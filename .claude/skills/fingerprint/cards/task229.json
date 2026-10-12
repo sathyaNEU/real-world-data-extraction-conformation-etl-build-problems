@@ -1,86 +1,89 @@
 {
   "task": "task229",
-  "architecture": "v2",
-  "drawn": "2026-10-11",
-  "slot_note": "seed DQ02 (release-health alert on the average user's rate). Architecture 1 (a smart-meter data provider's read-health alert, decided by the unit of the build mean's standard error) is spent: the portal's determinism QC failed it on the error's unforced construction and the estimand rework was cracked on the leak reader's first pass. Architecture 2 keeps the pairing the author re-filed (general-statistics-data-science, missing-data-censoring-measurement-error, x Data Quality Monitoring) and the third-party logistics stock-record world, with the decisive step redrawn on the field's own count-programme logic (a count measures and corrects the record it reads) after the paused draft's step, weighting counted locations by their chance of being counted, was judged the generic reweighting.",
-  "domain": "general-statistics-data-science",
-  "subdomain": "missing-data-censoring-measurement-error",
-  "client_domain": "general-statistics-data-science",
-  "niche": "a third-party logistics operator's peak stock-record gate for a grocery client: which of the eight distribution centres it runs for the client carry pick-face stock records accurate enough, at the moment counting stands down for the peak freeze, for the client's automated replenishment to order off them unattended, judged from a perpetual count programme whose cycle and exception counts each correct the record they read",
+  "architecture": "v3",
+  "drawn": "2026-10-12",
+  "slot_note": "seed DQ02 (release-health alert on the average user's rate). Architecture 1 (a smart-meter data provider's read-health alert, decided by the unit of the build mean's standard error) is spent on the portal's determinism QC and the cracked estimand rework; architecture 2 (a third-party logistics operator's stock-record accuracy gate, decided by the state of each record at one moment rebuilt from the accrual since its last count) is spent at hardening loop 1. Architecture 3, the number's last, keeps the objective and re-roots in a new world and a new client domain: a city's permanent cycle-counter network in urban and regional science, decided by the flow at which cyclists actually pass a loop once a crossing signal gates them.",
+  "domain": "urban-regional-science",
+  "subdomain": "other",
+  "client_domain": "urban-regional-science",
+  "niche": "a city's permanent cycle-counter network: from which month of the 2027 counting season each counter site will record fewer than nine in ten of the cyclists passing it in the weekday peak hours, once four rail-trail crossings become signal controlled and cycling grows through the season",
   "objective": "data-quality-monitoring",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "Let Thornacre's replenishment run unattended through the freeze at Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth, and keep Thurrock and Doncaster on supervised replenishment (planned; the builder confirms it from the cut pack).",
-  "answer_source": "design note, planned set (prototype proto2/tune3.py); replaced by the golden at ship",
+  "shape": "13",
+  "decision_type": "date_or_period",
+  "answer_unit": "date_or_period",
+  "answer": "Upgrade or flag the Old Spur Trail counters at Hallett Avenue and Ravine Road from May 2027, at Gorse Street from June and at Mallory Drive from July, and the Cutler Bridge counter from August; the other eleven sites hold the 90 per cent capture standard through October (planned; the builder confirms it from the cut pack).",
+  "answer_source": "design note, planned schedule (prototype proto3/ladder.py); replaced by the golden at ship",
   "gap": [
-    "time",
-    "population"
+    "objective",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G13",
-    "G16",
-    "G17"
+    "G7",
+    "G13"
   ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "gate_g": "binding_constraint",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "binding_constraint",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the count history and reads Thornacre's standard and Corderoy's count programme correctly sets the exception counts aside as symptom-led, weights each centre's routine counts to its in-scope A, B and C mix and takes that rate as the share of correct records at the stand-down; it passes Magor and Hinckley only and holds back Daventry, Bellshill, Warrington and Avonmouth, which qualify, because every routine count read its record at the end of a cycle and then set it right, so the weighted rate is the accuracy of records as they fall due, not of the records each centre carries into the freeze.",
-  "domain_test": "The deciding quantity is the share of stock records that are right at one moment, which no count observes, and the inventory field's own count-programme logic decides it: a cycle or exception count both measures a record and sets it right, and a record goes wrong again only through the handling it takes before its next count, so the share at the stand-down is built face by face from each face's handling or time since its last count of any kind, with the accrual read off the routine counts alone; the generalist's correction (weight the counts to the population's class and flag cells) never reaches it, and with survey or clinic nouns in place nothing resets what it measures, so the task no longer reads the same.",
+  "analyst_test": "A strong analyst who cleans every counter export and reads the counting standard, the counter maker's capture curve and the crossing design summary correctly applies the curve at each channel's forecast 2027 weekday peak-hour flow and files that only the busiest bridge drops below 90 per cent (in August), because nothing the hour's average shows changes at the trail; the four trail sites just beyond the newly signalled crossings fall below the standard from May, May, June and July.",
+  "domain_test": "The deciding quantity is the flow at which cyclists actually cross a counter's loop, and traffic signal control sets it: a crossing signal releases each cycle's cyclists in its green, so beyond the crossing the flow while they pass is the cycle's cyclists over the green, several times the hour's average; with another field's nouns there is no signal cycle gating arrivals and no loop whose capture falls with the passing flow, so the task does not survive the swap.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:count-corrects-the-record-it-measures",
+  "layer2_pattern": "own:signal-gated-arrivals-set-a-counter-loop-capture",
   "layer1": [
-    "count and posting timestamps in UTC against trading days set in UK local time across the 25 October 2026 clock change (main path asserted invariant to the day attribution)",
-    "effective-dated location master with re-slotted, merged, held and re-labelled locations, reserve bins carried beside the pick faces",
-    "a stock-by-location export whose quantity is the face total repeated on every batch row of a date-coded face, with batch quantities in a separate batch register",
-    "a line master with effective-dated case sizes and single-pick lines held in eaches against a per-case cost",
-    "a period-10 cost change file delivered over a base cost list extracted before the period opened",
-    "a replenishment forecast run that carries each store's depot as assigned before the peak re-zoning, with the re-zoning (and its early end for part of the stores) only on an effective-dated store servicing map",
-    "a store trading calendar updated for Boxing Day after the forecast run"
+    "per-site counter portal exports at 15-minute grain, one file per site, with channel numbering that runs past the bicycle channels into pedestrian infrared channels at combined sites",
+    "interval stamps in local standard time all year on one firmware family against local clock time with daylight saving on the other",
+    "two loops in one direction on the widest trail sections, exported under one direction label",
+    "trail chainage in the crossing design summary against map coordinates in the counter inventory",
+    "a forecast workbook keyed by travel-model link, with a link-to-channel lookup",
+    "a crossing design summary issued as a PDF with its timing tables",
+    "video audit counts at 15-minute grain from a separate contractor, timed in local clock time"
   ],
-  "context_artifact": "operations_log",
-  "stakeholder_role": "head of stock integrity at a third-party logistics operator, who has to tell the operator's account director which distribution centres meet the grocery client's peak record-accuracy gate before the client's first unattended replenishment run",
-  "role_family": "compliance_or_audit",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "the lead of a city's cycle-counting programme, who has to tell the provincial active transportation fund which counter sites will meet its 90 per cent capture condition through the 2027 season, and from which month each of the others must be upgraded or its counts flagged",
+  "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "pick-face count history, Thornacre lines, eight centres, export start to the stand-down",
+    "file": "per-site counter portal exports for 2026, one CSV per site, 15-minute counts by channel",
     "rows": 0,
-    "entity": "one count task on one pick face (a cycle count or an exception count), with the system quantity, the first count, the supervisor recount where one was taken, the quantity posted, the result and the task's reason code",
-    "grain": "pick face x count task",
+    "entity": "one 15-minute count on one counter channel (an inductive loop for one direction of cycling, or an infrared beam for pedestrians at combined sites) at one counter site",
+    "grain": "counter channel x 15-minute interval",
     "source": "synthetic"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "season_or_peak",
-  "org_family": "logistics_or_3pl",
+  "forum": "funder_or_donor",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "local_government",
   "world": {
-    "geography": "United Kingdom, England, Scotland and Wales",
-    "currency": "GBP",
-    "org_type": "third-party logistics operator running ambient, chilled and frozen distribution centres for a grocery retail client",
+    "geography": "Canada, Alberta (a fictional mid-size city)",
+    "currency": "CAD",
+    "org_type": "a city's transportation department running a permanent cycle-counter network, funded in part by a provincial active transportation fund",
     "invented_names": [
-      "Corderoy Logistics",
-      "Thornacre"
+      "City of Pembury",
+      "Old Spur Trail",
+      "Tallis Counting Systems",
+      "Pembury Region Travel Model",
+      "Old Spur Trail Crossings Upgrade"
     ],
     "people": [
-      "Rhys Flynn",
-      "Stacey Sykes",
-      "Arthur Mason",
-      "Leonard Finch"
+      "Phyllis Thompson",
+      "Brandon Holden",
+      "Teresa Chen"
     ]
   },
   "deliverables": [
-    "freeze_gate_2026.html"
+    "counter_season_2027.xlsx",
+    "trail_baseline_2026.png"
   ],
   "opening_move": "question-first",
-  "driver": "The decisive quantity is the share of units in a correct state at one moment, seen only through checks that record a unit's state just before setting it right; scheduled checks see each unit at the end of its interval and symptom-led checks see units because they were wrong, so the checked-unit rate, however reweighted to the population's cells, measures states that have since been reset, and the share at the moment is built unit by unit from what each has accrued since its own last check of any kind, with the accrual read from the scheduled checks alone.",
-  "driver_concrete": "Corderoy's cycle and exception counts each record a pick face's system quantity against the physical count and then post the confirmed count as the record, so every count leaves the record right; the routine counts on the A, B and C cycles of four, eight and thirteen weeks see each record at the end of its cycle and the exception counts see records because a short pick or a negative balance showed them wrong, while at the stand-down each face is only part way through its cycle since its last count of any kind; so a centre's count accuracy, even with the exception counts set aside and the routine counts weighted to its A, B and C mix, understates the records it carries into the freeze, most where fast faces run long cycles, and Thornacre's 97.0 per cent gate passes six centres where the weighted count rate passes two.",
-  "stump": "A competent solver takes each centre's share of correct records from its count history as the share of count tasks that matched the record and finds that no centre qualifies, all eight held on supervised replenishment, and its textbook correction (exception counts set aside as symptom-led, the routine counts weighted to the in-scope A, B and C mix) still passes only Magor and Hinckley; the step that lands it there is reading a count's result as the record's standing state, when every count also posts the confirmed quantity as the record, so routine counts see each record at the end of its cycle and exception counts see records because they were wrong, while at 06:00 on 7 December each face is only part way through its cycle since its last count of any kind, and built face by face from the accrual since that count, read off the routine counts alone, Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth clear 97.0 per cent.",
+  "question_form": "when",
+  "driver": "The decisive quantity is the rate at which units pass a counting point while they actually pass, which a gate upstream confines to a short open phase of each cycle; a counter whose capture falls as that rate rises records far less of a gated stream than the period's average rate implies, so a capture curve validated where arrivals were ungated and applied at the average rate passes points that the new gate pushes below the standard.",
+  "driver_concrete": "Four Old Spur Trail crossings of arterial roads become signal controlled in May and June 2027, so every cyclist reaching a counter loop 40 metres beyond a crossing in that direction passes during the trail's 18 to 20 second green of a 90 to 110 second cycle; the Tallis loop records 0.55 points fewer for every extra cyclist a minute of steady flow, so at the green-phase flow (four and a half to six times the hour's average) those channels fall below 90 per cent from the month their signal starts, while every video audit that certifies the loop's curve was taken where cyclists arrived unsignalled.",
+  "stump": "A competent solver applies the counter maker's capture curve to each channel's forecast 2027 weekday peak-hour flow (and, if careful, to the busiest quarter hour) and files that the network holds the 90 per cent standard all season except Cutler Bridge in August; the step that lands it there is taking the hour's average flow as the flow cyclists cross the loop at, when at the four Old Spur Trail crossings signalled from May and June every cyclist leaving a crossing passes the loop 40 metres on inside the trail's green, so those four sites fall below 90 per cent from May, May, June and July.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
@@ -108,8 +111,65 @@
       "stump_strategy": "grain_or_unit",
       "decision_type": "designation_set",
       "driver": "The decisive quantity is the standard error of a mean over entities that fail together through a shared parent node, so it has to be built over the nodes; an error that takes each entity as an independent unit understates it severalfold for a group concentrated behind few nodes, and the alert fires on what is node noise."
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-11",
+      "fate": "spent 2026-10-11 at hardening loop 1 (paper): solver round 1 landed the call and cracked every ask (proxy 97.9) by fitting an error rate per centre and class on the routine counts against days since the face's last count, the design's own rung 3, found from a visible symptom (routine-count accuracy falling with days since the previous count); no rung above that accrual model completes with its checks passing and still lands wrong, so the architecture was re-rooted",
+      "domain": "general-statistics-data-science",
+      "subdomain": "missing-data-censoring-measurement-error",
+      "objective": "data-quality-monitoring",
+      "shape": "10",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G16",
+        "G17"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "decision_type": "designation_set",
+      "calibration_form": "none",
+      "context_artifact": "operations_log",
+      "role_family": "compliance_or_audit",
+      "forum": "line_manager_or_team",
+      "forcing_event": "season_or_peak",
+      "org_family": "logistics_or_3pl",
+      "layer2_family": "field_method",
+      "layer2_pattern": "own:count-corrects-the-record-it-measures",
+      "spine": {
+        "file": "pick-face count history, Thornacre lines, eight centres, export start to the stand-down",
+        "rows": 0,
+        "entity": "one count task on one pick face (a cycle count or an exception count), with the system quantity, the first count, the supervisor recount where one was taken, the quantity posted, the result and the task's reason code",
+        "grain": "pick face x count task",
+        "source": "synthetic"
+      },
+      "world": {
+        "geography": "United Kingdom, England, Scotland and Wales",
+        "currency": "GBP",
+        "org_type": "third-party logistics operator running ambient, chilled and frozen distribution centres for a grocery retail client",
+        "invented_names": [
+          "Corderoy Logistics",
+          "Thornacre"
+        ],
+        "people": [
+          "Rhys Flynn",
+          "Stacey Sykes",
+          "Arthur Mason",
+          "Leonard Finch"
+        ]
+      },
+      "niche": "a third-party logistics operator's peak stock-record gate for a grocery client: which of the eight distribution centres it runs for the client carry pick-face stock records accurate enough, at the moment counting stands down for the peak freeze, for the client's automated replenishment to order off them unattended, judged from a perpetual count programme whose cycle and exception counts each correct the record they read",
+      "driver": "The decisive quantity is the share of units in a correct state at one moment, seen only through checks that record a unit's state just before setting it right; scheduled checks see each unit at the end of its interval and symptom-led checks see units because they were wrong, so the checked-unit rate, however reweighted to the population's cells, measures states that have since been reset, and the share at the moment is built unit by unit from what each has accrued since its own last check of any kind, with the accrual read from the scheduled checks alone.",
+      "driver_concrete": "Corderoy's cycle and exception counts each record a pick face's system quantity against the physical count and then post the confirmed count as the record, so every count leaves the record right; the routine counts on the A, B and C cycles of four, eight and thirteen weeks see each record at the end of its cycle and the exception counts see records because a short pick or a negative balance showed them wrong, while at the stand-down each face is only part way through its cycle since its last count of any kind; so a centre's count accuracy, even with the exception counts set aside and the routine counts weighted to its A, B and C mix, understates the records it carries into the freeze, most where fast faces run long cycles, and Thornacre's 97.0 per cent gate passes six centres where the weighted count rate passes two.",
+      "stump": "A competent solver takes each centre's share of correct records from its count history as the share of count tasks that matched the record and finds that no centre qualifies, all eight held on supervised replenishment, and its textbook correction (exception counts set aside as symptom-led, the routine counts weighted to the in-scope A, B and C mix) still passes only Magor and Hinckley; the step that lands it there is reading a count's result as the record's standing state, when every count also posts the confirmed quantity as the record, so routine counts see each record at the end of its cycle and exception counts see records because they were wrong, while at 06:00 on 7 December each face is only part way through its cycle since its last count of any kind, and built face by face from the accrual since that count, read off the routine counts alone, Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth clear 97.0 per cent."
     }
   ],
-  "notes": "Architecture 2 drawn 2026-10-11 after the author's decision to re-root in the same pairing, designed against main at 3966e83 (PR #39, PR #43). The paused draft (weighting counted locations by the inverse of their stratum's counted share) is not drawn: under stumping's domain-coupling rule its step is the generic reweighting, and here it is rung 2 of the ladder, landing on Magor and Hinckley. Decisive G-code G13 (horizon mismatch: the counts are states taken before each count's posting, the gate reads the records at one later moment), with G16 (the estimator of that state, selected under Thornacre 4.5) and G17; pattern none, because no A to E pattern carries the move. decisive_rule_filed true: Thornacre's standard files the scope, the correct-record test, the estimand through a full count at the measurement time, the measurement time, the estimate criterion (an estimate a full count then would be expected to bear out) and the 97.0 per cent gate; nothing files how the share at the moment is estimated. official_decoy false: no shipped document defines or reports a count-based accuracy. Registration deferred: task228 registers its next architecture first (coordination of 2026-10-11).",
-  "question_form": "whether"
+  "notes": "Architecture 3 drawn 2026-10-12 (re-root of the number's last architecture, designer pass on branch perssathya/task229-rework). Decisive G-code G7 (operating window: a cyclist leaving a signalled crossing can pass the counter only in the trail's green), with G13 (the 2027 season, the months the crossings switch on); pattern none. Gate G binding_constraint and strategy binding_constraint: the crossing signal's red phase is the constraint the default path never checks, and it removes sites from the compliant set without replacing any. decisive_rule_filed true: the counting standard files the capture estimand and the 90 per cent condition, and the counter maker's test report files the capture at a steady flow; nothing files the flow at which a gated stream crosses the loop. official_decoy false: no shipped document reports a forecast capture for any site. calibration_form gold_standard_subsample: the contractor's video audits certify the loop's capture curve, all at sites where cyclists arrived unsignalled in 2025 and 2026. Window at registration (dated 2026-10-12): task230 v2 (branch perssathya/task230-event-volume-drop), task445, task446."
 }

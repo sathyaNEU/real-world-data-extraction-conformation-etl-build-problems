@@ -1,0 +1,7 @@
+Missed appointments in the Scotland region have tripled, from about one visit in sixty over January to June to about one in nineteen over July to September. The January peak is twelve weeks off. Leslie Yates on dispatch is certain the routing engine that went live on 1 July is behind the rise. I manage field operations for the region and would rather fix the right thing once. What I need is the cause that will be behind the most missed appointments over January to March if we change nothing, and how many of the July to September missed appointments trace to it.
+
+That goes to the resource planning desk as a short note, missed_appointments_q3_2026.docx, which opens on that cause and what we change before January because of it. Under it, the cause that comes second over the peak with its July to September count, then every cause family in our review procedure with its July to September missed appointments, the goodwill credits paid on those misses and the complaints they drew. Then each of our six patches with its July to September missed appointments from the cause we are fixing, so the desk knows where to start.
+
+The same finding goes to the weekly ops call as one picture, missed_appointments_q3_2026.png: a stacked bar for every week from January to September split by cause, the 1 July go-live drawn and labelled, the worst week annotated with its count, and a title someone could read out as the finding.
+
+Counts are whole numbers and credits are whole pounds.

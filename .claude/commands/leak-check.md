@@ -1,6 +1,7 @@
 ---
 description: Check a built task for anything that hands the solver the answer or the author's intent. Runs leak.py's eleven mechanical sweeps, then one isolated solver's-eye read of the prompt and bundle, and writes leak_check_report.md.
 argument-hint: taskNN [--asof YYYY-MM-DD]
+effort: medium
 ---
 
 # /leak-check
@@ -29,9 +30,9 @@ Run the leak check over the one task named in `$ARGUMENTS`. A bare number or `ta
 5. **Append** the agent's answers to `<task>/leak_check_report.md` under `## Solver's-eye read`.
 6. **Report**: the mechanical verdict, the five answers in one line each, and the list of items to
    fix. Run on its own, this command fixes nothing; the fix goes in the generator. Inside `/build`
-   (stage 4) the pipeline fixes every finding before the judge: question 1 to 3 findings, any question 5
+   (stage 4) the pipeline fixes every finding in one pass with the judge's: question 1 to 3 findings, any question 5
    sentence whose literal execution is not the golden, any fork on the main call or an ask figure, and
-   the realism tells. A decisive-step sentence or a main-call fork goes back to a designer first. This
+   the realism tells. A decisive-step sentence or a main-call fork sends the build back to stage 2. This
    command re-runs only when a fix changed a document under `target/` or the prompt; a data-only fix is
    checked by `leak.py`.
 

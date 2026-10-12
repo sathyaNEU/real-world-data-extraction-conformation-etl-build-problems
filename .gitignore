@@ -1,8 +1,64 @@
+# OS and Python noise
+.DS_Store
 __pycache__/
 *.pyc
 *.tmp
-# Each task's generator rebuilds its pack and goldens, so in-flight builds are not committed;
-# the delivered copies are added with git add -f at delivery.
+
+# Derived caches. guard.py and fingerprint.py rebuild them on demand and seed them from the tracked
+# baselines under clone-check/corpus/ and fingerprint/corpus/, so no build ever commits one.
+.claude/skills/*/.cache/
+
+# Packs and goldens are rebuilt by each task's generator. A shipped build tracks target.zip and its
+# golden/ files only, added with `git add -f` in the SHIPPED commit; nothing else under these paths.
 task*/target/
 task*/golden/
-task*/target.zip
+task*/gd/
+task*/deliverables/
+task*/*.zip
+# the same anywhere deeper in a task folder: old iteration snapshots and nested packs are not repo content
+task*/**/target/
+task*/**/golden/
+task*/**/*.zip
+task*/**/_staged/
+task*/**/*.bak
+
+# Raw downloads, source caches and large intermediates never go in git (GitHub refuses files over 100 MB).
+task*/raw/
+task*/source/
+task*/sources/
+task*/over50mb/
+task*/data/
+task*/dirty/
+task*/clean/
+task*/wwi/
+task*/input-assets/
+task*/Brazilian*/
+task*/.git/
+task*/generator/cache/
+task*/generator/src/
+task*/generator/out/
+task*/generator/sources/
+task*/generator/downloads/
+task*/**/*.pkl
+task*/**/*.parquet.tmp
+
+# The earlier corpus, task1 to task109, stays on the author's machine and is never tracked
+/task[0-9]/
+/task[0-9][0-9]/
+/task10[0-9]/
+
+# Root-level archives and scratch from local machines
+/*.zip
+/dot_claude_setup*
+task*/.vendor/
+task*/**/.venv/
+task*/**/venv/
+task*/**/site-packages/
+task*/**/node_modules/
+task*/**/.ipynb_checkpoints/
+
+# Repair snapshots (freeze.py), local to the run
+task*/.freeze.json
+
+# Batch clone-check reports are the author's reading, not repo content
+/clone_check_report*.md

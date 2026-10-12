@@ -1093,9 +1093,11 @@ def write_docx(fx, path, png):
              " as avoidable in the trust's own care. The trust that comes closest is {}, at {:,}, so {} leads by "
              .format(NAME[run], rv, SHORT[call]), ["{:,} deaths".format(gap)], "."])
     para("The engagement is judged on the deaths its reviewers confirm as avoidable because of problems in the "
-         "reviewed trust's own care, and the terms of reference count a trust's decisions about the use of its own "
-         "beds and staff as part of that care (WRHB/26/097, sections 3 and 4). The placement rests on the latest "
-         "four complete quarters, July 2025 to June 2026 (section 5).", after=6)
+         "reviewed trust's own care (WRHB/26/097, section 3). Section 4 sets the test: a death counts where, at any "
+         "time while the patient waited, the trust's own level 3 unit had a staffed bed with no patient in it that was "
+         "the trust's to use, or admitted another of the trust's own patients. A bed the network bed bureau has "
+         "allocated to a transfer is the network's to use. The placement rests on the latest four complete quarters, "
+         "July 2025 to June 2026 (section 5).", after=6)
 
     heading("Why Stennock")
     p = para(after=6)
@@ -1108,11 +1110,10 @@ def write_docx(fx, path, png):
              "at the Stennock Treatment Centre when the waiting patient's decision was made; each left during the "
              "wait. At weekends, with no lists running, no Stennock referral waited more than four hours."
              .format(fx["stn_waits_hold"])])
-    para("Those beds were staffed and empty, kept by Stennock for its own elective patients while its own emergency "
-         "patient waited for a bed. Keeping a bed for a planned patient of its own is the trust's decision about the "
-         "use of its own beds, and no bed bureau was involved. Under the methodology note every one of those {:,} "
-         "deaths therefore falls inside Stennock's own care, and they are the deaths a review can examine and "
-         "confirm.".format(y3[call][2]), after=6)
+    para("Those beds were staffed and had no patient in them, and with no bed bureau allocation involved they were "
+         "Stennock's to use. Stennock was keeping them for its own elective patients while its own emergency patient "
+         "waited. Under the section 4 test every one of those {:,} deaths therefore falls inside Stennock's own care, "
+         "and they are the deaths a review can examine and confirm.".format(y3[call][2]), after=6)
     para("The pattern is not a one-year effect. Across the network's record Stennock has the most confirmable "
          "deaths in each four-quarter year ({:,}, {:,} and {:,}, against Prideswick's {:,}, {:,} and {:,}), so the "
          "latest year is a fair guide to 2027-28."
@@ -1130,8 +1131,8 @@ def write_docx(fx, path, png):
     tb.style = "Table Grid"
     hdr = ["Trust", "Deaths inside the remit", "Confirmable in own care", "What held the waits"]
     reason = {
-        "STN": "Beds in its own unit kept empty for Stennock's planned surgical patients, not yet out of theatre "
-               "recovery, through each wait",
+        "STN": "Staffed beds with no patient in them when each wait began, kept for Stennock's planned surgical "
+               "patients still in theatre recovery",
         "PRW": "{:,} after waits beside its own empty staffed beds; {:,} after waits through which its full unit "
                "took transfers the bed bureau placed; {:,} with the unit full and no admission".format(
                    held["PRW"]["empty"], held["PRW"]["bureau"], held["PRW"]["capacity"]),
@@ -1188,11 +1189,12 @@ def write_docx(fx, path, png):
          .format(rv, gap), after=6)
     para("Ristenholm's unit gave beds to other patients during the waits behind {:,} of its {:,} deaths in the "
          "placement year, many of them planned transfers, which can read as Ristenholm putting other patients first. "
-         "Every one of those patients was referred by a trust without level 3 beds, and the network's bed bureau "
-         "allocates the bed for each transfer between trusts, so those waits are the network's capacity rather than "
-         "Ristenholm's own decisions. Brackenford's morning returns show empty beds most days, which is what the "
-         "network manager has in mind, but its unit was full at every hour of each of its long waits, all of which "
-         "began in the evening.".format(held["RIS"]["bureau"], y3["RIS"][1]), after=6)
+         "Every one of those patients was referred by a trust without level 3 beds and placed on a bed the network's "
+         "bed bureau allocated, which section 4 makes the network's to use rather than Ristenholm's, so those waits "
+         "are network capacity and not Ristenholm's own care. Brackenford's morning returns show empty beds most "
+         "days, which is what the network manager has in mind, but the test looks at the beds while each patient "
+         "waited, and its unit was full at every hour of each of its long waits, all of which began in the evening."
+         .format(held["RIS"]["bureau"], y3["RIS"][1]), after=6)
 
     heading("The record behind the placement")
     para("Across the network's whole record, July 2023 to June 2026, {:,} patients waited inside the remit and "

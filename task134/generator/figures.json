@@ -1,0 +1,333 @@
+{
+ "call": {
+  "30 June 2027": {
+   "unrounded": 759.07,
+   "stated": 760
+  },
+  "30 September 2027": {
+   "unrounded": 770.52,
+   "stated": 770
+  },
+  "31 December 2027": {
+   "unrounded": 780.08,
+   "stated": 780
+  },
+  "31 March 2028": {
+   "unrounded": 788.96,
+   "stated": 790
+  }
+ },
+ "stock_31_december_2026": 745,
+ "pool_31_december_2026": 599,
+ "components": {
+  "30 June 2027": {
+   "today_residents": 621.1,
+   "direct_admissions": 84.5,
+   "conversions": 53.5
+  },
+  "30 September 2027": {
+   "today_residents": 567.6,
+   "direct_admissions": 120.9,
+   "conversions": 82.0
+  },
+  "31 December 2027": {
+   "today_residents": 518.5,
+   "direct_admissions": 154.1,
+   "conversions": 107.5
+  },
+  "31 March 2028": {
+   "today_residents": 474.2,
+   "direct_admissions": 183.9,
+   "conversions": 130.8
+  }
+ },
+ "direct_admissions_per_month": 15.94,
+ "conversion_hazard_per_month_by_months_since_admission": {
+  "under 6": 0.0001,
+  "6 to 11": 0.0001,
+  "12 to 14": 0.0,
+  "15 to 17": 0.0295,
+  "18 to 23": 0.0511,
+  "24 to 35": 0.0536,
+  "36 to 47": 0.0275,
+  "48 and over": 0.0136
+ },
+ "pool_by_months_since_admission": {
+  "under 6": 130,
+  "6 to 11": 174,
+  "12 to 14": 74,
+  "15 to 17": 53,
+  "18 to 23": 74,
+  "24 to 35": 51,
+  "36 to 47": 17,
+  "48 and over": 26
+ },
+ "conversions_by_year": {
+  "2021": 85,
+  "2022": 91,
+  "2023": 104,
+  "2024": 79,
+  "2025": 81,
+  "2026": 84
+ },
+ "default_path": {
+  "30 June 2027": 742.6,
+  "30 September 2027": 742.0,
+  "31 December 2027": 741.1,
+  "31 March 2028": 740.3
+ },
+ "default_path_stated": {
+  "30 June 2027": 740,
+  "30 September 2027": 740,
+  "31 December 2027": 740,
+  "31 March 2028": 740
+ },
+ "rungs_31_march_2028": {
+  "R1": 740.3,
+  "R1b": 741.5,
+  "R2": 729.1,
+  "R3": 746.0,
+  "golden": 789.0,
+  "R4": 828.6,
+  "R0": 726.4
+ },
+ "ask": {
+  "Allanvale residential": {
+   "residents": 110,
+   "contribution": 279.96,
+   "contribution_stated": 280,
+   "net": 673.032,
+   "net_stated": "673"
+  },
+  "Allanvale nursing": {
+   "residents": 66,
+   "contribution": 259.053,
+   "contribution_stated": 259,
+   "net": 818.9576,
+   "net_stated": "819"
+  },
+  "Braeburn residential": {
+   "residents": 97,
+   "contribution": 246.066,
+   "contribution_stated": 246,
+   "net": 708.9472,
+   "net_stated": "709"
+  },
+  "Braeburn nursing": {
+   "residents": 42,
+   "contribution": 259.019,
+   "contribution_stated": 259,
+   "net": 820.9652,
+   "net_stated": "821"
+  },
+  "Carsefield residential": {
+   "residents": 82,
+   "contribution": 237.9424,
+   "contribution_stated": 238,
+   "net": 713.076,
+   "net_stated": "713"
+  },
+  "Carsefield nursing": {
+   "residents": 63,
+   "contribution": 250.8965,
+   "contribution_stated": 251,
+   "net": 822.1959,
+   "net_stated": "822"
+  },
+  "Dunmorrow residential": {
+   "residents": 73,
+   "contribution": 274.8821,
+   "contribution_stated": 275,
+   "net": 680.0944,
+   "net_stated": "680"
+  },
+  "Dunmorrow nursing": {
+   "residents": 55,
+   "contribution": 248.1907,
+   "contribution_stated": 248,
+   "net": 834.1355,
+   "net_stated": "834"
+  },
+  "Kirkhallam residential": {
+   "residents": 78,
+   "contribution": 252.144,
+   "contribution_stated": 252,
+   "net": 702.8849,
+   "net_stated": "703"
+  },
+  "Kirkhallam nursing": {
+   "residents": 54,
+   "contribution": 253.9346,
+   "contribution_stated": 254,
+   "net": 836.8067,
+   "net_stated": "837"
+  }
+ },
+ "chart": {
+  "order": [
+   "Kirkhallam",
+   "Dunmorrow",
+   "Carsefield",
+   "Braeburn",
+   "Allanvale"
+  ],
+  "title_locality": "Kirkhallam",
+  "title": "Kirkhallam's nursing places cost the partnership most: £837 a week after contributions"
+ },
+ "ask_stops": {
+  "s1": [
+   285.55,
+   666.83,
+   283.81,
+   794.78,
+   235.62,
+   719.17,
+   229.26,
+   843.6,
+   220.77,
+   733.94,
+   216.63,
+   861.61,
+   292.74,
+   665.46,
+   276.18,
+   808.45,
+   255.95,
+   695.01,
+   249.23,
+   841.01
+  ],
+  "s2": [
+   286.77,
+   665.6,
+   285.57,
+   793.01,
+   237.53,
+   717.26,
+   229.75,
+   843.1,
+   222.33,
+   732.38,
+   218.6,
+   859.63,
+   294.79,
+   663.4,
+   277.53,
+   807.11,
+   257.16,
+   693.81,
+   250.32,
+   839.93
+  ],
+  "s3": [
+   281.54,
+   671.45,
+   260.57,
+   817.44,
+   247.57,
+   707.45,
+   260.59,
+   819.4,
+   239.48,
+   711.54,
+   252.44,
+   820.66,
+   276.41,
+   678.57,
+   249.56,
+   832.77,
+   253.89,
+   701.14,
+   255.44,
+   835.31
+  ],
+  "s4": [
+   279.96,
+   673.03,
+   259.05,
+   818.96,
+   245.01,
+   710.14,
+   247.93,
+   828.97,
+   237.94,
+   713.08,
+   250.9,
+   822.2,
+   276.89,
+   677.91,
+   245.59,
+   834.57,
+   252.14,
+   702.88,
+   253.93,
+   836.81
+  ],
+  "s5": [
+   279.96,
+   668.76,
+   259.05,
+   811.99,
+   246.07,
+   702.65,
+   259.02,
+   812.02,
+   237.94,
+   710.78,
+   250.9,
+   820.14,
+   274.88,
+   673.84,
+   248.19,
+   822.85,
+   252.14,
+   696.58,
+   253.93,
+   817.11
+  ],
+  "o1": [
+   283.37,
+   669.66,
+   271.46,
+   805.81,
+   236.48,
+   720.04,
+   244.22,
+   829.74,
+   216.35,
+   732.38,
+   226.87,
+   844.67,
+   302.92,
+   651.92,
+   265.2,
+   816.66,
+   247.8,
+   704.26,
+   255.14,
+   840.02
+  ],
+  "lazy": [
+   286.77,
+   661.95,
+   285.57,
+   785.47,
+   237.53,
+   711.19,
+   229.75,
+   841.29,
+   222.33,
+   726.39,
+   218.6,
+   852.44,
+   294.79,
+   653.93,
+   277.53,
+   793.51,
+   257.16,
+   691.56,
+   250.32,
+   820.72
+  ]
+ }
+}

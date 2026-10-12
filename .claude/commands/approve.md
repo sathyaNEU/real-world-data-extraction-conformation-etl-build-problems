@@ -1,6 +1,7 @@
 ---
-description: The author's sign-off on a built task. Checks the heart of the stump against every card and ledger row for a template or a duplicate, re-runs the surface screen, refuses a LEAK, and on PASS writes the pipeline state and the ledger row's status to approved and brings the fingerprint card up to date.
+description: The author's sign-off on a built task. Checks the heart of the stump against every card and ledger row for a template or a duplicate, re-runs the surface screen, refuses a LEAK, and on PASS records the approval in pipeline.json and brings the fingerprint card up to date.
 argument-hint: taskNN
+effort: medium
 ---
 
 # /approve
@@ -40,12 +41,10 @@ On PASS:
 - Update the fingerprint card's `answer`, `answer_source`, `spine.rows`, `deliverables`,
   `opening_move` and `question_form` from the submission and the prompt if any is stale (`fingerprint` Part 2 step 5),
   then `guard.py validate <task>`.
-- Write `<task>/pipeline.json` with `"stage": "approved"` and the ISO date (create the file with
-  that one field if it does not exist).
-- Rewrite the build's row in `.claude/skills/stumping/references/shipped-ledger.md` to status
-  `approved MM-DD` (its Keeping it current section); the portal result is added when the author reports it.
+- Set `approved` in `<task>/pipeline.json` to the ISO date (create the file with that one field if it does
+  not exist); `status` and `stage` are left as they are.
 - Tell the author: approved, the heart verdict line, the nearest build and its similarity.
 
-Beyond that status cell this command never writes the shipped ledger, never edits the prompt, the
+This command never writes the shipped ledger and commits nothing; never edits the prompt, the
 bundle or the submission, and never spawns an adjudicator. Where the heart check promotes a
 pair the author wants read, `/clone-check <task>` is the adjudicated route.

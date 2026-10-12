@@ -260,7 +260,7 @@ The card's `generators` and the note the record left on each (`../SKILL.md` Part
 
 Four runs of the current model on each of 64 accepted client tasks where it averaged under 0.70; a task
 counts where the failure cost the call or its key figures, so one task can feed two. (N, M) is tasks
-decided and of those under 0.50. Evidence of habits, never architectures: the top four decided 37 of 64
+decided and of those under 0.50 (the full catalogue, with each task's evidence: `client/measured-traps.md`). Evidence of habits, never architectures: the top four decided 37 of 64
 and share the withheld method behind a published control set the client rejects. 17 to 26 are emerging.
 
 1. **Ships a method its own back-test failed** (11, 9): the obvious construction matches most controls, not

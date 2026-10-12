@@ -76,18 +76,22 @@ patient's wait.
 
 ## Stump sentence
 
-Hardening loop 3's sentence, the build's current one (loop 2's, G at 15 by the admission type, and loop 1's, A at 37 by the
-any-admission reading, are now grid cells):
+The determinism repair's sentence (2026-10-10, after portal test 1). Loop 3's sentence had the solver write its own test
+from a one-sentence methodology note, and the portal judges ruled every operationalisation of that sentence defensible
+(`## Portal test 1 and the determinism repair`); loop 2's (G at 15 by the admission type) and loop 1's (A at 37 by the
+any-admission reading) are grid cells:
 
 A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, sets aside the
-trusts holding no level-3 beds, rebuilds every unit's census from its stays, writes the remit's methodology sentence as
-its test (an empty staffed bed, or a freed bed given to a patient the trust placed itself, the bureau's transfers set
-aside) and files Prideswick (G) at 15 over Ristenholm's 2; the step that lands it there is reading the unit feed's bed
-assignment as the patient in the bed: through every Stennock long wait since the platform went live its unit held one or
-two staffed beds assigned at the morning bed meeting to its own elective centre patients, who the theatre extract shows had
-not left recovery when the waiting patient's decision was made, so Stennock kept beds empty for its own planned surgery
-while its emergency patient waited, 27 deaths, the largest number the review can confirm. A solver who re-times every held
-bed, the bureau's included, files Ristenholm (A) at 37 instead.
+trusts holding no level-3 beds, reads the test in section 4 of the terms of reference (at any time while the patient
+waited, a staffed bed with no patient in it that was the trust's to use, or another of the trust's own patients admitted;
+a bed the bed bureau has allocated is the network's), computes it from the unit feed's stays against the staffed beds and
+files Prideswick (G) at 15 over Ristenholm's 2; the step that lands it there is taking each stay's `admitted_at`, which
+the field guide defines as the minute the bed was assigned, as the minute a patient was in the bed: through every Stennock
+long wait since the platform went live its unit held one or two staffed beds assigned at the morning bed meeting to its own
+elective centre patients, who the theatre extract shows had not left recovery when the waiting patient's decision was made,
+so those beds had no patient in them and were Stennock's to use, 27 deaths, the largest number the review can confirm. A
+solver who reads every bed without a patient as empty, the bureau's included, breaks section 4's second sentence and files
+Ristenholm (A) at 37.
 
 ## Decisive rung
 
@@ -524,8 +528,11 @@ counts are pinned by the remit's placement clause (C4).
 - **Filed, the remit (the board's terms of reference for the engagement, authority 1 to 2).** The scope: adult patients referred
   from a ward or an emergency department for a level-3 critical care bed who waited more than four hours from the decision to admit
   to the assignment of a bed and died within 30 days of the decision. The judging rule: the deaths its reviewers confirm as avoidable
-  because of problems in the reviewed trust's own care. The methodology note, one sentence: the trust's decisions about the use of its
-  own beds and staff are its own care. The placement clause: the board places the engagement on the latest four complete quarters of
+  because of problems in the reviewed trust's own care. The methodology note (section 4, operationalised in the portal repair): the
+  trust's decisions about the use of its own beds and staff are its own care; the reviewers confirm a death where, at any time while
+  the patient waited, the trust's own level 3 unit had a staffed bed with no patient in it that was the trust's to use, or admitted
+  another of the trust's own patients; a bed the network bed bureau has allocated to a transfer between trusts is the network's to
+  use, not the receiving trust's. It names no assignment, hold, theatre, recovery, plan, booking or arrival (asserted). The placement clause: the board places the engagement on the latest four complete quarters of
   the network's record. The licensed wrong basis: the national programme screens trusts on referrals waiting more than four hours
   from receipt, and Sharon Banks will present that screen to the board (it ranks E first).
 - **Filed, the field guide (authority 4).** A unit stay's `admitted_at` is the minute its bed was assigned; times are as each system
@@ -535,8 +542,8 @@ counts are pinned by the remit's placement clause (C4).
 - **Empirical, the corpus.** The yield equals the count (34 of 34).
 - **Counter-pins: none.** The capacity report is labelled in-file (occupancy is the 08:00 return; referrals waiting over four hours
   are counted from receipt, the network's operational standard; it ranks no trust). The network manager's notes state facts (D's
-  unit is full every morning) and beliefs (C could take its own patients), never a rule that a full unit is capacity. No
-  document says that a transfer is or is not the receiving trust's own care. The stage-3 sweep greps every shipped document for
+  unit is full every morning) and beliefs (C could take its own patients), never a rule that a full unit is capacity. Section 4's
+  second sentence is the only statement on whose a bureau-allocated bed is. The stage-3 sweep greps every shipped document for
   quotable sentences near capacity, full, own, planned, theatre, elective, bureau and transfer.
 
 ### Fork grid: the 22-axis closure table (determinism-check A.5)
@@ -561,14 +568,16 @@ counts are pinned by the remit's placement clause (C4).
 | 16 | Identity normalisation | verified identities since 2 April 2024 | C1; temporary identities are legacy (ask device DV2) |
 | 17 | Netting | none | n/a |
 | 18 | Dimensional units | local time throughout the platform era and the unit feed; a wait is elapsed time | C1 in the window: no wait in the latest four quarters crosses a clock change (asserted), so elapsed and clock readings agree; the legacy UTC clock is ask hazard DV1 and the two spring clock-change nights are ask device DV5 |
-| 19 | Code semantics | own care counts the admissions the trust placed itself, read from each admitted patient's referring trust (the bureau's audit agrees for transfers between trusts), never from the admission type | C1 between the referral and audit readings (asserted on the window and the record). Since loop 2 the admission type is a rung, not a fork the closure leaves open: inside the window's long waits the code disagrees with the placement both ways (D's own planned transfers and the bureau's planned transfers into A's unit are both 03), so the type readings name G (01/04/05, 04) or A (03/04/05, not 02), each violating the methodology note read with the field guide's `bed_confirmed_at` line and the referral log's referring trust (C4: G 15 over A 2 and A 37 over D 27 against D 27 over G 15); any admission against own placement is the rung-3 fork, closed the same way; before April 2024 the CCRS-era feed coded every unplanned admission 01, which the type readings price on the record |
+| 19 | Code semantics | own care counts the admissions the trust placed itself, read from each admitted patient's referring trust (the bureau's audit agrees for transfers between trusts), never from the admission type | filed since the portal repair (section 4: "another of the trust's own patients", and a bureau-allocated bed is the network's to use); C1 between the referral and audit readings (asserted on the window and the record). Since loop 2 the admission type is a rung, not a fork the closure leaves open: inside the window's long waits the code disagrees with the placement both ways (D's own planned transfers and the bureau's planned transfers into A's unit are both 03), so the type readings name G (01/04/05, 04) or A (03/04/05, not 02), each violating the methodology note read with the field guide's `bed_confirmed_at` line and the referral log's referring trust (C4: G 15 over A 2 and A 37 over D 27 against D 27 over G 15); any admission against own placement is the rung-3 fork, closed the same way; before April 2024 the CCRS-era feed coded every unplanned admission 01, which the type readings price on the record |
 | 20 | Integerisation | none | n/a |
-| 21 | Scope of a stated clause | own care governs every wait; "own unit" scope | C1 at the census basis with admissions ignored (no wait overlaps another unit's empty staffed bed, asserted); with admissions read the network reading names E, and at the 08:00 basis C or E (C4, each violates "its own beds") |
+| 21 | Scope of a stated clause | own care governs every wait; "own unit" scope | filed (section 4: "the trust's own level 3 unit"); C1 at the census basis with admissions ignored (no wait overlaps another unit's empty staffed bed, asserted); with admissions read the network reading names E, and at the 08:00 basis C or E (C4, each violates "its own beds") |
 | 22 | Forward window contents | 2027-28, placed on the latest four quarters | filed; D leads the decisive construction in each four-quarter year of the record (25, 28, 27 against G's 14, 17, 15, asserted); no register change or reconfiguration inside the latest four quarters |
 | + | Census grain (hourly snapshot or continuous) | the bed is assigned at the minute it frees | C1: no capacity wait shows an empty staffed bed at any grain; every own-empty wait holds the empty bed from decision to assignment (asserted at minute grain and at hourly snapshots) |
-| + | Census reading (empty at the decision, at any time, for an hour, through the wait) | any of them | C1 by the same construction |
+| + | Census reading (empty at the decision, at any time, for an hour, through the wait) | at any time | filed (section 4: "at any time while the patient waited"); C1 for the decision-minute reading and for the wait read inclusive or strict at either end (no death moves; one survivor's wait meets an own admission on its decision minute, asserted) |
+| + | A bed with no patient in it (assigned, or a patient in it) | a patient in it | filed (section 4); the field guide dates a stay from the bed's assignment and the theatre extract dates each held patient leaving recovery. C3 on the unrecorded journey after recovery (the bed read empty to left recovery plus 30 to 480 minutes moves no death, asserted in the generator and the verifier); C1 on a patient away mid-stay (no theatre case falls inside a bed its patient already had, asserted after the theatre repair) |
+| + | Whose bed a held transfer's bed is | the network's | filed (section 4's second sentence); the census by assignment, every held bed read empty and any admission are grid cells mapped to it |
 | + | Which trust a death belongs to | the referring trust | filed (the remit examines the reviewed trust's patients); C1: every own-care wait ends in the trust's own unit or in death |
-| + | Staffed against physical beds | staffed beds from the daily return | C1: physical equals staffed at the four units in the window |
+| + | Staffed against physical beds | staffed beds from the daily return | C1: physical equals staffed at the four units in the window, and every unit's `beds_open` is one figure through the record, equal to the register's commissioned beds in force (asserted), so the return, the register and the hour of day agree |
 
 ### Deliverables and the criteria arithmetic
 
@@ -1504,6 +1513,63 @@ here; sweeps 1, 2 and 5 to 11 clean.
 
 Retired on 2026-10-09 and reopened on 2026-10-10 under the author's single-solver rule: the build had used 2 of its three hardening loops, so it gets 1 more. One plain solver follows each loop; any answer other than the golden one sends it to the determinism judge and then to ship.
 
+
+## Portal test 1 and the determinism repair (2026-10-10)
+
+**Result.** Rubric average 29 per cent; both portal determinism judges failed Gates C, D and E (underspecified_objective,
+competing_defensible_answer, semantic_fork). The responses filed Brackenford 34 (the 08:00 return as the bed state, with
+Prideswick's weekend rule giving Prideswick 17) and Ristenholm 44 (Stennock's holds found, and every bed the bureau gave
+another trust's patient counted as Ristenholm's own decision). The judges reproduced the golden under one reading and also
+reproduced Prideswick 15 (the census by assignment), and named no shipped sentence that any rival breaks: section 4 was
+one sentence ("a trust's decisions about the use of its own beds and staff are part of its own care"), the field guide's
+`bed_confirmed_at` line read to them as context rather than an exclusion, and the corpus is blind to all of it by design
+(L1). Diagnosis: `forcing-the-answer` Part 4 failure 1, the semantic pin never operationalised; convergence cannot close
+the decisive fork (assignment against the patient in the bed at Stennock is the stump itself), so the repair is a filed
+test at authority 1.
+
+**The repair, one mechanism.**
+
+- Section 4 of the terms of reference (`texts.REMIT`) now states the test as observables: the reviewers confirm a death
+  where, at any time while the patient waited, the trust's own level 3 unit had a staffed bed with no patient in it that was
+  the trust's to use, or admitted another of the trust's own patients; and a bed the network bed bureau has allocated to a
+  transfer between trusts is the network's to use, not the receiving trust's. It names no assignment, hold, theatre,
+  recovery, plan, booking, list, arrival or morning return (asserted). Neither judge's suggested wording was used, because
+  both named the held beds outright. The second prong is load-bearing on the record only: 27 record deaths (Stennock 20,
+  Brackenford 4, Ristenholm 2, Prideswick 1), none in the placement year, are own admissions on a bed that freed and was
+  filled in the same minute, with no empty moment, and all 44 placement-year confirmable deaths meet the first prong
+  (asserted in `pin_checks`).
+- The theatre extract's background ward surgery was placed around the referral without regard to the patient's unit stay,
+  so ward cases put a level 3 patient in theatre and in a ward recovery while the unit stay ran on, and "no patient in it"
+  would have read those beds as empty (none in the placement year). Ward cases now avoid every critical care stay of the
+  patient with an hour's margin, re-placed from a separate stream (`theatre.py`) so no other row's draws move; the row
+  count is unchanged at 8,026.
+- Assertions added (`checks.pin_checks`, 8, now 188 of 188): section 4 carries each observable once and no construction
+  vocabulary; a held bed read empty until its patient left recovery plus 30 to 480 minutes moves no death (C3); an own
+  admission on a wait's first or last minute decides no death (C1, one survivor); one `beds_open` figure per unit, equal to
+  the register's commissioned beds (C1); no patient away in theatre from a bed already theirs (C1); every in-wait admission
+  is the trust's own patient with no audit row or another trust's patient with one; the second prong carries record deaths
+  only. The grid's `GRID_RULE` now names the
+  section 4 clause each wrong cell breaks. Verifier claims added (3, now 36 of 36), on its own code path; run on the portal
+  test 1 bundle (sha256 4b2d996e...72454c) the absent-patient claim fails with 627 case and stay overlaps, and on the
+  repaired one it passes.
+- Measured: no graded figure moved (rungs 56, 34, 15, 37, 27; placement year 731 / 213 / 44; record 2,163 / 629 / 148);
+  two fresh builds byte-identical; `target.zip` re-cut with 20 members, of which only `review_terms_of_reference_2027-28.docx`
+  and `rds_theatre_cases_2023-2026.parquet` differ from portal test 1 (6,810,104 bytes, sha256 ab9f790b...acdf6). The
+  review database is the shipped file: a local rebuild writes the same rows (identical `.dump`) on different page bytes,
+  SQLite 3.50.4 against the build machine's 3.45.1. Goldens: the workbook and the chart unchanged; three paragraphs and the
+  Stennock table line of the board paper now argue from section 4 (built from `golden.py` with the shipped chart embedded,
+  since local matplotlib kerns the same chart differently). Submission block 1 and steps 5 and 6 cite section 4. Leak sweep
+  REVIEW with no LEAK (the same lines as before); `guard.py surface` 0 promoted pairs.
+
+**What it costs the stump, stated before any round.** Section 4 now hands rung 1 (the 08:00 return) and rung 3 (the
+bureau's transfers) to any solver who reads it, and "a staffed bed with no patient in it" invites the question that leads to
+the theatre join; portal response 2 had already found the holds without the pin and would now land the call. The stump that
+remains is the first-moves operationalisation: section 4 computed from the feed's stays, whose `admitted_at` is the
+assignment, files Prideswick 15. The crack rate is unmeasured; the build goes to `/solve 2` before the portal. One response on
+Stennock is survivable only while DV8 stays silent (a landed response banks about 45 from the call and instruction-following,
+and 5 of 32 ask criteria are reachable from the call). Both top responses on Stennock is the stopping rule's ceiling: two
+landed responses sit at 53 or more whatever the workbook does, so the ladder re-roots rather than the asks being hardened.
+
 ## Tried and rejected
 
 - v1 (first draft, 2026-10-08, never registered): chains of spells linked across trusts on the regional patient key at a
@@ -1578,3 +1644,15 @@ Retired on 2026-10-09 and reopened on 2026-10-10 under the author's single-solve
 - Stage 6 fix cycle 2, the optional field-guide sentence that the bureau allocates a bed and the receiving unit does not choose
   the patient (judge finding 5): not added, because four shipped facts already close the Ristenholm reading and the sentence
   would disarm the rung-3 lure.
+- Portal test 1 (2026-10-10), section 4 as one sentence with the operation left to the solver ("a trust's decisions about
+  the use of its own beds and staff are part of its own care"): rubric average 29 per cent and both determinism judges
+  failed C, D and E. A pin that names a concept and no observable lets every operationalisation stand (the 08:00 return
+  named Brackenford 34, the census by assignment Prideswick 15, the bureau's transfers as Ristenholm's decisions Ristenholm
+  44), and a corpus blind by design cannot choose between them. Section 4 now states the test as observables.
+- Stage 6 fix cycle 2's call to leave the bureau sentence out so rung 3's lure stayed armed: reversed by portal test 1. The
+  lure caught a response the judge scored as defensible, so the rung was an open fork, not a trap. Section 4's second
+  sentence now pins it, at the cost of the lure.
+- The theatre extract's background ward surgery, drawn within days of the referral and never checked against the patient's
+  unit stays: ward cases put a level 3 patient in theatre and a ward recovery while the stay ran on (627 case and stay
+  overlaps on the portal test 1 bundle, by the verifier's absent-patient claim), a realism defect that the "no patient in
+  it" test turned into a fork. Ward cases now avoid every critical care stay.

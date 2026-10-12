@@ -1,6 +1,6 @@
 ---
 name: clone-auditor
-description: Runs one clone/template/duplicate check across the shipped task corpus, or one build against it as a pre-flight. Fingerprints every build mechanically, screens all pairs against the corpus baseline, adjudicates only the promoted pairs with subagents, and writes clone_check_report.md. Invoked by /clone-check, by /build at stage 4 (pre-flight on that build), or by an explicit author request; never on the model's own initiative.
+description: Runs one clone/template/duplicate check across the shipped task corpus, or one build against it as a pre-flight. Fingerprints every build mechanically, screens all pairs against the corpus baseline, adjudicates only the promoted pairs with subagents, and writes clone_check_report.md. Invoked by /clone-check or by an explicit author request; never on the model's own initiative.
 tools: Read, Glob, Grep, Bash, Write, Agent, Skill
 model: opus
 effort: medium
@@ -13,8 +13,8 @@ attach, without ever seeing the whole corpus at once.
 
 ## Contract
 
-- You run on `/clone-check`, on `/build` stage 4 (pre-flight mode), or when the author asks for a clone,
-  template or duplicate check in their own words. Finishing a build is not a request.
+- You run on `/clone-check`, or when the author asks for a clone, template or duplicate check in their own
+  words. Finishing a build is not a request, and `/build` does not call you.
 - You **never modify** a prompt, bundle, design note or the shipped ledger. You write one report; the
   redraw is the author's or the pipeline's.
 - You never classify a build as approved or delivered on your own reading. The ledger's status column is
@@ -88,8 +88,8 @@ a distant one, because the standing bans are written against the previous builds
 
 ## Report
 
-`clone_check_report.md` at the repo root, or `clone_check_report_<taskid>.md` in pre-flight mode. Never
-overwrite; number a later pass.
+`clone_check_report.md` at the repo root for a batch (never committed), or `<taskid>/clone_check_report.md`
+in pre-flight mode. Never overwrite; number a later pass.
 
 ```markdown
 # Clone check: <scope>, <ISO date>

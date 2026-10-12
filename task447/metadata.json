@@ -1,0 +1,210 @@
+{
+  "task": "task447",
+  "title": "Whether notice N25-014 (Ledgestone Health buying Brightwater Medical Group) proceeds to a cost and market impact review",
+  "domain": "Healthcare Delivery & Health Economics",
+  "subdomain": "Payment, claims & health-plan analytics",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "07 (grid of cells): the projected 2026 increase by part (professional prices and five referred service lines), Ledgestone's outpatient share by county, line and year, and Ledgestone's physicians by year",
+  "as_of": "2025-10-21",
+  "deliverables": [
+    "N25-014_preliminary_review.pdf"
+  ],
+  "distractor_files": [
+    "hcris_hospital_outpatient_extract_fy2023.csv",
+    "apcd_medicare_advantage_facility_claims_2024.csv"
+  ],
+  "input_gates": {
+    "files": 19,
+    "formats": [
+      "csv",
+      "json",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "apcd_eligibility_spans.csv",
+    "largest_file_rows": 101741
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task447/generator/make.py (seeded, deterministic) on the layout of a state all-payer claims database extract; every carrier, system, practice, physician, member key and figure is invented. County names, ZIP codes, CPT codes, NUCC taxonomy codes and place-of-service codes are the real public vocabularies.",
+      "date": "2025-10-21",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-11",
+  "generator": "task447/generator/make.py",
+  "files": [
+    {
+      "path": "N25-014_exhibit_C_ledgestone_rates.xlsx",
+      "format": "xlsx",
+      "bytes": 10166,
+      "rows": null,
+      "source": "Constructed: Exhibit C to notice N25-014: Ledgestone Health rates",
+      "date": "2025-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "N25-014_notice_of_material_change.pdf",
+      "format": "pdf",
+      "bytes": 5682,
+      "rows": null,
+      "source": "Constructed: Notice of material change N25-014 with exhibits A and B",
+      "date": "2025-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "apcd_eligibility_spans.csv",
+      "format": "csv",
+      "bytes": 7935927,
+      "rows": 101741,
+      "source": "Constructed: Eligibility spans 2021 to 2024 for members with a line in the claim files",
+      "date": "2025-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "apcd_extract_data_dictionary.pdf",
+      "format": "pdf",
+      "bytes": 8731,
+      "rows": null,
+      "source": "Constructed: APCD extract data dictionary, request OHCCR-MO-2025-031",
+      "date": "2025-09-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "apcd_medicare_advantage_facility_claims_2024.csv",
+      "format": "csv",
+      "bytes": 838405,
+      "rows": 5200,
+      "source": "Constructed: Medicare Advantage outpatient facility claims referred by lakeshore physicians, 2024, layout 3.1",
+      "date": "2025-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "apcd_op_facility_claims_2021_2023.csv",
+      "format": "csv",
+      "bytes": 4626749,
+      "rows": 31568,
+      "source": "Constructed: Commercial outpatient facility claims referred by physicians of practices acquired 2021 to 2023, layout 2.4",
+      "date": "2024-08-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "apcd_op_facility_claims_2024.csv",
+      "format": "csv",
+      "bytes": 10779913,
+      "rows": 66660,
+      "source": "Constructed: Commercial outpatient facility claims, layout 3.1, dates of service 2024, paid through 31 August 2025",
+      "date": "2025-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "apcd_product_reference.csv",
+      "format": "csv",
+      "bytes": 1930,
+      "rows": 14,
+      "source": "Constructed: Carrier product reference",
+      "date": "2025-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "apcd_professional_claims_2024.csv",
+      "format": "csv",
+      "bytes": 10393012,
+      "rows": 65782,
+      "source": "Constructed: Commercial professional claims performed in Manitowoc and Kewaunee counties, layout 3.1, 2024",
+      "date": "2025-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "carrier_provider_file.csv",
+      "format": "csv",
+      "bytes": 120493,
+      "rows": 1042,
+      "source": "Constructed: Carrier provider files, providers in network 2019 to 2025",
+      "date": "2025-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cms_opps_clfs_2025_wisconsin.csv",
+      "format": "csv",
+      "bytes": 1250,
+      "rows": 21,
+      "source": "Constructed: CY2025 Medicare OPPS and CLFS amounts, Wisconsin wage-adjusted, CBSA 24580",
+      "date": "2025-02-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest.csv",
+      "format": "csv",
+      "bytes": 2864,
+      "rows": 18,
+      "source": "Constructed: export manifest",
+      "date": "2025-10-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "facility_directory.csv",
+      "format": "csv",
+      "bytes": 2506,
+      "rows": 20,
+      "source": "Constructed: Outpatient facility directory, northeast region",
+      "date": "2025-10-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hcris_hospital_outpatient_extract_fy2023.csv",
+      "format": "csv",
+      "bytes": 653,
+      "rows": 6,
+      "source": "Constructed: Hospital cost report extract, outpatient lines, fiscal year 2023",
+      "date": "2025-03-31",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "market_oversight_technical_appendix.pdf",
+      "format": "pdf",
+      "bytes": 3638,
+      "rows": null,
+      "source": "Constructed: Market oversight technical appendix, revision 3",
+      "date": "2025-06-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "network_tier_placements_2020_2026.json",
+      "format": "json",
+      "bytes": 26817,
+      "rows": null,
+      "source": "Constructed: Network tier placements of the three hospital systems in each tiered product, plan years 2020 to 2026",
+      "date": "2025-09-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "npi_reassignment_history.csv",
+      "format": "csv",
+      "bytes": 14416,
+      "rows": 246,
+      "source": "Constructed: NPI reassignment history: physician and practitioner billing relationships",
+      "date": "2025-10-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ohccr_rule_4_preliminary_review.pdf",
+      "format": "pdf",
+      "bytes": 5025,
+      "rows": null,
+      "source": "Constructed: Rule OHCCR 4, preliminary review of notices of material change",
+      "date": "2023-02-14",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "provider_ownership_register.csv",
+      "format": "csv",
+      "bytes": 2791,
+      "rows": 21,
+      "source": "Constructed: Provider ownership register (notices of material change and annual registrations)",
+      "date": "2025-10-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

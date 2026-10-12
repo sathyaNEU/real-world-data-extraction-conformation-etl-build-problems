@@ -298,14 +298,29 @@ def build_index(repo, cache_path):
     return data
 
 
+BASELINE = Path(__file__).resolve().parent / "corpus" / "people.json"
+
+
+def _with_baseline(index):
+    """Add the tracked baseline's builds that this checkout cannot see (packs not in git)."""
+    try:
+        base = json.loads(BASELINE.read_text())
+    except (OSError, ValueError):
+        return index
+    for task, pairs in base.get("builds", {}).items():
+        if not index["builds"].get(task):
+            index["builds"][task] = pairs
+    return index
+
+
 def load_index(repo, cache_path, refresh=False):
     p = Path(cache_path)
     if refresh or not p.exists():
-        return build_index(repo, cache_path)
+        return _with_baseline(build_index(repo, cache_path))
     newest = max((d.stat().st_mtime for d in Path(repo).glob("task*") if d.is_dir()), default=0)
     if p.stat().st_mtime < newest:
-        return build_index(repo, cache_path)
-    return json.loads(p.read_text())
+        return _with_baseline(build_index(repo, cache_path))
+    return _with_baseline(json.loads(p.read_text()))
 
 
 def usage(index, exclude=()):

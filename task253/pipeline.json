@@ -1,0 +1,74 @@
+{
+ "task": "task253",
+ "domain": "education-learning-sciences",
+ "objective": "descriptive-distribution",
+ "stage": 7,
+ "stage_name": "FIX_NOW repaired; round 2 and re-judge next",
+ "updated": "2026-10-12",
+ "branch": "sathay3012/task253-rent-relief-closeout",
+ "stump": "a competent analyst fits the system's filed three-level model (students within year groups within schools, REML), counts the schools whose predicted underlying Year 5 reading average is below 480 and commissions 28 places, where the sum of the 264 schools' probabilities of an underlying average below 480 gives 41.95, so 42",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": 1,
+  "date": "2026-10-12",
+  "fails": "pair ceiling 44.5 against 40; cracker keeps Ask A (students by region), both the direct consequence of filing the census fact"
+ },
+ "note": "architecture 2 built at stage 3: generator task253/generator/make.py (seed 233, shift 0.47); checks.py 728 assertions green (SF1 to SF17, ladder acceptance, grid, closures, 458 ask-composition cells, chart, bins, gates, counter-pin and realism sweeps); verify.py green (REML by EM within 1e-6 of the generator's fit); two builds byte-identical; 13 files, 5 formats, largest 111,150 rows, 2 distractors in metadata.json; figures_check exit 0; golden-realism and reduce-house-fixes passed; guard.py surface 0 promoted; precut exit 0; voice-check exit 0; target.zip cut. Golden 42 (41.95), default path 28. Standard 3.4 and 3.5 added to the filed text (ask determinacy under the golden-method variants, see the design note's Stage 3 build record)",
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (architecture 2; re-run after 6b, same three lines)",
+  "reader": "pass 1: no decisive-step sentence, no ranking, answer or help-only file, no main-call fork; realism tells deferred to 6b"
+ },
+ "duplicate_check": {
+  "heart": "WARN, no BLOCK over the pooled cards (repeat.gate_g, overuse.gate_g)",
+  "nearest": "surface task132 0.100; heart text 0.05 (task100 ledger row); driver 0.07 (task107 v4)",
+  "clone_check": "pass 2 CLEAN (clone_check_report_task253_pass2.md); one soft shape echo against task254 v2, charged to task254"
+ },
+ "solver_rounds": [
+  {
+   "label": "round 1",
+   "date": "2026-10-11",
+   "score": 44.5,
+   "landed": false,
+   "cracked": 1,
+   "items": 6,
+   "ask_share": 0.59,
+   "asks_leak": true,
+   "gate": "pass (main thread: call missed at the decisive step, 28 against 42; ask figures kept 0 of 25; the script ASKS LEAK reading was name tokens)",
+   "architecture": 2,
+   "proxy_script": 44.5,
+   "ask_share_by_figures": 0.0,
+   "decision": "pass",
+   "brief": ""
+  }
+ ],
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW (thread APPROVE; spec gate: the census roll-forward settled as the natural reading)",
+  "report": "task253/determinism_check_report.md",
+  "gate_g": "statistical_rigor / method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "repair_6b": {
+  "date": "2026-10-11",
+  "items": "notes row counts and licence line, standard history table and page break, visit plan per-coordinator habits, register dedications and college names, road file routed metro to metro hubs (990 rows), rates allowances by role, docx template parts, persona Williams to Hardy",
+  "gates": "checks 749 green; verify green and unchanged; byte-identical; figures.json unchanged; figures_check 0; precut 0; voice-check 0; leak.py REVIEW no LEAK; surface 0 promoted; H1 audit clean",
+  "golden": "42 (41.95)",
+  "default_path": 28,
+  "documents_changed": true,
+  "fresh_round_needed": false
+ },
+ "repair_fixnow_1": {
+  "date": "2026-10-12",
+  "items": "data_team_notes.txt census entry files the year level as the 2026 school-year level and that students move up one level each school year; checks.py A1 assertions rewritten to the filed reading; design note SF18, ask sheet, cracker sheet, pair arithmetic and Tried and rejected",
+  "gates": "checks 744 green; verify green; byte-identical; figures.json unchanged; figures_check 0; precut 1 (pair ceiling 44.5, cracker keeps Ask A); voice-check 0; leak.py REVIEW no LEAK (same three lines); surface 0 promoted",
+  "golden": "42 (41.95)",
+  "default_path": 28,
+  "pair_ceiling": 44.5,
+  "documents_changed": true,
+  "fresh_round_needed": true
+ }
+}

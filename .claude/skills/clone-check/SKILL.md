@@ -16,9 +16,11 @@ nothing new from the second, which is about the driver, not the surface. The che
 severity a reviewer would attach and never repairs; a clone is answered by a redraw, which is the
 author's.
 
-**Where it runs.** Stage 4 of `/build`, together with the leak check: `guard.py heart` (free) and the
-pre-flight by the `clone-auditor` agent (Opus, medium) on a build whose draw is fixed. Outside `/build`, only
-when the author asks, because it spends tokens. The mechanical screen is `fingerprint.py extract` then
+**Where it runs.** Every build runs the free half, `guard.py heart` and `guard.py surface`, at stage 3. The
+adjudicated check (the `clone-auditor` agent, medium effort) runs only when the author asks, through
+`/clone-check`, because it spends tokens. The corpus baseline is `corpus/fingerprints.json` (tracked); the
+working cache under `.cache/` is seeded from it and never committed. The author refreshes the baseline on a
+checkout holding every pack: `fingerprint.py extract --out .claude/skills/clone-check/corpus/fingerprints.json`. The mechanical screen is `fingerprint.py extract` then
 `fingerprint.py screen` (default the last 15 builds), whose **hard tells** (byte-identical files, same-seed
 tables surviving a rename, identical column sets, shared multi-word invented names, masked prompt wording)
 route straight to adjudication.

@@ -2,7 +2,8 @@
 
 A shape is named for where the rubric's 25 or more criteria come from: the **structure of the answer**, never a
 stack of asks. Pick the shape the data and the decision already have, size it on paper, write the arithmetic into the
-design note. The eighteen are patterns seen to carry a rich rubric, not a menu: a structure outside them is legal
+design note. Each shape's full file (`01-` to `18-` here) carries four worked prompts from the client's paid-out tasks, read on
+demand as idea seeds, never copied. The eighteen are patterns seen to carry a rich rubric, not a menu: a structure outside them is legal
 (card `shape: other`) with its arithmetic written out. `fingerprint/vocab.json` keys the shapes `01` to `18`, and
 `guard.py` (`SHAPE_OBJECTIVE`, `SHAPE_DECISIONS`) mirrors the objective column below.
 

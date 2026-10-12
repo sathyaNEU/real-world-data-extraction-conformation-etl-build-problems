@@ -1,0 +1,522 @@
+{
+ "round": {
+  "slate": [
+   "BISHOP HOGARTH CATHOLIC EDUCATION TRUST",
+   "PATHWAY TRUST",
+   "SWALE ACADEMIES TRUST",
+   "DERBY DIOCESAN ACADEMY TRUST",
+   "TUDOR GRANGE ACADEMIES TRUST",
+   "ADVANCE LEARNING PARTNERSHIP",
+   "BRADFORD DIOCESAN ACADEMIES TRUST",
+   "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+   "ST OSCAR ROMERO CATHOLIC ACADEMY TRUST",
+   "THE TED WRAGG MULTI ACADEMY TRUST"
+  ],
+  "planned": [
+   24100,
+   23026,
+   19801,
+   16065,
+   15372,
+   13501,
+   12126,
+   10281,
+   9326,
+   8659
+  ],
+  "new_recurring_revenue": [
+   44756.9,
+   42762.35,
+   36773.3,
+   29835.2,
+   28548.25,
+   25073.0,
+   22520.05,
+   19093.2,
+   17319.65,
+   16080.7
+  ],
+  "academies": [
+   35,
+   20,
+   19,
+   33,
+   13,
+   23,
+   21,
+   46,
+   16,
+   18
+  ],
+  "subscribing": [
+   3,
+   3,
+   10,
+   3,
+   3,
+   13,
+   14,
+   40,
+   3,
+   12
+  ],
+  "pupils": [
+   11738,
+   11519,
+   13474,
+   8040,
+   8579,
+   9236,
+   10369,
+   14008,
+   5753,
+   15210
+  ],
+  "licence_value": [
+   47538.9,
+   46651.95,
+   54569.7,
+   32562.0,
+   34744.95,
+   37405.8,
+   41994.45,
+   56732.4,
+   23299.65,
+   61600.5
+  ],
+  "replaced": [
+   2782.0,
+   3889.6,
+   17796.4,
+   2726.8,
+   6196.7,
+   12332.8,
+   19474.4,
+   37639.2,
+   5980.0,
+   45519.8
+  ],
+  "total": 152257,
+  "running": [
+   24100,
+   47126,
+   66927,
+   82992,
+   98364,
+   111865,
+   123991,
+   134272,
+   143598,
+   152257
+  ],
+  "share": [
+   15.8,
+   15.1,
+   13.0,
+   10.6,
+   10.1,
+   8.9,
+   8.0,
+   6.8,
+   6.1,
+   5.7
+  ],
+  "first_below": "DIOCESE OF CHICHESTER ACADEMY TRUST",
+  "gap": 1310,
+  "behind": [
+   {
+    "trust": "DIOCESE OF CHICHESTER ACADEMY TRUST",
+    "planned": 7349,
+    "new_recurring_revenue": 13648.1
+   },
+   {
+    "trust": "SYMPHONY LEARNING TRUST",
+    "planned": 6808,
+    "new_recurring_revenue": 12643.25
+   },
+   {
+    "trust": "KNOWLEDGE SCHOOLS TRUST",
+    "planned": 5736,
+    "new_recurring_revenue": 10652.7
+   },
+   {
+    "trust": "GREAT HEIGHTS ACADEMY TRUST",
+    "planned": 5365,
+    "new_recurring_revenue": 9963.8
+   },
+   {
+    "trust": "TRUSTED SCHOOLS ALLIANCE",
+    "planned": 4927,
+    "new_recurring_revenue": 9150.15
+   }
+  ],
+  "sign_rate": [
+   7,
+   13
+  ],
+  "cluster": {
+   "central": {
+    "offered": 13,
+    "won": 6
+   },
+   "devolved": {
+    "offered": 17,
+    "won": 0
+   }
+  },
+  "eligible": {
+   "trusts": 146,
+   "central": 68,
+   "devolved": 78
+  },
+  "rivals": [
+   {
+    "trust": "GLF SCHOOLS",
+    "planned_if_signed": 36129
+   },
+   {
+    "trust": "THE SPENCER ACADEMIES TRUST",
+    "planned_if_signed": 32164
+   }
+  ]
+ },
+ "book": {
+  "Academies|Primary": {
+   "pupils": 212265,
+   "revenue": 1030156
+  },
+  "Academies|Secondary": {
+   "pupils": 235861,
+   "revenue": 1222775
+  },
+  "Free Schools|Primary": {
+   "pupils": 7264,
+   "revenue": 35239
+  },
+  "Free Schools|Secondary": {
+   "pupils": 13050,
+   "revenue": 72706
+  },
+  "Local authority maintained schools|Primary": {
+   "pupils": 251454,
+   "revenue": 1246858
+  },
+  "Local authority maintained schools|Secondary": {
+   "pupils": 70320,
+   "revenue": 368710
+  },
+  "Special schools|Primary": {
+   "pupils": 0,
+   "revenue": 0
+  },
+  "Special schools|Secondary": {
+   "pupils": 14233,
+   "revenue": 81079
+  }
+ },
+ "book_invoiced": 684,
+ "pilot": {
+  "GROVE LEARNING TRUST": {
+   "fee": 10930.95,
+   "credit": 2567.82,
+   "net": 8363.13
+  },
+  "OUR LADY IMMACULATE CATHOLIC ACADEMIES TRUST LTD": {
+   "fee": 17718.75,
+   "credit": 4128.83,
+   "net": 13589.92
+  },
+  "EDUCATION LEARNING TRUST": {
+   "fee": 14195.25,
+   "credit": 2189.09,
+   "net": 12006.16
+  },
+  "GATEWAY MULTI ACADEMY TRUST": {
+   "fee": 16625.25,
+   "credit": 3809.34,
+   "net": 12815.91
+  },
+  "LEODIS ACADEMIES TRUST": {
+   "fee": 13389.3,
+   "credit": 2394.18,
+   "net": 10995.12
+  },
+  "THREE SPIRES TRUST": {
+   "fee": 16552.35,
+   "credit": 3717.26,
+   "net": 12835.09
+  },
+  "GENERATIONS MULTI ACADEMY TRUST": {
+   "fee": 11412.9,
+   "credit": 2223.76,
+   "net": 9189.14
+  }
+ },
+ "usage": {
+  "Academies|Primary": 56.4,
+  "Academies|Secondary": 32.4,
+  "Free Schools|Primary": 55.7,
+  "Free Schools|Secondary": 32.3,
+  "Local authority maintained schools|Primary": 55.1,
+  "Local authority maintained schools|Secondary": 31.7,
+  "Special schools|Primary": null,
+  "Special schools|Secondary": 26.7
+ },
+ "ladder": {
+  "R0 licence fee, recorded URN": {
+   "total": 291629,
+   "slate": [
+    "GLF SCHOOLS",
+    "UNITY SCHOOLS PARTNERSHIP",
+    "THE TED WRAGG MULTI ACADEMY TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "SWALE ACADEMIES TRUST",
+    "LIGHTHOUSE SCHOOLS PARTNERSHIP",
+    "PATHWAY TRUST",
+    "BISHOP CHADWICK CATHOLIC EDUCATION TRUST",
+    "BRADFORD DIOCESAN ACADEMIES TRUST",
+    "ADVANCE LEARNING PARTNERSHIP"
+   ]
+  },
+  "gross, recorded URN": {
+   "total": 227337,
+   "slate": [
+    "GLF SCHOOLS",
+    "UNITY SCHOOLS PARTNERSHIP",
+    "LIGHTHOUSE SCHOOLS PARTNERSHIP",
+    "PATHWAY TRUST",
+    "SWALE ACADEMIES TRUST",
+    "BISHOP CHADWICK CATHOLIC EDUCATION TRUST",
+    "THE TED WRAGG MULTI ACADEMY TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "STOUR VALE ACADEMY TRUST"
+   ]
+  },
+  "R1 net, recorded URN": {
+   "total": 214305,
+   "slate": [
+    "GLF SCHOOLS",
+    "UNITY SCHOOLS PARTNERSHIP",
+    "LIGHTHOUSE SCHOOLS PARTNERSHIP",
+    "PATHWAY TRUST",
+    "SWALE ACADEMIES TRUST",
+    "BISHOP CHADWICK CATHOLIC EDUCATION TRUST",
+    "THE TED WRAGG MULTI ACADEMY TRUST",
+    "STOUR VALE ACADEMY TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST"
+   ]
+  },
+  "R2 net, successors": {
+   "total": 237215,
+   "slate": [
+    "GLF SCHOOLS",
+    "THE SPENCER ACADEMIES TRUST",
+    "UNITY SCHOOLS PARTNERSHIP",
+    "LIGHTHOUSE SCHOOLS PARTNERSHIP",
+    "PATHWAY TRUST",
+    "ANGLIAN LEARNING",
+    "SWALE ACADEMIES TRUST",
+    "BISHOP CHADWICK CATHOLIC EDUCATION TRUST",
+    "STOUR VALE ACADEMY TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST"
+   ]
+  },
+  "R3 signing condition, academies by the agreement's key": {
+   "total": 126249,
+   "slate": [
+    "PATHWAY TRUST",
+    "SWALE ACADEMIES TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "ADVANCE LEARNING PARTNERSHIP",
+    "BRADFORD DIOCESAN ACADEMIES TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "ST OSCAR ROMERO CATHOLIC ACADEMY TRUST",
+    "THE TED WRAGG MULTI ACADEMY TRUST",
+    "DIOCESE OF CHICHESTER ACADEMY TRUST",
+    "SYMPHONY LEARNING TRUST"
+   ]
+  },
+  "gross, successors": {
+   "total": 244626,
+   "slate": [
+    "GLF SCHOOLS",
+    "THE SPENCER ACADEMIES TRUST",
+    "UNITY SCHOOLS PARTNERSHIP",
+    "LIGHTHOUSE SCHOOLS PARTNERSHIP",
+    "ANGLIAN LEARNING",
+    "PATHWAY TRUST",
+    "SWALE ACADEMIES TRUST",
+    "BISHOP CHADWICK CATHOLIC EDUCATION TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "STOUR VALE ACADEMY TRUST"
+   ]
+  },
+  "central, gross, recorded": {
+   "total": 158889,
+   "slate": [
+    "PATHWAY TRUST",
+    "SWALE ACADEMIES TRUST",
+    "THE TED WRAGG MULTI ACADEMY TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "BRADFORD DIOCESAN ACADEMIES TRUST",
+    "ADVANCE LEARNING PARTNERSHIP",
+    "ST OSCAR ROMERO CATHOLIC ACADEMY TRUST",
+    "DIOCESE OF CHICHESTER ACADEMY TRUST",
+    "SYMPHONY LEARNING TRUST"
+   ]
+  },
+  "central, net, recorded": {
+   "total": 144323,
+   "slate": [
+    "PATHWAY TRUST",
+    "SWALE ACADEMIES TRUST",
+    "THE TED WRAGG MULTI ACADEMY TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "BRADFORD DIOCESAN ACADEMIES TRUST",
+    "ADVANCE LEARNING PARTNERSHIP",
+    "ST OSCAR ROMERO CATHOLIC ACADEMY TRUST",
+    "DIOCESE OF CHICHESTER ACADEMY TRUST",
+    "SYMPHONY LEARNING TRUST"
+   ]
+  },
+  "central, gross, successors": {
+   "total": 143747,
+   "slate": [
+    "PATHWAY TRUST",
+    "SWALE ACADEMIES TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "ADVANCE LEARNING PARTNERSHIP",
+    "BRADFORD DIOCESAN ACADEMIES TRUST",
+    "THE TED WRAGG MULTI ACADEMY TRUST",
+    "ST OSCAR ROMERO CATHOLIC ACADEMY TRUST",
+    "DIOCESE OF CHICHESTER ACADEMY TRUST",
+    "SYMPHONY LEARNING TRUST"
+   ]
+  },
+  "licence fee, successors": {
+   "total": 313917,
+   "slate": [
+    "GLF SCHOOLS",
+    "THE SPENCER ACADEMIES TRUST",
+    "UNITY SCHOOLS PARTNERSHIP",
+    "THE TED WRAGG MULTI ACADEMY TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "SWALE ACADEMIES TRUST",
+    "LIGHTHOUSE SCHOOLS PARTNERSHIP",
+    "PATHWAY TRUST",
+    "BISHOP CHADWICK CATHOLIC EDUCATION TRUST",
+    "ANGLIAN LEARNING"
+   ]
+  },
+  "central, licence fee, successors": {
+   "total": 228527,
+   "slate": [
+    "THE TED WRAGG MULTI ACADEMY TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "SWALE ACADEMIES TRUST",
+    "PATHWAY TRUST",
+    "BRADFORD DIOCESAN ACADEMIES TRUST",
+    "ADVANCE LEARNING PARTNERSHIP",
+    "DIOCESE OF CHICHESTER ACADEMY TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "THE COLLEGIATE TRUST",
+    "BEDFORDSHIRE SCHOOLS TRUST LIMITED"
+   ]
+  },
+  "R4 answer": {
+   "total": 152257,
+   "slate": [
+    "BISHOP HOGARTH CATHOLIC EDUCATION TRUST",
+    "PATHWAY TRUST",
+    "SWALE ACADEMIES TRUST",
+    "DERBY DIOCESAN ACADEMY TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "ADVANCE LEARNING PARTNERSHIP",
+    "BRADFORD DIOCESAN ACADEMIES TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "ST OSCAR ROMERO CATHOLIC ACADEMY TRUST",
+    "THE TED WRAGG MULTI ACADEMY TRUST"
+   ]
+  },
+  "sign rate of the pilot's twelve offers": {
+   "total": 164945,
+   "slate": [
+    "BISHOP HOGARTH CATHOLIC EDUCATION TRUST",
+    "PATHWAY TRUST",
+    "SWALE ACADEMIES TRUST",
+    "DERBY DIOCESAN ACADEMY TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "ADVANCE LEARNING PARTNERSHIP",
+    "BRADFORD DIOCESAN ACADEMIES TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "ST OSCAR ROMERO CATHOLIC ACADEMY TRUST",
+    "THE TED WRAGG MULTI ACADEMY TRUST"
+   ]
+  },
+  "R3 at the pilot's rate": {
+   "total": 136769,
+   "slate": [
+    "PATHWAY TRUST",
+    "SWALE ACADEMIES TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "ADVANCE LEARNING PARTNERSHIP",
+    "BRADFORD DIOCESAN ACADEMIES TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "ST OSCAR ROMERO CATHOLIC ACADEMY TRUST",
+    "THE TED WRAGG MULTI ACADEMY TRUST",
+    "DIOCESE OF CHICHESTER ACADEMY TRUST",
+    "SYMPHONY LEARNING TRUST"
+   ]
+  },
+  "people counted by name as typed": {
+   "total": 132449,
+   "slate": [
+    "BISHOP HOGARTH CATHOLIC EDUCATION TRUST",
+    "SWALE ACADEMIES TRUST",
+    "DERBY DIOCESAN ACADEMY TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "ADVANCE LEARNING PARTNERSHIP",
+    "BRADFORD DIOCESAN ACADEMIES TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "THE TED WRAGG MULTI ACADEMY TRUST",
+    "SYMPHONY LEARNING TRUST",
+    "KNOWLEDGE SCHOOLS TRUST"
+   ]
+  },
+  "people counted by surname": {
+   "total": 163034,
+   "slate": [
+    "BISHOP HOGARTH CATHOLIC EDUCATION TRUST",
+    "PATHWAY TRUST",
+    "SWALE ACADEMIES TRUST",
+    "BISHOP CHADWICK CATHOLIC EDUCATION TRUST",
+    "DERBY DIOCESAN ACADEMY TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "ADVANCE LEARNING PARTNERSHIP",
+    "BRADFORD DIOCESAN ACADEMIES TRUST",
+    "BISHOP WILKINSON CATHOLIC EDUCATION TRUST",
+    "ST OSCAR ROMERO CATHOLIC ACADEMY TRUST"
+   ]
+  },
+  "one contact signed for most academies": {
+   "total": 224372,
+   "slate": [
+    "GLF SCHOOLS",
+    "THE SPENCER ACADEMIES TRUST",
+    "LIGHTHOUSE SCHOOLS PARTNERSHIP",
+    "BISHOP HOGARTH CATHOLIC EDUCATION TRUST",
+    "PATHWAY TRUST",
+    "SWALE ACADEMIES TRUST",
+    "BISHOP CHADWICK CATHOLIC EDUCATION TRUST",
+    "DERBY DIOCESAN ACADEMY TRUST",
+    "TUDOR GRANGE ACADEMIES TRUST",
+    "ADVANCE LEARNING PARTNERSHIP"
+   ]
+  }
+ }
+}

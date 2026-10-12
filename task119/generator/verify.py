@@ -404,6 +404,33 @@ def main(T):
     got = top2({t: rr_.get(t, 0) for t in CLAIMS["y3"]})
     claim("every held bed read empty (the bureau's too): %s %d over %s %d" % CLAIMS["every_hold_empty"],
           got == CLAIMS["every_hold_empty"], got)
+    # section 4 (terms of reference): at any time while the patient waited, a staffed bed with no patient in it that
+    # was the trust's to use, or another of the trust's own patients admitted. A held bed's patient reaches it some
+    # unrecorded time after leaving recovery: reading the bed as empty for up to eight hours longer moves no death.
+    con.execute("CREATE TABLE st2_own480 AS SELECT o.stay_id, o.unit_code, o.referral_id, o.patient_key, "
+                "CASE WHEN o.admitted_at <> s.admitted_at THEN LEAST(o.admitted_at + INTERVAL 480 MINUTE, "
+                "o.discharged_at - INTERVAL 1 MINUTE) ELSE o.admitted_at END AS admitted_at, o.discharged_at, "
+                "o.admission_type, o.source_location FROM st2_own o JOIN st2 s USING (stay_id)")
+    e480 = classify(con, build_waits(con), table="st2_own480")["empty"].values
+    moved = int((((e480 | W["alloc"]) != conf_m) & died).sum())
+    claim("section 4: a held bed read empty to left recovery + 8h moves no death's verdict", moved == 0, moved)
+    away = con.execute("""
+        WITH s AS (SELECT o.unit_code, COALESCE(l.verified_key, o.patient_key) vk, o.admitted_at a0, o.discharged_at b
+                   FROM st2_own o LEFT JOIN links l ON l.temporary_key = o.patient_key),
+             t AS (SELECT tx.to_unit, CAST(tx.bed_confirmed_at AS TIMESTAMP) conf, CAST(tx.arrived_at AS TIMESTAMP) arr,
+                          COALESCE(l.verified_key, tx.patient_key) vk
+                   FROM tx LEFT JOIN links l ON l.temporary_key = tx.patient_key),
+             p AS (SELECT s.vk, s.b, COALESCE(t.arr, s.a0) a FROM s
+                   LEFT JOIN t ON t.to_unit = s.unit_code AND t.conf = s.a0 AND t.vk = s.vk),
+             h AS (SELECT COALESCE(l.verified_key, th.patient_key) vk, th.into_theatre_at i, th.left_recovery_at e
+                   FROM th LEFT JOIN links l ON l.temporary_key = th.patient_key)
+        SELECT COUNT(*) FROM p JOIN h USING (vk) WHERE h.i < p.b AND h.e > p.a""").fetchone()[0]
+    claim("section 4: no patient away in theatre from a bed already theirs", away == 0, away)
+    beds = con.execute("SELECT r.unit_code, COUNT(DISTINCT r.beds) n, MIN(r.beds) b, MIN(CAST(g.commissioned_beds AS INT)) c "
+                       "FROM ret r JOIN reg g ON g.unit_code = r.unit_code AND g.care_level = '3' "
+                       "AND COALESCE(g.valid_to, '9999') >= '2023-06-01' GROUP BY 1").df()
+    claim("section 4: one staffed-bed figure per unit, equal to the register's commissioned beds",
+          (beds.n == 1).all() and (beds.b == beds.c).all(), beds.to_dict("records"))
     for rd, want in CLAIMS["readings"].items():
         Wr = W if rd == "referral" else classify(con, build_waits(con), reading=rd)
         rr_ = per_trust(Wr, (Wr.year == 3) & Wr.died30 & Wr["own"] & (Wr["empty"] | Wr["alloc"]))

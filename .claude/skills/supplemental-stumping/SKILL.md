@@ -81,6 +81,8 @@ Families: D1 duplication, D2 version, D3 units and meaning, D4 absence, D5 scope
 
 **Seen, repaired right** (hazards or texture): exact duplicates, re-sent batches, reprints · roll-ups and summaries inside detail · displaced fields, drifted fixed-width layouts, sign overpunch · key formats, padding, case, invisible characters, mis-keys · join fan-out.
 
+**Measured as executed by the hygiene battery** (seven in-house rounds across 228 to 230, each a work order the solver ran, never a primary): repeated-row dedup; minutes logged per session; change files over base lists; unit conversions; closed days; effective-dated maps; UTC against contract zones; latest reviews; band and indexation rules. The one device set that held (230 design 2) rode a domain effect the solver never modelled.
+
 ## Part 4. The ask ladder and the span floor
 
 Each ask is a ladder of three to five stops, complete competent pipelines at distinct values outside the bin: the natural read, the half-handled device, the over-corrected read, the right rule on the wrong population, the answer. The golden sits mid-bin; a miss inside the bin needs more device mass. The ladder file comes from the golden's code and never ships. Every figure is separately gradable, a quantity, never a treatment or device word.
@@ -93,7 +95,7 @@ Every ask answer recomputes from the bundle, forced by the records: enumerate th
 
 ## Part 6. The returned-task revision
 
-**Call held, asks scored** (`build-pipeline` fast path): change only the ask paths' data (devices, their rows, ask goldens and assertions); the prompt, card, ladder, main rows and `target/` documents stay, bar a field description for a new column in an ask-only file. `checks.py` asserts against the shipped commit that files the call reads and no ask touches are byte-identical, shared files keep the main rows and gain no column, and every main-call figure recomputes unchanged; a device needing more is dropped. Per device: one asserted line (the natural read lands outside the bin), an ask-sheet line, a `## Tried and rejected` line. **Call fell too:** the ladder first (`stumping`), then the asks against the new cracker sheet.
+**Call held, asks scored** (`/fix-rubric`, proved by `freeze.py check --mode rubric`): change the ask paths' data first (devices, their rows, ask goldens and assertions); the card, ladder, main rows and the `target/` documents the call reads stay, bar a field description for a new column in an ask-only file. An ask's wording in the prompt changes only when no device can hold it as worded, every figure, unit and rounding kept; the call sentence never. `checks.py` asserts against the shipped commit that files the call reads and no ask touches are byte-identical, shared files keep the main rows and gain no column, and every main-call figure recomputes unchanged; a device needing more is dropped. Per device: one asserted line (the natural read lands outside the bin), an ask-sheet line, a `## Tried and rejected` line. **Call fell too:** the ladder first (`stumping`), then the asks against the new cracker sheet.
 
 ## Part 7. The ask sheet
 

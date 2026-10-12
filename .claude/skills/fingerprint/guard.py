@@ -17,6 +17,8 @@ is cut, and this script checks it against every card already on file.
   guard.py validate [taskNN ...]      every filed card against vocab.json
   guard.py show taskNN                one card, readable
   guard.py nearest taskNN|<card.json> the closest drivers in the corpus
+  guard.py mechanisms [--objective O] [--gate-g G] [--strategy S]
+                                      every spent driver on that ground, lineage included, one screen
   guard.py surface taskNN             after the pack is cut: clone-check's mechanical screen, then people
   guard.py names --geo <place> --seed N   draw fresh personas from that locale's name pool
   guard.py people [taskNN]            the corpus name index, or one build's personas checked against it
@@ -1134,6 +1136,33 @@ def cmd_nearest(args):
     return 0
 
 
+def cmd_mechanisms(args):
+    """The draw-time read of what is spent: each matching card's driver and every earlier architecture's,
+    one compact block per build, so the mechanisms on file are read in one screen instead of card by card."""
+    cards = load_cards()
+    def hit(c):
+        if args.objective and c.get("objective") != args.objective:
+            return False
+        if args.gate_g and c.get("gate_g") != args.gate_g:
+            return False
+        if args.strategy and c.get("stump_strategy") != args.strategy:
+            return False
+        return True
+    sel = [c for c in cards if hit(c)]
+    w = args.width
+    for c in sel:
+        gap = "/".join(c.get("gap") or []) if isinstance(c.get("gap"), list) else str(c.get("gap") or "")
+        pat = "/".join(c.get("pattern") or []) if isinstance(c.get("pattern"), list) else str(c.get("pattern") or "")
+        print("%s %s  %s  gap %s  pat %s  %s  %s" % (c.get("task"), c.get("drawn") or "", c.get("objective") or "",
+              gap, pat, c.get("gate_g") or "", c.get("stump_strategy") or ""))
+        print("   now: %s" % (c.get("driver") or "")[:w])
+        for l in c.get("lineage") or []:
+            if isinstance(l, dict) and l.get("driver"):
+                print("   arch %s: %s  [%s]" % (l.get("architecture", "?"), l["driver"][:w], (l.get("fate") or "")[:90]))
+    print("\n%d builds. Write one line on the insight each spends, then draw from what they leave." % len(sel))
+    return 0
+
+
 def cmd_heart(args):
     """The /approve check: the heart of the stump against every build on file. Reads the card's
     driver, driver_concrete and stump sentences and compares them against every card's driver, every
@@ -1263,6 +1292,8 @@ def main():
     s = sub.add_parser("show"); s.add_argument("task"); s.set_defaults(fn=cmd_show)
     s = sub.add_parser("nearest"); s.add_argument("card"); s.add_argument("--n", type=int, default=8)
     s.set_defaults(fn=cmd_nearest)
+    s = sub.add_parser("mechanisms"); s.add_argument("--objective"); s.add_argument("--gate-g", dest="gate_g")
+    s.add_argument("--strategy"); s.add_argument("--width", type=int, default=260); s.set_defaults(fn=cmd_mechanisms)
     s = sub.add_parser("surface"); s.add_argument("task"); s.set_defaults(fn=cmd_surface)
     s = sub.add_parser("heart"); s.add_argument("task"); s.add_argument("--n", type=int, default=10)
     s.set_defaults(fn=cmd_heart)

@@ -1,0 +1,158 @@
+{
+ "task": "task253",
+ "title": "How many 2027 Reading Partnership places a Catholic school system needs, one per primary school whose underlying Year 5 reading average is below 480",
+ "domain": "Education & Learning Sciences",
+ "subdomain": "student growth and value-added modelling (school-effects estimation)",
+ "objective": "Descriptive & Distribution Analysis",
+ "prompt_shape": "14 (cuts of a distribution): the number of schools below the floor, its cut by region, and the students and hub travel the places carry",
+ "as_of": "2026-11-10",
+ "deliverables": [
+  "reading_partnership_2027.xlsx",
+  "reading_partnership_2027_hubs.png"
+ ],
+ "distractor_files": [
+  "literacy_specialist_rates_2027.xlsx",
+  "literacy_PL_register_2026.csv"
+ ],
+ "input_gates": {
+  "files": 13,
+  "formats": [
+   "csv",
+   "docx",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "naplan_results_2026.csv",
+  "largest_file_rows": 110515
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task253/generator/make.py (seeded, deterministic) around a fictional state Catholic school system; NAPLAN is named as the real national assessment; every school, locality, hub, region and person is invented, and no real school's results are depicted.",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work)"
+  }
+ ],
+ "created": "2026-10-11",
+ "generator": "task253/generator/make.py",
+ "files": [
+  {
+   "path": "naplan2024_legacy_extract.csv",
+   "format": "csv",
+   "bytes": 4075075,
+   "rows": 107995,
+   "source": "Constructed: NAPLAN 2024 results, legacy results system extract: one row per student per test, Years 3 and 5",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "NAPLAN2025_results_portal.xlsx",
+   "format": "xlsx",
+   "bytes": 2550182,
+   "rows": null,
+   "source": "Constructed: NAPLAN 2025 results-portal download: a sheet per year level, one row per student per test",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "naplan_results_2026.csv",
+   "format": "csv",
+   "bytes": 6429910,
+   "rows": 110515,
+   "source": "Constructed: NAPLAN 2026 results, data-platform export: one row per student per test, Years 3 and 5",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "school_register_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 20766,
+   "rows": null,
+   "source": "Constructed: School register as refreshed 3 March 2026, primary schools and secondary colleges",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "census_aug2026_enrolments.csv",
+   "format": "csv",
+   "bytes": 48213,
+   "rows": 2196,
+   "source": "Constructed: August 2026 enrolment census, headcount by school and year level",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "facilities_service_directory_feb2026.xlsx",
+   "format": "xlsx",
+   "bytes": 17460,
+   "rows": null,
+   "source": "Constructed: Facilities service directory, annual refresh of 16 February 2026, sites and servicing hubs",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "hub_visit_plan_2027.xlsx",
+   "format": "xlsx",
+   "bytes": 15609,
+   "rows": null,
+   "source": "Constructed: Hub coordinators' 2027 school servicing plan, version of 6 November 2026, a sheet per hub",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "hub_school_road_distances.csv",
+   "format": "csv",
+   "bytes": 22856,
+   "rows": 990,
+   "source": "Constructed: Routing service one-way road distances and drive times, primary schools to the hubs that could serve them",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "LT-AS-04_analysing_school_results.pdf",
+   "format": "pdf",
+   "bytes": 5334,
+   "rows": null,
+   "source": "Constructed: Analysis standard LT-AS-04 version 3, Analysing school results in NAPLAN (12 February 2026)",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "reading_partnership_2027_guidelines.docx",
+   "format": "docx",
+   "bytes": 21047,
+   "rows": null,
+   "source": "Constructed: Reading Partnership 2027 programme guidelines (October 2026)",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "data_team_notes.txt",
+   "format": "txt",
+   "bytes": 3825,
+   "rows": null,
+   "source": "Constructed: System data team notes on the extracts and their fields (9 November 2026)",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "literacy_specialist_rates_2027.xlsx",
+   "format": "xlsx",
+   "bytes": 6919,
+   "rows": null,
+   "source": "Constructed: Panel provider's 2027 schedule of rates for specialist literacy services",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "literacy_PL_register_2026.csv",
+   "format": "csv",
+   "bytes": 179945,
+   "rows": 2382,
+   "source": "Constructed: Professional learning register for literacy courses, 2026 school year to date",
+   "date": "2026-11-10",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  }
+ ]
+}

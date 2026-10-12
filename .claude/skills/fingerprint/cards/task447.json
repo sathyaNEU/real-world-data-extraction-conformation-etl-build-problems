@@ -1,0 +1,97 @@
+{
+  "task": "task447",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "seed ET04 (organic deposit growth with merger-adjusted bases from charter, holding-company and branch events). The seed's own pairings are blocked by the guard (banking x etl against task446 v2, quantitative-finance x etl against task445, shape 03 and the financial_institution family against the last two builds) and its stump is rule application, so the draw is redrawn inside the objective under START_HERE rule 2. The seed's mechanics survive as supporting work and as ask devices in a provider-ownership world: an owner's gains arrive through three channels (a practice's TIN retired into the owner's, a practice joining under the owner as parent while keeping its TIN, and physicians reassigned one by one with no organisation event), with transitive chains and intra-system TIN consolidations that are not acquisitions.",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "client_domain": "healthcare-delivery-health-economics",
+  "niche": "a state health care cost review office's preliminary review of a hospital system's purchase of a multi-specialty physician group, projecting the 2026 increase in commercial spending from the group's professional prices moving to the system's rates and from its referrals for imaging, echocardiography, endoscopy, arthroscopy and laboratory work moving into the system's hospital outpatient departments, where the referral shift is projected from the earlier physician-practice acquisitions in the state and the carriers' network tier placements are reset for the projection year",
+  "objective": "etl",
+  "shape": "07",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "named_option",
+  "answer": "Proceed to a cost and market impact review of notice N25-014: Ledgestone Health's purchase of Brightwater Medical Group raises commercial spending by $2.2 million in 2026, above the $2.0 million threshold in rule OHCCR 4.06.",
+  "answer_source": "submission.md, 1. Final Recommendation, first sentence (bold markers removed)",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G8",
+    "G14",
+    "G16",
+    "G19"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "other",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "director of market oversight at a state health care cost review office, who files the preliminary review figure with the Attorney General",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "apcd_op_facility_claims_2024.csv",
+    "rows": 66660,
+    "entity": "one service line of one commercial outpatient facility claim as the carrier submitted it to the state all-payer claims database, with its referring physician, member key and product",
+    "grain": "claim x line",
+    "source": "synthetic, on the APCD Common Data Layout (outpatient facility and professional claims, eligibility spans and provider files)"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "United States (Wisconsin)",
+    "currency": "USD",
+    "org_type": "state health care cost review office (market oversight unit)",
+    "invented_names": [
+      "Office of Health Care Cost Review",
+      "Ledgestone Health",
+      "Brightwater Medical Group",
+      "Wolf River Health",
+      "Kinnickinnic Health"
+    ],
+    "people": [
+      "Samantha Abbott",
+      "Jacob Murillo",
+      "Debra Prince",
+      "Clayton Brown",
+      "Donna Mcintosh"
+    ]
+  },
+  "deliverables": [
+    "N25-014_preliminary_review.pdf"
+  ],
+  "opening_move": "question-first",
+  "driver": "The decisive quantity is the share of a unit's outbound flow that a change of owner redirects in a period that has not opened; redirection happens only on flow whose payer terms do not make the new owner's sites the dearer option for the end party, those terms are reset for the forward period, and the earlier units were observed only under the old terms, so a redirection rate pooled, cut by the flow's visible attributes or carried product by product reproduces the owner's own history and misstates the forward change; only the rate conditioned on the terms in force, the one model that reproduces every closed transfer year by year across owners, carries forward.",
+  "driver_concrete": "Brightwater's referrals move into Ledgestone's outpatient departments after the purchase only for patients whose plan does not put Ledgestone in its second tier. Bayfield's Value Tier PPO, the plan of two in five Brightwater patients, kept Ledgestone in the second tier through 2024 and places it in the first tier from 2025, so the capture measured on Ledgestone's own earlier purchases, pooled, by carrier or product by product, is nil for those patients and the 2026 increase lands under the threshold. The capture follows the patient's tier for the acquirer, the only model that reproduces every earlier purchase year by year once Wolf River's are included (Norbridge moved Wolf River into the first tier of its tiered EPO for 2024 and those patients followed their physicians that year), and applied with the 2026 placements it puts the increase above the threshold.",
+  "stump": "A competent solver conforms the APCD extracts, the ownership changes and Ledgestone's rate exhibit correctly, measures how much of each earlier purchase's outside referral flow moved to the new owner, pooled, by carrier or product by product, finds that Bayfield Value Tier patients never moved, projects a 2026 increase of about $1.6 million against the office's $2.0 million threshold and closes the preliminary review; the capture follows each patient's tier for the acquirer, as Wolf River's 2024 re-tiering shows inside the history, and Bayfield places Ledgestone in its first tier from 2025, so the projection with each referral's 2026 tier is about $2.2 million and the notice goes to a cost and market impact review.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms every claim, eligibility span, ownership change and rate exhibit correctly and reads the regulation correctly measures the referral shift on Ledgestone's earlier practice purchases, finds a product-by-product capture that reproduces every one of them exactly (Value Tier patients never moved), applies it to Brightwater's referrals, projects about $1.6 million and closes the review. Nothing it read is wrong; what is wrong is carrying a capture measured under the 2021 to 2024 tier placements onto a year in which Bayfield's placement of Ledgestone has changed, when the only model that reproduces every earlier acquisition year by year, Wolf River's included, is the one keyed to the patient's tier for the acquirer.",
+  "domain_test": "The figure is the health-economics projection of a vertical integration's spending effect, professional price convergence plus referral capture into hospital outpatient departments priced on commercial allowed amounts, and the field's method for the referral half is a capture model moderated by benefit design, since tiered cost sharing is what lets a hospital system steer an acquired group's patients, projected under the plan designs of the year being projected. A generalist's correction (stratify the capture by carrier or product, reweight to Brightwater's mix) reproduces the history and still misses, because the stratum that matters is defined by a carrier's placement of one system in a given plan year. Swap in another field's nouns and the site-of-service price gap, tiered cost sharing and post-integration referral capture have nothing to attach to.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:referral-capture-transported-across-a-network-tier-mix",
+  "layer1": [
+    "medical claims at header and line grain with replacement and void submissions identified by claim frequency codes",
+    "APCD Common Data Layout field codes with a layout revision between submission years",
+    "provider identifiers that do not line up: NPIs, billing TINs, CMS certification numbers and practice names, with NPI reassignment history",
+    "ownership changes through three channels (TIN retirement, parent affiliation keeping the TIN, physician-by-physician reassignment), transitive chains and intra-system TIN consolidations",
+    "eligibility spans split at employer plan-year renewals, some renewing on 1 July, with product moves at renewal",
+    "network tier placements filed per product and plan year, changing between plan years",
+    "negotiated rates in mixed payment formats (fee schedule by carrier, percent of Medicare by service category)",
+    "claims paid after the runout date in an extract pulled later, and telehealth visits billed at the office place of service with a modifier"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task35": "task35 v1 priced a hold on per-order component value above a filed floor and a filed certification share to pick one candidate; this build projects one transaction's referral shift with a capture that exists only for flow whose payer terms tier the new owner as preferred, reached through enrolment and measured on earlier purchases, with no floor, no filed share and no candidate list"
+  },
+  "lineage": [],
+  "notes": "calibration_form other: the organ is a natural experiment in the claims history, the physician-practice acquisitions by Ledgestone and Wolf River in 2021 to 2023 observed before and after, with Norbridge's 2024 re-tiering of Wolf River inside the window; it is not a filed corpus of settled cases and carries no certified figures. decisive_rule_filed false: the office's projection rule files the estimand literally (population: the target's baseline-year professional services and the outpatient facility services its physicians referred, 2024 dates of service paid through 30 June 2025, each projected as the same service to the same member under the same product in 2026; outcome: allowed amounts; the share expected for each referred service in the projection year, measured on the physicians who joined systems by acquisition before and after, stated in whole per cent; comparison: the baseline) and no rule that decides it: no selection criterion is filed, and the method is forced by the records (determinism-check section 1, form 1), the tier split absolute in every acquired practice and product and Norbridge's 2024 re-tiering of Wolf River moving its Tiered EPO patients inside the history. Personas drawn with guard.py names --geo 'United States' --seed 447 (Danielle Foster, Joel Erickson and Carla Jenkins skipped on people.first WARNs, Robert Fox on a WARN). Physician names come from the generator's seeded en_US draw (a surname another build carries is replaced from a separate stream, Johnson on a people.last BLOCK); Clayton Brown and Donna Mcintosh are the two Exhibit B physicians the surface screen reads as personas. decision_type go_hold_or_stop: the office's statutory choice after a preliminary review is to proceed to a cost and market impact review or close the review, on the projected increase against the regulation's threshold; the projected increase and its split are graded as the call's critical components.",
+  "question_form": "whether"
+}

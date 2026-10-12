@@ -54,7 +54,7 @@ def describe(target):
         "fsds_cover_extract/num.txt": "Cover-page extract in the financial statement data sets layout: dei cover tags",
         "manager_register.csv": "Ownership desk register of 13F filing managers",
         D.WATCHLIST: "Client watchlist, crowding monitor",
-        D.LAYOUT: "Client flag file layout v3",
+        D.LAYOUT: "Client flag file layout v4",
         D.METHOD_PDF: "Ownership methodology note OM-4",
         D.README: "Readme for the Form 13F data sets (tables, fields)",
         D.SOURCES: "Data sources note for the ownership desk",
@@ -83,7 +83,7 @@ def metadata(target, counts):
         "domain": "Quantitative Finance",
         "subdomain": "other: institutional ownership analytics from Form 13F holdings filings",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "03 (bridge between two totals): the September bridge from the SEC information-table lines to conformed institutional shares, inside a twelve-row client flag file with ownership, flag, share counts and top holder per name for two periods",
+        "prompt_shape": "03 (bridge between two totals): the September bridge from the SEC information-table lines to conformed institutional shares, inside a twelve-row client flag file in layout v4 with December ownership, the flag and September ownership per name",
         "as_of": "2023-02-06",
         "deliverables": ["crowded_flags_2022q4.csv", "sep_quarter_bridge.png"],
         "distractor_files": DISTRACTORS,
@@ -127,15 +127,44 @@ def main():
         json.dump(meta, fh, indent=2)
         fh.write("\n")
     n = C.run(wd, g, TARGET, GOLDEN, meta)
-    out, br = V.run(TARGET, GOLDEN)
+    out, br, vx = V.run(TARGET, GOLDEN)
     assert br["conformed"] == g["bridge"]["conformed"] and br["superseded"] == g["bridge"]["superseded"] \
         and br["options"] == g["bridge"]["options"] and br["cusip_repaired"] == g["bridge"]["cusip_repaired"], (br, g["bridge"])
+    assert vx["due"] == len(g["due_ciks"]), vx
+    for k, v in g["stops_a"].items():
+        assert all(abs(vx["stops_a"][k][c] - v[c]) < 1e-9 for c in g["cusips"]), ("verifier Ask A stop", k)
+    for k, v in g["stops_b"].items():
+        assert all(vx["stops_b"][k][x] == v[x] for x in vx["stops_b"][k]), ("verifier Ask B stop", k, vx["stops_b"][k], v)
+    r3 = lambda d: {c: round(v, 3) for c, v in d.items()}
     with open(os.path.join(HERE, "golden_figures.json"), "w", encoding="utf-8") as fh:
-        json.dump({k: g[k] for k in ("bridge", "c_count", "c_value", "c_value_june", "thousands_after_switch")}
-                  | {"rungs": {k: {c: round(v, 3) for c, v in g[k].items()} for k in ("R0", "R1", "R2", "R3", "R3w", "R4dev", "dec_io", "sep_io")},
-                     "backtest": g["backtest"], "sep_wrong": g["sep_wrong"], "top": g["top"], "top_wrong": g["top_wrong"],
-                     "dec_onfile_shares": g["dec_onfile_shares"], "dec_carried_shares": g["dec_carried_shares"],
-                     "pending_count": len(g["pending_ciks"])}, fh, indent=1, default=str)
+        json.dump({"bridge": g["bridge"], "backtest": C.LOG["backtest"], "dec_io": r3(g["dec_io"]), "sep_io": r3(g["sep_io"]),
+                   "jun_io": r3(g["jun_io"]), "rungs": {k: r3(v) for k, v in g["rungs"].items()},
+                   "variants": {k: r3(v) for k, v in g["dec_variants"].items()},
+                   "type_change": g["type_change"], "type_change_allsec": g["type_change_allsec"],
+                   "sponsor_change_name": g["sponsor_change_name"], "sponsor_stake_change": g["sponsor_stake_change"],
+                   "grid": {f"{a}|{b}": r3(v) for (a, b), v in g["grid"].items()},
+                   "type_change_sep_window": g["type_change3"],
+                   "stops_a": {k: r3(v) for k, v in g["stops_a"].items()}, "stops_b": g["stops_b"],
+                   "dec_onfile_shares": g["dec_onfile_shares"], "checks": {k: v for k, v in C.LOG.items() if k != "backtest"},
+                   "verifier_window_miss": vx["miss"]}, fh, indent=1, default=str)
+    # figures.json: every figure submission.md states, as it states it (figures_check.py)
+    tk = dict(zip(g["cusips"], g["tickers"]))
+    b = g["bridge"]
+    fig = {"call": {tk[c]: DL.r1(g["dec_io"][c]) for c in g["cusips"]},
+           "due": len(g["due_ciks"]),
+           "sponsors_change_pct": {"OTF": f"{100 * (g['sponsor_change_name'][g['cusips'][2]] - 1):.1f}",
+                                   "pooled": f"{100 * (g['type_change']['Index and ETF sponsor'] - 1):.1f}"},
+           "line": "80.0",
+           "type_pooled_OTF": DL.r1(g["rungs"]["type_pooled"][g["cusips"][2]]),
+           "backtest": {k: f"{C.LOG['backtest'][k]:.2f}" for k in ("sponsors_per_name", "type_pooled", "flat")},
+           "flag_file": {tk[c]: {"dec": DL.r1(g["dec_io"][c]), "flag": "Y" if g["flag"][c] else "N",
+                                 "sep": DL.r1(g["sep_io"][c]), "cusip": c} for c in g["cusips"]},
+           "bridge": {"start": f"{b['raw']:,}", "options": f"-{b['options']:,}", "superseded": f"-{b['superseded']:,}",
+                      "cusips": f"+{b['cusip_repaired']:,}", "end": f"{b['conformed']:,}",
+                      "gap_m": f"{(b['raw'] - b['conformed']) / 1e6:.1f}"}}
+    with open(os.path.join(HERE, "figures.json"), "w", encoding="utf-8") as fh:
+        json.dump(fig, fh, indent=1)
+        fh.write("\n")
     # second build, byte-identical
     tmp = tempfile.mkdtemp()
     t2, g2 = os.path.join(tmp, "target"), os.path.join(tmp, "golden")

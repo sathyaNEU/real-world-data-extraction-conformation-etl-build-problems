@@ -1,0 +1,215 @@
+{
+  "task": "task254",
+  "title": "Monitoring windows for the identified risks of an oral immunomodulator, set from a post-marketing case series at the PSUR data lock",
+  "domain": "Pharmacology, Pharmacoepidemiology & Safety",
+  "subdomain": "other: time-to-onset characterisation of identified risks for routine risk minimisation",
+  "objective": "Descriptive & Distribution Analysis",
+  "prompt_shape": "14 (cuts of a distribution): the 80 and 95 per cent months of six identified risks, the ILD 95 per cent month as the call, with reporting rates and the exposure under them",
+  "as_of": "2026-10-06",
+  "deliverables": [
+    "rmp_monitoring_windows_2027.xlsx",
+    "onset_windows_by_risk.svg"
+  ],
+  "distractor_files": [
+    "medinfo_enquiries_2023-2026.xlsx",
+    "literature_screening_PSUR6.csv",
+    "signal_tracker_2026.xlsx"
+  ],
+  "referee_file": "finance_net_sales_by_market_quarter.xlsx",
+  "input_gates": {
+    "files": 19,
+    "formats": [
+      "csv",
+      "docx",
+      "pdf",
+      "txt",
+      "xlsx",
+      "xml"
+    ],
+    "largest_file": "lyrevo_line_listing_PSUR6_DLP20260930.csv",
+    "largest_file_rows": 44858
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task254/generator/make.py (seeded, deterministic) around a fictional marketing authorisation holder (Ravnsborg Pharma A/S) and product (Lyrevo, RVB-417); MedDRA preferred terms, ISO country codes and national article code formats are used as published; no real patient, case, laboratory, wholesaler or hospital is depicted.",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-11",
+  "generator": "task254/generator/make.py",
+  "files": [
+    {
+      "path": "lyrevo_line_listing_PSUR6_DLP20260930.csv",
+      "format": "csv",
+      "bytes": 5390545,
+      "rows": 44858,
+      "source": "Constructed: Safety database (Argus Safety) line listing of every version of every Lyrevo case received up to the extraction run of 6 October 2026",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lyrevo_dosage_lines_PSUR6.csv",
+      "format": "csv",
+      "bytes": 1176714,
+      "rows": 23354,
+      "source": "Constructed: Safety database dosage lines of Lyrevo for every case, as held at the extraction run",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "psp_lab_feed_2023-2026.csv",
+      "format": "csv",
+      "bytes": 479483,
+      "rows": 8090,
+      "source": "Constructed: Patient support programme vendor's laboratory transfer for programme patients with a safety case",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "psp_laboratory_register.xlsx",
+      "format": "xlsx",
+      "bytes": 7825,
+      "rows": null,
+      "source": "Constructed: PSP partner laboratory register: units and reference limits by laboratory and analyte",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "duplicate_register_PSUR6.xlsx",
+      "format": "xlsx",
+      "bytes": 19992,
+      "rows": null,
+      "source": "Constructed: Case Processing duplicate management register for Lyrevo",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rmp_term_list_version_4.xlsx",
+      "format": "xlsx",
+      "bytes": 10291,
+      "rows": null,
+      "source": "Constructed: RMP term list version 4 (MedDRA preferred term to safety concern) with the changes from version 3",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "RVB-417_RMP_annex7_methods.pdf",
+      "format": "pdf",
+      "bytes": 5967,
+      "rows": null,
+      "source": "Constructed: RMP annex 7, methods for characterising the important identified risks, version 3.0",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "safety_export_field_guide.pdf",
+      "format": "pdf",
+      "bytes": 5650,
+      "rows": null,
+      "source": "Constructed: Field guide for the safety database export (line listing, dosage lines, PSP laboratory feed)",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sellin_wholesaler_monthly_2023-2026.csv",
+      "format": "csv",
+      "bytes": 325979,
+      "rows": 3293,
+      "source": "Constructed: SAP sell-in to wholesalers by month, customer and national article code, including credit notes and free goods",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "tender_calloffs_FR_IT_ES_2025-2026.xlsx",
+      "format": "xlsx",
+      "bytes": 103661,
+      "rows": null,
+      "source": "Constructed: Third-party logistics provider's hospital call-off report for France, Italy and Spain",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "product_master_national_codes.csv",
+      "format": "csv",
+      "bytes": 5894,
+      "rows": 64,
+      "source": "Constructed: Regulatory mapping of national article codes and GTINs to EU presentations",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "xevmpd_presentations_RVB-417.xml",
+      "format": "xml",
+      "bytes": 3418,
+      "rows": null,
+      "source": "Constructed: xEVMPD (Article 57) export of the four authorised presentations",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "market_supply_channels.xlsx",
+      "format": "xlsx",
+      "bytes": 6779,
+      "rows": null,
+      "source": "Constructed: Supply Chain Planning overview of the supply channel of each market",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "PSUR6_section5_exposure_method.docx",
+      "format": "docx",
+      "bytes": 37522,
+      "rows": null,
+      "source": "Constructed: PSUR 6 section 5 exposure method note",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "finance_net_sales_by_market_quarter.xlsx",
+      "format": "xlsx",
+      "bytes": 8213,
+      "rows": null,
+      "source": "Constructed: Net sales by market and quarter from the management accounts",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "medinfo_enquiries_2023-2026.xlsx",
+      "format": "xlsx",
+      "bytes": 95221,
+      "rows": null,
+      "source": "Constructed: Medical Information enquiry log",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "literature_screening_PSUR6.csv",
+      "format": "csv",
+      "bytes": 249886,
+      "rows": 2343,
+      "source": "Constructed: Weekly literature screening log for the PSUR period",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "signal_tracker_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 7992,
+      "rows": null,
+      "source": "Constructed: Signal tracker",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "PSUR6_data_package_log.txt",
+      "format": "txt",
+      "bytes": 2891,
+      "rows": null,
+      "source": "Constructed: PSUR 6 data package log (extraction runs, documents, notes)",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

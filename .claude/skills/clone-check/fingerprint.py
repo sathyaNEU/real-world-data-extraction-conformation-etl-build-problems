@@ -32,6 +32,17 @@ from collections import Counter, defaultdict
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 CACHE = os.path.join(REPO, ".claude", "skills", "clone-check", ".cache", "fingerprints.json")
+# The tracked corpus baseline: every build's card, pack profiles included, extracted on a checkout that
+# held every pack. The working cache above is never committed; a fresh checkout seeds it from here.
+BASELINE = os.path.join(REPO, ".claude", "skills", "clone-check", "corpus", "fingerprints.json")
+
+
+def seed_cache(path):
+    """Copy the tracked baseline into the working cache when the cache is missing."""
+    if not os.path.exists(path) and os.path.exists(BASELINE) and os.path.abspath(path) != os.path.abspath(BASELINE):
+        import shutil
+        os.makedirs(os.path.dirname(os.path.abspath(path)) or ".", exist_ok=True)
+        shutil.copyfile(BASELINE, path)
 LEDGER = os.path.join(REPO, ".claude", "skills", "stumping", "references", "shipped-ledger.md")
 # Fingerprint cards (the fingerprint skill): the mechanism layer in one controlled vocabulary,
 # reconciled against each build's submission. Where both builds of a pair have a card, Track B is
@@ -498,6 +509,7 @@ def cmd_extract(args):
         cards.append(build_card(repo, t, ledger))
     # Builds fingerprinted on another checkout are not on this disk; keep their cached cards so the
     # screen still compares a new build against the whole corpus.
+    seed_cache(args.out)
     if os.path.exists(args.out):
         try:
             cached = json.load(open(args.out)).get("cards", [])
@@ -972,6 +984,7 @@ def track_b(x, y):
 
 
 def cmd_screen(args):
+    seed_cache(args.cache)
     data = json.load(open(args.cache))
     cards = [c for c in data["cards"] if c["has"]["prompt"] or c["target"]["file_count"] >= 3]
     w, df = idf_weights(cards)

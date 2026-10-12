@@ -3,14 +3,14 @@ import hashlib
 import re
 import zipfile
 
-FIXED = (2026, 10, 12, 15, 40, 0)
+FIXED = (2026, 12, 7, 7, 20, 0)
 
 
 DECL = b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
 NS_REL = b"http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 
 
-def normalize_zip(path, when=FIXED, modified=None):
+def normalize_zip(path, when=FIXED, modified=None, company="Corderoy Logistics"):
     """Repack an office container reproducibly. A workbook is laid out the way Excel saves one (shared
     strings, its own calc id and extended properties, its entry order, the 1980 entry stamp Office
     writes) and keeps its own last-saved stamp, given as `modified`; the cells are not touched."""
@@ -20,7 +20,7 @@ def normalize_zip(path, when=FIXED, modified=None):
     names = [n for n, _ in items]
     is_docx = "word/document.xml" in names
     if not is_docx:
-        items = _excel_like(dict(items), stamp)
+        items = _excel_like(dict(items), stamp, company)
         when = (1980, 1, 1, 0, 0, 0)
     doc_text = ""
     if is_docx:
@@ -42,7 +42,7 @@ def normalize_zip(path, when=FIXED, modified=None):
             z.writestr(zi, data)
 
 
-def _excel_like(parts, modified):
+def _excel_like(parts, modified, company):
     sst, index, count = [], {}, [0]
 
     def shared(m):
@@ -102,7 +102,7 @@ def _excel_like(parts, modified):
         b"<vt:variant><vt:i4>%d</vt:i4></vt:variant></vt:vector></HeadingPairs>" % len(titles)
         + b'<TitlesOfParts><vt:vector size="%d" baseType="lpstr">' % len(titles)
         + b"".join(b"<vt:lpstr>" + t_ + b"</vt:lpstr>" for t_ in titles)
-        + b"</vt:vector></TitlesOfParts><Company>Halvane Metering</Company><LinksUpToDate>false</LinksUpToDate>"
+        + b"</vt:vector></TitlesOfParts><Company>" + company.encode() + b"</Company><LinksUpToDate>false</LinksUpToDate>"
         b"<SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion>"
         b"</Properties>")
     core = parts["docProps/core.xml"]
@@ -139,7 +139,7 @@ def _word_app(data, text):
     return data
 
 
-def normalize_pdf(path, stamp=b"D:20260318094100Z'", doc_id=b"6D1F4C0A92B83E57A1C4D90E3B7F2A61"):
+def normalize_pdf(path, stamp=b"D:20260911143200Z'", doc_id=b"3B9E07C4A1D25F68E0C7B4A91D3F2E85"):
     b = open(path, "rb").read()
     b = re.sub(rb"D:\d{14}Z'", lambda m: stamp[:len(m.group(0))], b)
     b = re.sub(rb"(/ID\s*\[\s*)<[0-9A-Fa-f]{32}>(\s*)<[0-9A-Fa-f]{32}>",

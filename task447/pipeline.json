@@ -1,0 +1,35 @@
+{
+ "task": "task447",
+ "domain": "healthcare-delivery-health-economics",
+ "objective": "data-extraction-conformation",
+ "stage": 2,
+ "stage_name": "design (ask-layer redesign), paused: prompt asks rewritten, devices not yet designed",
+ "updated": "2026-10-12",
+ "branch": "oviya1301/task447-organic-deposit-growth",
+ "stump": "Solvers measure the referral share on Ledgestone's earlier practice purchases, pooled, by carrier or product by product (Bayfield Value Tier patients never moved), project a 2026 increase of about $1.6 million against the $2.0 million threshold and close the review; the records of every earlier acquisition show the share following each patient's tier for the acquirer (Norbridge's 2024 re-tiering of Wolf River moved its Tiered EPO patients), and Bayfield places Ledgestone in its first tier from 2025, so the projection is about $2.2 million and the notice proceeds to a cost and market impact review.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 1,
+  "date": "2026-10-11",
+  "fails": "pair ceiling 72 and cracker sheet: the ask layer predates the merged cracker-sheet rules and needs a designer pass"
+ },
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (9 lines, each answered in the design note's Leak check), on the final rebuild with --asof 2025-10-21",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "",
+  "clone_check": ""
+ },
+ "solver_rounds": [],
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null
+}

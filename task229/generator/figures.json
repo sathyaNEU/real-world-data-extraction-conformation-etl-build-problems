@@ -1,0 +1,89 @@
+{
+ "call": {
+  "qualify": [
+   "Hinckley",
+   "Daventry",
+   "Bellshill",
+   "Magor",
+   "Warrington",
+   "Avonmouth"
+  ],
+  "supervised": [
+   "Thurrock",
+   "Doncaster"
+  ],
+  "line": "97.0"
+ },
+ "in_scope_faces": "26,188",
+ "share_whole_pc": {
+  "Hinckley": 99,
+  "Daventry": 98,
+  "Bellshill": 98,
+  "Thurrock": 96,
+  "Magor": 99,
+  "Warrington": 98,
+  "Avonmouth": 98,
+  "Doncaster": 96
+ },
+ "share_unrounded": {
+  "Hinckley": 98.82,
+  "Daventry": 98.16,
+  "Bellshill": 98.06,
+  "Thurrock": 95.91,
+  "Magor": 99.11,
+  "Warrington": 97.9,
+  "Avonmouth": 97.96,
+  "Doncaster": 96.02
+ },
+ "stock_value_gbp": {
+  "Hinckley": "\u00a31,174,000",
+  "Daventry": "\u00a31,292,000",
+  "Bellshill": "\u00a3939,000",
+  "Thurrock": "\u00a31,068,000",
+  "Magor": "\u00a3877,000",
+  "Warrington": "\u00a31,241,000",
+  "Avonmouth": "\u00a31,001,000",
+  "Doncaster": "\u00a31,086,000"
+ },
+ "forecast_cases": {
+  "Hinckley": "1,119,600",
+  "Daventry": "666,000",
+  "Bellshill": "450,800",
+  "Thurrock": "923,100",
+  "Magor": "203,300",
+  "Warrington": "435,500",
+  "Avonmouth": "398,600",
+  "Doncaster": "362,500"
+ },
+ "chart_order": [
+  "Hinckley",
+  "Thurrock",
+  "Daventry",
+  "Bellshill",
+  "Warrington",
+  "Avonmouth",
+  "Doncaster",
+  "Magor"
+ ],
+ "chart_title_centre": "Hinckley",
+ "conventions": {
+  "standard_clauses": [
+   "4.1",
+   "4.4",
+   "4.5",
+   "5.1"
+  ],
+  "stock_rounding": "1,000",
+  "survival_base": "1"
+ },
+ "dates": [
+  "06:00 on 7 December 2026",
+  "6 December",
+  "7 December",
+  "3 January",
+  "4 January 2027",
+  "27 December",
+  "26 December",
+  "23 November"
+ ]
+}

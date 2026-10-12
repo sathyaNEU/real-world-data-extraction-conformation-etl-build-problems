@@ -1,0 +1,793 @@
+{
+ "assertions": 16040,
+ "carried_pairs": 482,
+ "complaints_by_family": {
+  "Customer access": 11,
+  "Engineer attendance & punctuality": 45,
+  "Job duration & standards": 34,
+  "Other": 16,
+  "Parts & van stock": 59,
+  "Rota & cover": 110,
+  "Travel & routing": 51
+ },
+ "corpus": {
+  "one_hop": 79,
+  "same_day": 200
+ },
+ "credits_by_family": {
+  "Customer access": 930,
+  "Engineer attendance & punctuality": 7740,
+  "Job duration & standards": 4820,
+  "Other": 2060,
+  "Parts & van stock": 10060,
+  "Rota & cover": 18160,
+  "Travel & routing": 6020
+ },
+ "device_mass": {
+  "agent_days_elsewhere_q3": {
+   "HC2324206": 28,
+   "HC4399445": 33,
+   "HC4673364": 39
+  },
+  "complaint_paths": {
+   "any_category": {
+    "Customer access": 11,
+    "Engineer attendance & punctuality": 45,
+    "Job duration & standards": 34,
+    "Other": 16,
+    "Parts & van stock": 59,
+    "Rota & cover": 110,
+    "Travel & routing": 51
+   },
+   "closed_only": {
+    "Customer access": 6,
+    "Engineer attendance & punctuality": 35,
+    "Job duration & standards": 26,
+    "Other": 12,
+    "Parts & van stock": 43,
+    "Rota & cover": 76,
+    "Travel & routing": 44
+   },
+   "dedup_acct_visit": {
+    "Customer access": 12,
+    "Engineer attendance & punctuality": 46,
+    "Job duration & standards": 35,
+    "Other": 17,
+    "Parts & van stock": 60,
+    "Rota & cover": 111,
+    "Travel & routing": 52
+   },
+   "dedup_copies": {
+    "Customer access": 13,
+    "Engineer attendance & punctuality": 48,
+    "Job duration & standards": 36,
+    "Other": 18,
+    "Parts & van stock": 61,
+    "Rota & cover": 112,
+    "Travel & routing": 54
+   },
+   "dedup_hhday": {
+    "Customer access": 10,
+    "Engineer attendance & punctuality": 44,
+    "Job duration & standards": 33,
+    "Other": 15,
+    "Parts & van stock": 58,
+    "Rota & cover": 109,
+    "Travel & routing": 50
+   },
+   "drop_reopened": {
+    "Customer access": 13,
+    "Engineer attendance & punctuality": 54,
+    "Job duration & standards": 38,
+    "Other": 19,
+    "Parts & van stock": 66,
+    "Rota & cover": 131,
+    "Travel & routing": 58
+   },
+   "golden": {
+    "Customer access": 11,
+    "Engineer attendance & punctuality": 45,
+    "Job duration & standards": 34,
+    "Other": 16,
+    "Parts & van stock": 59,
+    "Rota & cover": 110,
+    "Travel & routing": 51
+   },
+   "label_only": {
+    "Customer access": 6,
+    "Engineer attendance & punctuality": 30,
+    "Job duration & standards": 18,
+    "Other": 11,
+    "Parts & van stock": 32,
+    "Rota & cover": 50,
+    "Travel & routing": 33
+   },
+   "received_q3": {
+    "Customer access": 10,
+    "Engineer attendance & punctuality": 44,
+    "Job duration & standards": 29,
+    "Other": 14,
+    "Parts & van stock": 50,
+    "Rota & cover": 106,
+    "Travel & routing": 48
+   },
+   "refs_direct": {
+    "Customer access": 12,
+    "Engineer attendance & punctuality": 49,
+    "Job duration & standards": 37,
+    "Other": 18,
+    "Parts & van stock": 64,
+    "Rota & cover": 119,
+    "Travel & routing": 50
+   },
+   "refs_resolved": {
+    "Customer access": 15,
+    "Engineer attendance & punctuality": 57,
+    "Job duration & standards": 40,
+    "Other": 21,
+    "Parts & van stock": 68,
+    "Rota & cover": 133,
+    "Travel & routing": 61
+   },
+   "rows_direct": {
+    "Customer access": 12,
+    "Engineer attendance & punctuality": 50,
+    "Job duration & standards": 40,
+    "Other": 18,
+    "Parts & van stock": 64,
+    "Rota & cover": 123,
+    "Travel & routing": 52
+   },
+   "rows_resolved": {
+    "Customer access": 15,
+    "Engineer attendance & punctuality": 58,
+    "Job duration & standards": 43,
+    "Other": 21,
+    "Parts & van stock": 68,
+    "Rota & cover": 137,
+    "Travel & routing": 63
+   }
+  },
+  "credit_paths": {
+   "all_lines": {
+    "Customer access": 1580,
+    "Engineer attendance & punctuality": 9090,
+    "Job duration & standards": 6220,
+    "Other": 3610,
+    "Parts & van stock": 12260,
+    "Rota & cover": 20280,
+    "Travel & routing": 6800
+   },
+   "direct": {
+    "Customer access": 640,
+    "Engineer attendance & punctuality": 5770,
+    "Job duration & standards": 3880,
+    "Other": 1580,
+    "Parts & van stock": 7840,
+    "Rota & cover": 14830,
+    "Travel & routing": 4870
+   },
+   "first_hit": {
+    "Customer access": 1230,
+    "Engineer attendance & punctuality": 8390,
+    "Job duration & standards": 5620,
+    "Other": 3360,
+    "Parts & van stock": 11480,
+    "Rota & cover": 19660,
+    "Travel & routing": 6520
+   },
+   "first_line": {
+    "Customer access": 910,
+    "Engineer attendance & punctuality": 7780,
+    "Job duration & standards": 4840,
+    "Other": 2040,
+    "Parts & van stock": 10080,
+    "Rota & cover": 18140,
+    "Travel & routing": 6040
+   },
+   "golden": {
+    "Customer access": 930,
+    "Engineer attendance & punctuality": 7740,
+    "Job duration & standards": 4820,
+    "Other": 2060,
+    "Parts & van stock": 10060,
+    "Rota & cover": 18160,
+    "Travel & routing": 6020
+   },
+   "one_per_acct_day": {
+    "Customer access": 850,
+    "Engineer attendance & punctuality": 7600,
+    "Job duration & standards": 4700,
+    "Other": 1980,
+    "Parts & van stock": 9890,
+    "Rota & cover": 17990,
+    "Travel & routing": 5960
+   },
+   "policy": {
+    "Customer access": 910,
+    "Engineer attendance & punctuality": 7540,
+    "Job duration & standards": 4700,
+    "Other": 1980,
+    "Parts & van stock": 9800,
+    "Rota & cover": 17700,
+    "Travel & routing": 5880
+   },
+   "runs_q3": {
+    "Customer access": 1170,
+    "Engineer attendance & punctuality": 7320,
+    "Job duration & standards": 5140,
+    "Other": 3170,
+    "Parts & van stock": 8290,
+    "Rota & cover": 10100,
+    "Travel & routing": 5820
+   },
+   "single_hit": {
+    "Customer access": 1230,
+    "Engineer attendance & punctuality": 7910,
+    "Job duration & standards": 5480,
+    "Other": 3020,
+    "Parts & van stock": 10400,
+    "Rota & cover": 18750,
+    "Travel & routing": 6520
+   },
+   "split": {
+    "Customer access": 876.6666666666666,
+    "Engineer attendance & punctuality": 7612.5,
+    "Job duration & standards": 4741.666666666667,
+    "Other": 1950.0,
+    "Parts & van stock": 9847.5,
+    "Rota & cover": 17951.666666666664,
+    "Travel & routing": 5990.0
+   }
+  },
+  "let_by_agents": 6208,
+  "letting_agents": 3,
+  "patch_current_moves": 28,
+  "patch_team_moves": 22,
+  "register_joiners_q3": 64,
+  "reopened_as_new_scotland": 17
+ },
+ "family_counts": {
+  "Customer access": 30,
+  "Engineer attendance & punctuality": 246,
+  "Job duration & standards": 153,
+  "Other": 65,
+  "Parts & van stock": 322,
+  "Rota & cover": 571,
+  "Travel & routing": 187
+ },
+ "forward": {
+  "answer": "Parts & van stock",
+  "calls_per_night": {
+   "jan_2026": 27.8,
+   "q3_2026": 18.6
+  },
+  "grid": {
+   "last_winter_as_is": "Engineer attendance & punctuality",
+   "q3_carry_all": "Rota & cover",
+   "q3_carry_winter": "Parts & van stock",
+   "same_day_carry": "Engineer attendance & punctuality",
+   "seasonal_ratio": "Parts & van stock"
+  },
+  "grid_values": {
+   "last_winter_q1_2026": {
+    "Customer access": 19,
+    "Engineer attendance & punctuality": 134,
+    "Job duration & standards": 92,
+    "Other": 33,
+    "Parts & van stock": 76,
+    "Travel & routing": 59
+   },
+   "q3_2025": {
+    "Customer access": 12,
+    "Engineer attendance & punctuality": 151,
+    "Job duration & standards": 102,
+    "Other": 57,
+    "Parts & van stock": 63,
+    "Rota & cover": 56,
+    "Travel & routing": 70
+   },
+   "seasonal_ratio": {
+    "Customer access": 47.5,
+    "Engineer attendance & punctuality": 218.3,
+    "Job duration & standards": 138.0,
+    "Other": 37.6,
+    "Parts & van stock": 388.4,
+    "Rota & cover": 0.0,
+    "Travel & routing": 157.6
+   }
+  },
+  "ranking": [
+   [
+    "Parts & van stock",
+    322
+   ],
+   [
+    "Engineer attendance & punctuality",
+    246
+   ],
+   [
+    "Travel & routing",
+    187
+   ],
+   [
+    "Job duration & standards",
+    153
+   ],
+   [
+    "Other",
+    65
+   ],
+   [
+    "Customer access",
+    30
+   ]
+  ],
+  "winter": {
+   "latest_list_clear": "20:23",
+   "october_2026_panel": 20,
+   "panel_by_month": {
+    "2025-10": 11,
+    "2025-11": 37,
+    "2025-12": 94,
+    "2026-01": 83,
+    "2026-02": 99,
+    "2026-03": 12,
+    "2026-04": 3,
+    "2026-05": 2
+   },
+   "rota_cover_by_month": {
+    "2025-10": 0,
+    "2025-11": 0,
+    "2025-12": 0,
+    "2026-01": 0,
+    "2026-02": 0,
+    "2026-03": 0,
+    "2026-04": 0,
+    "2026-05": 0
+   },
+   "summer_list_late": 265
+  }
+ },
+ "h1_family_counts": {
+  "Customer access": 41,
+  "Engineer attendance & punctuality": 291,
+  "Job duration & standards": 214,
+  "Other": 62,
+  "Parts & van stock": 144,
+  "Rota & cover": 6,
+  "Travel & routing": 163
+ },
+ "lens_overlap": 0.949,
+ "one_hop_q3": {
+  "Engineer attendance & punctuality": 102,
+  "Job duration & standards": 1291,
+  "Other": 17,
+  "Parts & van stock": 106,
+  "Travel & routing": 58
+ },
+ "patch_family": {
+  "Ayrshire & Renfrewshire": {
+   "Customer access": 4,
+   "Engineer attendance & punctuality": 42,
+   "Job duration & standards": 32,
+   "Other": 4,
+   "Parts & van stock": 42,
+   "Rota & cover": 113,
+   "Travel & routing": 20
+  },
+  "Edinburgh & Lothians": {
+   "Customer access": 8,
+   "Engineer attendance & punctuality": 26,
+   "Job duration & standards": 25,
+   "Other": 6,
+   "Parts & van stock": 72,
+   "Rota & cover": 87,
+   "Travel & routing": 27
+  },
+  "Fife & Forth Valley": {
+   "Customer access": 4,
+   "Engineer attendance & punctuality": 61,
+   "Job duration & standards": 22,
+   "Other": 14,
+   "Parts & van stock": 59,
+   "Rota & cover": 93,
+   "Travel & routing": 25
+  },
+  "Glasgow North & West": {
+   "Customer access": 5,
+   "Engineer attendance & punctuality": 43,
+   "Job duration & standards": 27,
+   "Other": 17,
+   "Parts & van stock": 39,
+   "Rota & cover": 109,
+   "Travel & routing": 30
+  },
+  "Glasgow South & East": {
+   "Customer access": 5,
+   "Engineer attendance & punctuality": 48,
+   "Job duration & standards": 36,
+   "Other": 12,
+   "Parts & van stock": 49,
+   "Rota & cover": 100,
+   "Travel & routing": 45
+  },
+  "Lanarkshire": {
+   "Customer access": 4,
+   "Engineer attendance & punctuality": 26,
+   "Job duration & standards": 11,
+   "Other": 12,
+   "Parts & van stock": 61,
+   "Rota & cover": 69,
+   "Travel & routing": 40
+  }
+ },
+ "q3_missed": 1574,
+ "rates": {
+  "h1_attended": 55717,
+  "h1_missed": 921,
+  "q3_attended": 30321,
+  "q3_missed": 1574
+ },
+ "reopened_as_new": 16,
+ "same_day_q3": {
+  "Customer access": 30,
+  "Engineer attendance & punctuality": 817,
+  "Job duration & standards": 153,
+  "Other": 65,
+  "Parts & van stock": 322,
+  "Travel & routing": 187
+ },
+ "standby_in_post": {
+  "2025-07-01": 17,
+  "2026-06-01": 14,
+  "2026-09-30": 6
+ },
+ "weekly": {
+  "2025-12-25": {
+   "Engineer attendance & punctuality": 6,
+   "Job duration & standards": 4,
+   "Other": 2,
+   "Parts & van stock": 5,
+   "Travel & routing": 5
+  },
+  "2026-01-01": {
+   "Engineer attendance & punctuality": 3,
+   "Job duration & standards": 4,
+   "Parts & van stock": 7,
+   "Travel & routing": 5
+  },
+  "2026-01-08": {
+   "Customer access": 2,
+   "Engineer attendance & punctuality": 24,
+   "Job duration & standards": 7,
+   "Other": 5,
+   "Parts & van stock": 15,
+   "Travel & routing": 4
+  },
+  "2026-01-15": {
+   "Customer access": 1,
+   "Engineer attendance & punctuality": 12,
+   "Job duration & standards": 16,
+   "Parts & van stock": 6,
+   "Travel & routing": 3
+  },
+  "2026-01-22": {
+   "Customer access": 3,
+   "Engineer attendance & punctuality": 8,
+   "Job duration & standards": 6,
+   "Other": 2,
+   "Parts & van stock": 8,
+   "Travel & routing": 10
+  },
+  "2026-01-29": {
+   "Customer access": 5,
+   "Engineer attendance & punctuality": 10,
+   "Job duration & standards": 3,
+   "Other": 2,
+   "Parts & van stock": 9,
+   "Travel & routing": 3
+  },
+  "2026-02-05": {
+   "Engineer attendance & punctuality": 28,
+   "Job duration & standards": 8,
+   "Other": 2,
+   "Parts & van stock": 2,
+   "Travel & routing": 2
+  },
+  "2026-02-12": {
+   "Customer access": 3,
+   "Engineer attendance & punctuality": 11,
+   "Job duration & standards": 13,
+   "Other": 1,
+   "Parts & van stock": 4,
+   "Travel & routing": 3
+  },
+  "2026-02-19": {
+   "Customer access": 1,
+   "Engineer attendance & punctuality": 11,
+   "Job duration & standards": 4,
+   "Other": 6,
+   "Travel & routing": 6
+  },
+  "2026-02-26": {
+   "Customer access": 1,
+   "Engineer attendance & punctuality": 13,
+   "Job duration & standards": 9,
+   "Parts & van stock": 5,
+   "Travel & routing": 4
+  },
+  "2026-03-05": {
+   "Engineer attendance & punctuality": 4,
+   "Job duration & standards": 14,
+   "Other": 6,
+   "Parts & van stock": 8,
+   "Travel & routing": 6
+  },
+  "2026-03-12": {
+   "Customer access": 1,
+   "Engineer attendance & punctuality": 8,
+   "Job duration & standards": 2,
+   "Parts & van stock": 6,
+   "Travel & routing": 2
+  },
+  "2026-03-19": {
+   "Job duration & standards": 2,
+   "Other": 2,
+   "Parts & van stock": 6,
+   "Travel & routing": 8
+  },
+  "2026-03-26": {
+   "Customer access": 2,
+   "Engineer attendance & punctuality": 2,
+   "Job duration & standards": 5,
+   "Other": 8,
+   "Travel & routing": 4
+  },
+  "2026-04-02": {
+   "Engineer attendance & punctuality": 13,
+   "Job duration & standards": 4,
+   "Parts & van stock": 5,
+   "Travel & routing": 7
+  },
+  "2026-04-09": {
+   "Customer access": 1,
+   "Engineer attendance & punctuality": 26,
+   "Job duration & standards": 14,
+   "Parts & van stock": 5,
+   "Travel & routing": 11
+  },
+  "2026-04-16": {
+   "Customer access": 1,
+   "Engineer attendance & punctuality": 15,
+   "Job duration & standards": 9,
+   "Parts & van stock": 6,
+   "Travel & routing": 6
+  },
+  "2026-04-23": {
+   "Customer access": 3,
+   "Engineer attendance & punctuality": 3,
+   "Job duration & standards": 13,
+   "Parts & van stock": 5,
+   "Travel & routing": 18
+  },
+  "2026-04-30": {
+   "Customer access": 1,
+   "Engineer attendance & punctuality": 14,
+   "Job duration & standards": 4,
+   "Other": 7,
+   "Parts & van stock": 3
+  },
+  "2026-05-07": {
+   "Customer access": 1,
+   "Engineer attendance & punctuality": 30,
+   "Job duration & standards": 13,
+   "Other": 3,
+   "Parts & van stock": 2,
+   "Travel & routing": 8
+  },
+  "2026-05-14": {
+   "Customer access": 2,
+   "Engineer attendance & punctuality": 14,
+   "Job duration & standards": 7,
+   "Other": 2,
+   "Parts & van stock": 6,
+   "Travel & routing": 8
+  },
+  "2026-05-21": {
+   "Engineer attendance & punctuality": 5,
+   "Job duration & standards": 9,
+   "Other": 1,
+   "Parts & van stock": 3,
+   "Travel & routing": 4
+  },
+  "2026-05-28": {
+   "Engineer attendance & punctuality": 9,
+   "Job duration & standards": 10,
+   "Parts & van stock": 2,
+   "Travel & routing": 1
+  },
+  "2026-06-04": {
+   "Customer access": 2,
+   "Engineer attendance & punctuality": 20,
+   "Job duration & standards": 14,
+   "Other": 5,
+   "Parts & van stock": 11,
+   "Rota & cover": 6,
+   "Travel & routing": 10
+  },
+  "2026-06-11": {
+   "Customer access": 4,
+   "Engineer attendance & punctuality": 6,
+   "Job duration & standards": 11,
+   "Other": 4,
+   "Parts & van stock": 10,
+   "Travel & routing": 13
+  },
+  "2026-06-18": {
+   "Customer access": 4,
+   "Job duration & standards": 9,
+   "Other": 1,
+   "Parts & van stock": 1,
+   "Travel & routing": 15
+  },
+  "2026-06-25": {
+   "Customer access": 3,
+   "Engineer attendance & punctuality": 10,
+   "Job duration & standards": 6,
+   "Other": 9,
+   "Parts & van stock": 14,
+   "Rota & cover": 7,
+   "Travel & routing": 4
+  },
+  "2026-07-02": {
+   "Customer access": 2,
+   "Engineer attendance & punctuality": 13,
+   "Job duration & standards": 9,
+   "Other": 2,
+   "Parts & van stock": 26,
+   "Rota & cover": 17,
+   "Travel & routing": 13
+  },
+  "2026-07-09": {
+   "Engineer attendance & punctuality": 17,
+   "Job duration & standards": 7,
+   "Other": 7,
+   "Parts & van stock": 19,
+   "Rota & cover": 25,
+   "Travel & routing": 24
+  },
+  "2026-07-16": {
+   "Engineer attendance & punctuality": 38,
+   "Job duration & standards": 14,
+   "Other": 9,
+   "Parts & van stock": 30,
+   "Rota & cover": 14,
+   "Travel & routing": 11
+  },
+  "2026-07-23": {
+   "Customer access": 4,
+   "Engineer attendance & punctuality": 21,
+   "Job duration & standards": 6,
+   "Other": 9,
+   "Parts & van stock": 5,
+   "Rota & cover": 22,
+   "Travel & routing": 38
+  },
+  "2026-07-30": {
+   "Customer access": 1,
+   "Engineer attendance & punctuality": 14,
+   "Job duration & standards": 11,
+   "Other": 8,
+   "Parts & van stock": 24,
+   "Travel & routing": 9
+  },
+  "2026-08-06": {
+   "Customer access": 2,
+   "Engineer attendance & punctuality": 11,
+   "Job duration & standards": 7,
+   "Other": 3,
+   "Parts & van stock": 21,
+   "Rota & cover": 51,
+   "Travel & routing": 7
+  },
+  "2026-08-13": {
+   "Customer access": 1,
+   "Engineer attendance & punctuality": 17,
+   "Job duration & standards": 10,
+   "Other": 3,
+   "Parts & van stock": 34,
+   "Rota & cover": 26,
+   "Travel & routing": 9
+  },
+  "2026-08-20": {
+   "Customer access": 1,
+   "Engineer attendance & punctuality": 21,
+   "Job duration & standards": 13,
+   "Other": 1,
+   "Parts & van stock": 26,
+   "Rota & cover": 84,
+   "Travel & routing": 18
+  },
+  "2026-08-27": {
+   "Customer access": 4,
+   "Engineer attendance & punctuality": 28,
+   "Job duration & standards": 26,
+   "Other": 5,
+   "Parts & van stock": 21,
+   "Rota & cover": 48,
+   "Travel & routing": 11
+  },
+  "2026-09-03": {
+   "Customer access": 4,
+   "Engineer attendance & punctuality": 26,
+   "Job duration & standards": 18,
+   "Other": 2,
+   "Parts & van stock": 23,
+   "Rota & cover": 101,
+   "Travel & routing": 16
+  },
+  "2026-09-10": {
+   "Customer access": 1,
+   "Engineer attendance & punctuality": 5,
+   "Job duration & standards": 10,
+   "Parts & van stock": 25,
+   "Rota & cover": 51,
+   "Travel & routing": 11
+  },
+  "2026-09-17": {
+   "Customer access": 6,
+   "Engineer attendance & punctuality": 6,
+   "Job duration & standards": 9,
+   "Other": 9,
+   "Parts & van stock": 30,
+   "Rota & cover": 62,
+   "Travel & routing": 6
+  },
+  "2026-09-24": {
+   "Customer access": 4,
+   "Engineer attendance & punctuality": 21,
+   "Job duration & standards": 11,
+   "Other": 3,
+   "Parts & van stock": 33,
+   "Rota & cover": 63,
+   "Travel & routing": 12
+  }
+ },
+ "worst_week": {
+  "by_week_start": {
+   "Fri": [
+    "2026-08-21",
+    186
+   ],
+   "Mon": [
+    "2026-08-31",
+    173
+   ],
+   "Sat": [
+    "2026-08-29",
+    173
+   ],
+   "Sun": [
+    "2026-08-30",
+    173
+   ],
+   "Thu": [
+    "2026-09-03",
+    190
+   ],
+   "Tue": [
+    "2026-09-01",
+    169
+   ],
+   "Wed": [
+    "2026-08-26",
+    165
+   ]
+  },
+  "count": 190,
+  "iso_count": 173,
+  "iso_start": "2026-08-31",
+  "start": "2026-09-03"
+ }
+}

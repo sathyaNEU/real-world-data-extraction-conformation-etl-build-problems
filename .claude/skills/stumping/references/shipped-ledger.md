@@ -159,6 +159,8 @@ before the lanes record none (`-`).
 | 445 | delivered 10-11; hardening loop 1 in build | QF 13F ownership | ETL | time population | none | complete holdings reporter by reporter | - | - | 5 of 12 crowded | determinism fail | oviya1301 |
 | 446 (v2) | delivered 10-11 | BANK watch list | ETL | time population | none | carry error rates, not yield | - | - | 133 groups | none reported | oviya1301 |
 | 447 | drawing (in build, no card on main) | BANK peer benchmarks | ETL | - | - | - | - | - | - | none reported | oviya1301 |
+| 500 (v3) | delivered 10-11, awaiting the portal | ECON lodging tax | RCA | rule population | B | each change measured by the office's matched-reference method | - | - | long-stay exemption, $3,235k | v1, v2 solved 10-10, 10-11 | sathya8571 |
+| 501 (v2) | in build 10-11 | QF pension liquidity | FC | time population | none | buffer is the furthest calls ran ahead of the path | - | - | CHF 225m tranche | v2 10-11: landed by 2 of 2 (filed walk-forward executed) | sathya8571 |
 
 ## Earlier architectures
 
@@ -239,6 +241,7 @@ them as history. Round-by-round detail is in each build's design note and card l
 | 229 (v1) | failed portal determinism 10-11 | ENR | DQ | population time | D | standard error of a build mean |
 | 230 (v1) | retired 10-11: solved in-house twice | PA | DQ | population time | none | segment comparison pool |
 | 446 (v1) | retired 10-11: rule application | BANK | ETL | population time | none | group fixed at the projection date |
+| 500 (v1, v2) | solved on the portal 10-10, 10-11 | SCL, P&E | RCA | population | none | held blocks off late calls (shuttle, 15 of 28); a later start spilling onto siblings |
 
 ## Lessons the outcomes paid for
 

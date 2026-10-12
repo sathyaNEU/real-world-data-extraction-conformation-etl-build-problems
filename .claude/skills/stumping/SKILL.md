@@ -10,7 +10,10 @@ description: Find, prove and protect the analytical stump behind a main recommen
 > commits to a specific wrong answer.
 
 Work Part 6 first, then Parts 1 to 5, with `references/strategies.md`, the client's standard and rigor
-patterns in `references/client/` (learn one, write your own), `../guide-to-prompt/references/exemplars.md`
+patterns in `references/client/` (learn one, write your own; `references/client/measured-drivers.md` reads the
+client's 49 measured tasks against our top-two bar: 18 held, 13 coin flips, 13 leaked their asks, 3 landed,
+so a decisive rung is drawn from the held group, upstream of every graded figure, with its partial-fix match
+counts in the note before any data is cut), `../guide-to-prompt/references/exemplars.md`
 (the depth, never the withheld method) and `analytical_tasks/` seeds (a world, never a mechanism). The
 portal is the only stump oracle; the leak reader and the judge's Gate F check the paper.
 
@@ -94,7 +97,9 @@ capacity) makes this the stump an analyst trips on here. A move that reads the s
 
 Each rung runs six tests on paper; any that fires makes it readable, and a readable decisive rung is dead
 (36 of 79 rounds, 13 of 21 portal results; `strategies.md` Part 6). **1 Filed sentence:** a clause,
-definition or formula names the decisive quantity. **2 Schema:** a column, key or marker makes it a row
+definition or formula names the decisive quantity, or only makes the solver ask the question: a clause it
+cannot avoid reading sends it looking, and a join forced by a key it already holds is one line of code; a
+template asking for each candidate's affected population is that clause for every candidate (500 v2). **2 Schema:** a column, key or marker makes it a row
 predicate or a header-found join. **3 Reflex:** an opponent default. **4 Control bench:** a control or
 corpus scores the rules or refutes the naive read. **5 Hygiene:** the battery finds it (73 v2, 117). **6
 Linear:** one subtraction, ratio or half of a reported figure. The note gives a row per rung, verdict
@@ -136,7 +141,12 @@ wrongly, at any depth, except a declared wrong-basis distractor (`dataset-genera
 table the naive pipeline needs is rung 0 (42). **Every rung** reproduces from the raw files, names its own
 candidate, dies to exactly one shipped fact or construction, and is satisfying to stop at; a loop-fixable
 slip (58 v5) or one group-by (36) is no rung. Cleaning sits at rung 1 or 2. Depth is a Gate F device,
-never a Gate G defence.
+never a Gate G defence. **Read rung 0 off what the shipped files name, free text included:** remarks naming
+the counterparty each affected case waited on hand that candidate to the natural pipeline whatever code sits
+beside it, and the one entity present only in the later period is the first thing a two-period comparison
+lists (500 v1). **Measure the decisive rung on the graded name and the graded figure separately:** a rung that
+only changes who is blamed, while the counterfactual figure is the same whoever is blamed, is worth nothing on
+the figure, and a response skipping it files the golden figure (500 v1).
 
 **The arithmetic, on paper before any row.** Position, margin, separation and dominance as
 `dataset-generation` §6 asserts them (4th or 5th on rung 0, no margin under 1.15x). Then: one live degree
@@ -215,6 +225,10 @@ the ladder.
   `identity_resolution` never held, the emerging habits beat the top four. Pick the strategy, then data.
 
 **Test it against the cards and the record.**
+- **Read the mechanisms on file first:** `guard.py mechanisms --objective <o>` (and `--gate-g <g>`) prints
+  every driver and earlier architecture on that ground in one screen; write one line on the insight each
+  spends and draw from what they leave. The driver score misses a mechanism told in other nouns: two task500
+  re-roots passed `check` at 0.05 and 0.08 and still repeated 109's and 111 v1's drivers.
 - **Abstraction test:** strip the nouns from your driver and the three `guard.py nearest` returns; one
   that maps onto yours (the same latent structure, default path and correction) is the same driver at any
   similarity. Change the structure, never the nouns; read their `## Tried and rejected`.
@@ -250,7 +264,7 @@ candidates. No organ ships because earlier builds shipped one.
 ## Part 8. Diagnosis and repair
 
 A diagnosis comes from the judge or the portal, never a solve in the main thread; returned tasks take
-`build-pipeline`'s fast path. Diff each response against the golden cell by cell: the step it never took
+`/fix-determinism`, `/fix-rubric`, or stage 2 when the call landed (`build-pipeline`, Returned tasks). Diff each response against the golden cell by cell: the step it never took
 is the finding, and an assumption every response holds unchecked is where to change the world.
 
 - Landed on the default construction: make it wrong, a rung below rung 0 from another gap.

@@ -1,0 +1,7 @@
+We can only run one round of Trust Licence approaches this spring: two partnership managers, five trusts each. Henry signs the list off at the November planning meeting, because trusts settle their 2027-28 budgets over the spring and summer. Philip thinks the round should go wherever we have the most room to grow. Planning it falls to me as head of trust partnerships. The call I need is the ten trusts we take the licence to, in priority order, and the new recurring revenue that round puts on the 2027-28 plan, in whole pounds.
+
+That figure goes to Henry as trust_round_spring2027.pptx. The first slide names the ten and the figure. Then one chart that builds the round up in priority order, each trust's step labelled with the running total after it, the first trust below the line set after the tenth with its gap, and a title that carries the round's figure.
+
+The workings behind it, and the base the round sits on, go in trust_round_spring2027.xlsx. For each type of school as the register groups them and each price band: the pupils billed at 1 October and the recurring revenue. For each licence signed in the pilot: what was credited back when it replaced the schools' subscriptions, and what the licence bills for 2026-27 net of that credit. Last, weekly active pupils per hundred billed over the first six weeks of the autumn term, by the same type and band, to one decimal place.
+
+Money is in whole pounds ex VAT throughout, and counts are whole numbers.

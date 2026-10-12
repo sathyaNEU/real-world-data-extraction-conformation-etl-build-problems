@@ -1,0 +1,22 @@
+{
+ "task": "task500",
+ "domain": "economics",
+ "objective": "root-cause",
+ "stage": "B",
+ "stage_name": "v3 built, verified, leak REVIEW; delivered for the author's portal test (no in-house round, by the author's choice)",
+ "updated": "2026-10-11",
+ "stump": "files the convention center closure by comparing each change's filers with untouched ones by class; the office's standing matched-reference method, pinned by two certified statements, puts the shortfall on the long-stay exemption",
+ "harden_loops": 0,
+ "solver_rounds": [],
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": "2026-10-11, v3: target.zip (11 files), golden.zip (deck, CSV), prompt.md, submission.md",
+ "portal": {
+  "P1": "2026-10-10, v1: Stumped Check 1 failed, both responses named the shuttle with 15 of 28",
+  "P2": "2026-10-11, v2: Stumped Check 1 failed, both responses named MV-25-01 with 156 (one: siblings spillover); at ceiling under the stopping rule"
+ }
+}

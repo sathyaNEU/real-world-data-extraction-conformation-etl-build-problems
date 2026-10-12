@@ -1,0 +1,292 @@
+{
+ "cells": {
+  "R0 raw register": "1142518.92",
+  "R1 cleaned, rules unapplied": "1140748.18",
+  "R2 five-year": "1133471.41",
+  "R3 end with host": "993555.07",
+  "five years unless the system runs out sooner": "981802.51",
+  "host remaining in whole years (down)": "936168.24",
+  "host remaining in whole years (nearest)": "984845.74",
+  "host remaining less one": "930318.43",
+  "pin: FY2024 imaging depreciation, five-year less published": "-8901.13",
+  "ten-year": "950220.24"
+ },
+ "classes": {
+  "Clinical equipment": 438489,
+  "Computer equipment": 130944,
+  "Furniture and fittings": 123144,
+  "Imaging equipment": 2775536,
+  "Leasehold improvements": 2826283,
+  "Motor vehicles": 21195
+ },
+ "devices": {
+  "clock AEST": {
+   "CES.h2": "-10653.48",
+   "CES.nbv_load": "-79900.94",
+   "CES.nbv_sep": "-85227.65",
+   "CES.nil_cost": "3324.95",
+   "CES.nil_count": "1",
+   "CES.q4": "-5326.71",
+   "CHA.h2": "341.10",
+   "CHA.nbv_load": "1648.57",
+   "CHA.nbv_sep": "1819.09",
+   "CHA.nil_cost": "273948.59",
+   "CHA.nil_count": "2",
+   "CHA.q4": "170.52",
+   "MAI.h2": "10312.38",
+   "MAI.nbv_load": "78252.37",
+   "MAI.nbv_sep": "83408.56",
+   "MAI.nil_cost": "144002.18",
+   "MAI.nil_count": "2",
+   "MAI.q4": "5156.19"
+  },
+  "clock UTC": {
+   "CES.h2": "-10653.48",
+   "CES.nbv_load": "-79900.94",
+   "CES.nbv_sep": "-85227.65",
+   "CES.nil_cost": "3324.95",
+   "CES.nil_count": "1",
+   "CES.q4": "-5326.71",
+   "CHA.h2": "341.10",
+   "CHA.nbv_load": "1648.57",
+   "CHA.nbv_sep": "1819.09",
+   "CHA.nil_cost": "273948.59",
+   "CHA.nil_count": "2",
+   "CHA.q4": "170.52",
+   "MAI.h2": "10312.38",
+   "MAI.nbv_load": "78252.37",
+   "MAI.nbv_sep": "83408.56",
+   "MAI.nil_cost": "144002.18",
+   "MAI.nil_count": "2",
+   "MAI.q4": "5156.19"
+  },
+  "first TB run": {
+   "Furniture and fittings": "19942.90",
+   "Leasehold improvements": "-19942.90"
+  },
+  "mapping v3": {
+   "Clinical equipment": "-438489.26",
+   "Furniture and fittings": "-123143.84",
+   "Furniture, fittings and vehicles": "144339.11",
+   "Imaging equipment": "438489.26",
+   "Motor vehicles": "-21195.27"
+  },
+  "no count sheet": {
+   "CHA.h2": "5092.53",
+   "CHA.nbv_load": "5092.53",
+   "CHA.nbv_sep": "10185.00",
+   "CHA.q4": "5092.47",
+   "RAY.h2": "-5092.53",
+   "RAY.nbv_load": "-5092.53",
+   "RAY.nbv_sep": "-10483.24",
+   "RAY.nil_cost": "-163992.55",
+   "RAY.nil_count": "-13",
+   "RAY.q4": "-5390.71"
+  },
+  "register site": {
+   "CES.h2": "-15810.20",
+   "CES.nbv_load": "-30091.78",
+   "CES.nbv_sep": "-37935.34",
+   "CES.nil_cost": "139930.24",
+   "CES.nil_count": "1",
+   "CES.q4": "-7843.56",
+   "CHA.h2": "-7708.45",
+   "CHA.nbv_load": "-130621.15",
+   "CHA.nbv_sep": "-131990.80",
+   "CHA.nil_cost": "7403.53",
+   "CHA.nil_count": "2",
+   "CHA.q4": "-1369.65",
+   "MAI.h2": "28317.66",
+   "MAI.nbv_load": "164778.12",
+   "MAI.nbv_sep": "178937.04",
+   "MAI.nil_cost": "-147333.77",
+   "MAI.nil_count": "-3",
+   "MAI.q4": "14158.92",
+   "RAY.h2": "-4799.01",
+   "RAY.nbv_load": "-4065.19",
+   "RAY.nbv_sep": "-9010.90",
+   "RAY.q4": "-4945.71"
+  },
+  "tag-only join": {
+   "CES.h2": "257.16",
+   "CES.nbv_load": "1114.43",
+   "CES.nbv_sep": "1243.01",
+   "CES.nil_cost": "-5094.27",
+   "CES.nil_count": "-2",
+   "CES.q4": "128.58",
+   "CHA.h2": "-257.16",
+   "CHA.nbv_load": "-1114.43",
+   "CHA.nbv_sep": "-1243.01",
+   "CHA.nil_cost": "-363646.50",
+   "CHA.nil_count": "-3",
+   "CHA.q4": "-128.58",
+   "MAI.nil_cost": "-6825.91",
+   "MAI.nil_count": "-3"
+  },
+  "transfer as new": {
+   "Clinical equipment": "134362.28"
+  }
+ },
+ "h2": 931458,
+ "h2_cents": "931458.07",
+ "load_cost": 26925204,
+ "load_nbv": 6315591,
+ "load_rows": 202,
+ "lure_classes": {
+  "Clinical equipment": 438489,
+  "Computer equipment": 130944,
+  "Furniture and fittings": 123144,
+  "Imaging equipment": 2745182,
+  "Leasehold improvements": 2826283,
+  "Motor vehicles": 21195
+ },
+ "lure_sites": {
+  "CES": {
+   "h2": 178063,
+   "nbv_load": 856703,
+   "nbv_sep": 945801,
+   "nil_cost": 20223,
+   "nil_count": 5,
+   "q4": 89098
+  },
+  "CHA": {
+   "h2": 534249,
+   "nbv_load": 2681656,
+   "nbv_sep": 3001608,
+   "nil_cost": 2847717,
+   "nil_count": 25,
+   "q4": 319952
+  },
+  "MAI": {
+   "h2": 223220,
+   "nbv_load": 1142016,
+   "nbv_sep": 1288746,
+   "nil_cost": 2638057,
+   "nil_count": 21,
+   "q4": 146730
+  },
+  "RAY": {
+   "h2": 197940,
+   "nbv_load": 1604862,
+   "nbv_sep": 1706676,
+   "nil_cost": 163993,
+   "nil_count": 13,
+   "q4": 101814
+  }
+ },
+ "q4": 627241,
+ "scan_devices": {
+  "HH-07 clock as written": {
+   "CES.h2": "-388.08",
+   "CES.nbv_load": "-4398.32",
+   "CES.nbv_sep": "-4592.39",
+   "CES.nil_cost": "-4057.60",
+   "CES.nil_count": "-1",
+   "CES.q4": "-194.07",
+   "CHA.h2": "388.08",
+   "CHA.nbv_load": "4398.32",
+   "CHA.nbv_sep": "4592.39",
+   "CHA.q4": "194.07",
+   "acc_dec": "-4057.60",
+   "cost": "-4057.60",
+   "rows": "-1"
+  },
+  "UTC-date start, clock as written": {
+   "CES.h2": "-388.08",
+   "CES.nbv_load": "-4398.32",
+   "CES.nbv_sep": "-4592.39",
+   "CES.nil_cost": "-7121.59",
+   "CES.nil_count": "-2",
+   "CES.q4": "-194.07",
+   "CHA.h2": "388.08",
+   "CHA.nbv_load": "4398.32",
+   "CHA.nbv_sep": "4592.39",
+   "CHA.q4": "194.07",
+   "acc_dec": "-7121.59",
+   "cost": "-7121.59",
+   "rows": "-2"
+  },
+  "no window start": {
+   "MAI.nil_cost": "5279.39",
+   "MAI.nil_count": "1",
+   "acc_dec": "5279.39",
+   "cost": "5279.39",
+   "rows": "1"
+  },
+  "tag before plate": {
+   "CES.h2": "257.16",
+   "CES.nbv_load": "1114.43",
+   "CES.nbv_sep": "1243.01",
+   "CES.q4": "128.58",
+   "CHA.h2": "-257.16",
+   "CHA.nbv_load": "-1114.43",
+   "CHA.nbv_sep": "-1243.01",
+   "CHA.q4": "-128.58"
+  },
+  "tag first, clock as written": {
+   "CES.h2": "-130.92",
+   "CES.nbv_load": "-3283.89",
+   "CES.nbv_sep": "-3349.38",
+   "CES.nil_cost": "-4057.60",
+   "CES.nil_count": "-1",
+   "CES.q4": "-65.49",
+   "CHA.h2": "130.92",
+   "CHA.nbv_load": "3283.89",
+   "CHA.nbv_sep": "3349.38",
+   "CHA.q4": "65.49",
+   "acc_dec": "-4057.60",
+   "cost": "-4057.60",
+   "rows": "-1"
+  },
+  "tag first, no window start": {
+   "CES.h2": "257.16",
+   "CES.nbv_load": "1114.43",
+   "CES.nbv_sep": "1243.01",
+   "CES.q4": "128.58",
+   "CHA.h2": "-257.16",
+   "CHA.nbv_load": "-1114.43",
+   "CHA.nbv_sep": "-1243.01",
+   "CHA.q4": "-128.58",
+   "MAI.nil_cost": "5279.39",
+   "MAI.nil_count": "1",
+   "acc_dec": "5279.39",
+   "cost": "5279.39",
+   "rows": "1"
+  }
+ },
+ "sites": {
+  "CES": {
+   "h2": 168692,
+   "nbv_load": 936428,
+   "nbv_sep": 1020841,
+   "nil_cost": 20223,
+   "nil_count": 5,
+   "q4": 84413
+  },
+  "CHA": {
+   "h2": 439211,
+   "nbv_load": 2611648,
+   "nbv_sep": 2934245,
+   "nil_cost": 3653162,
+   "nil_count": 28,
+   "q4": 322597
+  },
+  "MAI": {
+   "h2": 152095,
+   "nbv_load": 979511,
+   "nbv_sep": 1111168,
+   "nil_cost": 3231776,
+   "nil_count": 24,
+   "q4": 131657
+  },
+  "RAY": {
+   "h2": 171460,
+   "nbv_load": 1788004,
+   "nbv_sep": 1876578,
+   "nil_cost": 163993,
+   "nil_count": 13,
+   "q4": 88574
+  }
+ },
+ "written_off": 9
+}

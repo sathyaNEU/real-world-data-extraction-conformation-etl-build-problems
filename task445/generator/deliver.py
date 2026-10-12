@@ -8,9 +8,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
-LAYOUT_COLS = ["report_period", "cusip", "ticker", "shares_outstanding", "inst_own_pct", "crowded",
-               "prior_shares_outstanding", "prior_inst_own_pct", "top_holder_cik", "top_holder_name",
-               "top_holder_value_usd"]
+LAYOUT_COLS = ["report_period", "cusip", "ticker", "inst_own_pct", "crowded", "prior_inst_own_pct"]
 
 
 def r1(x):
@@ -24,17 +22,15 @@ def flag_file(g, path):
         w = csv.writer(fh, lineterminator="\n")
         w.writerow(LAYOUT_COLS)
         for c, t in zip(g["cusips"], g["tickers"]):
-            top = g["top"][c]
-            w.writerow(["2022-12-31", c, t, g["S_dec"][c], r1(g["dec_io"][c]), "Y" if g["flag"][c] else "N",
-                        g["S_sep"][c], r1(g["sep_io"][c]), top["cik"], top["name"], top["usd"]])
+            w.writerow(["2022-12-31", c, t, r1(g["dec_io"][c]), "Y" if g["flag"][c] else "N", r1(g["sep_io"][c])])
 
 
 def bridge_png(g, path):
     b = g["bridge"]
     steps = [("Information-table lines\nas filed", b["raw"], "total"),
-             ("Put and call lines", -b["options"], "down"),
-             ("Lines in reports\nsuperseded by a restatement", -b["superseded"], "down"),
-             ("Lines keyed under a\nmalformed CUSIP", b["cusip_repaired"], "up"),
+             ("Put and call lines\n(put/call field or title)", -b["options"], "down"),
+             ("Lines in reports replaced\nby a later amendment", -b["superseded"], "down"),
+             ("CUSIPs keyed off-format,\nmatched back", b["cusip_repaired"], "up"),
              ("September institutional\nshares, twelve names", b["conformed"], "total")]
     fig, ax = plt.subplots(figsize=(10.5, 5.6), dpi=110)
     run = 0
@@ -66,9 +62,11 @@ def bridge_png(g, path):
     ax.grid(axis="y", color="#edf2f7", linewidth=0.8)
     ax.set_axisbelow(True)
     net = b["conformed"] - b["raw"]
-    ax.set_title(f"Our September institutional shares sit {abs(net) / 1e6:,.1f}m {'below' if net < 0 else 'above'} a straight sum of the "
-                 "SEC lines:\nrestated reports and options come out, CUSIPs keyed off-format come back in "
-                 "(twelve watchlist names, period ended 30 Sep 2022)", fontsize=10.5, loc="left")
+    ax.set_title(f"Our September institutional shares sit {abs(net) / 1e6:,.1f}m {'below' if net < 0 else 'above'} a straight sum of the SEC lines",
+                 fontsize=11.5, loc="left", pad=38, fontweight="bold")
+    ax.text(0, 1.02, "Lines in reports replaced by a later amendment and option lines come out;\nCUSIPs keyed off-format come "
+            "back in. Twelve watchlist names, period ended 30 Sep 2022.", transform=ax.transAxes, fontsize=9,
+            color="#4a5568", ha="left", va="bottom")
     fig.text(0.01, 0.01, "Source: Form 13F reports for the period ended 30 Sep 2022, filed through 3 Feb 2023. "
              "Quillfield Research ownership desk.", fontsize=7.5, color="#4a5568")
     fig.tight_layout(rect=(0, 0.03, 1, 1))

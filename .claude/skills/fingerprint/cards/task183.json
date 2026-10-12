@@ -1,0 +1,101 @@
+{
+  "task": "task183",
+  "architecture": "v1",
+  "drawn": "2026-10-11",
+  "slot_note": "Seed AD06 (a hospital network rebuilding a retired surge trigger from a settled activation ledger) used as idea material only: its decisive step was a withheld rule recovered from settled figures. Re-rooted inside the same objective (Anomaly Detection & Diagnostics) on an electric utility's underground cable network, where the decisive step is analytical.",
+  "domain": "energy-systems-utilities",
+  "subdomain": "grid-reliability-outage-analysis",
+  "client_domain": "energy-systems-utilities",
+  "niche": "an electric distribution utility's underground cable program naming the one feeder whose worst sections it replaces in 2027, by the cable failures each feeder's in-service sections will have next year, when a first failure seldom recurs and a section that has failed twice keeps failing",
+  "objective": "anomaly-detection",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "Quarry Hill 21 (design target; the golden's wording is fixed at ship from the generator)",
+  "answer_source": "design note",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G6",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the distribution asset management group that names the feeder for the 2027 underground cable replacement program in the utility's reliability plan",
+  "role_family": "research_desk",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "ug_cable_fault_work_orders_2012_2026.csv",
+    "rows": 1800,
+    "entity": "one cable fault repair: a work order closing one failure on one underground cable section",
+    "grain": "failure x section",
+    "source": "synthetic"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "United States, Pennsylvania (fictional utility, district and places)",
+    "currency": "USD",
+    "org_type": "an investor-owned electric distribution utility's underground network district with eight cable-heavy feeders",
+    "invented_names": [
+      "Tamsin Valley Electric",
+      "Harrow Road substation",
+      "Mill Lane substation",
+      "Quarry Hill substation",
+      "Sutter Park substation",
+      "Harrow Road 12",
+      "Harrow Road 14",
+      "Mill Lane 3",
+      "Mill Lane 7",
+      "Quarry Hill 21",
+      "Quarry Hill 22",
+      "Sutter Park 5",
+      "Sutter Park 9"
+    ],
+    "people": [
+      "Samantha Werner",
+      "Jeffrey Roth",
+      "Charles Weber"
+    ]
+  },
+  "deliverables": [
+    "cable_program_2027.xlsx",
+    "feeder_failures_2027.png"
+  ],
+  "opening_move": "question-first",
+  "driver": "When a unit's coming events arise in its parts and a part that has already failed more than once keeps failing at many times the rate of a part with one or no failures, both the unit's trailing event rate and any rate built from its parts' visible attributes miss that the forward count is driven by the current mix of its parts' own failure histories; only a forecast that carries each part's prior failures forward names the unit with the most events ahead.",
+  "driver_concrete": "Each of Tamsin Valley Electric's eight underground feeders is scored on the cable failures (insulation, splice, termination) its in-service sections will have in 2027: Mill Lane 7 had the most such failures in the last five years, but nearly all were first failures on different sections, which seldom fail again, while Quarry Hill 21, whose cable runs under a state highway and has been spliced rather than replaced, now carries a dozen sections that have each failed twice and fail again at about a third a year, so only a forecast built on each section's own failure count names Quarry Hill 21.",
+  "stump": "A competent solver takes the last five years of cable-condition failures on the sections still in service, averages them per feeder, or applies failure rates by insulation type and age to each feeder's cable, and names Mill Lane 7 or Sutter Park 5; the step that lands it there is forecasting from feeder history or visible cable attributes, when a section's next failure depends mostly on how often that section has already failed and only Quarry Hill 21 carries in-service sections that have failed twice.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who keeps only cable-condition failures, drops dig-ins and replaced sections and reads every field correctly still forecasts 2027 from each feeder's recent failure rate, or from failure rates by insulation type and age, and names Mill Lane 7 or Sutter Park 5, because only a forecast that carries each section's own failure history forward shows that Quarry Hill 21's twice-failed sections will fail most.",
+  "domain_test": "What decides the call is distribution cable reliability engineering's condition reading of underground sections, where a first failure is often a one-off splice or termination defect while a second failure marks insulation degraded by water treeing that keeps failing (the reason utilities replace a section at its second failure); with another field's nouns there is no splice, no water treeing and no repair-against-replacement history behind the recurrence, so the task does not read the same.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "sociology-demography/event-history-life-course-analysis/3",
+  "layer1": [
+    "an outage management export at device-operation grain, with staged restorations as several rows per outage",
+    "multi-feeder outages (a substation breaker) carried as one row per feeder, with the outage's total customer minutes repeated on each row",
+    "an outage management system migration in March 2026: legacy rows in local prevailing time, new rows in UTC, the reliability year defined in local time",
+    "the customer system's feeder label stored at account set-up, before a June 2026 lateral transfer between feeders that only the dated connectivity model records",
+    "a GIS cable register where a replaced section is retired and its replacement carries a new section id with a predecessor pointer",
+    "work orders with a coded cause and a free-text crew note, dig-ins coded as third-party damage"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task132": "task132 sums a wear-out rate by item age over a horizon and turns on renewal (a failed item is replaced and restarts its curve); here age is a visible attribute whose rate model is a wrong rung, and the decisive state is each section's own count of prior failures, with replacement only removing a section from the pool",
+    "task46": "task46 measures age on the wrong clock (register age against service exposure); here no clock is wrong, and the forward rate turns on the section's failure history, not its exposure"
+  },
+  "lineage": [],
+  "notes": "Anomaly Detection & Diagnostics: the network's failure monitoring has to separate the feeder whose cable is heading into a run of repeat failures from feeders whose recent counts are first failures that seldom recur. The prompt files the estimand (cable-condition failures on the sections in service at 30 September 2026, calendar 2027, per feeder) and names no method; the design forces the method because the closed record shows a second failure is followed by a third far more often than a first by a second. stump_strategy composition_mix: a feeder's forward count is the mix of its sections' failure states, and the state that decides is derived (failures per section), not a column. Pattern E with G14 decisive (the pooled rate does not apply to the pool of twice-failed sections), G6 for the replaced sections leaving the pool, G13 for the 2027 window. No calibration corpus, no decoy document, no stakeholder belief. Personas drawn with guard.py names (en_US, seed 183) and checked against task180's six names on the committed cache (no overlap)."
+}

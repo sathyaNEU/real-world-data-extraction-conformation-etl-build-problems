@@ -1,0 +1,353 @@
+PASS  replay: 90 account-month cells under the truth
+PASS  rival: five years unless the system runs out sooner lands at least 3 per cent from the answer
+PASS  ladder: R0 > R1 > R2 > R3 > answer (each correction walks down)
+PASS  ladder: the five-year path at least 15 per cent above the answer
+PASS  ladder: end-with-host at least 5 per cent above the answer
+PASS  ladder: R1 at least 15 per cent above the answer
+PASS  replay: five reproduces every cell
+PASS  replay: ten misses at least one cell
+PASS  replay: endhost reproduces every cell
+PASS  replay: host_less1 misses at least one cell
+PASS  replay: host_full misses at least one cell
+PASS  replay: min60 misses at least one cell
+PASS  replay: host_years_floor misses at least one cell
+PASS  replay: host_years_round misses at least one cell
+PASS  certify: the five-year path reproduces all 90 account-months to the cent
+PASS  certify: the five-year path carries every account's balance at 30 June 2024 to the cent
+PASS  certify: the five-year path carries every account's balance at 30 June 2025 to the cent
+PASS  certify: the five-year path carries every account's balance at 30 September 2026 to the cent
+PASS  window: no upgrade schedule starts or ends inside the replay on the host reading
+PASS  window: no upgrade schedule starts or ends inside the replay on the five-year reading
+PASS  window: no upgrade schedule starts or ends inside the replay on the end-with-host reading
+PASS  pin: the five-year path misses note 9 only on the 2024 imaging depreciation
+PASS  pin: the five-year path misses it by $5,000 or more
+PASS  pin: the end-with-host path misses note 9 only on the 2024 imaging depreciation
+PASS  pin: the end-with-host path misses it by $5,000 or more
+PASS  back-test: ten fails at least one shipped control (replay, balances or note 9)
+PASS  back-test: host_less1 fails at least one shipped control (replay, balances or note 9)
+PASS  back-test: host_full fails at least one shipped control (replay, balances or note 9)
+PASS  back-test: min60 fails at least one shipped control (replay, balances or note 9)
+PASS  back-test: host_years_floor fails at least one shipped control (replay, balances or note 9)
+PASS  back-test: host_years_round fails at least one shipped control (replay, balances or note 9)
+PASS  tolerance: R2 five-year, which the replay and the balances certify, lands 5 per cent or more from the answer
+PASS  tolerance: R3 end with host, which the replay and the balances certify, lands 5 per cent or more from the answer
+PASS  sweep: a single upgrade life of 24 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 25 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 26 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 27 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 28 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 29 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 30 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 31 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 32 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 33 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 34 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 35 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 36 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 37 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 38 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 39 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 40 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 41 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 42 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 43 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 44 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 45 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 46 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 47 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 48 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 49 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 50 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 51 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 52 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 53 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 54 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 55 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 56 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 57 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 58 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 59 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 60 months reproduces the imaging account to the cent
+PASS  sweep: a single upgrade life of 61 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 62 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 63 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 64 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 65 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 66 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 67 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 68 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 69 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 70 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 71 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 72 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 73 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 74 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 75 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 76 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 77 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 78 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 79 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 80 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 81 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 82 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 83 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 84 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 85 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 86 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 87 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 88 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 89 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 90 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 91 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 92 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 93 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 94 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 95 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 96 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 97 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 98 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 99 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 100 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 101 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 102 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 103 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 104 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 105 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 106 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 107 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 108 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 109 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 110 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 111 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 112 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 113 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 114 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 115 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 116 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 117 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 118 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 119 months does not reproduce the imaging account
+PASS  sweep: a single upgrade life of 120 months does not reproduce the imaging account
+PASS  sweep: sixty months is the only single life that reproduces it
+PASS  construction: CHA nbv_sep differs between the five-year path and the answer by $1,000 or more
+PASS  construction: CHA q4 differs between the five-year path and the answer by $1,000 or more
+PASS  construction: CHA nbv_load differs between the five-year path and the answer by $1,000 or more
+PASS  construction: CHA h2 differs between the five-year path and the answer by $1,000 or more
+PASS  construction: MAI nbv_sep differs between the five-year path and the answer by $1,000 or more
+PASS  construction: MAI q4 differs between the five-year path and the answer by $1,000 or more
+PASS  construction: MAI nbv_load differs between the five-year path and the answer by $1,000 or more
+PASS  construction: MAI h2 differs between the five-year path and the answer by $1,000 or more
+PASS  construction: CES nbv_sep differs between the five-year path and the answer by $1,000 or more
+PASS  construction: CES q4 differs between the five-year path and the answer by $1,000 or more
+PASS  construction: CES nbv_load differs between the five-year path and the answer by $1,000 or more
+PASS  construction: CES h2 differs between the five-year path and the answer by $1,000 or more
+PASS  construction: RAY nbv_sep differs between the five-year path and the answer by $1,000 or more
+PASS  construction: RAY q4 differs between the five-year path and the answer by $1,000 or more
+PASS  construction: RAY nbv_load differs between the five-year path and the answer by $1,000 or more
+PASS  construction: RAY h2 differs between the five-year path and the answer by $1,000 or more
+PASS  construction: CHA nil-book-value count differs on the five-year path
+PASS  construction: MAI nil-book-value count differs on the five-year path
+PASS  construction: imaging class book value differs on the five-year path
+PASS  host text: CR-2022-139 carries no Existing Asset key
+PASS  host text: CR-2022-139 names exactly one system under every reading
+PASS  host text: CR-2022-142 carries no Existing Asset key
+PASS  host text: CR-2022-142 names exactly one system under every reading
+PASS  host text: CR-2022-143 carries no Existing Asset key
+PASS  host text: CR-2022-143 names exactly one system under every reading
+PASS  host text: CR-2022-144 carries no Existing Asset key
+PASS  host text: CR-2022-144 names exactly one system under every reading
+PASS  host text: CR-2022-145 carries no Existing Asset key
+PASS  host text: CR-2022-145 names exactly one system under every reading
+PASS  host text: CR-2022-147 carries no Existing Asset key
+PASS  host text: CR-2022-147 names exactly one system under every reading
+PASS  host text: CR-2022-148 carries no Existing Asset key
+PASS  host text: CR-2022-148 names exactly one system under every reading
+PASS  host text: CR-2022-149 carries no Existing Asset key
+PASS  host text: CR-2022-149 names exactly one system under every reading
+PASS  host text: CR-2022-150 carries no Existing Asset key
+PASS  host text: CR-2022-150 names exactly one system under every reading
+PASS  host text: CR-2023-152 carries no Existing Asset key
+PASS  host text: CR-2023-152 names exactly one system under every reading
+PASS  host text: CR-2022-155 carries no Existing Asset key
+PASS  host text: CR-2022-155 names exactly one system under every reading
+PASS  host text: CR-2023-156 carries no Existing Asset key
+PASS  host text: CR-2023-156 names exactly one system under every reading
+PASS  host text: CR-2023-159 carries no Existing Asset key
+PASS  host text: CR-2023-159 names exactly one system under every reading
+PASS  host text: CR-2023-161 carries no Existing Asset key
+PASS  host text: CR-2023-161 names exactly one system under every reading
+PASS  host text: CR-2023-163 carries no Existing Asset key
+PASS  host text: CR-2023-163 names exactly one system under every reading
+PASS  host text: CR-2023-165 carries no Existing Asset key
+PASS  host text: CR-2023-165 names exactly one system under every reading
+PASS  host text: every upgrade checked
+PASS  host text: Existing Asset filled only on replacement rows
+PASS  scan devices: truth equals the reading with every default
+PASS  label: the moved unit is scanned once, wearing the other unit's tag with its own plate keyed
+PASS  label: the unit whose tag it wears is sighted on its own plate at its own site
+PASS  label: exactly one scan reads a tag and a plate that belong to different units
+PASS  clock: every rewritten time is a Cessnock scan on Thursday 8 October
+PASS  clock: HH-07's Thursday reads 1 January 2025
+PASS  clock: a Thursday scan shows an asset bought after the date the clock wrote
+PASS  clock: the moved asset is sighted only on Thursday
+PASS  clock: the asset at nil is sighted only on Thursday
+PASS  label: no shipped sentence makes the tag govern where a plate was also read
+PASS  trial: 1002 is also sighted inside the window
+PASS  trial: 1144 is also sighted inside the window
+PASS  trial: 1303 is also sighted inside the window
+PASS  trial: 1255 is also sighted inside the window
+PASS  trial: 1037 is also sighted inside the window
+PASS  trial: 1201 is also sighted inside the window
+PASS  trial: 1098 is also sighted inside the window
+PASS  clock: the scan before the run is a tag scan inside the window
+PASS  clock: the scan after the run is a tag scan inside the window
+PASS  trial: the asset at nil is sighted only on 25 September
+PASS  trial: it is at nil on 30 September and written off
+PASS  separation: 'tag before plate' leaves the committed figure to the cent
+PASS  scan device 'tag before plate' moves CES.nbv_sep beyond the band
+PASS  scan device 'tag before plate' moves CES.q4 beyond the band
+PASS  scan device 'tag before plate' moves CES.nbv_load beyond the band
+PASS  scan device 'tag before plate' moves CES.h2 beyond the band
+PASS  scan device 'tag before plate' moves CHA.nbv_sep beyond the band
+PASS  scan device 'tag before plate' moves CHA.q4 beyond the band
+PASS  scan device 'tag before plate' moves CHA.nbv_load beyond the band
+PASS  scan device 'tag before plate' moves CHA.h2 beyond the band
+PASS  separation: 'no window start' leaves the committed figure to the cent
+PASS  scan device 'no window start' moves rows beyond the band
+PASS  scan device 'no window start' moves cost beyond the band
+PASS  scan device 'no window start' moves acc_dec beyond the band
+PASS  scan device 'no window start' moves MAI.nil_count beyond the band
+PASS  scan device 'no window start' moves MAI.nil_cost beyond the band
+PASS  separation: 'HH-07 clock as written' leaves the committed figure to the cent
+PASS  scan device 'HH-07 clock as written' moves rows beyond the band
+PASS  scan device 'HH-07 clock as written' moves cost beyond the band
+PASS  scan device 'HH-07 clock as written' moves acc_dec beyond the band
+PASS  scan device 'HH-07 clock as written' moves CES.nil_count beyond the band
+PASS  scan device 'HH-07 clock as written' moves CES.nil_cost beyond the band
+PASS  scan device 'HH-07 clock as written' moves CHA.nbv_sep beyond the band
+PASS  scan device 'HH-07 clock as written' moves CHA.q4 beyond the band
+PASS  scan device 'HH-07 clock as written' moves CHA.nbv_load beyond the band
+PASS  scan device 'HH-07 clock as written' moves CHA.h2 beyond the band
+PASS  scan device 'HH-07 clock as written' moves CES.nbv_sep beyond the band
+PASS  scan device 'HH-07 clock as written' moves CES.q4 beyond the band
+PASS  scan device 'HH-07 clock as written' moves CES.nbv_load beyond the band
+PASS  scan device 'HH-07 clock as written' moves CES.h2 beyond the band
+PASS  separation: 'UTC-date start, clock as written' leaves the committed figure to the cent
+PASS  scan device 'UTC-date start, clock as written' moves rows beyond the band
+PASS  scan device 'UTC-date start, clock as written' moves cost beyond the band
+PASS  scan device 'UTC-date start, clock as written' moves acc_dec beyond the band
+PASS  separation: 'tag first, no window start' leaves the committed figure to the cent
+PASS  scan device 'tag first, no window start' moves rows beyond the band
+PASS  scan device 'tag first, no window start' moves CHA.h2 beyond the band
+PASS  separation: 'tag first, clock as written' leaves the committed figure to the cent
+PASS  scan device 'tag first, clock as written' moves rows beyond the band
+PASS  scan device 'tag first, clock as written' moves CHA.h2 beyond the band
+PASS  scan device 'tag first, clock as written' moves CES.h2 beyond the band
+PASS  separation: device 'clock AEST' leaves the main call unchanged
+PASS  device: 'clock AEST' moves at least one ask figure
+PASS  separation: device 'clock UTC' leaves the main call unchanged
+PASS  device: 'clock UTC' moves at least one ask figure
+PASS  separation: device 'tag-only join' leaves the main call unchanged
+PASS  device: 'tag-only join' moves at least one ask figure
+PASS  separation: device 'no count sheet' leaves the main call unchanged
+PASS  device: 'no count sheet' moves at least one ask figure
+PASS  separation: device 'register site' leaves the main call unchanged
+PASS  device: 'register site' moves at least one ask figure
+PASS  separation: mapping v3 leaves the main call unchanged
+PASS  device: mapping v3 moves at least three class figures
+PASS  separation: the September reclass leaves the main call unchanged
+PASS  device: the first TB run moves the furniture and leasehold class figures
+PASS  separation: the Bremer transfer read as a new asset leaves the committed whole-dollar figure unchanged
+PASS  walk: every written-off asset is already at nil on 30 September and charges nothing in October to December
+PASS  device: CHA nil count moves under at least one verification device
+PASS  device: MAI nil count moves under at least one verification device
+PASS  device: CES nil count moves under at least one verification device
+PASS  device: RAY nil count moves under at least one verification device
+PASS  device: CHA Jan-Jun charge moves when sites are left on the register
+PASS  device: MAI Jan-Jun charge moves when sites are left on the register
+PASS  device: CES Jan-Jun charge moves when sites are left on the register
+PASS  device: RAY Jan-Jun charge moves when sites are left on the register
+PASS  bins: h2 sits clear of the rounding boundary
+PASS  tells: h2 does not land on a round thousand
+PASS  bins: CHA.nbv_sep sits clear of the rounding boundary
+PASS  tells: CHA.nbv_sep does not land on a round thousand
+PASS  bins: CHA.q4 sits clear of the rounding boundary
+PASS  tells: CHA.q4 does not land on a round thousand
+PASS  bins: CHA.nbv_load sits clear of the rounding boundary
+PASS  tells: CHA.nbv_load does not land on a round thousand
+PASS  bins: CHA.h2 sits clear of the rounding boundary
+PASS  tells: CHA.h2 does not land on a round thousand
+PASS  bins: CHA.nil_cost sits clear of the rounding boundary
+PASS  tells: CHA.nil_cost does not land on a round thousand
+PASS  bins: MAI.nbv_sep sits clear of the rounding boundary
+PASS  tells: MAI.nbv_sep does not land on a round thousand
+PASS  bins: MAI.q4 sits clear of the rounding boundary
+PASS  tells: MAI.q4 does not land on a round thousand
+PASS  bins: MAI.nbv_load sits clear of the rounding boundary
+PASS  tells: MAI.nbv_load does not land on a round thousand
+PASS  bins: MAI.h2 sits clear of the rounding boundary
+PASS  tells: MAI.h2 does not land on a round thousand
+PASS  bins: MAI.nil_cost sits clear of the rounding boundary
+PASS  tells: MAI.nil_cost does not land on a round thousand
+PASS  bins: CES.nbv_sep sits clear of the rounding boundary
+PASS  tells: CES.nbv_sep does not land on a round thousand
+PASS  bins: CES.q4 sits clear of the rounding boundary
+PASS  tells: CES.q4 does not land on a round thousand
+PASS  bins: CES.nbv_load sits clear of the rounding boundary
+PASS  tells: CES.nbv_load does not land on a round thousand
+PASS  bins: CES.h2 sits clear of the rounding boundary
+PASS  tells: CES.h2 does not land on a round thousand
+PASS  bins: CES.nil_cost sits clear of the rounding boundary
+PASS  tells: CES.nil_cost does not land on a round thousand
+PASS  bins: RAY.nbv_sep sits clear of the rounding boundary
+PASS  tells: RAY.nbv_sep does not land on a round thousand
+PASS  bins: RAY.q4 sits clear of the rounding boundary
+PASS  tells: RAY.q4 does not land on a round thousand
+PASS  bins: RAY.nbv_load sits clear of the rounding boundary
+PASS  tells: RAY.nbv_load does not land on a round thousand
+PASS  bins: RAY.h2 sits clear of the rounding boundary
+PASS  tells: RAY.h2 does not land on a round thousand
+PASS  bins: RAY.nil_cost sits clear of the rounding boundary
+PASS  tells: RAY.nil_cost does not land on a round thousand
+PASS  bins: class Imaging equipment sits clear of the rounding boundary
+PASS  tells: class Imaging equipment does not land on a round thousand
+PASS  bins: class Furniture and fittings sits clear of the rounding boundary
+PASS  tells: class Furniture and fittings does not land on a round thousand
+PASS  bins: class Clinical equipment sits clear of the rounding boundary
+PASS  tells: class Clinical equipment does not land on a round thousand
+PASS  bins: class Leasehold improvements sits clear of the rounding boundary
+PASS  tells: class Leasehold improvements does not land on a round thousand
+PASS  bins: class Computer equipment sits clear of the rounding boundary
+PASS  tells: class Computer equipment does not land on a round thousand
+PASS  bins: class Motor vehicles sits clear of the rounding boundary
+PASS  tells: class Motor vehicles does not land on a round thousand
+PASS  footing: the four sites' nbv_sep, rounded, add to the rounded total
+PASS  footing: the four sites' q4, rounded, add to the rounded total
+PASS  footing: the four sites' nbv_load, rounded, add to the rounded total
+PASS  footing: the four sites' h2, rounded, add to the rounded total
+PASS  footing: the four sites' nil_cost, rounded, add to the rounded total
+PASS  footing: the class book values, rounded, add to the rounded load book value
+PASS  footing: the site charges add to the committed figure
+PASS  gate: GL detail has more than 10,000 lines
+PASS  gate: 10 or more files
+PASS  gate: 3 or more formats
+PASS  verifier: passes on the shipped bundle
+
+334 assertions
+08369d2cc104bf78  BRM_load_2026-07-01.csv
+98479da598fc48f0  RAY_count_sheet_07-10-2026.pdf
+06058a13eef1e9cd  RE_Yacaaba_cutover.eml
+2755e103b131abd3  YCB_FY2025_financial_statements_extract.pdf
+2b753fa467d03552  YCB_GL_detail_2025-07_to_2026-09.csv
+2b9992f4e681fcda  YCB_asset_register_2026-10-02.xlsx
+fcde6f4d89161526  YCB_capital_approvals_2018-2026.csv
+05c5d7bc3535882a  YCB_extract_notes.md
+f5371a3d04d222f1  YCB_trial_balance_30-09-2026.xlsx
+4b033e4e78771504  asset_verification_procedure.pdf
+a390cfe8276fe945  fa_load_specification.xlsx
+57c54bf82c167c1f  fa_migration_standard.pdf
+bbb8b8e527869516  group_asset_class_mapping.xlsx
+0f00521a1206d333  sources_and_licences.txt
+5516162e47d1e669  verification_scans_YCB_2026.csv
+5a9e2a1d4d0f52f7  cutover_signoff.docx
+0ea9ceda561b9cbc  fa_load_2027-01-01.csv

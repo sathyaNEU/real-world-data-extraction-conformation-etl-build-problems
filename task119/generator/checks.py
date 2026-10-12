@@ -99,23 +99,27 @@ GRID_NAMES.update({("0800", "own", "ignored"): C, ("0800", "own", "any"): frozen
                    ("held_all", "own", "ignored"): A, ("held_all", "own", "any"): A, ("held_all", "own", "placed"): A,
                    ("held_all", "network", "ignored"): frozenset((A, E)), ("held_all", "network", "any"): frozenset((E, A)),
                    ("held_all", "network", "placed"): frozenset((E, A))})
-GRID_RULE = {("none", "own"): "own care at the hour: the wait passed with the own unit full",
-             ("none", "network"): "own care: the trust holds no level-3 beds of its own",
-             ("0800", "own"): "own care at the hour of the wait: the 08:00 return describes the morning",
-             ("0800", "network"): "its own beds: another trust's vacancy or admission is not this trust's care",
-             ("census", "own"): "the bed bureau allocates every transfer's bed (field guide): a transfer is not the "
-                                "trust's own decision",
-             ("census", "network"): "its own beds: another trust's vacancy or admission is not this trust's care",
-             ("census", "own", "ignored"): "the methodology note: a full unit's own placements during the wait are the "
-                                           "trust's decisions about the use of its own beds",
-             ("census", "own", "placed"): "the theatre extract: a bed assigned to the trust's own patient still in "
-                                          "theatre stood empty, kept by the trust (the methodology note)",
-             ("held_own", "own"): "the bed bureau allocates every transfer's bed (field guide): a transfer is not the "
-                                  "trust's own decision",
-             ("held_own", "network"): "its own beds: another trust's vacancy or admission is not this trust's care",
-             ("held_all", "own"): "the bed bureau allocates every transfer's bed (field guide): a bed it holds for an "
-                                  "incoming transfer is not the trust's to give",
-             ("held_all", "network"): "its own beds: another trust's vacancy or admission is not this trust's care"}
+GRID_RULE = {("none", "own"): "section 4: an empty staffed bed or another own patient admitted during the wait; the "
+                             "own unit was full and admitted none of the trust's own patients",
+             ("none", "network"): "section 4: the trust's own level 3 unit; the trust holds no level 3 beds",
+             ("0800", "own"): "section 4: at any time while the patient waited; the 08:00 return describes the morning",
+             ("0800", "network"): "section 4: the trust's own level 3 unit; another trust's bed is not this trust's",
+             ("census", "own"): "section 4: another of the trust's own patients, and a bed the bed bureau has "
+                                "allocated is the network's to use; every admission inside an A wait is another "
+                                "trust's patient the bureau placed",
+             ("census", "network"): "section 4: the trust's own level 3 unit; another trust's bed is not this trust's",
+             ("census", "own", "ignored"): "section 4: a staffed bed with no patient in it; a bed assigned (field guide, "
+                                           "admitted_at) to a patient the theatre extract shows still in recovery had "
+                                           "no patient in it",
+             ("census", "own", "placed"): "section 4: a staffed bed with no patient in it; a bed assigned (field guide, "
+                                          "admitted_at) to a patient the theatre extract shows still in recovery had no "
+                                          "patient in it",
+             ("held_own", "own"): "section 4: another of the trust's own patients; the bureau's transfers are other "
+                                  "trusts' patients on beds the network allocated",
+             ("held_own", "network"): "section 4: the trust's own level 3 unit; another trust's bed is not this trust's",
+             ("held_all", "own"): "section 4: a bed the bed bureau has allocated to a transfer is the network's to use, "
+                                  "not the receiving trust's",
+             ("held_all", "network"): "section 4: the trust's own level 3 unit; another trust's bed is not this trust's"}
 
 
 def run_all(S, target, meta_path, F, distractors):
@@ -403,6 +407,7 @@ def census_checks(K, D, S, target, F):
     K.check("no planned own placement at any unit inside any year-3 long wait at a trust other than D (D's own unit "
             "admits no one during its waits: hold checks)", ok)
     hold_checks(K, D, cl_all, target, F)
+    pin_checks(K, D, target, F)
     # D's long waits fall on weekdays during the lists; G's own-empty waits at weekends
     d_days = {x["dta"].weekday() for x in cl3 if x["trust"] == D_}
     K.check("every D long wait falls on a weekday", d_days <= {0, 1, 2, 3, 4}, sorted(d_days))
@@ -511,6 +516,126 @@ def hold_checks(K, D, cl_all, target, F):
     K.check("record 3c: round 3's test keeps Stennock's legacy months only; every other trust as the golden",
             wo[D_][2] < gold[D_][2] and all(wo[t] == gold[t] for t in CODES if t != D_),
             "D %d against %d" % (wo[D_][2], gold[D_][2]))
+
+
+# ===================================================================================== the section 4 test
+def pin_checks(K, D, target, F):
+    """Section 4 of the terms of reference states the test: at any time while the patient waited, the trust's own
+    level 3 unit had a staffed bed with no patient in it that was the trust's to use, or admitted another of the
+    trust's own patients; a bed the bed bureau has allocated to a transfer is the network's to use. Every reading the
+    wording still leaves converges on the golden (asserted here); every reading it rules out is a grid cell mapped to
+    the clause it breaks (GRID_RULE)."""
+    sec4, on = [], False
+    for kind, text in T.REMIT:
+        if kind == "h":
+            on = text.startswith("4.")
+        elif on and kind == "p":
+            sec4.append(text)
+    s4 = " ".join(sec4)
+    K.check("section 4 states the test's observables once: any time in the wait, a staffed bed with no patient in it, "
+            "the trust's to use, another of its own patients admitted, the bureau's allocation the network's",
+            all(s4.count(s) == 1 for s in ("at any time while the patient waited", "a staffed bed with no patient in it",
+                                           "that was the trust's to use", "admitted another of the trust's own patients",
+                                           "is the network's to use, not the receiving trust's")), len(sec4))
+    words = re.compile(r"\b(assign\w*|held|hold\w*|theatre\w*|recover\w*|plan\w*|elective\w*|surg\w*|book\w*|arriv\w*|"
+                       r"reserv\w*|kept|keep\w*|morning|08:00|transit|list\w*|wait(ed|ing)? for)\b", re.I)
+    found = sorted({m.group(0).lower() for m in words.finditer(s4)})
+    K.check("section 4 names no step of the decisive construction (no assignment, hold, theatre, recovery, plan, "
+            "elective, booking, arrival, list or morning return)", not found, found)
+    hd = set(G.DEVICES)
+    cl = G.classified(D, hd)
+    V = D.view(hd)
+    res = lambda k: D.temp.get(k, k)
+    base = {x["id"]: bool(x["empty_own"] or x["alloc"]) for x in cl if x["died"]}
+    # a held bed has no patient in it from its assignment until the patient reaches it: the theatre extract dates the
+    # patient leaving recovery, the journey after it is unrecorded; any journey up to eight hours decides nothing
+    flips = {}
+    for extra in (30, 60, 120, 240, 480):
+        rows = []
+        for (u, k, a, b, typ, rid) in V["rows"]:
+            lr = D.own_hold.get((u, res(k), a))
+            rows.append((u, k, a if lr is None else min(lr + extra, b - 1), b, typ, rid))
+        m = D.merge_rows(rows, gap=0)
+        cen = {u: D.occ_series(m, u) for u in D.units}
+        n = 0
+        for x in cl:
+            if x["died"]:
+                e = any(D.empty_during(u, x["a"], x["b"], census=cen)
+                        for u in D.own_units(x["trust"], x["dta"].date()) if u in cen)
+                n += (e or x["alloc"]) != base[x["id"]]
+        flips[extra] = n
+    K.check("section 4 at the minute: a held bed read as empty until its patient left recovery plus 30 to 480 minutes "
+            "changes no death's verdict (C3 corridor on the unrecorded journey)", not any(flips.values()), flips)
+    # 'at any time while the patient waited': an own admission of another patient on a wait's first or last minute
+    own_adm = defaultdict(list)
+    for (u, k, a, b, typ, rid) in V["merged"]:
+        if not D.is_transfer_op(u, rid):
+            own_adm[u].append((a, res(k)))
+    edge, edge_surv = [], 0
+    for x in cl:
+        if x["empty_own"] or x["alloc"]:
+            continue
+        for u in D.own_units(x["trust"], x["dta"].date()):
+            if any(t in (x["a"], x["b"]) and p != x["person"] for t, p in own_adm.get(u, ())):
+                if x["died"]:
+                    edge.append(x["id"])
+                else:
+                    edge_surv += 1
+    K.check("section 4's wait read inclusive or strict at either end decides no death (an own admission on the "
+            "decision minute meets survivors only)", not edge, "%d deaths, %d survivors" % (len(edge), edge_surv))
+    # 'a staffed bed': the morning return's staffed beds, the register's commissioned beds and any hour of the day agree
+    bo = defaultdict(set)
+    for (u, d), v in D.beds_on.items():
+        bo[u].add(v)
+    reg_in = defaultdict(set)
+    for (u, t, lv, beds, a, z) in D.reg_rows:
+        if lv == 3 and (z is None or z >= dt.date(2023, 6, 1)):
+            reg_in[u].add(beds)
+    K.check("a staffed bed: one beds_open figure per unit through the record, equal to the register's commissioned "
+            "beds in force (C1 across the return, the register and the hour)",
+            all(len(v) == 1 for v in bo.values()) and all(bo[u] == reg_in.get(u) for u in bo),
+            {u: sorted(v) for u, v in bo.items()})
+    # 'no patient in it': a bed is without its patient only before the patient first reaches it (a held bed or a
+    # bureau transfer on its way), never while a patient already in it is away in theatre
+    th = pd.read_parquet(Path(target) / F["theatre"])
+    cases = defaultdict(list)
+    for r in th.itertuples(index=False):
+        cases[res(r.patient_key)].append((G.mins(r.into_theatre_at.to_pydatetime()),
+                                          G.mins(r.left_recovery_at.to_pydatetime())))
+    away = []
+    for (u, k, a, b, typ, rid) in V["rows"]:
+        kk = res(k)
+        start = D.own_hold.get((u, kk, a), D.arrive_of.get((u, kk, a), a))
+        away += [(u, k) for s, e in cases.get(kk, ()) if s < b and e > start]
+    K.check("no patient is away in theatre from a bed already theirs: every theatre case ends before its patient is in "
+            "the bed or starts after the patient left it", not away, "%d overlaps" % len(away))
+    # every admission inside a wait is the trust's own patient or a bureau transfer in the audit, never both or neither
+    idx = D.adm_index(V["merged"])
+    split = Counter()
+    for x in cl:
+        for u in D.own_units(x["trust"], x["dta"].date()):
+            m = idx.get(u)
+            if m is None:
+                continue
+            for t in m["all"]:
+                if x["a"] < t < x["b"]:
+                    own_r = t in m["referral"]
+                    own_a = t in m["audit"]
+                    split[(own_r, own_a)] += 1
+    K.check("inside every long wait an admission is the trust's own patient (no bureau audit row) or another trust's "
+            "patient the bureau placed (an audit row): the two readings of 'another of the trust's own patients' agree",
+            set(split) <= {(True, True), (False, False)}, dict(split))
+    # which prong carries each confirmable death: the empty bed carries the whole placement year; the own admission
+    # (a freed bed filled in the same minute by the trust's own patient) carries record deaths only
+    first, second = defaultdict(set), defaultdict(set)
+    for x in cl:
+        if x["died"] and (x["empty_own"] or x["alloc"]):
+            (first if x["empty_own"] else second)[(x["trust"], x["year"])].add(x["person"])
+    by_trust = {LET[t]: sum(len(v) for (tt, y), v in second.items() if tt == t) for t in CODES}
+    K.check("section 4's prongs: every placement-year confirmable death has a staffed bed with no patient in it; the "
+            "own-admission prong alone carries record deaths only, none in the placement year",
+            not any(y == 3 for (t, y) in second) and sum(len(v) for (t, y), v in first.items() if y == 3) == 44,
+            "own admission only: %d deaths %s" % (sum(by_trust.values()), {k: v for k, v in by_trust.items() if v}))
 
 
 def window_checks(K, D):
@@ -1213,6 +1338,9 @@ def pack_checks(K, D, S, target, F, meta, distractors):
     pins = {"more than four hours from the decision to admit to the assignment of a bed": "remit",
             "within 30 days of the decision to admit": "remit",
             "own care": "remit",
+            "a staffed bed with no patient in it": "remit",
+            "at any time while the patient waited": "remit",
+            "is the network's to use": "remit",
             "latest four complete quarters": "remit",
             "the minute the bed was assigned": "guide",
             "valid_from to valid_to inclusive": "guide",

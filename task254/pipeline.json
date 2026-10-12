@@ -1,0 +1,31 @@
+{
+ "task": "task254",
+ "domain": "urban-regional-science",
+ "objective": "descriptive-distribution",
+ "stage": 1,
+ "stage_name": "draw (re-root, architecture 3): card registered; design note not yet rewritten; paused by the author",
+ "updated": "2026-10-12",
+ "note": "stopped at stage 2 under the spec-update brief's stop rule; precut FAIL: default path ends on the golden, decisive rung readable, cracker keeps every ask, pair ceiling 70.1; architecture 2 awaits the re-root decision, not redrawn here; generator, pack and card unchanged at efe84a7",
+ "branch": "sathay3012/task254-fire-planning-bands",
+ "stump": "A competent solver takes the route's segments in order, adds the fixed access legs, uses the passenger-vehicle travel times and, for each evidence weekday and each slot, adds up the segments' travel times for the five-minute period the shuttle leaves in, filing 7:15 a.m. (on time on 235 of 250 weekdays, 94.0 per cent) against 7:05; the step that lands it there is reading every segment at the moment of departure, when the shuttle reaches the I-264 queue twenty to thirty minutes later, after it has grown, so the trip it adds up is one no vehicle made, and a 7:15 departure would have reached the stop by 8:00 on only 156 of those weekdays (62.4 per cent).",
+ "architecture": 3,
+ "loops": 0,
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "",
+  "clone_check": ""
+ },
+ "solver_rounds": [],
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null
+}

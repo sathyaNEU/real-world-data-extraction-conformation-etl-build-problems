@@ -113,8 +113,20 @@ def build_theatre(world, P, stays, refs, out):
         proc = str(r.choice(ELECTIVE_CC if urg in ("Elective", "Expedited") else EMERGENCY_CC))
         cases.append({"key": key_of[i], "prov": prov, "site": site, "urg": urg, "proc": proc, "into": into,
                       "out": out_th, "left": left, "dest": CC_DEST, "kind": kind, "stay": i})
+    # a patient's time in critical care beds, any unit: ward surgery never falls inside it (a level 3 patient goes to
+    # theatre from the unit and comes back to it, and recovers to a ward only after leaving the unit)
+    span = {}
+    for row in out["stays"]:
+        i = row["_stay"]
+        a, b = p_min(row["admitted_at"]), p_min(row["discharged_at"])
+        lo, hi = span.get(i, (a, b))
+        span[i] = (min(lo, a), max(hi, b))
+    busy = defaultdict(list)
+    for i, (a, b) in span.items():
+        busy[stays[i]["pid"]].append((a - 60, b + 60))
     # ward surgery for referred patients (texture): around the referral, at the referring trust's hospital
     rb = rng("theatre_bg")
+    rc = rng("theatre_bg_clear")
     for ref in refs:
         if ref.get("stay") is not None and src_of.get(ref["stay"]) in ("01", "02"):
             continue
@@ -125,8 +137,17 @@ def build_theatre(world, P, stays, refs, out):
         into = clear(lm(d, 8, 30) + int(rb.integers(0, 11 * 60)))
         op = int(rb.integers(35, 150))
         rec = int(rb.integers(25, 80))
+        proc = str(rb.choice(WARD))
+        clash = lambda t0, t1: any(t0 < hi and t1 > lo for lo, hi in busy.get(ref["pid"], ()))
+        tries = 0
+        while clash(into, clear(into + op + rec)) and tries < 30:
+            d = day_of(ref["dta"]) + dt.timedelta(days=int(rc.integers(-6, 15)))
+            into = clear(lm(d, 8, 30) + int(rc.integers(0, 11 * 60)))
+            tries += 1
+        if clash(into, clear(into + op + rec)):
+            continue
         cases.append({"key": P.p[ref["pid"]]["key"], "prov": CODE[ref["letter"]], "site": TRUSTS[ref["letter"]][2],
-                      "urg": urg, "proc": str(rb.choice(WARD)), "into": into, "out": into + op,
+                      "urg": urg, "proc": proc, "into": into, "out": into + op,
                       "left": clear(into + op + rec), "dest": "Ward", "kind": "bg", "stay": None})
     cases.sort(key=lambda c: (c["into"], c["prov"], c["key"]))
     rows = []

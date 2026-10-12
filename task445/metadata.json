@@ -4,7 +4,7 @@
   "domain": "Quantitative Finance",
   "subdomain": "other: institutional ownership analytics from Form 13F holdings filings",
   "objective": "Data Extraction & Conformation (ETL)",
-  "prompt_shape": "03 (bridge between two totals): the September bridge from the SEC information-table lines to conformed institutional shares, inside a twelve-row client flag file with ownership, flag, share counts and top holder per name for two periods",
+  "prompt_shape": "03 (bridge between two totals): the September bridge from the SEC information-table lines to conformed institutional shares, inside a twelve-row client flag file in layout v4 with December ownership, the flag and September ownership per name",
   "as_of": "2023-02-06",
   "deliverables": [
     "crowded_flags_2022q4.csv",
@@ -26,7 +26,7 @@
       "xlsx"
     ],
     "largest_file": "form13f_2022q4/INFOTABLE.tsv",
-    "largest_file_rows": 39301
+    "largest_file_rows": 39439
   },
   "sources": [
     {
@@ -51,7 +51,7 @@
     {
       "path": "FORM13F_readme.htm",
       "format": "htm",
-      "bytes": 4116,
+      "bytes": 4095,
       "rows": null,
       "source": "Constructed on the SEC readme's structure: Readme for the Form 13F data sets (tables, fields)",
       "date": "2023-02-04",
@@ -60,9 +60,9 @@
     {
       "path": "client_flag_file_layout.md",
       "format": "md",
-      "bytes": 1125,
+      "bytes": 847,
       "rows": null,
-      "source": "Constructed: Client flag file layout v3",
+      "source": "Constructed: Client flag file layout v4",
       "date": "2023-02-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -78,7 +78,7 @@
     {
       "path": "data_sources.md",
       "format": "md",
-      "bytes": 2007,
+      "bytes": 2031,
       "rows": null,
       "source": "Constructed: Data sources note for the ownership desk",
       "date": "2023-02-04",
@@ -87,8 +87,8 @@
     {
       "path": "edgar13f_daily_20230103_20230203/COVERPAGE.tsv",
       "format": "tsv",
-      "bytes": 43354,
-      "rows": 292,
+      "bytes": 41744,
+      "rows": 281,
       "source": "Constructed: Nightly EDGAR 13F build, filings accepted 3 Jan to 3 Feb 2023: cover pages",
       "date": "2023-02-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -96,8 +96,8 @@
     {
       "path": "edgar13f_daily_20230103_20230203/INFOTABLE.tsv",
       "format": "tsv",
-      "bytes": 3621683,
-      "rows": 34351,
+      "bytes": 3570820,
+      "rows": 33900,
       "source": "Constructed: Nightly EDGAR 13F build, filings accepted 3 Jan to 3 Feb 2023: information tables",
       "date": "2023-02-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -105,8 +105,8 @@
     {
       "path": "edgar13f_daily_20230103_20230203/SUBMISSION.tsv",
       "format": "tsv",
-      "bytes": 17585,
-      "rows": 292,
+      "bytes": 16925,
+      "rows": 281,
       "source": "Constructed: Nightly EDGAR 13F build, filings accepted 3 Jan to 3 Feb 2023: submissions",
       "date": "2023-02-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -114,8 +114,8 @@
     {
       "path": "form13f_2022q3/COVERPAGE.tsv",
       "format": "tsv",
-      "bytes": 60978,
-      "rows": 411,
+      "bytes": 60663,
+      "rows": 407,
       "source": "Constructed: SEC Form 13F data set, filings submitted 1 Jul to 30 Sep 2022: cover pages",
       "date": "2023-02-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -123,8 +123,8 @@
     {
       "path": "form13f_2022q3/INFOTABLE.tsv",
       "format": "tsv",
-      "bytes": 3832367,
-      "rows": 37395,
+      "bytes": 3879103,
+      "rows": 37869,
       "source": "Constructed: SEC Form 13F data set, filings submitted 1 Jul to 30 Sep 2022: information tables",
       "date": "2023-02-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -132,8 +132,8 @@
     {
       "path": "form13f_2022q3/SUBMISSION.tsv",
       "format": "tsv",
-      "bytes": 24723,
-      "rows": 411,
+      "bytes": 24483,
+      "rows": 407,
       "source": "Constructed: SEC Form 13F data set, filings submitted 1 Jul to 30 Sep 2022: submissions",
       "date": "2023-02-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -141,8 +141,8 @@
     {
       "path": "form13f_2022q4/COVERPAGE.tsv",
       "format": "tsv",
-      "bytes": 60864,
-      "rows": 409,
+      "bytes": 61927,
+      "rows": 414,
       "source": "Constructed: SEC Form 13F data set, filings submitted 1 Oct to 31 Dec 2022: cover pages",
       "date": "2023-02-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -150,8 +150,8 @@
     {
       "path": "form13f_2022q4/INFOTABLE.tsv",
       "format": "tsv",
-      "bytes": 4027186,
-      "rows": 39301,
+      "bytes": 4038206,
+      "rows": 39439,
       "source": "Constructed: SEC Form 13F data set, filings submitted 1 Oct to 31 Dec 2022: information tables",
       "date": "2023-02-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -159,8 +159,8 @@
     {
       "path": "form13f_2022q4/SUBMISSION.tsv",
       "format": "tsv",
-      "bytes": 24605,
-      "rows": 409,
+      "bytes": 24917,
+      "rows": 414,
       "source": "Constructed: SEC Form 13F data set, filings submitted 1 Oct to 31 Dec 2022: submissions",
       "date": "2023-02-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -168,8 +168,8 @@
     {
       "path": "fsds_cover_extract/num.txt",
       "format": "txt",
-      "bytes": 59958,
-      "rows": 612,
+      "bytes": 85515,
+      "rows": 869,
       "source": "Constructed: Cover-page extract in the financial statement data sets layout: dei cover tags",
       "date": "2023-02-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -177,8 +177,8 @@
     {
       "path": "fsds_cover_extract/sub.txt",
       "format": "txt",
-      "bytes": 80065,
-      "rows": 554,
+      "bytes": 116639,
+      "rows": 808,
       "source": "Constructed: Cover-page extract in the financial statement data sets layout: submissions",
       "date": "2023-02-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -195,7 +195,7 @@
     {
       "path": "ownership_methodology_OM-4.pdf",
       "format": "pdf",
-      "bytes": 3368,
+      "bytes": 3722,
       "rows": null,
       "source": "Constructed: Ownership methodology note OM-4",
       "date": "2023-02-04",

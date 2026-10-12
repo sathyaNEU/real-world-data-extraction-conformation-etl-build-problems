@@ -1,0 +1,75 @@
+{
+ "call": "proceed",
+ "counts": {
+  "2020": 57,
+  "2021": 68,
+  "2022": 73,
+  "2023": 81,
+  "2024": 90,
+  "2025": 89
+ },
+ "joined": {
+  "2020": 10,
+  "2021": 5,
+  "2022": 7,
+  "2023": 8,
+  "2024": 0
+ },
+ "parts": {
+  "ARTH": 240000,
+  "ECHO": 130000,
+  "ENDO": 670000,
+  "IMG": 500000,
+  "LAB": 60000,
+  "P": 610000
+ },
+ "prompt_parameters": {
+  "baseline_year": "2024",
+  "parts_rounding": "10,000",
+  "projection_year": "2026"
+ },
+ "shares": {
+  "Kewaunee|ARTH": [
+   "9.1",
+   "73.6"
+  ],
+  "Kewaunee|ENDO": [
+   "10.5",
+   "81.4"
+  ],
+  "Kewaunee|IMG": [
+   "10.0",
+   "52.0"
+  ],
+  "Manitowoc|ARTH": [
+   "8.1",
+   "41.2"
+  ],
+  "Manitowoc|ENDO": [
+   "6.6",
+   "46.9"
+  ],
+  "Manitowoc|IMG": [
+   "9.6",
+   "40.5"
+  ]
+ },
+ "total_m": "2.2",
+ "write_up": {
+  "claims_layouts": [
+   "2.4",
+   "3.1"
+  ],
+  "professional_prices": "610,000",
+  "referred_services": "1,600,000",
+  "rule_sections_cited": [
+   "4.03",
+   "4.04",
+   "4.05",
+   "4.06"
+  ],
+  "threshold_m": "2.0",
+  "tier_one_share_pct": "86",
+  "tier_two_share_pct": "0"
+ }
+}

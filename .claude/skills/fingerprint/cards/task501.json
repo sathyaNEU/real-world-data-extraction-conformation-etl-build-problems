@@ -1,0 +1,116 @@
+{
+  "task": "task501",
+  "architecture": "v3",
+  "drawn": "2026-10-11",
+  "slot_note": "first build in the author-declared new domain Quantitative Finance (vocab key quantitative-finance proposed 2026-10-10; the author adds it to vocab.json); bar top two under 50, build to 40",
+  "domain": "quantitative-finance",
+  "subdomain": "liquidity-funding-balance-sheet",
+  "niche": "a Swiss occupational pension fund's private-markets programme sizing a standby capital-call facility for 2027, where the directive selects the pacing basis by a walk-forward test and sizes the buffer from how far realised calls ran ahead of the forecast at any point in a test horizon, and first-half deal seasonality makes the end-of-horizon miss understate the exposure",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "dial_setting",
+  "answer_unit": "currency",
+  "answer": "Elect the CHF 225 million standby tranche for 2027 (peak cumulative net outflow CHF 190,630 thousand in December 2027 plus a path buffer of CHF 96,560 thousand, CHF 212,190 thousand above the CHF 75 million reserve).",
+  "answer_source": "submission.md block 1",
+  "gap": [
+    "time",
+    "population",
+    "rule"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G13",
+    "G16",
+    "G2"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "certified_matrix",
+  "context_artifact": "register",
+  "stakeholder_role": "head of treasury and liquidity at an occupational pension fund",
+  "role_family": "finance_controller",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "capital_notice_lines_2018-2026.csv",
+    "rows": 13083,
+    "entity": "one line of one capital call or distribution notice received by the pension fund from a fund manager",
+    "grain": "notice x line",
+    "source": "synthetic (fictional pension fund's private-markets ledger); real SNB daily FX rates"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "incident_or_complaint",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "Switzerland, Zurich",
+    "currency": "CHF",
+    "org_type": "occupational pension fund (Pensionskasse) with a private-markets programme",
+    "invented_names": [
+      "Pensionskasse Werdinsel",
+      "Privatbank Lindenhof"
+    ],
+    "people": [
+      "Serena Sidler",
+      "Luciano Hotz",
+      "Othmar Suter",
+      "Enrique Hofer",
+      "Noelia Amrein",
+      "Marino Imhof"
+    ]
+  },
+  "deliverables": [
+    "standby_facility_2027.py",
+    "standby_facility_2027_board_paper.docx"
+  ],
+  "opening_move": "role-first",
+  "driver": "The facility covers a cumulative path through the year, so the buffer the validation sets is the furthest realised calls ran ahead of the forecast at any point inside a test horizon; the error table a solver builds is on horizon totals, and reading the buffer off it lands a tranche short, because calls cluster in the first half of each year while every candidate spreads them evenly, with the filed walk-forward and the filed recycling term executed correctly on both paths.",
+  "driver_concrete": "RL-PM-04 s.5.6 sets the buffer as the largest amount realised calls ran ahead of the selected basis at any point in a horizon: on the age-band basis that is CHF 96,560 thousand against CHF 61,852 thousand read at the end of the horizons, one tranche (225 against 200); fitting the candidates once on the whole record crowns the manager's-own basis and lands on 200 too; no test at all lands on 175.",
+  "stump": "A competent solver runs the walk-forward as filed, selects the age-band basis and sizes the buffer from the end-of-horizon shortfalls in its error table (largest 61,852 thousand), electing CHF 200 million; the step that lands them there is never tracing realised against forecast cumulative calls month by month inside each horizon, where the first-half run of calls puts realised 96,560 thousand ahead at a month-end, the exposure the facility is drawn against, which elects CHF 225 million.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task102": "task102's move is a calendar rule that shifts whole payments across a period boundary; this build's move is the estimand of a forecast's error, the within-horizon cumulative path against the horizon total, with every calendar rule filed and executed on both paths"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-10",
+      "fate": "retired 2026-10-11: decisive stump was a hidden recycling term recovered from audited cells, data semantics under the client's 10/10 rules",
+      "driver": "The forward draw on a book of open commitments is each unit's age rate applied to its size and capped at what remains undrawn, and what remains undrawn is restored by the proceeds of any holding sold within a fixed time of its purchase, up to the original size, a rule stated nowhere and recovered only because the certified year-end balances reproduce under plain size-minus-draws for every unit that had no quick sale and fail for the ones that did; the months since the last certified year-end carry a run of quick sales far larger than any closed year, so carrying the certified balances forward net of draws, or rebuilding them from draws alone, leaves the cap biting on units that in fact have room and under-sizes the forward draw.",
+      "gap": [
+        "time",
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "gate_g": "binding_constraint",
+      "generators": [
+        "G16",
+        "G13",
+        "G2"
+      ]
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-11",
+      "fate": "retired 2026-10-11: walk-forward selection with filed mechanics, both portal responses executed it and landed the call",
+      "driver": "The forward figure is struck from whichever of several candidate pacing bases survives a walk-forward test on the closed years, with every rate re-estimated at each origin from the record before that origin and the facility sized at the plan plus the largest miss of the test; fitting once on the whole window and scoring the past with it crowns the richest base and understates the miss, so the easy validation lands two tranches short while every definition and rule in the pack is read correctly.",
+      "gap": [
+        "time",
+        "population",
+        "rule"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "generators": [
+        "G16",
+        "G13",
+        "G2"
+      ]
+    }
+  ],
+  "notes": "Domain declared by the author in chat (Quantitative Finance); vocab key quantitative-finance to be added to vocab.json by the author before registration. v3 after the v2 portal result (both responses landed): the deciding quantity is the buffer's estimand, the within-horizon path error of the forecast, which the client's rules count as analysis; the walk-forward and the recycling term are filed execution layers. Personas drawn with guard.py names --geo Switzerland --seed 118."
+}

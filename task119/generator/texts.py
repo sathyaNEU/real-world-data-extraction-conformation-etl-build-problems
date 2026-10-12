@@ -20,7 +20,12 @@ REMIT = [
     ("p", "The Board will judge the engagement by the number of deaths its reviewers confirm as avoidable because of "
           "problems in the reviewed trust's own care."),
     ("h", "4. Methodology note"),
-    ("p", "A trust's decisions about the use of its own beds and staff are part of its own care."),
+    ("p", "A trust's decisions about the use of its own beds and staff are part of its own care. The reviewers will "
+          "confirm a death inside the scope as avoidable in the trust's own care where, at any time while the patient "
+          "waited, the trust's own level 3 unit had a staffed bed with no patient in it that was the trust's to use, "
+          "or admitted another of the trust's own patients."),
+    ("p", "A bed the network bed bureau has allocated to a transfer between trusts is the network's to use, not the "
+          "receiving trust's."),
     ("h", "5. Placement"),
     ("p", "The engagement is placed once, on the latest four complete quarters of the network's referral record. "
           "The placement is not revisited when later quarters close."),

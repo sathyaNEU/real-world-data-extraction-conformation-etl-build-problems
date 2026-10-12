@@ -51,12 +51,20 @@ METHOD = [
           "the current quarter, in the same layout. Share counts come from the cover pages of issuers' 10-K and "
           "10-Q filings, in the financial statement data sets layout."),
     ("b", "2. Institutional ownership"),
-    ("p", "Institutional ownership of an issuer for a report period is the number of its shares held by all "
-          "managers that file a Form 13F holdings report or combination report for that period, each report taken "
-          "as amended, divided by the issuer's shares outstanding. Managers that file a 13F notice report no "
-          "holdings of their own; their holdings sit in another manager's report."),
+    ("p", "Institutional ownership of an issuer for a report period is the number of its shares held at the period "
+          "end by the managers that report holdings for the period, divided by the issuer's shares outstanding. The "
+          "managers that report holdings for a period are every manager that has filed a Form 13F holdings report or "
+          "combination report for the period, and every manager that filed a holdings report or combination report "
+          "for the previous period and has not filed a 13F notice for this one. A manager that files a 13F notice "
+          "reports no holdings of its own; its holdings sit in another manager's report. Each report is taken as "
+          "amended."),
+    ("p", "Where a flag file is issued before the period's filing deadline, the holdings in reports not yet filed are "
+          "estimated and the flag is set on the estimate. The estimate is made on the basis that, applied to the "
+          "previous period with only the reports filed by the same number of days after its end as the reports in "
+          "hand, comes closest to that period's ownership on all the reports since filed for it, on every security in "
+          "the flag file; closeness is the largest difference, in percentage points, across those securities."),
     ("b", "3. What counts as a holding"),
-    ("p", "Information-table lines reported in shares (SH) with no put or call entry. Put and call lines are "
+    ("p", "Information-table lines reported in shares (SH). Put and call lines are "
           "exposure, not ownership, and are left out. A manager's holding of a security is the sum of its lines "
           "for that security, whatever the investment discretion or other-manager entries on them."),
     ("b", "4. Matching lines to securities"),
@@ -74,7 +82,7 @@ METHOD = [
           "period is above 80.0 per cent."),
     ("b", "8. Client flag files"),
     ("p", "One flag file per report period and client watchlist, issued on the date in the client calendar and not "
-          "reissued. The file layout is client flag file layout v3."),
+          "reissued. The file layout is client flag file layout v4."),
     ("s", "Internal. Questions to the methodology mailbox. Next scheduled review: April 2023."),
 ]
 
@@ -143,7 +151,7 @@ def readme(path):
             ("VALUE", "Market value of the holding. For filings made before January 3, 2023, rounded to the nearest one thousand dollars (x$1000); for filings made on or after January 3, 2023, rounded to the nearest dollar."),
             ("SSHPRNAMT", "Shares or principal amount."),
             ("SSHPRNAMTTYPE", "SH for shares, PRN for principal amount."),
-            ("PUTCALL", "Put or Call, where the line reports an option."),
+            ("PUTCALL", "Put or Call, as reported."),
             ("INVESTMENTDISCRETION", "SOLE, DFND (shared-defined) or OTR (shared-other)."),
             ("OTHERMANAGER", "Sequence numbers of other included managers, from the list of other included managers."),
             ("VOTING_AUTH_SOLE / SHARED / NONE", "Voting authority, in shares."),
@@ -214,9 +222,9 @@ def _disp(name):
 
 # ------------------------------------------------------------------ client flag file layout
 def layout(path):
-    txt = """# Client flag file layout, v3
+    txt = """# Client flag file layout, v4
 
-Owner: client services. In use since the 2021Q2 files.
+Owner: client services. In use from the 2022Q4 files; replaces v3, in use from the 2021Q2 files.
 
 One CSV per report period and watchlist, UTF-8, comma-separated, header row, one row per watchlist
 security in watchlist sequence.
@@ -226,17 +234,13 @@ security in watchlist sequence.
 | `report_period` | Report period end, YYYY-MM-DD |
 | `cusip` | Nine-character CUSIP from the watchlist |
 | `ticker` | Ticker from the watchlist |
-| `shares_outstanding` | The share count institutional ownership is measured against (OM-4 section 5), whole shares |
 | `inst_own_pct` | Institutional ownership for the report period, per cent |
 | `crowded` | `Y` or `N` |
-| `prior_shares_outstanding` | As `shares_outstanding`, for the previous report period |
-| `prior_inst_own_pct` | As `inst_own_pct`, for the previous report period |
-| `top_holder_cik` | CIK of the largest holder by market value at the report period end |
-| `top_holder_name` | That manager's name as on its 13F cover page |
-| `top_holder_value_usd` | That holder's market value, whole US dollars |
+| `prior_inst_own_pct` | Institutional ownership for the previous report period, per cent |
 
-Rows for securities with no institutional holders carry `0.0` and `N` and leave the holder columns
-blank.
+Changes from v3: the share-count and holder columns are dropped; the client takes share counts and
+holder detail from its own vendor feeds. Rows for securities with no institutional holders carry `0.0`
+and `N`.
 """
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(txt)
@@ -246,14 +250,14 @@ blank.
 def sources(wd, path):
     txt = f"""# Data sources for the ownership desk
 
-Maintained by Jonathan Richardson (data engineering). Pull for the December 2022 quarter files.
+Maintained by Brian Guerra (data engineering). Pull for the December 2022 quarter files.
 
 | Path | What it is | Coverage | How it is produced |
 |---|---|---|---|
 | `form13f_2022q3/` | SEC Form 13F data set, tables SUBMISSION, COVERPAGE, INFOTABLE | filings submitted 1 Jul to 30 Sep 2022 | downloaded from sec.gov as published, unaltered |
 | `form13f_2022q4/` | SEC Form 13F data set, same tables | filings submitted 1 Oct to 31 Dec 2022 | downloaded from sec.gov as published, unaltered |
 | `edgar13f_daily_20230103_20230203/` | nightly build from EDGAR 13F information-table XML, in the data-set layout | filings accepted 3 Jan to 3 Feb 2023 | parsed by our loader; INFOTABLE_SK is our own surrogate key |
-| `fsds_cover_extract/` | cover-page share counts in the financial statement data sets layout (sub, num) | 10-Q and 10-K filings of covered issuers accepted by 3 Feb 2023 | the security master's pull; num carries the dei cover tags only |
+| `fsds_cover_extract/` | cover-page share counts in the financial statement data sets layout (sub, num) | cover pages of covered issuers' quarterly and annual reports accepted 1 May 2022 to 3 Feb 2023 | the security master's pull; num carries the dei cover tags only |
 | `manager_register.csv` | the desk's register of 13F filing managers | every manager we have covered since 2009 | maintained by hand; `family` groups affiliates for research notes, not for ownership |
 | `{WATCHLIST}` | the client's watchlist | 12 securities | from client services |
 | `{LAYOUT}` | the client flag file layout | | client services |

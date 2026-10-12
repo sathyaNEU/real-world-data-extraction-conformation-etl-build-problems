@@ -1,6 +1,6 @@
 {
   "task": "task116",
-  "architecture": "v1",
+  "architecture": "v3",
   "drawn": "2026-10-08",
   "slot_note": "product-analytics x opportunity-sizing-decision, a pairing never built before this slot",
   "domain": "product-analytics",
@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Take the Trust Licence to Bishop Hogarth Catholic Education Trust, Pathway Trust, Swale Academies Trust, Derby Diocesan Academy Trust, Tudor Grange Academies Trust, Advance Learning Partnership, Bradford Diocesan Academies Trust, Bishop Wilkinson Catholic Education Trust, St Oscar Romero Catholic Academy Trust and The Ted Wragg Multi Academy Trust, in that order, and put £152,257 of new recurring revenue on the 2027-28 plan.",
+  "answer_source": "task116/submission.md, 1. Final Recommendation",
   "gap": [
     "population",
     "objective"
@@ -20,8 +20,8 @@
     "C"
   ],
   "generators": [
-    "G8",
     "G2",
+    "G11",
     "G1"
   ],
   "gate_g": "binding_constraint",
@@ -31,7 +31,7 @@
   "official_decoy": false,
   "validated_decoy": true,
   "context_artifact": "monitoring_export",
-  "stakeholder_role": "director of trust partnerships at a schools edtech company",
+  "stakeholder_role": "head of trust partnerships at a schools edtech company",
   "role_family": "portfolio_manager",
   "scoring_unit": "per covered member",
   "spine": {
@@ -63,15 +63,54 @@
     ]
   },
   "deliverables": [
-    "trust_round_spring2027.xlsx",
-    "trust_round_spring2027.pptx"
+    "trust_round_spring2027.pptx",
+    "trust_round_spring2027.xlsx"
   ],
   "opening_move": "constraint-first",
-  "driver": "The realisable value of an offer made to a group comes only from groups whose members' existing purchases were all made by one decision-maker, a property visible only as one signatory recurring across the members' separate records; every closed offer went to such a group, so sizing each group's uncovered members, netted for repricing, at the closed sign rate reproduces all of them, while the largest uncovered volumes sit in groups whose members buy one by one and never take a group-wide offer.",
-  "driver_concrete": "A trust-wide licence is only ever signed by a trust whose academies' current agreements were all signed by one trust officer; the 2026 pilot went only to trusts that asked for it, all of that kind, so successor-matched whitespace net of repricing at the pilot's sign rate reproduces every pilot booking, while about half of the trusts with the most net whitespace have each academy signing for itself and, like every such trust offered the 2023-24 cluster licence, will not sign.",
-  "stump": "A competent solver matches customer academies to the register through their successor URNs, prices each trust's not-yet-subscribing academies at the trust rate net of repricing the academies it already has, confirms that construction against every 2026 pilot booking, and files the ten trusts with the largest net whitespace at the pilot's sign rate; the step that lands it there is never asking whether a trust buys for its academies at all, which the agreements' signatories answer (one trust officer for every academy, or each school for itself) and the 2023-24 cluster-licence offers settle (no trust whose schools sign for themselves ever took a trust-wide licence).",
+  "driver": "A group-level offer can go only to groups in which at least two members are covered by existing contracts that one person signed, and one contract can cover several members while the contract register keys it to a single member, so counting members by the register's key drops the groups that already buy for several members under one contract; the members a contract covers are named only on its billing documents, and the closed offers that certify the pricing all went to groups whose contracts each covered one member. The realisation rate is filed as that of the offers closed to date, and the system of record holds one closed offer more than the pilot's own list, so the rate taken from the pilot list overstates every candidate's planned value.",
+  "driver_concrete": "Two trusts buy Tallybridge for several academies under one agreement recorded on their lead school's account; the agreements export keys it to that school and only the invoices name the academies it covers, so a solver who counts academies by the agreement's URN drops both trusts at the plan's two-academy condition, while the 2026 pilot reproduces exactly under that count. The plan values the round at the sign rate of the Trust Licence offers closed to date: the pilot sheet lists twelve (7 signed) and the CRM holds a thirteenth, declined on 30 September, so the rate is 7 of 13.",
+  "stump": "A competent solver matches agreements to academies through successor URNs, prices each trust at the licence rate net of the agreements it replaces exactly as the pilot reproduces, applies the plan's eligibility with one CRM contact signing every agreement, counts the academies on agreements by each agreement's URN, takes the sign rate off the pilot sheet (7 of 12), and files Pathway Trust first and £136,769; the steps that land it there are counting an agreement as one school and reading the pilot's twelve offers as the offers closed to date, when Bishop Hogarth and Derby Diocesan each have three academies on one agreement and the CRM holds a thirteenth closed offer, so the round is £152,257 at 7 of 13.",
   "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "Decisive rung from the measured catalogue: #13 validates on one population, applies to another (the pilot's trusts all buy centrally), with #6 treats a mixed segment all one way behind it. Pattern B unavailable (task110, task109)."
+  "differentiation": {
+    "task77": "task77 collapses several valid rows to one person before netting; here one agreement row expands to the several academies its invoices name, and the count decides which groups an offer may go to at all, not a supply-demand net",
+    "task93": "task93 tests a pay floor per person per pay period on a convex cost curve; here nothing is netted or tested against a floor, the unit is the set of academies a billing document names, read off an operational registry the eligibility count never joins",
+    "task116": "v1 turned on which groups buy as one (filed in v1.1 and executed by both portal responses); v2 on how many members one contract covers (solved once in two on the portal); v3 keeps v2's unit move and adds the divisor of the filed realisation rate (the offers closed to date against the pilot's own list), which moves every candidate's planned value rather than slate membership"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "two determinism reviews (2026-10-08) failed the unfiled signing class as competing_defensible_answer; filed in the plan, the main call was solved twice on the portal (2026-10-09), the second time through the CRM contact identity",
+      "driver": "The realisable value of an offer made to a group comes only from groups whose members' existing purchases were all made by one decision-maker, a property visible only as one signatory recurring across the members' separate records; every closed offer went to such a group, so sizing each group's uncovered members, netted for repricing, at the closed sign rate reproduces all of them, while the largest uncovered volumes sit in groups whose members buy one by one and never take a group-wide offer.",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "generators": [
+        "G8",
+        "G2",
+        "G1"
+      ]
+    },
+    {
+      "architecture": "v2",
+      "fate": "portal 2026-10-10: one response stumped at 58 per cent, one landed every figure at 98; the unit move alone changed slate membership and left the per-trust value grid to the stumped response, and every ask device was battery-visible or settled by a filed sentence",
+      "driver": "A group-level offer can go only to groups in which at least two members are covered by existing contracts that one person signed, and one contract can cover several members while the contract register keys it to a single member, so counting members by the register's key drops the groups that already buy for several members under one contract; the members a contract covers are named only on its billing documents, and the closed offers that certify the pricing all went to groups whose contracts each covered one member.",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "generators": [
+        "G2",
+        "G11",
+        "G1"
+      ]
+    }
+  ],
+  "notes": "Decisive rung from the measured catalogue: #13 validates on one population, applies to another (the pilot's trusts all buy centrally), with #6 treats a mixed segment all one way behind it. Pattern B unavailable (task110, task109). The surface screen reads 'Oscar Romero' as a persona; it is part of a real trust's name (St Oscar Romero Catholic Academy Trust) in the DfE register, not a person the build names. v2 re-root 2026-10-09: decisive rung moved from who signs (filed, executed twice on the portal) to how many academies one agreement bills (the invoice names them; the CRM keys the agreement to one school). v3 2026-10-10: a second decisive move on the divisor (7 of 13, the CRM's thirteenth closed Trust Licence offer); the ask layer rebuilt on silent devices off the main path."
 }

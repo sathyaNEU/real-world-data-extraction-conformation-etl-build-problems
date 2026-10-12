@@ -58,7 +58,8 @@
       "Eamon Manahan",
       "Joanne Uniacke",
       "George Fenelon",
-      "Rebekah Masterson"
+      "Rebekah Masterson",
+      "Martina Mulgrew"
     ]
   },
   "deliverables": [
@@ -66,9 +67,9 @@
     "march_offer_workings.xlsx"
   ],
   "opening_move": "rule-first",
-  "driver": "A planned move earns a second response only at the points where its new level falls to or below a rival option's own level at that same point, a response visible exactly in the rival's volume during other subjects' moves; the subject's own closed moves never reached that level anywhere, so its own response curve reproduces its whole history and misses the plan, other subjects' curves that cross everywhere overstate it, and a crossing tested against the rival's average level misplaces it, because the rival's level differs point by point.",
-  "driver_concrete": "Delahunt's 160s earns the own-label switch only in the stores where a mechanic puts its deal price at or below that store's own-label 160s price, which the own-label line's collapse during other brands' deep deals shows exactly; none of Delahunt's own deals ever went below own label, so its own curve says no mechanic clears the group's floor, the recap's mainstream lifts say Save a third clears it, the chain-average own-label price says only half price does, and the store-by-store test says Save 40% clears it inside the funding budget.",
-  "stump": "A competent solver fits Delahunt's own deal lift from its Save 20% and Save 25% events, carries it to the four March mechanics, finds none reaches the group's two-and-a-half-times floor and advises sitting the event out (or, borrowing the recap's mainstream lifts, offers Save a third); the step that lands it there is never asking where the mainstream lines' extra deal volume came from, which the own-label 160s answers: its sales fell to three tenths of normal in exactly the store-weeks where a branded deal price sat at or below that store's own-label shelf price, and in the stores whose own-label price is highest Save 40% puts Delahunt there.",
+  "driver": "A planned move earns a second response only at the points where its new level falls to or below a rival option's own level at that same point; the rival's volume shows that response only in part, because the subjects that move gain twice what the rival loses, so it has to be measured on the subjects that moved rather than read off the rival; the subject's own closed moves never reached that level anywhere, so its own response curve reproduces its whole history and misses the plan, the rival's loss credited one for one understates the plan, and a crossing tested against the rival's average level misplaces it.",
+  "driver_concrete": "Delahunt's 160s earns the own-label switch only in the stores where a mechanic puts its deal price at or below that store's own-label 160s price; in other brands' crossing deals own label lost about a third of its normal sales while the deal line sold extra packs worth 0.7 of own label's base, so the own-label drop credited one for one puts Save 40% at 2.2 and offers half price, Delahunt's own curve says sit out, the recap's mainstream lifts say Save a third, the chain-average own-label price says EUR 2.40 off, and the switch measured on the deal line store by store says Save 40% clears at 2.7.",
+  "stump": "A competent solver either never finds the switch, fits Delahunt's own Save 20% and Save 25% deals and sits March out, or finds it the way the data shows it first, own-label 160s sales falling by about a third wherever another brand's 160s deal undercut the store's own-label price, credits those lost packs to the deal line one for one, forecasts Save 40% at 2.2 times base and offers half price; the step that lands it there is never measuring the response on the deal line itself, which in those store-weeks sold twice the packs own label lost, enough to put Save 40% at 2.7 in the stores whose own-label price is highest.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [],

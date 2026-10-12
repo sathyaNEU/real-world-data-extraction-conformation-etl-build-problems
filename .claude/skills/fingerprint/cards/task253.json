@@ -1,0 +1,144 @@
+{
+ "task": "task253",
+ "architecture": "v3 (architecture 2, re-root)",
+ "drawn": "2026-10-11",
+ "slot_note": "re-root, architecture 2: architecture 1 is spent (its first decisive step a Template against task230, its one redraw left without a stump once the literal estimand was filed); the objective (Descriptive & Distribution Analysis) and the number are kept, and the client domain moves to Education & Learning Sciences",
+ "domain": "education-learning-sciences",
+ "subdomain": "student-growth-value-added-modeling",
+ "niche": "a state Catholic school system's office commissioning 2027 places in a reading programme that takes every primary school whose underlying Year 5 reading average is below a floor, the count read from three NAPLAN sittings in schools whose Year 5 cohorts run from a handful of students to over a hundred",
+ "objective": "descriptive-distribution",
+ "shape": "14",
+ "decision_type": "quantity_figure",
+ "answer_unit": "count",
+ "answer": "Commission 42 places for the 2027 Reading Partnership.",
+ "answer_source": "task253/submission.md, 1. Final Recommendation",
+ "gap": [
+  "population",
+  "objective"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G11",
+  "G17"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "uncertainty_hold",
+ "decisive_rule_filed": true,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "client_domain": "education-learning-sciences",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:count-of-units-past-a-floor-from-noisy-unit-averages",
+ "layer1": [
+  "NAPLAN result extracts whose layout changes across the three sittings (a coded legacy extract, a results-portal workbook with a title block, a data-platform export with renamed columns)",
+  "participation status codes (participated, absent, exempt, withdrawn, sanctioned abandonment), only participating students carrying a scale score",
+  "an August enrolment census by year level taken the year before the programme year",
+  "school master data whose servicing-hub field lags the operational schedule that takes effect next year",
+  "school codes held as four-digit strings in one system and as integers with leading zeros dropped in another"
+ ],
+ "context_artifact": "monitoring_export",
+ "stakeholder_role": "the system's reading programme lead, who brings the 2027 commissioning to the executive",
+ "role_family": "programme_officer",
+ "scoring_unit": "units served",
+ "spine": {
+  "file": "naplan_results_2026.csv",
+  "rows": 111150,
+  "entity": "one student's result in one NAPLAN test at the 2026 sitting",
+  "grain": "student x test (Years 3 and 5, five tests)",
+  "source": "synthetic"
+ },
+ "forum": "executive_team",
+ "forcing_event": "vote_or_meeting",
+ "org_family": "university_or_school",
+ "world": {
+  "geography": "Australia, a state-wide Catholic school system (the schools of four dioceses)",
+  "currency": "AUD",
+  "org_type": "a state Catholic education office running about 264 primary schools in six regions, its literacy specialists based at five hubs",
+  "invented_names": [],
+  "people": [
+   "Joshua Nguyen",
+   "Laura Proctor",
+   "Alice Wood",
+   "Diana Hardy"
+  ]
+ },
+ "deliverables": [
+  "reading_partnership_2027.xlsx",
+  "reading_partnership_2027_hubs.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-many",
+ "driver": "The decisive quantity is how many units have a latent level below a fixed line, seen only through averages of small and unequal samples taken over a few periods; counting the units whose raw averages fall below the line counts sampling noise as signal and overstates it, counting the units whose shrunken estimates fall below the line understates it because estimates pulled toward the centre are less spread than the levels they estimate, and only adding up each unit's probability of lying below the line, under the spread left once the noise is separated out, counts the units the line will actually catch.",
+ "driver_concrete": "The 2027 Reading Partnership needs one place for every primary school whose underlying Year 5 reading average (what its Year 5 students would average over many years at its current standard of teaching) is below 480; three NAPLAN sittings give each school a noisy average, the system's filed analysis standard (students within year groups within schools, REML) gives each school a predicted average and its uncertainty, and the places are the sum of the schools' probabilities of an underlying average below 480, 42 in the built pack (41.95), not the 56 schools whose three-year average is below it nor the 28 whose predicted average is.",
+ "stump": "A competent analyst fits the analysis standard's three-level model, reads each school's predicted underlying average and commissions 28 places for the schools whose prediction is below 480 (stage 3 pack, against 42); the step that lands it there is counting point predictions, which the model pulls toward the system's mean, instead of adding up each school's probability of an underlying average below 480.",
+ "stump_class": "analytical",
+ "analyst_test": "An analyst who parses the three sittings correctly, keeps the participating students, fits the filed three-level model and counts the schools whose predicted underlying average is below 480 commissions 28 places, and one who skips the model and counts three-year averages below 480 commissions 56; both have read every field and rule correctly and miss the 42 the reviews will find, because the number of schools below a floor is the sum of each school's probability of lying below it, not a count of estimates on either side of the line.",
+ "domain_test": "The call turns on school-effects estimation, the field's own decomposition of NAPLAN results into student, year-group and school levels and its use to say how a system's schools are spread on underlying attainment; with another field's nouns there is no year group sitting as one class whose luck turns over every year, no NAPLAN scale or participation codes, and the small-school noise that decides the count has no counterpart.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task97": "task97 v4 caps the outcomes a funded total buys at each category's pool of eligible counterparties, a per-category binding limit on a filed eligibility that does not commute with netting across categories; task253 has no cap and no netting: it counts the units whose latent level lies below a floor when each unit is seen only through a noisy average, and the count is the sum of the units' probabilities, which neither the raw count nor the count of shrunken estimates gives"
+ },
+ "lineage": [
+  {
+   "architecture": "v1 (architecture 1 as drawn: the rent-relief voucher split)",
+   "fate": "spent at stage 5 (2026-10-11): the adjudicated clone pre-flight returned TEMPLATE (Track B) against task230, stand-ins reweighted within the class that drives both selection and the outcome; one redraw allowed (v2)",
+   "domain": "survey-research-official-statistics",
+   "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+   "objective": "descriptive-distribution",
+   "shape": "05",
+   "decision_type": "allocation_to_total",
+   "gap": [
+    "population",
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G6",
+    "G12",
+    "G11"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "composition_mix",
+   "layer2_pattern": "survey-research-official-statistics/nonresponse-calibration-measurement-error-adjustment/1",
+   "driver": "The decisive quantity is a population count estimated from a sample whose response rate varies sharply by a frame attribute that also predicts the outcome and whose mix differs across the reporting areas, so the nonresponse adjustment has to be made within classes of that attribute; adjusting within the reporting areas alone, or not at all, keeps the respondents' mix and under-counts the areas rich in the hardest-to-reach, most-affected units.",
+   "driver_concrete": "Severely rent-burdened renter households per neighbourhood come from the city's rental housing survey, delivered with base weights only; rooming houses and 50-plus-unit buildings answer at about a quarter and two-fifths while small buildings answer at about seven in ten, rooming-house tenants are the most burdened, and Harlow Flats and Delph Row hold most of the city's rooming houses, so only respondents reweighted to the eligible sample within structure class restore each neighbourhood's burdened count and move vouchers toward those two neighbourhoods.",
+   "stump": "A competent solver annualises and pools income, adds separately paid utilities to the rent, flags gross rent above half of income, adjusts the delivered base weights for nonresponse within each neighbourhood (the sampling stratum), holds Eastgate to its 447 enrolled units and splits the other 2,553 vouchers pro rata, filing Harlow Flats at 458 and Delph Row at 412 against 553 and 476; the step that lands them there is taking the stratum as the nonresponse class, which leaves lodging-house rooms (answering at 22.2 per cent, 76.8 per cent of completes severely burdened) under-represented inside every neighbourhood, where reweighting within registry licence class (or any class set, raking or propensity model that includes it, all of which return the same weights) restores them.",
+   "analyst_test": "An analyst who cleans the roster, annualises income correctly, adds the separately paid utilities, reads the disposition codes and applies every programme rule, then adjusts the base weights for nonresponse within the neighbourhood strata (or uses them unadjusted, which leaves the shares the same as a single overall factor), files a voucher split that under-funds Harlow Flats by 17 per cent and Delph Row by 13 (458 and 412 against 553 and 476) and over-funds Millbrook, Corran Hill and Quarry Bank.",
+   "domain_test": "The call turns on a survey statistician's weighting-class choice, reweighting respondents to the eligible sample within classes of a frame variable that predicts both response and burden; with another field's nouns in and no sample design, dispositions or base weights, the task has no estimator to choose and stops reading the same."
+  },
+  {
+   "architecture": "v2 (architecture 1, decisive pattern redrawn once: crossing criticality)",
+   "fate": "spent at stage 2 (spec update, 2026-10-11): under literal determinism the assignment rule had to be filed, and the filed closure estimand then means re-running it (seconds in numpy), so the default path ended on the golden and no redesign inside the niche moved the difficulty into how the quantity is computed; the ask layer also failed the cracker sheet",
+   "domain": "urban-regional-science",
+   "subdomain": "network-analysis",
+   "objective": "descriptive-distribution",
+   "shape": "01",
+   "decision_type": "ranked_slate_under_cap",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G5",
+    "G8",
+    "G16"
+   ],
+   "gate_g": "binding_constraint",
+   "stump_strategy": "binding_constraint",
+   "layer2_pattern": "urban-regional-science/network-analysis/2",
+   "driver": "The cost of losing one of several parallel links that share a congestible capacity is the delay its displaced flow creates on the links that absorb it, whose service times rise steeply with load and are shared with the flow already on them, so it has to be measured by re-solving the self-consistent loading with the link removed; moving the displaced flow once at the existing service times, or re-pricing that one move, is a single pass through a fixed point that values long slack detours above short saturated ones and misses the delay imposed on the absorbing links' own users.",
+   "driver_concrete": "Each crossing's criticality is the change in zone-to-zone AM peak vehicle-hours when the region's equilibrium assignment is re-solved without it and the 2026 trip table is held fixed; the shipped base skims and select-link trips invite moving each crossing's trips to their next-best crossing at today's loaded times, which ranks the outer crossings with the longest detours first, and re-pricing that single move with the volume-delay curves piles the busiest east crossing's traffic onto its small neighbour; only the re-solved equilibrium shows that the central core crossing, whose two neighbours already run at about 95 per cent of capacity, and an outer crossing whose one nearby alternative is near capacity cost the most.",
+   "stump": "A competent solver takes the 2026 base assignment the model report documents, moves each crossing's select-link trips to their cheapest remaining crossing at the base loaded times and funds the three longest detours, X11, X12 and X01 (about 148, 108 and 91 added vehicle-hours); a stronger one re-prices that single move on the volume-delay curves and funds X09, X07 and X06 (about 1,313, 330 and 302, with X09's trips piled onto X10 at more than three times its capacity). The step that lands them there is treating a closure as one reroute at fixed times instead of re-solving the equilibrium with the crossing removed, which alone puts X06 (about 230), X11 (about 199) and X05 (about 182) on top, with X07, the most congested core crossing, first left out at about 156, 26 short of the third.",
+   "analyst_test": "An analyst who reads the model report, the volume-delay table, the trip table and the skims correctly and builds each closure from the shipped select-link trips, every displaced trip moved to its cheapest remaining crossing at the base loaded times, funds the three longest detours; one who then applies the volume-delay curves to the new loads without letting traffic re-balance funds the busy east crossing and two core crossings; both have cleaned and read everything correctly and still miss, because a closure's response is a fixed point that the easy route solves in one pass.",
+   "domain_test": "The call turns on a transport modeller's closure analysis, re-solving a user-equilibrium assignment with volume-delay curves for each crossing removed (link criticality measured with congestion), the field's own method; with another field's nouns and no assignment principle or volume-delay curves there is nothing to re-solve, and the task stops reading the same."
+  }
+ ],
+ "notes": "stump_strategy uncertainty_hold (signal against noise; not a hold here): the decisive move separates each school's underlying average from student and year-group noise and counts schools by probability. G11 first because the programme's eligibility predicate is a latent quantity (is this school in the eligible set?), G17 under it (the rigor that decides the count). gap population first (the file's cohort averages are not the schools' underlying averages), objective second. decisive_rule_filed true: the floor, the definition of the underlying average and the analysis standard's model (three levels, REML) are filed; nothing filed says how the number of schools below the floor is counted. calibration_form none: no prior programme's confirmed list, no published school estimates."
+}

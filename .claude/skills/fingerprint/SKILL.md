@@ -64,7 +64,14 @@ strong  The decisive quantity is a per-unit floor recovered from a closed corpus
 python3 .claude/skills/fingerprint/guard.py recent      # last builds, one line each
 python3 .claude/skills/fingerprint/guard.py coverage    # spent and never-drawn cells, axis use overall and last 12
 python3 .claude/skills/fingerprint/guard.py suggest     # optional fresh draws, never breaking a ban
+python3 .claude/skills/fingerprint/guard.py mechanisms --objective <o>   # every spent driver there, lineage included
 ```
+
+`mechanisms` is the one read of the corpus a draw needs: one block per build on the objective (narrow it with
+`--gate-g` or `--strategy`), so no card is opened by hand. Write one line on the insight each spends before
+drawing. Everything here is mechanical and free; the people index and the clone screen keep working caches
+under `.cache/` (never committed), seeded from the tracked baselines in `corpus/` and
+`../clone-check/corpus/`.
 
 **2. When the draw is fixed** (before the ladder; personas from `guard.py names --geo <geo> --seed <N>`):
 
@@ -73,6 +80,9 @@ python3 .claude/skills/fingerprint/guard.py new task98 > <scratch>/task98_card.j
 python3 .claude/skills/fingerprint/guard.py check <scratch>/task98_card.json
 python3 .claude/skills/fingerprint/guard.py register <scratch>/task98_card.json
 ```
+
+The registered card is committed at once with `pipeline.json` and the design note (`DRAWN (taskNN)`), so every
+other session's guard sees the draw.
 
 Clear every BLOCK by redrawing its axis; answer each WARN in one design-note line. `register` refuses a
 BLOCK; `--force` is the author's override, reason in `notes`.
@@ -83,7 +93,7 @@ The guard compares against the slot's own lineage too.
 **4. After the pack is cut:** `guard.py surface task98` runs the `clone-check` hard-tell screen on the build
 and re-reads persona names from the pack; a promoted pair is renamed or regenerated.
 
-**4b. Duplicate check (stage 4, and `/approve`):** `guard.py heart taskNN` compares `driver`,
+**4b. Duplicate check (stage 3, and `/approve`):** `guard.py heart taskNN` compares `driver`,
 `driver_concrete` and `stump` with every driver, lineage driver, stump and shipped-ledger row, then runs
 the full check; exit 1 on BLOCK. An empty `stump` is filled from the design note first.
 

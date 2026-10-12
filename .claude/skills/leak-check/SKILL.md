@@ -12,16 +12,15 @@ reader then reads the pack as a solver would.
 ## When
 
 - **Stage 4 of `/build`**, after the build stage's free gates (generator checks, `figures_check.py`, the
-  realism sweep) and together with the duplicate check (`guard.py heart` and the clone pre-flight), before
-  the determinism judge. Every finding (a LEAK, a quoted question-1 sentence, a question-2 or question-3
+  realism sweep, `guard.py heart`), spawned beside the determinism judge in the background. Every finding (a LEAK, a quoted question-1 sentence, a question-2 or question-3
   file, a question-5 sentence that does not execute to the golden, a main-call fork, a realism tell, an
-  ask-figure fork) is fixed in the generator before the judge runs.
+  ask-figure fork) is fixed in the generator in the same pass as the judge's findings.
 - **`leak.py` after every rebuild** and after any edit to a document under `target/`.
-- **The reader once per build**, on Sonnet at medium, after the realism sweep (so it confirms realism
+- **The reader once per build**, at medium effort, after the realism sweep (so it confirms realism
   rather than finds it; repeated passes cost task132 and task180 most of a day), and again only when a fix
   changed a document or the prompt. A data-only repair is checked by `leak.py` alone.
 - Before `/approve`, which refuses a build whose last report is LEAK.
-- **Returned tasks:** `leak.py` only, no reader.
+- **Returned tasks** (`/fix-determinism`, `/fix-rubric`): `leak.py` only, no reader.
 
 ## The mechanical half: `leak.py`
 
@@ -37,7 +36,7 @@ python3 .claude/skills/leak-check/leak.py task100 --asof 2027-05-14
 | Sweep | Hunts |
 |---|---|
 | 1 file names | author nouns (`trap`, `golden`, `clean_`, `_v2`, `answer`), dot and system files, code in the pack |
-| 2 author vocabulary | `rung`, `decoy`, `the solver`, `rubric`, `placeholder`, library names, home paths, `claude`, em dashes (data files: toolchain terms only) |
+| 2 author vocabulary | `rung`, `decoy`, `the solver`, `rubric`, `placeholder`, library names, home paths, `claude`, em dashes (data files: toolchain terms only); a sentence saying the pack was built (`constructed for this exercise`, `are invented`, `are fictional`) is LEAK in any file, the bare words `fictional`, `fictitious`, `this exercise` REVIEW in documents (`reduce-house-fixes` H24) |
 | 3 answer figures | a golden figure (4+ digits) from blocks 1 and 4 in a document is LEAK; a candidate beside decision vocabulary, or a long figure in data, is REVIEW |
 | 4 design-note vocabulary | a document with 3+ of the stump paragraph's distinctive terms, a prompt sentence with 2 |
 | 5 announcements | `make sure`, `note that`, `must ... exclude`, `the correct basis`: the sentence naming the decisive step |

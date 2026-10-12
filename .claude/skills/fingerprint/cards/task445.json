@@ -2,7 +2,7 @@
   "task": "task445",
   "architecture": "v1",
   "drawn": "2026-10-11",
-  "slot_note": "seed ET02 (13F institutional ownership bridge: amendment types, filing-date value units, option rows, CUSIP repair). The seed's stump was rule application and data semantics, so it is re-rooted: the seed's mechanics stay as Layer 1 mess carried by the asks, and the decisive step is a Layer 2 censoring construction, completing a filing period whose 45-day window is still open at the extract.",
+  "slot_note": "seed ET02 (13F institutional ownership bridge: amendment types, filing-date value units, option rows, CUSIP repair). The seed's stump was rule application and data semantics, so it is re-rooted: the seed's mechanics stay as Layer 1 mess carried by the asks, and the decisive step is a Layer 2 censoring construction, completing a filing period whose 45-day window is still open at the extract. Hardening loop 1 (2026-10-11, after portal round 1 failed determinism): the estimand and a basis-selection criterion are filed in OM-4 s.2, and the decisive step moves from completing the open window at all to the basis the completion uses. Hardening loop 2 (2026-10-12, after in-house round 3 landed the call on the register-type change pooled across the names): the index and ETF sponsors' share holdings now follow each name's share count as well as their creations, so the type change pooled across names is the stump rung and the decisive step is moving each sponsor still due with the name's own count.",
   "domain": "quantitative-finance",
   "subdomain": "other",
   "niche": "an independent ownership-research firm's quarterly crowded-ownership flag on a client watchlist, set from the SEC Form 13F structured data sets while the quarter's filing window is still open, so the flag has to rest on the institutional ownership the completed filing set will show",
@@ -17,34 +17,34 @@
     "population"
   ],
   "pattern": [
-    "none"
+    "E"
   ],
   "generators": [
-    "G12",
+    "G14",
     "G16",
     "G6",
     "G19"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "censored_or_lagged_release",
-  "stump_strategy": "maturity_censoring",
+  "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms every Q4 2022 13F filing correctly (amendment types, value units by filing date, option rows out, CUSIPs repaired) computes institutional ownership on the filings received by the extract, or scales every issuer by one aggregate share of value historically on file by that day, and flags the wrong set of watchlist issuers, because managers that filed for Q3 and have not yet filed for Q4 are holders not yet reported, not zero holders, and they sit in some issuers' registers far more than in others.",
-  "domain_test": "The flag turns on ownership-data practice specific to 13F: holdings arrive over a 45-day window, filing lag tracks manager type (large passive complexes and multi-strategy funds file at the deadline), positions of slow filers persist quarter to quarter, and ownership is measured in shares against the issuer's cover-page shares outstanding; put another field's nouns in and the censoring structure, the carry-forward of a manager's last filed position and the shares denominator have nothing to attach to.",
+  "analyst_test": "A strong analyst who conforms every 13F line, reads OM-4 s.2 literally and back-tests the natural completion bases, the register-type change among them, grows each manager still due by its own type's change pooled across the twelve names (index and ETF sponsors about 4.5 per cent in shares, every other type flat), sees it beat every other basis it builds in the September back-test (about 0.7 points against 1.0 and up), and flags WHII, GLI, JEMS and SAF with OTF at about 79.2; only moving each index sponsor still due with the change its filed peers show in that name (equivalently its September stake grown by the sponsors' stake growth), the basis the filed criterion selects (about 0.04), flags WHII, GLI, OTF, JEMS and SAF.",
+  "domain_test": "The decisive step is how an index fund's 13F holdings behave: an index or ETF sponsor holds the index weight, so in shares it holds a fixed slice of each constituent's float, scaled by its own creations, and its share count in a name moves when that company issues, buys back or tenders while an active manager's does not; completing a quarter still inside its 45-day window has to move each sponsor still due with each name's own count; with another field's nouns there is no float to track, no creation mechanism and no filing window.",
   "client_domain": "quantitative-finance",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:late-reporter-completion-of-a-censored-filing-period",
+  "layer2_pattern": "own:float-tracking-holders-in-completing-an-open-filing-window",
   "layer1": [
-    "holdings filings with reporting lags and amendments (originals, RESTATEMENT and NEW HOLDINGS amendments, filing dates)",
-    "value reported in thousands of dollars before 2023-01-03 and in dollars after, by filing date, with a filer still in thousands after the switch",
-    "put and call rows and principal-amount rows on the same CUSIP as the shares",
-    "filer-keyed CUSIPs with dropped leading zeros, lower case and a bad check digit",
-    "the SEC data sets organised by the quarter a filing was submitted, not the period it reports",
-    "shares outstanding from cover pages of 10-K and 10-Q filings with different as-of dates",
-    "manager families filing under several CIKs, and 13F notice filers"
+    "the SEC Form 13F data sets organised by the quarter a filing was submitted, not the period it reports, with the current quarter in a nightly build",
+    "originals with RESTATEMENT and NEW HOLDINGS amendments, including two amendments to one report filed the same day through two filing agents (the data set lists them in accession order, the amendment numbers give the other), a restatement whose submission header carries the previous quarter's period while its cover page carries the report's own, and a September report's option positions added in January when confidential treatment expired",
+    "put and call lines on the share CUSIP, some carrying the option only in the title of class with the put or call field blank",
+    "filer-keyed CUSIPs: leading zeros dropped, lower case, and failed check digits under filer-abbreviated issuer names",
+    "value in thousands of dollars before 2023-01-03 and in dollars after, by filing date, with one filer still on thousands after the switch",
+    "cover-page share counts at as-of dates either side of a period end, including an amended quarterly report's later count",
+    "manager families filing under several CIKs, a filer renamed between quarters, 13F notice filers and combination reports"
   ],
   "context_artifact": "register",
   "stakeholder_role": "head of ownership research at an independent ownership-research firm that publishes a quarterly crowded flag to hedge fund clients",
@@ -68,13 +68,14 @@
       "Quillfield Research",
       "Harrowby Point Partners",
       "Prescott Funds Group",
+      "Prescott Global Indexing",
       "Wexley Trust Wealth Advisors",
       "Tregaron National Bank Wealth Management",
       "Shelby Investment Group"
     ],
     "people": [
       "Nancy Henderson",
-      "Jonathan Richardson"
+      "Brian Guerra"
     ]
   },
   "deliverables": [
@@ -82,11 +83,56 @@
     "sep_quarter_bridge.png"
   ],
   "opening_move": "question-first",
-  "driver": "The decisive quantity is the part of a period's total still held by reporters whose reports have not arrived at the extract; because slow reporters concentrate in some units and not others, it has to be completed reporter by reporter from each one's last report, and reading the arrived reports as the total, or scaling every unit by one aggregate completion share, misstates exactly the units whose holders report late and changes which units cross the threshold.",
-  "driver_concrete": "At the extract the Q4 2022 13F window (deadline 2023-02-14) is still open; managers that filed for Q3 but not yet for Q4 are mostly large passive complexes and multi-strategy funds that file at the deadline, and they hold a very different share of each watchlist issuer, so the flag rests on Q4 holdings on file plus each pending manager carried at its last filed share position (back-tested on the Q2 and Q3 windows at the same day), not on the filings in hand or one aggregate completion factor.",
-  "stump": "A competent solver conforms the December 2022 13F reports in hand perfectly and flags the names whose ownership on file is above 80 per cent (WHII, JEMS), or scales every name by the aggregate share of value historically on file by the same day (WHII, AMRB, TAAV, JEMS, FENN, SAF); both file the wrong set, because the step that decides it is completing the period holder by holder: the 125 managers with a September report and no December report by 3 February are holders not yet reported, concentrated in GLI, OTF and SAF, and carrying each at its September shares flags WHII, GLI, OTF, JEMS and SAF.",
+  "driver": "One class of holder keeps a fixed fraction of each unit rather than a fixed amount, so when a unit's size changes that class's amount in it moves with it, and the class's common change is a change in the fraction, the same in every unit; completing the holders not yet reported in a still-open period with one amount change per class pooled across units misstates the units whose size moved, carrying every class as a fraction misstates the units whose missing holders keep amounts, and the basis a filed back-test criterion selects moves each missing holder of that class with its own unit's size and the class's change in fraction while every other class keeps its amount.",
+  "driver_concrete": "At the 3 February 2023 extract the December 13F window (deadline 14 February) is open and OM-4 s.2 files the estimand (every manager that reports holdings for the quarter, the 129 still due included, their holdings estimated) and the criterion that selects the basis (closest on the September window at the same day, by the largest miss across the twelve names); an index or ETF sponsor holds a fixed slice of each company's float, so its shares in a name move with that name's count (OTF's October follow-on +4.6 per cent, FENN's shares issued for an acquisition +4.8, ABBB's tender -5.4, the buybacks at WHII, JEMS, AMRB and NOPR, GLI's July follow-on +5.0, SAF's July tender -4.0) on top of its creations (its stake in every name +5.5 per cent a quarter), while every other register type is flat in aggregate in shares; the selected basis grows each sponsor still due by the change its filed peers show in that name (equivalently its September stake grown by the sponsors' stake growth), which puts OTF, a quarter of it held by sponsors still due, at 80.4, while the sponsors' change pooled across the names in shares (about 4.5 per cent) leaves OTF at about 79.2, and carrying every manager's stake or one rate for everyone flags FENN, whose managers still due are multi-strategy funds.",
+  "stump": "A competent solver executes OM-4 literally, sees that the index and ETF sponsors that have filed grew their share holdings while every other register type held flat, grows each of the 129 managers still due by its own type's change pooled across the twelve names, sees that basis beat every other it builds in the September back-test (largest miss about 0.66 points against 1.0 for the all-filer change, 1.4 for flat carry and 2.6 per name), and flags WHII, GLI, JEMS and SAF with OTF at about 79.2; the step that lands it there is treating the sponsors' change as one factor for every name, when an index sponsor holds a fixed slice of each company, so in shares it moves with that name's share count as well as with its creations: OTF issued about 4.6 per cent more shares in October and its sponsors still due, 23 per cent of OTF, took their slice, which the two filed sponsors' OTF holdings show (up about 10.4 per cent against 4.5 pooled), so the basis the filed criterion selects grows each sponsor still due by the change its filed peers show in that name (largest miss about 0.04), which puts OTF at 80.4 and keeps FENN, whose managers still due are multi-strategy funds, at 79.6.",
   "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "subdomain other: institutional ownership analytics from regulatory holdings filings, which the quantitative-finance task-type list does not carry. forcing_event other: the firm's quarterly flag file is published to clients on a fixed date inside the filing window. decisive_rule_filed true: the firm's methodology note files the estimand (ownership on the complete filing set for the period, every manager that files for it) and the 13F deadline; it does not say how to complete a period before the deadline, which is the construction the data force. Personas drawn with guard.py names --geo 'United States' --seed 445 (Joan Collins skipped as a public figure name; Philip Montes and Pamela Sullivan skipped on a people.first WARN). Surface screen 2026-10-11: 0 promoted pairs; people.last WARN (Henderson in task117) answered in the design note."
+  "differentiation": {
+    "task445": "Loop 1 (lineage) moved each missing reporter by its class's common drift pooled across the units, which round 3 landed; loop 2's decisive move is that the drifting class holds fractions of each unit, so a class change pooled across units in amounts is wrong unit by unit wherever a unit's size moved, and the selected basis applies the class's change in fraction with each unit's own size change; the loop 1 basis is loop 2's stump rung.",
+    "task181": "task181 nowcasts how much of a fortnight is still in transit, by each reporting route's own arrival delay (how much is missing); task445 knows exactly which holders are missing and turns on what they now hold: the missing index sponsors hold a fixed slice of each company, so they are moved with each name's share count and the sponsors' stake growth, not with their own history and not with a factor pooled across names, a basis a filed back-test criterion selects.",
+    "task107": "task107 v4 carries each unit forward past a dated step (a pay rise at a service anniversary) that earlier entrants show in the history, so its decisive step is when the step takes effect against the forward window; task445 has no dated event: one reporter class's holdings drift at a common rate every quarter (creations), measured on that class's filed peers in the same open period, and the decisive step is completing each missing reporter by its own class's drift, which a filed back-test criterion selects over flat carry and over any pooled rate.",
+    "task446": "task446 backs a forward count out of a screen's flagged share through error rates that hold across years while its yield moves with the base rate; task445 completes an open filing window holder by holder, and its decisive step is the quantity the missing index sponsors conserve (a slice of each company, moving with each name's share count), not a screen's yield against a base rate."
+  },
+  "lineage": [
+    {
+      "architecture": "v1 loop 1 (built 2026-10-11, 4c2bcbb and a78cb74)",
+      "fate": "in-house round 2 missed at flat carry; in-house round 3 (2026-10-11) landed the call on the register-type change pooled across the names (0.042 points in OM-4 s.2's back-test against 0.60 for the all-filer change); hardened in loop 2 by making the index sponsors' holdings follow each name's share count, so that basis is the stump rung",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G16",
+        "G19"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "driver": "A period still open at the extract is completed for the reporters not yet in by carrying each from its last report, but that report is stale for the class of reporter whose holdings drift every period at a common rate, so each missing reporter is moved by the drift its own class already shows among those that have reported, the basis a filed back-test criterion selects; flat carry misplaces the unit whose missing reporters are of the drifting class, and any single rate for every missing reporter misplaces the unit whose missing reporters are not."
+    },
+    {
+      "architecture": "v1 loop 0 (shipped 2026-10-11)",
+      "fate": "portal round 1 (2026-10-11): rubric average 52, determinism QC failed (answer_contradicts_files, golden_wrong): OM-4 s.2 named the filers for the period and filed no completion, so the literal reading counted only the reports on file; the driver also collided with task181 (task446 pre-flight); hardened in loop 1 by filing the estimand and a basis-selection criterion and moving the decisive step to the basis",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G16",
+        "G6",
+        "G19"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "driver": "The decisive quantity is the part of a period's total still held by reporters whose reports have not arrived at the extract; because slow reporters concentrate in some units and not others, it has to be completed reporter by reporter from each one's last report, and reading the arrived reports as the total, or scaling every unit by one aggregate completion share, misstates exactly the units whose holders report late and changes which units cross the threshold."
+    }
+  ],
+  "notes": "subdomain other: institutional ownership analytics from regulatory holdings filings, which the quantitative-finance task-type list does not carry. forcing_event other: the firm's quarterly flag file is published to clients on a fixed date inside the filing window. decisive_rule_filed true: the firm's methodology note (OM-4 s.2) files the estimand (the managers still due are in the population and their holdings are estimated) and the criterion that selects the estimation basis (the basis closest on the previous period at the same day, by the largest miss); it never names the basis. Personas drawn with guard.py names --geo 'United States' --seed 445 (Joan Collins skipped as a public figure name; Philip Montes and Pamela Sullivan skipped on a people.first WARN). Surface screen 2026-10-11: 0 promoted pairs; people.last WARN (Henderson in task117) answered in the design note. Hardening loop 1 (2026-10-11): card rewritten for the filed estimand and the basis-selection criterion; the shipped driver moved to lineage; stump_strategy forecast_method_backtest (the basis is chosen by a back-test the filed criterion names), decisive pattern E (one pooled carry rate applied to every missing reporter against the rate each reporter class shows). Prescott's December cover page carries a new name (an ask device); the old name stays in invented_names. Loop 1 people: Jonathan Richardson (data engineering, named only in data_sources.md) replaced by Brian Guerra (guard.py names --geo 'United States' --seed 445, the next name after the ones skipped at the draw), because task130 v3 (retired, filed later the same day) carries Jonathan Hoffman. Loop 1 build (2026-10-11): re-registered with register --force over the ban.forum BLOCK against task228 v2, a registration-order artifact (task445 registered customer_or_counterparty at 15:47, task228 v2 drew the same forum at 16:21 the same day); the forum is unchanged since the original PASS registration. Hardening loop 2 (2026-10-12): the loop 1 driver moved to lineage; decisive pattern E kept (the completion factor for the class that holds slices is conditioned on the name, through its share count), G6 added (the share count moves under the share metric); stump_strategy forecast_method_backtest and the calibration form unchanged; OM-4, the readme, the layout, data_sources.md and the prompt byte-identical; no filed sentence names a basis, a stake, float tracking or an index weight. Re-registered with register --force over the same ban.forum BLOCK against task228 v2 (registration order, unchanged since the original PASS registration)."
 }

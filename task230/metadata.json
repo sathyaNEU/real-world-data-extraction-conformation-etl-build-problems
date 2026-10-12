@@ -1,0 +1,286 @@
+{
+  "task": "task230",
+  "title": "Which client streams go on second-pass verification in November at an insurance-claims capture centre",
+  "domain": "Human Factors & Ergonomics",
+  "subdomain": "human reliability assessment (first-pass human verification of OCR-captured key fields)",
+  "objective": "Data Quality Monitoring & Alerting",
+  "prompt_shape": "07 (grid of cells): eleven client streams by the second-pass call, second-pass hours, credit at stake and the client-audited third-quarter residual, plus a chart",
+  "as_of": "2026-10-28",
+  "deliverables": [
+    "november_second_pass_plan.xlsx",
+    "second_pass_november.pptx"
+  ],
+  "distractor_files": [
+    "ocr_confidence_summary_2026q3.csv",
+    "verifier_keystroke_telemetry_2026q3.parquet"
+  ],
+  "input_gates": {
+    "files": 27,
+    "formats": [
+      "csv",
+      "docx",
+      "json",
+      "md",
+      "parquet",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "blind_rekey_audit_2026q3.parquet",
+    "largest_file_rows": 2381352
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task230/generator/make.py (seeded, deterministic) around a fictional Kolkata claims-capture centre (Tamralipta Data Services) and fictional clients; no real person, claimant, organisation or contract is depicted.",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-11",
+  "generator": "task230/generator/make.py",
+  "files": [
+    {
+      "path": "first_pass_verifications_2026q3.parquet",
+      "format": "parquet",
+      "bytes": 29974268,
+      "rows": 1259599,
+      "source": "Constructed: Capture platform first-pass verification log, shift-days 1 July to 30 September 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "first_pass_field_edits_2026q3.parquet",
+      "format": "parquet",
+      "bytes": 9616322,
+      "rows": 466253,
+      "source": "Constructed: Capture platform field edits on submitted first-pass screens, Q3 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "blind_rekey_audit_2026q3.parquet",
+      "format": "parquet",
+      "bytes": 12590949,
+      "rows": 2381352,
+      "source": "Constructed: QA tool blind re-key audit of first-pass output, Q3 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "workforce_register.xlsx",
+      "format": "xlsx",
+      "bytes": 10592,
+      "rows": null,
+      "source": "Constructed: HRMS export: employees, badge allocation and the Q3 queue rota",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "stream_register.csv",
+      "format": "csv",
+      "bytes": 1534,
+      "rows": 13,
+      "source": "Constructed: Stream register",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "november_operating_plan.xlsx",
+      "format": "xlsx",
+      "bytes": 12556,
+      "rows": null,
+      "source": "Constructed: November 2026 operating plan of record, version 3",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "QCP-04_first_pass_quality_control.docx",
+      "format": "docx",
+      "bytes": 36443,
+      "rows": null,
+      "source": "Constructed: Controlled procedure QCP-04 First-pass quality control, version 5.0",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "client_quality_schedules_2026.pdf",
+      "format": "pdf",
+      "bytes": 6209,
+      "rows": null,
+      "source": "Constructed: Client quality schedules extract, 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hollings_pryce_pilot_report.docx",
+      "format": "docx",
+      "bytes": 35774,
+      "rows": null,
+      "source": "Constructed: Hollings & Pryce pilot report, 6 October 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "second_pass_sessions_2026_09.csv",
+      "format": "csv",
+      "bytes": 9574405,
+      "rows": 124717,
+      "source": "Constructed: Second-pass workflow session export, September 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "second_pass_labour_planning_note.docx",
+      "format": "docx",
+      "bytes": 35487,
+      "rows": null,
+      "source": "Constructed: Second-pass labour planning note, revised 19 October 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "form_specifications.xlsx",
+      "format": "xlsx",
+      "bytes": 11685,
+      "rows": null,
+      "source": "Constructed: Form specifications: versions and key fields",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kessington_volume_forecast_nov26.csv",
+      "format": "csv",
+      "bytes": 1679,
+      "rows": 30,
+      "source": "Constructed: Kessington Benefit Administrators volume forecast revisions for November 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "us_client_forecasts_nov26.xlsx",
+      "format": "xlsx",
+      "bytes": 7514,
+      "rows": null,
+      "source": "Constructed: Northgate, Brightmoor and Harbison volume forecast revisions for November 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wattlebird_coolabah_forecasts_fy27.xlsx",
+      "format": "xlsx",
+      "bytes": 8474,
+      "rows": null,
+      "source": "Constructed: Wattlebird Health and Coolabah volume forecast revisions, FY27 weeks, with the FY27 calendar",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "uk_client_forecasts_nov26.csv",
+      "format": "csv",
+      "bytes": 2115,
+      "rows": 36,
+      "source": "Constructed: Whinfell Pet Cover and Thistlecombe Motor volume forecast revisions",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hollings_pryce_forecast_nov26.json",
+      "format": "json",
+      "bytes": 1373,
+      "rows": null,
+      "source": "Constructed: Hollings & Pryce volume forecast revisions in bundles",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "billing_register_oct26.xlsx",
+      "format": "xlsx",
+      "bytes": 6683,
+      "rows": null,
+      "source": "Constructed: Billing register, accounts and bands as at October 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "client_rate_cards_2026.pdf",
+      "format": "pdf",
+      "bytes": 4487,
+      "rows": null,
+      "source": "Constructed: Client rate cards, 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kessington_audit_findings_q3.csv",
+      "format": "csv",
+      "bytes": 239579,
+      "rows": 2788,
+      "source": "Constructed: Kessington client audit findings, Q3 2026 deliveries",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "client_audits_us_q3.xlsx",
+      "format": "xlsx",
+      "bytes": 89102,
+      "rows": null,
+      "source": "Constructed: Northgate, Brightmoor and Harbison client audit returns, Q3 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "client_audits_au_q3.xlsx",
+      "format": "xlsx",
+      "bytes": 191187,
+      "rows": null,
+      "source": "Constructed: Wattlebird and Coolabah client audit returns, Q3 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "client_portal_audits_uk_q3.json",
+      "format": "json",
+      "bytes": 823722,
+      "rows": null,
+      "source": "Constructed: Whinfell and Thistlecombe partner portal audit export, Q3 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "delivery_manifests_2026q3.csv",
+      "format": "csv",
+      "bytes": 197987,
+      "rows": 2361,
+      "source": "Constructed: SFTP gateway delivery manifests, 25 June to 3 October 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ocr_confidence_summary_2026q3.csv",
+      "format": "csv",
+      "bytes": 22125,
+      "rows": 414,
+      "source": "Constructed: OCR engine confidence summary by stream, field and month, Q3 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "verifier_keystroke_telemetry_2026q3.parquet",
+      "format": "parquet",
+      "bytes": 33528,
+      "rows": 2229,
+      "source": "Constructed: Desktop agent keystroke telemetry by badge and login date, Q3 2026",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "capture_mis_extract_notes.md",
+      "format": "md",
+      "bytes": 4483,
+      "rows": null,
+      "source": "Constructed: MIS extract notes: data dictionary and provenance",
+      "date": "2026-10-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

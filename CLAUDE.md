@@ -1,7 +1,8 @@
 # Project Mark task builds
 
 Every `taskNN/` folder is one deterministic analytical task: `prompt.txt`, the bundle under `target/`,
-the golden deliverables and `submission.md`.
+the golden deliverables and `submission.md`. The goal is one thing: high-quality, unique, submission-ready
+tasks, shipped one after another. Everything below serves that and nothing else.
 
 ## Skill routing (binding)
 
@@ -20,72 +21,98 @@ Invoke the skill before the work, whatever the request's wording; if two apply, 
 | Declaring a bundle ready, or recording a fix that came back from submission | `reduce-house-fixes` |
 | Checking a cut pack for anything that hands over the answer or the author's intent | `leak-check` |
 | Checking a build or a batch for cloning, templating or duplication | `clone-check` |
-| Taking a task to ship, or resuming a build in flight | `build-pipeline` |
+| Taking a task to ship, resuming a build, or repairing a returned one | `build-pipeline` |
 
-**Four slash commands, all author-triggered:** `/build` (the pipeline), `/approve` (heart check and
-sign-off), `/leak-check` (sweeps plus one reader), `/clone-check` (adjudicated corpus comparison).
-No isolated thread runs on the model's own initiative; `/build` licenses the threads it sequences
-(the leak reader, the clone pre-flight, the judge).
+## Commands and effort
+
+Each command sets its own effort in its frontmatter, so a session gets the right depth without being told.
+
+| Command | What it does | Effort |
+|---|---|---|
+| `/build taskNN` | draw, design, build, leak read and judge, ship; resumes from `pipeline.json` | max |
+| `/fix-determinism taskNN <portal finding>` | closes the determinism block's finding; the main call, the stump and every graded figure stay frozen | max |
+| `/fix-rubric taskNN <portal finding>` | reworks the supplemental asks until the top two sit under 50; the main recommendation side stays frozen | max |
+| `/approve taskNN` | the mechanical sign-off (heart, surface, precut, leak verdict) | medium |
+| `/leak-check taskNN` | `leak.py` plus one isolated reader | medium |
+| `/clone-check [scope]` | the adjudicated corpus comparison, **author-triggered only** | medium |
+
+Every spawned agent (the leak reader, the determinism judge, the clone auditor) runs at medium effort, set in
+`.claude/agents/` or on the `Agent` call. There is **no solver round** and none is rebuilt under another name.
+No isolated thread runs on the model's own initiative; the commands above license the ones they name.
 
 ## The workflow
 
 ```
-0 INTAKE    taskNN from the root START_HERE.md, Status in build on main, the branch, pipeline.json
-1 DRAW      fingerprint recent + coverage, the pairing and prompt shape, the card through guard.py
-            (check, then register): the stump is unique, no repeated driver, pattern or strategy
-2 DESIGN    designer, Opus max: default path ending on a wrong answer, stump sentence, ladder,
-            semantic fork table, closure, the asks, prompt.txt          gate: precut.py exit 0
-3 BUILD     builder, Opus medium: generator, pack, goldens, submission.md
-            gate: generator checks, verify, two byte-identical rebuilds, figures_check.py,
-            the realism sweep, golden-realism, reduce-house-fixes, guard.py surface
-4 LEAK + DUPLICATE, together: leak.py + one leak reader (Sonnet medium);
-            guard.py heart + the clone pre-flight (clone-auditor, Opus medium);
-            every finding fixed in the generator before the judge
-5 JUDGE     determinism-judge (Sonnet medium). APPROVE ships; FIX_NOW fixed, re-judged once;
-            SEND_BACK re-roots or retires
-6 SHIP      target.zip from the final build, commit "SHIPPED (taskNN): <the call>", Status shipped
-            on main, ledger row delivered. Then start the next open task at once.
-7 PORTAL    the author's result goes into the ledger row. A return takes the fast path: designer
-            (if the call or determinism failed), builder, the free mechanical gates, re-ship.
-            No reader, clone check or judge.
+0 INTAKE    status.py next <handle> (or the number handed out), status.py taskNN for the seed's header and
+            Situation only, pipeline.json written (status "drawing")
+1 DRAW      guard.py recent, coverage and mechanisms --objective <o>; the pairing and shape; the card through
+            guard.py check, then register.                                    COMMIT "DRAWN (taskNN)"
+2 DESIGN    default path ending on a wrong answer, stump sentence, ladder, fork table, closure, the asks,
+            prompt.txt                                                        gate: precut.py exit 0
+3 BUILD     generator, pack, goldens, submission.md
+            gate: generator checks, verify, two byte-identical rebuilds, figures_check.py, realism sweep,
+            golden-realism, reduce-house-fixes, leak.py, guard.py surface and heart
+4 CHECK     the leak reader and the determinism judge spawned together in the background (both medium);
+            the card and the pre-ship check proceed meanwhile; every finding fixed in the generator in one
+            pass; a FIX_NOW is re-judged once
+5 SHIP      target.zip from the final rebuild, ledger row, card current       COMMIT "SHIPPED (taskNN): <call>"
+            then the next open number at once
+6 PORTAL    the author's result: a determinism finding goes to /fix-determinism, a rubric over 50 with the
+            call held goes to /fix-rubric, a landed call goes back to stage 2 (a redesign of the decisive step)
 ```
 
-There is no in-house solver round. Stump power is argued on paper (`precut.py`), checked by the leak
-reader and the judge's Gate F, and measured by the portal, the only stump evidence the ledger records.
-Every repair (a leak fix, a FIX_NOW, a returned task) runs in a fresh agent from the committed state
-named in a short brief; a finished agent is never resumed. At most two builds in flight per author.
-Gates, models, `pipeline.json`, re-rooting and retirement: `build-pipeline`.
+One session runs the whole build in its main thread at max effort: design and build are the same hand, and
+a repair is done where the context already is, never handed to a fresh agent that rereads every skill. Stump
+power is argued on paper (`precut.py`), checked by the leak reader and the judge's Gate F, and measured by the
+portal, the only stump evidence the ledger records. The adjudicated `/clone-check` is not a stage: the free
+`guard.py heart` and `surface` gate every build, and the author asks for the adjudicated read when they want it.
 
-**The fingerprint guard is mandatory and free.** The card is registered the moment the draw is fixed,
-so builds in flight guard each other. Personas are drawn with `guard.py names --geo <geo> --seed <task
-number>`, never typed; `forum`, `forcing_event` and `org_family` are banned against the last three
-builds. The adjudicated `/clone-check` runs only when the author asks or `/build` reaches stage 4.
-Reusing a proven device is legitimate; a repeated driver or a strategy monoculture is not.
+**The fingerprint guard is mandatory and free.** The card is registered the moment the draw is fixed and
+committed with it, so builds in flight guard each other. `guard.py mechanisms` reads every spent driver on the
+objective in one screen before drawing; personas come from `guard.py names --geo <geo> --seed <task number>`,
+never typed; `forum`, `forcing_event` and `org_family` are banned against the last three builds. Reusing a
+proven device is legitimate; a repeated driver or a strategy monoculture is not.
 
 **Determinism is a construction, not an inspection**: invoke `determinism-check` while the ladder and the
-generator are written. Its judge thread is spawned only when the author asks or `/build` reaches stage 5.
+generator are written. Its judge thread is spawned at stage 4, by `/fix-determinism`, or when the author asks.
 
-## Per-author rules
+## Git: one branch, commits at status changes only
 
-Authors keep standing rules (branch prefixes, lanes) in `.claude/authors/<handle>.md`. At session start
-read the file matching the session user's email and follow it; ignore every other author's file. Task
-numbers come from the root `START_HERE.md`; a session builds the number it was handed and sets its
-Status on main, so no two sessions draw the same `taskNN`.
+There is one branch, `main`. No build, skill or status branch is created, and no pull request is opened.
+
+- **Commit only at a status change**, never at a stage boundary: `DRAWN (taskNN)` (the card, `pipeline.json`
+  and the design note, so other builds' guard sees the draw), `SHIPPED (taskNN): <the call>`, `RESHIPPED
+  (taskNN): <what the repair moved>` after a fix command, `PAUSED (taskNN)` with the resume step in
+  `pipeline.json`, `RETIRED (taskNN)`. A skill change is its own commit, `SKILLS: <the rule>`.
+- **Each commit carries every artifact that status touches:** the task folder, its card, its ledger row, and at
+  ship `target.zip` and the `golden/` files added with `git add -f`. Stage paths by name; never `git add -A`.
+- **Before every push:** `git pull --rebase origin main`, then push. Task folders and cards are one file per
+  build, so they never collide; on a ledger conflict keep both rows. Never force-push, never rewrite history,
+  never commit `.cache/` or anything `.gitignore` names.
+- Status is never edited in a shared file: `pipeline.json` carries it, and `status.py` prints the board.
+
+## Lanes, authors and handoffs
+
+Task numbers come from the root `START_HERE.md`, numbered by objective; each lane has one owner. At session
+start read `.claude/authors/<handle>.md` for the session user's email (the lane and the status page) and ignore
+the others. `status.py next <handle>` names the next open number; at most two builds in flight per author.
+Resuming a paused build: read `handoffs/<handle>.md` if it names the task, then `pipeline.json` and the design
+note's `## Tried and rejected`.
 
 ## How a build is worked
 
 1. **Deliver before bookkeeping.** Finish and hand over what was asked; only then the ledger row, skill
-   lessons, house fixes or memory. This defers filing, never design or a skill. The ledger row is
-   rewritten whenever a build's status changes (drawn, built, shipped, re-rooted, retired) and takes the
-   portal result the day the author reports it (`stumping/references/shipped-ledger.md`).
+   lessons, house fixes or memory. This defers filing, never design or a skill. The ledger row is written
+   at ship (or retirement) and takes the portal result the day the author reports it
+   (`stumping/references/shipped-ledger.md`).
 2. **One design note per build, with an append-only `## Tried and rejected` section** (that exact
    heading). When an approach dies, add one line: what was tried and why it died, written at the moment
    it is abandoned. Every iteration reads it first.
 3. **No backups, snapshots or versioned design docs.** Banned in a task folder: `DESIGN_V2.md` and
    later, `_v*_snapshot.zip`, `.bak`, dated copies of the prompt or golden, a second design note. Allowed
-   beside the note: `START_HERE.md` (never edited once the build starts), `pipeline.json` (state only),
-   `generator/figures.json`, and the leak, clone and determinism reports (evidence). Older folders may
-   also hold `solver_rounds/`, kept as history. A build that cannot be rebuilt from its generator has a
+   beside the note: `pipeline.json` (state only), `generator/figures.json`, and the leak, clone and
+   determinism reports (evidence). Older folders may also hold `START_HERE.md` (the seed they were numbered
+   from) and `solver_rounds/`, kept as history. A build that cannot be rebuilt from its generator has a
    broken generator.
 
 ## Standing rules

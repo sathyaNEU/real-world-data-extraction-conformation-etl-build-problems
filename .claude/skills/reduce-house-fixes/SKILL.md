@@ -257,6 +257,36 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
   organisations than the ladder needs so "constructed" does not mark the decisive ones; re-check
   camouflage.
 
+## H23. An ask whose wording presupposes what the data holds
+- **Defect.** An ask requests a count with a property of the counted items, or names a subset or a direction
+  of change as given ("how many of them and what they cost", "the sites where it fell"), so the prompt states
+  a fact about the data before a file is opened.
+- **Cost.** The client's prompt review fails the prompt on it alone, as a leak; where a rung or device depends
+  on the presupposed fact, the step is also handed over.
+- **Line.** A fact the requester knows before any analysis (their own sites, the cut-over date) is furniture;
+  a fact only the analysis establishes (a count is non-zero, a subset exists, a figure moved one way) fails.
+- **Check.** Read every ask about a subset with "none" as its answer; flag
+  `how many[^.]* and (what|which|how much) (they|their|those|it|its)` unless the sentence carries "whether" or
+  "if so".
+- **Repair.** Make "none" grammatical and keep every figure, unit, rounding and per-unit structure, so the
+  criteria count does not move; never delete or fold the ask. Where a unit's answer is zero, golden and
+  write-up say "none".
+
+## H24. A provenance record that steps outside the fiction
+- **Defect.** Every file reads as the organisation's own record except the provenance or licence file, which
+  says in the author's voice that the files were constructed, invented or made for an exercise.
+- **Cost.** The client's input-asset review fails the pack on authorship, blocking on its own; it is often the
+  first file opened and the review stops there.
+- **Line.** Who compiled the folder and when, the licence, each file's source and pull date, and real names used
+  descriptively stay. Any statement that the world is constructed goes to the design note, the card and the
+  portal's provenance field, never under `target/`.
+- **Check.** Sweep `target/` for a sentence saying the pack was built ("constructed for this exercise", "are
+  invented", "are fictional"); read the bare words "fictional", "fictitious" and "this exercise" in documents.
+- **Repair.** Rewrite it in the generator as the organisation's own compile note (a team the pack already uses,
+  the pack's export date), rebuild, confirm every other file, the golden and the write-up byte-identical (H7).
+- **Tooling.** `leak.py` sweep 2: the built-pack sentence is LEAK in any file, the bare words REVIEW in
+  documents; it cannot tell an in-world "fictitious vendor" from a tell.
+
 ---
 
 ## Adding an entry

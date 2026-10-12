@@ -44,11 +44,12 @@ extract keyed by medical record number; an antenatal vaccination register keyed 
 to infants through the birth record file; school enrolment rosters with school names spelled as each school spells
 them.
 
-**Layer 2 (the analytical shortcut).** Reading the cases notified so far for the last fortnight as the fortnight's
-cases. The protocol's excess is defined on specimens collected in the 14 days before the extract; the line list holds
-only the specimens that have been notified, and how many have is a property of each area's laboratory route. A careful
-analyst who sees the shortfall still pools the delay across the unit; an expert estimates each route's own
-specimen-to-notification delay from the completed history in the file and nowcasts each area on it.
+**Layer 2 (the analytical shortcut).** Completing the fortnight on one delay pooled across the unit. The protocol's
+excess is defined on the cases with specimens collected in the 14 days before the extract, as the count will stand once
+all are notified (4.2); the line list holds only the specimens that have been notified, and how many have is a property
+of each area's laboratory route. A careful analyst who sees the shortfall still pools the delay across the unit; an
+expert estimates each route's own specimen-to-notification delay from the completed history in the file and nowcasts
+each area on it.
 
 **Similarity claim.** No prior build turns on right-truncated counts read across reporting routes of different speed.
 task229 (a release-health alert on interval meter reads) has days the MDM held nothing for until its estimation run,
@@ -67,11 +68,12 @@ comparison design against confounding, not a count read before its records have 
   imputation, UTC stamps, split postcodes, record linkage across three registers, school spellings). Layer 2: the
   nowcast on each route's own delay.
 - **Rule 3, the decisive step is analytical.** Class `analytical`. Analyst test: a strong analyst who removes the
-  duplicate notifications, applies the case definition, maps every case to its area and computes the protocol's
-  expected counts exactly still compares the cases notified so far for the fortnight (or a nowcast on one pooled delay)
-  with the expected counts and sends the team to Wagga Wagga; only a nowcast on each area's own route shows Griffith's
-  fortnight several times above its expected count. Rule application (the expected-count arithmetic, the episode rule,
-  the cluster rule) and data semantics (UTC stamps, the probable class) sit on lower rungs and in the asks.
+  duplicate notifications, applies the case definition, maps every case to its area, computes the protocol's
+  expected counts exactly and reads 4.2's count as the fortnight's cases once all are notified still completes the
+  notified counts on one delay pooled across the unit and sends the team to Wagga Wagga; only a nowcast on each area's
+  own route shows Griffith's fortnight several times above its expected count. Rule application (the expected-count
+  arithmetic, the episode rule, the cluster rule, 4.2's definition of the count) and data semantics (UTC stamps, the
+  probable class) sit on lower rungs and in the asks.
 
 ## GATE G
 
@@ -91,16 +93,18 @@ comparison design against confounding, not a count read before its records have 
 
 ## STUMP SENTENCE
 
-A competent solver counts the cases notified with specimens collected in the 14 days to Sunday 4 October in each area
-against PR-07's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the
-unit's pooled delay and still lands there); the step that lands it there is reading the specimens notified so far as
-the specimens collected, when Griffith's swabs go by courier to Sydney and, at Griffith's own specimen-to-notification
-delay, its fortnight is several times what has arrived.
+A competent solver reads PR-07 4.2's count as the fortnight's cases once all are notified, completes each area's
+notified count on one specimen-to-notification delay pooled across the unit and sends the team to Wagga Wagga (excess
+13.43 against Griffith and Snowy Valleys 10.13); the step that lands it there is pooling the delay, when the pooled history is
+mostly the hospital laboratory's and Griffith's swabs go by courier to Sydney through Inland Pathology, so that,
+completed on each route's own delay, Griffith's fortnight is several times what has been notified (excess 30.97 against
+Wagga Wagga 9.74).
 
 ## ENTITY AND UNIT OF VALUE
 
 One local government area, one team-week. PR-07's excess is a count of cases (confirmed and probable) with specimens
-collected in the 14 days before the extract day, less the area's expected count for the same 14 days.
+collected in the 14 days before the extract day, as the count will stand once all their notifications have been
+received (4.2), less the area's expected count for the same 14 days.
 
 ## LADDER (shipped; every rung asserted by name in `generator/checks.py`)
 
@@ -121,13 +125,18 @@ Route speeds as shipped (specimen collection to notification, local dates):
 
 | Rung | Construction | First (excess or score) | Next | Margin | Griffith | Killed by |
 |---|---|---|---|---|---|---|
-| 0 | Cases notified with specimens 21 Sep to 4 Oct | Wagga Wagga 9 | Griffith 7 (= Snowy Valleys) | 1.29 | 2nd, tied | PR-07 4.2 is an excess over the expected count |
-| 1 | PR-07 excess on the cases notified so far | Wagga Wagga 7.6 | Griffith 5.6 (= Snowy Valleys) | 1.36 | 2nd, tied | the fortnight is not all notified: Inland Pathology notifies 8% of specimens within 7 days and 76% within 14 |
-| 1b | The same on notification date, protocol's expected count | Wagga Wagga 10.6 | Griffith 6.6 | 1.61 | 2nd | PR-07 4.2 and 3.5 count specimens collected |
+| 0 | Cases notified with specimens 21 Sep to 4 Oct | Wagga Wagga 9 | Griffith 7 (= Snowy Valleys) | 1.29 | 2nd, tied | PR-07 4.2's definition: the count is the fortnight's cases once all are notified, set against the expected count |
+| 1 | PR-07 excess on the cases notified so far | Wagga Wagga 7.6 | Griffith 5.6 (= Snowy Valleys) | 1.36 | 2nd, tied | PR-07 4.2's definition: the count is the fortnight's cases once all are notified, and Inland Pathology notifies 8% of specimens within 7 days and 76% within 14 |
+| 1b | The same on notification date, protocol's expected count | Wagga Wagga 10.6 | Griffith 6.6 | 1.61 | 2nd | PR-07 4.2 and 3.5 count specimens collected, once all are notified |
 | 1b' | The same, expected count also on notification dates | Wagga Wagga 10.6 | Griffith 6.2 | 1.71 | 2nd | as 1b |
-| 2 | Notified over expected | Wagga Wagga 6.43 | Griffith 5.00 (= Snowy Valleys) | 1.29 | 2nd, tied | PR-07 4.2 is a count excess |
+| 2 | Notified over expected | Wagga Wagga 6.43 | Griffith 5.00 (= Snowy Valleys) | 1.29 | 2nd, tied | PR-07 4.2's definition: a count excess, on the fortnight's cases once all are notified |
 | 3 | Nowcast on one delay pooled across the unit (aggregate inflation, 12 months, daily) | Wagga Wagga 13.43 | Griffith 10.13 (= Snowy Valleys) | 1.33 | 2nd, tied | the pooled delay is mostly the hospital route's; Inland Pathology's is several times slower |
 | 4 (answer) | Nowcast each area on its own route's delay (aggregate inflation, 12 months, daily, by route) | **Griffith 30.97** | Wagga Wagga 9.74 | 3.18 | 1st | |
+
+Rungs 0 to 2 (1b and 1b' with them) read the cases notified so far, and 4.2's definition of the count kills them in
+writing; they are the readings of a solver who skips the definition, not the stump. Rung 3 (the count completed on the
+unit's pooled delay, Wagga Wagga) and rung 4 (each route on its own delay, Griffith) stand, and the step between them is
+the stump.
 
 Expected counts (PR-07 4.3, mean of 21 September to 4 October in 2021 to 2025): Wagga Wagga, Griffith and Snowy Valleys
 1.4; Leeton and Cootamundra-Gundagai 0.6; Narrandera and Edward River 0.4; Murrumbidgee, Hay and Junee 0.2. Notified in
@@ -188,6 +197,14 @@ count and nowcast. 14 Row order: irrelevant. 15 Duplicates: the episode rule. 16
 laboratories; the mother's Medicare number for the antenatal link. 17 Netting: none. 18 Units: cases. 19 Code
 semantics: case status confirmed or probable under the definition in force at the specimen date; PR-07 counts both. 20
 Integerisation: none in the call. 21 Scope: pertussis only. 22 Forward window: none.
+
+The estimand (axis 12 with axis 4): pinned in PR-07 4.2, stated once in the highest-authority filed document. The count
+is every case with a specimen in the 14 days as it will stand once all the notifications for those days have been
+received, the quantity 4.3 counts in five complete years, and a case belongs to the 14 days of its first specimen
+whenever its notification is received; the 07:00 extract is the day's data (4.1), not the count. Closure: the pin, which
+defines what is counted and never how (the BANNED and METHOD sweeps in `checks.py`). The method stays open and is the
+decisive step: completing the count on the unit's pooled delay gives Wagga Wagga in all 18 pooled cells, on each route's
+own delay Griffith in all 36 route-specific cells.
 
 As shipped: axis 9 (boundary): the nearest rung margin is 1.29 (rungs 0 and 2). Axis 10 (rounding):
 expected counts are exact fifths and print at one decimal; the slide's route shares are whole per cents, 76.04 and 100.
@@ -268,19 +285,34 @@ PR-07 v3.1 (`PR-07_pertussis_response_protocol.pdf`, effective 2 March 2026): 1.
 to 2.4 case definition, the 1 July 2024 revision and both statuses counted; 3.1 one row per laboratory notification, 3.2
 onset imputation (specimen date less 10 days), 3.3 the 90-day episode rule, 3.4 residential postcode and the larger
 population share for split postcodes, 3.5 every count dated by first specimen; 4.1 one area a week from the 07:00
-Monday extract, 4.2 the deciding excess, 4.3 the expected count, 4.4 team leader confirmations; 5.1 the cluster rule and
+Monday extract, 4.2 the deciding excess and the count it is taken on (below), 4.3 the expected count, 4.4 team leader
+confirmations; 5.1 the cluster rule and
 the slide's list (the clusters in the area the team goes to, its school visits under 4.4), 5.2 cluster follow-up; 6.1 infants, 6.2 the admission link, 6.3 the maternal vaccination link; 7.1 the
 quarterly report. Line-list notes: field semantics, the school fields added to the interview on 1 September 2026, the
 linked files. No shipped sentence mentions the time a notification takes, completeness, backfill or nowcasting
 (asserted over every text-bearing file and the prompt, with the banned list in `checks.py`).
 
-**Why 4.2 reads as the eventual count, the main Gate C risk.** 4.1 names the 07:00 extract as the day's data and 4.2
-names the quantity: cases with specimens collected in the 14 days before the extract day, the same quantity 4.3 counts
-on the same 14 dates in five complete years. A case exists from its positive specimen (2.1, 3.5), not from its
-notification, and the expected count is built on years in which every case has long since been notified, so setting
-the cases notified so far against it is not like for like. The literal reading (count what the extract holds) is rung
-1; the leak reader's pass 1 planned it in those words ("PR-07 has no lag adjustment") while noting Griffith's slow
-route, so the judge is pointed at this sentence.
+**PR-07 4.2 as shipped:** "The team goes to the area with the largest excess, over its expected count, of cases with
+specimens collected in the 14 days before the extract day. The count is the number of such cases as it will stand once
+all the notifications for those 14 days have been received, the same quantity 4.3 counts for each of the previous five
+years. A case belongs to the 14 days in which its first specimen was collected, whenever its notification is
+received." The author's wording, in the protocol's voice: a notification "is received" (`arriv\w*` is on the banned
+list), "the 14 days in which its first specimen was collected" for "the fortnight of its specimen" (3.3, 3.5), and 4.3's
+own "previous five years". No word on the banned list was needed, so no ban was narrowed, and `checks.py` adds a METHOD
+sweep over the protocol (estimate, route, speed, model, adjust, forecast, predict, project, inflate, scale, weight,
+complete). It also asserts that no other file restates the pin, and that built with d6944e3's 4.2 the protocol is
+d6944e3's file to the byte. The version stays 3.1 with no history row (a history line invites the question of why;
+Tried and rejected).
+
+**Why 4.2 reads as the eventual count, the Gate C question.** It says so. The count is every case with a specimen in the
+14 days as it will stand once all the notifications for those days have been received, the quantity 4.3 counts in five
+complete years, and a late notification still counts in the 14 days of its first specimen. 4.1 still names the 07:00
+extract as the day's data, so the count has to be reached from the extract, and no file says how. The earlier wording
+("the largest excess of cases with specimens collected in the 14 days before the extract day over its expected count")
+left the cases on the extract defensible: the portal's determinism QC on the re-test read 4.1's "from the line-list
+extract" as favouring them, and the leak reader's three passes and solver rounds 2 and 3 all planned on them. The
+definition closes that reading and names no method, so one delay pooled across the unit against each route's own is
+still the analyst's choice, and it is the stump.
 
 ## PACK GATES (shipped)
 
@@ -300,8 +332,10 @@ route, so the judge is pointed at this sentence.
 
 11 files, 6 formats (csv, md, parquet, pdf, txt, xlsx); two files over 25,000 rows; two distractors named in
 `metadata.json`, asserted unused (the golden recomputes unchanged with each removed). Goldens:
-`golden/response_team_brief.pptx` (one slide) and `golden/pertussis_cases_by_lga.csv`. `checks.py`: 488 assertions
-passed. `verify.py` (standard library, openpyxl and pyarrow, no code shared with `golden.py`): OK, Griffith, rungs 0 to
+`golden/response_team_brief.pptx` (one slide) and `golden/pertussis_cases_by_lga.csv`. `checks.py`: 508 assertions
+passed (after the 4.2 pin; the gate holds the prompt and eight files to d6944e3's bytes, the protocol to d6944e3's but
+for 4.2, the quarterly table's three files and its golden to df378aa's, and the main-call fingerprint to
+2e6c46341f359476). `verify.py` (standard library, openpyxl and pyarrow, no code shared with `golden.py`): OK, Griffith, rungs 0 to
 3 Wagga Wagga, Griffith's 2 clusters (5 unit-wide), 50 ask A figures and both route speeds, each matched against the
 goldens. Two consecutive
 builds byte-identical over `target/`, `golden/` and `metadata.json` (sha256).
@@ -371,6 +405,23 @@ rule the prompt cites, questions 2 to 4 none, every REVIEW line harmless. The ro
 Griffith schools (30 September and 1 October), which the reader called "at most a weak sign of recent activity": it is
 the slow route showing (Griffith's first school cases were notified late), the order is honest, and it names no area or
 cluster. Its plan files Wagga Wagga at rung 1, stable under every 14-day variant it tried, without a word on delay.
+
+**Rerun after the 4.2 pin (2026-10-11).** Only PR-07's text changed (PINS); every other file under `target/` is
+byte-identical. `leak.py task181 --asof 2026-10-05 --quiet`: REVIEW, the same twelve lines, no LEAK and no new line. The
+design-note counts moved because the paragraphs the sweep draws its 25 terms from were rewritten (`complete`, `pooled`
+and `eventual` are among the terms now), not because a document did. Each line:
+
+- The bulletin's 100 and PR-07's 4 of 5 call words: as above; the pin names no area.
+- PR-07, 11 terms (notifications, definition, notified, expected, health, griffith, specimen, received, excess,
+  specimens, record): the d6944e3 protocol carries the same 11 against this vocabulary, so the pin adds none. Its words
+  are the protocol's own, and it names no method (no nowcast, pooled, complete, eventual, fortnight or method). Harmless.
+- The run report, 5 (health, specimen, received, record, and complete through the job's `COMPLETED` status), the
+  bulletin, 6, and the notes, 5: byte-identical, each on its own subject. Harmless.
+- Ranking artifacts (PR-07, the bulletin, the line list, the concordance, the rosters) and the parquet's 1,177 due
+  dates: as above. Harmless.
+
+The reader has not read the pack since the pin; a document under `target/` changed, so a re-read is due before the next
+round.
 
 ## DUPLICATE CHECK (stage 5)
 
@@ -442,15 +493,16 @@ Tiffany Peters, all on the card (Colleen Brown is in the rosters workbook, which
 
    Every record is correct.
 3. **The flip is a method.** The flip is completing each area's fortnight from its own laboratory route's delay history.
-   PR-07 is silent on delay, so the solver has to choose to estimate. Nothing is planted to catch, and no field, code or
-   stated rule decides it.
-4. **Analyst test.** It holds. Cleaned and read correctly, the easy route sets the cases notified so far against PR-07's
-   expected count, or nowcasts on one pooled delay, and sends the team to Wagga Wagga (7.6 against 5.6). In-house solver
-   rounds 2 and 3 both took that route.
+   PR-07 4.2 defines the count (the fortnight's cases once all are notified) and is silent on delay, so the solver has
+   to choose how to reach it from the extract. Nothing is planted to catch, and no field, code or stated rule decides it.
+4. **Analyst test.** It holds. Cleaned and read correctly, 4.2's count completed on one delay pooled across the unit
+   sends the team to Wagga Wagga (13.43 against 10.13). In-house solver rounds 2 and 3 stopped a rung lower, at the cases
+   notified so far (7.6 against 5.6), a reading 4.2's definition now rules out in writing.
 5. **The estimand is defined.** PR-07 4.2 to 4.3 define the quantity: cases (3.3) dated by first specimen (3.5), collected
-   in the 14 days before the extract day, set against the mean of the same dates in five complete years. Only an estimate
-   of the cases collected is like for like. Judge pass 2 ruled the on-file count the trap, not a licensed reading, and
-   found Griffith first under all 33 nowcast variants.
+   in the 14 days before the extract day, counted as they will stand once all their notifications have been received,
+   set against the mean of the same dates in five complete years. Judge pass 2 found Griffith first under all 33 nowcast
+   variants; the portal's determinism QC on the re-test read the earlier 4.2 as open between the on-file count and the
+   eventual count, and 4.2 now states the eventual count.
 6. **No decoy.** No memo, draft or briefing argues for Wagga Wagga. The two declared distractors carry no recommendation:
    the week-35 report counts notifications by week received, and the influenza file holds another condition's
    notifications.
@@ -465,6 +517,43 @@ Tiffany Peters, all on the card (Colleen Brown is in the rosters workbook, which
 
 Two rounds in which the solver nowcasts each route unprompted file this architecture as at-ceiling; a miss that lands
 anywhere other than rungs 0 to 3 is read for a fork before any hardening.
+
+## DETERMINISM RETURN (portal QC, Response 2, 2026-10-11)
+
+**The finding** (`oviya-notes/portal-task181-determinism-response2.md`). Read literally, PR-07 4.1 to 4.3 count the
+cases on the 07:00 extract, so the committed Griffith contradicts the files (Wagga Wagga 9 against Griffith and Snowy
+Valleys 7, excess 7.6 against 5.6); even granting a completion, its variants (history, estimator) were left open.
+Required: a PR-07 clause that makes the completion mandatory and single-valued. A second open axis: the CSV infant
+columns rest on a birth-link judgement (the request's month-first date of birth, the mother's reissued card).
+
+**The clause, designed and measured, not built.** PR-07 4.2a in the protocol's voice: "The count is completed laboratory
+by laboratory before the excess is taken. Each laboratory's cases with first specimens in the 14 days are divided by
+that laboratory's share of the cases a Monday extract holds: of its cases with first specimens in the 14 days before
+each Monday from 1 September 2025 to 31 August 2026, as they now stand, the share whose first notification had been
+received by 07:00 that Monday. A case belongs to the laboratory whose notification of it was received first." A share
+taken on Monday extracts and not a per-day share, because Inland Pathology keys its routine results in a Wednesday batch
+(91 of its 96 receipts, specimens August 2025 to July 2026): a per-day share then turns on how the empty days after the
+Tuesday courier are read, and one urgent result can carry a weight of twenty.
+
+**Measured** (scratch `oviya-notes/t181-det/proto/sweepA.py`, the shipped world on urgent-stream seeds 0 to 11). The
+clause names Griffith on all 12 seeds at 2.87 to 4.44 times Wagga Wagga (Inland's share 0.140 to 0.217, the hospital
+laboratory's about 0.82). Every variant names Griffith on every seed: Mondays over 6 months (2.55 to 4.18) or 3 years
+(3.10 to 3.99), Mondays run to the extract (2.88 to 4.62), a case's laboratory by its first specimen (2.49 to 4.21), the
+same 14 dates of 2023 to 2025 at 07:00 on 5 October (1.95 to 3.93, Inland's share from 6 cases), and each case over its
+laboratory's per-day share (2.95 to 7.43). Only a share pooled across the laboratories names Wagga Wagga (1.33 on every
+seed), and "laboratory by laboratory" rules it out.
+
+**Infant columns.** Three readings to close before any rebuild: the infant's age from the request's date of birth or the
+birth record's (6.1); the link when a case's medical record number is in neither file (6.2); the mother's register key
+with or without the card's issue digit (6.3). Filed in PR-07, each is single-valued but becomes a filed rule the cracker
+executes, so the ask layer would need new devices; closed by convergence (a second record that contradicts the
+request's date, such as an earlier admission on the same medical record number), the device stays silent.
+
+**Status.** With 4.2a filed, a solver who executes PR-07 lands Griffith (round 4 already completed by laboratory
+unprompted), and on the portal's rubric a response that lands the call banks about 58 before it answers an ask (the
+call and its dependent figures about 48, format about 10), so the build cannot pass the bar. No stump survives with the
+method filed (Tried and rejected, 2026-10-11 entries). Nothing under `target/` or `golden/`, no
+prompt and no write-up has changed; the author decides what comes next.
 
 ## Tried and rejected
 
@@ -499,3 +588,156 @@ anywhere other than rungs 0 to 3 is read for a fork before any hardening.
   word sweep in `checks.py`).
 - Solver round 2 (architecture 2) missed the call at rung 1 but answered every ask, proxy 65.2; the slide's cluster list now follows the call (the team's school visits), so a wrong area carries a wrong list.
 - **Portal round 1 (2026-10-11): ask A's devices as shipped did not bite.** The response filed all 15 graded CSV figures (42 points, 52 with the format points against the bar of 50), because each device was a stated rule or a step the hygiene battery runs: the 90-day episode, probable status, the 14-day admission link, the pregnancy window, the six-month boundary, split postcodes, eight-digit MRNs and the Medicare format. Revised on ask-path data alone (A1 to A3 under ASK SHEET). Not taken: any line-list device (the run report carries the line list's sha256, so one changed byte changes the job file the gate holds), and a `dTpa-IPV` antigen label (a value count shows it).
+- Portal determinism QC (2026-10-11): the unpinned 4.2 left the observed-count reading defensible; pinned the estimand (the eventual count), not the method. Not taken: the QC's proposal to write the delay completion into 4.2, which would make the decisive step rule application and hand every solver Griffith.
+- **Round 4 after the 4.2 pin (2026-10-11): landed, proxy 96.8.**
+  - **What it did:** with 4.2 now defining the count, it completed each case by its own laboratory's historical delay
+    ("Allowed for reporting delay using each lab's historical delay from first specimen to first receipt (cases before
+    Jul 2026)"). That gave Griffith 60.6 against Wagga Wagga 9.3, and it never visited the pooled rung.
+  - **Why the stump went:** before the pin, the stump rested on not completing the fortnight at all (rung 1), which
+    was the portal's fork. Once the count is defined, the two laboratories' delays (median 12 days against 2) make the
+    per-laboratory completion the obvious first move.
+  - **Decision:** hardening loop on architecture 2.
+- **Hardening loop 1 after round 4 (2026-10-11): a dated change in Inland Pathology's pertussis process, measured on
+  prototypes and not built.** Pertussis PCR on Inland's regional bench before the change (daily van, a run every working
+  day: median 2 days, 95th percentile 4 over the 12 months to July, the hospital's speed) and on the Sydney route as
+  shipped after it, so each laboratory's 12-month history is the old fast one.
+  - **Trap side:** on histories that end before the change, the per-laboratory completion names Wagga Wagga in every
+    cell, but at 1.05 to 1.35 over the route-specific cells (round 4's per-case method on the 12 months to 30 June:
+    Wagga Wagga 7.91 against Griffith 5.90). With both laboratories fast it cannot sit further apart than the notified
+    excesses (7.6 against 5.6). A reporting triangle that runs to 4 October takes in the post-change cohorts and falls
+    to 1.01 to 1.24.
+  - **Answer side:** Inland Pathology notifies about 8 pertussis specimens a month (96 in the 12 months to July 2026).
+    A change on 1 August leaves 18 post-change notifications on the extract, 5 of them in cohorts complete by then; on
+    1 July, 25 and 12. The route cells name Griffith (1.30 to 15.9 at 1 August, 1.42 to 6.55 at 1 July), but the
+    by-area cells have no post-change history to run on (undefined, and Leeton infinite on one row).
+  - **Rescue tried:** ten designed early-September Inland cases (no school, so neither ask moves) lift the truncated
+    route cells to 1.83 and leave the by-area cells undefined. They also put September cohorts into every triangle
+    that runs to 4 October, which flips old-history cells to Griffith: one on round 4's history to 30 June, seven on
+    the 12 months to the extract. The trap and the answer pull on the same few notifications.
+  - **Literal rule (main, PR #39):** the window would need a filed criterion. "The experience that applies to the
+    fortnight's own specimens" (or "that has held steady") closes the 12-month reading only by naming the step a
+    clause-reading solver then runs, and the natural wording needs words `checks.py` bans (turnaround, completed). A
+    back-test on the last closed fortnight cannot separate the candidates: 10 to 23 August, as at 07:00 on 24 August,
+    holds one Griffith case (Inland, not yet on that extract) and 2 (1 August change) or 9 (1 July) post-change Inland
+    notifications.
+  - **Decision:** nothing under `target/` or `golden/`, no prompt and no write-up changed. Once the literal rule files
+    which delay experience completes the fortnight, that choice is the route round 4 already ran, so the
+    recommendation is a re-root rather than loops 2 and 3. The shipped pack also leaves pooled against per-route
+    with no filed criterion; judge pass 3 closed that on the data alone, which the literal rule no longer accepts.
+- **Determinism return, Response 2 (2026-10-11): the completion filed single-valued leaves no stump on the call.** The
+  clause and its measurement are under DETERMINISM RETURN: filed by laboratory, every variant names Griffith on 12 of 12
+  seeds, so the step that carried this architecture becomes a work order. Each new direction below was tried with the
+  method filed and died.
+  - **The Wednesday batch (measured, the nearest miss).** Inland Pathology keys routine results on Wednesdays, so at a
+    Monday extract only the specimens on the Tuesday courier can be on file. With Griffith's two urgent window results
+    made routine (scratch `sweepB.py`, `sweepB2.py`, seeds 0 to 11), every per-day completion names Wagga Wagga
+    (weekday-pooled 1.14 to 1.31, weekday-stratified 1.15 to 1.38; Griffith completed to 7.4 to 8.5, because a per-day
+    completion has nothing to inflate on the empty days), while the fortnight's share names Griffith (calendar 1.72 to
+    2.47, Monday extracts 1.90 to 2.95; Griffith 18 to 30, truth 41). It lives only while the estimator is open: filed per
+    day, the protocol's own method gives the wrong area (a decoy); filed per fortnight, it is a work order; left open, it
+    is the variant fork this return rejected. Nor is the per-day answer wrong in itself: an urgent request (7 per cent of
+    Inland PCRs) is keyed within days, so a per-day completion is unbiased and fails only on the draw where none of the
+    35 Griffith specimens that missed the Tuesday courier went urgent (0.93 to the 35th, about 1 in 13), which the data
+    would have to be cut to show; on the shipped draw (2 urgent) every per-day completion names Griffith. Round 4 also
+    ran a per-day and a fortnight completion side by side, so a solver sees the threefold disagreement.
+  - **A filed back-test choosing the estimator (measured).** Run at each Monday from March to August 2026 (world B,
+    seeds 0, 3, 7, `backtestB.py`): mean absolute miss 0.48 to 0.53 for per-day, fortnight and Monday-extract alike (area
+    fortnights of 0 to 2 cases cannot separate them); largest miss per-day 16.0 to 19.3 (one urgent result weighted
+    about twenty), fortnight 5.75 to 6.27, Monday extract 5.86 to 7.31. A largest-miss criterion drops per-day and both
+    survivors name Griffith, so the filed criterion hands over the call (a control bench); the organ is task446's, and
+    architecture 3 measured that closed records this thin do not pin a method.
+  - **Right truncation inside the delay history.** With the history ending before the 14 days, its unfinished cohorts
+    are 15 days old or more: running the Mondays to the extract moves Inland's share by under 0.01 (0.140 to 0.217
+    against 0.132 to 0.212), and solvers take complete cohorts by reflex (round 4).
+  - **Case-level against notification-level delays (the unit).** A case's laboratory by first specimen instead of first
+    receipt moves the margin under 10 per cent on every seed; 7 per cent of non-infant cases have a second laboratory, and
+    round 4 measured first specimen to first receipt unprompted.
+  - **The expected count as the decisive step.** 4.3 files the five-year mean (rule application); worded as the area's
+    usual count, mean, median and leaving out 2024 all stand (a fork); and expected counts of 0.2 to 1.4 cannot move a
+    completed excess of 20 or more.
+  - **A second truncation or a missing route.** A case re-dated out of the 14 days once a slower earlier specimen is
+    keyed is rare and has no single completion; a laboratory with nothing on file for an area completes to zero under any
+    per-laboratory clause; a window on onset dates needs specimens not yet collected (a forecast, a fork).
+  - **The ratio against the difference.** Setting the notified count against prior years as they stood at the same hour
+    (`samelag.py`) keeps the ratio (Griffith 11.7 against Wagga Wagga 7.5) but shrinks the difference by the completeness
+    (Griffith 6.4 against Wagga Wagga 7.8); with the completion mandatory no solver takes that route, and filing it would
+    make the protocol the decoy.
+  - **Redesigns that keep "which area".** Excess per resident, the excess over the district-wide rise, growth, infant
+    exposure, school clusters, a reliability hold on the completion, test positivity: each is a filed formula (rule
+    application) or an open model (a fork). Once the completion is filed, PR-07's quantity is a function of the records
+    and its rules, and none of these adds an estimand the data alone settles.
+
+- **Architecture 3 (designed on its own branch and spent 2026-10-11; its record folded in here when the repo moved to one branch).** Its design note is not kept; what died, verbatim:
+  - **Draws weighed for architecture 3 and not taken.**
+    - Electricity theft against technical losses that scale with the square of the load: task180 v1's revenue-protection
+      territory, task229's smart-meter surface, and a strong solver squares the half-hourly load by reflex.
+    - The variance of a month-to-month change between overlapping survey panels: the same insight as task229 (an error built
+      on the wrong independence), in the other direction.
+    - A registry outlier on cumulative incidence against one minus Kaplan-Meier: spent by task134 and task133 (competing
+      exits).
+    - Overdispersed funnel limits for provider outliers: architecture 2's own rejected fork, and the limits widen on reflex
+      once a criterion files their coverage.
+    - Fabricated interviews found as inliers (too little variance): the only literal pin is a closed reinterview corpus
+      that selects the indicator, which is a corpus-fit rule.
+    - Warranty returns read against an age-specific failure curve (a sales surge's echo against a defect): age-specific
+      rates are the warranty analyst's first move.
+    - The seed's own zone-D vibration split by operating point: the same insight as task180 v2 (a monitored signal carried in
+      from ordinary operation, attributed to its source).
+    - A self-exciting fit with one background rate over five years as the golden's method: it misses the recent rise in
+      Heathfold's background and its forward figures depend on the kernel; the golden projects each estate's recent
+      background instead, and the constant-background fit sits in the grid as a wrong cell.
+    - The same draw labelled time and A: collides with ten older builds, task33's forward-yield signal pick among them.
+  - **Build, stage 3 (2026-10-11): CS-04 2.3's back-test does not select the background projection on honest data, so
+    the closure in LADDER, GRID and CLOSURE axis 22 cannot be built.** Prototyped before any pack was cut (scratch
+    `oviya-notes/t181-a3/proto2.py`, `sweep2.py`, `backtest_feasibility.log`): the eight Appendix B quarters (29 July 2024
+    to 26 July 2026, cut at the end of the Sunday 15 days before each), twelve estates at the planned usual counts and
+    seasonal ratios, Poisson background, four persistent steps of 40 to 60 per cent in the closed period, 25 to 30 runs
+    of 4 to 11 over the quarters and their bases at the same rate before, true run labels standing in for the proximity
+    separation, total absolute miss over the 96 estate-quarters. Over 300 seeds the best count projection misses
+    0.85 times the golden cell's total at the median and 1.03 at most (25 per cent better is required; no seed reaches
+    1.0 by a margin), the usual winter itself (every estate's excess zero) wins the whole back-test in 81 per cent of
+    seeds and shrinkage toward it at 0.75 in most of the rest, and the golden cell (13 weeks, seasonal ratio of all
+    break-ins) is the best background cell in 8 per cent (flat 13 weeks or a background-only ratio win). Twelve steps
+    of 60 to 150 per cent and larger, more frequent runs (6 to 14, 30 to 36 in the closed period) lift the best count
+    cell's ratio to the golden cell to 1.22 at most over 400 seeds and never make the golden cell the background
+    minimum. Why: a 13-week window holds about 10 break-ins, so a 13-week projection carries Poisson noise as large as
+    anything the count projections lose to runs; runs in the target quarters are a miss every projection shares; and the
+    five-winter usual, which needs no recent data, is the most accurate 13-week forecast in this world. Read literally,
+    2.3 would then select the usual (no estate exceeds it), a fork as well as a lost stump. A seed search cannot find the
+    planned margins and a smoother background would be the planted fix the brief rules out, so nothing was cut; the
+    closure goes back to a designer (the criterion, the window, or the volume it runs on).
+  - **Design pass 2, stage 3 (2026-10-11): no criterion, window or volume closes CS-04 2.3 on honest data; architecture
+    3 is spent.** Prototyped across seeds before any design was written (scratch `oviya-notes/t181-a3/proto3.py` to
+    `proto14.py` and their logs). (1) Accuracy criteria, total absolute or squared miss: with shrinkage toward the usual and
+    trailing windows open to both families (the builder's run gave background cells none) the usual rarely wins outright
+    (2 per cent of seeds in the base world), but in all 96 configurations swept (10 to 35 background break-ins an
+    estate-quarter, estate levels changing 0.6 to 1.5 times a year with log SD 0.30 to 0.45, runs started by 3 to 8 per
+    cent of break-ins with 3 to 10 or 8 to 19 follow-ons) the best count projection sits at 0.95 to 1.11 times the best
+    background projection at the median and at most 1.04 at the 10th percentile, because shrinking a count projection
+    toward the usual sheds its runs without changing its estate order, and the target quarter's noise is a floor both
+    families share. Sprees of 15 to 30 under absolute loss reach 1.10; 100 break-ins an estate-quarter (no estate of this
+    size) gives 1.00, since runs started by break-ins scale with the background and average out. Confining the projection
+    to the 13 weeks before the cut opens the count gap to 1.14 but leaves the usual (0.98) and count shrinkage (0.95) ahead
+    of every 13-week background cell, and count shrinkage stays within 1.11 at the median (10th percentile 0.97 to 1.0)
+    even when estate levels jump by a factor of 1.8 a year. (2) Decision-scored criteria (the estate each projection would
+    have funded, or its top three, recorded excess totalled): shrinkage cannot help a count projection and the usual makes
+    no call, but the background family wins only 59 to 88 per cent of seeds (top three, 76 to 95) over 8 or 20 quarters.
+    (3) Rank criteria, the correlation between projected and recorded excess over the usual (pooled over estates and
+    quarters, or by rank within each quarter), over 20 quarters (log from April 2016), the projection confined to the 13
+    weeks to the cut, homes placed in space at 30 to 45 dwellings a hectare and runs separated by proximity rules rather
+    than true labels: the families separate (pooled, at least 1.10 in 87 per cent of 90 seeds, median 1.27; the usual has
+    no spread to score and constant shrinkage leaves the score unchanged), but nothing pins the method inside the
+    background family. At estate densities a 200 m and 14 day rule links 45 to 50 per cent of background break-ins (11 of
+    Heathfold's 17 in a median world) and names another estate while scoring within 6 per cent of the tight rules' best
+    in 44 to 52 per cent of seeds (ahead of them at the 90th percentile); the weekly-median background form ranks on
+    medians of 0 to 2 and topped the per-quarter rank criterion in that median world, for Rookcliffe. With each live
+    autumn sized to its seed's own usual counts, the closure (families at least 1.10 apart, the criterion's best
+    background cell on Heathfold, every cell on another estate at least 9 per cent behind) held in 2 of 12 typical worlds.
+    The planned empty band cannot exist on an honest background either: a 200 m radius covers a fifth of a 2,400-home
+    estate and half its background break-ins have a chance neighbour within 200 m and 14 days, so the band was a planted
+    background, and without it the run set depends on a scale no filed sentence may name. Root cause: about 10 break-ins
+    per estate per 13 weeks, so every choice made after the runs are separated (window, seasonal treatment, robust form,
+    proximity scale) moves the call by more than any closed record of this size discriminates. Filing the scale names the
+    step, an under-dispersed background is planted, and at volumes where noise stops deciding (35 or more a quarter,
+    estates of about 6,000 homes at 25 per 1,000) runs started by break-ins average out and the families stop
+    disagreeing (1.02). Retiring task181 is the author's decision.

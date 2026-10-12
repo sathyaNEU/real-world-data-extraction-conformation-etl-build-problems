@@ -1,0 +1,922 @@
+{
+ "askA": {
+  "A": {
+   "Q1": {
+    "hours": 2726.53,
+    "peak": 18,
+    "solo_hours": 516.17
+   },
+   "Q2": {
+    "hours": 2683.83,
+    "peak": 18,
+    "solo_hours": 534.77
+   },
+   "Q3": {
+    "hours": 2872.85,
+    "peak": 23,
+    "solo_hours": 559.62
+   },
+   "Q4": {
+    "hours": 2795.75,
+    "peak": 20,
+    "solo_hours": 542.72
+   },
+   "own_rule": 15,
+   "rooms_30_sep": 30
+  },
+  "F": {
+   "Q1": {
+    "hours": 2506.75,
+    "peak": 19,
+    "solo_hours": 666.0
+   },
+   "Q2": {
+    "hours": 2684.5,
+    "peak": 19,
+    "solo_hours": 670.5
+   },
+   "Q3": {
+    "hours": 2732.0,
+    "peak": 18,
+    "solo_hours": 697.5
+   },
+   "Q4": {
+    "hours": 2778.5,
+    "peak": 18,
+    "solo_hours": 718.0
+   },
+   "own_rule": 13,
+   "rooms_30_sep": 31
+  },
+  "today_rooms": 61
+ },
+ "askA_device_floors": {
+  "A1 release keyed on status (give-backs held to the end)": 22.33,
+  "A2 combined rows dropped (half rows kept)": 34.7,
+  "F1 cancelled rows filtered before the fold": 17.5,
+  "F2 the fold keyed on the room": 18.0,
+  "G1 people read from the headcount (an outside party on the line counted)": 23.87,
+  "S1 focus blocks read as calls": 62.0
+ },
+ "askA_legacy": {
+  "A": {
+   "Q1": {
+    "hours": 2810.75,
+    "peak": 19,
+    "solo_hours": 593.5
+   },
+   "Q2": {
+    "hours": 2775.0,
+    "peak": 19,
+    "solo_hours": 610.5
+   },
+   "Q3": {
+    "hours": 2933.75,
+    "peak": 23,
+    "solo_hours": 629.0
+   },
+   "Q4": {
+    "hours": 2819.5,
+    "peak": 21,
+    "solo_hours": 603.5
+   },
+   "own_rule": 16,
+   "rooms_30_sep": 30
+  },
+  "F": {
+   "Q1": {
+    "hours": 2570.25,
+    "peak": 19,
+    "solo_hours": 735.0
+   },
+   "Q2": {
+    "hours": 2742.0,
+    "peak": 20,
+    "solo_hours": 769.0
+   },
+   "Q3": {
+    "hours": 2813.5,
+    "peak": 19,
+    "solo_hours": 794.0
+   },
+   "Q4": {
+    "hours": 2859.0,
+    "peak": 20,
+    "solo_hours": 808.0
+   },
+   "own_rule": 14,
+   "rooms_30_sep": 31
+  }
+ },
+ "askA_legacy_peaks_missed": [
+  "A Q1",
+  "A Q2",
+  "A Q4",
+  "F Q2",
+  "F Q3",
+  "F Q4"
+ ],
+ "askA_utc_hazard_moves": 0,
+ "askA_variants": {
+  "A1 release keyed on status (give-backs held to the end)": [
+   "A Q1 hours",
+   "A Q1 solo_hours",
+   "A Q1 peak",
+   "A Q2 hours",
+   "A Q2 solo_hours",
+   "A Q2 peak",
+   "A Q3 hours",
+   "A Q3 solo_hours",
+   "A Q4 hours",
+   "A Q4 solo_hours",
+   "A Q4 peak"
+  ],
+  "A2 combined rows dropped (half rows kept)": [
+   "A Q3 hours",
+   "A Q4 hours"
+  ],
+  "C1 client meetings in meeting rooms counted toward the room count": [
+   "A own_rule",
+   "F own_rule"
+  ],
+  "F1 cancelled rows filtered before the fold": [
+   "F Q1 hours",
+   "F Q1 solo_hours",
+   "F Q2 hours",
+   "F Q2 solo_hours",
+   "F Q3 hours",
+   "F Q3 solo_hours",
+   "F Q3 peak",
+   "F Q4 hours",
+   "F Q4 solo_hours",
+   "F Q4 peak"
+  ],
+  "F2 the fold keyed on the room": [
+   "F Q1 hours",
+   "F Q1 solo_hours",
+   "F Q2 hours",
+   "F Q2 solo_hours",
+   "F Q2 peak",
+   "F Q3 hours",
+   "F Q3 solo_hours",
+   "F Q3 peak",
+   "F Q4 hours",
+   "F Q4 solo_hours",
+   "F Q4 peak"
+  ],
+  "G1 people read from the headcount (an outside party on the line counted)": [
+   "A Q1 solo_hours",
+   "A Q2 solo_hours",
+   "A Q3 solo_hours",
+   "A Q4 solo_hours",
+   "F Q1 solo_hours",
+   "F Q2 solo_hours",
+   "F Q3 solo_hours",
+   "F Q4 solo_hours",
+   "A own_rule",
+   "F own_rule"
+  ],
+  "S1 focus blocks read as calls": [
+   "A Q1 solo_hours",
+   "A Q2 solo_hours",
+   "A Q3 solo_hours",
+   "A Q4 solo_hours",
+   "F Q1 solo_hours",
+   "F Q2 solo_hours",
+   "F Q3 solo_hours",
+   "F Q4 solo_hours"
+  ],
+  "cancelled kept": [
+   "A Q1 hours",
+   "A Q1 peak",
+   "A Q2 hours",
+   "A Q2 solo_hours",
+   "A Q2 peak",
+   "A Q3 hours",
+   "A Q4 hours",
+   "F Q1 hours",
+   "F Q1 solo_hours",
+   "F Q1 peak",
+   "F Q2 hours",
+   "F Q2 solo_hours",
+   "F Q2 peak",
+   "F Q3 hours",
+   "F Q3 solo_hours",
+   "F Q3 peak",
+   "F Q4 hours",
+   "F Q4 solo_hours",
+   "F Q4 peak",
+   "A own_rule",
+   "F own_rule"
+  ],
+  "combined room as one room": [
+   "A Q1 hours",
+   "A Q1 peak",
+   "A Q2 hours",
+   "A Q3 hours",
+   "A Q3 peak",
+   "A Q4 hours"
+  ],
+  "declined rows kept": [
+   "F Q1 hours",
+   "F Q2 hours",
+   "F Q2 peak",
+   "F Q3 hours",
+   "F Q3 peak",
+   "F Q4 hours",
+   "F own_rule"
+  ],
+  "every Adelaide row a room": [
+   "A Q1 hours",
+   "A Q1 peak",
+   "A Q2 hours",
+   "A Q3 hours",
+   "A Q3 peak",
+   "A Q4 hours"
+  ],
+  "released dropped": [
+   "A Q1 hours",
+   "A Q1 solo_hours",
+   "A Q2 hours",
+   "A Q2 solo_hours",
+   "A Q2 peak",
+   "A Q3 hours",
+   "A Q3 solo_hours",
+   "A Q4 hours",
+   "A Q4 solo_hours",
+   "A Q4 peak",
+   "A own_rule"
+  ],
+  "released held to the end": [
+   "A Q1 hours",
+   "A Q1 solo_hours",
+   "A Q1 peak",
+   "A Q2 hours",
+   "A Q2 solo_hours",
+   "A Q2 peak",
+   "A Q3 hours",
+   "A Q3 solo_hours",
+   "A Q4 hours",
+   "A Q4 solo_hours",
+   "A Q4 peak"
+  ],
+  "room type as on 30 September all year": [
+   "A Q1 hours",
+   "A Q2 hours",
+   "A Q3 hours",
+   "A Q3 solo_hours",
+   "A Q3 peak",
+   "A Q4 hours",
+   "A Q4 solo_hours",
+   "A Q4 peak",
+   "F Q1 hours",
+   "F Q2 hours",
+   "F Q2 peak"
+  ],
+  "series rows kept (no fold)": [
+   "F Q1 hours",
+   "F Q1 solo_hours",
+   "F Q2 hours",
+   "F Q2 solo_hours",
+   "F Q2 peak",
+   "F Q3 hours",
+   "F Q3 solo_hours",
+   "F Q3 peak",
+   "F Q4 hours",
+   "F Q4 solo_hours",
+   "F Q4 peak"
+  ],
+  "solo read as one recipient": [
+   "F Q1 solo_hours",
+   "F Q2 solo_hours",
+   "F Q3 solo_hours",
+   "F Q4 solo_hours",
+   "F own_rule"
+  ],
+  "solo read from the app and kiosk only": [
+   "A Q1 solo_hours",
+   "A Q2 solo_hours",
+   "A Q3 solo_hours",
+   "A Q4 solo_hours",
+   "A own_rule"
+  ],
+  "tentative rows dropped": [
+   "F Q1 hours",
+   "F Q2 hours",
+   "F Q3 hours",
+   "F Q4 hours"
+  ]
+ },
+ "assertions": 234,
+ "close_outs": {
+  "A": {
+   "Q1": {
+    "client_rooms": 4,
+    "hours": 3205.53,
+    "meeting_rooms": 33,
+    "peak": 19,
+    "peak_date": "2025-10-07",
+    "utilisation": 14.7
+   },
+   "Q2": {
+    "client_rooms": 4,
+    "hours": 3158.83,
+    "meeting_rooms": 33,
+    "peak": 19,
+    "peak_date": "2026-01-06",
+    "utilisation": 14.0
+   },
+   "Q3": {
+    "client_rooms": 5,
+    "hours": 3349.35,
+    "meeting_rooms": 32,
+    "peak": 23,
+    "peak_date": "2026-05-13",
+    "utilisation": 14.5
+   },
+   "Q4": {
+    "client_rooms": 5,
+    "hours": 3315.25,
+    "meeting_rooms": 31,
+    "peak": 21,
+    "peak_date": "2026-07-22",
+    "utilisation": 14.8
+   }
+  },
+  "F": {
+   "Q1": {
+    "client_rooms": 5,
+    "hours": 2887.25,
+    "meeting_rooms": 28,
+    "peak": 20,
+    "peak_date": "2025-10-14",
+    "utilisation": 14.8
+   },
+   "Q2": {
+    "client_rooms": 5,
+    "hours": 3072.0,
+    "meeting_rooms": 28,
+    "peak": 21,
+    "peak_date": "2026-02-17",
+    "utilisation": 15.3
+   },
+   "Q3": {
+    "client_rooms": 3,
+    "hours": 3140.5,
+    "meeting_rooms": 30,
+    "peak": 20,
+    "peak_date": "2026-04-07",
+    "utilisation": 15.1
+   },
+   "Q4": {
+    "client_rooms": 3,
+    "hours": 3183.0,
+    "meeting_rooms": 30,
+    "peak": 20,
+    "peak_date": "2026-07-14",
+    "utilisation": 15.2
+   }
+  }
+ },
+ "daily_peaks": {
+  "2025-10-01": 24,
+  "2025-10-02": 23,
+  "2025-10-03": 4,
+  "2025-10-06": 5,
+  "2025-10-07": 27,
+  "2025-10-08": 27,
+  "2025-10-09": 19,
+  "2025-10-10": 2,
+  "2025-10-14": 27,
+  "2025-10-15": 22,
+  "2025-10-16": 25,
+  "2025-10-17": 3,
+  "2025-10-20": 5,
+  "2025-10-21": 31,
+  "2025-10-22": 25,
+  "2025-10-23": 19,
+  "2025-10-24": 5,
+  "2025-10-27": 5,
+  "2025-10-28": 30,
+  "2025-10-29": 30,
+  "2025-10-30": 29,
+  "2025-10-31": 5,
+  "2025-11-03": 5,
+  "2025-11-04": 32,
+  "2025-11-05": 23,
+  "2025-11-06": 19,
+  "2025-11-07": 4,
+  "2025-11-10": 4,
+  "2025-11-11": 28,
+  "2025-11-12": 24,
+  "2025-11-13": 22,
+  "2025-11-14": 5,
+  "2025-11-17": 4,
+  "2025-11-18": 25,
+  "2025-11-19": 23,
+  "2025-11-20": 25,
+  "2025-11-21": 4,
+  "2025-11-24": 4,
+  "2025-11-25": 29,
+  "2025-11-26": 27,
+  "2025-11-27": 18,
+  "2025-11-28": 4,
+  "2025-12-01": 5,
+  "2025-12-02": 24,
+  "2025-12-03": 20,
+  "2025-12-04": 20,
+  "2025-12-05": 5,
+  "2025-12-08": 3,
+  "2025-12-09": 24,
+  "2025-12-10": 26,
+  "2025-12-11": 25,
+  "2025-12-12": 3,
+  "2025-12-15": 4,
+  "2025-12-16": 27,
+  "2025-12-17": 25,
+  "2025-12-18": 20,
+  "2025-12-19": 4,
+  "2025-12-22": 4,
+  "2025-12-23": 28,
+  "2026-01-05": 3,
+  "2026-01-06": 25,
+  "2026-01-07": 28,
+  "2026-01-08": 21,
+  "2026-01-09": 5,
+  "2026-01-12": 3,
+  "2026-01-13": 28,
+  "2026-01-14": 25,
+  "2026-01-15": 19,
+  "2026-01-16": 3,
+  "2026-01-19": 4,
+  "2026-01-20": 24,
+  "2026-01-21": 23,
+  "2026-01-22": 22,
+  "2026-01-23": 3,
+  "2026-01-26": 6,
+  "2026-01-27": 25,
+  "2026-01-28": 31,
+  "2026-01-29": 22,
+  "2026-01-30": 3,
+  "2026-02-02": 4,
+  "2026-02-03": 25,
+  "2026-02-04": 22,
+  "2026-02-05": 27,
+  "2026-02-06": 4,
+  "2026-02-09": 5,
+  "2026-02-10": 29,
+  "2026-02-11": 34,
+  "2026-02-12": 17,
+  "2026-02-13": 3,
+  "2026-02-17": 31,
+  "2026-02-18": 32,
+  "2026-02-19": 21,
+  "2026-02-20": 4,
+  "2026-02-23": 3,
+  "2026-02-24": 21,
+  "2026-02-25": 30,
+  "2026-02-26": 22,
+  "2026-02-27": 4,
+  "2026-03-02": 4,
+  "2026-03-03": 28,
+  "2026-03-04": 26,
+  "2026-03-05": 22,
+  "2026-03-06": 5,
+  "2026-03-09": 3,
+  "2026-03-10": 26,
+  "2026-03-11": 23,
+  "2026-03-12": 21,
+  "2026-03-13": 4,
+  "2026-03-16": 3,
+  "2026-03-17": 28,
+  "2026-03-18": 21,
+  "2026-03-19": 23,
+  "2026-03-20": 4,
+  "2026-03-23": 5,
+  "2026-03-24": 24,
+  "2026-03-25": 24,
+  "2026-03-26": 27,
+  "2026-03-27": 4,
+  "2026-03-30": 4,
+  "2026-03-31": 29,
+  "2026-04-01": 25,
+  "2026-04-02": 25,
+  "2026-04-06": 4,
+  "2026-04-07": 25,
+  "2026-04-08": 25,
+  "2026-04-09": 19,
+  "2026-04-10": 4,
+  "2026-04-13": 5,
+  "2026-04-14": 34,
+  "2026-04-15": 26,
+  "2026-04-16": 28,
+  "2026-04-17": 5,
+  "2026-04-20": 3,
+  "2026-04-21": 25,
+  "2026-04-22": 25,
+  "2026-04-23": 24,
+  "2026-04-24": 3,
+  "2026-04-27": 7,
+  "2026-04-28": 23,
+  "2026-04-29": 30,
+  "2026-04-30": 20,
+  "2026-05-01": 4,
+  "2026-05-04": 3,
+  "2026-05-05": 31,
+  "2026-05-06": 25,
+  "2026-05-07": 28,
+  "2026-05-08": 4,
+  "2026-05-11": 4,
+  "2026-05-12": 26,
+  "2026-05-13": 26,
+  "2026-05-14": 21,
+  "2026-05-15": 6,
+  "2026-05-19": 26,
+  "2026-05-20": 24,
+  "2026-05-21": 22,
+  "2026-05-22": 4,
+  "2026-05-25": 4,
+  "2026-05-26": 31,
+  "2026-05-27": 31,
+  "2026-05-28": 17,
+  "2026-05-29": 5,
+  "2026-06-01": 5,
+  "2026-06-02": 25,
+  "2026-06-03": 21,
+  "2026-06-04": 22,
+  "2026-06-05": 4,
+  "2026-06-08": 4,
+  "2026-06-09": 27,
+  "2026-06-10": 23,
+  "2026-06-11": 17,
+  "2026-06-12": 4,
+  "2026-06-15": 5,
+  "2026-06-16": 25,
+  "2026-06-17": 28,
+  "2026-06-18": 21,
+  "2026-06-19": 3,
+  "2026-06-22": 6,
+  "2026-06-23": 22,
+  "2026-06-24": 28,
+  "2026-06-25": 20,
+  "2026-06-26": 5,
+  "2026-06-29": 5,
+  "2026-06-30": 32,
+  "2026-07-02": 25,
+  "2026-07-03": 4,
+  "2026-07-06": 4,
+  "2026-07-07": 28,
+  "2026-07-08": 30,
+  "2026-07-09": 19,
+  "2026-07-10": 5,
+  "2026-07-13": 8,
+  "2026-07-14": 29,
+  "2026-07-15": 27,
+  "2026-07-16": 20,
+  "2026-07-17": 3,
+  "2026-07-20": 5,
+  "2026-07-21": 22,
+  "2026-07-22": 28,
+  "2026-07-23": 22,
+  "2026-07-24": 2,
+  "2026-07-27": 4,
+  "2026-07-28": 31,
+  "2026-07-29": 38,
+  "2026-07-30": 19,
+  "2026-07-31": 4,
+  "2026-08-04": 27,
+  "2026-08-05": 28,
+  "2026-08-06": 20,
+  "2026-08-07": 2,
+  "2026-08-10": 4,
+  "2026-08-11": 22,
+  "2026-08-12": 34,
+  "2026-08-13": 21,
+  "2026-08-14": 4,
+  "2026-08-17": 3,
+  "2026-08-18": 26,
+  "2026-08-19": 25,
+  "2026-08-20": 20,
+  "2026-08-21": 3,
+  "2026-08-24": 5,
+  "2026-08-25": 23,
+  "2026-08-26": 26,
+  "2026-08-27": 21,
+  "2026-08-28": 4,
+  "2026-08-31": 4,
+  "2026-09-01": 24,
+  "2026-09-02": 24,
+  "2026-09-03": 19,
+  "2026-09-04": 4,
+  "2026-09-08": 24,
+  "2026-09-09": 23,
+  "2026-09-10": 21,
+  "2026-09-11": 4,
+  "2026-09-14": 3,
+  "2026-09-15": 26,
+  "2026-09-16": 27,
+  "2026-09-17": 21,
+  "2026-09-18": 2,
+  "2026-09-21": 5,
+  "2026-09-22": 26,
+  "2026-09-23": 26,
+  "2026-09-24": 17,
+  "2026-09-25": 4,
+  "2026-09-28": 4,
+  "2026-09-29": 30,
+  "2026-09-30": 28
+ },
+ "device_log": {
+  "A1 give-backs": 1024,
+  "A1 give-backs at a meeting-room peak": 3,
+  "A2 combined bookings without half rows": 53,
+  "C1 client meetings in a meeting room": 91,
+  "C1 client meetings in a meeting room at the room-count threshold": 11,
+  "F1 cancelled standing calls at the true peak": 3,
+  "F1 cancelled-occurrence rows (meetings)": 90,
+  "F1 cancelled-occurrence rows (standing calls)": 173,
+  "F2 moved-occurrence rows in another room": 73,
+  "F2 standing calls moved later into another room": 146,
+  "F2 standing calls moved off a meeting-room peak": 2,
+  "G1 calls booked at the threshold, Adelaide Street": 7,
+  "G1 calls with an outside party at the room-count threshold": 10,
+  "G1 calls with an outside party booked at the room-count threshold": 7,
+  "G1 calls with an outside party on the line": 366,
+  "S1 focus blocks held in a meeting room": 308,
+  "client meetings added at a busiest moment": 7,
+  "client meetings re-timed off a meeting-room peak": 8,
+  "moved-occurrence rows in the same room": 63
+ },
+ "grid": {
+  "R0 offices sized apart and added": 28,
+  "R1 bookings on one timeline, solo kept": 29,
+  "R2 bookings on one timeline (natural stop)": 24,
+  "R2 with client meetings in meeting rooms kept": 24,
+  "R2b paired bookings merged, split meetings not added": 23,
+  "accepted and organiser only": 25,
+  "accepted, tentative and organiser": 28,
+  "bookings plus split meetings, pairs not merged": 31,
+  "cancelled items kept": 31,
+  "client meetings kept": 32,
+  "closed intervals": 41,
+  "declined invitees counted": 35,
+  "one person counts (calls kept)": 60,
+  "optional invitees ignored": 28,
+  "presence ignored": 59,
+  "solo bookings added to the replay": 35,
+  "tentative dropped, no response kept": 28
+ },
+ "guest_calls": {
+  "adelaide": 196,
+  "adelaide_share_of_headcount_2": 0.022,
+  "at_threshold": 17,
+  "booked_at_threshold": {
+   "Adelaide Street": 7,
+   "Front Street": 0
+  },
+  "front": 187,
+  "front_share_of_attendee_count_3": 0.046,
+  "items": 383,
+  "named_a_call": 85
+ },
+ "main": {
+  "days_above": [
+   "2026-07-29",
+   "2026-02-11",
+   "2026-04-14",
+   "2026-08-12",
+   "2025-11-04",
+   "2026-02-18",
+   "2026-06-30"
+  ],
+  "days_short_at": 7,
+  "days_short_one_fewer": 14,
+  "design_day": "2026-05-27",
+  "meetings_needing_room": 27607,
+  "rooms": 31,
+  "split_meetings": 9144
+ },
+ "own_count_readings": {
+  "A": [
+   15,
+   16
+  ],
+  "F": [
+   13,
+   14
+  ],
+  "sums": [
+   28,
+   29,
+   30
+  ]
+ },
+ "pairsim": {
+  "every Adelaide device handled": {
+   "passed": [
+    "A hours",
+    "A solo_hours",
+    "A peak",
+    "A rooms_30_sep",
+    "A own_rule",
+    "F rooms_30_sep"
+   ],
+   "points": 27
+  },
+  "every Front Street device handled": {
+   "passed": [
+    "A rooms_30_sep",
+    "F hours",
+    "F solo_hours",
+    "F peak",
+    "F rooms_30_sep",
+    "F own_rule"
+   ],
+   "points": 27
+  },
+  "every representation device handled, focus blocks read as calls, client meetings kept": {
+   "passed": [
+    "A hours",
+    "A peak",
+    "A rooms_30_sep",
+    "F hours",
+    "F peak",
+    "F rooms_30_sep"
+   ],
+   "points": 24
+  },
+  "everything handled": {
+   "passed": [
+    "A hours",
+    "A solo_hours",
+    "A peak",
+    "A rooms_30_sep",
+    "A own_rule",
+    "F hours",
+    "F solo_hours",
+    "F peak",
+    "F rooms_30_sep",
+    "F own_rule"
+   ],
+   "points": 46
+  },
+  "everything handled but the calls with an outside party": {
+   "passed": [
+    "A hours",
+    "A peak",
+    "A rooms_30_sep",
+    "F hours",
+    "F peak",
+    "F rooms_30_sep"
+   ],
+   "points": 24
+  },
+  "everything handled but the client meetings": {
+   "passed": [
+    "A hours",
+    "A solo_hours",
+    "A peak",
+    "A rooms_30_sep",
+    "F hours",
+    "F solo_hours",
+    "F peak",
+    "F rooms_30_sep"
+   ],
+   "points": 32
+  },
+  "everything handled but the focus blocks": {
+   "passed": [
+    "A hours",
+    "A peak",
+    "A rooms_30_sep",
+    "A own_rule",
+    "F hours",
+    "F peak",
+    "F rooms_30_sep",
+    "F own_rule"
+   ],
+   "points": 38
+  },
+  "everything handled, calls told by a subject that is Call": {
+   "passed": [
+    "A hours",
+    "A peak",
+    "A rooms_30_sep",
+    "F hours",
+    "F peak",
+    "F rooms_30_sep"
+   ],
+   "points": 24
+  },
+  "everything handled, calls told by a subject that says call": {
+   "passed": [
+    "A hours",
+    "A peak",
+    "A rooms_30_sep",
+    "F hours",
+    "F peak",
+    "F rooms_30_sep"
+   ],
+   "points": 24
+  },
+  "legacy (the portal's first conventions)": {
+   "passed": [
+    "A rooms_30_sep",
+    "F rooms_30_sep"
+   ],
+   "points": 8
+  },
+  "legacy, client meetings out of the room count": {
+   "passed": [
+    "A rooms_30_sep",
+    "F rooms_30_sep"
+   ],
+   "points": 8
+  },
+  "legacy, combined bookings expanded": {
+   "passed": [
+    "A rooms_30_sep",
+    "F rooms_30_sep"
+   ],
+   "points": 8
+  },
+  "legacy, fold across rooms": {
+   "passed": [
+    "A rooms_30_sep",
+    "F rooms_30_sep"
+   ],
+   "points": 8
+  },
+  "legacy, fold over every status": {
+   "passed": [
+    "A rooms_30_sep",
+    "F rooms_30_sep"
+   ],
+   "points": 8
+  },
+  "legacy, give-backs read": {
+   "passed": [
+    "A peak",
+    "A rooms_30_sep",
+    "F rooms_30_sep"
+   ],
+   "points": 12
+  },
+  "portal run 3 (Adelaide right, Front Street fold keyed on the room, people from the headcount)": {
+   "passed": [
+    "A hours",
+    "A peak",
+    "A rooms_30_sep",
+    "F rooms_30_sep"
+   ],
+   "points": 16
+  },
+  "portal run 3, the one-person rule read right": {
+   "passed": [
+    "A hours",
+    "A solo_hours",
+    "A peak",
+    "A rooms_30_sep",
+    "A own_rule",
+    "F rooms_30_sep",
+    "F own_rule"
+   ],
+   "points": 34
+  }
+ },
+ "pin": {
+  "cross_office_booked": 3697,
+  "exceptions_accepted_only": 4151,
+  "exceptions_accepted_tentative": 2033,
+  "exceptions_declined_counted": 3904,
+  "exceptions_no_tentative": 2090,
+  "exceptions_required_only": 2115,
+  "meetings": 113174,
+  "released": 439,
+  "with_two_in_an_office": 18463
+ },
+ "rungs": {
+  "R0_offices_added": 28,
+  "R1_bookings_with_solo": 29,
+  "R2_bookings": 24
+ },
+ "series_rows_superseded": {
+  "all": 550,
+  "same_room": 329
+ },
+ "twins": {
+  "booking_peaks": [
+   10,
+   10,
+   19
+  ],
+  "days": [
+   "2026-04-02",
+   "2025-10-21"
+  ],
+  "one_floor": [
+   25,
+   31
+  ]
+ }
+}

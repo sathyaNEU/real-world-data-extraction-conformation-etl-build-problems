@@ -109,10 +109,10 @@ The judge's own text: `guidelines/determinism_judge_system_prompt.md`.
 
 ## Running the judge
 
-- **When:** the pipeline's judge stage, after the leak check and the duplicate check pass, or when the
-  author asks in their own words. Nothing else licenses it. Returned tasks take the free mechanical gates
-  and no judge.
-- **One isolated thread, Sonnet at medium effort**, in the background; meanwhile only work that moves no
+- **When:** `/build` stage 4 (in the background beside the leak reader, after the free gates pass), one
+  re-judge in `/fix-determinism`, or when the author asks in their own words. Nothing else licenses it.
+  `/fix-rubric` takes the free mechanical gates and no judge.
+- **One isolated thread at medium effort**, in the background; meanwhile only work that moves no
   graded figure. It sees a fresh unzip of `target.zip`, the prompt, the submission's graded blocks and
   the judge's system prompt inlined verbatim; never the design note, `pipeline.json`, the stump sentence,
   an earlier report or anything its orchestrator read. The `determinism-judge` agent prepares and spawns

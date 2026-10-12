@@ -116,21 +116,30 @@ PASSIVE_SIZE = [25.4, 25.0, 23.9, 23.6, 23.4, 23.0, 22.8]
 # id, target Dec IO on the completed set (A), share of it on file at the extract (f),
 # target Sep IO (complete), shares outstanding (Oct-dated cover page), Q4 price
 WATCH = [
-    # id   A      f      sep    S_oct        P4
-    ("W01", 88.4, 0.935, 86.3, 41_820_557, 74.18),
-    ("W02", 84.1, 0.665, 83.2, 63_104_219, 38.62),
-    ("W03", 83.4, 0.705, 79.0, 28_559_804, 112.41),
-    ("W04", 76.2, 0.950, 75.1, 117_402_633, 23.07),
-    ("W05", 74.4, 0.915, 77.2, 52_271_090, 56.90),
-    ("W06", 86.1, 0.945, 84.4, 35_906_712, 141.55),
-    ("W07", 77.3, 0.860, 81.6, 88_013_465, 31.34),
-    ("W08", 62.26, 0.855, 61.1, 74_660_128, 47.73),
-    ("W09", 71.1, 0.800, 70.2, 23_177_946, 88.26),
-    ("W10", 91.6, 0.720, 90.3, 46_318_551, 64.09),
-    ("W11", 55.2, 0.880, 53.8, 158_244_370, 18.44),
-    ("W12", 67.3, 0.750, 66.4, 31_052_683, 52.80),
+    # id   A (Dec)  f      sep    S_oct        P4
+    ("W01", 88.60, 0.935, 85.11, 41_820_557, 74.18),
+    ("W02", 84.43, 0.665, 81.69, 63_104_219, 38.62),
+    ("W03", 80.40, 0.705, 78.81, 28_559_804, 112.41),
+    ("W04", 76.20, 0.950, 74.09, 117_402_633, 23.07),
+    ("W05", 74.30, 0.915, 75.41, 52_271_090, 56.90),
+    ("W06", 84.80, 0.945, 81.79, 35_906_712, 141.55),
+    ("W07", 79.60, 0.860, 81.61, 88_013_465, 31.34),
+    ("W08", 62.30, 0.855, 59.79, 74_660_128, 47.73),
+    ("W09", 71.10, 0.800, 69.71, 23_177_946, 88.26),
+    ("W10", 91.40, 0.720, 88.91, 46_318_551, 64.09),
+    ("W11", 55.20, 0.880, None, 158_244_370, 18.44),
+    ("W12", 67.20, 0.750, 65.49, 31_052_683, 52.80),
 ]
-
+# holdings of the managers still due at the December extract, per cent of the October count:
+# index and ETF sponsors (December level), every other type (September level)
+PEND = {"W01": (3.5, 2.5), "W02": (15.4, 12.1), "W03": (23.2, 3.2), "W04": (4.0, 4.0), "W05": (5.0, 3.0),
+        "W06": (2.2, 1.6), "W07": (0.7, 16.0), "W08": (4.0, 4.5), "W09": (5.0, 4.0), "W10": (15.7, 9.2),
+        "W11": (3.0, 4.0), "W12": (4.5, 4.0)}
+SEP_SLACK = "W11"      # September early-holder total set by the type balance
+JUN_SLACK = "W04"      # June early-holder total set by the type balance
+JUN_MOVE = {"W02": 1.14}   # early holders' September over June, by name (others 1)
+GROW = 1.055               # index and ETF sponsors' stake growth per quarter (their creations)
+A5_NAMES = ("W05", "W09", "W11")
 
 def rng(*salt):
     return np.random.default_rng([SEED] + [abs(hash_str(s)) for s in salt])

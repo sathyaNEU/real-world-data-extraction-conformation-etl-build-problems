@@ -1,0 +1,70 @@
+{
+ "recommended_feeder": "Quarry Hill 21",
+ "recommended_feeder_id": "QH21",
+ "sections_twice_failed_in_service": {
+  "HR12": 0,
+  "HR14": 0,
+  "ML03": 0,
+  "ML07": 0,
+  "QH21": 17,
+  "QH22": 0,
+  "SP05": 0,
+  "SP09": 0
+ },
+ "saifi_ry2026": {
+  "HR12": "1.40",
+  "HR14": "1.97",
+  "ML03": "1.73",
+  "ML07": "1.31",
+  "QH21": "1.58",
+  "QH22": "1.52",
+  "SP05": "2.23",
+  "SP09": "1.53"
+ },
+ "saidi_ry2026_min": {
+  "HR12": "71.3",
+  "HR14": "131.4",
+  "ML03": "88.2",
+  "ML07": "85.7",
+  "QH21": "92.4",
+  "QH22": "73.5",
+  "SP05": "139.7",
+  "SP09": "125.5"
+ },
+ "customers_4plus_ry2026": {
+  "HR12": 108,
+  "HR14": 1163,
+  "ML03": 445,
+  "ML07": 485,
+  "QH21": 262,
+  "QH22": 44,
+  "SP05": 1812,
+  "SP09": 65
+ },
+ "customers_served_2026_09_30": {
+  "HR12": 3878,
+  "HR14": 3105,
+  "ML03": 4168,
+  "ML07": 3971,
+  "QH21": 2781,
+  "QH22": 3306,
+  "SP05": 3650,
+  "SP09": 3362
+ },
+ "major_event_days_ry2026": [
+  "2026-01-25",
+  "2026-07-28"
+ ],
+ "major_event_day_method": "2.5 beta (TVE-RS-04)",
+ "feeder_names": [
+  "Harrow Road 12",
+  "Harrow Road 14",
+  "Mill Lane 3",
+  "Mill Lane 7",
+  "Quarry Hill 21",
+  "Quarry Hill 22",
+  "Sutter Park 5",
+  "Sutter Park 9"
+ ],
+ "twice_failed_sections_location": "State Route 443"
+}

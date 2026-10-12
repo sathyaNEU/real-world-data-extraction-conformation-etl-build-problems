@@ -1,0 +1,168 @@
+{
+  "task": "task183",
+  "title": "The underground feeder for a 2027 cable program, with each feeder's RY2026 reliability indices",
+  "domain": "Energy Systems & Utilities",
+  "subdomain": "grid reliability and outage analysis (underground distribution cable failures and feeder reliability indices at a Pennsylvania electric utility)",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "01 (ranked list under a cap): the one feeder for the 2027 program, with every feeder's SAIFI, SAIDI and multiple-interruption count",
+  "as_of": "2026-10-06",
+  "deliverables": [
+    "cable_program_2027.xlsx",
+    "feeder_failures_2027.png"
+  ],
+  "distractor_files": [
+    "vault_manhole_inspections_2022-2026.csv",
+    "feeder_peak_loading_2021-2026.xlsx"
+  ],
+  "input_gates": {
+    "files": 14,
+    "formats": [
+      "csv",
+      "json",
+      "md",
+      "parquet",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "connectivity_meter_points.parquet",
+    "largest_file_rows": 37008
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task183/generator/build.py (seeded, deterministic) around a fictional electric utility (Tamsin Valley Electric), its fictional substations, feeders, customers and places in Pennsylvania; no real utility, person, account or asset is depicted.",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-11",
+  "generator": "task183/generator/build.py",
+  "files": [
+    {
+      "path": "2025_annual_reliability_report_sec6_ug_cable.pdf",
+      "format": "pdf",
+      "bytes": 64032,
+      "rows": null,
+      "source": "Constructed: 2025 annual reliability report, section 6 (underground cable)",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "TVE-RS-04_reliability_reporting_standard_rev6.pdf",
+      "format": "pdf",
+      "bytes": 64826,
+      "rows": null,
+      "source": "Constructed: Reliability reporting standard TVE-RS-04 revision 6",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "asset_analytics_extract_notes_2026-10.md",
+      "format": "md",
+      "bytes": 6650,
+      "rows": null,
+      "source": "Constructed: Asset analytics extract notes: where each file came from and its fields",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cis_service_accounts_20260930.csv",
+      "format": "csv",
+      "bytes": 1719442,
+      "rows": 28221,
+      "source": "Constructed: Customer information system: active service accounts at 30 September 2026",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "connectivity_meter_points.parquet",
+      "format": "parquet",
+      "bytes": 674790,
+      "rows": 37008,
+      "source": "Constructed: Network connectivity model: metered points to transformers, protective devices and feeders, dated rows",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "feeder_device_list.json",
+      "format": "json",
+      "bytes": 77678,
+      "rows": null,
+      "source": "Constructed: Network model protective device hierarchy: substations, banks, breakers, automated switches, fuses",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "feeder_peak_loading_2021-2026.xlsx",
+      "format": "xlsx",
+      "bytes": 21170,
+      "rows": null,
+      "source": "Constructed: SCADA feeder monthly peak loading, 2021 to 2026",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "gis_ug_primary_sections_20260930.xlsx",
+      "format": "xlsx",
+      "bytes": 201310,
+      "rows": null,
+      "source": "Constructed: GIS export: underground primary cable sections of the eight feeders, in service and retired, as of 30 September 2026",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "major_event_days_RY2021-RY2025.csv",
+      "format": "csv",
+      "bytes": 1273,
+      "rows": 31,
+      "source": "Constructed: Published major event days, reliability years 2021 to 2025",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "oms_outage_export_2020-10_2026-09.csv",
+      "format": "csv",
+      "bytes": 143419,
+      "rows": 1432,
+      "source": "Constructed: Outage management export (legacy OMS to 17 March 2026, ADMS after): one row per outage per feeder, October 2020 to September 2026",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "oms_restoration_steps_2020-10_2026-09.csv",
+      "format": "csv",
+      "bytes": 103703,
+      "rows": 1607,
+      "source": "Constructed: Outage management restoration steps for the same outages",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ug_cable_fault_work_orders_2012_2026.csv",
+      "format": "csv",
+      "bytes": 121505,
+      "rows": 1055,
+      "source": "Constructed: Work management system: cable fault work orders on the district's underground primary sections, January 2012 to 30 September 2026",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "vault_manhole_inspections_2022-2026.csv",
+      "format": "csv",
+      "bytes": 131460,
+      "rows": 1803,
+      "source": "Constructed: Manhole and vault inspection records, 2022 to 2026",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wo_cause_repair_codes.csv",
+      "format": "csv",
+      "bytes": 752,
+      "rows": 10,
+      "source": "Constructed: Work order cause and repair codes and GIS status codes",
+      "date": "2026-10-06",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

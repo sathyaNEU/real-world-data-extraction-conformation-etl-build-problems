@@ -165,6 +165,7 @@
       "market-microstructure-execution-cost",
       "volatility-derivatives-pricing",
       "event-study",
+      "liquidity-funding-balance-sheet",
       "other"
     ],
     "banking-credit-financial-risk": [

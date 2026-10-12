@@ -1,0 +1,50 @@
+{
+ "task": "task183",
+ "domain": "energy-systems-utilities",
+ "objective": "anomaly-detection",
+ "stage": 4,
+ "stage_name": "build done (stage 3): leak check and duplicate check next (stage 4)",
+ "updated": "2026-10-12",
+ "stump": "A competent solver averages each feeder's last five years of cable-condition failures on the sections still in service and files Mill Lane 7 as the feeder that will fail most in 2027 (about 8.8 failures a year against Quarry Hill 21's 3.4, fifth of eight), and the step that lands it there is forecasting from feeder history when a section's next failure depends on how often that section has already failed: Mill Lane 7's failures are first failures on 44 different sections, which recur at about 2 per cent a year, while Quarry Hill 21 carries 14 sections in service that have each failed two or more times and fail again at about one in three a year, so it heads 2027 at about 6.4 expected failures.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-11"
+ },
+ "leak": {
+  "leak_py": "REVIEW",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "WARN",
+  "nearest": "",
+  "clone_check": ""
+ },
+ "solver_rounds": [],
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "build": {
+  "date": "2026-10-12",
+  "files": 14,
+  "formats": 5,
+  "largest_file_rows": 37008,
+  "checks": 233,
+  "verify": "green",
+  "byte_identical": true,
+  "figures_check": 0,
+  "leak_py": "REVIEW (answered in the design note, Build record)",
+  "guard_surface": "no block",
+  "guard_heart": "WARN (repeat.gate_g, overuse.gate_g, answered in Draw)",
+  "precut": 0,
+  "voice_check": 0,
+  "call": "Quarry Hill 21",
+  "r3_lead": 1.52
+ }
+}

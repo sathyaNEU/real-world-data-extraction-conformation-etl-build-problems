@@ -1,379 +1,440 @@
-"""Assertions over the built pack: the ladder, the grid, the asks' stops, separation, gates, bins.
-
-Run after build.py. Everything is computed from target/ through golden.py, plus the simulated world
-where an assertion is about the world itself (separation, chronology, the network's events)."""
-import collections
-import datetime as dt
+"""Every assertion task229's design owes, by name: the ladder sets and margins, SF1 to SF12, the rung-3
+estimators' agreement, the grid cells, the clean-data and lens-swap tests, the ask devices and stops with
+every composed subset, the cracker and mirror sheets, the pair ceiling, the input gates and the realism sweep.
+Run by make.py on every build; any failure stops the build."""
 import itertools
 import json
 import math
 import os
+import re
 import shutil
+import subprocess
 import sys
 import tempfile
 
+import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import golden as G
 import world as W
+import simulate as S
+import estimate as E
+import asks as A
+import docs as DC
+import build as B
 
-N = [0]
+GOLD = ["Avonmouth", "Bellshill", "Daventry", "Hinckley", "Magor", "Warrington"]
+DISTINCT = ["Avonmouth", "Bellshill", "Daventry", "Warrington"]
+LOG = []
 
 
-def ok(cond, msg):
-    N[0] += 1
+def ok(cond, label):
+    LOG.append(label)
     if not cond:
-        raise AssertionError(msg)
+        raise AssertionError("FAILED: " + label)
 
 
-GOLD_FIRE = ("EM3.10.9", "EM3.12.1", "PX5.2.7")
+def edge_dist(x):
+    """Distance of x from the nearest whole-per-cent rounding edge (x.5)."""
+    return abs((x - math.floor(x)) - 0.5)
 
 
-def random_intercept(y, groups):
-    """One-way random-intercept model by the moment (ANOVA) estimator: the variance of the simple mean
-    under the model, and the full fit's GLS mean and its standard error."""
-    df = pd.DataFrame({"y": y, "g": groups})
-    grp = df.groupby("g")["y"]
-    m, mu = grp.size().to_numpy().astype(float), grp.mean().to_numpy()
-    n, k, yb = len(df), len(m), float(df["y"].mean())
-    msb = float((m * (mu - yb) ** 2).sum()) / (k - 1)
-    msw = float(((df["y"] - grp.transform("mean")) ** 2).sum()) / (n - k)
-    su2, se2 = max(0.0, (msb - msw) / ((n - float((m ** 2).sum()) / n) / (k - 1))), msw
-    w = 1.0 / (su2 + se2 / m)
-    return dict(rh=yb, se_simple=math.sqrt(su2 * float((m ** 2).sum()) + se2 * n) / n,
-                gls=float((w * mu).sum() / w.sum()), se_gls=1.0 / math.sqrt(float(w.sum())))
+def qual(est, key):
+    return sorted(n for n in W.NAMES if est[n][key] >= W.LINE)
 
 
-def edge(x):
-    """Distance from x to the nearest two-decimal rounding edge (the x.xx5 points)."""
-    return abs((x * 100) % 1 - 0.5) / 100
+def main_path(target, world):
+    est = E.everything(target)
+    truth = S.truth(world["sim"])
+    # the ladder, set by name
+    ok(qual(est, "rung0_all_counts") == [], "rung 0 (all count tasks) qualifies no centre")
+    ok(qual(est, "rung1_routine") == ["Magor"], "rung 1 (routine counts) qualifies Magor only")
+    ok(qual(est, "rung2_class_weighted") == ["Hinckley", "Magor"], "rung 2 (class-weighted routine) qualifies Magor and Hinckley")
+    for k in E.R3_KEYS:
+        ok(qual(est, k) == GOLD, "rung 3 %s qualifies the six" % k)
+    ok(qual(est, E.GOLDEN_KEY) == GOLD, "golden set (per day by class) is the six")
+    # margins and positions
+    for n in W.NAMES:
+        e = est[n]
+        vals = [e[k] for k in E.R3_KEYS]
+        ok(all(abs(v - W.LINE) >= 0.6 for v in vals), "%s: every rung-3 estimator at least 0.6 from 97.0" % n)
+        ok(all(edge_dist(v) >= 0.2 for v in vals), "%s: every rung-3 estimator at least 0.2 from an x.5 edge" % n)
+        ok(len({round(v) for v in vals}) == 1, "%s: every rung-3 estimator gives the same whole per cent" % n)
+        ok((truth[n] >= W.LINE + 0.6) == (n in GOLD) and abs(truth[n] - W.LINE) >= 0.6,
+           "%s: private truth at least 0.6 from 97.0 on the golden's side" % n)
+        ok(abs(e["rung1_routine"] - W.LINE) >= 0.5, "%s: rung 1 at least 0.5 from the line" % n)
+        ok(e["rung0_all_counts"] <= W.LINE - 1.0, "%s: rung 0 at least 1.0 under the line" % n)
+        for k in ("rung0_all_counts", "rung1_routine", "rung2_class_weighted", "cell_weighted_flag_class",
+                  "latest_result_per_face"):
+            ok(e[E.GOLDEN_KEY] - e[k] >= 0.5, "%s: C4 shortfall, %s at least 0.5 under the estimate (4.5)" % (n, k))
+        for w in range(4, 27):
+            ok(e[E.GOLDEN_KEY] - e["rung2_last_%dw" % w] >= 0.5, "%s: C4 shortfall, rung 2 over %d weeks at least 0.5" % (n, w))
+        ok(e["counted_taken_as_correct"] > e[E.GOLDEN_KEY], "%s: over-correction stop sits above the estimate" % n)
+    ok(est["Hinckley"]["rung1_routine"] <= 96.5, "first tuning item: Hinckley rung 1 at 96.5 or under (%.2f)" % est["Hinckley"]["rung1_routine"])
+    ok(est["Hinckley"]["rung2_class_weighted"] >= 97.5, "first tuning item: Hinckley rung 2 at 97.5 or over (%.2f)" % est["Hinckley"]["rung2_class_weighted"])
+    for w in range(4, 27):
+        s = qual(est, "rung2_last_%dw" % w)
+        ok(not set(DISTINCT) & set(s), "rung 2 over %d weeks qualifies none of the four distinctive centres" % w)
+        ok(len(set(s) ^ set(GOLD)) >= 4, "rung 2 over %d weeks differs from the answer in four or more verdicts" % w)
+        if w >= 8:
+            ok(s == ["Hinckley", "Magor"], "rung 2 over %d weeks is Magor and Hinckley" % w)
+    # grid and partial cells
+    ok(qual(est, "cell_weighted_flag_class") == ["Magor"], "grid: counts weighted by flag-and-class cell give Magor")
+    ok(qual(est, "latest_result_per_face") == ["Magor"], "grid: each face's latest count result gives Magor")
+    ok(qual(est, "accrual_from_every_count") == ["Magor"], "grid: reset seen, accrual from every count, gives Magor")
+    ok(qual(est, "resets_at_routine_only") == GOLD, "grid: resets at routine counts only converges on the six")
+    for n in W.NAMES:
+        ok(abs(est[n]["resets_at_routine_only"] - est[n][E.GOLDEN_KEY]) <= 0.25,
+           "%s: resets-at-routine-only within 0.25 of the estimate" % n)
+    ok(qual(est, "counted_taken_as_correct") == sorted(W.NAMES), "grid: a counted face taken as correct gives all eight")
+    ok(qual(est, "per_day_pooled_classes") == ["Hinckley", "Magor"],
+       "grid: per-day accrual pooled over classes (class hazards differ) gives rung 2's set")
+    for n in W.NAMES:
+        for k in ("rung1_routine", "rung2_class_weighted", "cell_weighted_flag_class", "latest_result_per_face",
+                  "accrual_from_every_count", "per_day_pooled_classes"):
+            ok(est[n][k] < est[n][E.GOLDEN_KEY], "%s: sign discipline, %s below the answer" % (n, k))
+    return est
 
 
-def margin(v):
-    return v["rh"] - v["lcl"]
+def semantic_forks(target, world, est):
+    loc, cnt = E.load(target)
+    faces = E.in_scope(loc)
+    reg = pd.read_csv(os.path.join(target, S.FILES["centres"]), dtype=str)
+    # SF1
+    ok(len(reg) == 8 and set(reg.site) == {c["code"] for c in W.CENTRES}, "SF1: the centre register lists the eight centres")
+    ok(set(cnt.site) <= set(reg.site) and set(faces.site) == set(reg.site), "SF1: no other site holds a Thornacre face")
+    # SF2
+    ok(qual(est, "rung0_all_counts") == [] and qual(est, E.GOLDEN_KEY) != [], "SF2: count-task share gives no centre")
+    # SF3
+    ok(((cnt.confirmed_qty.astype(int) == cnt.system_qty.astype(int)) == (cnt.result == "MATCH")).all(),
+       "SF3: result is confirmed equals system on every row")
+    f2, c2 = E.prepared(target)
+    c2["hit"] = c2.variance_qty.astype(int).abs() <= 1
+    loose = E.rung3(f2, c2)
+    names = {c["code"]: c["name"] for c in W.CENTRES}
+    loose_set = sorted(names[k] for k, v in loose.items() if v[E.GOLDEN_KEY] >= W.LINE)
+    ok(set(loose_set) > set(GOLD), "SF3: the within-a-case reading passes more centres (%s)" % loose_set)
+    ok("equals the quantity a count" in " ".join(t for _, t in DC.STANDARD), "SF3: 4.2 files 'equals'")
+    # SF4, SF12
+    st = " ".join(t for _, t in DC.STANDARD)
+    ok("06:00 on 7 December 2026" in st and "4 January 2027" in st, "SF4/SF12: 4.4 and 5.1 file the moment and the freeze")
+    ok(cnt.posted_utc.max() <= "2026-12-07T06:00:00Z", "SF4/SF10: the export closes at the stand-down")
+    # SF5
+    ok(qual(est, "rung2_class_weighted") == ["Hinckley", "Magor"], "SF5: any estimate from the count records (rung 2) gives Magor and Hinckley")
+    # SF6 held faces counted in
+    held = loc[(loc.location_type == "PICK") & (loc.client == "THN") & loc.status.isin(["HOLD", "RECALL"])
+               & (loc.eff_to == "")]
+    ok(len(held) > 0, "SF6: held faces exist at the stand-down (%d)" % len(held))
+    ok(_golden_with(target, extra=held[["site", "location"]]) == _whole(est), "SF6: counting held faces in moves no verdict and no whole per cent")
+    # SF7, SF8 are margins (main_path)
+    # SF9 OVR read as routine
+    f3, c3 = E.prepared(target)
+    c3["routine"] = c3.reason_code.isin(["CYC", "OVR"])
+    ok(_whole_from(E.rung3(f3, c3)) == _whole(est), "SF9: overflowed replenishment read as routine moves nothing")
+    # SF10 last night left out
+    f4, c4 = E.prepared(target)
+    c4 = c4[c4.day < W.F - 1].copy()
+    same = (c4.site == c4.site.shift()) & (c4.location == c4.location.shift())
+    c4["age"] = np.where(same, c4.day - c4.day.shift(), np.nan)
+    r4 = E.rung3(f4, c4)
+    ok(sorted(names[k] for k, v in r4.items() if v[E.GOLDEN_KEY] >= W.LINE) == GOLD, "SF10: the last night left out gives the same six")
+    # SF11
+    m = cnt.merge(loc[loc.location_type == "PICK"][["site", "location"]].drop_duplicates(), on=["site", "location"], how="left", indicator=True)
+    ok((m._merge == "both").all(), "SF11: every count row's site and location is on the location master")
+    ins_rows = loc.merge(faces[["site", "location"]], on=["site", "location"])
+    ins_rows = ins_rows[ins_rows.location_type == "PICK"]
+    ok(ins_rows.groupby(["site", "location"]).size().max() == 1, "SF11: each in-scope face has one version through the window")
+    ok((faces.eff_from < "2026-06-01").all(), "SF11/closure 5: every in-scope face slotted and classed before 1 June")
+    # SF12
+    days = sorted(pd.to_datetime(pd.Series(W.FREEZE_DAYS)).dt.strftime("%Y-%m-%d"))
+    ok(days[0] == "2026-12-07" and days[-1] == "2027-01-03" and len(days) == 28, "SF12: the freeze's trading days are 7 December to 3 January")
+    sf13_pooling(target, est, names)
+    sf14_first_count(target, est, names)
 
 
-def run(target, world=None, quiet=False):
-    D, g = G.solve(target)
-    sc = g["scorecard"]
-    log = []
+def _wald(age, hit, p):
+    """95 per cent Wald interval on the per-day hazard p from the observed information of the geometric likelihood."""
+    age = np.asarray(age, float); hit = np.asarray(hit, bool)
 
-    # ---------------------------------------------------------------- the call
-    ok(g["fire"] == GOLD_FIRE, "golden fire set moved: %s" % (g["fire"],))
-    for r in G.RELEASES:
-        v = sc[r]
-        ok(abs(margin(v)) >= 0.05, "%s sits %.4f from its limit" % (r, margin(v)))
-        ok(min(edge(v["rh"]), edge(v["se"]), edge(v["lcl"]), edge(margin(v))) >= 0.0015, "%s two-decimal edge" % r)
-        ok(round(round(v["rh"], 2) - round(v["lcl"], 2), 2) == round(margin(v), 2), "%s distance reads the same from rounded figures" % r)
-    margins = sorted(margin(sc[r]) for r in G.RELEASES)
-    ok(min(b - a for a, b in zip(margins, margins[1:])) >= 0.04, "order by distance to the limit is not a near tie")
+    def ll(q):
+        pr = np.clip((1 - q) ** age, 1e-12, 1 - 1e-12)
+        return np.log(pr[hit]).sum() + np.log(1 - pr[~hit]).sum()
+    h = p * 1e-3
+    info = -(ll(p + h) - 2 * ll(p) + ll(p - h)) / h ** 2
+    se = info ** -0.5
+    return p - 1.96 * se, p + 1.96 * se
 
-    # ---------------------------------------------------------------- the ladder
-    vers = {w: G.versions(D["mdm"], w) for w in ("cutoff", "latest", "first")}
-    pops = {m: G.assessed(D, m) for m in ("fullweek", "start", "end")}
-    rung = collections.OrderedDict([
-        ("R0 latest deliveries, every installation on its end-of-week build, pooled reads, read-count error",
-         ("latest", "end", "pooled", "binomial_reads", "register")),
-        ("R1 + reads held at the cut-off against every expected interval (a register-day held nowhere counts zero)",
-         ("cutoff", "end", "pooled", "binomial_reads", "register")),
-        ("R2 + installations that ran the build all week", ("cutoff", "fullweek", "pooled", "binomial_reads", "register")),
-        ("R3 + the mean of installation read health", ("cutoff", "fullweek", "installation", "binomial_reads", "register")),
-        ("R4 + a standard error with each installation its own unit (sample SD over root n)",
-         ("cutoff", "fullweek", "installation", "installation", "register")),
-        ("R5 + a standard error built over the comms parents the installations share (the answer)",
-         ("cutoff", "fullweek", "installation", "collector", "register")),
-    ])
-    expect = [("EM3.10.9", "EM3.12.0", "EM3.12.2", "PX5.3.0", "PX5.3.1"),
-              ("EM3.10.9", "EM3.12.0", "EM3.12.1", "EM3.12.2", "PX5.2.7", "PX5.3.0", "PX5.3.1"),
-              ("EM3.10.9", "EM3.12.0", "EM3.12.1", "EM3.12.2", "PX5.2.7", "PX5.3.0"),
-              ("EM3.10.9", "EM3.12.0", "EM3.12.1", "EM3.12.2", "PX5.2.7", "PX5.3.1"),
-              ("EM3.10.9", "EM3.12.0", "EM3.12.1", "EM3.12.2", "PX5.2.7"),
-              GOLD_FIRE]
-    sets = []
-    for (name, cell), want in zip(rung.items(), expect):
-        fs = G.fire_set(G.score(vers[cell[0]], pops[cell[1]], cell[2], cell[3], cell[4], D=D))
-        ok(fs == tuple(sorted(want)), "%s fires %s" % (name, fs))
-        sets.append(fs)
-        log.append("%s -> fires %s" % (name, ", ".join(fs)))
-    ok(len(set(sets)) == len(sets), "every rung names a different set")
-    right = [sum(1 for r in G.RELEASES if (r in fs) == (r in GOLD_FIRE)) for fs in sets]
-    ok(max(right[:-1]) <= 6 and right[-1] == 8, "no rung below the answer lands the call: %s" % right)
-    log.append("calls right per rung: %s" % right)
 
-    # ---------------------------------------------------------------- the grid, cell by cell
-    units = ("installation", "pooled", "row", "stream")
-    errs = ("collector", "collector_cr0", "installation", "binomial_reads", "binomial_installations", "none")
-    golden_cells = []
-    cells = 0
-    for v, p, u, e, dn in itertools.product(vers, pops, units, errs, ("register", "rows")):
-        fs = G.fire_set(G.score(vers[v], pops[p], u, e, dn, D=D))
-        cells += 1
-        if fs == GOLD_FIRE:
-            golden_cells.append((v, p, u, e, dn))
-    ok(cells == 432, "grid size")
-    want_cells = [("cutoff", "fullweek", "installation", "collector", "register"),
-                  ("cutoff", "fullweek", "installation", "collector_cr0", "register")]
-    extra = [c for c in golden_cells if c not in want_cells]
-    ok(all(c in golden_cells for c in want_cells), "the standard's reading lands the call under either small-sample convention")
-    ok(all(c[3] in ("collector", "collector_cr0") for c in golden_cells),
-       "every cell that lands the call builds its error over the comms parents: %s" % golden_cells)
-    for c in extra:
-        sc_x = G.score(vers[c[0]], pops[c[1]], c[2], c[3], c[4], D=D)
-        moved = [r for r in G.RELEASES if round(sc_x[r]["rh"], 2) != round(sc[r]["rh"], 2)
-                 or round(sc_x[r]["lcl"], 2) != round(sc[r]["lcl"], 2)]
-        ok(len(moved) >= 4, "a cell %s that lands the call moves at least four builds' graded figures (%d)" % (c, len(moved)))
-    log.append("grid: %d cells; %d land the call, every one on the comms-parent error: %s" % (cells, len(golden_cells), golden_cells))
+def sf13_pooling(target, est, names):
+    """SF13: the per-day accrual pooled over the three classes gives rung 2's set, and the routine counts
+    themselves rule pooling out: the per-day class hazards are separated with non-overlapping intervals at every
+    centre, and the pooled hazard mis-predicts each class's own routine match rate."""
+    ok(qual(est, "per_day_pooled_classes") == ["Hinckley", "Magor"], "SF13: per-day pooled over classes gives Magor and Hinckley")
+    faces, c = E.prepared(target)
+    obs = c[c.routine & c.age.notna()]
+    for code, o in obs.groupby("site"):
+        n = names[code]
+        pk, iv = {}, {}
+        for k in "ABC":
+            ok_ = o[o.slot_class == k]
+            pk[k] = E.fit_geom(ok_.age, ok_.hit)
+            iv[k] = _wald(ok_.age, ok_.hit, pk[k])
+        ok(iv["A"][0] > iv["B"][1] and iv["B"][0] > iv["C"][1],
+           "SF13 %s: per-day class hazards separated, 95%% intervals A [%.5f, %.5f] > B [%.5f, %.5f] > C [%.5f, %.5f]"
+           % (n, iv["A"][0], iv["A"][1], iv["B"][0], iv["B"][1], iv["C"][0], iv["C"][1]))
+        ok(pk["A"] / pk["C"] >= 15, "SF13 %s: an A face goes wrong %.1f times as fast a day as a C face (15 or more)" % (n, pk["A"] / pk["C"]))
+        pp = E.fit_geom(o.age, o.hit)
+        gap = {}
+        for k in "ABC":
+            ok_ = o[o.slot_class == k]
+            seen = 100 * ok_.hit.mean()
+            gap[k] = 100 * ((1 - pp) ** ok_.age).mean() - seen
+            fit_k = 100 * ((1 - pk[k]) ** ok_.age).mean() - seen
+            ok(abs(fit_k) <= 0.1, "SF13 %s: the class-%s hazard reproduces the class's routine match rate within 0.1 (%+.2f)" % (n, k, fit_k))
+        ok(gap["A"] >= 3.5, "SF13 %s: the pooled hazard over-predicts the A routine match rate by 3.5 or more (%+.2f)" % (n, gap["A"]))
+        ok(gap["B"] <= -0.5, "SF13 %s: the pooled hazard under-predicts the B routine match rate by 0.5 or more (%+.2f)" % (n, gap["B"]))
+        ok(gap["C"] <= -3.0, "SF13 %s: the pooled hazard under-predicts the C routine match rate by 3.0 or more (%+.2f)" % (n, gap["C"]))
 
-    # convergence: the call does not depend on the small-sample convention or the estimator family
-    fw = (vers["cutoff"], pops["fullweek"], "installation")
-    for e in ("collector_cr0", "collector_jack"):
-        ok(G.fire_set(G.score(*fw, e, "register", D=D)) == GOLD_FIRE, "%s: same call" % e)
-    jack = G.score(*fw, "collector_jack", "register", D=D)
-    log.append("jackknife over comms parents: same call; standard errors %s" % {r: round(jack[r]["se"], 3) for r in G.RELEASES})
-    # the judge's residual (pass 1): the simple mean with a random-intercept variance holds EM3.10.9, whose
-    # node spread is one failed collector the model charges to every node by size squared; the full
-    # random-intercept fit, which applies the same model to the mean, fires it with the golden call
-    U = G._units(D, vers["cutoff"], pops["fullweek"], "register", "installation")
-    ri = {r: random_intercept(U.loc[U["release"] == r, "y"].to_numpy(), U.loc[U["release"] == r, "parent"].to_numpy())
-          for r in G.RELEASES}
-    gls_fire = tuple(sorted(r for r in G.RELEASES if ri[r]["gls"] < G.REFERENCE - G.K * ri[r]["se_gls"]))
-    hyb_fire = tuple(sorted(r for r in G.RELEASES if ri[r]["rh"] < G.REFERENCE - G.K * ri[r]["se_simple"]))
-    ok(gls_fire == GOLD_FIRE, "the full random-intercept fit lands the call: %s" % (gls_fire,))
-    ok(hyb_fire == ("EM3.12.1", "PX5.2.7"), "the simple mean with a random-intercept variance holds EM3.10.9 only: %s" % (hyb_fire,))
-    big = U[U["release"] == "EM3.10.9"].groupby("parent")["y"].agg(["size", "mean"]).sort_values("size").tail(10)
-    log.append("random intercept (moment estimator): full fit fires %s (EM3.10.9 %.2f, SE %.2f); simple mean with the model's "
-               "variance fires %s (EM3.10.9 SE %.2f, needs %.2f to hold); EM3.10.9's ten largest nodes (%d to %d "
-               "installations) average %.2f to %.2f"
-               % (gls_fire, ri["EM3.10.9"]["gls"], ri["EM3.10.9"]["se_gls"], hyb_fire, ri["EM3.10.9"]["se_simple"],
-                  (G.REFERENCE - ri["EM3.10.9"]["rh"]) / G.K, big["size"].min(), big["size"].max(), big["mean"].min(),
-                  big["mean"].max()))
-    # the error built over installations (either divisor) fires EM3.12.0 and EM3.12.2 with margin
-    inst = G.score(*fw, "installation", "register", D=D)
-    inst0 = G.score(*fw, "installation_ddof0", "register", D=D)
-    for r, lim in (("EM3.12.2", -0.2), ("EM3.12.0", -0.5)):
-        ok(margin(inst[r]) <= lim and margin(inst0[r]) <= lim, "%s fires on an installation-level error (%.3f)" % (r, margin(inst[r])))
-    ok(margin(sc["EM3.12.2"]) >= 2.0 and margin(sc["EM3.12.0"]) >= 0.3, "EM3.12.2 and EM3.12.0 hold on the comms-parent error")
-    for r in GOLD_FIRE:
-        ok(margin(inst[r]) <= -0.15, "%s fires on either error" % r)
-    log.append("deciding contrasts: EM3.12.2 %.2f against %.2f (installations as units) or %.2f (comms parents, k=%d); "
-               "EM3.12.0 %.2f against %.2f or %.2f (k=%d)"
-               % (sc["EM3.12.2"]["rh"], inst["EM3.12.2"]["lcl"], sc["EM3.12.2"]["lcl"], sc["EM3.12.2"]["k"],
-                  sc["EM3.12.0"]["rh"], inst["EM3.12.0"]["lcl"], sc["EM3.12.0"]["lcl"], sc["EM3.12.0"]["k"]))
 
-    # the data's own structure: a node-night either loses the day for most of the installations behind
-    # it or for very few of them, nothing between (the hole that makes the node the unit)
-    x = G.panel(D, vers["cutoff"], pops["end"])
-    x["parent"] = x["NMI"].map(D["nmi_parent"])
-    day = x.groupby(["NMI", "READ_DATE"]).agg(A=("QTY_A", "sum"), parent=("parent", "first"))
-    day["lost"] = day["A"] == 0
-    frac = day.groupby(["parent", "READ_DATE"])["lost"].mean()
-    lo, hi = frac[frac < 0.5], frac[frac >= 0.5]
-    ok(float(lo.max()) <= 0.12, "outside a node failure, a node-night loses the day for at most 12 per cent of its installations (%.3f)" % lo.max())
-    ok(float(hi.min()) >= 0.6 and len(hi) == 4, "four node-nights lose the day for 60 per cent or more of their installations: %s" % hi.round(3).to_dict())
-    log.append("node-nights losing the day for most installations: %s; every other node-night at most %.1f per cent"
-               % ({k: round(v_, 3) for k, v_ in hi.items()}, 100 * lo.max()))
-    ok(set(pops["fullweek"]) <= set(D["nmi_parent"]), "every assessed installation has a comms parent")
+def _docx_text(path):
+    import docx
+    d = docx.Document(path)
+    parts = [p.text for p in d.paragraphs]
+    for t in d.tables:
+        for row in t.rows:
+            parts.extend(cell.text for cell in row.cells)
+    return " ".join(parts)
 
-    # independence of installations, which the installation-level error assumes, is refuted by the files:
-    # at the rate installations lose a whole day on every other node-night, each failed node-night
-    # has a binomial tail below 1e-10
-    import math as _m
-    from scipy import stats as _st
-    cnt = day.groupby(["parent", "READ_DATE"])["lost"].agg(["sum", "size"])
-    base = cnt[frac < 0.5]
-    p0 = float(base["sum"].sum() / base["size"].sum())
-    tails = {k: _st.binom.logsf(int(r_["sum"]) - 1, int(r_["size"]), p0) / _m.log(10) for k, r_ in cnt[frac >= 0.5].iterrows()}
-    ok(all(t <= -10 for t in tails.values()), "every failed node-night is impossible under independent installations: %s" % tails)
-    log.append("independence test: whole-day loss rate %.4f outside node failures; log10 tail per failed node-night %s"
-               % (p0, {k: round(t, 1) for k, t in tails.items()}))
 
-    # every grouping that respects the shared failures lands the call: nodes, node-days, days, and the
-    # two-way node and day error, on the installation-day panel (each installation-day an equal share)
-    xf = G.panel(D, vers["cutoff"], pops["fullweek"])
-    xf["parent"] = xf["NMI"].map(D["nmi_parent"])
-    idy = xf.groupby(["NMI", "READ_DATE"]).agg(A=("QTY_A", "sum"), E=("expected", "sum"), parent=("parent", "first"),
-                                              release=("release", "first")).reset_index()
-    idy["s"] = 100.0 * idy["A"] / idy["E"]
+def sf14_first_count(target, est, names):
+    """SF14: "correct" read on the first count rather than the confirmed count gives another set; CP-THN-04 s.5
+    (the confirmed count is posted as the location's record) with SCS-07 4.2 rules it out."""
+    faces, c = E.prepared(target)
+    c["hit"] = c.first_count_qty.astype(int) == c.system_qty.astype(int)
+    r = E.rung3(faces, c)
+    first_set = sorted(names[k] for k, v in r.items() if v[E.GOLDEN_KEY] >= W.LINE)
+    ok(first_set == ["Bellshill", "Daventry", "Hinckley", "Magor"],
+       "SF14: the first-count reading gives Bellshill, Daventry, Hinckley and Magor (%s), not the six" % first_set)
+    prog = [f for f in os.listdir(target) if f.startswith("Corderoy_CP-THN-04") and f.endswith(".docx")]
+    ok(len(prog) == 1, "SF14: the count programme ships as one docx")
+    txt = re.sub(r"\s+", " ", _docx_text(os.path.join(target, prog[0])))
+    ok("The confirmed count (the recount where there is one, otherwise the first count) is posted as the location's record"
+       in txt, "SF14: CP-THN-04 s.5 in the shipped docx posts the confirmed count as the record")
+    ok("equals the quantity a count under the 3PL's count programme would record" in " ".join(t for _, t in DC.STANDARD),
+       "SF14: SCS-07 4.2 defines correct against what a count under the programme records")
 
-    def se_by(y, g_):
-        d_ = pd.Series(y - y.mean()).groupby(pd.Series(g_).values).sum().to_numpy()
-        k_ = len(d_)
-        return _m.sqrt(k_ / (k_ - 1) * float((d_ ** 2).sum())) / len(y)
-    alt = {}
-    for rel, g_ in idy.groupby("release"):
-        y = g_["s"].to_numpy()
-        se_n, se_nd, se_d = se_by(y, g_["parent"]), se_by(y, g_["parent"] + "|" + g_["READ_DATE"]), se_by(y, g_["READ_DATE"])
-        two = _m.sqrt(max(se_n ** 2 + se_d ** 2 - se_nd ** 2, se_n ** 2))
-        alt[rel] = {k_: bool(y.mean() < 99.5 - 3 * v_) for k_, v_ in (("node", se_n), ("node-day", se_nd), ("day", se_d), ("two-way", two))}
-    for k_ in ("node", "node-day", "day", "two-way"):
-        fs_ = tuple(sorted(r for r in G.RELEASES if alt[r][k_]))
-        ok(fs_ == GOLD_FIRE, "the %s grouping lands the call: %s" % (k_, fs_))
-    log.append("node, node-day, day and two-way groupings of the installation-day panel all fire %s" % ", ".join(GOLD_FIRE))
 
-    # the outage carve-out a solver might improvise (no clause allows it: 3.3 counts every interval)
-    # files a wrong set on every variant, with EM3.12.0 firing clearly, so it reaches no knife edge
-    failed = set(frac[frac >= 0.5].index)
-    nodes_f = {p_ for p_, _ in failed}
-    xl = G.panel(D, vers["latest"], pops["fullweek"])
-    dl = xl.groupby(["NMI", "READ_DATE"])["QTY_A"].sum()
-    idy["AL"] = [dl.get((n_, d_), 0) for n_, d_ in zip(idy["NMI"], idy["READ_DATE"])]
-    idy["nf"] = [(p_, d_) in failed for p_, d_ in zip(idy["parent"], idy["READ_DATE"])]
-    variants = {"failed node-days dropped": idy[~idy["nf"]],
-                "node backlog counted as held": idy.assign(A=idy["A"].where(~idy["nf"], idy["AL"])),
-                "installations behind failed nodes dropped": idy[~idy["parent"].isin(nodes_f)]}
-    for nm, dv in variants.items():
-        iv = dv.groupby("NMI").agg(A=("A", "sum"), E=("E", "sum"), release=("release", "first"))
-        iv["s"] = 100.0 * iv["A"] / iv["E"]
-        mm = {rel: g_["s"].mean() - (99.5 - 3 * g_["s"].std(ddof=1) / _m.sqrt(len(g_))) for rel, g_ in iv.groupby("release")}
-        fs_ = tuple(sorted(r for r, v_ in mm.items() if v_ < 0))
-        ok(fs_ != GOLD_FIRE and mm["EM3.12.0"] <= -0.1, "carve-out (%s) files %s, EM3.12.0 at %.3f" % (nm, fs_, mm["EM3.12.0"]))
-        log.append("carve-out, %s, installation-level error: fires %s (EM3.12.0 %.3f)" % (nm, ", ".join(fs_), mm["EM3.12.0"]))
-    if world is not None:
-        moved_parent = [i for i in world["insts"] if i.group == "full" and i.since.date() >= dt.date(2026, 10, 5)]
-        ok(not moved_parent, "no assessed installation changed comms parent during the week")
+def _whole(est):
+    return {n: round(est[n][E.GOLDEN_KEY]) for n in W.NAMES}
 
-    # the cut-off rung: register-days held nowhere at the cut-off, and the partial application
-    naive_rows = G.score(vers["cutoff"], pops["fullweek"], "installation", "collector", "rows", D=D)
-    ok(not naive_rows["PX5.2.7"]["fire"], "dividing by the register-days held at the cut-off holds PX5.2.7")
-    part = G.fire_set(G.score(vers["cutoff"], pops["end"], "pooled", "binomial_reads", "rows", D=D))
-    ok(part != GOLD_FIRE and "PX5.2.7" not in part, "the cut-off filter applied to rows alone holds PX5.2.7: %s" % (part,))
-    ok(naive_rows["EM3.12.2"]["rh"] >= 99.5 and G.fire_set(naive_rows) != GOLD_FIRE,
-       "dividing by held rows drops the node failures' days altogether (EM3.12.2 %.2f)" % naive_rows["EM3.12.2"]["rh"])
-    log.append("cut-off on rows alone fires %s; on held rows the node failures vanish (EM3.12.2 %.2f, EM3.12.0 %.2f)"
-               % (", ".join(part), naive_rows["EM3.12.2"]["rh"], naive_rows["EM3.12.0"]["rh"]))
-    held_days = set(map(tuple, vers["cutoff"][["NMI", "NMI_SUFFIX", "READ_DATE"]].values.tolist()))
-    pxn = [n for n, b in pops["fullweek"].items() if b == "PX5.2.7"]
-    st = D["streams"][D["streams"]["NMI"].isin(pxn)]
-    absent = sum(1 for _, r_ in st.iterrows() for d_ in G.DATES if (r_["NMI"], r_["NMI_SUFFIX"], d_) not in held_days)
-    ok(absent >= 60, "PX5.2.7 has register-days the MDM held nothing for at the cut-off (%d)" % absent)
-    log.append("PX5.2.7: %d register-days held nowhere at the cut-off; dividing by held rows gives %.2f against %.2f, the register gives %.2f"
-               % (absent, naive_rows["PX5.2.7"]["rh"], naive_rows["PX5.2.7"]["lcl"], sc["PX5.2.7"]["rh"]))
-    late = G.score(vers["latest"], pops["fullweek"], D=D)
-    ok(not late["PX5.2.7"]["fire"], "PX5.2.7 holds on the latest deliveries")
-    first = G.score(vers["first"], pops["fullweek"], D=D)
-    moved = [r for r in G.RELEASES if round(first[r]["rh"], 2) != round(sc[r]["rh"], 2)]
-    ok(len(moved) >= 4, "the first-delivery reading moves at least four graded read-health figures: %s" % moved)
-    pooled = G.score(vers["cutoff"], pops["fullweek"], "pooled", "collector", D=D)
-    ok(pooled["PX5.3.0"]["fire"] and not pooled["EM3.12.1"]["fire"], "pooled reads fire PX5.3.0 and hold EM3.12.1")
-    log.append("pooled reads: PX5.3.0 %.2f, EM3.12.1 %.2f against the mean's %.2f and %.2f"
-               % (pooled["PX5.3.0"]["rh"], pooled["EM3.12.1"]["rh"], sc["PX5.3.0"]["rh"], sc["EM3.12.1"]["rh"]))
 
-    # convergent readings (C1): same population and same figures
-    sp_fail = G.running_builds(D["hes"], D["img2rel"], failed_moves=True)
-    sp_raw = G.running_builds(D["hes"], D["img2rel"], dedupe=False)
-    ok(G.assessed(D, "fullweek", sp_fail) == pops["fullweek"], "a failed activation read as a move changes no assessed installation")
-    ok(G.assessed(D, "fullweek", sp_raw) == pops["fullweek"], "replayed events change no assessed installation")
-    xx = G.panel(D, vers["cutoff"], pops["fullweek"])
-    dd = xx.groupby(["NMI", "READ_DATE"])[["QTY_A", "expected"]].sum()
-    day_mean = (100 * dd["QTY_A"] / dd["expected"]).groupby(level=0).mean()
-    wk = xx.groupby("NMI")[["QTY_A", "expected"]].sum()
-    wk_share = 100 * wk["QTY_A"] / wk["expected"]
-    ok(float((day_mean - wk_share).abs().max()) < 1e-9, "installation-day mean equals the installation's week share")
-    gap = (D["mdm"]["cutoff"] - D["mdm"]["received"]).dt.total_seconds().abs() / 60
-    ok(float(gap.min()) >= 8.0, "no delivery lands within 8 minutes of its cut-off")
-    ok(bool(((D["mdm"]["expected"] * D["mdm"]["INTERVAL_LENGTH"]) == 1440).all()), "every delivered register-day carries a full day of intervals")
+def _whole_from(r3):
+    names = {c["code"]: c["name"] for c in W.CENTRES}
+    return {names[k]: round(v[E.GOLDEN_KEY]) for k, v in r3.items()}
 
-    # clean-data and lens-swap tests: repair the Layer 1 mess on the main path; the answer and the
-    # installation-level answer do not move, and they differ
-    ok(G.fire_set(G.score(vers["cutoff"], G.assessed(D, "fullweek", sp_raw), "installation", "collector", D=D)) == GOLD_FIRE,
-       "clean data: replays removed, same call")
-    ok(G.fire_set(G.score(vers["cutoff"], pops["fullweek"], "installation", "installation", "rows", D=D)) != GOLD_FIRE,
-       "clean data: the installation-level error is still wrong on held rows")
-    ok(len(pops["end"]) - len(pops["fullweek"]) >= 1100, "the naive population is not the assessed population")
 
-    # ---------------------------------------------------------------- ask A: Wave 8 moves under the call
-    a = g["wave8"]
-    ok(a == {"EM3.12.2": 1274, "PX5.3.1": 109}, "wave 8 moves %s" % a)
-    ok(G.wave8_moves(D, sets[4]) == {"EM3.12.2": 0, "PX5.3.1": 109}, "the installation-level call stops Wave 8 onto EM3.12.2")
-    wb = __import__("openpyxl").load_workbook(os.path.join(target, "wave8_schedule.xlsx"), read_only=True)
-    raw = []
-    for name in ("Batch A 13-10", "Batch B 14-10"):
-        for r_ in list(wb[name].iter_rows(values_only=True))[2:]:
-            raw.append(dict(serial=str(r_[1]), nmi=r_[2], target=r_[5]))
-    raw = pd.DataFrame(raw)
-    rows_ct = raw.groupby("target").size().to_dict()
-    ok(rows_ct != a, "schedule row count is not the answer")
-    pad = raw.assign(serial=raw["serial"].str.zfill(8)).drop_duplicates()
-    ok(pad.groupby("target").size().to_dict() != a, "distinct scheduled meters is not the answer")
-    by_nmi = raw.fillna("").drop_duplicates(["nmi", "target"]).groupby("target").size().to_dict()
-    ok(by_nmi != a, "collapsing on the NMI column (blanks included) is not the answer")
-    log.append("wave 8: rows %s, distinct meters %s, one-per-NMI-cell %s, answer %s" % (rows_ct, pad.groupby("target").size().to_dict(), by_nmi, a))
+def _golden_with(target, extra):
+    loc, _ = E.load(target)
+    faces, c = E.prepared(target, include_out_of_scope=True)
+    ins = E.in_scope(loc)[["site", "location"]]
+    keep = pd.concat([ins, extra]).drop_duplicates()
+    f = faces.merge(keep, on=["site", "location"])
+    cc = c.merge(keep, on=["site", "location"])
+    return _whole_from(E.rung3(f, cc))
 
-    # ---------------------------------------------------------------- ask B: the substitution load
-    load = g["load"]
-    run_now = G.running_now(D)
-    ok(load == sum(run_now[r] for r in GOLD_FIRE), "the load is every installation running a build that fires")
-    week_end = G.running_now(D, dt.datetime(2026, 10, 11, 14, 0, tzinfo=dt.timezone.utc))
-    ok(week_end == run_now, "the build each installation runs is the same at the week's end and at the extract")
-    load_r4 = G.substitution_load(D, sets[4])
-    ok(load_r4 != load and load_r4 - load >= 3000, "the installation-level call loads %d installations, not %d" % (load_r4, load))
-    log.append("substitution load: %d installations on the builds that fire; the installation-level call would load %d" % (load, load_r4))
 
-    # ---------------------------------------------------------------- chronology (H16)
-    if world is not None:
-        import records as R
-        inv = {v: k for k, v in R.ALL_IMAGES.items()}
-        early = sum(1 for es in world["ev"].values() for e in es
-                    if e["image"] and e["type"] in ("COMMISSIONED", "FW_ACTIVATED")
-                    and e["at"].date() < dt.date.fromisoformat(R.RELEASED[inv[e["image"]]]))
-        ok(early == 0, "no meter runs an image before its release date (%d)" % early)
-        late_ev = sum(1 for es in world["ev"].values() for e in es if e["at"] > W.EXTRACT_AT)
-        ok(late_ev == 0, "no event after the extract")
-        ok(all(i.since >= i.meters[0][3] for i in world["insts"]), "no meter joins a node before it was installed")
+def invariance(target, est):
+    faces, c = E.prepared(target, utc_days=True)
+    ok(_whole_from(E.rung3(faces, c)) == _whole(est), "closure: UTC calendar days against UK trading days move no whole per cent")
+    allf, allc = E.prepared(target, include_out_of_scope=True)
+    loc, _ = E.load(target)
+    r = E.rung3(E.in_scope(loc), allc.merge(E.in_scope(loc)[["site", "location"]], on=["site", "location"]))
+    ok(_whole_from(r) == _whole(est), "closure: the estimate reads only in-scope faces' counts")
+    cnt = pd.read_csv(os.path.join(target, S.FILES["counts"]), dtype=str, keep_default_na=False)
+    ins = E.in_scope(loc)
+    lc = cnt.merge(ins[["site", "location", "slot_class"]], on=["site", "location"])
+    first = lc.groupby(["site", "location"]).counted_utc.min()
+    ok(len(first) == len(ins), "closure 12: every in-scope face has a count in the export")
+    days = E.trading_day(lc.counted_utc)
+    gaps = lc.assign(day=days).sort_values(["site", "location", "counted_utc"]).groupby(["site", "location"]).day.apply(
+        lambda s: s.diff().max() if len(s) > 1 else 0)
+    ok(gaps.max() <= 91 + 7, "closure 12: no in-scope face goes longer than its cycle plus roll-over without a count")
+    reasons = set(cnt.reason_code)
+    ok(reasons == {"CYC", "SHP", "NEG", "EMP", "OVR"}, "closure 19: reason codes are the programme's five")
+    rows = len(cnt)
+    ok(len(cnt.count_task.unique()) == rows, "closure 15: one row per count task")
 
-    # ---------------------------------------------------------------- separation
-    if world is not None:
-        dev = {i.nmi for i in world["insts"] if i.group in ("w7", "exch")}
-        ok(not (dev & set(pops["fullweek"].keys())), "no mover or exchanged installation sits in the main population")
-        sched_full = {row["inst"].nmi for row in world["sched"] if row["inst"].group == "full"}
-        ok(len(sched_full) > 1000, "schedule rows for full-week installations are separate records, not main-path rows")
 
-    # ---------------------------------------------------------------- gates
+def clean_data_and_lens(target, est):
+    # the main call reads two files; every ask device sits elsewhere
+    tmp = tempfile.mkdtemp()
+    for k in ("counts", "locations"):
+        shutil.copy(os.path.join(target, S.FILES[k]), os.path.join(tmp, S.FILES[k]))
+    e2 = E.everything(tmp)
+    shutil.rmtree(tmp)
+    ok(all(abs(e2[n][E.GOLDEN_KEY] - est[n][E.GOLDEN_KEY]) < 1e-9 for n in W.NAMES),
+       "clean-data test: the answer recomputes from the count history and location master alone (every ask device repaired or removed)")
+    ok(qual(e2, "rung0_all_counts") != qual(e2, E.GOLDEN_KEY), "clean-data test: the naive answer and the answer still differ")
+    ok(set(qual(est, "rung2_class_weighted")) != set(GOLD), "lens swap: the count rate and the state at 06:00 are different moments and different sets")
+    cols_c = set(pd.read_csv(os.path.join(target, S.FILES["counts"]), nrows=1).columns)
+    cols_l = set(pd.read_csv(os.path.join(target, S.FILES["locations"]), nrows=1).columns)
+    for bad in ("batch_no", "best_before", "cost_per_case", "depot", "store_no", "age", "days_since", "last_counted"):
+        ok(bad not in cols_c | cols_l, "separation: no %s column inside the main population" % bad)
+
+
+def bins_and_subsets(target, world):
+    out = {}
+    ga = A.ask_a(target)
+    gb = A.ask_b(target)
+    out["a"], out["b"] = ga, gb
+    for n in W.NAMES:
+        ok(abs(B.bin_offset(ga[n], 1000)) <= 300, "%s: ask A at least 200 from its £1,000 edge (%.0f)" % (n, ga[n]))
+        ok(abs(B.bin_offset(gb[n], 100)) <= 30, "%s: ask B at least 20 from its 100-case edge (%.1f)" % (n, gb[n]))
+    # ask A: every subset of mishandlings outside the bin on every centre
+    flags = ["fanout", "units", "case_version", "p10"]
+    for r in range(1, 5):
+        for sub in itertools.combinations(flags, r):
+            kw = dict(fanout="fanout" not in sub, units="units" not in sub,
+                      case_version="first" if "case_version" in sub else "current", p10="p10" not in sub)
+            x = A.ask_a(target, **kw)
+            for n in W.NAMES:
+                ok(round(x[n], -3) != round(ga[n], -3) and abs(x[n] - ga[n]) >= 1000,
+                   "ask A, %s mishandled: %s outside the bin" % ("+".join(sub), n))
+    x = A.ask_a(target, overclean=True)
+    for n in W.NAMES:
+        ok(abs(x[n] - ga[n]) >= 1000 and x[n] < ga[n], "ask A over-cleaned (one row per line per centre): %s low, outside the bin" % n)
+    stops_a = {"1 lazy": A.ask_a(target, fanout=False, units=False, p10=False),
+               "2 fan-out handled": A.ask_a(target, units=False, p10=False),
+               "3 period 10 missed": A.ask_a(target, p10=False),
+               "4 over-cleaned": A.ask_a(target, overclean=True), "5 golden": ga}
+    for n in W.NAMES:
+        ok(abs(stops_a["1 lazy"][n] - ga[n]) >= 2000, "ask A lazy delta at least two bins: %s" % n)
+        ok(len({round(s[n], -3) for s in stops_a.values()}) == 5, "ask A stops distinct: %s" % n)
+    # ask B: every combination of basis, units and closures
+    for basis in ("run", "start", "daily"):
+        for units in (True, False):
+            for closures in (True, False):
+                if (basis, units, closures) == ("daily", True, True):
+                    continue
+                x = A.ask_b(target, basis=basis, units=units, closures=closures)
+                for n in W.NAMES:
+                    ok(round(x[n], -2) != round(gb[n], -2) and abs(x[n] - gb[n]) >= 100,
+                       "ask B, basis %s units %s closures %s: %s outside the bin" % (basis, units, closures, n))
+    x = A.ask_b(target, overclean=True)
+    for n in W.NAMES:
+        ok(abs(x[n] - gb[n]) >= 100 and x[n] < gb[n], "ask B over-cleaned (re-zoned stores dropped): %s low, outside the bin" % n)
+    stops_b = {"1 lazy": A.ask_b(target, basis="run", units=False, closures=False),
+               "2 start map": A.ask_b(target, basis="start"), "3 Boxing Day missed": A.ask_b(target, closures=False),
+               "4 over-cleaned": A.ask_b(target, overclean=True), "5 golden": gb}
+    for n in W.NAMES:
+        ok(abs(stops_b["1 lazy"][n] - gb[n]) >= 200, "ask B lazy delta at least two bins: %s" % n)
+        ok(len({round(s[n], -2) for s in stops_b.values()}) == 5, "ask B stops distinct: %s" % n)
+    # the chart
+    order = sorted(W.NAMES, key=lambda n: -gb[n])
+    ok(order[0] == "Hinckley", "chart title on the golden path names Hinckley")
+    run = A.ask_b(target, basis="run")
+    ok(max(run, key=run.get) == "Thurrock", "chart title on the run's depots names Thurrock")
+    ok(sorted(W.NAMES, key=lambda n: -run[n]) != order, "chart order on the run's depots differs")
+    for n in W.NAMES:
+        ok(abs(gb[n] - gb[order[0]]) > 0 or n == order[0], "chart: no tie for the largest")
+    out["order"] = order
+    out["stops_a"], out["stops_b"] = stops_a, stops_b
+    return out
+
+
+def cracker_and_pair(target, asks):
+    ga, gb = asks["a"], asks["b"]
+    crack_a = A.ask_a(target, fanout=False, units=True, p10=False)
+    for n in W.NAMES:
+        ok(round(crack_a[n], -3) != round(ga[n], -3), "cracker sheet, ask A misses: %s" % n)
+    crack_b = A.ask_b(target, basis="run", units=True, closures=True)
+    for n in W.NAMES:
+        ok(round(crack_b[n], -2) != round(gb[n], -2), "cracker sheet, ask B misses: %s" % n)
+    ok(sorted(W.NAMES, key=lambda n: -crack_b[n]) != asks["order"], "cracker sheet, chart order misses")
+    ok(max(crack_b, key=crack_b.get) != asks["order"][0], "cracker sheet, chart title misses")
+    # mirror sheet: the best response that misses the call runs the same ask path
+    crit_ask = 8 + 8 + 4
+    kept = 1  # one bar per centre, structural
+    L = kept / crit_ask
+    C = 38 + 7 + 55 * L
+    Sx = 5 + 7 + 55 * L
+    ceiling = math.ceil((C + Sx) / 2)
+    ok(ceiling <= 40, "pair ceiling at 40 or under (%d)" % ceiling)
+    return dict(C=C, S=Sx, ceiling=ceiling, crack_a=crack_a, crack_b=crack_b)
+
+
+def input_gates(target, meta_path):
     files = sorted(os.listdir(target))
-    ok(len(files) >= 10, "ten files")
+    ok(len(files) >= 10, "input gate: 10 or more files (%d)" % len(files))
     fmts = {f.rsplit(".", 1)[1] for f in files}
-    ok(len(fmts) >= 3, "three formats: %s" % fmts)
-    ok(len(D["mdm"]) >= 25000, "a file of 25,000 rows")
-    meta_p = os.path.join(os.path.dirname(target), "metadata.json")
-    meta = json.load(open(meta_p)) if os.path.exists(meta_p) else None
-    if meta:
-        ok(len(meta["distractor_files"]) >= 2, "two distractors")
-        tmp = tempfile.mkdtemp()
-        for f in files:
-            if f not in meta["distractor_files"]:
-                shutil.copy(os.path.join(target, f), tmp)
-        _, g2 = G.solve(tmp)
-        shutil.rmtree(tmp)
-        ok(g2["fire"] == g["fire"] and g2["wave8"] == g["wave8"] and g2["load"] == g["load"], "the golden ignores the distractors")
-    # single statement: the reference and the cut-off hour are stated only in the standard
-    txt = {f: open(os.path.join(target, f), errors="ignore").read() for f in files if f.endswith((".md", ".csv")) and "mdm_" not in f}
-    for needle in ("99.50", "06:00"):
-        hits = [f for f, t in txt.items() if needle in t]
-        ok(not hits, "%s stated outside the standard: %s" % (needle, hits))
+    ok(len(fmts) >= 3, "input gate: 3 or more formats (%s)" % sorted(fmts))
+    big = max(sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv"))
+    ok(big >= 25000, "input gate: a file of 25,000 or more rows (%d)" % big)
+    meta = json.load(open(meta_path))
+    ok(len(meta["distractor_files"]) >= 2 and all(f in files for f in meta["distractor_files"]),
+       "input gate: two distractors named in metadata.json")
     for f in files:
-        ok("distract" not in f.lower(), "no file named for its role")
-    # the write-up carries the golden's figures, to the golden's rounding (H2, H3)
-    sub = os.path.join(os.path.dirname(target), "submission.md")
-    gj = os.path.join(os.path.dirname(target), "golden", "wave8_read_health_alerts.json")
-    if os.path.exists(sub) and os.path.exists(gj):
-        s_ = open(sub).read()
-        pj = json.load(open(gj))
-        for b_ in pj["builds"]:
-            line = "%s: %.2f%%, standard error %.2f, lower limit %.2f%%, %.2f %s the limit, %s" % (
-                b_["release"], b_["read_health_pct"], b_["standard_error_pct"], b_["lower_limit_pct"], abs(b_["vs_limit_pct"]),
-                "below" if b_["vs_limit_pct"] < 0 else "above", b_["alert"].lower())
-            ok(line in s_, "submission carries %s" % line)
-        for v_ in list(pj["wave8_moves_under_this_call"].values()) + [pj["settlement_substitution_load_installations"]]:
-            ok(format(v_, ",") in s_, "submission carries %s" % v_)
-        ok("\u2014" not in s_, "no em dash in the write-up")
-    if not quiet:
-        print("checks: %d assertions passed" % N[0])
-        for line in log:
-            print("  " + line)
-    return N[0], log
+        ok("distractor" not in f.lower(), "no file name says distractor: %s" % f)
+    # distractors unused: the golden recomputes with both removed
+    tmp = tempfile.mkdtemp()
+    for f in files:
+        if f not in meta["distractor_files"]:
+            shutil.copy(os.path.join(target, f), os.path.join(tmp, f))
+    e = E.everything(tmp)
+    a, b = A.ask_a(tmp), A.ask_b(tmp)
+    shutil.rmtree(tmp)
+    ok(qual(e, E.GOLDEN_KEY) == GOLD, "distractors unused: the call recomputes without them")
+    ok(a == A.ask_a(target) and b == A.ask_b(target), "distractors unused: both asks recompute without them")
+    ok(len(meta["deliverables"]) == 1, "one deliverable")
 
 
-if __name__ == "__main__":
-    run(os.path.join(os.path.dirname(HERE), "target"))
+def realism(target, world):
+    cnt = pd.read_csv(os.path.join(target, S.FILES["counts"]), dtype=str, keep_default_na=False)
+    by = cnt.groupby("site").size()
+    ok(by.nunique() == len(by), "realism: no two centres carry the same number of count rows")
+    m = cnt.assign(month=cnt.counted_utc.str[:7]).groupby(["site", "month"]).size()
+    ok(m.groupby(level=0).nunique().min() >= 5, "realism: monthly count volumes vary at every centre")
+    loc, _ = E.load(target)
+    ins = E.in_scope(loc).groupby("site").size()
+    ok(ins.nunique() == len(ins) and all(v % 100 for v in ins), "realism: in-scope face counts differ and none is round")
+    fc = pd.read_csv(os.path.join(target, A.FILES["forecast"]), dtype=str)
+    fc["q"] = fc.fcst_qty.astype(float)
+    nun = fc.groupby(["store_no", "category"]).q.nunique()
+    ok(nun.min() >= 10, "realism: no store's category forecast is a constant stream")
+    rows = {f: (sum(1 for _ in open(os.path.join(target, f))) if f.endswith(".csv") else None) for f in os.listdir(target)}
+    vals = [v for v in rows.values() if v]
+    ok(len(set(vals)) == len(vals), "realism: no two CSVs carry the same row count")
+    ok(all(v % 1000 for v in vals), "realism: no CSV row count is a round thousand")
+    # people: only the card's drawn personas appear in the documents
+    card = json.load(open(os.path.join(B.REPO, ".claude", "skills", "fingerprint", "cards", "task229.json")))
+    people = set(card["world"]["people"])
+    text = " ".join(t for _, t in DC.STANDARD) + " " + " ".join(t if isinstance(t, str) else "" for _, t in DC.PROGRAMME)
+    text += open(os.path.join(target, DC.FILES["notes"])).read()
+    for p in ("Arthur Mason", "Leonard Finch"):
+        ok(p in people and (p in text), "realism: persona %s drawn and on the card" % p)
+    # containers scrubbed
+    r = subprocess.run([sys.executable, B.SCRUB, target, "--floor", "2022-01-01", "--ceiling", "2026-12-07"],
+                       capture_output=True, text=True)
+    sig = [l for l in r.stdout.splitlines() if any(s in l for s in ("python-docx", "openpyxl", "reportlab", "ReportLab"))]
+    ok(not sig, "realism: no container carries its writer's signature")
+    # dates coherent with the setting: nothing posted after the pull
+    ok(cnt.posted_utc.max() < "2026-12-07T06:00:00Z", "realism: no count posted after the stand-down")
+    snap = pd.read_csv(os.path.join(target, A.FILES["batches"]), dtype=str)
+    ok(snap.received_utc.max() < "2026-12-07T06:00:00Z", "realism: no batch received after the snapshot")
+    cal = pd.read_csv(os.path.join(target, A.FILES["calendar"]), dtype=str)
+    ok(cal.updated_utc.max() < "2026-12-07", "realism: the calendar's last update precedes the pull")
+    ok(set(card["world"]["people"]) >= {"Rhys Flynn", "Stacey Sykes", "Arthur Mason", "Leonard Finch"}, "realism: card lists the four personas")
+
+
+def run(target, world, meta_path):
+    del LOG[:]
+    est = main_path(target, world)
+    semantic_forks(target, world, est)
+    invariance(target, est)
+    clean_data_and_lens(target, est)
+    asks = bins_and_subsets(target, world)
+    pair = cracker_and_pair(target, asks)
+    input_gates(target, meta_path)
+    realism(target, world)
+    return len(LOG), dict(est=est, asks=asks, pair=pair)

@@ -5,7 +5,7 @@
   "stage": 8,
   "stage_name": "delivered",
   "updated": "2026-10-10",
-  "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, sets aside the trusts holding no level-3 beds, rebuilds every unit's census from its stays, writes the remit's methodology sentence as its test (an empty staffed bed, or a freed bed given to a patient the trust placed itself, the bureau's transfers set aside) and files Prideswick at 15 over Ristenholm's 2; the step that lands it there is reading the unit feed's bed assignment as the patient in the bed: through every Stennock long wait since the platform went live its unit held one or two staffed beds assigned at the morning bed meeting to its own elective centre patients, who the theatre extract shows had not left recovery when the waiting patient's decision was made, so Stennock kept beds empty for its own planned surgery while its emergency patient waited, 27 deaths, the largest number the review can confirm.",
+  "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, sets aside the trusts holding no level-3 beds, reads the test in section 4 of the terms of reference (at any time while the patient waited, a staffed bed with no patient in it that was the trust's to use, or another of the trust's own patients admitted; a bed the bed bureau has allocated is the network's), computes it from the unit feed's stays against the staffed beds and files Prideswick at 15 over Ristenholm's 2; the step that lands it there is taking each stay's admitted_at, the minute the bed was assigned, as the minute a patient was in the bed: through every Stennock long wait since the platform went live its unit held one or two staffed beds assigned at the morning bed meeting to its own elective centre patients, who the theatre extract shows had not left recovery when the waiting patient's decision was made, so those beds had no patient in them and were Stennock's to use, 27 deaths, the largest number the review can confirm.",
   "harden_loops": 3,
   "solver_rounds": [
     {
@@ -49,8 +49,38 @@
     "gate_g": "mechanism: decomposition_attribution, stumping_family: mixed (design note: analytical_non_defect; both pass), surface_read_dependency: no, sole_data_defect: no"
   },
   "approved": "2026-10-10 (no author checkpoint in the flow; heart PASS)",
-  "delivered": "2026-10-10",
-  "portal": null,
+  "delivered": "2026-10-10 (re-delivered after the determinism repair)",
+  "portal": [
+    {
+      "test": 1,
+      "date": "2026-10-10",
+      "rubric_average": 29,
+      "determinism": "2 of 2 judges failed C, D and E (semantic_fork, competing_defensible_answer)",
+      "responses": [
+        "Brackenford 34 (the 08:00 return as the bed state)",
+        "Ristenholm 44 (holds found; the bureau's transfers counted as Ristenholm's decisions)"
+      ],
+      "judges_also_reproduced": "Prideswick 15 (the census by assignment)",
+      "diagnosis": "section 4 a one-sentence concept pin with no observable; the corpus blind to every reading"
+    }
+  ],
   "source_note": "analytical_tasks/02_anomaly_detection/AD01_mortality-review-transfer-chain-origin.md",
-  "zip": "task119/target.zip"
+  "zip": "task119/target.zip",
+  "repair": {
+    "date": "2026-10-10",
+    "kind": "determinism (forcing-the-answer Part 4 failure 1)",
+    "changes": [
+      "section 4 of the terms of reference states the test as observables (texts.REMIT)",
+      "theatre extract: background ward surgery no longer falls inside the patient's critical care stay (639 rows moved)",
+      "checks.pin_checks (8) and three verifier claims; GRID_RULE names the section 4 clause each wrong cell breaks"
+    ],
+    "checks": "188 of 188",
+    "verifier": "36 of 36",
+    "reproduce": "byte-identical",
+    "graded_figures_moved": 0,
+    "zip_sha256": "ab9f790bf1dd77295c79dd091f9c8e21794b4f0b336a3bcf567eac6d128acdf6",
+    "leak": "REVIEW, no LEAK",
+    "surface": "0 promoted pairs",
+    "next": "/solve 2 before portal test 2, then a judge rehearsal only if the author asks for one. One response on Stennock is survivable while DV8 stays silent; both top responses on Stennock is the stopping rule's ceiling (re-root the ladder, not harden the asks)."
+  }
 }

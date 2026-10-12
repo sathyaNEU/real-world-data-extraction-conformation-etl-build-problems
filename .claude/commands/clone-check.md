@@ -1,6 +1,7 @@
 ---
 description: Run a clone/template/duplicate check across the shipped task corpus, or one build against it as a pre-flight. Fingerprints every build, screens every pair, adjudicates the promoted ones, and writes clone_check_report.md.
 argument-hint: <nothing for the last 15 builds, or taskNN for a pre-flight, or "last 8" / "through task47" / "all">
+effort: medium
 ---
 
 # /clone-check
@@ -29,6 +30,6 @@ it.
 When the agent returns, relay its verdict line, the finding counts by track, and the report path. Do
 not apply a redraw, do not edit the shipped ledger, and do not soften a tier.
 
-**This command is author triggered only**, or run by `/build` at stage 4 as the pre-flight on that one
-build. Never invoke it on your own initiative, including right after finishing a build that looks like
+**This command is author triggered only.** `/build` does not run it; the free `guard.py heart` and `surface`
+gate every build. Never invoke it on your own initiative, including right after finishing a build that looks like
 it wants checking: it reads the whole corpus and spends real adjudication tokens.

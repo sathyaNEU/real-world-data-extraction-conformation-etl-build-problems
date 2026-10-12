@@ -80,7 +80,10 @@ call runs on only where the pack lacks it; a generic threat to validity ("partic
 **Never says:** anything that fixes the basis, window, convention or population; the deciding metric, eligibility rule
 or fee schedule; an input file name; a standard by acronym; a method hint ("compare A against B"); a trap word (clean,
 unduplicated, reconcile, attribution, mix, standardise, grain); two metrics named as valid; a warning that a view
-might mislead.
+might mislead; a **presupposition**, an ask that only parses if a subset is non-empty or a move happened ("how many
+and what they cost", "the sites where it fell"), which the client's prompt review fails as a leak: make "none" a
+grammatical answer ("whether any and, if so, how many and what they cost") with every figure, unit and rounding kept,
+while a fact the requester knows before any analysis stays (`reduce-house-fixes` H23).
 
 **Budget.** 1,000 characters is about 150 to 170 words; the client's paid-out prompts ran a median 227 words at 21.6
 a sentence and a maximum of 334, each still carrying the full unit. Compress per sentence, never by deleting a
@@ -119,3 +122,4 @@ files. `leak.py` sweep 11 and `precut.py` run the same gate. A failing draft is 
 
 - [ ] Domain, task type, objective and `domain_test` fixed; shape arithmetic at 25 or more before any file exists
 - [ ] The call is one quotable sentence; every ask passes H18 and the six tests; `voice-check.py taskNN` exits 0
+- [ ] No ask presupposes what the data holds: every ask about a subset still reads with "none" as its answer

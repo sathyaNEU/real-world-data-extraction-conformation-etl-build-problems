@@ -58,11 +58,21 @@ ASK_A_DEVICES = [
      {("Leeton", "vaccinated"): 0, ("Edward River", "vaccinated"): 0, ("Junee", "vaccinated"): 0}),
 ]
 # the gate: the main call as shipped at d6944e3 (portal round 1). Every file the main call reads keeps its bytes (the
-# line list, so every row of the main call's population, among them), and every main-call figure on golden.py and
-# verify.py hashes to the shipped pack's (main_fingerprint below, computed on the d6944e3 pack).
+# line list, so every row of the main call's population, among them) except the protocol, whose 4.2 now defines the
+# count it deploys on (the portal's determinism QC on the re-test) and which differs from d6944e3's in that clause's
+# text alone: the generator with d6944e3's 4.2 rebuilds d6944e3's bytes. The quarterly table's three files and its
+# golden keep the ask-only revision's bytes (df378aa). Every main-call figure on golden.py and verify.py hashes to the
+# shipped pack's (main_fingerprint below, computed on the d6944e3 pack).
 SHIPPED_COMMIT = "d6944e3"
+PROMPT_SHIPPED = "4a0bfaf34640c55c9c19592d52c501aa66e10971615a87d89bbda91b6e9a0967"
+PROTOCOL_REL = "target/PR-07_pertussis_response_protocol.pdf"
+PROTOCOL_SHIPPED = "a9203ff9795d27cc1174648c0d7862ef25c4e9594b7e04323ea991ae5a11603d"
+PR07_42_SHIPPED = ("The team goes to the area with the largest excess of cases with specimens collected in the 14 days "
+                   "before the extract day over its expected count.")
+# the pin defines what 4.2 counts and names no way of reaching it
+METHOD = re.compile(r"\b(estimat\w*|route\w*|speed\w*|model\w*|adjust\w*|forecast\w*|predict\w*|project\w*|"
+                    r"inflat\w*|scal(?:e|ed|ing)|weight\w*|complet\w*)\b", re.I)
 SHIPPED_FILES = {
-    "target/PR-07_pertussis_response_protocol.pdf": "a9203ff9795d27cc1174648c0d7862ef25c4e9594b7e04323ea991ae5a11603d",
     "target/SIPHU_PERTUSSIS_LINELIST_job_20261005_0700.txt": "c9d21b1c95fc8bec67611cc9272d01b2485b2d76ca8ef3823ef6afd5a23f2357",
     "target/cd_weekly_report_2026_wk35.pdf": "5bfcb7195e1d45e0d3117bd2d596250a0d190075df99bca4189c4c9b233ab7f8",
     "target/influenza_notifications_2026.csv": "8442d344e0a412a180d2e1ea986bdbcdd5d8d1fe3f54c241a29de264d4d13ba4",
@@ -74,6 +84,13 @@ SHIPPED_FILES = {
 }
 ASK_ONLY_FILES = ("respiratory_admissions_2019-2026.csv", "birth_records_2024-2026.csv",
                   "antenatal_vaccinations_2019-2026.parquet")
+REVISED_COMMIT = "df378aa"
+REVISED_FILES = {
+    "target/respiratory_admissions_2019-2026.csv": "37dcbc00b9d58072729b58fa9eefbc6051b950e7f33a0239cb2524cbfe279895",
+    "target/birth_records_2024-2026.csv": "50ef14ef29de56b9c49ccee9ab70af35e03961df202b179482e087c677812b84",
+    "target/antenatal_vaccinations_2019-2026.parquet": "b5be43ea988457ad3d187d12d84bc073969ba1943e41c3c8f6f3df62d477a36d",
+    "golden/pertussis_cases_by_lga.csv": "5d422caa130ffef89a7c0bf8f2f0a22ca5c1886e10902ccee73f4243eb8b5fa2",
+}
 SHIPPED_MAIN = "2e6c46341f35947685cf726850d40bfea0109b7d128bf06717f246bd76c73961"
 A_KEYS = ("confirmed", "probable", "infants", "admitted", "vaccinated")
 EXPECT_B_ALL = [("Banna Avenue Public School", "Griffith", 5), ("Wollundry Public School", "Wagga Wagga", 3),
@@ -257,29 +274,54 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
     ok(int((utc_day != ll["recv_day"]).sum()) > 50, "UTC and local received dates differ on many rows (texture)")
 
     # ---------------------------------------------------------------- the gate: the main call as shipped
-    for rel, h in sorted(SHIPPED_FILES.items()):
+    gate = [(rel, h, SHIPPED_COMMIT) for rel, h in sorted(SHIPPED_FILES.items())] \
+        + [(rel, h, REVISED_COMMIT) for rel, h in sorted(REVISED_FILES.items())]
+    for rel, h, commit in gate:
         path = os.path.join(target if rel.startswith("target/") else golden_dir, rel.split("/", 1)[1])
-        ok(hashlib.sha256(open(path, "rb").read()).hexdigest() == h, "%s differs from %s" % (rel, SHIPPED_COMMIT))
+        ok(hashlib.sha256(open(path, "rb").read()).hexdigest() == h, "%s differs from %s" % (rel, commit))
+    ok(hashlib.sha256(open(os.path.join(TASK, "prompt.md"), "rb").read()).hexdigest() == PROMPT_SHIPPED,
+       "prompt.md differs from %s" % SHIPPED_COMMIT)
+    recorded = gate + [(PROTOCOL_REL, PROTOCOL_SHIPPED, SHIPPED_COMMIT), ("prompt.md", PROMPT_SHIPPED, SHIPPED_COMMIT)]
     try:
-        shown = {rel: hashlib.sha256(subprocess.run(["git", "show", "%s:task181/%s" % (SHIPPED_COMMIT, rel)], cwd=REPO,
-                                                    capture_output=True, check=True).stdout).hexdigest()
-                 for rel in SHIPPED_FILES}
+        shown = {(rel, commit): hashlib.sha256(subprocess.run(["git", "show", "%s:task181/%s" % (commit, rel)], cwd=REPO,
+                                                              capture_output=True, check=True).stdout).hexdigest()
+                 for rel, _, commit in recorded}
     except (OSError, subprocess.CalledProcessError):
         shown = None
     if shown is not None:
-        ok(shown == SHIPPED_FILES, "the gate's digests are the files at %s" % SHIPPED_COMMIT)
+        ok(shown == {(rel, commit): h for rel, h, commit in recorded},
+           "the gate's digests are the files at %s and %s" % (SHIPPED_COMMIT, REVISED_COMMIT))
     ok(sorted(os.listdir(target)) == sorted([r.split("/", 1)[1] for r in SHIPPED_FILES if r.startswith("target/")]
-                                            + list(ASK_ONLY_FILES)),
-       "every target file is either byte-identical to the shipped pack or read only by the quarterly table")
+                                            + [PROTOCOL_REL.split("/", 1)[1]] + list(ASK_ONLY_FILES)),
+       "every target file is byte-identical to the shipped pack, the protocol, or read only by the quarterly table")
+    ok(all("target/" + f in REVISED_FILES for f in ASK_ONLY_FILES), "the quarterly table's files keep the revision's bytes")
+    # the protocol: 4.2's text is its one change. Built with d6944e3's 4.2 it is d6944e3's file to the byte, so every
+    # other clause, the history, the header and the containers are as shipped; the pack carries the new 4.2, not the old
+    sections = [(n, h, [(c, PR07_42_SHIPPED if c == "4.2" else t) for c, t in cl]) for n, h, cl in D.PR07]
+    tmp = tempfile.mkdtemp(dir=TASK, suffix=".tmp")
+    try:
+        D.write_protocol(os.path.join(tmp, D.PROTOCOL), sections=sections)
+        rebuilt = hashlib.sha256(open(os.path.join(tmp, D.PROTOCOL), "rb").read()).hexdigest()
+    finally:
+        shutil.rmtree(tmp)
+    ok(rebuilt == PROTOCOL_SHIPPED, "the protocol with %s's 4.2 rebuilds %s's bytes" % (SHIPPED_COMMIT, SHIPPED_COMMIT))
+    pin = dict((c, t) for _, _, cl in D.PR07 for c, t in cl)["4.2"]
+    ok(pin != PR07_42_SHIPPED, "4.2 carries the pin")
+    pt = " ".join(file_text(os.path.join(target, D.PROTOCOL)).split())
+    ok(hashlib.sha256(open(os.path.join(target, D.PROTOCOL), "rb").read()).hexdigest() != PROTOCOL_SHIPPED
+       and pin in pt and PR07_42_SHIPPED not in pt, "the shipped protocol carries the new 4.2 and not the old")
+    ok(not METHOD.search(pt), "the protocol names a method: %s" % sorted(set(m.lower() for m in METHOD.findall(pt))))
     import contextlib
     import io
     import verify as V
     with contextlib.redirect_stdout(io.StringIO()):
         vmain = V.main(target, golden_dir)
     ok(main_fingerprint(g, vmain) == SHIPPED_MAIN, "a main-call figure moved from the shipped pack (%s)" % SHIPPED_COMMIT)
-    LOG.append("gate: %d files byte-identical to %s (the line list, so every main-population row, among them); every "
-               "main-call figure on golden.py and verify.py as shipped (fingerprint %s)" % (
-                   len(SHIPPED_FILES), SHIPPED_COMMIT, SHIPPED_MAIN[:16]))
+    LOG.append("gate: prompt.md and %d files byte-identical to %s (the line list, so every main-population row, among "
+               "them) and %d to %s (the quarterly table's); the protocol %s's but for 4.2 (rebuilt to its bytes with the "
+               "old clause); every main-call figure on golden.py and verify.py as shipped (fingerprint %s)" % (
+                   len(SHIPPED_FILES), SHIPPED_COMMIT, len(REVISED_FILES), REVISED_COMMIT, SHIPPED_COMMIT,
+                   SHIPPED_MAIN[:16]))
 
     # ---------------------------------------------------------------- the asks
     adm, births, reg = G.load_links(target)
@@ -456,6 +498,9 @@ def run(target, golden_dir, world=None, meta_path=None, quiet=False):
         hits = sorted(set(m.group(0).lower() for m in BANNED.finditer(t)))
         ok(not hits, "%s carries %s" % (f, hits))
         ok("\u2014" not in t, "%s carries an em dash" % f)
+        if f != D.PROTOCOL:
+            ok(not re.search(r"as it will stand|whenever its notification", " ".join(t.split()), re.I),
+               "%s restates 4.2's pin" % f)
         if f != "../prompt.md":
             tc = sorted(set(m.group(0) for m in TOOLCHAIN.finditer(t)))
             ok(not tc, "%s carries toolchain or author words %s" % (f, tc))

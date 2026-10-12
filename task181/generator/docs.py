@@ -107,8 +107,11 @@ PR07 = [
     ("4", "Deploying the outbreak response team", [
         ("4.1", "The outbreak response team works in one area each week. The area is set at the Monday huddle from the "
                 "line-list extract run at 07:00 that morning."),
-        ("4.2", "The team goes to the area with the largest excess of cases with specimens collected in the 14 days before "
-                "the extract day over its expected count."),
+        ("4.2", "The team goes to the area with the largest excess, over its expected count, of cases with specimens "
+                "collected in the 14 days before the extract day. The count is the number of such cases as it will stand "
+                "once all the notifications for those 14 days have been received, the same quantity 4.3 counts for each "
+                "of the previous five years. A case belongs to the 14 days in which its first specimen was collected, "
+                "whenever its notification is received."),
         ("4.3", "An area's expected count is the mean, over the previous five years, of its cases with specimens collected "
                 "on the same 14 calendar dates."),
         ("4.4", "The team leader confirms travel, clinic sessions and school visits with the area's council, general "
@@ -137,7 +140,7 @@ PR07 = [
 ]
 
 
-def write_protocol(path):
+def write_protocol(path, sections=PR07):
     title = "PR-07 Pertussis response protocol"
     doc = _doc(path, title, W.PEOPLE["director"], "Pertussis response protocol, version 3.1")
     s = [Paragraph(title, H1),
@@ -146,7 +149,7 @@ def write_protocol(path):
                  ["3.1", "02/03/2026", "Director, %s" % W.UNIT, "Director, %s (%s)" % (W.UNIT, W.PEOPLE["director"]), "March 2028"]],
                 [16 * mm, 21 * mm, 50 * mm, 58 * mm, 24 * mm]),
          Spacer(1, 8)]
-    for num, head, clauses in PR07:
+    for num, head, clauses in sections:
         block = [Paragraph("%s  %s" % (num, head), H2)]
         for cl, text in clauses:
             block.append(Paragraph("<b>%s</b>&nbsp;&nbsp;%s" % (cl, text), CLAUSE))

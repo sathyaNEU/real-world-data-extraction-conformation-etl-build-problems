@@ -1,36 +1,37 @@
 {
   "task": "task229",
-  "title": "Which comms firmware builds the read-health alert fires on before a smart-meter rollout wave",
-  "domain": "Energy Systems & Utilities",
-  "subdomain": "other: smart-meter interval data delivery quality (metering data provider read performance)",
+  "title": "Which distribution centres meet the client's peak stock-record standard at the freeze stand-down",
+  "domain": "General Statistics & Data Science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "setting": "a third-party logistics operator's peak gate on its pick-face stock records for a grocery client",
   "objective": "Data Quality Monitoring & Alerting",
-  "prompt_shape": "10 (scorecard against thresholds): eight builds, each with read health, its standard error, lower limit, distance from the limit and fire or hold, plus the Wave 8 moves under the call and the substitution load",
-  "as_of": "2026-10-12",
+  "prompt_shape": "10 (scorecard against thresholds): eight centres, each with record accuracy against the line and a verdict, plus the stock value on the gate's faces and the forecast cases over the freeze, charted",
+  "as_of": "2026-12-07",
   "deliverables": [
-    "wave8_read_health_alerts.json",
-    "read_health_by_build_wk41.png"
+    "freeze_gate_2026.html"
   ],
   "distractor_files": [
-    "extract_log_20261012.csv",
-    "dnsp_planned_interruptions_oct2026.xlsx"
+    "Corderoy_peak_labour_plan_2026.xlsx",
+    "goods_in_bookings_summary_7Dec_3Jan.csv"
   ],
   "input_gates": {
-    "files": 10,
+    "files": 18,
     "formats": [
       "csv",
+      "docx",
       "json",
-      "md",
       "pdf",
+      "txt",
       "xlsx"
     ],
-    "largest_file": "mdm_interval_receipts_20261005_20261011.csv",
-    "largest_file_rows": 95140
+    "largest_file": "THN_store_replen_forecast_run_20261123.csv",
+    "largest_file_rows": 147924
   },
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task229/generator/make.py (seeded, deterministic) around a fictional metering data provider (Halvane Metering) with real New South Wales distributor names and the AEMO NMI checksum; no real installation, meter, customer or firmware product is depicted.",
-      "date": "2026-10-12",
+      "origin": "constructed for this task by task229/generator/make.py (seeded, deterministic) around a fictional 3PL (Corderoy Logistics) and a fictional grocer (Thornacre); real UK place names and postcode districts; no real company, store, product or person is depicted.",
+      "date": "2026-12-07",
       "license": "CC0-1.0 (original work)"
     }
   ],
@@ -38,93 +39,165 @@
   "generator": "task229/generator/make.py",
   "files": [
     {
-      "path": "mdm_interval_receipts_20261005_20261011.csv",
+      "path": "THN_pickface_count_history_20260601_20261207.csv",
       "format": "csv",
-      "bytes": 7864652,
-      "rows": 95140,
-      "source": "Constructed: MDM interval receipt extract: one row per data stream, read date and delivery, read dates 5 to 11 October 2026",
-      "date": "2026-10-12",
+      "bytes": 13785456,
+      "rows": 107072,
+      "source": "Constructed: Corderoy WMS count history for Thornacre pick faces, all eight centres, 1 June to 7 December 2026",
+      "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "hes_meter_firmware_history.json",
-      "format": "json",
-      "bytes": 10484757,
-      "rows": 49495,
-      "source": "Constructed: Head-end (HES) firmware service export: every meter and its firmware events since commissioning",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "mp_installation_register_20261012.xlsx",
-      "format": "xlsx",
-      "bytes": 793015,
-      "rows": null,
-      "source": "Constructed: MP installation register extract: installations, meters with install and removal times, data streams",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "fw_release_catalogue.csv",
+      "path": "wms_location_master_THN_eff.csv",
       "format": "csv",
-      "bytes": 995,
-      "rows": 12,
-      "source": "Constructed: Firmware engineering release catalogue: release names and HES image ids",
-      "date": "2026-10-12",
+      "bytes": 2566196,
+      "rows": 39790,
+      "source": "Constructed: Corderoy WMS location master, Thornacre client, effective-dated",
+      "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "wave8_schedule.xlsx",
-      "format": "xlsx",
-      "bytes": 63955,
-      "rows": null,
-      "source": "Constructed: Rollout desk Wave 8 schedule workbook, both batches",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "MDS-STD-114_firmware_read_health_r3.pdf",
-      "format": "pdf",
-      "bytes": 4521,
-      "rows": null,
-      "source": "Constructed: Controlled document MDS-STD-114 revision 3, firmware read health",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "mds_extract_field_reference.md",
-      "format": "md",
-      "bytes": 2823,
-      "rows": null,
-      "source": "Constructed: MDS analytics field reference for the read-health extracts",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "extract_log_20261012.csv",
+      "path": "corderoy_thornacre_centre_register.csv",
       "format": "csv",
-      "bytes": 1116,
+      "bytes": 571,
       "rows": 8,
-      "source": "Constructed: Extract log for the pull of 12 October 2026",
-      "date": "2026-10-12",
+      "source": "Constructed: Corderoy centre register with Thornacre depot codes",
+      "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "hes_firmware_census_20261012.csv",
+      "path": "WMS_stock_by_location_THN_20261207_0600.csv",
       "format": "csv",
-      "bytes": 649,
-      "rows": 12,
-      "source": "Constructed: HES nightly firmware census by image and status, 00:00 on 12 October 2026",
-      "date": "2026-10-12",
+      "bytes": 2652822,
+      "rows": 39199,
+      "source": "Constructed: Corderoy WMS stock by location at 06:00 on 7 December 2026",
+      "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "dnsp_planned_interruptions_oct2026.xlsx",
+      "path": "WMS_batch_register_THN_20261207_0600.csv",
+      "format": "csv",
+      "bytes": 523986,
+      "rows": 8345,
+      "source": "Constructed: Corderoy WMS batch register at 06:00 on 7 December 2026",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "Thornacre_line_master_20261204.xlsx",
       "format": "xlsx",
-      "bytes": 8912,
+      "bytes": 581889,
       "rows": null,
-      "source": "Constructed: Planned supply interruption notifications received from the distributors in October 2026",
-      "date": "2026-10-12",
+      "source": "Constructed: Thornacre line master export with case-size history",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "THN_cost_price_list_20261128.csv",
+      "format": "csv",
+      "bytes": 506321,
+      "rows": 13050,
+      "source": "Constructed: Thornacre cost price list extracted 28 November 2026",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "THN_cost_changes_P10_2026.csv",
+      "format": "csv",
+      "bytes": 173148,
+      "rows": 2460,
+      "source": "Constructed: Thornacre period 10 cost change file",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "THN_store_replen_forecast_run_20261123.csv",
+      "format": "csv",
+      "bytes": 8758945,
+      "rows": 147924,
+      "source": "Constructed: Thornacre store replenishment forecast, run of 23 November 2026",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "THN_store_servicing_map.csv",
+      "format": "csv",
+      "bytes": 33496,
+      "rows": 1048,
+      "source": "Constructed: Thornacre store-to-depot servicing map with validity dates",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "THN_store_trading_calendar_2026_27.csv",
+      "format": "csv",
+      "bytes": 92180,
+      "rows": 1625,
+      "source": "Constructed: Thornacre store trading calendar, Christmas and New Year 2026/27",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "THN_store_list.json",
+      "format": "json",
+      "bytes": 68863,
+      "rows": 325,
+      "source": "Constructed: Thornacre store list from the estate service",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "THN_category_table.csv",
+      "format": "csv",
+      "bytes": 543,
+      "rows": 12,
+      "source": "Constructed: Thornacre forecast category table",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "Corderoy_peak_labour_plan_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 7003,
+      "rows": null,
+      "source": "Constructed: Corderoy peak labour plan, agency hours and headcount",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "goods_in_bookings_summary_7Dec_3Jan.csv",
+      "format": "csv",
+      "bytes": 17192,
+      "rows": 540,
+      "source": "Constructed: Corderoy goods-in booking summary over the freeze",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "Thornacre_SCS-07_peak_stock_record_standard_v3.pdf",
+      "format": "pdf",
+      "bytes": 4623,
+      "rows": null,
+      "source": "Constructed: Thornacre SCS-07 peak stock-record standard, version 3",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "Corderoy_CP-THN-04_perpetual_count_programme.docx",
+      "format": "docx",
+      "bytes": 38351,
+      "rows": null,
+      "source": "Constructed: Corderoy CP-THN-04 perpetual count programme, version 7",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_notes_LF_20261207.txt",
+      "format": "txt",
+      "bytes": 2756,
+      "rows": null,
+      "source": "Constructed: Corderoy BI extract notes for the pull of 7 December 2026",
+      "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     }
   ]

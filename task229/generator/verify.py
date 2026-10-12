@@ -1,168 +1,217 @@
-"""Independent verifier: reads only target/ and golden/, shares no code with golden.py, and recomputes
-every graded figure with the standard library (csv, json, datetime) and openpyxl."""
+"""Independent verifier: recomputes every graded figure, the ladder's sets and the chart from target/ alone
+(csv module, its own likelihood search, no generator state, no pandas) and checks figures.json and the
+golden page against them.
+
+    python3 task229/generator/verify.py [target] [golden_dir]
+"""
 import csv
 import datetime as dt
 import json
 import math
 import os
+import re
 import sys
+from collections import defaultdict
+from zoneinfo import ZoneInfo
 
-import openpyxl
-
-TASK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-UTC = dt.timezone.utc
-
-
-def t_utc(s):
-    return dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
-
-
-def local(s):
-    t = dt.datetime.strptime(s, "%d/%m/%Y %H:%M")
-    y = t.year
-    fs = lambda m: dt.date(y, m, 1) + dt.timedelta(days=(6 - dt.date(y, m, 1).weekday()) % 7)
-    off = 11 if (t.date() >= fs(10) or t.date() < fs(4)) else 10
-    return t.replace(tzinfo=dt.timezone(dt.timedelta(hours=off)))
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+LON = ZoneInfo("Europe/London")
+DAY0 = dt.date(2026, 6, 1)
+LAST = (dt.date(2026, 12, 6) - DAY0).days
+CENTRE = {}
 
 
-def main(target, golden):
-    ws_ = dt.datetime(2026, 10, 4, 14, 0, tzinfo=UTC)          # Monday 5 October 00:00 AEST
-    we_ = ws_ + dt.timedelta(days=7)
-    # images to releases
-    img = {}
-    with open(os.path.join(target, "fw_release_catalogue.csv")) as fh:
-        for r in csv.DictReader(fh):
-            img[r["hes_image"]] = r["release"]
-    # head-end: build spells per meter, first copy of each event id only
-    hes = json.load(open(os.path.join(target, "hes_meter_firmware_history.json")))
-    spells, w7, node = {}, {}, {}
-    for m in hes["meters"]:
-        s = m["meter_id"][4:]
-        node[s] = m.get("comms_parent")
-        seen, sp = set(), []
-        for e in sorted(m["events"], key=lambda e: (e["ts_utc"], e["seq"])):
-            if e["event_id"] in seen:
-                continue
-            seen.add(e["event_id"])
-            if e["type"] in ("COMMISSIONED", "FW_ACTIVATED"):
-                sp.append((t_utc(e["ts_utc"]), img[e["image"]]))
-            if e["type"] == "FW_ACTIVATED" and (e["job"] or "").startswith("WAVE7"):
-                w7[s] = (img[e["image"]], (t_utc(e["ts_utc"]) + dt.timedelta(hours=10)).strftime("%Y%m%d"))
-        spells[s] = sp
+def rows(target, name):
+    with open(os.path.join(target, name), newline="", encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
 
-    def at(s, t):
-        b = None
-        for (u, rel) in spells.get(s, []):
-            if u <= t:
-                b = rel
-        return b
-    # register: meter assignments
-    wb = openpyxl.load_workbook(os.path.join(target, "mp_installation_register_20261012.xlsx"), read_only=True)
-    assign = {}
-    for row in list(wb["Meters"].iter_rows(values_only=True))[3:]:
-        nmi = str(row[0])[:10]
-        assign.setdefault(nmi, []).append((str(row[1]).zfill(8), local(row[4]), local(row[5]) if row[5] else None))
-    pop, inst_node = {}, {}
-    for nmi, ms in assign.items():
-        for s, _, _ in ms:
-            if node.get(s):
-                inst_node.setdefault(nmi, node[s])
-    for nmi, ms in assign.items():
-        live = [m for m in ms if m[1] < we_ and (m[2] is None or m[2] > ws_)]
-        if len(live) != 1:
+
+def tday(utc):
+    t = dt.datetime.strptime(utc, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc).astimezone(LON)
+    return ((t - dt.timedelta(hours=6)).date() - DAY0).days
+
+
+def fit(obs):
+    """Golden-section search for the per-day error chance maximising the likelihood of (days, matched)."""
+    def ll(lp):
+        p = math.exp(lp)
+        s = 0.0
+        for d, hit in obs:
+            pr = min(max((1 - p) ** d, 1e-12), 1 - 1e-12)
+            s += math.log(pr) if hit else math.log(1 - pr)
+        return s
+    a, b = -16.0, -1.0
+    g = (math.sqrt(5) - 1) / 2
+    c, d = b - g * (b - a), a + g * (b - a)
+    fc, fd = ll(c), ll(d)
+    for _ in range(90):
+        if fc > fd:
+            b, d, fd = d, c, fc
+            c = b - g * (b - a)
+            fc = ll(c)
+        else:
+            a, c, fc = c, d, fd
+            d = a + g * (b - a)
+            fd = ll(d)
+    return math.exp((a + b) / 2)
+
+
+def gate_faces(target):
+    out = {}
+    for r in rows(target, "wms_location_master_THN_eff.csv"):
+        if (r["location_type"] == "PICK" and r["client"] == "THN" and r["line_no"] and r["status"] == "ACTIVE"
+                and r["eff_from"] <= "2026-12-07" and (r["eff_to"] == "" or r["eff_to"] >= "2026-12-07")):
+            out[(r["site"], r["location"])] = r
+    return out
+
+
+def record_accuracy(target):
+    faces = gate_faces(target)
+    hist = defaultdict(list)
+    for r in rows(target, "THN_pickface_count_history_20260601_20261207.csv"):
+        k = (r["site"], r["location"])
+        if k in faces:
+            hist[k].append((r["counted_utc"], tday(r["counted_utc"]), r["reason_code"], r["result"] == "MATCH"))
+    obs = defaultdict(list)
+    last = {}
+    rates = defaultdict(lambda: [0, 0])
+    for k, h in hist.items():
+        h.sort()
+        cls = faces[k]["slot_class"]
+        for i, (_, d, code, hit) in enumerate(h):
+            rates[(k[0], "all")][0] += hit; rates[(k[0], "all")][1] += 1
+            if code == "CYC":
+                rates[(k[0], "cyc")][0] += hit; rates[(k[0], "cyc")][1] += 1
+                rates[(k[0], "cyc", cls)][0] += hit; rates[(k[0], "cyc", cls)][1] += 1
+                if i > 0:
+                    obs[(k[0], cls)].append((d - h[i - 1][1], hit))
+        last[k] = h[-1][1]
+    p = {key: fit(v) for key, v in obs.items()}
+    acc = defaultdict(list)
+    mix = defaultdict(lambda: defaultdict(int))
+    for k, r in faces.items():
+        acc[k[0]].append((1 - p[(k[0], r["slot_class"])]) ** (LAST - last[k]))
+        mix[k[0]][r["slot_class"]] += 1
+    out = {}
+    for site, v in acc.items():
+        n = sum(mix[site].values())
+        w = sum(mix[site][c] / n * rates[(site, "cyc", c)][0] / rates[(site, "cyc", c)][1] for c in "ABC")
+        out[site] = dict(estimate=100 * sum(v) / len(v), rung0=100 * rates[(site, "all")][0] / rates[(site, "all")][1],
+                         rung1=100 * rates[(site, "cyc")][0] / rates[(site, "cyc")][1], rung2=100 * w)
+    return out, len(faces)
+
+
+def stock_value(target):
+    faces = gate_faces(target)
+    seen, qty = set(), defaultdict(float)
+    unit = {}
+    for r in rows(target, "WMS_stock_by_location_THN_20261207_0600.csv"):
+        k = (r["site"], r["location"], r["line_no"])
+        if (r["site"], r["location"]) in faces and faces[(r["site"], r["location"])]["line_no"] == r["line_no"] and k not in seen:
+            seen.add(k)
+            qty[k] = float(r["qty"])
+            unit[k] = r["stock_unit"]
+    breg = defaultdict(float)
+    for r in rows(target, "WMS_batch_register_THN_20261207_0600.csv"):
+        breg[(r["site"], r["location"], r["line_no"])] += float(r["batch_qty"])
+    for k, v in breg.items():
+        if k in qty:
+            assert abs(qty[k] - v) < 1e-9, ("batch register does not tie", k)
+    from openpyxl import load_workbook
+    ws = load_workbook(os.path.join(target, "Thornacre_line_master_20261204.xlsx"), read_only=True).active
+    size = {}
+    when = dt.datetime(2026, 12, 7)
+    for i, r in enumerate(ws.iter_rows(values_only=True)):
+        if i == 0:
             continue
-        s, a, b = live[0]
-        if a > ws_ or (b is not None and b < we_):
-            continue
-        if any(ws_ < u < we_ for u, _ in spells.get(s, [])):
-            continue
-        pop[nmi] = at(s, ws_)
-    # MDM: per data stream and day, the latest delivery received before 20:00 UTC on the read date
-    best = {}
-    with open(os.path.join(target, "mdm_interval_receipts_20261005_20261011.csv")) as fh:
-        for r in csv.DictReader(fh):
-            rd = r["READ_DATE"]
-            cut = dt.datetime(int(rd[:4]), int(rd[4:6]), int(rd[6:]), 20, 0, tzinfo=UTC)
-            t = t_utc(r["RECEIVED_UTC"])
-            if t >= cut:
-                continue
-            k = (r["NMI"], r["NMI_SUFFIX"], rd)
-            if k not in best or t > best[k][0]:
-                best[k] = (t, int(r["QTY_A"]))
-    # expected reads come from the register's data streams: every interval of every stream, every day
-    per_day = {}
-    for row in list(wb["Data streams"].iter_rows(values_only=True))[3:]:
-        nmi = str(row[0])[:10]
-        per_day[nmi] = per_day.get(nmi, 0) + 1440 // int(row[2])
-    days = [(dt.date(2026, 10, 5) + dt.timedelta(days=d)).strftime("%Y%m%d") for d in range(7)]
-    held, held_day = {}, {}
-    for (nmi, sx, rd), (_, a) in best.items():
-        held[nmi] = held.get(nmi, 0) + a
-        held_day[(nmi, rd)] = held_day.get((nmi, rd), 0) + a
-    expd = {nmi: 7 * v for nmi, v in per_day.items()}
-    day_miss = {(nmi, d): per_day[nmi] - held_day.get((nmi, d), 0) for nmi in per_day for d in days}
-    shares = {}
-    for nmi, rel in pop.items():
-        shares.setdefault(rel, []).append((100.0 * held.get(nmi, 0) / expd[nmi], inst_node[nmi]))
-    score = {}
-    for rel, xs in shares.items():
-        n = len(xs)
-        mu = sum(x for x, _ in xs) / n
-        dev = {}
-        for x, nd in xs:
-            dev[nd] = dev.get(nd, 0.0) + (x - mu)
-        k = len(dev)
-        se = math.sqrt(k / (k - 1) * sum(d * d for d in dev.values())) / n
-        lcl = 99.50 - 3 * se
-        score[rel] = (n, mu, se, lcl, mu < lcl)
-    # wave 8
-    wb8 = openpyxl.load_workbook(os.path.join(target, "wave8_schedule.xlsx"), read_only=True)
-    in_service = {}
-    for nmi, ms in assign.items():
-        for s, a, b in ms:
-            if b is None:
-                in_service[s] = nmi
-    end = dt.datetime(2026, 10, 12, 4, 0, tzinfo=UTC)
-    w8 = {}
-    for sh in ("Batch A 13-10", "Batch B 14-10"):
-        for row in list(wb8[sh].iter_rows(values_only=True))[2:]:
-            if row[1] is None:
-                continue
-            s = str(row[1]).zfill(8)
-            if s in in_service and at(s, end) != row[5]:
-                w8.setdefault(row[5], set()).add(in_service[s])
-    # compare with the golden payload
-    gj = json.load(open(os.path.join(golden, "wave8_read_health_alerts.json")))
-    bad = []
-    fire = sorted(r for r, v in score.items() if v[4])
-    if sorted(gj["fire"]) != fire:
-        bad.append(("fire", gj["fire"], fire))
-    order = sorted(score, key=lambda r: score[r][1] - score[r][3])
-    if [b["release"] for b in gj["builds"]] != order:
-        bad.append(("order", order))
-    for b in gj["builds"]:
-        n, mu, se, lcl, f = score[b["release"]]
-        if (b["read_health_pct"], b["standard_error_pct"], b["lower_limit_pct"], b["vs_limit_pct"], b["alert"]) != (
-                round(mu, 2), round(se, 2), round(lcl, 2), round(mu - lcl, 2), "FIRE" if f else "HOLD"):
-            bad.append((b, (n, mu, se, lcl, f)))
-    # substitution load: installations whose in-service meter runs a firing build at the extract
-    now = dt.datetime(2026, 10, 12, 4, 40, tzinfo=UTC)
-    load = 0
-    for nmi, ms in assign.items():
-        for s, a, b in ms:
-            if b is None and a <= now and at(s, now) in fire:
-                load += 1
-    if gj["settlement_substitution_load_installations"] != load:
-        bad.append(("load", load))
-    moves = {k: (0 if k in fire else len(v)) for k, v in w8.items()}
-    if gj["wave8_moves_under_this_call"] != moves:
-        bad.append(("wave8", moves))
+        line, _, _, _, _, cs, vf, vt, _ = r
+        if vf <= when and (vt is None or vt >= when):
+            size[str(line)] = float(cs)
+    cost = {r["line_no"]: float(r["cost_per_case"]) for r in rows(target, "THN_cost_price_list_20261128.csv")}
+    for r in rows(target, "THN_cost_changes_P10_2026.csv"):
+        if r["effective_from"] <= "2026-12-07":
+            cost[r["line_no"]] = float(r["new_cost_per_case"])
+    out = defaultdict(float)
+    for k, q in qty.items():
+        c = q / size[k[2]] if unit[k] == "EA" else q
+        out[k[0]] += c * cost[k[2]]
+    return out
 
-    if bad:
-        print("VERIFY FAILED", bad)
-        sys.exit(1)
-    print("verify: every graded figure recomputes from target/ (%d builds with comms-parent standard errors, wave 8, the substitution load)" % len(score))
+
+def forecast_cases(target):
+    upc = {r["category"]: r["units_per_case"] for r in rows(target, "THN_category_table.csv")}
+    regime = {r["category"]: r["supply_chain"] for r in rows(target, "THN_category_table.csv")}
+    closed = {(r["store_no"], r["trading_date"]) for r in rows(target, "THN_store_trading_calendar_2026_27.csv")
+              if r["status"] == "CLOSED"}
+    sm = defaultdict(list)
+    for r in rows(target, "THN_store_servicing_map.csv"):
+        sm[(r["store_no"], r["supply_chain"])].append((r["valid_from"], r["valid_to"] or "9999-12-31", r["depot"]))
+    out, run = defaultdict(float), defaultdict(float)
+    for r in rows(target, "THN_store_replen_forecast_run_20261123.csv"):
+        d = r["trading_date"]
+        if not ("2026-12-07" <= d <= "2027-01-03"):
+            continue
+        q = float(r["fcst_qty"])
+        if r["uom"] == "EA":
+            q /= float(upc[r["category"]])
+        run[r["depot"]] += q
+        if (r["store_no"], d) in closed:
+            continue
+        dep = [x[2] for x in sm[(r["store_no"], regime[r["category"]])] if x[0] <= d <= x[1]]
+        assert len(dep) == 1, (r, dep)
+        out[dep[0]] += q
+    return out, run
+
+
+def main(target=None, golden=None):
+    target = target or os.path.join(TASK, "target")
+    golden = golden or os.path.join(TASK, "golden")
+    reg = rows(target, "corderoy_thornacre_centre_register.csv")
+    name = {r["site"]: r["centre"] for r in reg}
+    depot = {r["thornacre_depot"]: r["centre"] for r in reg}
+    acc, nfaces = record_accuracy(target)
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    page = open(os.path.join(golden, "freeze_gate_2026.html"), encoding="utf-8").read()
+    n_checks = 0
+    qual = sorted(name[s] for s, v in acc.items() if v["estimate"] >= 97.0)
+    assert qual == sorted(figs["call"]["qualify"]), (qual, figs["call"])
+    assert sorted(name[s] for s, v in acc.items() if v["rung0"] >= 97.0) == []
+    assert sorted(name[s] for s, v in acc.items() if v["rung1"] >= 97.0) == ["Magor"]
+    assert sorted(name[s] for s, v in acc.items() if v["rung2"] >= 97.0) == ["Hinckley", "Magor"]
+    assert figs["in_scope_faces"] == "{:,}".format(nfaces)
+    n_checks += 5
+    for s, v in acc.items():
+        n = name[s]
+        assert int(round(v["estimate"])) == figs["share_whole_pc"][n], (n, v)
+        assert abs(v["estimate"] - figs["share_unrounded"][n]) < 0.006, (n, v["estimate"], figs["share_unrounded"][n])
+        n_checks += 2
+    val = stock_value(target)
+    for s, v in val.items():
+        n = name[s]
+        txt = "£{:,.0f}".format(round(v, -3))
+        assert txt == figs["stock_value_gbp"][n], (n, txt, figs["stock_value_gbp"][n])
+        assert txt in page
+        n_checks += 2
+    fc, run = forecast_cases(target)
+    for d, v in fc.items():
+        n = depot[d]
+        txt = "{:,.0f}".format(round(v, -2))
+        assert txt == figs["forecast_cases"][n], (n, txt)
+        assert txt in page
+        n_checks += 2
+    order = [depot[d] for d in sorted(fc, key=lambda d: -fc[d])]
+    assert order == figs["chart_order"], (order, figs["chart_order"])
+    bars = re.findall(r'<title>([A-Za-z]+): ([\d,]+) cases</title>', page)
+    assert [b[0] for b in bars] == order and [b[1] for b in bars] == [figs["forecast_cases"][n] for n in order]
+    assert ">%s draws the most over the freeze<" % order[0] in page
+    assert depot[max(run, key=run.get)] != order[0]
+    for n in figs["share_whole_pc"]:
+        assert "<td>%s</td><td>%d%%</td>" % (n, figs["share_whole_pc"][n]) in page
+    n_checks += 4 + len(figs["share_whole_pc"])
+    print("verify.py: %d checks green; qualify %s" % (n_checks, ", ".join(qual)))
+    return n_checks
 
 
 if __name__ == "__main__":
-    main(os.path.join(TASK, "target"), os.path.join(TASK, "golden"))
+    main(*(sys.argv[1:3]))

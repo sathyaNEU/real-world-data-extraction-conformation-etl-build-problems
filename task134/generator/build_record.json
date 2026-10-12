@@ -1,0 +1,79 @@
+{
+ "seed": 13494,
+ "centring_moves": [
+  [
+   "cf_in",
+   6867
+  ],
+  [
+   "cf_in",
+   7368
+  ],
+  [
+   "sf_in10",
+   9494
+  ],
+  [
+   "sf_in10",
+   9558
+  ],
+  [
+   "sf_in10",
+   9625
+  ],
+  [
+   "sf_in17",
+   9300
+  ],
+  [
+   "sf_in17",
+   9347
+  ],
+  [
+   "sf_in17",
+   9413
+  ],
+  [
+   "cf_in",
+   2510
+  ],
+  [
+   "cf_out",
+   1871
+  ],
+  [
+   "sf_out10",
+   9565
+  ],
+  [
+   "sf_out10",
+   9596
+  ],
+  [
+   "sf_out26",
+   9156
+  ],
+  [
+   "sf_in_short",
+   9938
+  ]
+ ],
+ "ask_tune_residual": 0.2629,
+ "ask_tune_detail": {
+  "centre": 0.0,
+  "s1": 0.0,
+  "s2": 0.0,
+  "s3": 0.2629,
+  "o1": 0.0,
+  "lazy": 0.0,
+  "s5": 0.0,
+  "s4": 0.0,
+  "crosswalk_one_ref": 0.0,
+  "deaths_unread": 0.0,
+  "definitions_interim_kept": 0.0,
+  "codes_unread": 0.0,
+  "assessments_latest": 0.0,
+  "composed": 0.0,
+  "chart": 0.0
+ }
+}

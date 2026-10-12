@@ -2,7 +2,8 @@
 
 The client's hardest accepted tasks (batch 14), each with the current model's mean score over four runs (two for
 Freight Rail Siting). Read the two or three nearest the draw for the **depth** of analysis the client pays for, then
-learn the stump, never the structure. Shape is the nearest of the eighteen (`fig` is one committed figure with no
+learn the stump, never the structure. The full record of each task (prompt, files, solution, the client's trap note) is
+in `exemplars/<domain>.md`, opened only for the two or three nearest the draw. Shape is the nearest of the eighteen (`fig` is one committed figure with no
 repeated unit). The stump column says what the models actually did wrong.
 
 **Their architecture is capped now.** Every task under 0.25 shares one design: a published control set made by a

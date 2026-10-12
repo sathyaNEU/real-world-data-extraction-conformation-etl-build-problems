@@ -1,0 +1,133 @@
+{
+  "task": "task500",
+  "architecture": "v3",
+  "drawn": "2026-10-11",
+  "slot_note": "re-rooted twice: v1 (supply chain) and v2 (K-12) were both solved on the portal; the author asked for a third Root-Cause draw, with no in-house solver round before the portal",
+  "domain": "economics",
+  "subdomain": "public-finance",
+  "niche": "a state revenue office's fiscal 2026 lodging tax receipts shortfall against forecast, attributed to one of five changes in the year-end revenue variance statement under the office's standing matched-reference attribution method",
+  "objective": "root-cause",
+  "shape": "03",
+  "decision_type": "root_cause_named",
+  "answer_unit": "named_option",
+  "answer": "the long-stay exemption, which reduced fiscal 2026 lodging tax by $3,235 thousand (runner-up the convention center closure at $2,108 thousand)",
+  "answer_source": "submission.md block 1 and block 4",
+  "gap": [
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "B"
+  ],
+  "generators": [
+    "G16",
+    "G6",
+    "G15"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "published_series",
+  "stakeholder_role": "director of the state's office of revenue analysis",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "take-rate on flow",
+  "spine": {
+    "file": "lodging_tax_returns_fy2023-fy2026.csv",
+    "rows": 57577,
+    "entity": "one monthly lodging tax return of one filer",
+    "grain": "filer x month",
+    "source": "synthetic (constructed return extract for an invented state; no public spine)"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "period_close",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "United States (an invented state's department of revenue)",
+    "currency": "USD",
+    "org_type": "state office of revenue analysis (revenue estimating and variance reporting)",
+    "invented_names": [
+      "Office of Revenue Analysis",
+      "Joint Committee on Finance",
+      "Capital City Downtown",
+      "Capital City North",
+      "Highway 14",
+      "Prairie County",
+      "Bluff County"
+    ],
+    "people": [
+      "Thomas Valentine",
+      "Erica Lynch",
+      "Rachel Erickson",
+      "Paul Crane"
+    ]
+  },
+  "deliverables": [
+    "fy2026_lodging_tax_variance.pptx",
+    "fy2026_lodging_reference_matches.csv"
+  ],
+  "opening_move": "other",
+  "driver": "The decisive quantity is each candidate change's effect measured by a standing matched-reference method that no document gives in full and only two certified prior statements pin: each touched unit is compared with same-size peers outside its own group, aligned to its own effective period and drawn from a pool screened at each peer's own window with a cap on reuse; the natural comparison against all untouched units, even controlled by class, credits the loud change whose units shared a sector-wide fall, and only the pinned method names the change that carried the move.",
+  "driver_concrete": "Fiscal 2026 lodging tax receipts came in below forecast. Compared with untouched filers by property class, the downtown hotels' fall after the convention center closed looks like the cause, but the office's standing matched-reference method, which alone reproduces the certified fiscal 2024 and 2025 statements, matches each downtown hotel to same-size full-service peers that fell with it in the business-travel slump and puts the shortfall on the long-stay exemption at extended-stay properties.",
+  "stump": "A competent solver lines the five changes up against the monthly shortfall, compares each change's filers with the untouched ones by property class, sees the downtown hotels fall furthest after the convention center closed, and files the closure as the cause with its class-controlled dollars; the step that lands it there is measuring each change with its own comparison instead of the office's standing matched-reference method, which reproduces the two certified variance statements only when each filer is matched to same-size peers outside its region, aligned to its own effective month and drawn from a pool screened at each peer's own window with a cap on reuse, and under that method the downtown fall is the business-travel slump every large hotel shared while the long-stay exemption carries the shortfall.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task27": "task27 recovers a conversion rate netted of reversals from a separate ledger to project cash; in v3 the recovered object is a matched-reference counterfactual (same-size peers outside the unit's group, alignment to each unit's own effective month, a pool screened at each peer's own window, a reuse cap) pinned by certified per-filer figures, used to attribute a closed shortfall among five changes.",
+    "task29": "task29 fits a forward-yield function whose slope differs by instrument type; v3 fits nothing forward: the recovered object is a matched-reference counterfactual (same-size peers outside the unit's group, alignment to each unit's own effective month, a pool screened at each peer's own window, a reuse cap) pinned by certified per-filer figures, used to attribute a closed shortfall among five changes.",
+    "task30": "task30 carries an uncomputable component across from closed parallel cases on an unstated transmission variable; v3 carries nothing across, because the recovered object is a matched-reference counterfactual (same-size peers outside the unit's group, alignment to each unit's own effective month, a pool screened at each peer's own window, a reuse cap) pinned by certified per-filer figures, used to attribute a closed shortfall among five changes.",
+    "task35": "task35 recovers the period an obligation attaches to from settled records; v3 recovers no attachment period: the recovered object is a matched-reference counterfactual (same-size peers outside the unit's group, alignment to each unit's own effective month, a pool screened at each peer's own window, a reuse cap) pinned by certified per-filer figures, used to attribute a closed shortfall among five changes.",
+    "task36": "task36's Calderstone build recovered a precedence rule charging each shortfall to its binding condition on a reconstructed promise clock; v3 has no precedence rule: the recovered object is a matched-reference counterfactual (same-size peers outside the unit's group, alignment to each unit's own effective month, a pool screened at each peer's own window, a reuse cap) pinned by certified per-filer figures, used to attribute a closed shortfall among five changes.",
+    "task37": "task37's estimator lineage picks an interval-share estimator from a menu by an out-of-sample test; v3 picks from no menu: the recovered object is a matched-reference counterfactual (same-size peers outside the unit's group, alignment to each unit's own effective month, a pool screened at each peer's own window, a reuse cap) pinned by certified per-filer figures, used to attribute a closed shortfall among five changes.",
+    "task38": "task38's v1 picks an estimator for an open-ended cell against lagged ground truth; v3 reconstructs a standing attribution method instead: the recovered object is a matched-reference counterfactual (same-size peers outside the unit's group, alignment to each unit's own effective month, a pool screened at each peer's own window, a reuse cap) pinned by certified per-filer figures, used to attribute a closed shortfall among five changes.",
+    "task40": "task40 recovers an eligibility gate on a charge base through control-linked groups; v3 has no eligibility gate: the recovered object is a matched-reference counterfactual (same-size peers outside the unit's group, alignment to each unit's own effective month, a pool screened at each peer's own window, a reuse cap) pinned by certified per-filer figures, used to attribute a closed shortfall among five changes.",
+    "task42": "task42 charges each transaction to the programme in force over its covered period; v3 charges nothing by period: the recovered object is a matched-reference counterfactual (same-size peers outside the unit's group, alignment to each unit's own effective month, a pool screened at each peer's own window, a reuse cap) pinned by certified per-filer figures, used to attribute a closed shortfall among five changes.",
+    "task55": "task55 recovers the date an expiry runs from, a per-line anchoring convention; v3 recovers no date convention: the recovered object is a matched-reference counterfactual (same-size peers outside the unit's group, alignment to each unit's own effective month, a pool screened at each peer's own window, a reuse cap) pinned by certified per-filer figures, used to attribute a closed shortfall among five changes.",
+    "task71": "task71 strikes a coverage share on a weighting recovered from closed determinations; v3 strikes no share: the recovered object is a matched-reference counterfactual (same-size peers outside the unit's group, alignment to each unit's own effective month, a pool screened at each peer's own window, a reuse cap) pinned by certified per-filer figures, used to attribute a closed shortfall among five changes.",
+    "task78": "task78 recovers an unfiled measurement span from a counterparty's settled claims; v3 recovers no span: the recovered object is a matched-reference counterfactual (same-size peers outside the unit's group, alignment to each unit's own effective month, a pool screened at each peer's own window, a reuse cap) pinned by certified per-filer figures, used to attribute a closed shortfall among five changes."
+  },
+  "lineage": [
+    {
+      "architecture": "v2 (household spillover of a later middle school start, natural experiment at the magnet school)",
+      "fate": "portal Stumped Check 1, 2026-10-11: both responses named MV-25-01 with 156 and full-day kindergarten at 41, one calling it the later start spilling over onto younger siblings. The template asked for each change's affected students, the one change that touched no K-5 student was the odd one in a closed list of five, and the household file had no job on the natural path. Re-rooted at stage 1.",
+      "domain": "policy-education",
+      "objective": "root-cause",
+      "gap": [
+        "population",
+        "rule"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G16",
+        "G3"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "root_cause_named",
+      "driver": "The decisive quantity is the rise among units a change never touched but reaches through a link to units it did touch, a link held in another entity's register; the rise is absent among otherwise identical units linked to an untouched counterpart, so the pooled rise read against each change's own touched units credits the change that touched the rising group, and only the linked exposure, built through the register, names the change that drove it.",
+      "stump": "A competent solver compares this fall's K-5 chronic absence with last fall's, sees grades 3-5 rise twice as much as K-2 and evenly across schools, rules out the middle school start change because middle school absence fell, and names the end of the grades 3-5 attendance program with about 75 students under the state's comparison; the step that lands it there is reading each change off the students it touched, when the household register shows the whole rise sits with elementary students who share a household with a student at one of the three middle schools that moved their start, and none with those linked only to the middle school that kept its time."
+    },
+    {
+      "architecture": "v1 (filed hold line crossed by block consolidation, measure pinned by the desk's closed hold-or-roll decisions)",
+      "fate": "portal Stumped Check 1, 2026-10-10: both responses named the Rijnpendel shuttle with 15 of 28 late sailings saved, one citing 4.3. The shuttle was the one operator new in the later summer and the call log's remarks named it on every barge hold, so it led the natural pipeline; removing its held blocks returns 15 whichever change a solver blames, so the decisive measure moved neither graded quantity. Re-rooted at stage 1, the author widening the draw to any accepted domain.",
+      "domain": "supply-chain-logistics",
+      "objective": "root-cause",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G11",
+        "G6",
+        "G2"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "root_cause_named",
+      "driver": "The decisive quantity is whether a late input block reaches the share of a unit's load at which a standing instruction makes the unit wait for it, measured on the instruction's own population and size unit rather than on a count of items, because the rise in late outcomes comes from blocks that moved across that line when the inputs were consolidated into fewer, larger blocks, not from the inputs arriving any later, so attributing each late outcome to the lateness of the input it waited for names a cause that barely changed.",
+      "stump": "A competent solver splits the summer's late sailings by delay code, sees the rise sit in ships held for barge cargo, reads the line's hold instruction, finds the 2026 barge blocks under its 10 per cent line on a box or TEU count, and files the terminal's own planning desk (holding ships for blocks the instruction says to roll, since the July TOS release) as the root cause; the step that lands it there is measuring the blocks on a count rather than on the instruction's own measure of load, on which every closed hold-or-roll decision reproduces and every 2026 barge block sits over the line because the line consolidated its Rhine cargo into two blocks a call."
+    }
+  ],
+  "notes": "v3 decisive rung: method selection (G16, pattern B) where the recovered object is the attribution method, not the population a figure was computed on; pinned by two certified prior statements produced by the same standing method; rung below is the class-controlled comparison (G6); the platform collection change is a reclassification, killed by G15. Device source: the client's matched-reference construction (stabilisation award, held at 0.33)."
+}

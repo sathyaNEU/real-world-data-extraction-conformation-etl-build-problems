@@ -10,8 +10,8 @@
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Build the new office with 31 meeting rooms.",
+  "answer_source": "submission.md block 1",
   "gap": [
     "time",
     "population"
@@ -36,9 +36,9 @@
   "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "calendar_meetings_attendees.csv",
-    "rows": 250000,
-    "entity": "one invitee on one calendar meeting in the reference year",
+    "file": "calendar_attendees_fy2026.csv",
+    "rows": 347150,
+    "entity": "one recipient on one calendar item in the reference year",
     "grain": "meeting x invitee",
     "source": "synthetic"
   },
@@ -49,25 +49,33 @@
     "geography": "Canada, Toronto",
     "currency": "CAD",
     "org_type": "engineering and planning consultancy formed by a 2025 merger of two firms, moving its two downtown Toronto offices into one floor plate in 2027",
-    "invented_names": [],
+    "invented_names": [
+      "Harrowfield Engineering & Planning",
+      "Brennock Structures",
+      "Tallis Mobility Planning",
+      "Corran Teague Architects"
+    ],
     "people": [
       "Claudia Hernandez",
-      "Tiffany Kline",
-      "Mary Hurst"
+      "Mary Hurst",
+      "Louis Thompson",
+      "Debbie Jimenez",
+      "Caleb Walker",
+      "Kristie Morgan"
     ]
   },
   "deliverables": [
-    "meeting_rooms_2027.xlsx",
+    "meeting_rooms_brief.docx",
     "room_demand_fy2026.svg"
   ],
-  "opening_move": "other",
+  "opening_move": "number-first",
   "driver": "The decisive quantity is demand that takes a unit of a resource only when two or more of its parties are at the same site that day, a rule the records keep without exception wherever the parties were together; parties split across two sites took nothing, so each site's own records and period reports are exact and adding the sites leaves out the demand that appears once the sites become one.",
   "driver_concrete": "Every calendar meeting with two or more attendees badged into the same office that day booked a room in that office, and meetings whose attendees were in different offices booked none; on the single 2027 floor those meetings take a room whenever two or more attendees are in, which no room booking and no quarterly utilisation report from either office can show.",
-  "stump": "A competent solver puts both offices' reference-year room bookings on one timeline, takes each working day's peak, and files the lowest room count short on no more than the allowed number of days, which reproduces every quarterly utilisation figure for both offices; the step that lands it there is never asking which meetings booked no room only because their attendees sat in different offices, when on one floor every meeting with two or more attendees in that day takes a room, as the records show for every meeting whose attendees were in the same office.",
+  "stump": "A competent solver builds the booking pipeline that reproduces every busiest moment in both offices' quarterly close-outs, puts both offices' meeting-room bookings on one timeline, sets the solo calls aside for the booths, takes each working day's peak and files 24 rooms, the fewest short on no more than twelve working days; the step that lands it there is never asking which meetings booked no room only because their people were in different offices that day (9,144 of them), when on one floor every meeting with two or more of its people in takes a room, as the records show without exception wherever two of a meeting's people were in the same office.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task33": "task33 truncates a measured elevation at a filed future intervention and picks one of eleven series by forward yield; task114 adds demand a two-site layout never put on the resource and reads a capacity dial off a replay of the closed year, so no series is projected and nothing is truncated."
   },
   "lineage": [],
-  "notes": "Draw registered at checkpoint A; deliverables and opening move provisional until the prompt is written. WARN repeat.gate_g answered in the design note (task109 selects between compilation rules a control set arbitrates; here two replay bases no control set can arbitrate). Pattern A is the off-chain form: how a site layout treats a meeting decides whether it takes a room."
+  "notes": "WARN repeat.gate_g answered in the design note (task109 selects between compilation rules a control set arbitrates; here two replay bases no control set can arbitrate). Pattern A is the off-chain form: how a site layout treats a meeting decides whether it takes a room."
 }

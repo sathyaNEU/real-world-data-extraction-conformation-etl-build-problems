@@ -1,127 +1,136 @@
 ---
 name: build-pipeline
-description: "The stage machine from a task number to a shipped task: draw, design (precut.py), build, leak and duplicate check together, determinism judge, ship, then the next task at once. Owns pipeline.json, the stage gates, models and effort per role, returned tasks, re-rooting and retirement. Invoked by /build and when resuming a build in flight."
+description: "The stage machine from a task number to a shipped task: intake, draw, design (precut.py), build, the leak reader and judge together, ship, then the next task at once. Owns pipeline.json, the stage gates, effort per role, the commit points, returned tasks (routed to /fix-determinism and /fix-rubric), freeze.py, status.py, re-rooting and retirement. Invoked by /build, the two fix commands, and when resuming a build in flight."
 ---
 
 # Build pipeline
 
 Every gate is a script's exit status or a thread's verdict; no thread runs before the free gates pass.
-There is no solver round: stump power is argued on paper (`precut.py`), checked by the leak reader and
-the judge's Gate F, measured by the portal.
+One session carries a build end to end in its main thread at max effort. Spawned agents exist only where
+isolation is the point (the leak reader and the judge must not have seen the design) and run at medium.
+There is no solver round: stump power is argued on paper (`precut.py`), checked by the leak reader and the
+judge's Gate F, and measured by the portal.
 
 ## The stages
 
 | # | Stage | Skills | Gate to leave the stage |
 |---|---|---|---|
-| 0 | intake | `fingerprint` (`recent`, `coverage`) | `taskNN` from root `START_HERE.md`, Status `in build` on main; branch from main under the author's prefix; `pipeline.json` |
-| 1 | draw | `guide-to-prompt`, `stumping`, `fingerprint` (`check`, `register`, `names`) | card at PASS or answered WARN, three rules answered, both layers named, people drawn, the stump unique; **default path ending on a wrong answer, stump sentence, data-native sentence** |
+| 0 | intake | `fingerprint` (`recent`, `coverage`) | `taskNN` from `status.py next <handle>` or as handed out; `status.py taskNN` read (the seed's header and Situation only); `pipeline.json` with `status` `drawing` and `owner` |
+| 1 | draw | `guide-to-prompt`, `stumping`, `fingerprint` (`mechanisms`, `check`, `register`, `names`) | card at PASS or answered WARN, three rules answered, both layers named, people drawn, the stump unique; **default path ending on a wrong answer, stump sentence, data-native sentence**. Commit `DRAWN (taskNN)` |
 | 2 | design | `stumping` (screen, fork table, 3 to 5 rungs), `determinism-check` (closure), `supplemental-stumping`, `guide-to-prompt` | **`precut.py taskNN` exit 0** (runs `voice-check.py`) |
-| 3 | build | `dataset-generation`, `determinism-check`, `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `fingerprint` | generator green, every fork asserted; `verify`; two byte-identical builds; input gates; `metadata.json`; `figures_check.py` exit 0; realism sweep; house-fix register; `guard.py surface` |
-| 4 | leak + duplicate, together | `leak-check`, `fingerprint` (`heart`), `clone-check` (pre-flight) | `leak.py` not LEAK, REVIEW answered; reader: no decisive-step sentence, no helping file, quoted sentences execute to the golden, no main-call fork; `heart` not BLOCK; no Exact, Same seed, Dataset or Template finding. Every finding, realism tells and ask-figure forks included, fixed in the generator before the judge; reader re-runs only if a document or the prompt changed |
-| 5 | judge | `determinism-check` | APPROVE ships. FIX_NOW: fixed, stage 3 gates and `leak.py`, re-judged once. SEND_BACK: re-root or retire |
-| 6 | ship | `fingerprint`, `reduce-house-fixes` | pre-ship check in the design note; `target.zip` from the final rebuild; card updated; commit `SHIPPED (taskNN): <the call>`; Status `shipped` on main; author handed the bundle and the stump, leak, duplicate and judge lines; ledger row `delivered`. **Then the next task** |
-| 7 | portal | the author | the result and its date in the ledger row; then lessons, memory |
+| 3 | build | `dataset-generation`, `determinism-check`, `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `leak-check`, `fingerprint` | generator green, every fork asserted; `verify`; two byte-identical builds; input gates; `metadata.json`; `figures_check.py` exit 0; realism sweep; house-fix register; `leak.py` not LEAK; `guard.py surface` clean and `heart` not BLOCK |
+| 4 | check | `leak-check` (reader), `determinism-check` (judge) | both spawned in one message, in the background. Reader: no decisive-step sentence, no helping file, quoted sentences execute to the golden, no main-call fork. Judge: APPROVE. Every finding fixed in the generator in one pass, stage 3 gates re-run; FIX_NOW re-judged once; the reader re-runs only if a document or the prompt changed. SEND_BACK: re-root |
+| 5 | ship | `fingerprint`, `reduce-house-fixes` | pre-ship check in the design note; `target.zip` from the final rebuild; card current; ledger row `delivered`; `status` `shipped`; commit `SHIPPED (taskNN): <the call>` with the zip and `golden/` force-added; the author handed the bundle and the stump, leak and judge lines. **Then the next task** |
+| 6 | portal | the author | the result and its date in the ledger row; the repair routed (Returned tasks) |
 
 Back to design: a reader finding a decisive-step sentence or a main-call fork; a FIX_NOW that moves the
-decisive path; a reject-tier clone finding (redraw the axis once, or retire); a portal return.
+decisive path; a portal return where the call landed.
 
-**The ledger row** (`stumping/references/shipped-ledger.md`, Keeping it current) is rewritten at every
-status change, after the hand-over it follows: `drawing` at stage 1, `built` at stage 3, `delivered` at
-stage 6, `retired` when that happens (a re-root moves the dead architecture to Earlier architectures),
-and the portal result with its date at stage 7.
+## Effort per role
 
-## Models and effort
-
-Passed as `model` and `effort` on every `Agent` call, or set in the agent definition.
-
-| Role | Stages | Model | Effort |
-|---|---|---|---|
-| Designer (also the paper half of a re-root or return) | 1, 2 | Opus | max |
-| Builder (also every repair of a committed design) | 3, 4 fixes, FIX_NOW, 6 | Opus | medium |
-| Leak reader | 4 | Sonnet | medium |
-| `clone-auditor` and its adjudicators | 4 | Opus | medium |
-| `determinism-judge` and its thread | 5 | Sonnet | medium |
-
-The designer never cuts data. A builder that finds the design will not hold commits and hands back the
-reason to a designer.
+| Role | Where | Effort |
+|---|---|---|
+| The build session (design, build, every repair) | `/build`, `/fix-determinism`, `/fix-rubric` | max, set in the command |
+| Leak reader | stage 4, `/leak-check` | medium (`general-purpose`, `model: sonnet`, `effort: medium` on the call) |
+| `determinism-judge` and its thread | stage 4, `/fix-determinism` | medium (agent definition) |
+| `clone-auditor` and its adjudicators | `/clone-check` only | medium (agent definition) |
+| `/approve` | author sign-off | medium |
 
 ## Running the stages
 
-- **Not optional.** Reader, pre-flight and judge run on every new build; only a return skips them.
-- **Stage 4 spawns both threads at once** (same pack, neither changes it); the judge waits for both and
-  runs in the background while the card and pre-ship check proceed. Register the next draw meanwhile.
-- **Every repair is a fresh agent from what is committed** (a leak fix, a FIX_NOW, a re-root, a return),
-  briefed in the scratchpad: `pipeline.json`, the report's findings, the design note (`## Tried and
-  rejected` first) or the portal result. A finished agent is never resumed (it reloads its transcript).
-  A re-root is a designer on paper, then a builder from its commit. No work is left only in a context.
-- **`/build` licenses** the reader, the pre-flight and the judge; outside it each is author-triggered.
-- **No author checkpoints.** The draw is shown in ten lines and the build carries on; the author can stop
-  or redraw at any point, and `/approve` remains for a manual sign-off.
+- **One thread.** Design and build are one hand; a repair runs where the context already is. Spawn a fresh
+  agent for a repair only when the session is near its context limit, briefed with `pipeline.json`, the
+  design note and the finding, never a resumed finished agent.
+- **Stage 4 spawns the reader and the judge together** (same pack, neither changes it). While they run, update
+  the card and write the pre-ship check. Collect both reports, fix everything in one generator pass, rebuild,
+  re-run the free gates, then re-judge only on FIX_NOW and re-read only if a document or the prompt changed.
+- **The free gates come first, always:** nothing with a token cost runs on a pack the scripts have not passed.
+- **No author checkpoints.** The draw is shown in ten lines and the build carries on; the author can stop or
+  redraw at any point, and `/approve` remains for a manual sign-off.
+- **Stage 0 reads no more than it needs.** `status.py taskNN` prints the seed's header and Situation; the
+  rest of a seed is decoy-era design and is not read. The pitfall is re-found from the data.
+
+## Commits
+
+Commit only at a status change: `DRAWN`, `SHIPPED`, `RESHIPPED`, `PAUSED`, `RETIRED` (`CLAUDE.md`, Git). Each
+commit stages its paths by name: the task folder, `.claude/skills/fingerprint/cards/taskNN.json`, the ledger
+row, and at ship `git add -f taskNN/target.zip taskNN/golden/`. Then `git pull --rebase origin main` and push.
+Nothing is committed between those points; a session that stops mid-stage writes `pipeline.json` with a
+`resume` line and commits `PAUSED`.
 
 ## Returned tasks
 
-Repaired **design, build, commit, ship** with no reader, clone check or judge (each already ran; the
-portal measures better), keeping every free gate: generator checks, `verify`, byte-identical rebuilds,
-`leak.py`, `guard.py validate` and `heart`, `voice-check.py`, `figures_check.py`, `precut.py`.
+A portal result comes back in one of three shapes, and each has its own repair. Every repair keeps every free
+gate (generator checks, `verify`, byte-identical rebuilds, `leak.py`, `guard.py validate` and `heart`,
+`voice-check.py`, `figures_check.py`, `precut.py`) and proves its scope with `freeze.py`.
 
-- **Call landed:** a designer rewrites the default path and decisive step against the portal's reading,
-  `precut.py` re-run; a builder rebuilds from that commit.
-- **Determinism finding:** a designer adds the fork to the closure or fork table (convergence first); a
-  builder asserts and rebuilds.
-- **Call held, asks scored:** a builder revises the ask paths alone, the call's inputs byte-identical.
+- **Determinism block failed** (the judges found a fork, a competing defensible answer or a figure that does
+  not recompute): `/fix-determinism`. The fork is closed in the record so the literal execution is the golden;
+  the main call, the stump, the ladder and every graded figure are frozen.
+- **Call held, rubric at or over 50:** `/fix-rubric`. The ask layer is reworked against the responses' paths;
+  the main recommendation side is frozen, because touching it can turn a passed verdict into a failed one.
+- **Call landed:** back to stage 2 with this session as designer. Read the response against the default path
+  and rungs; it left the ladder after the last rung it shows:
+  - walked the default path to the golden: redesign the decisive step, never add a rung above it;
+  - never saw the rung, yet landed: discriminator dominance failed, fix the magnitudes;
+  - saw the rung and declined it: file the selection criterion, never the method;
+  - executed the rung as a work order: it was announced; the leak sweeps and readability screen find where;
+  - missed only on a misread field or misapplied rule: a lower rung, not the stump; redesign.
 
-Read the portal's response against the default path and rungs; it left the ladder after the last rung
-it shows:
+Each attempt gets a `## Tried and rejected` line. A repair re-cuts `target.zip`, appends to `returned`, sets
+`status` `shipped`, commits `RESHIPPED (taskNN)`, and counts as a loop against the architecture.
 
-- **Walked the default path to the golden:** redesign the decisive step, never add a rung above it.
-- **Never saw the rung, yet landed:** discriminator dominance failed; fix the magnitudes.
-- **Saw the rung and declined it:** file the selection criterion, never the method; a reading one model
-  declines another takes, so it is a fork-table row, not a hold.
-- **Executed the rung as a work order:** it was announced; the leak sweeps and readability screen find where.
-- **Missed only on a misread field or misapplied rule:** a lower rung, not the stump; redesign.
+## `freeze.py` and `status.py`
 
-Each attempt gets a `## Tried and rejected` line. The repair re-cuts `target.zip`, appends to
-`returned`, sets Status `shipped` on main, and counts as a loop against the architecture.
+- `freeze.py snapshot taskNN` before the first edit of a fix; `freeze.py check taskNN --mode determinism` or
+  `--mode rubric` after the rebuild. It freezes the Final Recommendation and Critical Components numbers,
+  the figures.json keys carrying them, the stump sentence, the card's stump and driver, the design note's
+  ladder and default path, and the prompt's call sentence; in determinism mode also every Deliverable Answers
+  number. Exit 1 lists what moved; a move the author accepts is named with `--allow` and its reason written
+  in the design note.
+- `status.py` prints the board from every `pipeline.json` (`--owner <handle>` for one lane); `status.py next
+  <handle>` the lowest open number in that lane; `status.py taskNN` the seed.
 
 ## `pipeline.json`
 
 The one state file in a task folder: where the build is, never why.
 
 ```json
-{"task": "task108", "domain": "...", "objective": "forecasting",
- "stage": 4, "stage_name": "leak and duplicate check", "updated": "2026-10-11",
+{"task": "task108", "owner": "sathya8571", "status": "build",
+ "domain": "...", "objective": "forecasting",
+ "stage": 3, "stage_name": "build", "updated": "2026-10-11",
  "stump": "the stump sentence",
  "architecture": 1, "loops": 0,
  "precut": {"exit": 0, "date": ""},
  "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "", "clone_check": ""},
+ "duplicate_check": {"heart": "", "nearest": ""},
  "judge": {"verdict": "", "disposition": "", "report": ""},
- "returned": [{"date": "", "portal": "", "repair": "asks | design | fork", "commit": ""}],
- "approved": null, "delivered": null, "portal": null}
+ "returned": [{"date": "", "portal": "", "repair": "determinism | rubric | design", "commit": ""}],
+ "resume": "", "approved": null, "delivered": null, "portal": null}
 ```
 
-Older files may carry `solver_rounds` and old stage numbers: history; trust `stage_name`. `/approve`
-sets `approved`. The leak, clone and determinism reports are evidence.
+`status` is one of `drawing`, `design`, `build`, `shipped`, `returned`, `paused`, `retired`. Older files may
+carry `solver_rounds`, `branch` and old stage numbers: history; `status.py` infers their status from
+`stage_name`. `/approve` sets `approved`.
 
 ## Resuming
 
-Read `stage` and `## Tried and rejected`, then re-check that stage's gate before new work. No
-`pipeline.json` with a finished submission is stage 3 complete. A portal result means Returned tasks.
+Read `handoffs/<handle>.md` if it names the task, then `pipeline.json` (`status`, `stage`, `resume`) and
+`## Tried and rejected`; re-check that stage's gate before new work. No `pipeline.json` with a finished
+submission is stage 3 complete. A portal result means Returned tasks.
 
 ## Re-root and retirement
 
-An architecture is **spent** when the judge returns SEND_BACK, a FIX_NOW fails its second pass, a clone
-finding survives one redraw, its third portal return fails, or `precut.py` fails twice on the default path
-(re-root before any data is cut). A hardening deepens Layer 2 or Layer 1 and never plants; if only a
-plant would hold, the architecture is spent.
+An architecture is **spent** when the judge returns SEND_BACK, a FIX_NOW fails its second pass, its third
+portal return fails, or `precut.py` fails twice on the default path (re-root before any data is cut). A
+hardening deepens Layer 2 or Layer 1 and never plants; if only a plant would hold, the architecture is spent.
 
 **Re-root:** a new draw at stage 1 in the same objective and number, `architecture` incremented, `loops`
-reset, the old card's notes saying spent and why, one line in `## Tried and rejected`. **Retire** the
-number when its third architecture is spent: a `## Retired` section in the design note, `stage`
-`retired`, Status `retired` on main, every card kept. `.claude/authors/` files may set other caps.
+reset, the old card's lineage saying spent and why, one line in `## Tried and rejected`, committed `DRAWN`.
+**Retire** the number when its third architecture is spent: a `## Retired` section in the design note,
+`status` `retired`, every card kept, committed `RETIRED`. An author file may set another cap.
 
 ## Throughput
 
-Two builds in flight per author, a re-root counted as one; while one waits, the other proceeds. **The
-moment a build ships or retires, start the next open number**: Status, branch, `/build`. Draws register
-in task-number order, since the guard's bans reach the last three builds.
+Two builds in flight per author, a re-root counted as one; while one waits on stage 4, the other proceeds.
+**The moment a build ships or retires, start the next open number** (`status.py next <handle>`, `/build`).
