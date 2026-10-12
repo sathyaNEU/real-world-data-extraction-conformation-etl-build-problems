@@ -512,6 +512,69 @@ folder and compares every byte: identical.
   to the stage 3 cut, no graded figure moved, and the goldens changed in prose only (plan 4.3's wording, the visit
   reasons). The prompt is unchanged. The reader's stage 3 read stands in the leak report and is due again on this cut.
 
+- **Stage 4 re-judge and ship, 2026-10-12.** The re-judge (one isolated thread on a fresh copy of the repaired cut)
+  returned DETERMINISTIC, APPROVE (`determinism_check_report_pass2.md`): every figure reproduced, the 78 segments
+  verified whole are a clean break (the next segment at 0.42), and both competing bases it ran (every verification;
+  one pooled share on the whole segments) file 2039. Its one soft point, taken: step 6 said the form zone was printed
+  before plan revision 2 redrew six boundaries, which no shipped file states; step 6 now rests only on the field
+  notes' definitions (the inventory's `zone` is the line's zone under plan revision 2, `zone_on_form` the zone printed
+  on the form). The board paper's note under the agreement table carried the same claim, with an October 2026 edge
+  that two forms signed on 3 and 12 October 2026 contradict (house fix H6); it now reads "in the zone the inventory
+  gives each line under plan revision 2; some forms signed before the revision print a different zone" (B5). The
+  leak reader's re-read is answered under `## Leak review`. Gates on the final rebuild: `checks.py` 108 assertions,
+  0 failed; `verify.py` green; two full runs byte-identical, each with its own second build; `target/` byte-identical
+  to the cut the judge and the reader read, the workbook, `metadata.json` and `figures.json` byte-identical, and the
+  board paper changed in that note only; `figures_check.py` exit 0 (75 figures, the old step 6's "2" gone);
+  `freeze.py check --mode determinism` PASS against the snapshot taken before the stage 4 repair; `precut.py` exit 0
+  (38 checks, 0 FAIL); voice-check PASS; `leak.py --asof 2027-01-11` REVIEW, no LEAK, the same seven lines;
+  container audit clean on `target/` and `golden/`; `guard.py surface` 0 promoted (nearest task111 at 0.100),
+  `heart` WARN (`repeat.gate_g`, answered in the draw), nearest driver 0.05 (task32 v2); the card's answer is the
+  call verbatim, `guard.py validate` 145 cards, 0 invalid. `target.zip` is cut from the final rebuild: the 16 files,
+  flat, each byte-identical to `target/`.
+
+## Leak review
+
+- `leak.py --asof 2027-01-11` on the final cut: REVIEW, no LEAK. Its seven lines (sweep 3, the plan's call words;
+  sweep 4, the plan, the progress report and the field notes; sweep 6, the plan, the unit cost schedule and the
+  change order log) are the stage 3 and stage 4 lines, each answered in the build record.
+- Reader, stage 3 cut: no decisive-step sentence, ranking, helping file or answer-like figure; it named the era
+  share's estimation sample as open, with the payment and agreement readings and six realism tells, all taken into
+  the stage 4 repair.
+- Reader, re-read on the repaired cut: no decisive-step sentence (the field notes' two verification routes read to it
+  as a mild lean, not a leak), no ranking, helping file or answer-like figure. Its own 2034 execution took the era
+  share from the inventory's current classes of the no-tap-card lines of known status (3.8, 3.3 and 1.4 per cent;
+  13.6, 7.3 and 1.8 on the field-verified ones), where every line found lead and since replaced reads NON-LEAD under
+  REPLACED, so those lines are not a sample of the unknown lines; the judge's competing bases land on 2039 and none
+  returns 2034: not a defensible reading, and nothing changed for it.
+- The re-read's ask readings (payment basis, Eastern quarters, reclosings, Tri-County's two vendor numbers; withdrawn
+  agreements, form zone against inventory zone, the crosswalk) are the asks' designed devices and hazards, each
+  reproduced by the re-judge. Its two realism notes (the change order descriptions still read patterned; the capital
+  plan draft is thin, with no footer) are left as they stand: the realism sweep passes (R3, 45 of 45 descriptions
+  distinct), neither file carries the decisive step, and both are files the judge read.
+
+## Pre-ship check
+
+1. Domain: a water utility's estimate of how many of its unknown-material service lines are lead or GRR, made from
+   verifications that dug lines regardless of their likely material and carried into a replacement schedule against
+   the capital plan; with another field's nouns there are no tap cards, GRR classes or main-replacement sweeps.
+2. Real work, nothing planted: a verification log keyed across the March 2023 migration, result codes by recording
+   route, two date formats, re-verifications and assessor zeros; on the asks, change order totals repeated per site,
+   reclosings, UTC completion times, a vendor renumbered mid-year and agreements keyed by unpadded legacy numbers
+   with the zone printed on the form, each a record the district's systems produce.
+3. The step that flips the call is methodological: the estimation sample (the 78 main segments verified whole)
+   rather than every verification on file; no field reading, code or stated rule flips it.
+4. Analyst test: the default path (every verified no-tap-card line by era, or a model on every visible attribute)
+   files $347.5 million, 12.82 programme years and RZ-06 Wexley in 2039, past the deadline.
+5. Plan 4.3 defines the quantity and the field notes file how lines come to be verified; the design forces the method
+   (form 1), and the re-judge found every competing basis on 2039: DETERMINISTIC, APPROVE.
+6. No decoy: no consultant score, published hit rate or memo ships; the progress report carries counts only and
+   ranks no zone.
+7. Nothing is recovered from certified figures: no file states a share, a zone's count or cost, or a schedule; the
+   shares are estimated on the record.
+8. The lesson (a rate measured on units examined because they showed signs of the outcome does not carry to a
+   population that examines every unit; only the groups examined exhaustively do) is on no other card: `guard.py
+   heart` WARN on `repeat.gate_g` only, nearest driver 0.05.
+
 ## Tried and rejected
 
 - Draw, the note's tariff-class replay as the decisive rung: a schema-visible join (ESI ID to the premise file's class) that a finest-grain replay of the interval data also hands over, both default moves for the pilot solver; demoted to rung 3.
@@ -576,3 +639,4 @@ folder and compares every byte: identical.
 - Stage 4, varying the unit costs zone by zone: every zone cost, running total and the default path move; the schedule states its system rates and each zone's rate basis instead.
 - Stage 4, the prompt's "the November 2037 deadline" changed to "1 November 2037": voice-check passes both, the plan files 1 November 2037 and the 31 October season close, every reading gives the same call, and the call sentence is frozen; kept.
 - Stage 4, "from May 2023" in the field notes: the first replaced-main verification is 13 July 2023; filed as "from 2023".
+- Ship, step 6 of the write-up and the board paper's agreement note saying the form zone is the line's zone before plan revision 2 (forms signed before October 2026): no shipped file states it (the re-judge's soft point), and forms signed on 3 and 12 October 2026 also carry a differing zone; both now rest only on the inventory's zone being plan revision 2's.

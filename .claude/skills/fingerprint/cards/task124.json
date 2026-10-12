@@ -11,8 +11,8 @@
   "shape": "06",
   "decision_type": "schedule_or_sequence",
   "answer_unit": "date_or_period",
-  "answer": "Every zone finished inside the deadline: the last, RZ-06 Wexley, in programme year 2037 at $27.1 million a year from 2027 ($284.7 million of plan cost, 10.50 programme years)",
-  "answer_source": "task124/generator/figures.json (call, zones), recomputed by task124/generator/verify.py from target/",
+  "answer": "At $27.1 million a year from 2027 every zone in the plan is finished inside the deadline: the last, RZ-06 Wexley, is finished in programme year 2037, before 1 November 2037.",
+  "answer_source": "task124/submission.md, 1. Final Recommendation, first sentence (bold markers removed); figures in task124/generator/figures.json (call, zones), recomputed by task124/generator/verify.py from target/",
   "gap": [
     "population"
   ],

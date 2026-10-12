@@ -52,3 +52,11 @@ REVIEW lines: all harmless. The 9-of-13 call-word line on the plan PDF matched t
 Ask-level readings raised: what "paid per full replacement" includes (extras, restoration, change orders; RECLOSED duplicates; the Tri-County vendor change); quarters in Eastern time against UTC completions; signed agreements and WITHDRAWN status, form zone against inventory zone, archived lines.
 
 Realism tells: flat 12,400 unit costs with two outliers; templated change-order descriptions; a Christmas Day approval; sequential, round ids; neat 87,410 inventory rows; the prompt's "November 2037 deadline" against the plan's 1 November 2037.
+
+## Solver's-eye read (re-read after the stage 4 repair)
+
+1. Decisive step: none stated. Plan 4.3 says what to compute, not which lines estimate the share. The field notes' two verification routes (main-replacement exposure, single-line visits) read to the reader as a mild lean toward the step, not a leak.
+2. Ranking or stated figures: none. 3. Helping files: none out of place (the progress report is plausible). 4. Answer-like figure: none.
+5. Literal construction: plan 5.3 with 3.1 and 4.2 to 4.4. The reader's own execution took the era share from every no-tap-card line of known status in the inventory (3.8 / 3.3 / 1.4 per cent) and finished RZ-06 in 2034; from field-verified no-card lines only, 13.6 / 7.3 / 1.8 per cent, still 2034. MAIN-CALL READING TO CHECK: the share's estimation base under 4.3 as now worded.
+Ask readings: payment basis, quarter boundary (UTC against Eastern), RECLOSED rows, Tri-County's two vendor numbers; agreements and WITHDRAWN, form zone against inventory zone, premise_no against sl_id across the 2023 crosswalk.
+REVIEW lines: all harmless (the 9-of-13 call-word line is a sweep false positive). Realism: change-order descriptions still read patterned; the capital plan docx is thin, with no footer.

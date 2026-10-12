@@ -1,11 +1,11 @@
 {
   "task": "task124",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "energy-systems-utilities",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-12",
   "stump": "A competent solver joins the verification log to the inventory through the migration crosswalk, keeps the lines that had no tap card record, prices each zone's unknown lines at the share found lead or GRR in each construction era across every verification (0.763, 0.585 and 0.217) and files the plan as missing the deadline, its last zone finished in 2039; the step that lands it there is treating verifications prompted by evidence of lead as a sample of the lines a systematic programme digs, when on the main segments a water main replacement verified whole the shares are 0.556, 0.316 and 0.083, the plan costs $284.7 million rather than $347.5 million, and the last zone is finished in 2037, inside the deadline.",
   "architecture": 2,
@@ -64,22 +64,24 @@
   ],
   "reroot": "done 2026-10-12: architecture 2 drawn in Forecasting & Predictive Modeling (energy-systems-utilities, asset-condition-maintenance: Hollins Ford Regional Water District's lead service line replacement schedule)",
   "leak": {
-    "leak_py": "REVIEW 2026-10-12 on the stage 4 cut, no LEAK (the stage 3 lines; each answered in the design note's build record)",
-    "reader": "stage 3 cut: no decisive-step sentence, no helping file, no answer-like figure; named the era share as open (which verifications form the sample), the payment and agreement readings and six realism tells, all taken into the stage 4 repair; due again on the repaired cut (four documents changed)"
+    "leak_py": "REVIEW 2026-10-12 on the final cut (--asof 2027-01-11), no LEAK: the same seven lines as stages 3 and 4, answered in the design note's build record",
+    "reader": "stage 3 cut: no decisive-step sentence, no helping file, no answer-like figure; named the era share as open (which verifications form the sample), the payment and agreement readings and six realism tells, all taken into the stage 4 repair. Re-read on the repaired cut: no decisive-step sentence, ranking, helping file or answer-like figure, no main-call fork; its own 2034 execution priced the share on the inventory's current classes, where replaced lead lines read NON-LEAD, which is not a sample of the unknown lines (the judge's competing bases land on 2039), answered under the design note's Leak review"
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.gate_g against task501, answered in the draw)",
-    "nearest": "surface 0 promoted, nearest task111 at 0.100; driver task32 v2 at 0.05"
+    "heart": "WARN (repeat.gate_g against task501, answered in the draw), nearest driver 0.05 (task32 v2)",
+    "nearest": "surface 0 promoted, nearest task111 at 0.100"
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC (main call; asks 1 to 3 reproduce)",
-    "disposition": "SEND_BACK, repaired as a fix in the record: the verification design filed in the field notes, plan 4.3's class tightened, the payment and zone readings pinned; re-judge pending",
-    "report": "task124/determinism_check_report.md"
+    "verdict": "DETERMINISTIC (the re-judge on the repaired cut; pass 1 NOT_DETERMINISTIC on the stage 3 cut)",
+    "disposition": "APPROVE; its optional step 6 rewording taken, with the board paper's agreement note brought into line (wording only, no figure moved)",
+    "report": "task124/determinism_check_report_pass2.md (pass 1: task124/determinism_check_report.md)",
+    "gate_g": "statistical_rigor (selection bias in the estimand's sample), analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "returned": [],
-  "resume": "stage 4: the main session re-judges the repaired cut (fresh unzip) and re-runs the leak reader, since the field notes, plan 4.3, the change order log and the unit cost schedule changed; APPROVE ships; a fork convergence cannot close re-roots per the design note's stopping rule",
+  "resume": "shipped; next event is the author's portal result",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -90,9 +92,11 @@
     "verify": "green (own parsers; call, default path, SF16 and SF17 rivals, 12 zones, 12 payments, 12 agreement counts)",
     "byte_identical": true,
     "input_gates": "16 files, 5 formats, 87,410-row spine, 2 distractors (deletion moves nothing)",
-    "figures_check": "exit 0 (76 figures)",
-    "freeze": "freeze.py check --mode determinism PASS",
+    "figures_check": "exit 0 (75 figures)",
+    "freeze": "freeze.py check --mode determinism PASS (snapshot taken before the stage 4 repair)",
     "house_fixes": "pass, recorded in the design note's build record",
-    "answer": "last zone RZ-06 Wexley finished 2037 (default path 2039); $284.7 million over 10.50 programme years"
+    "answer": "last zone RZ-06 Wexley finished 2037 (default path 2039); $284.7 million over 10.50 programme years",
+    "final_rebuild": "target/ byte-identical to the cut the judge and the reader read; workbook, metadata.json and figures.json unchanged; board paper changed in its agreement note only",
+    "target_zip": "16 members, 2,359,704 bytes, sha256 4a6995d646a3e2d1"
   }
 }

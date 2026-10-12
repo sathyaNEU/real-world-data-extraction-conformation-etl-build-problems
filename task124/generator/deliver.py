@@ -352,8 +352,8 @@ def write_pdf(path, F, fig):
         Paragraph("Access agreements in hand", D.H2),
         D._table(rows, [0.7 * inch, 1.9 * inch, 2.0 * inch], right=(2,))]))
     st.append(Paragraph("Distinct service lines with a right-of-entry agreement signed and not withdrawn at 8 January "
-                        "2027, in the zone the inventory gives each line; forms signed before October 2026 print the "
-                        "zone the line was in before plan revision 2.", D.NOTE))
+                        "2027, in the zone the inventory gives each line under plan revision 2; some forms signed "
+                        "before the revision print a different zone.", D.NOTE))
     foot = D._frame("%s  |  Board of Directors, 19 January 2027" % K.DISTRICT, "LSLR schedule 2027 to 2037")
     doc.build(st, onFirstPage=foot, onLaterPages=foot)
     PP.normalize_pdf(path, b"D:20270111161204-05'00'", b"D:20270111173518-05'00'")
