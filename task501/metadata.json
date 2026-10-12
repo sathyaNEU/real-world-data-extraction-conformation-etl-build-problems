@@ -1,0 +1,39 @@
+{
+  "task": "task501",
+  "title": "Which autumn 2027 MMR catch-up, if any, keeps measles' winter reproduction number in Oriel Health Region below one, with each option's register residents, unvaccinated and part-vaccinated people and confirmed cases since 2019",
+  "domain": "Epidemiology & Public Health",
+  "subdomain": "infectious-disease transmission modelling (a measles catch-up appraised on the next-generation matrix's dominant eigenvalue)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "07 (grid of cells): the winter reproduction number under no catch-up and each of five options, with each option's register residents, no-dose and one-dose counts, confirmed and imported cases",
+  "as_of": "2027-07-12",
+  "deliverables": [
+    "winter_measles_2027.xlsx",
+    "measles_readiness_2027.pptx"
+  ],
+  "distractor_files": [
+    "national_mmr_uptake_report_2027q1.pdf",
+    "mmr_stock_return_2027-06-30.csv"
+  ],
+  "input_gates": {
+    "files": 19,
+    "formats": [
+      "csv",
+      "docx",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "register_mmr_events_born_1993-2017.csv",
+    "largest_file_rows": 278746
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task501/generator/build.py (seeded, deterministic) around a fictional regional health authority (Oriel Health Region), its immunisation register and case records, a fictional national contact survey and immunity profile; no real person, patient, practice or case is depicted, and the place names are used as geography only.",
+      "date": "2027-07-12",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-12",
+  "generator": "task501/generator/build.py"
+}
