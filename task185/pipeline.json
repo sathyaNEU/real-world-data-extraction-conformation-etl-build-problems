@@ -1,11 +1,11 @@
 {
   "task": "task185",
   "owner": "oviya13ya",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "general-statistics-data-science / exploratory-data-analysis-distribution-assessment (secondary physical-environmental-sciences)",
   "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-12",
   "stump": "The default path converts the glass era with the comparison readings' mean probe-minus-glass difference (+0.13 C), which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day line and it ends on $567 a hectare, the raw record's premium; one hot-day offset ends on $542 or $506; the conversion at each reading files $525.",
   "architecture": 1,
@@ -15,8 +15,8 @@
     "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "REVIEW (benign: filed triggers, clause number 4.1, station history wording, sub-district names, schedule's forward inceptions)",
-    "reader": ""
+    "leak_py": "REVIEW, every line harmless (reader rulings in the report)",
+    "reader": "two reads, no decisive-step sentence, no ranking file, question 6 analytical"
   },
   "duplicate_check": {
     "heart": "WARN (overuse.objective, answered in the note)",
@@ -24,13 +24,13 @@
   },
   "judge": {
     "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW (pass 1)",
+    "disposition": "APPROVE (pass 2; pass 1 FIX_NOW fixed)",
     "report": "task185/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: judge pass 1 FIX_NOW fixed in the generator (notes pin the register's sub-districts, step 2 bases, quote total row); re-judge pass 2 and the leak re-read running; then ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "seed": "analytical_tasks/02_anomaly_detection/AD08_station-break-hold-hot-day-tail.md"
 }

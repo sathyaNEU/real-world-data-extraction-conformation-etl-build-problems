@@ -284,6 +284,9 @@ Pair ceiling: about 37 (the cracker at about 55 with the call and the chart, the
   a straight line through every pair ($542 pooled, $557 Merrin Flat only) is the R2 rung, ruled out by the data (the
   difference is flat then bends) and never by a filed method, which would turn the decisive step into rule application.
   Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical.
+- Pass 2 (the one re-judge): DETERMINISTIC, APPROVE. Every figure reproduced; a 300-draw bootstrap of the pairs never
+  moved the crossing readings; the unrounded premium ($524.58) sits $0.08 above the rounding line, definitive because
+  every reading-by-reading estimator gives the same day counts. Same Gate G and Gate H lines.
 
 ## Pre-ship check
 
@@ -297,6 +300,9 @@ Pair ceiling: about 37 (the cracker at about 55 with the call and the chart, the
   card), heart WARN (Anomaly Detection overuse only).
 - Deliverables: heat_cover_quote_2027_28.pdf (two pages: the call, the explanation, the sub-district table; the chart
   and the season table), heat_cover_payouts.csv (eight seasons); target.zip from the final rebuild, 14 files.
+- Leak: two isolated reads, no decisive-step sentence, no ranking file, question 6 analytical.
+- Judge: pass 1 DETERMINISTIC, FIX_NOW (the sub-district source, step 2's bases, the quote's total row), fixed; pass 2
+  DETERMINISTIC, APPROVE.
 - Card current: answer, spine rows 34,404, stump and driver at the built values.
 
 ## Tried and rejected

@@ -1,4 +1,9 @@
-# determinism-check report, task185, 2026-10-12 (pass 1)
+# determinism-check report, task185, 2026-10-12 (pass 2 headline; pass 1 below)
+
+## Headline (pass 2)
+DETERMINISTIC, **Disposition: APPROVE**. Stumping type: mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no. Gate H: domain pass, layers pass, decisive_step analytical.
+
+# Pass 1 (superseded)
 
 ## Verdict
 DETERMINISTIC, with SOLUTION_WRONG on a minor wording point (submission step 2 mixed pooled and Merrin Flat figures).
@@ -63,3 +68,50 @@ Moderate to good. The mean offset or raw route files $567 and a one-offset route
 
 ## Next action for the author
 Pin the register as the sub-district source in the extract notes. Correct submission step 2 to the seven sites pooled, with no Merrin Flat mean. Drop the summed premium from the quote's total row. Then re-judge once (pass 2).
+
+
+---
+
+# Pass 2 (current bundle and submission after the generator fixes)
+
+## Verdict
+DETERMINISTIC
+**Disposition:** APPROVE
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+
+## Why
+A fresh thread reproduced every committed answer from the shipped files: premium $525 (397.41 x 1.32 = 524.58), 16.66 / 4.13 days (lines 0.2959 and 0.1911 a year), the 115 blocks and 722.7 ha, the four sub-district rows, and the eight seasons of payouts. The pooled difference of +0.719 C at 34.5 C and +1.354 C at 39.0 C sets the two crossings. Each of these gives $525:
+- Merrin Flat only.
+- The other six sites only.
+- The per-reading median.
+- A quadratic fit of the difference.
+- An OLS fit on readings of 30 C and over.
+- A bootstrap of the pairs: the crossings were unchanged in 300 of 300 draws.
+
+The ask 3 fork is closed: the extract notes name the register as the co-operative's sub-districts. Step 2 is consistent (seven sites pooled). The summed premium is gone from the quote, so the $379,419 against $379,418 rounding difference does not bite.
+
+## Competing answers that survived
+- **Conversion estimator, not forced by text but separated by the data:**
+  - A single OLS of probe on glass gives $542. It misfits the hot end, predicting +0.67 at 39.0 C against +1.35 observed.
+  - Expected exceedance gives $518, and yields fractional days, which the manual's "each day's maximum" does not describe.
+- **Easy route:** no adjustment or any constant offset gives $567; a constant offset from readings of 34 C and over gives $506.
+- **Margin:** 524.58 is 0.08 above the 524.50 line. Every reasonable per-reading estimator gives identical day counts, so the thread rated it thin but clean.
+
+## Spec gates (reconciled)
+All pass, unchanged from pass 1: 14 files, 5 formats, 34,404 rows in the largest file, two distractors named in `metadata.json` and not labelled by file name, 2 deliverables both in the golden, shape 14 (41 criteria by the design note). The thread's hygiene read: clean, temporally coherent, nothing exclusion-level.
+
+## Gate G reconciliation
+The thread returned `method_or_model_selection`, `analytical_non_defect`, surface read no, sole data defect no. This matches the card and design note. Gate G is classified as analytical. The declared distractors, the 2026/27 term sheet and the district means, are not what carries the task. The thread gave a borderline note: the prompt itself names the changeover, so a reader could call the raw-count rejection a surface-read flip. It judged the decisive work to be estimating the conversion, not spotting a defect.
+
+Gate H: domain pass, layers pass, decisive_step analytical. The easy route (a count of raw or constant-offset days) files $567; the reading-dependent conversion files $525. The thread's swap test says the task does not read the same with other nouns. There is no mismatch with the card's `analyst_test` and `domain_test`.
+
+## Stump power (Gate F)
+Moderate to good. A strong run can fail on a mean offset or a global regression ($542). The prompt flags the changeover and the manual pins the target instrument, so some strong runs will land it. The thread says no lever is needed before live testing.
+
+## Findings, ranked
+1. None blocking.
+2. Optional, solution text only: state that the mean difference is read at each half-degree reading, with 34.5 C and 39.0 C the crossing readings, so the estimator is on record. No change to files or prompt.
+3. The rounding margin of $0.08 is the most fragile point, but it is not contested.
+
+## Next action for the author
+Proceed to ship (stage 5). Optionally add the estimator sentence to the write-up.
