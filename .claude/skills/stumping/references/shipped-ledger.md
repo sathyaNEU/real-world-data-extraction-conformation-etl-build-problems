@@ -168,7 +168,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 122 (v2) | FAILED_TO_STUMP: backlog perssathya | PA experimentation | CEX | time rule | none, B | log keeps only pre-close outcomes | - | - | HC-37 | not submitted | perssathya |
 | 123 | FAILED_TO_STUMP: backlog oviya1301 | NPO grantee finance | ETL | time rule | B | trailing total over filed years only | - | - | 42.55 cents | not submitted | oviya1301 |
 | 124 (v4) | SHIPPED, delivered 10-12, pending review | ENR lead service lines | FC | population | none | verified share inflated by why lines were dug | - | - | zone finish years, last 2037 | none reported | sathya8571 |
-| 125 | FAILED_TO_STUMP: backlog oviya13ya | AAF audit sampling | AD | population time | none, A, B | a filed date ends a component class | - | - | 6,900 payments | not submitted | oviya13ya |
+| 125 (v2) | DRAWN 10-12, design | SROS labour survey fieldwork | AD | population time | none | a first-interview visit limit filters employed-heavy households for five quarters | - | - | - | none reported | oviya13ya |
 | 126 | SHIPPED, delivered, pending review | P&E pendency | DESC | population rule | none, D | a carried file joins two units | - | - | 28.9 months | none reported | - |
 | 127 | FAILED_TO_STUMP: backlog sathay3012 | NPO heat-pump slots | OPP | time objective | none, C, E | a team must finish the last step | - | - | 1,170 slots | not submitted | sathay3012 |
 | 128 | FAILED_TO_STUMP: backlog oviya1301 | BOA patch tickets | OPP | objective rule | none, C, B | capacity per booked interval | - | - | ticket split | none reported | oviya1301 |
@@ -265,6 +265,7 @@ them as history. Round-by-round detail is in each build's design note and card l
 | 111 (v1) | retired 10-06: both filed it on the portal | BOA | RCA | objective population | none | rest after call-out via payroll |
 | 124 (v1, v2) | retired 10-10: solved in-house | BOA | FC | population time | E | analogs' uncalled draw |
 | 124 (v3) | retired 10-12: validated decoy, rungs stacked above solved steps | BOA | FC | population time | E | pre-cool hours against heat-matched uncalled days |
+| 125 (v1) | spent 10-10: solved in-house twice, judge SEND_BACK on hygiene | AAF | AD | population time | none, A, B | a filed date ends a component class (digit-filter call-off) |
 | 128 (v1) | retired 10-10: solved in-house | BOA | OPP | objective rule | C | whole-host rebuild value |
 | 130 (v1, v2) | failed on the portal 10-10, 10-11 | - | FC | - | - | designation; duty-date queue |
 | 133 (v1) | retired 10-11: one portal model at 100 | BANK | FC | time | none | survival to date, soft asks |

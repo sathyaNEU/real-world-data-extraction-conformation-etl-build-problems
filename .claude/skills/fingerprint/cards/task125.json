@@ -1,88 +1,96 @@
 {
   "task": "task125",
-  "architecture": "v1",
-  "drawn": "2026-10-10",
-  "slot_note": "accounting-audit-forensic x anomaly-detection; first realisation of analytical_tasks note AD02; wave task124 to task130, drafted in parallel and registered in task-number order by the coordinator",
-  "domain": "accounting-audit-forensic",
-  "subdomain": "audit-testing-sampling",
-  "niche": "sizing the plan-year call-off of post-payment examinations for a council's first-two-digit payment filter, whose flagged cells are carried by fixed-amount streams: a fixed-term household instalment scheme, and a carer scheme that pays one four-weekly amount for every guest a carer hosts",
+  "architecture": "v2",
+  "drawn": "2026-10-12",
+  "slot_note": "re-root of task125 (architecture 1 spent); oviya13ya's Anomaly Detection lane, wave 1",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "anomaly-detection",
+  "niche": "separating a fieldwork artifact from a real labour market move in a national household labour survey's quarterly unemployment rate, where a first-interview visit limit changed which households a five-quarter rotating panel recruits",
   "objective": "anomaly-detection",
   "shape": "02",
   "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "Order 6,900 routed payments from Fernhollow for April 2027 to March 2028.",
-  "answer_source": "task125/submission.md, block 1 (Final Recommendation)",
+  "answer_unit": "rate_or_share",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population",
-    "time",
-    "rule"
+    "time"
   ],
   "pattern": [
-    "none",
-    "A",
-    "B"
+    "none"
   ],
   "generators": [
-    "G2",
-    "G13",
-    "G16"
+    "G6",
+    "G13"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "certified_matrix",
-  "stump_strategy": "withheld_rule_corpus_fit",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
-  "validated_decoy": true,
-  "context_artifact": "operations_log",
-  "stakeholder_role": "head of exchequer services at a shire county council, who places the year's call-off for post-payment examination of the payments the council's digit filter routes",
-  "role_family": "finance_controller",
-  "scoring_unit": "per accepted item",
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "head of labour market statistics at a national statistics office, who must say in the July to September release whether the quarter's rise in the unemployment rate is real and what the first-interview visit limit will do to the published rate through September 2027",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "other",
   "spine": {
-    "file": "wealdmoor_spend_over_500_2023-04_to_2027-02.csv",
-    "rows": 408795,
-    "entity": "one published payment over 500 pounds on the council's transparency spending file, with its department, service area, expense type, supplier, vendor number, transaction reference, payment date, net amount and VAT",
-    "grain": "payment (one transaction reference)",
-    "source": "synthetic (fictional county council's transparency spending publication, April 2023 to February 2027)"
+    "file": "hls_person_quarter_2023q1_2026q3.parquet",
+    "rows": 0,
+    "entity": "one person aged 15 or over in a responding household in one quarter's sample, with wave, household serial, ILO status items, region, age, sex and final person weight",
+    "grain": "person x quarter",
+    "source": "synthetic (fictional national household labour survey microdata)"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "local_government",
+  "forum": "line_manager_or_team",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "research_or_statistics_office",
   "world": {
-    "geography": "United Kingdom, England",
-    "currency": "GBP",
-    "org_type": "a shire county council's exchequer service, which runs a first-two-digit filter that routes payments for post-payment examination by a framework assurance provider",
+    "geography": "fictional country (Merrowland), South Pacific, English-speaking",
+    "currency": "MRD",
+    "org_type": "national statistics office running a quarterly household labour survey with a five-wave rotating panel (first interview face to face, waves 2 to 5 by telephone)",
     "invented_names": [
-      "Wealdmoor County Council",
-      "Tenancy Sustainment Payments",
-      "Fernhollow Assurance",
-      "Home First Step-Down"
+      "Merrowland",
+      "Merrowland Statistics",
+      "Household Labour Survey"
     ],
     "people": [
-      "Tina Rogers",
-      "Julia Burgess",
-      "Pauline Pollard",
-      "Douglas Harris",
-      "Wendy Lyons",
-      "Abigail McDonald",
-      "Adam White",
-      "Lynda Donnelly",
-      "Bethan Carpenter",
-      "Shaun Collins",
-      "Anne McKenzie"
+      "Raewyn Bailey",
+      "Jane Phillips",
+      "Aaron Tucker",
+      "Dylan Fletcher"
     ]
   },
   "deliverables": [
-    "examination_calloff_2027-28.docx",
-    "examination_calloff_2027-28.xlsx"
+    "hls_visit_limit_note_2026q3.docx",
+    "hls_visit_limit_path_2027.xlsx"
   ],
-  "opening_move": "stakes-first",
-  "driver": "The forward count of items a fixed band rule selects includes units outside the band today: each unit's periodic amount is one sum over every component it holds, a filed date in the forward window ends one class of component, and re-summing what survives moves the unit's amount into the selected band; some units are paid in two equal parts to two linked payees, and how a unit is paid depends on how many components it keeps, because the record's own changed units show that a unit left with one component is paid its whole amount by the first payee and nothing by the second; a forecast that treats every linked unit as always paid in halves carries the one-component units' halves below the band's lower floor and out of the count, and only applying the payment rule recovered from the changed units puts each such unit's whole amount into the band once a period, after a fixed-term cohort run-off on a term recovered from an earlier completed cohort, the whole-amount decomposition and the linked-pair re-sum have all been made and read as final.",
-  "driver_concrete": "Adult Social Care's flagged cell 14 holds the four-weekly 1,464-pound Shared Lives payment for one long-term band 2 guest, and a carer is paid one four-weekly amount for every guest hosted, so after the Home First step-down places close on 31 March 2027 the 60 single carers paid 3,044, 3,272 or 3,524 fall to 1,464 and the 8 jointly approved households paid 2,274, 2,388 or 2,514 a half fall to 1,484 a half; 16 further joint households host a band 2 guest beside a step-down guest (halves 1,522, 1,636 or 1,762) and are left with one guest, and the extract's changed households (November 2023, August 2024, September 2025) show a one-guest household paid its whole fee by the first vendor number and nothing by the second, so each is paid 1,464 once a run in cell 14 rather than two halves of 732 under the 1,000-pound floor: 194 carer payments a run in cell 14 against 102 now, 6,914 routed payments in 2027/28 (filed 6,900) against 6,706 (6,700) with every joint household halved, 6,498 (6,500) with the halves held and 5,718 (5,700) with every carer held (Housing Support's 2024-25 Tenancy Sustainment round run off on its 30-instalment term in all).",
-  "stump": "A competent solver rebuilds the screen until all 63 published figures reproduce, runs Housing Support's 2024-25 instalment intake off on its 30-instalment term, decomposes every Shared Lives carer payment into the scheduled weekly rates (each joint half as two weeks of them), moves the 60 single carers paid 3,044, 3,272 or 3,524 to 1,464 and the 16 halves paid 2,274, 2,388 or 2,514 to 1,484 in cell 14 after the Home First step-down closure on 31 March 2027, carries the 32 halves paid 1,522, 1,636 or 1,762 down to 732 each, under the filter's 1,000-pound floor, and files 6,700 routed payments (6,706); the step that lands it there is reading a joint household as two vendors each paid half of whatever the household is owed, when the extract's own changed households show that a joint household left with one guest is paid its whole fee by the first vendor and nothing by the second, so the 16 households hosting a band 2 guest beside a step-down guest are each paid 1,464 once a run from April 2027, in cell 14, and the plan year routes 6,900 (6,914).",
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "A change at the point units are recruited filters out a hard-to-reach share whose outcomes differ from the rest, and because every recruited unit stays for a fixed run of later periods carrying part of that difference, the distortion in the aggregate builds as filtered intakes replace unfiltered ones and lingers for a full run after the change is reversed; only removing the hard-to-reach recruits from each intake the change touches, at that intake's position in the run, measures each period's distortion, while the first-period gap repeated only while the change lasts, or the same gap applied at every position, files a wrong path.",
+  "driver_concrete": "Since July 2026 first interviews stop after three visits, so the households reached only at a fourth to sixth visit, whose members are more often in work and out by day, drop out of each new wave-1 intake; those households would have stayed for five quarters, interviewed by telephone in waves 2 to 5, and their lower unemployment partly persists as statuses churn and they attrit, so the limit's distortion of the published unemployment rate builds through Q4 2026 and, with six visits restored in January 2027, still holds the rate above the labour market in every quarter to September 2027 as the two capped intakes age out.",
+  "stump": "A competent solver finds the visit limit in the field instruction, measures how much removing fourth-to-sixth-visit households moves the wave-1 rate, treats the limit as a first-interview effect that repeats each quarter it runs and ends the quarter six visits return, and files the July to September rise as mostly the limit with the published rate back on the labour market from January 2027; the step that lands it there is missing that the households recruited under the limit are the same households interviewed in waves 2 to 5, so the selection rides on through every quarter to September 2027.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who derives ILO status correctly, re-rakes the weights and reads the field instruction measures the limit on the latest wave-1 intake only, carries that gap while the limit runs and drops it to zero once six visits return, so the published rate is called clean from January 2027 when it still runs above the labour market through September 2027.",
+  "domain_test": "The deciding analysis is the survey methodologist's fieldwork-effort selection read through a rotating panel's recruitment cohorts (who a contact protocol recruits, how long they stay, how their selected outcomes regress) and the calibrated estimator's response; with another field's nouns there is no visit protocol, no recruited cohort riding five waves and no re-raked rate, so the task stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:recruitment-selection-riding-a-rotating-panel",
+  "layer1": [
+    "person-quarter microdata with ILO status from questionnaire items, final weights raked to population controls",
+    "a wave-1 contact log keyed by address serial, one row per visit, with tablet re-syncs",
+    "population controls in two vintages after a population estimate rebase",
+    "a superseded field instruction beside the current one",
+    "published release tables revised after the rebase",
+    "a regional boundary change recoding two areas"
+  ],
   "mechanism_source": "design_note",
   "differentiation": {
-    "task126": "Both turn on a population gap and file a quantity, but task125's move is a forward composition inside a forecast (one periodic amount summed over components, a filed closure ends one class, and re-summing what survives puts units into the counted band in the plan year), while task126's is a historical succession link that over-joins units and is split by a separate classification ledger inside a descriptive median; the decisive generator (G2 against G3), Gate G mechanism (forecasting against method_or_model_selection), shape (02 against 14), calibration form, domain and objective all differ."
+    "task132": "Both turn on who is in a population and file a forward figure, but task132 restarts a replaced item at the bottom of a wear curve inside a spares count, while task125 tracks a recruitment protocol's selection riding a rotating panel's intakes through their later waves and the estimator's rate, with no replacement, wear or spares."
   },
-  "lineage": [],
-  "notes": "Realises analytical_tasks note AD02 (analytical_tasks/02_anomaly_detection/AD02_digit-filter-workload-cohort-runoff.md), its first realisation, drawn 2026-10-10; registered after task124 in task-number order. The note's decisive move, Housing Support's fixed-term cohort run off on a term recovered from the completed 2021 intake, is kept as rung 3: the pilot's plain solver replays records at the finest grain and runs cohort studies unprompted, and the 2021 intake's full rise and run-off sits in the same flagged-cell series, so that rung is constructed rather than missed. A first redraw (re-pricing Adult Social Care's stream at a filed 2027/28 tariff) reads honestly as (time, A) or (time, G13) and the guard blocks both (task121 v1 lineage in the window, ten older builds, task122's decisive G13), so the decisive rung moved to the population gap: the forward composition of each carer's single four-weekly payment. Requester moved from the head of internal audit (compliance_or_audit, banned against task119) to the head of exchequer services (finance_controller); internal audit keeps publishing the conformity statements. Context artifact redrawn at registration from close_out_summary (BLOCK ban.artifact against task124) to operations_log, the filter's 2025/26 run log. Harden loop 1 (2026-10-10): round 1's plain solver landed the carer-grain decomposition (rung 4, 6,500), so the decisive rung moved to the household grain (jointly approved households paid in equal halves to consecutive vendor numbers); driver, driver_concrete and stump rewritten to it at stage 3b. Retired 2026-10-10 after the determinism judge returned SEND_BACK (mechanism matched the note, decisive rung 6); not submitted. The card stays registered so the architecture is never drawn again."
+  "lineage": [
+    {
+      "architecture": "v1 (Wealdmoor County Council digit filter: the 2027/28 call-off of routed payments for post-payment examination)",
+      "fate": "spent 2026-10-10: in-house solver rounds 1 and 2 landed (80.2, 85.1), judge SEND_BACK on hygiene (the payments ledger read as generated); FAILED_TO_STUMP, re-rooted 2026-10-12 under the no-retirement rule",
+      "driver": "The forward count of items a fixed band rule selects includes units outside the band today: each unit's periodic amount is one sum over every component it holds, a filed date in the forward window ends one class of component, and re-summing what survives moves the unit's amount into the selected band; some units are paid in two equal parts to two linked payees, and how a unit is paid depends on how many components it keeps, because the record's own changed units show that a unit left with one component is paid its whole amount by the first payee and nothing by the second; a forecast that treats every linked unit as always paid in halves carries the one-component units' halves below the band's lower floor and out of the count, and only applying the payment rule recovered from the changed units puts each such unit's whole amount into the band once a period, after a fixed-term cohort run-off on a term recovered from an earlier completed cohort, the whole-amount decomposition and the linked-pair re-sum have all been made and read as final."
+    }
+  ],
+  "notes": "Re-root under the author's no-retirement rule; architecture 1's identity is in lineage. Interviewer falsification was considered for this draw and dropped before registration (fabricated interviews are a planted defect under the three rules). Strategy: composition_mix and population_selection both fit (the sample's mix on a recruitment property no person column names shifts as filtered intakes rotate in); composition_mix is filed because the distortion is read as the panel's mix moving under a correct pooled rate, rebuilt from the contact log joined to the panel."
 }
