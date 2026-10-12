@@ -1,7 +1,7 @@
 """task138 assertions: the input gates, every rung of the ladder and its separation, every semantic fork row (SF1 to
-SF23), the graded figures' distances to their rounding edges, the asks' stops and devices, the separation line
-between the call and the asks, the distractors' deletion test, and the realism and hygiene sweeps. Run by build.py on
-every build; prints the ladder and the measured figures the design note quotes."""
+SF29, the asks' readings among them), the graded figures' distances to their rounding edges, the asks' stops and
+devices, the separation line between the call and the asks, the distractors' deletion test, and the realism and
+hygiene sweeps. Run by build.py on every build; prints the ladder and the measured figures the design note quotes."""
 from __future__ import annotations
 
 import copy
@@ -180,6 +180,10 @@ def run(target, golden, W=None, meta_path=None):
     # SF8: the irrigation test before rain
     sf8 = _order_test_before_rain(M, st)
     ok(sf8["order"] != g["order"], ("SF8", sf8["order"]))
+    # SF8, second alternative: the day's rain taken first, its excess over the depletion drained, then the day's ET
+    # (WOP 3.1 nets the day: the previous depletion plus the day's ET less its rain, then the floor at zero)
+    sf8b = _order_rain_first(M)
+    ok(sf8b["order"] != g["order"], ("SF8 rain first", sf8b["order"]))
     # SF10: cancelled orders as irrigations (R2d), SF14 no cap (O2): in the ladder
     ok(R2d["order"] != g["order"] and O2["order"] != g["order"], "SF10 SF14")
     # SF11: every requested field's last 2026 delivered set starts and ends on one day
@@ -239,9 +243,27 @@ def run(target, golden, W=None, meta_path=None):
                                                                                          sf24["year"]))
     # SF22: acre-feet as inches times acres over 12 (the model's own arithmetic)
     ok(abs(M.replay(2012, D) - g["reqs"][2012]) < 1e-6, "SF22")
-    print("  SF2 %s, SF3 %s, SF4 %s, SF5 %s, SF8 %s, SF15 %s, SF16 %s, SF20 %s, SF21 %s" % tuple(
-        "{:,}".format(x) for x in (K.ceil_hundred(p80), sf3["order"], sf4["order"], sf5["order"], sf8["order"],
-                                   sf15["order"], sf16["order"], sf20["order"], sf21["order"])))
+    # SF25: the day of a field's last 2026 set ends at zero depletion (WOP 3.4) and the balance resumes the next day;
+    # counting that day's ET and rain after the set moves the order
+    D25 = _carry_from_set_day(M)
+    sf25 = variant_order(M, lambda y: D25)
+    ok(sf25["order"] != g["order"], ("SF25", sf25["order"]))
+    # SF29: station 39's millimetres in inches at 25.4 to the inch (the dictionary's unit line), carried unrounded
+    # (closure axis 10); each converted value rounded to the yard's hundredths, or converted at 0.0394 in per mm, moves
+    # the order: neither is a reading of WOP 6.1 or 3.2
+    dic = _text_of(os.path.join(target, K.DICTIONARY))
+    ok("25.4 millimetres to the inch" in dic, "SF29 the dictionary's unit line")
+    sf29 = {}
+    for key, conv in (("hundredths", lambda mm: round(mm / 25.4 + 1e-12, 2)), ("0.0394", lambda mm: mm * 0.0394)):
+        wx29 = {d: (M.yard[d] if (d >= K.SPLICE and d in M.yard) else
+                    (conv(M.s39[d][0] * 25.4), conv(M.s39[d][1] * 25.4))) for d in M.wx}
+        sf29[key] = _order_on_weather(M, wx29)
+        ok(sf29[key]["order"] != g["order"], ("SF29", key, sf29[key]["order"]))
+    print("  SF2 %s, SF3 %s, SF4 %s, SF5 %s, SF8 %s and rain first %s, SF15 %s, SF16 %s, SF20 %s, SF21 %s, SF25 %s, "
+          "SF29 hundredths %s and 0.0394 %s" % tuple(
+              "{:,}".format(x) for x in (K.ceil_hundred(p80), sf3["order"], sf4["order"], sf5["order"], sf8["order"],
+                                         sf8b["order"], sf15["order"], sf16["order"], sf20["order"], sf21["order"],
+                                         sf25["order"], sf29["hundredths"]["order"], sf29["0.0394"]["order"])))
 
     # ------------------------------------------------------------------------------------------ the asks
     A = C.load_asks(target)
@@ -270,6 +292,47 @@ def run(target, golden, W=None, meta_path=None):
     for l in ("L3", "L7", "L8"):
         ok(K.round_to(b2[l], 10) != K.round_to(sp[l], 10), ("Ask B S2", l))
     ok(len(A["changes"]) >= 18 and len({c["turnout"][:2] for c in A["changes"]}) == 9, "meter changes on every lateral")
+    # S2b: within each meter's own reads, with a new meter's first read counted from zero (a rebuilt meter's carried
+    # register cannot be): every figure still off
+    units = _replacement_units(target)
+    s2bd = _ask_a_new_from_zero(A, units)
+    for l in K.LATERALS:
+        s2bs = 100.0 * (inflow[l] - s2bd[l]) / inflow[l]
+        ok(K.round_to(s2bd[l], 10) != K.round_to(gd[l], 10) and share1(s2bs) != share1(gs[l]), ("Ask A S2b", l))
+    # realism of the replacements: a new meter goes in at zero, a rebuilt one with the register it carried out of its
+    # last service; the book starts each replacement at or above the register the shop recorded, and the shop's
+    # removal register sits just past the old meter's last weekly read
+    ok(set(units.values()) == {"New", "Rebuilt"}, ("new and rebuilt replacements", sorted(set(units.values()))))
+    for c in A["changes"]:
+        u = units[(c["old"], c["new"])]
+        ok((c["installation"] == 0.0) == (u == "New"), ("installation register", c["new"], u, c["installation"]))
+        first = [v for t, s, v in A["reads"][c["turnout"]] if s == c["new"]][0]
+        last = [v for t, s, v in A["reads"][c["turnout"]] if s == c["old"]][-1]
+        ok(0.0 <= first - c["installation"] < 200.0, ("first read just past the installation register", c["new"]))
+        ok((c["removal"] - last) % 10000.0 < 200.0, ("removal register just past the last read", c["old"]))
+    # SF26: a Lateral 5 tail turnout's lateral on a read interval is the lateral that fed it: Lateral 5 through its 15
+    # June 2026 read, Lateral 6 after (the operations log's 13 and 15 June entries; the register as it stands carries
+    # Lateral 6). The register's lateral all season moves four figures (S3 above); the turnout number's lateral all
+    # season leaves Lateral 5 delivering more than its heading put in
+    db, reach_after = _ask_a_built(A)
+    ok(inflow["L5"] - db["L5"] < 0, "SF26 the turnout number's lateral all season: Lateral 5 delivers more than it took")
+    # SF26's convergence: no water ran to the reach while the connector was tied in (13 to 15 June), so the interval
+    # ending at each tail meter's 15 June read and the one after it each hold one lateral's water
+    for rr in rows[1:]:
+        if rr[ix["season"]] == "2026" and rr[ix["status"]] == "Delivered" and rr[ix["turnout"]] in set(K.MOVED):
+            ok(rr[ix["set_end"]][:10] < "2026-06-13" or rr[ix["set_start"]][:10] > "2026-06-15",
+               ("SF26 no water to the reach during the tie-in", rr[ix["order_no"]]))
+    # SF27: each heading's volumes as recorded (the water that passed that heading); the reach's metered water after
+    # 15 June moved from Lateral 6's heading to Lateral 5's, with the reach on Lateral 5 all season, moves four figures
+    inf27 = dict(inflow)
+    inf27["L5"] += reach_after
+    inf27["L6"] -= reach_after
+    for l in ("L5", "L6"):
+        s27 = 100.0 * (inf27[l] - db[l]) / inf27[l]
+        ok(K.round_to(db[l], 10) != K.round_to(gd[l], 10) and share1(s27) != share1(gs[l]), ("SF27", l))
+    # SF28: the head over a tail weir with flashboards in is the gauge less the crest raised 2 inches a board (the
+    # bare crest files every lateral high: Ask B S1 above); the notes' times converge below
+    ok(all(K.round_to(b1[l], 10) > K.round_to(sp[l], 10) for l in K.LATERALS), "SF28 the bare crest files high")
     # converging readings on Ask A: the book brackets the season at every turnout (opening reads before 1 February,
     # closing reads after 31 October), and every Lateral 5 tail meter was read on the realignment day, so no read
     # interval straddles it
@@ -296,6 +359,22 @@ def run(target, golden, W=None, meta_path=None):
     print("  Ask A: deliveries %s" % ", ".join("%s %s" % (l, "{:,}".format(K.round_to(gd[l], 10))) for l in K.LATERALS))
     print("         shares %s" % ", ".join("%s %.1f" % (l, share1(gs[l])) for l in K.LATERALS))
     print("         within-serial lost %s AF" % ", ".join("%s %.0f" % (l, gd[l] - s2d[l]) for l in K.LATERALS))
+    print("         S1 by turnout across changes: deliveries %s to %s AF, shares %.0f to %.0f per cent" % (
+        "{:,}".format(min(K.round_to(v, 10) for v in s1d.values())),
+        "{:,}".format(max(K.round_to(v, 10) for v in s1d.values())), min(s1s.values()), max(s1s.values())))
+    print("         S2b new meters counted from zero (%d new, %d rebuilt): %s AF low" % (
+        sum(1 for u in units.values() if u == "New"), sum(1 for u in units.values() if u == "Rebuilt"),
+        ", ".join("%s %.0f" % (l, gd[l] - s2bd[l]) for l in K.LATERALS)))
+    print("         S2b filed: %s" % ", ".join("%s %s and %.1f" % (l, "{:,}".format(K.round_to(s2bd[l], 10)),
+                                                               share1(100.0 * (inflow[l] - s2bd[l]) / inflow[l]))
+                                              for l in K.LATERALS))
+    print("         S3 register's lateral: %s; SF26 turnout number's lateral: Lateral 5 %s against %s put in; SF27 "
+          "headings moved with the reach: %s" % (
+              ", ".join("%s %s and %.1f" % (l, "{:,}".format(K.round_to(s3d[l], 10)), share1(s3s[l]))
+                        for l in ("L5", "L6")),
+              "{:,}".format(K.round_to(db["L5"], 10)), "{:,}".format(K.round_to(inflow["L5"], 10)),
+              ", ".join("%s %s and %.1f" % (l, "{:,}".format(K.round_to(db[l], 10)),
+                                           share1(100.0 * (inf27[l] - db[l]) / inf27[l])) for l in ("L5", "L6"))))
     print("  Ask B: spill %s" % ", ".join("%s %s" % (l, "{:,}".format(K.round_to(sp[l], 10))) for l in K.LATERALS))
     print("         bare crest %s" % ", ".join("%s %s" % (l, "{:,}".format(K.round_to(b1[l], 10))) for l in K.LATERALS))
 
@@ -371,6 +450,59 @@ def run(target, golden, W=None, meta_path=None):
     # no identical heading totals, no round asks
     ok(len({round(inflow[l], 2) for l in K.LATERALS}) == 9, "distinct heading totals")
     ok(all(abs(gd[l] - round(gd[l])) > 1e-6 for l in K.LATERALS), "deliveries not whole numbers before rounding")
+    # the request clerk's remarks: a revision's remark says what the grower revised, an irrigation system remark only
+    # where the method differs from 2026, a withdrawal's reason fits the crop, and no one remark dominates
+    method26 = {rr[0]: rr[5] for rr in C.read_csv(os.path.join(target, K.CROP_REPORT))[1:]}
+    versions = {}
+    for q in M.requests:
+        versions.setdefault(q["Request no."], []).append(q)
+    sys_words = ("method", "changed to", "converted to", "system", "border", "sprinklers pulled")
+    for no, vs in versions.items():
+        vs = sorted(vs, key=lambda q: q["Version"])
+        last = vs[-1]
+        rem = (last["Remarks"] or "").lower()
+        if len(vs) == 2:
+            changed = vs[0]["Irrigation method"] != last["Irrigation method"]
+            ok(any(w in rem for w in sys_words) == changed, ("revision remark", no, rem))
+        elif last["Status"] == "Accepted" and any(w in rem for w in sys_words):
+            ok(method26[last["Field"]] != last["Irrigation method"], ("system remark", no, rem))
+        if last["Status"] == "Withdrawn":
+            ok(rem != "", ("withdrawal without a reason", no))
+        if "orchard" in rem or "trees" in rem:
+            ok(last["Crop code"] in ("ALM", "PIS", "WAL", "CIT"), ("orchard remark", no, last["Crop code"]))
+        if "vine" in rem:
+            ok(last["Crop code"] == "GRW", ("vineyard remark", no, last["Crop code"]))
+        if "fallowing" in rem or "out of production" in rem:
+            ok(last["Crop code"] in ("ALF", "PAS"), ("fallowing remark", no, last["Crop code"]))
+    remarks = [q["Remarks"] for q in M.requests if q["Remarks"]]
+    top = max(remarks.count(x) for x in set(remarks))
+    ok(len(set(remarks)) >= 12 and top <= 0.35 * len(remarks), ("request remarks", len(set(remarks)), top, len(remarks)))
+    # the operations log: entries in time order, each written when it happened (every heading outage it logs ends on
+    # the last of the headings' estimated days, the logger's totals resuming the next day)
+    log = _ops_log(target)
+    ok(log == sorted(log, key=lambda e: (e[0], e[1])) and len({e[0] for e in log}) >= 30, "operations log")
+    # an entry reporting the day's meter reads is logged after the last of them
+    last_read = {}
+    for v in A["reads"].values():
+        for t_, s_, r_ in v:
+            last_read[t_.date()] = max(last_read.get(t_.date(), t_), t_)
+    for day, time, text, by in log:
+        if "read today" in text or "reads taken" in text:
+            hh, mm = (int(x) for x in time.split(":"))
+            ok(dt.datetime(day.year, day.month, day.day, hh, mm) > last_read[day], ("log entry before the reads", day))
+    e_days = {}
+    for d_, l_, v_, q_ in A["headings"]:
+        if q_ == "E":
+            e_days.setdefault(l_, []).append(d_)
+    resumed = {}
+    for day, time, text, by in log:
+        m = re.search(r"Lateral (\d) .*totals (?:again from (\d{1,2}) (\w+)|good from midnight)", text)
+        if m:
+            when = (dt.datetime.strptime("%s %s 2026" % (m.group(2), m.group(3)), "%d %B %Y").date() if m.group(2)
+                    else day + dt.timedelta(days=1))
+            resumed["L" + m.group(1)] = when
+    ok(sorted(resumed) == sorted(e_days) and all(resumed[l] == max(e_days[l]) + dt.timedelta(days=1) for l in e_days),
+       ("heading outages in the log", resumed))
     print("checks.py: %d assertions passed" % N[0])
     ok(N[0] >= 40, "forty or more assertions")
     return lad
@@ -391,6 +523,81 @@ def _text_of(path):
         except Exception:
             return ""
     return ""
+
+
+def _order_rain_first(M):
+    """SF8's second alternative: each day's rain taken off first, its excess drained, then the day's ET added."""
+    class RainFirst(C.Model):
+        def day(self, D, d, cap=True):
+            e, rn = self.wx[d]
+            D = np.maximum(D - rn, 0.0) + self.kc[:, d.month - 1] * e
+            return np.minimum(D, self.taw) if cap else D
+    M2 = RainFirst(M.fields, M.wx, M.T, last_delivery=M.last_delivery, turnout_last=M.turnout_last,
+                   cancelled_last=M.cancelled_last)
+    return variant_order(M2, M2.start_golden())
+
+
+def _carry_from_set_day(M, upto=K.WEATHER_END):
+    """SF25's alternative: each field's 31 January depletion with the day of its last 2026 set counted after the set."""
+    anchors = [M.last_delivery[i] for i in M.ids]
+    D = np.zeros(M.n)
+    a_ord = np.array([a.toordinal() for a in anchors])
+    for d in K.daterange(min(anchors), upto):
+        nd = M.day(D, d)
+        D = np.where(d.toordinal() >= a_ord, nd, D)
+    return D
+
+
+def _replacement_units(target):
+    """(meter removed, meter installed) -> New or Rebuilt, from the shop log's 2026 changes."""
+    import openpyxl
+    rows = list(openpyxl.load_workbook(os.path.join(target, K.SHOP_LOG), data_only=True)["2026 changes"]
+                .iter_rows(values_only=True))
+    hi = next(i for i, r in enumerate(rows) if r and r[0] == "Date")
+    col = list(rows[hi]).index("New or rebuilt")
+    return {(r[3], r[5]): r[col] for r in rows[hi + 1:] if r and r[0] is not None}
+
+
+def _lateral_of(A, tid, t1):
+    reg_lat, built = A["lateral"][tid], "L%d" % int(tid[:2])
+    return built if (built != reg_lat and t1.date() <= C.MOVED_FROM) else reg_lat
+
+
+def _ask_a_new_from_zero(A, units):
+    """Ask A deliveries within each meter's own reads, plus each new meter's first read taken from zero."""
+    deliv = {l: 0.0 for l in K.LATERALS}
+    for tid, rd in A["reads"].items():
+        for t1, v in C.turnout_intervals(A, tid, "serial"):
+            deliv[_lateral_of(A, tid, t1)] += v
+        for c in A["changes"]:
+            if c["turnout"] == tid and units[(c["old"], c["new"])] == "New":
+                t1, v = next((t, v) for t, s, v in rd if s == c["new"])
+                deliv[_lateral_of(A, tid, t1)] += v
+    return deliv
+
+
+def _ask_a_built(A):
+    """Ask A deliveries chained, every turnout on the lateral its number names all season; and the Lateral 5 tail
+    reach's metered water after its 15 June read."""
+    deliv = {l: 0.0 for l in K.LATERALS}
+    after = 0.0
+    for tid in A["reads"]:
+        for t1, v in C.turnout_intervals(A, tid, "chain"):
+            deliv["L%d" % int(tid[:2])] += v
+            if tid in K.MOVED and t1.date() > C.MOVED_FROM:
+                after += v
+    return deliv, after
+
+
+def _ops_log(target):
+    """The operations log's rows as (date, time, entry, initials)."""
+    import docx
+    t = docx.Document(os.path.join(target, K.OPS_LOG)).tables[0]
+    out = []
+    for row in t.rows[1:]:
+        c = [x.text for x in row.cells]
+        out.append((dt.date.fromisoformat(c[0]), c[1], c[2], c[3]))
+    return out
 
 
 def _ask_b_lagged(A):

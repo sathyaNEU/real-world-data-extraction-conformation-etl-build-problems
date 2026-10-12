@@ -262,6 +262,7 @@ def simulate():
 
 TIE_IN = (dt.date(2026, 6, 13), dt.date(2026, 6, 15))
 ASK_SALT = 0     # the draw of the 2026 meters, headings and weir sheets (the ask paths only)
+NEW_METER_SHARE = 0.4   # replacements fitted new from the factory; the rest are the shop's rebuilt meters
 # per lateral: a calibration offset shared by the lateral's meters (the batch it was tested against), and the scale of
 # its tail spill
 METER_OFFSET = {"L1": -0.000147, "L2": 0.0, "L3": -0.000292, "L4": 0.0, "L5": 0.0, "L6": 0.000263, "L7": 0.000229,
@@ -404,14 +405,19 @@ def build_meters(W):
                 vol_old = volume_between(flows[tid], dt.datetime(2026, 1, 1), ch) * (1 + cur["bias"])
                 rem = cur["reg0"] + vol_old
                 cur["removed"] = ch.date()
+                # the replacement comes off the shop's shelf: a new meter goes in with its register at zero, a rebuilt
+                # one with the register it carried out of its last service (the draw is kept for the stream either way)
                 new_reg0 = float(r.uniform(300, 7400))
+                unit = "New" if K.rng("meter-unit", tid).random() < NEW_METER_SHARE else "Rebuilt"
+                if unit == "New":
+                    new_reg0 = 0.0
                 nm = dict(serial=serial("P"), turnout=tid, kind="P", units="AF", capacity=10000.0, installed=ch.date(),
                           removed=None, bias=float(r.normal(0, 0.012)) + METER_OFFSET[t["lateral_built"]], reg0=new_reg0,
-                          since=ch)
+                          since=ch, unit=unit)
                 meters.append(nm)
                 changes.append(dict(turnout=tid, when=ch, removed_serial=cur["serial"],
                                     removal=round(rem % cur["capacity"], 2), installed_serial=nm["serial"],
-                                    installation=round(new_reg0, 2),
+                                    installation=round(new_reg0, 2), unit=unit,
                                     reason=str(r.choice(["register stopped", "bearing worn, under-reading",
                                                          "propeller fouled", "register fogged", "annual test failed"]))))
                 new_meter = nm
@@ -545,6 +551,51 @@ RANCH_A = ["Oak", "Sand", "Willow", "Cottonwood", "Quail", "Mesa", "Alder", "Syc
 RANCH_B = ["Ranch", "Farms", "Orchards", "Vineyards", "Ranch Co.", "Farming", "Family Farms", "Land Co."]
 
 
+def _pick(rm, options, weights=None):
+    p = None if weights is None else np.array(weights, dtype=float) / float(sum(weights))
+    return str(options[int(rm.choice(len(options), p=p))])
+
+
+def _revision_remark(v1, f, rm):
+    """The clerk's note on a revised request says what the grower revised."""
+    meth = f["method"].lower()
+    if v1["method"] != f["method"]:
+        note = _pick(rm, ["converted to %s for 2027" % meth, "changed to %s" % meth, "method corrected to %s" % meth])
+        if abs(v1["acres"] - f["acres"]) >= 0.005 and rm.random() < 0.5:
+            note += ", acres corrected"
+        return note
+    if f["acres"] < v1["acres"]:
+        return _pick(rm, ["acreage corrected", "acres corrected, roads and ditch banks out", "revised by grower",
+                          "corrected acres per county permit", "acres reduced per grower's survey"], [5, 2, 2, 1, 1])
+    return _pick(rm, ["acreage corrected", "revised by grower", "corrected acres per county permit",
+                      "acres corrected, block left off first filing"], [5, 2, 1, 1])
+
+
+def _request_remark(f, growers, rm):
+    """Most requests carry no remark; a changed irrigation system or an account matter gets one."""
+    meth = f["method"].lower()
+    if f["method_2026"] != f["method"] and rm.random() < 0.75:
+        if f["method"] == "Border":
+            return _pick(rm, ["back to border for 2027", "sprinklers pulled, border 2027"])
+        return _pick(rm, ["converted to %s for 2027" % meth, "changed to %s" % meth, "new %s system" % meth])
+    if rm.random() < 0.06:
+        other = "%s %s" % (_pick(rm, RANCH_A), _pick(rm, RANCH_B))
+        return _pick(rm, ["new owner, account transferred", "leased to %s" % other, "orders through the farm manager",
+                          "billing to farm manager", "call grower before ordering", "gate key with the rider",
+                          "phone number changed", "mailing address changed"], [3, 2, 2, 2, 2, 1, 2, 1])
+    return ""
+
+
+def _withdrawal_remark(f, rm):
+    if f["crop"] in ("ALM", "PIS", "WAL", "CIT"):
+        return _pick(rm, ["orchard to be pulled", "orchard to be pushed", "grower withdrew",
+                          "trees coming out, replant 2028"], [3, 1, 2, 1])
+    if f["crop"] == "GRW":
+        return _pick(rm, ["vineyard to be pulled", "grower withdrew", "vines coming out"], [3, 2, 1])
+    return _pick(rm, ["fallowing 2027", "grower withdrew", "field sold, new owner to file", "out of production 2027"],
+                 [3, 2, 1, 1])
+
+
 def build_requests(W):
     """Each turnout's grower files one request per field. A grower who changed a field's irrigation method for 2027
     or corrected its acres filed a second version; a few withdrew. Every field took water in 2026 and keeps its crop."""
@@ -568,6 +619,7 @@ def build_requests(W):
         received = K.REQUESTS_OPEN + dt.timedelta(days=int(r.integers(0, 55)))
         k += 1
         base = dict(acct=acct, ranch=ranch, field=f["id"], turnout=f["turnout"], crop=f["crop"])
+        rm = K.rng("request-remarks", f["id"])     # the clerk's remark, on its own stream
         if f["req_status"] == "accepted" and f["revised"]:
             v1 = dict(base, no="R27-%04d" % (1000 + k), version=1, status="Superseded", received=received,
                       method=f["method_2026"] if f["method_2026"] != f["method"] else f["method"],
@@ -575,17 +627,17 @@ def build_requests(W):
             if v1["method"] == f["method"] and abs(v1["acres"] - f["acres"]) < 0.005:
                 v1["acres"] = round(f["acres"] + 2.5, 2)
             rows.append(v1)
+            r.choice(["acreage corrected", "method changed", "revised by grower"])   # keeps the row stream's draws
             rows.append(dict(base, no="R27-%04d" % (1000 + k), version=2, status="Accepted",
                              received=received + dt.timedelta(days=int(r.integers(3, 30))), method=f["method"],
-                             acres=f["acres"], remarks=str(r.choice(["acreage corrected", "method changed",
-                                                                     "revised by grower"]))))
+                             acres=f["acres"], remarks=_revision_remark(v1, f, rm)))
         elif f["req_status"] == "accepted":
             rows.append(dict(base, no="R27-%04d" % (1000 + k), version=1, status="Accepted", received=received,
-                             method=f["method"], acres=f["acres"], remarks=""))
+                             method=f["method"], acres=f["acres"], remarks=_request_remark(f, growers, rm)))
         elif f["req_status"] == "withdrawn":
+            r.choice(["fallowing 2027", "orchard to be pulled", "grower withdrew"])   # keeps the row stream's draws
             rows.append(dict(base, no="R27-%04d" % (1000 + k), version=1, status="Withdrawn", received=received,
-                             method=f["method"], acres=f["acres"],
-                             remarks=str(r.choice(["fallowing 2027", "orchard to be pulled", "grower withdrew"]))))
+                             method=f["method"], acres=f["acres"], remarks=_withdrawal_remark(f, rm)))
     for x in rows:
         if x["received"] > K.REQUESTS_CLOSE:
             x["received"] = K.REQUESTS_CLOSE - dt.timedelta(days=int(r.integers(0, 4)))

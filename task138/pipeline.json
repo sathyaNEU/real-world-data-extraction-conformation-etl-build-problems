@@ -15,20 +15,20 @@
     "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-12); every REVIEW line answered in the design note's Build record",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (2026-10-12, on the pack after the stage 4 fix pass; the same REVIEW lines as before, each answered in the design note's Build record)",
+    "reader": "pass 1 (2026-10-12): clean on Q1 to Q4, every reading it raised closed in the fork table (SF8, SF16, SF25 to SF29); re-read pending, the fix pass changed two documents (kbid_data_dictionary.xlsx, kbid_canal_operations_log_2026.docx)"
   },
   "duplicate_check": {
     "heart": "WARN (strategy_risk, repeat.gate_g and repeat.decision against task137, answered at the draw)",
-    "nearest": "surface: one pair promoted on card axes, task446 (retired), differentiated on the card"
+    "nearest": "surface: two pairs promoted on card axes alone, task137 back to back (gap time and quantity_figure collide, pattern and driver differ; in flight, for the author's adjudicated /clone-check) and task446 (retired); both differentiated on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE (no repair; the optional WOP 2.4 start-state sentence refused as naming the decisive rung; the unit margin closed by SF29 and the dictionary's 25.4 millimetres to the inch)",
+    "report": "task138/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: the reader's re-read of the changed pack (two documents: the dictionary's station 39 unit line and the operations log; data: the meter shop log, meter book and request remarks); the author's call on the surface pair task137 against task138; then stage 5 ship (pre-ship check written in the design note, target.zip cut from the final rebuild, card current; still to do: ledger row SHIPPED, status SHIPPED, commit SHIPPED with target.zip and golden/ force-added)",
   "approved": null,
   "delivered": null,
   "portal": null,

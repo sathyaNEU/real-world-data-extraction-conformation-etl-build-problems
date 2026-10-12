@@ -77,7 +77,7 @@
     {
       "path": "kbid_canal_operations_log_2026.docx",
       "format": "docx",
-      "bytes": 37786,
+      "bytes": 38490,
       "rows": null,
       "source": "Constructed: Canal operations log, 2026 season",
       "date": "2027-02-01",
@@ -104,7 +104,7 @@
     {
       "path": "kbid_data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 8313,
+      "bytes": 8328,
       "rows": null,
       "source": "Constructed: Data dictionary for the order working files",
       "date": "2027-02-01",
@@ -149,7 +149,7 @@
     {
       "path": "kbid_meter_book_2026.csv",
       "format": "csv",
-      "bytes": 865474,
+      "bytes": 865128,
       "rows": 16334,
       "source": "Constructed: Riders' turnout meter reads for 2026",
       "date": "2027-02-01",
@@ -158,7 +158,7 @@
     {
       "path": "kbid_meter_shop_log_2026.xlsx",
       "format": "xlsx",
-      "bytes": 25999,
+      "bytes": 26142,
       "rows": null,
       "source": "Constructed: Meter shop log: 2026 meter changes and the meters in service",
       "date": "2027-02-01",
@@ -185,7 +185,7 @@
     {
       "path": "kbid_water_requests_2027.xlsx",
       "format": "xlsx",
-      "bytes": 52635,
+      "bytes": 53252,
       "rows": null,
       "source": "Constructed: Growers' 2027 water requests, every version, from the District's request log",
       "date": "2027-02-01",

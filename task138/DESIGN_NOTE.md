@@ -186,7 +186,7 @@ Procedure; T1 to T5 its tables.
 | SF5 | a field's total available water | T3 available water capacity times the lesser of the crop's T2 root depth and the soil unit's T3 depth limit | capacity times root depth with no depth limit | 202,300 | WOP 3.3 |
 | SF6 | the weather record | station 39 to 30 April 2014, the District station from 1 May 2014, a day the District station did not record taking station 39's values; station 39's millimetres in inches | station 39 throughout; the District station from its first day (April 2014); missing yard days as zero (dropped) | station 39 throughout 205,500; the yard from April 2014 the same order, setting year and requirement but other months (April 10,180 against 10,290); missing days as zero 202,600 (each asserted) | WOP 6.1 |
 | SF7 | a replay's days | each weather year's own 1 February to 31 October, 29 February kept in a leap year | 29 February dropped | the same order and setting year, other months (asserted) | WOP 2.4 ("its 29 February included in a leap year") |
-| SF8 | a day's arithmetic | ET added and rain subtracted, then the floor at zero and the cap at total available water, then the irrigation test at the day's end | the irrigation test before rain | 205,000 | WOP 3.1, 3.4 ("at whose end") |
+| SF8 | a day's arithmetic (the order of operations within a day) | the previous day's depletion plus the day's ET less its rain, then the floor at zero and the cap at total available water, then the irrigation test at the day's end | the irrigation test before rain; the rain taken first, its excess over the depletion drained, then the day's ET | 205,000; 202,800 (both asserted) | WOP 3.1 ("A day's depletion is the previous day's depletion plus the crop's evapotranspiration for the day less the day's rainfall. It is never less than zero"), 3.4 ("on any day at whose end its depletion has reached or passed") |
 | SF9 | where each replay starts | the depletion each field carries at the end of 31 January 2027 (R3) | full (R0); each weather year's own preceding autumn and winter (R1); the replay rule run through 2026 (R2); full at the canal's close (R2b); the turnout's last set (R2c) | each files its own order (Ladder) | R0 by WOP 3.1 on the record (each day's depletion is the previous day's plus ET less rain, and no rain or irrigation since each field's last set brought it to zero); R1 by WOP 2.4 (only each year's 1 February to 31 October weather is put on the 2027 season, whose autumn and winter already fell); R2 by WOP 3.4 (its irrigation rule is the replays'; the 2026 irrigations are on the orders); R2b by WOP 3.1 (the canal's close is not an irrigation); R2c by the orders (every set names its one field) |
 | SF10 | "an irrigation" in the record | an order with status Delivered | cancelled orders counted (R2d) | moves the order | the dictionary ("Cancelled: cancelled before water ran; no water was delivered") |
 | SF11 | the day of a field's last irrigation | the day its last delivered set ran | the set's start day against its end day | converges: every field's last 2026 delivered set starts and ends on one day (asserted) | the records converge |
@@ -194,7 +194,7 @@ Procedure; T1 to T5 its tables.
 | SF13 | the crop in the 2026-27 autumn and winter | the crop on the 2027 request | the 2026 crop | converges: every requested field carries the crop it had in 2026 (asserted) | the records converge |
 | SF14 | the winter cap | depletion never above total available water | uncapped | moves the order (O2) | WOP 3.1 |
 | SF15 | the loss allowances | water put into a lateral is its fields' deliveries over one less the T5 allowance; the headgate requirement is the laterals' water over one less the main canal allowance | deliveries times one plus each allowance | 200,200 | WOP 4.1 |
-| SF16 | a field's lateral | the register's turnout and lateral as it stands (the Lateral 5 tail turnouts on Lateral 6) | the Lateral 5 tail fields on Lateral 5 | 202,500 | WOP 6.2 |
+| SF16 | a field's lateral (the 20 fields on turnouts 05-045 to 05-058, fed from Lateral 6 through the connector since 15 June 2026) | the register's lateral as it stands: Lateral 6 (asserted for all 14 turnouts) | Lateral 5, by the turnout number's 05 or by the reach's feed before 15 June | 202,500 (asserted) | WOP 6.2 ("The fields, their turnouts, laterals and soil units are as the District's field register stands when the order is calculated") |
 | SF17 | "the weather year whose replay sets it" | the weather year of the 24th smallest requirement | the 25th (the first year not covered) | names another year | WOP 2.3 ("covered ... in at least 24") |
 | SF18 | "that replay's headgate requirement" | its unrounded requirement, to the nearest 10 acre-feet | the order itself | different figure | the prompt (two figures asked) |
 | SF19 | the monthly schedule | each month's requirement summed over the thirty replays over their total, times the order, each month to the nearest 10 acre-feet, October the difference | the setting replay's own months; the mean of the thirty years' monthly shares | moves every month | WOP 5.1 |
@@ -203,10 +203,17 @@ Procedure; T1 to T5 its tables.
 | SF22 | units | inches of depletion, ET and rain; acre-feet as inches times acres over 12 | (none) | n/a (the model's own arithmetic reproduces each replay, asserted) | WOP 3.1, 3.5 |
 | SF23 | ties at the order's rank | none: the 23rd (2000, 201,412), 24th (2012, 202,658) and 25th (2003, 204,982) smallest stand apart (asserted at 300 acre-feet, margins printed) | (a tie-break) | n/a | the records converge |
 | SF24 | the root zone after a field's last 2026 set | field capacity: the field ends the day of the set at zero depletion | the 2026 season run through the balance from a full root zone on 1 February with each delivered set's volume (cubic feet per second times hours) times the application efficiency taken off the depletion | 206,200 (asserted) | WOP 3.4 ("An irrigation returns the root zone to field capacity: a field ends the day of an irrigation at zero depletion") |
+| SF25 | the day of a field's last 2026 set, in the carry to 31 January | the field ends that day at zero depletion and the balance runs from the next day | that day's ET and rain counted after the set | 203,200 (asserted) | WOP 3.4 ("a field ends the day of an irrigation at zero depletion") |
+| SF26 | Ask A: a Lateral 5 tail turnout's lateral on a read interval | the lateral that fed it: Lateral 5 for intervals ending at or before its 15 June 2026 read, Lateral 6 after (no water ran to the reach from 13 to 15 June and every tail meter was read on 15 June, both asserted, so no interval straddles the change) | the register's Lateral 6 all season; the turnout number's Lateral 5 all season | S3: Lateral 5 15,290 and 15.0, Lateral 6 18,510 and 7.9; the turnout number's lateral leaves Lateral 5 delivering 19,690 against 17,990 put in, a negative share (both asserted) | the ask's own terms (the share of the water put into a lateral that its turnouts did not deliver: a delivery counts against the heading its water passed); the operations log's 13 and 15 June entries ("Turnouts 05-045 to 05-058 now fed from Lateral 6 through the connector"); the register's `lateral` ("The lateral the turnout is on") as it stands on 1 February 2027 |
+| SF27 | Ask A: Laterals 5 and 6's water put in after the connector | each heading's daily volumes as recorded (from 15 June the reach's water passes Lateral 6's heading) | the reach's metered water after 15 June moved from Lateral 6's heading to Lateral 5's, the reach on Lateral 5 all season | Lateral 5 19,690 and 7.1, Lateral 6 14,110 and 16.5 (asserted) | the dictionary's `volume_af` ("Water that passed the lateral's heading structure on the day"); the operations log's 15 June entry (the reach fed from Lateral 6 through the connector) |
+| SF28 | Ask B: the head over a tail weir with flashboards in | the gauge reading less the crest gauge reading less 2 inches for each board the remarks show in place | the gauge less the bare crest | every lateral high, 1.5 to 5 times (S1, asserted) | the physical fact that a board set in a weir's slots raises its crest by the board's height (the structures sheet gives the weir as built, its crest gauge reading and two flashboard slots, H the head over the crest); the riders' 24 board notes, each timed ahead of its sheet's reading (asserted), converge on the boards in place at each reading, and a change taken from the next day instead (Lateral 2 640, Lateral 4 280, Lateral 6 660) is ruled out by those times |
+| SF29 | station 39's millimetres in inches | divided by 25.4 and carried unrounded (closure axes 10 and 18) | each converted value rounded to the yard's hundredths of an inch; 0.0394 inches per millimetre | 202,400; 202,800 (both asserted; neither is a literal reading) | the inch is 25.4 millimetres by definition, and the dictionary's station 39 entry gives it ("millimetres (25.4 millimetres to the inch)"); no sentence rounds the network's values before the balance (WOP 3.2 takes the reference evapotranspiration "the District's weather record reports for the day") |
 
 The stump is none of these rows: every term is read the same way by a careful reader, and the default path reads them
 all correctly. SF9 lists methods, not readings; each competing start is priced and refused by a quoted sentence on the
-record, never by a reading.
+record, never by a reading. SF26 to SF28 are the asks' readings the leak reader raised, closed the same way; SF29 is the
+judge's unit margin (the 24th smallest sits 42.23 acre-feet under the order's edge, so a non-literal conversion moves the
+order), closed by the inch's definition, which the dictionary states as a unit fact.
 
 ## Ladder
 
@@ -256,12 +263,12 @@ pack (619 fields on accepted requests, 39,399 acres) and the default path and go
 | 10 | Rounding path | carried unrounded; the order rounded up once (WOP 2.3), the setting replay's requirement to 10 acre-feet, the months by WOP 5.1; the 24th smallest sits 57.77 acre-feet above 202,600 (asserted between 25 and 75), the setting requirement 2.77 and every month at least 1.88 acre-feet from a rounding edge (asserted at 1.5, flip distances printed) |
 | 11 | Tie-break | none needed: the 23rd, 24th and 25th smallest 1,246 and 2,324 acre-feet apart (asserted at 300) |
 | 12 | Maturity and censoring | none: the weather record has every day from October 1995 to 31 January 2027 (asserted: station 39 complete, the yard's missing days take station 39's) and the 2026 orders are closed (the canal closed 31 October) |
-| 13 | Order of operations | per day ET and rain, then floor and cap, then the irrigation test (WOP 3.1, 3.4, SF8) |
+| 13 | Order of operations | per day ET and rain together, then floor and cap, then the irrigation test (WOP 3.1, 3.4, SF8); the day of a field's last 2026 set ends at zero and the carry runs from the next day (WOP 3.4, SF25) |
 | 14 | Row order | file order changes nothing (asserted: the orders shuffled and the requests reversed file the same order, requirement and months) |
 | 15 | Duplicate resolution | request versions: the latest accepted (SF3); orders: every order number unique (asserted) |
 | 16 | Identity normalisation | field ids since the March 2025 re-mapping on both the 2026 orders and the 2027 requests (asserted: every one in the register); turnout id formats matter only on the ask paths |
 | 17 | Netting against gross | rain nets ET within a day, floored at zero (WOP 3.1); nothing else nets |
-| 18 | Dimensional units | station 39 in millimetres, the District station in inches (SF6); acre-inches to acre-feet over 12 |
+| 18 | Dimensional units | station 39 in millimetres, the District station in inches (SF6), station 39 converted at 25.4 millimetres to the inch and carried unrounded (SF29); acre-inches to acre-feet over 12 |
 | 19 | Code and status semantics | request status, order status and station quality flags are defined in the dictionary (field semantics, never the stump) |
 | 20 | Integerisation | the order in whole hundreds, the months in tens (WOP 2.3, 5.1) |
 | 21 | Clause scope | WOP 3.4's first sentence (an irrigation returns the root zone to field capacity) applies to every irrigation, the 2026 sets on the record included (SF24); its second (the irrigation rule) in a replay |
@@ -318,8 +325,10 @@ which WOP 6.2 fixes (SF16: the Lateral 5 reading files 202,500).
   old meter's last weekly read and its removal, and between the new meter's installation and its first weekly read,
   appears only in the shop log's removal and installation reads. Differenced within each serial the book loses that
   water (25 to 82 acre-feet a lateral); differenced across the change by turnout it picks up the gap between two
-  unrelated registers (refurbished meters arrive with old totals, higher or lower). Every lateral moves under both;
-  nothing in the book flags a change except the serial column, and the dictionary describes the shop log flatly.
+  unrelated registers (the shop fits 14 new meters, registers at 0.00, and 17 of its rebuilt meters, each with the
+  register it carried out of its last service; the shop log says which). Every lateral moves under both; counting a
+  new meter's first read from zero recovers only part of the gap (S2b); nothing in the book flags a change except the
+  serial column, and the dictionary describes the shop log flatly.
 - Hazards: HA1 (D7, as-of) the Lateral 5 tail reach (14 turnouts) was re-served from Lateral 6 through a new connector
   from the 15 June 2026 read; the register carries their current lateral (6), and the operations log records the
   change in its own day's entry, so the register's lateral puts their spring water on Lateral 6; HA2 (D3, loud) 42
@@ -336,10 +345,12 @@ which WOP 6.2 fixes (SF16: the Lateral 5 reading files 202,500).
   (`turnout_id`, `lateral`), the lateral headings (`lateral`, `volume_af`, `quality`), the operations log's 13 and 15
   June entries, the dictionary.
 - Stops (each computed and asserted in `checks.py`): S1 natural, differenced by turnout across changes (all 18 off:
-  deliveries 19,400 to 40,890 acre-feet, every share negative); S2 within serial (all 18 off, each lateral's
-  deliveries 25 to 82 acre-feet low, shares 0.2 to 0.5 points high); S3 chained, the register's lateral (Laterals 5 and
-  6, four figures off: 15,290 and 15.0, 18,510 and 7.9); S4 chained, as-of lateral, estimated days dropped (four shares
-  off: Lateral 2 7.0, Lateral 4 11.7, Lateral 6 12.2, Lateral 9 12.6); answer.
+  deliveries 18,700 to 52,640 acre-feet, every share negative); S2 within serial (all 18 off, each lateral's
+  deliveries 25 to 82 acre-feet low, shares 0.2 to 0.5 points high); S2b within serial with each new meter's first
+  read counted from zero (all 18 off, 11 to 66 acre-feet low, Lateral 7's the thinnest at one bin and 0.1 points);
+  S3 chained, the register's lateral (Laterals 5 and 6, four figures off: 15,290 and 15.0, 18,510 and 7.9); S4
+  chained, as-of lateral, estimated days dropped (four shares off: Lateral 2 7.0, Lateral 4 11.7, Lateral 6 12.2,
+  Lateral 9 12.6); answer.
 - Lazy delta: S1 wrong on 18 of 18.
 - Realism: meters are swapped through the season and the riders' book is kept by serial; a reach re-served from a
   neighbouring lateral is ordinary capital work.
@@ -416,7 +427,7 @@ If the rubric grades the nine monthly figures as asks, the cracker keeps them an
 | WOP 4.1 and T5 | 1 | the loss allowances' arithmetic | a measured loss |
 | WOP 5.1 | 1 | the monthly schedule | a month's figure |
 | WOP 6.1, 6.2 | 1 | the weather record's splice, the fields, their versions and attributes | the winter |
-| The dictionary | 4 | field semantics: order and request statuses, station quality flags, the meter book's units, the weir sheet's reading | how to start a replay, how to chain a meter, that boards raise a crest |
+| The dictionary | 4 | field semantics: order and request statuses, station quality flags, station 39's millimetres (25.4 to the inch), the meter book's units, the weir sheet's reading | how to start a replay, how to chain a meter, that boards raise a crest |
 
 ## Prompt
 
@@ -431,7 +442,7 @@ once at the close. 791 characters.
   `weather.py` the two stations (FAO-56 Penman-Monteith ET0 from generated daily weather, the October 2026 to January
   2027 rain cut to a tenth of its climatology), `world.py` the district, the growers' sets (each field's own streams,
   its last set's date drawn first), the requests, the 2026 meters, headings and weirs, `records.py` and `docs.py` the
-  files, `calc.py` the procedure and every rung, `deliver.py` the goldens and `figures.json`, `checks.py` (131,543
+  files, `calc.py` the procedure and every rung, `deliver.py` the goldens and `figures.json`, `checks.py` (132,242
   assertions), `verify.py` (an independent recompute from the shipped files alone), `metadata.py`.
 - The growers' irrigation answers to the fields as they are (`PHYS_*` in `common.py`, never shipped); the procedure's
   Tables 1 to 3 are the District's planning values, so a table value can move without moving a 2026 delivery or an
@@ -439,20 +450,77 @@ once at the close. 791 characters.
 - 18 files, 5 formats (pdf, xlsx, csv, docx, txt), the orders file 64,887 rows; distractors (metadata only): the
   groundwater levels, the 2026 crop report, the Authority's allocation notice. Two consecutive builds byte-identical
   (target, golden, `metadata.json`, `figures.json`, `target.zip`).
-- Stage 3 gates: `precut.py` 38 checks, 0 FAIL, 0 WARN; `voice-check.py` exit 0 (791 characters); `figures_check.py`
-  68 figures, none absent; the container audit (`scrub_producer_metadata.py`) clean on `target/` and `golden/`;
-  `guard.py validate` clean; `guard.py heart` WARN (the three draw WARNs answered under `## Draw`; nearest stump 0.08).
-- `guard.py surface`: one promoted pair, task138 against task446, on the card axes alone (gap time, G16,
-  `quantity_figure`; surface 0.093), severity history (task446 is retired, rule application); the card's
-  differentiation answers it, and no persona from outside the card appears in the pack. Left for the author's
-  adjudicated `/clone-check` if wanted.
-- `leak.py --asof 2027-02-01`: REVIEW, no LEAK. Each line harmless: "the model" is the procedure's own name for its
-  crop water model (WOP 3); the meter book's "37,270" is a time and a register read run together ("13:37,270.39");
-  the procedure and the working-files note carry the call's nouns (district, project, order, acre-feet, season) and no
-  figure; the stump-term counts in the procedure, the note, the Authority's notice and the operations log are the
-  domain's ordinary words (orders, October, record, procedure, station, requests, quantity, winter maintenance), none
-  naming a start state; the yard logger's `Flag` column is its export's own missing-day flag, defined in the
-  dictionary.
+- Stage 4: the leak reader (pass 1, clean on Q1 to Q4) and the judge (DETERMINISTIC, APPROVE,
+  `determinism_check_report.md`), then one generator pass:
+  - every reading the reader raised has its fork row: SF8 gains the rain-first order of a day (202,800), SF16 its
+    quoted sentence (the connector turnouts for the call), SF25 the day of the last set in the carry (203,200), SF26
+    and SF27 Ask A's tail turnouts by read interval and the headings after the connector, SF28 Ask B's head with
+    boards in, SF29 the judge's unit margin (202,400 and 202,800); each asserted;
+  - the dictionary's station 39 entry gains "(25.4 millimetres to the inch)", a unit fact (a changed document);
+  - the meter shop log gains a `New or rebuilt` column: the 14 new meters go in at 0.00 and the book reads them from
+    zero, the 17 rebuilt meters keep the registers they carried out of their last service (the reader's
+    random-looking registers); S2b asserted, every Ask A figure still off;
+  - the request remarks say what each revision changed (all 46 revisions changed acres only, and 17 had read "method
+    changed"), a withdrawal's reason fits its crop, and a few accepted requests carry an account remark or, where the
+    2026 method differs, a system remark (the reader's templated remarks); asserted;
+  - the operations log dates each entry the day it happened (six entries had logged later events in advance: the
+    laterals' fill days, the four heading outages' ends, the closing reads), names Check 2's gate as the overshot gate
+    the structures workbook lists (it read "radial"), fills the time column its header promised, adds initials and 12
+    routine entries (38 against 20; the reader's evenly spaced log); the outage entries asserted against the
+    headings' estimated days;
+  - the stray quote characters are not a generator bug: a weir-sheet or meter-book remark carrying a comma is quoted
+    as every CSV writer quotes it, every line's quotes balance and a CSV reader returns the remark whole; no change.
+  Five files changed; `golden/` and `figures.json` byte-identical; `freeze.py check task138 --mode determinism` PASS.
+- Gates on the final build: `precut.py` 38 checks, 0 FAIL, 0 WARN (29 fork rows); `voice-check.py` exit 0 (791
+  characters); `figures_check.py` 68 figures, none absent; the container audit (`scrub_producer_metadata.py`) clean
+  on `target/` and `golden/`; `guard.py validate` clean; `guard.py heart` WARN (the three draw WARNs answered under
+  `## Draw`; nearest stump 0.08).
+- `guard.py surface`: two promoted pairs, both on the card axes alone. task137 against task138, back to back (surface
+  0.000): the decisive gap (time) and the decision type (`quantity_figure`) collide; the pattern does not (E and G14
+  there, none and G16 here), and the drivers share nothing (a retention share conditioned on a repricing gap there,
+  a replay started from the state at the forecast date here), so the same-puzzle test passes; the card's
+  differentiation answers it, and the screen marks it in flight, for the author's adjudicated `/clone-check` before
+  the batch goes. task138 against task446 (surface 0.093), severity history (task446 is retired, rule application);
+  the card's differentiation answers it. No persona from outside the card appears in the pack.
+- `leak.py --asof 2027-02-01`: REVIEW, no LEAK, the same lines before and after the fix pass. Each line harmless: "the
+  model" is the procedure's own name for its crop water model (WOP 3); the meter book's "37,270" is a time and a
+  register read run together ("13:37,270.39"); the procedure and the working-files note carry the call's nouns
+  (district, project, order, acre-feet, season) and no figure; the stump-term counts in the procedure, the note, the
+  Authority's notice and the operations log are the domain's ordinary words (orders, October, record, procedure,
+  station, requests, quantity, winter maintenance), none naming a start state; the yard logger's `Flag` column is its
+  export's own missing-day flag, defined in the dictionary.
+
+## Pre-ship check
+
+1. Domain: a season's irrigation requirement read at 24 in 30 replayed weather years through a daily root-zone balance
+   (crop coefficients on reference evapotranspiration, allowable depletion, rain beyond field capacity draining), the
+   field's ensemble forecast run from the state at the forecast date; with another field's nouns there is no root
+   zone or reference evapotranspiration for the carry-over to live in.
+2. Real work, nothing planted: a weather record spliced from two stations (millimetres and inches, an overlap month,
+   missing yard days), a field register re-mapped after parcel splits, revised and withdrawn requests, cancelled
+   orders, turnout ids written three ways; on the ask paths new and rebuilt meter swaps, rollovers, hundred-cubic-foot
+   meters, a reach re-served in mid-season, estimated flume days and flashboards in free text; each what these systems
+   produce, none deciding the call.
+3. The flip is a method choice: where each replayed season starts (the state the fields hold at the end of 31 January
+   2027, rebuilt from the delivery record and the observed winter), not a field read, a unit or a stated rule; every
+   rule in the pack is read the same on the default path.
+4. The analyst test holds: full on 1 February files 189,800 set by 2003, each year's own winter 193,100, the replay
+   rule run through 2026 193,800; only each field's last delivered set carried through the observed winter files
+   202,700 set by 2012.
+5. One defensible answer: WOP 2.3, 2.4, 3.1 to 3.5, 4.1, 5.1, 6.1 and 6.2 file the estimand, the 29 fork rows are each
+   asserted, and the judge returned DETERMINISTIC, APPROVE (`determinism_check_report.md`); its residual, that no
+   sentence names the start, is the decisive rung forced by WOP 3.1 and 3.4 on the record, and its unit margin is
+   closed by SF29.
+6. No decoy: no file states a 2027 figure, a past requirement, a start state or a schedule; the procedure files the
+   balance and the replay window only; the groundwater levels, the 2026 crop report and the Authority's notice are
+   declared distractors; no memo or voice argues for a start.
+7. Nothing hidden and recovered: no certified figure or past order pins the start; the 2023 to 2025 orders are the
+   growers' own schedules, which no planning model reproduces.
+8. A new lesson: a season forecast replayed over past weather has to start from the state the system holds at the
+   forecast date, rebuilt from its own delivery record, because each past season started from its own winter
+   (`guard.py heart` WARN on the three draw findings answered under `## Draw`, nearest stump 0.08; `surface` promotes
+   task137 back to back on the gap and the decision type and task446 on the card axes, both differentiated on the
+   card).
 
 ## Tried and rejected
 
@@ -468,3 +536,11 @@ once at the close. 791 characters.
   noise and several monthly figures moved between the two tie-breaks; Tables 2 and 3 re-cut so every allowable
   depletion is an odd number of hundred-thousandths of an inch (asserted), and the walnut June coefficient set at 1.11
   to keep the months clear of their rounding edges.
+- One WOP 2.4 sentence stating that a replay starts from each field's depletion at the end of 31 January, carried from
+  its last delivered 2026 set (the judge's optional hardening, 12 October): refused. It names the decisive rung and
+  pins the method, turning R3 into rule application; the start stays forced by WOP 3.1 and 3.4 on the record (SF9).
+- Every replacement meter at a near-zero register (the reader's random-looking registers): a solver who counts a new
+  meter's first read from zero would recover 307 of the 500 acre-feet the 31 swaps hide, and bench-test registers
+  summing to 0.8 acre-feet on Lateral 3's two would put its delivery back in the golden's bin; kept the shop's real
+  mix instead, 14 new meters at 0.00 and 17 rebuilt with their carried registers, every Ask A figure off on that
+  path (S2b).

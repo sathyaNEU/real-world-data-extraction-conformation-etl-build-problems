@@ -241,10 +241,10 @@ def write_shop_log(path, W):
     _title_rows(ws, "Meter shop: turnout meters removed and installed, 2026 season",
                 "Kestrel Bend Irrigation District, Water Master's office. Registers as read by the shop at the change.")
     hr = _head(ws, ["Date", "Time", "Turnout", "Meter removed", "Register at removal", "Meter installed",
-                    "Register at installation", "Reason"], [11, 7, 9, 13, 18, 14, 20, 28])
+                    "Register at installation", "Reason", "New or rebuilt"], [11, 7, 9, 13, 18, 14, 20, 28, 14])
     for c in sorted(W.changes, key=lambda c: c["when"]):
         ws.append([c["when"].date(), c["when"].strftime("%H:%M"), R.tid_gis(c["turnout"]), c["removed_serial"],
-                   c["removal"], c["installed_serial"], c["installation"], c["reason"]])
+                   c["removal"], c["installed_serial"], c["installation"], c["reason"], c["unit"]])
         ws.cell(row=ws.max_row, column=1).number_format = "yyyy-mm-dd"
         ws.cell(row=ws.max_row, column=5).number_format = "0.00"
         ws.cell(row=ws.max_row, column=7).number_format = "0.00"
@@ -301,59 +301,87 @@ def write_structures(path):
 # ---------------------------------------------------------------------------------------------------- operations log
 
 def ops_entries(W):
-    """The Water Master's 2026 log. A figure quoted in an entry is read from the records (the yard's rain)."""
+    """The Water Master's 2026 log: (date, time, initials, entry), each entry written when it happened. A figure quoted
+    in an entry is read from the records (the yard's rain)."""
     rain = {d: W.yard_rep[d]["rain_in"] for d in W.yard_rep if dt.date(2026, 2, 1) <= d <= dt.date(2026, 4, 30)}
     storm = max(sorted(rain), key=lambda d: rain[d])
+    D = dt.date
     e = [
-        (dt.date(2026, 1, 26), "Main canal fill started at the headgate, 120 cfs. Laterals 1 to 4 filled 28 January, "
-                               "Laterals 5 to 9 on 29 January."),
-        (dt.date(2026, 1, 30), "Opening reads taken on every turnout meter this week on the usual route days."),
-        (dt.date(2026, 2, 1), "Deliveries open for the 2026 season."),
-        (storm, "Storm, %.2f in at the yard. Bank roads on Laterals 7 and 8 closed to trucks until they dry." % rain[storm]),
-        (dt.date(2026, 3, 9), "Check 2 radial gate actuator replaced; no interruption to deliveries."),
-        (dt.date(2026, 4, 14), "Lateral 9 heading flume: level sensor failed; daily volumes estimated by the Water "
-                               "Master from the heading gate opening and the Check 4 level until the sensor was "
-                               "replaced on 18 April."),
-        (dt.date(2026, 5, 20), "Lateral 4 turnout 04-031 gate stem broken; repaired same day."),
-        (dt.date(2026, 6, 2), "Lateral 4 heading flume logger lost power (solar regulator). Volumes estimated from the gate "
-                              "until 7 June."),
-        (dt.date(2026, 6, 13), "Lateral 5 tail reach below Check 5-9 shut off for the connector tie-in."),
-        (dt.date(2026, 6, 15), "Lateral 5 to 6 connector in service. Turnouts 05-045 to 05-058 now fed from Lateral 6 "
-                               "through the connector; Lateral 5 below Check 5-9 abandoned. Meters on the reach read "
-                               "today."),
-        (dt.date(2026, 7, 21), "Lateral 2 heading flume: logger card fault; volumes estimated 21 to 24 July."),
-        (dt.date(2026, 8, 10), "Lateral 6 heading flume: stilling well silted; volumes estimated 10 to 12 August, well "
-                               "cleaned 13 August."),
-        (dt.date(2026, 9, 2), "Almond harvest under way; orders falling on Laterals 1, 4 and 9."),
-        (dt.date(2026, 10, 31), "Deliveries closed for the season at midnight. Headgate closed."),
-        (dt.date(2026, 11, 2), "Closing reads on every turnout meter this week on the usual route days."),
-        (dt.date(2026, 11, 9), "Winter maintenance: Lateral 7 lining repairs (stations 112 to 140) and Check 3 "
-                               "gate seals."),
-        (dt.date(2026, 11, 30), "Meter book closed for 2026."),
-        (dt.date(2026, 12, 14), "Lateral 4 culvert at Road 156 replaced."),
-        (dt.date(2027, 1, 11), "Weed control on the main canal banks complete."),
-        (dt.date(2027, 1, 25), "Main canal fill for the 2027 season scheduled from 28 January."),
+        (D(2026, 1, 26), "07:20", "CR", "Main canal fill started at the headgate, 120 cfs."),
+        (D(2026, 1, 26), "14:15", "CR", "Fill water at Check 2. Walked the main canal from the headgate to Check 2; no "
+                                        "seepage at the Road 152 crossing."),
+        (D(2026, 1, 27), "07:30", "CR", "Gopher holes packed on the Lateral 2 bank at station 41."),
+        (D(2026, 1, 28), "16:05", "CR", "Laterals 1 to 4 filled."),
+        (D(2026, 1, 29), "15:40", "CR", "Laterals 5 to 9 filled."),
+        (D(2026, 1, 30), "16:30", "CR", "Opening reads taken on every turnout meter this week on the usual route days."),
+        (D(2026, 2, 1), "06:00", "CR", "Deliveries open for the 2026 season."),
+        (D(2026, 2, 3), "08:45", "CR", "Trash rack at the headgate cleaned."),
+        (storm, "13:30", "CR", "Storm, %.2f in at the yard. Bank roads on Laterals 7 and 8 closed to trucks until they "
+                               "dry." % rain[storm]),
+        (storm + dt.timedelta(days=3), "08:10", "CR", "Bank roads on Laterals 7 and 8 open to trucks again."),
+        (D(2026, 3, 9), "10:30", "DZ", "Check 2 overshot gate actuator replaced; no interruption to deliveries."),
+        (D(2026, 3, 24), "09:00", "CR", "Aquatic weed treatment on Laterals 2 and 3 under the District's permit."),
+        (D(2026, 4, 2), "11:20", "CR", "Gopher damage on the Lateral 8 bank near turnout 08-019 repaired."),
+        (D(2026, 4, 14), "07:50", "DZ", "Lateral 9 heading flume: level sensor failed. Daily volumes estimated by the "
+                                        "Water Master from the heading gate opening and the Check 4 level."),
+        (D(2026, 4, 18), "15:30", "DZ", "Lateral 9 heading level sensor replaced; logger totals again from 19 April."),
+        (D(2026, 5, 20), "16:30", "CR", "Lateral 4 turnout 04-031 gate stem broken; repaired same day."),
+        (D(2026, 5, 26), "07:15", "CR", "Wind overnight; trash racks at Checks 3 and 4 cleared."),
+        (D(2026, 6, 2), "08:30", "DZ", "Lateral 4 heading flume logger lost power (solar regulator). Volumes estimated "
+                                       "from the gate."),
+        (D(2026, 6, 7), "14:10", "DZ", "Lateral 4 heading logger regulator replaced; logger totals again from 8 June."),
+        (D(2026, 6, 13), "06:30", "CR", "Lateral 5 tail reach below Check 5-9 shut off for the connector tie-in."),
+        (D(2026, 6, 15), "16:20", "CR", "Lateral 5 to 6 connector in service. Turnouts 05-045 to 05-058 now fed from "
+                                        "Lateral 6 through the connector; Lateral 5 below Check 5-9 abandoned. Meters on "
+                                        "the reach read today."),
+        (D(2026, 6, 24), "07:00", "CR", "Safety tailgate meeting with the ditch riders; canal rescue gear checked."),
+        (D(2026, 7, 14), "11:05", "CR", "Small bank slough on Lateral 3 at station 22 repaired; deliveries kept on."),
+        (D(2026, 7, 21), "08:20", "DZ", "Lateral 2 heading flume: logger card fault. Volumes estimated from the gate."),
+        (D(2026, 7, 24), "16:40", "DZ", "Lateral 2 logger card replaced; logger totals again from 25 July."),
+        (D(2026, 8, 10), "07:35", "DZ", "Lateral 6 heading flume: stilling well silted, logger reading low. Volumes "
+                                        "estimated from the gate."),
+        (D(2026, 8, 12), "17:20", "DZ", "Lateral 6 stilling well cleaned out; logger checked against the staff gauge, "
+                                        "totals good from midnight."),
+        (D(2026, 9, 2), "14:00", "CR", "Almond harvest under way; orders falling on Laterals 1, 4 and 9."),
+        (D(2026, 9, 22), "10:15", "CR", "Bank mowing on Laterals 5 and 6 done."),
+        (D(2026, 11, 1), "00:10", "CR", "Deliveries closed for the season at midnight. Headgate closed."),
+        (D(2026, 11, 6), "16:35", "CR", "Closing reads taken on every turnout meter this week on the usual route days."),
+        (D(2026, 11, 9), "08:00", "CB", "Winter maintenance: Lateral 7 lining repairs (stations 112 to 140) and Check "
+                                        "3 gate seals."),
+        (D(2026, 11, 30), "16:00", "CR", "Meter book closed for 2026."),
+        (D(2026, 12, 4), "15:20", "CB", "Lateral 7 lining repairs complete."),
+        (D(2026, 12, 14), "13:00", "CB", "Lateral 4 culvert at Road 156 replaced."),
+        (D(2027, 1, 11), "15:45", "CR", "Weed control on the main canal banks complete."),
+        (D(2027, 1, 20), "11:30", "CB", "Check 3 gate seals replaced and the gates worked through their travel."),
+        (D(2027, 1, 25), "09:10", "CR", "Main canal fill for the 2027 season scheduled from 28 January."),
     ]
-    return sorted(e, key=lambda x: x[0])
+    return sorted(e, key=lambda x: (x[0], x[1]))
 
 
 def write_ops_log(path, W):
     import docx
-    from docx.shared import Pt
+    from docx.shared import Inches, Pt
     d = docx.Document()
     st = d.styles["Normal"]
     st.font.name = "Calibri"
     st.font.size = Pt(10)
     d.add_heading("Kestrel Bend Irrigation District: canal operations log, 2026 season", level=1)
     d.add_paragraph("Water Master's office. Entries as logged; times are local.")
-    t = d.add_table(rows=1, cols=2)
+    t = d.add_table(rows=1, cols=4)
     t.style = "Table Grid"
-    t.rows[0].cells[0].text = "Date"
-    t.rows[0].cells[1].text = "Entry"
-    for day, text in ops_entries(W):
+    t.autofit = False
+    widths = (Inches(0.95), Inches(0.55), Inches(4.55), Inches(0.45))
+    for k, h in enumerate(("Date", "Time", "Entry", "By")):
+        t.rows[0].cells[k].text = h
+    for day, time, by, text in ops_entries(W):
         row = t.add_row().cells
         row[0].text = day.isoformat()
-        row[1].text = text
+        row[1].text = time
+        row[2].text = text
+        row[3].text = by
+    for r_ in t.rows:
+        for k, w in enumerate(widths):
+            r_.cells[k].width = w
     d.core_properties.author = K.PEOPLE["watermaster"]
     d.core_properties.title = "Canal operations log 2026"
     d.save(path)
@@ -386,7 +414,7 @@ DICT = [
     (K.ORDERS, "status", "Delivered: water ran for the set. Cancelled: cancelled before water ran; no water was "
                          "delivered."),
     (K.ST39, "ETo (mm), Precip (mm)", "Daily reference evapotranspiration and precipitation as published by the state "
-                                      "agricultural weather network, millimetres."),
+                                      "agricultural weather network, millimetres (25.4 millimetres to the inch)."),
     (K.ST39, "qc", "Network quality flag for the value to its left: blank, passed; Y, moderate outlier (value kept)."),
     (K.YARD, "ETo_in, Rain_in", "Daily reference evapotranspiration and rainfall at the Kestrel Bend yard station, "
                                 "inches. The logger computes ETo from the day's weather."),
