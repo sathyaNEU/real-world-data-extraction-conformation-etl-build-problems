@@ -1,33 +1,39 @@
 {
   "task": "task254",
+  "owner": "sathay3012",
+  "status": "BUILD",
   "domain": "urban-regional-science",
   "objective": "descriptive-distribution",
-  "stage": 1,
-  "stage_name": "draw (re-root, architecture 3): card registered; design note not yet rewritten; paused by the author",
-  "updated": "2026-10-11",
-  "note": "stopped at stage 2 under the spec-update brief's stop rule; precut FAIL: default path ends on the golden, decisive rung readable, cracker keeps every ask, pair ceiling 70.1; architecture 2 awaits the re-root decision, not redrawn here; generator, pack and card unchanged at efe84a7",
-  "branch": "sathay3012/task254-fire-planning-bands",
-  "stump": "A competent solver takes the route's segments in order, adds the fixed access legs, uses the passenger-vehicle travel times and, for each evidence weekday and each slot, adds up the segments' travel times for the five-minute period the shuttle leaves in, filing 7:15 a.m. (on time on 235 of 250 weekdays, 94.0 per cent) against 7:05; the step that lands it there is reading every segment at the moment of departure, when the shuttle reaches the I-264 queue twenty to thirty minutes later, after it has grown, so the trip it adds up is one no vehicle made, and a 7:15 departure would have reached the stop by 8:00 on only 156 of those weekdays (62.4 per cent).",
+  "stage": 3,
+  "stage_name": "build (architecture 3)",
+  "updated": "2026-10-12",
+  "stump": "A competent analyst adds the fixed legs to the sum of the route's sixteen segments' travel times for the five-minute period the shuttle leaves in and files 7:15 a.m. (237 of 252 working weekdays) where composing each day's trip segment by segment at the period the shuttle reaches each one gives 7:05 (238; 7:10 on 197)",
   "architecture": 3,
   "loops": 0,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-12"
+  },
   "leak": {
     "leak_py": "",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "",
-    "clone_check": ""
+    "heart": "WARN (no BLOCK), nearest driver 0.08 task77 v1",
+    "nearest": "task77 v1 0.08, task85 v2.5 0.06"
   },
-  "solver_rounds": [],
   "judge": {
     "verdict": "",
     "disposition": "",
     "report": ""
   },
+  "returned": [],
+  "resume": "stage 3: write task254/generator from the design note's builder brief (scratch prototype search6.py and proto_cal.py), then the stage 3 gates",
   "approved": null,
   "delivered": null,
   "portal": null,
-  "status": "FAILED_TO_STUMP",
-  "owner": "sathay3012"
+  "history": {
+    "architecture_1": "fire planning bands, spent at stage 2",
+    "architecture_2": "Lyrevo RMP windows, spent at stage 2 (precut FAIL under literal determinism; pair ceiling 70.1)"
+  }
 }
