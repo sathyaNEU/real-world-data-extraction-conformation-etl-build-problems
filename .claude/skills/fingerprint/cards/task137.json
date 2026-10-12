@@ -1,0 +1,97 @@
+{
+  "task": "task137",
+  "architecture": "v1",
+  "drawn": "2026-10-12",
+  "slot_note": "wave 2 (new). Seed FC08: world, decision and quantity kept (a deposit-taker's quarterly take-or-pay booking of outsourced agent-hours for its term deposit maturity calls, the list fixed a quarter ahead); the seed's withheld dialling rule and callable-number architecture are not used (the dialling rules are filed and the callable wash is depth); the pitfall is re-found from how the deposits reprice: a conversation goes to the long retention offer at a rate set by each deposit's drop from its locked rate to the card it reinvests at.",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "deposit-liquidity-behaviour",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a New Zealand building society's quarterly take-or-pay block of outsourced agent-hours for the calls to holders of maturing term deposits, where a conversation that goes to the retention offer is billed at 21 agent-minutes against 8 for a plain renewal and the January to March 2027 list carries the 2024 three-year special at 5.75 per cent onto a reinvestment card near 3.25",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "term deposits product manager",
+  "role_family": "product_manager",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "harbourline_dial_log_2025q1-2026q3.csv",
+    "rows": 0,
+    "entity": "one dial Harbourline made on a released case",
+    "grain": "dial x case x number",
+    "source": "constructed (the contact centre's acknowledgement records)"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "New Zealand",
+    "currency": "NZD",
+    "org_type": "building society (a mutual deposit-taker)",
+    "invented_names": [
+      "Kaimai Building Society",
+      "Harbourline Contact Services"
+    ],
+    "people": [
+      "Hazel Johnstone",
+      "Stuart Waller",
+      "Suzanne Wallis",
+      "Joseph Herd",
+      "Sienna Stewart",
+      "Ashton Findlay"
+    ]
+  },
+  "deliverables": [
+    "td_booking_q1_2027.xlsx",
+    "td_booking_note_q1_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "A unit's chance of needing the long, costly form of a service at a one-off repricing is set by the gap between the price it locked in and the schedule it rolls onto, so the share is stable across past rounds only per unit of that gap; carried pooled, from the latest round, trended, by product group or by the unit's own locked price, it misses the coming round, whose dominant cohort meets a gap only a small slice of past units met, and every such carry understates the forward effort by about an eighth.",
+  "driver_concrete": "Each conversation Harbourline holds with a maturing term deposit's holder goes to the 21-minute retention offer with a probability set by the drop from the deposit's locked rate to Kaimai's posted card for its term on the maturity date (a few per cent with no drop, above four in five at a 2.5-point drop), stable across the seven past campaigns; January to March 2027 brings the 2024 three-year special at 5.75 per cent onto a 3.25 per cent card, so conditioning on the drop books about 5,000 agent-hours where the pooled, latest, per-term or locked-rate share books 4,300 to 4,450.",
+  "stump": "A competent solver washes the numbers against the do-not-call register, prices dialling per callable configuration from the past campaigns, carries the past share of conversations that went to the retention offer (pooled, the latest campaign's or by term) and books about 4,400 agent-hours; the step that lands it there is not conditioning that share on each deposit's drop from its locked rate to the card it reinvests at, where the 2024 three-year special meets a 2.5-point drop: the golden is about 5,000.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the SOW's billing and dialling rules, washes every number against the do-not-call register and prices dialling per callable configuration still carries the past campaigns' retention-offer share (pooled, the latest campaign's, trended, by term or by locked rate) and books 4,300 to 4,450 agent-hours, about an eighth short of the golden.",
+  "domain_test": "The deciding quantity is the share of maturing term deposits whose holders will want to move their money when reached, which deposit-behaviour analysis models on the repricing gap between each deposit's locked rate and the posted rate it reinvests at on maturity; with another field's nouns there is no fixed-term repricing, posted card, rate cycle or locked rate for the share to hang on, so the task stops making sense.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task117": "task117's forward peak turns on draw caps that belong to another entity reached through a dated join and on follow-on operations re-timed behind the one ahead (a queue's timing); here nothing is joined from another entity and nothing is re-timed: the share of conversations that go long is conditioned on each deposit's own repricing gap, and the forward figure is a sum over the list, not a peak.",
+    "task37": "task37's forward count is conditioned on a coupling to a linked entity's authorisation, recovered from a closed outcome roll as an absolute split no document states; here the conditioning quantity is a continuous repricing gap built from each deposit's own locked rate and the dated card it reinvests at, with no linked entity and no recovered rule.",
+    "task44": "task44's pooled pilot gain is a mixture of opposite effects split by a behavioural moderator measured over a prior instance of the window; here there is no pilot and no opposite effects, only a share rising monotonically with the repricing gap, carried onto a list whose gaps sit far from the past lists' within every term.",
+    "task97": "task97's chance turns on the cumulative history of the place a unit occupies, counted across every occupant; here it turns on the unit's own price change at one repricing, set by where on the rate path it locked and where it matures, and no place, occupant or history count enters."
+  },
+  "lineage": [],
+  "notes": "Calibration none: the seven past campaigns are the bank's own history from which the dialling yields and the retention-offer share are estimated, not an organ confirming a filed criterion. Pattern E (a conditioned yield, no column naming the conditioning quantity: the drop needs the locked rate from the campaign list and the card for the deposit's term from each quarter's campaign brief); G14 then G6 (the coming list's mix on that quantity sits far from every past list's within each term). Layer 2 pattern own:repricing-gap-conditioned-retention-at-maturity (banking has no library patterns). Context artifact planning_thread: the contact centre's request for the quarter's block order and the society's reply, which set the deadline and the take-or-pay terms and argue no figure. Gate G forecasting answered against task130 (a claims-made window costed by report lag): the decisive step here is how the forward share is forecast, conditioned on the repricing gap.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:repricing-gap-conditioned-retention-at-maturity",
+  "layer1": [
+    "past campaign lists in two extract layouts (rate in per cent with dashed account numbers to mid-2025, then rate as a decimal with unpunctuated account numbers after the core banking upgrade)",
+    "the contact centre's dial records in UTC with its own disposition codes and its own case reference format",
+    "the bank's case release files listing each case's callable numbers and their types at release",
+    "client phone numbers in mixed formats (+64, 0-prefixed, spaced, with and without area codes) normalised before the do-not-call wash",
+    "a do-not-call register keyed on the normalised number with added and removed dates",
+    "posted term deposit cards inside each quarter's campaign brief (PDF tables whose layout changes in 2026)",
+    "a term deposit account event extract where an instructed reinvestment opens a new account linked only through its funding transfer, on the ask paths",
+    "a whole-book maturity extract listing joint deposits once per holder and carrying foreign-currency deposits beside NZD ones, on the ask paths"
+  ]
+}
