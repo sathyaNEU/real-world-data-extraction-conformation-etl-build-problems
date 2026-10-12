@@ -19,6 +19,9 @@ population read literally; eight builds lost their stump when a pin removed the 
 the data executes, saying whether members not yet observed at the as-of date are in it), outcome, window,
 unit, comparison, inclusion and exclusion, threshold, rounding. Each fixed by the question or by one
 filed sentence at authority, stated once, never worded so the literal reading is the easy answer.
+A source the golden completes (a list whose capture it estimates, a link whose error it corrects) says in
+its own documentation that it does not hold every member, never how many or which: left unsaid, a literal
+judge reads that source as the count and the other source's excess as error (task448's portal return).
 
 **HOW** may stay open only when something forces it (`references/forcing-the-answer.md` Part 5): the
 design (the data's structure rules out every other method; preferred), a governing standard's general
