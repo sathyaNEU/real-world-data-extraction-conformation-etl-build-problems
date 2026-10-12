@@ -304,6 +304,26 @@ from a filed sentence sends that sentence out of the pack and the build back to 
   methods note sections 2, 6 and 7 (visit identity, flows, rounding from unrounded estimates) and the release table's
   total actual weekly hours as a referee; a dictionary line naming the h.mm encoding was declined as narrating the
   device.
+- Pass 2 (2026-10-12): DETERMINISTIC, APPROVE, no rerun. Every figure reproduced from target/ alone, the regional asks
+  included (visits once the re-uploads go, flows on people interviewed in both quarters, hours converted, which the
+  release's April to June total of 85,762.5 thousand confirms against 85,492.6 raw). Alternatives checked: each target
+  quarter's own controls (same to four decimals), no re-rake and capping every wave (ruled out by sections 4 and 5 and
+  the rotation). Stump power moderate: the direction (cap, not labour market) is easy; the difficulty is the five-quarter
+  path, its October to December peak and its tail. Gate G decomposition_attribution with forecasting of the carry-
+  through, analytical_non_defect; Gate H pass, decisive step analytical.
+
+## Pre-ship check
+
+- Call: almost none of the July to September rise is the labour market (0.22 of 0.27 the cap, 0.05 the labour market);
+  with six visits from January 2027 the unemployment rate sits 0.37, 0.25, 0.19 and 0.07 point above the six-visit rate
+  to July to September 2027, the employment rate 1.37, 1.11, 0.93 and 0.63 below.
+- Default path: the wave-1 gap while the cap runs and nothing from January 2027 (0.22, 0.22, 0.00, 0.00, 0.00); both
+  isolated readers took it or its equivalent.
+- Gates: 221 checks, independent verifier, two byte-identical builds, figures_check 120 figures, precut 38 of 38, scrub
+  clean, leak.py REVIEW read (no leak), reader twice no leak, judge pass 2 APPROVE, guard heart WARN.
+- Deliverables: hls_visit_limit_note_2026q3.docx (two pages, chart and table), hls_visit_limit_path_2027.xlsx (gap
+  path, July to September split, regions, notes); target.zip from the final rebuild, 12 files.
+- Card current: answer, spine rows 491,673, deliverables, labels as re-read at stage 3.
 
 ## Tried and rejected
 

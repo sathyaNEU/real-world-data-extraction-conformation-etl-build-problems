@@ -1,11 +1,11 @@
 {
   "task": "task125",
   "owner": "oviya13ya",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "survey-research-official-statistics",
   "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-12",
   "stump": "A competent solver finds the visit limit in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves the latest wave-1 intake, carries that wave-1 gap through the two capped quarters and files the published rates as clean from January 2027; the step that lands it there is treating the limit as a first-interview effect, when the households a capped intake fails to recruit would have stayed in the panel for five quarters with their lower unemployment partly persisting.",
   "architecture": 2,
@@ -23,14 +23,14 @@
     "nearest": "0.08 task500 v2"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (pass 1)",
-    "disposition": "FIX_NOW",
-    "report": "task125/determinism_check_report.md"
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE (pass 2)",
+    "report": "task125/determinism_check_report_pass2.md"
   },
   "returned": [],
-  "resume": "stage 4: judge pass 2 running on /tmp/determinism-check-task125-1791796196/judge_brief.md; then the determinism-judge agent writes determinism_check_report_pass2.md; then ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "lineage": [
     {
