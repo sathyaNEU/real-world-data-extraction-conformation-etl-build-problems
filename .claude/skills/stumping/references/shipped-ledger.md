@@ -188,7 +188,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 230 (v2) | FAILED_TO_STUMP: backlog perssathya | HFE reliability | DQ | time population | A | hit rate falls as targets get rarer | - | - | five streams | none reported | perssathya |
 | 253 | SHIPPED, delivered 10-12, pending review | EDU student growth | DESC | population | G11, G17 | a count of schools past a floor is the sum of their probabilities, not a count of shrunken predictions (28 against 42) | - | - | 42 places | none reported | sathay3012 |
 | 254 | FAILED_TO_STUMP: backlog sathay3012 | SCL aviation crews | DESC | - | - | - | - | - | - | none reported | sathay3012 |
-| 445 | FAILED_TO_STUMP: backlog oviya1301 | QF 13F ownership | ETL | time population | none | complete holdings reporter by reporter | - | - | 5 of 12 crowded | determinism fail | oviya1301 |
+| 445 | SHIPPED, delivered 10-12, pending review | QF 13F ownership | ETL | time population | E | an index sponsor's slice moves with each name's own share count | - | - | 5 of 12 crowded | loop 0 r1 10-11: 52, determinism fail; loop 2 shipped 10-12 | oviya1301 |
 | 446 (v2) | FAILED_TO_STUMP: backlog oviya1301 | BANK watch list | ETL | time population | none | carry error rates, not yield | - | - | 133 groups | none reported | oviya1301 |
 | 447 | FAILED_TO_STUMP: backlog oviya1301 | BANK peer benchmarks | ETL | - | - | - | - | - | - | none reported | oviya1301 |
 | 500 (v3) | SHIPPED, delivered, pending review | ECON lodging tax | RCA | rule population | B | each change measured by the office's matched-reference method | - | - | long-stay exemption, $3,235k | v1, v2 solved 10-10, 10-11 | sathya8571 |

@@ -121,8 +121,7 @@ builds (0.66 against 1.01 and up) and the solver stops.
 ## Default path
 
 The competent default pipeline, from the prompt's words and the files' grain (round 3's own path, step for step,
-which now ends wrong). Figures are the scratch prototype's (loop 2 dynamics on the shipped pack's decomposition); the
-builder lands its own and writes them here.
+which now ends wrong). Figures as built (2026-10-12).
 
 1. Union SUBMISSION, COVERPAGE and INFOTABLE from `form13f_2022q3/`, `form13f_2022q4/` and
    `edgar13f_daily_20230103_20230203/`; key each report to its period; apply amendments; keep SH lines,
@@ -134,7 +133,7 @@ builder lands its own and writes them here.
    `manager_type`, each type's change pooled across the twelve names (index and ETF sponsors up about 5.75 per cent
    in the September window and 4.5 in the December window in shares, every other type flat).
 4. Run the criterion on the September window at 3 November 2022, completing from June: the type-pooled change misses
-   by at most 0.66 points against 1.01 for every filed manager's pooled change, 1.38 for flat carry, 2.56 for the
+   by at most 0.66 points against 1.01 for every filed manager's pooled change, 1.38 for flat carry, 2.15 for the
    per-name change and 26.6 for the reports on file, so choose the type-pooled change.
 5. Grow each of the 129 by its type's pooled change (sponsors about 1.045, every other type about 1.000), add the
    December reports on file, divide by the October-dated counts and flag above 80.0 per cent (OM-4 s.7).
@@ -147,7 +146,7 @@ Golden: WHII, GLI, OTF, JEMS and SAF carry the flag.
 A competent solver executes OM-4 literally, sees that the index and ETF sponsors that have filed grew their share
 holdings while every other register type held flat, grows each of the 129 managers still due by its own type's change
 pooled across the twelve names, sees that basis beat every other it builds in the September back-test (largest miss
-about 0.66 points against 1.01 for every filed manager's change, 1.38 for flat carry and 2.56 per name), and flags
+about 0.66 points against 1.01 for every filed manager's change, 1.38 for flat carry and 2.15 per name), and flags
 WHII, GLI, JEMS and SAF with OTF at about 79.2; the step that lands it there is treating the sponsors' change as one
 factor for every name, when an index sponsor holds a fixed slice of each company, so in shares it moves with that
 name's share count as well as with its creations: OTF issued 4.6 per cent more shares in October and its sponsors
@@ -295,7 +294,7 @@ every other type as shipped. The builder lands its own values and asserts every 
 | R1 | last quarter's ownership (September's figure as December's) | WHII, GLI, JEMS, FENN, SAF | 5.2 | the filed criterion |
 | R2 | on file over the share of September filers that have filed | about ten names (builder) | about 34 | the filed criterion |
 | R3 | on file over the aggregate share of September value on file by day 34 | WHII, AMRB, TAAV, JEMS, SAF (builder) | about 15 | the filed criterion |
-| R4 | one factor or none across the names: each manager still due at its September position (1.38); every filed manager's change pooled (1.01) or per name (2.56); the issuer-level completion factor (builder, about 2.6); each sponsor still due at its September stake with no growth (1.15) | WHII, GLI, JEMS, SAF | 1.01 to 2.6 | the filed criterion |
+| R4 | one factor or none across the names: each manager still due at its September position (1.38); every filed manager's change pooled (1.01) or per name (2.15); the issuer-level completion factor (2.15); each sponsor still due at its September stake with no growth (1.15) | WHII, GLI, JEMS, SAF | 1.01 to 2.15 | the filed criterion |
 | R4' (stump) | each register type's change pooled across the names, in shares: round 3's basis (sponsors about 1.045 in December, every other type about 1.000); the same pooled over every security; the sponsors' pooled change with every other type flat | WHII, GLI, JEMS, SAF (OTF 79.15) | 0.66 | the filed criterion: the per-name sponsor basis misses by 0.04 |
 | R4b | one quantity for everyone: the sponsors' pooled change for every manager still due (1.18); every manager still due at its September stake (1.17) | WHII, GLI, JEMS, FENN, SAF | 1.17 to 1.18 | the filed criterion |
 | R4c | the name for everyone: the sponsors' per-name change for every manager still due (1.34); each type's change measured in stakes, on every manager's stake (0.91); each type's change per name, the type by name grid (11.0) | WHII, GLI, OTF, JEMS, FENN, SAF | 0.91 to 11.0 | the filed criterion |
@@ -385,33 +384,34 @@ the golden too. The simulation's true December holdings give the same flags with
 ## Back-test table (the filed criterion; targets for the builder)
 
 September 2022 completed at 3 November 2022 from the June reports, against September's ownership on all
-the reports since filed; largest miss across the twelve names, percentage points. Prototype values as in the ladder.
+the reports since filed; largest miss across the twelve names, percentage points. Prototype values as in the ladder;
+as built 2026-10-12 (`generator/golden_figures.json`).
 
-| Basis | Prototype | Target |
-|---|---|---|
-| golden: each sponsor still due by its filed peers' change in that name; every other type by its own pooled change | 0.039 | at most 0.15 |
-| golden variants: every other type flat; the September stake grown by the sponsors' stake change (twelve names, every security) | 0.040 | each at most 0.15; every December figure within 0.01 of the golden |
-| each type's change pooled across the twelve names, in shares (round 3's basis); the same over every security; the sponsors' pooled change with every other type flat | 0.660 (over every security about 0.66) | each 0.5 to 0.9; the three below every other rival by at least 0.05, and round 3's basis the smallest of the default path's five by at least 0.15 |
-| each type's change measured in stakes, applied to every manager's stake | 0.912 | at least 0.6 |
-| every filed manager's change, pooled | 1.013 | at least 0.6 |
-| each sponsor still due at its September stake, no growth | 1.153 | at least 0.9 |
-| every manager still due at its September stake | 1.168 | at least 0.9 |
-| one rate for every manager still due (the sponsors' pooled change) | 1.180 | at least 0.6 |
-| the sponsors' per-name change for every manager still due | 1.337 | at least 0.6 |
-| type change as a mean of per-manager ratios | builder | at least 0.6 |
-| flat carry at the September position | 1.380 | at least 0.9 |
-| every filed manager's change, per name | 2.559 | at least 1.5 |
-| issuer-level completion factor | builder | at least 1.5 |
-| last quarter's ownership | 5.202 | at least 3.0 |
-| type change per type and per name (the grid) | 11.020 | at least 1.5 |
-| aggregate share of value on file | builder | at least 8 |
-| aggregate share of filers that have filed | builder | at least 15 |
-| reports on file only | 26.599 | at least 15 |
+| Basis | Prototype | As built | Target |
+|---|---|---|---|
+| golden: each sponsor still due by its filed peers' change in that name; every other type by its own pooled change | 0.039 | 0.041 | at most 0.15 |
+| golden variants: every other type flat; the September stake grown by the sponsors' stake change (twelve names, every security) | 0.040 | 0.041 and 0.042 | each at most 0.15; every December figure within 0.01 of the golden |
+| each type's change pooled across the twelve names, in shares (round 3's basis); the same over every security; the sponsors' pooled change with every other type flat | 0.660 (over every security about 0.66) | 0.661, 0.679, 0.661 | each 0.5 to 0.9; the three below every other rival by at least 0.05, and round 3's basis the smallest of the default path's five by at least 0.15 |
+| each type's change measured in stakes, applied to every manager's stake | 0.912 | 0.923 | at least 0.6 |
+| every filed manager's change, pooled | 1.013 | 1.011 | at least 0.6 |
+| each sponsor still due at its September stake, no growth | 1.153 | 1.152 | at least 0.9 |
+| every manager still due at its September stake | 1.168 | 1.166 | at least 0.9 |
+| one rate for every manager still due (the sponsors' pooled change) | 1.180 | 1.181 | at least 0.6 |
+| the sponsors' per-name change for every manager still due | 1.337 | 1.338 | at least 0.6 |
+| type change as a mean of per-manager ratios | builder | 1.333 | at least 0.6 |
+| flat carry at the September position | 1.380 | 1.379 | at least 0.9 |
+| every filed manager's change, per name | 2.559 | 2.152 | at least 1.5 |
+| issuer-level completion factor | builder | 2.152 | at least 1.5 |
+| last quarter's ownership | 5.202 | 4.467 | at least 3.0 |
+| type change per type and per name (the grid) | 11.020 | 10.165 | at least 1.5 |
+| aggregate share of value on file | builder | 14.995 | at least 8 |
+| aggregate share of filers that have filed | builder | 34.269 | at least 15 |
+| reports on file only | 26.599 | 26.599 | at least 15 |
 
-The golden basis wins by at least 0.4 points and 3x over every rival (prototype 0.62 points and 17x over the
+The golden basis wins by at least 0.4 points and 3x over every rival (as built 0.62 points and 16x over the
 type-pooled change), asserted. The default path's five (round 3's set: on file, flat carry, every filed manager's
 change pooled and per name, the type-pooled change) are ordered with the type-pooled change first (0.66 against 1.01,
-1.38, 2.56 and 26.6), asserted. With every ask device and count hazard mishandled, alone and in every combination, the
+1.38, 2.15 and 26.6 as built), asserted. With every ask device and count hazard mishandled, alone and in every combination, the
 golden basis keeps the smallest miss by at least 0.3 (asserted): every September device host is a bank trust that files
 all its September reports by 3 November, so its handling enters the day-34 estimate and the final figure identically and
 cancels; the count hazards rescale a name's misses, and the golden's share-ratio formulation reads no count at all.
@@ -450,7 +450,7 @@ on its assertion in `generator/checks.py` (SF9 to SF13 tagged at the sites the l
 | SF2 | "shares outstanding" for December | the cover count with the latest as-of date on or before 31 December (the October-dated 10-Q) | the January 10-K count | same call (no flag moves, asserted) | OM-4 s.5 "on or before the report period end" |
 | SF3 | what counts as a holding | SH lines without put or call | December option lines counted | same call (asserted) | OM-4 s.3 |
 | SF4 | "above 80.0 per cent" | strictly above, on the unrounded estimate | at or above, or on the one-decimal figure | same call: OTF 80.39 and FENN 79.59 in the prototype, every golden variant at least 0.3 from the line (asserted) | OM-4 s.7; checks.py distance assertion |
-| SF5 | "the same number of days after its end" | 34 days, so 3 November 2022 | business days, or the gap to the deadline | same call: the same 129 managers are still due in both windows | OM-4 s.2 (3 February is day 34 after 31 December) |
+| SF5 | "the same number of days after its end" | 34 days, so 3 November 2022 | business days, or the gap to the deadline; 39 days, the 8 February issue date read as the day of the reports in hand (8 November 2022) | same call: the same 129 managers are still due in both windows; at 39 days the criterion selects the same basis (0.017 points against 0.42 for the nearest rival and 0.67 for the type-pooled change, loop 2 build) | OM-4 s.2 (the reports in hand were filed by 3 February, day 34 after 31 December) |
 | SF6 | "each report taken as amended" for December | no December report is amended | an amendment applied in some order | same call: none exists (asserted zero) | the records; checks.py separation |
 | SF7 | "every security in the flag file" | the twelve watchlist names, as the criterion's scope and as the pooling scope of any change | every security in the information tables | same call: the golden basis also wins the back-test scored over every security, and the sponsors' stake change pooled over every security is the same 5.5 per cent (asserted) | OM-4 s.2 |
 | SF8 | the latest count on or before 31 December | the October-dated 10-Q count | a 10-Q/A for the September quarter with a later date | same call: no September-quarter 10-Q/A exists (asserted) | the records; OM-4 s.5 |
@@ -459,6 +459,8 @@ on its assertion in `generator/checks.py` (SF9 to SF13 tagged at the sites the l
 | SF11 | the per-name peer set ("the change its filed peers show in that name") | the index and ETF sponsors that filed both the September and the December report by 3 February, in that name | each filed complex alone; every sponsor with a December report; the sponsors' stake change pooled over the twelve or over every security | same call: both filed complexes hold all twelve names in all three quarters and their stakes grow 5.5 per cent in every security (asserted within 0.0005 per name and 0.01 on every December figure) | same call (C1) |
 | SF12 | "that period's ownership on all the reports since filed" (the back-test's target) | September ownership as amended by the cover-page period and the amendment numbers, s.3 to s.5 | any reading of the ask devices (two period sources, seven amendment orders, the line hazards, three count readings) | same selection: the golden basis keeps the smallest miss by at least 0.3 in every combination (asserted) | same call (the device hosts file every September report by 3 November, so each handling cancels) |
 | SF13 | the client layout | OM-4 s.8 names layout v4 (since 45981f4), the layout file is v4, the prompt names v4 | layout v3 (OM-4 s.8 as shipped before 45981f4) | closed: no filed text names v3 as current, and the v4 header says it replaces v3 from the 2022Q4 files; the flags do not depend on the layout | OM-4 s.8 "The file layout is client flag file layout v4." |
+| SF14 | "the basis that ... comes closest" over the family a solver builds | the per-name sponsor completion, every other type by its own pooled change, peers that filed both reports | any basis built type by type (carry, the type's change pooled or per name, the name's share-count move, every filer's change per name or pooled), with the peers read as the managers that filed both periods or every manager that filed the current one | same call: every such basis within 0.1 point of the best back-test files the golden's flags, and every one within 0.01 of the best files each name's one-decimal December figure (96 near-ties; GLI 84.384 to 84.414, the widest, after the judge's pass 3 found GLI at 84.452 under the all-filer peers with GLI's target at 84.43), asserted | same call (C1) |
+| SF15 | the bridge's bars (Ask B) | one bar each, in the prompt's order: put and call lines, the other lines in reports replaced by a later amendment, lines matched back to their CUSIPs | replaced reports first and the remaining option lines after (435,800 option shares sit inside replaced reports); the matched-back bar split by kind of mis-keying | closed: the prompt names the three bars and their order | prompt.txt, the bridge sentence |
 
 ## Oracles
 
@@ -604,12 +606,24 @@ read against the September count, and the September counts move on eight names (
 the bridge's share figures and the device hosts' positions in shares move with them, while the Ask A golden figures
 stay at the `sep` targets. And the October-dated count, a hazard on Ask A's denominator, now sits 1 to 4.8 per cent
 from the September count on every name. The builder re-runs the DV-1 and DV-2 size search and every stop and grid
-assertion on the new positions (Generator changes, item 6) and writes the as-built values into this sheet; the
-figures below are loop 1's as built until then. The cracker (now landing the per-name sponsor completion) and the
+assertion on the new positions (Generator changes, item 6); the as-built values are in the next paragraph and the
+figures further below are loop 1's. The cracker (now landing the per-name sponsor completion) and the
 mirror (now the type-pooled response) stand on the same stops, because no ask reads the estimate. Loop 2's mirror
 keeps eleven of twelve flags and about three of the twelve December figures (prototype: GLI, FENN, HAMR), against one
 of twelve for loop 1's flat-carry mirror, because the December-window count moves spread the type-pooled error over
 every name.
+
+**Loop 2 as built (2026-10-12).** DV-1 and DV-2 re-sized by the per-name search in `sim.py`: the trust account's share
+26.0 to 33.25 per cent and the original's overstatement 13.5 to 36.0 per cent, with OTF, AMRB, TAAV, OLPD, SAF and NOPR
+outside the preferred 25 to 30 and 22 to 28 (the October count, now 1 to 4.8 per cent off the September count, broke
+the old sizes on seven names, AMRB first). Ask A: 2,012 grid cells, the nearest mishandled figure 0.066 points from the golden, every
+touched name in another bin; the stops on every name, in points: S1 +1.00 to +1.54, S2 +0.54 to +0.90, S3 +0.31 to +0.68, S4 -2.17 to -1.43.
+Ask B golden (after the judge's pass 3 repair): 599,363,366 / -8,193,500 / -50,329,359 / +6,508,236 / 547,348,743, gap
+52.0 million; the stops' ends S1 +9,089,760, S2 +5,427,285, S3 +3,662,475, and S4's start -187,000.
+Back-test robust margin 0.42 over every device and count combination. The main call's declared
+population as snapshotted (`generator/main_call_ref.json`): 2,337 December lines for the twelve CUSIPs,
+353 September lines of the managers still due, 58,981 peer lines, 747 cover counts,
+862 filings and 313 register rows, every one clean.
 
 **What died and why** (supplemental-stumping Part 4). Round 2 missed the call at R4 and kept every ask
 figure: each device (A1 to A5, the rename, Wexley's units, the split lines, the affiliates) was a work order
@@ -843,6 +857,9 @@ careful solver; a response that clears both devices keeps every ask figure (a cr
 often. If the generated rubric files the twelve December ownership figures as asks rather than critical
 components, the pair rises to about 44; the writer files them as critical components (submission-writeup).
 
+**Mirror leakage:** 10.0 per cent of the ask weight on paper (the two chart parts, 5.5 of 55; every Ask A and Ask B figure
+missed on the same stops as the cracker).
+
 **Ask-level determinism** (supplemental-stumping Part 3; every reading computed by the generator and the
 verifier):
 
@@ -949,27 +966,30 @@ the v4 text, DV-1 and DV-2 sit in `form13f_2022q4/`, DV-3 in the nightly build. 
 - Active managers' books move by a manager-level flow each quarter (multi-strategy 25 per cent, long-only 15,
   advisers 18, one standard deviation) on top of position turnover; forced so the mean of per-manager ratios
   sits away from the pooled change. The type aggregates stay flat by construction.
-- HAMR is the balancing name for the September type totals: 49.1 in September against 55.2 in December, an
-  accumulation of about 6 points by managers already on file.
+- HAMR is the balancing name for the September type totals (`SEP_SLACK`, no `sep` target): 52.5 in September
+  against 55.2 in December as built in loop 2 (49.1 in loop 1, before the sponsors' September positions became their
+  stakes read against the September count), an accumulation of about 2.7 points by managers already on file; its
+  December target is 55.22 so the slack stays mid-bin after GLI's target moved to 84.39.
 - DV-1: one department filing a new holdings amendment and a full restatement of the same report on one day
   through two agents is uncommon but real; the restatement's merged lines (own plus trust account) keep the
   pair from showing as duplicate lines.
 - DV-2: a header period that disagrees with the form's cover page is a filing-agent template slip the SEC
   data sets carry as filed; one such filing in the quarter.
+- Accession sequence numbers run in the low thousands (for example 0001104659-22-000748), smaller than a busy
+  filing agent reaches by October; kept, because the same-day device ordering reads accession order and the judge's
+  pass 4 called it a mild tell only.
 - The client's move to a six-column layout v4 for the 2022Q4 files (share counts and holder detail from its
   own vendor feeds) is a client-side change the pack records once, in the layout's own header.
 
 ## Stopping rule
 
-Loop 2 is the second of three hardening loops for architecture 1 (CLAUDE.md: three loops per architecture, then
-re-root). A round that lands the call by the per-name sponsor completion, or its stake formulation, sends the build to
-loop 3 with the decisive step moved again by the data's own structure, never by a filed sentence; a third landing files
-architecture 1 as solved and the slot re-roots in the same objective and number. A round that stops at R4' or any R4
-rung passes the ladder gate. A round that lands R0 means s.2's estimate clause was missed: read it as a leak-reader
-question on the clause's prominence, never as a reason to name the basis. Ask layer: a round that misses the call and
-reads ASKS LEAK means a solver cleared both DV-1 and DV-2; the next repair moves the layer's weight (a third silent
-device on a new quantity), never a filed sentence or a marker, and a second leak after that files the ask layer as at
-its ceiling for this world.
+Loop 2 is architecture 1's second hardening loop. The pipeline runs no solver round: the leak reader and the
+determinism judge check this pack, and the portal measures it. A portal return where the call landed sends the build
+back to design (build-pipeline, Returned tasks) with the decisive step moved again by the data's own structure, never
+by a filed sentence; the architecture is spent at a judge SEND_BACK, a FIX_NOW that fails its second pass or a third
+failed portal return, and the slot then re-roots in the same objective and number. A determinism return goes to
+`/fix-determinism` and a rubric return with the call held to `/fix-rubric`, the main call frozen in both; a rubric
+repair moves the ask layer's weight (a third silent device on a new quantity), never a filed sentence or a marker.
 
 ## Pre-ship check (client two-layer standard)
 
@@ -990,6 +1010,13 @@ its ceiling for this world.
 - Estimand pinned literally (OM-4 s.2), method open behind a filed criterion with every rival separated by at least 0.4
   points; no decoy memo; no method recovered from certified figures; the lesson (an index fund's holding moves with
   each company's own float and its creations, an active manager's does not) is not one an earlier build teaches.
+- Leak: `leak.py --asof 2023-02-03` REVIEW with no LEAK; two isolated reads, nothing names the decisive step, no file ranks
+  the names, the literal reading of OM-4 s.2 is the golden population and of the bridge sentence the golden's bars.
+- Judge: pass 3 NOT_DETERMINISTIC on the ask layer only (the bridge's bar order and split, GLI 0.026 under its bin edge), repaired
+  in one pass; pass 4 DETERMINISTIC, FIX_NOW write-up only (an unrequested title line), applied. Gate G method_or_model_selection,
+  analytical_non_defect; Gate H domain, layers and decisive step pass.
+- Duplicate: `guard.py heart` BLOCK on `ban.org_family` against task230 v2 only, the registration-order artifact this pair's
+  other author waived; nearest driver 0.19, this slot's own loop 1.
 
 ## Record
 
@@ -1003,7 +1030,24 @@ cent of the weight).
 Loop 2 designed 2026-10-12 (this note, paper half; scratch prototype on the shipped decomposition): the
 index sponsors' holdings follow each name's share count as well as their creations, the type-pooled change is
 the stump rung and the per-name sponsor completion the golden; the card re-filed (`register --force` over
-ban.forum); `precut.py` green. The builder implements from Generator changes; then `leak.py` and round 4.
+ban.forum); `precut.py` green.
+Loop 2 built 2026-10-12 in the main session (no solver round in the current pipeline): DV-1 and DV-2 re-sized, realism sweep added,
+leak reader clean, judge pass 3 NOT_DETERMINISTIC on the ask layer only (the bridge's bar order and split, GLI 0.026 under
+its bin edge), repaired in one pass (SF14, SF15, GLI and HAMR targets, the prompt's bridge sentence) and re-judged.
+
+## Leak review (loop 2)
+
+`leak.py --asof 2023-02-03`: REVIEW, no LEAK. The reader (2026-10-12, `leak_check_report.md`): question 1 quotes OM-4 s.2's
+criterion, which selects the basis and names none (the filed criterion, by design); questions 2 to 4 none; question 5's
+literal execution of s.2 is the golden population (the managers still due counted and estimated, notice filers out) and
+leaves the candidate bases open, which the criterion closes; its day-39 reading of the cut selects the same basis (SF5).
+Every REVIEW line is harmless: the twelve CUSIPs in the watchlist and the 13F lines are identifiers in the data; 80.0 is
+OM-4 s.7's filed line; the design-note terms in the readme, the layout, `data_sources.md` and OM-4 are ordinary 13F words
+(manager, period, counts, change, client) and none names the move. Realism notes (fictional issuer names in the 13(f)
+list, a trimmed readme, a tidy register, the header-period and January filings) are the constructed world and the ask
+devices, recorded in Realism debts; no change.
+
+Second read (2026-10-12, after the judge's pass 3 repair changed the prompt): questions 1 to 4 as before; question 5 reads the bridge sentence as the golden's three bars in the golden's order (put and call lines, the other lines in replaced reports, lines matched back). Its one realism tell was fixed: the cover pages' ZIP codes were drawn uniformly and did not match their cities (a Minneapolis manager at 29762); they now come from each city's own range, on a stream of their own, so no other field moved. It again calls OM-4 s.2 the sentence that tells a solver an estimate is needed, which is the filed estimand and criterion by design; no sentence names the basis.
 
 ## Tried and rejected
 
@@ -1088,3 +1132,5 @@ ban.forum); `precut.py` green. The builder implements from Generator changes; th
   moving the back-test (the type-pooled change 0.66, the golden 0.04).
 - An accelerated repurchase on HAMR in the December window: HAMR's August offering (A5) makes a buyback in the next
   quarter implausible; the December-window buybacks sit on WHII, AMRB, JEMS and NOPR.
+- GLI's December target at 84.43 (loop 2 build): the golden sat at 84.424, 0.026 under the 84.45 edge, and the judge's pass 3 (2026-10-12) found the near-argmin family (peers read as every December filer, other types mixed carry and pool, best miss 0.0402 against the golden's 0.0408) at 84.452, which rounds to 84.5; the target moved to 84.39 (family 84.384 to 84.414) with HAMR's December target at 55.22 to hold its September slack at 52.479, and SF14 asserts the family.
+- The bridge asked as "one bar for each item between the two totals" (judge pass 3): 435,800 option shares sit inside replaced reports, so replaced-first and options-first both tie to the end total with different first two bars, and the matched-back bar could be split three ways by kind of mis-keying; the prompt now names the three bars and their order (SF15), and the stakes clause about never reissuing a file came out to keep it under 1,000 characters.

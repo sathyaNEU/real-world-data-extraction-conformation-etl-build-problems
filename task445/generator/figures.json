@@ -14,12 +14,16 @@
   "NOPR": "67.2"
  },
  "due": 129,
- "type_change_sponsors_pct": "5.5",
+ "sponsors_change_pct": {
+  "OTF": "10.4",
+  "pooled": "4.5"
+ },
  "line": "80.0",
+ "type_pooled_OTF": "79.2",
  "backtest": {
-  "type_pooled": "0.04",
-  "flat": "1.14",
-  "one_rate": "0.89"
+  "sponsors_per_name": "0.04",
+  "type_pooled": "0.66",
+  "flat": "1.38"
  },
  "flag_file": {
   "WHII": {
@@ -85,7 +89,7 @@
   "HAMR": {
    "dec": "55.2",
    "flag": "N",
-   "sep": "49.1",
+   "sep": "52.5",
    "cusip": "233712108"
   },
   "NOPR": {
@@ -96,11 +100,11 @@
   }
  },
  "bridge": {
-  "start": "598,531,990",
-  "options": "-8,203,900",
-  "superseded": "-50,938,469",
-  "cusips": "+6,452,942",
-  "end": "545,842,563",
-  "gap_m": "52.7"
+  "start": "599,363,366",
+  "options": "-8,193,500",
+  "superseded": "-50,329,359",
+  "cusips": "+6,508,236",
+  "end": "547,348,743",
+  "gap_m": "52.0"
  }
 }

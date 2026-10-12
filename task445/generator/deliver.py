@@ -29,8 +29,8 @@ def bridge_png(g, path):
     b = g["bridge"]
     steps = [("Information-table lines\nas filed", b["raw"], "total"),
              ("Put and call lines\n(put/call field or title)", -b["options"], "down"),
-             ("Lines in reports replaced\nby a later amendment", -b["superseded"], "down"),
-             ("CUSIPs keyed off-format,\nmatched back", b["cusip_repaired"], "up"),
+             ("Other lines in reports replaced\nby a later amendment", -b["superseded"], "down"),
+             ("Lines matched back\nto their CUSIPs", b["cusip_repaired"], "up"),
              ("September institutional\nshares, twelve names", b["conformed"], "total")]
     fig, ax = plt.subplots(figsize=(10.5, 5.6), dpi=110)
     run = 0
@@ -64,8 +64,8 @@ def bridge_png(g, path):
     net = b["conformed"] - b["raw"]
     ax.set_title(f"Our September institutional shares sit {abs(net) / 1e6:,.1f}m {'below' if net < 0 else 'above'} a straight sum of the SEC lines",
                  fontsize=11.5, loc="left", pad=38, fontweight="bold")
-    ax.text(0, 1.02, "Lines in reports replaced by a later amendment and option lines come out;\nCUSIPs keyed off-format come "
-            "back in. Twelve watchlist names, period ended 30 Sep 2022.", transform=ax.transAxes, fontsize=9,
+    ax.text(0, 1.02, "Put and call lines come out first, then the other lines in reports replaced by a later amendment;\nlines matched "
+            "back to their CUSIPs come back in. Twelve watchlist names, period ended 30 Sep 2022.", transform=ax.transAxes, fontsize=9,
             color="#4a5568", ha="left", va="bottom")
     fig.text(0.01, 0.01, "Source: Form 13F reports for the period ended 30 Sep 2022, filed through 3 Feb 2023. "
              "Quillfield Research ownership desk.", fontsize=7.5, color="#4a5568")

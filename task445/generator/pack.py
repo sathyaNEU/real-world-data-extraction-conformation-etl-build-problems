@@ -27,10 +27,26 @@ def _w_tsv(path, cols, rows):
             fh.write("\t".join("" if r.get(c) is None else str(r.get(c)) for c in cols) + "\n")
 
 
+# ZIP code ranges of the managers' cities (USPS delivery areas of each city centre)
+ZIP_RANGE = {"NEW YORK": (10001, 10282), "GREENWICH": (6830, 6836), "BOSTON": (2108, 2137), "SAN FRANCISCO": (94102, 94134),
+             "CHICAGO": (60601, 60661), "DALLAS": (75201, 75254), "PHILADELPHIA": (19102, 19154), "PRINCETON": (8540, 8544),
+             "MIAMI": (33125, 33199), "ATLANTA": (30303, 30363), "DENVER": (80202, 80239), "SEATTLE": (98101, 98199),
+             "MINNEAPOLIS": (55401, 55488), "COLUMBUS": (43201, 43240), "BALTIMORE": (21201, 21239),
+             "RICHMOND": (23218, 23298), "CHARLOTTE": (28202, 28299), "ST. LOUIS": (63101, 63199),
+             "MILWAUKEE": (53202, 53295), "NASHVILLE": (37201, 37250), "SCOTTSDALE": (85250, 85268)}
+
+
 def write_drops(wd, target):
     M = wd.M
     rz = W.rng("pack-zip")
-    zips = {m["mid"]: f"{int(rz.integers(10001, 99950)):05d}" for m in wd.mgrs}
+    # each manager's ZIP code from its city's own range; the old uniform draw is still taken so every later draw
+    # from this stream keeps its value
+    rzc = W.rng("pack-zip-city")
+    zips = {}
+    for m in wd.mgrs:
+        rz.integers(10001, 99950)
+        lo, hi = ZIP_RANGE[m["city"]]
+        zips[m["mid"]] = f"{int(rzc.integers(lo, hi + 1)):05d}"
     streets = {m["mid"]: f"{int(rz.integers(1, 2400))} {rz.choice(['MAIN ST', 'PARK AVENUE', 'BROAD ST', 'MARKET ST', 'STATE ST', 'WASHINGTON BLVD', 'ELM ST', 'LEXINGTON AVE', 'COMMERCE DR'])}" for m in wd.mgrs}
     crd = {m["mid"]: ("" if m["type"] in ("banktrust", "instit") else str(int(rz.integers(100000, 330000)))) for m in wd.mgrs}
     rzd = W.rng("pack-dev")

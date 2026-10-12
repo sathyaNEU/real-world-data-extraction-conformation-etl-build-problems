@@ -32,13 +32,14 @@ A3_LINES = [("A3a", "W01", "swap", 0.50), ("A3a", "W04", "check", 0.22), ("A3a",
 KY_LINES = [("KYa", "W03", 0.41), ("KYa", "W04", 0.50), ("KYb", "W09", 0.30), ("KYb", "W12", 0.52)]
 # DV-1 (new-holdings host): the trust account's share of each watchlist position, left out of the original.
 # DV-2 (restatement host): the original's overstatement of each watchlist position. Both from a deterministic
-# search (per name, 0.0025 steps over 25 to 30 and 22 to 28 per cent) for the largest smallest distance of
-# any mishandled September figure from the golden, every cell in another one-decimal bin; WHII and the other
-# names land inside the ranges, SAF needs 19 per cent to clear 0.06 points
-DV1_T = {"W01": 0.255, "W02": 0.30, "W03": 0.2975, "W04": 0.30, "W05": 0.29, "W06": 0.2825, "W07": 0.2825,
-         "W08": 0.30, "W09": 0.30, "W10": 0.2575, "W11": 0.27, "W12": 0.25}
-DV2_O = {"W01": 0.2725, "W02": 0.28, "W03": 0.2575, "W04": 0.2725, "W05": 0.28, "W06": 0.22, "W07": 0.25,
-         "W08": 0.275, "W09": 0.235, "W10": 0.19, "W11": 0.2275, "W12": 0.25}
+# search per name (0.0025 steps over 15 to 40 and 12 to 36 per cent, preferring 25 to 30 and 22 to 28) for
+# sizes that keep every mishandled September figure at least 0.06 points from the golden and in another
+# one-decimal bin, with every Ask A stop in its range; the loop 2 share-count moves make the October count a
+# larger hazard, so OTF, AMRB, TAAV, OLPD, SAF and NOPR sit outside the preferred ranges
+DV1_T = {"W01": 0.26, "W02": 0.30, "W03": 0.305, "W04": 0.3325, "W05": 0.315, "W06": 0.2825, "W07": 0.285,
+         "W08": 0.30, "W09": 0.2725, "W10": 0.27, "W11": 0.2675, "W12": 0.315}
+DV2_O = {"W01": 0.28, "W02": 0.28, "W03": 0.315, "W04": 0.135, "W05": 0.1925, "W06": 0.22, "W07": 0.2525,
+         "W08": 0.275, "W09": 0.36, "W10": 0.1775, "W11": 0.225, "W12": 0.25}
 DV2_KEYED = ("W04", "W09", "W12")
 DV2_OPT = [("W01", "CALL", 62_000), ("W06", "PUT", 48_500), ("W10", "CALL", 71_000), ("W02", "PUT", 55_000),
            ("W07", "CALL", 64_500)]

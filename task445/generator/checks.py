@@ -3,6 +3,7 @@ largest miss and the winner's margin, also under every combination of mishandled
 own variants, truth, bins, the separation zero-counts, the ask devices and their stops, the bridge, the top
 holders and the input gates. Every check counts; the run fails on the first miss."""
 import datetime as dt
+import itertools
 import os
 
 import numpy as np
@@ -210,6 +211,93 @@ def run(wd, g, target, golden_dir, meta):
     due3 = hold["Q2"] - set(f[(f.period == P["Q3"]) & (f.fdate <= G.CUT["Q3"])].CIK)
     ok(all(mtype[k] not in ("Bank trust and wealth department", "Broker-dealer") for k in due3), "bank trust due in September")
     ok(not (due3 ^ due), "the same managers are still due in both windows")  # SF5
+    # SF5: the cut read at the 8 February issue date (day 39) selects the same basis
+    import datetime as _dt
+    keep = dict(G.CUT)
+    try:
+        for q in G.CUT:
+            G.CUT[q] = G.PERIOD[q] + _dt.timedelta(days=39)
+        fr0 = g["_frames"]
+        bt39 = G.make_backtest(fr0["f"], fr0["inf"], cus, fr0["mtype"], fr0["S"], "num")[0]()
+    finally:
+        G.CUT.clear()
+        G.CUT.update(keep)
+    r39 = min(v for k, v in bt39.items() if k not in variants)
+    ok(min(bt39, key=bt39.get) in variants and r39 - bt39[GOLD] >= 0.3, f"SF5 day-39 cut selects {min(bt39, key=bt39.get)}")
+    LOG["sf5_day39"] = dict(golden=round(bt39[GOLD], 3), nearest=round(r39, 3))
+
+    # SF14: every basis a solver can build type by type (carry, the type's change pooled or per name, the name's
+    # share-count move, every filer's change per name or pooled), with the peers read as the managers that filed
+    # both periods or as every manager that filed the current one, and within 0.1 point of the best back-test,
+    # files the golden's flags and every name's one-decimal December figure
+    fr1 = g["_frames"]
+    f1, inf1, mt1 = fr1["f"], fr1["inf"], fr1["mtype"]
+    Sx = {"Q2": g["S_jun"], "Q3": g["S_sep"], "Q4": g["S_dec"]}
+
+    def fam(qn, qp, cut, peers):
+        fn = f1[(f1.period == G.PERIOD[qn]) & (f1.fdate <= cut)]
+        prev = set(f1[(f1.period == G.PERIOD[qp]) & (f1.REPORTTYPE != "13F NOTICE")].CIK)
+        cur = set(fn[fn.REPORTTYPE != "13F NOTICE"].CIK)
+        due = prev - set(fn.CIK)
+        peer = cur & prev if peers == "both" else cur
+        hn = G.holdings(f1, inf1, G.PERIOD[qn], cut=cut, cusips=cus)
+        hp = G.holdings(f1, inf1, G.PERIOD[qp], cusips=cus)
+        on = np.array([hn[hn.cusip9 == c].SSHPRNAMT.sum() for c in cus], float)
+        pN, pP = hn[hn.CIK.isin(peer)], hp[hp.CIK.isin(peer)]
+        tyN, tyP = pN.CIK.map(mt1), pP.CIK.map(mt1)
+        nN = pN.groupby([tyN, "cusip9"]).SSHPRNAMT.sum().to_dict()
+        nP = pP.groupby([tyP, "cusip9"]).SSHPRNAMT.sum().to_dict()
+        aN = pN.groupby("cusip9").SSHPRNAMT.sum().to_dict()
+        aP = pP.groupby("cusip9").SSHPRNAMT.sum().to_dict()
+        dH = hp[hp.CIK.isin(due)]
+        types = sorted(set(dH.CIK.map(mt1)))
+        contrib = {}
+        for t in types:
+            d_ = dH[dH.CIK.map(mt1) == t]
+            v = np.array([d_[d_.cusip9 == c].SSHPRNAMT.sum() for c in cus], float)
+            tn = sum(nN.get((t, c), 0) for c in cus)
+            tp = sum(nP.get((t, c), 0) for c in cus)
+            modes = {"carry": np.ones(len(cus)),
+                     "pool": np.full(len(cus), tn / tp if tp else 1.0),
+                     "name": np.array([nN.get((t, c), 0) / nP[(t, c)] if nP.get((t, c)) else 1.0 for c in cus]),
+                     "so": np.array([Sx[qn][c] / Sx[qp][c] for c in cus]),
+                     "all": np.array([aN.get(c, 0) / aP[c] if aP.get(c) else 1.0 for c in cus]),
+                     "all_pool": np.full(len(cus), sum(aN.values()) / sum(aP.values()))}
+            contrib[t] = {m: v * r for m, r in modes.items()}
+        return on, types, contrib
+
+    truth3 = np.array([100 * g["sep_shares"][c] / Sx["Q3"][c] for c in cus])
+    den3 = np.array([Sx["Q3"][c] for c in cus], float)
+    den4 = np.array([Sx["Q4"][c] for c in cus], float)
+    gold_bin = np.array([round(g["dec_io"][c], 1) for c in cus])
+    n_near, spread = 0, {}
+    for peers in ("both", "all"):
+        on3, ty3, c3 = fam("Q3", "Q2", G.CUT["Q3"], peers)
+        on4, ty4, c4 = fam("Q4", "Q3", G.EXTRACT, peers)
+        ok(ty3 == ty4, f"SF14 types due differ between windows ({peers})")
+        res = []
+        for combo in itertools.product(*[list(c3[t]) for t in ty3]):
+            s3 = on3 + sum(c3[t][m] for t, m in zip(ty3, combo))
+            res.append((float(np.abs(100 * s3 / den3 - truth3).max()), combo))
+        best = min(m for m, _ in res)
+        ok(abs(best - bt[GOLD]) <= 0.005, f"SF14 best back-test {best:.4f} ({peers}) far from the golden's {bt[GOLD]:.4f}")
+        for m, combo in res:
+            if m > 0.10:
+                continue
+            io4 = 100 * (on4 + sum(c4[t][mm] for t, mm in zip(ty4, combo))) / den4
+            ok({ids[c] for c, v in zip(cus, io4) if v > 80.0} == ANS, f"SF14 flags under {peers} {combo}")
+            if m > best + 0.01:
+                continue                       # the criterion separates these from the best by more than 0.01
+            n_near += 1
+            ok((np.round(io4, 1) == gold_bin).all(), f"SF14 bins under {peers} {combo}: {np.round(io4, 3)}")
+            for c, v in zip(cus, io4):
+                lo, hi = spread.get(ids[c], (v, v))
+                spread[ids[c]] = (min(lo, v), max(hi, v))
+    ok(n_near >= 50, f"SF14 near-best family {n_near}")
+    for k, (lo, hi) in spread.items():
+        ok(round(lo, 1) == round(hi, 1) and min(abs(lo * 10 - round(lo * 10) + 0.5), abs(hi * 10 - round(hi * 10) - 0.5)) >= 0.05,
+           f"SF14 {k} spread {lo:.3f} to {hi:.3f} within 0.005 of a bin edge")
+    LOG["sf14_family"] = dict(near=n_near, spread={k: (round(a, 3), round(b, 3)) for k, (a, b) in spread.items()})
 
     # ---- separation: zero device rows and zero hazard rows in the main call's declared population
     def bad(e):
@@ -362,6 +450,17 @@ def run(wd, g, target, golden_dir, meta):
 
     # ---- Ask B: the September bridge. Every stop moves its bars by more than 0.5 per cent of the golden bar
     GB = g["bridge"]
+    # SF15: the prompt names the three bars and their order (put and call lines, then the other lines in replaced
+    # reports, then lines matched back); the reverse order would move the first two bars by the option lines
+    # inside replaced reports, which the wording rules out
+    l3all = fr["inf"][fr["inf"].ACCESSION_NUMBER.isin(set(fr["f"][fr["f"].period == G.PERIOD["Q3"]].ACCESSION_NUMBER))]
+    exact = l3all[l3all.CUSIP.isin(cus)]
+    eff = g["readings"][("cover", "num", "all")]["eff"]
+    opt_in_replaced = int(exact[G.is_option(exact) & ~exact.ACCESSION_NUMBER.isin(eff)].SSHPRNAMT.sum())
+    ok(GB["options"] == int(exact[G.is_option(exact)].SSHPRNAMT.sum()), "SF15 the put and call bar takes every option line")
+    ok(opt_in_replaced > 0 and GB["superseded"] + opt_in_replaced == int(exact[~exact.ACCESSION_NUMBER.isin(eff)].SSHPRNAMT.sum()),
+       "SF15 the replaced-report bar takes only the other lines")
+    LOG["sf15_reverse_order"] = dict(replaced_first=-(GB["superseded"] + opt_in_replaced), options_after=-(GB["options"] - opt_in_replaced))
     BARS = ("raw", "options", "superseded", "cusip_repaired", "conformed")
     SB = g["stops_b"]
     LOG["stops_b"] = {k: {x: int(SB[k][x] - GB[x]) for x in BARS} for k in SB}
@@ -492,6 +591,14 @@ def run(wd, g, target, golden_dir, meta):
     ok("The file layout is client flag file layout v4." in om4 and "layout v3" not in om4, "SF13 OM-4 s.8")
     lay = open(os.path.join(target, D.LAYOUT), encoding="utf-8").read()
     ok(lay.startswith("# Client flag file layout, v4") and "replaces v3" in lay, "SF13 layout header")
+    # ---- realism sweep: no round headline total, no share count repeated across periods or round
+    for x in ("raw", "conformed", "superseded", "cusip_repaired"):
+        ok(g["bridge"][x] % 1000 != 0, f"bridge {x} is a round total")
+    ok(g["bridge"]["options"] % 100 == 0 and g["bridge"]["options"] % 100_000 != 0, "option lines in whole contracts")
+    for c in cus:
+        cs = [g["S_jun"][c], g["S_sep"][c], g["S_dec"][c]]
+        ok(len(set(cs)) == 3, f"{ids[c]} repeats a share count across periods")
+        ok(all(v % 1000 != 0 for v in cs), f"{ids[c]} round share count")
     # ---- input gates
     files = [os.path.join(dp, fn_) for dp, _, fns in os.walk(target) for fn_ in fns]
     ok(len(files) >= 10, "file count")

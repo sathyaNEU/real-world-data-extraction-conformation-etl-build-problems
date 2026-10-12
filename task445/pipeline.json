@@ -2,9 +2,9 @@
   "task": "task445",
   "domain": "quantitative-finance",
   "objective": "data-extraction-conformation",
-  "stage": 3,
-  "stage_name": "build (hardening loop 2), paused mid-build: checks red at the DV separation assert",
-  "updated": "2026-10-11",
+  "stage": 5,
+  "stage_name": "shipped (hardening loop 2)",
+  "updated": "2026-10-12",
   "branch": "oviya1301/task445-hardening",
   "stump": "Solvers execute OM-4 s.2 literally, see the filed index and ETF sponsors grow while every other register type holds flat, grow each of the 129 managers still due by its type's change pooled across the twelve names (round 3's basis), see it win every basis the default path builds in the September back-test, and flag WHII, GLI, JEMS and SAF (OTF about 79.2); an index sponsor holds a fixed slice of each company, so its shares move with each name's own share count as well as its creations, and the filed criterion selects growing each sponsor still due by the change its filed peers show in that name (OTF's October follow-on +4.6 per cent), every other type flat, which flags WHII, GLI, OTF, JEMS and SAF.",
   "architecture": 1,
@@ -37,11 +37,11 @@
     }
   },
   "leak": {
-    "leak_py": "REVIEW (0 LEAK) on the ask-layer rebuild",
-    "reader": "loop 1: Q1 to Q4 none; Q5 open candidate list closed by asserted separation (0.042 vs 0.813) and variant convergence"
+    "leak_py": "REVIEW (0 LEAK) at --asof 2023-02-03 on the loop 2 build",
+    "reader": "loop 2: two isolated reads (before and after the prompt's bridge sentence changed): Q1 to Q4 none; Q5 literal readings execute to the golden population and bars; one realism tell fixed (cover-page ZIP codes)"
   },
   "duplicate_check": {
-    "heart": "BLOCK ban.forum vs task228 v2 (registration-order artifact, forced and noted)",
+    "heart": "BLOCK ban.org_family vs task230 v2 only (registration-order artifact; same pair waived by perssathya's author 2026-10-12); nearest driver 0.19 own lineage",
     "nearest": "task181: clean, shares components (pass 2)",
     "clone_check": "pass 2 CLEAN of reject tiers; Track B standing-ban hit: stump_strategy forecast_method_backtest consecutive with task446 (task445/clone_check_report_pass2.md)"
   },
@@ -112,15 +112,14 @@
     }
   ],
   "judge": {
-    "verdict": "DETERMINISTIC (pass 1 and pass 2)",
-    "disposition": "FIX_NOW twice, write-up wording only, both applied; no target, prompt or graded figure moved",
-    "report": "task445/determinism_check_report.md, task445/determinism_check_report_pass2.md",
-    "gate_g": "judge: forecasting (nowcast, method chosen by back-test), analytical_non_defect, surface_read_dependency no, sole_data_defect no; card: method_or_model_selection, same step",
-    "gate_h": "domain pass, layers pass, decisive_step analytical",
-    "note": "loop 0 pack; superseded by the portal's determinism fail"
+    "verdict": "pass 3 NOT_DETERMINISTIC (ask layer only); pass 4 DETERMINISTIC",
+    "disposition": "pass 3 SEND_BACK scoped to the ask layer, repaired in one pass (prompt bridge sentence, GLI and HAMR targets, SF14, SF15); pass 4 FIX_NOW write-up only (title line), applied",
+    "report": "task445/determinism_check_report_pass3.md, task445/determinism_check_report_pass4.md",
+    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "approved": null,
-  "delivered": "2026-10-11",
+  "delivered": "2026-10-12",
   "precut": {
     "exit": 0,
     "date": "2026-10-12"
@@ -155,8 +154,19 @@
     "ask_layer": "design kept; Ask A golden at the sep targets; DV-1 and DV-2 size search re-run by the builder; pair ceiling 35.0 (mirror now the type-pooled response, about 3 of 12 December figures in bin)",
     "guard": "check, register --force and heart: BLOCK ban.forum only (task228 v2, registration-order artifact, unchanged); WARN people.last Henderson, repeat.gate_g and repeat.decision vs task230 (answered); NOTE driver.near 0.19 vs own loop 1 driver (differentiated); heart nearest 0.05 (task107 v4 stump, task125 driver); validate 138 cards 0 invalid",
     "precut": "exit 0",
-    "next": "builder (fresh, medium effort) implements Generator changes items 1 to 10; then leak.py (no document or prompt change) and solver round 4"
+    "next": "builder (fresh, medium effort) implements Generator changes items 1 to 10; then leak.py (no document or prompt change) and solver round 4",
+    "build": {
+      "date": "2026-10-12",
+      "generator": "green, 26,973 checks (realism sweep added); verifier ok; two builds byte-identical; main call identical to generator/main_call_ref.json",
+      "devices": "DV1_T and DV2_O re-searched per name (scratch search, exact on the built pack): Ask A grid 2,012 cells, nearest 0.066 points and another bin; stops S1 +1.00 to +1.54, S2 +0.54 to +0.90, S3 +0.31 to +0.68, S4 -2.17 to -1.43; robust back-test margin 0.42",
+      "backtest": "golden 0.041 (variants 0.041, 0.042); type-pooled 0.661, all-securities 0.679, sponsors only 0.661; every other rival 0.923 to 34.3",
+      "bridge": "599,356,877 / -8,193,500 / -50,329,283 / +6,508,236 / 547,342,330, gap 52.0m",
+      "hamr": "September 52.475 (SEP_SLACK, the type balance); intended, not a bug",
+      "gates": "19 files, 7 formats, INFOTABLE 39,439 rows, 2 distractors; figures_check 0; voice-check 0; precut 0 (WARN mirror leakage figure); leak.py REVIEW (0 LEAK) at --asof 2023-02-03; guard surface clean (WARN people.last Henderson, answered); heart BLOCK ban.org_family vs task230 v2 only (registration-order artifact, the pair waived by perssathya's author 2026-10-12); validate 145 cards 0 invalid",
+      "repair": "judge pass 3: prompt names the bridge's three bars and order; GLI December target 84.43 to 84.39 and HAMR 55.20 to 55.22; SF14 near-argmin family (both peer readings) asserted, SF15 bar order asserted; cover-page ZIP codes from each city's range; main-call snapshot re-taken; 27,281 checks green, byte-identical"
+    }
   },
-  "status": "FAILED_TO_STUMP",
-  "owner": "oviya1301"
+  "status": "SHIPPED",
+  "owner": "oviya1301",
+  "resume": ""
 }

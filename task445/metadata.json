@@ -150,7 +150,7 @@
     {
       "path": "form13f_2022q4/INFOTABLE.tsv",
       "format": "tsv",
-      "bytes": 4038206,
+      "bytes": 4038204,
       "rows": 39439,
       "source": "Constructed: SEC Form 13F data set, filings submitted 1 Oct to 31 Dec 2022: information tables",
       "date": "2023-02-04",
