@@ -20,3 +20,4 @@ architecture), new. A task from an objective no developer owns says so.
 |---|---|
 | 1 | task445 (resume 3: hardening loop 2) · task118 (resume 3, Opportunity Sizing) · task128 (resume 3, Opportunity Sizing) · task447 (resume 2: the asks) · task446 (redesign: shipped, not stumped) · task123 (re-root: retired) |
 | 2 | task448 (new) · task449 (new) · task450 (new) · task451 (new) · task452 (new) · task453 (new) |
+| 3 | task454 (new) · task455 (new) · task456 (new) · task457 (new) · task458 (new) · task459 (new) |

@@ -4,7 +4,7 @@
   "objective": "data-extraction-conformation",
   "stage": 8,
   "stage_name": "shipped",
-  "updated": "2026-10-11",
+  "updated": "2026-10-12",
   "branch": "oviya1301/task446-lei-group-concentration",
   "stump": "A competent solver sets the probabilities from the share of flagged and of unflagged groups that reached the list over the four closed cohorts taken together (the hit and miss rates) and files 73, or, seeing that basis fail the standard's leave-one-cohort-out test by 40.6 per cent, trends those rates on the flagged share and files 147; only the basis that backs each year's share reaching out of its flagged share through the capture and false-alarm rates passes the test (worst miss 1.6 per cent) and gives 133.",
   "architecture": 2,
@@ -100,6 +100,8 @@
     "target_zip": "3035037 bytes, 17 members, matches target/ (H7); rebuild byte-identical (builder)"
   },
   "returns": 1,
-  "status": "FAILED_TO_STUMP",
-  "owner": "oviya1301"
+  "status": "SHIPPED",
+  "owner": "oviya1301",
+  "author_decision": "2026-10-12: kept as SHIPPED at the author's request; the FAILED_TO_STUMP rework (redesign) is not done and the portal record below is unchanged",
+  "resume": "closed by the author; no rework scheduled"
 }
