@@ -1,0 +1,195 @@
+{
+ "task": "task120",
+ "title": "The well capacity a university's campus water system must add before June 2027 so that its wells, with the largest out of service, would have met the most water the campus used on any day of the twelve months to September 2026, with the year's water audit",
+ "domain": "Energy Systems & Utilities",
+ "subdomain": "generation capacity planning (water source capacity against maximum-day demand)",
+ "objective": "Descriptive & Distribution Analysis",
+ "prompt_shape": "other: the call and its three components (the maximum day, the water used on it, the firm capacity), the water lost in each of twelve months with the year and its share and a bar per month, and the year's water used by four building groups",
+ "as_of": "2026-10-12",
+ "deliverables": [
+  "campus_water_capacity_2027.xlsx",
+  "sanitary_survey_response_2026.docx"
+ ],
+ "distractor_files": [
+  "weather_station_daily_2025-10_2026-09.csv",
+  "grounds_irrigation_programs_2026.xlsx",
+  "krbwa_2025_drinking_water_quality_report.pdf"
+ ],
+ "input_gates": {
+  "files": 17,
+  "formats": [
+   "csv",
+   "docx",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "scada_historian_export_2025-10-01_2026-10-01.csv",
+  "largest_file_rows": 237168
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task120/generator/make.py (seeded, deterministic) around a fictional university, its campus water system, borough and people; the Pennsylvania Department of Environmental Protection is named as the state regulator, and every record, reading and figure is invented.",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work)"
+  }
+ ],
+ "created": "2026-10-12",
+ "generator": "task120/generator/make.py",
+ "files": [
+  {
+   "path": "amr_monthend_reads_2025-10_2026-10.csv",
+   "format": "csv",
+   "bytes": 47502,
+   "rows": 1072,
+   "source": "Constructed: AMR fixed network month-end register reads, 1 October 2025 to 1 October 2026",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "campus_water_records_field_guide.txt",
+   "format": "txt",
+   "bytes": 3028,
+   "rows": null,
+   "source": "Constructed: Field guide to the water records",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "campus_water_system_facilities_summary_2026.docx",
+   "format": "docx",
+   "bytes": 22049,
+   "rows": null,
+   "source": "Constructed: Campus water system facilities summary (revised July 2026)",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "cmms_water_work_orders_2025-10-01_2026-10-09.csv",
+   "format": "csv",
+   "bytes": 46350,
+   "rows": 329,
+   "source": "Constructed: CMMS water work orders, opened 1 October 2025 to 9 October 2026",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "dep_sanitary_survey_letter_2026-09-15.pdf",
+   "format": "pdf",
+   "bytes": 4316,
+   "rows": null,
+   "source": "Constructed: State drinking water program's 2026 sanitary survey letter (15 September 2026)",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "grounds_irrigation_programs_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 9089,
+   "rows": null,
+   "source": "Constructed: Grounds Department irrigation controller programs, 2026 season",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "krbwa_2025_drinking_water_quality_report.pdf",
+   "format": "pdf",
+   "bytes": 4499,
+   "rows": null,
+   "source": "Constructed: Borough water authority's 2025 drinking water quality report",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "meter_inventory_2026-10-08.xlsx",
+   "format": "xlsx",
+   "bytes": 13282,
+   "rows": null,
+   "source": "Constructed: Meter shop's meter inventory (8 October 2026)",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "scada_export_readme.txt",
+   "format": "txt",
+   "bytes": 1133,
+   "rows": null,
+   "source": "Constructed: Readme of the SCADA historian export",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "scada_historian_export_2025-10-01_2026-10-01.csv",
+   "format": "csv",
+   "bytes": 8776129,
+   "rows": 237168,
+   "source": "Constructed: Water SCADA historian export: hourly samples of 27 tags, 1 October 2025 to 1 October 2026 (UTC)",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "scada_tag_list.csv",
+   "format": "csv",
+   "bytes": 1864,
+   "rows": 27,
+   "source": "Constructed: Water SCADA tag list",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "service_line_inventory_2024-10-15.csv",
+   "format": "csv",
+   "bytes": 13817,
+   "rows": 145,
+   "source": "Constructed: Service line inventory filed 15 October 2024",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "space_inventory_buildings_2026-09-30.xlsx",
+   "format": "xlsx",
+   "bytes": 10470,
+   "rows": null,
+   "source": "Constructed: Office of Space Management building inventory (30 September 2026)",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "survey_response_records_index.csv",
+   "format": "csv",
+   "bytes": 2214,
+   "rows": 16,
+   "source": "Constructed: Records index of the survey response",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "water_operators_daily_log_2025-10_2026-10.xlsx",
+   "format": "xlsx",
+   "bytes": 46634,
+   "rows": null,
+   "source": "Constructed: Water operators' daily log, October 2025 to 11 October 2026",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "weather_station_daily_2025-10_2026-09.csv",
+   "format": "csv",
+   "bytes": 12474,
+   "rows": 365,
+   "source": "Constructed: Campus weather station daily record, October 2025 to September 2026",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "well_pump_tests_2021-2026.xlsx",
+   "format": "xlsx",
+   "bytes": 8745,
+   "rows": null,
+   "source": "Constructed: Well pump test records 2021 to 2026 and well data",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  }
+ ]
+}

@@ -1,36 +1,37 @@
 {
   "task": "task120",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "energy-systems-utilities",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design (architecture 3)",
+  "stage": 5,
+  "stage_name": "shipped (architecture 3)",
   "updated": "2026-10-12",
-  "stump": "A competent analyst differences the operators' daily log into each day's well production, takes the largest day (about 4.15 million gallons on 21 August 2026) as the maximum-day demand and files no added well capacity against a firm capacity of about 4.20 million gallons a day, where the campus used about 4.47 million gallons on 20 August (about 180 gpm short) once each day's storage change is taken off production",
+  "stump": "A competent solver differences the operators' daily log into each day's well production, takes the largest day (4,136,417 gallons on 21 August 2026) as the most water the campus used on any day and, against the firm capacity of 4,204,800 gallons a day, files that the campus needs no added well capacity, where the golden is 184 gpm (the campus used 4,469,527 gallons on 20 August); the step that lands it there is reading the wells' production as the campus's use, when on the peak day the tanks gave up 752,881 gallons the wells never pumped and the default's own largest day is the day the wells refilled them.",
   "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (2026-10-12, --asof 2026-10-12)",
+    "reader": "three passes (Sonnet, medium): questions 1 to 4 none each pass; realism tells fixed in the generator; no main-call fork beyond the closed estimand"
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN, nearest 0.08 task63 v3 stump",
+    "surface": "promoted task254 (gap key) and task118 (gap and G5), drivers differ (card differentiation)",
     "nearest": "task106 0.07, task134 v2 0.06, task98 v1 0.06, task89 v12 0.05"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task120/determinism_check_report.md (Gate G decomposition_attribution, analytical_non_defect)"
   },
   "returned": [],
-  "resume": "stage 2: design the campus water system build (readability screen, fork table, ladder, closure, ask sheet, prompt.txt) to precut.py exit 0",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "history": {
     "architecture_1": "DA01 household-unit income tier floors: built, solved in-house (round 1 plain 96.8), retired by the author 2026-10-09",
@@ -51,5 +52,13 @@
       "approved": "2026-10-09 (checkpoint B waived by the author; heart PASS)",
       "source_note": "analytical_tasks/03_descriptive_distribution/DA01_revenue-tiers-household-unit-dependent-returns.md"
     }
+  },
+  "build": {
+    "checks": 1487,
+    "composition_cells": 608,
+    "verifier": "green",
+    "byte_identical": true,
+    "figures_check": "PASS 53 of 53",
+    "target_zip_bytes": 1280136
   }
 }

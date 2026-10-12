@@ -1,0 +1,258 @@
+{
+ "call_gpm": 184,
+ "gap_gpm": "183.84",
+ "maximum_day": "August 20, 2026",
+ "maximum_day_iso": "2026-08-20",
+ "water_used_on_maximum_day": "4,469,527",
+ "production_on_maximum_day": "3,716,646",
+ "tanks_gave_up_on_maximum_day": "752,881",
+ "maximum_day_demand_gpm": "3,103.8",
+ "minutes_a_day": 1440,
+ "w3_register_max": "99,999,999",
+ "annex_building_no": 47,
+ "firm_capacity_gpm": 2920,
+ "firm_capacity_gal_per_day": "4,204,800",
+ "tested_capacity_gpm": {
+  "W1": 1090,
+  "W2": 820,
+  "W3": 760,
+  "W4": 700,
+  "W5": 640
+ },
+ "largest_well": "W1",
+ "evaluation_days": 365,
+ "window": [
+  "October 1, 2025",
+  "September 30, 2026"
+ ],
+ "default_path": {
+  "day": "August 21, 2026",
+  "production": "4,136,417",
+  "gap_gpm": "-47.5",
+  "call": "none"
+ },
+ "rungs": {
+  "main_zone_tanks_only": {
+   "day": "2026-08-20",
+   "figure": "4,246,581",
+   "call_gpm": 30
+  },
+  "utc_days": {
+   "day": "2026-08-20",
+   "figure": "4,373,095",
+   "call_gpm": 117
+  },
+  "daily_mean_storage": {
+   "day": "2026-08-20",
+   "figure": "3,796,400",
+   "call_gpm": "none"
+  }
+ },
+ "grid": {
+  "none/local": {
+   "day": "2026-08-21",
+   "figure": "4,136,417",
+   "gap_gpm": "-47.5",
+   "call": "none"
+  },
+  "main/local": {
+   "day": "2026-08-20",
+   "figure": "4,246,581",
+   "gap_gpm": "29.0",
+   "call": 30
+  },
+  "all/local": {
+   "day": "2026-08-20",
+   "figure": "4,469,527",
+   "gap_gpm": "183.8",
+   "call": 184
+  },
+  "none/utc": {
+   "day": "2026-08-21",
+   "figure": "4,135,141",
+   "gap_gpm": "-48.4",
+   "call": "none"
+  },
+  "main/utc": {
+   "day": "2026-08-20",
+   "figure": "4,132,089",
+   "gap_gpm": "-50.5",
+   "call": "none"
+  },
+  "all/utc": {
+   "day": "2026-08-20",
+   "figure": "4,373,095",
+   "gap_gpm": "116.9",
+   "call": 117
+  },
+  "none/est": {
+   "day": "2026-08-21",
+   "figure": "4,136,066",
+   "gap_gpm": "-47.7",
+   "call": "none"
+  },
+  "main/est": {
+   "day": "2026-08-20",
+   "figure": "4,255,416",
+   "gap_gpm": "35.2",
+   "call": 36
+  },
+  "all/est": {
+   "day": "2026-08-20",
+   "figure": "4,414,348",
+   "gap_gpm": "145.5",
+   "call": 146
+  },
+  "main/mean": {
+   "day": "2026-08-21",
+   "figure": "3,845,529",
+   "gap_gpm": "-249.5",
+   "call": "none"
+  },
+  "all/mean": {
+   "day": "2026-08-20",
+   "figure": "3,796,400",
+   "gap_gpm": "-283.6",
+   "call": "none"
+  }
+ },
+ "rolling_24h": {
+  "figure": "4,469,527",
+  "start_utc": "2026-08-20T04:00:00+00:00"
+ },
+ "golden_day_production_rank": 3,
+ "second_largest_use": "3,757,396",
+ "water_lost_by_month": [
+  {
+   "month": "October 2025",
+   "used": "97,215,588",
+   "delivered": "87,965,860",
+   "lost": "9,249,728"
+  },
+  {
+   "month": "November 2025",
+   "used": "81,484,921",
+   "delivered": "72,792,221",
+   "lost": "8,692,700"
+  },
+  {
+   "month": "December 2025",
+   "used": "78,769,290",
+   "delivered": "69,784,219",
+   "lost": "8,985,071"
+  },
+  {
+   "month": "January 2026",
+   "used": "82,712,637",
+   "delivered": "73,365,911",
+   "lost": "9,346,726"
+  },
+  {
+   "month": "February 2026",
+   "used": "88,067,409",
+   "delivered": "79,799,959",
+   "lost": "8,267,450"
+  },
+  {
+   "month": "March 2026",
+   "used": "86,771,408",
+   "delivered": "77,740,022",
+   "lost": "9,031,386"
+  },
+  {
+   "month": "April 2026",
+   "used": "93,990,800",
+   "delivered": "84,501,884",
+   "lost": "9,488,916"
+  },
+  {
+   "month": "May 2026",
+   "used": "72,344,431",
+   "delivered": "62,248,646",
+   "lost": "10,095,785"
+  },
+  {
+   "month": "June 2026",
+   "used": "70,421,340",
+   "delivered": "58,301,951",
+   "lost": "12,119,389"
+  },
+  {
+   "month": "July 2026",
+   "used": "78,289,138",
+   "delivered": "63,252,421",
+   "lost": "15,036,717"
+  },
+  {
+   "month": "August 2026",
+   "used": "91,201,041",
+   "delivered": "76,754,032",
+   "lost": "14,447,009"
+  },
+  {
+   "month": "September 2026",
+   "used": "100,010,946",
+   "delivered": "89,142,611",
+   "lost": "10,868,335"
+  }
+ ],
+ "water_lost_year": "125,629,212",
+ "water_used_year": "1,021,278,949",
+ "delivered_year": "895,649,737",
+ "water_loss_percentage": "12.3",
+ "groups": {
+  "Residence halls": "280,319,280",
+  "Academic and research buildings": "366,798,732",
+  "Athletics facilities": "36,193,200",
+  "Central energy plant": "87,422,200"
+ },
+ "ask_stops": {
+  "sub_meters_summed": {
+   "year": "79,753,351",
+   "share": "7.8"
+  },
+  "vault_meters_missing": {
+   "year": "222,652,887",
+   "share": "21.8"
+  },
+  "both": {
+   "year": "176,777,026",
+   "share": "17.3"
+  },
+  "partials_dropped": {
+   "year": "135,876,252",
+   "share": "13.3"
+  },
+  "production_as_used": {
+   "year": "125,578,093",
+   "share": "12.3"
+  },
+  "groups_sub_meters_summed": {
+   "Residence halls": "291,430,218",
+   "Academic and research buildings": "375,311,504",
+   "Athletics facilities": "37,727,381",
+   "Central energy plant": "112,140,170"
+  },
+  "groups_building_47_current": {
+   "Residence halls": "281,842,750",
+   "Academic and research buildings": "365,275,262",
+   "Athletics facilities": "36,193,200",
+   "Central energy plant": "87,422,200"
+  },
+  "groups_annex_dropped": {
+   "Residence halls": "280,319,280",
+   "Academic and research buildings": "365,275,262",
+   "Athletics facilities": "36,193,200",
+   "Central energy plant": "87,422,200"
+  }
+ },
+ "pack": {
+  "scada_rows": 237168,
+  "amr_rows": 1072,
+  "amr_resent_rows": 0,
+  "cmms_rows": 329,
+  "meters": 99,
+  "sub_meters": 8,
+  "vault_meters": 9
+ }
+}

@@ -163,7 +163,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 117 | SHIPPED, delivered, pending review | SCL sourcing | FC | time population | E, A | draw caps via a dated join | - | - | 110 kW | none reported | - |
 | 118 | FAILED_TO_STUMP: backlog oviya1301 | MCR media | OPP | objective rule | none, C, B | gain only on volume tests have not banked | - | - | 1,250,000 clicks | none reported | oviya1301 |
 | 119 (v2) | SHIPPED, delivered, pending review | P&E mortality review | AD | objective population | C | beds held empty for planned work | - | - | Stennock | none reported | - |
-| 120 (v3) | drawing 10-12: re-root, architecture 3 | ENR campus water capacity | DESC | objective | none | a day's demand is production less what storage gained | - | - | added well capacity, gpm | none reported | sathay3012 |
+| 120 (v3) | SHIPPED, delivered 10-12, pending review | ENR generation capacity planning | DESC | objective | G5, G3 | a day's use is the wells' production less the water the four tanks gained between Eastern midnights, not the largest day of production (none against 184 gpm) | - | - | added firm well capacity, 184 gpm | none reported | sathay3012 |
 | 121 (v2) | FAILED_TO_STUMP: backlog sathay3012 | PA checkout | RCA | population time | none, A | signed-out customers own accounts | - | - | sprint target | not submitted | sathay3012 |
 | 122 (v2) | FAILED_TO_STUMP: backlog perssathya | PA experimentation | CEX | time rule | none, B | log keeps only pre-close outcomes | - | - | HC-37 | not submitted | perssathya |
 | 123 | FAILED_TO_STUMP: backlog oviya1301 | NPO grantee finance | ETL | time rule | B | trailing total over filed years only | - | - | 42.55 cents | not submitted | oviya1301 |

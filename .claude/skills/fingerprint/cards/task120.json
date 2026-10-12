@@ -8,11 +8,11 @@
   "client_domain": "energy-systems-utilities",
   "niche": "a public university's campus water utility answering the state drinking water program's sanitary survey: how much well capacity it must add before summer 2027 so that, with its largest well out of service, its wells meet the most water the campus used in a day in the twelve months to September 2026, read from the operators' daily log of well totalizers and the hourly SCADA levels of its four storage tanks",
   "objective": "descriptive-distribution",
-  "shape": "10",
+  "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "rate_or_share",
-  "answer": "Add about 180 gpm of firm well capacity before 1 June 2027 (prototype figure; stage 3 freezes it)",
-  "answer_source": "task120/DESIGN_NOTE.md, ## Default path (prototype scratchpad/t120/proto2.py)",
+  "answer": "The university has to add 184 gpm of firm well capacity to its campus water system before June 2027.",
+  "answer_source": "task120/submission.md, block 1 (Final Recommendation)",
   "gap": [
     "objective"
   ],
@@ -23,7 +23,7 @@
     "G5",
     "G3"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "decomposition_attribution",
   "calibration_form": "none",
   "stump_strategy": "other",
   "decisive_rule_filed": false,
@@ -34,8 +34,8 @@
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "campus_scada_hourly export (SCADA historian, hourly tag values)",
-    "rows": 0,
+    "file": "scada_historian_export_2025-10-01_2026-10-01.csv",
+    "rows": 237168,
     "entity": "one SCADA tag's value for one hour",
     "grain": "tag x hour",
     "source": "synthetic"
@@ -47,9 +47,15 @@
     "geography": "United States, Pennsylvania (a fictional public university campus)",
     "currency": "USD",
     "org_type": "a public university operating its own campus water system (wells, storage tanks, two pressure zones)",
-    "invented_names": [],
+    "invented_names": [
+      "Kettle Ridge University",
+      "Kettle Ridge Borough Water Authority",
+      "Larch Hall",
+      "North Commons",
+      "Centre Pump & Well Co."
+    ],
     "people": [
-      "Shelly Mccarthy",
+      "Shelly McCarthy",
       "Wayne Hicks",
       "Samuel Reyes",
       "Darrell Clark"
@@ -63,23 +69,26 @@
   "question_form": "how-much",
   "driver": "The decisive quantity is the most a population drew from a supply system in one period, which is what entered the system less what accumulated inside it; in the periods that matter the system's internal reserve was drawn down, so the inflow record understates the draw exactly when it peaks, and reading inflow as draw puts the peak, and any capacity sized on it, too low.",
   "driver_concrete": "The campus's maximum-day demand is the water its users took in a day, the wells' production less what the storage tanks gained; in the late-August heat and move-in, with the largest well out for rehabilitation, the tanks gave up water every day, so the daily well production in the operators' log understates the peak and only adding each day's storage drawdown (midnight tank levels through each tank's level-volume table) shows the campus used more than its firm capacity.",
-  "stump": "A competent solver differences the operators' daily log into each day's well production, takes the largest day (about 4.15 million gallons, on 21 August 2026) as the maximum-day demand and, against the firm capacity of about 4.20 million gallons a day, files that the campus needs no added well capacity, where the golden is about 180 gpm (the campus used about 4.47 million gallons on 20 August); the step that lands it there is reading the wells' production as the campus's use, when on the peak days the tanks gave up water the wells could not supply and the default's own maximum day is the day the wells refilled them. (prototype figures; stage 3 freezes them)",
+  "stump": "A competent solver differences the operators' daily log into each day's well production, takes the largest day (4,136,417 gallons on 21 August 2026) as the most water the campus used on any day and, against the firm capacity of 4,204,800 gallons a day, files that the campus needs no added well capacity, where the golden is 184 gpm (the campus used 4,469,527 gallons on 20 August); the step that lands it there is reading the wells' production as the campus's use, when on the peak day the tanks gave up 752,881 gallons the wells never pumped and the default's own largest day is the day the wells refilled them.",
   "stump_class": "analytical",
   "analyst_test": "An analyst who reads the daily log, the SCADA export, the well test records and the state's definitions correctly (local calendar days, tested capacities, the largest well out) and takes each day's well production as that day's demand files no shortfall, where the campus's use (production less the water the tanks gained) exceeded firm capacity on the late-August peak days; the reflexes on top of it (average day times a textbook peaking factor, the peak hour times 24, production plus the booster transfer) land on other wrong figures.",
   "domain_test": "The call turns on maximum-day demand, the water-system engineering quantity a source capacity evaluation is scored on: the water users took in a day, production adjusted for what storage gave up or gained; with another field's nouns there is no well field rated with its largest well out, no elevated storage riding through a peak, no pressure zones fed through a booster, and the task stops reading the same.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:maximum-day-demand-from-production-adjusted-for-storage",
   "layer1": [
-    "an operators' daily log kept as a workbook with a sheet per month: each well's cumulative totalizer reading at midnight (gallons, one register rolling over), run hours, and each tank's level in feet as read at midnight",
-    "an hourly SCADA historian export in long format (tag, timestamp in UTC, value, quality code) with its tag list and engineering units, covering well flows, tank levels, the booster station and pressures",
-    "the wells' annual pump-test records (tested against nameplate gallons per minute) and a rehabilitation work order that took the largest well out of service for part of August 2026",
-    "level-volume tables for the two elevated tanks (bowl geometry) beside the standpipe's and ground tank's dimensions",
-    "monthly campus building meter reads on cycle days with register multipliers, and the billing account list",
-    "the state's sanitary survey letter and design standard excerpts; distractors: the town utility's consumer confidence report and the grounds department's irrigation controller schedule"
+    "an operators' daily log kept as a workbook with a sheet per month: each well's cumulative totalizer at midnight (one register rolling over), run hours, chlorine and remarks",
+    "an hourly SCADA historian export in long format (tag, UTC timestamp, value, quality code) with a tag list and a readme: instantaneous levels and flows beside cumulative totalizers, a radio outage with held values, the two daylight-saving days",
+    "pump-test records against nameplate, with the largest well's August 2026 rehabilitation and retest",
+    "a facilities summary giving each storage tank's gallons per foot of level, zone and overflow",
+    "month-end AMR meter reads by endpoint and meter, a meter inventory with register multipliers, removals and change-outs, and CMMS work orders carrying the vault meters' manual reads",
+    "a building inventory with a removed-buildings sheet (a building number reissued to the building that replaced it) and the 2024 lead service line inventory",
+    "distractors: the campus weather station's daily record, the grounds irrigation controller schedule, the borough's consumer confidence report"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
-    "task89": "task89 v12 takes a trailing rate from a stock's change, already net of dated inflows, and rolls the stock forward to a first passage (gap time, forecasting); here a day's draw is the inflow less the stock's gain and the default reads the inflow alone (gap objective, descriptive)"
+    "task89": "task89 v12 takes a trailing rate from a stock's change, already net of dated inflows, and rolls the stock forward to a first passage (gap time, forecasting); here a day's draw is the inflow less the stock's gain and the default reads the inflow alone (gap objective, descriptive)",
+    "task118": "task118 sizes the clicks a headline squad adds beyond the gain each desk already banks through its own tests (a decomposition of a measured effect, gate decomposition_attribution); here a day's use is the wells' production less what the storage tanks gained (a supply-and-use balance, no attribution)",
+    "task254": "task254 composes a shuttle trip day by day through segment times that change as a queue grows (time-dependent construction of a travel time); here a day's water use is production less the storage gained between two midnights (a mass balance over a closed day)"
   },
   "lineage": [
     {
@@ -135,5 +144,5 @@
       "stump": "A competent solver sums the TY2025 household floors as the TY2026 schedule, missing the joint-return netting of limited losses across spouses."
     }
   ],
-  "notes": "Re-root of the retired DA01 slot on 2026-10-12. stump_strategy other: a mass balance (the use a system served is its inflow less what its storage gained), none of the listed families; not population, grain or time: every row is read at its own grain and date, and the error is taking a correct production record for the quantity the decision is scored on. subdomain generation-capacity-planning: the client's Energy Systems & Utilities capacity-planning task type, here source (well) capacity against peak demand in a water utility. Gap objective: production is correct and is not what the capacity check is scored on. G5 provision elsewhere: the peak-day need was met partly from storage, which the production record cannot see; G3 record versus operation under it."
+  "notes": "Re-root of the retired DA01 slot on 2026-10-12. stump_strategy other: a mass balance (the use a system served is its inflow less what its storage gained), none of the listed families; not population, grain or time: every row is read at its own grain and date, and the error is taking a correct production record for the quantity the decision is scored on. subdomain generation-capacity-planning: the client's Energy Systems & Utilities capacity-planning task type, here source (well) capacity against peak demand in a water utility. Gap objective: production is correct and is not what the capacity check is scored on. G5 provision elsewhere: the peak-day need was met partly from storage, which the production record cannot see; G3 record versus operation under it. Shape other (2026-10-12 design): the criteria come from the call and its three components, a twelve-month water-loss series with its year, share and bars, and four building groups' year (28); shape 10 was the draw's first key. Gate G relabelled decomposition_attribution on 2026-10-12, the determinism judge's key for the decisive step (the day's production split into the water used and the water the tanks kept); fingerprint Part 4: where two keys fit, the reviewer's."
 }
