@@ -1,5 +1,5 @@
 """task137 generator checks: the call and its bins, the ladder and every rival the design note names, the estimator
-corridor, every semantic fork row (SF1 to SF17), the domain claims the note and write-up make, the asks' goldens,
+corridor, every semantic fork row (SF1 to SF21), the domain claims the note and write-up make, the asks' goldens,
 stops and devices, the separation and distractor deletion tests, the input gates, the realism sweep and the goldens'
 agreement with figures.json. Run by build.py on the built pack; raises on the first failure and prints the count of
 assertions passed."""
@@ -203,7 +203,7 @@ def run(target, golden, Wd=None, H=None, meta_path=None):
     yrs = raw["term_months"].astype(int) // 12
     ok(all((m_.year - s_.year == y_) and (m_.month == s_.month) for s_, m_, y_ in zip(st_, mt, yrs)),
        "SF17 a term disagrees with its dates")
-    for sf in range(1, 18):
+    for sf in range(1, 22):
         ok(("SF%d" % sf) in open(__file__).read(), "SF%d not asserted" % sf)
 
     # ------------------------------------------------------------------ domain claims in the note and write-up
@@ -233,8 +233,11 @@ def run(target, golden, Wd=None, H=None, meta_path=None):
     ok(max(per.values()) < g * 60 / len(F), "a past campaign used more minutes per listed deposit than the forecast")
     ok(len(set(listed.values)) == len(listed), "identical list sizes across campaigns")
     share = G["ret"] / G["conv"]
-    ok(figs["components"]["retention_share_pct"] == "%d" % (5 * int(np.floor(100 * share / 5 + 0.5))), "share figure")
-    ok(abs(100 * share - int(figs["components"]["retention_share_pct"])) < 2.5, "about 60 per cent")
+    ok(figs["components"]["retention_share_pct"] == "%d" % int(np.floor(100 * share + 0.5)), "share figure")
+    ok(room(100 * share, 1.0) >= 0.2, "the list's retention share %.2f within 0.2 of a rounding edge" % (100 * share))
+    ok(figs["steps"]["non_reaching_dials"] == "{:,}".format(GD.n100(G["nr"])), "non-reaching dials figure")
+    ok(figs["components"]["expected_conversations"] == "{:,}".format(GD.n500(G["conv"])) ==
+       "{:,}".format(GD.n100(G["conv"])), "expected conversations figure")
     ok(figs["components"]["no_callable_number"] == "{:,}".format(int((F["cfg"] == "").sum())), "no callable count")
     ok(figs["steps"]["release_share_pct"] == "%.1f" % (100 * R), "release share")
 
@@ -286,6 +289,38 @@ def run(target, golden, Wd=None, H=None, meta_path=None):
     fresh = set(opens) - set(tr.loc[tr["narrative"] == "MATURITY PROCEEDS", "to_account"])
     ok(len(fresh) > 200, "ask A holders opened no deposits with new money (%d)" % len(fresh))
     hold = A["hold"]
+
+    # ------------------------------------------------------------------ ask A readings (SF18 to SF21)
+    prompt = open(os.path.join(os.path.dirname(golden), "prompt.txt"), encoding="utf-8").read()
+    ok("30 days after maturity, counting a deposit if any of its principal was, and only the part that was;" in prompt,
+       "SF18 the prompt's clause")
+    ok(st["A"]["clause"] == ga, "SF18 the clause executed on the extracts is not the golden")
+    part = 0
+    for a, prin, m in zip(lists["account"], lists["principal"], lists["maturity"]):
+        moved = [am for to, am in out.get((a, m.date()), []) if to in opens and opens[to][0] == m.date()]
+        part += bool(moved) and abs(sum(moved) - prin) > 0.005
+    ok(part > 1000, "SF18 few deposits moved part of their principal (%d)" % part)
+    for q in W.PAST:
+        n_, a_ = ga[q]
+        n2, a2 = st["A"]["fullonly"][q]
+        ok(n2 < n_ and k1000(a2) < k1000(a_), "SF18 counting only deposits kept whole lands %s" % q)
+        n2, a2 = st["A"]["fullprin"][q]
+        ok(n2 == n_ and k1000(a2) > k1000(a_), "SF18 the whole principal of a part kept lands %s" % q)
+    listed_accts = set(lists["account"])
+    kic_accts = set(hold.loc[hold["product"] == "KIC", "account"]) | set(A["kip"]["cert_no"])
+    from_listed = tr[tr["from_account"].isin(listed_accts)]
+    ok(not from_listed["to_account"].isin(kic_accts).any() and
+       not from_listed["to_account"].str.endswith(W.KIC_SUFFIX).any(),
+       "SF19 a listed deposit's principal reached an investment certificate")
+    ok("principal on term deposits and investment certificates together" in prompt,
+       "SF19 the prompt names term deposits and investment certificates apart")
+    td_accts = set(ev["account"])
+    into_td = from_listed[from_listed["to_account"].isin(td_accts)]
+    ok(len(into_td) > 1000 and all(to in opens and opens[to][0].isoformat() == d_
+                                   for to, d_ in zip(into_td["to_account"], into_td["value_date"])),
+       "SF20 a listed deposit's principal went into a term deposit not opened that day")
+    ok(not lists.duplicated(["campaign", "customer_no"]).any(), "SF21 a holder with two deposits on one list")
+    ok(all(st["A"]["holder"][q][0] > ga[q][0] for q in W.PAST), "SF21 the holder's new money changes no count")
     fwd = A["fwd"].set_index("account")
     hd = hold.drop_duplicates("account").set_index("account")
     ok(set(fwd.index) <= set(hd.index), "ask B a listed deposit is missing from the holdings view")

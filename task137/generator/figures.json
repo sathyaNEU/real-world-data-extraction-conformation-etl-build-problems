@@ -15,7 +15,7 @@
   "drop_points": "2.50",
   "past_share_at_2_5_or_more_pct": "92",
   "expected_conversations": "14,000",
-  "retention_share_pct": "60",
+  "retention_share_pct": "62",
   "past_pooled_share_pct": "33"
  },
  "steps": {
@@ -26,7 +26,7 @@
    "March": "6,739"
   },
   "release_share_pct": "95.5",
-  "non_reaching_dials": "67,500",
+  "non_reaching_dials": "67,400",
   "past_conversations": "45,044",
   "past_conversations_at_2_5_or_more": "1,394",
   "past_share_negative_drop_pct": "0.1",

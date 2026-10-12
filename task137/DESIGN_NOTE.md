@@ -201,6 +201,13 @@ will use under the SOW, and only the data's structure separates them (Literal re
 | SF15 | a dial that does not reach the holder | NOA, BSY, VML, DIS and WNG, at 1.5 minutes | wrong party as a conversation | SOW schedule 2 and 3 |
 | SF16 | the dialling calendar | no listed deposit has fewer dialling days between release and maturity than the six dials per number need | maturity truncating dials | C1, asserted over every maturity date with Harbourline's close-down and public holidays |
 | SF17 | a deposit's term | the list's term | term from the start and maturity dates | the same on every row (C1, asserted) |
+| SF18 | Ask A: a deposit that moved part of its principal into a new term deposit at maturity and paid the rest out (4,890 listed deposits, 4,791 of them still there at 30 days) | counted, at the part on term deposit 30 days after maturity | counted only when kept whole: 5,889, 6,338, 6,170, 6,218, 6,142, 6,252 and 6,340 deposits, every count 9 to 11 per cent low and every amount 6 to 7 per cent low; counted at its whole principal: the counts land, every amount 3.1 to 3.8 per cent high; at the new deposit's whole principal, new money included: every amount 1.1 to 1.3 per cent high | the prompt's clause (counting a deposit if any of its principal was, and only the part that was); executed on the extracts it files the golden, and each reading misses a graded figure in every campaign (asserted) |
+| SF19 | Ask A: principal switched into an investment certificate at maturity | not on term deposit | counted as kept | same answer: no listed deposit's principal reaches a certificate (C1, asserted); the prompt names term deposits and investment certificates apart (Ask B) |
+| SF20 | Ask A: principal paid into the holder's other term deposit | on term deposit with us, so counted (the clause) | only a term deposit opened that day counts | same answer: every payment of a listed deposit's principal into a term deposit goes to one opened that day (C1, asserted); the clause run over every account of the events extract files the golden |
+| SF21 | Ask A: the unit counted | per deposit, the list's grain | per holder; or a deposit counted kept when its holder opened any term deposit within 30 days | same answer per holder: no holder has two deposits on one campaign's list (C1, asserted); a holder's other new deposit is new money, not the deposit's principal (the clause), and that reading puts every count 34 to 59 high (asserted) |
+
+SF18 to SF21 are Ask A's readings: SF18 the partial-move fork the judge found at stage 4, SF19 to SF21 the leak reader's
+readings of "still on term deposit with us 30 days after maturity".
 
 ## Ladder
 
@@ -324,7 +331,10 @@ amounts to the nearest NZ$1,000; 14 figures).
   (NZ$503,624,000), 6,933 (NZ$512,433,000), 7,001 (NZ$521,207,000).
 - Construction: per listed deposit, a REINVEST on its own account at that maturity and no BREAK or CLOSE in the 30 days
   after; otherwise the maturity proceeds transferred that day to term deposits opened that day and still open at 30
-  days, at the amount transferred; counted once per deposit.
+  days, at the amount transferred; counted once per deposit. The prompt's clause (counting a deposit if any of its
+  principal was, and only the part that was) files the partial moves (SF18). It says principal, not the transfer
+  extract's MATURITY PROCEEDS, so it points at no file; it narrows the whole-principal stop (a response reading "only
+  the part" takes the amount transferred), and the own-account cracker is untouched.
 - Primary device (D7, the true key elsewhere, a prior-id chain): a holder who changes term or amount at maturity does not
   reinvest on the old account; the core pays the old account out, closes it and opens a new term deposit funded by an
   internal transfer. The old account's events read exactly like a payout; only the transfer extract's from and to
@@ -416,12 +426,12 @@ Pair ceiling: 33.4
 
 ## Prompt
 
-`prompt.txt` (voice-check.py exit 0, 847 characters): how many agent-hours to book for the 18,400 deposits on the
+`prompt.txt` (voice-check.py exit 0, 923 characters): how many agent-hours to book for the 18,400 deposits on the
 January to March 2027 list; td_booking_q1_2027.xlsx with the hours for the deposits maturing in each month, Ask A for
-the seven campaigns and Ask B for the quarter's maturities; td_booking_note_q1_2027.docx opening with the booking and
-charting the hours by maturity month; hours to the nearest 250, deposits whole and dollars to the nearest thousand, in
-the last sentence. It names no method, convention, input file, standard or person, and nothing about rates, drops or
-the retention offer.
+the seven campaigns (with one clause: counting a deposit if any of its principal was, and only the part that was, SF18)
+and Ask B for the quarter's maturities; td_booking_note_q1_2027.docx opening with the booking and charting the hours by
+maturity month; hours to the nearest 250, deposits whole and dollars to the nearest thousand, in the last sentence. It
+names no method, convention, input file, standard or person, and nothing about rates, drops or the retention offer.
 
 ## Build record
 
@@ -448,6 +458,24 @@ the retention offer.
   any conditioning of the share; the dates after 4 November 2026 are maturity dates of deposits and certificates still
   running, forward-looking by nature.
 
+### Stage 4
+
+- Judge: DETERMINISTIC, FIX_NOW (`determinism_check_report.md`), applied in one generator pass: the list's
+  share of conversations to the retention offer and its non-reaching dials now read 62 per cent and 67,400 (62.1 and
+  67,354.8 unrounded) in figures.json, the write-up and the note; the Final Recommendation's two rival sentences
+  rewritten; the incidental 0.1 per cent dropped from step 3; the judge's Ask A fork (partial moves) closed by the
+  prompt's clause and SF18. The booking, its months and every Deliverable Answer are unchanged; the only main-side
+  figure that moved is that share, 60 to 62 (Tried and rejected); target/ is byte-identical to the stage 3 build.
+- Leak reader, solver's-eye read: Q1 to Q4 none, and its REVIEW lines are the harmless ones answered above (the 3.15
+  posted rate, the domain's shared nouns, maturity dates after 4 November).
+- Left as is: every January list opens on 3 January maturities (the society opens no deposit on 1 or 2 January, so no
+  anniversary falls on either), and the thread's last email is dated 4 November 2026 at 9.12 am NZDT against file times
+  of 3 November 20:35 UTC (9.35 am on 4 November in Tauranga), the same morning as the extracts.
+- The reader's per-month against total rounding reading is closed by SF13: each month rounds from its own hours, and
+  the rounded months add to the rounded booking, 5,500.
+- The reader's readings of "still on term deposit" (a switch to a certificate, a transfer to the holder's other term
+  deposit, per deposit or per holder) are SF19 to SF21, each the same answer on the extracts and asserted.
+
 ## Tried and rejected
 
 - The seed's architecture (FC08): the vendor's standard dialling rules withheld from the contract and recovered from its
@@ -472,3 +500,13 @@ the retention offer.
   narrated Ask B's overlap; the notes now describe the files' fields only.
 - Forum `line_manager_or_team` (the head of deposits signing the block order alone): task136 moved its forum to the same
   key after this card was registered, and `ban.forum` blocked; the Deposits Committee now approves the block.
+- Write-up figures rounded coarser than they read: the list's retention-offer share to the nearest 5 per cent (60,
+  against 62.1) and its non-reaching dials to the nearest 500 (67,500, against 67,354.8); the judge read both as wrong.
+  Now whole per cent and nearest 100 (62, 67,400), with freeze.py allowing the two keys
+  (`components.retention_share_pct`, `steps.non_reaching_dials`); the Final Recommendation and Critical Components move
+  only by that 60 to 62.
+- The judge's wording for the Ask A clause (a deposit counts if any of its maturity proceeds were in a society term
+  deposit, its principal the amount in term deposit then): "maturity proceeds" is the transfer extract's narrative and
+  points at Ask A's device, and "the amount on term deposit then" reads as the new deposit's whole balance, new money
+  included (the whole-principal stop). Filed as: counting a deposit if any of its principal was, and only the part that
+  was.

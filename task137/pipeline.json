@@ -15,20 +15,20 @@
     "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-12 (25 lines, no LEAK; each answered in the design note build record)",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-12 (25 lines, no LEAK; each answered in the design note build record; the same 25 lines after the FIX_NOW rebuild)",
+    "reader": "2026-10-12, stage 3 pack: Q1 to Q4 none, REVIEW lines harmless, readings raised closed (SF13, SF18 to SF21); the prompt has since gained the ask 3 clause, so it re-reads with the re-judge"
   },
   "duplicate_check": {
     "heart": "WARN 2026-10-12 (repeat.gate_g only, answered in the design note; ban.forum against task136 cleared by redrawing the forum to committee_or_panel)",
     "nearest": "0.07 task136 (stump); surface exit 0, 4 promoted on card axes (task117, task37, task97, task44), differentiated on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "FIX_NOW, applied 2026-10-12; re-judge once",
+    "report": "task137/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: re-judge once on the FIX_NOW pass (ask 3 clause in the prompt, SF18 to SF21; write-up share 62 per cent, dials 67,400); the leak reader re-reads beside it because the prompt changed",
   "approved": null,
   "delivered": null,
   "portal": null,

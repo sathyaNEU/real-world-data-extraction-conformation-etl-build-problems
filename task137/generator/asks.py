@@ -69,9 +69,16 @@ def ask_a(A, mode="golden"):
     """mode: golden; own (the deposit's own account only); holder (own-account reinvestments plus any term deposit
     the holder opened within 30 days after maturity, at its whole principal); whole (proceeds followed into new term
     deposits but each counted at its whole opening principal); nobreak (the golden without the 30-day survival check);
-    anyreinv (the golden with a reinvestment found anywhere on the account, not at this maturity)."""
+    anyreinv (the golden with a reinvestment found anywhere on the account, not at this maturity); fullonly (the
+    golden, a deposit counted only when all its principal stayed on term deposit); fullprin (the golden, a deposit that
+    moved part of its principal counted at its whole principal); clause (the prompt's clause executed on the extracts:
+    a deposit counts when any of its principal sits on a term deposit with the society 30 days after maturity, on its
+    own account after a reinvestment or paid out of it in the 30 days into any account of the term deposit events
+    extract, opened that day or not, and only that part counts)."""
     reinv, gone, opens, by_holder, out = _index(A)
     reinv_any = {a for a, _ in reinv}
+    if mode == "clause":
+        td_accts = set(A["events"]["account"])
     lists = A["lists"]
     res = {}
     for q in W.PAST:
@@ -91,10 +98,20 @@ def ask_a(A, mode="golden"):
                 for d, acct, am in by_holder.get(cust, []):
                     if m <= d <= lim and acct != a and alive(acct):
                         kept += am
-            elif mode in ("golden", "whole", "nobreak", "anyreinv") and kept == 0.0:
+            elif mode == "clause" and kept == 0.0:
+                for k in range(DAYS + 1):
+                    for to, am in out.get((a, m + dt.timedelta(days=k)), []):
+                        if to in td_accts and to != a and alive(to):
+                            kept += am
+            elif mode in ("golden", "whole", "nobreak", "anyreinv", "fullonly", "fullprin") and kept == 0.0:
                 for to, am in out.get((a, m), []):
                     if to in opens and opens[to][0] == m and alive(to):
                         kept += opens[to][1] if mode == "whole" else am
+                if kept > 0 and abs(kept - prin) > 0.005:
+                    if mode == "fullonly":
+                        kept = 0.0
+                    elif mode == "fullprin":
+                        kept = prin
             if kept > 0:
                 n += 1
                 amt += kept
@@ -139,5 +156,5 @@ def all_stops(A):
     return dict(A={m: ask_a(A, m) for m in A_MODES}, B={m: ask_b(A, m) for m in B_MODES})
 
 
-A_MODES = ("golden", "own", "holder", "whole", "nobreak", "anyreinv")
+A_MODES = ("golden", "own", "holder", "whole", "nobreak", "anyreinv", "fullonly", "fullprin", "clause")
 B_MODES = ("golden", "rows_both", "dedup_both", "dedup_core", "rows_core", "deferred")

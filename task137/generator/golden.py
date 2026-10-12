@@ -38,6 +38,10 @@ def n500(x):
     return int(np.floor(x / 500.0 + 0.5) * 500)
 
 
+def n100(x):
+    return int(np.floor(x / 100.0 + 0.5) * 100)
+
+
 def c(x):
     return "{:,}".format(int(x))
 
@@ -83,14 +87,14 @@ def figures(c_):
             "drop_points": "%.2f" % (5.65 - c_["card4"]),
             "past_share_at_2_5_or_more_pct": "%d" % int(np.floor(100 * c_["share_hi"] + 0.5)),
             "expected_conversations": c(n500(G["conv"])),
-            "retention_share_pct": "%d" % (5 * int(np.floor(100 * share / 5 + 0.5))),
+            "retention_share_pct": "%d" % int(np.floor(100 * share + 0.5)),
             "past_pooled_share_pct": "%d" % int(np.floor(100 * c_["pooled"] + 0.5)),
         },
         "steps": {
             "listed_deposits": c(len(c_["F"])),
             "deposits_by_month": {MONTHS[k]: c(pm[k]["deposits"]) for k in (1, 2, 3)},
             "release_share_pct": "%.1f" % (100 * G["R"]),
-            "non_reaching_dials": c(n500(G["nr"])),
+            "non_reaching_dials": c(n100(G["nr"])),
             "past_conversations": c(c_["n_conv_past"]),
             "past_conversations_at_2_5_or_more": c(c_["n_hi"]),
             "past_share_negative_drop_pct": "%.1f" % (100 * c_["share_neg"]),

@@ -30,10 +30,10 @@ def render(f):
     out.append("About %s per cent of the list's expected %s conversations will go to the %s-minute retention offer, "
                "against %s per cent across the seven closed campaigns, because %s of the deposits are four-year "
                "deposits at %s per cent reinvesting at the %s per cent four-year card, a drop of %s points. Not the "
-               "hours from the past share of conversations that went to the retention offer, pooled, from the latest "
-               "campaign or by term, which is the share of deposits that met smaller drops (the past four-year "
-               "deposits had locked in low rates). Not the share by each deposit's locked rate, which past deposits at "
-               "that rate earned on smaller drops.\n" % (
+               "past share of conversations that went to the retention offer, whether pooled, from the latest campaign "
+               "or by term: it was measured on holders who met smaller drops, since the four-year deposits called so "
+               "far had been opened at lower rates. Not the past share for deposits at the same locked rate, which was "
+               "also measured on smaller drops.\n" % (
                    comp["retention_share_pct"], comp["expected_conversations"], ru["minutes_retention"],
                    comp["past_pooled_share_pct"], comp["deposits_at_5_65_four_year"], comp["locked_rate_pct"],
                    comp["card_four_year_pct"], comp["drop_points"]))
@@ -64,10 +64,10 @@ def render(f):
             comp["expected_conversations"]),
         "Took each past conversation's drop, the rate on its deposit's row in %s or %s less the reinvestment rate for "
         "its term in the quarter's campaign brief PDF: the share that went to the retention offer (RTK, RTW) rises "
-        "with the drop in every campaign and every term, from %s per cent where the rate rose to %s per cent at drops "
-        "of %s points or more, %s per cent overall." % (
-            W.F_LISTS_2025, W.F_LISTS_2026, st["past_share_negative_drop_pct"],
-            comp["past_share_at_2_5_or_more_pct"], st["drop_threshold_points"], comp["past_pooled_share_pct"]),
+        "with the drop in every campaign and every term, reaching %s per cent at drops of %s points or more, against "
+        "%s per cent overall." % (
+            W.F_LISTS_2025, W.F_LISTS_2026, comp["past_share_at_2_5_or_more_pct"], st["drop_threshold_points"],
+            comp["past_pooled_share_pct"]),
         "Read each listed deposit's drop against the rates in %s (four years %s per cent) and gave it the past share "
         "of conversations in its %s-point band of drop: %s deposits at %s per cent meet a drop of %s points, and about "
         "%s per cent of the %s conversations go to the retention offer." % (
@@ -78,10 +78,11 @@ def render(f):
         "for March." % (W.F_SOW, ru["minutes_not_reached"], ru["minutes_conversation"], ru["minutes_retention"],
                         st["hours_unrounded"], hu["January"], hu["February"], hu["March"]),
         "Counted each listed deposit of the seven campaigns (account numbers without punctuation) as still on term "
-        "deposit when %s shows a REINVEST on its own account on its maturity date, or %s shows its maturity proceeds "
-        "paid that day into an account the events extract shows opened that day, with no BREAK or CLOSE on that "
-        "account in the %s days after maturity, taking its principal or the amount transferred: the counts and "
-        "principal in block 4." % (W.F_EVENTS, W.F_TRANSFERS, ru["days_after_maturity"]),
+        "deposit when %s shows a REINVEST on its own account on its maturity date, or %s shows any of its maturity "
+        "proceeds paid that day into an account the events extract shows opened that day, with no BREAK or CLOSE on "
+        "that account in the %s days after maturity, taking its principal or only the part of its proceeds paid into "
+        "the new account: the counts and principal in block 4." % (W.F_EVENTS, W.F_TRANSFERS,
+                                                                   ru["days_after_maturity"]),
         "Summed the principal in %s maturing in each month once per account, added the certificates in %s maturing in "
         "the month that %s does not show as MIGRATED, and took off the list's principal for the month: the amounts in "
         "block 4." % (W.F_HOLDINGS, W.F_KIP, W.F_BATCHES),

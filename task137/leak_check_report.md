@@ -53,3 +53,9 @@ Stump terms swept: locked, release, dialling, latest, golden, quantity, conditio
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+Q1 to Q4: none. Procedure v4 6.1 says the booking draws on every closed campaign but names no method; the treasury workbook's monthly maturities (870.4, 891.7, 787.4 NZ$ million) are a forecast on a wholesale-inclusive basis the reader marked a distractor; the extract notes are an ordinary layout glossary; the email, proposal and SOW carry inputs only (minute rates 1.5, 8 and 22, multiples of 250, the 9,000-hour cap, the 750-hour minimum, NZ$66.10). Q5: SOW 2.1 and 2.2 fix the billing arithmetic; the forecast of dials and conversations is the open analytical step (by design, the method stays open and the data forces it). Readings raised: per-month against total rounding to 250; "still on term deposit 30 days after maturity" (reinvest, switch to KIC, transfer to the holder's other account, per deposit or per holder); the all-members totals (KIC register against holdings, migration de-duplication). Realism: the email is dated 4 November against file times of 3 November (the extract's own date, coherent); the 2027Q1 and 2025 lists both open on 3 January maturities. REVIEW lines: all harmless (rate-table 3.15, shared vocabulary, future maturity dates).
+
+Main thread note (2026-10-12): the read above was on the stage 3 pack. Since then the prompt has gained one clause on ask 3 (fork row SF18) and target/ is unchanged byte for byte; leak.py on the rebuilt pack gives the same 25 REVIEW lines and no LEAK.

@@ -169,8 +169,9 @@ def main(target, golden):
     total = sum(hours.values())
 
     # ------------------------------------------------------------- ask A
-    reinv, gone, opens = set(), defaultdict(list), {}
+    reinv, gone, opens, td = set(), defaultdict(list), {}, set()
     for r in rows(P("kbs_td_account_events_2025-01_2026-10.csv")):
+        td.add(r["account"])
         if r["event_type"] == "REINVEST":
             reinv.add((r["account"], r["event_date"]))
         elif r["event_type"] in ("BREAK", "CLOSE"):
@@ -196,6 +197,33 @@ def main(target, golden):
                 n += 1
                 amt += kept
         ask_a[q] = (n, half_up(amt, 1000))
+    # the prompt's clause read on the extracts: a deposit counts when any of its principal sits on a term deposit
+    # with the society (any account of the events extract, opened that day or not) 30 days after maturity, and only
+    # that part counts; per deposit, as the lists carry one deposit per holder
+    clause, kept_whole, holders = {}, {}, defaultdict(int)
+    for q in PAST:
+        n, amt, nw = 0, 0.0, 0
+        for (qq, acct), dep in listed.items():
+            if qq != q:
+                continue
+            holders[(q, dep["cust"])] += 1
+            m = dep["maturity"]
+            lim = m + dt.timedelta(days=30)
+            alive = lambda a: not any(m < x <= lim for x in gone.get(a, []))
+            kept = dep["principal"] if ((acct, m.isoformat()) in reinv and alive(acct)) else 0.0
+            if not kept:
+                for k in range(31):
+                    kept += sum(v for to, v in paid.get((acct, (m + dt.timedelta(days=k)).isoformat()), [])
+                                if to in td and to != acct and alive(to))
+            if kept > 0:
+                n += 1
+                amt += kept
+                nw += abs(kept - dep["principal"]) < 0.005
+        clause[q] = (n, half_up(amt, 1000))
+        kept_whole[q] = nw
+    check(clause == ask_a, "ask A under the prompt's clause %s against %s" % (clause, ask_a))
+    check(max(holders.values()) == 1, "a holder with two deposits on one campaign's list")
+    check(all(kept_whole[q] < ask_a[q][0] for q in PAST), "ask A counting only deposits kept whole lands")
 
     # ------------------------------------------------------------- ask B
     seen, maturing = set(), defaultdict(float)
