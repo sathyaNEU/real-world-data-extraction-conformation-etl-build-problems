@@ -2,10 +2,10 @@
   "task": "task183",
   "domain": "energy-systems-utilities",
   "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "build done (stage 3): leak check and duplicate check next (stage 4)",
-  "updated": "2026-10-11",
-  "stump": "A competent solver averages each feeder's last five years of cable-condition failures on the sections still in service and files Mill Lane 7 as the feeder that will fail most in 2027 (about 8.8 failures a year against Quarry Hill 21's 3.4, fifth of eight), and the step that lands it there is forecasting from feeder history when a section's next failure depends on how often that section has already failed: Mill Lane 7's failures are first failures on 44 different sections, which recur at about 2 per cent a year, while Quarry Hill 21 carries 14 sections in service that have each failed two or more times and fail again at about one in three a year, so it heads 2027 at about 6.4 expected failures.",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-12",
+  "stump": "A competent solver averages each feeder's last five years of cable-condition failures on the sections still in service and files Mill Lane 7 (about 14.4 a year against Quarry Hill 21's 10.4, fifth of eight), or applies failure rates by insulation and age and files Sutter Park 5; the step that lands it there is forecasting from feeder history or visible attributes when a section's next failure depends on how often it has already failed, and only Quarry Hill 21 carries in-service sections that have failed twice or more (17, heading 2027 at about 15 expected failures).",
   "architecture": 1,
   "loops": 0,
   "precut": {
@@ -13,29 +13,33 @@
     "date": "2026-10-11"
   },
   "leak": {
-    "leak_py": "REVIEW",
-    "reader": ""
+    "leak_py": "REVIEW on the final build (13 lines, the same kinds, answered in the design note)",
+    "reader": "pass 1: five realism tells, repaired; pass 2: Q1 to Q5 none, every REVIEW line harmless, two realism notes repaired in data (no third read)"
   },
   "duplicate_check": {
-    "heart": "WARN",
-    "nearest": "",
-    "clone_check": ""
+    "heart": "PASS (after task181's architecture 4 replaced the spent v3 card)",
+    "nearest": "task132 0.08",
+    "clone_check": "pass 1 CLEAN (5294cdd)",
+    "surface": "0 promoted of 142 pairs"
   },
   "solver_rounds": [],
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task183/determinism_check_report.md",
+    "date": "2026-10-12",
+    "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "build": {
     "date": "2026-10-12",
     "files": 14,
     "formats": 5,
     "largest_file_rows": 37008,
-    "checks": 233,
+    "checks": 229,
     "verify": "green",
     "byte_identical": true,
     "figures_check": 0,
@@ -45,8 +49,11 @@
     "precut": 0,
     "voice_check": 0,
     "call": "Quarry Hill 21",
-    "r3_lead": 1.52
+    "r3_lead": 1.52,
+    "figures_moved": "none",
+    "target_zip_sha256": "c923369dcbc512b2"
   },
-  "status": "FAILED_TO_STUMP",
-  "owner": "oviya13ya"
+  "status": "SHIPPED",
+  "owner": "oviya13ya",
+  "resume": ""
 }

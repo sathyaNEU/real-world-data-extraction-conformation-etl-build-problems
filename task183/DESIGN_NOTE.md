@@ -76,12 +76,12 @@ Golden: Quarry Hill 21
 ## Stump sentence
 
 A competent solver averages each feeder's last five years of cable-condition failures on the sections still in
-service and files Mill Lane 7 as the feeder that will fail most in 2027 (about 8.8 failures a year against Quarry
-Hill 21's 3.4, fifth of eight), and the step that lands it there is forecasting from feeder history when a
-section's next failure depends on how often that section has already failed: Mill Lane 7's failures are first
-failures on 44 different sections, which recur at about 2 per cent a year, while Quarry Hill 21 carries 14 sections
-in service that have each failed two or more times and fail again at about one in three a year, so it heads 2027 at
-about 6.4 expected failures.
+service and files Mill Lane 7 as the feeder that will fail most in 2027 (about 14.4 failures a year against Quarry
+Hill 21's 10.4, fifth of eight), and the step that lands it there is forecasting from feeder history when a section's
+next failure depends on how often that section has already failed: Mill Lane 7's in-service cable carries 123
+sections with a single failure, which fail again at about 2 per cent a year, while Quarry Hill 21 carries 17 sections
+in service that have each failed two or more times and fail again at about a third to a half a year, so it heads 2027
+at about 15 expected failures against Harrow Road 12's 9.9.
 
 ## Three rules
 
@@ -335,6 +335,9 @@ row misses outside its rounding bin:
 The mirror sheet (the same response stopped at Mill Lane 7) differs from the cracker sheet only on the
 recommendation criteria, so no ask is coupled to the call.
 
+Mirror leakage: 8 per cent of the ask weight (method credit on the ask paths, no figure; the mirror's ask rows are the
+cracker's).
+
 **Pair arithmetic.** Planning weights 38 recommendation, 7 instruction following, 55 asks over 24 figures. With
 r = 5 (the recommendation criteria that survive a wrong call: the cause filter, the in-service pool) and each top
 response keeping about 8 per cent of the ask weight (method credit on the ask paths, no figure):
@@ -401,6 +404,59 @@ architecture's main call.
 - **Not met against the plan:** R1's lead (planned 2.10x, built 1.16x), R3's lead (planned 1.78x, built 1.52x),
   the grid floors (above), and Quarry Hill 21 second on the trend and last-twelve-months partials. The leaders,
   the position rule on R0 to R2 and every semantic fork row hold.
+- **Stage 4 repair of 2026-10-12 (the leak reader's pass 1, five realism tells):**
+  - The extract notes are a hand-off note: a file list and the conventions the files need (replacement as a new
+    section with a predecessor id, a REPL order's completed date, the two OMS clocks, dated connectivity rows), with
+    no field glossary or row counts; `checks.py` asserts the four conventions survive in place of the row counts.
+  - Crew notes draw from crew habits on their own random stream (abbreviations, sentence case, blanks, the odd note
+    disagreeing with the supervisor's code inside the cable causes); orders keyed before the March 2014 cut-over are
+    upper case and cut at 40 characters, the legacy field's width.
+  - The annual report's Table 6.2 carries the 2023 GIS re-measurement (plat lengths filed for 2021 and 2022) and the
+    PILC program's new route on Harrow Road 12 in 2025; Table 6.3 grows with new developments energised feeder by
+    feeder from 2017 to 2024; Sutter Park 9 and Quarry Hill 22 scatter about one failure a year.
+  - Structures at the sections' ends are the district's own numbering (manhole sheet and number, pad-mount asset
+    tags), drawn apart from the GIS section ids, shared by a replacement and its predecessor.
+  - Exports differ by system: SAP dates MM/DD/YYYY, the customer system's upper-case field names, YYYYMMDD dates and
+    fixed-width addresses, ADMS cause names against the legacy OMS codes, inspectors' initials as each crew keyed them.
+  - Graded figures: none moved (`generator/figures.json` identical to the stage 3 build). 229 assertions, `verify.py`
+    green, two builds byte-identical, `target.zip` re-cut, `figures_check.py` exit 0, `precut.py` exit 0.
+  - The mild note: Table 6.1 is kept. Its caption counts the failures of the cable itself repaired in the year on the
+    cable in service on the feeder at the time, a correct past quantity (the R0 surface), ranked on nothing in 2027.
+  - `leak.py --asof 2026-10-06`: REVIEW, the same kinds as at stage 3, answered above.
+  - `guard.py heart`: BLOCK `ban.artifact`, the context-artifact type `operations_log` against task181's card, which
+    is architecture 3 (registered 20:31 UTC on 11 October on its branch, before task183's 22:34) and is spent; the
+    draw of task183 was checked against main's architecture 2 card. Cleared by task181's re-root (architecture 4,
+    drawn 12 October, another artifact type), after which `heart` is re-run.
+
+- **Stage 4 (2026-10-12):**
+  - Leak reader pass 2 (Sonnet): questions 1 to 5 none, every REVIEW line harmless (the report's Table 6.1 is a
+    labelled past count, the extract notes describe the GIS convention, the column names are the systems' own).
+  - Its two realism notes are fixed in the generator, both data files, so no third read: the major event day list
+    names each lockout's feeder or substation, and replaced-section crew notes draw from more crews' wordings.
+  - Determinism judge pass 1: DETERMINISTIC, APPROVE, no FIX_NOW (`determinism_check_report.md`). It recomputed
+    17 twice-failed sections, a rate after two failures 15.4 times the rate after one, Quarry Hill 21 first at 14.9
+    expected failures against Harrow Road 12 at 9.85, and all 24 ask figures exactly. Residual forks, none moving a
+    graded figure: major event days kept in the four-or-more count (TVE-RS-04 6.1), the moved lateral (4.2), and
+    the chart graded on its top bar only.
+  - Final build: 229 assertions, `verify.py` green, two builds byte-identical, `generator/figures.json` unchanged,
+    `target.zip` sha256 c923369dcbc512b2.
+
+## Pre-ship check
+
+1. Domain: the task is underground cable condition reading, which feeder's in-service sections will fail in
+   2027; the recurrence by each section's own failure count is the field's, and another field's nouns break it.
+2. Real work, nothing planted: an SAP export in its own date format, a GIS register with retired sections and
+   predecessor ids, an outage export across a clock change with staged restorations and bank outages repeated per
+   feeder, dated connectivity, a customer system's stale feeder label, each from the utility's own systems.
+3. The flip is a method choice: forecasting each section by its own count of failures, never a field read or a rule.
+4. The analyst test holds: the five-year in-service average names Mill Lane 7, failure rates by insulation and age
+   name Sutter Park 5, the last twelve months name Sutter Park 5, all retired cable counted names Harrow Road 12.
+5. One defensible method: the prompt fixes the population and causes; the record forces the count-conditioned rate
+   (the judge found every model with a section's prior failures puts Quarry Hill 21 first).
+6. No decoy: the annual report is a correct, labelled history; no memo, draft or voice argues for a feeder.
+7. Nothing hidden and recovered: no certified figure pins the method; the rates are estimated on the record.
+8. A new lesson: repeat failures concentrate in parts that have already failed twice, which a unit's trailing rate
+   and its parts' visible attributes both hide (`guard.py heart` PASS, nearest driver task132 at 0.08).
 
 ## Tried and rejected
 

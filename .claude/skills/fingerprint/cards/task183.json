@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Quarry Hill 21 (design target; the golden's wording is fixed at ship from the generator)",
-  "answer_source": "design note",
+  "answer": "Quarry Hill 21 will have the most failures of the cable itself in 2027, so it is the feeder for the 2027 cable program.",
+  "answer_source": "task183/submission.md block 1; task183/golden/cable_program_2027.xlsx and feeder_failures_2027.png, written by the generator from target/ and recomputed by verify.py; generator/figures.json",
   "gap": [
     "time",
     "population"
@@ -37,7 +37,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "ug_cable_fault_work_orders_2012_2026.csv",
-    "rows": 1800,
+    "rows": 1055,
     "entity": "one cable fault repair: a work order closing one failure on one underground cable section",
     "grain": "failure x section",
     "source": "synthetic"
@@ -76,8 +76,8 @@
   ],
   "opening_move": "question-first",
   "driver": "When a unit's coming events arise in its parts and a part that has already failed more than once keeps failing at many times the rate of a part with one or no failures, both the unit's trailing event rate and any rate built from its parts' visible attributes miss that the forward count is driven by the current mix of its parts' own failure histories; only a forecast that carries each part's prior failures forward names the unit with the most events ahead.",
-  "driver_concrete": "Each of Tamsin Valley Electric's eight underground feeders is scored on the cable failures (insulation, splice, termination) its in-service sections will have in 2027: Mill Lane 7 had the most such failures in the last five years, but nearly all were first failures on different sections, which seldom fail again, while Quarry Hill 21, whose cable runs under a state highway and has been spliced rather than replaced, now carries a dozen sections that have each failed twice and fail again at about a third a year, so only a forecast built on each section's own failure count names Quarry Hill 21.",
-  "stump": "A competent solver takes the last five years of cable-condition failures on the sections still in service, averages them per feeder, or applies failure rates by insulation type and age to each feeder's cable, and names Mill Lane 7 or Sutter Park 5; the step that lands it there is forecasting from feeder history or visible cable attributes, when a section's next failure depends mostly on how often that section has already failed and only Quarry Hill 21 carries in-service sections that have failed twice.",
+  "driver_concrete": "Each of Tamsin Valley Electric's eight underground feeders is scored on the cable failures (insulation, splice, termination) its in-service sections will have in 2027: Mill Lane 7 had the most such failures in the last five years, but nearly all were first failures on different sections, which seldom fail again, while Quarry Hill 21, whose cable runs under a state highway and has been spliced rather than replaced, now carries 17 in-service sections that have each failed twice or more and fail again at about a third to a half a year, so only a forecast built on each section's own failure count names Quarry Hill 21.",
+  "stump": "A competent solver averages each feeder's last five years of cable-condition failures on the sections still in service and files Mill Lane 7 (about 14.4 a year against Quarry Hill 21's 10.4, fifth of eight), or applies failure rates by insulation and age and files Sutter Park 5; the step that lands it there is forecasting from feeder history or visible attributes when a section's next failure depends on how often it has already failed, and only Quarry Hill 21 carries in-service sections that have failed twice or more (17, heading 2027 at about 15 expected failures).",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who keeps only cable-condition failures, drops dig-ins and replaced sections and reads every field correctly still forecasts 2027 from each feeder's recent failure rate, or from failure rates by insulation type and age, and names Mill Lane 7 or Sutter Park 5, because only a forecast that carries each section's own failure history forward shows that Quarry Hill 21's twice-failed sections will fail most.",
   "domain_test": "What decides the call is distribution cable reliability engineering's condition reading of underground sections, where a first failure is often a one-off splice or termination defect while a second failure marks insulation degraded by water treeing that keeps failing (the reason utilities replace a section at its second failure); with another field's nouns there is no splice, no water treeing and no repair-against-replacement history behind the recurrence, so the task does not read the same.",

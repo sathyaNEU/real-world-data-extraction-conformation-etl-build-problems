@@ -41,7 +41,7 @@
     {
       "path": "2025_annual_reliability_report_sec6_ug_cable.pdf",
       "format": "pdf",
-      "bytes": 64032,
+      "bytes": 64162,
       "rows": null,
       "source": "Constructed: 2025 annual reliability report, section 6 (underground cable)",
       "date": "2026-10-06",
@@ -59,16 +59,16 @@
     {
       "path": "asset_analytics_extract_notes_2026-10.md",
       "format": "md",
-      "bytes": 6650,
+      "bytes": 2398,
       "rows": null,
-      "source": "Constructed: Asset analytics extract notes: where each file came from and its fields",
+      "source": "Constructed: Asset analytics hand-off note for the extract: where each file came from and what to know reading it",
       "date": "2026-10-06",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "cis_service_accounts_20260930.csv",
       "format": "csv",
-      "bytes": 1719442,
+      "bytes": 2061550,
       "rows": 28221,
       "source": "Constructed: Customer information system: active service accounts at 30 September 2026",
       "date": "2026-10-06",
@@ -77,7 +77,7 @@
     {
       "path": "connectivity_meter_points.parquet",
       "format": "parquet",
-      "bytes": 674790,
+      "bytes": 675902,
       "rows": 37008,
       "source": "Constructed: Network connectivity model: metered points to transformers, protective devices and feeders, dated rows",
       "date": "2026-10-06",
@@ -104,7 +104,7 @@
     {
       "path": "gis_ug_primary_sections_20260930.xlsx",
       "format": "xlsx",
-      "bytes": 201310,
+      "bytes": 193695,
       "rows": null,
       "source": "Constructed: GIS export: underground primary cable sections of the eight feeders, in service and retired, as of 30 September 2026",
       "date": "2026-10-06",
@@ -113,7 +113,7 @@
     {
       "path": "major_event_days_RY2021-RY2025.csv",
       "format": "csv",
-      "bytes": 1273,
+      "bytes": 1751,
       "rows": 31,
       "source": "Constructed: Published major event days, reliability years 2021 to 2025",
       "date": "2026-10-06",
@@ -122,7 +122,7 @@
     {
       "path": "oms_outage_export_2020-10_2026-09.csv",
       "format": "csv",
-      "bytes": 143419,
+      "bytes": 144593,
       "rows": 1432,
       "source": "Constructed: Outage management export (legacy OMS to 17 March 2026, ADMS after): one row per outage per feeder, October 2020 to September 2026",
       "date": "2026-10-06",
@@ -131,8 +131,8 @@
     {
       "path": "oms_restoration_steps_2020-10_2026-09.csv",
       "format": "csv",
-      "bytes": 103703,
-      "rows": 1607,
+      "bytes": 103765,
+      "rows": 1608,
       "source": "Constructed: Outage management restoration steps for the same outages",
       "date": "2026-10-06",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -140,7 +140,7 @@
     {
       "path": "ug_cable_fault_work_orders_2012_2026.csv",
       "format": "csv",
-      "bytes": 121505,
+      "bytes": 123504,
       "rows": 1055,
       "source": "Constructed: Work management system: cable fault work orders on the district's underground primary sections, January 2012 to 30 September 2026",
       "date": "2026-10-06",
@@ -149,8 +149,8 @@
     {
       "path": "vault_manhole_inspections_2022-2026.csv",
       "format": "csv",
-      "bytes": 131460,
-      "rows": 1803,
+      "bytes": 133929,
+      "rows": 1806,
       "source": "Constructed: Manhole and vault inspection records, 2022 to 2026",
       "date": "2026-10-06",
       "license": "CC0-1.0 (original work, constructed for this task)"

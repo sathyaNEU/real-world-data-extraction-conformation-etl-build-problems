@@ -83,7 +83,7 @@ def published_meds(snap, outs, topo):
                 cm[day] = cm.get(day, 0.0) + mins
                 tot += mins
         if tot > biggest.get(day, (0.0, ""))[0]:
-            biggest[day] = (tot, o["cause"], snap.devices[o["device"]]["type"])
+            biggest[day] = (tot, o["cause"], snap.devices[o["device"]]["type"], o["feeders"])
     served = {}
 
     def base(y):
@@ -114,9 +114,15 @@ def published_meds(snap, outs, topo):
         T = math.exp(v.mean() + 2.5 * v.std(ddof=1))
         for d, s in sorted(daily(y).items()):
             if s > T:
-                _, cause, dtype = biggest[d]
-                other = ("Substation transformer outage" if dtype == "TRANSFORMER BANK" else
-                         "Feeder lockout" if dtype == "FEEDER BREAKER" else "Multiple lateral outages")
+                _, cause, dtype, fdrs = biggest[d]
+                where = W.NAME.get(fdrs[0], fdrs[0])
+                if dtype == "TRANSFORMER BANK":
+                    other = "%s substation transformer outage" % [n for _, n, fs in W.SUBSTATIONS if fdrs[0] in fs][0]
+                elif dtype == "FEEDER BREAKER":
+                    other = "%s breaker lockout%s" % (where, ", UG cable fault" if cause == "UG FAULT" else
+                                                       ", dig-in" if cause == "DIG-IN" else "")
+                else:
+                    other = "Lateral outages, %s" % where
                 rows.append(dict(reliability_year="RY%d" % y, med_date=d.isoformat(), tmed_saidi_min="%.2f" % T,
                                  event=names.get(d, "Storm" if d in storms else other)))
     return rows
