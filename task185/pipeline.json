@@ -4,10 +4,10 @@
   "status": "PAUSED",
   "domain": "general-statistics-data-science / exploratory-data-analysis-distribution-assessment (secondary physical-environmental-sciences)",
   "objective": "anomaly-detection",
-  "stage": 3,
-  "stage_name": "build",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-12",
-  "stump": "The default path converts the glass era with the comparison readings' mean probe-minus-glass difference, which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day line and it quotes the raw record's premium; one hot-day offset quotes a third figure.",
+  "stump": "The default path converts the glass era with the comparison readings' mean probe-minus-glass difference (+0.13 C), which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day line and it ends on $567 a hectare, the raw record's premium; one hot-day offset ends on $542 or $506; the conversion at each reading files $525.",
   "architecture": 1,
   "loops": 0,
   "precut": {
@@ -15,12 +15,12 @@
     "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (benign: filed triggers, clause number 4.1, station history wording, sub-district names, schedule's forward inceptions)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN (overuse.objective, answered in the note)",
+    "nearest": "task181 0.08; surface promotes task184 (back to back, 0.100) and task80 (gap rule, G16, differentiated on the card)"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 3 build: generator/world.py, climate.py (probe-minus-glass 0.05 flat to 31 C, ramp to 0.70 at 34.5 C, then 0.25 C a degree), pricing.py and book.py are written; next records.py (station daily long file with both station numbers, the glass register as one wide sheet a year, comparison readings, neighbours' monthly series, the network register JSON, renewal schedule with variety lines and stored sub-districts, block register, claims register with block lines and duplicate lodgements, finance ledger with interim and final runs), docs.py (pricing manual, 2027/28 term sheet, station history), deliver.py, checks.py with the R1 to R3c block, verify.py, metadata.py, build.py; seed-search the comparison bins for margins; terms D6, $48, $85, cap $760, loading 1.32",
+  "resume": "stage 4: leak reader returned (no decisive-step sentence beyond the filed estimand; realism notes on the schedule and claims to weigh); determinism judge thread running from scratchpad/judge185_brief.md; then fix in one pass, rebuild, ship",
   "approved": null,
   "delivered": null,
   "portal": null,

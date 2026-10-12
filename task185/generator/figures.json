@@ -1,0 +1,81 @@
+{
+ "call_premium_per_ha": 525,
+ "expected_heat_days_2027_28": "16.7",
+ "expected_severe_days_2027_28": "4.1",
+ "heat_line_slope_days_per_decade": "0.30",
+ "severe_line_slope_days_per_decade": "0.19",
+ "glass_era_heat_days_added": 54,
+ "glass_era_severe_days_added": 29,
+ "default_premium_per_ha": 567,
+ "default_expected_heat_days": "17.2",
+ "default_heat_line_slope_days_per_decade": "0.74",
+ "conversion_at_34_5": "0.72",
+ "conversion_at_39_0": "1.35",
+ "mean_conversion_merrin_flat": "0.13",
+ "sub_districts": {
+  "Upper Merrin": {
+   "blocks": 28,
+   "ha": 184.8,
+   "premium": 97020
+  },
+  "Lower Merrin": {
+   "blocks": 17,
+   "ha": 100.5,
+   "premium": 52763
+  },
+  "Kerrin Flats": {
+   "blocks": 33,
+   "ha": 178.7,
+   "premium": 93818
+  },
+  "Tolbin": {
+   "blocks": 37,
+   "ha": 258.7,
+   "premium": 135818
+  }
+ },
+ "insured_ha_total": "722.7",
+ "blocks_total": 115,
+ "seasons": {
+  "2019/20": {
+   "claims": 25,
+   "amount": 80344
+  },
+  "2020/21": {
+   "claims": 28,
+   "amount": 79148
+  },
+  "2021/22": {
+   "claims": 36,
+   "amount": 50260
+  },
+  "2022/23": {
+   "claims": 38,
+   "amount": 63534
+  },
+  "2023/24": {
+   "claims": 45,
+   "amount": 195809
+  },
+  "2024/25": {
+   "claims": 52,
+   "amount": 285417
+  },
+  "2025/26": {
+   "claims": 54,
+   "amount": 433200
+  },
+  "2026/27": {
+   "claims": 55,
+   "amount": 35631
+  }
+ },
+ "heat_trigger_c": "35.0",
+ "severe_trigger_c": "40.0",
+ "glass_readings_first_over_each_trigger": [
+  "34.5",
+  "39.0"
+ ],
+ "seasons_in_record": 62,
+ "loading": "1.32"
+}

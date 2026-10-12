@@ -10,8 +10,8 @@
   "shape": "14",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Quote Merrin Valley Winegrowers $525 a hectare for its 2027/28 heat-day cover, a premium that assumes 16.7 heat days and 4.1 severe heat days at Merrin Flat.",
+  "answer_source": "task185/submission.md, Final Recommendation; golden heat_cover_quote_2027_28.pdf",
   "gap": [
     "rule",
     "population"
@@ -34,8 +34,8 @@
   "role_family": "portfolio_manager",
   "scoring_unit": "index points",
   "spine": {
-    "file": "aws_daily_merrin_flat_19891101_20270831.csv",
-    "rows": 0,
+    "file": "ncs_daily_041391_19951101_20270827.csv",
+    "rows": 34404,
     "entity": "one automatic weather station reading of one element on one day",
     "grain": "station x day x element",
     "source": "synthetic"
@@ -67,8 +67,8 @@
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "The decisive quantity is the conversion between an old and a new measuring device sized at the value being converted, because the new device agrees with the old at ordinary values and departs only at high ones, so any single conversion, the average or one high-value offset, leaves a threshold count on the wrong basis and lets the changeover step pass into the fitted trend.",
-  "driver_concrete": "Each glass-era daily maximum is brought to the present probe's basis by the probe-minus-glass difference at that reading in the paired comparison readings, about +0.7 C at 34.5 C and +1.25 C at 39 C against +0.1 C on average, so the half-degree 34.5 C days cross the 35 C trigger and the 39 C days the 40 C trigger, the glass era's heat days rise, the 1995 step leaves the trend and the 2027/28 premium falls.",
-  "stump": "A competent solver brings the glass era to the probe's basis with the comparison readings' mean difference (+0.1 C, about +0.2 C on summer days), which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day trend and the quote is the raw record's premium (about $725 a hectare against about $670, prototype); a solver who sizes one hot-day offset moves the 34.5 C days but not the 39.0 C days and quotes a third figure.",
+  "driver_concrete": "Each glass-era daily maximum is brought to the present probe's basis by the probe-minus-glass difference at that reading in the paired comparison readings, +0.72 C at 34.5 C and +1.35 C at 39.0 C against +0.13 C on average, so the half-degree 34.5 C days cross the 35.0 C trigger and the 39.0 C days the 40.0 C trigger, the glass seasons gain 54 heat days and 29 severe heat days, the heat-day line falls from 0.74 to 0.30 days a decade and the 2027/28 premium from $567 to $525 a hectare.",
+  "stump": "A competent solver brings the glass era to the probe's basis with the comparison readings' mean difference (+0.13 C, +0.25 C on summer days), which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day line and the quote is the raw record's premium, $567 a hectare against $525; a solver who sizes one hot-day offset moves the 34.5 C days but not the 39.0 C days ($542), or the 34.0 C days as well ($506).",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who joins the two station numbers, reshapes the register, keeps approved readings, reads the station history and applies the pricing manual exactly still converts the glass era with the comparison's average probe-minus-glass difference and quotes the raw record's premium.",
   "domain_test": "The deciding quantity is a distribution assessment of a paired-instrument difference, how the new device's readings depart from the old across the range of the reading rather than in the mean, estimated conditionally or by quantile matching; with the method swapped for a mean or one pooled offset the call changes, and with another field's nouns there is no instrument pair whose difference grows with the reading, no half-degree register and no threshold count whose trend the changeover inflates.",

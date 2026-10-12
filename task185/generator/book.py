@@ -28,7 +28,7 @@ ENTITY = ["Vineyards", "Estate", "Family Vineyards", "& Sons", "Wines", "Growers
 
 
 def rng(*key):
-    return np.random.default_rng([W.SEED, 900] + [int(k) for k in key])
+    return np.random.default_rng([W.SEED, 900, W.BOOK_SALT] + [int(k) for k in key])
 
 
 class Block:
@@ -78,7 +78,7 @@ def blocks(mem):
             if insured and g.random() < 0.06:
                 cancel = dt.date(int(g.choice([2023, 2024, 2025, 2026, 2027])), int(g.integers(3, 10)), int(g.integers(1, 28)))
                 if first is not None and cancel.year <= first:
-                    cancel = dt.date(first + 1, 6, 15)
+                    cancel = dt.date(first + 1, 6, 15) if first + 1 <= W.AS_OF.year else None
             b = Block(m["coop_no"], no, area, old, new, list(zip(vs, ha)), int(g.integers(1968, 2021)), first, cancel)
             if insured and g.random() < 0.38:
                 b.endorsed = dt.date(int(g.choice([2025, 2026, 2027])), int(g.integers(1, 13)), int(g.integers(1, 28)))
@@ -108,3 +108,57 @@ def in_force(b, on):
 
 def schedule_2027(bl):
     return [b for b in bl if in_force(b, W.COVER_START)]
+
+
+def season_payout(heat, severe, s):
+    d, hr, sr, cap = W.TERMS_HISTORY[s]
+    return min(cap, hr * max(0, heat - d) + sr * severe)
+
+
+def claims(bl, mem, heat, severe):
+    """The cover's claims, 2019/20 to 2026/27: one claim a member a season it paid, on the member's insured area at the
+    season's payout a hectare; duplicate lodgements assessed and never paid; payments in an interim run in March and a
+    final run after the Service's approval. heat, severe: {season: count} from the approved readings."""
+    g = rng(5)
+    name = {m["coop_no"]: m for m in mem}
+    reg, ledger = [], []
+    seq = 41200
+    pay_seq = 880000
+    for s in range(W.COVER_FIRST_SEASON, W.LAST_SEASON + 1):
+        per_ha = season_payout(heat[s], severe[s], s)
+        if per_ha <= 0:
+            continue
+        on = dt.date(s, 12, 1)
+        by_member = collections.defaultdict(list)
+        for b in bl:
+            if in_force(b, on):
+                by_member[b.member].append(b)
+        members_s = sorted(by_member)
+        dup = set(g.choice(members_s, size=min(len(members_s), int(g.integers(2, 5))), replace=False).tolist())
+        for m in members_s:
+            ha = sum(b.area for b in by_member[m])
+            amount = round(per_ha * ha, 2)
+            lodgements = 2 if m in dup else 1
+            nos = []
+            for k in range(lodgements):
+                seq += int(g.integers(1, 9))
+                cno = "HCC-%d-%05d" % (s + 1, seq)
+                lodged = dt.date(s + 1, 3, 1) + dt.timedelta(days=int(g.integers(0, 40)) + 9 * k)
+                source = "BROKER" if (k == 0) == (g.random() < 0.6) else "PORTAL"
+                for b in sorted(by_member[m], key=lambda b: b.no):
+                    reg.append({"claim_no": cno, "season": W.season_label(s), "grower_ref": m, "block_no": b.no,
+                                "lodged": lodged, "source": source, "assessed_amount": amount})
+                nos.append(cno)
+            paid_no = nos[0]
+            interim = round(amount * 0.6, 2)
+            pay_seq += int(g.integers(1, 30))
+            ledger.append({"payment_id": "PY%07d" % pay_seq, "posting_date": dt.date(s + 1, 3, 20) + dt.timedelta(days=int(g.integers(0, 10))),
+                           "claim_no": paid_no, "payee": name[m]["name"], "amount": interim})
+            pay_seq += int(g.integers(1, 30))
+            ledger.append({"payment_id": "PY%07d" % pay_seq,
+                           "posting_date": W.APPROVAL[s] + dt.timedelta(days=int(g.integers(5, 16))),
+                           "claim_no": paid_no, "payee": name[m]["name"], "amount": round(amount - interim, 2)})
+    for r in ledger:
+        d = r["posting_date"]
+        r["fin_year"] = "FY%d" % (d.year + 1 if d.month >= 7 else d.year)
+    return reg, ledger

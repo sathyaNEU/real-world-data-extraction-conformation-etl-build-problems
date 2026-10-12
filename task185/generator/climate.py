@@ -19,7 +19,7 @@ def delta(t):
     lo, hi = 31.0, 34.5
     s = np.clip((x - lo) / (hi - lo), 0.0, 1.0)
     ramp = 0.05 + 0.65 * (3 * s ** 2 - 2 * s ** 3)
-    return np.where(x <= hi, ramp, 0.70 + 0.25 * (x - hi))
+    return np.where(x <= hi, ramp, np.minimum(0.70 + 0.15 * (x - hi), 1.9))
 
 
 def rng(*key):
@@ -33,11 +33,11 @@ def days_between(d0, d1):
 # site: (code, name, station number, mean max, seasonal amplitude, anomaly spread, warming C a year,
 #        comparison period start and end)
 SITES = [
-    ("MF", W.STATION, W.NEW_ID, 21.4, 7.6, 3.3, 0.012, W.CHANGE, W.CHECK_END),
+    ("MF", W.STATION, W.NEW_ID, 22.2, 7.6, 3.5, 0.012, W.CHANGE, W.CHECK_END),
     ("BR", "Barrow Downs", "041318", 23.6, 8.4, 3.6, 0.011, dt.date(1993, 9, 1), dt.date(1998, 8, 31)),
-    ("CW", "Coolwater Siding", "042205", 24.9, 8.9, 3.7, 0.012, dt.date(1994, 2, 1), dt.date(1999, 1, 31)),
+    ("CW", "Coolwater Siding", "042205", 23.8, 8.8, 3.7, 0.012, dt.date(1994, 2, 1), dt.date(1999, 1, 31)),
     ("HG", "Hallgate", "040977", 20.6, 7.2, 3.1, 0.010, dt.date(1994, 6, 1), dt.date(1997, 5, 31)),
-    ("PN", "Pinnaroo East", "043112", 25.8, 9.2, 3.8, 0.013, dt.date(1995, 3, 1), dt.date(2000, 2, 29)),
+    ("PN", "Pinnaroo East", "043112", 24.2, 8.8, 3.8, 0.013, dt.date(1995, 3, 1), dt.date(2000, 2, 29)),
     ("TB", "Tolbin Hill", "041455", 22.3, 7.9, 3.4, 0.012, dt.date(1994, 10, 1), dt.date(1997, 9, 30)),
     ("WK", "Warrick Plains", "042640", 24.2, 8.7, 3.6, 0.011, dt.date(1993, 11, 1), dt.date(1998, 10, 31)),
 ]
@@ -58,7 +58,9 @@ def true_max(site_idx, days):
     for i in range(1, n):
         z[i] = phi * z[i - 1] + np.sqrt(1 - phi ** 2) * e[i]
     skew = np.where(z > 0, 1.18, 0.86)
-    return clim + warm * (yr - 1994.0) + sd * z * skew
+    t = clim + warm * (yr - 1994.0) + sd * z * skew
+    # the hottest days flatten out: a dry northerly cannot heat the valley past the mid-forties
+    return np.where(t > 39.0, 39.0 + 6.5 * np.tanh((t - 39.0) / 6.5), t)
 
 
 def glass(site_idx, t):

@@ -27,16 +27,27 @@ PRICED_SEASON = 2027                    # 2027/28
 
 # the cover's 2027/28 terms (per insured hectare, per season)
 HEAT_C, SEVERE_C = 35.0, 40.0
-DEDUCTIBLE_DAYS = 6
-HEAT_RATE = 48.0          # dollars for each heat day after the season's first six
-SEVERE_RATE = 85.0        # dollars for each severe heat day (a severe day is also a heat day)
-CAP = 760.0               # dollars a hectare a season
+DEDUCTIBLE_DAYS = 14
+HEAT_RATE = 40.0          # dollars for each heat day after the season's first fourteen
+SEVERE_RATE = 60.0        # dollars for each severe heat day (a severe day is also a heat day)
+CAP = 1500.0              # dollars a hectare a season
 LOADING = 1.32
 
 # the co-operative's sub-districts (the 2025 redraw kept the four names and moved blocks between them)
 SUB_DISTRICTS = ["Upper Merrin", "Lower Merrin", "Kerrin Flats", "Tolbin"]
 REDRAW = dt.date(2025, 7, 1)
 COVER_FIRST_SEASON = 2019     # the co-operative has held the cover since 2019/20
+BOOK_SALT = 0                 # the book's random stream (chosen so every sub-district's figures move under each device)
+
+# the terms each season was written on (the 2027/28 quote's terms above): deductible days, heat-day and severe-day
+# rates, cap a hectare
+TERMS_HISTORY = {2019: (16, 36.4, 52.8, 1200.0), 2020: (16, 36.4, 52.8, 1200.0), 2021: (16, 36.4, 52.8, 1200.0),
+                 2022: (16, 36.4, 52.8, 1200.0), 2023: (15, 38.6, 55.7, 1350.0), 2024: (15, 38.6, 55.7, 1350.0),
+                 2025: (15, 38.6, 55.7, 1350.0), 2026: (15, 38.6, 55.7, 1350.0)}
+# the day the Service released each season's approved readings, and the mutual's final run after it
+APPROVAL = {2019: dt.date(2020, 6, 29), 2020: dt.date(2021, 7, 19), 2021: dt.date(2022, 8, 8),
+            2022: dt.date(2023, 6, 27), 2023: dt.date(2024, 7, 15), 2024: dt.date(2025, 9, 2),
+            2025: dt.date(2026, 7, 23), 2026: dt.date(2027, 7, 21)}
 
 PEOPLE = {
     "portfolio": ("Rachel Ballard", "Weather Portfolio Manager, " + INSURER),

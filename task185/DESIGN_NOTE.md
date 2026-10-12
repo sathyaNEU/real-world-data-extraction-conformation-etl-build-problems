@@ -66,22 +66,22 @@
 2. Join the glass register (old station number, one sheet per year) to the automatic station's daily file (new
    number) through the station register; keep approved readings.
 3. Read the station history: the 1995 change to the probe in the small shield, with paired readings to April 1998.
-4. Bring the glass era to the probe's basis with the comparison readings' mean difference, probe minus glass, about
-   +0.1 C (+0.2 C on summer days); no half-degree reading crosses 35.0 C or 40.0 C, so the glass era's counts stand.
+4. Bring the glass era to the probe's basis with the comparison readings' mean difference, probe minus glass, +0.13 C
+   at Merrin Flat (+0.25 C on summer days); no half-degree reading crosses 35.0 C or 40.0 C, so the glass era's counts
+   stand.
 5. Count heat and severe heat days per season, fit the two lines, detrend, replay the terms, average and load.
 
-Ends on: about $725 a hectare (prototype), the raw record's premium, with the heat-day line rising about 1.0 day a
-decade.
-Golden: about $670 a hectare (prototype), with the heat-day line on the present basis rising about 0.6 days a decade.
-
-Every figure here is the prototype's (`generator/` replaces it with the built values at stage 3).
+Ends on: $567 a hectare, the raw record's premium, assuming 17.2 heat days and 4.5 severe heat days, with the
+heat-day line rising 0.74 days a decade.
+Golden: $525 a hectare, assuming 16.7 heat days and 4.1 severe heat days, with the heat-day line on the present basis
+rising 0.30 days a decade.
 
 ## Stump sentence
 
-The default path converts the glass era with the comparison readings' mean probe-minus-glass difference (about +0.1 C,
-+0.2 C on summer days), which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the
-heat-day line and it quotes about $725 a hectare, the raw record's premium; a solver who sizes one hot-day offset
-moves the 34.5 C days but not the 39.0 C days and quotes a third figure.
+The default path converts the glass era with the comparison readings' mean probe-minus-glass difference (+0.13 C,
++0.25 C on summer days), which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the
+heat-day line and it ends on $567 a hectare, the raw record's premium; a solver who sizes one hot-day offset moves the
+34.5 C days but not the 39.0 C days ($542), or the 34.0 C days as well ($506).
 
 ## Three rules
 
@@ -93,7 +93,7 @@ moves the 34.5 C days but not the 39.0 C days and quotes a third figure.
   and a location summary misses.
 - Swap: rewrite the call with a blood-pressure cuff replaced mid-record and hypertension days, and the setting survives,
   as it does in a methods domain; swap the method, the mean difference or one pooled hot-day offset for the
-  reading-dependent conversion, and the call moves (about $725 or a third figure against about $670).
+  reading-dependent conversion, and the call moves ($567, $557, $542 or $506 against $525).
 - Layer 1: the two station numbers joined through the network register (the network renumbers a site when it goes
   automatic); the glass register as one wide sheet per year, days by months, with the observer's header block (how the
   network digitised paper registers); half-degree glass readings (the observers' practice, stated in the station
@@ -106,9 +106,15 @@ moves the 34.5 C days but not the 39.0 C days and quotes a third figure.
 - Decisive step: sizing the conversion at each reading is a choice of estimator for a documented change, not catching
   a plant (the change and its paired readings are filed as the network files them), not reading a field (every field
   is read the same on both routes) and not applying a rule (the manual states the basis, never the method).
+- Not semantics: every field, unit and code is read the same on the easy route and the golden one (the half-degree
+  register, the two station numbers, the 09:00 day, the approved flag); a reader who reads them all correctly and
+  converts by the average difference still quotes the raw record's premium, $567.
+- Not rule application: the manual states the basis (each day as the present instrument would have recorded it) and
+  the counting, line, burn and loading, but no filed rule says how to size the conversion; executing every stated
+  rule with the average conversion still files $567.
 - Analyst test: a strong analyst who joins the two station numbers, reshapes the register, keeps approved readings,
   reads the station history and applies the manual exactly still converts the glass era with the comparison readings'
-  mean difference and quotes about $725 a hectare (prototype), the raw record's premium.
+  mean difference and ends on $567 a hectare, the raw record's premium (R3a in `checks.py`).
 - Estimand: the pricing manual's basis sentence (each past day's maximum as the present instrument would have recorded
   it; heat days and severe heat days counted per season from 1965/66), filed in the manual, with the cover's terms in
   the term sheet.
@@ -136,44 +142,49 @@ The six tests per rung (1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | heat day | maximum 35.0 C or more | above 35.0 C | same call (no converted reading lands on 35.0 C, asserted) | the term sheet's "35.0 C or more", and same call |
+| SF1 | heat day | maximum 35.0 C or more | above 35.0 C | $490 (probe readings of exactly 35.0 C and 40.0 C drop out) | the term sheet's "35.0 C or more"; no converted glass reading within 0.1 C of a trigger (asserted) |
 | SF2 | severe heat day | 40.0 C or more, and also a heat day | a severe day not counted as a heat day | a lower premium | the term sheet: a severe heat day is also a heat day |
-| SF3 | season | 1 December to the last day of February, 29 February in leap years, named by its first year | 90 days fixed | same call (asserted) | the manual's season sentence |
+| SF3 | season | 1 December to the last day of February, 29 February in leap years, named by its first year | 90 days fixed | $523 | the manual's season sentence and the term sheet's period (to 29 February 2028) |
 | SF4 | present instrument | the probe in the small shield installed 1 November 1995, unchanged since (recalibrations only) | a later probe | none ships | the station history: no change since 1995 |
 | SF5 | pricing record | 1965/66 to 2026/27 | the record since 1995 | a different premium | the manual's basis sentence |
 | SF6 | the line | least squares of each count on the season's first year over the record, each count on its own line | one line on the sum | a different premium | the manual's projection sentence |
 | SF7 | a projected count below zero | taken as zero | kept negative | same call (no projected count below zero, asserted) | the manual |
-| SF8 | the burn | the average over the record of each projected season's payout per hectare under the 2027/28 terms, counts unrounded | payout at the average counts | a lower premium | the manual's burn sentence |
-| SF9 | loading and rounding | the burn times 1.32, rounded once to the whole dollar | rounded before loading | same call within the bin (asserted) | the manual |
-| SF10 | the overlap months, November 1995 to April 1998 | the official record is the probe from 1 November 1995; the glass readings sit only in the comparison file | the glass converted for the overlap | same call (asserted) | the station register and the station history |
+| SF8 | the burn | the average over the record of each projected season's payout per hectare under the 2027/28 terms, counts unrounded | payout at the average counts | $468 | the manual's burn sentence |
+| SF9 | loading and rounding | the burn times 1.32, rounded once to the whole dollar | rounded before loading | $524 | the manual's "rounded once" |
+| SF10 | the overlap months, November 1995 to April 1998 | the official record is the probe from 1 November 1995; the glass readings sit only in the comparison file | the glass converted for the overlap | same call ($525) | the station list and the station history |
 | SF11 | the paired readings used for the conversion | Merrin Flat's own, or all seven comparison sites | either | same call (the same readings cross each trigger, asserted) | same call |
-| SF12 | the estimator of a reading's conversion | the mean difference at that reading, a local or hot-range fit, or quantile matching | any of them | same call (C3: each moves exactly the 34.5 C and 39.0 C readings and none of 34.0 C or 38.5 C) | same call |
+| SF12 | the estimator of a reading's conversion | the mean difference at that reading | the median at each reading, a local line within 1.5 C, quantile matching, a line over glass readings of 25, 28 or 30 C and up, a polynomial of degree 2 or 3 over all pairs | same call (each moves exactly the 34.5 C and 39.0 C readings and up, and none of 34.0 C or 38.5 C; all eight asserted at $525, 16.7 and 4.1) | same call |
 | SF13 | approved against provisional readings | approved, to 30 June 2027 | provisional | same call (provisional rows fall in July and August 2027, outside every season) | same call |
 | SF14 | the expected counts the premium assumes | the lines' values at 2027/28 | the average projected count | same call (no floor binds, asserted) | the manual |
 | SF15 | the daily maximum's day | the 24 hours from 09:00, filed against the day they begin, both eras | filed against the reading's day | same call (the station history files one convention) | the station history |
 
 ## Ladder
 
-Prototype figures (seed 187, 1995 changeover); `generator/` asserts the built values by name.
+Built values (`checks.py` asserts each by name).
 
-| Rung | Construction | Premium a hectare | Heat days 2027/28 | Severe days 2027/28 |
-|---|---|---|---|---|
-| R0 | no conversion (the neighbours show no break at Merrin Flat) | about $725 | 14.5 | 2.7 |
-| R1, the default path | the comparison readings' mean difference, +0.1 C | about $725 | 14.5 | 2.7 |
-| R2 | the summer mean (+0.2 C) or a linear fit over all days (+0.3 C at 34.5 C) | about $725 | 14.5 | 2.7 |
-| R3 | one hot-day offset (+0.85 C, glass at 33 C or more) | about $683 | 14.0 | 2.6 |
-| R4, decisive | the conversion at each reading (+0.7 C at 34.5 C, +1.25 C at 39.0 C) | about $670 | 14.0 | 2.6 |
+| Rung | Construction | Premium a hectare | Heat days 2027/28 | Severe days 2027/28 | Heat line, days a decade |
+|---|---|---|---|---|---|
+| R0 | no conversion (the neighbours show no break at Merrin Flat) | $567 | 17.2 | 4.5 | 0.74 |
+| R1, the default path | the comparison readings' mean difference, +0.13 C | $567 | 17.2 | 4.5 | 0.74 |
+| R2 | the summer mean (+0.25 C) | $567 | 17.2 | 4.5 | 0.74 |
+| R2 | a line through all the pairs (+0.39 C at 34.5 C) | $557 | 17.2 | 4.4 | 0.74 |
+| R3 | one hot-day offset, glass at 33 C or more (+0.81 C) | $542 | 16.7 | 4.4 | 0.30 |
+| R3 | one hot-day offset, glass at 35 C or more (+1.02 C) | $506 | 16.0 | 4.1 | negative |
+| R4, decisive | the conversion at each reading (+0.72 C at 34.5 C, +1.35 C at 39.0 C) | $525 | 16.7 | 4.1 | 0.30 |
 
 - **Kills, one fact each:** R0 by the manual's basis sentence (the present instrument); R1 and R2 by the paired readings
-  (the difference rises with the reading); R3 by the two triggers (no single offset moves 34.5 C over 35.0 C and 39.0 C
-  over 40.0 C while leaving 34.0 C and 38.5 C below); R4 stands.
+  (the difference rises with the reading, and a straight line through 10,409 pairs, most of them cool days, sits under
+  the hot bins); R3 by the two triggers (no single offset moves 34.5 C over 35.0 C and 39.0 C over 40.0 C while leaving
+  34.0 C below); R4 stands.
 - **Why each is satisfying:** R1 is the textbook adjustment and the station history's own pairing; R2 decomposes the
-  pilot by season; R3 answers the threshold worry with a tail offset.
-- **Separation:** R0 to R2 file one figure by construction (the half-degree register makes the count a step function
-  of the offset, with the steps at 0.5 C and 1.0 C); R3 and R4 differ on the severe count; the build asserts R3 at
-  least 2 per cent from R4 on the premium and the default at least 6 per cent.
+  pilot by season or fits the difference against the reading; R3 answers the threshold worry with a tail offset.
+- **Separation:** the default 8.0 per cent above the golden; the line through all pairs 6.1 per cent; the two hot offsets
+  3.2 and 3.6 per cent, each also missing one of the two counts at one decimal.
 - **Uniform-offset proof:** 34.5 C crossing needs 0.5 C or more, 34.0 C staying below needs under 1.0 C, 39.0 C
-  crossing needs 1.0 C or more: no single offset satisfies all three, asserted over a sweep of offsets 0.0 C to 2.0 C.
+  crossing needs 1.0 C or more: no single offset satisfies all three; the sweep from 0.0 C to 2.0 C files $567, $542,
+  $506, $477 or $446, never $525 (asserted).
+- **Robustness:** every estimator that follows the reading (SF12, eight of them) files $525; the hot range's slope was
+  set so the 38.5 C bin (+1.33 C) sits clear of the 1.5 C it would need to cross 40.0 C under every one.
 
 ## Closure table
 
@@ -225,8 +236,8 @@ golden; the easy answer comes only from the easy method (one offset) on the same
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
 |---|---|---|---|---|---|---|---|---|
-| A, the 2027/28 schedule by the co-operative's four sub-districts | 12: member blocks, insured hectares, premium | a component of the quote: what the cover insures and the premium it brings | the co-operative apportions the premium by sub-district | D2, the sub-district stored on each block at inception and rewritten only at an endorsement, so blocks not endorsed since the co-operative's 2025 redraw carry the old one (same four names) | D6, variety lines repeat the block's insured hectares; over-clean, block numbers restart for each member | renewal schedule, block register, member crosswalk, term sheet, the quote's rate (5 files, 11 columns) | schedule labels and lines summed (every sub-district high and mis-split); lines deduplicated, schedule labels (totals right, split wrong); dedup on block number (low); register sub-districts over every register block (high); the answer | a policy system copies the customer's sub-district at inception and mirrors the grower's variety lines |
-| B, the cover's record by season since 2019/20 | 16: claims paid and what they came to | the audit trail of the cover being repriced | the history table the co-operative weighs the new premium against | D1, duplicate lodgements: a member's claim lodged twice (broker and member portal) sits in the claims register twice, both assessed, only one ever paid; only the finance ledger shows which | D6, the register extract repeats each claim's amount on every insured block line of the claim; D8, the interim run in March and the final run after the Service's approval, often after 30 June, so the ledger's financial year is not the season | claims register, finance ledger, member crosswalk (3 files, 9 columns) | register claim numbers counted and amounts summed by season (high every season); ledger by financial year (shifted); register rows counted (higher); the answer | a broker and a member both lodge after a hot season; a flattened claims report repeats claim fields on each risk line; insurers settle weather covers on approved data |
+| A, the 2027/28 schedule by the co-operative's four sub-districts | 12: member blocks, insured hectares, premium | a component of the quote: what the cover insures and the premium it brings | the co-operative apportions the premium by sub-district | D2, the sub-district stored on each block at inception and rewritten only at an endorsement, so blocks not endorsed since the co-operative's 2025 redraw carry the old one (same four names) | D6, variety lines repeat the block's insured hectares; over-clean, block numbers restart for each member | renewal schedule, block register, the extract notes' member-number line, term sheet, the quote's rate (5 files, 11 columns) | schedule labels and lines summed (every sub-district high and mis-split); lines deduplicated, schedule labels (totals right, split wrong); dedup on block number (low); register sub-districts over every register block (high); the answer | a policy system copies the customer's sub-district at inception and mirrors the grower's variety lines |
+| B, the cover's record by season since 2019/20 | 16: claims paid and what they came to | the audit trail of the cover being repriced | the history table the co-operative weighs the new premium against | D1, duplicate lodgements: a member's claim lodged twice (broker and member portal) sits in the claims register twice, both assessed, only one ever paid; only the finance ledger shows which | D6, the register extract repeats each claim's amount on every insured block line of the claim; D8, the interim run in March and the final run after the Service's approval, often after 30 June, so the ledger's financial year is not the season | claims register, finance ledger, the extract notes (3 files, 9 columns) | register claim numbers counted and amounts summed by season (high every season); ledger by financial year (shifted); register rows counted (higher); the answer | a broker and a member both lodge after a hot season; a flattened claims report repeats claim fields on each risk line; insurers settle weather covers on approved data |
 | Chart | 4 named parts | the exhibit of the line the premium is read from | the quote's second page | none (construction) | none | the seasons' counts and the line | the mirror's glass-era seasons and line differ | a pricing desk's standard exhibit |
 
 - **Main population zero-counts:** no device row in Merrin Flat's daily maxima, the comparison readings or the manual
@@ -249,6 +260,32 @@ golden; the easy answer comes only from the easy method (one offset) on the same
 Mirror leakage: about 16 per cent of the ask weight (the chart's two presence parts and one in ten device figures).
 Pair ceiling: about 37 (the cracker at about 55 with the call and the chart, the mirror at about 18).
 
+## Build record
+
+- Generator: `world.py`, `climate.py`, `pricing.py`, `book.py`, `records.py`, `docs.py`, `analysis.py`, `deliver.py`,
+  `checks.py`, `verify.py`, `metadata.py`, `build.py`, `postprocess.py`; `python3 task185/generator/build.py` builds the
+  pack, the goldens, `metadata.json` and `generator/figures.json`, runs the checks and the verifier, rebuilds into scratch
+  for the byte comparison and cuts `target.zip`.
+- Pack: 14 files in 5 formats; the automatic station's daily file 34,404 rows; the paired readings 10,409 rows at seven
+  sites; distractors the district stations' monthly series and the 2026/27 term sheet.
+- Mess neutrality (R2): the resent July 2012 batch and the provisional July and August 2027 rows fall outside every
+  season; either station number alone carries 30 or 32 of the 62 seasons, a visible gap; the book's variety lines,
+  endorsements, duplicate lodgements and payment runs touch only the asks.
+
+## Pre-ship check
+
+- Call: quote $525 a hectare for 2027/28, assuming 16.7 heat days and 4.1 severe heat days; the glass seasons gain 54
+  heat days and 29 severe heat days at each reading, and the heat-day line rises 0.30 days a decade.
+- Default path: the mean conversion (+0.13 C) ends on $567 with 17.2 and 4.5; a line through all pairs $557; one hot
+  offset $542 or $506; no offset from 0.0 C to 2.0 C reaches $525; eight reading-dependent estimators all file $525.
+- Gates: 5,902 checks with the R1 to R3c block, independent verifier from target/ alone, two byte-identical builds,
+  figures_check 73 figures, precut 49 checks, scrub clean (target and golden), leak.py REVIEW (no LEAK), guard surface
+  promotes task184 (back to back, different domain and driver) and task80 (gap rule and G16, differentiated on the
+  card), heart WARN (Anomaly Detection overuse only).
+- Deliverables: heat_cover_quote_2027_28.pdf (two pages: the call, the explanation, the sub-district table; the chart
+  and the season table), heat_cover_payouts.csv (eight seasons); target.zip from the final rebuild, 14 files.
+- Card current: answer, spine rows 34,404, stump and driver at the built values.
+
 ## Tried and rejected
 
 - Physical & Environmental Sciences, environmental monitoring exceedance, as the domain: blocked by `ban.pairing`
@@ -267,4 +304,11 @@ Pair ceiling: about 37 (the cracker at about 55 with the call and the chart, the
   severe trigger with a 0.14 C margin; the record starts in 1965 in Celsius instead.
 - A 1989 changeover with the overlap to 1992: the glass era held 24 of 62 seasons and the premium moved under 5 per
   cent on some draws; the 1995 changeover balances the eras (30 and 32 seasons).
-
+- A probe-minus-glass slope of 0.25 C a degree above 34.5 C: the 38.5 C bin (+1.74 C) crossed 40.0 C under the bin
+  means but not under a polynomial or a line over glass from 25 C, which filed $689, a competing estimator; at 0.15 C a
+  degree every estimator that follows the reading files one premium.
+- An uncompressed hot tail: the simulated maxima reached 51 C at Merrin Flat and 57 C at a comparison site; the hottest
+  days now flatten into the mid-forties (probe at most 47.1 C), which moves no day across either trigger.
+- The terms D6, $48, $85, cap $760: the premium came to 88 per cent of the cap, a cover no co-operative buys; the quote's
+  terms are now D14, $40, $60, cap $1,500 (35 per cent of the cap), and the bound seasons' day rates carry cents so no
+  season's paid total sits on a half dollar.

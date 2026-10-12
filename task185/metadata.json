@@ -1,0 +1,167 @@
+{
+  "task": "task185",
+  "title": "The premium per hectare to quote Merrin Valley Winegrowers for its 2027/28 heat-day cover at Merrin Flat after the station's 1995 change of instrument, the heat days and severe heat days it assumes, the 2027/28 schedule by sub-district, and what the cover has paid each season since 2019/20",
+  "domain": "General Statistics & Data Science (secondary Physical & Environmental Sciences)",
+  "subdomain": "exploratory data analysis and distribution assessment (a paired-instrument difference assessed across the range of the reading, for a threshold count read off a weather station with an instrument change)",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "14 (cuts by segment): the call and its two expected counts, the 2027/28 schedule by the four sub-districts, the cover's paid claims by season, the chart",
+  "as_of": "2027-08-27",
+  "deliverables": [
+    "heat_cover_quote_2027_28.pdf",
+    "heat_cover_payouts.csv"
+  ],
+  "distractor_files": [
+    "ncs_district_stations_monthly_mean_max.csv",
+    "heat_cover_term_sheet_2026_27.pdf"
+  ],
+  "input_gates": {
+    "files": 14,
+    "formats": [
+      "csv",
+      "json",
+      "md",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "ncs_daily_041391_19951101_20270827.csv",
+    "largest_file_rows": 34404
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task185/generator/build.py (seeded, deterministic) around a fictional insurer, grower co-operative and national climate service; no real organisation, station, person or record is depicted.",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2027-08-27",
+  "generator": "task185/generator/build.py",
+  "files": [
+    {
+      "path": "claims_register_heat_cover_2020_2027.csv",
+      "format": "csv",
+      "bytes": 33640,
+      "rows": 560,
+      "source": "Constructed: Southward Mutual claims register report, heat-day cover, 2019/20 to 2026/27",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_notes_merrin_valley_renewal_2027-08-27.md",
+      "format": "md",
+      "bytes": 2062,
+      "rows": null,
+      "source": "Constructed: Southward Mutual weather desk extract notes, 27 August 2027",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "gl6120_weather_claims_payments_FY2020_FY2028.csv",
+      "format": "csv",
+      "bytes": 49390,
+      "rows": 666,
+      "source": "Constructed: Southward Mutual general ledger 6120, weather claims payments, FY2020 to FY2028",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "heat_cover_term_sheet_2026_27.pdf",
+      "format": "pdf",
+      "bytes": 41813,
+      "rows": null,
+      "source": "Constructed: Southward Mutual heat-day cover term sheet, 2026/27 (bound)",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "heat_cover_term_sheet_2027_28_quote.pdf",
+      "format": "pdf",
+      "bytes": 41817,
+      "rows": null,
+      "source": "Constructed: Southward Mutual heat-day cover term sheet, 2027/28 quotation",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "merrin_valley_block_register_2027-08.xlsx",
+      "format": "xlsx",
+      "bytes": 16102,
+      "rows": null,
+      "source": "Constructed: Merrin Valley Winegrowers Co-operative block register at 1 August 2027",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ncs_climatological_register_041207_1964_1995.xlsx",
+      "format": "xlsx",
+      "bytes": 88748,
+      "rows": null,
+      "source": "Constructed: National Climate Service climatological register for Merrin Flat 041207, maximum temperature, 1964 to 1995 (digitised)",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ncs_daily_041391_19951101_20270827.csv",
+      "format": "csv",
+      "bytes": 1050737,
+      "rows": 34404,
+      "source": "Constructed: National Climate Service data portal, Merrin Flat automatic station 041391, daily elements from 1 November 1995",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ncs_district_stations_monthly_mean_max.csv",
+      "format": "csv",
+      "bytes": 162605,
+      "rows": 4444,
+      "source": "Constructed: National Climate Service monthly mean maximum temperature, the district's other stations",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ncs_parallel_observations_maxtemp.csv",
+      "format": "csv",
+      "bytes": 443634,
+      "rows": 10409,
+      "source": "Constructed: National Climate Service parallel observations archive, daily maxima on both instruments at seven sites",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ncs_station_history_merrin_flat.pdf",
+      "format": "pdf",
+      "bytes": 42048,
+      "rows": null,
+      "source": "Constructed: National Climate Service station history, Merrin Flat",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ncs_station_list_merrin_district.json",
+      "format": "json",
+      "bytes": 2152,
+      "rows": null,
+      "source": "Constructed: National Climate Service station list, Merrin and Murrow valleys",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "policy_schedule_HC104_merrin_valley_2027-08-26.csv",
+      "format": "csv",
+      "bytes": 15363,
+      "rows": 192,
+      "source": "Constructed: Southward Mutual policy system extract, policy schedule for the co-operative's heat-day cover",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "southward_weather_index_pricing_manual_rev3.pdf",
+      "format": "pdf",
+      "bytes": 45431,
+      "rows": null,
+      "source": "Constructed: Southward Mutual weather index pricing manual, revision 3",
+      "date": "2027-08-27",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
