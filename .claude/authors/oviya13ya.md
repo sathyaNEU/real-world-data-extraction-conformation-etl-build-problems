@@ -21,5 +21,5 @@ architecture), new. A task from an objective no developer owns says so.
 
 | Wave | Tasks, in order |
 |---|---|
-| 1 | task183 (resume 4) · task182 (redesign: shipped, not stumped) · task181 (re-root: architecture 4) · task180 (re-root) · task125 (re-root: retired) · task113 (new: data bundle in task113_ext) |
+| 1 | task183 (resume 4) · task182 (redesign: shipped, not stumped) · task181 (re-root: architecture 4) · task180 (re-root) · task125 (re-root: retired) |
 | 2 | task184 (new) · task185 (new) · task186 (new) · task187 (new) · task188 (new) · task189 (new) |
