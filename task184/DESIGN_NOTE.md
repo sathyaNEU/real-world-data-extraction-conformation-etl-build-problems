@@ -288,6 +288,15 @@ Pair ceiling: 37.0
   standard's 3.1 and every posted day refuting the roster pattern plus three), with the extract notes' "ran every
   day" reworded. The design days' redraw moved every figure; every gate re-ran.
 
+- Pass 2 (2026-10-12): DETERMINISTIC, APPROVE. All eight summer figures, the 14 per cent flip (Halloran Bay 244,431
+  at 13 against Cullinvale's 237,703, 224,159 at 14, under every rounding of the scaled arrivals) and the 24 measures
+  reproduced from target/ alone; the figures hold under a flat two-lane or by-interval stand-down. Gate G: net against
+  gross capacity estimated from the 2026 postings, analytical, no surface read, no sole defect. Gate H: domain,
+  layers pass, decisive step analytical. Its optional pins (the staff-lane exclusion, claims assigned whole to their
+  posting) are declined: each would state an ask's device, and the judge found both readings forced by the pack (the
+  operators' returns, the policy's staff and aircrew search, the Sunday travel lines). Its note that Halloran Bay's
+  bank-window stand-down rests on one posting week stands as filed: every posted day at every host shows its pattern.
+
 ## Pre-ship check
 
 - Call: post the unit to Halloran Bay, 382,700 passengers moved within the standard against Cullinvale's 237,700;
@@ -299,7 +308,7 @@ Pair ceiling: 37.0
   (government_agency overuse only).
 - Deliverables: mobile_team_posting_summer_2027.pdf (two pages, chart and two tables),
   mobile_team_effect_2027.xlsx (posting effect, summer 2026, notes); target.zip from the final rebuild, 17 files.
-- Judge: pass 1 FIX_NOW on the flip's convention only (fixed by the prompt's pin); pass 2 below.
+- Judge: pass 1 FIX_NOW on the flip's convention only (fixed by the prompt's pin); pass 2 DETERMINISTIC, APPROVE.
 - Card current: forum redrawn to operations_desk, driver, stump, answer, spine rows 279,417, layer 1 as built.
 
 ## Tried and rejected

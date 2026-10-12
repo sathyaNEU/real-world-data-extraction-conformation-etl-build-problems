@@ -1,11 +1,11 @@
 {
   "task": "task184",
   "owner": "oviya13ya",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "supply-chain-logistics",
   "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-12",
   "stump": "A competent solver runs the planning standard on each airport's 2027 design days and summer roster pattern with the unit's three lanes added and posts the unit to Cullinvale (730,800 passengers moved within the standard); the step that lands it there is taking the roster pattern plus three as the lanes that will be open, when every posted day last summer shows seven hosts standing down two of their own lanes for the whole of the unit's day and Halloran Bay none through its banks, so the unit moves the most at Halloran Bay (382,700).",
   "architecture": 1,
@@ -23,14 +23,14 @@
     "nearest": "task128 v2 lineage, 0.06"
   },
   "judge": {
-    "verdict": "pass 1 NOT_DETERMINISTIC",
-    "disposition": "FIX_NOW (flip convention), fixed by the prompt pin; pass 2 running",
+    "verdict": "pass 1 NOT_DETERMINISTIC (FIX_NOW, flip convention); pass 2 DETERMINISTIC",
+    "disposition": "APPROVE",
     "report": "determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: judge pass 2 thread running on the rebuilt pack (brief /tmp/determinism-check-task184-p2/judge_brief.md); on its verdict re-invoke the determinism-judge agent to write pass 2 into determinism_check_report.md; on APPROVE rebuild, ship (ledger row SHIPPED, card current, target.zip and golden/ force-added); a second FIX_NOW spends the architecture",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "seed": "analytical_tasks/02_anomaly_detection/AD07_mobile-screening-team-idle-position-cap.md"
 }
