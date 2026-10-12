@@ -1,58 +1,51 @@
-# task254: end of pulmonary monitoring for Lyrevo in the RMP update filed with PSUR 6
+# task254: the 2027 staff shuttle's morning departure
 
 ## Tags
 
-**Domain:** Pharmacology, Pharmacoepidemiology & Safety (time to onset of identified risks from a post-marketing case series, setting the routine monitoring windows of the risk management plan).
+**Domain:** Urban & Regional Science (network analysis: corridor travel-time reliability from probe segment data, setting a timetable departure).
 **Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**File month 20 of treatment as the end of pulmonary monitoring: by the end of month 20, 95 per cent of interstitial lung disease reactions have begun.**
+**The 2027 staff shuttle should leave the Cedar Grove park-and-ride lot at 7:05 a.m.**
 
-A reaction can be in the case series only once it has begun, so each one is bounded by its own course's time on treatment at the 30 September 2026 lock, and the reverse-time product-limit estimate on that bound reaches 95 per cent in month 20 and 80 per cent in month 9. Not an earlier month read straight off the reported times to onset: uptake is recent (44,010 of the 74,160 patient-years fall in the twelve months to the lock), so most patients have not been treated long enough for a late reaction to begin, and the series is short of exactly the long onsets that set the 95 per cent cut. Not a Weibull or other fitted curve, which annex 7 section 5 rules out.
+Built day by day, each segment at the five-minute epoch in which the shuttle enters it, trips leaving at 7:05 a.m. would have reached the Brook Street stop by 8:00 a.m. on 238 of the 252 working weekdays against a bar of 227, and trips leaving at 7:10 a.m. on only 190. Not 7:15 a.m., which adds up the sixteen segments' travel times for the epoch the shuttle leaves in: that reads the queue ahead of the I-264 merge before the shuttle gets there, while it is still growing, so the trip it measures is one no vehicle made. Not 7:10 a.m. from the whole route read at the trip's midpoint or from 90th-percentile segment times summed at departure, nor 7:00 a.m. from a 90th-percentile profile walked through the epochs: none of them is any day's trip.
 
 ## 2. Critical Components
 
-1. 95 per cent of ILD reactions have begun by the end of month **20** of treatment
-2. 80 per cent of ILD reactions have begun by the end of month **9** of treatment
+1. Working weekdays from 1 October 2025 to 30 September 2026: **252**, so the bar is **227**
+2. Working weekdays on which trips leaving at 7:05 a.m. would have reached the stop by 8:00 a.m.: **238**
+3. Working weekdays on which trips leaving at 7:10 a.m. would have reached the stop by 8:00 a.m.: **190**
 
 ## 3. Step-by-Step Solution
 
-1. In `lyrevo_line_listing_PSUR6_DLP20260930.csv` kept each case's latest version received on or before 30 Sep 2026, left out study (ST) reports and cases first received after the lock, and merged duplicates into the master case of `duplicate_register_PSUR6.xlsx` (annex 7 sections 1 and 2).
-2. Mapped reactions to the six identified risks with the v4 sheet of `rmp_term_list_version_4.xlsx`, one reaction per case and risk, the earliest onset (annex 7 section 2).
-3. Built courses from `lyrevo_dosage_lines_PSUR6.csv`, a new course only after more than 28 days without a dose, and counted time to onset from the first dose of the course in which the reaction began, complete dates only (annex 7 section 3).
-4. Dated hepatotoxicity and neutropenia reactions reported without an onset at the first sample in `psp_lab_feed_2023-2026.csv` meeting the case definition, each laboratory's unit and upper limit for the patient's sex taken from `psp_laboratory_register.xlsx` (annex 7 section 4).
-5. Bounded each reaction by its course's time on treatment at the lock (days from the course's first dose to 30 Sep 2026) and estimated each risk's onset distribution with the reverse-time product-limit estimator for right-truncated data: ILD reaches 80 per cent in month 9 and 95 per cent in month 20.
-6. Counted each risk's cases from launch and among cases first received 1 Oct 2025 to 30 Sep 2026 (annex 7 section 6).
-7. Converted supply up to 30 Sep 2026 to patient-years per `PSUR6_section5_exposure_method.docx`: the wholesaler sell-in in `sellin_wholesaler_monthly_2023-2026.csv` net of credit notes with free packs counted, plus the hospital call-offs in `tender_calloffs_FR_IT_ES_2025-2026.xlsx` at 10 packs a shipper case, each national code taken to its pack size through `product_master_national_codes.csv` and `xevmpd_presentations_RVB-417.xml`, one tablet one patient-day: 74,160 patient-years from launch and 44,010 in the twelve months.
-8. Recommendation: pulmonary monitoring for patients starting from January 2027 ends after month 20 of treatment.
+1. Took Monday to Friday from 1 October 2025 to 30 September 2026 less the 2025-26 holidays in hr_holiday_calendars.xlsx (shuttle standard 2.2): 252 working weekdays, so the bar is 227 (90 per cent, standard 2.1).
+2. Read travel_time_passenger (standard 2.5) for the sixteen TMCs of route_cedar_grove_to_brook_st.xlsx from the twelve trelvane_tmc_export files, epochs in local time per trelvane_export_readme.txt: every route segment has a value in every morning epoch of the 252 days.
+3. For each working weekday and each departure from 6:30 to 7:20 a.m., built the trip (standard 2.4): the route file's 4-minute lot leg, then each segment in order at its travel time for the five-minute epoch in which the shuttle enters it, the next segment entered as the last is left, then the 3-minute leg to the stop.
+4. Counted the days arriving at or before 8:00 a.m.: 238 at 7:05 a.m. and 190 at 7:10 a.m., so 7:05 a.m. is the latest departure meeting the bar.
+5. Counted the 8:00 a.m. starters on the permit roll (employee numbers) and the HR-granted spaces (payroll IDs mapped to employee numbers through hr_staff_extract_2026-10-02.csv) of cedar_grove_reassignment_list.xlsx, each person once, less the opt-outs: 410 riders, 15 vehicles at the 28 seats of ridgeline_schedule_of_charges_2027.xlsx, 10 seats left empty.
+6. Added the legs and each code of ridgeline_deadhead_route_brook_st_yard.xlsx at its length in TMC_Identification.csv's release 2025.2, in force when the route was set up (in release 2026.1 its I-264 to Grade Lane code is an I-264 ramp): 10.96 miles; at $214.00 a vehicle a day and $3.50 a vehicle-mile over the 252 service days of the 2027 calendar, $953,920.80 for the 15 vehicles.
+7. Counted each departure's late working weekdays, each carrying the 410 riders, as its late staff arrivals and added $38.00 for each to the vehicle charges (shuttle_service_budget_note_2027.docx): from $969,501 at 6:50 a.m. to $3,493,461 at 7:20 a.m.
+8. Recommendation: the 2027 staff shuttle leaves Cedar Grove at 7:05 a.m.
 
 ## 4. Deliverable Answers
 
-### rmp_monitoring_windows_2027.xlsx
+### shuttle_departures_2027.xlsx
 
-1. Interstitial lung disease, 95 per cent of reactions begun: month 20 of treatment.
-2. Months of treatment by which 80 and 95 per cent of reactions have begun:
-   - Interstitial lung disease: 80 per cent by month 9, 95 per cent by month 20
-   - Herpes zoster: 80 per cent by month 11, 95 per cent by month 21
-   - Serious infections: 80 per cent by month 7, 95 per cent by month 18
-   - Venous thromboembolism: 80 per cent by month 6, 95 per cent by month 16
-   - Hepatotoxicity: 80 per cent by month 4, 95 per cent by month 9
-   - Neutropenia: 80 per cent by month 3, 95 per cent by month 8
-3. Reporting rates per 1,000 patient-years, from launch (3 Apr 2023 to 30 Sep 2026) and for the twelve months to the lock (1 Oct 2025 to 30 Sep 2026):
-   - Interstitial lung disease: 8.1 from launch, 8.3 for the twelve months
-   - Herpes zoster: 23.7 from launch, 24.2 for the twelve months
-   - Serious infections: 27.2 from launch, 27.2 for the twelve months
-   - Venous thromboembolism: 11.2 from launch, 11.2 for the twelve months
-   - Hepatotoxicity: 20.5 from launch, 20.5 for the twelve months
-   - Neutropenia: 18.8 from launch, 18.5 for the twelve months
-4. Patient-years, nearest 10:
-   - From launch to 30 Sep 2026: 74,160
-   - Of which on 15 mg tablets: 46,320
-   - Of which on 30 mg tablets: 27,840
-   - 1 Oct 2025 to 30 Sep 2026: 44,010
+1. Departure: 7:05 a.m.
+2. Working weekdays on which trips would have reached the stop by 8:00 a.m.: 238 leaving at 7:05 a.m., 190 leaving at 7:10 a.m.
+3. Staff who will ride the morning shuttle: 410
+4. Vehicles it needs: 15
+5. Seats left empty: 10
 
-### onset_windows_by_risk.svg
+### shuttle_departure_costs_2027.html
 
-1. Cumulative share of reactions begun by month of treatment, months 0 to 24, one panel per identified risk, each risk's 95 per cent window marked at its month: interstitial lung disease 20, herpes zoster 21, serious infections 18, venous thromboembolism 16, hepatotoxicity 9, neutropenia 8.
-2. Title giving the ILD month: "Pulmonary monitoring to month 20: by then 95% of interstitial lung disease reactions have begun".
+1. Late staff arrivals a year and the 2027 cost of holding each departure, whole arrivals and whole dollars:
+   - 6:50 a.m.: 410 late arrivals, $969,501
+   - 6:55 a.m.: 410 late arrivals, $969,501
+   - 7:00 a.m.: 1,230 late arrivals, $1,000,661
+   - 7:05 a.m.: 5,740 late arrivals, $1,172,041
+   - 7:10 a.m.: 25,420 late arrivals, $1,919,881
+   - 7:15 a.m.: 47,560 late arrivals, $2,761,201
+   - 7:20 a.m.: 66,830 late arrivals, $3,493,461
+2. Bar chart above the table: one bar per departure from 6:50 to 7:20 a.m. in time order, each stacked into operator charges and late-arrival cost and labelled with its 2027 cost in whole dollars, on a dollar axis, titled with the rise in cost from 6:50 to 7:20 a.m.

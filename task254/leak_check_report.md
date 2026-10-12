@@ -1,21 +1,23 @@
 # leak check, task254
 
-**Verdict: REVIEW.** 19 files read, 14 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 25 files read, 16 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: distribution, burned, origin, reported, reaction, safety, domain, state-protected, duplicates, estimand, decisive, course, analysis, perimeter, population, pattern, method, merges, escaped, answered, sentence, competent, overlay, series, patients
+Stump terms swept: segment, period, rejected, architecture, decisive, construction, carries, golden, walked, dropped, re-root, counts, vehicle, reading, segments, midpoint, travel, second, default, device, cutover, reliability, planning, setting, profile
 
-## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `RVB-417_RMP_annex7_methods.pdf`: carries 7 of 11 distinctive words of the committed call: 'File month 20 of treatment as the end of pulmonary monitoring: by the end of month 20, 95 per cent of interstitial lung '
+## 3 answer figures in the pack (REVIEW 3)
+- **REVIEW** `trelvane_export_readme.txt`: golden figure 264 appears: ...age: I-65 between Exit 121 and Exit 136 and the I-264 interchange, both directions, KY-480 at Exit 12...
+- **REVIEW** `chestnut_garage_closure_notice.pdf`: carries 6 of 7 distinctive words of the committed call: 'The 2027 staff shuttle should leave the Cedar Grove park-and-ride lot at 7:05 a.m.'
+- **REVIEW** `shuttle_service_budget_note_2027.docx`: carries 5 of 7 distinctive words of the committed call: 'The 2027 staff shuttle should leave the Cedar Grove park-and-ride lot at 7:05 a.m.'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `PSUR6_section5_exposure_method.docx`: 4 of 25 stump-paragraph terms appear (reported, safety, method, patients); read whether the document names the move
-- **REVIEW** `RVB-417_RMP_annex7_methods.pdf`: 6 of 25 stump-paragraph terms appear (reaction, safety, course, population, method, patients); read whether the document names the move
-- **REVIEW** `safety_export_field_guide.pdf`: 4 of 25 stump-paragraph terms appear (reported, reaction, safety, patients); read whether the document names the move
+- **REVIEW** `shuttle_service_budget_note_2027.docx`: 3 of 25 stump-paragraph terms appear (counts, vehicle, planning); read whether the document names the move
+- **REVIEW** `staff_shuttle_service_standard.docx`: 5 of 25 stump-paragraph terms appear (counts, vehicle, travel, planning, setting); read whether the document names the move
+- **REVIEW** `trelvane_export_readme.txt`: 6 of 25 stump-paragraph terms appear (segment, vehicle, segments, travel, second, planning); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `signal_tracker_2026.xlsx`: 8 ISO dates after 2026-10-06, e.g. 2026-10-28, 2026-11-06, 2026-11-12, 2026-11-14, 2026-11-15
+- **REVIEW** `hr_holiday_calendars.xlsx`: 9 ISO dates after 2026-10-16, e.g. 2027-01-01, 2027-01-18, 2027-05-31, 2027-06-18, 2027-07-05
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -32,26 +34,32 @@ Stump terms swept: distribution, burned, origin, reported, reaction, safety, dom
 
 ## 8 column names (clean)
 
-## 11 prompt form (clean)
+## 11 prompt gate (clean)
 
 ## Solver's-eye read
 
-Reader pass 1 (one isolated Sonnet agent, fresh copy of `prompt.md` and `target/` from `target.zip`). Its answers, condensed, quotations kept:
+First pass (Sonnet, medium, on the pack as first built; the budget note, the readme and the export changed afterwards, see the second pass).
 
-1. Decisive step: no single sentence. It reads `RVB-417_RMP_annex7_methods.pdf` as stating the whole method as rules (1.2 version of record, 1.3 post-marketing only, 2.1 duplicate links, 3.1 to 3.4 course and month arithmetic, 5.1 "the first month by the end of which at least 95 per cent have begun", 5.2 "without fitting a parametric model") and concludes the ILD month rests on the case filters and the month arithmetic; it notes every ILD case carries one dosage line and no ILD onset changes across versions. Exposure pointers: the section 5 method's "every channel" sentence and its reference to the market supply channel overview; finance net sales at 2.4 to 4.1 times sell-in in FR, IT and ES.
-2. Ranking or stating file: none.
-3. Help-only file: `market_supply_channels.xlsx` (its `data_source` and `comment` columns route the solver to the hospital channel); second candidate, the NOTES block of `PSUR6_data_package_log.txt`.
-4. Answer-like figure: none (parameters and distractor texts only).
-5. Forks. ILD month: none live (5.1 fixes month M; "at least" excludes interpolation; populations closed by 1.3). Other windows: none live. Rates: herpes zoster moves by two cases on the ten duplicate links dated after the DLP (1.2 against 2.1); rounded against unrounded patient-years under the rates (effect untested). Patient-years: 17 exact duplicate return rows in sell-in (66 packs), whether double extraction or separate credit notes.
-6. Realism tells: python-docx template traits in the section 5 docx; small unembedded-font PDFs with hand-set producers; field guide dated before the file it names; openpyxl markup under an Excel app.xml with one shared header style; register modified before its own link dates; call-off numbers in steps of exactly 3 and weekend deliveries; constant net unit values; finance extract labelled closed quarters but holding 2026-Q3; 22 distinct medinfo questions; odd consecutive signal IDs with text next_review; contiguous case numbers and shared onsets across multi-reaction cases; capped lab values; numeric limits stored as text; an invented XEVMPD namespace; one author signing five documents.
+1. Decisive step: none announced. The nearest sentences are the standard's 2.4 ("A trip runs from the departure at the boarding bay to arrival at the campus stop, along the route in the route file, with the route file's fixed legs.") and 2.5 ("Trip times use the passenger-vehicle travel times in the vendor's export."); they say what to sum, not how to carry the segment times along the trip, and nothing says not to add up one epoch's times.
+2. Ranking or scoring file: none. The Route 40X timetable is another service's schedule.
+3. File only there to help: none obvious; the commute survey and the 40X timetable read as distractors.
+4. Answer-like figures: none.
+5. Literal sentences: standard 2.1 (at least 90 per cent of the working weekdays of the latest twelve months, by 8:00), 2.2 (working weekday: Monday to Friday less the HR calendar's holidays), 2.3 (every working weekday counts), 2.4 (the route file's segments and fixed legs), 2.5 (passenger class), 2.6 (the five-minute grid); the budget note's late arrivals (late working weekdays, each counting every rider), service days (the HR 2027 calendar) and convoy (a seat a rider); the closure notice's riders (8:00 starters, granted HR spaces, less opt-outs), "cross-keyed via the HR extract (employee_no vs payroll_id)". Every one executes to the golden's construction.
 
-Step 2, the reader on the mechanical REVIEW lines: annex against the call harmless (no ILD, lung or 20 in it); docx and field guide harmless; signal tracker dates harmless (next_review on ongoing rows); annex 6 of 25 terms called "leak, at rule level" (the annex states the course construction and the population rules).
+Mechanical items: 264 is the I-264 road name (harmless); the closure notice and budget note share the call's nouns but carry no departure time (harmless); the standard, the budget note and the readme name no move (harmless); the 2027 dates are the 2027 holiday sheet the budget note uses (harmless).
 
-### Main thread's dispositions
+Realism tells: the budget note read somewhat like a brief; each monthly export was a complete grid with no epoch missing; the two start-time formats read as deliberate; the opt-out dates run past "the extract", which is the probe export's delivery date, not the workbook's.
 
-- Question 1 and the annex's "rule-level" call: harmless for the stump. The annex pins conventions (version, duplicates, course, month arithmetic, the estimand in 5.1, no parametric fit in 5.2), which determinism requires; it says nothing about how far each case could have been observed, and the reader's own path (the cut read off the reported reactions) is the stump path, which is the evidence that the decisive step is not announced.
-- Questions 2 and 4: nothing to fix.
-- Question 3, `market_supply_channels.xlsx`: kept as a file (the section 5 method names Supply Chain Planning's channel overview as its source, as a real PSUR exposure method does); its `comment` and `data_source` columns announce Ask B's channel device, an ask-level finding deferred to stage 6b.
-- Main-call forks: none.
-- Ask forks deferred to stage 6b: the post-DLP duplicate links (pin the link date against the DLP in annex 2.1 or the register), the exact duplicate return rows (make them distinct credit notes or drop the duplication), rounded against unrounded patient-years (assert the rates' margins).
-- Realism tells: deferred to stage 6b.
+## Solver's-eye read (second pass)
+
+Second pass (Sonnet, medium) on the final pack, after the budget note was rewritten and the readme gained its sentence on epochs left out.
+
+1. Decisive step: none stated as a method. The nearest is standard 2.4 ("A trip runs from the departure at the boarding bay to arrival at the campus stop, along the route in the route file, with the route file's fixed legs."); the documents define the quantity and never say how to evaluate it, and the reader names both a trip chained through the epochs it reaches and every segment taken at the departure epoch as open to the analyst.
+2. Ranking or scoring file: none. The 40X timetable gives another service's scheduled times.
+3. File only there to help: none clearly; the readme reads as a vendor data dictionary and the deadhead route as an operator's file.
+4. Answer-like figure or name: none; 7:05 appears in no file.
+5. Literal sentences: standard 2.1 to 2.6, the route file's release note, the readme's release rule, its density C fill and its epochs left out, the budget note's late arrivals, operator charges, service days and convoy, and the closure notice's riders. Every one executes to the golden's construction; the epochs left out never touch the route's working-weekday rows.
+
+Mechanical items: all seven harmless (I-264 is a road; the notice and budget note give no time; the standard, budget note and readme name no move; the 2027 dates are the 2027 holiday sheet the budget note cites).
+
+Realism tells: none needing a fix. The reader reads the probe files as uniform and complete (they are complete on the route's working-weekday rows by design, with 1,664 epochs left out elsewhere), the 40X timetable as a clean grid, the request numbers as sequential in date order and the permit roll as sorted by permit number, which is how such exports come out.

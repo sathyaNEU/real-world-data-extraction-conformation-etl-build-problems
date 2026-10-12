@@ -1,0 +1,455 @@
+{
+ "call": "7:05 a.m.",
+ "call_next": "7:10 a.m.",
+ "on_time_at_call": 238,
+ "on_time_at_next": 190,
+ "working_weekdays": 252,
+ "bar_weekdays": 227,
+ "bar_pct": 90,
+ "bar_exact": "226.8",
+ "arrive_by": "8:00 a.m.",
+ "window": [
+  "1 October 2025",
+  "30 September 2026"
+ ],
+ "legs_minutes": [
+  4.0,
+  3.0
+ ],
+ "route_segments": 16,
+ "holidays_2025_26": 9,
+ "riders": 410,
+ "vehicles": 15,
+ "seats_empty": 10,
+ "seats_per_vehicle": 28,
+ "riders_both_sheets": 34,
+ "riders_by_department": {
+  "Nursing": 150,
+  "Imaging": 52,
+  "Laboratory": 46,
+  "Pharmacy": 34,
+  "Rehabilitation": 31,
+  "Support Services": 57,
+  "Administration": 40
+ },
+ "ask_departures": [
+  "6:50 a.m.",
+  "6:55 a.m.",
+  "7:00 a.m.",
+  "7:05 a.m.",
+  "7:10 a.m.",
+  "7:15 a.m.",
+  "7:20 a.m."
+ ],
+ "conventions": {
+  "network_releases": [
+   "2025.2",
+   "2026.1"
+  ],
+  "standard_clauses": [
+   "2.1",
+   "2.2",
+   "2.3",
+   "2.4",
+   "2.5"
+  ],
+  "departures_from": "6:30 a.m.",
+  "departures_to": "7:20 a.m.",
+  "epochs": [
+   "5:30",
+   "9:25"
+  ]
+ },
+ "late_staff_arrivals": [
+  {
+   "departure": "6:50 a.m.",
+   "late_weekdays": 1,
+   "late_staff_arrivals": "410",
+   "late_arrival_cost": "15,580",
+   "cost_2027": "969,501"
+  },
+  {
+   "departure": "6:55 a.m.",
+   "late_weekdays": 1,
+   "late_staff_arrivals": "410",
+   "late_arrival_cost": "15,580",
+   "cost_2027": "969,501"
+  },
+  {
+   "departure": "7:00 a.m.",
+   "late_weekdays": 3,
+   "late_staff_arrivals": "1,230",
+   "late_arrival_cost": "46,740",
+   "cost_2027": "1,000,661"
+  },
+  {
+   "departure": "7:05 a.m.",
+   "late_weekdays": 14,
+   "late_staff_arrivals": "5,740",
+   "late_arrival_cost": "218,120",
+   "cost_2027": "1,172,041"
+  },
+  {
+   "departure": "7:10 a.m.",
+   "late_weekdays": 62,
+   "late_staff_arrivals": "25,420",
+   "late_arrival_cost": "965,960",
+   "cost_2027": "1,919,881"
+  },
+  {
+   "departure": "7:15 a.m.",
+   "late_weekdays": 116,
+   "late_staff_arrivals": "47,560",
+   "late_arrival_cost": "1,807,280",
+   "cost_2027": "2,761,201"
+  },
+  {
+   "departure": "7:20 a.m.",
+   "late_weekdays": 163,
+   "late_staff_arrivals": "66,830",
+   "late_arrival_cost": "2,539,540",
+   "cost_2027": "3,493,461"
+  }
+ ],
+ "cost_inputs": {
+  "day_rate": "214.00",
+  "mile_rate": "3.50",
+  "holdover": "38.00",
+  "service_days_2027": 252,
+  "deadhead_miles": "10.96",
+  "deadhead_legs_miles": [
+   0.8,
+   2.1
+  ],
+  "vehicle_charges": "953,921",
+  "vehicle_charges_cents": "953920.80"
+ },
+ "departures": [
+  {
+   "departure": "6:30 a.m.",
+   "on_time": 252,
+   "late": 0,
+   "share_pct": "100.0"
+  },
+  {
+   "departure": "6:35 a.m.",
+   "on_time": 252,
+   "late": 0,
+   "share_pct": "100.0"
+  },
+  {
+   "departure": "6:40 a.m.",
+   "on_time": 252,
+   "late": 0,
+   "share_pct": "100.0"
+  },
+  {
+   "departure": "6:45 a.m.",
+   "on_time": 252,
+   "late": 0,
+   "share_pct": "100.0"
+  },
+  {
+   "departure": "6:50 a.m.",
+   "on_time": 251,
+   "late": 1,
+   "share_pct": "99.6"
+  },
+  {
+   "departure": "6:55 a.m.",
+   "on_time": 251,
+   "late": 1,
+   "share_pct": "99.6"
+  },
+  {
+   "departure": "7:00 a.m.",
+   "on_time": 249,
+   "late": 3,
+   "share_pct": "98.8"
+  },
+  {
+   "departure": "7:05 a.m.",
+   "on_time": 238,
+   "late": 14,
+   "share_pct": "94.4"
+  },
+  {
+   "departure": "7:10 a.m.",
+   "on_time": 190,
+   "late": 62,
+   "share_pct": "75.4"
+  },
+  {
+   "departure": "7:15 a.m.",
+   "on_time": 136,
+   "late": 116,
+   "share_pct": "54.0"
+  },
+  {
+   "departure": "7:20 a.m.",
+   "on_time": 89,
+   "late": 163,
+   "share_pct": "35.3"
+  }
+ ],
+ "contrasts": {
+  "default_path": {
+   "call": "7:15 a.m.",
+   "on_time": {
+    "6:30": 252,
+    "6:35": 252,
+    "6:40": 252,
+    "6:45": 252,
+    "6:50": 252,
+    "6:55": 252,
+    "7:00": 252,
+    "7:05": 251,
+    "7:10": 250,
+    "7:15": 241,
+    "7:20": 181
+   }
+  },
+  "midpoint": {
+   "call": "7:10 a.m.",
+   "on_time": {
+    "6:30": 252,
+    "6:35": 252,
+    "6:40": 252,
+    "6:45": 252,
+    "6:50": 252,
+    "6:55": 252,
+    "7:00": 251,
+    "7:05": 251,
+    "7:10": 242,
+    "7:15": 193,
+    "7:20": 127
+   }
+  },
+  "p90_profile_at_departure": "7:10 a.m.",
+  "p90_profile_walked": "7:00 a.m.",
+  "p50_profile_walked": "7:15 a.m.",
+  "walked_at_default_call": 136,
+  "grid": {
+   "incidents_dropped_walk": "7:05 a.m.",
+   "incidents_dropped_R0": "7:15 a.m.",
+   "incidents_dropped_R2": "7:10 a.m.",
+   "holidays_kept": "7:05 a.m.",
+   "weekdays_all": 261,
+   "class_all": "7:05 a.m.",
+   "class_freight": "7:00 a.m.",
+   "p90_rule": "7:05 a.m.",
+   "no_legs": "7:10 a.m."
+  },
+  "holidays_kept_counts": {
+   "6:30": 261,
+   "6:35": 261,
+   "6:40": 261,
+   "6:45": 261,
+   "6:50": 260,
+   "6:55": 260,
+   "7:00": 258,
+   "7:05": 247,
+   "7:10": 199,
+   "7:15": 145,
+   "7:20": 98
+  },
+  "strict_counts": {
+   "6:30": 252,
+   "6:35": 252,
+   "6:40": 252,
+   "6:45": 252,
+   "6:50": 251,
+   "6:55": 251,
+   "7:00": 249,
+   "7:05": 238,
+   "7:10": 190,
+   "7:15": 136,
+   "7:20": 89
+  },
+  "all_vehicle_counts": {
+   "6:30": 252,
+   "6:35": 252,
+   "6:40": 252,
+   "6:45": 252,
+   "6:50": 251,
+   "6:55": 251,
+   "7:00": 249,
+   "7:05": 236,
+   "7:10": 187,
+   "7:15": 132,
+   "7:20": 80
+  },
+  "nearest_arrival_seconds": {
+   "6:30": "2386.3",
+   "6:35": "2138.5",
+   "6:40": "1142.3",
+   "6:45": "24.3",
+   "6:50": "34.1",
+   "6:55": "36.9",
+   "7:00": "23.2",
+   "7:05": "16.5",
+   "7:10": "15.3",
+   "7:15": "15.5",
+   "7:20": "15.9"
+  },
+  "mean_trip_minutes_walked": {
+   "6:30": "27.1",
+   "6:35": "27.6",
+   "6:40": "28.4",
+   "6:45": "29.5",
+   "6:50": "30.6",
+   "6:55": "32.5",
+   "7:00": "34.8",
+   "7:05": "37.7",
+   "7:10": "40.8",
+   "7:15": "43.5",
+   "7:20": "45.3"
+  },
+  "mean_trip_minutes_default": {
+   "6:30": "26.3",
+   "6:35": "26.6",
+   "6:40": "26.9",
+   "6:45": "27.4",
+   "6:50": "28.1",
+   "6:55": "28.9",
+   "7:00": "29.8",
+   "7:05": "30.9",
+   "7:10": "32.3",
+   "7:15": "33.8",
+   "7:20": "35.9"
+  },
+  "herded_days": 77,
+  "herd_factor_range": [
+   "0.91",
+   "1.09"
+  ],
+  "incident_days": 20,
+  "moved_at_default_call": {
+   "all": 105,
+   "school": 100,
+   "break": 5
+  },
+  "queue_at_default_call": {
+   "minutes_to_queue_p10": "10.3",
+   "minutes_to_queue_p90": "12.2",
+   "queue_minutes_at_departure": "14.3",
+   "queue_minutes_met": "21.2"
+  },
+  "school_term_days": 180,
+  "break_days": 72
+ },
+ "ask_stops": {
+  "riders": {
+   "golden": 410,
+   "H3": 531,
+   "H2": 423,
+   "H2+H3": 556,
+   "R1": 444,
+   "R1+H3": 565,
+   "R1+H2": 457,
+   "R1+H2+H3": 590
+  },
+  "vehicles": {
+   "golden": 15,
+   "H3": 19,
+   "H2": 16,
+   "H2+H3": 20,
+   "R1": 16,
+   "R1+H3": 21,
+   "R1+H2": 17,
+   "R1+H2+H3": 22
+  },
+  "seats_empty": {
+   "golden": 10,
+   "H3": 1,
+   "H2": 25,
+   "H2+H3": 4,
+   "R1": 4,
+   "R1+H3": 23,
+   "R1+H2": 19,
+   "R1+H2+H3": 26
+  },
+  "deadhead_miles": {
+   "golden": "10.96",
+   "current": "10.27",
+   "drop": "9.75"
+  },
+  "late_days_default_path": [
+   0,
+   0,
+   0,
+   1,
+   2,
+   11,
+   71
+  ],
+  "late_days_midpoint": [
+   0,
+   0,
+   1,
+   1,
+   10,
+   59,
+   125
+  ],
+  "late_days_walked": [
+   1,
+   1,
+   3,
+   14,
+   62,
+   116,
+   163
+  ],
+  "cracker_cost": [
+   "1,024,650",
+   "1,024,650",
+   "1,058,394",
+   "1,243,986",
+   "2,053,842",
+   "2,964,930",
+   "3,757,914"
+  ],
+  "nearest_composition": {
+   "units": 13,
+   "subset": "H2+walk+current",
+   "departure": "6:50 a.m.",
+   "figure": "late_arrivals"
+  },
+  "deadhead_cost_gap": {
+   "current": "9,128.70",
+   "drop": "16,008.30"
+  },
+  "deadhead_cost_gap_pct": {
+   "current": [
+    "0.94",
+    "0.94",
+    "0.91",
+    "0.78",
+    "0.48",
+    "0.33",
+    "0.26"
+   ],
+   "drop": [
+    "1.65",
+    "1.65",
+    "1.60",
+    "1.37",
+    "0.83",
+    "0.58",
+    "0.46"
+   ]
+  },
+  "compositions": 71,
+  "cracker_late_arrivals": [
+   "444",
+   "444",
+   "1,332",
+   "6,216",
+   "27,528",
+   "51,504",
+   "72,372"
+  ],
+  "composition_cells": 1169
+ }
+}

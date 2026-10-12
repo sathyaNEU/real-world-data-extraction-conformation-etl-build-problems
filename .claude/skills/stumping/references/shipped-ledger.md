@@ -187,7 +187,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 229 (v2) | FAILED_TO_STUMP: backlog perssathya | GSD missing data | DQ | time population | none | checks record a state before fixing it | - | - | six sites | none reported | perssathya |
 | 230 (v2) | SHIPPED, delivered 10-12, pending review | HFE reliability | DQ | time population | A | hit rate falls as targets get rarer | - | - | five streams | none reported | perssathya |
 | 253 | SHIPPED, delivered 10-12, pending review | EDU student growth | DESC | population | G11, G17 | a count of schools past a floor is the sum of their probabilities, not a count of shrunken predictions (28 against 42) | - | - | 42 places | none reported | sathay3012 |
-| 254 | FAILED_TO_STUMP: backlog sathay3012 | SCL aviation crews | DESC | - | - | - | - | - | - | none reported | sathay3012 |
+| 254 | SHIPPED, delivered 10-12, pending review | URS network analysis | DESC | objective population | G7, G16 | a departure's trip composed segment by segment at the period the shuttle reaches each one, not the sixteen segments summed at the departure period (7:15 against 7:05) | - | - | 7:05 a.m. departure | none reported | sathay3012 |
 | 445 | SHIPPED, delivered 10-12, pending review | QF 13F ownership | ETL | time population | E | an index sponsor's slice moves with each name's own share count | - | - | 5 of 12 crowded | loop 0 r1 10-11: 52, determinism fail; loop 2 shipped 10-12 | oviya1301 |
 | 446 (v2) | FAILED_TO_STUMP: backlog oviya1301 | BANK watch list | ETL | time population | none | carry error rates, not yield | - | - | 133 groups | none reported | oviya1301 |
 | 447 | FAILED_TO_STUMP: backlog oviya1301 | BANK peer benchmarks | ETL | - | - | - | - | - | - | none reported | oviya1301 |
@@ -275,6 +275,7 @@ them as history. Round-by-round detail is in each build's design note and card l
 | 228 (v1) | retired 10-11: collided with task129 | PA | DQ | population time | E, A | beacon calibration; reweighting |
 | 229 (v1) | failed portal determinism 10-11 | ENR | DQ | population time | D | standard error of a build mean |
 | 230 (v1) | retired 10-11: solved in-house twice | PA | DQ | population time | none | segment comparison pool |
+| 254 (v1, v2) | retired 10-11 at stage 2: v1 the estimand named the overlay; v2 the literal annex read to the stump's month | PES, PHA | DESC | objective population | C | burned area by final perimeter; right-truncated onsets |
 | 446 (v1) | retired 10-11: rule application | BANK | ETL | population time | none | group fixed at the projection date |
 | 500 (v1, v2) | solved on the portal 10-10, 10-11 | SCL, P&E | RCA | population | none | held blocks off late calls (shuttle, 15 of 28); a later start spilling onto siblings |
 
