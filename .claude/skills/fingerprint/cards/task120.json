@@ -7,7 +7,7 @@
   "subdomain": "generation-capacity-planning",
   "client_domain": "energy-systems-utilities",
   "niche": "a public university's campus water utility answering the state drinking water program's sanitary survey: how much well capacity it must add before summer 2027 so that, with its largest well out of service, its wells meet the most water the campus used in a day in the twelve months to September 2026, read from the operators' daily log of well totalizers and the hourly SCADA levels of its four storage tanks",
-  "objective": "descriptive-distribution",
+  "objective": "opportunity-sizing-decision",
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "rate_or_share",

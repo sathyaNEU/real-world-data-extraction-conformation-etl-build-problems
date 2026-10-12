@@ -3,7 +3,7 @@
   "owner": "sathay3012",
   "status": "SHIPPED",
   "domain": "energy-systems-utilities",
-  "objective": "descriptive-distribution",
+  "objective": "opportunity-sizing-decision",
   "stage": 5,
   "stage_name": "shipped (architecture 3)",
   "updated": "2026-10-12",
@@ -28,7 +28,14 @@
     "disposition": "APPROVE",
     "report": "task120/determinism_check_report.md (Gate G decomposition_attribution, analytical_non_defect)"
   },
-  "returned": [],
+  "returned": [
+    {
+      "date": "2026-10-12",
+      "portal": "none (author's 10/10 audit before review)",
+      "repair": "design: objective retagged to Opportunity Sizing & Decision Support (generation capacity planning serves it), write-up step 3 and the workbook note present the storage balance as the analyst's construction, Three rules block completed; pack and every figure unchanged (freeze PASS)",
+      "commit": ""
+    }
+  ],
   "resume": "",
   "approved": null,
   "delivered": "2026-10-12",

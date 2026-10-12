@@ -103,7 +103,7 @@ def metadata():
                  "twelve months to September 2026, with the year's water audit",
         "domain": "Energy Systems & Utilities",
         "subdomain": "generation capacity planning (water source capacity against maximum-day demand)",
-        "objective": "Descriptive & Distribution Analysis",
+        "objective": "Opportunity Sizing & Decision Support",
         "prompt_shape": "other: the call and its three components (the maximum day, the water used on it, the firm "
                         "capacity), the water lost in each of twelve months with the year and its share and a bar per "
                         "month, and the year's water used by four building groups",

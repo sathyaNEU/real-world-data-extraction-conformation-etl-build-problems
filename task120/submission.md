@@ -3,7 +3,7 @@
 ## Tags
 
 **Domain:** Energy Systems & Utilities (generation capacity planning: a campus water system's firm well capacity against its maximum-day demand).
-**Analytical objective:** Descriptive & Distribution Analysis.
+**Analytical objective:** Opportunity Sizing & Decision Support.
 
 ## 1. Final Recommendation
 
@@ -21,7 +21,7 @@ The campus used 4,469,527 gallons on August 20, 2026, 3,103.8 gpm against a firm
 
 1. Differenced each well's midnight totalizers in water_operators_daily_log_2025-10_2026-10.xlsx (Well 3's register rolls over after 99,999,999) for each of the 365 calendar days from October 1, 2025 to September 30, 2026: the wells produced 3,716,646 gallons on August 20, 2026.
 2. Took the four tanks' levels at each Eastern midnight from scada_historian_export_2025-10-01_2026-10-01.csv (UTC, per scada_export_readme.txt) at each tank's gallons per foot of level in campus_water_system_facilities_summary_2026.docx: on August 20 the tanks gave up 752,881 gallons.
-3. Took each day's water used as its production less the change in the four tanks' storage between its midnights, per the maximum day demand definition in dep_sanitary_survey_letter_2026-09-15.pdf: the most was 4,469,527 gallons on August 20, 2026.
+3. Balanced the whole system over each Eastern calendar day the letter sets, since the wells pump into the tanks and not into the buildings: water used is the day's production less what the four tanks gained (plus what they gave up), and the most was 4,469,527 gallons on August 20, 2026.
 4. Took each well's most recent pump test in well_pump_tests_2021-2026.xlsx (1,090, 820, 760, 700 and 640 gpm) less Well 1, the largest, per the letter's firm capacity: 2,920 gpm.
 5. Took each month's water used the same way, less the water its buildings' service meters recorded (amr_monthend_reads_2025-10_2026-10.csv, the vault meters' logged reads in cmms_water_work_orders_2025-10-01_2026-10-09.csv, multipliers and change-out reads from meter_inventory_2026-10-08.xlsx; the meters inside a building beyond its service lines in service_line_inventory_2024-10-15.csv not counted twice): 125,629,212 gallons lost, 12.3% of the 1,021,278,949 gallons used.
 6. Summed each service meter's year by its building's primary use in space_inventory_buildings_2026-09-30.xlsx, the Science Annex's meter under building 47 taken from the removed-buildings sheet: the residence halls used 280,319,280 gallons.

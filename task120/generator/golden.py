@@ -66,8 +66,8 @@ def workbook(path, F, Gf, W):
     ws.append([])
     ws.append(["Firm capacity is the total of the wells' most recent pump-test capacities less Well 1, the "
                "largest: " + ", ".join("%s %s" % (w, g(core.TESTED[w])) for w in core.WELLS) + " gpm."])
-    ws.append(["Maximum day demand is the day's well production less the water the four tanks gained between that "
-               "day's midnights (here they gave water up), counting water lost from the mains as used."])
+    ws.append(["Water used on a day is a balance over the whole system: the wells' production less the water the four "
+               "tanks gained between that day's midnights (on this day they gave water up); the mains' losses are inside it."])
     ws.append(["The largest day of well production alone was %s (%s gal), when the wells refilled the tanks."
                % (F["R0"]["day"].strftime("%B %-d"), g(F["R0"]["figure"]))])
     ws.column_dimensions["A"].width = 52

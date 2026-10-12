@@ -4,16 +4,17 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: production, architecture, august, storage, change, demand, letter, decisive, household, federal, carries, register, schedule, households, design, record, corpus, return, dependent, sentence, prompt, dependents, export, golden, construction
+Stump terms swept: production, storage, architecture, august, letter, change, demand, record, carries, register, decisive, schedule, household, federal, records, households, export, balance, construction, design, sentence, prompt, corpus, return, dependent
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `campus_water_records_field_guide.txt`: carries 5 of 8 distinctive words of the committed call: 'The university has to add 184 gpm of firm well capacity to its campus water system before June 2027.'
 - **REVIEW** `campus_water_system_facilities_summary_2026.docx`: carries 6 of 8 distinctive words of the committed call: 'The university has to add 184 gpm of firm well capacity to its campus water system before June 2027.'
 - **REVIEW** `dep_sanitary_survey_letter_2026-09-15.pdf`: carries 8 of 8 distinctive words of the committed call: 'The university has to add 184 gpm of firm well capacity to its campus water system before June 2027.'
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `campus_water_records_field_guide.txt`: 5 of 25 stump-paragraph terms appear (august, change, register, record, export); read whether the document names the move
-- **REVIEW** `dep_sanitary_survey_letter_2026-09-15.pdf`: 5 of 25 stump-paragraph terms appear (august, demand, letter, schedule, record); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `campus_water_records_field_guide.txt`: 6 of 25 stump-paragraph terms appear (august, change, record, register, records, export); read whether the document names the move
+- **REVIEW** `campus_water_system_facilities_summary_2026.docx`: 3 of 25 stump-paragraph terms appear (storage, record, records); read whether the document names the move
+- **REVIEW** `dep_sanitary_survey_letter_2026-09-15.pdf`: 5 of 25 stump-paragraph terms appear (august, letter, demand, record, schedule); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -33,7 +34,6 @@ Stump terms swept: production, architecture, august, storage, change, demand, le
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
-
 
 ## Solver's-eye read
 
