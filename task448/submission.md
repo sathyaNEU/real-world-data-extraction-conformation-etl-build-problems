@@ -51,7 +51,7 @@ The deciding figures are Weyrauch's 260 and Mennwell's 200, two lenders that do 
    - Dickinson: 190
    - Marion: 150
    - Rice, Ottawa, Ellsworth and Lincoln together: 240
-   - All eight counties: 1,610
+   - All eight counties: 1,610 (rounded once from the unrounded county figures, not the sum of the rounded rows)
 
 ### rural_lender_recruitment_2027.pptx
 

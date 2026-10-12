@@ -48,7 +48,7 @@
     {
       "path": "field_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 11728,
+      "bytes": 11772,
       "rows": null,
       "source": "Constructed: the research desk's field dictionary",
       "date": "2026-10-09",
@@ -165,7 +165,7 @@
     {
       "path": "venridge_pmm_layout_guide_v4.pdf",
       "format": "pdf",
-      "bytes": 44033,
+      "bytes": 44084,
       "rows": null,
       "source": "Constructed: the vendor's file layout guide, versions 3 and 4",
       "date": "2026-10-09",

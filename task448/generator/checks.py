@@ -311,6 +311,20 @@ def run(target, golden, world=None, meta_path=None):
     _, P_rd = C.ask_figures(two_g, C.program_year(B, datecol="MTG_REC_DATE"))
     ok(any(C.r10(P_rd[k]) != C.r10(PYf[k]) for k in PYf), "SF10 Ask A the recording date for the closing moves a figure")
     ok(C.estimate(B) == gold, "SF10 the main call never reads the program year")
+    wbd = openpyxl.load_workbook(os.path.join(target, DC.DICTIONARY), read_only=True)
+    dict_rows = {(r[0], r[1]): r[2] for r in wbd["Fields"].iter_rows(min_row=2, values_only=True)}
+    ok("geocoding" in dict_rows[(P.FILES["lar"], "county_code")],
+       "Ask B pin: the dictionary files HMDA's county as the institution's geocode of the address")
+    ok("the county in which the property lies" in doc_text,
+       "Ask B pin: the vendor's guide files the recording county as where the property lies")
+    sf4 = {}
+    feed_all = C.counts(B, lambda F: F.mortgage)
+    for n, nm in short:
+        sf4[nm] = float(feed_all.get(n, 0)) / caps[route(n)]
+    t4, s4 = C.five(sf4)
+    ok(names(t4) == GOLD and s4[0] == SIXTH and same_bins(sf4, gold, graded),
+       "SF4 the reporters counted from the recorder by route as well: same five, same bins",
+       " ".join("%.1f" % sf4[n] for n in graded))
     ok(abs(sum(two_g.values()) - sum(gold.values())) > 0 and sum(two_g.values()) > sum(gold.values()),
        "Ask B the eight counties hold more than the twelve shortlisted lenders made")
 

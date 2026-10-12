@@ -164,7 +164,9 @@ def write_xlsx(path, X, f, five, sixth):
         "County figures: each HMDA reporter's count is spread over the counties its recorded mortgages stand in "
         "(HMDA places some rural homes in the county of their postal city); the program year is counted from the "
         "recorder file for every lender, each mortgage over the capture of the way it was recorded.",
-        "Every count is estimated from unrounded figures and rounded to the nearest 10 once.",
+        "Every count is estimated from unrounded figures and rounded to the nearest 10 once; the program year's total "
+        "for all eight counties is rounded from the unrounded county figures, so it need not equal the sum of the "
+        "rounded rows.",
         "Prepared by the research desk, 9 October 2026, from the files pulled for the December board.",
     ]
     ws3.append(["Notes"])

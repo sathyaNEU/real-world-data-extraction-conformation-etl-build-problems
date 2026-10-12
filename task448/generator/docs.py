@@ -129,8 +129,8 @@ def _vframe(canvas, doc):
 V3_DESC = [
     ("REC_KEY", "Venridge record key", "text"),
     ("STATE", "State postal code", "text"),
-    ("CNTY_FIPS", "County FIPS code of the recording county", "5 digits"),
-    ("CNTY_NAME", "Recording county", "text"),
+    ("CNTY_FIPS", "County FIPS code of the recording county, the county in which the property lies", "5 digits"),
+    ("CNTY_NAME", "Recording county (where the property lies)", "text"),
     ("MTG_DOC_NO", "Recorder's document number of the mortgage", "county format"),
     ("MTG_REC_DATE", "Date the mortgage was recorded", "MM/DD/YYYY"),
     ("MTG_INSTR_DATE", "Date on the mortgage instrument", "MM/DD/YYYY"),
@@ -194,7 +194,7 @@ def write_layout(path):
 HMDA_FIELDS = [
     ("activity_year", "Calendar year of the action taken"), ("lei", "Legal entity identifier of the reporting institution"),
     ("derived_msa-md", "MSA or metropolitan division of the property; 99999 outside any"),
-    ("state_code", "State of the property"), ("county_code", "Five-digit FIPS code of the property's county"),
+    ("state_code", "State of the property"), ("county_code", "Five-digit FIPS code of the county the reporting institution's geocoding assigned to the property address"),
     ("census_tract", "Eleven-digit census tract of the property"),
     ("conforming_loan_limit", "C conforming, NC nonconforming, U undetermined, NA"),
     ("derived_loan_product_type", "Loan type and lien status"),
