@@ -274,6 +274,7 @@ def run(target, golden, st, meta_path):
         x = gold["premium"] * v["ha"]
         ok(abs(x % 1 - 0.5) > 1e-6 or "50 cents up" in terms27, "the sub-district premium's half dollar is filed (%s)" % sd)
     ok("50 cents up" in terms27, "the term sheet files the half dollar")
+    ok("Its sub-districts are the ones the co-operative reports by" in _ws(notes), "Ask A the register's sub-districts govern")
     paid = collections.defaultdict(float)
     for p in st["ledger"]:
         paid[p["claim_no"]] += p["amount"]

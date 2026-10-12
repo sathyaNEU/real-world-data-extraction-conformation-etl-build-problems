@@ -23,12 +23,12 @@
     "nearest": "task181 0.08; surface promotes task184 (back to back, 0.100) and task80 (gap rule, G16, differentiated on the card)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "FIX_NOW (pass 1)",
+    "report": "task185/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: leak reader returned (no decisive-step sentence beyond the filed estimand; realism notes on the schedule and claims to weigh); determinism judge thread running from scratchpad/judge185_brief.md; then fix in one pass, rebuild, ship",
+  "resume": "stage 4: judge pass 1 FIX_NOW fixed in the generator (notes pin the register's sub-districts, step 2 bases, quote total row); re-judge pass 2 and the leak re-read running; then ship",
   "approved": null,
   "delivered": null,
   "portal": null,

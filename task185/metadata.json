@@ -49,7 +49,7 @@
     {
       "path": "extract_notes_merrin_valley_renewal_2027-08-27.md",
       "format": "md",
-      "bytes": 2062,
+      "bytes": 2150,
       "rows": null,
       "source": "Constructed: Southward Mutual weather desk extract notes, 27 August 2027",
       "date": "2027-08-27",
@@ -148,7 +148,7 @@
     {
       "path": "policy_schedule_HC104_merrin_valley_2027-08-26.csv",
       "format": "csv",
-      "bytes": 15363,
+      "bytes": 15243,
       "rows": 192,
       "source": "Constructed: Southward Mutual policy system extract, policy schedule for the co-operative's heat-day cover",
       "date": "2027-08-27",

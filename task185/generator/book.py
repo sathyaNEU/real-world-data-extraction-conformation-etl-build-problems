@@ -92,7 +92,7 @@ def blocks(mem):
 
 def stored_district(b):
     """the policy system's sub-district: written when the block came on cover, rewritten at an endorsement"""
-    if b.endorsed is not None and b.endorsed >= W.REDRAW:
+    if b.endorsed is not None and b.endorsed >= W.REDRAW and b.endorsed >= dt.date(b.first_cover, 11, 1):
         return b.district_new
     if b.first_cover is not None and b.first_cover >= 2025:
         return b.district_new

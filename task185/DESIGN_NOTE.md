@@ -272,6 +272,19 @@ Pair ceiling: about 37 (the cracker at about 55 with the call and the chart, the
   season; either station number alone carries 30 or 32 of the 62 seasons, a visible gap; the book's variety lines,
   endorsements, duplicate lodgements and payment runs touch only the asks.
 
+## Judge record
+
+- Pass 1 (stage 4): DETERMINISTIC, FIX_NOW. The premium ($524.58 unrounded), 16.7 and 4.1, the 54 and 29 glass-season
+  days, the sub-district rows and the eight season rows reproduced; every reading-by-reading table the judge tried
+  (pooled, Merrin Flat only, 1 C and 2 C bins, polynomials, a fit from 28 C, a Merrin Flat quantile map) crossed the
+  same readings. Findings: the sub-district ask did not say whether the schedule's or the register's sub-district
+  governs (fixed: the extract notes say the register's are the ones the co-operative reports and splits the premium
+  by; the stale schedule label stays the device); step 2 mixed the pooled conversion with Merrin Flat's mean (fixed);
+  the quote's total row summed rounded premiums to $1 over the policy's (fixed: no summed total). Left open by design:
+  a straight line through every pair ($542 pooled, $557 Merrin Flat only) is the R2 rung, ruled out by the data (the
+  difference is flat then bends) and never by a filed method, which would turn the decisive step into rule application.
+  Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical.
+
 ## Pre-ship check
 
 - Call: quote $525 a hectare for 2027/28, assuming 16.7 heat days and 4.1 severe heat days; the glass seasons gain 54

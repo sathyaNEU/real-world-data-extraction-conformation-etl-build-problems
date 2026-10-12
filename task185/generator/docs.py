@@ -218,7 +218,8 @@ Files:
 - {history}: station history for Merrin Flat.
 - {manual}, {terms27}, {terms26}: ours.
 - {schedule}: policy system extract, every block on the co-operative's policy since inception.
-- {blocks}: the co-operative's block register, sent by {coop_first} on 3 Aug.
+- {blocks}: the co-operative's block register, sent by {coop_first} on 3 Aug. Its sub-districts are the ones the
+  co-operative reports by and splits the premium by.
 - {claims}: claims register report, heat-day cover, one row per claim and insured block.
 - {ledger}: GL 6120 weather claims payments, posting date and financial year (1 July to 30 June).
 

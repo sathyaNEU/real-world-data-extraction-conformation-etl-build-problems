@@ -172,7 +172,8 @@ def write_schedule(path, mem, bl):
         incept = dt.date(b.first_cover, 11, 1)
         for variety, _ in b.varieties:
             rows.append([m["policy_no"], "MV-%04d" % b.member, m["name"], b.no, variety, B.stored_district(b),
-                         "%.1f" % b.area, incept.isoformat(), b.endorsed.isoformat() if b.endorsed else "",
+                         "%.1f" % b.area, incept.isoformat(),
+                         b.endorsed.isoformat() if b.endorsed and b.endorsed >= incept else "",
                          b.cancel.isoformat() if b.cancel else ""])
     with open(path, "w", newline="") as fh:
         w = csv.writer(fh)

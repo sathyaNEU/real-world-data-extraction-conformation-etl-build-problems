@@ -109,8 +109,7 @@ def write_quote(path, fig, mc):
     for name in W.SUB_DISTRICTS:
         v = sd[name]
         rows.append([name, v["blocks"], "%.1f" % v["ha"], "${:,}".format(v["premium"])])
-    rows.append(["Total", fig["blocks_total"], fig["insured_ha_total"],
-                 "${:,}".format(sum(v["premium"] for v in sd.values()))])
+    rows.append(["Total", fig["blocks_total"], fig["insured_ha_total"], ""])
     s += [_table(rows, [48 * mm, 30 * mm, 30 * mm, 32 * mm]),
           Paragraph("Blocks on the policy schedule on 1 December 2027, each once at its insured area, by the "
                     "co-operative's sub-districts in its block register of 1 August 2027. Premium is the rate times "
