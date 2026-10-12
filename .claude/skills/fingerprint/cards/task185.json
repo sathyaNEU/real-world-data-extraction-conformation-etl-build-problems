@@ -7,7 +7,7 @@
   "subdomain": "exploratory-data-analysis-distribution-assessment",
   "niche": "pricing a vineyard heat-day index cover off one weather station whose 1995 change from glass thermometers in a large wooden screen to an electronic probe in a small plastic shield matches the old readings on cool days and reads hot afternoons warmer, the old register kept to the half degree",
   "objective": "anomaly-detection",
-  "shape": "08",
+  "shape": "14",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
   "answer": "",
@@ -62,7 +62,7 @@
   },
   "deliverables": [
     "heat_cover_quote_2027_28.pdf",
-    "heat_cover_as_if_seasons.csv"
+    "heat_cover_payouts.csv"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",

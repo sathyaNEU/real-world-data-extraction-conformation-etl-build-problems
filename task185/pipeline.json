@@ -1,7 +1,7 @@
 {
   "task": "task185",
   "owner": "oviya13ya",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science / exploratory-data-analysis-distribution-assessment (secondary physical-environmental-sciences)",
   "objective": "anomaly-detection",
   "stage": 2,
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2 design: readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet, prompt.txt, then precut.py",
+  "resume": "stage 2 design: write the readability screen, semantic fork table, ladder, closure table (22 axes), literal reader, oracles and the full ask sheet (draft in the note: Ask A sub-district schedule with D2 vintage labels, Ask B season payouts with D6 claim repeats), then prompt.txt and precut.py. Paused for the task183 determinism repair.",
   "approved": null,
   "delivered": null,
   "portal": null,

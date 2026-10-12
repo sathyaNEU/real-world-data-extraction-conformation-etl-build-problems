@@ -20,12 +20,14 @@
   stakeholder is the mutual's weather portfolio manager (`portfolio_manager`).
 - **Call:** the premium per hectare for the 2027/28 season, with the season's expected heat days and severe heat
   days on the present instrument's basis.
-- **Shape 08** (rule replayed on history: each period's cells). The cover's terms replayed season by season are the
-  burn the premium is built from, and the broker's exhibit of the recent seasons is the replay the asks grade.
-  Criteria arithmetic (provisional, fixed at the ask sheet): the call and its two expected counts (3), the critical
-  components (glass-era days the present probe would have counted over each trigger, the heat-day trend per decade
-  on the present basis: 3), the replayed seasons (10 seasons by heat days, severe days and payout: 30), the chart's
-  named parts (4), the files (2): about 42.
+- **Shape 14** (cuts by segment: each cut per segment). The quote cuts the 2027/28 schedule by the co-operative's four
+  sub-districts (member blocks, insured hectares, premium) and the cover's own record by season since it began
+  (claims paid and what they came to). Criteria arithmetic: the call and its two expected counts (3), the critical
+  components (glass-era days the present probe would have counted over each trigger, the heat-day line's slope: 3),
+  the sub-district cut (4 sub-districts by 3 figures: 12), the season cut (8 seasons by 2 figures: 16), the chart's
+  named parts (4), the files and units (3): 41. Shape 08 (the replay of the terms on past seasons) was the draw's
+  first label; the replayed seasons sit in the call's own population, where no ask device may live, so the cuts moved
+  to rows outside it.
 - **Strategy and mechanism:** `population_selection` (the conversion estimated on the days like the one being
   converted, not on all days); gap rule over population (the manual's basis, each past day as the present instrument
   would have recorded it, selects a conversion sized at each reading once the paired readings show the difference
@@ -137,3 +139,20 @@ moves the 34.5 C days but not the 39.0 C days and quotes a third figure.
   severe trigger with a 0.14 C margin; the record starts in 1965 in Celsius instead.
 - A 1989 changeover with the overlap to 1992: the glass era held 24 of 62 seasons and the premium moved under 5 per
   cent on some draws; the 1995 changeover balances the eras (30 and 32 seasons).
+
+## Ask sheet
+
+Draft, settled at the pause (the full ledger, stops, cracker sheet and ceilings are written on resume):
+
+- Ask A, the 2027/28 schedule cut by the co-operative's four sub-districts (member blocks, insured hectares, premium):
+  12 figures. Primary device D2, the sub-district stored on each block at inception and only rewritten when the
+  block is endorsed, so blocks not endorsed since the co-operative redrew its boundaries in 2025 carry the old
+  sub-district (same four names, so every row is valid); the co-operative's block register holds the current one.
+  Hazards: D6, the policy system's variety lines repeat the block's insured hectares (the register gives the area by
+  variety); the over-cleaning half, block numbers restart for each member so a dedup on block number deletes real
+  blocks. Premium figures are the quoted rate times the cut's hectares (rate-coupled, so the mirror misses them too).
+- Ask B, the cover's own record cut by season since 2019/20 (claims paid and what they came to): 16 figures. Primary
+  device D6, the claims register extract repeats each member's claim amount on every insured block line of the
+  claim; hazard D8, the finance ledger pays each season in an interim run in March and a final run after the
+  Service's approval, often after 30 June, so the ledger's financial year is not the season.
+- The chart (seasons since 1965/66, the line the price is read from, the 1995 change marked): 4 parts.
