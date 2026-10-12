@@ -1,11 +1,11 @@
 {
   "task": "task137",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "banking-credit-financial-risk",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-12",
   "stump": "A competent solver washes the numbers against the do-not-call register, prices dialling per mix of callable numbers from the seven closed campaigns, carries the past share of conversations that went to the retention offer (pooled, the latest campaign's or each term's) and books about 4,500 agent-hours; the step that lands it there is not conditioning that share on each deposit's drop from its locked rate to the card it reinvests at, which leaves the 10,735 four-year deposits locked at 5.65 per cent, meeting a 2.50-point drop where 92 per cent of past conversations went to the retention offer, at the share of deposits that met smaller drops: the golden is 5,500.",
   "architecture": 1,
@@ -15,22 +15,24 @@
     "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-12 (25 lines, no LEAK; each answered in the design note build record; the same 25 lines after the FIX_NOW rebuild)",
-    "reader": "2026-10-12, stage 3 pack: Q1 to Q4 none, REVIEW lines harmless, readings raised closed (SF13, SF18 to SF21); the prompt has since gained the ask 3 clause, so it re-reads with the re-judge"
+    "leak_py": "REVIEW 2026-10-12 on the final rebuild (--asof 2026-11-04), no LEAK, sweep 11 clean; the same 25 lines as at stage 3, each answered in the design note's Build record",
+    "reader": "2026-10-12 on the stage 3 pack: Q1 to Q4 none, REVIEW lines harmless, readings raised closed (SF13, SF18 to SF21); targeted re-read of the changed prompt (the Ask A clause): Q1 to Q4 none, its two readings left open by the text (a switch to a certificate, proceeds paid into another of the member's term deposits) are SF19 and SF20, the same figures on the extracts, asserted"
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-12 (repeat.gate_g only, answered in the design note; ban.forum against task136 cleared by redrawing the forum to committee_or_panel)",
-    "nearest": "0.07 task136 (stump); surface exit 0, 4 promoted on card axes (task117, task37, task97, task44), differentiated on the card"
+    "heart": "WARN 2026-10-12 at the final rebuild (repeat.gate_g only, answered under Guard); no BLOCK",
+    "nearest": "0.07 task136 (stump); surface exit 0, five pairs promoted on card axes (task117, task37, task97, task44, and task138 cut since stage 3), each differentiated on the card"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW, applied 2026-10-12; re-judge once",
-    "report": "task137/determinism_check_report.md"
+    "verdict": "DETERMINISTIC 2026-10-12 (judge-task137b, re-judge): APPROVE, no fix; the call forced (5,500 agent-hours, 1,500, 2,000 and 2,000 by maturity month), every supplementary figure reproduced; thinnest margin 5,568.0 against the 5,625 line, no defensible variant across it",
+    "disposition": "APPROVE, shipped; the shipped pack byte-identical to the judged one; pass 1 (judge-task137) DETERMINISTIC with a FIX_NOW, applied in one pass (the write-up's retention share 60 to 62 and non-reaching dials 67,500 to 67,400, the Ask A clause, SF18 to SF21) with no booking, month or Deliverable Answer moved",
+    "report": "determinism_check_report_pass2.md (pass 1: determinism_check_report.md)",
+    "gate_g": "forecasting (covariate-shift-aware forecast), analytical_non_defect, surface_read_dependency no, sole_data_defect no; no reported number is wrong",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "returned": [],
-  "resume": "stage 4: re-judge once on the FIX_NOW pass (ask 3 clause in the prompt, SF18 to SF21; write-up share 62 per cent, dials 67,400); the leak reader re-reads beside it because the prompt changed",
+  "resume": "shipped; next event is the author's portal result",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

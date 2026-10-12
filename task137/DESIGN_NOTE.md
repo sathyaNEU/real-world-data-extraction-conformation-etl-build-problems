@@ -253,6 +253,17 @@ off every graded bin).
 - **Worth, on the graded figures:** the booking and all three monthly figures move with R3 (each month carries
   four-year deposits at 5.65 per cent); no rung below it files any of the four.
 
+### Margins after the re-judge
+
+The thinnest margin is upward: 5,568.0 hours sits 57.0 hours (1.0 per cent) under the 5,625 line. The 32-member
+corridor runs 5,416.0 (half-point bands at a 0.1 offset, 41.0 hours over the 5,375 line) to 5,586.3 (the three 2026
+campaigns alone, 38.7 hours under the 5,625 line), and every member files 5,500 and the three months (asserted); the
+months run 1,441.1 to 1,484.1, 1,986.8 to 2,051.0 and 1,988.1 to 2,051.3, each at least 66 hours inside its bin. The
+re-judge's variants (exact-drop shares, a logistic in the drop, no mix split, the mix by number count only, the
+release share taken over the whole list) run 5,549 to 5,589. The one cell over the line is the drop without the
+release share, 5,832.8 (booked 5,750), the reading SF11 refuses by procedure 4.2. Measured on the shipped pack
+(`calc.family`, `calc.rungs`); no figure moved.
+
 ## Closure table
 
 | # | Axis | Reading | Closure |
@@ -475,6 +486,69 @@ names no method, convention, input file, standard or person, and nothing about r
   the rounded months add to the rounded booking, 5,500.
 - The reader's readings of "still on term deposit" (a switch to a certificate, a transfer to the holder's other term
   deposit, per deposit or per holder) are SF19 to SF21, each the same answer on the extracts and asserted.
+- **The re-judge and ship (2026-10-12).** The re-judge (judge-task137b) returned DETERMINISTIC, APPROVE, no fix
+  (`determinism_check_report_pass2.md`) on a pack byte-identical to the shipped one, with the prompt and the
+  write-up's blocks as shipped: every committed figure reproduced, the hours and their months exactly and both asks
+  exactly. Its weak points are recorded and none is acted on: the thinnest margin (`### Margins after the re-judge`,
+  under the Ladder); the 460 read off the register as it stood at the cut, a registration withdrawn by then no longer
+  barring the number (SF5; the re-judge puts the reading that ignores withdrawals at 501 deposits and about 0.2 per
+  cent of the hours); the 2.50-point drop at the top of past support, on 874 past conversations at exactly 2.50. The
+  leak reader's targeted re-read of the changed prompt quoted nothing for questions 1 to 4, and its two readings left
+  open by the text (a switch to a certificate, proceeds paid into another of the member's term deposits) are SF19 and
+  SF20, the same figures on the extracts, asserted.
+- **Gates on the final rebuild (2026-10-12).** `checks.py` 448 assertions; `verify.py` 32 checks from the bundle
+  alone; two builds byte-identical (27 target files, 2 goldens, `metadata.json`, `figures.json`, `target.zip`), every
+  file also byte-identical to the build before the ship pass; `figures_check.py` exit 0 (80 figures); `precut.py`
+  exit 0 (38 checks, `voice-check.py` PASS); container audit clean (pack 1 November 2024 to 4 November 2026, goldens
+  4 to 20 November 2026); `target.zip` equal to `target/` by name and content (27 members, no folder, sha256
+  d5644068df2d6430b521a0830bcf4a5773841fa2da7cc31dad4f0bc4b5c985ca); `leak.py --asof 2026-11-04` REVIEW, the same 25
+  lines, no LEAK; `guard.py surface` exit 0 with five pairs promoted on card axes, the four of stage 3 and task138, cut
+  since (gap time and decision `quantity_figure` shared, pattern none against E, surface 0.000), each differentiated
+  on the card; `guard.py heart` WARN (`repeat.gate_g`, answered under Guard); `guard.py validate` clean; `freeze.py
+  check --mode determinism` PASS against a snapshot refreshed after the judge's 60 to 62 (against the stage 3
+  snapshot only that 60 to 62 moved, in the Final Recommendation and the Critical Components, with the two keys
+  allowed in `## Tried and rejected`).
+
+## Pre-ship check
+
+1. Domain: the task is a building society's quarterly take-or-pay booking of agent-hours for the calls to holders of
+   maturing term deposits; the quantity that decides is the share of reached holders whose conversation goes to the
+   22-minute retention offer, which deposit-behaviour analysis models on the repricing gap between each deposit's
+   locked rate and the posted card it reinvests at, and with another field's nouns there is no fixed-term repricing,
+   posted card or locked rate for that share to hang on.
+2. Real work, nothing planted: past lists in two core-banking layouts (per cent rates, dashed account numbers and
+   comma-grouped principal through 2025; decimal rates and unpunctuated numbers after the January 2026 upgrade), the
+   contact centre's dial log in UTC with its own disposition codes and case references, release files listing each
+   case's callable numbers, phone numbers in mixed New Zealand formats washed against a register with recorded and
+   withdrawn dates, the posted cards inside each quarter's campaign brief; on the ask paths an account event extract
+   where a change of term opens a new account funded by transfer, a holdings view listing joint deposits under each
+   holder, and a frozen certificate register beside its migration batches; each what these systems produce, none
+   deciding the call.
+3. The flip is a method choice: conditioning the share of conversations that go to the retention offer on each
+   deposit's drop from its locked rate to the card for its term, read against the January to March 2027 card; every
+   rule in the pack (the SOW's minutes and dialling rules, the release 21 days before maturity, the do-not-call wash,
+   the reinvestment default, the booking to the nearest 250) is executed the same way on both paths.
+4. The analyst test holds: dialling priced per mix of callable numbers with the release share and the pooled share
+   books 4,500 (4,611.1); the latest campaign's share, the campaigns' trend and the latest campaign's hours per listed
+   deposit book 4,750, the share by term 4,000, the latest campaign's or the trended share by term 4,250, the share by
+   locked rate within term 4,500 and by locked rate alone 5,000 (4,987.3); only the drop books 5,500 (5,568.0), with
+   1,500, 2,000 and 2,000 by maturity month.
+5. One defensible answer: procedure 6.1 and the SOW's schedules file the estimand and every convention, and every fork
+   row is asserted (SF1 to SF21); the seven campaigns separate the bases (the share rises with the drop inside every
+   campaign and every term, asserted); every corridor member files the booking and the three months; the re-judge
+   returned DETERMINISTIC, APPROVE with no fix (`determinism_check_report_pass2.md`) on the pack that ships, its
+   thinnest margin 57.0 hours under the 5,625 line with no defensible variant across it.
+6. No decoy: no file states a forward share, an hours forecast, a past booking or a share by drop; the close-outs
+   report what each campaign did and tie under every basis; the treasury funding outlook (a flat rollover assumption
+   on balances, wholesale funding included) and Harbourline's 2027 staffing proposal (a capacity and a rate, no
+   forecast of the society's hours) are the declared distractors; no memo or voice argues for a share or a basis.
+7. Nothing hidden and recovered: the drop is built from two filed sources every route reads (the locked rate on each
+   list, the card in each quarter's brief); no rule is withheld, no certified figure pins the share, and the
+   procedure sends the forecast to every closed campaign without naming a method.
+8. A new lesson: a maturity conversation goes long on the drop the deposit meets at repricing, not on its term or its
+   rate, so a list whose largest cohort locked at a special meets a drop no past deposit of its term met and needs
+   about a fifth more agent time than the past share books (`guard.py heart` WARN on `repeat.gate_g` only, answered
+   under Guard; `surface` exit 0, five pairs promoted on card axes, each differentiated on the card).
 
 ## Tried and rejected
 
