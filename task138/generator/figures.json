@@ -1,0 +1,174 @@
+{
+  "call": {
+    "order_af": "202,700",
+    "setting_year": 2012,
+    "setting_requirement_af": "202,660",
+    "schedule_af": {
+      "February": "13,520",
+      "March": "970",
+      "April": "10,290",
+      "May": "27,190",
+      "June": "37,470",
+      "July": "42,010",
+      "August": "37,270",
+      "September": "24,010",
+      "October": "9,970"
+    }
+  },
+  "steps": {
+    "fields": 619,
+    "acres": "39,399",
+    "requirement_24th_unrounded": "202,657.77",
+    "requirement_23rd": "201,410",
+    "requirement_25th": "204,980",
+    "year_23rd": 2000,
+    "year_25th": 2003,
+    "mean_depletion_31jan_in": "3.39",
+    "fields_at_allowable_31jan": 446,
+    "replays_af": {
+      "1997": "192,420",
+      "1998": "201,070",
+      "1999": "199,450",
+      "2000": "201,410",
+      "2001": "195,890",
+      "2002": "211,090",
+      "2003": "204,980",
+      "2004": "191,260",
+      "2005": "210,490",
+      "2006": "198,490",
+      "2007": "183,350",
+      "2008": "201,140",
+      "2009": "208,110",
+      "2010": "206,750",
+      "2011": "201,290",
+      "2012": "202,660",
+      "2013": "192,270",
+      "2014": "194,600",
+      "2015": "190,970",
+      "2016": "182,350",
+      "2017": "189,570",
+      "2018": "191,860",
+      "2019": "193,590",
+      "2020": "196,970",
+      "2021": "210,400",
+      "2022": "200,730",
+      "2023": "188,100",
+      "2024": "156,210",
+      "2025": "197,300",
+      "2026": "195,600"
+    },
+    "procedure_clauses": [
+      "2.3",
+      "2.4",
+      "3.1",
+      "3.3",
+      "3.4",
+      "3.5",
+      "4.1",
+      "5.1",
+      "6.1",
+      "6.2"
+    ]
+  },
+  "default_path": {
+    "order_af": "189,800",
+    "setting_year": 2003,
+    "setting_requirement_af": "189,780"
+  },
+  "rungs": {
+    "R0": {
+      "order_af": "189,800",
+      "setting_year": 2003
+    },
+    "R1": {
+      "order_af": "193,100",
+      "setting_year": 2008
+    },
+    "R2": {
+      "order_af": "193,800",
+      "setting_year": 2008
+    },
+    "R2b": {
+      "order_af": "191,100",
+      "setting_year": 2003
+    },
+    "R2c": {
+      "order_af": "200,400",
+      "setting_year": 2012
+    },
+    "R2d": {
+      "order_af": "201,000",
+      "setting_year": 2012
+    },
+    "R3": {
+      "order_af": "202,700",
+      "setting_year": 2012
+    },
+    "O2": {
+      "order_af": "203,200",
+      "setting_year": 2012
+    },
+    "O1": {
+      "order_af": "205,700",
+      "setting_year": 2003
+    }
+  },
+  "ask_a": {
+    "L1": {
+      "deliveries_af": "17,820",
+      "not_delivered_pct": "8.7",
+      "water_in_af": "19,520"
+    },
+    "L2": {
+      "deliveries_af": "19,610",
+      "not_delivered_pct": "9.6",
+      "water_in_af": "21,690"
+    },
+    "L3": {
+      "deliveries_af": "12,800",
+      "not_delivered_pct": "8.5",
+      "water_in_af": "13,990"
+    },
+    "L4": {
+      "deliveries_af": "16,960",
+      "not_delivered_pct": "14.9",
+      "water_in_af": "19,930"
+    },
+    "L5": {
+      "deliveries_af": "16,500",
+      "not_delivered_pct": "8.3",
+      "water_in_af": "17,990"
+    },
+    "L6": {
+      "deliveries_af": "17,300",
+      "not_delivered_pct": "13.9",
+      "water_in_af": "20,090"
+    },
+    "L7": {
+      "deliveries_af": "13,880",
+      "not_delivered_pct": "8.0",
+      "water_in_af": "15,090"
+    },
+    "L8": {
+      "deliveries_af": "14,430",
+      "not_delivered_pct": "12.3",
+      "water_in_af": "16,460"
+    },
+    "L9": {
+      "deliveries_af": "18,210",
+      "not_delivered_pct": "13.2",
+      "water_in_af": "20,980"
+    }
+  },
+  "ask_b": {
+    "L1": "580",
+    "L2": "630",
+    "L3": "440",
+    "L4": "270",
+    "L5": "550",
+    "L6": "650",
+    "L7": "510",
+    "L8": "420",
+    "L9": "360"
+  }
+}
