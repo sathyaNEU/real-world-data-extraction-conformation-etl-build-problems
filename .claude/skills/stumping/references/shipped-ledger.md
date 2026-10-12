@@ -171,7 +171,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 125 (v2) | DRAWN 10-12, design | SROS labour survey fieldwork | AD | population time | none | a first-interview visit limit filters employed-heavy households for five quarters | - | - | - | none reported | oviya13ya |
 | 126 | SHIPPED, delivered, pending review | P&E pendency | DESC | population rule | none, D | a carried file joins two units | - | - | 28.9 months | none reported | - |
 | 127 | FAILED_TO_STUMP: backlog sathay3012 | NPO heat-pump slots | OPP | time objective | none, C, E | a team must finish the last step | - | - | 1,170 slots | not submitted | sathay3012 |
-| 128 | FAILED_TO_STUMP: backlog oviya1301 | BOA patch tickets | OPP | objective rule | none, C, B | capacity per booked interval | - | - | ticket split | none reported | oviya1301 |
+| 128 (v3) | drawing 10-12: re-root, architecture 3 | ACT pet renewal increases | OPP | time population | G6 | the dogs an increase sheds priced at their own cost, not the book's average | - | - | which books take their 2027 increase | none reported | oviya1301 |
 | 129 | FAILED_TO_STUMP: backlog perssathya | BOA service SLA | RCA | population objective | E, D | co-switched causes split by groups | - | - | cause named | none reported | perssathya |
 | 130 (v4) | drawing 10-12: re-root, architecture 4 | ACT professional liability pricing | FC | time population | G13, G14 | a claims-made trust's opening window catches only the quick, cheap claims, part-year windows less than pro rata | - | register | trust contribution | v1, v2 failed on the portal 10-10, 10-11; v3 landed in house 10-11 | sathya8571 |
 | 131 | FAILED_TO_STUMP: backlog perssathya | MCR loyalty | CEX | population objective | none | card lift nets out inside a household | - | - | CHF 972k | none reported | perssathya |
@@ -266,7 +266,7 @@ them as history. Round-by-round detail is in each build's design note and card l
 | 124 (v1, v2) | retired 10-10: solved in-house | BOA | FC | population time | E | analogs' uncalled draw |
 | 124 (v3) | retired 10-12: validated decoy, rungs stacked above solved steps | BOA | FC | population time | E | pre-cool hours against heat-matched uncalled days |
 | 125 (v1) | spent 10-10: solved in-house twice, judge SEND_BACK on hygiene | AAF | AD | population time | none, A, B | a filed date ends a component class (digit-filter call-off) |
-| 128 (v1) | retired 10-10: solved in-house | BOA | OPP | objective rule | C | whole-host rebuild value |
+| 128 (v1, v2) | retired: v1 solved in-house 10-10; v2 spent at the wave-1 re-root 10-12 (rule application decisive; no client-domain task type) | BOA | OPP | objective rule | C | whole-host rebuild value; one change request per drain window |
 | 130 (v1, v2) | failed on the portal 10-10, 10-11 | - | FC | - | - | designation; duty-date queue |
 | 130 (v3) | retired 10-11: landed in house round 1 (the analog was the default construction) | ACT | FC | objective population | A | regression to the mean after selection |
 | 133 (v1) | retired 10-11: one portal model at 100 | BANK | FC | time | none | survival to date, soft asks |
