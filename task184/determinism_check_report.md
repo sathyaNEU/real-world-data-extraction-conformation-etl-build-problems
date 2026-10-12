@@ -1,3 +1,67 @@
+# determinism-check report, task184, pass 2, 2026-10-12
+
+Pass 1 (FIX_NOW) is kept verbatim below under "Pass 1 record". Pass 2 judged the rebuilt pack.
+
+## Verdict
+DETERMINISTIC
+**Disposition:** APPROVE
+**Stumping type:** mechanism: other (net-vs-gross capacity effect estimated from the 2026 postings, then a standard-governed queue run and a threshold search), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+
+## Why
+Every committed figure reproduced from the bundle. The 2026 lane feed against the 2026 roster shows each host standing down 2 own lanes from 05:00 to 21:00 on every posted day, none through Halloran Bay's banks, so the unit nets +1 lane at seven hosts and +3 at Halloran Bay. KAS-STD-07 sections 4 and 6 on the 2027 design days give Halloran Bay 382,700 against Cullinvale 237,700. The pass 1 finding is closed: the prompt now asks for "the smallest whole per cent shortfall ... at which another posting would move more", so 14 is the first whole per cent at which Halloran Bay loses (13: 244,431 ahead of 237,703; 14: 224,159 behind), identical with arrivals unrounded, rounded, floored or ceiled, and monotone for k=1 to 14. The gross +3 reading (Cullinvale 730,800) is contradicted by the shipped feed.
+
+## Recomputation ledger
+| Figure | Claimed | Judge recomputed | Reproduced |
+|---|---|---|---|
+| Moved passengers HAL/CUL/ESK/FAR/BRN/DRM/ARD/GLK | 382,700 / 237,700 / 195,200 / 187,200 / 186,300 / 184,100 / 180,900 / 166,600 | same | yes |
+| Shortfall | 14 per cent | 13 ahead, 14 behind, robust to rounding of scaled arrivals | yes |
+| 2026 passengers screened, same order | 616,000 / 1,299,100 / 890,200 / 1,058,700 / 757,600 / 866,300 / 1,125,900 / 641,000 | same; ties to operator returns within 0.2% | yes |
+| Hotel cost per officer-night | 112.98 / 116.72 / 98.50 / 90.30 / 84.70 / 95.40 / 110.01 / 93.73 | same | yes |
+| Expense claims per posting week | 8,091.04 / 7,135.92 / 8,163.34 / 7,991.56 / 8,247.46 / 8,824.96 / 7,339.69 / 8,724.60 | same | yes |
+
+## Competing answers that survived
+No fork changes a main or graded figure under the most natural reading. Residual, none requested for repair:
+1. The 2027 hosts repeating the 2026 stand-down is not stated in a filed sentence; it is forced by KAS-STD-07 6.1 ("lanes open with the change") and the 11-of-11 posted-week regularity. Halloran Bay with no exemption anywhere would fall to 147,700, so its exemption is read from its single July posting week.
+2. Workbook ask 2 needs the staff and aircrew lanes excluded (policy page 1; operator returns tie out only without them). The prompt does not say so; summing every row gives 631,500 for Halloran Bay.
+3. Workbook ask 4 assigns whole claims to a posting week; assigning by line claim_date gives different values (e.g. Halloran Bay 7,807.60) and mis-attributes 28 Sunday-before travel lines, the weaker reading.
+Optional pins for 2 and 3 would change what solvers see and were not requested.
+
+## Spec gates
+| Gate | Required | Actual | Pass |
+|---|---|---|---|
+| Files | 10+ | 17 | yes |
+| Formats | 3+ | 5 (csv, xlsx, pdf, json, md) | yes |
+| Large file | 25,000+ rows | 279,417 rows | yes |
+| Distractors in metadata.json, none named by file | 2+ | lane_fault_log_2026.csv, passenger_feedback_summer2026.csv listed; judge also treats the queue sensor and the 2023 standard as weighing but unused; no file name labels one | yes |
+| Distractor reproduces a graded quantity and a shipped fact rules it out | each | judge named neither declared distractor as the surface read; I did not re-derive an answer from each | partial, not verified |
+| Deliverables | 1 to 3, all in golden | 2 (pdf, xlsx), both in golden/ | yes |
+| Asks multi-dimensional, unit and rounding stated | each | 8 airports x several measures; nearest hundred, euros to the cent, whole per cent; convention now stated | yes |
+| Prompt form | one paragraph, under 1,000 chars | 868 characters | yes |
+| Shape and 25+ criteria | identifiable | shape 13, about 40 criteria per design note | yes |
+| Real work product, not LLM generated | | judge found no hygiene problem; I did not review the golden PDF and workbook | not checked |
+
+## Gate G reconciliation
+Thread: mechanism other (net-vs-gross capacity effect), stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note: gate G decomposition_attribution (the unit's added capacity net of the host's release), stump_class analytical, domain_test and analyst_test as stated. These match in substance (the judge's label is a different name for the same decomposition). Neither declared distractor was named as the surface read, so neither is too load-bearing. The judge's caution: a strict reviewer could call the stand-down a hidden regularity, since no filed sentence names it; it is derived from three files, not read off, which is the design intent. The design note's fork row SF8 now says 14 under the smallest-whole-per-cent reading; the thread confirms it. Cross-batch fingerprint was not available to the judge, a gap in its evidence rather than a clean result.
+
+## Gate H line
+domain: pass, layers: pass, decisive_step: analytical (checkpoint queue run on the lanes actually open, net of the host's stand-down estimated from past postings).
+
+## Stump power (Gate F)
+Moderate to good. The natural route (roster plus 3 lanes) ranks Cullinvale first at 730,800 and Halloran Bay fifth; only comparing the hosts' own lane counts on posted days with the roster plan reaches Halloran Bay.
+
+## Findings, ranked
+1. None blocking. Pass 1's shortfall-convention fork is closed.
+2. Stand-down persistence into 2027 rests on empirical regularity, not a filed sentence (watch under Gate H).
+3. Workbook asks 2 and 4 rest on unpinned but well-supported readings (staff-lane exclusion, claim-level week assignment).
+4. Provenance note: after the thread unzipped, only the PO labels in hotel_invoices_CC4109_summer2026.xlsx and mobile_unit_postings_2026.csv changed (checked by diff against the current target.zip; target/ equals target.zip). The invoice PO set (4113, 4117, 4125, 4135, 4150, 4154, 4173, 4192, 4203, 4214) matches the postings file with PO-26-4219 (second Ardcarrig week) unbilled, as with the earlier 4176/4183 pair. I did not rerun the hotel ask on the relabelled pack.
+
+## Next action for the author
+Proceed to stage 5 (ship). Optionally rerun the hotel per-night figures from the current pack as a free check.
+
+---
+
+# Pass 1 record (verbatim)
+
 # determinism-check report, task184, 2026-10-12
 
 ## Verdict
