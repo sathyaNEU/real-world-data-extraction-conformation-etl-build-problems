@@ -152,13 +152,13 @@ def build(out, quiet=False, W=None):
         (K.NPP, "Network Planning", "2026-03-02", "", K.PEOPLE["planning"], "procedure, revision 3"),
         (K.HCA, "Buchanan Power Engineering", "2026-07-24", "", K.PEOPLE["consultant"], "assessment report BPE-2026-031"),
         (K.PEAK, "Network Planning", "2026-05-12", "", K.PEOPLE["planning"], "summer peak demand forecast by feeder"),
-        (K.DICTIONARY, "Network Planning", "2026-09-02", "", K.PEOPLE["analyst"], "field definitions for these extracts"),
+        (K.DICTIONARY, "Network Planning", "2026-09-07", "", K.PEOPLE["analyst"], "field definitions for these extracts"),
     ]
     K.write_csv(p(K.MANIFEST), R.MANIFEST_COLS, manifest)
     PP.normalize_ooxml(p(K.PROGRAM_LOG), K.PEOPLE["council"], K.PEOPLE["council"], "2019-02-11T23:12:40Z",
                        "2025-03-03T05:31:17Z", excel=True, company=K.COUNCIL)
     PP.normalize_ooxml(p(K.DICTIONARY), K.PEOPLE["analyst"], K.PEOPLE["analyst"], "2024-05-20T01:02:11Z",
-                       "2026-09-02T03:44:58Z", excel=True)
+                       "2026-09-07T03:44:58Z", excel=True)
     PP.normalize_ooxml(p(K.PEAK), K.PEOPLE["planning"], K.PEOPLE["planning"], "2026-04-29T22:05:31Z",
                        "2026-05-12T06:17:09Z", excel=True)
     PP.normalize_pdf(p(K.NPP), b"D:20260226104512+10'00'", b"D:20260302083017+10'00'")

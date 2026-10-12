@@ -532,6 +532,44 @@ def run(target, golden, W=None, meta_path=None):
     bat = der[(der.device_type == "Battery") & (der.ac_connection_status == "Active")]
     multi = bat.groupby("ac_connection_id").agg(n=("nmi", "size"), f=("feeder", "first"))
     ok(all((multi[multi.f == f].n >= 2).any() for f in K.FEEDERS), "ask B primary absent on a feeder")
+    # ask B's one reading, carried by the data and never written in the pack: a connection's storage capacity is one
+    # value on all its battery rows, does not rise with the number of module rows, is a home battery's size (the
+    # register's battery_kwh, the rebate file's nominal_kwh) and matches the site's own connection record, while the
+    # row sums run to several times both
+    allb = der[der.device_type == "Battery"].assign(kwh=lambda d: d.storage_capacity_kwh.astype(float))
+    per_c = allb.groupby("ac_connection_id").agg(k=("kwh", "size"), lo=("kwh", "min"), hi=("kwh", "max"),
+                                                 st=("ac_connection_status", "first"), nmi=("nmi", "first"))
+    ok((per_c.lo == per_c.hi).all(), "ask B a connection's battery rows carry different capacities")
+    act_c = per_c[per_c.st == "Active"]
+    by_k = act_c.groupby("k").lo.mean()
+    ok(len(by_k) >= 4 and by_k.max() / by_k.min() < 1.25, "ask B capacity rises with the module rows: %s"
+       % by_k.round(2).to_dict())
+    ok(abs(act_c[["k", "lo"]].corr(method="spearman").iloc[0, 1]) < 0.2, "ask B capacity follows the row count")
+    app_kwh = reg.battery_kwh[reg.battery_kwh != ""].astype(float)
+    reb = pd.read_csv(os.path.join(target, K.REBATE), dtype=str, keep_default_na=False)
+    reb_kwh = reb.nominal_kwh[reb.nominal_kwh != ""].astype(float)
+    home_lo, home_hi = min(app_kwh.min(), reb_kwh.min()), max(app_kwh.max(), reb_kwh.max())
+    ok(act_c.lo.min() >= home_lo - 0.05 and act_c.lo.max() <= 1.05 * home_hi, "ask B capacity %.1f to %.1f outside "
+       "a home battery's %.1f to %.1f" % (act_c.lo.min(), act_c.lo.max(), home_lo, home_hi))
+    ok((act_c.k * act_c.lo).max() >= 3 * home_hi, "ask B row sums stay inside a home battery's range")
+    last_b = reg[reg.status.isin(C.CONNECTED) & (reg.connection_date <= pd.Timestamp(K.BASE)) &
+                 (reg.removal_date.isna() | (reg.removal_date > pd.Timestamp(K.BASE)))]
+    last_b = last_b.sort_values(["nmi", "connection_date", "application_type"]).groupby("nmi").tail(1)
+    site_kwh = dict(zip(last_b.nmi, last_b.battery_kwh))
+    act_c = act_c.assign(app=act_c.nmi.map(C.norm_nmi).map(lambda x: remap.get(x, x)).map(site_kwh).fillna(""))
+    m_c = act_c[act_c.app != ""].assign(app=lambda d: d.app.astype(float))
+    once = (m_c.lo / m_c.app).groupby(m_c.k).median()
+    summed = (m_c.lo * m_c.k / m_c.app).groupby(m_c.k).median()
+    ok(len(m_c) >= 0.9 * len(act_c), "ask B %d of %d active battery connections match a site record" % (len(m_c), len(act_c)))
+    ok(once.between(0.8, 1.2).all() and (summed[summed.index >= 2] >= 1.5).all(),
+       "ask B once per connection %s, summed %s, against the site's battery_kwh" % (once.round(3).to_dict(),
+                                                                                     summed.round(3).to_dict()))
+    print("ask B one reading: capacity by module rows %s (Spearman %.3f); per connection %.1f to %.1f kWh against the "
+          "register's battery_kwh %.1f to %.1f and the rebate file's nominal_kwh %.1f to %.1f, row sums to %.1f; "
+          "median against the site record once %s, summed %s"
+          % (by_k.round(2).to_dict(), act_c[["k", "lo"]].corr(method="spearman").iloc[0, 1], act_c.lo.min(),
+             act_c.lo.max(), app_kwh.min(), app_kwh.max(), reb_kwh.min(), reb_kwh.max(), (act_c.k * act_c.lo).max(),
+             once.round(3).to_dict(), summed.round(3).to_dict()))
     # zero device rows in the main call's population: the call ignores the DER extract and the re-allocation log
     L2 = dict(L, der=L["der"].iloc[0:0], realloc=L["realloc"].iloc[0:0])
     v = C.forecast(L2, base=base, camps=camps, pools=pools)
@@ -577,6 +615,15 @@ def run(target, golden, W=None, meta_path=None):
     dwb = openpyxl.load_workbook(os.path.join(target, K.DICTIONARY), read_only=True)
     dnames = {r[0] for r in dwb["Files"].iter_rows(min_row=2, values_only=True) if r and r[0]}
     ok(dnames == {f for f in files if f.endswith(".csv") and f != K.MANIFEST}, "dictionary files %s" % dnames)
+    # the dictionary describes every extract it lists, so it is dated on or after the latest of them, in the manifest
+    # and in its own properties alike
+    ext = dict(zip(man.file, man.extracted))
+    ok(ext[K.DICTIONARY] >= max(ext[f] for f in dnames), "the dictionary (%s) predates an extract it describes"
+       % ext[K.DICTIONARY])
+    import zipfile
+    core = zipfile.ZipFile(os.path.join(target, K.DICTIONARY)).read("docProps/core.xml").decode()
+    ok(re.search(r"<dcterms:modified[^>]*>(\d{4}-\d\d-\d\d)", core).group(1) == ext[K.DICTIONARY],
+       "the dictionary's properties and the manifest give different dates")
     for r_ in man.itertuples():
         if r_.file.endswith(".csv"):
             df = pd.read_csv(os.path.join(target, r_.file), dtype=str, keep_default_na=False)

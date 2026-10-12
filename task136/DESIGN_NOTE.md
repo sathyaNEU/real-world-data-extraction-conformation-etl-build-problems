@@ -360,6 +360,14 @@ active DER Register sites have no connected system** (8 feeders by 2 counts, 16 
   battery connections), so summing device rows multiplies every modular system by its module count. Every feeder has
   modular systems, so all 8 figures move. The dictionary states the field flatly ("Storage capacity (kWh), battery
   rows."); the tell is a connection whose module rows each carry the whole system's capacity.
+- One reading, carried by the data and left unwritten (the re-judge's watch item): no file says the repeated value is
+  the connection's total, and a dictionary line saying so would announce the device, so none ships. The data admits
+  only that reading. The value is identical on every battery row of a connection and does not rise with the module
+  rows (mean 11.8 kWh on one row, then 10.8, 11.5, 11.4 and 13.1 on two to five; Spearman 0.05). It runs 9.6 to 16.2
+  kWh per connection, a home battery's size beside the register's `battery_kwh` (9.6 to 15.4) and the rebate file's
+  `nominal_kwh` (9.6 to 16.0), and it matches the site's own connection record (by module count, the median ratio to
+  the NMI's connected `battery_kwh` is 0.84 to 1.00), where the row sums reach 80 kWh and their median ratio on two to
+  five rows is 1.7 to 4.7. Asserted and printed by `checks.py`.
 - Hazards: HA1 (shared, device grain); HA2 (shared) decommissioned batteries kept moves 5 of 8 feeders; HA4 (D1,
   shared with Ask A's primary) a solver who places batteries on feeders by joining NMIs to the network model without
   the re-allocation log drops builders' batteries (YRB23, YRB24 and YRB27 move).
@@ -450,30 +458,84 @@ Stage 3, built 2026-10-12 by `python3 task136/generator/build.py` (one command: 
   repair; after the fix the base excesses read YRB22 1.508, YRB21 1.110, YRB27 0.813, YRB23 0.438 and YRB26 -0.657
   (the rest unchanged), every rung names the same feeder with YRB24 in the same place, the margins are 1.22 below R3
   and 1.25 on R3, and YRB22 leads YRB24 on R1 by 0.351 MW (dominance 2.1), as `checks.py` prints.
+- **Stage 4, the re-judge and ship (2026-10-12).** The re-judge (judge-task136b) returned DETERMINISTIC, APPROVE with no
+  fix on a pack byte-identical to the FIX_NOW build (`determinism_check_report_pass2.md`): the call forced (YRB24 1.892
+  MW, YRB22 1.508, gap 0.384), every supplementary figure reproduced, and one watch item, Ask B's repeated battery
+  capacity, which the data reads one way (Ask sheet, Ask B; no pack change). The leak reader's targeted re-read of the
+  two changed documents quoted nothing for questions 1 to 4. The re-judge's temporal note is fixed: the data dictionary,
+  dated 2 September for the 5 September DER Register extract it lists, is now dated 7 September in its properties and in
+  the manifest (a date only, asserted on or after every extract it lists); the reader's realism notes on the assessment
+  are not acted on (`## Tried and rejected`). The final rebuild differs from the judged pack in that date alone: 13 of
+  15 files byte-identical, `data_dictionary.xlsx` in its `docProps/core.xml` modified stamp only and
+  `export_manifest.csv` in the dictionary's date cell; both goldens, `figures.json`, `metadata.json` and `submission.md`
+  byte-identical. `target.zip` is cut from it by the generator's `cut_zip`.
 - **Asks.** Ask A (connected not shown; active sites with no connected system): YRB21 12 and 11, YRB22 8 and 12, YRB23
   11 and 10, YRB24 2 and 8, YRB25 6 and 5, YRB26 14 and 4, YRB27 14 and 9, YRB28 12 and 4. Ask B (kWh): 2,439.7,
   1,767.9, 1,800.8, 392.5, 900.5, 1,588.4, 1,738.1, 1,311.2, graded to the nearest ten.
-- **Gates.** `checks.py` 284 assertions; `verify.py` 123 checks from the bundle alone (csv, openpyxl, pypdf, no
-  generator import); two builds byte-identical (15 target files, 2 goldens, `metadata.json`, `figures.json`,
-  `target.zip`); `figures_check.py` PASS (50 figures); input gates 15 files, 3 formats (csv, xlsx, pdf), largest
-  `merindah_rates_roll_2026-27.csv` at 48,876 rows, two distractors (`feeder_peak_demand_forecast_2027-31.xlsx`,
-  `home_battery_rebate_approvals_fy2025-26.csv`, deletion asserted); container audit clean in the fiction's band
-  (2018-06-01 to 2026-10-12) for the pack, and for the goldens to 2026-10-31 (the workbook carries the analyst's own
-  13 and 16 October 2026 stamps, after the request); `target.zip` equal to `target/` by content; `guard.py surface` 0 promoted pairs (nearest 0.094);
-  `guard.py heart` WARN only (`overuse.gate_g` and `repeat.question_form`, answered under Guard); `leak.py --asof
-  2026-10-12` REVIEW, no LEAK (the same seven lines after the stage 4 rebuild).
+- **Gates (the final rebuild, 2026-10-12).** `checks.py` 293 assertions (nine added at ship: Ask B's one reading and
+  the dictionary's date); `verify.py` 123 checks from the bundle alone (csv, openpyxl, pypdf, no generator import); two
+  builds byte-identical (15 target files, 2 goldens, `metadata.json`, `figures.json`, `target.zip`); `figures_check.py`
+  PASS (50 figures); `precut.py` exit 0 (38 checks, `voice-check.py` PASS); input gates 15 files, 3 formats (csv, xlsx,
+  pdf), largest `merindah_rates_roll_2026-27.csv` at 48,876 rows, two distractors
+  (`feeder_peak_demand_forecast_2027-31.xlsx`, `home_battery_rebate_approvals_fy2025-26.csv`, deletion asserted);
+  container audit clean in the fiction's band (2018-06-01 to 2026-10-12) for the pack, and for the goldens to
+  2026-10-31 (the workbook carries the analyst's own 13 and 16 October 2026 stamps, after the request); `target.zip`
+  equal to `target/` by name and content (15 members, no folder); `guard.py surface` 0 promoted pairs (nearest 0.094,
+  task95 and task73); `guard.py heart` WARN only (`overuse.gate_g` and `repeat.question_form`, answered under Guard;
+  nearest text 0.08, task137's card stump); `leak.py --asof 2026-10-12` REVIEW, no LEAK, sweep 11 clean (each line
+  answered below); `freeze.py check --mode determinism` PASS against a snapshot taken before the ship pass (nothing
+  allowed) and against the stage 3 snapshot (the twelve step keys of `## Tried and rejected` allowed).
 - **leak.py REVIEW lines, each harmless.** (1) The letter's 6,240 contains the golden 240: the Bindarra Waters
   letterbox count, a different quantity, and the default path's denominator, not an answer. (2) The assessment's 4.22
   is YRB24's hosting capacity, an input the golden cites. (3) NPP-114 carries six of seven words of the call (hosting
   capacity augmentation, capital works program): the procedure's own vocabulary; it names no feeder. (4) Stump
-  vocabulary in NPP-114, the letter and the assessment (forecast, network, connection, campaign, suburb, method):
-  generic domain words; none names the pool, a rate per house or the conjunction. (5) `device_type` in the DER
-  extract: the national DER Register's own field (Device Type).
+  vocabulary in NPP-114 (forecast, assessment, network, connection, window, carried), the letter (campaign, suburb,
+  network, connection, letterbox, letter) and the assessment (forecast, assessment, network, method): generic domain
+  words, carried from 7.1's "carried unrounded", letterbox from the 2027 drops the letter gives, the default path's
+  input in (1), and letter its own name; none names the pool, a rate per house or the conjunction.
+  (5) `device_type` in the DER extract: the national DER Register's own field (Device Type).
 - **Differentiation (abstraction test, read at the build).** task446 v2 carries a screen's yield across years by
   backing the base rate out through the screen's error rates (a Bayes inversion on a moving prevalence); here the
   yield's denominator is the reachable pool, built behind a three-file join, with no inversion and no base rate.
   task86 v2 runs an earlier draw on a shared pool forward member by member; here nothing is drawn down, and the pool
   is counted, not simulated.
+
+## Pre-ship check
+
+1. Domain: the task is a distribution network planner's choice of the one feeder that gets the FY2027-28 accelerated
+   hosting-capacity augmentation, judged on each feeder's rooftop PV at the 31 August 2029 design point against its
+   spring 2029 hosting capacity; the quantity that decides is the systems each 2027 bulk-buy adds, carried from the
+   seven past campaigns, and with another field's nouns hosting capacity, inverter ratings, rooftop ownership and the
+   embedded generation register have nothing to attach to.
+2. Real work, nothing planted: an embedded generation register at application grain (alterations carrying the NMI's
+   whole system, withdrawn and approved-not-connected applications, rows migrated in 2019 with the inverter in a
+   separate equipment table), the feeder at application against the network model after the 2023 Yarrabin North
+   transfer, the council's rates roll joined to NMIs only through the GIS cross-reference, the council's program
+   workbook in its own layout, and on the ask paths a DER Register extract at device grain with builders' temporary
+   NMIs, checksum NMIs and decommissioned connections; each what these systems produce, none deciding the call.
+3. The flip is a method choice: each past campaign's yield carried to a new suburb per owner-occupied house still
+   without PV when its sign-ups open, not per home letterboxed; every rule in the pack (NPP-114's connected capacity,
+   trend, program systems, average inverter, hosting capacity case, selection and rounding, and the dictionary's status
+   values) is read the same on both paths.
+4. The analyst test holds: per home letterboxed files YRB22 at 1.5 MW with Bindarra Waters at 90 systems and
+   Wattleview at 50; per owner-occupied house, per address without PV, per untapped house on the whole feeder, as a
+   rate ratio or as an average campaign, Bindarra Waters takes 26 to 140 systems and the call stays with YRB22; only
+   the untapped owner-occupied pool files YRB24 at 1.9 MW, with 240 and 30 systems.
+5. One defensible answer: NPP-114 2.1 to 7.1 file the estimand and every fork row is asserted (SF1 to SF24); the
+   records separate the transfer bases (the seven campaigns vary 0.6 per cent per untapped owner-occupied house against
+   25.5 per letterbox, 30.1 per owner-occupied house and 27.5 per address without PV, SF16); the re-judge returned
+   DETERMINISTIC, APPROVE with no fix (`determinism_check_report_pass2.md`), its watch item, Ask B's battery rows, has
+   one reading in the data (asserted), and the shipped pack differs from the judged one only in the dictionary's date.
+6. No decoy: no file states a 2029 forecast, an excess over hosting capacity, a campaign forecast or a participation
+   rate; the council's log reports what each past campaign did and the assessment gives hosting capacities only; the
+   summer peak demand forecast and the battery rebate approvals are declared distractors; no memo or voice argues for a
+   feeder or a basis.
+7. Nothing hidden and recovered: no certified figure pins the transfer basis; NPP-114 4.1 sends the programme
+   component to the records of past programs, and the yield is estimated from them.
+8. A new lesson: a campaign's yield moves to a new suburb only on the pool it can still convert, the owner-occupied
+   houses without PV when it opens, so an untouched new estate takes about 2.7 times the campaign its letterbox count
+   suggests (`guard.py heart` WARN on `overuse.gate_g` and `repeat.question_form`, nearest driver task86 v2 at 0.07;
+   `surface` 0 promoted).
 
 ## Tried and rejected
 
@@ -533,3 +595,16 @@ Stage 3, built 2026-10-12 by `python3 task136/generator/build.py` (one command: 
 - Forum `executive_team` on the card (stage 3): task128's architecture 3, drawn the same day and so before this build by
   draw key, took the same forum and heart blocked on `ban.forum`; no shipped file or prompt sentence named a forum, so
   the card carries `line_manager_or_team`.
+- The data dictionary dated 2 September 2026 (stage 3), three days before the 5 September DER Register extract it lists
+  with its row count: a register cannot describe an extract not yet run (the re-judge's temporal note). It is dated
+  Monday 7 September 2026 in its properties and in the manifest, nothing else in it changed, and `checks.py` asserts it
+  on or after every extract it lists.
+- A dictionary line saying the battery storage capacity repeats on each module row (the re-judge's optional input
+  fix): declined, because it would announce Ask B's device, and the data already admits one reading (Ask sheet, Ask B,
+  asserted).
+- The reader's realism notes on the hosting capacity assessment after the FIX_NOW pass: not acted on, because each would
+  change the document beyond a date after the judge and the reader had read it, for no graded figure or call input. The
+  demand and capacity moves agree in sign on every feeder (each feeder's hosting capacity moves with its own minimum
+  demand, inside the report's stated sensitivity once its two decimals are allowed for, asserted); they differ in sign
+  across feeders by design (minimum demand rises on YRB24 as Bindarra Waters fills, and a little on YRB23). The round
+  route lengths (YRB21 30.0, YRB22 15.0 and YRB25 21.0 km of eight) and the single page carry nothing a solver computes.

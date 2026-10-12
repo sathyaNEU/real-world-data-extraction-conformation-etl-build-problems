@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "YRB24 should get the FY2027-28 accelerated hosting capacity augmentation: its rooftop PV will sit 1.9 MW above its hosting capacity at 31 August 2029 (runner-up YRB22 at 1.5 MW, gap 0.4 MW; the Bindarra Waters bulk-buy adds 240 systems, Wattleview 30)",
-  "answer_source": "task136/submission.md block 1 and block 4, from task136/generator/figures.json (call)",
+  "answer": "YRB24 should get the accelerated hosting capacity augmentation in the FY2027-28 capital works program. Its rooftop PV will sit 1.9 MW above its hosting capacity at 31 August 2029, 0.4 MW more than YRB22's 1.5 MW, because the Bindarra Waters bulk-buy will add about 240 systems to a feeder that hosts little.",
+  "answer_source": "task136/submission.md, 1. Final Recommendation, first two sentences (bold markers removed); figures in task136/generator/figures.json, written with golden/feeder_upgrade_2029.xlsx and golden/yarrabin_pv_vs_hosting_2029.png by generator/deliver.py from target/ and recomputed by generator/verify.py",
   "gap": [
     "population"
   ],
