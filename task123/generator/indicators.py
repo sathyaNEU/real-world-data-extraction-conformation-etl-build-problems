@@ -49,7 +49,7 @@ def _batch_utc(d, r):
 
 def build(prem):
     out = dict(kvg_orders=[], northline=[], nng_activity=[], nng_crew=[], phe_wo=[], phe_events=[],
-               kvg_lipp=[], nng_roster=[], nng_accounts=[], phe_plans=[], ledger=defaultdict(list),
+               kvg_lipp=[], nng_roster=[], nng_accounts=[], nng_enrol={}, phe_plans=[], ledger=defaultdict(list),
                k1=defaultdict(int), k2=defaultdict(int))
     seq = defaultdict(int)
 
@@ -308,6 +308,8 @@ def _plans(p, r, out, nxt):
             if active:
                 out["k2"][p.county] += 1
         elif p.util == "NNG":
+            # the account's own enrollment record: HHAP ends with the account
+            out["nng_enrol"][a] = (start, end)
             if start <= JAN1 and (end is None or end >= ROSTER_REFRESH):
                 out["nng_roster"].append(dict(premise=p.pid, since=start, account=a))
                 if end is not None and end < JAN1:

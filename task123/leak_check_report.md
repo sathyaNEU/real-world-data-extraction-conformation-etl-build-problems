@@ -1,19 +1,18 @@
 # leak check, task123
 
-**Verdict: REVIEW.** 22 files read, 40 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 22 files read, 40 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: rejected, return, hardening, register, account, quarter, inside, decisive, standard, window, annual, months, architecture, census, co-funding, calendar, northbank, government, sentence, identity, income, interval, reading, prompt, golden
+Stump terms swept: standard, inside, account, calendar, northbank, interval, golden, decisive, sentence, method, meters, harbor, prompt, monthly, billed, months, indicator, activity, period, closed, day-proration, nothing, extracts, service, asserted
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `County_Energy_Data_Standard_Ed3_2025.pdf`: golden figure 2.4 appears: ...s on which meters were read or bills were issued. 2.4 Service period. The gas days a bill covers: from...
 - **REVIEW** `County_Energy_Data_Standard_Ed3_2025.pdf`: carries 16 of 17 distinctive words of the committed call: 'Split the $18,640,000 Northern Heat Assistance Grant for 2026-27 as Brennock $2,380,000, Rennick $2,145,000, Pellow $1,9'
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `County_Energy_Data_Standard_Ed3_2025.pdf`: 5 of 25 stump-paragraph terms appear (account, standard, calendar, northbank, income); read whether the document names the move
-- **REVIEW** `RHEF_data_notes_utility_extracts_2026-04.docx`: 8 of 25 stump-paragraph terms appear (register, account, months, calendar, northbank, income); read whether the document names the move
-- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Give each county's January 2026 residential therms, its residential disconnections for nonpayment completed in January and its residential accounts on a low-income payment plan on 31 January 2026 in jan2026_county_gas_se"
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `County_Energy_Data_Standard_Ed3_2025.pdf`: 11 of 25 stump-paragraph terms appear (standard, account, calendar, northbank, meters, harbor); read whether the document names the move
+- **REVIEW** `RHEF_data_notes_utility_extracts_2026-04.docx`: 15 of 25 stump-paragraph terms appear (account, calendar, northbank, interval, meters, harbor); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `NNG_READ_SCHEDULE_2026-27.csv`: 240 ISO dates after 2026-04-20, e.g. 2026-09-01, 2026-09-02, 2026-09-03, 2026-09-04, 2026-09-07
@@ -232,3 +231,7 @@ These read as a mix of ordinary layout notes and a lightly narrated map of the d
 - The eml is short and every sentence supplies a fact the solver needs (who sent what, which files are left unused); it reads as a plot-explaining email, and it flags the GS extract and read schedule as the unused extras.
 - The PDF standard is thin (two pages) for an "Edition 3" with a replaced "Edition 2 (March 2022)"; no legal references or revision notes beyond one line.
 - Heading-case and sequential names (Brennock, Dellmoor, Lorrance...) with alphabetic initials A-L, N01 to N12 in alphabetical order by utility group; invented fantasy-style county names ("Ashwell, Brennock, Carrow ... Tillery" run alphabetically A to M-T), a generated feel.
+
+### After the portal determinism repair (2026-10-12)
+
+leak.py re-run above: REVIEW, no LEAK, the same lines as the third read (section numbers and the counties' names in the standard, ordinary words in the standard and the notes, the 2026-27 reading schedule's future dates). The repair changed one document: the data notes' account-history line now names the account's HHAP enrollment columns, beside the Ask 2 device and away from the decisive step, so no reader was re-run (/fix-determinism). Nothing on the main path changed.

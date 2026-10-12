@@ -242,6 +242,25 @@ def run(target, golden_dir, world, meta_path):
     B.check("SF2", len(bins_off(K.awards(rungs["R0"]), g_aw, 5000)) == 12,
             "billed-month reading (R0) moves all twelve; standard 2.3 rules it out")
     B.check("SF7", abs(sum(gc["jan"].values()) - sum(r4.values())) < 0.1, "shares of the twelve counties' total")
+    # SF12: the estimator of a straddling bill's January share is forced by the utilities' own move-out reads
+    for u, m in sorted(gc["moves"].items()):
+        B.check("SF12-" + u, m["n"] >= 300 and m["shape"] <= 0.5 and m["even"] >= 3.0 and m["even_worse"] >= 0.9 * m["n"],
+                "%s: %d move-out reads split a service period touching January; the AMI shape puts the read's share of "
+                "the two periods' therms within %.2f points on average, an even split by days %.2f, and is closer at "
+                "%d" % (u, m["n"], m["shape"], m["even"], m["even_worse"]))
+    # SF13: Northbank's enrollment record decides the HHAP count (Appendix B, through the enrollment's end date)
+    hist = pd.read_csv(os.path.join(target, P.FILES["nng_accounts"]), dtype=str, keep_default_na=False)
+    fl = pd.read_csv(os.path.join(target, P.FILES["nng_flags"]), dtype=str)
+    pend = dict(zip(hist.ACCOUNT_NO, hist.PROGRAM_END_DT))
+    aend = dict(zip(hist.ACCOUNT_NO, hist.END_DT))
+    stale = [a for a in fl.ACCOUNT_NO if aend[a] and aend[a] < "2026-01-31"]
+    ended = [a for a in stale if pend[a] and pend[a] < "2026-01-31"]
+    ro = G.nng_roster_open(target, cof)
+    nng_c = [W.DISPLAY[c] for c in W.COUNTY_ORDER if W.COUNTIES[c][0] == "NNG"]
+    B.check("SF13", len(stale) >= 8 and len(ended) == len(stale) and all(ro.get(c, 0) == gc["k2"][c] for c in nng_c),
+            "%d flagged premises' enrolling accounts closed before 31 January, every one with its HHAP enrollment "
+            "ended in the account history; the enrollment record and the flagged premises with an open enrolling "
+            "account give the same count in each Northbank county" % len(stale))
 
     # ---------------------------------------------------------------- closure facts
     last = max(bl.end for bl in bills if K.touches_jan(bl))

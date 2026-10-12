@@ -44,6 +44,20 @@
   "Tillery": "252",
   "Wynnell": "154"
  },
+ "move_reads": {
+  "KVG": {
+   "even_split_error_pts": "5.3",
+   "even_split_worse": "530",
+   "pairs": "567",
+   "shape_error_pts": "0.3"
+  },
+  "NNG": {
+   "even_split_error_pts": "3.3",
+   "even_split_worse": "517",
+   "pairs": "536",
+   "shape_error_pts": "0.3"
+  }
+ },
  "np_disconnections_jan2026": {
   "Ashwell": "13",
   "Brennock": "13",

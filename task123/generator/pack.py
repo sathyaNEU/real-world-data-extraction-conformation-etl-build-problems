@@ -409,10 +409,18 @@ def nng_crew(ind, acts, path):
 def nng_accounts(ind, path):
     rows = sorted((x for x in ind["nng_accounts"] if x["start"] <= PULL),
                   key=lambda x: (x["premise"], x["start"], x["account"]))
+    enrol = ind["nng_enrol"]
+
+    def prog(a):
+        if a not in enrol or enrol[a][0] > PULL:
+            return ("", "", "")
+        s, e = enrol[a]
+        return ("HHAP", iso(s), iso(cens(e)) if e is not None and cens(e) else "")
     out = [(A_(x["account"]), P_(x["premise"]), "RES", iso(x["start"]), iso(cens(x["end"])) if cens(x["end"]) else "")
-           for x in rows]
+           + prog(x["account"]) for x in rows]
     out.sort(key=lambda x: (x[1], x[3], x[0]))
-    write_text(path, _csv(out, ["ACCOUNT_NO", "PREMISE_ID", "CUST_CLASS", "START_DT", "END_DT"]))
+    write_text(path, _csv(out, ["ACCOUNT_NO", "PREMISE_ID", "CUST_CLASS", "START_DT", "END_DT", "PROGRAM_CD",
+                                "PROGRAM_START_DT", "PROGRAM_END_DT"]))
     return len(out)
 
 

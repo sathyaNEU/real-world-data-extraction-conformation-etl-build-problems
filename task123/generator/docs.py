@@ -227,7 +227,8 @@ def write_notes(path):
             ("ACT_DATE", "Activity date."),
             ("RESULT_CD", "C completed; U unable to complete; X cancelled before a crew was sent."),
             ("COMPLETED_AT", "Crew completion file: date and time the crew closed the activity.")])
-    para("Account history: every R1 account at each premise with its start and end dates. HHAP premises: the premises "
+    para("Account history: every R1 account at each premise with its start and end dates, and the account's Home Heat "
+         "Assistance Plan enrollment (PROGRAM_CD, PROGRAM_START_DT, PROGRAM_END_DT) where it has one. HHAP premises: the premises "
          "carrying the Home Heat Assistance Plan indicator at close of business on 31 January 2026, with the account "
          "that enrolled (ACCOUNT_NO) and the start of its enrollment (PROGRAM_START_DT); PROGRAM_STATUS A is active.")
 

@@ -29,16 +29,26 @@
   },
   "judge": {
     "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report.md, determinism_check_report_pass2.md",
-    "pass": 2,
+    "disposition": "FIX_NOW on the write-up only, fixed (shipped without a fourth judge: the same fork closed further)",
+    "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2), determinism_check_report_pass3.md (pass 3)",
+    "pass": 3,
     "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
     "gate_h": "domain pass, layers pass, decisive_step analytical",
-    "fix_cycles": 1,
-    "notes": "pass 1 FIX_NOW: Northbank's HHAP file named premises only (a residual fork on four counts); fixed by naming the enrolling account; pass 2 APPROVE, optional pin taken (the contractor report lists completed jobs)"
+    "fix_cycles": 2,
+    "notes": "pass 1 FIX_NOW: Northbank's HHAP file named premises only (a residual fork on four counts); fixed by naming the enrolling account; pass 2 APPROVE, optional pin taken (the contractor report lists completed jobs); pass 3 after the portal repair: DETERMINISTIC, every graded figure reproduces, even split by days judged not defensible; FIX_NOW on step 3's Northbank move-out figures, because the step did not say the pairs lie inside the AMI reads' span (read without it, a pair's gas days before 7 October have no shape); fixed by stating the span, and every zero-therm handling then gives 536 reads, 0.27 and 3.32 points"
   },
-  "returned": [],
-  "resume": "",
+  "returned": [
+    {
+      "date": "2026-10-12",
+      "portal": "determinism block failed (C, D, E: competing_defensible_answer, fix_location input_files): the estimator of a straddling bill's January share unforced outside Pine Harbor's territory; Northbank's HHAP count read on premises (821) or enrolled accounts (798)",
+      "repair": "determinism",
+      "moves": "(1) SF12: the utilities' own move-out reads (Kestrel Valley 567, Northbank 536) place each split where the AMI shape does (0.34 and 0.27 points) and refute an even split by days (5.28 and 3.32), shown in the write-up's step 3 and asserted; no input file changed on the main path. (2) SF13: Northbank's account history carries each account's HHAP enrollment with its end date, so Appendix B's end-date sentence executes to the golden; golden counts unchanged. freeze.py determination PASS.",
+      "commit": "",
+      "requested_by": "perssathya (author's request in session)",
+      "judge": "pass 3 DETERMINISTIC; FIX_NOW on the write-up (the AMI reads' span stated in step 3), fixed"
+    }
+  ],
+  "resume": "reshipped after the portal determinism repair; waiting for the portal",
   "approved": null,
   "delivered": "2026-10-12",
   "portal": null,

@@ -156,10 +156,8 @@ def on_plan(target, county_of):
         if eff <= JAN1 and (end is None or end >= JAN1):
             out[county_of[acct_prem[a]]] += 1
     hist = pd.read_csv(find(target, "NNG_ACCOUNT_PREMISE"), dtype=str, keep_default_na=False)
-    acct_end = {a: (dt.date.fromisoformat(en) if en else None) for a, en in zip(hist.ACCOUNT_NO, hist.END_DT)}
-    fl = pd.read_csv(find(target, "NNG_HHAP_PREMISE"), dtype=str)
-    for p, a in zip(fl.PREMISE_ID, fl.ACCOUNT_NO):
-        if acct_end[a] is None or acct_end[a] >= JAN1:
+    for p, cd, s, en in zip(hist.PREMISE_ID, hist.PROGRAM_CD, hist.PROGRAM_START_DT, hist.PROGRAM_END_DT):
+        if cd == "HHAP" and dt.date.fromisoformat(s) <= JAN1 and (not en or dt.date.fromisoformat(en) >= JAN1):
             out[county_of[p]] += 1
     mh = pd.read_csv(find(target, "PHE_METER_ACCOUNT"), dtype=str, keep_default_na=False)
     live = {}
@@ -174,6 +172,52 @@ def on_plan(target, county_of):
     return {c: out.get(c, 0) for c in COUNTIES}
 
 
+def nng_roster_open(target, county_of):
+    """Northbank by its premise roster: flagged premises whose enrolling account is open on 31 January (the
+    route the first judge pass took); asserted equal to the enrollment record."""
+    out = defaultdict(int)
+    hist = pd.read_csv(find(target, "NNG_ACCOUNT_PREMISE"), dtype=str, keep_default_na=False)
+    acct_end = {a: (dt.date.fromisoformat(en) if en else None) for a, en in zip(hist.ACCOUNT_NO, hist.END_DT)}
+    fl = pd.read_csv(find(target, "NNG_HHAP_PREMISE"), dtype=str)
+    for p, a in zip(fl.PREMISE_ID, fl.ACCOUNT_NO):
+        if acct_end[a] is None or acct_end[a] >= JAN1:
+            out[county_of[p]] += 1
+    return dict(out)
+
+
+def move_validation(bills, weights):
+    """At each read where one account's service at a Kestrel Valley or Northbank premise ends and the next
+    account's begins (a move-out read), for service periods touching January and inside the AMI reads' span: the
+    share of the two periods' therms used up to the read, against the share an even split by days and the AMI
+    meters' daily shape each put there."""
+    b = bills[bills.util.isin(["KVG", "NNG"])]
+    b = b.groupby(["util", "premise", "account", "first", "last"], as_index=False).therms.sum()
+    b = b[b.therms != 0]
+    day0 = min(weights)
+    out = {}
+    for u, g in b.groupby("util"):
+        g = g.sort_values(["premise", "first"])
+        ed, es = [], []
+        prev = None
+        for r in g.itertuples(index=False):
+            if (prev is not None and prev.premise == r.premise and prev.account != r.account
+                    and (r.first - prev.last).days == 1 and r.last >= JAN0 and prev.first <= JAN1
+                    and prev.first >= day0):
+                tot = prev.therms + r.therms
+                if tot > 0:
+                    d1 = (prev.last - prev.first).days + 1
+                    d2 = (r.last - r.first).days + 1
+                    s1 = sum(weights[prev.first + dt.timedelta(i)] for i in range(d1))
+                    s2 = sum(weights[r.first + dt.timedelta(i)] for i in range(d2))
+                    act = prev.therms / tot
+                    ed.append(abs(act - d1 / (d1 + d2)))
+                    es.append(abs(act - s1 / (s1 + s2)))
+            prev = r
+        out[u] = dict(n=len(ed), even=100 * float(np.mean(ed)), shape=100 * float(np.mean(es)),
+                      even_worse=int(sum(1 for x, y in zip(ed, es) if x > y)))
+    return out
+
+
 # ------------------------------------------------------------------ compute
 def compute(target):
     county_of = load_counties(target)
@@ -184,8 +228,9 @@ def compute(target):
     k1 = disconnections(target, county_of)
     k2 = on_plan(target, county_of)
     snap = [w[dt.date(2026, 1, d)] for d in range(1, 32)]
+    mv = move_validation(bills, w)
     return dict(jan=jan, awards=aw, k1=k1, k2=k2, weights=w, bills=bills, county_of=county_of,
-                snap_ratio=float(np.mean(snap[18:]) / np.mean(snap[:18])))
+                snap_ratio=float(np.mean(snap[18:]) / np.mean(snap[:18])), moves=mv)
 
 
 def figures(c):
@@ -200,6 +245,9 @@ def figures(c):
         "np_disconnections_jan2026": {k: str(c["k1"][k]) for k in COUNTIES},
         "lipp_accounts_2026_01_31": {k: str(c["k2"][k]) for k in COUNTIES},
         "cold_snap_ratio": "%.1f" % c["snap_ratio"],
+        "move_reads": {u: {"pairs": "{:,}".format(m["n"]), "even_split_error_pts": "%.1f" % m["even"],
+                           "shape_error_pts": "%.1f" % m["shape"], "even_split_worse": "{:,}".format(m["even_worse"])}
+                       for u, m in c["moves"].items()},
         "largest": order[0], "smallest": order[-1],
         "rounding": {"award_usd": "5,000", "therms": "10,000"},
         "standard_clauses": ["2.4", "2.5", "2.6", "3.3"],

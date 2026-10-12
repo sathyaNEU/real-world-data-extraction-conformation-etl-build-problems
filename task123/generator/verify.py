@@ -118,11 +118,11 @@ def recompute(target):
     for c, n in rows:
         k2[c] = k2.get(c, 0) + n
     rows = con.execute("""
-        SELECT county, count(*) FROM read_csv('%s', all_varchar=true) f
-        JOIN read_csv('%s', all_varchar=true) h ON h.ACCOUNT_NO = f.ACCOUNT_NO
-        JOIN sp ON sp.premise = f.PREMISE_ID
-        WHERE h.END_DT IS NULL OR CAST(h.END_DT AS DATE) >= DATE '2026-01-31'
-        GROUP BY county""" % (q("NNG_HHAP_PREMISE"), q("NNG_ACCOUNT_PREMISE"))).fetchall()
+        SELECT county, count(*) FROM read_csv('%s', all_varchar=true) h
+        JOIN sp ON sp.premise = h.PREMISE_ID
+        WHERE h.PROGRAM_CD = 'HHAP' AND CAST(h.PROGRAM_START_DT AS DATE) <= DATE '2026-01-31'
+          AND (h.PROGRAM_END_DT IS NULL OR CAST(h.PROGRAM_END_DT AS DATE) >= DATE '2026-01-31')
+        GROUP BY county""" % q("NNG_ACCOUNT_PREMISE")).fetchall()
     for c, n in rows:
         k2[c] = k2.get(c, 0) + n
     rows = con.execute("""
@@ -135,7 +135,43 @@ def recompute(target):
         GROUP BY county""" % q("PHE_PAYMENT_ARR")).fetchall()
     for c, n in rows:
         k2[c] = k2.get(c, 0) + n
-    return jan, awards, k1, k2
+    return jan, awards, k1, k2, moves(con, q)
+
+
+def moves(con, q):
+    """Each move-out read inside Kestrel Valley's and Northbank's service periods touching January: the share of
+    the two periods' therms before the read, against an even split by days and the AMI shape."""
+    con.execute("""CREATE TABLE mb AS
+        SELECT 'KVG' AS u, PREMISE_NO AS premise, ACCOUNT_NO AS acct, strptime(SVC_FROM, '%%m/%%d/%%Y')::DATE AS d0,
+               strptime(SVC_TO, '%%m/%%d/%%Y')::DATE AS d1, sum(CAST(THERMS AS DOUBLE)) AS therms
+        FROM read_csv('%s', all_varchar=true) GROUP BY ALL
+        UNION ALL
+        SELECT 'NNG', trim(substr(line, 2, 8)), substr(line, 10, 8),
+               strptime(substr(line, 23, 8), '%%Y%%m%%d')::DATE + 1, strptime(substr(line, 31, 8), '%%Y%%m%%d')::DATE,
+               sum(CAST(substr(line, 61, 7) AS DOUBLE))
+        FROM read_csv('%s', columns={'line': 'VARCHAR'}, delim='|', header=false, quote='', escape='')
+        WHERE substr(line, 1, 1) = 'D' GROUP BY ALL""" % (q("KVG_RES_BILLING"), q("NNG_R1_READS")))
+    rows = con.execute("SELECT u, premise, acct, d0, d1, therms FROM mb WHERE therms <> 0 "
+                       "ORDER BY u, premise, d0, acct").fetchall()
+    w = {d: float(x) for d, x in con.execute("SELECT d, w FROM shape").fetchall()}
+    import datetime as dt
+    j0, j1 = dt.date(2026, 1, 1), dt.date(2026, 1, 31)
+    span = lambda a, b: sum(w[a + dt.timedelta(i)] for i in range((b - a).days + 1))
+    out = {}
+    for u in ("KVG", "NNG"):
+        ed, es = [], []
+        rr = [x for x in rows if x[0] == u]
+        for x, y in zip(rr[:-1], rr[1:]):
+            if x[1] == y[1] and x[2] != y[2] and (y[3] - x[4]).days == 1 and y[4] >= j0 and x[3] <= j1 \
+                    and x[3] >= min(w):
+                tot = x[5] + y[5]
+                if tot > 0:
+                    n1, n2 = (x[4] - x[3]).days + 1, (y[4] - y[3]).days + 1
+                    s1, s2 = span(x[3], x[4]), span(y[3], y[4])
+                    ed.append(abs(x[5] / tot - n1 / (n1 + n2)))
+                    es.append(abs(x[5] / tot - s1 / (s1 + s2)))
+        out[u] = (len(ed), 100 * sum(ed) / len(ed), 100 * sum(es) / len(es), sum(1 for a, b in zip(ed, es) if a > b))
+    return out
 
 
 def titled(d):
@@ -147,7 +183,8 @@ def r(x, step):
 
 
 def main(target, golden):
-    jan, awards, k1, k2 = (titled(x) for x in recompute(target))
+    jan, awards, k1, k2, mv = recompute(target)
+    jan, awards, k1, k2 = (titled(x) for x in (jan, awards, k1, k2))
     with open(os.path.join(golden, "jan2026_county_gas_series.csv"), encoding="utf-8") as fh:
         g = {row["county"]: row for row in csv.DictReader(fh)}
     wb = openpyxl.load_workbook(os.path.join(golden, "heating_grant_split_2026_27.xlsx"), data_only=True)
@@ -168,10 +205,17 @@ def main(target, golden):
         if int(g[c]["accounts_on_low_income_plan_2026-01-31"]) != k2.get(c, 0):
             bad.append((c, "k2", k2.get(c, 0), g[c]["accounts_on_low_income_plan_2026-01-31"]))
     assert len(jan) == 12, sorted(jan)
+    for u, (n, ev, sh, worse) in mv.items():
+        f = figs["move_reads"][u]
+        if (f["pairs"] != "{:,}".format(n) or f["even_split_error_pts"] != "%.1f" % ev
+                or f["shape_error_pts"] != "%.1f" % sh or f["even_split_worse"] != "{:,}".format(worse)):
+            bad.append((u, "move reads", (n, ev, sh, worse), f))
+        if not (ev >= 5 * sh and worse >= 0.9 * n):
+            bad.append((u, "move reads do not separate", (n, ev, sh, worse)))
     if bad:
         raise SystemExit("verify: %d mismatches: %s" % (len(bad), bad))
     print("verify: 12 counties' January therms and awards, 12 disconnection counts and 12 plan counts recomputed "
-          "from target/ alone (DuckDB) and equal to the goldens and figures.json")
+          "from target/ alone (DuckDB) and equal to the goldens and figures.json; move reads %s" % mv)
 
 
 if __name__ == "__main__":

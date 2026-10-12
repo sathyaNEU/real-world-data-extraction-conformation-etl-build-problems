@@ -89,7 +89,7 @@
     {
       "path": "NNG_ACCOUNT_PREMISE_HISTORY_20260415.csv",
       "format": "csv",
-      "bytes": 526220,
+      "bytes": 583379,
       "rows": 14654,
       "source": "Constructed: Northbank Natural Gas R1 account history by premise",
       "date": "2026-04-20",
@@ -215,7 +215,7 @@
     {
       "path": "RHEF_data_notes_utility_extracts_2026-04.docx",
       "format": "docx",
-      "bytes": 40083,
+      "bytes": 40115,
       "rows": null,
       "source": "Constructed: Ridgeline Home Energy Fund data notes on the April 2026 utility extracts",
       "date": "2026-04-20",
