@@ -1,0 +1,39 @@
+{
+  "task": "task140",
+  "owner": "sathya8571",
+  "status": "DESIGN",
+  "domain": "supply-chain-logistics",
+  "objective": "forecasting",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-12",
+  "stump": "A competent solver approves the firm requests under their frozen budgets at the Q1 rate card, forecasts each platform service's busiest hour as the line through its last four quarters and files 127,000 cores; the step that lands it there is carrying the storage service forward on its own history, when its busiest hour is set by the machines in service and the batch cores running (3.0 and 0.2 cores each), so the guarantee has to be solved together with the storage it brings: the golden is 114,000.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: precut.py exit 0 (card registered), then stage 3 build (generator in progress under task140/generator)",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "wave": "wave 2 (new), seed FC11"
+}

@@ -1,0 +1,91 @@
+{
+  "task": "task140",
+  "architecture": "v1",
+  "drawn": "2026-10-12",
+  "slot_note": "wave 2 (new). Seed FC11: world, decision and quantity kept (a compute cell's quarterly batch guarantee, the reservable cores left after the firm tenants' reservations, struck at the quarterly capacity review); the seed's self-referencing platform levy (a share no document states, recovered from settled ledgers) and its budget ceilings are not the stump; the pitfall is re-found from how the cell's own storage service burns CPU on the batch tier's reads and checkpoints, so the residual carries a reservation it drives.",
+  "domain": "supply-chain-logistics",
+  "subdomain": "other",
+  "client_domain": "general-statistics-data-science",
+  "niche": "quarterly capacity review of a shared compute cell in an online travel marketplace's own Madrid data centre: the batch-training guarantee struck after the firm tenants' approved reservations and the platform services, one of which (the cell's storage service) uses CPU in proportion to the batch cores it serves",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G1",
+    "G16"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "none",
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "head of compute operations for the Madrid data centre's cells, who publishes each quarter's batch guarantee",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "c22_usage_hourly_2025-01-01_2026-12-13.csv",
+    "rows": 238000,
+    "entity": "one tenant's average cores in use in cell C-22 over one hour",
+    "grain": "tenant x hour",
+    "source": "constructed (the cell monitoring export)"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "hospitality_or_tourism",
+  "world": {
+    "geography": "Spain (data centre at Alcobendas, Madrid; head office Barcelona)",
+    "currency": "EUR",
+    "org_type": "online travel marketplace running its own data centres",
+    "invented_names": [
+      "Alisio Viajes"
+    ],
+    "people": [
+      "Alejandro Baena",
+      "María Ayala",
+      "Jordana Sala",
+      "Ruy Franco",
+      "Georgina Quirós",
+      "Raúl Echevarría",
+      "Martina Pera",
+      "Esteban Madrigal"
+    ]
+  },
+  "deliverables": [
+    "c22_capacity_2027q1.xlsx",
+    "c22_capacity_review_2027q1.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The residual promised to the lowest tier is struck after every higher reservation, and one of those reservations is a dependent service whose load rises with the very tier being promised, so the residual has to be solved together with that dependency, estimated from the dependent's own use against its two drivers; carrying the dependent forward on its own history, scaling it with the pool, or applying the dependency once at the naive residual each promises more or less than the pool can carry once the residual jumps.",
+  "driver_concrete": "C-22's storage service burns 1.6 cores for every machine in service and 0.2 cores for every batch core running (its hourly use against the cell's machines and the batch tier's cores, which batch pauses and rack additions separate), so the 2027 Q1 guarantee, which the 580 new machines lift by about 64,000 cores, has to be solved with the storage reservation it brings: 120,000 cores, where storage on its own four-quarter trend leaves 131,000, storage scaled with the cell's machines 128,000 and the dependency applied once at the trend's guarantee 118,000.",
+  "stump": "A competent solver approves the firm requests under their frozen budgets at the Q1 rate card, forecasts each platform service's busiest hour from its own last four quarters and files 131,000 cores; the step that lands it there is carrying the storage service forward on its history, when its busiest hour is set by the machines in service and the batch cores running (1.6 and 0.2 cores each), so the guarantee has to be solved together with the storage it brings: the golden is 120,000.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who approves every firm request under its frozen budget at the Q1 rate card, takes the hardware plan's 5,180 machines at the 1.45 overcommit and forecasts the platform services' busiest hours from their own history files 131,000 cores (storage on its four-quarter trend), 128,000 (storage scaled with the machines) or 118,000 (the batch dependency applied once at the trend's guarantee); only storage solved together with the guarantee gives 120,000.",
+  "domain_test": "The deciding quantity is the storage service's CPU per machine in service and per batch core running, a regression of its hourly use on the cell's machines and the batch tier's cores estimated from the cell's own telemetry (batch pauses and rack additions separate the two), which is how a compute capacity planner sizes a dependent infrastructure service before striking a residual guarantee; replacing the regression with a summary of storage's own history (its trend, its share of the cell) files another guarantee, and with another field's nouns there is no shared service burning the cell's own cores on the tier being guaranteed.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:residual-tier-drives-a-dependent-reservation",
+  "layer1": [
+    "several sources for one picture (the reservation ledger, the capacity requests, the finance budget workbook, the monitoring export, the operations log)",
+    "identifiers differ across systems (tenant ids in the monitoring export and the ledger, cost-centre names in the finance workbook)",
+    "UTC timestamps against a local-time operations log (Europe/Madrid, CEST and CET)",
+    "a collector outage leaving hours missing for every series",
+    "effective-dated tables (the rate card, the budget freeze)",
+    "rack additions on dated changes in the machines-in-service series",
+    "documentation that has to be read (the capacity standard, the memo, the dictionary)"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Client domain general-statistics-data-science, task type regression-classification-model-diagnostics (forecasting): the deciding statistical object is the regression of a dependent load on its drivers, and a generic summary of the load's own history files another call. Calibration none: the cell's reservation ledger and telemetry are its own operating records, not an organ. Gate G binding_constraint: the reservable cores bind on the batch tier and the storage it drives together. Stump strategy binding_constraint (F3): the limit is shared between the guarantee and the reservation that rises with it. Forcing event vote_or_meeting: the quarterly capacity review on Tuesday 15 December 2026 strikes the Q1 guarantee before 1 January. Forum line_manager_or_team: the compute operations team publishes the guarantee to the batch teams after its own review, with no formal forum. Role family operations_director: the head of compute operations runs the cells. Context artifact capacity_report: the cell's 2026 Q3 capacity report (reservable cores, reservations, busiest hours and the batch guarantee delivered), which answers its own quarter correctly. Draw history: a first scratch draw (capacity report, the requester's team, the budget round, a PNG) met task136 while task139 was not on file; a second (close-out summary, executive team, capacity planner) met task139's card when it landed; the third is the one registered."
+}
