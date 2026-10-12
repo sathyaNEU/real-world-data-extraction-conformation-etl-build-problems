@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (outcome code 110 against a denominator; architecture 1 vocabulary)",
-    "reader": "no leak; forks to close: baseline quarter wording, without-cap level, January 2027 meaning, rounding path"
+    "reader": "re-run after pass-1 repair: no leak, no helping file; reader took the default (wave-1 only) path"
   },
   "duplicate_check": {
     "heart": "WARN",
@@ -28,7 +28,7 @@
     "report": "task125/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: pass-1 FIX_NOW repaired (methods note sections 2, 6, 7; release hours referee); reader re-run and judge pass 2 running; append the reader to leak_check_report.md, then ship",
+  "resume": "stage 4: judge pass 2 running on /tmp/determinism-check-task125-1791796196/judge_brief.md; then the determinism-judge agent writes determinism_check_report_pass2.md; then ship",
   "approved": null,
   "delivered": null,
   "portal": null,
