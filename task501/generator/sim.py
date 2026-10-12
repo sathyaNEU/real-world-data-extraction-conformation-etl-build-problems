@@ -107,7 +107,7 @@ def build_funds():
                  commitment=cm * 1_000_000.0, first_close=fc, final_close=W.add_months(fc, int(rng.randint(6, 15))),
                  ip_end=W.add_months(fc, W.IP_MONTHS[strat]), term_end=W.add_months(fc, W.TERM_MONTHS[strat]),
                  lei=lei_for(rng, dom), pace=pace * float(rng.uniform(0.93, 1.07)),
-                 iota=W.TAU_TARGET - fee_ip * W.IP_MONTHS[strat] / 12.0 - 0.002 + float(rng.normal(0, 0.0045)),
+                 iota=W.TAU_TARGET - fee_ip * W.IP_MONTHS[strat] / 12.0 - 0.002 + float(rng.normal(0, W.IOTA_SD)),
                  fee_ip=fee_ip, fee_post=W.FEE_POST[strat])
         funds.append(f)
     return funds

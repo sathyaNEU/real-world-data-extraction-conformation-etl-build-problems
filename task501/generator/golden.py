@@ -43,6 +43,7 @@ STAMP = (2027, 1, 8, 16, 20, 0)
 STRAT_ORDER = ("BO", "GR", "PC", "IN")
 NAMES = W.STRATEGIES
 COLOURS = {"BO": "#1f4e79", "GR": "#6f9fc9", "PC": "#b8860b", "IN": "#8c8c8c"}
+QWORD = {1: "first", 2: "second", 3: "third", 4: "fourth"}
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 
@@ -235,7 +236,7 @@ def paper(chart_path):
         f"CHF {m1(F['expected_calls_plus_tenth_chf_m'])} million, and with the CHF {F['reserve_chf_m']} million reserve set against it the "
         f"facility has to cover CHF {m1(F['requirement_chf_m'])} million. CHF {down} million would leave CHF "
         f"{m1(F['shortfall_next_down_chf_m'])} million of that open; CHF {amt} million is the smallest amount on the lender's menu that "
-        f"covers it.")
+        f"covers it, and it is within the term sheet's covenants on the programme's net asset value.")
     doc.add_paragraph(
         f"Under the term sheet of 9 December the fees for the year come to CHF {F['fees_at_amount_chf']:,} at CHF {amt} million "
         f"(commitment fee CHF {F['commitment_fee_at_amount']:,}, arrangement fee CHF {F['arrangement_fee_at_amount']:,}) and "
@@ -255,8 +256,8 @@ def paper(chart_path):
         f"Our own record shows how such funds finish. All {F['closed_funds']} funds whose investment period has ended had drawn between "
         f"{F['closed_share_min_pct']:.1f} and {F['closed_share_max_pct']:.1f} per cent of their commitment by its last day, "
         f"{F['closed_share_mean_pct']:.1f} per cent on average, and that includes the five that were as far behind a year out as these four "
-        f"are now (table 2). We have planned the four to reach {F['closed_share_mean_pct']:.1f} per cent by their deadlines and to call at "
-        f"the programme's post-period rate after them: CHF {m1(F['four_2027_chf_m'])} million in 2027. The programme's call rates by fund "
+        f"are now (table 2). We have planned the four to reach {F['closed_share_mean_pct']:.1f} per cent by their deadlines and, after "
+        f"them, to call the rest at the programme's rate for funds of their age: CHF {m1(F['four_2027_chf_m'])} million in 2027. The programme's call rates by fund "
         f"age, which forecast the 2025 and 2026 calls within {F['backtests_pct']['2025']:.1f} and {F['backtests_pct']['2026']:.1f} per "
         f"cent, would give the same four funds CHF {m1(F['four_default_chf_m'])} million: the funds those rates are measured on were at "
         f"that age with years of investment period still ahead of them. On those rates alone the plan would come to "
@@ -279,7 +280,7 @@ def paper(chart_path):
           [4.9, 2.3, 3.2, 1.9, 2.1, 2.2])
     source(doc, "Source: notice ledger and fund register as at 31 December 2026. Drawn: capital calls with a value date to 31 December 2026 "
                 "over commitment. Francs at the plan-date reference rates. Planned calls: the balance to 92.6 per cent of commitment by the "
-                "end of the period, then the programme's post-period call rate.")
+                "end of the period, then the programme's call rate for the fund's age on the rest.")
 
     p = doc.add_paragraph()
     p.paragraph_format.space_after = Pt(3)
@@ -295,8 +296,9 @@ def paper(chart_path):
     doc.add_paragraph(
         f"For the annual liquidity report (RL-PM-05 section 6): the programme account received CHF {k(F['distributions_2026_total_chf_k'])} "
         f"thousand from fund distributions in 2026. {F['top_strategy']} returned the most, CHF "
-        f"{k(D[next(s for s in STRAT_ORDER if NAMES[s] == F['top_strategy']) + '_year'])} thousand; the first "
-        f"quarter was the strongest, at CHF {k(D['total_Q1'])} thousand. None of it reduces the facility: distributions are swept to "
+        f"{k(D[next(s for s in STRAT_ORDER if NAMES[s] == F['top_strategy']) + '_year'])} thousand; the "
+        f"{QWORD[max((1, 2, 3, 4), key=lambda q: D[f'total_Q{q}'])]} quarter was the strongest, at CHF "
+        f"{k(max(D[f'total_Q{q}'] for q in (1, 2, 3, 4)))} thousand. None of it reduces the facility: distributions are swept to "
         f"the general portfolio on the day they arrive and are not credited against calls.")
     doc.add_picture(chart_path, width=Cm(15.6))
     source(doc, "Figure 1. Distributions received on the programme account by quarter of arrival, CHF thousand at the reference rate of "

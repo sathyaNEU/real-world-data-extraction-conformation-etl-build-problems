@@ -7,313 +7,395 @@
  "arrangement_fee_at_amount": 337500,
  "commitment_fee_next_down": 600000,
  "arrangement_fee_next_down": 300000,
- "expected_calls_chf_m": 326.6,
- "requirement_chf_m": 209.2,
+ "expected_calls_chf_m": 329.3,
+ "requirement_chf_m": 212.2,
  "reserve_chf_m": 150,
  "margin_share": 0.1,
- "expected_calls_plus_tenth_chf_m": 359.2,
+ "expected_calls_plus_tenth_chf_m": 362.2,
  "four_funds": {
   "LOS-III": {
-   "drawn_share": 57.6,
+   "drawn_share": 56.4,
    "ip_end": "2027-09-20",
-   "undrawn_chf_k": 31656,
-   "balance_chf_k": 26155,
-   "calls_2027_chf_m": 26.7,
-   "calls_2027_chf_k": 26670
+   "undrawn_chf_k": 32542,
+   "balance_chf_k": 27047,
+   "calls_2027_chf_m": 27.7,
+   "calls_2027_chf_k": 27745
   },
   "JUN-II": {
-   "drawn_share": 60.2,
+   "drawn_share": 61.2,
    "ip_end": "2027-10-22",
-   "undrawn_chf_k": 50311,
-   "balance_chf_k": 40997,
-   "calls_2027_chf_m": 41.7,
-   "calls_2027_chf_k": 41688
+   "undrawn_chf_k": 49067,
+   "balance_chf_k": 39764,
+   "calls_2027_chf_m": 40.5,
+   "calls_2027_chf_k": 40471
   },
   "ROS-II": {
-   "drawn_share": 63.3,
+   "drawn_share": 61.8,
    "ip_end": "2027-11-24",
-   "undrawn_chf_k": 31955,
-   "balance_chf_k": 25552,
-   "calls_2027_chf_m": 25.9,
-   "calls_2027_chf_k": 25900
+   "undrawn_chf_k": 33180,
+   "balance_chf_k": 26784,
+   "calls_2027_chf_m": 27.1,
+   "calls_2027_chf_k": 27139
   },
   "TES-I": {
-   "drawn_share": 47.8,
+   "drawn_share": 45.6,
    "ip_end": "2027-12-18",
-   "undrawn_chf_k": 82893,
-   "balance_chf_k": 71204,
-   "calls_2027_chf_m": 71.2,
-   "calls_2027_chf_k": 71204
+   "undrawn_chf_k": 86417,
+   "balance_chf_k": 74741,
+   "calls_2027_chf_m": 74.7,
+   "calls_2027_chf_k": 74741
   }
  },
- "four_undrawn_chf_m": 196.8,
- "four_balance_chf_m": 163.9,
- "four_default_chf_m": 77.2,
- "four_2027_chf_m": 165.5,
- "others_2027_chf_m": 161.1,
+ "four_undrawn_chf_m": 201.2,
+ "four_balance_chf_m": 168.3,
+ "four_default_chf_m": 79.7,
+ "four_2027_chf_m": 170.1,
+ "others_2027_chf_m": 159.2,
  "funds_in_register": 51,
- "six_2027_chf_m": 14.2,
+ "six_2027_chf_m": 14.5,
  "six_undrawn_chf_m": {
-  "NOR-II": 3.9,
-  "ULM-III": 5.4,
-  "STA-IV": 5.9,
-  "OST-II": 4.6,
-  "HAL-II": 6.2,
-  "KAL-IV": 5.3
+  "NOR-II": 3.8,
+  "ULM-III": 5.6,
+  "STA-IV": 5.8,
+  "OST-II": 4.5,
+  "HAL-II": 6.4,
+  "KAL-IV": 5.4
  },
  "six_drawn_range_pct": [
-  84.3,
-  92.2
+  84.5,
+  91.9
  ],
  "four_drawn_range_pct": [
-  47.8,
-  63.3
+  45.6,
+  61.8
  ],
  "in_specie_2026": [
   "ISE-III ISE-III-DN-009"
  ],
  "withdrawn_distributions_2026": [
-  "PEL-I-DN-025"
+  "PEL-I-DN-026"
  ],
- "rest_2027_chf_m": 146.9,
+ "rest_2027_chf_m": 144.7,
  "rest_count": 41,
  "six_detail": {
   "NOR-II": {
    "ip_end": "2027-01-26",
-   "drawn_share": 91.6,
-   "calls_2027_chf_m": 1.2,
-   "calls_2027_chf_k": 1185,
-   "undrawn_chf_k": 3907
+   "drawn_share": 91.9,
+   "calls_2027_chf_m": 1.1,
+   "calls_2027_chf_k": 1076,
+   "undrawn_chf_k": 3772
   },
   "ULM-III": {
    "ip_end": "2027-03-23",
-   "drawn_share": 91.0,
-   "calls_2027_chf_m": 1.7,
-   "calls_2027_chf_k": 1725,
-   "undrawn_chf_k": 5374
+   "drawn_share": 90.7,
+   "calls_2027_chf_m": 2.0,
+   "calls_2027_chf_k": 1975,
+   "undrawn_chf_k": 5595
   },
   "STA-IV": {
    "ip_end": "2027-05-18",
-   "drawn_share": 84.3,
+   "drawn_share": 84.5,
    "calls_2027_chf_m": 3.5,
-   "calls_2027_chf_k": 3485,
-   "undrawn_chf_k": 5856
+   "calls_2027_chf_k": 3451,
+   "undrawn_chf_k": 5806
   },
   "OST-II": {
    "ip_end": "2027-07-07",
-   "drawn_share": 89.0,
-   "calls_2027_chf_m": 2.0,
-   "calls_2027_chf_k": 2017,
-   "undrawn_chf_k": 4613
+   "drawn_share": 89.3,
+   "calls_2027_chf_m": 1.9,
+   "calls_2027_chf_k": 1915,
+   "undrawn_chf_k": 4497
   },
   "HAL-II": {
    "ip_end": "2027-02-16",
-   "drawn_share": 92.2,
-   "calls_2027_chf_m": 2.9,
-   "calls_2027_chf_k": 2887,
-   "undrawn_chf_k": 6228
+   "drawn_share": 91.9,
+   "calls_2027_chf_m": 3.1,
+   "calls_2027_chf_k": 3092,
+   "undrawn_chf_k": 6394
   },
   "KAL-IV": {
    "ip_end": "2027-05-13",
-   "drawn_share": 88.6,
-   "calls_2027_chf_m": 2.9,
-   "calls_2027_chf_k": 2872,
-   "undrawn_chf_k": 5336
+   "drawn_share": 88.4,
+   "calls_2027_chf_m": 3.0,
+   "calls_2027_chf_k": 2966,
+   "undrawn_chf_k": 5416
   }
  },
  "slow_starters": {
   "COR-VI": {
    "ip_end": "2020-09-21",
-   "year_before_pct": 70.0,
-   "at_end_pct": 93.8
+   "year_before_pct": 69.6,
+   "at_end_pct": 93.3
   },
   "BRW-II": {
    "ip_end": "2021-01-20",
-   "year_before_pct": 61.7,
-   "at_end_pct": 93.5
+   "year_before_pct": 58.9,
+   "at_end_pct": 92.9
   },
   "ULM-II": {
    "ip_end": "2021-03-04",
    "year_before_pct": 49.6,
-   "at_end_pct": 92.5
+   "at_end_pct": 92.4
   },
   "QUE-III": {
    "ip_end": "2021-10-18",
-   "year_before_pct": 53.2,
-   "at_end_pct": 92.5
+   "year_before_pct": 53.3,
+   "at_end_pct": 92.6
   },
   "ISE-II": {
    "ip_end": "2023-06-13",
-   "year_before_pct": 56.4,
-   "at_end_pct": 91.8
+   "year_before_pct": 56.7,
+   "at_end_pct": 92.4
   }
  },
- "closed_others_year_before_min_pct": 78.3,
- "shortfall_next_down_chf_m": 9.2,
+ "closed_others_year_before_min_pct": 78.0,
+ "shortfall_next_down_chf_m": 12.2,
  "fee_difference_chf": 112500,
  "commitment_fee_pct": 0.3,
  "arrangement_fee_pct": 0.15,
  "slow_year_before_range_pct": [
   49.6,
-  70.0
+  69.6
  ],
- "group_2027_chf_m": 179.6,
+ "group_2027_chf_m": 184.6,
  "group_count": 10,
  "closed_funds": 27,
- "closed_share_min_pct": 91.8,
- "closed_share_max_pct": 93.8,
+ "closed_share_min_pct": 92.2,
+ "closed_share_max_pct": 93.3,
  "closed_share_mean_pct": 92.6,
  "plan_date_rates": {
   "USD": 0.7906,
   "EUR": 0.9339
  },
- "default_expected_calls_chf_m": 235.6,
- "default_requirement_chf_m": 109.1,
+ "default_expected_calls_chf_m": 236.1,
+ "default_requirement_chf_m": 109.7,
  "default_amount_chf_m": 125,
  "ladder": {
   "R0": {
    "label": "the programme's 2026 calls carried forward",
-   "expected_calls_chf_m": 305.0,
-   "requirement_chf_m": 185.4,
+   "expected_calls_chf_m": 310.0,
+   "requirement_chf_m": 191.0,
    "amount": 200
   },
   "R1": {
    "label": "age-band call rates on unfunded commitment (12-month bands from the first call, pooled)",
-   "expected_calls_chf_m": 235.6,
-   "requirement_chf_m": 109.1,
+   "expected_calls_chf_m": 236.1,
+   "requirement_chf_m": 109.7,
    "amount": 125
   },
   "R1-6": {
    "label": "the same with 6-month bands",
-   "expected_calls_chf_m": 243.9,
-   "requirement_chf_m": 118.3,
+   "expected_calls_chf_m": 243.0,
+   "requirement_chf_m": 117.3,
    "amount": 125
   },
   "R1s": {
    "label": "age-band rates by strategy",
-   "expected_calls_chf_m": 255.4,
-   "requirement_chf_m": 131.0,
+   "expected_calls_chf_m": 253.5,
+   "requirement_chf_m": 128.8,
    "amount": 150
   },
   "R1fc": {
    "label": "age from the first close",
-   "expected_calls_chf_m": 231.5,
-   "requirement_chf_m": 104.6,
+   "expected_calls_chf_m": 230.9,
+   "requirement_chf_m": 103.9,
    "amount": 125
   },
   "R1b": {
    "label": "age bands split by in or after the investment period",
-   "expected_calls_chf_m": 234.5,
-   "requirement_chf_m": 107.9,
+   "expected_calls_chf_m": 234.4,
+   "requirement_chf_m": 107.8,
    "amount": 125
   },
   "R1m": {
    "label": "mean of fund-month rates",
-   "expected_calls_chf_m": 245.0,
+   "expected_calls_chf_m": 245.1,
    "requirement_chf_m": 119.6,
    "amount": 125
   },
   "R2-12": {
    "label": "rates by months to the investment-period end, 12-month bands",
-   "expected_calls_chf_m": 251.2,
-   "requirement_chf_m": 126.3,
+   "expected_calls_chf_m": 252.1,
+   "requirement_chf_m": 127.3,
    "amount": 150
   },
   "R2-6": {
    "label": "rates by months to the investment-period end, 6-month bands",
-   "expected_calls_chf_m": 268.9,
-   "requirement_chf_m": 145.8,
+   "expected_calls_chf_m": 269.5,
+   "requirement_chf_m": 146.4,
    "amount": 150
   },
   "R2-3": {
    "label": "rates by months to the investment-period end, 3-month bands",
-   "expected_calls_chf_m": 270.5,
-   "requirement_chf_m": 147.6,
+   "expected_calls_chf_m": 270.3,
+   "requirement_chf_m": 147.4,
    "amount": 150
   },
   "R2s-6": {
    "label": "months to the investment-period end by strategy, 6-month bands",
-   "expected_calls_chf_m": 268.1,
-   "requirement_chf_m": 145.0,
+   "expected_calls_chf_m": 266.2,
+   "requirement_chf_m": 142.8,
    "amount": 150
   },
   "X1": {
    "label": "every undrawn franc of the deadline group called by the deadline",
-   "expected_calls_chf_m": 375.1,
-   "requirement_chf_m": 262.6,
+   "expected_calls_chf_m": 377.4,
+   "requirement_chf_m": 265.1,
    "amount": 275
   },
   "R3own": {
    "label": "each fund's own 2026 call rate on its unfunded commitment",
-   "expected_calls_chf_m": 215.3,
-   "requirement_chf_m": 86.8,
+   "expected_calls_chf_m": 214.3,
+   "requirement_chf_m": 85.8,
    "amount": 100
   },
   "X2": {
    "label": "the balance to the drawn share spread evenly to every in-period fund's own deadline",
-   "expected_calls_chf_m": 288.0,
-   "requirement_chf_m": 166.8,
+   "expected_calls_chf_m": 291.1,
+   "requirement_chf_m": 170.2,
    "amount": 175
   }
  },
  "family": {
-  "canonical: 12-month age bands, pooled, first call, all records, mean drawn share": {
-   "expected_calls_chf_m": 326.6,
-   "requirement_chf_m": 209.2
+  "canonical: 12-month age bands, pooled, first call, whole record, mean drawn share": {
+   "expected_calls_chf_m": 329.3,
+   "requirement_chf_m": 212.2
   },
   "6-month age bands": {
-   "expected_calls_chf_m": 326.6,
-   "requirement_chf_m": 209.2
+   "expected_calls_chf_m": 329.3,
+   "requirement_chf_m": 212.3
   },
-  "age bands by strategy": {
-   "expected_calls_chf_m": 328.8,
-   "requirement_chf_m": 211.6
+  "24-month age bands": {
+   "expected_calls_chf_m": 327.6,
+   "requirement_chf_m": 210.4
   },
   "age from the first close": {
+   "expected_calls_chf_m": 332.1,
+   "requirement_chf_m": 215.3
+  },
+  "age bands by strategy": {
    "expected_calls_chf_m": 329.6,
-   "requirement_chf_m": 212.6
-  },
-  "median drawn share": {
-   "expected_calls_chf_m": 326.1,
-   "requirement_chf_m": 208.8
-  },
-  "drawn share by strategy": {
-   "expected_calls_chf_m": 326.7,
-   "requirement_chf_m": 209.4
-  },
-  "records from 2019": {
-   "expected_calls_chf_m": 330.0,
-   "requirement_chf_m": 213.0
-  },
-  "records from 2021": {
-   "expected_calls_chf_m": 334.2,
-   "requirement_chf_m": 217.7
+   "requirement_chf_m": 212.5
   },
   "6-month bands by strategy": {
-   "expected_calls_chf_m": 326.6,
-   "requirement_chf_m": 209.3
+   "expected_calls_chf_m": 328.7,
+   "requirement_chf_m": 211.6
   },
-  "mean of fund-month rates": {
-   "expected_calls_chf_m": 334.1,
-   "requirement_chf_m": 217.5
+  "median drawn share": {
+   "expected_calls_chf_m": 329.1,
+   "requirement_chf_m": 212.0
+  },
+  "drawn share by strategy": {
+   "expected_calls_chf_m": 329.2,
+   "requirement_chf_m": 212.2
   },
   "lowest drawn share": {
-   "expected_calls_chf_m": 321.0,
-   "requirement_chf_m": 203.1
+   "expected_calls_chf_m": 326.5,
+   "requirement_chf_m": 209.2
   },
   "highest drawn share": {
-   "expected_calls_chf_m": 334.2,
-   "requirement_chf_m": 217.7
+   "expected_calls_chf_m": 333.3,
+   "requirement_chf_m": 216.6
+  },
+  "balance for the funds behind schedule only": {
+   "expected_calls_chf_m": 326.5,
+   "requirement_chf_m": 209.2
+  },
+  "post-period rates after the period end": {
+   "expected_calls_chf_m": 326.1,
+   "requirement_chf_m": 208.7
+  },
+  "top-up in the period-end month": {
+   "expected_calls_chf_m": 329.4,
+   "requirement_chf_m": 212.3
+  },
+  "first month left out of the rates": {
+   "expected_calls_chf_m": 328.2,
+   "requirement_chf_m": 211.0
   }
  },
  "family_requirement_range_chf_m": [
-  203.1,
-  217.7
+  208.7,
+  216.6
  ],
+ "family_margin_pct": {
+  "canonical: 12-month age bands, pooled, first call, whole record, mean drawn share": 3.41,
+  "6-month age bands": 3.39,
+  "24-month age bands": 2.96,
+  "age from the first close": 2.58,
+  "age bands by strategy": 3.32,
+  "6-month bands by strategy": 3.31,
+  "median drawn share": 3.44,
+  "drawn share by strategy": 3.42,
+  "lowest drawn share": 2.62,
+  "highest drawn share": 2.23,
+  "balance for the funds behind schedule only": 2.63,
+  "post-period rates after the period end": 2.49,
+  "top-up in the period-end month": 3.39,
+  "first month left out of the rates": 3.15
+ },
+ "family_weak": {
+  "mean of fund-month rates": {
+   "expected_calls_chf_m": 336.8,
+   "requirement_chf_m": 220.5,
+   "margin_pct": 1.2
+  },
+  "nothing called after the period end": {
+   "expected_calls_chf_m": 321.6,
+   "requirement_chf_m": 203.7,
+   "margin_pct": 1.07
+  }
+ },
+ "family_cross": {
+  "n": 384,
+  "lo_chf_m": 320.1,
+  "hi_chf_m": 336.8,
+  "weak_n": 1152,
+  "weak_off_amount": 52
+ },
+ "calls_bin_chf_m": [
+  318.2,
+  340.9
+ ],
+ "window_variants": {
+  "2019": {
+   "expected_calls_chf_m": 332.6,
+   "amount": 225
+  },
+  "2021": {
+   "expected_calls_chf_m": 337.0,
+   "amount": 225
+  },
+  "2022": {
+   "expected_calls_chf_m": 325.3,
+   "amount": 225
+  },
+  "2023": {
+   "expected_calls_chf_m": 320.0,
+   "amount": 225
+  },
+  "2024": {
+   "expected_calls_chf_m": 317.1,
+   "amount": 200
+  },
+  "2025": {
+   "expected_calls_chf_m": 324.8,
+   "amount": 225
+  }
+ },
+ "nav_readings_chf_m": {
+  "30 June 2026, booked": 1403.7,
+  "30 June 2026, plan-date rate": 1407.9,
+  "30 September 2026 as received, booked": 1234.0,
+  "30 September 2026 as received, plan-date rate": 1231.0,
+  "each fund's latest statement, booked": 1418.5,
+  "each fund's latest statement, plan-date rate": 1415.3
+ },
+ "programme_calls_2026_value_date_chf_m": 310.6,
  "backtests_pct": {
-  "2024": 23.8,
-  "2025": 1.6,
-  "2026": 3.0
+  "2024": 20.6,
+  "2025": 4.6,
+  "2026": 0.9
  },
  "sf_calls": {
   "SF4": 200,
@@ -322,66 +404,66 @@
   "SF15": 125
  },
  "distributions_2026_chf_k": {
-  "BO_Q1": 33264,
-  "BO_Q2": 19030,
-  "BO_Q3": 19695,
-  "BO_Q4": 23981,
-  "BO_year": 95970,
-  "GR_Q1": 15950,
-  "GR_Q2": 8017,
-  "GR_Q3": 10193,
-  "GR_Q4": 15788,
-  "GR_year": 49948,
-  "PC_Q1": 19184,
-  "PC_Q2": 22454,
-  "PC_Q3": 19764,
-  "PC_Q4": 19240,
-  "PC_year": 80642,
-  "IN_Q1": 36241,
-  "IN_Q2": 9749,
-  "IN_Q3": 19546,
-  "IN_Q4": 14712,
-  "IN_year": 80248,
-  "total_Q1": 104639,
-  "total_Q2": 59250,
-  "total_Q3": 69198,
-  "total_Q4": 73721
+  "BO_Q1": 34270,
+  "BO_Q2": 18990,
+  "BO_Q3": 19757,
+  "BO_Q4": 18909,
+  "BO_year": 91926,
+  "GR_Q1": 16007,
+  "GR_Q2": 8123,
+  "GR_Q3": 10143,
+  "GR_Q4": 19696,
+  "GR_year": 53969,
+  "PC_Q1": 19513,
+  "PC_Q2": 21248,
+  "PC_Q3": 18973,
+  "PC_Q4": 18630,
+  "PC_year": 78364,
+  "IN_Q1": 22393,
+  "IN_Q2": 14442,
+  "IN_Q3": 21387,
+  "IN_Q4": 29302,
+  "IN_year": 87524,
+  "total_Q1": 92183,
+  "total_Q2": 62803,
+  "total_Q3": 70260,
+  "total_Q4": 86537
  },
  "distributions_2026_exact": {
-  "BO_Q1": 33263.625997603,
-  "BO_Q2": 19030.138124219,
-  "BO_Q3": 19695.053754099998,
-  "BO_Q4": 23980.766102333997,
-  "BO_year": 95969.58397825599,
-  "GR_Q1": 15950.189558454,
-  "GR_Q2": 8016.630153552,
-  "GR_Q3": 10192.677140992,
-  "GR_Q4": 15788.119645304001,
-  "GR_year": 49947.616498302006,
-  "PC_Q1": 19183.820285880996,
-  "PC_Q2": 22454.271101511,
-  "PC_Q3": 19763.840602829994,
-  "PC_Q4": 19240.461659515,
-  "PC_year": 80642.393649737,
-  "IN_Q1": 36241.21983342899,
-  "IN_Q2": 9749.238847019,
-  "IN_Q3": 19546.344906991,
-  "IN_Q4": 14711.602399188003,
-  "IN_year": 80248.405986627,
-  "total_Q1": 104638.85567536698,
-  "total_Q2": 59250.278226301,
-  "total_Q3": 69197.91640491298,
-  "total_Q4": 73720.94980634101
+  "BO_Q1": 34269.67343440701,
+  "BO_Q2": 18989.608249871006,
+  "BO_Q3": 19756.861996207,
+  "BO_Q4": 18909.413791141997,
+  "BO_year": 91925.557471627,
+  "GR_Q1": 16007.067599323002,
+  "GR_Q2": 8123.370324395999,
+  "GR_Q3": 10142.58328534,
+  "GR_Q4": 19695.745975444,
+  "GR_year": 53968.767184503005,
+  "PC_Q1": 19512.855290234,
+  "PC_Q2": 21248.388697272003,
+  "PC_Q3": 18972.750389217,
+  "PC_Q4": 18630.425017922003,
+  "PC_year": 78364.41939464501,
+  "IN_Q1": 22393.13290213,
+  "IN_Q2": 14441.976442543002,
+  "IN_Q3": 21387.409362392005,
+  "IN_Q4": 29301.587697601,
+  "IN_year": 87524.106404666,
+  "total_Q1": 92182.729226094,
+  "total_Q2": 62803.343714082,
+  "total_Q3": 70259.60503315601,
+  "total_Q4": 86537.17248210902
  },
- "distributions_2026_total_chf_k": 306808,
+ "distributions_2026_total_chf_k": 311783,
  "top_strategy": "Buyout",
  "cracker_top_strategy": "Infrastructure",
  "stops_smallest_miss_chf_k": {
-  "s1 cracker (ledger, value date)": 39.5,
-  "s2 deduplicated keeping the clerk's notice": 39.5,
-  "s3 deduplicated keeping the feed's advice": 12.9,
-  "s4 custodian francs": 15.0,
-  "s5 lazy": 39.5
+  "s1 cracker (ledger, value date)": 720.8,
+  "s2 deduplicated keeping the clerk's notice": 97.6,
+  "s3 deduplicated keeping the feed's advice": 26.6,
+  "s4 custodian francs": 18.9,
+  "s5 lazy": 720.8
  },
  "mishandlings_items_kept_of_25": {
   "h4": 1,
@@ -399,13 +481,13 @@
   "h1+h2+h4": 1,
   "h1+h2+h3": 1,
   "h1+h2+h3+h4": 1,
-  "P1": 5,
+  "P1": 1,
   "P1+h4": 0,
-  "P1+h3": 5,
+  "P1+h3": 1,
   "P1+h3+h4": 0,
-  "P1+h2": 5,
+  "P1+h2": 1,
   "P1+h2+h4": 0,
-  "P1+h2+h3": 5,
+  "P1+h2+h3": 1,
   "P1+h2+h3+h4": 0,
   "P1+h1": 0,
   "P1+h1+h4": 0,
@@ -416,5 +498,5 @@
   "P1+h1+h2+h3": 0,
   "P1+h1+h2+h3+h4": 0
  },
- "programme_calls_2026_chf_m": 305.0
+ "programme_calls_2026_chf_m": 310.0
 }

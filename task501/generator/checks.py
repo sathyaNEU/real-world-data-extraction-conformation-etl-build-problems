@@ -126,15 +126,57 @@ def main():
         bts[y] = 100 * (fc / real - 1)
     ok(abs(bts[2025]) < 5 and abs(bts[2026]) < 5, f"the default back-tests within 5 per cent on 2025 and 2026 ({bts[2025]:+.1f}, {bts[2026]:+.1f})")
 
-    # ------------------------------------------------------------------ the golden family (C3)
+    # ------------------------------------------------------------------ the golden family (C3) on the filed estimation period
+    # every member lands on the golden amount; each careful-solver choice at least 2 per cent of expected calls inside both edges
+    # of the bin, the two weaker estimators inside it; every combination of the careful choices inside it
+    LO_E, HI_E = (amt - 25 + 150) / 1.1 * 1e6, (amt + 150) / 1.1 * 1e6
+    def cmargin(e):
+        return min(e / LO_E - 1.0, 1.0 - e / HI_E)
     fam = S.golden_family(pk, fs)
+    weak = S.golden_family(pk, fs, weak=True)[1:]
     for nm, e in fam:
-        r = S.requirement(e)
-        ok(S.amount(e) == amt, f"family member '{nm}' lands on CHF {S.amount(e)} million (requirement {r / 1e6:.2f})")
-        if "drawn share" not in nm or "median" in nm or "strategy" in nm:
-            ok(inside(r, amt, 3.0), f"family member '{nm}' at least 3 million inside the bin ({r / 1e6:.2f})")
+        ok(S.amount(e) == amt, f"family member '{nm}' lands on CHF {S.amount(e)} million (requirement {S.requirement(e) / 1e6:.2f})")
+        ok(cmargin(e) >= 0.02, f"family member '{nm}': expected calls {e / 1e6:.1f} at least 2 per cent inside {LO_E / 1e6:.1f} to {HI_E / 1e6:.1f} "
+                               f"({100 * cmargin(e):.2f} per cent)")
+    for nm, e in weak:
+        ok(S.amount(e) == amt and cmargin(e) >= 0.010, f"weaker member '{nm}' lands on CHF {S.amount(e)} million ({100 * cmargin(e):.2f} per cent inside)")
+    cross = S.family_cross(pk, fs)
+    cross_e = [e for _, e in cross]
+    ok(len(cross) == 384 and all(S.amount(e) == amt for e in cross_e),
+       f"every one of the {len(cross)} combinations of the careful choices lands on CHF {amt} million ({min(cross_e) / 1e6:.1f} to {max(cross_e) / 1e6:.1f})")
+    cross_w = S.family_cross(pk, fs, weak=True)
+    cross_w_out = sum(1 for _, e in cross_w if S.amount(e) != amt)
+    canon_k = (12, "first_call", False, "sum", "mean", "all", "band", "balance")
+    off = [k for k, e in cross_w if S.amount(e) != amt]
+    ok(all(sum(1 for a, b in zip(k, canon_k) if a != b) >= 3 and (k[3] == "mean" or k[6] == "zero") for k in off),
+       f"the {len(off)} combinations off the golden amount each take three or more departures, one of them a weaker estimator")
+    # the mean of fund-month rates does not reproduce the record's own calls; the ratio of sums does
+    def in_sample(weight):
+        Rw = S.rates(fs, weight=weight)
+        pred = act = 0.0
+        for d in fs:
+            cum = 0.0
+            for i in range(d["first"], S.PLAN_I + 1):
+                unf = d["C"] - cum
+                c = d["calls"].get(i, 0.0)
+                if unf > 1.0:
+                    pred += Rw[(i - d["first"]) // 12] * unf
+                    act += c
+                cum += c
+        return pred / act
+    ins_sum, ins_mean = in_sample("sum"), in_sample("mean")
+    ok(abs(ins_sum - 1.0) < 1e-9 and ins_mean > 1.03, f"in the record the ratio of sums reproduces the calls exactly; the mean of fund-month rates "
+                                                       f"gives {100 * (ins_mean - 1):.1f} per cent more")
     fam_lo = min(S.requirement(e) for _, e in fam) / 1e6
     fam_hi = max(S.requirement(e) for _, e in fam) / 1e6
+    # SF17 the estimation period: the whole record, as s.5.2 files it; a recent window is another reading of the record
+    wins = S.window_variants(pk, fs)
+    win_amt = {y: S.amount(e) for y, e in wins}
+    ok(win_amt == {2019: amt, 2021: amt, 2022: amt, 2023: amt, 2024: amt - 25, 2025: amt},
+       f"SF17: recent-window fits give {win_amt} (the fork row's calls under the alternative)")
+    ok("over the programme's whole history since its first commitment in 2015" in flat(doc_text("richtlinie_liquiditaet_privatmarkt_RL-PM-05.docx")),
+       "SF17: s.5.2 files the estimation period (the programme's whole history since 2015)")
+    ok(min(pk.calls["value_date"]).year == 2015 and min(pk.reg["first_close"]).year == 2015, "SF17: the record and the register start in 2015")
     # the drawn share at the deadline counted by notice date converges
     sh_n = pk.closed_shares(fs, by="notice_date")
     ok(max(abs(sh_n[k] - sh[k]) for k in sh) < 1e-9, "axis 9: no call is noticed inside an investment period and due after it")
@@ -222,6 +264,29 @@ def main():
     ok(not any(date(2026, 12, 1) <= d["ip_date"] <= date(2027, 1, 6) for d in fs),
        "axis 12: no investment period ends between 1 December 2026 and the extract, so the closed set is the same at the plan date and the run")
 
+    # ------------------------------------------------------------------ the term sheet's covenants never bind (reader's reading)
+    # the programme NAV on every reading of the NAV register: the statements for 30 June or 30 September 2026 as received, or each
+    # fund's latest statement, at the booked francs or at the plan-date rate
+    navr = pd.read_csv(os.path.join(T, "nav_register_quartal.csv"))
+    nav_readings = {}
+    for lab, sub in [("30 June 2026", navr[navr["period_end"] == "2026-06-30"]), ("30 September 2026 as received", navr[navr["period_end"] == "2026-09-30"]),
+                     ("each fund's latest statement", navr.sort_values("period_end").groupby("fund_id").tail(1))]:
+        nav_readings[lab + ", booked"] = float(sub["nav_chf_booked"].sum())
+        nav_readings[lab + ", plan-date rate"] = float(sum(a * pk.rate(S.PLAN_DATE, c.upper()) for a, c in zip(sub["nav_fund_ccy"], sub["currency"])))
+    nav_min = min(nav_readings.values())
+    ok(nav_min >= 900e6, f"SF18 covenant: the programme NAV is at least CHF 900 million on every reading ({nav_min / 1e6:.0f})")
+    ok(0.25 * nav_min >= (amt + 25) * 1e6, f"SF18 covenant: 25 per cent of the smallest NAV reading ({0.25 * nav_min / 1e6:.0f}) is above CHF {amt + 25} million, "
+                                          "so the covenant caps neither the golden amount nor the next amount up")
+    # R0's basis: the 2026 calls at the plan-date rate with the franc commitments at par (s.4), and at each value date's rate
+    c26 = pk.calls[pk.calls["value_date"].apply(lambda d: d.year == 2026)]
+    r0_plan = sum(a * pk.rate(S.PLAN_DATE, c) for a, c in zip(c26["amount"], c26["currency"]))
+    r0_vd = sum(a * pk.rate(d, c) for a, c, d in zip(c26["amount"], c26["currency"], c26["value_date"]))
+    r0_nochf = sum(a * pk.rate(S.PLAN_DATE, c) for a, c in zip(c26["amount"], c26["currency"]) if c != "CHF")
+    ok(abs(r0_plan - lad["R0"][1]) < 1.0, f"R0: the 2026 calls at the plan-date rate, francs at par, are CHF {r0_plan / 1e6:.1f} million")
+    ok(S.amount(r0_vd) == S.amount(r0_plan) == S.amount(r0_nochf) == amt - 25,
+       f"R0 lands on CHF {amt - 25} million at the plan-date rate ({r0_plan / 1e6:.1f}), at value-date rates ({r0_vd / 1e6:.1f}) and with the franc "
+       f"commitments left out ({r0_nochf / 1e6:.1f})")
+
     # ------------------------------------------------------------------ quoted sentences at authority
     directive = flat(doc_text("richtlinie_liquiditaet_privatmarkt_RL-PM-05.docx"))
     for q in ["the smallest facility amount offered by the lender", "Facility year: the calendar year for which the facility is elected",
@@ -234,6 +299,9 @@ def main():
               "Unfunded commitment: the commitment less the capital calls with a value date on or before that day",
               "a reserve of CHF 150 million"]:
         ok(q in directive, f"directive carries: {q}")
+    minutes = flat(doc_text("stiftungsrat_protokoll_auszug_2026-09-24.pdf"))
+    ok("is repaid from the October transfer" in minutes and "repaid on" not in minutes,
+       "the minutes of 24 September report no repayment date after the sitting")
     notes = flat(doc_text("feldbeschrieb_privatmarkt_extrakt.md"))
     for q in ["A withdrawn notice has no cash effect; the manager reissues it under a new number", "the clerks are not consistent about case"]:
         ok(q in notes, f"field notes carry: {q}")
@@ -307,6 +375,18 @@ def main():
             # notice (neither has a credit): these handlings matter on the ledger's dates only, where h1 already misses all
             ok(kept == 25, f"handling {name} is inert on the credit path ({kept})")
     ok(abs(S.grid_figures(S.ask_variant(pk))["BO_year"] - G["BO_year"]) < 1e-6, "the variant machinery reproduces the golden")
+    # the reader's booking-date reading (the field notes define Valuta as the day credited): the title holds under it
+    cu_b = pk.custody[(pk.custody["Buchungstext"] == "Gutschrift Ausschuettung")]
+    lg_i = pk.dists[(pk.dists["status"] == "ISSUED") & (pk.dists["line_type"] != "IN_KIND")]
+    tot_n, fund_n = lg_i.groupby("notice_id")["amount"].sum().to_dict(), lg_i.groupby("notice_id")["fund_id"].first().to_dict()
+    gb = S._grid()
+    for r in cu_b.itertuples():
+        if r.Buchungsdatum.year != 2026:
+            continue
+        kk = [x for x in (r.Transaktionsreferenz, r.Referenz.split(" ")[0]) if x in tot_n][0]
+        fid = fund_n[kk]
+        gb[pk.reg.loc[fid, "strategy"]][S.quarter(r.Buchungsdatum)] += tot_n[kk] * pk.rate(r.Valuta, pk.reg.loc[fid, "currency"])
+    ok(S.grid_figures(gb)["top_strategy"] == G["top_strategy"], "the booking-date reading keeps the chart's title")
     _, rows = S.ask_golden(pk, detail=True)
     ok(sum(1 for r in rows if r[7] == 2) >= 20, f"{sum(1 for r in rows if r[7] == 2)} credits of 2026 carried twice in the ledger (P1)")
     dup_q = {}
@@ -417,6 +497,15 @@ def main():
                    for k, (l, e) in lad.items()},
         "family": {nm: dict(expected_calls_chf_m=round(e / 1e6, 1), requirement_chf_m=round(S.requirement(e) / 1e6, 1)) for nm, e in fam},
         "family_requirement_range_chf_m": [round(fam_lo, 1), round(fam_hi, 1)],
+        "family_margin_pct": {nm: round(100 * cmargin(e), 2) for nm, e in fam},
+        "family_weak": {nm: dict(expected_calls_chf_m=round(e / 1e6, 1), requirement_chf_m=round(S.requirement(e) / 1e6, 1),
+                                 margin_pct=round(100 * cmargin(e), 2)) for nm, e in weak},
+        "family_cross": dict(n=len(cross), lo_chf_m=round(min(cross_e) / 1e6, 1), hi_chf_m=round(max(cross_e) / 1e6, 1),
+                             weak_n=len(cross_w), weak_off_amount=cross_w_out),
+        "calls_bin_chf_m": [round(LO_E / 1e6, 1), round(HI_E / 1e6, 1)],
+        "window_variants": {str(y): dict(expected_calls_chf_m=round(e / 1e6, 1), amount=S.amount(e)) for y, e in wins},
+        "nav_readings_chf_m": {k: round(v / 1e6, 1) for k, v in nav_readings.items()},
+        "programme_calls_2026_value_date_chf_m": round(r0_vd / 1e6, 1),
         "backtests_pct": {str(k): round(x, 1) for k, x in bts.items()},
         "sf_calls": sf_calls,
         "distributions_2026_chf_k": {k: round(G[k]) for k in keys}, "distributions_2026_exact": {k: G[k] for k in keys},

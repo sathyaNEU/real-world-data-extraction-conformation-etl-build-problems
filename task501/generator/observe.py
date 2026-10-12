@@ -41,6 +41,17 @@ def _arrivals(funds, rng):
                 n["arrival"] = W.add_bdays(n["value_date"], int(rng.randint(1, 5)))
 
 
+def _arrivals_2025_26(funds, rng):
+    """The cash of the 2025-26 distributions, drawn again on the timing stream: the same one-in-six late credit, one to four
+    business days after the stated payment date."""
+    for f in funds:
+        for n in sorted(f.notices, key=lambda x: (x["notice_date"], x["notice_id"])):
+            if n["type"] == "DISTRIBUTION" and n["value_date"] >= date(2025, 1, 1):
+                n["arrival"] = n["value_date"]
+                if f.ccy != "CHF" and rng.rand() < 1 / 6.0:
+                    n["arrival"] = W.add_bdays(n["value_date"], int(rng.randint(1, 5)))
+
+
 def _boundary_items(funds, rng, held_fn):
     """Each strategy gets, at each 2026 quarter edge, a distribution of a manager the clerks key whose cash arrives
     after the edge although the notice states a payment date before it (cross-border credits routinely do)."""
@@ -158,6 +169,7 @@ def observe(funds, fx):
     _arrivals(funds, rng)
     withdrawn_calls = _withdraw_calls(funds, rng)
     rng_d = np.random.RandomState(W.SEED * 31 + W.DIST_STREAM)   # the 2025-26 distribution timings, a stream of their own
+    _arrivals_2025_26(funds, rng_d)
     boundary = _boundary_items(funds, rng_d, _held_at)
     withdrawn_dist = _withdraw_distribution(funds, rng_d)
     in_specie = _in_specie(funds)
@@ -237,8 +249,9 @@ def custodian_postings(funds, fx, events, rng_seed=W.SEED * 37):
                     bal -= chf
                     rows.append(dict(booking_date=d, value_date=d, text="Zahlung Kapitalabruf", counterparty=f.paying_agent,
                                      reference=f"{n['notice_id']} {f.name}", transaction_ref=n["custodian_ref"], amount=-chf, kind="call"))
-                    if bal < 0.0:
-                        draw = float(np.ceil((-bal + 5_000_000) / 1_000_000) * 1_000_000)
+                    if bal < W.MIN_BALANCE:
+                        # the treasury keeps the account at its operating minimum and draws the facility to restore it
+                        draw = float(np.ceil((W.MIN_BALANCE - bal + 5_000_000) / 1_000_000) * 1_000_000)
                         facility_drawn += draw
                         bal += draw
                         rows.append(dict(booking_date=d, value_date=d, text="Ziehung Standby-Fazilitaet", counterparty=W.BANK,

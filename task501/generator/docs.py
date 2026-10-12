@@ -54,7 +54,8 @@ DIRECTIVE_TEXT = [
     ("p", "5.1  The plan states the expected capital calls of the facility year on every commitment in the programme register at the plan "
           "date. A call is in the facility year when its value date is, whenever it was noticed. Commitments signed after the plan date are "
           "funded from the commitment budget and are not in the plan."),
-    ("p", "5.2  Treasury & Liquidität prepares the plan from the programme's own records as they stand at the plan date."),
+    ("p", "5.2  Treasury & Liquidität prepares the plan from the programme's own records as they stand at the plan date, over the "
+          "programme's whole history since its first commitment in 2015."),
     ("p", "5.3  The Stiftungsrat delegates the election to its president together with the head of Treasury & Liquidität, who elect the "
           "facility on the basis of the plan and report it at the next sitting."),
     ("h", "6  Annual liquidity report"),
@@ -145,8 +146,8 @@ def write_minutes(sept):
           Paragraph("6  Programme liquidity: the September event and the revised directive", head),
           Paragraph(f"6.1  {P['treasury']} reported that in the week of {sept['first'].day} September capital calls of CHF {sept['calls'] / 1e6:.1f} million "
                     "fell due on the programme account while the month's transfer from the general portfolio was held back by the settlement of a bond "
-                    f"sale. The standby facility was drawn for CHF {drawn} million on {sept['date'].day} September and repaid on {sept['repaid'].day} October. "
-                    "No call was paid late. The interest and fees are in the third-quarter accounts.", body), Spacer(1, 4),
+                    f"sale. The standby facility was drawn for CHF {drawn} million on {sept['date'].day} September and is repaid from the October "
+                    "transfer. No call was paid late.", body), Spacer(1, 4),
           Paragraph("6.2  The Stiftungsrat approved version 5 of the liquidity directive (RL-PM-05), in force from 1 October 2026. It raises the "
                     "programme reserve from CHF 35 million to CHF 150 million and sizes the standby facility on the plan's expected capital calls "
                     "for the facility year, with a margin of one tenth, instead of the buffer of version 4.", body), Spacer(1, 4),

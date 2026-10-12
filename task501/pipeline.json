@@ -1,13 +1,13 @@
 {
   "task": "task501",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "quantitative-finance",
   "objective": "forecasting",
   "stage": 4,
   "stage_name": "check",
   "updated": "2026-10-12",
-  "stump": "A competent solver forecasts 2027 calls fund by fund with the programme's age-band call rates on unfunded commitment, files CHF 235.6 million of expected calls and elects CHF 125 million; the step that lands it there is giving Loschwitz Equity III, Juneau Infrastructure Partners II, Rosenthal Buyout Partners II and Tessin Private Credit I, which deployed slowly through 2023-24 and whose investment periods end between September and December 2027 with 47.8 to 63.3 per cent of their commitments drawn, the call rate of funds their age, when every fund whose investment period has ended in the record had drawn 91.8 to 93.8 per cent of its commitment by then, so those four call about CHF 165 million in 2027 rather than CHF 77 million and the facility is CHF 225 million.",
+  "stump": "A competent solver forecasts 2027 calls fund by fund with the programme's age-band call rates on unfunded commitment, files CHF 236.1 million of expected calls and elects CHF 125 million; the step that lands it there is giving Loschwitz Equity III, Juneau Infrastructure Partners II, Rosenthal Buyout Partners II and Tessin Private Credit I, which deployed slowly through 2023-24 and whose investment periods end between September and December 2027 with 45.6 to 61.8 per cent of their commitments drawn, the call rate of funds their age, when every fund whose investment period has ended in the record had drawn 92.2 to 93.3 per cent of its commitment by then, so those four call about CHF 170 million in 2027 rather than CHF 80 million and the facility is CHF 225 million.",
   "architecture": 3,
   "loops": 0,
   "precut": {
@@ -15,17 +15,17 @@
     "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-12, no LEAK; every REVIEW line answered in the design note's Build record",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-12 after the stage-4 rebuild, no LEAK; every REVIEW line answered in the design note's Build record",
+    "reader": "2026-10-12 on the stage-3 cut: no decisive-step sentence, no helping file; readings (dealing rate, booking date against Valuta, the NAV covenant) answered in the design note; a re-read is due because RL-PM-05 s.5.2 and the minutes' item 6.1 changed"
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-12 (overuse.shape, repeat.gate_g against task181; answered)",
-    "nearest": "task132 card stump 0.07; surface 0 pairs promoted"
+    "heart": "WARN 2026-10-12 (repeat.gate_g against task181; answered)",
+    "nearest": "surface 0 pairs promoted (2026-10-12, after the repair)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC (margin_or_boundary_fragility), 2026-10-12; repaired in the generator, re-judge pending",
+    "disposition": "SEND_BACK (repaired in place: the estimation period filed in s.5.2 and the world tightened; the call and the stump unchanged)",
+    "report": "task501/determinism_check_report.md"
   },
   "returned": [
     {
@@ -35,7 +35,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: re-judge the repaired build (fresh unzip, the judge isolated) and re-run the leak reader (RL-PM-05 s.5.2 and the minutes changed); on APPROVE, stage 5 ship",
   "approved": null,
   "delivered": null,
   "portal": [

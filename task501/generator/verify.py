@@ -53,7 +53,9 @@ def main():
             continue
         ipd = r[h["investment_period_end"]]
         ipd = ipd.date() if hasattr(ipd, "date") else ipd
-        reg[r[h["fund_id"]]] = dict(ccy=r[h["currency"]], C=float(r[h["commitment"]]), ip=ipd, s=r[h["strategy"]], code=r[h["fund_code"]])
+        fcd = r[h["first_close"]]
+        fcd = fcd.date() if hasattr(fcd, "date") else fcd
+        reg[r[h["fund_id"]]] = dict(ccy=r[h["currency"]], C=float(r[h["commitment"]]), ip=ipd, s=r[h["strategy"]], code=r[h["fund_code"]], fc=fcd)
 
     # the ledger
     calls = defaultdict(lambda: defaultdict(float))          # fund -> month -> CHF at the plan-date rate
@@ -80,53 +82,59 @@ def main():
     funds = {}
     for fid, f in reg.items():
         ms = calls.get(fid, {})
-        funds[fid] = dict(f, C_chf=f["C"] * rate(PLAN, f["ccy"]), calls=ms, first=min(ms) if ms else None, ipm=month(f["ip"]))
+        funds[fid] = dict(f, C_chf=f["C"] * rate(PLAN, f["ccy"]), calls=ms, first=min(ms) if ms else None, ipm=month(f["ip"]), fcm=month(f["fc"]))
 
     # the closed funds' drawn share at the end of their investment periods
     closed = [calls_fcy_to_ip[fid] / f["C"] for fid, f in funds.items() if f["ip"] <= PLAN]
     tau = sum(closed) / len(closed)
 
-    # pooled call rates on unfunded commitment by 12-month band of age from the first call
-    num, den = defaultdict(float), defaultdict(float)
-    for f in funds.values():
-        if f["first"] is None:
-            continue
-        drawn = 0.0
-        for m in range(f["first"], P + 1):
+    # pooled call rates on unfunded commitment by band of age (12 months from the first call unless a corridor case says otherwise)
+    def expected_calls(tau_, band=12, anchor="first"):
+        num, den = defaultdict(float), defaultdict(float)
+        for f in funds.values():
+            if f["first"] is None:
+                continue
+            a0 = f["first"] if anchor == "first" else f["fcm"]
+            drawn = 0.0
+            for m in range(f["first"], P + 1):
+                unf = f["C_chf"] - drawn
+                c = f["calls"].get(m, 0.0)
+                if unf > 1.0:
+                    b = (m - a0) // band
+                    num[b] += c
+                    den[b] += unf
+                drawn += c
+        band_rate = {b: num[b] / den[b] for b in num}
+
+        def r_for(b):
+            if b in band_rate:
+                return band_rate[b]
+            lower = [k for k in band_rate if k <= b]
+            return band_rate[max(lower)] if lower else band_rate[min(band_rate)]
+
+        def run_off(f, months, unf):
+            out = 0.0
+            a0 = f["first"] if anchor == "first" else f["fcm"]
+            for m in months:
+                c = min(unf, r_for((m - a0) // band) * unf)
+                unf -= c
+                out += c
+            return out
+
+        total = 0.0
+        for f in funds.values():
+            if f["first"] is None:
+                continue
+            drawn = sum(v for m, v in f["calls"].items() if m <= P)
             unf = f["C_chf"] - drawn
-            c = f["calls"].get(m, 0.0)
-            if unf > 1.0:
-                b = (m - f["first"]) // 12
-                num[b] += c
-                den[b] += unf
-            drawn += c
-    band_rate = {b: num[b] / den[b] for b in num}
+            if window[0] <= f["ipm"] <= window[-1]:
+                need = max(0.0, tau_ * f["C_chf"] - drawn)
+                total += need + run_off(f, [m for m in window if m > f["ipm"]], max(0.0, unf - need))
+            else:
+                total += run_off(f, window, unf)
+        return total
 
-    def r_for(b):
-        if b in band_rate:
-            return band_rate[b]
-        lower = [k for k in band_rate if k <= b]
-        return band_rate[max(lower)] if lower else band_rate[min(band_rate)]
-
-    def run_off(f, months, unf):
-        out = 0.0
-        for m in months:
-            c = min(unf, r_for((m - f["first"]) // 12) * unf)
-            unf -= c
-            out += c
-        return out
-
-    expected = 0.0
-    for f in funds.values():
-        if f["first"] is None:
-            continue
-        drawn = sum(v for m, v in f["calls"].items() if m <= P)
-        unf = f["C_chf"] - drawn
-        if window[0] <= f["ipm"] <= window[-1]:
-            need = max(0.0, tau * f["C_chf"] - drawn)
-            expected += need + run_off(f, [m for m in window if m > f["ipm"]], max(0.0, unf - need))
-        else:
-            expected += run_off(f, window, unf)
+    expected = expected_calls(tau)
     req = 1.1 * expected - 150e6
     amount = next(a for a in range(50, 401, 25) if a * 1e6 >= req)
     fees = round(amount * 1e6 * (0.0030 + 0.0015))
@@ -142,6 +150,14 @@ def main():
     check("fees at the amount", fees, fig["fees_at_amount_chf"])
     check("fees at the next amount down", fees_down, fig["fees_at_next_down_chf"])
     check("closed funds' mean drawn share", round(100 * tau, 1), fig["closed_share_mean_pct"])
+    # the corridor (C3): the lowest and highest drawn share of a closed fund, 6- and 24-month bands, age from the first close
+    lo_e, hi_e = (amount - 25 + 150) / 1.1 * 1e6, (amount + 150) / 1.1 * 1e6
+    corridor = {"lowest drawn share": expected_calls(min(closed)), "highest drawn share": expected_calls(max(closed)),
+                "6-month bands": expected_calls(tau, band=6), "24-month bands": expected_calls(tau, band=24),
+                "age from the first close": expected_calls(tau, anchor="close")}
+    for name, e in corridor.items():
+        if not (e >= 1.02 * lo_e and e <= 0.98 * hi_e):
+            fails.append(f"corridor {name}: expected calls {e / 1e6:.1f} not 2 per cent inside {lo_e / 1e6:.1f} to {hi_e / 1e6:.1f}")
 
     # the ask: each 2026 credit of a distribution on the programme account, at the notice's cash amount and the reference
     # rate of the credit's value date

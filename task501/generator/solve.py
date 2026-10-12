@@ -76,11 +76,16 @@ class Pack:
         return out
 
     def closed_shares(self, fs, by="value_date"):
+        key = (by, id(self.calls), tuple(d["fid"] for d in fs), tuple(str(d["ip_date"]) for d in fs))
+        memo = self.__dict__.setdefault("_shares", {})
+        if key in memo:
+            return dict(memo[key])
         out = {}
         for d in fs:
             if d["ip_date"] <= PLAN_DATE:
                 sub = self.calls[(self.calls["fund_id"] == d["fid"]) & (self.calls[by] <= d["ip_date"])]
                 out[d["code"]] = float(sub["amount"].sum()) / d["C_fcy"]
+        memo[key] = dict(out)
         return out
 
 
@@ -98,7 +103,7 @@ def bkey(d, i, key, band, age_from):
         return ((i - a0) // band, i > d["ip"])
 
 
-def rates(fs, plan_i=PLAN_I, est0=None, band=12, key="age", by_strat=False, age_from="first_call", weight="sum"):
+def rates(fs, plan_i=PLAN_I, est0=None, band=12, key="age", by_strat=False, age_from="first_call", weight="sum", skip_first=False):
     num, den, per = {}, {}, {}
     for d in fs:
         if d["first"] is None or d["first"] > plan_i:
@@ -107,7 +112,7 @@ def rates(fs, plan_i=PLAN_I, est0=None, band=12, key="age", by_strat=False, age_
         for i in range(d["first"], plan_i + 1):
             unf = d["C"] - cum
             c = d["calls"].get(i, 0.0)
-            if (est0 is None or i >= est0) and unf > 1.0:
+            if (est0 is None or i >= est0) and unf > 1.0 and not (skip_first and i == d["first"]):
                 b = bkey(d, i, key, band, age_from)
                 if by_strat:
                     b = (d["s"], b)
@@ -150,8 +155,15 @@ def ta(d, R, months, unf0, band=12, key="age", by_strat=False, age_from="first_c
 
 
 def forecast(pk, fs, method="golden", plan_i=PLAN_I, tau=None, band=12, by_strat=False, age_from="first_call", est0=None, key="age",
-             weight="sum", detail=False):
-    R = rates(fs, plan_i, est0, band, key, by_strat, age_from, weight)
+             weight="sum", detail=False, catch="all", post="band", style="balance", skip_first=False):
+    """Expected calls of the twelve months after plan_i. method "ta": every fund on the rate table. method "golden": every
+    fund whose investment period ends inside the window calls the balance to the closed funds' drawn share (tau) by its
+    period end, then the table's rate on what remains. Variants of the golden family: catch "behind" puts only the funds
+    under 80 per cent drawn on the balance (the rest on the table); post "ipstatus" takes the months after a period end at
+    the rate of fund-months after their periods, post "zero" calls nothing after it; style "topup" runs the table's rate
+    up to the period end and tops up to the drawn share in the period-end month."""
+    R = rates(fs, plan_i, est0, band, key, by_strat, age_from, weight, skip_first)
+    Rp = rates(fs, plan_i, est0, band, "ipstatus", by_strat, age_from, weight, skip_first) if post == "ipstatus" else None
     sh = pk.closed_shares(fs)
     tau_v = float(np.mean(list(sh.values()))) if not isinstance(tau, (int, float)) else float(tau)
     smean = {}
@@ -161,18 +173,39 @@ def forecast(pk, fs, method="golden", plan_i=PLAN_I, tau=None, band=12, by_strat
     win = list(range(plan_i + 1, plan_i + 13))
     tot = grp = 0.0
     per = {}
+
+    def rate_at(d, i):
+        if Rp is not None and i > d["ip"]:
+            return lookup(Rp, bkey(d, i, "ipstatus", band, age_from), by_strat, d["s"])
+        if post == "zero" and i > d["ip"]:
+            return 0.0
+        return lookup(R, bkey(d, i, key, band, age_from), by_strat, d["s"])
+
     for d in fs:
         if d["first"] is None or d["first"] > plan_i:
             continue
         called = called_to(d, plan_i)
         unf = d["C"] - called
         in_win = win[0] <= d["ip"] <= win[-1]
-        if method == "golden" and in_win:
+        on_balance = method == "golden" and in_win and (catch == "all" or called / d["C"] < 0.80)
+        if on_balance:
             t = smean[d["s"]] if tau == "strategy" else tau_v
-            need = max(0.0, t * d["C"] - called)
-            post_months = [i for i in win if i > d["ip"]]
-            post = ta(d, R, post_months, max(0.0, unf - need), band, key, by_strat, age_from) if post_months else 0.0
-            s = need + post
+            if style == "balance":
+                need = max(0.0, t * d["C"] - called)
+                rest, s = max(0.0, unf - need), need
+                for i in [i for i in win if i > d["ip"]]:
+                    c = min(rest, rate_at(d, i) * rest)
+                    rest -= c
+                    s += c
+            else:
+                cum, s = called, 0.0
+                for i in win:
+                    c = (0.0 if i > d["ip"] and post == "zero" else rate_at(d, i)) * (d["C"] - cum)
+                    if i == d["ip"]:
+                        c = max(c, t * d["C"] - cum)
+                    c = min(max(c, 0.0), d["C"] - cum)
+                    cum += c
+                    s += c
         else:
             s = ta(d, R, win, unf, band, key, by_strat, age_from)
         if in_win:
@@ -196,18 +229,52 @@ def amount(E, **kw):
     return None
 
 
-def golden_family(pk, fs):
-    sh = pk.closed_shares(fs)
-    v = np.array(list(sh.values()))
-    est19 = 2019 * 12
-    est21 = 2021 * 12
-    members = [("canonical: 12-month age bands, pooled, first call, all records, mean drawn share", {}),
-               ("6-month age bands", dict(band=6)), ("age bands by strategy", dict(by_strat=True)),
-               ("age from the first close", dict(age_from="first_close")), ("median drawn share", dict(tau=float(np.median(v)))),
-               ("drawn share by strategy", dict(tau="strategy")), ("records from 2019", dict(est0=est19)), ("records from 2021", dict(est0=est21)),
-               ("6-month bands by strategy", dict(by_strat=True, band=6)), ("mean of fund-month rates", dict(weight="mean")),
-               ("lowest drawn share", dict(tau=float(v.min()))), ("highest drawn share", dict(tau=float(v.max())))]
-    return [(nm, forecast(pk, fs, "golden", **kw)[0]) for nm, kw in members]
+FAMILY = [("6-month age bands", dict(band=6)), ("24-month age bands", dict(band=24)), ("age from the first close", dict(age_from="first_close")),
+          ("age bands by strategy", dict(by_strat=True)), ("6-month bands by strategy", dict(by_strat=True, band=6)),
+          ("median drawn share", dict(tau="median")), ("drawn share by strategy", dict(tau="strategy")),
+          ("lowest drawn share", dict(tau="min")), ("highest drawn share", dict(tau="max")),
+          ("balance for the funds behind schedule only", dict(catch="behind")),
+          ("post-period rates after the period end", dict(post="ipstatus")), ("top-up in the period-end month", dict(style="topup")),
+          ("first month left out of the rates", dict(skip_first=True))]
+FAMILY_WEAK = [("mean of fund-month rates", dict(weight="mean")), ("nothing called after the period end", dict(post="zero"))]
+
+
+def _tau_value(pk, fs, name):
+    v = np.array(list(pk.closed_shares(fs).values()))
+    return {"median": float(np.median(v)), "min": float(v.min()), "max": float(v.max())}.get(name, name)
+
+
+def golden_family(pk, fs, weak=False):
+    """The golden family on the filed estimation period (the whole record): the canonical construction, then each choice a
+    careful solver could make differently, one at a time (weak=True: the two weaker estimators)."""
+    out = [("canonical: 12-month age bands, pooled, first call, whole record, mean drawn share", forecast(pk, fs, "golden")[0])]
+    for nm, kw in (FAMILY_WEAK if weak else FAMILY):
+        kw = dict(kw)
+        if "tau" in kw:
+            kw["tau"] = _tau_value(pk, fs, kw["tau"])
+        out.append((nm, forecast(pk, fs, "golden", **kw)[0]))
+    return out
+
+
+def family_cross(pk, fs, weak=False):
+    """Every combination of the family's choices: bands, anchor, pooling, target, catch-up set, post-period rate and style
+    (weak=True adds the mean of fund-month rates and nothing after the period end)."""
+    import itertools
+    out = []
+    taus = ["mean", "median", "min", "max"]
+    weights = ("sum", "mean") if weak else ("sum",)
+    posts = ("band", "ipstatus", "zero") if weak else ("band", "ipstatus")
+    for band, af, bs, wt, tn, catch, post, style in itertools.product((6, 12, 24), ("first_call", "first_close"), (False, True), weights, taus,
+                                                                      ("all", "behind"), posts, ("balance", "topup")):
+        tv = None if tn == "mean" else _tau_value(pk, fs, tn)
+        e = forecast(pk, fs, "golden", tau=tv, band=band, by_strat=bs, age_from=af, weight=wt, catch=catch, post=post, style=style)[0]
+        out.append(((band, af, bs, wt, tn, catch, post, style), e))
+    return out
+
+
+def window_variants(pk, fs):
+    """Rates fitted on a recent window of the record instead of the whole history (ruled out by RL-PM-05 s.5.2)."""
+    return [(y, forecast(pk, fs, "golden", est0=y * 12)[0]) for y in (2019, 2021, 2022, 2023, 2024, 2025)]
 
 
 def ladder(pk, fs):

@@ -31,6 +31,7 @@ STRATEGY_DE = {"BO": "Buyout", "GR": "Wachstumskapital", "PC": "Privatkredit", "
 
 # facility terms (directive RL-PM-05 and the lender's term sheet)
 RESERVE = 150_000_000.0
+MIN_BALANCE = 5_000_000.0                # the programme account's operating minimum, below which the facility is drawn
 MARGIN = 0.10
 MENU = list(range(50, 401, 25))          # CHF million
 COMMIT_FEE = 0.0030                      # per annum on the facility amount, drawn or not
@@ -80,8 +81,8 @@ FUNDS = [
     ("NOR", "II", (2022, 1), 50, 1.30), ("ULM", "III", (2022, 3), 60, 1.25), ("STA", "IV", (2022, 5), 40, 1.20),
     ("OST", "II", (2022, 7), 45, 1.25), ("HAL", "II", (2023, 2), 85, 1.30), ("KAL", "IV", (2023, 5), 50, 1.20),
     # investment periods ending September to December 2027, far behind schedule
-    ("LOS", "III", (2022, 9), 80, 0.38), ("JUN", "II", (2022, 10), 160, 0.38), ("ROS", "II", (2022, 11), 110, 0.38),
-    ("TES", "I", (2023, 12), 170, 0.38),
+    ("LOS", "III", (2022, 9), 80, 0.36), ("JUN", "II", (2022, 10), 160, 0.36), ("ROS", "II", (2022, 11), 110, 0.36),
+    ("TES", "I", (2023, 12), 170, 0.35),
     # later vintages (no first close from December 2022 to June 2023 for five-year funds, or in the first half of
     # 2024 for four-year credit funds: the programme paused new commitments while it was over its allocation)
     ("GOS", "IV", (2023, 7), 70, 1.00), ("ALD", "V", (2023, 10), 100, 1.00), ("COR", "VIII", (2024, 2), 90, 1.10),
@@ -95,6 +96,7 @@ DEADLINE_GROUP = ("LOS-III", "JUN-II", "ROS-II", "TES-I")
 IP_MONTHS = {"BO": 60, "GR": 60, "PC": 48, "IN": 60}
 TERM_MONTHS = {"BO": 120, "GR": 120, "PC": 96, "IN": 144}
 TAU_TARGET = 0.926                                                # the drawn share (investments, fees, expenses) managers aim for at the IP end
+IOTA_SD = 0.0015                                                  # each fund's spread around that aim (share of commitment)
 H = {"BO": 0.060, "GR": 0.060, "PC": 0.065, "IN": 0.055}         # monthly pacing hazard on the investable balance
 FEE_IP = {"BO": 0.016, "GR": 0.016, "PC": 0.009, "IN": 0.012}    # management fee p.a. on commitment in the IP
 FEE_POST = {"BO": 0.012, "GR": 0.012, "PC": 0.008, "IN": 0.010}  # p.a. on net invested cost after the IP
@@ -111,7 +113,7 @@ FEED_START = {"BRW": date(2026, 1, 1), "ROS": date(2026, 1, 1), "GOS": date(2026
               "EBE": date(2026, 1, 1), "DUN": date(2026, 1, 1), "OST": date(2026, 1, 1), "KAL": date(2026, 4, 1)}
 CLERK_STOP = {"EBE": date(2026, 7, 1), "DUN": date(2026, 7, 1)}  # the clerks stopped keying these managers in July
 PARALLEL_END = date(2026, 9, 30)                                  # the clerks stopped keying every feed manager
-DIST_STREAM = 12                                                  # random stream of the 2025-26 distribution timings
+DIST_STREAM = 360                                                  # random stream of the 2025-26 distribution timings
 
 
 def market(y, m):
