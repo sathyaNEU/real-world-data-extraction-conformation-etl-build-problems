@@ -1,0 +1,39 @@
+{
+  "task": "task136",
+  "owner": "sathya8571",
+  "status": "DESIGN",
+  "domain": "energy-systems-utilities",
+  "objective": "forecasting",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-12",
+  "stump": "A competent solver collapses alterations, builds NPP-114's base trend, carries the past bulk-buys' systems per home letterboxed onto the 2027 letterbox drops and files YRB22 at about 1.5 MW over hosting capacity; the step that lands it there is transferring each campaign's yield per contacted address instead of per owner-occupied house still without rooftop PV in its suburb, which leaves YRB24's untouched Bindarra Waters estate with about half its campaign: the golden is YRB24 at about 1.9 MW.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: design (readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet, prompt.txt, precut.py)",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "wave": "wave 2 (new), seed FC07"
+}

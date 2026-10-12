@@ -1,0 +1,94 @@
+{
+  "task": "task136",
+  "architecture": "v1",
+  "drawn": "2026-10-12",
+  "slot_note": "wave 2 (new). Seed FC07: world, decision and quantity kept (a distributor's one accelerated feeder upgrade for rooftop solar beyond hosting capacity in the 2029 design year, two neighbourhood campaigns next spring); the pitfall re-found from the data (a bulk-buy reaches only the owner-occupied houses still without solar in its suburb, a pool behind the rates-roll join); no published control set, reproduction clause or filed back-test.",
+  "domain": "energy-systems-utilities",
+  "subdomain": "load-forecasting",
+  "client_domain": "energy-systems-utilities",
+  "niche": "an Australian distribution network's rooftop PV forecast for its FY2027-28 capital program: which of the eight 22 kV feeders out of one peri-urban zone substation gets the single accelerated hosting-capacity upgrade, sized on rooftop PV connected at 31 August 2029, when the city council runs solar bulk-buy campaigns in two suburbs in spring 2027",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G8",
+    "G14"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "DER forecasting analyst in the distributor's network planning group",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "eg_connection_applications_20260901.csv",
+    "rows": 0,
+    "entity": "one micro embedded generation (rooftop PV) connection application at a national meter identifier",
+    "grain": "connection application (new system or alteration) x NMI",
+    "source": "constructed (the distributor's embedded generation connection register)"
+  },
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "Australia, Queensland",
+    "currency": "AUD",
+    "org_type": "electricity distribution network service provider",
+    "invented_names": [
+      "Mirrabee Energy",
+      "Yarrabin zone substation",
+      "Merindah City Council",
+      "Bindarra Waters",
+      "Wattleview",
+      "Merindah Solar Streets"
+    ],
+    "people": [
+      "Wanda Thornton",
+      "Christopher Sheppard",
+      "Julie Cochran",
+      "Bryan Nichols",
+      "Linda Ruiz",
+      "Nicole Rocha",
+      "Tammy Buchanan"
+    ]
+  },
+  "deliverables": [
+    "feeder_upgrade_2029.xlsx",
+    "yarrabin_pv_vs_hosting_2029.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A scheduled intervention's yield is carried to new sites from its past runs, and it is stable only per member who can still respond, those inside the intervention's area who qualify and have not already responded, a pool built by joining a membership roll through a link file to the response log; per contacted member, per qualifying member, per member without a response or per whole site each fits the past runs no better than the raw counts, so every such transfer leaves the site with the largest untouched pool at a third to a half of its yield and the call with a rival.",
+  "driver_concrete": "Each of the council's seven past solar bulk-buys added the same share (about 4.6 per cent) of its suburb's owner-occupied houses that had no rooftop PV when it opened, a pool reached only by joining the council's rates roll through the distributor's NMI-to-property cross-reference to its connection register; feeder YRB24's new Bindarra Waters estate holds more such houses than any past suburb, so its spring 2027 campaign adds about 1.5 MW and puts YRB24 furthest over hosting capacity in August 2029, where a transfer per home letterboxed, per owner-occupied house or per home without PV adds a third to two thirds of that and leaves the upgrade with YRB22.",
+  "stump": "A competent solver files YRB22 at about 1.5 MW over hosting capacity by carrying the past campaigns' installations per home letterboxed onto the 2027 letterbox drops; the step that lands it there is transferring the yield per contacted home instead of per owner-occupied house still without rooftop PV in the suburb, which leaves YRB24's untouched new estate with well under half its campaign: the golden is YRB24 at about 1.9 MW.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the forecasting procedure, collapses alterations to one system per NMI and takes each past campaign's installations correctly still carries them to the 2027 suburbs per home letterboxed and files YRB22; per owner-occupied house, per home without PV, per feeder, by rate ratio or as an average count also leave YRB24's campaign at a third to two thirds of its size and the upgrade with YRB22.",
+  "domain_test": "The deciding quantity is each feeder's design-point rooftop PV against its hosting capacity, with a bulk-buy campaign's installations forecast from the rooftops that can still take it up (owner-occupied houses with no PV yet), which is how a distribution planner forecasts DER for an augmentation; with another field's nouns, hosting capacity, inverter ratings, rooftop ownership and the embedded generation register have nothing to attach to.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Calibration none: the seven past campaigns are the distributor's and the council's own history from which the programme component is estimated (natural experiments in the register), not an organ confirming a filed criterion. Pattern none, decisive G8 (reachability: a house that already has PV, a rented house or a unit cannot take the bulk-buy, binary per dwelling) then G14 (the yield conditioned on that reachable pool); Gate G method_or_model_selection because the transfer basis is the method, and only one basis reproduces all seven past campaigns. Layer 2 pattern product-analytics/feature-adoption-diffusion-modeling/2 (the eligible denominator at risk) on a new structure: a campaign transfer across suburbs behind a three-file join, not a product's adoption rate.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "product-analytics/feature-adoption-diffusion-modeling/2",
+  "layer1": [
+    "an embedded generation connection register at application grain, where an alteration (added panels, a replaced inverter, a battery retrofit) is a new application carrying the NMI's whole configuration after the work, with withdrawn and approved-not-connected applications beside connected ones",
+    "the feeder recorded at application against the feeder in the network model at the base date, after a 2023 load transfer between two feeders",
+    "NMIs keyed by the distributor, properties keyed by the council's property number and lot on plan, joined only through the GIS NMI-to-property cross-reference with dual-occupancy and granny-flat NMIs",
+    "inverter rating in kVA beside panel capacity in kWp, rows migrated from the pre-2019 system with panel capacity only and the inverter in a separate equipment table",
+    "the council's bulk-buy log in its own workbook layout (title block, merged headers, footnotes) with homes letterboxed, registrations, contracts and systems installed",
+    "a national DER Register extract at device grain and a customer case export with repeat calls and re-categorised cases on the ask paths"
+  ]
+}
