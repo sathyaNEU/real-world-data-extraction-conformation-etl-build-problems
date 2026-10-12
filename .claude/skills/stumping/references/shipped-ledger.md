@@ -167,7 +167,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 121 (v2) | FAILED_TO_STUMP: backlog sathay3012 | PA checkout | RCA | population time | none, A | signed-out customers own accounts | - | - | sprint target | not submitted | sathay3012 |
 | 122 (v2) | FAILED_TO_STUMP: backlog perssathya | PA experimentation | CEX | time rule | none, B | log keeps only pre-close outcomes | - | - | HC-37 | not submitted | perssathya |
 | 123 | FAILED_TO_STUMP: backlog oviya1301 | NPO grantee finance | ETL | time rule | B | trailing total over filed years only | - | - | 42.55 cents | not submitted | oviya1301 |
-| 124 (v3) | FAILED_TO_STUMP: backlog sathya8571 | BOA capacity block | FC | population time | E | analogs held down by an intervention | - | - | 400 MW split | none reported | sathya8571 |
+| 124 (v4) | FAILED_TO_STUMP: backlog sathya8571 | ENR lead service lines | FC | population | none | verified share inflated by why lines were dug | - | - | zone finish years | none reported | sathya8571 |
 | 125 | FAILED_TO_STUMP: backlog oviya13ya | AAF audit sampling | AD | population time | none, A, B | a filed date ends a component class | - | - | 6,900 payments | not submitted | oviya13ya |
 | 126 | SHIPPED, delivered, pending review | P&E pendency | DESC | population rule | none, D | a carried file joins two units | - | - | 28.9 months | none reported | - |
 | 127 | FAILED_TO_STUMP: backlog sathay3012 | NPO heat-pump slots | OPP | time objective | none, C, E | a team must finish the last step | - | - | 1,170 slots | not submitted | sathay3012 |
@@ -264,6 +264,7 @@ them as history. Round-by-round detail is in each build's design note and card l
 | 109 (v1) | retired 10-07: solved in-house | BOA | ETL | population time | none | departure unit from a filed definition |
 | 111 (v1) | retired 10-06: both filed it on the portal | BOA | RCA | objective population | none | rest after call-out via payroll |
 | 124 (v1, v2) | retired 10-10: solved in-house | BOA | FC | population time | E | analogs' uncalled draw |
+| 124 (v3) | retired 10-12: validated decoy, rungs stacked above solved steps | BOA | FC | population time | E | pre-cool hours against heat-matched uncalled days |
 | 128 (v1) | retired 10-10: solved in-house | BOA | OPP | objective rule | C | whole-host rebuild value |
 | 130 (v1, v2) | failed on the portal 10-10, 10-11 | - | FC | - | - | designation; duty-date queue |
 | 133 (v1) | retired 10-11: one portal model at 100 | BANK | FC | time | none | survival to date, soft asks |

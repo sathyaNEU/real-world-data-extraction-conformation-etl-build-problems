@@ -1,80 +1,95 @@
 {
   "task": "task124",
-  "architecture": "v3",
-  "drawn": "2026-10-10",
-  "slot_note": "Realises analytical_tasks note FC02 (summer firm-capacity block split, cold-store coincidence). The note's decisive move, the tariff-class replay, is demoted to rung 3 and a new decisive rung is drawn after it.",
-  "domain": "business-operations-analytics",
-  "subdomain": "other",
-  "niche": "a Texas retail electricity provider splitting its risk committee's capped summer firm-capacity block across its eight weather-zone books in 5 MW lots, the season a cold-storage developer's 31 new distribution centres arrive in North Central and the book's only refrigerated analogs have only ever been metered under its own summer load-shift dispatch",
+  "architecture": "v4 (re-root: architecture 2)",
+  "drawn": "2026-10-12",
+  "slot_note": "Re-root of task124 in the same objective (Forecasting & Predictive Modeling). Architecture 1, the Texas retail electricity provider's summer firm-capacity block split (harden loops 0 to 2, carried in lineage as v1 to v3), is spent: a validated decoy the guard now blocks, two in-house solves on the default path, and two hardenings that stacked rungs above solved steps. Architecture 2 draws a new world, a new domain and a new decisive step; nothing of architecture 1's pack, prompt or asks is reused.",
+  "domain": "energy-systems-utilities",
+  "subdomain": "asset-condition-maintenance",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a regional water district owned by its member municipalities, testing whether its lead service line replacement plan's annual capital finishes every zone by the federal deadline, and in which year each zone finishes, when the cost of each zone turns on how many of its unknown-material service lines prove to be lead or galvanized-requiring-replacement and nearly every field verification so far was prompted by evidence of lead",
   "objective": "forecasting",
-  "shape": "05",
-  "decision_type": "allocation_to_total",
-  "answer_unit": "count",
-  "answer": "Split the 400 MW summer block as Coast 120 MW, East 30, Far West 0, North 0, North Central 210, South Central 25, Southern 15 and West 0.",
-  "answer_source": "task124/submission.md, block 1",
+  "shape": "06",
+  "decision_type": "schedule_or_sequence",
+  "answer_unit": "date_or_period",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "population"
   ],
   "pattern": [
-    "E"
+    "none"
   ],
   "generators": [
     "G14",
     "G6",
-    "G16",
-    "G10"
+    "G2"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "existing_book_actuals",
-  "stump_strategy": "causal_design",
+  "calibration_form": "physical_verification",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
-  "validated_decoy": true,
-  "context_artifact": "close_out_summary",
-  "stakeholder_role": "head of supply portfolio at a Texas retail electricity provider, who takes the summer block split to the risk committee",
-  "role_family": "portfolio_manager",
-  "scoring_unit": "per active unit per period",
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "the district's lead service line programme manager, who brings the replacement schedule to the board with the capital plan",
+  "role_family": "programme_officer",
+  "scoring_unit": "per accepted item",
   "spine": {
-    "file": "idr_hourly_reads_summers_2017_2026.parquet",
-    "rows": 1881080,
-    "entity": "one hourly read of one interval-metered premise in the book on a June to September weekday, with its ESI ID, weather zone and kWh",
-    "grain": "premise x hour",
-    "source": "synthetic, shaped on ERCOT's published hourly load by weather zone (public)"
+    "file": "hfwa_service_line_inventory_20270226.csv",
+    "rows": 88000,
+    "entity": "one service line (the connection from a water main to one premise) in the authority's lead and copper inventory, with its records, its classification and the main segment it taps",
+    "grain": "service line",
+    "source": "synthetic, shaped on public lead service line inventories filed by Ohio community water systems"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "season_or_peak",
-  "org_family": "utility_or_infrastructure",
+  "forum": "board_of_directors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "United States, Texas",
+    "geography": "United States, Ohio (fictional authority, city, townships and zones)",
     "currency": "USD",
-    "org_type": "retail electricity provider serving commercial and industrial customers in all eight ERCOT weather zones",
+    "org_type": "a regional water district owned by a mid-size Ohio city and two townships, serving about 88,000 service connections",
     "invented_names": [
-      "Sabine Crest Energy",
-      "Harlan Ridge Cold Storage Partners",
-      "Business Saver programme"
+      "Hollins Ford Regional Water District",
+      "Hollins Ford",
+      "Darrow Township",
+      "Kittering Township",
+      "Brannigan Excavating",
+      "Tri-County Underground",
+      "Kestrel Pipe and Utility"
     ],
     "people": [
-      "Tammy Ochoa",
-      "Gregory Sheppard",
-      "Craig Stewart",
-      "Susan Kelley",
-      "Donald Lee"
+      "Andrew Wells",
+      "William Bates",
+      "Bethany Davidson",
+      "Seth Sullivan"
     ]
   },
   "deliverables": [
-    "summer_block_split.xlsx",
-    "summer_block_committee.pptx"
+    "lslr_2027_programme.xlsx",
+    "lslr_2027_board_paper.pdf"
   ],
-  "opening_move": "constraint-first",
-  "driver": "The newcomers' share of a capped peak is priced from the only analogs on file, whose measured value at every deciding hour was held down by the organisation's own intervention, which the newcomers cannot join; on the deciding days the hours either side of the intervention show the analogs pre-loading and recovering at their own maximum, and the intervention's own counterfactual averages ordinary days, so the same-day read overshoots and the counterfactual undershoots, and only the analogs' unintervened records on days matching the deciding hour's extreme condition, read from a separately joined condition file, recover the level the newcomers will run at.",
-  "driver_concrete": "North Central's 31 new refrigerated distribution centres are priced from the book's fourteen cold stores and ice plants, which sat in a Business Saver called window at every closed system peak (0.60 of maximum demand) and which no site can join before a metered summer; on those peak days the fourteen pre-cool before the window and recover after it with every compressor stage on (0.97 of maximum demand over hours ending 11-14 and 19-20), the programme baseline puts them at 0.755, and only their uncalled weekdays as hot as a closed peak in their zone's daily temperatures show the 0.85 the un-enrolled centres will draw.",
-  "stump": "A competent solver rebuilds the per-kW replay that ties all 80 replay-table cells, collapses the North Central amendment rows, joins the premise register, sets the Business Saver credit dates beside the system peaks, sees the fourteen cold stores' 0.60 is their called draw and reads their uncalled draw off the peak days' own hours outside the window (0.97 of maximum demand), filing 115 / 25 / 0 / 0 / 230 / 20 / 10 / 0; the step that lands it there is taking a called day's pre-cool and recovery hours as an uncalled draw, when on uncalled weekdays as hot as a closed peak the fourteen drew 0.85, so the split is 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0.",
+  "opening_move": "question-first",
+  "question_form": "when",
+  "driver": "A rate measured on units that were examined because they showed signs of the outcome is carried to a population every unit of which will be examined; only the groups examined exhaustively, recognisable by complete coverage rather than by any code, give the population's rate within each visible stratum, and every pooling, stratification, reweighting or model fitted on the full set of examinations keeps the selection.",
+  "driver_concrete": "Hollins Ford Regional Water District's plan digs every unknown-material service line in each zone it works, in priority order at a fixed capital a year, but nearly all of its 2021 to 2026 field verifications were prompted by a customer's report, a sampling site or a leak on old pipe, so the share found lead or galvanized-requiring-replacement in each construction era runs far above what a systematic dig finds; only the water-main segments whose every service was verified when the main was replaced show the shares the programme will meet, and with them every zone finishes before the deadline instead of after it.",
+  "stump": "A competent solver joins the verification log to the inventory through the migration crosswalk, keeps the lines that had no material record, takes the share found lead or GRR in each construction era across every verification and prices each zone's unknown lines at it, so the zones' cumulative cost outruns the annual capital and the last zone finishes after the deadline; the step that lands it there is treating verifications prompted by evidence of lead as a sample of the lines a systematic programme digs, when only the segments a main replacement verified whole show the shares the programme will meet, and with them the last zone finishes before the deadline.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who joins the verification log through the migration crosswalk, normalises every material code, keeps the lines that had no material record and reads the inventory, the plan, the bid prices and the capital plan correctly still estimates each era's lead and GRR share from every verification on file (pooled, by era, or with a model on every visible attribute) and finds the plan misses the deadline, because nearly every verification was prompted by evidence of lead and only the segments a main replacement verified whole show what a programme that digs every unknown line will find.",
+  "domain_test": "What decides the call is a water utility's estimate of how many of its unknown-material service lines are lead or galvanized-requiring-replacement, which inventory practice has to make from verifications that sampled lines regardless of their likely material, since a dig prompted by a customer's report, a sampling site or a leak on galvanized pipe finds lead far more often than a systematic dig; with another field's nouns there are no tap cards, goosenecks, GRR classifications or main-replacement sweeps, and the task does not read the same.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "biomedical-clinical-research/diagnostic-biomarker-accuracy/1",
+  "layer1": [
+    "a field verification log keyed by the customer system's legacy premise number before the March 2023 GIS migration and by the GIS service line id after it, joined through the migration crosswalk",
+    "material result codes that differ by crew and contractor form (PB, LEAD; GALV-RR, GRR; CU, COPPER, PE, NL), resolved through the field code list",
+    "re-verifications of one line (a pothole, then an excavation) dated in two formats either side of the migration",
+    "the county assessor's year built carried onto the inventory, zero or blank on non-residential parcels",
+    "a contractor pay-application export at site-line grain that repeats each change order's total on every covered site's line",
+    "pay applications revised and resubmitted, with the engineer's decisions kept in a separate review log",
+    "property access agreements keyed by the legacy premise number before the migration and carrying the zone named on the form when it was signed",
+    "one owner's agreement signed twice, on paper and on the customer portal"
+  ],
   "mechanism_source": "design_note",
-  "differentiation": {
-    "task83": "task83 sizes a randomized treatment effect and splits it by each unit's own earlier exposure to that same treatment; here no effect is sized: a separate programme's dispatch held the analogs' measured level down at the very hour the policy reads, the newcomers are barred from that programme, so the analogs' level is restored from their own non-dispatch records before it transports to them, and the cap is levelled by exposure rather than ranked by effect.",
-    "task124": "Harden loops 0 and 1 (lineage) restored the analogs to their ordinary uncalled level (the programme baseline, solved in round 1) and then to their heat-conditioned level, which the peak days' own hours around the window also showed (solved in round 2); this architecture keeps both as stop rungs and makes the same-day hours read the analogs' pre-cool and recovery at their own maximum demand (0.97), above the heat-conditioned uncalled level (0.85), so the solved same-day read now overshoots and only the heat-matched uncalled weekdays recover the answer."
-  },
+  "differentiation": {},
   "lineage": [
     {
       "architecture": "v1 (harden loop 0): the analogs' uncalled draw on ordinary weekdays as the decisive rung",
@@ -107,7 +122,23 @@
       "gate_g": "forecasting",
       "decision_type": "allocation_to_total",
       "driver": "The newcomers' share of a capped peak is priced from the only analogs on file, whose measured value at every deciding hour was held down by the organisation's own intervention, which the newcomers cannot join; the intervention's own counterfactual, an average of recent ordinary days that reproduces every settlement record, restores the analogs only to their ordinary level, and only conditioning the analogs' unintervened records on the deciding hour's own extreme condition, read from a separately joined condition file, recovers the saturated level the newcomers will run at."
+    },
+    {
+      "architecture": "v3 (harden loop 2): the analogs' uncalled draw on uncalled weekdays as hot as a closed peak, with the peak days' own hours around the window reading pre-cool and recovery",
+      "fate": "spent 2026-10-12 at the wave-1 resume, never solved: the card carried validated_decoy true (the closed replay table and the members' metered peaks reproduce every wrong rung and only the newcomers' 2027 summer breaks it), which the guard blocks outright since 2026-10-11; loops 1 and 2 each stacked a rung above a decisive step the in-house solver had walked to the golden (round 1 by the programme baseline, round 2 by the peak days' shoulder hours), which the current rules forbid, so the default path reached the golden twice and the architecture re-roots",
+      "domain": "business-operations-analytics",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "allocation_to_total",
+      "driver": "The newcomers' share of a capped peak is priced from the only analogs on file, whose measured value at every deciding hour was held down by the organisation's own intervention, which the newcomers cannot join; on the deciding days the hours either side of the intervention show the analogs pre-loading and recovering at their own maximum, and the intervention's own counterfactual averages ordinary days, so the same-day read overshoots and the counterfactual undershoots, and only the analogs' unintervened records on days matching the deciding hour's extreme condition, read from a separately joined condition file, recover the level the newcomers will run at."
     }
   ],
-  "notes": "Realises analytical_tasks note FC02 (analytical_tasks/01_forecasting/FC02_summer-block-split-cold-store-coincidence.md); this build is its first realisation. Drawn 2026-10-10 as a candidate for task-number-order registration by the coordinator, not registered here. Decisive move redrawn at the draw: the note's tariff-class replay is a schema-visible join (ESI ID to the distribution utility's premise file) that a finest-grain replay of the premise interval data also hands over, so it is rung 3, and the decisive rung is the analogs' dispatch. Domain moved from the note's Economics to Business & Operations Analytics because a retail provider's hedge-block placement sits in the Economics boundary's out-of-scope markets-trading class; subdomain other (an energy retailer's summer supply planning), since no enumerated business-operations subdomain fits. Figures in the stump are provisional from the draw-stage sketch and are re-solved at stage 2."
+  "notes": "Architecture 2 of task124, drawn 2026-10-12 at the wave-1 resume. Forecasting: the call is a bet on what the plan's digs will find zone by zone over 2027 to 2037, and the history pins it only through the verifications a programme-like process produced. Pattern none, G14 decisive (the verified yield, conditioned on why a line was dug, does not apply to a programme that digs every line), G6 (the zones' construction-era mix differs from the swept segments') and G2 (the representative unit is a main segment verified whole, built by grouping verifications by segment against the inventory, no key bridging them); as on task183, no A to E pattern label is carried. Strategy population_selection: the measured rate comes from units selected on signs of the outcome. Calibration physical_verification: the field verification log. No decoy document, no voice, no certified figure pins the method; the estimand is filed literally and the design forces the method. Furniture drawn clear of task181 v4 and task229, both filed today and later in draw order (role, artifact, organisation family, forum, forcing event, shape and decisive mechanism), so this card bans neither. Personas drawn with guard.py names --geo 'United States, Ohio' --seed 124 (n 24), avoiding architecture 1's five and the first names the guard warns on; none appears in the prompt."
 }

@@ -1,54 +1,86 @@
 {
   "task": "task124",
-  "domain": "business-operations-analytics",
+  "owner": "sathya8571",
+  "status": "DESIGN",
+  "domain": "energy-systems-utilities",
   "objective": "forecasting",
-  "stage": 3,
-  "stage_name": "hardened",
-  "updated": "2026-10-11",
-  "stump": "A competent solver rebuilds the per-kW replay that ties all 80 replay-table cells, collapses the North Central amendment rows, joins the premise register, sets the Business Saver credit dates beside the system peaks, sees the fourteen cold stores' 0.60 is their called draw and reads their uncalled draw off the peak days' own hours outside the window (0.973 of maximum demand), filing 115 / 25 / 0 / 0 / 230 / 20 / 10 / 0; the step that lands it there is taking a called day's pre-cool and recovery hours as an uncalled draw, when on uncalled weekdays as hot as a closed peak the fourteen drew 0.850, so the centres add 158.2 MW and the split is 120 / 30 / 0 / 0 / 210 / 25 / 15 / 0.",
-  "harden_loops": 2,
-  "solver_rounds": [
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-12",
+  "stump": "A competent solver joins the verification log to the inventory through the migration crosswalk, keeps the lines that had no material record, prices each zone's unknown lines at the share found lead or GRR in each construction era across every verification and files the last zone finished after the deadline; the step that lands it there is treating verifications prompted by evidence of lead as a sample of the lines a systematic programme digs, when only the main segments a water main replacement verified whole show the shares the programme will meet (provisional at the draw; stage 2 re-solves the figures).",
+  "architecture": 2,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "three_rules": {
+    "domain": "pass (a water utility's estimate of how many unknown-material service lines are lead or GRR, from verifications that sampled lines regardless of their likely material)",
+    "layers": "pass (Layer 1: the migration crosswalk, field codes, re-verifications, assessor years; Layer 2: the estimation sample)",
+    "decisive_step": "analytical (the representative sample is the main segments verified whole, recovered from coverage; every full-sample estimator keeps the selection)"
+  },
+  "lineage": [
     {
-      "label": "round 1, plain",
-      "date": "2026-10-10",
-      "score": 89.7,
-      "landed": true,
-      "cracked": 5,
-      "items": 8
-    },
-    {
-      "label": "round 2, plain",
-      "date": "2026-10-10",
-      "score": 96.6,
-      "landed": true,
-      "cracked": 7,
-      "items": 8
+      "architecture": 1,
+      "world": "Sabine Crest Energy, the Texas retail electricity provider's 400 MW summer firm-capacity block split across eight weather-zone books (business-operations-analytics, forecasting)",
+      "loops": 2,
+      "rounds": [
+        {
+          "label": "round 1, plain",
+          "date": "2026-10-10",
+          "score": 89.7,
+          "landed": true,
+          "cracked": 5,
+          "items": 8
+        },
+        {
+          "label": "round 2, plain",
+          "date": "2026-10-10",
+          "score": 96.6,
+          "landed": true,
+          "cracked": 7,
+          "items": 8
+        }
+      ],
+      "harden_log": [
+        {
+          "loop": 1,
+          "date": "2026-10-10",
+          "change": "rung 5 added: a member's uncalled draw follows its zone's heat (full load on design-day afternoons); the programme baseline becomes rung 4; temperatures on the main path, day-ahead forecast file as the new distractor",
+          "gates": "generator 101 green, verifier 39/0, two builds byte-identical, task build matches, scrub clean, leak REVIEW (answered), heart PASS"
+        },
+        {
+          "loop": 2,
+          "date": "2026-10-10",
+          "change": "rung 5 added: on a called day the members pre-cool and recover around the window at their own maximum demand (0.973 over hours ending 11-14 and 19-20 on the peak days), uncalled full load lowered to 0.85, so the peak days' same-day read files North Central at 230; the heat-matched uncalled weekdays (0.850) are the answer",
+          "gates": "generator 109 green, verifier 40/0, two builds byte-identical, task build matches, goldens byte-identical, scrub clean, leak REVIEW (answered), surface unchanged, heart PASS, validate 126/0"
+        }
+      ],
+      "fate": "spent 2026-10-12 at the wave-1 resume: validated_decoy true on the card (blocked outright by guard.py since 2026-10-11); the default path reached the golden twice in-house (round 1, round 2); loops 1 and 2 stacked rungs above solved decisive steps; precut.py failed 23 of 33 checks on the loop-2 note",
+      "files": "generator, pack, goldens, submission.md, metadata.json and prompt.md removed at the re-root (in history at 64079f2); solver_rounds/ and leak_check_report.md kept as evidence",
+      "portal": "never on the portal list (FAILED_TO_STUMP, backlog sathya8571 wave 1)"
     }
   ],
+  "reroot": "done 2026-10-12: architecture 2 drawn in Forecasting & Predictive Modeling (energy-systems-utilities, asset-condition-maintenance: Hollins Ford Regional Water District's lead service line replacement schedule)",
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
   "judge": {
     "verdict": "",
     "disposition": "",
     "report": ""
   },
-  "approved": "2026-10-10 (no author checkpoint in the flow; heart PASS)",
+  "returned": [],
+  "resume": "stage 2: design to precut.py exit 0 (readability screen, fork table, ladder on the prototype, closure, asks, prompt.txt)",
+  "approved": null,
   "delivered": null,
   "portal": null,
-  "source_note": "analytical_tasks/01_forecasting/FC02_summer-block-split-cold-store-coincidence.md",
-  "stage3b": "2026-10-10 (rebuild after harden loop 1): goldens regenerated from the loop-1 pack, figures unchanged, two runs byte-identical; submission.md five blocks, step 5 heat rule stated as the verifier applies it, CC5 bound restated as a maximum (H3); golden-realism and reduce-house-fixes passes done, containers clean; leak.py REVIEW (twelve lines, answered in DESIGN_NOTE ## Leak review); surface: three promoted pairs, no rename or regeneration case; card brought to loop 1 (solved architecture in lineage, own-lineage differentiation); heart PASS; validate 126 cards, 0 invalid. Gate passed.",
-  "harden_log": [
-    {
-      "loop": 1,
-      "date": "2026-10-10",
-      "change": "rung 5 added: a member's uncalled draw follows its zone's heat (full load on design-day afternoons); the programme baseline becomes rung 4; temperatures on the main path, day-ahead forecast file as the new distractor",
-      "gates": "generator 101 green, verifier 39/0, two builds byte-identical, task build matches, scrub clean, leak REVIEW (answered), heart PASS"
-    },
-    {
-      "loop": 2,
-      "date": "2026-10-10",
-      "change": "rung 5 added: on a called day the members pre-cool and recover around the window at their own maximum demand (0.973 over hours ending 11-14 and 19-20 on the peak days), uncalled full load lowered to 0.85, so the peak days' same-day read files North Central at 230; the heat-matched uncalled weekdays (0.850) are the answer",
-      "gates": "generator 109 green, verifier 40/0, two builds byte-identical, task build matches, goldens byte-identical, scrub clean, leak REVIEW (answered), surface unchanged, heart PASS, validate 126/0"
-    }
-  ],
-  "status": "FAILED_TO_STUMP",
-  "owner": "sathya8571"
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
 }
