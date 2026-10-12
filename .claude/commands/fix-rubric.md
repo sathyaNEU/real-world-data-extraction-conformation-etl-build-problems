@@ -1,6 +1,7 @@
 ---
 description: Repair a build whose main call held on the portal but whose rubric score came back at or over 50. Reworks only the supplemental asks and their devices until the top two responses sit under 50 (built to 40), with the main recommendation side frozen so a passed verdict cannot turn into a failed one; proves the scope with freeze.py and re-ships.
 argument-hint: taskNN <the portal result: the top two scores and which rubric rows each response passed>
+model: opus
 effort: max
 ---
 

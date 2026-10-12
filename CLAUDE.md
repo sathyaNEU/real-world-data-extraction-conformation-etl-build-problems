@@ -25,7 +25,7 @@ Invoke the skill before the work, whatever the request's wording; if two apply, 
 
 ## Commands and effort
 
-Each command sets its own effort in its frontmatter, so a session gets the right depth without being told.
+Each command sets its own effort in its frontmatter, so a session gets the right depth without being told; the three build commands also run on Opus (`model: opus`).
 
 | Command | What it does | Effort |
 |---|---|---|

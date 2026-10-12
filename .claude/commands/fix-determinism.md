@@ -1,6 +1,7 @@
 ---
 description: Repair a build whose portal determinism block failed while its rubric score and stump were fine. Closes the judges' fork in the record so the literal reading is the golden, without moving the main call, the stump, the ladder or any graded figure, proves the scope with freeze.py, re-judges once, and re-ships.
 argument-hint: taskNN <the portal's determinism finding, pasted or summarised>
+model: opus
 effort: max
 ---
 

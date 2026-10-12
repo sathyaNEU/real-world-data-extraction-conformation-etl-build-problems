@@ -1,6 +1,7 @@
 ---
 description: Build one task end to end (draw, design gated by precut.py, build, leak reader and determinism judge together, ship) in this session's main thread, then start the next open task. Takes a task number, or a domain and an objective. Resumes a build from its pipeline.json.
 argument-hint: taskNN | next | <domain> <objective> [taskNN] | resume taskNN | taskNN from <stage>
+model: opus
 effort: max
 ---
 
