@@ -1,0 +1,65 @@
+{
+ "arr_bal_cad": {
+  "Kingston": "14,300,000",
+  "London": "15,500,000",
+  "Sudbury": "10,100,000",
+  "Thunder Bay": "7,000,000",
+  "Winnipeg": "16,000,000"
+ },
+ "balance_rounding": "100,000",
+ "bar_rolls": "694",
+ "best_centre": "London",
+ "best_rolls": "500",
+ "best_short": "200",
+ "call": "none",
+ "campaign_cycles": [
+  "04",
+  "13"
+ ],
+ "london_dials": "9,600",
+ "london_per_100_dials": "5.2",
+ "new_team_dials": "400",
+ "order": [
+  "London",
+  "Kingston",
+  "Winnipeg",
+  "Sudbury",
+  "Thunder Bay"
+ ],
+ "over_days": "24",
+ "per": "100",
+ "policy_clauses": [
+  "6.3",
+  "6.4",
+  "6.5"
+ ],
+ "ptp_per_100_rpc": {
+  "Kingston": "39.1",
+  "London": "37.6",
+  "Sudbury": "36.4",
+  "Thunder Bay": "41.2",
+  "Winnipeg": "40.3"
+ },
+ "roll_dpd": "90",
+ "rolls": {
+  "Kingston": "200",
+  "London": "500",
+  "Sudbury": "100",
+  "Thunder Bay": "100",
+  "Winnipeg": "200"
+ },
+ "rpc_per_100": {
+  "Kingston": "57.2",
+  "London": "49.3",
+  "Sudbury": "54.6",
+  "Thunder Bay": "50.4",
+  "Winnipeg": "52.8"
+ },
+ "upgrade": {
+  "Kingston": "2025-10-20",
+  "London": "2025-10-20",
+  "Sudbury": "2025-10-20",
+  "Thunder Bay": "2025-10-20",
+  "Winnipeg": "2025-11-17"
+ }
+}

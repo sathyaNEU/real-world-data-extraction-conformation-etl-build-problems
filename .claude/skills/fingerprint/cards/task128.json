@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "none (hold): no centre gets the 2027 early-stage team; London closest at 500 rolls prevented a year (nearest 100), 200 short of CP-14's 694",
+  "answer_source": "task128/generator/figures.json",
   "gap": [
     "population",
     "objective"
@@ -36,8 +36,8 @@
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "dialler_lists_2025-01_2026-09.csv",
-    "rows": 520000,
+    "file": "ES30_DIALLER_LISTS_2025-01_2026-09.csv",
+    "rows": 362358,
     "entity": "one account listed for an early-stage call on one business day, with its position in the centre's list that day",
     "grain": "account x list day",
     "source": "synthetic"
@@ -48,7 +48,7 @@
   "world": {
     "geography": "Canada (Ontario and Manitoba; fictional bank, real cities for its centres)",
     "currency": "CAD",
-    "org_type": "regional bank with a credit card book of about 400,000 accounts and five regional collections centres",
+    "org_type": "Canadian bank with about 1.6 million credit card accounts and five early-stage collections centres",
     "invented_names": [
       "Ferncliffe Trust Bank"
     ],
@@ -64,22 +64,23 @@
     "centre_call_effects_2025_2026.png"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A contact's effect is read only where the day's queue of units outran the team, comparing the units placed before the day's last contacted position with those placed after it on the same list, because units contacted at other times are the ones that respond and would have resolved anyway, units missing from the queue for other reasons could never be contacted, and the queue's order comes from a key unrelated to the outcome; read that way, no candidate clears the funding bar that every pooled or score-adjusted comparison clears.",
-  "driver_concrete": "A collections call's effect on rolls to 90 days past due is measured only on the days a centre's 30-day dialler list outran its team, comparing accounts listed above the day's last attempted call with those below it on the same list, because accounts reached on other days are the customers who pay anyway, accounts off the dialler list (no valid phone, an arrangement already in place) could never be called, and the list is ordered by the card platform's partition key; on that comparison the best centre prevents about 2 rolls per 100 accounts called against the 3.4 the funding rule needs, so no centre gets the team.",
-  "stump": "A competent solver compares accounts the centre's team called with accounts it did not, from the account register's 30-day arrears flag and adjusted for the behaviour score, and funds the centre whose called accounts roll least, at about 4 rolls prevented per 100 (figures fixed at design), because the uncalled include accounts with no valid phone and accounts listed on the big billing cycles' days, when the team never reaches the bottom of the list, both of which roll more for reasons a call does not change.",
+  "question_form": "where",
+  "driver": "A contact's effect is read only where the day's queue outran the team, comparing every unit placed before the day's last contact, the units the system skipped as uncontactable included, with every unit placed after it on the same list, because the system marks a unit uncontactable only when it reaches it and the units left at the end hold their share of uncontactable ones unmarked; the effect is then sized on the contacts a new team could make a day, and read that way no candidate clears the funding bar that every pooled, cleaned or uncapped comparison clears.",
+  "driver_concrete": "A collections call's effect on rolls to 90 days past due is read only on the campaign cycles' collections days, when a centre's 30-day list outran its team, comparing every record above the day's last dial, the records the dialler skipped as undiallable included, with every record below it on the same list, because the dialler marks a record undiallable only when it reaches it, so the records left at shift end hold their share of undiallable accounts unmarked; scaled to a dial and sized on the 400 accounts a day a new team could dial, London's team would prevent about 495 rolls a year against the 694 the policy needs, so no centre gets the team.",
+  "stump": "A competent solver compares the called with the uncalled 30-day entries, adjusted for the behaviour score and pooled over the year, and funds London at about 2,315 rolls prevented a year, because the uncalled are the accounts on hold, the records the dialler skipped as undiallable and the records left at shift end on the campaign cycles' days, which roll more for reasons a call does not change; the cleaner comparison on the over-capacity lists with the skipped records set aside still funds London at about 981, because the records left at shift end hold their share of undiallable accounts unmarked.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the call log, the dialler lists and the delinquency ledger and reads the funding rule right compares attempted with unattempted listed accounts by centre, adjusted for the behaviour score and pooled over the months, and funds a centre at about 4 rolls prevented per 100, because the unattempted accounts come from the large billing cycles' list days and roll more for reasons no score records; only the same-day comparison on over-capacity days measures the effect, and it falls short at every centre.",
+  "analyst_test": "A strong analyst who cleans the lists, the call detail and the delinquency history and reads the policy right finds the capacity overflow and compares, on each over-capacity list, the accounts dialled with the accounts left at shift end, setting the records the dialler skipped as undiallable aside because no team can call them; that funds London at about 981 rolls a year against the 694 the policy needs, because the records left at shift end still hold their share of undiallable accounts, which roll far more, while the dialled side has had them removed.",
   "domain_test": "Collections strategy is judged on incremental cures against a counterfactual, champion-challenger tests and the natural experiments capacity gives, which is collections analytics' own method for funding a team; with another field's nouns there is no delinquency roll, no dialler list and no capacity overflow, and the task stops reading the same.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:capacity-overflow-natural-experiment-for-early-stage-collections-calls",
   "layer1": [
-    "a dialler list export per centre and day with list positions, re-listed accounts and test accounts",
-    "a call log at attempt grain (several attempts per account per day, dispositions in two code sets either side of a 2025 dialler upgrade)",
-    "a capacity log of each team's staffed seats and attempts per day, with a centre that merged two teams mid-2025",
-    "an account register with the nightly ageing job's arrears flag, which counts accounts the protocol keeps off the list",
-    "a monthly delinquency ledger with re-aged accounts, charge-offs and accounts sold to a debt buyer",
-    "the collections protocol and the credit policy's funding rule, filed once each"
+    "five centres' dialler list exports in load order with each record's final result in two code sets either side of a dialler upgrade",
+    "attempt-grain call detail with the QA team's test calls",
+    "the card platform's 30-day entries with hold codes for accounts kept off the lists",
+    "a delinquency history by cycle date with re-aged and charged-off accounts",
+    "a capacity log by centre and day with the dialler version and London's two pods merging",
+    "an arrangement system extract carrying each balance in its account's own currency",
+    "the treasury's daily booking rates, the collections protocol, the credit policy's funding rule and the budget line"
   ],
   "mechanism_source": "design_note",
   "differentiation": {},
@@ -121,5 +122,5 @@
       "driver": "The decisive quantity is how many requests it takes to spend a binding resource whose budget is stated for the whole period, because each request draws only on the capacity of the one interval it is booked into; a plan that values every use correctly but files one request against the period's whole budget reaches one interval's share, so the constrained candidates need one request per interval and the unconstrained candidates give up that many places under the cap."
     }
   ],
-  "notes": "Re-root drawn 2026-10-12, architecture 3. A first architecture-3 draw (a Swedish pet insurer's older-dog renewal increases, composition_mix, shape 10) was withdrawn before registration: guard BLOCK against task125 v2, registered ahead of it in draw order. This draw: Banking, Credit & Financial Risk / collections-recovery (the client task type serving Opportunity Sizing). stump_strategy causal_design: the decisive move is the comparison the design implies (the over-capacity overflow), not a filed rule. Gate signal_vs_noise_or_hold: the call is a hold forced by a computed blocking quantity (the best centre's prevented rolls per 100 called against the funding rule's 3.4). Personas drawn with guard.py names --geo Canada --seed 128."
+  "notes": "Re-root drawn 2026-10-12, architecture 3. A first architecture-3 draw (a Swedish pet insurer's older-dog renewal increases, composition_mix, shape 10) was withdrawn before registration: guard BLOCK against task125 v2, registered ahead of it in draw order. This draw: Banking, Credit & Financial Risk / collections-recovery (the client task type serving Opportunity Sizing). stump_strategy causal_design: the decisive move is the comparison the design implies (the over-capacity overflow), not a filed rule. Gate signal_vs_noise_or_hold: the call is a hold forced by a computed blocking quantity (the best centre's rolls prevented a year, London 495, against the funding rule's 694). Personas drawn with guard.py names --geo Canada --seed 128."
 }

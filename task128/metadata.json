@@ -1,0 +1,159 @@
+{
+  "task": "task128",
+  "title": "Which of a Canadian bank's five early-stage collections centres, if any, gets its one new 2027 team, sized on the rolls to 90 days past due the new team's calls would have prevented on the July 2025 to June 2026 lists",
+  "domain": "Banking, Credit & Financial Risk",
+  "subdomain": "collections and recovery (capacity funding from a natural experiment in the dialler's overflow)",
+  "objective": "Opportunity Sizing & Decision Support",
+  "prompt_shape": "01 (ranked list under a cap): five centres sized against one funding line, none on the same footing",
+  "as_of": "2026-10-09",
+  "deliverables": [
+    "centre_call_effects_2025_2026.csv",
+    "centre_call_effects_2025_2026.png",
+    "sixth_team_decision_2027.docx"
+  ],
+  "distractor_files": [
+    "LS60_DAILY_LIST_SUMMARY_2025-01_2026-09.csv",
+    "Collections_Workforce_Headcount_2025Q1-2026Q3.xlsx"
+  ],
+  "input_gates": {
+    "files": 13,
+    "formats": [
+      "csv",
+      "docx",
+      "parquet",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "CARD_DELINQUENCY_HISTORY_2025-01_2026-10.parquet",
+    "largest_file_rows": 1063574
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task128/generator/build.py (seeded, deterministic) around a fictional bank and its collections operation; no real bank, person or account is depicted.",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-09",
+  "generator": "task128/generator/build.py",
+  "files": [
+    {
+      "path": "2027_Collections_Budget_Request.xlsx",
+      "format": "xlsx",
+      "bytes": 7820,
+      "rows": null,
+      "source": "Constructed: 2027 collections budget request",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "CARD_DELINQUENCY_HISTORY_2025-01_2026-10.parquet",
+      "format": "parquet",
+      "bytes": 10942531,
+      "rows": 1063574,
+      "source": "Constructed: card platform delinquency history by cycle date from each 30-day entry",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "CMI_EXTRACT_REGISTER_20261009.csv",
+      "format": "csv",
+      "bytes": 1709,
+      "rows": 12,
+      "source": "Constructed: Collections MI extract register, 9 October 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "Collections_Extracts_Field_Reference_2026-10.docx",
+      "format": "docx",
+      "bytes": 39603,
+      "rows": null,
+      "source": "Constructed: field reference for the collections extracts",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "Collections_Workforce_Headcount_2025Q1-2026Q3.xlsx",
+      "format": "xlsx",
+      "bytes": 7593,
+      "rows": null,
+      "source": "Constructed: collections workforce headcount by centre and quarter",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "Credit_Policy_CP-14_Collections_Resourcing_2026.docx",
+      "format": "docx",
+      "bytes": 38786,
+      "rows": null,
+      "source": "Constructed: credit policy chapter CP-14, collections resourcing",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ES30_CALL_DETAIL_2025-07_2026-06.parquet",
+      "format": "parquet",
+      "bytes": 4395927,
+      "rows": 272323,
+      "source": "Constructed: dialler call detail, 30-day and QA campaigns, July 2025 to June 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ES30_DIALLER_LISTS_2025-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 16905967,
+      "rows": 362358,
+      "source": "Constructed: dialler list export, five 30-day campaigns, list days January 2025 to September 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ES30_PAYMENT_ARRANGEMENTS_2025-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 2442234,
+      "rows": 28692,
+      "source": "Constructed: arrangement system extract, arrangements set up by the 30-day teams",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ES_WORKFORCE_DIALLER_LOG_2025-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 88632,
+      "rows": 2147,
+      "source": "Constructed: workforce and dialler log by team and working day",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "Early_Stage_Collections_Protocol_Cards_v7.2.pdf",
+      "format": "pdf",
+      "bytes": 43858,
+      "rows": null,
+      "source": "Constructed: early-stage collections protocol, cards, version 7.2",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "LS60_DAILY_LIST_SUMMARY_2025-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 51825,
+      "rows": 1900,
+      "source": "Constructed: 60-day campaign daily list summary by centre",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "TREASURY_BOOKING_RATES_USDCAD_2025-01_2026-10.csv",
+      "format": "csv",
+      "bytes": 11972,
+      "rows": 442,
+      "source": "Constructed: treasury daily USD/CAD booking rates",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
