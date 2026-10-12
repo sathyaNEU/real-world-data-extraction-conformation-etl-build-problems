@@ -10,10 +10,38 @@ def placements_df(O):
     rows = O.placements + O.short
     df = pd.DataFrame(rows)
     df = df.sort_values(["_st", "client_id", "placement_type"], kind="stable").reset_index(drop=True)
-    rng = np.random.default_rng(W.SEED + 1111)
-    ids = 3100000 + np.cumsum(rng.integers(1, 6, len(df)))
-    df.insert(0, "placement_id", ["%07d" % v for v in ids])
+    df.insert(0, "placement_id", ["%07d" % v for v in placement_ids(df, O)])
     return df
+
+
+def placement_ids(df, O):
+    """episode numbers as the case system issues them, from one sequence it shares with every other service it records
+    (care at home, day care, equipment), so a care home episode's number follows the one before by a gap of one or
+    more: the episodes on the old system numbered at the July 2023 migration in start order, later ones in the order
+    they were keyed (a conversion when the funding decision was recorded, the April fee episodes by the uprating run on
+    1 April, anything else on the day it started or a day or two after). The rows keep the extract's order."""
+    rng = np.random.default_rng(W.SEED + 1111)
+    n = len(df)
+    st = df["_st"].to_numpy(float)
+    who = df["_i"].to_numpy(int)
+    perm = (df["placement_type"] == "PERM").to_numpy()
+    first = np.zeros(n, bool)
+    seen = set()
+    for k in range(n):                                  # rows are in start order
+        if perm[k] and who[k] >= 0 and who[k] not in seen:
+            seen.add(who[k])
+            first[k] = True
+    april = np.array([W.fy_start(W.fy(s)) == s for s in st]) & perm & ~first
+    keyed = st + (rng.geometric(0.55, n) - 1)
+    keyed[april] = st[april]
+    conv = first & (df["route"] == "CONV").to_numpy()
+    keyed[conv] = st[conv] + O.ask.lag0[who[conv]]
+    live = keyed >= W.GOLIVE
+    order = np.lexsort((np.arange(n), np.where(live, keyed, st), live))
+    gap = np.where(live[order], rng.geometric(0.30, n), rng.geometric(0.45, n))
+    ids = np.empty(n, np.int64)
+    ids[order] = 3100000 + np.cumsum(gap)
+    return ids
 
 
 PL_COLS = ["placement_id", "client_id", "service_no", "placement_type", "route", "care_type", "admitted", "start_date",
@@ -47,9 +75,21 @@ def assess_df(O):
     df["completed_s"] = [OB.ds(v) for v in df["completed"]]
     df["effective_s"] = [OB.ds(v) for v in df["effective"]]
     df = df.sort_values(["completed", "_ref", "effective"], kind="stable").reset_index(drop=True)
-    rng = np.random.default_rng(W.SEED + 2222)
-    df.insert(0, "assessment_no", ["FA%06d" % v for v in 210000 + np.cumsum(rng.integers(1, 4, len(df)))])
+    df.insert(0, "assessment_no", ["FA%06d" % v for v in assessment_numbers(df)])
     return df
+
+
+def assessment_numbers(df):
+    """assessment numbers as the finance system issues them when an assessment is opened, from one sequence it shares
+    with the charging assessments for care at home, a few days to a few weeks before the assessment is completed. The
+    rows keep the extract's order (by completion)."""
+    rng = np.random.default_rng(W.SEED + 2222)
+    n = len(df)
+    opened = df["completed"].to_numpy(float) - (rng.geometric(0.16, n) - 1)
+    order = np.lexsort((np.arange(n), opened))
+    nums = np.empty(n, np.int64)
+    nums[order] = 210000 + np.cumsum(rng.geometric(0.40, n))
+    return nums
 
 
 def as_str(df, cols):

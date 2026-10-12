@@ -10,8 +10,8 @@
   "shape": "07",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "Budget for 760, 770, 780 and 790 council-funded long-stay care home residents at 30 June, 30 September and 31 December 2027 and 31 March 2028.",
-  "answer_source": "task134/submission.md block 1 (built golden, stage 3, 2026-10-12; generator/figures.json)",
+  "answer": "Budget for 760, 770, 780 and 790 council-funded long-stay care home residents on 30 June, 30 September and 31 December 2027 and 31 March 2028.",
+  "answer_source": "task134/submission.md, 1. Final Recommendation",
   "gap": [
     "time",
     "population"
@@ -135,7 +135,7 @@
       ]
     }
   ],
-  "notes": "Re-root drawn 2026-10-11 after architecture 1 was spent at hardening loop 1 (design note, Hardening loop 1, on paper); architecture 1's identity is in lineage with its fate. Coding: decisive gap time (the transfer history describes past self-funding pools, the forecast bets on a pool whose time-since-admission mix the window never saw), pattern none with G14 decisive (does the pooled transfer rate apply to this pool), Gate G method_or_model_selection (the transfer forecasting method). The pattern-E codings collided with spent signatures (task117, task37, task44, task97; task31, task56, task76) and were not used. Forum committee_or_panel is the integration joint board. Paper design 2026-10-11 (precut exit 0): the call is the four 2027-28 quarter-end counts; the ask is the average assessed contribution and net weekly cost by the home's locality and care type on 31 December 2026 with a chart on it, so the chart deliverable is care_home_costs_by_locality.png and not a chart of the call; the nursing split of the call was dropped (a care-type-change fork on a forecast). Built 2026-10-12 (stage 3, world seed 13494): golden 759.07, 770.52, 780.08 and 788.96 against the default's 742.6, 742.0, 741.1 and 740.3; the ask's cost clause brought back to the ask sheet's words (the average weekly cost) at the build.",
+  "notes": "Re-root drawn 2026-10-11 after architecture 1 was spent at hardening loop 1 (design note, Hardening loop 1, on paper); architecture 1's identity is in lineage with its fate. Coding: decisive gap time (the transfer history describes past self-funding pools, the forecast bets on a pool whose time-since-admission mix the window never saw), pattern none with G14 decisive (does the pooled transfer rate apply to this pool), Gate G method_or_model_selection (the transfer forecasting method). The pattern-E codings collided with spent signatures (task117, task37, task44, task97; task31, task56, task76) and were not used. Forum committee_or_panel is the integration joint board. Paper design 2026-10-11 (precut exit 0): the call is the four 2027-28 quarter-end counts; the ask is the average assessed contribution and net weekly cost by the home's locality and care type on 31 December 2026 with a chart on it, so the chart deliverable is care_home_costs_by_locality.png and not a chart of the call; the nursing split of the call was dropped (a care-type-change fork on a forecast). Built 2026-10-12 (stage 3, world seed 13494): golden 759.07, 770.52, 780.08 and 788.96 against the default's 742.6, 742.0, 741.1 and 740.3; the ask's cost clause brought back to the ask sheet's words (the average weekly cost) at the build. Stage 4 2026-10-12: the leak reader clean on the main call, the judge DETERMINISTIC and APPROVE; one realism pass (placement and assessment numbers reissued, one NIL label, the definitions' version table and the extract notes' row counts removed), no graded figure moved.",
   "client_domain": "healthcare-delivery-health-economics",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:self-funder-conversion-by-time-since-admission",

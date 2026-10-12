@@ -118,7 +118,7 @@ def build(out):
     DOC.charging_policy_pdf(p("policy"))
     DOC.draft_offer_pdf(p("offer"))
     DOC.rates_xlsx(p("rates"))
-    DOC.extract_notes(p("notes"), dict(pl=len(T["pl"]), li=len(T["li"]), fa=len(T["ass"]), cw=len(T["cw"]), dl=len(T["dl"])))
+    DOC.extract_notes(p("notes"))
     write_csv(Q.homecare(np.random.default_rng(W.SEED + 1313)), p("homecare"))
     write_csv(Q.grades(T["reg"], np.random.default_rng(W.SEED + 1414)), p("grades"))
     for k in FILES:

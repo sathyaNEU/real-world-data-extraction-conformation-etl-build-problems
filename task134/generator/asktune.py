@@ -352,10 +352,13 @@ def run(S, O, df, seed, iters=80000, verbose=False):
     CENTRE_W[0] = 10.0
     centre_pass(F, persons, levers, applied)
     cur = search(F, persons, levers, applied, rng, steps, iters // 3, verbose)
-    # write back: assessment amounts and the episode fees
+    # write back: assessment amounts, each outcome as its amount reads (a nil review moved off nil is an assessed one),
+    # and the episode fees
     for r, (i, P) in persons.items():
         for x in P.rows:
-            O.assess[x[4]]["amount"] = round(x[3], 2)
+            a = O.assess[x[4]]
+            a["amount"] = round(x[3], 2)
+            a["outcome"] = "ASSESSED" if a["amount"] > 0 else "NIL"
     for j, (kind, r, lo, hi) in enumerate(levers):
         if kind == "C" and applied[j] != 0:
             i = persons[r][0]

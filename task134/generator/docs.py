@@ -41,10 +41,6 @@ def definitions_docx(path):
         ("h1", "4. Sources"),
         P_("4.1 The figures are taken from the case management system and the finance system as extracted on 18 January "
            "2027. The extract notes of that date describe each file."),
-        ("table", [["Version", "Date", "Change"],
-                   ["1.0", "24 November 2026", "First issue for the budget working group"],
-                   ["1.1", "9 December 2026", "2.4 extended to residents placed outside Strathallan"],
-                   ["1.2", "12 January 2027", "1.2 added; 3.2 supplements"]], [1300, 2200, 5500], 18),
     ]
     props = dict(title="Care home budget 2027-28: definitions", creator=PEOPLE["analyst"], modified_by=PEOPLE["cfo"],
                  created=dt.datetime(2026, 11, 24, 10, 41), modified=dt.datetime(2027, 1, 12, 16, 8), revision=11,
@@ -202,18 +198,18 @@ def register_xlsx(df, path):
                           dt.datetime(2026, 12, 21, 15, 47), seed=3102)
 
 
-def extract_notes(path, n):
+def extract_notes(path):
     t = """STRATHALLAN HEALTH AND SOCIAL CARE PARTNERSHIP
 Performance and Information: care home extracts for the 2027-28 budget
 Run: Monday 18 January 2027. Records to 31 December 2026.
 Contact: %(analyst)s, Planning and Performance
 
 Files
-  care_home_placements_2021-2026.csv     case management system, %(pl)s rows
-  fpnc_payment_lines_2021-2026.csv        finance system (care payments), %(li)s rows
-  charging_assessments_2021-2026.csv      finance system (financial assessment), %(fa)s rows
-  client_id_crosswalk_2023.csv            case management system, %(cw)s rows
-  nrs_death_linkage_2027-01-15.tsv        NRS deaths matched to client records (tab-separated), %(dl)s rows
+  care_home_placements_2021-2026.csv     case management system
+  fpnc_payment_lines_2021-2026.csv        finance system (care payments)
+  charging_assessments_2021-2026.csv      finance system (financial assessment)
+  client_id_crosswalk_2023.csv            case management system
+  nrs_death_linkage_2027-01-15.tsv        NRS deaths matched to client records (tab-separated)
 
 The cut
   Each extract holds what the system recorded by the run date for events up to 31 December 2026. Admissions,
@@ -285,6 +281,6 @@ Other files supplied with this run
   nchc_draft_offer_2027-28.pdf            briefing note on the draft 2027-28 contract rates (Contracts and Commissioning)
   care_at_home_hours_2024-2026.csv        care at home hours by locality (Performance and Information)
   care_inspectorate_grades_2026.csv       latest inspection grades for Strathallan's care homes
-""" % dict(analyst=PEOPLE["analyst"], **{k: format(v, ",") for k, v in n.items()})
+""" % dict(analyst=PEOPLE["analyst"])
     with open(path, "w", newline="\r\n") as f:
         f.write(t)
