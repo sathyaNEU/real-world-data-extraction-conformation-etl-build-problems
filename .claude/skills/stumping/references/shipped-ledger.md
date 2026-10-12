@@ -179,7 +179,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 133 | FAILED_TO_STUMP: backlog sathya8571 | BANK credit loss | FC | time | none | condition the curve on survival to date | - | - | AUD 13,160,000 | r1: one stumped, one at 100 | sathya8571 |
 | 134 (v2) | SHIPPED, delivered 10-12, pending review | HDE utilisation | FC | time population | none | inflow hazard peaks after a year | - | - | 760 to 790 residents | none reported | sathya8571 |
 | 135 | FAILED_TO_STUMP: backlog sathya8571 | PES sediment load | FC | objective time | none | back-transformed median is not the mean | - | - | - | none reported | sathya8571 |
-| 180 | FAILED_TO_STUMP: backlog oviya13ya | ECON revenue protection | AD | - | - | seed AD03: night-register bypass hides in totals | - | - | which district | none reported | oviya13ya |
+| 180 (v4) | drawing 10-12 | PES induced seismicity monitoring | AD | population time | none | a town network loses small daytime earthquakes to noise | - | - | Q (town plant) | none reported | oviya13ya |
 | 181 (v4) | SHIPPED, delivered 10-12, pending review | HFE air traffic control safety | AD | population time | D | losses follow vertical crossings, not flight hours | - | - | Tarvik | none reported | oviya13ya |
 | 182 | FAILED_TO_STUMP: backlog oviya13ya | PES groundwater | AD | objective | none | each bore's own lagged driver response | - | - | 4 owners, 5 bores | none reported | oviya13ya |
 | 183 | SHIPPED, delivered 10-12, pending review | ENR distribution reliability | AD | time population | none | repeat failures concentrate in parts already failed twice | - | - | Quarry Hill 21 | none reported | oviya13ya |
@@ -269,6 +269,9 @@ them as history. Round-by-round detail is in each build's design note and card l
 | 130 (v1, v2) | failed on the portal 10-10, 10-11 | - | FC | - | - | designation; duty-date queue |
 | 133 (v1) | retired 10-11: one portal model at 100 | BANK | FC | time | none | survival to date, soft asks |
 | 134 (v1) | retired 10-11: default was the golden | CJ | FC | population time | none | Kaplan-Meier, deaths as non-returners |
+| 180 (v1) | spent 10-11: solved in-house | ENR | AD | population | none | screen grain, metering system against supply number |
+| 180 (v2) | spent 10-11: judge SEND_BACK, Gate C | ENR | AD | objective | none | main-tank acetylene attributed to a leaking compartment |
+| 180 (v3) | spent 10-11: solved in-house, then rule application once filed | PHA | AD | population time | none | channelling against a self-controlled comparison |
 | 181 (v1) | retired 10-11: solved in-house | BANK | AD | population | none | skimmed terminals behind a common point |
 | 181 (v2) | failed portal determinism 10-11: PR-07 4.2 fork, landed once filed | EPH | AD | time population | none | nowcast each area on its own delay |
 | 181 (v3) | failed at design 10-11: no filed back-test closes it | CJ | AD | population time | E, A | near-repeat runs against background |

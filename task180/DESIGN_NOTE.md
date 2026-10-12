@@ -1,379 +1,101 @@
-# task180 design note (architecture 3)
+# task180 design note (architecture 4)
 
-Seed AD03 (the revenue-protection crew), objective Anomaly Detection & Diagnostics. Architecture 1 (revenue protection,
-the screen grain) was spent at in-house round 1. Architecture 2 (a lines company's transformer inspection slate, main-tank
-acetylene attributed to its source) was spent at judge pass 2 (SEND_BACK, Gate C); its note is `DESIGN_NOTE_arch2.md`
-and its reports and rounds carry the `_arch2` suffix (architecture 1's carry `_arch1`). This is the slot's third architecture; a
-SEND_BACK or a third failed hardening loop spends it, and the number is then re-rooted (the author's rule: no
-retiring). The seed's idea that carries over is the one
-the whole lane shares: the loudest signal is not the cause.
+Seed AD03, objective Anomaly Detection & Diagnostics, re-rooted a fourth time on the author's rule (no retiring).
+Architecture 1 (revenue protection, the screen grain) was spent at in-house round 1, architecture 2 (a transformer
+inspection slate, main-tank acetylene attributed to its source) at judge pass 2, architecture 3 (pharmacovigilance
+signal refinement, channelling against a self-controlled comparison) at hardening loop 1 under the literal-determinism
+rule; their records are the lines in `## Tried and rejected`, and their files are gone from the folder. Carried
+forward from all three: the decisive separation sits far above the noise of every lens a reviewer can bring, every
+graded figure is stated with its window and method, and nothing in the pack files the comparison that decides.
 
-Carried from architecture 2's send-back: the decisive separation must sit far above the noise of every lens a reviewer
-can bring; every graded figure is stated with its window and method; no exact ties among graded figures.
+## Draw
 
-## DRAW
+- **Card:** `.claude/skills/fingerprint/cards/task180.json` (v4), registered 2026-10-12. `guard.py check`: WARN
+  repeat.gate_g only (forecasting in the last two builds, task124 and task181), answered in the card's notes: the
+  forecast here is pinned once the 2026 record's detection is modelled, with no change to the generating process. A
+  first card (strategy population_selection, pattern E) was blocked against task124 (ban.strategy and
+  test.same_driver); the move is a property of the recording process, so the honest labels are strategy `other`
+  (detection completeness on a daily noise cycle) and pattern `none`, with the G-codes carrying it.
+- **Pairing:** Physical & Environmental Sciences, task type `environmental-monitoring-exceedance` (AD), objective
+  Anomaly Detection & Diagnostics. The anomaly is a geothermal plant whose induced seismicity will run over the mining
+  authority's traffic-light amber in 2027; the diagnosis is that its quiet 2026 record is an artifact of daytime
+  noise at its town stations, not a quiet reservoir.
+- **Stakeholder and forum:** the state survey's seismological service (org `research_or_statistics_office`), which
+  runs the plants' monitoring networks and reports the traffic-light counts quarterly; its induced-seismicity lead
+  (role `research_desk`) tells the mining authority (forum `regulator_or_inspector`) before the 2027 operating plans
+  are approved which plants the new networks will locate over amber. Forcing event `cutover_or_migration`: from
+  1 January 2027 the monitoring ordinance requires borehole stations at every plant. People (guard.py names, de_DE,
+  seed 180): Gundula Atzler, Eugen Scheel, Amalie Mende, Arndt Ernst.
+- **Shape 07 (grid of cells):** plant by quarter of 2027, each cell an expected count of located earthquakes of ML
+  1.0 or more within 5 km of the injection well and its place against amber (5 plants x 4 quarters = 20 cells), with
+  the call (which plants, which quarters) on top; the asks add their own grids (sized in `## Ask sheet` at design).
+- **Gap and generators:** gap population (the catalogue is not the earthquakes), then time (the 2027 network records
+  what the 2026 one missed). G12 (absence against record of absence: a daytime hour with no small events is a
+  non-answer), G14 (the detection yield conditioned on the hour), G16 (which completeness method the record
+  supports), G13 (the horizon: the network the forecast is counted on). Gate G `forecasting`.
+- **Data-native sentence:** the 2026 networks record an earthquake only when it rises above the ground noise at the
+  stations around the plant, and in town that noise follows the working day, so the town plant's small events reach
+  the catalogue mostly in the night hours while its magnitude-frequency curve still looks complete on the usual test.
+- **World (targets; the generator asserts or replaces each with its built value):** five deep geothermal
+  district-heating doublets in the southern Bavarian Molasse basin, each injecting cooled brine into the Upper Jurassic
+  carbonate at 3 to 4 km. Injection follows heat demand (winter quarters high, summer low) and the filed 2027
+  operating plans repeat each plant's 2026 quarterly volumes. Traffic-light rule (the authority's 2024 scheme): amber
+  when the plant's monitoring network locates more than 120 earthquakes of ML 1.0 or more within 5 km of the
+  injection well in a calendar quarter; red on any located earthquake of ML 2.5 or more within 5 km (none in the
+  record). Monitoring ordinance (2026): from 1 January 2027 at least three borehole stations (150 m or deeper) within
+  5 km of each injection well, the network designed to locate every earthquake of ML 0.6 or more within 5 km.
+  - **Q (the town plant):** surface stations in a school basement, the waterworks and the fire station; true rate of
+    ML 1.0 or more about 175 in a winter quarter and 75 in a summer one; working-day noise hides most events below
+    ML 1.8 (half detected near ML 1.45 by day, everything above ML 0.7 by night), so the catalogue holds about 60 per
+    cent of them (about 105 in a winter quarter) and the maximum-curvature test reads it complete near ML 0.7.
+  - **P (rural, the busiest catalogue):** quiet stations, complete above ML 0.7 at every hour; about 92 in a winter
+    quarter.
+  - **R (rural):** a station added nearer the well in July 2025; its first-half-2025 catalogue misses about a quarter
+    of its small events, so year-on-year growth projects it over amber in the first quarter of 2027 (about 130) while
+    its true rate stays about 95.
+  - **S and T (rural, small):** 25 to 45 a quarter, each with a quarry within 5 km whose daytime blasts the reviewed
+    catalogue types as explosions.
 
-```
-Card filed with guard.py register before the ladder was written? yes (WARN: overuse.org_family government_agency,
-  repeat.gate_g method_or_model_selection against task134; both answered under WARNS)
-Shape: 18 hypotheses versus evidence (three signals, each a hypothesis the registries confirm or refute)
-Gate G mechanism: method_or_model_selection (which comparison the registry data entitle: the medicine's users against
-  other people, or each user against their own other time)
-Gap: population (decisive: who the users are compared with), time (the month after the start)
-Pattern: none (own); generator G17 (confounding: the association collapses once the person is conditioned on)
-Domain: pharmacology-pharmacoepidemiology-safety / safety-signal-detection   Objective: anomaly-detection
-Pairing repeated from a recent build? no (pharmacology x anomaly detection never built)
-Stakeholder role: head of the medicines agency's pharmacovigilance unit (compliance_or_audit)
-Context artifact: monitoring_export (the quarter's signal screen and its spontaneous-report line listing)
-Calibration form: none
-Decision type: pick_one_of_n   Answer unit: named_option   Opening move: evidence-first
-Stump strategy: causal_design   Decisive rule filed? no (SOP-PV-14 files the case definitions, the new-user rule and the
-  30-day window; it says nothing about what the month after the start is compared with)
-Official decoy filed? no   Validated decoy? no   stump_class: analytical
-Forum: committee_or_panel (the agency's medicines safety committee opens the formal assessment; filed as
-  regulator_or_inspector until the stage 5 heart check, see DUPLICATE CHECK)
-Forcing event: vote_or_meeting (the committee meets on Thursday 22 October 2026)
-Org family: government_agency (the national medicines agency)
-Layer 2: estimand_identification, own:self-controlled-signal-refinement
-People (guard.py names, da_DK, seed 180): Helge Jørgensen (head of the pharmacovigilance unit, the requester), Janni Nielsen (registry data manager who wrote the extract notes), Frida Clausen (signal
-  assessor, owner of SOP-PV-14), Kåre Holst (committee secretary), Iben Pedersen
-  (pharmacoepidemiologist), Esben Olesen (medical assessor)
-```
+## Default path
 
-**Data-native sentence.** A new medicine's users are the patients doctors chose to start on it, and a new medicine is
-channelled by its claims and its contraindications: the new orexin-receptor sleep medicine, sold as gentler for older
-people, goes to frail patients who are already falling, and the new uricosuric, which is avoided in kidney disease,
-goes to gout patients whose kidneys are healthy; the registries hold every dispensing and every hospital contact of the
-same people for years, so each new user can be compared with their own other time.
+1. Take the survey's reviewed catalogue, 1 January 2025 to 30 September 2026, event type earthquake, ML 1.0 or more,
+   within 5 km of each plant's injection well (well coordinates from the plant register).
+2. Count each plant's events in each calendar quarter, local time.
+3. Carry each quarter's count into the same quarter of 2027, the operating plans repeating 2026's volumes (for the
+   fourth quarter, 2025's).
+4. Compare each cell with amber's 120.
 
-**Layer 1 (realistic mess and the systems that produce it).** National registry extracts as a medicines agency receives
-them through the national health data service: the patient registry's contacts (emergency, inpatient and outpatient) with
-ICD-10 diagnoses in the registry's own form (a D prefix, no dot: DN179), an action diagnosis and secondary diagnoses per
-contact, and transfers between departments recorded as separate contacts of one admission; the registry's 2019 change
-from courses to contacts, so the extract carries two record structures; the prescription registry's dispensings coded by
-ATC with package number, packages and defined daily doses per package, with one new product's ATC code reassigned in 2024
-from a provisional code; pseudonymised personal numbers across the extracts, with deaths and emigrations in the civil
-registration extract ending observation; the spontaneous reports line listing with suspect and concomitant medicines,
-follow-up versions of one case and MedDRA preferred terms; the agency's standard matched comparator extract (non-users
-matched on birth year, sex and the user's start date).
+Ends on: no plant over amber in any quarter of 2027 (Q's winter quarters at about 105, P's first quarter at about 92).
+Golden: Q over amber in the first and fourth quarters of 2027 (about 175 and 165), no other plant in any quarter.
 
-**Layer 2 (the analytical shortcut).** Comparing the people who started a medicine with other people. A strong analyst
-compares each medicine's new users with matched non-users and then, as modern pharmacoepidemiology prefers, with new
-users of the established alternative (zopiclone, allopurinol, orlistat), adjusted for every recorded comorbidity; both
-designs name the sleep medicine's falls signal, because the new sleep medicine is channelled to frail patients already
-falling and the uricosuric to patients with healthy kidneys, and frailty and kidney reserve are what no registry
-variable records. An expert sees an acute effect of an intermittent exposure in a channelled population and uses the
-self-controlled comparison, each patient's first 30 days on the medicine against the same patient's later time, which
-cancels everything fixed about who is prescribed it: the falls signal disappears and the kidney injury signal stands.
+## Stump sentence
 
-**Similarity claim.** No build on file uses a self-controlled comparison. task68's matched panel removes entrants from a
-movement (composition); task83 conditions a randomised holdout's effect on each unit's prior trend; task130 v3 forecasts a
-group chosen on an extreme value (regression to the mean). Here the decisive step is the comparison design under
-channelling. Nearest driver on file 0.07 (task41).
+A competent solver counts each plant's earthquakes of ML 1.0 or more within 5 km of its injection well in the reviewed
+catalogue quarter by quarter, carries the counts into 2027 on the repeated operating plans and files that no plant
+goes over amber (Q's winter quarters at about 105, P's first quarter at about 92); the step that lands it there is
+reading the 2026 catalogue as complete at ML 1.0 when the town stations around Q lose most daytime events below ML
+1.8, so Q's true rate, recovered from its night hours or from its magnitudes above 1.8, is about 175 a winter quarter,
+which the borehole stations will locate from January.
 
-## THREE RULES (client, 2026-10-10)
+## Three rules
 
-- **Rule 1, the domain is used.** What decides the call is the self-controlled design pharmacoepidemiology uses to test
-  an acute adverse reaction in registry data, under channelling of a new medicine. Swap test: with another field's nouns
-  in there is no new-user cohort, no channelling by indication and contraindication, no acute risk window after an
-  exposure start on the same person; the task does not survive the swap.
-- **Rule 2, two layers.** Layer 1 above (registry structures, codes, the 2019 change, ATC reassignment, linkage,
-  censoring, report versions). Layer 2: the comparison design under channelling.
-- **Rule 3, the decisive step is analytical.** Class `analytical`. Analyst test: a strong analyst who links the
-  registries correctly, restricts to new users and compares the 30-day admission rate after the start with matched
-  non-users and with new users of the established alternative, adjusted for every recorded comorbidity, confirms the sleep
-  medicine's falls signal; only the within-patient comparison of the first 30 days with the same patient's later time
-  confirms the uricosuric's kidney injury signal. Rule application (the case definitions, the new-user rule, the window)
-  and data semantics (the D prefix, the two record structures, the ATC reassignment) sit on lower rungs and in the asks.
-
-## GATE G
-
-- **Litmus.** Nothing reported is overturned: every report, dispensing and contact is correct, and no one in the pack
-  claims any signal is real. The committee's question is open; the difficulty is which comparison answers it.
-- **Primary mechanism:** method_or_model_selection (the comparison design), with statistical rigour (confounding)
-  supporting.
-- `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`
-- **Deletion test.** Delete the spontaneous reports and the extract notes: the cohort and active-comparator designs still
-  name the sleep medicine and the self-controlled design still names the uricosuric.
-- **Clean-data and instrument test.** No file is incomplete or stale. A perfect instrument (every fall and every kidney
-  injury in the population recorded, every dose taken known) leaves the channelling exactly where it is: the people who
-  start the sleep medicine still fall more before and after starting it. Nothing is repaired.
-- **Lens swap.** Not one population under two lenses: the answer's quantity is a within-person rate ratio built from the
-  timing of each case's admissions against their own start date (a group-and-order construction across the prescription
-  and patient registries); the naive quantity is a between-person ratio.
-
-## STUMP SENTENCE
-
-A competent solver links the prescription and patient registries, takes each medicine's new users, compares their
-admissions for the signalled event in the 30 days after starting with matched non-users and then with new users of the
-established alternative, adjusts for every recorded comorbidity and names the sleep medicine's falls signal, the largest
-ratio on both designs; the step that lands it there is comparing people with other people, when the sleep medicine is
-channelled to patients already falling and the uricosuric to patients with healthy kidneys, and only the self-controlled
-comparison of each patient's first 30 days with the same patient's later time confirms the uricosuric's kidney injury
-signal instead.
-
-## ENTITY AND UNIT OF VALUE
-
-One signal (a medicine and an event). The committee opens one formal assessment this meeting; its value is an adverse
-reaction confirmed (a label change, a direct healthcare professional communication) or a false alarm not chased.
-
-## THE WORLD (build plan; every figure below is a target the generator asserts or replaces with its shipped value)
-
-Medicines (fictional products, real ATC groups):
-- Sleep medicine: tasorexant (Somnevo), a dual orexin-receptor antagonist, ATC N05CJ05, launched in Denmark 2022.
-  Signal: falls. Comparator for the active-comparator design: zopiclone (N05CF01).
-- Uricosuric: corinurad (Uralexa), a URAT1 inhibitor for gout, provisional ATC M04AX02 until 31 December 2023, then
-  M04AB06. Signal: acute kidney injury. Comparator: allopurinol (M04AA01).
-- Weight-loss medicine: velaglutide (Gravera), a GLP-1 receptor agonist, ATC A10BJ09. Signal: acute pancreatitis.
-  Comparator: orlistat (A08AB01).
-
-Channelling (latent, never a column):
-- Tasorexant starters carry a latent frailty that raises fall admissions about fourfold against age- and sex-matched
-  people; zopiclone starters carry about half that excess; prior fall admissions and recorded comorbidities are noisy
-  indicators of it, so adjusting for them moves the ratios only partly.
-- Corinurad starters carry a latent kidney reserve that halves their acute kidney injury rate against allopurinol starters
-  (allopurinol is the gout medicine used in kidney disease); recorded chronic kidney disease codes capture only part of it.
-- Velaglutide starters carry moderate obesity-related pancreatitis risk; no true effect.
-
-True effects (the only causal effects in the world): corinurad raises acute kidney injury about 2.5-fold in days 1 to 30
-after a new user's first dispensing, independently of NSAID co-use (the excess holds among starters with no NSAID
-dispensed in the window, asserted). Tasorexant and velaglutide have no effect on their events. A prior acute kidney
-injury lowers the chance of starting corinurad (contraindication), and a fall admission raises the chance of starting a
-sleep medicine slightly (insomnia after discharge): both bias a full-observation self-controlled analysis in the same
-direction as the answer (the kidney ratio up, the falls ratio down), and the exposure-anchored design (all observation
-after the start) is immune; asserted.
-
-## LADDER (shipped; each rung asserted by name in `generator/checks.py`)
-
-| Rung | Construction | First | Shipped margin (thinnest cell) | Killed by |
-|---|---|---|---|---|
-| 0 | Spontaneous reports per signal in the quarter (the screen: latest version of each case, medicine suspected) | tasorexant falls, 34 cases | 1.62 over velaglutide 21 (corinurad 13) | reports are not incidence; the screen raises signals, it does not confirm them |
-| 1 | New users against matched non-users, 30-day admission rate ratio: crude; Charlson groups; Charlson groups and prior admission for the event | tasorexant falls (3.76, 3.49, 3.13 in the thinnest cells) | 2.56, 2.37, 2.13 | channelling: the users were admitted for the event at their own rates before starting |
-| 1b | Observed in the 30 days after the start against expected from the age- and sex-specific population rates | tasorexant falls (3.51) | 2.29 | as rung 1 |
-| 2 | New-user active comparator (zopiclone, allopurinol, orlistat starters): crude, adjusted, propensity-weighted (IPTW and ATT) | tasorexant falls (2.25, 1.86, 1.81, 1.91) | 1.80, 1.38, 1.33, 1.38; corinurad 1.40 or less in every cell | the new sleep medicine is channelled to the frailest; the uricosuric to the healthiest kidneys |
-| 3 (answer) | Self-controlled: each new user's days 1 to 30 after the first dispensing against the same person's days 61 to 180, conditional Poisson, each start its own stratum, Wald interval | **corinurad acute kidney injury, 2.52 (95% CI 1.92 to 3.31)** | tasorexant 1.01 (0.84 to 1.22), velaglutide 0.98 (0.51 to 1.85) | |
-
-Evidence the pack carries for the judge (asserted): in the year before the start tasorexant starters' fall admission
-rate is 3.95 times matched non-users' and 2.32 times zopiclone starters'; corinurad starters' kidney injury rate is 0.46
-times allopurinol starters'. In the month before the start falls run at 1.65 times the rate of days -395 to -31 for
-tasorexant starters (211 events), and kidney injury at 0.41 for corinurad starters (12 events): the event-dependent
-starts the design note planned, which bias a full-observation comparison (corinurad 2.573 with days -30 to 0 set
-aside, 2.606 without; tasorexant 1.034 and 1.020) and leave the exposure-anchored one untouched (the golden cell reads
-no time before the start, asserted by deleting every earlier event). Among corinurad starters with no NSAID dispensed in
-days 0 to 30 (72 per cent) the ratio is 2.35 (1.71 to 3.23); NSAIDs are dispensed in days 0 to 30 to 28.3 per cent
-against 6.1 per cent in the month before (flare cover). Corinurad: 58,988 new-user starts, 93 admissions in days 1 to
-30 and 132 in days 61 to 180.
-## GRID (shipped, asserted cell by cell)
-
-- **Self-controlled, pinned conventions (deaths and emigrations end observation, transfers merged): 567 cells, 189
-  per signal** (3 populations: all starts, starts from 2022, starts from 2023; risk windows days 1 to 30, 0 to 30 and
-  1 to 28; control windows days 61 to 180, 31 to 180, 61 to 365, all time after day 30, and the full-observation design
-  with days -30 to 0 set aside; no adjustment, five-year age bands, and age bands with calendar half-years in the
-  full-observation design; conditional Poisson and Mantel-Haenszel). Corinurad 2.308 to 2.624 in every cell, every cell
-  within 0.3 of the golden 2.52 and every lower limit 1.6 or more; tasorexant 0.960 to 1.083 and velaglutide 0.619 to
-  0.996, every interval spanning 1. Misses 0.
-- **The two convention variants: 1,134 cells.** Deaths and emigrations not ending observation: corinurad 2.333 to
-  2.670, tasorexant 1.029 to 1.132, velaglutide 0.619 to 0.996. Transfers not merged: corinurad 2.195 to 2.567,
-  tasorexant 1.010 to 1.138, velaglutide 0.621 to 0.821. Every cell keeps corinurad first with no rival within 25 per
-  cent (closure asserted cell by cell).
-- **Naive cells: 48, every one tasorexant falls** (matched non-users crude and two adjustment sets, observed against
-  expected, active comparator crude, adjusted, IPTW and ATT, each over observation from 2022 or 2023 and with deaths
-  ending observation or not); thinnest margin 1.33 (active comparator IPTW).
-- **Mess neutrality of the main call (asserted):** every ask stop below keeps corinurad first with no rival within 25
-  per cent; contacts linked within 1, 4, 12, 24 or 48 hours give the same admissions for every event; no dispensing gap
-  of 336 to 394 days and no immigration within ten days of a start's 365-day boundary.
-## CLOSURE (the 22 axes)
-
-1 Population: new users 1 January 2022 to 31 March 2026 (no dispensing of the same substance in the 365 days before;
-resident for those 365 days). 2 Unit: a signal (medicine and event). 3 Window: days 1 to 30 after the first dispensing
-(SOP-PV-14). 4 As-of: registry data to 30 June 2026 (the extract); the committee meets 22 October 2026. 5 Version basis:
-the latest version of each spontaneous report. 6 Divisor: person time. 7 Weighting: none. 8 Window length: 30 days. 9
-Boundary: no rival within 25 per cent of the winner at any rung. 10 Rounding: ratios to two decimals. 11 Tie-break: none
-needed. 12 Maturity: windows that end after 30 June 2026 excluded (starters after 31 March 2026 cannot complete a control
-window). 13 Order: link, new-user rule, case definition, then the design. 14 Row order: irrelevant. 15 Duplicates:
-transfers within one admission are one admission; report versions. 16 Identity: pseudonymised personal number across
-extracts; the substance across its two ATC codes. 17 Netting: none. 18 Units: admissions, person-days. 19 Code semantics:
-the registry's D-prefixed ICD-10; action against secondary diagnoses per the case definitions. 20 Integerisation: none.
-21 Scope: the three signals. 22 Forward window: none.
-
-## ASK SHEET (shipped)
-
-| Ask | Figures | Shipped answer |
-|---|---|---|
-| The signal the committee opens (note) | 1 | corinurad (Uralexa) and acute kidney injury |
-| Its rate ratio for the month after the start, with the 95 per cent interval (note) | 3 | 2.52 (1.92 to 3.31), days 1 to 30 against days 61 to 180; 2.36 to 2.62 over the 63 self-controlled cells on SOP-PV-14 6.1's days 1 to 30 (every control period, adjustment, estimator and population), which the submission carries; the 189-cell grid spans 2.31 to 2.62 |
-| Its admissions in that month among people who started it in 2025 (note) | 1 | 21 |
-| How many of those it caused (note; SOP-PV-14 8.2) | 1 | 13 (12.678); 12 or 13 across the band (12.11 to 13.00), carried in the submission |
-| New users per medicine and calendar year, 2022 to 2025 (`new_users_by_year.csv`) | 12 | tasorexant 1,946, 3,895, 4,546, 4,625; corinurad 11,182, 12,903, 13,712, 13,461; velaglutide 6,153, 18,338, 21,376, 20,070 |
-
-Ask stops (each asserted to move its figures, shipped):
-- New users: the current ATC code only takes corinurad 2022 and 2023 to 0 and 2024 to 22,905. Ignoring the washout
-  (first dispensing ever) takes tasorexant 2025 to 4,422 and corinurad 2025 to 12,765. A first dispensing each year takes
-  corinurad 2025 to 24,178. Counting returned dispensings takes corinurad 2025 to 13,567, and ignoring residence to 13,515.
-- The 2025 admissions: transfers counted separately 26, secondary diagnoses 25, outpatient contacts 24, returned
-  dispensings counted 22.
-- The ratio moves under secondary diagnoses (1.79), outpatient contacts (1.94), the current ATC code only (2.00), the
-  washout ignored (2.42), returned dispensings (2.49), residence ignored (2.51), transfers separately (2.53) and deaths not
-  ending observation (2.53).
-## PINS (shipped)
-
-`SOP-PV-14_signal_refinement.pdf`, revision 3, effective 1 June 2026:
-- 1.1 purpose. 1.2 the committee's question: does starting the medicine raise the risk of the event in the month after
-  the start? A signal is supported when it does.
-- 2.1 responsibilities.
-- 3.1 the registry extract, linked on the pseudonymised personal number. 3.2 spontaneous reports frame the event and are
-  not used to estimate risk.
-- 4.1 annex A's case definitions on the registry's D-prefixed codes. 4.2 contacts linked by transfer make one admission;
-  an event is dated by the start of its admission.
-- 5.1 to 5.4 the new-user rule: 365 days without the substance, resident for those days; every ATC code the substance
-  has carried; returned dispensings do not count; a person can be a new user again after 365 days.
-- 6.1 the month after the start is days 1 to 30.
-- 7.1 observation ends at death, emigration or the last day of data.
-- 8.1 the note's figures. 8.2 ratios to two decimals, and admissions caused as admissions x (ratio - 1) / ratio,
-  rounded to the nearest whole admission. 8.3 the note's deadline.
-- Annex A:
-  - falls: an emergency contact or inpatient admission whose action diagnosis is an injury (DS00 to DT14), with a fall
-    code (DW00 to DW19) among its diagnoses;
-  - acute kidney injury: an inpatient admission with DN17 as action diagnosis;
-  - acute pancreatitis: an inpatient admission with DK85 as action diagnosis.
-
-The SOP names no comparison group and no design.
-
-`registry_extract_notes.md` (Janni Nielsen): field semantics in Danish with an English dictionary, the D prefix, the
-change of record structure on 4 February 2019, the ATC reassignment, the matched comparator extract's matching rule.
-The banned-word sweep (15 terms) over every shipped text file and the prompt is clean.
-## PACK GATES (shipped)
-
-| File | Format | Rows | Role |
-|---|---|---|---|
-| `pv_signal_screen_2026Q3.xlsx` | xlsx | | context artifact: the Q3 screen's disproportionality table and line listing |
-| `SOP-PV-14_signal_refinement.pdf` | pdf | | governing procedure (pins) |
-| `registry_extract_notes.md` | md | | field notes |
-| `prescription_registry_2018-2026.parquet` | parquet | 3,598,588 | dispensings |
-| `patient_registry_contacts_2018-2026.parquet` | parquet | 2,667,469 | hospital contacts (spine) |
-| `patient_registry_diagnoses_2018-2026.parquet` | parquet | 3,725,191 | diagnoses per contact |
-| `civil_registration_extract.csv` | csv | 583,700 | birth year, sex, death, emigration, immigration |
-| `matched_comparators.csv` | csv | 446,700 | the data service's matched non-users |
-| `atc_ddd_index_2026.csv` | csv | 12 | substances, codes with validity dates, DDDs |
-| `population_and_admissions_2022-2025.csv` | csv | 128 | population and national admissions by age and sex |
-| `psur_summary_tasorexant_2026.pdf` | pdf | | distractor (named in `metadata.json`) |
-| `committee_minutes_2026-07-09.md` | md | | distractor (named in `metadata.json`) |
-
-12 files, 5 formats (csv, md, parquet, pdf, xlsx), 130.1 MB; four files over 25,000 rows. Two distractors, asserted unused:
-the golden recomputes unchanged with each removed. Goldens: `golden/signal_refinement_note.docx` (one page and a
-little, to the committee from Iben Pedersen, approved by Helge Jørgensen) and `golden/new_users_by_year.csv`.
-
-## BUILD RECORD
-
-- `generator/build.py` runs everything:
-  - the pack: `world.py`, `sim.py` (people, latent channelling, dispensings, events), `hospital.py` (contacts,
-    transfers, diagnoses, the 2019 structure change), `records.py`, `docs.py`, `postprocess.py`;
-  - the goldens: `deliver.py` over `golden.py`;
-  - then `metadata.py`, `checks.py` (4,219 assertions), `verify.py` (OK on its own code path: the call corinurad at 2.52 (1.92 to 3.31), 2025 admissions 21,
-    caused 13, tasorexant 1.01 and velaglutide 0.98, NSAID-free 2.35, the between-person rungs (matched 3.77, active
-    comparator 2.29, observed against expected 3.53 for tasorexant), and the new-user table and the note agree);
-  - then a second full build into a scratch folder inside the task (removed after) and the sha256 comparison
-    (12 target files, 2 golden files and metadata.json byte-identical, combined sha256 b3ac114e0fabd58d).
-- Containers: workbooks and the note repacked with in-fiction owners and saved stamps and fixed entry stamps. PDFs are
-  issued on their in-fiction dates with the library banner blanked at equal length.
-- Personas in the pack, the golden and the prompt (`guard.py surface` scan): Esben Olesen, Frida Clausen, Helge
-  Jørgensen, Iben Pedersen, Janni Nielsen, Kåre Holst, all on the card.
-- Invented names (H21): Somnevo, Uralexa, Gravera, tasorexant, corinurad, velaglutide (no such products or INNs); the
-  agency is "the Agency" and the data service "the national health data service".
-
-## DEVIATIONS FROM THE DESIGN (as built)
-
-- **A salted stream.** The 2022 cohort of corinurad starters draws its after-start events from a salted stream (salt
-  1); no other stream moves.
-  - Why: the unsalted world passed every check except one. Its admissions-caused figure was 12.579, 0.079 from its
-    rounding edge.
-  - How it was chosen: a screen of ten salts against the checks' thresholds. This salt is the only one that held every
-    graded figure off its edges (ratio 2.5235, limits 1.9222 and 3.3130, caused 12.678) with every margin.
-- **The two convention variants are held to keep the winner, not to the 2.2 floor.** These are deaths and emigrations
-  not ending observation, and transfers not merged.
-  - The floor applies to the pinned cells only. The variants hold corinurad at 2.0 or more, rivals at 1.25 or less,
-    closure at 1.25.
-  - This matches the GRID line "every cell keeps its winner". Transfers not merged reach 2.195 at their lowest.
-- **A last stay-separation pass.** `hospital.separate_stays` settles any clash left after its six rounds against the
-  latest end of every earlier event stay of the person.
-  - One person's kidney injury stay and pancreatitis stay sat 41 hours apart, so 48-hour linking changed an admission.
-  - Now every linking window from 1 to 48 hours gives the same admissions, asserted.
-- **Acute kidney injury counts on the action diagnosis only** (annex A), not "action or secondary" as the plan had it.
-  Counting secondary diagnoses is an ask stop (2025 admissions 21 to 25, ratio 1.79).
-- **The population file** carries national admissions beside the population (`population_and_admissions_2022-2025.csv`),
-  which rung 1b's observed-against-expected comparison uses.
-
-## LEAK CHECK (stage 4, mechanical half)
-
-`python3 .claude/skills/leak-check/leak.py task180 --asof 2026-10-12 --quiet`: **REVIEW, no LEAK** (12 files, 19
-golden figures). Each REVIEW line answered:
-- `SOP-PV-14_signal_refinement.pdf` carries 6 of 8 words of the committed call. Harmless: the SOP names the formal
-  assessment the committee opens (1.1, 8.1) and defines all three events in annex A (falls, acute kidney injury, acute
-  pancreatitis); it never pairs an event with a medicine as supported and names no design.
-- `SOP-PV-14_signal_refinement.pdf` has 3 stump-paragraph terms (agency, carried, extract). Harmless: the
-  Agency's own name, and "carried" and "extract" in the SOP's description of the data service's extract; the SOP
-  states the committee's question and never names a design, a reference period or an estimator.
-- `registry_extract_notes.md` has 4 stump-paragraph terms (register, agency, matched, extract). Harmless: "matched"
-  is the data service's matched comparator extract (a file the notes must describe), and "register", "agency" and
-  "extract" are the organisation's nouns; the notes describe fields and never name a comparison design.
-- Container metadata: INFO only (no writer signature).
-
-Re-run after the reader's fixes (rebuild 92e0abb): the same lines, nothing new.
-
-**Solver's-eye read (pass 1, Sonnet; the answers are in `leak_check_report.md`).**
-- **Q1 and Q4: none.** No sentence names the decisive step, and nothing reads as the answer.
-- **Q3: `atc_ddd_index_2026.csv`.** It narrated the corinurad code change ("Erstatter M04AX02"). The list now keeps
-  its codes and validity dates without remarks; the notes already present it as the delivered code list for `atc`.
-- **Q2: the screen's PRR ranked corinurad/AKI first.** It was 17.74, against 10.37 and 6.35. It now leads with
-  tasorexant/Fall (13.85, corinurad/AKI 11.18 at 24 cases, velaglutide 6.35), as the report counts already did, and
-  no screen count equals a golden figure.
-- **Both fixes are data-only,** so there is no second read.
-- **Realism notes, deferred to stage 6b:**
-  - weekday-flat dispensings, with holidays;
-  - a 15:59 start-time spike in the LPR3 contacts;
-  - round cohort counts;
-  - flat immigration dates;
-  - the PSUR's exposure against the registry's;
-  - the extract delivered before the screen ran;
-  - the screen's 11 pairs and its case-number blocks;
-  - fictional ATC codes on real assignments (M04AX02).
-- **Watch item:** the reader planned the within-person comparison unprompted. The STOPPING RULE applies if the solver
-  round does the same.
-## DUPLICATE CHECK (stage 5)
-
-**Heart (`guard.py heart task180`, 2026-10-11): BLOCK on two axes, both against task135.** task135 is another author's
-build. Its card reached main at 10:46, after this card was registered on this branch at 10:14. Same-day draws sort by
-task number, so task135 counts as a predecessor here, and neither card was on main when the other was checked.
-- `ban.forum` (regulator_or_inspector). The deciding forum is the agency's own medicines safety committee, so the card
-  now files `committee_or_panel`, which is the more accurate label and clears the block.
-- `ban.pattern` (decisive G-code G17).
-  - The only other honest label for the decisive step, G16 (the comparison design), is banned by task134, drawn the
-    same day.
-  - This is the slot's third and last architecture.
-  - The card was re-registered with `--force` on the author's explicit instruction (AskUserQuestion, "Register anyway
-    (Recommended)"), with the reason in its notes and a differentiation line against task135.
-  - task135's G17 is a rating curve's retransformation bias in a sediment forecast; here it is confounding by
-    indication that only a within-person comparison removes.
-  - Domain, objective, decision type, shape, gap and driver all differ, and the heart's nearest driver on file is 0.04.
-
-WARNs, answered:
-- `overuse.org_family` government_agency: signal management belongs to the medicines agency (see WARNS).
-- `repeat.gate_g` method_or_model_selection against task134: task134's method choice is a survival estimator for
-  competing exits on a forecast; here it is the comparison design under channelling.
-
-**Clone pre-flight:** see `clone_check_report.md` (architecture 3, pass 1).
-
-## WARNS (guard.py, answered)
-
-- `overuse.org_family government_agency`: signal management belongs to the medicines agency; a university unit could
-  run the analysis but could not open a committee assessment.
-- `repeat.gate_g method_or_model_selection` against task134: task134's method choice is a survival estimator for
-  competing exits on a forecast; here it is the comparison design under channelling on a signal.
-
-## STOPPING RULE
-
-Two rounds in which the solver uses a self-controlled comparison unprompted file this architecture as at-ceiling (it
-is then re-rooted); a miss that lands anywhere other than rungs 0 to 2 is read for a fork before any hardening.
+- **Domain test:** the decisive analysis is the seismologist's own: the completeness of an earthquake catalogue by
+  place and hour, and the Gutenberg-Richter rate it supports above the counting magnitude; with another field's nouns
+  there is no magnitude-frequency law, no detection threshold set by ambient ground noise and nothing to recover from
+  the quiet hours.
+- **Analyst test:** a strong analyst who reads the counting rule and the reviewed catalogue correctly counts each
+  plant's 2026 events per quarter, confirms completeness with the maximum-curvature test (about ML 0.7 at every
+  plant), carries the counts into 2027 and files that no plant goes over amber; wrong, because Q's completeness changes
+  with the hour of the day.
+- **Layer 1:** origin times in UTC against a rule counted in local calendar quarters across the daylight-saving
+  changes; a preliminary catalogue (the one the quarterly reports were counted on) superseded by the reviewed one,
+  with relocations, magnitude revisions and blasts retyped at review; the federal agency's catalogue duplicating the
+  larger events under its own ids and moment magnitudes; quarry blasts in the working day near S and T; station
+  outages and a sensor swap that changes a station code; operators' injection reports with corrected resubmissions.
+  Each is something these systems produce, and none decides the call.
+- **Layer 2:** the shortcut is to take the located events as the earthquakes; the expert tests the catalogue's
+  completeness by hour as well as by magnitude before using it as a rate, and recovers the true rate where the network
+  is blind part of the day.
 
 ## Tried and rejected
 
@@ -598,3 +320,26 @@ is then re-rooted); a miss that lands anywhere other than rungs 0 to 2 is read f
     task181 found.
   - **State.** The WIP generator at a4261fe stays as committed (not green: caused 5.539 on its rounding edge). No pack
     is cut and nothing goes to a builder. Retiring the number is the author's decision.
+
+- **Architecture 3 re-rooted (2026-10-12).** On the author's rule (no retiring) the number takes a fourth architecture;
+  the pharmacovigilance files (generator, pack, goldens, write-up) are deleted, its rounds stay in `solver_rounds/`.
+- **Draws weighed for architecture 4 and not taken (2026-10-12).**
+  - Measles susceptible accumulation against the herd threshold: once the estimand is literal, the count of children
+    without immunity is mechanical from the registry, and a record of past importations that forces a threshold is a
+    search bench.
+  - Two-source capture-recapture of surveillance records: an estimand saying "recorded or not" sends the solver to the
+    textbook estimator, and without it the recorded count is the literal reading.
+  - A first testing sweep finding the prevalent stock: the count found follows the time since a population was last
+    looked at, the reset family task132 holds.
+  - Repeat-tester incidence against new diagnoses: the population's incidence is not literal, and the repeat-tester
+    rate is a proxy whose choice is the reading.
+  - Crime displacement or ambulance diversion under a moved deployment: the displacement shares need a model the
+    record fixes only once, a fork at the figures.
+  - A correlation break in batch process data: an enumerable set of monitoring statistics behind closed batch
+    outcomes is an answer key.
+  - A pull-forward before a dated policy change: any solver anticipates the deficit after a filed deadline.
+  - Site-specific magnitude-frequency slopes under a lowered counting magnitude: estimating each site's own b-value is
+    standard practice and lands.
+  - Lead surveillance stratified by housing age: reweighting tested children to all children is the stratify reflex.
+  - A case-fatality ratio read before deaths mature: the reporting-delay family of task181 v2.
+  - A VAT carousel traced through buffer traders: the swap test fails, any layered money flow reads the same.

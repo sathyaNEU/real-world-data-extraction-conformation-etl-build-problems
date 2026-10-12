@@ -1,22 +1,47 @@
 {
   "task": "task180",
-  "domain": "pharmacology-pharmacoepidemiology-safety",
+  "owner": "oviya13ya",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences",
   "objective": "anomaly-detection",
   "stage": 2,
-  "stage_name": "open on the author's decision (2026-10-11, no retiring): architecture 3's hardening loop 1 found on paper that the exposure-anchored rung fails the literal-determinism rule; picked up again when a build slot frees",
-  "updated": "2026-10-11",
-  "stump": "A competent solver links the prescription and patient registries, takes each medicine's new users, compares their admissions for the signalled event in the 30 days after starting with matched non-users and then with new users of the established alternative (zopiclone, allopurinol, orlistat), adjusts for every recorded comorbidity and names the sleep medicine's falls signal, the largest ratio on both designs; the step that lands it there is comparing people with other people, when the sleep medicine is channelled to patients already falling and the uricosuric to patients with healthy kidneys, and only the self-controlled comparison of each patient's first 30 days with the same patient's later time confirms the uricosuric's kidney injury signal instead.",
-  "architecture": 3,
-  "loops": 1,
+  "stage_name": "design",
+  "updated": "2026-10-12",
+  "stump": "A competent solver counts each plant's earthquakes of ML 1.0 or more within 5 km of its injection well in the reviewed catalogue quarter by quarter, carries the counts into 2027 on the repeated operating plans and files that no plant goes over amber (Q's winter quarters at about 105, P's first quarter at about 92); the step that lands it there is reading the 2026 catalogue as complete at ML 1.0 when the town stations around Q lose most daytime events below ML 1.8, so Q's true rate, recovered from its night hours or from its magnitudes above 1.8, is about 175 a winter quarter, which the borehole stations will locate from January.",
+  "architecture": 4,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
   "leak": {
-    "leak_py": "REVIEW, no LEAK, --asof 2026-10-12; re-run on the rebuild at 92e0abb: the same 3 lines, each answered in the design note",
-    "reader": "pass 1 (Sonnet, 2026-10-11): Q1 none, Q4 none; Q3 atc_ddd_index_2026.csv remarks and Q2 the screen's PRR order fixed data-only (no second read); realism tells deferred to 6b"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "BLOCK on ban.pattern (G17 against task135), overridden with --force on the author's instruction (card re-registered at 83eaddc)",
-    "nearest": "task135, by the G17 label only; the clone check finds no shared driver (log back-transform against a within-person design)",
-    "clone_check": "pass 1 CLEAN (0bb0d0e): no Exact, Same seed, Dataset, Template or Shape echo; Idiom notes: one pack outline across task180 to task182, 'extract' in file names"
+    "heart": "",
+    "nearest": "task229 0.05 (driver; differentiated on the card)"
   },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [
+    {
+      "date": "2026-10-11",
+      "portal": "architecture 1 spent at in-house round 1; architecture 2 spent at judge pass 2 (SEND_BACK); architecture 3 spent at hardening loop 1 under the literal-determinism rule",
+      "repair": "design",
+      "commit": ""
+    }
+  ],
+  "resume": "stage 2: write the readability screen, semantic fork table, ladder, closure table, literal reader, oracles and ask sheet, then prompt.txt, until precut.py exits 0",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
   "solver_rounds": [
     {
       "round": 1,
@@ -88,20 +113,6 @@
       "stopping_rule_count": "1 of 2 rounds with a self-controlled comparison unprompted"
     }
   ],
-  "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
-  },
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "three_rules": {
-    "domain": "pass (the self-controlled design pharmacoepidemiology uses to test an acute adverse reaction under channelling; the swap breaks it)",
-    "layers": "pass",
-    "decisive_step": "analytical",
-    "analyst_test": "A strong analyst who links the registries correctly, restricts to new users and compares the 30-day admission rate after starting each medicine with matched non-users and then with new users of the established alternative, adjusted for every recorded comorbidity, confirms the sleep medicine's falls signal, because the new medicine is channelled to frail patients already falling and the uricosuric to patients with healthy kidneys; only the within-patient comparison of the first 30 days with the same patient's later time confirms the uricosuric's kidney injury signal."
-  },
   "earlier_architectures": {
     "arch1": {
       "spent": "in-house round 1 (screen grain)",
@@ -162,32 +173,5 @@
         "determinism_check_report_arch2_pass2.md"
       ]
     }
-  },
-  "build": {
-    "answer": "corinurad (Uralexa) and acute kidney injury: 2.52 (95% CI 1.92 to 3.31), days 1 to 30 against days 61 to 180; 2.36 to 2.62 across control periods; 21 admissions among 2025 starters, 13 caused (12 or 13 across the band)",
-    "checks": 4241,
-    "verify": "OK (independent code path; the call, the ratio, the asks, the rungs, the new-user table and the note agree)",
-    "byte_identical": "12 target files, 2 golden files and metadata.json (combined sha256 b3ac114e0fabd58d)",
-    "grid": "567 self-controlled cells under the pinned conventions and 1,134 under two variants, misses 0; corinurad 2.308 to 2.624; 48 naive cells all tasorexant, thinnest margin 1.33",
-    "rungs": "rung 0 tasorexant 34 reports (1.62); matched non-users 2.13 to 2.56; observed against expected 2.29; active comparator 1.33 to 1.80; self-controlled corinurad 2.52, tasorexant 1.01, velaglutide 0.98",
-    "salt": "corinurad 2022 after-start stream salt 1 (ten screened)"
-  },
-  "hardening": [
-    {
-      "loop": 1,
-      "architecture": 3,
-      "date": "2026-10-11",
-      "from_round": "6",
-      "brief": "harden so the plain full-observation self-controlled comparison names a wrong signal and only the exposure-anchored design recovers corinurad",
-      "wip": "a4261fe (an earlier loop agent, stopped by an author interrupt, not green): velaglutide not started after a pancreatitis, corinurad effect 1.7, realism fixes, rung 2b assertions; checks stop on caused 5.539 at its rounding edge",
-      "paper_result": "spent",
-      "literal_reader": "other people: tasorexant by 2.48 (matched non-users) and 2.49 (active comparator); the same new users before they started: velaglutide by 6.25 (days -365 to -31), 5.72 (all pre-start time), 4.97 (difference in differences on the matched sets); the same new users' other time: velaglutide by 2.64, 1.38 and 1.53; the same new users' time after the month after the start: corinurad 1.655 (1.221 to 2.242) by 1.62 and 1.59, the only filing that gives the golden and it names the reference window",
-      "best_text": "1.2 compared with the rate the same new users would have had over those days had they not started; estimated by a design whose assumptions the registry data bear out",
-      "separation": "year before the start: tasorexant falls 3.99 x matched non-users and 2.28 x zopiclone starters; corinurad kidney injury 0.45 x allopurinol starters; velaglutide pancreatitis 0.12 x orlistat starters and 0.17 x matched non-users (0.24 per 1,000 person-years before the start, 2.09 after; 18 admissions in the twelve 30-day blocks before the start, 103 in the twelve after)",
-      "rule3": "no: executing the criterion is the textbook self-controlled assumption check (the event must not change the chance of starting), whose data are the loudest pattern in the pack and sit in the block profile round 6 drew unprompted; the counterfactual without a criterion reads literally to the same new users before they started (velaglutide)",
-      "decision": "spent on paper; no rebuild, no round 7; retirement is the author's decision (START_HERE.md untouched)"
-    }
-  ],
-  "status": "FAILED_TO_STUMP",
-  "owner": "oviya13ya"
+  }
 }

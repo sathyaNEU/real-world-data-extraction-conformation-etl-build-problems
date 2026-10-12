@@ -1,17 +1,17 @@
 {
   "task": "task180",
-  "architecture": "v3",
-  "drawn": "2026-10-11",
-  "slot_note": "seed AD03 re-rooted, architecture 3 (the slot's last): v1 (revenue protection, screen grain) spent at in-house round 1; v2 (transformer DGA inspection slate, acetylene source attribution) spent at judge pass 2 (SEND_BACK, Gate C); the objective and number are kept and the draw is new",
-  "domain": "pharmacology-pharmacoepidemiology-safety",
-  "subdomain": "safety-signal-detection",
-  "niche": "a national medicines agency's pharmacovigilance unit refining three signals from the quarter's spontaneous reports in the national prescription and patient registries, to choose the one the medicines safety committee opens a formal assessment on",
+  "architecture": "v4",
+  "drawn": "2026-10-12",
+  "slot_note": "seed AD03 re-rooted, architecture 4 (the author's builds are never retired): v1 (revenue protection, screen grain) spent at in-house round 1; v2 (transformer DGA, acetylene source attribution) spent at judge pass 2; v3 (pharmacovigilance channelling) spent at hardening loop 1 under the literal-determinism rule; the objective and number are kept and the draw is new",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "environmental-monitoring-exceedance",
+  "niche": "a state geological survey's induced-seismicity monitoring for the mining authority's traffic-light system at deep geothermal district-heating plants: which plants the borehole stations required from January 2027 will locate over amber, when the town stations around one plant lose most small daytime earthquakes to traffic noise",
   "objective": "anomaly-detection",
-  "shape": "18",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "the kidney injury signal for the new uricosuric (acute kidney injury admissions in the 30 days after starting it run at about two and a half times the same patients' rate at other times); final wording fixed at ship from the golden",
-  "answer_source": "task180/golden/signal_refinement_note.docx and task180/golden/signal_estimates.csv, written by generator/golden.py from target/ and recomputed by generator/verify.py",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "design target: one plant over amber in the winter quarters of 2027 and no other (final wording at ship from the generator)",
+  "answer_source": "the design note's Ladder; at ship task180/golden/, written by the generator from target/ and recomputed by the verifier",
   "gap": [
     "population",
     "time"
@@ -20,53 +20,72 @@
     "none"
   ],
   "generators": [
-    "G17"
+    "G12",
+    "G14",
+    "G16",
+    "G13"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "causal_design",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stakeholder_role": "head of the agency's pharmacovigilance unit, who brings one signal to the medicines safety committee for a formal assessment",
-  "role_family": "compliance_or_audit",
-  "scoring_unit": "per resolved case",
+  "context_artifact": "published_series",
+  "stakeholder_role": "the survey's induced-seismicity lead, who tells the mining authority before the 2027 operating plans are approved which plants the new network will locate over amber",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
   "spine": {
-    "file": "patient_registry_contacts_2018-2026.parquet",
+    "file": "seismic_catalogue_reviewed_2022-2026.csv",
     "rows": 0,
-    "entity": "one hospital contact (admission, outpatient or emergency visit) of one person in the national patient registry",
-    "grain": "person x hospital contact",
+    "entity": "one seismic event the survey's network located, with its reviewed origin time, location, depth, local magnitude and event type",
+    "grain": "located event",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "government_agency",
+  "forum": "regulator_or_inspector",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "research_or_statistics_office",
   "world": {
-    "geography": "Denmark",
-    "currency": "DKK",
-    "org_type": "national medicines agency, pharmacovigilance unit, with registry access through the national health data service",
+    "geography": "Germany, Bavaria (southern Molasse basin)",
+    "currency": "EUR",
+    "org_type": "state geological survey's seismological service, running the induced-seismicity networks around deep geothermal district-heating plants",
     "invented_names": [],
     "people": [
-      "Helge Jørgensen",
-      "Janni Nielsen",
-      "Frida Clausen",
-      "Kåre Holst",
-      "Iben Pedersen",
-      "Esben Olesen"
+      "Gundula Atzler",
+      "Eugen Scheel",
+      "Amalie Mende",
+      "Arndt Ernst"
     ]
   },
   "deliverables": [
-    "signal_refinement_note.docx",
-    "signal_estimates.csv"
+    "amber_outlook_2027.docx",
+    "tls_counts_2026_reviewed.csv"
   ],
-  "opening_move": "evidence-first",
-  "driver": "A suspected effect of starting a treatment is tested by comparing the people who start it with people who do not, but the people who start it are chosen for a reason that already carries the outcome, a trait no recorded variable captures, so the comparison, adjusted for everything recorded, names the treatment its users were already at risk under; only comparing each person's outcomes in the window just after starting with the same person's other time, which cancels every fixed trait, finds the treatment that changes the outcome.",
-  "driver_concrete": "Three signals came out of the quarter's spontaneous reports: falls with a new orexin-receptor sleep medicine, acute kidney injury with a new uricosuric for gout, and pancreatitis with a new weight-loss medicine. The sleep medicine is marketed as gentler for older people and is channelled to frail patients already falling, and the uricosuric, avoided in kidney disease, is channelled to gout patients with healthy kidneys, so both the matched non-user comparison and the new-user active-comparator design (against zopiclone and allopurinol starters) put the sleep medicine first; within each patient the 30 days after starting carry no more falls than the same patient's later time on it, while the uricosuric's first 30 days carry about two and a half times the same patients' kidney injury rate.",
-  "stump": "A competent solver links the prescription and patient registries, takes each medicine's new users, compares their admissions for the signalled event in the 30 days after starting with matched non-users and then with new users of the established alternative (zopiclone, allopurinol, orlistat), adjusts for every recorded comorbidity and names the sleep medicine's falls signal, the largest ratio on both designs; the step that lands it there is comparing people with other people, when the sleep medicine is channelled to patients already falling and the uricosuric to patients with healthy kidneys, and only the self-controlled comparison of each patient's first 30 days with the same patient's later time confirms the uricosuric's kidney injury signal instead.",
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "An event enters the record only when it rises above the noise at the instruments, and where that noise follows a daily cycle the smallest events are recorded only in the quiet hours, so a unit's record understates its small events by the share of the day they are masked while its size distribution still passes the usual completeness tests; when a forward change removes the masking, the unit's count rises to its true rate, which only its quiet-hour record or its fully recorded sizes reveal.",
+  "driver_concrete": "The survey's surface stations around one plant stand in town, where traffic and industry noise through the working day hides most earthquakes below ML 1.8, so that plant's 2026 catalogue holds its small events mainly from the night hours and still looks complete near ML 0.7 on the maximum-curvature test; the borehole stations required from January 2027 locate every ML 0.6 event at any hour, so its 2027 count rises to its true rate, over amber in the winter quarters, while every rural plant's catalogue is already complete and stays under.",
+  "stump": "A competent solver counts each plant's 2026 earthquakes of ML 1.0 or more within 5 km of its injection well from the reviewed catalogue, quarter by quarter, carries them into 2027 on the unchanged injection plans and finds no plant over amber; the step that lands it there is reading the 2026 catalogue as complete at ML 1.0 when the town stations around one plant lose most daytime events below ML 1.8, so that plant's true rate, recovered from its night hours or from its magnitudes above 1.8, puts it over amber in the winter quarters once the borehole network records it.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the counting rule and the reviewed catalogue correctly counts each plant's 2026 events of ML 1.0 or more within 5 km per quarter, confirms completeness with the maximum-curvature test (about ML 0.7 at every plant), carries the counts into 2027 and files that no plant goes over amber; it is wrong because one plant's completeness changes with the hour of the day.",
+  "domain_test": "The deciding analysis is the seismologist's assessment of catalogue completeness by place and time of day and the Gutenberg-Richter rate it supports; with another field's nouns there is no magnitude-frequency law, no detection threshold set by ambient ground noise and nothing to recover from the quiet hours.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:diurnal-completeness-of-an-induced-seismicity-catalogue",
+  "layer1": [
+    "origin times in UTC against a counting rule in local calendar quarters across the daylight-saving changes",
+    "a preliminary catalogue (the one the quarterly reports were counted on) superseded by the reviewed catalogue, with relocations, magnitude revisions and explosions reclassified at review",
+    "the national agency's catalogue duplicating the larger events under its own ids and moment magnitudes",
+    "quarry blasts in the working day near two plants",
+    "station outages and a sensor swap that changes a station code",
+    "operators' injection reports in m3 with corrected resubmissions"
+  ],
   "mechanism_source": "design_note",
   "differentiation": {
-    "task135": "task135 forecasts a creek's sediment load for a forebay design, where G17 is the retransformation bias of a rating curve fitted in logs; task180 refines spontaneous-report drug signals in national registries, where G17 is confounding by indication that only a within-person comparison of each new user's first month with their own later time removes"
+    "task182": "task182 (same lane, same subdomain) reads groundwater drawdown at bores against each bore's own lagged climate response; task180 forecasts induced-earthquake counts once a network change removes diurnal detection masking, a recording process rather than a physical driver",
+    "task228": "task228 estimates sensor error from triple collocation with a shared input; task180's decisive quantity is a detection completeness that varies with the hour of the day, recovered from the quiet hours, with no collocated instruments",
+    "task230": "task230's hit rate falls as targets grow rarer at a fixed detector; task180's detector loses small events on a daily noise cycle at one site, and the forward change is the removal of that masking",
+    "task181": "task181 forecasts losses of separation from crossing pairs of aircraft; task180 forecasts located earthquakes once incomplete daytime detection ends, with no interaction or exposure construction",
+    "task229": "task229's counter captures a smaller share as the arrival rate rises, so a new signal that packs arrivals into its green phase cuts capture below the average-rate curve (a convex capture function evaluated at the wrong rate); task180's network loses small earthquakes on a daily ambient-noise cycle that does not depend on the event rate, its record still passes the standard completeness test, and the forward change removes the masking, so the true rate is recovered from the quiet hours"
   },
   "lineage": [
     {
@@ -78,19 +97,12 @@
       "architecture": "v2 (transformer DGA inspection slate: main-tank acetylene attributed to its source)",
       "fate": "spent at judge pass 2 (2026-10-11): NOT_DETERMINISTIC, SEND_BACK, Gate C competing_defensible_answer; rounds 3 and 5 missed at the decisive step, rounds 2 and 4 landed and were hardened (loops 1 and 2); loop 2's radiator hydrogen sat at the noise floor of the tap-linked increments, so the judge found Leeston T2's hydrogen tracking its tap operations (r 0.81) and a second defensible slate",
       "driver": "A monitored signal that the standard reads as the unit's own fault can be carried in from an attached compartment whose ordinary operation produces it, so ranking units on the signal measured in the main body puts units with a leaking neighbour ahead of units with genuine internal faults; only attributing each unit's signal to its source, by its co-movement with the neighbour's operations and its composition, separates them."
+    },
+    {
+      "architecture": "v3 (pharmacovigilance signal refinement: channelling against a self-controlled comparison)",
+      "fate": "spent 2026-10-11 at hardening loop 1 on paper: round 6 landed (proxy 81.6) with a self-controlled case series over all observed time; filing the comparison for the literal-determinism rule makes the decisive step rule application, and the separation determinism needs is the same symptom that hands the step over",
+      "driver": "A suspected effect of starting a treatment is tested by comparing the people who start it with people who do not, but the people who start it are chosen for a reason that already carries the outcome, a trait no recorded variable captures, so the comparison, adjusted for everything recorded, names the treatment its users were already at risk under; only comparing each person's outcomes in the window just after starting with the same person's other time, which cancels every fixed trait, finds the treatment that changes the outcome."
     }
   ],
-  "notes": "Re-root of task180 (architecture 3, the slot's last). v2 spent at judge pass 2 (SEND_BACK): its hardening put the decisive signal at the noise floor of a second lens; this draw keeps the decisive separation far above the noise of every lens a reviewer can bring (the self-controlled incidence rate ratios asserted on a grid of risk windows, age bands, observation periods and pre-exposure windows). Exposure comes from first dispensings only (a 30-day risk window from the first dispensing of a new user), so no exposure duration or overlapping-fill construction sits in this build. The committee's question (is the medicine causing the event in the month after it is started) is the prompt's; the agency's signal procedure files the case definitions and the new-user rule, never the comparison design. No calibration corpus, no filed decoy: the spontaneous-report line listing is correct and labelled as reports. AUTHOR OVERRIDE 2026-10-11, registered with --force on the author's explicit instruction (AskUserQuestion answer 'Register anyway (Recommended)'): ban.pattern blocks the decisive G-code G17 against task135, another author's build registered on main at 10:46 the same day, after this card (10:14) but sorted before it because same-day draws order by task number, and neither card was on main for the other's guard. The only other honest label for the decisive step, G16 (the comparison design), is banned by task134, also drawn the same day. This is the slot's third and last architecture, so no further re-root is possible. The forum moves to committee_or_panel, which is the more accurate label (the agency's medicines safety committee decides) and clears the forum block against task135. Domain, objective, decision type, shape, gap and the driver all differ from task135; the heart's nearest driver on file is 0.04. Architecture 3's hardening loop 1 found on paper on 2026-10-11 that the exposure-anchored rung fails the literal-determinism rule (the only filed comparison giving the golden names the reference window); the number is open again on the author's decision, with no retiring.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:self-controlled-signal-refinement",
-  "layer1": [
-    "hospital diagnoses in the national patient registry coded ICD-10 with the registry's D prefix, as action and secondary diagnoses on contacts, with transfers between departments as separate contacts of one admission",
-    "the patient registry's 2019 change from courses to contacts, so pre-2019 and post-2019 records have different structures",
-    "prescription registry dispensings coded by ATC with package size and defined daily doses, with ATC codes reassigned for one product",
-    "pseudonymised personal identification numbers across registries, with deaths and emigrations in the civil registration extract ending observation",
-    "spontaneous reports with suspect and concomitant medicines, follow-up versions of one case and MedDRA terms"
-  ],
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who links the registries correctly, restricts to new users and compares the 30-day admission rate after starting each medicine with matched non-users and then with new users of the established alternative, adjusted for every recorded comorbidity, confirms the sleep medicine's falls signal, because the new medicine is channelled to frail patients already falling and the uricosuric to patients with healthy kidneys; only the within-patient comparison of the first 30 days with the same patient's later time confirms the uricosuric's kidney injury signal.",
-  "domain_test": "The decisive analysis is the self-controlled case series pharmacoepidemiology uses to test an acute adverse reaction in registry data, each patient's events in the risk window after starting the medicine against the same patient's other time; swapped into a field without individual exposure start dates, acute risk windows and repeated events on the same person, the design and the question disappear."
+  "notes": "Re-root of task180 to architecture 4, drawn 2026-10-12. Anomaly Detection & Diagnostics: the anomaly is a plant whose seismicity will run over the traffic-light system's amber in 2027; the diagnosis is that its quiet 2026 record is an artifact of daytime noise at its town stations. The counting rule and the 2027 network's design completeness are filed literally; the forecast's method is open and forced by the record (small events at that plant arrive by night at the rate the other plants show around the clock). Stump strategy 'other': the decisive structure is the observation process itself, a detection completeness that changes with the hour of the day at one site (selection into the record by ambient noise), which none of the listed strategies names; the nearest are population_selection (who is in the record) and time_semantics (local hours), neither of which is the move. WARN repeat.gate_g (forecasting in the last two, task124 and task181): answered; the forecast here is pinned once the 2026 record's detection is modelled, with no change to the generating process (task181's new traffic, task124's service-line replacement)."
 }
