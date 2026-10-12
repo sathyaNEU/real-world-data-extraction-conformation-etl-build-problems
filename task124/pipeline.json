@@ -1,18 +1,19 @@
 {
   "task": "task124",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "energy-systems-utilities",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-12",
-  "stump": "A competent solver joins the verification log to the inventory through the migration crosswalk, keeps the lines that had no material record, prices each zone's unknown lines at the share found lead or GRR in each construction era across every verification and files the last zone finished after the deadline; the step that lands it there is treating verifications prompted by evidence of lead as a sample of the lines a systematic programme digs, when only the main segments a water main replacement verified whole show the shares the programme will meet (provisional at the draw; stage 2 re-solves the figures).",
+  "stump": "A competent solver joins the verification log to the inventory through the migration crosswalk, keeps the lines that had no tap card record, prices each zone's unknown lines at the share found lead or GRR in each construction era across every verification (0.763, 0.585 and 0.217) and files the plan as missing the deadline, its last zone finished in 2039; the step that lands it there is treating verifications prompted by evidence of lead as a sample of the lines a systematic programme digs, when on the main segments a water main replacement verified whole the shares are 0.556, 0.316 and 0.083, the plan costs $284.7 million rather than $347.5 million, and the last zone is finished in 2037, inside the deadline.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-12",
+    "checks": "38 checks, 0 FAIL, 0 WARN"
   },
   "three_rules": {
     "domain": "pass (a water utility's estimate of how many unknown-material service lines are lead or GRR, from verifications that sampled lines regardless of their likely material)",
@@ -57,18 +58,18 @@
         }
       ],
       "fate": "spent 2026-10-12 at the wave-1 resume: validated_decoy true on the card (blocked outright by guard.py since 2026-10-11); the default path reached the golden twice in-house (round 1, round 2); loops 1 and 2 stacked rungs above solved decisive steps; precut.py failed 23 of 33 checks on the loop-2 note",
-      "files": "generator, pack, goldens, submission.md, metadata.json and prompt.md removed at the re-root (in history at 64079f2); solver_rounds/ and leak_check_report.md kept as evidence",
+      "files": "generator, pack, goldens, submission.md, metadata.json and prompt.md removed at the re-root (in history at 64079f2); solver_rounds/ kept as evidence; its leak_check_report.md is in history at d8664dd, replaced by architecture 2's leak.py report at stage 3",
       "portal": "never on the portal list (FAILED_TO_STUMP, backlog sathya8571 wave 1)"
     }
   ],
   "reroot": "done 2026-10-12: architecture 2 drawn in Forecasting & Predictive Modeling (energy-systems-utilities, asset-condition-maintenance: Hollins Ford Regional Water District's lead service line replacement schedule)",
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-12, no LEAK (7 lines, each answered in the design note's build record)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN (repeat.gate_g against task501, answered in the draw)",
+    "nearest": "surface 0 promoted, nearest task111 at 0.100; driver task32 v2 at 0.05"
   },
   "judge": {
     "verdict": "",
@@ -76,11 +77,21 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: design to precut.py exit 0 (readability screen, fork table, ladder on the prototype, closure, asks, prompt.txt)",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "build": {
+    "date": "2026-10-12",
+    "checks": "93 assertions, 0 failed (every SF row, the realism sweep R1 to R7, the signpost sweep S1 to S5)",
+    "verify": "green (own parsers; call, default path, 12 zones, 12 payments, 12 agreement counts)",
+    "byte_identical": true,
+    "input_gates": "16 files, 5 formats, 87,410-row spine, 2 distractors (deletion moves nothing)",
+    "figures_check": "exit 0 (76 figures)",
+    "house_fixes": "pass, recorded in the design note's build record",
+    "answer": "last zone RZ-06 Wexley finished 2037 (default path 2039); $284.7 million over 10.50 programme years"
+  }
 }

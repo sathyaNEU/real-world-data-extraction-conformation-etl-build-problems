@@ -1,0 +1,209 @@
+{
+ "call": {
+  "last_zone": "RZ-06",
+  "last_zone_name": "Wexley",
+  "last_finish_year": 2037,
+  "meets_deadline": true,
+  "deadline": "1 November 2037"
+ },
+ "appropriation_million": "27.1",
+ "total_plan_cost_million": "284.7",
+ "programme_years": "10.50",
+ "era_shares_segments_verified_whole": {
+  "Built before 1930": "0.556",
+  "Built 1930 to 1949": "0.316",
+  "Built 1950 to 1988": "0.083"
+ },
+ "segments_verified_whole": 78,
+ "highest_coverage_other_segments": "0.42",
+ "verified_no_tap_card_lines": "4,911",
+ "mobilisation": "185,000",
+ "zones": {
+  "RZ-07": {
+   "priority": 1,
+   "name": "Orchard Ridge",
+   "lead_and_grr_to_replace": "1,670",
+   "plan_cost": "23,100,000",
+   "plan_cost_million": "23.1",
+   "cumulative_cost_million": "23.1",
+   "programme_years_cumulative": "0.85",
+   "finish_year": 2027
+  },
+  "RZ-02": {
+   "priority": 2,
+   "name": "Canal Street",
+   "lead_and_grr_to_replace": "2,140",
+   "plan_cost": "34,800,000",
+   "plan_cost_million": "34.8",
+   "cumulative_cost_million": "57.9",
+   "programme_years_cumulative": "2.14",
+   "finish_year": 2029
+  },
+  "RZ-11": {
+   "priority": 3,
+   "name": "Southgate",
+   "lead_and_grr_to_replace": "1,960",
+   "plan_cost": "29,800,000",
+   "plan_cost_million": "29.8",
+   "cumulative_cost_million": "87.7",
+   "programme_years_cumulative": "3.24",
+   "finish_year": 2030
+  },
+  "RZ-04": {
+   "priority": 4,
+   "name": "North Linden",
+   "lead_and_grr_to_replace": "1,480",
+   "plan_cost": "24,400,000",
+   "plan_cost_million": "24.4",
+   "cumulative_cost_million": "112.1",
+   "programme_years_cumulative": "4.14",
+   "finish_year": 2031
+  },
+  "RZ-09": {
+   "priority": 5,
+   "name": "Burkhart",
+   "lead_and_grr_to_replace": "1,830",
+   "plan_cost": "28,100,000",
+   "plan_cost_million": "28.1",
+   "cumulative_cost_million": "140.2",
+   "programme_years_cumulative": "5.17",
+   "finish_year": 2032
+  },
+  "RZ-01": {
+   "priority": 6,
+   "name": "Foundry Hill",
+   "lead_and_grr_to_replace": "1,970",
+   "plan_cost": "28,600,000",
+   "plan_cost_million": "28.6",
+   "cumulative_cost_million": "168.9",
+   "programme_years_cumulative": "6.23",
+   "finish_year": 2033
+  },
+  "RZ-05": {
+   "priority": 7,
+   "name": "Depot Square",
+   "lead_and_grr_to_replace": "1,750",
+   "plan_cost": "26,800,000",
+   "plan_cost_million": "26.8",
+   "cumulative_cost_million": "195.7",
+   "programme_years_cumulative": "7.22",
+   "finish_year": 2034
+  },
+  "RZ-12": {
+   "priority": 8,
+   "name": "Kittering Village",
+   "lead_and_grr_to_replace": "930",
+   "plan_cost": "15,200,000",
+   "plan_cost_million": "15.2",
+   "cumulative_cost_million": "210.9",
+   "programme_years_cumulative": "7.78",
+   "finish_year": 2034
+  },
+  "RZ-03": {
+   "priority": 9,
+   "name": "Millrace",
+   "lead_and_grr_to_replace": "1,290",
+   "plan_cost": "20,300,000",
+   "plan_cost_million": "20.3",
+   "cumulative_cost_million": "231.1",
+   "programme_years_cumulative": "8.53",
+   "finish_year": 2035
+  },
+  "RZ-08": {
+   "priority": 10,
+   "name": "Elm Park",
+   "lead_and_grr_to_replace": "1,380",
+   "plan_cost": "22,100,000",
+   "plan_cost_million": "22.1",
+   "cumulative_cost_million": "253.3",
+   "programme_years_cumulative": "9.35",
+   "finish_year": 2036
+  },
+  "RZ-10": {
+   "priority": 11,
+   "name": "Lakeview Terrace",
+   "lead_and_grr_to_replace": "770",
+   "plan_cost": "13,000,000",
+   "plan_cost_million": "13.0",
+   "cumulative_cost_million": "266.2",
+   "programme_years_cumulative": "9.82",
+   "finish_year": 2036
+  },
+  "RZ-06": {
+   "priority": 12,
+   "name": "Wexley",
+   "lead_and_grr_to_replace": "1,080",
+   "plan_cost": "18,400,000",
+   "plan_cost_million": "18.4",
+   "cumulative_cost_million": "284.7",
+   "programme_years_cumulative": "10.50",
+   "finish_year": 2037
+  }
+ },
+ "default_path": {
+  "era_shares_every_verification": {
+   "Built before 1930": "0.763",
+   "Built 1930 to 1949": "0.585",
+   "Built 1950 to 1988": "0.217"
+  },
+  "last_finish_year": 2039,
+  "total_plan_cost_million": "347.5"
+ },
+ "payments_2026_per_full_replacement": {
+  "2026-LSL-01": {
+   "contractor": "Brannigan Excavating Inc",
+   "Q1": "13,890",
+   "Q2": "13,494",
+   "Q3": "13,416",
+   "Q4": "13,673"
+  },
+  "2026-LSL-02": {
+   "contractor": "Tri-County Underground",
+   "Q1": "14,509",
+   "Q2": "13,937",
+   "Q3": "13,903",
+   "Q4": "13,568"
+  },
+  "2026-LSL-03": {
+   "contractor": "Kestrel Pipe and Utility",
+   "Q1": "14,488",
+   "Q2": "14,459",
+   "Q3": "15,008",
+   "Q4": "14,784"
+  }
+ },
+ "full_replacements_2026": {
+  "2026-LSL-01": {
+   "Q1": 71,
+   "Q2": 90,
+   "Q3": 162,
+   "Q4": 61
+  },
+  "2026-LSL-02": {
+   "Q1": 41,
+   "Q2": 85,
+   "Q3": 132,
+   "Q4": 53
+  },
+  "2026-LSL-03": {
+   "Q1": 23,
+   "Q2": 20,
+   "Q3": 21,
+   "Q4": 13
+  }
+ },
+ "agreements_signed": {
+  "RZ-07": 975,
+  "RZ-02": 1217,
+  "RZ-11": 1118,
+  "RZ-04": 954,
+  "RZ-09": 1017,
+  "RZ-01": 857,
+  "RZ-05": 889,
+  "RZ-12": 518,
+  "RZ-03": 626,
+  "RZ-08": 663,
+  "RZ-10": 368,
+  "RZ-06": 539
+ }
+}

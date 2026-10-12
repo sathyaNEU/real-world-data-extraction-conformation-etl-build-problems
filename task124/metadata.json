@@ -1,0 +1,185 @@
+{
+  "task": "task124",
+  "title": "When each lead service line replacement zone is finished at the capital plan's annual appropriation",
+  "domain": "Energy Systems & Utilities",
+  "subdomain": "asset condition and maintenance (lead service line inventory and replacement programme at an Ohio regional water district)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "06 (sequenced schedule under capacity): each zone's finish year, lines to replace and cost, with the deadline call and a schedule chart",
+  "as_of": "2027-01-11",
+  "deliverables": [
+    "lslr_2027_programme.xlsx",
+    "lslr_2027_board_paper.pdf"
+  ],
+  "distractor_files": [
+    "lcr_tap_samples_2025_2026.csv",
+    "ami_meter_exchanges_2023_2025.csv"
+  ],
+  "input_gates": {
+    "files": 16,
+    "formats": [
+      "csv",
+      "docx",
+      "md",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "hfrwd_service_line_inventory_20270108.csv",
+    "largest_file_rows": 87410
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task124/generator/build.py (seeded, deterministic) around a fictional water district (Hollins Ford Regional Water District), its fictional city, townships, zones, contractors and people in Ohio; no real utility, person, premise or contractor is depicted. Shaped on the public lead service line inventories Ohio community water systems file.",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-12",
+  "generator": "task124/generator/build.py",
+  "files": [
+    {
+      "path": "HFRWD_LSLR_plan_rev2_2026-10.pdf",
+      "format": "pdf",
+      "bytes": 66089,
+      "rows": null,
+      "source": "Constructed: Lead service line replacement plan, revision 2 (scope, zones and priority order, plan cost, schedule rule)",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "HFRWD_capital_improvement_plan_2027-2037_board_draft.docx",
+      "format": "docx",
+      "bytes": 37581,
+      "rows": null,
+      "source": "Constructed: Capital improvement plan 2027 to 2037, board draft (the lead service line construction appropriation)",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "LSLR_progress_report_2026.pdf",
+      "format": "pdf",
+      "bytes": 63911,
+      "rows": null,
+      "source": "Constructed: LSLR programme office 2026 progress report (counts of work done)",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "access_agreements_2022_2026.csv",
+      "format": "csv",
+      "bytes": 692905,
+      "rows": 10489,
+      "source": "Constructed: Right-of-entry agreement forms on lines open in the plan, 2022 to January 2027",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ami_meter_exchanges_2023_2025.csv",
+      "format": "csv",
+      "bytes": 2044570,
+      "rows": 30916,
+      "source": "Constructed: Automated meter exchanges, April 2023 to December 2025",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "change_orders_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 9983,
+      "rows": null,
+      "source": "Constructed: Engineering change order log, 2026 replacement contracts",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cis_gis_crosswalk_2023.csv",
+      "format": "csv",
+      "bytes": 3229451,
+      "rows": 85850,
+      "source": "Constructed: Customer system premise numbers to GIS service line ids, built at the March 2023 migration",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "contracts_2026.csv",
+      "format": "csv",
+      "bytes": 759,
+      "rows": 4,
+      "source": "Constructed: Purchasing contract register: the 2026 replacement contracts and their vendor records",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_log_2027-01-08.csv",
+      "format": "csv",
+      "bytes": 2194,
+      "rows": 15,
+      "source": "Constructed: Extract log: each file's source system, date, row count and owner",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hfrwd_service_line_inventory_20270108.csv",
+      "format": "csv",
+      "bytes": 8126550,
+      "rows": 87410,
+      "source": "Constructed: GIS export: the district's lead service line inventory, every service line in the fourteen zones, 8 January 2027",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lcr_tap_samples_2025_2026.csv",
+      "format": "csv",
+      "bytes": 25936,
+      "rows": 361,
+      "source": "Constructed: Lead and copper compliance samples at tier 1 sites, 2025 and 2026",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lsl_completions_2026.csv",
+      "format": "csv",
+      "bytes": 142519,
+      "rows": 777,
+      "source": "Constructed: Contract management export: 2026 full replacement completions with pay application amounts",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lsl_extract_field_notes_2027-01.md",
+      "format": "md",
+      "bytes": 5007,
+      "rows": null,
+      "source": "Constructed: Field notes for the extract: field meanings and code routes, file by file",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sl_field_verifications_2021_2026.csv",
+      "format": "csv",
+      "bytes": 388804,
+      "rows": 6671,
+      "source": "Constructed: Work management system: service line material verifications, January 2021 to December 2026 (customer system service orders before the March 2023 cut-over)",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sl_material_result_codes.csv",
+      "format": "csv",
+      "bytes": 1608,
+      "rows": 15,
+      "source": "Constructed: Service line verification result codes on each recording route, with the inventory class each posts",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "unit_cost_schedule_2027.xlsx",
+      "format": "xlsx",
+      "bytes": 7094,
+      "rows": null,
+      "source": "Constructed: 2027 unit cost schedule by zone (engineer's estimate)",
+      "date": "2027-01-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

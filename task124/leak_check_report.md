@@ -1,31 +1,24 @@
 # leak check, task124
 
-**Verdict: REVIEW.** 29 files read, 38 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 16 files read, 55 golden figures and 11 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: replay, decisive, closed, programme, analogs, premise, factor, refrigerated, system, measured, premises, window, dispatch, settled, fourteen, stores, cannot, dispatched, allocation, forecasting, method, population, summers, centres, undispatched
+Stump terms swept: verified, segments, verification, unknown, decisive, pinned, schedule, population, inventory, verifications, architecture, default, district, pattern, asserted, report, running, selection, shares, forecasting, mechanism, segment, family, measured, window
 
-## 3 answer figures in the pack (REVIEW 4)
-- **REVIEW** `summer_2026_risk_report.pdf`: golden figure 251 appears: ...408 417 414 415 425 422 407 425 Southern 257 247 251 260 252 258 260 259 250 260 West 234 222 230 233...
-- **REVIEW** `field_notes.md`: carries 10 of 13 distinctive words of the committed call: 'Split the 400 MW summer block as Coast 120 MW, East 30, Far West 0, North 0, North Central 210, South Central 25, Southe'
-- **REVIEW** `summer_2026_risk_report.pdf`: carries 12 of 13 distinctive words of the committed call: 'Split the 400 MW summer block as Coast 120 MW, East 30, Far West 0, North 0, North Central 210, South Central 25, Southe'
-- **REVIEW** `summer_risk_policy_2027.docx`: carries 13 of 13 distinctive words of the committed call: 'Split the 400 MW summer block as Coast 120 MW, East 30, Far West 0, North 0, North Central 210, South Central 25, Southe'
+## 3 answer figures in the pack (REVIEW 1)
+- **REVIEW** `HFRWD_LSLR_plan_rev2_2026-10.pdf`: carries 9 of 13 distinctive words of the committed call: 'At $27.1 million a year from 2027 every zone in the plan is finished inside the deadline: the last, RZ-06 Wexley, is fin'
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `extract_log.md`: 4 of 25 stump-paragraph terms appear (closed, premise, system, premises); read whether the document names the move
-- **REVIEW** `field_notes.md`: 6 of 25 stump-paragraph terms appear (closed, premise, system, premises, window, settled); read whether the document names the move
-- **REVIEW** `summer_2026_risk_report.pdf`: 5 of 25 stump-paragraph terms appear (replay, closed, system, settled, summers); read whether the document names the move
-- **REVIEW** `summer_risk_policy_2027.docx`: 6 of 25 stump-paragraph terms appear (closed, premise, system, settled, method, summers); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `HFRWD_LSLR_plan_rev2_2026-10.pdf`: 8 of 25 stump-paragraph terms appear (verified, verification, unknown, schedule, inventory, verifications); read whether the document names the move
+- **REVIEW** `LSLR_progress_report_2026.pdf`: 7 of 25 stump-paragraph terms appear (verified, verification, unknown, schedule, inventory, district); read whether the document names the move
+- **REVIEW** `lsl_extract_field_notes_2027-01.md`: 8 of 25 stump-paragraph terms appear (verified, verification, unknown, schedule, inventory, district); read whether the document names the move
 
-## 6 ranking artifacts (REVIEW 1, INFO 1)
-- **REVIEW** `summer_2026_risk_report.pdf`: names 3 of 4 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `summer_risk_policy_2027.docx`: names 3 of 4 answer-set candidates; confirm it does not rank them on the decision question
-
-## 9 dates after the setting (REVIEW 3)
-- **REVIEW** `hedge_positions_20270409.xlsx`: 26 ISO dates after 2027-04-12, e.g. 2027-10-01, 2027-12-31, 2028-01-01, 2028-12-31
-- **REVIEW** `trade_blotter_s27.csv`: 136 ISO dates after 2027-04-12, e.g. 2027-06-01, 2027-09-30, 2027-10-01, 2027-12-31, 2028-01-01
-- **REVIEW** `trading_calendar_2027.csv`: 263 ISO dates after 2027-04-12, e.g. 2027-04-13, 2027-04-14, 2027-04-15, 2027-04-16, 2027-04-17
+## 6 ranking artifacts (REVIEW 3, INFO 1)
+- **REVIEW** `HFRWD_LSLR_plan_rev2_2026-10.pdf`: names 8 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `change_orders_2026.xlsx`: names 3 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `unit_cost_schedule_2027.xlsx`: names 8 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `contracts_2026.csv`: names 3 of 11 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -40,4 +33,6 @@ Stump terms swept: replay, decisive, closed, programme, analogs, premise, factor
 
 ## 8 column names (clean)
 
-## 11 prompt form (clean)
+## 9 dates after the setting (clean)
+
+## 11 prompt gate (clean)

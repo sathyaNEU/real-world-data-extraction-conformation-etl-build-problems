@@ -11,8 +11,8 @@
   "shape": "06",
   "decision_type": "schedule_or_sequence",
   "answer_unit": "date_or_period",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Every zone finished inside the deadline: the last, RZ-06 Wexley, in programme year 2037 at $27.1 million a year from 2027 ($284.7 million of plan cost, 10.50 programme years)",
+  "answer_source": "task124/generator/figures.json (call, zones), recomputed by task124/generator/verify.py from target/",
   "gap": [
     "population"
   ],
@@ -35,8 +35,8 @@
   "role_family": "programme_officer",
   "scoring_unit": "per accepted item",
   "spine": {
-    "file": "hfwa_service_line_inventory_20270226.csv",
-    "rows": 88000,
+    "file": "hfrwd_service_line_inventory_20270108.csv",
+    "rows": 87410,
     "entity": "one service line (the connection from a water main to one premise) in the authority's lead and copper inventory, with its records, its classification and the main segment it taps",
     "grain": "service line",
     "source": "synthetic, shaped on public lead service line inventories filed by Ohio community water systems"
@@ -55,7 +55,21 @@
       "Kittering Township",
       "Brannigan Excavating",
       "Tri-County Underground",
-      "Kestrel Pipe and Utility"
+      "Kestrel Pipe and Utility",
+      "Orchard Ridge",
+      "Canal Street",
+      "Southgate",
+      "North Linden",
+      "Burkhart",
+      "Foundry Hill",
+      "Depot Square",
+      "Kittering Village",
+      "Millrace",
+      "Elm Park",
+      "Lakeview Terrace",
+      "Wexley",
+      "Darrow Meadows",
+      "Kittering North"
     ],
     "people": [
       "Andrew Wells",
@@ -79,14 +93,16 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "biomedical-clinical-research/diagnostic-biomarker-accuracy/1",
   "layer1": [
-    "a field verification log keyed by the customer system's legacy premise number before the March 2023 GIS migration and by the GIS service line id after it, joined through the migration crosswalk",
-    "material result codes that differ by crew and contractor form (PB, LEAD; GALV-RR, GRR; CU, COPPER, PE, NL), resolved through the field code list",
-    "re-verifications of one line (a pothole, then an excavation) dated in two formats either side of the migration",
-    "the county assessor's year built carried onto the inventory, zero or blank on non-residential parcels",
-    "a contractor pay-application export at site-line grain that repeats each change order's total on every covered site's line",
-    "pay applications revised and resubmitted, with the engineer's decisions kept in a separate review log",
-    "property access agreements keyed by the legacy premise number before the migration and carrying the zone named on the form when it was signed",
-    "one owner's agreement signed twice, on paper and on the customer portal"
+    "a field verification log keyed by the customer system's legacy premise number before the March 2023 GIS migration and by the GIS service line id after it, joined through the migration crosswalk with its eight-digit padding",
+    "material result codes that differ by recording route (customer system LEAD, GALV-R; district crews L, GRR; contractor forms PB, FE-R), resolved through the result code list",
+    "re-verifications of one line on separate rows, with dates in two formats either side of the migration",
+    "the county assessor's year built carried onto the inventory, zero on non-residential parcels",
+    "a contract-management completions export that repeats each change order's total on every site it covers",
+    "work orders re-closed after a restoration correction, both closings kept in the export",
+    "completion times exported in UTC against the district's local quarters",
+    "a contractor's vendor number changed by an acquisition mid-year under an unchanged contract number",
+    "property access agreements keyed by the unpadded legacy premise number before the migration and carrying the zone printed on the form when it was signed",
+    "one owner's agreement signed twice, on paper and on the customer portal, and agreements later withdrawn"
   ],
   "mechanism_source": "design_note",
   "differentiation": {},
