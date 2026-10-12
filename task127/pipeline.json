@@ -1,32 +1,63 @@
 {
   "task": "task127",
-  "domain": "nonprofit-grant-making",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "healthcare-delivery-health-economics",
   "objective": "opportunity-sizing-decision",
-  "stage": "retired",
-  "stage_name": "retired",
-  "updated": "2026-10-11",
-  "stump": "A competent solver builds each co-op's qualifying households from the survey's joint counts, converts them at the pilot's install rate for each heating system, groups neighbourhoods onto their feeders and caps each feeder at its hosting slots, confirms that every placeable buyer's meter would be set inside the pilot's three weeks and that each co-op crew's year has room for its meters, and commits 1,480 placed slots with Lakes taking the most (420); the step that lands it there is carrying the pilot's meter-set lag to a programme several times its size, when every rebate waits on the co-op crew setting the heat-pump rate meter, Lakes' and Uplands' crews have only about ten and seven sets a week left after standing work (the ceiling each held for twelve weeks after the July 2025 exchange batches), and the autumn window's orders queue past 31 December, so 1,170 slots can be placed and Riverbend takes the most (340).",
-  "harden_loops": 0,
-  "solver_rounds": [
-    {
-      "label": "round 1, plain",
-      "date": "2026-10-10",
-      "score": 47.3,
-      "landed": false,
-      "cracked": 3,
-      "items": 9
-    }
-  ],
+  "stage": 2,
+  "stage_name": "design (architecture 2)",
+  "updated": "2026-10-12",
+  "stump": "The default path values a discharge-to-assess package at each hospital by its covered pathway-1 patients' delay, or their home-care wait counted from medical optimisation, and fills Ashby Vale Hospital first and to all of its covered patients, where the golden fills Holmford Infirmary and Royal Marchford first and leaves Ashby Vale with few or none; at Ashby Vale most covered patients also wait days for community equipment, a wait that runs alongside the care wait and that a package does not remove.",
+  "architecture": 2,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task119 v2 0.07 (differentiated)"
+  },
   "judge": {
-    "verdict": "SEND_BACK",
-    "disposition": "retired",
+    "verdict": "",
+    "disposition": "",
     "report": ""
   },
-  "approved": "2026-10-10 (no author checkpoint in the flow; heart PASS)",
+  "returned": [],
+  "resume": "stage 2: design note (readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet, prompt) to precut.py exit 0",
+  "approved": null,
   "delivered": null,
   "portal": null,
-  "source_note": "analytical_tasks/04_opportunity_sizing/OS02_heat-pump-slots-feeder-headroom-split.md",
-  "retired_reason": "Determinism judge SEND_BACK (binding_constraint, analytical_non_defect); retired under build-pipeline's retirement rule, not submitted.",
-  "status": "FAILED_TO_STUMP",
-  "owner": "sathay3012"
+  "history": {
+    "architecture_1": {
+      "domain": "nonprofit-grant-making",
+      "objective": "opportunity-sizing-decision",
+      "stage": "retired",
+      "stage_name": "retired",
+      "stump": "A competent solver builds each co-op's qualifying households from the survey's joint counts, converts them at the pilot's install rate for each heating system, groups neighbourhoods onto their feeders and caps each feeder at its hosting slots, confirms that every placeable buyer's meter would be set inside the pilot's three weeks and that each co-op crew's year has room for its meters, and commits 1,480 placed slots with Lakes taking the most (420); the step that lands it there is carrying the pilot's meter-set lag to a programme several times its size, when every rebate waits on the co-op crew setting the heat-pump rate meter, Lakes' and Uplands' crews have only about ten and seven sets a week left after standing work (the ceiling each held for twelve weeks after the July 2025 exchange batches), and the autumn window's orders queue past 31 December, so 1,170 slots can be placed and Riverbend takes the most (340).",
+      "harden_loops": 0,
+      "solver_rounds": [
+        {
+          "label": "round 1, plain",
+          "date": "2026-10-10",
+          "score": 47.3,
+          "landed": false,
+          "cracked": 3,
+          "items": 9
+        }
+      ],
+      "judge": {
+        "verdict": "SEND_BACK",
+        "disposition": "retired",
+        "report": ""
+      },
+      "source_note": "analytical_tasks/04_opportunity_sizing/OS02_heat-pump-slots-feeder-headroom-split.md",
+      "retired_reason": "Determinism judge SEND_BACK (binding_constraint, analytical_non_defect); retired under build-pipeline's retirement rule, not submitted.",
+      "status": "FAILED_TO_STUMP"
+    }
+  }
 }
