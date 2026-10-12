@@ -41,7 +41,7 @@
     "source": "synthetic"
   },
   "forum": "trustees_or_governors",
-  "forcing_event": "purchase_order_or_contract",
+  "forcing_event": "vote_or_meeting",
   "org_family": "hospital_or_health_provider",
   "world": {
     "geography": "United States, Oregon",
@@ -112,7 +112,7 @@
       "stump_strategy": "forecast_method_backtest"
     }
   ],
-  "notes": "Re-rooted as v4 on 2026-10-12 (wave 1, the author's fourth root for a retired number). v4 moves to professional liability pricing: the first-year contribution to a new claims-made trust. stump_strategy maturity_censoring: the claims-made window truncates the report lag, so only early-made claims count, and early claims are the cheap early-resolution settlements. Pattern none, decisive G13 (horizon: the window the decision covers) then G14 (cost conditioned on early reporting). Calibration none: the system's own claims experience is the evidence, no organ. context_artifact register: the risk management claims register extract the stakeholder works from. Shape moved from 02 to other after the DRAWN commit (task125 drew 02 minutes earlier). Built 2026-10-12 on claims seed 3671: default $4,854,000 against the golden $784,000.",
+  "notes": "Re-rooted as v4 on 2026-10-12 (wave 1, the author's fourth root for a retired number). v4 moves to professional liability pricing: the first-year contribution to a new claims-made trust. stump_strategy maturity_censoring: the claims-made window truncates the report lag, so only early-made claims count, and early claims are the cheap early-resolution settlements. Pattern none, decisive G13 (horizon: the window the decision covers) then G14 (cost conditioned on early reporting). Calibration none: the system's own claims experience is the evidence, no organ. context_artifact register: the risk management claims register extract the stakeholder works from. Shape moved from 02 to other after the DRAWN commit (task125 drew 02 minutes earlier). Built 2026-10-12 on claims seed 3671: default $4,854,000 against the golden $784,000. Forcing event moved from purchase_order_or_contract to vote_or_meeting after the PAUSED commit: task127 v2, drawn the same day with a lower number, drew purchase_order_or_contract and so sits among this build's last three; the trustees fix the contribution at their 10 November 2026 meeting (funding policy section 2), which is what forces the call now.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:claims-made-opening-window-cost-by-report-lag",
   "layer1": [
