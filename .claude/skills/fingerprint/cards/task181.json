@@ -1,80 +1,94 @@
 {
   "task": "task181",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-10-11",
-  "slot_note": "seed AD04 re-rooted, architecture 2: v1 (a credit union's counterfeit wave, two skimmed terminals behind a dominant common point) was spent at in-house round 1, where the solver's explain-away and residual re-screen landed the count; the objective and number are kept and the draw is new",
-  "domain": "epidemiology-public-health",
-  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
-  "niche": "a regional public health unit's pertussis surveillance across inland New South Wales local government areas, choosing where its one outbreak response team goes this week from a notification line list whose latest onset days are still filling in, each area at the speed of its own laboratory route",
+  "slot_note": "seed AD04 re-rooted, architecture 3 (the slot's last): v1 (a credit union's counterfeit wave, two skimmed terminals behind a dominant common point) spent at in-house round 1; v2 (pertussis area deployment, the fortnight completed by laboratory route) spent once its estimand was filed literally; the objective and number are kept and the draw is new",
+  "domain": "criminology-justice",
+  "subdomain": "crime-incidence-hotspot-analysis",
+  "niche": "a housing association's community safety team choosing which of its twelve estates its one winter target-hardening grant goes to, from a community safety log in which some autumn rises are a crew's passing run of break-ins along neighbouring doors and one is a lasting rise in an estate's background burglary",
   "objective": "anomaly-detection",
-  "shape": "17",
+  "shape": "07",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Griffith",
-  "answer_source": "task181/golden/response_team_brief.pptx and task181/golden/pertussis_cases_by_lga.csv, written by generator/golden.py from target/ and recomputed by generator/verify.py",
+  "answer": "Heathfold (design target; the golden's wording is fixed at ship from the generator)",
+  "answer_source": "the design note's LADDER; at ship task181/golden/, written by the generator from target/ and recomputed by the verifier",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
-    "none"
+    "E",
+    "A"
   ],
   "generators": [
-    "G12",
-    "G13"
+    "G13",
+    "G16",
+    "G6"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "censored_or_lagged_release",
-  "stump_strategy": "maturity_censoring",
+  "calibration_form": "none",
+  "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stakeholder_role": "the public health unit's director, who sends the outbreak response team each Monday",
-  "role_family": "operations_director",
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the association's head of community safety, who names the estate in the bid for the Police and Crime Commissioner's winter target-hardening grant",
+  "role_family": "programme_officer",
   "scoring_unit": "per episode",
   "spine": {
-    "file": "pertussis_notifications_2019-2026.csv",
-    "rows": 1118,
-    "entity": "one notification of a pertussis case to the public health unit",
-    "grain": "notification (a case can be notified more than once)",
+    "file": "community_safety_log_2021-2026.csv",
+    "rows": 0,
+    "entity": "one incident logged by the association's community safety team (burglary, attempted burglary, criminal damage, anti-social behaviour)",
+    "grain": "logged incident (a break-in logged by the contact centre and again by the housing officer carries one police crime reference)",
     "source": "synthetic"
   },
-  "forum": "operations_desk",
-  "forcing_event": "shift_or_daily_cycle",
-  "org_family": "hospital_or_health_provider",
+  "forum": "funder_or_donor",
+  "forcing_event": "season_or_peak",
+  "org_family": "nonprofit_or_charity",
   "world": {
-    "geography": "Australia, New South Wales (Riverina)",
-    "currency": "AUD",
-    "org_type": "regional public health unit of a local health district",
+    "geography": "United Kingdom, England (West Yorkshire)",
+    "currency": "GBP",
+    "org_type": "housing association (registered provider of social housing) with twelve estates",
     "invented_names": [
-      "Southern Inland Public Health Unit",
-      "Inland Pathology",
-      "Murrumbidgee Courier Run"
+      "Hollinmoor Homes",
+      "Heathfold",
+      "Saltersfield",
+      "Whinhaugh",
+      "Mossbeck",
+      "Gillcroft",
+      "Rookcliffe",
+      "Snape Hollow",
+      "Nightline Property Services"
     ],
     "people": [
-      "Nathan Olson",
-      "Tiffany Peters",
-      "Janice Barker",
-      "Colleen Brown",
-      "Cassandra Dawson"
+      "Hazel Lloyd",
+      "Declan Lee",
+      "Stewart Hargreaves",
+      "Lynn Cox",
+      "Peter Tomlinson",
+      "Graeme Mitchell"
     ]
   },
   "deliverables": [
-    "response_team_brief.pptx",
-    "pertussis_cases_by_lga.csv"
+    "winter_hardening_bid.docx",
+    "estate_doors_windows.png"
   ],
-  "opening_move": "evidence-first",
-  "driver": "When a count is read before its records have finished arriving, the units whose records arrive slowest look quiet exactly while they are surging, so the comparison has to be made on the complete count each unit's own arrival history implies, not on what has arrived, and not on an arrival speed pooled across units.",
-  "driver_concrete": "Each local government area's pertussis cases with specimens collected in the 14 days before the extract are compared with its expected count under the unit's response protocol; Griffith's swabs go by courier to a Sydney laboratory that notifies a median of 12 days after collection (8 per cent within 7 days, 76 per cent within 14), so the specimens notified so far understate its fortnight several times over, while Wagga Wagga's hospital laboratory notifies within a couple of days and its modest rise looks like the largest excess.",
-  "stump": "A competent solver counts the cases notified with specimens collected in the 14 days before the extract in each local government area against the protocol's expected count and sends the team to Wagga Wagga, the largest excess on file (or nowcasts with the unit's pooled reporting delay and still lands there); the step that lands it there is reading the specimens notified so far as the specimens collected, when Griffith's swabs reach the unit through a slow private laboratory route and, at that route's own specimen-to-notification delay, its fortnight is several times what has arrived.",
+  "opening_move": "calendar-first",
+  "driver": "When events arrive both from a steady background and in short self-exciting runs, each run a burst of events close in place and time that ends once it has played out, a unit's recent count overstates its coming count exactly where a run has just passed, so the coming count follows the unit's background rate, which only separating the run events (each within a short distance and interval of an earlier one) from the rest recovers; projecting whole counts by any persistence, seasonal or smoothing rule names a unit whose run is over instead of the unit whose background has risen.",
+  "driver_concrete": "Each estate's break-ins over the 13 weeks to 11 October 2026 are projected into the winter programme's 13 weeks from 26 October: Saltersfield's 19 include a run of 10 by one crew along neighbouring doors, each within days and a street or two of the last, and Whinhaugh's 14 a run of 8, both over by the time the grant starts, while Heathfold's 16 are spread across the estate and the weeks, a rise in its background rate; projecting the whole autumn counts names Whinhaugh or Saltersfield, projecting each estate's background break-ins names Heathfold.",
+  "stump": "A competent solver counts each estate's break-ins in the 13 weeks to 11 October, back-tests persistence, seasonal-ratio, trailing-mean and smoothing projections of those counts over the last eight quarters as the standard's criterion asks, files the best of them and bids for Whinhaugh (Saltersfield on persistence); the step that lands it there is projecting each estate's whole autumn count, when the near-repeat runs (break-ins within days and a street or two of an earlier one, a crew's visit that ends when it moves on) are not what the winter brings and only Heathfold's rise is background, which the projection of each estate's background break-ins finds.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who removes the duplicate laboratory notifications, applies the episode rule and the case definition, maps every case to its area and computes the protocol's expected counts exactly still compares the cases notified so far for the fortnight (or a nowcast built on one pooled delay) with the expected counts and sends the team to Wagga Wagga, because only a nowcast on each laboratory route's own specimen-to-notification delay shows Griffith's fortnight running several times above its expected count.",
-  "domain_test": "What decides the call is an epidemiological nowcast, the eventual count of recent onsets estimated from each reporting route's own delay distribution, which is how outbreak surveillance reads right-truncated case data; with another field's nouns in there is no onset-to-notification delay, no laboratory route and no truncated epidemic curve, so the task does not read the same.",
+  "analyst_test": "A strong analyst who counts each break-in once by its crime reference, maps every home to its estate through the property register, computes each estate's usual winter exactly and back-tests every projection of estate counts that the standard's criterion invites still projects whole autumn counts and bids for Whinhaugh or Saltersfield, because only separating the near-repeat runs from each estate's background break-ins shows that Heathfold's rise is the one the winter will keep.",
+  "domain_test": "What decides the call is crime science's near-repeat analysis of residential burglary (a break-in raises the risk to homes within a street or two for a couple of weeks, so a crew working a street leaves a short run that ends, distinct from an estate's background rate), used to project the winter a target-hardening programme will face; with another field's nouns there is no offender returning to neighbouring doors, no near-repeat window and no target hardening, so the task does not read the same.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task134": "task134 forecasts how many of next year's jail releases are re-booked within three years, so its open periods are release cohorts whose follow-up has not run out (with deportations and deaths competing); task181 nowcasts specimens already collected whose notifications are still in transit, by laboratory route, to pick one outbreak area, and the error it punishes is a pooled or ignored reporting delay, not an immature follow-up window.",
-    "task135": "task135's forecasting is a creek rating curve fitted in logs and applied to daily flow; task181's is a right-truncation nowcast of an epidemic curve from each reporting route's delay history."
+    "task124": "task124 prices newcomers' share of a capped peak from analogs whose measured draw the organisation's own dispatch held down; task181 v3 projects each estate's winter burglary from an autumn count in which near-repeat runs (break-ins within days and a street or two of an earlier one, with no forward yield) are mixed with the estate's background, so the conditioning is on run membership built from the space-time proximity of break-ins, not on an intervention the analogs took part in.",
+    "task228": "task228 v1 set a monitoring rule's false-alarm budget per run when mid-run configuration changes disturbed the nights a run was checked; task181 v3 separates near-repeat burglary runs from an estate's background rate to project the winter, a forward count with no alarm budget and no configuration change.",
+    "task28": "task28 v1 conditioned at-stake volume on a portability property recovered through a credential join; task181 v3 conditions the forward yield of each autumn break-in on whether it belongs to a near-repeat run, a property of its distance and interval to earlier break-ins that no column or join carries.",
+    "task30": "task30 measured a change over only the events the existing procedure leaves unadjusted, found through a catalogue join; task181 v3 adjusts nothing and measures nothing on a subset: it projects the winter from each estate's background break-ins once the runs are separated by proximity in place and time.",
+    "task32": "task32 v1 conditioned each offer's realised delivered cost on the yield of the collection programme behind it; task181 v3's conditioning is the zero forward yield of near-repeat burglary runs against the persistence of an estate's background rate, in a forward projection chosen by a filed back-test.",
+    "task53": "task53 v2 pooled each candidate's eligible volume per account against a scale break a closed offer log draws; task181 v3 has no scale break and no account pooling: the decoy estates' autumn counts are concentrated in near-repeat runs that end, and the answer's rise is background spread across the estate.",
+    "task33": "task33 sent one field team to the syndromic signal whose elevation, carried as a ratio across the expected forward path and stopped at filed interventions, yields most; task181 v3's resolving candidates are near-repeat burglary runs that end by their own dynamics, found only by the space-time proximity of break-ins, with no filed intervention and no ratio carry-forward."
   },
   "lineage": [
     {
@@ -86,17 +100,23 @@
       "architecture": "v1 (a credit union's counterfeit wave traced to two skimmed terminals behind a dominant common point; reissue count)",
       "fate": "spent at in-house solver round 1 (2026-10-11): one solver, proxy 94.5, landed 387 by explaining the co-visited plaza sites away as subsets of the pump's victims and re-screening the residual; any further rung is dismissed by the same subset check or opens a fork",
       "driver": "Victims of two independent sources are pooled, so the dominant source's victims make the places they also passed look like sources and pull the second source down among ordinary places; only attributing victims to the strongest source first and screening the victims it leaves unexplained separates the second source from the co-visited places, and the exposed population is the union of both sources' exposures."
+    },
+    {
+      "architecture": "v2 (a regional public health unit's pertussis line list: which local government area the outbreak response team goes to, the fortnight's count completed by each laboratory route's specimen-to-notification delay)",
+      "fate": "spent 2026-10-11: missed at in-house rounds 2 and 3 only while the estimand was open; the portal's determinism QC called the cases-on-file against eventual-count reading a fork, and once PR-07 4.2 filed the eventual count literally, round 4 landed (96.8) by completing each case on its own laboratory's delay; hardening loop 1 (a dated change in the slow laboratory's process) found that any filed criterion choosing the delay history names the step, so the architecture cannot be both literally deterministic and stumped; re-rooted to architecture 3",
+      "driver": "When a count is read before its records have finished arriving, the units whose records arrive slowest look quiet exactly while they are surging, so the comparison has to be made on the complete count each unit's own arrival history implies, not on what has arrived, and not on an arrival speed pooled across units."
     }
   ],
-  "notes": "Re-root of task181 (architecture 2) under the client's three rules. Anomaly Detection & Diagnostics: an outbreak signal in surveillance data. The protocol files the decision quantity (the excess of cases with specimens collected in the 14 days before the extract day over the expected count) and the baseline; it says nothing about notification delay. AUTHOR OVERRIDE 2026-10-11, registered with --force on the author's explicit instruction (AskUserQuestion answer 'Register anyway (Recommended)'): ban.strategy blocks stump_strategy maturity_censoring against task134, another author's build drawn the same day about five minutes apart, when neither card was on main for the other's guard to read (same-day draws sort by task number, so task181 sits after it). The label is kept honest rather than relabelled: the stump is late arrival, which maturity_censoring names. The block is on that one axis; domain, objective, decision type, shape, gap, pattern and Gate G mechanism all differ, test.same_puzzle and test.same_driver do not fire, and task134 is not among this card's nearest drivers (nearest on file 0.08). The build was solver-tested (rounds 2 and 3 missed at the nowcast) and judged DETERMINISTIC, APPROVE (pass 2) before the override. Darryl Morales (immunisation coordinator in the design) is named in no shipped file and is off people at ship.",
+  "notes": "Re-root of task181 to architecture 3 (the slot's last), drawn 2026-10-11 after architecture 2 was spent under the literal-determinism rule. Anomaly Detection & Diagnostics: the anomaly is each estate's autumn rise in break-ins, and the diagnosis is whether it is a passing near-repeat run or a lasting rise in the estate's background. The filed standard states the estimand literally (break-ins expected in the 13 weeks from 26 October 2026 against the mean of the same calendar dates in the five previous winters) and leaves the projection open behind a back-test criterion (the projection that would have come closest over the eight quarters of its Appendix B, each made from the log at the end of the Sunday two weeks before the quarter began, closeness the total absolute miss over every estate and quarter); the criterion names no method. stump_strategy is forecast_method_backtest rather than decomposition_attribution because what decides is which projection of the forward window the history supports, chosen by the filed back-test; separating run events is the construction inside the winning projection, not an attribution of a reported movement. Pattern A: Saltersfield's and Whinhaugh's runs are resolving, Heathfold's background rise is ongoing. No calibration corpus, no twin case file and no filed decoy: the eight back-test quarters are the log's own history, which the criterion names. Personas drawn with guard.py names (en_GB, seed 181); checked against task180's people on its branch cache (Danish names, no overlap).",
   "layer2_family": "field_method",
-  "layer2_pattern": "epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection/2",
+  "layer2_pattern": "own:near-repeat-runs-against-background-burglary-rate",
   "layer1": [
-    "laboratory notifications of one case from two laboratories, and repeat notifications after a re-test, under the protocol's episode rule",
-    "residential postcodes mapped to local government areas through a postcode concordance whose split postcodes carry population ratios",
-    "onset dates missing on some notifications, imputed from the specimen date under the protocol's stated rule",
-    "confirmed and probable cases under a case definition revised in 2024 (serology-only cases moved to probable)",
-    "a notification extract with notification times in UTC from the state system and onset and specimen dates as local dates",
-    "an antenatal vaccination register keyed by the mother's Medicare number, linked to infant cases through a birth record"
+    "a community safety log where one break-in can be logged twice (contact centre and housing officer) under one police crime reference, with attempted and completed burglary under separate codes",
+    "log times in UTC from the association's CRM against occurred dates in local time across the October clock change",
+    "homes keyed by the association's property reference and UPRN, placed on British National Grid coordinates and mapped to estates in a property register that also holds Right to Buy leaseholders",
+    "flat references reissued to different flats after a 2023 block refurbishment, with the former reference and its change date on the register",
+    "a stock condition survey run in two cycles (2022 and 2025) on different door and window grading scales, each with its own guidance",
+    "a repairs job log with several jobs per break-in, and out-of-hours board-ups invoiced monthly by a contractor under its own job references and addresses, never raised in the repairs log",
+    "contractor invoices dated after the work, net and VAT shown separately, across a financial year that starts on 1 April"
   ]
 }
