@@ -1,39 +1,65 @@
 {
   "task": "task121",
-  "domain": "product-analytics",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences",
   "objective": "root-cause",
-  "stage": "retired",
-  "stage_name": "retired: no admissible hardening rung; RC11 takes the slot",
-  "updated": "2026-10-11",
-  "stump": "A competent solver gives the sprint to the card-authentication upgrade: it drains the address check on its flag cohorts, follows each club-app token to a member number and the member number to the loyalty profile alone, finds only about a sixth of Shop-tab sessions on existing accounts losing about 13 orders a week, books the rest as new-fan dilution as both close-outs do, and is left with the 3-D Secure challenge rise (18) as the largest loss, because it never reads last season's SOCIO member codes redeemed on the accounts, which put 63 per cent of those sessions on existing accounts losing 51 orders a week that only the one-time-code sign-in reaches.",
-  "harden_loops": 2,
-  "solver_rounds": [
-    {
-      "label": "round 1, plain",
-      "date": "2026-10-09",
-      "score": 86.1,
-      "landed": true,
-      "cracked": 6,
-      "items": 11
-    },
-    {
-      "label": "round 2, plain",
-      "date": "2026-10-09",
-      "score": 89.5,
-      "landed": true,
-      "cracked": 10,
-      "items": 11
-    }
-  ],
+  "stage": 2,
+  "stage_name": "design (architecture 3)",
+  "updated": "2026-10-12",
+  "stump": "A competent solver counts the odor events each facility lay upwind of under the district's upwind check and files the Pine Gulch landfill, upwind of the most events, where the golden is Ridgeway Organics' compost facility; the step that lands it there is counting upwind events, when the night drainage puts the landfill upwind of the town on most nights whether or not anyone complains, and dividing by the all-hours wind frequency only moves the pick to the rendering plant.",
+  "architecture": 3,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task180 v4 0.12 (differentiated), task50 v4 0.08"
+  },
   "judge": {
     "verdict": "",
     "disposition": "",
     "report": ""
   },
-  "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
+  "returned": [],
+  "resume": "stage 2: readability screen, semantic fork table, ladder, closure table, literal reader, oracles, ask sheet, prompt.txt; then precut.py",
+  "approved": null,
   "delivered": null,
   "portal": null,
-  "source_note": "analytical_tasks/06_root_cause/RC01_checkout-release-forward-cost-self-healing.md",
-  "status": "FAILED_TO_STUMP",
-  "owner": "sathay3012"
+  "history": {
+    "architecture_1": "v1 the address check's forward weekly cost (self-healing exposure): drafted 2026-10-08, rejected at checkpoint A",
+    "architecture_2": "v2 signed-out club-app customers behind a checkout conversion fall (RC01): built, solved in-house twice (86.1, 89.5), retired 2026-10-10, FAILED_TO_STUMP",
+    "v2_pipeline": {
+      "stage": "retired",
+      "stage_name": "retired: no admissible hardening rung; RC11 takes the slot",
+      "solver_rounds": [
+        {
+          "label": "round 1, plain",
+          "date": "2026-10-09",
+          "score": 86.1,
+          "landed": true,
+          "cracked": 6,
+          "items": 11
+        },
+        {
+          "label": "round 2, plain",
+          "date": "2026-10-09",
+          "score": 89.5,
+          "landed": true,
+          "cracked": 10,
+          "items": 11
+        }
+      ],
+      "harden_loops": 2,
+      "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
+      "source_note": "analytical_tasks/06_root_cause/RC01_checkout-release-forward-cost-self-healing.md",
+      "status": "FAILED_TO_STUMP"
+    }
+  }
 }
