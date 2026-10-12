@@ -1,77 +1,86 @@
 {
   "task": "task128",
-  "architecture": "v1",
-  "drawn": "2026-10-10",
-  "slot_note": "first realisation of analytical_tasks note DS02; the note's decisive rung (drains per window built from the capacity register, the hourly forecast and the window calendar) is kept as the stop rung, and a new decisive rung, what one drain of a colocated host actually takes out when the provider rebuilds the host from the estate's current platform image, sits above it",
-  "domain": "business-operations-analytics",
-  "subdomain": "field-service-maintenance",
-  "niche": "an online travel platform's vulnerability office splitting the patch crews' monthly change tickets across two colocated and four cloud production estates, sized by the exploitable host exposures the tickets take out in November when the colocation provider can drain only so many hosts a window and rebuilds every host it drains",
+  "architecture": "v3 (architecture 3, re-root at wave 1: which collections centre's overflow earns a sixth team, or none)",
+  "drawn": "2026-10-12",
+  "slot_note": "re-root of the task128 slot in oviya1301's wave 1; the world comes from analytical_tasks/05_decision_support/DS04 (an arrears-outreach team and the days its list outruns it), moved from a utility to a bank's card collections; the seed's withheld rule and decoy are not used, and the pitfall is re-found from the data",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "collections-recovery",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a Canadian regional bank's early-stage credit card collections: five regional collections centres call accounts on the first business day after they reach 30 days past due, and the bank decides which centre gets a sixth team for 2027, or none",
   "objective": "opportunity-sizing-decision",
   "shape": "01",
-  "decision_type": "allocation_to_total",
-  "answer_unit": "count",
-  "answer": "Give payments 4 tickets, checkout 5, search 72, media 75, internal tools 77 and the data pipeline 67, which takes out 13,300 exploitable host exposures in November.",
-  "answer_source": "task128/submission.md, block 1",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "objective",
-    "rule"
+    "population",
+    "objective"
   ],
   "pattern": [
-    "none",
-    "C",
-    "B"
+    "none"
   ],
   "generators": [
-    "G1",
-    "G2",
+    "G5",
     "G8",
     "G16"
   ],
-  "gate_g": "binding_constraint",
-  "calibration_form": "closed_decision_corpus",
-  "stump_strategy": "binding_constraint",
-  "decisive_rule_filed": true,
+  "gate_g": "signal_vs_noise_or_hold",
+  "calibration_form": "none",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stakeholder_role": "remediation planner in the vulnerability management office of an online travel platform, who splits the patch crews' 300 monthly change tickets across six production estates",
-  "role_family": "capacity_planner",
-  "scoring_unit": "per resolved case",
+  "context_artifact": "operations_log",
+  "stakeholder_role": "director of collections operations at a Canadian regional bank, who decides which of the five regional collections centres gets a sixth early-stage team in 2027, or none",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
   "spine": {
-    "file": "vuln_findings_2026-10-23.csv",
-    "rows": 215867,
-    "entity": "one open vulnerability finding, one CVE on one installed package on one host",
-    "grain": "host x package x CVE",
-    "source": "synthetic (fictional scanner export over CVE-format identifiers; exploit-prediction scores shaped on FIRST's public EPSS feed, constructed case under CC BY 4.0 as the pack's provenance record states)"
+    "file": "dialler_lists_2025-01_2026-09.csv",
+    "rows": 520000,
+    "entity": "one account listed for an early-stage call on one business day, with its position in the centre's list that day",
+    "grain": "account x list day",
+    "source": "synthetic"
   },
-  "forum": "operations_desk",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "hospitality_or_tourism",
+  "forum": "executive_team",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "financial_institution",
   "world": {
-    "geography": "Spain (Malaga)",
-    "currency": "EUR",
-    "org_type": "online travel booking platform with a colocated payments platform and four cloud estates",
+    "geography": "Canada (Ontario and Manitoba; fictional bank, real cities for its centres)",
+    "currency": "CAD",
+    "org_type": "regional bank with a credit card book of about 400,000 accounts and five regional collections centres",
     "invented_names": [
-      "Sendalia Viajes",
-      "Centro de Datos Guadalhorce"
+      "Ferncliffe Trust Bank"
     ],
     "people": [
-      "Reina Guzmán",
-      "Santiago Vidal",
-      "Prudencio Cañete",
-      "Fabio Montalbán",
-      "Felicia Infante",
-      "Eva Mas"
+      "Elizabeth Marquez",
+      "Gabriel Ross",
+      "Kathryn Gray"
     ]
   },
   "deliverables": [
-    "november_ticket_cut.csv",
-    "ticket_split_review.pptx"
+    "sixth_team_decision_2027.docx",
+    "centre_call_effects_2025_2026.csv",
+    "centre_call_effects_2025_2026.png"
   ],
-  "opening_move": "calendar-first",
-  "driver": "The decisive quantity is how many requests it takes to spend a binding resource whose budget is stated for the whole period, because each request draws only on the capacity of the one interval it is booked into; a plan that values every use correctly but files one request against the period's whole budget reaches one interval's share, so the constrained candidates need one request per interval and the unconstrained candidates give up that many places under the cap.",
-  "driver_concrete": "A colocated ticket rides one provider change request and a request is for one window, so each November window drains 24 hosts under its own ticket: payments needs 4 tickets and checkout 5 to spend 96 and 120 drains on the most exposed hosts, and the cloud estates keep 291 tickets, not 298; every past colocated ticket in the crew log carries exactly one change request and the part-accepted ones never reached their declined hosts.",
-  "stump": "A competent solver recovers the cut-day scoring rule, builds 96 and 120 drains from the window-hours headroom, finds that a drained host comes back on the current image and files one glibc ticket per colocated estate naming the 96 and 120 most exposed hosts: 1 / 1 / 74 / 77 / 79 / 68 for about 13,360; the step that lands it there is spending a whole month's drains under one ticket, when a ticket is one change request and a request is for one window, so the split is 4 / 5 / 72 / 75 / 77 / 67 for 13,300.",
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A contact's effect is read only where the day's queue of units outran the team, comparing the units placed before the day's last contacted position with those placed after it on the same list, because units contacted at other times are the ones that respond and would have resolved anyway, units missing from the queue for other reasons could never be contacted, and the queue's order comes from a key unrelated to the outcome; read that way, no candidate clears the funding bar that every pooled or score-adjusted comparison clears.",
+  "driver_concrete": "A collections call's effect on rolls to 90 days past due is measured only on the days a centre's 30-day dialler list outran its team, comparing accounts listed above the day's last attempted call with those below it on the same list, because accounts reached on other days are the customers who pay anyway, accounts off the dialler list (no valid phone, an arrangement already in place) could never be called, and the list is ordered by the card platform's partition key; on that comparison the best centre prevents about 2 rolls per 100 accounts called against the 3.4 the funding rule needs, so no centre gets the team.",
+  "stump": "A competent solver compares accounts the centre's team called with accounts it did not, from the account register's 30-day arrears flag and adjusted for the behaviour score, and funds the centre whose called accounts roll least, at about 4 rolls prevented per 100 (figures fixed at design), because the uncalled include accounts with no valid phone and accounts listed on the big billing cycles' days, when the team never reaches the bottom of the list, both of which roll more for reasons a call does not change.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the call log, the dialler lists and the delinquency ledger and reads the funding rule right compares attempted with unattempted listed accounts by centre, adjusted for the behaviour score and pooled over the months, and funds a centre at about 4 rolls prevented per 100, because the unattempted accounts come from the large billing cycles' list days and roll more for reasons no score records; only the same-day comparison on over-capacity days measures the effect, and it falls short at every centre.",
+  "domain_test": "Collections strategy is judged on incremental cures against a counterfactual, champion-challenger tests and the natural experiments capacity gives, which is collections analytics' own method for funding a team; with another field's nouns there is no delinquency roll, no dialler list and no capacity overflow, and the task stops reading the same.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:capacity-overflow-natural-experiment-for-early-stage-collections-calls",
+  "layer1": [
+    "a dialler list export per centre and day with list positions, re-listed accounts and test accounts",
+    "a call log at attempt grain (several attempts per account per day, dispositions in two code sets either side of a 2025 dialler upgrade)",
+    "a capacity log of each team's staffed seats and attempts per day, with a centre that merged two teams mid-2025",
+    "an account register with the nightly ageing job's arrears flag, which counts accounts the protocol keeps off the list",
+    "a monthly delinquency ledger with re-aged accounts, charge-offs and accounts sold to a debt buyer",
+    "the collections protocol and the credit policy's funding rule, filed once each"
+  ],
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
@@ -92,7 +101,25 @@
       "gate_g": "binding_constraint",
       "decision_type": "allocation_to_total",
       "driver": "The decisive quantity is what one use of the binding resource removes, which is everything on the member that the current baseline fixes rather than the single item the request names, because each use rebuilds the member from that baseline; a ledger that credits each request with its own item reproduces every closed period, so per-item valuation spends the scarce uses on the members with the richest single item instead of the members carrying the most in total, and the constrained candidates need far fewer requests for far more removal than the per-item reading allows."
+    },
+    {
+      "architecture": "v2 (the ticket's reach: one change request per drain window)",
+      "fate": "shipped 10-10 after solver round 2 missed (55.3) and a judge FIX_NOW; returned FAILED_TO_STUMP from the portal; spent at the wave-1 re-root 2026-10-12 (rule application as the decisive step; IT patch remediation has no client-domain task type serving Opportunity Sizing)",
+      "domain": "business-operations-analytics",
+      "objective": "opportunity-sizing-decision",
+      "gap": [
+        "objective",
+        "rule"
+      ],
+      "pattern": [
+        "none",
+        "C",
+        "B"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "allocation_to_total",
+      "driver": "The decisive quantity is how many requests it takes to spend a binding resource whose budget is stated for the whole period, because each request draws only on the capacity of the one interval it is booked into; a plan that values every use correctly but files one request against the period's whole budget reaches one interval's share, so the constrained candidates need one request per interval and the unconstrained candidates give up that many places under the cap."
     }
   ],
-  "notes": "Drawn 2026-10-10, not registered (the coordinator registers the wave in task-number order). Realises analytical_tasks note DS02 (analytical_tasks/05_decision_support/DS02_patch-tickets-window-drain-headroom.md); the note is the idea and this build is its first realisation. The note's decisive rung (drains per window from the capacity register, the hourly forecast and the window calendar, pinned by an SRE standard sentence and by acknowledgements that reproduce 412 of 412 only under that rule) fails the pilot test: the filed N+1 sentence is a work order and the acknowledgement corpus refutes the stop rung below it, so a plain solver builds it; it is kept as the stop rung (rung 2), certified by the acknowledgements, and its driver also sits beside task106's shared-pool driver. First redraw rejected: a data-cluster maintenance cycle that lands each ticket on only the nodes recommissioned inside November is task50 v4's insight (how much of each candidate's exposure a forward service order reaches inside the funded window) under new nouns, although driver similarity read 0.06. Decisive rung: G1 unit-of-value swap, never before the decisive generator on any card: the provider rebuilds every colocated host it drains from the estate's current platform image, so the unit that takes exposure out is the drained host, not the ticket's package; evidence lives only in the host inventory's last-rebuilt dates and the scanner (no colocated host carries an exposure whose fix predates its last rebuild), and no document states it. Pattern none (G1 carries it), C carries rung 2 (drains), B carries rung 1 (the cut-day EPSS rule from the close-out). G2 supports (host rather than package as the unit of removal). Measured trap #25 assumes an effect the log could measure (1 of 64, emerging, thin record; the bet is stated in the design note), with #11 beats the headline trap, misses the quiet one (4 of 64, 2 under 0.50) behind it and #10 notes a binding limit as a risk at the stop rung. Domain moved from the note's Product Analytics to business-operations-analytics/service-operations-sla: the remediation planner owns an operations call on change capacity, product-analytics has no honest subdomain for it, and business-operations x opportunity-sizing is a never-built pairing. Geography Spain (Malaga) rather than Portugal, which repeats task121 inside the last three. Personas from guard.py names --geo Spain --seed 128, the first six in draw order: Reina Guzmán (requester, remediation planner), Santiago Vidal (CISO, the prompt's one belief), Prudencio Cañete (SRE lead for the colocated estates), Fabio Montalbán (data platform lead), Felicia Infante (provider's service delivery manager), Eva Mas (patch crews' dispatch lead). Calibration form counterparty_acknowledgement (the provider's acknowledgements of change requests against windows). Context artifact monitoring_export: the planner (and the CISO's belief) works from the vulnerability scanner's exploitable-exposure export; the office's quarterly close-out (covering only the four cloud estates the crews patch, because the provider closes colocated tickets) still ships as rung 1's corpus. Keys tried first and banned as siblings registered during the draw: close_out_summary (task124) and operations_log (task125); monitoring_export was itself banned against task121 when the draw opened and left the window as task124 and task125 registered. Role family capacity_planner: the requester plans the crews' monthly ticket capacity; compliance_or_audit would also read true and was blocked by ban.role against task119 at draw time. Forum operations_desk (the crews' dispatch desk keys the cut list on Monday 2 November); forcing event budget_or_appropriation (the first monthly allocation of the crews' 300 tickets on exploitable exposure); org family hospitality_or_tourism (an online travel booking platform), never used before. Shape 01 (ranked list under a cap): the 300 tickets are every candidate package update ranked by what it takes out in November and cut at 300, with the colocated tickets trimmed by the drain budget; shape 05 was the first key and is banned against task124. Spine planned synthetic over real CVE identifiers with FIRST EPSS scores, licence and date to be recorded at stage 3. Answer, answer_source and spine rows are filled at stage 3. Registration redraws (coordinator, 2026-10-10): calibration counterparty_acknowledgement to closed_decision_corpus (BLOCK against task126), forcing event budget_or_appropriation to launch_or_rollout (BLOCK against task127), subdomain service-operations-sla to field-service-maintenance (would block task129); decisive rung unchanged. Harden loop 1 (2026-10-10): the in-house plain solver landed the v1 call (whole-host rebuild read off in_service_since); the decisive rung moved to the ticket's reach (one change request, one window, G2 support), with v1 kept as the stop rung and moved to lineage."
+  "notes": "Re-root drawn 2026-10-12, architecture 3. A first architecture-3 draw (a Swedish pet insurer's older-dog renewal increases, composition_mix, shape 10) was withdrawn before registration: guard BLOCK against task125 v2, registered ahead of it in draw order. This draw: Banking, Credit & Financial Risk / collections-recovery (the client task type serving Opportunity Sizing). stump_strategy causal_design: the decisive move is the comparison the design implies (the over-capacity overflow), not a filed rule. Gate signal_vs_noise_or_hold: the call is a hold forced by a computed blocking quantity (the best centre's prevented rolls per 100 called against the funding rule's 3.4). Personas drawn with guard.py names --geo Canada --seed 128."
 }

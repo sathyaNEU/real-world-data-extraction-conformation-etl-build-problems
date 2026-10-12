@@ -1,13 +1,13 @@
 {
   "task": "task128",
   "owner": "oviya1301",
-  "status": "PAUSED",
-  "domain": "actuarial-science-insurance",
+  "status": "DRAWN",
+  "domain": "banking-credit-financial-risk",
   "objective": "opportunity-sizing-decision",
-  "stage": 1,
-  "stage_name": "re-root pending (first architecture-3 draw withdrawn)",
+  "stage": 2,
+  "stage_name": "design (architecture 3 drawn: the collections centres' over-capacity days)",
   "updated": "2026-10-12",
-  "stump": "",
+  "stump": "The default path compares called with uncalled accounts from the register's arrears flag, adjusted for the behaviour score and pooled over the year, and funds the centre whose called accounts roll least (about 4 rolls prevented per 100, prototype); the same-day comparison on the dialler list's over-capacity days gives every centre less than the funding rule's bar, so none gets the team.",
   "architecture": 3,
   "loops": 0,
   "precut": {
@@ -20,8 +20,8 @@
   },
   "duplicate_check": {
     "heart": "",
-    "nearest": "",
-    "note": "the first v3 draw was withdrawn: guard BLOCK against task125 v2 (registered 08:22, ahead in draw order); its subdomain would have blocked task130 v4"
+    "nearest": "0.07 (task103 v1 lineage)",
+    "note": "architecture 3 draw checked 2026-10-12: guard PASS, no WARN; window task127, task125, task124 before, task130, task180, task181 after"
   },
   "judge": {
     "verdict": "",
@@ -29,11 +29,11 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 1: redraw architecture 3. task127 v2 (drawn 10-12) now sits in this slot's window with task125 and task124 (task123 v2, drawn 10-12, is ahead of them and out of it), and task130, task180 and task181 have this slot in theirs. Axes to avoid before: healthcare OPP pairing, shapes 05 and 02, strategies decomposition_attribution, composition_mix, population_selection, mechanisms C, G6, G14, calibration counterparty_acknowledgement and physical_verification, roles capacity_planner, statistical_office_head, programme_officer, artifacts published_series, filed_standard, capacity_report, forums operations_desk, line_manager_or_team, board_of_directors, forcing events purchase_order_or_contract, statutory_or_regulatory_filing, budget_or_appropriation, organisations government_agency, research_or_statistics_office, cooperative_or_member_body. Axes to avoid after: shapes 02 and 07; mechanisms G13, G12, D; roles compliance_or_audit, research_desk, capacity_planner; artifacts register, published_series, close_out_summary; strategies maturity_censoring, grain_or_unit; forums trustees_or_governors, regulator_or_inspector, committee_or_panel; forcing events purchase_order_or_contract, cutover_or_migration, season_or_peak; organisations hospital_or_health_provider, research_or_statistics_office, utility_or_infrastructure; subdomains pricing-ratemaking-credibility, environmental-monitoring-exceedance, safety-incident-error-analysis. The collections overflow comparison (causal_design, seed DS04's world in a bank's collections team: financial_institution) still fits. Pull origin/main before every guard check.",
+  "resume": "stage 2: prototype the world in the scratchpad (five centres, two years of daily dialler lists, billing cycles of different size and risk, a no-phone and arrangement population off the list, the over-capacity days), fix each comparison's best centre against the funding bar, then the readability screen, fork table, ladder, closure, asks and prompt.txt to precut exit 0. Pull origin/main before every guard check.",
   "approved": null,
   "delivered": null,
   "portal": null,
-  "source_note": "own draw (seed DS27, task373, shares the anti-selection insight; recorded on the card)",
+  "source_note": "seed DS04 (analytical_tasks/05_decision_support), the world and the overflow insight only",
   "history": {
     "architecture_1": "v1 whole-host rebuild valuation in patch tickets (DS02): solved by the in-house plain solver in round 1, 2026-10-10",
     "architecture_2": "v2 the ticket's reach (one change request per drain window): round 2 missed (55.3), judge FIX_NOW fixed, FAILED_TO_STUMP; spent at the wave-1 re-root 2026-10-12 (rule application as the decisive step; no client-domain task type)",
@@ -71,6 +71,7 @@
       "approved": "2026-10-10 (no author checkpoint in the flow; heart WARN)",
       "status": "FAILED_TO_STUMP",
       "source_note": "analytical_tasks/05_decision_support/DS02_patch-tickets-window-drain-headroom.md"
-    }
+    },
+    "architecture_3_withdrawn": "first architecture-3 draw (pet insurer's older-dog renewal increases, composition_mix) withdrawn 2026-10-12 on the guard against task125 v2"
   }
 }
