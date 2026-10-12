@@ -1,75 +1,95 @@
 {
   "task": "task501",
   "architecture": "v3",
-  "drawn": "2026-10-11",
-  "slot_note": "first build in the author-declared new domain Quantitative Finance (vocab key quantitative-finance proposed 2026-10-10; the author adds it to vocab.json); bar top two under 50, build to 40",
+  "drawn": "2026-10-12",
+  "slot_note": "architecture 3 of the slot (v1 retired on the client's rules, v2 landed on the portal 10-11); its first decisive step (the buffer estimand on a filed walk-forward) was replaced on paper at the 2026-10-12 redesign; Quantitative Finance, liquidity, funding and balance-sheet risk (author-declared task type); bar top two under 50, build to 40",
   "domain": "quantitative-finance",
   "subdomain": "liquidity-funding-balance-sheet",
-  "niche": "a Swiss occupational pension fund's private-markets programme sizing a standby capital-call facility for 2027, where the directive selects the pacing basis by a walk-forward test and sizes the buffer from how far realised calls ran ahead of the forecast at any point in a test horizon, and first-half deal seasonality makes the end-of-horizon miss understate the exposure",
+  "niche": "a Swiss pension foundation's private-markets programme electing its 2027 standby facility for capital calls, when four funds committed in 2022 and 2023 deployed slowly through the 2023-24 deal drought and reach the end of their investment periods in the last four months of 2027 with roughly half their commitments undrawn",
   "objective": "forecasting",
-  "shape": "02",
+  "shape": "07",
   "decision_type": "dial_setting",
   "answer_unit": "currency",
-  "answer": "Elect the CHF 225 million standby tranche for 2027 (peak cumulative net outflow CHF 190,630 thousand in December 2027 plus a path buffer of CHF 96,560 thousand, CHF 212,190 thousand above the CHF 75 million reserve).",
-  "answer_source": "submission.md block 1",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "time",
-    "population",
-    "rule"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
+    "G6",
     "G13",
-    "G16",
-    "G2"
+    "G7"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "certified_matrix",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
   "context_artifact": "register",
-  "stakeholder_role": "head of treasury and liquidity at an occupational pension fund",
+  "stakeholder_role": "head of treasury and liquidity at a Swiss pension foundation, electing the standby facility that bridges the private-markets programme's 2027 capital calls",
   "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "capital_notice_lines_2018-2026.csv",
-    "rows": 13083,
-    "entity": "one line of one capital call or distribution notice received by the pension fund from a fund manager",
+    "file": "kapitalabrufe_ausschuettungen_2015-2026.csv",
+    "rows": 0,
+    "entity": "one line of one capital call or distribution notice received from a fund manager, or one distribution advice loaded from the custodian's feed",
     "grain": "notice x line",
-    "source": "synthetic (fictional pension fund's private-markets ledger); real SNB daily FX rates"
+    "source": "synthetic (fictional pension foundation's private-markets ledger)"
   },
   "forum": "trustees_or_governors",
-  "forcing_event": "incident_or_complaint",
-  "org_family": "financial_institution",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "foundation_or_funder",
   "world": {
     "geography": "Switzerland, Zurich",
     "currency": "CHF",
-    "org_type": "occupational pension fund (Pensionskasse) with a private-markets programme",
+    "org_type": "occupational pension foundation (Pensionskasse, a Stiftung) with a private-markets programme",
     "invented_names": [
       "Pensionskasse Werdinsel",
-      "Privatbank Lindenhof"
+      "Privatbank Lindenhof AG"
     ],
     "people": [
-      "Serena Sidler",
-      "Luciano Hotz",
-      "Othmar Suter",
-      "Enrique Hofer",
-      "Noelia Amrein",
-      "Marino Imhof"
+      "Domenica Hürlimann",
+      "Torsten Sigrist",
+      "Noémie Hess",
+      "Jeremias Ritter",
+      "Lazar Marti"
     ]
   },
   "deliverables": [
-    "standby_facility_2027.py",
-    "standby_facility_2027_board_paper.docx"
+    "facility_election_2027.docx",
+    "distributions_received_2026.xlsx"
   ],
-  "opening_move": "role-first",
-  "driver": "The facility covers a cumulative path through the year, so the buffer the validation sets is the furthest realised calls ran ahead of the forecast at any point inside a test horizon; the error table a solver builds is on horizon totals, and reading the buffer off it lands a tranche short, because calls cluster in the first half of each year while every candidate spreads them evenly, with the filed walk-forward and the filed recycling term executed correctly on both paths.",
-  "driver_concrete": "RL-PM-04 s.5.6 sets the buffer as the largest amount realised calls ran ahead of the selected basis at any point in a horizon: on the age-band basis that is CHF 96,560 thousand against CHF 61,852 thousand read at the end of the horizons, one tranche (225 against 200); fitting the candidates once on the whole record crowns the manager's-own basis and lands on 200 too; no test at all lands on 175.",
-  "stump": "A competent solver runs the walk-forward as filed, selects the age-band basis and sizes the buffer from the end-of-horizon shortfalls in its error table (largest 61,852 thousand), electing CHF 200 million; the step that lands them there is never tracing realised against forecast cumulative calls month by month inside each horizon, where the first-half run of calls puts realised 96,560 thousand ahead at a month-end, the exposure the facility is drawn against, which elects CHF 225 million.",
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "A unit's forward draw on what remains of its allotment is set by how much it must still place before a hard deadline, because every unit whose deadline has passed had placed all but a small reserve by it whatever its earlier pace; a draw rate pooled by age over units that kept to schedule gives a group that fell behind and meets its deadline inside the window the same modest share as any unit of its age, and understates the window's total.",
+  "driver_concrete": "Loschwitz III, Juno II, Rosenthal II and Tessin I deployed slowly through 2023-24 and their investment periods end between September and December 2027 with about half their commitments drawn; every fund whose investment period has ended in the programme's record had drawn about 92 per cent of commitment by then, slow starters included, so their 2027 calls are the balance to that share, not the age-band call rate applied to their unfunded commitment.",
+  "stump": "A competent solver forecasts 2027 calls fund by fund with age-band call rates on unfunded commitment estimated from the programme's record and elects a facility several tranches short; the step that lands it there is giving four funds that are far behind schedule, with investment periods ending in late 2027, the call rate of funds their age, when every fund whose investment period has ended had drawn about 92 per cent of commitment by then.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every term right (calls by value date with fees and expenses, every commitment in the register, the plan-date rate, distributions not credited) and fits the field's standard pacing model, age-band call rates on unfunded commitment, still elects a facility several tranches short, because the model gives the four funds whose investment periods end in late 2027 the call rate of funds their age instead of the balance they must draw before their deadlines.",
+  "domain_test": "The deciding quantity is a private-markets commitment pacing forecast, capital calls driven by each fund's undrawn commitment and by the investment period its limited partnership agreement allows for new investments, which is how a pension fund's treasury sizes liquidity for unfunded commitments; with another field's nouns there is no commitment drawn down by a manager, no investment period that closes the undrawn balance to new deals and no fee charged on commitment, so the task stops reading the same.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:investment-period-deadline-drawdown",
+  "layer1": [
+    "call and distribution notices withdrawn by the manager and reissued under a new number",
+    "multi-line notices with investment, management fee and partnership expense lines",
+    "December notices due in January, so the notice date and the value date fall in different years",
+    "currency codes in mixed case and descriptions with trailing spaces as keyed by clerks",
+    "distribution advices loaded by the custodian's feed from April 2026 as single lines beside the clerks' line-by-line keying of the same notices",
+    "custodian credit dates a few days after the payment date stated on the notice",
+    "distributions in specie of listed shares",
+    "manager statements received months after the period end, some still outstanding",
+    "audited capital accounts at fund and year-end grain beside the line-level ledger",
+    "look-through holdings by quarter with NACE codes from the managers' reports",
+    "a reference-rate file without holidays",
+    "German and English labels across the systems"
+  ],
   "mechanism_source": "design_note",
-  "differentiation": {
-    "task102": "task102's move is a calendar rule that shifts whole payments across a period boundary; this build's move is the estimand of a forecast's error, the within-horizon cumulative path against the horizon total, with every calendar rule filed and executed on both paths"
-  },
+  "differentiation": {},
   "lineage": [
     {
       "architecture": "v1",
@@ -110,7 +130,27 @@
         "G13",
         "G2"
       ]
+    },
+    {
+      "architecture": "v3 (first decisive step)",
+      "drawn": "2026-10-11",
+      "fate": "replaced on paper at the 2026-10-12 redesign, before any portal test: the plan was the directive's filed walk-forward (rule application, the step both v2 portal responses executed), and the buffer's estimand was filed in s.5.6 ('at any point in a horizon'), a readable rung under the readability screen",
+      "driver": "The facility covers a cumulative path through the year, so the buffer the validation sets is the furthest realised calls ran ahead of the forecast at any point inside a test horizon; the error table a solver builds is on horizon totals, and reading the buffer off it lands a tranche short, because calls cluster in the first half of each year while every candidate spreads them evenly, with the filed walk-forward and the filed recycling term executed correctly on both paths.",
+      "gap": [
+        "time",
+        "population",
+        "rule"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "generators": [
+        "G13",
+        "G16",
+        "G2"
+      ]
     }
   ],
-  "notes": "Domain declared by the author in chat (Quantitative Finance); vocab key quantitative-finance to be added to vocab.json by the author before registration. v3 after the v2 portal result (both responses landed): the deciding quantity is the buffer's estimand, the within-horizon path error of the forecast, which the client's rules count as analysis; the walk-forward and the recycling term are filed execution layers. Personas drawn with guard.py names --geo Switzerland --seed 118."
+  "notes": "Redesign at stage 2 on 2026-10-12 after the v2 portal result (both responses executed the filed walk-forward). The decisive step moved off every filed sentence: the directive files the estimand only (expected calls of 2027 by value date, every commitment in the register, the plan-date rate, the reserve and the margin), no method. Organisation family foundation_or_funder: a Swiss Pensionskasse is a pension foundation (Stiftung) governed by a Stiftungsrat and supervised as a foundation, not a FINMA financial institution; financial_institution also repeats task446. Forcing event: the lender's facility election. Personas drawn with guard.py names --geo Switzerland --seed 501."
 }

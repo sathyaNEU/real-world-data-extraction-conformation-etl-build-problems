@@ -192,7 +192,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 446 (v2) | FAILED_TO_STUMP: backlog oviya1301 | BANK watch list | ETL | time population | none | carry error rates, not yield | - | - | 133 groups | none reported | oviya1301 |
 | 447 | SHIPPED, delivered 10-12, pending review | HDE vertical integration | ETL | objective population | C | referral capture follows the patient's tier for the acquirer in the projection year | - | - | proceed at $2.2M | ask layer rebuilt 10-12 (two standing exhibits, pair ceiling 27.5); judge APPROVE | oviya1301 |
 | 500 (v3) | SHIPPED, delivered, pending review | ECON lodging tax | RCA | rule population | B | each change measured by the office's matched-reference method | - | - | long-stay exemption, $3,235k | v1, v2 solved 10-10, 10-11 | sathya8571 |
-| 501 (v2) | FAILED_TO_STUMP: backlog sathya8571 | QF pension liquidity | FC | time population | none | buffer is the furthest calls ran ahead of the path | - | - | CHF 225m tranche | v2 10-11: landed by 2 of 2 (filed walk-forward executed) | sathya8571 |
+| 501 (v3) | drawing 10-12: redesigned at stage 2 after the v2 portal landing | QF pension liquidity | FC | time population | G6 | funds behind schedule draw their balance before their investment-period deadlines | - | register | facility amount | v2 10-11: landed by 2 of 2 (filed walk-forward executed) | sathya8571 |
 
 ## Earlier architectures
 
@@ -282,6 +282,7 @@ them as history. Round-by-round detail is in each build's design note and card l
 | 120 (v1, v2) | retired 10-09: v1 solved in-house (96.8), v2 drafted and blocked | ECON | DESC | population objective | none, B | unit formed by the claimant's roster; losses netted across spouses |
 | 446 (v1) | retired 10-11: rule application | BANK | ETL | population time | none | group fixed at the projection date |
 | 500 (v1, v2) | solved on the portal 10-10, 10-11 | SCL, P&E | RCA | population | none | held blocks off late calls (shuttle, 15 of 28); a later start spilling onto siblings |
+| 501 (v1, v2, v3 first step) | v1 retired 10-11 on the rules; v2 solved on the portal 10-11; v3's buffer step replaced on paper 10-12 | QF | FC | time population rule | none | recycling term recovered from audited cells; filed walk-forward executed; filed path buffer readable |
 
 ## Lessons the outcomes paid for
 

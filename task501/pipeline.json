@@ -1,18 +1,41 @@
 {
   "task": "task501",
+  "owner": "sathya8571",
+  "status": "BUILD",
   "domain": "quantitative-finance",
   "objective": "forecasting",
   "stage": 3,
   "stage_name": "build",
-  "updated": "2026-10-11",
-  "stump": "A competent solver runs the walk-forward as filed, selects the age-band basis and sizes the buffer from the end-of-horizon shortfalls in its error table (largest 61,852 thousand), electing CHF 200 million; the step that lands them there is never tracing realised against forecast cumulative calls month by month inside each horizon, where the first-half run of calls puts realised 96,560 thousand ahead at a month-end, the exposure the facility is drawn against, which elects CHF 225 million.",
-  "harden_loops": 0,
-  "solver_rounds": [],
+  "updated": "2026-10-12",
+  "stump": "A competent solver forecasts 2027 calls fund by fund with the programme's age-band call rates on unfunded commitment, files about CHF 246 million of expected calls and elects CHF 125 million; the step that lands it there is giving Loschwitz III, Juno II, Rosenthal II and Tessin I, which deployed slowly through 2023-24 and whose investment periods end between September and December 2027 with about half their commitments drawn, the call rate of funds their age, when every fund whose investment period has ended in the record had drawn about 92 per cent of its commitment by then, so those four call about CHF 150 million in 2027 rather than about CHF 75 million and the facility is CHF 225 million.",
+  "architecture": 3,
+  "loops": 0,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-12"
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
   "judge": {
     "verdict": "",
     "disposition": "",
     "report": ""
   },
+  "returned": [
+    {
+      "date": "2026-10-11",
+      "portal": "v2: landed by 2 of 2 (filed walk-forward executed)",
+      "repair": "design",
+      "commit": ""
+    }
+  ],
+  "resume": "stage 3: build the pack, generator, goldens and submission from DESIGN_NOTE.md (the deadline-drawdown redesign); the prototype is in the build session's scratch, the design note carries its figures",
   "approved": null,
   "delivered": null,
   "portal": [
@@ -24,7 +47,9 @@
       "note": "filed walk-forward executed by both responses"
     }
   ],
-  "blocked_on": "checkpoint B (/approve); vocab key quantitative-finance to be added by the author before guard.py register",
-  "status": "FAILED_TO_STUMP",
-  "owner": "sathya8571"
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "harden_loops": 0,
+  "solver_rounds": []
 }
