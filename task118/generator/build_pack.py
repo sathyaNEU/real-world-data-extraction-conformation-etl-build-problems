@@ -290,10 +290,10 @@ def write_changelog(W, path, rows):
     ws = wb.add_worksheet("Embeddings")
     hd = wb.add_format({"bold": True, "bottom": 1})
     df = wb.add_format({"num_format": "yyyy-mm-dd"})
-    nf = wb.add_format({"num_format": "#,##0"})
     f1 = wb.add_format({"num_format": "0.0"})
+    f2 = wb.add_format({"num_format": "0.000"})
     cols = ["embedding", "desk", "desk_code", "distribution", "started", "ended", "tests_run",
-            "avg_winning_lift_pct", "planned_clicks_m", "realised_incremental_clicks", "closed_on"]
+            "avg_winning_lift_pct", "realised_holdback_lift_pct", "closed_on"]
     for j, c in enumerate(cols):
         ws.write(0, j, c, hd)
     for i, r in enumerate(rows, start=1):
@@ -305,21 +305,19 @@ def write_changelog(W, path, rows):
         ws.write_datetime(i, 5, dt.datetime.combine(r["ended"], dt.time()), df)
         ws.write_number(i, 6, r["tests"])
         ws.write_number(i, 7, r["lift_pct"], f1)
-        ws.write_number(i, 8, r["planned_m"], f1)
-        ws.write_number(i, 9, r["realised"], nf)
-        ws.write_datetime(i, 10, dt.datetime.combine(r["closed"], dt.time()), df)
+        ws.write_number(i, 8, r["realised_pct"], f2)
+        ws.write_datetime(i, 9, dt.datetime.combine(r["closed"], dt.time()), df)
     ws.set_column(0, 0, 10)
     ws.set_column(1, 3, 12)
     ws.set_column(4, 5, 11)
-    ws.set_column(6, 9, 14)
-    ws.set_column(10, 10, 11)
+    ws.set_column(6, 8, 16)
+    ws.set_column(9, 9, 11)
     ws.freeze_panes(1, 0)
     ws2 = wb.add_worksheet("Notes")
     lines = ["Kept by Experimentation (Nina Franklin). One row per closed embedding of the headline squad.",
-             "realised_incremental_clicks: incremental article clicks at the embedded desk over the embedding year, "
-             "measured against matched app desks (difference in differences), signed off on closed_on.",
-             "planned_clicks_m: the desk's planned article clicks for the embedding year, in millions, from that "
-             "year's audience plan.",
+             "realised_holdback_lift_pct: the click-through of the embedded desk's articles over the embedding "
+             "year against the 5 per cent holdback that kept their original headlines, minus one, in per cent, "
+             "signed off on closed_on.",
              "avg_winning_lift_pct and tests_run: the embedding's concluded tests in the headline test archive.",
              "The 2026 embedding with Puzzles closes in December 2026 and is added once its year is measured."]
     for i, l in enumerate(lines):
@@ -394,11 +392,10 @@ def write_panelwb(W, path):
         i += 1
     ws.set_column(0, 5, 15)
     ws = wb.add_worksheet("Release log")
-    for j, c in enumerate(["release", "published_on", "periods", "note"]):
+    for j, c in enumerate(["release", "published_on", "note"]):
         ws.write(0, j, c, hd)
     i = 1
     for rel in sorted(W.panel_rel_pub, key=lambda r: (W.panel_rel_pub[r], r)):
-        pers = sorted(W.panel_rel_per[rel])
         note = ""
         if rel == "R26-04":
             note = "First release on the 2026 content taxonomy."
@@ -406,16 +403,14 @@ def write_panelwb(W, path):
             note = ("History release: November 2025 to February 2026 rerun on the 2026 content taxonomy. These "
                     "figures replace the earlier releases for those months.")
         if rel == "R26-07B":
-            note = ("Restated April, May and June 2026 after a processing fault undercounted mobile audiences for "
-                    "those months. These figures replace those published in R26-05, R26-06 and R26-07.")
+            note = ("Restated April, May and June 2026 after a processing fault undercounted mobile audiences and "
+                    "visits for those months. These figures replace those published in R26-05, R26-06 and R26-07.")
         ws.write_string(i, 0, rel)
         ws.write_datetime(i, 1, dt.datetime.combine(W.panel_rel_pub[rel], dt.time()), df)
-        ws.write_string(i, 2, ", ".join(pers))
-        ws.write_string(i, 3, note)
+        ws.write_string(i, 2, note)
         i += 1
     ws.set_column(0, 1, 12)
-    ws.set_column(2, 2, 26)
-    ws.set_column(3, 3, 100)
+    ws.set_column(2, 2, 100)
     ws = wb.add_worksheet("Definitions")
     defs = [("release", "Panel release the row was loaded from."),
             ("period", "Calendar month measured."),
@@ -495,7 +490,7 @@ def changelog_rows(W):
         closed = dt.date(y + 1, 2, 2) + dt.timedelta(days=int(AR.rng_for(778, y).integers(0, 14)))
         rows.append(dict(no=e["no"], desk=e["desk"], started=start, ended=end, tests=len(ts),
                          lift_pct=round(100 * raw, 1), planned_m=e["planned_m"],
-                         realised=int(round(s * e["planned_m"] * 1e6 * (1 + eps[k]))), closed=closed,
+                         realised_pct=round(100 * s * (1 + eps[k]), 3), closed=closed,
                          eps=float(eps[k])))
     return rows
 

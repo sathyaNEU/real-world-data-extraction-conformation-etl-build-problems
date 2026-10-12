@@ -1,119 +1,204 @@
-# determinism-check report, task118, 2026-10-09
+# task118 determinism check (wave-1 redesign)
 
-## Verdict
-DETERMINISTIC, SOLUTION_WRONG
-**Disposition:** FIX_NOW
-**Stumping type:** mechanism: binding_constraint, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+Isolated judge on the shipped bundle (prompt.txt, target.zip unzipped, the submission's blocks). Pass 1 on the first rebuilt pack, 2026-10-12.
 
-**Run note.** This runtime exposes no Agent tool, so the one judge pass ran in the orchestrator's own context. Isolation was enforced by hand. Before `verdict.md` was written to `/tmp/determinism-check-task118-20261009T164438-15580/`, the only things read were:
-- a fresh copy of `target/` (there is no `target.zip` in the folder)
-- `prompt.md`
-- the submission blocks
-- `guidelines/determinism_judge_system_prompt.md` (v3)
+## Pass 1
 
-DESIGN_NOTE.md, metadata.json, golden/, generator/, solver_rounds/, pipeline.json and leak_check_report.md were opened only after the verdict was written. The cross-batch fingerprint check was not run, because it falls outside the isolation scope.
 
-## Why
-The call for Culture·national is forced by three rungs, each grounded in a shipped fact:
-1. **Shrunk lift beats raw lift.** One normal prior, fitted by maximum likelihood on all 10,111 variant packages in `headline_tests_archive_2019-2026.csv`, puts 7 of 7 closed embeddings within 2 per cent on `headline_squad_change_log.xlsx`. Raw lift gets 0 of 7.
-2. **Only clicks on Bightline's own surfaces can move.** `audience_warehouse_field_reference.md` says the stored headline is the one carried in feeds, search and social metadata, newsletters and alerts.
-3. **Headlines the desk already tests are netted out.** `audience_plan_2027.xlsx` holds 2027 at the trailing year and plans new initiatives "on top of these figures".
+- **Verdict:** DETERMINISTIC. The one wording defect in the solution blocks is that SOLUTION_STEPS step 2 says "within 2%". It reproduces only as within 0.2 percentage points, not as 2% relative.
+- **Disposition:** FIX_NOW. Restate the back-test tolerance as 0.2 points. Tell graders that the 1,250,000 / 450,000 figures sit about 5,000 from a 50,000 rounding edge under some defensible estimators (see Evidence), and so should carry a tolerance of one rounding step. The shipped files and the prompt stay byte-identical, so no rerun is needed.
+- **Why:** Every committed answer reproduces from the shipped files. Culture·national wins on shrunk lift (1.78%) times click exposure on its own surfaces that its desk has not already tested (70.31M clicks), which gives 1.25M. Local·metro follows at 0.81M. Every route to a different desk (raw lift, all-source clicks, no tested-article exclusion, readers) uses a number or convention that a shipped file contradicts. The desk and runner-up hold under every shrinkage estimator that survives the change-log back-test. Cross-batch check: I could not run it, because the sandbox lets me read nothing outside the review directory, so it is not done.
 
-Every committed figure recomputes. The defect is in the solution blocks. Step 7 states the panel rule ("on the section list it was issued on") and the correction rule ("on the save before or on the save after") in words that, applied literally, produce different readers and corrections figures. It also omits the restored-copy and scheduled go-live rules that the medians depend on. The fix is to regenerate the block. Nothing a solver sees has to change.
+## Literal reading (before the gates)
+
+| Open term | Literal readings | Answer each gives | Closed by |
+|---|---|---|---|
+| Lift per test | (a) dashboard raw: shipped CTR over control minus one, zero if kept (filed). (b) shrunk to a prior | (a) gives Sport·metro 2.76M on own-untested clicks. (b) gives Culture·national 1.25M | `headline_squad_change_log.xlsx`: raw average lift of 2.5 to 3.9 against realised holdback lift of 0.7 to 2.6. Back-test errors for the all-variant EB prior are at most 0.14 points. A zero-mean prior fails (up to 0.30 points). A prior that counts kept controls as zero fails (0.27 to 0.44). Raw lift misses by 0.72 to 1.83 points. |
+| Which clicks the lift moves | All article clicks, or only surfaces that render the live headline. The sources that carry `canonical_headline` are partner_apps, search, social, discover, newsletter and alerts. | All clicks gives Business·national 3.59M untested, or 6.18M if tested articles are not excluded. Live-headline surfaces (home_web, section_web, feed_app, section_app, related_links) give Culture·national | `audience_warehouse_field_reference.md` (canonical_headline definition; test impressions are "test slot"). This is **inferential**: no file states outright that a shipped variant leaves the stored headline alone. |
+| Articles already tested | Squad adds lift on every article, or only where the desk has not already shipped a winner | No exclusion gives Local·metro 2.79M, ahead of Culture·national 1.37M. With the exclusion, Culture·national leads | The archive has one test per article. The plan notes hold 2027 at the trailing level, so desk-test gains are already in the base. Reasonable but unfiled: nothing says a second round adds zero. |
+| Readers (the leadership view) | Politics·national leads on readers, plan clicks and dashboard Politics lift | Politics·national | Rejected: the brief says the squad is judged on incremental clicks. |
 
 ## Recomputation ledger
-Supplementary rows list the six desks in this order: Culture·national, Local·metro, Business·national, Sport·national, Politics·national, Sport·metro.
 
-| Figure | Claimed | Judge recomputed | Reproduced |
+| Figure | Claimed | Recomputed | Reproduced |
 |---|---|---|---|
-| Culture·national shrunk winning lift | 1.78% | 1.781% (prior mu -1.04%, tau 4.53%, delta-method variance) | Yes |
-| Back-test, shrunk lift x planned clicks | 7 of 7 within 2% | 7 of 7, largest error 1.16% (tests by calendar year, counts match the change log) | Yes |
-| Back-test, raw lift | 0 of 7 | 0 of 7 (errors +32% to +261%) | Yes |
-| Culture·national clicks on Bightline surfaces | 50.2% | 50.16% (home_web, section_web, feed_app, section_app, related_links) | Yes |
-| Desk-run test coverage of platform clicks, CUL / LOC | 8.6% / 71.1% | 8.585% / 71.066% (all 3,515 web tests owned by the desk's own staff) | Yes |
-| Culture·national platform clicks on untested headlines | 70,300,000 | 70,314,857 | Yes |
-| Parquet tie-out to the 2027 plan | ties | exact for all 11 desks | Yes |
-| Extra article clicks 2027, six desks | 1,250,000; 800,000; 700,000; 650,000; 550,000; 100,000 | 1,252,299; 808,110; 697,594; 648,293; 552,392; 100,400 | Yes |
-| Gap to runner-up | 450,000 | 450,000 (unrounded 444,189) | Yes |
-| Average monthly readers, six desks | 1,412,000; 617,000; 1,760,000; 2,931,000; 3,180,000; 470,000 | 1,412,240; 616,760; 1,760,310; 2,930,720; 3,180,260; 470,290 | Yes (see finding 1a) |
-| Extra clicks per reader, six desks | 0.9; 1.3; 0.4; 0.2; 0.2; 0.2 | same, on rounded or unrounded inputs | Yes |
-| Headline corrections, six desks | 14; 34; 39; 42; 47; 18 | same (same-session pairing, entry fixed before the blog note; March across seven desks = 11, matching the bulletin) | Yes (see finding 1b) |
-| Corrections per 1,000 articles, six desks | 3.6; 4.9; 4.9; 3.8; 5.2; 7.3 | same, on 3,883; 6,941; 7,937; 11,043; 9,007; 2,463 articles (equals the parquet count of articles published in the window) | Yes |
-| Median minutes to first headline correction, six desks | 119; 102; 89; 47; 86; 55 | same (go-live is the earlier of publish_at and the first live save; a restored copy uses its original's go-live; the blog is the article for entry corrections) | Yes (see finding 1c) |
-| Embeddings within 2 per cent | 7 of 7 | 7 of 7 | Yes |
-| Dashboard export (not a solution input) | n/a | every vertical reproduces exactly from the archive (Politics 4.69, Local 3.44, Sport 3.02, Business 2.34, Culture 2.22) | Yes |
+| Culture·national raw average lift | (dashboard 2.22%) | 2.219% (50 tests, 21 shipped) | yes |
+| Prior (all 10,111 variant packages, ML, delta-method binomial variance) | not stated | mu = -1.04%, tau = 4.53% | n/a |
+| Culture·national shrunk lift | 1.78% | 1.781% | yes |
+| Culture·national own-surface share of clicks | 50.2% | 76.92M / 153.34M = 50.16% | yes |
+| Desk-test coverage of own-surface clicks, Culture·national | 8.6% | 8.59% | yes |
+| Desk-test coverage of own-surface clicks, Local·metro | 71.1% | 71.07% | yes |
+| Culture·national own-surface clicks on untested articles | 70,300,000 | 70,314,857 | yes |
+| Culture·national extra clicks | 1,250,000 | 1,252k, which rounds to 1,250,000 | yes |
+| Local·metro extra clicks | 800,000 | 808k (31.45M x 2.57%), which rounds to 800,000 | yes |
+| Gap | 450,000 | 444k, which rounds to 450,000 (also 1,250k - 800k) | yes |
+| Back-test, shrunk vs holdback | "within 2%, 7 of 7; raw 0 of 7" | 7 of 7 within 0.14 points; raw 0 of 7 (min miss 0.72 points). As 2% relative only 3 of 7 pass. | **wording only** |
+| Panel readers / visits, 6 desks | POL 3,180/13,041; SPT-M 470/1,550; BUS 1,760/6,642; SPT-N 2,931/11,626; LOC 617/2,359; CUL 1,412/5,052 (thousands) | identical, using the release-to-taxonomy map, latest release per month, and R26-08 April to June dropped as the R26-07B-replaced figures | yes (all 12 cells) |
+| Median minutes to first headline correction | POL 86, SPT-M 55, BUS 89, SPT-N 47, LOC 102, CUL 119 | 86, 55, 89, 47, 102, 119 (n = 43, 17, 37, 39, 31, 13) | yes |
+| Standards bulletin calibration (March 2026: 11 headline corrections, 22 text corrections) | not claimed | rule gives 11 headline events (10 articles) and 22 note-only events | consistent |
+| Staff join, "every shortlisted-desk test was run by that desk's own staff" | yes | true, but trivially: all 12,171 web tests are desk-owned. The join adds no discrimination. | yes |
+| Dashboard Politics 4.69% and "leads on readers / planned clicks" | yes | 4.69% = POL-N 205 + POL-M 210 tests pooled; POL-N leads readers and plan clicks | yes |
 
-## Competing answers that survived
-No fork survived for the main call or for any supplementary answer under a careful reading. These are the forks tested, with the shipped fact that closes each:
+### Estimator sensitivity for the main figure
 
-| Fork | Answer it produces | Closed by |
-|---|---|---|
-| Readers, Kayla's view | Politics·national (3.18m readers) | The prompt pins the metric to extra clicks |
-| Raw lift x plan clicks, or raw lift x the movable base | Sport·metro (11.3m, 2.76m) | Change-log back-test, 0 of 7 |
-| Shrunk lift x all clicks, or x all untested clicks | Business·national (6.18m, 3.59m) | Canonical-headline surfaces, field reference |
-| Shrunk lift x platform clicks, no desk-test netting | Local·metro (2.79m), which is the stump | Plan Notes: trailing year carried forward, initiatives on top |
-| Net out only articles with a shipped variant | Local·metro (1.55m vs 1.30m) | Selection error: the desk average already prices kept controls at zero |
-| Squad's pooled history lift (1.80%) for every desk | Culture 1,250,000, but runner-up Sport·national (900,000) | Pooled lift x planned clicks fails the back-test (0 of 7) |
-| Shrinkage variants | A pooled-p variance passes 7 of 7 with the same figures. A per-desk prior (1,200,000), mu fixed at 0 (1,300,000), a per-engine prior and a shipped-only prior all fail the back-test | Back-test |
-| Drop related_links, or add discover, to platform surfaces | 1,050,000, or 1,400,000 with Sport·national runner-up | Field reference's canonical-headline list |
-| Panel R26-03 read on the 2026 list by issue date | BUS 1,824,000, SPT-N 2,830,000, LOC 634,000, SPT-M 463,000 | Release log ("R26-04: first release on the 2026 content taxonomy") and the February discontinuities |
-| Corrections counted by note wording only | CUL 8, LOC 25, BUS 26, SPT-N 28, POL-N 24, SPT-M 12 | Standards bulletin control total (March = 11 under the structural rule) |
-| Corrections with literal save adjacency and no session limit | CUL 18, LOC 42, BUS 48, SPT-N 52, POL-N 62, SPT-M 24 | Not closed by any shipped rule. Unreasonable, because it pairs body-worded notes with headline updates hours apart |
+Shown for Culture·national and Local·metro on own-untested clicks.
 
-Residual risk, closed only by reading 7.5 as fix-then-note. A symmetric 30 to 60 minute pairing window gives SPT-N 43 and POL-N 48. The cause is two blog notes whose entry headline changed 21 and 22 minutes after the note (`6LU3SH4UEH`, `N3YWU62GU5`). With the entry-before-note order, the golden counts hold for every window from 10 to 60 minutes. Neither cell is the recommended desk's.
+| Estimator | Back-test max miss (points) | CUL | LOC | Rounded CUL / gap |
+|---|---|---|---|---|
+| ML, binomial variance (golden) | 0.14 | 1,252k | 808k | 1.25M / 450k |
+| ML, Poisson variance | 0.13 | 1,239k | 793k | 1.25M / 450k |
+| ML, prior on web only | 0.12 | 1,248k | 804k | 1.25M / 450k |
+| Method of moments, precision-weighted mu | 0.16 | 1,259k | 814k | 1.25M / 450k |
+| Method of moments, unweighted | 0.19 | 1,270k | 823k | 1.25M / 450k (5k from the 1.275M edge) |
+| ML on log ratio, back-transformed | 0.27 | 1,280k | 833k | 1.30M / 450k |
+| Per-desk priors | not backtestable on web desks | 1,199k | 807k | 1.20M / 400k |
+| Zero-mean prior | 0.30 | 1,311k | 859k | 1.30M / 450k |
+| Control counted as zero in the prior | 0.44 | 1,103k | 687k | 1.10M / 400k |
 
-## Spec gates
-| Gate | Required | Actual | Pass |
+The desk and runner-up order never changes. The 50,000-rounded click figure can move one step under estimators that the unfiled tolerance cannot clearly exclude (log scale at 0.27 points, per-desk priors).
+
+## Evidence (competing answers tried)
+
+- Raw dashboard lift on own-untested clicks gives Sport·metro 2.76M. This is the easy route. Shrinkage takes Sport·metro to 0.1M because its 150 tests are small (about 2,200 impressions) and its raw lift is 10.8%.
+- Shrunk lift on all clicks gives Business·national 6.18M, then Politics·national 4.81M. Culture·national falls to fifth. This is rejected only by the canonical-headline definition.
+- Shrunk lift on own clicks without excluding tested articles gives Local·metro 2.79M, then Business·national 1.73M, then Culture·national 1.37M.
+- Surface-set variants (drop related_links, add newsletter and alerts, home and feed only, under-24h only, new articles only) all keep Culture·national first and Local·metro second. Only adding search flips the order, to Business·national 1.58M, then Culture·national 1.53M. Search is a stored-headline surface by the field reference, so this is excluded.
+- Panel mapping traps resolve as filed. R26-04H reruns BLN 101/102/105 on the 2026 list (Politics, Culture, Home), so mapping by period date would mislabel them. R26-08 re-carries April to June at the exact R26-05 values that the R26-07B note says are replaced. Taking R26-08 as the latest release gives Culture·national 1,386k and 4,870k, which is wrong.
+- Correction timing needs five conventions, none of them stated outright as numbers in a single file:
+  1. A published-headline change within 10 minutes of a new (not carried, not put-back) note, taken at the save that publishes the changed headline. The note-save time gives CUL 121 instead of 119.
+  2. A live blog counts its own headline changes as well as its entries'. Without this, POL 89.5 and SPT-N 51 instead of 86 and 47.
+  3. Restored copies are merged into their originals. Without this, LOC 87 instead of 102.
+  4. Going live is publish_at for CMS-published scheduled articles. This needs `publish_at` to be Brisbane time (UTC+10). **That timezone is not stated in any file** (`cms_revisions_export_fields.txt` is silent). Only the data's structure shows it: with +10, no draft save precedes publish_at and the gaps have sharp edges at -10 and +2 minutes. Reading it as UTC gives 61/40/83/41/67/100. Reading it as +11 gives 113/55/98/82/131/126. Gate B/E exposure for the xlsx minutes column; the main call is unaffected.
+  5. The median runs over corrected articles only, which is the natural reading.
+
+## Gates
+
+- **A (correct):** pass. All figures reproduce, except the "within 2%" unit.
+- **B (facts present):** pass for the main call. The surface-to-headline mapping is in the field reference. It is inferential about shipped variants leaving the canonical headline alone. Weak spot: the `publish_at` timezone for the minutes column.
+- **C (forced):** pass for the desk and runner-up. The 50,000-rounded figure is robust over the pass-the-back-test estimators, which give 1.24M to 1.27M. It is less robust at the margin (log scale, per-desk priors).
+- **D:** pass. The split among good answers is analytical, not about the meaning of a word.
+- **E (prompt):** pass. The prompt pins the desk, the figure, rounding and each xlsx column. It leaves method open (shrinkage, exposure), which is allowed.
+
+## Files / Hygiene: PASS
+
+19 files in 8 formats (csv, xlsx, parquet, pdf, docx, md, txt, eml); one file has 2.3M rows, one 266k. Distractors: the Newsfold syndication agreement, the newsletter performance file, and the dashboard export (right numbers, wrong basis). Dates are coherent: Friday 16 October 2026 email, Monday 12 October staff list, R26-10 published 11 October. Nothing declares the data as synthetic or generated. Minor noise: the field reference is "revised 2 October" while the email says it was updated on 16 October. Two LOC-M web tests are owned by staff whose HR dates do not cover the test start, which is harmless. No exclusion-level finding.
+
+## Stump power
+
+Four independent easy routes each give a wrong desk: raw dashboard lift (Sport·metro), reader share (Politics·national), all-source clicks (Business·national), and no tested-article exclusion (Local·metro). A strong model that shrinks correctly but forgets the exposure base still fails. I expect stumps, and for analytical reasons. The stacked inferences (surface class, coverage, rounding) make full agreement with the 1,250,000 figure uncertain even for a correct solver.
+
+## Stumping type
+
+`mechanism: method_or_model_selection` `stumping_family: analytical_non_defect` `surface_read_dependency: no` `sole_data_defect: no`
+
+The reported dashboard lift is arithmetically right and is not a planted defect. The stump is choosing a validated shrinkage estimator (empirical Bayes, back-tested on the change log) and the exposure base. On clean data it still stumps, so Gate G passes.
+
+## Three rules
+
+`domain: pass` `layers: pass` `decisive_step: analytical`
+
+The field's own analysis, A/B-test winner's-curse correction with empirical Bayes validated against holdbacks, decides Culture·national over Sport·metro. The easy route (dashboard lift times clicks) gives Sport·metro at about 2.8M. Layer 1 is the mixed taxonomies, restated panel months, restored and migrated CMS documents, and mixed timezones. Layer 2 is shrinkage plus the exposure base. Surface classification and the coverage join are rule-application steps below the decisive one.
+
+## Fix
+
+- **solution:** restate the back-test tolerance as 0.2 percentage points.
+- **rubric:** allow one 50,000 step on the clicks figure.
+- **Optional input_files lever (needs a rerun):** state the `publish_at` timezone in the CMS field notes, and state that shipped variants do not alter the stored canonical headline.
+
+## Pass 2 (re-judge after the pass-1 fix and the leak reader's brief fix)
+
+
+**Verdict:** DETERMINISTIC (SOLUTION_WRONG on wording only: CRITICAL_COMPONENTS 2 and SOLUTION_STEPS 3 call the 50.2% "platform-drawn", but 50.2% is the share on Bightline's OWN surfaces; the externally drawn share is 49.8%. The figure itself reproduces.)
+
+**Disposition:** FIX_NOW. Reword that one label, and pin two facts the files only imply (see Fix). No model rerun needed: the analytic surface is unchanged.
+
+**Why:** Executed literally, the shipped files give Culture·national 1,250,000 extra clicks, Local·metro 800,000, gap 450,000, and every xlsx row reproduces to the stated rounding. The call is forced by three things the files pin: (i) the per-test winning lift must be shrunk (an empirical-Bayes prior fitted on all 10,111 variant packages), and `headline_squad_change_log.xlsx` back-tests that estimator to within 1.2% of realised holdback lift on 7 of 7 embeddings while raw lift is 30% to 285% out; (ii) the squad can only move headlines on Bightline's own surfaces (`canonical_headline` in the field reference lists every external surface that shows the stored headline); (iii) the desks' own tests (every `owner_staff_id` is that desk's own staff) already cover 8.6% of Culture·national's own-surface clicks and 71.1% of Local·metro's, and the plan holds 2027 clicks at the trailing level, so only untested clicks are incremental. Culture·national wins under every reading I tried except dropping the coverage exclusion, which no reasonable reading supports. Runner-up and gap are less sturdy than the winner (see forks).
+
+## Literal reading first
+
+Executed word for word: desk = the shortlist desk with the largest (shrunk winning lift x own-surface clicks on articles with no test in the archive). The prompt is silent on lift basis, surface scope and coverage; the files supply them (field reference, plan notes, placement brief "tests that desk's headlines", change log notes). Where the files stay silent I listed every option below.
+
+## Recomputation ledger
+
+| Figure | Claimed | Recomputed | Reproduced |
 |---|---|---|---|
-| File count | 10 or more | 19 | Yes |
-| Distinct formats | 3 or more | 8 (csv, xlsx, pdf, md, txt, parquet, eml, docx) | Yes |
-| Large file | 25,000+ rows or a large database | parquet 2,324,291 rows; CMS csv 266,630 rows | Yes |
-| Distractors declared | 2 or more in metadata.json, none labelled in a name | 2 (newsfold_syndication_agreement.pdf, newsletter_performance_2026-07_2026-09.csv); file names neutral | Yes |
-| Distractors unused yet relevant | same world, something to weigh | both are click surfaces in the Bightline world; neither is used by the solution | Yes |
-| Wrong-basis artifacts declared | any file that ranks the candidates on the decision and gets it wrong must be a declared distractor | experimentation_dashboard_export_2026-10-01.csv ranks verticals for placement (the brief names it the room's view), reproduces exactly, is ruled out by the back-test, and is NOT in distractor_files | No (finding 3) |
-| Deliverable count | 1 to 3 | 2 (docx, xlsx) | Yes |
-| Format family | none required | n/a | Yes |
-| Asks multi-dimensional | not stacked lookups | six-desk grid of six measures, each needing its own ETL, plus chart and back-test line | Yes |
-| Golden deliverables present | every file the prompt names | golden/squad_placement_2027.docx and .xlsx present; figures match the submission; chart meets every named part | Yes |
-| Units and rounding stated | inside the asking sentence | Main ask, readers, per-reader and rate are inline. The docx gap and the xlsx clicks, corrections and minutes take their rounding from the following sentence | Yes, with note (finding 7) |
-| Prompt shape, 25 criteria | identifiable shape, 25+ | funnel or chain of stages (shape 09) over a desk grid; about 45 gradable items from the prompt | Yes |
-| Realism | nothing reads LLM-generated; goldens read as real work | Goldens read as a real paper and workbook. The pack has minor tells (finding 8) | Yes, with notes |
-| Domain tag | an accepted domain | "Marketing & Consumer Research" is on guide-to-prompt Step 1's nine-domain list. It is not on CLAUDE.md's, stumping SKILL.md's or guidelines/scope_of_project.md's six-domain list | Unresolved (finding 6) |
+| Raw avg winning lift vs dashboard (CUL/BUS/LOC) | 2.22 / 2.34 / 3.44 | 2.219 / 2.344 / 3.444 (kept control = 0) | yes |
+| Test counts vs dashboard (Politics 415, Business 700, Sport 950, Local 1400, Culture 50) | as dashboard | POL-N 205 + POL-M 210, 700, SPT-N 800 + SPT-M 150, 1400, 50 | yes |
+| Prior (ratio-minus-one scale, binomial delta variance, ML, all variant packages, both engines) | not stated | mu = -1.04%, tau = 4.53% | n/a |
+| Culture·national shrunk lift | 1.78% | 1.781% | yes |
+| Change-log selection | tests_run, avg lift | desk tests started in the embedding's calendar year: 72/3.008, 54/3.137, 60/2.889, 88/3.664, 66/2.678, 60/2.895, 58/3.217 vs 72/3.0, 54/3.1, 60/2.9, 88/3.7, 66/2.7, 60/2.9, 58/3.2. Window by started/ended dates does NOT reproduce (69, 52, 59, 80, 64, 56, 58). | yes (calendar year) |
+| Back-test shrunk vs realised holdback | within 2%, 7 of 7 | shrunk 1.863/1.441/2.222/2.568/0.693/1.101/2.410 vs 1.842/1.426/2.218/2.554/0.695/1.108/2.431: errors +1.2/+1.0/+0.2/+0.5/-0.3/-0.7/-0.9% | yes |
+| Back-test raw | 0 of 7 within 2% | raw 3.008 etc. vs realised: 0 of 7 | yes |
+| Culture own-surface share | 50.2% | 76,918,315 / 153,340,236 = 50.16% | yes (label error, see Verdict) |
+| Pageview file ties to plan | ties | all 11 desk totals equal `clicks_oct25_sep26` | yes |
+| Desk-test coverage of own-surface clicks, Culture / Local | 8.6% / 71.1% | 8.59% / 71.07% | yes |
+| Culture untested own-surface clicks | 70,300,000 | 70,314,857 | yes |
+| Culture extra clicks | 1,250,000 | 1,252,299 (-> 1,250,000) | yes |
+| Local·metro extra clicks | 800,000 | 808,110 (-> 800,000) | yes |
+| Gap | 450,000 | 444,189 unrounded, 450,000 rounded either way | yes |
+| Other desks (for ranking) | not stated | BUS-N 697,594; SPT-N 648,293; POL-N 552,392; SPT-M 100,400 | n/a |
+| Panel readers / visits, POL-N | 3,180,000 / 13,041,000 | 3,180,260 / 13,041,230 | yes |
+| SPT-M | 470,000 / 1,550,000 | 470,290 / 1,550,270 | yes |
+| BUS-N | 1,760,000 / 6,642,000 | 1,760,310 / 6,641,840 | yes |
+| SPT-N | 2,931,000 / 11,626,000 | 2,930,720 / 11,626,310 | yes |
+| LOC-M | 617,000 / 2,359,000 | 616,760 / 2,358,790 | yes |
+| CUL-N | 1,412,000 / 5,052,000 | 1,412,240 / 5,052,120 | yes |
+| Median minutes to first headline correction: POL-N, SPT-M, BUS-N, SPT-N, LOC-M, CUL-N | 86, 55, 89, 47, 102, 119 | 86, 55, 89, 47, 102, 119 (n = 43, 17, 37, 39, 31, 13) | yes, under one stated rule set |
+| Calibration: standards bulletin (11 headline + 22 text corrections in March 2026) | n/a | 11 headline-correction events and 33 new notes in March 2026 under the same rules | consistent |
 
-## Gate G reconciliation
-- **Judge (outside):** mechanism binding_constraint, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no.
-- **Design note (inside):** decomposition_attribution ("G5 netting over a G8 reachable base") with method_or_model_selection at rung 2, analytical_non_defect, surface_read_dependency no, sole_data_defect no.
+Panel rule used: each month from its latest release by desk (earlier section list through R26-03, 2026 list from R26-04, R26-04H on the 2026 list, R26-04H rows replace only the sections it carries), R26-08's April to June rows set aside because they are byte-identical to the figures R26-07B restated. Correction rule used: live saves only; headline change = published headline hash differs from the previous live save; new note = first appearance of the text (carried and put-back excluded); pair within +/-10 min; time = the headline-changing live save; live blogs count their own headline and their entries' headlines; restored copies merged into originals; migrated documents and never-live documents dropped; go-live = min(publish_at - 10 h, first live save).
 
-Family and all three flags match. Only the mechanism label differs. From outside, the decisive step (netting desk-tested headlines out of the clicks the squad can move) reads as an eligibility limit on honest data. It does not read as splitting a movement into mix, rate and volume, which is how v3 defines decomposition_attribution. Both labels are FINE-numbers shapes that pass Gate G, so this mismatch does not predict a send-back.
+## Forks (literal readings, with the answers they give)
 
-The two declared distractors were not named as the surface read carrying the task. The design note's own stump sentence (a solver lands on Local·metro by never asking who ran the tests) is the trap the outside pass also found decisive. The one Gate G gap is the undeclared dashboard export (finding 3). It is a licensed wrong basis that is not filed as one, but it is not the stump: the task stays hard with it deleted.
+| Fork | Option A (golden) | Option B | Effect |
+|---|---|---|---|
+| related_links is an own surface (shows the live/tested headline) | in: CUL 1.25M, LOC 0.80M, gap 0.45M | out: CUL 1.05M, LOC 0.70M, gap 0.35M | figures change, winner and runner-up do not. The field reference lists every surface that carries `canonical_headline` and omits related links, so inclusion follows by exclusion only. |
+| Coverage exclusion (only untested clicks are incremental) | applied | not applied: LOC-M 2.79M beats CUL-N 1.37M | flips the winner. Implied by plan notes ("no change assumed", "planned on top") plus the owner join, not stated in one sentence. Judged forced. |
+| Lift basis | desk's own shrunk lift | squad's pooled realised lift 1.753%: CUL 1.23M still first (-> 1.25M), runner-up becomes SPT-N (~860k), gap ~400k | runner-up and gap change. Desk-specific evidence is the only basis that uses the web desks' data, so I treat it as the expert reading. |
+| Estimator rounding band | binomial delta, global prior: CUL 1.781% -> 1.252M | web-only prior 1.775%, Poisson variance 1.762% -> still 1.25M. Log-ratio 1.820% -> 1.28M -> 1,300,000; per-desk prior 1.706% -> 1.20M | the 50,000 rounding makes the figure sensitive to +/-2% in lift. The back-test rejects log-ratio (max error 20.6%) and per-desk prior (15.4%); the filed "within 2%" criterion is the author's, not in the files, but the golden estimator is the best fit by a wide margin (1.2% vs next 1.9%). Thin but settled by the back-test. |
+| Time zone of `publish_at` | AEST (+10 h) all desks | UTC: POL-N 64, SPT-M 40, BUS-N 83, SPT-N 42, LOC-M 67, CUL-N 100. AEDT for national desks Oct to Apr: POL-N 105.5, SPT-N 63, BUS-N 90, CUL-N 119 | affects the xlsx minutes column (every desk but SPT-M/LOC-M under DST). The files never state the zone. The data pin +10: first live save is never more than 120 min before publish_at on every desk in every month (no DST step), and the 15 to 716 min scheduling lead only fits +10. Inferable, not filed. |
+| Live-blog own headline counts as headline | counts | entries only: POL-N 89.5, SPT-N 51 | two xlsx values change. "a live-blog entry's included" plus the bulletin calibration (11 March events) support the golden. |
+| Drafts count as published versions | no (live saves only) | yes: POL-N 86, SPT-N 45, LOC-M 86 | LOC-M changes 102 to 86. Standards 7.4 ("the revision that publishes the corrected headline") supports live only. |
+| Stale April to June rows in R26-08 | set aside (07B governs) | latest release: all readers and visits fall 1% to 4% (POL-N visits 12,557k) | the release log names 07B as replacing R26-05/06/07; R26-08's rows equal the replaced figures exactly. Resolvable from the files. |
+| R26-04H partial coverage | replaces only the sections it carries (by desk) | replaces whole months (Business/Sport·national blank Nov to Feb) | the first is the only reading that yields 12 months for every desk. |
+| Old articles in the 2027 base | all clicks | only articles published in the window | no effect: pre-October-2025 articles carry under 0.3% of own-surface clicks on every desk. |
+| Timestamp of the correction (headline save, note save, later of the two) | headline save | note or later: CUL 121, BUS 91, POL-N 88, SPT-N 51 | Standards 7.4 favours the headline save. |
 
-## Stump power (Gate F)
-Moderate and plausible. The trap doing the work is the desk-tested netting. A strong model that shrinks the lift and keeps only platform clicks, but never joins test owners to the staff list, files Local·metro at about 2.8m. The platform cut is the second trap; missing it gives Business·national. Too-easy signals:
-- The prompt's back-test line telegraphs the method-validation step.
-- The field reference states the canonical-headline fact plainly.
-- The plan Notes say initiatives are "planned on top of these figures".
-- `squad_placement_thread.eml` gives three opinions (readers, the dashboard, big samples), each of which pre-flags a wrong path.
+The ten-minute window is not a fork (any value from 9 to 20 gives the same medians; 8 and below change them).
 
-The supplementary ETL is heavy (release restatements, the taxonomy cutover, put-back notes, live-blog entries, restored and migrated documents, scheduled go-live) and should hold the asks. If the solver rounds show the main call too easy, the most natural lever is to drop the explicit "within 2 per cent" framing from the prompt and keep the back-test as an unprompted check.
+## Gates
 
-## Findings, ranked
-1. **submission.md Step 7 misstates the rules behind the supplementary figures (SOLUTION_WRONG).**
-   - (a) "Read each release on the section list it was issued on", taken as the list in force on the issue date, puts R26-03 (issued 10 March 2026) on the 2026 list. That gives BUS 1,824,000, SPT-N 2,830,000, LOC 634,000 and SPT-M 463,000. State the release-log rule instead: R26-03 and earlier on the 2025 list; R26-04, R26-04H and later on the 2026 list; R26-08's April to June rows set aside; R26-07B replaces R26-05 to R26-07.
-   - (b) "On the save before or on the save after" with no session limit gives CUL 18, LOC 42, BUS 48, SPT-N 52, POL-N 62, SPT-M 24. State the same-session pairing and the live-blog order the way the golden workbook's Notes sheet does ("a few minutes apart", "the entry fixed in the minutes before it"). In that Notes sheet and in docx footnote 3, replace "the note saying the headline was corrected" with wording that does not invite a text-only count, which gives CUL 8.
-   - (c) Add the two omitted rules. A restored copy continues its original: LOC-M's median is 102 only if `YJZKD97TGJ` is timed from `JNPKCW55H4`'s go-live on 2 November 2025, and is 72 without it. A scheduled article goes live at publish_at: Culture's median is 119 with it and 100 on the first live save.
-2. **headline_squad_change_log.xlsx predates one of its own rows.** The export log and workbook properties date the snapshot 6 February 2026, but embedding 7's closed_on is 10 February 2026. Set the change log's extracted_on and created date to 11 February 2026 or later in the generator, both in `audience_data_export_log.csv` and in the workbook properties.
-3. **The dashboard is an undeclared wrong-basis artifact.** Add `experimentation_dashboard_export_2026-10-01.csv` to `distractor_files` in metadata.json. It already meets the bar: it reproduces exactly, the back-test rules raw lift out, and it is not the stump.
-4. **Optional determinism hardening.** No shipped file says how a correction note pairs with the corrected headline. One line under correction_note in `cms_revisions_export_fields.txt` would close the residual 30 to 60 minute fork on SPT-N and POL-N. It changes a shipped file, so the in-house rounds' supplementary results would no longer carry over strictly.
-5. **Temporal slip in the thread.** `squad_placement_thread.eml` has the exports in the folder at 16:05 on 15 October, but `audience_data_export_log.csv` and `cms_revisions_export_fields.txt` date them 16 October. Align the dates in the generator.
-6. **Domain roster conflict.** Confirm which roster is current before delivery. On the six-domain roster, the tag alone gets the task rejected.
-7. **Prompt rounding placement.** For the docx gap and the xlsx extra clicks, corrections and minutes, the rounding sits in the sentence after the ask. Rubric risk is low; move it inline if the prompt is touched again.
-8. **Realism tells.**
-   - `audience_data_export_log.csv` reads as a package manifest: it logs the mail thread and the contract as extracts.
-   - `standards_bulletin_2026-04.docx` and the golden docx carry python-docx template residue (Words 0, default thumbnail).
-   - Every file in `target/` has an identical mtime.
-   - The PDF producer is "Bightline News".
-9. **Gate G label (no action required).** Optionally align the design note's mechanism label to binding_constraint.
+- **A:** passes. Every load-bearing figure reproduced. Grain checked: the panel and CMS files are not change-log feeds; the archive is one row per package; shipped = Y once per test. Dashboard "Politics 4.69%" is the 415-test pooled value across POL-N and POL-M (a declared-wrong-basis distractor), and does not misattribute.
+- **B:** passes with two unfiled-but-inferable facts (`publish_at` zone, related links). Every decisive value was found in a shipped file or its data. Vocabulary check: "extra article clicks", "desk", "runner-up" appear in prompt and brief.
+- **C:** passes for the winner. Strongest competitors built: Sport·metro on raw lift (raw 10.81% x 25.5M = 2.76M), Politics·national on the dashboard's 4.69% (43.2M x 4.69% = 2.0M), Local·metro without the coverage exclusion (2.79M), Politics/Sport·national on readers. Each is eliminated by the back-test, the desk-level join or the owner join. Runner-up and gap carry the related_links and pooled-lift forks above.
+- **D, E:** pass. Difficulty comes from estimator choice and unit of analysis, not from a word. The prompt fixes the decision, the rounding and the window; method is open.
+- **Contrasting models:** none supplied.
+- **Cross-batch reference check:** not performed (no access outside this folder).
 
-## Next action for the author
-Rewrite Step 7 of `submission.md` to state the rules that actually produce its numbers: the release-log taxonomy rule for the panel, same-session pairing with the entry fixed before the blog note, the restored copy continuing its original, and go-live at publish_at for scheduled articles. Use the golden workbook's Notes sheet as the base wording, and carry the same correction into that sheet and into docx footnote 3.
+## Files / Hygiene: PASS
+
+20 files; formats csv, parquet, xlsx, docx, pdf, md, txt, eml (8). Four distractors present and unused by the solution (newsletter file, syndication agreement, standards bulletin, experimentation dashboard) plus the stale panel releases. Real-looking operational noise (partial panel rerun, restored Brisbane copies, migration copies, mixed time zones). Dates cohere (12 Oct 2026 Monday, 16 Oct 2026 Friday, 11 Jan 2027 Monday, 18 Dec 2026 Friday; export log run times precede the 08:05 email). No README, generation disclosures or toolchain banners found in document properties. Minor: `audience_plan_2027.xlsx` creation date (18 Sep) precedes its stated version P2 date (9 Oct), harmless. Nothing exclusion-level.
+
+## Stump power
+
+The trap that does the work is the winner's curse: the dashboard-style raw lift makes Sport·metro (raw 10.8%, shrunk 0.39%) and Politics (4.69%) look best, and the change log's own tests_run/avg_winning_lift against realised holdback is the evidence to shrink. A second layer, tested coverage by owner, removes Local·metro (94.7% own-surface, 71.1% already tested). A strong model that skips shrinkage lands on Sport·metro or Politics; one that shrinks but skips the coverage join lands on Local·metro. Both are analytical errors, so the task should stump; whether it does is for the model runs.
+
+## Stumping type
+
+`mechanism: statistical_rigor` (empirical-Bayes shrinkage validated by back-test, with a coverage/unit-of-analysis join), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. The dashboard and change-log averages are arithmetically right; the difficulty is selection bias in winning lifts and overlap with existing testing, and it persists on perfectly clean data, so it passes Gate G.
+
+## Three rules
+
+`domain: pass`, `layers: pass`, `decisive_step: analytical`. Layer 1: panel taxonomy and release restatements, restored and migrated CMS documents, UTC and Brisbane clocks, partial extracts; Layer 2: empirical-Bayes lift estimation validated out of sample, then incremental reach net of existing testing. Easy route a strong analyst who read everything would take: average the winning lifts as the dashboard and change log do and multiply by all own-surface clicks, giving Local·metro (about 2.8M at shrunk lift, or Sport·metro at about 2.76M if lift is raw and coverage is applied), not Culture·national.
+
+## Fix
+
+- **solution:** relabel "platform-drawn" as "on Bightline's own surfaces" in CRITICAL_COMPONENTS 2 and SOLUTION_STEPS 3, and use "own-surface clicks" in step 5.
+- **input_files (optional pins, no analytic change, no rerun):** one line in `audience_warehouse_field_reference.md` stating that related-story links show the live headline; one line in `cms_revisions_export_fields.txt` stating that `publish_at` is the editor's AEST (UTC+10) clock.
+
+## Disposition of pass 2
+
+- The label ("platform-drawn" for the 50.2% own-surface share) is fixed in submission.md: blocks 1 to 3 now say own-surface clicks.
+- The related-links fork is closed in the pack: the field reference's `related_links` row now says the links show each linked article's current headline (SF7, asserted). The call, the runner-up and every graded figure are unchanged.
+- The `publish_at` clock is left unfiled: it is the median ask's device, and this pass found the data pin it to +10 hours (no daylight-saving step, scheduling leads that fit only +10). The squad's pooled lift and the rounding band are settled by the change-log back-test, as this pass found.
+- No third pass: the skill allows one re-judge, and neither fix moves a figure, a rung or the decisive path.

@@ -270,13 +270,35 @@ def off_median(m, g):
 
 # ---------------------------------------------------------------------------------- asks: the panel
 
-def panel_readers(D, mode="golden"):
-    """Average monthly unique audience per desk, and the number of section-months it averages over.
+def echo_rows(D):
+    """Index of panel rows that repeat, figure for figure, a figure a later release says it replaces, filed under a
+    release no replacing note names (the July file's April to June rows)."""
+    p, rel = D["panel"], D["rel"]
+    named = set()
+    superseded = set()
+    key = lambda r: (r["period"], r["site_code"], r["section_code"], r["unique_audience"], r["visits"])  # noqa: E731
+    for r0, note in zip(rel["release"], rel["note"]):
+        m = re.search(r"replace those published in ([R0-9, and-]+)\.", str(note))
+        if not m:
+            continue
+        olds = set(re.findall(r"R\d\d-\d\d", m.group(1)))
+        named |= olds
+        months = set(p.loc[p["release"] == r0, "period"])
+        old_rows = p[p["release"].isin(olds) & p["period"].isin(months)]
+        superseded |= {key(r) for _, r in old_rows.iterrows()}
+    return [i for i, r in p.iterrows() if r["release"] not in named and key(r) in superseded]
+
+
+def panel_readers(D, mode="golden", echo=False):
+    """Average monthly unique audience and visits per desk, and the number of section-months they average over:
+    {desk: (readers, months, visits)}.
     golden: releases before the release log's first release on the 2026 content taxonomy read on the earlier section
-    list, that release and every later one (the history release included) on the 2026 list, each release counted only
-    for the months the release log lists for it, then the latest release per period and section. issue_date: the same,
-    each release read on the list in force on its issue date (the 2026 list from 1 March 2026, so R26-03 on it). echo: the same without the release log's months,
-    so the July release's file supplies April to June as first published (the round-5 path).
+    list, that release and every later one (the history release included) on the 2026 list, then the latest release
+    per period and section. echo=True keeps the July file's April to June rows (the replaced figures carried again
+    under the July release), which then win as the latest release: the natural path. echo=False sets them aside.
+    issue_date: each release read on the list in force on its issue date (the 2026 list from 1 March 2026, so R26-03
+    on it). convention: each monthly release counted only for the month its name follows, the history release and
+    the restatement for the months their notes name (converges on golden).
     per_period: the rows of the latest release carrying each period (the round-3 path); per_site: the rows of the
     latest release carrying each period and site; per_code: the latest release per period, site and section code,
     then codes read on the list each release was issued on. careful: the latest release per period and code,
@@ -287,9 +309,16 @@ def panel_readers(D, mode="golden"):
     p = D["panel"].copy()
     rel = D["rel"].copy()
     pub = dict(zip(rel["release"], pd.to_datetime(rel["published_on"])))
-    months = {r: {m.strip() for m in str(v).split(",")} for r, v in zip(rel["release"], rel["periods"])}
-    if mode in ("golden", "nohist", "norestate", "national", "issue_date"):
-        p = p[[per in months[r] for r, per in zip(p["release"], p["period"])]]
+    if not echo:
+        p = p.drop(index=echo_rows(D))
+    if mode == "convention":
+        noted = {"R26-04H": {"2025-11", "2025-12", "2026-01", "2026-02"}, "R26-07B": {"2026-04", "2026-05", "2026-06"}}
+
+        def month_of(r):
+            y, m = 2000 + int(r[1:3]), int(r[4:6])
+            y, m = (y, m - 1) if m > 1 else (y - 1, 12)
+            return {"%d-%02d" % (y, m)}
+        p = p[[per in noted.get(r, month_of(r)) for r, per in zip(p["release"], p["period"])]]
     first26 = pub[rel.loc[rel["note"].str.startswith("First release on the 2026"), "release"].iloc[0]]
     h = D["sec_hist"].copy()
     h["valid_from"] = pd.to_datetime(h["valid_from"])
@@ -302,15 +331,15 @@ def panel_readers(D, mode="golden"):
         p = p[p["release"] != asks_mod.HISTORY_RELEASE]
     if mode == "norestate":
         p = p[p["release"] != "R26-07B"]
-    by_issue = mode in ("golden", "echo", "nohist", "norestate", "national", "per_period", "per_site", "per_code",
-                        "issue_date")
+    by_issue = mode in ("golden", "nohist", "norestate", "national", "per_period", "per_site", "per_code",
+                        "issue_date", "convention")
     if by_issue:
         cut = h.loc[h["valid_to"].isna(), "valid_from"].min() if mode == "issue_date" else first26
         lst = np.where(p["pub"] >= cut, "new", "old")
         p["section"] = [lists[l].loc[(s, c), "section_name"] for l, s, c in zip(lst, p["site_code"], p["section_code"])]
         p["desk"] = [lists[l].loc[(s, c), "bightline_desk"] for l, s, c in zip(lst, p["site_code"], p["section_code"])]
     p = p.sort_values("pub", kind="stable")
-    if mode in ("golden", "echo", "nohist", "norestate", "national", "issue_date"):
+    if mode in ("golden", "nohist", "norestate", "national", "issue_date", "convention"):
         p = p.drop_duplicates(["period", "site_code", "section"], keep="last")
     elif mode == "per_period":
         p = p[p["pub"] == p.groupby("period")["pub"].transform("max")]
@@ -331,10 +360,10 @@ def panel_readers(D, mode="golden"):
     out = {}
     for d in P.WEB:
         x = p[p["desk"] == d]
-        out[d] = (float(x["unique_audience"].mean()), len(x))
+        out[d] = (float(x["unique_audience"].mean()), len(x), float(x["visits"].mean()))
     if mode == "national":
         x = p[(p["site_code"] == "BLN") & (p["section"] == "Sport")]
-        out["SPT-M"] = (float(x["unique_audience"].mean()), len(x))
+        out["SPT-M"] = (float(x["unique_audience"].mean()), len(x), float(x["visits"].mean()))
     return out
 
 
@@ -528,6 +557,52 @@ def run(W, target, out):
              bin_round(r4_disc[CUL]) != bin_round(r4[CUL]) and o4d[1] != o4[1],
              str(rec["discover_ruled_out_by_field_reference"]))
 
+    # ----- the semantic fork table (DESIGN_NOTE.md): each term of the main ask and each convention the main
+    # computation needs, its golden reading against every alternative
+    brief_ = re.sub(r"\s+", " ", T[F["charter"]])
+    flat_ = lambda z: re.sub(r"[^a-z]", "", z.lower())     # noqa: E731
+    dname = dict(zip(D["desks"]["desk_code"], D["desks"]["desk_name"]))
+    L_.check("SF1 shortlist: the brief's 2027 shortlist names the six desks the prompt names",
+             all(flat_(dname[d]) in flat_(brief_) for d in SL), str([dname[d] for d in SL]))
+    L_.check("SF2 window: the brief puts the squad on one desk from January for the calendar year and judges it on the "
+             "twelve months after it embeds, so 2027 is January to December",
+             "Each January it moves to one desk for the calendar year" in brief_
+             and "in the twelve months after it embeds" in brief_)
+    L_.check("SF3 extra clicks: the brief's measure is incremental article clicks, clicks the plan would not "
+             "otherwise carry, and no filed sentence names the clicks a lift applies to",
+             "judged on incremental article clicks" in brief_ and "every click" not in brief_)
+    L_.check("SF4 owning desk: every article carries one desk code on every spine row, so counting at the owning desk "
+             "is one reading (C1)", int(D["spine"].groupby("article_id")["desk_code"].nunique().max()) == 1)
+    sp_ = D["spine"]
+    m_post = (sp_["source_code"].isin(PLATFORM) & ~sp_["article_id"].isin(set(tests["article_id"]))
+              & sp_["age_band"].ne("0-2h"))
+    post_ = sp_[m_post].groupby("desk_code")["pageviews"].sum()
+    r4_post = {d: LB["shr"][d] * float(post_[d]) for d in SL}
+    rec["post_test_reading"] = {P.SHORT[d]: round(r4_post[d]) for d in SL}
+    L_.check("SF5 counting period: the brief counts an article's clicks from its publication, its test hours included, "
+             "and names no click base; the post-test reading it rules out moves the call figure out of its bin",
+             "counted at the owning desk from each article's publication, the hours its headline is under test "
+             "included" in brief_
+             and bin_round(r4_post[CUL]) != bin_round(r4[CUL]), str(rec["post_test_reading"]))
+    L_.check("SF6 2027 base: the plan's 2027 clicks equal the base-year clicks at every desk, so plan and actuals are "
+             "one reading (C1)", all(int(plan.loc[d, "plan_2027_clicks"]) == int(plan.loc[d, "clicks_oct25_sep26"])
+                                    for d in SL))
+    L_.check("SF7 surfaces: the canonical_headline row names every surface that shows the stored headline, Discover-"
+             "style cards included (the discover reading it rules out is asserted above), and the related-links row says "
+             "those links show the linked article's current headline",
+             canon_ is not None and "Discover-style cards" in canon_.group(1)
+             and "| `related_links` | Related-story links inside an article, web and app, each showing the linked "
+                 "article's current headline |" in T[F["fieldref"]])
+    L_.check("SF8 winning lift: the field reference defines it as the shipped variant's click-through over the "
+             "control's, minus one, and zero when the control is kept",
+             "minus one, and zero when the control is kept" in re.sub(r"\s+", " ", T[F["fieldref"]]))
+    L_.check("SF9 runner-up and gap: Local·metro second, the gap the same whether the two figures are rounded before "
+             "or after subtracting",
+             o4[1] == "LOC-M" and bin_round(r4[o4[0]]) - bin_round(r4[o4[1]]) == bin_round(r4[o4[0]] - r4[o4[1]]))
+    L_.check("SF10 rounding: the call figure sits at least 15,000 inside its 50,000 bin, so rounding once at the end and "
+             "rounding the lift to two decimals first file the same figure", bin_margin(r4[CUL]) >= 15_000,
+             "%.0f" % bin_margin(r4[CUL]))
+
     # ----- the grid, cell by cell
     grid = {}
     for lb in ("dash", "raw", "shr", "pool"):
@@ -609,8 +684,10 @@ def run(W, target, out):
     for _, r in chg.iterrows():
         y = pd.Timestamp(r["started"]).year
         tid = tests[(tests["desk_code"] == r["desk_code"]) & (tests["start"].dt.year == y) & (tests["engine"] == "app")]
+        # the change log records each embedding's realised lift over its 5 per cent holdback, a rate: every
+        # prediction below is a lift (planned = 1 keeps the rival forms' arithmetic)
         emb.append(dict(no=int(r["embedding"]), desk=r["desk_code"], year=y, ids=tid.index.tolist(),
-                        planned=float(r["planned_clicks_m"]) * 1e6, real=float(r["realised_incremental_clicks"]),
+                        planned=1.0, real=float(r["realised_holdback_lift_pct"]) / 100,
                         lift=float(r["avg_winning_lift_pct"]), n=int(r["tests_run"])))
     L_.check("change log: tests_run and the observed lift reproduce from the archive",
              all(len(e["ids"]) == e["n"] and round(100 * tests.loc[e["ids"], "raw"].mean(), 1) == round(e["lift"], 1) for e in emb))
@@ -624,7 +701,7 @@ def run(W, target, out):
 
     gold = {e["no"]: tests.loc[e["ids"], "shr"].mean() * e["planned"] for e in emb}
     h, m3, worst, _ = score(gold)
-    L_.check("back-test: shrunk lift x planned clicks reproduces 7 of 7 within 2%, worst at most 1.6%", h == 7 and worst <= 0.016,
+    L_.check("back-test: the shrunk lift reproduces 7 of 7 realised holdback lifts within 2%, worst at most 1.6%", h == 7 and worst <= 0.016,
              "%d/7 worst %.2f%%" % (h, 100 * worst))
     rec["backtest"] = {"golden": (h, m3, round(100 * worst, 2))}
     raw = {e["no"]: tests.loc[e["ids"], "raw"].mean() * e["planned"] for e in emb}
@@ -656,8 +733,6 @@ def run(W, target, out):
     rivals["shrink every variant then take the maximum"] = {e["no"]: shrink_then_max(pk, pr_ml, e["ids"]) * e["planned"] for e in emb}
     rivals["impression-weighted desk mean"] = {e["no"]: np.average(tests.loc[e["ids"], "shr"], weights=tests.loc[e["ids"], "imp"]) * e["planned"] for e in emb}
     rivals["click-weighted desk mean"] = {e["no"]: np.average(tests.loc[e["ids"], "shr"], weights=tests.loc[e["ids"], "clk"]) * e["planned"] for e in emb}
-    post = {d: 1 - c[d]["first2h"] / c[d]["total"] for d in P.APP}
-    rivals["post-test clicks only"] = {e["no"]: gold[e["no"]] * post[e["desk"]] for e in emb}
     absp = {}
     a = D["arch"].copy()
     a["ctr"] = a["clicks"] / a["impressions"]
@@ -700,13 +775,11 @@ def run(W, target, out):
         rec["backtest"]["rivals"][name] = (h, m3, round(100 * worst, 1))
         if "(convergent)" in name:
             L_.check("back-test: %s reproduces 7 of 7 within 2%%" % name, h == 7, "%d/7 worst %.2f%%" % (h, 100 * worst))
-        elif name == "post-test clicks only":
-            L_.check("back-test: post-test reading misses all 7 by at least 8%", (np.abs(err) >= 0.08).all(), "min %.1f%%" % (100 * np.abs(err).min()))
         else:
             L_.check("back-test refutes %s (at least 2 of 7 missed by more than 3%%)" % name, m3 >= 2, "%d hits, %d misses >3%%, worst %.1f%%" % (h, m3, 100 * worst))
         if name.startswith("per-desk"):
             L_.check("back-test: %s reproduces at most 3 of 7" % name, h <= 3, "%d/7" % h)
-    L_.check("back-test: rival family swept", len(rivals) >= 17, "%d rules" % len(rivals))
+    L_.check("back-test: rival family swept", len(rivals) >= 16, "%d rules" % len(rivals))
     # what the forms the back-test refutes would file, and the convergent web-only prior against every graded bin
     tw_ = test_table(D["arch"], pk, pr_web)
     lw_ = tw_[tw_["engine"] == "web"].groupby("desk_code")["shr"].mean()
@@ -727,24 +800,25 @@ def run(W, target, out):
                  "figure" % nm_, bin_round(cul_) != bin_round(r4[CUL]), "%.0f" % cul_)
     twins = [e for e in emb if e["no"] in (3, 6)]
     t3, t6 = twins
-    same = (t3["n"] == t6["n"] and t3["lift"] == t6["lift"] and t3["planned"] == t6["planned"]
+    same = (t3["n"] == t6["n"] and t3["lift"] == t6["lift"]
             and chg.loc[chg.embedding == 3, "distribution"].iloc[0] == chg.loc[chg.embedding == 6, "distribution"].iloc[0])
     ratio = t3["real"] / t6["real"]
-    L_.check("twins #3 and #6 identical on tests, lift, planned clicks and distribution", same)
-    L_.check("twins' realised gains 2.03x apart (plus or minus 0.05)", abs(ratio - 2.03) <= 0.05, "%.3f" % ratio)
-    rec["twins"] = dict(ratio=round(ratio, 3), lift=t3["lift"], tests=t3["n"], planned=t3["planned"])
+    L_.check("twins #3 and #6 identical on tests, observed lift and distribution", same)
+    L_.check("twins' realised holdback lifts 2.03x apart (plus or minus 0.05)", abs(ratio - 2.03) <= 0.05, "%.3f" % ratio)
+    rec["twins"] = dict(ratio=round(ratio, 3), lift=t3["lift"], tests=t3["n"])
     sizes = {e["no"]: float(np.log10(a[a["test_id"].isin(e["ids"])]["impressions"].median())) for e in emb}
     ship = {e["no"]: float(tests.loc[e["ids"], "won"].mean()) for e in emb}
     bt = tests[(tests["desk_code"] == "BUS-N")]
     bsize = float(np.log10(a[a["test_id"].isin(bt.index)]["impressions"].median()))
     bship = float(bt["won"].mean())
     near_emb = min(emb, key=lambda e: (sizes[e["no"]] - bsize) ** 2 + (ship[e["no"]] - bship) ** 2)
-    L_.check("resemblance: Business·national's test profile is nearest embedding #3, the largest realised gain",
-             near_emb["no"] == 3 and max(emb, key=lambda e: e["real"])["no"] == 3,
-             "nearest #%d" % near_emb["no"])
+    L_.check("resemblance: Business·national's test profile is nearest embedding #3, whose realised holdback lift is "
+             "above Business·national's own shrunk lift (a lookup by resemblance overstates it)",
+             near_emb["no"] == 3 and near_emb["real"] > float(bt["shr"].mean()),
+             "nearest #%d, %.4f against %.4f" % (near_emb["no"], near_emb["real"], float(bt["shr"].mean())))
     ratios = [e["real"] / e["planned"] for e in sorted(emb, key=lambda e: e["year"])]
     mono = all(x <= y for x, y in zip(ratios, ratios[1:])) or all(x >= y for x, y in zip(ratios, ratios[1:]))
-    L_.check("no time trend in realised over planned across the embeddings", not mono)
+    L_.check("no time trend in the realised holdback lift across the embeddings", not mono)
     L_.check("blindness: no app-desk test owned outside the squad, so every embedding's untested share is 1.000",
              (tt[tt["desk_code"].isin(P.APP)]["team_code"] == "AUD-HS").all())
     L_.check("maturity: the open 2026 embedding is absent from the change log", 2026 not in [e["year"] for e in emb])
@@ -789,10 +863,17 @@ def run(W, target, out):
     arts = {d: G[d]["articles"] for d in P.WEB}
     L_.check("CMS articles equal the spine's articles published in the window, desk by desk",
              all(arts[d] == c[d]["n_art_win"] for d in P.WEB), str({P.SHORT[d]: (arts[d], c[d]["n_art_win"]) for d in P.WEB}))
-    PR = {m: panel_readers(D, m) for m in ("golden", "echo", "per_period", "per_site", "per_code", "careful", "lazy",
-                                            "nohist", "first", "norestate", "national", "issue_date")}
+    MODES = ("golden", "per_period", "per_site", "per_code", "careful", "lazy", "nohist", "first", "norestate",
+             "national", "issue_date", "convention")
+    PR = {m: panel_readers(D, m) for m in MODES}
+    PRE = {m: panel_readers(D, m, echo=True) for m in MODES}     # the July file's April to June rows kept
     readers = {d: v[0] for d, v in PR["golden"].items()}
-    L_.check("readers: every desk's average runs over twelve months of record", all(v[1] == 12 for v in PR["golden"].values()))
+    visits = {d: v[2] for d, v in PR["golden"].items()}
+    L_.check("readers and visits: every desk's average runs over twelve months of record",
+             all(v[1] == 12 for v in PR["golden"].values()))
+    L_.check("readers and visits: counting each monthly release only for the month its name follows (and the two "
+             "reruns for the months their notes name) converges on the golden at every desk",
+             all(PR["convention"][d] == PR["golden"][d] for d in P.WEB))
     iss = PR["issue_date"]
     moved = sorted(d for d in SL if abs(iss[d][0] / readers[d] - 1) > 0.005)
     rec["readers_issue_date"] = {P.SHORT[d]: round(iss[d][0], -3) for d in SL}
@@ -804,33 +885,27 @@ def run(W, target, out):
     asks = {}
     for d in SL:
         cnt = G[d]["count"]
-        asks[d] = dict(extra=r4[d], readers=readers[d], per_reader=r4[d] / readers[d], count=cnt,
+        asks[d] = dict(extra=r4[d], readers=readers[d], visits=visits[d], count=cnt,
                        rate=1000 * cnt / arts[d], median=G[d]["median"], corrected=G[d]["corrected"])
-    rec["asks"] = {d: dict(extra=golden_bins[d], readers=int(round(asks[d]["readers"], -3)),
-                           per_reader=round(asks[d]["per_reader"], 1), count=asks[d]["count"],
-                           rate=round(asks[d]["rate"], 1), median=int(asks[d]["median"]),
-                           articles=arts[d], corrected=asks[d]["corrected"],
-                           unrounded=dict(readers=round(asks[d]["readers"], 2), per_reader=round(asks[d]["per_reader"], 4),
-                                          rate=round(asks[d]["rate"], 4), median=asks[d]["median"]))
+    rec["asks"] = {d: dict(readers=int(round(asks[d]["readers"], -3)), visits=int(round(asks[d]["visits"], -3)),
+                           median=int(asks[d]["median"]), articles=arts[d], corrected=asks[d]["corrected"],
+                           unrounded=dict(readers=round(asks[d]["readers"], 2), visits=round(asks[d]["visits"], 2),
+                                          median=asks[d]["median"]))
                    for d in SL}
     for d in SL:
         x = asks[d]
         L_.check("%s corrected-article count odd" % d, x["corrected"] % 2 == 1, str(x["corrected"]))
-        rm = (x["readers"] / 1000 + 0.5) % 1
-        L_.check("%s readers at least 150 inside the nearest-thousand bin" % d, min(rm, 1 - rm) * 1000 >= 150, "%.1f" % x["readers"])
-        for nm, v, step, need in (("extra per reader", x["per_reader"], 0.1, 0.015), ("rate per 1,000", x["rate"], 0.1, 0.02)):
-            q = (v / step + 0.5) % 1
-            L_.check("%s %s at least %s inside its one-decimal bin" % (d, nm, need), min(q, 1 - q) * step >= need, "%.4f" % v)
-        alt = bin_round(r4[d]) / round(x["readers"], -3)
-        L_.check("%s extra per reader: rounded and unrounded paths agree" % d, round(alt, 1) == round(x["per_reader"], 1), "%.4f %.4f" % (alt, x["per_reader"]))
+        for nm, v in (("readers", x["readers"]), ("visits", x["visits"])):
+            rm = (v / 1000 + 0.5) % 1
+            L_.check("%s %s at least 150 inside the nearest-thousand bin" % (d, nm), min(rm, 1 - rm) * 1000 >= 150,
+                     "%.1f" % v)
         L_.check("%s median minutes is a whole number (odd count, whole-minute stamps)" % d, float(x["median"]).is_integer())
 
     def one(v):
         return np.floor(v * 10 + 0.5) / 10
 
-    L_.check("the web-only prior converges on every desk's extra clicks per reader",
-             all(one(r4_web[d] / asks[d]["readers"]) == one(asks[d]["per_reader"]) for d in SL),
-             " ".join("%s %.4f" % (P.SHORT[d], r4_web[d] / asks[d]["readers"]) for d in SL))
+    def k1(v):
+        return int(np.floor(v / 1000 + 0.5))
 
     # every reading that misses one or more of the corrections devices
     views = {name: ask_corrections(rows, **kw) for name, kw in READ.items()}
@@ -908,34 +983,94 @@ def run(W, target, out):
         off = [d for d in SL if off_median(s_[d], asks[d]["median"])]
         L_.check("ask stop moves the median at %d or more desks: %s" % (need_m.get(name, 6), name),
                  len(off) >= need_m.get(name, 6), str(off))
-    pnames = {"echo": ("readers: the latest release carrying each section's month, its release's published months "
-                       "unchecked (the round-5 path)", set(SL)),
-              "per_period": ("readers: the rows of the latest release carrying each month (the round-3 path)", set(SL)),
-              "per_site": ("readers: the rows of the latest release carrying each month and site", set(SL)),
-              "per_code": ("readers: the latest release per month and section code, codes read on each release's own list",
-                           set(SL)),
-              "careful": ("readers: latest release per code, codes read through the section history by period (the round-1 path)",
-                          set(SL)),
-              "lazy": ("readers: latest release per code, read on the current section list", set(SL)),
-              "nohist": ("readers: the history release left out", {"POL-N", "CUL-N"}),
-              "first": ("readers: first release per code, read by period", set(SL)),
-              "norestate": ("readers: the restated release left out", set(SL)),
-              "national": ("readers: national site for Sport-metro", {"SPT-M"})}
-    for m, (name, need) in pnames.items():
-        s_ = {d: PR[m][d][0] for d in SL}
-        off = [d for d in SL if round(s_[d], -3) != round(asks[d]["readers"], -3)]
-        prox = [d for d in SL if abs(s_[d] / asks[d]["readers"] - 1) > 0.005]
-        moved = [d for d in SL if one(r4[d] / s_[d]) != one(asks[d]["per_reader"])]
-        rec.setdefault("ask_stops", {})[name] = {P.SHORT[d]: int(round(s_[d], -3)) for d in SL}
-        rec.setdefault("readers_months", {})[name] = {P.SHORT[d]: PR[m][d][1] for d in SL}
-        rec.setdefault("per_reader_moves", {})[name] = [P.SHORT[d] for d in moved]
-        L_.check("ask stop moves readers at %s, each by more than half a per cent: %s" % (
-            ", ".join(sorted(P.SHORT[d] for d in need)), name), set(off) >= need and set(prox) >= need, str(off))
-    L_.check("readers: the round-1 path moves extra per reader at one or more desks", len(rec["per_reader_moves"][pnames["careful"][0]]) >= 1)
+    pnames = {"golden": "the July file's April to June rows kept as the latest release (the natural path)",
+              "per_period": "the rows of the latest release carrying each month (the round-3 path)",
+              "per_site": "the rows of the latest release carrying each month and site",
+              "per_code": "the latest release per month and section code, codes read on each release's own list",
+              "careful": "latest release per code, codes read through the section history by period (the round-1 path)",
+              "lazy": "latest release per code, read on the current section list",
+              "nohist": "the history release left out",
+              "first": "first release per code, read by period",
+              "norestate": "the restated release left out",
+              "national": "national site for Sport-metro",
+              "issue_date": "each release read on the list in force on its issue date",
+              "convention": "each monthly release only for the month its name follows"}
+    # with the July file's rows kept, every way of reading the releases lands both measures off the golden bin at every
+    # desk: no other mishandling, alone or with it, carries a desk back
+    combo_in = []
+    for m, name in pnames.items():
+        if m == "convention":
+            continue        # it sets the July file's earlier months aside by itself
+        r_ = {d: PRE[m][d][0] for d in SL}
+        v_ = {d: PRE[m][d][2] for d in SL}
+        rec.setdefault("ask_stops", {})["readers, July rows kept: " + name] = {P.SHORT[d]: int(round(r_[d], -3)) for d in SL}
+        rec.setdefault("ask_stops", {})["visits, July rows kept: " + name] = {P.SHORT[d]: int(round(v_[d], -3)) for d in SL}
+        combo_in += [(name, "readers", P.SHORT[d]) for d in SL if k1(r_[d]) == k1(readers[d])]
+        combo_in += [(name, "visits", P.SHORT[d]) for d in SL if k1(v_[d]) == k1(visits[d])]
+    L_.check("readers and visits: with the July file's April to June rows kept, all %d other ways of reading the "
+             "releases land both figures off the golden bin at every desk" % (len(pnames) - 1), not combo_in,
+             str(combo_in[:6]))
+    nat = {d: PRE["golden"][d] for d in SL}
+    lo_r = {d: nat[d][0] / readers[d] - 1 for d in SL}
+    lo_v = {d: nat[d][2] / visits[d] - 1 for d in SL}
+    rec["cracker_readers_visits"] = {P.SHORT[d]: (int(round(nat[d][0], -3)), int(round(nat[d][2], -3)),
+                                                  round(100 * lo_r[d], 2), round(100 * lo_v[d], 2)) for d in SL}
+    L_.check("cracker sheet, readers and visits: the July file's rows taken as the latest release file every desk's "
+             "readers 1.0 to 3.0 per cent low and visits 2.5 to 5.0 per cent low, twelve months each",
+             all(-0.03 <= lo_r[d] <= -0.01 and -0.05 <= lo_v[d] <= -0.025 and nat[d][1] == 12 for d in SL),
+             str(rec["cracker_readers_visits"]))
+    # the other stops, with the July file's April to June rows set aside: each lands both figures off the golden bin
+    # at the desks it reaches (asserted where it reaches every desk, recorded where it reaches some)
+    D_whole = dict(D)
+    D_whole["panel"] = D["panel"][D["panel"]["release"] != P.ECHO_RELEASE]
+    whole = panel_readers(D_whole)
+    stop_reach = {}
+    for m, name in list(pnames.items()) + [("whole", "the July release set aside whole, its own month included")]:
+        if m in ("golden", "convention"):
+            continue
+        src = whole if m == "whole" else PR[m]
+        r_ = {d: src[d][0] for d in SL}
+        v_ = {d: src[d][2] for d in SL}
+        rec.setdefault("ask_stops", {})["readers: " + name] = {P.SHORT[d]: int(round(r_[d], -3)) for d in SL}
+        rec.setdefault("ask_stops", {})["visits: " + name] = {P.SHORT[d]: int(round(v_[d], -3)) for d in SL}
+        rec.setdefault("readers_months", {})[name] = {P.SHORT[d]: src[d][1] for d in SL}
+        stop_reach[m] = {d for d in SL if k1(r_[d]) != k1(readers[d]) and k1(v_[d]) != k1(visits[d])}
+    rec["stop_reach"] = {m: sorted(P.SHORT[d] for d in v) for m, v in stop_reach.items()}
+    L_.check("readers and visits: the over-cleaned path (the July release set aside whole, so July has no record), the "
+             "first release per code, the restatement left out and the current section list each land both figures "
+             "off the golden bin at every desk; the history release left out at Politics·national and Culture·national; "
+             "the national site at Sport·metro",
+             all(stop_reach[m] == set(SL) for m in ("whole", "first", "norestate", "lazy"))
+             and stop_reach["nohist"] >= {"POL-N", "CUL-N"} and stop_reach["national"] >= {"SPT-M"},
+             str(rec["stop_reach"]))
     L_.check("readers: per period, per site and per code each leave a desk off its twelve single months (gaps or doubled "
              "months), and the golden reading alone files twelve at every desk",
              all(any(PR[m][d][1] != 12 for d in SL) for m in ("per_period", "per_site", "per_code"))
              and all(PR["golden"][d][1] == 12 for d in SL))
+
+    # the median under each clock publish_at can be read on: the cracker reads it on the saves' clock (UTC)
+    CLK = {c_: ask_corrections(rows, clock=c_) for c_ in ("UTC", "Sydney")}
+    rec["clock_readings"] = {c_: {P.SHORT[d]: v[d]["median"] for d in SL} for c_, v in CLK.items()}
+    mm_utc = [d for d in SL if not off_median(CLK["UTC"][d]["median"], G[d]["median"])]
+    mm_syd = [d for d in SL if off_median(CLK["Sydney"][d]["median"], G[d]["median"])]
+    L_.check("cracker sheet, minutes: publish_at read on the saves' clock (UTC) lands off the golden median at every desk",
+             not mm_utc, str(rec["clock_readings"]["UTC"]))
+    L_.check("over-corrected clock: publish_at read on Sydney time (daylight saving from 5 October 2025 to 5 April 2026) "
+             "lands off the golden median at four or more desks", len(mm_syd) >= 4, str(rec["clock_readings"]["Sydney"]))
+    L_.check("publish_at on the saves' clock files no correction at minute 0 or earlier",
+             all(min(CLK["UTC"][d]["mins"]) >= 1 for d in P.WEB if CLK["UTC"][d]["mins"]))
+    clock_in = []
+    for name, kw in READ.items():
+        v = ask_corrections(rows, clock="UTC", **kw)
+        clock_in += [(name, P.SHORT[d]) for d in SL if not off_median(v[d]["median"], G[d]["median"])]
+    for nm, kw in (("first note of any kind", dict(s2=False)), ("restored and migrated kept", dict(merge=False, migrated=True, blank_start=True)),
+                   ("migrated kept", dict(migrated=True, blank_start=True)), ("headline note at its own save", dict(by_text=("headline",))),
+                   ("every scheduled article live at publish_at", dict(scheduled_always=True))):
+        v = ask_corrections(rows, clock="UTC", **kw)
+        clock_in += [(nm, P.SHORT[d]) for d in SL if not off_median(v[d]["median"], G[d]["median"])]
+    L_.check("minutes: with publish_at on the saves' clock, every other corrections reading (%d) also lands off the "
+             "golden median at every desk, so no pair of mishandlings carries a desk back" % (len(READ) + 5),
+             not clock_in, str(clock_in[:6]))
 
     # necessity matrix: each device alone mishandled, everything else read the golden way
     dev = {
@@ -987,7 +1122,7 @@ def run(W, target, out):
         live = g_[g_.status == "live"]
         sch = g_[(g_.status == "scheduled") & (g_.revision < live["revision"].min())]
         if len(sch):
-            pub_t = pd.to_datetime(sch.iloc[-1]["publish_at"].replace("Z", ""))
+            pub_t = pd.to_datetime(sch.iloc[-1]["publish_at"]) - pd.Timedelta(hours=10)    # the editor's Brisbane time
             first_live = live["t"].min()
             mid = g_[(g_.revision > sch.iloc[-1]["revision"]) & (g_["t"] < pub_t)]
             if pub_t < first_live:
@@ -1231,21 +1366,71 @@ def run(W, target, out):
     L_.check("partial releases: the history release carries three national sections a month and the restatement both "
              "sites", sites_of.get(asks_mod.HISTORY_RELEASE) == ["BLN"] and (secs_of == 3).all()
              and sites_of.get("R26-07B") == ["BLB", "BLN"], str({k: v for k, v in sites_of.items() if k in (asks_mod.HISTORY_RELEASE, "R26-07B")}))
-    logm = {r: sorted(m.strip() for m in str(v).split(",")) for r, v in zip(D["rel"]["release"], D["rel"]["periods"])}
-    echo_rows = p_[(p_.release == P.ECHO_RELEASE) & (p_.period != "2026-07")]
+    rlog_ = D["rel"]
+    july = p_[(p_.release == P.ECHO_RELEASE) & (p_.period != "2026-07")]
     firsts = p_[p_.release.isin(["R26-05", "R26-06", "R26-07"])]
-    same = echo_rows.merge(firsts, on=["period", "site_code", "section_code"], suffixes=("", "_f"))
-    L_.check("the July release's file: its April to June rows, both sites, repeat the figures first published "
-             "(audience and visits) that the restatement replaced, and the release log lists July only for it",
-             len(echo_rows) == 27 and len(same) == 27 and (same.unique_audience == same.unique_audience_f).all()
-             and (same.visits == same.visits_f).all() and logm.get(P.ECHO_RELEASE) == ["2026-07"],
-             "%d rows, log %s" % (len(echo_rows), logm.get(P.ECHO_RELEASE)))
-    L_.check("release log: every other release's rows fall in the months the log lists for it",
-             all(set(p_[p_.release == r_].period) == set(m_) for r_, m_ in logm.items() if r_ != P.ECHO_RELEASE))
+    same = july.merge(firsts, on=["period", "site_code", "section_code"], suffixes=("", "_f"))
+    L_.check("R-echo: the July release's file carries April to June for both sites as first published (audience and "
+             "visits, the figures the restatement replaced), and nothing in the pack picks those rows out: the release "
+             "log names no months for any release and has no note for the July release, no column marks them, and the "
+             "only thing that finds them is the repeat of replaced figures (exactly these 27 rows)",
+             len(july) == 27 and len(same) == 27 and (same.unique_audience == same.unique_audience_f).all()
+             and (same.visits == same.visits_f).all() and list(rlog_.columns) == ["release", "published_on", "note"]
+             and rlog_.loc[rlog_.release == P.ECHO_RELEASE, "note"].iloc[0] == ""
+             and list(p_.columns) == ["release", "period", "site_code", "section_code", "unique_audience", "visits"]
+             and sorted(echo_rows(D)) == sorted(july.index), "%d rows" % len(july))
+
+    def month_of(r):
+        y, m_ = 2000 + int(r[1:3]), int(r[4:6])
+        return "%d-%02d" % ((y, m_ - 1) if m_ > 1 else (y - 1, 12))
+    noted = {asks_mod.HISTORY_RELEASE: set(P.HISTORY_PERIODS), "R26-07B": set(P.RESTATED_PERIODS)}
+    L_.check("release log: every other monthly release carries only the month its name follows, and the history "
+             "release and the restatement exactly the months their notes name",
+             all(set(p_[p_.release == r_].period) == noted.get(r_, {month_of(r_)}) for r_ in rlog_.release
+                 if r_ != P.ECHO_RELEASE)
+             and set(p_[p_.release == P.ECHO_RELEASE].period) == {"2026-07"} | set(P.RESTATED_PERIODS))
     rs_ = p_[(p_.release == "R26-07B")].merge(firsts, on=["period", "site_code", "section_code"], suffixes=("", "_f"))
     infl = (rs_.unique_audience_f / rs_.unique_audience)
     L_.check("restatement: the figures first published for April to June ran 5 to 9 per cent under the restated ones "
              "at every section of both sites", len(rs_) == 27 and infl.between(0.91, 0.95).all(), "%.3f to %.3f" % (infl.min(), infl.max()))
+    infl_v = (rs_.visits_f / rs_.visits)
+    L_.check("restatement: the visits first published for April to June ran 11 to 17 per cent under the restated ones "
+             "(the fault also dropped repeat app visits), so visits move further than readers on the natural path",
+             infl_v.between(0.83, 0.89).all(), "%.3f to %.3f" % (infl_v.min(), infl_v.max()))
+    nz = D["cms"][D["cms"].publish_at != ""]["publish_at"]
+    notes_txt = re.sub(r"\s+", " ", T[F["cmsnotes"]])
+    pub_line = re.search(r"publish_at (.+?) headline_sha1", notes_txt).group(1)
+    L_.check("publish_at device: every publish_at is a bare wall-clock time with no zone marker, the field notes give "
+             "saved_at's clock (UTC) and none for publish_at, and no file in the pack says which clock publish_at uses",
+             nz.str.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d").all() and "saved_at Time of the save, UTC" in notes_txt
+             and not re.search(r"UTC|AEST|Brisbane|local|zone|clock", pub_line)
+             and not any(re.search(r"publish_at[^.\n]{0,80}(UTC|AEST|Brisbane time|local time|zone)", T[f_]) for f_ in T),
+             pub_line)
+    # every scheduled article: its first live save against the time its editor set, on each clock
+    sch_gap = {"AEST": [], "UTC": []}
+    for k, g_ in cms[(cms.doc_type != "post") & (cms.restored_from_doc == "") & (cms.migrated_from == "")].groupby("doc_id"):
+        live_ = g_[g_.status == "live"]
+        sch_ = g_[(g_.status == "scheduled") & (g_.revision < live_["revision"].min())] if len(live_) else g_.iloc[:0]
+        if not len(sch_):
+            continue
+        fl_ = live_["t"].iloc[0]
+        pa_ = pd.Timestamp(sch_["publish_at"].iloc[-1])
+        sch_gap["AEST"].append((fl_ - (pa_ - pd.Timedelta(hours=10))).total_seconds() / 60)
+        sch_gap["UTC"].append((fl_ - pa_).total_seconds() / 60)
+    ga_ = {c_: np.array(v) for c_, v in sch_gap.items()}
+    early_utc = float((ga_["UTC"] <= 0).mean())
+    cms_aest = float((ga_["AEST"] > 0).mean())
+    lead_aest = -ga_["AEST"][ga_["AEST"] <= 0]
+    rec["publish_at_clock"] = dict(scheduled=len(ga_["AEST"]), cms_published_aest=round(cms_aest, 3),
+                                   early_by_hand_utc=round(early_utc, 3),
+                                   early_minutes_utc_median=float(np.median(-ga_["UTC"][ga_["UTC"] <= 0])),
+                                   early_minutes_aest=(float(lead_aest.min()), float(lead_aest.max())))
+    L_.check("publish_at device, the inconsistency that finds it: read on the saves' clock, over 80 per cent of "
+             "scheduled articles would have gone live by hand before the time their editor set, hours early; read on "
+             "the newsroom's clock, 65 to 85 per cent went live at the set time, before their first live save, and the "
+             "rest by hand 10 to 120 minutes early",
+             early_utc > 0.8 and 0.65 <= cms_aest <= 0.85 and lead_aest.min() >= 10 and lead_aest.max() <= 120,
+             str(rec["publish_at_clock"]))
     L_.check("battery on the CMS: (doc_id, revision) unique, every parent and restored source resolves",
              not cms.duplicated(["doc_id", "revision"]).any()
              and set(cms.loc[cms.parent_doc != "", "parent_doc"]) <= set(cms["doc_id"])
@@ -1281,6 +1466,10 @@ def run(W, target, out):
         outside = {d: (G[d]["count"], views[name_][d]["count"]) for d in SL}
         L_.check("referee: outside March the %s path and the standards rule part at every desk" % nm_,
                  all(a_ != b_ for a_, b_ in outside.values()), str(outside))
+    for c_ in ("UTC", "Sydney"):
+        cm_ = march(asks_mod.read_corrections(rows, clock=c_))
+        L_.check("referee: publish_at read on %s time ties to the bulletin's March figures as well (the bulletin "
+                 "settles nothing about the clock)" % c_, cm_ == gm, str(cm_))
     lazy_march = int(((cms["t"] >= lo) & (cms["t"] < hi) & (cms["correction_note"] != "")).sum())
     L_.check("referee: the lazy reading of March is at least 3x the bulletin", lazy_march >= 3 * gm[0], "%d" % lazy_march)
     edge = [t_ for A_ in (GA, HB, H3) for a in A_.values() for t_ in a["heads"] + a["texts"]
@@ -1288,31 +1477,28 @@ def run(W, target, out):
     L_.check("referee: no correction within 12 hours of a March boundary on any path (UTC and AEST agree)", not edge)
 
     full = golden_figures(target)
-    # pair simulation
+    # pair simulation: the asks are decoupled from the call, so the cracker and the mirror file the same ask figures
     readings = {
-        "round-5 path": (views[R5], "echo"),
-        "round-3 path": (views[R3], "per_period"),
-        "round-1 path": (views[R1], "careful"),
-        "round-5 path, catches the note before its fix": (views["the note before its fix caught, a note put back read as new"], "echo"),
-        "round-5 path, catches the note put back": (views["a note put back caught, the note before its fix missed (pairing looks before the note only)"], "echo"),
-        "round-5 path, catches the July file's earlier months": (views[R5], "golden"),
-        "catches both corrections devices, not the July file": (G, "echo"),
-        "catches everything": (G, "golden"),
+        "cracker path (the July file's rows kept, publish_at on the saves' clock)": (CLK["UTC"], PRE["golden"]),
+        "catches the July file's earlier months only": (CLK["UTC"], PR["golden"]),
+        "catches the publish_at clock only": (G, PRE["golden"]),
+        "catches both": (G, PR["golden"]),
     }
-    pair = pair_simulation(asks, rv, r4, readings, PR, golden_bins)
+    pair = pair_simulation(asks, readings)
     rec["pair"] = pair
-    # with every device holding the cracker keeps only extra per reader (one-decimal bins absorb any silent readers
-    # shift) and the 12 free criteria, which puts the layer's floor at 40.6
-    caps = {"round-5 path": 41, "round-3 path": 41, "round-1 path": 45, "round-5 path, catches the note before its fix": 41,
-            "round-5 path, catches the note put back": 41, "round-5 path, catches the July file's earlier months": 50}
-    x5 = pair["round-5 path"]
-    L_.check("pair simulation (round-5 path): the device layer holds whole against both sheets, the cracker keeping "
-             "extra per reader only and the mirror nothing", int(x5["cracker"]["device_hits"]) == 6
-             and int(x5["mirror"]["device_hits"]) == 0, "%s %s" % (x5["cracker"]["device_hits"], x5["mirror"]["device_hits"]))
-    for label, x in pair.items():
-        if label in caps:
-            L_.check("pair simulation (%s): top-two average at or under %d" % (label, caps[label]), x["pair"] <= caps[label],
-                     "%.1f" % x["pair"])
+    xc = pair["cracker path (the July file's rows kept, publish_at on the saves' clock)"]
+    L_.check("cracker sheet: the response that lands the call, runs the battery and executes every filed rule misses "
+             "all 18 ask figures, and the mirror (rung 3) files the same figures, so mirror leakage is 0",
+             xc["hits"] == 0, str(xc))
+    L_.check("pair ceiling: cracker and mirror average at or under 30 on the planning weights", xc["pair"] <= 30,
+             "%.1f" % xc["pair"])
+    ref = json.load(open(Path(__file__).resolve().parent / "main_call_ref.json", encoding="utf-8"))["figures"]
+    frozen = all(abs(r4[d] - ref["chain"][d]["extra"]) < 0.5 for d in SL)
+    L_.check("main call frozen across the ask-layer pass: every desk's extra clicks, the call and the runner-up equal "
+             "the reference taken before it (main_call_ref.json)",
+             frozen and o4[0] == ref["CALL"] and o4[1] == ref["RUNNER"]
+             and abs((r4[o4[0]] - r4[o4[1]]) - ref["GAP"]) < 0.5,
+             str({P.SHORT[d]: round(r4[d]) for d in SL}))
     main_files = {F[k] for k in ("spine", "archive", "staff", "plan", "changelog", "fieldref", "charter", "desks", "dashboard")}
     nomain = without(target, main_files)
     try:
@@ -1320,8 +1506,8 @@ def run(W, target, out):
                and golden_figures(nomain, part="cms")["corrections"] == full["corrections"])
     except Exception:
         dec = False
-    L_.check("pair simulation: the device asks recompute with every main-path file deleted, so no ask figure but "
-             "extra clicks and extra per reader can move between the cracker and mirror sheets", dec)
+    L_.check("separation: every ask figure (readers, visits, median minutes) recomputes with every main-path file "
+             "deleted, so no ask figure can move between the cracker and mirror sheets", dec)
 
     # ----- separation, single statements, vocabulary, dates, gates
     main_docs = [F["fieldref"], F["charter"], F["desks"], F["plan"], F["changelog"], F["staff"]]
@@ -1334,7 +1520,6 @@ def run(W, target, out):
              not set(D["spine"]["article_id"].astype(str)) & set(cms["doc_id"]))
     single = {
         "pin": "judged on incremental article clicks in the twelve months after it embeds",
-        "licensed basis": "average winning lift by vertical",
         "stored headline": "Discover-style cards, newsletters and alerts. Not included",
         "plan basis": "held at the twelve months to September 2026",
         "note persistence": "copies the\nnote to every later revision",
@@ -1342,7 +1527,7 @@ def run(W, target, out):
         "fix and note pairing": "on two saves within ten minutes of each other",
         "headline rule": "logged on the revision that publishes the corrected headline",
         "entry headline": "with a headline of its own",
-        "publish time": "the time set for the CMS to publish the document",
+        "publish time": "the time the editor set for the CMS to publish the document",
         "history release": "rerun on the 2026 content taxonomy",
         "entry note": "the correction note is added to the live blog",
         "restatement": "These figures replace those published",
@@ -1567,11 +1752,13 @@ def run(W, target, out):
              all(x in pools for x in others), str([x for x in others if x not in pools][:8]))
 
     # ----- the authored asides the judge read as tells are gone; the dashboard still says what it records
-    L_.check("no authored aside: the brief's 'view the room will have' and the dashboard's 'Describes those tests' are "
-             "gone, and the dashboard's own filter line says it records concluded tests",
+    L_.check("no authored aside and no filed basis: the brief's 'view the room will have' and the dashboard's 'Describes "
+             "those tests' are gone, the brief no longer names the dashboard or its vertical average as a basis, no file "
+             "says 'average winning lift by vertical', and the dashboard's own filter line says it records concluded tests",
              "room will have" not in re.sub(r"\s+", " ", T[F["charter"]]) and "Describes those tests" not in T[F["dashboard"]]
              and re.search(r"^Filters,Test status is Concluded; concluded date in window$", T[F["dashboard"]], re.M)
-             and "will present that view at the meeting" in re.sub(r"\s+", " ", T[F["charter"]]))
+             and "dashboard" not in T[F["charter"]].lower()
+             and not any("average winning lift by vertical" in re.sub(r"\s+", " ", t_) for t_ in T.values()))
     thumbs, words = [], []
     for f in files:
         if f.endswith(".docx"):
@@ -1584,11 +1771,13 @@ def run(W, target, out):
                        r"clean(ed)?_|_fixed|correct(ed)?_|synthetic|generated|_seed|placeholder|dummy|sample_|test_|_v\d+\b|"
                        r"\bcopy\b|backup)", re.I)
     L_.check("no file name carries the author's vocabulary", not [f for f in files if names.search(f)])
-    prompt = (Path(out) / "prompt.md").read_text() if (Path(out) / "prompt.md").exists() else (P_TASK / "prompt.md").read_text()
+    prompt = (P_TASK / "prompt.txt").read_text(encoding="utf-8")
     L_.check("prompt: no input file name appears in it", not [f for f in files if f in prompt])
     L_.check("prompt: no trap word", not author.search(prompt))
-    L_.check("prompt: the rounding convention sentence is present",
-             "to the nearest 50,000" in prompt and "Click totals are to the nearest 50,000 throughout" in prompt)
+    L_.check("prompt: the rounding sentence closes it and names every graded unit",
+             prompt.rstrip().endswith("Round clicks to the nearest 50,000, readers and visits to the nearest thousand, "
+                                      "and minutes to whole numbers."))
+    L_.check("prompt: no prompt.md beside prompt.txt", not (P_TASK / "prompt.md").exists())
     L_.check("container metadata: the producer audit is clean", "clean" in W.scrub_audit, W.scrub_audit[:120])
     hid = []
     for f in files:
@@ -1634,7 +1823,7 @@ def golden_figures(target, part="all"):
              "sec_cur": pd.read_excel(t / F["panelwb"], sheet_name="Sections (current)", keep_default_na=False),
              "sec_hist": pd.read_excel(t / F["panelwb"], sheet_name="Section history", keep_default_na=False),
              "rel": pd.read_excel(t / F["panelwb"], sheet_name="Release log", keep_default_na=False)}
-        out["readers"] = {d: round(v[0], 2) for d, v in panel_readers(D).items() if d in SL}
+        out["readers"] = {d: (round(v[0], 2), round(v[2], 2)) for d, v in panel_readers(D).items() if d in SL}
     if part in ("all", "cms"):
         cm = cms_frames({"cms": pd.read_csv(t / F["cms"], keep_default_na=False, dtype=str)})
         g = ask_corrections(cms_rows_of(cm))
@@ -1652,35 +1841,21 @@ def without(target, drop):
     return tmp
 
 
-def pair_simulation(asks, rv, r4, readings, PR, golden_bins):
-    """Two answer sheets per reading. The cracker lands the call; the mirror stops at rung 3 (Local-metro).
-    Each reading is a way a strong response reads the ask files, as (corrections view, readers mode): the round-5
-    path (a headline note paired with the fix before it only, a note put back read as new; the latest release
-    carrying each section's month), the round-3 and round-1 paths, the round-5 path with one loop-3 device caught,
-    and the paths that catch everything on one side. Planning weights 38 / 7 / 55 over 42 ask criteria; r = 3
-    survives a wrong call."""
-    w_ask = 55 / 42
-    one = lambda v: np.floor(v * 10 + 0.5) / 10      # noqa: E731
-    gold = {d: dict(extra=golden_bins[d], readers=round(asks[d]["readers"], -3), per_reader=one(asks[d]["per_reader"]),
-                    count=asks[d]["count"], rate=one(asks[d]["rate"]), median=asks[d]["median"]) for d in SL}
+def pair_simulation(asks, readings):
+    """Two answer sheets per reading. The cracker lands the call; the mirror stops at rung 3 (Local-metro). The
+    18 ask criteria (readers, visits and median minutes at six desks) never read a main-path file, so both sheets file
+    the same ask figures under a reading. Planning weights 38 / 7 / 55 over the 18 ask criteria; r = 3 survives a
+    wrong call."""
+    w_ask = 55 / 18
+    k1 = lambda v: int(np.floor(v / 1000 + 0.5))     # noqa: E731
     out = {}
-    for label, (V, pm) in readings.items():
-        rd = {d: PR[pm][d][0] for d in SL}
-        sheets = {}
-        for side in ("cracker", "mirror"):
-            ex = {d: (r4[d] if side == "cracker" else rv[3][d]) for d in SL}
-            hits_extra = sum(bin_round(ex[d]) == gold[d]["extra"] for d in SL)
-            dev = sum(round(rd[d], -3) == gold[d]["readers"] for d in SL)
-            dev += sum(one(ex[d] / rd[d]) == gold[d]["per_reader"] for d in SL)
-            dev += sum(V[d]["count"] == gold[d]["count"] for d in SL)
-            dev += sum(one(1000 * V[d]["count"] / V[d]["articles"]) == gold[d]["rate"] for d in SL)
-            dev += sum(not off_median(V[d]["median"], gold[d]["median"]) for d in SL)
-            rec_pts = 38 if side == "cracker" else 3
-            chart = 5 if side == "cracker" else 1
-            score = rec_pts + 7 + w_ask * (hits_extra + chart + 1 + dev)
-            sheets[side] = dict(score=round(score, 1), extra_hits=hits_extra, device_hits=dev, leakage=round(dev / 30, 3))
-        out[label] = dict(cracker=sheets["cracker"], mirror=sheets["mirror"],
-                          pair=round((sheets["cracker"]["score"] + sheets["mirror"]["score"]) / 2, 1))
+    for label, (V, R) in readings.items():
+        hits = sum(k1(R[d][0]) == k1(asks[d]["readers"]) for d in SL)
+        hits += sum(k1(R[d][2]) == k1(asks[d]["visits"]) for d in SL)
+        hits += sum(not off_median(V[d]["median"], asks[d]["median"]) for d in SL)
+        cr, mi = 38 + 7 + w_ask * hits, 3 + 7 + w_ask * hits
+        out[label] = dict(cracker=round(cr, 1), mirror=round(mi, 1), hits=hits, leakage=round(hits / 18, 3),
+                          pair=round((cr + mi) / 2, 1))
     return out
 
 

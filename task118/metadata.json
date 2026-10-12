@@ -50,7 +50,7 @@
   {
    "path": "newsroom_staff_list_2026-10-12.xlsx",
    "format": "xlsx",
-   "bytes": 16514,
+   "bytes": 16490,
    "rows": 207,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-12",
@@ -68,7 +68,7 @@
   {
    "path": "headline_squad_change_log.xlsx",
    "format": "xlsx",
-   "bytes": 7062,
+   "bytes": 6958,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-02-11",
@@ -77,7 +77,7 @@
   {
    "path": "audience_warehouse_field_reference.md",
    "format": "md",
-   "bytes": 3827,
+   "bytes": 3879,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-02",
@@ -86,7 +86,7 @@
   {
    "path": "headline_squad_2027_placement_brief.pdf",
    "format": "pdf",
-   "bytes": 3481,
+   "bytes": 3419,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-12",
@@ -113,8 +113,8 @@
   {
    "path": "cms_revisions_web_desks_2025-10_2026-09.csv",
    "format": "csv",
-   "bytes": 19109238,
-   "rows": 266630,
+   "bytes": 19093977,
+   "rows": 266633,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-16",
    "license": "CC0-1.0 (original work)"
@@ -122,7 +122,7 @@
   {
    "path": "cms_revisions_export_fields.txt",
    "format": "txt",
-   "bytes": 2097,
+   "bytes": 2103,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-16",
@@ -140,7 +140,7 @@
   {
    "path": "panel_monthly_audience_2025-10_2026-09.csv",
    "format": "csv",
-   "bytes": 6858,
+   "bytes": 6876,
    "rows": 174,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-15",
@@ -149,7 +149,7 @@
   {
    "path": "panel_reference_workbook.xlsx",
    "format": "xlsx",
-   "bytes": 8914,
+   "bytes": 8774,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-15",
@@ -167,7 +167,7 @@
   {
    "path": "squad_placement_thread.eml",
    "format": "eml",
-   "bytes": 2557,
+   "bytes": 2375,
    "rows": null,
    "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
    "date": "2026-10-16",

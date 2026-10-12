@@ -239,7 +239,8 @@ def charter_blocks():
         ("p", "The headline squad is six people: a squad lead, three headline editors, a producer and a data analyst. "
               "Each January it moves to one desk for the calendar year, tests that desk's headlines and ships each "
               "winning headline. The squad is judged on incremental article clicks in the twelve months after it "
-              "embeds, counted at the owning desk."),
+              "embeds, counted at the owning desk from each article's publication, the hours its headline is under "
+              "test included."),
         ("h", "Where it has been"),
         ("p", "Since 2019 the squad has worked with the app desks: Games, Wellness, Puzzles and Recipes. Its 2026 "
               "year with Puzzles finishes on Friday 18 December. Experimentation keeps the change log of closed "
@@ -250,9 +251,7 @@ def charter_blocks():
               "are not being considered for 2027."),
         ("h", "How the decision is made"),
         ("p", "The planning meeting takes one recommendation from the managing editor: the desk, and the clicks the "
-              "squad is expected to add there in 2027. The editor-in-chief's office reviews squad placement on the "
-              "experimentation dashboard's average winning lift by vertical, and Lisa Jennings's office will present "
-              "that view at the meeting."),
+              "squad is expected to add there in 2027."),
         ("p", "Papers: a short paper and its workbook to Corey Cox by Friday 30 October, for circulation with the "
               "agenda on Monday 2 November."),
         ("h", "Moving in January"),
@@ -263,7 +262,7 @@ def charter_blocks():
             "Desk access and hardware requests go to the newsroom systems team by Friday 4 December.",
         ]),
         ("space", 2),
-        ("small", "Distribution: Lisa Jennings, Kayla Torres, Nina Franklin, Jason Anderson; editors of the six "
+        ("small", "Distribution: Lisa Jennings, Kayla Torres, Nina Franklin, Willie Smith; editors of the six "
                   "shortlisted desks."),
     ]
 
@@ -390,7 +389,7 @@ parent_doc         For posts, the doc_id of the live blog.
 revision           Revision number within the document, from 1.
 saved_at           Time of the save, UTC, to the minute.
 status             Status recorded with the save: draft, scheduled, live or withdrawn.
-publish_at         On a scheduled revision, the time set for the CMS to publish the document, UTC.
+publish_at         On a scheduled revision, the time the editor set for the CMS to publish the document.
 headline_sha1      First 12 characters of the SHA-1 of the headline text at that revision.
 correction_note    Text of the correction notice shown with the document at that revision. The CMS copies the
                    note to every later revision until an editor clears it. A note put back after a save that
@@ -469,7 +468,7 @@ def agreement_blocks():
 def thread_eml():
     hdr = """From: Corey Cox <corey.cox@bightline.com.au>
 To: Kayla Torres <kayla.torres@bightline.com.au>, Nina Franklin <nina.franklin@bightline.com.au>,
- Jason Anderson <jason.anderson@bightline.com.au>, Natalie Benjamin <natalie.benjamin@bightline.com.au>
+ Willie Smith <willie.smith@bightline.com.au>, Natalie Benjamin <natalie.benjamin@bightline.com.au>
 Cc: Lisa Jennings <lisa.jennings@bightline.com.au>
 Subject: Re: Squad placement 2027
 Date: Fri, 16 Oct 2026 08:38:10 +1000
@@ -481,7 +480,7 @@ Content-Transfer-Encoding: 8bit
 
 """
     body = """Thanks all. Natalie, that folder is what I'll work from. I'll take one recommendation to the 4 November
-meeting with a number against it. Lisa's office is bringing the dashboard view as usual.
+meeting with a number against it.
 
 Corey Cox
 Managing editor
@@ -495,16 +494,14 @@ On Fri, 16 Oct 2026 at 08:05, Natalie Benjamin <natalie.benjamin@bightline.com.a
 >
 > Natalie
 >
-> On Wed, 14 Oct 2026 at 11:20, Jason Anderson <jason.anderson@bightline.com.au> wrote:
->> Happy to go anywhere on the list, but the squad does its best work where tests run big and steady.
->> Business reminds me of our Puzzles year: big samples, clean reads. A small desk like Culture would
->> waste the year.
+> On Wed, 14 Oct 2026 at 11:20, Willie Smith <willie.smith@bightline.com.au> wrote:
+>> The squad can move on 11 January wherever it lands. I'll need the desk's liaison editor named by
+>> 1 December so we can book the stand-ups.
 >>
->> Jason
+>> Willie
 >>
 >> On Wed, 14 Oct 2026 at 09:02, Nina Franklin <nina.franklin@bightline.com.au> wrote:
->>> Every winner the squad ships clears 95 per cent. A winner is a winner. The dashboard is the honest
->>> record of what testing does for us.
+>>> The change log is up to date to embedding 7. The Puzzles year goes in once it closes in December.
 >>>
 >>> Nina
 >>>

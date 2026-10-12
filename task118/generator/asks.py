@@ -77,6 +77,11 @@ def fmt(t):
     return t.strftime("%Y-%m-%dT%H:%MZ")
 
 
+def fmt_local(t):
+    """A scheduled publish time as the editor set it in the CMS: Brisbane wall-clock time."""
+    return (t + P.AEST).strftime("%Y-%m-%dT%H:%M")
+
+
 class Doc:
     __slots__ = ("id", "desk", "type", "parent", "restored_from", "migrated_from", "revs", "art", "live_at")
 
@@ -568,7 +573,7 @@ def cms_rows(docs):
     rows = []
     for D in docs:
         for k, (t, status, hs, note, pub) in enumerate(D.revs, start=1):
-            rows.append((D.id, D.desk, D.type, D.parent, k, fmt(t), status, fmt(pub) if pub else "", hs, note,
+            rows.append((D.id, D.desk, D.type, D.parent, k, fmt(t), status, fmt_local(pub) if pub else "", hs, note,
                          D.restored_from, D.migrated_from))
     rows.sort(key=lambda r: (r[5], r[0], r[4]))
     return rows
@@ -577,7 +582,7 @@ def cms_rows(docs):
 def read_corrections(rows, published=True, scheduled=True, entries=True, merge=True, migrated=False, posts=False,
                      never_live=False, blank_start=False, s1=True, s2=True, entry_any=False, entry_tol=None,
                      by_text=None, scheduled_always=False, lag=True, lag_struct=None, entry_from_entry=False,
-                     lead=True, readd=True, readd_desk=False, after_first=False, entry_after=0):
+                     lead=True, readd=True, readd_desk=False, after_first=False, entry_after=0, clock="AEST"):
     """Headline and text corrections per article document from cms_rows tuples.
 
     The golden reading (every flag at its default): a correction is a new note on a revision that publishes the
@@ -604,7 +609,9 @@ def read_corrections(rows, published=True, scheduled=True, entries=True, merge=T
     headline unchanged records the headline published without a new note on a save within LAG_WINDOW minutes
     before it or, failing that, after it (lead=False looks before it only; after_first=True tries the save after it
     first); lag_struct pairs the same way. entry_after=N also pairs a blog's note with an entry whose headline changed
-    up to N minutes after it (the field notes' pairing line read symmetrically)."""
+    up to N minutes after it (the field notes' pairing line read symmetrically). clock is the zone publish_at is read
+    in: AEST (the editor's Brisbane wall clock, the golden), UTC (the saves' clock), or Sydney (AEDT in daylight
+    saving, 5 October 2025 to 5 April 2026)."""
     from collections import defaultdict
     if entry_tol is None:
         entry_tol = P.ENTRY_WINDOW
@@ -615,6 +622,14 @@ def read_corrections(rows, published=True, scheduled=True, entries=True, merge=T
         info[did] = (desk, typ, parent, rest, mig)
     copy_of = {v[3]: k for k, v in info.items() if v[3]}
     t = lambda s: dt.datetime.strptime(s, "%Y-%m-%dT%H:%MZ")     # noqa: E731
+
+    def t_set(s):
+        x = dt.datetime.strptime(s, "%Y-%m-%dT%H:%M")
+        if clock == "UTC":
+            return x
+        if clock == "Sydney" and dt.datetime(2025, 10, 5, 2) <= x < dt.datetime(2026, 4, 5, 3):
+            return x - dt.timedelta(hours=11)
+        return x - P.AEST
     first_shown = {}
     if readd_desk:
         for did, revs in by_doc.items():
@@ -653,8 +668,8 @@ def read_corrections(rows, published=True, scheduled=True, entries=True, merge=T
         states = live
         if scheduled:
             sch = [r for r in chain if r[2] == "scheduled" and r[0] < live[0][0] and r[3]]
-            if sch and (t(sch[-1][3]) < go or scheduled_always):
-                go = t(sch[-1][3])
+            if sch and (t_set(sch[-1][3]) < go or scheduled_always):
+                go = t_set(sch[-1][3])
                 states = [sch[-1]] + live
         seq = states if published else chain
         if blank_start:
@@ -762,6 +777,8 @@ def build_panel(W):
     moved in 2026; the restated release carries both sites; the July release's file also carries April to June as
     first published, rows the warehouse loaded under the July release, which published July only."""
     rng = rng_for(700)
+    rng_v = rng_for(701)   # visits: each section's own visits per reader, steady month to month
+    freq = {}
     base = {}          # audience on the 2026 taxonomy, every month
     oct_old = {}       # October 2025 as first published, on the 2024 taxonomy (never rerun)
     for site, code, name, desk in SECTION_NEW:
@@ -776,6 +793,7 @@ def build_panel(W):
         vals[-1] += want * 12 - (o + vals[1:].sum())
         base[(site, name)] = vals
         oct_old[(site, name)] = o
+        freq[(site, name)] = (2.6 + 1.8 * rng_v.random()) * (1 + rng_v.normal(0, 0.02, 12))
     W.panel_true = {}
     for site, code, name, desk in SECTION_NEW:
         if desk:
@@ -801,7 +819,10 @@ def build_panel(W):
                 ua = int(base[(site, name)][k])
             restated = per in P.RESTATED_PERIODS and site in P.RESTATED_SITES
             ua_pub = int(round(ua * P.RESTATE_FACTOR * (1 + rng.normal(0, 0.004)))) if restated else ua
-            visits = int(round(ua_pub * rng.uniform(2.6, 4.4)))
+            rng.uniform(2.6, 4.4)          # the audience stream keeps its draws
+            v_true = ua * freq[(site, name)][k]
+            visits = int(round(v_true * P.VISITS_RESTATE_FACTOR * (1 + rng_v.normal(0, 0.006)))) if restated \
+                else int(round(v_true))
             rows.append((rel, per, site, code, ua_pub, visits))
             first_pub[(per, site, code)] = (ua_pub, visits)
     rel_pub[HISTORY_RELEASE] = dt.date(*P.HISTORY_PUBLISHED)
@@ -813,7 +834,8 @@ def build_panel(W):
             if (site, name) not in P.HISTORY_SECTIONS:
                 continue
             ua = int(base[(site, name)][k])
-            rows.append((HISTORY_RELEASE, per, site, code, ua, int(round(ua * rng.uniform(2.6, 4.4)))))
+            rng.uniform(2.6, 4.4)
+            rows.append((HISTORY_RELEASE, per, site, code, ua, int(round(ua * freq[(site, name)][k]))))
     rel_b = "R26-07B"
     rel_pub[rel_b] = dt.date(2026, 7, 30)
     rel_per[rel_b] = list(P.RESTATED_PERIODS)
@@ -824,7 +846,33 @@ def build_panel(W):
             if site not in P.RESTATED_SITES:
                 continue
             ua = int(base[(site, name)][k])
-            rows.append((rel_b, per, site, code, ua, int(round(ua * rng.uniform(2.6, 4.4)))))
+            rng.uniform(2.6, 4.4)
+            rows.append((rel_b, per, site, code, ua, int(round(ua * freq[(site, name)][k]))))
+    # each desk section's twelve-month average visits, on the record of each month, lands where VISITS_REMAINDER puts
+    # it inside its thousand: the September release, which nothing restates, takes up the difference
+    for site, code, name, desk in SECTION_NEW:
+        if not desk:
+            continue
+        rec = []
+        for per in PERIODS:
+            y, m = map(int, per.split("-"))
+            rel = "R%02d-%02d" % ((y + (m == 12)) % 100, m % 12 + 1)
+            if per in P.RESTATED_PERIODS:
+                rel = rel_b
+            elif per in P.HISTORY_PERIODS and (site, name) in P.HISTORY_SECTIONS:
+                rel = HISTORY_RELEASE
+            sec = SECTION_OLD if (per < CUTOVER and rel != HISTORY_RELEASE) else SECTION_NEW
+            c_ = [c for s_, c, nm, _ in sec if s_ == site and nm == name][0]
+            idx = [i for i, r in enumerate(rows) if r[:4] == (rel, per, site, c_)]
+            assert len(idx) == 1, (rel, per, site, c_)
+            rec.append(idx[0])
+        total = sum(rows[i][5] for i in rec)
+        want = P.VISITS_REMAINDER[desk]
+        target = int(round((total / 12 - want) / 1000)) * 1000 + want
+        i_sep = rec[-1]
+        r_ = rows[i_sep]
+        assert r_[1] == "2026-09"
+        rows[i_sep] = r_[:5] + (r_[5] + 12 * target - total,)
     # the July release's file also carried April to June for both sites as first published; the warehouse loaded those
     # rows under the July release, which published July only
     for per in P.RESTATED_PERIODS:

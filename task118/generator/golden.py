@@ -50,6 +50,7 @@ SHORTLIST = ["POL-N", "SPT-M", "BUS-N", "SPT-N", "LOC-M", "CUL-N"]
 # canonical headline stored at publication, which a test never changes.
 PLATFORM = ("home_web", "section_web", "feed_app", "section_app", "related_links")
 WINDOW_START = dt.date(2025, 10, 1)
+AEST_OFFSET = dt.timedelta(hours=10)     # Brisbane, no daylight saving
 BACKTEST_TOL = 0.02
 FIX_AND_NOTE = 10       # minutes: a fix and its note go on one save or two saves this far apart (CMS field notes)
 
@@ -189,45 +190,57 @@ for e in emb:
     ids = app_tests[(e["desk_code"], e["started"].year)]
     assert len(ids) == e["tests_run"]
     lift = float(np.mean([win(t) for t in ids]))
-    pred = lift * float(e["planned_clicks_m"]) * 1e6
-    real = float(e["realised_incremental_clicks"])
+    real = float(e["realised_holdback_lift_pct"]) / 100
     backtest.append({"n": e["embedding"], "desk": e["desk"], "year": e["started"].year, "tests": e["tests_run"],
-                     "observed": float(e["avg_winning_lift_pct"]), "shrunk": lift,
-                     "planned_m": float(e["planned_clicks_m"]), "diff": pred / real - 1})
+                     "observed": float(e["avg_winning_lift_pct"]), "shrunk": lift, "realised": real,
+                     "diff": lift / real - 1})
 HITS = sum(abs(b["diff"]) <= BACKTEST_TOL for b in backtest)
 RAW_HITS = sum(abs(float(np.mean([win(t, False) for t in app_tests[(e["desk_code"], e["started"].year)]]))
-                   * float(e["planned_clicks_m"]) * 1e6 / float(e["realised_incremental_clicks"]) - 1) <= BACKTEST_TOL
-               for e in emb)
+                   / (float(e["realised_holdback_lift_pct"]) / 100) - 1) <= BACKTEST_TOL for e in emb)
 
-# --------------------------------------------------------------------------- readers (panel)
+# --------------------------------------------------------------------------- readers and visits (panel)
 # Releases before the release log's first release on the 2026 content taxonomy carry the earlier section codes; that
-# release and every release after it, the history release included, carry the 2026 codes. A release publishes the
-# months the release log lists for it, and the latest release that published a month carrying a section is the
-# record for that section's month.
+# release and every release after it, the history release included, carry the 2026 codes. A later release of a
+# section's month replaces the earlier one. A release that says it replaces figures published in named releases makes
+# those figures superseded: a row elsewhere that repeats a superseded figure byte for byte is that figure carried
+# again, not a new publication (the July file repeats April to June as first published).
 pwb = load_workbook(find("panel_reference_workbook"), read_only=True, data_only=True)
 hist = list(pwb["Section history"].iter_rows(values_only=True))[1:]
 rlog = [r for r in list(pwb["Release log"].iter_rows(values_only=True))[1:] if r[0]]
 rel = {r[0]: r[1] for r in rlog}
-published_months = {r[0]: {m.strip() for m in str(r[2]).split(",")} for r in rlog}
-issued_2026 = min(r[1] for r in rlog if (r[3] or "").startswith("First release on the 2026 content taxonomy"))
+issued_2026 = min(r[1] for r in rlog if (r[2] or "").startswith("First release on the 2026 content taxonomy"))
 sections = {"2026": {(h[0], h[1]): (h[2], h[5]) for h in hist if h[4] is None},
             "2024": {(h[0], h[1]): (h[2], h[5]) for h in hist if h[4] is not None}}
+prows = list(csv.DictReader(open(find("panel_monthly_audience"), encoding="utf-8")))
+fig = lambda r: (r["period"], r["site_code"], r["section_code"], r["unique_audience"], r["visits"])  # noqa: E731
+superseded = set()
+for r0 in rlog:
+    named = re.search(r"replace those published in ([R0-9, and-]+)\.", r0[2] or "")
+    if not named:
+        continue
+    olds = set(re.findall(r"R\d\d-\d\d", named.group(1)))
+    months = {r["period"] for r in prows if r["release"] == r0[0]}
+    superseded |= {fig(r) for r in prows if r["release"] in olds and r["period"] in months}
+ECHO_ROWS = 0
 latest = {}
-for r in csv.DictReader(open(find("panel_monthly_audience"), encoding="utf-8")):
-    if r["period"] not in published_months[r["release"]]:
-        continue        # the July file also carried April to June as first published; July is all it published
+for r in prows:
+    if fig(r) in superseded and r["release"] not in {x for r0 in rlog for x in re.findall(r"R\d\d-\d\d", r0[2] or "")}:
+        ECHO_ROWS += 1
+        continue        # a superseded figure carried again in a later file
     name, desk = sections["2026" if rel[r["release"]] >= issued_2026 else "2024"][(r["site_code"], int(r["section_code"]))]
     key = (r["period"], r["site_code"], name)
     if key not in latest or rel[r["release"]] > rel[latest[key][0]["release"]]:
         latest[key] = (r, desk)  # a later release of the same month replaces the earlier one
-monthly = defaultdict(dict)
+monthly, monthly_v = defaultdict(dict), defaultdict(dict)
 for (period, site, name), (r, desk) in latest.items():
     if desk:
         monthly[desk][period] = int(r["unique_audience"])
-readers = {}
+        monthly_v[desk][period] = int(r["visits"])
+readers, visits = {}, {}
 for d in SHORTLIST:
     assert len(monthly[d]) == 12, d
     readers[d] = statistics.mean(monthly[d].values())
+    visits[d] = statistics.mean(monthly_v[d].values())
 
 # --------------------------------------------------------------------------- headline corrections (CMS)
 docs, info = defaultdict(list), {}
@@ -237,6 +250,9 @@ for r in csv.DictReader(open(find("cms_revisions_web_desks"), encoding="utf-8"))
     info[r["doc_id"]] = (r["desk_code"], r["doc_type"], r["parent_doc"], r["restored_from_doc"], r["migrated_from"])
 restored_copy = {v[3]: k for k, v in info.items() if v[3]}
 when = lambda x: dt.datetime.strptime(x, "%Y-%m-%dT%H:%MZ")  # noqa: E731
+# a scheduled publish time is the Brisbane time the editor set: every article the CMS published went live at it,
+# minutes before its first live save, once it is read on the saves' clock
+when_set = lambda x: dt.datetime.strptime(x, "%Y-%m-%dT%H:%M") - AEST_OFFSET  # noqa: E731
 
 # Entries of a live blog that published a changed headline (an entry's error is fixed in the entry, and its
 # correction note goes on the live blog, editorial standards 7.5).
@@ -265,8 +281,8 @@ for did, revs in docs.items():
     # what readers saw: each live save, and a scheduled version the CMS published at publish_at
     published, went_live = live, when(live[0][1])
     scheduled = [r for r in revs if r[2] == "scheduled" and r[0] < live[0][0]]
-    if scheduled and scheduled[-1][3] and when(scheduled[-1][3]) < went_live:
-        published, went_live = [scheduled[-1]] + live, when(scheduled[-1][3])
+    if scheduled and scheduled[-1][3] and when_set(scheduled[-1][3]) < went_live:
+        published, went_live = [scheduled[-1]] + live, when_set(scheduled[-1][3])
     first, fixed_alone = None, None     # a corrected headline published before its note, since the last note change
     shown, paired_later = {published[0][5]}, set()
     for k in range(1, len(published)):
@@ -326,9 +342,8 @@ asks = {}
 for d in SHORTLIST:
     assert arts[d] == chain[d]["articles"], d
     assert len(mins[d]) % 2 == 1, d
-    asks[d] = {"extra": r50k(chain[d]["extra"]), "readers": r1k(readers[d]),
-               "per_reader": one_dp(chain[d]["extra"] / readers[d]), "corrections": corr[d],
-               "rate": one_dp(1000 * corr[d] / arts[d]), "median": int(statistics.median(mins[d]))}
+    asks[d] = {"extra": r50k(chain[d]["extra"]), "readers": r1k(readers[d]), "visits": r1k(visits[d]),
+               "corrections": corr[d], "median": int(statistics.median(mins[d]))}
 
 # ============================================================================ the chart
 INK, INK2, MUTED, GRID, SURF = "#0b0b0b", "#52514e", "#8a8984", "#e4e3df", "#fcfcfb"
@@ -442,15 +457,15 @@ def write_xlsx(path):
     ws.title = "Desks"
     ws["A1"] = "Headline squad 2027: shortlisted desks"
     ws["A1"].font = Font(name="Calibri", bold=True, size=13)
-    ws["A2"] = "Extra clicks are for calendar 2027. Readers, corrections and minutes cover October 2025 to September 2026."
+    ws["A2"] = "Readers, visits and minutes cover October 2025 to September 2026."
     ws["A2"].font = Font(name="Calibri", italic=True, size=9, color="595959")
-    cols = ["Desk", "Code", "Extra article clicks 2027", "Average monthly readers", "Extra clicks per reader",
-            "Headline corrections", "Corrections per 1,000 articles", "Median minutes to first headline correction"]
-    header(ws, 4, cols, [22, 8, 14, 14, 12, 13, 14, 17])
-    fmts = [None, None, "#,##0", "#,##0", "0.0", "#,##0", "0.0", "#,##0"]
-    for i, d in enumerate(order):
+    cols = ["Desk", "Code", "Average monthly readers", "Average monthly visits",
+            "Median minutes to first headline correction"]
+    header(ws, 4, cols, [22, 8, 14, 14, 17])
+    fmts = [None, None, "#,##0", "#,##0", "#,##0"]
+    for i, d in enumerate(SHORTLIST):
         a = asks[d]
-        vals = [NAME[d], d, a["extra"], a["readers"], a["per_reader"], a["corrections"], a["rate"], a["median"]]
+        vals = [NAME[d], d, a["readers"], a["visits"], a["median"]]
         for j, (v, f) in enumerate(zip(vals, fmts), 1):
             c = ws.cell(row=5 + i, column=j, value=v)
             c.font = Font(name="Calibri", size=10, bold=(d == CALL and j == 1))
@@ -460,16 +475,15 @@ def write_xlsx(path):
                 c.alignment = Alignment(horizontal="right")
             if d == CALL:
                 c.fill = pick_fill
-    r = 5 + len(order) + 1
-    ws.cell(row=r, column=1, value="Recommended: {}. Runner-up {}, {:,} extra clicks behind."
-            .format(NAME[CALL], NAME[RUNNER], r50k(GAP))).font = Font(name="Calibri", size=10, bold=True)
-    ws.cell(row=r + 1, column=1, value="Back-test: the method gets {} of the squad's 7 finished embeddings within 2% of "
-            "the clicks each actually added (Back-test sheet).".format(HITS)).font = body
-    ws.cell(row=r + 2, column=1, value="Desks in order of extra clicks. Click totals to the nearest 50,000; readers to the "
-            "nearest thousand; definitions on the Notes sheet.").font = Font(name="Calibri", size=9, color="595959")
+    r = 5 + len(SHORTLIST) + 1
+    ws.cell(row=r, column=1, value="Recommended: {}, {:,} extra article clicks in 2027. Runner-up {}, {:,} behind."
+            .format(NAME[CALL], asks[CALL]["extra"], NAME[RUNNER], r50k(GAP))).font = Font(name="Calibri", size=10,
+                                                                                         bold=True)
+    ws.cell(row=r + 1, column=1, value="Extra clicks for every desk are on the Click chain sheet. Readers and visits to "
+            "the nearest thousand; definitions on the Notes sheet.").font = Font(name="Calibri", size=9, color="595959")
     ws.freeze_panes = "B5"
-    ws.auto_filter.ref = "A4:H%d" % (4 + len(order))
-    ws.print_area = "A1:H%d" % (r + 2)
+    ws.auto_filter.ref = "A4:E%d" % (4 + len(SHORTLIST))
+    ws.print_area = "A1:E%d" % (r + 1)
     ws.page_setup.orientation = "landscape"
     ws.page_setup.fitToWidth = 1
     ws.sheet_properties.pageSetUpPr.fitToPage = True
@@ -510,12 +524,12 @@ def write_xlsx(path):
     ws["A1"] = "The method against the squad's seven finished embeddings"
     ws["A1"].font = Font(name="Calibri", bold=True, size=13)
     cols = ["Embedding", "Desk", "Year", "Tests", "Observed winning lift", "Shrunk winning lift",
-            "Planned clicks (m)", "Prediction against realised", "Within 2%"]
+            "Realised holdback lift", "Prediction against realised", "Within 2%"]
     header(ws, 3, cols, [11, 12, 7, 7, 11, 11, 11, 13, 9])
     for i, b in enumerate(backtest):
-        vals = [b["n"], b["desk"], b["year"], b["tests"], round(b["observed"] / 100, 4), b["shrunk"], b["planned_m"],
+        vals = [b["n"], b["desk"], b["year"], b["tests"], round(b["observed"] / 100, 4), b["shrunk"], b["realised"],
                 b["diff"], "Yes" if abs(b["diff"]) <= BACKTEST_TOL else "No"]
-        f = ["0", None, "0", "0", "0.0%", "0.00%", "0.0", "+0.0%;-0.0%;0.0%", None]
+        f = ["0", None, "0", "0", "0.0%", "0.00%", "0.00%", "+0.0%;-0.0%;0.0%", None]
         for j, (v, fm) in enumerate(zip(vals, f), 1):
             cell = ws.cell(row=4 + i, column=j, value=v)
             cell.font = body
@@ -527,9 +541,9 @@ def write_xlsx(path):
     ws.cell(row=n, column=1, value="Within 2%").font = Font(name="Calibri", size=10, bold=True)
     ws.cell(row=n, column=9, value="{} of 7".format(HITS)).font = Font(name="Calibri", size=10, bold=True)
     ws.cell(row=n, column=9).alignment = Alignment(horizontal="right")
-    ws.cell(row=n + 2, column=1, value="Prediction = shrunk winning lift x the desk's planned clicks for the year; realised "
-            "incremental clicks from the change log, measured against matched desks.").font = Font(name="Calibri", size=9,
-                                                                                                   color="595959")
+    ws.cell(row=n + 2, column=1, value="Prediction = the shrunk winning lift of the embedding's tests; realised = the "
+            "change log's lift over the 5 per cent holdback for the year.").font = Font(name="Calibri", size=9,
+                                                                                        color="595959")
     ws.freeze_panes = "A4"
 
     # ---- Notes
@@ -548,11 +562,11 @@ def write_xlsx(path):
         ("Average monthly readers", "Panel unique audience for the desk's section, mean of October 2025 to September "
          "2026. Releases up to R26-03 are read on the earlier section list; R26-04, the release log's first release "
          "on the 2026 content taxonomy, and every release after it, the R26-04H history release included, are read on "
-         "the 2026 list. Each release counts only for the months the release log lists for it, and a section's figure "
-         "for a month is the latest of those releases that carries it, so the history release replaces three national "
-         "sections, the R26-07B restatement replaces both sites, and the April to June rows in the July file are set "
-         "aside."),
-        ("Extra clicks per reader", "Extra article clicks 2027 over average monthly readers."),
+         "the 2026 list. A section's figure for a month is the latest release of that month: the history release "
+         "replaces three national sections for November to February, and R26-07B, the restatement, replaces April to "
+         "June on both sites. The July file's April to June rows repeat, figure for figure, the releases R26-07B "
+         "replaced; they are those figures carried again, not a later release of the months."),
+        ("Average monthly visits", "Panel visits for the same section and months, from the same releases."),
         ("Headline corrections", "A new correction note on a version readers saw, where a corrected headline went up "
          "with it: on the same version, or, where the fix and the note went on separate saves (at most ten minutes "
          "apart, CMS export field notes), on a version within those ten minutes before or after it that changed the "
@@ -565,12 +579,14 @@ def write_xlsx(path):
          "copies restored after the 14 November 2025 Brisbane outage and documents carried across at the "
          "1 October 2025 CMS migration are not separate articles; a restored copy continues its original."),
         ("Median minutes", "Minutes from an article going live to its first headline correction, over corrected "
-         "articles. An article goes live at its first published version: its publish time when the CMS published a "
-         "scheduled article, otherwise its first live save. A restored copy keeps its original's time, and an entry's "
+         "articles. An article goes live at its first published version: the time the editor set when the CMS "
+         "published a scheduled article, otherwise its first live save. The CMS keeps that time on the newsroom's "
+         "Brisbane clock (AEST, ten hours ahead of the UTC save times); on that clock it falls before the first live "
+         "save of every article the CMS published. A restored copy keeps its original's time, and an entry's "
          "correction counts for its live blog."),
         ("Sources", "2027 audience plan; pageviews by source and age, Oct 2025 to Sep 2026; headline test archive "
          "2019 to 2026; newsroom staff list; headline squad change log; panel monthly audience and reference "
-         "workbook; CMS revisions for the web desks."),
+         "workbook; CMS revisions for the web desks and their field notes."),
     ]
     for i, (k, v) in enumerate(defs):
         a = ws.cell(row=3 + i, column=1, value=k)
@@ -672,7 +688,7 @@ def write_docx(path, png):
     para(doc, "Headline squad 2027: send the squad to {}".format(NAME[CALL]), size=16, bold=True, space_after=2)
     para(doc, "Owner: Corey Cox, Managing editor | Version 1, 19 October 2026 | Internal", size=9,
          color="595959", space_after=2)
-    para(doc, "Distribution: Lisa Jennings, Kayla Torres, Nina Franklin, Jason Anderson; editors of the six "
+    para(doc, "Distribution: Lisa Jennings, Kayla Torres, Nina Franklin, Willie Smith; editors of the six "
          "shortlisted desks", size=9, color="595959", space_after=12)
 
     p = para(doc, space_after=8)
@@ -689,9 +705,9 @@ def write_docx(path, png):
         "First, the lift. A desk's average winning lift over-reads what a winning headline is worth, because the "
         "variant that wins a small test is usually the one that drew a lucky sample. Each shipped variant is shrunk "
         "toward one prior fitted on every package in the test archive, and the desk's lift is the mean over its "
-        "tests. On that basis {} lifts clicks by {} on the headlines it tests. The same rule gets {} of the "
-        "squad's 7 finished embeddings within 2% of the clicks each actually added; the raw lift gets {} of them."
-        .format(NAME[CALL], pct(c["lift"], 2), HITS, RAW_HITS), ("1",)])
+        "tests. On that basis {} lifts clicks by {} on the headlines it tests. The same rule comes within 2% of the "
+        "realised holdback lift for {} of the squad's 7 finished embeddings; the raw lift does so for {}."
+        .format(NAME[CALL], pct(c["lift"], 2), HITS, RAW_HITS or "none"), ("1",)])
     runs(para(doc), [
         "Second, where the click starts. A tested headline only shows on Bightline's own surfaces: the web and app "
         "home pages, section fronts and related links. Search, Discover, partner apps, social cards, newsletters and "
@@ -736,17 +752,17 @@ def write_docx(path, png):
         r.bold, r.font.size = True, Pt(10.5)
         runs(p, [why[d]])
 
-    doc.add_heading("Readers and the standards record", level=2)
+    doc.add_heading("Readers and corrections", level=2)
     runs(para(doc), [
         "Kayla's case is that the squad belongs where the readers are. Politics·national has the most, {:,} a "
-        "month, but readers do not change which headlines the squad can still move. Per reader, {} returns {:.1f} "
-        "extra clicks, behind only {} ({:.1f}). {} also carries a light corrections record: {} headline corrections "
-        "in the year, {:.1f} per 1,000 articles. The full set is below and in the workbook."
-        .format(asks["POL-N"]["readers"], NAME[CALL], asks[CALL]["per_reader"], NAME[RUNNER],
-                asks[RUNNER]["per_reader"], NAME[CALL], asks[CALL]["corrections"], asks[CALL]["rate"]), ("3",)])
+        "month over {:,} visits, but readers do not change which headlines the squad can still move. {} reaches "
+        "{:,} readers a month, and when one of its headlines is wrong the first correction comes a median {} "
+        "minutes after the article goes live. The full set is below and in the workbook."
+        .format(asks["POL-N"]["readers"], asks["POL-N"]["visits"], NAME[CALL], asks[CALL]["readers"],
+                asks[CALL]["median"]), ("3",)])
 
-    cols = ["Desk", "Extra clicks 2027", "Monthly readers", "Extra per reader", "Headline corrections",
-            "Per 1,000 articles", "Median minutes"]
+    cols = ["Desk", "Extra clicks 2027", "Monthly readers", "Monthly visits", "Median minutes to first headline "
+            "correction"]
     t = doc.add_table(rows=1, cols=len(cols))
     t.alignment = WD_TABLE_ALIGNMENT.CENTER
     t.style = "Table Grid"
@@ -759,8 +775,8 @@ def write_docx(path, png):
         shade(cell, "1F3A5F")
     for d in order:
         a = asks[d]
-        vals = [NAME[d], "{:,}".format(a["extra"]), "{:,}".format(a["readers"]), "{:.1f}".format(a["per_reader"]),
-                str(a["corrections"]), "{:.1f}".format(a["rate"]), str(a["median"])]
+        vals = [NAME[d], "{:,}".format(a["extra"]), "{:,}".format(a["readers"]), "{:,}".format(a["visits"]),
+                str(a["median"])]
         cells = t.add_row().cells
         for j, v in enumerate(vals):
             cells[j].text = ""
@@ -773,13 +789,13 @@ def write_docx(path, png):
             if d == CALL:
                 shade(cells[j], "FDF0E8")
     t.autofit = False
-    for j, w in enumerate([Cm(3.9)] + [Cm(2.1)] * (len(cols) - 1)):     # desk names on one line
+    for j, w in enumerate([Cm(3.9)] + [Cm(2.6)] * (len(cols) - 1)):     # desk names on one line
         t.columns[j].width = w
         for row in t.rows:
             row.cells[j].width = w
     para(doc, "Source: 2027 audience plan; pageviews by source; headline test archive; panel monthly audience "
-         "(restated releases); CMS revisions for the web desks. Readers, corrections and minutes cover October 2025 "
-         "to September 2026.", size=8, italic=True, color="595959", space_after=10)
+         "(restated releases); CMS revisions for the web desks. Readers, visits and minutes cover October 2025 to "
+         "September 2026.", size=8, italic=True, color="595959", space_after=10)
 
     doc.add_heading("Notes", level=3)
     notes = [
@@ -787,17 +803,18 @@ def write_docx(path, png):
         "lift. Embedding-by-embedding results are on the workbook's Back-test sheet.".format(N_PACKAGES),
         "Source codes as defined in the audience warehouse field reference. The 2027 plan holds every desk at its "
         "October 2025 to September 2026 clicks, with no change in where they come from.",
-        "Readers are the panel's unique audience for the desk's section: releases up to R26-03 on the earlier section "
-        "list and R26-04, the first on the 2026 content taxonomy, and every later release (the R26-04H history release "
-        "included) on the 2026 list, each counted only for the months the release log lists for it, with each "
-        "section's month taken from the latest of those releases. A headline correction is a new note on a published "
+        "Readers and visits are the panel's for the desk's section: releases up to R26-03 on the earlier section list "
+        "and R26-04, the first on the 2026 content taxonomy, and every later release (the R26-04H history release "
+        "included) on the 2026 list, each section's month taken from its latest release. The R26-07B restatement "
+        "replaces April to June on both sites; the July file repeats those months as first published, and those rows "
+        "are the replaced figures carried again. A headline correction is a new note on a published "
         "version that went up with a corrected headline, on the same save or on a save within ten minutes either side "
         "as the CMS export's field notes allow, a live-blog entry's headline included (editorial standards 7.4 and "
-        "7.5); a note carried forward, or put back after a save that left it off, is not a new correction. Rates are "
-        "per 1,000 stories and live blogs first published October 2025 to September 2026; live-blog posts, restored "
+        "7.5); a note carried forward, or put back after a save that left it off, is not a new correction. Articles "
+        "are stories and live blogs first published October 2025 to September 2026; live-blog posts, restored "
         "copies and documents carried across at the 1 October 2025 migration are not separate articles. An article "
-        "goes live at its first published version, its publish time if the CMS published it; a restored copy keeps "
-        "its original's.",
+        "goes live at its first published version, the time the editor set (Brisbane time) if the CMS published it; "
+        "a restored copy keeps its original's.",
     ]
     for i, n in enumerate(notes, 1):
         para(doc, "{}  {}".format(i, n), size=8.5, color="404040", space_after=3)
@@ -880,6 +897,36 @@ def repack(path):
     os.utime(path, (ts, ts))
 
 
+def write_figures(path):
+    """Every figure the write-up states, as it states it (figures_check.py reads this)."""
+    c = chain[CALL]
+    pct = lambda x, k=1: ("{:.%df}" % k).format(100 * x)  # noqa: E731
+    fig = {
+        "call": NAME[CALL], "call_figure": "{:,}".format(asks[CALL]["extra"]), "runner_up": NAME[RUNNER],
+        "runner_up_figure": "{:,}".format(asks[RUNNER]["extra"]), "gap": "{:,}".format(r50k(GAP)),
+        "components": {
+            "call_shrunk_lift_pct": pct(c["lift"], 2),
+            "call_platform_share_pct": pct(c["platform"] / c["planned"]),
+            "call_desk_tested_share_pct": pct(c["platform_tested"] / c["platform"]),
+            "runner_up_desk_tested_share_pct": pct(chain[RUNNER]["platform_tested"] / chain[RUNNER]["platform"]),
+            "call_untested_platform_clicks": "{:,}".format(r50k(c["untested"])),
+            "runner_up_platform_share_pct": pct(chain[RUNNER]["platform"] / chain[RUNNER]["planned"]),
+            "business_stored_headline_share_pct": pct(1 - chain["BUS-N"]["platform"] / chain["BUS-N"]["planned"]),
+        },
+        "backtest": {"hits": str(HITS), "of": "7", "raw_hits": str(RAW_HITS), "tolerance_pct": "2",
+                     "packages": "{:,}".format(N_PACKAGES)},
+        "extra_by_desk": {NAME[d]: "{:,}".format(asks[d]["extra"]) for d in SHORTLIST},
+        "rows": {NAME[d]: {"readers": "{:,}".format(asks[d]["readers"]), "visits": "{:,}".format(asks[d]["visits"]),
+                           "median_minutes": str(asks[d]["median"])} for d in SHORTLIST},
+        "write_up": {"policy_clauses": ["7.4", "7.5"], "pairing_minutes": "10", "aest_offset_hours": "10",
+                     "july_rows_set_aside": str(ECHO_ROWS), "rounding": ["50,000", "1,000"]},
+    }
+    import json
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(fig, fh, indent=1, ensure_ascii=False, sort_keys=True)
+        fh.write("\n")
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     write_xlsx(OUT / "squad_placement_2027.xlsx")
@@ -894,6 +941,7 @@ def main():
                            capture_output=True, text=True)
     assert audit.returncode == 0, audit.stdout + audit.stderr
 
+    write_figures(HERE / "figures.json")
     print("prior: maximum likelihood on %d packages, mean %.3f%%, sd %.3f%%" % (N_PACKAGES, 100 * MU, 100 * TAU2 ** .5))
     print("\nCALL  %s  %s extra article clicks in 2027 (unrounded %s)"
           % (NAME[CALL], "{:,}".format(asks[CALL]["extra"]), "{:,.0f}".format(chain[CALL]["extra"])))
@@ -911,12 +959,11 @@ def main():
         print("%-18s %9.2f%% %13.1f%% %13.1f%% %16s %12s" % (
             NAME[d], 100 * c["lift"], 100 * c["platform"] / c["planned"], 100 * c["platform_tested"] / c["platform"],
             "{:,}".format(r50k(c["untested"])), "{:,}".format(asks[d]["extra"])))
-    print("\nworkbook rows")
-    for d in order:
+    print("\nworkbook rows (July file rows set aside as the replaced figures carried again: %d)" % ECHO_ROWS)
+    for d in SHORTLIST:
         a = asks[d]
-        print("%-18s extra %9s  readers %9s  per reader %.1f  corrections %d  rate %.1f  median %d min" % (
-            NAME[d], "{:,}".format(a["extra"]), "{:,}".format(a["readers"]), a["per_reader"], a["corrections"],
-            a["rate"], a["median"]))
+        print("%-18s readers %9s  visits %10s  median %d min" % (
+            NAME[d], "{:,}".format(a["readers"]), "{:,}".format(a["visits"]), a["median"]))
     print("\nback-test")
     for b in backtest:
         print("#%d %-9s %d  %d tests  shrunk %.2f%%  %+.2f%%" % (b["n"], b["desk"], b["year"], b["tests"],

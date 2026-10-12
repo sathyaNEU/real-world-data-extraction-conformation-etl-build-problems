@@ -2,10 +2,10 @@
  "task": "task118",
  "domain": "marketing-consumer-research",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design: redesign to the current spec, paused after the plan (wave 1)",
+ "stage": 5,
+ "stage_name": "shipped (wave-1 redesign)",
  "updated": "2026-10-12",
- "stump": "A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines that carry most of its platform clicks, so most of the gain the squad was sized on is already in the plan.",
+ "stump": "A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings' realised holdback lifts require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro at 2,800,000; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines behind 71.1% of its platform clicks, so most of the gain the squad was sized on is already in the plan.",
  "harden_loops": 4,
  "solver_rounds": [
   {
@@ -90,15 +90,25 @@
   }
  ],
  "judge": {
-  "verdict": "DETERMINISTIC; pass 3",
-  "disposition": "FIX_NOW; fix cycle 3 applied 2026-10-09 (submission step 7 and the paper's note 3 state the rate denominator; staff names redrawn from Australasian pools and recased; export log scoped to Audience data's six extract runs; per-file write times; PDF and workbook containers; the two authored asides removed; golden chart re-encoded; stage 3 gates green: 444/444 assertions, verifier 91/91, two builds byte-identical to each other and to the task folder, goldens byte-identical, leak.py REVIEW no LEAK, heart WARN no BLOCK), judge re-run pending",
-  "report": "task118/determinism_check_report_pass3.md (pass 3; passes 1 and 2 in task118/determinism_check_report.md and task118/determinism_check_report_pass2.md); fixes in DESIGN_NOTE.md, Changes 55 to 63 and Build record, Stage 6 fix cycle 3"
+  "verdict": "DETERMINISTIC; passes 1 and 2 of the redesign",
+  "disposition": "FIX_NOW twice, both fixed: step 2 names the embedding test selection and the ratio tolerance (pass 1); the write-up says own-surface clicks and the field reference's related_links row says the links show the current headline (pass 2). No third pass: neither fix moves a figure, a rung or the decisive path.",
+  "report": "task118/determinism_check_report.md (redesign passes 1 and 2; the earlier build's passes 2 to 4 in determinism_check_report_pass2.md to _pass4.md)"
  },
  "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
- "delivered": null,
+ "delivered": "2026-10-12",
  "portal": null,
  "source_note": "analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "owner": "oviya1301",
- "resume": "stage 2, DESIGN_NOTE.md '## Redesign plan (wave 1, 2026-10-12)': change log to holdback lift and the charter's counting-period phrase; cut the charter's dashboard endorsement; thread down to one belief; a new ask layer against the cracker sheet (readers primary: the July repeat with the release log's periods column gone; corrections given an equal primary or retired); prompt.txt; the note on the current headings; card three-rules fields and validated_decoy false; precut exit 0 before the generator moves. Paused so task447's scoped ask redesign can ship first."
+ "resume": null,
+ "leak": "leak.py REVIEW, no LEAK; three isolated reads: read 1 found the brief's counting phrase read as an all-sources base (fixed), reads 2 and 3 on the fixed pack",
+ "asks": {
+  "cracker_hits": 0,
+  "of": 18,
+  "pair_ceiling": 27.5,
+  "mirror_leakage_pct": 0.0
+ },
+ "assertions": 438,
+ "verifier": "78 of 78",
+ "builds_byte_identical": true
 }

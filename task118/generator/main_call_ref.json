@@ -1,0 +1,113 @@
+{
+ "about": "The main call's figures taken before the wave-1 ask-layer redesign; checks.py asserts every build reproduces each desk's extra clicks, the call, the runner-up and the gap.",
+ "figures": {
+  "CALL": "CUL-N",
+  "GAP": 444188.616711,
+  "MU": -0.010384,
+  "N_PACKAGES": 10111,
+  "RUNNER": "LOC-M",
+  "TAU2": "0.0020546969954384343",
+  "chain": {
+   "BUS-N": {
+    "articles": 7937,
+    "extra": 697593.532593,
+    "lift": 0.019994,
+    "planned": 309052180,
+    "platform": 86354201,
+    "platform_tested": 51463809,
+    "untested": 34890392
+   },
+   "CUL-N": {
+    "articles": 3883,
+    "extra": 1252298.848742,
+    "lift": 0.01781,
+    "planned": 153340236,
+    "platform": 76918315,
+    "platform_tested": 6603458,
+    "untested": 70314857
+   },
+   "GAM-A": {
+    "articles": 1128,
+    "planned": 41562640,
+    "platform": 41562640,
+    "platform_tested": 0
+   },
+   "LOC-M": {
+    "articles": 6941,
+    "extra": 808110.232032,
+    "lift": 0.025696,
+    "planned": 114737642,
+    "platform": 108693347,
+    "platform_tested": 77244055,
+    "untested": 31449292
+   },
+   "POL-M": {
+    "articles": 3186,
+    "planned": 61272319,
+    "platform": 36709519,
+    "platform_tested": 16253438
+   },
+   "POL-N": {
+    "articles": 9007,
+    "extra": 552392.303466,
+    "lift": 0.012792,
+    "planned": 376236959,
+    "platform": 71403123,
+    "platform_tested": 28220219,
+    "untested": 43182904
+   },
+   "PZL-A": {
+    "articles": 1462,
+    "planned": 52648799,
+    "platform": 52648799,
+    "platform_tested": 14127355
+   },
+   "RCP-A": {
+    "articles": 1815,
+    "planned": 46307909,
+    "platform": 46307909,
+    "platform_tested": 0
+   },
+   "SPT-M": {
+    "articles": 2463,
+    "extra": 100399.783575,
+    "lift": 0.003938,
+    "planned": 104669888,
+    "platform": 57786909,
+    "platform_tested": 32290753,
+    "untested": 25496156
+   },
+   "SPT-N": {
+    "articles": 11043,
+    "extra": 648293.410758,
+    "lift": 0.013214,
+    "planned": 340990504,
+    "platform": 98219774,
+    "platform_tested": 49158748,
+    "untested": 49061026
+   },
+   "WEL-A": {
+    "articles": 903,
+    "planned": 27868316,
+    "platform": 27868316,
+    "platform_tested": 3350766
+   }
+  },
+  "raw": {
+   "BUS-N": 0.023438,
+   "CUL-N": 0.022194,
+   "LOC-M": 0.034445,
+   "POL-N": 0.014471,
+   "SPT-M": 0.108109,
+   "SPT-N": 0.015548
+  },
+  "shr": {
+   "BUS-N": 0.019994,
+   "CUL-N": 0.01781,
+   "LOC-M": 0.025696,
+   "POL-N": 0.012792,
+   "SPT-M": 0.003938,
+   "SPT-N": 0.013214
+  }
+ }
+}

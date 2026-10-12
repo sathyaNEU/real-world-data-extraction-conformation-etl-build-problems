@@ -83,7 +83,8 @@ SOURCE_DESC = {
     "section_web": "Web section fronts",
     "feed_app": "Bightline app home feed",
     "section_app": "App section tabs",
-    "related_links": "Related-story links inside an article, web and app",
+    "related_links": "Related-story links inside an article, web and app, each showing the linked article's current "
+                     "headline",
     "search": "Organic search results",
     "discover": "Discover-style recommendation cards in mobile browsers",
     "partner_apps": "Partner news apps carrying the Bightline feed",
@@ -181,12 +182,12 @@ ENTRY_BODY_LAG = 0.5            # entry text fixes whose note also arrives minut
 PAIR_GUARD = 60                 # minutes before a note on an unchanged headline in which no other headline change falls
 LAG_WINDOW = 10                 # the golden pairing of a note with the headline fix it records, minutes
 ENTRY_WINDOW = 30               # the golden pairing of a live blog's note with its entry's fix, minutes
-LAG_SUBSEED = {"POL-N": 55, "BUS-N": 57, "SPT-N": 51, "CUL-N": 63, "POL-M": 0, "SPT-M": 50, "LOC-M": 57}   # chosen so every partial reading misses every median
+LAG_SUBSEED = {"POL-N": 55, "BUS-N": 57, "SPT-N": 51, "CUL-N": 63, "POL-M": 0, "SPT-M": 218, "LOC-M": 57}   # chosen so every partial reading misses every median, with publish_at read on either clock
 # the note before its fix: a story's headline correction saved note first, the note (which says the headline was
 # corrected) on one live save and the corrected headline published on the next save a few minutes later
 LEAD_SHARE = {"POL-N": 0.12, "BUS-N": 0.12, "SPT-N": 0.12, "CUL-N": 0.20, "POL-M": 0.15, "SPT-M": 0.17, "LOC-M": 0.13}
 LEAD_MINUTES = (1, 9)
-LEAD_SUBSEED = {"POL-N": 0, "BUS-N": 47, "SPT-N": 1, "CUL-N": 2, "POL-M": 0, "SPT-M": 0, "LOC-M": 1}
+LEAD_SUBSEED = {"POL-N": 0, "BUS-N": 102, "SPT-N": 1, "CUL-N": 2, "POL-M": 0, "SPT-M": 0, "LOC-M": 1}
 # a note dropped and restored: a live save that left an article's correction note off, and the later save that put the
 # same note back while updating the headline (text-corrected stories only)
 READD_N = {"POL-N": 2, "BUS-N": 2, "SPT-N": 2, "CUL-N": 1, "POL-M": 1, "SPT-M": 1, "LOC-M": 2}
@@ -202,6 +203,9 @@ PANEL_REMAINDER = {"POL-N": 260, "BUS-N": 310, "SPT-N": 720, "CUL-N": 240, "POL-
                    "LOC-M": 760, "BLN-HOME": 200, "BLB-HOME": 330}
 RESTATED_PERIODS = ["2026-04", "2026-05", "2026-06"]
 RESTATE_FACTOR = 0.93           # the processing fault left the original releases at this share of the restated figures
+VISITS_RESTATE_FACTOR = 0.86    # and their visits at this share: repeat app visits were dropped as well
+# where each section's twelve-month average visits sits inside its thousand (the September release absorbs it)
+VISITS_REMAINDER = {"POL-N": 230, "BUS-N": 840, "SPT-N": 310, "CUL-N": 120, "POL-M": 690, "SPT-M": 270, "LOC-M": 790}
 # the history release: November 2025 to February 2026 rerun on the 2026 content taxonomy, for the national
 # sections whose content moved; the other sections were renumbered with their content unchanged and keep the
 # figures first published

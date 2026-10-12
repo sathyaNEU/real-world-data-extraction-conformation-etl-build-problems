@@ -97,7 +97,7 @@ PERSONAS = {
     "Corey Cox": ("EDT", "Managing editor", "Sydney", dt.date(2020, 8, 17)),
     "Kayla Torres": ("AUD", "Head of audience", "Sydney", dt.date(2021, 2, 1)),
     "Nina Franklin": ("AUD-EXP", "Experimentation lead", "Melbourne", dt.date(2019, 6, 10)),
-    "Jason Anderson": ("AUD-HS", "Headline squad lead", "Sydney", dt.date(2018, 11, 5)),
+    "Willie Smith": ("AUD-HS", "Headline squad lead", "Sydney", dt.date(2018, 11, 5)),
     "Natalie Benjamin": ("AUD-DATA", "Audience data engineer", "Brisbane", dt.date(2022, 4, 19)),
 }
 TEAM_NAME = {"EDT": "Editorial leadership", "AUD": "Audience", "AUD-EXP": "Experimentation",

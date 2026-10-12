@@ -7,9 +7,11 @@ read from the field reference's canonical_headline row, a profile-likelihood pri
 published states in the CMS revisions that skips a note put back after a save that left it off when the CMS field
 notes say it is the earlier notice, and pairs a note on an unchanged headline with the bare headline change within
 the window the field notes give for a fix and its note (ten minutes) before it, else after it, else with an entry's
-headline change within that window either side, each panel release read on the earlier section list up to the
-release before the release log's first on the 2026 content taxonomy and on the 2026 list from that release on,
-counted only for the months the release log lists for it, each section's month taken from the latest such release).
+headline change within that window either side, with a scheduled article live at the publish time its editor set
+on the newsroom's Brisbane clock, each panel release read on the earlier section list up to the release before the
+release log's first on the 2026 content taxonomy and on the 2026 list from that release on, a monthly release counted
+for the month its name follows and a rerun for the months its note names, each section's month taken from the latest
+such release).
 The CLAIMS block is the answer key it checks.
 """
 import csv
@@ -34,9 +36,8 @@ CLAIMS = {
               "CUL-N": 1_250_000},
     "readers": {"POL-N": 3_180_000, "SPT-M": 470_000, "BUS-N": 1_760_000, "SPT-N": 2_931_000, "LOC-M": 617_000,
                 "CUL-N": 1_412_000},
-    "per_reader": {"POL-N": 0.2, "SPT-M": 0.2, "BUS-N": 0.4, "SPT-N": 0.2, "LOC-M": 1.3, "CUL-N": 0.9},
-    "corrections": {"POL-N": 47, "SPT-M": 18, "BUS-N": 39, "SPT-N": 42, "LOC-M": 34, "CUL-N": 14},
-    "rate": {"POL-N": 5.2, "SPT-M": 7.3, "BUS-N": 4.9, "SPT-N": 3.8, "LOC-M": 4.9, "CUL-N": 3.6},
+    "visits": {"POL-N": 13_041_000, "SPT-M": 1_550_000, "BUS-N": 6_642_000, "SPT-N": 11_626_000, "LOC-M": 2_359_000,
+               "CUL-N": 5_052_000},
     "median_minutes": {"POL-N": 86, "SPT-M": 55, "BUS-N": 89, "SPT-N": 47, "LOC-M": 102, "CUL-N": 119},
     "backtest_hits": 7,
     "bulletin_march": (11, 22),
@@ -293,8 +294,6 @@ def main(target):
             app_tests[(m[1], int(m[4][:4]))].append(x)
     imp = {x: sum(int(p["impressions"]) for p in tests[x]) for x in tests}
     clk = {x: sum(int(p["clicks"]) for p in tests[x]) for x in tests}
-    first2h = dict(con.execute("SELECT desk_code, sum(pageviews) FILTER (WHERE age_band='0-2h') / sum(pageviews) "
-                               "FROM pv GROUP BY desk_code").fetchall())
 
     def fit_mom(ids):
         sel = np.isin(np.array(pkg_test), ids)
@@ -304,8 +303,8 @@ def main(target):
     real = {}
     for e in emb:
         ids = app_tests[(e["desk_code"], e["started"].year)]
-        real[e["embedding"]] = float(e["realised_incremental_clicks"])
-        plan_c = float(e["planned_clicks_m"]) * 1e6
+        real[e["embedding"]] = float(e["realised_holdback_lift_pct"]) / 100
+        plan_c = 1.0        # the log records a lift, so every prediction is a lift
         check("change log row %d: tests and observed lift reproduce" % e["embedding"],
               len(ids) == e["tests_run"] and round(100 * np.mean([win(x, prior, False) for x in ids]), 1) == round(e["avg_winning_lift_pct"], 1))
         g = np.mean([win(x, prior) for x in ids])
@@ -325,7 +324,6 @@ def main(target):
         wv = np.array([win(x, prior) for x in ids])
         preds["impression-weighted"][e["embedding"]] = np.average(wv, weights=[imp[x] for x in ids]) * plan_c
         preds["click-weighted"][e["embedding"]] = np.average(wv, weights=[clk[x] for x in ids]) * plan_c
-        preds["post-test"][e["embedding"]] = g * plan_c * (1 - first2h[e["desk_code"]])
         preds["absolute points"][e["embedding"]] = np.mean(
             [next((dp for _, _, sh, dp in per_test[x] if sh), 0.0) for x in ids]) * plan_c
         preds["log-scale shrinkage"][e["embedding"]] = np.mean([win_form(x, prior_log, "log") for x in ids]) * plan_c
@@ -353,41 +351,65 @@ def main(target):
     t3 = [e for e in emb if e["embedding"] == 3][0]
     t6 = [e for e in emb if e["embedding"] == 6][0]
     check("twins identical on every change-log column a lookup sees, realised about 2x apart",
-          all(t3[k] == t6[k] for k in ("tests_run", "avg_winning_lift_pct", "planned_clicks_m", "distribution"))
+          all(t3[k] == t6[k] for k in ("tests_run", "avg_winning_lift_pct", "distribution"))
           and 1.95 <= real[3] / real[6] <= 2.1, "%.3f" % (real[3] / real[6]))
 
-    # ------------------------------------------------------------------ readers: each release on its own section list
+    # ------------------------------------------------------------------ readers and visits: each release on its own list
     wb = load_workbook(panelwb, read_only=True, data_only=True)
     hist = list(wb["Section history"].iter_rows(values_only=True))[1:]
     rlog = [r for r in list(wb["Release log"].iter_rows(values_only=True))[1:] if r[0]]
     rel = {r[0]: r[1] for r in rlog}
-    rel_months = {r[0]: {x.strip() for x in str(r[2]).split(",")} for r in rlog}
-    first_2026 = [r[1] for r in rlog if (r[3] or "").startswith("First release on the 2026 content taxonomy")][0]
+    first_2026 = [r[1] for r in rlog if (r[2] or "").startswith("First release on the 2026 content taxonomy")][0]
     later_list = {(h[0], h[1]): (h[2], h[5]) for h in hist if h[4] is None}
     earlier_list = {(h[0], h[1]): (h[2], h[5]) for h in hist if h[4] is not None}
+    mnames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+              "November", "December"]
+
+    def months_of(name, note):
+        """A monthly release publishes the month before the one its name carries; a rerun publishes the months its
+        note names ("November 2025 to February 2026", "April, May and June 2026")."""
+        note = note or ""
+        m = re.search(r"(%s) (\d{4}) to (%s) (\d{4})" % ("|".join(mnames), "|".join(mnames)), note)
+        if m:
+            y, k = int(m.group(2)), mnames.index(m.group(1)) + 1
+            y2, k2 = int(m.group(4)), mnames.index(m.group(3)) + 1
+            out = set()
+            while (y, k) <= (y2, k2):
+                out.add("%d-%02d" % (y, k))
+                y, k = (y, k + 1) if k < 12 else (y + 1, 1)
+            return out
+        m = re.search(r"Restated ((?:(?:%s)(?:, | and ))+(?:%s)) (\d{4})" % ("|".join(mnames), "|".join(mnames)), note)
+        if m:
+            return {"%s-%02d" % (m.group(2), mnames.index(x) + 1) for x in re.findall("|".join(mnames), m.group(1))}
+        y, k = 2000 + int(name[1:3]), int(name[4:6])
+        y, k = (y, k - 1) if k > 1 else (y - 1, 12)
+        return {"%d-%02d" % (y, k)}
+    pub_months = {r[0]: months_of(r[0], r[2]) for r in rlog}
     best = {}
     off_log = 0
     for r in csv.DictReader(open(panel_f, encoding="utf-8")):
-        if r["period"] not in rel_months[r["release"]]:
-            off_log += 1        # a row a release's file carried for a month that release did not publish
+        if r["period"] not in pub_months[r["release"]]:
+            off_log += 1        # a month the release's file carried but the release did not publish
             continue
         lst = later_list if rel[r["release"]] >= first_2026 else earlier_list
         name, desk = lst[(r["site_code"], int(r["section_code"]))]
         key = (r["period"], r["site_code"], name)
         if key not in best or rel[r["release"]] > rel[best[key][0]["release"]]:
             best[key] = (r, desk)
-    monthly = defaultdict(dict)
+    monthly, monthly_v = defaultdict(dict), defaultdict(dict)
     for (period, site, name), (r, desk) in best.items():
         if desk:
             monthly[desk][period] = int(r["unique_audience"])
+            monthly_v[desk][period] = int(r["visits"])
     readers = {d: statistics.mean(monthly[d].values()) for d in SHORTLIST}
-    check("panel rows outside their release's published months are set aside (the July file's April to June rows)",
+    visits = {d: statistics.mean(monthly_v[d].values()) for d in SHORTLIST}
+    check("panel rows for months their release did not publish are set aside (the July file's April to June rows)",
           off_log == 27, str(off_log))
     for d in SHORTLIST:
         check("readers %s (12 months)" % d, len(monthly[d]) == 12 and round(readers[d], -3) == CLAIMS["readers"][d],
               "%.1f" % readers[d])
-        check("extra clicks per reader %s" % d, one_dp(r4[d] / readers[d]) == CLAIMS["per_reader"][d],
-              "%.4f" % (r4[d] / readers[d]))
+        check("visits %s (12 months)" % d, len(monthly_v[d]) == 12 and round(visits[d], -3) == CLAIMS["visits"][d],
+              "%.1f" % visits[d])
 
     # ------------------------------------------------------------------ corrections: a walk of the published states
     docs = defaultdict(list)
@@ -432,8 +454,12 @@ def main(target):
         arts[desk] += 1
         states, golive = live, ts(live[0][1])
         sched = [r for r in chain if r[2] == "scheduled" and r[0] < live[0][0]]
-        if sched and sched[-1][3] and ts(sched[-1][3]) < golive:
-            states, golive = [sched[-1]] + live, ts(sched[-1][3])
+        # publish_at is the time the editor set, on the newsroom's clock (AEST, no daylight saving): on that clock
+        # every article the CMS published goes live minutes before its first live save
+        set_at = dt.datetime.strptime(sched[-1][3], "%Y-%m-%dT%H:%M") - dt.timedelta(hours=10) if sched and sched[-1][3] \
+            else None
+        if set_at is not None and set_at < golive:
+            states, golive = [sched[-1]] + live, set_at
         first, bare = None, None        # bare: a headline change published with no new note
         shown, taken = {states[0][5]}, set()
         for i in range(1, len(states)):
@@ -475,9 +501,6 @@ def main(target):
             mins[desk].append(int((first - golive).total_seconds() // 60))
     for d in SHORTLIST:
         check("articles %s equal the spine's base-year articles" % d, arts[d] == C[d]["n_win"], "%d %d" % (arts[d], C[d]["n_win"]))
-        check("headline corrections %s" % d, count[d] == CLAIMS["corrections"][d], str(count[d]))
-        check("rate per 1,000 articles %s" % d, one_dp(1000 * count[d] / arts[d]) == CLAIMS["rate"][d],
-              "%.4f" % (1000 * count[d] / arts[d]))
         check("median minutes to first headline correction %s" % d,
               len(mins[d]) % 2 == 1 and statistics.median(mins[d]) == CLAIMS["median_minutes"][d],
               "%s over %d articles" % (statistics.median(mins[d]), len(mins[d])))
