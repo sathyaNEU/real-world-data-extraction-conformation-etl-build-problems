@@ -1,0 +1,109 @@
+{
+  "call": "Halloran Bay",
+  "pick_total": 382700,
+  "runner_up": "Cullinvale",
+  "runner_total": 237700,
+  "gross_leader": "Cullinvale",
+  "average_leader": "Eskerford",
+  "flip_pct": 14,
+  "lanes_stood_down_all_day": 2,
+  "unit_lanes": 3,
+  "unit_lanes_added_at_banks": {
+    "Cullinvale": 1,
+    "Ardcarrig": 1,
+    "Faranloe": 1,
+    "Halloran Bay": 3,
+    "Eskerford": 1,
+    "Brennagh": 1,
+    "Dromkeel": 1,
+    "Glenkessan": 1
+  },
+  "period_days": [
+    16,
+    31,
+    31
+  ],
+  "gap_to_runner": 145000,
+  "moved": {
+    "Cullinvale": {
+      "late June": 51900,
+      "July": 92900,
+      "August": 92900
+    },
+    "Ardcarrig": {
+      "late June": 48900,
+      "July": 71900,
+      "August": 60100
+    },
+    "Faranloe": {
+      "late June": 43500,
+      "July": 77500,
+      "August": 66200
+    },
+    "Halloran Bay": {
+      "late June": 66600,
+      "July": 165300,
+      "August": 150800
+    },
+    "Eskerford": {
+      "late June": 60500,
+      "July": 65400,
+      "August": 69300
+    },
+    "Brennagh": {
+      "late June": 43200,
+      "July": 81200,
+      "August": 61900
+    },
+    "Dromkeel": {
+      "late June": 49600,
+      "July": 79600,
+      "August": 54900
+    },
+    "Glenkessan": {
+      "late June": 40300,
+      "July": 62100,
+      "August": 64200
+    }
+  },
+  "moved_total": {
+    "Cullinvale": 237700,
+    "Ardcarrig": 180900,
+    "Faranloe": 187200,
+    "Halloran Bay": 382700,
+    "Eskerford": 195200,
+    "Brennagh": 186300,
+    "Dromkeel": 184100,
+    "Glenkessan": 166600
+  },
+  "passengers_2026": {
+    "Cullinvale": 1299100,
+    "Ardcarrig": 1125900,
+    "Faranloe": 1058700,
+    "Halloran Bay": 616000,
+    "Eskerford": 890200,
+    "Brennagh": 757600,
+    "Dromkeel": 866300,
+    "Glenkessan": 641000
+  },
+  "hotel_per_night": {
+    "Cullinvale": 116.72,
+    "Ardcarrig": 110.01,
+    "Faranloe": 90.3,
+    "Halloran Bay": 112.98,
+    "Eskerford": 98.5,
+    "Brennagh": 84.7,
+    "Dromkeel": 95.4,
+    "Glenkessan": 93.73
+  },
+  "claims_per_week": {
+    "Cullinvale": 7135.92,
+    "Ardcarrig": 7339.69,
+    "Faranloe": 7991.56,
+    "Halloran Bay": 8091.04,
+    "Eskerford": 8163.34,
+    "Brennagh": 8247.46,
+    "Dromkeel": 8824.96,
+    "Glenkessan": 8724.6
+  }
+}

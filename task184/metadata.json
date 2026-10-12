@@ -1,0 +1,194 @@
+{
+  "task": "task184",
+  "title": "Where the mobile screening unit should be posted for 15 June to 31 August 2027 among the eight airports the throughput detector flagged, how many passengers it would move within the 20-minute wait standard at each in each period, and how far the chosen airport's forecast can fall before another posting moves more",
+  "domain": "Urban & Regional Science (house domain Supply Chain & Logistics)",
+  "subdomain": "aviation passenger screening operations (checkpoint capacity and the posting of a mobile screening unit after a throughput detector's spring flags)",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "13 (scenarios and the flip point): each airport's posting in each 2027 period, the call, the flip, and three 2026 measures per airport",
+  "as_of": "2027-04-23",
+  "deliverables": [
+    "mobile_team_posting_summer_2027.pdf",
+    "mobile_team_effect_2027.xlsx"
+  ],
+  "distractor_files": [
+    "lane_fault_log_2026.csv",
+    "passenger_feedback_summer2026.csv"
+  ],
+  "input_gates": {
+    "files": 17,
+    "formats": [
+      "csv",
+      "json",
+      "md",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "checkpoint_lane_counts_20260615_20260831.csv",
+    "largest_file_rows": 279417
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task184/generator/build.py (seeded, deterministic) around a fictional country's aviation screening agency, its airports, staff and suppliers; no real agency, airport, hotel, person or record is depicted.",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2027-04-23",
+  "generator": "task184/generator/build.py",
+  "files": [
+    {
+      "path": "checkpoint_lane_counts_20260615_20260831.csv",
+      "format": "csv",
+      "bytes": 8086115,
+      "rows": 279417,
+      "source": "Constructed: Lane sensor feed, eight central checkpoints, 15 June to 31 August 2026",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "checkpoint_lane_register.csv",
+      "format": "csv",
+      "bytes": 8029,
+      "rows": 94,
+      "source": "Constructed: Central checkpoint lane register",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "checkpoint_planning_standard_2023.pdf",
+      "format": "pdf",
+      "bytes": 44408,
+      "rows": null,
+      "source": "Constructed: Checkpoint planning standard KAS-STD-07, 2023 edition (superseded)",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "checkpoint_planning_standard_2026.pdf",
+      "format": "pdf",
+      "bytes": 45321,
+      "rows": null,
+      "source": "Constructed: Checkpoint planning standard KAS-STD-07, 2026 edition",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "expense_claims_CC4109_2026.csv",
+      "format": "csv",
+      "bytes": 257628,
+      "rows": 3542,
+      "source": "Constructed: Expense claims export, cost centre CC-4109, claims approved June to October 2026",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_notes_2027-04-23.md",
+      "format": "md",
+      "bytes": 2718,
+      "rows": null,
+      "source": "Constructed: Capacity Planning extract notes, 23 April 2027",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hotel_invoices_CC4109_summer2026.xlsx",
+      "format": "xlsx",
+      "bytes": 7908,
+      "rows": null,
+      "source": "Constructed: Payables lines, cost centre CC-4109, hotel invoices and credit notes, summer 2026",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lane_fault_log_2026.csv",
+      "format": "csv",
+      "bytes": 7387,
+      "rows": 116,
+      "source": "Constructed: Lane fault log, 2026",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mobile_screening_unit_deployment_policy_2027.pdf",
+      "format": "pdf",
+      "bytes": 42086,
+      "rows": null,
+      "source": "Constructed: Mobile screening unit deployment policy 2027",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mobile_unit_postings_2026.csv",
+      "format": "csv",
+      "bytes": 801,
+      "rows": 11,
+      "source": "Constructed: Mobile screening unit postings, summer 2026",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "operator_traffic_returns_2026.csv",
+      "format": "csv",
+      "bytes": 4949,
+      "rows": 96,
+      "source": "Constructed: Airport operators' monthly traffic returns, 2026",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "passenger_feedback_summer2026.csv",
+      "format": "csv",
+      "bytes": 186745,
+      "rows": 2186,
+      "source": "Constructed: Passenger feedback about security, summer 2026",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "queue_time_sensor_20260615_20260831.csv",
+      "format": "csv",
+      "bytes": 1178702,
+      "rows": 44749,
+      "source": "Constructed: Queue-camera queue times, eight central checkpoints, 15 June to 31 August 2026",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "roster_pattern_summer2027.xlsx",
+      "format": "xlsx",
+      "bytes": 8914,
+      "rows": null,
+      "source": "Constructed: Summer 2027 roster pattern from the airports' rostering tool, lanes planned by 15 minutes",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "roster_plan_summer2026.csv",
+      "format": "csv",
+      "bytes": 24841,
+      "rows": 576,
+      "source": "Constructed: Summer 2026 roster patterns, lanes planned by 15 minutes",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "summer2027_planning_sheet.xlsx",
+      "format": "xlsx",
+      "bytes": 19609,
+      "rows": null,
+      "source": "Constructed: Capacity Planning's summer 2027 planning sheet (design days)",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "throughput_detector_flags_spring2027.json",
+      "format": "json",
+      "bytes": 2344,
+      "rows": null,
+      "source": "Constructed: Throughput detector run, spring 2027",
+      "date": "2027-04-23",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
