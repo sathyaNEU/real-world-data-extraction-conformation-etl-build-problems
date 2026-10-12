@@ -5,13 +5,13 @@
   "slot_note": "seed AD04 re-rooted, architecture 4 (the author's builds are never retired): v1 (a credit union's counterfeit wave) spent at in-house round 1; v2 (pertussis area deployment, completed by laboratory route) spent once its estimand was filed literally; v3 (near-repeat burglary runs) spent at design because no filed back-test closes it on honest data; the objective and number are kept and the draw is new",
   "domain": "human-factors-ergonomics",
   "subdomain": "safety-incident-error-analysis",
-  "niche": "an area control centre's summer traffic plan: whether any en-route sector will run over the safety plan's tolerance of ATM-related losses of separation per 100,000 flight hours in summer 2027, when a new low-cost base sends its departures climbing through a busy eastbound airway",
+  "niche": "an area control centre's summer traffic plan: whether any en-route sector will run over the safety plan's tolerance of ATM-related losses of separation per 100,000 flight hours in summer 2027, when a new low-cost base sends its departures climbing and arrivals descending through a busy east-west trunk airway",
   "objective": "anomaly-detection",
   "shape": "01",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Tarvik High (design target; the golden's wording is fixed at ship from the generator)",
-  "answer_source": "the design note's Ladder; at ship task181/golden/, written by the generator from target/ and recomputed by the verifier",
+  "answer": "Tarvik will run over the safety plan's tolerance in summer 2027, at about 72 ATM-related losses of separation per 100,000 flight hours against 40.0, and no other sector will.",
+  "answer_source": "task181/submission.md, Final Recommendation; golden/summer2027_safety_forecast.pptx and golden/summer2026_sector_measures.csv, written by generator/deliver.py from target/ and recomputed by generator/verify.py",
   "gap": [
     "population",
     "time"
@@ -34,8 +34,8 @@
   "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "fdps_sector_traversals_2025-2026.parquet",
-    "rows": 0,
+    "file": "fdps_sector_traversals_2025-01_2026-09.parquet",
+    "rows": 1693315,
     "entity": "one flight's traversal of one elementary en-route sector (entry and exit time and flight level, as the flight data processing system logged it)",
     "grain": "flight x elementary sector traversal",
     "source": "synthetic"
@@ -46,7 +46,7 @@
   "world": {
     "geography": "fictional country (Aldmark), northern Europe, EUR ICAO region",
     "currency": "EUR",
-    "org_type": "national air navigation service provider's area control centre with eight elementary en-route sectors",
+    "org_type": "national air navigation service provider's area control centre with eight elementary en-route sectors from FL245 up",
     "invented_names": [
       "Aldmark",
       "Aldmark Air Navigation",
@@ -54,38 +54,40 @@
       "Holmvik",
       "Brekka",
       "Skarnes",
-      "Tarvik High",
-      "Tarvik Low",
-      "Mosby High",
-      "Mosby Low",
+      "Tarvik",
+      "Mosby",
       "Grendal",
       "Linmark",
       "Karrow",
-      "Lysvik"
+      "Lysvik",
+      "Hallin",
+      "Sandvik"
     ],
     "people": [
       "Dorte Koch",
       "Erik Sørensen",
-      "Paw Frandsen"
+      "Paw Frandsen",
+      "Kenny Lassen"
     ]
   },
   "deliverables": [
-    "summer2027_sector_forecast.xlsx",
-    "sector_rates_summer2027.png"
+    "summer2027_safety_forecast.pptx",
+    "summer2026_sector_measures.csv"
   ],
   "opening_move": "question-first",
   "question_form": "whether",
   "driver": "Events arise when one moving unit passes through the position of another present at the same time, so the expected count follows the crossings a period's traffic creates rather than the time units spend, their number or its square; a forward change that sends new units across a dense existing flow multiplies the crossings while barely adding time, so scaling last period's events by time spent, by counts, by their square or by the time spent changing position keeps a unit under a rate limit that its crossings carry over it.",
-  "driver_concrete": "Losses of separation in the Holmvik centre happen where one aircraft climbs or descends through the level of another in the same sector, so each sector's summer 2027 losses follow the vertical crossings in the 2027 traffic sample; Brekka's new base sends about thirty departures a day climbing through Tarvik High's eastbound cruise levels, adding about 2 per cent to its flight hours and roughly doubling its crossings, which takes it over the safety plan's 12.0 losses per 100,000 flight hours while every other sector stays under.",
-  "stump": "A competent solver keeps each sector's summer 2026 losses of separation per 100,000 flight hours, scales each sector's losses with its 2027 flight hours from the traffic sample and files that no sector reaches the safety plan's 12.0 in summer 2027 (Mosby High highest at about 11); the step that lands it there is forecasting losses from flight hours when separation is lost where one aircraft climbs or descends through another's level, so the Brekka departures that add about 2 per cent to Tarvik High's flight hours roughly double its vertical crossings and take it to about 14.5.",
+  "driver_concrete": "Losses of separation in the Holmvik centre happen where one aircraft climbs or descends through the level of another in the same sector (every one of the 96 ATM-related losses in the record), so each sector's summer 2027 losses follow the pairs whose levels change order in the summer 2027 planning traffic; Brekka's new base sends 26 departures and 26 arrivals a day climbing and descending through Tarvik's trunk-airway cruise levels, adding about 10 per cent to its flight hours and multiplying its pairs five-fold, which takes it to 72.4 against the safety plan's 40.0 losses per 100,000 flight hours while every other sector stays at or under 26.4.",
+  "stump": "A competent solver keeps each sector's summer 2026 losses of separation per 100,000 flight hours, scales each sector's losses with its 2027 flight hours from the planning traffic and files that no sector reaches the safety plan's 40.0 in summer 2027 (Mosby highest at 32.0, Tarvik 13.4); the step that lands it there is forecasting losses from flight hours when separation is lost where one aircraft climbs or descends through another's level, so the Brekka flights that add about 10 per cent to Tarvik's flight hours multiply its pairs whose levels change order five-fold (9,682 to 48,545) and take it to 72.4, every other sector at or under 26.4.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who deduplicates the occurrence records, keeps the ATM-related losses of separation, attributes each to its elementary sector under the night configurations and computes summer flight hours exactly still forecasts summer 2027 by scaling each sector's losses with its flight hours, with the square of its traffic or with its climbing and descending flight hours, and files that no sector exceeds 12.0, because only counting the vertical crossings in each sector shows the new Brekka departures taking Tarvik High over the tolerance.",
+  "analyst_test": "A strong analyst who keeps the ATM-related losses of separation, attributes each to its elementary sector, reads the season in local time and computes summer flight hours exactly still forecasts summer 2027 by scaling each sector's losses with its flight hours, with the square of its traffic or with its climbing and descending flight hours, and files that no sector exceeds 40.0, because only counting the vertical crossings in each sector shows the new Brekka flights taking Tarvik over the tolerance.",
   "domain_test": "What decides the call is air traffic control's human-factors safety analysis of controller workload: a loss of separation is a controller error in a vertical interaction (one aircraft cleared through the level of another), so a sector's expected losses follow the vertical crossings in its traffic, a complexity measure the field uses beside flight hours; with another field's nouns there are no flight levels to cross and no climb through a cruising flow, so the task does not survive the swap.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task229": "task229 v1 builds a standard error over shared parent nodes (entities that fail together); task181 v4 builds the exposure unit as a vertical crossing between two aircraft in one sector, and its forecast follows the crossings, never an error term.",
     "task98": "task98 v3 forms each unit by chaining members within a distance under a per-unit threshold; task181 v4 forms no group: the exposure is each pair where one aircraft changes level through another's, and the forward change is new traffic multiplying those pairs.",
-    "task60": "task60 v8 counts people filed by two filers once under a tie-break; task181 v4 counts encounters between two aircraft (vertical crossings), and the forward count scales with those pairs rather than with flight hours or with any roll of units."
+    "task60": "task60 v8 counts people filed by two filers once under a tie-break; task181 v4 counts encounters between two aircraft (vertical crossings), and the forward count scales with those pairs rather than with flight hours or with any roll of units.",
+    "task183": "task183 forecasts each feeder's cable failures from each section's own failure history (a state carried by the part); task181 v4 forecasts each sector's losses from pairs of aircraft whose levels change order (an interaction the traffic builds); the shared surface is the lane (Anomaly Detection, shape 01) and the author's pack idiom, not the mechanism."
   },
   "lineage": [
     {
@@ -113,10 +115,11 @@
   "layer2_family": "field_method",
   "layer2_pattern": "own:vertical-crossing-exposure-for-separation-losses",
   "layer1": [
-    "flight data processing extract at flight x elementary sector grain, levels in hundreds of feet, times in UTC, with the night sector configurations (collapsed positions) in a separate opening log",
-    "occurrence database export where one loss of separation carries a controller report, a short-term conflict alert log entry and sometimes a pilot report, under one occurrence number but on separate lines",
-    "callsigns that change between the flight plan and the radio (ICAO three-letter designator against the airline's telephony callsign and the operator's own flight number)",
-    "the season defined in local time against UTC timestamps across the summer-time changes",
-    "a traffic sample built by the forecast team in a different layout and key (IFPLID) from the actuals extract"
+    "flight data processing extract at flight x elementary sector grain, levels in hundreds of feet, times in UTC against a season defined in local time",
+    "sectors named in full in the occurrence export and by code in the flight data",
+    "a summer 2027 planning traffic built by the forecast team in its own layout and flight key",
+    "a network manager delay export that keeps a re-filed flight's cancelled plan with the delay its slot carried",
+    "a sector configuration table revised mid-season, the earlier groupings only in the operations manual",
+    "both crews' reports of one ACAS resolution advisory encounter filed as two occurrences"
   ]
 }

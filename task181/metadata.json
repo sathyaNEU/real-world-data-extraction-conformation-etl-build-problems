@@ -1,0 +1,184 @@
+{
+  "task": "task181",
+  "title": "Whether any en-route sector will run over the summer 2027 tolerance of ATM-related losses of separation, with each sector's summer 2026 delay, solo opening hours and ACAS encounters",
+  "domain": "Human Factors & Ergonomics",
+  "subdomain": "safety incident and error analysis (losses of separation in an area control centre's en-route sectors against a unit safety plan's tolerance)",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "01 (each candidate in or out against a line): every sector's summer 2027 forecast against the tolerance, with every sector's summer 2026 ATFM delay per flight, hours open on its own and ACAS RA encounters",
+  "as_of": "2026-10-12",
+  "deliverables": [
+    "summer2027_safety_forecast.pptx",
+    "summer2026_sector_measures.csv"
+  ],
+  "stated_inputs": [
+    "40.0",
+    "100,000",
+    "14,957",
+    "13.4",
+    "32.0"
+  ],
+  "distractor_files": [
+    "controller_roster_summer2026.xlsx",
+    "met_cb_activity_summer2026.csv"
+  ],
+  "input_gates": {
+    "files": 15,
+    "formats": [
+      "csv",
+      "json",
+      "md",
+      "parquet",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "fdps_sector_traversals_2025-01_2026-09.parquet",
+    "largest_file_rows": 1693315
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task181/generator/build.py (seeded, deterministic) around a fictional air navigation service provider (Aldmark Air Navigation), its area control centre, sectors, airports and operators; external airports are real ICAO locations used only as origins and destinations. No real person, operator, flight or occurrence is depicted.",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-12",
+  "generator": "task181/generator/build.py",
+  "files": [
+    {
+      "path": "HACC_OM_part3_ch4_sector_configuration.pdf",
+      "format": "pdf",
+      "bytes": 47376,
+      "rows": null,
+      "source": "Constructed: Operations Manual Part 3 Chapter 4, sector configuration (edition of 26 March 2026)",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "HACC_summer2026_safety_closeout.pdf",
+      "format": "pdf",
+      "bytes": 43749,
+      "rows": null,
+      "source": "Constructed: Summer 2026 safety performance close-out (HACC-SAF-RPT-2026-11)",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "HACC_unit_safety_plan_2026-2028.pdf",
+      "format": "pdf",
+      "bytes": 44866,
+      "rows": null,
+      "source": "Constructed: Unit Safety Plan 2026 to 2028 (HACC-SAF-PLN-03 edition 2.0)",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "controller_roster_summer2026.xlsx",
+      "format": "xlsx",
+      "bytes": 11511,
+      "rows": null,
+      "source": "Constructed: Controller roster, June to August 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_notes_2026-10-12.md",
+      "format": "md",
+      "bytes": 2673,
+      "rows": null,
+      "source": "Constructed: Data and Analytics hand-off note for the extract",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fdps_sector_traversals_2025-01_2026-09.parquet",
+      "format": "parquet",
+      "bytes": 24133262,
+      "rows": 1693315,
+      "source": "Constructed: FDPS archive: one row per flight per elementary sector entered, 1 January 2025 to 30 September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "met_cb_activity_summer2026.csv",
+      "format": "csv",
+      "bytes": 19505,
+      "rows": 736,
+      "source": "Constructed: Met office convective activity summaries by sector and day, summer 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "nm_regulations_2026-05_2026-09.csv",
+      "format": "csv",
+      "bytes": 42101,
+      "rows": 507,
+      "source": "Constructed: Network manager regulation list, May to September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "nm_slot_allocations_2026-05_2026-09.csv",
+      "format": "csv",
+      "bytes": 1060822,
+      "rows": 14667,
+      "source": "Constructed: Network manager slot allocation list for regulations on Holmvik traffic volumes and arrivals, May to September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "occurrence_export_2025-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 80881,
+      "rows": 743,
+      "source": "Constructed: Safety occurrence database export, Holmvik ACC sectors, occurrences dated 1 January 2025 to 30 September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "occurrence_scheme_codes.csv",
+      "format": "csv",
+      "bytes": 1482,
+      "rows": 24,
+      "source": "Constructed: Occurrence scheme AAN-OCC-01 code lists",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "planning_traffic_summer2027_issue1.csv",
+      "format": "csv",
+      "bytes": 27399540,
+      "rows": 308913,
+      "source": "Constructed: Network and Capacity Planning: planning traffic for summer 2027, issue 1 of 9 October 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sector_configuration_log_2026-05_2026-09.csv",
+      "format": "csv",
+      "bytes": 34392,
+      "rows": 1182,
+      "source": "Constructed: Supervisors' sector configuration log, 30 April to 30 September 2026 (local time)",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sector_configurations_current.csv",
+      "format": "csv",
+      "bytes": 1809,
+      "rows": 44,
+      "source": "Constructed: Sector configuration table as exported from the ops system on 9 October 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sector_register.json",
+      "format": "json",
+      "bytes": 2615,
+      "rows": null,
+      "source": "Constructed: Sector register: elementary sectors, traffic volumes, limits",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

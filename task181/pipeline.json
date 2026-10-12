@@ -1,31 +1,31 @@
 {
   "task": "task181",
   "owner": "oviya13ya",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "human-factors-ergonomics",
   "objective": "anomaly-detection",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-12",
-  "stump": "A competent solver keeps each sector's summer 2026 losses of separation per 100,000 flight hours, scales each sector's losses with its 2027 flight hours from the traffic sample and files no sector over the tolerance (Mosby High highest at about 11 against 12.0), and the step that lands it there is forecasting losses from flight hours when separation is lost where one aircraft climbs or descends through another's level: the new Brekka departures add about 2 per cent to Tarvik High's flight hours and roughly double the vertical crossings of its eastbound airway, which takes Tarvik High to about 14.5 losses per 100,000 flight hours while every other sector stays under 12.0.",
+  "stump": "A competent solver keeps each sector's summer 2026 losses of separation per 100,000 flight hours, scales each sector's losses with its 2027 flight hours from the planning traffic and files that no sector reaches the safety plan's 40.0 in summer 2027 (Mosby highest at 32.0, Tarvik 13.4); the step that lands it there is forecasting losses from flight hours when separation is lost where one aircraft climbs or descends through another's level, so the Brekka flights that add about 10 per cent to Tarvik's flight hours multiply its pairs whose levels change order five-fold (9,682 to 48,545) and take it to 72.4, every other sector at or under 26.4.",
   "architecture": 4,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (2026-10-12), every line harmless",
+    "reader": "pass 1 and pass 2 (Sonnet, 2026-10-12): nothing for questions 1 to 4, question 5 sentences execute to the golden; pass 1 realism tells fixed, pass 2 minor"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task183 0.06 (driver)"
+    "heart": "WARN",
+    "nearest": "task183 0.06 (driver); surface task183 0.100"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (pass 2)",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report_pass2.md (pass 1 FIX_NOW: delay population, pooled-rate grading, bandbox remark; fixed)"
   },
   "returned": [
     {
@@ -35,9 +35,9 @@
       "commit": ""
     }
   ],
-  "resume": "stage 2: prototype the crossing world across seeds (the ladder's leaders and the 12.0 line), then the design note's screen, fork table, ladder, closure, literal reader, oracles and ask sheet, and prompt.txt, to precut exit 0",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

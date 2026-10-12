@@ -180,7 +180,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 134 (v2) | built 10-12, awaiting the leak reader and judge | HDE utilisation | FC | time population | none | inflow hazard peaks after a year | - | - | 760 to 790 residents | none reported | sathya8571 |
 | 135 | FAILED_TO_STUMP: backlog sathya8571 | PES sediment load | FC | objective time | none | back-transformed median is not the mean | - | - | - | none reported | sathya8571 |
 | 180 | FAILED_TO_STUMP: backlog oviya13ya | ECON revenue protection | AD | - | - | seed AD03: night-register bypass hides in totals | - | - | which district | none reported | oviya13ya |
-| 181 (v4) | drawing 10-12 | HFE air traffic control safety | AD | population time | D | losses follow vertical crossings, not flight hours | - | - | Tarvik High | none reported | oviya13ya |
+| 181 (v4) | SHIPPED, delivered 10-12, pending review | HFE air traffic control safety | AD | population time | D | losses follow vertical crossings, not flight hours | - | - | Tarvik | none reported | oviya13ya |
 | 182 | FAILED_TO_STUMP: backlog oviya13ya | PES groundwater | AD | objective | none | each bore's own lagged driver response | - | - | 4 owners, 5 bores | none reported | oviya13ya |
 | 183 | SHIPPED, delivered 10-12, pending review | ENR distribution reliability | AD | time population | none | repeat failures concentrate in parts already failed twice | - | - | Quarry Hill 21 | none reported | oviya13ya |
 | 228 (v2) | FAILED_TO_STUMP: backlog perssathya | PES soil moisture | DQ | objective | none | shared input breaks triple collocation | - | - | 8 stations | none reported | perssathya |
