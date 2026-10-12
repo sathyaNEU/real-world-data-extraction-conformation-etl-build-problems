@@ -1,11 +1,11 @@
 {
   "task": "task501",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "DRAWING",
   "domain": "quantitative-finance",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "re-root (architecture spent at stage 4: two judge passes failed)",
   "updated": "2026-10-12",
   "stump": "A competent solver forecasts 2027 calls fund by fund with the programme's age-band call rates on unfunded commitment, files CHF 236.1 million of expected calls and elects CHF 125 million; the step that lands it there is giving Loschwitz Equity III, Juneau Infrastructure Partners II, Rosenthal Buyout Partners II and Tessin Private Credit I, which deployed slowly through 2023-24 and whose investment periods end between September and December 2027 with 45.6 to 61.8 per cent of their commitments drawn, the call rate of funds their age, when every fund whose investment period has ended in the record had drawn 92.2 to 93.3 per cent of its commitment by then, so those four call about CHF 170 million in 2027 rather than CHF 80 million and the facility is CHF 225 million.",
   "architecture": 3,
@@ -23,9 +23,9 @@
     "nearest": "surface 0 pairs promoted (2026-10-12, after the repair)"
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC (margin_or_boundary_fragility), 2026-10-12; repaired in the generator, re-judge pending",
-    "disposition": "SEND_BACK (repaired in place: the estimation period filed in s.5.2 and the world tightened; the call and the stump unchanged)",
-    "report": "task501/determinism_check_report.md"
+    "verdict": "NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK",
+    "report": "determinism_check_report.md (pass 1, margin) and determinism_check_report_pass2.md (pass 2, the non-ten funds' base)"
   },
   "returned": [
     {
@@ -35,7 +35,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 4: re-judge the repaired build (fresh unzip, the judge isolated) and re-run the leak reader (RL-PM-05 s.5.2 and the minutes changed); on APPROVE, stage 5 ship",
+  "resume": "stage 1: re-root, a new draw in Forecasting",
   "approved": null,
   "delivered": null,
   "portal": [
