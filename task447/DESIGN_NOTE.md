@@ -8,7 +8,7 @@ The seed is redrawn under START_HERE rule 2. Its own pairings are blocked by the
 2026-10-11): banking x etl repeats task446 v2, quantitative-finance x etl repeats task445, shape 03
 repeats task445, the financial_institution family repeats task446, and the seed's stump (restating a
 base through charter, holding-company and branch events) is rule application. What survives of the
-seed is its mechanics, kept as supporting work and as an ask in a provider-ownership world: an owner
+seed is its mechanics, kept as supporting work in a provider-ownership world (appendix A5's joining): an owner
 gains physicians through three channels (a practice's billing TIN retired into the owner's, a
 practice joining under the owner as parent while keeping its TIN, and physicians reassigned one by
 one with no organisation event), with a transitive chain and an intra-system TIN consolidation that
@@ -374,7 +374,7 @@ base). No single defensible reading moves the call.
 | 7 | Weighting | pooled over practice-years | C1/C3: the practice average and every finer cell (system, carrier, product, line, practice, latest year) state the same 86 per cent and nil |
 | 8 | Measurement window | all pre and all post months | C1: the quota keeps every key's share stable month to month |
 | 9 | Boundary inclusivity | a service on an acquisition date is after it; 1 January counts include spans starting that day | filed in the appendix; C1: no event or hire on a boundary in the asks' populations |
-| 10 | Rounding path | the expected share in whole per cent first (4.05), then sum in dollars and round each graded figure once | the parts sit $2,700 or more inside their $10,000 bins (arthroscopy, $237,732, the tightest) and the total $40,795 inside its $0.1 million bin (asserted at $1,000 and $20,000); the thinnest boundary in the pack is Ask B's Manitowoc endoscopy 2024 share (6.556, 0.006 points inside), then Kewaunee endoscopy after (81.365, 0.015), both counts of services with no estimator in them (asserted at 0.005 and 0.012) |
+| 10 | Rounding path | the expected share in whole per cent first (4.05), then sum in dollars and round each graded figure once | the parts sit $2,700 or more inside their $10,000 bins (arthroscopy, $237,732, the tightest) and the total $40,795 inside its $0.1 million bin (asserted at $1,000 and $20,000); the thinnest exhibit boundary is Exhibit 1's Kewaunee imaging share (45.437, 0.013 points inside), then Exhibit 2's Brightwater primary-care share (35.034, 0.016), both ratios of counted services with no estimator in them (asserted at 0.01) |
 | 11 | Tie-break | none | no ties exist |
 | 12 | Maturity | baseline runout to 30 June 2025 | filed; late-paid claims sit only on ask rows (zero-count asserted) |
 | 13 | Order of operations | reprice, then sum | commutes |
@@ -404,116 +404,162 @@ base). No single defensible reading moves the call.
 
 ## Ask sheet
 
-Main block (recommendation and critical components, about 10 criteria): the call; the 2026 increase
-in $ millions to one decimal; professional prices and the five referred families, each to the nearest
-$10,000; the chart (stacked components with the $2.0 million threshold drawn). Every family figure
-fails on every wrong rung (R4 product by product gives imaging $308k, echocardiography $76k,
-endoscopy $438k, arthroscopy $155k, laboratory $37k against $502k, $130k, $670k, $238k, $60k). The
-professional figure ($610k) is right on every rung and is the recommendation's `r`.
+The asks are the review's two standing exhibits. Rule 4.07 says the preliminary review states the projected
+increase, its professional and referred parts, and the exhibits the market oversight unit maintains in its
+technical appendix; appendix A2 and A3 define them. Both are counted on rows outside the main call's
+population and neither needs the call or its construction, so the cracker and the mirror file the same
+exhibit figures.
 
-**Ask B, Ledgestone's outpatient share (12 cells, coupled to the construction, device-carried).**
-Ledgestone's share of the commercial outpatient imaging, endoscopy and arthroscopy services received
-by residents of Manitowoc and of Kewaunee county, in 2024 and with Brightwater's 2026 referral shift,
-as percentages to one decimal. Built (2024, after): Manitowoc imaging 9.6, 40.5; endoscopy 6.6, 46.9;
-arthroscopy 8.1, 41.2; Kewaunee imaging 10.0, 52.0; endoscopy 10.5, 81.4; arthroscopy 9.1, 73.6. The
-R4 path (the tier share with the 2024 placements) files 25.3 to 50.3 for the after cells and misses
-all six.
-- Construction layer: the six after cells need the R5 capture by line and county.
-- Device layer (all on rows outside the main population, zero-counts asserted): (D1, primary) the
-  residence on the date of service, from eligibility spans split at an address change, for members
-  who moved between or out of the two counties during 2024 (a member's single ZIP files the wrong
-  county; organ: the appendix's residence rule and the span ZIP column); (D2) Kinnickinnic's
-  replacement and void claims at its Manitowoc hospital, replacements under new claim IDs naming the
-  claim they replace and voids with negative units, beside genuine same-day repeats a blanket
-  de-duplication would destroy (law 5); (D3) procedure units above one on bilateral imaging lines
-  (services are units, per the appendix); (D4) Kewaunee residents' services at Ledgestone's Green Bay
-  hospital and at Sheboygan facilities, inside a residence-based market a facility-county filter
-  drops; (D11) a self-funded administrator's fourth-quarter claims for two employer groups on
-  Lakefront's PPO (members in Kewaunee County and in Two Rivers) paid after the 30 June 2025 runout and
-  inside the extract's 31 August paid-through date.
-- Stops, as built (make.py prints each, checks.py asserts each moves two or more of the 12 figures):
-  every line as it stands with the member's first address, 10; versions handled but the first
-  address, 10; a blanket de-duplication on member, date, code and site, 4; lines counted instead of
-  units, 2; claims paid after the runout kept, 5; only facilities in the two counties, 4; the shift
-  with the 2024 placements, all six after cells.
-- Span: the 2024 claims, the 2021 to 2023 history extract, eligibility, the product reference, the
-  placement filings, the facility directory, the register, the reassignment history, the data
-  dictionary and the technical appendix (ten files), with columns member ID, ZIP, span dates, product,
-  frequency code, prior claim ID, units, facility NPI, CPT, date of service, referring NPI and plan
-  year.
+Main block (recommendation and critical components): the call; the 2026 increase in $ millions to one
+decimal; the parts 4.07 names (professional $610,000, referred $1,600,000); the 86 per cent measured on the
+earlier acquisitions; Bayfield's first-tier placement of Ledgestone from plan year 2025. The cracker keeps
+all of it. The mirror (R4) keeps the professional part, which is right on every rung (`r` about 3).
 
-**Ask C, Ledgestone's physicians (11 cells, decoupled, device-carried).** The count of physicians on
-each 1 January 2020 to 2025 and how many joined by acquisition in each year 2020 to 2024 (built:
-counts 57, 68, 73, 81, 90, 89; joined 10, 5, 7, 8, 0). The appendix defines a Ledgestone physician (an MD
-or DO billing on that date under a TIN Ledgestone owns or controls, directly or through an entity it
-controls) and an acquisition (joining together with the practice billed under: the practice coming
-under Ledgestone's control, or every physician of the practice moving to Ledgestone TINs within 90 days
-with the practice billing no more).
-- Devices (silent ones first): (D5, primary) Northpoint Orthopedics, four orthopedists reassigned to
-  Ledgestone Medical Group one at a time in October and November 2022 with no register event (the
-  register-only read misses four acquisitions and four physicians in every later count); (D6) Bayside
-  Pediatrics, owned by Fox River Physician Partners since 2018, comes under Ledgestone with Fox River in
-  September 2020 (a direct-parent read misses three); (D7) Ledgestone Primary Care North's TIN retired
-  into Ledgestone Medical Group in June 2020, an intra-system move that is not an acquisition (a
-  "merged into" read counts nine); (D8) Harbor Lakes Clinic joined Ledgestone's clinically integrated
-  network in 2023, not control; (D9) nurse practitioners and physician assistants on the same TINs; (D10)
-  a physician who left in 2021 and returned in 2024, a hire both ways.
-- Stops: register only (Northpoint missed, 3 joined in 2022, not 7) / direct parent only (Bayside
-  missed, 7 joined in 2020, not 10) / the 2020 consolidation counted as an acquisition (19 joined in
-  2020) / every TIN including the clinically integrated network and advanced practitioners / answer. Span: the register, the reassignment history, the carriers' provider file,
-  the taxonomy list in the dictionary, the appendix, the notice, the history extract's practice list
-  and the facility directory (eight files), columns NPI, TIN, span start and end, relationship type,
-  parent, effective dates, taxonomy, credential, practice name variants.
+**Ask 1, Exhibit 1 (appendix A2): the commercial imaging, endoscopy and arthroscopy services Manitowoc and
+Kewaunee county residents received in 2024, by county and line, with the share Brightwater's physicians
+referred (12 figures).**
+- Golden: Manitowoc imaging 3,269 services, 40.6 per cent referred by Brightwater's physicians; endoscopy
+  1,574, 52.9; arthroscopy 328, 42.7. Kewaunee imaging 1,008, 45.4; endoscopy 444, 64.0; arthroscopy 97,
+  41.2.
+- H18 home: a standing exhibit of the same review (4.07). It shows how much of each county's outpatient
+  care the target's physicians direct, which is the flow the referral shift draws on; the call does not
+  turn on it. Use: the Attorney General's health care division reads it with the call.
+- Primary device (D1, the same records under two sources): 1,025 members are covered twice, under their
+  own employer's plan and as a spouse or child under a second carrier's plan, with concurrent eligibility
+  spans from both submitters. Once the first carrier has paid, the second carrier's claim for the same
+  service arrives under its own submitter code, product, claim number and paid date, priced on what the
+  first carrier left the member to pay. On file: 659 facility services and 1,807 office services billed by
+  both carriers. Allowed equals plan paid plus member liability on every row, and nothing names a second
+  plan. Key uniqueness, exact duplicates (none, even with the claim number dropped), the amount identity
+  and the claim-to-eligibility join on member, product and date all pass, because each copy joins its own
+  carrier's span. Only a cut across submitters finds it: one member, one date, one code and modifier, one
+  facility, two carriers, each with a span that day. Fair handling (asserted against the services the
+  simulation generated): for each member, date, code, modifier and facility, count the units one plan
+  holds. Over-cleaning half: de-duplicating on member, date, code and facility also removes the genuine
+  RT and LT lines of bilateral knee films and arthroscopies.
+- Hazards: H1 versions, H2 late payment, H4 residence on the date of service, H5 RT and LT lines.
+- Path: eight files (the 2024 facility claims, the eligibility spans, the product reference, the data
+  dictionary for frequency codes and ZIP to county, the technical appendix A1 and A2, rule OHCCR 4.02 for a
+  physician of a practice and a referred service, the notice for Brightwater's number, the NPI reassignment
+  history) and fifteen columns (submitter_code, payer_claim_control_number, claim_frequency_code,
+  original_claim_control_number, member_id, product_id, service_from_date, procedure_code,
+  procedure_modifier_1, quantity, service_facility_npi, referring_provider_npi, coverage_start,
+  coverage_end, member_zip).
+- Stops (make.py prints each, checks.py asserts each lands outside its bins), in services and points,
+  Manitowoc imaging, endoscopy, arthroscopy, then Kewaunee:
+  - every claim counted (the cracker): +67, +49, +12, +33, +5, +4 services; shares -0.82, -1.60, -1.51,
+    -1.44, -0.71, -1.63
+  - de-duplicated on member, date, code and facility: -64, 0, -7, -19, 0, -4; +0.81, 0, +0.93, +0.77, 0,
+    +1.77
+  - residence by the member's first ZIP: +23, +16, +2, -17, -9, 0; -0.28, -0.53, -0.26, +0.78, +1.32, 0
+  - rule 4.03's runout applied to the exhibit: -12, -2, -1, -12, -2, 0; +0.15, +0.07, +0.13, +0.55,
+    +0.29, 0
+  - versions as filed: Manitowoc imaging +29, -0.36
+  - every combination of the five (24 pipelines): none lands back inside a bin it left, the nearest 0.13
+    points off.
+- Realism: dual coverage is ordinary in commercial claims, a second carrier's claim follows the first
+  carrier's payment, and pricing the secondary on the remaining liability is one of the formats APCD
+  submitters use.
 
-**Hazards (cross-cutting).** H1, claim frequency codes and prior-claim references (Ask B's D2, and the
-history extract's own replacements on non-main rows); H2, eligibility spans split at plan-year
-renewals and address changes (Ask B's D1 and the main call's product join, inert on the main rows by
-construction); H3, NPI and TIN identity through name variants in the carriers' provider files (Ask C
-and Ask B's facility and referrer identities). Direction discipline per ask is asserted: no subset of
-mishandlings lands back inside a bin.
+**Ask 2, Exhibit 2 (appendix A3): Brightwater's and Ledgestone's shares of the two counties' 2024
+commercial office visits, by specialty (8 figures).**
+- Golden: primary care 35.0 and 7.6 per cent; gastroenterology 41.8 and 4.0; orthopaedic surgery 35.7
+  and 3.7; cardiovascular disease 71.9 and 7.6.
+- H18 home: the second standing exhibit (4.07), the parties' combined position in the physician services
+  the transaction consolidates; the call does not turn on it.
+- Primary device (D2, an attribute reported at the wrong level): Kinnickinnic's Sheboygan business office
+  reports the network's own family-medicine taxonomy in the rendering-provider field for every
+  practitioner it bills. That covers its internists, the Brightwater gastroenterologist's Thursday clinic,
+  and the gastroenterologists, orthopaedic surgeons and cardiologists who hold clinic days at its Manitowoc
+  hospital: 7,471 lines, 12 NPIs. Every code is valid and maps to a specialty, so a specialty read from
+  the claim moves the visiting specialists' visits into primary care. Only a cut across files finds it:
+  the carriers' provider files give each NPI one taxonomy; a "family medicine" provider on these lines
+  bills knee arthroscopy and echocardiography interpretation; the Brightwater gastroenterologist carries
+  two taxonomies on two numbers' claims. Fair handling: each physician's specialty from his or her own
+  taxonomy (asserted one per NPI across every carrier's file).
+- Shared device: Ask 1's second-plan copies, 1,807 office services, move every denominator.
+- Hazards: H2 late payment, H3 control through the register (Mishicot Family Practice is Ledgestone's as
+  an affiliated, controlled practice), H6 physicians only (Mishicot's nurse practitioner), H7 telehealth
+  (A3: a visit by telehealth is not an office visit; 706 at place of service 10, 701 with modifier 95).
+- Path: eight files (the 2024 professional claims, the carriers' provider file, the provider ownership
+  register, the notice for Exhibit A and Brightwater's number, the technical appendix A3 and A4, the data
+  dictionary for place of service, modifiers, taxonomy and ZIP to county, the eligibility spans for the
+  second plans, the product reference) and fourteen columns (procedure_code, place_of_service,
+  procedure_modifier_2, rendering_provider_npi, rendering_provider_taxonomy, billing_provider_tin,
+  service_facility_zip, member_id, service_from_date, submitter_code, primary_taxonomy, entity_tin,
+  relationship, effective_from).
+- Stops, in points, Brightwater then Ledgestone, primary care, gastroenterology, orthopaedic surgery,
+  cardiovascular disease:
+  - the claim's taxonomy and both plans' copies (the cracker): -1.75, +6.29, +3.59, +18.15; -0.38, +0.76,
+    +0.49, +2.33
+  - the claim's taxonomy alone: -0.85, +7.49, +4.74, +18.52; -0.19, +0.72, +0.49, +1.96
+  - both plans' copies alone: -0.90, -1.00, -1.13, -0.92; -0.20, +0.04, -0.01, +0.22
+  - telehealth counted: -1.07, -0.34, -0.55, -0.37; +0.10, -0.03, -0.06, -0.04
+  - Mishicot's nurse practitioner counted: primary care -0.52 and +1.38
+  - Ledgestone Medical Group's number only: Ledgestone's primary care -7.61 (to nil)
+  - rule 4.03's runout applied: +0.27, +0.03, +0.18, +0.14; 0.00, -0.07, -0.01, -0.12
+  - every combination of the seven (128 pipelines): none lands back inside a bin it left by a full point
+    of rounding, the nearest 0.065 points off.
+- Realism: a central business office reporting the group's taxonomy in the rendering loop is one of the
+  most common provider-field faults in APCD professional claims.
 
-**The line, in three sentences.** No device or hazard row sits inside the main call's declared row
-population (Brightwater's 2024 professional and referral claims, the history extract's and the 2024
-extract's referral claims of the acquired practices' physicians, their members' eligibility spans);
-the generator asserts zero-counts. Ask C needs nothing from the main call; Ask B's after cells need the
-main construction by design (the lane's construction layer). Every graded ask figure sits under at
-least two independent devices.
+**Hazards (cross-cutting).**
 
-**Pair arithmetic** (planning weights 38 / 7 / 55; 33 ask and component cells; `r` about 3 for the
-professional figure and the chart's furniture). Case 1, neither top response lands the call (the
-build's target): each keeps Ask B's six 2024 cells only where it handles D1 to D4 and D11, and Ask C where it
-handles D5 to D10; at a leakage of one half on those 17 device-only cells and nil on the six coupled
-cells, L is about 0.37 and each response scores about 3 + 7 + 20 = 30, a pair of 30. Case 2, one
-lands the call: the lander keeps the coupled cells less the devices, L about 0.5, about 72; the other
-about 30; a pair near 51, at the bar, so the build rests on case 1, which is the ladder's job: R0 to
-R4 must hold every response but one off the call. Criteria count: 10 + 12 + 11 + 2 instruction
-criteria = 35.
-
-**Cracker sheet** (`supplemental-stumping` Part 1.1, merged after this ask layer was designed: the
-response that lands R5, runs the hygiene battery and executes every filed rule).
-
-| Ask | Figures | Why the cracker keeps it | Cracker |
+| Hazard | What it is | Ask 1 | Ask 2 |
 |---|---|---|---|
-| The increase split (professional prices and the five referred lines) and the chart | 6 and a chart | a split of the committed figure, keyed to the construction | hit |
-| Ask B, Ledgestone's shares in 2024 | 6 | every device is adjudicated by appendix A2 (residence on the date of service, latest version net of voids, units, the runout) | hit |
-| Ask B, the shares once Brightwater's referrals move | 6 | keyed to the construction, devices as above | hit |
-| Ask C, Ledgestone's physicians each 1 January | 6 | adjudicated by appendix A4 (control through an entity, the network that is not control, doctors only) | hit |
-| Ask C, physicians who joined by acquisition | 5 | adjudicated by appendix A5 (joining with the practice, the 90-day rule, moves between the system's own numbers) | hit |
+| H1 versions | Kinnickinnic's referrals to its Manitowoc hospital: replacements (code 7) and voids in error with rebills (code 8); the dictionary files the codes | Manitowoc imaging +29 as filed | none |
+| H2 late payment | two self-funded groups' fourth-quarter claims paid in July and August 2025, inside the extract | up to -12 services under a runout | Brightwater up to +0.27 under a runout |
+| H3 control | Mishicot under Ledgestone (register and Exhibit A) | none | Ledgestone primary care to nil on LMG's number only |
+| H4 residence | 4 per cent of the other lakeshore members move, spans cut at the move | first ZIP: up to 23 services | none |
+| H5 RT and LT | bilateral knee films and arthroscopies on two lines | the over-cleaner's loss | none |
+| H6 physicians | Mishicot's nurse practitioner (A4: physicians only) | none | primary care -0.52 and +1.38 |
+| H7 telehealth | place of service 10 or modifier 95 (A3) | none | Brightwater -0.34 to -1.07 |
 
-Pair ceiling: 72 (the cracker keeps every ask figure, about 100; the mirror response at R4 keeps Ask
-B's 2024 cells and Ask C by executing A2, A4 and A5, about 44). The case-1 arithmetic above was the
-design's assumption before the merge; under the cracker-sheet rules this ask layer fails, and it needs
-a designer pass that re-routes the asks off filed adjudication and off the construction before the
-solver round (`precut.py` fails on these two rows).
+**Referees.** Ask 1: the eligibility file (every second-plan claim has the second carrier's own span
+covering the date, and every member billed by two carriers for one service holds both). Ask 2: the
+carriers' provider file (one taxonomy per NPI across every carrier). Neither hands over a level: the
+eligibility file counts nothing and the provider file ranks nothing.
+
+**No marker, no oracle.** The second-plan claims carry frequency code 1 and fill every column as first
+claims do, and the second carriers' claims for their own members look the same. The family-medicine code
+on Kinnickinnic's lines is the code of every family physician in the file. No control total ties under one
+handling only: the export manifest's row counts tie on every path.
+
+**The separation line.** Zero device and hazard rows in the main call's population, asserted by count: no
+second plan for any Brightwater, acquired-practice or Ledgestone Medical Group member; none on Mishicot's
+lines or at Ledgestone's sites (so R1 and the 2024-price column of the grid do not move); the taxonomy
+device on Kinnickinnic's professional lines only. `generator/main_call_ref.json`, written from the build
+before this ask layer, holds every main row, every reference file the call reads whole and every main
+figure; checks.py asserts the current build reproduces it byte for byte.
+
+**Cracker sheet.**
+
+| Ask figures | n | The cracker's path (lands R5, runs the battery, executes A2 and A3) | Cracker |
+|---|---|---|---|
+| Exhibit 1, services by county and line | 6 | counts every claim's units: the second plans' copies add 67, 49, 12, 33, 5 and 4 services | miss |
+| Exhibit 1, Brightwater's referred share | 6 | the same totals: every share 0.71 to 1.63 points low | miss |
+| Exhibit 2, Brightwater's share by specialty | 4 | specialty from the claim and both plans' copies: -1.75, +6.29, +3.59, +18.15 | miss |
+| Exhibit 2, Ledgestone's share by specialty | 4 | the same totals: -0.38, +0.76, +0.49, +2.33 | miss |
+
+Mirror leakage: 0 per cent (the mirror stops at R4 and counts both exhibits exactly as the cracker does).
+
+Pair ceiling: 27.5 (planning weights 38 / 7 / 55 and r = 3: the cracker 38 + 7 + 0 = 45, the mirror
+3 + 7 + 0 = 10).
+
+The honest exposure: a response that cuts across submitters and reads each specialty from the provider
+file keeps both exhibits, about 3 + 7 + 55 = 65 with the call held, and two such responses would fail the
+bar on their own. The build rests on the two silent devices holding at least one of the top two.
+Criteria: the call, the increase, four critical components, twenty exhibit figures and two instruction
+criteria, 28.
 
 ## Pack plan
 
 | File | Format | Rows | Role |
 |---|---|---|---|
-| `apcd_op_facility_claims_2024.csv` | CSV | 66,660 | spine: 2024 commercial outpatient facility claims for the directory's facilities, layout 3.1, paid through 31 August 2025 |
+| `apcd_op_facility_claims_2024.csv` | CSV | 67,976 | spine: 2024 commercial outpatient facility claims for the directory's facilities, layout 3.1, paid through 31 August 2025 |
 | `apcd_op_facility_claims_2021_2023.csv` | CSV | 31,568 | the acquired practices' physicians' referrals 2021 to 2023, layout 2.4 |
-| `apcd_professional_claims_2024.csv` | CSV | 65,782 | professional claims performed in Manitowoc and Kewaunee counties, 2024 |
-| `apcd_eligibility_spans.csv` | CSV | 101,741 | member spans 2021 to 2024, cut at product, benefit period and address |
+| `apcd_professional_claims_2024.csv` | CSV | 69,086 | professional claims performed in Manitowoc and Kewaunee counties, 2024 |
+| `apcd_eligibility_spans.csv` | CSV | 102,665 | member spans 2021 to 2024, cut at product, benefit period and address, one set per carrier for members covered twice |
 | `apcd_product_reference.csv` | CSV | 14 | product, carrier, line of business, tiered network flag |
 | `network_tier_placements_2020_2026.json` | JSON | | each tiered product's placement of each system by plan year, from the carriers' form filings |
 | `apcd_extract_data_dictionary.pdf` | PDF | | both layouts, frequency codes, place of service, taxonomy, ZIP to county |
@@ -525,31 +571,35 @@ solver round (`precut.py` fails on these two rows).
 | `N25-014_exhibit_C_ledgestone_rates.xlsx` | XLSX | | Ledgestone's facility rates by carrier (Bayfield as a percent of Medicare by category) and professional schedule |
 | `cms_opps_clfs_2025_wisconsin.csv` | CSV | 21 | the Medicare amounts the Bayfield terms reference |
 | `ohccr_rule_4_preliminary_review.pdf` | PDF | | the rule (estimand, criterion, threshold) |
-| `market_oversight_technical_appendix.pdf` | PDF | | market share, residence, physician and joining definitions |
+| `market_oversight_technical_appendix.pdf` | PDF | | service lines, the two exhibits (residence, office visits), physicians and joining |
 | `export_manifest.csv` | CSV | 18 | the extract's manifest |
 | `hcris_hospital_outpatient_extract_fy2023.csv` | CSV | 6 | distractor: cost report outpatient lines, costs and charges |
 | `apcd_medicare_advantage_facility_claims_2024.csv` | CSV | 5,200 | distractor: Medicare Advantage claims for the same referrers, outside the commercial estimand |
 
-19 files, four formats (CSV, JSON, PDF, XLSX), the eligibility spans at 101,741 rows, two distractors
+19 files, four formats (CSV, JSON, PDF, XLSX), the eligibility spans at 102,665 rows, two distractors
 named in `metadata.json` only. No filed document says that referrals follow tiers, that the share
 depends on a plan's placement, or that placements change what an acquisition does.
 
 ## Assertion regime
 
-`generator/checks.py` runs 422 assertions on every build, and `generator/verify.py` recomputes every
-graded figure from `target/` alone with csv, json, openpyxl and pypdf, sharing no code with the
-generator: the answer and every component; every rung and its distance to the threshold (each wrong
-rung 8 per cent or more below, the nearest at 16.5 per cent; the answer 10.5 per cent above); the
-24-cell correction grid; the records' structure (the tier model within two points of every
-practice-year, every model outside the tier family 8 or more points off one; every finer cell, every
-practice and Norbridge's Tiered EPO at Wolf River before and after plan year 2024 stating 86 and nil);
-the estimator corridor; the semantic fork table, SF1 to SF12; the rule filing no selection criterion;
-every graded figure's distance to its bin edge; the clean-data test; zero device and hazard rows in
-the main population; Ask B's and Ask C's stops; the distractor-deletion test; the realism sweep (no
-two facilities with one count, no constant monthly series, no recurring monthly totals, no round
-headline figure); the input gates; the submission's figures and the house checks; the prompt as one
-plain-text paragraph; two consecutive builds byte-identical and the zip member for member. The
-generator writes `generator/figures.json` and `figures_check.py` passes (55 figures, none typed).
+`generator/checks.py` runs every assertion on each build (the count is in `pipeline.json`), and
+`generator/verify.py` recomputes every graded figure from `target/` alone with csv, json, openpyxl and
+pypdf, sharing no code with the generator: the answer and every component; every rung and its distance to
+the threshold (each wrong rung 8 per cent or more below, the nearest at 16.5 per cent; the answer 10.5 per
+cent above); the 24-cell correction grid; the records' structure (the tier model within two points of
+every practice-year, every model outside the tier family 8 or more points off one; every finer cell,
+every practice and Norbridge's Tiered EPO at Wolf River before and after plan year 2024 stating 86 and
+nil); the estimator corridor; the semantic fork table, SF1 to SF12; the rule filing no selection
+criterion; every graded figure's distance to its bin edge; the clean-data test; zero device and hazard
+rows in the main population; the main call reproduced byte for byte against `main_call_ref.json`; both
+exhibits' goldens against the simulation's own services, every stop and the cracker outside every bin,
+every combination of mishandlings (24 on Exhibit 1, 128 on Exhibit 2) kept out of the bins it leaves;
+the referees (one taxonomy per NPI in the provider file, a second carrier's span under every
+second-plan claim); the distractor-deletion test; the realism sweep (no two facilities with one count,
+no constant monthly series, no recurring monthly totals, no round headline figure); the input gates;
+the submission's figures and the house checks; the prompt as one plain-text paragraph; two consecutive
+builds byte-identical and the zip member for member. The generator writes `generator/figures.json` and
+`figures_check.py` passes.
 
 ## Realism debts
 
@@ -564,6 +614,17 @@ generator writes `generator/figures.json` and `figures_check.py` passes (55 figu
   on the other referrers' rows in the same files.
 - Bayfield's percent-of-Medicare terms differ by service category (405 per cent for imaging). Forced by
   the price book; such carve-outs exist in hospital agreements.
+- No Brightwater, acquired-practice or Ledgestone Medical Group member has a second plan, Mishicot's office
+  files no claims with second plans, and no second plan submits a service at a Ledgestone site. Forced by
+  the separation line (the main call reads those members' rows, and the R1 rung and the grid's 2024-price
+  column read Mishicot's referrals and Ledgestone's site prices); mitigation: 1,025 other members carry
+  two plans, with second-plan claims at every other facility and practice.
+- Exhibit C's facility rates are one chargemaster times a constant factor per carrier (Norbridge's are
+  1.06 of Cedarbrook's on every code). The rates are main-call inputs, frozen through the ask-layer pass;
+  a revision that may move the call can give each carrier its own negotiated schedule.
+- Kinnickinnic's visiting specialists see patients in Manitowoc but their lakeshore patients' outpatient
+  referrals are not in the extract's lakeshore rows. Accepted: no exhibit counts their referrals, and the
+  Sheboygan rows carry their referral pattern.
 
 ## Stopping rule
 
@@ -577,15 +638,46 @@ goes to the ask-only revision; one where two responses land the call re-roots.
 
 `leak.py --asof 2025-10-21` (the pack's export date) returns REVIEW with no LEAK, each line answered:
 - `014` in the notice and the data dictionary: the notice number N25-014, which the prompt names.
-- 'Brightwater Medical Group' beside decision vocabulary in the notice: the certification block of
-  the filing under review; the target is named in the prompt.
+- 'Brightwater Medical Group' beside decision vocabulary in the notice: the certification block of the
+  filing under review; the target is named in the prompt.
 - `4.05` and `4.06` in the rule: the rule's own section numbers, which the submission cites.
-- Design-note vocabulary in the notice (6 terms), the dictionary (9), the appendix (10) and the rule
-  (9): the field's ordinary nouns (office, carrier, product, practice, physicians, service, history,
-  projection, records); read in full, no document connects tiers with referrals, the share that moves
-  or the projection year, the rule files no selection criterion, and the placement file says only
-  what it is kept for (the annual cost trends report).
-The solver's-eye reader has not been run.
+- Design-note vocabulary in the notice (3 terms), the dictionary (7), the appendix (8) and the rule (9):
+  the field's ordinary nouns (product, carrier, service, practice, claims, history, shares, records,
+  projection); no document connects tiers with referrals, the share that moves or the projection year,
+  the rule files no selection criterion, and the placement file says only what it is kept for (the
+  annual cost trends report).
+
+Two isolated solver's-eye reads ran, on the stage 3 pack and again after the appendix pins. Neither quoted a sentence for the decisive step,
+found no file that ranks or answers, no file that exists only to help, no figure that reads as the answer,
+and both called all nine REVIEW lines harmless. Their literal readings of 4.02 to 4.06 execute to the golden. Their
+literal reading of the exhibits counts claim units and takes specialty from the claim's taxonomy, which is
+the cracker's path the ask sheet designs for (the second read names the provider file as a competing source;
+the judge took it, from the records). Rulings on the first read's other points:
+- Exhibit definitions without a paid-date cut, version netting stated only for spending, and
+  "Internal Medicine, Gastroenterology" read as internal medicine: closed in the appendix (A2 and A3 count
+  every 2024 date of service whenever paid, on the latest version net of voids; A3 maps each specialty to
+  its NUCC codes and defines a physician's specialty as the classification of the physician's taxonomy).
+  Hazards only; no figure moved.
+- The export manifest's "lakeshore physicians" on the Medicare Advantage file: reworded to the two counties.
+- Bayfield's percent-of-Medicare cells (4.05 shown as 405 per cent under the 0% format) and the CY2025
+  amounts for a 2026 projection: harmless; the workbook stores percentages as Excel does, and 4.04 does
+  not trend prices, so the filed CY2025 amounts are the only ones a literal reader can apply (the judge
+  executed both the same way).
+- Exhibit C's rates scale by a constant carrier factor over one chargemaster: accepted as a realism debt,
+  because the rates are main-call inputs and the ask-layer pass keeps the main call byte-identical.
+
+## Determinism check
+
+Judge pass 1 (2026-10-12, isolated, Sonnet, medium, literal reading first): DETERMINISTIC, APPROVE
+(`determinism_check_report.md`). Every component, the call and all twenty exhibit figures reproduced; the
+judge found both ask devices (it counted the 659 cross-carrier facility services and 2,420 office visits
+once and took each physician's specialty from the provider files) and recorded the claim-taxonomy reading
+as a semantics error with no shipped sentence naming the source. Its optional pin (naming the provider
+file in A3) would settle the Exhibit 2 device by a filed sentence, so it is not taken; A3 instead defines
+a physician's specialty as the classification of the physician's taxonomy. Gate G: method_or_model_selection
+with forecasting, analytical_non_defect, no surface-read dependency, no sole data defect. Gate H: domain
+pass, layers pass, decisive step analytical. Its second optional pin (filing the tier stratification) would
+remove the stump and is not taken.
 
 ## Tried and rejected
 
@@ -664,3 +756,29 @@ The solver's-eye reader has not been run.
 - An expected share worded in the singular ("the expected share is estimated from ..."): its literal
   execution is one pooled number, the easy answer from a reading rather than a method; 4.04(b) files
   the share expected for each service.
+- The first ask layer (the increase split by part and service line with its chart, Ledgestone's county
+  shares in 2024 and after the referral shift, Ledgestone's physicians each 1 January and those who joined
+  by acquisition): the split, the after cells and the chart were keyed to the call's construction, and
+  every device was settled by a filed sentence (appendix A2's residence, versions, units and runout, A4's
+  control and credentials, A5's joining rule), so a response that landed the call kept every figure (pair
+  ceiling 72). Replaced by the review's two standing exhibits, each held by a device no filed sentence
+  settles.
+- A bilateral knee film billed as one line with modifier 50 and two units beside hospitals' RT and LT
+  lines: "how many services" then read as lines or as units. Every bilateral service is two lines now and
+  A2 counts units.
+- Kewaunee's endoscopies and arthroscopies left to the movers and the outreach top-ups: no second-plan
+  copy fell in either cell, so the cracker kept four figures. The Manitowoc gastroenterology and
+  orthopaedic groups now see Kewaunee patients.
+- Second-plan claims on Mishicot's office visits: the copies grew Ledgestone's primary-care numerator with
+  its denominator and left that share 0.06 points from the golden on the cracker's path. Mishicot's office
+  files no second-plan claims.
+- Office visits counted in person or by telehealth, and replacements on Kinnickinnic's professional
+  lines: telehealth and the replacements pushed against the late payments, and four-mistake combinations
+  landed back inside a bin on three specialty shares. A3 counts in-person visits only and the professional
+  replacements are gone.
+- The new lines drawn by their position in the claim stream: tuning one exhibit's volumes moved the
+  other's cells. Each new line now draws from its own key.
+- The judge's optional pin naming the carriers' provider file as the source of a physician's specialty:
+  it would settle the Exhibit 2 device by a filed sentence the cracker executes; A3 defines specialty as
+  the classification of the physician's taxonomy instead, which closes the code-to-specialty reading
+  without naming a source.

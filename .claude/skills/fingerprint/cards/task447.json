@@ -38,7 +38,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "apcd_op_facility_claims_2024.csv",
-    "rows": 66660,
+    "rows": 67976,
     "entity": "one service line of one commercial outpatient facility claim as the carrier submitted it to the state all-payer claims database, with its referring physician, member key and product",
     "grain": "claim x line",
     "source": "synthetic, on the APCD Common Data Layout (outpatient facility and professional claims, eligibility spans and provider files)"
@@ -85,7 +85,9 @@
     "eligibility spans split at employer plan-year renewals, some renewing on 1 July, with product moves at renewal",
     "network tier placements filed per product and plan year, changing between plan years",
     "negotiated rates in mixed payment formats (fee schedule by carrier, percent of Medicare by service category)",
-    "claims paid after the runout date in an extract pulled later, and telehealth visits billed at the office place of service with a modifier"
+    "claims paid after the runout date in an extract pulled later, and telehealth visits billed at the office place of service with a modifier",
+    "members covered by two carriers, whose second plan's claims repeat the first plan's services under another submitter, product, claim number and paid date",
+    "a central business office reporting its group's taxonomy in the rendering-provider field of every professional claim"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

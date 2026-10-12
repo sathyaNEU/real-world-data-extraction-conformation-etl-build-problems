@@ -48,8 +48,8 @@ def run(target, task_dir, wd, packed, g):
     neutrality_checks(wd, packed, g)
     clean_data_check(target, g, L)
     distractor_check(target, task_dir, g)
-    ask_b_checks(target, g)
-    ask_c_checks(wd, g)
+    main_call_frozen(target, g, L, bt)
+    exhibit_checks(target, wd, packed, g)
     structure_checks(target, task_dir, wd, g)
     document_checks(target)
     semantic_fork_checks(target, g, L)
@@ -259,8 +259,8 @@ def distractor_check(target, task_dir, g):
             if f not in dis:
                 shutil.copy(os.path.join(target, f), tmp)
         g2 = G.compute(tmp)
-        A(abs(g2["total"] - g["total"]) < 0.01 and g2["shares"] == g["shares"] and g2["counts"] == g["counts"]
-          and g2["joined"] == g["joined"], "the golden recomputes unchanged with the distractors deleted")
+        A(abs(g2["total"] - g["total"]) < 0.01 and g2["ex1"] == g["ex1"] and g2["ex2"] == g["ex2"],
+          "the golden recomputes unchanged with the distractors deleted")
     finally:
         shutil.rmtree(tmp)
     for root, _, files in os.walk(target):
@@ -271,124 +271,179 @@ def distractor_check(target, task_dir, g):
                   "no file content says distractor (%s)" % f)
 
 
-# ------------------------------------------------------------------ Ask B
-def ask_b_stops(target, g):
+# ------------------------------------------------------------------ the exhibits (appendix A2 and A3)
+BROAD = ("member_id", "dos", "procedure_code", "service_facility_npi")
+MIN_D = 0.05          # half a unit of the stated rounding: a figure this close to the golden would score
+
+
+def miss(x, gold):
+    """A share outside the golden's bin: another rounding bin and at least half a unit away."""
+    return round(x, 1) != round(gold, 1) and abs(x - gold) >= MIN_D
+
+
+def exhibit_context(target):
     X = G.load(target)
-    fac = X["fac"]
-    f = fac[(fac["dos"].dt.year == 2024)].copy()
-    f["fam"] = f["procedure_code"].map(G.family)
-    f = f[f["fam"].isin(["IMG", "ENDO", "ARTH"])]
-    E = G.Elig(X["elig"])
     zc = G.zip_county(target)
-    sys_of = dict(zip(X["facdir"]["facility_npi"], X["facdir"]["health_system"]))
-    county_of_fac = dict(zip(X["facdir"]["facility_npi"], X["facdir"]["county"]))
-    first_zip = {}
-    for m, z, s in zip(X["elig"]["member_id"], X["elig"]["member_zip"], X["elig"]["start"]):
-        if m not in first_zip or s < first_zip[m][1]:
-            first_zip[m] = (z, s)
-    br = g["br"]
-    mv = br[br["fam"].isin(["IMG", "ENDO", "ARTH"])]
-
-    def shares(df, county_fn, units=True, after_caps=None):
-        out = {}
-        df = df.copy()
-        df["county"] = county_fn(df)
-        for county in ("Manitowoc", "Kewaunee"):
-            for fam in ("IMG", "ENDO", "ARTH"):
-                sel = df[(df["county"] == county) & (df["fam"] == fam)]
-                w = sel["qty"] if units else pd.Series(1, index=sel.index)
-                tot = w.sum()
-                ldg = w[sel["service_facility_npi"].map(sys_of) == "Ledgestone Health"].sum()
-                m = mv[(mv["county"] == county) & (mv["fam"] == fam)]
-                caps = after_caps(m) if after_caps else m["share_moving"]
-                moved = (caps * m["qty"]).sum()
-                out[(county, fam)] = (100 * ldg / tot, 100 * (ldg + moved) / tot)
-        return out
-
-    res = {}
-    base = f[f["paid"] <= G.RUNOUT]
-    latest = G.latest_versions(base)
-    resid = lambda df: [zc.get(E.on(m, d)[2]) for m, d in zip(df["member_id"], df["dos"])]
-    firstz = lambda df: [zc.get(first_zip[m][0]) for m in df["member_id"]]
-    res["golden"] = shares(latest, resid)
-    res["every line as it stands, first address"] = shares(base[base["claim_frequency_code"] != "8"], firstz, units=False)
-    res["versions handled, first address"] = shares(latest, firstz)
-    dd = latest.drop_duplicates(["member_id", "service_from_date", "procedure_code", "service_facility_npi"])
-    res["de-duplicated on member, date, code and site"] = shares(dd, resid)
-    res["lines not units"] = shares(latest, resid, units=False)
-    res["late-paid kept"] = shares(G.latest_versions(f), resid)
-    in2 = latest[latest["service_facility_npi"].map(county_of_fac).isin(["Manitowoc", "Kewaunee"])]
-    res["facilities in the two counties only"] = shares(in2, resid)
-    c1, c2 = g["c1"], g["c2"]
-    res["shift with 2024 placements"] = shares(latest, resid, after_caps=lambda m: pd.Series(
-        [(c1 if t == 1 else c2) if e else 0.0 for t, e in zip(m["t24"], m["eligible"])], index=m.index))
-    return res
+    spans = G.billing_spans(X["reassign"])
+    ctrl = G.Control(X["register"])
+    with pdfplumber.open(os.path.join(target, DC.NOTICE)) as pdf:
+        text = " ".join(pg.extract_text() or "" for pg in pdf.pages)
+    bmg = re.search(r"Brightwater's number\s*\((\d{2}-\d{7})\)", text).group(1)
+    return X, zc, spans, ctrl, bmg
 
 
-def ask_b_checks(target, g):
-    res = ask_b_stops(target, g)
-    gold = res["golden"]
-    for k, (a, b) in gold.items():
-        A(abs(a - g["shares"][k][0]) < 1e-9 and abs(b - g["shares"][k][1]) < 1e-9, "Ask B golden reproduces %s" % (k,))
-        A(edge_distance(a, 0.1) >= 0.005 and edge_distance(b, 0.1) >= 0.012,
-          "Ask B %s inside its bins (%.3f, %.3f)" % (k, a, b))
-    REPORT["askb_stops"] = {}
-    for name, cells in res.items():
-        if name == "golden":
+def ex1_variant(ctx, second="once", residence="span", runout=False, versions="latest"):
+    X, zc, spans, ctrl, bmg = ctx
+    kw = dict(residence=residence, runout=runout, versions=versions)
+    if second == "broad":
+        kw.update(second="one per key", key=BROAD)
+    else:
+        kw.update(second=second)
+    return G.ex1_cells(X, zc, bmg, spans, **kw)
+
+
+def ex2_variant(ctx, **kw):
+    X, zc, spans, ctrl, bmg = ctx
+    return G.ex2_cells(X, zc, bmg, ctrl, **kw)
+
+
+EX1_AXES = {"second": ["once", "every claim", "broad"], "residence": ["span", "first"], "runout": [False, True],
+            "versions": ["latest", "as filed"]}
+EX2_AXES = {"specialty": ["provider", "claim"], "second": ["once", "every claim"], "physicians": [True, False],
+            "system": ["register", "lmg"], "telehealth": [False, True], "runout": [False, True]}
+EX1_STOPS = {"every claim counted (the cracker)": dict(second="every claim"),
+             "de-duplicated on member, date, code and facility": dict(second="broad"),
+             "the member's first ZIP": dict(residence="first"),
+             "rule 4.03's runout applied": dict(runout=True),
+             "versions as filed": dict(versions="as filed")}
+EX2_STOPS = {"the claim's taxonomy and both plans (the cracker)": dict(specialty="claim", second="every claim"),
+             "the claim's taxonomy": dict(specialty="claim"),
+             "both plans' copies": dict(second="every claim"),
+             "telehealth counted": dict(telehealth=True),
+             "nurse practitioner counted": dict(physicians=False),
+             "Ledgestone Medical Group's number only": dict(system="lmg"),
+             "rule 4.03's runout applied": dict(runout=True)}
+
+
+def exhibit_truth(wd, packed):
+    """Both exhibits from the simulation's own services, without the claim files: every service once, a bilateral
+    service as its two sides, residence from the member's address on the day, specialty from the physician."""
+    mem, people, lines = wd["mem"], wd["people"], wd["lines"]
+    bil = set(packed["ledger"]["bilateral_lines"])
+    t1 = defaultdict(lambda: [0, 0])
+    for i, l in enumerate(lines):
+        if l["kind"] != "fac" or l["date"].year != 2024:
             continue
-        moved = sum(1 for k in gold for i in (0, 1) if round(cells[k][i], 1) != round(gold[k][i], 1))
-        REPORT["askb_stops"][name] = (moved, min(cells[k][1] for k in gold), max(cells[k][1] for k in gold))
-        A(moved >= 2, "Ask B stop '%s' lands on wrong values (%d of 12 figures move)" % (name, moved))
-    after = sum(1 for k in gold if round(res["shift with 2024 placements"][k][1], 1) != round(gold[k][1], 1))
-    A(after == 6, "the R4 shift misses every after cell")
-    # the after cells use the shares as 4.05 states them; every estimator form states the same shares
-    # (corridor_checks), so the after cells are one set of figures
-    br = g["br"]
-    for k, (a, b) in gold.items():
-        county, fam = k
-        m = br[(br["county"] == county) & (br["fam"] == fam)]
-        moved = sum(((g["c1"] if t == 1 else g["c2"]) if e else 0.0) * q for t, e, q in zip(m["t26"], m["eligible"], m["qty"]))
-        tot, ldg = g["shares"][k][2], g["shares"][k][3]
-        A(abs(100 * (ldg + moved) / tot - b) < 1e-9, "Ask B %s after cell recomputes at the stated shares" % (k,))
+        fam = W.CPT[l["cpt"]][1]
+        if fam not in ("IMG", "ENDO", "ARTH"):
+            continue
+        cty = W.ZIP_COUNTY[mem.zip_on(l["member"], l["date"])]
+        if cty not in ("Manitowoc", "Kewaunee"):
+            continue
+        n = 2 if i in bil else 1
+        t1[(cty, fam)][0] += n
+        if l["tag"] == "bmg_ref":
+            t1[(cty, fam)][1] += n
+    spec = {"FM": "primary care", "IM": "primary care", "PED": "primary care", "GI": "gastroenterology",
+            "ORTH": "orthopaedic surgery", "CARD": "cardiovascular disease"}
+    office = {str(c) for c in range(99202, 99216)}
+    t2 = defaultdict(lambda: [0, 0, 0])
+    for l in lines:
+        if l["kind"] != "prof" or l["code"] not in office or l["tele"] is not None:
+            continue
+        if W.ZIP_COUNTY[l["site_zip"]] not in ("Manitowoc", "Kewaunee"):
+            continue
+        sp = spec.get(people[l["rnd_npi"]]["spec"])
+        if sp is None:
+            continue
+        t2[sp][0] += 1
+        t2[sp][1] += l["practice"] == "BMG"
+        t2[sp][2] += l["practice"] in ("LMG", "MFP")
+    return t1, t2
 
 
-# ------------------------------------------------------------------ Ask C
-def ask_c_truth(wd):
-    """The counts from the simulation's own assignment records, computed without the register file."""
-    people, assign = wd["people"], wd["assign"]
-    phys = {n for n, p in people.items() if p["spec"] not in ("NP", "PA")}
-    ctrl = {"LMG": (date(2009, 7, 1), None), "LPCN": (date(2017, 1, 1), None), "MFP": (date(2019, 3, 1), None),
-            "FRPP": (date(2020, 9, 1), None), "BYP": (date(2020, 9, 1), None), "P2": (date(2022, 4, 1), None),
-            "P5": (date(2023, 8, 1), None)}
-    counts = {}
-    for y in range(2020, 2026):
-        d = date(y, 1, 1)
-        counts[y] = len({n for n, prac, s, e in assign if n in phys and prac in ctrl and ctrl[prac][0] <= d
-                         and s <= d and (e is None or d <= e)})
-    acq = {"FRPP": 2020, "BYP": 2020, "P1": 2021, "P2": 2022, "P3": 2022, "P4": 2023, "P5": 2023}
-    joined = {y: 0 for y in range(2020, 2025)}
-    for prac, y in acq.items():
-        joined[y] += len([n for n in wd["roster"][prac] if n in phys])
-    return counts, joined
+def exhibit_checks(target, wd, packed, g):
+    ctx = exhibit_context(target)
+    t1, t2 = exhibit_truth(wd, packed)
+    g1, g2 = g["ex1"], g["ex2"]
+    for k, (tot, b, sh) in g1.items():
+        A([tot, b] == t1[k], "Exhibit 1 %s reproduces the simulation's services (%s / %s)" % (k, [tot, b], t1[k]))
+        A(edge_distance(sh, 0.1) >= 0.01, "Exhibit 1 %s share at least 0.01 inside its bin (%.3f)" % (k, sh))
+    for k, v in g2.items():
+        A(list(v[:3]) == t2[k], "Exhibit 2 %s reproduces the simulation's visits (%s / %s)" % (k, list(v[:3]), t2[k]))
+        A(min(edge_distance(v[3], 0.1), edge_distance(v[4], 0.1)) >= 0.01,
+          "Exhibit 2 %s shares at least 0.01 inside their bins (%.3f, %.3f)" % (k, v[3], v[4]))
+    REPORT["ex1_stops"], REPORT["ex2_stops"] = {}, {}
+    # the stops: the cracker misses every figure; every other stop lands outside every bin it moves by a full unit
+    for name, kw in EX1_STOPS.items():
+        r = ex1_variant(ctx, **kw)
+        REPORT["ex1_stops"][name] = {k: (r[k][0] - g1[k][0], r[k][2] - g1[k][2]) for k in g1}
+        for k in g1:
+            if "cracker" in name:
+                A(r[k][0] != g1[k][0] and miss(r[k][2], g1[k][2]), "the cracker misses Exhibit 1 %s (%s)" % (k, r[k]))
+            elif abs(r[k][2] - g1[k][2]) >= 0.1:
+                A(miss(r[k][2], g1[k][2]) and r[k][0] != g1[k][0], "Exhibit 1 stop '%s' leaves %s's bin" % (name, k))
+    for name, kw in EX2_STOPS.items():
+        r = ex2_variant(ctx, **kw)
+        REPORT["ex2_stops"][name] = {k: (r[k][3] - g2[k][3], r[k][4] - g2[k][4]) for k in g2}
+        for k in g2:
+            for j in (3, 4):
+                if "cracker" in name:
+                    A(miss(r[k][j], g2[k][j]), "the cracker misses Exhibit 2 %s %d (%.3f / %.3f)" % (k, j, r[k][j], g2[k][j]))
+                elif abs(r[k][j] - g2[k][j]) >= 0.1:
+                    A(miss(r[k][j], g2[k][j]), "Exhibit 2 stop '%s' leaves %s's bin" % (name, k))
+    # direction discipline: no combination of mishandlings lands back inside a bin one of them leaves
+    import itertools
+    worst = [9.0, 9.0]
+    for n_ax, (axes, fn, gold, cols) in enumerate(((EX1_AXES, lambda **kw: ex1_variant(ctx, **kw), g1, (2,)),
+                                                   (EX2_AXES, lambda **kw: ex2_variant(ctx, **kw), g2, (3, 4)))):
+        single = {(a, v): fn(**{a: v}) for a, vals in axes.items() for v in vals[1:]}
+        for combo in itertools.product(*axes.values()):
+            kw = dict(zip(axes, combo))
+            mis = [(a, v) for a, v in kw.items() if v != axes[a][0]]
+            if len(mis) < 2:
+                continue
+            r = fn(**kw)
+            for k in gold:
+                for j in cols:
+                    if any(abs(single[m][k][j] - gold[k][j]) >= 0.1 for m in mis):
+                        A(miss(r[k][j], gold[k][j]), "combination %s keeps %s %d out of its bin" % (mis, k, j))
+                        worst[n_ax] = min(worst[n_ax], abs(r[k][j] - gold[k][j]))
+    REPORT["combo_worst"] = worst
+    # the referees, and no marker: one taxonomy per provider, a second carrier's span under every second-plan
+    # claim, second-plan claims filed as ordinary originals
+    X = ctx[0]
+    pv = X["provfile"].groupby("provider_npi")["primary_taxonomy"].nunique()
+    A(int(pv.max()) == 1, "the provider file gives every NPI one taxonomy")
+    lake = X["prof"][X["prof"]["service_facility_zip"].map(ctx[1]).isin(("Manitowoc", "Kewaunee"))]
+    A(set(lake["rendering_provider_npi"]) <= set(X["provfile"]["provider_npi"]), "every lakeshore rendering NPI is on file")
+    sp = [r for r in packed["fac_rows"] + packed["prof_rows"] if "second_plan" in r["device"]]
+    A(len(sp) > 1000 and all(r["freq"] == "1" and r["orig"] == "" for r in sp), "second-plan claims file as originals")
+    A(all(wd["mem"].second_on(r["member"], r["dos"]) == r["product"] for r in sp), "a second carrier's span under each")
+    for key in ("fac24", "prof24"):
+        df = pd.read_csv(os.path.join(target, PK.FILES[key]), dtype=str, keep_default_na=False)
+        idn = (df["allowed_amount"].astype(float) - df["plan_paid_amount"].astype(float)
+               - df["member_liability_amount"].astype(float)).abs()
+        A(bool((idn < 0.011).all()), "%s: allowed is plan paid plus member liability on every row" % key)
+        A(int(df.drop(columns=["payer_claim_control_number"]).duplicated().sum()) == 0,
+          "%s: no exact duplicate even without the claim number" % key)
+    gt = [r for r in packed["prof_rows"] if "group_taxonomy" in r["device"]]
+    A(len(gt) > 1000 and all(r["practice"] == "KPN" for r in gt), "the group taxonomy sits on Kinnickinnic's lines only")
+    A(all(r["practice"] != "MFP" and W.FAC[r["fac"]][2] != "LDG" for r in sp if "fac" in r and r.get("fac")),
+      "no second-plan claim on Mishicot's referrals or at a Ledgestone site")
+    A(all(r["practice"] != "MFP" for r in sp if "rnd_npi" in r), "Mishicot's office files no second-plan claims")
 
 
-def ask_c_checks(wd, g):
-    counts, joined = ask_c_truth(wd)
-    A(g["counts"] == counts, "Ask C counts match the assignment records (%s / %s)" % (g["counts"], counts))
-    A(g["joined"] == joined, "Ask C acquisitions match (%s / %s)" % (g["joined"], joined))
-    # stops: each reading the register or the roster a different way lands elsewhere
-    p3 = len(wd["roster"]["P3"])
-    byp = len(wd["roster"]["BYP"])
-    A(g["joined"][2022] - p3 != g["joined"][2022], "register-only read misses Northpoint")
-    A(g["joined"][2020] - byp != g["joined"][2020], "a direct-parent read misses Bayside")
-    lpcn = len([n for n in wd["roster"].get("LPCN", [])]) if "LPCN" in wd["roster"] else 9
-    A(g["joined"][2020] + lpcn != g["joined"][2020], "counting the 2020 TIN consolidation lands elsewhere")
-    nppa = len([n for n, p in wd["people"].items() if p["spec"] in ("NP", "PA") and p["home"] in ("LMG", "MFP")])
-    A(nppa > 0, "advanced practitioners on Ledgestone's numbers exist")
-    A(len(set(g["counts"].values())) == 6, "every year's count differs")
+def main_call_frozen(target, g, L, bt):
+    """The main call's declared rows, reference files and figures reproduce the build before the ask layer."""
+    import maincall as MC
+    ref = MC.load_ref()
+    now = MC.snapshot(target, g, L, bt)
+    for k, v in ref["population"].items():
+        A(now["population"][k] == v, "main call population '%s' byte-identical to the reference" % k)
+    A(now["figures"] == ref["figures"], "main call figures identical to the reference")
 
 
-# ------------------------------------------------------------------ structure and documents
 def structure_checks(target, task_dir, wd, g):
     files = sorted(os.listdir(target))
     A(len(files) >= 10, "10 or more files (%d)" % len(files))
@@ -451,7 +506,10 @@ def realism_checks(target, g):
     # headline figures never sit exactly on a round value
     A(round(g["total"]) % 1000 != 0 and all(round(v) % 1000 != 0 for v in [g["P"]] + list(g["fam"].values())),
       "the total and its parts are not round thousands")
-    A(all(abs(x - round(x)) > 1e-6 for v in g["shares"].values() for x in v[:2]), "no Ask B share is an exact whole per cent")
+    A(all(abs(v[2] - round(v[2])) > 1e-6 for v in g["ex1"].values()) and
+      all(abs(x - round(x)) > 1e-6 for v in g["ex2"].values() for x in v[3:]), "no exhibit share is an exact whole per cent")
+    A(len({v[0] for v in g["ex1"].values()}) == 6 and all(v[0] % 100 for v in g["ex1"].values()),
+      "the six service counts differ and none is a round hundred")
 
 
 # ------------------------------------------------------------------ the semantic fork table (design note SF1 to SF12)
@@ -514,23 +572,26 @@ def semantic_fork_checks(target, g, L):
 # ------------------------------------------------------------------ the write-up agrees with the golden
 def submission_check(task_dir, figs, g):
     txt = open(os.path.join(task_dir, "submission.md"), encoding="utf-8").read()
-    A("—" not in txt, "no em dash in submission.md")
+    A("\u2014" not in txt, "no em dash in submission.md")
     money = lambda v: "${:,.0f}".format(v)
-    names = {"P": "Professional prices", "IMG": "Referred imaging", "ECHO": "Referred echocardiography",
-             "ENDO": "Referred endoscopy", "ARTH": "Referred arthroscopy", "LAB": "Referred laboratory"}
-    for k, lab in names.items():
-        A("%s: %s" % (lab, money(figs["parts"][k])) in txt, "submission carries %s at %s" % (lab, money(figs["parts"][k])))
-    A("$%s million" % figs["total_m"] in txt and money(figs["parts"]["P"]) in txt, "submission carries the total and P")
-    A(money(int(round(g["referred"] / 1e4)) * 10000) in txt, "submission carries the referred part")
+    A("$%s million" % figs["total_m"] in txt, "submission carries the total")
+    A(money(figs["professional"]) in txt and money(figs["referred"]) in txt, "submission carries the two parts")
     A("%d%%" % round(100 * g["c1"]) in txt, "submission carries the tier-one share")
-    for key, (a, b) in figs["shares"].items():
+    names = {"IMG": "imaging", "ENDO": "endoscopy", "ARTH": "arthroscopy"}
+    for key, (n, sh) in figs["ex1"].items():
         county, fam = key.split("|")
-        lab = {"IMG": "imaging", "ENDO": "endoscopy", "ARTH": "arthroscopy"}[fam]
-        A("%s County, %s: %s%% in 2024, %s%% after" % (county, lab, a, b) in txt, "submission carries Ask B %s" % key)
-    counts = "; ".join("%s, %d" % (y, figs["counts"][y]) for y in sorted(figs["counts"]))
-    joined = "; ".join("%s, %d" % (y, figs["joined"][y]) for y in sorted(figs["joined"]))
-    A(counts in txt and joined in txt, "submission carries Ask C")
+        A("%s County, %s: %s services, %s%%" % (county, names[fam], n, sh) in txt, "submission carries Exhibit 1 %s" % key)
+    labels = {"primary care": "Primary care", "gastroenterology": "Gastroenterology",
+              "orthopaedic surgery": "Orthopaedics", "cardiovascular disease": "Cardiology"}
+    for sp, (b, l) in figs["ex2"].items():
+        A("%s: Brightwater %s%%, Ledgestone %s%%" % (labels[sp], b, l) in txt, "submission carries Exhibit 2 %s" % sp)
     A(("Proceed" in txt) == (figs["call"] == "proceed"), "submission carries the call")
+    gold = pdf_text(os.path.join(task_dir, "golden", "N25-014_preliminary_review.pdf"))
+    flat = re.sub(r"\s+", " ", gold)
+    for key, (n, sh) in figs["ex1"].items():
+        A("%s %s%%" % (n, sh) in flat, "the golden PDF carries Exhibit 1 %s as the write-up does" % key)
+    for sp, (b, l) in figs["ex2"].items():
+        A("%s %s%% %s%%" % (labels[sp], b, l) in flat, "the golden PDF carries Exhibit 2 %s as the write-up does" % sp)
 
 
 # ------------------------------------------------------------------ house fixes wired in (reduce-house-fixes)

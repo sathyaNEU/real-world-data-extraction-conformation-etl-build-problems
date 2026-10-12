@@ -107,6 +107,11 @@ def money(x):
     return "%.2f" % x
 
 
+# the second plan submits most, not all, of the services it receives after the first carrier pays
+SECOND_SUBMITTED = 0.86
+# billing offices that report their group's taxonomy in the rendering provider loop
+GROUP_TAXONOMY = {"KPN": "207Q00000X"}
+
 FAMILY_REV = {"IMG": "0320", "ECHO": "0483", "ENDO": "0750", "ARTH": "0360", "LAB": "0300", "SLEEP": "0740",
               "NUC": "0341"}
 REV_BY_CPT = {"70551": "0610", "72148": "0610", "73721": "0610", "74177": "0350", "71250": "0350",
@@ -125,9 +130,10 @@ def build_claims(mem, people, lines):
     (facility rows by year, professional rows, device ledger)."""
     num = Numberer()
     fac_rows, prof_rows = [], []
+    second = []                           # lines a spouse's plan may also have been billed for
     ledger = defaultdict(list)            # device -> list of claim numbers touched
     for i, l in enumerate(lines):
-        key = ("ln", i)
+        key = l.get("key", ("ln", i))
         d = l["date"]
         car = l["carrier"]
         prod = l["product"]
@@ -149,10 +155,10 @@ def build_claims(mem, people, lines):
             bill_npi, bill_tin = billing_of(f)
             hosp = sysk is not None
             mod = ""
-            # bilateral knee films: Manitowoc Open MRI bills one line with modifier 50 and two units;
-            # the hospitals bill two lines, RT and LT, on one claim
-            bilateral = (l["tag"] in ("lake_ref", "other_ref") and l["cpt"] == "73562"
-                         and h01("bilat", key) < 0.18)
+            # bilateral knee films and the occasional bilateral knee arthroscopy: two lines, RT and LT, on one claim
+            bilateral = (l["tag"] in ("lake_ref", "other_ref") and
+                         ((l["cpt"] == "73562" and h01("bilat", key) < 0.18) or
+                          (l["cpt"] == "29881" and h01("bilat_a", key) < 0.05)))
             base = dict(year=d.year, tag=l["tag"], practice=l["practice"], member=l["member"], product=prod,
                         carrier=car, dos=d, paid=paid, fac=f, cpt=l["cpt"], ref_npi=l["ref_npi"],
                         bill_npi=bill_npi, bill_tin=bill_tin, fac_npi=FAC_NPI[f], fac_zip=W.FAC[f][4],
@@ -164,12 +170,8 @@ def build_claims(mem, people, lines):
                 base["device"].append("late_paid")
                 ledger["late_paid"].append(i)
             cno = num.next(car, d, key)
-            if bilateral and not hosp:
-                qty, mod = 2, "50"
-                base["device"].append("bilateral_units")
-                ledger["bilateral_units"].append(i)
             claim_lines = []
-            if bilateral and hosp:
+            if bilateral:
                 base["device"].append("bilateral_lines")
                 ledger["bilateral_lines"].append(i)
                 for ln, m in ((1, "RT"), (2, "LT")):
@@ -184,9 +186,12 @@ def build_claims(mem, people, lines):
                 originals.append(dict(base, cno=cno, line=ln, mod=m, qty=q, allowed=allowed, liab=liab,
                                       plan=round(allowed - liab, 2)))
             fac_rows.extend(originals)
+            versioned = False
             # replacements and voids on Kinnickinnic's own referrals to its Manitowoc hospital
             if l["tag"] == "lake_ref" and l["practice"] == "KPN" and f == "KLH" and d.year == 2024:
                 u = h01("ver", key)
+                if u < 0.095:
+                    versioned = True
                 if u < 0.07:
                     # replaced: corrected charge lines resubmitted under a new number
                     rno = num.next(car, d, key + ("r",))
@@ -217,6 +222,8 @@ def build_claims(mem, people, lines):
                                              plan=round(allowed - liab, 2), paid=npaid,
                                              device=base["device"] + ["rebilled"]))
                     ledger["voided"].append(i)
+            if not versioned and l["tag"] not in MAIN_TAGS and l["practice"] != "MFP" and sysk != "LDG":
+                second.append((i, "fac", originals))
         else:
             code = l["code"]
             cpt = code.split("-")[0]
@@ -240,19 +247,38 @@ def build_claims(mem, people, lines):
             tin = O.tin_of(bp)
             if bp == "LMG":
                 tin = O.tin_of("LMG")
+            # Kinnickinnic's business office reports the network's own taxonomy for every rendering provider
+            taxonomy = GROUP_TAXONOMY.get(bp, people[l["rnd_npi"]]["taxonomy"])
             row = dict(year=2024, tag=l["tag"], practice=bp, member=l["member"], product=prod, carrier=car, dos=d,
                        paid=paid, cno=num.next(car, d, key), line=1, freq="1", orig="", pos=pos, cpt=cpt,
                        mod1=mod1, mod2=mod2, qty=1, allowed=allowed, liab=liab, plan=round(allowed - liab, 2),
                        bill_npi=GROUP_NPI[bp], bill_tin=tin, bill_zip=O.BILLING_ZIP.get(bp, O.PRACTICES[bp][2][0]),
-                       rnd_npi=l["rnd_npi"], taxonomy=people[l["rnd_npi"]]["taxonomy"], site_zip=l["site_zip"],
+                       rnd_npi=l["rnd_npi"], taxonomy=taxonomy, site_zip=l["site_zip"],
                        late=late, device=["late_paid"] if late else [])
+            if taxonomy != people[l["rnd_npi"]]["taxonomy"]:
+                row["device"] = row["device"] + ["group_taxonomy"]
+                ledger["group_taxonomy"].append(i)
             prof_rows.append(row)
-            if bp == "KPN" and h01("pver", key) < 0.03:
-                rno = num.next(car, d, key + ("r",))
-                prof_rows.append(dict(row, cno=rno, freq="7", orig=row["cno"],
-                                      paid=paid + timedelta(days=25 + int(h01("prp", key) * 30)),
-                                      device=row["device"] + ["replaced"]))
-                ledger["prof_replaced"].append(i)
+            if l["tag"] not in MAIN_TAGS and bp != "MFP":
+                second.append((i, "prof", [row]))
+    # the spouse's plan: the same services submitted again by the second carrier after the first paid, priced on
+    # what the first left the member to pay (numbered after every first-carrier claim)
+    for i, kind, rows in second:
+        l = lines[i]
+        k2 = l.get("key", i)
+        p2 = mem.second_on(l["member"], l["date"])
+        if p2 is None or h01("cob_sub", k2) >= SECOND_SUBMITTED:
+            continue
+        car2 = W.PRODUCTS[p2][0]
+        cno2 = num.next(car2, l["date"], ("ln2", k2))
+        paid2 = rows[0]["paid"] + timedelta(days=24 + int(h01("cob_lag", k2) * 46))
+        for r in rows:
+            a2 = r["liab"]
+            pl2 = round(a2 * (0.72 + 0.26 * h01("cob_pay", k2, r["line"])), 2)
+            out = dict(r, carrier=car2, product=p2, cno=cno2, freq="1", orig="", paid=paid2, allowed=a2, plan=pl2,
+                       liab=round(a2 - pl2, 2), device=r["device"] + ["second_plan"])
+            (fac_rows if kind == "fac" else prof_rows).append(out)
+        ledger["second_plan"].append(i)
     return fac_rows, prof_rows, ledger
 
 
@@ -354,6 +380,25 @@ def elig_rows(mem, used):
             bpb = D(py, inf["renew"], 1)
             out.append([mid, W.CARRIERS[W.PRODUCTS[prod][0]]["submitter"], prod, a.isoformat(), e.isoformat(),
                         bpb.isoformat(), rel, inf["birth"], inf["sex"], mem.zip_on(mid, a)])
+        sc = inf.get("second")
+        if sc:
+            p2, s2, e2, rn2 = sc
+            rel2 = "01" if h01("rel_s", mid) < 0.8 else "19"
+            cuts2 = {s2, e2 + timedelta(days=1)}
+            for z, s, e in inf["zips"]:
+                cuts2.add(s)
+                cuts2.add(e + timedelta(days=1))
+            y = s2.year - 1
+            while D(y, rn2, 1) <= e2:
+                if D(y, rn2, 1) > s2:
+                    cuts2.add(D(y, rn2, 1))
+                y += 1
+            cuts2 = sorted(c for c in cuts2 if s2 <= c <= e2 + timedelta(days=1))
+            for a, b in zip(cuts2, cuts2[1:]):
+                py = W.plan_year_of(a, rn2)
+                out.append([mid, W.CARRIERS[W.PRODUCTS[p2][0]]["submitter"], p2, a.isoformat(),
+                            (b - timedelta(days=1)).isoformat(), D(py, rn2, 1).isoformat(), rel2, inf["birth"],
+                            inf["sex"], mem.zip_on(mid, a)])
     return out
 
 

@@ -153,19 +153,26 @@ def appendix_pdf(path):
                "gastrointestinal endoscopy is CPT 43235 to 43270 and 45378 to 45398; arthroscopy is CPT 29805 to "
                "29999; laboratory is CPT 80047 to 89398. Nuclear cardiology, sleep studies and other services fall "
                "in no line."),
-             S("A2 Outpatient market share"),
-             P("For a service line, a county and a year, a system's share is the services its facilities provided "
-               "to commercial members residing in the county, divided by all the services in that line that any "
-               "facility in the database provided to those members. A service is one unit of a procedure code: the "
-               "quantity on the latest version of an outpatient facility claim line, net of voids. A member resides "
-               "in the county holding the ZIP code on the member's eligibility span that covers the date of service. "
-               "The year is dates of service in the calendar year paid on or before 30 June of the following year. "
-               "Shares are stated in per cent to one decimal."),
-             S("A3 Share after a transaction"),
-             P("A system's share after a transaction is computed as in A2 on the baseline year's services, with the "
-               "target practice's referred services that the projection under rule OHCCR 4 moves to the acquiring "
-               "party counted, in their expected share, as the acquiring party's. All other services, and the "
-               "totals, are unchanged."),
+             S("A2 Outpatient services by county of residence"),
+             P("For a service line, a county and a year, the services the county's residents received are the "
+               "services in the line that facilities in the database provided to commercial members residing in the "
+               "county, with dates of service in the year, whenever paid. Each unit of a procedure code that a "
+               "facility provided to a member is one service, read on the latest version of the claim line, net of "
+               "voids. A member resides in the county holding the ZIP code on the member's "
+               "eligibility span that covers the date of service. A practice's referred share is the part of those "
+               "services whose referring provider is a physician of the practice. Shares are stated in per cent to "
+               "one decimal."),
+             S("A3 Office visits by specialty"),
+             P("For a specialty and a year, the office visits in Manitowoc and Kewaunee counties are the services "
+               "coded 99202 to 99215 that physicians of the specialty rendered in person to commercial members at "
+               "locations in the two counties, with dates of service in the year, whenever paid, read on the latest "
+               "version of each claim; a visit by telehealth (place of service 10, or modifier 95) is not an office "
+               "visit. A physician's specialty is the classification of the physician's NUCC taxonomy: primary care "
+               "is family medicine (207Q00000X), internal medicine (207R00000X) and pediatrics (208000000X); "
+               "gastroenterology is 207RG0100X, orthopaedic surgery 207X00000X and cardiovascular disease "
+               "207RC0000X. A practice's or a system's share is the part of "
+               "those visits billed under taxpayer identification numbers it owns or controls, read from the "
+               "register as in A4, stated in per cent to one decimal."),
              S("A4 A system's physicians"),
              P("A physician is a doctor of medicine or of osteopathic medicine; nurse practitioners and physician "
                "assistants are not counted. A system's physicians on a date are the physicians billing on that "
@@ -183,7 +190,7 @@ def appendix_pdf(path):
              S("A6 Sources"),
              P("Claims, eligibility and products come from the database extracts described in the extract data "
                "dictionary; ownership from the office's provider ownership register; billing relationships from "
-               "the NPI reassignment history; credentials and taxonomy from the carriers' provider files.")]
+               "the NPI reassignment history.")]
     _doc(path, flow, "Technical appendix rev 3", "Samantha Abbott", "D:20250602141108-05'00'",
          "B71E04C9A35D2F68E0C1974AB3D85E20")
 
@@ -191,7 +198,8 @@ def appendix_pdf(path):
 # ------------------------------------------------------------------ data dictionary
 FAC24_DEF = [
     ("submitter_code", "Carrier's APCD submitter code (see product reference)."),
-    ("payer_claim_control_number", "Carrier's claim number. A replacement or void carries its own number."),
+    ("payer_claim_control_number", "Carrier's claim number. A replacement carries its own number; a void carries "
+                                   "the number of the claim it cancels."),
     ("line_counter", "Line number within the claim."),
     ("claim_frequency_code", "1 original; 7 replacement of a prior claim; 8 void of a prior claim."),
     ("original_claim_control_number", "For codes 7 and 8, the claim number replaced or voided."),
@@ -230,7 +238,8 @@ PROF_DEF = [
                          "outpatient hospital, 24 ambulatory surgical centre."),
     ("procedure_modifier_1, _2", "Modifiers, for example 26 professional component, 95 synchronous telehealth."),
     ("billing_provider_npi, _tin, _zip", "The billing group's NPI, taxpayer number and billing address ZIP."),
-    ("rendering_provider_npi, _taxonomy", "The individual who performed the service and his or her NUCC taxonomy."),
+    ("rendering_provider_npi, _taxonomy", "The individual who performed the service, and the NUCC taxonomy code "
+                                          "submitted with the claim for the rendering provider."),
     ("service_facility_zip", "ZIP code of the location where the service was performed."),
 ]
 TAXONOMY = [("207Q00000X", "Family Medicine"), ("207R00000X", "Internal Medicine"), ("208000000X", "Pediatrics"),

@@ -28,6 +28,8 @@ HEAD = ParagraphStyle("h", parent=BODY, fontName="Times-Bold", fontSize=12.5, le
 SEC = ParagraphStyle("c", parent=BODY, fontName="Times-Bold", fontSize=10.5, spaceBefore=6, spaceAfter=2)
 CELL = ParagraphStyle("t", parent=BODY, fontName="Helvetica", fontSize=8.2, leading=10, spaceAfter=0)
 CELLB = ParagraphStyle("tb", parent=CELL, fontName="Helvetica-Bold")
+CELLR = ParagraphStyle("tr", parent=CELL, alignment=2)
+CELLBR = ParagraphStyle("tbr", parent=CELLB, alignment=2)
 
 PARTS = [("P", "Professional prices"), ("IMG", "Referred imaging"), ("ECHO", "Referred echocardiography"),
          ("ENDO", "Referred endoscopy"), ("ARTH", "Referred arthroscopy"), ("LAB", "Referred laboratory")]
@@ -49,9 +51,10 @@ def figures(g):
         "call": g["call"],
         "total_m": "%.1f" % (g["total"] / 1e6),
         "parts": {k: r10k(v) for k, v in parts.items()},
-        "shares": {"%s|%s" % k: ("%.1f" % v[0], "%.1f" % v[1]) for k, v in g["shares"].items()},
-        "counts": {str(k): v for k, v in g["counts"].items()},
-        "joined": {str(k): v for k, v in g["joined"].items()},
+        "professional": r10k(g["P"]),
+        "referred": r10k(g["referred"]),
+        "ex1": {"%s|%s" % k: ("{:,}".format(v[0]), "%.1f" % v[2]) for k, v in g["ex1"].items()},
+        "ex2": {k: ("%.1f" % v[3], "%.1f" % v[4]) for k, v in g["ex2"].items()},
     }
 
 
@@ -96,9 +99,14 @@ def _chart(g):
     return buf
 
 
-def _table(rows, widths, bold_last=False):
-    data = [[Paragraph(str(c), CELLB if i == 0 or (bold_last and i == len(rows) - 1) else CELL) for c in r]
-            for i, r in enumerate(rows)]
+def _table(rows, widths, bold_last=False, numeric=True):
+    """Text left, figures right (every column after the first holds figures when numeric is set)."""
+    def style(i, j):
+        bold = i == 0 or (bold_last and i == len(rows) - 1)
+        if numeric and j > 0:
+            return CELLBR if bold else CELLR
+        return CELLB if bold else CELL
+    data = [[Paragraph(str(c), style(i, j)) for j, c in enumerate(r)] for i, r in enumerate(rows)]
     t = Table(data, colWidths=widths)
     t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.black),
                            ("LINEABOVE", (0, 0), (-1, 0), 0.6, colors.black),
@@ -123,7 +131,7 @@ def write(g, out_dir):
                     ("From", "Director of Market Oversight"),
                     ("Parties", "Ledgestone Health (acquiring); Brightwater Medical Group, S.C. (target)"),
                     ("Notice complete", "8 October 2025; review closes 7 November 2025"),
-                    ("Date", "24 October 2025")], [1.5 * inch, 5.0 * inch]),
+                    ("Date", "24 October 2025")], [1.5 * inch, 5.0 * inch], numeric=False),
             Spacer(1, 8),
             Paragraph("Determination: the office proceeds to a cost and market impact review of notice N25-014." if
                       F["call"] == "proceed" else "Determination: the office closes the preliminary review.", SEC),
@@ -158,26 +166,33 @@ def write(g, out_dir):
                "kept Ledgestone in its second tier through 2024 and places it in the first tier from plan year "
                "2025, so in 2026 those patients' referrals move as well. Only Cedarbrook Choice and Norbridge "
                "Tiered EPO patients, whose plans keep Ledgestone in the second tier, stay where they are.")]
-    ex1 = [("Ledgestone share of commercial outpatient services, by residence", "2024",
-            "After Brightwater's referrals move")]
-    names = {"IMG": "imaging", "ENDO": "endoscopy", "ARTH": "arthroscopy"}
+    names = {"IMG": "Imaging", "ENDO": "Endoscopy", "ARTH": "Arthroscopy"}
+    ex1 = [("County of residence, service line", "Services received in 2024",
+            "Referred by Brightwater's physicians")]
     for county in ("Manitowoc", "Kewaunee"):
         for f in ("IMG", "ENDO", "ARTH"):
-            a, b = F["shares"]["%s|%s" % (county, f)]
-            ex1.append(("%s County residents, %s" % (county, names[f]), "%s%%" % a, "%s%%" % b))
-    ex2 = [("Ledgestone Health physicians", "On 1 January", "Joined by acquisition during the year")]
-    for y in range(2020, 2026):
-        ex2.append((str(y), str(F["counts"][str(y)]), str(F["joined"][str(y)]) if y <= 2024 else ""))
-    flow += [KeepTogether([Paragraph("Exhibit 1. Ledgestone's outpatient market share", SEC),
-                           _table(ex1, [3.6 * inch, 0.9 * inch, 1.9 * inch]),
-                           Paragraph("Appendix A2 and A3: services counted in units on the latest claim version, net "
-                                     "of voids; residence on the date of service; 2024 dates of service paid by 30 "
-                                     "June 2025.", SMALL)]),
-             KeepTogether([Paragraph("Exhibit 2. Ledgestone Health's physicians", SEC),
-                           _table(ex2, [2.2 * inch, 1.4 * inch, 2.8 * inch]),
-                           Paragraph("Appendix A4 and A5: doctors of medicine and osteopathy billing under numbers "
-                                     "Ledgestone owns or controls, directly or through an entity it controls; "
-                                     "acquisitions as physicians joining with their practice.", SMALL)]),
+            n, sh = F["ex1"]["%s|%s" % (county, f)]
+            ex1.append(("%s County, %s" % (county, names[f].lower()), n, "%s%%" % sh))
+    ex2 = [("Specialty", "Brightwater Medical Group", "Ledgestone Health")]
+    for sp, lab in (("primary care", "Primary care"), ("gastroenterology", "Gastroenterology"),
+                    ("orthopaedic surgery", "Orthopaedics"), ("cardiovascular disease", "Cardiology")):
+        b, l = F["ex2"][sp]
+        ex2.append((lab, "%s%%" % b, "%s%%" % l))
+    flow += [KeepTogether([Paragraph("Exhibit 1. Commercial outpatient imaging, endoscopy and arthroscopy received "
+                                     "by lakeshore residents, 2024", SEC),
+                           _table(ex1, [2.9 * inch, 1.6 * inch, 1.9 * inch]),
+                           Paragraph("Appendix A1 and A2. A service is one unit of the procedure code on the latest "
+                                     "version of a claim, net of voids; a service a member's two plans were both "
+                                     "billed for is counted once. Residence is the member's ZIP code on the date of "
+                                     "service; every 2024 date of service in the extract is counted.", SMALL)]),
+             KeepTogether([Paragraph("Exhibit 2. Share of commercial office visits in Manitowoc and Kewaunee "
+                                     "counties, 2024", SEC),
+                           _table(ex2, [2.2 * inch, 2.1 * inch, 2.1 * inch]),
+                           Paragraph("Appendix A3 and A4. In-person visits coded 99202 to 99215 by doctors of "
+                                     "medicine and osteopathy, by each physician's own specialty in the carriers' "
+                                     "provider files (Kinnickinnic Physician Network reports its group taxonomy on "
+                                     "every claim); a visit billed to two plans counted once. Ledgestone includes "
+                                     "Mishicot Family Practice, an affiliated, controlled practice.", SMALL)]),
              Spacer(1, 8),
              Paragraph("<super>1</super> Bayfield pays Ledgestone a percent of the CY2025 Medicare amount by service "
                        "category under its 2025 agreement (Exhibit C, sheet Bayfield terms); Ledgestone's 2024 Bayfield "

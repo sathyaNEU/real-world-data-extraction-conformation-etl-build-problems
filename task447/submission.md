@@ -3,7 +3,7 @@
 ## Tags
 
 **Domain:** Healthcare Delivery & Health Economics, payment, claims and health-plan analytics (the spending effect of a hospital system buying a physician group, projected from all-payer claims).
-**Analytical objective:** Data Extraction & Conformation (ETL) (two claims layouts, eligibility spans, an ownership register, NPI reassignment spans, a rate exhibit and carrier tier filings conformed into the projection rule OHCCR 4 defines).
+**Analytical objective:** Data Extraction & Conformation (ETL) (two claims layouts, eligibility spans, an ownership register, NPI reassignment spans, a rate exhibit and carrier tier filings conformed into the projection rule OHCCR 4 defines and the review's two market exhibits).
 
 ## 1. Final Recommendation
 
@@ -21,13 +21,13 @@ The deciding figure is the $2.2 million projected increase against the $2.0 mill
 
 ## 3. Step-by-Step Solution
 
-1. Conformed the 2021 to 2023 extract (layout 2.4) to layout 3.1 and kept each claim's latest version net of voids, as the data dictionary sets out.
-2. Took Brightwater's 2024 baseline under OHCCR 4.03: professional lines billed under the number the notice gives, and outpatient facility lines whose referring physician billed under that number on the date of service, paid by 30 June 2025.
-3. Repriced the professional lines at Exhibit C's Ledgestone Medical Group schedules: $610,000.
-4. Took the physicians who joined Ledgestone and Wolf River by acquisition in 2021 to 2023 (appendix A5; Northpoint's orthopedists moved one at a time) from the register and the NPI reassignment history, and gave each referral its tier for the acquiring system from the member's benefit period and the tier filings.
-5. In every acquired practice and product, 86% of the outside referrals of first-tier or untiered patients moved and none of second-tier patients', and Norbridge's Tiered EPO patients at Wolf River moved only once the plan placed Wolf River first in plan year 2024, which pooled, carrier and product shares miss by eight points or more.
-6. Applied those shares, in whole per cent as OHCCR 4.05 states them, to Brightwater's referrals for codes Ledgestone bills, by each member's product's 2026 placement, priced at Exhibit C with Bayfield at its percent of the CY2025 Medicare amounts: $1,600,000.
-7. Added the two parts: $2.2 million, against the $2.0 million threshold in OHCCR 4.06.
+1. Took Brightwater's 2024 baseline under OHCCR 4.03 (professional lines billed under the number the notice gives and outpatient facility lines whose referring physician billed under it, paid by 30 June 2025, latest version net of voids) and repriced the professional lines at Exhibit C's Ledgestone Medical Group schedules: $610,000.
+2. Took the physicians who joined Ledgestone and Wolf River by acquisition in 2021 to 2023 (appendix A5; Northpoint's orthopedists moved one at a time) from the register and the NPI reassignment history, conformed their 2021 to 2023 referrals from layout 2.4, and gave each referral its tier for the acquiring system from the member's benefit period and the tier filings.
+3. In every acquired practice and product, 86% of the outside referrals of first-tier or untiered patients moved and none of second-tier patients', and Norbridge's Tiered EPO patients at Wolf River moved only once the plan placed Wolf River first in plan year 2024, which pooled, carrier and product shares miss by eight points or more.
+4. Applied those shares, in whole per cent as OHCCR 4.05 states them, to Brightwater's referrals for codes Ledgestone bills, by each member's product's 2026 placement, priced at Exhibit C with Bayfield at its percent of the CY2025 Medicare amounts: $1,600,000.
+5. Added the two parts: $2.2 million, against the $2.0 million threshold in OHCCR 4.06.
+6. For the residents' exhibit (appendix A2), counted the units of each 2024 commercial imaging, endoscopy and arthroscopy service on the facility claims by the county of the member's ZIP on the eligibility span covering the date, once where the member's two plans were both billed for it (one member, date, code, modifier and facility from two carriers), and the part whose referring physician billed under Brightwater's number.
+7. For the office-visit exhibit (appendix A3 and A4), counted the in-person visits coded 99202 to 99215 that physicians rendered at locations in the two counties, once where two plans were billed, by each physician's own taxonomy in the carriers' provider files (Kinnickinnic's claims report its group's family-medicine code for every physician), and the parts billed under Brightwater's number and under the numbers Ledgestone owns or controls, Mishicot Family Practice's included.
 8. Recommendation: proceed to a cost and market impact review.
 
 ## 4. Deliverable Answers
@@ -36,20 +36,15 @@ The deciding figure is the $2.2 million projected increase against the $2.0 mill
 
 1. Proceed to a cost and market impact review.
 2. The increase in commercial spending the deal will cause in 2026: $2.2 million.
-3. The increase split, each to the nearest $10,000:
-   - Professional prices: $610,000
-   - Referred imaging: $500,000
-   - Referred echocardiography: $130,000
-   - Referred endoscopy: $670,000
-   - Referred arthroscopy: $240,000
-   - Referred laboratory: $60,000
-4. Chart on the first page: the six parts stacked to the $2.2 million total, with a dashed line at the $2.0 million review threshold.
-5. Ledgestone's share of commercial outpatient services for county residents, in 2024 and once Brightwater's referrals move, percent to one decimal:
-   - Manitowoc County, imaging: 9.6% in 2024, 40.5% after
-   - Manitowoc County, endoscopy: 6.6% in 2024, 46.9% after
-   - Manitowoc County, arthroscopy: 8.1% in 2024, 41.2% after
-   - Kewaunee County, imaging: 10.0% in 2024, 52.0% after
-   - Kewaunee County, endoscopy: 10.5% in 2024, 81.4% after
-   - Kewaunee County, arthroscopy: 9.1% in 2024, 73.6% after
-6. Ledgestone's physician count on 1 January: 2020, 57; 2021, 68; 2022, 73; 2023, 81; 2024, 90; 2025, 89.
-7. Physicians who joined by acquisition: 2020, 10; 2021, 5; 2022, 7; 2023, 8; 2024, 0.
+3. Commercial outpatient services Manitowoc and Kewaunee county residents received in 2024, with the share Brightwater's physicians referred:
+   - Manitowoc County, imaging: 3,269 services, 40.6%
+   - Manitowoc County, endoscopy: 1,574 services, 52.9%
+   - Manitowoc County, arthroscopy: 328 services, 42.7%
+   - Kewaunee County, imaging: 1,008 services, 45.4%
+   - Kewaunee County, endoscopy: 444 services, 64.0%
+   - Kewaunee County, arthroscopy: 97 services, 41.2%
+4. Shares of the two counties' 2024 commercial office visits billed by Brightwater and by Ledgestone:
+   - Primary care: Brightwater 35.0%, Ledgestone 7.6%
+   - Gastroenterology: Brightwater 41.8%, Ledgestone 4.0%
+   - Orthopaedics: Brightwater 35.7%, Ledgestone 3.7%
+   - Cardiology: Brightwater 71.9%, Ledgestone 7.6%

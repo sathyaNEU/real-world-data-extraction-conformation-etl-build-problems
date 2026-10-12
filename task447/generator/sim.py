@@ -111,11 +111,13 @@ class Members:
     def new_id(pool, i):
         return "WM" + hashlib.sha256(("m|%s|%d" % (pool, i)).encode()).hexdigest()[:10].upper()
 
-    def add_pool(self, pool, n, mix, zips, years, switch_rate=0.04, switch_before=None, mover_rate=0.0):
+    def add_pool(self, pool, n, mix, zips, years, switch_rate=0.04, switch_before=None, mover_rate=0.0,
+                 second_rate=0.0):
         """n members on the product mix. A member may move to another product at an employer
         renewal; moves happen only between products with no tiers, so a member's tier for any
         system never changes on a move. zips is a list (uniform) or a dict of weights. A share of
-        the pool changes address once during the last year (mover_rate)."""
+        the pool changes address once during the last year (mover_rate). A share of the pool is also
+        covered under a second carrier's plan as a spouse (second_rate)."""
         prods = sorted(mix)
         cum, acc = [], 0.0
         for p in prods:
@@ -161,9 +163,22 @@ class Members:
                     group = "KCSD"
                 elif zp == "54241":
                     group = "TRWC"
+            second = None
+            if second_rate and h01("cob", pool, i) < second_rate:
+                cars = {W.PRODUCTS[p][0] for p, _, _ in spans}
+                alt = [p for p in UNTIERED if W.PRODUCTS[p][0] not in cars]
+                p2 = alt[int(h01("cobp", pool, i) * len(alt))]
+                second = (p2, start, end, 1 if h01("cobr", pool, i) < 0.7 else 7)
             self.info[mid] = {"zips": zl, "birth": birth, "sex": sex, "spans": spans, "pool": pool,
-                              "renew": renew, "group": group}
+                              "renew": renew, "group": group, "second": second}
             self.by_pool[pool].append(mid)
+
+    def second_on(self, mid, d):
+        """The spouse's plan covering the member on d, if any."""
+        sc = self.info[mid].get("second")
+        if sc and sc[1] <= d <= sc[2]:
+            return sc[0]
+        return None
 
     def product_on(self, mid, d):
         for p, s, e in self.info[mid]["spans"]:
@@ -247,6 +262,12 @@ T2_WEIGHT = 0.25        # cost sharing pulls a patient away from a second-tier f
 
 
 HISTORY_PRACTICES = ("P1", "P2", "P3", "P4", "P5", "W1", "W2")
+# members also covered as a spouse under a second carrier's plan, by pool
+SECOND_RATE = {"LKO": 0.055, "OTS": 0.045}
+# Kinnickinnic's specialists who hold clinic days at its Manitowoc hospital, and their share of a full week
+KPN_OUTREACH = {"GI": 0.32, "ORTH": 0.24, "CARD": 0.315}
+# the share of a full panel the Manitowoc specialty groups see from Kewaunee County
+KEWAUNEE_VOLUME = {"MDC": 0.18, "SOA": 0.24}
 
 
 class Quota:
@@ -332,10 +353,12 @@ def simulate():
     for p in ("W1", "W2"):
         mem.add_pool(p, 1700, mix_with_t2(W.MIX_OSHKOSH, "WRH", T2_TARGET[p]), osh_zips, (2021, 2024))
     mem.add_pool("LMG", 6400, W.MIX_METRO, metro_zips, (2024, 2024))
-    mem.add_pool("LKO", 9800, W.MIX_LAKESHORE_OTHER, LAKE_ZIP_WEIGHTS, (2024, 2024), mover_rate=0.04)
+    mem.add_pool("LKO", 9800, W.MIX_LAKESHORE_OTHER, LAKE_ZIP_WEIGHTS, (2024, 2024), mover_rate=0.04,
+                 second_rate=SECOND_RATE["LKO"])
     mem.add_pool("OTM", 3200, W.MIX_METRO, metro_zips + W.ZIPS["Calumet"], (2024, 2024))
     mem.add_pool("OTO", 2600, W.MIX_OSHKOSH, osh_zips, (2024, 2024))
-    mem.add_pool("OTS", 3000, W.MIX_LAKESHORE_OTHER, W.ZIPS["Sheboygan"], (2024, 2024))
+    mem.add_pool("OTS", 3000, W.MIX_LAKESHORE_OTHER, W.ZIPS["Sheboygan"], (2024, 2024),
+                 second_rate=SECOND_RATE["OTS"])
 
     quota = Quota()
     lines = []
@@ -353,8 +376,10 @@ def simulate():
             ids = mem.by_pool[pool]
         return ids[int(h01("mem", key) * len(ids))]
 
-    def referrals(practice, npi, spec, years, pool, owner, event, volume, tag, own_site, region, phase=None):
-        """phase None: before/after the event date; 'steady': an owned group; 'pre': not yet bought."""
+    def referrals(practice, npi, spec, years, pool, owner, event, volume, tag, own_site, region, phase=None,
+                  keyed=None):
+        """phase None: before/after the event date; 'steady': an owned group; 'pre': not yet bought. keyed: a
+        name that gives each line its own key for the claim draws, so its place in the stream does not matter."""
         mix = REF_MIX[spec]
         for (y, m) in months(*years):
             for cpt, per_year in mix.items():
@@ -389,9 +414,12 @@ def simulate():
                     if dest is None:
                         dest = choose_outside(region, fam, cpt, prod, py, owner,
                                               h01("dest", npi, cpt, y, m, k))
-                    lines.append(dict(kind="fac", tag=tag, practice=practice, member=mid, product=prod,
-                                      carrier=W.PRODUCTS[prod][0], date=d, cpt=cpt, fac=dest, ref_npi=npi,
-                                      units=1, event=event))
+                    ln = dict(kind="fac", tag=tag, practice=practice, member=mid, product=prod,
+                              carrier=W.PRODUCTS[prod][0], date=d, cpt=cpt, fac=dest, ref_npi=npi,
+                              units=1, event=event)
+                    if keyed:
+                        ln["key"] = (keyed, npi, cpt, y, m, k)
+                    lines.append(ln)
 
     # Brightwater's 2024 referrals: the baseline
     for npi in roster["BMG"]:
@@ -456,7 +484,7 @@ def simulate():
                           ref_npi=W.npi_from("other|%d" % (i % 150)), units=units))
 
     # ---- professional claims rendered in Manitowoc and Kewaunee counties, 2024
-    def professional(practice, npi, spec, volume, pool, tag, zips, billing_practice=None, pos_tele=0.0):
+    def professional(practice, npi, spec, volume, pool, tag, zips, billing_practice=None, pos_tele=0.0, keyed=None):
         mix = PROF_MIX[spec]
         for (y, m) in months(2024, 2024):
             for code, per_year in mix.items():
@@ -475,9 +503,12 @@ def simulate():
                     if pos == "11" and code.startswith("992") and h01("tele", npi, code, m, k) < pos_tele:
                         tele = "10" if h01("tpos", npi, code, m, k) < 0.5 else "95"
                     zp = zips[int(h01("pz", npi, code, m, k) * len(zips))]
-                    lines.append(dict(kind="prof", tag=tag, practice=billing_practice or practice, member=mid,
-                                      product=prod, carrier=W.PRODUCTS[prod][0], date=d, code=code,
-                                      rnd_npi=npi, site_zip=zp, pos=pos, tele=tele, units=1))
+                    ln = dict(kind="prof", tag=tag, practice=billing_practice or practice, member=mid,
+                              product=prod, carrier=W.PRODUCTS[prod][0], date=d, code=code,
+                              rnd_npi=npi, site_zip=zp, pos=pos, tele=tele, units=1)
+                    if keyed:
+                        ln["key"] = (keyed, npi, code, m, k)
+                    lines.append(ln)
 
     bmg_sites = {"FM": ["54220", "54220", "54241", "54216"], "IM": ["54220", "54241", "54216"],
                  "GI": ["54220"] * 6 + ["54216"], "ORTH": ["54220"] * 4 + ["54216"],
@@ -517,6 +548,21 @@ def simulate():
             lines.append(dict(kind="fac", tag="lake_ref", practice=prac, member=mid, product=prod,
                               carrier=W.PRODUCTS[prod][0], date=d, cpt=cpt, fac=other if j < n_other else ldg,
                               ref_npi=npi, units=1, event=None))
+    # Kinnickinnic's gastroenterologists, orthopaedic surgeons and cardiologists see patients at clinic days in
+    # Manitowoc; Ledgestone's cardiologists hold a monthly clinic at its Manitowoc outpatient center
+    for npi in roster["KPN"]:
+        spec = people[npi]["spec"]
+        if spec in KPN_OUTREACH:
+            professional("KPN", npi, spec, KPN_OUTREACH[spec], "LKO:Manitowoc", "kpn_outreach", ["54220"],
+                         pos_tele=0.03, keyed="kpo")
+    # the Manitowoc gastroenterology and orthopaedic groups' Kewaunee County patients
+    for p, vol in (("MDC", KEWAUNEE_VOLUME["MDC"]), ("SOA", KEWAUNEE_VOLUME["SOA"])):
+        for npi in roster[p]:
+            referrals(p, npi, people[npi]["spec"], (2024, 2024), "LKO:Kewaunee", None, None, vol, "lake_ref", None,
+                      "kewaunee", keyed="kwr")
+    lmg_cd = [n for n in lmg_now if people[n]["spec"] == "CARD"][:1]
+    for npi in lmg_cd:
+        professional("LMG", npi, "CARD", 0.22, "LKO:Manitowoc", "lmg_prof_lake", ["54220"], keyed="lmc")
     return mem, people, assign, roster, lines
 
 

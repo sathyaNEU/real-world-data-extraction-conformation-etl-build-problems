@@ -4,7 +4,7 @@
   "domain": "Healthcare Delivery & Health Economics",
   "subdomain": "Payment, claims & health-plan analytics",
   "objective": "Data Extraction & Conformation (ETL)",
-  "prompt_shape": "07 (grid of cells): the projected 2026 increase by part (professional prices and five referred service lines), Ledgestone's outpatient share by county, line and year, and Ledgestone's physicians by year",
+  "prompt_shape": "07 (grid of cells): the call and the projected 2026 increase, then the review's two standing exhibits: the commercial imaging, endoscopy and arthroscopy services each lakeshore county's residents received in 2024 with Brightwater's referred share (county by line), and Brightwater's and Ledgestone's shares of the two counties' office visits by specialty",
   "as_of": "2025-10-21",
   "deliverables": [
     "N25-014_preliminary_review.pdf"
@@ -22,7 +22,7 @@
       "xlsx"
     ],
     "largest_file": "apcd_eligibility_spans.csv",
-    "largest_file_rows": 101741
+    "largest_file_rows": 102665
   },
   "sources": [
     {
@@ -56,8 +56,8 @@
     {
       "path": "apcd_eligibility_spans.csv",
       "format": "csv",
-      "bytes": 7935927,
-      "rows": 101741,
+      "bytes": 8007999,
+      "rows": 102665,
       "source": "Constructed: Eligibility spans 2021 to 2024 for members with a line in the claim files",
       "date": "2025-09-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -65,7 +65,7 @@
     {
       "path": "apcd_extract_data_dictionary.pdf",
       "format": "pdf",
-      "bytes": 8731,
+      "bytes": 8826,
       "rows": null,
       "source": "Constructed: APCD extract data dictionary, request OHCCR-MO-2025-031",
       "date": "2025-09-16",
@@ -76,7 +76,7 @@
       "format": "csv",
       "bytes": 838405,
       "rows": 5200,
-      "source": "Constructed: Medicare Advantage outpatient facility claims referred by lakeshore physicians, 2024, layout 3.1",
+      "source": "Constructed: Medicare Advantage outpatient facility claims referred by Manitowoc and Kewaunee county physicians, 2024, layout 3.1",
       "date": "2025-09-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -92,8 +92,8 @@
     {
       "path": "apcd_op_facility_claims_2024.csv",
       "format": "csv",
-      "bytes": 10779913,
-      "rows": 66660,
+      "bytes": 10991986,
+      "rows": 67976,
       "source": "Constructed: Commercial outpatient facility claims, layout 3.1, dates of service 2024, paid through 31 August 2025",
       "date": "2025-09-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -110,8 +110,8 @@
     {
       "path": "apcd_professional_claims_2024.csv",
       "format": "csv",
-      "bytes": 10393012,
-      "rows": 65782,
+      "bytes": 10904118,
+      "rows": 69086,
       "source": "Constructed: Commercial professional claims performed in Manitowoc and Kewaunee counties, layout 3.1, 2024",
       "date": "2025-09-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -137,7 +137,7 @@
     {
       "path": "export_manifest.csv",
       "format": "csv",
-      "bytes": 2864,
+      "bytes": 2884,
       "rows": 18,
       "source": "Constructed: export manifest",
       "date": "2025-10-21",
@@ -164,7 +164,7 @@
     {
       "path": "market_oversight_technical_appendix.pdf",
       "format": "pdf",
-      "bytes": 3638,
+      "bytes": 4413,
       "rows": null,
       "source": "Constructed: Market oversight technical appendix, revision 3",
       "date": "2025-06-02",

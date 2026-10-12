@@ -1,0 +1,158 @@
+{
+ "figures": {
+  "P": 609632.63,
+  "backtest": {
+   "carrier": 0.20784,
+   "pooled": 0.2,
+   "product": 0.168838,
+   "product x system": 0.083256,
+   "system": 0.120452,
+   "tier": 0.01529,
+   "tier (calendar year)": 0.01529,
+   "tiered flag": 0.158428
+  },
+  "c1": 0.86,
+  "c2": 0.0,
+  "call": "proceed",
+  "fam": {
+   "ARTH": 237731.7866,
+   "ECHO": 130261.0524,
+   "ENDO": 670166.008,
+   "IMG": 501705.5358,
+   "LAB": 59708.123
+  },
+  "fit": {
+   "carrier": {
+    "WI0412": 0.431314,
+    "WI0587": 0.422024,
+    "WI0633": 0.347139,
+    "WI0709": 0.552176,
+    "WI0751": 0.859886
+   },
+   "pooled": {
+    "all": 0.443763
+   },
+   "product": {
+    "BMH-HMO2": 0.862253,
+    "BMH-PPO1": 0.860036,
+    "BMH-VTP3": 0.001832,
+    "CBH-HMO1": 0.861837,
+    "CBH-PPO1": 0.861865,
+    "CBH-TPO2": 0.118699,
+    "HCH-PPO1": 0.859886,
+    "LBA-PPO7": 0.860261,
+    "LBA-TPO9": 0.061385,
+    "NBH-PPO1": 0.860963,
+    "NBH-TEP4": 0.071223
+   },
+   "product x system": {
+    "BMH-HMO2|Ledgestone Health": 0.864794,
+    "BMH-HMO2|Wolf River Health": 0.856996,
+    "BMH-PPO1|Ledgestone Health": 0.859493,
+    "BMH-PPO1|Wolf River Health": 0.861132,
+    "BMH-VTP3|Ledgestone Health": 0.00326,
+    "BMH-VTP3|Wolf River Health": 0.001255,
+    "CBH-HMO1|Ledgestone Health": 0.862204,
+    "CBH-HMO1|Wolf River Health": 0.861329,
+    "CBH-PPO1|Ledgestone Health": 0.861532,
+    "CBH-PPO1|Wolf River Health": 0.862477,
+    "CBH-TPO2|Ledgestone Health": -0.001269,
+    "CBH-TPO2|Wolf River Health": 0.860445,
+    "HCH-PPO1|Ledgestone Health": 0.858509,
+    "HCH-PPO1|Wolf River Health": 0.868073,
+    "LBA-PPO7|Ledgestone Health": 0.860027,
+    "LBA-PPO7|Wolf River Health": 0.861154,
+    "LBA-TPO9|Ledgestone Health": -0.002037,
+    "LBA-TPO9|Wolf River Health": 0.863906,
+    "NBH-PPO1|Ledgestone Health": 0.860517,
+    "NBH-PPO1|Wolf River Health": 0.862013,
+    "NBH-TEP4|Ledgestone Health": -0.000219,
+    "NBH-TEP4|Wolf River Health": 0.332005
+   },
+   "system": {
+    "Ledgestone Health": 0.390769,
+    "Wolf River Health": 0.583636
+   },
+   "tier": {
+    "1": 0.860905,
+    "2": -0.000468
+   },
+   "tier (calendar year)": {
+    "1": 0.857554,
+    "2": -0.000217
+   },
+   "tiered flag": {
+    "False": 0.860924,
+    "True": 0.075055
+   }
+  },
+  "grid": {
+   "by carrier|claims2024|all": 1938995.296387,
+   "by carrier|claims2024|outside": 1832390.4314,
+   "by carrier|filed|all": 1633198.904912,
+   "by carrier|filed|outside": 1551116.6054,
+   "pooled, Ledgestone's purchases|claims2024|all": 1640423.057058,
+   "pooled, Ledgestone's purchases|claims2024|outside": 1557761.435,
+   "pooled, Ledgestone's purchases|filed|all": 1441655.402599,
+   "pooled, Ledgestone's purchases|filed|outside": 1374933.4481,
+   "pooled, every acquisition|claims2024|all": 1772575.675911,
+   "pooled, every acquisition|claims2024|outside": 1679316.41,
+   "pooled, every acquisition|filed|all": 1548324.988829,
+   "pooled, every acquisition|filed|outside": 1473048.9376,
+   "product by product|claims2024|all": 1792054.19947,
+   "product by product|claims2024|outside": 1697232.9028,
+   "product by product|filed|all": 1722295.84031,
+   "product by product|filed|outside": 1633068.6382,
+   "tier, 2024 placements|claims2024|all": 1792054.19947,
+   "tier, 2024 placements|claims2024|outside": 1697232.9028,
+   "tier, 2024 placements|filed|all": 1722295.84031,
+   "tier, 2024 placements|filed|outside": 1633068.6382,
+   "tier, 2026 placements|claims2024|all": 2786970.359321,
+   "tier, 2026 placements|claims2024|outside": 2612364.2864,
+   "tier, 2026 placements|filed|all": 2348662.198206,
+   "tier, 2026 placements|filed|outside": 2209205.1358
+  },
+  "n_elig": 8029,
+  "n_prof": 23970,
+  "n_ref": 8972,
+  "referred": 1599572.5058,
+  "rungs": {
+   "R0": 609632.63,
+   "R1 employed group": 1296441.0565,
+   "R1 lakeshore affiliate": 1669279.9166,
+   "R2 pooled, Ledgestone": 1374933.4481,
+   "R2 pooled, every acquisition": 1473048.9376,
+   "R3 carrier": 1551116.6054,
+   "R4 product and system": 1633068.6382,
+   "R4 product by product": 1633068.6382,
+   "R4 product by product, every acquisition": 1643404.5964,
+   "R4 tier, 2024 placements": 1633068.6382,
+   "R5 answer": 2209205.1358
+  },
+  "total": 2209205.1358
+ },
+ "population": {
+  "N25-014_notice_of_material_change.pdf": "4dcc5da2bf3ea24f9916c7522df441606fa7fc6a5b0718aad5e3c73344e72bfd",
+  "elig_main": [
+   71191,
+   "786b29f57ae27a6bb993340be462d1549ba976e903bec1ec897ee6d99272c48c"
+  ],
+  "exhibit": "e0aa66b685599272271aefbbe1a8d3aecd11aa639a6132eb14e760e9aabae6d5",
+  "fac24_main": [
+   19511,
+   "eb0bb694fbe8c5b81f06e8a771b1f0714c21c212a545a8dfccc86d8237701a8f"
+  ],
+  "facdir": "d78051086390cdbaf1f73c391e5725ee712c7f68eab47110f49067e318a8cb1c",
+  "fachist": "e20121b28b799a864ece6706e62a8668163ffddd5d4d1b7ec199b1e4aed4cc91",
+  "medicare": "e4072de0a77e5ea99df25249f0daf86c89ff1bb86599e8dd5b1c7f1961640faa",
+  "ohccr_rule_4_preliminary_review.pdf": "70f8b32b711e45fb3d918958b87136e26dbf44af26c4ff60a979e2592919708e",
+  "prodref": "d861af6e80c2ca6744895817400777255fe090871e7e021bf1418a28ddad6ca3",
+  "prof24_main": [
+   23970,
+   "a15e39a9b0a011a9449672d0b137c228bceb7a98afcbf23f1b182cdc6a1ddaff"
+  ],
+  "reassign": "6b158105f0378b856cd02ba2d0458a4f1d09c740f6ca5bf12719992269785e04",
+  "register": "135713ee57bf7a0daa3fa8c62c6b50c20d3e3efa167c855af474cafa0303ee95",
+  "tiers": "23fa8525239a80b384d2680d58c4792c29e6f47c1a2c49491719c57471e00c65"
+ }
+}

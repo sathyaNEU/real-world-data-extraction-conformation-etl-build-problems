@@ -292,29 +292,12 @@ def compute(target):
                for f in LINES}
     other_fam = referred_inc - sum(fam_inc.values())
 
-    # ---- Ask B: Ledgestone's share of outpatient imaging, endoscopy and arthroscopy by residence county
-    bf = base_f.copy()
-    bf["fam"] = bf["procedure_code"].map(family)
-    bf = bf[bf["fam"].isin(["IMG", "ENDO", "ARTH"])]
-    zinfo = [E.on(m, d)[2] for m, d in zip(bf["member_id"], bf["dos"])]
-    bf["county"] = [zc.get(z) for z in zinfo]
-    bf["system"] = bf["service_facility_npi"].map(sys_of_fac)
-    shares = {}
-    moved = br[br["fam"].isin(["IMG", "ENDO", "ARTH"])]
-    for county in ("Manitowoc", "Kewaunee"):
-        for f in ("IMG", "ENDO", "ARTH"):
-            sel = bf[(bf["county"] == county) & (bf["fam"] == f)]
-            tot = sel["qty"].sum()
-            ldg = sel.loc[sel["system"] == "Ledgestone Health", "qty"].sum()
-            mv = (moved.loc[(moved["county"] == county) & (moved["fam"] == f), "share_moving"]
-                  * moved.loc[(moved["county"] == county) & (moved["fam"] == f), "qty"]).sum()
-            shares[(county, f)] = (100.0 * ldg / tot, 100.0 * (ldg + mv) / tot, int(tot), int(ldg), float(mv))
-
-    # ---- Ask C: Ledgestone's physicians each 1 January and those who joined by acquisition
-    counts, joined, jlist = physicians(X, spans, ctrl)
+    # ---- the market exhibits (rule 4.07, appendix A2 and A3)
+    ex1 = ex1_cells(X, zc, bmg_tin, spans)
+    ex2 = ex2_cells(X, zc, bmg_tin, ctrl)
 
     return dict(total=total, P=P, P_base=P_base, referred=referred_inc, fam=fam_inc, other_fam=other_fam,
-                c1=c1, c2=c2, fit=fit, shares=shares, counts=counts, joined=joined, joined_list=jlist,
+                c1=c1, c2=c2, fit=fit, ex1=ex1, ex2=ex2,
                 bmg_tin=bmg_tin, bmg_npis=sorted(bmg_npis), br=br, prof_rows=prof_rows, hist=hist,
                 call="proceed" if total >= THRESHOLD else "close", threshold=THRESHOLD,
                 base_ref=float(br["allowed"].sum()), n_prof=len(prof_rows), n_ref=len(br),
@@ -510,27 +493,123 @@ def backtest(h, models=None, stated=False):
     return res
 
 
-# ------------------------------------------------------------------ Ask C
 PHYS_TAX = ("207", "208")
 
 
-def physicians(X, spans, ctrl):
-    prov = X["provfile"]
-    tax = dict(zip(prov["provider_npi"], prov["primary_taxonomy"]))
-    is_phys = lambda n: tax.get(n, "")[:3] in PHYS_TAX
-    counts = {}
-    for y in range(2020, 2026):
-        d = pd.Timestamp("%d-01-01" % y)
-        counts[y] = sum(1 for npi, lst in spans.items() if is_phys(npi) and
-                        any(s <= d <= e and ctrl.system_of(t, d) == "Ledgestone Health" for t, s, e in lst))
-    j = joins(spans, ctrl, X["register"], "Ledgestone Health", is_phys)
-    joined = {y: 0 for y in range(2020, 2025)}
-    jlist = defaultdict(list)
-    for npi, (d, p) in j.items():
-        if 2020 <= d.year <= 2024:
-            joined[d.year] += 1
-            jlist[d.year].append((npi, d.date().isoformat(), p))
-    return counts, joined, jlist
+# ------------------------------------------------------------------ the market exhibits (appendix A2 and A3)
+EX1_LINES = ("IMG", "ENDO", "ARTH")
+EX_COUNTIES = ("Manitowoc", "Kewaunee")
+OFFICE = {str(c) for c in range(99202, 99216)}
+SPECIALTY = {"207Q00000X": "primary care", "207R00000X": "primary care", "208000000X": "primary care",
+             "207RG0100X": "gastroenterology", "207X00000X": "orthopaedic surgery",
+             "207RC0000X": "cardiovascular disease"}
+SPECIALTIES = ("primary care", "gastroenterology", "orthopaedic surgery", "cardiovascular disease")
+
+
+def _versions(df, how):
+    if how == "latest":
+        return latest_versions(df)
+    if how == "as filed":
+        return df.copy()
+    raise ValueError(how)
+
+
+def _services(df, key, how):
+    """Count services. 'once': a service billed to two plans is one service, so each key counts the units one
+    plan holds for it (most units over the plans); 'every claim': the units on every claim line; 'one per key':
+    a single service per key whatever the units or plans."""
+    if df.empty:
+        return 0
+    if how == "every claim":
+        return int(df["qty"].sum())
+    if how == "one per key":
+        return int((df.groupby(key)["qty"].sum() > 0).sum())
+    per = df.groupby(key + ["submitter_code"])["qty"].sum()
+    return int(per.groupby(level=list(range(len(key)))).max().sum())
+
+
+def ex1_cells(X, zc, bmg_tin, spans, versions="latest", second="once", key=("member_id", "dos", "procedure_code",
+              "procedure_modifier_1", "service_facility_npi"), residence="span", runout=False):
+    """Appendix A2: the commercial imaging, endoscopy and arthroscopy services each county's residents received in
+    2024, and the share whose referring provider billed under Brightwater's number on the date of service."""
+    commercial = set(X["prodref"].loc[X["prodref"]["line_of_business"] == "Commercial", "product_id"])
+    f = X["fac"]
+    f = f[(f["dos"] >= BASE_START) & (f["dos"] <= BASE_END) & f["product_id"].isin(commercial)]
+    f = f[f["procedure_code"].map(family).isin(EX1_LINES)]
+    if runout:
+        f = f[f["paid"] <= RUNOUT]
+    f = _versions(f, versions)
+    el = X["elig"]
+    if residence == "span":
+        idx = defaultdict(list)
+        for m, p, s_, e_, z in zip(el["member_id"], el["product_id"], el["start"], el["end"], el["member_zip"]):
+            idx[(m, p)].append((s_, e_, z))
+        zips = [next((z for s_, e_, z in idx.get((m, p), ()) if s_ <= d <= e_), None)
+                for m, p, d in zip(f["member_id"], f["product_id"], f["dos"])]
+    else:
+        first = el.sort_values(["member_id", "start"]).groupby("member_id")["member_zip"]
+        pick = (first.first() if residence == "first" else first.last()).to_dict()
+        zips = [pick.get(m) for m in f["member_id"]]
+    f = f.assign(county=[zc.get(z) for z in zips], line=f["procedure_code"].map(family))
+    bmg = [any(t == bmg_tin and s_ <= d <= e_ for t, s_, e_ in spans.get(n, ())) for n, d in
+           zip(f["referring_provider_npi"], f["dos"])]
+    f = f.assign(bmg=bmg)
+    key = list(key)
+    out = {}
+    for county in EX_COUNTIES:
+        for ln in EX1_LINES:
+            sel = f[(f["county"] == county) & (f["line"] == ln)]
+            tot = _services(sel, key, second)
+            b = _services(sel[sel["bmg"]], key, second)
+            out[(county, ln)] = (tot, b, 100.0 * b / tot)
+    return out
+
+
+def ex2_cells(X, zc, bmg_tin, ctrl, versions="latest", second="once", specialty="provider", physicians=True,
+              system="register", telehealth=False, runout=False):
+    """Appendix A3: commercial office visits in the two counties by the rendering physician's specialty, and the
+    shares billed under Brightwater's number and under the numbers Ledgestone owns or controls."""
+    commercial = set(X["prodref"].loc[X["prodref"]["line_of_business"] == "Commercial", "product_id"])
+    p = X["prof"]
+    p = p[(p["dos"] >= BASE_START) & (p["dos"] <= BASE_END) & p["product_id"].isin(commercial)]
+    p = p[p["procedure_code"].isin(OFFICE) & p["service_facility_zip"].map(zc).isin(EX_COUNTIES)]
+    if not telehealth:          # A3: a visit by telehealth is not an office visit
+        p = p[(p["place_of_service"] != "10") & (p["procedure_modifier_2"] != "95")]
+    if runout:
+        p = p[p["paid"] <= RUNOUT]
+    p = _versions(p, versions)
+    if specialty == "provider":
+        prov = X["provfile"]
+        tax = prov.groupby("provider_npi")["primary_taxonomy"].agg(lambda x: sorted(set(x))[0]).to_dict()
+        t = p["rendering_provider_npi"].map(tax)
+    else:
+        t = p["rendering_provider_taxonomy"]
+    p = p.assign(tax=t.values)
+    if physicians:
+        p = p[p["tax"].str[:3].isin(PHYS_TAX)]
+    else:
+        p = p.assign(tax=p["tax"].where(p["tax"].str[:3].isin(PHYS_TAX), "207Q00000X"))
+    p = p.assign(spec=p["tax"].map(SPECIALTY))
+    if system == "register":
+        ldg = [ctrl.system_of(tin, d) == "Ledgestone Health" for tin, d in zip(p["billing_provider_tin"], p["dos"])]
+    else:
+        lmg = ctrl_tin(X, "Ledgestone Medical Group")
+        ldg = list(p["billing_provider_tin"] == lmg)
+    p = p.assign(ldg=ldg, bmg=(p["billing_provider_tin"] == bmg_tin).values)
+    key = ["member_id", "dos", "procedure_code", "rendering_provider_npi"]
+    out = {}
+    for sp in SPECIALTIES:
+        sel = p[p["spec"] == sp]
+        tot = _services(sel, key, second)
+        b = _services(sel[sel["bmg"]], key, second)
+        lg = _services(sel[sel["ldg"]], key, second)
+        out[sp] = (tot, b, lg, 100.0 * b / tot, 100.0 * lg / tot)
+    return out
+
+
+def ctrl_tin(X, name):
+    reg = X["register"]
+    return reg.loc[reg["entity_name"] == name, "entity_tin"].iloc[0]
 
 
 # ------------------------------------------------------------------ the ladder, from the shipped files

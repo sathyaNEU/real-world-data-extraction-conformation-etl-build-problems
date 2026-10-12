@@ -53,12 +53,12 @@ def run(target):
                         orig=r["original_claim_control_number"], m=r["member_id"], prod=r["product_id"],
                         dos=d(r["service_from_date"]), paid=d(r["paid_date"]), cpt=r["procedure_code"],
                         qty=int(r["quantity"]), amt=float(r["allowed_amount"]), fac=r["service_facility_npi"],
-                        ref=r["referring_provider_npi"]))
+                        ref=r["referring_provider_npi"], mod=r["procedure_modifier_1"]))
     for r in rows(P("apcd_op_facility_claims_2021_2023.csv")):
         fac.append(dict(sub=r["SUBMITTER_ID"], cno=r["CLAIM_ID"], freq={"O": "1", "R": "7", "V": "8"}[r["CLM_STATUS"]],
                         orig=r["ORIG_CLAIM_ID"], m=r["MEMBER_ID"], prod=r["PRODUCT_ID"], dos=d(r["DOS_FROM"]),
                         paid=d(r["PAID_DT"]), cpt=r["PROC_CD"], qty=int(r["UNITS"]), amt=float(r["ALLOWED_AMT"]),
-                        fac=r["FAC_NPI"], ref=r["REF_NPI"]))
+                        fac=r["FAC_NPI"], ref=r["REF_NPI"], mod=r["MOD1"]))
     gone = {x["orig"] for x in fac if x["freq"] in ("7", "8")}
     fac = [x for x in fac if x["freq"] in ("1", "7") and x["cno"] not in gone]
     prof = rows(P("apcd_professional_claims_2024.csv"))
@@ -256,38 +256,67 @@ def run(target):
             moved_q[(county_of_zip[z], line_of(x["cpt"]))] += c * x["qty"]
     total = Pinc + sum(fam.values())
 
-    # ---- Ask B
-    tot, own = defaultdict(int), defaultdict(int)
+    # ---- Exhibit 1 (appendix A2): services by county of residence and line; a service two plans were billed
+    # for is one service, so each member, date, code, modifier and facility counts the units one plan holds
+    span_zip = defaultdict(list)
+    for x in rows(P("apcd_eligibility_spans.csv")):
+        span_zip[(x["member_id"], x["product_id"])].append((d(x["coverage_start"]), d(x["coverage_end"]), x["member_zip"]))
+    per_plan = defaultdict(lambda: defaultdict(int))
+    bmg_key = {}
     for x in fac:
-        if x["dos"].year != 2024 or x["paid"] > runout or x["prod"] not in commercial:
+        if x["dos"].year != 2024 or x["prod"] not in commercial or line_of(x["cpt"]) not in ("IMG", "ENDO", "ARTH"):
             continue
-        ln = line_of(x["cpt"])
-        if ln not in ("IMG", "ENDO", "ARTH"):
-            continue
-        cty = county_of_zip.get(on(x["m"], x["dos"])[2])
+        z = next(zz for s_, e_, zz in span_zip[(x["m"], x["prod"])] if s_ <= x["dos"] <= e_)
+        cty = county_of_zip.get(z)
         if cty not in ("Manitowoc", "Kewaunee"):
             continue
-        tot[(cty, ln)] += x["qty"]
-        if sysof.get(x["fac"]) == ldg:
-            own[(cty, ln)] += x["qty"]
-    shares = {"%s|%s" % k: ["%.1f" % (100.0 * own[k] / tot[k]), "%.1f" % (100.0 * (own[k] + moved_q[k]) / tot[k])]
-              for k in tot}
+        k = (cty, line_of(x["cpt"]), x["m"], x["dos"], x["cpt"], x["mod"], x["fac"])
+        per_plan[k][x["sub"]] += x["qty"]
+        bmg_key[k] = bmg_key.get(k, False) or (x["ref"] in spans and bmg in tins_on(x["ref"], x["dos"]))
+    tot1, b1 = defaultdict(int), defaultdict(int)
+    for k, by in per_plan.items():
+        n = max(by.values())
+        tot1[k[:2]] += n
+        if bmg_key[k]:
+            b1[k[:2]] += n
+    ex1 = {"%s|%s" % k: ["{:,}".format(tot1[k]), "%.1f" % (100.0 * b1[k] / tot1[k])] for k in tot1}
 
-    # ---- Ask C
-    counts = {}
-    for y in range(2020, 2026):
-        dt = date(y, 1, 1)
-        counts[str(y)] = sum(1 for n, lst in spans.items() if phys(n) and any(s <= dt <= e and system(t, dt) == ldg
-                                                                             for t, s, e in lst))
-    jn = defaultdict(int)
-    for n, (dt, p) in joined(ldg, phys).items():
-        if 2020 <= dt.year <= 2024:
-            jn[str(dt.year)] += 1
-    joins = {str(y): jn.get(str(y), 0) for y in range(2020, 2025)}
+    # ---- Exhibit 2 (appendix A3): in-person office visits by the rendering physician's own specialty
+    own_tax = defaultdict(set)
+    for x in rows(P("carrier_provider_file.csv")):
+        own_tax[x["provider_npi"]].add(x["primary_taxonomy"])
+    assert all(len(v) == 1 for v in own_tax.values()), "one taxonomy per provider"
+    spec_of = {"207Q00000X": "primary care", "207R00000X": "primary care", "208000000X": "primary care",
+               "207RG0100X": "gastroenterology", "207X00000X": "orthopaedic surgery",
+               "207RC0000X": "cardiovascular disease"}
+    office = {str(c) for c in range(99202, 99216)}
+    visits = defaultdict(lambda: defaultdict(int))
+    who = {}
+    for x in prof:
+        if x["product_id"] not in commercial or x["procedure_code"] not in office:
+            continue
+        if x["place_of_service"] == "10" or x["procedure_modifier_2"] == "95":
+            continue
+        dos = d(x["service_from_date"])
+        if dos.year != 2024 or county_of_zip.get(x["service_facility_zip"]) not in ("Manitowoc", "Kewaunee"):
+            continue
+        t = next(iter(own_tax[x["rendering_provider_npi"]]))
+        if t not in spec_of:
+            continue
+        k = (spec_of[t], x["member_id"], dos, x["procedure_code"], x["rendering_provider_npi"])
+        visits[k][x["submitter_code"]] += int(x["quantity"])
+        who[k] = (x["billing_provider_tin"] == bmg, system(x["billing_provider_tin"], dos) == ldg)
+    tot2, b2, l2 = defaultdict(int), defaultdict(int), defaultdict(int)
+    for k, by in visits.items():
+        n = max(by.values())
+        tot2[k[0]] += n
+        b2[k[0]] += n if who[k][0] else 0
+        l2[k[0]] += n if who[k][1] else 0
+    ex2 = {sp: ["%.1f" % (100.0 * b2[sp] / tot2[sp]), "%.1f" % (100.0 * l2[sp] / tot2[sp])] for sp in tot2}
     parts = {"P": int(round(Pinc / 1e4)) * 10000}
     parts.update({k: int(round(v / 1e4)) * 10000 for k, v in fam.items()})
     return {"call": "proceed" if total >= 2_000_000 else "close", "total_m": "%.1f" % (total / 1e6),
-            "parts": parts, "shares": shares, "counts": counts, "joined": joins,
+            "parts": parts, "ex1": ex1, "ex2": ex2,
             "raw": {"total": total, "P": Pinc, "capture": cap, "fitted": raw_cap}}
 
 
@@ -295,9 +324,8 @@ def compare(v, figs):
     assert v["call"] == figs["call"], (v["call"], figs["call"])
     assert v["total_m"] == figs["total_m"], (v["total_m"], figs["total_m"])
     assert v["parts"] == figs["parts"], (v["parts"], figs["parts"])
-    assert v["shares"] == figs["shares"], (v["shares"], figs["shares"])
-    assert v["counts"] == figs["counts"], (v["counts"], figs["counts"])
-    assert v["joined"] == figs["joined"], (v["joined"], figs["joined"])
+    assert v["ex1"] == {k: list(x) for k, x in figs["ex1"].items()}, (v["ex1"], figs["ex1"])
+    assert v["ex2"] == {k: list(x) for k, x in figs["ex2"].items()}, (v["ex2"], figs["ex2"])
     return True
 
 

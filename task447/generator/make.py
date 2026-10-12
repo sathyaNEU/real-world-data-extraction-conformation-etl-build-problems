@@ -40,7 +40,7 @@ DESCRIPTIONS = {
     PK.FILES["elig"]: ("Eligibility spans 2021 to 2024 for members with a line in the claim files",
                        "Wisconsin APCD, request OHCCR-MO-2025-031", "2025-09-15"),
     PK.FILES["prodref"]: ("Carrier product reference", "Wisconsin APCD", "2025-09-15"),
-    PK.FILES["ma"]: ("Medicare Advantage outpatient facility claims referred by lakeshore physicians, 2024, layout 3.1",
+    PK.FILES["ma"]: ("Medicare Advantage outpatient facility claims referred by Manitowoc and Kewaunee county physicians, 2024, layout 3.1",
                      "Wisconsin APCD, request OHCCR-MO-2025-031", "2025-09-15"),
     PK.FILES["tiers"]: ("Network tier placements of the three hospital systems in each tiered product, plan years 2020 to 2026",
                         "OHCCR market oversight unit, from carrier form filings", "2025-09-26"),
@@ -111,7 +111,7 @@ def metadata(target):
         "domain": "Healthcare Delivery & Health Economics",
         "subdomain": "Payment, claims & health-plan analytics",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "07 (grid of cells): the projected 2026 increase by part (professional prices and five referred service lines), Ledgestone's outpatient share by county, line and year, and Ledgestone's physicians by year",
+        "prompt_shape": "07 (grid of cells): the call and the projected 2026 increase, then the review's two standing exhibits: the commercial imaging, endoscopy and arthroscopy services each lakeshore county's residents received in 2024 with Brightwater's referred share (county by line), and Brightwater's and Ledgestone's shares of the two counties' office visits by specialty",
         "as_of": "2025-10-21",
         "deliverables": [DL.OUT],
         "distractor_files": DISTRACTORS,
@@ -142,9 +142,10 @@ def owed_figures(g, figs):
         "tier_two_share_pct": "%d" % round(100 * g["c2"]),
         "rule_sections_cited": ["4.03", "4.04", "4.05", "4.06"],
         "claims_layouts": ["2.4", "3.1"],
+        "office_visit_codes": ["99202", "99215"],
     }
     # the periods and the rounding unit the prompt fixes, as the answers name them
-    out["prompt_parameters"] = {"baseline_year": "2024", "projection_year": "2026", "parts_rounding": "10,000"}
+    out["prompt_parameters"] = {"baseline_year": "2024", "projection_year": "2026"}
     return out
 
 
@@ -228,8 +229,16 @@ def main():
             print("  corridor %-36s tier one %.5f, tier two %.5f, unrounded projection %.0f" % (k, c1, c2, tot))
     for (m, pr, b), val in L["grid"].items():
         print("  grid %-32s %-10s %-8s %.3f" % (m, pr, b, val / 1e6))
-    for k, (mv, lo, hi) in C.REPORT["askb_stops"].items():
-        print("  Ask B stop %-46s moves %2d of 12 figures; after cells %.1f to %.1f" % (k, mv, lo, hi))
+    lab1 = lambda k: "%s %s" % (k[0], {"IMG": "imaging", "ENDO": "endoscopy", "ARTH": "arthroscopy"}[k[1]])
+    for k, (tot, b, sh) in g["ex1"].items():
+        print("  Exhibit 1 %-24s %5d services, Brightwater %5d, %.3f%%" % (lab1(k), tot, b, sh))
+    for k, v in g["ex2"].items():
+        print("  Exhibit 2 %-24s %5d visits, Brightwater %5d (%.3f%%), Ledgestone %4d (%.3f%%)" % (k, v[0], v[1], v[3], v[2], v[4]))
+    for name, cells in C.REPORT["ex1_stops"].items():
+        print("  Exhibit 1 stop %-50s %s" % (name, "; ".join("%+d %+.2f" % cells[k] for k in g["ex1"])))
+    for name, cells in C.REPORT["ex2_stops"].items():
+        print("  Exhibit 2 stop %-50s %s" % (name, "; ".join("%+.2f %+.2f" % cells[k] for k in g["ex2"])))
+    print("  combinations: nearest landing to a bin it left, Exhibit 1 %.3f, Exhibit 2 %.3f" % tuple(C.REPORT["combo_worst"]))
 
 
 if __name__ == "__main__":
