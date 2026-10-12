@@ -14,7 +14,9 @@
   "D": "1.9",
   "N": "5.2"
  },
- "slope": "0.63",
+ "slope": "-0.63",
+ "ratio_over": "1.1",
+ "ratio_under": "0.9",
  "ratio_golden": {
   "KBA-INST": "0.76",
   "KBA-PROF": "0.77",
@@ -68,62 +70,49 @@
   "HPY-TYPD": "0.77"
  },
  "hours": {
-  "KBA-INST": "963",
-  "KBA-PROF": "857",
-  "NDS-DENT": "754",
-  "BMC-FROI": "340",
-  "HPB-UCF": "576",
-  "WBH-HOSP": "1,989",
-  "WBH-EXTR": "3,009",
-  "CIP-IPCL": "1,113",
-  "WPC-PETC": "1,682",
-  "TCM-FNOL": "2,168",
-  "HPY-TYPD": "2,449"
- },
- "credit": {
-  "KBA-INST": "USD 1,274",
-  "KBA-PROF": "USD 646",
-  "NDS-DENT": "USD 687",
-  "BMC-FROI": "USD 745",
-  "HPB-UCF": "USD 435",
-  "WBH-HOSP": "AUD 3,579",
-  "WBH-EXTR": "AUD 2,900",
-  "CIP-IPCL": "AUD 3,069",
-  "WPC-PETC": "GBP 1,332",
-  "TCM-FNOL": "GBP 4,091",
-  "HPY-TYPD": "GBP 2,644"
+  "KBA-INST": "985",
+  "KBA-PROF": "882",
+  "NDS-DENT": "771",
+  "BMC-FROI": "348",
+  "HPB-UCF": "589",
+  "WBH-HOSP": "2,035",
+  "WBH-EXTR": "3,097",
+  "CIP-IPCL": "1,139",
+  "WPC-PETC": "1,731",
+  "TCM-FNOL": "2,217",
+  "HPY-TYPD": "2,526"
  },
  "client_audit": {
-  "WBH-HOSP": "1.6",
-  "WBH-EXTR": "4.3",
-  "CIP-IPCL": "6.7",
-  "WPC-PETC": "3.9",
-  "TCM-FNOL": "14.5",
-  "KBA-INST": "0.3",
-  "KBA-PROF": "0.6",
-  "NDS-DENT": "1.6",
-  "BMC-FROI": "1.3",
-  "HPB-UCF": "0.7"
+  "WBH-HOSP": "1.52",
+  "WBH-EXTR": "3.89",
+  "CIP-IPCL": "5.73",
+  "WPC-PETC": "4.27",
+  "TCM-FNOL": "14.53",
+  "KBA-INST": "0.14",
+  "KBA-PROF": "0.97",
+  "NDS-DENT": "1.29",
+  "BMC-FROI": "1.45",
+  "HPB-UCF": "0.19"
  },
  "rates": {
-  "handwritten": "3.05",
-  "mixed": "2.10",
-  "printed": "1.55",
-  "typed": "1.20"
+  "handwritten": "3.122",
+  "mixed": "2.163",
+  "printed": "1.587",
+  "typed": "1.238"
  },
- "leader": "TCM-FNOL",
+ "leader": "WBH-EXTR",
  "chart_order": [
-  "TCM-FNOL",
-  "HPY-TYPD",
-  "WBH-HOSP",
-  "CIP-IPCL",
   "WBH-EXTR",
+  "HPY-TYPD",
+  "TCM-FNOL",
+  "WBH-HOSP",
   "WPC-PETC",
+  "CIP-IPCL",
   "KBA-INST",
-  "BMC-FROI",
-  "NDS-DENT",
   "KBA-PROF",
-  "HPB-UCF"
+  "NDS-DENT",
+  "HPB-UCF",
+  "BMC-FROI"
  ],
  "heldout_ratio": "1.52"
 }

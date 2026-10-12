@@ -38,18 +38,17 @@ FILES = {
     "fc_au": "wattlebird_coolabah_forecasts_fy27.xlsx",
     "fc_uk": "uk_client_forecasts_nov26.csv",
     "fc_hpy": "hollings_pryce_forecast_nov26.json",
-    "billing": "billing_register_oct26.xlsx",
-    "rates": "client_rate_cards_2026.pdf",
     "ca_kba": "kessington_audit_findings_q3.csv",
     "ca_us": "client_audits_us_q3.xlsx",
     "ca_au": "client_audits_au_q3.xlsx",
     "ca_uk": "client_portal_audits_uk_q3.json",
     "manifests": "delivery_manifests_2026q3.csv",
+    "index": "delivery_index_2026q3.parquet",
     "ocr": "ocr_confidence_summary_2026q3.csv",
     "keys": "verifier_keystroke_telemetry_2026q3.parquet",
     "notes": "capture_mis_extract_notes.md",
 }
-DISTRACTORS = ["ocr", "keys"]
+DISTRACTORS = ["ocr", "keys", "fc_kba", "fc_us", "fc_au", "fc_uk", "fc_hpy"]
 DAY = dt.timedelta(days=1)
 
 
@@ -233,14 +232,14 @@ def operating_plan(S, plan, roster, target):
         ["Plan of record", "Version 3"],
         ["Issued", dt.date(2026, 10, 23)],
         ["Owner", W.PEOPLE["ops"] + ", Head of Operations"],
-        ["Approved", "Service quality council, 23 Oct 2026"],
+        ["Approved", "Head of Operations, 23 Oct 2026"],
         ["Covers", "Shift-days 1 to 30 November 2026 (a night shift belongs to the date it starts)"],
         [],
         ["Notes"],
         ["Volumes are the clients' weekly forecasts as accepted for planning, spread evenly over each client's working days in the week, any remainder on the earliest days."],
         ["Hollings & Pryce forecast in bundles; one bundle is 25 documents."],
         ["Thistlecombe Motor moves to the night queue from 1 November to free day capacity for the Hollings & Pryce go-live."],
-        ["Second-pass streams for November are listed on the council's signed plan, not here."],
+        ["Second-pass streams for November are set on the head of operations' list, not here."],
     ]
     for l in lines:
         ws.append(l)
@@ -297,6 +296,14 @@ def operating_plan(S, plan, roster, target):
 
 # ----------------------------------------------------------------------------------------------- forecasts and billing
 def forecasts(fc, target):
+    # revisions other than the accepted one were each the client's own re-forecast, week by week
+    fc = fc.copy()
+    na = ~fc.accepted
+    import hashlib
+    wob = [(int(hashlib.md5(f"{w}-{rv}-{c}".encode()).hexdigest(), 16) % 91 - 45) / 1000.0
+           for w, rv, c in zip(fc.week_start, fc.revision, fc.code)]
+    fc.loc[na, "units"] = [int(round(u * (1 + x))) for u, x, m in zip(fc.units, wob, na) if m]
+
     def us_week_label(d):
         return f"Week ending {d + dt.timedelta(days=6):%m/%d/%Y}"
     k = fc[fc.client == "KBA"].copy()
@@ -390,15 +397,15 @@ def billing_register(target, oct_docs):
 
 # ----------------------------------------------------------------------------------------------- second pass and client audits
 def sessions_export(L, target):
-    blk = {("N", 1): "N-A", ("N", 2): "N-B", ("D", 1): "D-A", ("D", 2): "D-B"}
     start = np.array([np.datetime64(sim.shift_start(d, q)) for d, q in zip(L.day.values, L.queue.values)])
     t = start + (L.offset_min.values * 60).astype("timedelta64[s]")
     out = pd.DataFrame({"session_ref": L.session.values, "work_date": [f"{d:%d-%m-%Y}" for d in L.day],
-                        "half_shift": [blk[(q, p)] for q, p in zip(L.queue, L.part)], "sp_badge": L.badge.values,
-                        "stream": L.code.map(W.SID).values, "document_id": L.doc_id.values,
-                        "doc_started": pd.to_datetime(t).strftime("%d-%m-%Y %H:%M:%S"), "productive_min": L.minutes.values})
-    out = out.sort_values(["work_date", "session_ref", "doc_started"], key=lambda s: pd.to_datetime(s, format="%d-%m-%Y") if s.name == "work_date" else s)
-    out.to_csv(os.path.join(target, FILES["sessions"]), index=False, lineterminator="\n", float_format="%.1f")
+                        "sp_badge": L.badge.values, "basket": L.basket.map(W.SP_BASKET).values,
+                        "document_id": L.doc_id.values, "doc_opened": pd.to_datetime(t).strftime("%d-%m-%Y %H:%M:%S"),
+                        "handling_sec": L.secs.values})
+    out["_t"] = pd.to_datetime(t)
+    out = out.sort_values(["_t", "session_ref"]).drop(columns="_t")
+    out.to_csv(os.path.join(target, FILES["sessions"]), index=False, lineterminator="\n")
 
 
 def manifests(D, target):
@@ -409,24 +416,32 @@ def manifests(D, target):
     out.to_csv(os.path.join(target, FILES["manifests"]), index=False, lineterminator="\n")
 
 
+def delivery_index(I, target):
+    import asks_sim as _AS
+    out = pd.DataFrame({"file_name": I.file.values,
+                        "claim_ref": [_AS._claim_ref(c, k, n) for c, k, n in zip(I.client.values, I.code.values, I.claim.values)],
+                        "document_id": I.doc_id.values, "sheet": I.sheet.values.astype("int8")})
+    _write_parquet(out, os.path.join(target, FILES["index"]))
+
+
 def client_audit_files(Fd, D, target):
     utc = D.set_index("file").sent_utc
     Fd = Fd.copy()
-    Fd["delivered"] = [AS.delivered_stamp(utc[f], cl) for f, cl in zip(Fd.file, Fd.claim)]
+    Fd["received"] = [AS.received_business_date(utc[f], c, cl) for f, c, cl in zip(Fd.file, Fd.client, Fd.claim)]
     Fd["version"] = [W.version_on(c, d) for c, d in zip(Fd.code, Fd.day)]
-    rv_date = {}
+    Fd["ref"] = [AS._claim_ref(c, k, n) for c, k, n in zip(Fd.client, Fd.code, Fd.claim)]
 
     def rdate(r):
-        base = min(r.delivered.date() + dt.timedelta(days=9 + (int(r.claim) % 11)), dt.date(2026, 10, 9) - dt.timedelta(days=int(r.claim) % 4))
+        base = min(r.received + dt.timedelta(days=9 + (int(r.claim) % 11)), dt.date(2026, 10, 9) - dt.timedelta(days=int(r.claim) % 4))
         if r.rnd == 2:
             return min(base + dt.timedelta(days=21 + int(r.claim) % 9), dt.date(2026, 10, 16) - dt.timedelta(days=int(r.claim) % 3))
         return base
 
-    # Kessington: CSV
-    k = Fd[Fd.client == "KBA"].sort_values(["delivered", "claim", "seq", "rnd"])
+    # Kessington: CSV from its claims system
+    k = Fd[Fd.client == "KBA"].sort_values(["received", "ref", "seq", "rnd"])
     rows = []
     for r in k.itertuples():
-        rows.append({"Claim Nbr": f"K{int(r.claim):09d}", "Src File": r.file, "Delivered": f"{r.delivered:%Y-%m-%d %H:%M:%S}",
+        rows.append({"Claim Nbr": r.ref, "Src File": r.file, "Rcvd Bus Dt": f"{r.received:%Y-%m-%d}",
                      "Form": r.version, "Finding Seq": r.seq if r.seq else "", "Finding Cd": r.reason, "Review Rnd": r.rnd if r.seq else "",
                      "Review Dt": f"{rdate(r):%Y-%m-%d}"})
     pd.DataFrame(rows).to_csv(os.path.join(target, FILES["ca_kba"]), index=False, lineterminator="\r\n")
@@ -438,26 +453,24 @@ def client_audit_files(Fd, D, target):
         ws = wb.active if first else wb.create_sheet()
         first = False
         ws.title = title
-        g = Fd[Fd.client == c].sort_values(["delivered", "claim", "seq", "rnd"])
+        g = Fd[Fd.client == c].sort_values(["received", "ref", "seq", "rnd"])
         if c == "NDS":
-            _header(ws, ["Audit ID", "Batch File", "Received (UTC)", "Finding #", "Error Code", "Status"])
+            _header(ws, ["Claim ID", "Batch File", "Received", "Finding #", "Error Code", "Status"])
             for r in g.itertuples():
                 st = "" if not r.seq else ("SUPERSEDED" if not r.final else ("RE-REVIEWED" if r.rnd == 2 else "FINAL"))
-                ws.append([f"NG-{int(r.claim):07d}", r.file, r.delivered, r.seq or None, r.reason or None, st or "NO FINDING"])
+                ws.append([r.ref, r.file, r.received, r.seq or None, r.reason or None, st or "NO FINDING"])
         elif c == "BMC":
-            _header(ws, ["Report No", "Inbound File", "Delivery Stamp", "Line", "Discrepancy", "Round", "Reviewer Outcome"])
+            _header(ws, ["Report No", "Inbound File", "Receipt Date", "Line", "Discrepancy", "Round", "Reviewer Outcome"])
             for r in g.itertuples():
                 outc = "" if not r.seq else ("Replaced on re-review" if not r.final else ("Re-review" if r.rnd == 2 else "Initial"))
-                ws.append([f"BMC{int(r.claim):08d}", r.file, r.delivered, r.seq or None, r.reason or "CLEAN", r.rnd if r.seq else None, outc or None])
+                ws.append([r.ref, r.file, r.received, r.seq or None, r.reason or "CLEAN", r.rnd if r.seq else None, outc or None])
         else:
-            _header(ws, ["Rx Claim", "Source", "Delivered", "Err Seq", "Err Code", "Rev", "Rev Date"])
+            _header(ws, ["Rx Claim", "Source", "Recd", "Err Seq", "Err Code", "Rev", "Rev Date"])
             for r in g.itertuples():
-                ws.append([f"H{int(r.claim):010d}", r.file, r.delivered, r.seq or None, r.reason or None, r.rnd if r.seq else None, rdate(r) if r.seq else None])
+                ws.append([r.ref, r.file, r.received, r.seq or None, r.reason or None, r.rnd if r.seq else None, rdate(r) if r.seq else None])
         for row in ws.iter_rows(min_row=2):
             for cell in row:
-                if isinstance(cell.value, dt.datetime):
-                    cell.number_format = "yyyy-mm-dd hh:mm:ss"
-                elif isinstance(cell.value, dt.date):
+                if isinstance(cell.value, (dt.datetime, dt.date)):
                     cell.number_format = "yyyy-mm-dd"
         for col in "ABCDEFG":
             ws.column_dimensions[col].width = 22
@@ -469,24 +482,24 @@ def client_audit_files(Fd, D, target):
         ws = wb.active if first else wb.create_sheet()
         first = False
         ws.title = title
-        g = Fd[Fd.client == c].sort_values(["delivered", "claim", "seq", "rnd"])
-        _header(ws, ["Claim", "Stream", "File", "Delivered", "Item", "Reason", "Review", "Current"])
+        g = Fd[Fd.client == c].sort_values(["received", "ref", "seq", "rnd"])
+        _header(ws, ["Claim", "Stream", "File", "Lodged", "Item", "Reason", "Review", "Current"])
         for r in g.itertuples():
-            ws.append([f"{c[0]}{int(r.claim):08d}", W.SID[r.code], r.file, r.delivered, r.seq or None, r.reason or "NIL",
+            ws.append([r.ref, W.SID[r.code], r.file, r.received, r.seq or None, r.reason or "NIL",
                        ("Second review" if r.rnd == 2 else "First review") if r.seq else None, ("Y" if r.final else "N") if r.seq else None])
         for row in ws.iter_rows(min_row=2):
-            row[3].number_format = "dd/mm/yyyy hh:mm"
+            row[3].number_format = "dd/mm/yyyy"
         for col in "ABCDEFGH":
             ws.column_dimensions[col].width = 18
     _xlsx_save(wb, os.path.join(target, FILES["ca_au"]), "Client Services", "2026-10-06T02:10:00Z", "2026-10-20T13:51:00Z")
 
     js = {"export": "partner-quality-findings", "exported_at": "2026-10-19T08:14:22", "partner": "TDS", "records": []}
     for c in ("WPC", "TCM"):
-        g = Fd[Fd.client == c].sort_values(["delivered", "claim", "seq", "rnd"])
-        for (claim, cfile), gg in g.groupby(["claim", "file"], sort=False):
+        g = Fd[Fd.client == c].sort_values(["received", "ref", "seq", "rnd"])
+        for (ref, cfile), gg in g.groupby(["ref", "file"], sort=False):
             r0 = gg.iloc[0]
-            rec = {"insurer": W.CLIENTS[c]["name"], "claim_ref": f"{c}-{int(claim):08d}", "batch": cfile,
-                   "delivered_ts": f"{r0.delivered:%Y-%m-%dT%H:%M:%S}", "findings": []}
+            rec = {"insurer": W.CLIENTS[c]["name"], "claim_ref": ref, "batch": cfile,
+                   "received_on": f"{r0.received:%Y-%m-%d}", "findings": []}
             for r in gg.itertuples():
                 if not r.seq:
                     continue

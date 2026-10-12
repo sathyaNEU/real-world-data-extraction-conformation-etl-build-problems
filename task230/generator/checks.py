@@ -1,4 +1,4 @@
-"""Assertions on the built pack: the ladder by rung and by grid cell, SF1 to SF15, the form 1 separation, the
+"""Assertions on the built pack: the ladder by rung and by grid cell, SF1 to SF16, the form 1 separation, the
 rigorous family, the clean-data and lens-swap tests, the asks and the pair simulation, the input gates and the
 realism sweep. run() returns the results and raises on any failure."""
 import datetime as dt
@@ -91,6 +91,10 @@ def run(target, quiet=True, strict=True):
     ck("grid: six distinct sets", len(set(grid_sets.values())) == 6, sorted(set(grid_sets.values())))
     ck("grid: every cell feasible", all(len(v) < len(W.ORDER) for v in grid_sets.values()), "")
 
+    ck("write-up bands: every rigorous variant puts the five above 1.1 and the six below 0.9 times their limits",
+       all(min(r[c] / L[c] for c in GOLDEN_SET) > 1.1 and max(r[c] / L[c] for c in W.ORDER if c not in GOLDEN_SET) < 0.9
+           for r in list(out["V"].values()) + [R["golden"]]), "")
+
     # ------------------------------------------------------------------ the rigorous family
     for name, r in out["V"].items():
         ck(f"rigorous variant on the answer: {name}", AN.designate(r, L) == GOLDEN_SET, AN.designate(r, L))
@@ -161,32 +165,56 @@ def run(target, quiet=True, strict=True):
     ck("SF13 Hollings & Pryce routed from 1 November", "D6" in set(sc.plan.code) and sc.plan[sc.plan.code == "D6"].kf.sum() > 0, "")
     ck("SF14 verifier-introduced errors dropped: same call", AN.designate(out["T"]["verifier-introduced errors dropped"]["golden"], L) == GOLDEN_SET, "")
     ck("SF15 the divisor is key fields first-pass verified", "per 1,000 key fields first-pass verified" in qcp, "")
+    kfq = sc.plan.groupby("code").kf.sum()
+    qres = {}
+    for q in ("D", "N"):
+        cs = [c for c in W.ORDER if W.STREAMS[c]["nov"] == q]
+        v = sum(kfq[c] * R["golden"][c] for c in cs) / sum(kfq[c] for c in cs)
+        for c in cs:
+            qres[c] = v
+    sf16 = AN.designate(qres, L)
+    ck("SF16 the stream's own documents (4.1), and the queue-wide residual files another set",
+       "the stream's own documents" in qcp and sf16 != GOLDEN_SET, sf16)
+    out["sf16_set"] = sf16
 
     # ------------------------------------------------------------------ asks and the pair simulation
     A = AK.run(target, pk, sc)
-    for ask, stops in (("A", A["A"]), ("B", A["B"]), ("C", A["C"])):
+    for ask, stops in (("A", A["A"]), ("C", A["C"])):
         g = stops["golden"]
         for nm, v in stops.items():
             if nm == "golden":
                 continue
             moved = [c for c in g if v[c] != g[c]]
             ck(f"ask {ask} stop {nm} differs from the golden", len(moved) >= 1, f"{len(moved)} of {len(g)} figures")
-    ck("ask A: the cracker's dedupe misses every stream", all(A["A"]["dedupe"][c] != A["A"]["golden"][c] for c in W.ORDER), "")
-    ck("ask A: summing every line misses every stream", all(A["A"]["sum"][c] != A["A"]["golden"][c] for c in W.ORDER), "")
-    ck("ask B: the cracker misses every stream", all(A["B"]["cracker"][c] != A["B"]["golden"][c] for c in W.ORDER), "")
-    ck("ask C: the cracker's clock misses every stream", all(A["C"]["utc_as_local"][c] != A["C"]["golden"][c] for c in AK.ten_streams()), "")
+    for nm in ("basket", "basket_dedupe", "basket_lines", "dedupe", "lines"):
+        miss = [c for c in W.ORDER if abs(A["A"][nm][c] - A["A"]["golden"][c]) >= 1]
+        ck(f"ask A: stop {nm} misses every stream by an hour or more", len(miss) == len(W.ORDER), f"{len(miss)} of 11")
+    for nm in ("one_doc", "cracker_received"):
+        miss = [c for c in AK.ten_streams() if A["C"][nm][c] != A["C"]["golden"][c]]
+        ck(f"ask C: stop {nm} misses every stream", len(miss) == 10, f"{len(miss)} of 10")
+    miss = [c for c in AK.ten_streams() if A["C"]["received"][c] != A["C"]["golden"][c]]
+    ck("ask C hazard: the received business date read as the delivery date moves every stream", len(miss) == 10, f"{len(miss)} of 10")
     for c in W.ORDER:
         frac = A["A_unrounded"][c] % 1
-        ck(f"ask A {c} clear of the rounding edge", abs(frac - 0.5) > 0.05, round(frac, 3))
-    for c in W.ORDER:
-        frac = A["B_unrounded"][c] % 1
-        ck(f"ask B {c} clear of the rounding edge", abs(frac - 0.5) > 0.02, round(frac, 3))
+        ck(f"ask A {c} clear of the rounding edge", abs(frac - 0.5) > 0.1, round(frac, 3))
     for c in AK.ten_streams():
-        u = A["C_unrounded"][c] * 10 % 1
-        ck(f"ask C {c} clear of the rounding edge", abs(u - 0.5) > 0.1, round(A["C_unrounded"][c], 4))
+        u = A["C_unrounded"][c] * 100 % 1
+        ck(f"ask C {c} clear of the rounding edge", abs(u - 0.5) > 0.05, round(A["C_unrounded"][c], 5))
+    ck("ask A: the basket's family differs from the document's on some line in every family",
+       all(abs(A["rates"][("basket", "all")][f] / A["rates"][("document", "all")][f] - 1) > 0.01 for f in A["rates"][("document", "all")]),
+       {f: round(A["rates"][("basket", "all")][f] / A["rates"][("document", "all")][f] - 1, 4) for f in A["rates"][("document", "all")]})
+    ck("chart: the basket reading names another stream with the most hours", A["cracker_order"][0] != A["order"][0],
+       (A["cracker_order"][0], A["order"][0]))
     ck("pair simulation: every cracker row missed", all(r[2] for r in A["cracker_rows"]), [r for r in A["cracker_rows"] if not r[2]])
     ck("pair ceiling at or under 40", A["pair_ceiling_allowance"] <= 40, A["pair_ceiling_allowance"])
-    ck("chart leader the same at nominal and budget rates", A["order"][0] == A["order_nominal"][0], (A["order"][0], A["order_nominal"][0]))
+    # separation: no ask record sits in the main call's files, and the sessions and claims are the main log's documents
+    ses = pd.read_csv(os.path.join(target, PK.FILES["sessions"]), dtype={"document_id": str})
+    ck("separation: every second-pass document is in the first-pass log", ses.document_id.isin(set(pk.sp.document_id)).all(), "")
+    ix = pd.read_parquet(os.path.join(target, PK.FILES["index"]))
+    q3docs = ix[ix.file_name.str.split("_").str[2].between("20260701", "20260930")]
+    ck("separation: the delivery index's Q3 documents are the first-pass log's documents",
+       q3docs.document_id.isin(set(pk.sp.document_id)).all(), "")
+    ck("separation: one claim per document in the index", not ix.document_id.duplicated().any(), "")
 
     # ------------------------------------------------------------------ input gates and realism
     files = sorted(os.listdir(target))
@@ -195,6 +223,7 @@ def run(target, quiet=True, strict=True):
     ck("input gate: 3 or more formats", len(fmts) >= 3, sorted(fmts))
     ck("input gate: a file of 25,000 rows or more", len(pk.sp) >= 25000, len(pk.sp))
     ck("input gate: two distractors, unread by the solution", len(PK.DISTRACTORS) >= 2 and distractors_unread(), [PK.FILES[d] for d in PK.DISTRACTORS])
+    ck("input gate: no billing register or rate card in the pack", not any(("billing" in f or "rate_card" in f) for f in files), "")
     banned_hits, dash_hits = [], []
     for f in files:
         txt = _text_of(os.path.join(target, f))

@@ -182,3 +182,26 @@ BANDS = {
                 price={"D6": [0.38, 0.29, 0.24]}),
 }
 BUDGET_INR = {"USD": 84.20, "GBP": 111.60, "AUD": 55.40}
+
+# second pass in September as the workflow tool runs it: one work basket per stream on second pass; a session is
+# logged against the basket it opens on, and once that basket runs dry the tool feeds the session from the next
+# basket in its feed order. The day team works the Hollings & Pryce pilot's basket and the night's carry-over.
+SP_BASKET = {"N1": "SP-KBA-INST", "N2": "SP-KBA-PROF", "N3": "SP-NDS-DENT", "N4": "SP-BMC-FROI", "N5": "SP-HPB-UCF",
+             "D6": "SP-HPY-PILOT"}
+SP_FEED = {"N5": "N4", "N4": "N3", "N3": "N2", "N2": "N1", "N1": "N5"}
+SP_DRY = {"N1": 0.10, "N2": 0.24, "N3": 0.32, "N4": 0.14, "N5": 0.26}
+SP_DAY_DRY = 0.80
+SP_CARRY = {"N1": 0.003, "N2": 0.008, "N3": 0.045, "N4": 0.045, "N5": 0.003}
+SP_REWORK = 0.03
+
+# documents per claim: a claim's continuation sheets and attachments are captured as documents of the same claim
+CLAIM_DOCS = {"N1": (0.91, 0.07, 0.02), "N2": (0.86, 0.11, 0.03), "N3": (0.93, 0.06, 0.01), "N4": (0.92, 0.08, 0.00),
+              "N5": (0.89, 0.09, 0.02), "D1": (0.84, 0.13, 0.03), "D2": (0.95, 0.05, 0.00), "D3": (0.77, 0.19, 0.04),
+              "D4": (0.81, 0.17, 0.02), "D5": (0.90, 0.10, 0.00)}
+
+# the clients' claims systems date a receipt by business day: after the cutoff (local time) or on a weekend or
+# public holiday the receipt takes the next business day
+RECEIPT_CUTOFF = {"KBA": (18, 0), "NDS": (17, 0), "BMC": (18, 0), "HPB": (18, 0), "WBH": (18, 0), "CIP": (17, 30),
+                  "WPC": (17, 30), "TCM": (17, 0)}
+RECEIPT_HOLIDAYS = {"US": [dt.date(2026, 7, 3), dt.date(2026, 9, 7)], "UK": [dt.date(2026, 8, 31)],
+                    "AU": [dt.date(2026, 8, 12)]}

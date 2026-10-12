@@ -32,7 +32,8 @@ and registered (see `## Coordination`). The H2 headings from `## Draw` to
   operations works from (stream routing, daily key fields by stream, the verifier roster, the October
   list); both redrawn at registration (see `## Coordination`); scoring unit per accepted item; decision
   type `designation_set`; forum
-  `committee_or_panel` (the service quality council, in the pack, never in the prompt); forcing event
+  `line_manager_or_team` (the head of operations sets the list with the day and night queue managers; renamed
+  from `committee_or_panel` on 2026-10-12 to clear task446, in the pack, never in the prompt); forcing event
   `purchase_order_or_contract` (Hollings & Pryce's contract starts on 1 November); organisation family
   `professional_services`.
 - **World.** Tamralipta Data Services, a business-process outsourcing firm's insurance-claims capture
@@ -179,7 +180,7 @@ on holds by the asserted margins (`## The estimand, the rule and the records`).
 |---|---|---|---|---|---|
 | SF1 | "second-pass verification for November" | a stream is on second pass for the whole month when its forecast exceeds its limit | second pass from a mid-month date (a go-live or a form version) | not a call 4.2 can express | QCP-04 4.2, "for the month" |
 | SF2 | the residual compared with the limit | key fields wrong after first pass, before any second pass | the delivered residual after second pass | streams on second pass in October read as under | QCP-04 4.1, "value after first pass" |
-| SF3 | "forecast" | a first-pass detection model fitted to the closed quarter's records and applied to the plan's November routing, volumes and roster, one method for every stream (4.3) | the third quarter's measured residual carried forward | R0's set | QCP-04 4.1, "every document the November operating plan routes to the stream's queue", and 4.3, "the operating plan of record for the month" |
+| SF3 | "forecast" | a first-pass detection model fitted to the closed quarter's records and applied to the plan's November routing, volumes and roster, one method for every stream (4.3) | the third quarter's measured residual carried forward | R0's set | QCP-04 4.1, "the stream's own documents that the month's operating plan of record routes to a first-pass queue", and 4.3, "the operating plan of record for the month" |
 | SF4 | "exceeds its limit" | strictly greater, unrounded | at or above, or compared after rounding to the limit's precision | same call | same call: no forecast within 0.10 of its limit (asserted) |
 | SF5 | the limit | the client's quality schedule, errors per 1,000 key fields | an accuracy percentage some schedules also print | same call | same call: the schedules print both forms of one number |
 | SF6 | "key field" | the fields each client's quality schedule lists as key | every captured field | not computable: the audit re-keys key fields only | the quality schedules and the audit design |
@@ -189,12 +190,14 @@ on holds by the asserted margins (`## The estimand, the rule and the records`).
 | SF10 | November's shift-days in the forecast | each shift-day's mix from the plan's daily key fields by stream | the month's average mix in each queue | same call | same call (asserted; closure axis 22) |
 | SF11 | the misses a detection fit counts | audited key fields whose first-pass value the blind re-key adjudicates as wrong (4.1) | first-pass corrections from the edit log over every key field, with the audit's misses | same call | same call (asserted) |
 | SF12 | the roster | the plan's November roster | the third quarter's roster | same call | same call (asserted) |
-| SF13 | Hollings & Pryce | one of the eleven streams from 1 November | left out until its volume settles | the answer without D6 | the plan routes it from 1 November; QCP-04 4.1, "every document the plan routes" |
+| SF13 | Hollings & Pryce | one of the eleven streams from 1 November | left out until its volume settles | the answer without D6 | the plan routes it from 1 November; QCP-04 4.1, "the stream's own documents that the month's operating plan of record routes" |
+| SF16 | the documents a stream's residual is taken over (4.1) | the stream's own documents | every document on the stream's queue (one residual per queue, the reading round 1 of architecture 2 took) | on round 1's weighting the six streams KBA-INST, KBA-PROF, NDS-DENT, BMC-FROI, HPB-UCF and HPY-TYPD; on the golden model KBA-INST, KBA-PROF, BMC-FROI, HPB-UCF and HPY-TYPD (queue-wide residuals 3.74 by day and 7.76 by night per 1,000), asserted to differ | QCP-04 4.1, "taken over the stream's own documents" |
 | SF14 | verifier-introduced errors | counted (any value after first pass that differs from the image) | OCR misses only | same call | same call: about 0.1 per 1,000 (asserted) |
 | SF15 | the divisor | key fields first-pass verified | documents | not the limit's unit | QCP-04 4.1, "per 1,000 key fields first-pass verified" |
 
 The stump is none of these readings: R1 executes every golden reading and differs only in the detection
-model. SF10 and SF11 replace the rows on the dropped criterion's wording ("each shift left out",
+model. SF16 closes the reading round 1 of architecture 2 took (4.1's population read as the whole queue's
+documents); 4.1 now names the stream's own documents. SF10 and SF11 replace the rows on the dropped criterion's wording ("each shift left out",
 "closeness") with two conventions the forecast itself depends on.
 
 ## Ladder
@@ -261,10 +264,14 @@ motor claims arrive). Detection on a mixed field: day 0.870 falls to 0.803, nigh
 
 ## The estimand, the rule and the records (QCP-04, written at the build)
 
-- **4.1 Estimand.** For each stream, the first-pass residual key-field error rate for November 2026: key
-  fields first-pass verified on shift-days 1 to 30 November whose value after first pass differs from the
-  image as the blind re-key adjudicates it, per 1,000 key fields first-pass verified, over every document
-  the November operating plan routes to the stream's queue (none observed at the as-of date).
+- **4.1 Estimand.** For each stream, the first-pass residual key-field error rate for the month, taken over
+  the stream's own documents that the month's operating plan of record routes to a first-pass queue: of their
+  key fields first-pass verified on the month's shift-days, those whose value after first pass differs from
+  the image as the blind re-key adjudicates it, per 1,000 key fields first-pass verified (none observed at the
+  as-of date). Round 1 of architecture 2 read the earlier wording ("over every document the plan routes to
+  the stream's queue") as the whole queue's residual; the stream's own documents close it (SF16).
+- **4.4 The list.** The head of operations sets the month's list with the day and night queue managers before
+  the first shift-day (the forum is `line_manager_or_team`; no council is named in the pack).
 - **4.2 Rule.** A stream is on second pass for the month when its forecast exceeds its contract limit
   (errors per 1,000 key fields, in the client's quality schedule); a forecast equal to the limit stays off.
 - **4.3 Records.** Every stream's forecast, a new client's included, is made by the same method, from the
@@ -360,40 +367,62 @@ attribute, which never contains the pool's rate.
 
 ## Ask sheet
 
+Rebuilt 2026-10-12 after round 1 of architecture 2 (the main call held, the asks leaked: 5 of 6 items, 92 per cent of
+ask weight). Every device round 1 executed was a filed rule or visible in its own file; the credit ask is dropped
+(contract arithmetic with nothing silent to carry it). Two asks and a slide remain, each primary a fact in the
+records that no filed sentence names and no habitual check reaches.
+
 | Ask | Use (H18) | Primary device (silent) | Hazards | Span (causal files) |
 |---|---|---|---|---|
-| A. Second-pass hours November would take, every stream (whole hours) | the capacity beside the call; operations staffs the second-pass team from it, for any stream the council signs | D6, an event's quantity repeated on every covered line with the grain unstated: the second-pass workflow export writes one line per document worked in a session and repeats the session's productive minutes on every line; the over-cleaning half is real, since a session crossing the shift handover is split into two lines under one session id, each with its own part's minutes, so a blanket dedupe on session id drops real minutes. Every form family carries both shapes | H3 form versions effective mid-November (key fields per document; the plan gives key fields and second-pass rates run per document) | plan, stream register, form specifications, second-pass session export, workforce register, labour planning note, holiday calendar, pilot report (the pilot's second-pass sessions) |
-| B. Credit at stake if the stream broke its limit in November, every stream (contract currency, whole units) | the exposure beside the call | D2, the version of record is the latest accepted, not the latest delivered: most clients sent a forecast revision after the plan's cut-off; nothing names the accepted one, and only the plan's key fields, read back through each form version's key fields per claim, show which revision the plan used. A stored label taken before a silent switch adds to it: the billing register keeps each account's October volume band, and the account's November volume across its streams moves Kessington, Wattlebird and Hollings & Pryce to another band | H1 units set per source (Harbison forecasts claim lines, Thistlecombe first notifications, Hollings & Pryce bundles); H2 client calendars (US weeks from Sunday, Australian fiscal weeks) cut to November; H5 anniversary indexation part-way through November (Coolabah 9, Whinfell 16, Brightmoor 20) | client forecast files (five or more), rate cards, quality schedules (credit percentage), billing register, stream register, plan, form specifications, Australian fiscal calendar |
-| C. Third-quarter residual as each client's own audit counted it, ten streams (errors per 1,000 key fields, one decimal) | the trail that audits the measure behind the limits; account managers bring it to the council | D8, a clock against a filed cutoff: the quality schedules count claims delivered in the quarter by the client's local date, and the client audit exports stamp delivery in UTC with no zone marker; only the delivery manifests (IST with offsets) show it, so late-June and late-September deliveries move in or out of the quarter on every stream | H4 client reason codes (capture errors beside eligibility, coverage and duplicate-claim rejections); H6 a re-reviewed finding supersedes the first; H3 form versions within the quarter (key fields per audited claim) | client audit exports (four or more, in their own formats), quality schedules (codes, measurement clause), delivery manifests, form specifications, stream register |
+| A. Second-pass hours November would take, every stream (whole hours) | the capacity beside the call: the floor is staffed for whichever streams the head of operations lists | D2/D6, a label stored at the session's start: the September workflow export logs each line against the basket the session opened on, and a session whose basket runs dry is fed from the next basket in the tool's feed order (night baskets feed one another; the day team's pilot basket takes the night's carry-over, mostly handwritten), so the basket is not the document's stream on 4 to 24 per cent of a basket's lines; each document's stream is in the first-pass log by document_id | H1 a document reopened after a client query is worked again in a later session (2.3 per cent of documents: every line's seconds count, each document once); H2 form versions in force mid-November (key fields per document) | sessions export, first-pass log, stream register, labour planning note, plan of record, form specifications |
+| C. Third-quarter residual as each client's own audit counted it, every stream (errors per 1,000 key fields, two decimals; Hollings & Pryce none) | the trail behind the limits: the client's own number for the stream, which the queue managers hold the list against | D6, a ledger at another grain than its name: a sampled claim's key fields are on every document of the claim (continuation sheets and attachments are captured as documents of the same claim, 5 to 23 per cent of claims by stream), and the documents per claim are only in the gateway's delivery index | H3 the clients' exports carry a received business date (after the client's cutoff or on a non-business day the next business day), not the delivery date in the client's zone, which the manifests' transmission time gives; H4 capture codes against decision codes; H5 a re-review replaces the first finding; H2 form versions by shift-day | client audit exports (four files, four layouts), quality schedules, delivery index, delivery manifests, form specifications, stream register |
+| Slide. Every stream's hours, most to fewest, title naming the stream that would take the most | the floor's one view of the capacity | carries ask A: the basket reading lifts the typed family's rate by a quarter (the pilot basket takes the night carry-over), which puts Hollings & Pryce above Wattlebird's extras claims | as A | as A |
 
-**Hazard table.** H1 moves B; H2 moves B; H3 moves A and C; H4 moves C; H5 moves B; H6 moves C. Each
-hazard's per-ask delta and every subset of mishandlings is composed and asserted outside the bin.
+**Stops (measured on the built pack).** Hours, in stream order KBA-INST to HPY-TYPD: golden 985, 882, 771, 348, 589,
+2,035, 3,097, 1,139, 1,731, 2,217, 2,526; basket reading 1,015, 860, 750, 339, 607, 2,097, 3,021, 1,108, 1,689, 2,157,
+3,168 (every stream 9 to 642 hours off); basket reading with the rework deduped 992, 841, 734, 332, 594, 2,050, 2,953,
+1,085, 1,651, 2,113, 3,118; documents right but rework deduped 962, 861, 753, 340, 575, 1,987, 3,023, 1,113, 1,690,
+2,167, 2,461; one form version per stream moves KBA-PROF, WBH-EXTR, WPC-PETC and HPY-TYPD. Client-audited residual,
+KBA-INST to TCM-FNOL: golden 0.14, 0.97, 1.29, 1.45, 0.19, 1.52, 3.89, 5.73, 4.27, 14.53; one document per claim 0.16,
+1.11, 1.39, 1.55, 0.22, 1.80, 4.10, 7.18, 5.25, 16.13; the received date as the delivery date 0.19, 0.88, 1.28, 1.46,
+0.29, 1.55, 3.83, 5.62, 4.33, 14.70; both 0.21, 1.00, 1.38, 1.57, 0.33, 1.85, 4.04, 7.04, 5.33, 16.32; re-reviews
+ignored and every code counted each move every stream. Family rates (minutes per document): golden printed 1.587,
+mixed 2.163, handwritten 3.122, typed 1.238; basket reading 1.635, 2.109, 3.037, 1.553.
 
-**Off path.** Every device row sits in a file the main call never reads (session export, billing register,
-client forecasts, rate cards, client audit exports, delivery manifests, form specifications); the shared
-files (plan, stream register) carry no device row inside the main call's declared population (zero-count
-asserted). **Referee**: the delivery manifests, byte-clean, arbitrate ask C's clock and hand over no level.
-No filed rule adjudicates a primary; no column isolates a primary's rows.
+**Hazard table.** H1 moves A (every stream, 1 to 3 per cent); H2 moves A (KBA-PROF, WBH-EXTR, WPC-PETC, HPY-TYPD) and C
+(NDS-DENT and CIP-IPCL, whose versions changed in the quarter); H3 moves C on every stream (asserted); H4 and H5 move
+C on every stream. Every subset of mishandlings is composed in `asks.run` and lands outside the bin.
 
-**Cracker sheet.** The response that landed the call, ran the hygiene battery, executed every filed rule
-and reconciled every control:
+**Off path.** The session export, the delivery index, the manifests and the client audit exports are files the main
+call never reads; the first-pass log is read by ask A for one join (document to stream) and carries no ask row; the
+plan and the stream register carry no device row (asserted: every second-pass document and every Q3 index document is
+a first-pass log document, one claim per document). **Referee:** the delivery manifests arbitrate H3 and hand over no
+level. No filed sentence adjudicates a primary: the labour note files the method (documents times minutes per
+document by family, each document once) and never says how a line's stream is known; the schedules file the
+measurement (key fields on the claims) and never say how many documents a claim holds. No column isolates a primary's
+rows: the basket column is filled on every line, and the index's sheet column is filled on every document.
+
+**Cracker sheet.** The response that landed the call, ran the hygiene battery (duplicate document lines read as
+rework, each document once), executed every filed rule (versions by shift-day, the quarter by delivery date in the
+client's zone from the manifests, capture codes, re-reviews) and reconciled every control:
 
 | Ask row | What the cracker does | Against the golden | Cracker |
 |---|---|---|---|
-| A, hours for the eleven streams | the battery flags repeated session ids; it dedupes on session id (or, without the battery, sums every line) | dedupe drops the split sessions' second parts and sums inflate multi-document sessions, so every family's rate is off and every stream's hours fall outside the bin | miss |
-| B, credit at stake for the eleven streams | takes each client's latest delivered revision, executes the filed units, calendars and indexation dates, prices at the billing register's band | the revision and the stored band move every stream's November invoice outside the bin | miss |
-| C, client-audited rates for the ten streams | filters capture codes, takes re-reviews, reads the export stamps as the client's local date | boundary deliveries land in the wrong quarter on every stream; every rate is off by more than its decimal | miss |
-| Chart series (hours against credit at stake) | plots its own A and B values | every point off | miss |
-| Chart order (by credit at stake) | orders by its B values | the order differs from the golden's (asserted) | miss |
-| Chart title (the stream carrying the most credit at stake) | names its own leader | names another stream (asserted) | miss |
+| A, hours for the eleven streams | reads each line's basket as the document's stream | every family's rate off by 1.5 to 25 per cent; every stream 9 to 642 hours off | miss |
+| C, client-audited residuals for the ten streams | takes key fields per claim from the claim's form version | every stream's denominator short by its continuation share; every residual off at two decimals | miss |
+| Chart series (hours, most to fewest) | plots its own A values | every bar off | miss |
+| Chart order | orders its own A values | Hollings & Pryce above Wattlebird's extras claims | miss |
+| Chart title | names its own leader | names Hollings & Pryce, not WBH-EXTR | miss |
 
-**Mirror sheet.** The response on R1 files the same ask values as the cracker (every ask is decoupled from
-the call); its sheet differs only in the recommendation criteria.
+**Mirror sheet.** The response on R1 files the same ask values as the cracker (both asks are decoupled from the call);
+its sheet differs only in the recommendation criteria.
 
-Pair ceiling: 34.5 (the one-cracker case, r about 6 for Brightmoor's yes and Wattlebird hospital's no if the rubric grades per stream, ask leakage 0.10 for each top response: (38 + 7 + 5.5 + 6 + 7 + 5.5) / 2; at the ask gate's 0.2 each it is 40.0)
+Mirror leakage: 0 per cent of ask weight on the built pack (every row above misses for the mirror as for the cracker).
 
-**Returned-task revision readiness.** The asks' data lives in ask-only files, so an ask-only revision
-changes no byte the main call reads.
+Pair ceiling: 34.5 (the one-cracker case at the design's 0.10 allowance per top response, r about 6: (38 + 7 + 5.5 + 6 + 7 + 5.5) / 2; 29.0 as measured, every row missed)
+
+**Returned-task revision readiness.** The asks' data lives in ask-only files, so an ask-only revision changes no byte
+the main call reads.
 
 ## The pack (provisional)
 
@@ -486,6 +515,9 @@ tree at the form 1 pass returned the draw's WARN set unchanged and nothing again
   whose pick-face records clear a peak accuracy gate, built from what each record accrues since its own
   last count; here the set is client streams put on a second verification pass from forecast human
   detection.
+- `overuse.shape` (shape 07 in 3 of the last 12) and `overuse.gate_g` (method_or_model_selection in 5 of the last
+  12): both are the batch's spend, not a repeat of a driver; the nearest drivers on file sit at 0.05, and the shape
+  here grades eleven streams by three columns, which no neighbour's grid shares.
 - `test.same_driver_older` (task33, task114): differentiated on the card (task33's forward yield stops at a
   filed intervention recovered from closed actions; task114's demand exists only where two parties share a
   site; here nothing is recovered from closed actions and every record is exact).
@@ -548,6 +580,58 @@ the pack, runs 172 assertions (`checks.py`), writes the goldens, `figures.json` 
   client's volume moving another's accuracy, and none names or scores a method (asserted in `checks.py`).
 - Sweep 9, dates after 28 October in the form specifications, the plan, the stream register and the
   forecasts: November effective dates, shift-days and forecast weeks, which a plan for November carries.
+
+## Rebuild of the ask layer (architecture 2, 2026-10-12)
+
+Resumed from the pause in wave 1 of the author's backlog (no solver round under the current pipeline). The ladder,
+the stump, the decisive step and every main-call figure are unchanged; `freeze.py check --mode rubric` moves only the
+write-up's restatement of the forecast ratios as bands (the five above 1.1 times their limits, the six below 0.9,
+asserted on every rigorous variant), and no deliverable answer outside the asks.
+
+- **Asks**: rebuilt as `## Ask sheet` records (hours on the session baskets and the rework lines; the client-audited
+  residual on the documents per claim and the received business date; the slide on the hours). The credit ask, the
+  billing register and the rate cards are gone; the client forecast files stay as distractors (the labour note takes
+  documents from the plan of record).
+- **Main-call fork closed**: QCP-04 4.1 takes the residual over the stream's own documents (SF16, asserted).
+- **Furniture**: the forum is the head of operations with the queue managers (`line_manager_or_team`; the pack names
+  no council); the organisation family stays under the author's waiver against task445; card re-registered (WARN).
+- **Realism repairs from the reader**: employee and badge numbers by date of joining with irregular gaps; client
+  forecast revisions re-forecast week by week; each client's credit clause in its own words; the labour note's change
+  line removed. The plan's even daily spread is the plan's documented rule ("spread evenly over each client's working
+  days") and stays.
+- **Gates**: checks 172 green, `verify.py` green, two builds byte-identical, `target.zip` sha256
+  c85b4b2fe697dfeddb73389328d693fad9616914a98cee2643fda50e63d49267; `figures_check.py` exit 0; `precut.py` 38 of 38;
+  `voice-check.py` PASS (621 characters); `guard.py surface` exit 0 (task33 and task114 promoted on the card
+  signature, both differentiated on the card); `heart` WARN; the MIS notes name every shipped file.
+- **leak.py** REVIEW, no LEAK, every line harmless: 5.2 in the schedules is KBA-PROF's limit, not the night rate; the
+  vocabulary in QCP-04, the MIS notes, the schedules and the pilot report is the procedure's own (no sentence names
+  the pool's rate or a method); the November dates are the planning month's forward records (plan, form versions,
+  forecasts, the stream register's routing).
+- **Reader, read 1** (medium effort): question 1 none (nearest QCP-04 4.3, which says one method and not which);
+  questions 2 to 4 none; question 5 QCP-04 4.1, the quantity without a method (form 1). Realism tells fixed above.
+- **Judge** (`determinism_check_report.md`): DETERMINISTIC, APPROVE. Gate G forecasting with method selection,
+  analytical_non_defect, no surface read, no sole defect; Gate H domain pass, layers pass, decisive step analytical.
+  It reproduced the call, all eleven hours, the slide's order and title and all ten residuals; its own forecast ratios
+  sit 0.03 to 0.06 from the golden's with the same set, so the write-up states bands. Optional notes taken: the slope's
+  sign and the key fields of documents captured before the quarter (form specifications) are now in the solution.
+
+## Pre-ship check
+
+1. Domain: human reliability assessment's estimate of a verification step's non-detection under the conditions it
+   will run in, where the condition that moves is target prevalence; with an automated validation rule in the
+   verifiers' place nothing shifts and the task stops reading the same.
+2. Real work, nothing planted: sessionising the log, reissued badges, night shift-days, the audit's rounds; on the
+   asks, baskets that feed one another, rework, continuation documents and client business dates, each a record
+   the organisation's systems produce.
+3. The step that flips the call is methodological: detection modelled on the shift-day pool's error rate rather than
+   fixed by attribute.
+4. Analyst test: the default path (attribute models, clean monthly back-test) files N1 to N5 and D5.
+5. QCP-04 4.1 defines the estimand (the stream's own documents, November shift-days, per 1,000 key fields
+   first-pass verified); the design forces the method (form 1) and the judge found no competing answer.
+6. No decoy: the pilot report and the October list are correct records and recommend nothing for November.
+7. Nothing is recovered from certified figures: no file scores or selects a method.
+8. The lesson (a human detector's hit rate moves with the target prevalence of the shared pool it works) is on no
+   other card: nearest drivers 0.05.
 
 ## Architecture 1 (spent at hardening loop 2 of 3, 2026-10-11)
 
@@ -1109,3 +1193,10 @@ inert or close.
 - Architecture 2 build, a leave-one-month-out back-test as the default path's clean check: the group rota moves each verifier between queues month to month, so the attribute models miss single stream-months by up to four binomial standard errors; the in-sample month-by-month check in overdispersed standard errors is what an analyst runs and it is clean.
 - Architecture 2 build, three delivery batches a shift-day with even volumes and untuned client findings: one boundary batch held so few sampled claims that most streams moved by under 0.01 per 1,000 under the UTC reading; the end-of-shift sweep carries 58 per cent of a day and the generator places boundary findings until each stream moves by more than its decimal.
 - Architecture 2 build, a 10 per cent night audit share and a 60 per cent pilot audit: the night slope came out at 0.38 to 0.42 (the noisy measured rate attenuates it) and the typed family rested on about 17 misses, so the within-queue and Hollings & Pryce margins failed; 30 per cent at night and the full pilot re-key instead.
+- Architecture 2 asks as round 1 met them: credit at stake (bands, anniversary indexation, billing units, client calendars, the plan of record) and the client-audited residual (UTC stamps, capture codes, re-reviews, form versions), every device spelled out in the rate card or the schedules' measurement clauses, and second-pass minutes repeated down each session part: round 1 executed all of them (5 of 6 items, 92 per cent of ask weight). The credit ask is dropped (contract arithmetic with nothing silent to carry it); hours and the client-audited residual are rebuilt on devices no filed sentence adjudicates.
+- Second-pass hours on a per-key-field work-content model (time proportional to key fields rather than documents): the per-document and per-field methods are both licensed and diverge, so the ask would need the method filed, and a filed method is executed.
+- Second-pass hours with a learning curve after November's form-version changes: the hours depend on the curve's form, and no record pins it to a whole hour.
+- The client's received business date as the client-audit primary: the exports would name a received date beside the schedules' delivery date, and a careful solver then looks for delivery times; kept as a hazard, with documents per claim as the primary.
+- A credit ask carried by a superseded rate card, an account spanning two clients or claims billed against documents: each needs a filed sentence to be determinate, and a filed sentence is executed.
+- The slide charting hours against the client-audited residual, ordered by the residual: Hollings & Pryce has no client audit before 2027, so its place in the order would be a fork; the slide charts the hours, most to fewest.
+- The card's pattern relabelled E first (detection conditioned on the pool's rate): it meets task445's loop-2 card on gap time, pattern E and Gate G (guard BLOCK test.same_driver_older and test.same_puzzle_older), so the card keeps pattern A.

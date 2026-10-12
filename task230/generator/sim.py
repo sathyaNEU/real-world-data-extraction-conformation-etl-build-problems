@@ -115,7 +115,27 @@ def workforce(rng):
                             group="O", skill=float(rng.normal(0, W.TRUTH["skill_sd"]))))
     P = pd.DataFrame(persons)
     P["pid"] = np.arange(len(P))
+    # HRMS numbers: employee numbers by date of joining, badges by issue date, both with the gaps a real
+    # register carries (numbers taken by other centres and by people who never started)
+    order = sorted(range(len(P)), key=lambda i: (P.hire[i], i))
+    emp = _seq(40388, len(P), 9, 71, 1)
+    new_badge = [i for i in order if (P.badge == P.badge[i]).sum() == 1 or P.hire[i] == P[P.badge == P.badge[i]].hire.min()]
+    bno = dict(zip([P.badge[i] for i in new_badge], _seq(2716, len(new_badge), 2, 19, 2)))
+    P["emp"] = [None] * len(P)
+    for r, i in enumerate(order):
+        P.at[i, "emp"] = f"E{emp[r]}"
+    P["badge"] = [f"V{bno[b]:04d}" for b in P.badge]
     return P
+
+
+def _seq(start, n, lo, hi, salt):
+    """n increasing numbers from start with irregular gaps between lo and hi"""
+    import hashlib
+    out, v = [], start
+    for i in range(n):
+        out.append(v)
+        v += lo + int(hashlib.md5(f"{salt}-{i}".encode()).hexdigest(), 16) % (hi - lo + 1)
+    return out
 
 
 ROTATION = {7: {"A": "D", "B": "D", "C": "N"}, 8: {"A": "D", "B": "N", "C": "D"}, 9: {"A": "N", "B": "D", "C": "D"}}

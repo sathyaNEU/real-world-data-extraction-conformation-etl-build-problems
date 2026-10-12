@@ -185,7 +185,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 183 | SHIPPED, delivered 10-12, pending review | ENR distribution reliability | AD | time population | none | repeat failures concentrate in parts already failed twice | - | - | Quarry Hill 21 | none reported | oviya13ya |
 | 228 (v2) | FAILED_TO_STUMP: backlog perssathya | PES soil moisture | DQ | objective | none | shared input breaks triple collocation | - | - | 8 stations | none reported | perssathya |
 | 229 (v2) | FAILED_TO_STUMP: backlog perssathya | GSD missing data | DQ | time population | none | checks record a state before fixing it | - | - | six sites | none reported | perssathya |
-| 230 (v2) | FAILED_TO_STUMP: backlog perssathya | HFE reliability | DQ | time population | A | hit rate falls as targets get rarer | - | - | five streams | none reported | perssathya |
+| 230 (v2) | SHIPPED, delivered 10-12, pending review | HFE reliability | DQ | time population | A | hit rate falls as targets get rarer | - | - | five streams | none reported | perssathya |
 | 253 | SHIPPED, delivered 10-12, pending review | EDU student growth | DESC | population | G11, G17 | a count of schools past a floor is the sum of their probabilities, not a count of shrunken predictions (28 against 42) | - | - | 42 places | none reported | sathay3012 |
 | 254 | FAILED_TO_STUMP: backlog sathay3012 | SCL aviation crews | DESC | - | - | - | - | - | - | none reported | sathay3012 |
 | 445 | SHIPPED, delivered 10-12, pending review | QF 13F ownership | ETL | time population | E | an index sponsor's slice moves with each name's own share count | - | - | 5 of 12 crowded | loop 0 r1 10-11: 52, determinism fail; loop 2 shipped 10-12 | oviya1301 |

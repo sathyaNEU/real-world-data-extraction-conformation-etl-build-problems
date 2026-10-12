@@ -38,7 +38,7 @@ SOURCES = {
     "qcp": "Controlled procedure QCP-04 First-pass quality control, version 5.0",
     "schedules": "Client quality schedules extract, 2026",
     "pilot": "Hollings & Pryce pilot report, 6 October 2026",
-    "sessions": "Second-pass workflow session export, September 2026",
+    "sessions": "Second-pass workflow export, September 2026",
     "labour": "Second-pass labour planning note, revised 19 October 2026",
     "forms": "Form specifications: versions and key fields",
     "fc_kba": "Kessington Benefit Administrators volume forecast revisions for November 2026",
@@ -46,13 +46,12 @@ SOURCES = {
     "fc_au": "Wattlebird Health and Coolabah volume forecast revisions, FY27 weeks, with the FY27 calendar",
     "fc_uk": "Whinfell Pet Cover and Thistlecombe Motor volume forecast revisions",
     "fc_hpy": "Hollings & Pryce volume forecast revisions in bundles",
-    "billing": "Billing register, accounts and bands as at October 2026",
-    "rates": "Client rate cards, 2026",
     "ca_kba": "Kessington client audit findings, Q3 2026 deliveries",
     "ca_us": "Northgate, Brightmoor and Harbison client audit returns, Q3 2026",
     "ca_au": "Wattlebird and Coolabah client audit returns, Q3 2026",
     "ca_uk": "Whinfell and Thistlecombe partner portal audit export, Q3 2026",
     "manifests": "SFTP gateway delivery manifests, 25 June to 3 October 2026",
+    "index": "SFTP gateway delivery index, one row per document delivered, 25 June to 3 October 2026",
     "ocr": "OCR engine confidence summary by stream, field and month, Q3 2026",
     "keys": "Desktop agent keystroke telemetry by badge and login date, Q3 2026",
     "notes": "MIS extract notes: data dictionary and provenance",
@@ -72,8 +71,7 @@ def answers(out):
     A = out["asks"]
     L = out["limits"]
     call = AN.designate(out["R"]["golden"], L)
-    return dict(call=call, limits=L, hours=A["A"]["golden"], credit=A["B"]["golden"],
-                client_audit=A["C"]["golden"], credit_inr=A["inr"], chart_order=A["order"])
+    return dict(call=call, limits=L, hours=A["A"]["golden"], client_audit=A["C"]["golden"], chart_order=A["order"])
 
 
 def figures(out, ans):
@@ -92,15 +90,16 @@ def figures(out, ans):
         "call": [W.SID[c] for c in ans["call"]],
         "q3_rate_pct": {q: f"{100 * v:.1f}" for q, v in q3q.items()},
         "nov_rate_pct": {q: f"{100 * v:.1f}" for q, v in nov.items()},
-        "slope": f"{abs(out['slope'][0]):.2f}",
+        "slope": f"{out['slope'][0]:.2f}",
+        "ratio_over": "1.1",
+        "ratio_under": "0.9",
         "ratio_golden": {W.SID[c]: f"{R['golden'][c] / L[c]:.2f}" for c in W.ORDER},
         "ratio_default": {W.SID[c]: f"{R['R1'][c] / L[c]:.2f}" for c in W.ORDER},
         "forecast": {W.SID[c]: f"{R['golden'][c]:.1f}" for c in W.ORDER},
         "limit": {W.SID[c]: (f"{L[c]:.2f}" if c == "D6" else f"{L[c]:.1f}") for c in W.ORDER},
         "hours": {W.SID[c]: f"{ans['hours'][c]:,}" for c in W.ORDER},
-        "credit": {W.SID[c]: f"{W.CLIENTS[W.STREAMS[c]['client']]['ccy']} {ans['credit'][c]:,}" for c in W.ORDER},
-        "client_audit": {W.SID[c]: f"{v:.1f}" for c, v in ans["client_audit"].items()},
-        "rates": {k: f"{v:.2f}" for k, v in out["asks"]["rates"]["golden"].items()},
+        "client_audit": {W.SID[c]: f"{v:.2f}" for c, v in ans["client_audit"].items()},
+        "rates": {k: f"{v:.3f}" for k, v in out["asks"]["rates"][("document", "all")].items()},
         "leader": W.SID[ans["chart_order"][0]],
         "chart_order": [W.SID[c] for c in ans["chart_order"]],
         "heldout_ratio": f"{min(v for k, v in out['heldout'].items() if k != 'golden') / out['heldout']['golden']:.2f}",
@@ -125,8 +124,8 @@ def metadata(target):
         "domain": "Human Factors & Ergonomics",
         "subdomain": "human reliability assessment (first-pass human verification of OCR-captured key fields)",
         "objective": "Data Quality Monitoring & Alerting",
-        "prompt_shape": "07 (grid of cells): eleven client streams by the second-pass call, second-pass hours, credit at stake "
-                        "and the client-audited third-quarter residual, plus a chart",
+        "prompt_shape": "07 (grid of cells): eleven client streams by the second-pass call, second-pass hours and the "
+                        "client-audited third-quarter residual, plus a chart of the hours",
         "as_of": "2026-10-28",
         "deliverables": [G.WORKBOOK, G.SLIDE],
         "distractor_files": [PK.FILES[k] for k in PK.DISTRACTORS],

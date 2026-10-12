@@ -68,7 +68,7 @@ def qcp04(target):
     def build(d):
         d.add_heading("QCP-04 First-pass quality control", level=1)
         d.add_paragraph("Tamralipta Data Services, Salt Lake Sector V capture centre. Controlled procedure, version 5.0, "
-                        "effective 1 July 2026. Owner: Head of Operations. Approver: service quality council.")
+                        "effective 1 July 2026. Owner: Head of Operations. Approver: Centre Director.")
         d.add_heading("1 Purpose", level=2)
         d.add_paragraph("This procedure sets how the centre measures the accuracy of key fields after first-pass "
                         "verification and decides, month by month, which client streams also go through second-pass verification.")
@@ -84,15 +84,15 @@ def qcp04(target):
         ]:
             d.add_paragraph(t, style="List Bullet")
         d.add_heading("4 Second-pass verification", level=2)
-        d.add_paragraph("4.1 Estimand. For each stream, the first-pass residual key-field error rate for the month: key fields "
-                        "first-pass verified on the month's shift-days whose value after first pass differs from the image as the "
-                        "blind re-key adjudicates it, per 1,000 key fields first-pass verified, over every document the month's "
-                        "operating plan of record routes to the stream's queue.")
+        d.add_paragraph("4.1 Estimand. For each stream, the first-pass residual key-field error rate for the month, taken over "
+                        "the stream's own documents that the month's operating plan of record routes to a first-pass queue: of "
+                        "their key fields first-pass verified on the month's shift-days, those whose value after first pass differs "
+                        "from the image as the blind re-key adjudicates it, per 1,000 key fields first-pass verified.")
         d.add_paragraph("4.2 Rule. A stream is on second-pass verification for the month when its forecast exceeds its contract "
                         "limit (errors per 1,000 key fields, in the client's quality schedule). A forecast equal to the limit stays off.")
         d.add_paragraph("4.3 Records. Every stream's forecast, a new client's included, is made by the same method, from the last "
                         "closed quarter's first-pass log and blind re-key audit and from the operating plan of record for the month.")
-        d.add_paragraph("4.4 The head of operations proposes the list for the month; the service quality council signs it before "
+        d.add_paragraph("4.4 The head of operations sets the list for the month with the day and night queue managers before "
                         "the first shift-day of the month.")
         d.add_heading("5 Blind re-key audit", level=2)
         d.add_paragraph("A random share of each stream's documents on every shift is re-keyed blind by two keyers who do not see "
@@ -108,7 +108,7 @@ def qcp04(target):
         for c, h in zip(t.rows[0].cells, ["Version", "Date", "Change"]):
             c.text = h
         for v in [("4.0", "02 Jan 2025", "Night queue added to scope"), ("4.1", "14 Apr 2025", "Shift-day definition"),
-                  ("5.0", "24 Jun 2026", "Section 4 restated; council sign-off moved to 4.4")]:
+                  ("5.0", "24 Jun 2026", "Section 4 restated; the monthly list moved to 4.4")]:
             row = t.add_row().cells
             for c, x in zip(row, v):
                 c.text = x
@@ -118,6 +118,57 @@ def qcp04(target):
 # ----------------------------------------------------------------------------------------------- quality schedules
 CAPTURE_TEXT = {"KBA": "D01, D02 and D04", "NDS": "KE and KT", "BMC": "DE-1 and DE-2", "HPB": "E10 and E11",
                 "WBH": "CAPT and KEY", "CIP": "C1", "WPC": "DATA and TRANS", "TCM": "01 and 02", "HPY": "QA-C"}
+
+
+MEASUREMENT = {
+    "KBA": "Measurement. Kessington audits a random sample of the claims Tamralipta delivers. A quarter's residual is the "
+           "number of capture-error findings on sampled claims delivered in the quarter, per 1,000 key fields on those claims; "
+           "the quarter runs by delivery date in US Eastern time. Capture errors are findings coded D01, D02 or D04; other "
+           "codes record a claim decision. Where Kessington re-reviews a finding, the re-review stands in place of the first review.",
+    "NDS": "Measurement. Northgate samples delivered claims at random each week. The quarterly residual counts findings coded "
+           "KE or KT (keying and transcription) on sampled claims delivered during the quarter, divided by the key fields on "
+           "those claims and multiplied by 1,000. Delivery dates are taken in US Central time. A finding marked re-reviewed "
+           "replaces the earlier finding on the same item.",
+    "BMC": "Measurement. Brightmoor's claims QA samples first reports as they are delivered. Residual: discrepancies DE-1 and "
+           "DE-2 on sampled reports delivered in the quarter (US Eastern time), per 1,000 key fields on those reports. Other "
+           "discrepancy codes are adjudication decisions. The outcome of a re-review replaces the initial outcome.",
+    "HPB": "Measurement. Harbison audits a random sample of delivered pharmacy claims. Quarterly residual: error codes E10 and "
+           "E11 on sampled claims delivered in the quarter, by delivery date in US Central time, per 1,000 key fields on the "
+           "sampled claims. Codes E40 and above are benefit decisions. A revised finding replaces the original.",
+    "WBH": "Measurement. Wattlebird's QA team audits a random sample of delivered claims for both streams. The quarter's residual "
+           "is the CAPT and KEY findings on sampled claims delivered in the quarter, per 1,000 key fields on those claims, with "
+           "the delivery date taken in AEST (Brisbane). ELIG, COVR and DUPL findings are benefit decisions. Second-review "
+           "outcomes replace first-review outcomes.",
+    "CIP": "Measurement. Coolabah samples delivered claims for audit each month. Residual for a quarter: C1 findings on sampled "
+           "claims delivered in the quarter (Sydney time), per 1,000 key fields on those claims. Other reason codes relate to "
+           "the claim decision. A second review replaces the first.",
+    "WPC": "Measurement. Whinfell records its audit of a random sample of delivered claims on its partner portal. The quarter's "
+           "residual is the DATA and TRANS findings on sampled claims delivered in the quarter, by UK delivery date, per 1,000 "
+           "key fields on those claims. Other codes are cover decisions. The active review of a finding is the one that counts.",
+    "TCM": "Measurement. Thistlecombe audits a random sample of delivered first notifications on the same portal. Residual: "
+           "findings 01 and 02 on sampled notifications delivered in the quarter (UK time), per 1,000 key fields on them. "
+           "Codes 11 and above are claim handling decisions. The active review counts.",
+    "HPY": "Measurement. Hollings & Pryce does not audit delivered documents before 1 January 2027, when its quarterly sample "
+           "audit starts. Until then the supplier's own blind re-key audit measures the residual against the limit.",
+}
+
+
+CREDIT_TEXT = {
+    "KBA": "Service credit: due for any calendar month in which the residual exceeds the stream's limit, compared unrounded.",
+    "NDS": "Where the month's residual is above the limit (no rounding is applied before the comparison), the credit above is "
+           "deducted from the next invoice.",
+    "BMC": "Credit applies to the invoice for the month in which the residual exceeds the limit; residuals are compared to "
+           "the limit at full precision.",
+    "HPB": "A month above the limit carries the credit shown. The comparison uses the unrounded residual.",
+    "WBH": "The credit is calculated per stream for each month in which that stream's residual exceeds its limit, the residual "
+           "taken unrounded.",
+    "CIP": "Monthly service credit where the residual exceeds the limit (unrounded comparison).",
+    "WPC": "If the residual for a month exceeds the limit, the credit shown applies to that month's invoice; the residual is "
+           "not rounded for the test.",
+    "TCM": "Credit due for each month the residual exceeds the limit, tested on the unrounded residual.",
+    "HPY": "From go-live, a credit is due for a month in which the residual exceeds the limit. The limit is stated to two "
+           "decimals and compared with the unrounded residual.",
+}
 
 
 def quality_schedules(target, limits):
@@ -136,18 +187,9 @@ def quality_schedules(target, limits):
             rows.append([W.SID[k], f"{lim:.{dp}f}", f"{100 - lim / 10:.{dp + 1}f}%", f"{W.CREDIT_PCT[k]:g}% of the stream's monthly invoice"])
         story.append(_table(rows, [30 * mm, 50 * mm, 22 * mm, 70 * mm]))
         story.append(Spacer(1, 3 * mm))
-        if c == "HPY":
-            meas = ("Measurement: from 1 January 2027 the client audits a random sample of delivered documents each quarter. "
-                    "Until then the supplier's own blind re-key audit is the measure.")
-        else:
-            meas = (f"Measurement: the client audits a random sample of delivered claims. The residual for a quarter is the "
-                    f"capture-error findings on the sampled claims delivered in the quarter, per 1,000 key fields on those claims, "
-                    f"the quarter and the delivery date taken in {cl['tzlabel']} time. Findings coded {CAPTURE_TEXT[c]} are capture "
-                    f"errors; every other code is a business decision on the claim. Where a finding is re-reviewed, the re-review "
-                    f"replaces the original finding. Key fields per claim follow the form version the claim was captured on.")
+        meas = MEASUREMENT[c]
         story.append(Paragraph(meas, S["body"]))
-        story.append(Paragraph("A service credit is due for a month in which the residual exceeds the limit. The limit is "
-                               "compared with the unrounded residual.", S["body"]))
+        story.append(Paragraph(CREDIT_TEXT[c], S["body"]))
     p = os.path.join(target, pack.FILES["schedules"])
     _pdf(p, story, "Client quality schedules 2026", "Commercial", "Tamralipta Data Services | Commercial | quality schedules extract")
     postprocess.scrub(p, "Commercial", "2026-07-02")
@@ -192,7 +234,7 @@ def indexed_price(base, pct):
 def pilot_report(target, P):
     def build(d):
         d.add_heading("Hollings & Pryce typed claims: pilot report", level=1)
-        d.add_paragraph(f"Prepared by {W.PEOPLE['quality']}, Quality, for the service quality council. 6 October 2026.")
+        d.add_paragraph(f"Prepared by {W.PEOPLE['quality']}, Quality, for the head of operations. 6 October 2026.")
         d.add_heading("Pilot", level=2)
         d.add_paragraph(f"Hollings & Pryce sent typed claim documents for first-pass capture on the day queue from "
                         f"{W.PILOT[0]:%d %B} to {W.PILOT[1]:%d %B} 2026, six days a week including Saturdays and the "
@@ -223,17 +265,22 @@ def pilot_report(target, P):
 def labour_note(target):
     def build(d):
         d.add_heading("Second-pass verification: labour planning", level=1)
-        d.add_paragraph(f"{W.PEOPLE['mis']}, MIS and workforce planning. Revised 19 October 2026.")
-        d.add_paragraph("Second-pass verification re-verifies every key field of every document in a stream that the council "
-                        "puts on second pass for the month. We plan the hours a stream would take in a month as its documents "
-                        "for the month times the minutes per document for its form family.")
-        d.add_paragraph("Documents for the month come from the operating plan's daily key fields, divided by the key fields "
-                        "per document of the form version in force on each shift-day (form specifications).")
-        d.add_paragraph("Minutes per document for a form family are the productive minutes logged in the latest month's "
-                        "second-pass session export, divided by the documents worked in it, across every stream of that "
-                        "family. Typed forms take the Hollings & Pryce pilot's sessions in the same export. Productive minutes "
-                        "come from the workflow timer and exclude breaks, huddles and system downtime.")
-        d.add_paragraph("Staffing is then set from the hours at 6.5 productive hours a person-shift, outside this note.")
+        d.add_paragraph(f"{W.PEOPLE['mis']}, MIS and workforce planning. Revised 19 October 2026 for the November plan.")
+        d.add_paragraph("Second pass re-verifies every key field of every document of a stream the head of operations puts on second "
+                        "pass for the month. This note sets how MIS plans the hours, so that the second-pass floor can be "
+                        "staffed before the list is set.")
+        for t in [
+            "Hours for a stream are its documents for the month times the minutes per document for its form family. They are "
+            "productive hours.",
+            "Documents for the month are the operating plan of record's daily key fields for the stream, divided by the key "
+            "fields per document of the form version in force on each shift-day (form specifications).",
+            "Minutes per document for a form family are the handling time logged in the latest month's second-pass session "
+            "export on documents of the family's streams, divided by the number of those documents. Typed forms have only "
+            "the Hollings & Pryce pilot's documents. The workflow timer runs while a document is open and stops for breaks, "
+            "huddles and system downtime.",
+            "Staffing is set from the hours at 6.5 productive hours a person-shift, outside this note.",
+        ]:
+            d.add_paragraph(t, style="List Number")
     _docx(os.path.join(target, pack.FILES["labour"]), build, W.PEOPLE["mis"], "2025-05-12T09:00:00Z", "2026-10-19T07:42:00Z")
 
 
@@ -284,6 +331,21 @@ document adjudicated. One row per key field of an audited document. {counts['aud
 
 rekey_rounds is 2 when the two blind keyers agreed and 3 when a third keyer adjudicated.
 
+## {F['sessions']}
+
+Second-pass workflow, September 2026 (work dates 1 to 30 September), including the Hollings & Pryce pilot's second pass.
+One row per document opened in a second-pass session. {counts['sessions']:,} rows.
+
+| Column | Meaning |
+|---|---|
+| session_ref | workflow session |
+| work_date | shift-day the session worked |
+| sp_badge | second-pass verifier |
+| basket | second-pass work basket |
+| document_id | capture number of the document |
+| doc_opened | document opened, IST |
+| handling_sec | seconds the document was open on the workflow timer |
+
 ## Other files
 
 - workforce_register.xlsx: employees, badge allocation with validity dates, and the Q3 queue rota (HRMS export).
@@ -291,13 +353,12 @@ rekey_rounds is 2 when the two blind keyers agreed and 3 when a third keyer adju
 - november_operating_plan.xlsx: the plan of record for November (routing, daily key fields by stream, roster), with the
   October second-pass list and budget exchange rates.
 - {F['forms']}: form versions with effective shift-days, key fields per document and the key field list.
-- {F['sessions']}: second-pass workflow export for September 2026. One row per document worked in a second-pass
-  session; productive_min is the workflow timer's productive minutes. Night half-shifts N-A and N-B hand over at
-  01:00 IST, day half-shifts D-A and D-B at 12:30 IST.
-- {F['manifests']}: delivery transmissions to clients from 25 June to 3 October 2026, from the SFTP gateway log.
+- {F['manifests']}: delivery transmissions to clients from 25 June to 3 October 2026, from the SFTP gateway log, one row
+  per file. transmitted_at carries its offset.
+- {F['index']}: the gateway's index of the same files, one row per document delivered: the file, the client's claim
+  reference, the capture number (document_id) and the sheet.
 - {F['qcp']}: the controlled procedure for first-pass quality control and second-pass designation.
-- {F['schedules']} and {F['rates']}: extracts of the client contracts (limits, credits, client audit measurement, prices,
-  bands, indexation). {F['billing']}: Finance's account register as at the October invoice run.
+- {F['schedules']}: extract of the client contracts (limits, credits, client audit measurement).
 - {F['pilot']} and {F['labour']}: Quality's pilot report and the MIS labour planning note.
 - Client forecasts ({F['fc_kba']}, {F['fc_us']}, {F['fc_au']}, {F['fc_uk']}, {F['fc_hpy']}) and client audit returns
   ({F['ca_kba']}, {F['ca_us']}, {F['ca_au']}, {F['ca_uk']}) are filed as the clients sent them (Client Services inbox).
