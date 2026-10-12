@@ -1,0 +1,184 @@
+{
+  "task": "task130",
+  "title": "The 2027 contribution to Corvane Health's new claims-made professional liability trust",
+  "domain": "Actuarial Science & Insurance",
+  "subdomain": "pricing-ratemaking-credibility (first-year funding of a self-insured claims-made professional liability trust at an Oregon health system)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "other: the contribution with the expected number and cost of claims for each of four entities and seven specialty classes, the emergence chart by month, and two reconciliation asks",
+  "as_of": "2026-10-12",
+  "deliverables": [
+    "trust_funding_2027.xlsx",
+    "trustees_paper_2027.pptx"
+  ],
+  "distractor_files": [
+    "patient_safety_events_2019-01_2026-09.csv",
+    "insurance_premium_history_2017-2026.xlsx"
+  ],
+  "input_gates": {
+    "files": 16,
+    "formats": [
+      "csv",
+      "md",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "clinician_fte_by_month_2016-01_2025-12.csv",
+    "largest_file_rows": 114499
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task130/generator/build.py (seeded, deterministic) around a fictional Oregon health system (Corvane Health), its hospitals, medical group, trust, carriers and people; no real organisation, person, patient or claim is depicted.",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-12",
+  "generator": "task130/generator/build.py",
+  "files": [
+    {
+      "path": "CPLT_funding_policy_adopted_2026-09-22.pdf",
+      "format": "pdf",
+      "bytes": 65107,
+      "rows": null,
+      "source": "Constructed: Trust funding policy as adopted by the Trustees",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "CPLT_trust_agreement_executed_2026-08-14.pdf",
+      "format": "pdf",
+      "bytes": 109205,
+      "rows": null,
+      "source": "Constructed: Corvane Professional Liability Trust Agreement as executed (extract: definitions, coverage, claims administration, Schedules A and B)",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "QMPL_loss_run_Corvane_val_2026-06-30_rev1.xlsx",
+      "format": "xlsx",
+      "bytes": 43647,
+      "rows": null,
+      "source": "Constructed: Quillan Mutual loss run valued 30 June 2026, revision 1 issued 9 October 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "QMPL_loss_run_Corvane_val_2026-09-30.xlsx",
+      "format": "xlsx",
+      "bytes": 44635,
+      "rows": null,
+      "source": "Constructed: Quillan Mutual loss run for Tolliver Falls Hospital and Alderwick Medical Center, valued 30 September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "Stoneleigh_lossrun_CORVANE_20260930.csv",
+      "format": "csv",
+      "bytes": 72449,
+      "rows": 471,
+      "source": "Constructed: Stoneleigh Casualty loss run for Corvane Medical Group and Brennick Community Hospital, valued 30 September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "clinician_fte_by_month_2016-01_2025-12.csv",
+      "format": "csv",
+      "bytes": 7500797,
+      "rows": 114499,
+      "source": "Constructed: Legacy payroll history: paid FTE by employee, month and cost centre for employed clinicians, residents, fellows and psychologists, January 2016 to December 2025",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "clinician_staffing_plan_2027.xlsx",
+      "format": "xlsx",
+      "bytes": 9053,
+      "rows": null,
+      "source": "Constructed: 2027 staffing plan: covered clinician FTE by entity, specialty class and month",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cost_centre_directory_2026.csv",
+      "format": "csv",
+      "bytes": 4360,
+      "rows": 54,
+      "source": "Constructed: General ledger cost centre directory: company, entity and department",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "data_dictionary_rm_extracts.md",
+      "format": "md",
+      "bytes": 4913,
+      "rows": null,
+      "source": "Constructed: Data dictionary for the risk management extracts",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_log_2026-10.csv",
+      "format": "csv",
+      "bytes": 2325,
+      "rows": 15,
+      "source": "Constructed: Extract log: each file's system, date, row count and preparer",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hcm_clinician_pay_lines_2026-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 1700674,
+      "rows": 15665,
+      "source": "Constructed: HCM pay lines for clinicians, one row per worker, position, work month and earning code, January to September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hcm_job_profile_crosswalk.csv",
+      "format": "csv",
+      "bytes": 2811,
+      "rows": 33,
+      "source": "Constructed: HCM job profiles mapped to the legacy job codes they replaced",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "insurance_premium_history_2017-2026.xlsx",
+      "format": "xlsx",
+      "bytes": 8626,
+      "rows": null,
+      "source": "Constructed: Clinician professional liability premium history by entity and policy year, 2017 to 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "patient_safety_events_2019-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 2504077,
+      "rows": 34864,
+      "source": "Constructed: Patient safety event reports, January 2019 to September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rm_carrier_notices_2012_2026.csv",
+      "format": "csv",
+      "bytes": 76990,
+      "rows": 666,
+      "source": "Constructed: Precautionary notices risk management sent to the carriers, 2012 to September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rm_claims_register_extract_20261002.csv",
+      "format": "csv",
+      "bytes": 115400,
+      "rows": 618,
+      "source": "Constructed: Risk management claims register extract: every clinician named on a claim number, valued 30 September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

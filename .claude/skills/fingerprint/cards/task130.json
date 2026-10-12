@@ -7,11 +7,11 @@
   "subdomain": "pricing-ratemaking-credibility",
   "niche": "first-year funding of a health system's new self-insured professional liability trust that each hospital and the employed medical group joins, claims-made, on the day its commercial occurrence policy expires",
   "objective": "forecasting",
-  "shape": "02",
+  "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Corvane Health should put $784,000 into the Corvane Professional Liability Trust for 2027, the expected cost of the 11.5 claims expected to be first made against it that year (Tolliver Falls Hospital $227,000, Alderwick Medical Center $336,000, Corvane Medical Group $214,000, Brennick Community Hospital $7,000).",
+  "answer_source": "task130/submission.md block 1; golden/trust_funding_2027.xlsx (Contribution); generator/figures.json",
   "gap": [
     "time",
     "population"
@@ -34,10 +34,10 @@
   "role_family": "compliance_or_audit",
   "scoring_unit": "per resolved case",
   "spine": {
-    "file": "clinician_fte_by_month_2016-01_2026-09.csv",
-    "rows": 0,
-    "entity": "one employed or contracted clinician's paid full-time equivalent in one month, with the entity, cost centre and specialty payroll held for that month",
-    "grain": "clinician x month",
+    "file": "clinician_fte_by_month_2016-01_2025-12.csv",
+    "rows": 114499,
+    "entity": "one employee's paid full-time equivalent in one month on one cost centre, with the job code, entity and status payroll held that month (employed clinicians, residents, fellows and psychologists)",
+    "grain": "employee x month x cost centre",
     "source": "synthetic"
   },
   "forum": "trustees_or_governors",
@@ -68,8 +68,8 @@
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "A cover that pays only for events that both occur and are first reported inside its own window is costed from a full period's cost per unit of exposure, when inside a short window only the events reported soon after they occur can count and here those are the cheap ones; the expected cost is the exposure at each point of the window times the cost of past events reported within the time then left, which neither a full period's cost, its prorated share nor the share of events reported within a year at the average cost gives.",
-  "driver_concrete": "Each hospital and the employed medical group joins the new trust, claims-made, on the day its commercial occurrence policy expires, so the trust's 2027 cost is the claims first made by 31 December 2027 from incidents after each entity's transition; the system's early-resolution programme turns most claims into quick, small settlements while the lawsuits that carry most of the money are made years after the incident, so the expected cost is each month's covered clinician exposure times the trended cost of the system's past claims made within the months then left in 2027, not a mature year's cost per FTE prorated to each entity's months.",
-  "stump": "A competent solver collapses the claims system's defendant rows to one claim per incident, values and trends every claim, takes the system's annual claims cost per clinician FTE by specialty, prorates it to each entity's months in the trust and funds several times the golden; the step that lands it there is costing the trust's opening months as a mature year, when only claims made before 31 December 2027 from incidents after each transition count, and those are the system's quick, cheap early-resolution claims.",
+  "driver_concrete": "Each hospital and the employed medical group joins the new trust, claims-made, on the day its commercial occurrence policy expires, so the trust's 2027 cost is the claims first made by 31 December 2027 from incidents after each entity's transition; the system's early-resolution programme turns most claims into quick, small settlements while the lawsuits that carry most of the money are made a year or more after the incident, so the expected cost is each day's covered clinician exposure times the trended cost of the system's past claims made within the days then left in 2027, not a year's cost per FTE-year applied to each entity's FTE-years in the trust.",
+  "stump": "A competent solver collapses the register's defendant rows to one claim per incident, values and trends every claim from 2017, takes the system's annual claims cost per clinician FTE-year by specialty class, applies it to each entity's FTE-years in the trust and files a contribution of $4,854,000; the step that lands it there is costing the trust's opening months as a mature year, when only the claims made by 31 December 2027 from incidents after each entity's transition count, and those are mostly the quick, cheap requests: the golden is $784,000.",
   "stump_class": "analytical",
   "analyst_test": "a strong analyst who dedupes the claims and reads the trust agreement and funding policy correctly still multiplies a mature year's cost per FTE by each entity's 2027 months of cover, or applies the share of claims made within a year of the incident at the average claim cost, and overfunds the trust, because inside a first claims-made window only the claims made quickly count and they cost a fraction of the average.",
   "domain_test": "the deciding quantity is the expected cost of claims first made inside a claims-made trust's opening window, built from each entity's covered clinician exposure through the system's own report-lag and cost-by-lag experience, which is how a professional liability actuary funds a first claims-made year; with another field's nouns the retroactive dates, report lags, early-resolution settlements and specialty classes have nothing to attach to.",
@@ -112,16 +112,15 @@
       "stump_strategy": "forecast_method_backtest"
     }
   ],
-  "notes": "Re-rooted as v4 on 2026-10-12 (wave 1, the author's fourth root for a retired number). v4 moves to professional liability pricing: the first-year contribution to a new claims-made trust. stump_strategy maturity_censoring: the claims-made window truncates the report lag, so only early-made claims count, and early claims are the cheap early-resolution settlements. Pattern none, decisive G13 (horizon: the window the decision covers) then G14 (cost conditioned on early reporting). Calibration none: the system's own claims experience is the evidence, no organ. context_artifact operations_log: the risk management claims system export the stakeholder works from.",
+  "notes": "Re-rooted as v4 on 2026-10-12 (wave 1, the author's fourth root for a retired number). v4 moves to professional liability pricing: the first-year contribution to a new claims-made trust. stump_strategy maturity_censoring: the claims-made window truncates the report lag, so only early-made claims count, and early claims are the cheap early-resolution settlements. Pattern none, decisive G13 (horizon: the window the decision covers) then G14 (cost conditioned on early reporting). Calibration none: the system's own claims experience is the evidence, no organ. context_artifact register: the risk management claims register extract the stakeholder works from. Shape moved from 02 to other after the DRAWN commit (task125 drew 02 minutes earlier). Built 2026-10-12 on claims seed 3671: default $4,854,000 against the golden $784,000.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:claims-made-opening-window-cost-by-report-lag",
   "layer1": [
-    "a risk management claims system export with one row per named defendant, so one incident naming a surgeon, an anaesthetist and the hospital is three rows under one claim number",
-    "two expiring commercial carriers' loss runs in their own layouts (one per policy period, a format change when a carrier moved systems in 2021) overlapping the claims system",
-    "claim stages that move (an early-resolution request that later becomes a suit keeps its first claim-made date), reopened claims and claims closed without indemnity but with defence costs",
-    "paid indemnity and defence costs on a transaction ledger, with case reserves on open claims at the valuation date",
-    "payroll FTE by clinician and month with specialty and cost-centre codes that were re-mapped in 2020, employed and contracted clinicians in one file, and clinicians moving between entities",
-    "the early-resolution programme's own case log keyed on its case number, linked to claim numbers only once a payment or demand exists",
-    "each entity's expiring policy period, transition date and the trust's coverage terms in separate documents"
+    "a risk management claims register with one row per named defendant: employed clinicians, residents and contracted clinicians in one extract, the contracted rows unpriced",
+    "claim stages that move: an early-resolution request that later becomes a suit is a new claim number pointing back at the request; reopened claims keep their earlier closing date; claims closed without indemnity carry defence costs",
+    "legacy payroll by employee, month and cost centre with job codes re-mapped on 1 July 2020 (both code sets in the trust's schedule), dual appointments on two entities' cost centres, transfers between entities and one hospital's mid-2019 affiliation",
+    "a 2026 HCM pay-line extract at earning-code grain repeating the position's FTE on each line, the worker's home entity stamped as of the extract date, and job profiles that map to legacy codes only through a crosswalk",
+    "two expiring carriers' loss runs in their own layouts and reference formats, one carrier's corrected run for an earlier valuation delivered after its latest run, and noticed matters carried under the notice number",
+    "each entity's transition date, expiring policy and the trust's coverage terms in the trust agreement, the costing basis in a separate funding policy"
   ]
 }

@@ -1,26 +1,27 @@
 {
   "task": "task130",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "actuarial-science-insurance",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-12",
-  "stump": "A competent solver collapses the register's defendant rows to one claim per incident, values and trends every claim from 2017, takes the system's annual claims cost per clinician FTE by specialty class, prorates it to each entity's months in the trust and files a contribution of about $2.9 million; the step that lands it there is costing the trust's opening months as a mature year, when only the claims made before 31 December 2027 from incidents after each entity's transition count, and those are the early resolution program's quick, cheap settlements: the golden is about $0.3 million.",
+  "stump": "A competent solver collapses the register's defendant rows to one claim per incident, values and trends every claim from 2017, takes the system's annual claims cost per clinician FTE-year by specialty class, applies it to each entity's FTE-years in the trust and files a contribution of $4,854,000; the step that lands it there is costing the trust's opening months as a mature year, when only the claims made by 31 December 2027 from incidents after each entity's transition count, and those are mostly the quick, cheap requests: the golden is $784,000.",
   "architecture": 4,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW, no LEAK (sweep 4: the field's own nouns in the governing documents and the dictionary; sweep 9: the 2026 policy terms' 2027 end dates in the premium history), answered in the design note",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "guard.py check 2026-10-12: WARN repeat.gate_g only; nearest driver task121 v3 at 0.07"
+    "heart": "WARN 2026-10-12 (repeat.gate_g against task124, repeat.decision against task125, both answered at the draw; nearest text 0.08, task102 card stump)",
+    "nearest": "guard.py check 2026-10-12: WARN repeat.gate_g only; nearest driver task121 v3 at 0.07",
+    "surface": "2026-10-12: one promoted pair, task102, on the card axes only (answered by the differentiation line); the extract log column set (task124) and the prompt phrase (task133) were removed"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +29,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: ladder, readability screen, semantic fork table, closure, asks, prompt.txt, then precut.py",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -85,5 +86,14 @@
       "target_zip_sha256": "149049c424d397052c999f5d42997215d15c93fd0bd2397ed12703c0eba9af7a"
     }
   ],
-  "wave": "wave 1 (re-root: retired), the author's fourth root"
+  "wave": "wave 1 (re-root: retired), the author's fourth root",
+  "build": {
+    "claims_seed": 3671,
+    "checks": "121 of 121",
+    "verify": "match",
+    "rebuild": "byte-identical",
+    "figures_check": "exit 0",
+    "call": "$784,000",
+    "default": "$4,854,000"
+  }
 }

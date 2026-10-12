@@ -1,0 +1,198 @@
+{
+ "call": {
+  "contribution": "784,000",
+  "contribution_usd": "$784,000"
+ },
+ "entities": {
+  "TFH": {
+   "name": "Tolliver Falls Hospital",
+   "transition": "1 January 2027",
+   "fte_years_2027": "100.2",
+   "expected_claims": "2.9",
+   "expected_cost": "227,000"
+  },
+  "AMC": {
+   "name": "Alderwick Medical Center",
+   "transition": "1 April 2027",
+   "fte_years_2027": "175.6",
+   "expected_claims": "4.6",
+   "expected_cost": "336,000"
+  },
+  "CMG": {
+   "name": "Corvane Medical Group",
+   "transition": "1 July 2027",
+   "fte_years_2027": "264.9",
+   "expected_claims": "3.9",
+   "expected_cost": "214,000"
+  },
+  "BCH": {
+   "name": "Brennick Community Hospital",
+   "transition": "1 October 2027",
+   "fte_years_2027": "15.1",
+   "expected_claims": "0.1",
+   "expected_cost": "7,000"
+  }
+ },
+ "classes": {
+  "OB": {
+   "name": "Obstetrics",
+   "fte_years_2027": "30.7",
+   "expected_claims": "2.0",
+   "expected_cost": "148,000"
+  },
+  "SUR": {
+   "name": "Surgery",
+   "fte_years_2027": "61.7",
+   "expected_claims": "2.3",
+   "expected_cost": "291,000"
+  },
+  "EM": {
+   "name": "Emergency Medicine",
+   "fte_years_2027": "43.7",
+   "expected_claims": "2.0",
+   "expected_cost": "68,000"
+  },
+  "AN": {
+   "name": "Anesthesiology",
+   "fte_years_2027": "26.7",
+   "expected_claims": "0.5",
+   "expected_cost": "65,000"
+  },
+  "HM": {
+   "name": "Hospital and Medical Specialties",
+   "fte_years_2027": "114.9",
+   "expected_claims": "2.3",
+   "expected_cost": "124,000"
+  },
+  "PC": {
+   "name": "Primary Care",
+   "fte_years_2027": "108.4",
+   "expected_claims": "1.4",
+   "expected_cost": "26,000"
+  },
+  "APC": {
+   "name": "Advanced Practice",
+   "fte_years_2027": "169.6",
+   "expected_claims": "1.0",
+   "expected_cost": "62,000"
+  }
+ },
+ "totals": {
+  "expected_claims": "11.5",
+  "expected_cost": "784,000",
+  "fte_years_2027": "555.8"
+ },
+ "experience": {
+  "claims": 328,
+  "claims_made_within_364_days": 225,
+  "fte_years": "6,188.6",
+  "trend_pct": "5.0"
+ },
+ "by_month": {
+  "TFH": [
+   "0",
+   "3,000",
+   "9,000",
+   "13,000",
+   "16,000",
+   "20,000",
+   "23,000",
+   "24,000",
+   "25,000",
+   "28,000",
+   "31,000",
+   "36,000"
+  ],
+  "AMC": [
+   "0",
+   "0",
+   "0",
+   "0",
+   "10,000",
+   "24,000",
+   "33,000",
+   "41,000",
+   "50,000",
+   "58,000",
+   "57,000",
+   "63,000"
+  ],
+  "CMG": [
+   "0",
+   "0",
+   "0",
+   "0",
+   "0",
+   "0",
+   "1,000",
+   "10,000",
+   "29,000",
+   "44,000",
+   "53,000",
+   "76,000"
+  ],
+  "BCH": [
+   "0",
+   "0",
+   "0",
+   "0",
+   "0",
+   "0",
+   "0",
+   "0",
+   "0",
+   "0",
+   "2,000",
+   "5,000"
+  ]
+ },
+ "ask_a": {
+  "TFH": {
+   "any_missing": "no",
+   "count": 0,
+   "reserves": "0",
+   "open_claims": 10,
+   "carrier": "Quillan Mutual Professional Liability Company"
+  },
+  "AMC": {
+   "any_missing": "yes",
+   "count": 2,
+   "reserves": "178,000",
+   "open_claims": 27,
+   "carrier": "Quillan Mutual Professional Liability Company"
+  },
+  "CMG": {
+   "any_missing": "yes",
+   "count": 1,
+   "reserves": "6,000",
+   "open_claims": 30,
+   "carrier": "Stoneleigh Casualty Insurance Company"
+  },
+  "BCH": {
+   "any_missing": "no",
+   "count": 0,
+   "reserves": "0",
+   "open_claims": 4,
+   "carrier": "Stoneleigh Casualty Insurance Company"
+  }
+ },
+ "ask_b": {
+  "TFH": "96.3",
+  "AMC": "234.3",
+  "CMG": "522.0",
+  "BCH": "54.9"
+ },
+ "ask_b_total": "907.5",
+ "rungs": {
+  "golden": "784,000",
+  "R0": "4,854,000",
+  "R0m": "5,013,000",
+  "R1a": "3,221,000",
+  "R1": "1,784,000",
+  "R2": "1,075,000",
+  "R2b": "1,100,000",
+  "L0": "378,000",
+  "step30": "1,504,000",
+  "base2020": "1,314,000"
+ }
+}
