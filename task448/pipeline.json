@@ -1,0 +1,37 @@
+{
+  "task": "task448",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-12",
+  "stump": "A competent solver ranks the lenders in the HMDA LAR and recruits the five largest reporters, because HMDA leaves out the lenders with no metropolitan office; adding those lenders from the recorder feed and scaling their counts by the feed's capture of the reporters' loans still leaves one of the two largest out, because the pooled capture is set by reporters whose closings record the mortgage with the deed, while the non-reporting lenders record their own (figures fixed at build).",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.06 (task62 lineage)",
+    "note": "draw checked 2026-10-12: guard WARN repeat.gate_g (task185) answered; seven older same-signature builds differentiated on the card"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: tune the lender market so every wrong rung (HMDA only, feed unscaled, pooled capture, county and charter capture, route capture with the erroneous enumerations kept) names its own five and the golden's fifth clears its sixth by 1.2; then the readability screen, fork table, closure, asks and prompt.txt to precut exit 0",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET05 (analytical_tasks/07_data_extraction_conformation), the world and the league-table decision only"
+}

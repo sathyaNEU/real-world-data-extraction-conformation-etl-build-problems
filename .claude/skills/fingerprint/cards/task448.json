@@ -1,0 +1,91 @@
+{
+  "task": "task448",
+  "architecture": "v1",
+  "drawn": "2026-10-12",
+  "slot_note": "wave 2 for oviya1301, seed ET05 (analytical_tasks/07_data_extraction_conformation): the HMDA world, the lender league table and the peer decision are kept; the seed's two-part-key and purchased-loan traps (semantics and rule application) are not used, and the pitfall is re-found from the data",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "completing a mortgage-lending register (HMDA) that misses every bank and credit union with no metro office, from a county recorder vendor feed whose purchase-mortgage flag captures each lender's loans at the rate of its recording route, to name the largest home-purchase lenders in a rural region for a down-payment program's lender recruitment",
+  "objective": "etl",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G12",
+    "G6"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "research and data manager at a statewide homeownership nonprofit, who brings the board the lenders to recruit first as participating lenders for its 2027 rural down-payment assistance program",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "hmda_lar_kansas_2024_2025.csv",
+    "rows": 0,
+    "entity": "one HMDA loan application record (any action, any purpose) reported by an institution for a Kansas property",
+    "grain": "application or purchased loan x activity year",
+    "source": "synthetic (modeled on the FFIEC HMDA public loan-level dataset layout)"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "nonprofit_or_charity",
+  "world": {
+    "geography": "United States, Kansas (eight non-metropolitan central Kansas counties)",
+    "currency": "USD",
+    "org_type": "statewide homeownership nonprofit running a down-payment assistance program through participating lenders",
+    "invented_names": [],
+    "people": [
+      "Laura Cohen",
+      "Maxwell Ewing"
+    ]
+  },
+  "deliverables": [
+    "rural_purchase_lenders_2024_2025.xlsx",
+    "lender_recruitment_2027.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A register that misses whole producers is completed from a second, incomplete list whose capture of each producer's units depends on the route by which the producer files them, so the second list's capture, measured on the producers both lists hold, has to be estimated within route strata and carried to each unregistered producer by its own route; the pooled capture, set by the route the registered producers favour, leaves the unregistered producers at a fraction of their volume and off the capped list.",
+  "driver_concrete": "Banks and credit unions with no metropolitan office never report HMDA, and the county recorder feed's purchase flag captures a lender's mortgages at about 97 per cent when the closing records the mortgage in one package with the deed and about 60 per cent when the lender records its own mortgage separately, so the feed's capture has to be measured on the HMDA reporters within each recording route and carried to each non-reporting lender by its own route, after the feed's non-purchase and duplicate recordings are removed; scaled by the pooled capture instead, the second-largest non-reporting lender stays outside the five largest lenders (figures fixed at build).",
+  "stump": "A competent solver ranks the lenders in the HMDA LAR and recruits the five largest reporters, because HMDA leaves out the lenders with no metropolitan office; adding those lenders from the recorder feed and scaling their counts by the feed's capture of the reporters' loans still leaves one of the two largest out, because the pooled capture is set by reporters whose closings record the mortgage with the deed, while the non-reporting lenders record their own (figures fixed at build).",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the LAR and the recorder feed, resolves the mortgagee names and removes the feed's non-purchase recordings sees that HMDA misses the rural lenders, measures the feed's capture against the reporters' HMDA counts and scales the rural lenders' feed counts by it; the pooled capture (about 0.88) leaves the second-largest rural lender, a credit union, below the fifth reporter, because the route it records by is captured at about 0.60.",
+  "domain_test": "Completing an administrative register that misses whole classes of producers by dual-system estimation against a second, incomplete source, within post-strata where that source's capture is homogeneous and after its erroneous enumerations, is official statistics' coverage-measurement method; with another field's nouns (a credit model's default rates, a pricing grid) there is no register coverage or capture to estimate, and the task stops reading the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "survey-research-official-statistics/census-register-administrative-data-quality/1",
+  "layer1": [
+    "two activity years of the HMDA public LAR layout with every action and purpose, purchased loans and rounded loan amounts",
+    "eight county recorder files from one vendor with schema drift between deliveries and recording-date windows",
+    "mortgagee names as indexed (MERS nominee phrasing, abbreviations, suffixes) resolved to lenders through an alias register",
+    "the vendor's purchase flag carrying refinances recorded with a quitclaim deed, re-recorded mortgages and seller-financed notes",
+    "the HMDA reporter panel and a state lender register with charter, head office and NMLS identifiers",
+    "a parcel-to-census-tract crosswalk on 2020 tracts"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task30": "task30 measures a change over the events a procedure leaves unadjusted, found by a catalogue join; here no change is measured: a register's missing producers are sized by a second list's capture, carried by recording route.",
+    "task31": "task31 splits a lag on a prior-approval property recovered by a join; here the split is the second list's capture of each producer's units, measured on producers both lists hold and transported to producers only one list holds.",
+    "task500": "task500 credits a spillover through a link held in another register; here nothing spills over: units the register never saw are counted by dual-system estimation within capture strata.",
+    "task53": "task53 pools eligible volume per account against an unstated scale break from a closed log; here there is no break or log: the volume of producers absent from the register is estimated from a capture rate stratified by route.",
+    "task57": "task57 separates measures by a held-out year; here no measure is back-tested: the coverage estimator is chosen by where the second list's capture is homogeneous.",
+    "task69": "task69 re-pools a designed test across periods of varying assignment; here there is no test or assignment: a register's coverage is completed from a second list whose capture varies by filing route.",
+    "task76": "task76 removes a zero-conversion class found by a look-back over a contact log; here the decisive class is the producers a register omits by rule, added at the second list's capture for their route."
+  },
+  "lineage": [],
+  "notes": "Drawn 2026-10-12 for wave 2 with rule 1 as the governing constraint: the ETL lane's task types are six, and this seed's world (HMDA lender shares) sits in census-register-administrative-data-quality, where the deciding quantity (each lender's true volume when the register misses whole producers) is what official statistics estimates by dual-system estimation. Pattern: SROS admin-data quality 1 (DSE within post-strata after erroneous enumerations). Personas drawn with guard.py names --geo 'United States' --seed 448. Organisation redrawn from a bank's CRA office to a statewide homeownership nonprofit after the guard's ban.org_family (financial_institution, task185)."
+}
