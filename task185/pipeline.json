@@ -1,0 +1,36 @@
+{
+  "task": "task185",
+  "owner": "oviya13ya",
+  "status": "DESIGN",
+  "domain": "general-statistics-data-science / exploratory-data-analysis-distribution-assessment (secondary physical-environmental-sciences)",
+  "objective": "anomaly-detection",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-12",
+  "stump": "The default path converts the glass era with the comparison readings' mean probe-minus-glass difference, which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day line and it quotes the raw record's premium; one hot-day offset quotes a third figure.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2 design: readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet, prompt.txt, then precut.py",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "seed": "analytical_tasks/02_anomaly_detection/AD08_station-break-hold-hot-day-tail.md"
+}

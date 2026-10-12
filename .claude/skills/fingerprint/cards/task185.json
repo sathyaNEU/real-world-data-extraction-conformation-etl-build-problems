@@ -1,0 +1,93 @@
+{
+  "task": "task185",
+  "architecture": "v1",
+  "drawn": "2026-10-12",
+  "slot_note": "wave 2, seed AD08 (weather-index heat cover priced off one station with a break); the world and decision kept, the pitfall re-found from the station record; secondary domain physical-environmental-sciences (the station record's own mess)",
+  "domain": "general-statistics-data-science",
+  "subdomain": "exploratory-data-analysis-distribution-assessment",
+  "niche": "pricing a vineyard heat-day index cover off one weather station whose 1995 change from glass thermometers in a large wooden screen to an electronic probe in a small plastic shield matches the old readings on cool days and reads hot afternoons warmer, the old register kept to the half degree",
+  "objective": "anomaly-detection",
+  "shape": "08",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G14"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "parallel_run_overlap",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the mutual's weather portfolio manager, who quotes the growers' co-operative its heat-day cover for the 2027/28 season",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "index points",
+  "spine": {
+    "file": "aws_daily_merrin_flat_19891101_20270831.csv",
+    "rows": 0,
+    "entity": "one automatic weather station reading of one element on one day",
+    "grain": "station x day x element",
+    "source": "synthetic"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "fictional southern-hemisphere country, inland winegrowing valley",
+    "currency": "local dollar",
+    "org_type": "agricultural mutual insurer",
+    "invented_names": [
+      "Merrin Flat",
+      "Merrin Valley Winegrowers Co-operative",
+      "Southward Mutual",
+      "National Climate Service"
+    ],
+    "people": [
+      "Rachel Ballard",
+      "Jack Castro",
+      "Richard Strickland",
+      "Bonnie Barr"
+    ]
+  },
+  "deliverables": [
+    "heat_cover_quote_2027_28.pdf",
+    "heat_cover_as_if_seasons.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "The decisive quantity is the conversion between an old and a new measuring device sized at the value being converted, because the new device agrees with the old at ordinary values and departs only at high ones, so any single conversion, the average or one high-value offset, leaves a threshold count on the wrong basis and lets the changeover step pass into the fitted trend.",
+  "driver_concrete": "Each glass-era daily maximum is brought to the present probe's basis by the probe-minus-glass difference at that reading in the paired comparison readings, about +0.7 C at 34.5 C and +1.25 C at 39 C against +0.1 C on average, so the half-degree 34.5 C days cross the 35 C trigger and the 39 C days the 40 C trigger, the glass era's heat days rise, the 1995 step leaves the trend and the 2027/28 premium falls.",
+  "stump": "A competent solver brings the glass era to the probe's basis with the comparison readings' mean difference (+0.1 C, about +0.2 C on summer days), which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day trend and the quote is the raw record's premium (about $725 a hectare against about $670, prototype); a solver who sizes one hot-day offset moves the 34.5 C days but not the 39.0 C days and quotes a third figure.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who joins the two station numbers, reshapes the register, keeps approved readings, reads the station history and applies the pricing manual exactly still converts the glass era with the comparison's average probe-minus-glass difference and quotes the raw record's premium.",
+  "domain_test": "The deciding quantity is a distribution assessment of a paired-instrument difference, how the new device's readings depart from the old across the range of the reading rather than in the mean, estimated conditionally or by quantile matching; with the method swapped for a mean or one pooled offset the call changes, and with another field's nouns there is no instrument pair whose difference grows with the reading, no half-degree register and no threshold count whose trend the changeover inflates.",
+  "mechanism_source": "design_note",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:reading-dependent-instrument-conversion",
+  "layer1": [
+    "station history with a documented instrument and screen change",
+    "station number changed at the automatic station install",
+    "old register digitised as one wide sheet per year (days by months) with header blocks",
+    "half-degree readings in the old register",
+    "provisional and approved automatic-station records overlapping outside the cover window",
+    "neighbour stations' monthly series with gaps and their own changes",
+    "term sheet whose deductible and day rates changed by season",
+    "member schedule with endorsements and cancellations"
+  ],
+  "differentiation": {
+    "task80": "task80 v2 certifies a served-student count by dating each fixed-term designation from its criterion event, a time rule executed over records; here the filed basis selects a conversion between two instruments sized at each reading because their paired difference grows with the reading, a distributional estimate with no dated status anywhere in it."
+  },
+  "lineage": [],
+  "notes": "Secondary domain physical-environmental-sciences: the client's own Layer 1 technique 'station histories with moves and instrument swaps', documented in station metadata as real networks do. The decisive step is not finding the change (it is documented) but sizing it where the index counts."
+}
