@@ -55,7 +55,10 @@ def build(rng):
     X["ingest_delay"] = rng.integers(1, 30, n)
     X["is_dup"] = False
     D["is_dup"] = True
-    S = pd.concat([X, D], ignore_index=True)
+    X["second"] = False
+    D["second"] = False
+    D2 = second_beacons(X, dep)
+    S = pd.concat([X, D, D2], ignore_index=True)
     ing = S.ts.values + S.ingest_delay.values.astype("timedelta64[s]")
     o = np.lexsort((S.pv_id.values, ing))
     bid = np.empty(len(S), np.int64)
@@ -63,4 +66,43 @@ def build(rng):
     bid[o] = 41_000_000 + np.cumsum(gaps)
     S["beacon_id"] = bid
     S = S.sort_values(["ts", "beacon_id"], kind="stable").reset_index(drop=True)
-    return dict(dev=dev, dep=dep, ct=ct, V=V, X=X, S=S, n_gap=n_gap)
+    return dict(dev=dev, dep=dep, ct=ct, V=V, X=X, S=S, n_gap=n_gap, n_second=len(D2))
+
+
+def second_beacons(X, dep):
+    """The local-edition tag container's older RUM library, 16 March to 26 April: a second beacon for a
+    local-edition page view, sent at the load event under the library's own page-view key and stamped
+    with its send time. A view abandoned before the load event sends none, so over-line views send
+    fewer. Copies the original's device, account, page, context and timings."""
+    r2 = np.random.default_rng([P.SEED, 77])
+    day = X.local_day.values
+    win = ((day >= np.datetime64(P.SECOND_BEACON[0])) & (day <= np.datetime64(P.SECOND_BEACON[1]))
+           & X.local.values & ~np.isnan(X.lcp_ms.values))
+    p = np.where(X.over.values, P.SECOND_P["over"], P.SECOND_P["under"])
+    pick = win & (r2.random(len(X)) < p)
+    D2 = X[pick].copy()
+    lo, hi = P.SECOND_DELAY_S
+    lag = (D2.lcp_ms.values / 1000.0 + r2.uniform(lo, hi, len(D2))).round().astype("int64")
+    D2["ts"] = D2.ts.values + lag.astype("timedelta64[s]")
+    # the release train's quiet window holds for every row the collector received
+    du = dep.utc.values
+    k = np.searchsorted(du, D2.ts.values, side="right") - 1
+    q = np.timedelta64(P.DEPLOY_QUIET_MIN * 60, "s")
+    prev_gap = D2.ts.values - du[np.clip(k, 0, None)]
+    nxt = np.clip(k + 1, 0, len(du) - 1)
+    next_gap = du[nxt] - D2.ts.values
+    near = ((k >= 0) & (prev_gap < q)) | ((k + 1 < len(du)) & (next_gap < q))
+    D2 = D2[~near].copy()
+    alpha = np.array(list("abcdefghijkmnpqrstuvwxyz23456789"))
+    taken = set(X.pv_id.values)
+    ids = []
+    while len(ids) < len(D2):
+        cand = "".join(alpha[r2.integers(0, 32, 10)])
+        if cand not in taken:
+            taken.add(cand)
+            ids.append(cand)
+    D2["pv_id"] = np.array(ids, dtype=object)
+    D2["ingest_delay"] = r2.integers(1, 30, len(D2))
+    D2["is_dup"] = True
+    D2["second"] = True
+    return D2

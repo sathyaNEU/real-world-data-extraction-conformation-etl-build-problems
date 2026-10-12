@@ -65,22 +65,17 @@ def service_level(path):
               "scored. The service level is the share of scored mobile views that miss the line, "
               "reported monthly by title in the digital operations close-out."),
         ("h", "3. Reading a change"),
-        ("p", "The effect of a change on the share is read on the 28 days either side of the "
-              "release that switched it on."),
+        ("p", "Before-and-after comparisons of the share for a change use the 28 days either side of "
+              "the release that switched it on."),
         ("h", "4. Valuing a fix"),
         ("p", "A fix is valued on the mobile views it brings back under the line at the latest full "
-              "month's traffic. The operations squad works on one fix a quarter; the quarterly "
-              "service review allocates it."),
-        ("h", "5. Who reviews what"),
+              "month's traffic. The operations squad works on one fix a quarter."),
+        ("h", "5. Review"),
         ("p", "The quarterly service review is chaired by the head of digital operations, with the "
-              "three editors-in-chief, ad sales and the group digital director. The ad-revenue "
-              "committee reviews performance work on page weight from the monthly synthetic crawl; "
-              "Gunnar Paulsen, head of ad operations, works from that basis and will present it at "
-              "the review."),
+              "three editors-in-chief, ad sales and the group digital director. It reviews the "
+              "close-out and allocates the operations squad's next quarter."),
         ("h", "6. Data"),
-        ("p", "Field data is the RUM beacon export described in the field guide. The synthetic crawl "
-              "is a lab measurement of the anonymous page on an emulated phone; its run "
-              "configuration is filed with the crawl log."),
+        ("p", "Field data is the RUM beacon export described in the field guide."),
         ("sp", 10),
         ("small", "Internal. Not for distribution outside Sønderå Medier. Next revision due December "
                   "2026."),
@@ -190,10 +185,6 @@ rates are set per collector and are carried row by row in `sample_weight`.
   offset. `platform_bundle` and `puzzles_bundle` are the content hashes of the JavaScript bundles
   the deploy shipped.
 - `boelge_rollout_log.csv`: one row per Bølge wave, with the release that switched it on.
-- `synthetic_crawl_requests_2026.csv`: one row per request the crawler made. `run_id` is one
-  page load; `masthead` is the title whose list carries the URL.
-- `web_asset_register.csv`: a request belongs to the change the register names for its host and
-  longest matching path prefix; a request matching no row is platform baseline.
 - `image_cdn_delivery_2026.csv`: fields in the vendor appendix (appendix C).
 
 Throughout these extracts a kilobyte (kB) is 1,000 bytes.
@@ -226,27 +217,6 @@ It's the consent banner. The numbers turned the week it went in and nothing else
 shipped then. I'd like the squad on it.
 
 ----
-From: Caroline Mortensen <caroline.mortensen@sonderaa-medier.dk>
-Date: Wed, 2 Sep 2026 09:05:03 +0200
-
-The crawl gets heavier every month and most of it is pictures. The renditions from the new image
-pipeline are big. I'd rather the squad looked there than at anything the desks touch.
-
-----
-From: Finn Thygesen <finn.thygesen@sonderaa-medier.dk>
-Date: Wed, 2 Sep 2026 09:31:44 +0200
-
-For the record, Bølge has been on subscriber pages since each wave went out and those pages hardly
-moved. Whatever this is, I don't think it's the front end.
-
-----
-From: Gunnar Paulsen <gunnar.paulsen@sonderaa-medier.dk>
-Date: Wed, 2 Sep 2026 10:12:09 +0200
-
-The ad-revenue committee looks at performance work on page weight from the crawl, as it always
-has. That's what I'll bring to the review.
-
-----
 From: Gunhild Lund <gunhild.lund@sonderaa-medier.dk>
 Date: Wed, 2 Sep 2026 10:30:55 +0200
 
@@ -257,7 +227,7 @@ Field guide is updated.
 From: Elin Lauritsen <elin.lauritsen@sonderaa-medier.dk>
 Date: Wed, 2 Sep 2026 11:02:31 +0200
 
-Thanks. Noted, all of it.
+Thanks both. Noted.
 
 --
 Sønderå Medier, Digital operations. Internal: do not forward.
@@ -323,7 +293,7 @@ def newsletter_sends(rng, path):
 
 # ------------------------------------------------------------------ provenance
 MANIFEST = [
-    ("spine", "RUM beacon export, mobile web and app webviews, three titles", "2026-02-01 to 2026-08-31", "Gunhild Lund", "Export from the RUM collector (v1 forwarder to 7 May, v2 from 8 May), pulled 2026-09-05"),
+    ("spine", "RUM beacon export, mobile web and app webviews, three titles", "2026-02-01 to 2026-08-31", "Gunhild Lund", "Export from the RUM collector (v1 to 2 June, v2 from 3 June), pulled 2026-09-05"),
     ("release", "Release train log", "2026-01-05 to 2026-08-31", "Mette Johansen", "Export from the release tool"),
     ("rollout", "Bølge rollout log", "Waves 1 to 6", "Finn Thygesen", "Maintained by the front-end platform team"),
     ("changes", "Platform change register, 2026 extract", "Changes live since February", "Mette Johansen", "Extract of the change register"),
@@ -332,11 +302,7 @@ MANIFEST = [
     ("editions", "Edition register", "Local editions and their mastheads", "Caroline Mortensen", "Editorial register"),
     ("sla", "Page delivery service level, version 3", "In force from 2026-01-01", "Elin Lauritsen", "Filed document"),
     ("paywall", "Subscriber terms, layout and access (extract)", "Version 2026-01", "Abonnementsservice", "Filed document"),
-    ("closeout", "Q3 service close-out, mobile page delivery", "2026-02 to 2026-08", "Gunhild Lund", "Computed from the RUM export, v1.2"),
-    ("crawl", "Synthetic crawl request log", "Monthly crawls, February to August", "Simone Thorsen", "Export from the synthetic monitoring tool"),
-    ("crawlcfg", "Synthetic crawl run configuration", "Lists v1 and v2", "Simone Thorsen", "Tool configuration"),
-    ("assets", "Web asset register", "Hosts and path prefixes in use", "Finn Thygesen", "Maintained by the front-end platform team"),
-    ("roster", "Operations squad: closed fixes", "Fixes closed 2023 to January 2026", "Simone Thorsen", "Squad register"),
+    ("closeout", "Q3 service close-out, mobile page delivery", "2026-07 to 2026-08", "Gunhild Lund", "Computed from the RUM export, v1.2"),
     ("cdn", "Image CDN daily delivery log", "2026-02-01 to 2026-08-31, both vendors", "Gunhild Lund", "Merged vendor exports"),
     ("cdnapp", "Image CDN delivery log, appendix C", "Field definitions", "Digital operations", "Filed document"),
     ("guide", "RUM export field guide", "Beacon export, registers and logs", "Gunhild Lund", "Filed document"),

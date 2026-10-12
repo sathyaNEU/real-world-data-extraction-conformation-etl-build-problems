@@ -4,6 +4,7 @@
   "drawn": "2026-10-10",
   "slot_note": "RC02 (analytical_tasks/06_root_cause/RC02_slow-views-partial-exposure-cpu-mix.md), first realisation",
   "domain": "business-operations-analytics",
+  "client_domain": "general-statistics-data-science",
   "subdomain": "service-operations-sla",
   "niche": "a page-delivery service-level breach at a regional news group's shared digital operations unit: which of five changes shipped since spring gets the operations squad's next quarter, when the header-bidding ad stack and the redesign's client-side front end only ever switched on together, template cohort by template cohort",
   "objective": "root-cause",
@@ -27,11 +28,11 @@
     "G1"
   ],
   "gate_g": "decomposition_attribution",
-  "calibration_form": "realised_outcome_roster",
+  "calibration_form": "none",
   "stump_strategy": "composition_mix",
   "decisive_rule_filed": true,
   "official_decoy": false,
-  "validated_decoy": true,
+  "validated_decoy": false,
   "context_artifact": "close_out_summary",
   "stakeholder_role": "head of digital operations at a regional news group, who owns the page-delivery service level and assigns the operations squad's quarter",
   "role_family": "operations_director",
@@ -44,7 +45,7 @@
     "source": "synthetic"
   },
   "forum": "committee_or_panel",
-  "forcing_event": "vote_or_meeting",
+  "forcing_event": "budget_or_appropriation",
   "org_family": "media_or_publishing",
   "world": {
     "geography": "Denmark",
@@ -67,9 +68,9 @@
   },
   "deliverables": [
     "q4_squad_call.pptx",
-    "q4_squad_call_cohort_effects.xlsx"
+    "q4_squad_call_workings.xlsx"
   ],
-  "opening_move": "other",
+  "opening_move": "question-first",
   "driver": "Two causes that only ever switched on together are separated by two groups that each received one of them, but each cause's per-record effect is a switch on a state no column carries, whether a record is its unit's first after the latest version change or a reuse that follows it, recovered only by ordering each unit's records against the version changes; both separating groups are mostly reuse records while the population the decision acts on is mostly first records, and the two causes act on opposite states, so reweighting each cause's state-conditioned effect to that population moves the joint effect from one cause to the other while every total, and every split on a visible column, ties under both readings.",
   "driver_concrete": "The header-bidding ad stack and the redesign's client-side framework only ever switched on together; the puzzles pages (ad stack only, one date) and subscribers' ad-free views of the redesigned templates (framework only) separate them, but the framework costs a view mostly on a device's first page load after each release-train deploy and the ad stack mostly on loads that reuse the cached bundle, and the daily players and daily subscribers in both groups are mostly cached loads while most ad-supported views are first loads, so reweighting each group's first-load and cached-load effects to the ad-supported base names the framework where every phone-class standardisation through the device registry names the ad stack.",
   "stump": "A competent solver aligns the redesign's cohort-by-cohort switch-on for the joint effect of the ad stack and the framework, separates them with the puzzles pages, which took the header-bidding wrapper alone on one date, and subscribers' ad-free views of the redesigned templates (found through the subscription register), standardises both groups to the ad-supported views' phone mix through the device registry, which closes the joint ramp exactly, and names the ad stack; the step that lands it there is reading each change's cost as one figure per phone class, when the framework costs a view mostly on a device's first load after each release-train deploy and the ad stack mostly on reloads of the cached bundle, and the daily players and daily readers who make up both separating groups are mostly cached reloads while most ad-supported views are first loads, so reweighted to the ad-supported views' first-load share the framework fix brings back the most views a month.",
@@ -77,8 +78,25 @@
   "differentiation": {
     "task36": "task36 conditions a loud dated candidate's counterfactual on a structural property a file records and removes the leader through a filed agreement; task129 splits the joint effect of two causes that only switched on together, and the property that decides the split (a view is its device's first load after a deploy or a cached reload) is in no file and is built from the order of each device's views.",
     "task107": "task107 v1 sizes one check's reach from a per-source delivery property each source's history reveals, read off a shadow trial on one delivery kind; task129's property is per view, built from the order of each device's views against the release train, and it apportions a joint effect between two co-shipped causes acting on opposite states instead of sizing one intervention's reach.",
-    "task44": "task44 v2 carries one pilot's pooled gain, a mixture split by an item-level ordering behaviour, onto a request with the inverse mix; task129 has two separating groups for two co-shipped causes whose costs fall on opposite per-view states, both groups cached-heavy against a first-load-heavy base, so the reweighting moves the joint effect from one cause to the other while every total and every visible-column split ties."
+    "task44": "task44 v2 carries one pilot's pooled gain, a mixture split by an item-level ordering behaviour, onto a request with the inverse mix; task129 has two separating groups for two co-shipped causes whose costs fall on opposite per-view states, both groups cached-heavy against a first-load-heavy base, so the reweighting moves the joint effect from one cause to the other while every total and every visible-column split ties.",
+    "task500": "task500 v2 credits a change through a link to touched units held in another entity's register (a spillover); task129 has no spillover: it splits one joint effect of two co-shipped changes measured on two separating groups, and the split turns on a per-view state built from the order of each device's views against the release train, which moves the joint effect from one change to the other when the groups' effects are carried to the base.",
+    "task73": "task73's retention redraw apportions a movement shared by two collinear causes by standardising the partial-exposure group to the base's visible composition, which is task129's default path and its wrong answer: here the visible standardisation closes the joint effect exactly and still names the wrong change, because each change's cost switches on a per-view state built from the order of each device's views against the deploys, and only carrying the groups' state-conditioned effects to the base's state mix names the right one."
   },
   "lineage": [],
-  "notes": "Realises analytical_tasks note RC02 (06_root_cause/RC02_slow-views-partial-exposure-cpu-mix.md), first realisation. Decisive move redrawn at the draw: the note's CPU-class standardisation through the device registry is a schema-visible one-hop join followed by a reflexive composition check (pilot RC01 died on a schema-visible join) and survives only as the partial correction inside rung 2; the note's twin pair is dropped because a pair separated by audience composition points the solver at a moderator. Domain moved from product-analytics (pairing ban against task121) by redrawing the world around the group's internal page-delivery service level, owned by the head of digital operations. Calibration organ redrawn from randomised fix pilots (pilot_log, ban against task122) to the operations squad's roster of closed fixes with realised savings. Pattern E first: the decisive property (first load after a deploy against a cached reload) is a switch no column carries; D second for the standardisation that transports it. Opening move symptom-first, filed as other because the vocabulary has no symptom-first key. Figures set at stage 2. Not registered: the coordinator registers in task-number order. Registration redraws (coordinator, 2026-10-10): context artifact published_series to close_out_summary, the Q3 service close-out (BLOCK against task126); forcing event budget_or_appropriation to vote_or_meeting (BLOCK against task127); cohort grid csv to xlsx (deliverables WARN against task128); decisive rung unchanged."
+  "notes": "Realises analytical_tasks note RC02 (06_root_cause/RC02_slow-views-partial-exposure-cpu-mix.md), first realisation. Decisive move redrawn at the draw: the note's CPU-class standardisation through the device registry is a schema-visible one-hop join followed by a reflexive composition check (pilot RC01 died on a schema-visible join) and survives only as the partial correction inside rung 2; the note's twin pair is dropped because a pair separated by audience composition points the solver at a moderator. Domain moved from product-analytics (pairing ban against task121) by redrawing the world around the group's internal page-delivery service level, owned by the head of digital operations. Calibration organ redrawn from randomised fix pilots (pilot_log, ban against task122) to the operations squad's roster of closed fixes with realised savings. Pattern E first: the decisive property (first load after a deploy against a cached reload) is a switch no column carries; D second for the standardisation that transports it. Opening move symptom-first, filed as other because the vocabulary has no symptom-first key. Figures set at stage 2. Not registered: the coordinator registers in task-number order. Registration redraws (coordinator, 2026-10-10): context artifact published_series to close_out_summary, the Q3 service close-out (BLOCK against task126); forcing event budget_or_appropriation to vote_or_meeting (BLOCK against task127); cohort grid csv to xlsx (deliverables WARN against task128); decisive rung unchanged. 10/10 rework (2026-10-12, resume 2): the card answers the three rules (stump_class analytical, analyst_test, domain_test, client domain general-statistics-data-science, interpretability); the closed-fix roster is dropped as an organ (its planted resemblance to the ad stack's puzzles read was a certified record built to bless the wrong answer), so calibration_form none and validated_decoy false; the service level no longer files the committee's page-weight basis, and the prep thread keeps at most two beliefs; forcing event redrawn from vote_or_meeting (BLOCK against task122 in the draw-order window) to budget_or_appropriation, the review's allocation round for the squad's quarter; the prompt is question-first.",
+  "question_form": "which",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who aligns the redesign's six template groups on their switch-on releases, separates the ad stack from the front end with the puzzles pages (ad stack alone) and subscribers' ad-free views of the redesigned templates (front end alone), standardises both groups to the ad-supported views' phone mix through the device registry so the split closes the joint ramp exactly, and values each fix at August's traffic as the service level files it, names the header-bidding ad stack at about 1,210,000 views a month with the front end second at about 810,000.",
+  "domain_test": "The deciding quantity is each co-shipped change's attributable over-line rate on the mobile views its fix acts on, which web performance engineering estimates from staggered real-user monitoring with partial-exposure groups and carries to the base within the cache state that decides whether a view downloads and compiles the new bundle or reuses it; with another field's nouns there is no content-hashed bundle that every release invalidates, so the first-view-after-a-deploy state that moves the attribution has nothing to stand on.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:separating-group-effects-carried-within-a-state-built-from-record-order",
+  "layer1": [
+    "a sampled real-user monitoring export at page-view grain in UTC whose collector history shows in the rows: tablet views forwarded and one title's app-webview beacons forwarded twice under fresh beacon ids until the forwarder fix of 4 May, and a sampling change with collector v2 on 3 June carried row by row in sample_weight",
+    "a release train log in Copenhagen local time with its UTC offset, across the summer-time change, joined to the views by time rather than by key",
+    "a device registry keyed by the model string the client reports, classing phones by benchmark band and listing tablets beside them",
+    "subscriber status from an effective-dated subscription register joined by account key, with signed-out devices carrying no account",
+    "two local editions re-mastheaded in March while the close-out reports every month by today's masthead, and one week in which a shared tag container stopped firing on two titles' local-edition pages",
+    "a synthetic crawl whose URL list was refreshed in June, with timed-out runs filed beside their completed reruns, and an asset register mapping hosts and path prefixes to changes",
+    "an image CDN daily log split by edge hits and origin fills, a fallback vendor that reports bytes in kilobytes for six weeks, and the crawler's own image fetches in the same log"
+  ]
 }

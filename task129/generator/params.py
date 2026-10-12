@@ -77,6 +77,11 @@ COLLECTOR_V2 = datetime(2026, 6, 3, 0, 0)       # local: new sampling rates
 FORWARDER_FIX = datetime(2026, 5, 4, 0, 0)      # local: tablets filtered, single forwarding
 TAG_GAP = (date(2026, 4, 27), date(2026, 5, 3))  # LA and KD local-edition pages not firing
 DUP_WINDOW = (date(2026, 3, 16), date(2026, 5, 3))  # ST app-webview beacons forwarded twice
+# local-edition tag container: an older RUM library sent a second beacon at the load event on every
+# title's local-edition pages (its own page-view key, the send time as the timestamp)
+SECOND_BEACON = (date(2026, 3, 16), date(2026, 4, 26))
+SECOND_P = {"under": 0.90, "over": 0.30}         # a view abandoned before load sends none
+SECOND_DELAY_S = (2, 9)                          # load event after the paint, seconds
 DEPLOY_QUIET_MIN = 10
 EXTRACT_PULLED = date(2026, 9, 5)
 AS_OF = date(2026, 9, 7)

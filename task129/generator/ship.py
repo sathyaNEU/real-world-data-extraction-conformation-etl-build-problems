@@ -13,7 +13,6 @@ import xlsxwriter
 
 import params as P
 import world as Wd
-import lab
 from golden import F
 
 XLSX_WHEN = datetime(2026, 9, 4, 16, 20, 0)
@@ -208,8 +207,11 @@ def change_register(rel, path):
 
 
 # ------------------------------------------------------------------ the close-out (context artifact)
+Q3 = (7, 8)
+
+
 def closeout_table(v):
-    v = v[(v.month >= 2) & (v.month <= 8)]
+    v = v[v.month.isin(Q3)]
     g = v.assign(sw=v.w * v.scored, ow=v.w * (v.scored & v.over)).groupby(["month", "title_cur"])
     t = pd.DataFrame({"views": g.w.sum(), "scored": g.sw.sum(), "over": g.ow.sum()}).reset_index()
     return t
@@ -223,15 +225,15 @@ def closeout(t, path):
     ws = wb.add_worksheet("By title")
     ws.write(0, 0, "Digital operations: Q3 service close-out, mobile page delivery", b)
     ws.write(1, 0, "v1.2, refreshed 4 September 2026 (owner Gunhild Lund). For the quarterly service review.")
-    ws.write(2, 0, "Monthly mobile page views and the share of scored views over the service line, by "
-                   "current masthead. Describes delivery against the line; it does not attribute the "
-                   "share to any release.")
+    ws.write(2, 0, "Mobile page views and the share of scored views over the service line, July and "
+                   "August, by current masthead. Describes delivery against the line; it does not "
+                   "attribute the share to any release.")
     hdr = ["Month", "Title", "Mobile page views", "Scored views", "Over-line views",
            "Share over line (%)"]
     for j, h in enumerate(hdr):
         ws.write(3, j, h, b)
     r = 4
-    for m in range(2, 9):
+    for m in Q3:
         for ti in P.TITLES:
             x = t[(t.month == m) & (t.title_cur == ti)].iloc[0]
             ws.write(r, 0, f"2026-{m:02d}")
@@ -249,7 +251,7 @@ def closeout(t, path):
     for j, h in enumerate(["Month", "Mobile page views", "Scored views", "Over-line views",
                            "Share over line (%)"]):
         ws2.write(2, j, h, b)
-    for i, m in enumerate(range(2, 9)):
+    for i, m in enumerate(Q3):
         x = t[t.month == m]
         ws2.write(3 + i, 0, f"2026-{m:02d}")
         ws2.write_number(3 + i, 1, int(x.views.sum()), n0)
@@ -261,94 +263,5 @@ def closeout(t, path):
     normalise_zip(path, datetime(2026, 9, 4, 11, 5))
 
 
-# ------------------------------------------------------------------ crawl, config, assets
-def crawl_files(rng, tgt):
-    df, v1, v2 = lab.crawl(rng)
-    csv(df, os.path.join(tgt, F["crawl"]))
-    csv(lab.asset_register(), os.path.join(tgt, F["assets"]))
-    cfg = {
-        "crawler": "SMDQ synthetic monitoring, monthly mobile crawl",
-        "owner": "Simone Thorsen",
-        "user_agent": lab.AGENT,
-        "profile": {"device": "Moto G Power (emulated)", "network": "4G throttled 9 Mbps / 170 ms",
-                    "consent": "no stored choice", "login": "anonymous (ad-supported layout)",
-                    "cache": "cold: one run per URL, browser cache and service worker cleared"},
-        "url_lists": {"v1": {"in_use_from": "2026-01-01", "urls": int(len(v1))},
-                      "v2": {"in_use_from": lab.LIST_V2_FROM.isoformat(), "urls": int(len(v2)),
-                             "note": "refreshed list: stale article URLs replaced"}},
-        "comparison_rule": "Comparisons across crawls use the URLs present in both crawls' lists.",
-        "retries": "A run that times out is retried once later the same night; the completed run "
-                   "is the run of record. Both runs are filed.",
-        "crawls": [{"crawl_date": d.isoformat(), "url_list": "v2" if d >= lab.LIST_V2_FROM else "v1"}
-                   for d in lab.CRAWL_DATES],
-    }
-    with open(os.path.join(tgt, F["crawlcfg"]), "w", encoding="utf-8") as f:
-        json.dump(cfg, f, ensure_ascii=False, indent=2)
-        f.write("\n")
-    return df, v1, v2
-
-
 def cdn_file(df, path):
     csv(df, path)
-
-
-# ------------------------------------------------------------------ the closed-fix roster
-FIXES = [
-    ("OPS-FX-231", "2023-03-14", "Lazy-load images below the fold", "artikel", 0.58, 118.0, 31.0),
-    ("OPS-FX-237", "2023-06-06", "Subset legacy web fonts", "all", 0.21, 64.0, 66.0),
-    ("OPS-FX-244", "2023-09-19", "Edge cache for front-page HTML", "forside", 1.42, 0.0, 6.4),
-    ("OPS-FX-251", "2023-11-28", "Stop video player autoload", "artikel, liveblog", 0.47, 212.0, 23.0),
-    ("OPS-FX-262", "2024-02-20", "Lazy-load ad slots on puzzle pages", "spil", 2.20, 46.0, 4.6),
-    ("OPS-FX-268", "2024-05-07", "Recompress hero images (quality 72)", "hero templates", 0.92, 180.0, 56.0),
-    ("OPS-FX-275", "2024-08-27", "Inline critical CSS", "all", 0.33, 8.0, 64.0),
-    ("OPS-FX-283", "2024-11-12", "Defer analytics tags", "all", 0.29, 22.0, 65.0),
-    ("OPS-FX-290", "2025-03-04", "Edge caching of article HTML", "artikel", 0.74, 0.0, 30.5),
-    ("OPS-FX-297", "2025-08-19", "Liveblog polling every 30 s instead of 10 s", "liveblog", 1.36, 14.0, 3.1),
-    ("OPS-FX-304", "2026-01-13", "Preconnect to the image host", "hero templates", 0.37, 0.0, 57.5),
-]
-
-
-def roster(rng, path):
-    rows = []
-    for fid, gl, name, scope, drop, kb, mviews in FIXES:
-        pre_v = int(round(mviews * 1e6 * 28 / 30.4 / 300)) * 300
-        post_v = int(round(pre_v * rng.uniform(0.97, 1.03) / 300)) * 300
-        s_pre = rng.uniform(0.17, 0.27)
-        s_post = s_pre - drop / 100
-        pre_o = int(round(pre_v * s_pre / 300)) * 300
-        post_o = int(round(post_v * s_post / 300)) * 300
-        golive = date.fromisoformat(gl)
-        fm = date(golive.year + (golive.month == 12), golive.month % 12 + 1, 1)
-        month_v = int(round(mviews * 1e6 * rng.uniform(0.98, 1.03) / 300)) * 300
-        saving = round((pre_o / pre_v - post_o / post_v) * month_v)
-        closed = golive + timedelta(days=int(rng.integers(30, 45)))
-        rows.append([fid, name, scope, gl, pre_v, pre_o, post_v, post_o, fm.strftime("%Y-%m"),
-                     month_v, saving, kb, closed.isoformat()])
-    cols = ["Fix", "What was changed", "Templates", "Go-live", "Views, 4 wk before",
-            "Over-line views, 4 wk before", "Views, 4 wk after", "Over-line views, 4 wk after",
-            "First full month", "Mobile views in that month", "Realised saving (views a month)",
-            "Crawl kB removed per page", "Closed"]
-    wb = workbook(path, "Simone Thorsen", datetime(2026, 2, 3, 9, 40))
-    b = wb.add_format({"bold": True})
-    n0 = wb.add_format({"num_format": "#,##0"})
-    ws = wb.add_worksheet("Closed fixes")
-    ws.write(0, 0, "Operations squad: fixes closed, with what each brought back", b)
-    ws.write(1, 0, "Saving = (over-line share before - share after) x mobile views of the fix's "
-                   "templates in the first full month after go-live. Counts are mobile field views.")
-    for j, h in enumerate(cols):
-        ws.write(2, j, h, b)
-    for i, r in enumerate(rows):
-        for j, val in enumerate(r):
-            if isinstance(val, (int, np.integer)):
-                ws.write_number(3 + i, j, int(val), n0)
-            elif isinstance(val, float):
-                ws.write_number(3 + i, j, val)
-            else:
-                ws.write(3 + i, j, val)
-    ws.set_column(0, 0, 11)
-    ws.set_column(1, 1, 42)
-    ws.set_column(2, 2, 18)
-    ws.set_column(3, 12, 14)
-    wb.close()
-    normalise_zip(path, datetime(2026, 2, 3, 9, 40))
-    return pd.DataFrame(rows, columns=cols)

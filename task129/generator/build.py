@@ -35,8 +35,7 @@ MTIME = {
     "spine": "2026-09-05 06:40", "release": "2026-09-04 17:02", "rollout": "2026-08-04 09:12",
     "changes": "2026-09-04 16:20", "registry": "2026-09-01 08:30", "subs": "2026-09-05 06:55",
     "editions": "2026-03-16 10:05", "sla": "2025-12-10 14:30", "paywall": "2026-01-05 09:00",
-    "closeout": "2026-09-04 11:05", "crawl": "2026-08-19 07:48", "crawlcfg": "2026-06-01 12:10",
-    "assets": "2026-08-04 15:30", "roster": "2026-02-03 09:40", "cdn": "2026-09-02 05:15",
+    "closeout": "2026-09-04 11:05", "cdn": "2026-09-02 05:15",
     "cdnapp": "2026-06-12 13:20", "guide": "2026-09-04 15:42", "thread": "2026-09-02 11:03",
     "manifest": "2026-09-05 07:10", "desktop": "2026-09-04 11:20", "amp": "2026-09-03 10:00",
     "news": "2026-09-01 07:00",
@@ -67,10 +66,8 @@ def write_pack(out):
         L0[k] = pd.read_csv(p(k), keep_default_na=False, dtype=str)
     v = G.views(L0)
     ship.closeout(ship.closeout_table(v), p("closeout"))
-    ship.crawl_files(rngk(3), tgt)
     daily = v.groupby(v.day.dt.date).w.sum()
     ship.cdn_file(cdn.delivery_log(rngk(4), daily), p("cdn"))
-    ship.roster(rngk(5), p("roster"))
     docs.service_level(p("sla"))
     docs.paywall(p("paywall"))
     docs.vendor_appendix(p("cdnapp"))
@@ -126,7 +123,7 @@ def metadata(out, tgt):
         "objective": "Root-Cause Analysis",
         "prompt_shape": "11 (before and after with a control)",
         "as_of": P.AS_OF.isoformat(),
-        "deliverables": ["q4_squad_call.pptx", "q4_squad_call_cohort_effects.xlsx"],
+        "deliverables": ["q4_squad_call.pptx", "q4_squad_call_workings.xlsx"],
         "distractor_files": [F[k] for k in G.DISTRACTORS],
         "input_gates": {"files": len(files), "formats": sorted(fmts), "largest_file": biggest,
                         "largest_file_rows": rows},
