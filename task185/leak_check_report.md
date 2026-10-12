@@ -44,3 +44,24 @@ Stump terms swept: reading, conversion, readings, difference, detection, domain,
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+Read twice by an isolated reader (general-purpose, sonnet, medium) on fresh copies of prompt.txt and target/: once at stage 4 and once after the extract notes gained the sub-district line.
+
+1. Decisive step: none quoted beyond the filed estimand. The manual's clause 3.1 ("each day's maximum as the station's present instrument would have recorded it") and the station history's paired-readings line name the direction (bring the glass years to the probe); neither reader found a sentence giving the size or the form of the conversion. Ruled harmless: the estimand is filed by design (determinism-check §1) and the readable rung is R1; the decisive move (a conversion sized at each reading) is stated nowhere.
+2. Ranking or answer files: none.
+3. Analyst-only file: none; the parallel observations archive has its reason in the station history.
+4. Answer-like figure: none (the 1.32 loading and the quote's terms are inputs).
+5. Literal sentences: manual 2.1, 2.2, 3.1 to 3.7, the term sheet's triggers, payout, attachment and premium rows, the notes' 9 am day. Each executes to the golden's construction; the Tolbin Hill fallback never binds (no season day missing at Merrin Flat, asserted).
+6. What decides: an analytical choice (how to put the half-degree glass readings on the probe's basis across the two triggers), with rule execution around it; no plant found.
+
+The notes' sentence on the register's sub-districts bears only on the sub-district split the prompt asks for, never on the premium (second read).
+
+Mechanical lines: all fifteen ruled harmless (triggers filed by design, a section number, term sheets carrying no rate, notes and documents naming no move or size, sub-district names ranking nothing, forward inceptions at the renewal date).
+
+Realism notes and rulings:
+- Schedule endorsements dated before a block's inception on the forward-dated rows: fixed in the generator; no figure moved.
+- Variety lines repeating a block's insured hectares, and duplicate lodgements repeating an assessed amount: the asks' devices (D6, D1), kept.
+- Block register at two decimals against the schedule's one: planted areas by variety against the insured area, kept.
+- Member names and numbers, claim and payment numbering, the tidy manual and term sheets: kept; the documents are the two to four pages of operational content the pack allows.
