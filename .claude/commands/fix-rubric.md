@@ -50,7 +50,7 @@ python3 .claude/skills/build-pipeline/freeze.py check taskNN --mode rubric
 Exit 1 means the main side moved: undo it. A PASS that reports no ask file moved changed nothing graded.
 
 **5. Re-ship.** Re-cut `target.zip`, append to `pipeline.json` `returned` (`repair: "rubric"`), set `status`
-`shipped`, one `## Tried and rejected` line per device replaced (what the responses did to the old one), an
+`SHIPPED`, one `## Tried and rejected` line per device replaced (what the responses did to the old one), an
 ask-sheet line per new device, rewrite the ledger row's status, and commit `RESHIPPED (taskNN): rubric, <the
 devices replaced>` with the zip and `golden/` force-added (`CLAUDE.md`, Git).
 

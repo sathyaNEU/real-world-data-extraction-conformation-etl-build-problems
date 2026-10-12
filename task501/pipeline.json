@@ -1,28 +1,30 @@
 {
- "task": "task501",
- "domain": "quantitative-finance",
- "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
- "updated": "2026-10-11",
- "stump": "A competent solver runs the walk-forward as filed, selects the age-band basis and sizes the buffer from the end-of-horizon shortfalls in its error table (largest 61,852 thousand), electing CHF 200 million; the step that lands them there is never tracing realised against forecast cumulative calls month by month inside each horizon, where the first-half run of calls puts realised 96,560 thousand ahead at a month-end, the exposure the facility is drawn against, which elects CHF 225 million.",
- "harden_loops": 0,
- "solver_rounds": [],
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "approved": null,
- "delivered": null,
- "portal": [
-  {
-   "version": "v2",
-   "date": "2026-10-11",
-   "landed": 2,
-   "of": 2,
-   "note": "filed walk-forward executed by both responses"
-  }
- ],
- "blocked_on": "checkpoint B (/approve); vocab key quantitative-finance to be added by the author before guard.py register"
+  "task": "task501",
+  "domain": "quantitative-finance",
+  "objective": "forecasting",
+  "stage": 3,
+  "stage_name": "build",
+  "updated": "2026-10-11",
+  "stump": "A competent solver runs the walk-forward as filed, selects the age-band basis and sizes the buffer from the end-of-horizon shortfalls in its error table (largest 61,852 thousand), electing CHF 200 million; the step that lands them there is never tracing realised against forecast cumulative calls month by month inside each horizon, where the first-half run of calls puts realised 96,560 thousand ahead at a month-end, the exposure the facility is drawn against, which elects CHF 225 million.",
+  "harden_loops": 0,
+  "solver_rounds": [],
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "approved": null,
+  "delivered": null,
+  "portal": [
+    {
+      "version": "v2",
+      "date": "2026-10-11",
+      "landed": 2,
+      "of": 2,
+      "note": "filed walk-forward executed by both responses"
+    }
+  ],
+  "blocked_on": "checkpoint B (/approve); vocab key quantitative-finance to be added by the author before guard.py register",
+  "status": "FAILED_TO_STUMP",
+  "owner": "sathya8571"
 }

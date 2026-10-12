@@ -4,7 +4,7 @@
   "objective": "anomaly-detection",
   "stage": 8,
   "stage_name": "delivered",
-  "updated": "2026-10-10",
+  "updated": "2026-10-11",
   "stump": "A competent solver counts each trust's deaths after a wait of more than four hours for a level-3 bed, sets aside the trusts holding no level-3 beds, reads the test in section 4 of the terms of reference (at any time while the patient waited, a staffed bed with no patient in it that was the trust's to use, or another of the trust's own patients admitted; a bed the bed bureau has allocated is the network's), computes it from the unit feed's stays against the staffed beds and files Prideswick at 15 over Ristenholm's 2; the step that lands it there is taking each stay's admitted_at, the minute the bed was assigned, as the minute a patient was in the bed: through every Stennock long wait since the platform went live its unit held one or two staffed beds assigned at the morning bed meeting to its own elective centre patients, who the theatre extract shows had not left recovery when the waiting patient's decision was made, so those beds had no patient in them and were Stennock's to use, 27 deaths, the largest number the review can confirm.",
   "harden_loops": 3,
   "solver_rounds": [
@@ -82,5 +82,8 @@
     "leak": "REVIEW, no LEAK",
     "surface": "0 promoted pairs",
     "next": "/solve 2 before portal test 2, then a judge rehearsal only if the author asks for one. One response on Stennock is survivable while DV8 stays silent; both top responses on Stennock is the stopping rule's ceiling (re-root the ladder, not harden the asks)."
-  }
+  },
+  "status": "SHIPPED",
+  "portal_id": "8fee9bfd-50c0-45a8-8f2e-69966ee4d1d8",
+  "portal_status": "PENDING_REVIEW"
 }

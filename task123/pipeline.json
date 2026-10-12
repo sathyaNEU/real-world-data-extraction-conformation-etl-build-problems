@@ -4,7 +4,7 @@
   "objective": "etl",
   "stage": "retired",
   "stage_name": "retired under the author's standing rule; ET11 takes the slot",
-  "updated": "2026-10-09",
+  "updated": "2026-10-11",
   "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, builds each grantee's twelve months from the identity on the register as held with every quarter in the year its own return runs within, gives back all 821 published rows, every offer and every rate, reads rule 4.1 against rule 2's census list and drops the 17 grantees whose year to 31 March 2026 has no annual return on the register, and strikes the offers at 34.79 cents on 10 names, because it takes scope from the grants register's start and end dates (start of the grant, end of its current term), which keep Ilam After School Care Society in, so it scores its true 13.62 per cent fall over the twelve months to June 2026 and offers it, when the Variations sheet shows that its term ended on 31 July 2026 and its renewal runs from 1 November 2026, nothing paid for August to October, so it held no operating grant in force at the census (rule 3.1), and the answer scores 132 grantees and strikes 42.55 cents on nine.",
   "harden_loops": 3,
   "solver_rounds": [
@@ -60,5 +60,7 @@
   "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
   "delivered": null,
   "portal": null,
-  "source_note": "analytical_tasks/07_data_extraction_conformation/ET01_sec-fsds-point-in-time-revenue-screen.md"
+  "source_note": "analytical_tasks/07_data_extraction_conformation/ET01_sec-fsds-point-in-time-revenue-screen.md",
+  "status": "FAILED_TO_STUMP",
+  "owner": "oviya1301"
 }

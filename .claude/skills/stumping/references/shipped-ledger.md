@@ -6,7 +6,11 @@ Identity (domain, gap, pattern, driver, lineage) is on the fingerprint card
 protect a stump is in `strategies.md`. This file holds status and what the portal said.
 
 **Keeping it current.** Rewrite a build's row when its status changes (drawn, built, shipped,
-re-rooted, retired), and add the portal result with its date the day the author reports it. When
+re-rooted, retired), and add the portal result with its date the day the author reports it. The
+portal record below is the author's list from the portal: an APPROVED build is `SHIPPED & APPROVED
+MM-DD`, a PENDING_REVIEW build is `SHIPPED, delivered MM-DD, pending review`, and a build missing
+from the list is `FAILED_TO_STUMP: backlog <handle>`, back in its lane owner's backlog wave
+(`.claude/authors/`). The parser ranks the three as approved, delivered and failed. When
 an architecture dies, move it to Earlier architectures in the same edit: a row describing a dead
 version misleads the clone screen. task1 to task24 predate the ledger and have cards only.
 
@@ -34,6 +38,33 @@ Gap and pattern are the card's, decisive first; calibration and artifact are on 
 "Listed" means on the author's refresh lists of 10-02 or 10-07, which state no status. Rows 41 to
 43 follow the folders and cards. Author is the lane owner in the root `START_HERE.md`; builds
 before the lanes record none (`-`).
+
+## Portal record
+
+The author's portal list, rewritten whole each time they report it. Tasks below 100 are not tracked here.
+
+| Task | Portal id | Portal status | Date |
+|---|---|---|---|
+| task100 | c25e448d-6679-4580-9b46-5b0850304c3a | APPROVED | 10-06 |
+| task101 | 1aa2aa53-5cbb-4103-862a-758cb725d502 | APPROVED | 10-08 |
+| task102 | 5a798ae4-0ac3-4254-b895-028eeded4b10 | APPROVED | 10-08 |
+| task103 | 079972d3-05c9-4c24-9546-7c87c4c940a8 | APPROVED | 10-05 |
+| task104 | 75942cb4-cf82-41c4-865d-229ea22276ea | APPROVED | 10-08 |
+| task105 | 0d663732-82bf-4fba-ad56-a67b5074f031 | APPROVED | 10-05 |
+| task106 | 16c2111a-934c-4e8a-b1ca-ed2335c9a507 | APPROVED | 10-06 |
+| task107 | 17d4e5d9-7fd9-4acf-a2ab-e82de71ae010 | APPROVED | 10-06 |
+| task108 | 4d1e2903-6452-45b0-afec-ce7cf3b70e50 | APPROVED | 10-09 |
+| task109 | 9d1851a5-99cc-4129-b838-806c7ada966d | APPROVED | 10-09 |
+| task110 | 5a548639-10a4-49ba-93b3-3bd5d35b7894 | PENDING_REVIEW | - |
+| task111 | 34355e43-f330-4812-91ff-c9e3f37e920a | APPROVED | 10-11 |
+| task114 | d01e4abc-d188-424e-a322-c6fe043b29fd | PENDING_REVIEW | - |
+| task115 | 6e962c38-379f-4c7a-97c7-7d38e6fed366 | APPROVED | 10-11 |
+| task116 | db59e379-425e-474e-9876-f36d07e0f97d | PENDING_REVIEW | - |
+| task117 | 261f5aed-b97e-417f-b02d-98f44bb3263c | PENDING_REVIEW | - |
+| task119 | 8fee9bfd-50c0-45a8-8f2e-69966ee4d1d8 | PENDING_REVIEW | - |
+| task126 | adeccacd-4719-4d23-90c4-a5293c695201 | PENDING_REVIEW | - |
+| task132 | 4a42e005-f62d-469b-96cc-8a21e53b1953 | APPROVED | 10-11 |
+| task500 | 0e7ed8a4-b426-4c9f-9268-f692031dc597 | PENDING_REVIEW | - |
 
 ## Current builds
 
@@ -114,53 +145,54 @@ before the lanes record none (`-`).
 | 97 (v5) | built 10-02 (listed) | DSS hardship fund | FC | time population | E, D | renewal depends on the address's grant history | - | - | 60 caseworkers | none reported | - |
 | 98 (v7) | hardened 10-04 (listed) | P&E social rental | FC | population time | none | sold renovation dwellings leave once | - | - | 112 short | none reported | - |
 | 99 | built 08-17 (spare slot of task31) | SCL sourcing | FC | - | - | characteristic gate read as a category | - | - | which family | none reported | - |
-| 100 (v2) | built 10-05 (listed) | P&E schools equity | ETL | time population | none | census rolled across the year end | - | - | four schools | none reported | - |
-| 101 | built (listed) | NPO cold-spot line | DESC | population rule | none, B | own top-ups sit in the baseline | - | - | 12.40 GBP a head | none reported | - |
-| 102 | built (listed) | P&E special education | FC | time objective | none | weekend due dates slip a fiscal year | - | - | $50,300,000 | both missed the call, about 50 | - |
-| 103 (v4) | built 10-04 (listed) | NPO food reserve | AD | population time | D | one hamper per household per week | - | - | CAD 279,234 | v3: stumped, still 60+ on the asks | - |
-| 104 | built 10-03 (card only) | DQ alerting | AD | population rule | none, B | least sensitive threshold still paging | - | - | volwatch 3.25 | none reported | - |
-| 105 (v5) | built 10-04 (listed) | DSS lettings | OPP | objective time | C | homes sit on the nearest open branch | - | - | 150 tenancies | v2 stumped (250), asks all filed; v4 solved | - |
-| 106 | hardened 10-05 (listed) | SCL backhaul | OPP | objective population | none | one corridor's suppliers share return legs | - | - | EUR 370,900 | run 3: both missed, 41 and 70 | - |
-| 107 (v4) | built 10-05 (listed) | NPO power credit | FC | time population | A | intake moves to the experienced rate | - | - | $275,000 | 10-05: stumped, deterministic, about 50 | - |
-| 108 | built 10-06 (listed) | SCL co-pack | FC | rule population | D, B | each requirement counted once | - | - | 12,853 cases | none reported | - |
-| 109 (v2) | drawing 10-07 (card only) | BOA parcel claims | ETL | population rule | B | two unwritten compilation rules | - | - | promise days | none reported | - |
-| 110 | drawing 10-06 (card only) | AAF fixed assets | ETL | population rule | B | enhancements ride the host's remaining life | - | - | $951,870 | none reported | - |
-| 111 (v2) | drawing 10-06 (card only) | BOA field service | RCA | time objective | none, A | which cause still operates forward | - | - | parts and van stock | none reported | - |
-| 114 | drawing 10-08 (card only) | BOA facilities | DESC | time population | A, D | demand only when two parties share a site | - | - | dial | none reported | - |
-| 115 | drawing 10-08 (card only) | MCR pricing | FC | time population | D, E | second response only where it undercuts | - | - | which of N | none reported | - |
-| 116 | drawing 10-08 (card only) | PA monetisation | OPP | population objective | C | value only from one-buyer groups | - | - | slate under cap | none reported | - |
-| 117 | delivered 10-09 | SCL sourcing | FC | time population | E, A | draw caps via a dated join | - | - | 110 kW | none reported | - |
-| 118 | built 10-09, determinism pass | MCR media | OPP | objective rule | none, C, B | gain only on volume tests have not banked | - | - | 1,250,000 clicks | none reported | - |
-| 119 (v2) | delivered 10-10 | P&E mortality review | AD | objective population | C | beds held empty for planned work | - | - | Stennock | none reported | - |
-| 120 | retired 10-09 after round 1 | ECON revenue tiers | DESC | population objective | none, B | unit formed by the claimant's roster | - | - | tier floors | not submitted | - |
-| 121 (v2) | retired 10-10: no hardening rung | PA checkout | RCA | population time | none, A | signed-out customers own accounts | - | - | sprint target | not submitted | - |
-| 122 (v2) | retired 10-10: Gate G send-back | PA experimentation | CEX | time rule | none, B | log keeps only pre-close outcomes | - | - | HC-37 | not submitted | - |
-| 123 | retired 10-09 (author's rule) | NPO grantee finance | ETL | time rule | B | trailing total over filed years only | - | - | 42.55 cents | not submitted | - |
-| 124 (v3) | hardened 10-10 | BOA capacity block | FC | population time | E | analogs held down by an intervention | - | - | 400 MW split | none reported | - |
-| 125 | retired 10-10: judge SEND_BACK | AAF audit sampling | AD | population time | none, A, B | a filed date ends a component class | - | - | 6,900 payments | not submitted | - |
-| 126 | built 10-10, determinism pass | P&E pendency | DESC | population rule | none, D | a carried file joins two units | - | - | 28.9 months | none reported | - |
-| 127 | retired 10-10: judge SEND_BACK | NPO heat-pump slots | OPP | time objective | none, C, E | a team must finish the last step | - | - | 1,170 slots | not submitted | - |
-| 128 | built 10-10, not deterministic | BOA patch tickets | OPP | objective rule | none, C, B | capacity per booked interval | - | - | ticket split | none reported | - |
-| 129 | drawing 10-10 (design) | BOA service SLA | RCA | population objective | E, D | co-switched causes split by groups | - | - | cause named | none reported | - |
-| 130 (v3) | retired 10-11: three architectures spent | ACT claims | FC | objective population | A | regression to the mean after selection | - | - | $4,060 PMPM | v1, v2 solved 10-10, 10-11 | sathya8571 |
-| 131 | delivered 10-10 | MCR loyalty | CEX | population objective | none | card lift nets out inside a household | - | - | CHF 972k | none reported | - |
-| 132 | delivered 10-11 | ENR asset condition | FC | population time | none | a replacement restarts the wear curve | - | - | 13 lots | none reported | sathya8571 |
-| 133 | delivered 10-11 after round 1 | BANK credit loss | FC | time | none | condition the curve on survival to date | - | - | AUD 13,160,000 | r1: one stumped, one at 100 | sathya8571 |
-| 134 (v2) | drawing 10-11 | HDE utilisation | FC | time population | none | inflow hazard peaks after a year | - | - | - | none reported | sathya8571 |
-| 135 | drawing 10-11 | PES sediment load | FC | objective time | none | back-transformed median is not the mean | - | - | - | none reported | sathya8571 |
-| 180 | open: 3 architectures spent, awaiting a draw | ECON revenue protection | AD | - | - | seed AD03: night-register bypass hides in totals | - | - | which district | none reported | oviya13ya |
-| 181 (v2) | delivered twice; r2 fix in build | EPH outbreak surveillance | AD | time population | none | nowcast each area on its own delay | - | - | Griffith | r1 10-11: stumped, 52 (asks); r2: not deterministic (PR-07 4.2) | oviya13ya |
-| 182 | delivered 10-11, awaiting the portal | PES groundwater | AD | objective | none | each bore's own lagged driver response | - | - | 4 owners, 5 bores | none reported | oviya13ya |
-| 228 (v2) | drawing 10-11 | PES soil moisture | DQ | objective | none | shared input breaks triple collocation | - | - | 8 stations | none reported | developer 3 |
-| 229 (v2) | drawing 10-11 (START_HERE reads shipped) | GSD missing data | DQ | time population | none | checks record a state before fixing it | - | - | six sites | none reported | developer 3 |
-| 230 (v2) | drawing 10-11 | HFE reliability | DQ | time population | A | hit rate falls as targets get rarer | - | - | five streams | none reported | developer 3 |
-| 253 | drawing (in build, no card on main) | P&E housing | DESC | - | - | - | - | - | - | none reported | sathay3012 |
-| 254 | drawing (in build, no card on main) | SCL aviation crews | DESC | - | - | - | - | - | - | none reported | sathay3012 |
-| 445 | delivered 10-11; hardening loop 1 in build | QF 13F ownership | ETL | time population | none | complete holdings reporter by reporter | - | - | 5 of 12 crowded | determinism fail | oviya1301 |
-| 446 (v2) | delivered 10-11 | BANK watch list | ETL | time population | none | carry error rates, not yield | - | - | 133 groups | none reported | oviya1301 |
-| 447 | drawing (in build, no card on main) | BANK peer benchmarks | ETL | - | - | - | - | - | - | none reported | oviya1301 |
-| 500 (v3) | delivered 10-11, awaiting the portal | ECON lodging tax | RCA | rule population | B | each change measured by the office's matched-reference method | - | - | long-stay exemption, $3,235k | v1, v2 solved 10-10, 10-11 | sathya8571 |
-| 501 (v2) | in build 10-11 | QF pension liquidity | FC | time population | none | buffer is the furthest calls ran ahead of the path | - | - | CHF 225m tranche | v2 10-11: landed by 2 of 2 (filed walk-forward executed) | sathya8571 |
+| 100 (v2) | SHIPPED & APPROVED 10-06 | P&E schools equity | ETL | time population | none | census rolled across the year end | - | - | four schools | none reported | - |
+| 101 | SHIPPED & APPROVED 10-08 | NPO cold-spot line | DESC | population rule | none, B | own top-ups sit in the baseline | - | - | 12.40 GBP a head | none reported | - |
+| 102 | SHIPPED & APPROVED 10-08 | P&E special education | FC | time objective | none | weekend due dates slip a fiscal year | - | - | $50,300,000 | both missed the call, about 50 | - |
+| 103 (v4) | SHIPPED & APPROVED 10-05 | NPO food reserve | AD | population time | D | one hamper per household per week | - | - | CAD 279,234 | v3: stumped, still 60+ on the asks | - |
+| 104 | SHIPPED & APPROVED 10-08 | DQ alerting | AD | population rule | none, B | least sensitive threshold still paging | - | - | volwatch 3.25 | none reported | - |
+| 105 (v5) | SHIPPED & APPROVED 10-05 | DSS lettings | OPP | objective time | C | homes sit on the nearest open branch | - | - | 150 tenancies | v2 stumped (250), asks all filed; v4 solved | - |
+| 106 | SHIPPED & APPROVED 10-06 | SCL backhaul | OPP | objective population | none | one corridor's suppliers share return legs | - | - | EUR 370,900 | run 3: both missed, 41 and 70 | - |
+| 107 (v4) | SHIPPED & APPROVED 10-06 | NPO power credit | FC | time population | A | intake moves to the experienced rate | - | - | $275,000 | 10-05: stumped, deterministic, about 50 | - |
+| 108 | SHIPPED & APPROVED 10-09 | SCL co-pack | FC | rule population | D, B | each requirement counted once | - | - | 12,853 cases | none reported | - |
+| 109 (v2) | SHIPPED & APPROVED 10-09 | BOA parcel claims | ETL | population rule | B | two unwritten compilation rules | - | - | promise days | none reported | - |
+| 110 | SHIPPED, delivered, pending review | AAF fixed assets | ETL | population rule | B | enhancements ride the host's remaining life | - | - | $951,870 | none reported | - |
+| 111 (v2) | SHIPPED & APPROVED 10-11 | BOA field service | RCA | time objective | none, A | which cause still operates forward | - | - | parts and van stock | none reported | - |
+| 114 | SHIPPED, delivered, pending review | BOA facilities | DESC | time population | A, D | demand only when two parties share a site | - | - | dial | none reported | - |
+| 115 | SHIPPED & APPROVED 10-11 | MCR pricing | FC | time population | D, E | second response only where it undercuts | - | - | which of N | none reported | - |
+| 116 | SHIPPED, delivered, pending review | PA monetisation | OPP | population objective | C | value only from one-buyer groups | - | - | slate under cap | none reported | - |
+| 117 | SHIPPED, delivered, pending review | SCL sourcing | FC | time population | E, A | draw caps via a dated join | - | - | 110 kW | none reported | - |
+| 118 | FAILED_TO_STUMP: backlog oviya1301 | MCR media | OPP | objective rule | none, C, B | gain only on volume tests have not banked | - | - | 1,250,000 clicks | none reported | oviya1301 |
+| 119 (v2) | SHIPPED, delivered, pending review | P&E mortality review | AD | objective population | C | beds held empty for planned work | - | - | Stennock | none reported | - |
+| 120 | FAILED_TO_STUMP: backlog sathay3012 | ECON revenue tiers | DESC | population objective | none, B | unit formed by the claimant's roster | - | - | tier floors | not submitted | sathay3012 |
+| 121 (v2) | FAILED_TO_STUMP: backlog sathay3012 | PA checkout | RCA | population time | none, A | signed-out customers own accounts | - | - | sprint target | not submitted | sathay3012 |
+| 122 (v2) | FAILED_TO_STUMP: backlog perssathya | PA experimentation | CEX | time rule | none, B | log keeps only pre-close outcomes | - | - | HC-37 | not submitted | perssathya |
+| 123 | FAILED_TO_STUMP: backlog oviya1301 | NPO grantee finance | ETL | time rule | B | trailing total over filed years only | - | - | 42.55 cents | not submitted | oviya1301 |
+| 124 (v3) | FAILED_TO_STUMP: backlog sathya8571 | BOA capacity block | FC | population time | E | analogs held down by an intervention | - | - | 400 MW split | none reported | sathya8571 |
+| 125 | FAILED_TO_STUMP: backlog oviya13ya | AAF audit sampling | AD | population time | none, A, B | a filed date ends a component class | - | - | 6,900 payments | not submitted | oviya13ya |
+| 126 | SHIPPED, delivered, pending review | P&E pendency | DESC | population rule | none, D | a carried file joins two units | - | - | 28.9 months | none reported | - |
+| 127 | FAILED_TO_STUMP: backlog sathay3012 | NPO heat-pump slots | OPP | time objective | none, C, E | a team must finish the last step | - | - | 1,170 slots | not submitted | sathay3012 |
+| 128 | FAILED_TO_STUMP: backlog oviya1301 | BOA patch tickets | OPP | objective rule | none, C, B | capacity per booked interval | - | - | ticket split | none reported | oviya1301 |
+| 129 | FAILED_TO_STUMP: backlog perssathya | BOA service SLA | RCA | population objective | E, D | co-switched causes split by groups | - | - | cause named | none reported | perssathya |
+| 130 (v3) | FAILED_TO_STUMP: backlog sathya8571 | ACT claims | FC | objective population | A | regression to the mean after selection | - | - | $4,060 PMPM | v1, v2 solved 10-10, 10-11 | sathya8571 |
+| 131 | FAILED_TO_STUMP: backlog perssathya | MCR loyalty | CEX | population objective | none | card lift nets out inside a household | - | - | CHF 972k | none reported | perssathya |
+| 132 | SHIPPED & APPROVED 10-11 | ENR asset condition | FC | population time | none | a replacement restarts the wear curve | - | - | 13 lots | none reported | sathya8571 |
+| 133 | FAILED_TO_STUMP: backlog sathya8571 | BANK credit loss | FC | time | none | condition the curve on survival to date | - | - | AUD 13,160,000 | r1: one stumped, one at 100 | sathya8571 |
+| 134 (v2) | FAILED_TO_STUMP: backlog sathya8571 | HDE utilisation | FC | time population | none | inflow hazard peaks after a year | - | - | - | none reported | sathya8571 |
+| 135 | FAILED_TO_STUMP: backlog sathya8571 | PES sediment load | FC | objective time | none | back-transformed median is not the mean | - | - | - | none reported | sathya8571 |
+| 180 | FAILED_TO_STUMP: backlog oviya13ya | ECON revenue protection | AD | - | - | seed AD03: night-register bypass hides in totals | - | - | which district | none reported | oviya13ya |
+| 181 (v2) | FAILED_TO_STUMP: backlog oviya13ya | EPH outbreak surveillance | AD | time population | none | nowcast each area on its own delay | - | - | Griffith | r1 10-11: stumped, 52 (asks); r2: not deterministic (PR-07 4.2) | oviya13ya |
+| 182 | FAILED_TO_STUMP: backlog oviya13ya | PES groundwater | AD | objective | none | each bore's own lagged driver response | - | - | 4 owners, 5 bores | none reported | oviya13ya |
+| 183 | FAILED_TO_STUMP: backlog oviya13ya | ENR distribution reliability | AD | time population | none | repeat failures concentrate in parts already failed twice | - | - | Quarry Hill 21 | none reported | oviya13ya |
+| 228 (v2) | FAILED_TO_STUMP: backlog perssathya | PES soil moisture | DQ | objective | none | shared input breaks triple collocation | - | - | 8 stations | none reported | perssathya |
+| 229 (v2) | FAILED_TO_STUMP: backlog perssathya | GSD missing data | DQ | time population | none | checks record a state before fixing it | - | - | six sites | none reported | perssathya |
+| 230 (v2) | FAILED_TO_STUMP: backlog perssathya | HFE reliability | DQ | time population | A | hit rate falls as targets get rarer | - | - | five streams | none reported | perssathya |
+| 253 | FAILED_TO_STUMP: backlog sathay3012 | P&E housing | DESC | - | - | - | - | - | - | none reported | sathay3012 |
+| 254 | FAILED_TO_STUMP: backlog sathay3012 | SCL aviation crews | DESC | - | - | - | - | - | - | none reported | sathay3012 |
+| 445 | FAILED_TO_STUMP: backlog oviya1301 | QF 13F ownership | ETL | time population | none | complete holdings reporter by reporter | - | - | 5 of 12 crowded | determinism fail | oviya1301 |
+| 446 (v2) | FAILED_TO_STUMP: backlog oviya1301 | BANK watch list | ETL | time population | none | carry error rates, not yield | - | - | 133 groups | none reported | oviya1301 |
+| 447 | FAILED_TO_STUMP: backlog oviya1301 | BANK peer benchmarks | ETL | - | - | - | - | - | - | none reported | oviya1301 |
+| 500 (v3) | SHIPPED, delivered, pending review | ECON lodging tax | RCA | rule population | B | each change measured by the office's matched-reference method | - | - | long-stay exemption, $3,235k | v1, v2 solved 10-10, 10-11 | sathya8571 |
+| 501 (v2) | FAILED_TO_STUMP: backlog sathya8571 | QF pension liquidity | FC | time population | none | buffer is the furthest calls ran ahead of the path | - | - | CHF 225m tranche | v2 10-11: landed by 2 of 2 (filed walk-forward executed) | sathya8571 |
 
 ## Earlier architectures
 

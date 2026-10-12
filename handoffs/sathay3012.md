@@ -2,9 +2,7 @@
 
 Lane: Descriptive & Distribution Analysis (block task253 to task300). Both tasks are `in build` (Owner sathay3012)
 in the root `START_HERE.md` on main. No agent is running; nothing is half-written. Every build change is committed
-and pushed on the build branches below. This folder (on branch `claude/exciting-tesla-84medc`) holds this note, the
-session's agent briefs, task254 architecture 3's prototype scripts and task253's round 1 and judge evidence; all of
-it was local scratch before.
+and pushed on the build branches below. The session's extras are listed at the end.
 
 Status board (Artifact, shared database `builds`, one row per task):
 https://claude.ai/artifact/Ht1rZ4FAUWxn91Ma75XRzC (titled "Distribution Analysis Board"; both rows set ON HOLD).
@@ -71,29 +69,11 @@ https://claude.ai/artifact/Ht1rZ4FAUWxn91Ma75XRzC (titled "Distribution Analysis
   monitoring windows from a right-truncated case series: read literally the filed estimand gave the stump's month (a
   fork); refiled, every reflex correction gives the golden; asks failed the cracker. Both spent.
 
-## Process notes that cost time this session (read before resuming)
+## Where the session's extras went
 
-1. **Merge main first.** Main changed the spec mid-build on 2026-10-11 (prompt.txt, `precut.py`, literal determinism,
-   the semantic fork table, the cracker sheet, `figures_check.py`, the ask gate, models per role). Both branches have
-   main merged as of 2026-10-11/12; merge `origin/main` again before resuming, and re-run `precut.py`.
-2. **Keep the main checkout on current main**: the Skill tool loads skills from it.
-3. **Pool the guard.** `guard.py` only sees its own branch's cards; point `FINGERPRINT_CARDS` at a folder with main's
-   cards plus every in-flight card taken from its own branch for `check` and `heart`, and run `register` without it.
-   task253 v1's collision with task230 was invisible without this.
-4. **Worktrees and scratch.** Work each build in its own git worktree outside the scratchpad (this session used
-   `.work/wt253` and `.work/wt254` in the repo, excluded by `.git/info/exclude`); keep agents' scratch out of the
-   scratchpad, which must hold nothing but the isolated sandbox while a solver, reader or judge runs.
-5. **Roles** (build-pipeline, Models and effort): designer Opus max; builder Opus medium; leak reader Sonnet medium;
-   clone auditor Opus medium; solver `Explore` Opus high; judge Sonnet medium. A repair is always a fresh agent with a
-   short brief on committed state (the `briefs/` here are the ones used).
-6. **grade.py** matches tokens: a wrong call can be read as LANDED on shared words, and region or hub names inflate the
-   ask share. Read both and adjudicate by figures; record the reading in the round file and the pipeline row.
-7. **The determinism-judge agent has no Agent tool** in this runtime: it prepares `judge_brief.md` and stops; the main
-   session spawns one isolated Sonnet thread from it, then a fresh determinism-judge writes the report from
-   `verdict.md`. "Our judge is the floor": a fork the thread settles by the natural reading is a FIX_NOW.
-
-## Files in this folder
-
-- `briefs/`: every agent brief used this session (stage 1 to 3, spec update, re-roots, 6b, FIX_NOW).
-- `task254-arch3-prototype/`: the architecture 3 designer's prototype and pool builder.
-- `task253-evidence/`: round 1's solver output and the judge thread's pass 1 verdict.
+- task254 architecture 3's prototype scripts: `task254/generator/proto/` (`walk_proto*.py`, `ladder10.py`, `asks8.py`,
+  `freeze7.py`, `search*.py`), the start for the architecture 3 design.
+- task253's evidence: the judge thread's pass 1 verdict at `task253/judge_pass1_verdict.md`, round 1's solver output at
+  `task253/solver_rounds/round-1-solver.json`.
+- The fresh-agent briefs and the guard-pooling tool belonged to the branch-era workflow and stay in git history only. On
+  one branch every card is already in one pool, and repairs run in the build session.

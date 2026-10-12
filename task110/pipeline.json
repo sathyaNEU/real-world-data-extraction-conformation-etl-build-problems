@@ -1,57 +1,60 @@
 {
- "task": "task110",
- "domain": "accounting-audit-forensic",
- "objective": "etl",
- "stage": "harden",
- "stage_name": "harden loop 3 built (334 assertions, verifier green, byte-identical builds, leak REVIEW only, golden-realism and house fixes run); next: solver round via /solve, then the portal",
- "updated": "2026-10-10",
- "stump": "A competent solver finds that five years for the unrated upgrades (the card's options rate, Bremer's precedent, the only single life that does) replays all 90 account-months and ties both trial balance runs to the cent, stops there and files $1,133,471 (+22 per cent); only note 9's 2024 comparative refuses five years ($8,901 short on imaging) and only the host's remaining months reproduce it ($931,458).",
- "harden_loops": 3,
- "solver_rounds": [
-  {
-   "label": "round 1, plain",
-   "date": "2026-10-07",
-   "score": 84.9,
-   "landed": true,
-   "cracked": 4,
-   "items": 8
-  },
-  {
-   "label": "round 2, plain",
-   "date": "2026-10-07",
-   "score": 87.4,
-   "landed": true,
-   "cracked": 4,
-   "items": 8
-  }
- ],
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "approved": null,
- "delivered": null,
- "portal": {
-  "date": "2026-10-07",
-  "pack": "harden loop 1",
-  "top_two": [
-   84,
-   24
+  "task": "task110",
+  "domain": "accounting-audit-forensic",
+  "objective": "etl",
+  "stage": "harden",
+  "stage_name": "harden loop 3 built (334 assertions, verifier green, byte-identical builds, leak REVIEW only, golden-realism and house fixes run); next: solver round via /solve, then the portal",
+  "updated": "2026-10-11",
+  "stump": "A competent solver finds that five years for the unrated upgrades (the card's options rate, Bremer's precedent, the only single life that does) replays all 90 account-months and ties both trial balance runs to the cent, stops there and files $1,133,471 (+22 per cent); only note 9's 2024 comparative refuses five years ($8,901 short on imaging) and only the host's remaining months reproduce it ($931,458).",
+  "harden_loops": 3,
+  "solver_rounds": [
+    {
+      "label": "round 1, plain",
+      "date": "2026-10-07",
+      "score": 84.9,
+      "landed": true,
+      "cracked": 4,
+      "items": 8
+    },
+    {
+      "label": "round 2, plain",
+      "date": "2026-10-07",
+      "score": 87.4,
+      "landed": true,
+      "cracked": 4,
+      "items": 8
+    }
   ],
-  "note": "84 response failed only criterion 1"
- },
- "portal_runs": [
-  {
-   "date": "2026-10-10",
-   "pack": "harden loop 2",
-   "prompt": "one-paragraph request",
-   "responses": [
-    "$951,870.13, 200 rows",
-    "$952,537.33 (+0.07 per cent), 200 rows"
-   ],
-   "landed": 2,
-   "note": "grader tolerance +/-1.5 per cent on the main figure; both landed"
-  }
- ]
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "approved": null,
+  "delivered": null,
+  "portal": {
+    "date": "2026-10-07",
+    "pack": "harden loop 1",
+    "top_two": [
+      84,
+      24
+    ],
+    "note": "84 response failed only criterion 1"
+  },
+  "portal_runs": [
+    {
+      "date": "2026-10-10",
+      "pack": "harden loop 2",
+      "prompt": "one-paragraph request",
+      "responses": [
+        "$951,870.13, 200 rows",
+        "$952,537.33 (+0.07 per cent), 200 rows"
+      ],
+      "landed": 2,
+      "note": "grader tolerance +/-1.5 per cent on the main figure; both landed"
+    }
+  ],
+  "status": "SHIPPED",
+  "portal_id": "5a548639-10a4-49ba-93b3-3bd5d35b7894",
+  "portal_status": "PENDING_REVIEW"
 }

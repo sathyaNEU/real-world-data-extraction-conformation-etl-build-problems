@@ -1,36 +1,38 @@
 {
- "task": "task135",
- "domain": "quantitative-finance",
- "objective": "forecasting",
- "stage": 3,
- "stage_name": "build (architecture 2): paper design through precut, the builder cuts the pack",
- "updated": "2026-10-11",
- "stump": "A competent solver builds each holding's daily total return from the prices it is valued at, estimates the two-year covariance of daily returns, scales the portfolio's daily standard deviation by the square root of 252 at each step and sets the 2027 growth share at 70 per cent against 60, treating same-dated prices as same-moment prices when the Kestwick funds are struck at noon from each market's last available price, so the North American fund carries the previous evening's New York close that the London-close UK shares have already priced.",
- "architecture": 2,
- "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-11"
- },
- "designer": "2026-10-11, designer (architecture 2 draw and paper design): card v2 registered at WARN (repeat.gate_g against task134 v2, answered in the design note); default path, daily covariance times the square root of 252, ends on 70 per cent growth against 60 (prototype seed 2036: 9.66 at 70; golden family 9.21 to 9.82 at 60 and 10.45 to 11.24 at 70); decisive rung silent; SF1 to SF14 closed; asks are 2027 income and the capital release at nine steps, the 2027 grant payments and the chart (D6 lot-line repetition, D8 project instalments paid after the report), pair ceiling 34; prompt.txt 700 characters through voice-check; architecture 1's build products removed",
- "decision": "build",
- "brief": "Build architecture 2 from the design note's Build record: the generator, the pack, the goldens and the checks it lists, meeting every target in ## Ladder and ## Ask sheet; return to a designer if a target cannot be met without changing the ladder.",
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "nearest": "",
-  "clone_check": ""
- },
- "solver_rounds": [],
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "approved": null,
- "delivered": null,
- "portal": null
+  "task": "task135",
+  "domain": "quantitative-finance",
+  "objective": "forecasting",
+  "stage": 3,
+  "stage_name": "build (architecture 2): paper design through precut, the builder cuts the pack",
+  "updated": "2026-10-11",
+  "stump": "A competent solver builds each holding's daily total return from the prices it is valued at, estimates the two-year covariance of daily returns, scales the portfolio's daily standard deviation by the square root of 252 at each step and sets the 2027 growth share at 70 per cent against 60, treating same-dated prices as same-moment prices when the Kestwick funds are struck at noon from each market's last available price, so the North American fund carries the previous evening's New York close that the London-close UK shares have already priced.",
+  "architecture": 2,
+  "loops": 0,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-11"
+  },
+  "designer": "2026-10-11, designer (architecture 2 draw and paper design): card v2 registered at WARN (repeat.gate_g against task134 v2, answered in the design note); default path, daily covariance times the square root of 252, ends on 70 per cent growth against 60 (prototype seed 2036: 9.66 at 70; golden family 9.21 to 9.82 at 60 and 10.45 to 11.24 at 70); decisive rung silent; SF1 to SF14 closed; asks are 2027 income and the capital release at nine steps, the 2027 grant payments and the chart (D6 lot-line repetition, D8 project instalments paid after the report), pair ceiling 34; prompt.txt 700 characters through voice-check; architecture 1's build products removed",
+  "decision": "build",
+  "brief": "Build architecture 2 from the design note's Build record: the generator, the pack, the goldens and the checks it lists, meeting every target in ## Ladder and ## Ask sheet; return to a designer if a target cannot be met without changing the ladder.",
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "",
+    "clone_check": ""
+  },
+  "solver_rounds": [],
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "status": "FAILED_TO_STUMP",
+  "owner": "sathya8571"
 }

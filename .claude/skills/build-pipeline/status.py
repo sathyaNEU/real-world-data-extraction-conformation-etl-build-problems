@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
-"""status.py: the build board, read from each build's own pipeline.json. Nothing here is committed.
+"""status.py: the board, read from every build's pipeline.json, the backlog waves in each author file and the
+portal record in the shipped ledger. Nothing here writes a file.
 
-    python3 .claude/skills/build-pipeline/status.py                 every build in a lane block, by lane
-    python3 .claude/skills/build-pipeline/status.py --owner HANDLE  one developer's lane
-    python3 .claude/skills/build-pipeline/status.py --all           every task folder, legacy builds included
-    python3 .claude/skills/build-pipeline/status.py next HANDLE     the lowest open number in that lane
-    python3 .claude/skills/build-pipeline/status.py taskNN          the seed for a number: header and Situation only
+    python3 .claude/skills/build-pipeline/status.py                every developer's waves, each task with its status
+    python3 .claude/skills/build-pipeline/status.py --owner HANDLE one developer's waves, one task per line
+    python3 .claude/skills/build-pipeline/status.py --all          every task folder with its status, then the portal record
+    python3 .claude/skills/build-pipeline/status.py next HANDLE    the next task to start, from the earliest wave
+    python3 .claude/skills/build-pipeline/status.py wave HANDLE    the next six open numbers in the lane, as a wave row
+    python3 .claude/skills/build-pipeline/status.py taskNN         the seed for a number: header and Situation only
 
-Status is pipeline.json's `status` field (drawing, design, build, shipped, returned, paused, retired). Older
-files without it are read from `stage` and `stage_name`. Lanes and owners come from the root START_HERE.md.
+Status (pipeline.json `status`, exact strings): DRAWING, DESIGN, BUILD, SHIPPED (submitted, pending review),
+SHIPPED_APPROVED (shown as SHIPPED & APPROVED), RETURNED, FAILED_TO_STUMP (back in a backlog wave), PAUSED,
+RETIRED. A number with no folder is OPEN, unless the portal record says otherwise. Older files without a
+`status` are read from `stage` and `stage_name`.
 """
 import json
 import os
@@ -19,6 +23,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 START = os.path.join(REPO, "START_HERE.md")
 CARDS = os.path.join(REPO, ".claude", "skills", "fingerprint", "cards")
+AUTHORS = os.path.join(REPO, ".claude", "authors")
+LEDGER = os.path.join(REPO, ".claude", "skills", "stumping", "references", "shipped-ledger.md")
+
+DONE = {"SHIPPED", "SHIPPED_APPROVED"}
+IN_FLIGHT = {"DRAWING", "DESIGN", "BUILD", "RETURNED", "PAUSED"}
+SHOW = {"SHIPPED_APPROVED": "SHIPPED & APPROVED"}
+LEGACY = {"drawing": "DRAWING", "design": "DESIGN", "build": "BUILD", "shipped": "SHIPPED", "returned": "RETURNED",
+          "paused": "PAUSED", "retired": "RETIRED", "approved": "SHIPPED_APPROVED", "failed_to_stump": "FAILED_TO_STUMP"}
 
 
 def lanes():
@@ -37,77 +49,185 @@ def lane_of(n, ls):
     return "", ""
 
 
-def infer(p):
-    if p.get("status"):
-        return p["status"]
-    st, name = str(p.get("stage", "")).lower(), str(p.get("stage_name", "")).lower()
-    if "retired" in (st, name) or name.startswith("retired"):
-        return "retired"
-    if st == "paused" or name.startswith("paused") or ", paused" in name or "paused " in name:
-        return "paused"
-    if "returned" in name:
-        return "returned"
-    if name.startswith("shipped") or name.startswith("delivered") or st in ("delivered", "shipped"):
-        return "shipped"
-    if st in ("1", "draw"):
-        return "drawing"
-    if st in ("2", "design"):
-        return "design"
-    return "build"
-
-
-def builds():
-    out = []
-    for d in os.listdir(REPO):
-        m = re.fullmatch(r"task(\d+)", d)
-        if not m or not os.path.isdir(os.path.join(REPO, d)):
+def portal_record():
+    rec, on = {}, False
+    if not os.path.exists(LEDGER):
+        return rec
+    for line in open(LEDGER, encoding="utf-8"):
+        if line.startswith("## "):
+            on = line.strip() == "## Portal record"
             continue
-        p = os.path.join(REPO, d, "pipeline.json")
-        data = {}
-        if os.path.exists(p):
-            try:
-                data = json.load(open(p))
-            except ValueError:
-                data = {"status": "unreadable"}
-        out.append((int(m.group(1)), d, data, os.path.exists(p)))
-    return sorted(out)
+        m = re.match(r"\| (task\d+) \| ([^|]+) \| ([A-Z_]+) \| ([^|]*) \|", line) if on else None
+        if m:
+            rec[m.group(1)] = (m.group(2).strip(), m.group(3), m.group(4).strip())
+    return rec
 
 
-def board(owner=None, show_all=False):
+def infer(p):
+    st = p.get("status")
+    if st:
+        return LEGACY.get(str(st).lower(), str(st).upper())
+    stage, name = str(p.get("stage", "")).lower(), str(p.get("stage_name", "")).lower()
+    if "retired" in (stage, name) or name.startswith("retired"):
+        return "RETIRED"
+    if stage == "paused" or name.startswith("paused") or ", paused" in name or "paused " in name:
+        return "PAUSED"
+    if "returned" in name:
+        return "RETURNED"
+    if name.startswith("shipped") or name.startswith("delivered") or stage in ("delivered", "shipped"):
+        return "SHIPPED"
+    if stage in ("1", "draw"):
+        return "DRAWING"
+    if stage in ("2", "design"):
+        return "DESIGN"
+    return "BUILD"
+
+
+def pipeline(t):
+    p = os.path.join(REPO, t, "pipeline.json")
+    if not os.path.exists(p):
+        return None
+    try:
+        return json.load(open(p))
+    except ValueError:
+        return {"status": "UNREADABLE"}
+
+
+def status_of(t, rec):
+    p = pipeline(t)
+    if p is not None:
+        return infer(p)
+    if t in rec:
+        return "SHIPPED_APPROVED" if rec[t][1] == "APPROVED" else "SHIPPED"
+    return "OPEN"
+
+
+def authors():
+    out = {}
+    if not os.path.isdir(AUTHORS):
+        return out
+    for f in sorted(os.listdir(AUTHORS)):
+        if f.endswith(".md"):
+            out[f[:-3]] = os.path.join(AUTHORS, f)
+    return out
+
+
+def waves(handle):
+    """[(wave number, [(task, note)])] from the author file's `## Backlog` table."""
+    path = authors().get(handle)
+    out, on = [], False
+    if not path:
+        return out
+    for line in open(path, encoding="utf-8"):
+        if line.startswith("## "):
+            on = line.strip() == "## Backlog"
+            continue
+        m = re.match(r"\| (\d+) \| (.+) \|\s*$", line) if on else None
+        if m:
+            items = [(t, (note or "").strip()) for t, note in re.findall(r"(task\d+)(?:\s*\(([^)]*)\))?", m.group(2))]
+            out.append((int(m.group(1)), items))
+    return out
+
+
+def show(st):
+    return SHOW.get(st, st)
+
+
+def board(owner=None):
+    rec = portal_record()
+    ls = lanes()
+    for h in authors():
+        if owner and h != owner:
+            continue
+        lane = next(((obj, lo, hi) for obj, lo, hi, o in ls if o == h), None)
+        print("%s%s" % (h, ("  " + "%s, task%d to task%d" % lane) if lane else ""))
+        ws = waves(h)
+        if not ws:
+            print("  no backlog waves")
+        for n, items in ws:
+            sts = [status_of(t, rec) for t, _ in items]
+            done = sum(1 for s in sts if s in DONE)
+            if owner:
+                print("  wave %d (%d of %d shipped)" % (n, done, len(items)))
+                for (t, note), s in zip(items, sts):
+                    print("    %-8s %-19s %s" % (t, show(s), note))
+            else:
+                print("  wave %d (%d of %d shipped): %s" % (n, done, len(items),
+                      " · ".join("%s %s" % (t, show(s)) for (t, _), s in zip(items, sts))))
+        print()
+    if not owner:
+        a = sum(1 for v in rec.values() if v[1] == "APPROVED")
+        print("portal record: %d approved, %d pending review" % (a, len(rec) - a))
+
+
+def board_all():
+    rec = portal_record()
     ls = lanes()
     rows = []
-    for n, t, p, has in builds():
-        obj, own = lane_of(n, ls)
-        if not show_all and not obj and not has:
-            continue
-        if owner and own != owner:
-            continue
-        st = infer(p) if has else "legacy"
-        rows.append((obj or "outside the lanes", own, t, st, str(p.get("stage_name", ""))[:70], p.get("updated", "")))
-    cur = None
-    for obj, own, t, st, name, upd in rows:
-        if obj != cur:
-            print("\n%s (%s)" % (obj, own or "-"))
-            cur = obj
-        print("  %-8s %-9s %-10s %s" % (t, st, upd, name))
-    counts = {}
-    for r in rows:
-        counts[r[3]] = counts.get(r[3], 0) + 1
-    print("\n" + ", ".join("%d %s" % (v, k) for k, v in sorted(counts.items())))
+    for d in os.listdir(REPO):
+        m = re.fullmatch(r"task(\d+)", d)
+        if m and os.path.isdir(os.path.join(REPO, d)):
+            n = int(m.group(1))
+            p = pipeline(d) or {}
+            rows.append((n, d, status_of(d, rec), str(p.get("stage_name", ""))[:60], p.get("owner", "") or lane_of(n, ls)[1]))
+    for n, t, st, name, own in sorted(rows):
+        print("  %-8s %-19s %-11s %s" % (t, show(st), own or "-", name))
+    print("\nportal record (no folder needed):")
+    for t, (pid, st, dt) in sorted(rec.items(), key=lambda x: int(x[0][4:])):
+        print("  %-8s %-15s %-6s %s" % (t, st, dt, pid))
 
 
-def next_open(owner):
-    taken = {n for n, *_ in builds()} | {int(re.sub(r"\D", "", f)) for f in os.listdir(CARDS) if re.fullmatch(r"task\d+\.json", f)}
-    for obj, lo, hi, own in lanes():
-        if own == owner:
-            for n in range(lo, hi + 1):
-                if n not in taken:
-                    print("task%d (%s)" % (n, obj))
-                    return 0
-            print("lane %s is fully taken" % obj)
-            return 1
-    print("no lane for %s in START_HERE.md" % owner)
+def taken():
+    nums = set()
+    for d in os.listdir(REPO):
+        m = re.fullmatch(r"task(\d+)(?:_ext)?", d)
+        if m:
+            nums.add(int(m.group(1)))
+    for f in os.listdir(CARDS):
+        m = re.fullmatch(r"task(\d+)\.json", f)
+        if m:
+            nums.add(int(m.group(1)))
+    for h in authors():
+        for _, items in waves(h):
+            nums.update(int(t[4:]) for t, _ in items)
+    return nums
+
+
+def next_task(handle):
+    rec = portal_record()
+    ws = waves(handle)
+    flying = []
+    for n, items in ws:
+        for t, note in items:
+            st = status_of(t, rec)
+            if st in DONE:
+                continue
+            if st in IN_FLIGHT:
+                flying.append("%s %s" % (t, st))
+                continue
+            print("next: %s (wave %d, %s%s)" % (t, n, show(st), ", " + note if note else ""))
+            if flying:
+                print("in flight: " + ", ".join(flying))
+            return 0
+    if flying:
+        print("in flight: " + ", ".join(flying))
+    print("every wave is started or shipped: cut the next one with `status.py wave %s` and add it to the backlog" % handle)
     return 1
+
+
+def next_wave(handle):
+    lane = next(((lo, hi) for obj, lo, hi, o in lanes() if o == handle), None)
+    if not lane:
+        print("no lane for %s in START_HERE.md" % handle)
+        return 1
+    used = taken()
+    free = [n for n in range(lane[0], lane[1] + 1) if n not in used][:6]
+    if not free:
+        print("the lane is fully taken")
+        return 1
+    k = max([n for n, _ in waves(handle)] or [0]) + 1
+    print("| %d | %s |" % (k, " · ".join("task%d (new)" % n for n in free)))
+    return 0
 
 
 def seed(t):
@@ -126,8 +246,7 @@ def seed(t):
     for line in text.splitlines():
         if re.match(r"#{2,3} ", line):
             sec += 1
-            low = line.lower()
-            if sec > 1 and "situation" not in low and len("\n".join(out)) > 400:
+            if sec > 1 and "situation" not in line.lower() and len("\n".join(out)) > 400:
                 break
         out.append(line)
     print(row.strip())
@@ -141,9 +260,13 @@ def main(argv):
     if len(argv) > 1 and re.fullmatch(r"task\d+", argv[1]):
         return seed(argv[1])
     if len(argv) > 2 and argv[1] == "next":
-        return next_open(argv[2])
-    owner = argv[argv.index("--owner") + 1] if "--owner" in argv else None
-    board(owner, "--all" in argv)
+        return next_task(argv[2])
+    if len(argv) > 2 and argv[1] == "wave":
+        return next_wave(argv[2])
+    if "--all" in argv:
+        board_all()
+        return 0
+    board(argv[argv.index("--owner") + 1] if "--owner" in argv else None)
     return 0
 
 

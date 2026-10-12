@@ -9,4 +9,6 @@ pre-flight, a branch, a pull request or a fresh designer or builder agent is sup
 `build-pipeline`: skip it and carry on in the current workflow. A returned build goes to `/fix-determinism`
 or `/fix-rubric` as its portal result says.
 
-When a build resumes and ships, delete its paragraph here in the `SHIPPED` commit.
+Every build these notes describe is now `FAILED_TO_STUMP` and sits in its owner's backlog wave (`.claude/authors/`),
+with the wave note saying where it restarts. When a build resumes and ships, delete its paragraph here in the
+`SHIPPED` commit.

@@ -29,7 +29,7 @@ under each.
 **3. The stump test, before choosing a move.** Ask whether the fork *is* the stump: does the golden's lead
 over the easy answer come from the reading rather than from the analysis? If closing the fork in either
 direction makes the default path land on the golden, the stump lived in the fork (eight builds died this
-way). **Stop**: write the line in `## Tried and rejected`, set `pipeline.json` `status` `design`, and report
+way). **Stop**: write the line in `## Tried and rejected`, set `pipeline.json` `status` `DESIGN`, and report
 that this is a redesign (`/build taskNN from 2`), not a determinism fix. Never keep a fork open to keep a stump.
 
 **4. Close it with the strongest move that holds** (`determinism-check` §3):
@@ -64,7 +64,7 @@ and ship without a third judge only if the finding is the same fork closed furth
 report; it is a redesign.
 
 **7. Re-ship.** Re-cut `target.zip`, append to `pipeline.json` `returned` (`repair: "determinism"`), set
-`status` `shipped`, one `## Tried and rejected` line naming the fork and the move, rewrite the ledger row's
+`status` `SHIPPED`, one `## Tried and rejected` line naming the fork and the move, rewrite the ledger row's
 status, and commit `RESHIPPED (taskNN): determinism, <the fork closed>` with the zip and `golden/` force-added
 (`CLAUDE.md`, Git).
 

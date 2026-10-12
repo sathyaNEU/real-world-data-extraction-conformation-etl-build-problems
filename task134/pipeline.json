@@ -71,5 +71,7 @@
   },
   "approved": null,
   "delivered": null,
-  "portal": null
+  "portal": null,
+  "status": "FAILED_TO_STUMP",
+  "owner": "sathya8571"
 }

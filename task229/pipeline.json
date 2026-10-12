@@ -1,271 +1,273 @@
 {
- "task": "task229",
- "domain": "general-statistics-data-science",
- "objective": "data-quality-monitoring",
- "stage": "paused",
- "stage_name": "paused by the author on 2026-10-12 during the architecture 3 draw (phase A, on paper); the partial draft and the unregistered card are in DESIGN_NOTE.md, ## Architecture 3 draft",
- "updated": "2026-10-11",
- "stump": "A competent solver takes each centre's share of correct records from its count history as the share of count tasks that matched the record and finds that no centre qualifies, all eight held on supervised replenishment, and its textbook correction (exception counts set aside as symptom-led, the routine counts weighted to the in-scope A, B and C mix) still passes only Magor and Hinckley; the step that lands it there is reading a count's result as the record's standing state, when every count also posts the confirmed quantity as the record, so routine counts see each record at the end of its cycle and exception counts see records because they were wrong, while at 06:00 on 7 December each face is only part way through its cycle since its last count of any kind, and built face by face from the accrual since that count, read off the routine counts alone, Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth clear 97.0 per cent.",
- "architecture": 2,
- "loops": 1,
- "leak": {
-  "leak_py": "final cut: REVIEW (10 lines, each answered in the design note's ## Build record); no LEAK",
-  "reader": "read 1 (2026-10-11): no leak-level finding; main-call forks closed before the round as SF13 (per-day accrual pooled over classes, ruled out by the routine counts' class separation) and SF14 (first against confirmed count, readings differ, ruled by CP-THN-04 s.5 with SCS-07 4.2); no shipped file changed, so no second read"
- },
- "duplicate_check": {
-  "heart": "WARN (task107 v1 0.12, task228 v2 gate_g; answered at the draw), no BLOCK",
-  "nearest": "task107 v1 driver 0.12",
-  "surface": "0 promoted pairs, nearest task127 0.10",
-  "clone_check": "pass 1 on architecture 2: no reject tier; one soft Shape echo against task230 v2 (same objective, decision type, gap pair, Gate G mechanism and Layer 2 family, drivers differ), reported to the author, not looped; report clone_check_report_task229_d2.md"
- },
- "solver_rounds": [
-  {
-   "label": "round 1 (architecture 2)",
-   "date": "2026-10-11",
-   "score": 97.9,
-   "landed": true,
-   "cracked": 4,
-   "items": 4,
-   "ask_share": 0.964,
-   "asks_leak": false,
-   "gate": "LANDED",
-   "architecture": 2,
-   "round": 1,
-   "solver": {
-    "landed": true,
-    "proxy": 97.9,
-    "cracked": "4 of 4",
-    "ask_share": 0.964,
-    "stopped": "never left the ladder: it read SCS-07 4.5 as the expected accuracy at each face's age on 7 December, saw routine-count accuracy fall with days since the previous count (class A about 98 per cent at 0-7 days to about 88 at 28), fitted an exponential error rate per site and class on the CYC counts, and applied it to every in-scope face's age from its last count of any reason (path steps 4 and 5); a linear model agreed within 0.1"
-   },
-   "decision": "harden",
-   "brief": "The call landed on the solver's steps 4 and 5, the design's own rung 3: the accrual-since-last-count model was found from a visible symptom (routine-count accuracy falling with days since the previous count), and every ask device was executed by its hygiene (one quantity per location, the P10 cost changes, singles to cases, closed trading days, the servicing map in force on each date). Loop 1 is paper first: a rung the solver completes, with its accrual model and its checks passing, and still lands wrong, with no arithmetic symptom any check it writes can see; not the exposure clock of task46 (handling instead of days, the same driver older) and no third reset-driver build; the ask layer redesigned against this cracker path (every device it executed is spent). If no such rung exists, declare architecture 2 spent.",
-   "deferred": [
-    "stage 6b: ask A stock value, the P10 cost changes against the 28/11 price list (reader's ask-level convention)",
-    "stage 6b: ask B forecast, closed trading days over the freeze (reader's ask-level convention)",
-    "stage 6b: the rounding note (already closed by the 0.71 margin; confirm only)",
-    "stage 6b: any Track A name finding from the clone pre-flight (pass 1 raised none)",
-    "ship: card pre-cut field answer_source to fill",
-    "ship: card spine.rows reads 0 against 107,072 rows in the cut pack; correct it"
-   ]
-  },
-  {
-   "round": "loop 1 (paper)",
-   "architecture": 2,
-   "date": "2026-10-11",
-   "decision": "reroot",
-   "brief": "No rung above round 1's accrual model (per-day error rate by centre and class, read off the routine counts by days since the face's last count of any kind, applied to each face's age at 06:00) completes with its checks passing and still lands wrong inside the loop's bounds: with the routine due dates on the class grid and a stationary error process the age-conditional routine rate describes the faces at the stand-down, so a rung needs an error rate that changes into the peak (handling is task46's clock; a dated cause shows by month and the event study aligns it) or state-dependent counting (a symptom in the routine counts, or a reason code to classify). The persistent-cause candidate, prototyped over six seeds, moved the estimate 0.0 to +0.4 points while the class A routine counts ran 3 to 10 points under the fitted curve at 8 to 21 days. Architecture 2 is spent; re-root to architecture 3 (DESIGN_NOTE.md ## Hardening loop 1 (architecture 2, paper))."
-  }
- ],
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "approved": null,
- "delivered": null,
- "portal": null,
- "architecture_1": {
-  "stump": "A competent solver applies MDS-STD-114's cut-off, assessed-installation and mean rules and reads 4.4 (the standard error is the spread over repeats of the week, installations whose read losses move together counting as one unit), but looks for co-moving losses only in each installation's own rows, finds none, and keeps every installation as its own unit (sample SD over root n), firing EM3.10.9, EM3.12.0, EM3.12.1, EM3.12.2 and PX5.2.7 and stopping Wave 8 onto EM3.12.2; the installations behind one mesh collector lose a missed night together (the head-end's comms parent records the tie) and EM3.12.2 sits behind seven, so counted one unit per node the errors are 1.83 and 0.57, not 0.40 and 0.09, EM3.12.2 and EM3.12.0 hold, and the alert fires on EM3.12.1, EM3.10.9 and PX5.2.7 only.",
+  "task": "task229",
+  "domain": "general-statistics-data-science",
+  "objective": "data-quality-monitoring",
+  "stage": "paused",
+  "stage_name": "paused by the author on 2026-10-12 during the architecture 3 draw (phase A, on paper); the partial draft and the unregistered card are in DESIGN_NOTE.md, ## Architecture 3 draft",
+  "updated": "2026-10-11",
+  "stump": "A competent solver takes each centre's share of correct records from its count history as the share of count tasks that matched the record and finds that no centre qualifies, all eight held on supervised replenishment, and its textbook correction (exception counts set aside as symptom-led, the routine counts weighted to the in-scope A, B and C mix) still passes only Magor and Hinckley; the step that lands it there is reading a count's result as the record's standing state, when every count also posts the confirmed quantity as the record, so routine counts see each record at the end of its cycle and exception counts see records because they were wrong, while at 06:00 on 7 December each face is only part way through its cycle since its last count of any kind, and built face by face from the accrual since that count, read off the routine counts alone, Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth clear 97.0 per cent.",
+  "architecture": 2,
+  "loops": 1,
   "leak": {
-   "leak_py": "rework cut: REVIEW (3 lines, each answered in the design note); no LEAK",
-   "reader": "pending: the standard changed since round 3's reader"
+    "leak_py": "final cut: REVIEW (10 lines, each answered in the design note's ## Build record); no LEAK",
+    "reader": "read 1 (2026-10-11): no leak-level finding; main-call forks closed before the round as SF13 (per-day accrual pooled over classes, ruled out by the routine counts' class separation) and SF14 (first against confirmed count, readings differ, ruled by CP-THN-04 s.5 with SCS-07 4.2); no shipped file changed, so no second read"
   },
   "duplicate_check": {
-   "heart": "rework: WARN, no BLOCK; nearest heart text 0.04 (task60 ledger row)",
-   "nearest": "task87 v3 driver 0.06",
-   "clone_check": "driver unchanged by the rework, so the loop-1 adjudicated pre-flight (CLEAN, task229/clone_check_report.md) stands",
-   "surface": "rework cut: 0 promoted pairs, nearest surface 0.10, no persona in the pack"
+    "heart": "WARN (task107 v1 0.12, task228 v2 gate_g; answered at the draw), no BLOCK",
+    "nearest": "task107 v1 driver 0.12",
+    "surface": "0 promoted pairs, nearest task127 0.10",
+    "clone_check": "pass 1 on architecture 2: no reject tier; one soft Shape echo against task230 v2 (same objective, decision type, gap pair, Gate G mechanism and Layer 2 family, drivers differ), reported to the author, not looped; report clone_check_report_task229_d2.md"
   },
-  "judge": {
-   "verdict": "DETERMINISTIC (pass 1)",
-   "disposition": "APPROVE; optional fixes applied with no rerun: grading tolerance stated in step 6, the thinnest margins named in the recommendation, container metadata (PDF creator, Excel-shaped workbooks with their own UTC stamps); no graded figure, rung or read text moved",
-   "report": "task229/determinism_check_report.md",
-   "gate_g": "mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no; matches the design note",
-   "residual": "simple mean with a random-intercept variance holds EM3.10.9 (SE 0.65 against 0.48); not licensed: the full random-intercept fit (97.44, SE 0.46) and every design-based estimator fire it; asserted in checks.py",
-   "pass2": "pending: runs on the rework cut after its solver round passes; report determinism_check_report_pass2.md"
-  },
-  "delivered": "2026-10-11 (first ship; reworked after the portal result)",
-  "portal": {
-   "date": "2026-10-11",
-   "stump": "both portal models diverged from the ground truth; rubric under 50",
-   "determinism_qc": "FAILED by both reviewers: R1 A pass, B pass, C fail, D fail, E pass, F plausible, G fail, competing_defensible_answer, fix input_files; R2 A pass, B pass, C fail, D fail, E fail, F plausible, G pass, underspecified_objective, fix input_files",
-   "fork": "the standard error's construction is not forced: MDS-STD-114 s.7 and s.4.3 read literally as sample SD over root n across installations, which fires EM3.12.0 and EM3.12.2",
-   "gate_h_inhouse": "H1 domain fail (backdrop: Energy Systems & Utilities lists no task type serving Data Quality Monitoring), H2 pass, H3 analytical"
-  },
-  "rework": {
-   "opened": "2026-10-11",
-   "fix": "pin the estimand of the build's standard error in MDS-STD-114 without naming the estimator or the node field; re-file the domain under General Statistics & Data Science, missing-data-censoring-measurement-error",
-   "loops": 0,
-   "guard": "re-filed card general-statistics-data-science/missing-data-censoring-measurement-error x data-quality-monitoring: WARN (three_rules.strategy_risk, repeat.opening vs task134, repeat.geography vs task133; NOTE same_puzzle_older vs task98, differentiated); registered; task228's live card (architecture 2) copied in, task230 has no card yet",
-   "build": "only the standard's PDF changed against the portal-tested pack; every graded figure and the committed answer unchanged; 271 assertions (determinism targets (i) to (iv) included), the verifier and two byte-identical builds green; target.zip sha256 8a78497826e35474c4f95d5f0f83b4dd4135114876a043aae213c6035e9f80fe",
-   "isolated_runs": {
-    "leak_reader": "ran once (coordinator); cracked the rework on its first pass",
-    "solver": "not run (architecture spent)",
-    "judge": "pass 2 not run (architecture spent)"
-   }
-  },
-  "loops": 2,
-  "fate": "spent 2026-10-11: shipped, failed the portal determinism QC (both reviewers, the standard error construction unforced), Gate H H1 backdrop in-house, estimand rework cracked on the leak reader first pass; re-rooted by the author",
   "solver_rounds": [
-   {
-    "label": "round 1, plain",
-    "date": "2026-10-11",
-    "score": 91.3,
-    "landed": true,
-    "cracked": 4,
-    "items": 5,
-    "architecture": 1
-   },
-   {
-    "label": "round 1, skeptic",
-    "date": "2026-10-11",
-    "score": 87.4,
-    "landed": true,
-    "cracked": 3,
-    "items": 5,
-    "architecture": 1
-   },
-   {
-    "round": 1,
-    "architecture": 1,
-    "decision": "harden",
-    "brief": "both landed by executing the filed mean and the filed installation-level error; the error's unit is now unstated and the data's node-night failures make the comms node the unit, so the habitual sample-SD-over-root-n step completes and fires EM3.12.0 and EM3.12.2"
-   },
-   {
-    "label": "round 2, plain",
-    "date": "2026-10-11",
-    "score": 54.5,
-    "landed": false,
-    "cracked": 3,
-    "items": 5
-   },
-   {
-    "label": "round 2, skeptic",
-    "date": "2026-10-11",
-    "score": 54.5,
-    "landed": false,
-    "cracked": 3,
-    "items": 5
-   },
-   {
-    "round": 2,
-    "architecture": 1,
-    "loop": 1,
-    "plain": {
-     "landed": false,
-     "proxy": 54.5
+    {
+      "label": "round 1 (architecture 2)",
+      "date": "2026-10-11",
+      "score": 97.9,
+      "landed": true,
+      "cracked": 4,
+      "items": 4,
+      "ask_share": 0.964,
+      "asks_leak": false,
+      "gate": "LANDED",
+      "architecture": 2,
+      "round": 1,
+      "solver": {
+        "landed": true,
+        "proxy": 97.9,
+        "cracked": "4 of 4",
+        "ask_share": 0.964,
+        "stopped": "never left the ladder: it read SCS-07 4.5 as the expected accuracy at each face's age on 7 December, saw routine-count accuracy fall with days since the previous count (class A about 98 per cent at 0-7 days to about 88 at 28), fitted an exponential error rate per site and class on the CYC counts, and applied it to every in-scope face's age from its last count of any reason (path steps 4 and 5); a linear model agreed within 0.1"
+      },
+      "decision": "harden",
+      "brief": "The call landed on the solver's steps 4 and 5, the design's own rung 3: the accrual-since-last-count model was found from a visible symptom (routine-count accuracy falling with days since the previous count), and every ask device was executed by its hygiene (one quantity per location, the P10 cost changes, singles to cases, closed trading days, the servicing map in force on each date). Loop 1 is paper first: a rung the solver completes, with its accrual model and its checks passing, and still lands wrong, with no arithmetic symptom any check it writes can see; not the exposure clock of task46 (handling instead of days, the same driver older) and no third reset-driver build; the ask layer redesigned against this cracker path (every device it executed is spent). If no such rung exists, declare architecture 2 spent.",
+      "deferred": [
+        "stage 6b: ask A stock value, the P10 cost changes against the 28/11 price list (reader's ask-level convention)",
+        "stage 6b: ask B forecast, closed trading days over the freeze (reader's ask-level convention)",
+        "stage 6b: the rounding note (already closed by the 0.71 margin; confirm only)",
+        "stage 6b: any Track A name finding from the clone pre-flight (pass 1 raised none)",
+        "ship: card pre-cut field answer_source to fill",
+        "ship: card spine.rows reads 0 against 107,072 rows in the cut pack; correct it"
+      ]
     },
-    "skeptic": {
-     "landed": false,
-     "proxy": 54.5
-    },
-    "mean": 54.5,
-    "mean_read": 37.0,
-    "decision": "harden (ask layer)",
-    "brief": "both missed the call at R4 (installation-level error), a stump not a fork (independence refuted by the node-night failures; every dependence-respecting grouping lands the call); the asks leaked (grade.py 54.5 each, about 37 read honestly): Wave 7 fully cracked in both rounds, read health free; drop Wave 7, add the distance from the limit and the 6.1 substitution load; close the outage carve-out route (EM3.12.0 at 0.006 of its limit) by raising EM3.12.0's own gap and outage rates"
-   },
-   {
-    "label": "round 3, plain",
-    "date": "2026-10-11",
-    "score": 47.0,
-    "landed": false,
-    "cracked": 1,
-    "items": 4
-   },
-   {
-    "label": "round 3, skeptic",
-    "date": "2026-10-11",
-    "score": 43.4,
-    "landed": false,
-    "cracked": 1,
-    "items": 4
-   },
-   {
-    "round": 3,
-    "architecture": 1,
-    "loop": 2,
-    "plain": {
-     "landed": false,
-     "proxy": 47.0,
-     "strict_proxy": 44.5
-    },
-    "skeptic": {
-     "landed": false,
-     "proxy": 43.4,
-     "strict_proxy": 40.8
-    },
-    "mean": 45.2,
-    "mean_read": 31,
-    "decision": "pass",
-    "brief": "both missed the call at R4 (installation-level error; comms_parent unused), a stump not a fork; read for the facts each kept 17 of 51 ask criteria (about 31); grade.py's decimal is inflated by its 0.5 per cent tolerance on percentages near 99, unbound number matches, a quoted-but-rejected 1274 and a word token (strict tolerance: 44.5 and 40.8)",
-    "rule": "recorded as a pass under the single-solver rule (PR #17): the gate is that the solver does not commit to the main call; the proxy is recorded and does not gate; stump or fork is the judge's question"
-   }
-  ]
- },
- "architecture_2": {
-  "fate": "spent 2026-10-11: built and passed the leak read and the clone pre-flight; solver round 1 landed the call and cracked every ask (proxy 97.9) on the design's own rung 3 (the state at the stand-down rebuilt from each face's accrual since its last count, read off the routine counts), found from a visible symptom; hardening loop 1 on paper found no rung above it inside the loop's bounds",
-  "loops": 1,
-  "record": "DESIGN_NOTE.md ## Hardening loop 1 (architecture 2, paper); ## Draw to ## Build record"
- },
- "card": {
-  "status": "checked, not registered (task228 registers its next architecture first)",
-  "draft": "/home/user/orch/buildwork-task229/rework/card/task229_arch2_count_reset.json",
-  "guard_check": "WARN, no BLOCK (driver.near 0.12 task107 v1; repeat.gate_g task228 v2), answered in DESIGN_NOTE.md ## Draw",
-  "heart": "WARN, nearest heart text 0.07 (task107 v1 driver)"
- },
- "work_order": {
-  "read": "DESIGN_NOTE.md ## Draw to ## Coordination and registration (Builder's work order, Ladder, Semantic fork table, Closure table, Ask sheet), ## Tried and rejected; prompt.txt",
-  "generator": [
-   "world.py",
-   "simulate.py",
-   "estimate.py",
-   "asks.py",
-   "docs.py",
-   "golden.py",
-   "checks.py",
-   "verify.py",
-   "make.py"
+    {
+      "round": "loop 1 (paper)",
+      "architecture": 2,
+      "date": "2026-10-11",
+      "decision": "reroot",
+      "brief": "No rung above round 1's accrual model (per-day error rate by centre and class, read off the routine counts by days since the face's last count of any kind, applied to each face's age at 06:00) completes with its checks passing and still lands wrong inside the loop's bounds: with the routine due dates on the class grid and a stationary error process the age-conditional routine rate describes the faces at the stand-down, so a rung needs an error rate that changes into the peak (handling is task46's clock; a dated cause shows by month and the event study aligns it) or state-dependent counting (a symptom in the routine counts, or a reason code to classify). The persistent-cause candidate, prototyped over six seeds, moved the estimate 0.0 to +0.4 points while the class A routine counts ran 3 to 10 points under the fitted curve at 8 to 21 days. Architecture 2 is spent; re-root to architecture 3 (DESIGN_NOTE.md ## Hardening loop 1 (architecture 2, paper))."
+    }
   ],
-  "deliverable": "freeze_gate_2026.html (one file, shape 10; the chart on ask B's forecast cases)",
-  "golden_set": "Hinckley, Daventry, Bellshill, Warrington, Magor, Avonmouth qualify; Thurrock, Doncaster supervised",
-  "ladder_sets": "rung 0 none; rung 1 Magor; rung 2 (textbook) Magor, Hinckley; rung 3 the six",
-  "filed_criterion": "HOW forced by the design (determinism-check §1 form 1: the estimand at 06:00 through a full count, the posting and due-date facts and the data's age-dependent match rates) and by Thornacre 4.5, the standard's general requirement that an estimate be one a full count at the measurement time would be expected to bear out (form 2); no filed back-test (form 3)",
-  "asks": "A stock value on in-scope faces (D6 repeated face quantity on batch rows; H1 period-10 change file; H2 eaches); B forecast cases over the freeze and its chart (D2 depot label before the peak re-zoning with a 27 December far edge; H2; H3 Boxing Day closures)",
-  "input_gates": "19 files; PDF, DOCX, CSV, XLSX, TXT, JSON; count history about 110,000 rows; two distractors named in metadata.json; synthetic, CC0",
-  "first_tuning": "Hinckley's rung 1 to 96.5 or under with rung 2 at 97.5 or over; every rung-3 estimate 0.6+ from 97.0 and 0.2+ from an x.5 edge; private truth on the golden side; the chart title flipping under ask B's primary device"
- },
- "precut": {
-  "result": "exit 0: 37 checks, 0 FAIL, 0 WARN (main at e89a676)",
-  "provisional": [
-   "semantic forks asserted: passes until generator/checks.py exists, then every SF1 to SF12 id must appear in it (builder)",
-   "card registered: reads architecture 1's filed card until the architecture-2 card is registered after task228 (main session)"
-  ]
- },
- "draw": {
-  "registered": "2026-10-11",
-  "guard": "WARN (driver.near 0.12 against task107 v1 lineage; repeat.gate_g against task228 v2), both answered in the design note; registered by the main session after task228 architecture 4 drew no architecture"
- },
- "build": {
-  "date": "2026-10-11",
-  "checks": 791,
-  "verify": 65,
-  "byte_identical": true,
-  "figures_check": "exit 0 (52 figures)",
-  "precut": "exit 0",
-  "target_files": 18,
-  "count_rows": 107072,
-  "in_scope_faces": 26188,
-  "golden_set": "Hinckley, Daventry, Bellshill, Warrington, Magor, Avonmouth qualify; Thurrock, Doncaster supervised",
-  "ladder_sets": "rung 0 none; rung 1 Magor; rung 2 Magor, Hinckley; rung 3 (four estimators) the six",
-  "pair_ceiling": 32,
-  "target_zip_sha256": "fc3a047535392cb3f2d0755c36bf5557bf379d49e0d221a9445eb50b713e7061"
- },
- "deferred": [],
- "paused": {
-  "date": "2026-10-12",
-  "by": "author",
-  "at": "architecture 3 phase A, mid-draw",
-  "resume": "a fresh designer (Opus max) finishes architecture 3's phase A from the draft under the improvise rules (default path first, stump on the default path, four or more screened candidates before any no-architecture call), checks the card against the three cards before it in draw order on its registration day and registers it, runs precut.py to exit 0, then a builder (Opus medium), the leak read and clone pre-flight together, and the solver (Opus high)"
- }
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "architecture_1": {
+    "stump": "A competent solver applies MDS-STD-114's cut-off, assessed-installation and mean rules and reads 4.4 (the standard error is the spread over repeats of the week, installations whose read losses move together counting as one unit), but looks for co-moving losses only in each installation's own rows, finds none, and keeps every installation as its own unit (sample SD over root n), firing EM3.10.9, EM3.12.0, EM3.12.1, EM3.12.2 and PX5.2.7 and stopping Wave 8 onto EM3.12.2; the installations behind one mesh collector lose a missed night together (the head-end's comms parent records the tie) and EM3.12.2 sits behind seven, so counted one unit per node the errors are 1.83 and 0.57, not 0.40 and 0.09, EM3.12.2 and EM3.12.0 hold, and the alert fires on EM3.12.1, EM3.10.9 and PX5.2.7 only.",
+    "leak": {
+      "leak_py": "rework cut: REVIEW (3 lines, each answered in the design note); no LEAK",
+      "reader": "pending: the standard changed since round 3's reader"
+    },
+    "duplicate_check": {
+      "heart": "rework: WARN, no BLOCK; nearest heart text 0.04 (task60 ledger row)",
+      "nearest": "task87 v3 driver 0.06",
+      "clone_check": "driver unchanged by the rework, so the loop-1 adjudicated pre-flight (CLEAN, task229/clone_check_report.md) stands",
+      "surface": "rework cut: 0 promoted pairs, nearest surface 0.10, no persona in the pack"
+    },
+    "judge": {
+      "verdict": "DETERMINISTIC (pass 1)",
+      "disposition": "APPROVE; optional fixes applied with no rerun: grading tolerance stated in step 6, the thinnest margins named in the recommendation, container metadata (PDF creator, Excel-shaped workbooks with their own UTC stamps); no graded figure, rung or read text moved",
+      "report": "task229/determinism_check_report.md",
+      "gate_g": "mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no; matches the design note",
+      "residual": "simple mean with a random-intercept variance holds EM3.10.9 (SE 0.65 against 0.48); not licensed: the full random-intercept fit (97.44, SE 0.46) and every design-based estimator fire it; asserted in checks.py",
+      "pass2": "pending: runs on the rework cut after its solver round passes; report determinism_check_report_pass2.md"
+    },
+    "delivered": "2026-10-11 (first ship; reworked after the portal result)",
+    "portal": {
+      "date": "2026-10-11",
+      "stump": "both portal models diverged from the ground truth; rubric under 50",
+      "determinism_qc": "FAILED by both reviewers: R1 A pass, B pass, C fail, D fail, E pass, F plausible, G fail, competing_defensible_answer, fix input_files; R2 A pass, B pass, C fail, D fail, E fail, F plausible, G pass, underspecified_objective, fix input_files",
+      "fork": "the standard error's construction is not forced: MDS-STD-114 s.7 and s.4.3 read literally as sample SD over root n across installations, which fires EM3.12.0 and EM3.12.2",
+      "gate_h_inhouse": "H1 domain fail (backdrop: Energy Systems & Utilities lists no task type serving Data Quality Monitoring), H2 pass, H3 analytical"
+    },
+    "rework": {
+      "opened": "2026-10-11",
+      "fix": "pin the estimand of the build's standard error in MDS-STD-114 without naming the estimator or the node field; re-file the domain under General Statistics & Data Science, missing-data-censoring-measurement-error",
+      "loops": 0,
+      "guard": "re-filed card general-statistics-data-science/missing-data-censoring-measurement-error x data-quality-monitoring: WARN (three_rules.strategy_risk, repeat.opening vs task134, repeat.geography vs task133; NOTE same_puzzle_older vs task98, differentiated); registered; task228's live card (architecture 2) copied in, task230 has no card yet",
+      "build": "only the standard's PDF changed against the portal-tested pack; every graded figure and the committed answer unchanged; 271 assertions (determinism targets (i) to (iv) included), the verifier and two byte-identical builds green; target.zip sha256 8a78497826e35474c4f95d5f0f83b4dd4135114876a043aae213c6035e9f80fe",
+      "isolated_runs": {
+        "leak_reader": "ran once (coordinator); cracked the rework on its first pass",
+        "solver": "not run (architecture spent)",
+        "judge": "pass 2 not run (architecture spent)"
+      }
+    },
+    "loops": 2,
+    "fate": "spent 2026-10-11: shipped, failed the portal determinism QC (both reviewers, the standard error construction unforced), Gate H H1 backdrop in-house, estimand rework cracked on the leak reader first pass; re-rooted by the author",
+    "solver_rounds": [
+      {
+        "label": "round 1, plain",
+        "date": "2026-10-11",
+        "score": 91.3,
+        "landed": true,
+        "cracked": 4,
+        "items": 5,
+        "architecture": 1
+      },
+      {
+        "label": "round 1, skeptic",
+        "date": "2026-10-11",
+        "score": 87.4,
+        "landed": true,
+        "cracked": 3,
+        "items": 5,
+        "architecture": 1
+      },
+      {
+        "round": 1,
+        "architecture": 1,
+        "decision": "harden",
+        "brief": "both landed by executing the filed mean and the filed installation-level error; the error's unit is now unstated and the data's node-night failures make the comms node the unit, so the habitual sample-SD-over-root-n step completes and fires EM3.12.0 and EM3.12.2"
+      },
+      {
+        "label": "round 2, plain",
+        "date": "2026-10-11",
+        "score": 54.5,
+        "landed": false,
+        "cracked": 3,
+        "items": 5
+      },
+      {
+        "label": "round 2, skeptic",
+        "date": "2026-10-11",
+        "score": 54.5,
+        "landed": false,
+        "cracked": 3,
+        "items": 5
+      },
+      {
+        "round": 2,
+        "architecture": 1,
+        "loop": 1,
+        "plain": {
+          "landed": false,
+          "proxy": 54.5
+        },
+        "skeptic": {
+          "landed": false,
+          "proxy": 54.5
+        },
+        "mean": 54.5,
+        "mean_read": 37.0,
+        "decision": "harden (ask layer)",
+        "brief": "both missed the call at R4 (installation-level error), a stump not a fork (independence refuted by the node-night failures; every dependence-respecting grouping lands the call); the asks leaked (grade.py 54.5 each, about 37 read honestly): Wave 7 fully cracked in both rounds, read health free; drop Wave 7, add the distance from the limit and the 6.1 substitution load; close the outage carve-out route (EM3.12.0 at 0.006 of its limit) by raising EM3.12.0's own gap and outage rates"
+      },
+      {
+        "label": "round 3, plain",
+        "date": "2026-10-11",
+        "score": 47.0,
+        "landed": false,
+        "cracked": 1,
+        "items": 4
+      },
+      {
+        "label": "round 3, skeptic",
+        "date": "2026-10-11",
+        "score": 43.4,
+        "landed": false,
+        "cracked": 1,
+        "items": 4
+      },
+      {
+        "round": 3,
+        "architecture": 1,
+        "loop": 2,
+        "plain": {
+          "landed": false,
+          "proxy": 47.0,
+          "strict_proxy": 44.5
+        },
+        "skeptic": {
+          "landed": false,
+          "proxy": 43.4,
+          "strict_proxy": 40.8
+        },
+        "mean": 45.2,
+        "mean_read": 31,
+        "decision": "pass",
+        "brief": "both missed the call at R4 (installation-level error; comms_parent unused), a stump not a fork; read for the facts each kept 17 of 51 ask criteria (about 31); grade.py's decimal is inflated by its 0.5 per cent tolerance on percentages near 99, unbound number matches, a quoted-but-rejected 1274 and a word token (strict tolerance: 44.5 and 40.8)",
+        "rule": "recorded as a pass under the single-solver rule (PR #17): the gate is that the solver does not commit to the main call; the proxy is recorded and does not gate; stump or fork is the judge's question"
+      }
+    ]
+  },
+  "architecture_2": {
+    "fate": "spent 2026-10-11: built and passed the leak read and the clone pre-flight; solver round 1 landed the call and cracked every ask (proxy 97.9) on the design's own rung 3 (the state at the stand-down rebuilt from each face's accrual since its last count, read off the routine counts), found from a visible symptom; hardening loop 1 on paper found no rung above it inside the loop's bounds",
+    "loops": 1,
+    "record": "DESIGN_NOTE.md ## Hardening loop 1 (architecture 2, paper); ## Draw to ## Build record"
+  },
+  "card": {
+    "status": "checked, not registered (task228 registers its next architecture first)",
+    "draft": "/home/user/orch/buildwork-task229/rework/card/task229_arch2_count_reset.json",
+    "guard_check": "WARN, no BLOCK (driver.near 0.12 task107 v1; repeat.gate_g task228 v2), answered in DESIGN_NOTE.md ## Draw",
+    "heart": "WARN, nearest heart text 0.07 (task107 v1 driver)"
+  },
+  "work_order": {
+    "read": "DESIGN_NOTE.md ## Draw to ## Coordination and registration (Builder's work order, Ladder, Semantic fork table, Closure table, Ask sheet), ## Tried and rejected; prompt.txt",
+    "generator": [
+      "world.py",
+      "simulate.py",
+      "estimate.py",
+      "asks.py",
+      "docs.py",
+      "golden.py",
+      "checks.py",
+      "verify.py",
+      "make.py"
+    ],
+    "deliverable": "freeze_gate_2026.html (one file, shape 10; the chart on ask B's forecast cases)",
+    "golden_set": "Hinckley, Daventry, Bellshill, Warrington, Magor, Avonmouth qualify; Thurrock, Doncaster supervised",
+    "ladder_sets": "rung 0 none; rung 1 Magor; rung 2 (textbook) Magor, Hinckley; rung 3 the six",
+    "filed_criterion": "HOW forced by the design (determinism-check §1 form 1: the estimand at 06:00 through a full count, the posting and due-date facts and the data's age-dependent match rates) and by Thornacre 4.5, the standard's general requirement that an estimate be one a full count at the measurement time would be expected to bear out (form 2); no filed back-test (form 3)",
+    "asks": "A stock value on in-scope faces (D6 repeated face quantity on batch rows; H1 period-10 change file; H2 eaches); B forecast cases over the freeze and its chart (D2 depot label before the peak re-zoning with a 27 December far edge; H2; H3 Boxing Day closures)",
+    "input_gates": "19 files; PDF, DOCX, CSV, XLSX, TXT, JSON; count history about 110,000 rows; two distractors named in metadata.json; synthetic, CC0",
+    "first_tuning": "Hinckley's rung 1 to 96.5 or under with rung 2 at 97.5 or over; every rung-3 estimate 0.6+ from 97.0 and 0.2+ from an x.5 edge; private truth on the golden side; the chart title flipping under ask B's primary device"
+  },
+  "precut": {
+    "result": "exit 0: 37 checks, 0 FAIL, 0 WARN (main at e89a676)",
+    "provisional": [
+      "semantic forks asserted: passes until generator/checks.py exists, then every SF1 to SF12 id must appear in it (builder)",
+      "card registered: reads architecture 1's filed card until the architecture-2 card is registered after task228 (main session)"
+    ]
+  },
+  "draw": {
+    "registered": "2026-10-11",
+    "guard": "WARN (driver.near 0.12 against task107 v1 lineage; repeat.gate_g against task228 v2), both answered in the design note; registered by the main session after task228 architecture 4 drew no architecture"
+  },
+  "build": {
+    "date": "2026-10-11",
+    "checks": 791,
+    "verify": 65,
+    "byte_identical": true,
+    "figures_check": "exit 0 (52 figures)",
+    "precut": "exit 0",
+    "target_files": 18,
+    "count_rows": 107072,
+    "in_scope_faces": 26188,
+    "golden_set": "Hinckley, Daventry, Bellshill, Warrington, Magor, Avonmouth qualify; Thurrock, Doncaster supervised",
+    "ladder_sets": "rung 0 none; rung 1 Magor; rung 2 Magor, Hinckley; rung 3 (four estimators) the six",
+    "pair_ceiling": 32,
+    "target_zip_sha256": "fc3a047535392cb3f2d0755c36bf5557bf379d49e0d221a9445eb50b713e7061"
+  },
+  "deferred": [],
+  "paused": {
+    "date": "2026-10-12",
+    "by": "author",
+    "at": "architecture 3 phase A, mid-draw",
+    "resume": "a fresh designer (Opus max) finishes architecture 3's phase A from the draft under the improvise rules (default path first, stump on the default path, four or more screened candidates before any no-architecture call), checks the card against the three cards before it in draw order on its registration day and registers it, runs precut.py to exit 0, then a builder (Opus medium), the leak read and clone pre-flight together, and the solver (Opus high)"
+  },
+  "status": "FAILED_TO_STUMP",
+  "owner": "perssathya"
 }

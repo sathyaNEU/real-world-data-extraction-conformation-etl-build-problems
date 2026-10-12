@@ -1,38 +1,41 @@
 {
- "task": "task114",
- "domain": "business-operations-analytics",
- "objective": "descriptive-distribution",
- "stage": "B",
- "stage_name": "approve",
- "updated": "2026-10-10",
- "stump": "A competent solver builds the booking pipeline that reproduces every busiest moment in both offices' quarterly close-outs, puts both offices' meeting-room bookings on one timeline, sets the solo calls aside for the booths, takes each working day's peak and files 24 rooms, the fewest short on no more than twelve working days; the step that lands it there is never asking which meetings booked no room only because their people were in different offices that day (9,144 of them), when on one floor every meeting with two or more of its people in takes a room, as the records show without exception wherever two of a meeting's people were in the same office.",
- "harden_loops": 3,
- "solver_rounds": [],
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "approved": null,
- "delivered": null,
- "portal": [
-  {
-   "date": "2026-10-09",
-   "score": 62,
-   "reported": "main call held (rubric rows 1 to 4 and 6 missed); rows 5 and 7, every Ask A figure and instruction-following passed",
-   "followed_by": "ask layer rebuilt (devices A1, A2, F1, F2, C1); prompt and main call unchanged"
+  "task": "task114",
+  "domain": "business-operations-analytics",
+  "objective": "descriptive-distribution",
+  "stage": "B",
+  "stage_name": "approve",
+  "updated": "2026-10-11",
+  "stump": "A competent solver builds the booking pipeline that reproduces every busiest moment in both offices' quarterly close-outs, puts both offices' meeting-room bookings on one timeline, sets the solo calls aside for the booths, takes each working day's peak and files 24 rooms, the fewest short on no more than twelve working days; the step that lands it there is never asking which meetings booked no room only because their people were in different offices that day (9,144 of them), when on one floor every meeting with two or more of its people in takes a room, as the records show without exception wherever two of a meeting's people were in the same office.",
+  "harden_loops": 3,
+  "solver_rounds": [],
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
-  {
-   "date": "2026-10-09",
-   "score": 57,
-   "reported": "determinism passed, main recommendation held, Ask A small criteria passing",
-   "followed_by": "S1 focus blocks added; every device floored at 15 hours a figure; give-back rate 7 per cent for meetings, 9 for calls; standing-call moves"
-  },
-  {
-   "date": "2026-10-10",
-   "score": 54,
-   "reported": "both top responses at 54; main call held; both own-bookings room counts (Adelaide 15, Front Street 13) and Adelaide's hours and call hours passed",
-   "followed_by": "G1 added (calls with an outside party on the line, people read from the headcount); prompt, main call and stump unchanged"
-  }
- ]
+  "approved": null,
+  "delivered": null,
+  "portal": [
+    {
+      "date": "2026-10-09",
+      "score": 62,
+      "reported": "main call held (rubric rows 1 to 4 and 6 missed); rows 5 and 7, every Ask A figure and instruction-following passed",
+      "followed_by": "ask layer rebuilt (devices A1, A2, F1, F2, C1); prompt and main call unchanged"
+    },
+    {
+      "date": "2026-10-09",
+      "score": 57,
+      "reported": "determinism passed, main recommendation held, Ask A small criteria passing",
+      "followed_by": "S1 focus blocks added; every device floored at 15 hours a figure; give-back rate 7 per cent for meetings, 9 for calls; standing-call moves"
+    },
+    {
+      "date": "2026-10-10",
+      "score": 54,
+      "reported": "both top responses at 54; main call held; both own-bookings room counts (Adelaide 15, Front Street 13) and Adelaide's hours and call hours passed",
+      "followed_by": "G1 added (calls with an outside party on the line, people read from the headcount); prompt, main call and stump unchanged"
+    }
+  ],
+  "status": "SHIPPED",
+  "portal_id": "d01e4abc-d188-424e-a322-c6fe043b29fd",
+  "portal_status": "PENDING_REVIEW"
 }

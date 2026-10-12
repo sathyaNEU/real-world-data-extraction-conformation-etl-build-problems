@@ -1,160 +1,162 @@
 {
- "task": "task445",
- "domain": "quantitative-finance",
- "objective": "data-extraction-conformation",
- "stage": 3,
- "stage_name": "build (hardening loop 2), paused mid-build: checks red at the DV separation assert",
- "updated": "2026-10-12",
- "branch": "oviya1301/task445-hardening",
- "stump": "Solvers execute OM-4 s.2 literally, see the filed index and ETF sponsors grow while every other register type holds flat, grow each of the 129 managers still due by its type's change pooled across the twelve names (round 3's basis), see it win every basis the default path builds in the September back-test, and flag WHII, GLI, JEMS and SAF (OTF about 79.2); an index sponsor holds a fixed slice of each company, so its shares move with each name's own share count as well as its creations, and the filed criterion selects growing each sponsor still due by the change its filed peers show in that name (OTF's October follow-on +4.6 per cent), every other type flat, which flags WHII, GLI, OTF, JEMS and SAF.",
- "architecture": 1,
- "loops": 2,
- "portal": [
-  {
-   "round": 1,
-   "date": "2026-10-11",
-   "average": 52,
-   "determinism": "failed",
-   "taxonomy": "answer_contradicts_files",
-   "fix_location": "input_files",
-   "model_response": "golden_wrong",
-   "gates": "A pass, B fail, C fail, D fail, E pass, F plausible, G unsure",
-   "note": "OM-4 s.2 named the filers for the period and filed no completion; literal reading flags WHII and JEMS; 128 against 125 managers to carry unpinned"
-  }
- ],
- "loop_1": {
-  "brief": "file the estimand literally (OM-4 s.2: managers still due in the population, holdings estimated) and a criterion that selects the basis without naming it; move the stump to the basis (type-change completion against flat carry); new driver unlike task181; silent ask devices off the main call's rows",
-  "design": "task445/DESIGN_NOTE.md (OM-4 text, ladder, back-test table, generator changes, device ledger)",
-  "guard": "check and heart BLOCK on ban.forum only (customer_or_counterparty against task228 v2, a same-day race; author decision needed: override or re-frame); people.first cleared (Brian Guerra replaces Jonathan Richardson); WARNs answered in the design note",
-  "build": {
-   "date": "2026-10-11",
-   "generator": "green, 5375 checks; independent verifier green; two builds byte-identical",
-   "backtest": "golden 0.042; nearest rival all-filer pooled 0.813, one rate 0.886, flat carry 1.144; robust margin 0.421 over 360 device combinations",
-   "counts": "272 on file, 129 due, 4 September notice filers outside",
-   "devices": "every combination at least 0.077 points from the golden on touched names and 172,733 shares on the bridge end",
-   "gates": "19 files, 7 formats, INFOTABLE 38,858 rows, 2 distractors in metadata.json",
-   "guard": "register --force over ban.forum (task228 v2, registration order); heart BLOCK on ban.forum only; surface 0 promoted"
-  }
- },
- "leak": {
-  "leak_py": "REVIEW (0 LEAK) on the ask-layer rebuild",
-  "reader": "loop 1: Q1 to Q4 none; Q5 open candidate list closed by asserted separation (0.042 vs 0.813) and variant convergence"
- },
- "duplicate_check": {
-  "heart": "BLOCK ban.forum vs task228 v2 (registration-order artifact, forced and noted)",
-  "nearest": "task181: clean, shares components (pass 2)",
-  "clone_check": "pass 2 CLEAN of reject tiers; Track B standing-ban hit: stump_strategy forecast_method_backtest consecutive with task446 (task445/clone_check_report_pass2.md)"
- },
- "solver_rounds": [
-  {
-   "label": "round 1",
-   "date": "2026-10-11",
-   "score": 41.0,
-   "landed": false,
-   "cracked": 0,
-   "items": 3
+  "task": "task445",
+  "domain": "quantitative-finance",
+  "objective": "data-extraction-conformation",
+  "stage": 3,
+  "stage_name": "build (hardening loop 2), paused mid-build: checks red at the DV separation assert",
+  "updated": "2026-10-11",
+  "branch": "oviya1301/task445-hardening",
+  "stump": "Solvers execute OM-4 s.2 literally, see the filed index and ETF sponsors grow while every other register type holds flat, grow each of the 129 managers still due by its type's change pooled across the twelve names (round 3's basis), see it win every basis the default path builds in the September back-test, and flag WHII, GLI, JEMS and SAF (OTF about 79.2); an index sponsor holds a fixed slice of each company, so its shares move with each name's own share count as well as its creations, and the filed criterion selects growing each sponsor still due by the change its filed peers show in that name (OTF's October follow-on +4.6 per cent), every other type flat, which flags WHII, GLI, OTF, JEMS and SAF.",
+  "architecture": 1,
+  "loops": 2,
+  "portal": [
+    {
+      "round": 1,
+      "date": "2026-10-11",
+      "average": 52,
+      "determinism": "failed",
+      "taxonomy": "answer_contradicts_files",
+      "fix_location": "input_files",
+      "model_response": "golden_wrong",
+      "gates": "A pass, B fail, C fail, D fail, E pass, F plausible, G unsure",
+      "note": "OM-4 s.2 named the filers for the period and filed no completion; literal reading flags WHII and JEMS; 128 against 125 managers to carry unpinned"
+    }
+  ],
+  "loop_1": {
+    "brief": "file the estimand literally (OM-4 s.2: managers still due in the population, holdings estimated) and a criterion that selects the basis without naming it; move the stump to the basis (type-change completion against flat carry); new driver unlike task181; silent ask devices off the main call's rows",
+    "design": "task445/DESIGN_NOTE.md (OM-4 text, ladder, back-test table, generator changes, device ledger)",
+    "guard": "check and heart BLOCK on ban.forum only (customer_or_counterparty against task228 v2, a same-day race; author decision needed: override or re-frame); people.first cleared (Brian Guerra replaces Jonathan Richardson); WARNs answered in the design note",
+    "build": {
+      "date": "2026-10-11",
+      "generator": "green, 5375 checks; independent verifier green; two builds byte-identical",
+      "backtest": "golden 0.042; nearest rival all-filer pooled 0.813, one rate 0.886, flat carry 1.144; robust margin 0.421 over 360 device combinations",
+      "counts": "272 on file, 129 due, 4 September notice filers outside",
+      "devices": "every combination at least 0.077 points from the golden on touched names and 172,733 shares on the bridge end",
+      "gates": "19 files, 7 formats, INFOTABLE 38,858 rows, 2 distractors in metadata.json",
+      "guard": "register --force over ban.forum (task228 v2, registration order); heart BLOCK on ban.forum only; surface 0 promoted"
+    }
   },
-  {
-   "round": 1,
-   "architecture": 1,
-   "date": "2026-10-11",
-   "solver": {
-    "landed": false,
-    "proxy": 41.0
-   },
-   "decision": "pass",
-   "brief": "missed at R0: conformed the December reports on file (WHII, JEMS); saw the 91 unfiled September holders and the 14 Feb deadline in its notes but declined to complete them (a seen-and-declined miss at the decisive analytical step, every stated rule applied correctly); asks 0 of 3 cracked at 80 per cent tokens, bridge ties except the start bar basis"
+  "leak": {
+    "leak_py": "REVIEW (0 LEAK) on the ask-layer rebuild",
+    "reader": "loop 1: Q1 to Q4 none; Q5 open candidate list closed by asserted separation (0.042 vs 0.813) and variant convergence"
   },
-  {
-   "label": "round 2",
-   "date": "2026-10-11",
-   "score": 45.1,
-   "landed": false,
-   "cracked": 1,
-   "items": 3
+  "duplicate_check": {
+    "heart": "BLOCK ban.forum vs task228 v2 (registration-order artifact, forced and noted)",
+    "nearest": "task181: clean, shares components (pass 2)",
+    "clone_check": "pass 2 CLEAN of reject tiers; Track B standing-ban hit: stump_strategy forecast_method_backtest consecutive with task446 (task445/clone_check_report_pass2.md)"
   },
-  {
-   "round": 2,
-   "architecture": 1,
-   "loop": 1,
-   "date": "2026-10-11",
-   "solver": {
-    "landed": false,
-    "proxy": 45.1
-   },
-   "decision": "asks: ask layer rebuilt on paper (supplemental-stumping Part 4); main call held at R4",
-   "brief": "missed at the designed rung: ran OM-4 s.2's back-test over flat carry, scaling and on-file only, chose flat carry and flagged WHII, GLI, JEMS, SAF (OTF 79.18); but landed every December and September share count, every September ownership figure, every top holder and value and the whole September bridge: the A1 to A5 devices were work orders the OM-4 rules point at (s.3 options by title, s.4 check digit, s.5 latest count incl. the 10-Q/A, cover-page amendment fields, the December cover-page name)"
+  "solver_rounds": [
+    {
+      "label": "round 1",
+      "date": "2026-10-11",
+      "score": 41.0,
+      "landed": false,
+      "cracked": 0,
+      "items": 3
+    },
+    {
+      "round": 1,
+      "architecture": 1,
+      "date": "2026-10-11",
+      "solver": {
+        "landed": false,
+        "proxy": 41.0
+      },
+      "decision": "pass",
+      "brief": "missed at R0: conformed the December reports on file (WHII, JEMS); saw the 91 unfiled September holders and the 14 Feb deadline in its notes but declined to complete them (a seen-and-declined miss at the decisive analytical step, every stated rule applied correctly); asks 0 of 3 cracked at 80 per cent tokens, bridge ties except the start bar basis"
+    },
+    {
+      "label": "round 2",
+      "date": "2026-10-11",
+      "score": 45.1,
+      "landed": false,
+      "cracked": 1,
+      "items": 3
+    },
+    {
+      "round": 2,
+      "architecture": 1,
+      "loop": 1,
+      "date": "2026-10-11",
+      "solver": {
+        "landed": false,
+        "proxy": 45.1
+      },
+      "decision": "asks: ask layer rebuilt on paper (supplemental-stumping Part 4); main call held at R4",
+      "brief": "missed at the designed rung: ran OM-4 s.2's back-test over flat carry, scaling and on-file only, chose flat carry and flagged WHII, GLI, JEMS, SAF (OTF 79.18); but landed every December and September share count, every September ownership figure, every top holder and value and the whole September bridge: the A1 to A5 devices were work orders the OM-4 rules point at (s.3 options by title, s.4 check digit, s.5 latest count incl. the 10-Q/A, cover-page amendment fields, the December cover-page name)"
+    },
+    {
+      "label": "round 3",
+      "date": "2026-10-11",
+      "score": 52.3,
+      "landed": true,
+      "cracked": 0,
+      "items": 4,
+      "ask_share": 0.177,
+      "asks_leak": false,
+      "gate": "LANDED"
+    },
+    {
+      "round": 3,
+      "architecture": 1,
+      "loop": 1,
+      "date": "2026-10-11",
+      "solver": {
+        "landed": true,
+        "proxy": 52.3,
+        "ask_share": 0.18,
+        "asks_cracked": "0 of 4"
+      },
+      "decision": "harden (loop 2)",
+      "brief": "landed by testing five bases in OM-4 s.2's back-test and picking the in-hand change pooled by register manager type (0.042 pp), which grows every still-due index sponsor by the same factor; the next rung must make that type-pooled step complete and still return the wrong answer, data-native, with the back-test still selecting the golden; the ask layer held (a cracker kept 18 per cent of the ask weight, every bridge and September figure missed)"
+    }
+  ],
+  "judge": {
+    "verdict": "DETERMINISTIC (pass 1 and pass 2)",
+    "disposition": "FIX_NOW twice, write-up wording only, both applied; no target, prompt or graded figure moved",
+    "report": "task445/determinism_check_report.md, task445/determinism_check_report_pass2.md",
+    "gate_g": "judge: forecasting (nowcast, method chosen by back-test), analytical_non_defect, surface_read_dependency no, sole_data_defect no; card: method_or_model_selection, same step",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "note": "loop 0 pack; superseded by the portal's determinism fail"
   },
-  {
-   "label": "round 3",
-   "date": "2026-10-11",
-   "score": 52.3,
-   "landed": true,
-   "cracked": 0,
-   "items": 4,
-   "ask_share": 0.177,
-   "asks_leak": false,
-   "gate": "LANDED"
+  "approved": null,
+  "delivered": "2026-10-11",
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-12"
   },
-  {
-   "round": 3,
-   "architecture": 1,
-   "loop": 1,
-   "date": "2026-10-11",
-   "solver": {
-    "landed": true,
-    "proxy": 52.3,
-    "ask_share": 0.18,
-    "asks_cracked": "0 of 4"
-   },
-   "decision": "harden (loop 2)",
-   "brief": "landed by testing five bases in OM-4 s.2's back-test and picking the in-hand change pooled by register manager type (0.042 pp), which grows every still-due index sponsor by the same factor; the next rung must make that type-pooled step complete and still return the wrong answer, data-native, with the back-test still selecting the golden; the ask layer held (a cracker kept 18 per cent of the ask weight, every bridge and September figure missed)"
-  }
- ],
- "judge": {
-  "verdict": "DETERMINISTIC (pass 1 and pass 2)",
-  "disposition": "FIX_NOW twice, write-up wording only, both applied; no target, prompt or graded figure moved",
-  "report": "task445/determinism_check_report.md, task445/determinism_check_report_pass2.md",
-  "gate_g": "judge: forecasting (nowcast, method chosen by back-test), analytical_non_defect, surface_read_dependency no, sole_data_defect no; card: method_or_model_selection, same step",
-  "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "note": "loop 0 pack; superseded by the portal's determinism fail"
- },
- "approved": null,
- "delivered": "2026-10-11",
- "precut": {
-  "exit": 0,
-  "date": "2026-10-12"
- },
- "ask_layer": {
-  "date": "2026-10-11",
-  "design": "task445/DESIGN_NOTE.md, Ask sheet and device ledger (loop 1 ask layer)",
-  "asks": "A: September ownership per name (primary DV-1 same-day amendments, D2); B: September bridge, twelve names (primary DV-2 restatement header period, D7); hazards DV-3 January options amendment (D5), A2, title variants, A3, keyed CUSIPs, A5, October counts",
-  "retired": "December and September share counts, top holder (no silent device fits them); loop-0 misfiled restatement becomes a plain 13F-HR/A",
-  "cracker": "7 ask rows, all missed (period from SUBMISSION, amendments in file order)",
-  "pair_ceiling": 34.0,
-  "prompt": "prompt.txt, 934 characters, voice-check exit 0; prompt.md removed; layout v4",
-  "next": "leak reader (layout v4 and the device filings changed the pack) and a fresh solver round",
-  "build": {
-   "date": "2026-10-11",
-   "generator": "green, 26,221 checks; verifier recomputes Ask A, the bridge and every stop; two builds byte-identical",
-   "main_call": "identical to 4c2bcbb: every figure, flag, back-test basis, rung and variant, and the declared population digests (generator/main_call_ref.json); separation zero-counts 0",
-   "ask_a": "golden unchanged; S1 +1.01 to +1.41, S2 +0.55 to +0.89, S3 +0.34 to +0.66, S4 -1.48 to -2.21 on every name; 2,012 grid cells, every touched name >= 0.067 and in another bin",
-   "ask_b": "598,531,990 / -8,203,900 / -50,938,469 / +6,452,942 / 545,842,563, gap 52.7m; S1 end +9,351,257, S2 +5,277,437, S3 +4,073,820, S4 start -187,000",
-   "robust_margin": 0.418,
-   "deviations": "DV-2 19 per cent on SAF; S3 SAF +0.34; S4 start 0.03 per cent of the bar; 3.0m end floor on stops only (grid min 12,431)",
-   "gates": "precut 0; figures_check 0; voice-check --file 0; 19 files, 7 formats, INFOTABLE 39,439 rows, 2 distractors; guard validate ok, heart BLOCK ban.forum only (task228 v2, registration order), surface 0 promoted",
-   "leak_py": "REVIEW (0 LEAK) at --asof 2023-02-03"
-  }
- },
- "loop_2": {
-  "date": "2026-10-12",
-  "brief": "make the type-pooled step complete and still wrong, data-natively (index sponsors hold a slice of each float), with the filed criterion selecting the golden by a wide margin; every candidate basis listed and separated; ask layer kept and re-tuned",
-  "design": "task445/DESIGN_NOTE.md (default path ending on the type-pooled change, stump sentence, ladder R0 to R5 with the stump rung R4', back-test table, readability screen, SF1 to SF13, closure table re-walked, Generator changes for the builder, ask sheet loop 2 note)",
-  "mechanism": "each sponsor complex holds a fixed stake of each security's OM-4 count, the stake growing 5.5 per cent a quarter; share-count moves in both windows and both directions (December window: OTF +4.6, FENN +4.8, ABBB -5.4, WHII -3.0, JEMS -3.2, NOPR -4.0, AMRB -2.5, TAAV +1.2, OLPD +1.5; September window: GLI +5.0, SAF -4.0, the A5 offerings, buybacks); golden = the filed sponsors' per-name change for each sponsor still due (equivalently the September stake x the sponsors' stake change x the December count), other types flat",
-  "prototype": "scratch, on the shipped decomposition: back-test golden 0.039, type-pooled 0.660, stake change by type 0.912, all-filer pooled 1.013, stake without growth 1.153, every manager's stake 1.168, one rate 1.180, sponsors' per-name change for everyone 1.337, flat 1.380, all-filer per name 2.559, last quarter 5.202, type by name grid 11.02, on file 26.6; December type-pooled flags WHII, GLI, JEMS, SAF (OTF 79.15); golden OTF 80.39, FENN 79.59; one-rate crossings FENN 2.86, OTF 7.36 per cent; 24-cell grid lands the golden only at the per-name sponsor cells",
-  "ask_layer": "design kept; Ask A golden at the sep targets; DV-1 and DV-2 size search re-run by the builder; pair ceiling 35.0 (mirror now the type-pooled response, about 3 of 12 December figures in bin)",
-  "guard": "check, register --force and heart: BLOCK ban.forum only (task228 v2, registration-order artifact, unchanged); WARN people.last Henderson, repeat.gate_g and repeat.decision vs task230 (answered); NOTE driver.near 0.19 vs own loop 1 driver (differentiated); heart nearest 0.05 (task107 v4 stump, task125 driver); validate 138 cards 0 invalid",
-  "precut": "exit 0",
-  "next": "builder (fresh, medium effort) implements Generator changes items 1 to 10; then leak.py (no document or prompt change) and solver round 4"
- }
+  "ask_layer": {
+    "date": "2026-10-11",
+    "design": "task445/DESIGN_NOTE.md, Ask sheet and device ledger (loop 1 ask layer)",
+    "asks": "A: September ownership per name (primary DV-1 same-day amendments, D2); B: September bridge, twelve names (primary DV-2 restatement header period, D7); hazards DV-3 January options amendment (D5), A2, title variants, A3, keyed CUSIPs, A5, October counts",
+    "retired": "December and September share counts, top holder (no silent device fits them); loop-0 misfiled restatement becomes a plain 13F-HR/A",
+    "cracker": "7 ask rows, all missed (period from SUBMISSION, amendments in file order)",
+    "pair_ceiling": 34.0,
+    "prompt": "prompt.txt, 934 characters, voice-check exit 0; prompt.md removed; layout v4",
+    "next": "leak reader (layout v4 and the device filings changed the pack) and a fresh solver round",
+    "build": {
+      "date": "2026-10-11",
+      "generator": "green, 26,221 checks; verifier recomputes Ask A, the bridge and every stop; two builds byte-identical",
+      "main_call": "identical to 4c2bcbb: every figure, flag, back-test basis, rung and variant, and the declared population digests (generator/main_call_ref.json); separation zero-counts 0",
+      "ask_a": "golden unchanged; S1 +1.01 to +1.41, S2 +0.55 to +0.89, S3 +0.34 to +0.66, S4 -1.48 to -2.21 on every name; 2,012 grid cells, every touched name >= 0.067 and in another bin",
+      "ask_b": "598,531,990 / -8,203,900 / -50,938,469 / +6,452,942 / 545,842,563, gap 52.7m; S1 end +9,351,257, S2 +5,277,437, S3 +4,073,820, S4 start -187,000",
+      "robust_margin": 0.418,
+      "deviations": "DV-2 19 per cent on SAF; S3 SAF +0.34; S4 start 0.03 per cent of the bar; 3.0m end floor on stops only (grid min 12,431)",
+      "gates": "precut 0; figures_check 0; voice-check --file 0; 19 files, 7 formats, INFOTABLE 39,439 rows, 2 distractors; guard validate ok, heart BLOCK ban.forum only (task228 v2, registration order), surface 0 promoted",
+      "leak_py": "REVIEW (0 LEAK) at --asof 2023-02-03"
+    }
+  },
+  "loop_2": {
+    "date": "2026-10-12",
+    "brief": "make the type-pooled step complete and still wrong, data-natively (index sponsors hold a slice of each float), with the filed criterion selecting the golden by a wide margin; every candidate basis listed and separated; ask layer kept and re-tuned",
+    "design": "task445/DESIGN_NOTE.md (default path ending on the type-pooled change, stump sentence, ladder R0 to R5 with the stump rung R4', back-test table, readability screen, SF1 to SF13, closure table re-walked, Generator changes for the builder, ask sheet loop 2 note)",
+    "mechanism": "each sponsor complex holds a fixed stake of each security's OM-4 count, the stake growing 5.5 per cent a quarter; share-count moves in both windows and both directions (December window: OTF +4.6, FENN +4.8, ABBB -5.4, WHII -3.0, JEMS -3.2, NOPR -4.0, AMRB -2.5, TAAV +1.2, OLPD +1.5; September window: GLI +5.0, SAF -4.0, the A5 offerings, buybacks); golden = the filed sponsors' per-name change for each sponsor still due (equivalently the September stake x the sponsors' stake change x the December count), other types flat",
+    "prototype": "scratch, on the shipped decomposition: back-test golden 0.039, type-pooled 0.660, stake change by type 0.912, all-filer pooled 1.013, stake without growth 1.153, every manager's stake 1.168, one rate 1.180, sponsors' per-name change for everyone 1.337, flat 1.380, all-filer per name 2.559, last quarter 5.202, type by name grid 11.02, on file 26.6; December type-pooled flags WHII, GLI, JEMS, SAF (OTF 79.15); golden OTF 80.39, FENN 79.59; one-rate crossings FENN 2.86, OTF 7.36 per cent; 24-cell grid lands the golden only at the per-name sponsor cells",
+    "ask_layer": "design kept; Ask A golden at the sep targets; DV-1 and DV-2 size search re-run by the builder; pair ceiling 35.0 (mirror now the type-pooled response, about 3 of 12 December figures in bin)",
+    "guard": "check, register --force and heart: BLOCK ban.forum only (task228 v2, registration-order artifact, unchanged); WARN people.last Henderson, repeat.gate_g and repeat.decision vs task230 (answered); NOTE driver.near 0.19 vs own loop 1 driver (differentiated); heart nearest 0.05 (task107 v4 stump, task125 driver); validate 138 cards 0 invalid",
+    "precut": "exit 0",
+    "next": "builder (fresh, medium effort) implements Generator changes items 1 to 10; then leak.py (no document or prompt change) and solver round 4"
+  },
+  "status": "FAILED_TO_STUMP",
+  "owner": "oviya1301"
 }

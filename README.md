@@ -7,12 +7,12 @@ on the portal, shipped one after another. `CLAUDE.md` is the working contract an
 ## Start a session
 
 ```
-/build next                       # the next open number in your lane, built end to end
+/build next                       # the next task in your backlog wave, built end to end
 /build task136                    # a number you were handed
 /build resume task134             # a paused build, from its pipeline.json
 /fix-determinism task181 <finding>  # the portal's determinism block failed, the rubric was fine
 /fix-rubric task445 <portal rows>   # the call held, the top two averaged 50 or more
-python3 .claude/skills/build-pipeline/status.py          # the board, read from every pipeline.json
+python3 .claude/skills/build-pipeline/status.py          # every developer's waves, each task's status
 ```
 
 `/build`, `/fix-determinism` and `/fix-rubric` run at max effort; `/approve`, `/leak-check`, `/clone-check` and
@@ -20,8 +20,9 @@ every spawned agent run at medium. There is no in-house solver round: the portal
 
 ## Lanes
 
-Task numbers are fixed by objective in `START_HERE.md`. Each developer owns one lane, set in
-`.claude/authors/<handle>.md`, and keeps two builds in flight.
+Task numbers are fixed by objective in `START_HERE.md`. Each developer owns one lane and keeps two builds in
+flight. Their `.claude/authors/<handle>.md` holds the status board link and the backlog: waves of six tasks to
+ship, reworks of builds that failed to stump first.
 
 | Lane | Tasks | Owner |
 |---|---|---|

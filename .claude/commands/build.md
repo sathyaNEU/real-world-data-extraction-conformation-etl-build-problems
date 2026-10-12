@@ -12,8 +12,9 @@ commits, `pipeline.json` and retirement are its business and are not restated he
 **Arguments.**
 
 - `taskNN`: the number handed out; `status.py taskNN` prints its seed (header and Situation only).
-- `next`: `python3 .claude/skills/build-pipeline/status.py next <handle>` names it, from the author file
-  matching the session user.
+- `next`: `python3 .claude/skills/build-pipeline/status.py next <handle>` names the next task in the backlog
+  wave of the author file matching the session user. A `FAILED_TO_STUMP` rework resumes from its own
+  `pipeline.json` at the stage its wave note gives (resume N, redesign at 2, re-root at 1).
 - `<domain> <objective>`: a build outside the seeds. The domain is a client domain, the objective one of the
   eight; map plain words to the vocabulary keys. Use the number given, or the next open one in the lane.
 - `resume taskNN`, `taskNN from <stage>`: continue from `pipeline.json`, re-checking that stage's gate first.

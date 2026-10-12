@@ -1,160 +1,162 @@
 {
- "task": "task133",
- "domain": "banking-credit-financial-risk",
- "objective": "forecasting",
- "stage": 8,
- "stage_name": "shipped",
- "updated": "2026-10-11",
- "branch": "sathya8571/task133-harden",
- "stump": "A competent solver reads the PD curve as cumulative default by months on book, divides each performing loan's forward increments by its survival to date, 1 - C(a), and books about AUD 11.74 million against AUD 13,160,000 (10.8 per cent low); the step that lands it there is taking the curve's shares as shares of loans still open when they are shares of every loan drawn, so loans repaid in full by month a stay in the at-risk base.",
- "architecture": 1,
- "loops": 1,
- "leak": {
-  "leak_py": "REVIEW, no LEAK on the loop 1 cut (2026-10-11, --asof 2026-10-12): 'the model' team in 3.2, scorecard values 680 and 560 in the migration note's conversion table, the policy's scope sentence, the subject's own vocabulary in the policy and dictionary, forward-scheduled dates; each answered in the design note",
-  "reader": "loop 1 (Sonnet): no sentence names the decisive step, no file states the answer; question 3 named the development sample (fixed: release package filed for the auditors' model-change review); one main-call fork, the payout month (fixed: the sample's outcome month pinned to the curve's by-the-end-of convention); the conditioning reading is the stump, for the judge",
-  "reader_targeted": "loop 1 targeted read (Sonnet) after the pre-round repair: no step named, no figure stated, the repayment month closed; deferred: the filing note is the one 'other files' entry that explains itself and only the two outcome columns carry descriptions (form tells), and 'each stage' never names stage 3 (ask B)",
-  "leak_py_6b": "REVIEW, no LEAK on the 6b cut (2026-10-11, --asof 2026-10-12): 560 and 680 in the migration note's conversion table, the policy's scope sentence, the subject's own vocabulary in the policy (11 of 25 stump terms) and the dictionary (8 of 25), forward-scheduled dates; the 'the model' line is gone; each answered in the design note's LEAK REVIEW. 6b changed documents under target/ (CRM-ECL-04, the dictionary, the curve header, both parquet descriptions), so a reader's pass on this cut is owed; the loop 1 reader section is re-appended to the report"
- },
- "duplicate_check": {
-  "heart": "WARN, no BLOCK on the loop 1 card (strategy risk, task134 driver 0.14 differentiated, older first names, Gate G forecasting in the block)",
-  "nearest": "task134 driver 0.18 (check) and 0.14 (heart), differentiated on the card; task133 v1 lineage 0.27, differentiated",
-  "surface": "2 promoted after the pre-round repair (task124 0.149, task89 0.143) on the deliverable order alone: the prompt now names the deck before the workbook, as both of those do; no shared wording, file name, schema or invented name. 0 promoted on the loop 1 cut",
-  "clone_check": "",
-  "surface_6b": "6b: guard check and heart WARN only (the same lines); surface promotes the same two pairs at the same scores (task124 0.149, task89 0.143) on the deliverable order, nothing new"
- },
- "solver_rounds": [
-  {
-   "label": "round 1, plain",
-   "date": "2026-10-11",
-   "score": 37.6,
-   "landed": false,
-   "cracked": 1,
-   "items": 6
+  "task": "task133",
+  "domain": "banking-credit-financial-risk",
+  "objective": "forecasting",
+  "stage": 8,
+  "stage_name": "shipped",
+  "updated": "2026-10-11",
+  "branch": "sathya8571/task133-harden",
+  "stump": "A competent solver reads the PD curve as cumulative default by months on book, divides each performing loan's forward increments by its survival to date, 1 - C(a), and books about AUD 11.74 million against AUD 13,160,000 (10.8 per cent low); the step that lands it there is taking the curve's shares as shares of loans still open when they are shares of every loan drawn, so loans repaid in full by month a stay in the at-risk base.",
+  "architecture": 1,
+  "loops": 1,
+  "leak": {
+    "leak_py": "REVIEW, no LEAK on the loop 1 cut (2026-10-11, --asof 2026-10-12): 'the model' team in 3.2, scorecard values 680 and 560 in the migration note's conversion table, the policy's scope sentence, the subject's own vocabulary in the policy and dictionary, forward-scheduled dates; each answered in the design note",
+    "reader": "loop 1 (Sonnet): no sentence names the decisive step, no file states the answer; question 3 named the development sample (fixed: release package filed for the auditors' model-change review); one main-call fork, the payout month (fixed: the sample's outcome month pinned to the curve's by-the-end-of convention); the conditioning reading is the stump, for the judge",
+    "reader_targeted": "loop 1 targeted read (Sonnet) after the pre-round repair: no step named, no figure stated, the repayment month closed; deferred: the filing note is the one 'other files' entry that explains itself and only the two outcome columns carry descriptions (form tells), and 'each stage' never names stage 3 (ask B)",
+    "leak_py_6b": "REVIEW, no LEAK on the 6b cut (2026-10-11, --asof 2026-10-12): 560 and 680 in the migration note's conversion table, the policy's scope sentence, the subject's own vocabulary in the policy (11 of 25 stump terms) and the dictionary (8 of 25), forward-scheduled dates; the 'the model' line is gone; each answered in the design note's LEAK REVIEW. 6b changed documents under target/ (CRM-ECL-04, the dictionary, the curve header, both parquet descriptions), so a reader's pass on this cut is owed; the loop 1 reader section is re-appended to the report"
   },
-  {
-   "label": "round 1, skeptic",
-   "date": "2026-10-11",
-   "score": 37.6,
-   "landed": false,
-   "cracked": 1,
-   "items": 6
+  "duplicate_check": {
+    "heart": "WARN, no BLOCK on the loop 1 card (strategy risk, task134 driver 0.14 differentiated, older first names, Gate G forecasting in the block)",
+    "nearest": "task134 driver 0.18 (check) and 0.14 (heart), differentiated on the card; task133 v1 lineage 0.27, differentiated",
+    "surface": "2 promoted after the pre-round repair (task124 0.149, task89 0.143) on the deliverable order alone: the prompt now names the deck before the workbook, as both of those do; no shared wording, file name, schema or invented name. 0 promoted on the loop 1 cut",
+    "clone_check": "",
+    "surface_6b": "6b: guard check and heart WARN only (the same lines); surface promotes the same two pairs at the same scores (task124 0.149, task89 0.143) on the deliverable order, nothing new"
   },
-  {
-   "round": 1,
-   "architecture": 1,
-   "plain": {
-    "landed": false,
-    "proxy": 37.6,
-    "answer": "A$13,318k (shifted curve, no survival division)"
-   },
-   "skeptic": {
-    "landed": false,
-    "proxy": 37.6,
-    "answer": "A$13,318k (shifted curve, no survival division)"
-   },
-   "mean": 37.6,
-   "decision": "pass",
-   "brief": "Both solvers read the curve from each loan's months on book (the decisive starting-point rung) and stopped at the unconditional increment, the -3.3% rung; both named the survival-conditioned reading (A$13,773k) and declined it because CRM-ECL-04 does not spell it out. Read as a stump, not a fork: 3.2 defines PD(k) as the probability of default in the k-th month after the reporting date for a loan performing on that date, and the curve is the probability that a new loan defaults by each month on book. The judge rules on it at stage 7."
-  },
-  {
-   "label": "round 2",
-   "date": "2026-10-11",
-   "score": 36.1,
-   "landed": false,
-   "cracked": 1,
-   "items": 6
-  },
-  {
-   "round": 2,
-   "architecture": 1,
-   "date": "2026-10-11",
-   "rule": "one sandboxed solver (main, PR #17)",
-   "solver": {
-    "landed": false,
-    "proxy": 36.1,
-    "answer": "A$13,318,000 (curve increments from months on book, no survival division)"
-   },
-   "decision": "pass",
-   "brief": "The solver staged the book exactly as the golden does (37,289 stage 1, 3,265 stage 2, 343 stage 3, every gross carrying amount), read 3.2 and the curve header correctly, took the plain increments from each loan's months on book and named the survival-conditioned reading (about A$13,773,000) as an open point it declined because CRM-ECL-04 does not spell it out. The miss is at the decisive analytical step the card's analyst_test names; the judge rules on stump against fork at stage 7."
-  },
-  {
-   "round": 0,
-   "architecture": 1,
-   "label": "portal, v1 as shipped",
-   "date": "2026-10-11",
-   "landed": true,
-   "result": "two models: one stumped; the other filed AUD 13,773,000 by dividing the curve's increments by survival to date and scored 100 per cent, banking every ask",
-   "decision": "harden",
-   "brief": "The landed path divided the curve's increments by 1 - C(a); file the curve as the crude default share of every loan drawn in complete-term development cohorts, so that division becomes a rung and the answer conditions on the share still open and never defaulted, read from the development sample; replace the inheriting asks with two decoupled asks carried by silent devices (realised LGD of the 2023-24 defaults with the debt-sale receipt; the June book's stages at 30 September with the September labels and the next-day run dates); prompt under 1,000 characters."
-  },
-  {
-   "label": "loop 1 round 1",
-   "date": "2026-10-11",
-   "score": 35.3,
-   "landed": false,
-   "cracked": 1,
-   "items": 6
-  },
-  {
-   "round": 3,
-   "architecture": 1,
-   "loop": 1,
-   "label": "loop 1 round 1",
-   "date": "2026-10-11",
-   "solver": {
-    "landed": false,
-    "proxy": 35.3,
-    "answer": "AUD 11,421,000 (R3, the plain difference, no division); it weighed the default-only conditional reading (AUD 11,737,000, R4) and kept R3"
-   },
-   "asks": "both decoupled asks cracked exactly: ask A's eight LGD figures (it split the lump debt-sale receipt at 3.85 cents per loan from the sale schedule) and ask B's sixteen counts (June scores from the 1 July run, hardship in force by dates); the token proxy undercounts this, on the rubric the response sits in the 40s",
-   "decision": "pass",
-   "brief": "6b: the deferred items, plus ask hardening; a careful solver running the hygiene battery cracked both asks, so their devices must survive it (silent devices that reconcile on the wrong path), measured against this round's path"
-  }
- ],
- "judge": {
-  "verdict": "not run",
-  "disposition": "returned task (portal round 1): the author's rule is design, build, commit and ship, with no leak reader, solver round, judge or clone check; the mechanical gates ran (build, checks.py 511, verify, byte-identical rebuilds, leak.py, guard)",
-  "report": "",
-  "v1": "DETERMINISTIC, APPROVE on pass 2 (determinism_check_report.md, determinism_check_report_pass2.md), before loop 1"
- },
- "approved": null,
- "delivered": "2026-10-11 (re-shipped after portal round 1: hardened ladder from loop 1, asks hardened at 6b)",
- "portal": {
-  "v1": "2026-10-11: one model stumped, the other landed AUD 13,773,000 at 100 per cent"
- },
- "three_rules": {
-  "domain": "pass (AASB 9 staging, an attrition-conditioned crude default curve, LGD, EAD, scenario weighting and discounting decide it)",
-  "layers": "pass",
-  "decisive_step": "analytical (conditioning a crude cohort default curve on survival of both exits, default and repayment in full)"
- },
- "forum_redraw": "committee_or_panel to board_of_directors at ship (heart ban.forum against task129); the policy's section 5 reporting line and the deck name changed, no figure moved; no fresh solver round, the change does not touch the analysis",
- "pre_round_repair": "2026-10-11, from 22d2dfd, before the round: (1) the dictionary's other-files section files the curves and the development sample as PLPD-2026.06's release package for the external auditors' review of the PD model change (approved 24 June 2026, first quarter-end run on it), with nothing on the sample's use; (2) the sample's outcome_month_on_book pinned to the curve header's 'by the end of that month on book', and Cl(a-1) asserted off the allowance and both stage amounts (13,010,574, 10,445,065, 2,565,509) in checks.py and verify.py; (3) the prompt reordered deliverable-first (the chair's two slides, then the workbook behind them), 934 characters, ask B dated 30 September, card opening_move deliverable-first. No graded figure moved; the edits changed only ecl_extract_dictionary.txt and pd_model_development_sample.parquet under target/. The index refresh also replaced two stale blobs committed at 22d2dfd (personal_loan_book_2026-09-30.csv, three rows, and arrears_roll_rates_fy26.xlsx: an older build's files of the same byte size, which git never saw change); target.zip and the generator already carried the current files, and on the stale folder BPL2247062 stages 1 not 2 (37,289 and 3,265 against 37,288 and 3,266) and two ask B counts move (PL36 June stage 1: 14,471 and 679 against 14,470 and 680). leak.py REVIEW, no LEAK; guard check and heart WARN; surface 2 promoted on the deliverable order",
- "deferred": [
-  "asks: the 8-file span floor is not met (ask A 6 files, ask B 7). Neither ask may read the curve or the development sample (the separation that keeps both decoupled from the call), and the only other files left (the scenarios and the two distractors) could enter only through a dependency written for the purpose; left, with the reason in the design note"
- ],
- "repair_6b": {
-  "date": "2026-10-11",
-  "from": "2996a9a (loop 1 round 1: main call missed at R3, both decoupled asks banked by a careful solver)",
-  "asks": "each ask now sits under one silent device on rows the call never reads. Ask A: Collections closes a default case as cured when it approves a collections arrangement, dated from its start, and does not reopen it when the arrangement is withdrawn; 59 arrangements on 2023-24 defaults were withdrawn before they started, 43 on loans then written off (not sold, still paying the agency), 16 on loans that caught up; the careful path (every cure at its word) lands all 8 figures 2.4 to 3.1 points low, the over-cleaner 0.8 to 1.6 high. Ask B: the June extract ran at 07:30 on 1 July before CHG-26-0418 and counts days past due to its run, a day more than 1.3's close of business; read as extracted, 14 of 16 counts move. The loop 1 devices (the blank-key sale receipt, the status label, the run date) stay as hazards",
-  "golden": "unchanged: allowance AUD 13,160,000, stage 1 AUD 10,563,000, stage 2 AUD 2,597,000; the 8 realised losses and 16 counts unchanged",
-  "main_ladder": "unchanged at the nearest thousand; the smoothed curve moves the exact allowance to 13,160,123 (was 13,160,125); rungs R0 +38.80, Rh +6.91, R4b -6.03, R4 -10.81, R3 -13.21 per cent, each missing all three figures; the September book is byte-identical",
-  "pair_simulation": "both top responses the loop 1 careful solver: 2 of 24 ask figures each; one on the call 33.1 (cracker 49.6, mirror 16.6), neither 16.6; habitual sheets 28.5; catching A1 alone 51.4, B3 alone 65.2, both 83.5",
-  "prompt": "unchanged, 934 characters",
-  "pins": "3.3: a loan that returns to performing has lost nothing; recoveries discounted monthly at the contract rate as in 3.5. Dictionary: a loan leaves the extract once it closes (repaid in full, settled or written off)",
-  "realism": "CRM-ECL-04 rewritten (1.2 and 2.1 without the run-specific clauses, 2.2 plain, 3.2 cites PLPD-2026.06, 3.3 an LGD-review clause, v4.2 history line on the curve and the LGD review, effective 1 September 2026); the dictionary a run-folder data dictionary with a change log and uniform entries; PLPD-2026.06 smoothed (log spline from month 4, fitted under the allowance's own constraints by tune_curve.py); bulk COVID-19 statuses left Active; write-offs include settlement shortfalls (Jul-Sep 323 against 316 June 90+ departures); every parquet column described",
-  "gates": "build green; checks.py PASS 511; verify.py PASS; two scratch rebuilds byte-identical to target/, golden/ and target.zip; 15 files, 6 formats, 40,897 rows, 2 distractors; leak.py REVIEW no LEAK; guard check and heart WARN, surface 2 promoted (unchanged)",
-  "target_changed": [
-   "CRM-ECL-04_expected_credit_loss_personal_loans.docx",
-   "behaviour_score_runs_2026-03_2026-08.parquet (column descriptions only)",
-   "collections_defaults_2023-24.csv",
-   "ecl_extract_dictionary.txt",
-   "hardship_register_2026-09-30.xlsx",
-   "pd_curve_personal_loans_2026-06.csv",
-   "pd_model_development_sample.parquet (column descriptions only)",
-   "personal_loan_book_2026-06-30.csv (days_past_due only)",
-   "write_offs_2025-07_2026-09.csv"
+  "solver_rounds": [
+    {
+      "label": "round 1, plain",
+      "date": "2026-10-11",
+      "score": 37.6,
+      "landed": false,
+      "cracked": 1,
+      "items": 6
+    },
+    {
+      "label": "round 1, skeptic",
+      "date": "2026-10-11",
+      "score": 37.6,
+      "landed": false,
+      "cracked": 1,
+      "items": 6
+    },
+    {
+      "round": 1,
+      "architecture": 1,
+      "plain": {
+        "landed": false,
+        "proxy": 37.6,
+        "answer": "A$13,318k (shifted curve, no survival division)"
+      },
+      "skeptic": {
+        "landed": false,
+        "proxy": 37.6,
+        "answer": "A$13,318k (shifted curve, no survival division)"
+      },
+      "mean": 37.6,
+      "decision": "pass",
+      "brief": "Both solvers read the curve from each loan's months on book (the decisive starting-point rung) and stopped at the unconditional increment, the -3.3% rung; both named the survival-conditioned reading (A$13,773k) and declined it because CRM-ECL-04 does not spell it out. Read as a stump, not a fork: 3.2 defines PD(k) as the probability of default in the k-th month after the reporting date for a loan performing on that date, and the curve is the probability that a new loan defaults by each month on book. The judge rules on it at stage 7."
+    },
+    {
+      "label": "round 2",
+      "date": "2026-10-11",
+      "score": 36.1,
+      "landed": false,
+      "cracked": 1,
+      "items": 6
+    },
+    {
+      "round": 2,
+      "architecture": 1,
+      "date": "2026-10-11",
+      "rule": "one sandboxed solver (main, PR #17)",
+      "solver": {
+        "landed": false,
+        "proxy": 36.1,
+        "answer": "A$13,318,000 (curve increments from months on book, no survival division)"
+      },
+      "decision": "pass",
+      "brief": "The solver staged the book exactly as the golden does (37,289 stage 1, 3,265 stage 2, 343 stage 3, every gross carrying amount), read 3.2 and the curve header correctly, took the plain increments from each loan's months on book and named the survival-conditioned reading (about A$13,773,000) as an open point it declined because CRM-ECL-04 does not spell it out. The miss is at the decisive analytical step the card's analyst_test names; the judge rules on stump against fork at stage 7."
+    },
+    {
+      "round": 0,
+      "architecture": 1,
+      "label": "portal, v1 as shipped",
+      "date": "2026-10-11",
+      "landed": true,
+      "result": "two models: one stumped; the other filed AUD 13,773,000 by dividing the curve's increments by survival to date and scored 100 per cent, banking every ask",
+      "decision": "harden",
+      "brief": "The landed path divided the curve's increments by 1 - C(a); file the curve as the crude default share of every loan drawn in complete-term development cohorts, so that division becomes a rung and the answer conditions on the share still open and never defaulted, read from the development sample; replace the inheriting asks with two decoupled asks carried by silent devices (realised LGD of the 2023-24 defaults with the debt-sale receipt; the June book's stages at 30 September with the September labels and the next-day run dates); prompt under 1,000 characters."
+    },
+    {
+      "label": "loop 1 round 1",
+      "date": "2026-10-11",
+      "score": 35.3,
+      "landed": false,
+      "cracked": 1,
+      "items": 6
+    },
+    {
+      "round": 3,
+      "architecture": 1,
+      "loop": 1,
+      "label": "loop 1 round 1",
+      "date": "2026-10-11",
+      "solver": {
+        "landed": false,
+        "proxy": 35.3,
+        "answer": "AUD 11,421,000 (R3, the plain difference, no division); it weighed the default-only conditional reading (AUD 11,737,000, R4) and kept R3"
+      },
+      "asks": "both decoupled asks cracked exactly: ask A's eight LGD figures (it split the lump debt-sale receipt at 3.85 cents per loan from the sale schedule) and ask B's sixteen counts (June scores from the 1 July run, hardship in force by dates); the token proxy undercounts this, on the rubric the response sits in the 40s",
+      "decision": "pass",
+      "brief": "6b: the deferred items, plus ask hardening; a careful solver running the hygiene battery cracked both asks, so their devices must survive it (silent devices that reconcile on the wrong path), measured against this round's path"
+    }
   ],
-  "next": "stage 7: the determinism judge; a reader's pass on the 6b cut is owed because documents under target/ changed"
- },
- "prompt": "prompt.txt at ship, 840 characters, question-first plain text under the author's ten points; every ask, unit and rounding word for word; prompt.md removed"
+  "judge": {
+    "verdict": "not run",
+    "disposition": "returned task (portal round 1): the author's rule is design, build, commit and ship, with no leak reader, solver round, judge or clone check; the mechanical gates ran (build, checks.py 511, verify, byte-identical rebuilds, leak.py, guard)",
+    "report": "",
+    "v1": "DETERMINISTIC, APPROVE on pass 2 (determinism_check_report.md, determinism_check_report_pass2.md), before loop 1"
+  },
+  "approved": null,
+  "delivered": "2026-10-11 (re-shipped after portal round 1: hardened ladder from loop 1, asks hardened at 6b)",
+  "portal": {
+    "v1": "2026-10-11: one model stumped, the other landed AUD 13,773,000 at 100 per cent"
+  },
+  "three_rules": {
+    "domain": "pass (AASB 9 staging, an attrition-conditioned crude default curve, LGD, EAD, scenario weighting and discounting decide it)",
+    "layers": "pass",
+    "decisive_step": "analytical (conditioning a crude cohort default curve on survival of both exits, default and repayment in full)"
+  },
+  "forum_redraw": "committee_or_panel to board_of_directors at ship (heart ban.forum against task129); the policy's section 5 reporting line and the deck name changed, no figure moved; no fresh solver round, the change does not touch the analysis",
+  "pre_round_repair": "2026-10-11, from 22d2dfd, before the round: (1) the dictionary's other-files section files the curves and the development sample as PLPD-2026.06's release package for the external auditors' review of the PD model change (approved 24 June 2026, first quarter-end run on it), with nothing on the sample's use; (2) the sample's outcome_month_on_book pinned to the curve header's 'by the end of that month on book', and Cl(a-1) asserted off the allowance and both stage amounts (13,010,574, 10,445,065, 2,565,509) in checks.py and verify.py; (3) the prompt reordered deliverable-first (the chair's two slides, then the workbook behind them), 934 characters, ask B dated 30 September, card opening_move deliverable-first. No graded figure moved; the edits changed only ecl_extract_dictionary.txt and pd_model_development_sample.parquet under target/. The index refresh also replaced two stale blobs committed at 22d2dfd (personal_loan_book_2026-09-30.csv, three rows, and arrears_roll_rates_fy26.xlsx: an older build's files of the same byte size, which git never saw change); target.zip and the generator already carried the current files, and on the stale folder BPL2247062 stages 1 not 2 (37,289 and 3,265 against 37,288 and 3,266) and two ask B counts move (PL36 June stage 1: 14,471 and 679 against 14,470 and 680). leak.py REVIEW, no LEAK; guard check and heart WARN; surface 2 promoted on the deliverable order",
+  "deferred": [
+    "asks: the 8-file span floor is not met (ask A 6 files, ask B 7). Neither ask may read the curve or the development sample (the separation that keeps both decoupled from the call), and the only other files left (the scenarios and the two distractors) could enter only through a dependency written for the purpose; left, with the reason in the design note"
+  ],
+  "repair_6b": {
+    "date": "2026-10-11",
+    "from": "2996a9a (loop 1 round 1: main call missed at R3, both decoupled asks banked by a careful solver)",
+    "asks": "each ask now sits under one silent device on rows the call never reads. Ask A: Collections closes a default case as cured when it approves a collections arrangement, dated from its start, and does not reopen it when the arrangement is withdrawn; 59 arrangements on 2023-24 defaults were withdrawn before they started, 43 on loans then written off (not sold, still paying the agency), 16 on loans that caught up; the careful path (every cure at its word) lands all 8 figures 2.4 to 3.1 points low, the over-cleaner 0.8 to 1.6 high. Ask B: the June extract ran at 07:30 on 1 July before CHG-26-0418 and counts days past due to its run, a day more than 1.3's close of business; read as extracted, 14 of 16 counts move. The loop 1 devices (the blank-key sale receipt, the status label, the run date) stay as hazards",
+    "golden": "unchanged: allowance AUD 13,160,000, stage 1 AUD 10,563,000, stage 2 AUD 2,597,000; the 8 realised losses and 16 counts unchanged",
+    "main_ladder": "unchanged at the nearest thousand; the smoothed curve moves the exact allowance to 13,160,123 (was 13,160,125); rungs R0 +38.80, Rh +6.91, R4b -6.03, R4 -10.81, R3 -13.21 per cent, each missing all three figures; the September book is byte-identical",
+    "pair_simulation": "both top responses the loop 1 careful solver: 2 of 24 ask figures each; one on the call 33.1 (cracker 49.6, mirror 16.6), neither 16.6; habitual sheets 28.5; catching A1 alone 51.4, B3 alone 65.2, both 83.5",
+    "prompt": "unchanged, 934 characters",
+    "pins": "3.3: a loan that returns to performing has lost nothing; recoveries discounted monthly at the contract rate as in 3.5. Dictionary: a loan leaves the extract once it closes (repaid in full, settled or written off)",
+    "realism": "CRM-ECL-04 rewritten (1.2 and 2.1 without the run-specific clauses, 2.2 plain, 3.2 cites PLPD-2026.06, 3.3 an LGD-review clause, v4.2 history line on the curve and the LGD review, effective 1 September 2026); the dictionary a run-folder data dictionary with a change log and uniform entries; PLPD-2026.06 smoothed (log spline from month 4, fitted under the allowance's own constraints by tune_curve.py); bulk COVID-19 statuses left Active; write-offs include settlement shortfalls (Jul-Sep 323 against 316 June 90+ departures); every parquet column described",
+    "gates": "build green; checks.py PASS 511; verify.py PASS; two scratch rebuilds byte-identical to target/, golden/ and target.zip; 15 files, 6 formats, 40,897 rows, 2 distractors; leak.py REVIEW no LEAK; guard check and heart WARN, surface 2 promoted (unchanged)",
+    "target_changed": [
+      "CRM-ECL-04_expected_credit_loss_personal_loans.docx",
+      "behaviour_score_runs_2026-03_2026-08.parquet (column descriptions only)",
+      "collections_defaults_2023-24.csv",
+      "ecl_extract_dictionary.txt",
+      "hardship_register_2026-09-30.xlsx",
+      "pd_curve_personal_loans_2026-06.csv",
+      "pd_model_development_sample.parquet (column descriptions only)",
+      "personal_loan_book_2026-06-30.csv (days_past_due only)",
+      "write_offs_2025-07_2026-09.csv"
+    ],
+    "next": "stage 7: the determinism judge; a reader's pass on the 6b cut is owed because documents under target/ changed"
+  },
+  "prompt": "prompt.txt at ship, 840 characters, question-first plain text under the author's ten points; every ask, unit and rounding word for word; prompt.md removed",
+  "status": "FAILED_TO_STUMP",
+  "owner": "sathya8571"
 }

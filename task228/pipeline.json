@@ -1,169 +1,171 @@
 {
- "task": "task228",
- "domain": "physical-environmental-sciences",
- "objective": "data-quality-monitoring",
- "stage": "paused",
- "stage_name": "paused by the author (2026-10-11) after architecture 4 drew no architecture: out of the build slots; a designer redraws architecture 4 once task229 or task230 ships, under a waiver of the estimator-pattern ban if the author grants one then, or without one if the ban window has moved",
- "updated": "2026-10-11",
- "stump": "none: architecture 4 found no draw at phase A",
- "architecture": 4,
- "loops": 0,
- "exception": {
-  "granted_by": "the author",
-  "date": "2026-10-11",
-  "decision": "a fourth architecture in a new world (a fresh dataset and domain, nothing kept from the experiment platform or the Coteau network), objective kept (a forward monitoring or alerting call on data or pipeline health); retire the number if no draw clears, no fifth",
-  "reason": "an exception to the three-architecture cap: three architectures spent and the revival of architecture 1 failed the domain-coupling rule",
-  "outcome": "no architecture at phase A (DESIGN_NOTE.md, ## Architecture 4, phase A); nothing registered, the card on file is architecture 2's"
- },
- "precut": {
-  "exit": 1,
-  "date": "2026-10-11",
-  "result": "32 checks, 22 FAIL, 0 WARN: no architecture-4 design or prompt.txt to gate"
- },
- "spent": {
-  "architecture": 2,
-  "loop": 2,
-  "phase": "A (on paper), after round 4 landed the call",
-  "date": "2026-10-11",
-  "reason": "Round 4 landed the golden eight on its own independence check (a second station of the cell in every multi-station cell, the station-station-retrieval triple adopted over the two clay cells). Phase A found no loop-2 rung outside a third independence layer: with independent references collocation stays on NS-03 s.2.1 under persistence, wetness-dependent spread, lag, saturation and reference breaks (a generic Monte Carlo, within 0.0001); it errs only on a component two series share or on a sister gap authored to fall on the station's worst season (tuning to the solver); and a weekly-anchor or per-season window is a new filed estimand a reader of pins executes. Design note: ## Hardening loop 2, phase A, and ## Tried and rejected."
- },
- "leak": {
-  "leak_py": "REVIEW, no LEAK (5 lines answered in the design note), final cut after the house-fix pass, --asof 2026-10-09",
-  "reader": "pending a2-4 (sandbox staged; results-task228/arch2/leak/prompt_a2-4.txt). Earlier: a2-1 LEAK on NS-03 s.2.1 (fixed); a2-2 void after the persona redraw, findings fixed; a2-3 clean on questions 1 to 3, its ask-level forks and container tells folded into the round 3 brief and repaired in loop 1"
- },
- "duplicate_check": {
-  "heart": "BLOCK only the waived ban.pattern (decisive G16) against task134; WARN repeat.gate_g against task134",
-  "nearest": "surface: 0 of 126 pairs promoted, nearest task131 0.090; heart: nearest driver this slot's own round-3 lineage 0.26, every other card at or under 0.07, heart text at or under 0.04",
-  "clone_check": "pre-flight pass 4 (clone_check_report_task228_4.md): no reject-tier finding; Track B keying finding fixed by re-keying G16; ban.role against task135 cleared by a persona redraw; pre-flight pass 5 (clone_check_report_task228_5.md, loop 1, run because the driver changed): no reject-tier finding, the author-waived ban.pattern G16 against task134 carried (the same ban, not a Template)",
-  "draw": "card task228.json re-keyed 2026-10-11 for loop 1 (driver, stump, analyst and domain tests, layer 2 pattern) and its task107 and task134 lines, G16 note and waiver rewritten for the loop-1 rung after pass 5; guard.py check and heart verdicts unchanged; validate: 133 cards, 0 invalid"
- },
- "solver_rounds": [
-  {
-   "round": 1,
-   "architecture": 1,
-   "plain": {
-    "landed": false,
-    "proxy": 50.4,
-    "cracked": "6 of 12",
-    "stopped": "rung 1 (evpu_dev_pct at 12, 29 of 68 on all 452 sound runs)"
-   },
-   "skeptic": {
-    "landed": true,
-    "proxy": 97.6,
-    "cracked": "11 of 12",
-    "stopped": "rung 2, the answer (beacon_loss_z at 3.3 on the 123 sound four-week runs)"
-   },
-   "mean": 74.0,
-   "decision": "harden",
-   "brief": "1) The call landed on the skeptic's step 7 ('Peak runs are all 28 nights (handbook 6.2), and the budget applies over the season the setting is live. So sound runs were counted on the 123 sound 28-night audit experiments'): build the next rung so that exact step completes and still returns the wrong answer. 2) The asks leaked (mean 74 against 40): Ask B and Ask C, the channels, the window and the budget line were cracked by both, because the prompt pinned each device's handling (quarter of the night paged for, owner on the launch night), imported_from named the migration duplicates and the queue's status column announced its versions; move the adjudicating rules into filed documents, make the device populations silent, and keep no ask the call's own table hands over. 3) No fork: the plain's miss is a stump (it never weighed run length); the skeptic called its 28-night reading a judgement, so the rung was a work order, not a fork."
+  "task": "task228",
+  "domain": "physical-environmental-sciences",
+  "objective": "data-quality-monitoring",
+  "stage": "paused",
+  "stage_name": "paused by the author (2026-10-11) after architecture 4 drew no architecture: out of the build slots; a designer redraws architecture 4 once task229 or task230 ships, under a waiver of the estimator-pattern ban if the author grants one then, or without one if the ban window has moved",
+  "updated": "2026-10-11",
+  "stump": "none: architecture 4 found no draw at phase A",
+  "architecture": 4,
+  "loops": 0,
+  "exception": {
+    "granted_by": "the author",
+    "date": "2026-10-11",
+    "decision": "a fourth architecture in a new world (a fresh dataset and domain, nothing kept from the experiment platform or the Coteau network), objective kept (a forward monitoring or alerting call on data or pipeline health); retire the number if no draw clears, no fifth",
+    "reason": "an exception to the three-architecture cap: three architectures spent and the revival of architecture 1 failed the domain-coupling rule",
+    "outcome": "no architecture at phase A (DESIGN_NOTE.md, ## Architecture 4, phase A); nothing registered, the card on file is architecture 2's"
   },
-  {
-   "round": 2,
-   "architecture": 1,
-   "plain": {
-    "landed": false,
-    "proxy": 48.9,
-    "cracked": "4 of 9 (proxy)",
-    "stopped": "rung 2 (beacon_loss_z at 3.4, 22 of 78 on the 166 pooled four-week runs)"
-   },
-   "skeptic": {
-    "landed": false,
-    "proxy": 47.5,
-    "cracked": "5 of 9 (proxy)",
-    "stopped": "rung 2 (beacon_loss_z at 3.4, 22 of 78; reproduced 45 of 46 alert tickets by replay)"
-   },
-   "mean": 48.2,
-   "decision": "pass",
-   "brief": "Pass: both solvers missed the main call (beacon_loss_z at 3.4 on the 166 pooled four-week runs; the golden was expo_rate_gap_pp at 3.5). No hardening. Determinism pins taken from the round: BK27-103 and BK27-129 (one title, one launch night, read as a double booking, plain 43 against skeptic 42) made distinct tests; DQI-1093 (confirmed before its defect's first bad night) fixed; the platform on-call channel filed in DQ-07 s.6. Afterwards pre-flight pass 2 keyed the cut's decisive rung composition_mix, banned against task129, so the strategy axis was redrawn and round 3 re-tests the redrawn cut.",
-   "rule": "single-solver gate of 11 October (PR #17): a round passes when the solver does not commit to the main call; the proxy is recorded, not gating",
-   "decision_old_rule": "harden (mean 48.2 against 40); withdrawn by the author with the rule change"
+  "precut": {
+    "exit": 1,
+    "date": "2026-10-11",
+    "result": "32 checks, 22 FAIL, 0 WARN: no architecture-4 design or prompt.txt to gate"
   },
-  {
-   "round": 3,
-   "architecture": 2,
-   "label": "round 3",
-   "date": "2026-10-11",
-   "solver": {
-    "landed": true,
-    "proxy": 87.1,
-    "cracked": "5 of 8",
-    "stopped": "never left the ladder: from NS-03 s.2.1 and the open-loop model note straight to extended triple collocation (path step 6)"
-   },
-   "decision": "harden",
-   "brief": "The call landed on the solver's step 6 (extended triple collocation of the station, the Ninox v5 morning retrieval and the PLSM sw1 output over 255 to 382 mornings per station returned the golden eight with a 0.010 break): build the next rung so that exact step completes and still returns the wrong answer, deepening the analysis and planting nothing. Folded in from leak read a2-3: the ninth-slot ask forks (CS160 leads CS104 by about 0.001 and a dry-morning screen flips it), the 56-row ranks 11 to 56 sit a median 0.00007 apart (44 of 56 tie at 3 dp), an unpinned open-water or evening-pass screen swaps ranks 7 and 8, the asks banked 45.1 of 58 on a landed path, and two container tells (python-docx default template in NS-03, openpyxl defaults in the register).",
-   "deferred": [
+  "spent": {
+    "architecture": 2,
+    "loop": 2,
+    "phase": "A (on paper), after round 4 landed the call",
+    "date": "2026-10-11",
+    "reason": "Round 4 landed the golden eight on its own independence check (a second station of the cell in every multi-station cell, the station-station-retrieval triple adopted over the two clay cells). Phase A found no loop-2 rung outside a third independence layer: with independent references collocation stays on NS-03 s.2.1 under persistence, wetness-dependent spread, lag, saturation and reference breaks (a generic Monte Carlo, within 0.0001); it errs only on a component two series share or on a sister gap authored to fall on the station's worst season (tuning to the solver); and a weekly-anchor or per-season window is a new filed estimand a reader of pins executes. Design note: ## Hardening loop 2, phase A, and ## Tried and rejected."
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK (5 lines answered in the design note), final cut after the house-fix pass, --asof 2026-10-09",
+    "reader": "pending a2-4 (sandbox staged; results-task228/arch2/leak/prompt_a2-4.txt). Earlier: a2-1 LEAK on NS-03 s.2.1 (fixed); a2-2 void after the persona redraw, findings fixed; a2-3 clean on questions 1 to 3, its ask-level forks and container tells folded into the round 3 brief and repaired in loop 1"
+  },
+  "duplicate_check": {
+    "heart": "BLOCK only the waived ban.pattern (decisive G16) against task134; WARN repeat.gate_g against task134",
+    "nearest": "surface: 0 of 126 pairs promoted, nearest task131 0.090; heart: nearest driver this slot's own round-3 lineage 0.26, every other card at or under 0.07, heart text at or under 0.04",
+    "clone_check": "pre-flight pass 4 (clone_check_report_task228_4.md): no reject-tier finding; Track B keying finding fixed by re-keying G16; ban.role against task135 cleared by a persona redraw; pre-flight pass 5 (clone_check_report_task228_5.md, loop 1, run because the driver changed): no reject-tier finding, the author-waived ban.pattern G16 against task134 carried (the same ban, not a Template)",
+    "draw": "card task228.json re-keyed 2026-10-11 for loop 1 (driver, stump, analyst and domain tests, layer 2 pattern) and its task107 and task134 lines, G16 note and waiver rewritten for the loop-1 rung after pass 5; guard.py check and heart verdicts unchanged; validate: 133 cards, 0 invalid"
+  },
+  "solver_rounds": [
     {
-     "item": "ask fork: the ninth slot (CS160 leads CS104 by about 0.001; a dry-morning screen flips it; ninth in about 27 per cent of bootstrap draws)",
-     "repaired": "repaired: Craik E (0.01991) sits 1.34x above the tenth (Wadena S 0.01491) and stays ninth under every rigorous estimator, all 8 variants and the open-water and dry-morning screens, and in 0.883 of 300 block-bootstrap draws (checks.py)"
+      "round": 1,
+      "architecture": 1,
+      "plain": {
+        "landed": false,
+        "proxy": 50.4,
+        "cracked": "6 of 12",
+        "stopped": "rung 1 (evpu_dev_pct at 12, 29 of 68 on all 452 sound runs)"
+      },
+      "skeptic": {
+        "landed": true,
+        "proxy": 97.6,
+        "cracked": "11 of 12",
+        "stopped": "rung 2, the answer (beacon_loss_z at 3.3 on the 123 sound four-week runs)"
+      },
+      "mean": 74.0,
+      "decision": "harden",
+      "brief": "1) The call landed on the skeptic's step 7 ('Peak runs are all 28 nights (handbook 6.2), and the budget applies over the season the setting is live. So sound runs were counted on the 123 sound 28-night audit experiments'): build the next rung so that exact step completes and still returns the wrong answer. 2) The asks leaked (mean 74 against 40): Ask B and Ask C, the channels, the window and the budget line were cracked by both, because the prompt pinned each device's handling (quarter of the night paged for, owner on the launch night), imported_from named the migration duplicates and the queue's status column announced its versions; move the adjudicating rules into filed documents, make the device populations silent, and keep no ask the call's own table hands over. 3) No fork: the plain's miss is a stump (it never weighed run length); the skeptic called its 28-night reading a judgement, so the rung was a work order, not a fork."
     },
     {
-     "item": "ask fork: station_review_2027.csv ranks 11 to 56 sit a median 0.00007 apart and 44 of 56 tie at 3 dp",
-     "repaired": "repaired: station_review_2027.csv is keyed by site code with no rank column, so no three-decimal tie is graded as an order"
+      "round": 2,
+      "architecture": 1,
+      "plain": {
+        "landed": false,
+        "proxy": 48.9,
+        "cracked": "4 of 9 (proxy)",
+        "stopped": "rung 2 (beacon_loss_z at 3.4, 22 of 78 on the 166 pooled four-week runs)"
+      },
+      "skeptic": {
+        "landed": false,
+        "proxy": 47.5,
+        "cracked": "5 of 9 (proxy)",
+        "stopped": "rung 2 (beacon_loss_z at 3.4, 22 of 78; reproduced 45 of 46 alert tickets by replay)"
+      },
+      "mean": 48.2,
+      "decision": "pass",
+      "brief": "Pass: both solvers missed the main call (beacon_loss_z at 3.4 on the 166 pooled four-week runs; the golden was expo_rate_gap_pp at 3.5). No hardening. Determinism pins taken from the round: BK27-103 and BK27-129 (one title, one launch night, read as a double booking, plain 43 against skeptic 42) made distinct tests; DQI-1093 (confirmed before its defect's first bad night) fixed; the platform on-call channel filed in DQ-07 s.6. Afterwards pre-flight pass 2 keyed the cut's decisive rung composition_mix, banned against task129, so the strategy axis was redrawn and round 3 re-tests the redrawn cut.",
+      "rule": "single-solver gate of 11 October (PR #17): a round passes when the solver does not commit to the main call; the proxy is recorded, not gating",
+      "decision_old_rule": "harden (mean 48.2 against 40); withdrawn by the author with the rule change"
     },
     {
-     "item": "main-call order: an unpinned open-water (2 per cent footprint water) or evening-pass screen swaps ranks 7 and 8",
-     "repaired": "repaired: the eight hold in order under the 2 per cent open-water screen and the evening pass (checks.py)"
+      "round": 3,
+      "architecture": 2,
+      "label": "round 3",
+      "date": "2026-10-11",
+      "solver": {
+        "landed": true,
+        "proxy": 87.1,
+        "cracked": "5 of 8",
+        "stopped": "never left the ladder: from NS-03 s.2.1 and the open-loop model note straight to extended triple collocation (path step 6)"
+      },
+      "decision": "harden",
+      "brief": "The call landed on the solver's step 6 (extended triple collocation of the station, the Ninox v5 morning retrieval and the PLSM sw1 output over 255 to 382 mornings per station returned the golden eight with a 0.010 break): build the next rung so that exact step completes and still returns the wrong answer, deepening the analysis and planting nothing. Folded in from leak read a2-3: the ninth-slot ask forks (CS160 leads CS104 by about 0.001 and a dry-morning screen flips it), the 56-row ranks 11 to 56 sit a median 0.00007 apart (44 of 56 tie at 3 dp), an unpinned open-water or evening-pass screen swaps ranks 7 and 8, the asks banked 45.1 of 58 on a landed path, and two container tells (python-docx default template in NS-03, openpyxl defaults in the register).",
+      "deferred": [
+        {
+          "item": "ask fork: the ninth slot (CS160 leads CS104 by about 0.001; a dry-morning screen flips it; ninth in about 27 per cent of bootstrap draws)",
+          "repaired": "repaired: Craik E (0.01991) sits 1.34x above the tenth (Wadena S 0.01491) and stays ninth under every rigorous estimator, all 8 variants and the open-water and dry-morning screens, and in 0.883 of 300 block-bootstrap draws (checks.py)"
+        },
+        {
+          "item": "ask fork: station_review_2027.csv ranks 11 to 56 sit a median 0.00007 apart and 44 of 56 tie at 3 dp",
+          "repaired": "repaired: station_review_2027.csv is keyed by site code with no rank column, so no three-decimal tie is graded as an order"
+        },
+        {
+          "item": "main-call order: an unpinned open-water (2 per cent footprint water) or evening-pass screen swaps ranks 7 and 8",
+          "repaired": "repaired: the eight hold in order under the 2 per cent open-water screen and the evening pass (checks.py)"
+        },
+        {
+          "item": "asks: 45.1 of 58 banked on a landed path; the delivery statement and the anchor counts do not depend on the decisive construction",
+          "repaired": "repaired: the anchor counts now turn on the eight (the plain eight gives Dark Brown 20 and Black 11) and on the 48-hour receipt rule with the 60-day silence clause (a receipt-blind count keeps Aylsham, Dark Gray 5), and the CSV's clay-cell errors carry the decisive construction"
+        },
+        {
+          "item": "container: NS-03_reference_stations_rev2.docx is the python-docx default template (rsids 00B47730 and 00FC693F, Mac-Word namespaces)",
+          "repaired": "repaired: postprocess.py rewrites NS-03 byte-level to Word's package form (1980 zip stamps, per-document rsids and paragraph ids, Word 2013 settings, en-CA theme language, no Mac namespaces or Japanese fonts), every text run asserted unchanged"
+        },
+        {
+          "item": "container: station_register_2026-09.xlsx carries openpyxl defaults",
+          "repaired": "repaired: postprocess.py rewrites the register to Excel's package form (relationships, workbook view, styles, column widths, margins, properties), every cell asserted unchanged"
+        },
+        {
+          "item": "prompt: under 1,000 characters on main since PR #29 (now 1,605): one committed call and two or three multi-dimensional asks",
+          "repaired": "repaired: prompt.md is 989 characters and 164 words, one committed call and three asks (the note, the CSV, the chart); voice-check.py clean"
+        }
+      ]
     },
     {
-     "item": "asks: 45.1 of 58 banked on a landed path; the delivery statement and the anchor counts do not depend on the decisive construction",
-     "repaired": "repaired: the anchor counts now turn on the eight (the plain eight gives Dark Brown 20 and Black 11) and on the 48-hour receipt rule with the 60-day silence clause (a receipt-blind count keeps Aylsham, Dark Gray 5), and the CSV's clay-cell errors carry the decisive construction"
-    },
-    {
-     "item": "container: NS-03_reference_stations_rev2.docx is the python-docx default template (rsids 00B47730 and 00FC693F, Mac-Word namespaces)",
-     "repaired": "repaired: postprocess.py rewrites NS-03 byte-level to Word's package form (1980 zip stamps, per-document rsids and paragraph ids, Word 2013 settings, en-CA theme language, no Mac namespaces or Japanese fonts), every text run asserted unchanged"
-    },
-    {
-     "item": "container: station_register_2026-09.xlsx carries openpyxl defaults",
-     "repaired": "repaired: postprocess.py rewrites the register to Excel's package form (relationships, workbook view, styles, column widths, margins, properties), every cell asserted unchanged"
-    },
-    {
-     "item": "prompt: under 1,000 characters on main since PR #29 (now 1,605): one committed call and two or three multi-dimensional asks",
-     "repaired": "repaired: prompt.md is 989 characters and 164 words, one committed call and three asks (the note, the CSV, the chart); voice-check.py clean"
+      "round": 4,
+      "architecture": 2,
+      "label": "round 4",
+      "date": "2026-10-11",
+      "solver": {
+        "landed": true,
+        "proxy": 78.7,
+        "cracked": "1 of 5 (token proxy; the solver named stations by code, so the ask match undercounts)",
+        "stopped": "never left the ladder: plain collocation first, then the second-station independence check in every multi-station cell, which found and fixed the clay cells (path steps 5 and 6)"
+      },
+      "decision": "harden",
+      "brief": "The call landed on the solver's step 6, an independence check: it re-ran collocation with a second station in the same cell in every multi-station cell, found the triples agree everywhere except the two heavy-clay cells (where it read that Ninox and PLSM share the 1:1 million soil-map clay), and adopted the station-station-retrieval triple there. Build the next rung so that exact step completes and still returns the wrong answer, deepening the analysis and planting nothing, argued on paper first; if the only rung left is another comparator-independence layer, or anything that needs a decoy, a doctored figure or a withheld rule, declare architecture 2 spent instead (build-pipeline, Retirement).",
+      "deferred": [
+        "ask fork: the gap reads as round(e8 - e9, 3) or as the difference of the printed three-decimal errors (prompt: 'Tracking errors and the gap are in m3/m3 to three decimals')",
+        "soft signpost: both product notes carry the identical phrase 'dominant soil of each map polygon' for the provincial soil map, and the solver's path quotes the shared map",
+        "container: NS-03 still reads as a stock template style set (read a2-4)",
+        "question 3 near-miss: export_notes_2026-10-06.txt is the only file whose sole job is to orient the recipient (required provenance content, no method or result)"
+      ]
     }
-   ]
+  ],
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
-  {
-   "round": 4,
-   "architecture": 2,
-   "label": "round 4",
-   "date": "2026-10-11",
-   "solver": {
-    "landed": true,
-    "proxy": 78.7,
-    "cracked": "1 of 5 (token proxy; the solver named stations by code, so the ask match undercounts)",
-    "stopped": "never left the ladder: plain collocation first, then the second-station independence check in every multi-station cell, which found and fixed the clay cells (path steps 5 and 6)"
-   },
-   "decision": "harden",
-   "brief": "The call landed on the solver's step 6, an independence check: it re-ran collocation with a second station in the same cell in every multi-station cell, found the triples agree everywhere except the two heavy-clay cells (where it read that Ninox and PLSM share the 1:1 million soil-map clay), and adopted the station-station-retrieval triple there. Build the next rung so that exact step completes and still returns the wrong answer, deepening the analysis and planting nothing, argued on paper first; if the only rung left is another comparator-independence layer, or anything that needs a decoy, a doctored figure or a withheld rule, declare architecture 2 spent instead (build-pipeline, Retirement).",
-   "deferred": [
-    "ask fork: the gap reads as round(e8 - e9, 3) or as the difference of the printed three-decimal errors (prompt: 'Tracking errors and the gap are in m3/m3 to three decimals')",
-    "soft signpost: both product notes carry the identical phrase 'dominant soil of each map polygon' for the provincial soil map, and the solver's path quotes the shared map",
-    "container: NS-03 still reads as a stock template style set (read a2-4)",
-    "question 3 near-miss: export_notes_2026-10-06.txt is the only file whose sole job is to orient the recipient (required provenance content, no method or result)"
-   ]
-  }
- ],
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "approved": null,
- "delivered": null,
- "portal": null,
- "reroot": "Architecture 1 (the peak paging-alert check and setting on the experiment platform) spent 2026-10-11: keyed honestly its decisive rung is composition_mix (round 2) and then pattern E with G14 (the redraw), both BLOCK against task129, and a fork remained (dropping only the nights after a revision gives beacon_loss_z about 2.9, dropping revised runs whole gives 3.0). Re-rooted at stage 1 in the same objective and number: architecture 2, loops 0, new card (old identity kept in lineage). Architecture 2 (the April 2027 re-installation list for the Coteau soil moisture network: which eight of 56 stations, largest tracking error first, separated by collocation against the retrieval, the model and a second station) spent 2026-10-11 at hardening loop 2, phase A, on paper (reason under spent). Re-root pending in the main session: stage 1 in the same objective and number, architecture 3 (the number's last), loops 0, a new card with architecture 2's identity kept in its lineage; nothing drawn or registered by the loop-2 agent. Architecture 3 phase A (2026-10-11): no architecture. Closest candidates, both drafted in scratch and never registered: the frost clock (BLOCK test.same_driver_older on time/A/forecasting, task46's driver) and the reversible diurnal swing (BLOCK ban.pattern G16 against task134, BLOCK test.own_lineage); both also BLOCK people.first (Michael, task130). Architecture 4 phase A (2026-10-11, the author's exception to the cap, in a new world): no architecture. Closest candidates, drafted in scratch and never registered: exit-validator check-out capture at a light-rail operator by trip chaining (BLOCK card and test.same_driver_older against task101 and task121, both answerable; dead on readability test 2, a default path that ends on the golden, and the domain test) and oldest-old register over-coverage by survivor-ratio reconstruction (BLOCK ban.pattern G12 against task181, ban.forum and card; dead on the default path, which is the field's method and the golden at once, and on Gate G's coverage-gap flip).",
- "target_zip": {
-  "path": "task228/target.zip",
-  "bytes": 19308256,
-  "members": 18,
-  "sha256": "8f63775a9c5f2a2c92f382cdd507446a9c075012a0af22423154e73e55d24c59",
-  "cut": "2026-10-11 from the final target/ (after the house-fix pass), every member equal to the tree by content",
-  "removed": "2026-10-11, with architecture 2's artifacts, before the architecture 4 draw"
- },
- "paused": {
-  "date": "2026-10-11",
-  "by": "author",
-  "reason": "architecture 4 (author's exception) drew no architecture: the field's own data-health methods key G12 or G16, banned by task181/task182 and task445/task446 in the draw window; the two closest candidates failed the readability, default-path and Gate G tests",
-  "resume": "after task229 or task230 ships; architecture 4 redrawn by a designer at Opus max"
- }
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "reroot": "Architecture 1 (the peak paging-alert check and setting on the experiment platform) spent 2026-10-11: keyed honestly its decisive rung is composition_mix (round 2) and then pattern E with G14 (the redraw), both BLOCK against task129, and a fork remained (dropping only the nights after a revision gives beacon_loss_z about 2.9, dropping revised runs whole gives 3.0). Re-rooted at stage 1 in the same objective and number: architecture 2, loops 0, new card (old identity kept in lineage). Architecture 2 (the April 2027 re-installation list for the Coteau soil moisture network: which eight of 56 stations, largest tracking error first, separated by collocation against the retrieval, the model and a second station) spent 2026-10-11 at hardening loop 2, phase A, on paper (reason under spent). Re-root pending in the main session: stage 1 in the same objective and number, architecture 3 (the number's last), loops 0, a new card with architecture 2's identity kept in its lineage; nothing drawn or registered by the loop-2 agent. Architecture 3 phase A (2026-10-11): no architecture. Closest candidates, both drafted in scratch and never registered: the frost clock (BLOCK test.same_driver_older on time/A/forecasting, task46's driver) and the reversible diurnal swing (BLOCK ban.pattern G16 against task134, BLOCK test.own_lineage); both also BLOCK people.first (Michael, task130). Architecture 4 phase A (2026-10-11, the author's exception to the cap, in a new world): no architecture. Closest candidates, drafted in scratch and never registered: exit-validator check-out capture at a light-rail operator by trip chaining (BLOCK card and test.same_driver_older against task101 and task121, both answerable; dead on readability test 2, a default path that ends on the golden, and the domain test) and oldest-old register over-coverage by survivor-ratio reconstruction (BLOCK ban.pattern G12 against task181, ban.forum and card; dead on the default path, which is the field's method and the golden at once, and on Gate G's coverage-gap flip).",
+  "target_zip": {
+    "path": "task228/target.zip",
+    "bytes": 19308256,
+    "members": 18,
+    "sha256": "8f63775a9c5f2a2c92f382cdd507446a9c075012a0af22423154e73e55d24c59",
+    "cut": "2026-10-11 from the final target/ (after the house-fix pass), every member equal to the tree by content",
+    "removed": "2026-10-11, with architecture 2's artifacts, before the architecture 4 draw"
+  },
+  "paused": {
+    "date": "2026-10-11",
+    "by": "author",
+    "reason": "architecture 4 (author's exception) drew no architecture: the field's own data-health methods key G12 or G16, banned by task181/task182 and task445/task446 in the draw window; the two closest candidates failed the readability, default-path and Gate G tests",
+    "resume": "after task229 or task230 ships; architecture 4 redrawn by a designer at Opus max"
+  },
+  "status": "FAILED_TO_STUMP",
+  "owner": "perssathya"
 }

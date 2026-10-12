@@ -1,156 +1,158 @@
 {
- "task": "task130",
- "domain": "actuarial-science-insurance",
- "objective": "forecasting",
- "architecture": "v3",
- "stage": "retired",
- "stage_name": "retired: three architectures spent",
- "updated": "2026-10-11",
- "stump": "A competent solver nets the claim lines and the pharmacy reversals, links the members, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them 15 months at the renewal trend and certifies about $8,830; the step that lands it there is projecting a cohort chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost about $3,475 per member month the following year (at the enrolled tier mix, before trend); the baseline is $4,060.",
- "duplicate_check": {
-  "heart": "guard.py heart task130 after repair 4: WARN (people.first: Phillip against task101, Michelle against task104; heart text peaks at 0.06, task102's stump)",
-  "nearest": "task64 (v1, lineage) 0.06 on the driver; guard.py check after repair 4: WARN only (first names Phillip and Michelle in older builds)",
-  "surface": "guard.py surface after repair 2: task132 (0.152) and task83 (0.140) promoted on percentile only, both on format mix and deliverable species alone (no file name, prompt, schema or entity overlap); nothing to rename. People: WARN Phillip (older build); Ellery Benefit and Johnson Phillip are an administrator's name and a reversed persona, not new personas",
-  "clone_check": ""
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "approved": null,
- "delivered": null,
- "portal": null,
- "lineage": [
-  {
-   "architecture": "v1",
-   "portal": {
-    "date": "2026-10-10",
-    "result": "failed",
-    "note": "both top models filed the golden seven-section designation"
-   }
+  "task": "task130",
+  "domain": "actuarial-science-insurance",
+  "objective": "forecasting",
+  "architecture": "v3",
+  "stage": "retired",
+  "stage_name": "retired: three architectures spent",
+  "updated": "2026-10-11",
+  "stump": "A competent solver nets the claim lines and the pharmacy reversals, links the members, takes each tier's 2026 allowed claims per member month for medical and pharmacy, projects them 15 months at the renewal trend and certifies about $8,830; the step that lands it there is projecting a cohort chosen for its high 2026 claims at its own 2026 level, when the members the same model flagged on 2024 claims, never enrolled, cost about $3,475 per member month the following year (at the enrolled tier mix, before trend); the baseline is $4,060.",
+  "duplicate_check": {
+    "heart": "guard.py heart task130 after repair 4: WARN (people.first: Phillip against task101, Michelle against task104; heart text peaks at 0.06, task102's stump)",
+    "nearest": "task64 (v1, lineage) 0.06 on the driver; guard.py check after repair 4: WARN only (first names Phillip and Michelle in older builds)",
+    "surface": "guard.py surface after repair 2: task132 (0.152) and task83 (0.140) promoted on percentile only, both on format mix and deliverable species alone (no file name, prompt, schema or entity overlap); nothing to rename. People: WARN Phillip (older build); Ellery Benefit and Johnson Phillip are an administrator's name and a reversed persona, not new personas",
+    "clone_check": ""
   },
-  {
-   "architecture": "v2",
-   "portal": {
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "lineage": [
+    {
+      "architecture": "v1",
+      "portal": {
+        "date": "2026-10-10",
+        "result": "failed",
+        "note": "both top models filed the golden seven-section designation"
+      }
+    },
+    {
+      "architecture": "v2",
+      "portal": {
+        "date": "2026-10-11",
+        "result": "failed",
+        "note": "the reported model filed the golden: 46 units (0 / 7 / 20 / 19) at GBP 21,615 a week, with the month-end run-off"
+      },
+      "duplicate_check": {
+        "heart": "PASS (NOTE vs task102, differentiated)",
+        "nearest": "task119 0.08",
+        "surface": "",
+        "clone_check": "loop 1: TEMPLATE (Track B, reject tier) against task73 world ten; task86 v2 first cut carried the same move and was solved on the portal; clone_check_report_task130_loop1.md"
+      },
+      "leak": {
+        "leak_py": "REVIEW, no LEAK",
+        "reader": "loop 1: no leak (method filed as council rules); realism list not repaired (device spent)"
+      },
+      "fate": "spent: failed on the portal; hardening loop 1 rejected at the clone pre-flight as a template of task73 world ten"
+    }
+  ],
+  "target_zip": {
+    "path": "task130/target.zip",
+    "entries": 13,
+    "bytes": 11983896,
+    "sha256": "149049c424d397052c999f5d42997215d15c93fd0bd2397ed12703c0eba9af7a",
+    "cut": "2026-10-11, by build.py from the repair 4 rebuild",
+    "matches_target": "by content, every entry; byte-identical across three scratch rebuilds"
+  },
+  "two_layer": "compliant: Layer 1 the claims plumbing (claim versions and denials, PBM reversals, two key systems, the administrator conversion, coverage churn, run-out, a superseded draft list); Layer 2 selection on the outcome, a cohort chosen on its 2026 claims regressing toward the mean; six-point check in the design note",
+  "loops": 1,
+  "branch": "sathya8571/task130-harden",
+  "leak": {
+    "leak_py": "REVIEW, no LEAK after repair 4 (the same 4 REVIEW lines, answered in the design note's Leak review)",
+    "reader": "round 3 (Sonnet, after repair 2): no sentence names the decisive step, no file ranks or states the answer, none exists only to help; REVIEW lines harmless. Its two main-call forks are closed in repair 3 (RCV8692544 off the final list, the model scoring only members the run's eligibility file carries on the list's date; Schedule C.1(e) defines a Risk Tier as the tier the model places a member in when it draws a list). Repair 3 changed two documents under target/ (the agreement's C.1(e); the renewal letter's exhibits, by re-centring), so a fresh read is due before the solver round. Repair 4 changed one document under target/ (the renewal letter again, by re-centring off round values: two HDHP rates by a cent, four exhibit cells by $3 to $38) and the claims data on the centred claims only; the fresh read is still due."
+  },
+  "solver_rounds": [
+    {
+      "round": 0,
+      "architecture": "v2",
+      "source": "portal 2026-10-11",
+      "landed": true,
+      "decision": "harden",
+      "brief": "the queue landed once the order was filed; rebuild the lists on Part 3 need on each round day against a case record that lags it"
+    },
+    {
+      "round": "loop 1",
+      "architecture": "v2",
+      "decision": "reroot",
+      "brief": "the loop 1 device is a template of task73 world ten and was solved on the portal in task86 v2; v2 is spent"
+    },
+    {
+      "label": "v3 round 1",
+      "date": "2026-10-11",
+      "score": 100.0,
+      "landed": true,
+      "cracked": 4,
+      "items": 4
+    },
+    {
+      "round": 1,
+      "architecture": "v3",
+      "date": "2026-10-11",
+      "label": "v3 round 1",
+      "solver": {
+        "landed": true,
+        "proxy": 100.0,
+        "answer": "$4,060 PMPM ($1,438 medical, $2,622 pharmacy), every tier figure"
+      },
+      "decision": "harden",
+      "brief": "The solver saw the selection on 2026 claims, took the cancelled RFP 2025-07 cohort's April 2025 to March 2026 experience by its own RFP tier as untreated (C.1(e)'s any-list Risk Tier, Recital B's cancellation before award, the bid cover's programme year), trended it 24 months and weighted by the final list's tier counts, landing $4,060 in about four minutes; the next rung must let exactly that step complete and still return the wrong answer, or v3 is spent."
+    },
+    {
+      "round": "loop 1",
+      "architecture": "v3",
+      "date": "2026-10-11",
+      "decision": "reroot",
+      "brief": "v3 is spent: with the analog construction found in round 1, no forced, fork-free rung moves the call (exposure weighting 0.05 per cent, age and sex normalisation -3.56 to +0.18 per cent by an unfiled table, the tier-4 score floor +1.39 per cent against C.1(e), a two-month bridge +8.98 per cent and unfiled); v3 is the number's third architecture, so the cap retires task130 unless the author grants a fourth root"
+    }
+  ],
+  "repairs": [
+    {
+      "repair": 1,
+      "date": "2026-10-11",
+      "trigger": "v3 reader round and clone pre-flight surface note",
+      "moved": "every graded figure (claims engine rebuilt, seed 101005 to 101050): programme $2,157 / $1,384 / $3,541 to $2,227 / $1,689 / $3,916",
+      "gates": "checks.py 5,972 assertions green; verify.py green; two scratch rebuilds byte-identical to target/, golden/ and target.zip; leak.py REVIEW no LEAK; guard.py check WARN only"
+    },
+    {
+      "repair": 2,
+      "date": "2026-10-11",
+      "trigger": "v3 second reader round (forks A1 to A5, signposts B1 to B4, realism) and the prompt ceiling under 1,000 characters",
+      "moved": "every graded figure (seed 101050 to 102037, score weights and tier floors redrawn): programme $2,227 / $1,689 / $3,916 to $1,453 / $2,630 / $4,083; prompt 1,104 to 933 characters",
+      "gates": "checks.py 6,310 assertions green; verify.py green; three scratch rebuilds byte-identical to target/, golden/ and target.zip; leak.py REVIEW no LEAK; guard.py check and heart WARN only; voice-check no economy flag"
+    },
+    {
+      "repair": 3,
+      "date": "2026-10-11",
+      "trigger": "v3 third reader round (round 3): two forks on the main call, a member on the final list whose coverage the eligibility file ends on 31 October 2026, and the comparator tier for the members on both lists",
+      "moved": "final list (RCV8692544 off, RCV9058604 on at rank 140): tiers 35 / 37 / 38 / 30 to 34 / 37 / 38 / 31; tier 1 2026 PMPM $9,602 / $2,647 to $9,613 / $2,696; tier 4 2026 PMPM $1,981 / $4,191 to $1,919 / $4,556; tier baselines unchanged in whole dollars; programme $1,453 / $2,630 / $4,083 to $1,438 / $2,622 / $4,060; Schedule C.1(e) defines a Risk Tier per list; renewal letter exhibits moved by cents to $167 (re-centring)",
+      "gates": "checks.py 6,739 assertions green; verify.py green with submission.md; three scratch rebuilds byte-identical to target/, golden/ and target.zip; leak.py REVIEW no LEAK; guard.py check and heart WARN only"
+    },
+    {
+      "repair": 4,
+      "date": "2026-10-11",
+      "trigger": "pre-round finding (leak-level): the tuner centred graded figures on round values, all eight tier baselines within 0.00002 of a two-decimal value and seven of the eight 2026 PMPMs on exact quarter-dollars, a confirming bell",
+      "moved": "no whole-dollar figure; unrounded programme $1,438.28 / $2,621.86 / $4,060.15 to $1,438.28 / $2,621.87 / $4,060.14; every graded figure now at least 0.0013 from a cent and 0.0131 from a quarter-dollar, every rung and fork programme total at least 0.0006 from a cent; tune.py draws each figure's offset from seed 52389 and keeps a draw only once it is built and measured (15 adjustments); renewal letter exhibits by $0.01 to $38; 13 medical claim lines and 17 PBM rows",
+      "gates": "checks.py 6,834 assertions green; verify.py green with submission.md; three scratch rebuilds byte-identical to target/, golden/ and target.zip; leak.py REVIEW no LEAK; guard.py check and heart WARN only"
+    }
+  ],
+  "deferred": [
+    "UK spellings and day-month dates in documents from four Minnesota organisations (and the prompt)",
+    "PDF producers: Skia/HeadlessChrome with a Linux user agent and LibreOffice 24.2; embedded Liberation and Carlito fonts",
+    "one openpyxl fingerprint across four workbooks from three organisations",
+    "Recital B narrates the cancelled RFP 2025-07 and the Board's reason",
+    "the RFP workbook cover's District copy row reads as the join's explanation",
+    "the readme over-justifies the crosswalk and repeats the renewal letter's note on Bramwell's 2024 history",
+    "renewal letter: stop-loss premium confirmed 22 February, policy schedule signed 18 December 2026"
+  ],
+  "retired": {
     "date": "2026-10-11",
-    "result": "failed",
-    "note": "the reported model filed the golden: 46 units (0 / 7 / 20 / 19) at GBP 21,615 a week, with the month-end run-off"
-   },
-   "duplicate_check": {
-    "heart": "PASS (NOTE vs task102, differentiated)",
-    "nearest": "task119 0.08",
-    "surface": "",
-    "clone_check": "loop 1: TEMPLATE (Track B, reject tier) against task73 world ten; task86 v2 first cut carried the same move and was solved on the portal; clone_check_report_task130_loop1.md"
-   },
-   "leak": {
-    "leak_py": "REVIEW, no LEAK",
-    "reader": "loop 1: no leak (method filed as council rules); realism list not repaired (device spent)"
-   },
-   "fate": "spent: failed on the portal; hardening loop 1 rejected at the clone pre-flight as a template of task73 world ten"
-  }
- ],
- "target_zip": {
-  "path": "task130/target.zip",
-  "entries": 13,
-  "bytes": 11983896,
-  "sha256": "149049c424d397052c999f5d42997215d15c93fd0bd2397ed12703c0eba9af7a",
-  "cut": "2026-10-11, by build.py from the repair 4 rebuild",
-  "matches_target": "by content, every entry; byte-identical across three scratch rebuilds"
- },
- "two_layer": "compliant: Layer 1 the claims plumbing (claim versions and denials, PBM reversals, two key systems, the administrator conversion, coverage churn, run-out, a superseded draft list); Layer 2 selection on the outcome, a cohort chosen on its 2026 claims regressing toward the mean; six-point check in the design note",
- "loops": 1,
- "branch": "sathya8571/task130-harden",
- "leak": {
-  "leak_py": "REVIEW, no LEAK after repair 4 (the same 4 REVIEW lines, answered in the design note's Leak review)",
-  "reader": "round 3 (Sonnet, after repair 2): no sentence names the decisive step, no file ranks or states the answer, none exists only to help; REVIEW lines harmless. Its two main-call forks are closed in repair 3 (RCV8692544 off the final list, the model scoring only members the run's eligibility file carries on the list's date; Schedule C.1(e) defines a Risk Tier as the tier the model places a member in when it draws a list). Repair 3 changed two documents under target/ (the agreement's C.1(e); the renewal letter's exhibits, by re-centring), so a fresh read is due before the solver round. Repair 4 changed one document under target/ (the renewal letter again, by re-centring off round values: two HDHP rates by a cent, four exhibit cells by $3 to $38) and the claims data on the centred claims only; the fresh read is still due."
- },
- "solver_rounds": [
-  {
-   "round": 0,
-   "architecture": "v2",
-   "source": "portal 2026-10-11",
-   "landed": true,
-   "decision": "harden",
-   "brief": "the queue landed once the order was filed; rebuild the lists on Part 3 need on each round day against a case record that lags it"
+    "reason": "v3 landed by the in-house solver in round 1 (proxy 100); hardening loop 1 found no forced, fork-free rung beyond the analog; v1 and v2 failed on the portal",
+    "decided_by": "author"
   },
-  {
-   "round": "loop 1",
-   "architecture": "v2",
-   "decision": "reroot",
-   "brief": "the loop 1 device is a template of task73 world ten and was solved on the portal in task86 v2; v2 is spent"
-  },
-  {
-   "label": "v3 round 1",
-   "date": "2026-10-11",
-   "score": 100.0,
-   "landed": true,
-   "cracked": 4,
-   "items": 4
-  },
-  {
-   "round": 1,
-   "architecture": "v3",
-   "date": "2026-10-11",
-   "label": "v3 round 1",
-   "solver": {
-    "landed": true,
-    "proxy": 100.0,
-    "answer": "$4,060 PMPM ($1,438 medical, $2,622 pharmacy), every tier figure"
-   },
-   "decision": "harden",
-   "brief": "The solver saw the selection on 2026 claims, took the cancelled RFP 2025-07 cohort's April 2025 to March 2026 experience by its own RFP tier as untreated (C.1(e)'s any-list Risk Tier, Recital B's cancellation before award, the bid cover's programme year), trended it 24 months and weighted by the final list's tier counts, landing $4,060 in about four minutes; the next rung must let exactly that step complete and still return the wrong answer, or v3 is spent."
-  },
-  {
-   "round": "loop 1",
-   "architecture": "v3",
-   "date": "2026-10-11",
-   "decision": "reroot",
-   "brief": "v3 is spent: with the analog construction found in round 1, no forced, fork-free rung moves the call (exposure weighting 0.05 per cent, age and sex normalisation -3.56 to +0.18 per cent by an unfiled table, the tier-4 score floor +1.39 per cent against C.1(e), a two-month bridge +8.98 per cent and unfiled); v3 is the number's third architecture, so the cap retires task130 unless the author grants a fourth root"
-  }
- ],
- "repairs": [
-  {
-   "repair": 1,
-   "date": "2026-10-11",
-   "trigger": "v3 reader round and clone pre-flight surface note",
-   "moved": "every graded figure (claims engine rebuilt, seed 101005 to 101050): programme $2,157 / $1,384 / $3,541 to $2,227 / $1,689 / $3,916",
-   "gates": "checks.py 5,972 assertions green; verify.py green; two scratch rebuilds byte-identical to target/, golden/ and target.zip; leak.py REVIEW no LEAK; guard.py check WARN only"
-  },
-  {
-   "repair": 2,
-   "date": "2026-10-11",
-   "trigger": "v3 second reader round (forks A1 to A5, signposts B1 to B4, realism) and the prompt ceiling under 1,000 characters",
-   "moved": "every graded figure (seed 101050 to 102037, score weights and tier floors redrawn): programme $2,227 / $1,689 / $3,916 to $1,453 / $2,630 / $4,083; prompt 1,104 to 933 characters",
-   "gates": "checks.py 6,310 assertions green; verify.py green; three scratch rebuilds byte-identical to target/, golden/ and target.zip; leak.py REVIEW no LEAK; guard.py check and heart WARN only; voice-check no economy flag"
-  },
-  {
-   "repair": 3,
-   "date": "2026-10-11",
-   "trigger": "v3 third reader round (round 3): two forks on the main call, a member on the final list whose coverage the eligibility file ends on 31 October 2026, and the comparator tier for the members on both lists",
-   "moved": "final list (RCV8692544 off, RCV9058604 on at rank 140): tiers 35 / 37 / 38 / 30 to 34 / 37 / 38 / 31; tier 1 2026 PMPM $9,602 / $2,647 to $9,613 / $2,696; tier 4 2026 PMPM $1,981 / $4,191 to $1,919 / $4,556; tier baselines unchanged in whole dollars; programme $1,453 / $2,630 / $4,083 to $1,438 / $2,622 / $4,060; Schedule C.1(e) defines a Risk Tier per list; renewal letter exhibits moved by cents to $167 (re-centring)",
-   "gates": "checks.py 6,739 assertions green; verify.py green with submission.md; three scratch rebuilds byte-identical to target/, golden/ and target.zip; leak.py REVIEW no LEAK; guard.py check and heart WARN only"
-  },
-  {
-   "repair": 4,
-   "date": "2026-10-11",
-   "trigger": "pre-round finding (leak-level): the tuner centred graded figures on round values, all eight tier baselines within 0.00002 of a two-decimal value and seven of the eight 2026 PMPMs on exact quarter-dollars, a confirming bell",
-   "moved": "no whole-dollar figure; unrounded programme $1,438.28 / $2,621.86 / $4,060.15 to $1,438.28 / $2,621.87 / $4,060.14; every graded figure now at least 0.0013 from a cent and 0.0131 from a quarter-dollar, every rung and fork programme total at least 0.0006 from a cent; tune.py draws each figure's offset from seed 52389 and keeps a draw only once it is built and measured (15 adjustments); renewal letter exhibits by $0.01 to $38; 13 medical claim lines and 17 PBM rows",
-   "gates": "checks.py 6,834 assertions green; verify.py green with submission.md; three scratch rebuilds byte-identical to target/, golden/ and target.zip; leak.py REVIEW no LEAK; guard.py check and heart WARN only"
-  }
- ],
- "deferred": [
-  "UK spellings and day-month dates in documents from four Minnesota organisations (and the prompt)",
-  "PDF producers: Skia/HeadlessChrome with a Linux user agent and LibreOffice 24.2; embedded Liberation and Carlito fonts",
-  "one openpyxl fingerprint across four workbooks from three organisations",
-  "Recital B narrates the cancelled RFP 2025-07 and the Board's reason",
-  "the RFP workbook cover's District copy row reads as the join's explanation",
-  "the readme over-justifies the crosswalk and repeats the renewal letter's note on Bramwell's 2024 history",
-  "renewal letter: stop-loss premium confirmed 22 February, policy schedule signed 18 December 2026"
- ],
- "retired": {
-  "date": "2026-10-11",
-  "reason": "v3 landed by the in-house solver in round 1 (proxy 100); hardening loop 1 found no forced, fork-free rung beyond the analog; v1 and v2 failed on the portal",
-  "decided_by": "author"
- }
+  "status": "FAILED_TO_STUMP",
+  "owner": "sathya8571"
 }

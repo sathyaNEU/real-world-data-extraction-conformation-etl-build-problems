@@ -43,8 +43,8 @@ No isolated thread runs on the model's own initiative; the commands above licens
 ## The workflow
 
 ```
-0 INTAKE    status.py next <handle> (or the number handed out), status.py taskNN for the seed's header and
-            Situation only, pipeline.json written (status "drawing")
+0 INTAKE    status.py next <handle>: the next task in your backlog wave (a rework resumes from its own
+            pipeline.json; a new number reads only the seed's header and Situation, status.py taskNN)
 1 DRAW      guard.py recent, coverage and mechanisms --objective <o>; the pairing and shape; the card through
             guard.py check, then register.                                    COMMIT "DRAWN (taskNN)"
 2 DESIGN    default path ending on a wrong answer, stump sentence, ladder, fork table, closure, the asks,
@@ -57,8 +57,9 @@ No isolated thread runs on the model's own initiative; the commands above licens
             pass; a FIX_NOW is re-judged once
 5 SHIP      target.zip from the final rebuild, ledger row, card current       COMMIT "SHIPPED (taskNN): <call>"
             then the next open number at once
-6 PORTAL    the author's result: a determinism finding goes to /fix-determinism, a rubric over 50 with the
-            call held goes to /fix-rubric, a landed call goes back to stage 2 (a redesign of the decisive step)
+6 PORTAL    the author's list: APPROVED is SHIPPED_APPROVED, PENDING_REVIEW stays SHIPPED, a shipped build
+            left off it is FAILED_TO_STUMP and joins its lane owner's backlog wave; a determinism finding goes
+            to /fix-determinism, a rubric over 50 with the call held to /fix-rubric
 ```
 
 One session runs the whole build in its main thread at max effort: design and build are the same hand, and
@@ -89,13 +90,16 @@ There is one branch, `main`. No build, skill or status branch is created, and no
 - **Before every push:** `git pull --rebase origin main`, then push. Task folders and cards are one file per
   build, so they never collide; on a ledger conflict keep both rows. Never force-push, never rewrite history,
   never commit `.cache/` or anything `.gitignore` names.
-- Status is never edited in a shared file: `pipeline.json` carries it, and `status.py` prints the board.
+- Status lives in each build's `pipeline.json` (`DRAWING`, `DESIGN`, `BUILD`, `SHIPPED`, `SHIPPED_APPROVED`,
+  `RETURNED`, `FAILED_TO_STUMP`, `PAUSED`, `RETIRED`) and `status.py` prints the board. The author's portal list
+  goes into the ledger's portal record in one `STATUS: portal results` commit.
 
 ## Lanes, authors and handoffs
 
 Task numbers come from the root `START_HERE.md`, numbered by objective; each lane has one owner. At session
-start read `.claude/authors/<handle>.md` for the session user's email (the lane and the status page) and ignore
-the others. `status.py next <handle>` names the next open number; at most two builds in flight per author.
+start read `.claude/authors/<handle>.md` for the session user's email and ignore the others: it holds the lane,
+the status board link and the **backlog**, waves of six tasks to ship worked in order (reworks first). `status.py
+next <handle>` names the next task, `status.py` shows every wave; at most two builds in flight per author.
 Resuming a paused build: read `handoffs/<handle>.md` if it names the task, then `pipeline.json` and the design
 note's `## Tried and rejected`.
 
