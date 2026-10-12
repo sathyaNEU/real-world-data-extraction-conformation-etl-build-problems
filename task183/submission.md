@@ -9,7 +9,7 @@
 
 **Quarry Hill 21 will have the most failures of the cable itself in 2027, so it is the feeder for the 2027 cable program.**
 
-Quarry Hill 21 is the only feeder with in-service sections that have already failed twice or more (17 sections, all spliced in place under State Route 443), and a section in that state fails again many times as often as one with a single failure. Not Mill Lane 7, which leads the five-year failure count but on first failures of different sections, which seldom fail again, from a run that has eased since 2022. Not Sutter Park 5, which leads only when failure rates come from insulation and age alone. Not Harrow Road 12, which leads only when its removed paper cable is counted.
+Quarry Hill 21 is the only feeder with in-service sections that have already failed twice or more (17 sections, all spliced in place under State Route 443), and a section in that state fails again many times as often as one with a single failure. Not Mill Lane 7, which leads the five-year failure count but on first failures of different sections, which seldom fail again, from a run that has eased since 2022. Not Sutter Park 5, which leads on its last two years and on failure rates by insulation and age, but whose recent failures are mostly on the Kessler Avenue loop, over its rating from the warehouse park's expansion until the loop's second feed was energised in September, before the data cut (the annual report and the extract notes). Not Harrow Road 12, which leads only when its removed paper cable is counted.
 
 ## 2. Critical Components
 
@@ -24,7 +24,7 @@ Quarry Hill 21 is the only feeder with in-service sections that have already fai
 2. Ordered each section's failures by fault date and split its time in service from January 2012 (or installation) to retirement or 30 September 2026 at each failure, so every section year sits under the failures the section had already had.
 3. Estimated the failure rate per section year for none, one, two and three or more prior failures: the rate after two failures is more than ten times the rate after one.
 4. Counted the in-service sections by feeder and prior failures: only Quarry Hill 21 has sections at two or more, the rest were replaced at their second failure.
-5. Summed each in-service section's rate by feeder (the June 2026 lateral on Mill Lane 7, as the register states) for the expected failures of calendar 2027: Quarry Hill 21 is first under every rate split tried (by count alone, with insulation and age, or as a Poisson model).
+5. Summed each in-service section's rate by feeder (the June 2026 lateral on Mill Lane 7, as the register states) for the expected failures of calendar 2027: Quarry Hill 21 is first under every rate split tried (by count alone, with insulation and age, or as a Poisson model), with the Kessler Avenue loop's overload ended by its second feed.
 6. Recommendation: Quarry Hill 21 for the 2027 program.
 7. For the reliability figures, timed each customer's interruption to its own restoration step (`oms_restoration_steps_2020-10_2026-09.csv`, ADMS times converted from UTC) through the dated rows of `connectivity_meter_points.parquet` and `feeder_device_list.json`, counting a substation outage once per customer rather than at the export's repeated totals.
 8. Applied TVE-RS-04: sustained over five minutes, major event days 2026-01-25, 2026-07-28 by the 2.5 beta method (left out of SAIFI and SAIDI, kept in the four-or-more count), customers served from the connectivity model on 30 September 2026.

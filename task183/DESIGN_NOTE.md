@@ -108,6 +108,23 @@ at about 15 expected failures against Harrow Road 12's 9.9.
   attributes: failures recur on the section that has already failed, so the forecast has to carry each section's
   own failure count (the repeated-events pattern, made on cable sections), and the record proves it, because a
   section with two failures fails again about fifteen times as often as one with a single failure.
+- Task type: energy-systems-utilities / grid-reliability-outage-analysis, which serves anomaly-detection; the
+  decisive step reads which feeder's cable is in a failing condition its recent count does not show.
+- Swap: rewrite the call with hospital wards and patients and there is no section that is spliced or replaced at a
+  failure, no water treeing behind a second failure and no network that replaces at the second failure except under
+  one highway, so the recurrence and the call do not carry over.
+- Decisive step: carrying each in-service section at the record's rate for its own count of failures is a forecasting
+  choice; no planted defect decides it, every field is read the same on every path, and no filed rule says how to
+  forecast.
+- Estimand: the prompt's first sentence (failures of the cable itself, insulation, splice and termination, on the
+  sections in service at the end of September 2026, in 2027, damage by others left out), with the cause codes in
+  the code list and the in-service status in the GIS export.
+- No decoy: the annual report is a correct, labelled history (6.3 states Sutter Park 5's loop overload and its
+  relief as facts); no memo, draft or voice argues for a feeder.
+- No certified replay: no certified figure is reproduced to recover the method; the state rates are estimated on the
+  record, and a filed back-test was measured and not used (Tried and rejected).
+- Lesson: repeat failures concentrate in parts that have already failed twice, which a unit's trailing rate and its
+  parts' visible attributes both hide, and a recent surge with a cause that has ended is not a rate to carry forward.
 - **Stump class:** analytical. Rule 3 is cleared: no planted defect or decoy decides it, no field reading flips it
   (every code is read the same on both paths), and no stated rule produces it (nothing in the pack says how to
   forecast).
@@ -154,6 +171,7 @@ at about 15 expected failures against Harrow Road 12's 9.9.
 | SF6 | failure date | the fault date on the work order | the completion date | Quarry Hill 21 | same call |
 | SF7 | a replaced section's history | stays with the retired section; the new section starts at zero | passed to the replacement through the predecessor pointer | Quarry Hill 21 (built 1.32x over Harrow Road 14; the replacements of twice-failed cable fail at under 5 per cent a year, asserted) | same call |
 | SF8 | the window the hazard is estimated on | every closed section year, 2012 to September 2026 | 2017 on, or 2019 on | Quarry Hill 21 | same call |
+| SF9 | Sutter Park 5's 2024 to 2026 failures on the Kessler Avenue loop (the EPR laid 2006 to 2010) | the loop's overload ended when its second feed was energised on 15 September 2026, so 2027 carries each section at its own state's rate | the overload years carried into 2027 (its 2025 count, a two- or three-year average, a recent cohort or feeder-effect rate) | Sutter Park 5 (last twelve months 13 against 12) | the 2025 annual report 6.3 and the extract notes (second feed energised 15 Sep 2026, the loop back inside its rating), with 6.4's precedent (Harrow Road 14's elbow run ended with the 2024 change-out and its failures are back at the earlier level); the loop's last failure is 4 September; with the overload years taken out every recent window names Quarry Hill 21 (asserted) |
 
 ## Ladder
 
@@ -246,7 +264,9 @@ the record it is fitted on. Why the careful computation still lands wrong: the c
 filed quantity (each feeder's five-year average on the sections in service, or failure rates by insulation and age
 applied to each feeder's cable) averages over sections in different states and names Mill Lane 7 or Sutter Park 5;
 every literal reading of the prompt's terms lands on Quarry Hill 21 once the forecast carries each section's own
-failure count (the semantic fork table), and the easy answer comes only from the easy method on the same estimand.
+failure count (the semantic fork table), and the easy answer comes only from the easy method on the same estimand. Sutter Park 5's
+recent lead is the Kessler Avenue loop's overload, which the 2025 report (6.3) and the extract notes file as ended on 15
+September 2026, so a forecast carrying the overload years into 2027 contradicts those sentences (SF9).
 
 ## Oracles
 
@@ -441,6 +461,21 @@ architecture's main call.
   - Final build: 229 assertions, `verify.py` green, two builds byte-identical, `generator/figures.json` unchanged,
     `target.zip` sha256 c923369dcbc512b2.
 
+- **Determinism repair of 2026-10-12 (`/fix-determinism`, portal return):** the portal judge found Sutter Park 5
+  defensible (its 2025 count, two- and three-year averages and a recent cohort Poisson model all lead with it) because
+  the Kessler Avenue loop's overload, the generator's cause of its 2024 to 2026 failures, had no end anywhere in the
+  pack, and its SCADA peaks still reached 119 per cent in July 2026; it also found the portal's answer fields holding
+  task181's write-up (the repo's submission.md was correct). A filed back-test criterion was measured on the shipped
+  record and rejected (a three-year cohort rate back-tests best, 302 against 418, and would select Sutter Park 5).
+  Closed as SF9: the 2025 report's 6.3 files the loop's overload since the warehouse park's 2024 expansion and the
+  second feed under construction, the extract notes file the second feed energised on 15 September 2026 (after the
+  loop's last failure on 4 September), and 6.4 files Harrow Road 14's elbow run as ended with the 2024 change-out (its
+  2025 and 2026 failures back at the earlier level); the write-up's Sutter Park 5 clause now says where it leads and
+  why it does not carry. No record any graded figure reads moved: `freeze.py check --mode determinism` PASS, 236
+  assertions, `verify.py` green, two builds byte-identical, `figures_check.py` exit 0, `precut.py` exit 0 with the
+  eleven three-rules lines added, `leak.py` REVIEW of the same kinds (rerun note in the leak report). Judge pass 3:
+  DETERMINISTIC, APPROVE; its one residual-risk note (no data after the second feed) was answered by 6.4.
+
 ## Pre-ship check
 
 1. Domain: the task is underground cable condition reading, which feeder's in-service sections will fail in
@@ -459,6 +494,16 @@ architecture's main call.
    and its parts' visible attributes both hide (`guard.py heart` PASS, nearest driver task132 at 0.08).
 
 ## Tried and rejected
+
+- Portal determinism review (2026-10-12), `competing_defensible_answer`: Sutter Park 5 under its 2025 count, two- and
+  three-year averages and a recent cohort Poisson model, because the Kessler Avenue loop's overload (scheduled 2024 to
+  2026) had no end anywhere in the pack and its SCADA peaks still reached 119 per cent in July 2026; the write-up's
+  clause that Sutter Park 5 leads only on insulation and age was also wrong against the record. A filed back-test
+  criterion was measured and rejected: on the shipped record a three-year cohort rate predicts each closed year 2019
+  to 2025 best (absolute error 302 against the failure-count model's 418), so it would select Sutter Park 5. Closed
+  instead by filing the overload's end (the loop's second feed, energised 15 September 2026, after its last failure on
+  4 September) in the 2025 report (6.3) and the extract notes, with the write-up's clause corrected (SF9); no record
+  any graded figure reads moved.
 
 - Seed AD06 as written (a surge trigger rebuilt from a settled activation ledger): the decisive step is a rule left out of the method note and recovered from settled figures, which the guard blocks and the client caps, and under literal determinism the undefined term is a fork, not a stump.
 - Drinking-water non-detects (left-censored lab results; substitution against a censored-data estimator for the 95th percentile): the decisive move is method selection (G16, banned against the last three builds), and a laboratory reporting full values is a better instrument that dissolves it.

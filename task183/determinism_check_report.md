@@ -1,3 +1,66 @@
+# determinism-check report, task183, 2026-10-12 (pass 3, the one re-judge after the portal determinism return)
+
+## Verdict
+DETERMINISTIC
+**Disposition:** APPROVE
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+
+## Why
+One isolated sonnet thread saw only a fresh unzip of target.zip, prompt.txt, the graded blocks and the judge system prompt. Sections with status IS in the 30 Sep 2026 GIS export, INS/SPL/TRM only, each carried forward at the rate for its own count of prior cable failures, put Quarry Hill 21 first (14.95 expected 2027 failures against 9.85 for Harrow Road 12). All 24 reliability figures reproduce from the files under TVE-RS-04 rev 6. No semantic fork on the main call. The residual risk the thread noted (no data after Sutter Park 5's second feed on 15 Sep 2026) was acted on after the verdict: the 2025 report now also carries 6.4, a factual precedent that Harrow Road 14's 2021 to 2024 elbow run ended with the 2024 change-out and its failures are back at the earlier level, verifiable in the work orders. Recorded as the same fork closed further. No graded figure moved: freeze.py determinism mode PASS (236 checks), verify green, two builds byte-identical, target.zip re-cut. The thread judged the pre-6.4 bundle; this is the coordinator's account of the change, and the verdict is not re-run.
+
+## Recomputation ledger
+| Figure | Claimed | Judge recomputed | Reproduced |
+|---|---|---|---|
+| INS/SPL/TRM work orders | cause filter per code file | 937 orders, 538 on IS sections, every section joins GIS | yes |
+| QH21 IS sections with 2+ failures | 17, others none | 17 (5+3+4+1+2+2); every other feeder 0 | yes |
+| Hazard after 2 failures vs 1 | more than 10x | 0.311 vs 0.0201 per year (15x); 0.0224 / 0.579 at 0 / 3+ | yes |
+| Expected 2027, QH21 first | first | QH21 14.95, HR12 9.85, HR14 8.25, ML07 7.88, SP05 7.55, ML03 7.50, SP09 6.87, QH22 5.52 | yes |
+| SAIFI x8 | 1.40 1.97 1.73 1.31 1.58 1.52 2.23 1.53 | 1.399 1.967 1.730 1.312 1.582 1.520 2.230 1.532 | yes |
+| SAIDI x8 | 71.3 131.4 88.2 85.7 92.4 73.5 139.7 125.5 | 71.29 131.38 88.19 85.67 92.39 73.51 139.72 125.51 | yes |
+| CEMI4 x8 | 108 1,163 445 485 262 44 1,812 65 | identical | yes |
+| MEDs | 2026-01-25, 2026-07-28 | 34.18 and 55.11 min vs threshold 13.69 (13.72 sample SD); next day 9.32 | yes |
+| Customers served | from the connectivity model | HR12 3878, HR14 3105, ML03 4168, ML07 3971, QH21 2781, QH22 3306, SP05 3650, SP09 3362 | yes |
+| Chart | QH21 tallest | QH21 first under count-only, insulation-by-count and Poisson splits | yes |
+
+## Competing answers that survived
+None on the committed answers.
+1. Trailing or 5-year feeder history (Harrow Road 12, Sutter Park 5): closed by report 6.2 (PILC replaced; 7 PILC sections in service, all SP05), 6.3 and the extract notes (Kessler loop overload ended by the second feed on 15 Sep 2026).
+2. Successors inheriting a predecessor's count: closed by the code file (failed cable removed, new section is new cable).
+3. Residual: SP05 loop failures continuing at about 10 a year after the second feed would reach about 17 and pass QH21's 15. The data has no post-feed period; the filed cause and remedy close it, and the later 6.4 sentence on Harrow Road 14 adds the reversion precedent. Low risk.
+4. One work order is raised on ML03 but its section is on ML07 in GIS; the notes explain work-order feeder is the feeder when raised. Immaterial.
+
+## Spec gates
+| Gate | Required | Actual | Pass |
+|---|---|---|---|
+| Files | 10 or more | 14 | yes |
+| Formats | 3 or more | 6 (csv, pdf, xlsx, parquet, json, md) | yes |
+| Large file | 25,000 rows or more | connectivity_meter_points.parquet 37,008 rows (CIS csv 28,221 per the earlier pass) | yes |
+| Distractors | 2 or more in metadata.json, none named in a file | vault_manhole_inspections_2022-2026.csv, feeder_peak_loading_2021-2026.xlsx | yes |
+| Distractors relevant, unused | weighed, not carrying the answer | both same-world files; the thread named neither as the surface read (it lists the annual report's table 6.1 and the MED list as further non-deciding items) | yes |
+| Deliverables | 1 to 3, all in golden | 2 (xlsx, png), both in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | call plus 8 x 3 indices plus chart; two decimals, one decimal, whole numbers stated | yes |
+| Shape and rubric | identifiable, 25 or more criteria | shape 01; 1 call + 24 cells + chart | yes |
+| Prompt | one paragraph, under 1,000 characters | 829 | yes |
+| Realism | no LLM tells | export irregularities (banner rows, mixed dates, dual clocks); no authoring language found; golden visual realism not judged here | yes |
+
+## Gate G reconciliation
+Thread: mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card: stump_class analytical (match); analyst_test (strong analyst on clean data forecasts from feeder rate or insulation/age rates and names Mill Lane 7 or Sutter Park 5) matches the thread's easy routes (trailing or pooled rate giving SP05 or HR12). Label difference only: the card and design note declare Gate G `forecasting`, the thread chose method_or_model_selection. The design note records that the latter blocks as same_driver against task134 v2 on the guard, so the declared label stays; the family and the mechanism of the stump (hazard conditioned on a section's own failure history) agree. The declared distractors were not named as carrying the task.
+
+Gate H: domain pass, layers pass, decisive_step analytical. Card domain_test (second failure marks degraded insulation, the reason utilities replace at the second failure) matches the thread's reliability-engineering reading.
+
+## Stump power (Gate F)
+Moderate to good. Feeder-level trailing counts give SP05 or HR12; a pooled section rate gives HR12. QH21 needs a recurrent-event panel conditioned on prior failures, replacement-removal handling and the SP05 regime check, plus an ETL-heavy reliability layer (UTC conversion, bank dedupe, per-customer restore steps, MED recomputation, dated connectivity). No solver run data supplied; the empirical bar is not assessed here.
+
+## Findings, ranked
+1. Low: SP05 post-feed expectation rests on filed cause and remedy only; hardened by 6.4 after the verdict (not re-judged).
+2. Informational: Gate G label differs (forecasting vs method_or_model_selection), explained above.
+3. Informational: work-order count in this pass (937 on cause codes, 538 IS) differs from pass 2 (1,055 and 647 IS); both pass the same figures, the earlier count likely covers a wider set of cause codes. Not a graded figure.
+
+## Next action for the author
+Ship: no repair needed, no further judge run. Re-cut target.zip is already the final.
+
+---
+
 # determinism-check report, task183, 2026-10-12
 
 ## Verdict

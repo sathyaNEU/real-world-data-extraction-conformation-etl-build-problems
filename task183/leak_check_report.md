@@ -120,3 +120,13 @@ Mechanical sweep lines:
 - oms_restoration_steps columns device_id, restoring_device_id: harmless, normal for a step table.
 
 Repair after pass 2 (2026-10-12): the major event day list names each lockout's feeder or substation, and the replaced-section crew notes draw from more crews' wordings; both are data files, so no third read; leak.py re-run on the final build (REVIEW, the same lines).
+
+## Determinism repair, 12 October 2026: leak.py rerun
+
+`leak.py task183 --asof 2026-10-06`: REVIEW, the same kinds as the stage 3 and stage 4 sweeps (the organisation's
+"the model", the call's words in the report and the notes, the domain's ordinary vocabulary in the documents, ranking
+artifacts that rank nothing on 2027, the network model's and the OMS's own column names), plus "second" from the two
+new sentences on the Kessler Avenue loop's second feed (report 6.3, extract notes) and Harrow Road 14's ended elbow run (report 6.4). Those sentences name the causes of
+Sutter Park 5's 2024 to 2026 failures and Harrow Road 14's 2021 to 2024 run and when they ended, rungs' causes; neither names a section's failure order,
+and the readability regex in `generator/checks.py` (recurrence, second failure, failed twice, failure count and the
+rest) still finds nothing in the pack.

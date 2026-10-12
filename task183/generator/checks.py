@@ -1,5 +1,5 @@
 """Assertions over the built pack and the goldens: the call, every rung by name with its margin, the 16-cell grid
-cell by cell and the partial cells, the semantic fork rows SF1 to SF8, the six readability tests, the clean-data
+cell by cell and the partial cells, the semantic fork rows SF1 to SF9, the six readability tests, the clean-data
 and lens tests, every ask figure (bins, major event day margins) and every designed wrong stop, the separation of
 the ask devices from the main call's rows, the distractors, the report and the published major event days, the
 pack gates, dates, vocabulary and containers. Everything is computed from target/ and golden/ (models.py, asks.py),
@@ -219,6 +219,48 @@ def run(target, golden, world=None, meta_path=None, quiet=False):
                                                                           "no twice-failed section")
     # SF6: no failure completed in a later year than its fault would move a section's count past the cut
     ok(all(c >= f for f, c in zip(wo["fault_date"], wo["completed_date"])), "SF6: completion never before the fault")
+    # SF9: Sutter Park 5's recent lead is the Kessler Avenue loop's overload (the EPR laid 2006 to 2010), which the
+    # report (6.3) and the extract notes file as ended by the loop's second feed on 15 September 2026, so carrying
+    # the loop's overload years into 2027 is the reading those sentences rule out
+    loop = set(reg.loc[(reg["feeder_id"] == "SP05") & (reg["insulation"] == "EPR") &
+                       reg["install_date"].map(lambda d: 2006 <= d.year <= 2010), "section_id"])
+    lf = sorted(d for s in loop for d in fails.get(s, []))
+    relief = dt.date(2026, 9, 15)
+    ok(len(loop) == 72 and lf and lf[-1] < relief,
+       "SF9: the last of the 72 loop sections' failures (%s) precedes the loop's second feed" % (lf[-1] if lf else None))
+    sp_cable = wo[(wo["feeder_id"] == "SP05") & wo["cause_code"].isin(M.CABLE)]
+    n25 = int((sp_cable["fault_date"].map(lambda d: d.year) == 2025).sum())
+    l25 = sum(1 for d in lf if d.year == 2025)
+    ok(2 * l25 > n25, "SF9: most of Sutter Park 5's 2025 cable failures are on the loop (%d of %d)" % (l25, n25))
+    notes_txt = open(os.path.join(target, "asset_analytics_extract_notes_2026-10.md")).read()
+    ok(notes_txt.count("second feed to the Kessler Avenue loop was energised on 15 Sep 2026") == 1,
+       "SF9: the extract notes file the loop's second feed once")
+    with pdfplumber.open(os.path.join(target, "2025_annual_reliability_report_sec6_ug_cable.pdf")) as pdf:
+        rep_txt = " ".join((pg.extract_text() or "") for pg in pdf.pages).replace("\n", " ")
+    ok("Kessler Avenue loop" in rep_txt and "above the loop's rating" in rep_txt,
+       "SF9: the 2025 report (6.3) files the loop's overload since the 2024 expansion")
+    hr14 = wo[(wo["feeder_id"] == "HR14") & wo["cause_code"].isin(M.CABLE)]["fault_date"].map(lambda d: d.year)
+    before = np.mean([int((hr14 == y).sum()) for y in (2017, 2018, 2019)])
+    after = [int((hr14 == y).sum()) for y in (2025, 2026)]
+    ok("ended with the elbows' change-out in 2024" in rep_txt and max(after) <= before + 1,
+       "SF9: the report (6.4) files Harrow Road 14's elbow run as ended, and its 2025 and 2026 failures (%s) are back at "
+       "its 2017 to 2019 level (%.1f a year)" % (after, before))
+    # with the loop's overload years taken out of its record (its 2024 to 2026 failures), every recent-window count and
+    # the failure-count model name Quarry Hill 21; with them left in, the recent windows name Sutter Park 5 (the rung)
+    over = {(s, d) for s in loop for d in fails.get(s, []) if d.year >= 2024}
+    insvc = set(reg.loc[reg["status"] == "IS", "section_id"])
+    for lo, label in ((dt.date(2025, 10, 1), "last twelve months"), (dt.date(2024, 10, 1), "last two years")):
+        cnt_all, cnt_net = {}, {}
+        for f in W.FEEDERS:
+            secs_f = set(reg.loc[(reg["feeder_id"] == f) & reg["section_id"].isin(insvc), "section_id"])
+            ev = [(s, d) for s in secs_f for d in fails.get(s, []) if lo <= d <= W.CUT]
+            cnt_all[f] = len(ev)
+            cnt_net[f] = len([e for e in ev if e not in over])
+        top_all = max(cnt_all, key=cnt_all.get)
+        top_net = max(cnt_net, key=cnt_net.get)
+        ok(top_all == "SP05" and top_net == "QH21",
+           "SF9: the %s name Sutter Park 5 with the loop's overload kept (%d) and Quarry Hill 21 without it (%d)"
+           % (label, cnt_all["SP05"], cnt_net["QH21"]))
 
     # ------------------------------------------------------------ readability tests (the decisive rung silent)
     texts = []

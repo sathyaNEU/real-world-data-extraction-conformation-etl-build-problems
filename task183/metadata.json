@@ -41,7 +41,7 @@
     {
       "path": "2025_annual_reliability_report_sec6_ug_cable.pdf",
       "format": "pdf",
-      "bytes": 64162,
+      "bytes": 65240,
       "rows": null,
       "source": "Constructed: 2025 annual reliability report, section 6 (underground cable)",
       "date": "2026-10-06",
@@ -59,7 +59,7 @@
     {
       "path": "asset_analytics_extract_notes_2026-10.md",
       "format": "md",
-      "bytes": 2398,
+      "bytes": 2619,
       "rows": null,
       "source": "Constructed: Asset analytics hand-off note for the extract: where each file came from and what to know reading it",
       "date": "2026-10-06",

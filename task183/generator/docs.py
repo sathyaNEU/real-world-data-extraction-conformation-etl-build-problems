@@ -165,7 +165,14 @@ def write_report(path, failures, miles, customers):
               Spacer(1, 6),
               Paragraph("6.2&nbsp;&nbsp;Harrow Road 12's paper-insulated lead-covered cable was replaced between April "
                         "and November 2025 under the PILC replacement program; its 2025 count includes the failures "
-                        "on that cable before it was retired.", BODY)]
+                        "on that cable before it was retired.", BODY),
+              Paragraph("6.3&nbsp;&nbsp;Most of Sutter Park 5's 2025 failures were on the Kessler Avenue loop, the "
+                        "EPR cable laid from 2006 to 2010 to the warehouse park, which has carried the park's load "
+                        "above the loop's rating at the summer peaks since the park's 2024 expansion. A second feed from "
+                        "Sutter Park 5 to the loop's far end is under construction, for service by September 2026.", BODY),
+              Paragraph("6.4&nbsp;&nbsp;Harrow Road 14's run of termination failures, on a batch of loadbreak elbows "
+                        "fitted from 2017 to 2019, ended with the elbows' change-out in 2024, and its failures are back "
+                        "at the feeder's level before the run.", BODY)]
     frame = _frame("%s  |  2025 Annual Reliability Report" % W.COMPANY, "Section 6")
     doc.build(story, onFirstPage=frame, onLaterPages=frame)
 
@@ -198,6 +205,8 @@ Things to know:
 - Connectivity rows: eff_to is the first day the row no longer applies, blank while current. A new row is opened when
   the point's device, feeder or meter changes.
 - Device list in-service dates are blank for devices in service since the model went live (Nov 2014).
+- SP05: the second feed to the Kessler Avenue loop was energised on 15 Sep 2026; the loop now runs closed, fed from
+  both ends off SP05, and is back inside its rating. No meter moved, so connectivity has no rows for it.
 """
 
 

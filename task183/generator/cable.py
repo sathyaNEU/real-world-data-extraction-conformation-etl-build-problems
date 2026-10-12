@@ -43,7 +43,8 @@ STOCK = {
 }
 HWY_SECTIONS = 33                # Quarry Hill 21's run in conduit under State Route 443 (XLPE, 1986)
 LOOP_SECTIONS = 72               # Sutter Park 5's Kessler Avenue loop to the warehouse park (EPR, 2006-2010)
-# the loop ran above its rating from the 2024 warehouse expansion until the new tie took load off it in June 2026
+# the loop ran above its rating from the 2024 warehouse expansion until its second feed closed it on 15 September
+# 2026; the history is scheduled to 19 September, and the last loop failure falls on 4 September
 LOOP_ADD = {2024: 0.035, 2025: 0.12, 2026: 0.15}
 LATERAL_SECTIONS = 24            # the Mill Lane 3 lateral moved to Mill Lane 7 on 14 June 2026 (TRXLPE, 2000)
 

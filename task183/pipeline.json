@@ -28,7 +28,8 @@
     "disposition": "APPROVE",
     "report": "task183/determinism_check_report.md",
     "date": "2026-10-12",
-    "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "pass": 3,
+    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
     "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "approved": null,
@@ -39,7 +40,7 @@
     "files": 14,
     "formats": 5,
     "largest_file_rows": 37008,
-    "checks": 229,
+    "checks": 236,
     "verify": "green",
     "byte_identical": true,
     "figures_check": 0,
@@ -51,9 +52,20 @@
     "call": "Quarry Hill 21",
     "r3_lead": 1.52,
     "figures_moved": "none",
-    "target_zip_sha256": "c923369dcbc512b2"
+    "target_zip_sha256": "5d1d5870cc165847"
   },
   "status": "SHIPPED",
   "owner": "oviya13ya",
-  "resume": ""
+  "resume": "",
+  "returned": [
+    {
+      "date": "2026-10-12",
+      "portal": "determinism block failed: Gate C/D competing_defensible_answer (Sutter Park 5 under its 2025 count, two- and three-year averages and a recent cohort Poisson model, the Kessler Avenue loop's overload having no filed end); Gate A contamination (the portal's answer, component and step fields held task181's write-up; the repo's submission.md was correct)",
+      "repair": "determinism",
+      "move": "SF9: the loop's overload and its end filed (2025 report 6.3, extract notes: second feed energised 15 Sep 2026, after the last loop failure on 4 Sep) with a factual precedent (report 6.4, Harrow Road 14's elbow run ended with the 2024 change-out); the write-up's Sutter Park 5 clause corrected; a filed back-test was measured and rejected",
+      "freeze": "determinism mode PASS",
+      "judge": "DETERMINISTIC, APPROVE (pass 3)",
+      "commit": ""
+    }
+  ]
 }
