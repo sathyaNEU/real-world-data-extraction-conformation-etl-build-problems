@@ -34,7 +34,7 @@ FILES = [
      "4 December 2026"),
     (K.BUDGETS, "Technology compute budgets by cost centre, 2026 and January to March 2027, with the freeze note",
      "Technology Controlling, 27 November 2026"),
-    (K.RATECARD, "Compute rate card, every rate by effective date", "Technology Controlling"),
+    (K.RATECARD, "Compute rate card for MAD1 reserved cores, every rate by effective date", "Technology Controlling"),
     (K.LEDGER, "C-22 reservation ledger, 2025 Q1 to 2026 Q4, as approved at each review", "Compute Operations"),
     (K.USAGE, "C-22 monitoring export, each tenant's average cores in use by hour, 1 January 2025 to 13 December 2026",
      "Cell monitoring, pulled 14 December 2026 06:10 UTC"),

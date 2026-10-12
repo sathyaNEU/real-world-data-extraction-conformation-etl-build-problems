@@ -100,29 +100,16 @@ def request_rows(W):
 
 
 RATE_COLS = ["rate_id", "resource", "site", "unit", "eur_per_unit_month", "effective_from", "published_on"]
-OTHER_RATES = [
-    ("reserved core", "BCN2", "core", [("2025-01-01", 8.10, "2024-11-29"), ("2025-07-01", 7.98, "2025-06-02"),
-                                       ("2026-01-01", 7.84, "2025-12-01"), ("2026-09-01", 7.90, "2026-08-03"),
-                                       ("2027-01-01", 7.61, "2026-12-01")]),
-    ("block storage", "MAD1", "TB", [("2025-01-01", 11.40, "2024-11-29"), ("2026-01-01", 10.95, "2025-12-01"),
-                                     ("2027-01-01", 10.60, "2026-12-01")]),
-    ("block storage", "BCN2", "TB", [("2025-01-01", 11.85, "2024-11-29"), ("2026-01-01", 11.30, "2025-12-01"),
-                                     ("2027-01-01", 10.90, "2026-12-01")]),
-]
 MAD1_PUBLISHED = {"2025-01-01": "2024-11-29", "2025-07-01": "2025-06-02", "2026-01-01": "2025-12-01",
                   "2026-09-01": "2026-08-03", "2027-01-01": "2026-12-01"}
 
 
 def rate_rows(W):
-    rows = []
+    rid = 104
     for d, v in K.RATES:
-        rows.append(("reserved core", "MAD1", "core", v, d.isoformat(), MAD1_PUBLISHED[d.isoformat()]))
-    for res, site, unit, items in OTHER_RATES:
-        for d, v, p in items:
-            rows.append((res, site, unit, v, d, p))
-    rows.sort(key=lambda x: (x[4], x[1], x[0]))
-    for i, (res, site, unit, v, d, p) in enumerate(rows, 1):
-        yield ["R%03d" % (100 + i), res, site, unit, "%.2f" % v, d, p]
+        yield ["R%03d" % rid, "reserved core", "MAD1", "core", "%.2f" % v, d.isoformat(),
+               MAD1_PUBLISHED[d.isoformat()]]
+        rid += int(K.rng("rate-id", d.isoformat()).integers(2, 5))
 
 
 def directory(W):

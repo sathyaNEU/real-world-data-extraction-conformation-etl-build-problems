@@ -15,7 +15,7 @@ SOURCES = {
     K.HWPLAN: "C-22 hardware plan for 2027 Q1, revision of 11 December 2026: racks and machines in service by date",
     K.REQUESTS: "Firm tenants' reservation requests for 2027 Q1 from the quota tool",
     K.BUDGETS: "Technology compute budgets by cost centre, 2026 and January to March 2027, with the freeze note",
-    K.RATECARD: "Compute rate card, every rate by effective date",
+    K.RATECARD: "Compute rate card for MAD1 reserved cores, every rate by effective date",
     K.LEDGER: "C-22 reservation ledger, 2025 Q1 to 2026 Q4",
     K.USAGE: "C-22 monitoring export: each tenant's average cores in use by hour, 1 January 2025 to 13 December 2026",
     K.CELLHOURLY: "C-22 machines installed and in service by hour, same period",

@@ -129,9 +129,9 @@ together with the storage it brings: the golden is 109,000.
 - **Layer 1:** a monitoring export in UTC beside an operations log written in Madrid local time (CEST to 25 October,
   CET after), a collector outage on 19 August 2026 leaving seven hours with no rows for any tenant, tenant ids in the
   export and the ledger against cost-centre numbers in the finance budget workbook (joined through the tenant
-  directory), budget lines for other cells and for storage beside the C-22 lines, a rate card carrying BCN2 and storage
-  rates beside MAD1's, a re-sent day of export rows in March 2026, rack additions dated in the hardware plan and the
-  machines-in-service series; on the ask paths, an elastic training scheduler's resize log, checkpoint writes that never
+  directory), budget lines for other cells and for storage beside the C-22 lines, a re-sent day of export rows in March
+  2026, rack additions dated in the hardware plan and the machines series (installed beside in service); on the ask
+  paths, an elastic training scheduler's resize log, checkpoint writes that never
   committed, a cluster manager that gives a re-imaged machine a new id and re-sent a day's removals after a restart, a
   hardware inventory carrying each asset's id history, spares that replace retired machines in the same rack, a quota
   service that applies changes in six-hourly reconciliation runs and ran none for three days after the August power
@@ -140,11 +140,18 @@ together with the storage it brings: the golden is 109,000.
   service as a tenant like the others (its trend, its last quarter, its share of the cell); the expert specifies its
   use on its drivers and reads the forecast at the decision's own value, solving the guarantee and the storage
   reservation together.
-- **Decisive step:** not a plant (the storage service, its daemons on every machine and its load from the batch
-  tier's reads and checkpoints are how a cell's storage works, and nothing in the pack was placed to be caught), not a
-  field read (every column is read the same on the default path: cores in use, machines in service, reservations), not
-  a stated rule (CS-3 says a platform service is reserved at its forecast busiest-hour use and leaves the forecast to
-  the analyst; no sentence names a driver, a ratio or the batch tier in it).
+- **Decisive step:** specifying the storage service's busiest-hour load on what drives it (machines in service and
+  batch cores running) instead of on its own history, and reading that model at the batch tier's new guarantee, so the
+  guarantee and the storage reservation are solved as one fixed point: a capacity planner's dependent-load forecast,
+  done with a two-driver regression on the cell's telemetry.
+- **Not semantics:** every field the call reads means one thing and the easy route reads each correctly (cores in use
+  per tenant per hour, machines in service per hour, requests, monthly budgets, the rate in force, the reservable
+  cores); the fork table's rows are closed and none is the stump, and with every field read right the trend of the
+  storage service's own busiest hours still files 122,000.
+- **Not rule application:** CS-3 files the estimand (reservable cores, firm holds, platform services at the use forecast
+  for their busiest hour, the largest whole thousand left, batch inside its guarantee) and leaves the forecast to the
+  analyst; executing every filed rule with the default forecast files 122,000, and no rule, procedure or document
+  performs the step that moves it to 109,000 (a model of the storage load on its drivers, read at the unknown guarantee).
 - **Analyst test:** a strong analyst who approves every firm request under its frozen budget at the Q1 rate card, takes
   the hardware plan's 5,220 machines at the 1.45 overcommit and forecasts the platform services' busiest hours from
   their own last four quarters files 122,000 cores; with the last quarter's busiest hour 122,000, with storage scaled to
@@ -154,9 +161,10 @@ together with the storage it brings: the golden is 109,000.
   their busiest hour of the quarter, the guarantee as the largest whole thousand of cores the reservable cores leave,
   batch running inside it) with the prompt's question (the first quarter of 2027); CS-3 is the filed standard, the
   capacity memo and the hardware plan carry the quarter's overcommit and machines.
-- **No decoy:** no memo, draft, briefing or stakeholder figure gives a 2027 Q1 guarantee, a storage forecast or a
-  method; the platform team's past storage reservations are history in the ledger, the Q3 capacity report covers Q3 only,
-  and the batch teams' H1 2027 demand note (a distractor) states demand, not a guarantee.
+- **No decoy:** nothing is planted to be caught: no copied or backfilled block in any series (asserted), no hidden
+  rule, and no memo, draft, briefing or stakeholder figure gives a 2027 Q1 guarantee, a storage forecast or a method;
+  the platform team's past storage reservations are history in the ledger, the Q3 capacity report covers Q3 only, and
+  the batch teams' H1 2027 demand note (a distractor) states demand, not a guarantee.
 - **No certified replay:** the storage dependency is measured on the hourly telemetry (two drivers, 17,081 hours,
   residuals of about 13 cores); no certified or published figure has to be reproduced to find it, and the past
   guarantees in the ledger are the reviews' outcomes, which the golden never reads.
@@ -495,7 +503,7 @@ keeps 3 of its 6 figures (about 6 points). Recomputed from the generated rubric 
 | The capacity memo | 2 | the quarter's overcommit (1.45) and the machines from the hardware plan | storage, the batch tier's load |
 | The hardware plan | 2 | machines in service by date; 5,220 from 28 December 2026 | anything about tenants |
 | The finance freeze note and budget workbook | 2 | Q1 2027 monthly budgets held at December 2026 | any reservation |
-| The rate card | 2 | EUR per core-month by effective date, MAD1 and BCN2 | a reservation |
+| The rate card | 2 | EUR per core-month for MAD1 reserved cores by effective date | a reservation |
 | The chargeback policy (asks only) | 2 | what a firm tenant pays: the cores it holds at 00:00 UTC each day at the rate in force | when a change takes effect |
 | The dictionary | 4 | field semantics: cores in use, machines in service, run, checkpoint and resize fields, machine events, the inventory's cluster ids, quota change and reconciliation fields | what drives storage, how to follow a restore, that a re-image changes an id, when a change applies |
 
@@ -517,7 +525,8 @@ at the close.
   each deleted with the call and every ask unchanged (asserted).
 - Built figures: the guarantee 109,000 (109,492.0 before the thousand), the firm tenants 576,972, `cell-store` 38,058.5,
   `cell-ctl` 1,999.2, the default path 122,000 (122,235.1).
-- Stage 3 gates, 2026-10-12: `build.py` green (2,139 assertions in `checks.py`, `verify.py` agreeing on every graded
+- Stage 3 gates, 2026-10-12: `build.py` green (2,285 assertions in `checks.py`, the three-rules block R1 to R3c among
+  them on the clean truth, `verify.py` agreeing on every graded
   figure, two builds byte-identical, `target.zip` cut); `precut.py` 47 checks, 0 FAIL; `figures_check.py` PASS (89
   figures); `voice-check.py` PASS; `leak.py --asof 2026-12-14` REVIEW, no LEAK (answered under `## Leak review`);
   `guard.py heart` WARN (`overuse.objective`, no BLOCK), `guard.py surface` 0 promoted pairs; the container audit

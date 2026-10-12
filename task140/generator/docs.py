@@ -242,11 +242,7 @@ def write_hwplan(path, W):
 
 
 BUDGET_OTHER = [  # cost centres' lines for other cells and other resources (EUR a month, December 2026)
-    ("4110", "Search & Discovery", "MAD1 C-21 reserved cores", 214500),
-    ("4110", "Search & Discovery", "BCN2 C-03 reserved cores", 388000),
     ("4120", "Inventory & Availability", "MAD1 C-24 reserved cores", 151000),
-    ("4130", "Pricing", "BCN2 C-03 reserved cores", 96500),
-    ("4140", "Recommendations", "MAD1 C-23 reserved cores", 133500),
     ("4210", "Booking & Orders", "MAD1 C-21 reserved cores", 287000),
     ("4210", "Booking & Orders", "MAD1 block storage", 41000),
     ("4220", "Payments", "BCN2 C-01 reserved cores", 176500),
@@ -639,7 +635,7 @@ def write_readme(path, files):
 
 # ---------------------------------------------------------------------------------------------------- sister cells (distractor)
 
-SISTER_CELLS = {"C-21": (3260, 0.118), "C-23": (2740, 0.141), "C-24": (3880, 0.096), "C-25": (5960, 0.132)}
+SISTER_CELLS = {"C-21": (3260, 0.118), "C-23": (2740, 0.141), "C-24": (3880, 0.096), "C-25": (5960, 0.083)}
 
 
 def write_sisters(path, W):

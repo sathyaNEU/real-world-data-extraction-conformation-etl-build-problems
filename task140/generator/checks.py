@@ -69,6 +69,9 @@ def run(target, golden, W=None, meta_path=None):
     ok(0 < g["unreserved"] < 1000 * (1 + g["beta"]), "unreserved %.1f below one more thousand and its storage" %
        g["unreserved"])
 
+    # ------------------------------------------------------------------ the three rules, executed (R1, R2, R3)
+    _three_rules(target, M, g, lad, W)
+
     # ------------------------------------------------------------------ the ladder
     R0 = lad["R0"]
     ok(R0["G"] == 122000, "default path ends on 122,000: %d" % R0["G"])
@@ -374,6 +377,95 @@ def run(target, golden, W=None, meta_path=None):
     ok(W is None or len(spares) >= 3, "SF27 spares registered in Q3 (another asset, not a return): %d" % len(spares))
     print("checks: %d assertions passed" % N[0])
     return N[0]
+
+
+def _text_of(path):
+    if path.endswith(".pdf"):
+        return subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True).stdout
+    if path.endswith(".docx"):
+        import docx
+        d = docx.Document(path)
+        return "\n".join([p.text for p in d.paragraphs] + [c.text for t in d.tables for r in t.rows for c in r.cells])
+    if path.endswith(".xlsx"):
+        wb = openpyxl.load_workbook(path, read_only=True)
+        return "\n".join(" ".join("" if v is None else str(v) for v in row) for ws in wb.worksheets
+                         for row in ws.iter_rows(values_only=True))
+    return open(path, encoding="utf-8").read()
+
+
+def _three_rules(target, M, g, lad, W):
+    """dataset-generation 7.1: the client's three rules asserted on the clean truth (the world before any mess or
+    document) and on the pack."""
+    G = g["G"]
+    # R1: the field's raw material ships, and no shipped column or sentence holds the deciding quantity
+    ok(g["n"] >= 16000, "R1 the decisive fit reads %d hourly rows of cell-store, batch-train and machines" % g["n"])
+    texts = {f: _text_of(os.path.join(target, f)) for f in os.listdir(target)
+             if not f.endswith(".csv") or os.path.getsize(os.path.join(target, f)) < 2_000_000}
+    for f, t in texts.items():
+        for pat in (r"\b2\.94\d*\b", r"\b0\.208\d*\b", r"\b109,?000\b", r"\b38,?0[0-9]{2}\b", r"\b1\.208\d*\b"):
+            ok(not re.search(pat, t), "R1 %s states no deciding quantity (%s)" % (f, pat))
+    with open(os.path.join(target, K.USAGE), encoding="utf-8") as fh:
+        head = fh.readline().strip().split(",")
+    ok(head == ["hour_start_utc", "cell", "tenant", "cores_in_use"], "R1 the export is one use series per tenant")
+    # R2: every Layer 1 item, mishandled the natural way, leaves the call and its components where they were
+    comps = (G, K.round_to(g["F"], 1000), K.round_to(g["S"], 1000), K.round_to(g["ctl"], 1000))
+
+    def same(gx, lab):
+        ok((gx["G"], K.round_to(gx["F"], 1000), K.round_to(gx["S"], 1000), K.round_to(gx["ctl"], 1000)) == comps,
+           "R2 %s leaves the call and its components" % lab)
+    same(C.golden(C.load(target, dedupe=False)), "the re-sent day of 17 March kept twice")
+    same(C.golden(C.load(target, gap="interpolate")), "the collector's seven missing hours interpolated")
+    same(C.golden(M, use_installed=True), "machines installed read for machines in service")
+    by_name = {}
+    for t in M.firm:
+        name = M.cc[t].split(" ", 1)[1]
+        line = [x for x in M.budget_lines if x["Cost centre"] == name and x["Budget line"] == "MAD1 C-22 reserved cores"]
+        by_name[t] = min(M.requests[t], int(math.floor(line[0]["Jan 2027"] / M.rate_q1 + 1e-9)))
+    ok(by_name == C.firm_approvals(M), "R2 cost centres joined by name instead of number: the same approvals")
+    summed = {}
+    for t in M.firm:
+        code = M.cc[t].split()[0].replace("CC-", "")
+        tot = sum(x["Jan 2027"] for x in M.budget_lines if str(x["CC"]) == code)
+        summed[t] = min(M.requests[t], int(math.floor(tot / M.rate_q1 + 1e-9)))
+    ok(summed == C.firm_approvals(M), "R2 every budget line of a cost centre summed: the same approvals")
+    for m in ("Dec 2026", "Feb 2027", "Mar 2027"):
+        ok(C.firm_approvals(M, budget_month=m) == C.firm_approvals(M), "R2 the %s column: the same approvals" % m)
+    rates = C.rows(os.path.join(target, K.RATECARD))
+    ok({(r["resource"], r["site"]) for r in rates} == {("reserved core", "MAD1")},
+       "R2 the rate card carries MAD1 reserved cores only, so the 2027 row is the one row in force")
+    # R3a: the easy route on the clean truth files the named wrong answer
+    hrs = W.hours
+    qidx = np.array([K.QUARTERS.index(K.q_of(t)) for t in hrs])
+    smax = [float(W.store_h[qidx == i].max()) for i in range(len(K.QUARTERS))]
+    cmax = [float(W.ctl_h[qidx == i].max()) for i in range(len(K.QUARTERS))]
+    R1 = int(round(K.Q1_MACHINES * K.CORES * K.OVERCOMMIT))
+    ctl0 = C.line_forecast(cmax[-4:])
+    G0 = C.floor1000(R1 - W.q1_firm - ctl0 - C.line_forecast(smax[-4:]))
+    ok(G0 == 122000 and G0 != G, "R3a the default path on the clean truth files %d" % G0)
+    # R3b: the easy route with only the decisive step changed files the golden; single lower corrections do not
+    X = np.column_stack([np.ones(len(hrs)), W.inservice_h, W.batch_h])
+    co, *_ = np.linalg.lstsq(X, W.store_h, rcond=None)
+    Gt = C.floor1000((R1 - W.q1_firm - ctl0 - co[0] - co[1] * K.Q1_MACHINES) / (1 + co[2]))
+    ok(Gt == G, "R3b the decisive step alone, on the clean truth, files the golden %d" % Gt)
+    m4 = qidx == len(K.QUARTERS) - 1
+    k = int(np.argmax(W.store_h[m4]))
+    per_machine = float(W.store_h[m4][k]) / float(W.inservice_h[m4][k]) * K.Q1_MACHINES
+    Xb = np.column_stack([np.ones(len(hrs)), W.batch_h])
+    cb, *_ = np.linalg.lstsq(Xb, W.store_h, rcond=None)
+    for lab, Gx in (("storage per machine", C.floor1000(R1 - W.q1_firm - ctl0 - per_machine)),
+                    ("storage on batch alone", C.floor1000((R1 - W.q1_firm - ctl0 - cb[0]) / (1 + cb[1]))),
+                    ("the batch load once at the default's guarantee",
+                     C.floor1000(R1 - W.q1_firm - ctl0 - (co[0] + co[1] * K.Q1_MACHINES + co[2] * G0)))):
+        ok(Gx != G, "R3b %s alone stays wrong (%d)" % (lab, Gx))
+    # R3c: no plant: no copied block in any series, no document carrying a 2027 guarantee or a storage method
+    for name in M.use:
+        v = [M.use[name][h] for h in M.hours]
+        runs = max((len(list(grp)) for _, grp in __import__("itertools").groupby(v)), default=0)
+        ok(runs < 6, "R3c no repeated block in the %s series (longest run %d)" % (name, runs))
+    for f in (K.MEMO, K.STANDARD_PDF, K.CAPREPORT, K.OPSLOG, K.BATCH_DEMAND, K.README):
+        t = re.sub(r"\s+", " ", texts[f]).lower()
+        ok("per batch core" not in t and "per machine" not in t and "guarantee of" not in t,
+           "R3c %s carries no storage method or 2027 guarantee" % f)
 
 
 def _pct2(x):

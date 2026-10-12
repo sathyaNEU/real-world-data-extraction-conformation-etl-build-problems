@@ -51,7 +51,7 @@
     {
       "path": "README_capacity_review_files.txt",
       "format": "txt",
-      "bytes": 3246,
+      "bytes": 3270,
       "rows": null,
       "source": "Constructed: Files note: each file, what it is and where it came from",
       "date": "2026-12-14",
@@ -177,9 +177,9 @@
     {
       "path": "compute_rate_card.csv",
       "format": "csv",
-      "bytes": 981,
-      "rows": 16,
-      "source": "Constructed: Compute rate card, every rate by effective date",
+      "bytes": 360,
+      "rows": 5,
+      "source": "Constructed: Compute rate card for MAD1 reserved cores, every rate by effective date",
       "date": "2026-12-14",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -195,7 +195,7 @@
     {
       "path": "mad1_cells_quarterly_summary_2025-2026.xlsx",
       "format": "xlsx",
-      "bytes": 8355,
+      "bytes": 8348,
       "rows": null,
       "source": "Constructed: MAD1 compute cells' quarterly summary, 2025 and 2026",
       "date": "2026-12-14",
@@ -240,7 +240,7 @@
     {
       "path": "tech_budgets_2026_Q1-2027_freeze.xlsx",
       "format": "xlsx",
-      "bytes": 9718,
+      "bytes": 9487,
       "rows": null,
       "source": "Constructed: Technology compute budgets by cost centre, 2026 and January to March 2027, with the freeze note",
       "date": "2026-12-14",
