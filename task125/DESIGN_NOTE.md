@@ -33,7 +33,7 @@ solver already holds is no rung), and the pack must read as an organisation's ow
   real, and put to the Government Statistician (forum `line_manager_or_team`) what the visit limit does to the
   published rate through September 2027 if six visits return in January.
 - **Shape 02 (forecast across periods):** the limit's distortion of the published rate in each quarter from July to
-  September 2026 to July to September 2027, for the headline rate and the youth rate, with the real July to
+  September 2026 to July to September 2027, for the unemployment rate and the employment rate, with the real July to
   September change; arithmetic fixed at design.
 - **Strategy and gate:** `composition_mix`, gate G `forecasting`, gap population then time, generators G6 then G13,
   pattern none, layer 2 `estimand_identification` (own:recruitment-selection-riding-a-rotating-panel).
