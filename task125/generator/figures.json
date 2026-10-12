@@ -1,0 +1,91 @@
+{
+ "rise_unemployment_rate_points": "0.27",
+ "cap_share_of_rise_points": "0.22",
+ "labour_market_share_of_rise_points": "0.05",
+ "published_unemployment_rate_2026Q2": "4.99",
+ "published_unemployment_rate_2026Q3": "5.27",
+ "unemployment_rate_2026Q3_without_cap": "5.04",
+ "change_employment_rate_points": "-0.65",
+ "cap_share_of_employment_change_points": "-0.74",
+ "labour_market_share_of_employment_change_points": "0.09",
+ "published_employment_rate_2026Q2": "60.01",
+ "published_employment_rate_2026Q3": "59.36",
+ "employment_rate_2026Q3_without_cap": "60.10",
+ "unemployment_rate_gap_points": {
+  "Jul-Sep 2026": "0.22",
+  "Oct-Dec 2026": "0.37",
+  "Jan-Mar 2027": "0.25",
+  "Apr-Jun 2027": "0.19",
+  "Jul-Sep 2027": "0.07"
+ },
+ "employment_rate_gap_points": {
+  "Jul-Sep 2026": "-0.74",
+  "Oct-Dec 2026": "-1.37",
+  "Jan-Mar 2027": "-1.11",
+  "Apr-Jun 2027": "-0.93",
+  "Jul-Sep 2027": "-0.63"
+ },
+ "employment_rate_below_six_visit_rate_points": {
+  "Jul-Sep 2026": "0.74",
+  "Oct-Dec 2026": "1.37",
+  "Jan-Mar 2027": "1.11",
+  "Apr-Jun 2027": "0.93",
+  "Jul-Sep 2027": "0.63"
+ },
+ "employment_fall_points": "0.65",
+ "template_quarter": "Apr-Jun 2026",
+ "gap_tolerance_points": {
+  "unemployment": "0.05",
+  "employment": "0.15"
+ },
+ "first_interview_visits_2026Q3_intake": {
+  "Velmouth": 3945,
+  "Carrowdene": 2360,
+  "Pellard": 1856,
+  "Haskvale": 1737,
+  "Tirrin": 1469,
+  "Dunmarrow": 1212
+ },
+ "unemployed_to_employed_share_pct": {
+  "Velmouth": "30.77",
+  "Carrowdene": "30.58",
+  "Pellard": "35.45",
+  "Haskvale": "39.22",
+  "Tirrin": "28.72",
+  "Dunmarrow": "27.14"
+ },
+ "unemployed_to_employed_counts": {
+  "Velmouth": [
+   72,
+   234
+  ],
+  "Carrowdene": [
+   37,
+   121
+  ],
+  "Pellard": [
+   39,
+   110
+  ],
+  "Haskvale": [
+   40,
+   102
+  ],
+  "Tirrin": [
+   27,
+   94
+  ],
+  "Dunmarrow": [
+   19,
+   70
+  ]
+ },
+ "total_weekly_hours_thousand": {
+  "Velmouth": "27055.5",
+  "Carrowdene": "16009.7",
+  "Pellard": "12455.6",
+  "Haskvale": "11070.1",
+  "Tirrin": "9858.6",
+  "Dunmarrow": "8103.1"
+ }
+}
