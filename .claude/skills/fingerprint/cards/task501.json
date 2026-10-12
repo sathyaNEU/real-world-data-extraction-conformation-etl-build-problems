@@ -10,8 +10,8 @@
   "shape": "07",
   "decision_type": "dial_setting",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Elect a standby facility of CHF 225 million for 2027",
+  "answer_source": "task501/generator/figures.json (call_amount_chf_m); submission.md block 1",
   "gap": [
     "time",
     "population"
@@ -36,7 +36,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "kapitalabrufe_ausschuettungen_2015-2026.csv",
-    "rows": 0,
+    "rows": 11062,
     "entity": "one line of one capital call or distribution notice received from a fund manager, or one distribution advice loaded from the custodian's feed",
     "grain": "notice x line",
     "source": "synthetic (fictional pension foundation's private-markets ledger)"
@@ -67,7 +67,7 @@
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "A unit's forward draw on what remains of its allotment is set by how much it must still place before a hard deadline, because every unit whose deadline has passed had placed all but a small reserve by it whatever its earlier pace; a draw rate pooled by age over units that kept to schedule gives a group that fell behind and meets its deadline inside the window the same modest share as any unit of its age, and understates the window's total.",
-  "driver_concrete": "Loschwitz III, Juno II, Rosenthal II and Tessin I deployed slowly through 2023-24 and their investment periods end between September and December 2027 with about half their commitments drawn; every fund whose investment period has ended in the programme's record had drawn about 92 per cent of commitment by then, slow starters included, so their 2027 calls are the balance to that share, not the age-band call rate applied to their unfunded commitment.",
+  "driver_concrete": "Loschwitz Equity III, Juneau Infrastructure Partners II, Rosenthal Buyout Partners II and Tessin Private Credit I deployed slowly through 2023-24 and their investment periods end between 20 September and 18 December 2027 with 47.8 to 63.3 per cent of their commitments drawn; every fund whose investment period has ended in the programme's record had drawn 91.8 to 93.8 per cent of commitment by then, slow starters included, so their 2027 calls are the balance to that share (about CHF 164 million), not the age-band call rate applied to their unfunded commitment (CHF 77.2 million).",
   "stump": "A competent solver forecasts 2027 calls fund by fund with age-band call rates on unfunded commitment estimated from the programme's record and elects a facility several tranches short; the step that lands it there is giving four funds that are far behind schedule, with investment periods ending in late 2027, the call rate of funds their age, when every fund whose investment period has ended had drawn about 92 per cent of commitment by then.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who reads every term right (calls by value date with fees and expenses, every commitment in the register, the plan-date rate, distributions not credited) and fits the field's standard pacing model, age-band call rates on unfunded commitment, still elects a facility several tranches short, because the model gives the four funds whose investment periods end in late 2027 the call rate of funds their age instead of the balance they must draw before their deadlines.",
@@ -77,15 +77,15 @@
   "layer1": [
     "call and distribution notices withdrawn by the manager and reissued under a new number",
     "multi-line notices with investment, management fee and partnership expense lines",
-    "December notices due in January, so the notice date and the value date fall in different years",
     "currency codes in mixed case and descriptions with trailing spaces as keyed by clerks",
-    "distribution advices loaded by the custodian's feed from April 2026 as single lines beside the clerks' line-by-line keying of the same notices",
-    "custodian credit dates a few days after the payment date stated on the notice",
+    "distribution advices loaded by the custodian's feed from January 2026 as single lines beside the clerks' line-by-line keying of the same notices, in parallel until September",
+    "custodian credit dates a few days after the payment date stated on the notice, and credits booked the day after their value date",
     "distributions in specie of listed shares",
     "manager statements received months after the period end, some still outstanding",
     "audited capital accounts at fund and year-end grain beside the line-level ledger",
     "look-through holdings by quarter with NACE codes from the managers' reports",
-    "a reference-rate file without holidays",
+    "a reference-rate table in long form for every currency the custodian quotes, some per 100 units, without holidays",
+    "final closes still to come left blank in the register",
     "German and English labels across the systems"
   ],
   "mechanism_source": "design_note",

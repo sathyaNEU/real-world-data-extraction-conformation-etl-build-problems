@@ -1,0 +1,204 @@
+{
+ "task": "task501",
+ "title": "The standby facility a Swiss pension foundation should elect for its private-markets programme's 2027 capital calls, with the fees at the two nearest amounts and the 2026 distributions received by strategy and quarter",
+ "domain": "Quantitative Finance",
+ "subdomain": "liquidity, funding and balance-sheet risk (a private-markets programme's capital-call forecast against a standby facility)",
+ "objective": "Forecasting & Predictive Modeling",
+ "prompt_shape": "07 (a dial setting): the facility amount from the menu, with the fees at it and at the next amount down, and every strategy's 2026 distributions received in each quarter and for the year",
+ "as_of": "2027-01-06",
+ "deliverables": [
+  "facility_election_2027.docx",
+  "distributions_received_2026.xlsx"
+ ],
+ "stated_inputs": [
+  "35",
+  "50",
+  "75",
+  "100",
+  "125",
+  "150",
+  "175",
+  "200",
+  "225",
+  "250",
+  "275",
+  "300",
+  "325",
+  "350",
+  "375",
+  "400",
+  "0.30",
+  "0.15"
+ ],
+ "distractor_files": [
+  "kapitalkonten_revidiert_2021-2025.xlsx",
+  "nav_register_quartal.csv",
+  "look_through_bestaende_2016-2026.csv"
+ ],
+ "input_gates": {
+  "files": 14,
+  "formats": [
+   "csv",
+   "docx",
+   "json",
+   "md",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "fx_referenzkurse_tagesende.csv",
+  "largest_file_rows": 33968
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task501/generator/build.py (seeded, deterministic) around a fictional Swiss pension foundation (Pensionskasse Werdinsel), its private-markets programme, fund managers, funds, portfolio companies and lender (Privatbank Lindenhof AG). No real person, fund, company or record is depicted; exchange-rate paths are synthetic.",
+   "date": "2026-10-12",
+   "license": "CC0-1.0 (original work)"
+  }
+ ],
+ "created": "2026-10-12",
+ "generator": "task501/generator/build.py",
+ "files": [
+  {
+   "path": "extraktprotokoll_PKW-PM-2026-12-31.json",
+   "format": "json",
+   "bytes": 2453,
+   "rows": null,
+   "what": "extract log (manifest) of the year-end extract",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2027-01-05",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "feldbeschrieb_privatmarkt_extrakt.md",
+   "format": "md",
+   "bytes": 4759,
+   "rows": null,
+   "what": "field notes to the year-end extract",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2027-01-05",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "fondsregister_2026-12-31.xlsx",
+   "format": "xlsx",
+   "bytes": 12747,
+   "rows": null,
+   "what": "fund register at 31 December 2026 with contract dates and terms",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2026-12-31",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "fx_referenzkurse_tagesende.csv",
+   "format": "csv",
+   "bytes": 2180440,
+   "rows": 33968,
+   "what": "custodian end-of-day reference rates against the Swiss franc",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2026-12-31",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "halbjahresbericht_privatmarkt_2025-H1.pdf",
+   "format": "pdf",
+   "bytes": 3066,
+   "rows": null,
+   "what": "semi-annual programme report, first half of 2025",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2025-09-25",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "kapitalabrufe_ausschuettungen_2015-2026.csv",
+   "format": "csv",
+   "bytes": 1820800,
+   "rows": 11062,
+   "what": "notice ledger, one row per line of each capital call and distribution notice (2015 to 2026)",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2027-01-05",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "kapitalkonten_revidiert_2021-2025.xlsx",
+   "format": "xlsx",
+   "bytes": 20919,
+   "rows": 189,
+   "what": "capital accounts from the funds' audited financial statements, FY2021 to FY2025",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2026-06-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "look_through_bestaende_2016-2026.csv",
+   "format": "csv",
+   "bytes": 3690565,
+   "rows": 27507,
+   "what": "look-through holdings from the managers' quarterly schedules of investments",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2027-01-05",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "mail_standby_fazilitaet_2027.txt",
+   "format": "txt",
+   "bytes": 2104,
+   "rows": null,
+   "what": "mail export: the year-end extract and the facility election",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2027-01-06",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "nav_register_quartal.csv",
+   "format": "csv",
+   "bytes": 130975,
+   "rows": 1009,
+   "what": "NAV register of manager statements received",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "programmkonto_lindenhof_2025-2026.csv",
+   "format": "csv",
+   "bytes": 179524,
+   "rows": 1260,
+   "what": "custodian statement of the programme account, 2025 and 2026",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "richtlinie_liquiditaet_privatmarkt_RL-PM-05.docx",
+   "format": "docx",
+   "bytes": 38092,
+   "rows": null,
+   "what": "liquidity directive for the private-markets programme, version 5 (working translation)",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2026-09-24",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "stiftungsrat_protokoll_auszug_2026-09-24.pdf",
+   "format": "pdf",
+   "bytes": 2924,
+   "rows": null,
+   "what": "extract from the minutes of the board of trustees, 24 September 2026",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2026-09-24",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "term_sheet_lindenhof_standby_2027.pdf",
+   "format": "pdf",
+   "bytes": 3192,
+   "rows": null,
+   "what": "lender's indicative term sheet for the 2027 standby facility",
+   "source": "Constructed for this task (fictional organisation; no third-party data)",
+   "date": "2026-12-09",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  }
+ ]
+}

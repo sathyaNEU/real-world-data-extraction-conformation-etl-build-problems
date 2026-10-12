@@ -4,10 +4,10 @@
   "status": "BUILD",
   "domain": "quantitative-finance",
   "objective": "forecasting",
-  "stage": 3,
-  "stage_name": "build",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-12",
-  "stump": "A competent solver forecasts 2027 calls fund by fund with the programme's age-band call rates on unfunded commitment, files about CHF 246 million of expected calls and elects CHF 125 million; the step that lands it there is giving Loschwitz III, Juno II, Rosenthal II and Tessin I, which deployed slowly through 2023-24 and whose investment periods end between September and December 2027 with about half their commitments drawn, the call rate of funds their age, when every fund whose investment period has ended in the record had drawn about 92 per cent of its commitment by then, so those four call about CHF 150 million in 2027 rather than about CHF 75 million and the facility is CHF 225 million.",
+  "stump": "A competent solver forecasts 2027 calls fund by fund with the programme's age-band call rates on unfunded commitment, files CHF 235.6 million of expected calls and elects CHF 125 million; the step that lands it there is giving Loschwitz Equity III, Juneau Infrastructure Partners II, Rosenthal Buyout Partners II and Tessin Private Credit I, which deployed slowly through 2023-24 and whose investment periods end between September and December 2027 with 47.8 to 63.3 per cent of their commitments drawn, the call rate of funds their age, when every fund whose investment period has ended in the record had drawn 91.8 to 93.8 per cent of its commitment by then, so those four call about CHF 165 million in 2027 rather than CHF 77 million and the facility is CHF 225 million.",
   "architecture": 3,
   "loops": 0,
   "precut": {
@@ -15,12 +15,12 @@
     "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-12, no LEAK; every REVIEW line answered in the design note's Build record",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN 2026-10-12 (overuse.shape, repeat.gate_g against task181; answered)",
+    "nearest": "task132 card stump 0.07; surface 0 pairs promoted"
   },
   "judge": {
     "verdict": "",
@@ -35,7 +35,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 3: build the pack, generator, goldens and submission from DESIGN_NOTE.md (the deadline-drawdown redesign); the prototype is in the build session's scratch, the design note carries its figures",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": [

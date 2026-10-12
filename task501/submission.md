@@ -1,84 +1,43 @@
-# task501 submission
-
 ## Tags
 
-**Domain:** Quantitative Finance, liquidity, funding and balance-sheet risk (capital-call cash-flow forecasting and facility sizing for a pension fund's private-markets programme).
-**Analytical objective:** Forecasting & Predictive Modeling (candidate pacing bases selected by a walk-forward test, a twelve-month plan and a buffer from the test's within-horizon shortfalls).
-**Reasoning phases:** Explore/Discover, Hypothesize, Analyze/Validate, Synthesize, Recommend/Communicate.
+**Domain:** Quantitative Finance (liquidity, funding and balance-sheet risk: a pension foundation's standby facility for the capital calls of its private-markets programme).
+**Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Elect the CHF 225 million standby tranche for 2027.**
-
-The plan on the age-band basis peaks at a cumulative net outflow of CHF 190,630 thousand in December 2027; the test's buffer, the most realised calls ran ahead of that basis's forecast at any point in a horizon, is CHF 96,560 thousand, and with the CHF 75 million reserve netted the need is CHF 212,190 thousand, which CHF 225 million is the smallest tranche to cover. Not CHF 200 million: it leaves CHF 12,190 thousand uncovered in December, and it is where the plan lands when the buffer is read only at the end of each horizon (CHF 61,852 thousand), which misses the first-half run of calls the facility would actually face, and also where the manager's-own basis lands when every candidate is fitted once on the whole record and scored on years inside that fit. Not CHF 175 million on the manager's-own basis with no test and no buffer, the CIO's reading.
+**Elect a standby facility of CHF 225 million for 2027.**
+Expected capital calls of CHF 326.6 million in 2027, plus one tenth and less the CHF 150 million reserve, leave CHF 209.2 million for the facility to cover, CHF 9.2 million more than CHF 200 million. Not CHF 125 million, where the programme's age-band call rates on unfunded commitment land (CHF 235.6 million of calls): they give Loschwitz Equity III, Juneau Infrastructure Partners II, Rosenthal Buyout Partners II and Tessin Private Credit I the pace of funds their age, CHF 77.2 million, when those four must draw to 92.6 per cent of commitment before their investment periods close between September and December 2027 and call CHF 165.5 million. Not CHF 200 million, which the programme's 2026 calls of CHF 305.0 million carried forward would give: it leaves CHF 9.2 million of the requirement uncovered.
 
 ## 2. Critical Components
 
-1. Walk-forward test errors, each candidate estimated at each of the twelve quarter-end origins on the record to that origin only: age band **11.6 per cent**, strategy and band 14.4 per cent, manager's own 29.9 per cent, so the age-band basis is selected
-2. The most realised cumulative calls ran ahead of the age-band forecast at any month-end of a test horizon is CHF **96,560** thousand, the plan buffer (read at the end of the horizons alone it would be 61,852)
-3. Peak cumulative net outflow of the 2027 plan is CHF **190,630** thousand, in December
-4. Peak plus buffer less the CHF 75 million reserve is CHF **212,190** thousand, inside the CHF 200 to 225 million tranche
+1. Loschwitz Equity III, Juneau Infrastructure Partners II, Rosenthal Buyout Partners II and Tessin Private Credit I end their investment periods on 20 September, 22 October, 24 November and 18 December 2027 with **57.6, 60.2, 63.3 and 47.8 per cent** of commitment drawn at 31 December 2026 and **CHF 196.8 million** undrawn at the plan-date rates
+2. The **27** funds whose investment periods ended by 31 December 2026 had drawn **91.8 to 93.8 per cent** of commitment by the end of them, **92.6 per cent** on average
+3. Expected 2027 calls are **CHF 326.6 million**, **CHF 165.5 million** of them from the four funds, and the requirement is **CHF 209.2 million**, above CHF 200 million and within CHF 225 million
 
 ## 3. Step-by-Step Solution
 
-1. Built the monthly call and distribution history per fund from the issued lines of the notice ledger by notice month, cancelled notices out (field notes), and each fund's unfunded commitment at any date as commitment less calls plus return-of-capital proceeds under the register's recycling clause (directive s.6.1), which agrees to all 180 audited capital accounts.
-2. Estimated the three candidate bases of directive s.5.2 at each of the twelve quarter-end origins from the record up to that origin only, and forecast month by month the next twelve months of calls of the funds then on the register from their unfunded commitments at the origin, all at the origin's rate (s.5.3).
-3. Scored each candidate against the realised calls of the same funds over the same twelve months: age band 11.6 per cent mean error, strategy and band 14.4 per cent, manager's own 29.9 per cent; the age-band basis is selected, and fitting the candidates once on the whole record instead reverses the order and crowns the manager's-own basis.
-4. Took the buffer as the largest amount by which realised cumulative calls exceeded the age-band forecast's cumulative calls at any month-end of any horizon, CHF 96,560 thousand (s.5.6); the first half of each year runs far ahead of an even spread, so the end-of-horizon gap of 61,852 understates it.
-5. Scheduled October 2026 to December 2027 fund by fund on the age-band rates estimated to the plan date, capped at unfunded commitment, with distributions at the pooled strategy-and-band rates on the audited 31 December 2025 values credited at one quarter, everything at the 30 September 2026 rate (s.5.1, s.5.4, s.4).
-6. Summed the facility year: cumulative net outflow CHF 190,630 thousand by December 2027, plus the buffer, less the reserve, CHF 212,190 thousand; the buffered need passes CHF 200 million plus reserve in December.
-7. Recommendation: elect the CHF 225 million tranche (commitment and arrangement fees CHF 1,012,500 for the year against CHF 900,000 at CHF 200 million).
+1. Took the issued capital-call lines of kapitalabrufe_ausschuettungen_2015-2026.csv (investments, management fees and partnership expenses; cancelled notices out) by value date for the 51 commitments in fondsregister_2026-12-31.xlsx, in francs at the 31 December 2026 reference rates of fx_referenzkurse_tagesende.csv (USD 0.7906, EUR 0.9339), per RL-PM-05 sections 2 and 4.
+2. For the 27 funds whose investment_period_end is on or before 31 December 2026, divided the calls value-dated by that day by commitment: 91.8 to 93.8 per cent, 92.6 on average, including Corvisart Equity VI, Brantwood Partners II, Ulmenhof Capital II, Quendel Partners III and Isenring Private Capital II, which were 49.6 to 70.0 per cent drawn a year before.
+3. Estimated the programme's monthly call rate on unfunded commitment in 12-month bands of age from each fund's first call, summed calls over summed unfunded commitment across the record; run from the ends of 2024 and 2025 it forecasts the next year's calls within 1.6 and 3.0 per cent.
+4. Found the ten funds whose investment periods end in 2027: the four are 47.8 to 63.3 per cent drawn with CHF 196.8 million undrawn, the other six 84.3 to 92.2 per cent.
+5. Forecast 2027 month by month: each of the ten calls the balance to 92.6 per cent of commitment by its period end and the band rate on what remains after it, every other fund its band rate on its unfunded commitment, capped at what is undrawn: CHF 326.6 million, CHF 165.5 million from the four (the band rates alone give them CHF 77.2 million and the year CHF 235.6 million).
+6. Applied RL-PM-05 section 4: CHF 326.6 million plus one tenth, CHF 359.2 million, less the CHF 150 million reserve is CHF 209.2 million, and the smallest amount on the term sheet's menu that covers it is CHF 225 million.
+7. Took the term sheet's 0.30 per cent commitment fee and 0.15 per cent arrangement fee on the amount: CHF 1,012,500 at CHF 225 million and CHF 900,000 at CHF 200 million.
+8. Matched each 2026 credit "Gutschrift Ausschuettung" on programmkonto_lindenhof_2025-2026.csv to its notice in the ledger (Transaktionsreferenz for the custodian's advice, the notice number in Referenz for a keyed notice), counted each credit once and valued the notice's cash amount at the reference rate of the credit's value date, by the fund's strategy and the quarter of the credit: Buyout returned the most, CHF 95,970 thousand.
 
 ## 4. Deliverable Answers
 
-### standby_facility_2027_board_paper.docx
-1. CHF 225 million
-2. Tranche below: CHF 200 million; uncovered in the peak month (December 2027): CHF 12,190 thousand; commitment and arrangement fees for the year CHF 1,012,500 at CHF 225 million and CHF 900,000 at CHF 200 million
-3. Walk-forward test, CHF thousand, per origin: realised calls of the funds then on the register over the following twelve months, then the age-band, strategy-and-band and manager's-own forecasts:
-   - December 2022: 230,898, 192,164, 201,462, 192,130
-   - March 2023: 211,832, 201,106, 205,861, 286,419
-   - June 2023: 180,585, 219,338, 224,773, 325,226
-   - September 2023: 240,278, 277,279, 281,347, 316,683
-   - December 2023: 271,377, 284,645, 287,575, 313,977
-   - March 2024: 286,685, 297,618, 297,493, 386,890
-   - June 2024: 290,197, 277,931, 264,730, 398,606
-   - September 2024: 309,760, 273,218, 252,812, 344,824
-   - December 2024: 304,455, 242,603, 217,408, 190,756
-   - March 2025: 330,081, 284,647, 270,183, 388,965
-   - June 2025: 323,305, 298,209, 281,700, 440,607
-   - September 2025: 359,072, 309,737, 291,392, 345,451
-4. Test errors: age band 11.6%, strategy and band 14.4%, manager's own 29.9%; the plan runs on the age-band basis; its buffer CHF 96,560 thousand (the furthest realised calls ran ahead of each basis at any point in a horizon: age band 96,560, strategy and band 110,009, manager's own 127,139)
-5. 2027 plan, CHF thousand, per month: expected calls, expected distributions, credited distributions, net outflow, cumulative outflow:
-   - January: 27,753, 35,677, 8,919, 18,834, 18,834
-   - February: 26,262, 36,052, 9,013, 17,249, 36,083
-   - March: 26,457, 36,485, 9,121, 17,336, 53,419
-   - April: 25,226, 36,476, 9,119, 16,107, 69,527
-   - May: 25,315, 36,846, 9,212, 16,103, 85,630
-   - June: 25,315, 37,733, 9,433, 15,882, 101,512
-   - July: 25,452, 37,834, 9,459, 15,993, 117,505
-   - August: 24,925, 38,086, 9,521, 15,403, 132,908
-   - September: 24,925, 38,086, 9,521, 15,403, 148,312
-   - October: 23,659, 38,230, 9,558, 14,101, 162,413
-   - November: 24,147, 38,173, 9,543, 14,604, 177,017
-   - December: 23,215, 38,405, 9,601, 13,614, 190,630
-6. The buffered plan runs past the lower tranche; first month: December 2027
-7. Chart on page 1: cumulative net outflow of 2027 as a line, the same line plus the buffer, the CHF 225 million tranche plus reserve drawn at 300 and the CHF 200 million tranche plus reserve at 275 (CHF million), the December crossing marked, title stating the CHF 225 million call
-8. NAV bridge 31 December 2025 to 30 June 2026, CHF thousand, per strategy: opening, called, distributed, valuation and currency, closing:
-   - Buyout: 429,109, 65,271, 53,773, 24,089, 464,696
-   - Growth: 157,870, 38,243, 8,148, 18,165, 206,130
-   - Private credit: 332,986, 112,969, 96,511, 3,466, 352,910
-   - Infrastructure: 379,743, 49,354, 33,947, 22,373, 417,524
-   - Programme: 1,299,708, 265,837, 192,379, 68,093, 1,441,260
-9. Cash paid and received January to September 2026, CHF thousand, per month: calls, distributions, net:
-   - January: 39,076, 20,496, 18,580
-   - February: 55,090, 24,804, 30,286
-   - March: 52,627, 42,077, 10,550
-   - April: 46,327, 32,047, 14,280
-   - May: 31,718, 31,142, 576
-   - June: 41,001, 41,814, -813
-   - July: 16,228, 41,561, -25,333
-   - August: 20,521, 55,631, -35,110
-   - September: 15,666, 49,862, -34,196
+### facility_election_2027.docx
 
-### standby_facility_2027.py
-1. Runs from the extract folder, prints the tranche, the tranche below with its uncovered amount and the fees, the walk-forward table with the three test errors and each basis's furthest-ahead amount, the selected basis and buffer, the twelve-month plan, the NAV bridge and the 2026 cash table above, and writes the chart; its basis check prints 180 of 180 audited capital accounts agreed
+1. Facility amount for 2027: CHF 225 million
+2. Fees for 2027 at CHF 225 million: CHF 1,012,500 (commitment fee CHF 675,000, arrangement fee CHF 337,500)
+3. Fees for 2027 at CHF 200 million: CHF 900,000 (commitment fee CHF 600,000, arrangement fee CHF 300,000)
+4. Chart of the cash received from distributions in 2026: one stacked bar per quarter with a segment per strategy, the bars labelled CHF 104,639, 59,250, 69,198 and 73,721 thousand, the title naming Buyout as the strategy that returned the most
+
+### distributions_received_2026.xlsx
+
+1. Distributions received in 2026 by strategy, CHF thousand (Q1, Q2, Q3, Q4, year):
+   - Buyout: 33,264, 19,030, 19,695, 23,981, 95,970
+   - Growth: 15,950, 8,017, 10,193, 15,788, 49,948
+   - Private credit: 19,184, 22,454, 19,764, 19,240, 80,642
+   - Infrastructure: 36,241, 9,749, 19,546, 14,712, 80,248

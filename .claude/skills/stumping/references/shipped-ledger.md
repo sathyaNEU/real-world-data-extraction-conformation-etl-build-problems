@@ -192,7 +192,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 446 (v2) | FAILED_TO_STUMP: backlog oviya1301 | BANK watch list | ETL | time population | none | carry error rates, not yield | - | - | 133 groups | none reported | oviya1301 |
 | 447 | SHIPPED, delivered 10-12, pending review | HDE vertical integration | ETL | objective population | C | referral capture follows the patient's tier for the acquirer in the projection year | - | - | proceed at $2.2M | ask layer rebuilt 10-12 (two standing exhibits, pair ceiling 27.5); judge APPROVE | oviya1301 |
 | 500 (v3) | SHIPPED, delivered, pending review | ECON lodging tax | RCA | rule population | B | each change measured by the office's matched-reference method | - | - | long-stay exemption, $3,235k | v1, v2 solved 10-10, 10-11 | sathya8571 |
-| 501 (v3) | drawing 10-12: redesigned at stage 2 after the v2 portal landing | QF pension liquidity | FC | time population | G6 | funds behind schedule draw their balance before their investment-period deadlines | - | register | facility amount | v2 10-11: landed by 2 of 2 (filed walk-forward executed) | sathya8571 |
+| 501 (v3) | built 10-12: stage 3 green (CHF 225 million against the default's CHF 125 million), waiting on the reader and judge | QF pension liquidity | FC | time population | G6 | funds behind schedule draw their balance before their investment-period deadlines | - | register | facility amount | v2 10-11: landed by 2 of 2 (filed walk-forward executed) | sathya8571 |
 
 ## Earlier architectures
 
