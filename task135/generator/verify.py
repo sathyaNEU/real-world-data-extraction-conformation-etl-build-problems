@@ -79,6 +79,15 @@ def read(t):
     return X
 
 
+def index_dates(t):
+    """the benchmark index file's dates for each index, read under the header block above its column row"""
+    path = os.path.join(t, "benchmark_index_levels_2024-11_2026-11.csv")
+    with open(path, encoding="utf-8") as f:
+        k = next(i for i, line in enumerate(f) if line.startswith("date,"))
+    df = pd.read_csv(path, dtype=str, keep_default_na=False, skiprows=k)
+    return {nm: set(s["date"]) for nm, s in df.groupby("index_name")}
+
+
 def returns(X):
     v = X["val"]
     mand = v[v["asset_class"].isin(["Equity - UK", "Cash", "Rights"])]
@@ -195,6 +204,27 @@ def main():
         check(call(v) == 60 == F["call"], "%s calls %s" % (n, call(v)))
         for s in (60, 70):
             check(abs(v[s] - F["ladder"]["G " + n][str(s)]) < 1e-3, "%s at %d: %.4f (figures.json %.4f)" % (n, s, v[s], F["ladder"]["G " + n][str(s)]))
+    # an inner join of every price file on date (the mandate's valuation dates, Kestwick's sheets, the index file), each
+    # return carried across any date the join drops, then the default path
+    every = sorted(set(X["val"]["valuation_date"]))
+    joined = set(every)
+    for h in HOLD[1:]:
+        joined &= set(X["kw"][h].index)
+    ixd = index_dates(a.target)
+    for s_ in ixd.values():
+        joined &= s_
+    rows, carry = [], np.ones(R.shape[1])
+    for x, d in zip(R, dates):
+        carry = carry * (1 + x)
+        if d.isoformat() in joined:
+            rows.append(carry - 1)
+            carry = np.ones(R.shape[1])
+    Rj = np.array(rows)
+    rj = {s: vol_daily(Rj, s) for s in STEPS}
+    check(len(ixd) == 6 and len(joined) == len(every) == 506 and len(Rj) == 505 and call(rj) == 70 == F["index_join"]["default"]
+          and abs(rj[70] - F["index_join"]["r0_70"]) < 0.005,
+          "inner join with the index file: %d of %d dates kept, %d returns, the default calls %s (%.2f at 70)"
+          % (len(joined), len(every), len(Rj), call(rj), rj[70]))
     A = asks(X)
     check(abs(A["total"] - F["portfolio_value"]) < 0.01, "portfolio value %.2f" % A["total"])
     check(abs(A["running"] - F["running_costs"]) < 0.01, "running costs %.0f" % A["running"])

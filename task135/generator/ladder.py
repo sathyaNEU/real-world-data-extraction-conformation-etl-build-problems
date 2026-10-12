@@ -5,34 +5,44 @@ import estimators as E
 import callcalc as CC
 import world as W
 
-SLIPS = ["flows left in", "distributions left out", "post-holiday days dropped", "permanent endowment only",
-         "expendable endowment only", "mandate cash left out", "accrued income left out", "demerger uncarried",
-         "accumulation units", "250 days a year", "260 days a year"]
+SLIPS = ["flows left in", "distributions left out", "post-holiday days dropped", "common trading days kept",
+         "permanent endowment only", "expendable endowment only", "mandate cash left out", "accrued income left out",
+         "demerger uncarried", "accumulation units", "250 days a year", "260 days a year"]
+# the deliberate stale-day filter, in its two forms: a lower rung that investment policy 4.3 refuses (the periods it
+# leaves are not of equal length), accepted at stage 3 with its figures recorded rather than held off 60
+ACCEPTED = ("post-holiday days dropped", "common trading days kept")
 
 
 def pack_matrix(F, **kw):
     return CC.matrix(F["val"], F["moves"], F["events"], F["kest"], **kw)
 
 
+def merged(X, d, drop):
+    """the dates in `drop` taken out of the price series, so the next kept date's return runs across them"""
+    rows, dates, carry = [], [], np.ones(X.shape[1])
+    for k in range(len(d)):
+        carry = carry * (1 + X[k])
+        if k in drop and k + 1 < len(d):
+            continue
+        rows.append(carry - 1)
+        dates.append(d[k])
+        carry = np.ones(X.shape[1])
+    return np.array(rows), dates
+
+
 def slip_matrix(F, slip):
-    base = {}
     if slip == "flows left in":
         return pack_matrix(F, flows_in=True)
     if slip == "distributions left out":
         return pack_matrix(F, dist_out=True)
     if slip == "post-holiday days dropped":
-        # the post-holiday dates taken out of the price series, so the next return runs across them
+        # the days the North American or Japan fund carries no new close of its market
         X, d = pack_matrix(F)
-        drop = set(CC.post_holiday_rows(F["cal"], d))
-        rows, dates, carry = [], [], np.ones(X.shape[1])
-        for k in range(len(d)):
-            carry = carry * (1 + X[k])
-            if k in drop and k + 1 < len(d):
-                continue
-            rows.append(carry - 1)
-            dates.append(d[k])
-            carry = np.ones(X.shape[1])
-        return np.array(rows), dates
+        return merged(X, d, set(CC.post_holiday_rows(F["cal"], d)))
+    if slip == "common trading days kept":
+        # only the calendars' days on which London, New York and Tokyo are all open
+        X, d = pack_matrix(F)
+        return merged(X, d, set(CC.non_common_rows(F["cal"], d)))
     if slip == "permanent endowment only":
         return pack_matrix(F, sub="WRX-PE01")
     if slip == "expendable endowment only":
@@ -71,9 +81,12 @@ def slip_grid(F):
 
 def slip_ok(g):
     """no slip lands the default on 60; no slip moves the golden family off 60 unless it is gross (50 or below on every
-    member, with a one-day return of ten per cent or more that a solver sees)"""
+    member, with a one-day return of ten per cent or more that a solver sees); the accepted stale-day filter is recorded
+    instead (checks.py asserts its refusal by policy 4.3)"""
     bad = []
     for s, r in g.items():
+        if s in ACCEPTED:
+            continue
         if r["default"] == 60:
             bad.append((s, "default on 60"))
         if r["golden"] != [60]:

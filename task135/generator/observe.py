@@ -230,12 +230,29 @@ INDEX_NAMES = {"UK": ("FTSE All-Share", 4371.62), "US": ("S&P 500", 6032.38), "E
 
 
 def index_levels(M):
+    """the custodian's benchmark levels at each valuation date (UK business days): each index's close on the date, or,
+    on a date its market is closed, its last close before it"""
     rows = []
+    uk = W.bdays(W.WIN_START, W.VAL_DATE, "UK")
     for k, (nm, lvl0) in INDEX_NAMES.items():
         days, v = M["index"][k]
         sel = [(d, x) for d, x in zip(days, v) if W.WIN_START <= d <= W.VAL_DATE]
         base = sel[0][1]
-        for d, x in sel:
-            rows.append((d.isoformat(), nm, round(lvl0 * np.exp(x - base), 2)))
+        j = 0
+        for d in uk:
+            while j + 1 < len(days) and days[j + 1] <= d:
+                j += 1
+            rows.append((d.isoformat(), nm, round(lvl0 * np.exp(v[j] - base), 2)))
     df = pd.DataFrame(rows, columns=["date", "index_name", "close"])
     return df.sort_values(["date", "index_name"], kind="stable").reset_index(drop=True)
+
+
+# the header block the custodian's performance service writes above its benchmark levels
+INDEX_HEAD = [
+    "Brackenfold Custody: performance measurement",
+    "Benchmark index levels for The Wrexford Trust (client number 40719)",
+    "Closing levels at each valuation date (London business days). Where an index is not calculated on a valuation "
+    "date the last available level is shown.",
+    "Run: 2 December 2026 09:10 (report job PMR-3318)",
+    "",
+]

@@ -76,8 +76,9 @@ def matrix(val, moves, events, kest, **kw):
     return X, [dt.date.fromisoformat(d) for d in dates]
 
 
-def post_holiday_rows(cal, dates):
-    """UK business days whose North American or Japan fund price carries no new close of its market"""
+def post_holiday_rows(cal, dates, markets=("New York", "Tokyo")):
+    """UK business days whose North American or Japan fund price carries no new close of its market (`markets` names
+    which of the two to look at)"""
     bd = {}
     for m, sub in cal.groupby("market"):
         bd[m] = set(sub.loc[sub["is_business_day"] == "Y", "date"])
@@ -88,10 +89,16 @@ def post_holiday_rows(cal, dates):
         us_new = any(x.isoformat() in bd["New York"] for x in span)
         span_jp = [prev + dt.timedelta(days=j) for j in range(1, (d - prev).days + 1)]  # prev+1 .. d (Tokyo)
         jp_new = any(x.isoformat() in bd["Tokyo"] for x in span_jp)
-        if not us_new or not jp_new:
+        if ("New York" in markets and not us_new) or ("Tokyo" in markets and not jp_new):
             out.append(k)
         prev = d
     return out
+
+
+def non_common_rows(cal, dates):
+    """UK business days on which New York or Tokyo is closed (keeping only the calendars' days common to the three)"""
+    bd = {m: set(sub.loc[sub["is_business_day"] == "Y", "date"]) for m, sub in cal.groupby("market")}
+    return [k for k, d in enumerate(dates) if d.isoformat() not in bd["New York"] or d.isoformat() not in bd["Tokyo"]]
 
 
 def index_matrix(index, dates):

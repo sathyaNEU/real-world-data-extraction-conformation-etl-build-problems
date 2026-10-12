@@ -213,7 +213,12 @@ The volatility at 60, 70 and 80 per cent growth and the call. "Long run" is 300 
 **The grid and the Layer 1 slips.** Priced by the builder on the build; none is a rung. Each is computed under the default and under every golden-family member (default call; golden-family calls):
 - the mandate's flows left in: 40; 40 (one-day returns of up to 41 per cent; gross);
 - the distributions left out: 70; 60;
-- the North American and Japan funds' post-holiday days dropped instead of kept: 60; 50 and 60 at 252 periods a year, and 70; 50 and 60 at the merged series' own 229.5 a year (the one target the build does not meet: `## Build record`, As built);
+- the holdings' prices inner-joined with the benchmark index file: no date dropped, so 70 (9.41 at 70); 60. The file carries the custodian's valuation dates, with each index's last close shown on a date it is not calculated (asserted in `checks.py` and `verify.py`);
+- the stale-day filter, accepted as a lower rung that policy 4.3 refuses and recorded rather than held off 60 (`## Build record`, As built). Every holding prices on every UK business day, so these are filters a solver chooses from the calendars, not gaps a join leaves:
+  - the 46 days on which the North American or Japan fund carries no new close of its market, merged into the next day (420 one-day, 34 two-day, 3 three-day and 2 four-day periods): 60 (10.31 at 70); 50 and 60 at 252 periods a year, and 70 (9.84); 50 and 60 at the merged series' own 229.5 a year;
+  - only the calendars' days on which London, New York and Tokyo are all open kept (46 days: Tokyo's 33 as above, and the 13 US holidays themselves in place of the days after them): 60 (10.27); 50 and 60 at 252, and 70 (9.80); 50 and 60 at 229.5;
+  - either set of days deleted instead of merged, leaving 459 one-day periods that no longer divide the two years: 70 (9.53 and 9.47); 60 and 70;
+  - by market, merged at 252: Tokyo's 33 days alone 60 (10.02), New York's 13 alone 70 (9.69);
 - one endowment's sub-account only, either: 70; 60;
 - the mandate's cash left out: 40; 30 and 40 (purchase and sale days become one-day outliers of up to 43 per cent; gross);
 - the accrued income left out: 70; 60;
@@ -222,7 +227,7 @@ The volatility at 60, 70 and 80 per cent growth and the call. "Long run" is 300 
 - the accumulation units instead of the income units: 70; 60;
 - 250 or 260 periods a year: 70; 60.
 
-None may land the default on 60. None may move the golden off 60, except the gross slips, which land at 50 or below with outliers a solver sees. The post-holiday slip breaks both at 252 periods a year; policy 4.3 refuses it (its periods are of unequal length).
+None may land the default on 60, and none may move the golden off 60. Two exceptions are allowed. The gross slips land at 50 or below, with outliers a solver sees. The stale-day filter lands the default on 60 at 252 periods a year and splits the golden family. Policy 4.3 refuses it in every form: merged, its periods are not of equal length; deleted, its periods no longer divide the two years. No world holds it off 60 (`## Tried and rejected`).
 
 ## Closure table
 
@@ -283,7 +288,7 @@ Two things are devices the records expose, never readings the prompt allows: the
 - **What ships no figure.** No shipped file states a portfolio volatility at any mix, a covariance or correlation of the holdings, a twelve-month return series, an income figure or yield for the mandate, or a 2027 grant payments total. Nothing ranks or scores the steps.
 - **Kestwick's factsheets** (distractor). They carry each fund's own three-year volatility from monthly returns. These are single-fund figures that daily, weekly and monthly returns all reproduce within noise (L7). They rank nothing on the decision.
 - **Fernside's quarterly report** (distractor). It carries the mandate's performance and its own volatility against the FTSE All-Share. It is one holding, and it shows no income and no yield.
-- **The benchmark index levels** (declared wrong-basis distractor). They file 70 (R2). Policy 4.2 refuses them, and they are themselves struck at different closes.
+- **The benchmark index levels** (declared wrong-basis distractor). They file 70 (R2). Policy 4.2 refuses them, and they are themselves struck at different closes. The custodian's report carries them on its valuation dates (London business days). Where an index is not calculated on one of those dates, its last available level is shown, so joining the indices to the holdings drops no date.
 - **The 2026 setting** (80 per cent, policy annex). It was last year's decision on a window the pack does not carry, and nothing reproduces it.
 - **The operations documents.** Kestwick's key facts and Brackenfold's valuation methodology state the valuation points and the pricing sources, as every fund and custody document does, and draw no consequence for co-movement. `checks.py` sweeps every document for lag, stale, synchron, autocorrel, Dimson, Scholes, Newey, weekly, square root, annualis, time zone and fair value.
 - **The asks' one referee: the finance system's grant payment ledger.** It holds the dates and amounts of past payments and no 2027 figure. The spine's lot quantities corroborate the entitlement report's grain and carry no income.
@@ -454,7 +459,7 @@ Mirror leakage: 4.4 per cent of the ask weight (at most the one structural chart
 | `wrexford_grants_register_2026-11-30.csv` | the grant header (Ask B) | grant_ref, grantee, programme, grant_type, award_date, currency, award_amount, status, status_date |
 | `wrexford_grant_instalments_2026-11-30.csv` | the schedule (Ask B) | grant_ref, instalment_no, due_date, amount, status |
 | `wrexford_grant_payments_2023-01_2026-11.csv` | the finance system's ledger (Ask B, the referee) | payment_ref, payment_date, grant_ref, instalment_no, currency, amount, amount_gbp |
-| `benchmark_index_levels_2024-11_2026-11.csv` | distractor, declared wrong basis | date, index, close |
+| `benchmark_index_levels_2024-11_2026-11.csv` | distractor, declared wrong basis: Brackenfold's performance-measurement report | a header block (closing levels at each valuation date, London business days, with the last available level where an index is not calculated), then date, index_name, close |
 | `kestwick_factsheets_2026-10.pdf` and `fernside_quarterly_report_2026-q3.pdf` | distractors | single-fund three-year volatility from monthly returns, top holdings; the mandate's performance and own risk statistics, no income or yield |
 
 **The documents' load-bearing sentences** (verbatim in the documents; `checks.py` asserts each SF row's quoted text is present).
@@ -495,7 +500,9 @@ Kestwick key facts, each fund: "Dealing: daily at 12 noon UK time, the fund's va
   - R1, R2 and R3 calling a step other than 60 with margins;
   - R4 refused (24 periods);
   - every target in `## Ladder`, including the forcing statistics and the single-holding agreement.
-- The Layer 1 grid: every slip on the default and on every golden-family member, with none landing the default on 60, and none moving the golden off 60 except the gross slips (at 40 or below, with outliers). The post-holiday slip is the exception the build records (As built): asserted instead are its refusal by policy 4.3 (periods of unequal length) and the default's 70 at the merged series' own count of periods a year.
+- The Layer 1 grid: every slip on the default and on every golden-family member, with none landing the default on 60, and none moving the golden off 60 except the gross slips (at 40 or below, with outliers).
+  - The stale-day filter is the accepted exception (As built), in both forms: the post-holiday days merged, and only the calendars' common days kept. Asserted instead: its refusal by policy 4.3 (merged, periods of unequal length; deleted, periods that no longer divide the two years) and the default's 70 at the merged series' own count of periods a year.
+  - An inner join of the holdings' prices with the benchmark index file keeps all 506 dates and gives the default's 70, asserted again in `verify.py`.
 - The clean-data test, the lens-swap test and the separation count (zero device and hazard cells in the call's population; scrambling the ask-only files leaves the call's figures unchanged at full precision).
 - The asks:
   - every stop in the ask sheet, its value and its distance from the golden bin;
@@ -548,9 +555,9 @@ The builder, stopped mid-stage 3, left a generator whose world (seed 2109) misse
 **The pack.** 18 files in five formats (csv, docx, pdf, txt, xlsx); the spine `brackenfold_valuation_lots_2024-11_2026-11.csv` at 42,894 rows; three distractors in `metadata.json` (the benchmark index levels, the declared wrong basis; Kestwick's factsheets; Fernside's quarterly report).
 
 **Free gates, on the final build.**
-- `checks.py`: 268 assertions, 0 failed (every SF row with its quoted sentence present once, the ladder, the golden family's 26 members and the ten partials, the grid, the clean-data, lens-swap, separation and distractor-deletion tests, the asks' bins, title, corridor, the 146 composed mishandlings, the cracker sheet and necessity matrix, the cited clauses, the documents' vocabulary and the realism sweep).
-- `verify.py` (reads only `target/`, imports nothing from the generator): the 505 returns per holding, the default's 70 and R0 at every step, the one-day lead-lag, Newey-West, Friday-week and five-day members' 60 with their values at 60 and 70, the portfolio's value, the running costs, the grant payments with the payment ledger's median lag, the nine incomes, the nine releases and the chart's title step: 0 failed.
-- Two consecutive builds byte-identical, file by file and `target.zip` (sha256 bfa4abcdeb68ee7f20e5fe52c7fd2c115cf9acd6320cd5debc889b9c2ca93329); `golden.py` twice gives byte-identical goldens.
+- `checks.py`: 281 assertions, 0 failed (every SF row with its quoted sentence present once, the ladder, the golden family's 26 members and the ten partials, the grid with the stale-day filter's refusal and the index-file join, the clean-data, lens-swap, separation and distractor-deletion tests, the asks' bins, title, corridor, the 146 composed mishandlings, the cracker sheet and necessity matrix, the cited clauses, the documents' vocabulary and the realism sweep).
+- `verify.py` (reads only `target/`, imports nothing from the generator): the 505 returns per holding, the default's 70 and R0 at every step, the one-day lead-lag, Newey-West, Friday-week and five-day members' 60 with their values at 60 and 70, the portfolio's value, the running costs, the grant payments with the payment ledger's median lag, the nine incomes, the nine releases, the chart's title step, and the inner join of every price file with the index file (506 of 506 dates, the default's 70): 0 failed.
+- Two consecutive builds byte-identical, file by file and `target.zip` (sha256 550f976258b084f0e1d055571c322cee3bcf25160c8ba482df7a3364a9f67330); `golden.py` twice gives byte-identical goldens, unchanged by the holiday repair.
 - `figures_check.py`: 92 figures in blocks 1 to 4, 0 absent.
 - `scrub_producer_metadata.py` audit: `target/` and `golden/` clean.
 - `leak.py --asof 2026-12-02`: REVIEW, no LEAK; every line answered below.
@@ -558,7 +565,19 @@ The builder, stopped mid-stage 3, left a generator whose world (seed 2109) misse
 - `guard.py heart`: WARN on repeat.gate_g against task134 v2 (answered in `## Draw`); nearest driver 0.06 (task128), nearest stump 0.05 (task111).
 - `guard.py validate`: 145 cards, 0 invalid. `precut.py`: exit 0, 38 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS.
 
-**The one design target the build does not meet, for the main session.** `## Ladder`'s grid wants no Layer 1 slip to land the default on 60. Dropping the North American and Japan funds' post-holiday days (the 46 UK business days on which one of them carries no new close of its market) merges each into the next, leaving 420 one-day, 34 two-day, 3 three-day and 2 four-day periods. Annualised at 252 that lifts every daily estimate (the longer periods count as days, and they partly line the noon prices up with the London close): the default lands on 60 (10.31 at 70) and part of the golden family on 50. At the merged series' own 229.5 periods a year the default stays on 70 (9.84) and the golden family still splits 50 and 60. Policy 4.3 refuses the slip (the periods are not of equal length), so it is a misapplied filed rule and a lower rung, not a reading the text allows; and it is off the default path, whose step 3 keeps those days. No scanned world meets it with the rest (`tune.py holiday_slip` on the scan's seeds): of 202 samples whose golden family met its margins, the slip landed the default on 60 on 144 and moved part of the golden family to 50 on 194; it held on 4 (10451, 11091, 11572 and 17062), none of which meets the other targets, and all 6 samples meeting every call target fail it (11480, 14684 and 16914 among them). The prototype carried no market holidays, so the design never priced this slip. `checks.py` asserts the refusal (the unequal periods) and the slip at the series' own count. Accept it, or send the grid back to a designer.
+**The holiday slips, resolved at stage 3 (2026-10-12).** `## Ladder`'s grid wants no Layer 1 slip to land the default on 60, and the post-holiday slip did at 252 periods a year.
+- **What the pack already did.** Every holding already priced on every UK business day: the Kestwick funds deal daily at noon, and on a US or Japanese holiday the fund carries that market's last close. So an inner join of the holdings' prices drops nothing.
+- **The two routes that landed 60:**
+  - an inner join with the benchmark index file. Its S&P 500 (501 dates) and TOPIX (485) ran on their own markets' days, so the join dropped 46 dates: 10.27 at 70 at 252 periods a year, 9.80 at the series' own 229.5;
+  - the stale-day filter, a solver's own choice from the calendars (the grid's figures).
+- **The index file, changed.** It now carries the custodian's valuation dates, with the last available level shown where an index is not calculated, and its header block says so.
+  - Against the previous build: 2,990 levels unchanged, 46 carried levels added (13 S&P 500, 33 TOPIX), and 20 levels on UK holidays gone.
+  - R2 is unchanged to the last digit, because the ladder already read the indices forward-filled onto UK dates, and every other file is byte-identical.
+  - The inner join now keeps all 506 dates and gives the default's 70, asserted in `checks.py` and `verify.py`.
+- **The stale-day filter, accepted** as a lower rung that policy 4.3 refuses, with its figures in the grid.
+  - It is off the default path, whose step 3 keeps those days.
+  - No world holds it off 60 (`## Tried and rejected`). Of the scan's 202 samples whose golden family met its margins, it landed the default on 60 on 144. It held on 4 (10451, 11091, 11572 and 17062), none of which meets the other targets, and it fails on all 6 samples meeting every call target.
+  - `market_calendars_2024-2027.csv` stays as Layer 1.
 
 **Other measured departures from the design's figures.**
 - The lot lines inflate the mandate's twelve-month income by 43 per cent (design: about 36): an apparent yield of 5.3 per cent against 3.70.
@@ -567,12 +586,12 @@ The builder, stopped mid-stage 3, left a generator whose world (seed 2109) misse
 - Ask A's span stays at seven files (`## Ask sheet`).
 - SF11's overlapping twelve-month returns call 60 on the build (90 on the prototype); policy 4.3 refuses them either way.
 
-**Layer 1 added at the build** (no graded figure depends on it): the trustees' quarterly releases of capital from the expendable endowment (0.87 to 1.31 per cent of its value each quarter from March 2025), drawn across its holdings at the quarter-end rebalancing, so the expendable endowment's fund units fall between distribution dates and its mandate withdrawals carry its share; new money spread so that no purchase is much over 4 per cent of the designation's mandate; the Fernside report's benchmark as a total return, and its letter's account of the takeover cash read from the book.
+**Layer 1 added at the build** (no graded figure depends on it): the trustees' quarterly releases of capital from the expendable endowment (0.87 to 1.31 per cent of its value each quarter from March 2025), drawn across its holdings at the quarter-end rebalancing, so the expendable endowment's fund units fall between distribution dates and its mandate withdrawals carry its share; new money spread so that no purchase is much over 4 per cent of the designation's mandate; the Fernside report's benchmark as a total return, and its letter's account of the takeover cash read from the book; at the holiday repair, the benchmark index levels on the custodian's valuation dates, under its performance-measurement report's header block.
 
 **Leak review lines** (`leak.py`, each harmless):
 - the policy's paragraph number 4.3 matches a figure the write-up cites (a clause, not an answer);
 - the policy carries 7 of 11 words of the committed call: the decision's own vocabulary (growth share, the policy's steps, expected volatility, the cap);
-- the key facts (returns, prices, valuation) and the policy (design, returns, prices, measured, mandate, valuation) carry generic stump-paragraph words; neither names a period length, a lag or an estimator;
+- the export notes (design, valuation, market, holding), Fernside's report (returns, report, holding), the key facts (returns, prices, valuation), procedure 7 (mandate, valuation, market, holding) and the policy (design, returns, prices, measured, mandate, valuation) carry generic stump-paragraph words; none names a period length, a lag or an estimator;
 - dates after 2 December 2026: the income report's pay dates for dividends that went ex by 30 November, and the market calendars through 2027, forward-looking by nature.
 
 ## Tried and rejected
@@ -651,3 +670,4 @@ The builder, stopped mid-stage 3, left a generator whose world (seed 2109) misse
 - Fernside's letter as drafted said the takeover cash bought two holdings at the September rebalancing, where the book shows sales and a transfer to the trust; the letter now reads the book.
 - The budget workbook's totals written as text, and its summary pointing at a blank row: Excel would show the formula and a nil running costs line; the formulas now carry Excel's cached values and point at the total.
 - A Kestwick factsheet sector weight of 9.7 echoed a golden figure in `leak.py`'s sweep; 9.9.
+- Removing the holiday-gap slip in the world by having the Kestwick funds deal and price on every UK business day from each market's last close: they already did (506 prices per fund), so the change moved no figure, and the routes that landed 60 were an inner join with the benchmark index file and the stale-day filter (As built). No world holds that filter off 60 at 252 periods a year. Merging its 46 days lifts the daily estimate by about 6.6 per cent in expectation: 4.9 from the period count and 1.6 from co-movement inside the merged periods (9.6 on this world). That leaves the default room only between about 9.24 and 9.38 at 70, and the golden family cannot stay on 60 under it in any world, since its members spread about 8 per cent at 60.

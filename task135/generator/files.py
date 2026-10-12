@@ -87,5 +87,9 @@ def pack_for_asks(F, running, capital, kest_isins=None):
                   reg=F["reg"], inst=F["inst"], pays=F["pays"], running=running, capital=capital)
 
 
-def write_csv(df, path):
-    df.to_csv(path, index=False, lineterminator="\n")
+def write_csv(df, path, head=None):
+    """a CSV as the system exports it; `head` is the header block a report writes above its column row"""
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        for line in head or []:
+            f.write(line + "\n")
+        df.to_csv(f, index=False, lineterminator="\n")

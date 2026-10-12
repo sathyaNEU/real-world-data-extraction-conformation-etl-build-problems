@@ -161,7 +161,7 @@ def build(out):
     F = FL.frames(M, fp, B, g, i, p, W.GRANT_SEED)
     pth = lambda k: os.path.join(out, FL.FILES[k])
     for k in ("val", "moves", "events", "ent", "static", "cal", "index", "reg", "inst", "pays"):
-        FL.write_csv(F[k], pth(k))
+        FL.write_csv(F[k], pth(k), O.INDEX_HEAD if k == "index" else None)
     D.export_notes(pth("notes"), None)
     D.kestwick_xlsx(pth("kest"), F["kest"])
     D.key_facts_pdf(pth("keyfacts"))

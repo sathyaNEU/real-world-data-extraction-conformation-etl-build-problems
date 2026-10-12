@@ -235,31 +235,70 @@ def main(target):
     ok(sf["SF8"]["indices"] not in (None, 60), "SF8 the benchmark indices: not 60 (%s)" % sf["SF8"]["indices"])
     # the Layer 1 grid: SF9 distributions left out, SF12 one endowment, SF13 days a year, and the slips
     grid = LD.slip_grid(F)
-    # Dropping the North American and Japan funds' post-holiday days leaves 46 two-day periods among one-day ones; at 252
-    # periods a year it lands the default on 60 (the design's grid wants it off 60), and policy 4.3 refuses it: the
-    # periods are no longer of equal length. Recorded and flagged in the design note's As built; asserted here are the
-    # refusal and the slip at the series' own count of periods a year.
-    ph = "post-holiday days dropped"
-    Xm, dm = LD.slip_matrix(F, ph)
-    drop = CC.post_holiday_rows(F["cal"], dates)
-    ok(len(Xm) == 505 - len(drop) and len(drop) > 0, "%s: %d periods merged into the next" % (ph, len(drop)))
+    # Every holding prices on every UK business day, so the holiday slips are deliberate filters on the calendars: the 46
+    # days on which the North American or Japan fund carries no new close of its market taken out and merged into the
+    # next day, or only the days on which London, New York and Tokyo are all open kept. At 252 periods a year either
+    # lands the default on 60; both are a lower rung that policy 4.3 refuses (the periods left are not of equal length),
+    # accepted at stage 3 and recorded in the design note's grid and As built. Asserted: the refusal, the default's 70
+    # at the series' own count of periods a year, and that deleting the days instead leaves periods that no longer
+    # divide the two years.
     pos = {d: k for k, d in enumerate(dates)}
-    lengths = np.diff([-1] + [pos[d] for d in dm])
-    ok(len(set(lengths.tolist())) > 1, "%s: periods of %s business days mixed (policy 4.3's equal lengths refuse it)"
-       % (ph, sorted(set(lengths.tolist()))))
-    grid[ph]["period_lengths"] = {str(k): int((lengths == k).sum()) for k in sorted(set(lengths.tolist()))}
-    own, Town = LD.calls_on(Xm, dm, len(dm) / 2.0)
-    ok(own["R0 daily"] == 70, "%s at the series' own %.1f periods a year: the default stays on 70 (%s)" % (ph, len(dm) / 2.0, own["R0 daily"]))
-    grid[ph]["own_count_default"] = own["R0 daily"]
-    grid[ph]["r0_70_at_252"] = round(E.table(Xm, dm)["R0 daily"][70], 2)
-    grid[ph]["r0_70_at_own_count"] = round(Town["R0 daily"][70], 2)
-    grid[ph]["own_count_golden"] = sorted({c for n, c in own.items() if E.GOLDEN(n)}, key=lambda x: (x is None, x))
+    for ph, rows_of in (("post-holiday days dropped", CC.post_holiday_rows), ("common trading days kept", CC.non_common_rows)):
+        Xm, dm = LD.slip_matrix(F, ph)
+        drop = rows_of(F["cal"], dates)
+        ok(len(Xm) == 505 - len(drop) and len(drop) > 0, "%s: %d periods merged into the next" % (ph, len(drop)))
+        lengths = np.diff([-1] + [pos[d] for d in dm])
+        ok(len(set(lengths.tolist())) > 1, "%s: periods of %s business days mixed (policy 4.3's equal lengths refuse it)"
+           % (ph, sorted(set(lengths.tolist()))))
+        grid[ph]["dropped"] = len(drop)
+        grid[ph]["period_lengths"] = {str(k): int((lengths == k).sum()) for k in sorted(set(lengths.tolist()))}
+        own, Town = LD.calls_on(Xm, dm, len(dm) / 2.0)
+        ok(own["R0 daily"] == 70, "%s at the series' own %.1f periods a year: the default stays on 70 (%s)"
+           % (ph, len(dm) / 2.0, own["R0 daily"]))
+        grid[ph]["own_count_default"] = own["R0 daily"]
+        grid[ph]["r0_70_at_252"] = round(E.table(Xm, dm)["R0 daily"][70], 2)
+        grid[ph]["r0_70_at_own_count"] = round(Town["R0 daily"][70], 2)
+        grid[ph]["own_count_golden"] = sorted({c for n, c in own.items() if E.GOLDEN(n)}, key=lambda x: (x is None, x))
+        Xd = np.delete(X, sorted(drop), axis=0)
+        dd = [d for k, d in enumerate(dates) if k not in set(drop)]
+        ok(len(Xd) < 505, "%s, the days deleted instead of merged: %d one-day periods no longer divide the two years"
+           % (ph, len(Xd)))
+        cd, Td = LD.calls_on(Xd, dd)
+        grid[ph]["deleted"] = dict(default=cd["R0 daily"], r0_70=round(Td["R0 daily"][70], 2),
+                                   golden=sorted({c for n, c in cd.items() if E.GOLDEN(n)}, key=lambda x: (x is None, x)))
+        if ph == "post-holiday days dropped":
+            by, union = {}, set()
+            for mk in ("New York", "Tokyo"):
+                one = CC.post_holiday_rows(F["cal"], dates, (mk,))
+                union |= set(one)
+                co, To = LD.calls_on(*LD.merged(X, dates, set(one)))
+                by[mk] = dict(dropped=len(one), default=co["R0 daily"], r0_70=round(To["R0 daily"][70], 2))
+            ok(union == set(drop), "%s: the New York and Tokyo days (%d and %d) make up the %d"
+               % (ph, by["New York"]["dropped"], by["Tokyo"]["dropped"], len(drop)))
+            grid[ph]["by_market"] = by
     for s_, r in grid.items():
-        if s_ == ph:
+        if s_ in LD.ACCEPTED:
             continue
         ok(r["default"] != 60, "slip %s: the default does not land on 60 (%s)" % (s_, r["default"]))
-    bad = [b for b in LD.slip_ok(grid) if b[0] != ph]
+    bad = LD.slip_ok(grid)
     ok(not bad, "Layer 1 grid: %s" % bad)
+    # the benchmark index file is on the valuation dates (London business days), each index's last close carried on a
+    # date it is not calculated, so an inner join of the holdings' prices with it drops no date and the default is 70
+    price_dates = [W.WIN_START.isoformat()] + [d.isoformat() for d in dates]
+    ix_dates = {nm: list(s["date"]) for nm, s in F["index"].groupby("index_name")}
+    ok(len(ix_dates) == 6 and all(dl == price_dates for dl in ix_dates.values()),
+       "the index file carries all six indices on each of the %d valuation dates and no other" % len(price_dates))
+    joined = sorted(set(v["valuation_date"]) & set.intersection(*(set(dl) for dl in ix_dates.values()))
+                    & set.intersection(*(set(F["kest"][f]["Date"].map(lambda x: x.isoformat())) for f in F["kest"])))
+    ok(joined == price_dates, "inner join of the holdings' prices with the index file: %d of %d dates kept"
+       % (len(joined), len(price_dates)))
+    Xj, dj = LD.merged(X, dates, {k for k, d in enumerate(dates) if d.isoformat() not in set(joined)})
+    cj, Tj = LD.calls_on(Xj, dj)
+    ok(len(Xj) == 505 and cj["R0 daily"] == 70 and abs(Tj["R0 daily"][70] - r0[70]) < 1e-12,
+       "inner join with the index file: 505 returns and the default path's 70 (%.2f at 70)" % Tj["R0 daily"][70])
+    ok(len(F["index"]) == 6 * len(price_dates), "the index file has %d level rows" % len(F["index"]))
+    fig["index_join"] = dict(dates_kept=len(joined), dates=len(price_dates), returns=len(Xj), default=cj["R0 daily"],
+                             r0_70=round(Tj["R0 daily"][70], 2))
     fig["slips"] = grid
     sf["SF9"] = grid["distributions left out"]
     ok(sf["SF9"]["default"] == 70 and sf["SF9"]["golden"] == [60], "SF9 distributions left out: same call %s" % sf["SF9"])
@@ -490,7 +529,8 @@ def main(target):
     # ------------------------------------------------------------------ documents and realism
     for n in names:
         txt = texts[n]
-        if n.endswith(".csv") and n not in (FL.FILES["moves"], FL.FILES["events"], FL.FILES["reg"], FL.FILES["cal"]):
+        if n.endswith(".csv") and n not in (FL.FILES["moves"], FL.FILES["events"], FL.FILES["reg"], FL.FILES["cal"],
+                                            FL.FILES["index"]):
             continue
         hits = BANNED.findall(txt)
         ok(not hits, "no stump vocabulary in %s (%s)" % (n, hits[:3]))

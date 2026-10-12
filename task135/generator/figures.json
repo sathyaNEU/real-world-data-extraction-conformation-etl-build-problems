@@ -587,6 +587,13 @@
   "returns_per_holding": 505,
   "eur_rate": 1.146
  },
+ "index_join": {
+  "dates_kept": 506,
+  "dates": 506,
+  "returns": 505,
+  "default": 70,
+  "r0_70": 9.41
+ },
  "slips": {
   "flows left in": {
    "default": 40,
@@ -612,6 +619,7 @@
    ],
    "outlier": 4.698835675598103,
    "maxabs": 0.0518103959976256,
+   "dropped": 46,
    "period_lengths": {
     "1": 420,
     "2": 34,
@@ -624,7 +632,58 @@
    "own_count_golden": [
     50,
     60
-   ]
+   ],
+   "deleted": {
+    "default": 70,
+    "r0_70": 9.53,
+    "golden": [
+     60,
+     70
+    ]
+   },
+   "by_market": {
+    "New York": {
+     "dropped": 13,
+     "default": 70,
+     "r0_70": 9.69
+    },
+    "Tokyo": {
+     "dropped": 33,
+     "default": 60,
+     "r0_70": 10.02
+    }
+   }
+  },
+  "common trading days kept": {
+   "default": 60,
+   "golden": [
+    50,
+    60
+   ],
+   "outlier": 4.656202036810253,
+   "maxabs": 0.0518103959976256,
+   "dropped": 46,
+   "period_lengths": {
+    "1": 419,
+    "2": 36,
+    "3": 2,
+    "4": 2
+   },
+   "own_count_default": 70,
+   "r0_70_at_252": 10.27,
+   "r0_70_at_own_count": 9.8,
+   "own_count_golden": [
+    50,
+    60
+   ],
+   "deleted": {
+    "default": 70,
+    "r0_70": 9.47,
+    "golden": [
+     60,
+     70
+    ]
+   }
   },
   "permanent endowment only": {
    "default": 70,
@@ -1341,19 +1400,19 @@
  },
  "yields": {
   "MAND": 0.037018,
-  "GILT": 0.042792,
   "CORP": 0.054984,
   "EUEF": 0.028828,
+  "JPEF": 0.021997,
   "NAEF": 0.011709,
-  "JPEF": 0.021997
+  "GILT": 0.042792
  },
  "yields_pct": {
   "MAND": 3.7,
-  "GILT": 4.28,
   "CORP": 5.5,
   "EUEF": 2.88,
+  "JPEF": 2.2,
   "NAEF": 1.17,
-  "JPEF": 2.2
+  "GILT": 4.28
  },
  "income": {
   "20": 1441762.29,
@@ -1423,5 +1482,5 @@
   "later_max": 70,
   "later_n": 140
  },
- "checks": 268
+ "checks": 281
 }

@@ -48,8 +48,17 @@ CSV_KEYS = ("val", "moves", "events", "ent", "static", "cal", "index", "reg", "i
 DTYPES = {"lot_id": str, "lot_open_date": str, "sedol": str, "security_code": str, "new_security_code": str, "isin": str}
 
 
-def read_frame(src):
-    df = pd.read_csv(src, dtype=DTYPES, keep_default_na=False, na_values={"price": [""], "quantity": [""]})
+def header_row(path, first):
+    """the line number of a CSV's column row under any header block a report writes above it"""
+    with open(path, encoding="utf-8") as f:
+        for k, line in enumerate(f):
+            if line.startswith(first):
+                return k
+    raise ValueError("no column row starting %r in %s" % (first, path))
+
+
+def read_frame(src, skip=0):
+    df = pd.read_csv(src, dtype=DTYPES, keep_default_na=False, na_values={"price": [""], "quantity": [""]}, skiprows=skip)
     if "entitlement_gbp" in df.columns:
         df["entitlement_gbp"] = df["entitlement_gbp"].astype(float)
     return df
@@ -59,7 +68,7 @@ def pack(target):
     p = lambda k: os.path.join(target, FL.FILES[k])
     F = {}
     for k in CSV_KEYS:
-        F[k] = read_frame(p(k))
+        F[k] = read_frame(p(k), header_row(p(k), "date,index_name,close") if k == "index" else 0)
     F["kest"], F["kest_isins"] = kestwick(p("kest"))
     F["running"], F["capital"] = budget(p("budget"))
     return F
