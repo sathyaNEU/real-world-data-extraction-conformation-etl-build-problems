@@ -281,9 +281,9 @@ def write_book(path, c):
                        "3.4)." % (len(m["ex"]), "{:,.1f}".format(sum(m["E"].values())))),
         ("Exposure", "The staffing plan's covered FTE for each month from the Transition Date, one twelfth of an "
                      "FTE-year spread evenly over the month's days (funding policy 3.3)."),
-        ("Expected cost", "Each day of exposure is charged the experience's cost per FTE-year of the Claims that were "
-                          "made within the days then left in 2027 after their incident; the expected number of Claims "
-                          "is the same sum counting each Claim once."),
+        ("Expected cost", "Each day of exposure is charged the experience's cost per FTE-year of the Claims whose delay "
+                          "from incident to first making, added to that day, falls on or before 31 December 2027; the "
+                          "expected number of Claims is the same sum counting each Claim once."),
         ("Not included", "Administrative expenses, investment income, excess insurance and any margin (funding policy "
                          "3.5)."),
         ("Rounding", "Rounded once, from unrounded amounts: dollars to the nearest thousand, Claims and FTE to one "

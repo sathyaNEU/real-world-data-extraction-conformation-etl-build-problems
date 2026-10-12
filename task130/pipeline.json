@@ -1,11 +1,11 @@
 {
   "task": "task130",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "actuarial-science-insurance",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-12",
   "stump": "A competent solver collapses the register's defendant rows to one claim per incident, values and trends every claim from 2017, takes the system's annual claims cost per clinician FTE-year by specialty class, applies it to each entity's FTE-years in the trust and files a contribution of $4,854,000; the step that lands it there is costing the trust's opening months as a mature year, when only the claims made by 31 December 2027 from incidents after each entity's transition count, and those are mostly the quick, cheap requests: the golden is $784,000.",
   "architecture": 4,
@@ -15,23 +15,25 @@
     "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (sweep 4: the field's own nouns in the governing documents and the dictionary; sweep 9: the 2026 policy terms' 2027 end dates in the premium history), answered in the design note",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-12 on the final cut (--asof 2026-10-12), no LEAK: sweep 3 (clause numbers 1.4 and 2.3; the call's words in the documents that define the trust), sweep 4 (the field's and the organisation's own nouns), sweep 6 (no file ranks the entities or classes on the contribution), sweep 9 (the 2026 policy terms' 2027 end dates), answered in the design note's build record",
+    "reader": "stage 4 (Sonnet, medium): Q1 to Q4 none; Q5 executed funding policy 3.1 to 3.4 without 3.1's first-made limit (about $4.85M, the default), answered in one design-note line (no filed sentence prescribes a cost per FTE-year on the Plan Year's exposure, nothing reworded; the judge executed the same sentences to $784,000); its readings (chained claim numbers, OPEN against REOPENED, the latest loss run, Ask B's pay codes and home_entity) answered and asserted (SF20 and three ask convergences); REVIEW lines harmless. No document changed after, so no re-read"
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-12 (repeat.gate_g against task124, repeat.decision against task125, both answered at the draw; nearest text 0.08, task102 card stump)",
-    "nearest": "guard.py check 2026-10-12: WARN repeat.gate_g only; nearest driver task121 v3 at 0.07",
-    "surface": "2026-10-12: one promoted pair, task102, on the card axes only (answered by the differentiation line); the extract log column set (task124) and the prompt phrase (task133) were removed"
+    "heart": "WARN 2026-10-12 at ship (repeat.gate_g against task125, answered at the draw); nearest text 0.08 (task102 card stump)",
+    "nearest": "guard.py heart: nearest driver task121 v3 at 0.07",
+    "surface": "2026-10-12 at ship: one promoted pair, task102, on the card axes only (answered by the card's differentiation line); people Derek White, Lori Williams, Walter Butler, all on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE (one pass, no re-judge); its optional note, a one-day shift in the day count ($790,000 or $778,000), closed in SF19 (the filed dates give the golden, each one-day variant contradicts a sentence the PDFs carry, asserted); write-up step 5 and the golden Notes line worded as the date rule; no figure moved",
+    "report": "task130/determinism_check_report.md",
+    "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "shipped; next event is the author's portal result",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-12",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -89,11 +91,18 @@
   "wave": "wave 1 (re-root: retired), the author's fourth root",
   "build": {
     "claims_seed": 3671,
-    "checks": "121 of 121",
-    "verify": "match",
-    "rebuild": "byte-identical",
-    "figures_check": "exit 0",
+    "checks": "130 of 130 (SF1 to SF20, the ask stops and convergences, house fixes H5, H9, H16)",
+    "verify": "match (own code path from the bundle: call, default, 4 entities, 7 classes, ask A, ask B)",
+    "rebuild": "byte-identical (target/, golden/, metadata.json, figures.json, target.zip)",
+    "figures_check": "exit 0 (49 figures)",
     "call": "$784,000",
-    "default": "$4,854,000"
-  }
+    "default": "$4,854,000",
+    "date": "2026-10-12",
+    "precut": "exit 0 (38 checks)",
+    "freeze": "freeze.py check --mode determinism PASS (snapshot taken before the stage 4 fix pass)",
+    "house_fixes": "pass (H1 golden container clean, H4 and H7 zip members equal the pack, H8 citations resolve)",
+    "final_rebuild": "target/ byte-identical to the cut the reader and the judge read (16 files); golden workbook changed in its Notes line only; pptx, metadata.json and figures.json unchanged",
+    "target_zip": "16 members, 1405167 bytes, sha256 b1240baa6b1ca96e44209eca9a9a56d22d0199672338b11006ef0793ef4787c2"
+  },
+  "target_zip_sha256": "b1240baa6b1ca96e44209eca9a9a56d22d0199672338b11006ef0793ef4787c2"
 }

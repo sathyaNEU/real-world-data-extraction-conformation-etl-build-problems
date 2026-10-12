@@ -1,6 +1,6 @@
 """Build task130: the evidence pack into <task>/target, the goldens into <task>/golden, metadata.json and
 generator/figures.json, then the checks and the independent verifier, then a second full build into a scratch folder
-inside the task (removed after) compared byte for byte.
+inside the task (removed after) compared byte for byte, then target.zip cut from the pack.
 
     python3 task130/generator/build.py              everything
     python3 task130/generator/build.py --out DIR    the pack only, into DIR"""
@@ -125,6 +125,23 @@ def digest(folder):
             for f in sorted(os.listdir(folder))}
 
 
+def cut_zip(root):
+    """target.zip beside target/: the pack's files at the archive's top level in name order, each entry dated with the
+    pack's hand-off stamp, so the archive is byte-identical from build to build."""
+    import zipfile
+    folder = os.path.join(root, "target")
+    when = EXPORT_STAMP.timetuple()[:6]
+    zp = os.path.join(root, "target.zip")
+    with zipfile.ZipFile(zp, "w") as z:
+        for f in sorted(os.listdir(folder)):
+            zi = zipfile.ZipInfo(f, date_time=when)
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o644 << 16
+            with open(os.path.join(folder, f), "rb") as fh:
+                z.writestr(zi, fh.read())
+    return zp
+
+
 def everything(root, quiet=False):
     import deliver as DL
     import metadata as MD
@@ -153,15 +170,17 @@ def main():
         same = {}
         for f in ("metadata.json", os.path.join("generator", "figures.json")):
             same[f] = open(os.path.join(TASK, f), "rb").read() == open(os.path.join(tmp, f), "rb").read()
+        same["target.zip"] = open(cut_zip(TASK), "rb").read() == open(cut_zip(tmp), "rb").read()
         if not (same_t and same_g and all(same.values())):
             raise SystemExit("second build differs: target %s, golden %s, %s" % (same_t, same_g, same))
     finally:
         shutil.rmtree(tmp)
     allh = hashlib.sha256("".join(v for _, v in sorted(digest(os.path.join(TASK, "target")).items())).encode() +
                           "".join(v for _, v in sorted(digest(os.path.join(TASK, "golden")).items())).encode())
-    print("two builds byte-identical: %d target files, %d golden files, metadata.json and figures.json (sha256 %s)" % (
-        len(os.listdir(os.path.join(TASK, "target"))), len(os.listdir(os.path.join(TASK, "golden"))),
-        allh.hexdigest()[:16]))
+    print("two builds byte-identical: %d target files, %d golden files, metadata.json, figures.json and target.zip "
+          "(sha256 %s; target.zip sha256 %s)" % (
+              len(os.listdir(os.path.join(TASK, "target"))), len(os.listdir(os.path.join(TASK, "golden"))),
+              allh.hexdigest()[:16], hashlib.sha256(open(os.path.join(TASK, "target.zip"), "rb").read()).hexdigest()))
 
 
 if __name__ == "__main__":

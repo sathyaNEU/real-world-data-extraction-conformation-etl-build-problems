@@ -1,5 +1,5 @@
 """task130 assertions on the built pack and goldens: input gates, the ladder and its separations, the fork grid, every
-semantic fork row (SF1 to SF18), the closure axes that can be asserted, the asks with their stops and the separation
+semantic fork row (SF1 to SF20), the closure axes that can be asserted, the asks with their stops and the separation
 line, distractor deletion, mess neutrality, mid-bin figures, the realism sweep and container hygiene."""
 from __future__ import annotations
 
@@ -13,6 +13,9 @@ import re
 import shutil
 import tempfile
 import zipfile
+
+import openpyxl
+from pypdf import PdfReader
 
 import analysis as AN
 import asks as A
@@ -280,6 +283,83 @@ def run(target, golden, world=None, meta_path=None):
        "largest Claim that can be made inside the window %.0f; the $2,000,000 limit cannot move the golden" %
        max(c["cost"] for c in win))
 
+    # SF19: the day count, executed on the dates the agreement and the policy file. An incident on a date from the
+    # entity's Transition Date takes each experience Claim's delay (its made date less its incident date) and is in
+    # when that making date is no later than 31 December 2027; exposure is earned evenly over each month's days.
+    # Each one-day variant moves the rounded contribution and contradicts a sentence the shipped PDFs carry.
+    def _pdf(name):
+        return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(target, name)).pages))
+    filed = _pdf(K.AGREEMENT) + " " + _pdf(K.POLICY)
+
+    def by_date(start=0, end=0, delay=0):
+        last = K.PLAN_END + dt.timedelta(days=end)
+        per = {e: 0.0 for e in K.ENTITY_ORDER}
+        for (e, k), row in plan.items():
+            ck = [(dt.timedelta(days=c["lag"] + delay), c["cost"]) for c in ex if c["cls"] == k]
+            d, acc = tr[e] + dt.timedelta(days=start), 0.0
+            while d <= K.PLAN_END:
+                mm = d.month if d.year == K.PLAN_YEAR else 1     # a day before 1 January 2027 takes January's plan FTE
+                w = row[mm - 1] / 12.0 / K.days_in_month(K.PLAN_YEAR, mm)
+                acc += w * sum(cost for td, cost in ck if d + td <= last)
+                d += dt.timedelta(days=1)
+            per[e] += acc / E[k]
+        return sum(per.values()), per
+    base19, per19 = by_date()
+    ok("SF19.filed_dates_give_the_golden", abs(base19 - g) < 1e-6 and
+       all(abs(per19[e] - m["ent"][e]["cost"]) < 1e-6 for e in K.ENTITY_ORDER),
+       "incidents from the Transition Date, each made on its incident date plus an experience Claim's delay, in when "
+       "made by 31 December 2027: %.2f against the golden %.2f" % (base19, g))
+    for name, kw, rules in [
+            ("days_left_counted_with_both_ends", dict(end=1),
+             ("Plan Year means a calendar year", "A Claim first made after the end of a Plan Year is not covered by "
+                                                 "that Plan Year")),
+            ("delay_counted_with_both_ends", dict(delay=1),
+             ("A Claim is made on the date it is first received", "Plan Year means a calendar year")),
+            ("transition_date_left_out", dict(start=1),
+             ("occurred on or after the Retroactive Date", "A policy period ends at 12:01 a.m. on its last date")),
+            ("day_before_transition_counted", dict(start=-1),
+             ("occurred before a Participating Entity's Transition Date remains insured under the occurrence policy",
+              "month from the entity's Transition Date"))]:
+        v, pv = by_date(**kw)
+        moved = sum(1 for e in K.ENTITY_ORDER if r1000(pv[e]) != r1000(m["ent"][e]["cost"]))
+        ok("SF19.%s_ruled_out" % name, r1000(v) != r1000(g) and all(s in filed for s in rules),
+           "%s (%d of 4 entity costs move); against the filed sentences: %s" % (
+               "{:,}".format(r1000(v)), moved, "; ".join("'%s'" % s for s in rules)))
+
+    # SF20: a Claim's cost adds every claim number's rows (one row per defendant on a claim number). No escalation
+    # repeats an amount set on its two claim numbers, and each carrier's September run carries the escalated matter
+    # at the two claim numbers' payments added; reading the later claim number's rows as cumulative moves the call.
+    chains = [c for c in ex if c["n_claim_nos"] > 1]
+    repeats = 0
+    for c in chains:
+        sets = {}
+        for x in by_inc[c["incident_no"]]:
+            if x["coverage_line"] != "CONTRACT":
+                sets.setdefault(x["claim_no"], []).append((x["clinician_id"], x["indemnity_paid"], x["defense_paid"],
+                                                           x["indemnity_reserve"], x["defense_reserve"]))
+        vals = [tuple(sorted(v)) for v in sets.values()]
+        repeats += len(vals) != len(set(vals))
+    carrier_paid = {}
+    wb_qm = openpyxl.load_workbook(os.path.join(target, K.QM_SEP), data_only=True)
+    for x in wb_qm["Loss Run"].iter_rows(min_row=8, values_only=True):
+        if x[3]:
+            carrier_paid[A.norm(x[4])] = (float(x[9]), float(x[10]))
+    with open(os.path.join(target, K.SC_SEP), encoding="utf-8") as fh:
+        for x in csv.DictReader(fh):
+            carrier_paid[A.norm(x["INSURED_REF"])] = (float(x["IND_PAID"]), float(x["EXP_PAID"]))
+    summed = 0
+    for c in chains:
+        rs = [x for x in by_inc[c["incident_no"]] if x["coverage_line"] != "CONTRACT"]
+        first = min(rs, key=lambda x: (x["claim_made_date"], x["claim_no"]))["claim_no"]
+        got = carrier_paid.get(A.norm(first))
+        summed += got is not None and abs(got[0] - sum(x["indemnity_paid"] or 0 for x in rs)) < 0.01 and \
+            abs(got[1] - sum(x["defense_paid"] or 0 for x in rs)) < 0.01
+    later = [dict(c, cost=sorted(c["parts"])[-1][1]) if c["n_claim_nos"] > 1 else c for c in ex]
+    s20 = _total(CA.window(later, E, plan, tr, K.CLASSES, K.ENTITY_ORDER))
+    ok("SF20.claim_numbers_added", bool(chains) and repeats == 0 and summed == len(chains) and r1000(s20) != r1000(g),
+       "%d escalations, %d repeat an amount set, %d carried by their carrier at the added payments; the later claim "
+       "number alone files %s" % (len(chains), repeats, summed, "{:,}".format(r1000(s20))))
+
     # ------------------------------------------------------------------ mid-bin
     figs = [("contribution", g, 1000)] + \
         [("%s cost" % e, m["ent"][e]["cost"], 1000) for e in K.ENTITY_ORDER] + \
@@ -302,6 +382,16 @@ def run(target, golden, world=None, meta_path=None):
     ok("askA.none_is_an_answer", any(a[e]["count"] == 0 for e in K.ENTITY_ORDER))
     ok("askA.some_missing", sum(1 for e in K.ENTITY_ORDER if a[e]["count"] > 0) >= 2)
     ok("askA.S3_moves_a_quillan_entity", any(a[e]["s3"][0] != a[e]["count"] for e in ("TFH", "AMC")))
+    # "open": OPEN alone and OPEN with REOPENED give one answer, and no incident holds two open claim numbers, so
+    # counting claim numbers or incidents is one count
+    a_open = A.ask_a(target, [dict(x, status="CLOSED") if x["status"] == "REOPENED" else x for x in rows])
+    ok("askA.open_and_reopened_converge", all(a_open[e]["count"] == a[e]["count"] and
+                                              abs(a_open[e]["reserves"] - a[e]["reserves"]) < 0.01
+                                              for e in K.ENTITY_ORDER),
+       "OPEN alone: " + ", ".join("%s %d" % (e, a_open[e]["count"]) for e in K.ENTITY_ORDER))
+    two_open = [i for i, rs in by_inc.items() if len({x["claim_no"] for x in rs if x["status"] in ("OPEN", "REOPENED")
+                                                       and x["coverage_line"] != "CONTRACT"}) > 1]
+    ok("askA.one_open_claim_number_per_incident", not two_open, str(two_open[:3]))
     if world is not None:
         byno = {i.incident_no: i for i in world["incidents"]}
         for e in K.ENTITY_ORDER:
@@ -353,8 +443,8 @@ def run(target, golden, world=None, meta_path=None):
 
     # ------------------------------------------------------------------ realism sweep and hygiene
     text_files = [f for f in files if f.endswith((".csv", ".md"))]
-    dash = [f for f in text_files if "—" in open(os.path.join(target, f), encoding="utf-8").read() or
-            "–" in open(os.path.join(target, f), encoding="utf-8").read()]
+    dash = [f for f in text_files if "\u2014" in open(os.path.join(target, f), encoding="utf-8").read() or
+            "\u2013" in open(os.path.join(target, f), encoding="utf-8").read()]
     ok("hygiene.no_em_dash_text", not dash, str(dash))
     for f in files:
         if f.endswith((".xlsx", ".pptx", ".docx")):
@@ -362,7 +452,7 @@ def run(target, golden, world=None, meta_path=None):
             blob = b"".join(z.read(n) for n in z.namelist() if n.startswith("docProps"))
             ok("hygiene.%s.no_library" % f, b"openpyxl" not in blob and b"python-pptx" not in blob)
             body = b"".join(z.read(n) for n in z.namelist())
-            ok("hygiene.%s.no_dash" % f, "—".encode() not in body and "–".encode() not in body)
+            ok("hygiene.%s.no_dash" % f, "\u2014".encode() not in body and "\u2013".encode() not in body)
         if f.endswith(".pdf"):
             data = open(os.path.join(target, f), "rb").read()
             ok("hygiene.%s.no_reportlab" % f, b"ReportLab" not in data and b"reportlab" not in data)
@@ -410,6 +500,17 @@ def run(target, golden, world=None, meta_path=None):
                sb.get(xw[x["job_profile_code"]]) and abs(float(x["hours"]) / 173.33 - float(x["fte"])) > 0.0051]
     ok("H5.askB_hours_converge", not diverge and not any(x["work_month"] == "2026-09" and x["earning_code"] == "LOA"
                                                          for x in hcm), "%d lines" % len(diverge))
+    # Ask B's earning codes: every September position carries one REG line, one FTE on all its lines and one cost
+    # centre, so a position counted once gives one figure whichever of its lines is read
+    pos = {}
+    for x in hcm:
+        if x["work_month"] == "2026-09":
+            p = pos.setdefault((x["worker_id"], x["position_id"]), dict(reg=0, fte=set(), cc=set()))
+            p["reg"] += x["earning_code"] == "REG"
+            p["fte"].add(x["fte"])
+            p["cc"].add(x["cost_centre"])
+    ok("askB.one_position_one_figure", all(p["reg"] == 1 and len(p["fte"]) == 1 and len(p["cc"]) == 1
+                                           for p in pos.values()), "%d September positions" % len(pos))
     # H2: the design note's world and ladder figures, recomputed here
     lagc = [(c["lag"], c["cost"]) for c in ex]
     tot_c = sum(c for _, c in lagc)

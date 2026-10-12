@@ -10,8 +10,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "Corvane Health should put $784,000 into the Corvane Professional Liability Trust for 2027, the expected cost of the 11.5 claims expected to be first made against it that year (Tolliver Falls Hospital $227,000, Alderwick Medical Center $336,000, Corvane Medical Group $214,000, Brennick Community Hospital $7,000).",
-  "answer_source": "task130/submission.md block 1; golden/trust_funding_2027.xlsx (Contribution); generator/figures.json",
+  "answer": "Corvane Health should put $784,000 into its professional liability trust for 2027. That is the expected cost of the 11.5 claims expected to be first made against the trust in 2027 from incidents on or after each entity's Transition Date.",
+  "answer_source": "task130/submission.md, 1. Final Recommendation, first two sentences (bold markers removed); figures in task130/generator/figures.json, written with golden/trust_funding_2027.xlsx and golden/trustees_paper_2027.pptx by generator/deliver.py from target/ and recomputed by generator/verify.py",
   "gap": [
     "time",
     "population"
