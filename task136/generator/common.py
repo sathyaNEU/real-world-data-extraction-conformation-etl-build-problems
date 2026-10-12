@@ -118,10 +118,14 @@ CAMPAIGNS_2027 = [
 CAMP = {c["key"]: c for c in CAMPAIGNS}
 
 # Base excess over hosting capacity (MW) before the 2027 campaigns, by feeder: the hosting capacity assessment's
-# figures are set from these after the simulation; YRB24's is set from its golden excess.
-TARGET_BASE_EXCESS = {"YRB21": 1.104, "YRB22": 1.498, "YRB23": 0.452, "YRB25": 1.236, "YRB26": -0.618,
-                      "YRB27": 0.803, "YRB28": 0.712}
+# figures are set from these after the simulation; YRB24's is set from its golden excess. Unique legacy application
+# numbers (stage 4) moved five feeders' connected capacity by -34 to +10 kW; these targets keep the assessment's
+# published 2029 figures (HC29_PUBLISHED, asserted) and every graded figure where they stood.
+TARGET_BASE_EXCESS = {"YRB21": 1.110, "YRB22": 1.508, "YRB23": 0.438, "YRB25": 1.236, "YRB26": -0.657,
+                      "YRB27": 0.813, "YRB28": 0.712}
 TARGET_GOLDEN_YRB24 = 1.897
+HC29_PUBLISHED = {"YRB21": 17.81, "YRB22": 14.66, "YRB23": 12.03, "YRB24": 4.22, "YRB25": 6.75, "YRB26": 14.71,
+                  "YRB27": 13.99, "YRB28": 11.54}
 
 # File names (the pack)
 REGISTER = "eg_connection_applications_20260901.csv"

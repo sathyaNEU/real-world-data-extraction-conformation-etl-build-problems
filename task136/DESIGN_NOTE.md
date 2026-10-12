@@ -17,7 +17,7 @@ recovers a rule, and no record blesses the wrong method.
 | Decision | `pick_one_of_n`, answer unit `named_option` (with its MW figure): which feeder gets the one augmentation |
 | Mechanism | gap population (decisive: the population a bulk-buy can still convert); pattern none, generators G8 (reachability: a house that already has PV, a rented house or a unit cannot take a bulk-buy, binary per dwelling) then G14 (the yield conditioned on that reachable pool); Gate G `method_or_model_selection` (the transfer basis is the method, and the seven past campaigns select exactly one); strategy `population_selection` |
 | Layer 2 family / pattern | `field_method` (market definition: the addressable pool of a DER campaign); `product-analytics/feature-adoption-diffusion-modeling/2` (the eligible denominator at risk) on a new structure, a campaign's yield carried across suburbs behind a three-file join rather than a product's adoption rate (`two_layer.pattern_reused` does not fire: no card carries it) |
-| Furniture | forum `executive_team` (the executive leadership team locks the FY2027-28 capital works program at its investment review on Tuesday 24 November 2026), forcing event `budget_or_appropriation` (the program funds one accelerated hosting-capacity augmentation), organisation family `utility_or_infrastructure`, role family `research_desk` (the DER forecasting analyst in network planning), context artifact `capacity_report` (the 2026 hosting capacity assessment), calibration `none` (the past campaigns are the history the programme component is estimated from, not an organ), opening `question-first`, question form `which` |
+| Furniture | forum `line_manager_or_team` (no formal forum: the call is Network Planning's own, NPP-114 section 6 assigning the one augmentation when the FY2027-28 capital works program is compiled; no shipped file or prompt sentence names a forum), forcing event `budget_or_appropriation` (the program funds one accelerated hosting-capacity augmentation), organisation family `utility_or_infrastructure`, role family `research_desk` (the DER forecasting analyst in network planning), context artifact `capacity_report` (the 2026 hosting capacity assessment), calibration `none` (the past campaigns are the history the programme component is estimated from, not an organ), opening `question-first`, question form `which` |
 | Spine | `eg_connection_applications_20260901.csv`, the embedded generation connection register: one row per micro EG (rooftop PV) connection application at an NMI, new systems and alterations, 2011 to 31 August 2026; constructed |
 | Deliverables | `feeder_upgrade_2029.xlsx` (the call, the forecast by feeder, the two campaigns' installations, the two asks), `yarrabin_pv_vs_hosting_2029.png` (one bar per feeder for its rooftop PV connected at 31 August 2029, its hosting capacity marked) |
 | People | drawn with `guard.py names --geo Australia --seed 136 --n 30`, keeping only names with an unused first name and surname: Wanda Thornton (DER forecasting analyst, the requester), Christopher Sheppard (manager, network planning, signs NPP-114), Julie Cochran (sustainability programs officer, Merindah City Council, keeps the bulk-buy log), Bryan Nichols (embedded generation connections lead, the register), Linda Ruiz (GIS analyst, the NMI-to-property cross-reference), Nicole Rocha (customer programs officer, receives the state battery rebate approvals), Tammy Buchanan (consulting engineer, the hosting capacity assessment); none appears in the prompt |
@@ -30,7 +30,12 @@ the nearest driver on file is 0.07. The bans run against task125, task127 and ta
 this one by draw key). A first draft blocked on `ban.pattern` (C, task127), then on `test.same_driver` (gap population,
 pattern E, against task124's lineage and task500 v2) and `test.same_puzzle_older`; the decisive mechanism is carried
 honestly by the G-code (G8, reachability), which no recent build carries. Sweeping the card through gap, pattern and
-gate combinations confirmed gap population with pattern none and G8 first is clear under either Gate G key.
+gate combinations confirmed gap population with pattern none and G8 first is clear under either Gate G key. At stage 4,
+task128's architecture 3 (drawn the same day, so before this build by draw key) took `executive_team` and heart
+blocked on `ban.forum`; no shipped file or prompt sentence named that forum, so the card now carries
+`line_manager_or_team`, the honest label for what ships, and heart is WARN on `overuse.gate_g` (answered above) and
+`repeat.question_form` (task128 also asks which; the form follows the decision, a pick of one feeder, and the call
+sentence is frozen).
 
 **Same-puzzle and same-driver tests.** Gap population, decisive mechanism G8, decision `pick_one_of_n`: no build in the
 last twelve carries all three (task124 and task180 carry gap population and pattern none with G14 or G12 first; task501
@@ -80,8 +85,8 @@ capital works program funds one accelerated hosting-capacity augmentation, and N
 feeder with the most forecast rooftop PV above hosting capacity at the design point.
 
 As-of dates: the connection register and the network model are extracted at 31 August 2026 (run 1 September 2026);
-the council's letter on the 2027 campaigns is dated 14 August 2026; the request is made on 12 October 2026; the
-executive leadership team locks the program on 24 November 2026.
+the council's letter on the 2027 campaigns is dated 14 August 2026; the request is made on 12 October 2026; Network
+Planning compiles the FY2027-28 capital works program by 24 November 2026.
 
 ## Default path
 
@@ -189,19 +194,21 @@ alternative computed and shown to move the call or its figures, or shown to conv
 | SF7 | the trend | the average, over FY2023-24 to FY2025-26, of the year's increase in connected capacity less the capacity of program systems first connected in the year | new connections only; program systems left in; a fitted line | same call under the first two (asserted); a fitted line is not the trend 3.2 defines | NPP-114 3.2 |
 | SF8 | the years carried | three (31 August 2026 to 31 August 2029) | 3.25 or 2.92 years | same call, figures move | NPP-114 2.4 (design point) and 3.2 |
 | SF9 | "program system" | an application carrying a Solar Streets program reference; equal to the council's systems installed for every campaign (asserted) | the council's contracts signed (cancelled contracts included) | the contract count raises each campaign's rate by the same factor and leaves the call; it moves the two campaign figures (asserted) | NPP-114 2.3 (systems installed under a program) |
-| SF10 | the systems a 2027 bulk-buy adds | a count of systems, each at the feeder's FY2025-26 average inverter capacity of systems first connected | systems at the past campaigns' own average size (6.68 kW against YRB24's 7.25) | same call (asserted); YRB24 at 1.8 MW, gap 0.3 | NPP-114 4.2 (the feeder's average for systems first connected in the last complete financial year) |
+| SF10 | the systems a 2027 bulk-buy adds | a count of systems, each at the feeder's FY2025-26 average inverter capacity of systems first connected | systems at the past campaigns' own average size (6.68 kW against YRB24's 7.25) | same call (asserted); YRB24 at 1.8 MW, gap 0.2 | NPP-114 4.2 (the feeder's average for systems first connected in the last complete financial year) |
 | SF11 | the date the 2027 pool is counted | the opening of sign-ups (6 September 2027), the base pool less a year of the suburb's FY2025-26 organic adoptions | the pool at 31 August 2026 | converges: 240 and 30 systems and 1.9 MW either way (asserted) | the records converge |
 | SF12 | "owner-occupied house" | rates roll land use code 02 (single unit dwelling) with rating category Residential owner occupied | every house (code 02); every owner-occupied property | moves the transfer (R1 family) | the seven campaigns: only owner-occupied houses ever took a program system (asserted), and the program terms are for owner-occupiers of houses |
 | SF13 | "without PV" at an opening | no application, other than a withdrawn one, received at any of the property's NMIs before the opening | approved-not-yet-connected counted as untapped; or no live connected system at the date (removed systems and pending applications count as without PV), at the openings and for the 2027 pools | converges (rate within 0.02 points; every graded figure unchanged under both, asserted) | the records converge |
 | SF14 | a suburb | the rates roll's locality | the network model's address suburb | same rows (asserted equal in every campaign suburb) | the records converge |
 | SF15 | the estimator on the seven campaigns | pooled (all systems over all pools) | the mean of the seven rates; a regression through the origin; with an intercept | converges: 4.57 to 4.58 per cent, 240 and 30 systems, 1.9 MW and a 0.4 MW gap under every estimator and either pool date (asserted) | the records converge |
-| SF16 | transfer per letterbox (R0) | refused | the council's participation rate | YRB22 at 1.5 MW | the records of past programs: spread 24 per cent; misses Bunya Ridge by 36 per cent (asserted) |
+| SF16 | transfer per letterbox (R0) | refused | the council's participation rate; the stage 4 reader's reading of NPP-114 4.1 (systems installed over homes letterboxed, pooled over the seven campaigns: 1.45 per cent) | YRB22 at 1.5 MW, Bindarra Waters 90 and Wattleview 50 systems, YRB24 fifth (both, asserted) | the records of past programs: spread 24 per cent; misses Bunya Ridge by 36 per cent; by sample coefficient of variation the seven rates vary 0.6 per cent per untapped owner-occupied house against 25.5 per letterbox, 30.1 per owner-occupied house and 27.5 per address without PV, the separation the judge confirmed (asserted) |
 | SF17 | transfer per owner-occupied house (R1) | refused | | YRB22 | the records: spread 28 per cent; misses Tallowwood Rise by 38 per cent (asserted) |
 | SF18 | transfer per address without PV (R1b) | refused | | YRB22 | the records: spread 26 per cent; misses Glenmorrow by 64 per cent (asserted) |
 | SF19 | transfer per untapped owner-occupied house on the feeder (R2) | refused | | YRB22 | the records: spread 35 per cent; misses Glenmorrow by 102 per cent (asserted) |
 | SF20 | an average campaign (R0a) or a rate ratio (R0b) | refused | | YRB22 | the records: systems installed spread 44 per cent and miss Tallowwood Rise by 51 per cent; the ratio to each suburb's own adoption misses Silky Oak by 78 per cent (asserted) |
 | SF21 | hosting capacity | the assessment's figure for the spring 2029 minimum-demand case | the spring 2026 case beside it | same call, figures move | NPP-114 5.1 |
 | SF22 | the excess, the runner-up and the gap | forecast connected capacity at 31 August 2029 less hosting capacity, unrounded, ranked; rounded once to 0.1 MW | rounded figures subtracted | converges (asserted) | NPP-114 6.1 and 7.1 |
+| SF23 | a migrated row's inverter (the legacy join) | the equipment table's row with the register's legacy application number | rows paired by file order or by panel size; a number's rows summed; the first or the last row taken | converges: every legacy application number is issued once in the register and once in the equipment table, so every join selects the same inverter (C1, asserted in `checks.py` and `verify.py`); YRB22's connected capacity 13,690 kW under every join | the records converge |
+| SF24 | a withdrawn application, for "without PV" at an opening and in the 2027 pools | the house is without PV: nothing was connected under it | an application of any status counted as PV | the seven campaigns fit it about as well (4.66 per cent, so the records do not separate it); same call, YRB24 1.9 MW; Bindarra Waters 244.6 (240), or 245.8 (250) with the pool at the base date (asserted) | the data dictionary's status definition ("Withdrawn: withdrawn by the applicant or lapsed before connection; nothing was connected under the application."), asserted |
 
 The stump is none of these rows: every row is read the same way by a careful reader, and the default path reads them
 all correctly. SF16 to SF20 are methods, not readings; they are listed so that each competing model is priced and
@@ -258,7 +265,7 @@ YRB22 1.501, YRB25 1.238, YRB21 1.100, YRB27 0.806, YRB28 0.717, YRB23 0.447, YR
 | 13 | Order of operations | alterations collapsed before summing; pools built per campaign before pooling; C1 on the rest (asserted) |
 | 14 | Row order | row order changes nothing (asserted over three permutations) |
 | 15 | Duplicate resolution | one configuration per NMI by connection date (SF2); a property with two NMIs counts as one house, untapped if neither NMI has PV (no such property in a campaign suburb; asserted) |
-| 16 | Identity normalisation | NMIs are ten characters in the register, the network model and the cross-reference (asserted); the rates roll's property numbers join the cross-reference exactly |
+| 16 | Identity normalisation | NMIs are ten characters in the register, the network model and the cross-reference (asserted); the rates roll's property numbers join the cross-reference exactly; every legacy application number is issued once in the register and once in the equipment table (SF23, asserted) |
 | 17 | Netting against gross | removals subtract from connected capacity (NPP-114 2.2); no export netting |
 | 18 | Dimensional units | kW AC throughout, MW for reporting; migrated rows' panel kWp never enter (SF3) |
 | 19 | Code and status semantics | the register's status codes and the rates roll's land use and rating codes are defined in the dictionary (field semantics, never the stump) |
@@ -277,7 +284,9 @@ of the seven past campaigns put systems on 4.55 to 4.63 per cent (4.58 pooled) o
 suburb that had no PV when its sign-ups opened, and no other basis reproduces them (every other basis misses at least
 one campaign by a quarter, SF16 to SF20). The only number the records indicate for the 2027 campaigns is that rate on
 their own suburbs' untapped owner-occupied houses, which is the golden. No filed sentence prices a program per
-letterbox, per house or per feeder.
+letterbox, per house or per feeder. A house whose only application was withdrawn is without PV, because the
+dictionary says nothing was connected under a withdrawn application (SF24), and each migrated row's inverter is
+the one equipment row carrying its legacy application number (SF23).
 
 ## Oracles
 
@@ -420,21 +429,39 @@ Stage 3, built 2026-10-12 by `python3 task136/generator/build.py` (one command: 
 `generator/figures.json`, `checks.py`, `verify.py`, a second full build compared byte for byte, `target.zip`).
 
 - **The call.** YRB24, 1.892 MW above its spring 2029 hosting capacity (forecast 6.112 MW against 4.22 MW); runner-up
-  YRB22 at 1.501 MW; gap 0.391 MW. Bindarra Waters 241.6 systems (5,275 owner-occupied houses expected without PV at
+  YRB22 at 1.508 MW; gap 0.384 MW. Bindarra Waters 241.6 systems (5,275 owner-occupied houses expected without PV at
   the opening, at 4.580 per cent), Wattleview 30.6 (668). Graded as 1.9, 1.5, 0.4, 240 and 30; every one at least a third of
-  a bin from an edge (nearest: Bindarra Waters, 3.4 systems from 245; asserted at 0.07 of a bin).
-- **Default path.** YRB22 at 1.501 MW, runner-up YRB25 at 1.238, gap 0.263; Bindarra Waters 90.4 and Wattleview 47.8
+  a bin from an edge (nearest: the gap, 0.034 MW from 0.35, and Bindarra Waters, 3.4 systems from 245; asserted at
+  0.07 of a bin).
+- **Default path.** YRB22 at 1.508 MW, runner-up YRB25 at 1.238, gap 0.270; Bindarra Waters 90.4 and Wattleview 47.8
   systems (filed as 90 and 50); YRB24 5th at 0.796 MW.
+- **Stage 4, the judge's FIX_NOW.** DETERMINISTIC, with YRB22's connected capacity in the write-up (13,683 kW) not
+  reproducing: 40 legacy application numbers had been issued twice, so the lookup gave both applications the later
+  equipment row while a file-order or panel pairing gave 13,690 and a summed join 13,766 (YRB22 at 1.6 MW, gap 0.3).
+  Closed in the data: each legacy number is issued once (SF23, every join the same inverter); the dictionary defines
+  the register's status values, closing the judge's withdrawn-as-PV variant that rounds Bindarra Waters to 250 (SF24);
+  the stage 4 reader's per-letterbox reading is priced in SF16; the assessment's 2026 case now follows each feeder's
+  minimum demand (the reader's realism tell). Step 1 of the write-up drops YRB22's figure, which no ask or component
+  owes. Files changed under `target/`: `eg_connection_applications_20260901.csv` and `legacy_inverter_equipment.csv`
+  (40 legacy numbers each, that column only), `data_dictionary.xlsx` (the status definition) and
+  `yarrabin_hosting_capacity_assessment_2026.pdf` (the 2026 columns; the 2029 columns, route lengths and customers
+  unchanged). Every graded figure is unchanged (`freeze.py check --mode determinism` PASS with the twelve step keys
+  named in `## Tried and rejected` allowed). The `## Ladder` section keeps its stage 3 figures, frozen during the
+  repair; after the fix the base excesses read YRB22 1.508, YRB21 1.110, YRB27 0.813, YRB23 0.438 and YRB26 -0.657
+  (the rest unchanged), every rung names the same feeder with YRB24 in the same place, the margins are 1.22 below R3
+  and 1.25 on R3, and YRB22 leads YRB24 on R1 by 0.351 MW (dominance 2.1), as `checks.py` prints.
 - **Asks.** Ask A (connected not shown; active sites with no connected system): YRB21 12 and 11, YRB22 8 and 12, YRB23
   11 and 10, YRB24 2 and 8, YRB25 6 and 5, YRB26 14 and 4, YRB27 14 and 9, YRB28 12 and 4. Ask B (kWh): 2,439.7,
   1,767.9, 1,800.8, 392.5, 900.5, 1,588.4, 1,738.1, 1,311.2, graded to the nearest ten.
-- **Gates.** `checks.py` 250 assertions; `verify.py` 114 checks from the bundle alone (csv, openpyxl, pypdf, no
+- **Gates.** `checks.py` 284 assertions; `verify.py` 123 checks from the bundle alone (csv, openpyxl, pypdf, no
   generator import); two builds byte-identical (15 target files, 2 goldens, `metadata.json`, `figures.json`,
-  `target.zip`); `figures_check.py` PASS (51 figures); input gates 15 files, 3 formats (csv, xlsx, pdf), largest
+  `target.zip`); `figures_check.py` PASS (50 figures); input gates 15 files, 3 formats (csv, xlsx, pdf), largest
   `merindah_rates_roll_2026-27.csv` at 48,876 rows, two distractors (`feeder_peak_demand_forecast_2027-31.xlsx`,
   `home_battery_rebate_approvals_fy2025-26.csv`, deletion asserted); container audit clean in the fiction's band
-  (2018-06-01 to 2026-10-12) for the pack and the goldens; `guard.py surface` 0 promoted pairs (nearest 0.094);
-  `guard.py heart` WARN only (`overuse.gate_g`, answered under Guard); `leak.py --asof 2026-10-12` REVIEW, no LEAK.
+  (2018-06-01 to 2026-10-12) for the pack, and for the goldens to 2026-10-31 (the workbook carries the analyst's own
+  13 and 16 October 2026 stamps, after the request); `target.zip` equal to `target/` by content; `guard.py surface` 0 promoted pairs (nearest 0.094);
+  `guard.py heart` WARN only (`overuse.gate_g` and `repeat.question_form`, answered under Guard); `leak.py --asof
+  2026-10-12` REVIEW, no LEAK (the same seven lines after the stage 4 rebuild).
 - **leak.py REVIEW lines, each harmless.** (1) The letter's 6,240 contains the golden 240: the Bindarra Waters
   letterbox count, a different quantity, and the default path's denominator, not an answer. (2) The assessment's 4.22
   is YRB24's hosting capacity, an input the golden cites. (3) NPP-114 carries six of seven words of the call (hosting
@@ -481,3 +508,28 @@ Stage 3, built 2026-10-12 by `python3 task136/generator/build.py` (one command: 
 - A 2023 load transfer the generator never made (Yarrabin North kept on YRB23 in the network model): the Layer 1 claim
   was untrue; Yarrabin North now sits on YRB21 with the applications before 15 May 2023 recording YRB23 (SF5 asserts
   exactly YRB21 and YRB23 move). The first target, YRB28, put three feeders on 14 for Ask A's first figure.
+- Legacy application numbers drawn with replacement (stage 3): 40 numbers were issued twice, each pairing two
+  applications with two equipment rows and no key between them; the lookup gave both applications the later row (YRB22
+  13,683 kW), a file-order or panel pairing gave 13,690 and a summed join 13,766, which files YRB22 at 1.6 MW and the
+  gap at 0.3 (the judge's FIX_NOW). A legacy system never reissues an application number: each is now issued once and
+  every join selects the same inverter (SF23). Moved with it, all step intermediates and none graded, allowed in
+  `freeze.py`: `steps.connected_kw` for YRB21, YRB22, YRB23, YRB26 and YRB27, `steps.trend_kw.YRB23` (575 to 576 kW),
+  `steps.forecast_kw` for the same five feeders, and `steps.excess_mw.YRB26` (-0.6 to -0.7, from -0.657 unrounded).
+- Keeping the reissued numbers with a pairing key on both sides (an install date or the legacy row's sequence):
+  rejected; a solver joining on the number alone still fans out and files YRB22 at 1.6 MW, and the reissue was a
+  generator artifact, not something the legacy system produced.
+- Recomputing the 2029 hosting capacities from the stage 3 targets after the fix: rejected, five published inputs
+  would have moved 0.01 to 0.04 MW; the targets were reset (YRB21 1.110, YRB22 1.508, YRB23 0.438, YRB26 -0.657,
+  YRB27 0.813) so the assessment's 2029 case stands, asserted against `HC29_PUBLISHED`.
+- The assessment's 2026 case drawn independently of its minimum demand (stage 3): every feeder stepped 0.27 to 0.53 MW
+  lower in 2029, five of them below the report's own stated sensitivity (the reader's realism tell). The 2026 case now
+  follows each feeder's minimum-demand change at a sensitivity of 0.6 to 1.2: hosting capacity falls by 2029 on six
+  feeders by 0.04 to 0.70 MW and rises on YRB23 and on YRB24, whose minimum demand grows as Bindarra Waters fills; the
+  2029 columns, route lengths and customers are unchanged, and the 2026 case still files YRB24 (SF21).
+- The register's status values listed without definitions (stage 3): the judge's over-inclusive reading, a withdrawn
+  application counted as PV, fits the seven campaigns about as well (4.66 per cent) and rounds Bindarra Waters to 250
+  with the pool at the base date; the dictionary now defines each status, Withdrawn as nothing connected under the
+  application (SF24). No NPP-114 or prompt change.
+- Forum `executive_team` on the card (stage 3): task128's architecture 3, drawn the same day and so before this build by
+  draw key, took the same forum and heart blocked on `ban.forum`; no shipped file or prompt sentence named a forum, so
+  the card carries `line_manager_or_team`.

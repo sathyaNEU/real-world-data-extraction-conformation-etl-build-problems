@@ -531,12 +531,20 @@ def finish(W):
 
 def legacy_rows(W):
     """Applications lodged before the July 2019 migration carry panel capacity only in the register; their inverters
-    are in the legacy equipment table, keyed by the legacy application number."""
+    are in the legacy equipment table, keyed by the legacy application number. The legacy system never reissued a
+    number: a draw that repeats one already issued is replaced from a second stream, so the first stream (and every
+    inverter count drawn from it) is unchanged and the join is one to one."""
     r = K.rng("legacy")
+    spare = K.rng("legacy", "renumber")
+    issued = set()
     out = []
     for a in W.apps:
         if a["received"] < K.MIGRATION and a["status"] != "Withdrawn":
-            a["legacy_no"] = "LG-%06d" % int(r.integers(10000, 999999))
+            no = int(r.integers(10000, 999999))
+            while no in issued:
+                no = int(spare.integers(10000, 999999))
+            issued.add(no)
+            a["legacy_no"] = "LG-%06d" % no
             count = 1 if a["kw"] <= 5.0 or r.random() < 0.7 else 2
             out.append((a["legacy_no"], a["kw"], count))
     return out

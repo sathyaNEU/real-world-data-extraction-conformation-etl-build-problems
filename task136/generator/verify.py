@@ -68,10 +68,13 @@ def read(target):
     B["tariff"] = {r["nmi"]: r["tariff_class"] for r in net}
     B["locality"] = {r["nmi"]: r["locality"] for r in net}
     B["feeders"] = sorted(set(B["feeder"].values()))
-    legacy = {r["legacy_application_no"]: float(r["inverter_kw_ac_each"]) * int(r["inverter_count"])
-              for r in rows(one(target, "legacy_inverter_equipment"))}
+    leg_rows = rows(one(target, "legacy_inverter_equipment"))
+    legacy = {r["legacy_application_no"]: float(r["inverter_kw_ac_each"]) * int(r["inverter_count"]) for r in leg_rows}
+    B["legacy_rows"], B["legacy_nos"], B["reg_legacy"] = len(leg_rows), set(legacy), []
     apps = []
     for r in rows(one(target, "eg_connection_applications_")):
+        if r["legacy_application_no"]:
+            B["reg_legacy"].append(r["legacy_application_no"])
         if r["inverter_kw_ac"]:
             kw = float(r["inverter_kw_ac"])
         elif r["legacy_application_no"]:
@@ -102,9 +105,10 @@ def read(target):
         m = re.search(s + r"[^.]*?([\d,]+) (?:residential )?addresses", text)
         B["letter"][s] = int(m.group(1).replace(",", ""))
     text = pdf(one(target, "yarrabin_hosting_capacity_assessment"))
-    B["hc29"], B["hc26"] = {}, {}
-    for m in re.finditer(r"(YRB2\d) [\d.]+ [\d,]+ [-\d.]+ [-\d.]+ ([\d.]+) ([\d.]+)", text):
-        B["hc26"][m.group(1)], B["hc29"][m.group(1)] = float(m.group(2)), float(m.group(3))
+    B["hc29"], B["hc26"], B["min_demand"] = {}, {}, {}
+    for m in re.finditer(r"(YRB2\d) [\d.]+ [\d,]+ ([-\d.]+) ([-\d.]+) ([\d.]+) ([\d.]+)", text):
+        B["hc26"][m.group(1)], B["hc29"][m.group(1)] = float(m.group(4)), float(m.group(5))
+        B["min_demand"][m.group(1)] = (float(m.group(2)), float(m.group(3)))
     B["der"] = rows(one(target, "der_register_extract_"))
     B["realloc"] = {r["old_nmi"]: r["new_nmi"] for r in rows(one(target, "nmi_reallocations_"))}
     B["npp"] = pdf(one(target, "NPP-114"))
@@ -346,6 +350,12 @@ def main(target, golden):
     same_day = Counter((a["nmi"], a["connected"]) for a in B["apps"] if a["status"] in LIVE)
     check(max(same_day.values()) == 1, "an NMI with two configurations connected on one day")
     check(all(a["kw"] <= 30.0 for a in B["apps"] if a["kw"] is not None), "a system above 30 kVA")
+    check(B["legacy_rows"] == len(B["legacy_nos"]) and len(B["reg_legacy"]) == len(set(B["reg_legacy"]))
+          and set(B["reg_legacy"]) == B["legacy_nos"], "legacy application numbers do not pair one to one")
+    for f, (m26, m29) in B["min_demand"].items():
+        dm, dh = m26 - m29, B["hc26"][f] - B["hc29"][f]
+        check(min(0.6 * dm, 1.2 * dm) - 0.0051 <= dh <= max(0.6 * dm, 1.2 * dm) + 0.0051,
+              "%s: the 2026 case is off the assessment's own sensitivity" % f)
     cap, trend, base = base_forecast(B)
     avg = avg_new(B)
     first = first_application(B)

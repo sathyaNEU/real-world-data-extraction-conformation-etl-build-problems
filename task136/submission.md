@@ -17,7 +17,7 @@ Its rooftop PV will sit 1.9 MW above its hosting capacity at 31 August 2029, 0.4
 
 ## 3. Step-by-Step Solution
 
-1. Summed each NMI's latest connected inverter capacity at 31 August 2026 from eg_connection_applications_20260901.csv (migrated systems' inverters from legacy_inverter_equipment.csv) by its feeder in nmi_network_model_20260831.csv, as NPP-114 defines connected capacity: 3,064 kW on YRB24 and 13,683 kW on YRB22.
+1. Summed each NMI's latest connected inverter capacity at 31 August 2026 from eg_connection_applications_20260901.csv (migrated systems' inverters from legacy_inverter_equipment.csv) by its feeder in nmi_network_model_20260831.csv, as NPP-114 defines connected capacity: 3,064 kW on YRB24.
 2. Took each feeder's trend as NPP-114 sets it, the FY2023-24 to FY2025-26 average yearly increase in connected capacity less the program systems first connected that year, and carried it three years: 432 kW a year on YRB24 and 826 kW a year on YRB22.
 3. For each campaign in solar_streets_program_summary.xlsx, counted the suburb's owner-occupied houses (land use 02, rating R1 in merindah_rates_roll_2026-27.csv) none of whose NMIs (nmi_property_xref_2026.csv) had an application, other than a withdrawn one, received before sign-ups opened, and the connected systems carrying its program reference: 4.55 to 4.63 per cent each, 4.58 per cent pooled.
 4. Applied the pooled rate to the owner-occupied houses without PV at 31 August 2026 less the suburb's FY2025-26 first applications from such houses (5,275 in Bindarra Waters, 668 in Wattleview): 241.6 and 30.6 systems, at the feeder's FY2025-26 average new inverter (7.25 kW on YRB24, 6.67 kW on YRB27) 1,752 kW and 204 kW.

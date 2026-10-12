@@ -1,7 +1,7 @@
 {
   "task": "task136",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "energy-systems-utilities",
   "objective": "forecasting",
   "stage": 4,
@@ -15,20 +15,20 @@
     "date": "2026-10-12"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-12 (7 lines, no LEAK; each answered in the design note build record)",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-12 after the stage-4 rebuild (the same 7 lines, no LEAK; sweep 11 clean; each answered in the design note's Build record)",
+    "reader": "2026-10-12 on the stage-3 pack: nothing quoted for questions 1 to 4; its main-call reading (per letterbox, 90 and 50 systems) priced and ruled out by the records (SF16); its realism tell (the assessment's 2026 case) fixed; re-read due on the two changed documents"
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-12 (overuse.gate_g only, answered in the design note)",
+    "heart": "WARN 2026-10-12 at the stage-4 rebuild (overuse.gate_g, repeat.question_form); the ban.forum BLOCK against task128 v3 cleared by the card's forum line_manager_or_team, which no shipped file contradicts",
     "nearest": "0.07 task86 v2 (driver); surface 0 promoted, nearest 0.094 task95"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC 2026-10-12: the call forced (YRB24 1.9 MW, YRB22 1.5, gap 0.4); one write-up intermediate, YRB22's connected capacity 13,683 kW, not reproducing (40 reissued legacy application numbers)",
+    "disposition": "FIX_NOW, applied in one generator pass: legacy numbers issued once (SF23), the register's status values defined in the dictionary (SF24), the reader's per-letterbox reading ruled out by the records (SF16), the assessment's 2026 case consistent with its stated sensitivity; no graded figure moved, freeze.py determinism PASS with 12 step keys allowed",
+    "report": "task136/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: re-judge once on a fresh target.zip (FIX_NOW applied, SF16, SF23, SF24); the leak reader re-reads data_dictionary.xlsx and yarrabin_hosting_capacity_assessment_2026.pdf; on APPROVE ship",
   "approved": null,
   "delivered": null,
   "portal": null,

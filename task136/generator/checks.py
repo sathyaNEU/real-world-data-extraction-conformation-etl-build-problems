@@ -277,6 +277,25 @@ def run(target, golden, W=None, meta_path=None):
     b3 = base_with(reg_m, C.connected_kw, C.trend(reg_m)[0])
     v = variant_forecast(L, base_kw=b3, camps=camps, pools=pools)
     ok(v["winner"] == "YRB24", "SF3 migrated rows dropped files %s" % v["winner"])
+    # SF23 the legacy join is one to one: every legacy application number is issued once in the equipment table and
+    # once in the register, so a lookup, a merge (each register row's matches summed) and a first-match join select
+    # the same inverter for every migrated row (C1). Stage 3 drew 40 numbers twice; summing both rows then filed YRB22
+    # at 1.6 MW and a 0.3 MW gap.
+    leg = L["leg"]
+    regl = reg[reg.legacy_application_no != ""]
+    ok(leg.legacy_application_no.is_unique, "SF23 a legacy application number repeats in the equipment table")
+    ok(regl.legacy_application_no.is_unique, "SF23 a legacy application number repeats in the register")
+    ok(set(regl.legacy_application_no) == set(leg.legacy_application_no), "SF23 the legacy numbers do not pair one to one")
+    lk = leg.assign(kw_row=leg.inverter_kw_ac_each.astype(float) * leg.inverter_count.astype(int))
+    mg = regl[["legacy_application_no"]].reset_index().merge(lk[["legacy_application_no", "kw_row"]],
+                                                              on="legacy_application_no", how="left")
+    ok(len(mg) == len(regl), "SF23 the legacy join fans out")
+    summed_kw = mg.groupby("index").kw_row.sum().reindex(regl.index)
+    first_kw = regl.legacy_application_no.map(lk.drop_duplicates("legacy_application_no", keep="first")
+                                              .set_index("legacy_application_no").kw_row)
+    ok(np.allclose(summed_kw.values, regl.kw.values) and np.allclose(first_kw.values, regl.kw.values),
+       "SF23 a lookup, a merge and a first-match join give different inverters")
+    SF_SEEN["SF23 legacy numbers reissued"] = (int(leg.legacy_application_no.duplicated().sum()),)
     # SF4 approved but not connected counted
     reg4 = reg.copy()
     m = reg4.status.isin(["Approved"])
@@ -360,6 +379,37 @@ def run(target, golden, W=None, meta_path=None):
         ub = int((~r_.property_no.isin(tp)).sum())
         pools13b[name] = dict(p_, untapped_base=ub, untapped_open=ub - p_["adopt_fy"])
     ok(graded(C.forecast(L, base=base, camps=camps13b, pools=pools13b)) == graded(fc), "SF13 live-system reading moves a figure")
+    ok(graded(C.forecast(L, base=base, camps=camps13b, pools=pools13b, pool_date="base")) == graded(fc),
+       "SF13 live-system reading with the pool at the base date (SF11) moves a figure")
+    # SF24: an application of any status, a withdrawn one included, read as PV. The seven campaigns fit it about
+    # as well, so the records do not separate it; it files Bindarra Waters at 244.6 systems, 245.8 (250) with the pool
+    # at the base date. Ruled out by the dictionary: nothing is connected under a withdrawn application, so the house
+    # is still without PV.
+    first_any = reg.groupby("nmi").received_date.min()
+    campsW = [dict(c, untapped=len(C.untapped(L["rates"], L["xref"], first_any, c["suburb"], c["opening"]))) for c in camps]
+    poolsW = {}
+    for name, p_ in pools.items():
+        ub = len(C.untapped(L["rates"], L["xref"], first_any, name, K.BASE + dt.timedelta(days=1)))
+        r_, nm = C.houses(L["rates"], L["xref"], name)
+        f_oo = first_any[first_any.index.isin(set(nm.nmi))]
+        ad = int(((f_oo >= pd.Timestamp(K.LAST_FY[0])) & (f_oo <= pd.Timestamp(K.LAST_FY[1]))).sum())
+        poolsW[name] = dict(p_, untapped_base=ub, adopt_fy=ad, untapped_open=ub - ad)
+    ok(C.rates_by_basis(campsW)["untapped"]["cv"] < 0.01, "SF24 withdrawn-as-PV now scatters: the records separate it")
+    vW = C.forecast(L, base=base, camps=campsW, pools=poolsW)
+    vW0 = C.forecast(L, base=base, camps=campsW, pools=poolsW, pool_date="base")
+    ok(vW["winner"] == "YRB24" and vW0["winner"] == "YRB24", "SF24 withdrawn-as-PV moves the call")
+    ok(ten(vW0["lift"]["Bindarra Waters"]) == 250, "SF24 withdrawn-as-PV at the base date: Bindarra %.2f (the row says 250)"
+       % vW0["lift"]["Bindarra Waters"])
+    SF_SEEN["SF24 withdrawn as PV"] = graded(vW)
+    SF_SEEN["SF24 withdrawn as PV, pool at the base date"] = graded(vW0)
+    import openpyxl
+    wbd = openpyxl.load_workbook(os.path.join(target, K.DICTIONARY), read_only=True)
+    sdef = [r_[1] for r_ in wbd["Connections register"].iter_rows(values_only=True) if r_ and r_[0] == "status"]
+    ok(len(sdef) == 1 and "Withdrawn: withdrawn by the applicant or lapsed before connection; nothing was connected "
+       "under the application." in sdef[0], "SF24 the dictionary no longer defines Withdrawn")
+    wd = reg[reg.status == "Withdrawn"]
+    ok((wd.connection_date.isna()).all() and (wd.inverter_kw_ac == "").all() and (wd.legacy_application_no == "").all(),
+       "SF24 a withdrawn application carries a connection or a system")
     # every program system went to a house without PV at its campaign's opening
     first_ok = C.first_app(reg)
     for c in camps:
@@ -378,6 +428,22 @@ def run(target, golden, W=None, meta_path=None):
     # SF21 the 2026 case
     v = C.forecast(L, base=base, camps=camps, pools=pools, hc_case="hc26")
     ok(v["winner"] == "YRB24", "SF21 the 2026 case files %s" % v["winner"])
+    SF_SEEN["SF21 the 2026 case"] = graded(v)
+    # SF16 also: the stage 4 reader's reading of NPP-114 4.1, systems installed over homes letterboxed pooled over the
+    # seven campaigns, files YRB22 at 1.5 MW with Bindarra Waters at 90 and Wattleview at 50 and YRB24 fifth. Ruled
+    # out by the records: the seven rates vary 0.6 per cent per untapped owner-occupied house (sample coefficient of
+    # variation) against 25.5 per letterbox, 30.1 per owner-occupied house and 27.5 per address without PV.
+    pooled_lb = sum(c["systems"] for c in camps) / sum(c["letterboxed"] for c in camps)
+    lf = {k: pooled_lb * p["letterboxed"] for k, p in pools.items()}
+    v = variant_forecast(L, lift_override=lf, camps=camps, pools=pools)
+    ok(v["winner"] == "YRB22" and r1(v["excess"]["YRB22"]) == 1.5 and v["order"].index("YRB24") + 1 == 5,
+       "SF16 pooled per letterbox files %s, YRB24 %d" % (v["winner"], v["order"].index("YRB24") + 1))
+    ok(ten(lf["Bindarra Waters"]) == 90 and ten(lf["Wattleview"]) == 50, "SF16 pooled per letterbox systems %.1f %.1f"
+       % (lf["Bindarra Waters"], lf["Wattleview"]))
+    cv1 = {b: float(np.std(rb[b]["values"], ddof=1) / rb[b]["mean"]) for b in ("untapped", "letterboxed", "oo", "udw")}
+    ok(cv1["untapped"] < 0.01, "SF16 per untapped owner-occupied house scatters %.4f" % cv1["untapped"])
+    ok(min(cv1[b] for b in ("letterboxed", "oo", "udw")) >= 0.25, "SF16 a refused basis fits the records: %s" % cv1)
+    SF_SEEN["SF16 pooled per letterbox"] = graded(dict(v, lift=lf))
     # SF16 to SF20 listed with the ladder above; SF22 with the call.
 
     # ---------------------------------------------------------------- closure axes asserted
@@ -527,6 +593,25 @@ def run(target, golden, W=None, meta_path=None):
     hcs = [L["hca"][f]["hc29"] for f in K.FEEDERS]
     ok(len(set(hcs)) == len(hcs), "two feeders share a hosting capacity")
     ok(sum(abs(h * 10 - round(h * 10)) < 1e-6 for h in hcs) <= 2, "round hosting capacities")
+    # the assessment's published 2029 case stands (the call's inputs); its 2026 case moves with each feeder's spring
+    # minimum demand at the report's own sensitivity (a 0.5 MW lower minimum, 0.3 to 0.6 MW less hosting capacity),
+    # in both directions and by different amounts, never a steady step on every feeder
+    for f in K.FEEDERS:
+        ok(L["hca"][f]["hc29"] == K.HC29_PUBLISHED[f], "%s 2029 hosting capacity %.2f, published %.2f"
+           % (f, L["hca"][f]["hc29"], K.HC29_PUBLISHED[f]))
+    hca_txt = pdf_text(os.path.join(target, K.HCA))
+    ok("a 0.5 MW lower minimum lowers hosting capacity by 0.3 to 0.6 MW" in hca_txt, "the assessment's sensitivity sentence")
+    rows_hc = {m.group(1): tuple(float(m.group(k)) for k in (4, 5, 6, 7)) for m in re.finditer(
+        r"(YRB2\d) ([\d.]+) ([\d,]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)", hca_txt)}
+    ok(set(rows_hc) == set(K.FEEDERS), "the assessment's table rows %s" % sorted(rows_hc))
+    steps26 = []
+    for f, (m26, m29, h26, h29) in rows_hc.items():
+        dm, dh = m26 - m29, h26 - h29
+        lo_, hi_ = sorted((0.6 * dm, 1.2 * dm))
+        ok(lo_ - 0.0051 <= dh <= hi_ + 0.0051, "%s 2026 case %.2f against minimum demand %.2f to %.2f" % (f, h26, m26, m29))
+        steps26.append(dh)
+    ok(min(steps26) < 0 < max(steps26) and max(steps26) - min(steps26) >= 0.5 and len({round(x, 2) for x in steps26}) == 8,
+       "the 2026 case steps alike on every feeder: %s" % [round(x, 2) for x in steps26])
     for name, vals in (("ask A first", list(ga.values())), ("ask A second", list(gb.values()))):
         ok(max(collections.Counter(vals).values()) <= 2, "%s: three feeders share a count" % name)
     ok(abs(rb["untapped"]["pooled"] * 100 - round(rb["untapped"]["pooled"] * 100)) > 0.05, "a round conversion rate")

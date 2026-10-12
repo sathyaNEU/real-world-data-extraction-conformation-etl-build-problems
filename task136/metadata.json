@@ -47,7 +47,7 @@
     {
       "path": "data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 14113,
+      "bytes": 14176,
       "rows": null,
       "source": "Constructed: Data dictionary for the extracts",
       "date": "2026-10-12",
@@ -164,7 +164,7 @@
     {
       "path": "yarrabin_hosting_capacity_assessment_2026.pdf",
       "format": "pdf",
-      "bytes": 52593,
+      "bytes": 52591,
       "rows": null,
       "source": "Constructed: Hosting capacity assessment BPE-2026-031 for the Yarrabin 22 kV feeders",
       "date": "2026-10-12",

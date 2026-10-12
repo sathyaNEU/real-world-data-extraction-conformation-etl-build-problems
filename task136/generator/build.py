@@ -60,8 +60,14 @@ def program_rows(W):
 
 def hca_table(W, base_kw, golden_add_kw):
     """The assessment's figures: hosting capacity for the 2029 case set from each feeder's base forecast and its
-    target excess (YRB24's from its golden excess); the 2026 case above it; minimum demand and route length."""
+    target excess (YRB24's from its golden excess); the 2029 minimum demand and route length; the 2026 case from the
+    change in each feeder's spring minimum demand between the two cases, at a sensitivity inside the report's own
+    0.6 to 1.2 MW of hosting capacity per MW of minimum demand. Minimum demand falls on the established feeders by
+    up to 0.7 MW (or rises a little) and rises on YRB24 as the Bindarra Waters estate fills, so the two cases differ
+    by feeder in size and sign. Stream "hca" keeps its four draws per feeder (the 2029 minimum and the route length
+    unchanged); the 2026 case draws from its own stream."""
     r = K.rng("hca")
+    r26 = K.rng("hca", "2026 case")
     out = {}
     cust = {f: sum(1 for n in W.nmis if n["feeder"] == f and n["energised"] <= dt.date(2026, 6, 30)) for f in K.FEEDERS}
     for f in K.FEEDERS:
@@ -69,11 +75,14 @@ def hca_table(W, base_kw, golden_add_kw):
             hc29 = round((base_kw[f] + golden_add_kw) / 1000.0 - K.TARGET_GOLDEN_YRB24, 2)
         else:
             hc29 = round(base_kw[f] / 1000.0 - K.TARGET_BASE_EXCESS[f], 2)
-        hc26 = round(hc29 + float(r.uniform(0.26, 0.58)), 2)
+        r.uniform(0.26, 0.58)
         min29 = round(float(r.uniform(0.4, 2.2)), 2)
-        min26 = round(min29 + float(r.uniform(0.25, 0.9)), 2)
-        out[f] = dict(route_km=round(float(r.uniform(11, 46)), 1), customers=cust[f], min26=min26, min29=min29,
-                      hc26=hc26, hc29=hc29)
+        r.uniform(0.25, 0.9)
+        route_km = round(float(r.uniform(11, 46)), 1)
+        lo, hi = (-0.40, -0.15) if f == "YRB24" else (-0.12, 0.70)
+        min26 = round(min29 + float(r26.uniform(lo, hi)), 2)
+        hc26 = round(hc29 + float(r26.uniform(0.6, 1.2)) * (min26 - min29), 2)
+        out[f] = dict(route_km=route_km, customers=cust[f], min26=min26, min29=min29, hc26=hc26, hc29=hc29)
     return out
 
 

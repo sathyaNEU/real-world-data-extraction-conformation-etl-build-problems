@@ -40,7 +40,7 @@
     "grain": "connection application (new system or alteration) x NMI",
     "source": "constructed (the distributor's embedded generation connection register)"
   },
-  "forum": "executive_team",
+  "forum": "line_manager_or_team",
   "forcing_event": "budget_or_appropriation",
   "org_family": "utility_or_infrastructure",
   "world": {

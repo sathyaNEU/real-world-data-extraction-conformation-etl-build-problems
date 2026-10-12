@@ -309,7 +309,10 @@ def write_dictionary(path, counts):
             ("application_type", "New (a first system at the NMI) or Alteration (a change to the system at the NMI)."),
             ("received_date", "Date the application was received."),
             ("approved_date", "Date the application was approved; blank if not yet approved or withdrawn before approval."),
-            ("status", "Under assessment, Approved, Connected, Withdrawn or Removed, at the extract."),
+            ("status", "Status at the extract. Under assessment: received, not yet approved. Approved: approved, not "
+                       "yet connected. Connected: connected (connection_date). Withdrawn: withdrawn by the applicant "
+                       "or lapsed before connection; nothing was connected under the application. Removed: connected, "
+                       "then removed (removal_date)."),
             ("status_date", "Date of the status shown."),
             ("connection_date", "Date the system was connected (meter reconfigured); blank until connected."),
             ("removal_date", "Date a connected system was removed; blank otherwise."),
