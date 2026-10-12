@@ -4,15 +4,15 @@
   "status": "PAUSED",
   "domain": "general-statistics-data-science / exploratory-data-analysis-distribution-assessment (secondary physical-environmental-sciences)",
   "objective": "anomaly-detection",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 3,
+  "stage_name": "build",
   "updated": "2026-10-12",
   "stump": "The default path converts the glass era with the comparison readings' mean probe-minus-glass difference, which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day line and it quotes the raw record's premium; one hot-day offset quotes a third figure.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-12"
   },
   "leak": {
     "leak_py": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2 design: write the readability screen, semantic fork table, ladder, closure table (22 axes), literal reader, oracles and the full ask sheet (draft in the note: Ask A sub-district schedule with D2 vintage labels, Ask B season payouts with D6 claim repeats), then prompt.txt and precut.py. Paused for the task183 determinism repair.",
+  "resume": "stage 3 build: generator/world.py, climate.py (probe-minus-glass 0.05 flat to 31 C, ramp to 0.70 at 34.5 C, then 0.25 C a degree), pricing.py and book.py are written; next records.py (station daily long file with both station numbers, the glass register as one wide sheet a year, comparison readings, neighbours' monthly series, the network register JSON, renewal schedule with variety lines and stored sub-districts, block register, claims register with block lines and duplicate lodgements, finance ledger with interim and final runs), docs.py (pricing manual, 2027/28 term sheet, station history), deliver.py, checks.py with the R1 to R3c block, verify.py, metadata.py, build.py; seed-search the comparison bins for margins; terms D6, $48, $85, cap $760, loading 1.32",
   "approved": null,
   "delivered": null,
   "portal": null,

@@ -121,6 +121,134 @@ moves the 34.5 C days but not the 39.0 C days and quotes a third figure.
   conversion sized at each reading, and a mean conversion leaves the changeover step in the count to be read as
   climate; no build on file teaches a reading-dependent conversion (17 Anomaly Detection drivers read above).
 
+## Readability screen
+
+The six tests per rung (1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear), verdict last.
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R1 convert the glass era at all | the manual's basis sentence asks for it | the station history files the change | yes | no | no | no | readable |
+| R2 size the conversion from the paired readings, not the neighbours | no | the paired readings are a file of their own | yes | no | no | one subtraction | readable |
+| R3 one hot-day offset | no | no | a tail check on a threshold index | no | no | one subtraction on a filtered set | readable |
+| R4 (decisive) a conversion sized at each reading | no: the basis sentence is met on its face by the average | no column states a difference by reading | no: the defaults (overall, by month, by site, one hot subset, a linear fit over all days) each land wrong | none ships | the battery is clean on every path | no: a function of the reading applied reading by reading, under two triggers that need different offsets | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | heat day | maximum 35.0 C or more | above 35.0 C | same call (no converted reading lands on 35.0 C, asserted) | the term sheet's "35.0 C or more", and same call |
+| SF2 | severe heat day | 40.0 C or more, and also a heat day | a severe day not counted as a heat day | a lower premium | the term sheet: a severe heat day is also a heat day |
+| SF3 | season | 1 December to the last day of February, 29 February in leap years, named by its first year | 90 days fixed | same call (asserted) | the manual's season sentence |
+| SF4 | present instrument | the probe in the small shield installed 1 November 1995, unchanged since (recalibrations only) | a later probe | none ships | the station history: no change since 1995 |
+| SF5 | pricing record | 1965/66 to 2026/27 | the record since 1995 | a different premium | the manual's basis sentence |
+| SF6 | the line | least squares of each count on the season's first year over the record, each count on its own line | one line on the sum | a different premium | the manual's projection sentence |
+| SF7 | a projected count below zero | taken as zero | kept negative | same call (no projected count below zero, asserted) | the manual |
+| SF8 | the burn | the average over the record of each projected season's payout per hectare under the 2027/28 terms, counts unrounded | payout at the average counts | a lower premium | the manual's burn sentence |
+| SF9 | loading and rounding | the burn times 1.32, rounded once to the whole dollar | rounded before loading | same call within the bin (asserted) | the manual |
+| SF10 | the overlap months, November 1995 to April 1998 | the official record is the probe from 1 November 1995; the glass readings sit only in the comparison file | the glass converted for the overlap | same call (asserted) | the station register and the station history |
+| SF11 | the paired readings used for the conversion | Merrin Flat's own, or all seven comparison sites | either | same call (the same readings cross each trigger, asserted) | same call |
+| SF12 | the estimator of a reading's conversion | the mean difference at that reading, a local or hot-range fit, or quantile matching | any of them | same call (C3: each moves exactly the 34.5 C and 39.0 C readings and none of 34.0 C or 38.5 C) | same call |
+| SF13 | approved against provisional readings | approved, to 30 June 2027 | provisional | same call (provisional rows fall in July and August 2027, outside every season) | same call |
+| SF14 | the expected counts the premium assumes | the lines' values at 2027/28 | the average projected count | same call (no floor binds, asserted) | the manual |
+| SF15 | the daily maximum's day | the 24 hours from 09:00, filed against the day they begin, both eras | filed against the reading's day | same call (the station history files one convention) | the station history |
+
+## Ladder
+
+Prototype figures (seed 187, 1995 changeover); `generator/` asserts the built values by name.
+
+| Rung | Construction | Premium a hectare | Heat days 2027/28 | Severe days 2027/28 |
+|---|---|---|---|---|
+| R0 | no conversion (the neighbours show no break at Merrin Flat) | about $725 | 14.5 | 2.7 |
+| R1, the default path | the comparison readings' mean difference, +0.1 C | about $725 | 14.5 | 2.7 |
+| R2 | the summer mean (+0.2 C) or a linear fit over all days (+0.3 C at 34.5 C) | about $725 | 14.5 | 2.7 |
+| R3 | one hot-day offset (+0.85 C, glass at 33 C or more) | about $683 | 14.0 | 2.6 |
+| R4, decisive | the conversion at each reading (+0.7 C at 34.5 C, +1.25 C at 39.0 C) | about $670 | 14.0 | 2.6 |
+
+- **Kills, one fact each:** R0 by the manual's basis sentence (the present instrument); R1 and R2 by the paired readings
+  (the difference rises with the reading); R3 by the two triggers (no single offset moves 34.5 C over 35.0 C and 39.0 C
+  over 40.0 C while leaving 34.0 C and 38.5 C below); R4 stands.
+- **Why each is satisfying:** R1 is the textbook adjustment and the station history's own pairing; R2 decomposes the
+  pilot by season; R3 answers the threshold worry with a tail offset.
+- **Separation:** R0 to R2 file one figure by construction (the half-degree register makes the count a step function
+  of the offset, with the steps at 0.5 C and 1.0 C); R3 and R4 differ on the severe count; the build asserts R3 at
+  least 2 per cent from R4 on the premium and the default at least 6 per cent.
+- **Uniform-offset proof:** 34.5 C crossing needs 0.5 C or more, 34.0 C staying below needs under 1.0 C, 39.0 C
+  crossing needs 1.0 C or more: no single offset satisfies all three, asserted over a sweep of offsets 0.0 C to 2.0 C.
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | Merrin Flat's daily maxima, December to February, 1965/66 to 2026/27 | the manual's basis sentence |
+| 2 | Unit of account | the hectare | the question and the term sheet |
+| 3 | Attribution window | the season, 1 December to the last day of February | the manual; one daily convention in both eras (SF15) |
+| 4 | As-of dating | the latest complete season, 2026/27 | the manual |
+| 5 | Version basis | approved readings | C1: provisional rows only after June 2027 (SF13) |
+| 6 | Denominator | the burn's average over the 62 seasons | the manual |
+| 7 | Weighting | each season equally | the manual |
+| 8 | Window length | the whole record from 1965/66 | the manual |
+| 9 | Boundary inclusivity | 35.0 C and 40.0 C or more | the term sheet; no converted reading on a trigger (asserted) |
+| 10 | Rounding path | the premium rounded once, at the end | the manual (SF9) |
+| 11 | Tie-break | none: one figure | none needed |
+| 12 | Maturity and censoring | 2026/27 complete; 2027/28 not in the record | the manual |
+| 13 | Order of operations | convert, count, line, project, payout, average, load, round | the manual's order |
+| 14 | Row order | none affects a sum or a least-squares line | C1 |
+| 15 | Duplicate resolution | the overlap: probe official from 1 November 1995 | C1: the daily files do not overlap (SF10) |
+| 16 | Identity normalisation | the two station numbers | the station register's successor row; C4 (either number alone misses 30 or 32 seasons) |
+| 17 | Netting | none | none needed |
+| 18 | Dimensional units | degrees Celsius throughout; the glass to the half degree | units in the data and the station history |
+| 19 | Code and status semantics | quality flags (approved, provisional) | the dictionary |
+| 20 | Integerisation | counts whole, projected counts unrounded | the manual (SF8) |
+| 21 | Clause scope | the deductible and the cap per season and hectare | the term sheet |
+| 22 | Forward window contents | 2027/28's counts are the lines' values | the manual (SF14) |
+
+## Literal reader
+
+Executing the manual word for word: the basis sentence asks for each past day's maximum as the present instrument
+would have recorded it; the paired readings are the only record of what the probe reads for a given glass reading, and
+their difference rises with the reading, so the literal conversion of a day is the difference at that day's reading;
+the average satisfies the sentence only for a day whose reading is average. Every later clause (counting, the lines,
+projection, burn, loading, rounding) is filed and executes to one figure, and every admissible estimator of the
+reading-dependent conversion moves the same readings across the triggers (SF12), so every literal reading lands on the
+golden; the easy answer comes only from the easy method (one offset) on the same estimand.
+
+## Oracles
+
+- The comparison readings: their mean confirms the mean path and their per-reading differences confirm the golden;
+  the same file on both paths, so no tie decides between them.
+- The neighbours' monthly series: no break at Merrin Flat on every path, because the neighbours changed in the same
+  rollout (a distractor; no tie only under the golden).
+- The claims history (Ask B) is the cover's own record since 2019/20, read the same on every main-call path.
+- No published or adjusted series for Merrin Flat ships (it is not a reference station).
+
+## Ask sheet
+
+| Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
+|---|---|---|---|---|---|---|---|---|
+| A, the 2027/28 schedule by the co-operative's four sub-districts | 12: member blocks, insured hectares, premium | a component of the quote: what the cover insures and the premium it brings | the co-operative apportions the premium by sub-district | D2, the sub-district stored on each block at inception and rewritten only at an endorsement, so blocks not endorsed since the co-operative's 2025 redraw carry the old one (same four names) | D6, variety lines repeat the block's insured hectares; over-clean, block numbers restart for each member | renewal schedule, block register, member crosswalk, term sheet, the quote's rate (5 files, 11 columns) | schedule labels and lines summed (every sub-district high and mis-split); lines deduplicated, schedule labels (totals right, split wrong); dedup on block number (low); register sub-districts over every register block (high); the answer | a policy system copies the customer's sub-district at inception and mirrors the grower's variety lines |
+| B, the cover's record by season since 2019/20 | 16: claims paid and what they came to | the audit trail of the cover being repriced | the history table the co-operative weighs the new premium against | D1, duplicate lodgements: a member's claim lodged twice (broker and member portal) sits in the claims register twice, both assessed, only one ever paid; only the finance ledger shows which | D6, the register extract repeats each claim's amount on every insured block line of the claim; D8, the interim run in March and the final run after the Service's approval, often after 30 June, so the ledger's financial year is not the season | claims register, finance ledger, member crosswalk (3 files, 9 columns) | register claim numbers counted and amounts summed by season (high every season); ledger by financial year (shifted); register rows counted (higher); the answer | a broker and a member both lodge after a hot season; a flattened claims report repeats claim fields on each risk line; insurers settle weather covers on approved data |
+| Chart | 4 named parts | the exhibit of the line the premium is read from | the quote's second page | none (construction) | none | the seasons' counts and the line | the mirror's glass-era seasons and line differ | a pricing desk's standard exhibit |
+
+- **Main population zero-counts:** no device row in Merrin Flat's daily maxima, the comparison readings or the manual
+  and term sheet; asserted by count in `checks.py`.
+- **Hazard table:** D6 moves Ask A's hectares and blocks in every sub-district and Ask B's claims and amounts in every
+  season; D8 moves Ask B's amounts in every season with a final run after 30 June; D1 (a duplicate lodgement in every
+  season that paid) moves Ask B's counts and amounts on the register path.
+- **Referee:** none; the finance ledger and the claims register tie only by claim, never by season, under either
+  handling.
+
+| Ask figures | Cracker's path | Cracker's value | Verdict |
+|---|---|---|---|
+| A blocks by sub-district | schedule rows deduplicated by member and block, the schedule's own sub-district | right count, wrong split | miss |
+| A hectares by sub-district | the same | right total, wrong split | miss |
+| A premium by sub-district | the quoted rate times those hectares | wrong split | miss |
+| B claims by season | distinct claim numbers in the register with an assessed amount | high by the duplicate lodgements | miss |
+| B amounts by season | register amounts by claim and season | high by the duplicates and the block-line repeats | miss |
+| Chart parts (construction layer) | the golden's construction | right | outside |
+
+Mirror leakage: about 16 per cent of the ask weight (the chart's two presence parts and one in ten device figures).
+Pair ceiling: about 37 (the cracker at about 55 with the call and the chart, the mirror at about 18).
+
 ## Tried and rejected
 
 - Physical & Environmental Sciences, environmental monitoring exceedance, as the domain: blocked by `ban.pairing`
@@ -140,19 +268,3 @@ moves the 34.5 C days but not the 39.0 C days and quotes a third figure.
 - A 1989 changeover with the overlap to 1992: the glass era held 24 of 62 seasons and the premium moved under 5 per
   cent on some draws; the 1995 changeover balances the eras (30 and 32 seasons).
 
-## Ask sheet
-
-Draft, settled at the pause (the full ledger, stops, cracker sheet and ceilings are written on resume):
-
-- Ask A, the 2027/28 schedule cut by the co-operative's four sub-districts (member blocks, insured hectares, premium):
-  12 figures. Primary device D2, the sub-district stored on each block at inception and only rewritten when the
-  block is endorsed, so blocks not endorsed since the co-operative redrew its boundaries in 2025 carry the old
-  sub-district (same four names, so every row is valid); the co-operative's block register holds the current one.
-  Hazards: D6, the policy system's variety lines repeat the block's insured hectares (the register gives the area by
-  variety); the over-cleaning half, block numbers restart for each member so a dedup on block number deletes real
-  blocks. Premium figures are the quoted rate times the cut's hectares (rate-coupled, so the mirror misses them too).
-- Ask B, the cover's own record cut by season since 2019/20 (claims paid and what they came to): 16 figures. Primary
-  device D6, the claims register extract repeats each member's claim amount on every insured block line of the
-  claim; hazard D8, the finance ledger pays each season in an interim run in March and a final run after the
-  Service's approval, often after 30 June, so the ledger's financial year is not the season.
-- The chart (seasons since 1965/66, the line the price is read from, the 1995 change marked): 4 parts.
