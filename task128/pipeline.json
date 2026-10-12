@@ -1,13 +1,13 @@
 {
   "task": "task128",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "actuarial-science-insurance",
   "objective": "opportunity-sizing-decision",
-  "stage": 2,
-  "stage_name": "design (architecture 3)",
+  "stage": 1,
+  "stage_name": "re-root pending (first architecture-3 draw withdrawn)",
   "updated": "2026-10-12",
-  "stump": "A competent solver applies each book's indicated increase to its renewing premium, measures from the past renewals how many more owners lapse per point of increase in each book, and counts the extra leavers at the book's average claims cost, which keeps all five books; the step that lands it there is pricing the leavers at the book's average cost, when the owners who leave after an increase are those whose dogs have no ongoing condition and cost a fraction of the average while dogs under treatment stay, so two books' increases take money off the result and only the other three add.",
+  "stump": "",
   "architecture": 3,
   "loops": 0,
   "precut": {
@@ -20,7 +20,8 @@
   },
   "duplicate_check": {
     "heart": "",
-    "nearest": "task32 v1 lineage 0.07, task84 0.06"
+    "nearest": "",
+    "note": "the first v3 draw was withdrawn: guard BLOCK against task125 v2 (registered 08:22, ahead in draw order); its subdomain would have blocked task130 v4"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +29,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: name the world, design the history (past increases by book, lapse by condition), readability screen, semantic fork table, ladder, closure table, literal reader, oracles, ask sheet, prompt.txt; then precut.py",
+  "resume": "stage 1: redraw architecture 3 after task123's draw (which enters this slot's window and moves task121 out). The pet anti-selection draft stays blocked while task124 (population_selection) and task125 (composition_mix) sit in the window; a collections overflow comparison (causal_design, seed DS04's world moved to a bank's collections team) opens once task121 leaves it. Pull origin/main before every guard check.",
   "approved": null,
   "delivered": null,
   "portal": null,
