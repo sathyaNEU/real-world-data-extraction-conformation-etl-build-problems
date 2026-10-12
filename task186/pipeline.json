@@ -1,0 +1,23 @@
+{
+  "task": "task186",
+  "owner": "oviya13ya",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics / anomaly-detection (secondary economics-econometrics)",
+  "objective": "anomaly-detection",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-12",
+  "stump": "The default path tests each station's 28-day margin change against its own day-to-day variation, which cannot see that every area's margins cycle over five to nine weeks, so it finds nearly every station in the two areas whose cycles restored just after the change and sends the inquiry to Harbourline Fuels; a null from the stations' changes between periods when the levy did not move holds the false discovery rate and leaves Tallis Petroleum's company-run stations.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {"exit": null, "date": ""},
+  "leak": {"leak_py": "", "reader": ""},
+  "duplicate_check": {"heart": "", "nearest": ""},
+  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "returned": [],
+  "resume": "stage 2 design: readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet, prompt.txt; then precut",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "seed": "analytical_tasks/02_anomaly_detection/AD09_passthrough-panel-price-setting-population.md"
+}

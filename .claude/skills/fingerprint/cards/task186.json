@@ -1,0 +1,94 @@
+{
+  "task": "task186",
+  "architecture": "v1",
+  "drawn": "2026-10-12",
+  "slot_note": "wave 2 of oviya13ya's Anomaly Detection lane, from seed AD09 (a regulator choosing which fuel brands to examine for levy pass-through); the world, decision and quantity are the seed's, the pitfall is re-found from the stations' margin record",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "anomaly-detection",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a provincial statistics bureau's fuel price monitor, finding station by station where a carbon levy rise was passed on in excess with the false discovery rate held, to choose the one brand the Fuel Price Commissioner's pre-levy inquiry examines",
+  "objective": "anomaly-detection",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "rule",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G17"
+  ],
+  "gate_g": "signal_vs_noise_or_hold",
+  "calibration_form": "none",
+  "stump_strategy": "uncertainty_hold",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the head of the Prices Division at the provincial statistics bureau, which runs the fuel price monitor and recommends to the Fuel Price Commissioner the brand for the pass-through inquiry ahead of the 1 January 2027 levy rise",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "price_change_log_regular_2025-01-01_2026-11-15.csv",
+    "rows": 0,
+    "entity": "one posted price change for regular gasoline at one retail station",
+    "grain": "station x posted price change (minute stamped)",
+    "source": "synthetic"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "Canada, a province's sixteen urban areas (fictional towns)",
+    "currency": "CAD",
+    "org_type": "provincial statistics bureau running the fuel price monitor for the Fuel Price Commissioner",
+    "invented_names": [
+      "Provincial Statistics Bureau",
+      "Office of the Fuel Price Commissioner",
+      "Fuel Price Transparency Act",
+      "Tallis Petroleum",
+      "Harbourline Fuels",
+      "Pellow Gas",
+      "Wexcombe Petroleum",
+      "Oxbury Fuels",
+      "Cairnmore Energy",
+      "Garrow Fuels"
+    ],
+    "people": [
+      "Theodore Ellis",
+      "Kendra Andrews",
+      "Kristin Cline"
+    ]
+  },
+  "deliverables": [
+    "pass_through_inquiry_2027.docx",
+    "inquiry_scope_2027.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "Each unit's change across an event is tested for exceeding what the event alone would leave, but the units' levels swing between periods in local cycles shared within each place for reasons unrelated to the event, so a test built on a unit's within-period variation finds most units in the places whose cycles happened to rise across the event; only a null built from the units' changes between periods without the event, or from their same-place peers, holds the error rate and leaves the one group whose units truly moved.",
+  "driver_concrete": "Each station's regular-gasoline margin change across the 1 January 2026 levy rise is tested against what full pass-through would leave, but every urban area's margins cycle over five to nine weeks, so a 28-day before-and-after change moves by up to about 1.4 cents a litre at any date; a t-test on the station's daily margins reads that as signal and finds nearly every Harbourline station, all in the two areas whose cycles restored just after the change, so the inquiry goes to Harbourline, while a null from the stations' changes at dates with no levy change, or from same-area competitors, holds the false discovery rate and leaves Tallis's company-run stations, which kept about 3 cents a litre more than the rise.",
+  "stump": "A competent solver tests each station's margin change against its own day-to-day variation, applies Benjamini-Hochberg at 5 per cent, finds nearly all of Harbourline's stations and opens the inquiry into Harbourline; the null that holds the error rate leaves only Tallis's company-run stations, about three in ten of Tallis's.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who rebuilds every station's daily margin from the minute log, applies the standard's windows and examined-station rule and tests each margin change against the station's day-to-day variation (a Welch t-test or a regression with robust errors) before Benjamini-Hochberg at 5 per cent finds most stations in two urban areas and sends the inquiry to Harbourline, not Tallis.",
+  "domain_test": "The deciding quantity is each station's evidence of a margin rise beyond full pass-through, held to a 5 per cent false discovery rate across every station, which needs the reference distribution of a 28-day margin change when nothing changed; official statistics anomaly detection scores each unit's period change against the spread of changes in comparable units and periods (an empirical reference, as Hidiroglou-Berthelot does for ratios), not against the unit's own day-to-day variation. Swap the nouns and the setting survives, as in a methods domain; swap the theoretical reference for the empirical one and the inquiry moves from Harbourline to Tallis.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:empirical-null-for-shared-local-cycles",
+  "layer1": [
+    "minute-stamped price-change log in UTC against a local-time daily window across daylight-saving changes",
+    "terminal rack prices published per business day in dollars a litre, weekends carried",
+    "station register with brand and operating-model changes over time",
+    "station identifiers renumbered by the reporting system with a crosswalk",
+    "batches of price changes resubmitted after reporting outages"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Pairing redrawn from general-statistics-data-science x anomaly-detection (ban.pairing against task185) to survey-research-official-statistics x anomaly-detection: the monitor sits in the provincial statistics bureau, and scoring each unit's change against an empirical reference of comparable changes is official statistics' own anomaly detection. Decisive generator G2 (the unit of independent evidence is a 28-day period change of an urban area's cycle, not a station-day), G17 supporting; G16 is banned against task185."
+}
