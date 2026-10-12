@@ -106,7 +106,8 @@ def write_methods(path):
             "interviewer makes before an address is returned as a non-contact and when they are made. Telephone "
             "interviews are arranged at the first interview and made in the reference week's following fortnight.",
             "Interviews are recorded on the face-to-face (CAPI) and telephone (CATI) systems. Visits to addresses "
-            "issued for a first interview are logged on the interviewer's tablet in the call-record application."]),
+            "issued for a first interview are logged on the interviewer's tablet in the call-record application; a "
+            "visit is identified by the address serial and its visit number."]),
         ("3. Definitions", [
             "Employed: did any work for pay or profit in the reference week, or had a job they were temporarily away "
             "from. Unemployed: without a job, actively sought work in the last four weeks and available to start in "
@@ -127,9 +128,14 @@ def write_methods(path):
             "Effects are reported in percentage points on the published rates.",
             "Sampling error on the national unemployment rate is about 0.2 percentage point (95 per cent margin about "
             "0.4); on a quarter-on-quarter change it is somewhat smaller, the samples sharing four intakes."]),
-        ("6. Release", [
-            "Quarterly estimates are released about six weeks after the quarter ends, rounded to one decimal place. "
-            "Revisions to earlier quarters are made only when the population controls are rebased."]),
+        ("6. Flows", [
+            "Labour market flows between two quarters are counted on the people interviewed in both, matched person to "
+            "person within the household; a flow rate is the number moving from one status to another as a percentage "
+            "of those in the first status, unweighted. People not interviewed in the second quarter are left out."]),
+        ("7. Release", [
+            "Quarterly estimates are released about six weeks after the quarter ends, rounded to one decimal place; "
+            "changes and differences are computed from unrounded estimates and rounded independently. Revisions to "
+            "earlier quarters are made only when the population controls are rebased."]),
     ]
     for h, paras in sec:
         s.append(_p(h, S_H2))

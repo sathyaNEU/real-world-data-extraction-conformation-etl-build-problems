@@ -23,12 +23,12 @@
     "nearest": "0.08 task500 v2"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (pass 1)",
+    "disposition": "FIX_NOW",
+    "report": "task125/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: judge thread running on /tmp/determinism-check-task125-090148-17132/judge_brief.md; then the determinism-judge agent writes determinism_check_report.md; fix findings in one generator pass, then ship",
+  "resume": "stage 4: pass-1 FIX_NOW repaired (methods note sections 2, 6, 7; release hours referee); reader re-run and judge pass 2 running; append the reader to leak_check_report.md, then ship",
   "approved": null,
   "delivered": null,
   "portal": null,

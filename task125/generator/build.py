@@ -43,7 +43,7 @@ def build(out, quiet=False, world=None):
     counts["calls"] = R.write_calls(p("calls"), w["call_rows"])
     counts["register"] = R.write_register(p("register"), I)
     R.write_controls(p("controls"))
-    R.write_release(p("release"), I)
+    R.write_release(p("release"), I, w["person_rows"])
     counts["claimants"] = R.write_claimants(p("claimants"))
     R.write_staffing(p("staffing"))
     D.write_methods(p("methods"))

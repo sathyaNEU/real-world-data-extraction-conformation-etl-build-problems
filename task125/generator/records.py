@@ -207,20 +207,32 @@ def write_controls(path):
     wb.save(path)
 
 
-def write_release(path, intakes):
+def decimal_hours(h, mode):
+    if mode != "CATI":
+        return h
+    whole = int(h)
+    return whole + round((h - whole) * 100) / 60
+
+
+def write_release(path, intakes, person_rows):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Table 1"
     ws.append(["Household Labour Survey: headline rates, people aged 15 and over (not seasonally adjusted)"])
     ws.append([])
-    ws.append(["Quarter", "Unemployment rate (%)", "Employment rate (%)", "Unemployed (000)", "Employed (000)"])
+    ws.append(["Quarter", "Unemployment rate (%)", "Employment rate (%)", "Unemployed (000)", "Employed (000)",
+               "Total actual weekly hours (000)"])
+    hours = {}
+    for p in person_rows:
+        if p["ilo_status"] == 1:
+            hours[p["quarter"]] = hours.get(p["quarter"], 0.0) + p["weight"] * decimal_hours(p["actual_hours"], p["mode"])
     regional = []
     for q in W.qrange(W.FIRST_Q, W.TEMPLATE_Q):
         s = M.quarter_sample(intakes, q)
         w = M.rake(s["region"], s["cell"], q)
         u, e = M.rates(s["status"], w)
         ws.append([W.qname(q), round(u, 1), round(e, 1), round(w[s["status"] == 1].sum() / 1000, 1),
-                   round(w[s["status"] == 0].sum() / 1000, 1)])
+                   round(w[s["status"] == 0].sum() / 1000, 1), round(hours[W.qlabel(q)] / 1000, 1)])
         regional.append([W.qname(q)] + [round(M.rates(s["status"][s["region"] == r], w[s["region"] == r])[0], 1)
                                         for r in range(len(W.RCODES))])
     ws2 = wb.create_sheet("Table 4")
@@ -229,7 +241,7 @@ def write_release(path, intakes):
     ws2.append(["Quarter"] + [W.RNAME[c] for c in W.RCODES])
     for r in regional:
         ws2.append(r)
-    for s, widths in ((ws, [24, 14, 14, 14, 14]), (ws2, [24] + [12] * 6)):
+    for s, widths in ((ws, [24, 14, 14, 14, 14, 16]), (ws2, [24] + [12] * 6)):
         s["A1"].font = Font(bold=True)
         for cell in s[3]:
             cell.font = Font(bold=True)
@@ -244,6 +256,7 @@ def write_release(path, intakes):
     for line in ["Estimates for April to June 2026, released 13 August 2026.",
                  "Rates are of people aged 15 and over: unemployed as a share of the labour force, employed as a share of the population.",
                  "Estimates are weighted to the population controls in force for each quarter; see the HLS methods note.",
+                 "Total actual weekly hours: hours actually worked in the reference week by employed people, all jobs.",
                  "Figures are rounded independently."]:
         wn.append([line])
     wn.column_dimensions["A"].width = 110

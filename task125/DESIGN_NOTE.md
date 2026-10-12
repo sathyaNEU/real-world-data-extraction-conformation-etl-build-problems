@@ -157,7 +157,7 @@ first, employment rate below it.
 | 7 | Weighting | raked person weights | filed in the methods note; SF6 |
 | 8 | Window length | the template quarter | SF4 |
 | 9 | Boundary inclusivity | fourth visit and later | SF5 |
-| 10 | Rounding path | hundredths of a point from unrounded estimates | filed in the prompt; SF9 |
+| 10 | Rounding path | hundredths of a point from unrounded estimates | the methods note section 7 (changes from unrounded estimates, rounded independently); SF9 |
 | 11 | Tie-break | none | no decision turns on a tie |
 | 12 | Maturity and censoring | the July to September 2026 file complete at lock | filed in the extract notes |
 | 13 | Order of operations | drop households, re-rake, estimate | asserted |
@@ -207,6 +207,8 @@ adjudicates a device.
   logged offline after an August update, each re-sent call under a new record id with the same serial, visit number and
   visit time and a later upload time; counted as rows every region is high. Only an internal inconsistency finds it:
   two calls to one address with the same visit number and minute.
+- Reading pin (judge pass 1): the methods note's section 2 identifies a visit by the address serial and its visit
+  number; it says nothing of uploads.
 - Over-cleaning hazard: interviewers call twice on one day (afternoon and evening), so a de-duplication on serial and
   date drops real visits; on serial and visit number it is exact.
 - Shared hazard: the serial's check digit in the July to September file (region comes from the address register).
@@ -223,6 +225,8 @@ region (6 figures, percent to two decimals).**
   each) and every region moves. Only sex and date of birth disagreeing across a pair shows it.
 - Hazard: the check digit (shared with ask 1); wave-1 newcomers in July to September with no April to June record.
 - Span (2 files, 9 columns): person file, data dictionary.
+- Reading pin (judge pass 1): the methods note's section 6 counts flows on people interviewed in both quarters,
+  unweighted; it names no key.
 - Ladder (asserted): joined on serial and person number (the cracker, every region off, Velmouth 37.07 against
   30.77); joined on serial alone (fan-out, every region off); golden, serial, sex and date of birth (one match each).
 
@@ -234,6 +238,9 @@ thousands of hours to one decimal, final weights).**
   per cent (Velmouth 26,963.2 against 27,055.5 thousand, asserted). Only the telephone values' fractions never
   exceeding .59, against the face-to-face quarter hours, show it.
 - Over-correction hazard: converting every value as h.mm, face-to-face decimals included, puts every region high.
+- Referee (judge pass 1): the release table's national total actual weekly hours for each quarter to April to June
+  2026, which only the converted telephone hours reproduce (raw sums miss by more than 50 thousand in every quarter,
+  asserted); it fixes the level without a sentence naming the encoding.
 - Span (2 files, 7 columns): person file, data dictionary.
 - Ladder (asserted): raw sum (the cracker); every value converted; golden.
 
@@ -285,6 +292,18 @@ from a filed sentence sends that sentence out of the pack and the build back to 
   labels, task132 and task501 v3 on gap, pattern and Gate G); the labels were re-read at stage 3 (gap time first, G6
   then G13, context artifact filed_standard) and the card carries differentiation lines for task132 and task501 v3.
   No surface (vocabulary, file name, persona) overlap was found; the adjudicated /clone-check is the author's call.
+
+## Judge record
+
+- Pass 1 (2026-10-12): DETERMINISTIC, FIX_NOW. The call, the July to September split and the whole gap path reproduced
+  to two decimals; licensed variants (re-raking from the file weights, each quarter's own controls) agree to three
+  decimals. Findings on the asks only: the telephone hours encoding, the flow denominator and weighting, rows against
+  visits, and the rounding path. Gate G: decomposition_attribution, analytical_non_defect, no surface read, no sole
+  defect. Gate H: pass, decisive step analytical (borderline rule application through section 5, which states the
+  base quarter and the raking but not the rotation bookkeeping or the persistence). Repairs, one generator pass:
+  methods note sections 2, 6 and 7 (visit identity, flows, rounding from unrounded estimates) and the release table's
+  total actual weekly hours as a referee; a dictionary line naming the h.mm encoding was declined as narrating the
+  device.
 
 ## Tried and rejected
 

@@ -151,6 +151,19 @@ def run(target, golden, world, meta_path):
     for (q, (u, e)), r in zip([(q, AN.published(d, q)) for q in W.qrange(W.FIRST_Q, W.TEMPLATE_Q)], t1):
         ok(abs(r[1] - u) < 0.051 and abs(r[2] - e) < 0.051, "release table %s" % W.qlabel(q))
 
+    # the published hours referee: only the converted telephone hours reproduce it, every quarter
+    ph = d["person"]
+    emp = ph[ph["ilo_status"] == 1]
+    conv = emp["actual_hours"].where(emp["mode"] != "CATI", emp["actual_hours"].apply(A.to_decimal))
+    for q, r in zip(W.qrange(W.FIRST_Q, W.TEMPLATE_Q), t1):
+        m = (emp["quarter"] == W.qlabel(q)).to_numpy()
+        good = (emp["weight"][m] * conv[m]).sum() / 1000
+        raw = (emp["weight"][m] * emp["actual_hours"][m]).sum() / 1000
+        ok(abs(r[5] - good) < 0.051 and abs(r[5] - raw) > 50, "release hours referee %s" % W.qlabel(q))
+    ok("a visit is identified by the address serial and its visit number" in meth, "ask 1 reading pin")
+    ok("People not interviewed in the second quarter are left out" in meth and "unweighted" in meth, "ask 2 reading pin")
+    ok("computed from unrounded estimates" in meth, "rounding pin")
+
     # ---- goldens agree with figures.json
     with zipfile.ZipFile(os.path.join(golden, "hls_visit_limit_note_2026q3.docx")) as z:
         doc = re.sub(r"<[^>]+>", "", z.read("word/document.xml").decode("utf-8"))
