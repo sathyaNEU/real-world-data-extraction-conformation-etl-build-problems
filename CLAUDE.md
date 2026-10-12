@@ -146,9 +146,11 @@ note's `## Tried and rejected`.
    easy way? Choosing the estimand or unit of analysis counts as analysis.
 
 Cards carry `stump_class` (only `analytical` passes), `analyst_test` and `domain_test`. The guard blocks
-an official decoy, a certified record built to bless the wrong method, and a decisive rule left unstated
-against a stated one. File the rules a real organisation writes down; the answer turns on a step they
-leave open.
+an official decoy, a certified record built to bless the wrong method, a decisive rule left unstated
+against a stated one, and a task type that does not serve the objective. File the rules a real
+organisation writes down; the answer turns on a step they leave open. The rules are gates, not sentences:
+the design note's `## Three rules` answers the client's check line by line (`precut.py`), and `checks.py`
+executes the analyst test on the generator's clean truth (`dataset-generation` §7.1).
 
 **Determinism is literal.** The judge executes the shipped text word for word. The estimand
 (population, including members not yet observed, outcome, window, unit, comparison) is filed so its

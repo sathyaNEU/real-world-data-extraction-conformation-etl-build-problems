@@ -18,7 +18,9 @@ ask sheet). Read its `## Tried and rejected` first.
 One client domain, one task type, one of the eight Axis 1 objectives
 (`guide-to-prompt/references/domains/README.md`); house domains stay valid only for cards on file. If the
 stump needs evidence from a second sector, the stump is wrong. Framing rule: the entity is a platform, the
-public dataset the market it sells into.
+public dataset the market it sells into. The pack carries the raw material the task type's own analysis
+runs on (§7.1, R1): a pack whose deciding computation is a sort, filter, join or stated score over shipped
+columns makes the domain a backdrop, and goes back to design.
 
 | Objective | The pack must ship (fails when) |
 |---|---|
@@ -152,6 +154,31 @@ repeating block; no free text recurring beyond a real rate; every persona from `
 scrubbed (`reduce-house-fixes` H1); timestamps coherent (§9). A tell the leak reader still finds is a
 generator fix before the judge.
 
+### 7.1 The three rules, executed
+
+The generator holds the clean truth (the world before any mess is applied or any document written), so the
+client's three rules are asserted, not argued: one block in `checks.py`, every label starting `R1`, `R2` or
+`R3`, run on every build and every repair.
+
+- **R1, the field's raw material ships.** The pack carries what the task type's estimator runs on, at the
+  grain the field works at (paired readings, censored durations, a triangle's claims, assignment records,
+  microdata with its weights), never the deciding quantity precomputed and never a list to sort. Assert that
+  the golden's decisive computation reads those rows and that no shipped column holds the deciding quantity.
+- **R2, every mess item is real and neutral.** The design note's Layer 1 inventory names each item, the
+  system that writes it, the file it sits in and its natural mishandling. Per item, the golden method run
+  with that item mishandled leaves the call and every critical component where they were, or moves only its
+  ledgered asks (§7); one assertion per item.
+- **R3a, the analyst test.** The easy route (the default path) run on the clean truth, every filed rule
+  applied, files the named wrong answer. If executing the stated rules reaches the golden, the decisive step
+  is rule application.
+- **R3b, the decisive step alone.** The easy route with only the decisive step changed files the golden;
+  each lower rung's single correction leaves it on a wrong answer.
+- **R3c, no plant.** None of the client's plant kinds ships: a copied or backfilled block, a swapped or
+  reversed series, a hidden year-to-date column, a decoy memo or staff draft, a stakeholder figure wrong only
+  so the task can overturn it. The realism sweep's repeated-block check covers the first two by assertion.
+
+A failing R assertion is a design failure: back to `stumping`, never patched in the data.
+
 ## 8. Governing documents
 
 **8.1 The pin.** One sentence, a filed fact, in the highest-authority document that carries it; never
@@ -211,7 +238,7 @@ evidence alone; the fork grid cell by cell, each losing cell mapped to the sente
 and censoring included); mess neutrality per complication; the cracker sheet (`supplemental-stumping`)
 outside every ask's bin.
 
-**`checks.py`, 40 or more assertions:** rung winners by name and margins; position table; dominance;
+**`checks.py`, 40 or more assertions:** the three-rules block (§7.1, R1 to R3c); rung winners by name and margins; position table; dominance;
 disagreement both ways; calibration back-test and swept count; fork grid and every `SF` row; mess
 neutrality; each graded figure's distance to its bin edge; every figure a voice quotes; no round totals,
 shares or uniform counts; each load-bearing fact in exactly one file; the input gates; the realism sweep;
@@ -256,6 +283,7 @@ patch.
 ## 14. Checklist
 
 - [ ] Pairing in the design note; the objective's evidence ships; input gates asserted
+- [ ] The three-rules block passes on the clean truth: R1 raw material, R2 per mess item, R3a analyst test, R3b decisive step alone, R3c no plant
 - [ ] Every file does work; nothing broadcasts the stump; no answer key
 - [ ] Calibration only where needed, confirming a filed criterion, records behind every row
 - [ ] No artifact ranks the candidates wrongly (declared distractor excepted); context artifact reproduces

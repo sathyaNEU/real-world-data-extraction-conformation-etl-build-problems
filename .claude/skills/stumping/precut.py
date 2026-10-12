@@ -26,6 +26,10 @@ CARDS = os.path.join(REPO, ".claude", "skills", "fingerprint", "cards")
 REQUIRED = ["Draw", "Default path", "Stump sentence", "Three rules", "Readability screen",
             "Semantic fork table", "Ladder", "Closure table", "Literal reader", "Oracles", "Ask sheet",
             "Tried and rejected"]
+VOCAB = os.path.join(REPO, ".claude", "skills", "fingerprint", "vocab.json")
+# The client's check before a build ships, one label per point (stumping 1.1).
+THREE_RULES = ("Task type", "Domain test", "Swap", "Layer 1", "Layer 2", "Decisive step", "Analyst test",
+               "Estimand", "No decoy", "No certified replay", "Lesson")
 PAIR_CEILING = 40.0
 MIRROR_CEILING = 35.0   # per cent of ask weight the best response off the call may keep (supplemental Part 1.1)
 AXES = set(range(1, 23))
@@ -109,6 +113,41 @@ def names_value(sentence, value):
     return any(w in low for w in words) if (words and not nums) else False
 
 
+def build_status(task_dir):
+    try:
+        import json
+        return json.load(open(os.path.join(task_dir, "pipeline.json"))).get("status") or ""
+    except Exception:
+        return ""
+
+
+def task_type_serves(task, line):
+    """Rule 1: the task type the note names is one of the card's domain's task types and serves its objective.
+    Returns (True | False | None, detail); None when the card or vocabulary cannot be read."""
+    import json
+    try:
+        card = json.load(open(os.path.join(CARDS, task + ".json")))
+        vocab = json.load(open(VOCAB))
+    except Exception:
+        return None, "card or vocab.json unreadable; Task type line not checked"
+    client = vocab.get("client_domains", {})
+    obj, dom = card.get("objective"), card.get("domain")
+    doms = [dom] if dom in client else ([card.get("client_domain")] if card.get("client_domain") else
+                                        (vocab.get("house_domains", {}).get(dom, {}).get("maps_to") or []))
+    low = re.sub(r"[^a-z0-9]+", " ", line.lower())
+    named = []
+    for d in doms:
+        for key, objs in client.get(d, {}).get("task_types", {}).items():
+            if key.replace("-", " ") in low:
+                named.append((d, key, objs))
+    if not named:
+        return False, "names none of %s's task types (guide-to-prompt/references/domains/README.md)" % (", ".join(d for d in doms if d) or dom)
+    hit = [(d, k) for d, k, objs in named if obj in objs]
+    if hit:
+        return True, "%s/%s serves %s" % (hit[0][0], hit[0][1], obj)
+    return False, "%s serves %s, not %s" % (named[0][1], ", ".join(named[0][2]), obj)
+
+
 def check_note(task_dir, note_text):
     rows = []
     secs = sections(note_text)
@@ -147,11 +186,24 @@ def check_note(task_dir, note_text):
         row("stump sentence names the default answer", names_value(ss_text, ends),
             "names %r" % ends if names_value(ss_text, ends) else "does not name the default path's answer %r" % ends)
 
-    # Three rules.
+    # Three rules: one labelled line per point of the client's own pre-ship check (stumping 1.1). A build that
+    # has shipped meets a missing line as a WARN; a build being designed or repaired is refused.
     tr = section(secs, "Three rules") or ""
-    for label in ("Domain test", "Analyst test", "Layer 1", "Layer 2"):
+    shipped = build_status(task_dir) in ("SHIPPED", "SHIPPED_APPROVED", "RETIRED")
+    for label in THREE_RULES:
         v = labelled(tr, label)
-        row("three rules: %s" % label, bool(v), (v or "missing")[:120])
+        ok = bool(v) and len(v) >= 20
+        row("three rules: %s" % label, ok, (v or "missing")[:120] if ok else (v or "missing") + " (one line, 20 characters or more)",
+            warn=shipped and label not in ("Domain test", "Analyst test", "Layer 1", "Layer 2"))
+    at = labelled(tr, "Analyst test")
+    if at and ends:
+        row("analyst test names the default answer", names_value(at, ends),
+            "names %r" % ends if names_value(at, ends) else "the analyst test does not name the default path's answer %r" % ends,
+            warn=shipped)
+    tt = labelled(tr, "Task type")
+    if tt:
+        ok, detail = task_type_serves(task, tt)
+        row("task type serves the objective", ok, detail, warn=shipped or ok is None)
 
     # Readability screen.
     rs = section(secs, "Readability screen") or ""

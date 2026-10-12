@@ -15,8 +15,10 @@ tasks) for the depth the client pays for.
 
 **One domain, one task type.** From the client taxonomy (`references/domains/README.md`): the domain whose
 decision-maker owns the call, one task type in it (the card's `subdomain`); the task type is where the Layer 2 pitfall
-comes from. **Swap test:** put another field's nouns in; if the task reads the same, the domain is a backdrop. Write
-the field's own deciding analysis, and why the swap breaks it, into the card's `domain_test`.
+comes from, and it must serve the objective in the taxonomy (the guard and `precut.py` refuse one that does not).
+**Swap test:** put another field's nouns in the call sentence; if it reads the same, the domain is a backdrop. Write
+the field's own deciding analysis, and why the swap breaks it, into the card's `domain_test` and the design note's
+`## Three rules` (`stumping` 1.1).
 
 **One objective of eight**, or the task is rejected on the tag ("Comparative analysis" is not one).
 

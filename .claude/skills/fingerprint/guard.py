@@ -499,6 +499,34 @@ def check(cand, cards, vocab, status=None):
                 "a stated rule" % cand.get("stump_strategy"), [],
                 "the analyst_test shows the easy analytical route that still fails once every field and rule is "
                 "read correctly; if it cannot, the stump is semantics or rule application")
+        # Rule 1: the task does the analysis of one of its domain's task types, and that task type serves the
+        # objective in the client's taxonomy. A delivered build meets this as a WARN so the risk surfaces
+        # without blocking its sign-off; a new draw or a build in flight is blocked.
+        level = "WARN" if "delivered" in (status.get(cand.get("task")) or "") else "BLOCK"
+        client = vocab.get("client_domains", {})
+        obj, sub, dom = cand.get("objective"), cand.get("subdomain"), cand.get("domain")
+        if dom in client:
+            types = client[dom].get("task_types", {})
+            if sub in types and obj not in types[sub]:
+                add(level, "three_rules.task_type", "task type %s serves %s, not %s: the domain would be a backdrop"
+                    % (sub, ", ".join(types[sub]), obj), [],
+                    "draw a task type of %s that serves %s (%s), or another domain" % (
+                        dom, obj, ", ".join(k for k, v in types.items() if obj in v) or "none in this domain"))
+            elif sub not in types:
+                serving = [k for k, v in types.items() if obj in v]
+                add(level if not serving else "WARN", "three_rules.task_type",
+                    "subdomain %r is not one of %s's task types" % (sub, dom), [],
+                    "name the closest task type serving %s in the design note's Task type line (%s)" % (
+                        obj, ", ".join(serving) or "none in this domain: redraw the domain"))
+        else:
+            maps = [cand.get("client_domain")] if cand.get("client_domain") else \
+                (vocab.get("house_domains", {}).get(dom, {}).get("maps_to") or [])
+            serving = ["%s/%s" % (d, k) for d in maps for k, v in client.get(d, {}).get("task_types", {}).items()
+                       if obj in v]
+            if not serving:
+                add(level, "three_rules.task_type", "house domain %s sits in %s, where no task type serves %s"
+                    % (dom, ", ".join(m for m in maps if m) or "no client domain", obj), [],
+                    "draw a client domain with a task type serving %s" % obj)
     lp = cand.get("layer2_pattern")
     if lp:
         same = [c for c in cards if c.get("task") != cand.get("task") and c.get("layer2_pattern") == lp]

@@ -35,15 +35,46 @@ screen, never assume.
 
 ## Part 1. Find the pitfall
 
-### 1.1 The litmus and the three rules, in writing first
+### 1.1 The three rules, first and in writing
 
-**Litmus:** is the number the task overturns actually wrong, and is catching that what defeats the model?
-Yes to both is banned at any depth. The client's rules: the field estimates, models or tests the deciding
-quantity (`domain_test`: other nouns break the task); Layer 1 is real systems' mess, Layer 2 carries the
-stump; a plant, data semantics and rule application never decide. **Analyst test** (`analyst_test`): a
-strong analyst who cleaned the data and read every field and rule right still fails the easy way; name the
-route and its answer, or redesign, never harden. Choosing the estimand or unit is analysis; the card's
-`stump_class` is `analytical`.
+The client reviews every task against three rules and sends a break back even when the task is
+deterministic and correct (`references/client/two-layer-task-design.md`, its good and bad prompts
+included): the task really uses its domain; it has two layers, realistic mess and the analysis that
+decides; a plant, data semantics or rule application may appear but never decides. They are answered
+before the default path is written, in the design note's `## Three rules`, one labelled line per point of
+the client's own check before a build ships. `precut.py` refuses a missing or one-word line.
+
+| Label | The line answers |
+|---|---|
+| `Task type:` | the domain's task type the build sits closest to, one that serves the objective in the taxonomy (the guard and `precut.py` check it) |
+| `Domain test:` | the quantity that decides the call and the field's own estimator, model or test for it |
+| `Swap:` | the call sentence rewritten with another field's nouns, and what stops making sense |
+| `Layer 1:` | each mess item and the system that produces it; nothing placed to be caught |
+| `Layer 2:` | the family and the methodological choice that flips the call |
+| `Decisive step:` | why that step is not catching a plant, not reading a field, code, unit or definition, not applying a stated rule |
+| `Analyst test:` | the easy route a strong analyst takes with every field read and every rule applied, and the wrong answer it files (the default path's `Ends on:`, named) |
+| `Estimand:` | the filed sentence fixing population, outcome, window, unit and comparison, and the file it sits in |
+| `No decoy:` | that no memo, draft, briefing or stakeholder figure is written to carry the wrong answer |
+| `No certified replay:` | that the method is not hidden and recovered by reproducing certified or published figures |
+| `Lesson:` | what a model learns by getting it right, and why no build on file already teaches it |
+
+**Rule 1, the domain.** A decision framing ("which clinics") is fine; the quantity that decides must be one
+the field estimates, models or tests, worked the way its task type works it. Run the swap on the sentence,
+never in the head: if the call still reads with a hospital for a school, or megawatt-hours for visits, the
+domain is a backdrop and the draw is redone. A sort, filter, join, threshold or stated score deciding the
+call is a backdrop at any depth (the client's bad pair: substations ranked by the grant rules' score). In
+General Statistics & Data Science the setting is always another field's, so there the swap is of the
+method: the deciding quantity is the task type's own statistical object (a distribution's shape, a model's
+diagnostic, an interval's coverage), and replacing it with a generic summary must change the call.
+
+**Rule 3, the decisive step.** **Litmus:** is the number the task overturns actually wrong, and is catching
+that what defeats the model? Yes to both is a plant, banned at any depth. A field read, a unit converted
+and a rule executed may sit on lower rungs and in the asks; the call never turns on one. The analyst test
+(`analyst_test`) is the proof, and it is executed, not argued: `checks.py` runs the easy route on the
+generator's clean truth with every filed rule applied and asserts it files the named wrong answer, then
+changes the decisive step alone and asserts the golden (`dataset-generation` §7.1). A test that cannot be
+written means redesign, never harden. Choosing the estimand or unit is analysis; the card's `stump_class`
+is `analytical`.
 
 ### 1.2 The stump lives in HOW, never in WHAT
 
@@ -118,7 +149,8 @@ call`. The stump is never a reading.
 ### 2.3 The deletion tests
 
 Each kills a candidate decisive step. **1** Delete every wrong number and misleading claim: still hard, or
-a surface-read rejection. **2** Clean data, **3** lens swap (`determinism-check` §4). **4** Identity: if
+a surface-read rejection. **2** Clean data: the easy route on the clean truth still files the wrong answer,
+executed in `checks.py` (`dataset-generation` §7.1). **3** Lens swap (`determinism-check` §4). **4** Identity: if
 the governing arithmetic closes over shipped quantities, change the graded quantity (73 world six, 36).
 **5** Control direction: each control is absent or ties under every basis for a reason true now at its
 grain, the device netting to zero there (L1, L8). One refuting the naive read is a search bench (92 v2, 89
@@ -185,7 +217,7 @@ Nothing is cut until `DESIGN_NOTE.md` carries these H2 headings, spelt exactly, 
 | `## Draw` | card, pairing, shape, strategy, data-native sentence, a line per source; the card is filed |
 | `## Default path` | numbered steps, `Ends on:`, `Golden:`; both present and different |
 | `## Stump sentence` | the default answer and the step; names `Ends on:` |
-| `## Three rules` | `Domain test:`, `Analyst test:`, `Layer 1:`, `Layer 2:` |
+| `## Three rules` | the eleven labelled lines of 1.1; `Analyst test:` names `Ends on:`; `Task type:` names a task type serving the objective |
 | `## Readability screen` | a row per rung, the six tests, `(decisive)`, verdict last; decisive `silent` |
 | `## Semantic fork table` | `SF1`, `SF2`...; `Ruled out by` filled, ids in `generator/checks.py` |
 | `## Ladder` | rungs, winners, margins, position, dominance, grid, worth |
@@ -293,7 +325,8 @@ or refutes, a filed rule over filed candidates, a dated cutover, a validated dec
 
 ## Checklist (mirrored by `precut.py`)
 
-- [ ] Card registered first; abstraction, same-puzzle, litmus and three rules answered
+- [ ] Card registered first; abstraction, same-puzzle and litmus answered; the three rules line by line, swap run on the sentence
+- [ ] Analyst test written to execute on the clean truth (`dataset-generation` §7.1); the task type serves the objective
 - [ ] Default path ending wrong, named by the stump sentence; data-native sentence
 - [ ] Decisive rung silent, reflexes wrong, forks asserted, deletion tests passed, oracles listed
 - [ ] Ladder arithmetic on paper; 22 axes closed; organs only as needed; `precut.py` exits 0
