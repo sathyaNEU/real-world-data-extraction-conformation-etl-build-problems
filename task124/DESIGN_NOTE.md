@@ -142,12 +142,14 @@ inside the deadline.
   lines).
 - **Stump class:** analytical. Rule 3 is cleared: no planted defect or decoy decides it (the verifications are real
   and correctly recorded), no field reading flips it (every code is read the same on both paths) and no stated rule
-  produces it (nothing in the pack says how to estimate the unknown lines).
+  produces it (the field notes say how lines come to be verified; nothing in the pack says which verifications
+  estimate the share, or how).
 
 ## Gate G
 
 - **Litmus:** no. Every reported figure is correct; no stakeholder figure or conclusion is overturned. The difficulty
-  is estimating what the plan's digs will find from verifications whose reasons the log does not record.
+  is estimating what the plan's digs will find from verifications whose reasons the log does not carry row by row
+  (the field notes describe the two ways lines come to be verified, never which rows came which way).
 - **Classification:** mechanism `forecasting` with `method_or_model_selection` supporting;
   `surface_read_dependency: no`; `stumping_family: analytical_non_defect`; `sole_data_defect: no`.
 - **Deletion test:** delete every wrong number and misleading claim: there are none (no hit rate is published, no
@@ -173,7 +175,7 @@ inside the deadline.
 | R0 every verified no-record line, share by era (2039, the default path) | the plan groups unknown lines by era | result and construction year are columns | yes | none needed | clean | one share per era | readable |
 | R1 a model on every visible attribute (era, construction year, zone) fitted on every verified line, or the verified lines reweighted to the unknown lines' mix (2039) | no | era, year and zone are columns | yes: holds the pool to every visible attribute | none | clean | no | readable |
 | R2 the segments verified whole, one pooled share (2039, seven zones' years right) | no | no column marks them | no | none | clean | one share | silent |
-| R3 (decisive) the segments verified whole, share by era (2037) | no sentence says why a line was dug or names a main replacement, a project, a sweep or coverage | no column marks a sweep: one work-order type, crews and methods drawn from overlapping mixes, no project number; the swept segments are known only by every service on them having a verification | not a reflex: the reflex holds visible attributes, and why a line was dug is not one | no control scores the sample; the progress report carries counts only | clean on the wrong path: every join matches, every code normalises, re-verifications agree | no: a share per era on a subset rebuilt from coverage, then a running total against the appropriation | silent |
+| R3 (decisive) the segments verified whole, share by era (2037) | the field notes say how lines come to be verified (every service on a replaced main; every other row a single-line visit raised by a report, a leak, a sampling site or the 2024 ranking), a fact about the record that names no share, sample, segment, coverage or method; no sentence says which verifications estimate the share or which rows came from a replaced main | no column marks a sweep: one work-order type, crews and methods drawn from overlapping mixes, no project number; the swept segments are known only by every service on them having a verification | not a reflex: the reflex holds visible attributes, and why a line was dug is not one | no control scores the sample; the progress report carries counts only | clean on the wrong path: every join matches, every code normalises, re-verifications agree | no: a share per era on a subset rebuilt from coverage, then a running total against the appropriation | silent |
 
 ## Semantic fork table
 
@@ -183,16 +185,19 @@ inside the deadline.
 | SF2 | "finished" | the programme year in which the running total of plan cost through the zone is covered by the running total of appropriations | the year the zone's work starts | the last zone starts in 2036, inside the deadline: same call (asserted) | the plan's schedule sentence; same call |
 | SF3 | "$27.1 million a year from 2027" | 2027 dollars in each programme year 2027 to 2037, against 2027 unit costs | nominal dollars with escalation | 2037 | the capital plan: amounts in 2027 dollars; same call (no escalation figure ships) |
 | SF4 | "lead or galvanized-requiring-replacement lines" | lines that prove lead or GRR on the field form, with the lines already classified Lead or GRR | lead only, GRR left out | an earlier finish (a different schedule) | the prompt names both; the plan replaces both in full |
-| SF5 | "will replace" in each zone | the zone's Lead and GRR lines plus its unknown lines at the share expected among unknown lines of their era | every unknown line taken as lead | 2045 | the plan: plan costs carry each unknown line at the share of lead or GRR expected among unknown lines of its construction era |
+| SF5 | "will replace" in each zone | the zone's Lead and GRR lines plus its unknown lines at the share expected among the district's lines of their era with no usable tap card | every unknown line taken as lead | 2045 | plan 4.3: each Lead Status Unknown line is carried at the share of lead or GRR expected among the district's lines of its construction era that have no usable tap card |
 | SF6 | "the November 2037 deadline" | 1 November 2037; a zone finished in programme year 2037 meets it | a zone finished in 2037 counted late | the call would flip | the plan: each programme year's construction season runs from April to 31 October |
 | SF7 | a zone's "cost" | its plan cost: full replacements and non-lead digs at the zone's 2027 unit costs, plus one mobilisation | 2026 actual cost per replacement | a later schedule, the last zone past the deadline (asserted) | the plan: plan costs are at the 2027 unit cost schedule |
 | SF8 | the unknown lines of a zone | lines classified Lead Status Unknown in the inventory of 8 January 2027 | every no-record line, verified ones included | a later schedule | the inventory's classification carries every verification's result; the plan works lines by their classification |
 | SF9 | lines classified Lead or GRR | each is replaced in full | some prove non-lead when dug | 2037 | same call: every Lead or GRR record on a segment verified whole proved lead or GRR (asserted) |
-| SF10 | the lines a share is measured on | verified lines with no usable tap card record, built before 1989 | every verified line, tap card lines included | 2039 or later | the plan: Lead Status Unknown lines are those with no usable record |
+| SF10 | the lines a share is measured on | verified lines with no usable tap card record, built before 1989 | every verified line, tap card lines included | 2039 or later | plan 4.3: the share is among the district's lines of the era that have no usable tap card |
 | SF11 | a line verified twice | its first result | its latest result | 2037 | same call: the two results agree on every re-verified line (asserted) |
 | SF12 | a segment "verified whole" | every service line on the main segment has a verification | any coverage threshold from 0.45 to 1.00 | 2037 | same call: swept segments at 1.00, every other segment at 0.42 or less (asserted) |
 | SF13 | mobilisation | once per zone, when its work starts | once in each programme year a zone is worked | the same finish years; each zone spanning a year end costs $185,000 more per extra year (asserted) | the plan's cost sentence |
 | SF14 | how work crosses a year end | work runs on through the zones, a zone spanning years | whole zones only, each starting with a new programme year | the last zone past the deadline (asserted) | the plan's schedule sentence |
+| SF15 | which verifications estimate the share (the judge's fork) | the lines of the 78 segments whose every service was verified, the mains replaced from 2023, share by era | every verification on file, pooled by era | 2039, past the deadline (asserted) | the field notes' account of how lines come to be verified: every other row is a single-line visit raised by a customer reporting lead or galvanized pipe, a leak, a sampling site or the likely-lead ranking, so its results carry why the line was visited; only a replaced main takes every service on it |
+| SF16 | the lines plan 4.3's share is expected among | the district's lines of the era with no usable tap card, verified or not, which the whole segments estimate exactly (known results plus the left-unverified share for the rest return 0.556, 0.316, 0.083, asserted) | the lines still unverified off the whole segments after the single-line visits took the likely ones (0.497, 0.279, 0.075) | 2037, but five zones a year earlier and $10.4 million less (asserted) | plan 4.3: "expected among the district's lines of its construction era that have no usable tap card", a class that includes the verified lines |
+| SF17 | the same class, mixed | the whole-segment share for every line of the class | known results for the verified lines and the whole-segment share for the unverified (0.601, 0.348, 0.091) | 2037, two zones a year later (asserted) | the field notes' design: the unverified lines are those the single-line visits passed over, so pricing them at the whole segments' share counts the visits' selection back in; the coherent mix returns the whole-segment shares (SF16) |
 
 ## Ladder
 
@@ -240,7 +245,7 @@ Figures as built, asserted in `generator/checks.py` from the shipped files and r
 | 3 | Attribution window | verifications January 2021 to 18 December 2026; programme years 2027 to 2037 | pinned (extract dates, capital plan) |
 | 4 | As-of dating | inventory at 8 January 2027 | pinned (extract date); C1 |
 | 5 | Version basis | plan revision 2 and the 2027 unit cost schedule | C1: only revision 2 ships; the revision-1 zone label lives only on agreement forms (ask B) |
-| 6 | Denominator | no-record lines built before 1989 on the segments verified whole, by era | C4: every verified line (SF10) and every verified no-record line (R0) each map to a violated sentence or the decisive step |
+| 6 | Denominator | no-record lines built before 1989 on the segments verified whole, by era | C4: every verified line (SF10), every verified no-record line (R0, SF15) and the lines left unverified (SF16) each map to a violated sentence or the decisive step |
 | 7 | Weighting | lines unweighted within an era | C1: decade-band shares equal the era shares exactly and an era and construction-year model returns them within 0.15 line, asserted |
 | 8 | Window length | every verification on file | C1: every swept segment was verified from May 2023, so a 2023-on window selects the same lines, asserted |
 | 9 | Boundary inclusivity | eras before 1930, 1930 to 1949, 1950 to 1988; 1989 on non-lead | pinned (plan); C1: no unknown line built in 1989 or after |
@@ -262,18 +267,22 @@ Figures as built, asserted in `generator/checks.py` from the shipped files and r
 
 Filed estimand, from the prompt and the plan: for each of the twelve zones, taken in the plan's priority order, the
 programme year in which the running total of plan cost (the zone's Lead and GRR lines and its unknown lines at the
-share expected among unknown lines of their construction era as full replacements, the rest of its unknown lines as
-non-lead digs, at the zone's 2027 unit costs, plus one mobilisation) is covered by the running total of $27.1 million a
-year from 2027; and whether the last zone is finished in a programme year whose season closes by 31 October 2037.
-Criterion: none filed; the design forces the method (determinism-check §1, form 1): the share expected among unknown
-lines of an era is what a dig that does not choose its lines finds, and the record holds such digs only on the main
-segments a water main replacement verified whole, where the shares are 0.556, 0.316 and 0.083; every other verified
-line was dug because something pointed at lead, which the record itself shows as the gap within each era between those
-segments and the rest (0.556 against 0.842 before 1930). Why the careful computation still lands wrong: the obvious
-computation of the filed quantity takes the share from every verified unknown line, or fits a model on every visible
-attribute to them, which carries the selection and files 2039; every literal reading of the prompt's and the plan's
-terms lands on 2037 once the share comes from the segments verified whole (the semantic fork table), and the easy
-answer comes only from the easy estimator on the same estimand.
+share of lead or GRR expected among the district's lines of their construction era that have no usable tap card as
+full replacements, the rest of its unknown lines as non-lead digs, at the zone's 2027 unit costs, plus one
+mobilisation) is covered by the running total of $27.1 million a year from 2027; and whether the last zone is finished
+in a programme year whose season closes by 31 October 2037. Criterion: none filed; the design forces the method
+(determinism-check §1, form 1), and the design is filed: the field notes say that a replaced main has every service on
+it exposed and recorded and that every other row is a single-line visit raised by a customer reporting lead or
+galvanized pipe, a leak, a sampling site or the likely-lead ranking. The share expected among every no-tap-card line
+of an era is what a verification that does not choose its lines finds, and the record holds such verifications only on
+the 78 segments verified whole (the replaced mains, known by complete coverage), where the shares are 0.556, 0.316 and
+0.083; the single-line visits carry why the line was visited, which the record shows as the gap within each era
+between those segments and the rest (0.556 against 0.842 before 1930). Why the careful computation still lands wrong:
+the obvious computation of the filed quantity takes the share from every verified no-tap-card line, or fits a model on
+every visible attribute to them, which carries the selection and files 2039; every literal reading of the prompt's and
+the plan's terms lands on 2037 once the share comes from the segments verified whole (the semantic fork table, SF15 to
+SF17 for the estimation sample and the class), and the easy answer comes only from the easy estimator on the same
+estimand.
 
 ## Oracles
 
@@ -286,6 +295,8 @@ answer comes only from the easy estimator on the same estimand.
 - The unit cost schedule: prices only.
 - Ask referees: `change_orders_2026.xlsx` (each change order once) arbitrates ask A's device without stating any
   contractor's cost per replacement; the inventory's zone field arbitrates ask B's.
+- The field notes' account of how lines come to be verified: no figure, no segment, no share; it ties nothing on
+  either path and confirms neither estimate.
 - Nothing ties only under the golden for the main call.
 
 ## Ask sheet
@@ -312,7 +323,12 @@ when the call's estimator moves (R0 or R3). No ask is keyed to the call: every z
 - Hazards: H1 (D8 clock) completion times are exported in UTC while the district's quarters are local, and five
   completions at each of the first three quarter ends (one or two per contract) cross a quarter in UTC; H2 (D7) Tri-County's vendor number changed with its July
   2026 acquisition while its contract number did not; H3 (D2) a completion re-closed after a restoration correction
-  carries two rows, the later superseding.
+  carries two rows, the later superseding (filed in the field notes: the reclosing's paid amounts replace the first
+  closing's; paying on the first closing moves 5 of 12 figures, asserted).
+- Inclusion pin (the judge's secondary fork): the change order log says approved change orders are paid to the
+  contractor on its pay applications, so they are part of what was paid (leaving them out moves all 12 figures by $25
+  or more, asserted); no filed sentence says how a change order counts against its sites, so the device stays silent
+  (asserted).
 - Path (6 files, 13 columns): completions export, change order register, contracts list, field notes, extract log,
   progress report; `site_id`, `contract_no`, `vendor_no`, `completed_utc`, `work_type`, `paid_base`, `paid_extra_ft`,
   `paid_restoration`, `co_no`, `co_amount`, `row_status`, the register's `Amount ($)` and `Sites covered`. Six files is the
@@ -333,7 +349,9 @@ numbers).
   when it was signed; plan revision 2 (October 2026) moved main segments between six pairs of zones and kept every
   zone's code and name, so forms signed before it carry the old zone for those lines. Nothing in the pack states the
   redraw; it shows only where an agreement's form zone and the inventory's zone disagree for the same line. Every zone
-  gains or loses lines.
+  gains or loses lines. Zone basis (the judge's secondary fork): the field notes define the inventory's `zone` as the
+  line's replacement zone under plan revision 2, a field meaning; no filed rule counts agreements by either zone
+  (supplemental-stumping ban 1), asserted.
 - Hazards: H4 (D7) forms signed before the March 2023 migration carry the legacy premise number, unpadded; H5 (D1)
   owners who signed on paper and again on the portal; H6 (D2) agreements later withdrawn (status and date).
 - Path (6 files, 10 columns): agreements file, crosswalk, inventory, plan revision 2, field notes, extract log;
@@ -387,14 +405,19 @@ but one response, which the decisive rung is built for. Recomputed from the gene
 - In the prompt (the question, never a convention): each zone's finish year at $27.1 million a year from 2027, the
   last zone against the November 2037 deadline, the deliverables, the asks' units and rounding.
 - Plan revision 2 (level 1): the scope (every line classified Lead, GRR or Lead Status Unknown in a zone is excavated,
-  lead and GRR replaced in full), the zones and their priority order, the construction eras unknown lines are grouped by, plan cost carrying each unknown line at the share of lead or GRR
-  expected among unknown lines of its era, the 2027 unit cost schedule and one mobilisation per zone, the running-total
-  schedule rule, and each programme year's season closing 31 October; the LCRI deadline.
+  lead and GRR replaced in full), the zones and their priority order, the construction eras unknown lines are grouped
+  by, plan cost carrying each unknown line at the share of lead or GRR expected among the district's lines of its era
+  that have no usable tap card, the 2027 unit cost schedule and one mobilisation per zone, the running-total schedule
+  rule, and each programme year's season closing 31 October; the LCRI deadline.
 - Capital plan (level 2): $27.1 million a year in 2027 dollars, 2027 to 2037.
+- Change order log (level 2, the engineer's register): approved change orders are paid to the contractor on its pay
+  applications, each entered once with its sites.
 - Field notes (level 4): field meanings, the result code list, the crosswalk's zero padding, UTC on the completions
-  export.
-- No pin names why a line was dug, coverage, a main replacement project or any estimation method; the readability
-  screen was run on every pin.
+  export, the reclosing's paid amounts replacing the first closing's, the inventory's zone as plan revision 2's, and
+  the extract's own account of how lines come to be verified (every service on a replaced main, from 2023; every
+  other row a single-line visit raised by a customer report, a leak, a sampling site or the 2024 ranking), filed once.
+- No pin names coverage, a sample, a sweep, a project, which verifications estimate the share or any estimation
+  method; the readability screen was rerun on every pin, the verification account included.
 
 ## Stopping rule
 
@@ -465,6 +488,30 @@ folder and compares every byte: identical.
   vendor change; numbers right-aligned; the chart labels every finish year and marks the deadline; containers carry the
   programme manager as author and in-fiction stamps.
 
+- **Stage 4 repair, 2026-10-12.** The determinism judge returned NOT_DETERMINISTIC, SEND_BACK: nothing filed said
+  how the verifications were chosen, so pooling every verification (2039) read as literally as the whole segments
+  (2037). The fork is closed by filing a fact the record lacked, never the estimator (the stopping rule's line: the
+  method stays the solver's step). One generator pass: the field notes give the extract's own account of how lines
+  come to be verified (every service on a replaced main, from 2023; every other row a single-line visit raised by a
+  customer report, a leak, a sampling site or the 2024 ranking), naming no share, sample, segment or method (S1, S6,
+  W3); plan 4.3's share is expected among the district's lines of the era with no usable tap card, the class the whole
+  segments estimate exactly, which closes the left-unverified share the filing would otherwise expose (SF15 to SF17,
+  in `checks.py` and `verify.py`). Ask A: the field notes say the reclosing's paid amounts replace the first closing's
+  (A10) and the change order log says approved change orders are paid to the contractor (A11), neither saying how a
+  change order counts against its sites. Ask B: the inventory's zone is defined as plan revision 2's (B7), with no rule
+  counting agreements by either zone. Realism: change order approvals off weekends and district holidays (R8, the
+  Christmas Day approval now 23 December), each change order worded on its own (R3, 45 of 45 distinct), the unit cost
+  schedule's system rates and each zone's rate basis stated (R9). Gates: `checks.py` 108 assertions, 0 failed;
+  `verify.py` green; two builds byte-identical; `figures_check.py` exit 0 (76 figures); `freeze.py check --mode
+  determinism` PASS; `precut.py` exit 0; voice-check PASS; `leak.py` REVIEW, no LEAK, the same seven lines as stage 3 (sweep 4 now
+  counts 9, 8 and 10 stump-paragraph terms in the plan, the progress report and the field notes because the term list
+  follows this note and took in replaced and sample: the domain's own nouns, and the field notes' new paragraph says
+  how lines come to be verified, naming no share, sample, segment or method, S6, so no document names the move;
+  harmless); `guard.py surface` 0 promoted (nearest task111 at 0.100), `heart` WARN (`repeat.gate_g`, answered in the draw). Four pack files
+  changed (the plan, the field notes, the change order log, the unit cost schedule); every data file is byte-identical
+  to the stage 3 cut, no graded figure moved, and the goldens changed in prose only (plan 4.3's wording, the visit
+  reasons). The prompt is unchanged. The reader's stage 3 read stands in the leak report and is due again on this cut.
+
 ## Tried and rejected
 
 - Draw, the note's tariff-class replay as the decisive rung: a schema-visible join (ESI ID to the premise file's class) that a finest-grain replay of the interval data also hands over, both default moves for the pilot solver; demoted to rung 3.
@@ -519,3 +566,13 @@ folder and compares every byte: identical.
 - Build, large evening closings at all three quarter ends: the June closings moved into the third quarter as the September ones moved out, and the UTC stop came within $1 of the golden on Tri-County's third quarter; the June closings are ordinary jobs now, so the moves never cancel (A7).
 - Build, agreement outreach opening zone by zone every 70 days: six zones had no form signed before the cut-over, so the legacy-key stop missed only six zones; outreach now opens in every zone before 13 March 2023 (B3).
 - Build, the mobilisation fork (SF13) carried as a later schedule: a mobilisation in each year a zone spans adds $185,000 per year end crossed and moves no finish year; the row now says so, and the plan's cost sentence rules it out.
+- Stage 4, the verification design left unfiled (the selection recoverable only from coverage and the within-era gap): the judge read pooling every verification (2039) as literally as the whole segments (2037), NOT_DETERMINISTIC, SEND_BACK; the field notes now carry the extract's own account of how lines come to be verified, which forces the frame without naming it.
+- Stage 4, filing the whole segments as an inventory validation plan's sweeps: a validation sample is the estimation sample by name, so the decisive step would become a reading, and the world's whole segments are main replacements (old cast iron first, the era lean R2 rests on); filed as what a main replacement does to every service on the main.
+- Stage 4, a plan 4.3 sentence naming the estimation sample (lines on segments where every service was verified), the judge's second suggestion: it files the method, so the stump becomes rule application.
+- Stage 4, plan 4.3 left on "expected among Lead Status Unknown lines": once the selection is filed, the share among the lines the single-line visits left unverified (0.497, 0.279, 0.075) is a coherent rival, last zone 2037 but five zones a year earlier and $10.4 million less; 4.3 now carries the share among the district's lines of the era with no usable tap card, which the whole segments estimate exactly (SF16).
+- Stage 4, a filed rule counting agreements by the inventory's zone (the pin first proposed for ask B): it adjudicates ask B's primary device (supplemental-stumping ban 1), as the draw had already found; the inventory's zone field is defined as plan revision 2's instead, a field meaning.
+- Stage 4, "paid once" or "per site" wording beside the change order inclusion pin: either adjudicates ask A's device; the log says only that approved change orders are paid to the contractor.
+- Stage 4, moving holiday-dated field work (verifications, completions) to working days: it shifts replacement dates and the change orders built on them, so ask A's figures; only the change order approvals, which no figure rests on, moved.
+- Stage 4, varying the unit costs zone by zone: every zone cost, running total and the default path move; the schedule states its system rates and each zone's rate basis instead.
+- Stage 4, the prompt's "the November 2037 deadline" changed to "1 November 2037": voice-check passes both, the plan files 1 November 2037 and the 31 October season close, every reading gives the same call, and the call sentence is frozen; kept.
+- Stage 4, "from May 2023" in the field notes: the first replaced-main verification is 13 July 2023; filed as "from 2023".

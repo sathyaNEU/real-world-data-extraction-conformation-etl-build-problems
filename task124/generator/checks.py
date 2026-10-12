@@ -193,13 +193,45 @@ def run(target, golden, world=None, meta_path=None):
     ok("R6 no file says the pack was built (H24)", not built, built)
     ok("R7 no file name broadcasts the stump",
        not any(re.search(r"sweep|bias|known_issue|selection|answer|distract", f, re.I) for f in files))
+    import asks as AS
+    closed = AS.district_holidays(2026)
+    appr = [d.date() if hasattr(d, "date") else d for d in co.Approved]
+    ok("R8 no change order is approved on a weekend or a district holiday",
+       all(d.weekday() < 5 and d not in closed for d in appr),
+       [str(d) for d in appr if d.weekday() >= 5 or d in closed])
+    import openpyxl
+    uc = openpyxl.load_workbook(os.path.join(target, K.UNIT_COSTS), data_only=True).active
+    basis = {r[0]: (r[2], r[3], r[4]) for r in uc.iter_rows(values_only=True)
+             if isinstance(r[0], str) and re.fullmatch(r"RZ-\d\d", r[0])}
+    sys_rates = (12_400, 2_390)
+    ok("R9 the unit cost schedule states its system rates and names every zone's rate basis",
+       "System rates: $12,400 a full replacement and $2,390 a verification dig" in texts[K.UNIT_COSTS] and
+       len(basis) == 12 and all(b and ((u, d) == sys_rates) == (b == "System rates") for u, d, b in basis.values()),
+       basis)
 
     # ---------------------------------------------------------------- signposts (readability screen)
-    sign = r"main replacement|mains? (was|were) replaced|sweep|project|coverage|selection|biased|representative|" \
-           r"verified whole|every service line on|dug because|systematic|prompted by"
+    # the verification design is filed once, as the extract's own account of how rows come to exist; nothing names a
+    # sample, coverage, a selection or which verifications estimate a share
+    notes_flat = re.sub(r"\s+", " ", notes)
+    m_design = re.search(r"Lines come to be verified in one of two ways\..*?\(2024 and 2025\)\.", notes_flat)
+    design = m_design.group(0) if m_design else ""
+    ok("S1 the field notes file how lines come to be verified, once: every service on a replaced main, every other "
+       "row a visit to a single line raised by a report, a leak, a sampling site or the 2024 ranking",
+       bool(design) and notes_flat.count("every service on the replaced main") == 1 and
+       all(w in design for w in ("customer reporting lead or galvanized pipe", "a leak on the service",
+                                 "sampling site (2021 and 2022)", "2024 consultant ranking")), design[:80])
+    elsewhere = [f for f, t in texts.items() if f != K.NOTES and
+                 re.search(r"replaced main|main is replaced|visit to a single line|ways? (lines|a line) come",
+                           re.sub(r"\s+", " ", t), re.I)]
+    ok("S1 no other shipped file says how lines come to be verified (the fact is filed once)", not elsewhere, elsewhere)
+    sign = r"sweep|project|coverage|selection|selected|biased|representative|verified whole|systematic|" \
+           r"prompted by|random|sampling frame|every service line on|dug because"
     hits = {f: m.group(0) for f, t in texts.items() if f not in (K.METER_EXCHANGES,) for m in [re.search(sign, t, re.I)]
             if m}
-    ok("S1 no shipped sentence names why a line was dug, a main replacement, a project or coverage", not hits, hits)
+    ok("S1 no shipped sentence names a sample, coverage, a selection or which verifications estimate a share",
+       not hits, hits)
+    ok("S6 the filed design names no share, rate, estimate, segment or coverage, and no method",
+       bool(design) and not re.search(r"share|rate|estimat|segment|coverage|sample of|represent|method", design, re.I))
     ver_raw = pd.read_csv(os.path.join(target, K.VERIFICATIONS), dtype=str, keep_default_na=False)
     ok("S2 the verification log has no project, cause or batch column",
        list(ver_raw.columns) == ["source", "wo_no", "verified_date", "premise_no", "sl_id", "method", "crew",
@@ -407,6 +439,51 @@ def run(target, golden, world=None, meta_path=None):
        (finish_list(z26), {k: round(v, 3) for k, v in AN.shares(t26).items()}))
     ok("M23 separation: the default path's last zone two years past the answer, 10 of 12 finish years apart",
        int(z0.finish_year.max()) - 2037 == 2 and sum(a != b for a, b in zip(finish_list(z0), golden_years)) == 10)
+    # SF15 to SF17: which verifications estimate the share, and the share of which lines (the judge's fork, closed by
+    # the filed design and plan 4.3's reference class)
+    ok("SF15 the estimation sample: every verification pooled by era files 2039 (the visits raised by a report, a "
+       "leak, a sampling site or the ranking keep their selection); the whole segments by era file the golden",
+       int(z0.finish_year.max()) == 2039 and finish_list(z) == golden_years and bool(design),
+       (finish_list(z0), finish_list(z)))
+    plan_flat = re.sub(r"\s+", " ", plan)
+    ok("SF16 plan 4.3 carries unknown lines at the share expected among the district's lines of the era with no usable "
+       "tap card (verified or not), not among the lines left unverified",
+       "expected among the district's lines of its construction era that have no usable tap card" in plan_flat)
+    nr16 = inv[(inv.record == "") & (inv.year_built > 0) & (inv.year_built < 1989)].copy()
+    nr16["era"] = nr16.year_built.map(K.era_of)
+    nr16["seg_whole"] = nr16.segment.isin(whole_seg)
+    seen16 = set(s.sl_id)
+    hit16 = dict(zip(s.sl_id, s.hit))
+    p_left, p_mix_c, p_mix_i = {}, {}, {}
+    for e in range(3):
+        t = nr16[nr16.era == e]
+        off = t[~t.seg_whole]
+        n_off, d_off = len(off), int(off.sl_id.isin(seen16).sum())
+        h_off = int(sum(hit16[x] for x in off.sl_id if x in seen16))
+        p_left[e] = (n_off * p[e] - h_off) / (n_off - d_off)
+        n_all = len(t)
+        h_all = int(sum(hit16[x] for x in t.sl_id if x in seen16))
+        u_all = n_all - int(t.sl_id.isin(seen16).sum())
+        p_mix_c[e] = (h_all + p_left[e] * u_all) / n_all
+        p_mix_i[e] = (h_all + p[e] * u_all) / n_all
+    z_left = AN.zone_costs(rem, p_left, ap, prices, mob)
+    z_mix_i = AN.zone_costs(rem, p_mix_i, ap, prices, mob)
+    ok("SF16 the share among the lines the single visits left unverified (whole-segment share carried to every "
+       "no-tap-card line off the whole segments, less what the visits found): 0.497, 0.279, 0.075; last zone 2037 but "
+       "five zones a year earlier and $10.4 million less, a different schedule",
+       [round(p_left[e], 3) for e in range(3)] == [0.497, 0.279, 0.075] and int(z_left.finish_year.max()) == 2037 and
+       [b - a for a, b in zip(golden_years, finish_list(z_left)) if b != a] == [-1] * 5 and
+       round((z.cum_cost.iloc[-1] - z_left.cum_cost.iloc[-1]) / 1e6, 1) == 10.4,
+       ([round(p_left[e], 4) for e in range(3)], finish_list(z_left), round(z_left.cum_cost.iloc[-1] / 1e6, 1)))
+    ok("SF16 C1 on plan 4.3's class: known results for the verified lines and the left-unverified share for the rest "
+       "return the whole-segment shares exactly, so the share among every no-tap-card line of an era is the golden's",
+       all(abs(p_mix_c[e] - p[e]) < 1e-12 for e in range(3)), {e: p_mix_c[e] for e in range(3)})
+    ok("SF17 known results for the verified lines with the whole-segment share for the unverified (the selection "
+       "counted back in): 0.601, 0.348, 0.091, last zone 2037 with two zones a year later",
+       [round(p_mix_i[e], 3) for e in range(3)] == [0.601, 0.348, 0.091] and
+       int(z_mix_i.finish_year.max()) == 2037 and
+       [b - a for a, b in zip(golden_years, finish_list(z_mix_i)) if b != a] == [1, 1],
+       ([round(p_mix_i[e], 4) for e in range(3)], finish_list(z_mix_i)))
     if world is not None:
         lines, ev = world["lines"], world["ev"]
         sweeps = set(world["sweeps"])
@@ -417,6 +494,18 @@ def run(target, golden, world=None, meta_path=None):
         ok("W2 selection: lines dug for cause are lead or GRR far more often than the population share",
            (dug.truth != "NON-LEAD").groupby(dug.era).mean().min() > 0.2 and
            (dug.truth != "NON-LEAD").groupby(dug.era).mean()[0] > p[0] + 0.25)
+        evs = ev.assign(seg=ev.sl_id.map(lines.set_index("sl_id").segment))
+        main_ev, other_ev = evs[evs.cause == "main"], evs[evs.cause != "main"]
+        base_cause = other_ev.cause.str.replace("-confirm", "", regex=False)
+        ok("W3 the filed design is the world's: every row on a whole segment comes from a main replacement (from "
+           "2023) and every other row is a single-line visit for a report, a leak, a sampling site (2021 and 2022) or "
+           "the 2024 ranking (2024 and 2025), or a follow-up on one",
+           main_ev.seg.isin(whole_seg).all() and not other_ev.seg.isin(whole_seg).any() and
+           main_ev.date.min().year == 2023 and other_ev.date.min().year == 2021 and
+           set(base_cause) == {"customer", "leak", "ranked", "sampling"} and
+           other_ev[base_cause == "sampling"].date.max() <= dt.date(2022, 12, 31) and
+           other_ev[base_cause == "ranked"].date.between(dt.date(2024, 1, 1), dt.date(2025, 12, 31)).all(),
+           (main_ev.date.min(), sorted(set(base_cause))))
         tr = lines.set_index("sl_id").truth
         res_ok = (ver.result == ver.sl_id.map(tr).map({"LEAD": "LEAD", "GRR": "GRR", "NON-LEAD": "NON-LEAD"})).all()
         ok("M24 clean-data (instrument): every recorded result is the material in the ground", res_ok)
@@ -513,6 +602,32 @@ def run(target, golden, world=None, meta_path=None):
     tcq3 = [(v, 3) for v in ("V-20877", "V-31560")]
     ok("A8 stop S4 (by vendor number) splits Tri-County's third quarter, both halves $25 or more off",
        all(abs(s4[k] - pay[("2026-LSL-02", 3)]) >= 25 for k in tcq3), [round(s4[k]) for k in tcq3])
+    def pay_on(rows, with_co=True):
+        rows = rows.assign(q=rows.local_date.map(K.quarter_of),
+                           paid=rows.paid_base + rows.paid_extra_ft + rows.paid_restoration)
+        rows = rows[rows.local_date.map(lambda d: d.year == 2026)]
+        where = dict(zip(rows.site_id, zip(rows.contract_no, rows.q)))
+        tot = rows.groupby(["contract_no", "q"]).paid.sum().to_dict()
+        n = rows.groupby(["contract_no", "q"]).size().to_dict()
+        if with_co:
+            for sites, amt in zip(co["sites"], co["Amount ($)"]):
+                tot[where[sites[0]]] += float(amt)
+        return {k: tot[k] / n[k] for k in n}
+    first_close = comp.sort_values(["site_id", "closed_on", "row_status"]).drop_duplicates("site_id", keep="first")
+    pay_first = pay_on(first_close)
+    moved_first = [k for k in pay if math.floor(pay_first[k] + 0.5) != math.floor(pay[k] + 0.5)]
+    ok("A10 the field notes file that a reclosing's paid amounts replace the first closing's; paying on the first "
+       "closing moves %d of 12 figures" % len(moved_first),
+       "the reclosing's paid amounts replace the first closing's" in notes_flat and len(moved_first) == 5,
+       sorted(moved_first))
+    pay_noco = pay_on(latest, with_co=False)
+    co_log = texts[K.CHANGE_ORDERS]
+    ok("A11 the change order log files that approved change orders are paid to the contractor; leaving them out "
+       "moves all 12 figures by $25 or more",
+       "paid to the contractor on its pay applications" in re.sub(r"\s+", " ", co_log) and
+       all(abs(pay_noco[k] - pay[k]) >= 25 for k in pay), min(abs(pay_noco[k] - pay[k]) for k in pay))
+    ok("A11 no filed sentence says how a change order is counted against its sites (ask A's device stays silent)",
+       not re.search(r"paid once|counted once|per site|each site's pay application", co_log + notes_flat, re.I))
     main_cols = set(inv_raw.columns) | set(ver_raw.columns)
     ok("A9 no ask device or hazard column sits in the main call's files",
        not main_cols & {"co_amount", "co_no", "zone_on_form", "completed_utc", "vendor_no", "status"})
@@ -541,6 +656,11 @@ def run(target, golden, world=None, meta_path=None):
        "zone", pairs == set(K.REDRAW_PAIRS) and (moved.signed_on < K.REV2_DATE.isoformat()).all(), pairs)
     ok("B6 no shipped text states the zone redraw", not any(re.search(r"redr[ae]w|realign|boundar", t, re.I)
                                                             for t in texts.values()))
+    ok("B7 the field notes define the inventory's zone as the line's zone under plan revision 2 and say nothing of the "
+       "zone printed on older forms beyond the field's meaning (no rule counts agreements by either zone)",
+       "`zone`: the line's replacement zone under plan revision 2" in notes and
+       "`zone_on_form`: the replacement zone printed on the form." in notes and
+       not re.search(r"count\w* (agreements|forms) by", notes_flat, re.I))
     lg = ag[ag.premise_no != ""]
     xw = pd.read_csv(os.path.join(target, K.CROSSWALK), dtype=str, keep_default_na=False)
     ok("H4 legacy forms carry premise numbers that match the crosswalk only with the zero padding restored",

@@ -105,8 +105,9 @@ def plan_clauses():
             ("4.2", "A zone's plan cost is its full replacements and its verification digs that find no lead, each at "
                     "the zone's unit cost, and one mobilisation, charged when the zone's work starts."),
             ("4.3", "The zone's Lead and GRR lines are full replacements. Each of its Lead Status Unknown lines is "
-                    "carried as a full replacement at the share of lead or GRR expected among Lead Status Unknown "
-                    "lines of its construction era, and as a verification dig that finds no lead at the rest."),
+                    "carried as a full replacement at the share of lead or GRR expected among the district's lines of "
+                    "its construction era that have no usable tap card, and as a verification dig that finds no lead "
+                    "at the rest."),
             ("4.4", "The construction eras are: built before 1930; built 1930 to 1949; built 1950 to 1988. A line's "
                     "construction year is the year built the inventory carries from the county assessor."),
         ]),
@@ -271,6 +272,18 @@ def _header(ws, row, cols):
         cell.alignment = Alignment(wrap_text=True, vertical="top")
 
 
+SYSTEM_RATES = (12_400, 2_390)
+RATE_BASIS = {
+    "RZ-02": "Downtown: pavement restoration and traffic control on both items",
+    "RZ-04": "Long services on deep setbacks; curb stops under pavement",
+    "RZ-06": "System full replacement; dig restores sidewalk at the curb stop",
+    "RZ-07": "Short services, lawn restoration; dig restores sidewalk at the curb stop",
+    "RZ-08": "System full replacement; dig restores sidewalk at the curb stop",
+    "RZ-09": "System full replacement; dig restores sidewalk at the curb stop",
+    "RZ-11": "System full replacement; curb stops under pavement",
+}
+
+
 def write_unit_costs(path):
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -279,7 +292,8 @@ def write_unit_costs(path):
                       ("Lead service line replacement: unit cost schedule, 2027 dollars", True, 11),
                       ("Engineer's estimate, 2 November 2026 (%s). Applies to work in programme year 2027." %
                        K.PEOPLE["engineer"], False, 9)])
-    _header(ws, 5, ["Zone", "Zone name", "Full replacement, each ($)", "Verification dig, no lead found, each ($)"])
+    _header(ws, 5, ["Zone", "Zone name", "Full replacement, each ($)", "Verification dig, no lead found, each ($)",
+                    "Rate basis"])
     r = 6
     for z in sorted(K.PLAN_ORDER):
         uf, ud = K.ZONE_PRICES[z]
@@ -287,6 +301,7 @@ def write_unit_costs(path):
         ws.cell(row=r, column=2, value=K.ZONE_NAME[z])
         ws.cell(row=r, column=3, value=uf).number_format = "#,##0"
         ws.cell(row=r, column=4, value=ud).number_format = "#,##0"
+        ws.cell(row=r, column=5, value=RATE_BASIS.get(z, "System rates" if (uf, ud) == SYSTEM_RATES else None))
         r += 1
     r += 1
     ws.cell(row=r, column=1, value="Mobilisation, each zone ($)").font = Font(bold=True)
@@ -295,10 +310,12 @@ def write_unit_costs(path):
     for txt in ("Full replacement: public and private side from the main to the meter setting, new curb stop and "
                 "setter, restoration.",
                 "Verification dig: excavation at the curb stop and at the meter setting, restoration; no replacement.",
-                "Unit costs differ by zone with typical service length, pavement and traffic control."):
+                "System rates: $%s a full replacement and $%s a verification dig. A zone's rate differs from the "
+                "system rate where its typical service length, pavement or traffic control differs (column E)." % (
+                    "{:,}".format(SYSTEM_RATES[0]), "{:,}".format(SYSTEM_RATES[1]))):
         ws.cell(row=r, column=1, value=txt).font = Font(size=9)
         r += 1
-    for j, w in enumerate((10, 20, 16, 20), 1):
+    for j, w in enumerate((10, 20, 16, 20, 46), 1):
         ws.column_dimensions[get_column_letter(j)].width = w
     ws.row_dimensions[5].height = 30
     wb.save(path)
@@ -311,8 +328,8 @@ def write_change_orders(path, co, contractor_of):
     ws.title = "CO log 2026"
     _sheet_title(ws, [("%s, Engineering: change order log, 2026 lead service line replacement contracts" % K.DISTRICT,
                        True, 11),
-                      ("Approved change orders. Each change order is entered once, with the sites it covers.", False,
-                       9)])
+                      ("Approved change orders, paid to the contractor on its pay applications. Each change order is "
+                       "entered once, with the sites it covers.", False, 9)])
     cols = ["CO no.", "Contract", "Contractor", "Approved", "Description", "Sites covered", "No. of sites",
             "Amount ($)"]
     _header(ws, 4, cols)
@@ -348,7 +365,7 @@ as of 8 January 2027.
 
 - `sl_id`: GIS service line id.
 - `service_address`, `municipality`: the premise address.
-- `zone`: replacement zone, RZ-01 to RZ-14.
+- `zone`: the line's replacement zone under plan revision 2, RZ-01 to RZ-14.
 - `main_segment`: GIS id of the water main segment the service taps.
 - `year_built`: the premise's year built, from the county assessor; 0 where the assessor carries none (most
   non-residential parcels).
@@ -364,6 +381,12 @@ as of 8 January 2027.
 
 One row per field verification of a service line's material, 4 January 2021 to 18 December 2026. A line verified
 more than once has a row for each visit.
+
+Lines come to be verified in one of two ways. When a water main is replaced under the distribution system renewal
+programme (from 2023), every service on the replaced main is exposed and its material recorded before it is
+reconnected. Every other row is a visit to a single line, raised by a customer reporting lead or galvanized pipe or
+asking for a check, a leak on the service, a lead and copper sampling site (2021 and 2022) or the 2024 consultant
+ranking of services likely to be lead (2024 and 2025).
 
 - `source`: CIS for the customer system's service orders (to 12 March 2023), WMS for the work management system
   (from 13 March 2023).
@@ -395,7 +418,7 @@ management system. One row per closing of a work order.
 - `completed_utc`: completion time stamped by the field tablet, in UTC.
 - `closed_on`: date the work order was closed.
 - `row_status`: CLOSED, or RECLOSED when a closed work order was reopened for a correction and closed again; the
-  export keeps both closings.
+  export keeps both closings, and the reclosing's paid amounts replace the first closing's.
 - `paid_base`, `paid_extra_ft`, `paid_restoration`: paid on the pay application for the site: the bid price, the
   service length past 50 feet at the contract rate, and restoration.
 - `co_no`, `co_amount`: the approved change order that covers the site, and the change order's amount.

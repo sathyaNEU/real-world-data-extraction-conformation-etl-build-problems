@@ -120,6 +120,35 @@ def main(target=None, golden=None):
     print("verify: last zone %s finished %d (default path %d); plan cost $%.1f million over %.2f programme years" % (
         gold[-1][0], gold[-1][4], dflt[-1][4], gold[-1][3] / 1e6, gold[-1][3] / ap))
 
+    # SF16 and SF17 on this code path: the share among the no-tap-card lines left unverified off the whole segments,
+    # and the two mixes of known results with an estimate for the unverified rest
+    n_off, d_off, h_off = [0, 0, 0], [0, 0, 0], [0, 0, 0]
+    n_all, h_all, u_all = [0, 0, 0], [0, 0, 0], [0, 0, 0]
+    for r in inv:
+        y = int(r["year_built"])
+        if r["tap_card_material"] != "" or not 0 < y < 1989:
+            continue
+        e = era(y)
+        seen = r["sl_id"] in visits
+        hit = seen and sorted(visits[r["sl_id"]])[0][1] in ("LEAD", "GRR")
+        n_all[e] += 1
+        h_all[e] += hit
+        u_all[e] += not seen
+        if r["main_segment"] not in whole:
+            n_off[e] += 1
+            d_off[e] += seen
+            h_off[e] += hit
+    left = [(n_off[e] * shares["whole"][e] - h_off[e]) / (n_off[e] - d_off[e]) for e in range(3)]
+    mix_coherent = [(h_all[e] + left[e] * u_all[e]) / n_all[e] for e in range(3)]
+    mix_whole = [(h_all[e] + shares["whole"][e] * u_all[e]) / n_all[e] for e in range(3)]
+    s_left, s_mix = schedule(left), schedule(mix_whole)
+    assert all(abs(mix_coherent[e] - shares["whole"][e]) < 1e-9 for e in range(3)), mix_coherent
+    assert s_left[-1][4] == 2037 and [x[4] for x in s_left] != [x[4] for x in gold], s_left
+    assert [x[4] for x in s_mix] != [x[4] for x in gold], s_mix
+    print("verify: left-unverified shares %s file a different schedule (%s); the coherent mix returns the whole-segment "
+          "shares; the whole-share mix %s files %s" % (["%.3f" % x for x in left], [x[4] for x in s_left],
+                                                      ["%.3f" % x for x in mix_whole], [x[4] for x in s_mix]))
+
     # ask A
     comp = rows(target, "lsl_completions_2026.csv")
     latest = {}

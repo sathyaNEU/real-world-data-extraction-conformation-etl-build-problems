@@ -4,15 +4,15 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: verified, segments, verification, unknown, decisive, pinned, schedule, population, inventory, verifications, architecture, default, district, pattern, asserted, report, running, selection, shares, forecasting, mechanism, segment, family, measured, window
+Stump terms swept: verified, segments, verification, unknown, decisive, verifications, pinned, architecture, report, schedule, population, inventory, default, district, pattern, asserted, running, segment, selection, sample, shares, replaced, forecasting, mechanism, family
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `HFRWD_LSLR_plan_rev2_2026-10.pdf`: carries 9 of 13 distinctive words of the committed call: 'At $27.1 million a year from 2027 every zone in the plan is finished inside the deadline: the last, RZ-06 Wexley, is fin'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `HFRWD_LSLR_plan_rev2_2026-10.pdf`: 8 of 25 stump-paragraph terms appear (verified, verification, unknown, schedule, inventory, verifications); read whether the document names the move
-- **REVIEW** `LSLR_progress_report_2026.pdf`: 7 of 25 stump-paragraph terms appear (verified, verification, unknown, schedule, inventory, district); read whether the document names the move
-- **REVIEW** `lsl_extract_field_notes_2027-01.md`: 8 of 25 stump-paragraph terms appear (verified, verification, unknown, schedule, inventory, district); read whether the document names the move
+- **REVIEW** `HFRWD_LSLR_plan_rev2_2026-10.pdf`: 9 of 25 stump-paragraph terms appear (verified, verification, unknown, verifications, schedule, inventory); read whether the document names the move
+- **REVIEW** `LSLR_progress_report_2026.pdf`: 8 of 25 stump-paragraph terms appear (verified, verification, unknown, report, schedule, inventory); read whether the document names the move
+- **REVIEW** `lsl_extract_field_notes_2027-01.md`: 10 of 25 stump-paragraph terms appear (verified, verification, unknown, report, schedule, inventory); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 3, INFO 1)
 - **REVIEW** `HFRWD_LSLR_plan_rev2_2026-10.pdf`: names 8 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -36,3 +36,19 @@ Stump terms swept: verified, segments, verification, unknown, decisive, pinned, 
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+Reader (Sonnet, medium) on the stage 3 cut, prompt.txt and target/ only. Read before the stage 4 repair: the field notes, plan 4.3, the change order log and the unit cost schedule have changed since, so this read is due again on the repaired cut.
+
+1. Decisive step: none stated. Nearest: plan 4.3 (Lead Status Unknown lines carried at the era's expected lead or GRR share) and 5.2 (work runs on between zones and years); neither says how to estimate the share.
+2. Ranking or stated figures: none. The capital plan gives only the appropriation, the unit cost schedule only unit rates and mobilisation, the plan only the priority order, the progress report only system counts.
+3. Helping files: none; the tap samples and the meter exchanges read as unused extracts.
+4. Answer-like figure: none.
+5. Literal construction: plan 5.3 with 3.1, 4.2 to 4.4. The era share is not fixed by the files; with a first-verification share per era (0.7625, 0.5847, 0.2168) the reader's run finishes RZ-06 in 2039. Readings it names as open: which verifications form the sample, first or latest visit, verified lines in or out.
+
+REVIEW lines: all harmless. The 9-of-13 call-word line on the plan PDF matched the call sentence in the sweep's own source, not text in the PDF (the reader found no such sentence; grep confirms).
+
+Ask-level readings raised: what "paid per full replacement" includes (extras, restoration, change orders; RECLOSED duplicates; the Tri-County vendor change); quarters in Eastern time against UTC completions; signed agreements and WITHDRAWN status, form zone against inventory zone, archived lines.
+
+Realism tells: flat 12,400 unit costs with two outliers; templated change-order descriptions; a Christmas Day approval; sequential, round ids; neat 87,410 inventory rows; the prompt's "November 2037 deadline" against the plan's 1 November 2037.

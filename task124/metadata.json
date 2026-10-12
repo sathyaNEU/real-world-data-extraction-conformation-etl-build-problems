@@ -40,7 +40,7 @@
     {
       "path": "HFRWD_LSLR_plan_rev2_2026-10.pdf",
       "format": "pdf",
-      "bytes": 66089,
+      "bytes": 66095,
       "rows": null,
       "source": "Constructed: Lead service line replacement plan, revision 2 (scope, zones and priority order, plan cost, schedule rule)",
       "date": "2027-01-08",
@@ -85,7 +85,7 @@
     {
       "path": "change_orders_2026.xlsx",
       "format": "xlsx",
-      "bytes": 9983,
+      "bytes": 10513,
       "rows": null,
       "source": "Constructed: Engineering change order log, 2026 replacement contracts",
       "date": "2027-01-08",
@@ -148,7 +148,7 @@
     {
       "path": "lsl_extract_field_notes_2027-01.md",
       "format": "md",
-      "bytes": 5007,
+      "bytes": 5610,
       "rows": null,
       "source": "Constructed: Field notes for the extract: field meanings and code routes, file by file",
       "date": "2027-01-08",
@@ -175,7 +175,7 @@
     {
       "path": "unit_cost_schedule_2027.xlsx",
       "format": "xlsx",
-      "bytes": 7094,
+      "bytes": 7324,
       "rows": null,
       "source": "Constructed: 2027 unit cost schedule by zone (engineer's estimate)",
       "date": "2027-01-08",

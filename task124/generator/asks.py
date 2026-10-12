@@ -102,6 +102,73 @@ CO_KINDS = [
 ]
 
 
+# the engineer's change order entries as the log carries them: what was found or required, where, and how many
+# services when there is more than one; worded from each change order's own stream, so no other draw moves
+CO_TEXT = {
+    "Rock excavation, service trench": (
+        "Rock in service trench at {where}; hoe ram and haul-off{n}",
+        "Ledge rock at curb stop excavation, {where}{n}",
+        "Rock excavation beyond the bid allowance, {where}{n}"),
+    "Additional pavement restoration, full lane width": (
+        "Full-lane mill and overlay required by the street opening permit, {where}{n}",
+        "Pavement restored to full lane width at the inspector's direction, {where}{n}",
+        "Additional asphalt restoration, permit condition: {where}{n}"),
+    "Interior plumbing reconnection past the meter setter": (
+        "Interior reconnection past the setter, house piping would not take the new setter: {where}{n}",
+        "Owner-side plumbing reconnected inside the basement, {where}{n}",
+        "Reconnect interior piping beyond the meter setter, {where}{n}"),
+    "Tree root removal and arborist attendance": (
+        "Root pruning with the municipal arborist present, tree lawn services on {where}{n}",
+        "Arborist on site for excavation in the tree lawn, {where}{n}",
+        "Tree roots removed from the service trench, {where}{n}"),
+    "Traffic control, signalised intersection": (
+        "Lane closure and flaggers at the signalised intersection, {where}{n}",
+        "Police detail and arrow board at the signal, {where}{n}",
+        "Traffic control plan for work inside the signalised intersection, {where}{n}"),
+    "Unmarked utility conflict, relocation": (
+        "Unmarked gas service in the trench at {where}; hand dig and offset{n}",
+        "Abandoned storm lateral in the service trench, removed: {where}{n}",
+        "Unlocated fiber conduit, standby and relocation, {where}{n}"),
+}
+COUNT_WORDS = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}
+
+
+def co_description(co_no: str, kind: str, pick, street: dict, address: dict) -> str:
+    r = K.stream("co-text", co_no)
+    text = CO_TEXT[kind][int(r.integers(len(CO_TEXT[kind])))]
+    if len(pick) == 1:
+        return text.format(where=address[pick[0]].title(), n="")
+    streets = sorted({street[s].title() for s in pick})
+    if len(streets) == 1:
+        where = streets[0]
+    elif len(streets) == 2:
+        where = "%s and %s" % tuple(streets)
+    else:
+        k = len(streets) - 2
+        where = "%s, %s and %s other street%s" % (streets[0], streets[1], {1: "one"}.get(k, COUNT_WORDS.get(k)),
+                                                    "" if k == 1 else "s")
+    n = " (%d services)" % len(pick) if r.random() < 0.5 else ", %s services" % COUNT_WORDS[len(pick)]
+    return text.format(where=where, n=n)
+
+
+def district_holidays(year: int) -> set:
+    """Days the district's offices are closed: New Year's Day, Martin Luther King Jr. Day, Memorial Day, Independence
+    Day, Labor Day, Thanksgiving and the day after, Christmas Eve and Christmas Day (each observed on the nearest
+    weekday)."""
+    def observed(d):
+        return d - dt.timedelta(days=1) if d.weekday() == 5 else d + dt.timedelta(days=1) if d.weekday() == 6 else d
+
+    def nth_weekday(month, weekday, n):
+        d = dt.date(year, month, 1)
+        d += dt.timedelta(days=(weekday - d.weekday()) % 7)
+        return d + dt.timedelta(days=7 * (n - 1))
+    may_31 = dt.date(year, 5, 31)
+    thanksgiving = nth_weekday(11, 3, 4)
+    return {observed(dt.date(year, 1, 1)), nth_weekday(1, 0, 3), may_31 - dt.timedelta(days=may_31.weekday()),
+            observed(dt.date(year, 7, 4)), nth_weekday(9, 0, 1), thanksgiving,
+            thanksgiving + dt.timedelta(days=1), observed(dt.date(year, 12, 24)), observed(dt.date(year, 12, 25))}
+
+
 def contract_of(zone: str) -> str:
     for c in K.CONTRACTS_2026:
         if zone in c[3]:
@@ -168,6 +235,8 @@ def completions(lines: pd.DataFrame):
     st["evening"] = st.evening.fillna(False).astype(bool)
     st["quarter"] = st.date.map(K.quarter_of)
     street = {sl: a.split(" ", 1)[1] for sl, a in zip(lines.sl_id, lines.address)}
+    address = dict(zip(lines.sl_id, lines.address))
+    closed = district_holidays(2026)
     # change orders: every contract-quarter carries several, at least one covering two or more sites; a change
     # order's sites all complete in one quarter and it is approved inside that quarter
     cos = []
@@ -195,10 +264,6 @@ def completions(lines: pd.DataFrame):
                     near = sorted(free, key=lambda s: (abs(int(s[2:]) - int(seed[2:])), s))
                 pick = sorted(near[:s_n])
                 kind = CO_KINDS[int(r.integers(len(CO_KINDS)))]
-                streets = sorted({street[s].title() for s in pick})
-                where = streets[0] if len(streets) == 1 else (
-                    "%s and %s" % (streets[0], streets[1]) if len(streets) == 2 else "%s, %s and %d more" % (
-                        streets[0], streets[1], len(streets) - 2))
                 if kind[1] == "site":
                     amt = sum(kind[2] + (kind[3] - kind[2]) * r.random() for _ in pick)
                 else:
@@ -206,13 +271,14 @@ def completions(lines: pd.DataFrame):
                 last_done = max(st.loc[st.sl_id.isin(pick), "date"])
                 appr = last_done + dt.timedelta(days=int(r.integers(3, 21)))
                 appr = min(appr, qend)
-                while appr.weekday() >= 5:
+                while appr.weekday() >= 5 or appr in closed:
                     appr -= dt.timedelta(days=1)
                 n_co += 1
                 used.update(pick)
-                cos.append(dict(co_no="CO-%s-%03d" % (c[0][-2:], n_co), contract=c[0], approved=appr,
-                                description="%s: %s" % (kind[0], where), amount=_cents(amt), sites=list(pick),
-                                quarter=q))
+                co_no = "CO-%s-%03d" % (c[0][-2:], n_co)
+                cos.append(dict(co_no=co_no, contract=c[0], approved=appr,
+                                description=co_description(co_no, kind[0], pick, street, address),
+                                amount=_cents(amt), sites=list(pick), quarter=q))
     co = pd.DataFrame(cos)
     st["co_no"] = ""
     for row in co.itertuples():

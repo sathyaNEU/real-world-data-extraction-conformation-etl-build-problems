@@ -174,7 +174,7 @@ def write_xlsx(path, F, fig):
     ws.freeze_panes = "A5"
 
     ws2 = wb.create_sheet("Unknown-line shares")
-    ws2["A1"] = "Share of Lead Status Unknown lines expected to prove lead or GRR, by construction era"
+    ws2["A1"] = "Share of lines with no usable tap card expected to prove lead or GRR, by construction era"
     ws2["A1"].font = Font(bold=True, size=12)
     ws2["A2"] = ("Lines with no usable tap card on the %d main segments where every service line has been verified "
                  "(each segment's lines exposed and verified together when its main was replaced, 2023 to 2026)."
@@ -189,9 +189,9 @@ def write_xlsx(path, F, fig):
             if j in (4, 5):
                 cell.number_format = "0.000"
     ws2.cell(row=9, column=1, value=(
-        "Every other verification on file was dug because something pointed at lead (a customer report, a sampling "
-        "site, a leak on galvanized pipe, a ranked dig), so its shares run high: priced at them the last zone would "
-        "finish in %d." % fig["default_path"]["last_finish_year"])).font = Font(size=9)
+        "Every other verification on file was a visit to one line because something pointed at it (a customer report, "
+        "a sampling site, a leak on the service, the 2024 ranking), so its shares run high: priced at them the last "
+        "zone would finish in %d." % fig["default_path"]["last_finish_year"])).font = Font(size=9)
     ws2.freeze_panes = "A5"
 
     ws3 = wb.create_sheet("2026 contract payments")
@@ -322,14 +322,14 @@ def write_pdf(path, F, fig):
     dflt = fig["default_path"]["era_shares_every_verification"]
     st.append(Paragraph("How the unknown lines are costed", D.H2))
     st.append(Paragraph(
-        "Plan 4.3 carries each Lead Status Unknown line at the share of lead or GRR expected among unknown lines of its "
-        "construction era. Three in four of the lines with no tap card that the district has verified since 2021 were "
-        "dug because something pointed at lead: a customer's report, a lead sampling site, a leak on galvanized pipe "
-        "or a dig the 2024 consultant ranking flagged. Those digs find lead or GRR far more often than the plan's "
-        "digs will, "
-        "because the plan digs every unknown line in a zone. The only lines dug without regard to what they were "
-        "likely to be are on the %d main segments where a water main replacement exposed and verified every service "
-        "line, and there the shares are %s before 1930, %s for 1930 to 1949 and %s for 1950 to 1988. At the shares "
+        "Plan 4.3 carries each Lead Status Unknown line at the share of lead or GRR expected among the district's lines "
+        "of its construction era that have no usable tap card. Three in four of the lines with no tap card that the "
+        "district has verified since 2021 were visits to one line because something pointed at it: a customer's "
+        "report, a lead sampling site, a leak on the service or the 2024 consultant ranking. Those visits find lead or "
+        "GRR far more often than the plan's digs will, because the plan digs every unknown line in a zone. The only "
+        "lines verified without regard to what they were likely to be are on the %d main segments where a water main "
+        "replacement exposed every service, and there the shares are %s before 1930, %s for 1930 to 1949 and %s for "
+        "1950 to 1988. At the shares "
         "across every verification on file (%s, %s and %s) the same plan would run to %d." % (
             F["n_segments"], eras[ERA_LABEL[0]], eras[ERA_LABEL[1]], eras[ERA_LABEL[2]], dflt[ERA_LABEL[0]],
             dflt[ERA_LABEL[1]], dflt[ERA_LABEL[2]], fig["default_path"]["last_finish_year"]), D.BODY))

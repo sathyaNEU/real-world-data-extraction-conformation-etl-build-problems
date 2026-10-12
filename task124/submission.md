@@ -10,14 +10,14 @@ The running plan cost reaches $284.7 million after 10.50 years of the appropriat
 
 ## 2. Critical Components
 
-1. Share of Lead Status Unknown lines expected to prove lead or GRR, from the 78 main segments verified whole: **0.556** built before 1930, **0.316** built 1930 to 1949, **0.083** built 1950 to 1988
+1. Share of the district's lines with no usable tap card expected to prove lead or GRR, from the 78 main segments verified whole: **0.556** built before 1930, **0.316** built 1930 to 1949, **0.083** built 1950 to 1988
 2. Plan cost of the twelve zones: **$284.7 million**, **10.50** programme years of the appropriation
 3. Last zone finished: **RZ-06 Wexley, programme year 2037**
 
 ## 3. Step-by-Step Solution
 
 1. Joined sl_field_verifications_2021_2026.csv to hfrwd_service_line_inventory_20270108.csv, customer-system premise numbers through cis_gis_crosswalk_2023.csv with the eight-digit padding restored and result codes through sl_material_result_codes.csv: 4,911 verified lines have no tap card and were built before 1989.
-2. Grouped the verified lines by main segment against the inventory: 78 segments have every service line verified (no other segment above 0.42), and on their no-tap-card lines the share found lead or GRR is 0.556, 0.316 and 0.083 in the plan's three construction eras.
+2. Grouped the verified lines by main segment against the inventory: 78 segments have every service line verified (no other segment above 0.42), the replaced mains whose every service was exposed, while every other verification was a single-line visit raised by a report, a leak, a sampling site or the 2024 ranking (lsl_extract_field_notes_2027-01.md); on those segments' no-tap-card lines the share found lead or GRR is 0.556, 0.316 and 0.083 in the plan's three construction eras.
 3. Counted each plan zone's Lead and GRR lines and its Lead Status Unknown lines by era in the inventory, and carried the unknown lines at those shares as full replacements and the rest as digs that find no lead, per the plan's cost rule.
 4. Priced each zone at its unit costs in unit_cost_schedule_2027.xlsx with one $185,000 mobilisation: $284.7 million for the twelve zones.
 5. For the 2026 payments, took each site's latest closing in lsl_completions_2026.csv, converted completed_utc to Eastern time for the quarter, added each change order once from change_orders_2026.xlsx (co_amount repeats a change order's total on every site it covers) and divided by full replacements completed, by contract number (Tri-County's two vendor numbers are one contract).

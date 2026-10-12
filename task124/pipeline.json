@@ -1,7 +1,7 @@
 {
   "task": "task124",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "energy-systems-utilities",
   "objective": "forecasting",
   "stage": 4,
@@ -13,7 +13,7 @@
   "precut": {
     "exit": 0,
     "date": "2026-10-12",
-    "checks": "38 checks, 0 FAIL, 0 WARN"
+    "checks": "38 checks, 0 FAIL, 0 WARN (17 fork rows)"
   },
   "three_rules": {
     "domain": "pass (a water utility's estimate of how many unknown-material service lines are lead or GRR, from verifications that sampled lines regardless of their likely material)",
@@ -64,20 +64,20 @@
   ],
   "reroot": "done 2026-10-12: architecture 2 drawn in Forecasting & Predictive Modeling (energy-systems-utilities, asset-condition-maintenance: Hollins Ford Regional Water District's lead service line replacement schedule)",
   "leak": {
-    "leak_py": "REVIEW 2026-10-12, no LEAK (7 lines, each answered in the design note's build record)",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-12 on the stage 4 cut, no LEAK (the stage 3 lines; each answered in the design note's build record)",
+    "reader": "stage 3 cut: no decisive-step sentence, no helping file, no answer-like figure; named the era share as open (which verifications form the sample), the payment and agreement readings and six realism tells, all taken into the stage 4 repair; due again on the repaired cut (four documents changed)"
   },
   "duplicate_check": {
     "heart": "WARN (repeat.gate_g against task501, answered in the draw)",
     "nearest": "surface 0 promoted, nearest task111 at 0.100; driver task32 v2 at 0.05"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC (main call; asks 1 to 3 reproduce)",
+    "disposition": "SEND_BACK, repaired as a fix in the record: the verification design filed in the field notes, plan 4.3's class tightened, the payment and zone readings pinned; re-judge pending",
+    "report": "task124/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: the main session re-judges the repaired cut (fresh unzip) and re-runs the leak reader, since the field notes, plan 4.3, the change order log and the unit cost schedule changed; APPROVE ships; a fork convergence cannot close re-roots per the design note's stopping rule",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -86,11 +86,12 @@
   "portal_status_date": "",
   "build": {
     "date": "2026-10-12",
-    "checks": "93 assertions, 0 failed (every SF row, the realism sweep R1 to R7, the signpost sweep S1 to S5)",
-    "verify": "green (own parsers; call, default path, 12 zones, 12 payments, 12 agreement counts)",
+    "checks": "108 assertions, 0 failed (SF1 to SF17, S1 to S6, W1 to W3, A1 to A11, B1 to B7, R1 to R9)",
+    "verify": "green (own parsers; call, default path, SF16 and SF17 rivals, 12 zones, 12 payments, 12 agreement counts)",
     "byte_identical": true,
     "input_gates": "16 files, 5 formats, 87,410-row spine, 2 distractors (deletion moves nothing)",
     "figures_check": "exit 0 (76 figures)",
+    "freeze": "freeze.py check --mode determinism PASS",
     "house_fixes": "pass, recorded in the design note's build record",
     "answer": "last zone RZ-06 Wexley finished 2037 (default path 2039); $284.7 million over 10.50 programme years"
   }
