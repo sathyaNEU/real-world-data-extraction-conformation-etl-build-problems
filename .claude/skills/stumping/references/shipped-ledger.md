@@ -192,7 +192,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 | 446 (v2) | FAILED_TO_STUMP: backlog oviya1301 | BANK watch list | ETL | time population | none | carry error rates, not yield | - | - | 133 groups | none reported | oviya1301 |
 | 447 | SHIPPED, delivered 10-12, pending review | HDE vertical integration | ETL | objective population | C | referral capture follows the patient's tier for the acquirer in the projection year | - | - | proceed at $2.2M | ask layer rebuilt 10-12 (two standing exhibits, pair ceiling 27.5); judge APPROVE | oviya1301 |
 | 500 (v3) | SHIPPED, delivered, pending review | ECON lodging tax | RCA | rule population | B | each change measured by the office's matched-reference method | - | - | long-stay exemption, $3,235k | v1, v2 solved 10-10, 10-11 | sathya8571 |
-| 501 (v3) | built 10-12: judge NOT_DETERMINISTIC (margin on an unfiled fit window), repaired (period filed in RL-PM-05 s.5.2, world tightened, every careful family member 2 per cent or more inside; CHF 225 million against the default's CHF 125 million), re-judge next | QF pension liquidity | FC | time population | G6 | funds behind schedule draw their balance before their investment-period deadlines | - | register | facility amount | v2 10-11: landed by 2 of 2 (filed walk-forward executed) | sathya8571 |
+| 501 (v4) | drawing 10-12: re-rooted at stage 1 after v3 was spent at stage 4 (two judge passes failed) | EPH measles catch-up | FC | population time | none | a structured population's threshold set by the next-generation matrix's dominant eigenvalue, where the 15-19-year-olds mix mostly with each other (0.8 by the average, 1.3 by the eigenvalue) | - | standard | catch-up option | v2 10-11: landed by 2 of 2 (filed walk-forward executed) | sathya8571 |
 
 ## Earlier architectures
 
@@ -289,7 +289,7 @@ them as history. Round-by-round detail is in each build's design note and card l
 | 127 (v1) | retired 10-10: judge SEND_BACK, a filed install sentence read in date order moves a co-op's slots | NPO | OPP | time objective population | none, C, E | a co-op crew's meter-set queue to year end |
 | 446 (v1) | retired 10-11: rule application | BANK | ETL | population time | none | group fixed at the projection date |
 | 500 (v1, v2) | solved on the portal 10-10, 10-11 | SCL, P&E | RCA | population | none | held blocks off late calls (shuttle, 15 of 28); a later start spilling onto siblings |
-| 501 (v1, v2, v3 first step) | v1 retired 10-11 on the rules; v2 solved on the portal 10-11; v3's buffer step replaced on paper 10-12 | QF | FC | time population rule | none | recycling term recovered from audited cells; filed walk-forward executed; filed path buffer readable |
+| 501 (v1, v2, v3) | v1 retired 10-11 on the rules; v2 solved on the portal 10-11; v3's buffer step replaced on paper 10-12; v3 retired 10-12 at stage 4 (judge: margin on an unfiled fit window, then the remaining funds' call-rate base unseparated) | QF | FC | time population rule | none, G6 | recycling term recovered from audited cells; filed walk-forward executed; filed path buffer readable; funds behind schedule draw their balance before their deadlines |
 
 ## Lessons the outcomes paid for
 

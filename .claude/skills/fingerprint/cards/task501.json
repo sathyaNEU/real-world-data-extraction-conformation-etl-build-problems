@@ -1,95 +1,95 @@
 {
   "task": "task501",
-  "architecture": "v3",
+  "architecture": "v4",
   "drawn": "2026-10-12",
-  "slot_note": "architecture 3 of the slot (v1 retired on the client's rules, v2 landed on the portal 10-11); its first decisive step (the buffer estimand on a filed walk-forward) was replaced on paper at the 2026-10-12 redesign; Quantitative Finance, liquidity, funding and balance-sheet risk (author-declared task type); bar top two under 50, build to 40",
-  "domain": "quantitative-finance",
-  "subdomain": "liquidity-funding-balance-sheet",
-  "niche": "a Swiss pension foundation's private-markets programme electing its 2027 standby facility for capital calls, when four funds committed in 2022 and 2023 deployed slowly through the 2023-24 deal drought and reach the end of their investment periods in the last four months of 2027 with roughly half their commitments undrawn",
+  "slot_note": "architecture 4 of the slot, re-rooted at stage 1 on 2026-10-12: architectures 1 to 3 were private-markets liquidity forecasts for a Swiss pension foundation (v1 retired on the client's rules, v2 landed on the portal, v3 spent at stage 4 on two failed judge passes); the re-root moves to Epidemiology & Public Health, infectious-disease transmission modelling, a new world and a new driver; bar top two under 50, build to 40",
+  "domain": "epidemiology-public-health",
+  "subdomain": "infectious-disease-transmission-modeling",
+  "niche": "a regional health authority's department of public health choosing which birth cohort its one autumn 2027 MMR catch-up targets, or none, so that measles cannot keep spreading in winter 2027-28, when the cohort whose uptake fell in a 2010-12 vaccine scare is aged 15-19 on 1 January 2028, the ages that mix mostly with each other",
   "objective": "forecasting",
   "shape": "07",
-  "decision_type": "dial_setting",
-  "answer_unit": "currency",
-  "answer": "Elect a standby facility of CHF 225 million for 2027",
-  "answer_source": "task501/generator/figures.json (call_amount_chf_m); submission.md block 1",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G6",
+    "G16",
     "G13",
-    "G7"
+    "G6"
   ],
-  "gate_g": "forecasting",
-  "calibration_form": "existing_book_actuals",
-  "stump_strategy": "composition_mix",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
-  "stakeholder_role": "head of treasury and liquidity at a Swiss pension foundation, electing the standby facility that bridges the private-markets programme's 2027 capital calls",
-  "role_family": "finance_controller",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the regional immunisation manager, preparing the director of public health's recommendation to the executive management team",
+  "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "kapitalabrufe_ausschuettungen_2015-2026.csv",
-    "rows": 11223,
-    "entity": "one line of one capital call or distribution notice received from a fund manager, or one distribution advice loaded from the custodian's feed",
-    "grain": "notice x line",
-    "source": "synthetic (fictional pension foundation's private-markets ledger)"
+    "file": "register_mmr_events_born_1993-2017.csv",
+    "rows": 0,
+    "entity": "one MMR dose event loaded to one person's record in the regional immunisation register",
+    "grain": "person x dose event",
+    "source": "synthetic (fictional regional immunisation register)"
   },
-  "forum": "trustees_or_governors",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "foundation_or_funder",
+  "forum": "executive_team",
+  "forcing_event": "incident_or_complaint",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "Switzerland, Zurich",
-    "currency": "CHF",
-    "org_type": "occupational pension foundation (Pensionskasse, a Stiftung) with a private-markets programme",
+    "geography": "Ireland, the north-east (counties Louth, Meath, Cavan and Monaghan)",
+    "currency": "EUR",
+    "org_type": "regional health authority (department of public health and regional immunisation office)",
     "invented_names": [
-      "Pensionskasse Werdinsel",
-      "Privatbank Lindenhof AG"
+      "Oriel Health Region",
+      "National Social Contact Survey"
     ],
     "people": [
-      "Domenica Hürlimann",
-      "Torsten Sigrist",
-      "Noémie Hess",
-      "Jeremias Ritter",
-      "Lazar Marti"
+      "Eadaoin Bonner",
+      "Nigel Macmillan",
+      "Therese McGann",
+      "Karl McLoughlin"
     ]
   },
   "deliverables": [
-    "facility_election_2027.docx",
-    "distributions_received_2026.xlsx"
+    "winter_measles_2027.xlsx",
+    "measles_readiness_2027.pptx"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "A unit's forward draw on what remains of its allotment is set by how much it must still place before a hard deadline, because every unit whose deadline has passed had placed all but a small reserve by it whatever its earlier pace; a draw rate pooled by age over units that kept to schedule gives a group that fell behind and meets its deadline inside the window the same modest share as any unit of its age, and understates the window's total.",
-  "driver_concrete": "Loschwitz Equity III, Juneau Infrastructure Partners II, Rosenthal Buyout Partners II and Tessin Private Credit I deployed slowly through 2023-24 and their investment periods end between 20 September and 18 December 2027 with 45.6 to 61.8 per cent of their commitments drawn; every fund whose investment period has ended in the programme's record had drawn 92.2 to 93.3 per cent of commitment by then, slow starters included, so their 2027 calls are the balance to that share (about CHF 168 million), not the age-band call rate applied to their unfunded commitment (CHF 79.7 million).",
-  "stump": "A competent solver forecasts 2027 calls fund by fund with age-band call rates on unfunded commitment estimated from the programme's record and elects a facility several tranches short; the step that lands it there is giving four funds that are far behind schedule, with investment periods ending in late 2027, the call rate of funds their age, when every fund whose investment period has ended had drawn about 92 per cent of commitment by then.",
+  "question_form": "which",
+  "driver": "Whether a structured population can sustain a chain process is set by the dominant eigenvalue of its who-passes-to-whom matrix, so removing propensity from the subgroup that mixes most densely within itself can pull the system below its threshold while the system-average propensity, a contact-weighted average, the least-protected subgroup and the subgroup holding the most unprotected members all say the system is already below it or point at a subgroup whose removal leaves it above.",
+  "driver_concrete": "On 1 January 2028 the region is 94.7 per cent immune, above the 93.3 per cent that measles at R0 15 needs, so R0 times the susceptible share is 0.80; but the cohort born 2008-12, whose MMR uptake fell in the 2010-12 vaccine scare, is then 15-19, the ages whose contacts the national survey shows falling mostly on each other, so the dominant eigenvalue of the next-generation matrix is 1.3 and only a catch-up for that cohort brings it below one (0.9), while the options for the 30-34 and 25-34-year-olds, the least immune and the most people made immune, leave it at 1.3.",
+  "stump": "A competent solver joins the immunity profile to the population projection, finds the region 94.7 per cent immune at 1 January 2028 against the 93.3 per cent measles at R0 15 needs, puts the reproduction number at 0.8 (R0 times the susceptible share) and files that no catch-up is needed; the step that lands it there is treating the region as one well-mixed pool, when the national contact survey shows the 15-19-year-olds' contacts falling mostly on each other, so the next-generation matrix's dominant eigenvalue is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every term right (calls by value date with fees and expenses, every commitment in the register, the plan-date rate, distributions not credited) and fits the field's standard pacing model, age-band call rates on unfunded commitment, still elects a facility several tranches short, because the model gives the four funds whose investment periods end in late 2027 the call rate of funds their age instead of the balance they must draw before their deadlines.",
-  "domain_test": "The deciding quantity is a private-markets commitment pacing forecast, capital calls driven by each fund's undrawn commitment and by the investment period its limited partnership agreement allows for new investments, which is how a pension fund's treasury sizes liquidity for unfunded commitments; with another field's nouns there is no commitment drawn down by a manager, no investment period that closes the undrawn balance to new deals and no fee charged on commitment, so the task stops reading the same.",
+  "analyst_test": "A strong analyst who reads every dose, validity rule, profile basis and survey table right and compares the region's immunity with the herd immunity threshold, or computes R0 times the susceptible share (0.8), or weights each age group's susceptible share by its contacts (0.9), files that no catch-up is needed; one who ranks cohorts by their immunity gap targets the 30-34-year-olds (option D) or the most people made immune (option E); none of them brings the reproduction number below one.",
+  "domain_test": "The deciding quantity is measles' reproduction number in winter 2027 under each catch-up option, which infectious-disease epidemiology computes as the dominant eigenvalue of the next-generation matrix built from age-specific susceptibility and the social contact matrix; with another field's nouns there is no transmission between age groups, no contact survey and no susceptibility left by vaccine history, so the task stops reading the same.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:investment-period-deadline-drawdown",
+  "layer2_pattern": "epidemiology-public-health/infectious-disease-transmission-modeling/2",
   "layer1": [
-    "call and distribution notices withdrawn by the manager and reissued under a new number",
-    "multi-line notices with investment, management fee and partnership expense lines",
-    "currency codes in mixed case and descriptions with trailing spaces as keyed by clerks",
-    "distribution advices loaded by the custodian's feed from January 2026 as single lines beside the clerks' line-by-line keying of the same notices, in parallel until September",
-    "custodian credit dates a few days after the payment date stated on the notice, and credits booked the day after their value date",
-    "distributions in specie of listed shares",
-    "manager statements received months after the period end, some still outstanding",
-    "audited capital accounts at fund and year-end grain beside the line-level ledger",
-    "look-through holdings by quarter with NACE codes from the managers' reports",
-    "a reference-rate table in long form for every currency the custodian quotes, some per 100 units, without holidays",
-    "final closes still to come left blank in the register",
-    "German and English labels across the systems"
+    "immunity published by year of birth against contacts tabulated by five-year age group, joined through a projection at 1 January 2028",
+    "a contact survey matrix published by participant row and contact column, corrected for reciprocity against the national population",
+    "options defined by birth years and delivery settings, with expected people made immune per option",
+    "a register extract loaded as received from GP returns, school sessions, hospitals and records from abroad",
+    "GP return lines queried by the immunisation office and corrected or withdrawn in a separate log",
+    "local health office codes revised on 1 July 2024, one retired code reassigned to an area in another region",
+    "a surveillance system migrated in March 2021, with the 2019 outbreak's cases back-entered to its outbreak module",
+    "laboratory results keyed to surveillance case numbers, legacy numbers before the migration",
+    "a dose extract run three days after its as-of date"
   ],
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task104": "task104 re-thresholds a self-adapting scorer's log under a setting it never ran; here nothing is replayed: the deciding quantity is the dominant eigenvalue of an age-structured who-infects-whom matrix",
+    "task134": "task134 (v1 a competing-exit horizon probability, v2 a conversion hazard by time since entry) is a time-to-event estimand; here there is no hazard or follow-up at all, the threshold is set by the contact structure between age groups",
+    "task70": "task70 constructs a per-record date from an event log under a class-conditional cut; here no record is dated or classed, the method is the eigenvalue the mixing structure forces"
+  },
   "lineage": [
     {
       "architecture": "v1",
@@ -150,7 +150,28 @@
         "G16",
         "G2"
       ]
+    },
+    {
+      "architecture": "v3",
+      "drawn": "2026-10-12",
+      "fate": "spent 2026-10-12 at stage 4: judge pass 1 NOT_DETERMINISTIC on margin (an unfiled fit window gave CHF 200 million); after the repair, pass 2 found the remaining funds' call-rate base (on unfunded commitment, 329 and CHF 225 million, against on commitment, 349 and CHF 250 million) unseparated by anything filed; two failed passes spend the architecture",
+      "driver": "A unit's forward draw on what remains of its allotment is set by how much it must still place before a hard deadline, because every unit whose deadline has passed had placed all but a small reserve by it whatever its earlier pace; a draw rate pooled by age over units that kept to schedule gives a group that fell behind and meets its deadline inside the window the same modest share as any unit of its age, and understates the window's total.",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "generators": [
+        "G6",
+        "G13",
+        "G7"
+      ],
+      "domain": "quantitative-finance",
+      "subdomain": "liquidity-funding-balance-sheet"
     }
   ],
-  "notes": "Redesign at stage 2 on 2026-10-12 after the v2 portal result (both responses executed the filed walk-forward). The decisive step moved off every filed sentence: the directive files the estimand only (expected calls of 2027 by value date, every commitment in the register, the plan-date rate, the reserve and the margin), no method. Organisation family foundation_or_funder: a Swiss Pensionskasse is a pension foundation (Stiftung) governed by a Stiftungsrat and supervised as a foundation, not a FINMA financial institution; financial_institution also repeats task446. Forcing event: the lender's facility election. Personas drawn with guard.py names --geo Switzerland --seed 501. Stage-4 repair 2026-10-12 (judge: margin fragility on an unfiled fit window): RL-PM-05 s.5.2 files the estimation period (the programme's whole history since 2015, a period and no method) and the world was tightened (the spread of the drawn share at a period end, the four funds' pace) so every careful member of the golden family sits at least 2 per cent of expected calls inside the CHF 225 million bin; the driver and the stump are unchanged, the driver's figures restated."
+  "notes": "Re-root drawn 2026-10-12 after architecture 3 was spent at stage 4. The decisive step is the field's method for the reproduction number of a structured population (the dominant eigenvalue of the next-generation matrix built from age-specific susceptibility and the national contact survey); no sentence names it and the guidance files R0, the immunity profile, the protection rules and the assessment date only. Strategy 'other' (transmission structure); none of the listed strategies is honest. Personas drawn with guard.py names --geo Ireland --seed 501. WARN repeat.deliverables (docx+xlsx against task180) answered by drawing xlsx+pptx. Figures on the card are the prototype's and are brought current at stage 4."
 }
