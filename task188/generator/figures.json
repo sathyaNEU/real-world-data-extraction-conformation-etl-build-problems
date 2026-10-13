@@ -1,0 +1,254 @@
+{
+ "call": "Westbrook",
+ "call_figure": 2.3,
+ "call_figure_exact": 2.3275,
+ "runner_up": "South Prairie",
+ "runner_up_figure": 1.8,
+ "runner_up_figure_exact": 1.8112,
+ "flip_rate_per_1000": 18,
+ "flip_rate_exact": 18.289,
+ "call_rate_per_1000": 23.5,
+ "call_build": {
+  "zone": "Westbrook",
+  "trap_nights": 30,
+  "tarsalis_per_tn": 95.2,
+  "pipiens_per_tn": 3.8,
+  "culex_per_tn": 99.0,
+  "tarsalis_pools": 70,
+  "tarsalis_positive": 42,
+  "pipiens_pools": 25,
+  "pipiens_positive": 2,
+  "tarsalis_mle_per_1000": 23.7,
+  "pipiens_mle_per_1000": 18.2,
+  "tarsalis_mir_per_1000": 14.7,
+  "index": 2.3,
+  "index_exact": 2.3275
+ },
+ "runner_up_build": {
+  "zone": "South Prairie",
+  "trap_nights": 24,
+  "tarsalis_per_tn": 134.9,
+  "pipiens_per_tn": 8.2,
+  "culex_per_tn": 143.0,
+  "tarsalis_pools": 334,
+  "tarsalis_positive": 41,
+  "pipiens_pools": 33,
+  "pipiens_positive": 0,
+  "tarsalis_mle_per_1000": 13.4,
+  "pipiens_mle_per_1000": 0.0,
+  "tarsalis_mir_per_1000": 12.7,
+  "index": 1.8,
+  "index_exact": 1.8112
+ },
+ "bias_corrected": {
+  "call": 2.3,
+  "runner_up": 1.8,
+  "flip": 18
+ },
+ "ladder": {
+  "default": {
+   "pick": "Riverside South",
+   "pick_figure": 2.28,
+   "second": "Old Town",
+   "second_figure": 1.79,
+   "margin": 1.271,
+   "westbrook_place": 4,
+   "westbrook_figure": 1.47
+  },
+  "co2_mir": {
+   "pick": "South Prairie",
+   "pick_figure": 1.71,
+   "second": "Westbrook",
+   "second_figure": 1.47,
+   "margin": 1.165,
+   "westbrook_place": 2,
+   "westbrook_figure": 1.47
+  },
+  "all_mle": {
+   "pick": "Old Town",
+   "pick_figure": 2.98,
+   "second": "Riverside South",
+   "second_figure": 2.48,
+   "margin": 1.204,
+   "westbrook_place": 3,
+   "westbrook_figure": 2.33
+  },
+  "co2_mle": {
+   "pick": "Westbrook",
+   "pick_figure": 2.33,
+   "second": "South Prairie",
+   "second_figure": 1.81,
+   "margin": 1.285,
+   "westbrook_place": 1,
+   "westbrook_figure": 2.33
+  }
+ },
+ "cases_by_zone": {
+  "North Bottoms": 3,
+  "Maple Ridge": 2,
+  "Westbrook": 2,
+  "Old Town": 2,
+  "Riverside South": 3,
+  "South Prairie": 4,
+  "Coulee Hills": 7,
+  "Airport East": 2
+ },
+ "cases_total": 25,
+ "weeks": [
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32
+ ],
+ "cases_by_week": {
+  "North Bottoms": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   1,
+   1,
+   0
+  ],
+  "Maple Ridge": [
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0
+  ],
+  "Westbrook": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   2,
+   0
+  ],
+  "Old Town": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   1,
+   1,
+   0
+  ],
+  "Riverside South": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   2,
+   1,
+   0
+  ],
+  "South Prairie": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   2,
+   2,
+   0,
+   0
+  ],
+  "Coulee Hills": [
+   0,
+   0,
+   0,
+   0,
+   1,
+   2,
+   2,
+   2,
+   0,
+   0,
+   0
+  ],
+  "Airport East": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   1,
+   1,
+   0,
+   0
+  ]
+ },
+ "co2_trap_nights_run": {
+  "North Bottoms": 256,
+  "Maple Ridge": 252,
+  "Westbrook": 319,
+  "Old Town": 215,
+  "Riverside South": 211,
+  "South Prairie": 251,
+  "Coulee Hills": 188,
+  "Airport East": 186
+ },
+ "co2_trap_nights_lost": {
+  "North Bottoms": 6,
+  "Maple Ridge": 5,
+  "Westbrook": 9,
+  "Old Town": 3,
+  "Riverside South": 6,
+  "South Prairie": 11,
+  "Coulee Hills": 7,
+  "Airport East": 10
+ },
+ "reimport_copies": 206,
+ "week": {
+  "mmwr": 32,
+  "from": "2026-08-09",
+  "to": "2026-08-15"
+ },
+ "flight": "2026-08-20",
+ "rate_basis": 1000,
+ "pool_max": {
+  "district": 50,
+  "county": 10
+ },
+ "flight_text": "Thursday 20 August 2026",
+ "protocol_clauses": {
+  "trap_night": "3.4",
+  "pooling": "4.1",
+  "retest": "4.3"
+ }
+}

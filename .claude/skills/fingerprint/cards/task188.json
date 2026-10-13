@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Westbrook, 2.3 estimated West Nile virus-infected Culex females per CO2 trap-night in week 32 (runner-up South Prairie 1.8; flip below 18 per 1,000)",
+  "answer_source": "task188/submission.md block 1; generator/figures.json call, call_figure, runner_up, runner_up_figure, flip_rate_per_1000",
   "gap": [
     "rule",
     "population"
@@ -35,10 +35,10 @@
   "role_family": "field_unit_lead",
   "scoring_unit": "index points",
   "spine": {
-    "file": "rcvcd_surveillance_2024_2026.sqlite (table collections)",
-    "rows": 60000,
-    "entity": "one species count from one trap-night at one trap site",
-    "grain": "trap site x trap-night x species",
+    "file": "rcvcd_surveillance_2024_2026.sqlite (tables trap_nights, catches, pools, pool_tests)",
+    "rows": 57074,
+    "entity": "one species and sex count from one trap-night at one trap site (catches)",
+    "grain": "trap site x trap-night x species x sex",
     "source": "synthetic"
   },
   "forum": "operations_desk",
@@ -72,8 +72,8 @@
   },
   "deliverables": [
     "aerial_spray_recommendation.pdf",
-    "zone_vector_index_week32.xlsx",
-    "vector_index_chart.png"
+    "zone_season_2026.xlsx",
+    "human_cases_by_zone.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",

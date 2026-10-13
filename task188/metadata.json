@@ -1,0 +1,163 @@
+{
+  "task": "task188",
+  "title": "Which of a vector control district's eight treatment zones gets the week's single aerial adulticide application, judged by the estimated number of West Nile virus-infected Culex females collected per CO2 trap-night, with each zone's locally acquired human cases and CO2 trap-nights run and lost this season",
+  "domain": "Epidemiology & Public Health",
+  "subdomain": "disease surveillance and outbreak anomaly detection (arbovirus surveillance: mosquito trapping, pooled RT-PCR testing and the infected-vector index that books adult mosquito control)",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "01 (a ranked list under a cap): the zone for the flight with its figure, the runner-up with its figure and the infection rate that flips the flight; each zone's locally acquired human cases and CO2 trap-nights run and lost; the chart of each zone's cases by week of onset",
+  "as_of": "2026-08-17",
+  "deliverables": [
+    "aerial_spray_recommendation.pdf",
+    "zone_season_2026.xlsx",
+    "human_cases_by_zone.png"
+  ],
+  "distractor_files": [
+    "FJE_airport_daily_weather_2026.csv",
+    "dead_bird_reports_2026.csv",
+    "aerial_applications_2024_2026.csv"
+  ],
+  "field_terms": [
+    "trap"
+  ],
+  "input_gates": {
+    "files": 12,
+    "formats": [
+      "csv",
+      "geojson",
+      "pdf",
+      "sqlite",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "rcvcd_surveillance_2024_2026.sqlite",
+    "largest_table_rows": 57074
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task188/generator/build.py (seeded, deterministic) around a fictional vector control district, county, health department, laboratory and applicator; no real organisation, place, person or record is depicted.",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-08-17",
+  "generator": "task188/generator/build.py",
+  "files": [
+    {
+      "path": "FJE_airport_daily_weather_2026.csv",
+      "format": "csv",
+      "bytes": 3571,
+      "rows": 108,
+      "source": "Constructed: Daily weather at the regional airport, May to August 2026",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "Ostby_Aviation_aerial_ULV_agreement_2026.pdf",
+      "format": "pdf",
+      "bytes": 45288,
+      "rows": null,
+      "source": "Constructed: Aerial ULV adulticide agreement between the district and its applicator, 2026 season",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "RCPHL_arbovirus_report_2026-W32_RCVCD.pdf",
+      "format": "pdf",
+      "bytes": 105484,
+      "rows": null,
+      "source": "Constructed: County public health laboratory's RT-PCR report for the district's week-32 pools",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "RCVCD_site_register_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 36138,
+      "rows": null,
+      "source": "Constructed: Trap site register 2026: sites, legacy code crosswalk and the zone sections from 1 May 2026",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "RCVCD_surveillance_and_control_protocol_2026.pdf",
+      "format": "pdf",
+      "bytes": 44813,
+      "rows": null,
+      "source": "Constructed: District mosquito surveillance and adult control protocol, 2026 season",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "RCVCD_zones_2026.geojson",
+      "format": "geojson",
+      "bytes": 9372,
+      "rows": null,
+      "source": "Constructed: Treatment zone polygons from 1 May 2026",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "WNV_human_case_log_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 10584,
+      "rows": null,
+      "source": "Constructed: County epidemiologist's West Nile virus human case log, 2026",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "aerial_applications_2024_2026.csv",
+      "format": "csv",
+      "bytes": 765,
+      "rows": 16,
+      "source": "Constructed: Aerial blocks designated and flown, 2024 to 2026",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "dead_bird_reports_2026.csv",
+      "format": "csv",
+      "bytes": 3144,
+      "rows": 46,
+      "source": "Constructed: Dead bird reports to the district's hotline, 2026, with test results",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "extract_manifest_2026-08-17.csv",
+      "format": "csv",
+      "bytes": 1452,
+      "rows": 11,
+      "source": "Constructed: Extract manifest",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "field_database_data_dictionary.txt",
+      "format": "txt",
+      "bytes": 2937,
+      "rows": null,
+      "source": "Constructed: Field database data dictionary",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "rcvcd_surveillance_2024_2026.sqlite",
+      "format": "sqlite",
+      "bytes": 5320704,
+      "rows": {
+        "sites": 103,
+        "trap_nights": 9104,
+        "catches": 57074,
+        "pools": 35573,
+        "pool_tests": 34469,
+        "species": 8,
+        "status_codes": 6
+      },
+      "source": "Constructed: District field database extract: trap sites, trap-nights, catches by species and sex, pools and RT-PCR results, 2024 and 2025 seasons and 2026 to 15 August",
+      "date": "2026-08-17",
+      "license": "CC0-1.0 (original work)"
+    }
+  ]
+}

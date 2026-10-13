@@ -1,27 +1,27 @@
 {
  "task": "task188",
  "owner": "oviya13ya",
- "status": "DESIGN",
+ "status": "BUILD",
  "seed": "analytical_tasks/02_anomaly_detection/AD11_routing-engagement-measured-page-removal.md",
  "domain": "epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection (a county vector control district's West Nile virus mosquito surveillance)",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-13",
  "stump": "The natural index, each zone's Culex females per CO2 trap-night times the minimum infection rate of all its Culex pools, names Riverside South, because counting one infected mosquito per positive pool understates Westbrook's pools of fifty and the town zones' gravid-trap pools carry the infection of females that have already fed; maximum likelihood on the CO2-trap pools names Westbrook.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-13"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK), 2026-10-13",
+  "reader": "pass 2 clean on questions 1 to 6; its question 7 fork on the trap-night ask fixed by recutting the second load"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (nearest driver 0.05, task450 v2)",
+  "nearest": "surface promotes task186 (two apart; gap key rule and decision type only)"
  },
  "judge": {
   "verdict": "",
@@ -29,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "stage 4: judge pass 3 running on /tmp/determinism-check-task188-pass3 after the second-load recut; on APPROVE write the report, set SHIPPED and commit",
  "approved": null,
  "delivered": null,
  "portal": null,
