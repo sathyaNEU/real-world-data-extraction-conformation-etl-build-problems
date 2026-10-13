@@ -1,0 +1,81 @@
+{
+  "task": "task454",
+  "architecture": "v1",
+  "drawn": "2026-10-13",
+  "slot_note": "",
+  "domain": "general-statistics-data-science",
+  "subdomain": "data-integration-record-linkage-entity-resolution",
+  "niche": "a state Medicaid fee-for-service pharmacy program's maximum-allowable-cost list, extended by one drug class a year: twelve months of pharmacy claims integrated with the State's acquisition cost survey, which prices only the NDCs surveyed retail pharmacies buy, so the claims paid at WAC sit on the packages it leaves unpriced",
+  "objective": "etl",
+  "shape": "07",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G4"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the pharmacy benefit administrator's MAC pricing lead, proposing the class to the State's Medicaid pharmacy director",
+  "role_family": "procurement_lead",
+  "scoring_unit": "per settled transaction",
+  "spine": {
+    "file": "pharmacy claims extract, April 2026 to March 2027",
+    "rows": 0,
+    "entity": "one pharmacy claim (a paid fill or its reversal)",
+    "grain": "claim",
+    "source": "synthetic (constructed in the layout of a Medicaid fee-for-service pharmacy claims extract)"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "professional_services",
+  "world": {
+    "geography": "United States (an unnamed state's Medicaid fee-for-service pharmacy program)",
+    "currency": "USD",
+    "org_type": "pharmacy benefit administrator contracted to run the State's fee-for-service pharmacy claims and its maximum-allowable-cost list",
+    "invented_names": [],
+    "people": [
+      "Sonya Burton",
+      "Todd Allen",
+      "Carrie Arellano",
+      "Jeff Strickland"
+    ]
+  },
+  "deliverables": [
+    "smac_class_addition_2027-07.docx",
+    "smac_candidate_classes_fy2027.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is a total of the differences between what was paid for units and what they cost, the cost observed only for the items a price survey covered; coverage is lowest for one presentation of each item, which costs a different amount per unit from the common presentation, so filling every uncovered item with the covered cost of the same item books that presentation at the common one's cost and misranks the groups, and only taking each uncovered item's cost from covered items of its own presentation recovers the totals.",
+  "driver_concrete": "The State AAC survey prices only the NDCs its surveyed retail pharmacies buy, so the claims paid at WAC sit mostly on hospital unit-dose cartons, which cost more per unit than the retail bottles of the same product; filling each unpriced NDC with its product's AAC books those cartons at the bottle's cost and swells the spread of the unit-dose-heavy classes, and only costing each unpriced NDC from priced NDCs of the same product and package type ranks the classes right.",
+  "stump": "The default path proposes atypical antipsychotics because it fills every unpriced NDC with its product's AAC, costing the unit-dose cartons long-term care pharmacies dispense at the retail bottle's price; costing each unpriced NDC from priced NDCs of the same package type proposes anticonvulsants.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the NDCs, takes the AAC in effect on each fill date, leaves the dispensing fee out and fills every unpriced NDC with its product's AAC proposes atypical antipsychotics; the golden is anticonvulsants.",
+  "domain_test": "Data integration's own analysis decides: the claims that fail to link to the price survey are a selected subset (the unit-dose cartons the surveyed pharmacies do not buy), so their cost has to be filled conditioning on the variable that drives both the missed link and the cost; the generic fill, the product's average price, changes the call.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Drawn 2026-10-13 from seed ET11 (Medicaid pharmacy spread against NADAC): the world, the decision (one class added to the MAC list) and the quantity (each class's ingredient spread) kept; the pitfall re-found in the data: missed links to the price survey are selected on package type.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/1",
+  "layer1": [
+    "NDCs in three ten-digit hyphenated configurations in the drug file against eleven-digit NDCs in claims and rates",
+    "effective-dated AAC rates, several per NDC across the year",
+    "reversed claims and the dispensing fee inside the total paid",
+    "pricing units (each, millilitre, gram) against claim quantities in metric decimal units",
+    "drug classes assigned to products, not NDCs, through the State's class list"
+  ]
+}

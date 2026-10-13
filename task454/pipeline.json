@@ -1,0 +1,23 @@
+{
+  "task": "task454",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "general-statistics-data-science",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-13",
+  "stump": "The default path proposes atypical antipsychotics because it fills every unpriced NDC with its product's AAC, costing the unit-dose cartons long-term care pharmacies dispense at the retail bottle's price; costing each unpriced NDC from priced NDCs of the same package type proposes anticonvulsants.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {"exit": null, "date": ""},
+  "leak": {"leak_py": "", "reader": ""},
+  "duplicate_check": {"heart": "", "nearest": "0.08 (task93 v3)", "note": "drawn 2026-10-13: guard WARN (pattern reused against task449, Gate G against task452, objective overuse, question form against task453), answered in the Draw"},
+  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "returned": [],
+  "resume": "stage 2: write the default path, stump sentence, three rules, screen, fork table, ladder, closure, literal reader, oracles and ask sheet; prototype the generator's class spreads; precut",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET11 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept; its mechanisms (NDC formats, effective dates, the fee inside the total) are Layer 1 here"
+}
