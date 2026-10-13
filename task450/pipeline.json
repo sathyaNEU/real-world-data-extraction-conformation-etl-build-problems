@@ -2,13 +2,13 @@
   "task": "task450",
   "owner": "oviya1301",
   "status": "DESIGN",
-  "domain": "physical-environmental-sciences",
+  "domain": "education-learning-sciences",
   "objective": "etl",
   "stage": 2,
   "stage_name": "design",
-  "updated": "2026-10-12",
-  "stump": "The default path nominates five systems, two wet-gas systems among them, because it books each detection as a release lasting from halfway since the site's last clean flight to the crew's repair and drops the detections the crew found already stopped, which keeps only the releases a crew fixed and misses most of the short, self-ending tank flashes and blowdowns those systems carry (figures fixed at build).",
-  "architecture": 1,
+  "updated": "2026-10-13",
+  "stump": "The default path designates too many schools because it reads the 2026 raw scores through the 2025 table as if the two forms were the same, so the harder 2026 form costs every student about two raw points and the passing raw score stays at the 2025 form's; equating that matches the 2026 score distribution to 2025's does no better, because it books the stronger cohort's real gain as an easier form; linked through the items both forms share, the passing raw score on the 2026 form is lower and fewer schools fall under the line (schools and figures fixed at design).",
+  "architecture": 2,
   "loops": 0,
   "precut": {
     "exit": null,
@@ -20,8 +20,8 @@
   },
   "duplicate_check": {
     "heart": "",
-    "nearest": "0.05 (task134 v1 lineage, task102, task16, task229 v2 lineage, task17)",
-    "note": "draw checked 2026-10-12: guard WARN three_rules.strategy_risk, repeat.gate_g and repeat.question_form answered in the design note; task126 v1 differentiated on the card"
+    "nearest": "0.07 (task49, task62 lineage)",
+    "note": "architecture 2 drawn 2026-10-13: guard WARN repeat.question_form answered in the design note; v1 differentiated on the card"
   },
   "judge": {
     "verdict": "",
@@ -29,9 +29,9 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: readability screen, fork table, ladder arithmetic, closure table, asks (supplemental-stumping), prompt.txt, precut.py",
+  "resume": "stage 2: readability screen, fork table, ladder arithmetic and corridor, closure table, asks (supplemental-stumping), prompt.txt, precut.py",
   "approved": null,
   "delivered": null,
   "portal": null,
-  "source_note": "seed ET07 (analytical_tasks/07_data_extraction_conformation) not drawn: its honest task types were banned in the slot's window by task448 and task449, so the draw was redone inside ETL with the number kept (START_HERE); the build's world is its own"
+  "source_note": "architecture 1 (Physical & Environmental Sciences, methane overflights) spent 2026-10-13 at the determinism judge's pass 2 (SEND_BACK, Gate C); re-rooted inside ETL with the number kept; seed ET07 still not drawn (its task types banned in the window)"
 }

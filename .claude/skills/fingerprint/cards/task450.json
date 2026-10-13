@@ -1,89 +1,113 @@
 {
   "task": "task450",
-  "architecture": "v1",
-  "drawn": "2026-10-12",
-  "slot_note": "Seed ET07 (federal award reconciliation) not drawn: its honest ETL task types (survey-research-official-statistics census-register-administrative-data-quality and general-statistics-data-science record linkage) are banned by task448 and task449 in this slot's window, so the draw is redone inside the ETL objective with the number kept (START_HERE), on an ETL task type never drawn.",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "emissions-inventory",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "measurement-informed methane inventory of a gas producer's gathering systems, monthly aerial overflights reconciled with the routine-source factor inventory for a low-methane supply nomination",
+  "architecture": "v2",
+  "drawn": "2026-10-13",
+  "slot_note": "Seed ET07 not drawn at v1 (its honest task types were banned in the window by task448 and task449); v1 (Physical & Environmental Sciences, a methane inventory from monthly overflights) was spent at the judge's pass 2 and the slot re-rooted inside ETL with the number kept.",
+  "domain": "education-learning-sciences",
+  "subdomain": "item-response-theory-test-equating",
+  "niche": "a district's own end-of-year mathematics assessment, a new grade-5 form linked to the reporting scale through items shared with the previous form, to name the schools for its 2027 intervention programme",
   "objective": "etl",
-  "shape": "03",
+  "shape": "14",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
   "answer": "",
   "answer_source": "",
   "gap": [
     "population",
-    "time"
+    "rule"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G3",
-    "G2",
-    "G12"
+    "G4",
+    "G6",
+    "G2"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "etl_conformance",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_model",
-  "stakeholder_role": "methane measurement lead at a natural gas producer",
-  "role_family": "compliance_or_audit",
-  "scoring_unit": "per certified output",
+  "context_artifact": "published_series",
+  "stakeholder_role": "director of assessment and accountability in a large school district",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per covered member",
   "spine": {
-    "file": "state production reports by well and month",
+    "file": "grade5_math_item_responses_2026.csv",
     "rows": 0,
-    "entity": "one unconventional well's gas, condensate and days on line in one reporting month, as the producer files it with the state",
-    "grain": "well x month",
-    "source": "synthetic (constructed in the layouts of a state oil and gas production report, an aerial methane survey vendor's detection and flight files, a maintenance system's work orders and a routine-source emissions inventory; no real producer, site or measurement is depicted)"
+    "entity": "one student's scored response to one item of the 2026 grade-5 mathematics form",
+    "grain": "student x item",
+    "source": "synthetic (constructed in a state assessment vendor's item-response export layout)"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "other",
+  "forum": "trustees_or_governors",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "university_or_school",
   "world": {
-    "geography": "United States: southwestern Pennsylvania and northern West Virginia (Appalachian basin)",
+    "geography": "United States: a large urban school district running its own end-of-year assessments",
     "currency": "USD",
-    "org_type": "natural gas producer",
+    "org_type": "public school district (its assessment and accountability office)",
     "invented_names": [],
     "people": [
-      "Brianna Pollard",
-      "Jeffery Becker",
-      "Cole Arroyo",
-      "Jaime Holmes"
+      "Susan Bird",
+      "Christopher Murphy",
+      "Katherine Padilla",
+      "Debra Ward"
     ]
   },
   "deliverables": [
-    "low_methane_nomination_2027.docx",
-    "methane_inventory_annex_2026.xlsx"
+    "intervention_schools_2027.docx",
+    "grade5_math_results_2026.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "Each scheduled visit records the rate of whatever is active at that moment, so a unit's yearly total from intermittent releases is its mean recorded rate across the visits times the hours in the year; booking each sighting as a release whose duration is assumed from the visit schedule and the follow-up record understates the short releases that end on their own and overstates the long ones fixed after a sighting, so units dominated by each kind cross a fixed cap in opposite directions.",
-  "driver_concrete": "A gathering system's methane from large releases in the qualification year is each site's mean measured rate over the monthly overflights that covered it times the year's hours, summed over its sites; booking each detection from halfway since the site's last clean flight to the crew's repair, and dropping the detections the crew found already stopped, keeps only the stuck valves a crew fixed and misses most of the wet-gas systems' tank flashes and blowdowns, leaving two of them under the agreement's cap, which they exceed.",
-  "stump": "The default path nominates five systems, two wet-gas systems among them, because it books each detection as a release lasting from halfway since the site's last clean flight to the crew's repair and drops the detections the crew found already stopped, which keeps only the releases a crew fixed and misses most of the short, self-ending tank flashes and blowdowns those systems carry (figures fixed at build).",
+  "driver": "Two administrations of a measuring instrument differ both in the instrument and in the group measured, and the only quantities both groups answered are a shared subset, so the instrument's change has to be estimated from the groups' performance on that subset and removed before any group is placed against a fixed line; reading the new results through the old conversion, or matching the two groups' whole distributions, books the group's real change as the instrument's.",
+  "driver_concrete": "The 2026 grade-5 mathematics form is linked to the 2025 reporting scale through the items both forms share, which separate the form's difficulty from the 2026 cohort's higher ability, before each school's share of students at or above the proficiency line is counted; the 2025 raw-to-scale table, or equating that assumes the two cohorts are equivalent, files a different set of schools below the line.",
+  "stump": "The default path names the wrong schools because it converts 2026 raw scores with the 2025 raw-to-scale table (or matches the 2026 score distribution to 2025's), which credits the 2026 cohort's real gain to an easier form or erases it, moving the passing raw score; linked through the shared items, a different set of schools falls below the line (schools fixed at design).",
   "stump_class": "analytical",
-  "analyst_test": "With every field read right (a detection is a plume seen at a site at a flight's time, a work order records when the crew fixed the source or found it already stopped), the easy route books each detection as a release from midway since the site's last clean flight to the repair, drops the ones the crew could not find, and nominates the condensate systems whose measured intensity is above the cap.",
-  "domain_test": "The deciding quantity is each system's measurement-informed methane intensity, whose large-release part the field builds from repeated overflights as each source's mean measured rate times its persistence (the share of overflights that found it emitting), added to the routine-source factor inventory and divided by methane sold; with another field's nouns the plume detections above an aircraft's floor, the routine factor inventory and intensity against methane sold have no counterpart.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:overflights-as-time-samples-for-intermittent-releases",
-  "layer1": [
-    "two survey vendors across the year, one reporting kilograms of methane an hour against site identifiers in UTC, the other standard cubic feet of whole gas an hour against coordinates in Eastern time",
-    "flight logs in which some sites were not flown in some months (airspace, weather, pads brought on line mid-year), so an absent detection is a clean flight only where the site was flown",
-    "a site register in which pads moved between gathering systems on an effective date",
-    "state production reports by well and month, with amended filings, rolled up to pads and systems",
-    "quarterly gas analyses by system giving the methane share of sales gas",
-    "maintenance work orders with free-text findings and local times",
-    "the routine-source inventory workbook (component counts by site times factors) with multi-row headers"
-  ],
+  "analyst_test": "A strong analyst who scores every response with the right key, matches every student to a school, and converts raw scores with the 2025 table or equates by matching the 2026 distribution to 2025's names the wrong set of schools (fixed at design).",
+  "domain_test": "The deciding quantity is each school's proficiency rate on the reporting scale, which psychometrics gets by equating the new form through the anchor items under a non-equivalent groups design; with a hospital's nouns there are no test forms, no anchor items and no reporting scale to link, so the task stops reading.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task126": "task126 splits records a succession link wrongly joins into one unit; here no link is followed or split: the decisive move reads repeated scheduled snapshots as samples of time, so a site's yearly mass is its mean snapshot rate times the hours, against booking each sighting as a release with an assumed duration."
+    "task450": "v1 read scheduled overflight snapshots as samples of time for releases that stop on their own; v2 separates an instrument's change from its population's change through the items both administrations share, with no snapshot or sampling of time in it"
   },
-  "lineage": [],
-  "notes": "Drawn 2026-10-12 for wave 2 under the 10/10 rules. The ET07 seed's world (federal award reconciliation) sits honestly only in record linkage or administrative register quality, both banned by task448 and task449, so the draw is redone in the ETL objective on physical-environmental-sciences emissions-inventory (never drawn; PES x ETL never built). org_family other: a natural gas producer. The decisive step is the field's measurement-informed inventory method for intermittent large releases (rate times persistence from repeated overflights); grain_or_unit is the honest strategy (a detection row is a moment of a release, not a release) and draws the semantics-risk WARN, answered by the analyst test: every field is read right on the default path, which still files the wrong set. Detection probability is kept out of the decisive step (every large release sits above both vendors' floors, every routine site total below) so the build does not repeat task229 or task230. No continuous-monitor subsample ships, so it does not repeat task123's correction from a continuously measured sample. Personas drawn with guard.py names --geo 'United States' --seed 450."
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent at the determinism judge's pass 2, 2026-10-13: SEND_BACK on Gate C (underspecified_objective). What a sighting of a release the crews found already stopped stands for was left to the records, and a reasonable reader could book it at zero, a day or half the interval as well as at its month's hours, each filing another set; forcing it would file the method (rule application) or ship a measured duty cycle (task123's driver). Pass 1 had been DETERMINISTIC with a hygiene FIX_NOW.",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G3",
+        "G2",
+        "G12"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "stump_strategy": "grain_or_unit",
+      "driver": "A scheduled visit samples time only for events the schedule does not end: an event that recurs and stops on its own is seen at a moment independent of it, so each sighting stands for the whole interval it sampled, while an event that runs until a visit finds it and is then stopped is certain to be seen, so it is counted from its recorded start to its stop; dropping the unconfirmed sightings, halving them, or treating every sighting one way misstates one kind or the other, and units dominated by each kind cross a fixed cap in opposite directions.",
+      "driver_concrete": "A gathering system's large-release methane over the qualification year books each release a crew fixed from the start its work order records to its repair, and each sighting of a release the crew found already stopped (the wet-gas systems' recurring tank flashes) as the measured rate of the month its flight sampled; dropping those sightings puts Pursley Creek and Bluelick under the 0.10 per cent cap they exceed, and booking every sighting at its month's hours puts Owens Ridge over it."
+    }
+  ],
+  "notes": "Architecture 2 drawn 2026-10-13 after v1 was spent at the judge's pass 2 (see lineage).",
+  "client_domain": "education-learning-sciences",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "education-learning-sciences/item-response-theory-test-equating/3",
+  "layer1": [
+    "item responses with omits and not-reached items under the scoring key",
+    "a scoring-key correction issued after the window for one item",
+    "student identifiers that differ between the vendor's file and the district's roster",
+    "schools merged or renumbered between years",
+    "accommodated and make-up administrations on other forms",
+    "the vendor's export layout changed between 2025 and 2026"
+  ]
 }
