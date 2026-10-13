@@ -22,13 +22,22 @@ EXTRACT_FROM = dt.date(2023, 10, 2)          # Tallyband keeps reports filed in 
 HR_EXPORT = dt.date(2026, 10, 14)            # the HRIS and ATS exports the people data team pulled
 
 # The market for every Data Engineer level (the world's own, never shipped as figures): the median base pay at the
-# benchmark date, the market's movement at a fixed level, each person's merit inside the level, the promotion step
+# benchmark date, the market's movement at a fixed level within an employer, each person's merit inside the level,
+# the promotion step
 LEVELS = ["I", "II", "III", "IV"]
-MARKET_MEDIAN = {"I": 116922.7, "II": 142895.5, "III": 168071.8, "IV": 201031.0}
-MOVEMENT = 0.017            # a year, continuous
-MERIT = 0.030               # a year inside the level, continuous
+MARKET_MEDIAN = {"I": 117112.5, "II": 142479.0, "III": 167657.4, "IV": 201345.5}
+MOVEMENT = 0.027            # a year, continuous, at a fixed level within an employer
+MERIT = 0.020               # a year inside the level, continuous
 PROMOTION_STEP = 0.165      # log step between adjacent levels at promotion
-SPREAD = {"I": 0.1050, "II": 0.1100, "III": 0.1188, "IV": 0.1200}   # log sd of base pay at a level and date
+SPREAD = {"I": 0.0760, "II": 0.0800, "III": 0.0894, "IV": 0.0890}   # log sd of a person's pay about their employer's
+SKEW = {"I": 0.0000, "II": 0.0000, "III": -0.0276, "IV": 0.0000}                 # the lean of that spread, a little to one side
+# Tallyband's reach: the employers whose engineers were filing when the extract's window opened, and the employers
+# whose engineers began filing through it (each employer's reports ramp up over its first months); the later an
+# employer arrived, the less it pays at every level
+JOIN_EARLY_SHARE = 0.46     # share of employers already filing on 2 October 2023 (the larger ones more likely)
+JOIN_RAMP_DAYS = 60
+PREMIUM_EARLY = (0.040, 0.070)            # mean and sd of an early employer's log pay premium at a fixed level
+PREMIUM_JOINER = (0.000, -0.130, 0.065)   # a joiner's mean premium on arrival in July 2024, its fall to June 2026, sd
 
 # Tallyband's families and the shares of respondents in each (the extract holds every family)
 FAMILIES = [("Software Engineering", 0.40), ("Data Engineering", 0.16), ("Machine Learning Engineering", 0.08),

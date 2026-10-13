@@ -11,7 +11,7 @@
   "shape": "07",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "File the Data Engineer III midpoint at $168,000 for the pay bands that take effect on 1 April 2027.",
+  "answer": "File the Data Engineer III midpoint at $170,000 for the pay bands that take effect on 1 April 2027.",
   "answer_source": "task259/submission.md block 1; golden/data_engineer_bands_2027.xlsx, Bands 2027",
   "gap": [
     "time",
@@ -64,15 +64,15 @@
   ],
   "opening_move": "question-first",
   "question_form": "what",
-  "driver": "The decisive quantity is a level at a reference date estimated from reports filed at earlier dates, each of which has to be carried to the reference date by how the level itself moves at a fixed grade; the reporters' own changes between their two reports run faster because individuals also climb within the grade, so carrying the reports by the paired changes overshoots and leaving them as filed undershoots.",
-  "driver_concrete": "Each matched respondent's base pay is aged from the date it was reported to 1 October 2026 by the market movement for the job at a fixed level, read from how pay at that level rises across report dates, before the medians and quartiles are taken; the re-reporters' own pay growth between their two reports includes merit and promotion inside the level and over-ages every report, and the reports left unaged put the medians too low.",
-  "stump": "A competent analyst matches the platform's respondents to Data Engineer III through the crosswalk and the focus table, sees the reports were filed over three years and carries each to the benchmark date at the re-reporters' own pay growth between their two reports at the same level (4.7 per cent a year), filing the midpoint at $175,000, because a person's raises carry the merit earned inside the level that the market at a fixed level never sees; carried by the level's own movement across filing dates (1.7 per cent a year) the reports give $168,000, and left as filed they give $164,000.",
+  "driver": "The decisive quantity is a level at a reference date estimated from reports filed at earlier dates, each carried to the reference date by how the level itself moves at a fixed grade inside the same reporting units; the reporters' own changes between two reports run faster because individuals also climb within the grade, and the trend across the pooled reports runs slower because the units reporting at later dates sit lower, so carrying by the paired changes overshoots and carrying by the pooled trend, or not at all, undershoots.",
+  "driver_concrete": "Each matched respondent's base pay is aged from the date it was reported to 1 October 2026 by the market movement for the job at a fixed level read within employers (an intercept for each employer and level), 2.7 per cent a year, before the medians and quartiles are taken; the re-reporters' own growth between their two reports (4.7 per cent) includes merit inside the level and over-ages every report, and the trend across the pooled reports (1.1 per cent) under-ages them because the employers whose engineers began filing later pay less at every level.",
+  "stump": "A competent analyst matches the platform's respondents to Data Engineer III through the crosswalk and the focus table, sees the reports were filed over three years and carries each to the benchmark date at the re-reporters' own pay growth between their two reports at the same level (4.7 per cent a year), filing the midpoint at $175,000, because a person's raises carry the merit earned inside the level; the analyst who corrects that by the level's movement across the pooled reports (1.1 per cent a year) files $166,000, because the employers the platform reached later pay less at every level; carried by the movement within employers (2.7 per cent a year) the reports give $170,000, and left as filed they give $164,000.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who matches every respondent to the company's levels through the crosswalk and the focus table and reads every rule carries each report to the benchmark date at the re-reporters' own growth between their two reports at the same level (4.7 per cent a year) and files the Data Engineer III midpoint at $175,000; one who leaves the reports as filed files $164,000; carrying them by how pay at the fixed level moves across report dates (1.7 per cent a year) files the golden $168,000.",
-  "domain_test": "The call turns on the market median base pay for a job and level as in effect on a benchmark date, read from pay reports filed at different dates, which compensation practice ages to the date by the market movement at a fixed level (the structure movement) rather than by individuals' raises, which also carry merit and in-level progression; with a hospital's or a utility's nouns there is no job-level band whose market rate moves slower than the people inside it progress, and the task stops reading the same.",
+  "analyst_test": "A strong analyst who matches every respondent to the company's levels through the crosswalk and the focus table and reads every rule carries each report to the benchmark date at the re-reporters' own growth between their two reports at the same level (4.7 per cent a year) and files the Data Engineer III midpoint at $175,000; one who reads the level's movement across the pooled reports files $166,000; one who leaves the reports as filed files $164,000; carrying them by how pay at the fixed level moves within employers (2.7 per cent a year) files the golden $170,000.",
+  "domain_test": "The call turns on the market median base pay for a job and level as in effect on a benchmark date, read from pay reports filed at different dates, which compensation practice ages to the date by the market movement at a fixed level (the structure movement) measured on matched employers, the way the Employment Cost Index holds establishments fixed, rather than by individuals' raises, which carry merit, or by the pooled reports' trend, which carries the platform's changing employer mix; with a hospital's or a utility's nouns there is no job-level band, no re-reporter progressing inside it and no salary platform whose reach widens to lower-paying employers, and the task stops reading the same.",
   "mechanism_source": "design_note",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:report-ageing-by-market-movement-not-individual-progression",
+  "layer2_pattern": "own:report-ageing-by-market-movement-within-employers",
   "layer1": [
     "a salary platform's own job family and normalised level mixing roles and levels the company's architecture separates (machine-learning data engineers inside data engineering; employer level codes mapped through an effective-dated crosswalk)",
     "respondent reports filed over three years, a share carrying the respondent's previous report",
@@ -82,8 +82,28 @@
   ],
   "differentiation": {
     "task87": "task87 caps a delivered count under an exclusivity no procedure states; this build ages pay reports to a reference date by the level's own movement rather than the reporters' progression: no cap, no exclusivity, no filed procedure",
-    "task445": "task445 completes a period total for reporters whose reports have not arrived by carrying each from its last report; this build has every report in hand and ages each one to a reference date by the market's movement at a fixed level, not by the reporters' own progression"
+    "task445": "task445 completes a period total for reporters whose reports have not arrived by carrying each from its last report; this build has every report in hand and ages each one to a reference date by the market's movement at a fixed level, not by the reporters' own progression",
+    "task256": "task256 transfers a reference survey's joint body-size distribution to a roster through the survey's conditional distribution within sex; this build reads a rate of change at a fixed grade inside the same reporting employers because the platform's employers change across dates: a time trend's composition, not a population transfer",
+    "task259": "loop 1 keeps loop 0's carry by the level's own movement and reads that movement inside employers: loop 0's decisive trend across the pooled reports is now a rung, wrong because the platform's employers arrive through the window paying less at every level"
   },
-  "lineage": [],
-  "notes": "drawn 2026-10-13 after task258 shipped; task257 (DA07) waits for a later draw day because its world's natural step is the duty-cycle mix (composition_mix), barred against task256 in the draw window. DA09's seed step (the platform's family mixing machine-learning data engineers) stays a lower rung (job matching through the focus table); the client domain is Survey Research & Official Statistics (a salary survey's measurement adjustment), since Economics carries no Descriptive task type"
+  "lineage": [
+    {
+      "architecture": "v1 (loop 0): the level's movement read across the pooled reports as the decisive rung",
+      "fate": "hardened at the author's request for a second layer (2026-10-13, before any portal result); kept as rung R3 of loop 1, where the platform's employers arrive through the window paying less and the pooled movement (1.1 per cent) files $166,000",
+      "domain": "survey-research-official-statistics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "stump_strategy": "grain_or_unit",
+      "driver": "The decisive quantity is a level at a reference date estimated from reports filed at earlier dates, each of which has to be carried to the reference date by how the level itself moves at a fixed grade; the reporters' own changes between their two reports run faster because individuals also climb within the grade, so carrying the reports by the paired changes overshoots and leaving them as filed undershoots."
+    }
+  ],
+  "notes": "drawn 2026-10-13 after task258 shipped; task257 (DA07) waits for a later draw day because its world's natural step is the duty-cycle mix (composition_mix), barred against task256 in the draw window. DA09's seed step (the platform's family mixing machine-learning data engineers) stays a lower rung (job matching through the focus table); the client domain is Survey Research & Official Statistics (a salary survey's measurement adjustment), since Economics carries no Descriptive task type; loop 1 (2026-10-13, the author's request for a second layer): the platform's employers arrive through the window paying less, so the movement is read within employers; the strategy stays grain_or_unit for the first decisive move (whose movement carries a report) and the second layer is composition_mix (the employer mix of the pooled reports), which shares no mechanism with task256's within-sex conditional transfer of a survey to a roster"
 }

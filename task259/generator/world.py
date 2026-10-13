@@ -90,6 +90,7 @@ def employers(n=260):
     for e in out:
         if e["name"] == RELEVEL_EMPLOYER:
             e["scheme"], e["size"] = "L", 6.0
+    _arrivals(out)
     # the names employers trade under: a word each, a trade word on most
     rn = K.stream("employer_names")
     assert len(set(FIRST)) == len(FIRST) >= len(out)
@@ -108,6 +109,58 @@ def employers(n=260):
             e["name"] = (FIRST[int(k)] + " " + word).strip() if rn.random() < 0.64 else FIRST[int(k)]
     assert len({e["name"] for e in out}) == len(out)
     return out
+
+
+def _arrivals(emps):
+    """When each employer's engineers began filing on Tallyband and what it pays at a fixed level: the employers
+    already filing when the window opened (the larger ones more likely among them) and the ones that arrived through
+    it, a later arrival paying less."""
+    r = K.stream("arrivals")
+    sizes = np.array([e["size"] for e in emps])
+    rank = sizes.argsort().argsort() / (len(emps) - 1.0)
+    p_early = np.clip(K.JOIN_EARLY_SHARE + 0.40 * (rank - 0.5), 0.05, 0.95)
+    lo, hi = dt.date(2024, 7, 1), dt.date(2026, 6, 30)
+    span = (hi - lo).days
+    for e, pe in zip(emps, p_early):
+        u = r.random()
+        if e["name"] == RELEVEL_EMPLOYER or u < pe:
+            e["joined"] = K.EXTRACT_FROM - dt.timedelta(days=int(r.integers(60, 1500)))
+            e["premium"] = float(r.normal(*K.PREMIUM_EARLY))
+        else:
+            frac = float(r.random())
+            e["joined"] = lo + dt.timedelta(days=int(frac * span))
+            m0, fall, sd = K.PREMIUM_JOINER
+            e["premium"] = float(r.normal(m0 + fall * frac, sd))
+    return emps
+
+
+def _flat_within(u, ages, emp, strata, iters=200):
+    """u with every movement of its own inside an employer taken out: no slope on filing date within any employer
+    in any stratum, nor across them with an intercept for each employer and each stratum."""
+    u = np.asarray(u, float)
+    cols = []
+    for st in np.unique(strata):
+        k = strata == st
+        c = np.zeros(len(u))
+        c[k] = ages[k] - pd.Series(ages[k]).groupby(emp[k]).transform("mean").to_numpy()
+        cols.append(c)
+    two = np.asarray(ages, float).copy()
+    for _ in range(iters):
+        two = two - pd.Series(two).groupby(emp).transform("mean").to_numpy()
+        two = two - pd.Series(two).groupby(strata).transform("mean").to_numpy()
+    cols.append(two)
+    B = np.column_stack(cols)
+    return u - B @ np.linalg.lstsq(B, u, rcond=None)[0]
+
+
+def employer_weights(emps, on):
+    """How likely a report filed on a date is to come from each employer: its size once its engineers file, ramping
+    up over its first months on the platform."""
+    w = np.empty(len(emps))
+    for k, e in enumerate(emps):
+        d = (on - e["joined"]).days
+        w[k] = 0.0 if d < 0 else e["size"] * min(1.0, (d + 1) / K.JOIN_RAMP_DAYS)
+    return w / w.sum()
 
 
 def variant(name, r):
@@ -162,6 +215,11 @@ def tallyband():
     df["level_idx"] = r.choice(4, n, p=(0.18, 0.30, 0.32, 0.20))
     df["state_idx"] = r.choice(len(STATES), n, p=st_p / st_p.sum())
     df["filed_on"] = _filing_dates(r, n)
+    re_ = K.stream("employer_by_date")
+    emp_of = np.empty(n, dtype=int)
+    for d, idx in df.groupby("filed_on").indices.items():
+        emp_of[idx] = re_.choice(len(emps), len(idx), p=employer_weights(emps, d))
+    df["employer_idx"] = emp_of
     de = df.family == "Data Engineering"
     focus = np.array([f[0] for f in K.DE_FOCUS])[r.choice(len(K.DE_FOCUS), n, p=[f[1] for f in K.DE_FOCUS])]
     df["focus"] = np.where(de, focus, "")
@@ -175,27 +233,42 @@ def tallyband():
     df["quarter"] = [int((d - K.EXTRACT_FROM).days // 91.3125) for d in df.filed_on]
     base = np.zeros(n)
     loc = np.array([STATES[k][2] for k in df.state_idx])
-    emp_eff = np.array([emps[k]["effect"] for k in df.employer_idx])
-    score = loc + emp_eff + K.MERIT * (df.tenure - 2.0) + 0.06 * df.noise
+    prem = np.array([emps[k]["premium"] for k in df.employer_idx])
+    score = loc + K.MERIT * (df.tenure - 2.0) + 0.06 * df.noise
     matched = de & (df.focus == K.DE_FOCUS[0][0]) & (df.country == "US") & (df.employment_type == "full_time")
-    # the market's path, exact per level and filing quarter for the matched data engineers
+    # the matched data engineers: the market's path within an employer, the employer's premium and each person's place
+    # about their employer, drawn per level and filing quarter
     rs = K.stream("strata")
     quarters = np.array(sorted(df.quarter.unique()))
+    wobble = {}
     for li, lv in enumerate(K.LEVELS):
         # each quarter's sample sits a little off the path, the wobble carrying no trend of its own
         w = rs.normal(0.0, 0.0008, len(quarters))
         A = np.c_[np.ones(len(quarters)), quarters]
         w = w - A @ np.linalg.lstsq(A, w, rcond=None)[0]
-        for q, wq in zip(quarters, w):
+        wobble[li] = dict(zip(quarters, w))
+        for q in quarters:
             idx = np.flatnonzero(matched & (df.level_idx == li) & (df.quarter == q))
             if not len(idx):
                 continue
             k = len(idx)
             z = norm.ppf((np.arange(k) + rs.uniform(0.2, 0.8, k)) / k)
+            z = z + K.SKEW[lv] * (z * z - 1.0)
             order = np.argsort(score.to_numpy()[idx], kind="mergesort")
             zz = np.empty(k)
             zz[order] = z
-            base[idx] = K.MARKET_MEDIAN[lv] * np.exp(-K.MOVEMENT * df.age.to_numpy()[idx] + wq + K.SPREAD[lv] * zz)
+            base[idx] = zz
+    # a person's place carries no movement of its own inside an employer: at each level, the within-employer slope of
+    # the places on filing date is taken out, so the market's movement inside every employer is the path's
+    ages = df.age.to_numpy()
+    mm = matched.to_numpy()
+    rows_ = np.flatnonzero(mm)
+    base[rows_] = _flat_within(base[rows_], ages[rows_], df.employer_idx.to_numpy()[rows_],
+                               df.level_idx.to_numpy()[rows_])
+    for i in np.flatnonzero(mm):
+        li = int(df.level_idx.iat[i])
+        base[i] = K.MARKET_MEDIAN[K.LEVELS[li]] * np.exp(-K.MOVEMENT * ages[i] + wobble[li][df.quarter.iat[i]] +
+                                                          prem[i] + K.SPREAD[K.LEVELS[li]] * base[i])
     # everyone else: the same levels, the family's own pay, an ordinary spread
     fam_mult = {"Software Engineering": 1.04, "Data Engineering": 1.0, "Machine Learning Engineering": 1.10,
                 "Data Science": 0.98, "Product Management": 1.06, "Design": 0.86, "Site Reliability": 1.02,
@@ -204,8 +277,11 @@ def tallyband():
     lv_med = np.array([K.MARKET_MEDIAN[K.LEVELS[k]] for k in df.level_idx])
     fstep = np.array([fam_mult[f] for f in df.family])
     focus_step = np.array([dict((f[0], f[2]) for f in K.DE_FOCUS).get(f, 0.0) for f in df.focus])
-    oth = lv_med * fstep * np.exp(focus_step - K.MOVEMENT * df.age + score - score.mean() +
-                                  0.08 * r.normal(0.0, 1.0, n))
+    u = (score - score.mean()).to_numpy() + 0.05 * r.normal(0.0, 1.0, n)
+    orow = np.flatnonzero(~mm)
+    strata = np.array(["%s|%d|%s" % x for x in zip(df.family, df.level_idx, df.focus)])
+    u[orow] = _flat_within(u[orow], ages[orow], df.employer_idx.to_numpy()[orow], strata[orow])
+    oth = lv_med * fstep * np.exp(focus_step - K.MOVEMENT * df.age + prem + u)
     base = np.where(other, oth, base)
     # outside the United States: pay in US dollars at the filing date's rate, well below; part time paid as worked
     base = np.where(df.country != "US", base * r.uniform(0.62, 0.78, n), base)
@@ -220,6 +296,10 @@ def tallyband():
     eps = rp.normal(0.0, 0.025, n)
     prev = np.where(prom, df.base * np.exp(-(K.MOVEMENT + K.MERIT) * gap - K.PROMOTION_STEP + eps),
                     df.base * np.exp(-(K.MOVEMENT + K.MERIT) * gap + eps))
+    joined = np.array([emps[k]["joined"] for k in df.employer_idx])
+    prev_on = np.array([d - dt.timedelta(days=int(round(g * 365.25))) for d, g in zip(df.filed_on, gap)])
+    upd = upd & (prev_on >= joined)
+    prom = prom & upd
     df["updated"], df["gap"], df["promoted"], df["prev_base"] = upd, gap, prom, prev
     # codes, titles, names, experience
     codes, tally, prev_codes, names, titles, yoe = [], [], [], [], [], []
@@ -304,19 +384,27 @@ def offers(emps):
     n = 5163
     sizes = np.array([e["size"] for e in emps])
     fam_p = np.array([f[1] for f in K.FAMILIES])
-    rows = []
+    rows, parts = [], []
+    re_ = K.stream("offers_employer")
     for i in range(n):
-        e = emps[int(r.choice(len(emps), p=sizes / sizes.sum()))]
+        r.choice(len(emps), p=sizes / sizes.sum())
         fam = K.FAMILIES[int(r.choice(len(K.FAMILIES), p=fam_p / fam_p.sum()))][0]
         li = int(r.choice(4, p=(0.25, 0.32, 0.28, 0.15)))
         d = K.EXTRACT_FROM + dt.timedelta(days=int(r.integers(0, (K.BENCHMARK - K.EXTRACT_FROM).days)))
+        ek = int(re_.choice(len(emps), p=employer_weights(emps, d)))
+        e = emps[ek]
         c, t = code_for(e, li, d)
         st = STATES[int(r.choice(len(STATES), p=np.array([s[1] for s in STATES]) / sum(s[1] for s in STATES)))]
-        pay = K.MARKET_MEDIAN[K.LEVELS[li]] * 1.06 * np.exp(-K.MOVEMENT * K.years_to_benchmark(d) + st[2] +
-                                                           0.10 * r.normal())
-        rows.append(("OF-%s" % K.hexid("offer", i, n=10).upper(), e["name"], _title(fam, "data pipelines and platforms"
-                     if fam == "Data Engineering" else "", li, r), fam, c, t, st[0], d.isoformat(),
-                     int(round(pay / 500.0) * 500)))
+        noise = 0.08 * r.normal()
+        rows.append(["OF-%s" % K.hexid("offer", i, n=10).upper(), e["name"], _title(fam, "data pipelines and platforms"
+                     if fam == "Data Engineering" else "", li, r), fam, c, t, st[0], d.isoformat(), 0])
+        parts.append((ek, fam, li, K.years_to_benchmark(d), st[2] + e["premium"], noise))
+    ek_, fam_, li_, age_, eff_, u_ = (np.array(x) for x in zip(*parts))
+    u_ = _flat_within(u_, age_, ek_, np.array(["%s|%d" % x for x in zip(fam_, li_)]))
+    for row, li, a, ef, u in zip(rows, li_, age_, eff_, u_):
+        pay = K.MARKET_MEDIAN[K.LEVELS[int(li)]] * 1.06 * np.exp(-K.MOVEMENT * a + ef + u)
+        row[-1] = int(round(pay / 500.0) * 500)
+    rows = [tuple(x) for x in rows]
     return pd.DataFrame(rows, columns=["offer_id", "employer", "title", "family", "level_code", "tallyband_level",
                                        "state", "offered_on", "base_offered_usd"])
 

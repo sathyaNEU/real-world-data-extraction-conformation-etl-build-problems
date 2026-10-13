@@ -56,12 +56,15 @@ def bands(target):
         lv = [t for a, b, t in xw.get((_key(r["employer"]), r["employer_level"]), ())
               if a <= filed and (b is None or filed <= b)]
         if lv and lv[0] in LV:
-            recs.append((lv[0], filed, float(r["base_salary_usd"])))
+            recs.append((lv[0], filed, float(r["base_salary_usd"]), _key(r["employer"])))
     lev = np.array([x[0] for x in recs])
     yrs = np.array([(BENCH - x[1]).days / 365.25 for x in recs])
     pay = np.array([x[2] for x in recs])
-    X = np.column_stack([(lev == l).astype(float) for l in LV] + [-yrs])
-    g = sm.OLS(np.log(pay), X).fit().params[-1]
+    emp = np.array([x[3] for x in recs])
+    names = sorted(set(emp))
+    X = np.column_stack([(lev == l).astype(float) for l in LV] + [(emp == e).astype(float) for e in names[1:]] +
+                        [-yrs])
+    g = sm.OLS(np.log(pay), X).fit().params[-1]           # within employers: an intercept for each employer
     carried = pay * np.exp(g * yrs)
     out = {}
     for l in LV:
@@ -125,7 +128,7 @@ def main(target, golden):
             bad.append("chart midpoint %s" % l)
     if "Data Engineer III midpoint ${:,}".format(b["III"][50]) not in svg:
         bad.append("chart title")
-    if round(100 * g, 1) != 1.7:
+    if round(100 * g, 1) != 2.7:
         bad.append("movement %.3f" % g)
     if bad:
         raise SystemExit("verify: %d figures differ: %s" % (len(bad), ", ".join(bad)))

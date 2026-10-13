@@ -34,8 +34,10 @@ def compute(target):
     f["DE_III_p25"] = G["filed"]["III"][25]
     f["DE_III_p75"] = G["filed"]["III"][75]
     f["movement_pct_a_year"] = round(100 * G["g"], 1)
+    f["pooled_movement_pct_a_year"] = round(100 * R["g_pooled"], 1)
     f["paired_growth_pct_a_year"] = round(100 * R["g_pair"], 1)
     f["DE_III_unaged"] = A.to_k(R["R1"]["III"][50])
+    f["DE_III_pooled_movement"] = A.to_k(R["R3"]["III"][50])
     f["DE_III_paired_growth"] = A.to_k(R["R2"]["III"][50])
     f["matched_total"] = int(sum(G["n"].values()))
     f["headcount_total"] = int(hc.to_numpy().sum())
@@ -68,8 +70,8 @@ def write_workbook(path, fig):
     ws["A1"] = "Data Engineer pay bands from 1 April 2027"
     ws["A1"].font = Font(name="Calibri", size=14, bold=True)
     ws["A2"] = ("Market as in effect on 1 October 2026: matched Tallyband respondents, each report carried to the "
-                "benchmark date at the market's movement at a fixed level (%.1f per cent a year). Filed to the nearest "
-                "$1,000." % f["movement_pct_a_year"])
+                "benchmark date at the movement of pay at a fixed level within employers (%.1f per cent a year). "
+                "Filed to the nearest $1,000." % f["movement_pct_a_year"])
     ws["A2"].font = Font(name="Calibri", size=10, italic=True, color="5D5A66")
     ws["A2"].alignment = Alignment(wrap_text=True, vertical="top")
     ws.merge_cells("A2:E2")

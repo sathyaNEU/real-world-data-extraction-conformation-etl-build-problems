@@ -20,7 +20,22 @@
   respondents carry their previous report too, so the extract spreads one level's pay over three years of filing
   dates; carrying a report to the benchmark date by what that respondent's own pay did between two reports adds the
   merit and promotion each person earns inside and between levels, while the market rate at a fixed level, which is
-  what the band prices, moves only by how much the whole level's pay rises across filing dates.
+  what the band prices, moves only by how much the level's pay rises across filing dates; and because the platform's
+  reach widened through the window to employers that pay less at every level (128 of the 247 matched employers are
+  first seen after its first six months, 43 per cent of the last half-year's reports), the level's pay rises across
+  the pooled reports by much less than it rises inside any one employer, so the movement is read within employers.
+- **Loop 1 (2026-10-13, the author's request for a second layer of stumping):** the shipped decisive step (the level's
+  movement read across filing dates, 1.7 per cent, $168,000) becomes a rung. The world now carries each employer's
+  arrival on the platform and its pay at a fixed level: the employers whose engineers were filing when the window
+  opened, and those that arrived from July 2024, the later arrivals paying less. Pay at a fixed level rises 2.7 per
+  cent a year inside every employer; across the pooled reports it rises 1.1 per cent. The golden carries each report
+  at the movement within employers: $170,000. The re-reporters' growth stays the default path (4.7 per cent,
+  $175,000). The second layer is the survey field's own fixed-composition reading of change (the Employment Cost Index
+  holds jobs and establishments fixed; salary surveys measure market movement on matched employers), not a new organ:
+  no file, column or sentence was added for it. The card keeps grain_or_unit as the strategy of the first decisive
+  move (whose movement carries a report) and names the second in its notes (composition_mix, the employer mix of
+  the pooled reports); task256's composition step (a survey's within-sex conditional transfer to a roster) shares no
+  mechanism with it.
 - **Guard:** WARN three_rules.strategy_risk (grain_or_unit), answered by the analyst test: every field and rule read
   correctly still leaves the ageing rule open, and the easy routes (no ageing, or the re-reporters' own growth) are
   analysis, not readings. test.same_puzzle_older against task87 and the near driver task445 carry differentiation
@@ -58,12 +73,12 @@ generator's, asserted in `generator/checks.py`.
 3. See that reports were filed from October 2023 to September 2026, so each report's pay has to be carried to the
    benchmark date.
 4. Measure pay growth where the extract measures it directly: the re-reporters' own change between their previous and
-   current reports at the same level, 4.7 per cent a year over 1,072 pairs (7.1 with the reports that crossed a level).
+   current reports at the same level, 4.7 per cent a year over 848 pairs (7.3 with the reports that crossed a level).
 5. Carry each matched report to 1 October 2026 at that growth and take each level's median: Data Engineer III
    175,000 (181,000 on every pair), Data Engineer I 122,000, II 149,000, IV 209,000.
 
 Ends on: Data Engineer III midpoint $175,000
-Golden: Data Engineer III midpoint $168,000
+Golden: Data Engineer III midpoint $170,000
 
 ## Stump sentence
 
@@ -71,21 +86,25 @@ A strong analyst matches Tallyband's respondents to Tarnwick's levels, sees the 
 carries each one to the benchmark date at the re-reporters' own pay growth between their two reports at the same level
 (4.7 per cent a year) and files the Data Engineer III midpoint at $175,000; the step that lands it there is ageing by a
 person's growth, which adds the merit each person earns inside the level as they progress through it, when the band
-prices the level itself, whose pay rises across filing dates by only the market's movement (1.7 per cent a year), so
-the matched reports carried by that movement give $168,000; the analyst who leaves the reports as filed files $164,000.
+prices the level itself; the analyst who corrects that and reads the level's movement across the pooled reports (1.1
+per cent a year) files $166,000, because the platform's later filings come more and more from employers that pay less
+at every level; read within employers the level's pay rises 2.7 per cent a year, and the matched reports carried by
+that movement give $170,000; the analyst who leaves the reports as filed files $164,000.
 
 ## Three rules
 
 - Task type: nonresponse-calibration-measurement-error-adjustment (Survey Research & Official Statistics): a salary
-  survey's reports filed at different dates adjusted to one reference date before its percentiles are read.
+  survey's reports filed at different dates adjusted to one reference date before its percentiles are read, the
+  adjustment read on a fixed composition of employers.
 - Domain test: the deciding quantity is the market median base pay for a job and level as in effect on a benchmark
   date, which compensation practice reads from survey reports aged to that date by the market's structure movement
-  at a fixed level, never by individuals' raises, which also carry merit and in-level progression; the field knows
-  the two apart because a band prices a level that people move through.
+  at a fixed level, never by individuals' raises, which also carry merit and in-level progression; and the field
+  measures that movement on matched employers (the Employment Cost Index holds jobs and establishments fixed for the
+  same reason), never across a respondent pool whose employer mix shifts between dates.
 - Swap: "a hospital's median nurse wage at a reference date from staffing reports" or "a utility's median meter read
   cost" loses what decides here: there is no pay band whose market rate moves slower than the people inside it
-  progress, and no salary survey whose re-reporters carry their own merit and promotions, so the gap between the two
-  growth rates stands for nothing.
+  progress, no salary survey whose re-reporters carry their own merit and promotions, and no platform whose reach
+  widens to employers paying less at the same level, so neither gap stands for anything.
 - Layer 1: Tallyband's own family and normalised level, which mix roles and levels the company separates (the
   platform writes them); employer level codes mapped through an effective-dated crosswalk after one employer's
   re-levelling (the compensation team keeps it); employer names in the respondents' own spellings (free text); a few
@@ -94,30 +113,35 @@ the matched reports carried by that movement give $168,000; the analyst who leav
   history whose rows carry the pay zone recorded when each was written (Tarnwick re-zoned five cities on 1 July
   2026), future-dated job changes, leaves and contingent workers, and an ATS export listing each requisition once per
   posting city with its status as of the export and a hire's close date only.
-- Layer 2: estimand identification: the reference-date market rate for a level is carried from each report by the
-  level's own movement across filing dates, a property of the job and level, not of the people reporting.
-- Decisive step: ageing each matched report by the market's movement at a fixed level, read from how the level's pay
-  rises across filing dates, rather than by the re-reporters' own growth, which carries merit and in-level
-  progression, or not at all.
+- Layer 2: estimand identification and composition: the reference-date market rate for a level is carried from each
+  report by the level's own movement, a property of the job and level, not of the people reporting, and that movement
+  is read within employers because the employers reporting at each date are not the same.
+- Decisive step: reading the market's movement at a fixed level within employers (an intercept for each employer),
+  rather than across the pooled reports, whose later dates hold more of the lower-paying employers the platform
+  reached later, or from the re-reporters' own growth, which carries merit and in-level progression, then ageing each
+  matched report by it.
 - Not semantics: every field is read correctly on every route: the filing date is the date the pay applied, the
-  previous report is the same person's earlier pay, the crosswalk maps levels; no field, code, unit or definition says
-  which growth carries a report to the benchmark date.
+  previous report is the same person's earlier pay, the crosswalk maps levels, the employer is the employer; no field,
+  code, unit or definition says which movement carries a report or that the platform's employers changed over time.
 - Not rule application: the policy files what the market is (the matched respondents) and when it is read (the
-  benchmark date) and nothing on how a report is carried there; executing every filed sentence leaves the ageing rule
-  open, and only the data separate the level's movement from the people's.
+  benchmark date) and nothing on how a report is carried there; executing every filed sentence leaves the movement
+  open, and only the data separate the level's movement inside employers from the pooled drift and the people's
+  growth.
 - Analyst test: a strong analyst who matches every respondent correctly and ages each report by the re-reporters'
   own growth between their two reports at the same level files the Data Engineer III midpoint at $175,000 (the
-  default path's Ends on); leaving the reports unaged files $164,000; both miss $168,000.
+  default path's Ends on); one who corrects that by reading the level's movement across the pooled reports files
+  $166,000; leaving the reports unaged files $164,000; all miss $170,000.
 - Estimand: the compensation policy (`tarnwick_compensation_policy_2026.pdf`, 4.1 to 4.4): each band's midpoint is
   the median of market base pay for the job and level, the market being every matched respondent of the licensed
   extract counted once, read as in effect on 1 October 2026 and filed to the nearest $1,000.
 - No decoy: nothing is planted: no memo, prior band, published index or stakeholder figure states a growth rate or a
-  midpoint; the previous reports are the platform's ordinary record of respondents who updated.
+  midpoint; the previous reports are the platform's ordinary record of respondents who updated, and the employers'
+  arrival through the window is the platform's ordinary growth, named in no file.
 - No certified replay: no file publishes a market movement, an aged median or last year's bands, so no rule is chosen
   by reproducing a certified figure.
-- Lesson: a rate read from people who move through a scale is not the rate at which the scale moves; to carry a
-  survey report to a reference date, read the movement of the measured quantity at a fixed grade across the reports'
-  dates, not the reporters' own trajectories.
+- Lesson: a rate read from people who move through a scale is not the rate at which the scale moves, and a rate read
+  across a pool whose members change between dates is not the rate at which any member moves; to carry a survey
+  report to a reference date, read the movement at a fixed grade inside the same reporting units.
 
 ## Readability screen
 
@@ -125,8 +149,9 @@ the matched reports carried by that movement give $168,000; the analyst who leav
 |---|---|---|---|---|---|---|---|
 | R0 Tallyband's own family and normalised level, as reported | the policy names matched respondents through the focus and the crosswalk | the family and level columns | yes | none | clean | a median | readable |
 | R1 matched respondents, base pay as reported | policy 4.2 | the profile table and the crosswalk | yes | none | clean | a median | readable |
-| R2 (default) each report aged by the re-reporters' own growth | policy 4.3 says the market is read as in effect on the benchmark date | previous_base_usd and previous_reported_on name a growth | yes: a paired, same-person growth reads as the careful measure | none | clean | one rate, then a median | readable |
-| R3 (decisive) each report aged by the level's own movement across filing dates | no sentence names a movement, a trend or an ageing rule | no column carries a movement; it is read by fitting pay on filing date at a fixed level | not a reflex: the reflexes leave the reports as filed or use the people's growth | no published index or prior band to confirm it | clean | no: a trend fit on the cross-section, then every report re-aged before the percentiles | silent |
+| R2 (default) each report aged by the re-reporters' own growth | policy 4.3 says the market is read as the pay a job and level commands on the benchmark date | previous_base_usd and previous_reported_on name a growth | yes: a paired, same-person growth reads as the careful measure | none | clean | one rate, then a median | readable |
+| R3 each report aged by the level's movement across the pooled reports | no sentence names a movement | no column carries one | the careful analyst's correction once the people's growth is refused: a trend at a fixed level | none | clean | a trend fit, then every report re-aged | readable |
+| R4 (decisive) each report aged by the level's movement read within employers | no sentence names a movement, an employer mix, the platform's reach or a fixed panel | no column marks an employer's arrival or its pay; the employer column is the respondent's own text | not a reflex: the reflexes leave the reports as filed, use the people's growth or fit the pooled trend | no published index, prior band or matched-employer series to confirm it | clean | no: an intercept for each employer, then every report re-aged before the percentiles | silent |
 
 ## Semantic fork table
 
@@ -134,16 +159,18 @@ the matched reports carried by that movement give $168,000; the analyst who leav
 |---|---|---|---|---|---|
 | SF1 | "base pay" | the base salary each respondent reports, annual US dollars | total pay with bonus and equity | another figure | policy 4.1 (base pay); the extract's base column |
 | SF2 | "the market" | every matched respondent counted once | respondents weighted to OEWS state employment | another figure | policy 4.2: every matched respondent counts once |
-| SF3 | "Data Engineer III" | Tarnwick's level III through the level crosswalk | Tallyband's normalised level (L4) | another figure (164,000 carried) | policy 4.2 maps employer levels through the crosswalk |
-| SF4 | a matched respondent's job | primary focus data pipelines and platforms in the profile table | Tallyband's data engineering family | another figure (170,000 carried) | policy 4.2 and the job architecture's survey match |
-| SF5 | "as in effect on 1 October 2026" | every matched report carried to the benchmark date | only reports filed in the last twelve months, as filed | another figure (167,000) | policy 4.2: every matched respondent counts once |
+| SF3 | "Data Engineer III" | Tarnwick's level III through the level crosswalk | Tallyband's normalised level (L4) | another figure (166,000 carried) | policy 4.2 maps employer levels through the crosswalk |
+| SF4 | a matched respondent's job | primary focus data pipelines and platforms in the profile table | Tallyband's data engineering family | another figure (172,000 carried) | policy 4.2 and the job architecture's survey match |
+| SF5 | "as in effect on 1 October 2026" | every matched report carried to the benchmark date | only reports filed in the last twelve months, as filed | another figure | policy 4.2: every matched respondent counts once |
 | SF6 | the crosswalk in force | the mapping in effect on each report's filing date | the current mapping for every report | same figure (asserted) | C1; the crosswalk's effective dates |
 | SF7 | percentile definition | linear interpolation between order statistics | nearest rank, or the median of even counts as the lower middle | same figures to $1,000 (asserted) | C1 |
-| SF8 | rounding | half up to the nearest $1,000 once, from unrounded percentiles | rounding the aged pay first | same figures (asserted) | C1: no figure within $150 of a $500 edge |
-| SF9 | the movement's estimator | the slope of log base pay on filing date, levels pooled with their own intercepts | each level's own slope; the slope of quarterly medians; a median regression | same figures to $1,000 (asserted) | C1 |
+| SF8 | rounding | half up to the nearest $1,000 once, from unrounded percentiles | rounding the aged pay first | same figures (asserted) | C1 |
+| SF9 | the movement's estimator within employers | the slope of log base pay on filing date with an intercept for each employer and each level | an intercept for each employer and level pair; each level's own slope within employers; the pooled slope over the employers seen in the window's first year, or in all three years | same figures to $1,000 (asserted) | C1 |
 | SF10 | the ageing form | pay times e to the movement times the years to the benchmark date | compound annual, or linear | same figures (asserted) | C1 |
 | SF11 | years to the benchmark date | days over 365.25 | whole months over 12 | same figures (asserted) | C1 |
 | SF12 | "United States" | respondents located in the United States | respondents of US employers located abroad | same figure (asserted) | policy 4.2 (located in the United States); C1 |
+| SF13 | the employer a report belongs to | the employer name tidied to the crosswalk's | the name as the respondent typed it | same figures (asserted) | C1 |
+| SF14 | the reports the movement is read from | the matched reports | every family's US full-time reports, or the offers extract, each within employers | same call (asserted: 2.67 and 2.75 per cent) | C1 |
 
 ## Ladder
 
@@ -153,24 +180,27 @@ Generator figures (the Data Engineer III midpoint, dollars), asserted in `checks
 |---|---|---|---|
 | R0 | Tallyband's data engineering family at its normalised level L4, as reported | 162,000 | policy 4.2: matched through the survey match's focus and the crosswalk |
 | R1 | matched respondents, as reported | 164,000 | policy 4.3: read as in effect on the benchmark date |
-| R2 (default) | each matched report aged by the re-reporters' growth at the same level (4.7 per cent a year) | 175,000 (181,000 on every pair, 7.1 per cent) | the level's pay rises across filing dates by 1.7 per cent a year; the pairs add each person's merit inside the level |
-| R3 (decisive) | each matched report aged by the level's own movement (1.7 per cent a year) | 168,000 | |
+| R2 (default) | each matched report aged by the re-reporters' growth at the same level (4.7 per cent a year) | 175,000 (181,000 on every pair, 7.3 per cent) | the level's pay rises across filing dates far slower; the pairs add each person's merit inside the level |
+| R3 | each matched report aged by the level's movement across the pooled reports (1.1 per cent a year; 1.8 without an intercept for each level, 168,000) | 166,000 | inside every employer the level's pay rises 2.7 per cent a year; the pooled reports' later dates hold more of the employers that arrived later and pay less |
+| R4 (decisive) | each matched report aged by the level's movement within employers (2.7 per cent a year) | 170,000 | |
 
 - **Why each rung is a place to stop:** R0 is the platform's own dashboard; R1 is the median every survey reader
-  quotes; R2 is the most careful-looking measure of growth in the file (the same people, twice).
-- **Sign and worth:** R1 sits below the golden and R2 above it, so the decisive move is no correction in one
-  direction: it reverses R2's overshoot and R1's undershoot; the gaps (4,000 and 7,000) are four and seven rounding
-  steps.
-- **Every level:** the same construction moves every level's midpoint the same way (I: 114,000, 117,000, 122,000; II:
-  140,000, 143,000, 149,000; IV: 197,000, 201,000, 209,000 on R1, R3, R2), asserted per level.
-- **Every shortcut:** the family or the focus, the crosswalk or Tallyband's L4, each as reported, carried at 1.7 or at
-  4.7 per cent: 161,000, 162,000, 164,000, 166,000, 170,000, 171,000, 173,000 and 177,000; none lands on 168,000
-  (asserted). A trend fitted across all four levels without an intercept for each reads 2.4 per cent a year, because
-  the reports' level mix drifts toward Data Engineer IV across filing dates, and files 170,000 (asserted). The platform's normalised scale sets one employer scheme a level higher than Tarnwick's crosswalk does,
-  so its L4 is never Tarnwick's III.
-- **Bins:** every graded point keeps a margin of $215 or more to its bin edge under every defensible estimator (the
-  pooled or per-level slope, quarterly or annual medians, median regression, linear or compound carrying, whole
-  months, every percentile definition); the call sits $336 inside its bin.
+  quotes; R2 is the most careful-looking measure of growth in the file (the same people, twice); R3 is the careful
+  analyst's correction of R2 (a trend at a fixed level across every report), and it reconciles: every level's pooled
+  trend agrees, every estimator of it agrees (per level, quarterly or annual medians, median regression: 166,000 or
+  167,000).
+- **Sign and worth:** R1 and R3 sit below the golden and R2 above it, so neither single correction from R2 or R1
+  lands: the refusal of the people's growth walks down to R3 and only the within-employer reading reverses it back up
+  four rounding steps; the gaps to the golden are 6, 4, 2 (R3 without level intercepts) and 5 steps.
+- **Every level:** the same construction moves every level's midpoint the same way (I: 114,000, 116,000, 119,000,
+  122,000; II: 140,000, 142,000, 145,000, 149,000; IV: 197,000, 200,000, 204,000, 209,000 on R1, R3, R4, R2), asserted
+  per level; R1, R3, R3 without level intercepts and R2 each miss every Ask C figure.
+- **Every shortcut:** the family or the focus, the crosswalk or Tallyband's L4, each as reported, carried at the
+  pooled, within-employer or paired rate: 160,000 to 177,000, none on 170,000 (asserted). Within employers but
+  without an intercept for each level reads 3.3 per cent and files 172,000 (asserted). Every cross-section estimator
+  of the movement files 166,000 to 168,000 (asserted).
+- **Bins:** every graded point keeps a margin of $234 or more to its bin edge under every defensible estimator
+  (SF9 to SF11, SF13, every percentile definition, rounding first); the call sits $447 inside its bin.
 
 ## Closure table
 
@@ -203,21 +233,27 @@ Generator figures (the Data Engineer III midpoint, dollars), asserted in `checks
 
 Filed estimand, from the prompt and the policy: for each Data Engineer level, the 25th percentile, median and 75th
 percentile of the base pay of every matched respondent (US, full time, focus data pipelines and platforms, level
-through the crosswalk), counted once, as in effect on 1 October 2026, filed to the nearest $1,000. Criterion: none
-filed; the design forces the method (determinism-check §1, form 1): the policy reads the market at the benchmark date
-and the reports were filed over three years, so each must be carried there, and the extract shows how: at every level
-the matched pay rises across filing dates by the same 1.7 per cent a year (each quarter's median on that line), while
-the re-reporters' own growth at the same level, 4.7 per cent, would have every level's median rise almost three times
-faster than the reports filed at each date show. Every literal reading of the policy's terms lands on the golden once
-the reports are carried by the level's movement (the fork table, SF1 to SF12); the easy answers come only from easier
-models of the same carry (none, or the people's growth), never from another reading.
+through the crosswalk), counted once, as in effect on 1 October 2026 (the base pay a job and level commands on that
+date), filed to the nearest $1,000. Criterion: none filed; the design forces the method (determinism-check §1, form
+1): the policy reads the market at the benchmark date and the reports were filed over three years, so each must be
+carried there, and the extract shows how: inside every employer, at every level, pay rises across filing dates by
+the same 2.7 per cent a year (each level's own slope within employers, and an intercept for each employer and level
+pair, give the same rate); across the pooled reports it rises 1.1 per cent, because the employers first seen after
+the window's first six months (43 per cent of the last half-year's reports) pay 7.2 per cent less at a fixed level;
+and the re-reporters' own growth at the same level, 4.7 per cent, would have every level's pay rise far faster than
+any employer's reports filed at each date show. Every literal reading of the policy's terms lands on the golden once
+the reports are carried by the level's movement within employers (the fork table, SF1 to SF14); the easy answers come
+only from easier models of the same carry (none, the people's growth, the pooled drift), never from another reading.
 
 ## Oracles
 
 - OEWS wages by state: another population (every industry, no levels), no figure about Tarnwick's levels; ties
   nothing on either path, declared a distractor.
-- Tallyband's offers extract: what new hires were offered, not what respondents are paid; ties nothing, declared a
-  distractor.
+- Tallyband's offers extract: what new hires were offered, not what respondents are paid; read within employers its
+  movement is the golden's (2.75 per cent, the same call), read across the pooled offers it drifts like the pooled
+  reports (1.7 per cent); it ties nothing only under the golden, declared a distractor.
+- Every family's reports: within employers 2.67 per cent (the same call), pooled 1.2 per cent; the same insight on
+  more rows, never a referee.
 - The re-reporters' previous reports: evidence, not a control; they measure people's growth, which the golden does
   not use.
 - Nothing ties only under the golden for the main call.
@@ -228,7 +264,7 @@ models of the same carry (none, or the people's growth), never from another read
 |---|---|---|---|---|---|---|---|---|
 | A, how many Data Engineers Tarnwick employed at each level in each pay zone on 1 October 2026 | 12 | a measure every level carries that the call does not turn on (the population each band governs, policy 5.1) | the head of total rewards submits each band with the population it governs | D2: each HRIS job record carries the pay zone recorded when it was written; Tarnwick moved Los Angeles, Washington and Denver into zone 1, Atlanta and Raleigh into zone 2 and Portland into zone 3 on 1 July 2026, so the records written before carry the old zone; only pay_zones_2026.csv, with both maps and their dates, places a worker in the zone of their location that day | D8 (job changes entered ahead to 16 November 2026); D4 (employees on leave remain employees; an active-only filter drops them); D5 (contingent workers in the same export); D6 (a job history, one row per change, read as a roster) | hris_job_history_2026-10-14.csv (employee_id, effective_date, job_code, work_location, pay_zone, status, worker_type), pay_zones_2026.csv (work_location, pay_zone, effective_from, effective_to), people_data_exports_readme.md; 3 files, 11 columns | every row counted: 592 rows for 159 employees; the latest record, changes entered ahead read as current: 10 of 12 cells off; active only: 9 off; contingent kept: 8 off; the zone on the record: every cell off ([10, 13, 7], [17, 21, 13], [19, 18, 18], [7, 9, 7]); the answer: [19, 6, 5], [29, 12, 10], [27, 14, 14], [14, 6, 3] | an HRIS that stamps a derived attribute on the job record and refreshes it only when the next job event writes a record |
 | B, how many open requisitions Tarnwick held at each level on 1 October 2026 | 4 | a measure every level carries that the call does not turn on (the postings policy 4.5 reprices) | the head of total rewards counts the postings the new ranges replace | D4: closed_on holds a hire's close only; a cancelled requisition has none, and its cancellation is dated only by status_date, the date its status as of the export took effect | D6 (each requisition once per posting city); D2 (status as of the export, 14 October: fills and cancellations after 1 October, openings after it) | ats_requisitions_2026-10-14.csv (requisition_id, job_code, opened_on, closed_on, status, status_date), people_data_exports_readme.md; 2 files, 6 columns | posting rows: 12, 23, 28, 6; status open as exported: 3, 6, 9, 4 (three levels off); closed_on as the end: 4, 15, 12, 4 (every level off); the answer: 3, 5, 8, 3 | an ATS that dates a requisition's close by its hire and keeps a cancellation as a status change |
-| C, the midpoints of Data Engineer I, II and IV and Data Engineer III's 25th and 75th percentiles, and the chart | 5 and the chart's parts | the construction | the band table's own cells | none | none | the golden model | R1 and R2 values (I 114,000 and 122,000; II 140,000 and 149,000; IV 197,000 and 209,000; III quartiles 151,000 to 178,000 and 161,000 to 190,000) | the policy's own reference points |
+| C, the midpoints of Data Engineer I, II and IV and Data Engineer III's 25th and 75th percentiles, and the chart | 5 and the chart's parts | the construction | the band table's own cells | none | none | the golden model | R1, R3 and R2 values (I 114,000, 116,000 and 122,000; II 140,000, 142,000 and 149,000; IV 197,000, 200,000 and 209,000; III quartiles 153,000 to 176,000, 155,000 to 179,000 and 162,000 to 188,000) | the policy's own reference points |
 
 - **Main population zero-counts:** no row of the HRIS export, the zones table, the ATS export or the people data
   notes is read by the call; the Tallyband extract, the profile table, the crosswalk, the methodology page, the job
@@ -247,19 +283,20 @@ models of the same carry (none, or the people's growth), never from another read
 | B requisitions (4) | distinct requisitions opened on or before 1 October and not closed by then (closed_on blank or later) | every level off: 4, 15, 12, 4 | miss |
 | C midpoints and quartiles (5) and the chart | the golden's construction | right | outside |
 
-Mirror leakage: 0 per cent of the ask weight (the mirror, on R1 or R2, misses every Ask C figure and does the asks as
-the cracker does).
+Mirror leakage: 0 per cent of the ask weight (the mirror, on R1, R2 or R3, misses every Ask C figure and does the asks
+as the cracker does).
 Pair ceiling: 38 (the cracker at about 63 with the call, Ask C and the chart; the mirror at about 12).
 
 ## Layer 1 inventory
 
 | Item | System that writes it | File | Natural mishandling | Outcome (asserted) |
 |---|---|---|---|---|
-| Employer names as respondents typed them (one report in twenty) | Tallyband (free text) | tallyband_extract_2026-10-01.csv | joined to the crosswalk as typed, the unmatched dropped | the same call (168,058 unrounded); the counts move |
-| Respondents outside the United States or not full time (under one per cent) | Tallyband's open sign-up | tallyband_extract_2026-10-01.csv | kept | the same call (167,964) |
-| Quarry Systems' re-levelling on 3 March 2025 | Tarnwick's compensation team | level_crosswalk_2026.csv | today's crosswalk row for every report | the same call (168,266) |
+| Employer names as respondents typed them (one report in twenty) | Tallyband (free text) | tallyband_extract_2026-10-01.csv | joined to the crosswalk as typed, the unmatched dropped | the same call (169,994 unrounded); the counts move |
+| Respondents outside the United States or not full time (under one per cent) | Tallyband's open sign-up | tallyband_extract_2026-10-01.csv | kept | the same call (169,916) |
+| Quarry Systems' re-levelling on 3 March 2025 | Tarnwick's compensation team | level_crosswalk_2026.csv | today's crosswalk row for every report | the same call (170,225) |
 | Salaries typed to the thousand (a quarter of reports) | respondents | tallyband_extract_2026-10-01.csv | none needed | every estimator in the same bins (asserted) |
-| Previous reports for three in ten respondents, a fifth across a promotion | Tallyband (updates) | tallyband_extract_2026-10-01.csv | read as extra respondents | ruled out by policy 4.2 (counts once); the default path's raw material, never mess |
+| Previous reports for about a quarter of respondents, a fifth across a promotion | Tallyband (updates) | tallyband_extract_2026-10-01.csv | read as extra respondents | ruled out by policy 4.2 (counts once); the default path's raw material, never mess |
+| Employer names as typed when reading the movement within employers | Tallyband (free text) | tallyband_extract_2026-10-01.csv | each spelling its own employer | the same figures (SF13, asserted) |
 | OEWS wages and the offers extract beside the platform | the OEWS layout; Tallyband | the two distractors | read for the call | never read by the golden (asserted) |
 | The HRIS's recorded zone, entered-ahead changes, leaves and contingent workers; the ATS's posting grain, status as of the export and hire-only close dates | the HRIS and the ATS | the ask files | as in the ask sheet | the call never reads them (asserted) |
 
@@ -313,27 +350,54 @@ Pair ceiling: 38 (the cracker at about 63 with the call, Ask C and the chart; th
   and the decisive step would become rule application. Its minor semantics (the HRIS's recorded zone differs from the
   dated table for 65 of 159 employees; leave employed; contingent workers out) are each closed by a shipped file.
 
+- Loop 1 (2026-10-13, the author's request for a second layer). Stage 3: the world gives each employer its arrival
+  on the platform and its pay at a fixed level (127 employers filing when the window opened, 133 arriving from July
+  2024 with 60-day ramps, the later paying less); each person's place about their employer carries no movement of its
+  own inside any employer (projected off every within-employer date contrast), and the other families' and the
+  offers' noise likewise; movement 2.7 per cent within employers, merit 2.0; the market medians and Data Engineer
+  III's spread and lean tuned so every graded point keeps $234 or more under every estimator. 101 checks green (the
+  analyst test now runs both easy routes on the clean truth: the pairs file 175,000, the pooled movement 166,000, the
+  movement within employers the golden); the verifier recomputes the slope with an intercept for every employer;
+  two builds byte-identical; figures_check 36 figures; precut 49 checks; leak.py REVIEW on the same harmless lines
+  (clause 1.1 read as the pooled 1.1; the policy's call words; ordinary vocabulary; ATS levels; HRIS dates ahead);
+  guard heart WARN (loop 0 differentiated on the card), surface promotes task258 and task87 as before.
+- Loop 1, stage 4. Leak reader (fresh copies): no decisive-step sentence, no ranking or helper file, nothing names
+  the employers' arrival; it read 4.3 as vague on restating old reports (its literal executor files R1), ruled as in
+  loop 0: 4.3 names the pay on 1 October 2026. Determinism judge (one isolated thread on the judge agent's brief):
+  DETERMINISTIC, APPROVE; every figure reproduced (slope 2.70 per cent, the same by level and with an intercept for
+  each employer and level pair; midpoints, quartiles, matched counts, headcount, requisitions); the alternatives
+  (no carry 164,000, the pooled slopes 166,000 and 168,000, the pairs 175,000) all miss; Gate G
+  method_or_model_selection, analytical_non_defect, no surface read, no sole data defect; Gate H domain, layers and
+  decisive step pass. Its optional point (close "employed" for workers on leave in Ask A) is declined as in loop 0:
+  the leave rows are the ask's designed device and the readme files leave as a job state.
+
 ## Pre-ship check
 
 - **Rule 1, the domain:** the deciding quantity is a salary survey's market median for a job and level at a
   reference date, read from reports filed over three years; the field carries each report to the reference date by
-  the level's own movement across filing dates (the survey's reference-period adjustment), never by the reporters'
-  raises, because people climb through a level that the band holds still. Swapped into a hospital census or a meter
-  file, there is no level people move through and no re-reporter whose own growth carries merit, so the 3 per cent
-  gap between the two rates stands for nothing.
+  the level's own movement (the survey's reference-period adjustment), never by the reporters' raises, because people
+  climb through a level that the band holds still, and it reads that movement on matched employers, the way the
+  Employment Cost Index holds establishments fixed, because the platform's employers changed across the window.
+  Swapped into a hospital census or a meter file, there is no level people move through, no re-reporter whose own
+  growth carries merit and no platform whose reach widened to employers paying less, so the gaps between the three
+  rates stand for nothing.
 - **Rule 2, two layers:** Layer 1 is the platform's free-text employers, its own families and normalised levels, the
   effective-dated crosswalk, its non-US and part-time respondents, typed-to-the-thousand salaries and, on the ask
   paths, the HRIS's recorded zone, entered-ahead changes, leaves and contingent workers and the ATS's posting grain
-  and dates; each mishandled leaves the call at $168,000 (asserted). Layer 2 is the carry: the paired growth files
-  $175,000, no carry $164,000, the level's movement $168,000, executed on the clean truth.
-- **Rule 3, the decisive step:** an analytical choice of whose movement carries a report (the level's across filing
-  dates against the people's between their two reports); no field, code, unit or definition says it and no filed
-  rule performs it; nothing is planted (no memo, prior band, index or stakeholder figure).
+  and dates; each mishandled leaves the call at $170,000 (asserted). Layer 2 is the carry and the composition the
+  carry is read on: the paired growth files $175,000, the pooled movement $166,000, no carry $164,000, the movement
+  within employers $170,000, executed on the clean truth.
+- **Rule 3, the decisive step:** an analytical choice of whose movement carries a report and on which composition it
+  is read (the level's inside employers, against the pooled reports' drift and the people's growth between their two
+  reports); no field, code, unit or definition says it, no filed rule performs it, and no file names the employers'
+  arrival; nothing is planted (no memo, prior band, index or stakeholder figure).
 - **Gate G:** no shipped artifact ranks or states a midpoint; deleting every wrong number leaves the difficulty
   intact, since the wrong answers come from methods, not from figures in the pack.
 - **Determinism:** the estimand is filed in the policy (who, counted once, when, which points, rounding); every
-  defensible estimator of the movement, carrying form and percentile definition lands in the same bins (asserted);
-  the asks' WHAT is in the people data readme (what each row and column holds).
+  defensible estimator of the movement within employers, carrying form, time convention, employer spelling and
+  percentile definition lands in the same bins, and the movement read within employers from every family or from the
+  offers lands on the same call (asserted); the asks' WHAT is in the people data readme (what each row and column
+  holds).
 
 ## Tried and rejected
 
@@ -359,3 +423,15 @@ Pair ceiling: 38 (the cracker at about 63 with the call, Ask C and the chart; th
 - Coined employer names from syllable pairs: one came out as a drug brand (Valium), others matched real companies
   (Calyx, Doryx), and shared syllables still formed sibling sets; replaced by one distinct place or nature word an
   employer, with the words of real companies (Lattice, Starling, Mistral, Wolfram and others) left out.
+- The shipped design (loop 0) as the final rung: the level's movement read across filing dates over the pooled
+  reports (1.7 per cent, $168,000) was the decisive step; at the author's request for a second layer it is now R3,
+  and the world's employers arrive through the window paying less, so the pooled movement understates the market's.
+- A record check (a verified subsample of reports against pay statements) as the second layer: a verification column
+  or file announces the correction by its schema, and a check sample selected on the reported pay either needs its
+  selection filed (rule application) or left unstated (a hidden rule); the employer mix, which no column or sentence
+  names, kept.
+- A fixed panel of employers with 180-day arrival ramps and arrivals from January 2024: the panel's pooled slope fell
+  to 2.66 per cent and its band points left the golden's bins; ramps cut to 60 days and arrivals from July 2024.
+- Movement at 3.0 per cent a year within employers: whole months and linear carrying spread Data Engineer III's
+  quartiles over $480 and no common window held all three points; movement set to 2.7 per cent and III's spread given
+  a slight lean.
