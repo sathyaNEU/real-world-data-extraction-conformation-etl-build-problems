@@ -1,0 +1,93 @@
+{
+  "task": "task231",
+  "architecture": "v1",
+  "drawn": "2026-10-13",
+  "slot_note": "DQ04 seed (network-total shortfall alert with imputed missing reads) re-found in survey research under the 10/10 rules: the world kept is a network of reporting zones, a shortfall alert for the round being closed and a quantity completed for the units whose state is missing",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a central bank's quarterly business-conditions panel survey: which regions raise the response-shortfall alert that puts them into the reminder-call extension, when the response rate counts only panel firms still trading on the round's frame date, the business register records a closure about a year after it happens, and the call centre confirms a closure only when someone answers for the firm",
+  "objective": "data-quality-monitoring",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G12",
+    "G11"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "realised_outcome_roster",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "head of the business survey unit that runs the bank's Business Conditions Survey",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "bcs_round_outcomes_2017_2026.csv",
+    "rows": 170000,
+    "entity": "one panel firm's outcome in one survey round",
+    "grain": "panel firm x survey round",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "period_close",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "fictional country (Brevland), northern Europe, English working language",
+    "currency": "EUR",
+    "org_type": "central bank (economic statistics department, business survey unit)",
+    "invented_names": [
+      "Brevland",
+      "Brevland Central Bank",
+      "Business Conditions Survey",
+      "Brevland Business Register"
+    ],
+    "people": [
+      "Wenche Myklebust",
+      "Stein Thomassen",
+      "Turid Rønning",
+      "Håkon Abrahamsen"
+    ]
+  },
+  "deliverables": [
+    "bcs_sep2026_extension.xlsx",
+    "bcs_sep2026_response.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is a rate over the units still active on a reference date, but exits reach the record of exits about a year after they happen and the follow-up that could confirm a silent unit's state reaches active units far more often than exited ones, so the exited share of this round's silent units has to come from earlier rounds old enough for the record to have caught up; counting every unrecorded silent unit as active, carrying the follow-up's resolved mix onto the unresolved, or reading the share from rounds the record has not yet settled all leave the rate too low.",
+  "driver_concrete": "Firms that stopped trading before the 1 September 2026 frame date mostly have no closure in the business register yet, and the call centre records a closure only when someone answers for the firm, so the share of the September round's non-returning firms that had already closed is taken from rounds old enough for the register to have recorded their closures, not from the register as it stands, the call outcomes, or recent rounds whose closures are still arriving.",
+  "stump": "Counting every non-returning firm without a business-register closure as still trading puts six regions under 55 per cent (Capital, Harbour, North Coast, Islands, Border and Western Uplands) and sends all six into the extension; the step that lands it there is taking the register as it stands for the round's in-scope population, when most firms that closed before 1 September are not yet on it, and the closure share of the round's non-returners read from rounds old enough for the register to have recorded their closures leaves only Capital and Harbour short.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who deduplicates the returns, drops the firms the business register shows closed by 1 September and gives the remaining non-returners the eligibility of the call centre's resolved cases, AAPOR's proportional e, files the alert for five regions where only two fall short of 55 per cent.",
+  "domain_test": "The deciding quantity is the survey's response rate over in-scope panel firms with the eligibility of unresolved non-respondents estimated (AAPOR's e), which the survey statistician takes from the register's settled closures of earlier rounds because nonresponse follow-up resolves closed firms far less often than trading ones; with another field's nouns (a meter fleet's read rate) there is no in-scope population fixed at a frame date by trading status, no nonresponse follow-up whose resolution depends on the outcome and no e to estimate, so the task stops being a survey-nonresponse question.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:eligibility-of-unresolved-panel-nonrespondents-from-settled-register-closures",
+  "layer1": [
+    "register closures notified long after cessation, two dates per closure",
+    "company numbers reformatted in 2021 with a check digit, both forms in use",
+    "call outcome codes changed scheme with the 2022 contact-centre system",
+    "returns arriving by web, phone and post with duplicates across modes",
+    "round labels in three formats across files",
+    "timestamps in UTC against local cut-offs",
+    "a regional review that recoded two regions in 2023"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task445": "task445 completes the amounts that reporters not yet in still hold, from each reporter's last report; task231 estimates whether each non-returning unit still belongs to the population at all, from the register's later closures for earlier rounds, because the follow-up confirms closures selectively: the missing quantity is membership of the denominator, not an amount"
+  },
+  "lineage": [],
+  "notes": "DQ04 kept as an idea seed only (world, decision, quantity). Strategy maturity_censoring answers its overuse WARN in the design note: the tail is the register's later closures, not a delay distribution."
+}

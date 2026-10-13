@@ -1,9 +1,19 @@
 # perssathya: where work stopped
 
-Updated 2026-10-13 (task122 shipped). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-13 (task122 shipped; task231 drawn). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task230 (2026-10-12), task129, task229, task131 and task122 (2026-10-13) are SHIPPED and wait on the portal;
 task123's determinism repair is RESHIPPED. Wave 1 is shipped apart from task228, which waits on the author's call (a
 fifth architecture and a G16 waiver). Wave 2 (task231 to task236) is next.
+
+**task231: DRAWN 2026-10-13 (wave 2, first build); stage 2 next.**
+- The Brevland Central Bank's Business Conditions Survey (Survey Research & Official Statistics,
+  nonresponse-calibration-measurement-error-adjustment x Data Quality Monitoring; DQ04 kept as an idea seed only).
+  Call: which of twelve regions go into the reminder-call extension of the September 2026 round, when fewer than
+  55 per cent of the panel firms still trading on 1 September have returned. The register records closures about a
+  year late and the call centre confirms closures only when someone answers, so the default (register as it
+  stands) files six regions and AAPOR's call-centre e five; the closure share from settled rounds files two.
+- Prototypes in the session scratchpad settled the ladder; the silence-run refinement is a corridor variant, not a
+  rung (`## Tried and rejected`). Resume from `task231/pipeline.json`.
 
 **task122: SHIPPED 2026-10-13 (card v3, re-rooted under the 10/10 rules); waiting on the portal.**
 - Varnmark Therapeutics' 52-week phase 2b of VMK-4410, an aldosterone synthase inhibitor, in albuminuric CKD
