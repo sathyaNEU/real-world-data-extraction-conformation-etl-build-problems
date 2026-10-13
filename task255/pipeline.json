@@ -1,21 +1,30 @@
 {
   "task": "task255",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "actuarial-science-insurance / claims-frequency-severity",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-13",
-  "stump": "",
+  "stump": "The default path fits the policy's lognormal to the 820 recorded ground-up costs as a complete sample and ends on $2.0 million; censoring the 108 capped occurrences ends on $2.5 million; carrying each deductible as truncation too, both thresholds at 2027 cost, files $4.0 million.",
   "architecture": 1,
   "loops": 0,
-  "precut": {},
-  "leak": {},
-  "duplicate_check": {},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-13",
+    "checks": 49
+  },
+  "leak": {
+    "leak_py": "REVIEW (no LEAK): the policy's own vocabulary, 26 schedule changes keyed before they take effect (allow-listed)"
+  },
+  "duplicate_check": {
+    "heart": "WARN (Gate G overuse, answered in the note)",
+    "surface": "0 promoted"
+  },
   "judge": {},
   "returned": [],
-  "resume": "stage 2: write the design note to precut exit 0 (default path, three rules, screen, fork table, ladder, closure, asks), then the generator's records and documents",
+  "resume": "stage 4: leak reader back (no decisive-step sentence, no ranking file, Q5 read 4.2 as leaving the likelihood open, realism tells listed); isolated judge thread running; fix every finding in the generator in one pass, re-judge once on FIX_NOW",
   "approved": null,
   "delivered": null,
   "portal": null,
