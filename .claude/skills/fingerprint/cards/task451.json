@@ -1,86 +1,132 @@
 {
   "task": "task451",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-13",
-  "slot_note": "Seed ET08 (analytical_tasks/07_data_extraction_conformation, header and Situation only): an aid consortium's IATI publications and the decision where to open three country coordination offices; the world, the decision and the quantity kept, the pitfall re-found from the data.",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "census-register-administrative-data-quality",
-  "niche": "aid statistics compiled from a donor collaborative's IATI publications: the members' money followed through two pooled funds with different contribution cycles to the countries where it is spent",
+  "slot_note": "Re-root of the ETL slot after architecture 1 failed the honest swap test. No seed is drawn: the pairing comes from the client's ETL task types and the field method the client names for this one (completion of recent claims from a lag triangle, payment-claims-health-plan-analytics pattern 1), re-found as a process the history never saw.",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "niche": "a multiemployer health and welfare fund's annual total-cost-of-care reconciliation with its accountable care partners: each partner's 2026 incurred medical cost per attributed member month completed from claims paid through January 2027, after the fund's claims administrator moved adjudication to a next-day platform in October 2026",
   "objective": "etl",
   "shape": "other",
-  "decision_type": "ranked_slate_under_cap",
+  "decision_type": "designation_set",
   "answer_unit": "set_of_items",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G6",
-    "G5",
-    "G10"
+    "G7",
+    "G16",
+    "G17"
   ],
-  "gate_g": "decomposition_attribution",
+  "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
+  "stump_strategy": "maturity_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
-  "stakeholder_role": "head of data and learning at a donor collaborative's secretariat",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "health analytics lead at a multiemployer health fund's administrative office",
   "role_family": "research_desk",
-  "scoring_unit": "other",
+  "scoring_unit": "per covered member",
   "spine": {
-    "file": "iati_datastore_transactions_mnh.csv",
+    "file": "medical_claims_extract_2025-01_2027-01.csv",
     "rows": 0,
-    "entity": "one IATI transaction (a commitment, a payment out, a receipt or an expenditure) on one activity, as its publisher reported it",
-    "grain": "activity x transaction",
-    "source": "synthetic (constructed in the IATI Datastore's flattened transaction layout)"
+    "entity": "one version of one medical claim (original, replacement or void) as the claims administrator's extract reports it",
+    "grain": "claim x version",
+    "source": "synthetic (constructed in the layout of a third-party administrator's medical claims extract derived from 837 claims)"
   },
-  "forum": "council_or_assembly",
+  "forum": "trustees_or_governors",
   "forcing_event": "purchase_order_or_contract",
-  "org_family": "foundation_or_funder",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "International: a London-based donor collaborative funding maternal and newborn health programmes in East Africa, the Sahel and South Asia",
+    "geography": "United States: western Pennsylvania",
     "currency": "USD",
-    "org_type": "donor collaborative of foundations and agencies, and the pooled funds and organisations they fund",
-    "invented_names": [],
+    "org_type": "a jointly trusteed multiemployer health and welfare fund (building trades), its claims administrator, its pharmacy benefit manager and twelve accountable care partner groups",
+    "invented_names": [
+      "Laurelford Building Trades Health and Welfare Fund",
+      "Keswold Benefit Services",
+      "Tallis",
+      "Corvane Pharmacy Benefits",
+      "Halberd National Bank",
+      "Ridgeline Physician Group",
+      "Brookhollow Medical Associates",
+      "Sycamore Pediatric Partners",
+      "Stonecrest Internal Medicine",
+      "Kettle Run Health Partners",
+      "Harrow Point Medical Group",
+      "Wren Valley Physicians",
+      "Bellmont Clinic Network",
+      "Calder Family Practice",
+      "Tamarack Health Alliance",
+      "Juniper Hollow Primary Care",
+      "Ashby Lane Medical"
+    ],
     "people": [
-      "Lesley Hunter",
-      "Lee Sykes",
-      "Gail Dobson",
-      "Kieran Patel"
+      "Ariel Hogan",
+      "George Khan",
+      "Jason Pollard",
+      "Linda Austin"
     ]
   },
   "deliverables": [
-    "coordination_offices_2027.pptx",
-    "member_funds_by_country.csv"
+    "tcoc_reconciliation_2026.xlsx",
+    "partners_against_target_2026.png"
   ],
   "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "Spending done through commingled intermediaries is credited to the original sources by their share of the money each intermediary held when it paid out, which for an intermediary that collects in one period and pays out in the next is the previous period's inflow mix, not the current one, and for one that pays out each inflow at once is the current one, carried into an intermediary funded by another; the current-period inflow share, the lifetime share and the receipts-before-payment share each rank a different wrong set.",
-  "driver_concrete": "Each implementer's 2025 spending is credited to the members by the member share of the money its funder held when it paid: the global fund collects in the last quarter and pays the collection out the next year, so its 2025 grants carried the members' 31.7 per cent of its 2024 collection, not the 75 per cent of the 2025 collection received after its last 2025 grant; the Sahel fund pays each January round out the same year, so its 2025 grants carried the 2025 round's mix with the global fund's part at 31.7 per cent; the year's contribution share (Rwanda, Uganda, Mali), the lifetime share (Rwanda, Kenya, Uganda) and the share of contributions received before each payment (Rwanda, Kenya, Tanzania) each miss Rwanda, Kenya and Mali.",
-  "stump": "The default path opens the offices in Rwanda, Uganda and Mali because it credits each pooled fund's 2025 spending by the members' share of the contributions paid into it in 2025, while the global fund paid its 2025 grants out of the 2024 collection it held, when the members' share was 31.7 per cent, not the 75 per cent of the 2025 collection that arrived after its last 2025 grant; credited by the money each fund held when it paid, Kenya replaces Uganda.",
+  "question_form": "which",
+  "driver": "The decisive quantity is the part of each unit's period total not yet observed at the cut, completed from the history of how amounts arrive; arrival is a sender's delay, which never changed, plus a handler's delay that collapsed partway through the period, so development measured on arrival dates averages the old handler into the newest periods and overstates what they still owe, while development measured on the dates the handler received each amount completes them at the speed now in force; a recent-window or post-change arrival basis still mixes the transition.",
+  "driver_concrete": "Each accountable care partner's 2026 total cost of care is completed from claims paid through 29 January 2027. The administrator's move to next-day adjudication on 5 October 2026 cut receipt-to-payment from about five weeks to a day, so chain-ladder factors averaged over the 2025-2026 paid-date triangle carry the old speed into October to December 2026 and overstate 2026 by about ten per cent; the providers' submission lags never changed, so the received-date triangle completes 2026 at the speed now in force.",
+  "stump": "The default path completes 2026 with chain-ladder factors from the paid-date lag triangle over all 2025 and 2026 payments and flags partners who do not owe, because it reads the claims administrator's old five-week adjudication into claims now paid the day after they arrive; developed on the received dates, fewer partners owe.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who converts every currency at its value date, keeps the implementers' 2025 expenditure, identifies each activity's funder and credits each pooled fund's spending by the members' share of its 2025 contributions (the year's imputed share), the global fund's money in the Sahel fund carrying the global fund's share, opens the offices in Rwanda, Uganda and Mali; with the share of every contribution the funds have received, Rwanda, Kenya and Uganda.",
-  "domain_test": "The deciding quantity is aid statistics' imputed flow, each intermediary's country spending credited to its funders by their share of the resources that paid for it, carried through every layer of the delivery chain; the compilers' same-year contribution share stands in for that only while a fund's donor mix is steady, and an expert matches a fund that collects in arrears to the year of money it spent. With a retailer's nouns there are no pooled funds of commingled donor money, no contribution cycle and no delivery chain, so the task stops reading.",
+  "analyst_test": "A strong analyst who keeps each claim's final version and drops voids, builds attributed member months from the eligibility and attribution files, truncates each member's year at the agreement's cap, and completes 2026 with chain-ladder factors from the paid-date lag triangle over all of 2025 and 2026 flags more partners as owing than actually do; completing on the received dates, whose provider submission lags never changed, flags only those whose cost is over the corridor.",
+  "domain_test": "The deciding quantity is each partner's 2026 incurred medical cost per attributed member month, which health plan analytics estimates by completing the latest service months from a claims lag triangle; the field's own check is whether the payment process the factors were measured on is the one now paying, and when adjudication speeds up it develops claims on their received dates. With a school's or a utility's nouns there is no claim, no lag between service and payment, no adjudication engine and no triangle, so the task stops reading.",
   "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "Drawn 2026-10-13 for wave 2 under the 10/10 rules. Revised at design 2026-10-13 before any data was cut: the decisive step moved from the second fund layer (a provider-receiver join the estimand files) to the money each fund held when it paid; shape 03 to other (a register of 13 candidate countries with three measures each); generators G5, G10, G3 to G6, G5, G10 (design note, Tried and rejected).",
-  "client_domain": "survey-research-official-statistics",
-  "layer2_family": "allocation_constraints",
-  "layer2_pattern": "own:imputed-flows-at-the-money-held-when-paid",
+  "differentiation": {
+    "task135": "task135 measures co-movement between holdings priced at different times of day, a covariance question across striking times; this build completes the unobserved remainder of a closed period from a claims lag triangle whose payment process changed inside the history, a maturity question with no co-movement in it"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent at design 2026-10-13, before any data was cut for the pack it would ship: the honest swap test fails. With a fund-of-funds' or a franchise marketing levy's nouns the task reads the same, crediting a pool's spending to contributors by what the pool held when it paid, so the decisive step is generic fund accounting and Survey Research & Official Statistics was the backdrop (10/10 rule 1). Re-rooted in Healthcare Delivery & Health Economics.",
+      "domain": "survey-research-official-statistics",
+      "subdomain": "census-register-administrative-data-quality",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G5",
+        "G10"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "ranked_slate_under_cap",
+      "stump_strategy": "decomposition_attribution",
+      "driver": "Spending done through commingled intermediaries is credited to the original sources by their share of the money each intermediary held when it paid out, which for an intermediary that collects in one period and pays out in the next is the previous period's inflow mix, not the current one, and for one that pays out each inflow at once is the current one, carried into an intermediary funded by another; the current-period inflow share, the lifetime share and the receipts-before-payment share each rank a different wrong set.",
+      "driver_concrete": "Each implementer's 2025 spending is credited to the members by the member share of the money its funder held when it paid: the global fund collects in the last quarter and pays the collection out the next year, so its 2025 grants carried the members' 31.7 per cent of its 2024 collection, not the 75 per cent of the 2025 collection received after its last 2025 grant; the Sahel fund pays each January round out the same year, so its 2025 grants carried the 2025 round's mix with the global fund's part at 31.7 per cent; the year's contribution share (Rwanda, Uganda, Mali), the lifetime share (Rwanda, Kenya, Uganda) and the share of contributions received before each payment (Rwanda, Kenya, Tanzania) each miss Rwanda, Kenya and Mali."
+    }
+  ],
+  "notes": "Architecture 2 drawn 2026-10-13 after architecture 1 failed the honest swap test (lineage). Prototype in scratch (t451v2/proto3, proto4): against the received-date development, the paid-date chain ladder over all history is about +10 per cent on 2026, the latest twelve diagonals +8.5, the latest six +6.3, the latest four +5.4, the post-change diagonals +2.7 to +3.2, paid as extracted -3.",
+  "client_domain": "healthcare-delivery-health-economics",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:development-on-the-payment-process-in-force",
   "layer1": [
-    "the funds' activity files in IATI XML and the Datastore's flattened transaction CSV, with differing layouts and the funds' grant activities in both",
-    "transactions in several currencies, some leaving the currency to the activity default, converted at their value dates",
-    "the same payment reported by the payer (disbursement) and the receiver (incoming funds) at different dates and in different currencies",
-    "commitments, payments, receipts and expenditures in one transaction file",
-    "multi-country activities with recipient-country percentages",
-    "organisation identifiers under registry and IATI-assigned schemes, and one member's previous identifier"
+    "claim headers with replacement and void versions (837 frequency codes 1, 7, 8) collapsed to the final action claim",
+    "two date bases on every claim: service from and through, received and paid",
+    "eligibility earned through an hour bank, with retroactive eligibility when late employer contributions post",
+    "a monthly attribution roster of members to partner groups by primary care provider of record",
+    "a pharmacy benefit manager's file keyed by cardholder and person code, not member id",
+    "the agreement's per-member annual truncation of large claims",
+    "the bank's funding wires on the payment-run calendar, weekly then daily"
   ]
 }
