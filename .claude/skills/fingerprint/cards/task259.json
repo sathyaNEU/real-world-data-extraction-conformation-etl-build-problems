@@ -1,0 +1,86 @@
+{
+  "task": "task259",
+  "architecture": "v1",
+  "drawn": "2026-10-13",
+  "slot_note": "DA09 seed (START_HERE): the seed's world, decision and quantity kept (a software company's Data Engineer III base-pay midpoint for the bands taking effect on 1 April 2027, read from a salary-sharing platform's licensed extract as of the 1 October 2026 benchmark date); the seed's focus split is kept only as a lower rung (job matching) and the decisive step is re-found in the data: each report's pay ageing to the benchmark date",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a software company's compensation team setting its 2027 Data Engineer pay bands (25th percentile, median and 75th percentile of market base pay for each of four levels) from a salary-sharing platform's respondent reports filed over three years, each report's pay carried to the 1 October 2026 benchmark date",
+  "objective": "descriptive-distribution",
+  "shape": "07",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G7",
+    "G16"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "retry_or_revision_log",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the company's head of total rewards",
+  "role_family": "other",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "",
+    "rows": 0,
+    "entity": "one row is one salary-platform respondent's current report (employer, title, platform family and level, employer level code, state, years of experience, base pay, the date the pay was reported, and for respondents who updated, the previous base pay and its date)",
+    "grain": "respondent",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "United States (a fictional software company)",
+    "currency": "USD",
+    "org_type": "software company",
+    "invented_names": [
+      "Tarnwick Systems",
+      "Tallyband"
+    ],
+    "people": [
+      "Patty Carroll",
+      "Cole Gillespie",
+      "Wanda Kane"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "The decisive quantity is a level at a reference date estimated from reports filed at earlier dates, each of which has to be carried to the reference date by how the level itself moves at a fixed grade; the reporters' own changes between their two reports run faster because individuals also climb within the grade, so carrying the reports by the paired changes overshoots and leaving them as filed undershoots.",
+  "driver_concrete": "Each matched respondent's base pay is aged from the date it was reported to 1 October 2026 by the market movement for the job at a fixed level, read from how pay at that level rises across report dates, before the medians and quartiles are taken; the re-reporters' own pay growth between their two reports includes merit and promotion inside the level and over-ages every report, and the reports left unaged put the medians too low.",
+  "stump": "A competent analyst matches the platform's respondents to Data Engineer III through the crosswalk and the focus table, takes their base pay as reported and files a midpoint too low, because reports filed up to three years before the benchmark date are stale; the analyst who ages them by the re-reporters' own pay growth files one several thousand dollars too high, because a person's raises carry merit and promotion inside the level that the market median at a fixed level never sees.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who matches every respondent to the company's levels through the crosswalk and the focus table and reads every rule files the median of the base pay as reported (too low); one who ages each report to the benchmark date by the re-reporters' own pay growth between their two reports files a midpoint several thousand dollars too high; ageing by how pay at the fixed level moves across report dates files the golden.",
+  "domain_test": "The call turns on the market median base pay for a job and level as in effect on a benchmark date, read from pay reports filed at different dates, which compensation practice ages to the date by the market movement at a fixed level (the structure movement) rather than by individuals' raises, which also carry merit and in-level progression; with a hospital's or a utility's nouns there is no job-level band whose market rate moves slower than the people inside it progress, and the task stops reading the same.",
+  "mechanism_source": "design_note",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:report-ageing-by-market-movement-not-individual-progression",
+  "layer1": [
+    "a salary platform's own job family and normalised level mixing roles and levels the company's architecture separates (machine-learning data engineers inside data engineering; employer level codes mapped through an effective-dated crosswalk)",
+    "respondent reports filed over three years, a share carrying the respondent's previous report",
+    "free-text titles and employer names in several spellings",
+    "OEWS state employment margins beside the platform's respondents",
+    "ask paths: an HRIS roster with rehires under a second employee id, contractors and effective-dated job changes; a posting system export listing multi-location postings once per city"
+  ],
+  "differentiation": {
+    "task87": "task87 caps a delivered count under an exclusivity no procedure states; this build ages pay reports to a reference date by the level's own movement rather than the reporters' progression: no cap, no exclusivity, no filed procedure",
+    "task445": "task445 completes a period total for reporters whose reports have not arrived by carrying each from its last report; this build has every report in hand and ages each one to a reference date by the market's movement at a fixed level, not by the reporters' own progression"
+  },
+  "lineage": [],
+  "notes": "drawn 2026-10-13 after task258 shipped; task257 (DA07) waits for a later draw day because its world's natural step is the duty-cycle mix (composition_mix), barred against task256 in the draw window. DA09's seed step (the platform's family mixing machine-learning data engineers) stays a lower rung (job matching through the focus table); the client domain is Survey Research & Official Statistics (a salary survey's measurement adjustment), since Economics carries no Descriptive task type"
+}

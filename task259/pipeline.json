@@ -1,0 +1,23 @@
+{
+  "task": "task259",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics / nonresponse-calibration-measurement-error-adjustment",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-13",
+  "stump": "Matched respondents' base pay taken as reported files the Data Engineer III midpoint too low; ageing each report by the re-reporters' own pay growth files it several thousand dollars too high; ageing by the market's movement at a fixed level across filing dates files the golden.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": null,
+  "leak": null,
+  "duplicate_check": null,
+  "judge": null,
+  "returned": [],
+  "resume": "stage 2: write the default path, stump sentence, three rules, readability screen, fork table, ladder, closure, literal reader, oracles and ask sheet; the paper sketch (scratch) gives unaged 164k, golden about 168k, a 3.5 per cent merit budget 172k, paired same-level growth 174k, all paired growth 177k on a 168k level median with a 1.7 per cent market movement and 3 per cent in-level merit.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "seed": "DA09 (START_HERE): world, decision and quantity kept"
+}
