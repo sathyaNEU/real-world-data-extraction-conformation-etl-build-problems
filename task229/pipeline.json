@@ -1,13 +1,13 @@
 {
   "task": "task229",
   "owner": "perssathya",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "physical-environmental-sciences",
   "objective": "data-quality-monitoring",
-  "stage": 3,
-  "stage_name": "build",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-13",
-  "stump": "A competent solver back-tests every rating on its gaugings, applies the extrapolation rule to the 2027 outlook and files Sable Creek from May; the other twenty-one stations hold grade B through December; the step that lands it there is taking each published daily discharge as the day's mean flow, when the network publishes it from the day's mean water level through a convex rating and below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the plant releases the day's inflow in two peak windows and holds the minimum release between them, so the river at those four gauges swings tenfold and more inside every day and the published daily discharge sits an eighth to a third below the day's mean flow: from January below Talbot Canyon and from July, after the freshet's continuous generation, below Merrin Falls.",
+  "stump": "A competent solver back-tests every rating on its gaugings, applies the extrapolation rule to the 2027 outlook and files Sable Creek from May; the other twenty-two stations hold grade B through December; the step that lands it there is taking each published daily discharge as the day's mean flow, when the network publishes it from the day's mean water level through a convex rating and below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the plant releases the day's inflow in two peak windows and holds the minimum release between them, so the river at those four gauges swings tenfold and more inside every day and the published daily discharge sits an eighth to a third below the day's mean flow: from January below Talbot Canyon and from July, after the freshet's continuous generation, below Merrin Falls.",
   "architecture": 3,
   "loops": 0,
   "precut": {
@@ -16,18 +16,22 @@
     "checks": 49
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK); every REVIEW line answered in the design note's build record",
+    "reader": "read 1 (22-station cut) and read 2 (23-station cut): no decisive-step sentence, no ranking file, decisive step analytical, every REVIEW line harmless; read 1's blanket-flag risk answered by C124, realism tells fixed"
   },
   "duplicate_check": {
-    "heart": "WARN (2026-10-13, at the hydrometry draw; no BLOCK)",
+    "heart": "WARN (no BLOCK)",
+    "surface": "0 promoted pairs; two false personas (Brandt Flats, the outlook's month headers)",
     "nearest": "drivers 0.05: task79, task109 v1, task185, task123 v2, task500 v1",
-    "guard_check": "WARN (three_rules.strategy_risk, answered by the analyst test); NOTE same_driver_older against task127 v1 and task87 v9, differentiated"
+    "guard_check": "WARN (three_rules.strategy_risk, answered); NOTE same_driver_older against task105 v1, task127 v1 and task87 v9, differentiated"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (pass 1, the 22-station cut)",
+    "disposition": "APPROVE",
+    "report": "task229/determinism_check_report.md",
+    "gate_g": "mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no; reconciled with the card",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "residual": "the final cut adds C124 and a dictionary line after the thread; covered by 1,697 generator assertions and verify.py (313 checks)"
   },
   "returned": [
     {
@@ -37,17 +41,17 @@
       "commit": ""
     }
   ],
-  "resume": "stage 3 on architecture 3 (hydrometry): generator from scratch per the design note's ## Builder's work order (params, world, truth, forward, docs, build, golden, checks, verify, deliver, make); precut exit 0 on 2026-10-13 (49 checks)",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-13",
   "portal": null,
   "draw": {
     "registered": "2026-10-13",
     "card": ".claude/skills/fingerprint/cards/task229.json v3 (hydrometry)",
     "guard": "WARN, answered",
     "heart": "WARN",
-    "planned_golden": "Corriston River below Talbot Canyon and at Hollis Bridge from January 2027, Sable Creek from May, Merrin Creek below Merrin Falls and at Dunlop Road from July; the other seventeen stations hold grade B through December",
-    "planned_default": "Sable Creek from May; the other twenty-one stations hold grade B through December"
+    "planned_golden": "C104 and C105 from January 2027, C107 from May, C112 and C113 from July; the other 18 stations hold grade B through December",
+    "planned_default": "Sable Creek from May; the other twenty-two stations hold grade B through December"
   },
   "architecture_3_draft": {
     "date": "2026-10-12",
@@ -314,5 +318,16 @@
   "architecture_3_cycling_draft": {
     "date": "2026-10-13",
     "fate": "drawn and designed on paper as a city's cycle-counter network under general-statistics-data-science (precut exit 0, never built); redrawn the same day into hydrometry because the deciding quantity was traffic engineering under a borrowed method label and the task read the same under another field's nouns; line in ## Tried and rejected"
-  }
+  },
+  "build": {
+    "date": "2026-10-13",
+    "checks": 1697,
+    "verify": 313,
+    "byte_identical": true,
+    "figures_check": "exit 0 (49 figures)",
+    "target_files": 14,
+    "daily_rows": 39930,
+    "target_zip_sha256": "048a269bb0ff0fd7ed08bbfe83d6e89b8ac27312f06bb583687d4dec6ebb9cb2"
+  },
+  "call": "flag the published daily discharge at C104 and C105 from January 2027, C107 from May, C112 and C113 from July; the other 18 stations hold grade B"
 }

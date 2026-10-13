@@ -9,7 +9,7 @@ determinism QC and its estimand rework was cracked on the leak reader's first pa
 third-party logistics operator's stock-record accuracy gate, decided by each record's state at one moment
 rebuilt from the accrual since its last count) is spent: round 1 landed the call and every ask and
 hardening loop 1 found no rung above the solver's accrual model. **Architecture 3, the number's last, is
-drawn here, in hydrometry**: a regional district's stream gauging network, where daily discharge is
+drawn here, in hydrometry**: a basin cooperative's stream gauging network, where daily discharge is
 published from the day's mean water level through each station's rating and two generating stations swing
 the river inside every day. It was first drawn on 2026-10-13 as a city's cycle-counter network under
 General Statistics & Data Science and redrawn the same day, before any data was cut, because that world
@@ -24,16 +24,16 @@ bind the build; `## Architecture 2 record (spent 2026-10-11)` and `## Architectu
 | Card | `.claude/skills/fingerprint/cards/task229.json` v3, redrawn into hydrometry and registered 2026-10-13 (guard WARN answered, heart WARN, no BLOCK); the same-day cycling draft and architectures 1 and 2 in `lineage` with their fates |
 | Domain / task type | physical-environmental-sciences / sensor-calibration-measurement (serves DQ): the stage-discharge rating is the calibration that turns a gauge's water level into discharge, and the deciding quantity is the error of the discharge the network publishes from it |
 | Objective | Data Quality Monitoring & Alerting: the object is the health of the published discharge record (its error against the day's true mean flow) and the call is a monitoring decision (from which month of 2027 each station moves to hourly transmission or carries a flag) |
-| Shape | 13, scenarios and the flip point: the months of 2027 are the scenarios and each failing station's first month is graded (five stations, plus the seventeen that hold); the asks carry the 2026 water year's record (12 monthly counts, 22 station figures) |
-| Gate G mechanism | binding_constraint: the generating stations' release schedule (minimum release between two peak windows) is the operating constraint the default path never checks, and it moves stations out of grade B without moving any in |
+| Shape | 13, scenarios and the flip point: the months of 2027 are the scenarios and each failing station's first month is graded (five stations, plus the eighteen that hold); the asks carry the 2026 water year's record (12 monthly counts, 22 station figures) |
+| Gate G mechanism | forecasting: the call is a forward projection of each station's published record under the 2027 outlook and operating plan, the 2023 to 2026 record read correctly (relabelled from binding_constraint after the judge's pass 1: the plants' schedule is no capacity or eligibility limit, and the judge's label fits the definition) |
 | Gap / pattern / generators | time then objective / G7 decisive (operating window: the plants' peak windows inside each day) / G13 (the months of 2027, Merrin Falls' 1 June commissioning, the freshet months on continuous generation) |
 | Decision type / answer unit / question form | date_or_period / date_or_period / when |
 | Stump strategy | grain_or_unit; decisive rule filed: yes (the standard files grade B on the day's true mean discharge and the ratings are filed; nothing files the flow inside a day); official decoy: no; validated decoy: no |
 | Calibration form | physical_verification: the network's gaugings (field discharge measurements), made at steady flow by the standard's own rule, below Talbot Canyon between the peak windows or in the freshet's continuous generation |
 | Context artifact | filed_model: the 2027 water supply outlook (monthly natural flows at each station and at the two forebay inflow nodes), which answers how much water each stream will carry, correctly |
-| Role, forum, forcing event, organisation | the lead of the Regional District of Corriston's hydrometric network (field_unit_lead); the provincial water licence inspector who reviews the network's 2027 data plan (regulator_or_inspector); Merrin Falls Generating Station entering service on 1 June 2027 (launch_or_rollout); the regional district's environmental services department (local_government) |
-| World | Canada, British Columbia, the southern Coast Mountains (low valley gauges, open water all year): the fictional Regional District of Corriston and its 22-station Corriston Hydrometric Network; the Corriston River and Merrin Creek; Corriston Hydro Ltd.'s Talbot Canyon Generating Station (peaking since its 2017 licence amendment) and Merrin Falls Generating Station (from 1 June 2027); Fenn Creek's run-of-river plant; Sable Creek; Lake Ashlin |
-| People | Phyllis Thompson (network lead: the station register, the data review, the dictionary), Brandon Holden (Corriston Hydro operations planner: the 2027 operating plan), Teresa Chen (hydrologist: the 2027 water supply outlook); drawn with `guard.py names --geo "Canada, British Columbia"` (seeds 229 and 2290) |
+| Role, forum, forcing event, organisation | the data quality manager of the Corriston Basin Hydrometric Cooperative, who signs the network's data plan (compliance_or_audit); the provincial water licence inspector who reviews the 2027 data plan (regulator_or_inspector); Merrin Falls Generating Station entering service on 1 June 2027 (launch_or_rollout); the cooperative, whose members are the regional district, two water utilities, the irrigation districts and Corriston Hydro (cooperative_or_member_body) |
+| World | Canada, British Columbia, the southern Coast Mountains (low valley gauges, open water all year): the fictional Corriston Basin Hydrometric Cooperative and its 23-station Corriston Hydrometric Network; the Corriston River and Merrin Creek and its tributary the Vardy River; Corriston Hydro Ltd.'s Talbot Canyon Generating Station (peaking since its 2017 licence amendment) and Merrin Falls Generating Station (from 1 June 2027); Fenn Creek's run-of-river plant; Sable Creek; Lake Ashlin |
+| People | Phyllis Thompson (data quality manager: the station register, the data review, the dictionary), Brandon Holden (Corriston Hydro operations planner: the 2027 operating plan), Teresa Chen (hydrologist: the 2027 water supply outlook); drawn with `guard.py names --geo "Canada, British Columbia"` (seeds 229 and 2290) |
 | Layer 2 | field_method, `own:peaking-releases-bias-daily-mean-stage-discharge` |
 | Deliverables | `discharge_grades_2027.png` (the call: one row per station, one column per month of 2027, every month outside grade B shaded) and `record_review_wy2026.xlsx` (the asks: each month's station-days with a valid daily mean water level, each station's mean gauging difference from the rating in force) |
 
@@ -47,9 +47,12 @@ or more below the day's mean flow, a swing the daily record cannot show.
 **Guard.** `guard.py check` WARN and `heart` WARN on 2026-10-13, no BLOCK: `three_rules.strategy_risk`
 (grain_or_unit) is answered by the analyst test (the easy route fails with every field read and every
 rule applied); `test.same_driver_older` against task127 v1, task87 v9 and task135 v2 is answered by the
-card's differentiation lines. Furniture clear of the last three builds (task256, task450, task451):
-regulator_or_inspector, launch_or_rollout and local_government; geography moved off Washington (task255)
-and Scotland (task187). Nearest drivers 0.05 (task79, task109 v1, task185, task123 v2, task500 v1):
+card's differentiation lines. Furniture clear of the three builds before it in draw order (task501,
+task187, task188): compliance_or_audit, regulator_or_inspector, launch_or_rollout and
+cooperative_or_member_body (the first draw's field_unit_lead and local_government met task188's, filed the
+same day, at the build's heart check and were redrawn); geography off Washington (task255), Scotland
+(task187) and North Dakota (task188). `guard.py surface` reads Brandt Flats (a place) and the outlook's
+month headers as personas: false positives. Nearest drivers 0.05 (task79, task109 v1, task185, task123 v2, task500 v1):
 different moves.
 
 **One line per source read.**
@@ -66,22 +69,22 @@ different moves.
 
 What this solver does (it explores, fits, checks residuals and reconciles), on the files as planned:
 
-1. Reads the hydrometric data standard (a station-month is grade B when the mean of its published daily discharges is within 5 per cent of the month's true mean discharge; a month in which more than a third of the days exceed one and a half times the largest discharge gauged at the station is grade C; the day runs in local standard time; gaugings are made at steady flow), the station register (22 stations, river kilometres, drainage areas, telemetry), the current ratings (all refitted on 1 April 2026), the 2023 to 2026 gaugings, the 2027 water supply outlook (monthly natural flows at each station and at the Talbot Canyon and Merrin Falls forebay inflow nodes) and Corriston Hydro's 2027 operating plan (each plant's mode by month, its peak windows, its minimum release, each day's inflow released within that day).
+1. Reads the hydrometric data standard (a station-month is grade B when the mean of its published daily discharges is within 5 per cent of the month's true mean discharge; a month in which more than a third of the days exceed one and a half times the largest discharge gauged at the station is grade C; the day runs in local standard time; gaugings are made at steady flow), the station register (23 stations, river kilometres, drainage areas, telemetry), the current ratings (all refitted on 1 April 2026), the 2023 to 2026 gaugings, the 2027 water supply outlook (monthly natural flows at each station and at the Talbot Canyon and Merrin Falls forebay inflow nodes) and Corriston Hydro's 2027 operating plan (each plant's mode by month, its peak windows, its minimum release, each day's inflow released within that day).
 2. Back-tests the current ratings (refitted on 1 April 2026) on the gaugings: every gauging since 2023 within 3 per cent, the regulated stations included; the residuals show no pattern by station, season or flow (the back-test passes).
 3. Reads each station's 2027 monthly flow from the outlook as the daily discharge the network will publish, and applies the extrapolation rule: Sable Creek's May and June flows exceed one and a half times its largest gauging.
 4. Checks: the operating plan releases each day's inflow within that day, so a regulated station's daily volume and daily mean flow equal the inflow plus its local inflow; the outlook's flows at the regulated stations reconcile with the forebay nodes and drainage areas; a sensitivity on the 5 per cent line (4 and 6 per cent) moves no verdict.
 5. The careful variant looks at the regulated stations once more: the daily volume balances at each, the gaugings fit, Merrin Falls changes neither its creek's monthly flow nor its channel, and the spread of each station's daily water levels inside a month, carried through its rating, moves a monthly mean by under half a per cent; nothing changes.
 6. Files the schedule: Sable Creek falls outside grade B from May (May and June) and every other station holds through December.
 
-Ends on: Sable Creek from May; the other twenty-one stations hold grade B through December
+Ends on: Sable Creek from May; the other twenty-two stations hold grade B through December
 
-Golden: Corriston River below Talbot Canyon and at Hollis Bridge from January, Sable Creek from May, Merrin Creek below Merrin Falls and at Dunlop Road from July; the other seventeen stations hold grade B through December
+Golden: Corriston River below Talbot Canyon and at Hollis Bridge from January, Sable Creek from May, Merrin Creek below Merrin Falls and at Dunlop Road from July; the other eighteen stations hold grade B through December
 
 (From the stage 2 prototype; the builder tunes the world, keeps the schedule's shape and re-asserts both lines and every margin below from the cut pack.)
 
 ## Stump sentence
 
-A competent solver back-tests every rating on its gaugings, applies the extrapolation rule to the 2027 outlook and files Sable Creek from May; the other twenty-one stations hold grade B through December; the step that lands it there is taking each published daily discharge as the day's mean flow, when the network publishes it from the day's mean water level through a convex rating and below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the plant releases the day's inflow in two peak windows and holds the minimum release between them, so the river at those four gauges swings tenfold and more inside every day and the published daily discharge sits an eighth to a third below the day's mean flow: from January below Talbot Canyon and from July, after the freshet's continuous generation, below Merrin Falls.
+A competent solver back-tests every rating on its gaugings, applies the extrapolation rule to the 2027 outlook and files Sable Creek from May; the other twenty-two stations hold grade B through December; the step that lands it there is taking each published daily discharge as the day's mean flow, when the network publishes it from the day's mean water level through a convex rating and below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the plant releases the day's inflow in two peak windows and holds the minimum release between them, so the river at those four gauges swings tenfold and more inside every day and the published daily discharge sits an eighth to a third below the day's mean flow: from January below Talbot Canyon and from July, after the freshet's continuous generation, below Merrin Falls.
 
 ## Three rules
 
@@ -101,9 +104,9 @@ Not semantics: every field, unit and definition read correctly (the standard's g
 
 Not rule application: no filed rule computes discharge through the day: the standard defines the grade, the processing note states how daily discharge is published, the plan states how the plants run; executing every stated rule still files Sable Creek alone.
 
-Analyst test: a strong analyst who reads the standard, the ratings, the gaugings, the outlook and the operating plan correctly back-tests every rating, applies the extrapolation rule and files the default path's Ends on: Sable Creek from May; the other twenty-one stations hold grade B through December.
+Analyst test: a strong analyst who reads the standard, the ratings, the gaugings, the outlook and the operating plan correctly back-tests every rating, applies the extrapolation rule and files the default path's Ends on: Sable Creek from May; the other twenty-two stations hold grade B through December.
 
-Estimand: the hydrometric data standard (section 3) files it: a station-month is grade B when the mean of the station's published daily discharges for the month is within 5 per cent of the month's true mean discharge, the day running from midnight to midnight local standard time; the 2027 data plan applies it to all 22 stations in each month of 2027, the flows being those the outlook and the operating plan put through each station.
+Estimand: the hydrometric data standard (section 3) files it: a station-month is grade B when the mean of the station's published daily discharges for the month is within 5 per cent of the month's true mean discharge, the day running from midnight to midnight local standard time; the 2027 data plan applies it to all 23 stations in each month of 2027, the flows being those the outlook and the operating plan put through each station.
 
 No decoy: nothing is planted: the ratings, the gaugings, the outlook and the operating plan are all correct; no document reports a 2027 grade for any station, no memo argues a schedule, and the operating plan says nothing about the gauges.
 
@@ -120,7 +123,7 @@ Lesson: a model learns to carry a quantity's variation below the record's grain 
 - **Control direction:** the gaugings are made at steady flow by the standard's rule, below Talbot Canyon between the peak windows at the minimum release or during the freshet's continuous generation; at steady flow every reading of the rating agrees, so the gaugings confirm the ratings and tie under both bases (L1). The decisive cause is in the data window: Talbot Canyon has peaked through the whole record.
 - **Wrong now, and quiet in the record:** below Talbot Canyon the 2023 to 2026 published dailies already sit an eighth or more low outside the freshet; no file holds the day's true mean flow there, no station gauges the river above the plants, the utility's release records are not the network's, and against the 2027 outlook the regulated stations' gap sits inside the spread the unregulated stations show (asserted by the builder month by month).
 - **First moves:** the outlook read as published flow, the gauging back-test, the extrapolation rule, the daily volume balance, a routing with heavy damping and the hygiene battery each end on a rung below the answer.
-- **Gate G:** mechanism binding_constraint; `surface_read_dependency: no`, `stumping_family: analytical_non_defect`, `sole_data_defect: no`.
+- **Gate G:** mechanism forecasting; `surface_read_dependency: no`, `stumping_family: analytical_non_defect`, `sole_data_defect: no`.
 
 ## Readability screen
 
@@ -145,43 +148,43 @@ Lesson: a model learns to carry a quantity's variation below the record's grain 
 | SF8 | damping between a tailrace and a gauge | none stated: the gauges sit 0.6 to 3.1 km below their tailraces in confined channels | a damped swing | same call for damping up to 25 per cent of the swing at every regulated station (C3 asserted; flip stated in the ladder) | the register's reach notes; C3 |
 | SF9 | travel time to the gauge | any lag | none | same call: a lag shifts a repeating day inside itself (C1 asserted) | C1 |
 | SF10 | day-to-day variation inside a month | each day at the month's outlook flow | daily inflows varying 30 per cent about the month's mean | same call (C3 asserted) | data plan s.2 grades on the outlook's monthly flows; C3 |
-| SF11 | Merrin Falls' first peaking month | July: in service 1 June, continuous generation through the freshet to 30 June | June | June files C112 and C113 one month early | operating plan s.2 (continuous generation 1 May to 30 June each year) |
+| SF11 | Merrin Falls' first peaking month | July: in service 1 June, continuous generation through the freshet to 30 June, and June's inflow is more than the windows pass at capacity in any case | June | same call through the capacity clause (C1 asserted); only a June peaked past capacity, both clauses missed, files C112 and C113 from June | operating plan s.1 to s.3 |
 | SF12 | the largest discharge gauged at a station | the top of the gauged range the rating book prints under each rating | the largest discharge in the gauging export | same call: Sable Creek's is the same in both and no other station comes within 10 per cent of the limit (asserted) | the rating book; C1 |
 | SF13 | the month's mean discharge for the extrapolation rule | the outlook's monthly flow | the published monthly mean | same call: the rule binds only at Sable Creek, which no plant regulates (asserted) | C1 |
 | SF14 | rounding before comparing with 5 per cent | unrounded | whole or one-decimal per cent | same call: no golden station-month lies between 4.0 and 6.0 per cent (asserted) | C1 |
 | SF15 | within 5 per cent | 5.0 meets grade B | strictly under 5 | same call: no station-month at 5.0 | standard s.3 |
-| SF16 | the station set | the 22 stations of the register, C122 standing for the relocated C110 | C110 and C122 as two stations | 22 stations either way for 2027: C110 has no 2027 record | the register's replaced-by entry |
+| SF16 | the station set | the 23 stations of the register, C122 standing for the relocated C110 | C110 and C122 as two stations | 23 stations either way for 2027: C110 has no 2027 record | the register's replaced-by entry and its dictionary line (the closed number's rows and gaugings are the station's) |
 | SF17 | Fenn Creek below the run-of-river plant | no swing: the plant passes the creek as it arrives | the swing applied below every plant | no schedule exists to swing it | operating plan s.5 (no pondage) |
 | SF18 | Lake Ashlin's outflow | the weir rating at the lake level, steady through a day | none | holds | the register; the outlook |
-| SF19 | the plant's capacity | never reached outside the freshet | spill above capacity | same call: the largest peaking rate is 49.0 m3/s at Talbot Canyon (July) against 52, 21.8 at Merrin Falls against 24 (asserted) | operating plan s.3 |
+| SF19 | the plant's capacity | never reached in a peaking month at the month's inflow | continuous generation on a day above capacity | same call: the largest generating rate is 54.9 m3/s at Talbot Canyon (July) against 64, 24.4 at Merrin Falls against 28; days above capacity under a day-to-day spread run continuously by the plan and move no verdict (asserted) | operating plan s.1 and s.3 |
 
 ## Ladder
 
 Four rungs, each a complete construction a capable analyst stops at, each dying to one shipped fact or
 construction. The graded call is the five stations that fall short with their first months, and the
-seventeen that hold.
+eighteen that hold.
 
 | Rung | Construction | Schedule filed | Dies to | Worth on the graded call |
 |---|---|---|---|---|
-| 0 (default) | each published daily discharge taken as the day's mean flow; the extrapolation rule on the outlook's monthly flows against the rating book's gauged ranges | Sable Creek from May; the other twenty-one hold | the dictionary's processing (the published daily is the rating read at the day's mean water level) with the plan's windows and minimum release: below a peaking plant the day's mean water level is not the water level of the day's mean flow | 1 of 5 stations; four holds wrong |
+| 0 (default) | each published daily discharge taken as the day's mean flow; the extrapolation rule on the outlook's monthly flows against the rating book's gauged ranges | Sable Creek from May; the other twenty-two hold | the dictionary's processing (the published daily is the rating read at the day's mean water level) with the plan's windows and minimum release: below a peaking plant the day's mean water level is not the water level of the day's mean flow | 1 of 5 stations; four holds wrong |
 | 1 (the forcing event) | rung 0 plus Merrin Creek's two gauges flagged from the plant's in-service month, as a regime the ratings have not seen | Sable Creek from May; C112 and C113 from June | the standard's section 3 (the grade is the published mean's error, not a verification status) with the plan's channel note (no works below the tailrace) and freshet clause (continuous generation through 30 June): June's water passes as the river's own and the rating holds | 1 of 5; two months wrong; the Talbot pair missed |
-| 2 (sophisticated) | the rating's curvature checked at each regulated station: the spread of the daily water levels inside each month carried through the rating, under half a per cent of a monthly mean | Sable Creek from May; the other twenty-one hold | the plan's windows: the swing that matters is inside each day, which the daily record averages away, and the grade compares each day's published value with that day's flow | 1 of 5 |
+| 2 (sophisticated) | the rating's curvature checked at each regulated station: the spread of the daily water levels inside each month carried through the rating, under 3 per cent of a monthly mean (largest 2.8) | Sable Creek from May; the other twenty-two hold | the plan's windows: the swing that matters is inside each day, which the daily record averages away, and the grade compares each day's published value with that day's flow | 1 of 5 |
+| over-correction (the blanket flag) | every station below a peaking plant flagged in its plant's peaking months, the swing taken as decisive without carrying it through each station's flow | the golden plus Merrin Creek near the mouth (C124) from July | the outlook's C124 flow (the Vardy River joins 2.6 km above the gauge) through its rating: the swing moves the published discharge by 1 per cent or less, and the station holds | 5 of 5; one hold wrong |
 | 3 (decisive) | each regulated station's day built from the plan (the minimum release outside the windows, the rest of the day's inflow inside them, plus the outlook's local inflow), carried through the rating to the water level, the rating read at the day's mean water level against the day's mean flow, in each plant's peaking months | the golden | | 5 of 5 and the holds |
 
-**Margins (prototype, minimum releases 1.8 and 0.7 m3/s, rating exponents 1.75 to 1.95; the builder
-re-asserts them from the pack).** Published against true, failing months: C104 from minus 13.8 (February)
-to minus 30.6 per cent (July), C105 minus 13.4 to minus 28.8, C112 minus 17.4 (December) to minus 30.5,
-C113 minus 17.3 to minus 29.6; May and June 0.0 at all four (continuous generation). Sable Creek's May and
-June outlook flows at 1.68 and 1.95 times its largest gauging. Every holding station-month within 1 per
-cent of its true mean (steady rivers; Lake Ashlin's outflow; Fenn Creek's run-of-river reach). No golden
-station-month between 4.0 and 6.0 per cent.
+**Margins (measured on the cut pack; minimum releases 1.8 and 0.7 m3/s, rating exponents 1.75 to 1.95).**
+Published against true, failing months: C104 from minus 14.8 (February) to minus 32.3 per cent (July), C105
+minus 14.4 to minus 30.3, C112 minus 18.5 (December) to minus 32.0, C113 minus 18.3 to minus 31.0; May and
+June 0.0 at all four (continuous generation). Sable Creek's May and June outlook flows (8.65 and 9.44 m3/s)
+at 2.05 and 2.24 times its gauged top of 4.21; every other station-month at 0.91 of its station's top or
+under. Every holding station-month at 0.0 under the literal reading (steady through the day) and within half
+a per cent under a 30 per cent day-to-day spread. No golden station-month between 4.0 and 6.0 per cent.
 
 **The corridor (C3, SF6 to SF10).** Damping up to 25 per cent of the swing, ramps of 30 or 60 minutes,
 local inflow 20 per cent either way and daily inflows 30 per cent about the month's mean, every combination:
-the least-biased failing station-month stays at minus 6.4 per cent (C105, February) and every station keeps
+the least-biased failing station-month stays at minus 7.2 per cent (C105, February) and every station keeps
 its first month. Flip condition: Hollis Bridge (C105) would hold in January only if the swing reaching it
-were damped by more than about 35 per cent over the 2.4 km below the tailrace (the builder states the exact
-figure from the pack).
+were damped by more than 44 per cent over the 2.4 km below the tailrace.
 
 **The grid.** The forcing-event flag (off, on) by the within-day construction (none, the monthly spread,
 the full day) by the freshet clause (kept, missed): rung 0 is (off, none), rung 1 (on, none), rung 2 (off,
@@ -199,7 +202,7 @@ graded schedule, never on a bias.
 
 | # | Axis | Reading here | Closure |
 |---|---|---|---|
-| 1 | Population | the 22 stations, each month of 2027, every day of the month, flows not yet observed (the outlook's and the plan's) | filed: standard s.3, data plan s.1 and s.2 |
+| 1 | Population | the 23 stations, each month of 2027, every day of the month, flows not yet observed (the outlook's and the plan's) | filed: standard s.3, data plan s.1 and s.2 |
 | 2 | Unit of account | a station-month | filed: standard s.3 |
 | 3 | Attribution window | calendar months of local standard-time days; Merrin Falls in service 1 June, continuous generation to 30 June | filed: standard s.2, operating plan s.2 (SF11) |
 | 4 | As-of dating | the 2027 outlook (issued 2 November 2026), the 2027 operating plan, the ratings in force from 1 April 2026 | filed: each document's date; one version of each ships |
@@ -232,7 +235,8 @@ for the month, shaped inside the day by the plan where a plant peaks. At the eig
 peaks above, the flow is steady through the day, the day's mean water level is the water level of the
 day's flow, and only the extrapolation rule moves a grade (Sable Creek, May and June). At C104 and C105
 (every month but May and June) and C112 and C113 (July to December) the day's water level follows the
-release cycle, and the rating read at its mean falls 13 to 31 per cent below the day's mean flow. Every
+release cycle, and the rating read at its mean falls 14 to 32 per cent below the day's mean flow; at C124 the
+Vardy River's inflow keeps it within 1 per cent. Every
 admissible reading of the release shape, the local inflow, the damping, the lag and the clock files the
 same schedule (SF6 to SF10); taking the published daily as the day's flow is an easy method on the same
 filed estimand, not a second reading of a filed sentence. No filed sentence reads to another schedule
@@ -257,20 +261,20 @@ filed estimand, not a second reading of a filed sentence. No filed sentence read
 - **Over-cleaning half:** Lake Ashlin's weir-held level (June to October) and Pellam and Garrow spring creeks' winter baseflow (November to May) repeat to the centimetre for days, genuinely, on older 1 cm shaft encoders; a run-length flatline rule deletes them in every month whatever its threshold (asserted for runs of 2 to 14 days).
 - **Hazards:** H1 provisional and approved rows for the same station-day (October 2025 to June 2026 reviewed); H2 the cut-over day carried by both platforms; H3 C110 and C122 both transmitting 4 to 8 June 2026; H4 cellular days backfilled from logger memory and received days late (measured on their day).
 - **Files and columns on the path:** the daily records (station, date, water_level_m, status, platform, received_utc), the register (station, replaced_by, relocated, telemetry, cut_over, slot_utc, resolution_m), the migration tracker (station, from, to, cut_over), the dictionary, the visit log (station, date, work): 5 files, 15 columns.
-- **Stops:** (N) one row per station and date after removing duplicates: every month high by its held days; (O) a flatline rule over every station: low in every month by the genuine repeats; (P) held days dropped, provisional and approved both counted: reviewed months high; (R) C110 and C122 counted as two stations: June high by 5; then the golden. Lazy delta: the natural read misses every month by at least 3 station-days (asserted per month).
+- **Stops:** (N) one row per station and date after removing duplicates: every month high by its held days; (O) a flatline rule over every station: low in every month by the genuine repeats; (P) held days dropped, provisional and approved both counted: reviewed months high; (R) C110 and C122 counted as two stations: June high by 5; then the golden. Lazy delta: the natural read misses every month by at least 3 station-days (held days by month 3 to 51, asserted).
 - **Realism:** an ingest that fills a missed slot with the platform's last message keeps a series unbroken, and a copied record copies its metadata; the network's review approves ratings and gaugings, not transmissions.
 
-**Ask B: each station's mean difference between its 2026-water-year gaugings and the rating in force on the gauging day, as a percentage of the rating's discharge (22 figures, one decimal place).**
+**Ask B: each station's mean of its 2026-water-year gaugings' percentage differences from the rating in force on the gauging day (23 figures, one decimal place).**
 - **H18 home:** the ratings the 2027 grades rest on replaced, on 1 April 2026, the ratings that published the first half of the water year; each station's gauging agreement under the rating in force is the audit trail of the record and of the refit the call consumes.
 - **Use:** the inspector's rating-performance line, one figure per station.
-- **Primary device (D2, an attribute at the wrong vintage, a later snapshot):** at the move to the new database on 1 April 2026 every station's rating was refitted and the gauging export's rating column was rewritten to the current rating on every row, the gaugings before April included. The superseded ratings appear in no document; they survive only in the daily record, where every published discharge before 1 April is the superseded rating at that day's water level (the rating book's effective date and the dictionary's discharge column are the filed facts, and neither names the gauging column). Every station has 2 to 5 gaugings before April, and the refit moved every rating by 1.5 to 6 per cent somewhere in its gauged range (asserted per station at the gaugings' water levels).
+- **Primary device (D2, an attribute at the wrong vintage, a later snapshot):** at the move to the new database on 1 April 2026 every station's rating was refitted and the gauging export's rating column was rewritten to the current rating on every row, the gaugings before April included. The superseded ratings appear in no document; they survive only in the daily record, where every published discharge before 1 April is the superseded rating at that day's water level (the rating book's effective date and the dictionary's discharge column are the filed facts, and neither names the gauging column). Every station has 3 to 5 of its 6 to 11 WY2026 gaugings before April, and the refit moved every rating by 1.5 to 6 per cent at winter flows.
 - **Hazards:** H5 litres a second at Pellam and Garrow (the register's reporting unit); H6 braided sections at C108 and C119 gauged channel by channel, one row per channel under one gauging number; H3 the relocation (C110's gaugings against the old site's ratings, C122's from 4 June against the new site's); H7 field times in UTC (an evening gauging on 31 March 2026 local reads 1 April in UTC).
 - **Files and columns on the path:** the gaugings (gauging_no, station, measured_utc, gh_m, discharge, rating, method, notes), the rating book (equations, effective date, the curve form), the daily records (station, date, water_level_m, discharge_m3s, status), the register (reporting unit, replaced_by, relocated), the dictionary: 5 files, 16 columns.
-- **Stops:** (N) every gauging against the rating its export row names: every station off; (O) the gaugings before April dropped for want of a superseded table: every station off; (U) litres read as cubic metres: two stations absurd (loud, and repaired by every response); (S) channel rows read as gaugings: C108 and C119 off by about half their weight; (T) the UTC date for the switch: one station off; then the golden. Lazy delta: the natural read misses every station by at least 0.2 points (asserted per station).
+- **Stops:** (N) every gauging against the rating its export row names: every station off; (O) the gaugings before April dropped for want of a superseded table: every station off; (U) litres read as cubic metres: two stations absurd (loud, and repaired by every response); (S) channel rows read as gaugings: C108 and C119 off by about half their weight; (T) the UTC date for the switch: one station off; then the golden. Lazy delta: the natural read misses every station by at least 0.69 points (asserted per station, outside the bin).
 - **Realism:** a database move that refits ratings and repoints history at the current rating is how migrations go; a rating book prints the ratings in force, not those retired; a braided section is gauged channel by channel; spring creeks are reported in litres.
 
 **Main population.** Device and hazard rows in the main call's declared population (the outlook's rows,
-the operating plan's tables, the rating book's equations and gauged ranges, the register's 22 current
+the operating plan's tables, the rating book's equations and gauged ranges, the register's 23 current
 stations): 0, asserted by count. The daily records, the gaugings, the migration tracker and the visit log
 sit outside it; no document the call reads carries an ask's organ (the rating book's effective date is a
 fact both read, not an organ; the superseded ratings live only in the daily record).
@@ -297,7 +301,7 @@ the evidence and the visit log corroborates the backfills.
 | Ask figures | The cracker (lands the call; runs keys, duplicates, joins, fan-out and ties; executes every filed rule; matches every control) | What it misses | Cracker |
 |---|---|---|---|
 | Ask A, the 12 monthly counts | keeps approved over provisional, counts the cut-over day once, chains C110 to C122, counts one per station-day | the held days, counted as measured in every month; or, with a flatline rule, the genuine repeats deleted in every month | miss |
-| Ask B, the 22 station means | converts litres, sums the channel rows, chains the relocation, reads each gauging against the rating its export row names | the 2 to 5 gaugings before April at every station read against the current rating, or dropped | miss |
+| Ask B, the 23 station means | converts litres, sums the channel rows, chains the relocation, reads each gauging against the rating its export row names | the 3 to 5 gaugings before April at every station read against the current rating, or dropped | miss |
 
 Mirror leakage: 0 per cent of ask weight on paper (the mirror stops at rung 0 or 1 and runs the cracker's
 battery on the asks, missing the same two primaries); target a fifth. The measured risk is a solver that
@@ -310,11 +314,79 @@ and 0; generated-rubric weights assumed at 35, 7 and 58, rerun from the generate
 ## Builder's work order
 
 - **Read first:** `## Draw` to `## Ask sheet`, then `## Tried and rejected`.
-- **World** (22 stations; the builder fixes the list in `world.py` and keeps these): C104 Corriston River below Talbot Canyon (0.6 km below the tailrace) and C105 Corriston River at Hollis Bridge (2.4 km); C112 Merrin Creek below Merrin Falls (0.8 km) and C113 Merrin Creek at Dunlop Road (3.1 km); C107 Sable Creek near the mouth (the extrapolation case); C109 Fenn Creek below the powerhouse (run-of-river, no pondage); C102 Lake Ashlin at the outlet weir (weir-held June to October, 1 cm encoder); Pellam and Garrow spring creeks (litres a second, 1 cm encoders); C108 and C119 braided; C110 relocated on 4 June 2026 as C122; no station on the Corriston above Talbot Canyon or on Merrin Creek above Merrin Falls, none on the Corriston below Hollis Bridge. Talbot Canyon peaking since its 2017 licence amendment; windows 06:00 to 10:00 and 16:00 to 21:00 local clock time every day; minimum releases 1.8 (Talbot Canyon) and 0.7 m3/s (Merrin Falls); capacities 52 and 24; continuous generation 1 May to 30 June; ramps of 30 minutes; Merrin Falls in service 1 June 2027. Ratings Q = C (h - e)^b, exponents 1.6 to 2.4 across the network.
+- **World** (23 stations; the builder fixes the list in `world.py` and keeps these): C104 Corriston River below Talbot Canyon (0.6 km below the tailrace) and C105 Corriston River at Hollis Bridge (2.4 km); C112 Merrin Creek below Merrin Falls (0.8 km), C113 Merrin Creek at Dunlop Road (3.1 km) and C124 Merrin Creek near the mouth (7.0 km, below the ungauged Vardy River); C107 Sable Creek near the mouth (the extrapolation case); C109 Fenn Creek below the powerhouse (run-of-river, no pondage); C102 Lake Ashlin at the outlet weir (weir-held June to October, 1 cm encoder); Pellam and Garrow spring creeks (litres a second, 1 cm encoders); C108 and C119 braided; C110 relocated on 4 June 2026 as C122; no station on the Corriston above Talbot Canyon or on Merrin Creek above Merrin Falls, none on the Corriston below Hollis Bridge. Talbot Canyon peaking since its 2017 licence amendment; windows 06:00 to 10:00 and 16:00 to 21:00 local clock time every day; minimum releases 1.8 (Talbot Canyon) and 0.7 m3/s (Merrin Falls); capacities 64 and 28; continuous generation 1 May to 30 June; ramps of 30 minutes; Merrin Falls in service 1 June 2027. Ratings Q = C (h - e)^b, exponents 1.6 to 2.4 across the network.
 - **Generator** (`task229/generator/`, replacing the cycling draft's files): `params.py` (constants, seeds), `world.py` (stations, rivers, ratings old and current, gauged ranges, telemetry and cut-overs, the outlook's 2027 flows, the plan), `truth.py` (WY2023 to WY2026 15-minute flows and water levels per station, the regulated reaches shaped by the plan; daily means; published discharge through the rating in force; gaugings at steady flow; the asks' devices applied after the truth), `forward.py` (the 2027 truth from the outlook and the plan: each station-month's published and true means), `docs.py` (the standard, the data plan, the rating book, the operating plan, the flood frequency update), `build.py` (writes the pack, sets mtimes, scrubs), `golden.py` (the call and the asks from the pack), `checks.py` (the R block, SF1 to SF19, the grid, the corridor, every margin, the ask stops, device coverage, the separation count, the input gates, the realism sweep), `verify.py` (independent, bundle only), `deliver.py` (the PNG and the workbook), `make.py`.
-- **Pack** (flat under `target/`): the hydrometric data standard (PDF), the 2027 data plan (DOCX), the station register (XLSX), the rating book (PDF), the daily records WY2023 to WY2026 (CSV, about 33,000 rows), the gaugings 2016 to 2026 (CSV), the 2027 water supply outlook (XLSX), Corriston Hydro's 2027 operating plan (PDF), the 2026 telemetry migration tracker (XLSX), the visit log (CSV), the data dictionary (CSV); distractors: the 2025 flood frequency update (PDF) and the 2026 water quality sonde record (CSV), named in `metadata.json`.
+- **Pack** (flat under `target/`): the hydrometric data standard (PDF), the 2027 data plan (DOCX), the station register (XLSX), the rating book (PDF), the daily records WY2023 to WY2026 (CSV, 38,000 rows), the gaugings 2016 to 2026 (CSV), the 2027 water supply outlook (XLSX), Corriston Hydro's 2027 operating plan (PDF), the 2026 telemetry migration tracker (XLSX), the visit log (CSV), the data dictionary (CSV), the export manifest (CSV); distractors: the 2025 flood frequency update (PDF) and the 2026 water quality grab samples (CSV), named in `metadata.json`.
 - **Tuning targets:** every failing golden station-month at minus 10 per cent or beyond and every holding one within 1 per cent; the corridor's least-biased failing month beyond minus 6 per cent; Sable Creek's May and June above 1.6 times its largest gauging and every other station-month under 1.35 times; the regulated stations' outlook-to-record ratios inside the unregulated spread in every month; every Ask A month moved by held days and by the flatline rule at every threshold from 2 to 14; every Ask B station moved by the version device by at least 0.2 points; every Ask B figure at least 0.02 from a rounding edge.
-- **Assert:** the R block (R1 the outlook, the plan and the ratings are the raw material and no column holds a within-day flow or a bias; R2 each Layer 1 item mishandled leaves the call; R3a the default path files `Ends on`; R3b the decisive step alone files the golden; R3c no copied block, no swapped series, no decoy); SF1 to SF19; the grid; the corridor; the separation count; the referee's fit; the input gates (13 files, four formats, the 33,000-row record, two distractors).
+- **Assert:** the R block (R1 the outlook, the plan and the ratings are the raw material and no column holds a within-day flow or a bias; R2 each Layer 1 item mishandled leaves the call; R3a the default path files `Ends on`; R3b the decisive step alone files the golden; R3c no copied block, no swapped series, no decoy); SF1 to SF19; the grid; the corridor; the separation count; the referee's fit; the input gates (14 files, four formats, the 38,000-row record, two distractors).
+
+## Build record (architecture 3)
+
+**Stage 3 (2026-10-13), final cut.** `generator/make.py`: 1,697 assertions green (the R block, SF1 to SF19,
+the 16-cell grid, the corridor, every margin, Merrin Creek near the mouth holding across the corridor, the
+Ask A stops at every flatline threshold from 2 to 14 and on the 1 mm stations alone, the Ask B stops per
+station, the separation count, three distractor deletions, the input gates and the realism sweep);
+`verify.py` (bundle only, its own PDF parsing and least-squares recovery of the 2019 ratings) 313 checks, 0
+FAIL; two builds byte-identical (14 target files, 2 goldens, figures.json); `figures_check.py` 49 figures,
+0 absent; `precut.py` 49 checks, 0 FAIL; `leak.py --asof 2026-11-06` REVIEW (no LEAK); `guard.py heart`
+WARN, `surface` clean bar two false personas.
+
+**Measured.** The call: C104 and C105 from January, C107 from May, C112 and C113 from July, 18 hold (C124
+within 1.0 per cent in every month, 1.5 at the corridor's worst). Failing regulated months minus 14.4 to
+minus 32.3 per cent; corridor least minus 7.2; flip at 44 per cent damping (C105, January). Ask A: 620 to
+705 station-days a month, held days 3 to 51 a month. Ask B: every station mid-bin (0.02 or more from an
+edge), the export's rating label off by 0.69 points or more at every station.
+
+**Stage 4.** Leak reader (isolated, Sonnet at medium, 2026-10-13, on the 22-station cut): no sentence names
+the decisive step, no file ranks the stations, nothing exists only to help the analyst, every REVIEW line
+harmless; it raised the risk that a solver flagging every station below a peaking plant without computing
+reaches the list, and four realism tells (the outlook's method sentence, the ramp sentence's exactness, GOES
+slots in station order, the data plan echoing the asks). Determinism judge, pass 1 (isolated thread from the
+judge agent's brief, 2026-10-13, on the same cut): DETERMINISTIC, APPROVE; every committed figure
+reproduced (the call, the 12 station-day counts, the 22 gauging means, the 2019 ratings recovered to
+residuals of 5e-5); Gate G forecasting, analytical_non_defect, no surface-read dependency, no sole defect;
+Gate H domain, layers and decisive step pass; one soft fork (Mattin Creek's two numbers), optional fix. Fixed
+in one generator pass: Merrin Creek near the mouth (C124) added below the ungauged Vardy River, where the
+swing is diluted and the station holds, so the blanket flag files a wrong hold; the dictionary's replaced_by
+line now says the closed number's rows and gaugings are the station's; the four realism tells rewritten;
+the Gate G label moved to forecasting (card re-registered, task105 v1 differentiated). Read 2 (the 23-station
+cut): no decisive-step sentence, no ranking file, the decisive step analytical, every REVIEW line harmless;
+its realism tells fixed as data-only changes (the manifest's per-file dates, the tracker's installation dates,
+the flood update's record lengths), and the visit log declared as a third distractor. The judge agent's
+pass-1 report (`determinism_check_report.md`): DETERMINISTIC, APPROVE, Gate G reconciled (forecasting on
+both sides), Gate H pass, no competing answer on the main call, the Mattin fork closed by the shipped
+dictionary line; C124 and the rewritten documents rest on the generator's assertions and the verifier.
+
+**Knobs.** `knobs.py` (set by `knobs_lab.py`): GAUGE_SALT picks each station's gauging stream so its Ask B
+figure sits mid-bin with every device path outside the bin and Sable Creek's gauged top under its wading
+limit; DAILY_SALT picks the telemetry stream so no two months share a count, every month holds 3 or more
+held days, and no flatline rule lands on a month. Talbot Canyon's history runs above its 2027 outlook outside
+the freshet (factors 0.71 to 0.92) so the regulated stations' outlook-to-record ratios sit inside the
+unregulated spread in every month (asserted).
+
+**leak.py REVIEW lines, answered.** Section 3: "3.2" is the standard's clause number and "1.4" a water level
+in the rating table, not Ask B figures; station names beside the ratings are the rating book. Section 4: the
+operating plan, data plan, standard, rating book and flood update carry hydrometric vocabulary because they
+are hydrometric documents; none relates a release to a published value, names an error inside a day or says
+how the river at a gauge moves (the readability screen's decisive row). Section 6: the register, rating
+book, migration tracker, outlook and flood update list stations beside numbers (positions, ratings, dates,
+flows, flood peaks); none grades a station, ranks one or names a 2027 month.
+
+**Furniture redraw at the heart check.** task188 (drawn 2026-10-13 by another author, before this card in
+draw order) holds field_unit_lead and local_government; the network moved into the Corriston Basin
+Hydrometric Cooperative (cooperative_or_member_body) with its data quality manager (compliance_or_audit) as
+the stakeholder. No figure moved. Two station names that matched real British Columbia places (Larkin,
+Corbin) were renamed (Marrock River, Cawdell Creek).
+
+**Pre-ship check, the 10/10 rules re-read against the built pack.** Domain: the deciding quantity is the
+error of a published daily discharge against the day's mean flow, built through each station's
+stage-discharge rating from the plants' release schedule (hydrometry's own computation; no other field's
+nouns carry it). Two layers: the mess (GOES held messages, backfills, provisional and approved rows, the
+cut-over day, the relocation, the database move's rating column, litres, channel rows, UTC field times) sits
+in the daily record and the gaugings, which the call never reads (R2 asserted on the stripped pack); the
+decisive step is the within-day construction through the convex rating. Rule 3: no planted defect (every
+file is correct), no semantics (every field read right still files Sable Creek alone, R3a), no rule
+application (no filed sentence computes discharge through the day).
 
 ## Tried and rejected
 
@@ -457,6 +529,7 @@ and 0; generated-rubric weights assumed at 35, 7 and 58, rerun from the generate
 - 2026-10-13, hydrometry stage 2, gauging below the plants on days the operator holds a steady release: it blinds the gaugings, but each such day publishes a quarter to a half above its neighbours in the daily record, a spike on every gauging day that the anomaly sweep finds; the gaugings are made between the peak windows at the minimum release or in the freshet instead.
 - 2026-10-13, hydrometry stage 2, stuck-sensor runs as Ask A's device: a sensor that sticks part way through a day leaves that day and the repair day half real, so a count of measured days had no forced answer; replaced by the GOES ingest's held messages, whole days by construction.
 - 2026-10-13, hydrometry stage 2, the extrapolation rule on the share of days above one and a half times the largest gauging: the outlook gives monthly flows only, so the count of days was not forced; the rule reads on the month's mean discharge, and the largest gauging is the top of the gauged range the rating book prints.
+- 2026-10-13, hydrometry build, every gauge below a peaking plant failing: the leak reader's first read showed that a solver flagging every station below a peaking plant, with nothing computed, reached the golden list; Merrin Creek near the mouth (C124) was added below the ungauged Vardy River, where the diluted swing moves the published discharge by 1 per cent or less, so the blanket flag files a wrong hold.
 
 ## Architecture 2 record (spent 2026-10-11)
 

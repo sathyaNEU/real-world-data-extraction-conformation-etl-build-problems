@@ -1,23 +1,16 @@
 # perssathya: where work stopped
 
-Updated 2026-10-13. Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-13 (task229 shipped). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task230 (2026-10-12) and task129 (2026-10-13) are SHIPPED and wait on the portal; task123's determinism
-repair is RESHIPPED. task229's design 1 shipped (PR #18) and failed the portal's determinism QC.
+repair is RESHIPPED. task229's architecture 3 (hydrometry) shipped 2026-10-13; its design 1 had failed the portal's determinism QC.
 
-**task229: architecture 3 (the number's last), redrawn into hydrometry 2026-10-13; stage 2 done, stage 3 next.**
-- Designs 1 (firmware read health) and 2 (3PL stock-record accuracy) are spent. Architecture 3 was drawn on
-  2026-10-13 as a city's cycle-counter network and redrawn the same day, before any data was cut, because
-  that world failed the domain swap (the deciding quantity was traffic engineering under a borrowed
-  General Statistics label).
-- World: the Regional District of Corriston's 22-station hydrometric network (Physical & Environmental
-  Sciences, sensor-calibration-measurement). Daily discharge is published from the day's mean water level
-  through each station's rating; below two peaking plants (Talbot Canyon since 2017, Merrin Falls from
-  June 2027) the river swings tenfold inside each day, so the convex rating read at the daily mean
-  publishes 13 to 31 per cent low. Planned call: C104 and C105 from January, Sable Creek from May, C112
-  and C113 from July; the default files Sable Creek alone.
-- Card v3 re-registered (guard WARN answered, heart WARN, no BLOCK); precut exit 0 (49 checks).
-- **Resume:** `task229/pipeline.json` (`resume`), then the design note's `## Builder's work order`,
-  `## Ask sheet` and `## Tried and rejected`.
+**task229: SHIPPED 2026-10-13 (architecture 3, hydrometry); waiting on the portal.**
+- The Corriston Basin Hydrometric Cooperative's 23-station network (Physical & Environmental Sciences,
+  sensor-calibration-measurement x Data Quality Monitoring). Call: flag C104 and C105 from January 2027,
+  C107 from May, C112 and C113 from July; the other 18 hold. The default files Sable Creek alone; the
+  blanket flag on every station below a plant adds C124, which the Vardy River keeps within 1 per cent.
+- Gates: 1,697 generator assertions, verify.py 313 checks, byte-identical rebuilds, figures_check, precut,
+  leak.py REVIEW only; leak reader clean on two reads; judge pass 1 DETERMINISTIC, APPROVE.
 
 **task230: SHIPPED 2026-10-12** (asks rebuilt, judge APPROVE, leak reader clean twice); waiting on the
 portal.

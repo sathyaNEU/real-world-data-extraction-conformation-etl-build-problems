@@ -1,0 +1,157 @@
+{
+ "task": "task229",
+ "title": "From which month of 2027 each hydrometric station's published daily discharge carries the below-grade-B flag",
+ "domain": "Physical & Environmental Sciences",
+ "subdomain": "sensor-calibration-measurement",
+ "objective": "Data Quality Monitoring & Alerting",
+ "prompt_shape": "13 (scenarios and the flip point)",
+ "as_of": "2026-11-06",
+ "deliverables": [
+  "discharge_grades_2027.png",
+  "record_review_wy2026.xlsx"
+ ],
+ "distractor_files": [
+  "flood_frequency_update_2025.pdf",
+  "water_quality_grab_samples_2026.csv",
+  "field_visits_wy2026.csv"
+ ],
+ "input_gates": {
+  "files": 14,
+  "formats": [
+   "csv",
+   "docx",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "daily_records_wy2023_wy2026.csv",
+  "largest_file_rows": 39930
+ },
+ "files": [
+  {
+   "path": "corriston_hydro_operating_plan_2027.pdf",
+   "format": "pdf",
+   "bytes": 3953,
+   "rows": null,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "daily_records_wy2023_wy2026.csv",
+   "format": "csv",
+   "bytes": 2558369,
+   "rows": 39930,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "data_dictionary.csv",
+   "format": "csv",
+   "bytes": 2798,
+   "rows": 30,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "data_plan_2027.docx",
+   "format": "docx",
+   "bytes": 35817,
+   "rows": null,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "export_manifest.csv",
+   "format": "csv",
+   "bytes": 1617,
+   "rows": 14,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "field_visits_wy2026.csv",
+   "format": "csv",
+   "bytes": 16235,
+   "rows": 331,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "flood_frequency_update_2025.pdf",
+   "format": "pdf",
+   "bytes": 3831,
+   "rows": null,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "gaugings_2016_2026.csv",
+   "format": "csv",
+   "bytes": 138767,
+   "rows": 1743,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "hydrometric_data_standard_ed2.pdf",
+   "format": "pdf",
+   "bytes": 3653,
+   "rows": null,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "rating_book_issue2_2026.pdf",
+   "format": "pdf",
+   "bytes": 8620,
+   "rows": null,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "station_register.xlsx",
+   "format": "xlsx",
+   "bytes": 8686,
+   "rows": null,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "telemetry_migration_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 7271,
+   "rows": null,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "water_quality_grab_samples_2026.csv",
+   "format": "csv",
+   "bytes": 4739,
+   "rows": 120,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  },
+  {
+   "path": "water_supply_outlook_2027.xlsx",
+   "format": "xlsx",
+   "bytes": 9477,
+   "rows": null,
+   "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's network and Corriston Hydro Ltd.; no third-party data",
+   "date": "2026-11-06",
+   "license": "CC0-1.0 (original work)"
+  }
+ ]
+}

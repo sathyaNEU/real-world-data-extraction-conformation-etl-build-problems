@@ -1,0 +1,171 @@
+{
+ "ask_a": {
+  "Apr 2026": 671,
+  "Aug 2026": 700,
+  "Dec 2025": 695,
+  "Feb 2026": 620,
+  "Jan 2026": 683,
+  "Jul 2026": 705,
+  "Jun 2026": 672,
+  "Mar 2026": 696,
+  "May 2026": 687,
+  "Nov 2025": 655,
+  "Oct 2025": 662,
+  "Sep 2026": 686
+ },
+ "ask_a_total": 8132,
+ "ask_b": {
+  "C101": -1.2,
+  "C102": 1.5,
+  "C103": -1.5,
+  "C104": 3.2,
+  "C105": -2.5,
+  "C106": 2.1,
+  "C107": -1.8,
+  "C108": 2.2,
+  "C109": -1.6,
+  "C111": 0.9,
+  "C112": -0.5,
+  "C113": 1.2,
+  "C114": -0.9,
+  "C115": -1.8,
+  "C116": 1.4,
+  "C117": -3.3,
+  "C118": 2.5,
+  "C119": -0.5,
+  "C120": 2.2,
+  "C121": -1.0,
+  "C122": -2.0,
+  "C123": 1.7,
+  "C124": -1.5
+ },
+ "ask_b_n": {
+  "C101": 6,
+  "C102": 7,
+  "C103": 9,
+  "C104": 7,
+  "C105": 7,
+  "C106": 6,
+  "C107": 9,
+  "C108": 6,
+  "C109": 6,
+  "C111": 6,
+  "C112": 9,
+  "C113": 7,
+  "C114": 9,
+  "C115": 7,
+  "C116": 8,
+  "C117": 6,
+  "C118": 6,
+  "C119": 7,
+  "C120": 8,
+  "C121": 7,
+  "C122": 11,
+  "C123": 8,
+  "C124": 8
+ },
+ "bias_least": {
+  "month": "February",
+  "pct": 14.4,
+  "station": "C105"
+ },
+ "bias_range_pct": [
+  14,
+  32
+ ],
+ "c124_max_pct": 1.0,
+ "call": {
+  "C101": null,
+  "C102": null,
+  "C103": null,
+  "C104": "January",
+  "C105": "January",
+  "C106": null,
+  "C107": "May",
+  "C108": null,
+  "C109": null,
+  "C111": null,
+  "C112": "July",
+  "C113": "July",
+  "C114": null,
+  "C115": null,
+  "C116": null,
+  "C117": null,
+  "C118": null,
+  "C119": null,
+  "C120": null,
+  "C121": null,
+  "C122": null,
+  "C123": null,
+  "C124": null
+ },
+ "call_first": {
+  "C104": "January",
+  "C105": "January",
+  "C107": "May",
+  "C112": "July",
+  "C113": "July"
+ },
+ "corridor_worst_pct": -7.2,
+ "flip_damp_pct": 44,
+ "grade_b_pct": 5,
+ "holding_stations": 18,
+ "min_release": {
+  "merrin": 0.7,
+  "talbot": 1.8
+ },
+ "ramp_min": 30,
+ "sable": {
+  "june": 9.44,
+  "may": 8.65,
+  "top": 4.21
+ },
+ "short_months": {
+  "C104": [
+   "January",
+   "February",
+   "March",
+   "April",
+   "July",
+   "August",
+   "September",
+   "October",
+   "November",
+   "December"
+  ],
+  "C105": [
+   "January",
+   "February",
+   "March",
+   "April",
+   "July",
+   "August",
+   "September",
+   "October",
+   "November",
+   "December"
+  ],
+  "C107": [
+   "May",
+   "June"
+  ],
+  "C112": [
+   "July",
+   "August",
+   "September",
+   "October",
+   "November",
+   "December"
+  ],
+  "C113": [
+   "July",
+   "August",
+   "September",
+   "October",
+   "November",
+   "December"
+  ]
+ },
+ "stations": 23,
+ "windows": "06:00 to 10:00 and 16:00 to 21:00"
+}

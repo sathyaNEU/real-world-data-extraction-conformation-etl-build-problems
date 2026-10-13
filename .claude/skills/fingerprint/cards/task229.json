@@ -6,13 +6,13 @@
   "domain": "physical-environmental-sciences",
   "subdomain": "sensor-calibration-measurement",
   "client_domain": "physical-environmental-sciences",
-  "niche": "a regional district's hydrometric network: from which month of 2027 each stream gauging station's published daily discharge should carry the below-grade-B flag, where daily discharge is computed from the day's mean water level through the station's rating, two stations sit below a generating station that has run peaking operations since 2017 and two below a new one entering service in June 2027",
+  "niche": "a regional district's hydrometric network: from which month of 2027 each stream gauging station's published daily discharge should carry the below-grade-B flag, where daily discharge is computed from the day's mean water level through the station's rating, two stations sit below a generating station that has run peaking operations since 2017 and three below a new one entering service in June 2027, the lowest of them below a large unregulated tributary",
   "objective": "data-quality-monitoring",
   "shape": "13",
   "decision_type": "date_or_period",
   "answer_unit": "date_or_period",
-  "answer": "planned: Corriston River below Talbot Canyon and at Hollis Bridge short of grade B from January 2027, Sable Creek from May, Merrin Creek below Merrin Falls and at Dunlop Road from July; the other seventeen stations hold grade B through December (the builder confirms it from the cut pack)",
-  "answer_source": "design note, planned schedule; replaced by the golden at ship",
+  "answer": "Flag the published daily discharge at Corriston River below Talbot Canyon (C104) and at Hollis Bridge (C105) from January 2027, at Sable Creek (C107) from May, and at Merrin Creek below Merrin Falls (C112) and at Dunlop Road (C113) from July; the other 18 stations, Merrin Creek near the mouth (C124) among them, hold grade B through December",
+  "answer_source": "golden: task229/submission.md block 1, recomputed by generator/verify.py from the bundle",
   "gap": [
     "time",
     "objective"
@@ -24,14 +24,14 @@
     "G7",
     "G13"
   ],
-  "gate_g": "binding_constraint",
+  "gate_g": "forecasting",
   "calibration_form": "physical_verification",
   "stump_strategy": "grain_or_unit",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the network's hydrometric data standard, the station ratings and gaugings, the 2027 water supply outlook and the generating stations' 2027 operating plan correctly back-tests every current rating on its gaugings (all within 3 per cent), applies the standard's extrapolation rule and files Sable Creek from May; the other twenty-one stations hold grade B through December, because every published daily discharge matches its rating at the day's mean water level and nothing in the daily record moves inside a day; below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the river swings every day between the minimum release and the peak release, the convex rating read at the day's mean water level publishes a daily discharge an eighth to a third below the day's mean flow, and those four stations fall short of grade B from January (Talbot Canyon) and July (Merrin Falls, after the freshet).",
+  "analyst_test": "A strong analyst who reads the network's hydrometric data standard, the station ratings and gaugings, the 2027 water supply outlook and the generating stations' 2027 operating plan correctly back-tests every current rating on its gaugings (all within 3 per cent), applies the standard's extrapolation rule and files Sable Creek from May; the other twenty-two stations hold grade B through December, because every published daily discharge matches its rating at the day's mean water level and nothing in the daily record moves inside a day; below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the river swings every day between the minimum release and the peak release, the convex rating read at the day's mean water level publishes a daily discharge an eighth to a third below the day's mean flow, and those four stations fall short of grade B from January (Talbot Canyon) and July (Merrin Falls, after the freshet).",
   "domain_test": "The deciding quantity is the error of a gauging station's published daily discharge against the day's true mean discharge, which hydrometry estimates by carrying the water level's variation within the day through the station's stage-discharge rating: the rating is convex, so discharge computed at the day's mean water level falls below the mean of the discharges, by almost nothing where the river is steady and by a tenth or more where a peaking plant swings it between its minimum release and its peak release every day. Replacing the within-day computation with the rating at the daily mean water level (a generic summary) changes the call; with another field's nouns there is no stage-discharge rating, no tailrace release cycle and no gauging, and the task stops making sense.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:peaking-releases-bias-daily-mean-stage-discharge",
@@ -47,25 +47,25 @@
     "gauging records with discharge in cubic metres a second at most stations and litres a second at two spring-fed creeks, braided sections gauged channel by channel, field times in UTC"
   ],
   "context_artifact": "filed_model",
-  "stakeholder_role": "the lead of a regional district's hydrometric network, who has to tell the provincial water licence inspector from which month of 2027 each station's published daily discharge carries the below-grade-B flag",
-  "role_family": "field_unit_lead",
+  "stakeholder_role": "the data quality manager of a basin hydrometric cooperative (the regional district, two water utilities, the irrigation districts and Corriston Hydro as members), who has to tell the provincial water licence inspector from which month of 2027 each station's published daily discharge carries the below-grade-B flag",
+  "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "daily station records, 1 October 2022 to 30 September 2026, one row per station and day: daily mean water level, published daily discharge, grade, status",
-    "rows": 0,
+    "file": "daily_records_wy2023_wy2026.csv: one row per station, day, platform and status, 1 October 2022 to 30 September 2026",
+    "rows": 39930,
     "entity": "one station-day of a stream gauging station (or the weir-held lake level station)",
     "grain": "station x day",
     "source": "synthetic"
   },
   "forum": "regulator_or_inspector",
   "forcing_event": "launch_or_rollout",
-  "org_family": "local_government",
+  "org_family": "cooperative_or_member_body",
   "world": {
     "geography": "Canada, British Columbia (a fictional regional district in the southern Coast Mountains, valley gauges open all year)",
     "currency": "CAD",
-    "org_type": "a regional district's environmental services department running a 22-station hydrometric network whose daily discharge records feed water licence compliance and flood management",
+    "org_type": "a basin hydrometric cooperative running a 23-station network whose daily discharge records serve its members' water licence compliance and flood management",
     "invented_names": [
-      "Regional District of Corriston",
+      "Corriston Basin Hydrometric Cooperative",
       "Corriston River",
       "Corriston Hydro Ltd.",
       "Talbot Canyon Generating Station",
@@ -74,7 +74,8 @@
       "Sable Creek",
       "Hollis Bridge",
       "Dunlop Road",
-      "Lake Ashlin"
+      "Lake Ashlin",
+      "Vardy River"
     ],
     "people": [
       "Phyllis Thompson",
@@ -89,8 +90,8 @@
   "opening_move": "question-first",
   "question_form": "when",
   "driver": "A published daily value computed by passing the day's mean of a measured input through a convex conversion falls below the day's mean of the converted values by an amount set by how far the input swings inside the day, so a record that matches its conversion at steady conditions is biased wherever an upstream controller cycles the input within each day, and the bias is invisible at the record's own daily grain.",
-  "driver_concrete": "Talbot Canyon Generating Station has run peaking operations since its 2017 licence amendment and Merrin Falls Generating Station enters service on 1 June 2027; outside the freshet each releases the day's inflow in two peak windows (06:00 to 10:00 and 16:00 to 21:00) and holds its minimum release (1.8 and 0.7 cubic metres a second) between them, so the gauges 0.6 to 3.1 kilometres downstream swing tenfold and more inside every day; their discharge is published from the day's mean water level through ratings with exponents of 1.75 to 1.95, which puts the published daily discharge 13 to 31 per cent below the day's mean flow, while the gaugings, made at steady flow between the peak windows or in the freshet, agree with the ratings to within three per cent.",
-  "stump": "A competent solver back-tests every station's current rating on its gaugings, applies the standard's extrapolation rule to the 2027 outlook and files Sable Creek from May; the other twenty-one stations hold grade B through December; the step that lands it there is taking each published daily discharge as the day's mean flow, when below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the river swings every day between the minimum and the peak release and the convex rating read at the day's mean water level publishes an eighth to a third below the day's mean flow, so those four stations fall short of grade B from January and from July.",
+  "driver_concrete": "Talbot Canyon Generating Station has run peaking operations since its 2017 licence amendment and Merrin Falls Generating Station enters service on 1 June 2027; outside the freshet each releases the day's inflow in two peak windows (06:00 to 10:00 and 16:00 to 21:00) and holds its minimum release (1.8 and 0.7 cubic metres a second) between them, so the gauges 0.6 to 3.1 kilometres downstream swing tenfold and more inside every day; their discharge is published from the day's mean water level through ratings with exponents of 1.75 to 1.95, which puts the published daily discharge 14 to 32 per cent below the day's mean flow, while the gaugings, made at steady flow between the peak windows or in the freshet, agree with the ratings to within three per cent.",
+  "stump": "A competent solver back-tests every station's current rating on its gaugings, applies the standard's extrapolation rule to the 2027 outlook and files Sable Creek from May; the other twenty-two stations hold grade B through December; the step that lands it there is taking each published daily discharge as the day's mean flow, when below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the river swings every day between the minimum and the peak release and the convex rating read at the day's mean water level publishes an eighth to a third below the day's mean flow, so those four stations fall short of grade B from January and from July.",
   "mechanism_source": "own",
   "differentiation": {
     "task228": "Both are sensor-network DQ builds in physical and environmental sciences; task228 decides by comparator errors that co-vary in one region of a triple collocation, this one by a convex rating read at the daily mean of a water level that a release schedule swings inside each day.",
@@ -98,7 +99,8 @@
     "task182": "task182 separates a lagged response to a shared driver from an effect over years; here the within-day swing of a regulated river decides, and the long record is not modelled at all.",
     "task135": "task135 sizes a volatility from short-interval changes of components struck at different times of day (asynchronous pricing understates covariance); here a single station's daily value is biased by a convex rating read at the day's mean water level while a release schedule swings it inside the day: no covariance across components, no horizon scaling, and the correction is a within-day construction through the rating.",
     "task127": "task127 v1 counts units a capacity-limited team finishes before a close when the decision's volume bunches into weeks no closed period reached (a queue past a deadline); here no unit queues or is lost: every day is recorded, and its published value is biased by a convex rating read at the day's mean water level while a release schedule swings the river inside the day.",
-    "task87": "task87 caps a filed procedure's delivered count by an exclusivity between two items in one time slot that the schedule encodes; here nothing is capped or exclusive: the release schedule shapes the flow within each day and the error comes from converting that shape's mean water level through a convex rating."
+    "task87": "task87 caps a filed procedure's delivered count by an exclusivity between two items in one time slot that the schedule encodes; here nothing is capped or exclusive: the release schedule shapes the flow within each day and the error comes from converting that shape's mean water level through a convex rating.",
+    "task105": "task105 v1 times a new outlet's first-year commitments against a class agreed a season ahead of its start (a lead time a calendar window cuts); here nothing is committed or lost to timing: each 2027 day's flow is recorded, and its published value is biased by a convex rating read at the day's mean water level while a release schedule swings the river inside the day."
   },
   "lineage": [
     {
