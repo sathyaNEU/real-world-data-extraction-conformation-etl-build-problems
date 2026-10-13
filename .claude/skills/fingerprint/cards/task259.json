@@ -11,8 +11,8 @@
   "shape": "07",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "File the Data Engineer III midpoint at $168,000 for the pay bands that take effect on 1 April 2027.",
+  "answer_source": "task259/submission.md block 1; golden/data_engineer_bands_2027.xlsx, Bands 2027",
   "gap": [
     "time",
     "population"
@@ -35,8 +35,8 @@
   "role_family": "other",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
+    "file": "tallyband_extract_2026-10-01.csv",
+    "rows": 35851,
     "entity": "one row is one salary-platform respondent's current report (employer, title, platform family and level, employer level code, state, years of experience, base pay, the date the pay was reported, and for respondents who updated, the previous base pay and its date)",
     "grain": "respondent",
     "source": "synthetic"
@@ -58,14 +58,17 @@
       "Wanda Kane"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "data_engineer_bands_2027.xlsx",
+    "data_engineer_bands_2027.svg"
+  ],
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "The decisive quantity is a level at a reference date estimated from reports filed at earlier dates, each of which has to be carried to the reference date by how the level itself moves at a fixed grade; the reporters' own changes between their two reports run faster because individuals also climb within the grade, so carrying the reports by the paired changes overshoots and leaving them as filed undershoots.",
   "driver_concrete": "Each matched respondent's base pay is aged from the date it was reported to 1 October 2026 by the market movement for the job at a fixed level, read from how pay at that level rises across report dates, before the medians and quartiles are taken; the re-reporters' own pay growth between their two reports includes merit and promotion inside the level and over-ages every report, and the reports left unaged put the medians too low.",
-  "stump": "A competent analyst matches the platform's respondents to Data Engineer III through the crosswalk and the focus table, takes their base pay as reported and files a midpoint too low, because reports filed up to three years before the benchmark date are stale; the analyst who ages them by the re-reporters' own pay growth files one several thousand dollars too high, because a person's raises carry merit and promotion inside the level that the market median at a fixed level never sees.",
+  "stump": "A competent analyst matches the platform's respondents to Data Engineer III through the crosswalk and the focus table, sees the reports were filed over three years and carries each to the benchmark date at the re-reporters' own pay growth between their two reports at the same level (4.7 per cent a year), filing the midpoint at $175,000, because a person's raises carry the merit earned inside the level that the market at a fixed level never sees; carried by the level's own movement across filing dates (1.7 per cent a year) the reports give $168,000, and left as filed they give $164,000.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who matches every respondent to the company's levels through the crosswalk and the focus table and reads every rule files the median of the base pay as reported (too low); one who ages each report to the benchmark date by the re-reporters' own pay growth between their two reports files a midpoint several thousand dollars too high; ageing by how pay at the fixed level moves across report dates files the golden.",
+  "analyst_test": "A strong analyst who matches every respondent to the company's levels through the crosswalk and the focus table and reads every rule carries each report to the benchmark date at the re-reporters' own growth between their two reports at the same level (4.7 per cent a year) and files the Data Engineer III midpoint at $175,000; one who leaves the reports as filed files $164,000; carrying them by how pay at the fixed level moves across report dates (1.7 per cent a year) files the golden $168,000.",
   "domain_test": "The call turns on the market median base pay for a job and level as in effect on a benchmark date, read from pay reports filed at different dates, which compensation practice ages to the date by the market movement at a fixed level (the structure movement) rather than by individuals' raises, which also carry merit and in-level progression; with a hospital's or a utility's nouns there is no job-level band whose market rate moves slower than the people inside it progress, and the task stops reading the same.",
   "mechanism_source": "design_note",
   "layer2_family": "estimand_identification",
