@@ -294,11 +294,29 @@ def ctx(text, m, w=70):
     return re.sub(r"\s+", " ", text[a:b]).strip()
 
 
-def sweep_names(files, rep):
+def field_terms_of(task):
+    """Words the author vocabulary holds that the fiction's own field uses as nouns (a mosquito trap, a golden eagle),
+    declared under field_terms in metadata.json: a match on one of them is a reader's call, not a stop."""
+    meta_p = task / "metadata.json"
+    try:
+        return tuple(str(x).lower() for x in (json.loads(meta_p.read_text()).get("field_terms") or []))
+    except Exception:
+        return ()
+
+
+def _is_field(word, field):
+    w = word.lower()
+    return w in field or (w.endswith("s") and w[:-1] in field)
+
+
+def sweep_names(files, rep, field=()):
     for f in files:
         rel = f["rel"]
         if BAD_NAME.search(rel.name) or BAD_NAME.search(str(rel.parent)):
-            rep.add("1 file names", "LEAK", rel, "name matches the author's vocabulary: %s" % BAD_NAME.search(rel.name or str(rel)).group(0))
+            hit = BAD_NAME.search(rel.name or str(rel)).group(0)
+            lv = "REVIEW" if _is_field(hit, field) else "LEAK"
+            rep.add("1 file names", lv, rel, "name matches the author's vocabulary: %s%s" % (
+                hit, " (a field term declared in metadata.json)" if lv == "REVIEW" else ""))
         if rel.name.startswith(".") or rel.name in ("Thumbs.db", "desktop.ini") or "__MACOSX" in str(rel):
             rep.add("1 file names", "LEAK", rel, "stray system or dot file")
         if f["ext"] in (".py", ".ipynb", ".r", ".sql", ".sh"):
@@ -308,7 +326,7 @@ def sweep_names(files, rep):
 TOOLCHAIN = re.compile(r"python-docx|openpyxl|reportlab|matplotlib|pandas|numpy|faker|pyarrow|seed\s*=|scratchpad|/Users/|claude|anthropic|lorem|placeholder|TODO|FIXME|as an ai", re.I)
 
 
-def sweep_vocab(files, rep):
+def sweep_vocab(files, rep, field=()):
     for f in files:
         t = f["text"]
         if not t:
@@ -325,6 +343,10 @@ def sweep_vocab(files, rep):
                 continue
             if pat == "\u2014":
                 rep.add("2 author vocabulary", "REVIEW", f["rel"], "%d em dash(es)" % len(ms))
+                continue
+            if field and all(_is_field(m.group(0), field) for m in ms):
+                rep.add("2 author vocabulary", "REVIEW", f["rel"], "%s x%d, a field term declared in metadata.json: "
+                        "...%s..." % (pat, len(ms), ctx(t, ms[0])))
                 continue
             rep.add("2 author vocabulary", lv, f["rel"], "%s x%d: ...%s..." % (pat, len(ms), ctx(t, ms[0])))
 
@@ -538,8 +560,9 @@ def main():
     rep = Report()
     nums, names, call, _ = submission_answers(sub)
     vocab = design_vocab(note, prompt_text)
-    sweep_names(files, rep)
-    sweep_vocab(files, rep)
+    field = field_terms_of(task)
+    sweep_names(files, rep, field)
+    sweep_vocab(files, rep, field)
     stated = ()
     meta_p = task / "metadata.json"
     if meta_p.exists():

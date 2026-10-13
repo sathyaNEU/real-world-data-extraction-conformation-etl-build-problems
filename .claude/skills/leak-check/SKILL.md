@@ -79,6 +79,9 @@ thread rules fix or harmless per line, harmless ones one line each in the design
 - A figure the prompt states or `stated_inputs` lists.
 - A governing clause that pins a convention once. The test: would the sentence exist without the trap?
 - A real-world string in a real dataset.
+- A noun of the fiction's own field that the author vocabulary also holds (a mosquito trap, a golden eagle), declared
+  under `field_terms` in `metadata.json`: `leak.py` reports it REVIEW, answered in one design-note line. A file name
+  avoids it where the field has another word.
 - A confirming corpus the strategy needs (a sentence pointing at it would be).
 
 ## Checklist
