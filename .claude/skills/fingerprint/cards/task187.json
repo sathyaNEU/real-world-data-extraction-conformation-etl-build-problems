@@ -1,0 +1,90 @@
+{
+  "task": "task187",
+  "architecture": "v1",
+  "drawn": "2026-10-13",
+  "slot_note": "wave 2 of oviya13ya's Anomaly Detection lane, from seed AD10 (which turbine gets next summer's one leading-edge repair campaign, and the energy it recovers); the world, decision and quantity are the seed's, the pitfall is re-found from the turbines' 10-minute record",
+  "domain": "energy-systems-utilities",
+  "subdomain": "grid-reliability-outage-analysis",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a community-owned wind farm's lost-production analysis choosing the one turbine whose blades get next summer's rope-access leading-edge repair, where a turbine at a conifer plantation's edge runs in about twice the turbulence of the rest and the turbine with the worst year has since had its rotor exchanged",
+  "objective": "anomaly-detection",
+  "shape": "14",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G17",
+    "G4"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "the asset manager of a community-owned wind farm, booking next summer's one leading-edge repair campaign with the rope-access contractor for the board",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "scada_10min_2025-10_2026-09.csv",
+    "rows": 0,
+    "entity": "one turbine's ten-minute record of power, nacelle wind and state",
+    "grain": "turbine x ten-minute interval",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "season_or_peak",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "Scotland, United Kingdom (an upland moor with a conifer plantation along its western edge)",
+    "currency": "GBP",
+    "org_type": "community benefit society owning and operating a ten-turbine wind farm",
+    "invented_names": [
+      "Cairnhollow Community Wind Farm",
+      "Cairnhollow Community Energy",
+      "Hallvard H117-3.45"
+    ],
+    "people": [
+      "Jenna Dyer",
+      "Peter Sharp",
+      "Carolyn Scott"
+    ]
+  },
+  "deliverables": [
+    "le_repair_campaign_2027.pdf",
+    "lost_production_2025_26.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "Each unit's shortfall against a reference curve is read as the condition a repair fixes, but every record is the average of a capped, curved response over a spread of inputs whose width depends on where the unit stands, so a unit in a wide spread loses output near the cap for reasons no repair touches and ranks first; only the shortfall measured at matched spread isolates the repairable condition.",
+  "driver_concrete": "Each turbine's energy shortfall against the warranted power curve is read as leading-edge erosion, but a ten-minute mean power is the curve averaged over the turbulence within the ten minutes, and the turbine at the plantation edge runs in about twice the turbulence of the others, which cuts its output near rated power by up to a tenth while lifting it at low wind; ranked on the shortfall it is the worst, though its blades are sound, and only the shortfall at matched turbulence shows the eroded blades on another turbine losing about five per cent below rated.",
+  "stump": "A competent solver keeps normal operation, corrects for air density, follows the rotor exchange through the lift log and ranks the turbines by energy shortfall against the warranted power curve, choosing the plantation-edge turbine; the turbulence-matched shortfall leaves that turbine sound and names the turbine whose blades are eroded.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the ten-minute record (normal operation, curtailment, icing, air density, the March rotor exchange) and ranks each turbine's energy shortfall against the warranted power curve over the year picks the plantation-edge turbine, whose shortfall is turbulence, not the turbine with the eroded blades.",
+  "domain_test": "The deciding quantity is the energy each rotor's blades lose to leading-edge erosion, which wind power-performance analysis measures as the power-curve shortfall at matched inflow (turbulence normalisation of a ten-minute power curve, as in IEC 61400-12-1 Annex M), because a ten-minute mean power averages a capped cubic curve over the turbulence; with clinics and visits or pumps and flows in place of turbines and wind there is no capped curve averaged over a per-unit turbulence, and the task dissolves.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:turbulence-matched-shortfall-for-blade-erosion",
+  "layer1": [
+    "ten-minute SCADA in local time against a met mast logging in UTC across daylight-saving changes",
+    "turbine state codes, curtailment setpoints and the grid operator's monthly curtailment shares by connection",
+    "icing episodes in winter",
+    "air density from the met mast's temperature and pressure",
+    "a rotor exchange recorded by the crane contractor under position codes, with the site layout and the asset register"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task48": "task48 recovers a population its monitor cannot see by regrouping transactions to a two-sided pair grain; task187 keeps the turbine grain and takes out an effect the ten-minute averaging builds into every record (a capped curve averaged over a per-turbine turbulence), so nothing is regrouped and the correction is a comparison at matched spread."
+  },
+  "lineage": [],
+  "notes": "Energy Systems & Utilities x Anomaly Detection through grid-reliability-outage-analysis, read as a generator's lost-production accounting (availability, curtailment and performance losses, IEC 61400-26): the anomaly is a real aerodynamic loss separated from an apparent one. Decisive generator G2 (a ten-minute record is a curve averaged over sub-interval wind, not the curve at the mean wind), G17 supporting, G4 on the lower rung (the rotor exchange)."
+}

@@ -1,0 +1,36 @@
+{
+  "task": "task187",
+  "owner": "oviya13ya",
+  "status": "DESIGN",
+  "domain": "energy-systems-utilities / grid-reliability-outage-analysis (a wind farm's lost-production accounting)",
+  "objective": "anomaly-detection",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-13",
+  "stump": "The default path ranks the turbines by their energy shortfall against the warranted power curve after cleaning the record, which reads the plantation-edge turbine's turbulence loss near rated power as blade erosion and books the campaign there; the shortfall at matched turbulence leaves that turbine sound and names the turbine whose blades are eroded.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2 design: prototype the turbulence and erosion magnitudes, default path, ladder, fork table, closure, asks, prompt; then precut",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "seed": "analytical_tasks/02_anomaly_detection/AD10_blade-campaign-rotor-lift-log-chain.md"
+}
