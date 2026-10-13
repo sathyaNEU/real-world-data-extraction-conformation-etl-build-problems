@@ -1,0 +1,37 @@
+{
+  "task": "task453",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-13",
+  "stump": "The default path designates Brennick Valley, Kestrow North, Oslin Shore and Pellmarsh Hills because step 4 estimates each region's seasonal pattern across the January 2026 coverage step without removing it: the step inflates the first-quarter seasonal factors in proportion to its size, which pulls the first quarter of 2027 below the line in Kestrow North and Oslin Shore, where the quarterly remitters hold over a fifth of the jobs; removing the step as a level shift before the seasonal pattern is estimated (or restating the earlier history to the new coverage) designates Brennick Valley and Pellmarsh Hills only.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.08 (task30 round 3, lineage)",
+    "note": "drawn 2026-10-13: guard WARN (repeat.question_form); task139 and task30 differentiated"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: the generator prototype placing each region's path and step (ladder, readability screen, fork table, closure, literal reader, oracles, ask sheet), prompt.txt and precut.py exit 0",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET10 (analytical_tasks/07_data_extraction_conformation) not used: its world sits in biomedical and pharmacology domains with no ETL-serving task type, and its rate is a stated deadline count; the pairing is the client's seasonal-adjustment official time-series production task type"
+}
