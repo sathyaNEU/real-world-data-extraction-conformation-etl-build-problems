@@ -104,18 +104,21 @@ females the CO2 traps catch.
   from the shipped protocol, crosswalk and dictionary.
 - **Layer 2:** estimation_fit: the likelihood estimate of infection from pools of varying size, taken on the
   population the index counts (the females the CO2 traps caught), not the minimum infection rate across every pool.
-- **Decisive step:** estimate each zone's infection by maximum likelihood from the pools of its CO2-trap females only,
-  then multiply by their abundance per functioning CO2 trap-night; maximum likelihood alone names Old Town, the CO2
-  pools alone name South Prairie, and only both together name Westbrook.
+- **Decisive step:** estimate each zone's infection by maximum likelihood from pools of varying size, on the pools of
+  its CO2-trap females, then multiply by their abundance per functioning CO2 trap-night. The prompt's own words
+  ("collected per CO2 trap-night") point a literal reader at the CO2-caught females, so the step that decides the call
+  is the estimator: positive pools over females tested names South Prairie, likelihood names Westbrook. A reader who
+  carries the gravid-trap pools into the index instead files Old Town, and one who does both files Riverside South.
 - **Not semantics:** every field (pool size, result, species, trap type, status) read correctly still leaves the
-  minimum infection rate across all of a zone's pools, the common reading of an infection rate, on Riverside South; no
-  code, unit or definition flips the call.
+  minimum infection rate, the common reading of an infection rate in this field, on South Prairie, and on Riverside
+  South for a reader who takes every pool the zone sent; no code, unit or definition flips the call.
 - **Not rule application:** no filed rule says how infection is estimated from pools or which pools stand for the
   CO2-caught females; the protocol says how pools are made and tested, and executing every filed step still files
   Riverside South.
-- **Analyst test:** a strong analyst who reads every field and the protocol correctly computes infected Culex per CO2
-  trap-night as each zone's CO2 catch rate times positive pools over females tested across all its Culex pools, and
-  files Riverside South; maximum likelihood alone moves it to Old Town and CO2-trap pools alone to South Prairie.
+- **Analyst test:** a strong analyst who reads every field and the protocol correctly takes the infection rate the
+  way arbovirus surveillance states it, positive pools over mosquitoes tested, on the CO2 pools the prompt's wording
+  points at, and files South Prairie at 1.71 against Westbrook's 1.47; the same rate across every pool the zone sent
+  files Riverside South at 2.28, and the likelihood estimate across every pool files Old Town at 2.98.
 - **Estimand:** `prompt.txt` asks for the estimated number of West Nile virus-infected Culex females collected per
   CO2 trap-night in each zone in the week ending 15 August 2026: population, the Culex tarsalis and Culex pipiens
   females caught in the zone's CO2 traps on its functioning trap-nights that week; outcome, infected with the virus;

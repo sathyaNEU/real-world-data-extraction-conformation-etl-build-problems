@@ -1,36 +1,44 @@
 {
-  "task": "task186",
-  "owner": "oviya13ya",
-  "status": "SHIPPED",
-  "domain": "survey-research-official-statistics / anomaly-detection (secondary economics-econometrics)",
-  "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-13",
-  "stump": "The default path tests each station's 28-day margin change against its own day-to-day variation, which cannot see that every area's margins cycle over five to nine weeks, so it finds nearly every station in the two areas whose cycles restored around the turn of the year and sends the inquiry to Harbourline Fuels; a null from the stations' changes between periods when the levy did not move holds the false discovery rate and leaves Tallis Petroleum's company-run stations.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-13"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK)",
-    "reader": "five reads: no decisive-step sentence, no ranking file, question 6 analytical; findings fixed"
-  },
-  "duplicate_check": {
-    "heart": "WARN (objective overuse only)",
-    "nearest": "task121 v3 0.06"
-  },
-  "judge": {
-    "verdict": "pass 1 DETERMINISTIC, SOLUTION_WRONG (FIX_NOW, fixed); pass 2 DETERMINISTIC (FIX_NOW: one prompt clause, applied)",
-    "disposition": "FIX_NOW applied",
-    "report": "determinism_check_report.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-13",
-  "portal": null,
-  "seed": "analytical_tasks/02_anomaly_detection/AD09_passthrough-panel-price-setting-population.md"
+ "task": "task186",
+ "owner": "oviya13ya",
+ "status": "SHIPPED",
+ "domain": "survey-research-official-statistics / anomaly-detection (secondary economics-econometrics)",
+ "objective": "anomaly-detection",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-13",
+ "stump": "The default path tests each station's 28-day margin change against its own day-to-day variation, which cannot see that every area's margins cycle over five to nine weeks, so it finds nearly every station in the two areas whose cycles restored around the turn of the year and sends the inquiry to Harbourline Fuels; a null from the stations' changes between periods when the levy did not move holds the false discovery rate and leaves Tallis Petroleum's company-run stations.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-13"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK)",
+  "reader": "five reads: no decisive-step sentence, no ranking file, question 6 analytical; findings fixed"
+ },
+ "duplicate_check": {
+  "heart": "WARN (objective overuse only)",
+  "nearest": "task121 v3 0.06"
+ },
+ "judge": {
+  "verdict": "pass 1 DETERMINISTIC, SOLUTION_WRONG (FIX_NOW, fixed); pass 2 DETERMINISTIC (FIX_NOW: one prompt clause, applied)",
+  "disposition": "FIX_NOW applied",
+  "report": "determinism_check_report.md"
+ },
+ "returned": [
+  {
+   "date": "2026-10-13",
+   "portal": "author audit: 10/10 alignment",
+   "repair": "alignment",
+   "commit": ""
+  }
+ ],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-13",
+ "portal": null,
+ "seed": "analytical_tasks/02_anomaly_detection/AD09_passthrough-panel-price-setting-population.md",
+ "alignment_pass": "design note and card: the domain claim rests on the retail price cycle; the \"setting survives\" concession deleted"
 }

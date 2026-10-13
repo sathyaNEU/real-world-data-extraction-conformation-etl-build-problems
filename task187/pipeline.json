@@ -1,36 +1,44 @@
 {
-  "task": "task187",
-  "owner": "oviya13ya",
-  "status": "SHIPPED",
-  "domain": "energy-systems-utilities / grid-reliability-outage-analysis (a wind farm's lost-production accounting)",
-  "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-13",
-  "stump": "The default path ranks the turbines by their energy shortfall against the warranted power curve after cleaning the record, which reads the plantation-edge turbine's turbulence loss near rated power as blade erosion and books the campaign there; the shortfall at each turbine's own turbulence leaves it sound and names CH04, whose blades lose about two per cent of their power below rated, a loss its neighbour's wake hides at low wind.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-13"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK)",
-    "reader": "two reads: no decisive-step sentence, no ranking file, question 6 analytical; realism findings fixed"
-  },
-  "duplicate_check": {
-    "heart": "WARN (objective overuse, repeat decision)",
-    "nearest": "task500 v3 0.05"
-  },
-  "judge": {
-    "verdict": "pass 1 DETERMINISTIC (APPROVE; optional turbulence pin declined as a readability leak)",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-13",
-  "portal": null,
-  "seed": "analytical_tasks/02_anomaly_detection/AD10_blade-campaign-rotor-lift-log-chain.md"
+ "task": "task187",
+ "owner": "oviya13ya",
+ "status": "SHIPPED",
+ "domain": "energy-systems-utilities / grid-reliability-outage-analysis (a wind farm's lost-production accounting)",
+ "objective": "anomaly-detection",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-13",
+ "stump": "The default path ranks the turbines by their energy shortfall against the warranted power curve after cleaning the record, which reads the plantation-edge turbine's turbulence loss near rated power as blade erosion and books the campaign there; the shortfall at each turbine's own turbulence leaves it sound and names CH04, whose blades lose about two per cent of their power below rated, a loss its neighbour's wake hides at low wind.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-13"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK)",
+  "reader": "two reads: no decisive-step sentence, no ranking file, question 6 analytical; realism findings fixed"
+ },
+ "duplicate_check": {
+  "heart": "WARN (objective overuse, repeat decision)",
+  "nearest": "task500 v3 0.05"
+ },
+ "judge": {
+  "verdict": "pass 1 DETERMINISTIC (APPROVE; optional turbulence pin declined as a readability leak)",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md"
+ },
+ "returned": [
+  {
+   "date": "2026-10-13",
+   "portal": "author audit: 10/10 alignment",
+   "repair": "alignment",
+   "commit": ""
+  }
+ ],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-13",
+ "portal": null,
+ "seed": "analytical_tasks/02_anomaly_detection/AD10_blade-campaign-rotor-lift-log-chain.md",
+ "alignment_pass": "prompt: the reader clause cut; card: rotor exchange dated April; note: stale prototype line"
 }

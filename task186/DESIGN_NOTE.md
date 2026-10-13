@@ -88,16 +88,20 @@ Petroleum's company-run stations, which kept about 3 cents a litre more than the
 - Task type: survey-research-official-statistics / anomaly-detection, which serves anomaly-detection; the decisive
   step scores each unit's period change against the spread of comparable changes, as official statistics' anomaly
   detection does.
-- Domain test: the deciding quantity is each station's evidence of a margin rise beyond full pass-through, held to a 5
-  per cent false discovery rate across every station, which needs the reference distribution of a 28-day margin change
-  when nothing changed; official statistics anomaly detection takes that reference from comparable units and periods
-  (an empirical null), and a theoretical null built on day-to-day variation misses the areas' price cycles.
+- Domain test: the deciding quantity is the number of a brand's stations whose retail margin rose by more than the
+  levy, judged against the margin changes the retail price cycle produces on its own. Retail fuel prices run in
+  town-level cycles of undercutting and restoration over five to nine weeks, so a station's margin 28 days apart moves
+  by cents with nothing happening at all; the reference distribution for "passed on more than the rise" therefore has
+  to come from the same stations across periods when the levy did not move, which is the price monitor's own
+  construction and the reason a within-station null is the wrong instrument here.
 - Swap: put clinics and wait times in place of stations and margins and the task no longer stands: there is no levy to
   net out of a margin and no rack price, and the decisive structure, town-level cycles of undercutting and restoration
   in retail fuel margins, is the fuel market's own; the field measures pass-through as the margin change net of the
   levy change, station by station, and the monitor scores each station's period change against comparable changes,
-  official statistics' own anomaly detection. Swap the null instead, the day-to-day one for the stations' own changes
-  when nothing happened, and the call moves (Harbourline against Tallis).
+  official statistics' own anomaly detection. The test is not generic multiple testing wearing fuel nouns: what makes
+  the easy null wrong is the cycle itself, a feature of this market and of no clinic's waiting list. Swap the null
+  instead, the day-to-day one for the stations' own changes when nothing happened, and the call moves (Harbourline
+  against Tallis).
 - Layer 1: a minute-stamped price-change log in UTC read against a local-time daily window across daylight-saving
   changes (how the reporting platform stores submissions); station numbers renumbered by the reporting system in June
   2026 with a crosswalk; terminal rack prices published per business day in dollars a litre, weekends and holidays

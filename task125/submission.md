@@ -7,7 +7,7 @@
 
 ## 1. Final Recommendation
 
-**Almost none of the July to September 2026 rise is the labour market: 0.22 of the 0.27-point rise in the unemployment rate is the three-visit cap and 0.05 point the labour market, and with six visits back from January 2027 the published unemployment rate will still sit 0.37, 0.25, 0.19 and 0.07 point above the six-visit rate from October to December 2026 to July to September 2027, the employment rate 1.37, 1.11, 0.93 and 0.63 point below it.**
+**With six visits back from January 2027 the published unemployment rate will still sit 0.22, 0.37, 0.25, 0.19 and 0.07 point above the six-visit rate from July to September 2026 to July to September 2027, and the employment rate 0.74, 1.37, 1.11, 0.93 and 0.63 point below it; almost none of the July to September 2026 rise is the labour market, 0.22 of the 0.27-point rise being the three-visit cap and 0.05 point the labour market.**
 
 The households the cap fails to recruit are found only at a fourth to sixth visit, mostly adults in work, and the panel would have kept them for five quarters, so both capped intakes hold the rates off the six-visit basis at every wave they occupy. Not "clean from January 2027", which treats the cap as a wave-1 effect and drops it the quarter six visits return. Not the wave-1 gap carried unchanged into the later waves, which overstates every 2027 quarter because the missing households' rates move back towards the rest after their first interview. Not the gap on the April to June weights kept, which overstates the employment gap in every quarter because the estimator rakes every sample to the population controls.
 

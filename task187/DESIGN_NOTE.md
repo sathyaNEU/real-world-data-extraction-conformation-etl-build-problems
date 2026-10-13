@@ -73,7 +73,7 @@
 Ends on: the plantation-edge turbine.
 Golden: the turbine whose blades lose the most at matched turbulence.
 
-Every figure is the prototype's until the generator asserts the built values.
+Every figure here is the built pack's, asserted in `generator/checks.py`.
 
 ## Stump sentence
 

@@ -87,11 +87,12 @@ under 26.4.
 
 - **Litmus:** no reported number is wrong and nothing overturns one. The flight data, the occurrence export, the
   close-out and the traffic sample are all correct; the difficulty is building a summer 2027 count no file states.
-- Domain test: what decides the call is air traffic control's human-factors safety analysis of controller workload: a
-  loss of separation is a controller error in a vertical interaction (an aircraft cleared through the level of
-  another), so a sector's expected losses follow the vertical crossings in its traffic, a complexity measure the field
-  keeps beside flight hours; with another field's nouns there are no flight levels to cross and no climb through a
-  cruising flow, so the task does not survive the swap.
+- Domain test: what decides the call is the field's own traffic-complexity measure, the count of aircraft pairs whose
+  levels change order inside a sector. A loss of separation happens in a vertical interaction, an aircraft cleared
+  through the level of another, so a sector's expected losses follow its vertical crossings rather than its flight
+  hours, and air traffic safety analysis keeps that complexity count beside the hours for exactly this reason. Nothing
+  here measures controller workload; the quantity is the traffic's own geometry. With another field's nouns there are
+  no flight levels to cross and no climb through a cruising flow, so the task does not survive the swap.
 - Analyst test: a strong analyst who keeps the ATM-related losses of separation, attributes each to its elementary
   sector, reads the season in local time and computes summer flight hours exactly still forecasts
   summer 2027 by scaling each sector's losses with its flight hours, with the square of its traffic or with its

@@ -28,12 +28,20 @@
   "disposition": "APPROVE",
   "report": "determinism_check_report_pass3.md (pass 1 FIX_NOW on one write-up count, pass 2 APPROVE, pass 3 APPROVE after the second-load recut)"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-10-13",
+   "portal": "author audit: 10/10 alignment",
+   "repair": "alignment",
+   "commit": ""
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-13",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "alignment_pass": "design note and card: the analyst test follows the prompt's literal route (CO2-only minimum rate, South Prairie)"
 }

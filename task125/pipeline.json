@@ -1,41 +1,49 @@
 {
-  "task": "task125",
-  "owner": "oviya13ya",
-  "status": "SHIPPED",
-  "domain": "survey-research-official-statistics",
-  "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-12",
-  "stump": "A competent solver finds the visit limit in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves the latest wave-1 intake, carries that wave-1 gap through the two capped quarters and files the published rates as clean from January 2027; the step that lands it there is treating the limit as a first-interview effect, when the households a capped intake fails to recruit would have stayed in the panel for five quarters with their lower unemployment partly persisting.",
-  "architecture": 2,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-12"
-  },
-  "leak": {
-    "leak_py": "REVIEW (outcome code 110 against a denominator; architecture 1 vocabulary)",
-    "reader": "re-run after pass-1 repair: no leak, no helping file; reader took the default (wave-1 only) path"
-  },
-  "duplicate_check": {
-    "heart": "WARN",
-    "nearest": "0.08 task500 v2"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (pass 2)",
-    "report": "task125/determinism_check_report_pass2.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-12",
-  "portal": null,
-  "lineage": [
-    {
-      "architecture": 1,
-      "fate": "FAILED_TO_STUMP: in-house solves (rounds 1, 2) and judge SEND_BACK on hygiene, 2026-10-10"
-    }
-  ]
+ "task": "task125",
+ "owner": "oviya13ya",
+ "status": "SHIPPED",
+ "domain": "survey-research-official-statistics",
+ "objective": "anomaly-detection",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-13",
+ "stump": "A competent solver finds the visit limit in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves the latest wave-1 intake, carries that wave-1 gap through the two capped quarters and files the published rates as clean from January 2027; the step that lands it there is treating the limit as a first-interview effect, when the households a capped intake fails to recruit would have stayed in the panel for five quarters with their lower unemployment partly persisting.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-12"
+ },
+ "leak": {
+  "leak_py": "REVIEW (outcome code 110 against a denominator; architecture 1 vocabulary)",
+  "reader": "re-run after pass-1 repair: no leak, no helping file; reader took the default (wave-1 only) path"
+ },
+ "duplicate_check": {
+  "heart": "WARN",
+  "nearest": "0.08 task500 v2"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 2)",
+  "report": "task125/determinism_check_report_pass2.md"
+ },
+ "returned": [
+  {
+   "date": "2026-10-13",
+   "portal": "author audit: 10/10 alignment",
+   "repair": "alignment",
+   "commit": ""
+  }
+ ],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-12",
+ "portal": null,
+ "lineage": [
+  {
+   "architecture": 1,
+   "fate": "FAILED_TO_STUMP: in-house solves (rounds 1, 2) and judge SEND_BACK on hygiene, 2026-10-10"
+  }
+ ],
+ "alignment_pass": "prompt: one question, the forward gap path leading and the decomposition inside it"
 }
