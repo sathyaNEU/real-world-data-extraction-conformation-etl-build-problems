@@ -1,23 +1,36 @@
 {
   "task": "task258",
   "owner": "sathay3012",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "product-analytics / metric-definition-measurement-science",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-13",
-  "stump": "The ratio of medians carries the image's load delay in proportion and files the property with the short delays; the past engagements' delays settled at one level, so the property whose hero images waited on lazy loading leads.",
+  "stump": "Carrying the past engagements onto each slow own-image load as after-over-before ratios of medians files Ledger (7.4 million page loads a month); on every engagement the image's load delay settled at 240 ms whatever it began at, so Ledger's short delays rise (3.3 million) and Pantry, whose hero images wait longest, leads at 6.3 million.",
   "architecture": 1,
   "loops": 0,
-  "precut": null,
-  "leak": null,
-  "duplicate_check": null,
-  "judge": null,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-13"
+  },
+  "leak": {
+    "leak_py": "REVIEW (no LEAK), 2026-10-13",
+    "reader": "clean: no decisive-step sentence, no ranking or helper file, every literal sentence executes to the golden; three realism tells fixed"
+  },
+  "duplicate_check": {
+    "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.decision; answered in the Draw)",
+    "nearest": "task182 0.06; surface: task256 promoted (author-triggered, not run)"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task258/determinism_check_report.md (two ask-figure forks pinned as WHAT in the extract log after the verdict; no graded figure moved)"
+  },
   "returned": [],
-  "resume": "stage 2: the ladder settled on paper in generator/ladder_sketch.py (playbook effect from the past engagements: delay settles at 240 ms, load time x0.48, ratio of medians 0.48 for the delay, whole-paint ratio 0.70; properties tuned so rung 1 (own-image loads above 2.5 s) files Hearth, rungs 2 and 3 (whole-paint cut, per-part ratios) Ledger, the golden Pantry, margins 1.27x to 2.8x; parameters: Ledger 38M loads a month at 0.62 own-image, Pantry delay median 3,600 ms, Trailhead TTFB 1,100 ms). Next: default path, stump sentence, three rules, readability screen, fork table, closure, asks (an image egress ask with silent devices), prompt, precut. Paused for task124 (the author's request: harden its stumps).",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-13",
   "portal": null,
   "seed": "DA08 (START_HERE): world, decision and quantity kept"
 }

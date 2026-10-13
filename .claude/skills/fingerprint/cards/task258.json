@@ -11,9 +11,10 @@
   "shape": "14",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Pantry: its hero-image playbook would move 6.3 million page loads a month into the good LCP band, 1.36 times Tideline's 4.6 million",
+  "answer_source": "submission.md, Final Recommendation; golden performance_squad_q1_2027.md",
   "gap": [
+    "time",
     "population"
   ],
   "pattern": [
@@ -34,9 +35,9 @@
   "role_family": "product_manager",
   "scoring_unit": "units served",
   "spine": {
-    "file": "rum_beacons_lcp_2026-11.csv",
-    "rows": 0,
-    "entity": "one row is one sampled page load's RUM beacon with its Largest Contentful Paint attribution (element, resource host and the four parts of the paint)",
+    "file": "rum_lcp_beacons_2026-11.csv",
+    "rows": 157066,
+    "entity": "one row is one sampled page load's RUM beacon with its Largest Contentful Paint attribution (element, resource URL and the four parts of the paint)",
     "grain": "page load",
     "source": "synthetic"
   },
@@ -48,7 +49,24 @@
     "currency": "AUD",
     "org_type": "digital media group with six properties",
     "invented_names": [
-      "Brolga Media"
+      "Brolga Media",
+      "Tideline",
+      "Matchday",
+      "Hearth",
+      "Ledger",
+      "Trailhead",
+      "Pantry",
+      "Tallowood Edge",
+      "Pressframe Syndication",
+      "Wirelens",
+      "Clutch",
+      "Tenancy",
+      "Fairway",
+      "Undercurrent",
+      "Brolga Kids",
+      "Tidewater",
+      "Paddock",
+      "brolgacdn"
     ],
     "people": [
       "Margaret Good",
@@ -64,21 +82,24 @@
   "question_form": "where",
   "driver": "The decisive quantity is how many units an intervention moves across a threshold when it acts on two of the four additive parts of each unit's value, and the record of past interventions shows one of those parts settling at a fixed level rather than shrinking in proportion, rising where it began below that level, so the units it can move are those whose untouched parts leave room under the threshold once that part sits at its level, built unit by unit; carrying the past effect as a ratio of medians, or as one cut to the whole value, picks a candidate whose small starting part the ratio shrinks further.",
   "driver_concrete": "Each property's November page loads whose Largest Contentful Paint element is an image it serves itself are carried through the squad's hero-image playbook part by part from their RUM attribution: time to first byte and render delay untouched, the image's load time scaled as the past engagements' load times scaled, and its load delay set at the level the past engagements' delays settled at (the group image CDN's connection), so the property whose hero images waited on lazy loading gains most, while the after-over-before ratio of medians favours the property whose short delays it shrinks to nothing and a flat cut to the whole paint favours a third.",
-  "stump": "A competent analyst carries the squad's past engagements onto each own-image page load as ratios, the image's load delay and load time each cut by the after-over-before ratio of medians, and files the property with the short delays; the step that lands there is treating the delay as shrinking in proportion, when the past engagements' delays settled at one level, rising where they began below it, so that property gains little and the lazy-loading property leads.",
+  "stump": "A competent analyst carries the squad's past engagements onto each slow own-image page load as ratios, the image's load delay and load time each cut by the after-over-before ratio of medians, and files Ledger, 7.4 million page loads a month into the good band; the step that lands it there is treating the delay as shrinking in proportion, when on every engagement the delay settled at one level, 240 ms, the connection to the group image CDN, rising where a site's images were found early on its own origin, so Ledger moves 3.3 million and Pantry, whose hero images wait longest to start, leads at 6.3 million.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who weights the November beacons to page loads, keeps the loads whose paint element is an image the property serves itself, splits each load's paint into its four parts and applies the past engagements' after-over-before ratios to the image's delay and load time files the property with the short image delays; carrying the delay at the level the past engagements settled at files the property whose hero images waited on lazy loading.",
+  "analyst_test": "A strong analyst who weights the November beacons to page loads, keeps the loads whose paint element is an image the property serves itself, splits each load's paint into its four parts and applies the past engagements' after-over-before ratios to the image's delay and load time files Ledger (7.4 million page loads a month); the preload rule of thumb (no delay) files Ledger too (8.4 million); carrying the delay at the level the engagements settled at (240 ms) files Pantry (6.3 million).",
   "domain_test": "The call turns on how many page loads a month cross under the 2,500 ms Largest Contentful Paint line when a hero-image playbook changes two of the paint's four parts (time to first byte, resource load delay, resource load duration, element render delay), estimated as web performance engineers do from RUM attribution and the playbook's measured effect on each part; with a hospital's or a utility's nouns there is no paint split into parts and no preload or image CDN connection to settle a delay, and the task stops reading the same.",
   "mechanism_source": "design_note",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:paint-parts-counterfactual-with-a-delay-that-settles-at-a-level",
   "layer1": [
-    "RUM sampling rates set per property and changed mid-month in an effective-dated configuration log",
-    "image hosts: each property's own, a legacy alias retired during the year, the group image CDN by path prefix, third-party agency and advertising hosts",
-    "beacon navigation types (prerendered loads, back-forward cache restores) beside ordinary navigations",
-    "CrUX histograms by origin and device beside the group's own RUM sample",
-    "analytics page views counted at another grain than the beacons"
+    "RUM sampling rates set per origin in an effective-dated configuration and changed mid-month for two properties",
+    "an extract cut on whole UTC days around a Sydney-time month",
+    "beacons the collector received twice",
+    "beacon navigation types: back-forward cache restores with no LCP, prerendered loads timed from activation",
+    "image hosts of three kinds per property (own, a legacy alias the old media server still answers, a path on the group image CDN) beside agency, advertising and video hosts",
+    "review windows set in a change log by Sydney date across daylight-saving changes",
+    "CrUX rows by origin and form factor beside the group's own RUM; analytics page views at another grain",
+    "ask paths: hourly image-host rollups in UTC mixing slot sizes and 304 revalidations; a legacy server's own log on Sydney time; a DAM export with three renditions an asset, library records kept beside migrated assets, retired assets, and assets filed under the property they were uploaded for"
   ],
   "differentiation": {},
   "lineage": [],
-  "notes": "drawn 2026-10-13 ahead of task257 (DA07), whose world turns on the duty-cycle mix (composition_mix), barred by ban.strategy against task256; the seed's own decisive hint (fixes only moved loads whose paint element was the property's own image) is kept as a lower rung (the reachable population), never decisive; the decisive move is the shape of the playbook's effect on the image's load delay"
+  "notes": "drawn 2026-10-13 ahead of task257 (DA07), whose world turns on the duty-cycle mix (composition_mix), barred by ban.strategy against task256; the seed's own decisive hint (fixes only moved loads whose paint element was the property's own image) is kept as a lower rung (the reachable population), never decisive; the decisive move is the shape of the playbook's effect on the image's load delay Stage 3 (2026-10-13): built; the sampling rates were evened so that no wrong rung lands on Pantry without weights, Trailhead resized so Pantry sits 5th on rung 0, the engagements' samples tightened so every estimator of the level and ratio gives the same rounded counts. Gap re-read at stage 3: the decisive step carries a backward-measured effect (the past engagements, mostly on long delays) forward to properties whose starting delays differ (gap 1, time); the reach (the slow file is not the loads the playbook can move, gap 2) is the lower rung."
 }
