@@ -1,0 +1,382 @@
+{
+ "passing_raw": "25",
+ "passing_raw_identity": "27",
+ "passing_raw_rg": "26",
+ "designated_count": "15",
+ "designated_identity": "30",
+ "designated_rg": "21",
+ "designated": [
+  "Wolfberry Trail Elementary",
+  "Javelina Run Elementary",
+  "Arriaga Elementary",
+  "Gallardo Elementary",
+  "Rosedale Terrace Elementary",
+  "Sotol Mesa Elementary",
+  "Guayacan Hill Elementary",
+  "Elmhurst Avenue Elementary",
+  "Old Mill Road Elementary",
+  "Agarita Bend Elementary",
+  "Caliche Ridge Elementary",
+  "Tobar Elementary",
+  "Lechuguilla Gap Elementary",
+  "Mabry Elementary",
+  "Vance Avenue Elementary"
+ ],
+ "designated_rates": {
+  "Wolfberry Trail Elementary": "13.6",
+  "Javelina Run Elementary": "18.2",
+  "Arriaga Elementary": "25.0",
+  "Gallardo Elementary": "28.5",
+  "Rosedale Terrace Elementary": "29.8",
+  "Sotol Mesa Elementary": "30.8",
+  "Guayacan Hill Elementary": "32.0",
+  "Elmhurst Avenue Elementary": "33.6",
+  "Old Mill Road Elementary": "34.3",
+  "Agarita Bend Elementary": "34.5",
+  "Caliche Ridge Elementary": "34.8",
+  "Tobar Elementary": "35.8",
+  "Lechuguilla Gap Elementary": "35.9",
+  "Mabry Elementary": "36.4",
+  "Vance Avenue Elementary": "37.6"
+ },
+ "anchor_2025": "12.14",
+ "anchor_2026": "12.58",
+ "anchor_gain": "0.44",
+ "raw_2025": "24.97",
+ "raw_2026": "24.05",
+ "shared_items": "25",
+ "district_rate": "48.3",
+ "district_tested": "5,727",
+ "district_meeting": "2,769",
+ "rated_campuses": "54",
+ "campuses": {
+  "Agarita Bend Elementary": {
+   "tested": "116",
+   "meeting": "40",
+   "rate": "34.5"
+  },
+  "Alameda Park Elementary": {
+   "tested": "138",
+   "meeting": "67",
+   "rate": "48.6"
+  },
+  "Arriaga Elementary": {
+   "tested": "132",
+   "meeting": "33",
+   "rate": "25.0"
+  },
+  "Ashe Juniper Elementary": {
+   "tested": "129",
+   "meeting": "58",
+   "rate": "45.0"
+  },
+  "Barrow Street Elementary": {
+   "tested": "103",
+   "meeting": "63",
+   "rate": "61.2"
+  },
+  "Bramble Ford Elementary": {
+   "tested": "130",
+   "meeting": "54",
+   "rate": "41.5"
+  },
+  "Caliche Ridge Elementary": {
+   "tested": "66",
+   "meeting": "23",
+   "rate": "34.8"
+  },
+  "Cenizo Flat Elementary": {
+   "tested": "105",
+   "meeting": "58",
+   "rate": "55.2"
+  },
+  "Chinaberry Lane Elementary": {
+   "tested": "149",
+   "meeting": "65",
+   "rate": "43.6"
+  },
+  "Cottonwood Draw Elementary": {
+   "tested": "90",
+   "meeting": "74",
+   "rate": "82.2"
+  },
+  "Coyote Tank Elementary": {
+   "tested": "145",
+   "meeting": "94",
+   "rate": "64.8"
+  },
+  "Dewberry Terrace Elementary": {
+   "tested": "124",
+   "meeting": "54",
+   "rate": "43.5"
+  },
+  "Elmhurst Avenue Elementary": {
+   "tested": "137",
+   "meeting": "46",
+   "rate": "33.6"
+  },
+  "Encino Grove Elementary": {
+   "tested": "106",
+   "meeting": "48",
+   "rate": "45.3"
+  },
+  "Fairlane Elementary": {
+   "tested": "75",
+   "meeting": "33",
+   "rate": "44.0"
+  },
+  "Farias Elementary": {
+   "tested": "75",
+   "meeting": "33",
+   "rate": "44.0"
+  },
+  "Gallardo Elementary": {
+   "tested": "137",
+   "meeting": "39",
+   "rate": "28.5"
+  },
+  "Granjeno Crossing Elementary": {
+   "tested": "112",
+   "meeting": "48",
+   "rate": "42.9"
+  },
+  "Guayacan Hill Elementary": {
+   "tested": "103",
+   "meeting": "33",
+   "rate": "32.0"
+  },
+  "Hackberry Slough Elementary": {
+   "tested": "108",
+   "meeting": "49",
+   "rate": "45.4"
+  },
+  "Hargis Elementary": {
+   "tested": "138",
+   "meeting": "79",
+   "rate": "57.2"
+  },
+  "Horsemint Meadow Elementary": {
+   "tested": "97",
+   "meeting": "41",
+   "rate": "42.3"
+  },
+  "Huisachito Elementary": {
+   "tested": "100",
+   "meeting": "77",
+   "rate": "77.0"
+  },
+  "Indigo Prairie Elementary": {
+   "tested": "113",
+   "meeting": "64",
+   "rate": "56.6"
+  },
+  "Ironwood Point Elementary": {
+   "tested": "109",
+   "meeting": "47",
+   "rate": "43.1"
+  },
+  "Javelina Run Elementary": {
+   "tested": "55",
+   "meeting": "10",
+   "rate": "18.2"
+  },
+  "Jessamine Elementary": {
+   "tested": "68",
+   "meeting": "41",
+   "rate": "60.3"
+  },
+  "Kidneywood Knoll Elementary": {
+   "tested": "74",
+   "meeting": "46",
+   "rate": "62.2"
+  },
+  "Lantana Loop Elementary": {
+   "tested": "121",
+   "meeting": "88",
+   "rate": "72.7"
+  },
+  "Larkin Street Elementary": {
+   "tested": "146",
+   "meeting": "78",
+   "rate": "53.4"
+  },
+  "Lechuguilla Gap Elementary": {
+   "tested": "64",
+   "meeting": "23",
+   "rate": "35.9"
+  },
+  "Mabry Elementary": {
+   "tested": "140",
+   "meeting": "51",
+   "rate": "36.4"
+  },
+  "Mustang Grape Elementary": {
+   "tested": "143",
+   "meeting": "105",
+   "rate": "73.4"
+  },
+  "Nopalito Vista Elementary": {
+   "tested": "71",
+   "meeting": "31",
+   "rate": "43.7"
+  },
+  "Northgate Elementary": {
+   "tested": "126",
+   "meeting": "96",
+   "rate": "76.2"
+  },
+  "Old Mill Road Elementary": {
+   "tested": "143",
+   "meeting": "49",
+   "rate": "34.3"
+  },
+  "Orozco Elementary": {
+   "tested": "74",
+   "meeting": "39",
+   "rate": "52.7"
+  },
+  "Pinto Mesa Elementary": {
+   "tested": "76",
+   "meeting": "50",
+   "rate": "65.8"
+  },
+  "Retama Hollow Elementary": {
+   "tested": "126",
+   "meeting": "68",
+   "rate": "54.0"
+  },
+  "Riojas Elementary": {
+   "tested": "87",
+   "meeting": "61",
+   "rate": "70.1"
+  },
+  "Rosedale Terrace Elementary": {
+   "tested": "114",
+   "meeting": "34",
+   "rate": "29.8"
+  },
+  "Sandbur Flat Elementary": {
+   "tested": "82",
+   "meeting": "46",
+   "rate": "56.1"
+  },
+  "Sotol Mesa Elementary": {
+   "tested": "65",
+   "meeting": "20",
+   "rate": "30.8"
+  },
+  "Switchgrass Bend Elementary": {
+   "tested": "82",
+   "meeting": "40",
+   "rate": "48.8"
+  },
+  "Tasajillo Draw Elementary": {
+   "tested": "65",
+   "meeting": "31",
+   "rate": "47.7"
+  },
+  "Tepeguaje Draw Elementary": {
+   "tested": "131",
+   "meeting": "63",
+   "rate": "48.1"
+  },
+  "Tobar Elementary": {
+   "tested": "176",
+   "meeting": "63",
+   "rate": "35.8"
+  },
+  "Upland Prairie Elementary": {
+   "tested": "55",
+   "meeting": "37",
+   "rate": "67.3"
+  },
+  "Ursuline Avenue Elementary": {
+   "tested": "67",
+   "meeting": "29",
+   "rate": "43.3"
+  },
+  "Vance Avenue Elementary": {
+   "tested": "117",
+   "meeting": "44",
+   "rate": "37.6"
+  },
+  "Windmill Hill Elementary": {
+   "tested": "100",
+   "meeting": "52",
+   "rate": "52.0"
+  },
+  "Wolfberry Trail Elementary": {
+   "tested": "132",
+   "meeting": "18",
+   "rate": "13.6"
+  },
+  "Ximenez Elementary": {
+   "tested": "92",
+   "meeting": "65",
+   "rate": "70.7"
+  },
+  "Yucca Bloom Elementary": {
+   "tested": "98",
+   "meeting": "71",
+   "rate": "72.4"
+  }
+ },
+ "ask_2025": {
+  "North": {
+   "tested": "1,431",
+   "rate": "56.8"
+  },
+  "Central": {
+   "tested": "1,408",
+   "rate": "41.2"
+  },
+  "East": {
+   "tested": "1,184",
+   "rate": "38.2"
+  },
+  "South": {
+   "tested": "1,172",
+   "rate": "36.2"
+  },
+  "West": {
+   "tested": "1,359",
+   "rate": "49.3"
+  }
+ },
+ "ask_untested": {
+  "North": "18",
+  "Central": "25",
+  "East": "18",
+  "South": "19",
+  "West": "18"
+ },
+ "ask_untested_district": "98",
+ "key_item": "M545945",
+ "key_wrong": "D",
+ "key_right": "C",
+ "tests_2025": "6,554",
+ "tests_2026": "6,341",
+ "passing_raw_below": "24",
+ "unrated": {
+  "Vereda Elementary": "8"
+ },
+ "scale_intercept": "141",
+ "scale_slope": "6",
+ "scale_standard_raw": "26.5",
+ "report_sections": [
+  "3",
+  "4.1"
+ ],
+ "clauses": [
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7"
+ ],
+ "line": "40",
+ "standard": "300",
+ "n_min": "10",
+ "scale_formula": "141 + 6"
+}

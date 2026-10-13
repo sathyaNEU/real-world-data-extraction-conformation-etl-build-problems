@@ -1,0 +1,156 @@
+{
+  "task": "task450",
+  "title": "Which elementary campuses a Texas district's superintendent's cabinet places its 2027 mathematics intervention coaches at, once the spring 2026 grade-5 results on a partly new test form are put on the reporting scale set on the 2025 form",
+  "domain": "Education & Learning Sciences",
+  "subdomain": "item-response-theory-test-equating (a new form linked to the reporting scale through the items it shares with the previous form, the two cohorts not equivalent)",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "14 (cuts of a distribution): each rated campus's tested and meeting counts and share, the designated campuses the call",
+  "as_of": "2026-10-09",
+  "deliverables": [
+    "intervention_schools_2027.docx",
+    "grade5_math_results_2026.xlsx"
+  ],
+  "distractor_files": [
+    "grade5_enrollment_projection_2026-27.csv",
+    "math_professional_learning_hours_2025-26.csv"
+  ],
+  "input_gates": {
+    "files": 13,
+    "formats": [
+      "csv",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "grade5_math_responses_2026.csv",
+    "largest_file_rows": 317050
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task450/generator/build.py (seeded, deterministic) around a fictional Texas school district, its campuses and students; no real district, campus, person or test item is depicted.",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-09",
+  "generator": "task450/generator/build.py",
+  "files": [
+    {
+      "path": "campus_designation_rules_2026-27.pdf",
+      "format": "pdf",
+      "bytes": 85043,
+      "rows": null,
+      "source": "Constructed: the board's campus designation rules for the 2027 District Improvement Plan",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "campus_directory_2026-27.xlsx",
+      "format": "xlsx",
+      "bytes": 8647,
+      "rows": null,
+      "source": "Constructed: the district's campus directory for 2026-27",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "data_dictionary.xlsx",
+      "format": "xlsx",
+      "bytes": 7814,
+      "rows": null,
+      "source": "Constructed: the assessment office's field dictionary for the extract",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dma_item_bank_grade5_math.xlsx",
+      "format": "xlsx",
+      "bytes": 9538,
+      "rows": null,
+      "source": "Constructed: the district item bank's grade-5 mathematics items, release of 6 April 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dma_key_correction_2026-05-19.pdf",
+      "format": "pdf",
+      "bytes": 40831,
+      "rows": null,
+      "source": "Constructed: the assessment office's key correction notice of 19 May 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dma_registrations_2026.csv",
+      "format": "csv",
+      "bytes": 221394,
+      "rows": 6510,
+      "source": "Constructed: the assessment platform's 2026 registrations, test taker to student",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dma_technical_report_2025_excerpt.pdf",
+      "format": "pdf",
+      "bytes": 43510,
+      "rows": null,
+      "source": "Constructed: the District Mathematics Assessment technical report, spring 2025 (excerpt)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "grade5_enrollment_projection_2026-27.csv",
+      "format": "csv",
+      "bytes": 3276,
+      "rows": 55,
+      "source": "Constructed: the demographer's 2026-27 grade-5 enrollment projection by campus",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "grade5_math_responses_2025.csv",
+      "format": "csv",
+      "bytes": 1046091,
+      "rows": 6554,
+      "source": "Constructed: the assessment platform's export of spring 2025 grade-5 mathematics answers, one row per test",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "grade5_math_responses_2026.csv",
+      "format": "csv",
+      "bytes": 16744205,
+      "rows": 317050,
+      "source": "Constructed: the assessment platform's export of spring 2026 grade-5 mathematics answers, one row per answer",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "math_professional_learning_hours_2025-26.csv",
+      "format": "csv",
+      "bytes": 12753,
+      "rows": 560,
+      "source": "Constructed: the curriculum office's log of mathematics professional learning hours, 2025-26",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sis_grade5_enrollment_2025-26.csv",
+      "format": "csv",
+      "bytes": 282307,
+      "rows": 6884,
+      "source": "Constructed: the student information system's 2025-26 grade-5 enrollment history",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sis_student_id_merges_2026.csv",
+      "format": "csv",
+      "bytes": 2641,
+      "rows": 50,
+      "source": "Constructed: the student information system's id merges of 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

@@ -5,13 +5,13 @@
   "slot_note": "Seed ET07 not drawn at v1 (its honest task types were banned in the window by task448 and task449); v1 (Physical & Environmental Sciences, a methane inventory from monthly overflights) was spent at the judge's pass 2 and the slot re-rooted inside ETL with the number kept.",
   "domain": "education-learning-sciences",
   "subdomain": "item-response-theory-test-equating",
-  "niche": "a district's own end-of-year mathematics assessment, a new grade-5 form linked to the reporting scale through items shared with the previous form, to name the schools for its 2027 intervention programme",
+  "niche": "a Texas district's own end-of-year mathematics assessment, a new grade-5 form linked to the reporting scale through 25 items carried over from the previous form, to name the campuses for its 2027 intervention coaching",
   "objective": "etl",
   "shape": "14",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Place the 2027 mathematics intervention coaches at the 15 campuses where fewer than 40 per cent of tested full-academic-year grade-5 students met the standard: Wolfberry Trail, Javelina Run, Arriaga, Gallardo, Rosedale Terrace, Sotol Mesa, Guayacan Hill, Elmhurst Avenue, Old Mill Road, Agarita Bend, Caliche Ridge, Tobar, Lechuguilla Gap, Mabry and Vance Avenue.",
+  "answer_source": "task450/submission.md, 1. Final Recommendation",
   "gap": [
     "population",
     "rule"
@@ -35,20 +35,26 @@
   "role_family": "statistical_office_head",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "grade5_math_item_responses_2026.csv",
-    "rows": 0,
-    "entity": "one student's scored response to one item of the 2026 grade-5 mathematics form",
+    "file": "grade5_math_responses_2026.csv",
+    "rows": 317050,
+    "entity": "one student's response to one item of the 2026 grade-5 mathematics form",
     "grain": "student x item",
     "source": "synthetic (constructed in a state assessment vendor's item-response export layout)"
   },
-  "forum": "trustees_or_governors",
+  "forum": "executive_team",
   "forcing_event": "statutory_or_regulatory_filing",
   "org_family": "university_or_school",
   "world": {
-    "geography": "United States: a large urban school district running its own end-of-year assessments",
+    "geography": "United States (Texas): a large urban independent school district running its own end-of-year assessments",
     "currency": "USD",
     "org_type": "public school district (its assessment and accountability office)",
-    "invented_names": [],
+    "invented_names": [
+      "Coraza Independent School District",
+      "District Mathematics Assessment",
+      "Delgadillo Elementary",
+      "Tobar Elementary",
+      "Vereda Elementary"
+    ],
     "people": [
       "Susan Bird",
       "Christopher Murphy",
@@ -63,10 +69,10 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "Two administrations of a measuring instrument differ both in the instrument and in the group measured, and the only quantities both groups answered are a shared subset, so the instrument's change has to be estimated from the groups' performance on that subset and removed before any group is placed against a fixed line; reading the new results through the old conversion, or matching the two groups' whole distributions, books the group's real change as the instrument's.",
-  "driver_concrete": "The 2026 grade-5 mathematics form is linked to the 2025 reporting scale through the items both forms share, which separate the form's difficulty from the 2026 cohort's higher ability, before each school's share of students at or above the proficiency line is counted; the 2025 raw-to-scale table, or equating that assumes the two cohorts are equivalent, files a different set of schools below the line.",
-  "stump": "The default path names the wrong schools because it converts 2026 raw scores with the 2025 raw-to-scale table (or matches the 2026 score distribution to 2025's), which credits the 2026 cohort's real gain to an easier form or erases it, moving the passing raw score; linked through the shared items, a different set of schools falls below the line (schools fixed at design).",
+  "driver_concrete": "The 2026 grade-5 mathematics form is linked to the 2025 reporting scale through the 25 items both forms share, which separate the new items' difficulty from the 2026 cohort's higher ability, before each campus's share of tested full-academic-year students meeting the standard is counted; the 2025 conversion, or equating that assumes the two cohorts are equivalent, files a larger set of campuses under the line.",
+  "stump": "The default path designates 30 campuses because it converts the 2026 raw scores with the 2025 form's conversion (passing raw score 27), and matching the 2026 raw-score distribution to 2025's designates 21 (passing raw score 26), crediting the stronger 2026 cohort's gain to nobody or to an easier form; linked through the 25 items both forms share, the 2026 form's passing raw score is 25 and 15 campuses fall under the 40 per cent line.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who scores every response with the right key, matches every student to a school, and converts raw scores with the 2025 table or equates by matching the 2026 distribution to 2025's names the wrong set of schools (fixed at design).",
+  "analyst_test": "A strong analyst who scores every response with the corrected key, places every test through the crosswalk and the enrollment extract, applies every policy rule and links the 2026 form by matching its raw-score distribution to 2025's designates 21 campuses (passing raw score 26), six more than the golden's 15; one who applies the 2025 conversion as published designates 30.",
   "domain_test": "The deciding quantity is each school's proficiency rate on the reporting scale, which psychometrics gets by equating the new form through the anchor items under a non-equivalent groups design; with a hospital's nouns there are no test forms, no anchor items and no reporting scale to link, so the task stops reading.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -98,7 +104,7 @@
       "driver_concrete": "A gathering system's large-release methane over the qualification year books each release a crew fixed from the start its work order records to its repair, and each sighting of a release the crew found already stopped (the wet-gas systems' recurring tank flashes) as the measured rate of the month its flight sampled; dropping those sightings puts Pursley Creek and Bluelick under the 0.10 per cent cap they exceed, and booking every sighting at its month's hours puts Owens Ridge over it."
     }
   ],
-  "notes": "Architecture 2 drawn 2026-10-13 after v1 was spent at the judge's pass 2 (see lineage).",
+  "notes": "Architecture 2 drawn 2026-10-13 after v1 was spent at the judge's pass 2 (see lineage). Forum redrawn at design (2026-10-13) from trustees_or_governors to executive_team: task255, drawn at 00:38 UTC before this architecture's draw at 01:56, holds trustees_or_governors in the window; the board approved the designation rules and the superintendent's cabinet places the coaches under them.",
   "client_domain": "education-learning-sciences",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "education-learning-sciences/item-response-theory-test-equating/3",

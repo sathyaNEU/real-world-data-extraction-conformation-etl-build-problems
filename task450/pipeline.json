@@ -1,37 +1,39 @@
 {
   "task": "task450",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "education-learning-sciences",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-13",
-  "stump": "The default path designates too many schools because it reads the 2026 raw scores through the 2025 table as if the two forms were the same, so the harder 2026 form costs every student about two raw points and the passing raw score stays at the 2025 form's; equating that matches the 2026 score distribution to 2025's does no better, because it books the stronger cohort's real gain as an easier form; linked through the items both forms share, the passing raw score on the 2026 form is lower and fewer schools fall under the line (schools and figures fixed at design).",
+  "stump": "The default path designates 30 campuses because it converts the 2026 raw scores with the 2025 form's conversion (passing raw score 27), and matching the 2026 raw-score distribution to 2025's designates 21 (passing raw score 26), crediting the stronger 2026 cohort's gain to nobody or to an easier form; linked through the 25 items both forms share, the 2026 form's passing raw score is 25 and 15 campuses fall under the 40 per cent line.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-13"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK) 2026-10-13",
+    "reader": "pass 1: Q1 to Q4 none, Q5 main-call fork (the 2025 conversion read onto the 2026 form), fixed with the technical report's scope sentence (SF13); pass 2 on the fixed pack: Q1 to Q4 none, Q5 linking forced by the records, Q6 analytical"
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN (repeat.question_form, answered in the design note) 2026-10-13",
     "nearest": "0.07 (task49, task62 lineage)",
     "note": "architecture 2 drawn 2026-10-13: guard WARN repeat.question_form answered in the design note; v1 differentiated on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "pass 1 DETERMINISTIC, APPROVE",
+    "disposition": "APPROVE (optional ask-3 wording note applied)",
+    "report": "determinism_check_report.md",
+    "gate_g": "method_or_model_selection, analytical_non_defect",
+    "gate_h": "domain pass, layers pass, decisive step analytical"
   },
   "returned": [],
-  "resume": "stage 2: readability screen, fork table, ladder arithmetic and corridor, closure table, asks (supplemental-stumping), prompt.txt, precut.py",
+  "resume": "shipped; waiting for the portal",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-13",
   "portal": null,
   "source_note": "architecture 1 (Physical & Environmental Sciences, methane overflights) spent 2026-10-13 at the determinism judge's pass 2 (SEND_BACK, Gate C); re-rooted inside ETL with the number kept; seed ET07 still not drawn (its task types banned in the window)"
 }
