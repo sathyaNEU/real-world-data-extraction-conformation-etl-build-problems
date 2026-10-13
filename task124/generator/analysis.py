@@ -33,6 +33,24 @@ def sample(inv: pd.DataFrame, ver: pd.DataFrame) -> pd.DataFrame:
     return s
 
 
+
+def unknown_shares(inv: pd.DataFrame, ver: pd.DataFrame, p) -> dict:
+    """The share of lead or GRR expected among the district's Lead Status Unknown lines of each era: every line of the
+    era with no usable tap card is expected to prove lead or GRR at the whole-segment share p, the verifications have
+    already found some of them, and the unknown lines carry the rest. Returns {era: (share, lines with no tap card,
+    verified, found lead or GRR, unknown)}."""
+    first = ver.sort_values(["date", "sl_id"]).groupby("sl_id").result.first()
+    nr = inv[(inv.record == "") & (inv.year_built > 0) & (inv.year_built < K.AGE_RULE_YEAR)]
+    era = nr.year_built.map(K.era_of)
+    out = {}
+    for e in range(3):
+        t = nr[era == e]
+        res = t.sl_id.map(first)
+        n, d = len(t), int(res.notna().sum())
+        h = int(res.isin(["LEAD", "GRR"]).sum())
+        out[e] = ((n * p[e] - h) / (n - d), n, d, h, n - d)
+    return out
+
 def coverage(inv: pd.DataFrame, ver: pd.DataFrame) -> pd.Series:
     seen = set(ver.sl_id)
     g = inv.assign(v=inv.sl_id.isin(seen)).groupby("segment").v

@@ -6,19 +6,19 @@
   "objective": "forecasting",
   "stage": 5,
   "stage_name": "ship",
-  "updated": "2026-10-12",
-  "stump": "A competent solver joins the verification log to the inventory through the migration crosswalk, keeps the lines that had no tap card record, prices each zone's unknown lines at the share found lead or GRR in each construction era across every verification (0.763, 0.585 and 0.217) and files the plan as missing the deadline, its last zone finished in 2039; the step that lands it there is treating verifications prompted by evidence of lead as a sample of the lines a systematic programme digs, when on the main segments a water main replacement verified whole the shares are 0.556, 0.316 and 0.083, the plan costs $284.7 million rather than $347.5 million, and the last zone is finished in 2037, inside the deadline.",
+  "updated": "2026-10-13",
+  "stump": "A competent solver joins the verification log to the inventory through the migration crosswalk, keeps the lines that had no tap card record, prices each zone's unknown lines at the share found lead or GRR in each construction era across every verification (0.763, 0.585 and 0.217) and files the plan as missing the deadline, its last zone finished in 2040; the step that lands it there is pricing the lines still unknown at the share found where something sent a crew, and the solver who sees the selection and takes the shares on the 78 main segments verified whole (0.556, 0.316 and 0.083) still lands past the deadline, in 2038, because those are the shares across every line of the era with no tap card while the unknown lines are what the targeted visits left: the whole-segment share of the era's lines less the lead the visits already found, over the lines still unknown, is 0.497, 0.279 and 0.075, the plan costs $274.1 million rather than $284.4 million (or $347.2 million on the default path), and the last zone is finished in 2037, inside the deadline.",
   "architecture": 2,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
-    "date": "2026-10-12",
-    "checks": "38 checks, 0 FAIL, 0 WARN (17 fork rows)"
+    "date": "2026-10-13",
+    "checks": "49 checks, 0 FAIL, 0 WARN (17 fork rows)"
   },
   "three_rules": {
-    "domain": "pass (a water utility's estimate of how many unknown-material service lines are lead or GRR, from verifications that sampled lines regardless of their likely material)",
-    "layers": "pass (Layer 1: the migration crosswalk, field codes, re-verifications, assessor years; Layer 2: the estimation sample)",
-    "decisive_step": "analytical (the representative sample is the main segments verified whole, recovered from coverage; every full-sample estimator keeps the selection)"
+    "domain": "pass (a water utility's estimate of the lead or GRR share among its Lead Status Unknown service lines, from the one sample that did not choose its lines, corrected for what targeted verification took out of the unknown pool)",
+    "layers": "pass (Layer 1: the migration crosswalk, field codes, re-verifications, assessor years, REPLACED lines; Layer 2: estimand identification under selection, the depleted pool)",
+    "decisive_step": "analytical (the share among the unknown lines is the whole-segment expectation less what the verifications found, over the lines left; every estimator carrying a measured rate straight to the unknown lines files 2038 or later)"
   },
   "lineage": [
     {
@@ -64,39 +64,45 @@
   ],
   "reroot": "done 2026-10-12: architecture 2 drawn in Forecasting & Predictive Modeling (energy-systems-utilities, asset-condition-maintenance: Hollins Ford Regional Water District's lead service line replacement schedule)",
   "leak": {
-    "leak_py": "REVIEW 2026-10-12 on the final cut (--asof 2027-01-11), no LEAK: the same seven lines as stages 3 and 4, answered in the design note's build record",
-    "reader": "stage 3 cut: no decisive-step sentence, no helping file, no answer-like figure; named the era share as open (which verifications form the sample), the payment and agreement readings and six realism tells, all taken into the stage 4 repair. Re-read on the repaired cut: no decisive-step sentence, ranking, helping file or answer-like figure, no main-call fork; its own 2034 execution priced the share on the inventory's current classes, where replaced lead lines read NON-LEAD, which is not a sample of the unknown lines (the judge's competing bases land on 2039), answered under the design note's Leak review"
+    "leak_py": "REVIEW 2026-10-13 on the loop-1 cut (--asof 2027-01-11), no LEAK: sweeps 3, 4 and 6 answered in the design note's build record",
+    "reader": "loop-1 cut: no decisive-step sentence, ranking, helping file or answer-like figure; plan 4.3 read as the share among the unverified lines (the golden's estimand); its own execution carried a sample's shares straight to the unknown lines and filed 2039 (the whole-segment rung). Re-read on the final prompt (the first ask's 'expect to replace'): clean; ask readings are the asks' designed devices. Realism tells ruled in the leak report."
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.gate_g against task501, answered in the draw), nearest driver 0.05 (task32 v2)",
+    "heart": "BLOCK on ban.pattern alone (G14 against task121 v3, a retired re-root drawn later on 2026-10-12 whose lower number sorts it first; an ordering tie, recorded in the design note), WARN driver.near against this slot's loop-0 driver (0.20)",
     "nearest": "surface 0 promoted, nearest task111 at 0.100"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (the re-judge on the repaired cut; pass 1 NOT_DETERMINISTIC on the stage 3 cut)",
-    "disposition": "APPROVE; its optional step 6 rewording taken, with the board paper's agreement note brought into line (wording only, no figure moved)",
-    "report": "task124/determinism_check_report_pass2.md (pass 1: task124/determinism_check_report.md)",
-    "gate_g": "statistical_rigor (selection bias in the estimand's sample), analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "verdict": "DETERMINISTIC (loop 1, one isolated thread on the loop-1 cut)",
+    "disposition": "APPROVE; its optional point taken (the first ask reads 'lines we expect to replace')",
+    "report": "task124/determinism_check_report_loop1.md (loop 0: determinism_check_report.md, _pass2.md)",
+    "gate_g": "statistical_rigor (the note's forecasting), analytical_non_defect, surface_read_dependency no, sole_data_defect no",
     "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
-  "returned": [],
+  "returned": [
+    {
+      "date": "2026-10-13",
+      "portal": "call landed: the top response filed 2037 (the whole-segment shares, announced by the field notes and separated by coverage)",
+      "repair": "design",
+      "commit": "the RESHIPPED (task124) commit of 2026-10-13"
+    }
+  ],
   "resume": "shipped; next event is the author's portal result",
   "approved": null,
-  "delivered": "2026-10-12",
+  "delivered": "2026-10-13",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
   "build": {
-    "date": "2026-10-12",
-    "checks": "108 assertions, 0 failed (SF1 to SF17, S1 to S6, W1 to W3, A1 to A11, B1 to B7, R1 to R9)",
-    "verify": "green (own parsers; call, default path, SF16 and SF17 rivals, 12 zones, 12 payments, 12 agreement counts)",
+    "date": "2026-10-13",
+    "checks": "114 assertions, 0 failed (SF1 to SF17, S1 to S6, M1 to M26, W1 to W4, A1 to A11, B1 to B7, R1 to R9, F1 to F4)",
+    "verify": "green (own parsers; the accounting district-wide and off the whole segments; call 2037, whole-segment rung 2038, default 2040; 12 zones, 12 payments, 12 agreement counts)",
     "byte_identical": true,
     "input_gates": "16 files, 5 formats, 87,410-row spine, 2 distractors (deletion moves nothing)",
-    "figures_check": "exit 0 (75 figures)",
-    "freeze": "freeze.py check --mode determinism PASS (snapshot taken before the stage 4 repair)",
+    "figures_check": "exit 0 (84 figures)",
+    "asks_frozen": "every ask file byte-identical to the loop-0 cut; payments, completions and agreement counts equal the shipped figures.json",
     "house_fixes": "pass, recorded in the design note's build record",
-    "answer": "last zone RZ-06 Wexley finished 2037 (default path 2039); $284.7 million over 10.50 programme years",
-    "final_rebuild": "target/ byte-identical to the cut the judge and the reader read; workbook, metadata.json and figures.json unchanged; board paper changed in its agreement note only",
-    "target_zip": "16 members, 2,359,704 bytes, sha256 4a6995d646a3e2d1"
-  }
+    "answer": "last zone RZ-10 Lakeview Terrace finished 2037 (whole-segment rung 2038, default path 2040); $274.1 million over 10.79 programme years at $25.4 million a year"
+  },
+  "target_zip": "16 members, 2,443,128 bytes, sha256 44b98dea681cff3b, each byte-identical to target/"
 }

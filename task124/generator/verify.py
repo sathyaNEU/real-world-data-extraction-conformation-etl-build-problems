@@ -113,17 +113,12 @@ def main(target=None, golden=None):
             cum += cost
             out.append((z, lgrr[z] + exp, cost, cum, 2027 + math.ceil(cum / ap - 1e-9) - 1))
         return out
-    gold = schedule(shares["whole"])
-    dflt = schedule(shares["all"])
-    print("verify: %d segments verified whole; shares %s against %s on every verification" % (
-        len(whole), ["%.4f" % x for x in shares["whole"]], ["%.4f" % x for x in shares["all"]]))
-    print("verify: last zone %s finished %d (default path %d); plan cost $%.1f million over %.2f programme years" % (
-        gold[-1][0], gold[-1][4], dflt[-1][4], gold[-1][3] / 1e6, gold[-1][3] / ap))
-
-    # SF16 and SF17 on this code path: the share among the no-tap-card lines left unverified off the whole segments,
-    # and the two mixes of known results with an estimate for the unverified rest
-    n_off, d_off, h_off = [0, 0, 0], [0, 0, 0], [0, 0, 0]
+    # plan 4.3: the share expected among the district's Lead Status Unknown lines of each era. Every no-tap-card line
+    # of the era is expected to prove lead or GRR at the whole-segment share; the verifications have found some; the
+    # unknown lines carry the rest. Computed district-wide and again off the whole segments only (the same shares).
     n_all, h_all, u_all = [0, 0, 0], [0, 0, 0], [0, 0, 0]
+    n_off, d_off, h_off = [0, 0, 0], [0, 0, 0], [0, 0, 0]
+    n_unk = [0, 0, 0]
     for r in inv:
         y = int(r["year_built"])
         if r["tap_card_material"] != "" or not 0 < y < 1989:
@@ -134,20 +129,24 @@ def main(target=None, golden=None):
         n_all[e] += 1
         h_all[e] += hit
         u_all[e] += not seen
+        n_unk[e] += r["sl_class"] == "LEAD STATUS UNKNOWN"
         if r["main_segment"] not in whole:
             n_off[e] += 1
             d_off[e] += seen
             h_off[e] += hit
-    left = [(n_off[e] * shares["whole"][e] - h_off[e]) / (n_off[e] - d_off[e]) for e in range(3)]
-    mix_coherent = [(h_all[e] + left[e] * u_all[e]) / n_all[e] for e in range(3)]
-    mix_whole = [(h_all[e] + shares["whole"][e] * u_all[e]) / n_all[e] for e in range(3)]
-    s_left, s_mix = schedule(left), schedule(mix_whole)
-    assert all(abs(mix_coherent[e] - shares["whole"][e]) < 1e-9 for e in range(3)), mix_coherent
-    assert s_left[-1][4] == 2037 and [x[4] for x in s_left] != [x[4] for x in gold], s_left
-    assert [x[4] for x in s_mix] != [x[4] for x in gold], s_mix
-    print("verify: left-unverified shares %s file a different schedule (%s); the coherent mix returns the whole-segment "
-          "shares; the whole-share mix %s files %s" % (["%.3f" % x for x in left], [x[4] for x in s_left],
-                                                      ["%.3f" % x for x in mix_whole], [x[4] for x in s_mix]))
+    assert u_all == n_unk, (u_all, n_unk)
+    left = [(n_all[e] * shares["whole"][e] - h_all[e]) / u_all[e] for e in range(3)]
+    left_off = [(n_off[e] * shares["whole"][e] - h_off[e]) / (n_off[e] - d_off[e]) for e in range(3)]
+    assert all(abs(left[e] - left_off[e]) < 1e-9 for e in range(3)), (left, left_off)
+    gold = schedule(left)
+    whole_path = schedule(shares["whole"])
+    dflt = schedule(shares["all"])
+    print("verify: %d segments verified whole; whole-segment shares %s; unknown-line shares %s; every verification %s"
+          % (len(whole), ["%.4f" % x for x in shares["whole"]], ["%.4f" % x for x in left],
+             ["%.4f" % x for x in shares["all"]]))
+    print("verify: last zone %s finished %d (whole-segment shares %d, default path %d); plan cost $%.1f million over "
+          "%.2f programme years" % (gold[-1][0], gold[-1][4], whole_path[-1][4], dflt[-1][4], gold[-1][3] / 1e6,
+                                    gold[-1][3] / ap))
 
     # ask A
     comp = rows(target, "lsl_completions_2026.csv")
@@ -204,7 +203,8 @@ def main(target=None, golden=None):
         if r[1] in order and r[3] != len(agreed[r[1]]):
             bad.append(("agree", r[1], r[3], len(agreed[r[1]])))
     assert not bad, bad
-    assert gold[-1][4] == 2037 and dflt[-1][4] == 2039, (gold[-1], dflt[-1])
+    assert gold[-1][4] == 2037 and whole_path[-1][4] == 2038 and dflt[-1][4] >= 2039, (gold[-1], whole_path[-1],
+                                                                                    dflt[-1])
     print("verify: golden workbook agrees on 12 zones' lines, costs and finish years, 12 payments and 12 agreement "
           "counts")
     return gold, pay, agreed

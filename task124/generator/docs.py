@@ -105,9 +105,9 @@ def plan_clauses():
             ("4.2", "A zone's plan cost is its full replacements and its verification digs that find no lead, each at "
                     "the zone's unit cost, and one mobilisation, charged when the zone's work starts."),
             ("4.3", "The zone's Lead and GRR lines are full replacements. Each of its Lead Status Unknown lines is "
-                    "carried as a full replacement at the share of lead or GRR expected among the district's lines of "
-                    "its construction era that have no usable tap card, and as a verification dig that finds no lead "
-                    "at the rest."),
+                    "carried as a full replacement at the share of lead or GRR expected among the district's Lead "
+                    "Status Unknown lines of its construction era, and as a verification dig that finds no lead at "
+                    "the rest."),
             ("4.4", "The construction eras are: built before 1930; built 1930 to 1949; built 1950 to 1988. A line's "
                     "construction year is the year built the inventory carries from the county assessor."),
         ]),
@@ -207,7 +207,7 @@ def write_progress(path, t):
 
 # ------------------------------------------------------------------------------- the capital plan, board draft
 CAPITAL_LINES = [
-    ("Lead service line replacement, construction", "27.1", "2027 to 2037"),
+    ("Lead service line replacement, construction", "25.4", "2027 to 2037"),
     ("Lead service line programme, engineering, inspection and outreach", "2.3", "2027 to 2037"),
     ("Distribution system renewal", "11.8", "2027 to 2037"),
     ("Treatment plant filter and clearwell rehabilitation", "6.4", "2027 to 2030"),
@@ -372,8 +372,9 @@ as of 8 January 2027.
 - `tap_card_material`: the material on the district's tap card (LEAD, GALV, COPPER, PLASTIC); blank where no usable
   card survives.
 - `sl_class`: LEAD, GRR, NON-LEAD or LEAD STATUS UNKNOWN.
-- `class_basis`: RECORDS (tap card), FIELD VERIFIED, CONSTRUCTION DATE (built in or after 1989) or REPLACED; blank
-  for Lead Status Unknown. A galvanized tap card line is GRR until it is verified.
+- `class_basis`: RECORDS (tap card), FIELD VERIFIED, CONSTRUCTION DATE (built in or after 1989) or REPLACED (found
+  lead or GRR and replaced in full, NON-LEAD since); blank for Lead Status Unknown. A galvanized tap card line is GRR
+  until it is verified.
 - `field_verified_on`: date of the line's latest field verification.
 - `replaced_on`: date the line was replaced in full.
 

@@ -66,7 +66,7 @@ def build(out, quiet=False, world=None):
     w = world or simulate()
     lines, ev, st, co, ag = w["lines"], w["ev"], w["st"], w["co"], w["ag"]
     counts = {}
-    inv = R.inventory(lines, ev)
+    inv = R.inventory(W.lead_cards(lines), ev)
     counts[K.INVENTORY] = R.write_csv(p(K.INVENTORY), R.INV_COLS, list(inv.itertuples(index=False)))
     ver = R.verifications(ev, lines)
     counts[K.VERIFICATIONS] = R.write_csv(p(K.VERIFICATIONS), R.VER_COLS, list(ver.itertuples(index=False)),

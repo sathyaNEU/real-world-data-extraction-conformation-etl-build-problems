@@ -32,6 +32,10 @@ def ok(name, cond, detail=""):
 
 
 # ------------------------------------------------------------------------------------------------- helpers
+def round_to(x, step):
+    return int(math.floor(x / step + 0.5) * step)
+
+
 def finish_list(z):
     return [int(x) for x in z.finish_year]
 
@@ -173,10 +177,10 @@ def run(target, golden, world=None, meta_path=None):
     co = L.change_orders(target)
     ok("R3 change order descriptions do not repeat beyond a real rate", co.Description.nunique() >= 0.85 * len(co),
        "%d of %d" % (co.Description.nunique(), len(co)))
-    people = {"Andrew Wells", "Bethany Davidson", "Seth Sullivan", "William Bates"}
+    people = {"Gregory Sheppard", "Bethany Davidson", "Seth Sullivan", "Craig Stewart"}
     named = set()
     for t in texts.values():
-        for m in re.finditer(r"\b(Andrew|Bethany|Seth|William|John|Jane|Mary|Robert|Susan|Michael)\s+[A-Z][a-z]+", t):
+        for m in re.finditer(r"\b(Gregory|Craig|Andrew|Bethany|Seth|William|John|Jane|Mary|Robert|Susan|Michael)\s+[A-Z][a-z]+", t):
             named.add(m.group(0))
     ok("R4 every person named in the pack is drawn on the card", named <= people, named - people)
     late = []
@@ -256,66 +260,84 @@ def run(target, golden, world=None, meta_path=None):
     # ---------------------------------------------------------------- the main call from the shipped files
     F = DL.compute(target)
     s, whole, p, p0, z, z0, ap = F["s"], F["whole"], F["p"], F["p0"], F["z"], F["z0"], F["ap"]
+    pu, zc = F["pu"], F["zc"]
     prices, mob = L.unit_costs(target)
     rem = AN.remaining(inv)
-    golden_years = [2027, 2029, 2030, 2031, 2032, 2033, 2034, 2034, 2035, 2036, 2036, 2037]
+    golden_years = [2027, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2035, 2036, 2037, 2037]
+
+    def through(pp, inv_=None, ver_=None):
+        """Plan 4.3's share among the district's Lead Status Unknown lines, from whole-segment shares pp."""
+        q_ = AN.unknown_shares(inv if inv_ is None else inv_, ver if ver_ is None else ver_, pp)
+        return {e: q_[e][0] for e in range(3)}
     ok("M1 shares on the segments verified whole are 5/9, 6/19 and 1/12 on 792, 304 and 168 lines",
        all(abs(p[e] - x) < 1e-12 for e, x in enumerate((5 / 9, 6 / 19, 1 / 12))) and
        [F["era_n"][e] for e in range(3)] == [792, 304, 168], (p, F["era_n"]))
     ok("M2 78 segments verified whole; every other segment at 0.43 or less (SF12)",
        F["n_segments"] == 78 and cov[cov < 0.999].max() <= 0.43, (F["n_segments"], round(cov[cov < 0.999].max(), 3)))
-    ok("M3 the call: last zone RZ-06 finished 2037, the twelve finish years as designed",
-       finish_list(z) == golden_years and z.zone.iloc[-1] == "RZ-06", finish_list(z))
+    ok("M3 the call: last zone RZ-10 finished 2037, the twelve finish years as designed",
+       finish_list(z) == golden_years and z.zone.iloc[-1] == "RZ-10", finish_list(z))
+    ok("M3b the unknown-line shares are 0.497, 0.279 and 0.075: the whole-segment share of every no-tap-card line of "
+       "the era less what the verifications found, over the lines still unknown",
+       [round(pu[e], 3) for e in range(3)] == [0.497, 0.279, 0.075], {e: round(pu[e], 4) for e in range(3)})
     e_repl = (abs((z.replacements / 10) % 1 - 0.5) * 10).min()
     e_cost = (abs((z.cost / 1e5) % 1 - 0.5) * 1e5).min()
     e_year = min(min(y - math.floor(y), math.ceil(y) - y) for y in z.years)
     ok("M4 margins: replacements 2.6 lines, costs $16,000, running totals 0.13 programme years from an edge",
        e_repl >= 2.6 and e_cost >= 16_000 and e_year >= 0.13,
        "%.2f lines, $%.0f, %.3f years ($%.0f)" % (e_repl, e_cost, e_year, e_year * ap))
-    ok("M5 R0 default path: every verified no-record line by era, last zone 2039, 2 of 12 years right",
-       int(z0.finish_year.max()) == 2039 and sum(a == b for a, b in zip(finish_list(z0), golden_years)) == 2,
+    ok("M5 R0 default path: every verified no-record line by era, last zone 2040, 1 of 12 years right",
+       int(z0.finish_year.max()) == 2040 and sum(a == b for a, b in zip(finish_list(z0), golden_years)) == 1,
        (finish_list(z0), {k: round(v, 3) for k, v in p0.items()}))
     unk = inv[inv.zone.isin(K.PLAN_ORDER) & (inv.cls == "LEAD STATUS UNKNOWN")].copy()
     unk["era"] = unk.year_built.map(K.era_of)
     r1 = sched_expected(rem, model_expected(s, unk, era=True, year=True, zone=True), ap, prices, mob)
-    ok("M6 R1 a model on era, construction year and zone fitted on every verification: last zone 2039",
-       int(r1.finish_year.max()) == 2039, finish_list(r1))
+    ok("M6 R1 a model on era, construction year and zone fitted on every verification: last zone 2040",
+       int(r1.finish_year.max()) == 2040, finish_list(r1))
     cell = s.groupby(["zone", "era"]).hit.mean()
     era_all = s.groupby("era").hit.mean()
     expz = {zz: sum(n * cell.get((zz, e), era_all[e]) for e, n in unk[unk.zone == zz].era.value_counts().items())
             for zz in K.PLAN_ORDER}
     r1b = sched_expected(rem, expz, ap, prices, mob)
-    ok("M7 R1 reweighting the verified lines to the unknown lines' zone and era: last zone 2039",
-       int(r1b.finish_year.max()) == 2039, finish_list(r1b))
+    ok("M7 R1 reweighting the verified lines to the unknown lines' zone and era: last zone 2040",
+       int(r1b.finish_year.max()) == 2040, finish_list(r1b))
     pooled = float(s[whole].hit.mean())
     r2 = AN.zone_costs(rem, [pooled] * 3, ap, prices, mob)
-    ok("M8 R2 one pooled share on the segments verified whole: last zone 2039, 7 of 12 years right",
-       int(r2.finish_year.max()) == 2039 and sum(a == b for a, b in zip(finish_list(r2), golden_years)) == 7,
+    ok("M8 R2 one pooled share on the segments verified whole: last zone 2039, 4 of 12 years right",
+       int(r2.finish_year.max()) == 2039 and sum(a == b for a, b in zip(finish_list(r2), golden_years)) == 4,
        (round(pooled, 4), finish_list(r2)))
+    r2u = AN.zone_costs(rem, through([pooled] * 3), ap, prices, mob)
+    ok("M8b R2 carried through the unknown-line accounting still runs to 2039 (the plan's era grouping is what moves it)",
+       int(r2u.finish_year.max()) == 2039, finish_list(r2u))
+    ok("M8c R3 the whole-segment shares by era carried straight to the unknown lines: last zone 2038, $284.4 million, "
+       "10 of 12 years right (the decisive rung)",
+       int(zc.finish_year.max()) == 2038 and round(zc.cum_cost.iloc[-1] / 1e6, 1) == 284.4 and
+       sum(a == b for a, b in zip(finish_list(zc), golden_years)) == 10 and zc.years.iloc[-1] >= 11.13 and
+       z.years.iloc[-1] <= 10.87, (finish_list(zc), round(zc.years.iloc[-1], 3), round(z.years.iloc[-1], 3)))
     ok("M9 R2's pool leans old: 792 of the 1,264 whole-segment no-record lines built before 1930",
        F["era_n"][0] == 792 and sum(F["era_n"].values()) == 1264)
     cause = AN.zone_costs(rem, AN.shares(s, ~whole), ap, prices, mob)
     allpool = AN.zone_costs(rem, [float(s.hit.mean())] * 3, ap, prices, mob)
     rec0 = AN.zone_costs(rem, [0, 0, 0], ap, prices, mob)
     lead1 = AN.zone_costs(rem, [1, 1, 1], ap, prices, mob)
-    ok("M10 partials: digs for cause by era 2040, every verification pooled 2041, records only 2033, every unknown "
-       "lead 2045", [int(x.finish_year.max()) for x in (cause, allpool, rec0, lead1)] == [2040, 2041, 2033, 2045],
+    ok("M10 partials: digs for cause by era 2041, every verification pooled 2042, records only 2034, every unknown "
+       "lead 2046", [int(x.finish_year.max()) for x in (cause, allpool, rec0, lead1)] == [2041, 2042, 2034, 2046],
        [int(x.finish_year.max()) for x in (cause, allpool, rec0, lead1)])
     sw = s[whole].assign(decade=(s[whole].year_built // 10) * 10)
     dec = sw.groupby("decade").agg(era=("era", "first"), share=("hit", "mean"))
     ok("M11 C1 every construction decade on the whole segments carries its era's share exactly",
        all(abs(r.share - p[r.era]) < 1e-12 for r in dec.itertuples()), dec.round(4).to_dict())
-    gold_exp = {r.zone: r.replacements - r.lgrr for r in z.itertuples()}
+    gold_exp = {r.zone: r.replacements - r.lgrr for r in zc.itertuples()}
     ey = model_expected(s[whole], unk, era=True, year=True)
-    ok("M12 C1 an era and construction-year model on the whole segments returns the era shares within 0.15 line",
+    ok("M12 C1 an era and construction-year model on the whole segments returns the whole-segment era shares within "
+       "0.15 line",
        max(abs(ey[zz] - gold_exp[zz]) for zz in K.PLAN_ORDER) < 0.15,
        max(abs(ey[zz] - gold_exp[zz]) for zz in K.PLAN_ORDER))
     ze = model_expected(s[whole], unk, era=True, year=False, zone=True)
     rz = sched_expected(rem, ze, ap, prices, mob)
     dz = {zz: ze[zz] - gold_exp[zz] for zz in K.PLAN_ORDER}
-    ok("M13 C4 a model with zone effects on the whole segments keeps the finish years and moves zone counts by up to "
-       "200 lines", finish_list(rz) == golden_years and 195 <= max(abs(v) for v in dz.values()) <= 205,
-       {k: round(v, 1) for k, v in dz.items()})
+    ok("M13 C4 a model with zone effects on the whole segments moves zone counts by up to 200 lines against the "
+       "whole-segment shares and still runs past the deadline", int(rz.finish_year.max()) >= 2038 and
+       195 <= max(abs(v) for v in dz.values()) <= 205, ({k: round(v, 1) for k, v in dz.items()}, finish_list(rz)))
     yo = model_expected(s[whole], unk, era=False, year=True)
     dy = {zz: yo[zz] - gold_exp[zz] for zz in K.PLAN_ORDER}
     over = sorted(round(v) for v in dy.values() if v > 0)
@@ -326,7 +348,7 @@ def run(target, golden, world=None, meta_path=None):
     cum = 0.0
     for r in rr.itertuples():
         u = r.u0 + r.u1 + r.u2
-        e = round(r.u0 * p[0] + r.u1 * p[1] + r.u2 * p[2])
+        e = round(r.u0 * pu[0] + r.u1 * pu[1] + r.u2 * pu[2])
         uf, ud = prices[r.zone]
         cum += (r.lgrr + e) * uf + (u - e) * ud + mob
         zr.append(K.FIRST_YEAR + math.ceil(cum / ap - 1e-9) - 1)
@@ -335,20 +357,23 @@ def run(target, golden, world=None, meta_path=None):
     inv_s = inv.sample(frac=1.0, random_state=rng.integers(1 << 31)).reset_index(drop=True)
     ver_s = ver.sample(frac=1.0, random_state=rng.integers(1 << 31)).reset_index(drop=True)
     s_s = AN.sample(inv_s, ver_s)
-    z_s = AN.zone_costs(AN.remaining(inv_s), AN.shares(s_s, s_s.coverage >= 0.999), ap, prices, mob)
+    z_s = AN.zone_costs(AN.remaining(inv_s), through(AN.shares(s_s, s_s.coverage >= 0.999), inv_s, ver_s), ap, prices,
+                        mob)
     ok("M16 axis 14 shuffled rows give the same schedule", finish_list(z_s) == golden_years and
        abs(z_s.cum_cost.iloc[-1] - z.cum_cost.iloc[-1]) < 1e-3)
     first_whole = vv[vv.whole].groupby("sl_id").date.min()
     ver23 = ver[ver.date >= dt.date(2023, 1, 1)]
     s23 = AN.sample(inv, ver23)
     p23 = AN.shares(s23, s23.coverage >= 0.999)
-    ok("M17 axis 8 every whole-segment verification is from May 2023, so a 2023-on window gives the same shares",
-       first_whole.min() >= dt.date(2023, 5, 1) and all(abs(p23[e] - p[e]) < 1e-12 for e in range(3)),
+    ok("M17 axis 8 every whole-segment verification is from May 2023, so a 2023-on window gives the same whole-segment "
+       "shares", first_whole.min() >= dt.date(2023, 5, 1) and all(abs(p23[e] - p[e]) < 1e-12 for e in range(3)),
        first_whole.min())
     s_w = AN.sample(inv, ver[ver.source == "WMS"])
     p_w = AN.shares(s_w, s_w.coverage >= 0.999)
-    ok("M18 axis 16 dropping every customer-system row (legacy keys) leaves the golden shares (mess neutral)",
-       all(abs(p_w[e] - p[e]) < 1e-12 for e in range(3)))
+    z_w = AN.zone_costs(rem, through(p_w, ver_=ver[ver.source == "WMS"]), ap, prices, mob)
+    ok("M18 axis 16 dropping every customer-system row (legacy keys) leaves the whole-segment shares, and through the "
+       "unknown-line accounting the same twelve finish years (mess neutral on the call)",
+       all(abs(p_w[e] - p[e]) < 1e-12 for e in range(3)) and finish_list(z_w) == golden_years, finish_list(z_w))
     multi = ver.groupby("sl_id").result.nunique()
     ok("M19 SF11 every re-verified line has one result on every visit", int(multi.max()) == 1 and
        int((ver.groupby("sl_id").size() > 1).sum()) > 100, int((ver.groupby("sl_id").size() > 1).sum()))
@@ -364,7 +389,7 @@ def run(target, golden, world=None, meta_path=None):
     alt = rem.copy()
     for e, col in enumerate(("u0", "u1", "u2")):
         alt[col] = alt.zone.map(nr[nr.era == e].groupby("zone").size()).fillna(0).astype(int)
-    z8 = AN.zone_costs(alt, p, ap, prices, mob)
+    z8 = AN.zone_costs(alt, pu, ap, prices, mob)
     ok("SF8 counting every no-record line as unknown, verified ones included, gives a later schedule",
        int(z8.finish_year.max()) > 2037, finish_list(z8))
     first = ver.sort_values(["date", "sl_id"]).groupby("sl_id", as_index=False).first()
@@ -377,27 +402,27 @@ def run(target, golden, world=None, meta_path=None):
     same = True
     for t in (0.45, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 1.0):
         pt = AN.shares(s, s.coverage >= t - 1e-9)
-        same &= finish_list(AN.zone_costs(rem, pt, ap, prices, mob)) == golden_years
+        same &= finish_list(AN.zone_costs(rem, through(pt), ap, prices, mob)) == golden_years
     ok("SF12 any coverage threshold from 0.45 to 1.00 selects the same segments and the same schedule", same)
     before = z.cum_cost.iloc[-2]
-    ok("SF2 the last zone starts in 2036 and finishes in 2037: a start-year reading files the same call",
-       K.FIRST_YEAR + math.floor(before / ap) == 2036)
+    ok("SF2 the last zone starts and finishes in 2037: a start-year reading files the same call",
+       K.FIRST_YEAR + math.floor(before / ap) == 2037)
     ok("SF3 no shipped document states an escalation rate", not any(re.search(r"escalat|inflat", t, re.I)
                                                                      for t in texts.values()))
     lead_only_p = {e: float(s[whole & (s.era == e)].result.eq("LEAD").mean()) for e in range(3)}
     rem_l = rem.copy()
     rem_l["lgrr"] = rem_l.zone.map(inv[inv.cls == "LEAD"].groupby("zone").size()).fillna(0).astype(int)
-    zl = AN.zone_costs(rem_l, lead_only_p, ap, prices, mob)
+    zl = AN.zone_costs(rem_l, through(lead_only_p), ap, prices, mob)
     ok("SF4 lead only, GRR left out, gives a different, earlier schedule",
        finish_list(zl) != golden_years and int(zl.finish_year.max()) < 2037, finish_list(zl))
-    ok("SF5 every unknown line taken as lead: 2045", int(lead1.finish_year.max()) == 2045)
+    ok("SF5 every unknown line taken as lead: 2046", int(lead1.finish_year.max()) == 2046)
     ok("SF6 the plan files the season close that makes a 2037 finish meet the deadline",
        "finished by 31 October of that year" in re.sub(r"\s+", " ", plan))
     comp = L.completions(target)
     latest = comp.sort_values(["site_id", "closed_on", "row_status"]).drop_duplicates("site_id", keep="last")
     paid26 = (latest.paid_base + latest.paid_extra_ft + latest.paid_restoration).sum() + co["Amount ($)"].sum()
     avg26 = paid26 / len(latest)
-    z7 = AN.zone_costs(rem, p, ap, {zz: (avg26, prices[zz][1]) for zz in prices}, mob)
+    z7 = AN.zone_costs(rem, pu, ap, {zz: (avg26, prices[zz][1]) for zz in prices}, mob)
     ok("SF7 costing at what a 2026 replacement was paid gives a different, later schedule",
        finish_list(z7) != golden_years and int(z7.finish_year.max()) > 2037, (round(avg26), finish_list(z7)))
     ok("SF7 the plan files the 2027 unit cost schedule as the cost basis",
@@ -437,53 +462,74 @@ def run(target, golden, world=None, meta_path=None):
     z26 = AN.zone_costs(rem, AN.shares(t26), ap, prices, mob)
     ok("M22 Gate G first move: the 2026 verifications alone file 2039 or later", int(z26.finish_year.max()) >= 2039,
        (finish_list(z26), {k: round(v, 3) for k, v in AN.shares(t26).items()}))
-    ok("M23 separation: the default path's last zone two years past the answer, 10 of 12 finish years apart",
-       int(z0.finish_year.max()) - 2037 == 2 and sum(a != b for a, b in zip(finish_list(z0), golden_years)) == 10)
-    # SF15 to SF17: which verifications estimate the share, and the share of which lines (the judge's fork, closed by
-    # the filed design and plan 4.3's reference class)
-    ok("SF15 the estimation sample: every verification pooled by era files 2039 (the visits raised by a report, a "
-       "leak, a sampling site or the ranking keep their selection); the whole segments by era file the golden",
-       int(z0.finish_year.max()) == 2039 and finish_list(z) == golden_years and bool(design),
-       (finish_list(z0), finish_list(z)))
+    ok("M23 separation: the default path's last zone three years past the answer, 11 of 12 finish years apart; the "
+       "decisive rung's last zone a year past it",
+       int(z0.finish_year.max()) - 2037 == 3 and sum(a != b for a, b in zip(finish_list(z0), golden_years)) == 11 and
+       int(zc.finish_year.max()) - 2037 == 1)
+    # SF15 to SF17: which verifications estimate the share, and the share of which lines (closed by the filed design
+    # and plan 4.3's reference class, the district's Lead Status Unknown lines)
+    ok("SF15 the estimation sample: every verification pooled by era files 2040 (the visits raised by a report, a leak, "
+       "a sampling site or the ranking keep their selection); the whole segments by era carried straight to the unknown "
+       "lines file 2038; through the unknown-line accounting, the golden",
+       int(z0.finish_year.max()) == 2040 and int(zc.finish_year.max()) == 2038 and finish_list(z) == golden_years and
+       bool(design), (finish_list(z0), finish_list(zc), finish_list(z)))
     plan_flat = re.sub(r"\s+", " ", plan)
-    ok("SF16 plan 4.3 carries unknown lines at the share expected among the district's lines of the era with no usable "
-       "tap card (verified or not), not among the lines left unverified",
-       "expected among the district's lines of its construction era that have no usable tap card" in plan_flat)
+    ok("SF16 plan 4.3 carries unknown lines at the share expected among the district's Lead Status Unknown lines of the "
+       "era, and plan 6.1 defines them as the lines with no usable tap card not yet field verified",
+       "expected among the district's Lead Status Unknown lines of its construction era" in plan_flat and
+       "that has not been field verified is Lead Status Unknown" in plan_flat)
     nr16 = inv[(inv.record == "") & (inv.year_built > 0) & (inv.year_built < 1989)].copy()
     nr16["era"] = nr16.year_built.map(K.era_of)
     nr16["seg_whole"] = nr16.segment.isin(whole_seg)
     seen16 = set(s.sl_id)
     hit16 = dict(zip(s.sl_id, s.hit))
-    p_left, p_mix_c, p_mix_i = {}, {}, {}
+    p_off, p_inv, p_inv_wrong, p_mix_i, p_12 = {}, {}, {}, {}, {}
     for e in range(3):
         t = nr16[nr16.era == e]
         off = t[~t.seg_whole]
         n_off, d_off = len(off), int(off.sl_id.isin(seen16).sum())
         h_off = int(sum(hit16[x] for x in off.sl_id if x in seen16))
-        p_left[e] = (n_off * p[e] - h_off) / (n_off - d_off)
+        p_off[e] = (n_off * p[e] - h_off) / (n_off - d_off)
         n_all = len(t)
+        u_cls = int((t.cls == "LEAD STATUS UNKNOWN").sum())
+        h_inv = int((t.cls.isin(["LEAD", "GRR"]) | (t.basis == "REPLACED")).sum())
+        p_inv[e] = (n_all * p[e] - h_inv) / u_cls
+        p_inv_wrong[e] = (n_all * p[e] - int(t.cls.isin(["LEAD", "GRR"]).sum())) / u_cls
         h_all = int(sum(hit16[x] for x in t.sl_id if x in seen16))
         u_all = n_all - int(t.sl_id.isin(seen16).sum())
-        p_mix_c[e] = (h_all + p_left[e] * u_all) / n_all
         p_mix_i[e] = (h_all + p[e] * u_all) / n_all
-    z_left = AN.zone_costs(rem, p_left, ap, prices, mob)
+        t12 = t[t.zone.isin(K.PLAN_ORDER)]
+        p_12[e] = (len(t12) * p[e] - int(sum(hit16[x] for x in t12.sl_id if x in seen16))) / \
+            (len(t12) - int(t12.sl_id.isin(seen16).sum()))
+    ok("SF16 C1 the accounting three ways: district-wide from the verification log, off the whole segments only, and "
+       "from the inventory's classes (a replaced line counted as found lead or GRR) return the same shares",
+       all(abs(p_off[e] - pu[e]) < 1e-12 and abs(p_inv[e] - pu[e]) < 1e-12 for e in range(3)),
+       ({e: round(p_off[e], 5) for e in range(3)}, {e: round(p_inv[e], 5) for e in range(3)}))
+    z12 = AN.zone_costs(rem, p_12, ap, prices, mob)
+    expz16 = {}
+    first16 = ver.sort_values(["date", "sl_id"]).groupby("sl_id").result.first()
+    for zz in K.PLAN_ORDER:
+        tot = 0.0
+        for e in range(3):
+            t = nr16[(nr16.era == e) & (nr16.zone == zz)]
+            tot += len(t) * p[e] - int(t.sl_id.map(first16).isin(["LEAD", "GRR"]).sum())
+        expz16[zz] = tot
+    zpz = sched_expected(rem, expz16, ap, prices, mob)
+    ok("SF16 C1 the accounting on the twelve plan zones only, or zone by zone, keeps the twelve finish years (plan 4.3 "
+       "files the district's lines of the era)", finish_list(z12) == golden_years and finish_list(zpz) == golden_years,
+       (finish_list(z12), finish_list(zpz)))
     z_mix_i = AN.zone_costs(rem, p_mix_i, ap, prices, mob)
-    ok("SF16 the share among the lines the single visits left unverified (whole-segment share carried to every "
-       "no-tap-card line off the whole segments, less what the visits found): 0.497, 0.279, 0.075; last zone 2037 but "
-       "five zones a year earlier and $10.4 million less, a different schedule",
-       [round(p_left[e], 3) for e in range(3)] == [0.497, 0.279, 0.075] and int(z_left.finish_year.max()) == 2037 and
-       [b - a for a, b in zip(golden_years, finish_list(z_left)) if b != a] == [-1] * 5 and
-       round((z.cum_cost.iloc[-1] - z_left.cum_cost.iloc[-1]) / 1e6, 1) == 10.4,
-       ([round(p_left[e], 4) for e in range(3)], finish_list(z_left), round(z_left.cum_cost.iloc[-1] / 1e6, 1)))
-    ok("SF16 C1 on plan 4.3's class: known results for the verified lines and the left-unverified share for the rest "
-       "return the whole-segment shares exactly, so the share among every no-tap-card line of an era is the golden's",
-       all(abs(p_mix_c[e] - p[e]) < 1e-12 for e in range(3)), {e: p_mix_c[e] for e in range(3)})
-    ok("SF17 known results for the verified lines with the whole-segment share for the unverified (the selection "
-       "counted back in): 0.601, 0.348, 0.091, last zone 2037 with two zones a year later",
-       [round(p_mix_i[e], 3) for e in range(3)] == [0.601, 0.348, 0.091] and
-       int(z_mix_i.finish_year.max()) == 2037 and
-       [b - a for a, b in zip(golden_years, finish_list(z_mix_i)) if b != a] == [1, 1],
-       ([round(p_mix_i[e], 4) for e in range(3)], finish_list(z_mix_i)))
+    z_invw = AN.zone_costs(rem, p_inv_wrong, ap, prices, mob)
+    ok("SF17 known results for the verified lines with the whole-segment share for the rest, carried to the unknown "
+       "lines (the selection counted back in), runs past the deadline; so does reading a replaced line as found "
+       "non-lead (the field notes: REPLACED is found lead or GRR and replaced in full)",
+       int(z_mix_i.finish_year.max()) >= 2038 and int(z_invw.finish_year.max()) >= 2038 and
+       "REPLACED (found lead or GRR and replaced in full" in notes_flat,
+       ([round(p_mix_i[e], 3) for e in range(3)], finish_list(z_mix_i), finish_list(z_invw)))
+    z3d = AN.zone_costs(rem, {e: round(pu[e], 3) for e in range(3)}, ap, prices, mob)
+    ok("M26 the unknown-line shares rounded to three decimals keep every finish year and every rounded line count",
+       finish_list(z3d) == golden_years and
+       [round_to(x, 10) for x in z3d.replacements] == [round_to(x, 10) for x in z.replacements])
     if world is not None:
         lines, ev = world["lines"], world["ev"]
         sweeps = set(world["sweeps"])
@@ -509,6 +555,22 @@ def run(target, golden, world=None, meta_path=None):
         tr = lines.set_index("sl_id").truth
         res_ok = (ver.result == ver.sl_id.map(tr).map({"LEAD": "LEAD", "GRR": "GRR", "NON-LEAD": "NON-LEAD"})).all()
         ok("M24 clean-data (instrument): every recorded result is the material in the ground", res_ok)
+        # the analyst test on the world's clean truth (dataset-generation 7.1): the material in the ground of every
+        # no-tap-card line, verified or not
+        nrw = lines[(lines.record == "") & lines.era.between(0, 2)].copy()
+        nrw["hitw"] = nrw.truth != "NON-LEAD"
+        nrw["unknown"] = nrw.verified.isna()
+        true_all = nrw.groupby("era").hitw.mean().to_dict()
+        true_unk = nrw[nrw.unknown].groupby("era").hitw.mean().to_dict()
+        z_true = AN.zone_costs(rem, true_unk, ap, prices, mob)
+        z_easy = AN.zone_costs(rem, true_all, ap, prices, mob)
+        ok("W4 analyst test on the clean truth: carrying the true share of every no-tap-card line to the unknown lines "
+           "(the easy route, every rule applied) runs past the deadline; the true share among the unknown lines (the "
+           "decisive step alone changed) finishes in 2037, and the golden shares sit within 0.012 of it",
+           int(z_easy.finish_year.max()) >= 2038 and int(z_true.finish_year.max()) == 2037 and
+           all(abs(true_unk[e] - pu[e]) < 0.012 for e in range(3)) and all(true_unk[e] < true_all[e] for e in range(3)),
+           ({e: round(true_all[e], 4) for e in range(3)}, {e: round(true_unk[e], 4) for e in range(3)},
+            finish_list(z_easy), finish_list(z_true)))
     # context artifact: every figure in the progress report recomputes from the shipped rows
     v26 = ver[ver.date >= dt.date(2026, 1, 1)]
     vq = {q: int(v26[v26.date.map(K.quarter_of) == q].sl_id.nunique()) for q in (1, 2, 3, 4)}
@@ -709,7 +771,10 @@ def run(target, golden, world=None, meta_path=None):
     ok("F3 'three in four' of the verified no-tap-card lines sit off the segments verified whole (board paper)",
        0.70 <= other <= 0.78 and "Three in four of the lines with no tap card" in gp, round(other, 3))
     ok("F2 the board paper commits to the call in its first paragraph",
-       "The last zone, RZ-06 Wexley, is finished in programme year 2037" in gp)
+       "The last zone, RZ-10 Lakeview Terrace, is finished in programme year 2037" in gp)
+    rep_nt = inv[(inv.basis == "REPLACED") & (inv.record == "")]
+    ok("F4 every no-tap-card line the inventory carries as replaced was found lead or GRR on its first verification",
+       len(rep_nt) > 1000 and rep_nt.sl_id.map(first_res).isin(["LEAD", "GRR"]).all(), len(rep_nt))
 
     n_fail = sum(1 for _, c, _ in RESULTS if not c)
     print("checks: %d assertions, %d failed" % (len(RESULTS), n_fail))

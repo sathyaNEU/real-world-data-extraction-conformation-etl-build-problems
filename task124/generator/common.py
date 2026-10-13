@@ -26,11 +26,11 @@ FIRST_YEAR, LAST_YEAR = 2027, 2037           # programme years the appropriation
 # Plan costs, 2027 dollars (unit cost schedule)
 UNIT_FULL = 12_400        # full replacement of a lead or GRR line, both sides, restoration included (typical)
 UNIT_DIG = 2_450          # verification excavation that finds no lead, restored (typical)
-MOBILISATION = 185_000    # once per zone, when its work starts
-APPROPRIATION = 27_100_000  # capital plan, lead service line construction, each programme year
+MOBILISATION = 160_000    # once per zone, when its work starts
+APPROPRIATION = 25_400_000  # capital plan, lead service line construction, each programme year
 # engineer's unit costs by zone (service length, pavement, traffic control): full replacement, non-lead dig
 ZONE_PRICES = {
-    "RZ-07": (11_400, 2_420), "RZ-02": (13_800, 2_540), "RZ-11": (12_400, 2_540), "RZ-04": (12_500, 2_540),
+    "RZ-07": (11_050, 2_440), "RZ-02": (13_950, 2_540), "RZ-11": (12_400, 2_540), "RZ-04": (12_550, 2_540),
     "RZ-09": (12_400, 2_420), "RZ-01": (12_400, 2_390), "RZ-05": (12_400, 2_390), "RZ-12": (12_400, 2_390),
     "RZ-03": (12_400, 2_390), "RZ-08": (12_400, 2_420), "RZ-10": (12_400, 2_390), "RZ-06": (12_400, 2_420),
 }
@@ -59,7 +59,12 @@ ZONES = [
     ("RZ-14", "Kittering North", "Kittering Township", 10300, (0.0, 0.0, 0.05, 0.95), 0.90),
 ]
 PLAN_ORDER = ["RZ-07", "RZ-02", "RZ-11", "RZ-04", "RZ-09", "RZ-01",
-              "RZ-05", "RZ-12", "RZ-03", "RZ-08", "RZ-10", "RZ-06"]
+              "RZ-05", "RZ-03", "RZ-12", "RZ-08", "RZ-06", "RZ-10"]
+# the order agreement outreach opened zone by zone from February 2022, the ranking before plan revision 2
+OUTREACH_ORDER = ["RZ-07", "RZ-02", "RZ-11", "RZ-04", "RZ-09", "RZ-01",
+                  "RZ-05", "RZ-12", "RZ-03", "RZ-08", "RZ-10", "RZ-06"]
+# lead tap cards on lines no crew has dug, by plan zone (the cards a crew would replace on sight)
+LEAD_CARDS_ADDED = {"RZ-07": 3, "RZ-02": 2, "RZ-11": 2, "RZ-04": 5, "RZ-09": 5, "RZ-10": 2}
 ZONE_NAME = {z[0]: z[1] for z in ZONES}
 
 
@@ -107,8 +112,8 @@ DISTRACTORS = (TAP_SAMPLES, METER_EXCHANGES)
 DELIVERABLES = ("lslr_2027_programme.xlsx", "lslr_2027_board_paper.pdf")
 
 DISTRICT = "Hollins Ford Regional Water District"
-PEOPLE = {"programme": "Andrew Wells", "engineer": "Bethany Davidson", "finance": "Seth Sullivan",
-          "chair": "William Bates"}
+PEOPLE = {"programme": "Gregory Sheppard", "engineer": "Bethany Davidson", "finance": "Seth Sullivan",
+          "chair": "Craig Stewart"}
 
 # 2026 replacement contracts: contract, contractor, vendor numbers (Tri-County's changed with its July 2026
 # acquisition), zones, bid price per full replacement, extra service length rate per foot past 50 feet

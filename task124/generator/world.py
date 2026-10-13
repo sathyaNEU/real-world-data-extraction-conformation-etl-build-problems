@@ -337,15 +337,24 @@ def _replacements(lines, ev):
     return rep
 
 
+# the 2026 records search as it was run: its picks were drawn against the 2026 engineer's prices and mobilisation
+SEARCH_PRICES = {
+    "RZ-07": (11_400, 2_420), "RZ-02": (13_800, 2_540), "RZ-11": (12_400, 2_540), "RZ-04": (12_500, 2_540),
+    "RZ-09": (12_400, 2_420), "RZ-01": (12_400, 2_390), "RZ-05": (12_400, 2_390), "RZ-12": (12_400, 2_390),
+    "RZ-03": (12_400, 2_390), "RZ-08": (12_400, 2_420), "RZ-10": (12_400, 2_390), "RZ-06": (12_400, 2_420),
+}
+SEARCH_MOBILISATION = 185_000
+
+
 def _tune_records(lines):
     """A tap card turns up for a handful of unverified no-record lines in some zones (a records search the district
-    ran in 2026), chosen so every zone's expected replacements and cost sit clear of their rounding edges."""
+    ran in 2026)."""
     import itertools
     lines = lines.copy()
     p = P_SWEPT
-    for z in K.PLAN_ORDER:
+    for z in K.OUTREACH_ORDER:
         t = lines[(lines.zone == z) & lines.no_record & ~lines.swept & lines.verified.isna()]
-        uf, ud = K.ZONE_PRICES[z]
+        uf, ud = SEARCH_PRICES[z]
         zl = lines[lines.zone == z]
         lgrr = int(zl.cls.isin(["LEAD", "GRR"]).sum())
         unk = zl[zl.cls == "LEAD STATUS UNKNOWN"]
@@ -355,7 +364,7 @@ def _tune_records(lines):
             uu = [u[e] - k[e] for e in range(3)]
             exp_u = sum(uu[e] * p[e] for e in range(3))
             repl = lgrr + exp_u
-            cost = repl * uf + (sum(uu) - exp_u) * ud + K.MOBILISATION
+            cost = repl * uf + (sum(uu) - exp_u) * ud + SEARCH_MOBILISATION
             e_repl = abs((repl / 10) % 1 - 0.5) * 10
             e_cost = abs((cost / 1e5) % 1 - 0.5) * 1e5
             if e_repl >= 2.6 and e_cost >= 16000:
@@ -420,6 +429,23 @@ def addresses(segs, lines):
         out.append("%d %s" % (b + (ln.house_no - b0), ln.street))
     return pd.Series(out, index=lines.index)
 
+
+
+def lead_cards(lines):
+    """The inventory's view of the tap cards: in six zones a few lines no crew has dug carry a lead card where the
+    world's draw gave a copper one (cards from before 1950), so each zone's expected replacements sit clear of their
+    rounding edges. Nothing else reads these lines: they have no verification, completion or agreement."""
+    lines = lines.copy()
+    for z, k in sorted(K.LEAD_CARDS_ADDED.items()):
+        pool = sorted(lines[(lines.zone == z) & (lines.record == "COPPER") & lines.era.isin([0, 1]) & ~lines.swept &
+                            lines.verified.isna() & lines.replaced.isna()].sl_id)
+        r = K.stream("lead-cards", z)
+        for sl in r.choice(pool, size=k, replace=False):
+            i = lines.index[lines.sl_id == sl][0]
+            lines.at[i, "record"] = "LEAD"
+            lines.at[i, "cls"] = "LEAD"
+            lines.at[i, "basis"] = "RECORDS"
+    return lines
 
 def build():
     segs = _segments()

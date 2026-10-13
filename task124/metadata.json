@@ -40,7 +40,7 @@
     {
       "path": "HFRWD_LSLR_plan_rev2_2026-10.pdf",
       "format": "pdf",
-      "bytes": 66095,
+      "bytes": 66086,
       "rows": null,
       "source": "Constructed: Lead service line replacement plan, revision 2 (scope, zones and priority order, plan cost, schedule rule)",
       "date": "2027-01-08",
@@ -49,7 +49,7 @@
     {
       "path": "HFRWD_capital_improvement_plan_2027-2037_board_draft.docx",
       "format": "docx",
-      "bytes": 37581,
+      "bytes": 37580,
       "rows": null,
       "source": "Constructed: Capital improvement plan 2027 to 2037, board draft (the lead service line construction appropriation)",
       "date": "2027-01-08",
@@ -58,7 +58,7 @@
     {
       "path": "LSLR_progress_report_2026.pdf",
       "format": "pdf",
-      "bytes": 63911,
+      "bytes": 63933,
       "rows": null,
       "source": "Constructed: LSLR programme office 2026 progress report (counts of work done)",
       "date": "2027-01-08",
@@ -121,7 +121,7 @@
     {
       "path": "hfrwd_service_line_inventory_20270108.csv",
       "format": "csv",
-      "bytes": 8126550,
+      "bytes": 8126436,
       "rows": 87410,
       "source": "Constructed: GIS export: the district's lead service line inventory, every service line in the fourteen zones, 8 January 2027",
       "date": "2027-01-08",
@@ -148,7 +148,7 @@
     {
       "path": "lsl_extract_field_notes_2027-01.md",
       "format": "md",
-      "bytes": 5610,
+      "bytes": 5669,
       "rows": null,
       "source": "Constructed: Field notes for the extract: field meanings and code routes, file by file",
       "date": "2027-01-08",
@@ -175,7 +175,7 @@
     {
       "path": "unit_cost_schedule_2027.xlsx",
       "format": "xlsx",
-      "bytes": 7324,
+      "bytes": 7329,
       "rows": null,
       "source": "Constructed: 2027 unit cost schedule by zone (engineer's estimate)",
       "date": "2027-01-08",

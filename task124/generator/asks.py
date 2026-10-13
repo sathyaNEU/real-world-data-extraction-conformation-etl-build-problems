@@ -37,7 +37,7 @@ def agreements(lines: pd.DataFrame, moved: dict) -> pd.DataFrame:
     """One row per agreement form. Lines open in the plan at the extract only (agreements on lines since replaced or
     verified non-lead are archived out of the system's open file)."""
     scope = lines[lines.zone.isin(K.PLAN_ORDER) & lines.cls.isin(IN_SCOPE)].sort_values("sl_id")
-    prio = {z: i for i, z in enumerate(K.PLAN_ORDER)}
+    prio = {z: i for i, z in enumerate(K.OUTREACH_ORDER)}
     last = K.INVENTORY_DATE - dt.timedelta(days=1)
     rows = []
     for ln in scope.itertuples():
