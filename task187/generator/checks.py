@@ -341,7 +341,7 @@ def run(target, golden, sim, meta_path, quiet=False):
             ok(b"ReportLab" not in b and b"reportlab" not in b, "container scrubbed: %s" % f)
     for f in files:
         if f.endswith((".csv", ".txt")):
-            ok("—" not in texts[f] and "–" not in texts[f], "no dash in %s" % f)
+            ok("\u2014" not in texts[f] and "\u2013" not in texts[f], "no dash in %s" % f)
 
     # ------------------------------------------------------------------ the goldens agree with figures.json
     ok(sorted(os.listdir(golden)) == sorted([DL.PAPER, DL.WORKBOOK]), "the goldens are the two files asked")
@@ -351,14 +351,14 @@ def run(target, golden, sim, meta_path, quiet=False):
     for t in W.TURBINES:
         ok(re.search(r"%s [\d\-]+ [\d\-]+ %d %d" % (t, fig["downtime_mwh"][t], fig["curtailment_mwh"][t]), pt) is not None,
            "the paper's row for %s" % t)
-    ok("—" not in pt and "–" not in pt, "no dash in the paper")
+    ok("\u2014" not in pt and "\u2013" not in pt, "no dash in the paper")
     wb = openpyxl.load_workbook(os.path.join(golden, DL.WORKBOOK))
     ok(wb.sheetnames == ["Lost production 2025-26", "Campaign 2027", "Notes"], "the workbook's sheets")
     rows = list(wb["Lost production 2025-26"].iter_rows(min_row=2, max_row=11, values_only=True))
     for r, t in zip(rows, W.TURBINES):
         ok(list(r[:3]) == [t, fig["downtime_mwh"][t], fig["curtailment_mwh"][t]], "the workbook's row for %s" % t)
     for r in wb["Notes"].iter_rows(values_only=True):
-        ok(r[0] is None or ("—" not in r[0] and "–" not in r[0]), "no dash in the workbook notes")
+        ok(r[0] is None or ("\u2014" not in r[0] and "\u2013" not in r[0]), "no dash in the workbook notes")
     if not quiet:
         print("checks: %d assertions passed (call %s, %s MWh, %d MWh to the nearest 50; default %s by %.2f; golden fourth "
               "on the default; variants %d, smallest lead %.2f; D %s; G %s)" % (

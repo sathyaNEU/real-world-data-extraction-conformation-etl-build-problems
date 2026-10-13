@@ -65,7 +65,7 @@
    on its own months.
 2. Clean the ten-minute record: keep normal operation, set aside power-limited, iced, faulted, serviced and stopped
    intervals, join the met mast for air density and correct the nacelle wind to standard density, and take CH09's
-   months since its present rotor went up on 20 March 2026 (the crane lift log by pad code, through the site layout).
+   months since its present rotor went into service on 25 April 2026 (the crane lift log by pad code, through the site layout).
 3. Build each turbine's power curve by the method of bins (0.5 m/s bins of density-corrected nacelle wind) and its
    energy shortfall against the warranted power curve over its year of wind.
 4. Book the campaign on the turbine with the largest shortfall, and take that shortfall as the energy recovered.
@@ -115,7 +115,7 @@ hides at low wind.
   the normal-operation filter, but no filed rule says how turbulence enters the comparison; executing every stated rule
   with the binned shortfall still books the plantation-edge turbine.
 - Analyst test: a strong analyst who cleans the ten-minute record (normal operation, curtailment, icing, air density, the
-  March rotor exchange) and ranks each turbine's energy shortfall against the warranted power curve books the campaign
+  April rotor exchange) and ranks each turbine's energy shortfall against the warranted power curve books the campaign
   on the plantation-edge turbine, not CH04, whose blades are eroded.
 - Estimand: OM-07's valuation sentence (the energy the turbine would have produced over its last twelve months of normal
   operation, in the same winds, had its blades been as new, less the energy it produced), in the O&M standard.
@@ -150,7 +150,7 @@ The six tests per rung (1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5
 | SF4 | the turbulence | the nacelle anemometer's standard deviation over its mean, each record | the mast's turbulence intensity | CH07 | the valuation sentence: the same winds are the turbine's own; the mast does not see the plantation's eddies at CH07 |
 | SF5 | density correction | the wind normalised by the cube root of the density ratio, as OM-07 4.6 writes it | no correction | same call, the energy off its bin (every turbine 50 to 200 MWh short at a site density of 1.19) | Schedule 3 states the curve at 1.225 kg/m3 |
 | SF6 | the twelve months | the ten-minute intervals ending 1 October 2025 to 30 September 2026 | calendar months by UTC or by local time at the edges | same call, same bin (asserted) | the extract and OM-07's twelve months, and same call |
-| SF7 | a blade set changed within the year | CH09 measured from 20 March 2026 (its present rotor) | CH09's whole year | CH09 (its old rotor's erosion) | OM-07's blade-set sentence |
+| SF7 | a blade set changed within the year | CH09 measured from 25 April 2026 (its present rotor) | CH09's whole year | CH09 (its old rotor's erosion) | OM-07's blade-set sentence |
 | SF8 | the method of bins against per-record interpolation | either | either | same call, same bin (asserted) | same call |
 | SF9 | the matched-turbulence method | Annex M normalisation on the mast's turbulence (89 MWh) | Annex M on the site's typical turbulence or a flat 10 per cent (89, 116); turbulence bins of 0.25 or 0.5 m/s by 0.01 to 0.05 against the fleet's mean, median or the sound turbines' mean (24 variants, 80 to 90); the records in the usual turbulence scaled to the year (93) | CH04 every time, leading by 1.18x or more, every figure in the 100 MWh bin (asserted) | same call |
 | SF10 | the SCADA clock for the mast join | local time to 3 February 2026, UTC after | local throughout; UTC throughout | same call, same bin (asserted) | same call |
@@ -198,7 +198,7 @@ Built figures (seed 187), each asserted by name in `generator/checks.py`, MWh ov
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
-| 1 | Population | each turbine's normal-operation intervals in the twelve months; CH09 from 20 March 2026 | OM-07's normal-operation and blade-set sentences |
+| 1 | Population | each turbine's normal-operation intervals in the twelve months; CH09 from 25 April 2026 | OM-07's normal-operation and blade-set sentences |
 | 2 | Unit of account | the turbine (its three blades) | OM-07's campaign sentence |
 | 3 | Attribution window | intervals ending 1 October 2025 to 30 September 2026 | the extract and OM-07; no campaign-relevant record within an hour of either edge moves a bin (C1) |
 | 4 | As-of dating | the extract of 9 October 2026; the campaign is summer 2027 | the extract notes and OM-07 |
@@ -287,6 +287,36 @@ Pair ceiling: about 35 (the cracker at about 52 with the call and the chart's pr
 - **Guard:** heart WARN (objective overuse in the lane; a pick follows a pick); surface clean of promoted pairs, the
   company secretary's first name moved off one used in task108.
 
+## Judge record
+
+- **Pass 1 (stage 4):** DETERMINISTIC, APPROVE. The thread recomputed the blade loss three ways (Annex M at each
+  record's own turbulence 88.9 MWh, fleet bins 82.8, bins against the four clean east-row turbines 88.1): CH04 first,
+  CH02 second by 13 to 24 MWh, the energy 100 MWh to the nearest 50 every time; the default (Schedule 3 at the same mean
+  wind) files CH07, 235 MWh, refuted by CH07's own curve signature. It derived the SCADA clock from the data (the mast
+  correlation peaks at an hour's shift before the repeated October hour, at none after), reproduced all twenty lost
+  production figures, and classified the outage and the grid loss from the export meter and the grid state. Gate G: no
+  shipped artifact ranks the turbines on the campaign. Gate H: domain pass, layers pass, decisive step analytical.
+- **Its optional pin, declined:** adding "wind speed and turbulence as recorded at the nacelle" to OM-07 2.4 would name
+  the decisive quantity in the governing standard (readability test 1), turning the analytical step into a reading;
+  the judge itself kept the verdict DETERMINISTIC without it, the data refuting the mean-wind reading (CH07 above the
+  warranted curve from 4 to 8.5 m/s).
+- Its realism note (CH08 and CH09 sharing a hub serial) was the reader's too, fixed before the verdict arrived.
+
+## Pre-ship check
+
+- Call: the 2027 campaign goes to CH04; its blades cost 89 MWh over normal operation in the twelve months to September
+  2026 against the same turbine with blades as new at each record's own turbulence; 100 MWh to the nearest 50 MWh.
+  CH02 second (65 MWh), every other turbine under 1 MWh.
+- Default path: Schedule 3 at the same mean wind files CH07 (235 MWh, 2.04 times the next); the partial-load cut files
+  CH02; the sector screen, the mast's turbulence and the mast's wind file CH07; the whole year files CH09.
+- Gates: 443 checks with the R block, independent verifier, two byte-identical builds, figures_check 55 of 55, precut
+  49/0, voice-check PASS, scrub clean, leak.py REVIEW (no LEAK), guard heart WARN (lane overuse, a pick after a pick),
+  surface clean.
+- Deliverables: le_repair_campaign_2027.pdf (two pages: the call, why not CH07, why not CH02 and how CH04's loss was
+  hidden, CH09's exchange, the table, the lost production chart, notes), lost_production_2025_26.xlsx (twenty figures,
+  the campaign sheet, notes); target.zip from the final rebuild, 14 files.
+- Card current: answer, spine rows 522,159, stump and driver at the built values.
+
 ## Leak record
 
 - **leak.py** (as-of 2026-10-09): REVIEW only. OM-07 carries the call's vocabulary (campaign, leading-edge, repaired
@@ -301,6 +331,8 @@ Pair ceiling: about 35 (the cracker at about 52 with the call and the chart's pr
   Its realism findings, fixed in the generator: CH08 and CH09 shared a hub serial; CH09's register blades sat outside
   the farm's serial series; the serials ran too evenly; every corrective work order carried one summary; the crane log
   recorded the pool rotor's blade condition; the OM-07 revision entry named clause 2.5.
+- **Reader, pass 2 (the changed files):** no decisive-step sentence, no pointer to a turbine, no repeated serial, no
+  text written by someone who knows the answer; one shared commissioning date kept (one project, one handover).
 
 ## Tried and rejected
 
