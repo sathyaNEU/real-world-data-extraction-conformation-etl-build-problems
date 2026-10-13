@@ -1,0 +1,23 @@
+{
+  "task": "task255",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "actuarial-science-insurance / claims-frequency-severity",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-13",
+  "stump": "",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {},
+  "leak": {},
+  "duplicate_check": {},
+  "judge": {},
+  "returned": [],
+  "resume": "stage 2: write the design note to precut exit 0 (default path, three rules, screen, fork table, ladder, closure, asks), then the generator's records and documents",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "seed": "DA05 number (START_HERE); the seed's world is not used"
+}
