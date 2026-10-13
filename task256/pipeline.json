@@ -1,23 +1,34 @@
 {
   "task": "task256",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "human-factors-ergonomics / anthropometric-design-fit",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-13",
-  "stump": "The default path files Configuration B (the reference survey's own workers at the roster's sex mix); a carry through stature alone or through the operators' predicted dimensions files C; the full conditional distribution given stature and weight files G.",
+  "stump": "The default path files Configuration B (95.6 per cent of the survey's workers at the roster's sex mix, 82.3 per cent of the operators); stature alone files E and predicted dimensions C; each operator's conditional distribution given stature and weight files G (96.4 per cent; E 93.2, F 92.9).",
   "architecture": 1,
   "loops": 0,
-  "precut": null,
-  "leak": null,
-  "duplicate_check": null,
-  "judge": null,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-13",
+    "checks": 49
+  },
+  "leak": {
+    "leak_py": "REVIEW, every line harmless (rulings in the report)",
+    "reader": "two reads, no decisive-step sentence, no ranking file, question 6 analytical"
+  },
+  "duplicate_check": {
+    "heart": "WARN (org family, shape and Gate G overuse, answered in the note)",
+    "surface": "2 pairs promoted for adjudication, not run (author-triggered)",
+    "nearest": "task116 0.05 (driver)"
+  },
+  "judge": "pass 1 DETERMINISTIC, FIX_NOW (the measurement record, filed in standard 3.2); pass 2 DETERMINISTIC, APPROVE",
   "returned": [],
-  "resume": "stage 2: write default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet and prompt.txt to precut exit 0; prototype in scratchpad t256/menu.py and p2.json",
+  "resume": null,
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-13",
   "portal": null,
   "seed": "DA06 number (START_HERE); the seed's world is not used"
 }
