@@ -1,90 +1,117 @@
 {
   "task": "task131",
-  "architecture": "v1",
-  "drawn": "2026-10-10",
-  "slot_note": "replaces task130 (failed on the portal 2026-10-10, both top models filed the golden); drawn bespoke under the template caps, no calibration organ",
-  "domain": "marketing-consumer-research",
-  "subdomain": "crm-loyalty-retention",
-  "niche": "a regional consumer co-operative supermarket choosing which of four member-card reward offers its 2027 member programme runs for every card, from a summer test the offer engine randomised card by card although the cards of one membership share one household's shopping",
+  "architecture": "v2",
+  "drawn": "2026-10-13",
+  "slot_note": "Experiment & Causal rework in perssathya's wave 1. Architecture 1 (a Swiss consumer co-operative's card-randomised member offers, household interference) shipped 2026-10-10 and failed to stump on the portal; its crm-loyalty-retention task type serves no objective in the client taxonomy. Architecture 2 is redrawn into Energy Systems & Utilities, tariff-demand-response-evaluation, a pairing never built, with a new world, decision and quantity.",
+  "domain": "energy-systems-utilities",
+  "subdomain": "tariff-demand-response-evaluation",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a State-owned regional power corporation running an isolated inland town system choosing which of three peak-window residential tariff designs, if any, its flat-rate households default onto from 1 July 2027, from a summer trial its load research team randomised household by household, judged on the 2027-28 summer 50% POE maximum demand",
   "objective": "experiment-causal",
-  "shape": "07",
+  "shape": "11",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Put the Frischbonus (fresh bonus) on every member card in 2027; its 2027 programme value is CHF 972 thousand.",
-  "answer_source": "task131/submission.md, 1. Final Recommendation (the first line of golden/programme_offer_2027.docx carries the same call)",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population",
-    "objective"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G10",
-    "G4"
+    "G13",
+    "G7",
+    "G14"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "causal_design",
+  "stump_strategy": "other",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
-  "stakeholder_role": "head of the member programme at a regional consumer co-operative, who puts the 2027 programme offer and its budget line to the executive board",
-  "role_family": "product_manager",
-  "scoring_unit": "per active unit per period",
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "the power corporation's pricing and tariffs manager, who advises the Minister for Energy which design, if any, flat-rate households default onto in the 2027-28 tariff schedule",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
   "spine": {
-    "file": "card_week_sales_2026w15_w34.parquet",
-    "rows": 611400,
-    "entity": "one member card in one ISO week in which it was used, with its gross sales, gross margin and reward cost",
-    "grain": "card x ISO week",
+    "file": "interval data in NEM12 files, one per trial month (December 2025 to February 2026)",
+    "rows": 180000,
+    "entity": "one NEM12 300 record: one trial meter's 48 half-hourly kWh reads for one day (96 for the few 15-minute meters)",
+    "grain": "meter x day",
     "source": "synthetic"
   },
-  "forum": "executive_team",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "cooperative_or_member_body",
+  "forum": "minister_or_cabinet",
+  "forcing_event": "season_or_peak",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "Switzerland, eastern cantons",
-    "currency": "CHF",
-    "org_type": "regional consumer co-operative supermarket chain with a household membership and several cards per membership",
+    "geography": "Australia, Western Australia (a fictional inland town on its own isolated power system, no daylight saving)",
+    "currency": "AUD",
+    "org_type": "State-owned regional power corporation (generation, network and retail on one isolated system)",
     "invented_names": [
-      "Talwerk"
+      "Murrandi",
+      "Murrandi Regional Power"
     ],
     "people": [
-      "Patrice Keller",
-      "Hansjürg Wolf",
-      "Norah Burri",
-      "Marta Braun",
-      "Francis Amrein",
-      "Mirjana Felder",
-      "Amelie Peter",
-      "Nemanja Scheidegger",
-      "Enis Stutz",
-      "Ursula Wehrli",
-      "Ludwig Gfeller",
-      "Aline Baur"
+      "Pamela Crawford",
+      "Peter Huang",
+      "Craig Jackson",
+      "Nathaniel Maxwell"
     ]
   },
   "deliverables": [
-    "programme_offer_2027.docx",
-    "offer_grid_2027.png"
+    "tariff_default_advice_2027-28.pdf",
+    "tariff_trial_tables_2025-26.xlsx"
   ],
   "opening_move": "question-first",
-  "driver": "The treatment was randomised at a sub-unit that shares one budget with its sibling sub-units inside a parent unit, so each treated sub-unit's measured lift carries outcomes moved onto it from differently assigned siblings, which nets to zero once every sub-unit is treated; the at-scale effect is read only on parent units whose sub-units all drew the same arm, and the lift read at the randomisation unit ranks the options in a different order.",
-  "driver_concrete": "The offer engine randomised member cards, but the cards of one membership carry one household's shopping, and a card holding an offer pulls the household's baskets off its membership's other cards, so every offer's card-level lift includes spend that only moved between cards of the same membership and would not exist once every card carries the offer; measured on memberships whose cards all drew the same arm, the fresh-produce bonus leads, while the card-level run-rate reading files the weekly coupons.",
-  "stump": "A competent solver takes each card's change in net margin after reward cost from the spring baseline weeks to the six run-rate weeks, differences each offer against the control cards as randomised, and commits to the personalised weekly coupons; the step that lands it there is reading each card as an independent shopper, when the cards of one membership share a household's baskets and a card carrying an offer pulls them off its sibling cards, so the lift on the card is partly spend that only moved, and on memberships whose cards all drew the same arm the fresh-produce bonus leads.",
-  "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "Bespoke draw: the stump comes from how a co-operative's household memberships carry several cards while the offer engine targets cards. No calibration corpus, no licensed wrong basis, no certified record.",
-  "client_domain": "marketing-consumer-research",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "product-analytics/network-effect-marketplace-experimentation/1",
+  "question_form": "whether",
+  "driver": "The decisive quantity is the change in the maximum of a summed daily curve when a randomised treatment moves part of each unit's load out of a window: the moved load returns as a synchronised surge when the window closes, and on the target day's stress that surge outgrows the cut it repays, so the effect has to be estimated for every interval at the target day's conditions and added to the whole target curve, where the maximum can leave the window and rise; the cut inside the window on an average day, or the target-day cut read at the old maximum, ranks the treatments in another order.",
+  "driver_concrete": "Each trialled peak design's effect on the 2027-28 50% POE maximum demand is the design day's highest half-hour once every half-hour's household response at the design day's heat is added to the forecast curve; the cooling households put off past the peak price comes back as one pull-down when the price falls, and on 44-degree days that pull-down outgrows the cut, so B's maximum moves to the half-hour after 8 p.m. and A's to the half-hour after 9 p.m., both above today's, and only the stepped design C, whose shoulders split the return, lowers it; the window cut on an average trial day files B and the average day's whole profile files A.",
+  "stump": "A competent solver takes each design's treatment-minus-control drop in household demand over its peak window across the trial's workdays, scales it to the 2027-28 flat-rate residential customers and files Design B as lowering the 50% POE maximum demand by about 16 MW; the step that lands it there is reading a design's effect as its cut inside the window on an average trial day, when the cooling put off past the peak price comes back as one pull-down when the price falls and on the design day's heat outgrows the cut, so B's maximum moves to 8 p.m. and rises, A's moves to 9 p.m., and only the stepped design C lowers it.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who parses every interval read, keeps the trial workdays, takes the intention-to-treat difference against the control arm and scales it to the forecast's flat-rate customers subtracts each design's peak-window cut from the 50% POE maximum demand and files Design B (about 16 MW lower), or with the average trial day's whole half-hourly profile files Design A; neither is what B or A does to the design day's highest half-hour, which both raise.",
+  "domain_test": "The deciding quantity is a tariff's ex-ante load impact on the planning maximum demand (the 50% POE design day's highest half-hour), estimated from a randomised tariff trial half-hour by half-hour at the design day's weather, the core work of tariff and demand-response evaluation; with another field's nouns there is no design day, no deferred cooling pulled down at the price step in a way that grows with heat, and no half-hourly maximum against firm generation, so the task stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:tariff-rebound-moves-design-day-maximum",
   "layer1": [
-    "card-week facts in parquet with weeks without a row meaning zero",
-    "cards to memberships to branches through three files",
-    "a branch network change by effective date",
-    "an offer catalogue in JSON",
-    "a superseded plan version"
-  ]
+    "NEM12 interval files (100, 200, 300, 400, 900 records) with A, S, E, F and V quality, 400 records splitting a day's reads by quality, a few meters at 15-minute intervals, and days re-sent in a later file with actual reads replacing estimates",
+    "the trial register keyed by customer account while meter data is keyed by NMI, with move-outs changing the account at an NMI during the trial",
+    "the gazetted tariff schedule in GST-inclusive cents against the trial plan's GST-exclusive price table",
+    "interval-ending meter timestamps against tariff windows stated in clock time and a forecast labelled by trading interval",
+    "Bureau-format daily and half-hourly weather with quality flags and a gap filled from a second station",
+    "public holidays charged off-peak all day"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task122": "task122 attributes outcomes logged after a session closed back to the exposures that produced them on one guardrail; here a randomised tariff's effect is a signed half-hourly profile whose after-window pull-down, at the design day's heat, sets a new maximum on the whole design-day curve",
+    "task229": "task229 (all architectures) is a monitoring call on data health (a node-level standard error, a checked-state rate, a rating bias); here the call is a causal tariff effect on a planning maximum, estimated from a randomised trial half-hour by half-hour at the design day's weather",
+    "task124": "task124's dispatch architectures recovered a curtailed group's unintervened peak by heat-conditioning analogs; here nothing is curtailed by the organisation: a randomised tariff's own effect profile is carried to the design day, and the decisive move is the maximum of the whole curve after the pull-down at the price step"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-10",
+      "fate": "spent 2026-10-13: shipped 2026-10-10 and left off the portal's approved list (FAILED_TO_STUMP: the portal solved the household-interference read); its task type, crm-loyalty-retention, is not in the client taxonomy, and with app or subscription nouns the card-test question read the same, so the domain was a backdrop under the 10/10 rules",
+      "domain": "marketing-consumer-research",
+      "subdomain": "crm-loyalty-retention",
+      "objective": "experiment-causal",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G10",
+        "G4"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "causal_design",
+      "decision_type": "pick_one_of_n",
+      "driver": "The treatment was randomised at a sub-unit that shares one budget with its sibling sub-units inside a parent unit, so each treated sub-unit's measured lift carries outcomes moved onto it from differently assigned siblings, which nets to zero once every sub-unit is treated; the at-scale effect is read only on parent units whose sub-units all drew the same arm, and the lift read at the randomisation unit ranks the options in a different order."
+    }
+  ],
+  "notes": "Architecture 2, drawn 2026-10-13 under the 10/10 rules. The deciding quantity is a field quantity (a tariff's ex-ante impact on the planning maximum demand) and the decisive step is the field's own method (impacts estimated for every half-hour at the design day's weather, added to the design-day curve, the maximum taken over the whole day). Stump strategy 'other': the trial's effect is a signed half-hourly profile whose post-window lobe grows with heat, and the decision is scored on the maximum of the design day's whole curve; no listed family names an ex-ante impact at design conditions on a non-linear planning quantity. Gate G method_or_model_selection: time, G13 and forecasting collide inside the batch with task501's lineage, and the mechanism is honestly a method choice on correct figures. No calibration corpus, no certified record, no decoy; the trial's own report is not shipped."
 }

@@ -1,33 +1,47 @@
 {
   "task": "task131",
-  "domain": "marketing-consumer-research",
+  "owner": "perssathya",
+  "status": "DESIGN",
+  "domain": "energy-systems-utilities",
   "objective": "experiment-causal",
-  "stage": 6,
-  "stage_name": "delivered",
-  "updated": "2026-10-11",
-  "stump": "A competent solver takes each card's change in net margin after reward cost from the spring baseline weeks to the six run-rate weeks, differences each offer against the control cards as randomised, and commits to the personalised weekly coupons; the step that lands it there is reading each card as an independent shopper, when the cards of one membership share a household's baskets and a card carrying an offer pulls them off its sibling cards, so the lift on the card is partly spend that only moved, and on memberships whose cards all drew the same arm the fresh-produce bonus leads.",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-13",
+  "stump": "A competent solver takes each design's treatment-minus-control drop in household demand over its peak window across the trial's workdays, scales it to the 2027-28 flat-rate residential customers and files Design B as lowering the 50% POE maximum demand by about 16 MW; the step that lands it there is reading a design's effect as its cut inside the window on an average trial day, when the cooling put off past the peak price comes back as one pull-down when the price falls and on the design day's heat outgrows the cut, so B's maximum moves to the half-hour from 8 p.m. and rises, A's to the half-hour from 9 p.m., and only the stepped design C lowers it.",
+  "architecture": 2,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
   "duplicate_check": {
-    "heart": "PASS (no near driver or stump on file)",
-    "nearest": "task109 surface 0.096, 0 promoted",
-    "clone_check": "CLEAN (pass 1, clone_check_report_task131.md): no Track A finding; no live Track B finding; one Template-tier history match against the never-built ledger-row-41 draw (no redraw); 6 clean component-sharing pairs; task131 adds to neither capped strategy"
+    "heart": "",
+    "nearest": "task83 0.07 (driver), guard WARN only"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (pass 3)",
-    "disposition": "APPROVE",
-    "report": "task131/determinism_check_report_pass3.md",
-    "fix_cycles": 1,
-    "history": "pass 1 DETERMINISTIC/FIX_NOW, fixed in one cycle; pass 2 did not run (no judge thread); pass 3 APPROVE"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
-  "approved": "2026-10-10 (no author checkpoint in the flow; heart PASS, clone-check CLEAN, judge APPROVE)",
-  "delivered": "2026-10-10",
+  "returned": [
+    {
+      "date": "2026-10-13",
+      "portal": "FAILED_TO_STUMP (architecture 1 left off the approved list)",
+      "repair": "design (re-root to architecture 2)",
+      "commit": ""
+    }
+  ],
+  "resume": "stage 2: ladder, readability screen, fork table, closure, literal reader, oracles, ask sheet, prompt.txt to precut exit 0",
+  "approved": null,
+  "delivered": null,
   "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
   "replaces": "task130",
-  "target_zip": {
-    "path": "task131/target.zip",
-    "bytes": 6122513,
-    "members": 14,
-    "sha256": "2f364fb2edf0905e2d5ea76a2711c429000c038db702cb31e6e10dc2a33d3ceb"
-  },
-  "status": "FAILED_TO_STUMP",
-  "owner": "perssathya"
+  "history": "architecture 1 (marketing-consumer-research, card-randomised member offers) shipped 2026-10-10, FAILED_TO_STUMP; re-rooted 2026-10-13"
 }

@@ -1,8 +1,16 @@
 # perssathya: where work stopped
 
-Updated 2026-10-13 (task229 shipped). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-13 (task229 shipped; task131 re-rooted). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task230 (2026-10-12) and task129 (2026-10-13) are SHIPPED and wait on the portal; task123's determinism
 repair is RESHIPPED. task229's architecture 3 (hydrometry) shipped 2026-10-13; its design 1 had failed the portal's determinism QC.
+
+**task131: DRAWN 2026-10-13 (architecture 2, tariff evaluation); in stage 2.**
+- Re-rooted from the Swiss co-operative's card offers (FAILED_TO_STUMP, and crm-loyalty-retention is not a
+  client task type) into Energy Systems & Utilities, tariff-demand-response-evaluation x Experiment & Causal.
+- Murrandi Regional Power's summer 2025-26 trial of three peak-window designs; the call is which design, if
+  any, flat-rate households move onto from 1 July 2027, judged on the 2027-28 50% POE maximum demand.
+- **Resume:** stage 2 from `task131/pipeline.json` (ladder, screen, fork table, closure, ask sheet, prompt.txt,
+  precut).
 
 **task229: SHIPPED 2026-10-13 (architecture 3, hydrometry); waiting on the portal.**
 - The Corriston Basin Hydrometric Cooperative's 23-station network (Physical & Environmental Sciences,
