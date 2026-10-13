@@ -39,7 +39,7 @@ import re
 import subprocess
 import sys
 from collections import Counter, defaultdict
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 SKILL_DIR = Path(__file__).resolve().parent
@@ -157,7 +157,9 @@ def load_cards(cards_dir=CARDS_DIR):
 
 
 def draw_key(c):
-    return (c.get("drawn") or "0000-00-00", c.get("_num", task_num(c.get("task"))))
+    """Draw order: the date drawn, then the time `register` stamped (cards filed before the stamp existed keep their
+    task-number order and come ahead of stamped cards drawn the same day), then the task number."""
+    return (c.get("drawn") or "0000-00-00", c.get("registered") or "", c.get("_num", task_num(c.get("task"))))
 
 
 def load_candidate(arg, cards):
@@ -452,7 +454,10 @@ def check(cand, cards, vocab, status=None):
     # /approve) meets its own predecessors in draw order, never the builds drawn after it, which
     # met it in their own check when they were filed.
     if cand.get("drawn"):
-        ordered = [c for c in ordered if draw_key(c) < draw_key(cand)]
+        key = draw_key(cand)
+        if not cand.get("registered") and not (CARDS_DIR / ("%s.json" % cand.get("task"))).exists():
+            key = (key[0], "9999", key[2])      # a draw not yet filed comes after everything filed that day
+        ordered = [c for c in ordered if draw_key(c) < key]
     recent = ordered[-RECENT:]
     window = ordered[-WINDOW:]
     last = ordered[-1:] if ordered else []
@@ -1047,7 +1052,7 @@ TEMPLATE_KEYS = ["task", "architecture", "drawn", "slot_note", "domain", "subdom
                  "shape", "decision_type", "answer_unit", "answer", "answer_source", "gap", "pattern",
                  "generators", "gate_g", "calibration_form", "stump_strategy", "decisive_rule_filed",
                  "official_decoy", "validated_decoy", "context_artifact", "stakeholder_role", "role_family", "scoring_unit", "spine", "world", "deliverables", "opening_move", "driver",
-                 "driver_concrete", "stump", "mechanism_source", "differentiation", "lineage", "notes"]
+                 "driver_concrete", "stump", "mechanism_source", "differentiation", "lineage", "notes", "registered"]
 
 
 def cmd_new(args):
@@ -1112,6 +1117,7 @@ def cmd_register(args):
         return 1
     out = CARDS_DIR / ("%s.json" % cand["task"])
     clean = {k: v for k, v in cand.items() if not k.startswith("_")}
+    clean["registered"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     out.write_text(json.dumps(clean, indent=2, ensure_ascii=False) + "\n")
     print("\nfiled %s" % out)
     return 0

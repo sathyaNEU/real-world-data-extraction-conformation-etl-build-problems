@@ -150,7 +150,9 @@ BLOCK if any rule blocks, else WARN, else PASS; exit 1 on BLOCK.
 
 ## Part 5. Maintenance
 
-`guard.py validate` after editing a card or `vocab.json`; cards are edited in place. Driver thresholds:
+`guard.py validate` after editing a card or `vocab.json`; cards are edited in place. `register` stamps
+`registered` with the filing time, and builds drawn the same day order by it (cards filed before the stamp keep
+task-number order and come first), so a draw's bans reach the builds actually filed before it. Driver thresholds:
 cross-slot 99.9th percentile under 0.10, a byte-identical rebuild 0.88, AUC about 0.6 for mechanism (hence
 the structural tests); recalibrate with `guard.py nearest`. Cards to task36 carry fitted labels; builds
 with no design note or ledger row carry `mechanism_source: submission_only`.
