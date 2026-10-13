@@ -1,0 +1,87 @@
+{
+  "task": "task451",
+  "architecture": "v1",
+  "drawn": "2026-10-13",
+  "slot_note": "Seed ET08 (analytical_tasks/07_data_extraction_conformation, header and Situation only): an aid consortium's IATI publications and the decision where to open three country coordination offices; the world, the decision and the quantity kept, the pitfall re-found from the data.",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "niche": "aid statistics compiled from a donor collaborative's IATI publications: the members' money followed through pooled funds and implementing organisations to the countries where it is spent",
+  "objective": "etl",
+  "shape": "03",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G5",
+    "G10",
+    "G3"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "head of data and learning at a donor collaborative's secretariat",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "iati_datastore_transactions_2023_2025.csv",
+    "rows": 0,
+    "entity": "one IATI transaction (a commitment, a payment out, a receipt or an expenditure) on one activity, as its publisher reported it",
+    "grain": "activity x transaction",
+    "source": "synthetic (constructed in the IATI Datastore's flattened transaction layout)"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "foundation_or_funder",
+  "world": {
+    "geography": "International: a London-based donor collaborative funding maternal and newborn health programmes in East Africa, the Sahel and South Asia",
+    "currency": "USD",
+    "org_type": "donor collaborative of foundations and agencies, and the pooled funds and organisations they fund",
+    "invented_names": [],
+    "people": [
+      "Lesley Hunter",
+      "Lee Sykes",
+      "Gail Dobson",
+      "Kieran Patel"
+    ]
+  },
+  "deliverables": [
+    "coordination_offices_2027.pptx",
+    "member_funds_by_country_2025.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "Money passing through intermediaries is counted where it is finally spent and credited to its original sources in proportion to what each source gave the intermediary that spent it, an intermediary funded partly by other intermediaries inheriting their mix, so the sources' shares have to be solved through every layer of the funding network rather than read from the sources' own payment records or one layer down.",
+  "driver_concrete": "Each country's 2025 spending is credited to the collaborative's members by the member share of the activity that spent it, a pooled fund's share being pro rata of its contributions and a contribution from another pooled fund carrying that fund's own share, solved through every layer; the members' own records (grants by recipient country, pooled-fund contributions with no country) and the one-layer share (members' direct contributions only) rank the wrong three countries.",
+  "stump": "The default path ranks the wrong three because it sums the members' own 2025 payments by the country recorded on them, so their contributions to the pooled funds, which carry no country, drop out and grants count when paid rather than where they are spent; followed to the spending and credited through every layer, a different three lead (countries fixed at design).",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who converts every currency at its value date, keeps payments and expenditures, drops commitments and the receipts that duplicate a payment, and sums the members' 2025 payments by recipient country, or credits each pooled fund's spending by the members' direct share of its contributions, ranks the wrong three countries (fixed at design).",
+  "domain_test": "The deciding quantity is aid statistics' imputed flow, an intermediary's country spending credited to its funders by their share of its pooled contributions (the imputed multilateral share), carried through every layer of the delivery chain from the publishers' own IATI records; with a retailer's nouns there are no pooled funds of commingled contributions, no donor-and-implementer double reporting of one payment and no delivery chain of grants, so the task stops reading.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Drawn 2026-10-13 for wave 2 under the 10/10 rules.",
+  "client_domain": "survey-research-official-statistics",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:imputed-flows-through-the-delivery-chain",
+  "layer1": [
+    "publishers' activity files in IATI XML and the Datastore's flattened CSV, with differing field layouts",
+    "transactions in several currencies, some inheriting the activity's default currency, converted at their value dates",
+    "the same payment reported by the payer (disbursement) and the receiver (incoming funds) at different dates and in different currencies",
+    "commitments, payments, receipts and expenditures in one transaction file",
+    "parent programmes reporting budgets over child projects that report transactions",
+    "multi-country activities with recipient-country percentages",
+    "organisation identifiers in current and legacy prefixes, some receivers named without an identifier"
+  ]
+}

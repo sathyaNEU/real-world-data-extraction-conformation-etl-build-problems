@@ -1,0 +1,37 @@
+{
+  "task": "task451",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-13",
+  "stump": "The default path opens the offices in the wrong three countries because it places the members' money where their own payment records put it, so their contributions to the two pooled funds, which carry no country, drop out; followed to the organisations that spent it and credited back through both funds' layers, a different three lead (countries fixed at design).",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.08 (task181 v1 lineage)",
+    "note": "drawn 2026-10-13: guard PASS"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: readability screen, fork table, ladder arithmetic (the pooled funds' member shares through both layers), closure table, asks (supplemental-stumping), prompt.txt, precut.py",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET08 (analytical_tasks/07_data_extraction_conformation), the world, the decision and the quantity only"
+}
