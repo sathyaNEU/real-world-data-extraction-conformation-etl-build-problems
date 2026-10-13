@@ -1,12 +1,12 @@
 {
  "task": "task188",
  "owner": "oviya13ya",
- "status": "BUILD",
+ "status": "SHIPPED",
  "seed": "analytical_tasks/02_anomaly_detection/AD11_routing-engagement-measured-page-removal.md",
  "domain": "epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection (a county vector control district's West Nile virus mosquito surveillance)",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-13",
  "stump": "The natural index, each zone's Culex females per CO2 trap-night times the minimum infection rate of all its Culex pools, names Riverside South, because counting one infected mosquito per positive pool understates Westbrook's pools of fifty and the town zones' gravid-trap pools carry the infection of females that have already fed; maximum likelihood on the CO2-trap pools names Westbrook.",
  "architecture": 1,
@@ -17,21 +17,21 @@
  },
  "leak": {
   "leak_py": "REVIEW (no LEAK), 2026-10-13",
-  "reader": "pass 2 clean on questions 1 to 6; its question 7 fork on the trap-night ask fixed by recutting the second load"
+  "reader": "pass 2: question 1 none, question 6 analytical; its question 7 fork on the trap-night ask closed by the recut"
  },
  "duplicate_check": {
   "heart": "WARN (nearest driver 0.05, task450 v2)",
   "nearest": "surface promotes task186 (two apart; gap key rule and decision type only)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report_pass3.md (pass 1 FIX_NOW on one write-up count, pass 2 APPROVE, pass 3 APPROVE after the second-load recut)"
  },
  "returned": [],
- "resume": "stage 4: judge pass 3 running on /tmp/determinism-check-task188-pass3 after the second-load recut; on APPROVE write the report, set SHIPPED and commit",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-13",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

@@ -311,6 +311,17 @@ Pair ceiling: about 33 (the cracker at about 49 with the call and the chart's pr
   Neither document says the copies repeat nights or how the load dated them, so the cracker's keyed deduplication
   still keeps all 206 and misses every zone.
 
+- **Pass 3 (the recut bundle, the recorded pass):** DETERMINISTIC, APPROVE, no fix. It settled the second load from the
+  files alone: the 206 records entered on 22 June are the Tuesday nights of 2 and 9 June shifted a day (catches match
+  572 of 572 and 589 of 589 rows against 50 to 60 for any other pair of nights, status and crew 174 of 174 on the CO2
+  records), no copy lands on a night its site ran, and protocol 3.3, 3.5, 4.1 and 6.2 each exclude them as runs, so
+  "one reading is forced" and the only rival, counting as entered, contradicts four clauses. It reproduced the call
+  (Westbrook 2.3275, South Prairie 1.8112, every other zone at or below 1.07), the flip rate (18.3, so 18 per 1,000),
+  both single-rate and Firth variants in the same one-decimal bins, every human case count and every trap-night figure.
+  Gate G method_selection, no surface read, no sole data defect; Gate H domain, layers and decisive step all pass.
+  Its residual risk, recorded and accepted: no file names the estimator, which is the stump ("a minimum-infection
+  index is a count, not an estimate, and saturates" at 42 of Westbrook's 70 pools positive).
+
 ## Reader record
 
 - **Pass 1 (partial, the documents only):** nothing quoted for question 1; no file ranks the zones; nothing reads as
@@ -355,6 +366,8 @@ Pair ceiling: about 33 (the cracker at about 49 with the call and the chart's pr
   trap-nights) complicates the work and carries nothing decisive, each item asserted neutral for the call; the
   decisive step is analytical, and `checks.py` executes the easy route on the generator's clean truth and files
   Riverside South with every field read and every filed rule applied.
+- **Judge:** pass 1 FIX_NOW on one write-up count, pass 2 DETERMINISTIC APPROVE, pass 3 DETERMINISTIC APPROVE on the
+  recut bundle with the trap-night ask settled from the files alone.
 - **Gates:** 939 generator assertions with the R1 to R3c block, 1,385 independent checks from the bundle alone, two
   byte-identical builds, target.zip cut from the final build, figures_check 42 of 42, precut 49 of 49, voice-check
   PASS, scrub clean (target and golden), leak.py REVIEW with no LEAK, guard heart WARN and surface one promoted pair
