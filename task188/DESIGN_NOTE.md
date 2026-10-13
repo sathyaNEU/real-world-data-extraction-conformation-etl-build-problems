@@ -145,8 +145,8 @@ females the CO2 traps catch.
 |---|---|---|---|---|---|
 | SF1 | "the week ending 15 August 2026" | trap-nights set Monday 10 and Tuesday 11 August (MMWR week 32) | trap-nights by pickup date (11 and 12 August) | Westbrook | same call: every week-32 trap-night is set and picked up inside 9 to 15 August (C1, asserted) |
 | SF2 | "Culex females" | Culex tarsalis and Culex pipiens females | adding Culex not identified to species | Westbrook | same call: no unidentified Culex in the week-32 CO2 catches (C1, asserted) |
-| SF3 | "CO2 trap-night" | a CO2-baited trap that ran from set to pickup (status OK) | every CO2 trap set, failures included | Westbrook | the protocol's definition of a trap-night (3.2); same call and figures either way (C1, asserted) |
-| SF4 | "virus-infected" | a pool's final RT-PCR result, a retest replacing an inconclusive first result | the first result taken as final | Westbrook | the protocol's retest rule (5.3); same call either way (C1, asserted) |
+| SF3 | "CO2 trap-night" | a CO2-baited trap that ran from set to pickup (status OK) | every CO2 trap set, failures included | Westbrook | the protocol's definition of a trap-night (3.4); same call and figures either way (C1, asserted) |
+| SF4 | "virus-infected" | a pool's final RT-PCR result, a retest replacing an inconclusive first result | the first result taken as final | Westbrook | the protocol's retest rule (4.3); same call either way (C1, asserted) |
 | SF5 | "estimated number" | the maximum likelihood estimate of infection from the pools | the bias-corrected estimate (Firth), or the Jeffreys-penalised likelihood | Westbrook | same call, same one-decimal figures and the same whole-number flip rate (C3, asserted) |
 | SF6 | summing the two species | each species' infection times its catch, summed | one Culex infection rate across both species times the total catch | Westbrook | same call, same one-decimal figures and flip rate (C3, asserted; pools are species-pure, so the species-wise sum is the natural reading) |
 | SF7 | "per CO2 trap-night" | total females over total functioning trap-nights | the mean of each site's mean | Westbrook | same call and same one-decimal figures (C1, asserted) |
@@ -197,7 +197,7 @@ Built values (week 32, infected Culex females per CO2 trap-night unless stated),
 | 2 Unit of account | infected females per trap-night, one figure per zone | the prompt names the unit |
 | 3 Attribution window | MMWR week 32, 9 to 15 August | C1: every week-32 trap-night is set and picked up inside the week |
 | 4 As-of dating | laboratory results final at the extract (county report 14 August, district results through 15 August) | C1: every week-32 pool carries a final result |
-| 5 Version basis | the final result after a retest | the protocol's retest rule; C1 on the call |
+| 5 Version basis | the final result after a retest | the protocol's retest rule (4.3); C1 on the call |
 | 6 Denominator | functioning CO2 trap-nights | the protocol's definition; C1 with failures counted |
 | 7 Weighting | total females over total trap-nights | C1 against the mean of site means |
 | 8 Window length | one week | the prompt |
@@ -207,7 +207,7 @@ Built values (week 32, infected Culex females per CO2 trap-night unless stated),
 | 12 Maturity and censoring | no week-32 pool awaiting a result | C1, asserted |
 | 13 Order of operations | species summed after their own estimates, or one genus rate | C1, asserted |
 | 14 Row order | none | n/a, nothing order-dependent |
-| 15 Duplicate resolution | a retest replaces an inconclusive result; no pool is listed twice | protocol 5.3; C1 |
+| 15 Duplicate resolution | a retest replaces an inconclusive result; no pool is listed twice | protocol 4.3; C1 |
 | 16 Identity normalisation | species written CXTA and CXPI in the field database and in full by both laboratories | the data dictionary's species table; C1 |
 | 17 Netting against gross | none | n/a |
 | 18 Dimensional units | females per pool, per trap-night, per 1,000 | units in the data and the prompt; C4 against per-pool reading |
