@@ -1,38 +1,22 @@
 # perssathya: where work stopped
 
-Stopped by the author on 2026-10-12. Nothing is running. Nothing in this block has
-shipped and held: task229's design 1 shipped (PR #18) and failed the portal's determinism QC.
+Updated 2026-10-13. Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+task230 (2026-10-12) and task129 (2026-10-13) are SHIPPED and wait on the portal; task123's determinism
+repair is RESHIPPED. task229's design 1 shipped (PR #18) and failed the portal's determinism QC.
 
-**task229: architecture 3 (the number's last), paused mid-draw.**
-- Branch `perssathya/task229-rework` at d0ce2fb.
-- Designs 1 (firmware read health) and 2 (3PL stock-record accuracy) are spent. Design 2's round 1 was
-  landed (proxy 97.9, every ask cracked), and its hardening loop 1 found no rung.
-- Architecture 3 has a partial paper draft in `task229/DESIGN_NOTE.md`, under `## Architecture 3
-  draft`: a city's permanent cycle-counter network (Urban & Regional Science). Counter capture falls as
-  the flow rate rises, and traffic signals upstream bunch cyclists into short green-phase bursts, so a
-  capture curve applied at the average rate passes counting points that fail.
-- It has the draw, the default path, the stump sentence, the three rules and the deletion tests. The
-  card is drafted but unregistered.
-- **Resume:** a fresh designer finishes phase A under the improvise rules: screen, fork table, ladder,
-  closure, literal reader, oracles, asks, prompt.txt, work order. It checks the card against the three
-  cards before it on its registration day, registers, and gets precut.py to exit 0. Then the builder,
-  the leak read and clone pre-flight together, and the solver.
+**task229: architecture 3 (the number's last), drawn 2026-10-13, in stage 2 (design).**
+- Designs 1 (firmware read health) and 2 (3PL stock-record accuracy) are spent; the 2026-10-12 paper
+  draft of architecture 3 was redrawn (its validated and official decoys removed) and its card v3
+  registered (guard PASS, heart PASS).
+- World: the City of Pembury's permanent cycle-counter network (General Statistics & Data Science,
+  missing-data-censoring-measurement-error). A counter's capture falls as the flow over its loop rises;
+  read at the rate a crossing signal releases cyclists, the Old Spur Trail loops beyond signalled
+  crossings fail the fund's 90 per cent condition.
+- **Resume:** `task229/pipeline.json` (`resume`), then `## Draw` to `## Deletion tests and Gate G` in
+  the design note and `## Tried and rejected`.
 
-**task230: architecture 2, round 1 held the main call; the ask-layer rebuild is not started.**
-- Branch `perssathya/task230-event-volume-drop` at 7110c49.
-- World: Tamralipta Data Services, a claims-capture centre in Kolkata (Human Factors & Ergonomics).
-  Decisive step: first-pass detection falls as errors in the shared pool get rarer, the low-prevalence
-  effect.
-- Round 1 (Opus high) missed the call (proxy 62.7), but the asks leaked (5 of 6 items cracked, ask
-  share 92 per cent).
-- Author's decisions on 2026-10-12: waive the organisation-family ban (professional_services) against
-  task445 only, and rename the deciding forum (committee_or_panel) to clear task446.
-- **Resume, from `task230/pipeline.json`:**
-  - The steps are in `paused.resume`, and the deferred list is in the last `solver_rounds` row.
-  - A designer rebuilds the asks against round 1's cracker path.
-  - It fixes QCP-04 4.1 to "the stream's own documents" and adds the SF row.
-  - It applies the two furniture decisions and registers.
-  - Then come the builder, a new leak read, a fresh solver round, 6b, the judge, and ship.
+**task230: SHIPPED 2026-10-12** (asks rebuilt, judge APPROVE, leak reader clean twice); waiting on the
+portal.
 
 **task228: paused by the author.**
 - Branch `perssathya/task228-guardrail-alert-metric` at 9120146.

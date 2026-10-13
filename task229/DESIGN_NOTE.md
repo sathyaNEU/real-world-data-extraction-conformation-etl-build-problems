@@ -3,21 +3,259 @@
 Seed DQ02 (whether the release-health alert fires on this week's build, when the metric is the
 average user's rate), objective Data Quality Monitoring & Alerting.
 
-**Where the build stands (2026-10-11).** Architecture 1 (a smart-meter data provider's read-health
-alert, decided by the unit a build mean's standard error is built over) is spent: it shipped, failed the
-portal's determinism QC with both reviewers on the standard error's unforced construction, was called a
-backdrop by the in-house Gate H pass (H1), and its estimand rework was cracked on the leak reader's first
-pass. The author re-rooted the number as architecture 2 (the stock-control field's count-reset logic). It
-was built at stage 3, passed the leak read and the clone pre-flight, and its round 1 solver landed the call
-and cracked every ask (proxy 97.9) on the design's own rung 3, found from a visible symptom. Hardening loop
-1, on paper, found no rung above that accrual model that completes with its checks passing and still lands
-wrong within the loop's bounds (`## Hardening loop 1 (architecture 2, paper)`), so **architecture 2 is spent**
-and the number re-roots to architecture 3, its last. Architecture 2's sections (`## Draw` to
-`## Build record`) and its generator, pack, goldens and write-up stay in this folder as its record until the
-re-root's draw replaces them. Architecture 1's generator, pack, goldens, write-up and reports are removed from this
-folder (all in git history at f981255); its record is `## Architecture 1 record (spent 2026-10-11)`.
+**Where the build stands (2026-10-13).** Architecture 1 (a smart-meter data provider's read-health alert,
+decided by the unit a build mean's standard error is built over) is spent: it failed the portal's
+determinism QC and its estimand rework was cracked on the leak reader's first pass. Architecture 2 (a
+third-party logistics operator's stock-record accuracy gate, decided by each record's state at one moment
+rebuilt from the accrual since its last count) is spent: round 1 landed the call and every ask and
+hardening loop 1 found no rung above the solver's accrual model. **Architecture 3, the number's last, is
+drawn here** (redrawn 2026-10-13 from a paper draft paused on 2026-10-12 and never built): a city's
+permanent cycle-counter network, a counter's measurement error under the arrival process its loop actually
+sees. The sections from `## Draw` to `## Builder's work order` are architecture 3's and bind the build;
+`## Architecture 2 record (spent 2026-10-11)` and `## Architecture 1 record (spent 2026-10-11)` bind
+nothing.
 
 ## Draw
+
+| Axis | Draw |
+|---|---|
+| Card | `.claude/skills/fingerprint/cards/task229.json` v3, redrawn and registered 2026-10-13 (guard PASS, heart PASS); architectures 1 and 2 in `lineage` with their fates |
+| Domain / task type | general-statistics-data-science / missing-data-censoring-measurement-error (serves DQ): a counter's systematic undercount, a measurement error that grows with the flow over its loop; the setting is a city's permanent cycle-counter network (urban-regional-science has no task type serving DQ, so the draft's `other` is replaced) |
+| Objective | Data Quality Monitoring & Alerting: the object is the health of the counter data (the share of passing cyclists each counter records) and the call is a monitoring decision (from which month of 2027 each site's counts are flagged or its counter upgraded under the fund's audit condition) |
+| Shape | 13, scenarios and the flip point: the season's months are the scenarios, each site's first failing month is graded, and the asks carry the 2026 recorded baselines |
+| Gate G mechanism | binding_constraint: the crossing signals' red phase is the constraint the default path never checks, and it removes sites from the compliant set without replacing any |
+| Gap / pattern / generators | objective then time / G7 decisive (operating window: a cyclist leaving a signalled crossing passes the loop only inside the walk-and-bike interval) / G13 (the season's months, the switch-on dates of the two new signals) |
+| Decision type / answer unit / question form | date_or_period / date_or_period / when |
+| Stump strategy | binding_constraint; decisive rule filed: yes (the counting standard files the capture estimand and the 90 per cent condition, the counter maker files the capture curve for arrivals random through the hour; nothing files the rate a gated stream crosses the loop at); official decoy: no; validated decoy: no |
+| Calibration form | gold_standard_subsample: the contractor's 2025 and 2026 video audits, two midday hours at the sites on that year's rotation, none at a signalled crossing |
+| Context artifact | filed_model: the regional travel model's 2027 forecast workbook the programme plans from |
+| Role, forum, forcing event, organisation | the lead of the city's cycle-counting programme (field_unit_lead); the provincial active transportation fund that part-funds the network (funder_or_donor); the fund's 2027 capture audit of every funded counter network (audit_or_inspection); a city's transportation department (local_government) |
+| World | Canada, Alberta: the fictional City of Pembury; the Old Spur Trail (a rail trail) and its crossings, Tallis Counting Systems (the counter maker), the Pembury Region Travel Model; CAD |
+| People | Phyllis Thompson (counting programme lead, keeps the inventory and the maintenance log), Brandon Holden (signals engineer, issues the crossing timing sheets), Teresa Chen (transport modeller, issues the forecast); drawn with `guard.py names --geo "Canada, Alberta"` (seeds 229 and 2290) |
+| Layer 2 | field_method, `own:signal-gated-arrivals-set-a-counter-loop-capture` |
+| Deliverables | `counter_season_2027.xlsx`, `trail_baseline_2026.png` |
+
+**Data-native sentence.** On a rail trail whose arterial crossings at Hallett Avenue and Ravine Road have
+been signal controlled since 2025 and whose Gorse Street and Mallory Drive crossings switch to signal
+control in May and June 2027, every cyclist leaving a signalled crossing reaches the loop 40 metres on
+inside the crossing's 18 to 22 second walk-and-bike interval of a 90 to 110 second cycle, so the loop sees
+each cycle's cyclists inside the interval, four and a half to six times the hour's flow, and a loop whose
+capture falls as the flow over it rises records far fewer of them than the hour's flow implies.
+
+**Guard.** `guard.py check` PASS and `heart` PASS on 2026-10-13, against a window holding task187,
+task255, task256, task450 and task451 (all dated 2026-10-13) and the cards dated 2026-10-12. The context
+artifact moved from monitoring_export (task187) and operations_log (task449) to filed_model, and the
+forcing event from season_or_peak (task187) to audit_or_inspection. The paused 2026-10-12 draft card was
+set aside for the check: it is this architecture's first draft, replaced by this one, not an earlier
+architecture. Nearest drivers 0.06 (task98 v2 lineage) and 0.05 (task91, task40, task135): different moves.
+
+**One line per source read.**
+- task133 (held on the portal for one model): its divisor sat in a second file the natural pipeline never opened. Transfers: the deciding quantity sits outside the frame the solver's own checks test; here the frame is the counters' records and audits, and the deciding quantity is built from the crossing timing sheets.
+- task182 (held in-house): the solver's regression fitted and reconciled while the deciding process acted outside its window. Transfers: the default construction is complete and passes its back-test; here the back-test (the midday audits) cannot see the process by construction.
+- task446 (held in-house): the solver's candidate bases lacked the one that carries to the new condition. Transfers: the default uses a correct quantity at the wrong argument; here the argument is the arrival rate over the loop.
+- task445: its portal miss came from a literal reading of a filed clause, a fork. Avoided: the curve is filed for arrivals random through the hour, the standard files the estimand, and the default is an easy method on the same literal estimand (`## Literal reader`).
+- Client exemplars, supply-chain-logistics.md (Rail Grade Crossing Safety Programs, 0.17) and product-analytics.md (SaaS Usage Allowance Pricing, 0.20): the depth is a per-site construction graded site by site; their withheld-method architecture is capped and not used.
+- layer2-rigor-patterns: healthcare-delivery "Size beds by blocking probability, not occupancy" (a response nonlinear in load read at the average load) and urban "Transit access depends on departure minute" (a quantity that varies inside the period it is averaged over). This build's version: a counter's capture read at the rate a signal compresses each cycle into.
+- `_measured.md`: #13 validates on one population, applies to another (the audits' sites are all unsignalled), #7 uses the ready-made measure (the maker's curve at the forecast), #11 beats the headline trap and misses the quiet one (the busiest quarter hour).
+- `proven-in-production.md`: L1 (the audits confirm the curve and are blind to the gate at their grain: no audited loop sits beyond a signal), L7 (the naive basis is excellent on the closed record), L8; Part 4 checked: the decisive cause is in the data window (Hallett and Ravine signalled since 2025), no filed formula decides (the curve is filed for random arrivals; the rate a gated stream crosses at is not), no population is named by a clause.
+- The spent list, checked: not the unit of a standard error, not a check that resets what it measures, not renewal, not the exposure clock, not source independence, not errors-in-variables, not regression to the mean or shrinkage, not late-arrival maturity, not comparison-pool composition, not prevalence and human detection, not competing exits, not transport, not repeated looks, not reweighting to a mix, not a frailty layer; DQ's spent drivers (task228's comparator covariance, task230's rarity-dependent detection, this number's node-clustered standard error and count-reset accrual) are different moves.
+
+## Default path
+
+What this solver does (it explores, fits, checks residuals and reconciles), on the files as planned:
+
+1. Reads the counting standard (a site meets the condition for a month when, in each direction, its counter records at least 90 per cent of the cyclists who pass over it in the month's weekday peak hours, 07:30 to 08:30 and 16:30 to 17:30 local time; the season is April to October), the fund's audit condition, the inventory (16 sites, their channels, positions and loops per direction), the Tallis test report (for cyclists arriving at random through the hour, a loop records 99.6 minus 0.55 per cent for each cyclist a minute of the hour's flow, tested 0 to 60 a minute), the 2027 forecast workbook (each site's weekday morning and evening peak-hour cyclists by direction and month) and the crossing timing sheets.
+2. Explores the 2026 exports and the contractor's video audits: every audited channel's recorded share sits within a point of the curve at its audited flow, so the curve describes the loops; the residuals show no pattern by site type, counter model or month (the back-test passes).
+3. For every site, direction and month, turns the forecast peak-hour flow into cyclists a minute, splits it over the two loops where a direction has two, reads the capture off the curve, and weights the morning and evening hours by their cyclists to get the month's capture.
+4. Checks: every flow inside the curve's tested range, the forecast's link totals reconciled to its site rows, a sensitivity on the curve's slope that moves no verdict.
+5. The careful variant reads each hour at its busiest quarter hour (each channel's 2026 peak-quarter factor) and gets Cutler Bridge from May and Quarry Lane from July.
+6. Files the schedule: Cutler Bridge falls below the line from July and every other site holds through October.
+
+Ends on: Cutler Bridge from July; the other fifteen sites hold the 90 per cent standard through October
+
+Golden: Old Spur Trail at Hallett Avenue and at Ravine Road from April, at Gorse Street from May and at Mallory Drive from June, and Cutler Bridge from July; the other eleven sites hold through October
+
+(Planned on the paper prototype; the builder tunes the world, keeps the schedule's shape and re-asserts both lines from the cut pack.)
+
+## Stump sentence
+
+A competent solver reads each channel's 2027 capture off the counter maker's curve at the forecast weekday peak-hour flow, finds that the curve reproduces every video audit, and files Ends on: Cutler Bridge from July, the other fifteen sites holding the 90 per cent standard through October; the step that lands it there is reading the curve, which the maker states for cyclists arriving at random through the hour, at the hour's flow on the Old Spur Trail channels 40 metres beyond the signalled crossings, where every cyclist passes inside the crossing's walk-and-bike interval, so those loops see four and a half to six times the hour's flow while cyclists pass and record under 90 per cent from April at Hallett Avenue and Ravine Road (signalled since 2025) and from the months their signals start at Gorse Street (May) and Mallory Drive (June).
+
+## Three rules
+
+Task type: missing-data-censoring-measurement-error in General Statistics & Data Science, which serves Data Quality Monitoring & Alerting: the object is a counter's systematic undercount, a measurement error that grows with the flow over its loop, and the call is the month from which each site's data fails the fund's capture condition.
+
+Domain test: The deciding quantity is each loop's capture, the expected share of passing cyclists it records under the arrival process it actually sees; the field's estimator integrates the maker's flow-dependent capture over that process, and because capture falls with the rate over the loop, the capture at the average rate overstates the capture of a stream concentrated in time. At a channel 40 metres beyond a signalled crossing the process is each cycle's cyclists inside the walk-and-bike interval.
+
+Swap: General Statistics & Data Science swaps the method: replace the deciding statistical object (the capture integrated over the gated arrival process) with a generic summary (the curve at the hour's average flow) and the call changes, four trail sites passing that fail; with another field's nouns ("from which month will each ward's monitors capture fewer than nine in ten alarms") there is no signal gating arrivals into an open phase of a cycle, and the construction stops making sense.
+
+Layer 1: per-site counter portal exports at 15-minute grain, one CSV per site, whose channel numbering runs past the bicycle loops into infrared pedestrian beams at combined sites (the portal); interval stamps in local standard time all year on the older firmware family against local clock time on the newer (the firmware); two loops in one direction on the two widest sections exported as two channels under one direction label (the portal); trail loops re-terminated during the June 2026 resurfacing, recorded in the maintenance log (the contractor); trail chainage in the crossing timing sheets against map coordinates in the inventory, joined through the trail centreline file (two departments' references); a forecast workbook keyed by model link with a link-to-site lookup (the travel model); timing sheets issued as PDFs with tables (signals engineering); video audits timed in local clock time (the contractor). Nothing is placed to be caught, and none of it touches the main call's decisive step (asserted per item).
+
+Layer 2: field_method, measurement error under a nonlinear response: the methodological choice is the arrival process at which the maker's capture curve is evaluated; read at the hour's average flow it files the network compliant except Cutler Bridge, and integrated over the gated arrival process at the trail channels four sites fail from April, April, May and June.
+
+Decisive step: evaluating each trail channel's capture at the rate its loop sees cyclists while they pass: a crossing signal releases each cycle's cyclists inside its walk-and-bike interval, so 40 metres on the loop sees the cycle's cyclists inside the interval, the hour's flow times the cycle over the interval, and the curve, stated for arrivals random through the hour, is read at that rate.
+
+Not semantics: every field, unit and definition read correctly (the curve's percentage and flow unit, the standard's peak hours, directions and season, the timing sheets' intervals, the inventory's positions and loops) still leaves the curve read at the forecast hour's flow, a correct reading of every document; no file says the trail channels see a different rate.
+
+Not rule application: no filed rule relates a crossing signal to a counter's capture: the standard defines the capture and the threshold, the maker states the curve for random arrivals, the timing sheets state the signal phases; executing every stated rule still files Cutler Bridge alone.
+
+Analyst test: a strong analyst who cleans every export and reads the counting standard, the maker's curve and the timing sheets correctly reads the curve at each channel's forecast peak-hour flow and files the default path's Ends on: Cutler Bridge from July, the other fifteen sites holding the 90 per cent standard through October.
+
+Estimand: the counting standard (section 3) files it: a site meets the condition for a month when, in each direction, its counter records at least 90 per cent of the cyclists who pass over it in the month's weekday peak hours (07:30 to 08:30 and 16:30 to 17:30 local time); the fund's 2027 audit condition applies it to every funded site in each month from April to October 2027.
+
+No decoy: nothing is planted: the curve, the audits, the forecast and the timing sheets are all correct; no document reports a forecast capture for any site, no memo argues a schedule, and the forecast states no arrival pattern within the hour.
+
+No certified replay: the method is not recovered by reproducing certified figures: the video audits are taken at midday at unsignalled sites, where the hour's-flow reading and the gated reading agree, and they select neither.
+
+Lesson: a model learns to evaluate a nonlinear measurement response at the input process the sensor actually sees, here an upstream signal concentrating arrivals, rather than at the period's average; no build on file teaches capture under gated arrivals (nearest drivers 0.06 and below).
+
+## Deletion tests and Gate G
+
+- **Delete every wrong number:** none is planted; still hard.
+- **Clean-data test:** repair every Layer 1 file (the stamps, the beam channels, the twin-loop labels, the re-terminated directions, the link lookup, the chainage join) and the call and the default answer do not move, because the main path reads the forecast, the curve, the timing sheets and the inventory's positions (asserted by the builder).
+- **Lens swap:** no. The default and the answer read the same curve at two constructions of the arrival rate over the loop.
+- **Identity:** capture is recorded over passing; passing is the 2027 forecast and 2027 recordings do not exist, so the identity closes over nothing shipped.
+- **Control direction:** the video audits are taken at midday (11:00 to 13:00) at the sites on that year's rotation, and no site beyond a signalled crossing was on the 2025 or 2026 rotation; at midday flows every reading of the curve agrees within the audit's resolution, so the audits confirm the curve's low-flow end and tie under both bases (L1). The decisive cause is in the data window: Hallett Avenue and Ravine Road have been signalled since 2025.
+- **First moves:** the forecast group-by, the curve at the forecast flows, the audit back-test, the busiest-quarter refinement and the hygiene battery each end on a rung below the answer.
+- **Gate G:** mechanism binding_constraint; `surface_read_dependency: no`, `stumping_family: analytical_non_defect`, `sole_data_defect: no`.
+
+## Tried and rejected
+
+- Keeping the seed's product-analytics crash-rate world: a per-user crash rate is a product health
+  metric, not the health of data or of a pipeline, so the build would retag as Anomaly Detection
+  without changing a word; and task228 holds product-analytics in this objective on the same day,
+  so the pairing would block on `ban.pairing` at the heart check.
+- First cut of PX5.2.7's late data as partial-day misses (16:00 to 24:00) that the overnight delivery
+  already carried as substituted reads: a solver who applied the cut-off clause to the rows it held
+  reached PX5.2.7's fire with no further thought. Replaced before any round with whole-day misses that
+  leave the MDM no version of the register-day until its 06:30 estimate.
+- First rounding-edge assertion measured distance to the bin centre instead of to the x.xx5 edge;
+  caught on review, fixed in `tune.py` and `checks.py`, salts re-chosen.
+- Architecture 1, round 1 (2026-10-11): both solvers landed the call and every scorecard figure
+  (plain 91.3, skeptic 87.4). Plain path: "a build's read health is the mean of its installations'
+  read health; its lower limit is 99.50 minus 3 x (sample standard deviation / square root of n)",
+  read straight off section 4.2 and 5.2, with the cut-off, the register denominators and the full-week
+  population executed as written. Every decisive step was a filed formula, which is the dead shape
+  "a committed figure that is the output of a filed formula". Brief: keep the world and the call shape,
+  and move the decisive step into the error the measure needs when outages are shared by the meters
+  behind one comms node, which no formula in the pack spells out.
+- Hardening loop 1, first draft (pooled share with a node-level error, never shipped): making the
+  stated measure the pooled share of reads, as the brief first proposed, put the 5-minute
+  three-register installations in charge of the installation-level ratio error, which then held
+  EM3.12.2 on its own, and split the natural route between a binomial read count and a ratio error,
+  so the decisive rung stopped being the one step every solver takes. The filed mean stays, and the
+  natural error stays the one round 1 wrote.
+- Hardening loop 1, node failures on the access points carrying PX5.2.7 and PX5.3.0, and on the
+  older-suburb collectors carrying EM3.12.1: with fourteen and eleven nodes, one failure there widens
+  a genuinely degraded build's error until it holds, which buries the signal the alert exists for.
+  The tuned week keeps those nodes clean, so the builds that fire do so on a spread-out shortfall and
+  the node grain only bites where nodes failed.
+- Architecture 1, loop 1, round 2 (2026-10-11): both solvers missed the call at R4 (the stump held).
+  Plain path: "Assessed = IN_SERVICE meter, NMI with no meter change, no activation inside the week ->
+  6729 installations; mean, sample SD, SE, LL per build; fire if mean < LL -> 5 fire, 3 hold"; both
+  filed fire on EM3.12.0, EM3.10.9, PX5.2.7, EM3.12.1 and EM3.12.2 and set Wave 8 onto EM3.12.2 to 0,
+  and both set the node field aside "because the standard sets no exclusions for them". The asks
+  leaked: `grade.py` scored each 54.5 (the fire-and-hold item's only gradable tokens are its two verbs,
+  so any list scores it, and a Wave 8 answer that quoted the eligible 1,274 beside its 0 scored that
+  item too); read honestly, each kept the read-health figures, PX5.3.1's Wave 8 figure and the whole
+  Wave 7 ask, about 37 points, under 40 but with no margin. Decision: harden the ask layer (loop 2):
+  drop Wave 7, add the distance from the limit and 6.1's substitution load, and merge the lists into
+  the scorecard item.
+- Loop 1's leak reader (round 2) found the outage carve-out route: setting the four node failures aside
+  with the installation-level error landed the committed list with EM3.12.0 within 0.006 of its limit.
+  Closed in loop 2 by raising EM3.12.0's own gap and outage rates so every carve-out fires EM3.12.0 by
+  0.15 (`## The outage carve-out route`).
+- The first ship (architecture 1, loop 2, judge pass 1 APPROVE), failed at the portal's determinism QC
+  on 2026-10-11 with both reviewers (R1 `competing_defensible_answer`, R2 `underspecified_objective`,
+  both fixing in the input files): MDS-STD-114 named the three-standard-error limit but not what the
+  standard error measures, and its 7 ("standard deviations are sample standard deviations ... and
+  standard errors are built from them") with 4.3 ("only the build's own assessed installations enter its
+  read health and its standard error") read literally as sample SD over root n across installations,
+  which fires EM3.12.0 and EM3.12.2; the reason to build the error over the nodes lived only in the
+  write-up's step 6, which no solver sees. The stump itself held (both portal models diverged, rubric
+  under 50). Lesson: a decisive estimator the shipped files do not force is a competing defensible
+  answer however much better it is; define the estimand in the filed text so the naive method breaks a
+  filed definition, and name no estimator (naming it is rule application). Its domain, Energy Systems &
+  Utilities with no task type serving Data Quality Monitoring, was called a backdrop by the in-house Gate
+  H pass (a general-statistics clustered error in an energy setting) and is re-filed.
+- Rework 1 on architecture 1 (2026-10-11): MDS-STD-114 4.4 filed the standard error's estimand with
+  "installations whose read losses move together are one unit ... not independent ones", and 7 the divisor
+  over "independent units (4.4)". The solver's-eye reader quoted both for question 1, took the unit from the
+  field reference's comms_parent row, clustered on its first pass and reproduced the committed lists in the
+  committed order. A filed estimand that names co-moving losses hands the decisive step to a strong analyst
+  (H3, worth-it gate). 7's wording also makes SD of collector means over root G look compliant, which holds
+  EM3.10.9. Architecture 1 spent; re-root recommended (`## Verdict after the rework's leak read`).
+- Architecture 1 re-rooted (the author's decision, 2026-10-11). Its decisive move, the unit a build
+  mean's standard error is built over, was binary on a documented field: left unfiled, the portal's
+  two determinism reviewers called the installation-level error a competing defensible answer; filed as
+  an estimand, the leak reader clustered on its first pass. Its first domain (Energy Systems &
+  Utilities) read as a backdrop under Gate H (H1). Do not redraw a gate decided by how a standard
+  error is built over units that share a parent, in any world.
+- Architecture 2's paused draft, decisive step weighting counted locations by the inverse of their
+  stratum's counted share (dropped at the draw, 2026-10-11): under stumping Part 2's domain-coupling rule
+  it is the generic reweighting the in-house solvers landed on task228 (rounds 3 and 4) and task230
+  (rounds 1 and 2), and its estimand (accuracy over the window, each location once) made that reweighting
+  the answer. Kept as the textbook rung of the redrawn ladder, where it lands on Magor alone.
+- Exposure in handling rather than calendar days as the decisive step (rejected at the draw): it is
+  task46's insight (a rate law stationary only in cumulative usage, so calendar-age routes underbuy) and
+  needs a forward window whose volumes change; the estimand sits at the stand-down, where per-transaction
+  and per-day accrual agree within 0.17 points (prototype 2), so the exposure choice is never the stump.
+- Exception counts ignored as resets (accrual fitted on routine-to-routine intervals, resets at routine
+  counts only) as a rung (rejected in prototype 2): its two errors cancel (older ages lower the share,
+  longer intervals with fewer misses raise it) and it lands on the golden set within 0.2 points.
+- Audit projection of count differences to the book (monetary-unit sampling, taintings, the upper
+  misstatement limit) as the decisive step (rejected at the draw): under PPS the point projection is the
+  Horvitz-Thompson reweighting the solvers land, the bound methods (Stringer, cell, normal) disagree with no
+  filed criterion to choose among them, and a book-value misstatement is not what an unattended
+  replenishment gate turns on.
+- Non-blind count confirmation corrected with a blind audit subsample (sensitivity and specificity) as the
+  decisive step (rejected at the draw): checking one instrument against a better reference is the
+  cross-check reflex (task228's landing on collocation), and setting the non-blind counts aside is a
+  natural partial route whose result the design could not force.
+- A pre-peak count blitz that finds and fixes the accumulated errors (rejected at the draw): a dated spike
+  of counts with a low match rate makes the reset visible to the event-study opponent, and it is Pattern
+  A's resolving-candidates shape.
+- An estimand three days after the data closes (rejected at the draw): it would settle the in-house
+  instrument-repair question, but carrying the records forward over days with no counting invites decay
+  reasoning that leads straight to the reset; the estimand sits at the stand-down, where the export closes,
+  and the judge's own clean-data test passes.
+- A count summary, an accuracy KPI report or a contract KPI definition in the pack (rejected at the draw):
+  a shipped count-based accuracy per centre ranks the centres on the decision question and gets it wrong
+  (Gate G, official decoy); the count rates stay the solver's own construction.
+- Architecture 2's first paper design (written against main at 045b245, committed at 8adfec6): a six-rung
+  ladder, a two-paragraph `prompt.md` that named the account director, the gate's own shares drawn as the
+  chart, and the estimator left open with no filed criterion. Superseded at 3966e83: the ladder is now four
+  rungs; the prompt is a one-paragraph `prompt.txt` with no persona; a chart ordered and titled on the
+  decision quantity is banked by the response that lands the call (supplemental-stumping 1.4), so the chart
+  moved onto ask B's forecast cases; and under PR #39 and its follow-up the estimator is forced by the design with Thornacre 4.5 (an
+  estimate a full count at the measurement time would be expected to bear out), which the data settles.
+- Architecture 2, round 1 (2026-10-11): the solver landed the call and cracked every ask (proxy 97.9). Its
+  path: "SCS-07 does not say how to model accuracy between counts; I read 4.5 as the expected accuracy at each
+  face's actual age on 7 Dec, fitted from routine counts": routine-count accuracy falls with days since the
+  face's previous count (class A about 98 per cent at 0 to 7 days, about 88 at 28), an exponential error rate
+  per centre and class fitted on the CYC counts and applied to every in-scope face's age from its last count
+  of any reason, a linear model within 0.1. That is the design's rung 3, found from a visible symptom. Every
+  ask device fell to the hygiene battery (one quantity per location over the repeated batch rows, the P10
+  changes over the 28 November list, eaches to cases, the closed trading days, the servicing map in force on
+  each date).
+- Hardening loop 1 on architecture 2 (paper, 2026-10-11): no rung above round 1's accrual model. With the
+  routine due dates on the class grid and a stationary error process, the age-conditional routine rate
+  describes the faces standing at the stand-down, so a rung needs an error rate that changes into the peak
+  (by handling it is task46's clock; by a dated cause the event study aligns it and the routine counts show
+  it by month) or counting whose timing depends on the face's state (a symptom in the routine counts, or a
+  reason code to classify). A persistent-cause layer, prototyped (20 per cent of faces at four times the
+  silent and loud rates, six seeds), moved round 1's estimate by 0.0 to +0.4 points while its class A
+  routine counts ran 3 to 10 points under the fitted curve at 8 to 21 days: a symptom with no flip.
+  Architecture 2 spent; re-rooted to architecture 3, the number's last
+  (`## Hardening loop 1 (architecture 2, paper)`). Do not redraw a gate decided by the state of units at a
+  moment rebuilt from checks that reset them, in any world.
+- 2026-10-13, architecture 3 draw: the paused 2026-10-12 draft made every crossing signal a 2027 event, so the curve read at the hour's flow reproduced every audit and only the forward window broke it (the validated decoy the rules block), its forecast stated arrivals steady through the hour (an official decoy) and its subdomain `other` serves no objective; redrawn with Hallett Avenue and Ravine Road signalled since 2025, midday audits that tie under both readings, no arrival sentence in the forecast, and the client domain moved to general-statistics-data-science (missing-data-censoring-measurement-error, which serves DQ).
+
+## Architecture 2 record (spent 2026-10-11)
+
+Architecture 2 (a third-party logistics operator's stock-record accuracy gate) as it stood when it was spent at hardening loop 1; it binds nothing. Its generator, pack, goldens, write-up and metadata were removed from this folder when architecture 3 was drawn (all in git history).
+
+### Draw
 
 **Status (2026-10-11).** Architecture 2, drawn and designed on paper by the designer against main at
 3966e83 (PR #39, literal determinism; PR #43, the methodology-first stumping skill, `precut.py` and
@@ -103,7 +341,7 @@ records at the stand-down.
   the dead "reflex correction" (rung 2 is one, so it cannot be decisive) and task46's usage-exposure law
   (kept out of the decisive step by placing the estimand where per-day and per-handling accrual converge).
 
-## Default path
+### Default path
 
 The pipeline a competent analyst builds without thinking, from the prompt's words and the files' grain:
 
@@ -118,7 +356,7 @@ The pipeline a competent analyst builds without thinking, from the prompt's word
 Ends on: no centre qualifies, so all eight stay on supervised replenishment
 Golden: Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth qualify; Thurrock and Doncaster stay on supervised replenishment
 
-## Stump sentence
+### Stump sentence
 
 A competent solver takes each centre's share of correct records from its count history as the share of
 count tasks that matched the record and finds that no centre qualifies, all eight held on supervised
@@ -130,7 +368,7 @@ records because they were wrong, while at 06:00 on 7 December each face is only 
 since its last count of any kind, and built face by face from the accrual since that count, read off the
 routine counts alone, Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth clear 97.0 per cent.
 
-## Three rules
+### Three rules
 
 - **Litmus:** no reported number or stakeholder conclusion is overturned. The pack reports no accuracy
   figure at all, every count row is a correct record of a real count, and what defeats the solver is the
@@ -162,7 +400,7 @@ routine counts alone, Hinckley, Daventry, Bellshill, Warrington, Magor and Avonm
 - **Rule 3 (the decisive step is analytical):** scope, the correct-record test, reason codes and the posting
   rule are filed and read the same by everyone; what separates the answers is the estimator.
 
-## Deletion tests and Gate G
+### Deletion tests and Gate G
 
 - **Gate G line:** mechanism `method_or_model_selection` (the estimator of the record population's state at
   the stand-down, chosen over count-based rates; the design forces it and Thornacre 4.5 states the
@@ -187,7 +425,7 @@ routine counts alone, Hinckley, Daventry, Bellshill, Warrington, Magor and Avonm
   and class gives Magor, or Magor and Hinckley; the natural operationalisation of 4.3 (each face's latest
   count result) gives Magor; the hygiene battery is clean. None lands.
 
-## The decisive step and the domain-coupling verdict
+### The decisive step and the domain-coupling verdict
 
 **The field's own method.** In a perpetual inventory a count is two things at once: it measures the record
 and then posts the confirmed count as the record. A record then goes wrong again only through the handling
@@ -216,7 +454,7 @@ C face at every centre with non-overlapping intervals, and the pooled day rate m
 routine match rate (SF13). Per handling, pooling is legitimate because the handling carries the class difference;
 per day it is not.
 
-## Readability screen
+### Readability screen
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex correction | 4 control bench | 5 hygiene battery | 6 linear arithmetic | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -225,7 +463,7 @@ per day it is not.
 | Rung 2, routine counts weighted to the in-scope class mix | no | the class column on the location master | fires: reweight to the population's cells | no | no | no | readable |
 | Rung 3 (decisive), each face's state at 06:00 from the accrual since its last count of any kind, read off the routine counts | no: Thornacre 4.3 and 4.5 name the estimand (what a full count at the measurement time would find) and its unbiasedness, and Corderoy's programme files when counts fall due and that a confirmed count is posted, as a real procedure must; no sentence names a face's time or handling since its last count, an age, a decay or a reset | no: no last-counted, age or days-since column ships; a face's last count is a group-by max, and the move is the accrual fit applied to every face, not a row predicate | no: not a reweight, stratification, shrinkage, analog, control or decomposition | no: no full count, audit sample, census, KPI or published accuracy ships, and nothing scores candidate estimators | no: counts tie, keys are unique per count task, every face joins, on the wrong path as on the right one | no: no reported figure exists to halve or subtract; the state is built face by face from a fitted accrual | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | Id | Term or convention in the main ask or the main computation | Golden reading | Alternative reading | Call under the alternative | Ruled out by |
 |---|---|---|---|---|---|
@@ -249,7 +487,7 @@ answers by misreading; the rung-2 solver reads 4.3 to 4.5 correctly and believes
 the estimate a full count would bear out, because it takes record accuracy as a stable property of a centre.
 That belief is the method error, and the data, not the text, refutes it.
 
-## Ladder
+### Ladder
 
 Four rungs, each a complete pipeline a competent analyst files, each naming a different set, each killed
 by one shipped fact or one construction.
@@ -298,7 +536,7 @@ larger share of its routine counts until rung 1 is at 96.5 or under while rung 2
 Avonmouth) qualify on no intermediate rung. The rung-collision guard recomputes every rung's set by name
 after each parameter change.
 
-## Closure table
+### Closure table
 
 | # | Axis | Reading and closing move |
 |---|---|---|
@@ -326,7 +564,7 @@ after each parameter change.
 | 22 | Forward window contents | the freeze bounds the forecast ask only; the call governs the freeze, which has not run |
 | + | The estimator (HOW, forced by the design, form 1, and by the standard's general requirement 4.5, form 2; no filed back-test) | per handling pooled or by class, per day by class, exponential or linear: same set and whole per cents (C1, asserted); per day pooled over the classes gives Magor and Hinckley and is ruled out by the routine counts' own structure, the class day hazards separated at every centre and the pooled day rate mis-predicting each class's routine match rate (C4 against the data, SF13, asserted); every count-based rate falls short of the full-count share by 1.0 to 3.6 points at every centre on the data's own accrual (C4, each cell mapped to 4.5); the UTC against local-day attribution of counts moves no main figure (C1, asserted) |
 
-## Literal reader
+### Literal reader
 
 Executed word for word, Thornacre's standard asks for the number of in-scope faces whose record a full
 count at 06:00 on 7 December would find correct, over the in-scope faces at that time (4.1 to 4.4), and it
@@ -353,7 +591,7 @@ standard would, that any estimate is the one a full count at the measurement tim
 out, which names no method. Form 3 (a filed back-test against a closed full count) is not used, so the pack
 ships no recognisable back-test organ and no full count that a solver could score estimators against.
 
-## Oracles
+### Oracles
 
 - None on the main path. No full count, audit sample, census, accuracy KPI, count summary or published
   accuracy ships, so nothing scores the candidate estimators and nothing confirms the answer.
@@ -366,7 +604,7 @@ ships no recognisable back-test organ and no full count that a solver could scor
 - Ask B: the forecast's network daily totals are the same under every servicing assignment, so they tie on
   every path; no centre-level forecast summary ships.
 
-## Ask sheet
+### Ask sheet
 
 Both asks are per centre, decoupled from the main computation (no count-history column, no accrual), and
 each is a component of each centre's case under H18: what the verdict puts at stake. The chart is built on
@@ -419,7 +657,7 @@ Pair ceiling: 32 (average of 47.75 and 14.75, rounded up; recomputed from the re
 **Reuse.** D6 reuses task20's repeated event quantity and D2's stored label reuses task98 v4's, both
 re-skinned; neither repeats this author's last builds.
 
-## Shape and criteria
+### Shape and criteria
 
 Shape 10, one file: each centre's gate check (share against the line, one criterion per cell), two further
 measures per centre and the chart's parts. The call (1), each centre's share and verdict (8), stock value per
@@ -428,7 +666,7 @@ centre (8), forecast cases per centre (8), the chart's bars, order, labels and t
 Magor, Hinckley, Thurrock and Doncaster read the same on rung 2 and the answer, which is why the asks carry
 the weight.
 
-## Prompt
+### Prompt
 
 `task229/prompt.txt`, one paragraph, 733 characters, question first ("whether" form), one file, rounding at
 the close; `voice-check.py task229` passes every rule:
@@ -446,7 +684,7 @@ It names no person, file, standard acronym, method, moment or trap word; the mom
 the estimate criterion live in Thornacre's standard. The 10/10 check: the answer turns on the estimator, not
 on a procedure or a field.
 
-## Stopping rule
+### Stopping rule
 
 Filed at ceiling, and re-rooted rather than repaired, if two consecutive in-house rounds land the call by
 the count-reset construction, or the portal lands it twice. One more repair is licensed when a round misses
@@ -454,7 +692,7 @@ the call but keeps 35 per cent or more of the ask weight (the ask layer only), o
 on the estimator that a pin naming an observable (never the move) closes. Three hardening loops, then
 re-root; this is the number's second architecture of three.
 
-## Builder's work order
+### Builder's work order
 
 Read this note from `## Draw` to here, `## Tried and rejected` first, and `pipeline.json`; invoke
 `dataset-generation`, `determinism-check`, `supplemental-stumping` (Parts 2 to 5), `submission-writeup`
@@ -546,7 +784,7 @@ estimate at least 0.2 from an x.5 edge; the private truth at least 0.6 from 97.0
 the chart's title flipping under ask B's primary device. If a margin cannot be met without changing a rung,
 commit and hand back to a designer.
 
-## Coordination and registration
+### Coordination and registration
 
 This card registers after task228's next architecture (the coordination of 2026-10-11: cards dated today
 sort task228, task229, task230). At registration the main session copies the scratch card into
@@ -554,7 +792,7 @@ sort task228, task229, task230). At registration the main session copies the scr
 new card, and answers any new WARN here; a BLOCK goes back to the author. The builder does not start before
 the card is registered.
 
-## Build record (architecture 2, stage 3)
+### Build record (architecture 2, stage 3)
 
 **Built 2026-10-11 by the builder from the work order; no rung, pin or decisive step changed.** Generator
 `task229/generator/` (`world`, `simulate`, `estimate`, `asks`, `docs`, `golden`, `checks`, `verify`, `make`, plus
@@ -629,12 +867,12 @@ the chart's order and its title all missed (the run's depots put Thurrock first)
   summary (bookings over the freeze): each is a forward date a real extract carries on the day of the pull; the
   allow-list is exactly these six files (H16).
 
-## Hardening loop 1 (architecture 2, paper)
+### Hardening loop 1 (architecture 2, paper)
 
 **Inputs (2026-10-11).** Round 1 (`solver_rounds/round-1-architecture-2.md`, the round's row and brief in
 `pipeline.json`): the call landed, every ask item cracked, proxy 97.9. Designer pass on paper; no data cut.
 
-### Default path, rewritten from round 1
+#### Default path, rewritten from round 1
 
 1. Read SCS-07 v3 (scope 4.1, the correct-record test 4.2, the estimand 4.3, the measurement time 4.4, the
    estimate a full count then would be expected to bear out 4.5, the 97.0 per cent line 5.1) and CP-THN-04
@@ -654,7 +892,7 @@ Ends on: Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth qualify;
 on supervised replenishment. The golden is the same six, so the ladder as drawn carries no stump (`stumping`
 1.5): the competent default construction is the decisive rung.
 
-### What kept four solvers off the call, and how this build differs
+#### What kept four solvers off the call, and how this build differs
 
 - **task182** (round 1, missed at the coal-measures counterfactual): its control regression on the far-field
   coal-measure bore fitted the pre-take record closely, but that bore was itself being drawn down as the cone
@@ -674,7 +912,7 @@ on supervised replenishment. The golden is the same six, so the ladder as drawn 
   the estimand is filed literally and was executed exactly; no reading is left to lean on, and leaning on one
   would repeat task445's failure.
 
-### The search for a rung above round 1's model
+#### The search for a rung above round 1's model
 
 **What a rung needs.** Round 1's accrual model completes, its checks pass, and the answer is still wrong; the
 step is the stock-control field's own; no symptom reaches the solver's exploration; nothing is planted; it is
@@ -715,6 +953,7 @@ build whose call lands (both top responses bank about 45 before an ask, `supplem
 the only fixes that would stop this solver are a plant or a symptom it would follow. A second round on this
 ladder would spend a round on a pack that cannot hold, so architecture 2 is spent after one landing and the
 number re-roots to architecture 3, its last, drawn fresh at stage 1.
+
 
 ## Architecture 1 record (spent 2026-10-11)
 
@@ -1526,428 +1765,3 @@ client's automated replenishment may run on unattended.
   the call is made.
 - The containers show generation: the PDF keeps ReportLab's page preamble and ProcSet under an overwritten
   producer, and the workbooks carry styles Excel does not write.
-
-## Tried and rejected
-
-- Keeping the seed's product-analytics crash-rate world: a per-user crash rate is a product health
-  metric, not the health of data or of a pipeline, so the build would retag as Anomaly Detection
-  without changing a word; and task228 holds product-analytics in this objective on the same day,
-  so the pairing would block on `ban.pairing` at the heart check.
-- First cut of PX5.2.7's late data as partial-day misses (16:00 to 24:00) that the overnight delivery
-  already carried as substituted reads: a solver who applied the cut-off clause to the rows it held
-  reached PX5.2.7's fire with no further thought. Replaced before any round with whole-day misses that
-  leave the MDM no version of the register-day until its 06:30 estimate.
-- First rounding-edge assertion measured distance to the bin centre instead of to the x.xx5 edge;
-  caught on review, fixed in `tune.py` and `checks.py`, salts re-chosen.
-- Architecture 1, round 1 (2026-10-11): both solvers landed the call and every scorecard figure
-  (plain 91.3, skeptic 87.4). Plain path: "a build's read health is the mean of its installations'
-  read health; its lower limit is 99.50 minus 3 x (sample standard deviation / square root of n)",
-  read straight off section 4.2 and 5.2, with the cut-off, the register denominators and the full-week
-  population executed as written. Every decisive step was a filed formula, which is the dead shape
-  "a committed figure that is the output of a filed formula". Brief: keep the world and the call shape,
-  and move the decisive step into the error the measure needs when outages are shared by the meters
-  behind one comms node, which no formula in the pack spells out.
-- Hardening loop 1, first draft (pooled share with a node-level error, never shipped): making the
-  stated measure the pooled share of reads, as the brief first proposed, put the 5-minute
-  three-register installations in charge of the installation-level ratio error, which then held
-  EM3.12.2 on its own, and split the natural route between a binomial read count and a ratio error,
-  so the decisive rung stopped being the one step every solver takes. The filed mean stays, and the
-  natural error stays the one round 1 wrote.
-- Hardening loop 1, node failures on the access points carrying PX5.2.7 and PX5.3.0, and on the
-  older-suburb collectors carrying EM3.12.1: with fourteen and eleven nodes, one failure there widens
-  a genuinely degraded build's error until it holds, which buries the signal the alert exists for.
-  The tuned week keeps those nodes clean, so the builds that fire do so on a spread-out shortfall and
-  the node grain only bites where nodes failed.
-- Architecture 1, loop 1, round 2 (2026-10-11): both solvers missed the call at R4 (the stump held).
-  Plain path: "Assessed = IN_SERVICE meter, NMI with no meter change, no activation inside the week ->
-  6729 installations; mean, sample SD, SE, LL per build; fire if mean < LL -> 5 fire, 3 hold"; both
-  filed fire on EM3.12.0, EM3.10.9, PX5.2.7, EM3.12.1 and EM3.12.2 and set Wave 8 onto EM3.12.2 to 0,
-  and both set the node field aside "because the standard sets no exclusions for them". The asks
-  leaked: `grade.py` scored each 54.5 (the fire-and-hold item's only gradable tokens are its two verbs,
-  so any list scores it, and a Wave 8 answer that quoted the eligible 1,274 beside its 0 scored that
-  item too); read honestly, each kept the read-health figures, PX5.3.1's Wave 8 figure and the whole
-  Wave 7 ask, about 37 points, under 40 but with no margin. Decision: harden the ask layer (loop 2):
-  drop Wave 7, add the distance from the limit and 6.1's substitution load, and merge the lists into
-  the scorecard item.
-- Loop 1's leak reader (round 2) found the outage carve-out route: setting the four node failures aside
-  with the installation-level error landed the committed list with EM3.12.0 within 0.006 of its limit.
-  Closed in loop 2 by raising EM3.12.0's own gap and outage rates so every carve-out fires EM3.12.0 by
-  0.15 (`## The outage carve-out route`).
-- The first ship (architecture 1, loop 2, judge pass 1 APPROVE), failed at the portal's determinism QC
-  on 2026-10-11 with both reviewers (R1 `competing_defensible_answer`, R2 `underspecified_objective`,
-  both fixing in the input files): MDS-STD-114 named the three-standard-error limit but not what the
-  standard error measures, and its 7 ("standard deviations are sample standard deviations ... and
-  standard errors are built from them") with 4.3 ("only the build's own assessed installations enter its
-  read health and its standard error") read literally as sample SD over root n across installations,
-  which fires EM3.12.0 and EM3.12.2; the reason to build the error over the nodes lived only in the
-  write-up's step 6, which no solver sees. The stump itself held (both portal models diverged, rubric
-  under 50). Lesson: a decisive estimator the shipped files do not force is a competing defensible
-  answer however much better it is; define the estimand in the filed text so the naive method breaks a
-  filed definition, and name no estimator (naming it is rule application). Its domain, Energy Systems &
-  Utilities with no task type serving Data Quality Monitoring, was called a backdrop by the in-house Gate
-  H pass (a general-statistics clustered error in an energy setting) and is re-filed.
-- Rework 1 on architecture 1 (2026-10-11): MDS-STD-114 4.4 filed the standard error's estimand with
-  "installations whose read losses move together are one unit ... not independent ones", and 7 the divisor
-  over "independent units (4.4)". The solver's-eye reader quoted both for question 1, took the unit from the
-  field reference's comms_parent row, clustered on its first pass and reproduced the committed lists in the
-  committed order. A filed estimand that names co-moving losses hands the decisive step to a strong analyst
-  (H3, worth-it gate). 7's wording also makes SD of collector means over root G look compliant, which holds
-  EM3.10.9. Architecture 1 spent; re-root recommended (`## Verdict after the rework's leak read`).
-- Architecture 1 re-rooted (the author's decision, 2026-10-11). Its decisive move, the unit a build
-  mean's standard error is built over, was binary on a documented field: left unfiled, the portal's
-  two determinism reviewers called the installation-level error a competing defensible answer; filed as
-  an estimand, the leak reader clustered on its first pass. Its first domain (Energy Systems &
-  Utilities) read as a backdrop under Gate H (H1). Do not redraw a gate decided by how a standard
-  error is built over units that share a parent, in any world.
-- Architecture 2's paused draft, decisive step weighting counted locations by the inverse of their
-  stratum's counted share (dropped at the draw, 2026-10-11): under stumping Part 2's domain-coupling rule
-  it is the generic reweighting the in-house solvers landed on task228 (rounds 3 and 4) and task230
-  (rounds 1 and 2), and its estimand (accuracy over the window, each location once) made that reweighting
-  the answer. Kept as the textbook rung of the redrawn ladder, where it lands on Magor alone.
-- Exposure in handling rather than calendar days as the decisive step (rejected at the draw): it is
-  task46's insight (a rate law stationary only in cumulative usage, so calendar-age routes underbuy) and
-  needs a forward window whose volumes change; the estimand sits at the stand-down, where per-transaction
-  and per-day accrual agree within 0.17 points (prototype 2), so the exposure choice is never the stump.
-- Exception counts ignored as resets (accrual fitted on routine-to-routine intervals, resets at routine
-  counts only) as a rung (rejected in prototype 2): its two errors cancel (older ages lower the share,
-  longer intervals with fewer misses raise it) and it lands on the golden set within 0.2 points.
-- Audit projection of count differences to the book (monetary-unit sampling, taintings, the upper
-  misstatement limit) as the decisive step (rejected at the draw): under PPS the point projection is the
-  Horvitz-Thompson reweighting the solvers land, the bound methods (Stringer, cell, normal) disagree with no
-  filed criterion to choose among them, and a book-value misstatement is not what an unattended
-  replenishment gate turns on.
-- Non-blind count confirmation corrected with a blind audit subsample (sensitivity and specificity) as the
-  decisive step (rejected at the draw): checking one instrument against a better reference is the
-  cross-check reflex (task228's landing on collocation), and setting the non-blind counts aside is a
-  natural partial route whose result the design could not force.
-- A pre-peak count blitz that finds and fixes the accumulated errors (rejected at the draw): a dated spike
-  of counts with a low match rate makes the reset visible to the event-study opponent, and it is Pattern
-  A's resolving-candidates shape.
-- An estimand three days after the data closes (rejected at the draw): it would settle the in-house
-  instrument-repair question, but carrying the records forward over days with no counting invites decay
-  reasoning that leads straight to the reset; the estimand sits at the stand-down, where the export closes,
-  and the judge's own clean-data test passes.
-- A count summary, an accuracy KPI report or a contract KPI definition in the pack (rejected at the draw):
-  a shipped count-based accuracy per centre ranks the centres on the decision question and gets it wrong
-  (Gate G, official decoy); the count rates stay the solver's own construction.
-- Architecture 2's first paper design (written against main at 045b245, committed at 8adfec6): a six-rung
-  ladder, a two-paragraph `prompt.md` that named the account director, the gate's own shares drawn as the
-  chart, and the estimator left open with no filed criterion. Superseded at 3966e83: the ladder is now four
-  rungs; the prompt is a one-paragraph `prompt.txt` with no persona; a chart ordered and titled on the
-  decision quantity is banked by the response that lands the call (supplemental-stumping 1.4), so the chart
-  moved onto ask B's forecast cases; and under PR #39 and its follow-up the estimator is forced by the design with Thornacre 4.5 (an
-  estimate a full count at the measurement time would be expected to bear out), which the data settles.
-- Architecture 2, round 1 (2026-10-11): the solver landed the call and cracked every ask (proxy 97.9). Its
-  path: "SCS-07 does not say how to model accuracy between counts; I read 4.5 as the expected accuracy at each
-  face's actual age on 7 Dec, fitted from routine counts": routine-count accuracy falls with days since the
-  face's previous count (class A about 98 per cent at 0 to 7 days, about 88 at 28), an exponential error rate
-  per centre and class fitted on the CYC counts and applied to every in-scope face's age from its last count
-  of any reason, a linear model within 0.1. That is the design's rung 3, found from a visible symptom. Every
-  ask device fell to the hygiene battery (one quantity per location over the repeated batch rows, the P10
-  changes over the 28 November list, eaches to cases, the closed trading days, the servicing map in force on
-  each date).
-- Hardening loop 1 on architecture 2 (paper, 2026-10-11): no rung above round 1's accrual model. With the
-  routine due dates on the class grid and a stationary error process, the age-conditional routine rate
-  describes the faces standing at the stand-down, so a rung needs an error rate that changes into the peak
-  (by handling it is task46's clock; by a dated cause the event study aligns it and the routine counts show
-  it by month) or counting whose timing depends on the face's state (a symptom in the routine counts, or a
-  reason code to classify). A persistent-cause layer, prototyped (20 per cent of faces at four times the
-  silent and loud rates, six seeds), moved round 1's estimate by 0.0 to +0.4 points while its class A
-  routine counts ran 3 to 10 points under the fitted curve at 8 to 21 days: a symptom with no flip.
-  Architecture 2 spent; re-rooted to architecture 3, the number's last
-  (`## Hardening loop 1 (architecture 2, paper)`). Do not redraw a gate decided by the state of units at a
-  moment rebuilt from checks that reset them, in any world.
-
-## Architecture 3 draft (phase A, stopped by the author on 2026-10-12, partial, card unregistered)
-
-The author stopped all work on 2026-10-12 at about 00:15 UTC while a designer was drawing architecture 3 on paper. What it had written is kept below verbatim, headings demoted one level, as the starting point for the next designer. It is not a design: it has the draw, the default path, the stump sentence, the three rules and the deletion tests, and it is missing the readability screen, the semantic fork table, the ladder, the closure table, the literal-reader line, the oracles, the ask sheet, prompt.txt and the builder's work order. Its card is drafted but never checked against the window at registration or registered; the draft card follows the text.
-
-## task229 design note
-
-Seed DQ02 (whether the release-health alert fires on this week's build, when the metric is the
-average user's rate), objective Data Quality Monitoring & Alerting.
-
-**Where the build stands (2026-10-12).** Architecture 1 (a smart-meter data provider's read-health
-alert, decided by the unit a build mean's standard error is built over) is spent: it failed the portal's
-determinism QC and its estimand rework was cracked on the leak reader's first pass. Architecture 2 (a
-third-party logistics operator's stock-record accuracy gate, decided by each record's state at one moment
-rebuilt from the accrual since its last count) is spent: round 1 landed the call and every ask, and
-hardening loop 1 found no rung above the solver's accrual model. **Architecture 3, the number's last, is
-drawn here on paper** (designer pass, phase A, 2026-10-12): a new world and a new client domain, a city's
-permanent cycle-counter network in urban and regional science, with the objective kept. The sections from
-`## Draw` to `## Builder's work order` are architecture 3's and bind the build. Architecture 2's design and
-build record is `## Architecture 2 record (spent 2026-10-11)` and architecture 1's is
-`## Architecture 1 record (spent 2026-10-11)`; neither binds anything. Architecture 2's generator, pack,
-goldens, write-up, metadata and leak report are removed from this folder (all in git history at b569668).
-
-### Draw
-
-| Axis | Draw |
-|---|---|
-| Card | `.claude/skills/fingerprint/cards/task229.json` v3, drawn and registered 2026-10-12 (commit 834f2fc); architectures 1 and 2 in `lineage` with their fates |
-| Domain / task type | urban-regional-science / other: the data health of a city's permanent cycle-counter network (active-travel monitoring), a client domain never built for this objective |
-| Objective | Data Quality Monitoring & Alerting: the object is the health of the counter data (the share of passing cyclists each counter records) and the call is a monitoring decision (from which month each site's counts must be upgraded or flagged under the fund's condition) |
-| Shape | 13, scenarios and the flip point: the season's months are the scenarios, each site's earliest failing month is graded, and the asks carry the 2026 baselines |
-| Gate G mechanism | binding_constraint: the crossing signal's red phase is the constraint the default path never checks, and it removes sites from the compliant set without replacing any |
-| Gap / pattern / generators | objective then time / none / G7 (decisive: operating window, a cyclist leaving a signalled crossing passes the counter only in the trail's interval), G13 (the season's months, the dates the crossings switch on) |
-| Decision type / answer unit / question form | date_or_period / date_or_period / when (all three never drawn on any card before this one) |
-| Stump strategy | binding_constraint; decisive rule filed: yes (the counting standard files the capture estimand and the 90 per cent condition, and the maker's report files the capture at a steady flow; nothing files the flow a gated stream crosses the loop at); official decoy: no; validated decoy: no |
-| Calibration form | gold_standard_subsample: the contractor's 2025 and 2026 video audits certify the loop's capture curve, every one at a site where cyclists reached the loop unsignalled |
-| Context artifact | monitoring_export (the counter portal's per-site exports) |
-| Role, forum, forcing event, organisation | the lead of the city's cycle-counting programme (field_unit_lead); the provincial active transportation fund that part-funds the network and sets its monitoring condition (funder_or_donor); the four crossing signals switching on in May and June 2027 (launch_or_rollout); a city's transportation department (local_government) |
-| World | Canada, Alberta: the fictional City of Pembury; the Old Spur Trail (a rail trail), the Old Spur Trail Crossings Upgrade, Tallis Counting Systems (the counter maker), the Pembury Region Travel Model; CAD |
-| People | Phyllis Thompson (counting programme lead, writes the inventory and the maintenance log), Brandon Holden (signals engineer, signs the crossing design summary), Teresa Chen (transport modeller, issues the forecast); drawn with `guard.py names --geo "Canada, Alberta"` (seeds 229 and 2290) and checked by hand against every card's people: Troy, Margaret, Veronica and the surname Brown were dropped as last-twelve repeats |
-| Layer 2 | field_method, `own:signal-gated-arrivals-set-a-counter-loop-capture` |
-| Deliverables | `counter_season_2027.xlsx`, `trail_baseline_2026.png` |
-
-**Data-native sentence.** On a rail trail whose four arterial road crossings switch from give-way to
-signal control on 3 May and 7 June 2027, every cyclist who reaches the loop 40 metres beyond a crossing has
-started across inside the trail's 18 to 22 second walk-and-bike interval of a 90 to 110 second cycle, so on
-those four channels the flow over the loop while cyclists pass it is four and a half to six times the hour's
-average, and a loop whose capture falls as the flow over it rises records far fewer of them than the hour's
-average says.
-
-**Guard.** `guard.py check` PASS and `guard.py heart task229` PASS against the window the 2026-10-12 date
-gives (task230 v2 from its branch `perssathya/task230-event-volume-drop`, task445, task446), run on a
-scratch copy of the cards folder holding task230's branch card; re-run after merging main (task135 v2,
-dated 2026-10-11, sorts outside the window). One WARN on the first check, `repeat.deliverables` (svg plus
-xlsx against task446), answered by moving the chart to PNG. Nearest drivers 0.10 (task94 v2 lineage, an
-eight-week rolling minimum on a period plan) and 0.05 (task115, task95, task181 v2): different moves.
-Furniture clear of the window: no committee_or_panel, professional_services, operations_director,
-capacity_report, customer_or_counterparty, financial_institution, budget_or_appropriation or
-purchase_order_or_contract. task135 v2 also carries G7 decisive (dated 2026-10-11, inside the last twelve):
-its structural keys (time, G7, dial_setting; time, G7, method_or_model_selection) differ from this card's
-(objective, G7, date_or_period; objective, G7, binding_constraint), and its move is a growth share under a
-dial, not a gated flow.
-
-**One line per source read.**
-- task133 (held on the portal for one model): its divisor sat in a second file the natural pipeline never opened. What transfers is the shape of the miss, a deciding quantity outside the frame the solver's own checks test; here the frame is the counters' own records and audits and the deciding quantity sits in the crossing design summary. The move differs (a base for a conditional rate there, the flow a nonlinear capture is read at here).
-- task182 (held in-house): the solver's regression fitted and reconciled while the deciding process (the aquifer's long memory) acted outside its window. Transfers: the default construction is complete and validated on the closed record; here the validation (the audits) is blind to the signals by construction.
-- task446 (held in-house): the solver's candidate bases lacked the one that carries to the new condition. Transfers: the default uses a correct quantity on the wrong basis; here the basis is the flow over the loop, not a base rate.
-- task445: its portal miss came from a literal reading of a filed clause, a fork. Avoided: the gated flow is forced by the summary's sentence that cyclists start crossing only in the walk-and-bike interval and by the maker's steady-flow definition, and the default is an easy method on the same literal estimand (`## Literal reader`).
-- Client exemplars, supply-chain-logistics.md (Rail Grade Crossing Safety Programs, 0.17; Port Grain Export Loading, 0.49) and product-analytics.md (SaaS Usage Allowance Pricing, 0.20): the depth is a per-site construction graded site by site; their withheld-method architecture is capped and not used.
-- layer2-rigor-patterns: healthcare-delivery "Size beds by blocking probability, not occupancy" (a response that is nonlinear in load read at the average load) and urban "Transit access depends on departure minute" (a quantity that varies within the period it is averaged over). This build's own version: a counter's capture read at the flow a signal compresses each cycle into.
-- `_measured.md`: #13 validates on one population, applies to another (the audits' sites were all unsignalled), #7 uses the ready-made measure (the audited capture), #11 beats the headline trap and misses the quiet one (the quarter-hour peaking).
-- `proven-in-production.md`: L1 (the audits certify the curve and are blind to the gate, because no audited loop had a signal before it), L7 (the naive basis is excellent on the closed record), L8; Part 4 checked: the decisive cause is not dated in the history (no record before 3 May 2027 carries a signal at the trail), no filed formula decides (the curve is filed; the flow it is read at is not), no forward population is named by a clause.
-- The brief's spent list, checked: not the unit of a standard error, not a check that resets what it measures, not renewal, not the exposure clock, not source independence, not errors-in-variables, not regression to the mean or shrinkage, not late-arrival maturity, not comparison-pool composition, not prevalence and human detection, not competing exits, not transport (task124's analogs held down by an intervention), not repeated looks, not reweighting to a mix, not a frailty layer; and none of this block's later seeds (DQ04 to DQ25) sits in urban and regional science or turns on a gated flow.
-
-### Default path
-
-What this solver does (it explores, fits, checks residuals and reconciles), on the files as planned:
-
-1. Reads the counting standard (a site meets the condition for a month when, in each direction, its loop records at least 90 per cent of the cyclists who pass over it in the month's weekday peak hours, 07:30 to 08:30 and 16:30 to 17:30 local time; the season is April to October), the fund's monitoring condition, the inventory (16 sites, their channels and positions), the Tallis test report (at a steady flow of N cyclists a minute over the loop, the loop records 99.6 minus 0.55 N per cent, tested 0 to 60 a minute in each direction), the 2027 forecast workbook (each site's weekday morning and evening peak-hour cyclists by direction and month, arrivals steady through the hour) and the crossing design summary.
-2. Explores the 2026 exports and the contractor's video audits: every audited channel's recorded share sits within a point of the curve at its audited flow, so the curve describes the loops; the residuals show no pattern by site type, counter model or month (the back-test passes).
-3. For every site, direction and month, turns the forecast peak-hour flow into cyclists a minute (flow over 60), reads the capture off the curve, and weights the morning and evening hours by their cyclists to get the month's capture.
-4. Checks: every flow inside the curve's tested range, the forecast's link totals reconciled to its site rows, no site above the loop's rated flow, and a sensitivity on the curve's slope that moves no verdict.
-5. The careful variant replaces each hour's flow with its busiest quarter hour, using each channel's 2026 peak-quarter factor, and gets Cutler Bridge from June and Lowgate Bridge from August.
-6. Files the schedule: Cutler Bridge falls below the line from July and every other site holds through October.
-
-Ends on: Cutler Bridge from July; the other fifteen sites hold the 90 per cent standard through October
-
-Golden: Old Spur Trail at Hallett Avenue and at Ravine Road from May, at Gorse Street and at Mallory Drive from June, and Cutler Bridge from July; the other eleven sites hold through October
-
-(Planned on the paper prototype `proto3/ladder2.py`; the builder re-tunes the world, keeps the schedule's shape and re-asserts both lines from the cut pack.)
-
-### Stump sentence
-
-A competent solver reads each channel's 2027 capture off the counter maker's steady-flow curve at the forecast weekday peak-hour flow, finds that the curve reproduces every video audit, and files that only Cutler Bridge falls below the 90 per cent standard, from July, while the other fifteen sites hold through October; the step that lands it there is taking the hour's average flow as the flow over the loop, when the four Old Spur Trail crossings that switch to signal control on 3 May and 7 June release each cycle's cyclists inside an 18 to 22 second walk-and-bike interval, so the channel 40 metres beyond each crossing carries four and a half to six times the hour's flow while cyclists pass it and records under 90 per cent from the month its signal starts: Hallett and Ravine from May, Gorse and Mallory from June.
-
-### Three rules
-
-- **Domain test:** The deciding quantity is the flow at which cyclists actually cross a counter's loop, and traffic signal control sets it: a crossing signal releases each cycle's cyclists inside its walk-and-bike interval, so beyond the crossing the flow while they pass is the cycle's cyclists over that interval, several times the hour's average; with another field's nouns there is no signal cycle gating arrivals and no loop whose capture falls with the flow over it, so the task does not survive the swap.
-- **Analyst test:** A strong analyst who cleans every export and reads the counting standard, the maker's curve and the crossing design summary correctly applies the curve at each channel's forecast peak-hour flow and files that only Cutler Bridge drops below 90 per cent (from July), because nothing the hour's average shows changes at the trail; the four trail sites beyond the newly signalled crossings fall below the standard from May and June.
-- **Layer 1:** per-site counter portal exports at 15-minute grain, one CSV per site, whose channel numbering runs past the bicycle loops into infrared beams at combined sites; interval stamps in local standard time all year on the trail counters' firmware family against local clock time with daylight saving on the older family; the trail loops re-terminated during the June 2026 resurfacing, the inventory keeping the installation directions; two loops in one direction on the two widest trail sections, exported under one direction label; trail chainage in the crossing summary against map coordinates in the inventory, joined through a trail centreline file; a forecast workbook keyed by model link with a link-to-site lookup; the crossing summary issued as a PDF whose timing sits in tables; video audits from a contractor timed in local clock time. None of it touches the main call's decisive step (`## Ask sheet`, separation).
-- **Layer 2:** field_method. The shortcut a capable analyst takes is reading a flow-dependent capture at the period's average flow; the expert sees that a crossing signal concentrates every cyclist leaving the crossing into the trail's interval, so the loop beyond it works at the cycle's cyclists over the interval. Nothing filed says so: the summary states how the crossing operates, the maker states the curve, the standard states the estimand.
-- **Stump class:** analytical. Litmus: no reported figure is overturned; the curve, the audits, the forecast and the timing plans are all correct. Not planted (the signals are the city's own upgrade in the forward window), not data semantics (no field read two ways decides; `## Semantic fork table`), not rule application (no filed rule relates a signal to a counter's capture).
-- **Objective's discriminating test:** retagged as Forecasting it fails, because the 2027 flows are given and the analysis is the counters' capture of them; retagged as Anomaly Detection it fails, because nothing in any record is anomalous. The call is forward facing: the 2027 season has not opened.
-
-### Deletion tests and Gate G
-
-- **Delete every wrong number:** none is planted; still hard.
-- **Clean-data test:** repair every Layer 1 file (the trail exports' stamps and channel order, the beam channels, the forecast's link lookup, the chainage join) and the call and the default answer do not move, because the main path reads none of them (asserted by the builder).
-- **Lens swap:** no. The default and the answer read the same curve at two different constructions of the flow over the loop.
-- **Identity:** capture is recorded over passing; passing is the forecast and 2027 recordings do not exist, so the identity closes over nothing shipped.
-- **Corpus direction:** in every video audit the cyclists reached the loop unsignalled, because the trail crossings were give-way until May 2027 and every audited path and cycle-track site sits 300 metres or more from a signal; so the audits reproduce the curve on the naive read and say nothing about a gated channel (L1).
-- **First moves:** the forecast group-by, the curve at the forecast flows, the audit back-test, the busiest-quarter refinement and the hygiene battery each end on a rung below the answer.
-- **Gate G:** mechanism binding_constraint; `surface_read_dependency: no`, `stumping_family: analytical_non_defect`, `sole_data_defect: no`.
-
-### Draft card (unregistered)
-
-```json
-{
- "task": "task229",
- "architecture": "v3",
- "drawn": "2026-10-12",
- "slot_note": "seed DQ02 (release-health alert on the average user's rate). Architecture 1 (a smart-meter data provider's read-health alert, decided by the unit of the build mean's standard error) is spent on the portal's determinism QC and the cracked estimand rework; architecture 2 (a third-party logistics operator's stock-record accuracy gate, decided by the state of each record at one moment rebuilt from the accrual since its last count) is spent at hardening loop 1. Architecture 3, the number's last, keeps the objective and re-roots in a new world and a new client domain: a city's permanent cycle-counter network in urban and regional science, decided by the flow at which cyclists actually pass a loop once a crossing signal gates them.",
- "domain": "urban-regional-science",
- "subdomain": "other",
- "client_domain": "urban-regional-science",
- "niche": "a city's permanent cycle-counter network: from which month of the 2027 counting season each counter site will record fewer than nine in ten of the cyclists passing it in the weekday peak hours, once four rail-trail crossings become signal controlled and cycling grows through the season",
- "objective": "data-quality-monitoring",
- "shape": "13",
- "decision_type": "date_or_period",
- "answer_unit": "date_or_period",
- "answer": "Upgrade or flag the Old Spur Trail counters at Hallett Avenue and Ravine Road from May 2027, at Gorse Street from June and at Mallory Drive from July, and the Cutler Bridge counter from August; the other eleven sites hold the 90 per cent capture standard through October (planned; the builder confirms it from the cut pack).",
- "answer_source": "design note, planned schedule (prototype proto3/ladder.py); replaced by the golden at ship",
- "gap": [
-  "objective",
-  "time"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G7",
-  "G13"
- ],
- "gate_g": "binding_constraint",
- "calibration_form": "gold_standard_subsample",
- "stump_strategy": "binding_constraint",
- "decisive_rule_filed": true,
- "official_decoy": false,
- "validated_decoy": false,
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who cleans every counter export and reads the counting standard, the counter maker's capture curve and the crossing design summary correctly applies the curve at each channel's forecast 2027 weekday peak-hour flow and files that only the busiest bridge drops below 90 per cent (in August), because nothing the hour's average shows changes at the trail; the four trail sites just beyond the newly signalled crossings fall below the standard from May, May, June and July.",
- "domain_test": "The deciding quantity is the flow at which cyclists actually cross a counter's loop, and traffic signal control sets it: a crossing signal releases each cycle's cyclists in its green, so beyond the crossing the flow while they pass is the cycle's cyclists over the green, several times the hour's average; with another field's nouns there is no signal cycle gating arrivals and no loop whose capture falls with the passing flow, so the task does not survive the swap.",
- "layer2_family": "field_method",
- "layer2_pattern": "own:signal-gated-arrivals-set-a-counter-loop-capture",
- "layer1": [
-  "per-site counter portal exports at 15-minute grain, one file per site, with channel numbering that runs past the bicycle channels into pedestrian infrared channels at combined sites",
-  "interval stamps in local standard time all year on one firmware family against local clock time with daylight saving on the other",
-  "two loops in one direction on the widest trail sections, exported under one direction label",
-  "trail chainage in the crossing design summary against map coordinates in the counter inventory",
-  "a forecast workbook keyed by travel-model link, with a link-to-channel lookup",
-  "a crossing design summary issued as a PDF with its timing tables",
-  "video audit counts at 15-minute grain from a separate contractor, timed in local clock time"
- ],
- "context_artifact": "monitoring_export",
- "stakeholder_role": "the lead of a city's cycle-counting programme, who has to tell the provincial active transportation fund which counter sites will meet its 90 per cent capture condition through the 2027 season, and from which month each of the others must be upgraded or its counts flagged",
- "role_family": "field_unit_lead",
- "scoring_unit": "other",
- "spine": {
-  "file": "per-site counter portal exports for 2026, one CSV per site, 15-minute counts by channel",
-  "rows": 0,
-  "entity": "one 15-minute count on one counter channel (an inductive loop for one direction of cycling, or an infrared beam for pedestrians at combined sites) at one counter site",
-  "grain": "counter channel x 15-minute interval",
-  "source": "synthetic"
- },
- "forum": "funder_or_donor",
- "forcing_event": "launch_or_rollout",
- "org_family": "local_government",
- "world": {
-  "geography": "Canada, Alberta (a fictional mid-size city)",
-  "currency": "CAD",
-  "org_type": "a city's transportation department running a permanent cycle-counter network, funded in part by a provincial active transportation fund",
-  "invented_names": [
-   "City of Pembury",
-   "Old Spur Trail",
-   "Tallis Counting Systems",
-   "Pembury Region Travel Model",
-   "Old Spur Trail Crossings Upgrade"
-  ],
-  "people": [
-   "Phyllis Thompson",
-   "Brandon Holden",
-   "Teresa Chen"
-  ]
- },
- "deliverables": [
-  "counter_season_2027.xlsx",
-  "trail_baseline_2026.png"
- ],
- "opening_move": "question-first",
- "question_form": "when",
- "driver": "The decisive quantity is the rate at which units pass a counting point while they actually pass, which a gate upstream confines to a short open phase of each cycle; a counter whose capture falls as that rate rises records far less of a gated stream than the period's average rate implies, so a capture curve validated where arrivals were ungated and applied at the average rate passes points that the new gate pushes below the standard.",
- "driver_concrete": "Four Old Spur Trail crossings of arterial roads become signal controlled in May and June 2027, so every cyclist reaching a counter loop 40 metres beyond a crossing in that direction passes during the trail's 18 to 20 second green of a 90 to 110 second cycle; the Tallis loop records 0.55 points fewer for every extra cyclist a minute of steady flow, so at the green-phase flow (four and a half to six times the hour's average) those channels fall below 90 per cent from the month their signal starts, while every video audit that certifies the loop's curve was taken where cyclists arrived unsignalled.",
- "stump": "A competent solver applies the counter maker's capture curve to each channel's forecast 2027 weekday peak-hour flow (and, if careful, to the busiest quarter hour) and files that the network holds the 90 per cent standard all season except Cutler Bridge in August; the step that lands it there is taking the hour's average flow as the flow cyclists cross the loop at, when at the four Old Spur Trail crossings signalled from May and June every cyclist leaving a crossing passes the loop 40 metres on inside the trail's green, so those four sites fall below 90 per cent from May, May, June and July.",
- "mechanism_source": "design_note",
- "differentiation": {},
- "lineage": [
-  {
-   "architecture": "v1",
-   "drawn": "2026-10-11",
-   "fate": "spent 2026-10-11: shipped, then failed the portal's determinism QC with both reviewers (the standard error's construction was not forced: the old 7 and 4.3 read literally as sample SD over root n); the in-house Gate H pass called its first domain (energy-systems-utilities) a backdrop (H1); the estimand-route rework under general-statistics-data-science was cracked on the leak reader's first pass (the filed estimand named co-moving losses and the field reference named the node)",
-   "domain": "energy-systems-utilities",
-   "subdomain": "other",
-   "objective": "data-quality-monitoring",
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
-    "D"
-   ],
-   "generators": [
-    "G2",
-    "G12",
-    "G7",
-    "G17"
-   ],
-   "gate_g": "signal_vs_noise_or_hold",
-   "stump_strategy": "grain_or_unit",
-   "decision_type": "designation_set",
-   "driver": "The decisive quantity is the standard error of a mean over entities that fail together through a shared parent node, so it has to be built over the nodes; an error that takes each entity as an independent unit understates it severalfold for a group concentrated behind few nodes, and the alert fires on what is node noise."
-  },
-  {
-   "architecture": "v2",
-   "drawn": "2026-10-11",
-   "fate": "spent 2026-10-11 at hardening loop 1 (paper): solver round 1 landed the call and cracked every ask (proxy 97.9) by fitting an error rate per centre and class on the routine counts against days since the face's last count, the design's own rung 3, found from a visible symptom (routine-count accuracy falling with days since the previous count); no rung above that accrual model completes with its checks passing and still lands wrong, so the architecture was re-rooted",
-   "domain": "general-statistics-data-science",
-   "subdomain": "missing-data-censoring-measurement-error",
-   "objective": "data-quality-monitoring",
-   "shape": "10",
-   "gap": [
-    "time",
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G13",
-    "G16",
-    "G17"
-   ],
-   "gate_g": "method_or_model_selection",
-   "stump_strategy": "population_selection",
-   "decision_type": "designation_set",
-   "calibration_form": "none",
-   "context_artifact": "operations_log",
-   "role_family": "compliance_or_audit",
-   "forum": "line_manager_or_team",
-   "forcing_event": "season_or_peak",
-   "org_family": "logistics_or_3pl",
-   "layer2_family": "field_method",
-   "layer2_pattern": "own:count-corrects-the-record-it-measures",
-   "spine": {
-    "file": "pick-face count history, Thornacre lines, eight centres, export start to the stand-down",
-    "rows": 0,
-    "entity": "one count task on one pick face (a cycle count or an exception count), with the system quantity, the first count, the supervisor recount where one was taken, the quantity posted, the result and the task's reason code",
-    "grain": "pick face x count task",
-    "source": "synthetic"
-   },
-   "world": {
-    "geography": "United Kingdom, England, Scotland and Wales",
-    "currency": "GBP",
-    "org_type": "third-party logistics operator running ambient, chilled and frozen distribution centres for a grocery retail client",
-    "invented_names": [
-     "Corderoy Logistics",
-     "Thornacre"
-    ],
-    "people": [
-     "Rhys Flynn",
-     "Stacey Sykes",
-     "Arthur Mason",
-     "Leonard Finch"
-    ]
-   },
-   "niche": "a third-party logistics operator's peak stock-record gate for a grocery client: which of the eight distribution centres it runs for the client carry pick-face stock records accurate enough, at the moment counting stands down for the peak freeze, for the client's automated replenishment to order off them unattended, judged from a perpetual count programme whose cycle and exception counts each correct the record they read",
-   "driver": "The decisive quantity is the share of units in a correct state at one moment, seen only through checks that record a unit's state just before setting it right; scheduled checks see each unit at the end of its interval and symptom-led checks see units because they were wrong, so the checked-unit rate, however reweighted to the population's cells, measures states that have since been reset, and the share at the moment is built unit by unit from what each has accrued since its own last check of any kind, with the accrual read from the scheduled checks alone.",
-   "driver_concrete": "Corderoy's cycle and exception counts each record a pick face's system quantity against the physical count and then post the confirmed count as the record, so every count leaves the record right; the routine counts on the A, B and C cycles of four, eight and thirteen weeks see each record at the end of its cycle and the exception counts see records because a short pick or a negative balance showed them wrong, while at the stand-down each face is only part way through its cycle since its last count of any kind; so a centre's count accuracy, even with the exception counts set aside and the routine counts weighted to its A, B and C mix, understates the records it carries into the freeze, most where fast faces run long cycles, and Thornacre's 97.0 per cent gate passes six centres where the weighted count rate passes two.",
-   "stump": "A competent solver takes each centre's share of correct records from its count history as the share of count tasks that matched the record and finds that no centre qualifies, all eight held on supervised replenishment, and its textbook correction (exception counts set aside as symptom-led, the routine counts weighted to the in-scope A, B and C mix) still passes only Magor and Hinckley; the step that lands it there is reading a count's result as the record's standing state, when every count also posts the confirmed quantity as the record, so routine counts see each record at the end of its cycle and exception counts see records because they were wrong, while at 06:00 on 7 December each face is only part way through its cycle since its last count of any kind, and built face by face from the accrual since that count, read off the routine counts alone, Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth clear 97.0 per cent."
-  }
- ],
- "notes": "Architecture 3 drawn 2026-10-12 (re-root of the number's last architecture, designer pass on branch perssathya/task229-rework). Decisive G-code G7 (operating window: a cyclist leaving a signalled crossing can pass the counter only in the trail's green), with G13 (the 2027 season, the months the crossings switch on); pattern none. Gate G binding_constraint and strategy binding_constraint: the crossing signal's red phase is the constraint the default path never checks, and it removes sites from the compliant set without replacing any. decisive_rule_filed true: the counting standard files the capture estimand and the 90 per cent condition, and the counter maker's test report files the capture at a steady flow; nothing files the flow at which a gated stream crosses the loop. official_decoy false: no shipped document reports a forecast capture for any site. calibration_form gold_standard_subsample: the contractor's video audits certify the loop's capture curve, all at sites where cyclists arrived unsignalled in 2025 and 2026. Window at registration (dated 2026-10-12): task230 v2 (branch perssathya/task230-event-volume-drop), task445, task446."
-}
-```
-

@@ -1,18 +1,18 @@
 {
   "task": "task229",
   "architecture": "v3",
-  "drawn": "2026-10-12",
+  "drawn": "2026-10-13",
   "slot_note": "seed DQ02 (release-health alert on the average user's rate). Architecture 1 (a smart-meter data provider's read-health alert, decided by the unit of the build mean's standard error) is spent on the portal's determinism QC and the cracked estimand rework; architecture 2 (a third-party logistics operator's stock-record accuracy gate, decided by the state of each record at one moment rebuilt from the accrual since its last count) is spent at hardening loop 1. Architecture 3, the number's last, keeps the objective and re-roots in a new world and a new client domain: a city's permanent cycle-counter network in urban and regional science, decided by the flow at which cyclists actually pass a loop once a crossing signal gates them.",
-  "domain": "urban-regional-science",
-  "subdomain": "other",
-  "client_domain": "urban-regional-science",
-  "niche": "a city's permanent cycle-counter network: from which month of the 2027 counting season each counter site will record fewer than nine in ten of the cyclists passing it in the weekday peak hours, once four rail-trail crossings become signal controlled and cycling grows through the season",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a city's permanent cycle-counter network: from which month of the 2027 counting season each counter site will record fewer than nine in ten of the cyclists passing it in the weekday peak hours, where two rail-trail crossings have been signal controlled since 2025, two more switch to signal control in May and June 2027, and cycling grows through the season",
   "objective": "data-quality-monitoring",
   "shape": "13",
   "decision_type": "date_or_period",
   "answer_unit": "date_or_period",
-  "answer": "Upgrade or flag the Old Spur Trail counters at Hallett Avenue and Ravine Road from May 2027, at Gorse Street from June and at Mallory Drive from July, and the Cutler Bridge counter from August; the other eleven sites hold the 90 per cent capture standard through October (planned; the builder confirms it from the cut pack).",
-  "answer_source": "design note, planned schedule (prototype proto3/ladder.py); replaced by the golden at ship",
+  "answer": "planned: flag or upgrade the Old Spur Trail counters at Hallett Avenue and Ravine Road from April 2027, at Gorse Street from May and at Mallory Drive from June, and Cutler Bridge from July; the other eleven sites hold the 90 per cent standard through October (the builder confirms it from the cut pack)",
+  "answer_source": "design note, planned schedule; replaced by the golden at ship",
   "gap": [
     "objective",
     "time"
@@ -31,8 +31,8 @@
   "official_decoy": false,
   "validated_decoy": false,
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans every counter export and reads the counting standard, the counter maker's capture curve and the crossing design summary correctly applies the curve at each channel's forecast 2027 weekday peak-hour flow and files that only the busiest bridge drops below 90 per cent (in August), because nothing the hour's average shows changes at the trail; the four trail sites just beyond the newly signalled crossings fall below the standard from May, May, June and July.",
-  "domain_test": "The deciding quantity is the flow at which cyclists actually cross a counter's loop, and traffic signal control sets it: a crossing signal releases each cycle's cyclists in its green, so beyond the crossing the flow while they pass is the cycle's cyclists over the green, several times the hour's average; with another field's nouns there is no signal cycle gating arrivals and no loop whose capture falls with the passing flow, so the task does not survive the swap.",
+  "analyst_test": "A strong analyst who cleans every counter export and reads the counting standard, the counter maker's capture curve and the crossing timing sheets correctly applies the curve at each channel's forecast 2027 weekday peak-hour flow, as the maker states it, and files that only Cutler Bridge drops below 90 per cent (from July), because nothing the hour's flow shows differs at the trail; the trail counters 40 metres beyond the signalled crossings carry each cycle's cyclists inside the crossing's walk-and-bike interval and fall below the standard from April (the two signalled since 2025) and from their switch-on months (May and June).",
+  "domain_test": "The deciding quantity is a counter's capture of the cyclists passing its loop, a measurement error that grows with the flow over the loop; the field's estimator reads the maker's curve at the arrival rate the loop actually sees, and a signal that releases each cycle's cyclists inside its walk-and-bike interval multiplies that rate by the cycle over the interval. Replacing the gated arrival rate with the hour's average flow (a generic summary) changes the call.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:signal-gated-arrivals-set-a-counter-loop-capture",
   "layer1": [
@@ -44,7 +44,7 @@
     "a crossing design summary issued as a PDF with its timing tables",
     "video audit counts at 15-minute grain from a separate contractor, timed in local clock time"
   ],
-  "context_artifact": "monitoring_export",
+  "context_artifact": "filed_model",
   "stakeholder_role": "the lead of a city's cycle-counting programme, who has to tell the provincial active transportation fund which counter sites will meet its 90 per cent capture condition through the 2027 season, and from which month each of the others must be upgraded or its counts flagged",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
@@ -56,7 +56,7 @@
     "source": "synthetic"
   },
   "forum": "funder_or_donor",
-  "forcing_event": "launch_or_rollout",
+  "forcing_event": "audit_or_inspection",
   "org_family": "local_government",
   "world": {
     "geography": "Canada, Alberta (a fictional mid-size city)",
@@ -81,9 +81,9 @@
   ],
   "opening_move": "question-first",
   "question_form": "when",
-  "driver": "The decisive quantity is the rate at which units pass a counting point while they actually pass, which a gate upstream confines to a short open phase of each cycle; a counter whose capture falls as that rate rises records far less of a gated stream than the period's average rate implies, so a capture curve validated where arrivals were ungated and applied at the average rate passes points that the new gate pushes below the standard.",
-  "driver_concrete": "Four Old Spur Trail crossings of arterial roads become signal controlled in May and June 2027, so every cyclist reaching a counter loop 40 metres beyond a crossing in that direction passes during the trail's 18 to 20 second green of a 90 to 110 second cycle; the Tallis loop records 0.55 points fewer for every extra cyclist a minute of steady flow, so at the green-phase flow (four and a half to six times the hour's average) those channels fall below 90 per cent from the month their signal starts, while every video audit that certifies the loop's curve was taken where cyclists arrived unsignalled.",
-  "stump": "A competent solver applies the counter maker's capture curve to each channel's forecast 2027 weekday peak-hour flow (and, if careful, to the busiest quarter hour) and files that the network holds the 90 per cent standard all season except Cutler Bridge in August; the step that lands it there is taking the hour's average flow as the flow cyclists cross the loop at, when at the four Old Spur Trail crossings signalled from May and June every cyclist leaving a crossing passes the loop 40 metres on inside the trail's green, so those four sites fall below 90 per cent from May, May, June and July.",
+  "driver": "The decisive quantity is a counting point's capture of a stream whose arrivals an upstream gate confines to a short open phase of each cycle; the maker's capture curve is stated for arrivals random through the period, so read at the period's flow it overstates the capture of every gated stream, already at points gated today and at points the horizon gates, while calibration audits taken at low flows cannot tell the two readings apart.",
+  "driver_concrete": "The Old Spur Trail crossings of Hallett Avenue and Ravine Road have been signal controlled since 2025 and those of Gorse Street and Mallory Drive switch on in May and June 2027; every cyclist leaving a signalled crossing reaches the Tallis loop 40 metres on inside the crossing's 18 to 22 second walk-and-bike interval of a 90 to 110 second cycle, so the loop sees four and a half to six times the hour's flow while they pass; the Tallis curve, stated for arrivals random through the hour, read at that rate puts the four trail channels below 90 per cent from April, April, May and June, while the contractor's midday video audits, at flows where every reading of the curve agrees, confirm only its low-flow end.",
+  "stump": "A competent solver applies the counter maker's capture curve to each channel's forecast 2027 weekday peak-hour flow and files that the network holds the 90 per cent standard all season except Cutler Bridge from July; the step that lands it there is reading the curve, stated for arrivals random through the hour, at the hour's flow on the trail channels just beyond signalled crossings, where every cyclist passes inside the walk-and-bike interval, so Hallett Avenue and Ravine Road (signalled since 2025) fall below 90 per cent from April and Gorse Street and Mallory Drive from the months their signals start, May and June.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
@@ -171,5 +171,5 @@
       "stump": "A competent solver takes each centre's share of correct records from its count history as the share of count tasks that matched the record and finds that no centre qualifies, all eight held on supervised replenishment, and its textbook correction (exception counts set aside as symptom-led, the routine counts weighted to the in-scope A, B and C mix) still passes only Magor and Hinckley; the step that lands it there is reading a count's result as the record's standing state, when every count also posts the confirmed quantity as the record, so routine counts see each record at the end of its cycle and exception counts see records because they were wrong, while at 06:00 on 7 December each face is only part way through its cycle since its last count of any kind, and built face by face from the accrual since that count, read off the routine counts alone, Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth clear 97.0 per cent."
     }
   ],
-  "notes": "Architecture 3 drawn 2026-10-12 (re-root of the number's last architecture, designer pass on branch perssathya/task229-rework). Decisive G-code G7 (operating window: a cyclist leaving a signalled crossing can pass the counter only in the trail's green), with G13 (the 2027 season, the months the crossings switch on); pattern none. Gate G binding_constraint and strategy binding_constraint: the crossing signal's red phase is the constraint the default path never checks, and it removes sites from the compliant set without replacing any. decisive_rule_filed true: the counting standard files the capture estimand and the 90 per cent condition, and the counter maker's test report files the capture at a steady flow; nothing files the flow at which a gated stream crosses the loop. official_decoy false: no shipped document reports a forecast capture for any site. calibration_form gold_standard_subsample: the contractor's video audits certify the loop's capture curve, all at sites where cyclists arrived unsignalled in 2025 and 2026. Window at registration (dated 2026-10-12): task230 v2 (branch perssathya/task230-event-volume-drop), task445, task446."
+  "notes": "Architecture 3 redrawn 2026-10-13 from the paused 2026-10-12 draft (never built), same world and Layer 2 move. The draft made every crossing signal a 2027 event, so the curve read at the hour's flow reproduced every audit and only the forward window broke it (a validated decoy); in this draw two crossings have been signalled since 2025, so the default is wrong on the data in hand, and the audits are taken at midday flows where the hour's-flow and gated readings agree (they tie under every basis for a reason true at their grain). The forecast workbook carries no sentence on arrivals within the hour (the draft's 'arrivals steady through the hour' was an official decoy). Client domain moved to general-statistics-data-science, missing-data-censoring-measurement-error, which serves DQ (urban-regional-science has no task type serving it); the setting stays urban cycle counting. decisive_rule_filed true: the counting standard files the capture estimand and the 90 per cent condition, the maker files the curve for random arrivals; nothing files the rate a gated stream crosses the loop at. official_decoy false, validated_decoy false."
 }

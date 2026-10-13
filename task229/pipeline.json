@@ -1,70 +1,63 @@
 {
   "task": "task229",
+  "owner": "perssathya",
+  "status": "DESIGN",
   "domain": "general-statistics-data-science",
   "objective": "data-quality-monitoring",
-  "stage": "paused",
-  "stage_name": "paused by the author on 2026-10-12 during the architecture 3 draw (phase A, on paper); the partial draft and the unregistered card are in DESIGN_NOTE.md, ## Architecture 3 draft",
-  "updated": "2026-10-11",
-  "stump": "A competent solver takes each centre's share of correct records from its count history as the share of count tasks that matched the record and finds that no centre qualifies, all eight held on supervised replenishment, and its textbook correction (exception counts set aside as symptom-led, the routine counts weighted to the in-scope A, B and C mix) still passes only Magor and Hinckley; the step that lands it there is reading a count's result as the record's standing state, when every count also posts the confirmed quantity as the record, so routine counts see each record at the end of its cycle and exception counts see records because they were wrong, while at 06:00 on 7 December each face is only part way through its cycle since its last count of any kind, and built face by face from the accrual since that count, read off the routine counts alone, Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth clear 97.0 per cent.",
-  "architecture": 2,
-  "loops": 1,
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-13",
+  "stump": "A competent solver reads each channel's 2027 capture off the counter maker's curve at the forecast weekday peak-hour flow, finds that the curve reproduces every video audit, and files Ends on: Cutler Bridge from July, the other fifteen sites holding the 90 per cent standard through October; the step that lands it there is reading the curve, which the maker states for cyclists arriving at random through the hour, at the hour's flow on the Old Spur Trail channels 40 metres beyond the signalled crossings, where every cyclist passes inside the crossing's walk-and-bike interval, so those loops see four and a half to six times the hour's flow while cyclists pass and record under 90 per cent from April at Hallett Avenue and Ravine Road (signalled since 2025) and from the months their signals start at Gorse Street (May) and Mallory Drive (June).",
+  "architecture": 3,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
   "leak": {
-    "leak_py": "final cut: REVIEW (10 lines, each answered in the design note's ## Build record); no LEAK",
-    "reader": "read 1 (2026-10-11): no leak-level finding; main-call forks closed before the round as SF13 (per-day accrual pooled over classes, ruled out by the routine counts' class separation) and SF14 (first against confirmed count, readings differ, ruled by CP-THN-04 s.5 with SCS-07 4.2); no shipped file changed, so no second read"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (task107 v1 0.12, task228 v2 gate_g; answered at the draw), no BLOCK",
-    "nearest": "task107 v1 driver 0.12",
-    "surface": "0 promoted pairs, nearest task127 0.10",
-    "clone_check": "pass 1 on architecture 2: no reject tier; one soft Shape echo against task230 v2 (same objective, decision type, gap pair, Gate G mechanism and Layer 2 family, drivers differ), reported to the author, not looped; report clone_check_report_task229_d2.md"
+    "heart": "PASS (2026-10-13, at the draw)",
+    "nearest": "task98 v2 lineage driver 0.06; task91, task40, task135 at 0.05",
+    "guard_check": "PASS (2026-10-13)"
   },
-  "solver_rounds": [
-    {
-      "label": "round 1 (architecture 2)",
-      "date": "2026-10-11",
-      "score": 97.9,
-      "landed": true,
-      "cracked": 4,
-      "items": 4,
-      "ask_share": 0.964,
-      "asks_leak": false,
-      "gate": "LANDED",
-      "architecture": 2,
-      "round": 1,
-      "solver": {
-        "landed": true,
-        "proxy": 97.9,
-        "cracked": "4 of 4",
-        "ask_share": 0.964,
-        "stopped": "never left the ladder: it read SCS-07 4.5 as the expected accuracy at each face's age on 7 December, saw routine-count accuracy fall with days since the previous count (class A about 98 per cent at 0-7 days to about 88 at 28), fitted an exponential error rate per site and class on the CYC counts, and applied it to every in-scope face's age from its last count of any reason (path steps 4 and 5); a linear model agreed within 0.1"
-      },
-      "decision": "harden",
-      "brief": "The call landed on the solver's steps 4 and 5, the design's own rung 3: the accrual-since-last-count model was found from a visible symptom (routine-count accuracy falling with days since the previous count), and every ask device was executed by its hygiene (one quantity per location, the P10 cost changes, singles to cases, closed trading days, the servicing map in force on each date). Loop 1 is paper first: a rung the solver completes, with its accrual model and its checks passing, and still lands wrong, with no arithmetic symptom any check it writes can see; not the exposure clock of task46 (handling instead of days, the same driver older) and no third reset-driver build; the ask layer redesigned against this cracker path (every device it executed is spent). If no such rung exists, declare architecture 2 spent.",
-      "deferred": [
-        "stage 6b: ask A stock value, the P10 cost changes against the 28/11 price list (reader's ask-level convention)",
-        "stage 6b: ask B forecast, closed trading days over the freeze (reader's ask-level convention)",
-        "stage 6b: the rounding note (already closed by the 0.71 margin; confirm only)",
-        "stage 6b: any Track A name finding from the clone pre-flight (pass 1 raised none)",
-        "ship: card pre-cut field answer_source to fill",
-        "ship: card spine.rows reads 0 against 107,072 rows in the cut pack; correct it"
-      ]
-    },
-    {
-      "round": "loop 1 (paper)",
-      "architecture": 2,
-      "date": "2026-10-11",
-      "decision": "reroot",
-      "brief": "No rung above round 1's accrual model (per-day error rate by centre and class, read off the routine counts by days since the face's last count of any kind, applied to each face's age at 06:00) completes with its checks passing and still lands wrong inside the loop's bounds: with the routine due dates on the class grid and a stationary error process the age-conditional routine rate describes the faces at the stand-down, so a rung needs an error rate that changes into the peak (handling is task46's clock; a dated cause shows by month and the event study aligns it) or state-dependent counting (a symptom in the routine counts, or a reason code to classify). The persistent-cause candidate, prototyped over six seeds, moved the estimate 0.0 to +0.4 points while the class A routine counts ran 3 to 10 points under the fitted curve at 8 to 21 days. Architecture 2 is spent; re-root to architecture 3 (DESIGN_NOTE.md ## Hardening loop 1 (architecture 2, paper))."
-    }
-  ],
   "judge": {
     "verdict": "",
     "disposition": "",
     "report": ""
   },
+  "returned": [
+    {
+      "date": "2026-10-11",
+      "portal": "architecture 1: determinism QC failed by both reviewers (the standard error's construction unforced)",
+      "repair": "design",
+      "commit": ""
+    }
+  ],
+  "resume": "stage 2 on architecture 3: readability screen, semantic fork table, ladder, closure table (22 axes), literal reader, oracles, ask sheet (cracker, mirror, pair ceiling) and prompt.txt, to precut.py exit 0; then stage 3 (generator from scratch: world, timing sheets, forecast, 2026 exports, audits, documents, checks with the R block, verify, goldens counter_season_2027.xlsx and trail_baseline_2026.png)",
   "approved": null,
   "delivered": null,
   "portal": null,
+  "draw": {
+    "registered": "2026-10-13",
+    "card": ".claude/skills/fingerprint/cards/task229.json v3",
+    "guard": "PASS",
+    "heart": "PASS",
+    "planned_golden": "Old Spur Trail at Hallett Avenue and Ravine Road from April 2027, Gorse Street from May, Mallory Drive from June, Cutler Bridge from July; the other eleven sites hold through October",
+    "planned_default": "Cutler Bridge from July; the other fifteen sites hold through October"
+  },
+  "architecture_3_draft": {
+    "date": "2026-10-12",
+    "fate": "paused by the author mid-draw on paper, never built; redrawn 2026-10-13 (validated decoy and official decoy removed, subdomain moved to missing-data-censoring-measurement-error); line in ## Tried and rejected",
+    "paused": {
+      "date": "2026-10-12",
+      "by": "author",
+      "at": "architecture 3 phase A, mid-draw",
+      "resume": "a fresh designer (Opus max) finishes architecture 3's phase A from the draft under the improvise rules (default path first, stump on the default path, four or more screened candidates before any no-architecture call), checks the card against the three cards before it in draw order on its registration day and registers it, runs precut.py to exit 0, then a builder (Opus medium), the leak read and clone pre-flight together, and the solver (Opus high)"
+    }
+  },
   "architecture_1": {
     "stump": "A competent solver applies MDS-STD-114's cut-off, assessed-installation and mean rules and reads 4.4 (the standard error is the spread over repeats of the week, installations whose read losses move together counting as one unit), but looks for co-moving losses only in each installation's own rows, finds none, and keeps every installation as its own unit (sample SD over root n), firing EM3.10.9, EM3.12.0, EM3.12.1, EM3.12.2 and PX5.2.7 and stopping Wave 8 onto EM3.12.2; the installations behind one mesh collector lose a missed night together (the head-end's comms parent records the tie) and EM3.12.2 sits behind seven, so counted one unit per node the errors are 1.83 and 0.57, not 0.40 and 0.09, EM3.12.2 and EM3.12.0 hold, and the alert fires on EM3.12.1, EM3.10.9 and PX5.2.7 only.",
     "leak": {
@@ -206,68 +199,115 @@
   "architecture_2": {
     "fate": "spent 2026-10-11: built and passed the leak read and the clone pre-flight; solver round 1 landed the call and cracked every ask (proxy 97.9) on the design's own rung 3 (the state at the stand-down rebuilt from each face's accrual since its last count, read off the routine counts), found from a visible symptom; hardening loop 1 on paper found no rung above it inside the loop's bounds",
     "loops": 1,
-    "record": "DESIGN_NOTE.md ## Hardening loop 1 (architecture 2, paper); ## Draw to ## Build record"
-  },
-  "card": {
-    "status": "checked, not registered (task228 registers its next architecture first)",
-    "draft": "/home/user/orch/buildwork-task229/rework/card/task229_arch2_count_reset.json",
-    "guard_check": "WARN, no BLOCK (driver.near 0.12 task107 v1; repeat.gate_g task228 v2), answered in DESIGN_NOTE.md ## Draw",
-    "heart": "WARN, nearest heart text 0.07 (task107 v1 driver)"
-  },
-  "work_order": {
-    "read": "DESIGN_NOTE.md ## Draw to ## Coordination and registration (Builder's work order, Ladder, Semantic fork table, Closure table, Ask sheet), ## Tried and rejected; prompt.txt",
-    "generator": [
-      "world.py",
-      "simulate.py",
-      "estimate.py",
-      "asks.py",
-      "docs.py",
-      "golden.py",
-      "checks.py",
-      "verify.py",
-      "make.py"
+    "record": "DESIGN_NOTE.md ## Hardening loop 1 (architecture 2, paper); ## Draw to ## Build record",
+    "stump": "A competent solver takes each centre's share of correct records from its count history as the share of count tasks that matched the record and finds that no centre qualifies, all eight held on supervised replenishment, and its textbook correction (exception counts set aside as symptom-led, the routine counts weighted to the in-scope A, B and C mix) still passes only Magor and Hinckley; the step that lands it there is reading a count's result as the record's standing state, when every count also posts the confirmed quantity as the record, so routine counts see each record at the end of its cycle and exception counts see records because they were wrong, while at 06:00 on 7 December each face is only part way through its cycle since its last count of any kind, and built face by face from the accrual since that count, read off the routine counts alone, Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth clear 97.0 per cent.",
+    "leak": {
+      "leak_py": "final cut: REVIEW (10 lines, each answered in the design note's ## Build record); no LEAK",
+      "reader": "read 1 (2026-10-11): no leak-level finding; main-call forks closed before the round as SF13 (per-day accrual pooled over classes, ruled out by the routine counts' class separation) and SF14 (first against confirmed count, readings differ, ruled by CP-THN-04 s.5 with SCS-07 4.2); no shipped file changed, so no second read"
+    },
+    "duplicate_check": {
+      "heart": "WARN (task107 v1 0.12, task228 v2 gate_g; answered at the draw), no BLOCK",
+      "nearest": "task107 v1 driver 0.12",
+      "surface": "0 promoted pairs, nearest task127 0.10",
+      "clone_check": "pass 1 on architecture 2: no reject tier; one soft Shape echo against task230 v2 (same objective, decision type, gap pair, Gate G mechanism and Layer 2 family, drivers differ), reported to the author, not looped; report clone_check_report_task229_d2.md"
+    },
+    "solver_rounds": [
+      {
+        "label": "round 1 (architecture 2)",
+        "date": "2026-10-11",
+        "score": 97.9,
+        "landed": true,
+        "cracked": 4,
+        "items": 4,
+        "ask_share": 0.964,
+        "asks_leak": false,
+        "gate": "LANDED",
+        "architecture": 2,
+        "round": 1,
+        "solver": {
+          "landed": true,
+          "proxy": 97.9,
+          "cracked": "4 of 4",
+          "ask_share": 0.964,
+          "stopped": "never left the ladder: it read SCS-07 4.5 as the expected accuracy at each face's age on 7 December, saw routine-count accuracy fall with days since the previous count (class A about 98 per cent at 0-7 days to about 88 at 28), fitted an exponential error rate per site and class on the CYC counts, and applied it to every in-scope face's age from its last count of any reason (path steps 4 and 5); a linear model agreed within 0.1"
+        },
+        "decision": "harden",
+        "brief": "The call landed on the solver's steps 4 and 5, the design's own rung 3: the accrual-since-last-count model was found from a visible symptom (routine-count accuracy falling with days since the previous count), and every ask device was executed by its hygiene (one quantity per location, the P10 cost changes, singles to cases, closed trading days, the servicing map in force on each date). Loop 1 is paper first: a rung the solver completes, with its accrual model and its checks passing, and still lands wrong, with no arithmetic symptom any check it writes can see; not the exposure clock of task46 (handling instead of days, the same driver older) and no third reset-driver build; the ask layer redesigned against this cracker path (every device it executed is spent). If no such rung exists, declare architecture 2 spent.",
+        "deferred": [
+          "stage 6b: ask A stock value, the P10 cost changes against the 28/11 price list (reader's ask-level convention)",
+          "stage 6b: ask B forecast, closed trading days over the freeze (reader's ask-level convention)",
+          "stage 6b: the rounding note (already closed by the 0.71 margin; confirm only)",
+          "stage 6b: any Track A name finding from the clone pre-flight (pass 1 raised none)",
+          "ship: card pre-cut field answer_source to fill",
+          "ship: card spine.rows reads 0 against 107,072 rows in the cut pack; correct it"
+        ]
+      },
+      {
+        "round": "loop 1 (paper)",
+        "architecture": 2,
+        "date": "2026-10-11",
+        "decision": "reroot",
+        "brief": "No rung above round 1's accrual model (per-day error rate by centre and class, read off the routine counts by days since the face's last count of any kind, applied to each face's age at 06:00) completes with its checks passing and still lands wrong inside the loop's bounds: with the routine due dates on the class grid and a stationary error process the age-conditional routine rate describes the faces at the stand-down, so a rung needs an error rate that changes into the peak (handling is task46's clock; a dated cause shows by month and the event study aligns it) or state-dependent counting (a symptom in the routine counts, or a reason code to classify). The persistent-cause candidate, prototyped over six seeds, moved the estimate 0.0 to +0.4 points while the class A routine counts ran 3 to 10 points under the fitted curve at 8 to 21 days. Architecture 2 is spent; re-root to architecture 3 (DESIGN_NOTE.md ## Hardening loop 1 (architecture 2, paper))."
+      }
     ],
-    "deliverable": "freeze_gate_2026.html (one file, shape 10; the chart on ask B's forecast cases)",
-    "golden_set": "Hinckley, Daventry, Bellshill, Warrington, Magor, Avonmouth qualify; Thurrock, Doncaster supervised",
-    "ladder_sets": "rung 0 none; rung 1 Magor; rung 2 (textbook) Magor, Hinckley; rung 3 the six",
-    "filed_criterion": "HOW forced by the design (determinism-check §1 form 1: the estimand at 06:00 through a full count, the posting and due-date facts and the data's age-dependent match rates) and by Thornacre 4.5, the standard's general requirement that an estimate be one a full count at the measurement time would be expected to bear out (form 2); no filed back-test (form 3)",
-    "asks": "A stock value on in-scope faces (D6 repeated face quantity on batch rows; H1 period-10 change file; H2 eaches); B forecast cases over the freeze and its chart (D2 depot label before the peak re-zoning with a 27 December far edge; H2; H3 Boxing Day closures)",
-    "input_gates": "19 files; PDF, DOCX, CSV, XLSX, TXT, JSON; count history about 110,000 rows; two distractors named in metadata.json; synthetic, CC0",
-    "first_tuning": "Hinckley's rung 1 to 96.5 or under with rung 2 at 97.5 or over; every rung-3 estimate 0.6+ from 97.0 and 0.2+ from an x.5 edge; private truth on the golden side; the chart title flipping under ask B's primary device"
-  },
-  "precut": {
-    "result": "exit 0: 37 checks, 0 FAIL, 0 WARN (main at e89a676)",
-    "provisional": [
-      "semantic forks asserted: passes until generator/checks.py exists, then every SF1 to SF12 id must appear in it (builder)",
-      "card registered: reads architecture 1's filed card until the architecture-2 card is registered after task228 (main session)"
-    ]
-  },
-  "draw": {
-    "registered": "2026-10-11",
-    "guard": "WARN (driver.near 0.12 against task107 v1 lineage; repeat.gate_g against task228 v2), both answered in the design note; registered by the main session after task228 architecture 4 drew no architecture"
-  },
-  "build": {
-    "date": "2026-10-11",
-    "checks": 791,
-    "verify": 65,
-    "byte_identical": true,
-    "figures_check": "exit 0 (52 figures)",
-    "precut": "exit 0",
-    "target_files": 18,
-    "count_rows": 107072,
-    "in_scope_faces": 26188,
-    "golden_set": "Hinckley, Daventry, Bellshill, Warrington, Magor, Avonmouth qualify; Thurrock, Doncaster supervised",
-    "ladder_sets": "rung 0 none; rung 1 Magor; rung 2 Magor, Hinckley; rung 3 (four estimators) the six",
-    "pair_ceiling": 32,
-    "target_zip_sha256": "fc3a047535392cb3f2d0755c36bf5557bf379d49e0d221a9445eb50b713e7061"
-  },
-  "deferred": [],
-  "paused": {
-    "date": "2026-10-12",
-    "by": "author",
-    "at": "architecture 3 phase A, mid-draw",
-    "resume": "a fresh designer (Opus max) finishes architecture 3's phase A from the draft under the improvise rules (default path first, stump on the default path, four or more screened candidates before any no-architecture call), checks the card against the three cards before it in draw order on its registration day and registers it, runs precut.py to exit 0, then a builder (Opus medium), the leak read and clone pre-flight together, and the solver (Opus high)"
-  },
-  "status": "FAILED_TO_STUMP",
-  "owner": "perssathya"
+    "card": {
+      "status": "checked, not registered (task228 registers its next architecture first)",
+      "draft": "/home/user/orch/buildwork-task229/rework/card/task229_arch2_count_reset.json",
+      "guard_check": "WARN, no BLOCK (driver.near 0.12 task107 v1; repeat.gate_g task228 v2), answered in DESIGN_NOTE.md ## Draw",
+      "heart": "WARN, nearest heart text 0.07 (task107 v1 driver)"
+    },
+    "work_order": {
+      "read": "DESIGN_NOTE.md ## Draw to ## Coordination and registration (Builder's work order, Ladder, Semantic fork table, Closure table, Ask sheet), ## Tried and rejected; prompt.txt",
+      "generator": [
+        "world.py",
+        "simulate.py",
+        "estimate.py",
+        "asks.py",
+        "docs.py",
+        "golden.py",
+        "checks.py",
+        "verify.py",
+        "make.py"
+      ],
+      "deliverable": "freeze_gate_2026.html (one file, shape 10; the chart on ask B's forecast cases)",
+      "golden_set": "Hinckley, Daventry, Bellshill, Warrington, Magor, Avonmouth qualify; Thurrock, Doncaster supervised",
+      "ladder_sets": "rung 0 none; rung 1 Magor; rung 2 (textbook) Magor, Hinckley; rung 3 the six",
+      "filed_criterion": "HOW forced by the design (determinism-check §1 form 1: the estimand at 06:00 through a full count, the posting and due-date facts and the data's age-dependent match rates) and by Thornacre 4.5, the standard's general requirement that an estimate be one a full count at the measurement time would be expected to bear out (form 2); no filed back-test (form 3)",
+      "asks": "A stock value on in-scope faces (D6 repeated face quantity on batch rows; H1 period-10 change file; H2 eaches); B forecast cases over the freeze and its chart (D2 depot label before the peak re-zoning with a 27 December far edge; H2; H3 Boxing Day closures)",
+      "input_gates": "19 files; PDF, DOCX, CSV, XLSX, TXT, JSON; count history about 110,000 rows; two distractors named in metadata.json; synthetic, CC0",
+      "first_tuning": "Hinckley's rung 1 to 96.5 or under with rung 2 at 97.5 or over; every rung-3 estimate 0.6+ from 97.0 and 0.2+ from an x.5 edge; private truth on the golden side; the chart title flipping under ask B's primary device"
+    },
+    "precut": {
+      "result": "exit 0: 37 checks, 0 FAIL, 0 WARN (main at e89a676)",
+      "provisional": [
+        "semantic forks asserted: passes until generator/checks.py exists, then every SF1 to SF12 id must appear in it (builder)",
+        "card registered: reads architecture 1's filed card until the architecture-2 card is registered after task228 (main session)"
+      ]
+    },
+    "draw": {
+      "registered": "2026-10-11",
+      "guard": "WARN (driver.near 0.12 against task107 v1 lineage; repeat.gate_g against task228 v2), both answered in the design note; registered by the main session after task228 architecture 4 drew no architecture"
+    },
+    "build": {
+      "date": "2026-10-11",
+      "checks": 791,
+      "verify": 65,
+      "byte_identical": true,
+      "figures_check": "exit 0 (52 figures)",
+      "precut": "exit 0",
+      "target_files": 18,
+      "count_rows": 107072,
+      "in_scope_faces": 26188,
+      "golden_set": "Hinckley, Daventry, Bellshill, Warrington, Magor, Avonmouth qualify; Thurrock, Doncaster supervised",
+      "ladder_sets": "rung 0 none; rung 1 Magor; rung 2 Magor, Hinckley; rung 3 (four estimators) the six",
+      "pair_ceiling": 32,
+      "target_zip_sha256": "fc3a047535392cb3f2d0755c36bf5557bf379d49e0d221a9445eb50b713e7061"
+    },
+    "judge": {
+      "verdict": "",
+      "disposition": "",
+      "report": ""
+    },
+    "deferred": []
+  }
 }
