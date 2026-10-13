@@ -9,115 +9,312 @@ determinism QC and its estimand rework was cracked on the leak reader's first pa
 third-party logistics operator's stock-record accuracy gate, decided by each record's state at one moment
 rebuilt from the accrual since its last count) is spent: round 1 landed the call and every ask and
 hardening loop 1 found no rung above the solver's accrual model. **Architecture 3, the number's last, is
-drawn here** (redrawn 2026-10-13 from a paper draft paused on 2026-10-12 and never built): a city's
-permanent cycle-counter network, a counter's measurement error under the arrival process its loop actually
-sees. The sections from `## Draw` to `## Builder's work order` are architecture 3's and bind the build;
-`## Architecture 2 record (spent 2026-10-11)` and `## Architecture 1 record (spent 2026-10-11)` bind
-nothing.
+drawn here, in hydrometry**: a regional district's stream gauging network, where daily discharge is
+published from the day's mean water level through each station's rating and two generating stations swing
+the river inside every day. It was first drawn on 2026-10-13 as a city's cycle-counter network under
+General Statistics & Data Science and redrawn the same day, before any data was cut, because that world
+failed the domain swap (`## Tried and rejected`). The sections from `## Draw` to `## Builder's work order`
+bind the build; `## Architecture 2 record (spent 2026-10-11)` and `## Architecture 1 record (spent
+2026-10-11)` bind nothing.
 
 ## Draw
 
 | Axis | Draw |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task229.json` v3, redrawn and registered 2026-10-13 (guard PASS, heart PASS); architectures 1 and 2 in `lineage` with their fates |
-| Domain / task type | general-statistics-data-science / missing-data-censoring-measurement-error (serves DQ): a counter's systematic undercount, a measurement error that grows with the flow over its loop; the setting is a city's permanent cycle-counter network (urban-regional-science has no task type serving DQ, so the draft's `other` is replaced) |
-| Objective | Data Quality Monitoring & Alerting: the object is the health of the counter data (the share of passing cyclists each counter records) and the call is a monitoring decision (from which month of 2027 each site's counts are flagged or its counter upgraded under the fund's audit condition) |
-| Shape | 13, scenarios and the flip point: the season's months are the scenarios, each site's first failing month is graded, and the asks carry the 2026 recorded baselines |
-| Gate G mechanism | binding_constraint: the crossing signals' red phase is the constraint the default path never checks, and it removes sites from the compliant set without replacing any |
-| Gap / pattern / generators | objective then time / G7 decisive (operating window: a cyclist leaving a signalled crossing passes the loop only inside the walk-and-bike interval) / G13 (the season's months, the switch-on dates of the two new signals) |
+| Card | `.claude/skills/fingerprint/cards/task229.json` v3, redrawn into hydrometry and registered 2026-10-13 (guard WARN answered, heart WARN, no BLOCK); the same-day cycling draft and architectures 1 and 2 in `lineage` with their fates |
+| Domain / task type | physical-environmental-sciences / sensor-calibration-measurement (serves DQ): the stage-discharge rating is the calibration that turns a gauge's water level into discharge, and the deciding quantity is the error of the discharge the network publishes from it |
+| Objective | Data Quality Monitoring & Alerting: the object is the health of the published discharge record (its error against the day's true mean flow) and the call is a monitoring decision (from which month of 2027 each station moves to hourly transmission or carries a flag) |
+| Shape | 13, scenarios and the flip point: the months of 2027 are the scenarios and each failing station's first month is graded (five stations, plus the seventeen that hold); the asks carry the 2026 water year's record (12 monthly counts, 22 station figures) |
+| Gate G mechanism | binding_constraint: the generating stations' release schedule (minimum release between two peak windows) is the operating constraint the default path never checks, and it moves stations out of grade B without moving any in |
+| Gap / pattern / generators | time then objective / G7 decisive (operating window: the plants' peak windows inside each day) / G13 (the months of 2027, Merrin Falls' 1 June commissioning, the freshet months on continuous generation) |
 | Decision type / answer unit / question form | date_or_period / date_or_period / when |
-| Stump strategy | binding_constraint; decisive rule filed: yes (the counting standard files the capture estimand and the 90 per cent condition, the counter maker files the capture curve for arrivals random through the hour; nothing files the rate a gated stream crosses the loop at); official decoy: no; validated decoy: no |
-| Calibration form | gold_standard_subsample: the contractor's 2025 and 2026 video audits, two midday hours at the sites on that year's rotation, none at a signalled crossing |
-| Context artifact | filed_model: the regional travel model's 2027 forecast workbook the programme plans from |
-| Role, forum, forcing event, organisation | the lead of the city's cycle-counting programme (field_unit_lead); the provincial active transportation fund that part-funds the network (funder_or_donor); the fund's 2027 capture audit of every funded counter network (audit_or_inspection); a city's transportation department (local_government) |
-| World | Canada, Alberta: the fictional City of Pembury; the Old Spur Trail (a rail trail) and its crossings, Tallis Counting Systems (the counter maker), the Pembury Region Travel Model; CAD |
-| People | Phyllis Thompson (counting programme lead, keeps the inventory and the maintenance log), Brandon Holden (signals engineer, issues the crossing timing sheets), Teresa Chen (transport modeller, issues the forecast); drawn with `guard.py names --geo "Canada, Alberta"` (seeds 229 and 2290) |
-| Layer 2 | field_method, `own:signal-gated-arrivals-set-a-counter-loop-capture` |
-| Deliverables | `counter_season_2027.xlsx`, `trail_baseline_2026.png` |
+| Stump strategy | grain_or_unit; decisive rule filed: yes (the standard files grade B on the day's true mean discharge and the ratings are filed; nothing files the flow inside a day); official decoy: no; validated decoy: no |
+| Calibration form | physical_verification: the network's gaugings (field discharge measurements), made at steady flow by the standard's own rule, below Talbot Canyon between the peak windows or in the freshet's continuous generation |
+| Context artifact | filed_model: the 2027 water supply outlook (monthly natural flows at each station and at the two forebay inflow nodes), which answers how much water each stream will carry, correctly |
+| Role, forum, forcing event, organisation | the lead of the Regional District of Corriston's hydrometric network (field_unit_lead); the provincial water licence inspector who reviews the network's 2027 data plan (regulator_or_inspector); Merrin Falls Generating Station entering service on 1 June 2027 (launch_or_rollout); the regional district's environmental services department (local_government) |
+| World | Canada, British Columbia, the southern Coast Mountains (low valley gauges, open water all year): the fictional Regional District of Corriston and its 22-station Corriston Hydrometric Network; the Corriston River and Merrin Creek; Corriston Hydro Ltd.'s Talbot Canyon Generating Station (peaking since its 2017 licence amendment) and Merrin Falls Generating Station (from 1 June 2027); Fenn Creek's run-of-river plant; Sable Creek; Lake Ashlin |
+| People | Phyllis Thompson (network lead: the station register, the data review, the dictionary), Brandon Holden (Corriston Hydro operations planner: the 2027 operating plan), Teresa Chen (hydrologist: the 2027 water supply outlook); drawn with `guard.py names --geo "Canada, British Columbia"` (seeds 229 and 2290) |
+| Layer 2 | field_method, `own:peaking-releases-bias-daily-mean-stage-discharge` |
+| Deliverables | `discharge_grades_2027.png` (the call: one row per station, one column per month of 2027, every month outside grade B shaded) and `record_review_wy2026.xlsx` (the asks: each month's station-days with a valid daily mean water level, each station's mean gauging difference from the rating in force) |
 
-**Data-native sentence.** On a rail trail whose arterial crossings at Hallett Avenue and Ravine Road have
-been signal controlled since 2025 and whose Gorse Street and Mallory Drive crossings switch to signal
-control in May and June 2027, every cyclist leaving a signalled crossing reaches the loop 40 metres on
-inside the crossing's 18 to 22 second walk-and-bike interval of a 90 to 110 second cycle, so the loop sees
-each cycle's cyclists inside the interval, four and a half to six times the hour's flow, and a loop whose
-capture falls as the flow over it rises records far fewer of them than the hour's flow implies.
+**Data-native sentence.** The network publishes each station's daily discharge from the day's mean water
+level through a convex rating, which is exact where the river is steady; below Talbot Canyon (peaking since
+2017) and Merrin Falls (from 1 June 2027) the plant releases the day's inflow in two peak windows and holds
+the minimum release between them, so the river at the gauges 0.6 to 3.1 kilometres downstream swings
+tenfold and more inside every day, and the rating read at the day's mean water level publishes a tenth
+or more below the day's mean flow, a swing the daily record cannot show.
 
-**Guard.** `guard.py check` PASS and `heart` PASS on 2026-10-13, against a window holding task187,
-task255, task256, task450 and task451 (all dated 2026-10-13) and the cards dated 2026-10-12. The context
-artifact moved from monitoring_export (task187) and operations_log (task449) to filed_model, and the
-forcing event from season_or_peak (task187) to audit_or_inspection. The paused 2026-10-12 draft card was
-set aside for the check: it is this architecture's first draft, replaced by this one, not an earlier
-architecture. Nearest drivers 0.06 (task98 v2 lineage) and 0.05 (task91, task40, task135): different moves.
+**Guard.** `guard.py check` WARN and `heart` WARN on 2026-10-13, no BLOCK: `three_rules.strategy_risk`
+(grain_or_unit) is answered by the analyst test (the easy route fails with every field read and every
+rule applied); `test.same_driver_older` against task127 v1, task87 v9 and task135 v2 is answered by the
+card's differentiation lines. Furniture clear of the last three builds (task256, task450, task451):
+regulator_or_inspector, launch_or_rollout and local_government; geography moved off Washington (task255)
+and Scotland (task187). Nearest drivers 0.05 (task79, task109 v1, task185, task123 v2, task500 v1):
+different moves.
 
 **One line per source read.**
-- task133 (held on the portal for one model): its divisor sat in a second file the natural pipeline never opened. Transfers: the deciding quantity sits outside the frame the solver's own checks test; here the frame is the counters' records and audits, and the deciding quantity is built from the crossing timing sheets.
-- task182 (held in-house): the solver's regression fitted and reconciled while the deciding process acted outside its window. Transfers: the default construction is complete and passes its back-test; here the back-test (the midday audits) cannot see the process by construction.
-- task446 (held in-house): the solver's candidate bases lacked the one that carries to the new condition. Transfers: the default uses a correct quantity at the wrong argument; here the argument is the arrival rate over the loop.
-- task445: its portal miss came from a literal reading of a filed clause, a fork. Avoided: the curve is filed for arrivals random through the hour, the standard files the estimand, and the default is an easy method on the same literal estimand (`## Literal reader`).
-- Client exemplars, supply-chain-logistics.md (Rail Grade Crossing Safety Programs, 0.17) and product-analytics.md (SaaS Usage Allowance Pricing, 0.20): the depth is a per-site construction graded site by site; their withheld-method architecture is capped and not used.
-- layer2-rigor-patterns: healthcare-delivery "Size beds by blocking probability, not occupancy" (a response nonlinear in load read at the average load) and urban "Transit access depends on departure minute" (a quantity that varies inside the period it is averaged over). This build's version: a counter's capture read at the rate a signal compresses each cycle into.
-- `_measured.md`: #13 validates on one population, applies to another (the audits' sites are all unsignalled), #7 uses the ready-made measure (the maker's curve at the forecast), #11 beats the headline trap and misses the quiet one (the busiest quarter hour).
-- `proven-in-production.md`: L1 (the audits confirm the curve and are blind to the gate at their grain: no audited loop sits beyond a signal), L7 (the naive basis is excellent on the closed record), L8; Part 4 checked: the decisive cause is in the data window (Hallett and Ravine signalled since 2025), no filed formula decides (the curve is filed for random arrivals; the rate a gated stream crosses at is not), no population is named by a clause.
-- The spent list, checked: not the unit of a standard error, not a check that resets what it measures, not renewal, not the exposure clock, not source independence, not errors-in-variables, not regression to the mean or shrinkage, not late-arrival maturity, not comparison-pool composition, not prevalence and human detection, not competing exits, not transport, not repeated looks, not reweighting to a mix, not a frailty layer; DQ's spent drivers (task228's comparator covariance, task230's rarity-dependent detection, this number's node-clustered standard error and count-reset accrual) are different moves.
+- task133 (held on the portal for one model): its divisor sat in a second file the natural pipeline never opened. Transfers: the deciding quantity is built from a document the record's own checks never touch; here the record and its gaugings check themselves, and the deciding quantity is built from the operating plan.
+- task182 (held in-house): the solver's regression fitted and reconciled while the deciding process acted outside its window. Transfers: the default construction is complete and back-tests; here the back-test (the gaugings) is made at steady flow by rule.
+- task123 (my reshipped calendarisation): daily heating use inside each read interval decided the split. Differs: there the shape over days moved a total between periods; here a swing inside each day moves every daily value of one station by the same sign.
+- task445: a literal reading of a filed clause was its portal miss. Avoided: the standard files grade B on the day's true mean discharge; the default is an easy method on the same literal estimand (`## Literal reader`).
+- `_measured.md`: #7 uses the ready-made measure (the published daily discharge taken as the day's flow), #13 validates on one population and applies to another (gaugings at steady flow, applied to swinging flow), #11 beats the headline trap (the extrapolation rule at Sable Creek) and misses the quiet one.
+- `proven-in-production.md`: L1 (the gaugings confirm the rating and are blind to the swing by the standard's steady-flow rule), L7 (the published record matches its rating exactly), L8; Part 4 checked: the decisive cause is in the data window (Talbot Canyon has peaked through the whole record), no filed formula decides (the processing is stated as a fact; the flow inside a day is filed nowhere), no population is named by a clause.
+- Supplemental Part 3 (what held): an attribute at the wrong vintage (98 v4's label before a silent switch, here a later snapshot) is Ask B's primary (the gauging export names the April 2026 refit's rating on every row, and the superseded ratings survive only in the record they produced); absence written as values is Ask A's (the satellite ingest's held messages), with its over-cleaning half.
+- The spent list, checked: not the unit of a standard error, not a check that resets what it measures, not renewal, not the exposure clock, not source independence, not errors-in-variables, not regression to the mean or shrinkage, not late-arrival maturity, not comparison-pool composition, not prevalence and human detection, not competing exits, not transport, not repeated looks, not reweighting to a mix, not a frailty layer; DQ's spent drivers (task228's comparator covariance, task230's rarity-dependent detection, this number's node-clustered error and count-reset accrual) are different moves.
 
 ## Default path
 
 What this solver does (it explores, fits, checks residuals and reconciles), on the files as planned:
 
-1. Reads the counting standard (a site meets the condition for a month when, in each direction, its counter records at least 90 per cent of the cyclists who pass over it in the month's weekday peak hours, 07:30 to 08:30 and 16:30 to 17:30 local time; the season is April to October), the fund's audit condition, the inventory (16 sites, their channels, positions and loops per direction), the Tallis test report (for cyclists arriving at random through the hour, a loop records 99.6 minus 0.55 per cent for each cyclist a minute of the hour's flow, tested 0 to 60 a minute), the 2027 forecast workbook (each site's weekday morning and evening peak-hour cyclists by direction and month) and the crossing timing sheets.
-2. Explores the 2026 exports and the contractor's video audits: every audited channel's recorded share sits within a point of the curve at its audited flow, so the curve describes the loops; the residuals show no pattern by site type, counter model or month (the back-test passes).
-3. For every site, direction and month, turns the forecast peak-hour flow into cyclists a minute, splits it over the two loops where a direction has two, reads the capture off the curve, and weights the morning and evening hours by their cyclists to get the month's capture.
-4. Checks: every flow inside the curve's tested range, the forecast's link totals reconciled to its site rows, a sensitivity on the curve's slope that moves no verdict.
-5. The careful variant reads each hour at its busiest quarter hour (each channel's 2026 peak-quarter factor) and gets Cutler Bridge from May and Quarry Lane from July.
-6. Files the schedule: Cutler Bridge falls below the line from July and every other site holds through October.
+1. Reads the hydrometric data standard (a station-month is grade B when the mean of its published daily discharges is within 5 per cent of the month's true mean discharge; a month in which more than a third of the days exceed one and a half times the largest discharge gauged at the station is grade C; the day runs in local standard time; gaugings are made at steady flow), the station register (22 stations, river kilometres, drainage areas, telemetry), the current ratings (all refitted on 1 April 2026), the 2023 to 2026 gaugings, the 2027 water supply outlook (monthly natural flows at each station and at the Talbot Canyon and Merrin Falls forebay inflow nodes) and Corriston Hydro's 2027 operating plan (each plant's mode by month, its peak windows, its minimum release, each day's inflow released within that day).
+2. Back-tests the current ratings (refitted on 1 April 2026) on the gaugings: every gauging since 2023 within 3 per cent, the regulated stations included; the residuals show no pattern by station, season or flow (the back-test passes).
+3. Reads each station's 2027 monthly flow from the outlook as the daily discharge the network will publish, and applies the extrapolation rule: Sable Creek's May and June flows exceed one and a half times its largest gauging.
+4. Checks: the operating plan releases each day's inflow within that day, so a regulated station's daily volume and daily mean flow equal the inflow plus its local inflow; the outlook's flows at the regulated stations reconcile with the forebay nodes and drainage areas; a sensitivity on the 5 per cent line (4 and 6 per cent) moves no verdict.
+5. The careful variant looks at the regulated stations once more: the daily volume balances at each, the gaugings fit, Merrin Falls changes neither its creek's monthly flow nor its channel, and the spread of each station's daily water levels inside a month, carried through its rating, moves a monthly mean by under half a per cent; nothing changes.
+6. Files the schedule: Sable Creek falls outside grade B from May (May and June) and every other station holds through December.
 
-Ends on: Cutler Bridge from July; the other fifteen sites hold the 90 per cent standard through October
+Ends on: Sable Creek from May; the other twenty-one stations hold grade B through December
 
-Golden: Old Spur Trail at Hallett Avenue and at Ravine Road from April, at Gorse Street from May and at Mallory Drive from June, and Cutler Bridge from July; the other eleven sites hold through October
+Golden: Corriston River below Talbot Canyon and at Hollis Bridge from January, Sable Creek from May, Merrin Creek below Merrin Falls and at Dunlop Road from July; the other seventeen stations hold grade B through December
 
-(Planned on the paper prototype; the builder tunes the world, keeps the schedule's shape and re-asserts both lines from the cut pack.)
+(From the stage 2 prototype; the builder tunes the world, keeps the schedule's shape and re-asserts both lines and every margin below from the cut pack.)
 
 ## Stump sentence
 
-A competent solver reads each channel's 2027 capture off the counter maker's curve at the forecast weekday peak-hour flow, finds that the curve reproduces every video audit, and files Ends on: Cutler Bridge from July, the other fifteen sites holding the 90 per cent standard through October; the step that lands it there is reading the curve, which the maker states for cyclists arriving at random through the hour, at the hour's flow on the Old Spur Trail channels 40 metres beyond the signalled crossings, where every cyclist passes inside the crossing's walk-and-bike interval, so those loops see four and a half to six times the hour's flow while cyclists pass and record under 90 per cent from April at Hallett Avenue and Ravine Road (signalled since 2025) and from the months their signals start at Gorse Street (May) and Mallory Drive (June).
+A competent solver back-tests every rating on its gaugings, applies the extrapolation rule to the 2027 outlook and files Sable Creek from May; the other twenty-one stations hold grade B through December; the step that lands it there is taking each published daily discharge as the day's mean flow, when the network publishes it from the day's mean water level through a convex rating and below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the plant releases the day's inflow in two peak windows and holds the minimum release between them, so the river at those four gauges swings tenfold and more inside every day and the published daily discharge sits an eighth to a third below the day's mean flow: from January below Talbot Canyon and from July, after the freshet's continuous generation, below Merrin Falls.
 
 ## Three rules
 
-Task type: missing-data-censoring-measurement-error in General Statistics & Data Science, which serves Data Quality Monitoring & Alerting: the object is a counter's systematic undercount, a measurement error that grows with the flow over its loop, and the call is the month from which each site's data fails the fund's capture condition.
+Task type: sensor-calibration-measurement in Physical & Environmental Sciences, which serves Data Quality Monitoring & Alerting: the stage-discharge rating is the calibration that turns a gauge's water level into discharge, and the call is the month from which each station's published discharge fails the network's accuracy grade.
 
-Domain test: The deciding quantity is each loop's capture, the expected share of passing cyclists it records under the arrival process it actually sees; the field's estimator integrates the maker's flow-dependent capture over that process, and because capture falls with the rate over the loop, the capture at the average rate overstates the capture of a stream concentrated in time. At a channel 40 metres beyond a signalled crossing the process is each cycle's cyclists inside the walk-and-bike interval.
+Domain test: The deciding quantity is the error of a gauging station's published daily discharge against the day's true mean discharge, which hydrometry estimates by carrying the water level's variation within the day through the station's stage-discharge rating; the rating is convex, so discharge computed at the day's mean water level falls below the mean of the discharges, by almost nothing where the river is steady and by a tenth or more where a peaking plant swings it between its minimum release and its peak release every day.
 
-Swap: General Statistics & Data Science swaps the method: replace the deciding statistical object (the capture integrated over the gated arrival process) with a generic summary (the curve at the hour's average flow) and the call changes, four trail sites passing that fail; with another field's nouns ("from which month will each ward's monitors capture fewer than nine in ten alarms") there is no signal gating arrivals into an open phase of a cycle, and the construction stops making sense.
+Swap: with another field's nouns ("from which month will each ward's monitors fall outside grade B") there is no stage-discharge rating, no tailrace release cycle and no gauging at steady flow, and the construction stops making sense; inside hydrometry, replacing the within-day computation with the rating at the daily mean water level changes the call (four stations hold that fail).
 
-Layer 1: per-site counter portal exports at 15-minute grain, one CSV per site, whose channel numbering runs past the bicycle loops into infrared pedestrian beams at combined sites (the portal); interval stamps in local standard time all year on the older firmware family against local clock time on the newer (the firmware); two loops in one direction on the two widest sections exported as two channels under one direction label (the portal); trail loops re-terminated during the June 2026 resurfacing, recorded in the maintenance log (the contractor); trail chainage in the crossing timing sheets against map coordinates in the inventory, joined through the trail centreline file (two departments' references); a forecast workbook keyed by model link with a link-to-site lookup (the travel model); timing sheets issued as PDFs with tables (signals engineering); video audits timed in local clock time (the contractor). Nothing is placed to be caught, and none of it touches the main call's decisive step (asserted per item).
+Layer 1: daily records from two telemetry generations, legacy GOES satellite platforms averaging over the UTC day and their 2026 replacements (cellular loggers, and Iridium platforms in the two canyons) over the local standard-time day, each station switching on its own date with one day carried by both (the network's telemetry); the GOES ingest holding a platform's last message when a slot is missed, so a missed day arrives as a copy of the day before (the ingest software); cellular days backfilled from logger memory days late (the loggers); provisional and approved rows for the same station-day in one export, the approved superseding after review (the data system); Lake Ashlin's weir-held summer level and two spring-fed creeks' winter baseflow repeating to the centimetre for days, genuinely (older shaft encoders at 1 cm); a station renumbered at its June 2026 relocation, the chain kept only in the register (the register); river kilometres from the mouth in the register against distances below each tailrace in the operating plan (two organisations' references); ratings issued as a PDF book with an effective date, all refitted on 1 April 2026 at the move to a new database (the hydrometric section); the gauging export's rating column rewritten to the current rating at the move, discharge in litres a second at the two spring-fed creeks, braided sections gauged channel by channel, field times in UTC (the gauging software). Nothing is placed to be caught, and none of it touches the main call's decisive step (asserted per item).
 
-Layer 2: field_method, measurement error under a nonlinear response: the methodological choice is the arrival process at which the maker's capture curve is evaluated; read at the hour's average flow it files the network compliant except Cutler Bridge, and integrated over the gated arrival process at the trail channels four sites fail from April, April, May and June.
+Layer 2: field_method, a convex conversion read at a daily mean: the methodological choice is whether the station's daily discharge is computed through the rating from the day's mean water level or from the water level through the day; read at the daily mean it files every station but Sable Creek in grade B, and carried through the day four stations below the two peaking plants fall outside grade B from January and July.
 
-Decisive step: evaluating each trail channel's capture at the rate its loop sees cyclists while they pass: a crossing signal releases each cycle's cyclists inside its walk-and-bike interval, so 40 metres on the loop sees the cycle's cyclists inside the interval, the hour's flow times the cycle over the interval, and the curve, stated for arrivals random through the hour, is read at that rate.
+Decisive step: building each regulated station's flow through the day from the operating plan (the minimum release between the peak windows, the rest of the day's inflow in them, plus the local inflow), carrying it through the station's rating to the water level, and comparing the discharge at the day's mean water level, which is what the network publishes, with the day's mean flow.
 
-Not semantics: every field, unit and definition read correctly (the curve's percentage and flow unit, the standard's peak hours, directions and season, the timing sheets' intervals, the inventory's positions and loops) still leaves the curve read at the forecast hour's flow, a correct reading of every document; no file says the trail channels see a different rate.
+Not semantics: every field, unit and definition read correctly (the standard's grade, day and extrapolation rule, the ratings' tables, the outlook's flows, the plan's windows and releases) still leaves the published daily discharge taken as the day's mean flow, a correct reading of every document; no file says the regulated stations' published values are biased.
 
-Not rule application: no filed rule relates a crossing signal to a counter's capture: the standard defines the capture and the threshold, the maker states the curve for random arrivals, the timing sheets state the signal phases; executing every stated rule still files Cutler Bridge alone.
+Not rule application: no filed rule computes discharge through the day: the standard defines the grade, the processing note states how daily discharge is published, the plan states how the plants run; executing every stated rule still files Sable Creek alone.
 
-Analyst test: a strong analyst who cleans every export and reads the counting standard, the maker's curve and the timing sheets correctly reads the curve at each channel's forecast peak-hour flow and files the default path's Ends on: Cutler Bridge from July, the other fifteen sites holding the 90 per cent standard through October.
+Analyst test: a strong analyst who reads the standard, the ratings, the gaugings, the outlook and the operating plan correctly back-tests every rating, applies the extrapolation rule and files the default path's Ends on: Sable Creek from May; the other twenty-one stations hold grade B through December.
 
-Estimand: the counting standard (section 3) files it: a site meets the condition for a month when, in each direction, its counter records at least 90 per cent of the cyclists who pass over it in the month's weekday peak hours (07:30 to 08:30 and 16:30 to 17:30 local time); the fund's 2027 audit condition applies it to every funded site in each month from April to October 2027.
+Estimand: the hydrometric data standard (section 3) files it: a station-month is grade B when the mean of the station's published daily discharges for the month is within 5 per cent of the month's true mean discharge, the day running from midnight to midnight local standard time; the 2027 data plan applies it to all 22 stations in each month of 2027, the flows being those the outlook and the operating plan put through each station.
 
-No decoy: nothing is planted: the curve, the audits, the forecast and the timing sheets are all correct; no document reports a forecast capture for any site, no memo argues a schedule, and the forecast states no arrival pattern within the hour.
+No decoy: nothing is planted: the ratings, the gaugings, the outlook and the operating plan are all correct; no document reports a 2027 grade for any station, no memo argues a schedule, and the operating plan says nothing about the gauges.
 
-No certified replay: the method is not recovered by reproducing certified figures: the video audits are taken at midday at unsignalled sites, where the hour's-flow reading and the gated reading agree, and they select neither.
+No certified replay: the method is not recovered by reproducing certified figures: the gaugings are made at steady flow (between the peak windows or in the freshet below Talbot Canyon), where the daily-mean and within-day readings agree, and they select neither.
 
-Lesson: a model learns to evaluate a nonlinear measurement response at the input process the sensor actually sees, here an upstream signal concentrating arrivals, rather than at the period's average; no build on file teaches capture under gated arrivals (nearest drivers 0.06 and below).
+Lesson: a model learns to carry a quantity's variation below the record's grain through a nonlinear conversion before averaging, here a river swung by a peaking plant read through a convex rating, rather than converting the period's mean; no build on file teaches it in hydrometry (nearest drivers 0.05).
 
 ## Deletion tests and Gate G
 
 - **Delete every wrong number:** none is planted; still hard.
-- **Clean-data test:** repair every Layer 1 file (the stamps, the beam channels, the twin-loop labels, the re-terminated directions, the link lookup, the chainage join) and the call and the default answer do not move, because the main path reads the forecast, the curve, the timing sheets and the inventory's positions (asserted by the builder).
-- **Lens swap:** no. The default and the answer read the same curve at two constructions of the arrival rate over the loop.
-- **Identity:** capture is recorded over passing; passing is the 2027 forecast and 2027 recordings do not exist, so the identity closes over nothing shipped.
-- **Control direction:** the video audits are taken at midday (11:00 to 13:00) at the sites on that year's rotation, and no site beyond a signalled crossing was on the 2025 or 2026 rotation; at midday flows every reading of the curve agrees within the audit's resolution, so the audits confirm the curve's low-flow end and tie under both bases (L1). The decisive cause is in the data window: Hallett Avenue and Ravine Road have been signalled since 2025.
-- **First moves:** the forecast group-by, the curve at the forecast flows, the audit back-test, the busiest-quarter refinement and the hygiene battery each end on a rung below the answer.
+- **Clean-data test:** repair every Layer 1 file (the telemetry day, the held messages, the backfills, the provisional rows, the renumbered station, the rating label, the units, the split channels, the UTC field times) and the call and the default answer do not move, because the main path reads the standard, the data plan, the register, the current rating book (its equations and gauged ranges), the outlook and the operating plan; the daily records and the gaugings carry the asks (asserted by the builder).
+- **Lens swap:** no. The default and the answer read the same rating at two constructions of the flow it converts.
+- **Identity:** the published daily discharge is the rating at the daily mean water level, a recomputable identity on the record, but the true mean discharge appears in no file for any day, so nothing closes over the decisive quantity.
+- **Control direction:** the gaugings are made at steady flow by the standard's rule, below Talbot Canyon between the peak windows at the minimum release or during the freshet's continuous generation; at steady flow every reading of the rating agrees, so the gaugings confirm the ratings and tie under both bases (L1). The decisive cause is in the data window: Talbot Canyon has peaked through the whole record.
+- **Wrong now, and quiet in the record:** below Talbot Canyon the 2023 to 2026 published dailies already sit an eighth or more low outside the freshet; no file holds the day's true mean flow there, no station gauges the river above the plants, the utility's release records are not the network's, and against the 2027 outlook the regulated stations' gap sits inside the spread the unregulated stations show (asserted by the builder month by month).
+- **First moves:** the outlook read as published flow, the gauging back-test, the extrapolation rule, the daily volume balance, a routing with heavy damping and the hygiene battery each end on a rung below the answer.
 - **Gate G:** mechanism binding_constraint; `surface_read_dependency: no`, `stumping_family: analytical_non_defect`, `sole_data_defect: no`.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| Rung 0: each published daily discharge taken as the day's mean flow, the extrapolation rule on the outlook (default) | fires: the standard's grade and extrapolation rule, the outlook's monthly flows and the rating book's gauged ranges are all the solver needs | the outlook keys stations by number, as the register does | the first construction anyone builds | the gaugings confirm the ratings | nothing to find | one ratio per station-month | readable |
+| Rung 1: the gauges below Merrin Falls flagged from its in-service month | fires: the plan dates the plant's entry into service | the station names say which gauges sit below the plant | a regime change flagged as unverified is the monitoring reflex | none | none | one date | readable |
+| Rung 2: the rating's curvature checked on the spread of each regulated station's daily water levels inside a month | fires: the dictionary says discharge comes from the water level through the rating, which invites a curvature check | the daily record carries the water levels | the reflex of carrying an input's spread through a nonlinear conversion | none | none | one variance per station-month | readable |
+| Rung 3 (decisive): each regulated station's day built from the release schedule and the local inflow, carried through the rating, and the rating read at the day's mean water level against the day's mean flow | does not fire: the dictionary describes each column the way every station's record is processed (the day's mean water level, the discharge from it through the rating in force); the plan describes generation in two windows and a minimum release between them; no document relates a release to a published value, names an error inside a day, or says how the river at a gauge moves through a day | does not fire: no column carries a within-day range, a release or a regulated flag; the daily record holds one water level and one discharge per station-day, and the plan keys its plants by its own distances below each tailrace while the register keys stations by river kilometre from the mouth | does not fire: the reflexes for a published record's accuracy (back-test on the gaugings, the extrapolation check, the volume balance below a plant, neighbour ratios, the record's own spread through the rating) land on rungs 0 to 2 | does not fire: every gauging is made at steady flow by the standard's rule and ties under every reading; no file holds a day's true mean flow at a regulated station | does not fire: the battery (keys, duplicates, gaps, flatlines, timestamps, units) finds the asks' mess and nothing below the plants; every published value reproduces from its rating at the day's water level | does not fire: no shipped figure becomes the answer by one operation; the day's flow has to be built from the plan and carried through the rating before averaging | silent |
+
+## Semantic fork table
+
+| SF | Term or convention | Golden reading | Alternative readings | Call under each | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | fall short of grade B | the station-month's mean published daily discharge more than 5 per cent from the month's true mean discharge, or the month graded C by the extrapolation rule | graded anything but B | same call: the standard has two grades for a station-month, B and C | standard s.3 |
+| SF2 | the month's true mean discharge | the mean over the month of each day's mean flow past the station, the flows being the outlook's and the operating plan's | the outlook's figure read as the published mean (the default's easy method, not a reading) | the estimand is the same; the default is an easy method on it | standard s.3; data plan s.2 |
+| SF3 | published daily discharge in 2027 | the network's processing as the dictionary states it (the rating in force applied to the day's mean water level), unchanged in 2027 | a mean of within-day discharges | no station transmits within-day values in 2027 | data plan s.3 ("daily transmission and processing continue unchanged in 2027"); the dictionary |
+| SF4 | each month of 2027 | the calendar months January to December, days running midnight to midnight local standard time | days on the clock | same call: the release cycle repeats inside every day under either clock (C1 asserted) | standard s.2 |
+| SF5 | from which month | the first month short | every month short | the Talbot pair are short January to April and July to December; their first month is January; the chart shades every month | the prompt's "from which month"; the chart carries every month |
+| SF6 | the release inside a peaking day | the minimum release outside the windows and, inside them, the rate that passes the rest of the day's inflow | an even release; generation at full capacity for fewer hours | an even release is not the plan; full capacity breaks the plan's windows; with 30 or 60 minute ramps the call is unchanged (C3 asserted) | operating plan s.3 and s.4 |
+| SF7 | the local inflow between a plant and a gauge | the outlook's station flow less its forebay node, steady through the day | scaled from drainage areas | same call within 20 per cent either way (C3 asserted) | water supply outlook, method note |
+| SF8 | damping between a tailrace and a gauge | none stated: the gauges sit 0.6 to 3.1 km below their tailraces in confined channels | a damped swing | same call for damping up to 25 per cent of the swing at every regulated station (C3 asserted; flip stated in the ladder) | the register's reach notes; C3 |
+| SF9 | travel time to the gauge | any lag | none | same call: a lag shifts a repeating day inside itself (C1 asserted) | C1 |
+| SF10 | day-to-day variation inside a month | each day at the month's outlook flow | daily inflows varying 30 per cent about the month's mean | same call (C3 asserted) | data plan s.2 grades on the outlook's monthly flows; C3 |
+| SF11 | Merrin Falls' first peaking month | July: in service 1 June, continuous generation through the freshet to 30 June | June | June files C112 and C113 one month early | operating plan s.2 (continuous generation 1 May to 30 June each year) |
+| SF12 | the largest discharge gauged at a station | the top of the gauged range the rating book prints under each rating | the largest discharge in the gauging export | same call: Sable Creek's is the same in both and no other station comes within 10 per cent of the limit (asserted) | the rating book; C1 |
+| SF13 | the month's mean discharge for the extrapolation rule | the outlook's monthly flow | the published monthly mean | same call: the rule binds only at Sable Creek, which no plant regulates (asserted) | C1 |
+| SF14 | rounding before comparing with 5 per cent | unrounded | whole or one-decimal per cent | same call: no golden station-month lies between 4.0 and 6.0 per cent (asserted) | C1 |
+| SF15 | within 5 per cent | 5.0 meets grade B | strictly under 5 | same call: no station-month at 5.0 | standard s.3 |
+| SF16 | the station set | the 22 stations of the register, C122 standing for the relocated C110 | C110 and C122 as two stations | 22 stations either way for 2027: C110 has no 2027 record | the register's replaced-by entry |
+| SF17 | Fenn Creek below the run-of-river plant | no swing: the plant passes the creek as it arrives | the swing applied below every plant | no schedule exists to swing it | operating plan s.5 (no pondage) |
+| SF18 | Lake Ashlin's outflow | the weir rating at the lake level, steady through a day | none | holds | the register; the outlook |
+| SF19 | the plant's capacity | never reached outside the freshet | spill above capacity | same call: the largest peaking rate is 49.0 m3/s at Talbot Canyon (July) against 52, 21.8 at Merrin Falls against 24 (asserted) | operating plan s.3 |
+
+## Ladder
+
+Four rungs, each a complete construction a capable analyst stops at, each dying to one shipped fact or
+construction. The graded call is the five stations that fall short with their first months, and the
+seventeen that hold.
+
+| Rung | Construction | Schedule filed | Dies to | Worth on the graded call |
+|---|---|---|---|---|
+| 0 (default) | each published daily discharge taken as the day's mean flow; the extrapolation rule on the outlook's monthly flows against the rating book's gauged ranges | Sable Creek from May; the other twenty-one hold | the dictionary's processing (the published daily is the rating read at the day's mean water level) with the plan's windows and minimum release: below a peaking plant the day's mean water level is not the water level of the day's mean flow | 1 of 5 stations; four holds wrong |
+| 1 (the forcing event) | rung 0 plus Merrin Creek's two gauges flagged from the plant's in-service month, as a regime the ratings have not seen | Sable Creek from May; C112 and C113 from June | the standard's section 3 (the grade is the published mean's error, not a verification status) with the plan's channel note (no works below the tailrace) and freshet clause (continuous generation through 30 June): June's water passes as the river's own and the rating holds | 1 of 5; two months wrong; the Talbot pair missed |
+| 2 (sophisticated) | the rating's curvature checked at each regulated station: the spread of the daily water levels inside each month carried through the rating, under half a per cent of a monthly mean | Sable Creek from May; the other twenty-one hold | the plan's windows: the swing that matters is inside each day, which the daily record averages away, and the grade compares each day's published value with that day's flow | 1 of 5 |
+| 3 (decisive) | each regulated station's day built from the plan (the minimum release outside the windows, the rest of the day's inflow inside them, plus the outlook's local inflow), carried through the rating to the water level, the rating read at the day's mean water level against the day's mean flow, in each plant's peaking months | the golden | | 5 of 5 and the holds |
+
+**Margins (prototype, minimum releases 1.8 and 0.7 m3/s, rating exponents 1.75 to 1.95; the builder
+re-asserts them from the pack).** Published against true, failing months: C104 from minus 13.8 (February)
+to minus 30.6 per cent (July), C105 minus 13.4 to minus 28.8, C112 minus 17.4 (December) to minus 30.5,
+C113 minus 17.3 to minus 29.6; May and June 0.0 at all four (continuous generation). Sable Creek's May and
+June outlook flows at 1.68 and 1.95 times its largest gauging. Every holding station-month within 1 per
+cent of its true mean (steady rivers; Lake Ashlin's outflow; Fenn Creek's run-of-river reach). No golden
+station-month between 4.0 and 6.0 per cent.
+
+**The corridor (C3, SF6 to SF10).** Damping up to 25 per cent of the swing, ramps of 30 or 60 minutes,
+local inflow 20 per cent either way and daily inflows 30 per cent about the month's mean, every combination:
+the least-biased failing station-month stays at minus 6.4 per cent (C105, February) and every station keeps
+its first month. Flip condition: Hollis Bridge (C105) would hold in January only if the swing reaching it
+were damped by more than about 35 per cent over the 2.4 km below the tailrace (the builder states the exact
+figure from the pack).
+
+**The grid.** The forcing-event flag (off, on) by the within-day construction (none, the monthly spread,
+the full day) by the freshet clause (kept, missed): rung 0 is (off, none), rung 1 (on, none), rung 2 (off,
+spread) files rung 0's schedule and (on, spread) rung 1's; (off, full, kept) is the golden; (on, full) and
+(off, full, missed) file C112 and C113 from June. No combination of the wrong moves cancels onto the golden
+(asserted cell by cell). The swing applied below Fenn Creek's run-of-river plant has no schedule to apply
+(SF17), so it is no cell.
+
+**Direction and worth.** Rungs 1 and 2 never touch the Talbot pair, and only the decisive move adds C104
+and C105 and puts C112 and C113 in July. The answer is the grid's extreme on the Talbot pair and bracketed
+on the Merrin pair (June under the flag, never under the golden). Each rung's worth is computed on the
+graded schedule, never on a bias.
+
+## Closure table
+
+| # | Axis | Reading here | Closure |
+|---|---|---|---|
+| 1 | Population | the 22 stations, each month of 2027, every day of the month, flows not yet observed (the outlook's and the plan's) | filed: standard s.3, data plan s.1 and s.2 |
+| 2 | Unit of account | a station-month | filed: standard s.3 |
+| 3 | Attribution window | calendar months of local standard-time days; Merrin Falls in service 1 June, continuous generation to 30 June | filed: standard s.2, operating plan s.2 (SF11) |
+| 4 | As-of dating | the 2027 outlook (issued 2 November 2026), the 2027 operating plan, the ratings in force from 1 April 2026 | filed: each document's date; one version of each ships |
+| 5 | Version basis | the current rating book only; the superseded ratings never enter the call | filed: the rating book's effective date; data plan s.2 |
+| 6 | Denominator | the month's true mean discharge | filed: standard s.3 (SF2) |
+| 7 | Weighting | days equally weighted in a month's mean | filed: standard s.3 ("the mean of the month's daily discharges") |
+| 8 | Window length | one calendar month | filed: standard s.3 |
+| 9 | Boundary inclusivity | within 5 per cent meets grade B | filed: standard s.3; no station-month at 5.0 (SF15) |
+| 10 | Rounding path | errors compared unrounded | C1: no golden station-month between 4.0 and 6.0 (SF14) |
+| 11 | Tie-break | none: each station stands alone | not needed: no ranking |
+| 12 | Maturity and censoring | 2027 lies wholly in the forecast; no 2027 record exists | filed: data plan s.2 |
+| 13 | Order of operations | the day's flow built and carried through the rating before the day's mean water level is taken | the construction itself; every order that averages after converting agrees (C1 asserted) |
+| 14 | Row order | the outlook's and register's rows in any order | C1: order-free arithmetic, asserted over a shuffle |
+| 15 | Duplicate resolution | one outlook row per station and node | C1: asserted unique |
+| 16 | Identity normalisation | station numbers in the outlook and the register; plants by name in the plan | dictionary semantics; each join asserted one to one (C122 for C110, SF16) |
+| 17 | Netting against gross | no netting: the error is the published mean against the true mean | filed: standard s.3 |
+| 18 | Dimensional units | cubic metres a second in the outlook, the plan and the ratings; water levels in metres | units stated in each; a litres-a-second reading of the two spring creeks' ratings gives flows a thousand times the outlook's (C4) |
+| 19 | Code and status semantics | the plan's operating modes (peaking, continuous generation, run-of-river) | filed: operating plan s.2 to s.5 (SF11, SF17) |
+| 20 | Integerisation | none in the call | not needed |
+| 21 | Clause scope | the grade per station-month; the extrapolation rule per station-month | filed: standard s.3 and s.4 |
+| 22 | Forward window contents | the outlook's 2027 monthly flows, the 2027 operating plan with Merrin Falls from 1 June | shipped: the outlook workbook and the operating plan |
+
+## Literal reader
+
+Executed word for word (the standard's sections 2 to 4, the data plan's sections 1 to 3, the dictionary's
+daily-record columns, the rating book's equations and gauged ranges, the outlook's flows, the operating
+plan's modes, windows, minimum releases and in-service date): each station's 2027 published daily discharge
+is its current rating applied to the day's mean water level, and each day's flow past it is the outlook's
+for the month, shaped inside the day by the plan where a plant peaks. At the eighteen stations no plant
+peaks above, the flow is steady through the day, the day's mean water level is the water level of the
+day's flow, and only the extrapolation rule moves a grade (Sable Creek, May and June). At C104 and C105
+(every month but May and June) and C112 and C113 (July to December) the day's water level follows the
+release cycle, and the rating read at its mean falls 13 to 31 per cent below the day's mean flow. Every
+admissible reading of the release shape, the local inflow, the damping, the lag and the clock files the
+same schedule (SF6 to SF10); taking the published daily as the day's flow is an easy method on the same
+filed estimand, not a second reading of a filed sentence. No filed sentence reads to another schedule
+(SF1 to SF19).
+
+## Oracles
+
+- **The gaugings:** at steady flow by the standard's rule; below Talbot Canyon between the peak windows at the minimum release or in the freshet, where the day's mean and instantaneous readings coincide. They confirm the current ratings within 3 per cent under both paths and select neither.
+- **The published record's identity:** every published daily discharge reproduces from its rating at the day's water level, under both paths; it confirms the processing, not the flow.
+- **The outlook's regulated flows** reconcile with the forebay nodes and the local drainage under both paths.
+- **The outlook against the record:** the regulated stations' 2027 flows sit above their 2023 to 2026 published means by amounts inside the spread the unregulated stations show month by month (asserted by the builder); it ties under neither reading.
+- **Same-day gauging against published daily:** at the unregulated stations they agree within a few per cent; at C104 and C105 an off-peak gauging sits far below the day's published value under both readings, as an instantaneous flow at the minimum release must; it selects neither.
+- **The visit log, the flood frequency update and the water quality record** touch only the asks or nothing.
+- None ties only under the golden or only on the wrong read.
+
+## Ask sheet
+
+**Ask A: how many station-days in each month of the 2026 water year the daily record holds a water level measured on that day (12 figures, whole station-days).**
+- **H18 home:** the inspector reads the 2027 grades against the record they will be published into; the 2026 water year's measured station-days by month is that record's audit trail (a measure the call does not turn on, on rows outside the main population).
+- **Use:** the inspector's completeness line in the review of the network's data plan, in the network's own words ("station-days with a measured water level").
+- **Primary device (D4, absence written as values):** a GOES platform that misses its transmission slot leaves the ingest holding its last message, so the missed day arrives as a copy of the day before, value, discharge and received time alike. Every month carries held days: the GOES stations until each one's 2026 cut-over, and three stations on GOES until 21 to 28 September 2026. Nothing files the behaviour; the only evidence is a received time earlier than the end of the row's own day, repeated from the row before.
+- **Over-cleaning half:** Lake Ashlin's weir-held level (June to October) and Pellam and Garrow spring creeks' winter baseflow (November to May) repeat to the centimetre for days, genuinely, on older 1 cm shaft encoders; a run-length flatline rule deletes them in every month whatever its threshold (asserted for runs of 2 to 14 days).
+- **Hazards:** H1 provisional and approved rows for the same station-day (October 2025 to June 2026 reviewed); H2 the cut-over day carried by both platforms; H3 C110 and C122 both transmitting 4 to 8 June 2026; H4 cellular days backfilled from logger memory and received days late (measured on their day).
+- **Files and columns on the path:** the daily records (station, date, water_level_m, status, platform, received_utc), the register (station, replaced_by, relocated, telemetry, cut_over, slot_utc, resolution_m), the migration tracker (station, from, to, cut_over), the dictionary, the visit log (station, date, work): 5 files, 15 columns.
+- **Stops:** (N) one row per station and date after removing duplicates: every month high by its held days; (O) a flatline rule over every station: low in every month by the genuine repeats; (P) held days dropped, provisional and approved both counted: reviewed months high; (R) C110 and C122 counted as two stations: June high by 5; then the golden. Lazy delta: the natural read misses every month by at least 3 station-days (asserted per month).
+- **Realism:** an ingest that fills a missed slot with the platform's last message keeps a series unbroken, and a copied record copies its metadata; the network's review approves ratings and gaugings, not transmissions.
+
+**Ask B: each station's mean difference between its 2026-water-year gaugings and the rating in force on the gauging day, as a percentage of the rating's discharge (22 figures, one decimal place).**
+- **H18 home:** the ratings the 2027 grades rest on replaced, on 1 April 2026, the ratings that published the first half of the water year; each station's gauging agreement under the rating in force is the audit trail of the record and of the refit the call consumes.
+- **Use:** the inspector's rating-performance line, one figure per station.
+- **Primary device (D2, an attribute at the wrong vintage, a later snapshot):** at the move to the new database on 1 April 2026 every station's rating was refitted and the gauging export's rating column was rewritten to the current rating on every row, the gaugings before April included. The superseded ratings appear in no document; they survive only in the daily record, where every published discharge before 1 April is the superseded rating at that day's water level (the rating book's effective date and the dictionary's discharge column are the filed facts, and neither names the gauging column). Every station has 2 to 5 gaugings before April, and the refit moved every rating by 1.5 to 6 per cent somewhere in its gauged range (asserted per station at the gaugings' water levels).
+- **Hazards:** H5 litres a second at Pellam and Garrow (the register's reporting unit); H6 braided sections at C108 and C119 gauged channel by channel, one row per channel under one gauging number; H3 the relocation (C110's gaugings against the old site's ratings, C122's from 4 June against the new site's); H7 field times in UTC (an evening gauging on 31 March 2026 local reads 1 April in UTC).
+- **Files and columns on the path:** the gaugings (gauging_no, station, measured_utc, gh_m, discharge, rating, method, notes), the rating book (equations, effective date, the curve form), the daily records (station, date, water_level_m, discharge_m3s, status), the register (reporting unit, replaced_by, relocated), the dictionary: 5 files, 16 columns.
+- **Stops:** (N) every gauging against the rating its export row names: every station off; (O) the gaugings before April dropped for want of a superseded table: every station off; (U) litres read as cubic metres: two stations absurd (loud, and repaired by every response); (S) channel rows read as gaugings: C108 and C119 off by about half their weight; (T) the UTC date for the switch: one station off; then the golden. Lazy delta: the natural read misses every station by at least 0.2 points (asserted per station).
+- **Realism:** a database move that refits ratings and repoints history at the current rating is how migrations go; a rating book prints the ratings in force, not those retired; a braided section is gauged channel by channel; spring creeks are reported in litres.
+
+**Main population.** Device and hazard rows in the main call's declared population (the outlook's rows,
+the operating plan's tables, the rating book's equations and gauged ranges, the register's 22 current
+stations): 0, asserted by count. The daily records, the gaugings, the migration tracker and the visit log
+sit outside it; no document the call reads carries an ask's organ (the rating book's effective date is a
+fact both read, not an organ; the superseded ratings live only in the daily record).
+
+**Hazard table.**
+
+| Hazard | Asks moved | Per-ask delta (planned; the builder measures and asserts) |
+|---|---|---|
+| H1 provisional and approved both counted | A | A: October to June high by each month's reviewed station-days |
+| H2 the cut-over day counted twice | A | A: high by one at each station in its cut-over month |
+| H3 C110 and C122 as two stations | A, B | A: June high by 5; B: the relocated station split in two |
+| H4 late backfills read as held days | A | A: low in the months the backfills fall |
+| H5 litres read as cubic metres | B | B: Pellam and Garrow absurd |
+| H6 channel rows read as gaugings | B | B: C108 and C119 off by several points |
+| H7 the switch read on the UTC date | B | B: one station off by 0.3 or more |
+
+**Referee.** The daily record's pre-April pairs are the superseded ratings and settle Ask B's version
+question exactly (a three-parameter curve through each station's pairs, error under 0.01 per cent of a
+discharge); they hand over nothing about the held messages. Nothing referees Ask A: the received times are
+the evidence and the visit log corroborates the backfills.
+
+**Cracker sheet.**
+
+| Ask figures | The cracker (lands the call; runs keys, duplicates, joins, fan-out and ties; executes every filed rule; matches every control) | What it misses | Cracker |
+|---|---|---|---|
+| Ask A, the 12 monthly counts | keeps approved over provisional, counts the cut-over day once, chains C110 to C122, counts one per station-day | the held days, counted as measured in every month; or, with a flatline rule, the genuine repeats deleted in every month | miss |
+| Ask B, the 22 station means | converts litres, sums the channel rows, chains the relocation, reads each gauging against the rating its export row names | the 2 to 5 gaugings before April at every station read against the current rating, or dropped | miss |
+
+Mirror leakage: 0 per cent of ask weight on paper (the mirror stops at rung 0 or 1 and runs the cracker's
+battery on the asks, missing the same two primaries); target a fifth. The measured risk is a solver that
+fits the superseded ratings from the record (Ask B) or tests received times against the day they describe
+(Ask A): each primary holds the other ask.
+
+Pair ceiling: 27 (cracker 35 for the call and components, 7 for instructions, 0 for the asks; mirror 5, 7
+and 0; generated-rubric weights assumed at 35, 7 and 58, rerun from the generated rubric at ship).
+
+## Builder's work order
+
+- **Read first:** `## Draw` to `## Ask sheet`, then `## Tried and rejected`.
+- **World** (22 stations; the builder fixes the list in `world.py` and keeps these): C104 Corriston River below Talbot Canyon (0.6 km below the tailrace) and C105 Corriston River at Hollis Bridge (2.4 km); C112 Merrin Creek below Merrin Falls (0.8 km) and C113 Merrin Creek at Dunlop Road (3.1 km); C107 Sable Creek near the mouth (the extrapolation case); C109 Fenn Creek below the powerhouse (run-of-river, no pondage); C102 Lake Ashlin at the outlet weir (weir-held June to October, 1 cm encoder); Pellam and Garrow spring creeks (litres a second, 1 cm encoders); C108 and C119 braided; C110 relocated on 4 June 2026 as C122; no station on the Corriston above Talbot Canyon or on Merrin Creek above Merrin Falls, none on the Corriston below Hollis Bridge. Talbot Canyon peaking since its 2017 licence amendment; windows 06:00 to 10:00 and 16:00 to 21:00 local clock time every day; minimum releases 1.8 (Talbot Canyon) and 0.7 m3/s (Merrin Falls); capacities 52 and 24; continuous generation 1 May to 30 June; ramps of 30 minutes; Merrin Falls in service 1 June 2027. Ratings Q = C (h - e)^b, exponents 1.6 to 2.4 across the network.
+- **Generator** (`task229/generator/`, replacing the cycling draft's files): `params.py` (constants, seeds), `world.py` (stations, rivers, ratings old and current, gauged ranges, telemetry and cut-overs, the outlook's 2027 flows, the plan), `truth.py` (WY2023 to WY2026 15-minute flows and water levels per station, the regulated reaches shaped by the plan; daily means; published discharge through the rating in force; gaugings at steady flow; the asks' devices applied after the truth), `forward.py` (the 2027 truth from the outlook and the plan: each station-month's published and true means), `docs.py` (the standard, the data plan, the rating book, the operating plan, the flood frequency update), `build.py` (writes the pack, sets mtimes, scrubs), `golden.py` (the call and the asks from the pack), `checks.py` (the R block, SF1 to SF19, the grid, the corridor, every margin, the ask stops, device coverage, the separation count, the input gates, the realism sweep), `verify.py` (independent, bundle only), `deliver.py` (the PNG and the workbook), `make.py`.
+- **Pack** (flat under `target/`): the hydrometric data standard (PDF), the 2027 data plan (DOCX), the station register (XLSX), the rating book (PDF), the daily records WY2023 to WY2026 (CSV, about 33,000 rows), the gaugings 2016 to 2026 (CSV), the 2027 water supply outlook (XLSX), Corriston Hydro's 2027 operating plan (PDF), the 2026 telemetry migration tracker (XLSX), the visit log (CSV), the data dictionary (CSV); distractors: the 2025 flood frequency update (PDF) and the 2026 water quality sonde record (CSV), named in `metadata.json`.
+- **Tuning targets:** every failing golden station-month at minus 10 per cent or beyond and every holding one within 1 per cent; the corridor's least-biased failing month beyond minus 6 per cent; Sable Creek's May and June above 1.6 times its largest gauging and every other station-month under 1.35 times; the regulated stations' outlook-to-record ratios inside the unregulated spread in every month; every Ask A month moved by held days and by the flatline rule at every threshold from 2 to 14; every Ask B station moved by the version device by at least 0.2 points; every Ask B figure at least 0.02 from a rounding edge.
+- **Assert:** the R block (R1 the outlook, the plan and the ratings are the raw material and no column holds a within-day flow or a bias; R2 each Layer 1 item mishandled leaves the call; R3a the default path files `Ends on`; R3b the decisive step alone files the golden; R3c no copied block, no swapped series, no decoy); SF1 to SF19; the grid; the corridor; the separation count; the referee's fit; the input gates (13 files, four formats, the 33,000-row record, two distractors).
 
 ## Tried and rejected
 
@@ -250,6 +447,16 @@ Lesson: a model learns to evaluate a nonlinear measurement response at the input
   (`## Hardening loop 1 (architecture 2, paper)`). Do not redraw a gate decided by the state of units at a
   moment rebuilt from checks that reset them, in any world.
 - 2026-10-13, architecture 3 draw: the paused 2026-10-12 draft made every crossing signal a 2027 event, so the curve read at the hour's flow reproduced every audit and only the forward window broke it (the validated decoy the rules block), its forecast stated arrivals steady through the hour (an official decoy) and its subdomain `other` serves no objective; redrawn with Hallett Avenue and Ravine Road signalled since 2025, midday audits that tie under both readings, no arrival sentence in the forecast, and the client domain moved to general-statistics-data-science (missing-data-censoring-measurement-error, which serves DQ).
+- 2026-10-13, stage 2, the 90 per cent line: with a curve steep enough to matter, Cutler Bridge had to carry over 1,000 cyclists an hour in July and the trail's gated loops recorded 10 to 13 points short in 2026, an outlier against the forecast direction by direction; moved to 95 per cent with the curve at 0.70 a cyclist a minute, flows of 200 to 600 an hour.
+- 2026-10-13, stage 2, the trail loops re-terminated after a June 2026 resurfacing with their directions swapped, as Ask A's device: a swapped series is on the client's plant list; replaced by the firmware's stamp basis switching at each site's 2026 upgrade.
+- 2026-10-13, stage 2, the trail's 2026 flows near their 2027 level: the 2026 gated loops at Hallett Avenue and Ravine Road would have recorded 13 points short in their busiest hour, a direction-and-hour outlier against the forecast; the Railyard Bridge link (opening 22 March 2027) puts the trail's 2026 flows at about a third of 2027's and the shortfall near 7 points, inside the documented growth.
+- 2026-10-13, stage 2, the schedule as a column of the workbook beside the asks: sixteen schedule rows would grade the twelve sites the default gets right; the schedule moved to `counter_schedule_2027.png` and the workbook carries only the 2026 record.
+- 2026-10-13, architecture 3 redrawn out of the cycle-counter world before any data was cut: the deciding quantity there (a loop counter's capture at the arrival rate a crossing signal releases) is traffic engineering, and General Statistics & Data Science lent it only a method label, so with another field's nouns (a turnstile behind a ticket gate, a sensor behind a pump) the task read the same; the author's domain review rejects that. Redrawn into Physical & Environmental Sciences, sensor-calibration-measurement, where the deciding quantity (the error of a published daily discharge against the day's mean flow, built through the station's stage-discharge rating) is hydrometry's own computation and does not survive a swap. The cycling draft's stage 2 lines above stay as its record.
+- 2026-10-13, hydrometry stage 2, peaking at Talbot Canyon from March 2025: a peaking start inside the record puts a step in the regulated stations' published flows against their neighbours that an event study at the licence date finds; moved to the 2017 licence amendment, so the record is biased throughout and nothing steps.
+- 2026-10-13, hydrometry stage 2, gauges 1.4 to 6.4 km below the tailraces: the bias falls with the square of the swing, so a damping assumption of a third moved Hollis Bridge inside 5 per cent in winter; the gauges moved to 0.6 to 3.1 km in confined channels, and the call now holds to 25 per cent damping with every ramp and inflow variant.
+- 2026-10-13, hydrometry stage 2, gauging below the plants on days the operator holds a steady release: it blinds the gaugings, but each such day publishes a quarter to a half above its neighbours in the daily record, a spike on every gauging day that the anomaly sweep finds; the gaugings are made between the peak windows at the minimum release or in the freshet instead.
+- 2026-10-13, hydrometry stage 2, stuck-sensor runs as Ask A's device: a sensor that sticks part way through a day leaves that day and the repair day half real, so a count of measured days had no forced answer; replaced by the GOES ingest's held messages, whole days by construction.
+- 2026-10-13, hydrometry stage 2, the extrapolation rule on the share of days above one and a half times the largest gauging: the outlook gives monthly flows only, so the count of days was not forced; the rule reads on the month's mean discharge, and the largest gauging is the top of the gauged range the rating book prints.
 
 ## Architecture 2 record (spent 2026-10-11)
 

@@ -1,27 +1,28 @@
 {
   "task": "task229",
   "owner": "perssathya",
-  "status": "DESIGN",
-  "domain": "general-statistics-data-science",
+  "status": "BUILD",
+  "domain": "physical-environmental-sciences",
   "objective": "data-quality-monitoring",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 3,
+  "stage_name": "build",
   "updated": "2026-10-13",
-  "stump": "A competent solver reads each channel's 2027 capture off the counter maker's curve at the forecast weekday peak-hour flow, finds that the curve reproduces every video audit, and files Ends on: Cutler Bridge from July, the other fifteen sites holding the 90 per cent standard through October; the step that lands it there is reading the curve, which the maker states for cyclists arriving at random through the hour, at the hour's flow on the Old Spur Trail channels 40 metres beyond the signalled crossings, where every cyclist passes inside the crossing's walk-and-bike interval, so those loops see four and a half to six times the hour's flow while cyclists pass and record under 90 per cent from April at Hallett Avenue and Ravine Road (signalled since 2025) and from the months their signals start at Gorse Street (May) and Mallory Drive (June).",
+  "stump": "A competent solver back-tests every rating on its gaugings, applies the extrapolation rule to the 2027 outlook and files Sable Creek from May; the other twenty-one stations hold grade B through December; the step that lands it there is taking each published daily discharge as the day's mean flow, when the network publishes it from the day's mean water level through a convex rating and below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the plant releases the day's inflow in two peak windows and holds the minimum release between them, so the river at those four gauges swings tenfold and more inside every day and the published daily discharge sits an eighth to a third below the day's mean flow: from January below Talbot Canyon and from July, after the freshet's continuous generation, below Merrin Falls.",
   "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-13",
+    "checks": 49
   },
   "leak": {
     "leak_py": "",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "PASS (2026-10-13, at the draw)",
-    "nearest": "task98 v2 lineage driver 0.06; task91, task40, task135 at 0.05",
-    "guard_check": "PASS (2026-10-13)"
+    "heart": "WARN (2026-10-13, at the hydrometry draw; no BLOCK)",
+    "nearest": "drivers 0.05: task79, task109 v1, task185, task123 v2, task500 v1",
+    "guard_check": "WARN (three_rules.strategy_risk, answered by the analyst test); NOTE same_driver_older against task127 v1 and task87 v9, differentiated"
   },
   "judge": {
     "verdict": "",
@@ -36,17 +37,17 @@
       "commit": ""
     }
   ],
-  "resume": "stage 2 on architecture 3: readability screen, semantic fork table, ladder, closure table (22 axes), literal reader, oracles, ask sheet (cracker, mirror, pair ceiling) and prompt.txt, to precut.py exit 0; then stage 3 (generator from scratch: world, timing sheets, forecast, 2026 exports, audits, documents, checks with the R block, verify, goldens counter_season_2027.xlsx and trail_baseline_2026.png)",
+  "resume": "stage 3 on architecture 3 (hydrometry): generator from scratch per the design note's ## Builder's work order (params, world, truth, forward, docs, build, golden, checks, verify, deliver, make); precut exit 0 on 2026-10-13 (49 checks)",
   "approved": null,
   "delivered": null,
   "portal": null,
   "draw": {
     "registered": "2026-10-13",
-    "card": ".claude/skills/fingerprint/cards/task229.json v3",
-    "guard": "PASS",
-    "heart": "PASS",
-    "planned_golden": "Old Spur Trail at Hallett Avenue and Ravine Road from April 2027, Gorse Street from May, Mallory Drive from June, Cutler Bridge from July; the other eleven sites hold through October",
-    "planned_default": "Cutler Bridge from July; the other fifteen sites hold through October"
+    "card": ".claude/skills/fingerprint/cards/task229.json v3 (hydrometry)",
+    "guard": "WARN, answered",
+    "heart": "WARN",
+    "planned_golden": "Corriston River below Talbot Canyon and at Hollis Bridge from January 2027, Sable Creek from May, Merrin Creek below Merrin Falls and at Dunlop Road from July; the other seventeen stations hold grade B through December",
+    "planned_default": "Sable Creek from May; the other twenty-one stations hold grade B through December"
   },
   "architecture_3_draft": {
     "date": "2026-10-12",
@@ -309,5 +310,9 @@
       "report": ""
     },
     "deferred": []
+  },
+  "architecture_3_cycling_draft": {
+    "date": "2026-10-13",
+    "fate": "drawn and designed on paper as a city's cycle-counter network under general-statistics-data-science (precut exit 0, never built); redrawn the same day into hydrometry because the deciding quantity was traffic engineering under a borrowed method label and the task read the same under another field's nouns; line in ## Tried and rejected"
   }
 }

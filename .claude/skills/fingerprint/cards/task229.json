@@ -2,20 +2,20 @@
   "task": "task229",
   "architecture": "v3",
   "drawn": "2026-10-13",
-  "slot_note": "seed DQ02 (release-health alert on the average user's rate). Architecture 1 (a smart-meter data provider's read-health alert, decided by the unit of the build mean's standard error) is spent on the portal's determinism QC and the cracked estimand rework; architecture 2 (a third-party logistics operator's stock-record accuracy gate, decided by the state of each record at one moment rebuilt from the accrual since its last count) is spent at hardening loop 1. Architecture 3, the number's last, keeps the objective and re-roots in a new world and a new client domain: a city's permanent cycle-counter network in urban and regional science, decided by the flow at which cyclists actually pass a loop once a crossing signal gates them.",
-  "domain": "general-statistics-data-science",
-  "subdomain": "missing-data-censoring-measurement-error",
-  "client_domain": "general-statistics-data-science",
-  "niche": "a city's permanent cycle-counter network: from which month of the 2027 counting season each counter site will record fewer than nine in ten of the cyclists passing it in the weekday peak hours, where two rail-trail crossings have been signal controlled since 2025, two more switch to signal control in May and June 2027, and cycling grows through the season",
+  "slot_note": "seed DQ02 (release-health alert on the average user's rate). Architecture 1 (a smart-meter data provider's read-health alert, decided by the unit of the build mean's standard error) is spent on the portal's determinism QC and the cracked estimand rework; architecture 2 (a third-party logistics operator's stock-record accuracy gate) is spent at hardening loop 1. Architecture 3, the number's last, was drawn on 2026-10-13 as a city's bicycle-counter network under General Statistics & Data Science and redrawn the same day, before any data was cut, into hydrometry under Physical & Environmental Sciences: the cycling draft's deciding quantity was a transport-engineering one carried by a borrowed method label, and the author's domain review rejects a task that reads the same under another domain's label.",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "sensor-calibration-measurement",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a regional district's hydrometric network: from which month of 2027 each stream gauging station's published daily discharge should carry the below-grade-B flag, where daily discharge is computed from the day's mean water level through the station's rating, two stations sit below a generating station that has run peaking operations since 2017 and two below a new one entering service in June 2027",
   "objective": "data-quality-monitoring",
   "shape": "13",
   "decision_type": "date_or_period",
   "answer_unit": "date_or_period",
-  "answer": "planned: flag or upgrade the Old Spur Trail counters at Hallett Avenue and Ravine Road from April 2027, at Gorse Street from May and at Mallory Drive from June, and Cutler Bridge from July; the other eleven sites hold the 90 per cent standard through October (the builder confirms it from the cut pack)",
+  "answer": "planned: Corriston River below Talbot Canyon and at Hollis Bridge short of grade B from January 2027, Sable Creek from May, Merrin Creek below Merrin Falls and at Dunlop Road from July; the other seventeen stations hold grade B through December (the builder confirms it from the cut pack)",
   "answer_source": "design note, planned schedule; replaced by the golden at ship",
   "gap": [
-    "objective",
-    "time"
+    "time",
+    "objective"
   ],
   "pattern": [
     "none"
@@ -25,49 +25,56 @@
     "G13"
   ],
   "gate_g": "binding_constraint",
-  "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "binding_constraint",
+  "calibration_form": "physical_verification",
+  "stump_strategy": "grain_or_unit",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans every counter export and reads the counting standard, the counter maker's capture curve and the crossing timing sheets correctly applies the curve at each channel's forecast 2027 weekday peak-hour flow, as the maker states it, and files that only Cutler Bridge drops below 90 per cent (from July), because nothing the hour's flow shows differs at the trail; the trail counters 40 metres beyond the signalled crossings carry each cycle's cyclists inside the crossing's walk-and-bike interval and fall below the standard from April (the two signalled since 2025) and from their switch-on months (May and June).",
-  "domain_test": "The deciding quantity is a counter's capture of the cyclists passing its loop, a measurement error that grows with the flow over the loop; the field's estimator reads the maker's curve at the arrival rate the loop actually sees, and a signal that releases each cycle's cyclists inside its walk-and-bike interval multiplies that rate by the cycle over the interval. Replacing the gated arrival rate with the hour's average flow (a generic summary) changes the call.",
+  "analyst_test": "A strong analyst who reads the network's hydrometric data standard, the station ratings and gaugings, the 2027 water supply outlook and the generating stations' 2027 operating plan correctly back-tests every current rating on its gaugings (all within 3 per cent), applies the standard's extrapolation rule and files Sable Creek from May; the other twenty-one stations hold grade B through December, because every published daily discharge matches its rating at the day's mean water level and nothing in the daily record moves inside a day; below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the river swings every day between the minimum release and the peak release, the convex rating read at the day's mean water level publishes a daily discharge an eighth to a third below the day's mean flow, and those four stations fall short of grade B from January (Talbot Canyon) and July (Merrin Falls, after the freshet).",
+  "domain_test": "The deciding quantity is the error of a gauging station's published daily discharge against the day's true mean discharge, which hydrometry estimates by carrying the water level's variation within the day through the station's stage-discharge rating: the rating is convex, so discharge computed at the day's mean water level falls below the mean of the discharges, by almost nothing where the river is steady and by a tenth or more where a peaking plant swings it between its minimum release and its peak release every day. Replacing the within-day computation with the rating at the daily mean water level (a generic summary) changes the call; with another field's nouns there is no stage-discharge rating, no tailrace release cycle and no gauging, and the task stops making sense.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:signal-gated-arrivals-set-a-counter-loop-capture",
+  "layer2_pattern": "own:peaking-releases-bias-daily-mean-stage-discharge",
   "layer1": [
-    "per-site counter portal exports at 15-minute grain, one file per site, with channel numbering that runs past the bicycle channels into pedestrian infrared channels at combined sites",
-    "interval stamps in local standard time all year on one firmware family against local clock time with daylight saving on the other",
-    "two loops in one direction on the widest trail sections, exported under one direction label",
-    "trail chainage in the crossing design summary against map coordinates in the counter inventory",
-    "a forecast workbook keyed by travel-model link, with a link-to-channel lookup",
-    "a crossing design summary issued as a PDF with its timing tables",
-    "video audit counts at 15-minute grain from a separate contractor, timed in local clock time"
+    "daily station records from two telemetry generations: legacy GOES satellite platforms transmit a daily mean over the UTC day, their 2026 replacements (cellular loggers, Iridium platforms in the two canyons) a mean over the local standard-time day, each station switching on its own date with one day carried by both",
+    "the GOES ingest holds a platform's last message when its slot is missed, so a missed day arrives as a copy of the day before",
+    "cellular days backfilled from logger memory and received days late",
+    "provisional and approved values for the same station-day in one export, the approved record superseding after the annual review",
+    "a weir-held lake level and two spring-fed creeks' winter baseflow repeating to the centimetre for days, genuinely, on older 1 cm shaft encoders",
+    "a station renumbered at its June 2026 relocation, the chain kept only in the station register",
+    "river kilometres measured from the mouth in the register against distances below each tailrace in the operating plan",
+    "ratings issued as a PDF book with an effective date, all refitted on 1 April 2026 at the move to a new database, the gauging export's rating column rewritten to the current rating",
+    "gauging records with discharge in cubic metres a second at most stations and litres a second at two spring-fed creeks, braided sections gauged channel by channel, field times in UTC"
   ],
   "context_artifact": "filed_model",
-  "stakeholder_role": "the lead of a city's cycle-counting programme, who has to tell the provincial active transportation fund which counter sites will meet its 90 per cent capture condition through the 2027 season, and from which month each of the others must be upgraded or its counts flagged",
+  "stakeholder_role": "the lead of a regional district's hydrometric network, who has to tell the provincial water licence inspector from which month of 2027 each station's published daily discharge carries the below-grade-B flag",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "per-site counter portal exports for 2026, one CSV per site, 15-minute counts by channel",
+    "file": "daily station records, 1 October 2022 to 30 September 2026, one row per station and day: daily mean water level, published daily discharge, grade, status",
     "rows": 0,
-    "entity": "one 15-minute count on one counter channel (an inductive loop for one direction of cycling, or an infrared beam for pedestrians at combined sites) at one counter site",
-    "grain": "counter channel x 15-minute interval",
+    "entity": "one station-day of a stream gauging station (or the weir-held lake level station)",
+    "grain": "station x day",
     "source": "synthetic"
   },
-  "forum": "funder_or_donor",
-  "forcing_event": "audit_or_inspection",
+  "forum": "regulator_or_inspector",
+  "forcing_event": "launch_or_rollout",
   "org_family": "local_government",
   "world": {
-    "geography": "Canada, Alberta (a fictional mid-size city)",
+    "geography": "Canada, British Columbia (a fictional regional district in the southern Coast Mountains, valley gauges open all year)",
     "currency": "CAD",
-    "org_type": "a city's transportation department running a permanent cycle-counter network, funded in part by a provincial active transportation fund",
+    "org_type": "a regional district's environmental services department running a 22-station hydrometric network whose daily discharge records feed water licence compliance and flood management",
     "invented_names": [
-      "City of Pembury",
-      "Old Spur Trail",
-      "Tallis Counting Systems",
-      "Pembury Region Travel Model",
-      "Old Spur Trail Crossings Upgrade"
+      "Regional District of Corriston",
+      "Corriston River",
+      "Corriston Hydro Ltd.",
+      "Talbot Canyon Generating Station",
+      "Merrin Falls Generating Station",
+      "Merrin Creek",
+      "Sable Creek",
+      "Hollis Bridge",
+      "Dunlop Road",
+      "Lake Ashlin"
     ],
     "people": [
       "Phyllis Thompson",
@@ -76,16 +83,23 @@
     ]
   },
   "deliverables": [
-    "counter_season_2027.xlsx",
-    "trail_baseline_2026.png"
+    "discharge_grades_2027.png",
+    "record_review_wy2026.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "when",
-  "driver": "The decisive quantity is a counting point's capture of a stream whose arrivals an upstream gate confines to a short open phase of each cycle; the maker's capture curve is stated for arrivals random through the period, so read at the period's flow it overstates the capture of every gated stream, already at points gated today and at points the horizon gates, while calibration audits taken at low flows cannot tell the two readings apart.",
-  "driver_concrete": "The Old Spur Trail crossings of Hallett Avenue and Ravine Road have been signal controlled since 2025 and those of Gorse Street and Mallory Drive switch on in May and June 2027; every cyclist leaving a signalled crossing reaches the Tallis loop 40 metres on inside the crossing's 18 to 22 second walk-and-bike interval of a 90 to 110 second cycle, so the loop sees four and a half to six times the hour's flow while they pass; the Tallis curve, stated for arrivals random through the hour, read at that rate puts the four trail channels below 90 per cent from April, April, May and June, while the contractor's midday video audits, at flows where every reading of the curve agrees, confirm only its low-flow end.",
-  "stump": "A competent solver applies the counter maker's capture curve to each channel's forecast 2027 weekday peak-hour flow and files that the network holds the 90 per cent standard all season except Cutler Bridge from July; the step that lands it there is reading the curve, stated for arrivals random through the hour, at the hour's flow on the trail channels just beyond signalled crossings, where every cyclist passes inside the walk-and-bike interval, so Hallett Avenue and Ravine Road (signalled since 2025) fall below 90 per cent from April and Gorse Street and Mallory Drive from the months their signals start, May and June.",
-  "mechanism_source": "design_note",
-  "differentiation": {},
+  "driver": "A published daily value computed by passing the day's mean of a measured input through a convex conversion falls below the day's mean of the converted values by an amount set by how far the input swings inside the day, so a record that matches its conversion at steady conditions is biased wherever an upstream controller cycles the input within each day, and the bias is invisible at the record's own daily grain.",
+  "driver_concrete": "Talbot Canyon Generating Station has run peaking operations since its 2017 licence amendment and Merrin Falls Generating Station enters service on 1 June 2027; outside the freshet each releases the day's inflow in two peak windows (06:00 to 10:00 and 16:00 to 21:00) and holds its minimum release (1.8 and 0.7 cubic metres a second) between them, so the gauges 0.6 to 3.1 kilometres downstream swing tenfold and more inside every day; their discharge is published from the day's mean water level through ratings with exponents of 1.75 to 1.95, which puts the published daily discharge 13 to 31 per cent below the day's mean flow, while the gaugings, made at steady flow between the peak windows or in the freshet, agree with the ratings to within three per cent.",
+  "stump": "A competent solver back-tests every station's current rating on its gaugings, applies the standard's extrapolation rule to the 2027 outlook and files Sable Creek from May; the other twenty-one stations hold grade B through December; the step that lands it there is taking each published daily discharge as the day's mean flow, when below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the river swings every day between the minimum and the peak release and the convex rating read at the day's mean water level publishes an eighth to a third below the day's mean flow, so those four stations fall short of grade B from January and from July.",
+  "mechanism_source": "own",
+  "differentiation": {
+    "task228": "Both are sensor-network DQ builds in physical and environmental sciences; task228 decides by comparator errors that co-vary in one region of a triple collocation, this one by a convex rating read at the daily mean of a water level that a release schedule swings inside each day.",
+    "task180": "task180's record understates small events masked in noisy hours (detection varying within the day); here nothing is missed: every day is recorded, and the published value is biased by the conversion of a within-day swing.",
+    "task182": "task182 separates a lagged response to a shared driver from an effect over years; here the within-day swing of a regulated river decides, and the long record is not modelled at all.",
+    "task135": "task135 sizes a volatility from short-interval changes of components struck at different times of day (asynchronous pricing understates covariance); here a single station's daily value is biased by a convex rating read at the day's mean water level while a release schedule swings it inside the day: no covariance across components, no horizon scaling, and the correction is a within-day construction through the rating.",
+    "task127": "task127 v1 counts units a capacity-limited team finishes before a close when the decision's volume bunches into weeks no closed period reached (a queue past a deadline); here no unit queues or is lost: every day is recorded, and its published value is biased by a convex rating read at the day's mean water level while a release schedule swings the river inside the day.",
+    "task87": "task87 caps a filed procedure's delivered count by an exclusivity between two items in one time slot that the schedule encodes; here nothing is capped or exclusive: the release schedule shapes the flow within each day and the error comes from converting that shape's mean water level through a convex rating."
+  },
   "lineage": [
     {
       "architecture": "v1",
@@ -169,7 +183,15 @@
       "driver": "The decisive quantity is the share of units in a correct state at one moment, seen only through checks that record a unit's state just before setting it right; scheduled checks see each unit at the end of its interval and symptom-led checks see units because they were wrong, so the checked-unit rate, however reweighted to the population's cells, measures states that have since been reset, and the share at the moment is built unit by unit from what each has accrued since its own last check of any kind, with the accrual read from the scheduled checks alone.",
       "driver_concrete": "Corderoy's cycle and exception counts each record a pick face's system quantity against the physical count and then post the confirmed count as the record, so every count leaves the record right; the routine counts on the A, B and C cycles of four, eight and thirteen weeks see each record at the end of its cycle and the exception counts see records because a short pick or a negative balance showed them wrong, while at the stand-down each face is only part way through its cycle since its last count of any kind; so a centre's count accuracy, even with the exception counts set aside and the routine counts weighted to its A, B and C mix, understates the records it carries into the freeze, most where fast faces run long cycles, and Thornacre's 97.0 per cent gate passes six centres where the weighted count rate passes two.",
       "stump": "A competent solver takes each centre's share of correct records from its count history as the share of count tasks that matched the record and finds that no centre qualifies, all eight held on supervised replenishment, and its textbook correction (exception counts set aside as symptom-led, the routine counts weighted to the in-scope A, B and C mix) still passes only Magor and Hinckley; the step that lands it there is reading a count's result as the record's standing state, when every count also posts the confirmed quantity as the record, so routine counts see each record at the end of its cycle and exception counts see records because they were wrong, while at 06:00 on 7 December each face is only part way through its cycle since its last count of any kind, and built face by face from the accrual since that count, read off the routine counts alone, Hinckley, Daventry, Bellshill, Warrington, Magor and Avonmouth clear 97.0 per cent."
+    },
+    {
+      "architecture": "v3 (cycling draft)",
+      "drawn": "2026-10-13",
+      "fate": "superseded 2026-10-13 before any data was cut: a city's bicycle-counter capture under signal-gated arrivals, filed as general-statistics-data-science/missing-data-censoring-measurement-error; the deciding quantity (a loop counter's capture under platoons from a signal) belongs to transport engineering, which no client domain with a DQ task type owns, so the task read the same under another domain's label (the author's domain review); redrawn into hydrometry",
+      "niche": "a city's permanent bicycle counter network: from which month of the 2027 counting season each counter site will record fewer than nineteen in twenty of the cyclists passing it in the weekday peak hours, where two rail-trail crossings have been signal controlled since 2025, two more switch to signal control in May and June 2027, and a new trail link and a summer bridge closure move the flows",
+      "driver": "The decisive quantity is a counting point's capture of a stream whose arrivals an upstream gate confines to a short open phase of each cycle; the maker's capture curve is stated for arrivals random through the period, so read at the period's flow it overstates the capture of every gated stream, already at points gated today and at points the horizon gates, while calibration audits taken at low flows cannot tell the two readings apart.",
+      "stump": "A competent solver applies the counter maker's capture curve to each loop's forecast 2027 weekday peak-hour flow and files that the network holds the 95 per cent condition all season except Cutler Bridge from July; the step that lands it there is reading the curve, stated for riders passing at random gaps, at the hour's flow on the trail loops just beyond signalled crossings, where every cyclist passes inside the walk-and-bike interval, so Hallett Avenue and Ravine Road (signalled since 2025) fall below 95 per cent from April and Gorse Street and Mallory Drive from the months their signals start, May and June."
     }
   ],
-  "notes": "Architecture 3 redrawn 2026-10-13 from the paused 2026-10-12 draft (never built), same world and Layer 2 move. The draft made every crossing signal a 2027 event, so the curve read at the hour's flow reproduced every audit and only the forward window broke it (a validated decoy); in this draw two crossings have been signalled since 2025, so the default is wrong on the data in hand, and the audits are taken at midday flows where the hour's-flow and gated readings agree (they tie under every basis for a reason true at their grain). The forecast workbook carries no sentence on arrivals within the hour (the draft's 'arrivals steady through the hour' was an official decoy). Client domain moved to general-statistics-data-science, missing-data-censoring-measurement-error, which serves DQ (urban-regional-science has no task type serving it); the setting stays urban cycle counting. decisive_rule_filed true: the counting standard files the capture estimand and the 90 per cent condition, the maker files the curve for random arrivals; nothing files the rate a gated stream crosses the loop at. official_decoy false, validated_decoy false."
+  "notes": "Architecture 3 redrawn 2026-10-13 from the cycling draft (itself redrawn that morning from a paused 2026-10-12 paper draft), before any data was cut. Domain moved to physical-environmental-sciences/sensor-calibration-measurement, a task type serving DQ, where the deciding quantity (the error of daily discharge computed from the daily mean water level through a convex rating) is hydrometry's own. Wrong now: Talbot Canyon has peaked since March 2025, so the 2025 to 2026 published dailies below it already sit a tenth or more low, invisible at the daily grain; gaugings are made at steady flow before the morning window and tie under every reading. decisive_rule_filed true: the standard files the grade B estimand on the day's true mean discharge and the ratings are filed; nothing files the within-day discharge. official_decoy false, validated_decoy false."
 }
