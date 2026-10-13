@@ -30,9 +30,9 @@ BAR = 1.0                              # the policy: no layer the pool expects t
 COUNT_25K = 228.7                      # the actuary's expected 2027 occurrences costing more than $25,000 ground up
 # the broker's indications: per attachment, the rate per $1,000 of the members' 2027 operating expenditures and the
 # rate per unit on the members' vehicle schedules at 30 September 2026, for $10,000,000 per occurrence above it
-QUOTES = {1_000_000: (0.2385, 71.40), 1_500_000: (0.1917, 57.55), 2_000_000: (0.1606, 48.20),
-          2_500_000: (0.1378, 41.35), 3_000_000: (0.1201, 36.05), 4_000_000: (0.0941, 28.30),
-          5_000_000: (0.0762, 22.90)}
+QUOTES = {1_000_000: (0.2412, 71.40), 1_500_000: (0.1928, 56.85), 2_000_000: (0.1597, 48.65),
+          2_500_000: (0.1385, 41.20), 3_000_000: (0.1194, 36.30), 4_000_000: (0.0981, 31.75),
+          5_000_000: (0.0815, 31.75)}
 DED_CUTS = (0.15, 0.42, 0.72)          # members ranked by size: the largest carry the $100,000 deductible
 
 # liability claim cost index (accident year average, 2014 = 100.0), the 2027 value the study's projection
@@ -83,6 +83,14 @@ def members(rng):
         for _ in range(WITHDRAWALS[y]):
             m = pool[idx.pop()]
             m["left"] = y - 1
+    # member numbers run in the order members joined the pool: founders by their founding date, then admissions
+    import hashlib
+    for i, m in enumerate(out):
+        h = int(hashlib.sha256(("founded%d" % i).encode()).hexdigest()[:8], 16)
+        m["founded"] = (dt.date(1987 + h % 26, (1, 7)[h % 2], 1) if m["joined"] == FIT_YEARS[0]
+                        else dt.date(m["joined"], 1, 1))
+    for rank, i in enumerate(sorted(range(len(out)), key=lambda i: (out[i]["founded"], i))):
+        out[i]["no"] = 101 + rank
     # deductible elections: larger members carry larger deductibles
     ranked = sorted(out, key=lambda m: -m["w"])
     for r, m in enumerate(ranked):
@@ -174,30 +182,38 @@ TOE_PER_PAYROLL = {"city": (2.45, 3.30), "fire district": (1.55, 1.95), "water-s
                    "library district": (1.7, 2.2)}
 PAY_PER_FTE = {"city": 98_000, "fire district": 112_000, "water-sewer district": 91_000, "port district": 96_000,
                "transit authority": 88_000, "park and recreation district": 71_000, "library district": 74_000}
-CONSORTIUM_LOAD = dt.date(2025, 3, 3)        # the fleet consortium's lists loaded into the pool's schedule
-CONSORTIUM_EFFECTIVE = dt.date(2025, 3, 1)
+CONSORTIUM_LOAD = dt.date(2024, 3, 4)        # the fleet consortium's lists loaded into the pool's schedule
+CONSORTIUM_EFFECTIVE = dt.date(2024, 3, 1)
 SCHEDULE_OPENED = dt.date(2022, 1, 1)        # the pool's current vehicle schedule system went live
 LOG_EXTRACT = dt.date(2026, 10, 19)
 RATING_DATE = dt.date(2026, 9, 30)           # the quotes rate the units on the schedule at this date
 
 
+def consortium(mem, units):
+    """The regional fleet consortium: in every class the members with the largest fleets in service when the
+    consortium's lists were loaded (four cities, two of each district class, both transit authorities)."""
+    live = {m["no"]: m for m in mem if m["left"] is None and m["joined"] < CONSORTIUM_EFFECTIVE.year}
+    size = {}
+    for u in units:
+        if u["member"] in live and u["acquired"] <= CONSORTIUM_EFFECTIVE < u["disposed"]:
+            size[u["member"]] = size.get(u["member"], 0) + 1
+    for m in mem:
+        m["consortium"] = False
+    for kind, _ in KINDS:
+        cands = sorted((m for m in live.values() if m["kind"] == kind), key=lambda m: (-size.get(m["no"], 0), m["no"]))
+        for m in cands[:4 if kind == "city" else 2]:
+            m["consortium"] = True
+    return mem
+
+
 def member_details(rng, mem):
-    """Legacy member codes, the departments each 2027 member declared, intake route, fleet consortium."""
+    """Legacy member codes, the departments each 2027 member declared, and the intake route."""
     seq = {}
     for m in sorted(mem, key=lambda m: m["no"]):
         c = CLASS_CODE[m["kind"]]
         seq[c] = seq.get(c, 0) + 1
         m["code"] = "%s-%02d" % (c, seq[c])
     live27 = [m for m in mem if m["left"] is None]
-    # two members of every class (both transit authorities) run their fleets through the regional consortium
-    for kind, _ in KINDS:
-        cands = sorted([m for m in live27 if m["kind"] == kind and m["joined"] <= 2024], key=lambda m: m["no"])
-        k = 2 if kind != "city" else 4
-        pick = rng.choice(len(cands), size=min(k, len(cands)), replace=False)
-        for i in sorted(int(x) for x in pick):
-            cands[i]["consortium"] = True
-    for m in mem:
-        m.setdefault("consortium", False)
     # departments declared for 2027 and the intake route (online form or the paper form keyed by staff)
     for m in live27:
         deps = DEPARTMENTS[m["kind"]]
@@ -229,6 +245,13 @@ PART_MIX = {"city": (0.31, 0.27, 0.24, 0.10, 0.08), "fire district": (0.36, 0.40
             "library district": (0.56, 0.10, 0.0, 0.16, 0.18)}
 
 
+# courts closed for much of 2020 and the administrator changed that July, so claims tendered then closed slower
+SLOWDOWN = {2019: 1.12, 2020: 1.48, 2021: 1.31, 2022: 1.14}
+# each accident year's own mix of suits and settlements
+AY_PACE = {2014: 0.94, 2015: 1.09, 2016: 0.97, 2017: 1.13, 2018: 0.91, 2019: 1.06, 2020: 0.95, 2021: 1.04,
+           2022: 0.90, 2023: 1.10, 2024: 0.97, 2025: 1.05, 2026: 1.00}
+
+
 def _cents(v):
     return round(v + 1e-9, 2)
 
@@ -250,7 +273,8 @@ def development(rng, mem, occ):
         part = PARTS[int(rng.choice(5, p=mix / mix.sum()))]
         s = 1.0 if rng.random() < 0.11 else float(rng.beta(2.2, 4.5))      # share of the cost that was defence
         tender = o["date"] + dt.timedelta(days=int(18 + rng.gamma(1.5, 80.0)))
-        dur = float(rng.lognormal(math.log(250.0 * (x / 40_000.0) ** 0.25), 0.55))
+        dur = (float(rng.lognormal(math.log(250.0 * (x / 40_000.0) ** 0.25), 0.55)) * SLOWDOWN.get(tender.year, 1.0)
+               * AY_PACE.get(o["ay"], 1.0))
         close = tender + dt.timedelta(days=int(30 + dur))
         if o["ay"] in FIT_YEARS and close > dt.date(2026, 6, 30):
             close = dt.date(2026, 6, 30) - dt.timedelta(days=int(rng.integers(0, 200)))
@@ -418,9 +442,36 @@ def fleets(rng, mem):
     return units
 
 
+def _hash_int(key):
+    import hashlib
+    return int(hashlib.sha256(key.encode()).hexdigest()[:12], 16)
+
+
+# the schedule's yearly depreciation by unit class (the valuation guide the pool's schedule system applies)
+DEPRECIATION = {"private passenger": 0.85, "light truck": 0.87, "heavy truck": 0.91, "bus": 0.93,
+                "emergency vehicle": 0.89, "trailer": 0.94, "mobile equipment": 0.92}
+
+
+def stated_value(u, y):
+    """The value carried at the renewal of year y: the class's depreciation, steeper in a unit's first two years,
+    held at some renewals and reset by an appraisal at a few."""
+    v = u["value"]
+    for yy in range(max(2022, u["acquired"].year) + 1, y + 1):
+        h = _hash_int("%s|%s|%d" % (u["unit_no"], u["vin"] or u["serial"], yy))
+        age = yy - u["year"]
+        if h % 7 == 0:
+            continue                                    # value held at this renewal
+        if h % 53 == 1:
+            v *= 1.0 + (h % 11) / 100.0                  # an appraisal raised it
+            continue
+        r = DEPRECIATION[u["cls"]] - (0.04 if age <= 2 else 0.0) + ((h >> 8) % 21 - 10) / 1000.0
+        v *= r
+    return round(v, -2)
+
+
 def schedule_log(rng, mem, units):
     """The pool's vehicle schedule as its system logs it: the opening load, members' adds, deletes and changes, the
-    renewal revaluations, and on 3 March 2025 the fleet consortium's lists loaded under the consortium's asset
+    renewal revaluations, and on 4 March 2024 the fleet consortium's lists loaded under the consortium's asset
     numbers. The consortium's later disposals reach the pool on its numbers only."""
     byno = {m["no"]: m for m in mem}
     rows = []
@@ -445,9 +496,11 @@ def schedule_log(rng, mem, units):
     for u in units:
         m = byno[u["member"]]
         pool_vin = u["vin_keyed"] if u["vin"] else u["placeholder"]
-        first = max(u["acquired"], SCHEDULE_OPENED)
-        if u["acquired"] <= SCHEDULE_OPENED:
-            ent = dt.date(2021, 12, 1) + dt.timedelta(days=int(rng.integers(0, 28)))
+        start = max(SCHEDULE_OPENED, dt.date(m["joined"], 1, 1))
+        first = max(u["acquired"], start)
+        if u["acquired"] <= start:
+            ent = (dt.date(2021, 12, 1) + dt.timedelta(days=int(rng.integers(0, 28))) if start == SCHEDULE_OPENED
+                   else start - dt.timedelta(days=int(rng.integers(3, 20))))
         else:
             ent = entered(first, -10, 18)
         cons = m["consortium"]
@@ -469,8 +522,8 @@ def schedule_log(rng, mem, units):
             alive_pool = (not after) and first <= d and (u["disposed"] > d or (cons and loaded and
                                                                                u["disposed"] > CONSORTIUM_EFFECTIVE))
             alive_fmc = "fmc" in u and (CONSORTIUM_EFFECTIVE <= d or after) and first <= d < u["disposed"]
-            dep = round(u["value"] * (0.9 ** (y - max(2022, u["acquired"].year))), -2)
-            ent = dt.date(y - 1, 12, 9) + dt.timedelta(days=int(rng.integers(0, 6)))
+            dep = stated_value(u, y)
+            ent = dt.date(y - 1, 12, 2) + dt.timedelta(days=_hash_int("reval%d|%d" % (u["member"], y)) % 13)
             if alive_pool:
                 row(u, u["unit_no"], "CHANGE", d, ent, pool_vin, u["serial_keyed"], dep)
             if alive_fmc:
@@ -492,6 +545,17 @@ def schedule_log(rng, mem, units):
                 else:
                     row(u, u["unit_no"], "DELETE", u["disposed"], ent, pool_vin, u["serial_keyed"], None)
     rows = [r for r in rows if r["entered"] <= LOG_EXTRACT]
+    firsts = {}
+    for r in rows:
+        if r["type"] == "ADD":
+            firsts[r["unit_no"]] = min(firsts.get(r["unit_no"], r["entered"]), r["entered"])
+    renum, nxt = {}, {"pool": 180_037, "fmc": 7_301}
+    for old_no in sorted(firsts, key=lambda k: (firsts[k], k)):
+        kind = "fmc" if old_no.startswith("FMC-") else "pool"
+        nxt[kind] += 1 + _hash_int("gap" + old_no) % 3
+        renum[old_no] = ("FMC-%05d" if kind == "fmc" else "%06d") % nxt[kind]
+    for r in rows:
+        r["unit_no"] = renum[r["unit_no"]]
     rows.sort(key=lambda r: (r["entered"], r["member"], r["unit_no"], {"ADD": 0, "CHANGE": 1, "DELETE": 2}[r["type"]]))
     for i, r in enumerate(rows):
         r["txn"] = "T%07d" % (2_204_117 + i * 3 + (i * 7919) % 3)

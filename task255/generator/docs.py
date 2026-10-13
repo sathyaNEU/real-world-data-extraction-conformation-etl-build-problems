@@ -296,8 +296,8 @@ date, indemnity and defense, in dollars.
 
 ## {log}
 
-The transaction log of the pool's vehicle schedule system from its opening load (dated 1 January 2022) to
-19 October 2026: one row for each add, delete or change of a unit on a member's schedule. effective_date is when
+The transaction log of the pool's vehicle schedule system from its opening load (dated 1 January 2022), with
+every entry keyed through 19 October 2026: one row for each add, delete or change of a unit on a member's schedule. effective_date is when
 the change applies to coverage; entered_date is when it was keyed. stated_value is the value carried for physical
 damage cover, blank on deletes.
 

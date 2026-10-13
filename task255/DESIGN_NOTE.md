@@ -215,8 +215,8 @@ from another reading.
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
 |---|---|---|---|---|---|---|---|---|
-| A, the 2027 premium of each quoted attachment | 7 | a measure every candidate carries that the call does not turn on | the trustees see each attachment's cost beside the policy's test | D6: an online declaration repeats the member's total operating expenditure, a member-level figure, on every department line (a paper declaration keyed by staff carries it on its first line only) | D1 (the consortium replay moves the vehicles in every premium); D8 (log rows effective after 30 September) | declarations (member, department, expenditure), schedule log (member, unit, type, effective date, VIN, serial), indications (two rates per attachment), roster (class), extract notes; 5 files, 12 columns | expenditure summed over lines and units counted raw: 3.43 times the golden at every attachment; expenditure once, units raw: 6.3 per cent high; expenditure summed, units right: 3.36 times; expenditure once, units deduplicated among those in force: 0.8 per cent high; the answer | a member portal flattens a header field onto each detail line; paper forms are keyed line by line |
-| B, the rated exposure by member class | 14 (expenditure and vehicles, seven classes) | the audit trail of the premium's exposure | the board confirms the exposure the market rated | D1: on 3 March 2025 the fleet consortium's lists re-added sixteen members' fleets under the consortium's asset numbers; the pool's numbers were never deleted, and the consortium's later disposals reach the pool on its numbers only | D6 (expenditure); D7 (VINs keyed in lower case or with a space or dash; trailers and equipment with "NONE", "N/A", "UNKNOWN", "SEE SERIAL" or a blank VIN and a serial) | schedule log, roster, declarations, extract notes; 4 files, 9 columns | in-force unit numbers 7,104 (every class high); in-force units deduplicated by normalised VIN 5,818; raw-VIN dedup 5,889; VIN-only dedup (placeholders collapsed) 5,526; the answer 5,629 | a bulk load from a member's own system adds what it duplicates without closing the old records |
+| A, the 2027 premium of each quoted attachment | 7 | a measure every candidate carries that the call does not turn on | the trustees see each attachment's cost beside the policy's test | D6: an online declaration repeats the member's total operating expenditure, a member-level figure, on every department line (a paper declaration keyed by staff carries it on its first line only) | D1 (the consortium replay moves the vehicles in every premium); D8 (log rows effective after 30 September) | declarations (member, department, expenditure), schedule log (member, unit, type, effective date, VIN, serial), indications (two rates per attachment), roster (class), extract notes; 5 files, 12 columns | expenditure summed over lines and units counted raw: 3.41 to 3.45 times the golden across the attachments; expenditure once, units raw: 10 to 11 per cent high; expenditure summed, units right: 3.29 to 3.34 times; expenditure once, units deduplicated among those in force: 3.0 to 3.2 per cent high; the answer | a member portal flattens a header field onto each detail line; paper forms are keyed line by line |
+| B, the rated exposure by member class | 14 (expenditure and vehicles, seven classes) | the audit trail of the premium's exposure | the board confirms the exposure the market rated | D1: on 4 March 2024 the fleet consortium's lists re-added sixteen members' fleets (the largest in each class) under the consortium's asset numbers; the pool's numbers were never deleted, and the consortium's later disposals reach the pool on its numbers only | D6 (expenditure); D7 (VINs keyed in lower case or with a space or dash; trailers and equipment with "NONE", "N/A", "UNKNOWN", "SEE SERIAL" or a blank VIN and a serial) | schedule log, roster, declarations, extract notes; 4 files, 9 columns | in-force unit numbers 8,233 (every class high); in-force units deduplicated by normalised VIN 6,387; raw-VIN dedup 6,563; VIN-only dedup (placeholders collapsed) 6,045; the answer 5,649 | a bulk load from a member's own system adds what it duplicates without closing the old records |
 | C, the policy's test per attachment and the chart | 7 counts (in the call's question) and 5 chart parts | the construction | the call's own table | none | none | the golden fit | R0 and R1 values | the actuary's exhibit layout |
 
 - **Main population zero-counts:** no row of the declarations or the schedule log sits in the loss runs, the policy,
@@ -230,7 +230,7 @@ from another reading.
 
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
-| A premiums at seven attachments | expenditure summed over department lines, units counted by in-force unit number | 3.43 times the golden | miss |
+| A premiums at seven attachments | expenditure summed over department lines, units counted by in-force unit number | 3.41 to 3.45 times the golden | miss |
 | B expenditure by class | summed over department lines | high in every class | miss |
 | B vehicles by class | in-force unit numbers | high in every class | miss |
 | C counts and chart | the golden's construction | right | outside |
@@ -246,15 +246,72 @@ the seven counts as asks the pair is about 40).
   `postprocess.py`; `python3 task255/generator/build.py` builds the pack, the goldens, `metadata.json` and
   `generator/figures.json`, runs the checks and the independent verifier, rebuilds into scratch for the byte
   comparison and cuts `target.zip`.
-- Pack: 12 files in 4 formats; the vehicle schedule log 39,109 rows; the legacy archive 477 occurrences in six
-  accident-year sheets; the current loss run 990 occurrences (343 of them in the fit's years); distractors the member
-  deductible history and the actuary's triangles.
+- Pack: 12 files in 4 formats; the vehicle schedule log 43,855 rows; the legacy archive 467 occurrences in six
+  accident-year sheets; the current loss run with 353 occurrences in the fit's years among all its open and closed
+  occurrences; distractors the member deductible history and the actuary's triangles.
 - Gates: 196 assertions with the three-rules block and SF1 to SF14; the verifier recomputes the fit (log mean 10.1769,
   log standard deviation 1.7102), the call, every count, the premiums and the class exposure from `target/` alone with
   its own parser and optimiser; two builds byte-identical; figures_check 88 figures; precut 49 checks; voice-check
   PASS; scrub audit clean on target and golden; leak.py REVIEW (no LEAK: the quoted attachments are declared stated
   inputs; the policy's own vocabulary; 26 schedule changes keyed before they take effect, allow-listed); guard
   surface 0 promoted; heart WARN (Gate G overuse, answered in the Draw).
+
+## Judge record
+
+- Pass 1 (stage 4): DETERMINISTIC, APPROVE. The isolated thread recomputed the record (820 occurrences, 108 at the
+  retention), the fit (10.1769, 1.7102), the seven counts and premiums and the class exposure from the bundle alone,
+  and tested the competing estimators: censoring without truncation ($2.5 million) and truncation without censoring
+  ($2.0 million) each conflict with a memorandum sentence (2.3, 3.2); thresholds left nominal with costs trended
+  still give $4.0 million; an untrended fit is inconsistent with the policy's record brought to 2027 cost. Ask-only
+  fork: vehicles keyed on entered_date (5,602 on the judged pack) against effective_date, closed by the extract
+  notes' definition. Gate G statistical_rigor, analytical_non_defect, no surface read, no sole data defect; Gate H
+  domain pass, layers pass, decisive step analytical. Cosmetic: the class rows rounded one by one foot to a thousand
+  above the total (the golden's notes say so; the write-up's total line now says it is rounded from the exact sum).
+- After the judge: the leak reader's realism tells were fixed in the generator (member numbers in joining order, each
+  unit's own depreciation with some values held, slower closings for claims tendered in 2019 to 2022, a market's
+  uneven rate ladder, the log note's entry date; the consortium is now the largest fleets in each class, loaded
+  4 March 2024). A second read's tells were fixed in the same way: a member admitted in 2024 had schedule rows dated
+  from 2022 (now from its admission), unit numbers ran in member blocks (now in the order units were keyed),
+  revaluations followed one formula (now the class's depreciation, steeper in a unit's first years, held at some
+  renewals, an appraisal at a few, keyed in one batch per member), the rate ladder was one smooth curve (the auto
+  rate now stops at the market's minimum above $3.5 million) and the triangles closed at the same pace every year
+  (each accident year now has its own pace). The fit, the call and every count are the judged ones to the last
+  digit; the ask figures and the archive split (467 and 353) moved and were rechecked by the 196 assertions and the
+  independent verifier. No re-judge: the disposition was APPROVE and no estimand, rule or sentence the call reads
+  changed.
+
+## Leak record
+
+- leak.py REVIEW, no LEAK: the policy carries the call's own nouns (retention, attachment, occurrence), harmless; four
+  documents use ordinary domain words (record, deductible, likelihood, closed), none names a truncation or a
+  censoring (asserted); 25 schedule changes keyed before they take effect, allow-listed in metadata.json.
+- Reader 1 (fresh copy of prompt.txt and target/): no decisive-step sentence (the memorandum's tender and excess
+  sentences make the structure discoverable, neither says to adjust for it); no ranking file; no analyst-only file;
+  no answer-like figure. Question 5: it read policy 4.2 as leaving the likelihood open and computed the three
+  likelihoods to the golden's own figures ($2.0 million, $2.5 million, $4.0 million); ruled: the curve of 4.1 is over
+  all occurrences at their full cost and the memorandum files how the record arises, so the record's likelihood is
+  the truncated and censored one (the judge reached the same reading on its own). Question 6: an analytical choice.
+- Reader 2 (after the realism repairs, fresh copy): no decisive-step sentence; the extract notes describe files and
+  name no pitfall. Its tells were repaired as the judge record says; two did not hold on checking (every cleaned VIN
+  is free of I, O and Q and carries its model year in the tenth place) and three are the record as such a pool keeps
+  it (the pool's share stopping at the retention less the deductible, a member's deductible changing often, a bulk
+  load keyed on one day).
+
+## Pre-ship check
+
+- Call: keep the first $4,000,000 of each 2027 liability occurrence (the $4.0 million quoted attachment), 0.74
+  expected 2027 occurrences above it and 1.25 above $3.0 million; curve log mean 10.18, log standard deviation 1.71
+  on 820 closed occurrences of 2014 to 2021, 108 stopped at the retention.
+- Default path: the complete-sample fit files $2.0 million; censoring alone $2.5 million; truncation alone
+  $2.0 million; thresholds left nominal $4.0 million (convergent); a common floor at $215,600 $4.0 million.
+- Gates: 196 assertions with the three-rules block and SF1 to SF14; the independent verifier from target/ alone; two
+  builds byte-identical; figures_check 88 figures; precut 49 checks; voice-check PASS; scrub clean on target and
+  golden; leak.py REVIEW, no LEAK; guard surface 0 promoted; heart WARN (Gate G overuse, answered in the Draw).
+- Deliverables: retention_2027.xlsx (the test and premium at seven attachments, the rated exposure by class, notes)
+  and attachment_test_2027.png; target.zip from the final rebuild, 12 files.
+- Leak: two isolated reads, no decisive-step sentence, no ranking file, question 6 analytical.
+- Judge: pass 1 DETERMINISTIC, APPROVE (determinism_check_report.md).
+- Card current: answer, spine rows 1466, stump and driver at the built values.
 
 ## Tried and rejected
 

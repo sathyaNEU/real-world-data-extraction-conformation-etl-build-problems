@@ -128,7 +128,7 @@ def unit_key(vin, serial):
 def scheduled_units(log, at=None):
     """Units on the schedule at the rating date, one per vehicle: a vehicle's status is that of the latest unit
     number added for it (by its VIN, or its serial where it has none), so the consortium's numbers replace the
-    pool's for the vehicles loaded in March 2025."""
+    pool's for the vehicles loaded in March 2024."""
     at = at or W.RATING_DATE
     add, gone, ident = {}, set(), {}
     for r in log:
@@ -186,6 +186,7 @@ def world_state():
     W.member_details(W.stream(3), mem)
     rec = W.development(W.stream(4), mem, occ)
     units = W.fleets(W.stream(5), mem)
+    W.consortium(mem, units)
     dec = W.declarations(W.stream(6), mem)
     log = W.schedule_log(W.stream(7), mem, units)
     return {"mem": mem, "occ": occ, "rec": rec, "units": units, "dec": dec, "log": log}

@@ -124,8 +124,8 @@ def write_workbook(path, fig):
         "unrounded." % W.COUNT_25K,
         "Premiums: the indicated rates applied to the declared 2027 operating expenditures and the scheduled units; "
         "annual, before the Washington surplus lines tax and stamping fee; rounded to the dollar.",
-        "Vehicles loaded from the fleet consortium's lists on March 3, 2025 carry the consortium's asset numbers; "
-        "a vehicle counts once, under the latest number added for it.",
+        "Vehicles loaded from the fleet consortium's lists on %s carry the consortium's asset numbers; "
+        "a vehicle counts once, under the latest number added for it." % W.CONSORTIUM_LOAD.strftime("%B %-d, %Y"),
         "Rated exposure: each class's operating expenditures are rounded to the thousand on their own and the total "
         "from the unrounded sum, so the classes can differ from the total by a thousand dollars.",
     ]

@@ -1,11 +1,11 @@
 {
   "task": "task255",
   "owner": "sathay3012",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "actuarial-science-insurance / claims-frequency-severity",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-13",
   "stump": "The default path fits the policy's lognormal to the 820 recorded ground-up costs as a complete sample and ends on $2.0 million; censoring the 108 capped occurrences ends on $2.5 million; carrying each deductible as truncation too, both thresholds at 2027 cost, files $4.0 million.",
   "architecture": 1,
@@ -16,17 +16,23 @@
     "checks": 49
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK): the policy's own vocabulary, 26 schedule changes keyed before they take effect (allow-listed)"
+    "leak_py": "REVIEW, every line harmless (rulings in the report)",
+    "reader": "two reads, no decisive-step sentence, no ranking file, question 6 analytical; realism tells fixed in the generator"
   },
   "duplicate_check": {
     "heart": "WARN (Gate G overuse, answered in the note)",
-    "surface": "0 promoted"
+    "surface": "0 promoted",
+    "nearest": "task93 0.07 (driver), task254 v2 lineage differentiated on the card"
   },
-  "judge": {},
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE (pass 1)",
+    "report": "task255/determinism_check_report.md"
+  },
   "returned": [],
-  "resume": "stage 4: leak reader back (no decisive-step sentence, no ranking file, Q5 read 4.2 as leaving the likelihood open, realism tells listed); isolated judge thread running; fix every finding in the generator in one pass, re-judge once on FIX_NOW",
+  "resume": "shipped; next: task256 (wave 2)",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-13",
   "portal": null,
   "seed": "DA05 number (START_HERE); the seed's world is not used"
 }

@@ -143,10 +143,7 @@ def write_declarations(path, dec):
 
 
 def founded(m):
-    h = int(hashlib.sha256(("joined%d" % m["no"]).encode()).hexdigest()[:8], 16)
-    if m["joined"] > W.FIT_YEARS[0]:
-        return dt.date(m["joined"], 1, 1)
-    return dt.date(1987 + h % 26, (1, 7)[h % 2], 1)
+    return m["founded"]
 
 
 def write_roster(path, mem):

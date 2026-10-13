@@ -11,8 +11,8 @@
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Keep the first $4,000,000 of each 2027 liability occurrence: Fallowmere's 2027 retention is the $4.0 million quoted attachment, which the pool expects 0.74 of its 2027 occurrences to cost more than (1.25 above $3.0 million)",
+  "answer_source": "submission.md block 1; golden retention_2027.xlsx (sheet Retention 2027)",
   "gap": [
     "population"
   ],
@@ -35,7 +35,7 @@
   "scoring_unit": "per covered member",
   "spine": {
     "file": "liability_loss_run_2026-09-30.csv and liability_loss_run_legacy_2014-2020.xlsx",
-    "rows": 0,
+    "rows": 1466,
     "entity": "one liability occurrence the pool handled (above its member's deductible), with the member's deductible and the pool's paid and reserved amounts",
     "grain": "occurrence",
     "source": "synthetic (constructed pool records, declared)"
