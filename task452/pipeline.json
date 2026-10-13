@@ -1,37 +1,37 @@
 {
   "task": "task452",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "physical-environmental-sciences",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-13",
-  "stump": "The default path funds Varrow Brook, Orrinwood Brook and Ambrey River because it interpolates each tributary's sampled concentrations across the water year's daily discharge, pricing the storm days that carry most of the phosphorus at base-flow or stretched storm readings; the concentration-discharge rating curve applied to every day of the record, retransformed for the mean, funds Kestle River, Hessick River and Varrow Brook.",
+  "stump": "The default path funds Varrow Brook, Orrinwood Brook and Ambrey River because step 4 interpolates each tributary's sampled concentrations across the water year's daily discharge, pricing the storm days that carry most of the phosphorus at whatever the nearest samples read (mostly base flow, now and then a caught storm stretched across the days around it); estimating each day's concentration from its discharge through the concentration-discharge rating curve, retransformed for the mean, funds Kestle River, Hessick River and Varrow Brook.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-13"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK), --asof 2027-01-12",
+    "reader": "pass 1: no decisive-step sentence, two ask readings closed in the generator; pass 2 (rebuilt asks): clean, every sweep line harmless"
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN (organisation family, objective, shape, Gate G overuse; task134 differentiated); surface: task451 and task134 pairs answered in the pre-ship check",
     "nearest": "0.09 (task184)",
     "note": "drawn 2026-10-13: guard WARN (overuse.org_family, overuse.objective, overuse.shape, repeat.gate_g, overuse.gate_g; task134 differentiated)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (both passes)",
+    "disposition": "pass 1 FIX_NOW (cover crop acres read two ways, loads on rounding edges, a UTC hour at the clock changes), repaired; pass 2 APPROVE",
+    "report": "task452/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 2: the generator prototype placing the allocations (ladder, readability screen, fork table, closure, literal reader, oracles, ask sheet), prompt.txt and precut.py exit 0",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-13",
   "portal": null,
   "source_note": "seed ET09 (analytical_tasks/07_data_extraction_conformation) not used: its world is health economics, held by task451; the pairing is the client's emissions-inventory ETL task type"
 }

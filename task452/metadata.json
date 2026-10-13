@@ -1,0 +1,171 @@
+{
+  "task": "task452",
+  "architecture": 1,
+  "title": "Where a lake commission puts its three 2027 tributary restoration projects: each tributary's water-year 2026 total phosphorus load, estimated from monthly and storm grab samples and the 15-minute discharge record, against its allocation",
+  "domain": "Physical & Environmental Sciences",
+  "subdomain": "emissions-inventory (a lake basin's waterborne phosphorus load inventory: laboratory results, 15-minute discharge and the station register conformed into each tributary's water-year load)",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "01: a ranked slate of three tributaries under the fund's cap, with each tributary's load against its allocation, its upstream permitted wastewater phosphorus and its cover crop acres",
+  "as_of": "2027-01-12",
+  "deliverables": [
+    "restoration_slate_2027.docx",
+    "tributary_loads_wy2026.csv"
+  ],
+  "distractor_files": [
+    "blc_weather_precipitation_wy2024-wy2026.csv",
+    "lake_brannoch_summer_monitoring_2024-2026.xlsx"
+  ],
+  "stated_inputs": [
+    "1,200",
+    "14,280",
+    "2,390",
+    "3,490",
+    "3,240",
+    "5,660",
+    "800",
+    "3,380",
+    "1,830",
+    "3,930"
+  ],
+  "input_gates": {
+    "files": 13,
+    "formats": [
+      "csv",
+      "docx",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "merrifield_unit_values_wy2026_approved.csv",
+    "largest_file_rows": 350400
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task452/generator/build.py (seeded, deterministic) in the layouts of a water quality exchange results export, a hydrometric contractor's unit and daily value files, NPDES discharge monitoring reports and a conservation program's contract records; the lake, its commission, the tributaries, facilities and farms are fictional.",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2027-01-12",
+  "generator": "task452/generator/build.py",
+  "files": [
+    {
+      "path": "blc_station_register.xlsx",
+      "format": "xlsx",
+      "bytes": 10244,
+      "rows": null,
+      "source": "Constructed: the commission's station register: compliance stations, joining streams and permitted outfalls",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "blc_tributary_monitoring_program_2024-2026.docx",
+      "format": "docx",
+      "bytes": 37758,
+      "rows": null,
+      "source": "Constructed: the commission's description of its tributary monitoring program",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "blc_water_quality_results_2027-01-08.csv",
+      "format": "csv",
+      "bytes": 1025097,
+      "rows": 5297,
+      "source": "Constructed: the commission's water quality results export (both sampling organisations), 8 January 2027",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "blc_weather_precipitation_wy2024-wy2026.csv",
+      "format": "csv",
+      "bytes": 75863,
+      "rows": 3288,
+      "source": "Constructed: the commission's weather stations' daily precipitation, water years 2024 to 2026",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "brannoch_lake_phosphorus_agreement.pdf",
+      "format": "pdf",
+      "bytes": 85640,
+      "rows": null,
+      "source": "Constructed: the Brannoch Lake Phosphorus Agreement, consolidated text with Schedule 1 allocations",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "farm_practice_contracts_2024-2027.csv",
+      "format": "csv",
+      "bytes": 15143,
+      "rows": 202,
+      "source": "Constructed: the farm practice program's cover crop contracts, crop years 2024 to 2027, with amendments",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lake_brannoch_summer_monitoring_2024-2026.xlsx",
+      "format": "xlsx",
+      "bytes": 9081,
+      "rows": null,
+      "source": "Constructed: the commission's open-water lake monitoring, May to October 2024 to 2026",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "merrifield_daily_values_wy2024-wy2025.csv",
+      "format": "csv",
+      "bytes": 197145,
+      "rows": 7310,
+      "source": "Constructed: the gage contractor's approved daily mean discharge for water years 2024 and 2025",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "merrifield_data_transmittal_2026-12-14.txt",
+      "format": "txt",
+      "bytes": 1847,
+      "rows": 34,
+      "source": "Constructed: the gage contractor's data transmittal of 14 December 2026",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "merrifield_unit_values_2026-07_2026-09_provisional.csv",
+      "format": "csv",
+      "bytes": 2908424,
+      "rows": 88320,
+      "source": "Constructed: the gage contractor's provisional 15-minute discharge for July to September 2026, delivered 6 October 2026",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "merrifield_unit_values_wy2026_approved.csv",
+      "format": "csv",
+      "bytes": 11541035,
+      "rows": 350400,
+      "source": "Constructed: the gage contractor's approved 15-minute discharge for water year 2026, delivered 14 December 2026",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "npdes_dmr_phosphorus_wy2026.csv",
+      "format": "csv",
+      "bytes": 50399,
+      "rows": 345,
+      "source": "Constructed: the permitted facilities' discharge monitoring reports for phosphorus and flow, water year 2026",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "practice_field_watershed_acres.csv",
+      "format": "csv",
+      "bytes": 7390,
+      "rows": 228,
+      "source": "Constructed: the farm practice program's mapping of each contracted field's acres among watersheds",
+      "date": "2027-01-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Fund the 2027 tributary restoration projects in the Kestle River, the Hessick River and Varrow Brook.",
+  "answer_source": "task452/submission.md, 1. Final Recommendation",
   "gap": [
     "time",
     "population"
@@ -36,8 +36,8 @@
   "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
+    "file": "merrifield_unit_values_wy2026_approved.csv",
+    "rows": 350400,
     "entity": "one gage's discharge at one 15-minute interval",
     "grain": "station x 15 minutes",
     "source": "synthetic (constructed in the layout of a hydrometric agency's instantaneous-value export)"
@@ -80,7 +80,7 @@
   "opening_move": "question-first",
   "question_form": "where",
   "driver": "The decisive quantity is a period total of the product of two series, one recorded at every interval and one sampled on a few intervals that mostly catch the quiet state; the sampled factor rises with the recorded one, so carrying the sampled values across the unsampled intervals, by averaging or interpolating, misprices the busy intervals that carry most of the total, and the total has to be built from the relationship between the two factors applied to every recorded interval.",
-  "driver_concrete": "Each tributary's water-year 2026 phosphorus load is the sum over days of discharge times concentration; concentration is sampled on fixed monthly dates that fall mostly on base flow, plus a few storm-triggered samples, and it rises steeply with discharge, so interpolating or averaging the samples across the year prices the storm days at base-flow concentrations, while a rating curve of concentration on discharge, applied to every day of the gage record, prices them at storm concentrations.",
+  "driver_concrete": "Each tributary's water-year 2026 phosphorus load is the sum over days of discharge times concentration; concentration is sampled on the Commission's fixed rounds (the first and third Tuesdays), which fall mostly away from storms, plus a few college storm samples, and it rises with discharge, so interpolating or averaging the samples across the year prices the high-flow days at the readings of the days around them, while a rating curve of concentration on discharge, applied to every day of the gage record, prices them from the relationship.",
   "stump": "The default path funds Varrow Brook, Orrinwood Brook and Ambrey River because it interpolates each tributary's sampled concentrations across the water year's daily discharge, pricing the storm days that carry most of the phosphorus at base-flow or stretched storm readings; the concentration-discharge rating curve applied to every day of the record, retransformed for the mean, funds Kestle River, Hessick River and Varrow Brook.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who conforms the laboratory results (units, fractions, quality-control samples, non-detects), builds daily mean discharge from the approved gage records and computes each tributary's load by interpolating the sampled concentrations across the year's days funds Varrow Brook, Orrinwood Brook and Ambrey River; estimating each day's concentration from its discharge with a rating curve retransformed for the mean funds Kestle River, Hessick River and Varrow Brook.",
@@ -102,5 +102,5 @@
     "task134": "task134 sizes a forward inflow from a conversion hazard by time since entry applied to each member's entry date; here a closed water year's total is rebuilt day by day from a concentration-discharge relationship because the samples catch mostly base flow, a pricing of unsampled intervals, not a hazard over a cohort"
   },
   "lineage": [],
-  "notes": "Drawn 2026-10-13. Prototype in scratch (t452/proto1.py, ten simulated tributaries): against a rating curve with smearing, interpolation and averaging miss by -38 to +24 per cent in tributary-specific directions, the uncorrected rating curve by -4 to -15 per cent (a lower rung only: task135 v1 spent the retransformation insight as a decisive step), and the corrected variants agree within about 4 per cent."
+  "notes": "Drawn 2026-10-13. Built 2026-10-13 (world seed 4522): every rating-curve variant on the record (seasonal or not, smearing, the normal-theory correction or none, a quadratic term, calibrated on one, two or three water years, the Commission's samples alone) funds Kestle, Hessick and Varrow, the third at least 244 kg above the fourth; interpolation funds Ambrey, Orrinwood and Varrow, the sample mean times volume Varrow and Orrinwood, the flow-weighted mean and the monthly product Ambrey, Orrinwood and Varrow. The retransformation correction is part of the golden method and no rung turns on it (task135 v1 spent that insight as a decisive step). Asks (rebuilt at stage 4): the upstream wastewater phosphorus turns on quarterly reports standing for their period's days, with the stream network second; the cover crop acres turn on a contract's acres repeated on each enrolled field's line, with fields straddling a divide second."
 }

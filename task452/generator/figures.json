@@ -1,0 +1,458 @@
+{
+ "call": [
+  "Kestle River",
+  "Hessick River",
+  "Varrow Brook"
+ ],
+ "routes": {
+  "G1 rating curve, seasonal, smearing": [
+   "Kestle River",
+   "Hessick River",
+   "Varrow Brook"
+  ],
+  "G2 rating curve, seasonal, normal-theory correction": [
+   "Kestle River",
+   "Hessick River",
+   "Varrow Brook"
+  ],
+  "G3 rating curve, no seasonal terms, smearing": [
+   "Kestle River",
+   "Hessick River",
+   "Varrow Brook"
+  ],
+  "G4 rating curve, quadratic in discharge, smearing": [
+   "Kestle River",
+   "Hessick River",
+   "Varrow Brook"
+  ],
+  "G5 rating curve, no retransformation correction": [
+   "Kestle River",
+   "Hessick River",
+   "Varrow Brook"
+  ],
+  "G6 rating curve, water years 2025 and 2026": [
+   "Kestle River",
+   "Varrow Brook",
+   "Hessick River"
+  ],
+  "G7 rating curve, water year 2026 only": [
+   "Kestle River",
+   "Hessick River",
+   "Varrow Brook"
+  ],
+  "R0 interpolation (default)": [
+   "Ambrey River",
+   "Orrinwood Brook",
+   "Varrow Brook"
+  ],
+  "R2 sample mean times volume": [
+   "Varrow Brook",
+   "Orrinwood Brook"
+  ],
+  "R3 flow-weighted sample mean times volume": [
+   "Ambrey River",
+   "Orrinwood Brook",
+   "Varrow Brook"
+  ],
+  "R4 monthly sample times monthly volume": [
+   "Varrow Brook",
+   "Orrinwood Brook",
+   "Ambrey River"
+  ]
+ },
+ "default_slate": [
+  "Ambrey River",
+  "Orrinwood Brook",
+  "Varrow Brook"
+ ],
+ "load_kg": {
+  "Fallowmere Brook": 1070,
+  "Kestle River": 16820,
+  "Orrinwood Brook": 2600,
+  "Tamsell River": 3010,
+  "Varrow Brook": 4360,
+  "Hessick River": 6910,
+  "Pellow Brook": 740,
+  "Ambrey River": 3730,
+  "Dunmarsh Brook": 1660,
+  "Corriden River": 3570
+ },
+ "allocation_kg": {
+  "Fallowmere Brook": 1200,
+  "Kestle River": 14280,
+  "Orrinwood Brook": 2390,
+  "Tamsell River": 3490,
+  "Varrow Brook": 3240,
+  "Hessick River": 5660,
+  "Pellow Brook": 800,
+  "Ambrey River": 3380,
+  "Dunmarsh Brook": 1830,
+  "Corriden River": 3930
+ },
+ "excess_kg": {
+  "Fallowmere Brook": -130,
+  "Kestle River": 2540,
+  "Orrinwood Brook": 210,
+  "Tamsell River": -480,
+  "Varrow Brook": 1120,
+  "Hessick River": 1250,
+  "Pellow Brook": -60,
+  "Ambrey River": 350,
+  "Dunmarsh Brook": -170,
+  "Corriden River": -360
+ },
+ "excess_range_full_record_kg": {
+  "Fallowmere Brook": [
+   -130,
+   -120
+  ],
+  "Kestle River": [
+   2160,
+   2640
+  ],
+  "Orrinwood Brook": [
+   210,
+   230
+  ],
+  "Tamsell River": [
+   -490,
+   -470
+  ],
+  "Varrow Brook": [
+   1110,
+   1220
+  ],
+  "Hessick River": [
+   1140,
+   1270
+  ],
+  "Pellow Brook": [
+   -70,
+   -60
+  ],
+  "Ambrey River": [
+   340,
+   370
+  ],
+  "Dunmarsh Brook": [
+   -170,
+   -140
+  ],
+  "Corriden River": [
+   -370,
+   -350
+  ]
+ },
+ "load_range_full_record_kg": {
+  "Fallowmere Brook": [
+   1070,
+   1080
+  ],
+  "Kestle River": [
+   16440,
+   16920
+  ],
+  "Orrinwood Brook": [
+   2600,
+   2620
+  ],
+  "Tamsell River": [
+   3000,
+   3020
+  ],
+  "Varrow Brook": [
+   4350,
+   4460
+  ],
+  "Hessick River": [
+   6800,
+   6930
+  ],
+  "Pellow Brook": [
+   730,
+   740
+  ],
+  "Ambrey River": [
+   3720,
+   3750
+  ],
+  "Dunmarsh Brook": [
+   1660,
+   1690
+  ],
+  "Corriden River": [
+   3560,
+   3580
+  ]
+ },
+ "default_below_kg": {
+  "Kestle River": 4160,
+  "Hessick River": 1060
+ },
+ "excess_by_route_kg": {
+  "G1 rating curve, seasonal, smearing": {
+   "Fallowmere Brook": -130,
+   "Kestle River": 2540,
+   "Orrinwood Brook": 210,
+   "Tamsell River": -480,
+   "Varrow Brook": 1120,
+   "Hessick River": 1250,
+   "Pellow Brook": -60,
+   "Ambrey River": 350,
+   "Dunmarsh Brook": -170,
+   "Corriden River": -360
+  },
+  "G2 rating curve, seasonal, normal-theory correction": {
+   "Fallowmere Brook": -120,
+   "Kestle River": 2630,
+   "Orrinwood Brook": 220,
+   "Tamsell River": -470,
+   "Varrow Brook": 1130,
+   "Hessick River": 1270,
+   "Pellow Brook": -60,
+   "Ambrey River": 370,
+   "Dunmarsh Brook": -160,
+   "Corriden River": -360
+  },
+  "G3 rating curve, no seasonal terms, smearing": {
+   "Fallowmere Brook": -130,
+   "Kestle River": 2170,
+   "Orrinwood Brook": 210,
+   "Tamsell River": -470,
+   "Varrow Brook": 1120,
+   "Hessick River": 1150,
+   "Pellow Brook": -60,
+   "Ambrey River": 340,
+   "Dunmarsh Brook": -150,
+   "Corriden River": -360
+  },
+  "G4 rating curve, quadratic in discharge, smearing": {
+   "Fallowmere Brook": -130,
+   "Kestle River": 2580,
+   "Orrinwood Brook": 220,
+   "Tamsell River": -480,
+   "Varrow Brook": 1210,
+   "Hessick River": 1230,
+   "Pellow Brook": -60,
+   "Ambrey River": 350,
+   "Dunmarsh Brook": -150,
+   "Corriden River": -360
+  },
+  "G5 rating curve, no retransformation correction": {
+   "Fallowmere Brook": -170,
+   "Kestle River": 1710,
+   "Orrinwood Brook": 120,
+   "Tamsell River": -610,
+   "Varrow Brook": 950,
+   "Hessick River": 1000,
+   "Pellow Brook": -90,
+   "Ambrey River": 160,
+   "Dunmarsh Brook": -220,
+   "Corriden River": -520
+  },
+  "G6 rating curve, water years 2025 and 2026": {
+   "Fallowmere Brook": -110,
+   "Kestle River": 2600,
+   "Orrinwood Brook": 150,
+   "Tamsell River": -450,
+   "Varrow Brook": 1170,
+   "Hessick River": 680,
+   "Pellow Brook": -100,
+   "Ambrey River": 430,
+   "Dunmarsh Brook": -220,
+   "Corriden River": -560
+  },
+  "G7 rating curve, water year 2026 only": {
+   "Fallowmere Brook": -90,
+   "Kestle River": 2500,
+   "Orrinwood Brook": 450,
+   "Tamsell River": -280,
+   "Varrow Brook": 920,
+   "Hessick River": 1840,
+   "Pellow Brook": -70,
+   "Ambrey River": 440,
+   "Dunmarsh Brook": -360,
+   "Corriden River": -310
+  },
+  "R0 interpolation (default)": {
+   "Fallowmere Brook": -290,
+   "Kestle River": -4160,
+   "Orrinwood Brook": 280,
+   "Tamsell River": -440,
+   "Varrow Brook": 270,
+   "Hessick River": -1060,
+   "Pellow Brook": -150,
+   "Ambrey River": 310,
+   "Dunmarsh Brook": -580,
+   "Corriden River": -560
+  },
+  "R2 sample mean times volume": {
+   "Fallowmere Brook": -350,
+   "Kestle River": -5380,
+   "Orrinwood Brook": 90,
+   "Tamsell River": -640,
+   "Varrow Brook": 110,
+   "Hessick River": -1520,
+   "Pellow Brook": -170,
+   "Ambrey River": -100,
+   "Dunmarsh Brook": -670,
+   "Corriden River": -690
+  },
+  "R3 flow-weighted sample mean times volume": {
+   "Fallowmere Brook": -200,
+   "Kestle River": -3060,
+   "Orrinwood Brook": 1960,
+   "Tamsell River": -30,
+   "Varrow Brook": 700,
+   "Hessick River": -660,
+   "Pellow Brook": -130,
+   "Ambrey River": 2660,
+   "Dunmarsh Brook": -260,
+   "Corriden River": 200
+  },
+  "R4 monthly sample times monthly volume": {
+   "Fallowmere Brook": -340,
+   "Kestle River": -4610,
+   "Orrinwood Brook": 150,
+   "Tamsell River": -500,
+   "Varrow Brook": 210,
+   "Hessick River": -1310,
+   "Pellow Brook": -160,
+   "Ambrey River": 70,
+   "Dunmarsh Brook": -620,
+   "Corriden River": -630
+  }
+ },
+ "slope": {
+  "Fallowmere Brook": 0.44,
+  "Kestle River": 0.86,
+  "Orrinwood Brook": 0.54,
+  "Tamsell River": 0.38,
+  "Varrow Brook": 0.56,
+  "Hessick River": 0.71,
+  "Pellow Brook": 0.34,
+  "Ambrey River": 0.6,
+  "Dunmarsh Brook": 0.52,
+  "Corriden River": 0.31
+ },
+ "n_samples": {
+  "Fallowmere Brook": 79,
+  "Kestle River": 80,
+  "Orrinwood Brook": 81,
+  "Tamsell River": 80,
+  "Varrow Brook": 79,
+  "Hessick River": 80,
+  "Pellow Brook": 79,
+  "Ambrey River": 80,
+  "Dunmarsh Brook": 79,
+  "Corriden River": 80
+ },
+ "smearing": {
+  "Fallowmere Brook": 1.047,
+  "Kestle River": 1.052,
+  "Orrinwood Brook": 1.039,
+  "Tamsell River": 1.045,
+  "Varrow Brook": 1.042,
+  "Hessick River": 1.036,
+  "Pellow Brook": 1.032,
+  "Ambrey River": 1.053,
+  "Dunmarsh Brook": 1.035,
+  "Corriden River": 1.046
+ },
+ "wastewater_kg": {
+  "Fallowmere Brook": 81.2,
+  "Kestle River": 1037.7,
+  "Orrinwood Brook": 337.3,
+  "Tamsell River": 312.2,
+  "Varrow Brook": 477.3,
+  "Hessick River": 1047.0,
+  "Pellow Brook": 172.1,
+  "Ambrey River": 322.7,
+  "Dunmarsh Brook": 278.4,
+  "Corriden River": 542.6
+ },
+ "wastewater_stated": {
+  "Fallowmere Brook": 80,
+  "Kestle River": 1040,
+  "Orrinwood Brook": 340,
+  "Tamsell River": 310,
+  "Varrow Brook": 480,
+  "Hessick River": 1050,
+  "Pellow Brook": 170,
+  "Ambrey River": 320,
+  "Dunmarsh Brook": 280,
+  "Corriden River": 540
+ },
+ "cover_acres": {
+  "Fallowmere Brook": 632.6,
+  "Kestle River": 1029.7,
+  "Orrinwood Brook": 1038.7,
+  "Tamsell River": 687.0,
+  "Varrow Brook": 898.4,
+  "Hessick River": 1501.4,
+  "Pellow Brook": 657.7,
+  "Ambrey River": 1182.2,
+  "Dunmarsh Brook": 837.6,
+  "Corriden River": 751.3
+ },
+ "cover_stated": {
+  "Fallowmere Brook": 630,
+  "Kestle River": 1030,
+  "Orrinwood Brook": 1040,
+  "Tamsell River": 690,
+  "Varrow Brook": 900,
+  "Hessick River": 1500,
+  "Pellow Brook": 660,
+  "Ambrey River": 1180,
+  "Dunmarsh Brook": 840,
+  "Corriden River": 750
+ },
+ "basin_load_kg": 44480,
+ "default_vs_golden_pct": {
+  "Fallowmere Brook": -14.9,
+  "Kestle River": -39.8,
+  "Orrinwood Brook": 2.7,
+  "Tamsell River": 1.3,
+  "Varrow Brook": -19.7,
+  "Hessick River": -33.5,
+  "Pellow Brook": -11.0,
+  "Ambrey River": -1.1,
+  "Dunmarsh Brook": -24.8,
+  "Corriden River": -5.4
+ },
+ "record": {
+  "from": "1 October 2023",
+  "first_water_year": 2024
+ },
+ "clauses": [
+  "1.4",
+  "2.2",
+  "3.1",
+  "4.1"
+ ],
+ "samples_wy2026_mean": 26,
+ "top_tenth_load_pct": {
+  "Fallowmere Brook": 41,
+  "Kestle River": 63,
+  "Orrinwood Brook": 47,
+  "Tamsell River": 38,
+  "Varrow Brook": 49,
+  "Hessick River": 60,
+  "Pellow Brook": 40,
+  "Ambrey River": 46,
+  "Dunmarsh Brook": 48,
+  "Corriden River": 34
+ },
+ "top_tenth_samples_pct": {
+  "Fallowmere Brook": 12,
+  "Kestle River": 4,
+  "Orrinwood Brook": 15,
+  "Tamsell River": 12,
+  "Varrow Brook": 15,
+  "Hessick River": 4,
+  "Pellow Brook": 12,
+  "Ambrey River": 15,
+  "Dunmarsh Brook": 4,
+  "Corriden River": 12
+ }
+}
