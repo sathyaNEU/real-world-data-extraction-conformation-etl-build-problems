@@ -9,13 +9,13 @@ KEEP_AUG = {'base|artikel': 0.92,
  'base|liveblog': 0.8275,
  'base|sektion': 0.8725,
  'base|sport': 0.8,
- 'puz|spil': 0.905,
+ 'puz|spil': 0.9664,
  'sub|artikel': 0.85,
- 'sub|forside': 1.0,
+ 'sub|forside': 0.806,
  'sub|galleri': 0.94,
  'sub|liveblog': 0.8,
  'sub|sektion': 1.0,
  'sub|sport': 0.8}
-STEP_T = {'E': {'ST': 0.46, 'LA': 0.4191, 'KD': 0.4693},
- 'B': {'ST': 0.6644, 'LA': 0.6775, 'KD': 0.6472},
- 'D': {'ST': 0.7369, 'LA': 0.7466, 'KD': 0.6744}}
+STEP_T = {'E': {'ST': 0.46, 'LA': 0.4454, 'KD': 0.4884},
+ 'B': {'ST': 0.6465, 'LA': 0.6623, 'KD': 0.6285},
+ 'D': {'ST': 0.7519, 'LA': 0.7673, 'KD': 0.6737}}

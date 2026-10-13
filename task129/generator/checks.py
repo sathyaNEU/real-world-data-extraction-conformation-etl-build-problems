@@ -6,6 +6,7 @@ constructed disagreement, the correction grid and the corridor; the C1 convergen
 population; the semantic fork table (SF1 to SF12); the three-rules block (R1 to R3c); the bins; the
 two asks (T and I) with their device matrices, cracker and mirror sheets and composed mishandlings;
 the clean-data and lens-swap tests; distractors, single statements and the realism sweep."""
+import gc
 import itertools
 import os
 
@@ -98,6 +99,10 @@ def run(out, tgt, R, meta):
     flagged = set(spd.loc[G.repeated_beacons(spd), "pv_id"])
     ok("truth.repeat_rule_is_exact", flagged == sec and len(sec) == R["n_second"], (len(flagged), len(sec)))
     REC["n_second_beacons"] = len(sec)
+    del Sx, sec, flagged, spd
+    for k in ("S", "V", "ct"):
+        R.pop(k, None)
+    gc.collect()
 
     # ------------------------------------------------------------ main call: the ladder
     M = G.main_call(v, L)
@@ -178,12 +183,15 @@ def run(out, tgt, R, meta):
         REC[f"corridor.C{wk}"] = Mw["state"]["C"]
 
     # ------------------------------------------------------------ C1 convergences on the main population
-    t_main = t["D"]
+    # the call's rows: from 28 days before the first separating or switch-on release
+    t_main = min([t["PUZ"], t["SUB"]] + list(sw.values())) - G.WIN
     REC["main_population_from"] = str(t_main)
     main = v[v.ts >= t_main]
     allrows = G.views(L, dedup=False, phones=False, repeats=False)
     mainall = allrows[allrows.ts >= t_main]
     ok("sep.no_tablets_in_main", int((mainall.ff != "phone").sum()) == 0, int((mainall.ff != "phone").sum()))
+    del allrows, mainall
+    gc.collect()
     m_ts = sp.ts_utc.dt.tz_convert(None) >= t_main
     ok("sep.no_duplicates_in_main", not sp[m_ts].pv_id.duplicated().any())
     ok("sep.no_repeated_beacons_in_main", len(G.repeated_beacons(sp[m_ts])) == 0)
@@ -210,6 +218,9 @@ def run(out, tgt, R, meta):
     tr = X[["pv_id", "state"]].set_index("pv_id").state
     same = (tr.reindex(main.pv_id.values).values == main.state.values)
     ok("truth.state_matches", same.mean() == 1.0, float(same.mean()))
+    del X, tr, same, truth_phone
+    R.pop("X", None)
+    gc.collect()
     sb = L["subs"]
     pull_active = set(sb[(sb.end_date == "") | (sb.end_date >= P.EXTRACT_PULLED.isoformat())].account_key)
     acc = main.account_key.fillna("").values
@@ -222,11 +233,13 @@ def run(out, tgt, R, meta):
             x = co[(co.Month == f"2026-{mo:02d}") & (co.Title == P.TITLE_NAME[ti])]["Mobile page views"].iloc[0]
             y = v[(v.month == mo) & (v.title_cur == ti)].w.sum()
             ok(f"axis21.closeout[{mo},{ti}]", int(x) == int(y), (x, y))
-    ok("axis7.view_vs_device_weighting", _device_weighted_same(v, L, sw, t, C4, A4))
+    dw = _device_weighted(v, L, sw, t)
+    REC["axis7.device_weighted"] = dw
+    ok("axis7.device_weighting_keeps_call", dw["C"] > dw["A"], (dw, C4, A4))
     ok("axis14.sort_invariant", abs(G.main_call(v.sample(frac=1.0, random_state=7), L)["state"]["C"] - C4) < 1e-6)
 
     # ------------------------------------------------------------ semantic fork table
-    sf_rows(L, v, t, M, A4, C4, A3, C3, Tt)
+    sf_rows(L, v, t, M, A4, C4, A3, C3, Tt, tgt)
 
     # ------------------------------------------------------------ the three rules, executed
     three_rules(L, v, R, M, A4, C4, A3, C3, A2, C2, grid)
@@ -238,27 +251,61 @@ def P_Q3():
     return ship.Q3
 
 
-def _device_weighted_same(v, L, sw, t, C4, A4):
-    """Effects are constant inside each group, phone and state cell, so reading each cell's effect
-    with every device weighted once lands the call and both figures in their bins."""
-    x = v.copy()
-    n = x.groupby("device_key").w.transform("size")
-    x["w"] = x.w / n
-    Mx = G.main_call(x, L)
-    return (same_bin(Mx["state"]["C"], C4, P.HEADLINE_BIN) and same_bin(Mx["state"]["A"], A4, P.HEADLINE_BIN)
-            and Mx["state"]["C"] > Mx["state"]["A"]) or abs(Mx["state"]["C"] / C4 - 1) < 0.01
+def _title_matched(v, L):
+    """The subscriber groups rebuilt with a subscription counted only on its own title's pages (an all-titles
+    product counts everywhere): the reading paywall 4.2 rules out."""
+    sb = L["subs"]
+    sb = sb[sb.account_key != ""]
+    code = {n: k for k, n in P.TITLE_NAME.items()}
+    tab = pd.DataFrame({"account_key": sb.account_key.values, "st": pd.to_datetime(sb.start_date).values,
+                        "en": pd.to_datetime(sb.end_date.replace("", "2100-01-01")).values,
+                        "tt": sb.title.map(code).fillna("*").values,
+                        "all": sb["product"].str.contains("alle titler").values})
+    acc = v.account_key.fillna("").values
+    m = acc != ""
+    q = pd.DataFrame({"i": np.flatnonzero(m), "account_key": acc[m], "day": v.day.values[m],
+                      "vt": v.title_cur.values[m]})
+    j = q.merge(tab, on="account_key", how="inner")
+    j = j[(j.day >= j.st) & (j.day <= j.en) & (j["all"] | (j.tt == j.vt))]
+    act = np.zeros(len(v), bool)
+    act[j.i.unique()] = True
+    tpl = v.template.values
+    coh = np.isin(tpl, P.COHORTS)
+    g = np.full(len(v), "legacy", dtype=object)
+    g[coh & act] = "sub"
+    g[coh & ~act] = "base"
+    g[(tpl == "spil") & act] = "subpuz"
+    g[(tpl == "spil") & ~act] = "puz"
+    return v.assign(sub=act, group=g)
 
 
-def sf_rows(L, v, t, M, A4, C4, A3, C3, Tt):
+def _device_weighted(v, L, sw, t):
+    """Each group, phone and state cell's effect read with every device weighted once, then valued on
+    August's views: an estimator of another quantity than the service level's share of views, recorded."""
+    n = v.groupby("device_key").w.transform("size")
+    x = v.assign(w=v.w / n)
+    by = ["pclass", "state"]
+    eA, eC = G.effects(x, "puz", sw, t, by), G.effects(x, "sub", sw, t, by)
+    fA, fC = G.effects(x, "puz", sw, t, ["pclass"]), G.effects(x, "sub", sw, t, ["pclass"])
+    a = G.august(v)
+    base, sub, puz = a[a.group == "base"], a[a.group == "sub"], a[a.group == "puz"]
+    return {"A": G.apply(base, eA, by, fA) + G.apply(puz, eA, by, fA),
+            "C": G.apply(base, eC, by, fC) + G.apply(sub, eC, by, fC)}
+
+
+def sf_rows(L, v, t, M, A4, C4, A3, C3, Tt, tgt):
     HB = P.HEADLINE_BIN
     # SF1 mobile views: no tablet row from the forwarder fix on
     allp = G.views(L, phones=False)
     ok("SF1.no_tablets_after_fix", int(((allp.ff != "phone") & (allp.ts >= t["D"])).sum()) == 0)
     Mt = G.main_call(allp, L)
+    del allp
+    gc.collect()
     ok("SF1.same_call_with_tablets", same_bin(Mt["state"]["C"], C4, HB) and same_bin(Mt["state"]["A"], A4, HB))
     # SF2 restores counted as under: both figures leave their bins, the call stays
     vr = v.assign(scored=True, over=v.over & v.scored)
     M2 = G.main_call(vr, L)
+    del vr
     ok("SF2.restores_as_under_move_figures", M2["state"]["C"] > M2["state"]["A"] and
        not same_bin(M2["state"]["C"], C4, HB), (M2["state"]["C"], M2["state"]["A"]))
     # SF3 another month: June to August average, still C
@@ -266,6 +313,8 @@ def sf_rows(L, v, t, M, A4, C4, A3, C3, Tt):
     a3 = a3.assign(w=a3.w / 3.0)
     vv = pd.concat([v[~v.month.isin([6, 7, 8])], a3])
     M3 = G.main_call(vv, L)
+    del vv, a3
+    gc.collect()
     ok("SF3.other_month_same_name", M3["state"]["C"] > M3["state"]["A"])
     # SF4 every mobile view: the ad stack applied to subscribers' views too, still C
     sub = G.august(v)
@@ -280,6 +329,12 @@ def sf_rows(L, v, t, M, A4, C4, A3, C3, Tt):
     ok("SF5.base_only_same_call", C_base > A4, (C_base, A4))
     # SF6 the window: 28 days filed; 21 and 35 keep the call (corridor asserted above)
     ok("SF6.window_filed", G.WIN == pd.Timedelta(days=28))
+    # the image pipeline's templates are named in the change register's scope (the T ask's population)
+    import re as _re
+    chg = pd.read_excel(os.path.join(tgt, F["changes"]), header=3, dtype=str)
+    scope = chg[chg.Name.str.startswith("Image pipeline")].Scope.iloc[0]
+    named = set(x.strip() for x in _re.search(r"\((.*)\)", scope).group(1).split(","))
+    ok("T.hero_templates_filed", named == set(P.HERO), sorted(named))
     # SF7 the separating releases are the puzzles release and the ad-free release
     ro = L["rollout"]
     ok("SF7.adfree_one_release", (ro.layout != "ad-supported").sum() == 1)
@@ -297,6 +352,49 @@ def sf_rows(L, v, t, M, A4, C4, A3, C3, Tt):
     # SF12 rounding once: rounding each group's figure first lands in the same bins
     gC = sum(round(M["grid"][c]["C"], -3) for c in P.COHORTS)
     ok("SF12.rounding_path", same_bin(gC, C4, HB))
+    # SF14 valuation: that month's scored views the change now reaches (service level, section 4); all
+    # August views, or only views after each group's switch-on, keep the call and leave both bins
+    sla = " ".join(" ".join(p.extract_text().split()) for p in __import__("pypdf").PdfReader(
+        os.path.join(tgt, F["sla"])).pages)
+    ok("SF14.filed", "counted over all of that month's scored views on the pages and layouts the change is live on "
+                     "today" in sla)
+    aug_all = v[v.month == 8]
+    by = ["pclass", "state"]
+    eA, eC, fA, fC = M["state"]["eA"], M["state"]["eC"], M["state"]["fA"], M["state"]["fC"]
+
+    def valued(aug):
+        b_, s_, z_ = aug[aug.group == "base"], aug[aug.group == "sub"], aug[aug.group == "puz"]
+        return (G.apply(b_, eC, by, fC) + G.apply(s_, eC, by, fC), G.apply(b_, eA, by, fA) + G.apply(z_, eA, by, fA))
+    sw_, t_ = G.switch_times(L)
+    a8 = G.august(v)
+    alts = {"all_views": valued(aug_all), "after_switch": valued(a8[~((a8.template == "forside") &
+                                                                      (a8.ts < sw_["forside"]))])}
+    for k, (cC, cA) in alts.items():
+        REC[f"SF14.{k}"] = (cC, cA)
+        ok(f"SF14.{k}_off_bins_same_call", cC > cA and not (same_bin(cC, C4, HB) and same_bin(cA, A4, HB)),
+           (cC, cA))
+    # SF15 window boundary: from the deploy moment (service level, section 3); calendar days keep the call
+    ok("SF15.filed", "the moment the release that switched it on was deployed" in sla)
+
+    def midnight(ts):
+        return pd.Timestamp(ts).tz_localize("UTC").tz_convert(P.TZ).normalize().tz_convert("UTC").tz_localize(None)
+    Mc = G.main_call(v, L, times=({k: midnight(x) for k, x in sw_.items()}, {k: midnight(x) for k, x in t_.items()}))
+    REC["SF15.calendar"] = (Mc["state"]["C"], Mc["state"]["A"])
+    ok("SF15.calendar_same_call", Mc["state"]["C"] > Mc["state"]["A"], REC["SF15.calendar"])
+    # SF16 subscribers: any active subscription, on every title's site (paywall 4.2); a subscription counted only on
+    # its own title's pages keeps the call
+    pay = " ".join(" ".join(p.extract_text().split()) for p in __import__("pypdf").PdfReader(
+        os.path.join(tgt, F["paywall"])).pages)
+    ok("SF16.filed", "on all three titles' sites whichever titles their product includes" in pay)
+    Mt_ = G.main_call(_title_matched(v, L), L)
+    REC["SF16.title_matched"] = (Mt_["state"]["C"], Mt_["state"]["A"])
+    ok("SF16.title_matched_same_call", Mt_["state"]["C"] > Mt_["state"]["A"], REC["SF16.title_matched"])
+    # SF13 weighting: the field guide's "sum it to count views"; rows counted once give sampled rows, not
+    # views, far outside both bins, and still C
+    Mu = G.main_call(v.assign(w=1.0), L)
+    REC["SF13.unweighted"] = {"A": Mu["state"]["A"], "C": Mu["state"]["C"]}
+    ok("SF13.unweighted_rows_off_bins_same_call", Mu["state"]["C"] > Mu["state"]["A"] and
+       Mu["state"]["C"] < 0.1 * C4 and Mu["state"]["A"] < 0.1 * A4, REC["SF13.unweighted"])
 
 
 def three_rules(L, v, R, M, A4, C4, A3, C3, A2, C2, grid):
@@ -305,14 +403,17 @@ def three_rules(L, v, R, M, A4, C4, A3, C3, A2, C2, grid):
     # log with deploy instants); no column holds the state or a change's effect
     cols = set(sp.columns)
     ok("R1.raw_material", {"device_key", "ts_utc", "lcp_ms", "sample_weight", "url_path"} <= cols)
-    ok("R1.no_state_column", not any(c for c in cols if any(w in c.lower() for w in
-                                                             ("state", "cache", "first", "bundle", "effect"))))
+    toks = {w for c in cols for w in c.lower().split("_")}
+    said = toks & {"state", "cache", "cached", "first", "bundle", "effect", "repeat", "second"}
+    ok("R1.no_state_column", not said, sorted(said))
     # R2: every Layer 1 item mishandled leaves the call and both figures where they were
     HB = P.HEADLINE_BIN
-    for name, frame in (("tablets", G.views(L, phones=False)),
-                        ("forwarded_twice", G.views(L, dedup=False)),
-                        ("second_beacons", G.views(L, repeats=False))):
+    for name, kw in (("tablets", dict(phones=False)), ("forwarded_twice", dict(dedup=False)),
+                     ("second_beacons", dict(repeats=False))):
+        frame = G.views(L, **kw)
         Mx = G.main_call(frame, L)
+        del frame
+        gc.collect()
         ok(f"R2.mess_neutral[{name}]", same_bin(Mx["state"]["C"], C4, HB) and same_bin(Mx["state"]["A"], A4, HB)
            and same_bin(Mx["phone"]["A"], A3, HB), (Mx["state"]["C"], Mx["state"]["A"]))
     vt = v.assign(title_cur=v.title)
@@ -324,7 +425,7 @@ def three_rules(L, v, R, M, A4, C4, A3, C3, A2, C2, grid):
     ok("R2.clean_data_answer_and_default_unchanged", abs(Mc["state"]["C"] - C4) < 1e-6 and
        abs(Mc["phone"]["A"] - A3) < 1e-6)
     # R3a: the default path on the clean truth files the ad stack
-    ok("R3a.analyst_test_files_A", A3 > C3 and round(A3, -4) == 1_210_000, (A3, C3))
+    ok("R3a.analyst_test_files_A", A3 > C3 and round(A3, -4) == 1_230_000, (A3, C3))
     # R3b: only the decisive step changed files the golden; each lower correction leaves A or a
     # figure outside the bin
     ok("R3b.decisive_step_alone_files_C", C4 > A4 and round(C4, -4) == 1_460_000, (C4, A4))
@@ -334,19 +435,45 @@ def three_rules(L, v, R, M, A4, C4, A3, C3, A2, C2, grid):
     gA, gC, off = REC["grid.state_no_phone"]
     ok("R3b.state_without_phone_off", off >= 0.06, off)
     # R3c: no plant: no repeated block of rows, no backfilled or copied window
+    # (the older library's second beacons repeat their original's timings by construction; they are the T
+    # ask's device, so the sweep runs on the frame without them)
     sp2 = sp.sort_values("beacon_id").drop_duplicates("pv_id")
-    blk = sp2[["lcp_ms", "ttfb_ms", "cls"]].astype(str).agg("|".join, axis=1)
-    run_dup = (blk.values[1:] == blk.values[:-1]).mean()
+    sp2 = sp2.drop(index=G.repeated_beacons(sp2))
+    blk = sp2[["lcp_ms", "ttfb_ms", "cls"]].astype("float64").values
+    full = ~np.isnan(blk).any(axis=1)
+    pair = full[1:] & full[:-1]
+    run_dup = float(((blk[1:] == blk[:-1]).all(axis=1) & pair).sum() / pair.sum())
     ok("R3c.no_repeated_block", run_dup < 0.001, run_dup)
     ok("R3c.no_answer_column", "is_dup" not in sp.columns and "second" not in sp.columns)
 
 
-def frames(L):
-    """Every combination of the three collector mishandlings on the beacon frame."""
-    out = {}
-    for dedup, phones, repeats in itertools.product([True, False], repeat=3):
-        out[(dedup, phones, repeats)] = G.views(L, dedup=dedup, phones=phones, repeats=repeats)
-    return out
+T_DEVS = ["second", "tablets", "forwarded"]
+I_DEVS = ["native", "hits", "kb", "scored", "tablets", "forwarded", "second"]
+SWEEP_COLS = ["ts", "local", "month", "w", "over", "scored", "template", "edition", "title", "title_cur"]
+
+
+def _frame_key(sub):
+    return ("forwarded" not in sub, "tablets" not in sub, "second" not in sub)
+
+
+def sweeps(L, v):
+    """Both asks under every combination of their mishandlings. Each combination of the three collector
+    mishandlings is one beacon frame; frames are built one at a time and dropped once read."""
+    tsubs = [s for n in range(1, len(T_DEVS) + 1) for s in itertools.combinations(T_DEVS, n)]
+    isubs = [s for n in range(1, len(I_DEVS) + 1) for s in itertools.combinations(I_DEVS, n) if "native" in s]
+    TV, IV = {}, {}
+    for key in sorted({_frame_key(s) for s in tsubs + isubs}, reverse=True):
+        fr = v if key == (True, True, True) else G.views(L, dedup=key[0], phones=key[1], repeats=key[2])[SWEEP_COLS]
+        for s in tsubs:
+            if _frame_key(s) == key:
+                TV[s] = {x: G.dated(fr, L, x) for x in "DBE"}
+        for s in isubs:
+            if _frame_key(s) == key:
+                IV[s] = G.image_delivery(L, fr, native=True, hits_only="hits" in s, kb_fix="kb" not in s,
+                                         scored="scored" in s)
+        del fr
+        gc.collect()
+    return tsubs, TV, isubs, IV
 
 
 def finish(out, tgt, L, v, M, T, Tt, A4, C4, A3, C3, R):
@@ -359,24 +486,17 @@ def finish(out, tgt, L, v, M, T, Tt, A4, C4, A3, C3, R):
     for x in "DBE":
         for ti in P.TITLES:
             ok(f"bin.T[{x},{ti}]", edge_dist(T[x][ti], WB) >= 1500, (T[x][ti], edge_dist(T[x][ti], WB)))
+        ok(f"bin.T_total[{x}]", edge_dist(Tt[x], HB) >= 1500, (Tt[x], edge_dist(Tt[x], HB)))
+    # the share read inside local-edition and other pages lands in the same bins (C1)
     for x in "DBE":
-        rr = G.dated_restricted(v, L, x)
+        rr = G.dated(v, L, x, strata=True)
         for ti in P.TITLES:
-            ok(f"T.gap_handlings_converge[{x},{ti}]", same_bin(rr[ti], T[x][ti], WB), (rr[ti], T[x][ti]))
-    FR = frames(L)
-
-    def tvals(dedup=True, phones=True, repeats=True, masthead=False, gap=False):
-        fr = FR[(dedup, phones, repeats)]
-        return {x: G.dated(fr, L, x, title_col="title" if masthead else "title_cur", strata=not gap)
-                for x in "DBE"}
-    devs = ["second", "tablets", "forwarded", "masthead", "gap"]
-
-    def tv(sub):
-        return tvals(dedup="forwarded" not in sub, phones="tablets" not in sub,
-                     repeats="second" not in sub, masthead="masthead" in sub, gap="gap" in sub)
+            ok(f"T.page_class_converges[{x},{ti}]", same_bin(rr[ti], T[x][ti], WB), (rr[ti], T[x][ti]))
+    tsubs, TV, isubs, IV = sweeps(L, v)
+    devs = T_DEVS
     nm = {}
     for d in devs:
-        r = tv({d})
+        r = TV[(d,)]
         for x in "DBE":
             for ti in P.TITLES:
                 nm[(d, x, ti)] = r[x][ti] / T[x][ti] - 1
@@ -387,7 +507,7 @@ def finish(out, tgt, L, v, M, T, Tt, A4, C4, A3, C3, R):
                and abs(nm[("second", x, ti)]) >= 0.08, nm[("second", x, ti)])
     # the cracker: tablets out, forwarded copies deduplicated, today's mastheads, the gap held by page
     # class; the older library's beacons kept
-    crk = tv({"second"})
+    crk = TV[("second",)]
     REC["T.cracker"] = crk
     for x in "DBE":
         for ti in P.TITLES:
@@ -395,20 +515,19 @@ def finish(out, tgt, L, v, M, T, Tt, A4, C4, A3, C3, R):
     # every composed mishandling that keeps the older library's beacons lands outside the bin
     worst = {}
     dmax = 0.0
-    for n in range(1, len(devs) + 1):
-        for sub in itertools.combinations(devs, n):
-            r = tv(set(sub))
-            dmax = max(dmax, sum(r["D"].values()))
-            if "second" in sub:
-                for x in "DBE":
-                    for ti in P.TITLES:
-                        worst[(x, ti)] = min(worst.get((x, ti), 9e9), abs(r[x][ti] - T[x][ti]))
-                        ok(f"T.composed_outside[{'+'.join(sub)}|{x},{ti}]", not same_bin(r[x][ti], T[x][ti], WB),
-                           (r[x][ti], T[x][ti]))
-    lazy = tv(set(devs))
+    for sub in tsubs:
+        r = TV[sub]
+        dmax = max(dmax, sum(r["D"].values()))
+        if "second" in sub:
+            for x in "DBE":
+                for ti in P.TITLES:
+                    worst[(x, ti)] = min(worst.get((x, ti), 9e9), abs(r[x][ti] - T[x][ti]))
+                    ok(f"T.composed_outside[{'+'.join(sub)}|{x},{ti}]", not same_bin(r[x][ti], T[x][ti], WB),
+                       (r[x][ti], T[x][ti]))
+    lazy = TV[tuple(devs)]
     REC["T.lazy"] = lazy
     # the over-cleaner: one view per device, page and day, which drops genuine repeat views
-    oc = _overclean_T(L, FR[(True, True, True)])
+    oc = _overclean_T(L, v)
     REC["T.overclean"] = oc
     ok("sep.D_never_reaches_A", A4 / dmax >= 1.15, (A4, dmax))
     REC["T.closest_composed_miss"] = {f"{x}|{ti}": z for (x, ti), z in worst.items()}
@@ -430,7 +549,7 @@ def finish(out, tgt, L, v, M, T, Tt, A4, C4, A3, C3, R):
         ok(f"I.primary_moves_kb[{m}]", not same_bin(inat[m][1], kb, 10), inat[m][1] / kb)
     # the cracker: both request columns, the fallback's kilobytes converted, phones, each page view
     # by its key, the native clients kept, the older library's beacons in the divisor
-    icr = G.image_delivery(L, FR[(True, True, False)], native=True)
+    icr = IV[("native", "second")]
     REC["I.cracker"] = icr
     for m, (rq, kb) in Ig.items():
         ok(f"I.cracker_misses_req[{m}]", not same_bin(icr[m][0], rq, 0.1), (icr[m][0], rq))
@@ -444,18 +563,12 @@ def finish(out, tgt, L, v, M, T, Tt, A4, C4, A3, C3, R):
         if m in ("2026-06", "2026-07"):
             ok(f"I.kb_units_bite[{m}]", not same_bin(ik[m][1], kb, 10), ik[m][1] / kb)
     # composed: every mishandling set that keeps the native clients lands outside the bin
-    idevs = ["native", "hits", "kb", "scored", "tablets", "forwarded", "second"]
-    for n in range(1, len(idevs) + 1):
-        for sub in itertools.combinations(idevs, n):
-            if "native" not in sub:
-                continue
-            fr = FR[("forwarded" not in sub, "tablets" not in sub, "second" not in sub)]
-            r = G.image_delivery(L, fr, native=True, hits_only="hits" in sub, kb_fix="kb" not in sub,
-                                 scored="scored" in sub)
-            for m, (rq, kb) in Ig.items():
-                ok(f"I.composed_outside[{'+'.join(sub)}|{m}]",
-                   not same_bin(r[m][0], rq, 0.1) and not same_bin(r[m][1], kb, 10), (r[m], (rq, kb)))
-    REC["I.lazy"] = G.image_delivery(L, FR[(False, False, False)], native=True, hits_only=True, kb_fix=False)
+    for sub in isubs:
+        r = IV[sub]
+        for m, (rq, kb) in Ig.items():
+            ok(f"I.composed_outside[{'+'.join(sub)}|{m}]",
+               not same_bin(r[m][0], rq, 0.1) and not same_bin(r[m][1], kb, 10), (r[m], (rq, kb)))
+    REC["I.lazy"] = IV[("native", "hits", "kb", "tablets", "forwarded", "second")]
 
     # ------------------------------------------------------------ clean-data and lens-swap tests
     ok("lens.answer_ne_naive", (C4 > A4) and (A3 > C3))

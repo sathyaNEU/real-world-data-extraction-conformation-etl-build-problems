@@ -26,7 +26,7 @@ EDITIONS = {
     "kaerby": ("Kærby", "KD", None),
     "nordmarken": ("Nordmarken", "KD", None),
 }
-EDITION_MOVE = datetime(2026, 3, 16)            # local date the two editions changed masthead
+EDITION_MOVE = datetime(2026, 1, 12)            # local date the two editions changed masthead
 
 # Bølge template groups in switch-on order (the six waves)
 COHORTS = ["sektion", "galleri", "liveblog", "artikel", "sport", "forside"]
@@ -75,11 +75,12 @@ EXTRACT_END = date(2026, 8, 31)
 SIM_START = date(2026, 1, 12)                   # warm-up so state is defined at extract start
 COLLECTOR_V2 = datetime(2026, 6, 3, 0, 0)       # local: new sampling rates
 FORWARDER_FIX = datetime(2026, 5, 4, 0, 0)      # local: tablets filtered, single forwarding
-TAG_GAP = (date(2026, 4, 27), date(2026, 5, 3))  # LA and KD local-edition pages not firing
+TAG_GAP = None                                  # no reporting gap on local-edition pages
 DUP_WINDOW = (date(2026, 3, 16), date(2026, 5, 3))  # ST app-webview beacons forwarded twice
 # local-edition tag container: an older RUM library sent a second beacon at the load event on every
 # title's local-edition pages (its own page-view key, the send time as the timestamp)
-SECOND_BEACON = (date(2026, 3, 16), date(2026, 4, 26))
+SECOND_BEACON = ((date(2026, 3, 16), date(2026, 4, 6)),   # the older library, first spell
+                 (date(2026, 5, 4), date(2026, 5, 26)))   # back with the container version restored on 4 May
 SECOND_P = {"under": 0.90, "over": 0.30}         # a view abandoned before load sends none
 SECOND_DELAY_S = (2, 9)                          # load event after the paint, seconds
 DEPLOY_QUIET_MIN = 10

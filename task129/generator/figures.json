@@ -1,0 +1,68 @@
+{
+ "I": {
+  "April": {
+   "kb_per_view": "710",
+   "requests_per_view": "12.2"
+  },
+  "August": {
+   "kb_per_view": "790",
+   "requests_per_view": "12.6"
+  },
+  "July": {
+   "kb_per_view": "760",
+   "requests_per_view": "12.3"
+  },
+  "June": {
+   "kb_per_view": "770",
+   "requests_per_view": "12.5"
+  },
+  "March": {
+   "kb_per_view": "530",
+   "requests_per_view": "11.4"
+  },
+  "May": {
+   "kb_per_view": "750",
+   "requests_per_view": "12.4"
+  }
+ },
+ "T": {
+  "Brand web fonts": {
+   "Kærby Dagblad": "80,000",
+   "Lindå Avis": "80,000",
+   "Sønderå Tidende": "110,000"
+  },
+  "Consent banner": {
+   "Kærby Dagblad": "110,000",
+   "Lindå Avis": "140,000",
+   "Sønderå Tidende": "180,000"
+  },
+  "Image pipeline": {
+   "Kærby Dagblad": "90,000",
+   "Lindå Avis": "110,000",
+   "Sønderå Tidende": "130,000"
+  }
+ },
+ "call": "Bølge front end",
+ "call_views_month": "1,460,000",
+ "default_path": {
+  "A": "1,230,000",
+  "C": "800,000"
+ },
+ "first_view_share_pct": {
+  "base": "75",
+  "puz": "24",
+  "sub": "23"
+ },
+ "five": {
+  "Brand web fonts": "270,000",
+  "Bølge front end": "1,460,000",
+  "Consent banner": "430,000",
+  "Header-bidding ad stack": "610,000",
+  "Image pipeline": "330,000"
+ },
+ "joint_points": "4.74",
+ "puzzles_step_views": "160,000",
+ "raw_points": "4.27",
+ "runner_up": "Header-bidding ad stack",
+ "runner_up_views_month": "610,000"
+}

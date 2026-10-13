@@ -207,8 +207,10 @@ def export(dev, V, ct):
     keep_v1 = keep_v1 & ~(fixed & (gt == "tablet"))
     keep_v2 = keep_v2 & (gt != "tablet")
     w = np.where(v2, np.where(gt == "anon", P.W_V2_ANON, P.W_V2_SIGNED), P.W_V1)
-    gap = (V.local.values & np.isin(V.title.values, ["LA", "KD"])
-           & (day >= np.datetime64(P.TAG_GAP[0])) & (day <= np.datetime64(P.TAG_GAP[1])))
+    gap = np.zeros(len(V), bool)
+    if P.TAG_GAP:
+        gap = (V.local.values & np.isin(V.title.values, ["LA", "KD"])
+               & (day >= np.datetime64(P.TAG_GAP[0])) & (day <= np.datetime64(P.TAG_GAP[1])))
     keep = inwin & (keep_v1 | keep_v2) & ~gap
     return keep, w, gap & inwin & (keep_v1 | keep_v2)
 

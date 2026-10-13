@@ -131,8 +131,10 @@ def edition_register():
             rows.append({"edition_slug": slug, "edition_name": name, "masthead": before,
                          "valid_from": "2019-01-01", "valid_to": ""})
         else:
+            moved = P.EDITION_MOVE.date()
             rows.append({"edition_slug": slug, "edition_name": name, "masthead": before,
-                         "valid_from": "2019-01-01", "valid_to": "2026-03-15"})
+                         "valid_from": "2019-01-01",
+                         "valid_to": (moved - timedelta(days=1)).isoformat()})
             rows.append({"edition_slug": slug, "edition_name": name, "masthead": after,
-                         "valid_from": "2026-03-16", "valid_to": ""})
+                         "valid_from": moved.isoformat(), "valid_to": ""})
     return pd.DataFrame(rows)

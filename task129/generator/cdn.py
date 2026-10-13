@@ -6,7 +6,7 @@ import pandas as pd
 
 POPS = {"CPH": 0.46, "AMS": 0.22, "FRA": 0.15, "ARN": 0.08, "OSL": 0.06, "HEL": 0.03}
 FALLBACK = (date(2026, 6, 9), date(2026, 7, 21))
-FALLBACK_SHARE = 0.22
+FALLBACK_SHARE = 0.40
 from knobs_lab import IPV, KBPR, NATIVE_RPV, NATIVE_KB  # noqa: E402
 MISS = {"smartphone": 0.071, "tablet": 0.083, "desktop": 0.064, "other": 0.41}
 UA = {"smartphone": {"Chrome Mobile": 0.46, "Mobile Safari": 0.38, "Samsung Internet": 0.08,
@@ -14,7 +14,7 @@ UA = {"smartphone": {"Chrome Mobile": 0.46, "Mobile Safari": 0.38, "Samsung Inte
       "tablet": {"Mobile Safari": 0.62, "Chrome Mobile": 0.38},
       "desktop": {"Chrome": 0.58, "Safari": 0.17, "Edge": 0.16, "Firefox": 0.09},
       "other": {"bot": 1.0}}
-# the group app's native screens (article lists, push and gallery thumbnails) fetch images with the
+# the group app's native screens (article lists, push images and galleries) fetch images with the
 # platforms' own HTTP clients; the vendor classes them by device like any browser
 NATIVE = {"CFNetwork": 0.44, "okhttp": 0.56}
 NATIVE_MISS = 0.052

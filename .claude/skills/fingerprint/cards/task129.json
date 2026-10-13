@@ -11,8 +11,8 @@
   "shape": "11",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Fix Bølge's front end in Q4: about 1,460,000 mobile views a month back under the line at August's traffic; the header-bidding ad stack second at about 610,000",
+  "answer_source": "submission.md block 1; q4_squad_call.pptx slide 1",
   "gap": [
     "population",
     "objective",
@@ -39,7 +39,7 @@
   "scoring_unit": "units served",
   "spine": {
     "file": "rum_mobile_views_2026.parquet",
-    "rows": 1200000,
+    "rows": 2814292,
     "entity": "one sampled mobile page view (a field timing beacon)",
     "grain": "page view",
     "source": "synthetic"
@@ -86,7 +86,7 @@
   "notes": "Realises analytical_tasks note RC02 (06_root_cause/RC02_slow-views-partial-exposure-cpu-mix.md), first realisation. Decisive move redrawn at the draw: the note's CPU-class standardisation through the device registry is a schema-visible one-hop join followed by a reflexive composition check (pilot RC01 died on a schema-visible join) and survives only as the partial correction inside rung 2; the note's twin pair is dropped because a pair separated by audience composition points the solver at a moderator. Domain moved from product-analytics (pairing ban against task121) by redrawing the world around the group's internal page-delivery service level, owned by the head of digital operations. Calibration organ redrawn from randomised fix pilots (pilot_log, ban against task122) to the operations squad's roster of closed fixes with realised savings. Pattern E first: the decisive property (first load after a deploy against a cached reload) is a switch no column carries; D second for the standardisation that transports it. Opening move symptom-first, filed as other because the vocabulary has no symptom-first key. Figures set at stage 2. Not registered: the coordinator registers in task-number order. Registration redraws (coordinator, 2026-10-10): context artifact published_series to close_out_summary, the Q3 service close-out (BLOCK against task126); forcing event budget_or_appropriation to vote_or_meeting (BLOCK against task127); cohort grid csv to xlsx (deliverables WARN against task128); decisive rung unchanged. 10/10 rework (2026-10-12, resume 2): the card answers the three rules (stump_class analytical, analyst_test, domain_test, client domain general-statistics-data-science, interpretability); the closed-fix roster is dropped as an organ (its planted resemblance to the ad stack's puzzles read was a certified record built to bless the wrong answer), so calibration_form none and validated_decoy false; the service level no longer files the committee's page-weight basis, and the prep thread keeps at most two beliefs; forcing event redrawn from vote_or_meeting (BLOCK against task122 in the draw-order window) to budget_or_appropriation, the review's allocation round for the squad's quarter; the prompt is question-first.",
   "question_form": "which",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who aligns the redesign's six template groups on their switch-on releases, separates the ad stack from the front end with the puzzles pages (ad stack alone) and subscribers' ad-free views of the redesigned templates (front end alone), standardises both groups to the ad-supported views' phone mix through the device registry so the split closes the joint ramp exactly, and values each fix at August's traffic as the service level files it, names the header-bidding ad stack at about 1,210,000 views a month with the front end second at about 810,000.",
+  "analyst_test": "A strong analyst who aligns the redesign's six template groups on their switch-on releases, separates the ad stack from the front end with the puzzles pages (ad stack alone) and subscribers' ad-free views of the redesigned templates (front end alone), standardises both groups to the ad-supported views' phone mix through the device registry so the split closes the joint ramp exactly, and values each fix at August's traffic as the service level files it, names the header-bidding ad stack at about 1,230,000 views a month with the front end second at about 800,000.",
   "domain_test": "The deciding quantity is each co-shipped change's attributable over-line rate on the mobile views its fix acts on, which web performance engineering estimates from staggered real-user monitoring with partial-exposure groups and carries to the base within the cache state that decides whether a view downloads and compiles the new bundle or reuses it; with another field's nouns there is no content-hashed bundle that every release invalidates, so the first-view-after-a-deploy state that moves the attribution has nothing to stand on.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:separating-group-effects-carried-within-a-state-built-from-record-order",

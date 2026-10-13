@@ -206,8 +206,8 @@ def apply(aug, eff, by, fill=None):
     return float((w * e).sum())
 
 
-def main_call(v, L, by_state="state", win=WIN):
-    sw, t = switch_times(L)
+def main_call(v, L, by_state="state", win=WIN, times=None):
+    sw, t = times if times is not None else switch_times(L)
     a = august(v)
     base, sub, puz = a[a.group == "base"], a[a.group == "sub"], a[a.group == "puz"]
     out = {}
@@ -251,9 +251,10 @@ def page_class(v):
     return np.where(v.edition.values != "", "local", "other")
 
 
-def dated(v, L, letter, title_col="title_cur", strata=True, weighted=True, win=WIN):
-    """Views a month each title gets back from fixing a dated change: the step read on the 28
-    days either side of its release, inside each page class, valued on August scored views."""
+def dated(v, L, letter, title_col="title_cur", strata=False, weighted=True, win=WIN):
+    """Views a month each title gets back from fixing a dated change: the step in the title's share
+    over the 28 days either side of its deploy, valued on the title's August scored views the change
+    reaches (strata=True reads it inside each page class instead, a convergent reading)."""
     _, t = switch_times(L)
     t0 = t[letter]
     x = v[v.scored]
@@ -270,23 +271,6 @@ def dated(v, L, letter, title_col="title_cur", strata=True, weighted=True, win=W
         e = _cells(post[post[title_col] == ti], by) - _cells(pre[pre[title_col] == ti], by)
         out[ti] = apply(aug[aug.title_cur == ti], e, by)
     return out
-
-
-def dated_restricted(v, L, letter):
-    """Second correct handling of the tag gap: the window kept to days every edition reports."""
-    _, t = switch_times(L)
-    t0 = t[letter]
-    x = v[v.scored]
-    if letter == "B":
-        x = x[x.template.isin(sorted(P.HERO))]
-    gap = (x.day >= pd.Timestamp(P.TAG_GAP[0])) & (x.day <= pd.Timestamp(P.TAG_GAP[1]))
-    x = x[~gap]
-    pre = x[(x.ts >= t0 - WIN) & (x.ts < t0)]
-    post = x[(x.ts >= t0) & (x.ts < t0 + WIN)]
-    aug = x[x.month == 8]
-    return {ti: float(aug[aug.title_cur == ti].w.sum()
-                      * (share(post[post.title_cur == ti]) - share(pre[pre.title_cur == ti])))
-            for ti in P.TITLES}
 
 
 def puzzles_step(v, L):

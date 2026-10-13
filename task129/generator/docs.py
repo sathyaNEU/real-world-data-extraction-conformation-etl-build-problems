@@ -66,10 +66,11 @@ def service_level(path):
               "reported monthly by title in the digital operations close-out."),
         ("h", "3. Reading a change"),
         ("p", "Before-and-after comparisons of the share for a change use the 28 days either side of "
-              "the release that switched it on."),
+              "the moment the release that switched it on was deployed."),
         ("h", "4. Valuing a fix"),
         ("p", "A fix is valued on the mobile views it brings back under the line at the latest full "
-              "month's traffic. The operations squad works on one fix a quarter."),
+              "month's traffic, counted over all of that month's scored views on the pages and layouts the "
+              "change is live on today. The operations squad works on one fix a quarter."),
         ("h", "5. Review"),
         ("p", "The quarterly service review is chaired by the head of digital operations, with the "
               "three editors-in-chief, ad sales and the group digital director. It reviews the "
@@ -90,7 +91,8 @@ def paywall(path):
         ("h", "4. Layout"),
         ("p", "4.1 Digital access covers every article, front page, gallery, live blog and puzzle on "
               "the title or titles the product includes."),
-        ("p", "4.2 Signed-in subscribers are served the ad-free layout on every template."),
+        ("p", "4.2 Signed-in subscribers are served the ad-free layout on every template, on all three titles' "
+              "sites whichever titles their product includes."),
         ("p", "4.3 Readers who are not signed in to an active subscription, including readers with a "
               "free account, are served the ad-supported layout. Article access for them is metered "
               "at five articles a month."),
@@ -204,30 +206,35 @@ Subject: Q4 squad: prep for the service review on the 17th
 Hi all,
 
 The share over the line has gone up on all three titles since spring and the review on the 17th
-gives the squad its Q4. One fix, so we need to pick the right one. August extract lands on Friday.
-I'll make the call; tell me now if there is something I should look at.
+gives the squad its Q4. One fix, so it has to be the right one. The August extract lands on Friday
+and I'll make the call at the review; if there is anything I should look at first, say so now.
 
 Elin
 
 ----
-From: Ove Schmidt <ove.schmidt@sonderaa-medier.dk>
-Date: Wed, 2 Sep 2026 08:40:17 +0200
+From: Caroline Mortensen <caroline.mortensen@sonderaa-medier.dk>
+Date: Wed, 2 Sep 2026 09:12:40 +0200
 
-It's the consent banner. The numbers turned the week it went in and nothing else that size
-shipped then. I'd like the squad on it.
+Could the CDN team's delivery log go in the folder this time, with their appendix? The pictures
+come up at every editors' meeting and I'd rather we look at what was actually served.
+
+Caroline
 
 ----
 From: Gunhild Lund <gunhild.lund@sonderaa-medier.dk>
 Date: Wed, 2 Sep 2026 10:30:55 +0200
 
-Export for February to August goes out on the 5th with the registers. Same format as the July cut.
-Field guide is updated.
+The beacon export for February to August goes out on the 5th with the registers and the release log;
+the field guide has the collector v2 change in it now. I've asked the CDN team for their daily log
+for the same months and appendix C, so both will be in the folder too.
+
+Gunhild
 
 ----
 From: Elin Lauritsen <elin.lauritsen@sonderaa-medier.dk>
 Date: Wed, 2 Sep 2026 11:02:31 +0200
 
-Thanks both. Noted.
+Thanks both.
 
 --
 Sønderå Medier, Digital operations. Internal: do not forward.
@@ -245,7 +252,7 @@ def desktop_summary(rng, path):
     vol = {"ST": 9.8e6, "LA": 7.4e6, "KD": 5.6e6}
     for m in range(2, 9):
         for t in P.TITLES:
-            v = int(round(vol[t] * P.SEASON[m] * rng.uniform(0.97, 1.03) / 300)) * 300
+            v = int(round(vol[t] * P.SEASON[m] * rng.uniform(0.97, 1.03)))
             sh = 6.1 + (0.4 if m >= 3 else 0) + (0.5 if m >= 4 else 0) + (0.6 if m >= 5 else 0) \
                 + rng.uniform(-0.25, 0.25) + {"ST": 0.4, "LA": 0.0, "KD": -0.3}[t]
             rows.append((f"2026-{m:02d}", P.TITLE_NAME[t], v, round(sh, 2),
@@ -262,10 +269,9 @@ def amp_report(rng, path):
         for t in P.TITLES:
             v = int(round(vol[t] * fade * rng.uniform(0.96, 1.04)))
             rows.append((f"2026-{m:02d}", P.TITLE_NAME[t], v, int(round(v * rng.uniform(2.1, 2.4))),
-                         "amp-ad (AMP runtime, no Prebid wrapper)",
                          round(rng.uniform(4.8, 6.4), 2), int(round(rng.uniform(1650, 1980)))))
     pd.DataFrame(rows, columns=["month", "title", "amp_landing_views", "amp_ad_requests",
-                                "ad_integration", "share_over_line_pct", "p75_lcp_ms"]).to_csv(
+                                "share_over_line_pct", "p75_lcp_ms"]).to_csv(
         path, index=False, lineterminator="\n")
 
 

@@ -50,6 +50,7 @@ calibration_form none and validated_decoy false (the roster is gone), and added 
 call apportions one joint effect between two changes that only shipped together, which is what the label names;
 task122 scored an experiment's lift on borrowed orders, so the label repeats and the construction does not. Nearest
 drivers 0.08 (task98 v4 lineage), 0.07 (task121 v1 lineage, task230 v1, task44 v2); `guard.py heart`: WARN.
+`guard.py surface` promotes task36 on labels alone (population gap, pattern E, decomposition_attribution, root_cause_named; surface 0.077, corpus percentile 47): task36 names one standing cause of a distributor's delivery decline by removing the loud leader through a filed agreement and netting a dated candidate against a structural property a file records; task129 has no filed removal and no recorded property: it splits the joint effect of two changes that only switched on together, and the per-view state that decides the split is built from the order of each device's views against the release train.
 
 **Similarity.** No build on file splits the joint effect of two co-shipped changes on a per-view state built from
 the order of each unit's records against version changes, with the two changes costing opposite states. task73's
@@ -75,32 +76,32 @@ The pipeline a competent analyst builds from the prompt's words, the service lev
 2. Build the mobile view frame: phones through the device registry, scored views, each page view once, rows
    weighted by `sample_weight`, Copenhagen days.
 3. Event study at the three dated releases (fonts 3 March, image pipeline 7 April, banner 5 May): the share's step
-   over 28 days either side, valued at August's scored views (banner about 427,000, image pipeline 336,000, fonts
-   265,000 views a month).
+   over 28 days either side, valued at August's scored views (banner about 428,000, image pipeline 327,000, fonts
+   271,000 views a month).
 4. Align the six Bølge template groups on their switch-on releases: the ad stack and the front end together add
-   4.70 points on ad-supported views, about 1,694,000 views a month at August's traffic.
+   4.74 points on ad-supported views, about 1,707,000 views a month at August's traffic.
 5. Separate them with the puzzles pages (the ad stack alone from 24 June) and subscribers' ad-free views of the
    redesigned templates (the front end alone from 30 June, found through the subscription register): read raw the
-   two effects sum to 4.25 points against the joint 4.70.
+   two effects sum to 4.27 points against the joint 4.74.
 6. Standardise both groups to the ad-supported views' phone mix through the registry's benchmark band: the split
-   now sums to the joint ramp to within 0.01 point.
+   now sums to the joint ramp to within 0.02 point.
 7. Value each fix on the views it acts on (the ad stack on ad-supported redesigned views and the puzzles pages, the
    front end on every redesigned view) at August's traffic.
 
-Ends on: A, the header-bidding ad stack, 1,210,000 views a month, runner-up C, the front end, at 810,000
-Golden: C, Bølge's front end, 1,460,000 views a month, runner-up A, the ad stack, at 580,000
+Ends on: A, the header-bidding ad stack, 1,230,000 views a month, runner-up C, the front end, at 800,000
+Golden: C, Bølge's front end, 1,460,000 views a month, runner-up A, the ad stack, at 610,000
 
 ## Stump sentence
 
 A competent solver aligns the six Bølge template groups for the joint effect of the ad stack and the front end,
 separates the two with the puzzles pages (the ad stack alone) and subscribers' ad-free views of the redesigned
 templates (the front end alone), standardises both groups to the ad-supported views' phone mix through the device
-registry, which closes the joint ramp to within 0.01 point, and names the ad stack at 1,210,000 views a month with
-the front end second at 810,000; the step that lands it there is carrying each group's effect to the ad-supported
+registry, which closes the joint ramp to within 0.02 point, and names the ad stack at 1,230,000 views a month with
+the front end second at 800,000; the step that lands it there is carrying each group's effect to the ad-supported
 views as one figure per phone class, when the front end costs a view mostly on a device's first view after a
 release-train deploy and the ad stack mostly on its later views, and both separating groups are about a quarter
 first views against about three quarters on the ad-supported views, so carried within that state the front end's
-fix brings back 1,460,000 views a month and the ad stack's 580,000.
+fix brings back 1,460,000 views a month and the ad stack's 610,000.
 
 ## Three rules
 
@@ -122,10 +123,9 @@ changes' costs, and the call stops making sense.
 
 Layer 1: The RUM collector's history in the rows (tablets forwarded until 4 May, one title's app-webview beacons
 forwarded twice under one page-view key, a local-edition tag container that sent a second beacon from an older
-library from 16 March to 26 April and none on two titles' local pages from 27 April to 3 May, a sampling change on 3
-June carried in `sample_weight`), UTC beacons against a release train logged in Copenhagen time with offsets across
+library from 16 March to 6 April and again from the container version restored on 4 May to 26 May, a sampling change on 3 June carried in `sample_weight`), UTC beacons against a release train logged in Copenhagen time with offsets across
 the summer-time change, device models resolved through a registry that lists tablets beside phones, subscriber
-status from an effective-dated register by account, two local editions re-mastheaded on 16 March, and an image CDN
+status from an effective-dated register by account, two local editions re-mastheaded in January (effective-dated, before the export opens), and an image CDN
 log split by edge hits and origin fills with a fallback vendor reporting kilobytes and the group app's native screens
 in the smartphone class; every item is what the collector, the CMS, the tag manager or the vendor produces, and none
 moves the call (asserted per item).
@@ -153,7 +153,7 @@ two co-shipped changes or what to carry the separating groups' effects on.
 Analyst test: A strong analyst who cleans the export, reads every filed rule correctly, aligns the six template
 groups on their releases, separates the ad stack and the front end with the puzzles pages and subscribers' ad-free
 views and standardises both groups to the ad-supported views' phone mix so the split closes the joint ramp, still
-names the header-bidding ad stack at about 1,210,000 views a month with the front end second at 810,000.
+names the header-bidding ad stack at about 1,230,000 views a month with the front end second at 800,000.
 
 Estimand: page_delivery_service_level_v3.pdf: section 1 (a mobile view is a page view on a phone in the device
 registry), section 2 (a view misses the line when its largest contentful paint exceeds 4.0 seconds; views with no
@@ -163,9 +163,9 @@ latest full month's traffic, so August 2026), across the five changes the prompt
 4.3) fix which views carry the ad stack.
 
 No decoy: Nothing is planted to be caught: no document ranks or argues for a change, the close-out reports July and
-August by title without attributing anything, no document licenses page weight or any other basis, the one belief
-in the pack (the group digital director's, the banner, in the prep thread) is a colleague's view refuted by the
-event study a solver builds anyway, and no copied block, memo, draft or stakeholder figure carries the ad stack.
+August by title without attributing anything, no document licenses page weight or any other basis, the prep thread
+carries the review's timing and the export's contents and states no view on any change, and no copied block, memo,
+draft or stakeholder figure carries the ad stack.
 
 No certified replay: The method is not hidden and recovered from certified or published figures: the pack holds no
 closed-case corpus, the close-out and the joint ramp tie under the default path and the golden alike, and the
@@ -197,8 +197,8 @@ Measured trap #13, validates on one population and applies to another: each sepa
 view it can be checked on and is carried to views that differ on one axis, with the evidence of the difference left
 in the record (the order of each device's views against the deploys). Behind it, #11, beats the headline trap and
 misses the quiet one: the phone-mix residual is the headline trap, standardising on the registry's band closes the
-joint ramp to within 0.01 point, and the solver stops confirmed. The decisive rung changes the named change, not
-only its size: the default path's figure for the golden's change (810,000) and the golden figure (1,460,000) sit
+joint ramp to within 0.02 point, and the solver stops confirmed. The decisive rung changes the named change, not
+only its size: the default path's figure for the golden's change (800,000) and the golden figure (1,460,000) sit
 44 per cent apart, and the named change moves from the ad stack to the front end.
 
 ## Readability screen
@@ -230,6 +230,10 @@ record with no commentary.
 | SF10 | phone class | the registry's `perf_band` | a class built from the model name or the operating system | same call (every main-row model resolves to one band, asserted) | the field guide's registry line |
 | SF11 | deploy times | `deployed_at` with its UTC offset | local time read as UTC | not a reading: the offset is in the value; asserted that no view sits within ten minutes of a deploy and that the offset-ignoring order changes the state of no main-window view's interval by more than its bin | the field guide's release-log line, "local time with its offset" |
 | SF12 | rounding | unrounded through, rounded once to the ten thousand | per-group figures rounded first | same call, same bins (asserted) | the prompt's closing sentence |
+| SF13 | views (counting) | each row counts its `sample_weight` | each row once (sampled rows, not views: front end about 7,400, ad stack about 4,000) | same call, both figures far outside their bins (asserted) | the field guide: "`sample_weight` is the number of page views the row stands for; sum it to count views" |
+| SF14 | valuation population | August's scored views the change now reaches (forside's from 1 August) | every August view, scored or not (front end about 1,470,000, ad stack 610,000); only views after each group's switch-on (about 1,440,000 and 570,000) | same call, both figures off their bins (asserted) | service level section 4: "counted over all of that month's scored views on the pages and layouts the change is live on today" |
+| SF15 | window boundary | 28 days either side of the deploy instant | calendar days in Copenhagen time (front end about 1,470,000) | same call, the front end's figure off its bin (asserted) | service level section 3: "the 28 days either side of the moment the release that switched it on was deployed" |
+| SF16 | subscriber | a view by an account with any active subscription that day, on every title's site | a subscription counted only on its own title's pages, an all-titles product everywhere (front end about 1,470,000) | same call, the front end's figure off its bin (asserted) | paywall terms 4.2: "on all three titles' sites whichever titles their product includes" |
 
 The stump is none of these readings: the default path executes every golden reading and differs only in what it
 carries the separating groups' effects on.
@@ -238,20 +242,20 @@ carries the separating groups' effects on.
 
 | Rung | Gap | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact or construction) |
 |---|---|---|---|---|---|
-| R0 | time | Event study at the dated releases, valued at August's scored views; the Bølge ramp has no single date and stays unattributed; the ad stack's puzzles step is read on puzzles views | **D, the banner** (427,000; image pipeline 336,000, fonts 265,000, ad stack on puzzles 148,000, front end unplaced) | it is the service level's own 28-day read, every step reproduces | the rollout log: the ad stack and the front end switched on together, template group by template group over six weeks, a ramp larger than any dated step once aligned |
-| R1 | population (composition) | Cohort-aligned joint ramp on ad-supported views (4.70 points, about 1,694,000 views a month) split by the two separating groups; raw the split leaves 0.45 point unexplained, standardised to the base's phone mix it closes to within 0.01 point | **A, the ad stack** (1,211,700; front end 812,600) | two clean natural experiments, a composition correction a reviewer expects, a split that sums to the joint ramp | the order of each device's views against the deploys: the front end's cost falls on first views, the ad stack's on later views, and the groups are 23 to 24 per cent first views against 75 on the base |
-| R2 | population (partial) | The landing proxy (first view of a 30-minute visit as the first load) within phone class | **A, the ad stack** (1,134,600; front end 877,700) | a session-based first-load reading is the habitual proxy | daily players and subscribers open visits on a bundle cached before the last deploy on most days, so the proxy mislabels the state |
-| R3 | population (decisive) | Per-view state from each device's view order against the deploy times; each group's effect within phone class and state, carried to the base's state and phone mix, plus each group's own views at its own read | **C, the front end** (1,461,300; ad stack 580,000) | | none |
+| R0 | time | Event study at the dated releases, valued at August's scored views; the Bølge ramp has no single date and stays unattributed; the ad stack's puzzles step is read on puzzles views | **D, the banner** (427,600; image pipeline 327,200, fonts 270,800, ad stack on puzzles 157,500, front end unplaced) | it is the service level's own 28-day read, every step reproduces | the rollout log: the ad stack and the front end switched on together, template group by template group over six weeks, a ramp larger than any dated step once aligned |
+| R1 | population (composition) | Cohort-aligned joint ramp on ad-supported views (4.74 points, about 1,707,000 views a month) split by the two separating groups; raw the split leaves 0.46 point unexplained, standardised to the base's phone mix it closes to within 0.02 point | **A, the ad stack** (1,232,900; front end 804,500) | two clean natural experiments, a composition correction a reviewer expects, a split that sums to the joint ramp | the order of each device's views against the deploys: the front end's cost falls on first views, the ad stack's on later views, and the groups are 23 to 24 per cent first views against 75 on the base |
+| R2 | population (partial) | The landing proxy (first view of a 30-minute visit as the first load) within phone class | **A, the ad stack** (1,180,400; front end 860,600) | a session-based first-load reading is the habitual proxy | daily players and subscribers open visits on a bundle cached before the last deploy on most days, so the proxy mislabels the state |
+| R3 | population (decisive) | Per-view state from each device's view order against the deploy times; each group's effect within phone class and state, carried to the base's state and phone mix, plus each group's own views at its own read | **C, the front end** (1,460,000; ad stack 609,900) | | none |
 
-Position: C unplaced at R0, 2nd at R1 (1.49x behind A) and R2 (1.29x), 1st at R3 by 2.52x. No leader margin under
-1.15x on any rung. Dominance: A carries 1.49x into R3; the state reweighting multiplies C by 1.80 and A by 0.48, an
-edge of 3.76x against the 1.79x required (1.2 x 1.49). Worth on the graded quantity: R1 to R3 moves C by +80 per cent
-and A by -52 per cent, and the named change.
+Position: C unplaced at R0, 2nd at R1 (1.53x behind A) and R2 (1.37x), 1st at R3 by 2.39x. No leader margin under
+1.15x on any rung. Dominance: A carries 1.53x into R3; the state reweighting multiplies C by 1.81 and A by 0.49, an
+edge of 3.67x against the 1.84x required (1.2 x 1.53). Worth on the graded quantity: R1 to R3 moves C by +81 per cent
+and A by -51 per cent, and the named change.
 
-Correction grid (each asserted at build): raw split, phone-blind (A 1,118,100, C 752,300: A); phone-standardised
-(R1: A); standardised also on referrer class (A 1,017,700, C 884,400: A), on connection type or title (as R1: A);
-landing proxy (R2: A); the state without phone class (C 1,336,400, 8.5 per cent off: a wrong figure); the decisive
-cell (C 1,461,300, A 580,000). Every cell but the decisive one names A or lands C's figure outside its bin.
+Correction grid (each asserted at build): raw split, phone-blind (A 1,139,100, C 739,900: A); phone-standardised
+(R1: A); standardised also on referrer class (A 1,126,900, C 835,000: A), on connection type or title (as R1: A);
+landing proxy (R2: A); the state without phone class (C 1,330,200, 8.9 per cent off: a wrong figure); the decisive
+cell (C 1,460,000, A 610,000). Every cell but the decisive one names A or lands C's figure outside its bin.
 
 Why every split ties: within each phone class the two changes' joint cost is the same on a first view and a later
 view and both groups carry the same first-view share, so any classification of views (the true state, the landing
@@ -285,14 +289,14 @@ phone-blind raw split leaves a residual, and the registry's band closes it, whic
 |---|---|---|
 | 1 | Population | the ad stack on ad-supported redesigned views and the puzzles pages, the front end on every redesigned view (paywall 4.2, 4.3; service level section 4); C4: the front end on the base alone still names C (asserted) |
 | 2 | Unit of account | the page view (service level, field guide grain line) |
-| 3 | Attribution window | 28 days either side of the release concerned (service level section 3); C3 corridor: 21 to 35 days keep C first (asserted at 21 and 35) |
+| 3 | Attribution window | 28 days either side of the deploy instant of the release concerned (service level section 3, SF15); C3 corridor: 21 to 35 days keep C first (asserted at 21 and 35) |
 | 4 | As-of dating | subscription status at view time; C1: no main-population account changes status inside the main windows (asserted) |
 | 5 | Version basis | one registry snapshot, one release log, one rollout log; C1 |
 | 6 | Denominator | scored views (service level section 2); C4: restores counted as under move both figures out of their bins |
-| 7 | Weighting | each view counts by its `sample_weight`; C1: effects are constant inside each group, phone and state cell, so view- and device-weighted cell means agree (asserted) |
+| 7 | Weighting | each view counts by its `sample_weight`, pinned by the field guide ("sum it to count views") under the service level's share of scored mobile views (SF13); a cell effect read with each device weighted once is another estimator of another quantity, noisy in the first-view cells (ad stack about 435,000, front end about 1,477,000, call unchanged, recorded) |
 | 8 | Window length | 28 days, filed; C3 as axis 3 |
 | 9 | Boundary inclusivity | over the line means strictly over 4,000 ms; after a deploy means after its instant; C1: no `lcp_ms` equals 4,000, no view within ten minutes of a deploy (asserted) |
-| 10 | Rounding path | unrounded through, rounded once; headline 1,461,300 sits 3,700 from its bin edge, runner-up 580,000 sits 5,000 from both edges |
+| 10 | Rounding path | unrounded through, rounded once; headline 1,459,976 sits 4,976 from its bin edge, runner-up 609,889 sits 4,889 from its, every title figure and each change's total 2,190 or more from theirs (asserted) |
 | 11 | Tie-break | none needed: every leader margin 1.15x or more |
 | 12 | Maturity | August complete: beacons land within 48 hours and the extract is taken on 5 September (asserted none late) |
 | 13 | Order of operations | reweight inside phone class and state, then scale by August's weights; C1: linear throughout |
@@ -303,7 +307,7 @@ phone-blind raw split leaves a residual, and the registry's band closes it, whic
 | 18 | Dimensional units | `lcp_ms` in milliseconds on every row; kilobytes are 1,000 bytes (field guide) on the ask path |
 | 19 | Code semantics | navigation type, referrer and connection are context; C1: the state is decorrelated from each inside every group, so standardising on any of them leaves the call (asserted per column) |
 | 20 | Integerisation | views a month to the ten thousand (call and dated changes), image figures to one decimal and to the ten kilobytes; mid-bin assertions |
-| 21 | Scope of a clause | "latest full month's traffic" is August's views; C1: `sample_weight` summed by title equals the close-out's August mobile views exactly (asserted) |
+| 21 | Scope of a clause | "latest full month's traffic" is all of August's scored views on the pages and layouts the change is live on today (service level section 4, SF14), forside's from 1 August; C1: `sample_weight` summed by title equals the close-out's August mobile views exactly (asserted) |
 | 22 | Forward window contents | Q4 valued at August's traffic by the filed convention; no projection enters |
 
 ## Literal reader
@@ -335,11 +339,11 @@ default path's answer comes from an easy method on the same literal estimand.
 - **Filed pins, one statement each.** Service level v3 (scope, the line, the 28-day reading, the valuation); paywall
   terms (the ad-free layout for signed-in subscribers, the ad-supported layout for everyone else); the registry header
   (phone class from the benchmark band); the field guide (grain, sampling, keys, the registers' meaning).
-- **Voice.** One belief: Ove Schmidt, group digital director, in the prep thread: it was the consent banner. No other
-  colleague states a view; no voice supports any change on a figure.
+- **Voice.** None. The prep thread carries the review's date, the extract's contents and the image pipeline owner's
+  request that the CDN log go in the folder; nobody states a view on a change or a figure.
 - **Distractors (named in metadata.json only).** The desktop field summary (correct, desktop, outside the service
-  level's mobile scope); the AMP landing-view report (AMP pages carry amp-ad slots, not the wrapper, as its own column
-  states); the newsletter send log.
+  level's mobile scope); the AMP landing-view report (AMP pages are served by the AMP runtime, outside the release
+  train); the newsletter send log.
 - **Files.** The beacon export (spine), the release train log, the Bølge rollout log, the change register, the device
   registry, the subscription register extract, the edition register, the service level, the paywall terms, the Q3
   close-out, the image CDN delivery log and its vendor appendix, the field guide, the prep thread, the export manifest
@@ -352,32 +356,33 @@ primary riding something the organisation's own systems did, plus shared hazards
 (the crawl's page weight by change and title) is cut with the crawl: all three of its devices were filed rules a
 careful solver executes, and the crawl's only other role was a licensed wrong basis.
 
-**Main call's declared row population** (asserted zero device and hazard rows inside it): beacon rows dated 27 May
-to 31 August, the release train log, the registry rows of models seen in those rows, the subscription register rows
+**Main call's declared row population** (zero device and hazard rows inside it, asserted on every beacon row from
+the banner's release on 5 May, which covers it): beacon rows dated 27 May to 31 August, the release train log, the registry rows of models seen in those rows, the subscription register rows
 of accounts seen in them, the rollout log, the change register's A and C lines, the close-out. Device rows live only
 in beacons dated before 4 May and in the image CDN log.
 
 | Ask | Figures | Use (H18) | Primary device (silent) | Hazards | Span (files on the golden's path) |
 |---|---|---|---|---|---|
-| T. What fixing the banner, the image pipeline and the fonts would each bring back on each title (views a month, nearest ten thousand) | 3 changes x 3 titles = 9 | every other candidate's case on the same footing as the call, per title, the figure each editor-in-chief reads for their own title | D1, a second beacon from an older library: from 16 March to 26 April the local-edition tag container also loaded an older RUM library on every title's local-edition pages, which sent its own beacon at the page's load event under its own page-view key and with the send time as `ts_utc`; the copies carry the original's device, account, URL and timings, and because a view abandoned before load sends none they are mostly views under the line, so every title's share falls while they run (E's post window, B's pre and post, D's pre) | H1 tablets until 4 May (the service level's phone scope); H2 Sønderå Tidende's app-webview beacons forwarded twice under one page-view key, 16 March to 3 May (key uniqueness); T4 the same container sending nothing on Lindå Avis and Kærby Dagblad local pages, 27 April to 3 May; T1 two local editions re-mastheaded on 16 March (effective-dated edition register) | spine (February to early June), release train log, change register, device registry, edition register, field guide, service level, close-out (August views by title), 8 files, 13 columns |
-| I. For each month March to August, the image requests and the kilobytes of images the CDN served to mobile page views, per mobile page view (one decimal; nearest ten kilobytes) | 6 months x 2 = 12 | the image pipeline's own delivery record, the picture side of the case against it | D5, a category crossed by label: the group app's native screens (article lists, push and gallery thumbnails) fetch images from the same CDN with its native HTTP clients (`CFNetwork`, `okhttp`), which the vendor classes as smartphones like any browser; they make no page view, so counting every smartphone row overstates requests per view by about a tenth and kilobytes by a few per cent in every month | the fallback vendor's kilobytes, 9 June to 21 July (vendor appendix); requests split across edge hits and origin fills (vendor appendix); the T primary, tablets and H2 in the March and April denominators; scored views against all page views as the divisor | image CDN log, vendor appendix, spine (mobile page views by month), device registry, field guide, close-out (July and August views), 6 files, 11 columns |
+| T. What fixing the banner, the image pipeline and the fonts would each bring back on each title (views a month, nearest ten thousand) | 3 changes x 3 titles = 9 | every other candidate's case on the same footing as the call, per title, the figure each editor-in-chief reads for their own title | D1, a second beacon from an older library: from 16 March to 6 April, and again from the container version restored on 4 May to 26 May, the local-edition tag container also loaded an older RUM library on every title's local-edition pages, which sent its own beacon at the page's load event under its own page-view key and with the send time as `ts_utc`; the copies carry the original's device, account, URL and timings, and because a view abandoned before load sends none they are mostly views under the line, so every title's share falls while they run (E's post window, B's pre window, D's post window) | H1 tablets until 4 May (the service level's phone scope); H2 Sønderå Tidende's app-webview beacons forwarded twice under one page-view key, 16 March to 3 May (key uniqueness); T4 the same container sending nothing on Lindå Avis and Kærby Dagblad local pages, 27 April to 3 May; T1 two local editions re-mastheaded on 16 March (effective-dated edition register) | spine (February to early June), release train log, change register, device registry, edition register, field guide, service level, close-out (August views by title), 8 files, 13 columns |
+| I. For each month March to August, the image requests and the kilobytes of images the CDN served to mobile page views, per mobile page view (one decimal; nearest ten kilobytes) | 6 months x 2 = 12 | the image pipeline's own delivery record, the picture side of the case against it | D5, a category crossed by label: the group app's native screens (article lists, push images and galleries) fetch images from the same CDN with its native HTTP clients (`CFNetwork`, `okhttp`), which the vendor classes as smartphones like any browser; they make no page view, so counting every smartphone row overstates requests per view by about a quarter and kilobytes by about a sixth in every month, more than every composition of the divisor hazards takes back | the fallback vendor's kilobytes, 9 June to 21 July (vendor appendix); requests split across edge hits and origin fills (vendor appendix); the T primary, tablets and H2 in the March, April and May denominators; scored views against all page views as the divisor | image CDN log, vendor appendix, spine (mobile page views by month), device registry, field guide, close-out (July and August views), 6 files, 11 columns |
 | Slide 1 | the call | the review's one statement | carries the call | none | the call's path |
 
 **Stops (design targets; measured values replace them at build).** T: the natural read (every row, view-time
-titles); the cracker's read (tablets out, H2 deduplicated, current mastheads, the gap handled) with the older
-library's beacons kept, which deflates the banner's figures and inflates the fonts' on every title; the over-cleaned
+titles); the cracker's read (tablets out, H2 deduplicated) with the older
+library's beacons kept, which deflates the banner's and the fonts' figures and inflates the image pipeline's on every
+title; the over-cleaned
 read (one view per device, URL and day) dropping genuine reloads; the golden. I: the natural read (every smartphone
 row, edge hits only, raw bytes, beacon counts); the cracker's read (both request columns, the fallback's kilobytes
 converted, each page view once, phones only) with the native clients kept, every month off; native clients removed
 but the older library's beacons kept in March and April; the golden.
 
 **Hazard table.** H1 moves T (all 9) and I (March, April, early May denominators); H2 moves T (Sønderå Tidende's 3)
-and I (March, April); T4 moves T (the banner and the image pipeline on Lindå Avis and Kærby Dagblad); T1 moves T (the
-fonts and the image pipeline on Lindå Avis and Kærby Dagblad); the fallback units move I (June, July); the request
+and I (March, April); the fallback units move I (June, July); the request
 split moves I (all 12). Every subset of mishandlings is composed at build and asserted outside the bin.
 
-**Separation.** No device moves the call or its runner-up: every T device that moves the banner moves it down, the
-banner's highest mishandled figure stays under the ad stack's 580,000 by 1.15x or more (asserted), and nothing on the
+**Separation.** No device moves the call or its runner-up: every T device that moves the banner moves it down (the
+older library's copies sit in its post window, the tablets and the forwarder's duplicates in its pre window), the
+banner's highest mishandled figure stays under the ad stack's 610,000 by 1.15x or more (asserted), and nothing on the
 I path is read by the call. **Off path:** the image CDN log and the vendor appendix are files the call never reads;
 the call's beacon rows start on 27 May, after every T device has ended. **Referee:** none needed; nothing ties only
 under one handling. **No filed sentence adjudicates a primary:** the field guide says what a page view and `pv_id` are
@@ -386,15 +391,15 @@ never says which agents make page views.
 
 **Cracker sheet.** The response that landed the call, ran the hygiene battery (key uniqueness, exact duplicates,
 unmatched joins, fan-out, count ties), executed every filed rule (phones only, scored views, the 28-day windows,
-current mastheads by the edition register, the fallback's kilobytes, edge hits plus origin fills) and matched the
+the fallback's kilobytes, edge hits plus origin fills) and matched the
 close-out:
 
 | Ask row | What the cracker does | Against the golden | Cracker |
 |---|---|---|---|
-| T, the banner on each title (3) | keeps the older library's beacons (fresh keys, distinct send times, so no key or exact duplicate) | the pre window's share understated, every title's figure out of its bin | miss |
-| T, the image pipeline on each title (3) | as above, both windows carrying copies in different proportions | every title's figure out of its bin | miss |
-| T, the fonts on each title (3) | as above, the copies only in the post window | every title's figure out of its bin | miss |
-| I, image requests per mobile page view, March to August (6) | counts every smartphone row, the app's native clients included | every month about a tenth high | miss |
+| T, the banner on each title (3) | keeps the older library's beacons (fresh keys, distinct send times, so no key or exact duplicate) | the post window's share understated, every title's figure low and out of its bin | miss |
+| T, the image pipeline on each title (3) | as above, the copies only in the pre window | every title's figure high and out of its bin | miss |
+| T, the fonts on each title (3) | as above, the copies only in the post window | every title's figure low and out of its bin | miss |
+| I, image requests per mobile page view, March to August (6) | counts every smartphone row, the app's native clients included | every month about a quarter high, a fifth after the older library's beacons in the divisor | miss |
 | I, kilobytes per mobile page view, March to August (6) | as above | every month off by more than half a ten-kilobyte bin | miss |
 
 **Mirror sheet.** The response on R1 files the same ask values as the cracker (both asks are decoupled from the
@@ -418,6 +423,13 @@ Pair ceiling: 33.0 (the one-cracker case at a 0.10 ask allowance per top respons
 - No secular trend between steps; volume seasonality kept.
 - First views and later views share one baseline before any change: physically a first view is a little slower; the
   generator keeps the baselines equal so the state shows only through the changes' costs.
+
+## Leak check
+
+- leak.py --asof 2026-09-07: REVIEW, no LEAK. Each line: "the model's band" in the field guide is a device model's benchmark band (harmless); the service level carries most words of the call because it files the decision's basis (a fix valued on the mobile views it brings back, one fix a quarter) and names no change, order or figure (harmless); the stump terms in the service level, the paywall terms and the field guide are their ordinary vocabulary (device, release, deploy, registry, puzzles) and no sentence names a view's place after a deploy (the reader is asked); `device_model` and `device_class` are the registry's join key and the CDN vendor's own class column (harmless); the subscription register's 181 dates after 7 September are end dates of subscriptions cancelled in September, which run to the end of the following month (harmless, forward-dated by nature).
+- Reader, first read: nothing quoted for question 1, no file ranks or answers, the deciding step an analytical choice (question 6); every question-5 sentence fixes a WHAT. Realism tells fixed in the generator: the change register now lists every platform change the release log cites, the release notes carry change numbers, versions and a two-manager rota, the prep thread states no view on a change, the AMP report's constant column and the desktop summary's rounding are gone.
+- Reader, second read (the shipped bundle): nothing quoted for question 1, no file ranks or answers, every question-5 sentence fixes a WHAT, the deciding step an analytical choice. Its mild tells are true to the fiction: the waves are the release train's weekly schedule, counts ending in 50 follow from the sampling weights, the thread's request for the CDN log is the image ask's own reason, and the AMP and desktop summaries are distractors.
+- Reader, third read (after the section 4 and paywall 4.2 wording): clean on questions 1 to 6; its tells are the rollout log's weekly schedule and single signer, change numbers assigned when raised, and a thin prep thread, all true to the fiction.
 
 ## Tried and rejected
 
@@ -450,3 +462,12 @@ Pair ceiling: 33.0 (the one-cracker case at a 0.10 ask allowance per top respons
 - The crawl's page-weight ask (10/10 rework): its devices (the June URL refresh, failed runs filed beside reruns, asset ownership by register prefix) are all filed rules a careful solver executes; cut with the crawl, the run configuration and the asset register.
 - The old forwarder's double forwarding as the T ask's primary (10/10 rework): it keeps the page-view key, so key uniqueness finds it; kept as a hazard, the primary moved to the older library's own beacons under their own keys.
 - A close-out reporting February to August (10/10 rework): its March and April counts would include the older library's beacons and tie only on the wrong read; the close-out reports July and August, the quarter it closes.
+- The older library's beacons in one spell, 16 March to 26 April (stage 3, measured): the copies sat in the banner's pre window, so keeping them lifted the banner to 603,000 on the cracker's read, past the ad stack's 580,000, an ask device moving the call's runner-up; ending the spell earlier left the image pipeline's two windows near balance on Lindå Avis or cancelled the banner's move against the tablets on Kærby Dagblad. Two spells now (16 March to 6 April; 4 to 26 May, from the container version restored with the tag fix), so every T device moves the banner down and the image pipeline up.
+- Device weighting closed by convergence for axis 7 (stage 3, measured): read with each device weighted once, the first-view cells are noisy (the ad stack's figure 435,000 against 580,000, the call unchanged); weighting is pinned by the field guide's "sum it to count views" under the service level's share of views instead (SF13).
+- The app's native image requests at a tenth of page-view requests and their kilobytes at a few per cent (stage 3, measured): the divisor hazards (tablets, the forwarder's duplicates, the older library's beacons) took them back in March and April, so the cracker's kilobytes fell inside the bin; native requests now run at about a quarter and their kilobytes about a sixth, and the fallback vendor carries 40 per cent of its weeks so its kilobyte hazard (27 to 29 per cent) never cancels the native one.
+- Ove Schmidt's belief that the consent banner did it (stage 4, leak reader): read as a planted suspect, and the change's own owner blaming it read oddly; cut, the thread carries no view on a change.
+- The tag container's week without beacons on two titles' local pages (stage 4, judge FIX_NOW): with it the share read inside page classes and the pooled share split on four title figures, a fork on the T ask; the gap is gone, the golden reads each title's pooled share as the service level states it, and the page-class reading lands in the same bins (asserted).
+- Two local editions re-mastheaded on 16 March (stage 4, judge FIX_NOW): view-time and current mastheads split the fonts on Kærby Dagblad; the move now dates from January, before the export opens, so both readings select the same rows.
+- The window boundary and the valuation population left to the plain reading (stage 4, judge FIX_NOW): calendar days moved the front end to 1,470,000, every August view to 1,470,000 and 610,000, views after each switch-on to 1,440,000 and 570,000; the service level now files the deploy instant (section 3) and that month's scored views the change now reaches (section 4), the WHAT only.
+- A change register listing only the review's five changes, release notes cycling a dozen phrases under one approver (stage 4, leak reader): the register now carries every platform change the release log cites, with the release managers' rota.
+- The valuation population and the subscriber group left to the wording after the pass-1 pins (stage 4, pass 2 notes): "that month's scored views that the change now reaches" still let a per-view reading drop forside's views of 1 to 3 August (ad stack 600,000), and paywall 4.2 named no title, so a subscription counted on its own title's pages moved the front end to 1,470,000; section 4 now says "all of that month's scored views on the pages and layouts the change is live on today" and 4.2 "on all three titles' sites whichever titles their product includes", the WHAT only, the same forks closed further.

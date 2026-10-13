@@ -1,38 +1,45 @@
 {
   "task": "task129",
   "owner": "perssathya",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "business-operations-analytics",
   "objective": "root-cause",
-  "stage": 3,
-  "stage_name": "build",
-  "updated": "2026-10-12",
-  "stump": "A competent solver aligns the six Bølge template groups for the joint effect of the ad stack and the front end, separates the two with the puzzles pages (the ad stack alone) and subscribers' ad-free views of the redesigned templates (the front end alone), standardises both groups to the ad-supported views' phone mix through the device registry, which closes the joint ramp to within 0.01 point, and names the ad stack at 1,210,000 views a month with the front end second at 810,000; the step that lands it there is carrying each group's effect to the ad-supported views as one figure per phone class, when the front end costs a view mostly on a device's first view after a release-train deploy and the ad stack mostly on its later views, and both separating groups are about a quarter first views against about three quarters on the ad-supported views, so carried within that state the front end's fix brings back 1,460,000 views a month and the ad stack's 580,000.",
+  "stage": 5,
+  "stage_name": "shipped",
+  "updated": "2026-10-13",
+  "stump": "A competent solver aligns the six Bølge template groups for the joint effect of the ad stack and the front end, separates the two with the puzzles pages (the ad stack alone) and subscribers' ad-free views of the redesigned templates (the front end alone), standardises both groups to the ad-supported views' phone mix through the device registry, which closes the joint ramp to within 0.02 point, and names the ad stack at 1,230,000 views a month with the front end second at 800,000; the step that lands it there is carrying each group's effect to the ad-supported views as one figure per phone class, when the front end costs a view mostly on a device's first view after a release-train deploy and the ad stack mostly on its later views, and both separating groups are about a quarter first views against about three quarters on the ad-supported views, so carried within that state the front end's fix brings back 1,460,000 views a month and the ad stack's 610,000.",
   "architecture": 1,
   "loops": 0,
   "precut": {
     "exit": 0,
-    "date": "2026-10-12",
+    "date": "2026-10-13",
     "pair_ceiling": 33.0,
     "mirror_leakage": 0.0
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (0 LEAK) at --asof 2026-09-07, every line answered in the design note",
+    "reader": "three isolated reads: nothing quoted for question 1, no ranking file, the deciding step an analytical choice, every filed sentence a WHAT; first-read realism tells fixed in the generator, later tells true to the fiction"
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.gate_g against task122, answered in the design note)",
-    "nearest": "0.08 (task98 v4 lineage)"
+    "heart": "WARN only (repeat.gate_g against task122, answered in the design note)",
+    "surface": "1 pair promoted on labels alone (task36, surface 0.077), answered in the design note; personas Caroline Mortensen, Elin Lauritsen, Gunhild Lund on the card",
+    "nearest": "0.08 (task98 v4 lineage)",
+    "clone_check": ""
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE (pass 2)",
+    "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2)",
+    "pass": 2,
+    "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "fix_cycles": 1,
+    "notes": "pass 1 FIX_NOW: four conventions open (page-class reading of the dated steps, window boundary, view-time against current masthead, valuation population); closed by removing the tag gap and dating the edition move before the export (convergence, asserted) and by filing the deploy instant (section 3) and that month's scored views the change now reaches (section 4) in the service level; pass 2 APPROVE: every figure reproduced (front end 1,459,976, ad stack 609,889), no variant moves the call; its two optional notes (a per-view reading of section 4, a subscription counted on its own title's pages) closed further at authority (service level section 4, paywall terms 4.2), the WHAT only, no figure moved, so no third judge"
   },
   "returned": [],
-  "resume": "stage 3: run generator/build.py with the rewritten checks.py (SF1 to SF12, the three-rules block, the T and I device matrices and composed sweeps); update verify.py (no crawl, no roster; T with the repeat rule; I with the native clients excluded and beacon-based divisors; close-out July and August); retune knobs_lab IPV and KBPR so every I figure sits mid-bin (requests per view to one decimal, kilobytes per view to the ten); write the goldens (q4_squad_call.pptx with the call on slide 1, q4_squad_call_workings.xlsx with T and I), figures.json, metadata.json and submission.md; then the stage 3 gates and stage 4",
+  "resume": "shipped after the 10/10 rework; waiting for the portal",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-13",
   "portal": null,
   "source_note": "analytical_tasks/06_root_cause/RC02_slow-views-partial-exposure-cpu-mix.md",
   "history": {

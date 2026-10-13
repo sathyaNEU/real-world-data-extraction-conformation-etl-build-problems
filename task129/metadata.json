@@ -8,7 +8,7 @@
  "as_of": "2026-09-07",
  "deliverables": [
   "q4_squad_call.pptx",
-  "q4_squad_call_cohort_effects.xlsx"
+  "q4_squad_call_workings.xlsx"
  ],
  "distractor_files": [
   "desktop_field_summary_2026.csv",
@@ -16,10 +16,9 @@
   "newsletter_sends_2026.csv"
  ],
  "input_gates": {
-  "files": 22,
+  "files": 18,
   "formats": [
    "csv",
-   "json",
    "md",
    "parquet",
    "pdf",
@@ -27,13 +26,13 @@
    "xlsx"
   ],
   "largest_file": "rum_mobile_views_2026.parquet",
-  "largest_file_rows": 2786039
+  "largest_file_rows": 2814292
  },
  "files": [
   {
    "path": "amp_landing_views_2026.csv",
    "format": "csv",
-   "bytes": 2000,
+   "bytes": 1103,
    "rows": 21,
    "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
    "date": "2026-09-05",
@@ -51,7 +50,7 @@
   {
    "path": "change_register_2026.xlsx",
    "format": "xlsx",
-   "bytes": 6129,
+   "bytes": 7437,
    "rows": null,
    "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
    "date": "2026-09-05",
@@ -78,7 +77,7 @@
   {
    "path": "digital_ops_q3_service_closeout.xlsx",
    "format": "xlsx",
-   "bytes": 7478,
+   "bytes": 6711,
    "rows": null,
    "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
    "date": "2026-09-05",
@@ -96,8 +95,8 @@
   {
    "path": "export_manifest.csv",
    "format": "csv",
-   "bytes": 2843,
-   "rows": 21,
+   "bytes": 2315,
+   "rows": 17,
    "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
    "date": "2026-09-05",
    "license": "CC0-1.0 (original work)"
@@ -105,8 +104,8 @@
   {
    "path": "image_cdn_delivery_2026.csv",
    "format": "csv",
-   "bytes": 1113536,
-   "rows": 16837,
+   "bytes": 1329403,
+   "rows": 19890,
    "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
    "date": "2026-09-05",
    "license": "CC0-1.0 (original work)"
@@ -130,18 +129,9 @@
    "license": "CC0-1.0 (original work)"
   },
   {
-   "path": "ops_squad_closed_fixes.xlsx",
-   "format": "xlsx",
-   "bytes": 7136,
-   "rows": null,
-   "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
-   "date": "2026-09-05",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
    "path": "page_delivery_service_level_v3.pdf",
    "format": "pdf",
-   "bytes": 3000,
+   "bytes": 2883,
    "rows": null,
    "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
    "date": "2026-09-05",
@@ -150,7 +140,7 @@
   {
    "path": "paywall_terms_subscriber_layout_2026.pdf",
    "format": "pdf",
-   "bytes": 2481,
+   "bytes": 2514,
    "rows": null,
    "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
    "date": "2026-09-05",
@@ -159,7 +149,7 @@
   {
    "path": "release_train_log_2026.csv",
    "format": "csv",
-   "bytes": 8651,
+   "bytes": 8927,
    "rows": 67,
    "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
    "date": "2026-09-05",
@@ -168,7 +158,7 @@
   {
    "path": "rum_export_field_guide.md",
    "format": "md",
-   "bytes": 3432,
+   "bytes": 3098,
    "rows": null,
    "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
    "date": "2026-09-05",
@@ -177,8 +167,8 @@
   {
    "path": "rum_mobile_views_2026.parquet",
    "format": "parquet",
-   "bytes": 74876195,
-   "rows": 2786039,
+   "bytes": 75672681,
+   "rows": 2814292,
    "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
    "date": "2026-09-05",
    "license": "CC0-1.0 (original work)"
@@ -186,7 +176,7 @@
   {
    "path": "service_review_prep_thread.txt",
    "format": "txt",
-   "bytes": 1908,
+   "bytes": 1361,
    "rows": null,
    "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
    "date": "2026-09-05",
@@ -197,33 +187,6 @@
    "format": "csv",
    "bytes": 808026,
    "rows": 12856,
-   "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
-   "date": "2026-09-05",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "synthetic_crawl_config.json",
-   "format": "json",
-   "bytes": 1414,
-   "rows": null,
-   "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
-   "date": "2026-09-05",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "synthetic_crawl_requests_2026.csv",
-   "format": "csv",
-   "bytes": 7311489,
-   "rows": 42090,
-   "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
-   "date": "2026-09-05",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "web_asset_register.csv",
-   "format": "csv",
-   "bytes": 1265,
-   "rows": 17,
    "source": "Constructed for this task: fictional regional news group Sønderå Medier; no third-party data",
    "date": "2026-09-05",
    "license": "CC0-1.0 (original work)"

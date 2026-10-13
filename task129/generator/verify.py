@@ -4,7 +4,8 @@
 
 Reads only the shipped files under <target dir>. Imports nothing from the generator, reads every
 date and rule it needs from the shipped documents and logs, recomputes every rung, rival read,
-calibration outcome and graded figure, checks the ladder's shape and every figure's rounding bin,
+graded figure (the call, the dated changes by title, image delivery by month), checks the ladder's shape and every
+figure's rounding bin,
 and (with --record) checks agreement with the generator's build record."""
 import argparse
 import json
@@ -79,6 +80,15 @@ def main():
     # ---------------------------------------------------------------- the beacon frame
     tbl = pq.read_table(find(r"\.parquet$")).to_pandas()
     tbl = tbl.sort_values("beacon_id").drop_duplicates("pv_id")
+    # a second beacon for one page view under another key: same device, page and timings within ten minutes
+    sc_ = tbl[tbl.lcp_ms.notna()].sort_values(["device_key", "url_path", "lcp_ms", "ttfb_ms", "cls", "ts_utc", "pv_id"])
+    same = ((sc_.device_key.values[1:] == sc_.device_key.values[:-1]) & (sc_.url_path.values[1:] == sc_.url_path.values[:-1])
+            & (sc_.lcp_ms.values[1:] == sc_.lcp_ms.values[:-1]) & (sc_.ttfb_ms.values[1:] == sc_.ttfb_ms.values[:-1])
+            & (sc_.cls.values[1:] == sc_.cls.values[:-1]) & (sc_.pv_id.values[1:] != sc_.pv_id.values[:-1]))
+    gap_s = np.diff(sc_.ts_utc.values.astype("datetime64[s]").astype(np.int64))
+    rep = np.r_[False, same & (gap_s <= 600)]
+    n_rep = int(rep.sum())
+    tbl = tbl.drop(index=sc_.index[rep])
     phone = reg[reg.form_factor == "phone"].set_index("device_model").perf_band
     x = tbl[tbl.device_model.isin(phone.index)].copy()
     x["pc"] = x.device_model.map(phone)
@@ -150,18 +160,19 @@ def main():
     A3, C3 = out["phone"]["A"], out["phone"]["C"]
 
     # ---------------------------------------------------------------- dated changes by title
-    hero = set(cohorts) | {"arkiv"}
+    sc = chg[chg.Name.str.startswith(letters["B"])].Scope.iloc[0]
+    hero = {x.strip() for x in re.search(r"\((.*)\)", sc).group(1).split(",")}
     titles = {"ST": "Sønderå Tidende", "LA": "Lindå Avis", "KD": "Kærby Dagblad"}
     Tv = {}
     for k in "DBE":
         d = xs if k != "B" else xs[xs.template.isin(hero)]
-        d = d.assign(cls=np.where(d.ed.notna(), "local", "other"))
         t0 = t_dated[k]
         pre, post, au = d[(d.t >= t0 - W) & (d.t < t0)], d[(d.t >= t0) & (d.t < t0 + W)], d[d.mon == 8]
         Tv[k] = {}
         for ti in titles:
-            e = rate(post[post.mast == ti], ["cls"]) - rate(pre[pre.mast == ti], ["cls"])
-            Tv[k][ti] = value(au[au.mast == ti], e, ["cls"])
+            p1, p0 = post[post.mast == ti], pre[pre.mast == ti]
+            e = (p1.w * p1.ov).sum() / p1.w.sum() - (p0.w * p0.ov).sum() / p0.w.sum()
+            Tv[k][ti] = float(au[au.mast == ti].w.sum() * e)
     tot = {k: sum(Tv[k].values()) for k in "DBE"}
     pz = xs[xs.grp == "puz"]
     a_puz = aug[aug.grp == "puz"].w.sum() * (
@@ -171,80 +182,33 @@ def main():
     # ---------------------------------------------------------------- the ladder
     r2 = {"D": tot["D"], "B": tot["B"], "E": tot["E"], "A": a_puz}
     o2 = sorted(r2, key=r2.get, reverse=True)
-    check("rung2.D_leads", o2[0] == "D" and r2["D"] / r2[o2[1]] >= 1.15, {k: round(v) for k, v in r2.items()})
-    check("rung3raw.A_leads", out["raw"]["A"] > out["raw"]["C"], out["raw"])
+    check("R0.D_leads", o2[0] == "D" and r2["D"] / r2[o2[1]] >= 1.15, {k: round(v) for k, v in r2.items()})
+    check("R1raw.A_leads", out["raw"]["A"] > out["raw"]["C"], out["raw"])
     r3 = {"A": A3, "C": C3, **tot}
     o3 = sorted(r3, key=r3.get, reverse=True)
-    check("rung3.A_leads_C_second", o3[:2] == ["A", "C"] and A3 / C3 >= 1.2, (round(A3), round(C3)))
+    check("R1.A_leads_C_second", o3[:2] == ["A", "C"] and A3 / C3 >= 1.2, (round(A3), round(C3)))
     r4 = {"A": A4, "C": C4, **tot}
     o4 = sorted(r4, key=r4.get, reverse=True)
-    check("rung4.C_leads_A_second", o4[:2] == ["C", "A"] and C4 / A4 >= 1.5, (round(C4), round(A4)))
-    check("grid.sums", abs(sum(g["C"] for g in out["grid"].values()) - C4) < 1e-3)
-
-    # ---------------------------------------------------------------- lab weight
-    cr = pd.read_csv(find(r"crawl_requests"), dtype=str)
-    cfg = json.load(open(find(r"crawl_config")))
-    ar = pd.read_csv(find(r"asset_register"), dtype=str, keep_default_na=False)
-    inv = {v: k for k, v in cid.items()}
-    cr["host"] = cr.request_url.str.split("/").str[2]
-    cr["path"] = "/" + cr.request_url.str.split("/", n=3).str[3].fillna("")
-    cr["b"] = cr.transfer_bytes.astype(float)
-    best = pd.Series("", index=cr.index)
-    blen = pd.Series(-1, index=cr.index)
-    for r in ar.itertuples():
-        mm = (cr.host == r.host) & cr.path.str.startswith(r.path_prefix) & (len(r.path_prefix) > blen)
-        best[mm] = inv.get(r.change_id, "")
-        blen[mm] = len(r.path_prefix)
-    cr["own"] = best
-    first, last = cfg["crawls"][0]["crawl_date"], cfg["crawls"][-1]["crawl_date"]
-
-    def labw(matched, by_title):
-        c = cr[cr.run_status == "complete"]
-        fF, fA = c[c.crawl_date == first], c[c.crawl_date == last]
-        if matched:
-            u = set(fF.page_url) & set(fA.page_url)
-            fF, fA = fF[fF.page_url.isin(u)], fA[fA.page_url.isin(u)]
-        res = {}
-        for ti in (titles if by_title else ["all"]):
-            ff = fF if ti == "all" else fF[fF.masthead == ti]
-            aa = fA if ti == "all" else fA[fA.masthead == ti]
-            for k in "ABCDE":
-                res[(ti, k)] = (aa[aa.own == k].b.sum() / aa.page_url.nunique()
-                                - ff[ff.own == k].b.sum() / ff.page_url.nunique()) / 1000
-        return res
-    l0, l1, Lv = labw(False, False), labw(True, False), labw(True, True)
-    o0 = sorted("ABCDE", key=lambda k: -l0[("all", k)])
-    o1 = sorted("ABCDE", key=lambda k: -l1[("all", k)])
-    check("rung0.B_leads_C_low", o0[0] == "B" and o0.index("C") >= 3, o0)
-    check("rung1.E_leads_C_low", o1[0] == "E" and o1.index("C") >= 3, o1)
+    check("R3.C_leads_A_second", o4[:2] == ["C", "A"] and C4 / A4 >= 1.5, (round(C4), round(A4)))
 
     # ---------------------------------------------------------------- image delivery
     cdn = pd.read_csv(find(r"image_cdn_delivery"))
-    agent = cfg["user_agent"].split("/")[0]
-    cdn = cdn[(cdn.device_class == "smartphone") & (cdn.ua_family != agent)].copy()
+    cdn = cdn[(cdn.device_class == "smartphone") & ~cdn.ua_family.isin(["CFNetwork", "okhttp"])].copy()
     cdn["bytes"] = np.where(cdn.vendor == "fallback", cdn.bytes_served * 1000.0, cdn.bytes_served)
     cdn["req"] = cdn.edge_hits + cdn.origin_fills
     cdn["m"] = cdn.log_date.str[:7]
+    lm = x.ts_utc.dt.tz_convert(CZ).dt.strftime("%Y-%m")
+    pv_m = x.assign(lm=lm).groupby("lm").w.sum()
+    Iv = {m: (cdn[cdn.m == m].req.sum() / pv_m[m], cdn[cdn.m == m].bytes.sum() / 1000 / pv_m[m])
+          for m in ["2026-%02d" % k for k in range(3, 9)]}
     co = pd.read_excel(find(r"closeout"), sheet_name="By title", header=3)
-    mv = co.groupby("Month")["Mobile page views"].sum()
-    Iv = {m: (cdn[cdn.m == m].req.sum() / mv[m], cdn[cdn.m == m].bytes.sum() / 1000 / mv[m])
-          for m in sorted(cdn.m.unique()) if "2026-03" <= m <= "2026-08"}
-    # close-out reproduces from the beacons
     for ti, name in titles.items():
-        for mo in range(2, 9):
+        for mo in (7, 8):
             d = x[(x.mon == mo) & (x.mast == ti)]
             row = co[(co.Month == f"2026-{mo:02d}") & (co.Title == name)].iloc[0]
-            if mo in (2, 8):
-                check(f"closeout.reproduces[{ti},{mo}]", int(row["Mobile page views"]) == int(d.w.sum())
-                      and int(row["Over-line views"]) == int((d.w * (d.sc & d.ov)).sum()))
-
-    # ---------------------------------------------------------------- calibration roster
-    rs = pd.read_excel(find(r"closed_fixes"), header=2)
-    good = 0
-    for r in rs.itertuples(index=False):
-        if round((r[5] / r[4] - r[7] / r[6]) * r[9]) == int(r[10]):
-            good += 1
-    check("roster.11_of_11", good == 11 == len(rs), good)
+            check(f"closeout.reproduces[{ti},{mo}]", int(row["Mobile page views"]) == int(d.w.sum())
+                  and int(row["Over-line views"]) == int((d.w * (d.sc & d.ov)).sum()))
+    check("closeout.q3_only", sorted(co.Month.unique()) == ["2026-07", "2026-08"], sorted(co.Month.unique()))
 
     # ---------------------------------------------------------------- bins
     def edge(v_, b):
@@ -252,35 +216,27 @@ def main():
         return b * abs(q - 0.5)
     check("bin.C", edge(C4, 1e4) >= 1500, round(C4))
     check("bin.A", edge(A4, 1e4) >= 1500, round(A4))
-    for c, g in out["grid"].items():
-        check(f"bin.grid[{c}]", edge(g["A"], 1e4) >= 1000 and edge(g["C"], 1e4) >= 1000,
-              (round(g["A"]), round(g["C"])))
     for k in "DBE":
         for ti in titles:
             check(f"bin.T[{k},{ti}]", edge(Tv[k][ti], 1e4) >= 1500, round(Tv[k][ti]))
-    for key, val in Lv.items():
-        check(f"bin.L[{key}]", edge(val, 0.1) >= 0.01, round(val, 3))
+        check(f"bin.T_total[{k}]", edge(tot[k], 1e4) >= 1500, round(tot[k]))
     for mo, (rq, kb) in Iv.items():
-        check(f"bin.I[{mo}]", edge(rq, 0.1) >= 0.01 and edge(kb, 0.1) >= 0.01, (round(rq, 3), round(kb, 3)))
+        check(f"bin.I[{mo}]", edge(rq, 0.1) >= 0.012 and edge(kb, 10) >= 1.2, (round(rq, 3), round(kb, 2)))
+    check("repeats.found", n_rep > 0, n_rep)
 
-    figs = {"C": C4, "A": A4, "grid": out["grid"], "T": Tv, "L": {f"{a}|{b}": v for (a, b), v in Lv.items()},
-            "I": Iv, "rung3": {"A": A3, "C": C3}, "raw": out["raw"], "D": tot["D"], "B": tot["B"],
-            "E": tot["E"], "lab0": {k[1]: v for k, v in l0.items()}, "lab1": {k[1]: v for k, v in l1.items()}}
+    figs = {"C": C4, "A": A4, "T": Tv, "I": Iv, "rung3": {"A": A3, "C": C3}, "raw": out["raw"],
+            "D": tot["D"], "B": tot["B"], "E": tot["E"]}
     if a.record:
         rec = json.load(open(a.record))
         rf = rec["figures"]
         check("record.C", abs(rf["C"] - C4) < 0.5, (rf["C"], C4))
         check("record.A", abs(rf["A"] - A4) < 0.5, (rf["A"], A4))
-        for c in cohorts:
-            check(f"record.grid[{c}]", abs(rf["grid"][c]["A"] - out["grid"][c]["A"]) < 0.5 and
-                  abs(rf["grid"][c]["C"] - out["grid"][c]["C"]) < 0.5)
         for k in "DBE":
             for ti in titles:
                 check(f"record.T[{k},{ti}]", abs(rf["T"][k][ti] - Tv[k][ti]) < 0.5)
-        for key, val in figs["L"].items():
-            check(f"record.L[{key}]", abs(rec["L"][key] - val) < 1e-6)
         for mo, (rq, kb) in Iv.items():
             check(f"record.I[{mo}]", abs(rec["I"][mo][0] - rq) < 1e-9 and abs(rec["I"][mo][1] - kb) < 1e-6)
+        check("record.repeats", rec.get("n_second_beacons") == n_rep, (rec.get("n_second_beacons"), n_rep))
     n_ok = sum(1 for r in RESULTS if r[1])
     print(f"verify: {n_ok} of {len(RESULTS)} checks pass")
     print(json.dumps({"C": round(C4), "A": round(A4)}, ensure_ascii=False))

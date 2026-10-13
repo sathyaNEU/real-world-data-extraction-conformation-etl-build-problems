@@ -70,14 +70,17 @@ def build(rng):
 
 
 def second_beacons(X, dep):
-    """The local-edition tag container's older RUM library, 16 March to 26 April: a second beacon for a
-    local-edition page view, sent at the load event under the library's own page-view key and stamped
-    with its send time. A view abandoned before the load event sends none, so over-line views send
-    fewer. Copies the original's device, account, page, context and timings."""
+    """The local-edition tag container's older RUM library, 16 March to 6 April and again from the container
+    version restored on 4 May to 26 May: a second beacon for a local-edition page view, sent at the load event
+    under the library's own page-view key and stamped with its send time. A view abandoned before the load
+    event sends none, so over-line views send fewer. Copies the original's device, account, page, context and
+    timings."""
     r2 = np.random.default_rng([P.SEED, 77])
     day = X.local_day.values
-    win = ((day >= np.datetime64(P.SECOND_BEACON[0])) & (day <= np.datetime64(P.SECOND_BEACON[1]))
-           & X.local.values & ~np.isnan(X.lcp_ms.values))
+    on = np.zeros(len(X), bool)
+    for a, b in P.SECOND_BEACON:
+        on |= (day >= np.datetime64(a)) & (day <= np.datetime64(b))
+    win = on & X.local.values & ~np.isnan(X.lcp_ms.values)
     p = np.where(X.over.values, P.SECOND_P["over"], P.SECOND_P["under"])
     pick = win & (r2.random(len(X)) < p)
     D2 = X[pick].copy()

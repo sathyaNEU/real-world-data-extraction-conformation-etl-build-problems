@@ -82,17 +82,94 @@ def editions(path):
     csv(Wd.edition_register(), path)
 
 
-GENERIC_NOTES = [
-    "Editorial tools: byline cards", "Search: synonym list", "Paywall copy update",
-    "Dependency updates", "Comments moderation queue", "Video player patch",
-    "Newsletter sign-up form", "Sitemap generation fix", "Accessibility fixes (forms)",
-    "Weather widget data source", "TV guide listings feed", "Obituaries upload form",
-    "Front page curation tool", "Tracking plan v14", "Image credit field", "Election results module",
+# platform changes outside the review's five: name, owner, scope as the register states it
+MINOR = [
+    ("Editorial tools: byline cards", "Simone Thorsen", "CMS, all titles"),
+    ("Search: synonym list", "Finn Thygesen", "Search pages, all titles"),
+    ("Paywall copy update", "Ove Schmidt", "Paywall prompts, all titles"),
+    ("Comments moderation queue", "Simone Thorsen", "CMS, all titles"),
+    ("Video player patch", "Finn Thygesen", "Video player, all templates"),
+    ("Newsletter sign-up form", "Gunhild Lund", "Sign-up forms, all titles"),
+    ("Sitemap generation fix", "Mette Johansen", "Servers, all titles"),
+    ("Accessibility fixes (forms)", "Finn Thygesen", "Forms, all templates"),
+    ("Weather widget data source", "Simone Thorsen", "Front page widget, all titles"),
+    ("TV guide listings feed", "Simone Thorsen", "TV guide pages, all titles"),
+    ("Obituaries upload form", "Simone Thorsen", "CMS, all titles"),
+    ("Front page curation tool", "Simone Thorsen", "CMS, all titles"),
+    ("Image credit field", "Caroline Mortensen", "CMS, all titles"),
+    ("Election results module", "Finn Thygesen", "Results pages, all titles"),
+    ("Podcast player embed", "Finn Thygesen", "Article template, all titles"),
+    ("Crossword archive pages", "Gunnar Paulsen", "Spil pages, all titles"),
+    ("Event calendar feed", "Simone Thorsen", "Calendar pages, all titles"),
+    ("Sports results feed", "Simone Thorsen", "Sport template, all titles"),
+    ("Live blog editor: pinned posts", "Simone Thorsen", "CMS, all titles"),
+    ("Push opt-in prompt", "Gunhild Lund", "App webview, all titles"),
 ]
+ROUTINE = ["Dependency updates", "Minor CMS fixes", "Copy and translation fixes", "Logging changes",
+           "Feature flag cleanup", "Admin UI fixes"]
+# change numbers run with the date a change was raised; the review's five keep theirs
+CHG_ANCHORS = [(date(2026, 1, 20), 2490), (date(2026, 3, 3), 2529), (date(2026, 4, 7), 2547),
+               (date(2026, 5, 5), 2583), (date(2026, 6, 24), 2611), (date(2026, 9, 1), 2650)]
+MINOR_CHG = {}
+
+
+def _minor_plan(rng, n):
+    """Which generic releases carry which minor change (first release, then follow-up fixes), the
+    tracking plan's versions and the routine dependency updates."""
+    items = [[] for _ in range(n)]
+    order = rng.permutation(len(MINOR))
+    starts = np.linspace(0, max(1, n - 4), len(MINOR))
+    for k, s0 in zip(order, starts):
+        s = int(min(n - 1, max(0, round(s0 + rng.integers(-1, 2)))))
+        reps = int(rng.integers(1, 4))
+        pos = [s]
+        for _ in range(reps - 1):
+            pos.append(min(n - 1, pos[-1] + int(rng.integers(1, 5))))
+        for j, p_ in enumerate(sorted(set(pos))):
+            items[p_].append((int(k), j > 0))
+    ver = 13
+    for p_ in range(int(rng.integers(2, 6)), n, 9):
+        items[p_].append(("track", ver))
+        ver += 1
+    last = None
+    for i in range(n):
+        if not items[i] or rng.random() < 0.25:
+            pick = [r for r in range(len(ROUTINE)) if r != last]
+            last = int(rng.choice(pick))
+            items[i].append(("routine", last))
+    return items
+
+
+def _minor_ids(first_day):
+    import bisect
+    taken = {int(v[0][4:]) for v in P.CHG.values()}
+    out = {}
+    xs = [a.toordinal() for a, _ in CHG_ANCHORS]
+    for k in sorted(first_day, key=lambda k: (first_day[k], k)):
+        d = first_day[k].toordinal()
+        j = min(max(bisect.bisect_right(xs, d), 1), len(xs) - 1)
+        (a0, n0), (a1, n1) = CHG_ANCHORS[j - 1], CHG_ANCHORS[j]
+        num = int(round(n0 + (n1 - n0) * (d - a0.toordinal()) / (a1.toordinal() - a0.toordinal())))
+        while num in taken:
+            num += 1
+        taken.add(num)
+        out[k] = "CHG-%d" % num
+    return out
 
 
 def release_log(rng, dep, path):
     rows = []
+    special = ("E", "B", "D", "RUM", "PUZ")
+    generic = [i for i, r in enumerate(dep.itertuples()) if r.tag not in special and not r.tag.startswith("COH:")]
+    plan = _minor_plan(rng, len(generic))
+    first = {}
+    for g, its in zip(generic, plan):
+        for k, _ in its:
+            if isinstance(k, int) and k not in first:
+                first[k] = pd.Timestamp(dep.local.iloc[g]).date()
+    MINOR_CHG.clear()
+    MINOR_CHG.update(_minor_ids(first))
+    slot = dict(zip(generic, plan))
     for i, r in enumerate(dep.itertuples()):
         loc = pd.Timestamp(r.local).tz_localize(P.TZ)
         tag = r.tag
@@ -111,13 +188,23 @@ def release_log(rng, dep, path):
             if wave == 1:
                 note += "; ad-free layout on all six template groups"
         else:
-            k = int(rng.integers(1, 3))
-            note = "; ".join(rng.choice(GENERIC_NOTES, k, replace=False))
+            parts = []
+            for k, x in slot[i]:
+                if k == "track":
+                    parts.append(f"Tracking plan v{x}")
+                elif k == "routine":
+                    parts.append(ROUTINE[x])
+                else:
+                    name = MINOR[k][0]
+                    parts.append(f"{name}{': fixes' if x else ''} ({MINOR_CHG[k]})")
+            note = "; ".join(parts)
+        # the release managers' rota: alternate ISO weeks
+        mgr = "Mette Johansen" if loc.isocalendar()[1] % 2 == 0 else "Simone Thorsen"
         rows.append({"release_id": f"RT-26-{i + 1:03d}",
                      "deployed_at": loc.isoformat(timespec="seconds"),
                      "platform_bundle": "platform." + "".join(rng.choice(list("0123456789abcdef"), 10)),
                      "puzzles_bundle": "spil." + "".join(rng.choice(list("0123456789abcdef"), 10)),
-                     "approved_by": "Mette Johansen", "notes": note})
+                     "approved_by": mgr, "notes": note})
     df = pd.DataFrame(rows)
     csv(df, path)
     return df
@@ -185,7 +272,8 @@ def change_register(rel, path):
               "D": "Ove Schmidt", "E": "Caroline Mortensen"}
     rows = [
         ("E", "All templates, all titles", P.DATED["E"].isoformat(), ", ".join(rid(P.CHG["E"][0]))),
-        ("B", "Templates with a hero image", P.DATED["B"].isoformat(), ", ".join(rid(P.CHG["B"][0]))),
+        ("B", "Templates with a hero image (%s)" % ", ".join(t for t in P.COHORTS + P.LEGACY if t in P.HERO),
+         P.DATED["B"].isoformat(), ", ".join(rid(P.CHG["B"][0]))),
         ("D", "All templates, all titles", P.DATED["D"].isoformat(), ", ".join(rid(P.CHG["D"][0]))),
         ("A", "Ad-supported layout: spil pages, then the Bølge template groups wave by wave",
          P.PUZZLE_AD_SWITCH.isoformat(), ", ".join(rid(P.CHG["A"][0]))),
@@ -193,8 +281,14 @@ def change_register(rel, path):
               "by wave (see the rollout log)",
          P.COHORT_SWITCH["sektion"].isoformat(), ", ".join(rid(P.CHG["C"][0]))),
     ]
-    for i, (k, scope, live, rels) in enumerate(rows):
-        for j, val in enumerate([P.CHG[k][0], P.CHG[k][1], owners[k], scope, live, rels]):
+    out = [(P.CHG[k][0], P.CHG[k][1], owners[k], scope, live, rels) for k, scope, live, rels in rows]
+    for k, cid in MINOR_CHG.items():
+        hit = rel[rel.notes.str.contains(cid, regex=False)]
+        live = pd.Timestamp(hit.deployed_at.iloc[0]).date().isoformat()
+        out.append((cid, MINOR[k][0], MINOR[k][1], MINOR[k][2], live, ", ".join(hit.release_id)))
+    out.sort(key=lambda r: r[0])
+    for i, vals in enumerate(out):
+        for j, val in enumerate(vals):
             ws.write(4 + i, j, val)
     ws.set_column(0, 0, 11)
     ws.set_column(1, 1, 44)
@@ -224,7 +318,7 @@ def closeout(t, path):
     n0 = wb.add_format({"num_format": "#,##0"})
     ws = wb.add_worksheet("By title")
     ws.write(0, 0, "Digital operations: Q3 service close-out, mobile page delivery", b)
-    ws.write(1, 0, "v1.2, refreshed 4 September 2026 (owner Gunhild Lund). For the quarterly service review.")
+    ws.write(1, 0, "v1.2, refreshed 5 September 2026 (owner Gunhild Lund). For the quarterly service review.")
     ws.write(2, 0, "Mobile page views and the share of scored views over the service line, July and "
                    "August, by current masthead. Describes delivery against the line; it does not "
                    "attribute the share to any release.")
