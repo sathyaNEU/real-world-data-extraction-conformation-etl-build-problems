@@ -1,0 +1,175 @@
+{
+  "task": "task231",
+  "title": "Which regions go into the reminder-call extension of a central bank's business survey round",
+  "domain": "Survey Research & Official Statistics",
+  "subdomain": "nonresponse, calibration and measurement-error adjustment (eligibility of unresolved non-respondents)",
+  "objective": "Data Quality Monitoring & Alerting",
+  "prompt_shape": "10 (scorecard): twelve regions' response rates checked against the 55 and 58 per cent lines, with the contact centre's work, the June late returns and the March refreshment",
+  "as_of": "2026-09-25",
+  "deliverables": [
+    "bcs_sep2026_extension.xlsx",
+    "bcs_sep2026_response.pptx"
+  ],
+  "distractor_files": [
+    "BCS_regional_balances_2026_06.xlsx",
+    "BCS_questionnaire_2026.pdf"
+  ],
+  "input_gates": {
+    "files": 15,
+    "formats": [
+      "csv",
+      "json",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "bcs_round_outcomes_2017_2026.csv",
+    "largest_file_rows": 210800
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task231/generator/make.py (seeded, deterministic) around a fictional central bank's business survey (Brevland Central Bank, Business Conditions Survey); no real person, firm, organisation or register record is depicted.",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-13",
+  "generator": "task231/generator/make.py",
+  "files": [
+    {
+      "path": "BCS_fieldwork_quality_standard_v3.pdf",
+      "format": "pdf",
+      "bytes": 5196,
+      "rows": null,
+      "source": "Constructed: BCS fieldwork quality standard, version 3.0",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "BCS_round_calendar.xlsx",
+      "format": "xlsx",
+      "bytes": 9475,
+      "rows": null,
+      "source": "Constructed: BCS round calendar, March 2017 to December 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bcs_panel_register.csv",
+      "format": "csv",
+      "bytes": 1067629,
+      "rows": 14802,
+      "source": "Constructed: Every firm recruited to the BCS panel since 2014",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bcs_round_outcomes_2017_2026.csv",
+      "format": "csv",
+      "bytes": 9703929,
+      "rows": 210800,
+      "source": "Constructed: Outcome of every invited firm, rounds March 2017 to June 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bcs_invitations_2026_09.csv",
+      "format": "csv",
+      "bytes": 510404,
+      "rows": 8604,
+      "source": "Constructed: Firms invited to the September 2026 round",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bcs_returns_2026_09.csv",
+      "format": "csv",
+      "bytes": 201271,
+      "rows": 4627,
+      "source": "Constructed: Returns logged for the September 2026 round up to the main close",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "brevland_business_register_closures.csv",
+      "format": "csv",
+      "bytes": 243909,
+      "rows": 4702,
+      "source": "Constructed: Business register closure records for the panel's company numbers, as at 25 September 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "business_register_extract_notes.pdf",
+      "format": "pdf",
+      "bytes": 3219,
+      "rows": null,
+      "source": "Constructed: The register's notes on its closure extract",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "contact_centre_calls_2022_2026.csv",
+      "format": "csv",
+      "bytes": 10280866,
+      "rows": 148136,
+      "source": "Constructed: Contact centre call records, March 2022 to the September 2026 main close",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "contact_centre_outcome_codes.xlsx",
+      "format": "xlsx",
+      "bytes": 8120,
+      "rows": null,
+      "source": "Constructed: Contact centre outcome codes, both schemes",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bcs_region_review_2023.csv",
+      "format": "csv",
+      "bytes": 531,
+      "rows": 12,
+      "source": "Constructed: Region codes before and after the 2023 regional review",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "BCS_data_dictionary.xlsx",
+      "format": "xlsx",
+      "bytes": 10781,
+      "rows": null,
+      "source": "Constructed: Data dictionary for these files",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "BCS_regional_balances_2026_06.xlsx",
+      "format": "xlsx",
+      "bytes": 8530,
+      "rows": null,
+      "source": "Constructed: Published net balances, June 2026 round",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "BCS_questionnaire_2026.pdf",
+      "format": "pdf",
+      "bytes": 3450,
+      "rows": null,
+      "source": "Constructed: BCS questionnaire 2026",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest.json",
+      "format": "json",
+      "bytes": 3683,
+      "rows": null,
+      "source": "Constructed: export manifest",
+      "date": "2026-09-25",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

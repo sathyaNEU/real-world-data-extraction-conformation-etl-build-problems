@@ -1,36 +1,36 @@
 {
  "task": "task231",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "survey-research-official-statistics",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-13",
- "stump": "Counting every non-returning firm without a business-register closure as still trading puts six regions under 55 per cent (Capital, Harbour, North Coast, Islands, Border and Western Uplands) and sends all six into the extension; the step that lands it there is taking the register as it stands for the round's in-scope population, when most firms that closed before 1 September are not yet on it, and the closure share of the round's non-returners read from rounds old enough for the register to have recorded their closures leaves only Capital and Harbour short.",
+ "stump": "Counting every non-returning firm without a business-register closure as still trading puts five regions under 55 per cent (Capital, Harbour, Islands, Border and Western Uplands) and the other seven under 58, so the default sends five regions into the reminder-call extension and seven onto the email reminder; the step that lands it there is taking the register as it stands for the round's in-scope population when most firms that closed before 1 September are not yet on it, and the closure share of the round's non-returners read from rounds old enough for the register to have recorded their closures leaves only Capital and Harbour for the extension and Islands and Western Uplands for the email.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-13"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-13 (no LEAK; five REVIEW lines answered in the design note)",
+  "reader": "clean 2026-10-13 (no decisive-step sentence, no ranking file; Christmas-close realism catch fixed)"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (repeat.gate_g, repeat.question_form)",
+  "nearest": "0.08 task134"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task231/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 2: readability screen, semantic fork table, ladder (register as it stands, call-centre e, recent rounds, settled rounds, over-correction), closure table, literal reader, oracles, ask sheet, prompt.txt; generator next",
+ "resume": "shipped; waiting on the portal",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-13",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Capital and Harbour into the reminder-call extension, Islands and Western Uplands onto the extra email reminder, the other eight regions neither",
+  "answer_source": "submission.md block 1; bcs_sep2026_extension.xlsx sheet Alert levels",
   "gap": [
     "time",
     "population"
@@ -36,7 +36,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "bcs_round_outcomes_2017_2026.csv",
-    "rows": 170000,
+    "rows": 210800,
     "entity": "one panel firm's outcome in one survey round",
     "grain": "panel firm x survey round",
     "source": "synthetic"
@@ -69,20 +69,23 @@
   "question_form": "which",
   "driver": "The decisive quantity is a rate over the units still active on a reference date, but exits reach the record of exits about a year after they happen and the follow-up that could confirm a silent unit's state reaches active units far more often than exited ones, so the exited share of this round's silent units has to come from earlier rounds old enough for the record to have caught up; counting every unrecorded silent unit as active, carrying the follow-up's resolved mix onto the unresolved, or reading the share from rounds the record has not yet settled all leave the rate too low.",
   "driver_concrete": "Firms that stopped trading before the 1 September 2026 frame date mostly have no closure in the business register yet, and the call centre records a closure only when someone answers for the firm, so the share of the September round's non-returning firms that had already closed is taken from rounds old enough for the register to have recorded their closures, not from the register as it stands, the call outcomes, or recent rounds whose closures are still arriving.",
-  "stump": "Counting every non-returning firm without a business-register closure as still trading puts six regions under 55 per cent (Capital, Harbour, North Coast, Islands, Border and Western Uplands) and sends all six into the extension; the step that lands it there is taking the register as it stands for the round's in-scope population, when most firms that closed before 1 September are not yet on it, and the closure share of the round's non-returners read from rounds old enough for the register to have recorded their closures leaves only Capital and Harbour short.",
+  "stump": "Counting every non-returning firm without a business-register closure as still trading puts five regions under 55 per cent (Capital, Harbour, Islands, Border and Western Uplands) and the other seven under 58, so the default sends five regions into the reminder-call extension and seven onto the email reminder; the step that lands it there is taking the register as it stands for the round's in-scope population when most firms that closed before 1 September are not yet on it, and the closure share of the round's non-returners read from rounds old enough for the register to have recorded their closures leaves only Capital and Harbour for the extension and Islands and Western Uplands for the email.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who deduplicates the returns, drops the firms the business register shows closed by 1 September and gives the remaining non-returners the eligibility of the call centre's resolved cases, AAPOR's proportional e, files the alert for five regions where only two fall short of 55 per cent.",
+  "analyst_test": "A strong analyst who deduplicates the returns, drops the firms the business register shows closed by 1 September and divides each region's returns by the rest sends five regions into the extension (Capital, Harbour, Islands, Border and Western Uplands) and seven onto the email; one who gives the unresolved non-returners the eligibility of the call centre's resolved cases (AAPOR's proportional e), or reads the closure share from every earlier round or the last two years, still sends four (Capital, Harbour, Islands and Western Uplands), where only Capital and Harbour fall under 55 per cent.",
   "domain_test": "The deciding quantity is the survey's response rate over in-scope panel firms with the eligibility of unresolved non-respondents estimated (AAPOR's e), which the survey statistician takes from the register's settled closures of earlier rounds because nonresponse follow-up resolves closed firms far less often than trading ones; with another field's nouns (a meter fleet's read rate) there is no in-scope population fixed at a frame date by trading status, no nonresponse follow-up whose resolution depends on the outcome and no e to estimate, so the task stops being a survey-nonresponse question.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:eligibility-of-unresolved-panel-nonrespondents-from-settled-register-closures",
   "layer1": [
     "register closures notified long after cessation, two dates per closure",
-    "company numbers reformatted in 2021 with a check digit, both forms in use",
-    "call outcome codes changed scheme with the 2022 contact-centre system",
-    "returns arriving by web, phone and post with duplicates across modes",
+    "company numbers reformatted in 2021 with a check digit, the six-digit form surviving on the contractor's list",
+    "two contact-centre teams with their own outcome codes and keys, calls placed and received in one log",
+    "returns arriving by web, phone and post, a few firms returning twice",
+    "paper returns keyed by an outside bureau and telephone returns loaded overnight, two timestamps a word apart",
     "round labels in three formats across files",
     "timestamps in UTC against local cut-offs",
-    "a regional review that recoded two regions in 2023"
+    "a regional review that renamed two regions and recoded all twelve in 2023",
+    "panel identifiers freed in the 2024 expansion issued again",
+    "NACE Rev. 2.1 sections on recruits from 2025"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
