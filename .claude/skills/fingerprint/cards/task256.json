@@ -1,0 +1,92 @@
+{
+  "task": "task256",
+  "architecture": "v1",
+  "drawn": "2026-10-13",
+  "slot_note": "new draw for task256 (DA06 seed number); the seed's world (a mapping foundation's volunteer stickiness net of organised editors from published tables) reduces to subtracting one published table from another, a population filter the 10/10 rules ban as the decisive step, so the number was redrawn inside Descriptive & Distribution Analysis",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "anthropometric-design-fit",
+  "niche": "a regional transit authority choosing the operator workstation configuration for its 2027 bus order so that it fits at least 95 per cent of its own bus operators, whose bodies it knows only through the stature and weight its DOT medical examinations record, from a reference survey of workers' body dimensions",
+  "objective": "descriptive-distribution",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G6"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "none",
+  "stakeholder_role": "the Authority's manager of fleet engineering",
+  "role_family": "operations_director",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "dot_medical_exams_2014-2026",
+    "rows": 0,
+    "entity": "one row is one DOT medical examination of one employee who holds a commercial licence",
+    "grain": "employee x examination",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "United States (a fictional regional transit authority)",
+    "currency": "USD",
+    "org_type": "regional public transit authority",
+    "invented_names": [
+      "Tamarack Valley Regional Transit Authority",
+      "Halvard Coach Works",
+      "Brennard Institute for Workplace Design",
+      "Survey of Working Adults' Body Dimensions",
+      "Ostrander Occupational Health",
+      "Fernhill Occupational Medicine"
+    ],
+    "people": [
+      "Tracy Reynolds",
+      "William Roberts",
+      "Kelsey Sanchez",
+      "Donald Mcguire"
+    ]
+  },
+  "deliverables": [
+    "workstation_configurations_2027.xlsx",
+    "operator_accommodation_2027.svg"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the share of a population whose several correlated measurements all fall inside a box of ranges, when the population's own records hold only two other measurements and the box's measurements are described only by a reference group that differs from the population in those two; the share has to be carried from the reference through its within-group conditional distribution given both recorded measurements, member by member, so the reference's own share, a carry through one measurement alone and the members' predicted values each pick a cheaper box than the one that holds.",
+  "driver_concrete": "Each workstation configuration's accommodation is the share of the Authority's bus operators (statures and weights from their latest DOT medical examinations, sex from the roster) whose popliteal height, buttock-knee length, sitting eye height, thumb-tip reach and sitting abdominal depth all fall inside its fit envelope, the five dimensions taken jointly normal within sex given stature and weight from the reference survey's tables; the reference survey's own workers with the roster's sex mix file B, a carry through stature alone or the operators' predicted dimensions file C, and only the full conditional distribution files G, the cheapest configuration fitting 95 per cent of the operators.",
+  "stump": "The default path computes each configuration's joint accommodation from the reference survey's within-sex normal model for the survey's own workers, weighted to the roster's sex mix, and files Configuration B (95.4 per cent on that basis) because the Authority's operators, heavier and more varied in stature than the survey's workers, are never carried into the model; on them B fits about 80 per cent.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans both examination exports, takes each operator's latest stature and weight, reads the standard and the fit report correctly and computes each configuration's joint accommodation from the reference survey's within-sex normal model files a configuration cheaper than G: Configuration B for the survey's own workers at the roster's sex mix, or Configuration C when the operators are carried through stature alone or through their predicted dimensions, though none of A to F fits 95 per cent of the Authority's operators.",
+  "domain_test": "The call turns on multivariate anthropometric accommodation, the share of a user population whose correlated body dimensions all fall within a workstation's fit envelope, estimated the way the field does it for users measured only on stature and weight (the reference survey's within-sex joint distribution carried to each user through its conditional relationships, the residual spread kept); with another field's nouns there are no body dimensions, no fit envelope and no reference survey to carry, and the task stops reading the same.",
+  "mechanism_source": "design_note",
+  "lineage": [],
+  "notes": "drawn 2026-10-13; the first draft's decisive rung (a share counted from predicted values rather than each member's conditional distribution) stays a rung only, its insight being task253's mirror; the decisive move is the carry of the reference survey to the operators through stature and weight",
+  "client_domain": "human-factors-ergonomics",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:multivariate-accommodation-carried-to-the-users-through-stature-and-weight",
+  "layer1": [
+    "two occupational health providers' exam exports with different layouts across a 2021 changeover",
+    "heights in feet and inches or decimal inches, weights in pounds, against a reference survey in millimetres and kilograms",
+    "employee numbers formatted differently in the roster and each exam export",
+    "exam records for every licensed employee (mechanics, supervisors, former staff), several per person",
+    "tables inside PDFs (the reference survey report and the manufacturer's fit report)"
+  ],
+  "differentiation": {
+    "task54": "task54 runs a loss rule recovered from closed investigations over a re-sequenced forward plan's units-aboard exposure; this build carries a reference survey's within-sex joint body-dimension distribution to a workforce measured only on stature and weight, so the share is a multivariate accommodation inside a fit envelope, with no rule recovered and no exposure integral"
+  }
+}

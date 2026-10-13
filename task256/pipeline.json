@@ -1,0 +1,23 @@
+{
+  "task": "task256",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "human-factors-ergonomics / anthropometric-design-fit",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-13",
+  "stump": "The default path files Configuration B (the reference survey's own workers at the roster's sex mix); a carry through stature alone or through the operators' predicted dimensions files C; the full conditional distribution given stature and weight files G.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": null,
+  "leak": null,
+  "duplicate_check": null,
+  "judge": null,
+  "returned": [],
+  "resume": "stage 2: write default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet and prompt.txt to precut exit 0; prototype in scratchpad t256/menu.py and p2.json",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "seed": "DA06 number (START_HERE); the seed's world is not used"
+}
