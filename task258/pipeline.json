@@ -1,7 +1,7 @@
 {
   "task": "task258",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "product-analytics / metric-definition-measurement-science",
   "objective": "descriptive-distribution",
   "stage": 2,
@@ -15,7 +15,7 @@
   "duplicate_check": null,
   "judge": null,
   "returned": [],
-  "resume": "stage 2: default path, ladder on paper, fork table, closure, asks, prompt; precut",
+  "resume": "stage 2: the ladder settled on paper in generator/ladder_sketch.py (playbook effect from the past engagements: delay settles at 240 ms, load time x0.48, ratio of medians 0.48 for the delay, whole-paint ratio 0.70; properties tuned so rung 1 (own-image loads above 2.5 s) files Hearth, rungs 2 and 3 (whole-paint cut, per-part ratios) Ledger, the golden Pantry, margins 1.27x to 2.8x; parameters: Ledger 38M loads a month at 0.62 own-image, Pantry delay median 3,600 ms, Trailhead TTFB 1,100 ms). Next: default path, stump sentence, three rules, readability screen, fork table, closure, asks (an image egress ask with silent devices), prompt, precut. Paused for task124 (the author's request: harden its stumps).",
   "approved": null,
   "delivered": null,
   "portal": null,
