@@ -1,9 +1,19 @@
 # perssathya: where work stopped
 
-Updated 2026-10-13 (task131 shipped). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
-task230 (2026-10-12), task129, task229 and task131 (2026-10-13) are SHIPPED and wait on the portal; task123's
-determinism repair is RESHIPPED. Next in wave 1: task228 waits on the author's call (a fifth architecture and a G16
-waiver), so task122's re-root (Experiment & Causal) goes first.
+Updated 2026-10-13 (task122 re-rooted and drawn). Work is on `main` (one branch); each build's state is in its
+`pipeline.json`. task230 (2026-10-12), task129, task229 and task131 (2026-10-13) are SHIPPED and wait on the
+portal; task123's determinism repair is RESHIPPED. In wave 1, task122 is DRAWN and in stage 2; task228 waits on the
+author's call (a fifth architecture and a G16 waiver).
+
+**task122: DRAWN 2026-10-13 (card v3, the slot's second built architecture), stage 2.**
+- Varnmark Therapeutics' 52-week phase 2b of VMK-4410, an aldosterone synthase inhibitor, in albuminuric CKD
+  (Biomedical & Clinical Research, longitudinal-outcomes-repeated-measures x Experiment & Causal, a domain never
+  built). Call: which of 5, 10, 20 and 40 mg goes into the phase 3, judged on the eGFR difference from placebo
+  after 36 months. Golden 20 mg (4 mL/min/1.73 m2; 40 mg 3, 10 mg 2, 5 mg 1). The field's two-slope model with the
+  chronic phase from month 3 files 40 mg, because diuretics eased from week 12 let the higher doses' early fall
+  partly recover and that recovery reads as chronic slope; the week-52 change files 5 mg.
+- **Resume:** stage 2 from `pipeline.json` (`resume`); the arm-mean ladder and the parameter search are in the
+  design note's Draw. v2's pack, goldens and reports are removed from the tree and kept in history.
 
 **task131: SHIPPED 2026-10-13 (architecture 2, tariff evaluation); waiting on the portal.**
 - Murrandi Regional Power's summer 2025-26 trial of three peak-window designs (Energy Systems & Utilities,

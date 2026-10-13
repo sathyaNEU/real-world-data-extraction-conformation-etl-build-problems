@@ -1,71 +1,56 @@
 {
-  "task": "task122",
-  "domain": "product-analytics",
-  "objective": "experiment-causal",
-  "stage": "retired",
-  "stage_name": "retired after a Gate G send-back; DS11 takes the slot",
-  "updated": "2026-10-11",
-  "stump": "A competent solver scores all six registered policies with the session-weighted estimator that alone reproduces the nine archived carousel tests, takes the charter's lift as the orders the arm's buyers place over the test (which nets the velocity boost's brought-forward watch-list orders), reads condition (b) in the eight platform-by-tenure cells on the render log's ordered_tiles and commits the Q1 2027 slot to C, the session-sequence model, at 9.8 extra orders per 1,000 carousel sessions; the step that lands it there is taking the logger's in-session tile orders as the charter's carousel order rate, when the charter counts every order placed from the tiles an arm served and buyers under every other ranker come back to order from a tile left on screen after the session closes (credited to the new session, so only the listing ties the order to its tile), which puts C's rate in app 0-29 3.8 per cent below the incumbent's, so C fails (b) and E, at 5.7, is the largest lift that clears every condition.",
-  "harden_loops": 3,
-  "solver_rounds": [
-    {
-      "label": "round 1, plain",
-      "date": "2026-10-09",
-      "score": 89.8,
-      "landed": true,
-      "cracked": 6,
-      "items": 8
-    },
-    {
-      "label": "round 2, plain",
-      "date": "2026-10-09",
-      "score": 48.7,
-      "landed": false,
-      "cracked": 3,
-      "items": 8
-    },
-    {
-      "label": "round 3, plain",
-      "date": "2026-10-09",
-      "score": 51.1,
-      "landed": false,
-      "cracked": 4,
-      "items": 8
-    },
-    {
-      "label": "round 4, plain",
-      "date": "2026-10-09",
-      "score": 46.8,
-      "landed": false,
-      "cracked": 2,
-      "items": 8
-    },
-    {
-      "label": "round 5, plain",
-      "date": "2026-10-09",
-      "score": 48.0,
-      "landed": false,
-      "cracked": 2,
-      "items": 8
-    },
-    {
-      "label": "round 5, skeptic",
-      "date": "2026-10-09",
-      "score": 45.6,
-      "landed": false,
-      "cracked": 2,
-      "items": 8
-    }
-  ],
-  "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
-  },
-  "approved": "2026-10-09 (checkpoint B waived by the author; heart WARN)",
-  "delivered": null,
-  "portal": null,
-  "source_note": "analytical_tasks/05_decision_support/DS01_carousel-slot-library-fill-off-slate.md",
-  "status": "FAILED_TO_STUMP",
-  "owner": "perssathya"
+ "task": "task122",
+ "owner": "perssathya",
+ "status": "DESIGN",
+ "domain": "biomedical-clinical-research",
+ "objective": "experiment-causal",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-13",
+ "stump": "A competent solver fits each dose's eGFR with the field's two-slope model, an acute effect to month 3 and a chronic slope after it, carries the chronic slope to month 36 and files 40 mg at about 6 mL/min/1.73 m2 above placebo; the step that lands it there is starting the chronic slope at month 3, when the patients whose eGFR fell most on 20 and 40 mg had their loop diuretics eased only from week 12 and recovered part of the fall over the following weeks, so a slope from month 3 carries that one-off recovery forward for three years; taken from week 24, after the recovery, the slope leaves 20 mg furthest above placebo at month 36 (4) and 40 mg at 3.",
+ "architecture": 2,
+ "card_architecture": "v3",
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "task228 v1 lineage 0.08"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [
+  {
+   "date": "2026-10-13",
+   "portal": "FAILED_TO_STUMP (v2, retired 2026-10-10 after a Gate G send-back, never submitted)",
+   "repair": "design: re-root under the 10/10 rules",
+   "commit": ""
+  }
+ ],
+ "resume": "stage 2: readability screen, fork table, ladder on the tuned parameters, closure table, literal reader, oracles, ask sheet, prompt.txt, precut",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "earlier": {
+  "v2": {
+   "domain": "product-analytics",
+   "objective": "experiment-causal",
+   "stage_name": "retired after a Gate G send-back; DS11 takes the slot",
+   "updated": "2026-10-11",
+   "harden_loops": 3,
+   "source_note": "analytical_tasks/05_decision_support/DS01_carousel-slot-library-fill-off-slate.md"
+  }
+ }
 }
