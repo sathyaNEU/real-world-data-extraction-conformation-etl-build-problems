@@ -1,7 +1,7 @@
 {
   "task": "task454",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science",
   "objective": "etl",
   "stage": 2,
@@ -10,12 +10,26 @@
   "stump": "The default path proposes atypical antipsychotics because it fills every unpriced NDC with its product's AAC, costing the unit-dose cartons long-term care pharmacies dispense at the retail bottle's price; costing each unpriced NDC from priced NDCs of the same package type proposes anticonvulsants.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "0.08 (task93 v3)", "note": "drawn 2026-10-13: guard WARN (pattern reused against task449, Gate G against task452, objective overuse, question form against task453), answered in the Draw"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.08 (task93 v3)",
+    "note": "drawn 2026-10-13: guard WARN (pattern reused against task449, Gate G against task452, objective overuse, question form against task453), answered in the Draw"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: write the default path, stump sentence, three rules, screen, fork table, ladder, closure, literal reader, oracles and ask sheet; prototype the generator's class spreads; precut",
+  "resume": "stage 2, paused 2026-10-13 for the task448 determinism repair. The generator builds green (86 checks, verify, byte-identical): the package-type stump holds (golden Anticonvulsants 1.54 over Antipsychotics on every package-aware fill; the product-rate fill proposes Antipsychotics 1.22 to 1.25 with Anticonvulsants third or fourth). Next: put the extract on a paid-date basis (transactions paid 1 April 2026 to 20 April 2027) with late claims (about 2 per cent, 30 to 200 days); simulate FY2026 at claim level so the FY2026 summary holds transactions paid through 20 April 2026 and the later FY2026 transactions sit only in the extract (the ask's second device, a clock against the summary's cutoff, with the 1 to 20 April 2026 overlap); drop C.5's 'classes as the list in force' sentence (it adjudicates the ask's label device); pin 'the claims paid through 20 April 2027' in the prompt; then write the design sections and run precut.",
   "approved": null,
   "delivered": null,
   "portal": null,
