@@ -65,7 +65,7 @@
   "Dickinson": "190",
   "Marion": "150",
   "other four": "240",
-  "total": "1,610"
+  "total": "1,600"
  },
  "default_five": [
   "Corvane Home Loans",
@@ -110,6 +110,133 @@
   "2.2"
  ],
  "nearest": 10,
+ "nearest_total": 100,
  "years": "2024 and 2025",
- "program_year_span": "1 July 2025 to 30 June 2026"
+ "program_year_span": "1 July 2025 to 30 June 2026",
+ "stack": {
+  "stacked": "3,770",
+  "closed_2024_2025": "2,628",
+  "rerecordings": "17",
+  "quitclaim_pairings": "81",
+  "second_mortgages": "10",
+  "land_only_records": "10",
+  "seller_notes": "37",
+  "lender_mortgages": "2,473",
+  "nonreporters": {
+   "Mennwell Credit Union": {
+    "rows": "126",
+    "rerecord": "2",
+    "qcd": "3",
+    "second": "0",
+    "land_row": "0",
+    "seller_note": "0",
+    "mortgage": "121"
+   },
+   "Eisenbrandt State Bank": {
+    "rows": "51",
+    "rerecord": "1",
+    "qcd": "1",
+    "second": "0",
+    "land_row": "2",
+    "seller_note": "0",
+    "mortgage": "47"
+   },
+   "Kessinger FCU": {
+    "rows": "81",
+    "rerecord": "0",
+    "qcd": "1",
+    "second": "0",
+    "land_row": "0",
+    "seller_note": "0",
+    "mortgage": "80"
+   },
+   "Heidebrecht State Bank": {
+    "rows": "128",
+    "rerecord": "1",
+    "qcd": "43",
+    "second": "0",
+    "land_row": "2",
+    "seller_note": "0",
+    "mortgage": "82"
+   },
+   "Weyrauch State Bank": {
+    "rows": "166",
+    "rerecord": "3",
+    "qcd": "9",
+    "second": "0",
+    "land_row": "0",
+    "seller_note": "0",
+    "mortgage": "154"
+   }
+  },
+  "reporters_by_group": {
+   "P": {
+    "rows": "1,701",
+    "rerecord": "5",
+    "qcd": "12",
+    "second": "10",
+    "land_row": "1"
+   },
+   "S": {
+    "rows": "248",
+    "rerecord": "4",
+    "qcd": "8",
+    "second": "0",
+    "land_row": "0"
+   }
+  }
+ },
+ "capture_exact": {
+  "with the deed": "0.9665",
+  "after the deed": "0.5975"
+ },
+ "reporters": {
+  "all": "46",
+  "with_the_deed": "42",
+  "after_the_deed": "4",
+  "ratios_with_the_deed": [
+   "0.913",
+   "1.000"
+  ],
+  "ratios_after_the_deed": [
+   "0.593",
+   "0.607"
+  ]
+ },
+ "nonreporter_unrounded": {
+  "Weyrauch State Bank": "257.8",
+  "Mennwell Credit Union": "202.5",
+  "Heidebrecht State Bank": "137.2",
+  "Kessinger FCU": "82.8",
+  "Eisenbrandt State Bank": "78.7"
+ },
+ "two_year_unrounded": {
+  "Saline": "1,359.1",
+  "McPherson": "577.5",
+  "Dickinson": "361.9",
+  "Marion": "269.5",
+  "other four": "441.8"
+ },
+ "program_year_unrounded": {
+  "Saline": "710.9",
+  "McPherson": "311.1",
+  "Dickinson": "191.8",
+  "Marion": "151.9",
+  "other four": "241.9",
+  "total": "1,607.6"
+ },
+ "program_year_path": {
+  "mortgages": "1,387",
+  "with_the_deed": "1,117",
+  "after_the_deed": "270",
+  "inhouse_lenders": "12",
+  "inhouse_from_6_april_2026": "201",
+  "inhouse_from_6_april_2026_with_the_deed": "201",
+  "inhouse_earlier_2026": "79",
+  "inhouse_earlier_2026_with_the_deed": "0",
+  "inhouse_lift": "2.05",
+  "other_lift": "0.92",
+  "inhouse_lift_before": "1.08",
+  "other_lift_before": "1.14"
+ }
 }

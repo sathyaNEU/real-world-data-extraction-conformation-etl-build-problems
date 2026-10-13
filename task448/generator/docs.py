@@ -111,7 +111,8 @@ def write_guidelines(path):
              "arm's-length sale, secured by a first lien on the home, whatever the buyer's plans for living in it.")
     N("7.4", "<i>Arm's-length sale</i>: a sale between parties who are not related, on market terms. A transfer "
              "between a person and that person's trust, relative or business is not an arm's-length sale.")
-    N("7.5", "A mortgage is <i>made</i> on the day it closes.")
+    N("7.5", "A mortgage is <i>made</i> on the day it closes. Every mortgage a lender makes is counted, including "
+             "any that no report or data file shows.")
     s.append(Spacer(1, 8))
     s.append(Paragraph("Questions on these guidelines go to the program director.", G_SUB))
     doc.build(s, onFirstPage=_gframe, onLaterPages=_gframe)

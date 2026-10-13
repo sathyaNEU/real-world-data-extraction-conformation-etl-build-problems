@@ -5,6 +5,7 @@ compares them with the golden workbook, the golden deck and figures.json.
     python3 task448/generator/verify.py [target] [golden]
 """
 import json
+import math
 import os
 import sys
 
@@ -144,6 +145,68 @@ def main(target=None, golden=None):
         key = c if c in FOUR else "OTHER"
         py[key] = py.get(key, 0.0) + k / cap["P" if packaged else "S"]
     py["TOTAL"] = sum(py.values())
+    # SF13: guidelines 7.5 count every mortgage a lender makes, including any no report or data file shows
+    sf13 = "every mortgage a lender makes is counted, including any that no report or data file shows" in rules
+    # SF14: the completed lenders at a capture measured within each county and route land in the same bins
+    lr_tot = dict(q.execute("""SELECT nmls, count(*) FROM mtg WHERE instr BETWEEN DATE '2024-01-01' AND
+                  DATE '2025-12-31' GROUP BY nmls""").fetchall())
+    byc = q.execute("""SELECT nmls, county, count(*) FROM mtg WHERE instr BETWEEN DATE '2024-01-01' AND
+                  DATE '2025-12-31' GROUP BY ALL""").fetchall()
+    rt = {n: ("P" if pk >= 0.5 else "S") for n, (_, pk) in lend.items()}
+    cn, cd = {}, {}
+    for n, c, k in byc:
+        if n in hmn:
+            cn[(rt[n], c)] = cn.get((rt[n], c), 0.0) + k
+            cd[(rt[n], c)] = cd.get((rt[n], c), 0.0) + hmn[n] * k / lr_tot[n]
+    cr = {}
+    for n, c, k in byc:
+        key = c if c in FOUR else "OTHER"
+        cr[key] = cr.get(key, 0.0) + (hmn[n] * k / lr_tot[n] if n in hmn else k / (cn[(rt[n], c)] / cd[(rt[n], c)])
+                                      if cd.get((rt[n], c)) else k / cap[rt[n]])
+    sf14 = all(rnd(cr[k]) == rnd(two[k]) for k in two)
+    # SF15: the reporters' July to December 2025 from their 2025 HMDA counts lands in the same bins
+    h25 = dict(q.execute("""SELECT r.nmls, count(*) FROM read_csv('%s', all_varchar=true) l JOIN r ON r.lei = l.lei
+              WHERE county_code IN %s AND action_taken = '1' AND loan_purpose = '1' AND lien_status = '1'
+              AND activity_year = '2025' GROUP BY ALL""" % (t("hmda_lar_kansas_2024_2025.csv"), str(FIPS))).fetchall())
+    y25 = dict(q.execute("""SELECT nmls, count(*) FROM mtg WHERE instr BETWEEN DATE '2025-01-01' AND
+              DATE '2025-12-31' GROUP BY nmls""").fetchall())
+    hh = {}
+    for n, c, packaged, instr in q.execute("""SELECT nmls, county, packaged, instr FROM mtg
+            WHERE instr BETWEEN DATE '2025-07-01' AND DATE '2026-06-30'""").fetchall():
+        key = c if c in FOUR else "OTHER"
+        if n in hmn and str(instr) <= "2025-12-31":
+            hh[key] = hh.get(key, 0.0) + h25.get(n, 0) / y25[n]
+        else:
+            hh[key] = hh.get(key, 0.0) + 1.0 / cap["P" if packaged else "S"]
+    hh["TOTAL"] = sum(hh.values())
+    rk = lambda k, x: (int(math.floor(x / 100.0 + 0.5) * 100) if k == "TOTAL" else rnd(x))
+    sf15 = all(rk(k, hh[k]) == rk(k, py[k]) for k in py)
+    # SF16: the unweighted mean of the reporters' own ratios within each group lands Ask A in the same bins
+    ratios = {}
+    for n, hmc, rows_, route_ in q.execute("SELECT nmls, n, rows, route FROM rep").fetchall():
+        ratios.setdefault(route_, []).append(rows_ / hmc)
+    capm = {k: sum(v) / len(v) for k, v in ratios.items()}
+    pm = {}
+    for c, packaged, k in q.execute("""SELECT county, packaged, count(*) FROM mtg
+            WHERE instr BETWEEN DATE '2025-07-01' AND DATE '2026-06-30' GROUP BY ALL""").fetchall():
+        key = c if c in FOUR else "OTHER"
+        pm[key] = pm.get(key, 0.0) + k / capm["P" if packaged else "S"]
+    pm["TOTAL"] = sum(pm.values())
+    sf16 = all(rk(k, pm[k]) == rk(k, py[k]) for k in py)
+    print("verify: SF14 county-and-route capture %s; SF15 HMDA half-year %s" % (
+        ", ".join("%s %.1f" % (k, cr[k]) for k in two), ", ".join("%s %.1f" % (k, hh[k]) for k in py)))
+    # the write-up's path: the rows the stack leaves out, recomputed
+    st = dict(zip(("stacked", "window", "rerec", "qcd"), q.execute("""SELECT count(*),
+              count(*) FILTER (WHERE instr BETWEEN DATE '2024-01-01' AND DATE '2025-12-31'),
+              count(*) FILTER (WHERE rerec AND instr BETWEEN DATE '2024-01-01' AND DATE '2025-12-31'),
+              count(*) FILTER (WHERE qcd AND NOT rerec AND instr BETWEEN DATE '2024-01-01' AND DATE '2025-12-31')
+              FROM fr""").fetchone()))
+    win = "instr BETWEEN DATE '2024-01-01' AND DATE '2025-12-31'"
+    st["second"] = q.execute("SELECT count(*) FROM fr WHERE NOT qcd AND NOT rerec AND %s" % win).fetchone()[0] - \
+        q.execute("SELECT count(*) FROM f1 WHERE %s" % win).fetchone()[0]
+    st["mortgage"] = q.execute("SELECT count(*) FROM mtg WHERE %s" % win).fetchone()[0]
+    st["seller"] = q.execute("SELECT count(*) FROM f1 WHERE nmls IS NULL AND %s" % win).fetchone()[0]
+    st["land"] = q.execute("SELECT count(*) FROM f1 WHERE nmls IS NOT NULL AND %s" % win).fetchone()[0] - st["mortgage"]
     # compare with the goldens
     wb = openpyxl.load_workbook(os.path.join(golden, "rural_lender_recruitment_2027.xlsx"), data_only=True)
     ws = wb["Recruitment order"]
@@ -158,7 +221,7 @@ def main(target=None, golden=None):
     for i, k in enumerate(FOUR + ("OTHER",)):
         if wc.cell(4 + i, 2).value != rnd(two[k]) or wc.cell(4 + i, 3).value != rnd(py[k]):
             fail.append("county %s" % k)
-    if wc.cell(9, 3).value != rnd(py["TOTAL"]):
+    if wc.cell(9, 3).value != rk("TOTAL", py["TOTAL"]):
         fail.append("program-year total")
     from pptx import Presentation
     ch = [s for s in Presentation(os.path.join(golden, "rural_lender_recruitment_2027.pptx")).slides[0].shapes
@@ -171,6 +234,21 @@ def main(target=None, golden=None):
     if not sf12:
         fail.append("SF12: guidelines 2.2's recorded county, the hybrid's bins, or HMDA's codes missing four figures")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
+    fs = fig["stack"]
+    want = {"stacked": fs["stacked"], "window": fs["closed_2024_2025"], "rerec": fs["rerecordings"],
+            "qcd": fs["quitclaim_pairings"], "second": fs["second_mortgages"], "land": fs["land_only_records"],
+            "seller": fs["seller_notes"], "mortgage": fs["lender_mortgages"]}
+    bad = [k for k, v in want.items() if int(v.replace(",", "")) != st[k]]
+    if bad:
+        fail.append("the write-up's stack %s" % ", ".join("%s %s against %s" % (k, st[k], want[k]) for k in bad))
+    if not sf13:
+        fail.append("SF13: guidelines 7.5's count of every mortgage a lender makes")
+    if not sf14:
+        fail.append("SF14: the county-and-route capture leaves the county figures' bins")
+    if not sf15:
+        fail.append("SF15: the reporters' HMDA half-year leaves the program year's bins")
+    if not sf16:
+        fail.append("SF16: the mean of the reporters' ratios leaves the program year's bins")
     if fig["capture_packaged"] != "%d" % round(100 * cap["P"]) or fig["capture_separate"] != "%d" % round(100 * cap["S"]):
         fail.append("captures in figures.json")
     print("verify: capture %.4f packaged, %.4f separate; five %s; sixth %s %.1f" % (

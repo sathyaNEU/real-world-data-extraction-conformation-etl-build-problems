@@ -24,6 +24,10 @@ def r10(x):
     return int(np.floor(x / 10.0 + 0.5) * 10)
 
 
+def r100(x):
+    return int(np.floor(x / 100.0 + 0.5) * 100)
+
+
 def _date(s):
     s = str(s)
     if "/" in s:
@@ -223,7 +227,7 @@ def captures(B):
     return capture(B, stratum=route), route
 
 
-def market_two_year(B, reporters="share", dedupe=True, hmda_county=False, sellers=False, keep=None):
+def market_two_year(B, reporters="share", dedupe=True, hmda_county=False, sellers=False, keep=None, caps=None):
     """Home-purchase first liens on homes in each county closed in 2024 and 2025, every lender: the reporters' HMDA
     counts spread over the counties their recorded mortgages stand in; the others' feed rows over their route's
     capture."""
@@ -234,6 +238,8 @@ def market_two_year(B, reporters="share", dedupe=True, hmda_county=False, seller
         rt = route_of(B)
         route = lambda n: "P" if rt.get(n, 1.0) >= 0.5 else "S"
         c = capture(B, lambda F: F.mortgage & keep(F), stratum=route)
+    if caps is not None:
+        c = caps
     sel = F.mortgage if dedupe else (F.mortgage | F.land_row)
     if keep is not None:
         sel = sel & keep(F)
@@ -277,24 +283,127 @@ def market_two_year(B, reporters="share", dedupe=True, hmda_county=False, seller
     return out
 
 
-def program_year(B, per_record=True, own_capture=False, datecol="MTG_INSTR_DATE"):
-    """Home-purchase first liens on homes in each county closed 1 July 2025 to 30 June 2026, every lender: each
-    recorded mortgage over the capture of the route it was recorded by."""
-    c, route = captures(B)
+def market_two_year_alloc(B, mode):
+    """The two-year county figures with the lenders HMDA does not hold placed another way: 'county_route', each
+    one's mortgages in a county over a capture measured on the reporters within that county and route (a reporter's
+    HMDA count spread over the counties its recorded mortgages stand in); 'county_route_hmda', the same capture on
+    HMDA's county codes; 'round_first', each one's completed count rounded to the nearest 10, then spread over its
+    recorded counties. The reporters as in the golden."""
     F = B["F"]
-    d = F[F.mortgage & F[datecol].between(*PY)]
+    c, route = captures(B)
+    d = F[F.mortgage & F.MTG_INSTR_DATE.between(*WIN)]
+    hm = B["hmda"]
+    num, den = {}, {}
+    for n in sorted(B["reporter_nmls"]):
+        lei = B["lei_of"][n]
+        byc = d[d.nmls == n].groupby("county").size()
+        for k in REGION:
+            key = (route(n), k)
+            num[key] = num.get(key, 0.0) + float(byc.get(k, 0))
+            if mode == "county_route_hmda":
+                den[key] = den.get(key, 0.0) + float(B["hmda_county"].get((lei, k), 0))
+            elif byc.sum():
+                den[key] = den.get(key, 0.0) + float(hm[lei]) * float(byc.get(k, 0)) / float(byc.sum())
+    cc = {k: num[k] / den[k] for k in num if den.get(k) and num[k]}
+    out = {k: 0.0 for k in REGION}
+    for n, g in d.groupby("nmls"):
+        lei = B["lei_of"].get(n, "")
+        byc = g.groupby("county").size()
+        if lei in hm.index:
+            tot = float(hm[lei])
+            for k, v in byc.items():
+                out[k] += tot * v / byc.sum()
+        elif mode == "round_first":
+            tot = float(r10(byc.sum() / c[route(n)]))
+            for k, v in byc.items():
+                out[k] += tot * v / byc.sum()
+        else:
+            for k, v in byc.items():
+                out[k] += v / cc.get((route(n), k), c[route(n)])
+    return out
+
+
+def program_year(B, per_record=True, own_capture=False, datecol="MTG_INSTR_DATE", hmda_half=False, caps=None,
+                 sel=None):
+    """Home-purchase first liens on homes in each county closed 1 July 2025 to 30 June 2026, every lender: each
+    recorded mortgage over the capture of the route it was recorded by. hmda_half: the reporters' July to December
+    2025 taken instead from their 2025 HMDA counts, spread over the counties and half-years their recorded 2025
+    mortgages closed in."""
+    c, route = captures(B)
+    if caps is not None:
+        c = caps
+    F = B["F"]
+    d = F[(sel(F) if sel else F.mortgage) & F[datecol].between(*PY)]
     own = {}
     if own_capture:
         feed = counts(B, lambda F: F.mortgage)
         for n in B["reporter_nmls"]:
             own[n] = float(feed.get(n, 0)) / float(B["hmda"][B["lei_of"][n]])
     out = {k: 0.0 for k in REGION}
+    half = (dt.date(2025, 7, 1), dt.date(2025, 12, 31))
     for r in d.itertuples():
+        if hmda_half and r.nmls in B["reporter_nmls"] and half[0] <= r.MTG_INSTR_DATE <= half[1]:
+            continue
         rr = ("P" if r.packaged else "S") if per_record else route(r.nmls)
         cc = c[rr]
         if own_capture and r.nmls in own and rr == route(r.nmls):
             cc = own[r.nmls]
         out[r.county] += 1.0 / cc
+    if hmda_half:
+        y25 = F[F.mortgage & F.MTG_INSTR_DATE.between(dt.date(2025, 1, 1), dt.date(2025, 12, 31))]
+        for n in sorted(B["reporter_nmls"]):
+            mine = y25[y25.nmls == n]
+            if not len(mine):
+                continue
+            h25 = float(B["hmda_year"].get((B["lei_of"][n], "2025"), 0))
+            late = mine[mine.MTG_INSTR_DATE >= half[0]].groupby("county").size()
+            for k, v in late.items():
+                out[k] += h25 * v / len(mine)
+    return out
+
+
+def capture_family(B):
+    """The captures within each way of recording under each estimator a reader might take: the ratio of the group's
+    totals (the golden), the unweighted mean of the reporters' own ratios, that mean over reporters with 20 or more
+    loans, the median of the ratios, and, as bounds, the highest and lowest single after-deed reporter's ratio; and
+    the ratio of totals with the second mortgages counted."""
+    F = B["F"]
+    c, route = captures(B)
+    feed = counts(B, lambda F: F.mortgage)
+    feed2 = counts(B, lambda F: F.mortgage | F.second)
+    rat = {"P": [], "S": []}
+    for n in sorted(B["reporter_nmls"]):
+        h = float(B["hmda"][B["lei_of"][n]])
+        rat[route(n)].append((float(feed.get(n, 0)) / h, h, n))
+    fam = {"pooled": dict(c)}
+    fam["mean"] = {k: float(np.mean([x for x, _, _ in v])) for k, v in rat.items()}
+    fam["mean20"] = {k: float(np.mean([x for x, h, _ in v if h >= 20])) for k, v in rat.items()}
+    fam["median"] = {k: float(np.median([x for x, _, _ in v])) for k, v in rat.items()}
+    fam["high_after"] = {"P": c["P"], "S": max(x for x, _, _ in rat["S"])}
+    fam["low_after"] = {"P": c["P"], "S": min(x for x, _, _ in rat["S"])}
+    tot = {"P": [0.0, 0.0], "S": [0.0, 0.0]}
+    for n in B["reporter_nmls"]:
+        tot[route(n)][0] += float(feed2.get(n, 0))
+        tot[route(n)][1] += float(B["hmda"][B["lei_of"][n]])
+    fam["seconds_kept"] = {k: v[0] / v[1] for k, v in tot.items()}
+    return fam
+
+
+def stack(B):
+    """The recorder rows closed in 2024 and 2025 and what leaves them on the way to lender purchase mortgages, for
+    every lender and for each shortlisted lender HMDA does not hold."""
+    F = B["F"]
+    w = F[F.MTG_INSTR_DATE.between(*WIN)]
+    flags = ("rerecord", "qcd", "second", "land_row", "seller_note", "mortgage")
+    out = {"stacked": len(F), "window": len(w)}
+    out.update({k: int(w[k].sum()) for k in flags})
+    per = {}
+    for n, name in B["short"]:
+        if B["lei_of"].get(n, "") in B["hmda"].index:
+            continue
+        g = w[w.nmls == n]
+        per[name] = dict(rows=len(g), **{k: int(g[k].sum()) for k in flags})
+    out["lenders"] = per
     return out
 
 

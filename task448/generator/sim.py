@@ -160,6 +160,21 @@ def person(fk, rng, county):
     return "%s %s" % (last, a)
 
 
+# in a sale between unrelated parties the seller and buyer do not share a surname; a draw that pairs two is given
+# another surname for the seller, chosen from the record itself so no draw is spent on it
+UNRELATED = ["ANDERSON", "BAKER", "COLLINS", "DAVIS", "ELLIS", "FOSTER", "GRAHAM", "HARRIS", "JENSEN", "KELLER",
+             "LARSON", "MILLER", "NELSON", "OWENS", "PARKER", "REYNOLDS", "SCHMIDT", "THOMPSON", "WALKER", "YOUNG"]
+
+
+def unrelated(seller, buyer, county, close):
+    a, b = seller.split()[0], buyer.split()[0]
+    if a != b:
+        return seller
+    k = zlib.crc32(("%s|%s|%s" % (seller, county, close)).encode())
+    alt = [x for x in UNRELATED if x != b]
+    return " ".join([alt[k % len(alt)]] + seller.split()[1:])
+
+
 def place(rng, c, across=True):
     """Where a home in county c stands and how it is addressed and described."""
     ax = W.MAIL_ACROSS.get(c)
@@ -249,6 +264,7 @@ def lender_records(x):
                 if rec["occ"] == 3 and rng.random() < 0.45:
                     rec["buyer"] = "%s %s LLC" % (rec["buyer"].split()[0],
                                                    rng.choice(["PROPERTIES", "RENTALS", "HOLDINGS", "INVESTMENTS"]))
+                rec["seller"] = unrelated(rec["seller"], rec["buyer"], c, d)
                 rec.update(recording(rng, x, d))
                 rows.append(rec)
     D = pd.DataFrame(rows)
@@ -376,6 +392,7 @@ def seller_notes(LX):
                 rec.update(place(rng, c, across=False))
                 rec["seller"] = person(fk, rng, c)
                 rec["buyer"] = person(fk, rng, c)
+                rec["seller"] = unrelated(rec["seller"], rec["buyer"], c, d)
                 rec["price"] = round(float(np.exp(rng.normal(np.log(W.PRICE[c] * 0.8), 0.45))) / 100) * 100
                 rec["amount"] = int(round(rec["price"] * float(rng.choice([0.7, 0.8, 0.85, 0.9])) / 50) * 50)
                 rows.append(rec)

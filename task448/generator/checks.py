@@ -1,5 +1,5 @@
 """task448 assertions: the input gates, the three rules (R1 to R3c), the ladder with every rung computed from the
-pack, the separation and the grid, the semantic fork rows SF1 to SF11 and the estimator family inside every graded
+pack, the separation and the grid, the semantic fork rows SF1 to SF15 and the estimator family inside every graded
 bin, the asks' devices and crackers, mess neutrality item by item, consistency between the deliverables, and the
 realism sweep. Run by build.py after every build; exits on the first failure."""
 import datetime as dt
@@ -40,8 +40,17 @@ def edge(x):
     return 5.0 - abs(x - C.r10(x))
 
 
+def rk(k, x):
+    """the prompt's rounding: the program year's eight-county total to the nearest 100, every other count to 10"""
+    return C.r100(x) if k == "total" else C.r10(x)
+
+
+def edge_k(k, x):
+    return (50.0 - abs(x - C.r100(x))) if k == "total" else edge(x)
+
+
 def same_bins(a, b, keys):
-    return all(C.r10(a[k]) == C.r10(b[k]) for k in keys)
+    return all(rk(k, a[k]) == rk(k, b[k]) for k in keys)
 
 
 def run(target, golden, world=None, meta_path=None):
@@ -286,7 +295,7 @@ def run(target, golden, world=None, meta_path=None):
     A, PYf = C.ask_figures(two_g, py_g)
     ok(min(edge(v) for v in A.values()) >= 2.0, "Ask B every figure 2 or more from a rounding edge",
        " ".join("%.1f" % v for v in A.values()))
-    ok(min(edge(v) for v in PYf.values()) >= 2.0, "Ask A every figure 2 or more from a rounding edge",
+    ok(min(edge_k(k, v) for k, v in PYf.items()) >= 2.0, "Ask A every figure 2 or more from a rounding edge",
        " ".join("%.1f" % v for v in PYf.values()))
     A_alt, _ = C.ask_figures(C.market_two_year(B, reporters="route"), py_g)
     ok(same_bins(A, A_alt, A), "Ask B the reporters at their route's capture: same bins")
@@ -304,12 +313,12 @@ def run(target, golden, world=None, meta_path=None):
     miss_d = [k for k in A if C.r10(A_d[k]) != C.r10(A[k])]
     ok(len(miss_d) >= 1, "Ask B device D6 alone (farmsteads twice) misses a figure", ", ".join(miss_d))
     _, P_cr = C.ask_figures(two_g, C.program_year(B, per_record=False))
-    ok(all(C.r10(P_cr[k]) != C.r10(PYf[k]) for k in PYf), "Ask A cracker (each lender's 2024-25 route carried "
+    ok(all(rk(k, P_cr[k]) != rk(k, PYf[k]) for k in PYf), "Ask A cracker (each lender's 2024-25 route carried "
        "into 2026) misses every figure", " ".join("%.0f/%.0f" % (P_cr[k], PYf[k]) for k in PYf))
     A_s, _ = C.ask_figures(C.market_two_year(B, sellers=True), py_g)
     ok(any(C.r10(A_s[k]) != C.r10(A[k]) for k in A), "Ask B seller-carried notes counted (7.2) moves a figure")
     _, P_rd = C.ask_figures(two_g, C.program_year(B, datecol="MTG_REC_DATE"))
-    ok(any(C.r10(P_rd[k]) != C.r10(PYf[k]) for k in PYf), "SF10 Ask A the recording date for the closing moves a figure")
+    ok(any(rk(k, P_rd[k]) != rk(k, PYf[k]) for k in PYf), "SF10 Ask A the recording date for the closing moves a figure")
     ok(C.estimate(B) == gold, "SF10 the main call never reads the program year")
     wbd = openpyxl.load_workbook(os.path.join(target, DC.DICTIONARY), read_only=True)
     dict_rows = {(r[0], r[1]): r[2] for r in wbd["Fields"].iter_rows(min_row=2, values_only=True)}
@@ -357,6 +366,86 @@ def run(target, golden, world=None, meta_path=None):
        " ".join("%.1f" % sf4[n] for n in graded))
     ok(abs(sum(two_g.values()) - sum(gold.values())) > 0 and sum(two_g.values()) > sum(gold.values()),
        "Ask B the eight counties hold more than the twelve shortlisted lenders made")
+    ok("every mortgage a lender makes is counted, including any that no report or data file shows" in flat,
+       "SF13 pin: guidelines 7.5 count every mortgage a lender makes, including any no report or data file shows")
+    ok(set(names(t11)) != set(GOLD) and t11[4][0] == SIXTH,
+       "SF13 the twelve ranked on the file's rows as one instrument (no lender completed) file a wrong five",
+       " | ".join("%s %.0f" % (n.split()[0], x) for n, x in t11))
+    pool = C.lender_counts(B, "pooled")
+    tp, sp = C.five(pool)
+    ok(set(names(tp)) == expect["R1"] and C.r10(pool["Mennwell Credit Union"]) < C.r10(pool[SIXTH]),
+       "SF13 with every lender completed at the pooled capture (7.5 executed) the five stay wrong: the stump holds",
+       "Mennwell %.1f, Shunga Valley %.1f" % (pool["Mennwell Credit Union"], pool[SIXTH]))
+    A_cr2, _ = C.ask_figures(C.market_two_year_alloc(B, "county_route"), py_g)
+    ok(same_bins(A, A_cr2, A), "SF14 the completed lenders at a capture measured within each county and route: "
+       "same bins", " ".join("%.1f" % A_cr2[k] for k in A))
+    A_ch, _ = C.ask_figures(C.market_two_year_alloc(B, "county_route_hmda"), py_g)
+    ok(any(C.r10(A_ch[k]) != C.r10(A[k]) for k in A), "SF14 the county capture on HMDA's codes (not the recorded "
+       "county, 2.2) moves a figure", " ".join("%.1f" % A_ch[k] for k in A))
+    hc_num, hc_den = {}, {}
+    dwin = B["F"][B["F"].mortgage & B["F"].MTG_INSTR_DATE.between(*C.WIN)]
+    for n in B["reporter_nmls"]:
+        byc = dwin[dwin.nmls == n].groupby("county").size()
+        for k in C.REGION:
+            hc_num[(route(n), k)] = hc_num.get((route(n), k), 0) + int(byc.get(k, 0))
+            hc_den[(route(n), k)] = hc_den.get((route(n), k), 0) + int(B["hmda_county"].get((B["lei_of"][n], k), 0))
+    over = [k for k in hc_num if hc_den[k] and hc_num[k] / hc_den[k] > 1.0]
+    ok(len(over) >= 3, "SF14 on HMDA's codes the file holds more of a county's loans than HMDA places there",
+       ", ".join("%s %s" % k for k in sorted(over)))
+    A_rf, _ = C.ask_figures(C.market_two_year_alloc(B, "round_first"), py_g)
+    ok(any(C.r10(A_rf[k]) != C.r10(A[k]) for k in A), "SF14 each lender's count rounded before it is spread (not "
+       "each figure from its own unrounded figure) moves a figure", " ".join("%.1f" % A_rf[k] for k in A))
+    _, P_hh = C.ask_figures(two_g, C.program_year(B, hmda_half=True))
+    ok(same_bins(PYf, P_hh, PYf), "SF15 the reporters' July to December 2025 from their 2025 HMDA counts: same bins",
+       " ".join("%.1f" % P_hh[k] for k in PYf))
+    dm = B["F"][B["F"].mortgage]
+    inh = {n for n in set(dm.nmls) if n and route(n) == "S"}
+    late = dm[dm.MTG_INSTR_DATE.between(W.SWITCH, C.PY[1]) & dm.nmls.isin(inh)]
+    early = dm[dm.MTG_INSTR_DATE.between(dt.date(2026, 1, 1), W.SWITCH - dt.timedelta(days=1)) & dm.nmls.isin(inh)]
+    ok(len(late) > 100 and late.packaged.all() and len(early) > 0 and not early.packaged.any(),
+       "SF15 the in-house lenders' mortgages closing from 6 April 2026 are all recorded with the deed, none before",
+       "%d from the switch, %d before it" % (len(late), len(early)))
+    prior = dm[dm.MTG_INSTR_DATE.between(dt.date(2025, 4, 6), dt.date(2025, 6, 30))]
+    lift_i = len(late) / (prior.nmls.isin(inh)).sum()
+    now_t = dm[dm.MTG_INSTR_DATE.between(W.SWITCH, C.PY[1]) & ~dm.nmls.isin(inh) & (dm.nmls != "")]
+    lift_t = len(now_t) / (~prior.nmls.isin(inh)).sum()
+    e25 = dm[dm.MTG_INSTR_DATE.between(dt.date(2025, 1, 1), dt.date(2025, 4, 5))]
+    e26 = dm[dm.MTG_INSTR_DATE.between(dt.date(2026, 1, 1), dt.date(2026, 4, 5))]
+    pre_i = e26.nmls.isin(inh).sum() / e25.nmls.isin(inh).sum()
+    pre_t = (~e26.nmls.isin(inh) & (e26.nmls != "")).sum() / (~e25.nmls.isin(inh) & (e25.nmls != "")).sum()
+    ok(lift_i > 1.8 and lift_t < 1.0 and abs(pre_i - pre_t) < 0.15, "SF15 the switched lenders' file rows jump with "
+       "the recording while the others' do not, both groups level before it",
+       "from 6 April %.2f against %.2f; before %.2f against %.2f" % (lift_i, lift_t, pre_i, pre_t))
+    fam = C.capture_family(B)
+    rt16 = C.route_of(B)
+    r16 = lambda n: "P" if rt16.get(n, 1.0) >= 0.5 else "S"
+    for k in ("mean", "mean20", "median", "low_after", "seconds_kept"):
+        cp = fam[k]
+        sel16 = (lambda F: F.mortgage | F.second) if k == "seconds_kept" else (lambda F: F.mortgage)
+        f16 = C.counts(B, sel16)
+        v16 = {nm: float(B["hmda"][B["lei_of"][n]]) if B["lei_of"].get(n, "") in B["hmda"].index
+               else float(f16.get(n, 0)) / cp[r16(n)] for n, nm in short}
+        t16, s16 = C.five(v16)
+        ok(names(t16) == GOLD and s16[0] == SIXTH and same_bins(v16, gold, list(gold)),
+           "SF16 capture by %s: the five, the sixth and all twelve counts in the golden's bins" % k,
+           "P %.4f S %.4f" % (cp["P"], cp["S"]))
+        A16, P16 = C.ask_figures(C.market_two_year(B, caps=cp),
+                                 C.program_year(B, caps=cp, sel=sel16 if k == "seconds_kept" else None))
+        ok(same_bins(A, A16, A), "SF16 capture by %s: Ask B in the golden's bins" % k,
+           " ".join("%.1f" % A16[x] for x in A))
+        keys16 = ["total"] if k == "median" else list(PYf)
+        ok(same_bins(PYf, P16, keys16), "SF16 capture by %s: Ask A %s in the golden's bins" % (
+            k, "total" if k == "median" else "rows and total"), " ".join("%.1f" % P16[x] for x in PYf))
+    _, P16h = C.ask_figures(two_g, C.program_year(B, caps=fam["high_after"]))
+    ok(same_bins(PYf, P16h, PYf), "SF16 the highest single after-deed ratio as a bound: Ask A in the golden's bins",
+       " ".join("%.1f" % P16h[x] for x in PYf))
+    gaps = 1731 - 1673
+    ok(fam["median"]["P"] == 1.0 and caps["P"] < 0.97,
+       "SF16 the median ratio of the with-the-deed group is 1.000 while the file misses %d of its loans" % gaps)
+    first = lambda x: x.split()[0] if x else ""
+    arm = B["F"][~B["F"].qcd & (B["F"].nmls != "")]
+    ok(not (arm.GRANTOR_NAME.map(first) == arm.GRANTEE_NAME.map(first)).any(),
+       "SF17 no lender's arm's-length sale is between parties sharing a surname (7.4's relative never arises)")
 
     # ----------------------------------------------------------------------------------- the deliverables ----
     fig = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")))
@@ -374,7 +463,7 @@ def run(target, golden, world=None, meta_path=None):
         ok(wc.cell(4 + i, 1).value == labels[i] and wc.cell(4 + i, 2).value == C.r10(A[k]) and
            wc.cell(4 + i, 3).value == C.r10(PYf[k]), "xlsx: %s figures" % labels[i],
            "%s, %s" % (wc.cell(4 + i, 2).value, wc.cell(4 + i, 3).value))
-    ok(wc.cell(9, 3).value == C.r10(PYf["total"]), "xlsx: the program year's total", str(wc.cell(9, 3).value))
+    ok(wc.cell(9, 3).value == C.r100(PYf["total"]), "xlsx: the program year's total, nearest 100", str(wc.cell(9, 3).value))
     from pptx import Presentation
     prs = Presentation(os.path.join(golden, G.PPTX))
     ch = [s for s in prs.slides[0].shapes if s.has_chart][0].chart

@@ -47,7 +47,43 @@ def analyse(target):
     r4 = C.estimate(B, sel=lambda F: F.mortgage | F.qcd)
     return dict(B=B, caps=caps, route=route, v=v, order=order, rows=rows, reporter=reporter, hm_route=hm_route,
                 fe_route=fe_route, pooled=pooled, two=two, py=py, default=default, pooled_v=pooled_v, r4=r4,
-                routes={name: route(names[name]) for name in v})
+                routes={name: route(names[name]) for name in v}, stack=C.stack(B), trail=trail(B, caps, route))
+
+
+def trail(B, caps, route):
+    """The reproducible path's intermediate figures: the reporters by group, their ratios, their rows before the
+    exclusions, and the program year's mortgages by the way each was recorded, with the 2026 switch."""
+    F = B["F"]
+    w = F[F.MTG_INSTR_DATE.between(*C.WIN)]
+    feed = C.counts(B, lambda F: F.mortgage)
+    grp = {"P": [], "S": []}
+    for n in sorted(B["reporter_nmls"]):
+        h = float(B["hmda"][B["lei_of"][n]])
+        grp[route(n)].append((float(feed.get(n, 0)) / h, h, n))
+    raw = {r: w[w.nmls.isin([n for _, _, n in g])] for r, g in grp.items()}
+    d = F[F.mortgage]
+    py = d[d.MTG_INSTR_DATE.between(*C.PY)]
+    inhouse = {n for n in set(d.nmls) if n and route(n) == "S"}
+    title = {n for n in set(d.nmls) if n and route(n) == "P"}
+    after = d[d.MTG_INSTR_DATE.between(dt.date(2026, 4, 6), dt.date(2026, 6, 30))]
+    year_before = d[d.MTG_INSTR_DATE.between(dt.date(2025, 4, 6), dt.date(2025, 6, 30))]
+    early26 = d[d.MTG_INSTR_DATE.between(dt.date(2026, 1, 1), dt.date(2026, 4, 5)) & d.nmls.isin(inhouse)]
+    pre26 = d[d.MTG_INSTR_DATE.between(dt.date(2026, 1, 1), dt.date(2026, 4, 5))]
+    early25 = d[d.MTG_INSTR_DATE.between(dt.date(2025, 1, 1), dt.date(2025, 4, 5))]
+    sw = after[after.nmls.isin(inhouse)]
+    return dict(
+        reporters=sum(len(g) for g in grp.values()), reporters_P=len(grp["P"]), reporters_S=len(grp["S"]),
+        ratio_P=(min(x for x, h, _ in grp["P"] if h >= 20), max(x for x, h, _ in grp["P"] if h >= 20)),
+        ratio_S=(min(x for x, h, _ in grp["S"] if h >= 20), max(x for x, h, _ in grp["S"] if h >= 20)),
+        raw={r: dict(rows=len(x), **{k: int(x[k].sum()) for k in ("rerecord", "qcd", "second", "land_row")})
+             for r, x in raw.items()},
+        py_rows=len(py), py_P=int(py.packaged.sum()), py_S=int((~py.packaged).sum()),
+        switch_rows=len(sw), switch_packaged=int(sw.packaged.sum()), switch_lenders=len(inhouse),
+        early26_rows=len(early26), early26_packaged=int(early26.packaged.sum()),
+        lift_inhouse=len(sw) / len(year_before[year_before.nmls.isin(inhouse)]),
+        lift_title=len(after[after.nmls.isin(title)]) / len(year_before[year_before.nmls.isin(title)]),
+        pre_inhouse=len(early26) / len(early25[early25.nmls.isin(inhouse)]),
+        pre_title=len(pre26[pre26.nmls.isin(title)]) / len(early25[early25.nmls.isin(title)]))
 
 
 def figures(X):
@@ -69,7 +105,7 @@ def figures(X):
         reporters_separate_hmda=fmt(X["hm_route"]["S"]), reporters_separate_rows=fmt(X["fe_route"]["S"]),
         recorded_rows={SHORT[n]: fmt(X["rows"][n]) for n, _ in order if not X["reporter"][n]},
         two_year={k: fmt(C.r10(X["two"][k])) for k in COUNTY_ROWS},
-        program_year={k: fmt(C.r10(X["py"][k])) for k in COUNTY_ROWS + ["total"]},
+        program_year=dict({k: fmt(C.r10(X["py"][k])) for k in COUNTY_ROWS}, total=fmt(C.r100(X["py"]["total"]))),
         default_five=[SHORT[n] for n, _ in d_top], default_sixth=SHORT[d_six[0]],
         pooled_five=[SHORT[n] for n, _ in p_top],
         pooled_counts={SHORT[n]: fmt(C.r10(x)) for n, x in p_top},
@@ -83,8 +119,31 @@ def figures(X):
             X["B"]["F"].MTG_INSTR_DATE.between(*C.WIN)).sum())),
         margin_fifth_sixth="%.2f" % (X["v"][five[4]] / X["v"][sixth]),
         clauses=["7.2", "7.3", "7.4", "7.5", "2.2"],
-        nearest=10, years="2024 and 2025", program_year_span="1 July 2025 to 30 June 2026",
+        nearest=10, nearest_total=100, years="2024 and 2025", program_year_span="1 July 2025 to 30 June 2026",
     )
+    s, t = X["stack"], X["trail"]
+    f["stack"] = dict(stacked=fmt(s["stacked"]), closed_2024_2025=fmt(s["window"]), rerecordings=fmt(s["rerecord"]),
+                      quitclaim_pairings=fmt(s["qcd"]), second_mortgages=fmt(s["second"]),
+                      land_only_records=fmt(s["land_row"]), seller_notes=fmt(s["seller_note"]),
+                      lender_mortgages=fmt(s["mortgage"]),
+                      nonreporters={SHORT[n]: {k: fmt(v) for k, v in x.items()} for n, x in s["lenders"].items()},
+                      reporters_by_group={r: {k: fmt(v) for k, v in x.items()} for r, x in t["raw"].items()})
+    f["capture_exact"] = {"with the deed": "%.4f" % X["caps"]["P"], "after the deed": "%.4f" % X["caps"]["S"]}
+    f["reporters"] = dict(all=fmt(t["reporters"]), with_the_deed=fmt(t["reporters_P"]),
+                          after_the_deed=fmt(t["reporters_S"]),
+                          ratios_with_the_deed=["%.3f" % x for x in t["ratio_P"]],
+                          ratios_after_the_deed=["%.3f" % x for x in t["ratio_S"]])
+    f["nonreporter_unrounded"] = {SHORT[n]: "%.1f" % X["v"][n] for n, _ in order if not X["reporter"][n]}
+    f["two_year_unrounded"] = {k: "{:,.1f}".format(X["two"][k]) for k in COUNTY_ROWS}
+    f["program_year_unrounded"] = {k: "{:,.1f}".format(X["py"][k]) for k in COUNTY_ROWS + ["total"]}
+    f["program_year_path"] = dict(mortgages=fmt(t["py_rows"]), with_the_deed=fmt(t["py_P"]),
+                                  after_the_deed=fmt(t["py_S"]), inhouse_lenders=fmt(t["switch_lenders"]),
+                                  inhouse_from_6_april_2026=fmt(t["switch_rows"]),
+                                  inhouse_from_6_april_2026_with_the_deed=fmt(t["switch_packaged"]),
+                                  inhouse_earlier_2026=fmt(t["early26_rows"]),
+                                  inhouse_earlier_2026_with_the_deed=fmt(t["early26_packaged"]),
+                                  inhouse_lift="%.2f" % t["lift_inhouse"], other_lift="%.2f" % t["lift_title"],
+                                  inhouse_lift_before="%.2f" % t["pre_inhouse"], other_lift_before="%.2f" % t["pre_title"])
     return f, five, sixth
 
 
@@ -131,7 +190,7 @@ def write_xlsx(path, X, f, five, sixth):
     ws2.append(["County", "Closed in 2024 and 2025", "Closed 1 July 2025 to 30 June 2026"])
     for k in COUNTY_ROWS:
         ws2.append([COUNTY_LABEL[k], C.r10(X["two"][k]), C.r10(X["py"][k])])
-    ws2.append(["All eight counties, program year", None, C.r10(X["py"]["total"])])
+    ws2.append(["All eight counties, program year (nearest 100)", None, C.r100(X["py"]["total"])])
     for c in ws2[3]:
         c.font = head
         c.fill = fill
@@ -151,7 +210,8 @@ def write_xlsx(path, X, f, five, sixth):
     notes = [
         "Counts are first-lien mortgages a bank, credit union or licensed mortgage company made to finance an "
         "arm's-length purchase of a home in Saline, McPherson, Dickinson, Marion, Rice, Ottawa, Ellsworth or Lincoln "
-        "County, dated by closing (program guidelines 7.1 to 7.5).",
+        "County, dated by closing, every one a lender made whether or not a report or data file shows it (program "
+        "guidelines 7.1 to 7.5).",
         "Lenders that report HMDA are counted from the 2024 and 2025 loan-level file: originations (action 1), home "
         "purchase (purpose 1), first lien, property in the eight counties.",
         "Lenders that do not report HMDA are counted from the Venridge purchase-money file, after removing quitclaim "
@@ -165,9 +225,8 @@ def write_xlsx(path, X, f, five, sixth):
         "each HMDA reporter's count is spread over the counties its recorded mortgages stand in (HMDA places some "
         "rural homes in the county of their postal city); the program year is counted from the "
         "recorder file for every lender, each mortgage over the capture of the way it was recorded.",
-        "Every count is estimated from unrounded figures and rounded to the nearest 10 once; the program year's total "
-        "for all eight counties is rounded from the unrounded county figures, so it need not equal the sum of the "
-        "rounded rows.",
+        "Every count is estimated from unrounded figures and rounded once: the program year's total for all eight "
+        "counties to the nearest 100, every other count to the nearest 10.",
         "Prepared by the research desk, 9 October 2026, from the files pulled for the December board.",
     ]
     ws3.append(["Notes"])
