@@ -5,9 +5,9 @@
   "slot_note": "Seed ET08 (analytical_tasks/07_data_extraction_conformation, header and Situation only): an aid consortium's IATI publications and the decision where to open three country coordination offices; the world, the decision and the quantity kept, the pitfall re-found from the data.",
   "domain": "survey-research-official-statistics",
   "subdomain": "census-register-administrative-data-quality",
-  "niche": "aid statistics compiled from a donor collaborative's IATI publications: the members' money followed through pooled funds and implementing organisations to the countries where it is spent",
+  "niche": "aid statistics compiled from a donor collaborative's IATI publications: the members' money followed through two pooled funds with different contribution cycles to the countries where it is spent",
   "objective": "etl",
-  "shape": "03",
+  "shape": "other",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
   "answer": "",
@@ -20,9 +20,9 @@
     "none"
   ],
   "generators": [
+    "G6",
     "G5",
-    "G10",
-    "G3"
+    "G10"
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
@@ -35,7 +35,7 @@
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "iati_datastore_transactions_2023_2025.csv",
+    "file": "iati_datastore_transactions_mnh.csv",
     "rows": 0,
     "entity": "one IATI transaction (a commitment, a payment out, a receipt or an expenditure) on one activity, as its publisher reported it",
     "grain": "activity x transaction",
@@ -58,30 +58,29 @@
   },
   "deliverables": [
     "coordination_offices_2027.pptx",
-    "member_funds_by_country_2025.csv"
+    "member_funds_by_country.csv"
   ],
   "opening_move": "question-first",
   "question_form": "where",
-  "driver": "Money passing through intermediaries is counted where it is finally spent and credited to its original sources in proportion to what each source gave the intermediary that spent it, an intermediary funded partly by other intermediaries inheriting their mix, so the sources' shares have to be solved through every layer of the funding network rather than read from the sources' own payment records or one layer down.",
-  "driver_concrete": "Each country's 2025 spending is credited to the collaborative's members by the member share of the activity that spent it, a pooled fund's share being pro rata of its contributions and a contribution from another pooled fund carrying that fund's own share, solved through every layer; the members' own records (grants by recipient country, pooled-fund contributions with no country) and the one-layer share (members' direct contributions only) rank the wrong three countries.",
-  "stump": "The default path ranks the wrong three because it sums the members' own 2025 payments by the country recorded on them, so their contributions to the pooled funds, which carry no country, drop out and grants count when paid rather than where they are spent; followed to the spending and credited through every layer, a different three lead (countries fixed at design).",
+  "driver": "Spending done through commingled intermediaries is credited to the original sources by their share of the money each intermediary held when it paid out, which for an intermediary that collects in one period and pays out in the next is the previous period's inflow mix, not the current one, and for one that pays out each inflow at once is the current one, carried into an intermediary funded by another; the current-period inflow share, the lifetime share and the receipts-before-payment share each rank a different wrong set.",
+  "driver_concrete": "Each implementer's 2025 spending is credited to the members by the member share of the money its funder held when it paid: the global fund collects in the last quarter and pays the collection out the next year, so its 2025 grants carried the members' 31.7 per cent of its 2024 collection, not the 75 per cent of the 2025 collection received after its last 2025 grant; the Sahel fund pays each January round out the same year, so its 2025 grants carried the 2025 round's mix with the global fund's part at 31.7 per cent; the year's contribution share (Rwanda, Uganda, Mali), the lifetime share (Rwanda, Kenya, Uganda) and the share of contributions received before each payment (Rwanda, Kenya, Tanzania) each miss Rwanda, Kenya and Mali.",
+  "stump": "The default path opens the offices in Rwanda, Uganda and Mali because it credits each pooled fund's 2025 spending by the members' share of the contributions paid into it in 2025, while the global fund paid its 2025 grants out of the 2024 collection it held, when the members' share was 31.7 per cent, not the 75 per cent of the 2025 collection that arrived after its last 2025 grant; credited by the money each fund held when it paid, Kenya replaces Uganda.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who converts every currency at its value date, keeps payments and expenditures, drops commitments and the receipts that duplicate a payment, and sums the members' 2025 payments by recipient country, or credits each pooled fund's spending by the members' direct share of its contributions, ranks the wrong three countries (fixed at design).",
-  "domain_test": "The deciding quantity is aid statistics' imputed flow, an intermediary's country spending credited to its funders by their share of its pooled contributions (the imputed multilateral share), carried through every layer of the delivery chain from the publishers' own IATI records; with a retailer's nouns there are no pooled funds of commingled contributions, no donor-and-implementer double reporting of one payment and no delivery chain of grants, so the task stops reading.",
+  "analyst_test": "A strong analyst who converts every currency at its value date, keeps the implementers' 2025 expenditure, identifies each activity's funder and credits each pooled fund's spending by the members' share of its 2025 contributions (the year's imputed share), the global fund's money in the Sahel fund carrying the global fund's share, opens the offices in Rwanda, Uganda and Mali; with the share of every contribution the funds have received, Rwanda, Kenya and Uganda.",
+  "domain_test": "The deciding quantity is aid statistics' imputed flow, each intermediary's country spending credited to its funders by their share of the resources that paid for it, carried through every layer of the delivery chain; the compilers' same-year contribution share stands in for that only while a fund's donor mix is steady, and an expert matches a fund that collects in arrears to the year of money it spent. With a retailer's nouns there are no pooled funds of commingled donor money, no contribution cycle and no delivery chain, so the task stops reading.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [],
-  "notes": "Drawn 2026-10-13 for wave 2 under the 10/10 rules.",
+  "notes": "Drawn 2026-10-13 for wave 2 under the 10/10 rules. Revised at design 2026-10-13 before any data was cut: the decisive step moved from the second fund layer (a provider-receiver join the estimand files) to the money each fund held when it paid; shape 03 to other (a register of 13 candidate countries with three measures each); generators G5, G10, G3 to G6, G5, G10 (design note, Tried and rejected).",
   "client_domain": "survey-research-official-statistics",
   "layer2_family": "allocation_constraints",
-  "layer2_pattern": "own:imputed-flows-through-the-delivery-chain",
+  "layer2_pattern": "own:imputed-flows-at-the-money-held-when-paid",
   "layer1": [
-    "publishers' activity files in IATI XML and the Datastore's flattened CSV, with differing field layouts",
-    "transactions in several currencies, some inheriting the activity's default currency, converted at their value dates",
+    "the funds' activity files in IATI XML and the Datastore's flattened transaction CSV, with differing layouts and the funds' grant activities in both",
+    "transactions in several currencies, some leaving the currency to the activity default, converted at their value dates",
     "the same payment reported by the payer (disbursement) and the receiver (incoming funds) at different dates and in different currencies",
     "commitments, payments, receipts and expenditures in one transaction file",
-    "parent programmes reporting budgets over child projects that report transactions",
     "multi-country activities with recipient-country percentages",
-    "organisation identifiers in current and legacy prefixes, some receivers named without an identifier"
+    "organisation identifiers under registry and IATI-assigned schemes, and one member's previous identifier"
   ]
 }

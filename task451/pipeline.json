@@ -1,18 +1,18 @@
 {
   "task": "task451",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "survey-research-official-statistics",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 3,
+  "stage_name": "build",
   "updated": "2026-10-13",
-  "stump": "The default path opens the offices in the wrong three countries because it places the members' money where their own payment records put it, so their contributions to the two pooled funds, which carry no country, drop out; followed to the organisations that spent it and credited back through both funds' layers, a different three lead (countries fixed at design).",
+  "stump": "The default path opens the offices in Rwanda, Uganda and Mali because it credits each pooled fund's 2025 spending by the members' share of the contributions paid into it in 2025, while the global fund paid its 2025 grants out of the 2024 collection it held (31.7 per cent members), not the 74.6 per cent of the 2025 collection that arrived after its last 2025 grant; credited by the money each fund held when it paid, Kenya replaces Uganda.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-13"
   },
   "leak": {
     "leak_py": "",
@@ -29,7 +29,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: readability screen, fork table, ladder arithmetic (the pooled funds' member shares through both layers), closure table, asks (supplemental-stumping), prompt.txt, precut.py",
+  "resume": "stage 3: generator built (world, sim, calc, reader, pack, docs, golden, build, metadata, checks); checks 115 of 116 pass, the one FAIL an Ask B figure 0.0035 from a rounding edge (nudge that country's grant weights, re-run every rung); then verify.py (independent pandas recomputation), build.py main (two byte-identical builds, target.zip), the design note's Ladder and Ask sheet with the built figures and SF5 closed by the funds' pooled statement and the same-day settlements (pro rata, first in and last in agree), submission.md, figures_check.py, golden-realism, reduce-house-fixes, leak.py, guard.py surface and heart; then stage 4 (leak reader and judge together)",
   "approved": null,
   "delivered": null,
   "portal": null,
