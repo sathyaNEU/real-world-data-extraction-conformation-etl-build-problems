@@ -1,0 +1,38 @@
+{
+ "task": "task232",
+ "owner": "perssathya",
+ "status": "DESIGN",
+ "domain": "epidemiology-public-health",
+ "objective": "data-quality-monitoring",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-13",
+ "stump": "Counting every room contact the investigation follow-up records as ill with the condition as the index's secondary case overstates shigellosis and cryptosporidiosis transmission and sets four laboratory feeds tighter than they need to be (design target: the hospital laboratory at 6 hours, the larger private group and the regional laboratory at 8, the Queensland border laboratory at 1, against 8, 12, 12 and 2); the step that lands it there is reading illness onsets instead of attributing each illness to the index's infectious sessions through the condition's incubation range.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 2: world names, readability screen, semantic fork table, ladder (every ill contact, onset before exclusion, one-sided windows, median incubation, the incubation-range window), closure table, literal reader, oracles, ask sheet, prompt.txt; generator next",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}

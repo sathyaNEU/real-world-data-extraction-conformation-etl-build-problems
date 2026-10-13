@@ -1,0 +1,86 @@
+{
+  "task": "task232",
+  "architecture": "v1",
+  "drawn": "2026-10-13",
+  "slot_note": "DQ05 seed (an upstream-lag threshold for a feed SLA alert, with the lag measured with error) kept as an idea seed only: the world kept is a set of upstream data feeds, a lateness threshold set per feed for its SLA alert, and the downstream cost of lateness; the seed's attenuation pitfall is a general-statistics method that the author's domain review returns as a backdrop, so the pitfall is re-found in outbreak epidemiology",
+  "domain": "epidemiology-public-health",
+  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+  "client_domain": "epidemiology-public-health",
+  "niche": "a regional local health district's public health unit setting, for each pathology laboratory's electronic notification feed, the lateness at which the new notifiable-conditions platform's SLA alert pages the on-call officer, judged on the secondary enteric cases in childcare rooms that each hour of a laboratory's lateness lets an infectious child or staff member cause before exclusion",
+  "objective": "data-quality-monitoring",
+  "shape": "other",
+  "decision_type": "dial_setting",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G4",
+    "G13"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "manager of the public health unit's communicable disease surveillance team",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "elr_messages_2022_2026.csv",
+    "rows": 0,
+    "entity": "one electronic laboratory notification message a pathology laboratory sent to the state's notifiable-conditions platform for a case resident in the district",
+    "grain": "message",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "Australia, New South Wales (a fictional regional local health district on the Queensland border)",
+    "currency": "AUD",
+    "org_type": "a local health district's public health unit (communicable disease surveillance and control)",
+    "invented_names": [],
+    "people": [
+      "Haley Harper",
+      "Gilbert Ford",
+      "Katrina Valdez"
+    ]
+  },
+  "deliverables": [
+    "elr_sla_thresholds_2026-27.csv",
+    "elr_sla_basis_2026-27.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is a transmission rate per unit of exposure estimated from closed episodes whose later outcomes surface only after a delay of known range and mix the episode's own consequences with earlier unrelated and later second-generation ones, so each outcome is attributed to the exposure only when it falls within the delay's range after it; counting every outcome in the follow-up inflates the rate where unrelated and second-generation outcomes are common, counting only outcomes before the exposure ended deflates it most where the delay is long, and either misjudges which sources' lateness costs most.",
+  "driver_concrete": "Each enteric pathogen's secondary transmission per child-hour of an infectious case's childcare attendance is estimated from the public health unit's closed childcare investigations by counting a room contact's illness as the index's secondary case only when its onset falls between the index's first infectious session plus the pathogen's shortest incubation and the exclusion plus its longest, so cases ill before the window (co-primary, earlier and community cases) and after it are left out and the hepatitis A and cryptosporidiosis cases that fall ill weeks after the exclusion are kept; each laboratory's SLA lateness is then the longest allowed setting whose extra childcare sessions cost no more than the tolerance.",
+  "stump": "A competent solver who counts every room contact the investigation follow-up records as ill with the condition as the index's secondary case sets four laboratory feeds tighter than they need to be (design target: the hospital laboratory at 6 hours, the larger private group and the regional laboratory at 8, the Queensland border laboratory at 1, against 8, 12, 12 and 2), and one who counts only the contacts ill before the exclusion sets the hospital, border and regional feeds at 24 hours; the step that lands either is reading illness onsets instead of attributing each illness to the index's infectious sessions through the condition's incubation range.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who keeps each case's first notification, reads every onset, session and exclusion date and the incubation table correctly, and divides each closed investigation's ill room contacts by the child-hours the index attended while infectious, sets the hospital laboratory at 6 hours, the larger private group and the regional laboratory at 8 and the Queensland border laboratory at 1 (the default path's Ends on, design target), and one who counts only illnesses before the exclusion sets three feeds at 24 hours.",
+  "domain_test": "The deciding quantity is each pathogen's secondary transmission per hour of an infectious case's attendance, which outbreak epidemiology estimates by attributing contacts' illnesses to the exposure through the incubation window that follows it; with another field's nouns (a carrier's late tracking feed and missed delivery slots) nothing incubates, no illness falls days or weeks after the exposure that caused it, and there is no window to attribute it by, so the task stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:incubation-window-attribution-of-childcare-secondary-cases",
+  "layer1": [
+    "laboratory timestamps in three clocks: New South Wales time with daylight saving, Queensland time without it, and UTC from the state reference laboratory",
+    "one case notified by several laboratories: presumptive and confirmatory results, and corrected reports re-sent with a corrected status",
+    "condition codes changed at the platform's 2025 code-set update",
+    "childcare attendance and room rosters in each centre's own export layout",
+    "patient identifiers that differ by laboratory, linked through the platform's case number",
+    "contact follow-up onsets recorded as dates, some approximate",
+    "a private pathology group's 2024 acquisition of the regional laboratory, which changed the sending facility code mid-history"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "DQ05 kept as an idea seed only (world, decision, quantity). The per-laboratory settings on every rung are design targets fixed at stage 2 and confirmed by the generator at stage 3; answer and spine rows are filled at ship.",
+  "registered": "2026-10-13T20:45:24Z"
+}

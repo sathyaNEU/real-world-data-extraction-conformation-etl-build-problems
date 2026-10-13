@@ -1,10 +1,23 @@
 # perssathya: where work stopped
 
-Updated 2026-10-13 (task231 shipped). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-13 (task232 drawn). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task230 (2026-10-12), task129, task229, task131, task122 and task231 (2026-10-13) are SHIPPED and wait on the portal;
 task123's determinism repair is RESHIPPED. Wave 1 is shipped apart from task228, which waits on the author's call (a
-fifth architecture and a G16 waiver). Wave 2 continues with task232 (DQ05 seed: an alert threshold on a feed's lag
-measured with error; draw it in a client domain whose own estimator decides, never a general-statistics backdrop).
+fifth architecture and a G16 waiver). Wave 2: task232 is in design (stage 2).
+
+**task232: DRAWN 2026-10-13 (wave 2, second build); stage 2 (design) next.**
+- A regional local health district's public health unit on the New South Wales and Queensland border (Epidemiology &
+  Public Health, disease-surveillance-outbreak-anomaly-detection x Data Quality Monitoring; DQ05 kept as an idea seed
+  only). Call: the lateness at which each pathology laboratory's ELR feed pages the on-call officer on the
+  notifiable-conditions platform release of 1 December 2026, judged on the secondary enteric cases an infectious
+  childcare case causes before exclusion. The transmission that prices lateness comes from closed childcare
+  investigations, whose follow-up also records earlier, community and second-generation illness; counting every ill
+  contact tightens four feeds, counting only illness before the exclusion loosens three, and the incubation-range
+  window after the index's infectious sessions files the golden (design targets in `task232/DESIGN_NOTE.md`).
+- Card registered (guard PASS). Prototype in the session scratchpad: spread authorisation times keep the rungs apart;
+  single fixed batches do not (recorded under `## Tried and rejected`).
+- **Resume:** stage 2 per `task232/pipeline.json` (world names, fork table, ladder, closure table, ask sheet,
+  prompt.txt, precut), then the generator.
 
 **task231: SHIPPED 2026-10-13 (wave 2, first build); waiting on the portal.**
 - The Brevland Central Bank's Business Conditions Survey (Survey Research & Official Statistics,
