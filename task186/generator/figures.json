@@ -1,0 +1,104 @@
+{
+ "call": "Tallis Petroleum",
+ "change_examined": "2026-01-01",
+ "stations_examined": 369,
+ "stations_examined_by_brand": {
+  "Garrow Fuels": 45,
+  "Harbourline Fuels": 52,
+  "Oxbury Fuels": 45,
+  "Pellow Gas": 46,
+  "Strathlowe Energy": 46,
+  "Tallis Petroleum": 92,
+  "Wexcombe Petroleum": 43
+ },
+ "stations_found": 28,
+ "stations_found_by_brand": {
+  "Garrow Fuels": 0,
+  "Harbourline Fuels": 0,
+  "Oxbury Fuels": 0,
+  "Pellow Gas": 0,
+  "Strathlowe Energy": 0,
+  "Tallis Petroleum": 28,
+  "Wexcombe Petroleum": 0
+ },
+ "share_found_nearest_ten_per_cent": {
+  "Garrow Fuels": "0",
+  "Harbourline Fuels": "0",
+  "Oxbury Fuels": "0",
+  "Pellow Gas": "0",
+  "Strathlowe Energy": "0",
+  "Tallis Petroleum": "30",
+  "Wexcombe Petroleum": "0"
+ },
+ "inquiry_bar": "one in ten",
+ "false_discovery_rate": "5",
+ "levy_regular_cents_2025": "21.92",
+ "levy_regular_cents_2026": "25.38",
+ "priced_by_brand_2026_12_01": {
+  "Garrow Fuels": 5,
+  "Harbourline Fuels": 15,
+  "Oxbury Fuels": 8,
+  "Pellow Gas": 13,
+  "Strathlowe Energy": 9,
+  "Tallis Petroleum": 27,
+  "Wexcombe Petroleum": 10
+ },
+ "regular_litres_thousands": {
+  "Garrow Fuels": {
+   "January 2026": 12461,
+   "February 2026": 12051,
+   "March 2026": 13829
+  },
+  "Harbourline Fuels": {
+   "January 2026": 15059,
+   "February 2026": 14690,
+   "March 2026": 16563
+  },
+  "Oxbury Fuels": {
+   "January 2026": 11386,
+   "February 2026": 11450,
+   "March 2026": 13127
+  },
+  "Pellow Gas": {
+   "January 2026": 12659,
+   "February 2026": 11802,
+   "March 2026": 13619
+  },
+  "Strathlowe Energy": {
+   "January 2026": 12721,
+   "February 2026": 12200,
+   "March 2026": 13855
+  },
+  "Tallis Petroleum": {
+   "January 2026": 26040,
+   "February 2026": 25076,
+   "March 2026": 28690
+  },
+  "Wexcombe Petroleum": {
+   "January 2026": 11593,
+   "February 2026": 11204,
+   "March 2026": 12851
+  }
+ },
+ "survey_references_reissued": 8,
+ "found_towns": [
+  "HOL",
+  "GRY",
+  "DUN",
+  "MRB"
+ ],
+ "window_days": 28,
+ "days_with_a_price_each_window": 20,
+ "standard_clauses": [
+  "1.1",
+  "2.1",
+  "2.2",
+  "2.3",
+  "3.1",
+  "3.2",
+  "3.3",
+  "4.1",
+  "4.2",
+  "5.1"
+ ]
+}

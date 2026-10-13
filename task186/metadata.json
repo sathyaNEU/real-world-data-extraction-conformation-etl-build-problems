@@ -1,0 +1,167 @@
+{
+  "task": "task186",
+  "title": "Which brand, if any, the Fuel Price Commissioner's pass-through inquiry should examine before the 1 January 2027 carbon levy rise, judged on how each brand's stations passed on the 1 January 2026 rise, with the share of each brand's stations found, the stations each brand prices itself and the regular litres its stations sold in the first quarter of 2026",
+  "domain": "Survey Research & Official Statistics (secondary Economics & Econometrics)",
+  "subdomain": "anomaly detection (station-level findings of excess levy pass-through held to a false discovery rate, where every urban area's retail margins cycle)",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "01 (ranked list under a cap): the inquiry capped at one brand or none; every brand's share of stations found, its stations priced by the brand on 1 December 2026 and its regular litres in each month of the first quarter of 2026; the chart",
+  "as_of": "2026-11-16",
+  "deliverables": [
+    "pass_through_inquiry_2027.docx",
+    "inquiry_scope_2027.xlsx"
+  ],
+  "distractor_files": [
+    "weekly_price_bulletin_2026.xlsx",
+    "price_complaints_register_2026.csv"
+  ],
+  "input_gates": {
+    "files": 14,
+    "formats": [
+      "csv",
+      "json",
+      "md",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "price_change_log_regular_2025-01-01_2026-11-15.csv",
+    "largest_file_rows": 198870
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task186/generator/build.py (seeded, deterministic) around a fictional province, statistics bureau, fuel price commissioner, fuel brands and stations; no real organisation, station, person or record is depicted.",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-11-16",
+  "generator": "task186/generator/build.py",
+  "files": [
+    {
+      "path": "carbon_levy_regulation_schedule_2.pdf",
+      "format": "pdf",
+      "bytes": 83284,
+      "rows": null,
+      "source": "Constructed: Carbon Levy Regulation, Schedule 2, office consolidation",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_notes_2026-11-16.md",
+      "format": "md",
+      "bytes": 2079,
+      "rows": null,
+      "source": "Constructed: Fuel Price Monitor extract notes, 16 November 2026",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fuel_sales_survey_frame_2026-11.csv",
+      "format": "csv",
+      "bytes": 15191,
+      "rows": 397,
+      "source": "Constructed: Monthly fuel sales survey frame at November 2026",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fuel_sales_survey_returns_2026.csv",
+      "format": "csv",
+      "bytes": 460626,
+      "rows": 4128,
+      "source": "Constructed: Monthly fuel sales survey returns for 2026 reference months to date",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "monitored_brand_register.json",
+      "format": "json",
+      "bytes": 1444,
+      "rows": null,
+      "source": "Constructed: Monitored brand register under the Fuel Price Transparency Act",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pass_through_monitoring_standard_PM-04.pdf",
+      "format": "pdf",
+      "bytes": 42257,
+      "rows": null,
+      "source": "Constructed: Prices Division standard PM-04, levy pass-through monitoring, revision 2",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "price_change_log_regular_2025-01-01_2026-11-15.csv",
+      "format": "csv",
+      "bytes": 11057491,
+      "rows": 198870,
+      "source": "Constructed: Price reporting platform, regular gasoline price changes as received, 1 January 2025 to 15 November 2026",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "price_complaints_register_2026.csv",
+      "format": "csv",
+      "bytes": 19745,
+      "rows": 303,
+      "source": "Constructed: Office of the Fuel Price Commissioner price complaints line, 2026 to date",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "price_submissions_2026-11.csv",
+      "format": "csv",
+      "bytes": 820581,
+      "rows": 10747,
+      "source": "Constructed: Price reporting platform submissions received in November 2026, all grades",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "reporting_platform_operations_log.xlsx",
+      "format": "xlsx",
+      "bytes": 6908,
+      "rows": null,
+      "source": "Constructed: Price reporting platform operations log",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "station_register_2026-11-16.xlsx",
+      "format": "xlsx",
+      "bytes": 36490,
+      "rows": null,
+      "source": "Constructed: Price reporting platform station table and brand history, exported 16 November 2026",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "station_renumbering_2026-06-08.csv",
+      "format": "csv",
+      "bytes": 6375,
+      "rows": 397,
+      "source": "Constructed: Price reporting platform station renumbering of 8 June 2026",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "terminal_rack_prices_2024-12_2026-11.csv",
+      "format": "csv",
+      "bytes": 65218,
+      "rows": 1470,
+      "source": "Constructed: Port Ostley Terminal published rack prices, regular, premium and ultra-low sulphur diesel",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "weekly_price_bulletin_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 10154,
+      "rows": null,
+      "source": "Constructed: Prices Division weekly fuel price bulletin 2026 as published",
+      "date": "2026-11-16",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
