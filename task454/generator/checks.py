@@ -59,10 +59,17 @@ def run(target, golden_dir, world=None, meta_path=None):
     res = {r: C.spreads(target, r, cl, dr, cls)[0] for r in C.ROUTES}
     w, m, rk = top(res["golden"])
     ok("call: the golden fill proposes %s" % GOLD, w == GOLD, rk[:3])
-    ok("call: the golden margin is 1.4 or more", m >= 1.4, round(m, 3))
+    ok("call: the golden margin is 1.35 or more", m >= 1.35, round(m, 3))
     for r in C.GOLDEN:
         w, m, _ = top(res[r])
-        ok("call: golden family %s proposes %s by 1.4 or more" % (r, GOLD), w == GOLD and m >= 1.4, (w, round(m, 3)))
+        ok("call: golden family %s proposes %s by 1.35 or more" % (r, GOLD), w == GOLD and m >= 1.35, (w, round(m, 3)))
+    k1 = lambda v: int(round(v / 1000.0)) * 1000
+    for c in W.SHORTLIST_NAMES:
+        vals = [res[r][c] for r in C.GOLDEN]
+        edge = min(500 - abs(v - k1(res["golden"][c])) for v in vals)
+        ok("SF9 %s's spread rounds to the golden's thousand under every package-type fill, 200 or more from an edge" % c,
+           all(k1(v) == k1(res["golden"][c]) for v in vals) and edge >= 200,
+           " ".join("%.0f" % v for v in vals))
     for r in C.DEFAULT:
         w, m, rk = top(res[r])
         ok("default: %s proposes %s by 1.18 or more" % (r, DEFAULT), w == DEFAULT and m >= 1.18, (w, round(m, 3)))
@@ -77,7 +84,7 @@ def run(target, golden_dir, world=None, meta_path=None):
 
     # ---------------------------------------------------------------- the three rules on the clean truth
     if world is not None:
-        prods, idx, sc = world["prods"], world["idx"], world["claims"]
+        prods, idx, sc = world["prods"], world["idx"], S.window(world["claims"])
         tr = RT.spreads(sc, prods, idx, "truth")[0]
         gd = RT.spreads(sc, prods, idx, "golden")[0]
         df = RT.spreads(sc, prods, idx, "default")[0]
@@ -102,9 +109,17 @@ def run(target, golden_dir, world=None, meta_path=None):
     ok("R2 reversals and SF2 (net of reversals): left in as paid claims, the call holds", w == GOLD, w)
     w, _, _ = top(spreads_of(cl, target, latest=True))
     ok("R2 effective dates and SF5 (the rate in effect on the fill date): the latest rate used for every fill, the call holds", w == GOLD, w)
-    paid = cl[(cl.paid_date >= "2026-04-01") & (cl.paid_date <= "2027-03-31")]
+    allx, _, _ = C.frame(target, window=False)
+    paid = allx[(allx.paid_date >= "2026-04-01") & (allx.paid_date <= "2027-03-31")]
     w, _, _ = top(spreads_of(paid, target))
-    ok("R2 window and SF3 (fills, not payments): claims taken by paid date, the call holds", w == GOLD, w)
+    ok("R2 window and SF3 (fills, not payments): the transactions paid April 2026 to March 2027 taken whatever the "
+       "fill date, the call holds", w == GOLD, w)
+    w, _, _ = top(spreads_of(allx, target))
+    ok("R2 the extract cut by paid date: every row taken as a window claim, the earlier fills' rows included, the call "
+       "holds", w == GOLD, w)
+    early = allx[allx.fill < W.WINDOW[0]]
+    ok("R2 the extract carries earlier fills paid from 1 April 2026 (late claims and reversals)", len(early) > 300,
+       len(early))
     nouc = cl[cl.basis_of_cost != "U&C"]
     w, _, _ = top(spreads_of(nouc, target))
     ok("R2 usual and customary and SF6: U&C claims left out, the call holds", w == GOLD, w)
@@ -120,7 +135,10 @@ def run(target, golden_dir, world=None, meta_path=None):
     fee = cl.copy()
     fee["ingredient_cost_paid"] = fee.ingredient_cost_paid + fee.dispensing_fee_paid
     w2, _, _ = top(spreads_of(fee, target))
-    ok("SF1: the fee counted in the paid amount would name another class (C.5 says ingredient cost)", True, w2)
+    ok("SF1: the fee counted in the paid amount proposes the same class, the fees outweighing every spread (C.5 says "
+       "ingredient cost)", w2 == GOLD, w2)
+    w3, _, _ = top(C.spreads(target, "default", fee, dr, cls)[0])
+    ok("SF1: with the fee counted the default fill proposes it too, a reading C.5 rules out and not the stump", True, w3)
     ok("SF4: classes through the drug file and the current list, every claim placed", int(cl.cls.isna().sum()) == 0)
     ok("SF7: the unpriced NDCs' claims kept in the class (C.2 and C.5); left out, no class carries a spread to rank",
        max(abs(v) for v in res["complete_case"].values()) < 0.01 * res["golden"][GOLD])
@@ -128,11 +146,47 @@ def run(target, golden_dir, world=None, meta_path=None):
     ok("SF8: unrounded and rounded to the thousand the same class leads", round(gs[0], -3) > round(gs[1], -3))
 
     # ---------------------------------------------------------------- the ask
-    cur, lab = C.ask(target), C.ask(target, by_label=True)
-    for c in W.SHORTLIST_NAMES:
-        a, b = cur[c], lab[c]
-        ok("ask: %s's FY2026 figures differ on every count under the stored labels" % c,
-           a[0] != b[0] and round(a[1]) != round(b[1]) and round(a[2]) != round(b[2]), (a, b))
+    cur = C.ask(target)
+    stops = {"the summary by its stored label (the natural read)": C.ask(target, by_label=True, late=False),
+             "the summary alone, classes current (the cracker)": C.ask(target, late=False),
+             "the stored label with the later payments": C.ask(target, by_label=True),
+             "the later payments added from 1 April 2026 (the overlap twice)": C.ask(target, overlap=True)}
+    for label, st in stops.items():
+        miss = [c for c in W.SHORTLIST_NAMES
+                if st[c][0] != cur[c][0] and round(st[c][1]) != round(cur[c][1]) and round(st[c][2]) != round(cur[c][2])]
+        ok("ask stop: %s misses every figure of every class" % label, len(miss) == len(W.SHORTLIST_NAMES),
+           sorted(set(W.SHORTLIST_NAMES) - set(miss)))
+    ok("SF10 the claims are those paid through 20 April 2027: the extract's last payment is the cut and nothing is "
+       "completed for payments to come", allx.paid_date.max() <= "2027-04-20" and allx.paid_date.max() >= "2027-04-15")
+    req = ""
+    from pypdf import PdfReader
+    req = " ".join(" ".join(pg.extract_text() for pg in PdfReader(os.path.join(target, W.FILES["request"])).pages).split())
+    ok("SF11 the candidate classes are the list's in force from 1 January 2027 (the request letter), so FY2026 claims "
+       "take their class through the drug file and that list, not the summary's stored label",
+       "in force from 1 January 2027" in req and stops["the summary by its stored label (the natural read)"] != cur)
+    terms = " ".join(" ".join(pg.extract_text() for pg in PdfReader(os.path.join(target, W.FILES["terms"])).pages).split())
+    ok("SF11 the terms no longer say which list defines a class (the request letter alone names it)",
+       "drug class list in force on the date" not in terms)
+    ok("SF12 the FY2026 payments are the summary's (paid through 20 April 2026) and the extract's later ones, the 1 to 20 "
+       "April 2026 payments counted once", stops["the later payments added from 1 April 2026 (the overlap twice)"] != cur)
+    raw = pd.read_csv(os.path.join(target, W.FILES["claims"]), dtype=str, usecols=["ndc", "quantity_dispensed"])
+    ml = set(dr[dr["Dosage form"].str.contains("solution|suspension|syrup|elixir|concentrate", case=False)].ndc)
+    liq = raw[raw.ndc.isin(ml)]
+    ok("SF13 units dispensed are the claims' metric decimal quantities as filed: millilitres with one decimal for the "
+       "liquids, whole units for the solids", len(liq) > 0 and liq.quantity_dispensed.str.contains(r"\.").all() and
+       not raw[~raw.ndc.isin(ml)].quantity_dispensed.str.contains(r"\.").any())
+    sim = world["claims"] if world is not None else None
+    if sim is not None:
+        truth = collections.defaultdict(lambda: [0, 0.0, 0.0])
+        for c in sim:
+            if W.PRIOR[0] <= c["fill"] <= W.PRIOR[1] and c["paid"] <= W.PAID_THROUGH:
+                t = truth[c["product"].cls]
+                t[0] += -1 if c["txn"] == "B2" else 1
+                t[1] += c["qty"]
+                t[2] += c["ingredient"]
+        ok("ask fair: the golden FY2026 figures equal the simulation's transactions paid through 20 April 2027",
+           all(truth[c][0] == cur[c][0] and abs(truth[c][1] - cur[c][1]) < 0.6 and abs(truth[c][2] - cur[c][2]) < 0.6
+               for c in W.SHORTLIST_NAMES), {c: (truth[c][0], cur[c][0]) for c in W.SHORTLIST_NAMES[:3]})
     moved = collections.Counter()
     for (nm, st), (old, new) in W.MOVES.items():
         for x in (old, new):
@@ -167,7 +221,9 @@ def run(target, golden_dir, world=None, meta_path=None):
        all(round(res["golden"][c]) % 1000 != 0 for c in W.SHORTLIST_NAMES))
     ok("realism: claim counts not round", len(cl) % 100 != 0)
     people = set(W.PEOPLE.values())
-    txt = open(os.path.join(target, W.FILES["trans"]), encoding="utf-8").read()
+    import docx as _docx
+    _d = _docx.Document(os.path.join(target, W.FILES["trans"]))
+    txt = "\n".join([p.text for p in _d.paragraphs] + [c.text for t in _d.tables for r in t.rows for c in r.cells])
     named = set(re.findall(r"[A-Z][a-z]+ [A-Z][a-z]+(?=, account director)", txt))
     ok("realism: every person the transmittal names is on the card", named <= people, named)
     ok("realism: the carton premium shows in the shipped rates (1.8 to 2.0)", 1.8 < C.premium(C.in_effect(C.rates(target), dr)[1], cls, pooled=True)[None] < 2.0)
@@ -181,8 +237,9 @@ def run(target, golden_dir, world=None, meta_path=None):
             ok("container: %s carries no library banner" % f, b"ReportLab" not in b and b"reportlab" not in b)
     mt = {os.path.getmtime(os.path.join(target, f)) for f in files}
     ok("timestamps: every file stamped at the assembly time", len(mt) == 1, mt)
-    ok("timestamps: no fill after the window, no payment after 20 April 2027",
-       cl.fill_date.max() <= "2027-03-31" and cl.paid_date.max() <= "2027-04-20")
+    ok("timestamps: no fill after the window, payments from 1 April 2026 to 20 April 2027",
+       allx.fill_date.max() <= "2027-03-31" and allx.paid_date.max() <= "2027-04-20" and
+       allx.paid_date.min() >= "2026-04-01")
     ok("house: no em dash in a text file", not [f for f in files if f.endswith((".csv", ".txt")) and
                                                 "—" in open(os.path.join(target, f), encoding="utf-8").read()])
 

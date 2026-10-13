@@ -18,8 +18,8 @@ SOURCES = {
     F["terms"]: "Attachment C of the pharmacy benefit administration contract, as amended effective 1 July 2026",
     F["method"]: "the survey contractor's State AAC methodology, revised January 2026",
     F["request"]: "the Department's letter of 8 March 2027 naming the candidate classes",
-    F["dict"]: "the administrator's field descriptions for the extract",
-    F["trans"]: "the administrator's transmittal of 21 April 2027",
+    F["dict"]: "the administrator's record layout for the extract",
+    F["trans"]: "the administrator's data delivery note of 21 April 2027",
     F["mco"]: "the managed care plans' pharmacy encounter summary by class and quarter",
     F["pdl"]: "the Department's preferred drug list status as of January 2027",
 }

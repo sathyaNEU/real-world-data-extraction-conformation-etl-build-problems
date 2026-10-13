@@ -34,13 +34,27 @@ CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=9, leading=11.
 CELLB = ParagraphStyle("cellb", parent=CELL, fontName="LiberationSans-Bold")
 
 
-def _doc(path, title, author, footer):
+def _doc(path, title, author, footer, style="contract"):
     def frame(canvas, doc):
         canvas.saveState()
-        canvas.setFont("LiberationSans", 7.5)
         canvas.setFillColor(GREY)
-        canvas.drawString(1.0 * inch, 0.6 * inch, footer)
-        canvas.drawRightString(LETTER[0] - 1.0 * inch, 0.6 * inch, "Page %d" % doc.page)
+        if style == "contract":
+            canvas.setFont("LiberationSans", 7.5)
+            canvas.drawString(1.0 * inch, 0.6 * inch, footer)
+            canvas.drawRightString(LETTER[0] - 1.0 * inch, 0.6 * inch, "Page %d" % doc.page)
+        elif style == "report":
+            # the survey contractor's report style: a running head over a rule, the page number centred below
+            canvas.setFont("LiberationSerif-Italic", 8.5)
+            canvas.drawString(1.0 * inch, LETTER[1] - 0.55 * inch, footer)
+            canvas.setStrokeColor(GREY)
+            canvas.setLineWidth(0.4)
+            canvas.line(1.0 * inch, LETTER[1] - 0.6 * inch, LETTER[0] - 1.0 * inch, LETTER[1] - 0.6 * inch)
+            canvas.setFont("LiberationSerif", 9)
+            canvas.drawCentredString(LETTER[0] / 2.0, 0.55 * inch, "%d" % doc.page)
+        else:
+            # the Department's letterhead: the address line centred at the foot, no page number on a one-page letter
+            canvas.setFont("LiberationSans", 7)
+            canvas.drawCentredString(LETTER[0] / 2.0, 0.5 * inch, footer)
         canvas.restoreState()
     d = SimpleDocTemplate(path, pagesize=LETTER, leftMargin=1.0 * inch, rightMargin=1.0 * inch, topMargin=0.9 * inch,
                           bottomMargin=0.95 * inch, title=title, author=author, subject="", creator="", producer="")
@@ -72,8 +86,7 @@ def write_terms(path):
              "unrounded figures.")
     N("C.5", "The ingredient spread of a class is the ingredient cost the Program paid on the class's fee-for-service "
              "claims, net of reversals, less the acquisition cost of the units those claims dispensed: what the "
-             "dispensing pharmacies paid their suppliers for them. Classes are as the Department's drug class list in "
-             "force on the date of the proposal defines them.")
+             "dispensing pharmacies paid their suppliers for them.")
     N("C.6", "The proposal sets out each candidate class's ingredient spread and, for the Department's budget, the "
              "class's claims, units dispensed and ingredient cost paid over the twelve months of fills before those.")
     s.append(Paragraph("Rates in force and appeals", H2))
@@ -86,7 +99,8 @@ def write_terms(path):
 
 def write_method(path):
     title = "State Actual Acquisition Cost: Survey and Rate-Setting Methodology"
-    doc, frame = _doc(path, title, W.SURVEY, "%s  |  State AAC methodology  |  revised January 2026" % W.SURVEY)
+    doc, frame = _doc(path, title, W.SURVEY, "%s: State AAC survey and rate-setting methodology, January 2026" % W.SURVEY,
+                      style="report")
     s = [Paragraph(title.upper(), H1),
          Paragraph("Prepared for the %s, Pharmacy Program, by %s. Revised January 2026." % (W.DEPARTMENT, W.SURVEY), CAP)]
     P = lambda t: s.append(Paragraph(t, BODY))
@@ -116,7 +130,8 @@ def write_method(path):
 
 def write_request(path):
     title = "Candidate classes for the 1 July 2027 SMAC update"
-    doc, frame = _doc(path, title, W.DEPARTMENT, "%s  |  Pharmacy Program" % W.DEPARTMENT)
+    doc, frame = _doc(path, title, W.DEPARTMENT, "%s, Pharmacy Program  |  1400 Capitol Avenue, Suite 600" % W.DEPARTMENT,
+                      style="letter")
     s = [Paragraph(W.DEPARTMENT.upper(), SANSB), Paragraph("Pharmacy Program", SANS), Spacer(1, 6),
          Paragraph("8 March 2027", SANS),
          Paragraph("%s<br/>Account director, %s" % (W.PEOPLE["account"], W.ADMIN), SANS),

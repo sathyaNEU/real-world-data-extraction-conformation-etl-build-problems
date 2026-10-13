@@ -24,6 +24,7 @@ def months(start, end):
 
 WMONTHS = months(*W.WINDOW)
 PMONTHS = months(*W.PRIOR)
+HMONTHS = PMONTHS + WMONTHS
 LAB = {code: (name, kind, cfg) for name, code, kind, cfg in W.LABELERS}
 BY_KIND = {k: [c for _, c, kk, _ in W.LABELERS if kk == k] for k in "MUN"}
 
@@ -55,7 +56,7 @@ class Product:
         self.key = (name, strength)
         self.old_cls = W.MOVES.get(self.key, (cls, cls))[0]
         g = rng("premium", name, strength)
-        self.premium = W.UD_PREMIUM * float(np.exp(g.normal(0, 0.025)))
+        self.premium = W.UD_PREMIUM * float(np.exp(g.normal(0, W.PREMIUM_SD)))
         self.ndcs = []
         self.gpc = None
 
@@ -124,7 +125,7 @@ def catalog():
                     ndc_seen.add(eleven)
                     break
             p.ndcs.append(dict(product=p, labeler=lab, pkg=pkg, size=size, desc=desc_count, ndc10=ten, ndc11=eleven,
-                               share=share, labeler_factor=float(np.exp(rng("lf", lab, *p.key).normal(0, 0.02)))))
+                               share=share, labeler_factor=float(np.exp(rng("lf", lab, *p.key).normal(0, W.LABELER_SD)))))
 
         form = p.form.upper()
         for i, lab in enumerate(mans):
@@ -206,9 +207,10 @@ def aac_rates(prods):
     for p in prods:
         for n in p.ndcs:
             g = rng("aac", n["ndc11"])
+            g0 = rng("aac25", n["ndc11"])
             cur = None
-            for m in WMONTHS:
-                est = acquisition(n, m) * float(np.exp(g.normal(0, 0.012)))
+            for m in HMONTHS:
+                est = acquisition(n, m) * float(np.exp((g if m in WMONTHS else g0).normal(0, 0.012)))
                 if not n["priced"][m]:
                     if cur is not None:
                         rows.append(cur)
@@ -291,61 +293,88 @@ def mean_qty(p, ltc):
     return sum(q * w for q, w in tab)
 
 
+def growth(p):
+    """the product's FY2027 volume against FY2026"""
+    return float(rng("prior", *p.key).uniform(-0.08, 0.12))
+
+
 def claims(prods, rate_idx, scale):
-    """the window's claims: each a fill of one NDC at one pharmacy for one member, priced the way the State prices
-    it (the lesser of U&C and the AAC rate in effect on the fill date, or the WAC where none is), with reversals"""
+    """the candidate classes' claim transactions over fills from April 2025 to March 2027: each a fill of one NDC at
+    one pharmacy for one member, priced the way the State prices it (the lesser of U&C and the AAC rate in effect on
+    the fill date, or the WAC where none is), paid a few days after the fill or, for a few, months later, with
+    reversals and rebills. Transactions paid after the extract's cut are kept here and left out of the extract."""
     ph, mb = pharmacies(), members()
     out = []
     cid = [0]
-    for p in prods:
-        if not p.shortlisted:
-            continue
-        g = rng("claims", *p.key)
-        units = p.kunits * 1000 * scale[p.cls]
-        for ltc in (False, True):
-            u = units * (p.ltc if ltc else 1 - p.ltc)
-            n = int(round(u / mean_qty(p, ltc)))
-            mo = g.integers(0, 12, n)
-            day = g.random(n)
-            pick = g.random(n)
-            pick2 = g.random(n)
-            for i in range(n):
-                m = WMONTHS[int(mo[i])]
-                fill = m + dt.timedelta(days=int(day[i] * (month_end(m).day)))
-                if ltc and p.liquid:
-                    qty = _draw(QTY_LTC_ML, pick2[i])
-                elif ltc:
-                    qty = 31 if pick2[i] < 0.42 else 30
-                else:
-                    qty = _draw(QTY_ML if p.liquid else QTY_EA, pick2[i])
-                nd = _ndc(p, ltc, fill, pick[i], g)
-                pool = ph["ltc"] if ltc else (ph["discount"] if g.random() < 0.12 else ph["retail"])
-                pharm = pool[int(g.integers(0, len(pool)))]
-                mem = mb["ltc" if ltc else "retail"][int(g.integers(0, len(mb["ltc" if ltc else "retail"])))]
-                spans = rate_idx.get(nd["ndc11"], [])
-                r = rate_on(spans, fill)
-                basis = "AAC" if r is not None else "WAC"
-                amount = round((r if r is not None else nd["wac"]) * qty, 2)
-                if pool is ph["discount"] and p.base <= 0.15 and not p.liquid:
-                    uc = 4.00 if qty <= 30 else (10.00 if qty <= 90 else 15.00)
-                    if uc < amount:
-                        amount, basis = uc, "UC"
-                fee = W.FEE["ltc" if ltc else "retail"]
-                lag = int(g.integers(1, 20)) if ltc else int(_draw(((0, .5), (1, .3), (2, .2)), g.random()))
-                paid = min(fill + dt.timedelta(days=lag), W.PAID_THROUGH)
-                cid[0] += 1
-                row = dict(claim_id=cid[0], fill=fill, paid=paid, pharmacy=pharm, member=mem, ndc=nd, product=p,
-                           qty=qty, ingredient=amount, fee=fee, basis=basis, ltc=ltc, txn="B1", original=None)
-                out.append(row)
-                if g.random() < 0.032:
-                    rev = min(paid + dt.timedelta(days=int(g.integers(1, 25))), W.PAID_THROUGH)
+    for fy, mlist in (("FY2027", WMONTHS), ("FY2026", PMONTHS)):
+        for p in prods:
+            if not p.shortlisted:
+                continue
+            g = rng("claims", *p.key) if fy == "FY2027" else rng("claims26", *p.key)
+            gl = rng("late", fy, *p.key)
+            units = p.kunits * 1000 * scale[p.cls]
+            if fy == "FY2026":
+                units = units / (1 + growth(p))
+            for ltc in (False, True):
+                u = units * (p.ltc if ltc else 1 - p.ltc)
+                n = int(round(u / mean_qty(p, ltc)))
+                mo = g.integers(0, 12, n)
+                day = g.random(n)
+                pick = g.random(n)
+                pick2 = g.random(n)
+                for i in range(n):
+                    m = mlist[int(mo[i])]
+                    fill = m + dt.timedelta(days=int(day[i] * (month_end(m).day)))
+                    if ltc and p.liquid:
+                        qty = _draw(QTY_LTC_ML, pick2[i])
+                    elif ltc:
+                        qty = 31 if pick2[i] < 0.42 else 30
+                    else:
+                        qty = _draw(QTY_ML if p.liquid else QTY_EA, pick2[i])
+                    nd = _ndc(p, ltc, fill, pick[i], g)
+                    pool = ph["ltc"] if ltc else (ph["discount"] if g.random() < 0.12 else ph["retail"])
+                    pharm = pool[int(g.integers(0, len(pool)))]
+                    mem = mb["ltc" if ltc else "retail"][int(g.integers(0, len(mb["ltc" if ltc else "retail"])))]
+                    spans = rate_idx.get(nd["ndc11"], [])
+                    r = rate_on(spans, fill)
+                    basis = "AAC" if r is not None else "WAC"
+                    amount = round((r if r is not None else nd["wac"]) * qty, 2)
+                    if pool is ph["discount"] and p.base <= 0.15 and not p.liquid:
+                        uc = 4.00 if qty <= 30 else (10.00 if qty <= 90 else 15.00)
+                        if uc < amount:
+                            amount, basis = uc, "UC"
+                    fee = W.FEE["ltc" if ltc else "retail"]
+                    lag = int(g.integers(1, 20)) if ltc else int(_draw(((0, .5), (1, .3), (2, .2)), g.random()))
+                    if gl.random() < W.LATE_SHARE:
+                        lag = int(gl.integers(*W.LATE_LAG))
+                    paid = fill + dt.timedelta(days=lag)
                     cid[0] += 1
-                    out.append(dict(row, claim_id=cid[0], paid=rev, qty=-qty, ingredient=-amount, fee=-fee,
-                                    txn="B2", original=row["claim_id"]))
-                    if g.random() < 0.4:
+                    row = dict(claim_id=cid[0], fill=fill, paid=paid, pharmacy=pharm, member=mem, ndc=nd, product=p,
+                               qty=qty, ingredient=amount, fee=fee, basis=basis, ltc=ltc, txn="B1", original=None)
+                    out.append(row)
+                    if g.random() < 0.032:
+                        rev = paid + dt.timedelta(days=int(g.integers(1, 25)))
                         cid[0] += 1
-                        out.append(dict(row, claim_id=cid[0], paid=min(rev + dt.timedelta(days=1), W.PAID_THROUGH)))
+                        out.append(dict(row, claim_id=cid[0], paid=rev, qty=-qty, ingredient=-amount, fee=-fee,
+                                        txn="B2", original=row["claim_id"]))
+                        if g.random() < 0.4:
+                            cid[0] += 1
+                            out.append(dict(row, claim_id=cid[0], paid=rev + dt.timedelta(days=1)))
     return out
+
+
+def in_extract(c):
+    return W.EXTRACT_FROM <= c["paid"] <= W.PAID_THROUGH
+
+
+def extract(cl):
+    """the transactions the extract carries: paid 1 April 2026 to 20 April 2027, whatever the fill date"""
+    return [c for c in cl if in_extract(c)]
+
+
+def window(cl):
+    """the extract's transactions on fills in the window"""
+    return [c for c in cl if in_extract(c) and W.WINDOW[0] <= c["fill"] <= W.WINDOW[1]]
 
 
 def _draw(tab, u):
@@ -378,12 +407,21 @@ def _ndc(p, ltc, fill, u, g):
 
 
 # ------------------------------------------------------------------ the administrator's FY2026 summary
-def prior_year(prods):
+def prior_year(prods, cl):
     """the FY2026 utilization summary: for each NDC and fill month from April 2025 to March 2026, the claims (net of
-    reversals), units and ingredient cost paid, with the drug class the class list in force at the time gave the
-    product (the list revised on 1 January 2027 moved some products between classes)"""
+    reversals), units and ingredient cost paid on the transactions paid through 20 April 2026, with the drug class the
+    class list in force at the time gave the product (the list revised on 1 January 2027 moved some products between
+    classes). The candidate classes' products come from their claims; the others' from their volume directly."""
     out = []
+    for c in cl:
+        if not (W.PRIOR[0] <= c["fill"] <= W.PRIOR[1]) or c["paid"] > W.SUMMARY_PAID_THROUGH:
+            continue
+        out.append(dict(month=dt.date(c["fill"].year, c["fill"].month, 1), ndc=c["ndc"], product=c["product"],
+                        label=c["product"].old_cls, claims=1 if c["txn"] == "B1" else -1, units=c["qty"],
+                        ingredient=c["ingredient"]))
     for p in prods:
+        if p.shortlisted:
+            continue
         g = rng("prior", *p.key)
         growth = float(g.uniform(-0.08, 0.12))           # FY2027 against FY2026
         scale = W.SCALE.get(p.cls, W.OTHER_SCALE)

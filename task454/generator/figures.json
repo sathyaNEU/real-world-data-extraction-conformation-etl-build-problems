@@ -1,0 +1,249 @@
+{
+  "call": "Anticonvulsants",
+  "default_call": "Antipsychotics",
+  "runner_up": "Antipsychotics",
+  "golden_margin": 1.43,
+  "default_margin": 1.3,
+  "carton_premium": 1.9,
+  "unpriced_share_pct": 43,
+  "unpriced_carton_share_pct": 86,
+  "classes": {
+    "Anticonvulsants": {
+      "code": "C107",
+      "spread": 43000,
+      "spread_exact": 43097,
+      "spread_range": [
+        43000,
+        44000
+      ],
+      "default_spread": 50000,
+      "claims_fy27": 40210,
+      "ingredient_fy27": 233380,
+      "claims_fy26": 40046,
+      "units_fy26": 2412350,
+      "ingredient_fy26": 203083,
+      "claims_fy26_label": 50508,
+      "units_fy26_label": 2866819,
+      "ingredient_fy26_label": 231826
+    },
+    "Antipsychotics": {
+      "code": "C114",
+      "spread": 30000,
+      "spread_exact": 30124,
+      "spread_range": [
+        30000,
+        31000
+      ],
+      "default_spread": 65000,
+      "claims_fy27": 34285,
+      "ingredient_fy27": 211586,
+      "claims_fy26": 33990,
+      "units_fy26": 1284660,
+      "ingredient_fy26": 214917,
+      "claims_fy26_label": 35483,
+      "units_fy26_label": 1351356,
+      "ingredient_fy26_label": 227018
+    },
+    "Dementia agents": {
+      "code": "C121",
+      "spread": 24000,
+      "spread_exact": 23976,
+      "spread_range": [
+        23000,
+        25000
+      ],
+      "default_spread": 50000,
+      "claims_fy27": 11949,
+      "ingredient_fy27": 102664,
+      "claims_fy26": 11748,
+      "units_fy26": 415022,
+      "ingredient_fy26": 102160,
+      "claims_fy26_label": 8317,
+      "units_fy26_label": 278709,
+      "ingredient_fy26_label": 65661
+    },
+    "Antidepressants, SSRI": {
+      "code": "C128",
+      "spread": 2000,
+      "spread_exact": 2197,
+      "spread_range": [
+        2000,
+        3000
+      ],
+      "default_spread": 4000,
+      "claims_fy27": 17814,
+      "ingredient_fy27": 33465,
+      "claims_fy26": 17547,
+      "units_fy26": 876403,
+      "ingredient_fy26": 34393,
+      "claims_fy26_label": 16949,
+      "units_fy26_label": 846964,
+      "ingredient_fy26_label": 25919
+    },
+    "Beta blockers": {
+      "code": "C135",
+      "spread": 3000,
+      "spread_exact": 3104,
+      "spread_range": [
+        3000,
+        4000
+      ],
+      "default_spread": 7000,
+      "claims_fy27": 19749,
+      "ingredient_fy27": 48402,
+      "claims_fy26": 19706,
+      "units_fy26": 919853,
+      "ingredient_fy26": 49485,
+      "claims_fy26_label": 20569,
+      "units_fy26_label": 958190,
+      "ingredient_fy26_label": 56161
+    },
+    "Loop diuretics": {
+      "code": "C142",
+      "spread": 9000,
+      "spread_exact": 8975,
+      "spread_range": [
+        8000,
+        10000
+      ],
+      "default_spread": 18000,
+      "claims_fy27": 18758,
+      "ingredient_fy27": 51474,
+      "claims_fy26": 17780,
+      "units_fy26": 794219,
+      "ingredient_fy26": 50911,
+      "claims_fy26_label": 16368,
+      "units_fy26_label": 732867,
+      "ingredient_fy26_label": 37167
+    },
+    "Benzodiazepines": {
+      "code": "C149",
+      "spread": 3000,
+      "spread_exact": 3182,
+      "spread_range": [
+        3000,
+        4000
+      ],
+      "default_spread": 6000,
+      "claims_fy27": 11042,
+      "ingredient_fy27": 24870,
+      "claims_fy26": 10639,
+      "units_fy26": 471068,
+      "ingredient_fy26": 24878,
+      "claims_fy26_label": 16545,
+      "units_fy26_label": 763404,
+      "ingredient_fy26_label": 31903
+    },
+    "Antiparkinson agents": {
+      "code": "C156",
+      "spread": 23000,
+      "spread_exact": 23177,
+      "spread_range": [
+        22000,
+        24000
+      ],
+      "default_spread": 49000,
+      "claims_fy27": 11536,
+      "ingredient_fy27": 131527,
+      "claims_fy26": 11403,
+      "units_fy26": 472508,
+      "ingredient_fy26": 129520,
+      "claims_fy26_label": 13661,
+      "units_fy26_label": 536856,
+      "ingredient_fy26_label": 140979
+    },
+    "Urinary antispasmodics": {
+      "code": "C163",
+      "spread": 15000,
+      "spread_exact": 15023,
+      "spread_range": [
+        14000,
+        16000
+      ],
+      "default_spread": 32000,
+      "claims_fy27": 9719,
+      "ingredient_fy27": 119475,
+      "claims_fy26": 9414,
+      "units_fy26": 400145,
+      "ingredient_fy26": 121421,
+      "claims_fy26_label": 10157,
+      "units_fy26_label": 429484,
+      "ingredient_fy26_label": 129762
+    },
+    "Skeletal muscle relaxants": {
+      "code": "C170",
+      "spread": 2000,
+      "spread_exact": 1827,
+      "spread_range": [
+        1000,
+        2000
+      ],
+      "default_spread": 4000,
+      "claims_fy27": 15276,
+      "ingredient_fy27": 43012,
+      "claims_fy26": 16105,
+      "units_fy26": 760304,
+      "ingredient_fy26": 47287,
+      "claims_fy26_label": 20106,
+      "units_fy26_label": 951510,
+      "ingredient_fy26_label": 62174
+    },
+    "Antiemetics": {
+      "code": "C177",
+      "spread": 5000,
+      "spread_exact": 4880,
+      "spread_range": [
+        4000,
+        5000
+      ],
+      "default_spread": 10000,
+      "claims_fy27": 10771,
+      "ingredient_fy27": 46765,
+      "claims_fy26": 10653,
+      "units_fy26": 504780,
+      "ingredient_fy26": 48687,
+      "claims_fy26_label": 10822,
+      "units_fy26_label": 515985,
+      "ingredient_fy26_label": 39939
+    },
+    "Oral corticosteroids": {
+      "code": "C184",
+      "spread": 3000,
+      "spread_exact": 2798,
+      "spread_range": [
+        2000,
+        3000
+      ],
+      "default_spread": 5000,
+      "claims_fy27": 10058,
+      "ingredient_fy27": 52589,
+      "claims_fy26": 10247,
+      "units_fy26": 519328,
+      "ingredient_fy26": 54960,
+      "claims_fy26_label": 9731,
+      "units_fy26_label": 497786,
+      "ingredient_fy26_label": 45390
+    }
+  },
+  "extract_rows": "229,247",
+  "window_rows": "224,851",
+  "fy26_later_payments": "1,265",
+  "fy26_overlap": "3,131",
+  "carton_premium_2dp": "1.90",
+  "classes_ranked": [
+    "Anticonvulsants",
+    "Antipsychotics",
+    "Dementia agents",
+    "Antiparkinson agents",
+    "Urinary antispasmodics",
+    "Loop diuretics",
+    "Antiemetics",
+    "Benzodiazepines",
+    "Beta blockers",
+    "Oral corticosteroids",
+    "Antidepressants, SSRI",
+    "Skeletal muscle relaxants"
+  ],
+  "update": "1 July 2027",
+  "default_spread_call": "65,000"
+}

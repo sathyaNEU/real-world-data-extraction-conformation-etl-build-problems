@@ -62,7 +62,10 @@ def main(target, golden):
     gold, default = collections.Counter(), collections.Counter()
     with open(find("corvane_ffs_claims"), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
-            n, m = r["ndc"], month(dt.date.fromisoformat(r["fill_date"]))
+            fd = dt.date.fromisoformat(r["fill_date"])
+            if not (dt.date(2026, 4, 1) <= fd <= dt.date(2027, 3, 31)):
+                continue
+            n, m = r["ndc"], month(fd)
             q, paid = float(r["quantity_dispensed"]), float(r["ingredient_cost_paid"])
             c = klass[prod[n]]
             x = rate.get((n, m))
@@ -85,9 +88,8 @@ def main(target, golden):
         fails.append("default call %s" % drank[0])
     figs = json.load(open(os.path.join(HERE, "figures.json")))
     for c in CLASSES:
-        lo, hi = figs["classes"][c]["spread_range"]
-        if not (lo <= gold[c] <= hi):
-            fails.append("%s spread %.0f outside %s" % (c, gold[c], (lo, hi)))
+        if int(round(gold[c] / 1000.0)) * 1000 != figs["classes"][c]["spread"]:
+            fails.append("%s spread %.0f against the golden's %s" % (c, gold[c], figs["classes"][c]["spread"]))
     # the ask: FY2026 by the current class list
     summ = sheet(find("corvane_generic_utilization"), "Utilization")
     h = summ[0]
@@ -98,9 +100,20 @@ def main(target, golden):
         t[0] += r[h.index("Claims")]
         t[1] += r[h.index("Units")]
         t[2] += r[h.index("Ingredient cost paid")]
+    # the FY2026 fills' payments after the summary's 20 April 2026 cut sit only in the extract
+    with open(find("corvane_ffs_claims"), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            fd, pd_ = dt.date.fromisoformat(r["fill_date"]), dt.date.fromisoformat(r["paid_date"])
+            if dt.date(2025, 4, 1) <= fd <= dt.date(2026, 3, 31) and pd_ > dt.date(2026, 4, 20):
+                t = tot[klass[prod[r["ndc"]]]]
+                t[0] += -1 if r["transaction_code"] == "B2" else 1
+                t[1] += float(r["quantity_dispensed"])
+                t[2] += float(r["ingredient_cost_paid"])
     gx = sheet(os.path.join(golden, "smac_candidate_classes_fy2026.xlsx"), "Candidate classes")
     for r in gx[2:]:
         c = r[1]
+        if c not in CLASSES:
+            continue
         if (r[2], r[3], r[4]) != (tot[c][0], int(round(tot[c][1])), int(round(tot[c][2]))):
             fails.append("ask %s %s against %s" % (c, r[2:5], tot[c]))
         fc = figs["classes"][c]

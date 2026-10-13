@@ -18,6 +18,12 @@ WINDOW = (dt.date(2026, 4, 1), dt.date(2027, 3, 31))
 PRIOR = (dt.date(2025, 4, 1), dt.date(2026, 3, 31))
 EXTRACT_DATE = dt.date(2027, 4, 21)
 PAID_THROUGH = dt.date(2027, 4, 20)
+EXTRACT_FROM = dt.date(2026, 4, 1)           # the extract's first paid date
+SUMMARY_PAID_THROUGH = dt.date(2026, 4, 20)  # the FY2026 summary's last paid date
+# claims pharmacies submit long after the fill (retroactive eligibility, a rebill after a rejection): the share of
+# paid claims and the lag in days
+LATE_SHARE = 0.021
+LATE_LAG = (30, 200)
 REVISION_DATE = dt.date(2027, 1, 1)          # the State's class list revision
 SUMMARY_DATE = dt.date(2026, 4, 24)          # the administrator's FY2026 utilization summary
 REQUEST_DATE = dt.date(2027, 3, 8)
@@ -27,6 +33,10 @@ FEE = {"retail": 10.64, "ltc": 12.31}
 
 # a carton costs more per unit than the retail bottle of the same product (product by product, about this much)
 UD_PREMIUM = 1.9
+# product to product the premium varies little (repackagers price off the same bottles), and labelers of one
+# product and package sell within a narrow band
+PREMIUM_SD = 0.005
+LABELER_SD = 0.006
 # the WAC over acquisition cost: a new entrant's bottles, and the unit-dose cartons
 W_NEW = (2.6, 3.2)
 W_UD = (1.32, 1.44)
@@ -43,9 +53,9 @@ SHORTLIST = [
         ("lamotrigine", "100 mg", "tablet", "EA", 0.043, 1500, 0.05, 0.03, -0.04),
         ("topiramate", "50 mg", "tablet", "EA", 0.041, 1200, 0.05, 0.02, -0.02),
         ("oxcarbazepine", "300 mg", "tablet", "EA", 0.21, 600, 0.06, 0.05, -0.05),
-        ("lacosamide", "100 mg", "tablet", "EA", 0.38, 260, 0.05, 0.62, -0.12),
-        ("lacosamide", "150 mg", "tablet", "EA", 0.47, 120, 0.05, 0.58, -0.12),
-        ("lacosamide", "200 mg", "tablet", "EA", 0.55, 200, 0.05, 0.60, -0.12),
+        ("lacosamide", "100 mg", "tablet", "EA", 0.38, 260, 0.05, 0.62, -0.05),
+        ("lacosamide", "150 mg", "tablet", "EA", 0.47, 120, 0.05, 0.58, -0.05),
+        ("lacosamide", "200 mg", "tablet", "EA", 0.55, 200, 0.05, 0.60, -0.05),
         ("divalproex sodium", "500 mg", "delayed-release tablet", "EA", 0.16, 1000, 0.10, 0.03, -0.02),
         ("clonazepam", "0.5 mg", "tablet", "EA", 0.021, 1800, 0.10, 0.02, -0.01),
     ]),
@@ -145,10 +155,10 @@ SHORTLIST_NAMES = [c for c, _ in SHORTLIST]
 
 # each class's volume scale: the units listed above are multiplied by it (calibrated so the class spreads sit where
 # the design needs them; see the design note's Ladder)
-SCALE = {"Anticonvulsants": 0.181, "Antipsychotics": 0.0951, "Dementia agents": 0.1143, "Antidepressants, SSRI": 0.0913,
-         "Beta blockers": 0.0941, "Loop diuretics": 0.1079, "Benzodiazepines": 0.1123, "Antiparkinson agents": 0.1009,
+SCALE = {"Anticonvulsants": 0.1800, "Antipsychotics": 0.0951, "Dementia agents": 0.1130, "Antidepressants, SSRI": 0.0913,
+         "Beta blockers": 0.0941, "Loop diuretics": 0.1126, "Benzodiazepines": 0.1123, "Antiparkinson agents": 0.1001,
          "Urinary antispasmodics": 0.136, "Skeletal muscle relaxants": 0.1683, "Antiemetics": 0.1736,
-         "Oral corticosteroids": 0.16}
+         "Oral corticosteroids": 0.1728}
 # the products outside the shortlist: their volume scale in the FY2026 summary
 OTHER_SCALE = 0.11
 # each product's FY2026 volume against FY2027 (growth from the prior year), drawn per product in sim.prior_year
@@ -214,16 +224,16 @@ LABELERS = [
 ]
 
 FILES = {
-    "claims": "corvane_ffs_claims_2026-04_2027-03.csv",
-    "aac": "state_aac_rates_2026-04_2027-03.csv",
+    "claims": "corvane_ffs_claims_paid_2026-04_2027-04.csv",
+    "aac": "state_aac_rates_2025-04_2027-03.csv",
     "drugs": "state_drug_file_2027-04.xlsx",
     "classes": "state_drug_class_list_2027.xlsx",
     "summary": "corvane_generic_utilization_fy2026.xlsx",
     "terms": "smac_program_terms_2026.pdf",
     "method": "state_aac_survey_methodology_2026.pdf",
     "request": "smac_update_request_2027-03-08.pdf",
-    "dict": "corvane_extract_field_descriptions.csv",
-    "trans": "corvane_extract_transmittal_2027-04-21.txt",
+    "dict": "corvane_extract_record_layout.csv",
+    "trans": "corvane_data_delivery_note_2027-04-21.docx",
     "mco": "mco_pharmacy_encounter_summary_2026.csv",
     "pdl": "state_pdl_status_2027-01.xlsx",
 }

@@ -33,7 +33,8 @@ def simulate():
     prods = S.coverage(S.catalog())
     rates = S.aac_rates(prods)
     idx = S.index_rates(rates)
-    return dict(prods=prods, rates=rates, idx=idx, claims=S.claims(prods, idx, W.SCALE), prior=S.prior_year(prods))
+    cl = S.claims(prods, idx, W.SCALE)
+    return dict(prods=prods, rates=rates, idx=idx, claims=cl, prior=S.prior_year(prods, cl))
 
 
 def build(out, quiet=False, world=None):
@@ -59,6 +60,8 @@ def build(out, quiet=False, world=None):
                        "2027-04-15T12:31:44Z", excel=True, company=W.DEPARTMENT)
     PP.normalize_ooxml(f("classes"), W.PEOPLE["director"], W.PEOPLE["director"], "2026-11-18T15:20:00Z",
                        "2026-12-22T21:04:37Z", excel=True, company=W.DEPARTMENT)
+    PP.normalize_ooxml(f("trans"), W.PEOPLE["account"], W.PEOPLE["account"], "2027-04-21T13:25:00Z",
+                       "2027-04-21T15:38:12Z", title="Data delivery note")
     PP.normalize_ooxml(f("summary"), W.PEOPLE["pricing"], W.PEOPLE["pricing"], "2026-04-23T13:10:00Z",
                        "2026-04-24T19:55:12Z", excel=True)
     PP.normalize_ooxml(f("pdl"), "Pharmacy Program", "Pharmacy Program", "2026-12-10T14:00:00Z",

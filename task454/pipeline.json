@@ -1,37 +1,41 @@
 {
   "task": "task454",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "general-statistics-data-science",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-13",
-  "stump": "The default path proposes atypical antipsychotics because it fills every unpriced NDC with its product's AAC, costing the unit-dose cartons long-term care pharmacies dispense at the retail bottle's price; costing each unpriced NDC from priced NDCs of the same package type proposes anticonvulsants.",
+  "stump": "The default path proposes Antipsychotics because it costs every unpriced NDC at its product's rate, which the retail bottles set, so the unit-dose cartons long-term care pharmacies dispense (86 per cent of the unpriced cost, 1.9 times the bottle per unit) are booked below cost; costing each unpriced NDC from the priced NDCs of the same product and package type proposes Anticonvulsants.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-13"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK) 2026-10-13 on the final build",
+    "reader": "2026-10-13, two passes: questions 1 to 4 none, question 5 as designed (the cost of a unit with no rate open), question 6 an analytical choice; realism tells fixed (layout pseudo-rows, one PDF frame for three organisations, class-blind managed care prices, the delivery note's scope sentence)"
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN 2026-10-13 (pattern reused against task449, Gate G against task452, objective and Gate G overuse, question form against task453), answered in the Draw",
     "nearest": "0.08 (task93 v3)",
-    "note": "drawn 2026-10-13: guard WARN (pattern reused against task449, Gate G against task452, objective overuse, question form against task453), answered in the Draw"
+    "note": "drawn 2026-10-13: guard WARN (pattern reused against task449, Gate G against task452, objective overuse, question form against task453), answered in the Draw",
+    "surface": "clean 2026-10-13 after renaming the record layout and sending the delivery note as a Word memo (the format set had matched task453's)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report.md",
+    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no (borderline)",
+    "gate_h": "domain pass, layers pass, decisive step analytical",
+    "findings": "step 4's unrounded spreads restated rounded; the unfiled cost of a unit with no rate kept (the design's HOW, closed by SF9)"
   },
   "returned": [],
-  "resume": "stage 2, paused 2026-10-13 for the task448 determinism repair. The generator builds green (86 checks, verify, byte-identical): the package-type stump holds (golden Anticonvulsants 1.54 over Antipsychotics on every package-aware fill; the product-rate fill proposes Antipsychotics 1.22 to 1.25 with Anticonvulsants third or fourth). Next: put the extract on a paid-date basis (transactions paid 1 April 2026 to 20 April 2027) with late claims (about 2 per cent, 30 to 200 days); simulate FY2026 at claim level so the FY2026 summary holds transactions paid through 20 April 2026 and the later FY2026 transactions sit only in the extract (the ask's second device, a clock against the summary's cutoff, with the 1 to 20 April 2026 overlap); drop C.5's 'classes as the list in force' sentence (it adjudicates the ask's label device); pin 'the claims paid through 20 April 2027' in the prompt; then write the design sections and run precut.",
+  "resume": "shipped 2026-10-13; waiting for the portal",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-13",
   "portal": null,
   "source_note": "seed ET11 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept; its mechanisms (NDC formats, effective dates, the fee inside the total) are Layer 1 here"
 }

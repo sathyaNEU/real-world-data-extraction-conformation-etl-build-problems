@@ -2,6 +2,7 @@
 import csv
 import datetime as dt
 
+import numpy as np
 import openpyxl
 from openpyxl.styles import Font
 
@@ -28,8 +29,11 @@ def _money(x):
 
 def write_claims(claims, path):
     rows = []
-    order = sorted(claims, key=lambda c: (c["paid"], c["fill"], c["claim_id"]))
-    newid = {c["claim_id"]: 2600000000 + 1000 + k * 3 + (c["claim_id"] % 3) for k, c in enumerate(order)}
+    # identifiers run over every transaction in paid order, so a reversal in the extract can name a claim paid
+    # before the extract's first day
+    allo = sorted(claims, key=lambda c: (c["paid"], c["fill"], c["claim_id"]))
+    newid = {c["claim_id"]: 2500000000 + 1000 + k * 3 + (c["claim_id"] % 3) for k, c in enumerate(allo)}
+    order = [c for c in allo if S.in_extract(c)]
     for c in order:
         q = c["qty"]
         qty = ("%.1f" % q) if c["product"].liquid else "%d" % q
@@ -157,8 +161,6 @@ def write_summary(prior, path):
 
 
 DICTIONARY = [
-    (FILES["claims"], "(file)", "One row per claim transaction on the Program's fee-for-service pharmacy claims for the "
-                                "candidate classes, for fills from 1 April 2026 to 31 March 2027, paid through 20 April 2027."),
     (FILES["claims"], "claim_id", "The transaction's identifier."),
     (FILES["claims"], "transaction_code", "B1 for a paid claim; B2 for the reversal of a paid claim."),
     (FILES["claims"], "original_claim_id", "On a reversal, the claim_id of the claim it reverses."),
@@ -173,43 +175,64 @@ DICTIONARY = [
     (FILES["claims"], "dispensing_fee_paid", "Professional dispensing fee the Program paid, in dollars."),
     (FILES["claims"], "basis_of_cost", "The basis the ingredient was paid on: AAC (the State AAC rate in effect on the "
                                        "fill date), WAC, or U&C (the pharmacy's usual and customary charge)."),
-    (FILES["aac"], "(file)", "One row per State AAC rate in effect at any time from 1 April 2026 to 31 March 2027."),
     (FILES["aac"], "ndc", "The eleven-digit NDC the rate prices."),
     (FILES["aac"], "aac_per_unit", "The rate in dollars per pricing unit."),
     (FILES["aac"], "pricing_unit", "EA (each) or ML (millilitre)."),
     (FILES["aac"], "effective_date", "First day the rate is in effect."),
     (FILES["aac"], "end_date", "Last day the rate is in effect; blank while in effect."),
-    (FILES["summary"], "Utilization", "FY2026 fee-for-service generic utilization by fill month and NDC, net of reversals, "
-                                      "prepared 24 April 2026."),
 ]
 
 
+TYPES = {"claim_id": "CHAR(10)", "transaction_code": "CHAR(2)", "original_claim_id": "CHAR(10)", "fill_date": "DATE",
+         "paid_date": "DATE", "member_id": "CHAR(9)", "pharmacy_npi": "CHAR(10)", "ndc": "CHAR(11)",
+         "quantity_dispensed": "DECIMAL(10,3)", "days_supply": "SMALLINT", "ingredient_cost_paid": "DECIMAL(12,2)",
+         "dispensing_fee_paid": "DECIMAL(8,2)", "basis_of_cost": "VARCHAR(3)", "ndc_description": "VARCHAR(60)",
+         "aac_per_unit": "DECIMAL(12,5)", "pricing_unit": "CHAR(2)", "effective_date": "DATE", "end_date": "DATE"}
+
+
 def write_dictionary(path):
-    return _csv(path, ("file", "field", "description"), DICTIONARY)
+    rows = [(f, fld, "" if fld.startswith("(") or fld[0].isupper() else TYPES.get(fld, ""), d)
+            for f, fld, d in DICTIONARY]
+    return _csv(path, ("file_name", "column_name", "data_type", "definition"), rows)
 
 
 def write_transmittal(path, counts):
-    lines = [
-        "Corvane Pharmacy Solutions: data extract for the State MAC update proposal",
-        "Prepared 21 April 2027 for the Department of Health Coverage, Pharmacy Program",
-        "",
-        "Files:",
-        "  %s  (%s rows; fills 1 April 2026 to 31 March 2027, transactions paid through 20 April 2027)" % (
-            FILES["claims"], "{:,}".format(counts["claims"])),
-        "  %s  (%s rows; the State AAC rates in effect over the same months, as published to 1 April 2027)" % (
-            FILES["aac"], "{:,}".format(counts["aac"])),
-        "  %s  (%s NDCs; the Department's drug file as of 15 April 2027)" % (FILES["drugs"], "{:,}".format(counts["drugs"])),
-        "  %s  (the Department's drug class list)" % FILES["classes"],
-        "  %s  (%s rows; FY2026 utilization summary, as delivered 24 April 2026)" % (
-            FILES["summary"], "{:,}".format(counts["summary"])),
-        "  %s, %s" % (FILES["mco"], FILES["pdl"]),
-        "",
-        "Claims are limited to the twelve candidate classes the Department named on 8 March 2027.",
-        "Contact: Todd Allen, account director.",
-    ]
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        fh.write("\r\n".join(lines) + "\r\n")
-    return len(lines)
+    """the administrator's data delivery note, a one-page Word memo sent with the extract"""
+    import docx
+    from docx.shared import Pt
+    d = docx.Document()
+    st = d.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10.5)
+    h = d.add_paragraph()
+    r = h.add_run("Corvane Pharmacy Solutions: data delivery note")
+    r.bold = True
+    r.font.size = Pt(12)
+    d.add_paragraph("Extract for the State MAC update proposal. Prepared 21 April 2027 for the Department of Health "
+                    "Coverage, Pharmacy Program.")
+    t = d.add_table(rows=1, cols=2)
+    t.style = "Table Grid"
+    t.rows[0].cells[0].text, t.rows[0].cells[1].text = "File", "Contents"
+    for f, desc in ((FILES["claims"], "%s rows; every claim transaction for the candidate classes paid 1 April 2026 to 20 April 2027, whatever the fill date" % "{:,}".format(counts["claims"])),
+                    (FILES["aac"], "%s rows; every State AAC rate in effect at any time from 1 April 2025 to 31 March 2027, as published to 1 April 2027"
+                     % "{:,}".format(counts["aac"])),
+                    (FILES["drugs"], "%s NDCs; the Department's drug file as of 15 April 2027" % "{:,}".format(counts["drugs"])),
+                    (FILES["classes"], "the Department's drug class list"),
+                    (FILES["summary"], "%s rows; FY2026 utilization summary by fill month and NDC, net of reversals: the transactions paid through 20 April 2026, as delivered 24 April 2026"
+                     % "{:,}".format(counts["summary"])),
+                    (FILES["dict"], "record layout for the extract files"),
+                    (FILES["mco"], "managed care plans' pharmacy encounters, for reference"),
+                    (FILES["pdl"], "preferred drug list status, for reference")):
+        row = t.add_row().cells
+        row[0].text, row[1].text = f, desc
+    d.add_paragraph()
+    d.add_paragraph("The claims extract is limited to the twelve candidate classes the Department named on 8 March 2027; the "
+                    "FY2026 summary is the full generic utilization summary as delivered last year.")
+    d.add_paragraph("Contact: %s, account director." % W.PEOPLE["account"])
+    d.core_properties.author = W.PEOPLE["account"]
+    d.core_properties.title = "Data delivery note"
+    d.save(path)
+    return len(t.rows)
 
 
 def write_mco(prods, path):
@@ -223,7 +246,8 @@ def write_mco(prods, path):
                 g = S.rng("mco", cls, q, pl)
                 enc = int(g.integers(2500, 21000))
                 units = int(enc * float(g.uniform(32, 58)))
-                paid = round(units * float(g.uniform(0.05, 0.4)), 2)
+                rate = float(S.rng("mco_rate", cls).uniform(0.06, 0.32))
+                paid = round(units * rate * float(np.exp(g.normal(0, 0.05))), 2)
                 rows.append((pl, cls, q, enc, units, "%.2f" % paid))
     return _csv(path, ("plan", "drug_class", "quarter", "encounters", "units", "plan_paid_amount"), rows)
 

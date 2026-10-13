@@ -1,0 +1,150 @@
+{
+  "task": "task454",
+  "architecture": 1,
+  "title": "Which drug class a state Medicaid program's pharmacy benefit administrator proposes for the State maximum allowable cost list, ranked on each class's ingredient spread, when the State's acquisition cost survey prices only the NDCs its sampled community pharmacies buy",
+  "domain": "General Statistics & Data Science",
+  "subdomain": "data-integration-record-linkage-entity-resolution (pharmacy claims integrated with an acquisition cost survey that covers only part of the NDCs dispensed, with a drug file and a class list)",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "07: a grid of the twelve candidate classes, each with its ingredient spread and, for the prior year, its claims, units dispensed and ingredient cost paid",
+  "as_of": "2027-04-21",
+  "deliverables": [
+    "smac_class_addition_2027-07.docx",
+    "smac_candidate_classes_fy2026.xlsx"
+  ],
+  "distractor_files": [
+    "mco_pharmacy_encounter_summary_2026.csv",
+    "state_pdl_status_2027-01.xlsx"
+  ],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 12,
+    "formats": [
+      "csv",
+      "docx",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "corvane_ffs_claims_paid_2026-04_2027-04.csv",
+    "largest_file_rows": 229247
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task454/generator/build.py (seeded, deterministic) in the layouts of a Medicaid fee-for-service pharmacy claims extract, a state acquisition cost rate file, a state drug file and class list, and an administrator's utilization summary; the state, its agencies, the administrator, the labelers, pharmacies and people are fictional.",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2027-04-21",
+  "generator": "task454/generator/build.py",
+  "files": [
+    {
+      "path": "corvane_data_delivery_note_2027-04-21.docx",
+      "format": "docx",
+      "bytes": 37427,
+      "rows": null,
+      "source": "Constructed: the administrator's data delivery note of 21 April 2027",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "corvane_extract_record_layout.csv",
+      "format": "csv",
+      "bytes": 2139,
+      "rows": 18,
+      "source": "Constructed: the administrator's record layout for the extract",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "corvane_ffs_claims_paid_2026-04_2027-04.csv",
+      "format": "csv",
+      "bytes": 21222064,
+      "rows": 229247,
+      "source": "Constructed: the administrator's extract of the Program's fee-for-service pharmacy claims for the twelve candidate classes, fills April 2026 to March 2027, paid through 20 April 2027",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "corvane_generic_utilization_fy2026.xlsx",
+      "format": "xlsx",
+      "bytes": 364531,
+      "rows": null,
+      "source": "Constructed: the administrator's FY2026 generic utilization summary of 24 April 2026",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "mco_pharmacy_encounter_summary_2026.csv",
+      "format": "csv",
+      "bytes": 10132,
+      "rows": 144,
+      "source": "Constructed: the managed care plans' pharmacy encounter summary by class and quarter",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "smac_program_terms_2026.pdf",
+      "format": "pdf",
+      "bytes": 64682,
+      "rows": null,
+      "source": "Constructed: Attachment C of the pharmacy benefit administration contract, as amended effective 1 July 2026",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "smac_update_request_2027-03-08.pdf",
+      "format": "pdf",
+      "bytes": 41513,
+      "rows": null,
+      "source": "Constructed: the Department's letter of 8 March 2027 naming the candidate classes",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "state_aac_rates_2025-04_2027-03.csv",
+      "format": "csv",
+      "bytes": 377269,
+      "rows": 5154,
+      "source": "Constructed: the State AAC rates in effect from April 2026 to March 2027, as published to 1 April 2027",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "state_aac_survey_methodology_2026.pdf",
+      "format": "pdf",
+      "bytes": 85234,
+      "rows": null,
+      "source": "Constructed: the survey contractor's State AAC methodology, revised January 2026",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "state_drug_class_list_2027.xlsx",
+      "format": "xlsx",
+      "bytes": 11031,
+      "rows": null,
+      "source": "Constructed: the Department's drug class list in force from 1 January 2027",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "state_drug_file_2027-04.xlsx",
+      "format": "xlsx",
+      "bytes": 52876,
+      "rows": null,
+      "source": "Constructed: the Department's drug file as of 15 April 2027",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "state_pdl_status_2027-01.xlsx",
+      "format": "xlsx",
+      "bytes": 8456,
+      "rows": null,
+      "source": "Constructed: the Department's preferred drug list status as of January 2027",
+      "date": "2027-04-21",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

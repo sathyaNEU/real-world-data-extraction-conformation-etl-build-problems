@@ -10,8 +10,8 @@
   "shape": "07",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Propose Anticonvulsants (C107) for the 1 July 2027 State MAC update: ingredient spread $43,000 over fills April 2026 to March 2027, 1.43 times Antipsychotics' $30,000.",
+  "answer_source": "task454/submission.md, Final Recommendation; golden smac_class_addition_2027-07.docx",
   "gap": [
     "population"
   ],
@@ -32,8 +32,8 @@
   "role_family": "procurement_lead",
   "scoring_unit": "per settled transaction",
   "spine": {
-    "file": "pharmacy claims extract, April 2026 to March 2027",
-    "rows": 0,
+    "file": "pharmacy claims extract, transactions paid 1 April 2026 to 20 April 2027",
+    "rows": 229247,
     "entity": "one pharmacy claim (a paid fill or its reversal)",
     "grain": "claim",
     "source": "synthetic (constructed in the layout of a Medicaid fee-for-service pharmacy claims extract)"
@@ -55,13 +55,13 @@
   },
   "deliverables": [
     "smac_class_addition_2027-07.docx",
-    "smac_candidate_classes_fy2027.xlsx"
+    "smac_candidate_classes_fy2026.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is a total of the differences between what was paid for units and what they cost, the cost observed only for the items a price survey covered; coverage is lowest for one presentation of each item, which costs a different amount per unit from the common presentation, so filling every uncovered item with the covered cost of the same item books that presentation at the common one's cost and misranks the groups, and only taking each uncovered item's cost from covered items of its own presentation recovers the totals.",
   "driver_concrete": "The State AAC survey prices only the NDCs its surveyed retail pharmacies buy, so the claims paid at WAC sit mostly on hospital unit-dose cartons, which cost more per unit than the retail bottles of the same product; filling each unpriced NDC with its product's AAC books those cartons at the bottle's cost and swells the spread of the unit-dose-heavy classes, and only costing each unpriced NDC from priced NDCs of the same product and package type ranks the classes right.",
-  "stump": "The default path proposes atypical antipsychotics because it fills every unpriced NDC with its product's AAC, costing the unit-dose cartons long-term care pharmacies dispense at the retail bottle's price; costing each unpriced NDC from priced NDCs of the same package type proposes anticonvulsants.",
+  "stump": "The default path proposes Antipsychotics because it costs every unpriced NDC at its product's rate, which the retail bottles set, so the unit-dose cartons long-term care pharmacies dispense (86 per cent of the unpriced cost, 1.9 times the bottle per unit) are booked below cost; costing each unpriced NDC from the priced NDCs of the same product and package type proposes Anticonvulsants.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who conforms the NDCs, takes the AAC in effect on each fill date, leaves the dispensing fee out and fills every unpriced NDC with its product's AAC proposes atypical antipsychotics; the golden is anticonvulsants.",
   "domain_test": "Data integration's own analysis decides: the claims that fail to link to the price survey are a selected subset (the unit-dose cartons the surveyed pharmacies do not buy), so their cost has to be filled conditioning on the variable that drives both the missed link and the cost; the generic fill, the product's average price, changes the call.",

@@ -30,6 +30,7 @@ def claims(target):
     for c in ("quantity_dispensed", "ingredient_cost_paid", "dispensing_fee_paid"):
         df[c] = df[c].astype(float)
     df["fill"] = pd.to_datetime(df.fill_date).dt.date
+    df["paid"] = pd.to_datetime(df.paid_date).dt.date
     df["month"] = df.fill.map(lambda d: dt.date(d.year, d.month, 1))
     return df
 
@@ -68,9 +69,12 @@ def summary(target):
     return pd.DataFrame(rows[1:], columns=rows[0])
 
 
-def frame(target):
-    """the claims joined to product, package and current class"""
+def frame(target, window=True):
+    """the claims joined to product, package and current class; by default only the fills of the window (the extract
+    is cut by paid date, so it also carries earlier fills paid from 1 April 2026)"""
     cl, dr, cls = claims(target), drugs(target), classes(target)
+    if window:
+        cl = cl[(cl.fill >= W.WINDOW[0]) & (cl.fill <= W.WINDOW[1])].copy()
     m = dr.set_index("ndc")
     cl["gpc"] = cl.ndc.map(m.GPC)
     cl["pkg"] = cl.ndc.map(m.pkg)
@@ -113,9 +117,12 @@ def premium(by_grp, cls_of_gpc, pooled=False):
     return out
 
 
-ROUTES = ("golden", "golden_mean", "golden_class", "golden_pooled", "default", "default_mean", "lowest", "highest",
-          "complete_case")
-GOLDEN = ("golden", "golden_mean", "golden_class", "golden_pooled")
+ROUTES = ("golden", "golden_mean", "golden_class", "golden_pooled", "golden_pf", "golden_year", "default", "default_mean",
+          "lowest", "highest", "complete_case")
+# the package-type fill however it is implemented: median or mean of the priced NDCs of the same product and package,
+# a carton costed from priced cartons first or always from the bottles times a class or pooled carton premium, month by
+# month or over the whole window
+GOLDEN = ("golden", "golden_mean", "golden_class", "golden_pooled", "golden_pf", "golden_year")
 DEFAULT = ("default", "default_mean", "lowest")
 
 
@@ -123,7 +130,7 @@ def unit_cost(route, g, k, m, by_grp, prem, cls):
     same = by_grp.get((g, k, m))
     b = by_grp.get((g, "B", m))
     allx = (by_grp.get((g, "B", m)) or []) + (by_grp.get((g, "U", m)) or [])
-    if route == "golden":
+    if route in ("golden", "golden_pf"):
         if same:
             return statistics.median(same)
         return statistics.median(b) * prem[cls] if (b and k == "U") else None
@@ -161,7 +168,10 @@ def spreads(target, route="golden", cl=None, dr=None, cls=None, latest=False):
         for r in rt.sort_values("eff").itertuples():
             lat[r.ndc] = r.rate
         by_ndc = {(n, m): lat[n] for (n, m) in by_ndc}
-    prem = premium(by_grp, cls, pooled=(route == "golden_pooled"))
+    prem = premium(by_grp, cls, pooled=(route in ("golden_pooled", "golden_pf")))
+    year = collections.defaultdict(list)
+    for (g, k, m), xs in by_grp.items():
+        year[(g, k)].extend(xs)
     out = collections.Counter()
     missing = 0
     cache = {}
@@ -172,7 +182,13 @@ def spreads(target, route="golden", cl=None, dr=None, cls=None, latest=False):
                 continue
             key = (r.gpc, r.pkg, r.month)
             if key not in cache:
-                cache[key] = unit_cost(route, r.gpc, r.pkg, r.month, by_grp, prem, r.cls)
+                if route == "golden_year":
+                    # the same product and package's priced rates over the whole window, not month by month
+                    same, b = year.get((r.gpc, r.pkg)), year.get((r.gpc, "B"))
+                    cache[key] = (statistics.median(same) if same else
+                                  (statistics.median(b) * prem[r.cls] if (b and r.pkg == "U") else None))
+                else:
+                    cache[key] = unit_cost(route, r.gpc, r.pkg, r.month, by_grp, prem, r.cls)
             rate = cache[key]
             if rate is None:
                 missing += 1
@@ -185,15 +201,27 @@ def ranking(sp):
     return sorted(W.SHORTLIST_NAMES, key=lambda c: -sp[c])
 
 
-def ask(target, by_label=False):
-    """each shortlisted class's FY2026 claims, units and ingredient cost paid, classes as the current list defines
-    them (or, by_label, as the summary's stored label reads)"""
+def ask(target, by_label=False, late=True, overlap=False):
+    """each shortlisted class's FY2026 claims (net of reversals), units and ingredient cost paid on the transactions
+    paid through 20 April 2027: the summary (paid through 20 April 2026) plus the extract's FY2026 fills paid after
+    that, classes as the current list defines them. by_label: the summary's stored label for its rows; late=False:
+    the summary alone; overlap: the extract's FY2026 fills added from its first paid date (1 to 20 April 2026 twice)"""
     sm, dr, cls = summary(target), drugs(target), classes(target)
-    if by_label:
-        sm["cls"] = sm["Drug class"]
-    else:
-        gpc = dr.set_index("ndc").GPC
-        sm["cls"] = sm.NDC.map(gpc).map(cls)
+    gpc = dr.set_index("ndc").GPC
+    sm["cls"] = sm["Drug class"] if by_label else sm.NDC.map(gpc).map(cls)
     g = sm.groupby("cls")[["Claims", "Units", "Ingredient cost paid"]].sum()
-    return {c: (int(g.loc[c, "Claims"]), float(g.loc[c, "Units"]), float(g.loc[c, "Ingredient cost paid"]))
-            for c in W.SHORTLIST_NAMES}
+    out = {c: [int(g.loc[c, "Claims"]) if c in g.index else 0, float(g.loc[c, "Units"]) if c in g.index else 0.0,
+               float(g.loc[c, "Ingredient cost paid"]) if c in g.index else 0.0] for c in W.SHORTLIST_NAMES}
+    if late:
+        cl = claims(target)
+        cut = W.EXTRACT_FROM - dt.timedelta(days=1) if overlap else W.SUMMARY_PAID_THROUGH
+        x = cl[(cl.fill >= W.PRIOR[0]) & (cl.fill <= W.PRIOR[1]) & (cl.paid > cut)].copy()
+        x["cls"] = x.ndc.map(gpc).map(cls)
+        x["n"] = np.where(x.transaction_code == "B2", -1, 1)
+        h = x.groupby("cls")[["n", "quantity_dispensed", "ingredient_cost_paid"]].sum()
+        for c in W.SHORTLIST_NAMES:
+            if c in h.index:
+                out[c][0] += int(h.loc[c, "n"])
+                out[c][1] += float(h.loc[c, "quantity_dispensed"])
+                out[c][2] += float(h.loc[c, "ingredient_cost_paid"])
+    return {c: tuple(v) for c, v in out.items()}

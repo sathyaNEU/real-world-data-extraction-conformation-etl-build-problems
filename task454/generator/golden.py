@@ -38,7 +38,9 @@ def compute(target):
                                 ingredient=("ingredient_cost_paid", "sum"))
     X["fy27"] = {c: (int(net.loc[c, "claims"]), float(net.loc[c, "ingredient"])) for c in W.SHORTLIST_NAMES}
     X["ask"] = C.ask(target)
-    X["ask_label"] = C.ask(target, by_label=True)
+    X["ask_label"] = C.ask(target, by_label=True, late=False)
+    X["ask_summary"] = C.ask(target, late=False)
+    X["ask_overlap"] = C.ask(target, overlap=True)
     rt = C.rates(target)
     by_ndc, by_grp = C.in_effect(rt, dr)
     X["premium"] = C.premium(by_grp, cls, pooled=True)[None]
@@ -46,6 +48,11 @@ def compute(target):
     X["unpriced_share"] = float(unpriced.ingredient_cost_paid.sum() / cl.ingredient_cost_paid.sum())
     X["unpriced_carton_share"] = float(unpriced[unpriced.pkg == "U"].ingredient_cost_paid.sum() /
                                        unpriced.ingredient_cost_paid.sum())
+    allx = C.claims(target)
+    early = allx[allx.fill < W.WINDOW[0]]
+    X["extract_rows"], X["window_rows"] = len(allx), len(cl)
+    X["fy26_later"] = int((early.paid > W.SUMMARY_PAID_THROUGH).sum())
+    X["fy26_overlap"] = int((early.paid <= W.SUMMARY_PAID_THROUGH).sum())
     return X
 
 
@@ -94,7 +101,7 @@ def write_docx(X, path):
     r.bold = True
     r.font.size = Pt(13)
     r.font.color.rgb = RGBColor(0x1F, 0x4E, 0x5F)
-    d.add_paragraph("State MAC update, 1 July 2027: proposed class")
+    d.add_paragraph("Anticonvulsants proposed for the 1 July 2027 State MAC update")
     for k, v in (("To", "%s, Pharmacy Director, %s" % (W.PEOPLE["director"], W.DEPARTMENT)),
                  ("From", "%s, MAC Pricing Lead" % W.PEOPLE["pricing"]),
                  ("Copy", "%s, Account Director" % W.PEOPLE["account"]),
@@ -124,6 +131,10 @@ def write_docx(X, path):
         row[3].text = money(k1000(X["golden"][c]))
         for j in (1, 2, 3):
             row[j].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    src = d.add_paragraph("Source: Corvane claims extract of 21 April 2027 (claims paid through 20 April 2027); State AAC "
+                          "rates as published to 1 April 2027. Claims net of reversals. Spreads rounded to the nearest "
+                          "thousand dollars; the classes are compared on unrounded figures (C.4).")
+    src.runs[0].font.size = Pt(8.5)
     d.add_paragraph()
     d.add_picture(io.BytesIO(chart_png(X)), width=Inches(6.2))
     cap = d.add_paragraph("Figure 1. Ingredient spread by candidate class, fills April 2026 to March 2027, net of "
@@ -144,8 +155,10 @@ def write_docx(X, path):
         "A carton costs more per unit than the bottle of the same product. Costed at the product's bottle rate, the "
         "cartons would carry a spread they do not have, and %s would appear first at %s." % (
             X["default_rank"][0].lower(), money(k1000(X["routes"]["default"][X["default_rank"][0]]))))
-    d.add_paragraph("The candidate classes' claims, units and ingredient cost paid for fills from April 2025 to March 2026, "
-                    "classes as the current list defines them, are in the attached workbook for the budget.")
+    d.add_paragraph("The candidate classes' claims, units and ingredient cost paid for fills from April 2025 to March 2026 "
+                    "are in the attached workbook for the budget: the FY2026 utilization summary, which holds the "
+                    "payments made through 20 April 2026, with the later payments on those fills from this extract, "
+                    "classes as the current list defines them.")
     d.add_paragraph()
     d.add_paragraph("%s\nMAC Pricing Lead" % W.PEOPLE["pricing"])
     d.core_properties.author = W.PEOPLE["pricing"]
@@ -159,7 +172,8 @@ def write_xlsx(X, path):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Candidate classes"
-    ws.append(["Candidate classes: fills April 2025 to March 2026 (classes as the list in force from 1 January 2027)"])
+    ws.append(["Candidate classes: fills April 2025 to March 2026, claims paid through 20 April 2027 (classes as the "
+               "list in force from 1 January 2027)"])
     ws["A1"].font = Font(bold=True)
     ws.append(["Class code", "Class", "Claims", "Units dispensed", "Ingredient cost paid"])
     for c in range(1, 6):
@@ -167,11 +181,29 @@ def write_xlsx(X, path):
     for c in W.SHORTLIST_NAMES:
         cl, un, ing = X["ask"][c]
         ws.append([PK.class_code(c), c, cl, int(round(un)), round(ing)])
+    tot = [sum(X["ask"][c][i] for c in W.SHORTLIST_NAMES) for i in range(3)]
+    ws.append([None, "All candidate classes", tot[0], int(round(tot[1])), round(tot[2])])
+    last = ws.max_row
+    for c in range(2, 6):
+        ws.cell(row=last, column=c).font = Font(bold=True)
     for col, wdt in zip("ABCDE", (11, 30, 10, 16, 20)):
         ws.column_dimensions[col].width = wdt
     for row in ws.iter_rows(min_row=3, min_col=3, max_col=5):
         for cell in row:
             cell.number_format = "#,##0"
+    ws.freeze_panes = "A3"
+    nt = wb.create_sheet("Notes")
+    for line in ("Notes",
+                 "Claims are fee-for-service claims for fills from 1 April 2025 to 31 March 2026, net of reversals.",
+                 "Source: the FY2026 utilization summary of 24 April 2026 (transactions paid through 20 April 2026), "
+                 "with the later payments on those fills from the claims extract of 21 April 2027.",
+                 "Classes as the Department's drug class list in force from 1 January 2027 defines them, each NDC placed "
+                 "through the drug file of April 2027.",
+                 "Units are metric decimal quantities: each for solid forms, millilitres for liquids. Ingredient cost "
+                 "paid to the nearest dollar."):
+        nt.append([line])
+    nt["A1"].font = Font(bold=True)
+    nt.column_dimensions["A"].width = 110
     wb.save(path)
 
 
@@ -181,7 +213,11 @@ def figures(X):
          "default_margin": round(X["routes"]["default"][X["default_rank"][0]] /
                                  X["routes"]["default"][X["default_rank"][1]], 2),
          "carton_premium": round(X["premium"], 2), "unpriced_share_pct": round(X["unpriced_share"] * 100),
-         "unpriced_carton_share_pct": round(X["unpriced_carton_share"] * 100), "classes": {}}
+         "unpriced_carton_share_pct": round(X["unpriced_carton_share"] * 100), "classes": {},
+         "extract_rows": "{:,}".format(X["extract_rows"]), "window_rows": "{:,}".format(X["window_rows"]),
+         "fy26_later_payments": "{:,}".format(X["fy26_later"]), "fy26_overlap": "{:,}".format(X["fy26_overlap"]),
+         "carton_premium_2dp": "%.2f" % X["premium"], "classes_ranked": X["rank"], "update": "1 July 2027",
+         "default_spread_call": "{:,}".format(k1000(X["routes"]["default"][X["default_rank"][0]]))}
     for c in W.SHORTLIST_NAMES:
         cl, un, ing = X["ask"][c]
         lcl, lun, ling = X["ask_label"][c]
