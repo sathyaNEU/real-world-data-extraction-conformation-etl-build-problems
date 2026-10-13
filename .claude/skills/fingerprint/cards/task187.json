@@ -6,13 +6,13 @@
   "domain": "energy-systems-utilities",
   "subdomain": "grid-reliability-outage-analysis",
   "client_domain": "energy-systems-utilities",
-  "niche": "a community-owned wind farm's lost-production analysis choosing the one turbine whose blades get next summer's rope-access leading-edge repair, where a turbine at a conifer plantation's edge runs in about twice the turbulence of the rest and the turbine with the worst year has since had its rotor exchanged",
+  "niche": "a community-owned wind farm's lost-production analysis choosing the one turbine whose blades get next summer's rope-access leading-edge repair, where three turbines at a conifer plantation's edge run in its eddies, the loch-facing turbine in the smoothest air on the site, the eroded turbine in that neighbour's wake, and the turbine with the worst year has since had its rotor exchanged",
   "objective": "anomaly-detection",
   "shape": "14",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "CH04; 100 MWh to the nearest 50 MWh (89 MWh over the twelve months)",
+  "answer_source": "golden (le_repair_campaign_2027.pdf, submission.md)",
   "gap": [
     "population",
     "objective"
@@ -36,8 +36,8 @@
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "scada_10min_2025-10_2026-09.csv",
-    "rows": 0,
+    "file": "scada_10min_2025-10_2026-09.parquet",
+    "rows": 522159,
     "entity": "one turbine's ten-minute record of power, nacelle wind and state",
     "grain": "turbine x ten-minute interval",
     "source": "synthetic"
@@ -52,12 +52,21 @@
     "invented_names": [
       "Cairnhollow Community Wind Farm",
       "Cairnhollow Community Energy",
-      "Hallvard H117-3.45"
+      "Hallvard H93-2.3",
+      "Morvenside Networks",
+      "Brackwater Cranes",
+      "Skerrow Blade Services",
+      "Glenrigg ANM zone"
     ],
     "people": [
       "Jenna Dyer",
-      "Peter Sharp",
-      "Carolyn Scott"
+      "Carolyn Scott",
+      "Sara Wood",
+      "Natasha Gilbert",
+      "Marilyn Akhtar",
+      "Dorothy Graham",
+      "Ashleigh Jones",
+      "Melissa Hurst"
     ]
   },
   "deliverables": [
@@ -67,19 +76,20 @@
   "opening_move": "question-first",
   "question_form": "where",
   "driver": "Each unit's shortfall against a reference curve is read as the condition a repair fixes, but every record is the average of a capped, curved response over a spread of inputs whose width depends on where the unit stands, so a unit in a wide spread loses output near the cap for reasons no repair touches and ranks first; only the shortfall measured at matched spread isolates the repairable condition.",
-  "driver_concrete": "Each turbine's energy shortfall against the warranted power curve is read as leading-edge erosion, but a ten-minute mean power is the curve averaged over the turbulence within the ten minutes, and the turbine at the plantation edge runs in about twice the turbulence of the others, which cuts its output near rated power by up to a tenth while lifting it at low wind; ranked on the shortfall it is the worst, though its blades are sound, and only the shortfall at matched turbulence shows the eroded blades on another turbine losing about five per cent below rated.",
-  "stump": "A competent solver keeps normal operation, corrects for air density, follows the rotor exchange through the lift log and ranks the turbines by energy shortfall against the warranted power curve, choosing the plantation-edge turbine; the turbulence-matched shortfall leaves that turbine sound and names the turbine whose blades are eroded.",
+  "driver_concrete": "Each turbine's energy shortfall against the warranted power curve at the same mean wind is read as leading-edge erosion, but a ten-minute mean power is the curve averaged over the turbulence inside the ten minutes: the plantation-edge turbine, at 2.3 times the open-air turbulence, loses up to a tenth of its power near rated and gains at low wind, so it ranks first on the shortfall though its blades are sound; a partial-load check instead names the loch-facing turbine in the smoothest air; only the shortfall at each record's own turbulence names the eroded turbine, whose 2.4 per cent loss below rated a neighbour's wake hides at low wind.",
+  "stump": "A competent solver keeps normal operation, corrects for air density, follows the rotor exchange through the lift log and ranks the turbines by energy shortfall against the warranted power curve, choosing the plantation-edge turbine (CH07, 235 MWh); the shortfall at each turbine's own turbulence leaves it sound and names CH04 (89 MWh).",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who cleans the ten-minute record (normal operation, curtailment, icing, air density, the March rotor exchange) and ranks each turbine's energy shortfall against the warranted power curve over the year picks the plantation-edge turbine, whose shortfall is turbulence, not the turbine with the eroded blades.",
   "domain_test": "The deciding quantity is the energy each rotor's blades lose to leading-edge erosion, which wind power-performance analysis measures as the power-curve shortfall at matched inflow (turbulence normalisation of a ten-minute power curve, as in IEC 61400-12-1 Annex M), because a ten-minute mean power averages a capped cubic curve over the turbulence; with clinics and visits or pumps and flows in place of turbines and wind there is no capped curve averaged over a per-unit turbulence, and the task dissolves.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:turbulence-matched-shortfall-for-blade-erosion",
   "layer1": [
-    "ten-minute SCADA in local time against a met mast logging in UTC across daylight-saving changes",
-    "turbine state codes, curtailment setpoints and the grid operator's monthly curtailment shares by connection",
-    "icing episodes in winter",
-    "air density from the met mast's temperature and pressure",
-    "a rotor exchange recorded by the crane contractor under position codes, with the site layout and the asset register"
+    "SCADA export joining a site server's UK local time to a hosted platform's UTC from 3 February 2026, with the October clock change's repeated hour",
+    "a met mast logging UTC interval starts",
+    "one power-limited controller state shared by the network operator's ANM limits and a planning condition's night-time noise mode",
+    "silent intervals while a controller is isolated for service or a crane job, after converter trips, during a communications outage and a grid loss",
+    "winter icing stops",
+    "the warranted curve as a table in a contract schedule PDF"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

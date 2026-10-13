@@ -1,0 +1,172 @@
+{
+ "call": "CH04",
+ "recovered_mwh": 88.9,
+ "recovered_mwh_nearest_50": 100,
+ "recovered_share_of_energy_pct": 1.3,
+ "recovered_mwh_turbulence_bins": 83.2,
+ "zero_turbulence_curve": {
+  "cp": 0.47,
+  "cut_in_ms": 3.0
+ },
+ "runner_up": "CH02",
+ "matched_mwh": {
+  "CH01": -0.0,
+  "CH02": 65.3,
+  "CH03": -0.1,
+  "CH04": 88.9,
+  "CH05": -0.0,
+  "CH06": 0.4,
+  "CH07": 0.5,
+  "CH08": -0.5,
+  "CH09": 0.2,
+  "CH10": -0.3
+ },
+ "shortfall_vs_warranted_mwh": {
+  "CH01": 114.9,
+  "CH02": 71.3,
+  "CH03": 3.1,
+  "CH04": 93.0,
+  "CH05": 114.0,
+  "CH06": 3.8,
+  "CH07": 234.8,
+  "CH08": 1.6,
+  "CH09": -3.2,
+  "CH10": 8.5
+ },
+ "shortfall_vs_warranted_whole_year_ch09_mwh": 369.0,
+ "partial_load_3_to_10_mwh": {
+  "CH01": -33.5,
+  "CH02": 77.1,
+  "CH03": -35.3,
+  "CH04": 41.7,
+  "CH05": -19.8,
+  "CH06": -22.2,
+  "CH07": -24.1,
+  "CH08": -25.1,
+  "CH09": -10.0,
+  "CH10": -10.2
+ },
+ "partial_load_4_to_8_mwh": {
+  "CH01": -64.8,
+  "CH02": 48.1,
+  "CH03": -44.2,
+  "CH04": 0.5,
+  "CH05": -51.1,
+  "CH06": -27.4,
+  "CH07": -81.3,
+  "CH08": -30.6,
+  "CH09": -11.9,
+  "CH10": -15.1
+ },
+ "ch07_turbulence_ratio": 2.33,
+ "ch09_whole_year_blade_loss_mwh": 361.2,
+ "default_lead_ratio": 2.04,
+ "default_pick": "CH07",
+ "downtime_mwh": {
+  "CH01": 60,
+  "CH02": 47,
+  "CH03": 103,
+  "CH04": 130,
+  "CH05": 51,
+  "CH06": 430,
+  "CH07": 56,
+  "CH08": 129,
+  "CH09": 341,
+  "CH10": 71
+ },
+ "curtailment_mwh": {
+  "CH01": 292,
+  "CH02": 297,
+  "CH03": 297,
+  "CH04": 293,
+  "CH05": 302,
+  "CH06": 291,
+  "CH07": 302,
+  "CH08": 304,
+  "CH09": 300,
+  "CH10": 302
+ },
+ "downtime_mwh_exact": {
+  "CH01": 60.09,
+  "CH02": 46.78,
+  "CH03": 102.66,
+  "CH04": 129.65,
+  "CH05": 50.92,
+  "CH06": 429.85,
+  "CH07": 55.59,
+  "CH08": 128.57,
+  "CH09": 341.3,
+  "CH10": 71.13
+ },
+ "curtailment_mwh_exact": {
+  "CH01": 291.7,
+  "CH02": 297.12,
+  "CH03": 297.12,
+  "CH04": 293.13,
+  "CH05": 301.64,
+  "CH06": 290.93,
+  "CH07": 302.03,
+  "CH08": 303.67,
+  "CH09": 299.79,
+  "CH10": 301.54
+ },
+ "farm_downtime_mwh": 1417,
+ "farm_curtailment_mwh": 2979,
+ "normal_energy_mwh": {
+  "CH01": 7603.8,
+  "CH02": 7663.0,
+  "CH03": 7419.7,
+  "CH04": 7111.8,
+  "CH05": 7234.7,
+  "CH06": 5984.4,
+  "CH07": 7195.6,
+  "CH08": 6279.5,
+  "CH09": 2016.7,
+  "CH10": 6361.2
+ },
+ "ch09_rotor_back": "25 April 2026",
+ "standard_clauses": [
+  "1.1",
+  "1.2",
+  "2.1",
+  "2.2",
+  "2.3",
+  "2.4",
+  "2.5",
+  "2.6",
+  "3.1",
+  "4.1",
+  "4.2",
+  "4.3",
+  "4.4",
+  "4.5",
+  "4.6",
+  "4.7",
+  "5.1"
+ ],
+ "parameters": {
+  "rounding_step_mwh": 50,
+  "standard_density_kg_m3": 1.225,
+  "rated_kw": 2300,
+  "power_performance_standard": "IEC 61400-12-1",
+  "state_codes_downtime": [
+   30,
+   40,
+   41
+  ],
+  "state_codes_normal": [
+   10,
+   20
+  ],
+  "bands_ms": [
+   3,
+   4,
+   8,
+   8.5,
+   9.5,
+   10,
+   12
+  ],
+  "rotor_diameters_ch02_to_ch04": 3.5
+ }
+}

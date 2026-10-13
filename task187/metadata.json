@@ -1,0 +1,167 @@
+{
+  "task": "task187",
+  "title": "Which of a community wind farm's ten turbines gets the summer 2027 leading-edge repair campaign, and the energy the repaired blades recover over the twelve months after the work, with each turbine's energy lost to downtime and to grid curtailment over October 2025 to September 2026",
+  "domain": "Energy Systems & Utilities",
+  "subdomain": "grid reliability and outage analysis (a wind farm's lost-production accounting: downtime, grid curtailment and performance, with the performance shortfall split into blade loss and inflow)",
+  "objective": "Anomaly Detection & Diagnostics",
+  "prompt_shape": "14 (cuts of a distribution by segment): the campaign's turbine and recovered energy; each turbine's energy lost to downtime and to grid curtailment; the chart of both by turbine",
+  "as_of": "2026-10-09",
+  "deliverables": [
+    "le_repair_campaign_2027.pdf",
+    "lost_production_2025_26.xlsx"
+  ],
+  "distractor_files": [
+    "export_meter_halfhourly_2025-10_2026-09.csv",
+    "lost_production_2024_25.xlsx"
+  ],
+  "input_gates": {
+    "files": 14,
+    "formats": [
+      "csv",
+      "parquet",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "scada_10min_2025-10_2026-09.parquet",
+    "largest_file_rows": 522159
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task187/generator/build.py (seeded, deterministic) around a fictional community wind farm, its society, turbine maker, network operator and contractors; no real organisation, site, person or record is depicted.",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-09",
+  "generator": "task187/generator/build.py",
+  "files": [
+    {
+      "path": "OM-07_blade_campaigns_and_lost_production.pdf",
+      "format": "pdf",
+      "bytes": 43986,
+      "rows": null,
+      "source": "Constructed: Society O&M standard OM-07, revision 3",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "TSA_schedule_3_warranted_power_curve.pdf",
+      "format": "pdf",
+      "bytes": 84786,
+      "rows": null,
+      "source": "Constructed: Turbine supply agreement, Schedule 3, warranted power curve",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "anm_instructions_glenrigg_2025-10_2026-09.csv",
+      "format": "csv",
+      "bytes": 11181,
+      "rows": 120,
+      "source": "Constructed: Network operator's ANM instruction log for the farm's connection",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "asset_register.xlsx",
+      "format": "xlsx",
+      "bytes": 7895,
+      "rows": null,
+      "source": "Constructed: Turbine asset register",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "crane_lift_log_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 7035,
+      "rows": null,
+      "source": "Constructed: Crane contractor's lift log for the site, 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_meter_halfhourly_2025-10_2026-09.csv",
+      "format": "csv",
+      "bytes": 417371,
+      "rows": 17520,
+      "source": "Constructed: Connection export meter, half-hourly settlement data",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_notes_2026-10-09.txt",
+      "format": "txt",
+      "bytes": 2452,
+      "rows": null,
+      "source": "Constructed: Asset manager's extract notes, 9 October 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hallvard_H93_state_codes.xlsx",
+      "format": "xlsx",
+      "bytes": 7762,
+      "rows": null,
+      "source": "Constructed: Turbine controller state code table",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lost_production_2024_25.xlsx",
+      "format": "xlsx",
+      "bytes": 7492,
+      "rows": null,
+      "source": "Constructed: Lost production report to the board, October 2024 to September 2025",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "metmast_M1_10min_2025-10_2026-09.csv",
+      "format": "csv",
+      "bytes": 2661842,
+      "rows": 52560,
+      "source": "Constructed: Met mast M1 logger ten-minute record, October 2025 to September 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "monthly_production_2025-10_2026-09.csv",
+      "format": "csv",
+      "bytes": 4624,
+      "rows": 120,
+      "source": "Constructed: Turbine energy meter readings by month",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "scada_10min_2025-10_2026-09.parquet",
+      "format": "parquet",
+      "bytes": 5638043,
+      "rows": 522159,
+      "source": "Constructed: Wind farm SCADA ten-minute export, turbines CH01 to CH10, October 2025 to September 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "site_layout_pads.csv",
+      "format": "csv",
+      "bytes": 706,
+      "rows": 11,
+      "source": "Constructed: Site layout: pads, turbines and the met mast on the site grid",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "work_orders_2025-10_2026-09.csv",
+      "format": "csv",
+      "bytes": 11134,
+      "rows": 72,
+      "source": "Constructed: Service contractor's work orders, October 2025 to September 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

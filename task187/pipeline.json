@@ -1,26 +1,26 @@
 {
   "task": "task187",
   "owner": "oviya13ya",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "energy-systems-utilities / grid-reliability-outage-analysis (a wind farm's lost-production accounting)",
   "objective": "anomaly-detection",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-13",
-  "stump": "The default path ranks the turbines by their energy shortfall against the warranted power curve after cleaning the record, which reads the plantation-edge turbine's turbulence loss near rated power as blade erosion and books the campaign there; the shortfall at matched turbulence leaves that turbine sound and names the turbine whose blades are eroded.",
+  "stump": "The default path ranks the turbines by their energy shortfall against the warranted power curve after cleaning the record, which reads the plantation-edge turbine's turbulence loss near rated power as blade erosion and books the campaign there; the shortfall at each turbine's own turbulence leaves it sound and names CH04, whose blades lose about two per cent of their power below rated, a loss its neighbour's wake hides at low wind.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-13"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK)",
+    "reader": "pass 1: no decisive-step sentence, no ranking file, question 6 analytical; realism findings fixed"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN (objective overuse, repeat decision)",
+    "nearest": "task500 v3 0.05"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2 design: prototype the turbulence and erosion magnitudes, default path, ladder, fork table, closure, asks, prompt; then precut",
+  "resume": "stage 4 check: the leak reader's pass 1 is in (no leak; realism fixes applied in the generator and rebuilt green). The judge thread was spawned from /tmp/determinism-check-task187-1791859754/judge_brief.md; re-invoke the determinism-judge agent with that run's verdict.md to write determinism_check_report.md (or run a fresh judge pass if the /tmp run is gone), fix every finding in the generator in one pass, re-read only if a document or the prompt changes, then write the pre-ship check and ship.",
   "approved": null,
   "delivered": null,
   "portal": null,
