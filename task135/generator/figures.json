@@ -15,6 +15,338 @@
    "fernside_quarterly_report_2026-q3.pdf"
   ]
  },
+ "not_daily": {
+  "W 2-day blocks, anchor 0": {
+   "20": 4.9715,
+   "30": 5.6239,
+   "40": 6.5622,
+   "50": 7.6824,
+   "60": 8.9162,
+   "70": 10.2226,
+   "80": 11.5769,
+   "90": 12.9642,
+   "100": 14.3749
+  },
+  "W 2-day blocks, anchor 1": {
+   "20": 5.1219,
+   "30": 5.7852,
+   "40": 6.7054,
+   "50": 7.792,
+   "60": 8.9848,
+   "70": 10.2468,
+   "80": 11.5553,
+   "90": 12.8962,
+   "100": 14.2604
+  },
+  "W 3-day blocks, anchor 0": {
+   "20": 5.2677,
+   "30": 5.9784,
+   "40": 6.9567,
+   "50": 8.1063,
+   "60": 9.3643,
+   "70": 10.6926,
+   "80": 12.0678,
+   "90": 13.4758,
+   "100": 14.9072
+  },
+  "W 3-day blocks, anchor 1": {
+   "20": 4.859,
+   "30": 5.5818,
+   "40": 6.5726,
+   "50": 7.7291,
+   "60": 8.9874,
+   "70": 10.3104,
+   "80": 11.6761,
+   "90": 13.0711,
+   "100": 14.487
+  },
+  "W 3-day blocks, anchor 2": {
+   "20": 5.0976,
+   "30": 5.7549,
+   "40": 6.6703,
+   "50": 7.7528,
+   "60": 8.942,
+   "70": 10.2007,
+   "80": 11.506,
+   "90": 12.8438,
+   "100": 14.2048
+  },
+  "W 4-day blocks, anchor 0": {
+   "20": 5.1665,
+   "30": 5.8452,
+   "40": 6.8385,
+   "50": 8.0306,
+   "60": 9.3456,
+   "70": 10.7386,
+   "80": 12.1827,
+   "90": 13.6618,
+   "100": 15.1657
+  },
+  "W 4-day blocks, anchor 1": {
+   "20": 5.1423,
+   "30": 5.8426,
+   "40": 6.7813,
+   "50": 7.8737,
+   "60": 9.0643,
+   "70": 10.3193,
+   "80": 11.6177,
+   "90": 12.9466,
+   "100": 14.2974
+  },
+  "W 4-day blocks, anchor 2": {
+   "20": 4.906,
+   "30": 5.6389,
+   "40": 6.6064,
+   "50": 7.7208,
+   "60": 8.9273,
+   "70": 10.1933,
+   "80": 11.4991,
+   "90": 12.8325,
+   "100": 14.1858
+  },
+  "W 4-day blocks, anchor 3": {
+   "20": 5.0866,
+   "30": 5.8776,
+   "40": 6.9321,
+   "50": 8.1484,
+   "60": 9.4643,
+   "70": 10.8437,
+   "80": 12.2651,
+   "90": 13.7154,
+   "100": 15.1865
+  },
+  "W daily vols, five-day correlations": {
+   "20": 5.3106,
+   "30": 6.0946,
+   "40": 7.1273,
+   "50": 8.3166,
+   "60": 9.6044,
+   "70": 10.9561,
+   "80": 12.3508,
+   "90": 13.7753,
+   "100": 15.2213
+  },
+  "W five-day blocks, anchor 0": {
+   "20": 5.1791,
+   "30": 6.0425,
+   "40": 7.1429,
+   "50": 8.3877,
+   "60": 9.7214,
+   "70": 11.1121,
+   "80": 12.5408,
+   "90": 13.996,
+   "100": 15.4701
+  },
+  "W five-day blocks, anchor 1": {
+   "20": 5.2442,
+   "30": 6.0771,
+   "40": 7.1322,
+   "50": 8.3254,
+   "60": 9.6055,
+   "70": 10.9418,
+   "80": 12.3163,
+   "90": 13.7173,
+   "100": 15.1376
+  },
+  "W five-day blocks, anchor 2": {
+   "20": 5.0108,
+   "30": 5.8235,
+   "40": 6.9147,
+   "50": 8.1736,
+   "60": 9.5341,
+   "70": 10.9583,
+   "80": 12.4244,
+   "90": 13.9192,
+   "100": 15.4342
+  },
+  "W five-day blocks, anchor 3": {
+   "20": 4.9771,
+   "30": 5.6606,
+   "40": 6.6518,
+   "50": 7.8346,
+   "60": 9.135,
+   "70": 10.5094,
+   "80": 11.9323,
+   "90": 13.3882,
+   "100": 14.8673
+  },
+  "W five-day blocks, anchor 4": {
+   "20": 5.3085,
+   "30": 5.9132,
+   "40": 6.8135,
+   "50": 7.9089,
+   "60": 9.1296,
+   "70": 10.4316,
+   "80": 11.788,
+   "90": 13.1821,
+   "100": 14.6031
+  },
+  "W calendar weeks to Mon": {
+   "20": 5.1607,
+   "30": 5.9555,
+   "40": 6.9929,
+   "50": 8.1811,
+   "60": 9.4634,
+   "70": 10.8063,
+   "80": 12.19,
+   "90": 13.6019,
+   "100": 15.034
+  },
+  "W calendar weeks to Tue": {
+   "20": 5.1873,
+   "30": 5.9472,
+   "40": 6.9537,
+   "50": 8.1156,
+   "60": 9.3752,
+   "70": 10.6982,
+   "80": 12.0637,
+   "90": 13.4587,
+   "100": 14.875
+  },
+  "W calendar weeks to Wed": {
+   "20": 5.0122,
+   "30": 5.8601,
+   "40": 6.9504,
+   "50": 8.1867,
+   "60": 9.5124,
+   "70": 10.8948,
+   "80": 12.3148,
+   "90": 13.7609,
+   "100": 15.2255
+  },
+  "W calendar weeks to Thu": {
+   "20": 4.9814,
+   "30": 5.7688,
+   "40": 6.7879,
+   "50": 7.9501,
+   "60": 9.2014,
+   "70": 10.5099,
+   "80": 11.8567,
+   "90": 13.2302,
+   "100": 14.6228
+  },
+  "W calendar weeks to Fri": {
+   "20": 4.9427,
+   "30": 5.5616,
+   "40": 6.5136,
+   "50": 7.6758,
+   "60": 8.9668,
+   "70": 10.3384,
+   "80": 11.7625,
+   "90": 13.2221,
+   "100": 14.7067
+  },
+  "W five-day blocks of the daily portfolio, anchor 0": {
+   "20": 5.1724,
+   "30": 6.0355,
+   "40": 7.1366,
+   "50": 8.3822,
+   "60": 9.7169,
+   "70": 11.1085,
+   "80": 12.538,
+   "90": 13.9938,
+   "100": 15.4684
+  },
+  "W five-day blocks of the daily portfolio, anchor 1": {
+   "20": 5.2425,
+   "30": 6.0748,
+   "40": 7.1296,
+   "50": 8.3227,
+   "60": 9.6028,
+   "70": 10.9394,
+   "80": 12.3142,
+   "90": 13.7157,
+   "100": 15.1366
+  },
+  "W five-day blocks of the daily portfolio, anchor 2": {
+   "20": 5.0126,
+   "30": 5.8258,
+   "40": 6.9172,
+   "50": 8.176,
+   "60": 9.536,
+   "70": 10.9596,
+   "80": 12.4248,
+   "90": 13.9185,
+   "100": 15.4324
+  },
+  "W five-day blocks of the daily portfolio, anchor 3": {
+   "20": 4.9681,
+   "30": 5.6514,
+   "40": 6.6434,
+   "50": 7.8274,
+   "60": 9.1286,
+   "70": 10.5034,
+   "80": 11.9261,
+   "90": 13.3814,
+   "100": 14.8594
+  },
+  "W five-day blocks of the daily portfolio, anchor 4": {
+   "20": 5.2987,
+   "30": 5.9006,
+   "40": 6.7995,
+   "50": 7.8946,
+   "60": 9.1154,
+   "70": 10.4178,
+   "80": 11.7749,
+   "90": 13.1697,
+   "100": 14.5916
+  },
+  "W calendar weeks of the daily portfolio to Mon": {
+   "20": 5.1552,
+   "30": 5.9467,
+   "40": 6.9815,
+   "50": 8.168,
+   "60": 9.4496,
+   "70": 10.7926,
+   "80": 12.1771,
+   "90": 13.5906,
+   "100": 15.0252
+  },
+  "W calendar weeks of the daily portfolio to Tue": {
+   "20": 5.1844,
+   "30": 5.9447,
+   "40": 6.9519,
+   "50": 8.1145,
+   "60": 9.3745,
+   "70": 10.6974,
+   "80": 12.0624,
+   "90": 13.4565,
+   "100": 14.8715
+  },
+  "W calendar weeks of the daily portfolio to Wed": {
+   "20": 5.012,
+   "30": 5.8605,
+   "40": 6.9514,
+   "50": 8.1882,
+   "60": 9.5141,
+   "70": 10.8966,
+   "80": 12.3165,
+   "90": 13.7622,
+   "100": 15.2263
+  },
+  "W calendar weeks of the daily portfolio to Thu": {
+   "20": 4.9759,
+   "30": 5.7631,
+   "40": 6.7828,
+   "50": 7.9456,
+   "60": 9.1974,
+   "70": 10.5062,
+   "80": 11.853,
+   "90": 13.2262,
+   "100": 14.6181
+  },
+  "W calendar weeks of the daily portfolio to Fri": {
+   "20": 4.9344,
+   "30": 5.5505,
+   "40": 6.5013,
+   "50": 7.6634,
+   "60": 8.9552,
+   "70": 10.3283,
+   "80": 11.7544,
+   "90": 13.2167,
+   "100": 14.7044
+  }
+ },
  "ladder": {
   "R0 daily": {
    "20": 4.8966,
@@ -60,7 +392,7 @@
    "90": 13.51,
    "100": 14.8897
   },
-  "P 2-day blocks, anchor 0": {
+  "W 2-day blocks, anchor 0": {
    "20": 4.9715,
    "30": 5.6239,
    "40": 6.5622,
@@ -71,7 +403,7 @@
    "90": 12.9642,
    "100": 14.3749
   },
-  "P 2-day blocks, anchor 1": {
+  "W 2-day blocks, anchor 1": {
    "20": 5.1219,
    "30": 5.7852,
    "40": 6.7054,
@@ -82,7 +414,7 @@
    "90": 12.8962,
    "100": 14.2604
   },
-  "P 3-day blocks, anchor 0": {
+  "W 3-day blocks, anchor 0": {
    "20": 5.2677,
    "30": 5.9784,
    "40": 6.9567,
@@ -93,7 +425,7 @@
    "90": 13.4758,
    "100": 14.9072
   },
-  "P 3-day blocks, anchor 1": {
+  "W 3-day blocks, anchor 1": {
    "20": 4.859,
    "30": 5.5818,
    "40": 6.5726,
@@ -104,7 +436,7 @@
    "90": 13.0711,
    "100": 14.487
   },
-  "P 3-day blocks, anchor 2": {
+  "W 3-day blocks, anchor 2": {
    "20": 5.0976,
    "30": 5.7549,
    "40": 6.6703,
@@ -115,7 +447,7 @@
    "90": 12.8438,
    "100": 14.2048
   },
-  "P 4-day blocks, anchor 0": {
+  "W 4-day blocks, anchor 0": {
    "20": 5.1665,
    "30": 5.8452,
    "40": 6.8385,
@@ -126,7 +458,7 @@
    "90": 13.6618,
    "100": 15.1657
   },
-  "P 4-day blocks, anchor 1": {
+  "W 4-day blocks, anchor 1": {
    "20": 5.1423,
    "30": 5.8426,
    "40": 6.7813,
@@ -137,7 +469,7 @@
    "90": 12.9466,
    "100": 14.2974
   },
-  "P 4-day blocks, anchor 2": {
+  "W 4-day blocks, anchor 2": {
    "20": 4.906,
    "30": 5.6389,
    "40": 6.6064,
@@ -148,7 +480,7 @@
    "90": 12.8325,
    "100": 14.1858
   },
-  "P 4-day blocks, anchor 3": {
+  "W 4-day blocks, anchor 3": {
    "20": 5.0866,
    "30": 5.8776,
    "40": 6.9321,
@@ -225,7 +557,7 @@
    "90": 13.8968,
    "100": 15.3865
   },
-  "G daily vols, five-day correlations": {
+  "W daily vols, five-day correlations": {
    "20": 5.3106,
    "30": 6.0946,
    "40": 7.1273,
@@ -236,7 +568,7 @@
    "90": 13.7753,
    "100": 15.2213
   },
-  "G five-day blocks, anchor 0": {
+  "W five-day blocks, anchor 0": {
    "20": 5.1791,
    "30": 6.0425,
    "40": 7.1429,
@@ -247,7 +579,7 @@
    "90": 13.996,
    "100": 15.4701
   },
-  "G five-day blocks, anchor 1": {
+  "W five-day blocks, anchor 1": {
    "20": 5.2442,
    "30": 6.0771,
    "40": 7.1322,
@@ -258,7 +590,7 @@
    "90": 13.7173,
    "100": 15.1376
   },
-  "G five-day blocks, anchor 2": {
+  "W five-day blocks, anchor 2": {
    "20": 5.0108,
    "30": 5.8235,
    "40": 6.9147,
@@ -269,7 +601,7 @@
    "90": 13.9192,
    "100": 15.4342
   },
-  "G five-day blocks, anchor 3": {
+  "W five-day blocks, anchor 3": {
    "20": 4.9771,
    "30": 5.6606,
    "40": 6.6518,
@@ -280,7 +612,7 @@
    "90": 13.3882,
    "100": 14.8673
   },
-  "G five-day blocks, anchor 4": {
+  "W five-day blocks, anchor 4": {
    "20": 5.3085,
    "30": 5.9132,
    "40": 6.8135,
@@ -291,7 +623,7 @@
    "90": 13.1821,
    "100": 14.6031
   },
-  "G calendar weeks to Mon": {
+  "W calendar weeks to Mon": {
    "20": 5.1607,
    "30": 5.9555,
    "40": 6.9929,
@@ -302,7 +634,7 @@
    "90": 13.6019,
    "100": 15.034
   },
-  "G calendar weeks to Tue": {
+  "W calendar weeks to Tue": {
    "20": 5.1873,
    "30": 5.9472,
    "40": 6.9537,
@@ -313,7 +645,7 @@
    "90": 13.4587,
    "100": 14.875
   },
-  "G calendar weeks to Wed": {
+  "W calendar weeks to Wed": {
    "20": 5.0122,
    "30": 5.8601,
    "40": 6.9504,
@@ -324,7 +656,7 @@
    "90": 13.7609,
    "100": 15.2255
   },
-  "G calendar weeks to Thu": {
+  "W calendar weeks to Thu": {
    "20": 4.9814,
    "30": 5.7688,
    "40": 6.7879,
@@ -335,7 +667,7 @@
    "90": 13.2302,
    "100": 14.6228
   },
-  "G calendar weeks to Fri": {
+  "W calendar weeks to Fri": {
    "20": 4.9427,
    "30": 5.5616,
    "40": 6.5136,
@@ -346,7 +678,7 @@
    "90": 13.2221,
    "100": 14.7067
   },
-  "G five-day blocks of the daily portfolio, anchor 0": {
+  "W five-day blocks of the daily portfolio, anchor 0": {
    "20": 5.1724,
    "30": 6.0355,
    "40": 7.1366,
@@ -357,7 +689,7 @@
    "90": 13.9938,
    "100": 15.4684
   },
-  "G five-day blocks of the daily portfolio, anchor 1": {
+  "W five-day blocks of the daily portfolio, anchor 1": {
    "20": 5.2425,
    "30": 6.0748,
    "40": 7.1296,
@@ -368,7 +700,7 @@
    "90": 13.7157,
    "100": 15.1366
   },
-  "G five-day blocks of the daily portfolio, anchor 2": {
+  "W five-day blocks of the daily portfolio, anchor 2": {
    "20": 5.0126,
    "30": 5.8258,
    "40": 6.9172,
@@ -379,7 +711,7 @@
    "90": 13.9185,
    "100": 15.4324
   },
-  "G five-day blocks of the daily portfolio, anchor 3": {
+  "W five-day blocks of the daily portfolio, anchor 3": {
    "20": 4.9681,
    "30": 5.6514,
    "40": 6.6434,
@@ -390,7 +722,7 @@
    "90": 13.3814,
    "100": 14.8594
   },
-  "G five-day blocks of the daily portfolio, anchor 4": {
+  "W five-day blocks of the daily portfolio, anchor 4": {
    "20": 5.2987,
    "30": 5.9006,
    "40": 6.7995,
@@ -401,7 +733,7 @@
    "90": 13.1697,
    "100": 14.5916
   },
-  "G calendar weeks of the daily portfolio to Mon": {
+  "W calendar weeks of the daily portfolio to Mon": {
    "20": 5.1552,
    "30": 5.9467,
    "40": 6.9815,
@@ -412,7 +744,7 @@
    "90": 13.5906,
    "100": 15.0252
   },
-  "G calendar weeks of the daily portfolio to Tue": {
+  "W calendar weeks of the daily portfolio to Tue": {
    "20": 5.1844,
    "30": 5.9447,
    "40": 6.9519,
@@ -423,7 +755,7 @@
    "90": 13.4565,
    "100": 14.8715
   },
-  "G calendar weeks of the daily portfolio to Wed": {
+  "W calendar weeks of the daily portfolio to Wed": {
    "20": 5.012,
    "30": 5.8605,
    "40": 6.9514,
@@ -434,7 +766,7 @@
    "90": 13.7622,
    "100": 15.2263
   },
-  "G calendar weeks of the daily portfolio to Thu": {
+  "W calendar weeks of the daily portfolio to Thu": {
    "20": 4.9759,
    "30": 5.7631,
    "40": 6.7828,
@@ -445,7 +777,7 @@
    "90": 13.2262,
    "100": 14.6181
   },
-  "G calendar weeks of the daily portfolio to Fri": {
+  "W calendar weeks of the daily portfolio to Fri": {
    "20": 4.9344,
    "30": 5.5505,
    "40": 6.5013,
@@ -473,54 +805,71 @@
   "R1 ewma 0.94": 80,
   "R3 ledoit-wolf": 70,
   "R4 monthly": 60,
-  "P 2-day blocks, anchor 0": 60,
-  "P 2-day blocks, anchor 1": 60,
-  "P 3-day blocks, anchor 0": 60,
-  "P 3-day blocks, anchor 1": 60,
-  "P 3-day blocks, anchor 2": 60,
-  "P 4-day blocks, anchor 0": 60,
-  "P 4-day blocks, anchor 1": 60,
-  "P 4-day blocks, anchor 2": 60,
-  "P 4-day blocks, anchor 3": 60,
+  "W 2-day blocks, anchor 0": 60,
+  "W 2-day blocks, anchor 1": 60,
+  "W 3-day blocks, anchor 0": 60,
+  "W 3-day blocks, anchor 1": 60,
+  "W 3-day blocks, anchor 2": 60,
+  "W 4-day blocks, anchor 0": 60,
+  "W 4-day blocks, anchor 1": 60,
+  "W 4-day blocks, anchor 2": 60,
+  "W 4-day blocks, anchor 3": 60,
   "P pair lead-lag": 60,
   "G lead-lag 1": 60,
   "G lead-lag 2": 60,
   "G newey-west 4": 60,
   "G newey-west 5": 60,
   "G cross-lag matrix 1": 60,
-  "G daily vols, five-day correlations": 60,
-  "G five-day blocks, anchor 0": 60,
-  "G five-day blocks, anchor 1": 60,
-  "G five-day blocks, anchor 2": 60,
-  "G five-day blocks, anchor 3": 60,
-  "G five-day blocks, anchor 4": 60,
-  "G calendar weeks to Mon": 60,
-  "G calendar weeks to Tue": 60,
-  "G calendar weeks to Wed": 60,
-  "G calendar weeks to Thu": 60,
-  "G calendar weeks to Fri": 60,
-  "G five-day blocks of the daily portfolio, anchor 0": 60,
-  "G five-day blocks of the daily portfolio, anchor 1": 60,
-  "G five-day blocks of the daily portfolio, anchor 2": 60,
-  "G five-day blocks of the daily portfolio, anchor 3": 60,
-  "G five-day blocks of the daily portfolio, anchor 4": 60,
-  "G calendar weeks of the daily portfolio to Mon": 60,
-  "G calendar weeks of the daily portfolio to Tue": 60,
-  "G calendar weeks of the daily portfolio to Wed": 60,
-  "G calendar weeks of the daily portfolio to Thu": 60,
-  "G calendar weeks of the daily portfolio to Fri": 60,
+  "W daily vols, five-day correlations": 60,
+  "W five-day blocks, anchor 0": 60,
+  "W five-day blocks, anchor 1": 60,
+  "W five-day blocks, anchor 2": 60,
+  "W five-day blocks, anchor 3": 60,
+  "W five-day blocks, anchor 4": 60,
+  "W calendar weeks to Mon": 60,
+  "W calendar weeks to Tue": 60,
+  "W calendar weeks to Wed": 60,
+  "W calendar weeks to Thu": 60,
+  "W calendar weeks to Fri": 60,
+  "W five-day blocks of the daily portfolio, anchor 0": 60,
+  "W five-day blocks of the daily portfolio, anchor 1": 60,
+  "W five-day blocks of the daily portfolio, anchor 2": 60,
+  "W five-day blocks of the daily portfolio, anchor 3": 60,
+  "W five-day blocks of the daily portfolio, anchor 4": 60,
+  "W calendar weeks of the daily portfolio to Mon": 60,
+  "W calendar weeks of the daily portfolio to Tue": 60,
+  "W calendar weeks of the daily portfolio to Wed": 60,
+  "W calendar weeks of the daily portfolio to Thu": 60,
+  "W calendar weeks of the daily portfolio to Fri": 60,
   "R2 indices": 70
  },
  "golden_family_range": {
   "60": [
-   8.96,
-   9.72
+   9.29,
+   9.59
   ],
   "70": [
-   10.33,
-   11.11
+   10.65,
+   10.99
   ]
  },
+ "golden_family_range_stated": {
+  "60": [
+   "9.3",
+   "9.6"
+  ],
+  "70": [
+   "10.6",
+   "11.0"
+  ]
+ },
+ "lead_lag_1_stated": {
+  "60": "9.6",
+  "70": "11.0"
+ },
+ "newey_west_60_stated": [
+  "9.3"
+ ],
  "default_r0": {
   "60": 8.25,
   "70": 9.41,
@@ -630,15 +979,13 @@
    "r0_70_at_252": 10.31,
    "r0_70_at_own_count": 9.84,
    "own_count_golden": [
-    50,
     60
    ],
    "deleted": {
     "default": 70,
     "r0_70": 9.53,
     "golden": [
-     60,
-     70
+     60
     ]
    },
    "by_market": {
@@ -673,15 +1020,13 @@
    "r0_70_at_252": 10.27,
    "r0_70_at_own_count": 9.8,
    "own_count_golden": [
-    50,
     60
    ],
    "deleted": {
     "default": 70,
     "r0_70": 9.47,
     "golden": [
-     60,
-     70
+     60
     ]
    }
   },
@@ -772,28 +1117,7 @@
    "G lead-lag 2": 60,
    "G newey-west 4": 60,
    "G newey-west 5": 60,
-   "G cross-lag matrix 1": 60,
-   "G daily vols, five-day correlations": 60,
-   "G five-day blocks, anchor 0": 60,
-   "G five-day blocks, anchor 1": 60,
-   "G five-day blocks, anchor 2": 60,
-   "G five-day blocks, anchor 3": 60,
-   "G five-day blocks, anchor 4": 70,
-   "G calendar weeks to Mon": 60,
-   "G calendar weeks to Tue": 60,
-   "G calendar weeks to Wed": 60,
-   "G calendar weeks to Thu": 60,
-   "G calendar weeks to Fri": 70,
-   "G five-day blocks of the daily portfolio, anchor 0": 60,
-   "G five-day blocks of the daily portfolio, anchor 1": 60,
-   "G five-day blocks of the daily portfolio, anchor 2": 60,
-   "G five-day blocks of the daily portfolio, anchor 3": 60,
-   "G five-day blocks of the daily portfolio, anchor 4": 70,
-   "G calendar weeks of the daily portfolio to Mon": 60,
-   "G calendar weeks of the daily portfolio to Tue": 60,
-   "G calendar weeks of the daily portfolio to Wed": 60,
-   "G calendar weeks of the daily portfolio to Thu": 60,
-   "G calendar weeks of the daily portfolio to Fri": 70
+   "G cross-lag matrix 1": 60
   },
   "SF6": {
    "ewma": 80
@@ -1482,5 +1806,5 @@
   "later_max": 70,
   "later_n": 140
  },
- "checks": 281
+ "checks": 235
 }

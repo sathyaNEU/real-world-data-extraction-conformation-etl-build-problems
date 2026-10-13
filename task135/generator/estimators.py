@@ -181,31 +181,33 @@ def family(X, dates):
     F["R1 ewma 0.94"] = lambda s: ewma(X, s)
     F["R3 ledoit-wolf"] = lambda s: ledoit_wolf_cc(X, s)[0]
     F["R4 monthly"] = lambda s: vol_of(MO @ wvec(s), 12.0)
+    # returns over periods of several days: refused by investment policy 4.3 (the returns are daily)
     for k in (2, 3, 4):
         for a in range(k):
-            F["P %d-day blocks, anchor %d" % (k, a)] = (lambda s, k=k, a=a: simple(X, s, k, a))
+            F["W %d-day blocks, anchor %d" % (k, a)] = (lambda s, k=k, a=a: simple(X, s, k, a))
     F["P pair lead-lag"] = lambda s: pair_ll(X, s)
     F["G lead-lag 1"] = lambda s: leadlag(X, s, 1)
     F["G lead-lag 2"] = lambda s: leadlag(X, s, 2)
     F["G newey-west 4"] = lambda s: leadlag(X, s, 4, True)
     F["G newey-west 5"] = lambda s: leadlag(X, s, 5, True)
     F["G cross-lag matrix 1"] = lambda s: leadlag_matrix(X, s, 1)
-    F["G daily vols, five-day correlations"] = lambda s: mixed(X, s)
+    F["W daily vols, five-day correlations"] = lambda s: mixed(X, s)
     for k in range(5):
-        F["G five-day blocks, anchor %d" % k] = (lambda s, k=k: vol_of(B5[k] @ wvec(s), 52.0))
+        F["W five-day blocks, anchor %d" % k] = (lambda s, k=k: vol_of(B5[k] @ wvec(s), 52.0))
     for wd, nm in zip(range(5), ["Mon", "Tue", "Wed", "Thu", "Fri"]):
-        F["G calendar weeks to %s" % nm] = (lambda s, wd=wd: vol_of(CW[wd] @ wvec(s), 52.0))
+        F["W calendar weeks to %s" % nm] = (lambda s, wd=wd: vol_of(CW[wd] @ wvec(s), 52.0))
     # the same periods from the portfolio's daily return compounded (weights reset each day, not each period)
     for k in range(5):
-        F["G five-day blocks of the daily portfolio, anchor %d" % k] = (lambda s, k=k: vol_of(blocks((X @ wvec(s))[:, None], 5, k)[:, 0], 52.0))
+        F["W five-day blocks of the daily portfolio, anchor %d" % k] = (lambda s, k=k: vol_of(blocks((X @ wvec(s))[:, None], 5, k)[:, 0], 52.0))
     for wd, nm in zip(range(5), ["Mon", "Tue", "Wed", "Thu", "Fri"]):
-        F["G calendar weeks of the daily portfolio to %s" % nm] = (
+        F["W calendar weeks of the daily portfolio to %s" % nm] = (
             lambda s, wd=wd: vol_of(calendar_weeks((X @ wvec(s))[:, None], dates, wd)[:, 0], 52.0))
     return F
 
 
 GOLDEN = lambda n: n.startswith("G ")
 PARTIAL = lambda n: n.startswith("P ")
+NOT_DAILY = lambda n: n.startswith("W ")       # periods of several days, refused by investment policy 4.3
 
 
 def call(vols):

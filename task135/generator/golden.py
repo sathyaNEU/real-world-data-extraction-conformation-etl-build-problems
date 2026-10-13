@@ -47,7 +47,7 @@ def workbook(fig, path):
     for c in ("C5", "C6", "C7"):
         ws[c].number_format = "#,##0"
     hdr = ["Growth share", "Expected volatility, daily returns with one-day lead and lag (%)",
-           "Expected volatility, weekly returns, Friday to Friday (%)", "Inside the cap",
+           "Expected volatility, daily returns, lagged covariances to five days (%)", "Inside the cap",
            "2027 investment income (GBP)", "Capital release (GBP)"]
     for j, h in enumerate(hdr, 1):
         c = ws.cell(row=9, column=j, value=h)
@@ -55,7 +55,7 @@ def workbook(fig, path):
         c.fill = PatternFill("solid", fgColor="DCE6F1")
         c.alignment = Alignment(wrap_text=True, vertical="top")
     ll = fig["ladder"]["G lead-lag 1"]
-    wk = fig["ladder"]["G calendar weeks to Fri"]
+    wk = fig["ladder"]["G newey-west 5"]
     for k, s in enumerate(STEPS):
         r = 10 + k
         inside = ll[str(s)] <= 10.0 and wk[str(s)] <= 10.0
@@ -88,8 +88,9 @@ def workbook(fig, path):
         "The Kestwick funds are dealt at their 12 noon valuation point from each market's latest prices, so the North "
         "American fund's price on a day carries the previous evening's New York close; the Fernside shares are priced at "
         "the London close. The mandate's daily return correlates %.2f with the North American fund's on the same day "
-        "and %.2f with the fund's next-day return, so co-movement is measured where the prices line up: the daily "
-        "covariances with the one-day lead and lag added, and weekly returns." % (fw["uk_na_same_day"], fw["uk_na_next_day"]),
+        "and %.2f with the fund's next-day return, so the twelve-month variance takes in the co-movement that lands a day "
+        "apart: the daily covariances with the one-day lead and lag added, and, as a check, the daily covariances "
+        "lagged out to five days." % (fw["uk_na_same_day"], fw["uk_na_next_day"]),
         "At 70 per cent growth both estimates are over the cap (%.1f and %.1f per cent). The daily covariance on its own, "
         "scaled by the square root of 252, gives %.1f per cent at 70 per cent, because it misses the co-movement that "
         "lands a day apart." % (ll["70"], wk["70"], fig["default_r0"]["70"]),

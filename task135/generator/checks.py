@@ -40,13 +40,12 @@ QUOTES = [
     ("SF2", "policy", "The trustees set the growth share in ten-point steps from 20 to 100 per cent."),
     ("SF4", "policy", "The portfolio's expected volatility at the growth share set must be not more than 10 per cent."),
     ("SF5", "policy", "The estimate is compared with the cap before any rounding."),
-    ("SF6", "policy", "The two years are divided into return periods of equal length, at least 100 of them, and every "
-                      "period is weighted equally."),
+    ("SF6", "policy", "The returns are daily, one for each business day of the two years, and every day is weighted equally."),
     ("SF7", "policy", "over the two years to the last month-end valuation before the review"),
     ("SF8", "policy", "each measured from the holding's own prices and the income it pays"),
     ("SF9", "policy", "Expected volatility is the standard deviation of the portfolio's total return over twelve months."),
     ("SF10", "policy", "combined in every period at the policy weights for the growth share under review"),
-    ("SF11", "policy", "The two years are divided into return periods of equal length, at least 100 of them"),
+    ("SF11", "policy", "The returns are daily, one for each business day of the two years"),
     ("SF12", "policy", "The trust invests its permanent and expendable endowments as one portfolio under this policy."),
     ("SF12", "policy", "The mandate includes the cash its manager holds in it."),
     ("SF14", "policy", "At their December meeting the trustees set the growth share for the following calendar year."),
@@ -136,6 +135,12 @@ def main(target):
     r0 = T["R0 daily"]
     ok(call(r0) == 70 and r0[70] <= 10 - M_ and r0[80] >= 10 + M_, "R0 daily calls 70 with margins (%.2f, %.2f)" % (r0[70], r0[80]))
     gold = {n: t for n, t in T.items() if E.GOLDEN(n)}
+    ok(sorted(gold) == ["G cross-lag matrix 1", "G lead-lag 1", "G lead-lag 2", "G newey-west 4", "G newey-west 5"],
+       "the golden family: the daily estimators that take in the cross-day covariances (policy 4.3, daily returns)")
+    notd = {n: t for n, t in T.items() if E.NOT_DAILY(n)}
+    ok(len(notd) == 30 and all(call(t) == 60 for t in notd.values()),
+       "SF11 the 30 estimators on periods of several days, refused by policy 4.3, each land 60 (%d)" % len(notd))
+    fig["not_daily"] = {n: {str(s): round(t[s], 4) for s in W.STEPS} for n, t in notd.items()}
     for n, t in gold.items():
         ok(call(t) == 60 and t[60] <= 10 - M_ and t[70] >= 10 + M_, "%s calls 60 with margins (%.2f, %.2f)" % (n, t[60], t[70]))
         ok(all(abs(t[s] - 10) >= M_ for s in W.STEPS), "SF4 %s: no step within 0.15 of the cap" % n)
@@ -149,7 +154,7 @@ def main(target):
     ok(call(T["R3 ledoit-wolf"]) == 70, "R3 Ledoit-Wolf calls 70")
     lw_delta = E.ledoit_wolf_cc(X, 60)[1]
     n_months = len(E.months(X, dates))
-    ok(n_months == 24, "R4 monthly has 24 periods, under policy 4.3's 100 (%d)" % n_months)
+    ok(n_months == 24, "R4 monthly: 24 monthly returns, refused by policy 4.3 (the returns are daily) (%d)" % n_months)
     ok(all(all(np.diff([t[s] for s in W.STEPS]) > 0) for t in list(T.values()) + [r2]),
        "SF3: the volatility rises with the step under every estimator")
     ac, tstat = E.autocorr1(X, 60)
@@ -166,6 +171,16 @@ def main(target):
     gv60 = [t[60] for t in gold.values()]
     gv70 = [t[70] for t in gold.values()]
     fig["golden_family_range"] = {"60": [round(min(gv60), 2), round(max(gv60), 2)], "70": [round(min(gv70), 2), round(max(gv70), 2)]}
+    # the write-up's ranges, one decimal from the unrounded members; the lead-lag figures it quotes sit mid-bin
+    fig["golden_family_range_stated"] = {"60": ["%.1f" % min(gv60), "%.1f" % max(gv60)],
+                                         "70": ["%.1f" % min(gv70), "%.1f" % max(gv70)]}
+    ok(fig["golden_family_range_stated"] == {"60": ["9.3", "9.6"], "70": ["10.6", "11.0"]},
+       "the golden family's ranges as stated: %s" % fig["golden_family_range_stated"])
+    ll1 = T["G lead-lag 1"]
+    fig["lead_lag_1_stated"] = {"60": "%.1f" % ll1[60], "70": "%.1f" % ll1[70]}
+    ok(all(abs(ll1[s] * 10 - np.floor(ll1[s] * 10) - 0.5) >= 0.35 for s in (60, 70)),
+       "the lead-lag figures quoted (%.4f, %.4f) sit at least 0.035 from a rounding edge" % (ll1[60], ll1[70]))
+    fig["newey_west_60_stated"] = sorted({"%.1f" % T[n][60] for n in ("G newey-west 4", "G newey-west 5")})
     fig["default_r0"] = {str(s): round(r0[s], 2) for s in (60, 70, 80)}
     fig["forcing"] = dict(lag1_autocorrelation_60=round(ac, 3), t=round(tstat, 2), uk_na_same_day=round(same, 2),
                           uk_na_next_day=round(nxt, 2), uk_na_five_day=round(wkc, 2), variance_ratio_five_day_60=round(vr, 3),
@@ -217,6 +232,8 @@ def main(target):
     ok(sf["SF4"]["strictly_under"] == [60] and sf["SF4"]["default"] == 70, "SF4 strictly under the cap: same call %s" % sf["SF4"])
     # SF5 each step's volatility rounded first
     sf["SF5"] = {n: call({s: round(t[s]) for s in W.STEPS}) for n, t in gold.items()}
+    ok(set(sf["SF5"].values()) == {60} and call({s: round(r0[s]) for s in W.STEPS}) == 70,
+       "SF5 rounded to a whole per cent first: same call for every golden-family member %s, the default on 70" % sf["SF5"])
     # SF6 the exponentially weighted estimate (refused by 4.3)
     sf["SF6"] = dict(ewma=call(T["R1 ewma 0.94"]))
     ok(sf["SF6"]["ewma"] != 60, "SF6 exponentially weighted: not 60 (%s)" % sf["SF6"]["ewma"])
@@ -313,10 +330,13 @@ def main(target):
                      for n, t in gold.items()})
         sf["SF13"][str(py)] = dict(default=d0, golden=g0)
         ok(d0 == 70 and g0 == [60], "SF13 at %d days a year: %s %s" % (py, d0, g0))
+    # periods of several days are refused by policy 4.3 (the returns are daily); recorded: on any count a year they
+    # land 60, so a solver who breaks the policy that way files the golden call by a refused route
+    wkm = {n: t for n, t in T.items() if E.NOT_DAILY(n) and ("five-day blocks" in n or "calendar" in n)}
     for py in (50.5, 52.0, 52.18):
         f = np.sqrt(py / 52)
-        g0 = sorted({call({s: t[s] * f for s in W.STEPS}) for n, t in gold.items() if "five-day blocks" in n or "calendar" in n})
-        ok(g0 == [60], "SF13 five-day periods at %.2f a year: %s" % (py, g0))
+        g0 = sorted({call({s: t[s] * f for s in W.STEPS}) for n, t in wkm.items()})
+        ok(g0 == [60], "SF11 refused five-day periods at %.2f a year land %s" % (py, g0))
 
     # SF10 weights drifting from the window's start
     def drifting(Xm, step):

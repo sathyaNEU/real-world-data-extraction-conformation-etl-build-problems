@@ -70,7 +70,7 @@ This is the pipeline the measured opponent builds unsteered, from the prompt's w
 2. Build each holding's daily total return over the two years to 30 November 2026 (505 UK business days).
    - The mandate: the time-weighted return from the custodian's daily lot values with its cash and accrued income, external flows stripped from the capital movements report, and corporate actions carried through.
    - Each fund: the return from its dealing prices, with the distributions added back on their ex-dividend dates (from the published histories, which the custodian's fund prices agree with).
-3. Put every holding on UK business days. On the noon after its own market's holiday, the North American or Japan fund's price carries that market's last close, moved only by the exchange rate; keep those days as they are. Estimate the covariance of daily returns: 505 periods, each weighted equally, well over 100.
+3. Put every holding on UK business days. On the noon after its own market's holiday, the North American or Japan fund's price carries that market's last close, moved only by the exchange rate; keep those days as they are. Estimate the covariance of daily returns: 505 of them, one for each business day, each weighted equally (policy 4.3).
 4. For each step, combine the holdings at the policy weights, take the portfolio's daily standard deviation and scale it by the square root of 252. That gives 8.25 at 60, 9.41 at 70 and 10.63 per cent at 80 on the build (8.20, 9.34 and 10.53 on the prototype's long run).
 5. Cross-check, then file:
    - each holding's daily volatility agrees with its factsheet's and with its own monthly volatility;
@@ -79,8 +79,8 @@ This is the pipeline the measured opponent builds unsteered, from the prompt's w
 
 **Ends on:** 70 per cent growth (9.41 per cent expected volatility at 70 on the build; 80 breaches at 10.63).
 
-**Golden:** 60 per cent growth. Co-movement is measured where the prices are struck together: weekly returns on any anchor, or daily covariances with their one-day lead and lag.
-- On the build, across the golden family's 26 members: 8.96 to 9.72 per cent at 60, and 10.33 to 11.11 at 70.
+**Golden:** 60 per cent growth. The twelve-month variance takes in the co-movement that lands a day apart: the daily covariances with their one-day lead and lag added, or Newey-West at four or five lags.
+- On the build, across the golden family's five members: 9.29 to 9.59 per cent at 60, and 10.65 to 10.99 at 70.
 - Long run: the true twelve-month volatility is 9.81 at 60 and 11.32 at 70.
 
 **Other natural variants**, each a complete pipeline:
@@ -90,8 +90,9 @@ This is the pipeline the measured opponent builds unsteered, from the prompt's w
 | Exponentially weighted daily estimate (0.94) | 80 | it weights the calm last months |
 | The benchmark indices | 70 | not the holdings' own prices |
 | A Ledoit-Wolf shrunk daily covariance | 70 | intensity 0.031 |
-| Monthly returns | 60 | 24 periods, which the policy's 100 refuses |
-| Partial synchronisation (two-, three- or four-day returns on any anchor, or lead and lag on the UK and North American pair only) | 60 | lands the call |
+| Monthly returns | 60 | policy 4.3: the returns are daily |
+| Returns over two to five days on any anchor, or calendar weeks to any weekday | 60 | policy 4.3: the returns are daily; they land the call by a route the policy refuses |
+| Lead and lag on the UK and North American pair only | 60 | lands the call |
 
 ## Stump sentence
 
@@ -99,11 +100,29 @@ A competent solver builds each holding's daily total return from the prices it i
 
 ## Three rules
 
+**Task type:** volatility derivatives pricing (`volatility-derivatives-pricing`), here volatility forecasting with nothing priced: the portfolio's expected twelve-month volatility at each growth step, forecast from two years of the holdings' daily returns, which serves Forecasting & Predictive Modeling.
+
+**Swap:** "the largest growth share that keeps the portfolio's expected volatility inside the policy's cap" becomes "the largest share of a hospital's beds that elective surgery can take inside its occupancy cap"; there is then no valuation point, no noon price carrying the previous evening's New York close and no twelve-month variance assembled from daily covariances, so the decisive step has nothing to act on.
+
+**Decisive step:** estimating the twelve-month variance from the daily returns of holdings struck at different times of day by taking in the covariances that land a day apart (the lead and lag terms, or a Newey-West sum), instead of scaling the same-day daily covariance by the square root of 252.
+
+**Not semantics:** a solver who reads every field, code, unit and the valuation points correctly (noon dealing from each market's latest prices, listed shares at the official close, daily returns under policy 4.3) still files 70 by scaling the same-day daily covariance by the square root of 252; no reading of a term moves the call, since each of the fork table's 14 rows gives the same call or is refused by a quoted sentence.
+
+**Not rule application:** no filed rule or procedure performs the step from a day's covariance to a year's variance. Policy 4.1 to 4.4 fix the estimand (the twelve-month standard deviation, daily returns over the window, every day weighted equally, the comparison before rounding), and executing every one of them still files 70 through the square-root-of-time scaling.
+
+**Estimand:** the standard deviation of the portfolio's total return over twelve months at each step's policy weights, estimated from the six holdings' daily time-weighted total returns, one for each business day of the two years to the 30 November 2026 valuation, every day weighted equally, and compared with the 10 per cent cap before rounding (investment policy 2.2, 3.4 and 4.1 to 4.4, in `wrexford_investment_policy_2025-12.pdf`).
+
+**No decoy:** nothing is planted to be caught: no memo, draft, briefing or stakeholder figure argues for a step; the benchmark index levels are the declared wrong-basis distractor that policy 4.2 refuses, and the annex's 80 per cent is the 2026 setting, made on a window the pack does not carry.
+
+**No certified replay:** no shipped file states a portfolio volatility or a covariance or correlation of the holdings, so the method is never recovered by reproducing a certified figure; the factsheets' and Fernside's single-holding volatilities agree at every return frequency and confirm no method.
+
+**Lesson:** same-dated prices struck hours apart push a portfolio's co-movement into the next day's cross-covariances, so a daily covariance scaled by the square root of time understates its volatility; no build on file teaches it (`guard.py heart` nearest driver task128 at 0.06).
+
 **Domain test:** the deciding quantity is the portfolio's twelve-month volatility at each growth step. Investment risk practice estimates it from returns over which the holdings' prices are contemporaneous, because a pooled fund's dealing price is struck at its valuation point from each market's last available price while listed shares are struck at their exchange's close. Put another field's nouns in and there is no valuation point, no previous evening's close inside a noon price and no twelve-month variance assembled from daily covariances, so the task stops reading the same.
 
-**Analyst test:** take a strong analyst who strips the mandate's flows, adds back the funds' distributions, carries the corporate actions, aligns the calendars, and reads the policy's definition and the valuation points correctly.
-- The easy way: they still estimate co-movement from same-dated daily returns, scale by the square root of 252 and set growth at 70 per cent (9.41 at 70 and 10.63 at 80 on the build), above what the cap allows.
-- The right way: measuring co-movement over periods that align the noon dealing prices with the London close (weekly returns, any anchor), or adding the one-day lead and lag covariances, sets it at 60 (8.96 to 9.72 at 60, and 10.33 to 11.11 at 70).
+**Analyst test:** a strong analyst who strips the mandate's flows, adds back the funds' distributions, carries the corporate actions, aligns the calendars and reads the policy and the valuation points correctly still files 70 per cent growth (9.41 per cent expected volatility at 70 on the build; 80 breaches at 10.63).
+- The easy way: estimate co-movement from same-dated daily returns and scale by the square root of 252, which puts 70 inside the cap.
+- The right way: keeping the policy's daily returns and adding the covariances that land a day apart (the one-day lead and lag, or Newey-West at four or five lags) sets it at 60 (9.29 to 9.59 at 60, and 10.65 to 10.99 at 70).
 The easy way gets it wrong after every field and rule has been read correctly, so the stump is analytical.
 
 **Layer 1:** what these systems produce. None of it decides the call.
@@ -124,7 +143,7 @@ The easy way gets it wrong after every field and rule has been read correctly, s
 **Layer 2:**
 - The tempting shortcut is the square-root-of-time rule on daily returns. The policy's two years give 505 daily periods, every holding's daily volatility agrees with its factsheet, and the covariance matrix looks complete.
 - An expert refuses it. The variance of a twelve-month return is the sum of every lagged covariance across the year, and same-dated prices struck hours apart put a large share of the co-movement into the one-day cross-lags. The North American fund's noon price carries the New York session that the London close priced the day before.
-- The rigorous method measures co-movement where the prices are contemporaneous, over periods long enough to align them or with the lead and lag terms added. The data's own cross-lag correlation demands it: 0.49 between the UK mandate and the next day's North American return, against 0.20 on the same day (the build).
+- The rigorous method keeps the policy's daily returns and adds the lead and lag covariances to the twelve-month variance. The data's own cross-lag correlation demands it: 0.49 between the UK mandate and the next day's North American return, against 0.20 on the same day (the build).
 
 **Gate G.**
 - **Litmus.** No reported figure is overturned. Every price, distribution, flow and document in the pack is correct, and no shipped artifact computes a portfolio volatility.
@@ -140,12 +159,12 @@ The easy way gets it wrong after every field and rule has been read correctly, s
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 battery | 6 linear | Verdict |
 |---|---|---|---|---|---|---|---|
 | Total returns: the income units' distributions added back, the mandate's flows stripped (time-weighted), corporate actions carried | fires: policy 4.1 and 4.2 (total return, time-weighted) | fires: the movements report's type codes, the price history's distribution column | no | no | fires: flow days are double-digit one-day outliers | no | readable |
-| The policy's estimand executed: two years to the 30 November valuation, the step's policy weights in every period, at least 100 equal periods each weighted equally (an exponentially weighted estimate and monthly returns out) | fires: policy 4.2 and 4.3 | no | no | no | no | no | readable |
+| The policy's estimand executed: two years to the 30 November valuation, the step's policy weights in every period, daily returns, one for each business day, each weighted equally (an exponentially weighted estimate, and monthly and weekly returns, out) | fires: policy 4.2 and 4.3 | no | no | no | no | no | readable |
 | The holdings' own prices, not the benchmark indices | fires: policy 4.2 ("the holding's own prices") | fires: the index levels are a separate, named file | no | no | no | no | readable |
 | One calendar: UK business days, keeping each overseas fund's price on the noon after its own market's holiday (the last close, moved only by the exchange rate) | no | fires: the calendars file | no | no | fires: small fund returns, the exchange rate alone, on the noon after a US or Japanese holiday | no | readable |
-| (decisive) Co-movement measured on returns whose prices are struck together: periods long enough to align the noon dealing prices with the London close (weekly on any anchor), or daily covariances with their one-day lead and lag | no. The policy defines the twelve-month standard deviation and its periods and names no period length. The fund documents state the valuation point as every fund document does. No sentence names a lag, a stale price, a time zone, synchronicity, autocorrelation, a lead-lag or an aggregation | no. The price files carry dates, never times; no column marks a valuation time, and the custodian's price date equals the valuation date on every line | no. The reflexes (an exponentially weighted estimate, shrinkage, a benchmark proxy, more history) leave it in place, and checking each series for autocorrelation comes back clean: the cross-lags show only on the portfolio's series or between holdings | no. The factsheets' single-fund volatilities and the mandate report's own volatility reproduce under daily and weekly returns alike, and no portfolio-level figure ships | no. Every holding prices on every UK business day, every join resolves on the date, and there is no duplicate, gap or fan-out | no. The gap is a sum of lagged cross-covariances across six holdings at each step's weights | silent |
+| (decisive) The co-movement that lands a day apart taken into the twelve-month variance: the daily covariances with their one-day lead and lag added, or Newey-West at four or five lags | no. The policy defines the twelve-month standard deviation and files daily returns, as a volatility policy does, and names no step from a day's variance to a year's. The fund documents state the valuation point as every fund document does. No sentence names a lag, a stale price, a time zone, synchronicity, autocorrelation, a lead-lag or an aggregation | no. The price files carry dates, never times; no column marks a valuation time, and the custodian's price date equals the valuation date on every line | no. The reflexes (an exponentially weighted estimate, shrinkage, a benchmark proxy, more history) leave it in place, and checking each series for autocorrelation comes back clean: the cross-lags show only on the portfolio's series or between holdings | no. The factsheets' single-fund volatilities and the mandate report's own volatility reproduce under daily, weekly and monthly returns alike, and no portfolio-level figure ships | no. Every holding prices on every UK business day, every join resolves on the date, and there is no duplicate, gap or fan-out | no. The gap is a sum of lagged cross-covariances across six holdings at each step's weights | silent |
 
-The decisive rung's quantity is named by no sentence and no column. It is not a reflex, no control can see it, the battery comes back clean on the wrong path, and it is not linear in anything reported. Of the two shapes the record says hold, it is the first: a quantity the solver believes needs no construction. The daily covariance looks complete, and nothing in it shows that a large part of the co-movement sits a day off its diagonal.
+Periods of several days are no route to the call: policy 4.3 files daily returns, so a solver reaches 60 by taking in the cross-day covariances, or by breaking 4.3 (every multi-day and monthly estimator lands 60, asserted, so breaking it opens no other answer). The decisive rung's quantity is named by no sentence and no column. It is not a reflex, no control can see it, the battery comes back clean on the wrong path, and it is not linear in anything reported. Of the two shapes the record says hold, it is the first: a quantity the solver believes needs no construction. The daily covariance looks complete, and nothing in it shows that a large part of the co-movement sits a day off its diagonal.
 
 ## Semantic fork table
 
@@ -157,15 +176,15 @@ One row per term of the main ask and per convention the main computation rests o
 | SF2 | the investment policy's ten-point steps | 20, 30 and so on to 100 | a continuous share (62.9 per cent on the build) | not a step | the prompt ("in the investment policy's ten-point steps") and policy 3.1 |
 | SF3 | the largest step that keeps it inside the cap | the highest step whose own volatility is inside the cap | every step up to it inside the cap | same call: the volatility rises with the growth share at every step under every estimator (asserted) | same call |
 | SF4 | inside the cap | not more than 10 per cent | strictly under 10 per cent | same call: no golden-family value within 0.15 of 10.0 at any step (asserted) | policy 3.4 ("not more than 10 per cent") |
-| SF5 | the comparison with the cap | the estimate before any rounding | each step's volatility rounded to a whole per cent first | 70 for some members (five-day blocks from the fifth day, 10.43, and calendar weeks to Friday, 10.34, round to 10) | policy 4.4 ("before any rounding") |
-| SF6 | expected volatility | the standard deviation of the twelve-month total return, estimated as policy 4.2 and 4.3 say | a forward forecast weighting recent periods (exponentially weighted, GARCH) | 80 on the build (90 on the prototype's long run) | policy 4.3 ("every period is weighted equally") |
+| SF5 | the comparison with the cap | the estimate before any rounding | each step's volatility rounded to a whole per cent first | same call: every golden-family member rounds to 9 or 10 at 60 and to 11 at 70, and the default stays on 70 (asserted) | policy 4.4 ("before any rounding") |
+| SF6 | expected volatility | the standard deviation of the twelve-month total return, estimated as policy 4.2 and 4.3 say | a forward forecast weighting recent periods (exponentially weighted, GARCH) | 80 on the build (90 on the prototype's long run) | policy 4.3 ("every day is weighted equally") |
 | SF7 | the two years | the two years to the 30 November 2026 valuation (returns from 2 December 2024) | to 31 October 2026, or the calendar years 2025 and 2026 | same call on the October window (asserted); the calendar years are not in the pack | policy 4.2 ("the last month-end valuation before the review") |
 | SF8 | the prices | each holding's own prices: the mandate's closing prices, the funds' dealing prices | the benchmark indices | 70 | policy 4.2 ("the holding's own prices") |
 | SF9 | total return | the price change plus the dividends and distributions, time-weighted for the mandate | the income units' price return, distributions left out | same call (asserted) | policy 4.1 and 4.2 |
 | SF10 | the weights | the step's policy weights in every period | weights drifting from the window's start | same call (asserted) | policy 4.2 ("in every period") |
-| SF11 | the return periods | equal periods that divide the two years, at least 100 of them | overlapping twelve-month returns | 60 on the build (9.43 at 60) and 90 on the prototype sample, refused either way | policy 4.3 ("divided into return periods of equal length") |
+| SF11 | the return periods | daily returns, one for each business day of the two years | returns over two to five days or calendar weeks; monthly returns; overlapping twelve-month returns | 60 on the build under every one (the 30 multi-day estimators 8.92 to 9.72 at 60 and 10.19 to 11.11 at 70; monthly 9.53 and 10.82; overlapping 9.43 at 60, and 90 on the prototype sample), refused either way | policy 4.3 ("The returns are daily, one for each business day of the two years") |
 | SF12 | the portfolio | both endowments' holdings as one portfolio, the mandate with its cash | one endowment's holdings, or the mandate without its cash | same call for either endowment alone (asserted); without its cash the mandate's purchase and sale days become one-day outliers of up to 43 per cent and the call falls to 40, a gross slip | policy 1.1 and 2.3 |
-| SF13 | twelve months from the periods | the variance scaled by the periods in a year (252 daily, 52 weekly) or by the window's own count | 250 or 260 trading days a year | same call (asserted at 250, 252, 253 and 260) | same call |
+| SF13 | twelve months from the days | the daily variance and its lagged covariances scaled by 252 a year, or by the window's own count | 250 or 260 trading days a year | same call (asserted at 250, 252, 253 and 260) | same call |
 | SF14 | for 2027 | the share the December 2026 meeting sets for calendar 2027 | the trust's financial year, or the 2026 setting | same call: the trust's year is the calendar year and the estimate uses the same window | policy 3.2 |
 
 The stump is none of these readings. The default and the golden read every term the same way and differ only in how co-movement is measured from asynchronously struck prices.
@@ -180,13 +199,14 @@ The volatility at 60, 70 and 80 per cent growth and the call. "Long run" is 300 
 | R1 | exponentially weighted daily (0.94) | 7.02 / 7.94 / 8.91 | 90 | 7.32 / 8.35 / 9.44 | 80 | policy 4.3, every period weighted equally |
 | R2 | the benchmark indices, daily | 8.70 / 9.93 / 11.20 | 70 | 8.63 / 9.84 / 11.10 | 70 | policy 4.2, the holdings' own prices (the indices close at their own markets, so they are still asynchronous) |
 | R3 | daily, Ledoit-Wolf shrinkage to constant correlation | 8.20 / 9.34 / 10.53 | 70 | 8.24 / 9.39 / 10.60 | 70 | the shrinkage lift (intensity 0.031) is a fraction of the gap |
-| R4 | monthly returns | 9.59 / 10.99 / 12.43 | 60 | 9.53 / 10.82 / 12.15 | 60 | policy 4.3, at least 100 periods (24) |
-| Partial | two-, three- and four-day returns on every anchor; lead and lag on the UK and North American pair only | 9.02 to 9.30 / 10.30 to 10.64 | 60 | 8.90 to 9.46 / 10.18 to 10.84 | 60 | lands the call (C1); kept at 60 |
-| Golden | 26 members: five-day periods on each of five anchors and calendar weeks to each weekday, each from the holdings' period returns and from the daily portfolio compounded; daily with one or two lead-lag terms (the portfolio series and the covariance matrix); Newey-West at four or five lags; daily volatilities with five-day correlations | 9.46 to 9.80 / 10.82 to 11.22 | 60 | 8.96 to 9.72 / 10.33 to 11.11 | 60 | |
+| R4 | monthly returns | 9.59 / 10.99 / 12.43 | 60 | 9.53 / 10.82 / 12.15 | 60 | policy 4.3, the returns are daily (24 monthly returns) |
+| Partial | lead and lag on the UK and North American pair only | among the ten partials' 9.02 to 9.30 / 10.30 to 10.64 | 60 | 8.90 / 10.18 / 11.52 | 60 | lands the call (C1); kept at 60 |
+| Refused periods | 30 estimators on returns of several days: two- to five-day periods on every anchor and calendar weeks to each weekday, from the holdings' period returns and from the daily portfolio compounded, and daily volatilities with five-day correlations | 9.02 to 9.80 / 10.30 to 11.22 | 60 | 8.92 to 9.72 / 10.19 to 11.11 | 60 | policy 4.3, the returns are daily; each lands 60, so breaking 4.3 that way files the golden call by a refused route and opens no other answer (asserted) |
+| Golden | five daily members: one or two lead-lag terms on the portfolio series, one on the covariance matrix, and Newey-West at four or five lags | inside 9.46 to 9.80 / 10.82 to 11.22 | 60 | 9.29 to 9.59 / 10.65 to 10.99 | 60 | |
 
 **Margins on the build.**
-- The golden family's highest value at 60 is 9.72 (five-day periods from the window's first day), 0.28 inside the cap.
-- Its lowest value at 70 is 10.33 (calendar weeks to Friday from the daily portfolio), 0.33 over.
+- The golden family's highest value at 60 is 9.59 (the one-day lead and lag), 0.41 inside the cap.
+- Its lowest value at 70 is 10.65 (Newey-West at five lags), 0.65 over.
 - The default sits 0.59 inside at 70 and 0.63 over at 80.
 - The thinnest rung margin is R2's: 9.84 at 70, 0.16 inside the cap at its own boundary step.
 
@@ -202,9 +222,9 @@ The volatility at 60, 70 and 80 per cent growth and the call. "Long run" is 300 
 - `protoA8`: across the golden family the samples spread by a median of 0.88 points at 70 per cent (up to 1.28). That is why no volatility figure is graded (`## Tried and rejected`).
 
 **The builder's targets** (asserted on the built pack by `checks.py`; every one met):
-- Every golden-family member at or under 9.85 at 60, and at or over 10.15 at 70: 9.72 and 10.33.
+- Every golden-family member at or under 9.85 at 60, and at or over 10.15 at 70: 9.59 and 10.65 (and 9.72 and 10.19 across the 30 refused multi-day estimators).
 - The default at or under 9.85 at 70, and at or over 10.15 at 80: 9.41 and 10.63.
-- The partials at 60: all ten.
+- The partial and the 30 refused multi-day estimators at 60: all 31.
 - R1, R2 and R3 calling a step other than 60, each at least 0.15 from the cap at its own boundary steps: R1 80 (9.44 and 10.57), R2 70 (9.84 and 11.10), R3 70 (9.39 and 10.60).
 - The portfolio's lag-1 autocorrelation at 60 per cent between 0.17 and 0.26, with t at least 3.5: 0.177, t 3.97.
 - The same-day UK-to-North-American correlation between 0.20 and 0.35, the next-day correlation at least 0.40, and the weekly at least 0.45: 0.20, 0.49 and 0.59.
@@ -215,9 +235,9 @@ The volatility at 60, 70 and 80 per cent growth and the call. "Long run" is 300 
 - the distributions left out: 70; 60;
 - the holdings' prices inner-joined with the benchmark index file: no date dropped, so 70 (9.41 at 70); 60. The file carries the custodian's valuation dates, with each index's last close shown on a date it is not calculated (asserted in `checks.py` and `verify.py`);
 - the stale-day filter, accepted as a lower rung that policy 4.3 refuses and recorded rather than held off 60 (`## Build record`, As built). Every holding prices on every UK business day, so these are filters a solver chooses from the calendars, not gaps a join leaves:
-  - the 46 days on which the North American or Japan fund carries no new close of its market, merged into the next day (420 one-day, 34 two-day, 3 three-day and 2 four-day periods): 60 (10.31 at 70); 50 and 60 at 252 periods a year, and 70 (9.84); 50 and 60 at the merged series' own 229.5 a year;
-  - only the calendars' days on which London, New York and Tokyo are all open kept (46 days: Tokyo's 33 as above, and the 13 US holidays themselves in place of the days after them): 60 (10.27); 50 and 60 at 252, and 70 (9.80); 50 and 60 at 229.5;
-  - either set of days deleted instead of merged, leaving 459 one-day periods that no longer divide the two years: 70 (9.53 and 9.47); 60 and 70;
+  - the 46 days on which the North American or Japan fund carries no new close of its market, merged into the next day (420 one-day, 34 two-day, 3 three-day and 2 four-day periods): 60 (10.31 at 70); 50 and 60 at 252 periods a year, and 70 (9.84); 60 at the merged series' own 229.5 a year;
+  - only the calendars' days on which London, New York and Tokyo are all open kept (46 days: Tokyo's 33 as above, and the 13 US holidays themselves in place of the days after them): 60 (10.27); 50 and 60 at 252, and 70 (9.80); 60 at 229.5;
+  - either set of days deleted instead of merged, leaving 459 one-day returns, no longer one for each business day: 70 (9.53 and 9.47); 60;
   - by market, merged at 252: Tokyo's 33 days alone 60 (10.02), New York's 13 alone 70 (9.69);
 - one endowment's sub-account only, either: 70; 60;
 - the mandate's cash left out: 40; 30 and 40 (purchase and sale days become one-day outliers of up to 43 per cent; gross);
@@ -227,7 +247,7 @@ The volatility at 60, 70 and 80 per cent growth and the call. "Long run" is 300 
 - the accumulation units instead of the income units: 70; 60;
 - 250 or 260 periods a year: 70; 60.
 
-None may land the default on 60, and none may move the golden off 60. Two exceptions are allowed. The gross slips land at 50 or below, with outliers a solver sees. The stale-day filter lands the default on 60 at 252 periods a year and splits the golden family. Policy 4.3 refuses it in every form: merged, its periods are not of equal length; deleted, its periods no longer divide the two years. No world holds it off 60 (`## Tried and rejected`).
+None may land the default on 60, and none may move the golden off 60. Two exceptions are allowed. The gross slips land at 50 or below, with outliers a solver sees. The stale-day filter lands the default on 60 at 252 periods a year and splits the golden family. Policy 4.3 refuses it in every form: merged or deleted, the returns are no longer one for each business day. No world holds it off 60 (`## Tried and rejected`).
 
 ## Closure table
 
@@ -238,8 +258,8 @@ None may land the default on 60, and none may move the golden off 60. Two except
 | 3 | Attribution window | a period's return belongs to the period ending on its price date | C1 |
 | 4 | As-of dating | the 30 November 2026 valuation, the last month-end before the December meeting | filed (policy 4.2); SF7 |
 | 5 | Version basis | the funds' dealing prices as published (no restatement in the window); the custodian's export as run on 2 December 2026 | C1: the custodian's fund prices equal Kestwick's history on every day (asserted) |
-| 6 | Divisor and denominator | the sample variance on n minus 1; periods a year from the period length | C3: n or n minus 1, and 250 to 260 days a year, land every member on 60 (asserted) |
-| 7 | Weighting | every period equally; the step's policy weights in every period | filed (policy 4.2, 4.3); SF6 and SF10; R1 prices the exponentially weighted estimate |
+| 6 | Divisor and denominator | the sample variance on n minus 1; 252 days a year, or the window's own count | C3: n or n minus 1, and 250 to 260 days a year, land every member on 60 (asserted) |
+| 7 | Weighting | every day equally; the step's policy weights in every period | filed (policy 4.2, 4.3); SF6 and SF10; R1 prices the exponentially weighted estimate |
 | 8 | Measurement window length | two years to the valuation | filed (policy 4.2); SF7 |
 | 9 | Boundary inclusivity | the cap is met at or under 10.0 | filed (policy 3.4); C4: no step within 0.15 of 10.0 under the default or any golden-family member (asserted) |
 | 10 | Rounding path | the estimate compared with the cap before any rounding; pounds rounded once at the end | filed (policy 4.4); the prompt for the pounds |
@@ -255,8 +275,8 @@ None may land the default on 60, and none may move the golden off 60. Two except
 | 20 | Integerisation | none | not applicable |
 | 21 | Scope of a stated clause | the cap and its definition apply to every step | C1 |
 | 22 | Forward window contents | the call sets the growth share for calendar 2027; the estimate uses the two years to 30 November 2026 | filed (policy 3.2, 4.2); SF14 |
-| + | Period length | any equal division of the two years into at least 100 periods: daily, two-, three- and four-day, weekly | this is the method, never pinned. Daily alone is R0; every other admissible length converges on 60 (asserted) |
-| + | Estimator form | weekly on each anchor; daily plus one or two lead-lag terms; Newey-West at four or five lags; daily volatilities with weekly correlations | C3: every member on 60 with a 0.15 margin (asserted) |
+| + | Period length | daily, one return for each UK business day of the two years | filed (policy 4.3). The multi-day and monthly returns it refuses each land 60 (SF11, asserted), so no period length reaches another answer; within daily returns the estimator splits R0 (70) from the golden family (60) |
+| + | Estimator form | daily plus one or two lead-lag terms (the portfolio series, or the covariance matrix at one lag); Newey-West at four or five lags | the method, never filed. C3: every member on 60 with a 0.15 margin (asserted; measured 0.41 at 60 and 0.65 at 70) |
 | + | Ask: income basis | ex-dividend dates from 1 December 2025 to 30 November 2026. The mandate is one holding, over its market value with cash in and accrued income out. Each fund is taken per unit over its 30 November price | filed (procedure 7.2, 7.3); a pay-date basis is refused by 7.2's "ex-dividend date" |
 | + | Ask: the entitlement's grain | one amount per sub-account, security and event reference | the ask's primary device, never a reading the prompt allows. Forced by the lot quantities (C4): the line-sum reading credits a 600-share lot and a 14,000-share lot of one security with the same dividend |
 | + | Ask: grant payments | open instalments of grants awarded by 30 November 2026 and not withdrawn, at the date the trust expects to pay them; euro at 1.1460 | filed (procedure 7.4, 7.5). C3: every lag the 2023 to 2026 project payments show (35 to 70 days, whether median, mean, minimum, maximum or by programme) puts every instalment in the same year. The corridor guarantees it: no project later-instalment falls due between 23 October and 26 November of 2026 or of 2027, and every one due before 23 October 2026 is paid by 30 November (asserted) |
@@ -270,10 +290,10 @@ The prompt and the policy, executed word for word, fix the estimand:
 - the outcome: the standard deviation of the portfolio's twelve-month total return;
 - the window: the two years to the 30 November 2026 valuation;
 - the comparison: not more than 10 per cent, before rounding;
-- the periods: equal periods dividing the window, at least 100, each weighted equally;
+- the returns: daily, one for each business day of the window, each weighted equally;
 - the steps and the year the share applies to.
 
-No filed sentence names a period length or an estimator. Every literal reading of those terms selects the same returns (C1). The literal text admits daily periods, and daily periods give the default's 70 only through the square-root-of-time scaling, a method the data refutes. The portfolio's daily returns carry a lag-1 autocorrelation of 0.177 at 60 per cent (t 3.97), and the variance of five-day sums is 1.35 times five daily variances at 60 per cent on the build. So the twelve-month standard deviation, which is the filed estimand, is not the daily one times the square root of 252. The design forces the method (`determinism-check` §1, form 1), and the default's 70 comes from a method, not from a reading.
+No filed sentence names an estimator; policy 4.3 files the returns' length, daily, one for each business day. Every literal reading of those terms selects the same 505 returns per holding (C1). Daily returns give the default's 70 only through the square-root-of-time scaling, a method the data refute. The portfolio's daily returns carry a lag-1 autocorrelation of 0.177 at 60 per cent (t 3.97), and the variance of five-day sums is 1.35 times five daily variances at 60 per cent on the build. So the twelve-month standard deviation, which is the filed estimand, is not the daily one times the square root of 252. The design forces the method (`determinism-check` §1, form 1), and the default's 70 comes from a method, not from a reading. A solver who breaks 4.3 with weekly, other multi-day or monthly returns lands 60 under every one (SF11, asserted), so no refused route reaches another answer.
 
 The asks read literally as follows:
 - income per procedure 7.2 and 7.3;
@@ -475,7 +495,7 @@ Investment policy (approved 9 December 2025):
 - 3.4 The portfolio's expected volatility at the growth share set must be not more than 10 per cent.
 - 4.1 Expected volatility is the standard deviation of the portfolio's total return over twelve months.
 - 4.2 It is estimated from the time-weighted total returns of the policy's holdings, each measured from the holding's own prices and the income it pays, over the two years to the last month-end valuation before the review, combined in every period at the policy weights for the growth share under review.
-- 4.3 The two years are divided into return periods of equal length, at least 100 of them, and every period is weighted equally.
+- 4.3 The returns are daily, one for each business day of the two years, and every day is weighted equally.
 - 4.4 The estimate is compared with the cap before any rounding.
 - 5.1 Investment management and custody fees are charged to the capital of the endowments.
 - 6.1 The trustees may release capital from the expendable endowment to meet grant payments and running costs that income does not cover.
@@ -496,9 +516,9 @@ Kestwick key facts, each fund: "Dealing: daily at 12 noon UK time, the fund's va
 - The ladder:
   - R0 at 70 with its margins;
   - every golden-family member at 60 with its margins;
-  - the partials at 60;
+  - the partial and the 30 multi-day estimators refused by 4.3, each at 60;
   - R1, R2 and R3 calling a step other than 60 with margins;
-  - R4 refused (24 periods);
+  - R4 refused (24 monthly returns);
   - every target in `## Ladder`, including the forcing statistics and the single-holding agreement.
 - The Layer 1 grid: every slip on the default and on every golden-family member, with none landing the default on 60, and none moving the golden off 60 except the gross slips (at 40 or below, with outliers).
   - The stale-day filter is the accepted exception (As built), in both forms: the post-holiday days merged, and only the calendars' common days kept. Asserted instead: its refusal by policy 4.3 (merged, periods of unequal length; deleted, periods that no longer divide the two years) and the default's 70 at the merged series' own count of periods a year.
@@ -621,13 +641,32 @@ The key facts (dealing at 12 noon from the latest available prices) and the expo
 
 Gates after the pass: `checks.py` 281 assertions, 0 failed; `verify.py` 0 failed; two builds byte-identical; `golden.py` twice byte-identical and unchanged; `figures_check.py` 92 figures, 0 absent; `precut.py` exit 0; `voice-check.py` PASS at 700 characters; `leak.py --asof 2026-12-02` REVIEW, no LEAK, the lines answered under As built; `guard.py surface` exit 0, no pair promoted; `guard.py heart` WARN on repeat.gate_g against task134 v2 (answered in `## Draw`; nearest cards task128 at 0.06 and task111 at 0.05); `guard.py validate` 145 cards, 0 invalid; the container audit clean on `target/` and `golden/`.
 
+### Portal return and hardening (2026-10-13)
+
+**The return.** Response 1 set the growth share at 60 per cent at 9.0 per cent expected volatility: the Friday-to-Friday weekly member (8.97 at 60 on the build), one of the golden family's 26 members as shipped. Response 2 set 70 at 9.4, the default R0. Both missed the 2027 grant payments (£1,298,000 against £1,260,000) and the chart's title (50 per cent against 40), so the ask layer held both; the call landed for one.
+
+**The diagnosis.** Policy 4.3 read "The two years are divided into return periods of equal length, at least 100 of them, and every period is weighted equally." It put the return length in the solver's hands, and two years of weekly returns (104) are the length "at least 100" reads as. Weekly returns align the noon dealing prices with the London close by themselves, so a solver reached 60 without ever seeing the asynchrony: discriminator dominance failed on a route the policy invited (`build-pipeline`, Returned tasks: never saw the rung, yet landed).
+
+**The repair (loop 1 of 3 on architecture 2).** Policy 4.3 now reads "The returns are daily, one for each business day of the two years, and every day is weighted equally." It files the returns' length, the unit each return measures, and no estimator: the step from a day's covariance to a twelve-month variance stays the solver's.
+- Within daily returns only taking in the cross-day covariances reaches 60. The golden family is the five daily members (one or two lead-lag terms on the portfolio series, one on the covariance matrix, Newey-West at four or five lags): 9.29 to 9.59 at 60 and 10.65 to 10.99 at 70, margins 0.41 and 0.65 against the shipped family's 0.28 and 0.33.
+- The 30 multi-day estimators and the monthly returns that 4.3 now refuses each still land 60 (SF11, asserted in `checks.py` and `verify.py`), so a solver who breaks the policy that way files the golden call by a refused route, and no refused route opens another answer.
+- Pinning the estimator instead (lead and lag, or Newey-West) would file the decisive step and make it rule application, so the method stays open and forced by the data.
+- Unchanged: the default (8.25, 9.41 and 10.63 at 60, 70 and 80), R1 to R4, every ask figure, every Layer 1 slip on the default, the prompt, the stump sentence and the card's stump and driver. The card's `analyst_test` now names the daily returns; `## Three rules` carries every labelled line `precut.py` reads.
+- What moved: `wrexford_investment_policy_2025-12.pdf` (4.3's sentence, the only file in `target/` that changed); the workbook's third volatility column (Newey-West at five lags in place of Friday-to-Friday weeks) and its note; submission blocks 1 to 3 (9.3% to 9.6% at 60 and 10.6% to 11.0% at 70; the one-day lead and lag at 9.6% and 11.0%, each at least 0.04 from a rounding edge, asserted); SF5, now the same call for every golden member; the stale-day filter's golden calls at its own count (60, was 50 and 60) and deleted (60, was 60 and 70).
+
+**Gates on the re-cut.** `checks.py` 235 assertions, 0 failed; `verify.py` 0 failed (the lead-lag and Newey-West members' 60 recomputed independently, and the Friday weeks and five-day blocks recorded as refused routes landing 60); two builds byte-identical, file by file and `target.zip` (sha256 0c031ac57ea54240797f5b73e49709e4d4f82d034f0e62b1b160ed4c71907fc8), goldens byte-identical; `figures_check.py` 93 figures, 0 absent; `precut.py` exit 0, 49 checks, 0 FAIL, 0 WARN; `leak.py --asof 2026-12-02` REVIEW, no LEAK (the lines of As built, the policy now carrying 10 of 25 generic stump-paragraph words: returns, valuation, prices, holdings, mandate, measured); `guard.py surface` exit 0, no pair promoted; `guard.py heart` WARN (repeat.gate_g against task134 v2, answered in `## Draw`; the first name Samantha against task447, a different person in another fiction); `guard.py validate` 161 cards, 0 invalid; the container audit clean on `target/` and `golden/`. `freeze.py check --mode determinism` against a snapshot of the shipped commit lists only the main side the redesign moves (the Final Recommendation's and Critical Components' ranges, the golden family's and the renamed multi-day members' `figures.json` keys, the slips' golden calls, the ladder and default-path sections) and no Deliverable Answers figure, prompt sentence, stump sentence, card stump or driver.
+
+**Stage 4 on the re-cut** (`target.zip` 0c031ac5).
+- The leak reader (Sonnet, medium; `leak_check_report.md`, `## Solver's-eye read`) quoted no sentence naming the decisive step and found no ranking file, no helping file and no answer-like figure. It took the hard part to be the mandate's time-weighted return and the shortcuts to be Fernside's 15.3 per cent and the factsheets' volatilities, and never named the striking times, so the decisive rung stayed silent. Its question 5 reads 4.1 to 4.3 as daily returns over the window, equally weighted, "silent on the annualisation factor": the step from a day to a year is the open method, where the stump lives, not a reading. Its realism remarks are on files unchanged since the shipped cut and are left as they are: the Kestwick range launched together on 3 April 2009 with the Japan fund added on 1 October 2012, five factsheets in one manager's template, the charges differ by fund, and Fernside's quarterly letter is short as such letters are; the export dates of 2 December are the custodian's run after the 30 November valuation.
+- The judge (one isolated thread from the determinism-judge agent's brief, Sonnet, medium; `determinism_check_report.md`): DETERMINISTIC, APPROVE, no fix. Gate G method_or_model_selection, analytical_non_defect, no surface-read dependency, no sole data defect; three rules domain pass, layers pass, decisive step analytical. It recomputed every ask figure and the golden family (9.3 to 9.6 at 60, 10.6 to 11.0 at 70) and found two more routes off the call: the one-day shift of the North American series scaled by the square root of 252 files 70 (9.43 at 70), a rung below the golden for a solver who sees the lag but only re-dates one series; and a 63-day overlapping window files 50 (11.1 at 60), which 4.3's daily returns refuse.
+
 ## Pre-ship check
 
 1. Domain: the deciding quantity is the portfolio's twelve-month volatility at each growth step, estimated from holdings struck at different valuation points (the London close, and a noon dealing price carrying the previous New York close); with another field's nouns there is no valuation point, no last available price inside a noon price and no twelve-month variance built from daily covariances.
 2. Real work, nothing planted: a custodian's tax-lot valuation export across two designations with cash and accrued income, corporate actions in an events file, external flows a time-weighted return strips, three markets' calendars, income and accumulation units, a thirteen-month entitlements report carrying the position's amount on every lot line, euro and withdrawn grants held on a separate register, and a payment ledger from another system. Each is what these systems produce and none sits on the step that sets the call: repairing every one leaves the default at 70 and the golden at 60 (asserted).
-3. The flip is a method choice: measuring co-movement where the prices are struck together (periods of two to five days or calendar weeks, or daily covariances with their lead and lag), never a field read, a planted catch or a stated rule.
-4. The analyst test holds: the daily covariance scaled by the square root of 252 gives 8.25, 9.41 and 10.63 per cent at 60, 70 and 80 and sets 70; the golden family gives 8.96 to 9.72 at 60 and 10.33 to 11.11 at 70 and sets 60.
-5. One defensible method: policy 2.1 to 2.3 and 4.1 to 4.4 fix the estimand (the twelve-month standard deviation at the policy weights, the two years to 30 November 2026, equal periods, at least 100, weighted equally, compared before rounding), and the data refute the square-root-of-time scaling (lag-1 autocorrelation 0.177, t 3.97; five-day variance ratio 1.347; same-day 0.20 against next-day 0.49). Every admissible estimator measured that captures the lagged co-movement lands 60 (the golden family's 26 members and the ten partials), the judge's weekly, two- to five-day and lead-lag estimates included.
+3. The flip is a method choice: taking the co-movement that lands a day apart into the twelve-month variance (the daily covariances with their lead and lag, or Newey-West at four or five lags), never a field read, a planted catch or a stated rule.
+4. The analyst test holds: the daily covariance scaled by the square root of 252 gives 8.25, 9.41 and 10.63 per cent at 60, 70 and 80 and sets 70; the golden family gives 9.29 to 9.59 at 60 and 10.65 to 10.99 at 70 and sets 60.
+5. One defensible method: policy 2.1 to 2.3 and 4.1 to 4.4 fix the estimand (the twelve-month standard deviation at the policy weights, the two years to 30 November 2026, daily returns, one for each business day, weighted equally, compared before rounding), and the data refute the square-root-of-time scaling (lag-1 autocorrelation 0.177, t 3.97; five-day variance ratio 1.347; same-day 0.20 against next-day 0.49). Every daily estimator measured that takes in the lagged co-movement lands 60 (the golden family's five members and the UK and North American pair alone), and the multi-day and monthly returns policy 4.3 refuses land 60 as well.
 6. No decoy: no memo, draft or briefing argues for a step. The benchmark index levels are the declared wrong-basis distractor, refused by policy 4.2's "the holding's own prices", and the annex's 80 per cent is the 2026 setting, made on a window the pack does not carry.
 7. Nothing hidden and recovered: no shipped file states a portfolio volatility, a covariance or correlation of the holdings, or any figure only the golden method reproduces; the factsheets' and Fernside's single-holding volatilities agree within noise at every return frequency, so they confirm no method.
 8. A new lesson: same-dated prices struck hours apart push co-movement into the next day's cross-lags, so a daily covariance scaled by the square root of time understates a portfolio's volatility. No earlier build teaches it (`guard.py heart` WARN on repeat.gate_g only, against task134 v2's conversion hazard; nearest card task128 at 0.06).
@@ -709,3 +748,4 @@ Gates after the pass: `checks.py` 281 assertions, 0 failed; `verify.py` 0 failed
 - The budget workbook's totals written as text, and its summary pointing at a blank row: Excel would show the formula and a nil running costs line; the formulas now carry Excel's cached values and point at the total.
 - A Kestwick factsheet sector weight of 9.7 echoed a golden figure in `leak.py`'s sweep; 9.9.
 - Removing the holiday-gap slip in the world by having the Kestwick funds deal and price on every UK business day from each market's last close: they already did (506 prices per fund), so the change moved no figure, and the routes that landed 60 were an inner join with the benchmark index file and the stale-day filter (As built). No world holds that filter off 60 at 252 periods a year. Merging its 46 days lifts the daily estimate by about 6.6 per cent in expectation: 4.9 from the period count and 1.6 from co-movement inside the merged periods (9.6 on this world). That leaves the default room only between about 9.24 and 9.38 at 70, and the golden family cannot stay on 60 under it in any world, since its members spread about 8 per cent at 60.
+- Policy 4.3 as "return periods of equal length, at least 100 of them" (shipped 2026-10-12, returned 2026-10-13): the portal's first response set 60 on Friday-to-Friday weekly returns (9.0 at 60), the length the "at least 100" reads as, without needing to see the asynchrony. 4.3 now files daily returns, one for each business day; the multi-day routes are refused and still land 60. Pinning the lead-lag or Newey-West estimator instead was rejected: it would file the decisive step as a procedure.

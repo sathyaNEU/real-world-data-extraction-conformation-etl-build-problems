@@ -197,8 +197,9 @@ def main():
     r0 = {s: vol_daily(R, s) for s in STEPS}
     fams = {"lead-lag 1": {s: vol_daily(R, s, 1) for s in STEPS},
             "newey-west 4": {s: vol_daily(R, s, 4, True) for s in STEPS},
-            "calendar weeks to Fri": {s: vol_weekly_fri(R, dates, s) for s in STEPS},
-            "five-day blocks, anchor 0": {s: vol_blocks(R, s, 5) for s in STEPS}}
+            "newey-west 5": {s: vol_daily(R, s, 5, True) for s in STEPS}}
+    refused = {"calendar weeks to Fri": {s: vol_weekly_fri(R, dates, s) for s in STEPS},
+               "five-day blocks, anchor 0": {s: vol_blocks(R, s, 5) for s in STEPS}}
     check(call(r0) == 70 == F["call_default"], "the default (daily covariance, 252 days) calls %s (figures.json %s)" % (call(r0), F["call_default"]))
     for s in STEPS:
         check(abs(r0[s] - F["ladder"]["R0 daily"][str(s)]) < 1e-3, "R0 at %d: %.4f (figures.json %.4f)" % (s, r0[s], F["ladder"]["R0 daily"][str(s)]))
@@ -206,6 +207,11 @@ def main():
         check(call(v) == 60 == F["call"], "%s calls %s" % (n, call(v)))
         for s in (60, 70):
             check(abs(v[s] - F["ladder"]["G " + n][str(s)]) < 1e-3, "%s at %d: %.4f (figures.json %.4f)" % (n, s, v[s], F["ladder"]["G " + n][str(s)]))
+    # periods of several days are refused by investment policy 4.3 (the returns are daily); they land 60 all the same
+    for n, v in refused.items():
+        check(call(v) == 60, "%s (refused by policy 4.3) lands %s" % (n, call(v)))
+        for s in (60, 70):
+            check(abs(v[s] - F["ladder"]["W " + n][str(s)]) < 1e-3, "%s at %d: %.4f (figures.json %.4f)" % (n, s, v[s], F["ladder"]["W " + n][str(s)]))
     # an inner join of every price file on date (the mandate's valuation dates, Kestwick's sheets, the index file), each
     # return carried across any date the join drops, then the default path
     every = sorted(set(X["val"]["valuation_date"]))

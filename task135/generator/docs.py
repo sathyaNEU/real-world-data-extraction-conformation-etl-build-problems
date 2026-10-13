@@ -42,8 +42,7 @@ POLICY = [
     P("4.2 It is estimated from the time-weighted total returns of the policy's holdings, each measured from the "
       "holding's own prices and the income it pays, over the two years to the last month-end valuation before the "
       "review, combined in every period at the policy weights for the growth share under review."),
-    P("4.3 The two years are divided into return periods of equal length, at least 100 of them, and every period is "
-      "weighted equally."),
+    P("4.3 The returns are daily, one for each business day of the two years, and every day is weighted equally."),
     P("4.4 The estimate is compared with the cap before any rounding."),
     ("h1", "5. Costs"),
     P("5.1 Investment management and custody fees are charged to the capital of the endowments."),
