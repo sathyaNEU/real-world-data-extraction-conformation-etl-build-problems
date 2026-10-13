@@ -224,7 +224,7 @@ def next_task(handle):
     for n, items in ws:
         for t, note in items:
             st = status_of(t, rec)
-            if st in DONE:
+            if st in DONE or st == "RETIRED":         # a retired number is closed: nothing left to start
                 continue
             if st in IN_FLIGHT:
                 flying.append("%s %s" % (t, st))
