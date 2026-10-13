@@ -5,13 +5,13 @@
   "slot_note": "seed ET10 (trial results reporting compliance) not used: its world sits in biomedical and pharmacology domains, none of whose task types serves ETL, and its rate is a stated deadline count (the backdrop the 10/10 rules ban)",
   "domain": "survey-research-official-statistics",
   "subdomain": "seasonal-adjustment-official-time-series-production",
-  "niche": "a provincial statistics bureau's regional payroll-jobs series, built from the revenue service's monthly employer returns and seasonally adjusted for a statutory rapid-response trigger, across the January 2026 change that brought the quarterly remitters into the monthly returns",
+  "niche": "a provincial statistics bureau's regional payroll-jobs series, built from the revenue agency's employer return statistics and seasonally adjusted for a statutory rapid-response trigger, across the January 2026 move from placing each employer's jobs at its account address to placing them at the workplace",
   "objective": "etl",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Certify Brennick Valley, the Capital and Pellmarsh Hills as designated for the first quarter of 2027.",
+  "answer_source": "task453/submission.md, block 1",
   "gap": [
     "population",
     "time"
@@ -34,11 +34,11 @@
   "role_family": "other",
   "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "",
-    "rows": 0,
-    "entity": "one municipality's payroll jobs in one industry in one month",
-    "grain": "municipality x industry x month",
-    "source": "synthetic (constructed in the layout of a tax authority's monthly employer-return statistics)"
+    "file": "pra_payroll_jobs_monthly_2024-01_2027-03.csv",
+    "rows": 29118,
+    "entity": "one municipality's payroll jobs in one NAICS sector in one month",
+    "grain": "municipality x sector x month",
+    "source": "synthetic (constructed in the layout of a revenue agency's monthly employer return statistics)"
   },
   "forum": "minister_or_cabinet",
   "forcing_event": "period_close",
@@ -49,16 +49,24 @@
     "org_type": "provincial statistics bureau",
     "invented_names": [
       "Bureau of Statistics and Economic Analysis",
+      "Provincial Revenue Agency",
       "Regional Rapid Response Program",
       "Saltmere Coast",
       "Brennick Valley",
-      "Marrow Bay",
+      "Dunfallow Bay",
       "Quillon Plain",
-      "Tessaly Lakes",
+      "Hethervale Lakes",
       "Ardvane Uplands",
       "Kestrow North",
       "Pellmarsh Hills",
-      "Oslin Shore"
+      "Varrenby Shore",
+      "Wickmoor",
+      "Wexleigh-Dorran",
+      "Northline Health Authority",
+      "Coastal Community Health Services",
+      "Larkmoor Foods",
+      "Blackrill Mining",
+      "Kestrow Forest Products"
     ],
     "people": [
       "Joel Ferguson",
@@ -73,28 +81,28 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity compares two periods that both lie after a documented change in what the source counts, so the change looks irrelevant, but the seasonal pattern used to adjust them is estimated from history spanning it, and an adjustment that does not first remove the change as a level shift lets it leak into the seasonal factors and moves the latest period most where the change was largest.",
-  "driver_concrete": "Each region's first-quarter 2027 seasonally adjusted payroll jobs are set against its 2026 average, both on the coverage the returns have had since the quarterly remitters joined the monthly returns in January 2026; a default seasonal adjustment estimates the seasonal pattern across that step, inflating the first-quarter factors and pulling the latest quarter down where the remitters hold the most jobs, while official practice removes the step as a level shift in the regARIMA pre-adjustment (or restates the earlier history) before the seasonal filters run.",
-  "stump": "The default path designates Brennick Valley, Kestrow North, Oslin Shore and Pellmarsh Hills because step 4 estimates each region's seasonal pattern across the January 2026 coverage step without removing it: the step inflates the first-quarter seasonal factors in proportion to its size, which pulls the first quarter of 2027 below the line in Kestrow North and Oslin Shore, where the quarterly remitters hold over a fifth of the jobs; removing the step as a level shift before the seasonal pattern is estimated (or restating the earlier history to the new coverage) designates Brennick Valley and Pellmarsh Hills only.",
+  "driver": "The decisive quantity compares two periods that both lie after a documented change in where the source places what it counts, so the change looks irrelevant, but the seasonal pattern used to adjust them is estimated from a history spanning it, and an adjustment that does not first remove the change as a level shift lets it leak into the seasonal factors and moves the latest period most where the change was largest, in either direction.",
+  "driver_concrete": "Each region's first-quarter 2027 seasonally adjusted payroll jobs are set against its 2026 average, both on the workplace placement the revenue agency's statistics have used since January 2026, when jobs that had sat at employers' account addresses (head offices in Wickmoor and Saltmere) moved to their mines, mills, plants, hospitals and stores; a default seasonal adjustment estimates the seasonal pattern across that step, pulling the quarter down in the regions that gained (Kestrow North, Varrenby Shore) and up in the Capital, while official practice removes the step as a level shift in the regARIMA pre-adjustment (or restates the earlier history) before the seasonal filters run.",
+  "stump": "The default path designates Brennick Valley, Kestrow North, Varrenby Shore and Pellmarsh Hills because step 4 estimates each region's seasonal pattern across the January 2026 move to workplace placement without removing it: the step leaks into the first-quarter seasonal factors in proportion to its size, pulling the first quarter of 2027 below the line in Kestrow North and Varrenby Shore and lifting the Capital, which lost the jobs, above it; removing the step as a level shift before the seasonal pattern is estimated designates Brennick Valley, the Capital and Pellmarsh Hills.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the returns, reads the January 2026 coverage note correctly (both compared periods are on the new coverage) and seasonally adjusts each region's whole series with STL or the classical moving-average method designates Brennick Valley, Kestrow North, Oslin Shore and Pellmarsh Hills, against Brennick Valley and Pellmarsh Hills.",
-  "domain_test": "Official time-series production pre-adjusts a documented break in an administrative source as a level shift in the regARIMA model before the seasonal filters (the client's survey-research-official-statistics seasonal-adjustment pattern 1); the quantity is an official seasonally adjusted series a statute reads, built from a return whose coverage a filing rule changed, and outside official series production neither the coverage rule nor the statutory series exists.",
+  "analyst_test": "A strong analyst who conforms the agency's statistics, reads the January 2026 release note correctly (both compared periods are on the workplace placement) and seasonally adjusts each region's whole series with STL or the classical decomposition designates Brennick Valley, Kestrow North, Varrenby Shore and Pellmarsh Hills, against Brennick Valley, the Capital and Pellmarsh Hills.",
+  "domain_test": "Official time-series production pre-adjusts a documented break in an administrative source as a level shift in the regARIMA model before the seasonal filters (the client's survey-research-official-statistics seasonal-adjustment pattern 1); the quantity is an official seasonally adjusted series a statute reads, built from returns whose placement of jobs a filing change moved, and outside official series production neither the placement rule nor the statutory series exists.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task139": "task139 reads an intake-randomised intervention's effect per assigned unit rather than per recorded case (a causal estimand); task453 removes a documented coverage step as a level shift before estimating seasonal factors (official time-series production), with no intervention and no assignment",
-    "task30": "task30 round 3 segmented a calibration corpus to its post-change cohort; task453's post-change span (15 months) is too short to estimate a seasonal pattern, so the full history is kept and the change removed as a level shift, and segmenting to the post-change months is one of its wrong rungs"
+    "task30": "task30 round 3 segmented a calibration corpus to its post-change cohort; task453's post-change span (15 months) is too short to estimate a seasonal pattern, so the full history is kept and the change removed as a level shift, and segmenting to the post-change months lands the set on the wrong figures"
   },
   "lineage": [],
-  "notes": "Drawn 2026-10-13. Prototype in scratch (t453/proto3 to proto6, statsmodels in a scratch venv): default STL and the classical moving-average decomposition designate the high-step regions in every seed; robust STL lands the golden when the irregular is small (it down-weights the months around the step) and misses at a realistic regional irregular of 0.6 to 1.0 per cent; every step-aware method (regression with a level shift over three windows, STL and the classical method on the restated history, pre-break factors) designates the same regions.",
+  "notes": "Drawn 2026-10-13; the documented change refined at design from quarterly remitters joining the monthly returns to the move from account-address to workplace placement (steps both ways, the province's total unchanged). Measured on the generator's pack: eleven step-aware routes designate Brennick Valley, the Capital and Pellmarsh Hills at least 0.51 from the line; five default routes designate Brennick Valley, Kestrow North, Varrenby Shore and Pellmarsh Hills at least 0.32 from it; robust STL designates the Capital and Pellmarsh Hills; the year-on-year route lands the golden set on figures outside every step-aware range.",
   "client_domain": "survey-research-official-statistics",
   "layer2_family": "field_method",
   "layer2_pattern": "survey-research-official-statistics/seasonal-adjustment-official-time-series-production/1",
   "layer1": [
-    "the tax authority's monthly employer-return statistics in two layouts (a wide yearly file to 2023, a long monthly file from 2024)",
-    "municipality codes changed by a 2025 amalgamation, joined to the economic regions through the bureau's concordance",
+    "the revenue agency's employer return statistics in two layouts (yearly tables by industry group to 2023, a long monthly file by NAICS sector from 2024)",
+    "municipality codes retired by a 2025 amalgamation, joined to the economic regions through the bureau's concordance",
     "preliminary latest months beside a revision file that replaces them",
-    "payroll jobs reported with an industry code revised in 2024 (the totals unaffected)",
-    "the quarterly remitters' move into the monthly returns from January 2026, documented in the authority's release note",
-    "the labour force survey's regional rates and the population estimates beside the returns (distractors)"
+    "workplace returns listing each workplace once per payroll account under the account's own workplace number",
+    "the January 2026 move from account-address to workplace placement, documented in the agency's release note",
+    "the labour force survey's regional estimates and the population estimates beside the returns (distractors)"
   ]
 }

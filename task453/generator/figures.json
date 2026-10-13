@@ -1,0 +1,296 @@
+{
+ "call": [
+  "Capital",
+  "Brennick Valley",
+  "Pellmarsh Hills"
+ ],
+ "default_call": [
+  "Brennick Valley",
+  "Kestrow North",
+  "Pellmarsh Hills",
+  "Varrenby Shore"
+ ],
+ "robust_call": [
+  "Capital",
+  "Pellmarsh Hills"
+ ],
+ "line_per_cent": 1.0,
+ "stl_seasonal_windows": [
+  7,
+  13
+ ],
+ "designated_min_gap": 0.51,
+ "others_min_gap": 0.63,
+ "regions": {
+  "Capital": {
+   "pct": -1.6,
+   "pct_below": 1.6,
+   "pct_range": [
+    -1.7,
+    -1.5
+   ],
+   "pct_range_below": [
+    1.5,
+    1.7
+   ],
+   "sa_jobs": 82020,
+   "sa_jobs_range": [
+    81940,
+    82070
+   ],
+   "avg_2026": 83320,
+   "default_pct": -0.6,
+   "default_pct_below": 0.6,
+   "classical_pct": -0.2,
+   "level_shift_pct": -16.3,
+   "level_shift_abs": 16.3,
+   "designated": true,
+   "employers_2027_03": 5781,
+   "jobs_lost_none": 2390,
+   "jobs_lost_fewer": 5010
+  },
+  "Saltmere Coast": {
+   "pct": 1.1,
+   "pct_below": -1.1,
+   "pct_range": [
+    0.9,
+    1.3
+   ],
+   "pct_range_below": [
+    -1.3,
+    -0.9
+   ],
+   "sa_jobs": 51130,
+   "sa_jobs_range": [
+    51040,
+    51220
+   ],
+   "avg_2026": 50590,
+   "default_pct": 1.3,
+   "default_pct_below": -1.3,
+   "classical_pct": 1.6,
+   "level_shift_pct": -6.3,
+   "level_shift_abs": 6.3,
+   "designated": false,
+   "employers_2027_03": 3490,
+   "jobs_lost_none": 1430,
+   "jobs_lost_fewer": 1760
+  },
+  "Brennick Valley": {
+   "pct": -1.9,
+   "pct_below": 1.9,
+   "pct_range": [
+    -2.3,
+    -1.8
+   ],
+   "pct_range_below": [
+    1.8,
+    2.3
+   ],
+   "sa_jobs": 24770,
+   "sa_jobs_range": [
+    24680,
+    24800
+   ],
+   "avg_2026": 25250,
+   "default_pct": -2.4,
+   "default_pct_below": 2.4,
+   "classical_pct": -2.4,
+   "level_shift_pct": 5.8,
+   "level_shift_abs": 5.8,
+   "designated": true,
+   "employers_2027_03": 2125,
+   "jobs_lost_none": 820,
+   "jobs_lost_fewer": 1670
+  },
+  "Dunfallow Bay": {
+   "pct": 0.8,
+   "pct_below": -0.8,
+   "pct_range": [
+    0.5,
+    0.9
+   ],
+   "pct_range_below": [
+    -0.9,
+    -0.5
+   ],
+   "sa_jobs": 20330,
+   "sa_jobs_range": [
+    20270,
+    20340
+   ],
+   "avg_2026": 20160,
+   "default_pct": -0.0,
+   "default_pct_below": 0.0,
+   "classical_pct": 0.0,
+   "level_shift_pct": 11.7,
+   "level_shift_abs": 11.7,
+   "designated": false,
+   "employers_2027_03": 1386,
+   "jobs_lost_none": 570,
+   "jobs_lost_fewer": 740
+  },
+  "Quillon Plain": {
+   "pct": 1.4,
+   "pct_below": -1.4,
+   "pct_range": [
+    1.2,
+    1.8
+   ],
+   "pct_range_below": [
+    -1.8,
+    -1.2
+   ],
+   "sa_jobs": 30800,
+   "sa_jobs_range": [
+    30730,
+    30900
+   ],
+   "avg_2026": 30360,
+   "default_pct": 0.7,
+   "default_pct_below": -0.7,
+   "classical_pct": 0.7,
+   "level_shift_pct": 10.4,
+   "level_shift_abs": 10.4,
+   "designated": false,
+   "employers_2027_03": 2197,
+   "jobs_lost_none": 940,
+   "jobs_lost_fewer": 1220
+  },
+  "Hethervale Lakes": {
+   "pct": 1.2,
+   "pct_below": -1.2,
+   "pct_range": [
+    1.0,
+    1.4
+   ],
+   "pct_range_below": [
+    -1.4,
+    -1.0
+   ],
+   "sa_jobs": 17490,
+   "sa_jobs_range": [
+    17480,
+    17520
+   ],
+   "avg_2026": 17290,
+   "default_pct": 0.5,
+   "default_pct_below": -0.5,
+   "classical_pct": 0.3,
+   "level_shift_pct": 14.3,
+   "level_shift_abs": 14.3,
+   "designated": false,
+   "employers_2027_03": 1288,
+   "jobs_lost_none": 490,
+   "jobs_lost_fewer": 690
+  },
+  "Ardvane Uplands": {
+   "pct": 1.8,
+   "pct_below": -1.8,
+   "pct_range": [
+    1.5,
+    1.9
+   ],
+   "pct_range_below": [
+    -1.9,
+    -1.5
+   ],
+   "sa_jobs": 15680,
+   "sa_jobs_range": [
+    15630,
+    15690
+   ],
+   "avg_2026": 15400,
+   "default_pct": 0.9,
+   "default_pct_below": -0.9,
+   "classical_pct": 0.7,
+   "level_shift_pct": 16.6,
+   "level_shift_abs": 16.6,
+   "designated": false,
+   "employers_2027_03": 1116,
+   "jobs_lost_none": 340,
+   "jobs_lost_fewer": 540
+  },
+  "Kestrow North": {
+   "pct": -0.4,
+   "pct_below": 0.4,
+   "pct_range": [
+    -0.4,
+    0.2
+   ],
+   "pct_range_below": [
+    -0.2,
+    0.4
+   ],
+   "sa_jobs": 18830,
+   "sa_jobs_range": [
+    18830,
+    18930
+   ],
+   "avg_2026": 18900,
+   "default_pct": -1.6,
+   "default_pct_below": 1.6,
+   "classical_pct": -2.0,
+   "level_shift_pct": 27.6,
+   "level_shift_abs": 27.6,
+   "designated": false,
+   "employers_2027_03": 1158,
+   "jobs_lost_none": 410,
+   "jobs_lost_fewer": 1190
+  },
+  "Pellmarsh Hills": {
+   "pct": -2.1,
+   "pct_below": 2.1,
+   "pct_range": [
+    -2.6,
+    -2.0
+   ],
+   "pct_range_below": [
+    2.0,
+    2.6
+   ],
+   "sa_jobs": 21930,
+   "sa_jobs_range": [
+    21810,
+    21930
+   ],
+   "avg_2026": 22390,
+   "default_pct": -2.8,
+   "default_pct_below": 2.8,
+   "classical_pct": -2.8,
+   "level_shift_pct": 9.0,
+   "level_shift_abs": 9.0,
+   "designated": true,
+   "employers_2027_03": 1617,
+   "jobs_lost_none": 840,
+   "jobs_lost_fewer": 1660
+  },
+  "Varrenby Shore": {
+   "pct": 0.1,
+   "pct_below": -0.1,
+   "pct_range": [
+    -0.4,
+    0.2
+   ],
+   "pct_range_below": [
+    -0.2,
+    0.4
+   ],
+   "sa_jobs": 15070,
+   "sa_jobs_range": [
+    15000,
+    15090
+   ],
+   "avg_2026": 15060,
+   "default_pct": -1.5,
+   "default_pct_below": 1.5,
+   "classical_pct": -1.5,
+   "level_shift_pct": 23.2,
+   "level_shift_abs": 23.2,
+   "designated": false,
+   "employers_2027_03": 1070,
+   "jobs_lost_none": 380,
+   "jobs_lost_fewer": 760
+  }
+ }
+}

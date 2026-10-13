@@ -1,37 +1,38 @@
 {
   "task": "task453",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "survey-research-official-statistics",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-13",
-  "stump": "The default path designates Brennick Valley, Kestrow North, Oslin Shore and Pellmarsh Hills because step 4 estimates each region's seasonal pattern across the January 2026 coverage step without removing it: the step inflates the first-quarter seasonal factors in proportion to its size, which pulls the first quarter of 2027 below the line in Kestrow North and Oslin Shore, where the quarterly remitters hold over a fifth of the jobs; removing the step as a level shift before the seasonal pattern is estimated (or restating the earlier history to the new coverage) designates Brennick Valley and Pellmarsh Hills only.",
+  "stump": "The default path designates Brennick Valley, Kestrow North, Varrenby Shore and Pellmarsh Hills because step 4 estimates each region's seasonal pattern across the January 2026 move to workplace placement without removing it: the step leaks into the first-quarter seasonal factors in proportion to its size, pulling the first quarter of 2027 below the line in Kestrow North and Varrenby Shore, whose mines, mills and plants the agency counted at head offices in Wickmoor until 2026, and lifting the Capital, which lost those jobs, above it; removing the step as a level shift before the seasonal pattern is estimated (or restating the earlier history to the new placement) designates Brennick Valley, the Capital and Pellmarsh Hills.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-13"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK), --asof 2027-05-07",
+    "reader": "three passes (isolated, Sonnet, medium): no decisive-step sentence, analytical; the ask readings (employer, workplace, none left, loss) and the realism tells fixed in the generator; pass 3 clean"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "0.08 (task30 round 3, lineage)",
+    "heart": "WARN (repeat.question_form against task451 v2)",
+    "surface": "0 promoted pairs; personas in the pack are the card's four",
+    "nearest": "0.07 (task30 round 3 and task17 revision 3, lineage)",
     "note": "drawn 2026-10-13: guard WARN (repeat.question_form); task139 and task30 differentiated"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report.md (pass 1, on the cut before the reader's fixes; Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical)"
   },
   "returned": [],
-  "resume": "stage 2: the generator prototype placing each region's path and step (ladder, readability screen, fork table, closure, literal reader, oracles, ask sheet), prompt.txt and precut.py exit 0",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-13",
   "portal": null,
   "source_note": "seed ET10 (analytical_tasks/07_data_extraction_conformation) not used: its world sits in biomedical and pharmacology domains with no ETL-serving task type, and its rate is a stated deadline count; the pairing is the client's seasonal-adjustment official time-series production task type"
 }

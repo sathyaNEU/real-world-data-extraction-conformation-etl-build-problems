@@ -1,0 +1,143 @@
+{
+  "task": "task453",
+  "architecture": 1,
+  "title": "Which economic regions a provincial statistics bureau certifies for the first quarter of 2027 under a rapid response regulation read off seasonally adjusted payroll jobs, built from employer returns whose placement of jobs moved from account addresses to workplaces in January 2026",
+  "domain": "Survey Research & Official Statistics",
+  "subdomain": "seasonal-adjustment-official-time-series-production (each economic region's monthly payroll jobs conformed from the revenue agency's employer return statistics in two layouts, a revision file and a municipal concordance, and seasonally adjusted across a documented change of placement)",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "10: a scorecard of every economic region against the designation line, with each region's employers with payroll jobs in March 2027 and the jobs its workplaces lost from March 2026",
+  "as_of": "2027-05-07",
+  "deliverables": [
+    "rapid_response_certification_2027q1.pdf",
+    "regional_payroll_jobs_2027q1.csv"
+  ],
+  "distractor_files": [
+    "lfs_economic_region_estimates_2025-2027.csv",
+    "bsea_population_estimates_2024-2026.xlsx"
+  ],
+  "stated_inputs": [
+    "1.0"
+  ],
+  "input_gates": {
+    "files": 11,
+    "formats": [
+      "csv",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "pra_workplace_returns_2026-03_2027-03.csv",
+    "largest_file_rows": 47647
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task453/generator/build.py (seeded, deterministic) in the layouts of a provincial revenue agency's employer return statistics, a statistics bureau's municipal concordance and population estimates, and a labour force survey's regional estimates; the province, its regions, municipalities, employers and people are fictional.",
+      "date": "2027-05-07",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2027-05-07",
+  "generator": "task453/generator/build.py",
+  "files": [
+    {
+      "path": "bsea_municipal_concordance.xlsx",
+      "format": "xlsx",
+      "bytes": 9120,
+      "rows": null,
+      "source": "Constructed: the bureau's municipal concordance to economic regions",
+      "date": "2027-05-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bsea_population_estimates_2024-2026.xlsx",
+      "format": "xlsx",
+      "bytes": 10268,
+      "rows": null,
+      "source": "Constructed: the bureau's municipal population estimates, 1 July 2024 to 2026",
+      "date": "2027-05-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lfs_economic_region_estimates_2025-2027.csv",
+      "format": "csv",
+      "bytes": 11338,
+      "rows": 270,
+      "source": "Constructed: the labour force survey's three-month moving averages by economic region, January 2025 to March 2027",
+      "date": "2027-05-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pra_payroll_jobs_by_municipality_2021-2023.xlsx",
+      "format": "xlsx",
+      "bytes": 87812,
+      "rows": null,
+      "source": "Constructed: the Provincial Revenue Agency's yearly tables of payroll jobs by municipality and industry group, 2021 to 2023",
+      "date": "2027-05-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pra_payroll_jobs_monthly_2024-01_2027-03.csv",
+      "format": "csv",
+      "bytes": 677955,
+      "rows": 29118,
+      "source": "Constructed: the Agency's monthly payroll jobs by municipality and NAICS sector, January 2024 to March 2027, as of 23 April 2027",
+      "date": "2027-05-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pra_payroll_jobs_revisions_2027-05-07.csv",
+      "format": "csv",
+      "bytes": 53229,
+      "rows": 2286,
+      "source": "Constructed: the Agency's revision file of 7 May 2027 for January to March 2027",
+      "date": "2027-05-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pra_release_note_place_of_work_2026-02.pdf",
+      "format": "pdf",
+      "bytes": 41079,
+      "rows": null,
+      "source": "Constructed: the Agency's release note of 16 February 2026 on placing payroll jobs at the workplace",
+      "date": "2027-05-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pra_statistics_field_descriptions.csv",
+      "format": "csv",
+      "bytes": 2495,
+      "rows": 17,
+      "source": "Constructed: the Agency's field descriptions for its statistics files",
+      "date": "2027-05-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pra_transmittal_2027-05-07.txt",
+      "format": "txt",
+      "bytes": 1278,
+      "rows": 22,
+      "source": "Constructed: the Agency's transmittal of 7 May 2027",
+      "date": "2027-05-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pra_workplace_returns_2026-03_2027-03.csv",
+      "format": "csv",
+      "bytes": 5066914,
+      "rows": 47647,
+      "source": "Constructed: the Agency's workplace schedule lines for March 2026 and March 2027, as of 7 May 2027",
+      "date": "2027-05-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "regional_rapid_response_program_regulation.pdf",
+      "format": "pdf",
+      "bytes": 105991,
+      "rows": null,
+      "source": "Constructed: the Regional Rapid Response Program Regulation, consolidated to 1 July 2026",
+      "date": "2027-05-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
