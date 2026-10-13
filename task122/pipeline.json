@@ -1,32 +1,32 @@
 {
  "task": "task122",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "biomedical-clinical-research",
  "objective": "experiment-causal",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-13",
- "stump": "A competent solver fits each dose's eGFR with the field's two-slope model, an acute effect to month 3 and a chronic slope after it, carries the chronic slope to month 36 and files 40 mg at about 6 mL/min/1.73 m2 above placebo; the step that lands it there is starting the chronic slope at month 3, when the patients whose eGFR fell most on 20 and 40 mg had their loop diuretics eased only from week 12 and recovered part of the fall over the following weeks, so a slope from month 3 carries that one-off recovery forward for three years; taken from week 24, after the recovery, the slope leaves 20 mg furthest above placebo at month 36 (4) and 40 mg at 3.",
+ "stump": "A competent solver fits each dose's eGFR with the field's two-slope model, an acute effect to month 3 and a chronic slope after it, carries the chronic slope to month 36 and files 40 mg at about 5 mL/min/1.73 m2 above placebo; the step that lands it there is starting the chronic slope at month 3, when the patients whose eGFR fell most on 20 and 40 mg had their loop diuretics eased only from week 12, at the week-12, 16 and 20 visits, and recovered part of the fall over the following weeks, so a slope from month 3 carries that one-off recovery forward for three years; taken from week 24, after the recovery, the slope leaves 20 mg furthest above placebo at month 36 (3) and 40 mg at 2.",
  "architecture": 2,
  "card_architecture": "v3",
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-13"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-13 (sweeps 3 and 4: the study nouns, the disease name and the background-therapy clause; answered in the design note)",
+  "reader": "2026-10-13 two isolated reads (before and after the stage-4 fixes): nothing names the decisive step, ranks the doses, helps only the analyst or reads as the answer; main answer an analytical choice; notes fixed (synopsis primary end point pinned; recheck panels vary)"
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "WARN 2026-10-13 (question form which against task501); surface promotes task123 on the card axes the differentiation answers",
   "nearest": "task228 v1 lineage 0.08"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (2026-10-13; Gate G pass, forecasting mechanism, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical)"
  },
  "returned": [
   {
@@ -36,13 +36,13 @@
    "commit": ""
   }
  ],
- "resume": "stage 2: readability screen, fork table, ladder on the tuned parameters, closure table, literal reader, oracles, ask sheet, prompt.txt, precut",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-13",
  "portal": null,
  "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
+ "portal_status": "PENDING_REVIEW",
+ "portal_status_date": "2026-10-13",
  "earlier": {
   "v2": {
    "domain": "product-analytics",

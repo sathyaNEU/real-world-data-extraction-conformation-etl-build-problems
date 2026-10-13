@@ -1,0 +1,18 @@
+{
+  "task": "task122",
+  "distractor_files": [
+    "target/vs.csv",
+    "target/pc.csv"
+  ],
+  "deliverables": [
+    "VMK-4410_phase3_dose_recommendation.pdf",
+    "VMK-4410_phase2b_tables.xlsx"
+  ],
+  "domain": "Biomedical & Clinical Research",
+  "task_type": "longitudinal-outcomes-repeated-measures",
+  "objective": "Experiment & Causal Analysis",
+  "sources": {
+    "all files": "constructed for this task by the author (synthetic, no third-party data); no licence restriction",
+    "CKD-EPI 2021 equation": "Inker LA et al., N Engl J Med 2021; the published equation, used as a formula only"
+  }
+}

@@ -14,7 +14,7 @@ kept at the end of this note; its pack, goldens and reports are removed from the
 | Domain / task type | Biomedical & Clinical Research / longitudinal-outcomes-repeated-measures (serves Experiment & Causal in the client taxonomy; the domain has never been built, in any objective) |
 | Objective | Experiment & Causal Analysis: the call is a causal claim read from a randomised trial, how far each dose of the drug moves eGFR against placebo after 36 months' treatment |
 | Niche | a Copenhagen-area clinical-stage biotech chooses which of four once-daily doses of its oral aldosterone synthase inhibitor, VMK-4410, goes into the phase 3 kidney trial, from a 52-week multinational phase 2b in albuminuric chronic kidney disease whose protocol held background diuretics, RAS blockers and SGLT2 inhibitors unchanged for the first 12 weeks |
-| Shape | 11 before and after with a control: each dose's eGFR difference from placebo after 12, 24 and 36 months' treatment (4 doses x 3 times), plus the call, the runner-up and the gap, a chart with named parts and the asks |
+| Shape | 11 before and after with a control: each dose's eGFR difference from placebo after 36 months' treatment, plus the call, the runner-up and the gap, a chart of each dose's difference by month and the asks |
 | Decision type / unit | pick one of four doses (named option); the graded figures are mL/min/1.73 m2 of eGFR against placebo |
 | Gap / pattern / generators | time (what the 52-week trial measured against the 36 months the decision is scored on); no A to E pattern; G4 decisive (the one-off recovery after background diuretics are eased, at the turn from the acute phase to the chronic phase, attributed to the chronic slope), G13 (the 36-month horizon multiplies a slope read over 40 weeks), G16 (where the chronic phase is fitted from) |
 | Gate G mechanism | method_or_model_selection: every laboratory value, visit and protocol rule is read correctly on the wrong route; the decision turns on the window the chronic eGFR slope is fitted over |
@@ -25,7 +25,7 @@ kept at the end of this note; its pack, goldens and reports are removed from the
 | Stakeholder | the head of clinical development, who recommends the dose to the chief medical officer, who signs it for the end-of-phase-2 meeting package (the prompt names no one) |
 | Forum / forcing event / org family | line_manager_or_team / statutory_or_regulatory_filing (the end-of-phase-2 meeting package) / other (a clinical-stage biotech, not yet a manufacturer) |
 | World | Varnmark Therapeutics (invented), Copenhagen area, DKK; phase 2b VMK-4410-202 at sites in Denmark, Sweden, Germany, Poland, Spain and the United Kingdom; personas drawn da_DK seed 122: Benedicte Laursen (head of clinical development), Nicolaj Lassen (biostatistics), Kirsten Eriksen (clinical pharmacology), Lene Dam (medical monitor) |
-| Deliverables | `VMK-4410_phase3_dose_recommendation.pdf` (the call, each dose's eGFR difference from placebo after 12, 24 and 36 months' treatment, a chart of each dose's difference by month); `VMK-4410_phase2b_tables.xlsx` (the asks) |
+| Deliverables | `VMK-4410_phase3_dose_recommendation.pdf` (the call, each dose's eGFR difference from placebo after 36 months' treatment, a chart of each dose's difference by month); `VMK-4410_phase2b_tables.xlsx` (the asks) |
 | Guard | WARN only (answered below); registered 2026-10-13 |
 
 **Data-native sentence.** The protocol held background diuretics steady for the first twelve weeks, so the
@@ -76,20 +76,37 @@ a chronic slope started at the field's usual three months carries that one-off r
   forcing event against budget_or_appropriation, period_close and launch_or_rollout; strategy against other,
   population_selection and composition_mix; decisive pattern G4 against G14, G16 and C.
 
-**Arithmetic on the arm means** (scratch `ladder2.py`, `search4.py`; visits at weeks 0, 2, 4, 8, 12, 16, 20,
-24, 32, 40 and 52; diuretics eased at the week-12, 16 and 20 visits in 45, 35 and 20 per cent of the patients
-eased; recovery time constant 2.5 weeks). Each dose's initial fall against placebo, the part that comes back
-after easing, and the chronic benefit in mL/min/1.73 m2 a year: 5 mg 0.2, 0, 0.40; 10 mg 1.2, 0.05, 1.05; 20 mg
-2.5, 0.2, 2.10; 40 mg 5.85, 1.2, 2.55. Month-36 differences by route: golden (the level each arm settles at plus
-the chronic benefit over three years) 1, 2, 4, 3; two-slope with the chronic phase from week 4, 12 or 16, 40 mg
-first (6.3, 6.0, 4.9 against 20 mg 4.5, 4.5, 4.3); from week 20, 20 mg by 0.2; from week 24 or 32, the golden
-figures within 0.25; one slope through every visit, 20 mg on wrong figures (2.1, 0.6 for 40 mg); the week-52
-difference, 5 mg (0.2 against -0.1 and -0.2); the chronic benefit alone, 40 mg (2.55 against 2.10).
+**Arithmetic on the arm means** (`checks.design_routes`, carried in `generator/figures.json` as
+`note.design_coefficients`; visits at weeks 0, 2, 4, 8, 12, 16, 20, 24, 32, 40 and 52; diuretics eased at the
+week-12, 16 and 20 visits in 45, 35 and 20 per cent of the patients eased; the fall develops with a time constant of
+1.2 weeks and the recovery after easing with 1.5 weeks). Each route's 36-month value is linear in a dose's initial
+fall P, the part that comes back after easing R and its chronic benefit C (mL/min/1.73 m2 a year): golden -P + R + 3C;
+the two-slope model from week 12, -P + 3.36R + 3C (from week 16, 2.37R; week 20, 1.55R; week 24, 1.05R; week 32, 1.00R);
+one slope through every visit, -2.02P + 3.97R + 3C; the week-52 difference, -P + R + C. The draw's values (P, R, C):
+5 mg 0.9, 0, 0.30; 10 mg 1.0, 0, 0.667; 20 mg 3.85, 0.15, 2.20; 40 mg 6.9, 1.4, 2.50. The generator calibrates each
+arm's level and chronic slope so the measured week-52 difference and the week-24 route land on the draw's targets; the
+shipped values are in the Ladder. Month-36 differences by route on the draw's values:
 
-**Shape arithmetic (shape 11).** 4 doses x 3 times = 12 graded differences from placebo, plus the call, the
-runner-up and the gap (3), a chart with four named parts (4) and the two files (2): 21 before the ask layer, and
-the asks add 5 arms x 4 measures = 20, for 41 in all. The decisive construction moves the 24- and 36-month cells
-of 20 and 40 mg and the call; the 12-month cells are each dose's observed difference at week 52.
+| Route | 5 mg | 10 mg | 20 mg | 40 mg | Files |
+|---|---|---|---|---|---|
+| golden: the settled level plus the chronic benefit over three years | 0.0 | 1.0 | 2.9 | 2.0 | 20 mg |
+| chronic phase from week 24 (week 32) | 0.0 | 1.0 | 2.9 (2.9) | 2.1 (2.0) | 20 mg |
+| chronic phase from week 20 | 0.0 | 1.0 | 3.0 | 2.8 | 20 mg, 40 mg's figure a bin out |
+| chronic phase from week 16 | 0.0 | 1.0 | 3.1 | 3.9 | 40 mg |
+| chronic phase from week 12, the field's month 3 | 0.0 | 1.0 | 3.2 | 5.3 | 40 mg |
+| chronic phase from week 4 | 0.0 | 1.0 | 3.2 | 5.8 | 40 mg |
+| one slope through every visit | -0.9 | 0.0 | -0.6 | -0.9 | 10 mg |
+| the week-52 difference (no projection) | -0.6 | -0.3 | -1.5 | -3.0 | 10 mg |
+
+On the shipped pack the month-3 route reads 40 mg's chronic benefit over placebo as 3.7 mL/min/1.73 m2 a year against
+2.5 from week 24; placebo declines about 4 a year, so on the convention 40 mg reads as nearly flat, a strong but
+plausible claim for a kidney drug.
+
+**Shape arithmetic (shape 11).** Each dose's eGFR difference from placebo after 36 months' treatment (4), the
+call, the runner-up and the gap (3), a chart of each dose's difference by month with four named parts (4) and the
+two files (2): 13 before the ask layer; the asks add 5 arms x 4 measures = 20, for 33 in all. The decisive
+construction moves 20 and 40 mg's figures and the call; the 12- and 24-month values are drawn on the chart and not
+graded, since a chronic benefit that is not a whole number a year cannot keep every year's value mid-bin.
 
 ## Default path
 
@@ -104,21 +121,22 @@ of 20 and 40 mg and the call; the 12-month cells are each dose's observed differ
 4. Carry each dose's chronic slope to month 36 from its level at week 12 and take the difference from placebo.
 5. File the dose with the largest difference.
 
-Ends on: 40 mg, about 6 mL/min/1.73 m2 above placebo at month 36 (20 mg about 4.5, 10 mg 2, 5 mg 1); on the
-arm means the month-3 route gives 40 mg 5.97 and 20 mg 4.50, and the shipped figures are fixed at the design stage.
+Ends on: 40 mg, about 5 mL/min/1.73 m2 above placebo at month 36 (20 mg 3, 10 mg 1, 5 mg 1; on the shipped
+pack's arm means 4.81, 3.11, 1.03 and 0.65).
 
-Golden: 20 mg, 4 mL/min/1.73 m2 above placebo at month 36, then 40 mg at 3, 10 mg at 2 and 5 mg at 1, with the
-chronic slope taken from week 24, after the recovery, from the level each arm settled at.
+Golden: 20 mg, 3 mL/min/1.73 m2 above placebo at month 36, then 40 mg at 2, 10 mg at 1 and 5 mg at 0 (3.04, 2.04,
+1.05 and -0.01 on the shipped pack), with the chronic slope taken from week 24, after the recovery, from the level each
+arm settled at.
 
 ## Stump sentence
 
 A competent solver fits each dose's eGFR with the field's two-slope model, an acute effect to month 3 and a
-chronic slope after it, carries the chronic slope to month 36 and files 40 mg at about 6 mL/min/1.73 m2 above
+chronic slope after it, carries the chronic slope to month 36 and files 40 mg at about 5 mL/min/1.73 m2 above
 placebo (the `Ends on:` figure); the step that lands it there is starting the chronic slope at month 3, when the
 patients whose eGFR fell most on 20 and 40 mg had their loop diuretics eased only from week 12, at the week-12,
 16 and 20 visits, and recovered part of the fall over the following weeks, so a slope from month 3 carries that
 one-off recovery forward for three years; taken from week 24, after the recovery, the slope leaves 20 mg furthest
-above placebo at month 36 (4) and 40 mg at 3.
+above placebo at month 36 (3) and 40 mg at 2.
 
 ## Three rules
 
@@ -136,12 +154,17 @@ intensity leaves test scores furthest above the control group after three years"
 a diuretic adds to, no background diuretic held fixed for twelve weeks and then eased, and no recovery of a
 volume-related fall, so the step that decides has nothing to act on and the task stops making sense.
 
-Layer 1: an SDTM-style laboratory extract from two central laboratories and local laboratories (unscheduled and
-repeat samples, specimen-condition comments, creatinine in umol/L at some laboratories and mg/dL at others,
-potassium in mmol/L and mEq/L), visits taken outside their windows, a dosing record with interruptions beside a
-disposition record, concomitant medications with free-text doses and changes recorded as new rows, and urine
-albumin-to-creatinine ratios in mg/g and mg/mmol by laboratory: the mess a CRO's data management and two central
-laboratories produce, none of it placed to be caught and none of it on the decisive step.
+Layer 1: an SDTM-style extract from two central laboratory hubs and the sites' local laboratories: unscheduled
+potassium rechecks, a repeat sample after a haemolysed one filed under the visit it replaces, potassium not reported
+on a haemolysed sample (the condition on the potassium result only), rechecks requested as a renal panel or a full
+panel, creatinine in umol/L at one hub and mg/dL at the other, potassium in mmol/L and mEq/L, glucose in mmol/L and
+mg/dL, urine albumin-to-creatinine ratios in mg/mmol and mg/g, local laboratories reporting eGFR by CKD-EPI 2009 or
+not at all; visits before week 24 taken outside their windows under their scheduled names; drug collected at the site
+when a dispensing visit was missed; dosing records running from one dispensing visit to the next; a disposition form
+not reopened when a patient restarted; adverse events whose change of severity opens a new record; concomitant
+medications in each country's spelling, with free-text doses and changes recorded as new rows; screening failures in
+the demographics, visits, laboratory and vital-sign tables. This is the mess a CRO's data management, two central
+laboratory hubs and fifty sites produce; none of it is placed to be caught and none of it is on the decisive step.
 
 Layer 2: estimation_fit: fitting the chronic eGFR slope over the stretch where the trajectory is chronic, after
 the one-off recovery that easing background diuretics from week 12 produced, then carrying it to month 36 from the
@@ -161,8 +184,8 @@ the trial's conduct that no sentence connects to the eGFR record.
 
 Analyst test: with every laboratory value, visit and protocol rule read correctly, a strong analyst fits the
 standard acute-plus-chronic eGFR model with the chronic phase from month 3, projects it to month 36 and files 40
-mg (the `Ends on:` answer); the week-52 change the phase 2b protocol names as its primary end point files 5 mg
-instead.
+mg (the `Ends on:` answer); the week-52 change the phase 2b protocol names as a secondary end point, and one
+slope through every visit, file 10 mg instead.
 
 Estimand: the phase 3 synopsis (`VMK-4410-301_synopsis.pdf`) files it: the difference between each dose and
 placebo in the change in eGFR (CKD-EPI 2021, central laboratory) from baseline to month 36, in every randomised
@@ -181,6 +204,273 @@ Lesson: a model learns that the chronic phase of an eGFR response begins where t
 a trial's conduct (here the background changes its protocol allowed only after twelve weeks) can push well past
 the conventional three months, and that a slope fitted over a transient is multiplied by every year it is carried;
 no build on file is in nephrology or separates a transient from a long-run rate inside one arm's trajectory.
+
+## Readability screen
+
+Rungs in ladder order; the six tests of `stumping` 2.1 per rung, verdict last.
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 0 the week-52 change against placebo, unprojected (files 10 mg) | the protocol lists the week-52 change as a secondary end point | the visit column | the trial's own end point is a default | none | none | one difference per arm | readable |
+| 0b one slope through every on-treatment visit, the total slope (files 10 mg) | the synopsis's change to month 36 invites a slope | none | a mixed model of every visit is a reflex | none | none | a regression line | readable |
+| 1 the field's two-slope model, chronic phase from month 3 (files 40 mg) | none in the pack; field practice puts the acute phase in the first three months | none | the convention is the reflex | none | none | a regression with a knot | readable |
+| 2 chronic phase from week 16, after the visible turn at week 12 (files 40 mg) | none | none | moving the knot to the first change seen is a reflex | none | none | a regression with a knot | readable |
+| 3 (decisive) chronic phase from week 24, after the recovery that easing diuretics from week 12 produced, carried from the level each arm settled at (files 20 mg) | no sentence says where the chronic phase starts or links any background change to eGFR; the protocol's concomitant-medication clause (doses unchanged to week 12) is one clause among the conduct rules and names no outcome | no column marks the recovery or the eased patients; diuretic changes sit in `cm.csv`, which the eGFR path never opens; the arm curves show a rise after week 12 that reads as the drug's benefit | the convention (month 3) files 40 mg; knotting at the first visible change (week 16) files 40 mg; one slope through everything files 10 mg | no control, corpus or published figure scores the doses | keys, units, duplicates, joins and fan-out see nothing | the window of a fitted slope over a non-linear trajectory, multiplied by three years | silent |
+
+The two reflexes land on different wrong doses (10 mg, 40 mg) and the decisive move reverses the step every
+correction above rung 0 takes (towards 40 mg): the held signature.
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | eGFR | the central laboratory's CKD-EPI 2021 eGFR from serum creatinine, reported beside each creatinine | recomputed from the reported creatinine; local-laboratory values added | same call and same figures (asserted: the recomputation is within 1 of the report on every central sample; no local eGFR sits at a scheduled visit) | the synopsis's eGFR definition (central laboratory, CKD-EPI 2021) |
+| SF2 | baseline | the mean of the screening and day-1 central values | day 1 only | same call and same figures (asserted) | the protocol's and the synopsis's baseline definition |
+| SF3 | how much higher eGFR would be than on placebo | the difference between the dose's and placebo's mean change from baseline | the difference in mean eGFR levels at month 36 | same call and same figures (asserted: every arm's baseline mean is within 0.1 of placebo's; levels read -0.02, 1.07, 3.15, 2.14) | converges; the synopsis files the change from baseline |
+| SF4 | after 36 months' treatment | on treatment at the month-36 visit, 156 weeks after randomisation | off treatment, four weeks after the last dose (the phase 2b's week-56 pattern) | 40 mg (the early fall reverses off treatment: 6.5 and 7.1 on 20 and 40 mg, asserted) | the synopsis ("the month-36 visit takes place while patients are taking study drug"); C4 |
+| SF5 | every randomised patient, as if each had stayed on the assigned dose | values from samples after a patient's last dose set aside for the patients who stopped study drug for good, read from the dosing record | values after stopping kept (treatment policy); stopping read from the disposition form | treatment policy: same call, 40 mg's figure a bin up (2.70) and 20 mg's at 3.49 (asserted); the disposition form: same call and same figures (asserted) | the synopsis's intercurrent-event strategy (values after a permanent stop set aside); C4 for treatment policy |
+| SF6 | each dose | 5, 10, 20 and 40 mg once daily as randomised | as treated | same call (asserted: every patient took the randomised dose on every dosing row) | the synopsis's population (as randomised) |
+| SF7 | the visits a slope is fitted on | scheduled on-treatment central visits by nominal week, the first sample of a visit | actual study days; unscheduled central values added | same figures (asserted) | the SAP (values analysed under the scheduled visit; the first sample of a visit) |
+| SF8 | the week-56 follow-up visit | off treatment, outside the on-treatment estimand | fitted with the on-treatment visits | 40 mg (asserted) | the synopsis's on-treatment estimand and the protocol (week 56 is four weeks after the last dose); C4 |
+| SF9 | the phase 3 the dose goes into | the phase 2b's population, dose, schedule and background rule carried forward | a phase 3 without the 12-week background rule | same call (the settled level and the chronic slope are the same; the recovery comes earlier) | the synopsis's population and background-therapy sections, which repeat the phase 2b's (asserted present) |
+| SF10 | 36 months | 156 weeks of treatment from randomisation | 3 x 365.25 days | same figures (asserted) | the synopsis's visit schedule (month 36 = week 156) |
+| SF11 | rounding | each difference computed unrounded, rounded once to a whole mL/min/1.73 m2 | arm means rounded to one decimal before the differences; to whole numbers first | one decimal: same call and same figures (asserted); whole numbers first scrambles the figures | the prompt's closing sentence rounds the differences |
+| SF12 | placebo | the phase 2b's placebo arm, on the same background therapy | none | same call | the protocol's design |
+| SF13 | the dose to take into the phase 3 | the dose with the largest difference from placebo at month 36 | the lowest dose within a margin of the best; a safety screen first | same call (20 mg is the largest and no safety rule in the pack bars it) | the prompt's question; the synopsis's dose-selection sentence names this trial's primary end point, the change in eGFR at month 36 (asserted present) |
+
+## Ladder
+
+Measured on the shipped pack (`generator/checks.py` asserts every row; `generator/figures.json` carries the values
+under `note.rungs`, `note.margins` and `note.corridor`). Figures are each dose's month-36 difference from placebo in
+mL/min/1.73 m2.
+
+| Rung | Construction | 5 mg | 10 mg | 20 mg | 40 mg | Winner | Margin |
+|---|---|---|---|---|---|---|---|
+| 0 default variant | the week-52 difference, no projection | -0.60 | -0.34 | -1.39 | -2.99 | 10 mg | 0.26 over 5 mg |
+| 0b | one slope through every on-treatment visit, carried to month 36 | -0.15 | 0.18 | -0.38 | -1.02 | 10 mg | 0.33 over 5 mg |
+| 1 default path | two-slope, chronic phase from week 12 (month 3) | 0.65 | 1.03 | 3.11 | 4.81 | 40 mg | 1.70 over 20 mg |
+| 2 sophisticated | two-slope, chronic phase from week 16, after the visible turn | 0.39 | 1.11 | 3.05 | 3.56 | 40 mg | 0.51 over 20 mg |
+| 3 decisive | chronic phase from week 24, after the recovery, from each arm's settled level | -0.01 | 1.05 | 3.04 | 2.04 | 20 mg | 0.99 over 40 mg |
+
+- **Position.** 20 mg is third of four on rung 0 (only 40 mg's larger fall is behind it), second on 0b, second on rungs
+  1 and 2, and first only at the decisive rung. Four candidates leave no fifth place; the margins are in
+  mL/min/1.73 m2 because the week-52 values are negative.
+- **Dominance.** Every correction above the week-52 view moves the call to 40 mg (4.81, then 3.56); only the decisive
+  move reverses it, by carrying the recovery as a level rather than a slope: 40 mg's figure falls by 2.8 from rung 1
+  (asserted at 2.5 or more), 20 mg's by 0.1.
+- **The knot at week 20,** at the last easing visit: 20 mg stays first (3.24 against 2.83) and 40 mg's figure is a bin
+  out; the 40 mg difference still rises 0.51 from week 20 to week 24, more than one and a half times its chronic rate
+  over four weeks (asserted). A fifth of the easing happens at that visit, so the knot sits inside the recovery.
+- **Corridor (C3).** From week 24 every estimator lands the golden figures (asserted within 0.4 of the whole number):
+  the knot at week 32 (0.02, 1.10, 2.98, 1.89), the mixed model with a random intercept and slope per patient (-0.07,
+  1.24, 3.02, 2.03), each patient's own line averaged (-0.20, 1.14, 3.02, 2.06), the pooled patient-level line on
+  actual study days (-0.04, 1.07, 3.08, 2.07) and the week-52 difference plus two years of the chronic slope (0.02,
+  1.08, 3.08, 2.00).
+- **Worth on the graded quantity.** From rung 1 the decisive move shifts 40 mg by 2.8 and carries the call; from rung 2
+  it shifts 40 mg by 1.5. Rungs 0 and 0b file 10 mg with every drug figure one to four whole numbers off.
+- **Grid.** Two binary moves (project at all; start the chronic phase after the recovery) and the knot's position:
+  no projection, 10 mg; one slope through every visit, 10 mg; knots at weeks 4, 12 and 16, 40 mg; the knot at week
+  20, 20 mg with 40 mg's figure a bin out; knots at weeks 24 and 32 and the within-patient estimators, the golden.
+  Lower rungs at the golden cell: levels for changes, the disposition form for the dosing record, one-decimal arm
+  means, actual days and unscheduled values leave every figure in its bin (asserted); the week-56 visit fitted in or
+  an off-treatment reading moves the call to 40 mg (SF4, SF8); treatment policy keeps the call with 40 mg a bin up
+  (SF5).
+- **Flip condition.** 40 mg overtakes 20 mg at month 36 only if its chronic benefit over placebo exceeded 20 mg's by
+  more than 0.7 mL/min/1.73 m2 a year (against 0.3 measured: 2.5 and 2.2 a year).
+- **Figures mid-bin.** 3.04, 2.04, 1.05 and -0.01 against whole-number bins, each 0.45 or more from an edge.
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | every randomised patient, by randomised arm, values after a permanent stop set aside | filed (the synopsis's estimand); SF5, SF6 asserted |
+| 2 | Unit of account | a patient's eGFR at a visit; the arm mean of changes from baseline | filed (the synopsis); one central eGFR per patient-visit after duplicates collapse (asserted) |
+| 3 | Attribution window | on-treatment visits to week 52; the week-56 follow-up outside | filed; SF8 (C4) |
+| 4 | As-of dating | the phase 2b database as locked, every visit final | C1: the extract's last collection date precedes the lock date; no visit after week 56 |
+| 5 | Version basis | the central laboratory's final results | C1: no corrected or cancelled eGFR result on the main path (asserted) |
+| 6 | Denominator | the arm's patients with a value at each visit | C1: the mixed model, each patient's own line and the pooled patient-level line land the golden figures (asserted) |
+| 7 | Weighting | arm means of patients' changes, patients equal within a visit | C1 (asserted across the mixed model, arm means and per-patient lines; the dropout streams were drawn so the incomplete patients do not pull the late visit means) |
+| 8 | Window length | where the chronic phase starts | the data's structure: the easing runs from the week-12 visit to the week-20 visit and the recovery to about week 24; knots at weeks 24 and 32 and the within-patient estimators give the golden figures (C3 corridor, asserted); knots at weeks 4, 12 and 16 carry the recovery and file 40 mg; the knot at week 20 keeps 20 mg with 40 mg's figure a bin out, the 40 mg difference still rising from week 20 to 24 (asserted) |
+| 9 | Boundary inclusivity | visit windows | C1: from week 24 every visit is inside its window; visits before week 24 taken outside their windows, kept or dropped, leave every figure in its bin (asserted) |
+| 10 | Rounding path | once, at the end | filed in the prompt; SF11 asserted |
+| 11 | Tie-break | none | C1: the four figures are distinct whole numbers |
+| 12 | Maturity and censoring | every patient's 52 weeks complete at the lock | C1 |
+| 13 | Order of operations | changes from baseline, then arm means, then the projection | C1: projecting each patient and averaging lands in the same bins (asserted) |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | repeat central samples at a visit (the repeat after a haemolysed sample, filed under its visit) | filed: the SAP's first sample of a visit; averaging the repeats, or dropping the haemolysed sample for its repeat, leaves every figure in its bin (asserted) |
+| 16 | Identity normalisation | subject numbers across the laboratory and EDC extracts | C1: the laboratory's subject numbers equal the EDC's for every randomised patient |
+| 17 | Netting against gross | none on the main call | C1 |
+| 18 | Dimensional units | eGFR in mL/min/1.73 m2; creatinine in umol/L and mg/dL by laboratory | C1 on the main path (eGFR is reported in one unit); creatinine units matter only to a solver recomputing eGFR (SF1) |
+| 19 | Code and status semantics | central against local laboratory, scheduled against unscheduled | dictionary semantics; SF1, SF7 |
+| 20 | Integerisation | none | C1 |
+| 21 | Clause scope | the 12-week background rule covers diuretics, RAS blockers and SGLT2 inhibitors in both studies | filed (the protocol and the synopsis); SF9 |
+| 22 | Forward window contents | months 13 to 36 of a phase 3 not yet run | the chronic slope from the phase 2b's weeks 24 to 52 carried forward under the synopsis's identical population and conduct; the estimand is the phase 3's own |
+
+## Literal reader
+
+Executed word for word (the prompt; the synopsis's estimand, eGFR definition, intercurrent-event strategy and
+on-treatment month-36 visit; the protocol's design, visit schedule, windows, baseline and conduct sections; the SAP's
+visit conventions): each dose's figure is the difference between its mean change in central CKD-EPI 2021 eGFR from
+baseline and placebo's at month 36 on treatment, every randomised patient counted as randomised and values after a
+permanent stop set aside. The phase 2b records 52 weeks; the literal estimand at week 156 needs a projection, and the
+field's projection carries each arm's chronic slope from the level the arm has settled at. The record turns linear
+only after week 24 in the 20 and 40 mg arms (the easing visits run from week 12 to week 20 and the recovery follows
+them), so the chronic slope from week 24 or 32, by arm means, each patient's own line or a mixed model, returns 20 mg
+at 3, 40 mg at 2, 10 mg at 1 and 5 mg at 0; a slope started at month 3 or week 16 is an easier method on the same
+literal estimand, never another reading of a filed sentence. The level reading of the prompt's "how much higher eGFR
+would be" converges on the same figures (SF3).
+
+## Oracles
+
+- The protocol's planned sample size and the randomisation counts tie under every basis.
+- The central laboratory's reported eGFR and its recomputation from creatinine tie within 1 under every basis (SF1).
+- No phase 2b results report, published figure, investigator brochure table or corpus ships; nothing states a
+  dose's eGFR effect, slope or projection, and no document names a slope, knot or phase window (asserted on the
+  protocol, the SAP and the synopsis).
+- `vs.csv` (blood pressure, pulse and weight) and `pc.csv` (trough concentrations) are distractors; neither ranks the
+  doses on eGFR nor reproduces a figure, and deleting either leaves the golden and every ask unchanged (asserted).
+- The asks' tables (potassium, adverse events, exposure, discontinuation) never touch eGFR.
+
+None ties only under the golden.
+
+Leak sweep (`leak.py --asof 2026-10-12`, REVIEW, no LEAK), one line per REVIEW:
+- Sweep 3, the protocol and the synopsis carry words of the call (VMK-4410, phase 3, months, treatment, eGFR,
+  placebo): the study's own nouns; neither names a dose as the choice or states a figure.
+- Sweep 4, the protocol (chronic, change, window, protocol, diuretics, record), the synopsis (chronic, change, window,
+  diuretics, clinical, laboratory) and the SAP (change, protocol, laboratory, patient, repeat, second): "chronic" is
+  the disease's name, "window" the visit windows, "diuretics" the twelve-week background-therapy clause both studies
+  carry; no document names a slope, knot or phase (asserted in `checks.py`).
+
+Duplicate guard: `guard.py heart` WARN (question form "which" against task501); `guard.py surface` promotes task123
+on the card axes it shares (time gap, G4, method_or_model_selection), the overlap the card's differentiation line
+answers at registration; task123 is retired and failed to stump, and the drivers sit at 0.06.
+
+## Ask sheet
+
+Two asks, 20 figures, in `VMK-4410_phase2b_tables.xlsx`. Each is a component of the dose-selection case the eGFR
+call does not turn on (H18: a safety or exposure measure every candidate dose carries), on rows the call never
+reads (potassium and adverse events, dosing and disposition).
+
+**Ask A: hyperkalaemia by arm** (10 figures: for placebo and each dose, how many patients had a serum potassium above
+5.5 mmol/L on treatment, and how many hyperkalaemia adverse events began on treatment).
+- Home: the safety component every dose of an aldosterone synthase inhibitor carries; the call does not turn on it.
+- Use: the dose decision's safety table, the first thing the chief medical officer reads after the efficacy figure.
+- Primary device, patients (D5, a silently partial extract): potassium measured at local laboratories (an
+  unscheduled repeat after a raised central value) sits in the same extract beside the central results, as rows the
+  site's own laboratory reported (named in `LBNAM`, no other marker) that also carry creatinine, sodium and glucose,
+  most of them normal; the main call's estimand is central only, and a solver who carries that filter over misses the
+  patients whose only high potassium was measured locally (2, 2, 2, 5 and 8 by arm, placebo included).
+- Primary device, events (D6, a ledger at another grain than its name): the EDC opens a new adverse-event row when an
+  event's severity changes and links the rows of one event by a group number (`AEGRPID`, filled on every event, one
+  row or several); counting rows counts an event whose severity changed twice or more (1, 1, 1, 2 and 16 extra
+  records by arm).
+- Hazards: the two preferred terms the SAP's adverse events of special interest list for hyperkalaemia
+  (Hyperkalaemia, Blood potassium increased), the SAP's on-treatment period (first dose to last dose, the day-1 sample
+  a baseline value) beside its treatment-emergent window, partial onset dates imputed by the SAP's rule, potassium in
+  mEq/L at the Spanish sites' local laboratories (equal to mmol/L), and post-treatment values at the week-56 visit.
+- Path: `lb.csv`, `ae.csv`, `ex.csv`, `dm.csv`, the SAP (5 files; USUBJID, LBTESTCD, LBSPEC, LBSTRESN, LBSTRESU,
+  LBDTC, LBNAM, AEDECOD, AESTDTC, AEGRPID, AESEV, EXSTDTC, EXENDTC, ARM).
+- Stops: central only (patients short in every arm); rows counted (events over in every arm); both preferred terms
+  missed (events and patients short); the treatment-emergent window ignored (screening events counted); the golden.
+- Realism: EDC systems record a change in an event's severity as a new record linked to the first; local potassium
+  checks after a dose change are entered on the local-laboratory form of the same extract.
+
+**Ask B: exposure and discontinuation by arm** (10 figures: for placebo and each dose, how many patients stopped study
+drug for good before their week-52 visit, and the arm's total years on study drug before that visit, to one decimal).
+- Home: the tolerability and exposure components every dose carries; the call does not turn on them.
+- Use: how much drug each dose's evidence rests on, and how many patients a dose lost.
+- Primary device, stopping (D2, the record is the latest accepted, not the latest delivered): a site records
+  "STUDY DRUG DISCONTINUED" in the disposition form when a patient stops, and a few patients restart after a
+  temporary stop the site first entered as permanent; the disposition row stays and the dosing record shows tablets
+  taken after its date (2, 2, 2, 2 and 1 by arm). Counting disposition rows overstates; only the dosing record says
+  who stopped for good.
+- Primary device, years (D6 and D9, an interval's quantity on every line it covers): each dosing row runs from one
+  dispensing visit to the next with both dates inclusive, so consecutive rows share their boundary day; summing row
+  lengths counts each dispensing day twice (every arm, about 1.6 patient-years an arm). Interruptions appear as gaps
+  between rows.
+- Hazards: the "before their week-52 visit" boundary (the visit day itself excluded); drug collected at the site
+  when a dispensing visit was missed (an unscheduled dispensing row); patients who left the study before week 52.
+- Path: `ex.csv`, `ds.csv`, `sv.csv` (visit dates), `dm.csv`, the SAP's exposure definition (5 files; USUBJID,
+  EXSTDTC, EXENDTC, EXDOSE, DSSCAT, DSDECOD, DSSTDTC, VISIT, SVSTDTC, ARM).
+- Stops: disposition rows counted (stopping over); row lengths summed (years over); the visit day included (years
+  over by a day a patient); the golden.
+- Realism: EDC exposure logs record each dispensing interval visit to visit; disposition forms are not reopened when
+  a patient restarts.
+
+**Main population zero-counts (asserted by count).** On the main call's rows (central eGFR at the scheduled visits,
+screening to week 52): local-laboratory eGFR rows 0; eGFR results not done, cancelled or corrected 0. Split adverse-event
+rows, restarts after a disposition entry and shared-boundary dosing rows are not read by the main call. The patients
+who restarted after a disposition entry keep every on-treatment value; reading stopping from the disposition form
+instead leaves every figure in its bin (SF5, asserted).
+
+**Device mass on the shipped pack (golden against the device's natural read, placebo, 5, 10, 20, 40 mg).**
+
+| Device | Golden | Natural read | Arms moved |
+|---|---|---|---|
+| A patients: local potassium (D5) | 2, 4, 10, 29, 68 | central only 0, 2, 8, 24, 60 | all five |
+| A events: a new record per change of severity (D6) | 1, 2, 8, 28, 80 | records 2, 3, 9, 30, 96 | all five |
+| B stopping: the disposition form not reopened (D2) | 5, 6, 7, 9, 10 | form 7, 8, 9, 11, 11 | all five |
+| B years: bottle periods sharing their boundary day (D6, D9) | 147.1, 148.4, 145.7, 146.1, 144.7 | summed periods 148.7, 150.0, 147.3, 147.7, 146.3 | all five |
+
+**Hazard table.**
+
+| Hazard | Asks moved | Per-ask effect on the shipped pack |
+|---|---|---|
+| the AESI preferred terms | A events | Hyperkalaemia alone: 0, 1, 2, 19, 54 |
+| the on-treatment window | A events | three pre-treatment events (placebo, 20 mg, 40 mg) counted if the window is dropped; no event begins in the 30 days after a last dose, so 'on treatment' and treatment-emergent agree (asserted) |
+| the day-1 and week-56 samples | A patients | none on this pack: no day-1 value above 5.5 and no patient whose only value above 5.5 is at week 56 (asserted counts 0) |
+| local mEq/L units | A patients | none (equal to mmol/L) |
+| the week-52 visit day | B years | the visit day included: 149.1, 150.4, 147.7, 148.1, 146.7 |
+
+**Referee.** The adverse-event record of each restart ("drug interrupted") and the trough concentrations at later
+visits corroborate the dosing record against the disposition form; no ask needs them to be computed.
+
+| Ask | Figures | Cracker (lands the call, runs the battery, executes every filed rule) |
+|---|---|---|
+| A patients with potassium above 5.5 (placebo, 5, 10, 20, 40 mg) | 5 | miss |
+| A hyperkalaemia adverse events (placebo, 5, 10, 20, 40 mg) | 5 | miss |
+| B patients who stopped for good (placebo, 5, 10, 20, 40 mg) | 5 | miss |
+| B years on study drug (placebo, 5, 10, 20, 40 mg) | 5 | miss |
+
+The cracker keeps the central filter it built for the call (Ask A patients), counts adverse-event records after
+applying the SAP's terms and window (Ask A events), counts the disposition form's discontinuations (Ask B stopping)
+and sums dosing-record lengths to the day before the week-52 visit (Ask B years); each device moves every arm
+(asserted per arm in `checks.py`).
+
+Mirror leakage: 10 per cent of ask weight at most (the mirror stops at rung 1, files 40 mg and runs the same ask paths
+as the cracker; with every device moving every arm it keeps no ask figure on the shipped pack, and the tenth is the
+margin for a regrade).
+
+Pair ceiling: 31 (cracker 45 with no ask kept; mirror 5 + 7 + 5.5 = 17.5 at a tenth of the ask weight).
+
+**Stage 4 (2026-10-13).** Leak reader (isolated, medium): nothing names the decisive step, ranks the doses, exists
+only to help or reads as the answer; no filed sentence names a method, slope, knot or window for the projection; the
+main answer is an analytical choice. Its two notes were fixed in the generator: the synopsis's dose-selection
+sentence now names "this trial's primary end point, the change in eGFR from baseline to the month-36 visit" (the
+phase 2b's primary is UACR), and recheck requisitions vary between a renal panel and a full panel, so the test counts
+differ. Determinism judge (isolated thread from the agent's brief, medium): DETERMINISTIC, APPROVE; Gate G pass
+(forecasting mechanism, analytical_non_defect, no surface-read dependency, no sole defect); Gate H domain pass,
+layers pass, decisive step analytical; every graded figure reproduced (3.04, 2.04, 1.05, -0.01; the four tables).
+Its low findings: the window start (the data identify week 24: residual sums of squares of the 40 mg line 0.593 from
+week 12, 0.167 from 16, 0.073 from 20, 0.014 from 24 and 0.013 from 32); the write-up's diuretic counts, which
+depended on a counting rule, are cut from `submission.md` and kept in the memo with the rule stated; dropping
+haemolysed samples moved 5 mg to the edge, fixed by filing every repeat sample under the visit it replaces and
+carrying the haemolysis condition on the potassium result only (the variant now lands 0.24, 1.17, 3.08, 2.40,
+asserted). The reader re-ran on the changed documents.
+
+**Pre-ship check, the 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each dose's
+eGFR difference from placebo at month 36 on the phase 3 synopsis's estimand, estimated by nephrology's acute and
+chronic eGFR slope analysis on a randomised trial's repeated central eGFR; with another field's nouns there is no
+haemodynamic fall, no background diuretic held for twelve weeks and then eased, no recovery of a volume-related fall
+and no chronic slope to carry, so the swap breaks (judge: domain pass). Two layers: the Layer 1 mess (two laboratory
+hubs and local laboratories, units, repeat samples, out-of-window visits before week 24, bottle-period dosing
+records, a disposition form not reopened, severity changes as new records, country spellings of medications) is
+neutral on the call by assertion (R2: each item mishandled leaves every figure in its bin), and Layer 2, where the
+chronic phase starts, decides it (R3a files 40 mg on the clean pre-extract measurements with every filed rule
+applied, R3b the decisive step alone files 20 mg). Decisive step analytical: the month-3 two-slope route files 40
+mg and the week-52 difference and the total slope file 10 mg with every field read and every rule executed (judge:
+decisive_step analytical, analytical_non_defect); nothing planted, no decoy, no certified replay, no filed slope
+method.
 
 ## Tried and rejected
 
@@ -432,6 +722,25 @@ no build on file is in nephrology or separates a transient from a long-run rate 
   through a model of exposure.
 - Re-root candidate, HbA1c lag (a 16-week dose-ranging read before glycation catches up): dropped on the swap
   test; the decisive move, the steady state of a lagged average, reads the same with a trailing business metric.
+- Stage 3, 2026-10-13, the arms calibrated to the arm-mean line alone: the mixed model with a random intercept and
+  slope per patient, the field's own slope estimator, read 10 mg about 0.4 higher on every measurement draw, because
+  the few patients who left or stopped in an arm pulled its later visit means. Fixed in the data: the dropout, stop
+  and potassium streams are drawn so the arm-mean line and the within-patient estimators agree, then the measurement
+  draw so every estimator from week 24 sits in the golden's bins.
+- Stage 3, the claim that a knot anywhere from week 24 to week 32 gives the golden figures on any draw: a slope from
+  three visits carried to month 36 multiplies visit noise about sixfold, so the corridor is a property of the
+  shipped draw, asserted, never of the design alone.
+- Stage 3, treatment policy as a same-figures fork (SF5): values after a permanent stop show the early fall reversed
+  and lift the late visit means; on the shipped draw 40 mg's figure moves a bin. SF5 is closed by the synopsis's
+  intercurrent-event strategy (C4), the call unchanged.
+- Stage 3, a chance baseline imbalance: a 40 mg arm whose baseline sat 0.85 below placebo's moved the level reading
+  of the prompt's "how much higher eGFR would be" a bin. The randomisation's block order is drawn so every arm's
+  baseline sits within 0.1 of placebo's, and the level and change readings converge (SF3).
+- Stage 3, visits outside their windows at any week: dropping the few late ones from weeks 24 to 52 moved 40 mg's
+  figure across an edge. Sites keep to the window from week 24 (out-of-window visits fall before it), so the mess
+  cannot reach the decisive fit.
+- Stage 3, clinic visits on weekends and a missed dispensing visit leaving one bottle for seven months: dates moved to
+  the nearest weekday and drug collected at the site on the missed visit's day.
 
 ## Architecture v2 record (spent 2026-10-13)
 

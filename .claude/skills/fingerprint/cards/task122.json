@@ -1,143 +1,144 @@
 {
-  "task": "task122",
-  "architecture": "v3 (re-root 2026-10-13 under the 10/10 rules: the phase 3 dose of a kidney drug read on the eGFR slope after the background-diuretic recovery)",
-  "drawn": "2026-10-13",
-  "slot_note": "biomedical-clinical-research x experiment-causal, a pairing never built; re-rooted after v2 (a Dutch resale platform's carousel test slot) failed under the 10/10 rules; the DS01 seed's world, decision and quantity are all dropped",
-  "domain": "biomedical-clinical-research",
-  "client_domain": "biomedical-clinical-research",
-  "subdomain": "longitudinal-outcomes-repeated-measures",
-  "niche": "a Copenhagen biotech choosing which of four once-daily doses of its aldosterone synthase inhibitor goes into the phase 3 kidney trial, judged on the eGFR difference from placebo after 36 months' treatment, from a 52-week multinational phase 2b in albuminuric chronic kidney disease whose protocol held background diuretics, RAS blockers and SGLT2 inhibitors unchanged for the first 12 weeks",
-  "objective": "experiment-causal",
-  "shape": "11",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "time"
+ "task": "task122",
+ "architecture": "v3 (re-root 2026-10-13 under the 10/10 rules: the phase 3 dose of a kidney drug read on the eGFR slope after the background-diuretic recovery)",
+ "drawn": "2026-10-13",
+ "slot_note": "biomedical-clinical-research x experiment-causal, a pairing never built; re-rooted after v2 (a Dutch resale platform's carousel test slot) failed under the 10/10 rules; the DS01 seed's world, decision and quantity are all dropped",
+ "domain": "biomedical-clinical-research",
+ "client_domain": "biomedical-clinical-research",
+ "subdomain": "longitudinal-outcomes-repeated-measures",
+ "niche": "a Copenhagen biotech choosing which of four once-daily doses of its aldosterone synthase inhibitor goes into the phase 3 kidney trial, judged on the eGFR difference from placebo after 36 months' treatment, from a 52-week multinational phase 2b in albuminuric chronic kidney disease whose protocol held background diuretics, RAS blockers and SGLT2 inhibitors unchanged for the first 12 weeks",
+ "objective": "experiment-causal",
+ "shape": "11",
+ "decision_type": "pick_one_of_n",
+ "answer_unit": "named_option",
+ "answer": "Take VMK-4410 20 mg into the phase 3: after 36 months' treatment eGFR would be 3 mL/min/1.73 m2 higher on it than on placebo (40 mg 2, 10 mg 1, 5 mg 0).",
+ "answer_source": "submission.md block 1; golden/VMK-4410_phase3_dose_recommendation.pdf",
+ "gap": [
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G4",
+  "G13",
+  "G16"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "decomposition_attribution",
+ "decisive_rule_filed": true,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "other",
+ "stakeholder_role": "the head of clinical development, who recommends the phase 3 dose to the chief medical officer, who signs it for the end-of-phase-2 meeting package (the prompt names no one)",
+ "role_family": "other",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "lb.csv (the phase 2b laboratory results extract)",
+  "rows": 69405,
+  "entity": "one laboratory result for one patient at one visit: test, specimen, laboratory, original and standard units, collection date and time, visit, and the eGFR the central laboratory reports beside each serum creatinine",
+  "grain": "patient x visit x test",
+  "source": "synthetic"
+ },
+ "forum": "line_manager_or_team",
+ "forcing_event": "statutory_or_regulatory_filing",
+ "org_family": "other",
+ "world": {
+  "geography": "Denmark (a Copenhagen-area clinical-stage biotech; the phase 2b ran at sites in Denmark, Sweden, Germany, Poland, Spain and the United Kingdom)",
+  "currency": "DKK",
+  "org_type": "clinical-stage biotech developing an oral aldosterone synthase inhibitor for chronic kidney disease",
+  "invented_names": [
+   "Varnmark Therapeutics",
+   "VMK-4410"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G4",
+  "people": [
+   "Benedicte Laursen",
+   "Nicolaj Lassen",
+   "Kirsten Eriksen",
+   "Lene Dam"
+  ]
+ },
+ "deliverables": [
+  "VMK-4410_phase3_dose_recommendation.pdf",
+  "VMK-4410_phase2b_tables.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The long-run rate a three-year projection carries is read from the stretch after an early disturbance settles, and here part of the early fall is undone by a background change the protocol allowed only after a fixed opening period, so a long-run rate started at the field's conventional point includes that one-off recovery and carries it forward for years, crediting most the arms that fell and recovered most, while the rate taken after the recovery has run its course ranks a middle option first.",
+ "driver_concrete": "Patients whose eGFR fell most on 20 and 40 mg of VMK-4410 had their loop diuretics eased only after week 12, because the protocol held background therapy unchanged until then, and their eGFR came part of the way back over the following weeks; the field's two-slope model with the chronic phase from month 3 reads that recovery as a slower chronic decline and carries it to month 36, which puts 40 mg first, while the chronic slope taken from week 24, after the recovery, from the level each arm settled at, puts 20 mg first and 40 mg second.",
+ "stump": "A competent solver fits each dose's eGFR with the field's two-slope model, an acute effect to month 3 and a chronic slope after it, carries the chronic slope to month 36 and files 40 mg at about 5 mL/min/1.73 m2 above placebo; the step that lands it there is starting the chronic slope at month 3, when the patients whose eGFR fell most on 20 and 40 mg had their loop diuretics eased only from week 12, at the week-12, 16 and 20 visits, and recovered part of the fall over the following weeks, so a slope from month 3 carries that one-off recovery forward for three years; taken from week 24, after the recovery, the slope leaves 20 mg furthest above placebo at month 36 (3) and 40 mg at 2.",
+ "stump_class": "analytical",
+ "analyst_test": "With every laboratory value, visit and protocol rule read correctly, a strong analyst fits the standard acute-plus-chronic eGFR model with the chronic phase from month 3, projects it to month 36 and recommends 40 mg at about 5 mL/min/1.73 m2 above placebo; the week-52 difference the phase 2b protocol names as a secondary end point, and one slope through every visit, recommend 10 mg instead; neither route separates the recovery after background diuretics were eased from week 12 from the long-run slope.",
+ "domain_test": "The deciding quantity is each dose's eGFR difference from placebo after 36 months' treatment, which nephrology estimates by separating the acute haemodynamic fall from the chronic eGFR slope and projecting the slope; the call turns on where the chronic phase starts once background diuretics were eased after week 12, a kidney-physiology and trial-protocol fact that has no meaning with another field's nouns (sales, test scores, megawatts).",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:egfr-chronic-slope-after-diuretic-recovery",
+ "layer1": [
+  "an SDTM-style laboratory extract from two central laboratory hubs and the sites' local laboratories, with scheduled, unscheduled and repeat samples, specimen-condition comments and potassium not reported on a haemolysed sample",
+  "serum creatinine, potassium and glucose reported in the units each laboratory uses (umol/L and mg/dL; mmol/L and mEq/L; mmol/L and mg/dL) beside standardised results, and local laboratories reporting eGFR by CKD-EPI 2009 or not at all",
+  "visits before week 24 taken outside their protocol windows under their scheduled names, and an unscheduled visit numbering that sorts between scheduled visits",
+  "a dosing record of bottle periods from one dispensing visit to the next, with interruptions as gaps and drug collected at the site when a dispensing visit was missed, beside a disposition form not reopened when a patient restarted",
+  "adverse events whose change of severity opens a new record, tied by a group identifier, with partial onset dates",
+  "concomitant medication records in each country's spelling, with free-text doses and changes recorded as new rows",
+  "urine albumin and creatinine with the ratio in mg/mmol at one hub and mg/g at the other, and screening failures in the demographics, visits, laboratory and vital-sign tables"
+ ],
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task123": "task123 splits totals each unit records over its own reading interval onto fixed calendar periods; here a fitted long-run eGFR slope has to start after a one-off recovery that easing background diuretics after week 12 produced, a trajectory decomposition with no interval allocation"
+ },
+ "lineage": [
+  {
+   "architecture": "v1 (first draft, library fill off the slate)",
+   "fate": "drafted 2026-10-08, never registered, redrawn at checkpoint A: the decisive library-fill clause is a written rule a strong solver follows once no proposal qualifies (measured trap #9 alone scored 0.58 in its nearest exemplar, so the stump leaned on lower rungs firing first, and the nearest dead shape is argmax under a stated rule over a filed candidate list, task36), and the honest Gate G, binding_constraint, collided on (objective, G11, binding_constraint) with task106 and 13 older builds and passed only after the card relabelled it method_or_model_selection",
+   "domain": "product-analytics",
+   "objective": "experiment-causal",
+   "gap": [
+    "objective",
+    "rule",
+    "population"
+   ],
+   "pattern": [
+    "none",
+    "B"
+   ],
+   "generators": [
+    "G11",
+    "G16",
+    "G2"
+   ],
+   "gate_g": "binding_constraint",
+   "decision_type": "pick_one_of_n",
+   "driver": "Every candidate put forward fails a different one of several filed conditions once each condition is read at the grain the governing document names and lift is taken from the only estimator that reproduces a closed corpus of past outcomes, and a filed fallback then widens the choice to earlier registered candidates that nothing has scored on the current record, so the one candidate that clears every condition ranks fourth on the natural estimate and is reached only by scoring each registered specification from scratch.",
+   "drawn": "2026-10-08"
+  },
+  {
+   "architecture": "v2 (product analytics carousel test slot, harden loop 1)",
+   "drawn": "2026-10-09",
+   "fate": "spent 2026-10-13: registered and built 2026-10-09, retired 2026-10-10 after a Gate G send-back and never submitted, then FAILED_TO_STUMP in perssathya's backlog; under the 10/10 rules its decisive step was a field read (the logger's in-session order column against the charter's count) and a filed charter condition, and its estimator was pinned by an archive of certified tests (a validated decoy), so the slot is re-rooted into a new domain, decision and quantity",
+   "domain": "product-analytics",
+   "subdomain": "experimentation-measurement",
+   "objective": "experiment-causal",
+   "gap": [
+    "time",
+    "rule",
+    "population"
+   ],
+   "pattern": [
+    "none",
+    "B"
+   ],
+   "generators": [
     "G13",
-    "G16"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
-  "decisive_rule_filed": true,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "other",
-  "stakeholder_role": "the head of clinical development, who recommends the phase 3 dose to the chief medical officer, who signs it for the end-of-phase-2 meeting package (the prompt names no one)",
-  "role_family": "other",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "lb.csv (the phase 2b laboratory results extract)",
-    "rows": 0,
-    "entity": "one laboratory result for one patient at one visit: test, specimen, laboratory, original and standard units, collection date and time, visit, and the eGFR the central laboratory reports beside each serum creatinine",
-    "grain": "patient x visit x test",
-    "source": "synthetic"
-  },
-  "forum": "line_manager_or_team",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "other",
-  "world": {
-    "geography": "Denmark (a Copenhagen-area clinical-stage biotech; the phase 2b ran at sites in Denmark, Sweden, Germany, Poland, Spain and the United Kingdom)",
-    "currency": "DKK",
-    "org_type": "clinical-stage biotech developing an oral aldosterone synthase inhibitor for chronic kidney disease",
-    "invented_names": [
-      "Varnmark Therapeutics",
-      "VMK-4410"
-    ],
-    "people": [
-      "Benedicte Laursen",
-      "Nicolaj Lassen",
-      "Kirsten Eriksen",
-      "Lene Dam"
-    ]
-  },
-  "deliverables": [
-    "VMK-4410_phase3_dose_recommendation.pdf",
-    "VMK-4410_phase2b_tables.xlsx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The long-run rate a three-year projection carries is read from the stretch after an early disturbance settles, and here part of the early fall is undone by a background change the protocol allowed only after a fixed opening period, so a long-run rate started at the field's conventional point includes that one-off recovery and carries it forward for years, crediting most the arms that fell and recovered most, while the rate taken after the recovery has run its course ranks a middle option first.",
-  "driver_concrete": "Patients whose eGFR fell most on 20 and 40 mg of VMK-4410 had their loop diuretics eased only after week 12, because the protocol held background therapy unchanged until then, and their eGFR came part of the way back over the following weeks; the field's two-slope model with the chronic phase from month 3 reads that recovery as a slower chronic decline and carries it to month 36, which puts 40 mg first, while the chronic slope taken from week 24, after the recovery, from the level each arm settled at, puts 20 mg first and 40 mg second.",
-  "stump": "A competent solver fits each dose's eGFR with the field's two-slope model, an acute effect to month 3 and a chronic slope after it, carries the chronic slope to month 36 and files 40 mg; the step that lands it there is starting the chronic slope at month 3, when the patients whose eGFR fell most on 20 and 40 mg had their diuretics eased only after week 12 and recovered part of the fall over the next weeks, so the slope from month 3 carries that one-off recovery forward for three years, and taken from week 24 the slope leaves 20 mg furthest above placebo at month 36.",
-  "stump_class": "analytical",
-  "analyst_test": "With every laboratory value, visit and protocol rule read correctly, a strong analyst fits the standard acute-plus-chronic eGFR model with the chronic phase from month 3, projects it to month 36 and recommends 40 mg (the week-52 change the phase 2b protocol names as its primary endpoint recommends 5 mg instead); neither route separates the diuretic recovery after week 12 from the long-run slope.",
-  "domain_test": "The deciding quantity is each dose's eGFR difference from placebo after 36 months' treatment, which nephrology estimates by separating the acute haemodynamic fall from the chronic eGFR slope and projecting the slope; the call turns on where the chronic phase starts once background diuretics were eased after week 12, a kidney-physiology and trial-protocol fact that has no meaning with another field's nouns (sales, test scores, megawatts).",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:egfr-chronic-slope-after-diuretic-recovery",
-  "layer1": [
-    "an SDTM-style laboratory extract with central and local laboratories, scheduled, unscheduled and repeat samples, and specimen-condition comments",
-    "serum creatinine and potassium reported in the units each laboratory uses (umol/L and mg/dL; mmol/L and mEq/L) beside standardised results",
-    "visits taken outside their protocol windows and an unscheduled visit numbering that sorts between scheduled visits",
-    "a dosing record with interruptions and restarts beside a disposition record of permanent discontinuation",
-    "concomitant medication records with free-text doses and changes recorded as new rows",
-    "urine albumin and creatinine reported by spot sample with the ratio in mg/g at some laboratories and mg/mmol at others"
-  ],
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task123": "task123 splits totals each unit records over its own reading interval onto fixed calendar periods; here a fitted long-run eGFR slope has to start after a one-off recovery that easing background diuretics after week 12 produced, a trajectory decomposition with no interval allocation"
-  },
-  "lineage": [
-    {
-      "architecture": "v1 (first draft, library fill off the slate)",
-      "fate": "drafted 2026-10-08, never registered, redrawn at checkpoint A: the decisive library-fill clause is a written rule a strong solver follows once no proposal qualifies (measured trap #9 alone scored 0.58 in its nearest exemplar, so the stump leaned on lower rungs firing first, and the nearest dead shape is argmax under a stated rule over a filed candidate list, task36), and the honest Gate G, binding_constraint, collided on (objective, G11, binding_constraint) with task106 and 13 older builds and passed only after the card relabelled it method_or_model_selection",
-      "domain": "product-analytics",
-      "objective": "experiment-causal",
-      "gap": [
-        "objective",
-        "rule",
-        "population"
-      ],
-      "pattern": [
-        "none",
-        "B"
-      ],
-      "generators": [
-        "G11",
-        "G16",
-        "G2"
-      ],
-      "gate_g": "binding_constraint",
-      "decision_type": "pick_one_of_n",
-      "driver": "Every candidate put forward fails a different one of several filed conditions once each condition is read at the grain the governing document names and lift is taken from the only estimator that reproduces a closed corpus of past outcomes, and a filed fallback then widens the choice to earlier registered candidates that nothing has scored on the current record, so the one candidate that clears every condition ranks fourth on the natural estimate and is reached only by scoring each registered specification from scratch.",
-      "drawn": "2026-10-08"
-    },
-    {
-      "architecture": "v2 (product analytics carousel test slot, harden loop 1)",
-      "drawn": "2026-10-09",
-      "fate": "spent 2026-10-13: registered and built 2026-10-09, retired 2026-10-10 after a Gate G send-back and never submitted, then FAILED_TO_STUMP in perssathya's backlog; under the 10/10 rules its decisive step was a field read (the logger's in-session order column against the charter's count) and a filed charter condition, and its estimator was pinned by an archive of certified tests (a validated decoy), so the slot is re-rooted into a new domain, decision and quantity",
-      "domain": "product-analytics",
-      "subdomain": "experimentation-measurement",
-      "objective": "experiment-causal",
-      "gap": [
-        "time",
-        "rule",
-        "population"
-      ],
-      "pattern": [
-        "none",
-        "B"
-      ],
-      "generators": [
-        "G13",
-        "G9",
-        "G16",
-        "G2",
-        "G11"
-      ],
-      "gate_g": "decomposition_attribution",
-      "stump_strategy": "decomposition_attribution",
-      "decision_type": "pick_one_of_n",
-      "driver": "The guardrail rate counts every outcome a candidate's exposures produce, while the log the screen is scored on records only the outcomes produced before each session closed; units under the incumbent and most candidates come back to an exposure still on screen after their session times out and act on it in a new session that the outcome record credits instead, and one candidate's units almost never do, so that candidate clears the guardrail on the log's count and fails it in one cell once the late outcomes are attributed back to the exposures that produced them, which is found only by joining each unit's later outcomes to the items its logged session showed under a rule that keeps a shown item off later exposures; a solver who nets the leader's brought-forward outcomes over the window and reads the guardrail off the log files that candidate, and the candidate fourth on the natural estimate is the largest that clears every condition."
-    }
-  ],
-  "notes": "Re-rooted 2026-10-13 under the client's 10/10 rules. v2's decisive step (the logger's in-session order count) was a field read under a filed charter, and its estimator was pinned by a certified archive, so the slot moves to a new domain (Biomedical & Clinical Research, never built), a new decision (a phase 3 dose) and a new quantity (eGFR difference from placebo at month 36). Gate G method_or_model_selection: every laboratory value and protocol rule is read correctly on the wrong route; the decision turns on the window the chronic eGFR slope is fitted over. Strategy decomposition_attribution: the trajectory is split into the acute haemodynamic fall, the one-off recovery after background diuretics are eased, and the chronic slope. Forum line_manager_or_team (the chief medical officer signs the dose); forcing event statutory_or_regulatory_filing (the end-of-phase-2 meeting package); org family other (a clinical-stage biotech, not yet a manufacturer); role family other (head of clinical development); context artifact other (the phase 3 synopsis that files the estimand). The guard's draw order puts same-date cards by task number, so its bans here read task448, task449 and task501; the card also clears the builds registered last (task452, task453, task454) on every banned axis: shape 11 against 01, 10 and 07, forum against committee_or_panel, minister_or_cabinet and customer_or_counterparty, forcing event against budget_or_appropriation, period_close and launch_or_rollout, strategy against other, population_selection and composition_mix, decisive pattern G4 against G14, G16 and C."
+    "G9",
+    "G16",
+    "G2",
+    "G11"
+   ],
+   "gate_g": "decomposition_attribution",
+   "stump_strategy": "decomposition_attribution",
+   "decision_type": "pick_one_of_n",
+   "driver": "The guardrail rate counts every outcome a candidate's exposures produce, while the log the screen is scored on records only the outcomes produced before each session closed; units under the incumbent and most candidates come back to an exposure still on screen after their session times out and act on it in a new session that the outcome record credits instead, and one candidate's units almost never do, so that candidate clears the guardrail on the log's count and fails it in one cell once the late outcomes are attributed back to the exposures that produced them, which is found only by joining each unit's later outcomes to the items its logged session showed under a rule that keeps a shown item off later exposures; a solver who nets the leader's brought-forward outcomes over the window and reads the guardrail off the log files that candidate, and the candidate fourth on the natural estimate is the largest that clears every condition."
+  }
+ ],
+ "notes": "Re-rooted 2026-10-13 under the client's 10/10 rules. v2's decisive step (the logger's in-session order count) was a field read under a filed charter, and its estimator was pinned by a certified archive, so the slot moves to a new domain (Biomedical & Clinical Research, never built), a new decision (a phase 3 dose) and a new quantity (eGFR difference from placebo at month 36). Gate G method_or_model_selection: every laboratory value and protocol rule is read correctly on the wrong route; the decision turns on the window the chronic eGFR slope is fitted over. Strategy decomposition_attribution: the trajectory is split into the acute haemodynamic fall, the one-off recovery after background diuretics are eased, and the chronic slope. Forum line_manager_or_team (the chief medical officer signs the dose); forcing event statutory_or_regulatory_filing (the end-of-phase-2 meeting package); org family other (a clinical-stage biotech, not yet a manufacturer); role family other (head of clinical development); context artifact other (the phase 3 synopsis that files the estimand). The guard's draw order puts same-date cards by task number, so its bans here read task448, task449 and task501; the card also clears the builds registered last (task452, task453, task454) on every banned axis: shape 11 against 01, 10 and 07, forum against committee_or_panel, minister_or_cabinet and customer_or_counterparty, forcing event against budget_or_appropriation, period_close and launch_or_rollout, strategy against other, population_selection and composition_mix, decisive pattern G4 against G14, G16 and C."
 }

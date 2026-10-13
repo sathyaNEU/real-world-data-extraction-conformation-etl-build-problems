@@ -1,19 +1,20 @@
 # perssathya: where work stopped
 
-Updated 2026-10-13 (task122 re-rooted and drawn). Work is on `main` (one branch); each build's state is in its
-`pipeline.json`. task230 (2026-10-12), task129, task229 and task131 (2026-10-13) are SHIPPED and wait on the
-portal; task123's determinism repair is RESHIPPED. In wave 1, task122 is DRAWN and in stage 2; task228 waits on the
-author's call (a fifth architecture and a G16 waiver).
+Updated 2026-10-13 (task122 shipped). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+task230 (2026-10-12), task129, task229, task131 and task122 (2026-10-13) are SHIPPED and wait on the portal;
+task123's determinism repair is RESHIPPED. Wave 1 is shipped apart from task228, which waits on the author's call (a
+fifth architecture and a G16 waiver). Wave 2 (task231 to task236) is next.
 
-**task122: DRAWN 2026-10-13 (card v3, the slot's second built architecture), stage 2.**
+**task122: SHIPPED 2026-10-13 (card v3, re-rooted under the 10/10 rules); waiting on the portal.**
 - Varnmark Therapeutics' 52-week phase 2b of VMK-4410, an aldosterone synthase inhibitor, in albuminuric CKD
-  (Biomedical & Clinical Research, longitudinal-outcomes-repeated-measures x Experiment & Causal, a domain never
-  built). Call: which of 5, 10, 20 and 40 mg goes into the phase 3, judged on the eGFR difference from placebo
-  after 36 months. Golden 20 mg (4 mL/min/1.73 m2; 40 mg 3, 10 mg 2, 5 mg 1). The field's two-slope model with the
-  chronic phase from month 3 files 40 mg, because diuretics eased from week 12 let the higher doses' early fall
-  partly recover and that recovery reads as chronic slope; the week-52 change files 5 mg.
-- **Resume:** stage 2 from `pipeline.json` (`resume`); the arm-mean ladder and the parameter search are in the
-  design note's Draw. v2's pack, goldens and reports are removed from the tree and kept in history.
+  (Biomedical & Clinical Research, longitudinal-outcomes-repeated-measures x Experiment & Causal). Call: take
+  20 mg into the phase 3, 3 mL/min/1.73 m2 above placebo after 36 months' treatment (40 mg 2, 10 mg 1, 5 mg 0).
+  The field's two-slope model with the chronic phase from month 3 files 40 mg at 5, because loop diuretics eased
+  from week 12 let the higher doses' early fall partly recover and that recovery reads as chronic slope; the
+  week-52 difference and one slope through every visit file 10 mg.
+- Gates: 225 generator assertions, verify.py 54 checks, byte-identical rebuilds, figures_check, precut 49 checks,
+  leak.py REVIEW only (sweeps 3 and 4); leak reader clean on two reads; judge DETERMINISTIC, APPROVE in one pass.
+  Every estimator from week 24 (arm means, each patient's line, the mixed model) lands the golden's bins.
 
 **task131: SHIPPED 2026-10-13 (architecture 2, tariff evaluation); waiting on the portal.**
 - Murrandi Regional Power's summer 2025-26 trial of three peak-window designs (Energy Systems & Utilities,
