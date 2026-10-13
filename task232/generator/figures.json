@@ -1,0 +1,116 @@
+{
+ "settings": {
+  "Coast and Ranges Base Hospital Laboratory": "12",
+  "Larkspur Pathology": "2",
+  "Halden Pathology": "12",
+  "Kestrel Pathology (Queensland)": "4",
+  "Highfield Pathology Services": "12",
+  "State Enteric Reference Laboratory": "24"
+ },
+ "at": {
+  "Coast and Ranges Base Hospital Laboratory": "0.61",
+  "Larkspur Pathology": "0.69",
+  "Halden Pathology": "0.81",
+  "Kestrel Pathology (Queensland)": "0.74",
+  "Highfield Pathology Services": "0.61",
+  "State Enteric Reference Laboratory": "0.15"
+ },
+ "next": {
+  "Coast and Ranges Base Hospital Laboratory": "1.33",
+  "Larkspur Pathology": "1.29",
+  "Halden Pathology": "3.54",
+  "Kestrel Pathology (Queensland)": "1.25",
+  "Highfield Pathology Services": "1.57",
+  "State Enteric Reference Laboratory": ""
+ },
+ "rate": {
+  "shigellosis": "7.94",
+  "STEC infection": "3.07",
+  "cryptosporidiosis": "6.98"
+ },
+ "secondary_cases": {
+  "shigellosis": "75",
+  "STEC infection": "4",
+  "cryptosporidiosis": "62"
+ },
+ "secondary_total": "141",
+ "recorded_total": "319",
+ "child_hours": {
+  "shigellosis": "9,442.03",
+  "STEC infection": "1,301.72",
+  "cryptosporidiosis": "8,881.78"
+ },
+ "closed_total": "140",
+ "basis_total": "80",
+ "basis": {
+  "Coast and Ranges Base Hospital Laboratory": "13",
+  "Larkspur Pathology": "22",
+  "Halden Pathology": "22",
+  "Kestrel Pathology (Queensland)": "11",
+  "Highfield Pathology Services": "10",
+  "State Enteric Reference Laboratory": "2"
+ },
+ "default_rate": {
+  "shigellosis": "17.79",
+  "STEC infection": "5.38",
+  "cryptosporidiosis": "16.21"
+ },
+ "default_settings": {
+  "Coast and Ranges Base Hospital Laboratory": "2",
+  "Larkspur Pathology": "1",
+  "Halden Pathology": "2",
+  "Kestrel Pathology (Queensland)": "2",
+  "Highfield Pathology Services": "8",
+  "State Enteric Reference Laboratory": "24"
+ },
+ "lower_settings": {
+  "Coast and Ranges Base Hospital Laboratory": "12",
+  "Larkspur Pathology": "1",
+  "Halden Pathology": "4",
+  "Kestrel Pathology (Queensland)": "2",
+  "Highfield Pathology Services": "12",
+  "State Enteric Reference Laboratory": "24"
+ },
+ "reports": {
+  "Coast and Ranges Base Hospital Laboratory": "2,377",
+  "Larkspur Pathology": "3,884",
+  "Halden Pathology": "2,473",
+  "Kestrel Pathology (Queensland)": "1,041",
+  "Highfield Pathology Services": "1,167",
+  "State Enteric Reference Laboratory": "256"
+ },
+ "late": {
+  "Coast and Ranges Base Hospital Laboratory": "12",
+  "Larkspur Pathology": "22",
+  "Halden Pathology": "19",
+  "Kestrel Pathology (Queensland)": "8",
+  "Highfield Pathology Services": "11",
+  "State Enteric Reference Laboratory": "4"
+ },
+ "cases": {
+  "Coast and Ranges Base Hospital Laboratory": "34",
+  "Larkspur Pathology": "89",
+  "Halden Pathology": "47",
+  "Kestrel Pathology (Queensland)": "24",
+  "Highfield Pathology Services": "29",
+  "State Enteric Reference Laboratory": "1"
+ },
+ "tolerance": "1.00",
+ "allowed": [
+  "1",
+  "2",
+  "4",
+  "6",
+  "8",
+  "12",
+  "24"
+ ],
+ "basis_period": "1 October 2023 to 30 September 2026",
+ "year": "1 October 2025 to 30 September 2026",
+ "calling_hours": [
+  "07:00",
+  "21:00"
+ ],
+ "per": "1,000",
+ "hours_24": "24"
+}

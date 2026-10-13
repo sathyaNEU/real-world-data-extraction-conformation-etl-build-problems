@@ -1,23 +1,29 @@
 # perssathya: where work stopped
 
-Updated 2026-10-13 (task232 drawn). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
-task230 (2026-10-12), task129, task229, task131, task122 and task231 (2026-10-13) are SHIPPED and wait on the portal;
-task123's determinism repair is RESHIPPED. Wave 1 is shipped apart from task228, which waits on the author's call (a
-fifth architecture and a G16 waiver). Wave 2: task232 is in design (stage 2).
+Updated 2026-10-13 (task232 shipped). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+task230 (2026-10-12), task129, task229, task131, task122, task231 and task232 (2026-10-13) are SHIPPED and wait on the
+portal; task123's determinism repair is RESHIPPED. Wave 1 is shipped apart from task228, which waits on the author's
+call (a fifth architecture and a G16 waiver). Wave 2: task231 and task232 shipped; task233 to task236 not started.
 
-**task232: DRAWN 2026-10-13 (wave 2, second build); stage 2 (design) next.**
+**Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
+(Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
+`review` collection), leave approved builds alone, then for every build still on Shipped: run the domain swap test
+(the objective must be tied to the domain, not retaggable) and design a second analytical layer of stumping on top of
+the current one under the 10/10 rules. Two tags already look weak: task230's task type (human-reliability-assessment)
+serves Forecasting in the taxonomy, not Data Quality, and task129 sits in a house domain (business operations, client
+domain General Statistics) though its decisive method is web performance engineering.
+
+**task232: SHIPPED 2026-10-13 (wave 2, second build); waiting on the portal.**
 - A regional local health district's public health unit on the New South Wales and Queensland border (Epidemiology &
-  Public Health, disease-surveillance-outbreak-anomaly-detection x Data Quality Monitoring; DQ05 kept as an idea seed
-  only). Call: the lateness at which each pathology laboratory's ELR feed pages the on-call officer on the
-  notifiable-conditions platform release of 1 December 2026, judged on the secondary enteric cases an infectious
-  childcare case causes before exclusion. The transmission that prices lateness comes from closed childcare
-  investigations, whose follow-up also records earlier, community and second-generation illness; counting every ill
-  contact tightens four feeds, counting only illness before the exclusion loosens three, and the incubation-range
-  window after the index's infectious sessions files the golden (design targets in `task232/DESIGN_NOTE.md`).
-- Card registered (guard PASS). Prototype in the session scratchpad: spread authorisation times keep the rungs apart;
-  single fixed batches do not (recorded under `## Tried and rejected`).
-- **Resume:** stage 2 per `task232/pipeline.json` (world names, fork table, ladder, closure table, ask sheet,
-  prompt.txt, precut), then the generator.
+  Public Health, disease-surveillance-outbreak-anomaly-detection x Data Quality Monitoring). Call: the SLA lateness at
+  which each pathology laboratory's ELR feed pages the on-call officer from 1 December 2026: base hospital 12 hours,
+  Larkspur 2, Halden 12, Kestrel 4, Highfield 12, reference laboratory 24. The transmission that prices lateness comes
+  from closed childcare investigations; the follow-up runs two incubation periods past the exclusion, so counting every
+  case ill after the index files Larkspur 1, Halden 4 and Kestrel 2 and every follow-up case 2, 1, 2, 2, 8 and 24;
+  only the incubation window after the index's infectious attendance (141 of 319 cases) files the golden.
+- Judge pass 1 DETERMINISTIC, APPROVE but settled "secondary case" by the field's meaning; the guideline now defines a
+  secondary case (acquired from the index) and pass 2 is DETERMINISTIC, APPROVE. Leak reader two reads. 100 generator checks,
+  byte-identical rebuilds; the asks' over-clean stop (dropping every namespaced accession) now misses every feed.
 
 **task231: SHIPPED 2026-10-13 (wave 2, first build); waiting on the portal.**
 - The Brevland Central Bank's Business Conditions Survey (Survey Research & Official Statistics,
@@ -73,9 +79,7 @@ portal.
 - **Resume:** once task229 or task230 ships, a designer redraws architecture 4. It works under a G16
   waiver if the author grants one then, or without one if the window has moved.
 
-**Approved by the author but not started.** Fix `guard.py`'s draw order on `main` so same-date cards
-sort by registration time, and check that no shipped build's verdict changes. This is shared tooling:
-PR it under `perssathya/skills-<slug>`.
+**Done:** `guard.py` orders same-day draws by registration time (on `main`, 60881f6).
 
 **Lessons from this run.**
 - Seven in-house rounds landed on reflex corrections or visible symptoms:

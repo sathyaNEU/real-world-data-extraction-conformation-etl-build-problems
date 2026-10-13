@@ -1,36 +1,36 @@
 {
  "task": "task232",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "epidemiology-public-health",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-13",
- "stump": "Counting every room contact the investigation follow-up records as ill with the condition as the index's secondary case overstates shigellosis and cryptosporidiosis transmission and sets four laboratory feeds tighter than they need to be (design target: the hospital laboratory at 6 hours, the larger private group and the regional laboratory at 8, the Queensland border laboratory at 1, against 8, 12, 12 and 2); the step that lands it there is reading illness onsets instead of attributing each illness to the index's infectious sessions through the condition's incubation range.",
+ "stump": "Counting as the index's secondary cases every follow-up case ill after the index (221 of 319) gives 11.33, 4.61 and 12.16 per 1,000 child-hours and sets Larkspur 1, Halden 4 and Kestrel 2 (base hospital 12, Highfield 12, reference 24), against 12, 2, 12, 4, 12 and 24 from the incubation window (141 cases; 7.94, 3.07 and 6.98 per 1,000).",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-13"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (sweeps 3, 4, 6, 9 answered in the design note); no LEAK",
+  "reader": "two reads: first found secondary case undefined (fixed by the GL-CD-11 definition), incident templates and a register note (fixed); second clean"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "PASS",
+  "nearest": "0.08 task122 v2 lineage; surface nothing promoted"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (pass 2 after the definition fix; pass 1 also APPROVE)"
  },
  "returned": [],
- "resume": "stage 2: world names, readability screen, semantic fork table, ladder (every ill contact, onset before exclusion, one-sided windows, median incubation, the incubation-range window), closure table, literal reader, oracles, ask sheet, prompt.txt; generator next",
+ "resume": "shipped; next: the author marks approvals on the board, then the domain and second-layer review of unapproved shipped builds",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-13",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

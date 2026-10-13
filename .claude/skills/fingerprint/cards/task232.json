@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "dial_setting",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Set the SLA alert at 12 hours for Coast and Ranges Base Hospital Laboratory, 2 hours for Larkspur Pathology, 12 hours for Halden Pathology, 4 hours for Kestrel Pathology (Queensland), 12 hours for Highfield Pathology Services and 24 hours for the State Enteric Reference Laboratory.",
+  "answer_source": "task232/submission.md, 1. Final Recommendation; golden/elr_sla_thresholds_2026-27.csv",
   "gap": [
     "time",
     "population"
@@ -35,8 +35,8 @@
   "role_family": "field_unit_lead",
   "scoring_unit": "per episode",
   "spine": {
-    "file": "elr_messages_2022_2026.csv",
-    "rows": 0,
+    "file": "ncp_elr_message_log_2022-10_2026-10.csv",
+    "rows": 45727,
     "entity": "one electronic laboratory notification message a pathology laboratory sent to the state's notifiable-conditions platform for a case resident in the district",
     "grain": "message",
     "source": "synthetic"
@@ -62,11 +62,11 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "The decisive quantity is a transmission rate per unit of exposure estimated from closed episodes whose later outcomes surface only after a delay of known range and mix the episode's own consequences with earlier unrelated and later second-generation ones, so each outcome is attributed to the exposure only when it falls within the delay's range after it; counting every outcome in the follow-up inflates the rate where unrelated and second-generation outcomes are common, counting only outcomes before the exposure ended deflates it most where the delay is long, and either misjudges which sources' lateness costs most.",
-  "driver_concrete": "Each enteric pathogen's secondary transmission per child-hour of an infectious case's childcare attendance is estimated from the public health unit's closed childcare investigations by counting a room contact's illness as the index's secondary case only when its onset falls between the index's first infectious session plus the pathogen's shortest incubation and the exclusion plus its longest, so cases ill before the window (co-primary, earlier and community cases) and after it are left out and the hepatitis A and cryptosporidiosis cases that fall ill weeks after the exclusion are kept; each laboratory's SLA lateness is then the longest allowed setting whose extra childcare sessions cost no more than the tolerance.",
-  "stump": "A competent solver who counts every room contact the investigation follow-up records as ill with the condition as the index's secondary case sets four laboratory feeds tighter than they need to be (design target: the hospital laboratory at 6 hours, the larger private group and the regional laboratory at 8, the Queensland border laboratory at 1, against 8, 12, 12 and 2), and one who counts only the contacts ill before the exclusion sets the hospital, border and regional feeds at 24 hours; the step that lands either is reading illness onsets instead of attributing each illness to the index's infectious sessions through the condition's incubation range.",
+  "driver_concrete": "Each enteric pathogen's secondary transmission per child-hour of an infectious case's childcare attendance is estimated from the public health unit's closed childcare investigations by counting a room contact's illness as the index's secondary case only when its onset falls between the index's first infectious attendance plus the pathogen's shortest incubation and its last infectious attendance plus the longest, so the room's earlier source, co-primary and community cases and the second-generation and later cases after the window are left out; each laboratory feed's SLA lateness is then the longest allowed setting whose extra childcare hours cost no more than the tolerance in expected secondary cases a year.",
+  "stump": "A competent solver who counts as the index's secondary cases every room contact's case the investigation follow-up records after the index fell ill (221 of 319) gets 11.33, 4.61 and 12.16 secondary cases per 1,000 child-hours and sets the base hospital laboratory at 12 hours, Larkspur at 1, Halden at 4, Kestrel at 2, Highfield at 12 and the reference laboratory at 24, against 12, 2, 12, 4, 12 and 24 from the incubation window (141 cases; 7.94, 3.07 and 6.98); one who counts every follow-up case sets 2, 1, 2, 2, 8 and 24, and one who counts only cases ill before the exclusion sets every feed at 24; the step that lands them there is taking the follow-up period, which runs two incubation periods past the exclusion, as the window in which the index's secondary cases fall ill, instead of attributing each case to the index's infectious attendance through the condition's incubation range.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who keeps each case's first notification, reads every onset, session and exclusion date and the incubation table correctly, and divides each closed investigation's ill room contacts by the child-hours the index attended while infectious, sets the hospital laboratory at 6 hours, the larger private group and the regional laboratory at 8 and the Queensland border laboratory at 1 (the default path's Ends on, design target), and one who counts only illnesses before the exclusion sets three feeds at 24 hours.",
-  "domain_test": "The deciding quantity is each pathogen's secondary transmission per hour of an infectious case's attendance, which outbreak epidemiology estimates by attributing contacts' illnesses to the exposure through the incubation window that follows it; with another field's nouns (a carrier's late tracking feed and missed delivery slots) nothing incubates, no illness falls days or weeks after the exposure that caused it, and there is no window to attribute it by, so the task stops making sense.",
+  "analyst_test": "A strong analyst who reads every onset, case status, attendance row, exclusion time and the guideline's secondary case definition correctly, drops the follow-up cases ill before the index and divides the rest by the index's infectious child-hours sets the base hospital laboratory at 12 hours, Larkspur 1, Halden 4, Kestrel 2, Highfield 12 and the reference laboratory 24 (the default path's Ends on); one who counts every follow-up case sets 2, 1, 2, 2, 8 and 24.",
+  "domain_test": "The deciding quantity is each pathogen's secondary transmission per child-hour of an infectious case's attendance, which outbreak epidemiology estimates by attributing contacts' illnesses to the exposure through the incubation window that follows it; with another field's nouns (a carrier's late tracking feed and missed delivery slots) nothing incubates, no illness falls days after the exposure that caused it, and there is no window to attribute it by, so the task stops making sense.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:incubation-window-attribution-of-childcare-secondary-cases",
   "layer1": [
@@ -81,6 +81,6 @@
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [],
-  "notes": "DQ05 kept as an idea seed only (world, decision, quantity). The per-laboratory settings on every rung are design targets fixed at stage 2 and confirmed by the generator at stage 3; answer and spine rows are filled at ship.",
+  "notes": "DQ05 kept as an idea seed only (world, decision, quantity). Hepatitis A dropped at stage 2 (its infectious period and post-exposure vaccination open conventions); three conditions remain. Answer and spine rows are filled at ship.",
   "registered": "2026-10-13T20:45:24Z"
 }
