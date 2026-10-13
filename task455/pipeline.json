@@ -1,0 +1,37 @@
+{
+  "task": "task455",
+  "owner": "oviya1301",
+  "status": "PAUSED",
+  "domain": "survey-research-official-statistics",
+  "objective": "etl",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-13",
+  "stump": "",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.08 (task446 v2)",
+    "note": "guard check 2026-10-13 on the draft card: BLOCK ban.pairing (survey-research-official-statistics x etl against task453, in the last three draws), ban.pattern (G14 against task452), test.same_driver_older (against task121, differentiation owed), two_layer.fields (to fill)"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "paused at the draw 2026-10-13. The seed's world (a health department certifying whether a program bent the curve on a cause of death) needs the SROS register-quality task type, and SROS x ETL is barred until task453 leaves the last three draws. Draw task458 (payment claims) and task459 (emissions inventory) first, then this one. Draft draw in draft_card.json and the design note: a county health department certifies to its council whether its overdose initiative cut residents' opioid overdose deaths 20 per cent below the 2021 to 2023 average in 2026; the certificates miss opioid deaths and wrongly certify some stimulant deaths with an incidental opioid listed, a pool that stays level, so the observed fall is attenuated; the medical examiner's 2022 and 2025 record reviews show sensitivity and specificity steady while net error and predictive values move, and only the count corrected by the steady rates meets the target. Before registering: redraw the generator code (G14 is barred against task452 until it leaves the last three), fill layer2_family, layer2_pattern (survey-research-official-statistics/census-register-administrative-data-quality/2) and layer1, and write the differentiation against task121.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET12 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept; the ICD-9 to ICD-10 comparability bridge is not used (a documented-break bridge, task453's family)"
+}
