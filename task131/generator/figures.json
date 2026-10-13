@@ -1,0 +1,188 @@
+{
+ "bills": {
+  "A": {
+   "mean": -19.64,
+   "mean_as_written": "19.64",
+   "more": 123
+  },
+  "B": {
+   "mean": -42.86,
+   "mean_as_written": "42.86",
+   "more": 45
+  },
+  "C": {
+   "mean": -31.61,
+   "mean_as_written": "31.61",
+   "more": 52
+  }
+ },
+ "call": "C",
+ "call_sentence": "Move every flat-rate residential customer onto Design C (Stepped) from 1 July 2027: it lowers the 2027-28 summer maximum demand at 50% probability of exceedance by 11 MW.",
+ "change_mw": {
+  "A": -5,
+  "B": -20,
+  "C": 11
+ },
+ "default_B_mw": 15,
+ "design_tmax": 44.6,
+ "hot_tmax_range": [
+  43.7,
+  45.3
+ ],
+ "hot_workdays": [
+  "2026-01-19",
+  "2026-01-20",
+  "2026-01-21",
+  "2026-01-22",
+  "2026-01-23",
+  "2026-02-10",
+  "2026-02-11"
+ ],
+ "md50_mw": 214.6,
+ "md_half_hour": {
+  "A": "9.00 to 9.30 pm",
+  "B": "8.00 to 8.30 pm",
+  "C": "8.00 to 8.30 pm"
+ },
+ "mild_max": 39.7,
+ "n_flat": 41860,
+ "n_hot": 7,
+ "note": {
+  "block_adjusted": {
+   "A": -4.954,
+   "B": -19.95,
+   "C": 11.06
+  },
+  "c_effect_8pm_kw": -0.009,
+  "c_flip_effect_8pm_kw": 0.253,
+  "daymax_averaged": {
+   "A": -5.095,
+   "B": -20.045,
+   "C": 10.991
+  },
+  "did_november": {
+   "A": -5.168,
+   "B": -20.058,
+   "C": 11.075
+  },
+  "lead_mw": {
+   "A": 20.355,
+   "B": 16.715,
+   "C": 4.185
+  },
+  "rungs": {
+   "R0": {
+    "A": 12.487,
+    "B": 14.99,
+    "C": 9.746
+   },
+   "R0b": {
+    "A": 13.12,
+    "B": 15.859,
+    "C": 10.276
+   },
+   "R1": {
+    "A": 19.886,
+    "B": 23.672,
+    "C": 15.176
+   },
+   "R2": {
+    "A": 13.12,
+    "B": 3.311,
+    "C": 10.276
+   }
+  },
+  "sf11_at_least_design_tmax": {
+   "A": -5.009,
+   "B": -20.053,
+   "C": 11.043,
+   "days": 4
+  },
+  "sf11_hottest_k": {
+   "3": {
+    "A": -5.09,
+    "B": -19.926,
+    "C": 11.348
+   },
+   "4": {
+    "A": -5.009,
+    "B": -20.053,
+    "C": 11.043
+   },
+   "5": {
+    "A": -5.081,
+    "B": -19.997,
+    "C": 10.923
+   },
+   "6": {
+    "A": -5.155,
+    "B": -20.08,
+    "C": 10.928
+   },
+   "7": {
+    "A": -5.095,
+    "B": -20.045,
+    "C": 10.991
+   }
+  },
+  "sf11_straight_line": {
+   "fig": {
+    "A": 0.164,
+    "B": -14.283,
+    "C": 12.042
+   },
+   "resid_hot": 0.12,
+   "z": 25.272
+  },
+  "sf1_all_residential": {
+   "A": -6.963,
+   "B": -22.197,
+   "C": 11.019
+  },
+  "sf9_kwh_read_as_kw": {
+   "A": 8.202,
+   "B": -4.722,
+   "C": 7.588
+  }
+ },
+ "poe": 50,
+ "pulldown_kw": {
+  "A": 0.6,
+  "B": 0.7
+ },
+ "retention": {
+  "A": {
+   "back": 22,
+   "gone": 7,
+   "still": 370
+  },
+  "B": {
+   "back": 29,
+   "gone": 9,
+   "still": 361
+  },
+  "C": {
+   "back": 18,
+   "gone": 6,
+   "still": 374
+  }
+ },
+ "rung2_A_mw": 13,
+ "survey": {
+  "A": {
+   "answered": 257,
+   "likely": 155,
+   "share": 60.3
+  },
+  "B": {
+   "answered": 241,
+   "likely": 100,
+   "share": 41.5
+  },
+  "C": {
+   "answered": 250,
+   "likely": 147,
+   "share": 58.8
+  }
+ }
+}

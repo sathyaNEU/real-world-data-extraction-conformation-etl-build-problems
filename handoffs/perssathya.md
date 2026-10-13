@@ -1,16 +1,19 @@
 # perssathya: where work stopped
 
-Updated 2026-10-13 (task229 shipped; task131 re-rooted). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
-task230 (2026-10-12) and task129 (2026-10-13) are SHIPPED and wait on the portal; task123's determinism
-repair is RESHIPPED. task229's architecture 3 (hydrometry) shipped 2026-10-13; its design 1 had failed the portal's determinism QC.
+Updated 2026-10-13 (task131 shipped). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+task230 (2026-10-12), task129, task229 and task131 (2026-10-13) are SHIPPED and wait on the portal; task123's
+determinism repair is RESHIPPED. Next in wave 1: task228 waits on the author's call (a fifth architecture and a G16
+waiver), so task122's re-root (Experiment & Causal) goes first.
 
-**task131: DRAWN 2026-10-13 (architecture 2, tariff evaluation); in stage 2.**
-- Re-rooted from the Swiss co-operative's card offers (FAILED_TO_STUMP, and crm-loyalty-retention is not a
-  client task type) into Energy Systems & Utilities, tariff-demand-response-evaluation x Experiment & Causal.
-- Murrandi Regional Power's summer 2025-26 trial of three peak-window designs; the call is which design, if
-  any, flat-rate households move onto from 1 July 2027, judged on the 2027-28 50% POE maximum demand.
-- **Resume:** stage 2 from `task131/pipeline.json` (ladder, screen, fork table, closure, ask sheet, prompt.txt,
-  precut).
+**task131: SHIPPED 2026-10-13 (architecture 2, tariff evaluation); waiting on the portal.**
+- Murrandi Regional Power's summer 2025-26 trial of three peak-window designs (Energy Systems & Utilities,
+  tariff-demand-response-evaluation x Experiment & Causal). Call: default flat-rate households onto Design C
+  (Stepped) from 1 July 2027, 11 MW off the 2027-28 50% POE maximum; A raises it 5 MW and B 20 MW, their
+  pull-down after the window setting a new maximum on the design day's heat. The window cut on the average day
+  files B at 15; the pooled whole curve files A at 13.
+- Gates: 133 generator assertions, verify.py all agree, byte-identical rebuilds, figures_check, precut, leak.py
+  REVIEW only (sweep 4); leak reader three reads; judge pass 1 NOT_DETERMINISTIC on one survey share (closed by
+  convergence), pass 2 DETERMINISTIC FIX_NOW (two prompt pins applied), pass 3 DETERMINISTIC, APPROVE.
 
 **task229: SHIPPED 2026-10-13 (architecture 3, hydrometry); waiting on the portal.**
 - The Corriston Basin Hydrometric Cooperative's 23-station network (Physical & Environmental Sciences,

@@ -1,0 +1,24 @@
+{
+  "task": "task131",
+  "distractor_files": [
+    "target/zone_substation_loads_2025-26.csv",
+    "target/rooftop_pv_connections_2026-06.csv",
+    "target/generation_availability_2027-28.xlsx"
+  ],
+  "deliverables": [
+    "tariff_default_advice_2027-28.pdf",
+    "tariff_trial_tables_2025-26.xlsx"
+  ],
+  "domain": "Energy Systems & Utilities",
+  "task_type": "tariff-demand-response-evaluation",
+  "objective": "Experiment & Causal Analysis",
+  "stated_inputs": [
+    "41,860",
+    "41860",
+    "214.6",
+    "44.6"
+  ],
+  "sources": {
+    "all files": "constructed for this task by the author (synthetic, no third-party data); no licence restriction"
+  }
+}
