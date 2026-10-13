@@ -1,0 +1,84 @@
+{
+  "task": "task258",
+  "architecture": "v1",
+  "drawn": "2026-10-13",
+  "slot_note": "DA08 seed (START_HERE): the seed's world, decision and quantity kept (a media group's one performance squad for the quarter from 5 January 2027, sent to the property where it moves the most monthly page loads into the good LCP band); drawn ahead of task257 because DA07's world turns on the duty-cycle mix (composition_mix), barred against task256 until one more draw",
+  "domain": "product-analytics",
+  "subdomain": "metric-definition-measurement-science",
+  "client_domain": "product-analytics",
+  "niche": "a media group's web platform team choosing which of six properties gets its one performance squad for a quarter, by the page loads a month the squad's hero-image playbook would move into the good Largest Contentful Paint band, from RUM beacons that break each load's paint into its four parts",
+  "objective": "descriptive-distribution",
+  "shape": "14",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G8",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the group's head of web platform",
+  "role_family": "product_manager",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "rum_beacons_lcp_2026-11.csv",
+    "rows": 0,
+    "entity": "one row is one sampled page load's RUM beacon with its Largest Contentful Paint attribution (element, resource host and the four parts of the paint)",
+    "grain": "page load",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "other",
+  "org_family": "media_or_publishing",
+  "world": {
+    "geography": "Australia (a fictional digital media group)",
+    "currency": "AUD",
+    "org_type": "digital media group with six properties",
+    "invented_names": [
+      "Brolga Media"
+    ],
+    "people": [
+      "Margaret Good",
+      "Tasha Murillo",
+      "Doris Rhodes"
+    ]
+  },
+  "deliverables": [
+    "performance_squad_q1_2027.md",
+    "lcp_reach_q1_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The decisive quantity is how many units an intervention moves across a threshold when it acts on two of the four additive parts of each unit's value, and the record of past interventions shows one of those parts settling at a fixed level rather than shrinking in proportion, rising where it began below that level, so the units it can move are those whose untouched parts leave room under the threshold once that part sits at its level, built unit by unit; carrying the past effect as a ratio of medians, or as one cut to the whole value, picks a candidate whose small starting part the ratio shrinks further.",
+  "driver_concrete": "Each property's November page loads whose Largest Contentful Paint element is an image it serves itself are carried through the squad's hero-image playbook part by part from their RUM attribution: time to first byte and render delay untouched, the image's load time scaled as the past engagements' load times scaled, and its load delay set at the level the past engagements' delays settled at (the group image CDN's connection), so the property whose hero images waited on lazy loading gains most, while the after-over-before ratio of medians favours the property whose short delays it shrinks to nothing and a flat cut to the whole paint favours a third.",
+  "stump": "A competent analyst carries the squad's past engagements onto each own-image page load as ratios, the image's load delay and load time each cut by the after-over-before ratio of medians, and files the property with the short delays; the step that lands there is treating the delay as shrinking in proportion, when the past engagements' delays settled at one level, rising where they began below it, so that property gains little and the lazy-loading property leads.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who weights the November beacons to page loads, keeps the loads whose paint element is an image the property serves itself, splits each load's paint into its four parts and applies the past engagements' after-over-before ratios to the image's delay and load time files the property with the short image delays; carrying the delay at the level the past engagements settled at files the property whose hero images waited on lazy loading.",
+  "domain_test": "The call turns on how many page loads a month cross under the 2,500 ms Largest Contentful Paint line when a hero-image playbook changes two of the paint's four parts (time to first byte, resource load delay, resource load duration, element render delay), estimated as web performance engineers do from RUM attribution and the playbook's measured effect on each part; with a hospital's or a utility's nouns there is no paint split into parts and no preload or image CDN connection to settle a delay, and the task stops reading the same.",
+  "mechanism_source": "design_note",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:paint-parts-counterfactual-with-a-delay-that-settles-at-a-level",
+  "layer1": [
+    "RUM sampling rates set per property and changed mid-month in an effective-dated configuration log",
+    "image hosts: each property's own, a legacy alias retired during the year, the group image CDN by path prefix, third-party agency and advertising hosts",
+    "beacon navigation types (prerendered loads, back-forward cache restores) beside ordinary navigations",
+    "CrUX histograms by origin and device beside the group's own RUM sample",
+    "analytics page views counted at another grain than the beacons"
+  ],
+  "differentiation": {},
+  "lineage": [],
+  "notes": "drawn 2026-10-13 ahead of task257 (DA07), whose world turns on the duty-cycle mix (composition_mix), barred by ban.strategy against task256; the seed's own decisive hint (fixes only moved loads whose paint element was the property's own image) is kept as a lower rung (the reachable population), never decisive; the decisive move is the shape of the playbook's effect on the image's load delay"
+}
