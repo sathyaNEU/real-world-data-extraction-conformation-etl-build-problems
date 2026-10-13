@@ -1,0 +1,468 @@
+{
+ "call": [
+  "Stonecrest Internal Medicine",
+  "Kettle Run Health Partners",
+  "Harrow Point Medical Group",
+  "Bellmont Clinic Network"
+ ],
+ "call_codes": [
+  "SIM",
+  "KRH",
+  "HPM",
+  "BCN"
+ ],
+ "n_owe": 4,
+ "routes": {
+  "R0 paid, all development": [
+   "RPG",
+   "SIM",
+   "KRH",
+   "HPM",
+   "BCN",
+   "CFP",
+   "THA",
+   "JHP",
+   "ALM"
+  ],
+  "paid, latest 12 months": [
+   "RPG",
+   "SIM",
+   "KRH",
+   "HPM",
+   "BCN",
+   "CFP",
+   "THA",
+   "JHP",
+   "ALM"
+  ],
+  "paid, latest 6 months": [
+   "SIM",
+   "KRH",
+   "HPM",
+   "BCN",
+   "ALM"
+  ],
+  "paid, latest 4 months": [
+   "SIM",
+   "KRH",
+   "HPM",
+   "BCN",
+   "ALM"
+  ],
+  "G3 paid, after the go-live month": [
+   "SIM",
+   "KRH",
+   "HPM",
+   "BCN"
+  ],
+  "G1 received, all development": [
+   "SIM",
+   "KRH",
+   "HPM",
+   "BCN"
+  ],
+  "G2 received, latest 12 months": [
+   "SIM",
+   "KRH",
+   "HPM",
+   "BCN"
+  ],
+  "G5 paid (latest versions), after the go-live month": [
+   "SIM",
+   "KRH",
+   "HPM",
+   "BCN"
+  ],
+  "R1 paid as extracted": [
+   "SIM",
+   "BCN"
+  ],
+  "G4 received, by claim type": [
+   "SIM",
+   "KRH",
+   "HPM",
+   "BCN"
+  ]
+ },
+ "default_n": 9,
+ "ratio_pct": {
+  "R0 paid, all development": {
+   "RPG": 103.07,
+   "BMA": 98.3,
+   "SPP": 95.67,
+   "SIM": 119.44,
+   "KRH": 115.91,
+   "HPM": 112.58,
+   "WVP": 94.69,
+   "BCN": 120.15,
+   "CFP": 103.0,
+   "THA": 103.23,
+   "JHP": 102.86,
+   "ALM": 107.54
+  },
+  "paid, latest 12 months": {
+   "RPG": 103.01,
+   "BMA": 98.19,
+   "SPP": 95.72,
+   "SIM": 119.35,
+   "KRH": 115.79,
+   "HPM": 112.59,
+   "WVP": 94.46,
+   "BCN": 119.95,
+   "CFP": 102.98,
+   "THA": 103.15,
+   "JHP": 102.84,
+   "ALM": 107.37
+  },
+  "paid, latest 6 months": {
+   "RPG": 101.0,
+   "BMA": 95.67,
+   "SPP": 93.74,
+   "SIM": 116.85,
+   "KRH": 112.91,
+   "HPM": 110.56,
+   "WVP": 91.88,
+   "BCN": 116.68,
+   "CFP": 101.03,
+   "THA": 100.86,
+   "JHP": 101.17,
+   "ALM": 104.56
+  },
+  "paid, latest 4 months": {
+   "RPG": 100.05,
+   "BMA": 94.43,
+   "SPP": 92.88,
+   "SIM": 115.61,
+   "KRH": 111.51,
+   "HPM": 109.66,
+   "WVP": 90.5,
+   "BCN": 115.0,
+   "CFP": 100.15,
+   "THA": 99.74,
+   "JHP": 100.41,
+   "ALM": 103.12
+  },
+  "G3 paid, after the go-live month": {
+   "RPG": 97.05,
+   "BMA": 90.67,
+   "SPP": 89.52,
+   "SIM": 112.1,
+   "KRH": 107.28,
+   "HPM": 106.34,
+   "WVP": 87.13,
+   "BCN": 110.5,
+   "CFP": 97.22,
+   "THA": 96.53,
+   "JHP": 97.75,
+   "ALM": 99.19
+  },
+  "G1 received, all development": {
+   "RPG": 94.51,
+   "BMA": 87.76,
+   "SPP": 86.73,
+   "SIM": 109.18,
+   "KRH": 103.93,
+   "HPM": 103.58,
+   "WVP": 84.66,
+   "BCN": 107.1,
+   "CFP": 94.54,
+   "THA": 93.91,
+   "JHP": 95.59,
+   "ALM": 96.2
+  },
+  "G2 received, latest 12 months": {
+   "RPG": 94.64,
+   "BMA": 87.91,
+   "SPP": 86.88,
+   "SIM": 109.35,
+   "KRH": 104.13,
+   "HPM": 103.73,
+   "WVP": 84.82,
+   "BCN": 107.31,
+   "CFP": 94.67,
+   "THA": 94.05,
+   "JHP": 95.7,
+   "ALM": 96.39
+  },
+  "G5 paid (latest versions), after the go-live month": {
+   "RPG": 98.49,
+   "BMA": 92.31,
+   "SPP": 91.06,
+   "SIM": 113.72,
+   "KRH": 109.09,
+   "HPM": 107.91,
+   "WVP": 88.49,
+   "BCN": 112.34,
+   "CFP": 98.72,
+   "THA": 97.97,
+   "JHP": 99.03,
+   "ALM": 100.89
+  },
+  "R1 paid as extracted": {
+   "RPG": 91.89,
+   "BMA": 84.67,
+   "SPP": 83.99,
+   "SIM": 106.05,
+   "KRH": 100.36,
+   "HPM": 100.77,
+   "WVP": 81.78,
+   "BCN": 103.32,
+   "CFP": 91.85,
+   "THA": 91.11,
+   "JHP": 93.33,
+   "ALM": 92.82
+  },
+  "G4 received, by claim type": {
+   "RPG": 94.48,
+   "BMA": 87.61,
+   "SPP": 86.31,
+   "SIM": 108.85,
+   "KRH": 103.67,
+   "HPM": 103.25,
+   "WVP": 85.03,
+   "BCN": 107.5,
+   "CFP": 94.12,
+   "THA": 93.94,
+   "JHP": 95.1,
+   "ALM": 96.66
+  }
+ },
+ "family_ratio_range_pct": {
+  "RPG": [
+   "94.5",
+   "98.5"
+  ],
+  "BMA": [
+   "87.6",
+   "92.3"
+  ],
+  "SPP": [
+   "86.3",
+   "91.1"
+  ],
+  "SIM": [
+   "108.9",
+   "113.7"
+  ],
+  "KRH": [
+   "103.7",
+   "109.1"
+  ],
+  "HPM": [
+   "103.2",
+   "107.9"
+  ],
+  "WVP": [
+   "84.7",
+   "88.5"
+  ],
+  "BCN": [
+   "107.1",
+   "112.3"
+  ],
+  "CFP": [
+   "94.1",
+   "98.7"
+  ],
+  "THA": [
+   "93.9",
+   "98.0"
+  ],
+  "JHP": [
+   "95.1",
+   "99.0"
+  ],
+  "ALM": [
+   "96.2",
+   "100.9"
+  ]
+ },
+ "received_ratio_range_pct": {
+  "RPG": [
+   "94.5",
+   "94.6"
+  ],
+  "BMA": [
+   "87.6",
+   "87.9"
+  ],
+  "SPP": [
+   "86.3",
+   "86.9"
+  ],
+  "SIM": [
+   "108.9",
+   "109.4"
+  ],
+  "KRH": [
+   "103.7",
+   "104.1"
+  ],
+  "HPM": [
+   "103.2",
+   "103.7"
+  ],
+  "WVP": [
+   "84.7",
+   "85.0"
+  ],
+  "BCN": [
+   "107.1",
+   "107.5"
+  ],
+  "CFP": [
+   "94.1",
+   "94.7"
+  ],
+  "THA": [
+   "93.9",
+   "94.1"
+  ],
+  "JHP": [
+   "95.1",
+   "95.7"
+  ],
+  "ALM": [
+   "96.2",
+   "96.7"
+  ]
+ },
+ "golden_tcoc_pmpm": {
+  "RPG": 490.82,
+  "BMA": 430.71,
+  "SPP": 162.14,
+  "SIM": 412.55,
+  "KRH": 288.61,
+  "HPM": 417.33,
+  "WVP": 331.53,
+  "BCN": 342.61,
+  "CFP": 306.07,
+  "THA": 479.7,
+  "JHP": 394.67,
+  "ALM": 454.49
+ },
+ "targets": {
+  "RPG": 519.31,
+  "BMA": 490.8,
+  "SPP": 186.94,
+  "SIM": 377.85,
+  "KRH": 277.71,
+  "HPM": 402.92,
+  "WVP": 391.6,
+  "BCN": 319.89,
+  "CFP": 323.76,
+  "THA": 510.83,
+  "JHP": 412.9,
+  "ALM": 472.43
+ },
+ "member_months": {
+  "RPG": 5998,
+  "BMA": 6814,
+  "SPP": 11642,
+  "SIM": 6661,
+  "KRH": 8010,
+  "HPM": 6778,
+  "WVP": 6876,
+  "BCN": 8328,
+  "CFP": 8520,
+  "THA": 7238,
+  "JHP": 7074,
+  "ALM": 6530
+ },
+ "truncated_members": 7,
+ "agreement": {
+  "truncation": 200000.0,
+  "corridor_pct": 2.0,
+  "line_pct": 102.0
+ },
+ "pharmacy": {
+  "RPG": 549985.75,
+  "BMA": 580767.88,
+  "SPP": 403232.71,
+  "SIM": 553083.71,
+  "KRH": 525120.74,
+  "HPM": 577116.6,
+  "WVP": 532848.99,
+  "BCN": 504669.52,
+  "CFP": 524261.44,
+  "THA": 659732.26,
+  "JHP": 579177.17,
+  "ALM": 543081.48
+ },
+ "pharmacy_stated": {
+  "RPG": 550000,
+  "BMA": 581000,
+  "SPP": 403000,
+  "SIM": 553000,
+  "KRH": 525000,
+  "HPM": 577000,
+  "WVP": 533000,
+  "BCN": 505000,
+  "CFP": 524000,
+  "THA": 660000,
+  "JHP": 579000,
+  "ALM": 543000
+ },
+ "outside_share": {
+  "RPG": 35.8824,
+  "BMA": 42.1117,
+  "SPP": 31.5802,
+  "SIM": 40.682,
+  "KRH": 32.0924,
+  "HPM": 44.484,
+  "WVP": 31.4164,
+  "BCN": 38.3961,
+  "CFP": 30.3039,
+  "THA": 41.5788,
+  "JHP": 26.1843,
+  "ALM": 39.9244
+ },
+ "outside_share_stated": {
+  "RPG": "35.9",
+  "BMA": "42.1",
+  "SPP": "31.6",
+  "SIM": "40.7",
+  "KRH": "32.1",
+  "HPM": "44.5",
+  "WVP": "31.4",
+  "BCN": "38.4",
+  "CFP": "30.3",
+  "THA": "41.6",
+  "JHP": "26.2",
+  "ALM": "39.9"
+ },
+ "lags": {
+  "r2p_median_before": 23.0,
+  "r2p_median_after": 1.0,
+  "r2p_mean_before": 31.5,
+  "r2p_mean_after": 3.4,
+  "s2r_median_2025": 13.0,
+  "s2r_median_after": 14.0,
+  "s2r_mean_2025": 18.0,
+  "s2r_mean_after": 20.9
+ },
+ "book_vs_golden_pct": {
+  "R0 paid, all development": 10.24,
+  "paid, latest 12 months": 10.15,
+  "paid, latest 6 months": 7.69,
+  "paid, latest 4 months": 6.49,
+  "G3 paid, after the go-live month": 2.89,
+  "G1 received, all development": 0.0,
+  "G2 received, latest 12 months": 0.16,
+  "G5 paid (latest versions), after the go-live month": 4.51,
+  "R1 paid as extracted": -3.08,
+  "G4 received, by claim type": -0.09
+ },
+ "book_vs_golden_stated": {
+  "R0 paid, all development": "10",
+  "paid, latest 12 months": "10",
+  "paid, latest 6 months": "8",
+  "paid, latest 4 months": "6",
+  "G3 paid, after the go-live month": "3",
+  "G1 received, all development": "0",
+  "G2 received, latest 12 months": "0",
+  "G5 paid (latest versions), after the go-live month": "5",
+  "R1 paid as extracted": "-3",
+  "G4 received, by claim type": "-0"
+ }
+}

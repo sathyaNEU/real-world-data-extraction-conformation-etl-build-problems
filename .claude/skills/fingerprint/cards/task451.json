@@ -10,8 +10,8 @@
   "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Four partners owe the Fund a shared-loss payment for 2026: Stonecrest Internal Medicine, Bellmont Clinic Network, Kettle Run Health Partners and Harrow Point Medical Group.",
+  "answer_source": "submission.md (Final Recommendation); golden/partner_settlement_2026.xlsx",
   "gap": [
     "time",
     "population"
@@ -36,7 +36,7 @@
   "scoring_unit": "per covered member",
   "spine": {
     "file": "medical_claims_extract_2025-01_2027-01.csv",
-    "rows": 0,
+    "rows": 174248,
     "entity": "one version of one medical claim (original, replacement or void) as the claims administrator's extract reports it",
     "grain": "claim x version",
     "source": "synthetic (constructed in the layout of a third-party administrator's medical claims extract derived from 837 claims)"
@@ -75,16 +75,16 @@
     ]
   },
   "deliverables": [
-    "tcoc_reconciliation_2026.xlsx",
+    "partner_settlement_2026.xlsx",
     "partners_against_target_2026.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is the part of each unit's period total not yet observed at the cut, completed from the history of how amounts arrive; arrival is a sender's delay, which never changed, plus a handler's delay that collapsed partway through the period, so development measured on arrival dates averages the old handler into the newest periods and overstates what they still owe, while development measured on the dates the handler received each amount completes them at the speed now in force; a recent-window or post-change arrival basis still mixes the transition.",
+  "driver": "The decisive quantity is the part of each unit's period total not yet observed at the cut, completed from the history of how amounts arrive; arrival is a sender's delay, which never changed, plus a handler's delay that collapsed partway through the period, so development measured on arrival dates averages the old handler into the newest periods and overstates what they still owe, while development measured on the dates the handler received each amount completes them at the speed now in force; a recent arrival window still carries the old handler and the changeover's backlog, and only arrivals after the change settled agree.",
   "driver_concrete": "Each accountable care partner's 2026 total cost of care is completed from claims paid through 29 January 2027. The administrator's move to next-day adjudication on 5 October 2026 cut receipt-to-payment from about five weeks to a day, so chain-ladder factors averaged over the 2025-2026 paid-date triangle carry the old speed into October to December 2026 and overstate 2026 by about ten per cent; the providers' submission lags never changed, so the received-date triangle completes 2026 at the speed now in force.",
-  "stump": "The default path completes 2026 with chain-ladder factors from the paid-date lag triangle over all 2025 and 2026 payments and flags partners who do not owe, because it reads the claims administrator's old five-week adjudication into claims now paid the day after they arrive; developed on the received dates, fewer partners owe.",
+  "stump": "The default path names nine partners, the four that owe and Ashby Lane, Calder, Juniper Hollow, Ridgeline and Tamarack, because it completes 2026 with chain-ladder factors from the paid-date lag triangle over all 2025 and 2026 payments, reading the claims administrator's old five-week adjudication into claims now paid the day after they arrive and overstating 2026 by 10.2 per cent; developed on the received dates, whose provider submission lags never changed, four partners owe.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who keeps each claim's final version and drops voids, builds attributed member months from the eligibility and attribution files, truncates each member's year at the agreement's cap, and completes 2026 with chain-ladder factors from the paid-date lag triangle over all of 2025 and 2026 flags more partners as owing than actually do; completing on the received dates, whose provider submission lags never changed, flags only those whose cost is over the corridor.",
+  "analyst_test": "A strong analyst who keeps each claim's final version and drops voids, builds attributed member months from the eligibility and attribution files, truncates each member's year at the agreement's $200,000 and completes 2026 with chain-ladder factors from the paid-date lag triangle over all of 2025 and 2026 names nine partners as owing; completing on the received dates, whose provider submission lags never changed, names four (Bellmont, Harrow Point, Kettle Run, Stonecrest).",
   "domain_test": "The deciding quantity is each partner's 2026 incurred medical cost per attributed member month, which health plan analytics estimates by completing the latest service months from a claims lag triangle; the field's own check is whether the payment process the factors were measured on is the one now paying, and when adjudication speeds up it develops claims on their received dates. With a school's or a utility's nouns there is no claim, no lag between service and payment, no adjudication engine and no triangle, so the task stops reading.",
   "mechanism_source": "design_note",
   "differentiation": {

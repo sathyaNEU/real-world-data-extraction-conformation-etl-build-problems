@@ -1,37 +1,37 @@
 {
   "task": "task451",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "healthcare-delivery-health-economics",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-13",
-  "stump": "The default path names seven partners because it completes 2026 with chain-ladder factors averaged over the 2025 and 2026 paid-date triangle, which carry Keswold's old five-week adjudication into the October to December 2026 claims that Tallis pays the day after it receives them, overstating 2026 by about ten per cent; developed on the received dates, whose provider lags never changed, four partners owe.",
+  "stump": "The default path names nine partners, the four that owe and Ashby Lane, Calder, Juniper Hollow, Ridgeline and Tamarack, because it completes 2026 with chain-ladder factors from the paid-date lag triangle over all 2025 and 2026 payments, reading the claims administrator's old five-week adjudication into claims now paid the day after they arrive and overstating 2026 by 10.2 per cent; developed on the received dates, whose provider submission lags never changed, four partners owe.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-13"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK), 2026-10-13",
+    "reader": "two passes, no decisive-step sentence; Ask B reading closed; one realism tell fixed"
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN (overuse.gate_g, repeat.decision, repeat.question_form; answered in the Draw)",
     "nearest": "0.07 (task181 v2 lineage)",
     "note": "architecture 2 drawn 2026-10-13: guard WARN (repeat.gate_g, overuse.gate_g, repeat.decision, repeat.question_form; task135 differentiated)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 2: the ladder, readability screen, semantic fork table, closure table, literal reader, oracles and ask sheet on paper (prototype t451v2/proto3, proto4 in scratch), then prompt.txt and precut.py exit 0; then the generator",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-13",
   "portal": null,
   "source_note": "seed ET08 (analytical_tasks/07_data_extraction_conformation), the world, the decision and the quantity only"
 }

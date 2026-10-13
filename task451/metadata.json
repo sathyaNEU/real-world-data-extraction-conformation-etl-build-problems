@@ -1,0 +1,141 @@
+{
+  "task": "task451",
+  "architecture": 2,
+  "title": "Which of a multiemployer health fund's twelve accountable care partners owe a 2026 shared-loss payment, each partner's incurred total cost of care per attributed member month completed from claims paid through January 2027 after the claims administrator moved adjudication to a next-day platform",
+  "domain": "Healthcare Delivery & Health Economics",
+  "subdomain": "payment-claims-health-plan-analytics (a total-cost-of-care reconciliation: claims versions, two date clocks, hour-bank eligibility and a monthly attribution roster conformed into the agreement's incurred cost per attributed member month, the open months completed from the claims lag triangle)",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "other: a register of the twelve partner groups, each with whether it owes, its members' 2026 pharmacy spending and the share of its members' 2026 professional spending that went to clinicians outside the group, with a chart of each partner's cost against its target",
+  "as_of": "2027-02-03",
+  "deliverables": [
+    "partner_settlement_2026.xlsx",
+    "partners_against_target_2026.png"
+  ],
+  "distractor_files": [
+    "stop_loss_policy_2026.pdf",
+    "partner_quality_scorecard_2026.xlsx"
+  ],
+  "input_gates": {
+    "files": 11,
+    "formats": [
+      "csv",
+      "docx",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "medical_claims_extract_2025-01_2027-01.csv",
+    "largest_file_rows": 174248
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task451/generator/build.py (seeded, deterministic) in the layouts of a third-party administrator's medical claims extract (837-derived, with claim frequency codes and type-of-bill codes), a multiemployer fund's eligibility and attribution files, and an NCPDP-style pharmacy benefit manager claims file; the fund, its administrator, its partners and every member are fictional, and every NPI is synthetic.",
+      "date": "2027-02-03",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2027-02-03",
+  "generator": "task451/generator/build.py",
+  "files": [
+    {
+      "path": "accountable_care_partner_agreement_schedule_b.pdf",
+      "format": "pdf",
+      "bytes": 86957,
+      "rows": null,
+      "source": "Constructed: Schedule B (annual reconciliation) of the Fund's accountable care partner agreements, with Exhibit 1",
+      "date": "2027-02-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "attribution_roster_2026.csv",
+      "format": "csv",
+      "bytes": 3636565,
+      "rows": 90913,
+      "source": "Constructed: the Fund Office's monthly attribution roster of members to accountable care partner groups for 2026",
+      "date": "2027-02-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "corvane_claims_file_layout_v4.pdf",
+      "format": "pdf",
+      "bytes": 83854,
+      "rows": null,
+      "source": "Constructed: the pharmacy benefit manager's client claims file layout, version 4",
+      "date": "2027-02-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "corvane_pharmacy_claims_2026.csv",
+      "format": "csv",
+      "bytes": 8898819,
+      "rows": 75896,
+      "source": "Constructed: the pharmacy benefit manager's client claims file for prescriptions filled in 2026",
+      "date": "2027-02-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "eligibility_spans_2025-2027.csv",
+      "format": "csv",
+      "bytes": 1290679,
+      "rows": 14760,
+      "source": "Constructed: the Fund Office's export of its eligibility spans (hour-bank coverage), every version",
+      "date": "2027-02-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "keswold_extract_dictionary_2027-02-01.txt",
+      "format": "txt",
+      "bytes": 2783,
+      "rows": 44,
+      "source": "Constructed: the claims administrator's data dictionary for that extract, with its release notes",
+      "date": "2027-02-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "laurelford_data_notes_2027-02.docx",
+      "format": "docx",
+      "bytes": 37619,
+      "rows": null,
+      "source": "Constructed: the Fund Office's notes for analysts on member ids, eligibility and attribution",
+      "date": "2027-02-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "medical_claims_extract_2025-01_2027-01.csv",
+      "format": "csv",
+      "bytes": 23355155,
+      "rows": 174248,
+      "source": "Constructed: the claims administrator's monthly client extract of the Fund's medical claims, every version, run 1 February 2027",
+      "date": "2027-02-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "partner_clinician_roster_2027-01-01.xlsx",
+      "format": "xlsx",
+      "bytes": 13053,
+      "rows": null,
+      "source": "Constructed: the Fund's network file of clinicians in each partner group on 1 January 2027",
+      "date": "2027-02-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "partner_quality_scorecard_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 7152,
+      "rows": null,
+      "source": "Constructed: the partners' preliminary 2026 quality measures",
+      "date": "2027-02-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "stop_loss_policy_2026.pdf",
+      "format": "pdf",
+      "bytes": 83384,
+      "rows": null,
+      "source": "Constructed: the Fund's specific stop-loss policy summary for 2026",
+      "date": "2027-02-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
