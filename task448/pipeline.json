@@ -6,7 +6,7 @@
   "objective": "etl",
   "stage": 5,
   "stage_name": "ship",
-  "updated": "2026-10-12",
+  "updated": "2026-10-13",
   "stump": "The default path recruits Shunga Valley Bank at 151 instead of Mennwell Credit Union because it counts the five non-reporting lenders at their rows in the Venridge file, which holds 60 per cent of a lender's purchase mortgages when the lender records its own mortgage after the deed (97 per cent when the closing records the two together); measured on the reporters within each way of recording and carried to each non-reporting lender by its own, Mennwell made about 200 and Weyrauch State Bank about 260, while the pooled capture of 90 per cent still leaves Mennwell at about 130.",
   "architecture": 1,
   "loops": 0,
@@ -15,18 +15,18 @@
     "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK) 2026-10-12, rerun after the portal repair",
+    "leak_py": "REVIEW (no LEAK) 2026-10-13, rerun after the second portal repair (guidelines 2.2 gained the recorded county; not near the decisive step, so no reader rerun)",
     "reader": "2026-10-12: Q1 to Q4 none; Q5 the estimand executed, no main-call fork; Q6 the reader named the 7.3 to 7.5 filters and the date basis, both asserted neutral to the call (not a rule-3 finding); realism tells fixed (small-lender names, alias review dates, shortlist notes); second read after the fix: Q1 to Q4 none, Q5 resolves the county to the recorder's (fork closed), Q6 not a rule-3 finding (the named rules asserted neutral); third read after the coverage sentence: Q1 to Q4 none (the coverage sentence read as a data caveat, not a method), Q5 the estimand executed, Q6 analytical; realism tells fixed (verification dates, one shortlist note)"
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.gate_g, answered in the design note) 2026-10-12",
+    "heart": "BLOCK 2026-10-13 ban.shape against task186, drawn five hours after task448 on 2026-10-12 (DRAWN 699d08a against 4e15f1c) and ordered first by the guard's same-day tie-break on task number; the shape is frozen and the repair does not touch it; WARN repeat.gate_g answered",
     "nearest": "0.06 (task62 lineage)",
     "note": "draw checked 2026-10-12: guard WARN repeat.gate_g (task185) answered; seven older same-signature builds differentiated on the card"
   },
   "judge": {
-    "verdict": "pass 1 NOT_DETERMINISTIC scoped to Ask B (county basis), FIX_NOW; pass 2 DETERMINISTIC, APPROVE; pass 3 (after the portal return) DETERMINISTIC, FIX_NOW on write-up and ask wording, fixed",
+    "verdict": "pass 1 NOT_DETERMINISTIC scoped to Ask B (county basis), FIX_NOW; pass 2 DETERMINISTIC, APPROVE; pass 3 (after the portal return) DETERMINISTIC, FIX_NOW on write-up and ask wording, fixed; pass 4 (after the second portal return) DETERMINISTIC, APPROVE",
     "disposition": "APPROVE after one FIX_NOW (county basis pinned in the dictionary and the vendor's guide)",
-    "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2), determinism_check_report_pass3.md (pass 3)",
+    "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2), determinism_check_report_pass3.md (pass 3), determinism_check_report_pass4.md (pass 4)",
     "gate_g": "method_or_model_selection, analytical_non_defect; sole_data_defect borderline, routed to live testing",
     "gate_h": "domain pass, layers pass, decisive step analytical"
   },
@@ -35,10 +35,16 @@
       "date": "2026-10-12",
       "portal": "determinism block: one judge DETERMINISTIC, one NOT_DETERMINISTIC (competing_defensible_answer: the recorder file counted directly as the complete count, the reporters' HMDA excess read as geocoding error; Gate G planted for the per-lender recording split)",
       "repair": "determinism",
+      "commit": "05ac4f6"
+    },
+    {
+      "date": "2026-10-13",
+      "portal": "determinism block failed on Gates C and D (underspecified_objective), scoped to the county asks: a reporter's mortgages placed by HMDA's county_code (1,410, 590, 350, 250, 410) against the recorder's county (the golden's 1,360, 580, 360, 270, 440); main call, capture asks and stump forced, model response a valid stump",
+      "repair": "determinism",
       "commit": ""
     }
   ],
-  "resume": "reshipped after the portal determinism repair; waiting for the portal",
+  "resume": "reshipped after the second portal determinism repair (guidelines 2.2, SF12); waiting for the portal",
   "approved": null,
   "delivered": "2026-10-12",
   "portal": null,

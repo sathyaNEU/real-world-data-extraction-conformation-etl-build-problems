@@ -250,6 +250,13 @@ def market_two_year(B, reporters="share", dedupe=True, hmda_county=False, seller
                 tot = float(B["hmda"][lei])
                 for k, v in byc.items():
                     out[k] += tot * v / byc.sum()
+            elif reporters == "hybrid":
+                # the recorded mortgages where they are recorded, the rest of the HMDA count where HMDA's codes put it
+                tot = float(B["hmda"][lei])
+                for k, v in byc.items():
+                    out[k] += v
+                for k in REGION:
+                    out[k] += (tot - byc.sum()) * float(B["hmda_county"].get((lei, k), 0)) / tot
             else:
                 for k, v in byc.items():
                     out[k] += v / c[route(n)]

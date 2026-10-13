@@ -81,7 +81,7 @@ def write_guidelines(path):
              "agree to originate program loans.")
     s.append(Paragraph("2. Service area", G_H2))
     N("2.1", "Saline, McPherson, Dickinson, Marion, Rice, Ottawa, Ellsworth and Lincoln counties.")
-    N("2.2", "A home is in the county where it stands.")
+    N("2.2", "A home is in the county where it stands, which is the county in which the property is recorded.")
     s.append(Paragraph("3. Buyers", G_H2))
     N("3.1", "A buyer qualifies who has not owned a home in the past three years, whose household income is at or "
              "below 100 per cent of the non-metropolitan Kansas median family income for the household's size, who "

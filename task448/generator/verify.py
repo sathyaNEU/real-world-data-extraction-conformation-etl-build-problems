@@ -99,6 +99,45 @@ def main(target=None, golden=None):
     for n in hmn:
         if n not in seen:
             raise SystemExit("VERIFY: a reporter with no recorded mortgage needs HMDA's county codes")
+    # SF12: guidelines 2.2 place a home in the county in which the property is recorded; HMDA's county is a geocode.
+    # Keeping the recorded mortgages where recorded and only the rest of each reporter's count where HMDA's codes put
+    # it lands in the same bins; HMDA's codes for every reporter loan do not.
+    name_of = dict(zip(FIPS, ("SALINE", "MCPHERSON", "DICKINSON", "MARION", "RICE", "OTTAWA", "ELLSWORTH", "LINCOLN")))
+    rules = " ".join(" ".join(pg.extract_text() for pg in PdfReader(
+        os.path.join(target, "rural_dpa_program_guidelines_2027.pdf")).pages).split()).lower()
+    sf12_pin = "a home is in the county where it stands, which is the county in which the property is recorded" in rules
+    geo = {}
+    for lei, cc, k in q.execute("""SELECT lei, county_code, count(*) FROM read_csv('%s', all_varchar=true)
+            WHERE county_code IN %s AND action_taken = '1' AND loan_purpose = '1' AND lien_status = '1'
+            GROUP BY ALL""" % (t("hmda_lar_kansas_2024_2025.csv"), str(FIPS))).fetchall():
+        geo.setdefault(lei, {})[name_of[cc]] = k
+    lei_of = dict(q.execute("SELECT nmls, lei FROM r").fetchall())
+    hy, hc = {}, {}
+    for c, n, k, route, is_rep, tot in q.execute("""
+            WITH m AS (SELECT * FROM mtg WHERE instr BETWEEN DATE '2024-01-01' AND DATE '2025-12-31'),
+            bc AS (SELECT nmls, county, count(*) AS k FROM m GROUP BY ALL),
+            lr AS (SELECT nmls, sum(k) AS t FROM bc GROUP BY nmls)
+            SELECT bc.county, bc.nmls, bc.k, CASE WHEN coalesce(l.pk, 1) >= 0.5 THEN 'P' ELSE 'S' END,
+                   rep.nmls IS NOT NULL, lr.t
+            FROM bc JOIN lr USING (nmls) LEFT JOIN rep USING (nmls) LEFT JOIN lend l USING (nmls)""").fetchall():
+        key = c if c in FOUR else "OTHER"
+        if is_rep:
+            hy[key] = hy.get(key, 0.0) + k
+        else:
+            hy[key] = hy.get(key, 0.0) + k / cap[route]
+            hc[key] = hc.get(key, 0.0) + k / cap[route]
+    for n in hmn:
+        g = geo.get(lei_of[n], {})
+        rec = sum(x[0] for x in q.execute("""SELECT count(*) FROM mtg WHERE nmls = ? AND instr BETWEEN
+                  DATE '2024-01-01' AND DATE '2025-12-31'""", [n]).fetchall())
+        for c, k in g.items():
+            key = c if c in FOUR else "OTHER"
+            hy[key] = hy.get(key, 0.0) + (hmn[n] - rec) * k / hmn[n]
+            hc[key] = hc.get(key, 0.0) + k
+    sf12 = (sf12_pin and all(rnd(hy[k]) == rnd(two[k]) for k in two) and
+            sum(rnd(hc[k]) != rnd(two[k]) for k in two) >= 4)
+    print("verify: SF12 hybrid %s; HMDA's codes %s" % (", ".join("%s %.1f" % (k, hy[k]) for k in two),
+                                                       ", ".join("%s %.1f" % (k, hc[k]) for k in two)))
     py = {}
     for c, packaged, k in q.execute("""SELECT county, packaged, count(*) FROM mtg
             WHERE instr BETWEEN DATE '2025-07-01' AND DATE '2026-06-30' GROUP BY ALL""").fetchall():
@@ -129,6 +168,8 @@ def main(target=None, golden=None):
         fail.append("chart")
     if not sf11:
         fail.append("SF11: the guide's coverage sentence, or the file's rows alone giving a wrong five")
+    if not sf12:
+        fail.append("SF12: guidelines 2.2's recorded county, the hybrid's bins, or HMDA's codes missing four figures")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     if fig["capture_packaged"] != "%d" % round(100 * cap["P"]) or fig["capture_separate"] != "%d" % round(100 * cap["S"]):
         fail.append("captures in figures.json")

@@ -318,6 +318,11 @@ def run(target, golden, world=None, meta_path=None):
     ok("the county in which the property lies" in doc_text,
        "Ask B pin: the vendor's guide files the recording county as where the property lies")
     flat = re.sub(r"\s+", " ", doc_text)
+    ok("a home is in the county where it stands, which is the county in which the property is recorded" in flat,
+       "SF12 pin: guidelines 2.2 place a home in the county in which the property is recorded")
+    A_hy, _ = C.ask_figures(C.market_two_year(B, reporters="hybrid"), py_g)
+    ok(same_bins(A, A_hy, A), "SF12 the reporters' recorded mortgages where recorded, HMDA's codes for the rest: "
+       "same bins", " ".join("%.1f" % A_hy[k] for k in A))
     ok("does not hold every purchase-money mortgage recorded in a county" in flat,
        "SF11 pin: the vendor's guide files that the file does not hold every purchase-money mortgage recorded")
     feed_all_rows = C.counts(B, lambda F: F.mortgage)

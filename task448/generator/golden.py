@@ -82,7 +82,7 @@ def figures(X):
             (nm, n) for n, nm in X["B"]["short"])["Heidebrecht State Bank"]) &
             X["B"]["F"].MTG_INSTR_DATE.between(*C.WIN)).sum())),
         margin_fifth_sixth="%.2f" % (X["v"][five[4]] / X["v"][sixth]),
-        clauses=["7.2", "7.3", "7.4", "7.5"],
+        clauses=["7.2", "7.3", "7.4", "7.5", "2.2"],
         nearest=10, years="2024 and 2025", program_year_span="1 July 2025 to 30 June 2026",
     )
     return f, five, sixth
@@ -161,8 +161,9 @@ def write_xlsx(path, X, f, five, sixth):
         "same day as the deed (%s per cent), %s of their %s recorded after it (%s per cent)." % (
             f["reporters_packaged_rows"], f["reporters_packaged_hmda"], f["capture_packaged"],
             f["reporters_separate_rows"], f["reporters_separate_hmda"], f["capture_separate"]),
-        "County figures: each HMDA reporter's count is spread over the counties its recorded mortgages stand in "
-        "(HMDA places some rural homes in the county of their postal city); the program year is counted from the "
+        "County figures: a home counts in the county in which the property is recorded (program guidelines 2.2), so "
+        "each HMDA reporter's count is spread over the counties its recorded mortgages stand in (HMDA places some "
+        "rural homes in the county of their postal city); the program year is counted from the "
         "recorder file for every lender, each mortgage over the capture of the way it was recorded.",
         "Every count is estimated from unrounded figures and rounded to the nearest 10 once; the program year's total "
         "for all eight counties is rounded from the unrounded county figures, so it need not equal the sum of the "
