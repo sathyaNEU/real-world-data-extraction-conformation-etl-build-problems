@@ -1,153 +1,133 @@
-"""Independent verifier for task452: reads only target/ (and figures.json to compare), imports nothing from the
-generator, and recomputes the call (each day's concentration from a seasonal log-log rating curve fitted to every
-accepted routine sample of water years 2024 to 2026, retransformed by smearing), the default path's slate (samples
-interpolated across the water year), each tributary's upstream permitted wastewater phosphorus and its 2026 cover crop
-acres."""
-import datetime as dt
-import json
+"""Independent verifier: reads only the shipped bundle and the goldens, on its own code path (csv, openpyxl, pyarrow and
+pypdf readers), and recomputes the conformed reference classes, the area of deforestation on the sampling strata,
+the tonnes offered and the payment, the interval, each district's area and the final map's deforestation patches by
+district, in all and of 5 ha or more."""
+import csv
+import math
 import os
 import re
 import sys
 
-import numpy as np
-import pandas as pd
-
-HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
-FAILS = []
-KG = 0.028316846592 * 86400 * 1000 / 1e6
-
-
-def check(cond, msg):
-    print(("ok    " if cond else "FAIL  ") + msg)
-    if not cond:
-        FAILS.append(msg)
+MAIN = "reference_points_main_campaign_2026.csv"
+ADJ = "adjudication_log_2026-04.xlsx"
+DESIGN = "reference_sampling_design_2026-01.pdf"
+ERPA = "emission_reductions_payment_agreement_extract.pdf"
+POLY = "final_change_map_v2_polygons.parquet"
+CONC = "district_concordance_2019_2025.csv"
+PDF = "er_monitoring_report_2024-2025.pdf"
+XLSX = "reference_sample_conformed_2024-2025.xlsx"
+FIELD = {"lc24": "lc_2024", "cc24": "canopy_2024", "lc25": "lc_2025", "cc25": "canopy_2025", "loss_year": "loss_year",
+         "loss_month": "loss_month", "confidence": "confidence"}
 
 
-def offset(t):
-    """Eastern time's hours behind UTC at a UTC instant (daylight from 2am local on the second Sunday of March to 2am
-    local on the first Sunday of November)"""
-    for a, b in ((dt.datetime(2025, 3, 9, 7), dt.datetime(2025, 11, 2, 6)), (dt.datetime(2026, 3, 8, 7), dt.datetime(2026, 11, 1, 6))):
-        if a <= t < b:
-            return 4
-    return 5
-
-
-def main(target, golden=None):
-    F = json.load(open(os.path.join(HERE, "figures.json")))
-    import openpyxl
+def text(path):
     from pypdf import PdfReader
-    txt = "\n".join(p.extract_text() for p in PdfReader(os.path.join(target, "brannoch_lake_phosphorus_agreement.pdf")).pages)
-    wb = openpyxl.load_workbook(os.path.join(target, "blc_station_register.xlsx"), read_only=True)
-    st = [r for r in wb["Stations"].iter_rows(min_row=5, values_only=True) if r[0]]
-    A = {}
-    for r in st:
-        m = re.search(re.escape(r[0]) + r"\s+" + re.escape(r[1]) + r"\s+([\d,]+)", txt)
-        A[r[0]] = float(m.group(1).replace(",", ""))
-    check(len(A) == 10, "Schedule 1 lists ten tributaries")
-    sid = {}
-    for r in st:
-        sid[r[1]] = r[0]
-        sid[r[2]] = r[0]
-    w = pd.read_csv(os.path.join(target, "blc_water_quality_results_2027-01-08.csv"), dtype=str)
-    tp = w[w["ResultSampleFractionText"].eq("Total") & w["CharacteristicName"].str.contains("Phosphorus")
-           & w["ActivityTypeCode"].eq("Sample-Routine") & w["ResultStatusIdentifier"].eq("Accepted")]
-    v = tp["ResultMeasureValue"].astype(float) / np.where(tp["ResultMeasure/MeasureUnitCode"].eq("ug/L"), 1000.0, 1.0)
-    samp = {n: [] for n in A}
-    for loc, d, c in zip(tp["MonitoringLocationIdentifier"], tp["ActivityStartDate"], v):
-        samp[sid[loc]].append((dt.date.fromisoformat(d), c))
-    uv = pd.read_csv(os.path.join(target, "merrifield_unit_values_wy2026_approved.csv"), comment="#", dtype={"gage_id": str})
-    t = pd.to_datetime(uv["datetime_utc"])
-    off = np.array([offset(x) for x in t.dt.to_pydatetime()])
-    uv["day"] = (t - pd.to_timedelta(off, unit="h")).dt.date
-    dq = uv.groupby(["gage_id", "day"])["discharge_cfs"].mean()
-    dv = pd.read_csv(os.path.join(target, "merrifield_daily_values_wy2024-wy2025.csv"), comment="#", dtype={"gage_id": str})
-    days = [dt.date(2025, 10, 1) + dt.timedelta(days=i) for i in range(365)]
-    G1, R0, VAR, INFO = {}, {}, {}, {}
-    for r in st:
-        name, gage, ratio = r[0], str(r[3]), float(r[4]) / float(r[5])
-        q = {dt.date.fromisoformat(a): b * ratio for a, b in zip(dv.loc[dv["gage_id"].eq(gage), "date"], dv.loc[dv["gage_id"].eq(gage), "discharge_cfs"])}
-        for d, x in dq.loc[gage].items():
-            q[d] = x * ratio
-        s = [(d, c) for d, c in samp[name] if d in q]
-        def X(dd, season=True, quad=False):
-            lq = np.log([q[d] for d in dd])
-            cols = [np.ones(len(dd)), lq] + ([lq ** 2] if quad else [])
-            if season:
-                a = np.array([2 * np.pi * d.timetuple().tm_yday / 365.25 for d in dd])
-                cols += [np.sin(a), np.cos(a)]
-            return np.column_stack(cols)
-        y = np.log([c for d, c in s])
-        qd = np.array([q[d] for d in days])
-        loads = []
-        for season, quad, corr in ((True, False, "smear"), (True, False, "mle"), (False, False, "smear"), (True, True, "smear")):
-            Xs = X([d for d, c in s], season, quad)
-            b, *_ = np.linalg.lstsq(Xs, y, rcond=None)
-            res = y - Xs @ b
-            f = float(np.mean(np.exp(res))) if corr == "smear" else float(np.exp(np.sum(res ** 2) / (len(y) - Xs.shape[1]) / 2))
-            pred = np.exp(X(days, season, quad) @ b) * qd
-            loads.append(float(np.sum(pred) * KG * f))
-            if (season, quad, corr) == (True, False, "smear"):
-                top = qd > np.quantile(qd, 0.9)
-                s26d = [d for d, c in s if d >= days[0]]
-                INFO[name] = dict(slope=float(b[1]), smear=f, n=len(y), top_load=100 * float(pred[top].sum() / pred.sum()),
-                                  top_samp=100 * float(np.mean([q[d] > np.quantile(qd, 0.9) for d in s26d])))
-        G1[name] = loads[0]
-        VAR[name] = (min(loads), max(loads))
-        s26 = [(d, c) for d, c in s if d >= days[0]]
-        R0[name] = float(np.sum(np.interp([d.toordinal() for d in days], [d.toordinal() for d, c in s26], [c for d, c in s26]) * qd) * KG)
-    k10 = lambda x: int(round(x / 10.0)) * 10
-    out10 = lambda lo, hi: [int(np.floor(lo / 10.0)) * 10, int(np.ceil(hi / 10.0)) * 10]
-    check(all(out10(*VAR[n]) == F["load_range_full_record_kg"][n] for n in A),
-          "every tributary's load range over the four full-record curves recomputes (rounded outward)")
-    check(all(out10(VAR[n][0] - A[n], VAR[n][1] - A[n]) == F["excess_range_full_record_kg"][n] for n in A),
-          "every tributary's range above or below its allocation recomputes (rounded outward)")
-    check(all(round(INFO[n]["slope"], 2) == F["slope"][n] and round(INFO[n]["smear"], 3) == F["smearing"][n] and INFO[n]["n"] == F["n_samples"][n] for n in A),
-          "slopes, smearing factors and sample counts recompute")
-    check(all(round(INFO[n]["top_load"]) == F["top_tenth_load_pct"][n] and round(INFO[n]["top_samp"]) == F["top_tenth_samples_pct"][n] for n in A),
-          "the top tenth of days' load and sample shares recompute")
-    check(all(k10(A[n] - R0[n]) == v for n, v in F["default_below_kg"].items()), "the default's shortfalls for the funded rivers recompute")
-    check(k10(sum(G1.values())) == F["basin_load_kg"], "the basin load recomputes")
-    def slate(L):
-        ex = {n: L[n] - A[n] for n in L}
-        return sorted(sorted((n for n in ex if ex[n] > 0), key=lambda n: -ex[n])[:3])
-    check(slate(G1) == sorted(F["call"]), "the rating curve funds %s (figures.json %s)" % (slate(G1), sorted(F["call"])))
-    check(all(int(round(G1[n] / 10.0)) * 10 == F["load_kg"][n] for n in A), "every tributary's load recomputes to the nearest 10 kg")
-    check(slate(R0) == sorted(F["default_slate"]) and slate(R0) != slate(G1), "interpolation funds %s" % slate(R0))
-    # Ask A: permitted facilities upstream of each compliance station
-    streams = {r[0]: (r[1], float(r[2])) for r in wb["Streams"].iter_rows(min_row=4, values_only=True) if r[0]}
-    outf = {(r[0], r[2]): (r[3], float(r[4])) for r in wb["Facilities"].iter_rows(min_row=4, values_only=True) if r[0]}
-    rkm = {r[0]: float(r[6]) for r in st}
-    dm = pd.read_csv(os.path.join(target, "npdes_dmr_phosphorus_wy2026.csv"), dtype=str)
-    dm = dm[dm["STATISTICAL_BASE"].eq("MO AVG")].sort_values("RECEIVED_DATE").groupby(
-        ["PERMIT_ID", "OUTFALL", "MONITORING_PERIOD_END_DATE", "PARAMETER_DESC"]).tail(1)
-    ww = {n: 0.0 for n in A}
-    for (pid, of, start, end), g in dm.groupby(["PERMIT_ID", "OUTFALL", "MONITORING_PERIOD_START_DATE", "MONITORING_PERIOD_END_DATE"]):
-        rw, pos = outf[(pid, of)]
-        while rw not in A:
-            rw, pos = streams[rw]
-        if pos <= rkm[rw]:
+    return " ".join(" ".join((p.extract_text() or "").split()) for p in PdfReader(path).pages)
+
+
+def points(target):
+    from openpyxl import load_workbook
+    rows = {r["plot_id"]: r for r in csv.DictReader(open(os.path.join(target, MAIN), newline="", encoding="utf-8"))}
+    ws = load_workbook(os.path.join(target, ADJ), read_only=True, data_only=True).active
+    for r in ws.iter_rows(min_row=4, values_only=True):
+        if r[0]:
+            rows[r[0]][FIELD[r[1]]] = str(r[4])
+    for r in rows.values():
+        f24 = r["lc_2024"] in ("1", "2") and r["canopy_2024"] in ("C", "D")
+        f25 = r["lc_2025"] in ("1", "2") and r["canopy_2025"] in ("C", "D")
+        yr = int(float(r["loss_year"])) if r["loss_year"] else None
+        r["cls"] = "N" if not f24 else ("F" if f25 else ("D" if yr in (2024, 2025) else "N"))
+    return rows
+
+
+def strata(target):
+    t = text(os.path.join(target, DESIGN))
+    out = {}
+    for s in ("S1", "S2", "S3"):
+        m = re.search(r"%s (?:deforestation 2024-2025|stable forest|non-forest) ([\d,]+) ([\d,]+)" % s, t)
+        out[s] = (int(m.group(1).replace(",", "")), int(m.group(2).replace(",", "")))
+    return out
+
+
+def main(target, golden):
+    fails = []
+    pts = points(target)
+    st = strata(target)
+    w = {s: a / n for s, (a, n) in st.items()}
+    counts = {}
+    for r in pts.values():
+        counts[r["stratum"]] = counts.get(r["stratum"], 0) + 1
+    assert all(counts[s] == st[s][1] for s in st)
+    area = sum(w[r["stratum"]] for r in pts.values() if r["cls"] == "D")
+    var = 0.0
+    for s, (a, n) in st.items():
+        p = sum(1 for r in pts.values() if r["stratum"] == s and r["cls"] == "D") / n
+        var += a * a * p * (1 - p) / (n - 1)
+    se = math.sqrt(var)
+    erpa = text(os.path.join(target, ERPA))
+    rl = float(re.search(r"reference level is ([\d,]+) hectares", erpa).group(1).replace(",", ""))
+    ef = float(re.search(r"([\d.]+) tonnes of carbon dioxide equivalent per hectare", erpa).group(1))
+    rep = int(100 * math.floor(area / 100 + 0.5))
+    er = (2 * rl - rep) * ef
+    offer = max(0, math.floor(er * 0.82))
+    pay = offer * 5
+    lo, hi = area - 1.6448536 * se, area + 1.6448536 * se
+    by = {}
+    for r in pts.values():
+        if r["cls"] == "D":
+            by[r["district"]] = by.get(r["district"], 0.0) + w[r["stratum"]]
+    import pyarrow.parquet as pq
+    t = pq.read_table(os.path.join(target, POLY)).to_pydict()
+    conc = list(csv.DictReader(open(os.path.join(target, CONC), newline="", encoding="utf-8")))
+    to19 = {r["district_2025"]: r["district_2019"] for r in conc if r["accounting_area"] == "program"}
+    dname = {r["district_2019"]: r["name_2019"] for r in conc}
+    every, small, big = {}, {}, {}
+    for d, a, ph in zip(t["district_2025"], t["area_ha"], t["patch_ha"]):
+        if d in to19:
+            every[to19[d]] = every.get(to19[d], 0.0) + a / ph
+            small[to19[d]] = small.get(to19[d], 0.0) + (a / ph if ph < 1 else 0.0)
+            big[to19[d]] = big.get(to19[d], 0.0) + (a / ph if ph >= 5 else 0.0)
+    print("verify: area %.1f ha (reported %d), se %.1f, offered %d t, payment USD %d" % (area, rep, se, offer, pay))
+    print("verify: patches %d, under 1 ha %d, of 5 ha or more %d" % (round(sum(every.values())),
+                                                                     round(sum(small.values())), round(sum(big.values()))))
+    rep_txt = text(os.path.join(golden, PDF))
+    for need in (format(offer, ","), format(pay, ","), format(rep, ","), format(int(10_000 * math.floor(lo / 10_000 + 0.5)),
+                 ","), format(int(10_000 * math.floor(hi / 10_000 + 0.5)), ",")):
+        if need not in rep_txt:
+            fails.append("report lacks %s" % need)
+    for d, v in by.items():
+        if format(int(100 * math.floor(v / 100 + 0.5)), ",") not in rep_txt:
+            fails.append("report lacks district %s area %d" % (d, round(v)))
+    for d in every:
+        if max(abs(v[d] - round(v[d])) for v in (every, small, big)) > 1e-6:
+            fails.append("district %s: polygon shares do not sum to whole patches" % d)
+        if not re.search(r"%s [\d,]+ %s %s %s\b" % (re.escape(dname[d]), format(int(round(every[d])), ","),
+                                                     format(int(round(small[d])), ","),
+                                                     format(int(round(big[d])), ",")), rep_txt):
+            fails.append("report lacks district %s patches" % d)
+    from openpyxl import load_workbook
+    ws = load_workbook(os.path.join(golden, XLSX), read_only=True, data_only=True)["Reference points"]
+    name = {"D": "deforestation 2024-2025", "F": "stable forest", "N": "non-forest"}
+    seen = 0
+    for r in ws.iter_rows(min_row=2, values_only=True):
+        if not r[0]:
             continue
-        p_ = g[g["PARAMETER_DESC"].str.startswith("Phosphorus")].iloc[0]
-        f_ = g[g["PARAMETER_DESC"].str.startswith("Flow")].iloc[0]
-        nd = (dt.date.fromisoformat(end) - dt.date.fromisoformat(start)).days + 1
-        ww[rw] += float(p_["DMR_VALUE"]) * 0.45359237 * nd if p_["DMR_UNIT"] == "lb/d" else float(p_["DMR_VALUE"]) * float(f_["DMR_VALUE"]) * 3.785411784 * nd
-    check(all(int(round(ww[n] / 10.0)) * 10 == F["wastewater_stated"][n] for n in A), "every tributary's upstream wastewater phosphorus recomputes to the nearest 10 kg")
-    # Ask B: the acres of each enrolled field lying in each watershed, for the contracts in force for crop year 2026
-    c = pd.read_csv(os.path.join(target, "farm_practice_contracts_2024-2027.csv"), dtype=str, comment="#")
-    c["n"] = c["amendment_no"].astype(int)
-    c = c[c["n"].eq(c.groupby("contract_id")["n"].transform("max"))]
-    c = c[(c["first_crop_year"].astype(int) <= 2026) & (c["last_crop_year"].astype(int) >= 2026)]
-    fm = pd.read_csv(os.path.join(target, "practice_field_watershed_acres.csv"), dtype=str)
-    cov = {n: 0.0 for n in A}
-    for fid in c["field_id"]:
-        part = fm[fm["field_id"].eq(fid)]
-        for ws, fa, sh in zip(part["watershed"], part["field_acres"].astype(float), part["share_of_field"].astype(float)):
-            cov[ws] += fa * sh
-    check(all(int(round(cov[n] / 10.0)) * 10 == F["cover_stated"][n] for n in A), "every watershed's cover crop acres recompute to the nearest 10")
-    print("verify: %d failed" % len(FAILS))
-    return not FAILS
+        seen += 1
+        if r[3] != name[pts[r[0]]["cls"]] or r[1] != pts[r[0]]["stratum"]:
+            fails.append("xlsx %s" % r[0])
+    if seen != 4000:
+        fails.append("xlsx rows %d" % seen)
+    if offer != 23_229_780 or rep != 122_900:
+        fails.append("call: %d t on %d ha" % (offer, rep))
+    for f in fails[:12]:
+        print("VERIFY FAIL  " + f)
+    print("verify: %s (%d mismatches)" % ("PASS" if not fails else "FAIL", len(fails)))
+    if fails:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
-    sys.exit(0 if main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(TASK, "target")) else 1)
+    here = os.path.dirname(os.path.abspath(__file__))
+    task = os.path.dirname(here)
+    main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(task, "target"),
+         sys.argv[2] if len(sys.argv) > 2 else os.path.join(task, "golden"))

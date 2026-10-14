@@ -1,120 +1,120 @@
 {
-  "task": "task452",
-  "architecture": "v2",
-  "drawn": "2026-10-14",
-  "slot_note": "v2 re-rooted 2026-10-14 inside ETL with the number kept: v1 (tributary phosphorus loads by rating curve) is a standard method careful solvers apply; v2 stays in the emissions inventory task type, in the land-use sector a results-based payment reads, where the activity data are estimated from a reference sample drawn on a preliminary change map that the final map later revised.",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "emissions-inventory",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "a jurisdictional forest program's emission reductions for a results-based payment: the deforestation area of the reporting period estimated from a stratified reference sample of visually interpreted points, the sample drawn on the preliminary change map and the final map reprocessed after it",
-  "objective": "etl",
-  "shape": "other",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "population",
-    "time"
-  ],
-  "pattern": [
+ "task": "task452",
+ "architecture": "v2",
+ "drawn": "2026-10-14",
+ "slot_note": "v2 re-rooted 2026-10-14 inside ETL with the number kept: v1 (tributary phosphorus loads by rating curve) is a standard method careful solvers apply; v2 stays in the emissions inventory task type, in the land-use sector a results-based payment reads, where the activity data are estimated from a reference sample drawn on a preliminary change map that the final map later revised.",
+ "domain": "physical-environmental-sciences",
+ "subdomain": "emissions-inventory",
+ "client_domain": "physical-environmental-sciences",
+ "niche": "a jurisdictional forest program's emission reductions for a results-based payment: the deforestation area of the reporting period estimated from a stratified reference sample of visually interpreted points, the sample drawn on the preliminary change map and the final map reprocessed after it",
+ "objective": "etl",
+ "shape": "other",
+ "decision_type": "quantity_figure",
+ "answer_unit": "count",
+ "answer": "23,229,780 tonnes of CO2e offered for 2024-2025, for which the Rainforest Results Facility pays USD 116,148,900 (122,900 ha of deforestation)",
+ "answer_source": "task452/submission.md, block 1; golden/er_monitoring_report_2024-2025.pdf, page 1",
+ "gap": [
+  "population",
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G9",
+  "G16",
+  "G12"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "gold_standard_subsample",
+ "stump_strategy": "population_selection",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "monitoring_export",
+ "stakeholder_role": "head of the university forest monitoring laboratory that prepares the program's emission reductions monitoring report for the ministry and the fund",
+ "role_family": "field_unit_lead",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "final_change_map_v2_polygons.parquet",
+  "rows": 48947,
+  "entity": "one polygon of the final forest change map, delivered by 10 km tile and by quarter of first detection, with its own area and the area of the patch it belongs to",
+  "grain": "change polygon (tile by quarter piece of a patch)",
+  "source": "synthetic (constructed in the layout of a national forest monitoring system's change-map vector export)"
+ },
+ "forum": "funder_or_donor",
+ "forcing_event": "purchase_order_or_contract",
+ "org_family": "university_or_school",
+ "world": {
+  "geography": "a fictional Spanish-speaking tropical country (personas drawn on the Mexico index; no real agency, fund or program named)",
+  "currency": "USD",
+  "org_type": "a national university's forest monitoring laboratory, which prepares the program's monitoring report under contract to the ministry of environment; a results-based climate fund's trustee",
+  "invented_names": [],
+  "people": [
+   "Lilia Solano",
+   "César Verduzco",
+   "Raquel Saavedra"
+  ]
+ },
+ "deliverables": [
+  "er_monitoring_report_2024-2025.pdf",
+  "reference_sample_conformed_2024-2025.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-much",
+ "driver": "An area is estimated from reference observations drawn with stratum-specific inclusion probabilities from a preliminary classification that was revised before the estimate; the revised classification's own count and the textbook estimator stratified by its classes both misweight the observations, because the oversampled observations the revision moved between classes keep the inclusion probabilities of the classes they were drawn from, and only weighting each observation by its own design weight recovers the area.",
+ "driver_concrete": "The 2024-2025 reference points were drawn in January 2026 by stratified random sampling on the preliminary change map (400 in its deforestation class, 2,400 in stable forest, 1,200 in non-forest); the final map reprocessed in April with radar and late-season imagery moved 124 of the 400 preliminary-deforestation points, 21 of them real clearings, into stable forest, so an error matrix on the final map's classes weights each of them at 2,367 ha instead of the 329 its stratum gives it and states 171,600 ha, close under the reference level, while the final map's own area (73,200 ha) misses the clearings it left out; only the stratified estimator on the sampling strata, each point weighted by its stratum's area over its points, gives the 122,900 ha the emission reductions rest on.",
+ "stump": "A competent analyst conforms the two interpretation campaigns correctly, builds the error matrix of the final change map against the reference points and estimates the deforested area from it with the final map's class areas as weights, the stratified estimator of good practice: 171,600 ha, 8,300 under the reference level's 179,900 for the two years, so 3,382,582 tonnes offered; the final map's own deforestation (73,200 ha) would offer 43,484,518 tonnes; only the stratified estimator on the strata the sample was drawn from, each point weighted by its preliminary stratum's area over its points, gives 122,900 ha and 23,229,780 tonnes offered for USD 116,148,900.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who conforms both campaigns and the adjudication on the national forest definition and the reporting period and executes every article of the payment agreement assesses the final change map, the map the monitoring report presents, against the reference points and estimates the area from its error matrix with its mapped class areas: 171,600 ha and 3,382,582 tonnes offered; the final map's own area offers 43,484,518 tonnes; neither is the 23,229,780 tonnes the sample's own design gives.",
+ "domain_test": "The deciding quantity is the reporting period's deforested area, estimated the way forest monitoring estimates activity data for an emissions inventory: from a probability sample of reference points interpreted on high-resolution imagery, analysed by the design it was drawn under (strata from the map used for sampling, the final map only reporting where change sits), and turned into emission reductions against the reference level with the inventory's emission factor; with a hospital's nouns there is no change map, no interpreted reference point, no reference level or emission factor, and the task stops reading.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task452": "v1 priced unsampled days through a concentration-discharge rating curve; v2 has no rating curve or time series: the decisive step is design-based estimation of an area from a sample whose strata are a map revised after the draw",
+  "task459": "task459 sets an emissions performance standard on plants' heat rates by operating level; v2 estimates a land-use activity datum from a stratified reference sample",
+  "task230": "task230 corrects a census count for net classification bias in a channel still to be processed; v2 weights a classified sample by the design it was drawn under, the map that defined the strata having been revised",
+  "task448": "task448 completes a register from a second list whose capture depends on route; v2 has no capture-recapture: a single probability sample, analysed by its design weights rather than by the revised map's classes",
+  "task133": "task133 books a collective credit-loss allowance on loan pools; v2 estimates a land area from a probability sample analysed by its design weights, with no loans, stages or pools",
+  "task255": "task255 corrects an estimate for a misclassified share; v2's decisive step is the inclusion probability each reference point carries from the preliminary map it was drawn on, which the revised map's classes do not carry",
+  "task253": "task253 estimates a population count from a sample whose response rate varies by frame; v2 has full response: the decisive step is analysing a stratified sample by its own strata after the map that defined them was revised",
+  "task139": "task139 reads a randomised intervention per assigned unit rather than per surviving recorded case; v2 has no intervention, arms or costs: each reference point is weighted by the inclusion probability of the stratum it was drawn from, not by the class the revised map now gives it"
+ },
+ "notes": "Re-rooted 2026-10-14 (architecture 2). Strategy population_selection (who each reference point stands for: its inclusion probability follows the preliminary strata it was drawn from, not the final map's class it now sits in). The reference sample is the gold_standard_subsample organ. Gap population first (the final map is not the deforested area, and its classes are not the sampling frame); time second (the final map postdates the sample).",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:design-weights-when-the-sampling-map-is-revised",
+ "layer1": [
+  "two interpretation campaigns in different layouts (the laboratory's main campaign as CSV with land-cover codes and canopy classes; the ministry's quality-control re-interpretation of one point in five exported from its form tool as JSON, Spanish labels, canopy bands and LFM26/ ids), disagreements settled field by field in an adjudication log",
+  "interpreters' land-cover legend (dense and open forest, woodland, plantation, cropland, pasture, settlement, water) against the national forest definition (canopy cover of 30 per cent or more over 0.5 ha, plantations excluded)",
+  "remarks noting clearings of 2021 to 2023 on land that was pasture in January 2024",
+  "map areas by pixel counting on the 30 m grid, repeated across a patch's polygons",
+  "district codes on the 2019 layer in the reference points and on the 2025 layer in the map's statistics and polygons (La Esperanza split into La Esperanza and Nueva Esperanza), joined through the concordance",
+  "distractors: the national forest inventory's tree measurements and the fire hotspot detections"
+ ],
+ "lineage": [
+  {
+   "domain": "physical-environmental-sciences",
+   "subdomain": "emissions-inventory",
+   "objective": "etl",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G9",
+   ],
+   "generators": [
+    "G14",
     "G16",
-    "G12"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "population_selection",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stakeholder_role": "head of the university forest monitoring laboratory that prepares the program's emission reductions monitoring report for the ministry and the fund",
-  "role_family": "field_unit_lead",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "forest_change_polygons_final_2024-2025.parquet",
-    "rows": 0,
-    "entity": "one polygon of the final forest change map, with its area, district and detection date",
-    "grain": "change polygon",
-    "source": "synthetic (constructed in the layout of a national forest monitoring system's change-map vector export)"
-  },
-  "forum": "funder_or_donor",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "university_or_school",
-  "world": {
-    "geography": "a fictional Spanish-speaking tropical country (personas drawn on the Mexico index; no real agency, fund or program named)",
-    "currency": "USD",
-    "org_type": "a national university's forest monitoring laboratory, which prepares the program's monitoring report under contract to the ministry of environment; a results-based climate fund's trustee",
-    "invented_names": [],
-    "people": [
-      "Lilia Solano",
-      "César Verduzco",
-      "Raquel Saavedra"
-    ]
-  },
-  "deliverables": [
-    "er_monitoring_report_2024-2025.pdf",
-    "reference_sample_conformed_2024-2025.xlsx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "An area is estimated from reference observations drawn with stratum-specific inclusion probabilities from a preliminary classification that was revised before the estimate; the revised classification's own count and the textbook estimator stratified by its classes both misweight the observations, because the oversampled observations the revision moved between classes keep the inclusion probabilities of the classes they were drawn from, and only weighting each observation by its own design weight recovers the area.",
-  "driver_concrete": "The 2024-2025 reference points were drawn in January 2026 by stratified random sampling on the preliminary change map (400 in its deforestation class, 2,400 in stable forest, 1,200 in non-forest); the final map reprocessed in April with radar and late-season imagery removed most of the preliminary map's cloud-shadow false alarms and some true clearings, so an error matrix on the final map's classes pools heavily sampled former-deforestation points with lightly sampled stable-forest points and overstates the deforestation the final map omitted, while the final map's own area misses a third of it; only the stratified estimator on the sampling strata, each point weighted by its stratum's area over its sample size, gives the area the emission reductions rest on.",
-  "stump": "A competent analyst builds the error matrix of the final change map against the reference sample and estimates the deforested area from it by the stratified estimator, the final map's classes as strata (about 180,000 ha, above the reference level, so no emission reductions), or takes the final map's own deforestation area (about 83,000 ha, about 31 MtCO2e); only the stratified estimator on the strata the sample was drawn from, each point weighted by its preliminary stratum's area over its sample size, gives the area (about 121,000 ha) and the emission reductions (about 12 MtCO2e before the buffer) the payment rests on.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the interpretation campaigns to the national forest definition and the reporting period and reads the payment agreement correctly assesses the final map, the map the monitoring report presents, with the textbook error-matrix estimator stratified by its classes, and files about 180,000 ha of deforestation and no emission reductions; the final map's own area files about 31 MtCO2e; neither is the about 12 MtCO2e the sample's own design gives.",
-  "domain_test": "The deciding quantity is the reporting period's deforested area, estimated the way forest monitoring estimates activity data for an emissions inventory: from a probability sample of reference points interpreted on high-resolution imagery, analysed by the design it was drawn under (strata from the map used for sampling, the final map only reporting where change sits), and turned into emission reductions against the reference level with the inventory's emission factor; with a hospital's nouns there is no change map, no interpreted reference point, no reference level or emission factor, and the task stops reading.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task452": "v1 priced unsampled days through a concentration-discharge rating curve; v2 has no rating curve or time series: the decisive step is design-based estimation of an area from a sample whose strata are a map revised after the draw",
-    "task459": "task459 sets an emissions performance standard on plants' heat rates by operating level; v2 estimates a land-use activity datum from a stratified reference sample",
-    "task230": "task230 corrects a census count for net classification bias in a channel still to be processed; v2 weights a classified sample by the design it was drawn under, the map that defined the strata having been revised",
-    "task448": "task448 completes a register from a second list whose capture depends on route; v2 has no capture-recapture: a single probability sample, analysed by its design weights rather than by the revised map's classes",
-    "task133": "task133 books a collective credit-loss allowance on loan pools; v2 estimates a land area from a probability sample analysed by its design weights, with no loans, stages or pools",
-    "task255": "task255 corrects an estimate for a misclassified share; v2's decisive step is the inclusion probability each reference point carries from the preliminary map it was drawn on, which the revised map's classes do not carry",
-    "task253": "task253 estimates a population count from a sample whose response rate varies by frame; v2 has full response: the decisive step is analysing a stratified sample by its own strata after the map that defined them was revised",
-    "task139": "task139 reads a randomised intervention per assigned unit rather than per surviving recorded case; v2 has no intervention, arms or costs: each reference point is weighted by the inclusion probability of the stratum it was drawn from, not by the class the revised map now gives it"
-  },
-  "notes": "Re-rooted 2026-10-14 (architecture 2). Strategy population_selection (who each reference point stands for: its inclusion probability follows the preliminary strata it was drawn from, not the final map's class it now sits in). The reference sample is the gold_standard_subsample organ. Gap population first (the final map is not the deforested area, and its classes are not the sampling frame); time second (the final map postdates the sample).",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:design-weights-when-the-sampling-map-is-revised",
-  "layer1": [
-    "two interpretation campaigns exported from the collection tool in different layouts (the main campaign and a quality-control re-interpretation of one point in five), disagreements settled by an adjudicator",
-    "interpreters' land-cover legend (dense and open forest, plantation, cropland, pasture, settlement, water) against the national forest definition (canopy cover of 30 per cent or more over 0.5 ha, plantations excluded)",
-    "the year of loss recorded per point, so losses in 2023 that the change map caught late fall outside the reporting period",
-    "map areas reported in pixels of the 30 m grid in one file and in hectares in another",
-    "district codes renumbered in the 2025 administrative reform, joined through the national statistics office's concordance",
-    "distractors: the national forest inventory's plot measurements and the fire hotspot detections"
-  ],
-  "lineage": [
-    {
-      "domain": "physical-environmental-sciences",
-      "subdomain": "emissions-inventory",
-      "objective": "etl",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G14",
-        "G16",
-        "G17"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "ranked_slate_under_cap",
-      "stump_strategy": "other",
-      "driver": "The decisive quantity is a period total of the product of two series, one recorded at every interval and one sampled on a few intervals that mostly catch the quiet state; the sampled factor rises with the recorded one, so carrying the sampled values across the unsampled intervals, by averaging or interpolating, misprices the busy intervals that carry most of the total, and the total has to be built from the relationship between the two factors applied to every recorded interval.",
-      "driver_concrete": "Each tributary's water-year 2026 phosphorus load is the sum over days of discharge times concentration; concentration is sampled on the Commission's fixed rounds (the first and third Tuesdays), which fall mostly away from storms, plus a few college storm samples, and it rises with discharge, so interpolating or averaging the samples across the year prices the high-flow days at the readings of the days around them, while a rating curve of concentration on discharge, applied to every day of the gage record, prices them from the relationship.",
-      "architecture": "v1",
-      "fate": "shipped 2026-10-13 (judge pass 1 FIX_NOW, re-judge DETERMINISTIC, APPROVE) and re-rooted 2026-10-14 at the author's request for a stronger stump: the decisive step (a concentration-discharge rating curve applied to every day of the gage record) is the field's standard load method, which careful solvers reach for; two second layers after shipping (season, retransformation) and two hardening prototypes (a dense automated sampler, a kinked relation) were rejected as too thin for one answer or a choice between standard practices."
-    }
-  ],
-  "registered": "2026-10-14T15:05:56Z"
+    "G17"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "ranked_slate_under_cap",
+   "stump_strategy": "other",
+   "driver": "The decisive quantity is a period total of the product of two series, one recorded at every interval and one sampled on a few intervals that mostly catch the quiet state; the sampled factor rises with the recorded one, so carrying the sampled values across the unsampled intervals, by averaging or interpolating, misprices the busy intervals that carry most of the total, and the total has to be built from the relationship between the two factors applied to every recorded interval.",
+   "driver_concrete": "Each tributary's water-year 2026 phosphorus load is the sum over days of discharge times concentration; concentration is sampled on the Commission's fixed rounds (the first and third Tuesdays), which fall mostly away from storms, plus a few college storm samples, and it rises with discharge, so interpolating or averaging the samples across the year prices the high-flow days at the readings of the days around them, while a rating curve of concentration on discharge, applied to every day of the gage record, prices them from the relationship.",
+   "architecture": "v1",
+   "fate": "shipped 2026-10-13 (judge pass 1 FIX_NOW, re-judge DETERMINISTIC, APPROVE) and re-rooted 2026-10-14 at the author's request for a stronger stump: the decisive step (a concentration-discharge rating curve applied to every day of the gage record) is the field's standard load method, which careful solvers reach for; two second layers after shipping (season, retransformation) and two hardening prototypes (a dense automated sampler, a kinked relation) were rejected as too thin for one answer or a choice between standard practices."
+  }
+ ],
+ "registered": "2026-10-14T15:05:56Z"
 }

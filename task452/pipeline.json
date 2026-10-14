@@ -1,35 +1,36 @@
 {
   "task": "task452",
   "owner": "oviya1301",
-  "status": "DRAWING",
+  "status": "PAUSED",
   "domain": "physical-environmental-sciences",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-14",
-  "stump": "The default path offers no emission reductions for 2024-2025 because it estimates the deforested area with the textbook stratified estimator on the final map's classes (about 180,000 hectares, above the reference level), though the reference points were drawn on the preliminary map; the stratified estimator on the strata the sample was drawn from gives about 121,000 hectares and about 9.7 MtCO2e to offer.",
+  "stump": "The default path offers 3,382,582 tonnes for USD 16,912,910 because it estimates the deforested area from the final change map's error matrix with the final map's class areas as weights (171,600 ha, only 8,300 under the reference level's 179,900 for the two years), though the reference points were drawn on the preliminary map: the 124 points the final map moved out of the preliminary deforestation stratum stand for 329 ha each, not 2,367; the stratified estimator on the strata the sample was drawn from gives 122,900 ha and 23,229,780 tonnes offered for USD 116,148,900.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-14"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (2026-10-14, --asof 2026-05-22; no LEAK)",
+    "reader": "pass 1 clean on the decisive step (Q1 none, Q6 analytical), realism repaired; pass 2 on the retuned pack running at pause"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "0.07 (task253 v1 lineage); 0.05 task95, task37 lineage, task69 lineage",
+    "heart": "WARN (overuse.objective, overuse.gate_g, repeat.decision, repeat.question_form, answered in ## Draw)",
+    "nearest": "0.07 task253 v1 lineage; 0.05 task95, task37 lineage, task69 lineage",
+    "surface": "0 promoted (task453 at 0.095 after the dictionary schema and the JSON quality-control export)",
     "note": "architecture 2 drawn 2026-10-14: guard WARN overuse.objective, overuse.gate_g, repeat.decision, repeat.question_form answered in the design note; v1, task459, task230, task448, task133, task255, task253, task139 differentiated on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE (pass 1, first cut)",
+    "report": "determinism_check_report.md; pass 2 on the retuned pack running at pause"
   },
   "returned": [],
-  "resume": "stage 2: readability screen, fork table, ladder with tuned magnitudes on the generator's seed, closure, literal reader, oracles, the asks and prompt.txt to precut exit 0; then the v2 generator replaces v1's",
+  "resume": "stage 4: collect the leak reader's second read and the judge's second pass on the final pack (reference level 89,950 ha a year); if their reports are lost with the container, re-run both on a fresh unzip of target.zip (the judge through the determinism-judge agent's brief, report determinism_check_report_pass2.md); fix any finding in the generator, then ship: ledger row SHIPPED, pipeline SHIPPED, card current, commit SHIPPED (task452) with target.zip and golden/ force-added",
   "approved": null,
   "delivered": null,
   "portal": null,

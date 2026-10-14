@@ -1,236 +1,325 @@
-"""task452's generator checks: the input gates, every route's slate and margin, the forcing evidence, the Layer 1
-items neutral to the call, the three rules executed, the semantic forks' ruling sentences, the asks' bins and devices,
-the separation of the asks from the call, the documents and the goldens."""
-import datetime as dt
+"""task452's assertions (architecture 2), run on every build: the input gates, the golden from the bundle against the
+generator's truth, every wrong route by name, the convergence of the design's own implementations, the margins, every
+semantic-fork row, the three-rules block on the clean truth, mess neutrality, the ask's stops and cracker, the
+separation of the ask from the main call, the distractors' deletion test and the realism sweep."""
 import json
+import math
 import os
 import re
-import sys
 
 import numpy as np
 import pandas as pd
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import calc as C        # noqa: E402
-import golden as G      # noqa: E402
-import pack as P        # noqa: E402
-import world as W       # noqa: E402
+import golden as GD
+import interp as I
+import landscape as L
+import mapping as MP
+import methods as M
+import pack as P
+import world as W
 
-TASK = os.path.dirname(HERE)
-COUNT, FAILS = [0], []
-GOLDEN_SLATE = ["Kestle River", "Hessick River", "Varrow Brook"]
-DEFAULT_SLATE = ["Varrow Brook", "Orrinwood Brook", "Ambrey River"]
-GAP_MIN = 150.0          # kilograms between the third and the fourth on every golden route
-EDGE_MIN = 60.0          # kilograms between any golden excess and zero
-
-QUOTES = [
-    ("SF1", "agreement", "named for the calendar year in which it ends"),
-    ("SF2", "agreement", "at which the tributary's load is measured"),
-    ("SF3", "agreement", "phosphorus in all forms in an unfiltered sample of stream water, expressed as P"),
-    ("SF4", "agreement", "carried past a tributary's compliance station during a water year, in kilograms"),
-    ("SF5", "agreement", "the Commission's samples, the storm samples the"),
-    ("SF6", "agreement", "Comparisons under this agreement are made on unrounded loads"),
-    ("SF7", "agreement", "exceeds its allocation by the most kilograms"),
-    ("SF8", "agreement", "Where fewer than three tributaries exceed their allocations"),
-    ("SF9", "program", "Both are reported with their activity type"),
-    ("SF10", "program", "Result status is Accepted once a result passes review, or Rejected with the reason in the comment"),
-    ("SF11", "transmittal", "The approved values above replace them"),
-    ("SF12", "transmittal", "Daily values are means over local calendar days"),
-    ("SF13", "program", "whose gage is 4.2 km upstream; the register gives both drainage areas"),
-]
-BANNED = re.compile(r"rating curve|regression|interpolat|LOADEST|smearing|retransform|flow-weighted|concentration-discharge|"
-                    r"\bC-Q\b|load estimat|storm days|base flow|baseflow|representative", re.I)
+RESULTS = []
 
 
-def ok(cond, msg):
-    COUNT[0] += 1
-    if cond:
-        print("ok    " + msg)
-    else:
-        print("FAIL  " + msg)
-        FAILS.append(msg)
+def ok(label, cond, detail=""):
+    RESULTS.append((label, bool(cond), detail))
 
 
-def text_of(path):
-    if path.endswith((".csv", ".txt")):
-        return open(path, encoding="utf-8", errors="replace").read()
-    if path.endswith(".pdf"):
-        from pypdf import PdfReader
-        return "\n".join(p.extract_text() for p in PdfReader(path).pages)
-    if path.endswith(".docx"):
-        import docx
-        return "\n".join(p.text for p in docx.Document(path).paragraphs)
-    if path.endswith(".xlsx"):
-        import openpyxl
-        wb = openpyxl.load_workbook(path, read_only=True)
-        return "\n".join(" ".join(str(v) for v in r if v is not None) for ws in wb.worksheets for r in ws.iter_rows(values_only=True))
-    return ""
+def offered(area):
+    return M.emission_reductions(area)["offered_t"]
 
 
-def gap(loads, A):
-    top, ex = C.slate(loads, A)
-    srt = sorted(ex, key=lambda k: -ex[k])
-    return top, ex[srt[2]] - ex[srt[3]]
+def run(target, golden_dir, world=None, meta_path=None):
+    RESULTS.clear()
+    X = world["golden"] if world and "golden" in world else GD.compute(target)
+    files = sorted(os.listdir(target))
+    meta = json.load(open(meta_path)) if meta_path else {}
+    truth_pts = world["pts"] if world else I.points()
 
+    # ---------------------------------------------------------------- input gates
+    ok("gate: ten or more files", len(files) >= 10, "%d files" % len(files))
+    fmts = {f.rsplit(".", 1)[1] for f in files}
+    ok("gate: three or more formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
+    ok("gate: a file of 25,000 rows or more", world["counts"]["poly"] >= 25000, world["counts"]["poly"])
+    dis = meta.get("distractor_files", [])
+    ok("gate: two or more distractors in metadata.json", len(dis) >= 2 and all(d in files for d in dis), dis)
+    ok("gate: no file name says distractor or answer", not any(re.search("distract|answer|known_issue|trap", f)
+                                                                for f in files))
+    ok("gate: every pack file has a source and licence in metadata.json",
+       sorted(x["path"] for x in meta.get("files", [])) == files and all(x.get("license") for x in meta["files"]))
 
-def run(target, golden, world=None, meta_path=None):
-    names = sorted(os.listdir(target))
-    texts = {n: text_of(os.path.join(target, n)) for n in names}
-    meta = json.load(open(meta_path or os.path.join(TASK, "metadata.json")))
-    X = G.compute(target)
-    L, A, R = X["L"], X["A"], X["R"]
-    # ------------------------------------------------------------------ input gates
-    ok(len(names) >= 10, "ten or more files (%d)" % len(names))
-    ok(len({n.rsplit(".", 1)[1] for n in names}) >= 3, "three or more formats")
-    ok(len(L["uv"]) >= 25000, "the spine has 25,000 rows or more (%d)" % len(L["uv"]))
-    tu = pd.to_datetime(L["uv"]["datetime_utc"])
-    steps = tu.groupby(L["uv"]["gage_id"]).apply(lambda s: set((s.sort_values().diff().dropna() / pd.Timedelta(minutes=1)).astype(int)))
-    ok(all(x == {15} for x in steps) and not tu.groupby(L["uv"]["gage_id"]).apply(lambda s: s.duplicated().any()).any(),
-       "every gage's 15-minute record runs in UTC without a gap or a repeat, the clock changes included")
-    ok(len(meta["distractor_files"]) >= 2 and all(d in names for d in meta["distractor_files"]), "two or more distractors named in metadata.json")
-    ok(not any("distractor" in n.lower() for n in names), "no file name says distractor")
-    ok(sorted(names) == sorted(P.FILES.values()), "the pack is exactly the files the generator names")
+    # ---------------------------------------------------------------- the golden, from the bundle
+    Ah = {s: v[0] for s, v in X["strata"].items()}
+    ok("golden: the strata areas read from the design report are the generator's", Ah == {
+        s: int(round(v)) for s, v in L.strata_areas().items()}, Ah)
+    ok("golden: every point's conformed class equals the interpreters' truth",
+       dict(zip(X["pts"].plot_id, X["pts"].ref)) == {p["plot_id"]: p["ref"] for p in truth_pts})
+    truth_area = M.design_area(truth_pts, Ah)
+    ok("golden: the design estimate from the bundle equals the generator's", abs(X["area"] - truth_area) < 1e-6,
+       "%.2f" % X["area"])
+    ok("golden: the area of deforestation is 122,900 ha", X["er"]["area_ha"] == 122_900)
+    ok("golden: 23,229,780 tonnes offered for USD 116,148,900", X["er"]["offered_t"] == 23_229_780 and
+       X["er"]["payment_usd"] == 116_148_900)
+    edge = abs((X["area"] / 100) % 1 - 0.5) * 100
+    ok("bins: the area sits 20 ha or more from a hundred-hectare rounding edge", edge >= 20, "%.1f ha" % edge)
 
-    # ------------------------------------------------------------------ the call and every route
-    for nm in C.ROUTES:
-        top, g = gap(R[nm], A)
-        if nm in C.GOLDEN:
-            ok(sorted(top) == sorted(GOLDEN_SLATE), "%s funds %s" % (nm, ", ".join(top)))
-            ok(g >= GAP_MIN, "%s: the third stands %.0f kg above the fourth" % (nm, g))
-        elif nm == C.DEFAULT:
-            ok(sorted(top) == sorted(DEFAULT_SLATE), "%s funds %s" % (nm, ", ".join(top)))
-            ok(g >= GAP_MIN, "%s: the third stands %.0f kg above the fourth" % (nm, g))
-        else:
-            ok(sorted(top) != sorted(GOLDEN_SLATE), "%s funds %s, not the golden three" % (nm, ", ".join(top)))
-    ok(len(set(A.values())) == len(A), "no two allocations equal")
-    for nm in C.GOLDEN:
-        e = {k: R[nm][k] - A[k] for k in A}
-        k0 = min(e, key=lambda k: abs(e[k]))
-        ok(abs(e[k0]) >= EDGE_MIN, "%s: no excess within %.0f kg of zero (nearest %s, %.1f)" % (nm, EDGE_MIN, k0, e[k0]))
-        ok(sum(v > 0 for v in e.values()) >= 3, "SF8 %s: %d tributaries exceed, so three are funded" % (nm, sum(v > 0 for v in e.values())))
-    ok(sorted(C.slate({k: round(v, -1) for k, v in R[C.GOLD].items()}, A)[0]) == sorted(GOLDEN_SLATE),
-       "SF6 loads rounded to 10 kg before the comparison: same call")
-    share = {k: (R[C.GOLD][k] - A[k]) / A[k] for k in A}
-    ok(sorted(sorted(share, key=lambda k: -share[k])[:3]) == sorted(GOLDEN_SLATE), "SF7 the largest share above allocation: same call")
+    # ---------------------------------------------------------------- the design's own implementations converge (C1, C3)
+    st = pd.read_excel(os.path.join(target, P.FILES["stats"]), header=3)
+    conc = pd.read_csv(os.path.join(target, P.FILES["conc"]), dtype=str)
+    prog = set(conc.loc[conc.accounting_area == "program", "district_2025"])
+    st = st[st.district_2025.isin(prog)]
+    Af = {f: float(st[c].sum()) for f, c in (("FD", "deforestation 2024-2025 (ha)"), ("FF", "stable forest (ha)"),
+                                             ("FN", "non-forest (ha)"))}
+    exact = L.strata_areas()
+    pixel = {s: round(v / W.PIXEL_HA) * W.PIXEL_HA for s, v in exact.items()}
+    impl = {"published whole hectares": M.design_area(truth_pts, Ah),
+            "unrounded pixel areas": M.design_area(truth_pts, pixel),
+            "Horvitz-Thompson by point": float(sum(Ah[p["stratum"]] / W.N_SAMPLE[p["stratum"]] for p in truth_pts
+                                                   if p["ref"] == "D")),
+            "post-stratified to the final map, design weights": M.poststratified_area(truth_pts, Ah, Af)}
+    ok("C3: every design-consistent implementation reports 122,900 ha and offers the same tonnes",
+       len({M.reported(v) for v in impl.values()}) == 1 and len({offered(v) for v in impl.values()}) == 1,
+       {k: round(v, 1) for k, v in impl.items()})
 
-    # ------------------------------------------------------------------ the forcing evidence
-    samples, q = C.tp_samples(L), C.daily_q(L)
-    for n in W.NAME.values():
-        b = X["info"][n]["beta"][1]
-        ok(b >= 0.25, "%s: concentration rises with discharge (log slope %.2f)" % (n, b))
-    share_load, share_samp = [], []
-    for n in W.NAME.values():
-        qd = np.array([q[n][d] for d in C.WY26])
-        q90 = np.quantile(qd, 0.9)
-        A_ = X["info"][n]["beta"]
-        s26 = [d for d, c in samples[n] if W.WY26_START <= d <= W.WY_END]
-        share_samp.append(np.mean([q[n][d] > q90 for d in s26]))
-    ok(max(share_samp) <= 0.25, "no station has more than a quarter of its water year 2026 samples on its top tenth of flows (%.2f)" % max(share_samp))
-    F_ = G.figures(X)
-    for n in ("Kestle River", "Hessick River"):
-        ok(F_["top_tenth_load_pct"][n] >= 55 and F_["top_tenth_samples_pct"][n] <= 5,
-           "%s: its top tenth of days carry %d%% of the load and %d%% of the samples" % (n, F_["top_tenth_load_pct"][n], F_["top_tenth_samples_pct"][n]))
+    # ---------------------------------------------------------------- the wrong routes, by name
+    tb = M.textbook_area(truth_pts, Af)
+    ua = M.map_user_accuracy(truth_pts, Af)
+    mp = M.map_area(Af)
+    raw = M.raw_share(truth_pts)
+    routes = {"R0 final map area": mp, "R1' final map times its user's accuracy": ua,
+              "R1 (default) error matrix on the final map's classes": tb, "raw share of points": raw}
+    ok("R1 (default): the textbook estimator on the final map's classes files about 172,000 ha and 3,382,582 tonnes",
+       166_000 < tb < 178_000 and offered(tb) == 3_382_582, "%.0f ha, %d t" % (tb, offered(tb)))
+    ok("R0: the final map's own area files 73,225 ha and 43,484,518 tonnes", abs(mp - sum(X["map_fd"].values())) < 0.01
+       and round(mp) == 73_225 and offered(mp) == 43_484_518, "%.2f" % mp)
+    ok("R1': the final map times its user's accuracy files another amount", offered(ua) not in (
+        X["er"]["offered_t"], offered(mp), 0), "%.0f ha, %d t" % (ua, offered(ua)))
+    ok("raw share: every point weighted alike files no reductions", offered(raw) == 0, "%.0f" % raw)
+    ok("ladder: every route offers another amount, and every route but the raw share offers some",
+       len({offered(v) for v in routes.values()} | {X["er"]["offered_t"]}) == 5 and
+       all(offered(v) != X["er"]["offered_t"] for v in routes.values()) and
+       sum(offered(v) > 0 for v in routes.values()) == 3, {k: offered(v) for k, v in routes.items()})
+    ok("dominance: the default route sits 40,000 ha or more above the golden, the map's area 40,000 ha below",
+       tb - X["area"] >= 40_000 and X["area"] - mp >= 40_000, "%.0f, %.0f" % (tb - X["area"], X["area"] - mp))
 
-    # ------------------------------------------------------------------ R2: the Layer 1 items neutral to the call
-    def call_with(samples_=None, q_=None):
-        s_, qq = samples_ or samples, q_ or q
-        loads = {n: C.rating(s_[n], qq[n], C.WY26)[0] for n in s_}
-        return sorted(C.slate(loads, A)[0])
-    ok(call_with(samples_=C.tp_samples(L, accepted_only=False, routine_only=False)) == sorted(GOLDEN_SLATE),
-       "R2 quality-control replicates, blanks and rejected results kept: same call")
-    ok(call_with(q_=C.daily_q(L, local=False)) == sorted(GOLDEN_SLATE), "R2 daily means on UTC days: same call")
-    reg = C.register(L)
-    commission = dict(L, wq=L["wq"][L["wq"]["MonitoringLocationIdentifier"].isin({r["st"] for r in reg.values()})])
-    Rc, _ = C.route_loads(commission, q=q)
-    for nm in C.GOLDEN:
-        ok(sorted(C.slate(Rc[nm], A)[0]) == sorted(GOLDEN_SLATE), "SF5 %s on the Commission's samples alone: same call" % nm)
-    ok(call_with(q_=C.daily_q(L, ratio=False)) == sorted(GOLDEN_SLATE), "R2 Dunmarsh Brook without the drainage-area ratio: same call")
-    prov = pd.read_csv(os.path.join(target, P.FILES["prov"]), comment="#", dtype={"gage_id": str, "qualifiers": str})
-    t = pd.to_datetime(L["uv"]["datetime_utc"])
-    uvp = pd.concat([L["uv"][~(t >= "2026-07-01 04:00")], prov])
-    ok(call_with(q_=C.daily_q(L, uv=uvp)) == sorted(GOLDEN_SLATE), "R2 the provisional July to September discharge: same call")
+    # ---------------------------------------------------------------- the three rules, executed on the clean truth
+    heads = open(os.path.join(target, P.FILES["main"]), encoding="utf-8").readline()
+    ok("R1 the field's raw material ships: 4,000 interpreted reference points with their strata",
+       world["counts"]["main"] == 4000 and "stratum" in heads)
+    ok("R1 no shipped column holds a point's weight, a design estimate or a reference class",
+       not re.search(r"(?i)weight|estimate|ref_class|reference_class", heads), heads.strip())
+    clean = [dict(p, ref=p["true"]) for p in truth_pts]
+    ok("R3a analyst test: on the clean truth the error matrix on the final map's classes offers 3,382,582 tonnes",
+       offered(M.textbook_area(clean, Af)) == 3_382_582)
+    ok("R3b the decisive step alone: the same points on the sampling strata offer 23,229,780 tonnes",
+       offered(M.design_area(clean, Ah)) == X["er"]["offered_t"])
+    ok("R3b the first correction alone (the final map's own area) offers another amount", offered(mp) != X["er"][
+        "offered_t"])
+    main = pd.read_csv(os.path.join(target, P.FILES["main"]))
+    block = main[["lc_2024", "canopy_2024", "lc_2025", "canopy_2025", "loss_year", "loss_month"]].astype(str)
+    dup = block.duplicated(keep=False) & (main.change == "loss")
+    ok("R3c no copied block: loss points repeat their interpretation no more often than chance",
+       dup.mean() < 0.06, "%.3f" % dup.mean())
 
-    # ------------------------------------------------------------------ R3: the three rules executed
-    ok(sorted(X["slates"][C.DEFAULT]) != sorted(GOLDEN_SLATE),
-       "R3a the default path (every filed rule applied, samples interpolated across the year) funds %s" % ", ".join(X["slates"][C.DEFAULT]))
-    ok(sorted(X["slates"][C.GOLD]) == sorted(GOLDEN_SLATE), "R3b the same path with only the day's concentration taken from the rating curve funds the golden three")
+    # ---------------------------------------------------------------- Layer 1, every mess item neutral (R2)
+    r2 = {}
 
-    # ------------------------------------------------------------------ semantic forks
-    for sf, doc, qt in QUOTES:
-        tx = re.sub(r"\s+", " ", texts[P.FILES[doc]].replace("\n", " "))
-        ok(re.sub(r"\s+", " ", qt) in tx, "%s ruling sentence present in %s" % (sf, P.FILES[doc]))
+    def as_forest(codes, canopy):
+        q = [dict(p) for p in truth_pts]
+        for p in q:
+            f24 = p["lc24"] in codes and p["cc24"] in canopy
+            f25 = p["lc25"] in codes and p["cc25"] in canopy
+            p["ref"] = "N" if not f24 else ("F" if f25 else ("D" if p["loss_year"] in (2024, 2025) else "N"))
+        return M.design_area(q, Ah)
+    r2["plantations"] = as_forest((1, 2, 4), ("C", "D"))
+    r2["woodland"] = as_forest((1, 2, 3), ("B", "C", "D"))
+    for key, label in (("plantations", "plantations read as forest"),
+                       ("woodland", "woodland at 10 per cent canopy read as forest")):
+        ok("R2 mess: %s leaves the area and the offer unchanged" % label, abs(r2[key] - X["area"]) < 1e-6)
+    shipped = pd.read_csv(os.path.join(target, P.FILES["main"]), dtype={"district": str})
 
-    # ------------------------------------------------------------------ the asks
-    ww, cov = X["ww"], X["cover"]
-    crackers = {
-        "Ask A, the receiving-water name join": (C.ask_wastewater(L, "name"), ww),
-        "Ask A, each report times the days in its end month": (C.ask_wastewater(L, days="month"), ww),
-        "Ask B, each line's contracted acres shared by the overlay": (C.ask_cover(L, "split_contract"), cov),
-        "Ask B, each line's contracted acres under its watershed": (C.ask_cover(L, "label_latest"), cov),
-        "Ask B, each field's own acres under its line's watershed": (C.ask_cover(L, "label_field"), cov),
-    }
-    for n in W.NAME.values():
-        fr = ww[n] / 10 - np.floor(ww[n] / 10)
-        ok(abs(fr - 0.5) * 10 >= 2.0, "Ask A %s %.1f kg at least 2 kg from a rounding edge" % (n, ww[n]))
-        fr = cov[n] / 10 - np.floor(cov[n] / 10)
-        ok(abs(fr - 0.5) * 10 >= 2.0, "Ask B %s %.1f acres at least 2 acres from a rounding edge" % (n, cov[n]))
-    for label, (got, gold) in crackers.items():
-        hits = [n for n in W.NAME.values() if G.k10(got[n]) == G.k10(gold[n])]
-        gaps = [abs(got[n] - gold[n]) for n in W.NAME.values()]
-        ok(not hits, "%s misses all ten rows (off by %.0f to %.0f; hits %s)" % (label, min(gaps), max(gaps), hits))
-    # the reports cover whole months or whole calendar quarters, the smaller dischargers quarterly
-    dm = L["dmr"]
-    st_, en_ = pd.to_datetime(dm["MONITORING_PERIOD_START_DATE"]), pd.to_datetime(dm["MONITORING_PERIOD_END_DATE"])
-    months = (en_.dt.year - st_.dt.year) * 12 + en_.dt.month - st_.dt.month + 1
-    q = dm["PERMIT_ID"].isin(W.QUARTERLY)
-    ok((st_.dt.day == 1).all() and ((en_ + pd.Timedelta(days=1)).dt.day == 1).all(), "every report runs from a month's first day to a month's last")
-    ok(months[q].eq(3).all() and months[~q].eq(1).all() and st_[q].dt.month.isin([1, 4, 7, 10]).all(),
-       "the %d quarterly dischargers report calendar quarters, the rest months" % len(W.QUARTERLY))
-    per = dm.drop_duplicates(["PERMIT_ID", "MONITORING_PERIOD_START_DATE", "MONITORING_PERIOD_END_DATE"])
-    tiles = per.groupby("PERMIT_ID").apply(lambda g: sorted(m for a, b in zip(pd.to_datetime(g["MONITORING_PERIOD_START_DATE"]),
-                                                                              pd.to_datetime(g["MONITORING_PERIOD_END_DATE"]))
-                                                            for m in pd.period_range(a, b, freq="M").astype(str)))
-    wy = [str(p_) for p_ in pd.period_range("2025-10", "2026-09", freq="M")]
-    ok(all(t == wy for t in tiles), "each facility's reports cover every month of the water year exactly once")
-    ups = {}
-    walk = C.stream_to_tributary(L)
-    for pid, fname, rw, rkm, mgd, tp, mode, resub, reloc in W.FACILITIES:
-        trib, join = walk(rw)
-        if (rkm if join is None else join) > C.register(L)[trib]["rkm"] and pid in W.QUARTERLY:
-            ups.setdefault(trib, []).append(pid)
-    ok(sorted(ups) == sorted(W.NAME.values()), "every tributary has a quarterly discharger upstream of its station")
-    # every contract's acres are its enrolled fields' acres in the overlay, on every amendment
-    con, fl = L["contracts"], L["fields"]
-    fa = dict(zip(fl["field_id"], fl["field_acres"].astype(float)))
-    sums = con.assign(fa=con["field_id"].map(fa)).groupby(["contract_id", "amendment_no"]).agg(ca=("contracted_acres", "first"), fs=("fa", "sum"))
-    ok((sums["ca"].astype(float) - sums["fs"]).abs().max() < 0.05 and con.groupby(["contract_id", "amendment_no"])["contracted_acres"].nunique().eq(1).all(),
-       "each contract's acres, repeated on its field lines, equal its fields' acres (%d contract versions)" % len(sums))
-    multi = con.groupby(["contract_id", "amendment_no"])["field_id"].count().gt(1).sum()
-    ok(multi >= 20, "%d contract versions enrol more than one field" % multi)
-    shares = fl.assign(s=fl["share_of_field"].astype(float)).groupby("field_id")["s"].sum()
-    ok((shares - 1).abs().max() < 1e-9, "every field's shares sum to one")
+    def bundle_area(df):
+        ref = [GD.reference_class(int(a), b, int(c), d, (int(e) if pd.notna(e) else None)) for a, b, c, d, e in
+               zip(df.lc_2024, df.canopy_2024, df.lc_2025, df.canopy_2025, df.loss_year)]
+        wts = [Ah[s_] / W.N_SAMPLE[s_] for s_ in df.stratum]
+        return float(sum(wt for wt, r in zip(wts, ref) if r == "D"))
+    r2["main alone"] = bundle_area(shipped)
+    ok("R2 mess: the main campaign alone, the adjudication ignored, leaves the area unchanged (read from the shipped "
+       "export)", abs(r2["main alone"] - X["area"]) < 1e-6, "%.1f" % r2["main alone"])
+    qcf = pd.DataFrame(json.load(open(os.path.join(target, P.FILES["qc"]), encoding="utf-8")))
+    qcf["plot_id"] = qcf.id_parcela.str.replace("LFM26/", "LFM26-", regex=False)
+    over = shipped.set_index("plot_id").copy()
+    for r in qcf.itertuples():
+        over.loc[r.plot_id, ["lc_2024", "canopy_2024", "lc_2025", "canopy_2025", "loss_year"]] = [
+            GD.ES_LC[r.cobertura_2024], GD.ES_CANOPY[r.dosel_2024], GD.ES_LC[r.cobertura_2025],
+            GD.ES_CANOPY[r.dosel_2025], r.anio_perdida]
+    r2["qc wherever"] = bundle_area(over.reset_index())
+    ok("R2 mess: the quality-control labels used wherever they exist leave the area unchanged (read from the "
+       "ministry's Spanish export)", abs(r2["qc wherever"] - X["area"]) < 1e-6, "%.1f" % r2["qc wherever"])
+    early = shipped[shipped.remarks.str.contains(r"cleared 20(?:1|2[0-3])", regex=True)]
+    ok("R2 mess: clearings before 2024 noted in the remarks sit on land that was not forest in January 2024, so no "
+       "reading of the remarks adds them to the period", len(early) > 0 and not early.lc_2024.isin(W.FOREST_CODES).any()
+       and early.loss_year.isna().all(), "%d points" % len(early))
+    ok("R2 mess: the 2019 and 2025 district layers touch only the district asks: the call sums every point whatever "
+       "its district", abs(sum(X["by_d"].values()) - X["area"]) < 1e-6 and len(set(X["pts"].district)) == 12)
 
-    # ------------------------------------------------------------------ separation: the asks' files never reach the call
-    L2 = dict(L, dmr=None, contracts=None, fields=None, facilities=None, streams=None)
-    R2, _ = C.route_loads(L2)
-    ok(sorted(C.slate(R2[C.GOLD], A)[0]) == sorted(GOLDEN_SLATE),
-       "separation: the call recomputes with the reports, contracts, field mapping, streams and outfalls withheld")
+    # ---------------------------------------------------------------- the semantic fork table
+    ok("SF1: the reporting period is two years: the reference level emissions are 89,410,300 t; one year would offer "
+       "nothing", X["er"]["rl_t"] == 2 * 89_950 * 497.0 == 89_410_300 and 89_950 * 497.0 < X["er"]["monitored_t"])
+    unrounded = math.floor((2 * W.RL_HA_YEAR - X["area"]) * W.EF * 0.82)
+    ok("SF2: the area is stated to the nearest hundred hectares before the emission factor applies; the unrounded area "
+       "would offer another amount", X["er"]["monitored_t"] == 122_900 * 497.0 and unrounded != X["er"]["offered_t"],
+       "%d t unrounded" % unrounded)
+    ok("SF3: the buffer is 18 per cent of the reductions and the fraction of a tonne is dropped (exact here: same call "
+       "under any rounding)", X["er"]["offered_t"] == math.floor(X["er"]["er_t"] * 0.82) ==
+       round(X["er"]["er_t"] * 0.82))
+    ok("SF4: the payment is USD 5.00 a tonne offered; on the reductions before the buffer it would be another amount",
+       X["er"]["payment_usd"] == 5 * X["er"]["offered_t"] and 5 * X["er"]["er_t"] != X["er"]["payment_usd"])
+    ok("SF5: the area of deforestation is the reference sample's estimate (plan 4.1); the final map's own area offers "
+       "another amount", offered(mp) != X["er"]["offered_t"])
+    ok("SF6: deforestation is forest on 1 January 2024 and other land on 31 December 2025: no loss point outside "
+       "the period, and clearings before 2024 sit on land that was not forest", all(
+           p["loss_year"] in (2024, 2025) for p in truth_pts if p["change"] == "loss") and all(
+           p["ref"] == "N" for p in truth_pts if p["kind"] == "cleared before 2024"))
+    ok("SF7: forest is the plan's definition (30 per cent canopy, plantations excluded): plantations or woodland read "
+       "as forest give the same area", abs(r2["plantations"] - X["area"]) < 1e-6 and abs(r2["woodland"] - X["area"]) < 1e-6)
+    ok("SF10: the accounting area is the twelve districts on the 2019 layer: every reference point is in one",
+       {p["district"] for p in truth_pts} == set(W.DCODE))
+    ratio_d = {}
+    for c in W.DCODE:
+        m = (X["pts"].district == c).values
+        land = float(st.loc[st.district_2025.map(dict(zip(conc.district_2025, conc.district_2019))) == c,
+                            "total (ha)"].sum())
+        ratio_d[c] = land * (w_all := X["pts"].weight.values)[m].dot(X["pts"].y.values[m]) / w_all[m].sum()
+    ok("SF11: each district's area is its points' part of the accounting area's estimate (plan 4.5); the ratio to the "
+       "district's land area files another figure in ten or more districts",
+       sum(GD.hundred(ratio_d[c]) != GD.hundred(X["by_d"][c]) for c in W.DCODE) >= 10 and
+       abs(sum(X["by_d"].values()) - X["area"]) < 1e-6,
+       "%d of 12" % sum(GD.hundred(ratio_d[c]) != GD.hundred(X["by_d"][c]) for c in W.DCODE))
+    ok("SF16: a point's reference class is the main campaign with the adjudicated fields applied; the main campaign "
+       "alone or the quality-control labels wherever they exist give the same area",
+       abs(r2["main alone"] - X["area"]) < 1e-6 and abs(r2["qc wherever"] - X["area"]) < 1e-6)
+    # the interval under the design's own variants and under post-stratification to the final map (design weights)
+    w_, y_, f_, s_ = (X["pts"].weight.values, X["pts"].y.values, X["pts"].map_class_v2.values,
+                      X["pts"].stratum.values)
+    code = {"FD": "DEF", "FF": "BOS", "FN": "NOB"}
+    Afc = {code[k]: v for k, v in Af.items()}
+    Nh = {k: w_[f_ == k].sum() for k in Afc}
+    yb = {k: (w_[f_ == k] * y_[f_ == k]).sum() / Nh[k] for k in Afc}
+    z_ = np.array([Afc[f_[i]] / Nh[f_[i]] * (y_[i] - yb[f_[i]]) for i in range(len(y_))])
+    ps_area = sum(Afc[k] * yb[k] for k in Afc)
+    ps_se = math.sqrt(sum(Ah[h] ** 2 * z_[s_ == h].var(ddof=1) / (s_ == h).sum() for h in Ah))
+    se_n = math.sqrt(sum(Ah[h] ** 2 * y_[s_ == h].mean() * (1 - y_[s_ == h].mean()) / (s_ == h).sum() for h in Ah))
+    variants = {"z 1.6449, n - 1": (X["lo"], X["hi"]), "z 1.645, n": (X["area"] - 1.645 * se_n, X["area"] + 1.645 * se_n),
+                "t 3,997 df": (X["area"] - 1.64523 * X["se"], X["area"] + 1.64523 * X["se"]),
+                "about the reported 122,900": (122_900 - GD.Z90 * X["se"], 122_900 + GD.Z90 * X["se"]),
+                "post-stratified": (ps_area - GD.Z90 * ps_se, ps_area + GD.Z90 * ps_se)}
+    tt = lambda v: int(10_000 * math.floor(v / 10_000 + 0.5))
+    ok("SF8: the 90 per cent interval to the nearest ten thousand hectares is 100,000 to 140,000 under every variant "
+       "of the design's variance and under post-stratification, each bound 1,000 ha or more from an edge",
+       {(tt(a), tt(b)) for a, b in variants.values()} == {(100_000, 140_000)} and
+       min(abs(v % 10_000 - 5_000) for ab in variants.values() for v in ab) >= 1_000,
+       {k: "%.0f to %.0f" % v for k, v in variants.items()})
+    edges = [abs((v / 100) % 1 - 0.5) * 100 for v in X["by_d"].values()]
+    ok("SF9: every district's area sits 10 ha or more from a hundred-hectare rounding edge", min(edges) >= 10,
+       "%.1f" % min(edges))
 
-    # ------------------------------------------------------------------ documents
-    for n in names:
-        if n.endswith(".csv"):
-            continue
-        hit = BANNED.findall(texts[n])
-        ok(not hit, "%s names no estimator or sampling bias (%s)" % (n, hit[:3]))
-    for p_ in W.PEOPLE.values():
-        ok(any(p_[0] in texts[n] for n in names), "persona %s appears in the pack" % p_[0])
-    gd = sorted(os.listdir(golden))
-    ok(gd == sorted([G.DOCX, G.CSV]), "the goldens are the two files the prompt names (%s)" % gd)
-    print("checks: %d assertions, %d failed" % (COUNT[0], len(FAILS)))
-    return not FAILS
+    # ---------------------------------------------------------------- the ask: deforestation patches by district
+    poly = pd.read_parquet(os.path.join(target, P.FILES["poly"]))
+    to19 = dict(zip(conc.district_2025, conc.district_2019))
+    pp = poly[poly.district_2025.isin(prog)].copy()
+    pp["d19"] = pp.district_2025.map(to19)
+    pp["share"] = pp.area_ha / pp.patch_ha
+    back = {v: k for k, v in W.D2025.items()}
+    back[W.SPLIT_NEW[0]] = "05"
+    true_all, true_small, true_big = ({c: 0 for c in W.DCODE} for _ in range(3))
+    for pt in MP.patches():
+        d19 = back[pt["district"]]
+        if d19 in W.DCODE:
+            true_all[d19] += 1
+            true_small[d19] += pt["pix"] * W.PIXEL_HA < 1
+            true_big[d19] += pt["pix"] * W.PIXEL_HA >= 5
+    ok("ask: the patch counts equal the generator's patches, in all, under 1 ha and of 5 ha or more",
+       X["patches_all"] == true_all and X["small"] == true_small and X["patches"] == true_big,
+       "%d, %d and %d" % (sum(true_all.values()), sum(true_small.values()), sum(true_big.values())))
+    whole = max(abs(v - round(v)) for v in list(pp.groupby("d19").share.sum()) +
+                list(pp[pp.patch_ha >= 5].groupby("d19").share.sum()) +
+                list(pp[pp.patch_ha < 1].groupby("d19").share.sum()))
+    ok("ask: each district's polygon shares sum to whole patches (the count is exact from the file)", whole < 1e-6,
+       "%.1e" % whole)
+    ok("ask: patches are delivered in several polygons (tiles and quarters)", len(pp) > 1.25 * sum(true_all.values()),
+       "%d polygons, %d patches" % (len(pp), sum(true_all.values())))
 
+    golden_sets = (X["patches_all"], X["small"], X["patches"])
 
-if __name__ == "__main__":
-    tgt = sys.argv[1] if len(sys.argv) > 1 else os.path.join(TASK, "target")
-    sys.exit(0 if run(tgt, os.path.join(TASK, "golden")) else 1)
+    def stop(label, frame, area_col="patch_ha"):
+        """a counting route: every polygon row of `frame` that survives the route's deduplication is one patch"""
+        sets = (frame, frame[frame[area_col] < 1], frame[frame[area_col] >= 5])
+        got = [f.groupby("d19").size().to_dict() for f in sets]
+        miss = [sum(g.get(c, 0) != t[c] for c in W.DCODE) for g, t in zip(got, golden_sets)]
+        tot = all(sum(g.values()) != sum(t.values()) for g, t in zip(got, golden_sets))
+        ok("ask stop '%s' misses all twelve districts on all three counts and every total" % label,
+           miss == [12, 12, 12] and tot, "%d, %d and %d of 12; totals %s" % tuple(miss + [
+               ", ".join(format(sum(g.values()), ",") for g in got)]))
+    stop("polygons counted as patches", pp)
+    stop("polygons deduplicated on the patch area", pp.drop_duplicates(["d19", "patch_ha"]))
+    stop("polygons deduplicated on the patch area within the 2025 district",
+         pp.drop_duplicates(["district_2025", "patch_ha"]))
+    stop("polygons deduplicated on the patch area and first detection",
+         pp.drop_duplicates(["district_2025", "patch_ha", "first_detected"]))
+    stop("polygons deduplicated on the patch area and tile", pp.drop_duplicates(["district_2025", "patch_ha", "tile"]))
+    stop("polygons sized by their own area", pp, area_col="area_ha")
+    no06 = pp[pp.district_2025 != W.SPLIT_NEW[0]]
+    ok("ask hazard: leaving out Nueva Esperanza misses La Esperanza on all three counts",
+       round(no06.share[no06.d19 == "05"].sum()) != X["patches_all"]["05"] and
+       round(no06.share[(no06.d19 == "05") & (no06.patch_ha < 1)].sum()) != X["small"]["05"] and
+       round(no06.share[(no06.d19 == "05") & (no06.patch_ha >= 5)].sum()) != X["patches"]["05"])
+    hl = poly[~poly.district_2025.isin(prog)]
+    ok("ask hazard: the highland districts outside the accounting area move both totals",
+       round((hl.area_ha / hl.patch_ha).sum()) > 0 and round((hl.area_ha / hl.patch_ha)[hl.patch_ha >= 5].sum()) > 0)
+    ok("SF12: each district of the patch counts is a 2019 district: La Esperanza counts Nueva Esperanza's (LT-06) "
+       "polygons too", X["patches_all"]["05"] == round(pp.share[pp.district_2025.isin(["LT-05", "LT-06"])].sum()))
+    ok("SF13: a patch is the connected area of change whose area every one of its polygons carries (the dictionary's "
+       "patch_ha), counted once however many polygons deliver it", whole < 1e-6 and len(pp) > sum(true_all.values()))
+    ok("SF14: no patch measures exactly 1 ha or 5 ha (areas are whole 30 m pixels: 0.99 or 1.08, 4.95 or 5.04 ha), so "
+       "each size class's boundary counts the same patches whichever side holds it",
+       not ((poly.patch_ha > 0.995) & (poly.patch_ha < 1.075)).any() and
+       not ((poly.patch_ha > 4.955) & (poly.patch_ha < 5.035)).any())
+    ok("SF15: the totals are the accounting area's twelve districts; the highland districts lie outside it (the "
+       "concordance's accounting_area)", set(conc.loc[conc.accounting_area == "outside", "district_2025"]) ==
+       {W.D2025[c] for c, _, _ in W.HIGHLANDS} and not pp.district_2025.str.startswith("SR").any())
+    ok("ask: the main call reads no polygon (the call is unchanged with the polygon file deleted)",
+       X["er"]["offered_t"] == offered(M.design_area(truth_pts, Ah)))
+    ok("ask: the final map's polygons sum to its mapped deforestation in every district",
+       max(abs(pp.area_ha[pp.d19 == c].sum() - X["map_fd"][c]) for c in W.DCODE) < 0.01)
+
+    # ---------------------------------------------------------------- distractors and realism
+    used = {P.FILES[k] for k in ("main", "adj", "intersect", "stats", "poly", "conc", "design")}
+    ok("distractors: the forest inventory and the fire hotspots are read by no step", not (
+        set(meta.get("distractor_files", [])) & used))
+    ok("realism: no two districts share an estimated area, a patch count or a mapped area",
+       len({round(v) for v in X["by_d"].values()}) == W.R and len(set(X["patches"].values())) == W.R and
+       len(set(X["patches_all"].values())) == W.R and len(set(X["small"].values())) == W.R and
+       len({round(v) for v in X["map_fd"].values()}) == W.R)
+    ok("realism: the headline figures are not round", X["er"]["offered_t"] % 1000 != 0 and
+       X["er"]["payment_usd"] % 1000 != 0)
+    card = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+                                       ".claude", "skills", "fingerprint", "cards", "task452.json")))
+    ok("realism: every persona in the pack is on the card", set(W.PEOPLE.values()) <= set(card["world"]["people"]))
+    raw_b = b"".join(open(os.path.join(target, f), "rb").read() for f in files if f.endswith((".pdf", ".xlsx")))
+    ok("realism: containers carry no writing library's name", not re.search(rb"ReportLab|reportlab|openpyxl|matplotlib",
+                                                                          raw_b))
+    txt = "".join(open(os.path.join(target, f), encoding="utf-8").read() for f in files if f.endswith(".csv"))
+    docs_text = "".join(GD.pdf_text(os.path.join(target, f)) for f in files if f.endswith(".pdf"))
+    ok("realism: no em or en dash in any text file or document", not re.search("[–—]", txt + docs_text))
+    ok("realism: no document names the estimator, a weight or the default route",
+       not re.search(r"(?i)weight|estimator|Horvitz|Olofsson|Stehman|error matrix|post-strat", docs_text))
+    figs = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")))
+    ok("figures.json: the call as computed", figs["offered_t"] == X["er"]["offered_t"] and
+       figs["payment_usd"] == X["er"]["payment_usd"] and figs["area_ha"] == X["er"]["area_ha"])
+
+    bad = [r for r in RESULTS if not r[1]]
+    for label, good, detail in RESULTS:
+        print("%s  %s%s" % ("PASS" if good else "FAIL", label, ("  [%s]" % (detail,)) if detail != "" else ""))
+    print("checks: %d, failed %d" % (len(RESULTS), len(bad)))
+    return not bad

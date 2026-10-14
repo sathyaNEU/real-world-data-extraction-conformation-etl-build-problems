@@ -1,145 +1,140 @@
-"""The golden deliverables, computed from the shipped files only: restoration_slate_2027.docx (the water quality
-program's memo to the technical committee: the three tributaries, each tributary's water-year 2026 load against its
-allocation, a chart, how the loads were built) and tributary_loads_wy2026.csv (each tributary, whether it gets a 2027
-project, its upstream permitted wastewater phosphorus and its 2026 cover crop acres); and figures.json, every figure
-the write-up states."""
-import collections
+"""The golden from the bundle alone: conform the interpretation campaigns into one reference class per point on the
+national forest definition and the reporting period, estimate the area of deforestation on the strata the sample
+was drawn from, turn it into the emission reductions offered and the payment, estimate each district's area and the
+interval, count the final map's deforestation patches by district (in all and of 5 hectares or more), and write the
+monitoring report summary and the conformed reference sample."""
 import io
 import json
+import math
 import os
 import re
-import sys
 
 import numpy as np
+import pandas as pd
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
+import world as W
 
-import calc as C        # noqa: E402
-import pack as P        # noqa: E402
-import world as W       # noqa: E402
+PDF_NAME = "er_monitoring_report_2024-2025.pdf"
+XLSX_NAME = "reference_sample_conformed_2024-2025.xlsx"
+ES_LC = {"bosque denso": 1, "bosque abierto": 2, "arbustal": 3, "plantación forestal": 4, "cultivo": 5, "pasto": 6,
+         "urbano o suelo desnudo": 7, "agua o humedal": 8}
+ES_CANOPY = {"<10%": "A", "10-30%": "B", "30-60%": "C", ">60%": "D"}
+CLASS_NAME = {"D": "deforestation 2024-2025", "F": "stable forest", "N": "non-forest"}
+Z90 = 1.6448536269514722
 
-DOCX = "restoration_slate_2027.docx"
-CSV = "tributary_loads_wy2026.csv"
-FULL = C.ROUTES[:4]       # corrected rating curves on the full record
 
-
-def schedule(target):
-    """Schedule 1 of the agreement: each tributary's allocation"""
+def pdf_text(path):
     from pypdf import PdfReader
-    txt = "\n".join(p.extract_text() for p in PdfReader(os.path.join(target, P.FILES["agreement"])).pages)
-    A = {}
-    for t in W.TRIBS:
-        m = re.search(re.escape(t[1]) + r"\s+" + re.escape(t[2]) + r"\s+([\d,]+)", txt)
-        A[t[1]] = float(m.group(1).replace(",", ""))
-    return A
+    return "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
 
 
-def k10(v):
-    return int(round(v / 10.0)) * 10
+def read_strata(target):
+    txt = pdf_text(os.path.join(target, "reference_sampling_design_2026-01.pdf"))
+    out = {}
+    for s in ("S1", "S2", "S3"):
+        m = re.search(r"\b%s\s*\n[^\n]*\n\s*([\d,]{6,})\s+([\d,]+)" % s, txt)
+        out[s] = (int(m.group(1).replace(",", "")), int(m.group(2).replace(",", "")))
+    return out
 
 
-def floor10(v):
-    return int(np.floor(v / 10.0)) * 10
+def reference_class(lc24, cc24, lc25, cc25, loss_year):
+    forest24 = lc24 in (1, 2) and cc24 in ("C", "D")
+    forest25 = lc25 in (1, 2) and cc25 in ("C", "D")
+    if not forest24:
+        return "N"
+    if forest25:
+        return "F"
+    return "D" if loss_year in (2024, 2025) else "N"
 
 
-def ceil10(v):
-    return int(np.ceil(v / 10.0)) * 10
+def read_points(target):
+    """the main campaign with every adjudicated field applied"""
+    m = pd.read_csv(os.path.join(target, "reference_points_main_campaign_2026.csv"), dtype={"district": str})
+    adj = pd.read_excel(os.path.join(target, "adjudication_log_2026-04.xlsx"), header=2)
+    m = m.set_index("plot_id")
+    for r in adj.itertuples():
+        col = {"lc24": "lc_2024", "cc24": "canopy_2024", "lc25": "lc_2025", "cc25": "canopy_2025",
+               "loss_year": "loss_year", "loss_month": "loss_month", "confidence": "confidence"}[r.field]
+        m.loc[r.plot_id, col] = r.adjudicated_value
+    m = m.reset_index()
+    m["ref"] = [reference_class(int(a), b, int(c), d, (int(e) if pd.notna(e) else None)) for a, b, c, d, e in
+                zip(m.lc_2024, m.canopy_2024, m.lc_2025, m.canopy_2025, m.loss_year)]
+    fin = pd.read_csv(os.path.join(target, "reference_points_final_map_classes_2026-04-22.csv"))
+    return m.merge(fin, on="plot_id", how="left")
 
 
 def compute(target):
-    L = C.load(target)
-    A = schedule(target)
-    R, info = C.route_loads(L)
-    X = dict(L=L, A=A, R=R, info=info)
-    X["slates"] = {nm: C.slate(R[nm], A)[0] for nm in C.ROUTES}
-    X["call"], X["excess"] = C.slate(R[C.GOLD], A)
-    X["ww"] = C.ask_wastewater(L)
-    X["cover"] = C.ask_cover(L)
-    return X
+    strata = read_strata(target)
+    pts = read_points(target)
+    n = pts.groupby("stratum").size()
+    pts["weight"] = [strata[s][0] / n[s] for s in pts.stratum]
+    pts["y"] = (pts.ref == "D").astype(float)
+    area = float((pts.weight * pts.y).sum())
+    var = 0.0
+    for s in strata:
+        ph = pts.loc[pts.stratum == s, "y"].mean()
+        var += strata[s][0] ** 2 * ph * (1 - ph) / (n[s] - 1)
+    se = math.sqrt(var)
+    by_d = {c: float((pts.weight * pts.y)[pts.district == c].sum()) for c in W.DCODE}
+    import methods as M
+    er = M.emission_reductions(area)
+    stats = pd.read_excel(os.path.join(target, "final_change_map_v2_statistics.xlsx"), header=3)
+    conc = pd.read_csv(os.path.join(target, "district_concordance_2019_2025.csv"), dtype=str)
+    to19 = dict(zip(conc.district_2025, conc.district_2019))
+    prog = set(conc.loc[conc.accounting_area == "program", "district_2025"])
+    stats = stats[stats["district_2025"].isin(prog)]
+    map_fd = {c: 0.0 for c in W.DCODE}
+    for r in stats.itertuples():
+        map_fd[to19[r.district_2025]] += float(r[3])
+    poly = pd.read_parquet(os.path.join(target, "final_change_map_v2_polygons.parquet"))
+    poly = poly[poly.district_2025.isin(prog)].copy()
+    poly["d19"] = poly.district_2025.map(to19)
+    # a patch delivered in several polygons (tiles, quarters) carries its area on each: each polygon is the share
+    # area_ha / patch_ha of one patch, so the shares sum to the number of patches
+    poly["share"] = poly.area_ha / poly.patch_ha
+    patches_all = {c: int(round(poly.share[poly.d19 == c].sum())) for c in W.DCODE}
+    patches = {c: int(round(poly.share[(poly.d19 == c) & (poly.patch_ha >= 5.0)].sum())) for c in W.DCODE}
+    small = {c: int(round(poly.share[(poly.d19 == c) & (poly.patch_ha < 1.0)].sum())) for c in W.DCODE}
+    return dict(strata=strata, pts=pts, area=area, se=se, lo=area - Z90 * se, hi=area + Z90 * se, by_d=by_d, er=er,
+                map_fd=map_fd, patches=patches, patches_all=patches_all, small=small)
 
 
-def figures(X):
-    F = collections.OrderedDict()
-    A, R = X["A"], X["R"]
-    G = R[C.GOLD]
-    F["call"] = list(X["call"])
-    F["routes"] = collections.OrderedDict((nm, X["slates"][nm]) for nm in C.ROUTES)
-    F["default_slate"] = X["slates"][C.DEFAULT]
-    F["load_kg"] = collections.OrderedDict((n, k10(G[n])) for n in W.NAME.values())
-    F["allocation_kg"] = collections.OrderedDict((n, int(A[n])) for n in W.NAME.values())
-    F["excess_kg"] = collections.OrderedDict((n, k10(G[n] - A[n])) for n in W.NAME.values())
-    F["excess_range_full_record_kg"] = collections.OrderedDict(
-        (n, [floor10(min(R[k][n] for k in FULL) - A[n]), ceil10(max(R[k][n] for k in FULL) - A[n])]) for n in W.NAME.values())
-    F["load_range_full_record_kg"] = collections.OrderedDict(
-        (n, [floor10(min(R[k][n] for k in FULL)), ceil10(max(R[k][n] for k in FULL))]) for n in W.NAME.values())
-    F["default_below_kg"] = collections.OrderedDict(
-        (n, k10(A[n] - R[C.DEFAULT][n])) for n in W.NAME.values() if R[C.DEFAULT][n] < A[n] and n in X["call"])
-    F["excess_by_route_kg"] = collections.OrderedDict((nm, collections.OrderedDict((n, k10(R[nm][n] - A[n])) for n in W.NAME.values()))
-                                                      for nm in C.ROUTES)
-    F["slope"] = collections.OrderedDict((n, round(float(X["info"][n]["beta"][1]), 2)) for n in W.NAME.values())
-    F["n_samples"] = collections.OrderedDict((n, int(X["info"][n]["n"])) for n in W.NAME.values())
-    F["smearing"] = collections.OrderedDict((n, round(float(X["info"][n]["smear"]), 3)) for n in W.NAME.values())
-    F["wastewater_kg"] = collections.OrderedDict((n, round(X["ww"][n], 1)) for n in W.NAME.values())
-    F["wastewater_stated"] = collections.OrderedDict((n, k10(X["ww"][n])) for n in W.NAME.values())
-    F["cover_acres"] = collections.OrderedDict((n, round(X["cover"][n], 1)) for n in W.NAME.values())
-    F["cover_stated"] = collections.OrderedDict((n, k10(X["cover"][n])) for n in W.NAME.values())
-    tot_g = sum(G.values())
-    F["basin_load_kg"] = k10(tot_g)
-    F["default_vs_golden_pct"] = collections.OrderedDict(
-        (n, round(100 * (R[C.DEFAULT][n] / G[n] - 1), 1)) for n in W.NAME.values())
-    F["record"] = {"from": "1 October 2023", "first_water_year": 2024}
-    F["clauses"] = ["1.4", "2.2", "3.1", "4.1"]
-    s26 = C.tp_samples(X["L"])
-    F["samples_wy2026_mean"] = int(round(np.mean([sum(W.WY26_START <= d <= W.WY_END for d, c in s26[n]) for n in W.NAME.values()])))
-    # the forcing evidence: the top tenth of each station's water year 2026 days by discharge, their share of the
-    # golden load and of the water year's samples
-    L = X["L"]
-    s, q = C.tp_samples(L), C.daily_q(L)
-    tl, ts = collections.OrderedDict(), collections.OrderedDict()
-    for n in W.NAME.values():
-        qd = np.array([q[n][d] for d in C.WY26])
-        b = X["info"][n]["beta"]
-        a = np.array([2 * np.pi * d.timetuple().tm_yday / 365.25 for d in C.WY26])
-        ld = np.exp(b[0] + b[1] * np.log(qd) + b[2] * np.sin(a) + b[3] * np.cos(a)) * qd
-        top = qd > np.quantile(qd, 0.9)
-        s26 = [d for d, c in s[n] if W.WY26_START <= d <= W.WY_END]
-        tl[n] = round(100 * float(ld[top].sum() / ld.sum()))
-        ts[n] = round(100 * float(np.mean([q[n][d] > np.quantile(qd, 0.9) for d in s26])))
-    F["top_tenth_load_pct"] = tl
-    F["top_tenth_samples_pct"] = ts
-    return F
+def hundred(x):
+    return int(100 * math.floor(x / 100 + 0.5))
 
 
-# ------------------------------------------------------------------------------------------------------- chart
-def chart_png(X, F):
+def ten_thousand(x):
+    return int(10_000 * math.floor(x / 10_000 + 0.5))
+
+
+def fmt_int(v):
+    return format(int(v), ",")
+
+
+def chart_png(X):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     plt.rcParams["font.family"] = "DejaVu Sans"
-    A, G = X["A"], X["R"][C.GOLD]
-    order = sorted(W.NAME.values(), key=lambda n: G[n] - A[n])
-    fund = set(X["call"])
-    fig, ax = plt.subplots(figsize=(7.4, 4.6), dpi=150)
+    order = sorted(W.DCODE, key=lambda c: -X["by_d"][c])
+    names = [W.DNAME[c] for c in order]
+    est = [X["by_d"][c] / 1000 for c in order]
+    mp = [X["map_fd"][c] / 1000 for c in order]
     y = np.arange(len(order))
-    ax.barh(y, [G[n] / 1000 for n in order], height=0.6, color=["#1f5f7a" if n in fund else "#9fb6c3" for n in order],
-            label="Water year 2026 load")
-    ax.scatter([A[n] / 1000 for n in order], y, marker="|", s=420, color="#b23b1e", linewidths=2.2, zorder=3,
-               label="Allocation (Schedule 1)")
-    for i, n in enumerate(order):
-        ex = G[n] - A[n]
-        ax.text(max(G[n], A[n]) / 1000 + 0.25, i, ("+%s kg" % "{:,}".format(k10(ex))) if ex > 0 else ("%s kg" % "{:,}".format(k10(ex))),
-                va="center", fontsize=7.6, color="#202326")
+    fig, ax = plt.subplots(figsize=(7.0, 4.0), dpi=150)
+    ax.barh(y - 0.2, est, height=0.38, color="#1f5a3d", label="Estimated from the reference sample")
+    ax.barh(y + 0.2, mp, height=0.38, color="#a9b8a3", label="Final change map, version 2.0")
     ax.set_yticks(y)
-    ax.set_yticklabels(order, fontsize=8.2)
-    ax.set_xlabel("Total phosphorus, thousand kilograms", fontsize=8.6)
-    ax.set_xlim(0, max(max(G.values()), max(A.values())) / 1000 * 1.18)
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
-    ax.legend(fontsize=7.6, frameon=False, loc="lower right")
-    c3 = X["call"]
-    ax.set_title("%s, %s and %s carried the most phosphorus above allocation" % (c3[0], c3[1], c3[2]),
-                 fontsize=9.2, loc="left", color="#202326")
+    ax.set_yticklabels(names, fontsize=7.5)
+    ax.invert_yaxis()
+    ax.set_xlabel("Deforestation 2024-2025 (thousand hectares)", fontsize=8)
+    ax.tick_params(axis="x", labelsize=7.5)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    ax.legend(loc="lower right", fontsize=7.5, frameon=False)
+    ax.set_title("The final map shows %s of the %s hectares the reference sample finds" %
+                 ("{:.0f} per cent".format(100 * sum(X["map_fd"].values()) / X["er"]["area_ha"]),
+                  fmt_int(X["er"]["area_ha"])), fontsize=9.5, loc="left")
     fig.tight_layout()
     buf = io.BytesIO()
     fig.savefig(buf, format="png", metadata={"Software": None})
@@ -147,162 +142,158 @@ def chart_png(X, F):
     return buf.getvalue()
 
 
-# -------------------------------------------------------------------------------------------------------- memo
+def write_pdf(X, path):
+    from reportlab import rl_config
+    rl_config.invariant = 1
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.units import mm
+    from reportlab.platypus import Image, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+    import docs  # noqa: F401  (registers the fonts)
+    INK, GREY, GREEN = colors.HexColor("#1b1d20"), colors.HexColor("#5b6067"), colors.HexColor("#1f5a3d")
+    body = ParagraphStyle("b", fontName="LiberationSans", fontSize=9.6, leading=13.6, textColor=INK, spaceAfter=6)
+    h1 = ParagraphStyle("h1", fontName="LiberationSans-Bold", fontSize=14, leading=18, textColor=GREEN, spaceAfter=4)
+    sub = ParagraphStyle("s", fontName="LiberationSans", fontSize=9, leading=12.5, textColor=GREY, spaceAfter=10)
+    h2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10.5, leading=14, textColor=GREEN,
+                        spaceBefore=8, spaceAfter=3)
+    cell = ParagraphStyle("c", fontName="LiberationSans", fontSize=8.6, leading=11, textColor=INK)
+    num = ParagraphStyle("num", parent=cell, alignment=2)
+    note = ParagraphStyle("n", fontName="LiberationSans-Italic", fontSize=7.8, leading=10.5, textColor=GREY,
+                          spaceBefore=3, spaceAfter=8)
 
-def set_widths(table, inches):
-    """fix a table's column widths in both the grid and every cell, so every reader lays it out the same"""
-    from docx.shared import Inches
-    from docx.oxml.ns import qn
-    grid = table._tbl.tblGrid
-    for gc, w in zip(grid.findall(qn("w:gridCol")), inches):
-        gc.set(qn("w:w"), str(int(w * 1440)))
-    for row in table.rows:
-        for c, w in zip(row.cells, inches):
-            c.width = Inches(w)
-    table.autofit = False
+    def frame(canvas, doc):
+        canvas.saveState()
+        canvas.setFont("LiberationSans", 7.5)
+        canvas.setFillColor(GREY)
+        canvas.drawString(20 * mm, 12 * mm, "%s  |  Monitoring report 2024-2025, summary" % W.PROGRAM)
+        canvas.drawRightString(A4[0] - 20 * mm, 12 * mm, "%d" % doc.page)
+        canvas.restoreState()
 
-def write_docx(X, F, path):
-    import docx
-    from docx.enum.table import WD_TABLE_ALIGNMENT
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
-    from docx.shared import Inches, Pt
-    A, G = X["A"], X["R"][C.GOLD]
-    d = docx.Document()
-    st = d.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(10.5)
-    sec = d.sections[0]
-    sec.left_margin = sec.right_margin = Inches(1.0)
-    from docx.oxml import OxmlElement
-    from docx.oxml.ns import qn
-    from docx.shared import RGBColor
-    h2 = d.styles["Heading 2"]
-    h2.font.name = "Calibri"
-    h2.font.size = Pt(11.5)
-    h2.font.color.rgb = RGBColor(0x1F, 0x5F, 0x7A)
-    foot = sec.footer.paragraphs[0]
-    foot.text = "Brannoch Lake Commission  |  Water quality program  |  Water year 2026 tributary loads  |  Page "
-    foot.runs[0].font.size = Pt(8)
-    fld = OxmlElement("w:fldSimple")
-    fld.set(qn("w:instr"), "PAGE")
-    fr = OxmlElement("w:r")
-    rpr = OxmlElement("w:rPr")
-    sz = OxmlElement("w:sz")
-    sz.set(qn("w:val"), "16")
-    rpr.append(sz)
-    fr.append(rpr)
-    ft = OxmlElement("w:t")
-    ft.text = "1"
-    fr.append(ft)
-    fld.append(fr)
-    foot._p.append(fld)
-    t = d.add_paragraph()
-    r = t.add_run("MEMORANDUM")
-    r.bold = True
-    r.font.size = Pt(13)
-    hdr = d.add_table(rows=4, cols=2)
-    for i, (k, v) in enumerate((("To", "Technical Committee, Brannoch Lake Commission"),
-                                ("From", "%s, %s" % W.PEOPLE["manager"]),
-                                ("Date", "12 January 2027"),
-                                ("Subject", "Water year 2026 tributary loads and the 2027 Tributary Restoration Fund"))):
-        hdr.cell(i, 0).text = k
-        hdr.cell(i, 1).text = v
-        hdr.cell(i, 0).paragraphs[0].runs[0].bold = True
-    set_widths(hdr, (0.9, 5.6))
-    d.add_paragraph()
-    call = X["call"]
-    ex = {n: G[n] - A[n] for n in G}
-    rest_over = sorted((n for n in ex if n not in call and ex[n] > 0), key=lambda n: -ex[n])
-    n_under = sum(1 for n in ex if ex[n] <= 0)
-    p = d.add_paragraph()
-    r = p.add_run("Fund the 2027 projects in the %s, the %s and %s." % (call[0], call[1], call[2]))
-    r.bold = True
-    d.add_paragraph(
-        "Under section 3.1 of the agreement the Fund takes the three tributaries whose water year 2026 load exceeded its "
-        "allocation by the most kilograms. On the approved record those are the %s (%s kg above its allocation), the "
-        "%s (%s kg) and %s (%s kg). %s; the other %s tributaries were under their allocations."
-        % (call[0], "{:,}".format(F["excess_kg"][call[0]]), call[1], "{:,}".format(F["excess_kg"][call[1]]), call[2],
-           "{:,}".format(F["excess_kg"][call[2]]),
-           " and ".join("%s (%s kg)" % (n, "{:,}".format(F["excess_kg"][n])) for n in rest_over) +
-           (" were also above, by less" if len(rest_over) > 1 else " was also above, by less"),
-           {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven"}[n_under]))
-    d.add_paragraph("Table 1. Water year 2026 loads against Schedule 1 allocations (kilograms of total phosphorus).")
-    tb = d.add_table(rows=1, cols=6)
-    tb.style = "Table Grid"
-    tb.alignment = WD_TABLE_ALIGNMENT.CENTER
-    widths = (1.55, 0.75, 1.35, 0.85, 0.9, 0.85)
-    for j, h in enumerate(("Tributary", "Load", "Range, full record", "Allocation", "Above allocation", "2027 project")):
-        tb.rows[0].cells[j].text = h
-        tb.rows[0].cells[j].paragraphs[0].runs[0].bold = True
-    for n in sorted(G, key=lambda n: -ex[n]):
-        row = tb.add_row().cells
-        lo, hi = F["load_range_full_record_kg"][n]
-        vals = [n, "{:,}".format(F["load_kg"][n]), "{:,} to {:,}".format(lo, hi) if lo != hi else "{:,}".format(lo), "{:,}".format(F["allocation_kg"][n]),
-                "{:,}".format(F["excess_kg"][n]), "Yes" if n in call else "No"]
-        for j, v in enumerate(vals):
-            row[j].text = v
-            if j in (1, 2, 3, 4):
-                row[j].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    d.add_paragraph("Loads to the nearest 10 kg; the ranking is made on unrounded loads (agreement 2.2). The load is the "
-                    "seasonal rating curve with the smearing correction; the range covers the same curve without the seasonal "
-                    "cycle, with a quadratic term in discharge, and with the normal-theory correction, each fitted to the "
-                    "full record, rounded outward to 10 kg.").runs[0].font.size = Pt(8.5)
-    set_widths(tb, widths)
-    d.add_picture(io.BytesIO(chart_png(X, F)), width=Inches(5.5))
-    d.add_paragraph("Figure 1. Each tributary's water year 2026 load (bars) against its allocation (red marks).").runs[0].font.size = Pt(8.5)
-    d.add_heading("How the loads were built", level=2)
-    sl = F["slope"]
-    d.add_paragraph(
-        "A load is the year's daily discharge times the day's concentration, summed. Discharge comes from the approved "
-        "15-minute record, averaged over local days (Dunmarsh Brook's carried from its gage by the ratio of drainage "
-        "areas). Concentration was sampled on about %d days of the year at each station: the Commission's rounds on the "
-        "first and third Tuesdays and the college's storm samples. In every tributary concentration rises with discharge "
-        "(slopes of %.2f to %.2f on the log scale), and few samples fall on the high flows that carry the load: on the "
-        "Kestle River the tenth of days with the highest discharge carried %d per cent of the year's phosphorus and held "
-        "%d per cent of its samples. Carrying the samples across the days between them prices those days at the "
-        "readings of the days around them. Each day's concentration is therefore taken from a rating curve fitted to "
-        "every accepted routine sample from water years 2024 to 2026: log concentration on log discharge with a "
-        "seasonal cycle, retransformed to the mean with the smearing factor."
-        % (F["samples_wy2026_mean"], min(sl.values()), max(sl.values()), F["top_tenth_load_pct"]["Kestle River"],
-           F["top_tenth_samples_pct"]["Kestle River"]))
-    d.add_paragraph(
-        "Interpolating the samples between visit days instead puts the Kestle and Hessick rivers below their allocations "
-        "and funds Ambrey River, Orrinwood Brook and Varrow Brook; the selection above holds on every rating curve we "
-        "fitted (with or without the seasonal cycle, a quadratic term, the normal-theory correction, or a shorter "
-        "calibration record).")
-    d.add_heading("Data notes", level=2)
-    for note in ("Results from both organisations are used: the Commission's (BLC stations) and the college's storm "
-                 "samples (ACWL stations), joined through the station register. Field replicates, field blanks and "
-                 "rejected results are left out; results reported in micrograms per litre since July 2025 are converted.",
-                 "The approved discharge delivered on 14 December 2026 replaces the provisional values for July to "
-                 "September; two gages' ratings were shifted from 1 August 2026.",
-                 "The upstream wastewater phosphorus and cover crop acres the agreement's section 4.1 asks for are in "
-                 "tributary_loads_wy2026.csv."):
-        d.add_paragraph(note, style="List Bullet")
-    d.save(path)
+    er = X["er"]
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
+                            bottomMargin=20 * mm, title="Monitoring report 2024-2025: emission reductions",
+                            author=W.LAB, subject="", creator="", producer="")
+    lo, hi = ten_thousand(X["lo"]), ten_thousand(X["hi"])
+    s = [Paragraph("The program can offer %s tonnes for USD %s" % (fmt_int(er["offered_t"]), fmt_int(er["payment_usd"])),
+                   h1),
+         Paragraph("%s, monitoring report for 1 January 2024 to 31 December 2025: summary for the %s. %s, %s. 9 June "
+                   "2026." % (W.PROGRAM, W.FUND, W.LAB, W.PEOPLE["head"]), sub),
+         Paragraph("Emission reductions", h2),
+         Paragraph("Deforestation in the accounting area over the reporting period was <b>%s hectares</b> (90 per cent "
+                   "confidence interval %s to %s hectares), against a reference level of %s hectares for the two years. "
+                   "At 497.0 tonnes of CO2e a hectare the program emitted %s tonnes against reference level emissions "
+                   "of %s, for emission reductions of %s tonnes. After the 18 per cent buffer the program can offer "
+                   "<b>%s tonnes</b>, for which the %s pays <b>USD %s</b>." %
+                   (fmt_int(er["area_ha"]), fmt_int(lo), fmt_int(hi), fmt_int(2 * W.RL_HA_YEAR),
+                    fmt_int(er["monitored_t"]), fmt_int(er["rl_t"]), fmt_int(er["er_t"]), fmt_int(er["offered_t"]),
+                    W.FUND, fmt_int(er["payment_usd"])), body),
+         Paragraph("How the area was estimated", h2),
+         Paragraph("The 4,000 reference points were drawn on 20 January 2026 by stratified random sampling on the "
+                   "preliminary change map, version 0.9: 400 in its deforestation class, 2,400 in stable forest and "
+                   "1,200 in non-forest. The final map, version 2.0, moved most of the preliminary map's false alarms, "
+                   "and some real clearings, out of its deforestation class, but a point's weight is set by the "
+                   "stratum it was drawn from: %s hectares for a point of the deforestation stratum, %s for stable forest and %s for "
+                   "non-forest. The area is the sum of those weights over the %s points the interpreters class as "
+                   "deforestation in 2024-2025 on the national forest definition, after quality control." %
+                   tuple([fmt_int(round(X["strata"][s][0] / X["strata"][s][1])) for s in ("S1", "S2", "S3")] +
+                         [fmt_int(int(X["pts"].y.sum()))]), body),
+         Image(io.BytesIO(chart_png(X)), width=170 * mm, height=97 * mm),
+         Paragraph("Estimates from the reference sample; the final map's areas by pixel counting. Source: %s reference sample 2024-2025 and final change map version 2.0." % W.NFMS,
+                   note),
+         PageBreak(), Paragraph("Deforestation by district", h2)]
+    rows = [[Paragraph("<b>District</b>", cell), Paragraph("<b>Estimated deforestation (ha)</b>", num),
+             Paragraph("<b>Deforestation patches on the final map</b>", num),
+             Paragraph("<b>Under 1 ha</b>", num), Paragraph("<b>5 ha or more</b>", num)]]
+    for c in W.DCODE:
+        rows.append([Paragraph(W.DNAME[c], cell), Paragraph(fmt_int(hundred(X["by_d"][c])), num),
+                     Paragraph(fmt_int(X["patches_all"][c]), num), Paragraph(fmt_int(X["small"][c]), num),
+                     Paragraph(fmt_int(X["patches"][c]), num)])
+    rows.append([Paragraph("<b>Accounting area</b>", cell), Paragraph("<b>%s</b>" % fmt_int(er["area_ha"]), num),
+                 Paragraph("<b>%s</b>" % fmt_int(sum(X["patches_all"].values())), num),
+                 Paragraph("<b>%s</b>" % fmt_int(sum(X["small"].values())), num),
+                 Paragraph("<b>%s</b>" % fmt_int(sum(X["patches"].values())), num)])
+    t = Table(rows, colWidths=[42 * mm, 34 * mm, 42 * mm, 24 * mm, 26 * mm])
+    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, GREEN), ("LINEABOVE", (0, -1), (-1, -1), 0.4, GREY),
+                           ("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("TOPPADDING", (0, 0), (-1, -1), 2.4),
+                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2.4)]))
+    s += [t, Paragraph("District estimates sum the weights of each district's deforestation points; they carry far wider "
+                       "intervals than the accounting area's and are reported for the benefit-sharing plan. A patch is a "
+                       "connected area of change on the national mosaic, counted once however many tiles and quarters "
+                       "its polygons are delivered in.", note),
+          Spacer(1, 6), Paragraph("%s<br/>%s" % (W.PEOPLE["head"], W.LAB), body)]
+    doc.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
-def write_csv(X, F, path):
-    import csv
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\r\n")
-        w.writerow(["tributary", "compliance_station", "project_2027", "upstream_permitted_wastewater_p_kg_wy2026",
-                    "cover_crop_acres_2026"])
-        for t in W.TRIBS:
-            n = t[1]
-            w.writerow([n, t[2], "Yes" if n in X["call"] else "No", F["wastewater_stated"][n], F["cover_stated"][n]])
+def write_xlsx(X, path):
+    from openpyxl import Workbook
+    from openpyxl.styles import Font
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Reference points"
+    hdr = ["plot_id", "stratum", "district_2019", "reference_class_2024_2025", "map_class_v2", "weight_ha"]
+    for j, h in enumerate(hdr, 1):
+        ws.cell(row=1, column=j, value=h).font = Font(name="Calibri", bold=True, size=10)
+    fin = {"DEF": "deforestation 2024-2025", "BOS": "stable forest", "NOB": "non-forest"}
+    for i, r in enumerate(X["pts"].sort_values("plot_id").itertuples(), 2):
+        vals = [r.plot_id, r.stratum, r.district, CLASS_NAME[r.ref], fin[r.map_class_v2], round(r.weight, 2)]
+        for j, v in enumerate(vals, 1):
+            c = ws.cell(row=i, column=j, value=v)
+            if j == 6:
+                c.number_format = "#,##0.00"
+    for col, w in zip("ABCDEF", (14, 9, 13, 26, 24, 12)):
+        ws.column_dimensions[col].width = w
+    ws.freeze_panes = "A2"
+    ws.auto_filter.ref = "A1:F%d" % (len(X["pts"]) + 1)
+    s2 = wb.create_sheet("Notes")
+    notes = ["Reference sample 2024-2025, conformed: one row per reference point.",
+             "reference_class_2024_2025: the point's class for the reporting period on the national forest definition "
+             "(monitoring plan, section 3), from the main campaign with the adjudicated quality-control differences "
+             "applied.",
+             "weight_ha: the area the point stands for, its stratum's area over the stratum's points (sample design, "
+             "section 2).",
+             "map_class_v2: the point's class on the final change map, version 2.0."]
+    for i, t in enumerate(notes, 1):
+        s2.cell(row=i, column=1, value=t)
+    s2.column_dimensions["A"].width = 110
+    wb.save(path)
 
 
-def main(target, golden, figures_path):
-    os.makedirs(golden, exist_ok=True)
+def figures(X):
+    er = X["er"]
+    return {
+        "offered_t": er["offered_t"], "payment_usd": int(er["payment_usd"]), "area_ha": er["area_ha"],
+        "area_unrounded_ha": round(X["area"], 1), "er_t": int(er["er_t"]), "monitored_t": int(er["monitored_t"]),
+        "rl_t": int(er["rl_t"]), "rl_ha_year": int(W.RL_HA_YEAR), "rl_two_years_ha": int(2 * W.RL_HA_YEAR),
+        "buffer_pct": 18, "price_usd": 5, "ci_level_pct": 90, "forest_canopy_pct": 30,
+        "ef_t_per_ha": W.EF, "ci90_low_ha": ten_thousand(X["lo"]), "ci90_high_ha": ten_thousand(X["hi"]),
+        "points_deforestation": int(X["pts"].y.sum()),
+        "weights_ha": {s: round(X["strata"][s][0] / X["strata"][s][1]) for s in ("S1", "S2", "S3")},
+        "district_area_ha": {W.DNAME[c]: hundred(X["by_d"][c]) for c in W.DCODE},
+        "patches": {W.DNAME[c]: X["patches_all"][c] for c in W.DCODE},
+        "patches_all": sum(X["patches_all"].values()),
+        "patches_under_1ha": {W.DNAME[c]: X["small"][c] for c in W.DCODE},
+        "patches_under_1ha_all": sum(X["small"].values()),
+        "patches_5ha": {W.DNAME[c]: X["patches"][c] for c in W.DCODE},
+        "patches_5ha_all": sum(X["patches"].values()),
+        "map_fd_ha": int(round(sum(X["map_fd"].values()))),
+        "reference_points": 4000,
+        "reference_classes": {CLASS_NAME[k]: int((X["pts"].ref == k).sum()) for k in ("D", "F", "N")},
+        "final_map_classes": {n: int((X["pts"].map_class_v2 == k).sum()) for k, n in
+                              (("DEF", "deforestation 2024-2025"), ("BOS", "stable forest"), ("NOB", "non-forest"))},
+    }
+
+
+def main(target, out_dir, fig_path):
+    os.makedirs(out_dir, exist_ok=True)
     X = compute(target)
-    F = figures(X)
-    write_docx(X, F, os.path.join(golden, DOCX))
-    write_csv(X, F, os.path.join(golden, CSV))
+    write_pdf(X, os.path.join(out_dir, PDF_NAME))
+    write_xlsx(X, os.path.join(out_dir, XLSX_NAME))
     import postprocess as PP
-    by = W.PEOPLE["manager"][0]
-    PP.normalize_ooxml(os.path.join(golden, DOCX), by, by, "2027-01-11T15:02:00Z", "2027-01-12T14:31:27Z",
-                       title="Water year 2026 tributary loads", company=W.COMMISSION)
-    with open(figures_path, "w") as fh:
-        json.dump(F, fh, indent=1, ensure_ascii=False)
+    PP.normalize_pdf(os.path.join(out_dir, PDF_NAME), b"D:20260609104512-05'00'", b"D:20260609111938-05'00'")
+    PP.normalize_ooxml(os.path.join(out_dir, XLSX_NAME), W.PEOPLE["reference"], W.PEOPLE["head"],
+                       "2026-06-02T14:21:00Z", "2026-06-09T15:47:12Z", excel=True, company=W.LAB)
+    with open(fig_path, "w") as f:
+        json.dump(figures(X), f, indent=1, ensure_ascii=False)
+        f.write("\n")
     return X

@@ -1,6 +1,5 @@
-"""Build task452: the pack into <task>/target (data first, the asks' figures centred, then the agreement with each
-tributary's allocation placed from the loads the shipped data give), the goldens into <task>/golden, metadata.json
-and generator/figures.json; then the checks and the independent verifier, a second full build into a scratch folder
+"""Build task452 (architecture 2): the pack into <task>/target, the goldens into <task>/golden, metadata.json and
+generator/figures.json; then the checks and the independent verifier, a second full build into a scratch folder
 inside the task compared byte for byte, and target.zip cut from the final build.
 
     python3 task452/generator/build.py              everything
@@ -19,88 +18,56 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 warnings.filterwarnings("ignore")
 
-import calc as C            # noqa: E402
 import docs as DC           # noqa: E402
+import interp as I          # noqa: E402
 import pack as P            # noqa: E402
 import postprocess as PP    # noqa: E402
-import sim as S             # noqa: E402
 import world as W           # noqa: E402
 
 TASK = os.path.dirname(HERE)
-EASTERN = dt.timezone(dt.timedelta(hours=-5))
-STAMP = dt.datetime(2027, 1, 12, 9, 40, tzinfo=EASTERN)       # the folder as the program shared it
-
-GOLDEN_SLATE = ("Kestle River", "Hessick River", "Varrow Brook")
-DEFAULT_SLATE = ("Varrow Brook", "Orrinwood Brook", "Ambrey River")
+LOCAL = dt.timezone(dt.timedelta(hours=-5))
+STAMP = dt.datetime(2026, 5, 22, 17, 25, tzinfo=LOCAL)        # the folder as the laboratory assembled it
 
 
-def place_allocations(target):
-    """each tributary's Schedule 1 allocation from the shipped data. The golden slate's three stand above their
-    allocations on every rating-curve route (seasonal or not, either retransformation, quadratic, any calibration
-    window, even uncorrected) by clear margins over the fourth; Varrow Brook also stands just above its allocation on
-    the interpolated loads; Orrinwood Brook and Ambrey River sit about at their allocations on the rating curves and
-    clearly above on the interpolated loads; the rest sit under"""
-    L = C.load(target)
-    R, info = C.route_loads(L)
-    G = R[C.GOLD]
-    r0 = R[C.DEFAULT]
-    fam = [R[k] for k in C.GOLDEN]
-    A = {}
-    for code in W.CODES:
-        n = W.NAME[code]
-        role = W.ROLE[code]
-        lo, hi = min(v[n] for v in fam), max(v[n] for v in fam)
-        if role == "gold_top":
-            A[n] = lo / 1.12
-        elif role == "both_top":
-            A[n] = min(r0[n] - 0.06 * G[n], lo / 1.12)
-        elif role == "interp_top":
-            A[n] = min(lo, r0[n]) / 1.05
-        elif role == "clear":
-            A[n] = max(hi, r0[n]) / 0.92
-    out = {n: float(round(v / 10.0) * 10) for n, v in A.items()}
-    return {code: out[W.NAME[code]] for code in W.CODES}, None
-
-
-def build(out, quiet=False, world=None):
+def build(out, quiet=False):
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
-    w = world or S.simulate()
     f = lambda k: os.path.join(out, P.FILES[k])
+    pts = I.points()
+    qc, adj = I.qc_campaign(pts)
     n = {}
-    n["wq"] = P.write_wq(w, f("wq"))
-    n["uv"] = P.write_uv(w, f("uv"))
-    n["dv"] = P.write_dv(w, f("dv"))
-    n["prov"] = P.write_prov(w, f("prov"))
-    n["register"] = P.write_register(w, f("register"))
-    n["dmr"] = P.write_dmr(w, f("dmr"))
-    n["contracts"] = P.write_contracts(w, f("contracts"))
-    n["fields"] = P.write_fields(w, f("fields"))
-    n["precip"] = P.write_precip(w, f("precip"))
-    n["lake"] = P.write_lake(w, f("lake"))
-    import polish as PO
-    PO.straddle(out)
-    w["polish"] = dict(wastewater=PO.wastewater(out), cover=PO.cover(out))
-    alloc, band = place_allocations(out)
-    DC.write_agreement(f("agreement"), alloc)
-    DC.write_program(f("program"))
-    DC.write_transmittal(f("transmittal"), n)
-    mgr, dr = W.PEOPLE["manager"][0], W.PEOPLE["director"][0]
-    PP.normalize_ooxml(f("program"), mgr, mgr, "2024-02-20T14:10:00Z", "2026-11-17T16:22:41Z",
-                       title="Tributary monitoring program", company=W.COMMISSION)
-    PP.normalize_ooxml(f("register"), mgr, mgr, "2023-09-12T13:45:00Z", "2026-12-18T20:04:13Z", excel=True, company=W.COMMISSION)
-    PP.normalize_ooxml(f("lake"), mgr, mgr, "2024-05-02T12:30:00Z", "2026-11-03T15:51:09Z", excel=True, company=W.COMMISSION)
-    PP.normalize_pdf(f("agreement"), b"D:20251210101530-05'00'", b"D:20251210103347-05'00'")
+    n["main"] = P.write_main(pts, f("main"))
+    n["qc"] = P.write_qc(qc, f("qc"))
+    n["adj"] = P.write_adjudication(adj, f("adj"))
+    n["intersect"] = P.write_intersect(pts, f("intersect"))
+    n["stats"] = P.write_stats(f("stats"))
+    n["poly"] = P.write_polygons(f("poly"))
+    n["conc"] = P.write_concordance(f("conc"))
+    n["nfi"] = P.write_nfi(f("nfi"))
+    n["fire"] = P.write_fire(f("fire"))
+    n["dict"] = P.write_dictionary(f("dict"))
+    n["manifest"] = P.write_manifest(f("manifest"), n)
+    DC.write_design(f("design"))
+    DC.write_erpa(f("erpa"))
+    DC.write_plan(f("plan"))
+    DC.write_frel(f("frel"))
+    DC.write_release(f("release"))
+    PP.normalize_ooxml(f("adj"), W.PEOPLE["reference"], W.PEOPLE["reference"], "2026-04-13T13:02:00Z",
+                       "2026-04-17T22:41:09Z", excel=True, company=W.LAB)
+    PP.normalize_ooxml(f("stats"), W.PEOPLE["maps"], W.PEOPLE["maps"], "2026-04-20T15:10:00Z",
+                       "2026-04-22T18:05:44Z", excel=True, company=W.LAB)
+    PP.normalize_pdf(f("design"), b"D:20260126091503-05'00'", b"D:20260126093140-05'00'")
+    PP.normalize_pdf(f("erpa"), b"D:20240315140000-05'00'", b"D:20240315141255-05'00'")
+    PP.normalize_pdf(f("plan"), b"D:20230320100000-05'00'", b"D:20230320101722-05'00'")
+    PP.normalize_pdf(f("frel"), b"D:20231121110000-05'00'", b"D:20231121112033-05'00'")
+    PP.normalize_pdf(f("release"), b"D:20260422162210-05'00'", b"D:20260422163905-05'00'")
     stamp = STAMP.timestamp()
     for name in os.listdir(out):
         os.utime(os.path.join(out, name), (stamp, stamp))
-    w["counts"] = n
-    w["alloc"] = alloc
-    w["band"] = band
     if not quiet:
         print("built %s: %d files; %s" % (out, len(os.listdir(out)), ", ".join("%s %d" % kv for kv in n.items())))
-    return w
+    return {"counts": n, "pts": pts, "qc": qc, "adj": adj}
 
 
 def digest(folder):
@@ -110,7 +77,7 @@ def digest(folder):
 def cut_zip(root):
     import zipfile
     folder = os.path.join(root, "target")
-    stamp = (2027, 1, 12, 9, 40, 0)
+    stamp = (2026, 5, 22, 17, 25, 0)
     zp = os.path.join(root, "target.zip")
     with zipfile.ZipFile(zp, "w") as z:
         for name in sorted(os.listdir(folder)):
@@ -121,10 +88,10 @@ def cut_zip(root):
     return zp
 
 
-def everything(root, quiet=False, world=None):
+def everything(root, quiet=False):
     import golden as G
     import metadata as MD
-    world = build(os.path.join(root, "target"), quiet=quiet, world=world)
+    world = build(os.path.join(root, "target"), quiet=quiet)
     if os.path.exists(os.path.join(root, "golden")):
         shutil.rmtree(os.path.join(root, "golden"))
     world["golden"] = G.main(os.path.join(root, "target"), os.path.join(root, "golden"),

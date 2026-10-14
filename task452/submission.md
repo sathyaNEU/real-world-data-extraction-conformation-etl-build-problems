@@ -2,71 +2,68 @@
 
 ## Tags
 
-**Domain:** Physical & Environmental Sciences, emissions inventory (a lake commission's water year 2026 inventory of the total phosphorus each tributary carried into the lake, estimated from grab samples and the gage record and set against the tributary allocations of its phosphorus agreement).
-**Analytical objective:** Data Extraction & Conformation (ETL) (two organisations' laboratory results across a change of laboratory, the gage operator's approved 15-minute and daily discharge records, the station register, the permitted facilities' monthly and quarterly discharge monitoring reports and the farm practice contracts with their field overlay conformed into each tributary's water year 2026 load, its upstream permitted wastewater phosphorus and its cover crop acres).
+**Domain:** Physical & Environmental Sciences, emissions inventory (a lowland forest program's 2024-2025 activity data, the area of forest converted to other land, estimated from a stratified reference sample of points interpreted on high-resolution imagery and turned into the emission reductions a results-based payment agreement pays for).
+**Analytical objective:** Data Extraction & Conformation (ETL) (the laboratory's main interpretation campaign, the ministry's quality-control re-interpretation on its own form and the adjudication of their differences conformed into one reference class per point on the national forest definition and the reporting period, with the final change map's classes, statistics and polygons joined across the 2019 and 2025 district layers).
 
 ## 1. Final Recommendation
 
-**Fund the 2027 tributary restoration projects in the Kestle River, the Hessick River and Varrow Brook.**
+**The Lowland Forest Emission Reductions Program can offer the Rainforest Results Facility 23,229,780 tonnes of emission reductions for 2024-2025, for which the Facility will pay USD 116,148,900.**
 
-With each day's concentration estimated from its discharge by a rating curve fitted to the record's samples, their water year 2026 loads stand 2,160 to 2,640 kg (Kestle River), 1,140 to 1,270 kg (Hessick River) and 1,110 to 1,220 kg (Varrow Brook) above their Schedule 1 allocations, against 340 to 370 kg for Ambrey River, the next. Not Ambrey River, Orrinwood Brook and Varrow Brook, which interpolating the samples between sampling days funds: the tenth of days with the highest discharge carry 34 to 63 per cent of each tributary's load and hold 4 to 15 per cent of its water year 2026 samples, so interpolation prices them at the readings of the days around them and puts the Kestle River 4,160 kg and the Hessick River 1,060 kg under their allocations.
+The tonnes rest on 122,900 hectares of deforestation, estimated from the reference sample on the strata it was drawn from, against the reference level's 179,900 for the two years. Not the final change map's error matrix with its own class areas as weights: the points drawn from the preliminary map's deforestation class that the final map moved into stable forest would each stand for a stable-forest point's area, which puts the deforestation within a few thousand hectares of the reference level and offers a seventh of the tonnes. Not the final map's own deforestation: it leaves out the clearings the map missed and would offer nearly twice the tonnes.
 
 ## 2. Critical Components
 
-1. Kestle River's water year 2026 load is **2,160 to 2,640 kg** above its allocation, Hessick River's **1,140 to 1,270 kg** and Varrow Brook's **1,110 to 1,220 kg**.
-2. Ambrey River (**340 to 370 kg**) and Orrinwood Brook (**210 to 230 kg**) are the only other tributaries above their allocations.
+1. Each reference point stands for its sampling stratum's area over the points drawn there: **329, 2,469 and 4,785 hectares** for the preliminary map's deforestation, stable-forest and non-forest strata.
+2. The area of deforestation in the accounting area over 2024-2025 is **122,900 hectares** (122,882.7 before rounding to the nearest hundred).
+3. The emission reductions are **28,329,000 tonnes** of CO2e: reference level emissions of 89,410,300 tonnes less monitored emissions of 61,081,300.
 
 ## 3. Step-by-Step Solution
 
-1. Took the total phosphorus results (fraction Total) in blc_water_quality_results_2027-01-08.csv from both organisations the agreement names in 1.4, the Commission's BLC stations and the college's ACWL stations, joined to the tributaries through the Stations sheet of blc_station_register.xlsx; kept routine samples with result status Accepted and converted results reported in ug/L to mg/L: 79 to 81 samples a station over water years 2024 to 2026.
-2. Built each station's daily mean discharge from the approved records, merrifield_daily_values_wy2024-wy2025.csv before water year 2026 and merrifield_unit_values_wy2026_approved.csv averaged over local calendar days in it (merrifield_data_transmittal_2026-12-14.txt; the provisional July to September file is superseded), with Dunmarsh Brook's carried from its gage by the ratio of the two drainage areas in the register.
-3. Fitted at each station a rating curve of log concentration on log daily discharge with the sine and cosine of the day of the year, on every sample from step 1: concentration rises with discharge at every station (slopes 0.31 to 0.86), and the tenth of days in water year 2026 with the highest discharge carry 34 to 63 per cent of the load while holding 4 to 15 per cent of the year's samples.
-4. Applied each curve to every day from 1 October 2025 to 30 September 2026, retransformed to the mean with the smearing factor (1.032 to 1.053), multiplied by the day's discharge and summed: Kestle River 16,820 kg, Hessick River 6,910 kg and Varrow Brook 4,360 kg, 44,480 kg across the ten tributaries; the same curve without the seasonal terms, with a quadratic term in discharge or with the normal-theory correction gives the full-record ranges, rounded outward to 10 kg.
-5. Set each load against its allocation in Schedule 1 of brannoch_lake_phosphorus_agreement.pdf on unrounded loads (2.2) and took the three largest excesses (3.1): Kestle River 2,540 kg, Hessick River 1,250 kg and Varrow Brook 1,120 kg over, then Ambrey River 350 kg and Orrinwood Brook 210 kg, the other five under; interpolating the water year's samples across its days instead funds Ambrey River, Orrinwood Brook and Varrow Brook.
-6. For each tributary's upstream permitted wastewater phosphorus (4.1(a)), kept the monthly average rows of npdes_dmr_phosphorus_wy2026.csv at each report's latest submission, converted each report to kilograms (concentration times flow, or the reported mass, times the days of its monitoring period: a month, or a calendar quarter at the smaller dischargers), and counted each outfall that the register's Streams and Facilities sheets place upstream of the compliance station on the tributary's stream network while it was in service.
-7. For each watershed's cover crop acres (4.1(b)), took the contracts in farm_practice_contracts_2024-2027.csv in force for crop year 2026 at their latest amendment and shared each enrolled field's acres in practice_field_watershed_acres.csv among the watersheds it lies in; a contract's contracted acres, repeated on each of its field lines, are its fields' acres together.
-8. Recommendation: fund the 2027 tributary restoration projects in the Kestle River, the Hessick River and Varrow Brook.
+1. Applied the adjudicated fields of adjudication_log_2026-04.xlsx to reference_points_main_campaign_2026.csv and classed each point on the monitoring plan's section 3 (forest on 1 January 2024 and other land on 31 December 2025, canopy cover of 30 per cent or more, plantations excluded): 224 points are deforestation in 2024-2025.
+2. Weighted each point by its stratum's area over the points drawn in it, from the strata of the preliminary change map of 15 January 2026 in section 2 of reference_sampling_design_2026-01.pdf: 329, 2,469 and 4,785 hectares.
+3. Summed the weights of the deforestation points: 122,882.7 hectares, 122,900 to the nearest hundred (agreement article 4(2)); the stratified sampling variance gives a 90 per cent interval of 100,000 to 140,000 hectares to the nearest ten thousand.
+4. Set monitored emissions of 122,900 hectares at 497.0 tonnes of CO2e a hectare, 61,081,300 tonnes, against reference level emissions of 89,950 hectares a year for two years at the same factor, 89,410,300 tonnes (articles 1, 2 and 4): emission reductions of 28,329,000 tonnes.
+5. Set aside the 18 per cent buffer and dropped the fraction of a tonne: 23,229,780 tonnes offered, which the Facility pays for at USD 5.00 a tonne, USD 116,148,900 (articles 5 and 6).
+6. Took each district's area as the part of the estimate its points contribute, as section 4 of monitoring_plan_extract.pdf sets the district figures, the points' 2019 district codes being the accounting area's layer.
+7. Placed each polygon of final_change_map_v2_polygons.parquet in its 2019 district through district_concordance_2019_2025.csv (LT-05 and LT-06 both La Esperanza, the highland districts outside the accounting area) and summed area_ha over patch_ha, each polygon's share of the patch it delivers, by the patch's size: 30,548 patches, 12,206 under 1 hectare and 3,221 of 5 hectares or more.
+8. Recommendation: offer 23,229,780 tonnes for USD 116,148,900.
 
 ## 4. Deliverable Answers
 
-### restoration_slate_2027.docx
+### er_monitoring_report_2024-2025.pdf
 
-1. The three tributaries funded for 2027: Kestle River, Hessick River and Varrow Brook.
-2. Each tributary's water year 2026 load against its Schedule 1 allocation, as a range across the full-record rating curves rounded outward to 10 kg, with 10 kg of tolerance at each end (the memo's own load inside it), in the memo table's order:
-   - Kestle River: 16,440 to 16,920 kg (16,820 kg) against 14,280 kg, over
-   - Hessick River: 6,800 to 6,930 kg (6,910 kg) against 5,660 kg, over
-   - Varrow Brook: 4,350 to 4,460 kg (4,360 kg) against 3,240 kg, over
-   - Ambrey River: 3,720 to 3,750 kg (3,730 kg) against 3,380 kg, over
-   - Orrinwood Brook: 2,600 to 2,620 kg (2,600 kg) against 2,390 kg, over
-   - Pellow Brook: 730 to 740 kg (740 kg) against 800 kg, under
-   - Fallowmere Brook: 1,070 to 1,080 kg (1,070 kg) against 1,200 kg, under
-   - Dunmarsh Brook: 1,660 to 1,690 kg (1,660 kg) against 1,830 kg, under
-   - Corriden River: 3,560 to 3,580 kg (3,570 kg) against 3,930 kg, under
-   - Tamsell River: 3,000 to 3,020 kg (3,010 kg) against 3,490 kg, under
-3. Figure 1 in the memo: a horizontal bar chart of each tributary's load with its allocation marked, the three funded tributaries in dark bars.
+1. Tonnes offered: 23,229,780.
+2. Payment: USD 116,148,900.
+3. Area of deforestation the tonnes rest on: 122,900 hectares; 90 per cent confidence interval 100,000 to 140,000 hectares.
+4. Each district's area of deforestation, to the nearest hundred hectares:
+   - Caoba Alta: 7,600
+   - Caoba Baja: 23,500
+   - Cerro Azul: 6,600
+   - El Encanto: 8,900
+   - La Esperanza: 12,700
+   - Las Palmas: 18,100
+   - Llano Grande: 10,500
+   - Montealto: 3,300
+   - Puerto Viejo: 4,600
+   - Río Verde: 15,600
+   - Tres Ríos: 6,400
+   - Arroyo Hondo: 5,100
+5. Horizontal bar chart on page 1: for each of the twelve districts, the area estimated from the reference sample beside the deforestation on the final change map of 22 April 2026, in thousand hectares, titled with the final map's share of the estimated area.
+6. Deforestation patches on the final map by district, in all, under 1 hectare and of 5 hectares or more:
+   - Caoba Alta: 1,806, 729, 205
+   - Caoba Baja: 4,892, 1,982, 494
+   - Cerro Azul: 996, 404, 99
+   - El Encanto: 2,851, 1,118, 290
+   - La Esperanza: 5,083, 1,972, 539
+   - Las Palmas: 3,368, 1,365, 359
+   - Llano Grande: 2,610, 1,069, 259
+   - Montealto: 797, 333, 75
+   - Puerto Viejo: 2,025, 803, 225
+   - Río Verde: 3,932, 1,579, 431
+   - Tres Ríos: 1,263, 500, 145
+   - Arroyo Hondo: 925, 352, 100
+   - Accounting area: 30,548, 12,206, 3,221
 
-### tributary_loads_wy2026.csv
+### reference_sample_conformed_2024-2025.xlsx
 
-4. Whether each tributary gets a 2027 project: Yes for Kestle River, Hessick River and Varrow Brook; No for Fallowmere Brook, Orrinwood Brook, Tamsell River, Pellow Brook, Ambrey River, Dunmarsh Brook and Corriden River.
-5. The phosphorus permitted facilities upstream of each tributary's compliance station discharged in water year 2026, to the nearest 10 kg, in the file's order:
-   - Fallowmere Brook: 80 kg
-   - Kestle River: 1,040 kg
-   - Orrinwood Brook: 340 kg
-   - Tamsell River: 310 kg
-   - Varrow Brook: 480 kg
-   - Hessick River: 1,050 kg
-   - Pellow Brook: 170 kg
-   - Ambrey River: 320 kg
-   - Dunmarsh Brook: 280 kg
-   - Corriden River: 540 kg
-6. Each tributary's 2026 cover crop acres under the farm practice program, to the nearest 10 acres, in the file's order:
-   - Fallowmere Brook: 630 acres
-   - Kestle River: 1,030 acres
-   - Orrinwood Brook: 1,040 acres
-   - Tamsell River: 690 acres
-   - Varrow Brook: 900 acres
-   - Hessick River: 1,500 acres
-   - Pellow Brook: 660 acres
-   - Ambrey River: 1,180 acres
-   - Dunmarsh Brook: 840 acres
-   - Corriden River: 750 acres
+7. One row for each reference point with its 2024-2025 reference class (224 deforestation, 2,491 stable forest, 1,285 non-forest) and its class on the final change map (216 deforestation, 2,516 stable forest, 1,268 non-forest).
