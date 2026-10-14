@@ -1,192 +1,196 @@
 {
-    "task": "task230",
-    "domain": "human-factors-ergonomics",
-    "objective": "data-quality-monitoring",
-    "stage": 5,
-    "stage_name": "shipped",
-    "updated": "2026-10-12",
-    "stump": "A competent solver dedupes the timeout re-verifications, measures each stream's first-pass misses from the blind re-key audit, models detection on verifier, stream, field type, tenure, shift, time on shift, workload and day of week, takes the best-fitting of those models on a clean month-by-month back-test, and applies it to the November plan (the motor claims on nights, Hollings & Pryce on days, the roster moves), keeping Kessington's two streams, Northgate, Brightmoor, Harbison and the motor claims on second pass and the day streams off; the step that lands it there is treating detection as a property of the verifier, stream, shift or day when it rises and falls with the error rate of the shift's whole pool, which the plan cuts on the day queue (about 4.3 to 1.9 per cent) and raises on the night queue (about 2.5 to 5.0).",
-    "architecture": 2,
-    "loops": 1,
-    "lineage": [
-        {
-            "architecture": 1,
-            "rounds": [
-                1,
-                2
-            ],
-            "loops": 2,
-            "fate": "spent 2026-10-11 at hardening loop 2 of 3: rounds 1 and 2 landed the call (proxy 80.7 and 79.7), the solver holding the comparison pool to the segment and then to phones that can take 7.0; loop 2 found on paper no rung that deepens the analysis away from the comparison pool, plants nothing and is forced to one flag set by agreeing rigorous variants",
-            "card": "the architecture 1 identity sits in the task230 card's lineage (architecture 2 registered 2026-10-11)",
-            "draw": {
-                "registered": "2026-10-11",
-                "guard": "WARN (repeat.decision vs task229, answered); NOTE task68 differentiated",
-                "seed_territory": "DQ03 own: product-analytics metric-definition-measurement-science"
-            },
-            "leak": {
-                "leak_py": "REVIEW on the loop-1 cut (as-of 2026-11-16), five lines (KPI names in the definitions and the notes, the standard's defined terms, the notes' CRM paragraph), every one answered in the design note; no LEAK; container metadata clean",
-                "reader": "round 1 CLEAN: questions 1 to 4 none, every flagged item harmless; realism tells fixed (Office package defaults, entry stamps, round counts, order form layout), the rest deferred to 6b; round 2 (Sonnet) questions 1 to 4 none, every flagged item harmless, a main-call fork named, now closed (fork_closure); round 3 staged at scratchpad/leak-task230-3 with /home/user/orch/results-task230/stage4-leak/prompt_reader_3.md; round 3 (Sonnet): questions 1 to 4 none (question 1 quotes only the STD-07 s.3.2 estimand), every flagged item harmless; its fork line re-lists the comparison pool, the W40 newcomers and the rounding (all closed by the data, fork_closure) and adds ratio against shift; loop 1: the prompt (one clause), the register (last_sign_in_os), the notes, the standard (5.2) and the service register's Notes sheet changed, so round 4 reads this cut: staged at scratchpad/leak-task230-4 with /home/user/orch/results-task230/stage4-leak/prompt_reader_4.md (NEED ISOLATED RUN); round 4 (Sonnet, loop 1): questions 1 to 4 none (question 1 quotes only the STD-07 s.3.2 estimand), every flagged item harmless; its fork line names the comparison pool (whole pool, phones able to take 7.0, segment or sign-in bands, ratio or increment) and the rounding of the 3 per cent test, each closed by the data in fork_closure (loop 1)"
-            },
-            "duplicate_check": {
-                "heart": "BLOCK on the merged checkout (people.first, Sandra against task130's pack, which reached the branch in the 17:20 main merge); the build agent's WARN set (repeat.gate_g task228 v2, repeat.decision task229, repeat.deliverables task135) was produced before that merge",
-                "nearest": "task119 stump 0.06, task129 0.05 (loop 0's own driver 0.50, differentiated)",
-                "clone_check": "pre-flight: one Idiom (Track A), the invented name Larkspur shared with task84 and task31, renamed Dunnock; Track B clean on task229 and task68 (shares components by design); report clone_check_report_task230.md; loop 1: the driver changed (eligibility to switch inside the segment), so the adjudicated pre-flight is owed on this cut; surface promotes task229 and task68 as at loop 0; pass 2 (loop 1, 2026-10-11): Track B CLEAN against every build (task229, task68, task228, task135, task445, task129 adjudicated, shares components by design); Track A one Idiom: persona first names Sandra (task130, task127) and Erica (task126) inside the twelve-draw window, to be redrawn with guard.py names and checked by hand against every card's world.people; report clone_check_report_task230_2.md"
-            },
-            "fork_closure": {
-                "closed": "2026-10-11 (loop 1)",
-                "comparison_pool": "closed by the data (loop 1): the switch never reaches a phone below 7.0's minimum (0 Dunnock rows); inside every segment the 6.8 pool's share on those phones climbs every week (22 to 25 per cent in W42, 28 to 49 by W46) and their old-tracking traffic outruns the rest by 10 to 21 points on appointments, change requests, results and notifications; placebo on switchers' own pre-switch weeks: whole pool 6.2 to 6.6 per cent off, segment pool 3.2 to 4.0, segment x phone class 0.2 to 0.5; segment crossed with volume, activity, CRM weeks or platform stays on the stump's flags without the phone class and returns the answer within 0.06 with it; checks.py block 'the data's own case', verify.py fork check",
-                "w40_newcomers": "closed by the data: 1,874 unsegmented accounts (684 switched); five handlings give the same five flags and ten cells within 0.2 points; dependants credited to carers within 0.06; no convention filed",
-                "rounding_band": "closed by the data: across 18 defensible variants the nearest series is 1.70 points from the line (test result views, W40 newcomers read as frequent; 1.86 on the golden route), the smallest whole-per-cent margin 0.134, and the whole-per-cent flags equal the unrounded flags on every variant",
-                "crm_provenance": "closed in the generator: warehouse_export_notes.md describes two warehouse exports, then the segment file as CRM's monthly file of 1 October as published to the reporting share",
-                "prompt_ceiling": "closed: 964 characters and 167 words by voice-check, ECONOMY clean, one clause changed (the forced update retires 6.8)",
-                "ratio_vs_shift": "closed and asserted (loop 1): the additive carry-forward within segment and phone class, against not-yet-switched and never-switched patients, gives the five flags and the same ten whole per cents",
-                "q4_restatement": "closed in the standard (loop 1): STD-07 5.2 restates a flagged series' old-tracking events by its reported settled change; restating by the unrounded change gives the same two-decimal values (asserted); every Q4 value sits 0.0010 to 0.0017 under its two-decimal centre (round 1's 5.4695 note closed)"
-            },
-            "stump": "A competent solver maps each patient's handover week and carries each switched patient's reference level by the movement of patients still on 6.8 in the same CRM engagement segment (round 1's step 6), confirmed by a never-switched control and a group-rate index; inside every segment that pool fills week by week with phones below 7.0's minimum (iOS 16, Android 10), whose winter traffic climbs 10 to 21 points faster, so it flags appointment change requests and notification opens and clears appointment views and test result views; held within segment and to phones that can take 7.0 the flags are appointment views, test result views, clinic letter views, waiting list checks and digital check-ins.",
-            "domain": "product-analytics"
-        }
-    ],
-    "reroot": "drawn 2026-10-11: architecture 2 in human-factors-ergonomics x data-quality-monitoring, no data cut; the persona redraw (new world, personas drawn with guard.py names) and the ask-layer lesson (device-carried asks only, Part 0 and Part 12) carried into the design",
-    "draw": {
-        "registered": "2026-10-11",
-        "card": ".claude/skills/fingerprint/cards/task230.json (drafted at /home/user/orch/buildwork-task230/arch2/task230_card.json)",
-        "method_pin": "form 1 (the design forces the method): QCP-04 4.1 estimand, 4.2 rule, 4.3 records with one method for every stream; no selection criterion",
-        "guard": "registration, scratch folder (main e89a676 cards plus task229 design 2): check BLOCK ban.role and ban.artifact vs task229 v2 before the redraw; after it check WARN (repeat.gate_g vs task228 v2 and task229 v2, repeat.decision vs task229 v2; NOTE test.same_driver_older differentiated vs task114 and task33), no BLOCK; heart WARN; real tree check WARN, no BLOCK, register filed",
-        "checked_against": "main 3966e83 cards (task182 included); task228 branch 2e502d1 (architecture v2); task229 rework branch 702f3d5 (architecture v1, paused before its draw); main e89a676 (task446 included) at the form 1 pass: check WARN, the same set, no BLOCK, nothing against task446; at registration: main e89a676 cards plus task229 design 2 (perssathya/task229-rework, registered), task228 at architecture v2 (2e502d1)",
-        "nearest": "0.05: task33 ledger row, task92 v4 stump (heart at registration)",
-        "seed_territory": "own: human-factors-ergonomics/human-reliability-assessment (DQ03's event-volume driver not drawn)",
-        "furniture": "role_family operations_director (was compliance_or_audit), context_artifact capacity_report (was operations_log), both redrawn after task229 design 2 registered first; forum, forcing event and organisation family unchanged"
-    },
-    "leak": {
-        "leak_py": "REVIEW (10 lines, each answered in DESIGN_NOTE.md, Rebuild of the ask layer); no LEAK",
-        "reader": "two reads, medium effort: question 1 none (nearest QCP-04 4.3, the method in outline only), questions 2 to 4 none, question 5 QCP-04 4.1 the quantity without a method; read 1 realism tells fixed in the generator; no main-call fork"
-    },
-    "duplicate_check": {
-        "heart": "WARN (repeat.gate_g, overuse.shape, overuse.gate_g; NOTE test.same_driver_older differentiated), no BLOCK",
-        "nearest": "task33 and task83 at 0.05; surface exit 0, task33 and task114 promoted on the card signature, both differentiated on the card"
-    },
-    "solver_rounds": [
-        {
-            "round": 1,
-            "architecture": 1,
-            "label": "round 1",
-            "date": "2026-10-11",
-            "solver": {
-                "landed": true,
-                "proxy": 80.7,
-                "cracked": "2 of 4",
-                "stopped": "never left the ladder: went straight to R4 (segment-stratified trend from patients still on Tallyfield) and rejected the pooled and no-trend routes by name"
-            },
-            "decision": "harden",
-            "brief": "The call landed on the solver's step 6 (each switched patient's reference level carried forward by the week-by-week movement of patients still on Tallyfield in the same CRM engagement segment, which is the design's R4 itself): build the next rung so that exact step completes and still returns the wrong answer, deepening the analysis and planting nothing; the solver also ran a never-switched control and a group-rate index as robustness checks and saw them agree, so the rung has to hold against those too.",
-            "deferred": [
-                "question 3 soft tell (read 3): the Notes sheet of service_accounts_register.xlsx says 'Patients cannot register on a drumleehg.ie address (the registration form refuses it)', which reads as written to close an analyst's question",
-                "checks.py: add the additive (shift) carry-forward within segment as a rigorous variant (probe: same flags and whole per cents)",
-                "ask fork: Appointment views' Q4-to-date value is 5.4695 on the solver's route (weeks 40 to 46 over 640,670 active patient-weeks), on the 2 dp rounding edge"
-            ],
-            "hardened": {
-                "loop": 1,
-                "rung": "R5: the segment trend held to phones that can take 7.0; round 1's step 6 is R4",
-                "deferred_fixed": [
-                    "Notes-sheet sentence removed from service_accounts_register.xlsx",
-                    "additive (shift) carry-forward asserted as a rigorous variant",
-                    "Q4-to-date values re-centred 0.0010 to 0.0017 under their two-decimal centres"
-                ]
-            }
-        },
-        {
-            "round": 2,
-            "architecture": 1,
-            "label": "round 2",
-            "date": "2026-10-11",
-            "solver": {
-                "landed": true,
-                "proxy": 79.7,
-                "cracked": "2 of 4",
-                "stopped": "never left the ladder: segment-stratified movement from patients still on Tallyfield, with phones below 7.0's minimum left out of the control (path steps 6 and 7)"
-            },
-            "decision": "harden",
-            "brief": "The call landed on the solver's step 6: it carried each switched patient's reference level by the movement of patients still on Tallyfield in the same CRM segment, and left out of that control every phone below 7.0's minimum (Android 10, iOS 16) because their use rose faster from W41; it checked site, OS, exact CRM weeks and a never-switched control and saw them agree. Across rounds 1 and 2 the solver adjusts the comparison pool for every visible attribute it can test (segment, eligibility, site, OS, sign-in weeks). Loop 2 is paper first: build only a rung the solver completes those checks on and still lands wrong, with no further pool-composition layer and nothing planted; otherwise declare architecture 1 spent.",
-            "deferred": [
-                "persona first names: redraw Sandra Fitzpatrick and Erica Phayre (guard.py names --geo <geo> --seed 230, then a hand check against every card's world.people); update the card; rebuild; leak.py (pre-flight pass 2, Idiom)",
-                "card text: notes call G17 'confounding' (vocabulary G17 is statistical rigor); slot_note and niche still carry loop 0's framing and omit the minimum OS; name product-analytics/feature-adoption-diffusion-modeling/2 beside the own: key (pre-flight pass 2)",
-                "checks.py: assert the phone-class-only pool (segments pooled) misses the switchers' own pre-switch weeks; main-session probe: it returns the stump's wrong flag set, up to 6.48 points off the answer",
-                "asks: 37.7 of 58 banked on a landed path (round 1: 38.7); the ask layer must hold a landed response to about a fifth of the ask weight (supplemental-stumping Part 0)"
-            ],
-            "hardened": {
-                "loop": 2,
-                "verdict": "spent (phase A, on paper; no generator edit)",
-                "rung": "none: 7.0 as a bundle (the new home screen's use effect, which 3.2 puts in B, is not identified without a record of the same actions the client does not make, and with one the within-patient ratio hands over the answer), the sign-in trigger (every repair is one more pool attribute; spells big enough to move a flag split the repairs) and the estimand's window and population (pinned by 2.5 to 3.3; the forward reading is the rejected transport insight) all die; DESIGN_NOTE.md, Hardening loop 2, on paper",
-                "deferred_status": "moot for architecture 1; the persona redraw and the ask-layer lesson carry to architecture 2 (reroot)"
-            }
-        },
-        {
-            "label": "round 1 (architecture 2)",
-            "date": "2026-10-12",
-            "score": 62.7,
-            "landed": false,
-            "cracked": 5,
-            "items": 6,
-            "ask_share": 0.917,
-            "asks_leak": true,
-            "gate": "ASKS LEAK",
-            "architecture": 2,
-            "round": 1,
-            "solver": {
-                "landed": false,
-                "proxy": 62.7,
-                "cracked": "5 of 6",
-                "ask_share": 0.917,
-                "stopped": "missed the decisive step: it never let detection move with the pool's error rate; it read QCP-04 4.1 as the whole queue's residual (Q3 stream rates weighted by November key fields per queue) and put on KBA-INST, KBA-PROF, NDS-DENT, BMC-FROI, HPB-UCF and HPY-TYPD; it checked verifier, tenure and roster effects (none) and noted a stream-by-stream reading gives the five night streams (rung 0)"
-            },
-            "decision": "asks",
-            "brief": "The main call held (missed at the decisive step), but the asks leaked (grade.py ASKS LEAK: 5 of 6 items cracked, ask share 92 per cent): hours (productive minutes counted once per session half-shift, form versions in force, typed minutes from the pilot), credit at stake (November bands, indexation per client block), the client-audit Q3 residuals (UTC against contract zones, latest review, capture codes), the chart order at budget INR rates and its title were all executed by the solver's hygiene. Rebuild the ask layer against this cracker path (supplemental-stumping Parts 0 and 1) without touching the ladder, then a fresh round. Close the semantic fork the round exposed on the main call: QCP-04 4.1 'over every document the month's operating plan of record routes to the stream's queue' reads as the whole queue's residual; file it as the stream's own documents and add the SF row.",
-            "deferred": [
-                "6b ask fork: Hollings & Pryce's 'third-quarter residual as the client's own audit counted it' has no client audit until 1 January 2027 (own audit, pilot, or blank)",
-                "6b ask fork: credit at stake, the November invoice band and the anniversary indexation (20 Nov, 9 Nov, 16 Nov) against the billing register's October bands",
-                "6b ask fork: 'ordered by the credit' across USD, AUD and GBP (budget rates against raw numbers); the leader is asserted the same at nominal values",
-                "6b ask note: second-pass hours unit (productive minutes against staffing hours)",
-                "6b realism: forecast revisions move in lockstep (a constant factor per client and file); schedules' measurement paragraphs read as boilerplate; the pilot table is very tidy; extract notes' exact row counts",
-                "6b question 3 near miss: second_pass_labour_planning_note.docx reads as pure method for the hours ask",
-                "furniture: forum committee_or_panel and org family professional_services against task446 and task445 (pre-flight a2 pass 1); the forum is a rename in the pack's documents, the org family is the world itself (author's call: redraw or waive)",
-                "card: pattern A understates the decisive rung (G14 conditioned yield, pattern E); relabelling adds no BLOCK (pre-flight a2 pass 1)"
-            ]
-        }
-    ],
-    "judge": {
-        "verdict": "DETERMINISTIC",
-        "disposition": "APPROVE",
-        "gate_g": "forecasting with method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-        "gate_h": "domain pass, layers pass, decisive_step analytical",
-        "report": "task230/determinism_check_report.md"
-    },
-    "approved": null,
-    "delivered": "2026-10-12",
-    "portal": null,
-    "deferred": [],
-    "precut": {
-        "exit": 0,
-        "date": "2026-10-12",
-        "checks": "38 of 38"
-    },
-    "build": {
-        "date": "2026-10-12",
-        "checks": 172,
-        "verify": "green",
-        "byte_identical": true,
-        "target_zip_sha256": "c85b4b2fe697dfeddb73389328d693fad9616914a98cee2643fda50e63d49267",
-        "golden": "N4, D2, D3, D4, D6 (BMC-FROI, WBH-EXTR, CIP-IPCL, WPC-PETC, HPY-TYPD)",
-        "asks": "hours (session baskets, rework), client-audited residual (documents per claim, received business date); credit ask dropped",
-        "figures_check": "exit 0",
-        "precut": "exit 0",
-        "pair_ceiling": "29.0 measured, 34.5 at the 0.10 allowance"
-    },
-    "status": "SHIPPED",
-    "owner": "perssathya",
-    "returned": [],
-    "resume": "",
-    "portal_id": "",
-    "portal_status": "",
-    "portal_status_date": "",
-    "sf16_set": "KBA-INST, KBA-PROF, BMC-FROI, HPB-UCF, HPY-TYPD (the queue-wide residual on the golden model: day 3.74, night 7.76 per 1,000)"
+ "task": "task230",
+ "domain": "survey-research-official-statistics",
+ "objective": "data-quality-monitoring",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-14",
+ "stump": "Applying the coded-so-far sample's coding bias to the whole census release flags only occupation groups 35 and 93; building it by response route on the release's own route mix, with the late follow-up returns coded under the 0.80 acceptance rule, flags 24, 25, 31, 35, 41, 72 and 93 (design targets).",
+ "architecture": 3,
+ "loops": 0,
+ "lineage": [
+  {
+   "architecture": 1,
+   "rounds": [
+    1,
+    2
+   ],
+   "loops": 2,
+   "fate": "spent 2026-10-11 at hardening loop 2 of 3: rounds 1 and 2 landed the call (proxy 80.7 and 79.7), the solver holding the comparison pool to the segment and then to phones that can take 7.0; loop 2 found on paper no rung that deepens the analysis away from the comparison pool, plants nothing and is forced to one flag set by agreeing rigorous variants",
+   "card": "the architecture 1 identity sits in the task230 card's lineage (architecture 2 registered 2026-10-11)",
+   "draw": {
+    "registered": "2026-10-11",
+    "guard": "WARN (repeat.decision vs task229, answered); NOTE task68 differentiated",
+    "seed_territory": "DQ03 own: product-analytics metric-definition-measurement-science"
+   },
+   "leak": {
+    "leak_py": "REVIEW on the loop-1 cut (as-of 2026-11-16), five lines (KPI names in the definitions and the notes, the standard's defined terms, the notes' CRM paragraph), every one answered in the design note; no LEAK; container metadata clean",
+    "reader": "round 1 CLEAN: questions 1 to 4 none, every flagged item harmless; realism tells fixed (Office package defaults, entry stamps, round counts, order form layout), the rest deferred to 6b; round 2 (Sonnet) questions 1 to 4 none, every flagged item harmless, a main-call fork named, now closed (fork_closure); round 3 staged at scratchpad/leak-task230-3 with /home/user/orch/results-task230/stage4-leak/prompt_reader_3.md; round 3 (Sonnet): questions 1 to 4 none (question 1 quotes only the STD-07 s.3.2 estimand), every flagged item harmless; its fork line re-lists the comparison pool, the W40 newcomers and the rounding (all closed by the data, fork_closure) and adds ratio against shift; loop 1: the prompt (one clause), the register (last_sign_in_os), the notes, the standard (5.2) and the service register's Notes sheet changed, so round 4 reads this cut: staged at scratchpad/leak-task230-4 with /home/user/orch/results-task230/stage4-leak/prompt_reader_4.md (NEED ISOLATED RUN); round 4 (Sonnet, loop 1): questions 1 to 4 none (question 1 quotes only the STD-07 s.3.2 estimand), every flagged item harmless; its fork line names the comparison pool (whole pool, phones able to take 7.0, segment or sign-in bands, ratio or increment) and the rounding of the 3 per cent test, each closed by the data in fork_closure (loop 1)"
+   },
+   "duplicate_check": {
+    "heart": "BLOCK on the merged checkout (people.first, Sandra against task130's pack, which reached the branch in the 17:20 main merge); the build agent's WARN set (repeat.gate_g task228 v2, repeat.decision task229, repeat.deliverables task135) was produced before that merge",
+    "nearest": "task119 stump 0.06, task129 0.05 (loop 0's own driver 0.50, differentiated)",
+    "clone_check": "pre-flight: one Idiom (Track A), the invented name Larkspur shared with task84 and task31, renamed Dunnock; Track B clean on task229 and task68 (shares components by design); report clone_check_report_task230.md; loop 1: the driver changed (eligibility to switch inside the segment), so the adjudicated pre-flight is owed on this cut; surface promotes task229 and task68 as at loop 0; pass 2 (loop 1, 2026-10-11): Track B CLEAN against every build (task229, task68, task228, task135, task445, task129 adjudicated, shares components by design); Track A one Idiom: persona first names Sandra (task130, task127) and Erica (task126) inside the twelve-draw window, to be redrawn with guard.py names and checked by hand against every card's world.people; report clone_check_report_task230_2.md"
+   },
+   "fork_closure": {
+    "closed": "2026-10-11 (loop 1)",
+    "comparison_pool": "closed by the data (loop 1): the switch never reaches a phone below 7.0's minimum (0 Dunnock rows); inside every segment the 6.8 pool's share on those phones climbs every week (22 to 25 per cent in W42, 28 to 49 by W46) and their old-tracking traffic outruns the rest by 10 to 21 points on appointments, change requests, results and notifications; placebo on switchers' own pre-switch weeks: whole pool 6.2 to 6.6 per cent off, segment pool 3.2 to 4.0, segment x phone class 0.2 to 0.5; segment crossed with volume, activity, CRM weeks or platform stays on the stump's flags without the phone class and returns the answer within 0.06 with it; checks.py block 'the data's own case', verify.py fork check",
+    "w40_newcomers": "closed by the data: 1,874 unsegmented accounts (684 switched); five handlings give the same five flags and ten cells within 0.2 points; dependants credited to carers within 0.06; no convention filed",
+    "rounding_band": "closed by the data: across 18 defensible variants the nearest series is 1.70 points from the line (test result views, W40 newcomers read as frequent; 1.86 on the golden route), the smallest whole-per-cent margin 0.134, and the whole-per-cent flags equal the unrounded flags on every variant",
+    "crm_provenance": "closed in the generator: warehouse_export_notes.md describes two warehouse exports, then the segment file as CRM's monthly file of 1 October as published to the reporting share",
+    "prompt_ceiling": "closed: 964 characters and 167 words by voice-check, ECONOMY clean, one clause changed (the forced update retires 6.8)",
+    "ratio_vs_shift": "closed and asserted (loop 1): the additive carry-forward within segment and phone class, against not-yet-switched and never-switched patients, gives the five flags and the same ten whole per cents",
+    "q4_restatement": "closed in the standard (loop 1): STD-07 5.2 restates a flagged series' old-tracking events by its reported settled change; restating by the unrounded change gives the same two-decimal values (asserted); every Q4 value sits 0.0010 to 0.0017 under its two-decimal centre (round 1's 5.4695 note closed)"
+   },
+   "stump": "A competent solver maps each patient's handover week and carries each switched patient's reference level by the movement of patients still on 6.8 in the same CRM engagement segment (round 1's step 6), confirmed by a never-switched control and a group-rate index; inside every segment that pool fills week by week with phones below 7.0's minimum (iOS 16, Android 10), whose winter traffic climbs 10 to 21 points faster, so it flags appointment change requests and notification opens and clears appointment views and test result views; held within segment and to phones that can take 7.0 the flags are appointment views, test result views, clinic letter views, waiting list checks and digital check-ins.",
+   "domain": "product-analytics"
+  }
+ ],
+ "reroot": "drawn 2026-10-11: architecture 2 in human-factors-ergonomics x data-quality-monitoring, no data cut; the persona redraw (new world, personas drawn with guard.py names) and the ask-layer lesson (device-carried asks only, Part 0 and Part 12) carried into the design",
+ "draw": {
+  "registered": "2026-10-11",
+  "card": ".claude/skills/fingerprint/cards/task230.json (drafted at /home/user/orch/buildwork-task230/arch2/task230_card.json)",
+  "method_pin": "form 1 (the design forces the method): QCP-04 4.1 estimand, 4.2 rule, 4.3 records with one method for every stream; no selection criterion",
+  "guard": "registration, scratch folder (main e89a676 cards plus task229 design 2): check BLOCK ban.role and ban.artifact vs task229 v2 before the redraw; after it check WARN (repeat.gate_g vs task228 v2 and task229 v2, repeat.decision vs task229 v2; NOTE test.same_driver_older differentiated vs task114 and task33), no BLOCK; heart WARN; real tree check WARN, no BLOCK, register filed",
+  "checked_against": "main 3966e83 cards (task182 included); task228 branch 2e502d1 (architecture v2); task229 rework branch 702f3d5 (architecture v1, paused before its draw); main e89a676 (task446 included) at the form 1 pass: check WARN, the same set, no BLOCK, nothing against task446; at registration: main e89a676 cards plus task229 design 2 (perssathya/task229-rework, registered), task228 at architecture v2 (2e502d1)",
+  "nearest": "0.05: task33 ledger row, task92 v4 stump (heart at registration)",
+  "seed_territory": "own: human-factors-ergonomics/human-reliability-assessment (DQ03's event-volume driver not drawn)",
+  "furniture": "role_family operations_director (was compliance_or_audit), context_artifact capacity_report (was operations_log), both redrawn after task229 design 2 registered first; forum, forcing event and organisation family unchanged"
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "WARN",
+  "nearest": "0.06 task500 lineage, task183"
+ },
+ "solver_rounds": [
+  {
+   "round": 1,
+   "architecture": 1,
+   "label": "round 1",
+   "date": "2026-10-11",
+   "solver": {
+    "landed": true,
+    "proxy": 80.7,
+    "cracked": "2 of 4",
+    "stopped": "never left the ladder: went straight to R4 (segment-stratified trend from patients still on Tallyfield) and rejected the pooled and no-trend routes by name"
+   },
+   "decision": "harden",
+   "brief": "The call landed on the solver's step 6 (each switched patient's reference level carried forward by the week-by-week movement of patients still on Tallyfield in the same CRM engagement segment, which is the design's R4 itself): build the next rung so that exact step completes and still returns the wrong answer, deepening the analysis and planting nothing; the solver also ran a never-switched control and a group-rate index as robustness checks and saw them agree, so the rung has to hold against those too.",
+   "deferred": [
+    "question 3 soft tell (read 3): the Notes sheet of service_accounts_register.xlsx says 'Patients cannot register on a drumleehg.ie address (the registration form refuses it)', which reads as written to close an analyst's question",
+    "checks.py: add the additive (shift) carry-forward within segment as a rigorous variant (probe: same flags and whole per cents)",
+    "ask fork: Appointment views' Q4-to-date value is 5.4695 on the solver's route (weeks 40 to 46 over 640,670 active patient-weeks), on the 2 dp rounding edge"
+   ],
+   "hardened": {
+    "loop": 1,
+    "rung": "R5: the segment trend held to phones that can take 7.0; round 1's step 6 is R4",
+    "deferred_fixed": [
+     "Notes-sheet sentence removed from service_accounts_register.xlsx",
+     "additive (shift) carry-forward asserted as a rigorous variant",
+     "Q4-to-date values re-centred 0.0010 to 0.0017 under their two-decimal centres"
+    ]
+   }
+  },
+  {
+   "round": 2,
+   "architecture": 1,
+   "label": "round 2",
+   "date": "2026-10-11",
+   "solver": {
+    "landed": true,
+    "proxy": 79.7,
+    "cracked": "2 of 4",
+    "stopped": "never left the ladder: segment-stratified movement from patients still on Tallyfield, with phones below 7.0's minimum left out of the control (path steps 6 and 7)"
+   },
+   "decision": "harden",
+   "brief": "The call landed on the solver's step 6: it carried each switched patient's reference level by the movement of patients still on Tallyfield in the same CRM segment, and left out of that control every phone below 7.0's minimum (Android 10, iOS 16) because their use rose faster from W41; it checked site, OS, exact CRM weeks and a never-switched control and saw them agree. Across rounds 1 and 2 the solver adjusts the comparison pool for every visible attribute it can test (segment, eligibility, site, OS, sign-in weeks). Loop 2 is paper first: build only a rung the solver completes those checks on and still lands wrong, with no further pool-composition layer and nothing planted; otherwise declare architecture 1 spent.",
+   "deferred": [
+    "persona first names: redraw Sandra Fitzpatrick and Erica Phayre (guard.py names --geo <geo> --seed 230, then a hand check against every card's world.people); update the card; rebuild; leak.py (pre-flight pass 2, Idiom)",
+    "card text: notes call G17 'confounding' (vocabulary G17 is statistical rigor); slot_note and niche still carry loop 0's framing and omit the minimum OS; name product-analytics/feature-adoption-diffusion-modeling/2 beside the own: key (pre-flight pass 2)",
+    "checks.py: assert the phone-class-only pool (segments pooled) misses the switchers' own pre-switch weeks; main-session probe: it returns the stump's wrong flag set, up to 6.48 points off the answer",
+    "asks: 37.7 of 58 banked on a landed path (round 1: 38.7); the ask layer must hold a landed response to about a fifth of the ask weight (supplemental-stumping Part 0)"
+   ],
+   "hardened": {
+    "loop": 2,
+    "verdict": "spent (phase A, on paper; no generator edit)",
+    "rung": "none: 7.0 as a bundle (the new home screen's use effect, which 3.2 puts in B, is not identified without a record of the same actions the client does not make, and with one the within-patient ratio hands over the answer), the sign-in trigger (every repair is one more pool attribute; spells big enough to move a flag split the repairs) and the estimand's window and population (pinned by 2.5 to 3.3; the forward reading is the rejected transport insight) all die; DESIGN_NOTE.md, Hardening loop 2, on paper",
+    "deferred_status": "moot for architecture 1; the persona redraw and the ask-layer lesson carry to architecture 2 (reroot)"
+   }
+  },
+  {
+   "label": "round 1 (architecture 2)",
+   "date": "2026-10-12",
+   "score": 62.7,
+   "landed": false,
+   "cracked": 5,
+   "items": 6,
+   "ask_share": 0.917,
+   "asks_leak": true,
+   "gate": "ASKS LEAK",
+   "architecture": 2,
+   "round": 1,
+   "solver": {
+    "landed": false,
+    "proxy": 62.7,
+    "cracked": "5 of 6",
+    "ask_share": 0.917,
+    "stopped": "missed the decisive step: it never let detection move with the pool's error rate; it read QCP-04 4.1 as the whole queue's residual (Q3 stream rates weighted by November key fields per queue) and put on KBA-INST, KBA-PROF, NDS-DENT, BMC-FROI, HPB-UCF and HPY-TYPD; it checked verifier, tenure and roster effects (none) and noted a stream-by-stream reading gives the five night streams (rung 0)"
+   },
+   "decision": "asks",
+   "brief": "The main call held (missed at the decisive step), but the asks leaked (grade.py ASKS LEAK: 5 of 6 items cracked, ask share 92 per cent): hours (productive minutes counted once per session half-shift, form versions in force, typed minutes from the pilot), credit at stake (November bands, indexation per client block), the client-audit Q3 residuals (UTC against contract zones, latest review, capture codes), the chart order at budget INR rates and its title were all executed by the solver's hygiene. Rebuild the ask layer against this cracker path (supplemental-stumping Parts 0 and 1) without touching the ladder, then a fresh round. Close the semantic fork the round exposed on the main call: QCP-04 4.1 'over every document the month's operating plan of record routes to the stream's queue' reads as the whole queue's residual; file it as the stream's own documents and add the SF row.",
+   "deferred": [
+    "6b ask fork: Hollings & Pryce's 'third-quarter residual as the client's own audit counted it' has no client audit until 1 January 2027 (own audit, pilot, or blank)",
+    "6b ask fork: credit at stake, the November invoice band and the anniversary indexation (20 Nov, 9 Nov, 16 Nov) against the billing register's October bands",
+    "6b ask fork: 'ordered by the credit' across USD, AUD and GBP (budget rates against raw numbers); the leader is asserted the same at nominal values",
+    "6b ask note: second-pass hours unit (productive minutes against staffing hours)",
+    "6b realism: forecast revisions move in lockstep (a constant factor per client and file); schedules' measurement paragraphs read as boilerplate; the pilot table is very tidy; extract notes' exact row counts",
+    "6b question 3 near miss: second_pass_labour_planning_note.docx reads as pure method for the hours ask",
+    "furniture: forum committee_or_panel and org family professional_services against task446 and task445 (pre-flight a2 pass 1); the forum is a rename in the pack's documents, the org family is the world itself (author's call: redraw or waive)",
+    "card: pattern A understates the decisive rung (G14 conditioned yield, pattern E); relabelling adds no BLOCK (pre-flight a2 pass 1)"
+   ]
+  }
+ ],
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "approved": null,
+ "delivered": "2026-10-12",
+ "portal": null,
+ "deferred": [],
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "build": {
+  "date": "2026-10-12",
+  "checks": 172,
+  "verify": "green",
+  "byte_identical": true,
+  "target_zip_sha256": "c85b4b2fe697dfeddb73389328d693fad9616914a98cee2643fda50e63d49267",
+  "golden": "N4, D2, D3, D4, D6 (BMC-FROI, WBH-EXTR, CIP-IPCL, WPC-PETC, HPY-TYPD)",
+  "asks": "hours (session baskets, rework), client-audited residual (documents per claim, received business date); credit ask dropped",
+  "figures_check": "exit 0",
+  "precut": "exit 0",
+  "pair_ceiling": "29.0 measured, 34.5 at the 0.10 allowance"
+ },
+ "status": "DESIGN",
+ "owner": "perssathya",
+ "returned": [
+  {
+   "date": "2026-10-14",
+   "portal": "author request",
+   "repair": "re-root (domain fit)",
+   "commit": ""
+  }
+ ],
+ "resume": "stage 2: ladder calibration (route flows, acceptance band), fork table, closure, ask sheet, prompt.txt, precut",
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "sf16_set": "KBA-INST, KBA-PROF, BMC-FROI, HPB-UCF, HPY-TYPD (the queue-wide residual on the golden model: day 3.74, night 7.76 per 1,000)"
 }

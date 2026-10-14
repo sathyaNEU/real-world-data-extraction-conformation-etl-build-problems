@@ -1,12 +1,119 @@
 # task230 design note
 
-Architecture 2 is current: drawn 2026-10-11 as task230's architecture 2 of 3, loops 0, after architecture 1
-was spent at hardening loop 2 (its sections are kept under `## Architecture 1` below, and its identity sits in
-the card's lineage). Phase A only: no data is cut and no generator file is edited. The card is guard-checked
-and registered (see `## Coordination`). The H2 headings from `## Draw` to
-`## Ask sheet` are the ones `precut.py` reads.
+Architecture 3 is current: drawn 2026-10-14 at the author's request. Architecture 2 (human factors, a capture
+centre's second-pass verification, shipped 2026-10-12) sat in a task type the client taxonomy lists under
+Forecasting, not Data Quality, so its domain read as a backdrop for a monitoring call; its record is kept under
+`## Architecture 2 record` and its identity in the card's lineage. Architecture 3 keeps the lane and moves to
+Survey Research & Official Statistics, with two analytical layers on the main call.
 
 ## Draw
+
+- **Card:** `.claude/skills/fingerprint/cards/task230.json`, architecture v3, drawn and registered 2026-10-14.
+  Domain Survey Research & Official Statistics (client domain), task type `census-register-administrative-data-quality`,
+  objective Data Quality Monitoring & Alerting: the object is the coding quality of the census occupation counts, and
+  the call is which occupation groups' published counts carry the coding quality warning. Shape 10 (scorecard): each of
+  the 40 civilian ISCO-08 sub-major groups' projected coding bias against the plus or minus 2 per cent warning line.
+  Decision `designation_set`, question form which. Gap time then population; no A to E pattern; generators G14 (does the
+  rate measured so far apply to the late workload), G13 (the release covers returns not yet coded), G6. Gate G
+  `forecasting`. Strategy `maturity_censoring`: the coded-so-far records are the early, self-reported part of the
+  release. Calibration none. Context artifact `capacity_report` (the processing plan for the last stretch of coding).
+  Stakeholder: the deputy registrar general for census outputs (`statistical_office_head`), with the census programme
+  board (`executive_team`), ahead of the statutory first-release date (`statutory_or_regulatory_filing`), in a
+  registrar general's office (`government_agency`).
+- **World:** the Office of the Registrar General of Aldmere, a fictional English-speaking island state, runs the 2026
+  Census of Population and Housing (census day Tuesday 21 April 2026). Self-response online and on paper closed in June;
+  non-response follow-up (NRFU) ran June to 31 October, with proxy reports (a household member or neighbour answering
+  for an absent person) allowed from the third visit. Occupation write-ins (job title and main tasks) are coded to
+  ISCO-08 by an autocoder, which accepts its suggestion when it scores 0.90 or more and sends the rest to clerical coders;
+  a quality-control sample of coded records is recoded independently and adjudicated. As of the extract (Friday 13
+  November 2026) every self-response return and about a third of the NRFU returns are coded; from Monday 16 November the
+  processing plan lowers the acceptance score to 0.80 to finish coding before the first release (Tuesday 30 March 2027).
+  Personas (`guard.py names --geo Ireland --seed 230`): Timothy Taggart, Lesley Ahearne, Tracey Brien, Erica Phayre.
+- **Data-native sentence:** the census's follow-up returns arrive last and are mostly proxy reports, whose write-ins are
+  vague ("works at the hospital", "office", "labourer", "does computers") and are coded into default groups and out of
+  specific ones, so the coded-so-far records, almost all self-reports, carry a fraction of the release's coding bias;
+  and the returns still to be coded will take the autocoder's suggestion wherever it scores 0.80 to 0.90, where the
+  quality-control sample saw a clerical code instead.
+- **Second layer (the author's request):** two analytical steps decide the call, each moving it on its own: the bias
+  carried by response route to the release's own route mix (decisive), and the processing rule in force for the
+  returns still to be coded (second layer), whose production code is the autocoder's stored suggestion, not the clerical
+  code the sample recorded.
+- **Guard:** `guard.py check` WARN, no BLOCK (`overuse.strategy` maturity_censoring 3 of 12; `overuse.org_family`
+  government_agency; `repeat.question_form` which against task454; `test.same_driver_older` differentiated against
+  task131 and task183); `heart` WARN, nearest drivers 0.06 (task500 lineage, task183). WARN answers: the strategy is the
+  honest key (the early part of an incomplete process); a registrar general's office is a government agency, not the
+  statistics office; the question form follows the decision, a set of groups.
+- **Sources:** the client's census-register pattern 2 (net and gross classification error differ) is a lower rung here,
+  not the stump; the decisive step is the field's own NRFU proxy-reporting effect on coding, carried by route, which no
+  card on file holds; lane record: task231 (closures recorded late), task232 (incubation-window attribution), task229
+  (a convex conversion at a daily mean), task228 (error separation) spend other insights.
+
+## Default path
+
+1. From the coding extract take every coded record's production code; join the quality-control sample's adjudicated
+   reference codes.
+2. For each sub-major group, estimate the count coded to it and the count the reference puts there from the sample,
+   weighted by its strata (production route and coding week), and the group's net coding bias.
+3. Apply each group's bias to the release (every person in employment enumerated by the close of field operations).
+4. Flag every group whose bias is beyond plus or minus 2 per cent (the output quality standard).
+
+Ends on: groups 35 and 93 (design target)
+Golden: groups 24, 25, 31, 35, 41, 72 and 93 (design target)
+
+## Stump sentence
+
+A competent solver estimates each sub-major group's coding bias from the quality-control sample coded so far and
+applies it to the whole release, flagging only groups 35 and 93 (the default path's Ends on); the returns still to be
+coded are mostly NRFU proxy reports whose vague write-ins drain specific groups into default ones, and they will be coded
+with the autocoder's suggestion wherever it scores 0.80 to 0.90, so building the bias by route on the release's own
+route mix and coding the late returns under the rule in force flags 24, 25, 31, 35, 41, 72 and 93; carrying the routes
+under the old rule, or the new rule on the coded-so-far mix, lands on a third set.
+
+## Three rules
+
+- Task type: `census-register-administrative-data-quality` (Survey Research & Official Statistics), which serves Data
+  Quality Monitoring & Alerting: the object is the coding quality of the census's published occupation counts and the
+  call is the release's quality warning on each group.
+- Domain test: the deciding quantity is each occupation group's coding bias in the census release, which census
+  processing quality assurance estimates from independently recoded, adjudicated samples by response route, because NRFU
+  proxy reporting yields vague write-ins that coding moves into default groups; the release's bias is the route-weighted
+  bias of a workload whose late part is mostly proxy and is coded under the processing plan's rule for that stretch.
+- Swap: "which product categories' counts in the catalogue report carry a warning" has no follow-up proxy reporting, no
+  respondent answering for an absent person, no census release and no coding rule tied to a processing deadline; the
+  route that decides the bias does not exist, so the task stops making sense.
+- Layer 1: write-ins captured three ways (typed online, ICR-transcribed paper, enumerator-keyed follow-up), form numbers
+  that differ between the field and coding systems (joined through the receipt register), batches reopened after a
+  coder's work was redone, five-digit national codes beside four-digit ISCO codes, calendar weeks against coding weeks;
+  each comes from the system that writes it and none moves the call.
+- Layer 2: `forecast_uncertainty` in the field-method family: the release's bias is projected from the coded-so-far
+  sample to a late workload whose report route and processing rule differ.
+- Decisive step: building each group's coding bias by response route from the sample and weighting the routes by the
+  release's own route mix, the late follow-up returns included, then coding those returns under the rule in force (the
+  autocoder's suggestion from 0.80), instead of applying the coded-so-far bias to the whole release.
+- Not semantics: every field can be read correctly (production, suggested and reference codes, scores, routes, weeks)
+  and every definition followed (the standard's coding bias, the plan's acceptance score), and the coded-so-far bias
+  still files the default path's answer; no field states a group's bias in the release.
+- Not rule application: the output quality standard defines the bias and the warning line and the processing plan
+  states the acceptance score from 16 November; neither says how the release's bias is estimated from a sample taken on
+  a different workload under a different rule, so executing every stated rule files the default path's answer.
+- Analyst test: a strong analyst who joins the coding records to the receipt register, reads the standard and the plan
+  correctly and estimates every group's net coding bias from the sample with its design weights, applied to the release
+  as a whole, flags only groups 35 and 93 (the default path's Ends on).
+- Estimand: output quality standard OQ-4 fixes it: a group's coding bias is the count coded to the group less the count
+  the adjudicated reference coding puts there, as a percentage of the latter, over every person in employment enumerated
+  by the close of field operations whose occupation is coded from a write-in, coded or still to be coded.
+- No decoy: nothing is planted; proxy write-ins, the coding route, the acceptance score and the sample are what a census
+  processing operation records, and no memo, draft or dashboard carries a warning list or a bias for any group.
+- No certified replay: no published or certified figure is reproduced to recover the method; the sample is the raw
+  material of an estimate.
+- Lesson: a quality measure taken on the early part of a workload describes the release only once it is carried by the
+  route and rule each later record will meet; no build on file teaches census coding bias carried to the NRFU proxy tail.
+
+## Architecture 2 record (spent 2026-10-14)
+
+Architecture 2 (a BPO capture centre's second-pass verification, human factors) as it stood when it shipped on 2026-10-12; it binds nothing. Its generator, pack and goldens stay in git history and are replaced when architecture 3 is built.
+
+### Draw
 
 - **Card**: task230, architecture v2, registered as `cards/task230.json` (drafted at
   `/home/user/orch/buildwork-task230/arch2/task230_card.json`), with architecture 1 moved into `lineage`.
@@ -95,7 +202,7 @@ and registered (see `## Coordination`). The H2 headings from `## Draw` to
   decisive rung carried a loud row-count symptom and a careful solver executed it. Here the wrong path
   leaves every count, total and monthly back-test clean.
 
-## Default path
+### Default path
 
 The pipeline a competent analyst builds from the prompt's words, QCP-04 and the files' grain:
 
@@ -116,7 +223,7 @@ The pipeline a competent analyst builds from the prompt's words, QCP-04 and the 
 Ends on: second pass for Kessington's institutional and professional claims, Northgate, Brightmoor, Harbison and Thistlecombe's motor claims (N1, N2, N3, N4, N5, D5)
 Golden: second pass for Brightmoor, Wattlebird's extras claims, Coolabah, Whinfell and Hollings & Pryce (N4, D2, D3, D4, D6)
 
-## Stump sentence
+### Stump sentence
 
 A competent solver dedupes the timeout re-verifications, measures each stream's first-pass misses from the
 blind re-key audit, models detection on verifier, stream, field type, tenure, shift, time on shift,
@@ -127,7 +234,7 @@ streams off; the step that lands it there is treating detection as a property of
 shift or day when it rises and falls with the error rate of the shift's whole pool, which the plan cuts on
 the day queue (about 4.3 to 1.9 per cent) and raises on the night queue (about 2.5 to 5.0).
 
-## Three rules
+### Three rules
 
 Domain test: The deciding quantity is each stream's first-pass residual next month, which human reliability assessment estimates as a verification task's non-detection probability under the conditions it will run in, and the condition that moves is target prevalence (signal detection's low-prevalence effect: observers shift their criterion and miss more when targets are rare, so detection measured in one pool does not travel to a pool with a different error rate); a generalist's corrections (stratify by stream, shift, verifier or tenure, reweight to the new mix, control for time on shift, workload and day of week) treat detection as a fixed property of an attribute and never construct the pool's error rate, and with an automated validation rule in place of the verifiers there is no criterion shift and the task stops reading the same.
 Analyst test: A strong analyst who sessionises the log, dedupes the timeout re-verifications, resolves reissued verifier IDs, reads QCP-04 and every quality schedule correctly, and models first-pass detection on every visible attribute (verifier, stream, field type, tenure, shift, time on shift, workload, day of week), taking the best-fitting of them on a clean month-by-month back-test, still keeps the four night streams and the motor claims on second pass and leaves the day streams and Hollings & Pryce off.
@@ -157,7 +264,7 @@ Layer 2: Detection modelled as a fixed property of the verifier, stream, shift o
   every attribute model. Not selection into observation: the audit is a random
   sample. No regression to the mean: stream detection is measured on tens of thousands of audited fields.
 
-## Readability screen
+### Readability screen
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex correction | 4 control bench | 5 hygiene battery | 6 linear arithmetic | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -174,7 +281,7 @@ back-test that did is in `## Tried and rejected`). The data keep the attribute m
 inside what audit sampling produces on most shifts, while over the quarter the separation the design rests
 on holds by the asserted margins (`## The estimand, the rule and the records`).
 
-## Semantic fork table
+### Semantic fork table
 
 | Id | Term or convention in the main ask or computation | Golden reading | Alternative reading | Call under the alternative | Ruled out by |
 |---|---|---|---|---|---|
@@ -200,7 +307,7 @@ model. SF16 closes the reading round 1 of architecture 2 took (4.1's population 
 documents); 4.1 now names the stream's own documents. SF10 and SF11 replace the rows on the dropped criterion's wording ("each shift left out",
 "closeness") with two conventions the forecast itself depends on.
 
-## Ladder
+### Ladder
 
 Paper values at the truth slope (0.6 on the miss logit per unit of log pool error rate, inside the field's
 measured range); the generator sets the error rates and limits and asserts every margin. Ratio = November
@@ -262,7 +369,7 @@ motor claims arrive). Detection on a mixed field: day 0.870 falls to 0.803, nigh
   rate, with every roster verifier who worked the closed quarter observed on both sides (November's new
   hires enter at the closed quarter's terms for new verifiers).
 
-## The estimand, the rule and the records (QCP-04, written at the build)
+### The estimand, the rule and the records (QCP-04, written at the build)
 
 - **4.1 Estimand.** For each stream, the first-pass residual key-field error rate for the month, taken over
   the stream's own documents that the month's operating plan of record routes to a first-pass queue: of their
@@ -311,7 +418,7 @@ the pack never carries. Form 3 is not needed, and it cost: the filed back-test s
 shift grain where the pool's rate shows, and task446, newest on main, files a leave-one-out back-test of
 its own.
 
-## Closure table
+### Closure table
 
 | # | Axis | Reading and closure |
 |---|---|---|
@@ -338,7 +445,7 @@ its own.
 | 21 | Clause scope | 4.3 makes every stream's forecast, a new client's included, by the same method (closes R3; R2 falls to the night queue's own slope); 4.2 applies per stream |
 | 22 | Forward window | the plan's November shift-days and daily volumes (Saturdays, US Thanksgiving on 26 November); C1: monthly-average pools give the same set |
 
-## Literal reader
+### Literal reader
 
 Executing the prompt and QCP-04 4.1 to 4.3 word for word, a reader forecasts every stream's November
 first-pass residual by one method from the last closed quarter's records and the plan of record, and puts
@@ -351,7 +458,7 @@ for R3, 4.3's "by the same method"), every row of the semantic fork table is rul
 the default path's answer comes from an easy method on the same literal estimand: detection fixed by
 attribute, which never contains the pool's rate.
 
-## Oracles
+### Oracles
 
 - The closed quarter's audit: on the wrong path it reproduces every stream-month (the attribute models
   back-test clean month by month); it ties under both models at the monthly grain, refutes fixed detection
@@ -365,7 +472,7 @@ attribute, which never contains the pool's rate.
   figure that reproduces the default path's off for the new client; no forecast, no recommendation.
 - No control total, published figure or corpus ties only under the golden basis.
 
-## Ask sheet
+### Ask sheet
 
 Rebuilt 2026-10-12 after round 1 of architecture 2 (the main call held, the asks leaked: 5 of 6 items, 92 per cent of
 ask weight). Every device round 1 executed was a filed rule or visible in its own file; the credit ask is dropped
@@ -424,7 +531,7 @@ Pair ceiling: 34.5 (the one-cracker case at the design's 0.10 allowance per top 
 **Returned-task revision readiness.** The asks' data lives in ask-only files, so an ask-only revision changes no byte
 the main call reads.
 
-## The pack (provisional)
+### The pack (provisional)
 
 About twenty files in five formats. Main path: `first_pass_verifications_2026q3.parquet` (the spine,
 about 2.1 million document screens), the first-pass edit log (field grain), the blind re-key audit (field
@@ -438,7 +545,7 @@ audit is the measure) and the verifier keystroke telemetry (fields per hour, a t
 Dictionary and provenance in the organisation's own idiom. `prompt.txt` is the architecture 2 draft (it
 passes `voice-check.py`); `prompt.md` is architecture 1's and goes with the old pack at the build.
 
-## What the generator must add or change
+### What the generator must add or change
 
 Architecture 2 replaces the Drumlee generator's content module by module; nothing of the patient-app
 world is kept, and the generator rebuilds the pack from scratch.
@@ -484,7 +591,7 @@ world is kept, and the generator rebuilds the pack from scratch.
 - `pack.py`, `postprocess.py`, `deliver.py`, `make.py`, `build.py`: the new file list, `metadata.json`
   with the distractors, `target.zip`.
 
-## Coordination
+### Coordination
 
 DRAW REGISTERED 2026-10-11. task229's design 2 (perssathya/task229-rework) registered first and sorts
 before task230; its card holds `compliance_or_audit` and `operations_log`, which BLOCKed this card on
@@ -503,7 +610,7 @@ This note files no criterion (form 1), so the organ does not repeat, and `guard.
 tree at the form 1 pass returned the draw's WARN set unchanged and nothing against task446 (nearest drivers
 0.05, task446 not among them).
 
-## WARN answered
+### WARN answered
 
 - `repeat.gate_g` (method_or_model_selection, task228 v2 and task229 v2): task228 chooses among estimators
   of each sensor's own random error against a signal nothing observes, and task229's design 2 among
@@ -522,7 +629,7 @@ tree at the form 1 pass returned the draw's WARN set unchanged and nothing again
   filed intervention recovered from closed actions; task114's demand exists only where two parties share a
   site; here nothing is recovered from closed actions and every record is exact).
 
-## Stopping rule
+### Stopping rule
 
 Architecture 2 of 3. Three hardening loops; a round that lands the call (the five streams) sends it back
 to design with a brief and the default path rewritten; a round that misses the call but leaks the asks
@@ -530,7 +637,7 @@ rebuilds the ask layer; a third loop that still lands re-roots task230 to archit
 architecture retires the number. A draw that fails `precut.py` twice on the default path is re-rooted
 before any data is cut.
 
-## Build (architecture 2)
+### Build (architecture 2)
 
 Built 2026-10-11 from the committed design; no rung, pin or decisive step changed. `generator/make.py` builds
 the pack, runs 172 assertions (`checks.py`), writes the goldens, `figures.json` and `metadata.json`, runs
@@ -581,7 +688,7 @@ the pack, runs 172 assertions (`checks.py`), writes the goldens, `figures.json` 
 - Sweep 9, dates after 28 October in the form specifications, the plan, the stream register and the
   forecasts: November effective dates, shift-days and forecast weeks, which a plan for November carries.
 
-## Rebuild of the ask layer (architecture 2, 2026-10-12)
+### Rebuild of the ask layer (architecture 2, 2026-10-12)
 
 Resumed from the pause in wave 1 of the author's backlog (no solver round under the current pipeline). The ladder,
 the stump, the decisive step and every main-call figure are unchanged; `freeze.py check --mode rubric` moves only the
@@ -615,7 +722,7 @@ asserted on every rigorous variant), and no deliverable answer outside the asks.
   sit 0.03 to 0.06 from the golden's with the same set, so the write-up states bands. Optional notes taken: the slope's
   sign and the key fields of documents captured before the quarter (form specifications) are now in the solution.
 
-## Pre-ship check
+### Pre-ship check
 
 1. Domain: human reliability assessment's estimate of a verification step's non-detection under the conditions it
    will run in, where the condition that moves is target prevalence; with an automated validation rule in the
@@ -632,7 +739,6 @@ asserted on every rigorous variant), and no deliverable answer outside the asks.
 7. Nothing is recovered from certified figures: no file scores or selects a method.
 8. The lesson (a human detector's hit rate moves with the target prevalence of the shared pool it works) is on no
    other card: nearest drivers 0.05.
-
 ## Architecture 1 (spent at hardening loop 2 of 3, 2026-10-11)
 
 The series-break flag after the 7.0 tracker swap, as hardened at loop 1 and cut for round 2; rounds 1 and 2 landed the call and loop 2 found no rung on paper. Kept as the record; nothing below binds architecture 2.
@@ -1138,7 +1244,6 @@ set by agreeing rigorous variants. Architecture 1 is spent at hardening loop 2 o
 Monitoring & Alerting (pipeline.json `lineage` and `reroot`). A re-root that keeps this world inherits one open question:
 the 7.0.0 notes' new home screen against 3.2's "in the way patients use the app", which the new estimand has to leave
 inert or close.
-
 ## Tried and rejected
 
 - Physical & Environmental Sciences sensor calibration, an errors-in-variables gain for low-cost PM2.5 sensors against noisy BAM references (draft, never registered): task228's architecture 2 took physical-environmental-sciences x Data Quality Monitoring and the comparator-error family (triple collocation), and task251 is a later seed on errors in both instruments.
@@ -1200,3 +1305,4 @@ inert or close.
 - A credit ask carried by a superseded rate card, an account spanning two clients or claims billed against documents: each needs a filed sentence to be determinate, and a filed sentence is executed.
 - The slide charting hours against the client-audited residual, ordered by the residual: Hollings & Pryce has no client audit before 2027, so its place in the order would be a fork; the slide charts the hours, most to fewest.
 - The card's pattern relabelled E first (detection conditioned on the pool's rate): it meets task445's loop-2 card on gap time, pattern E and Gate G (guard BLOCK test.same_driver_older and test.same_puzzle_older), so the card keeps pattern A.
+- Architecture 2 retired at the author's request (2026-10-14): human-reliability-assessment serves Forecasting in the client taxonomy, not Data Quality, so the monitoring call read as a forecast in a backdrop domain; re-rooted into census occupation coding quality.

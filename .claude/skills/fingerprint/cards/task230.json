@@ -1,100 +1,90 @@
 {
   "task": "task230",
-  "architecture": "v2",
-  "drawn": "2026-10-11",
-  "slot_note": "architecture 2 of task230, a re-root of architecture 1 (spent at hardening loop 2 of 3) drawn inside Data Quality Monitoring & Alerting and outside the seed's product-analytics territory: the Drumlee world's organisation family repeats task181, and the author's domain-coupling rule asks for the field's own method, here human factors' detection model; DQ03's event-volume driver is not drawn",
-  "domain": "human-factors-ergonomics",
-  "subdomain": "human-reliability-assessment",
-  "client_domain": "human-factors-ergonomics",
-  "niche": "first-pass human verification of OCR-captured insurance-claim key fields in a BPO capture centre's pooled day and night queues: which client streams get second-pass verification in the month a typed-form client joins the day queue and a handwritten motor stream moves to nights",
+  "architecture": "v3",
+  "drawn": "2026-10-14",
+  "slot_note": "architecture 3 of task230, re-rooted at the author's request: architecture 2 (human factors, shipped 2026-10-12) sat in a task type that serves Forecasting, not Data Quality; this draw keeps the lane (Data Quality Monitoring & Alerting) and moves to Survey Research & Official Statistics, census-register-administrative-data-quality, with two analytical layers on the main call",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "census occupation coding quality: which ISCO-08 sub-major groups the census processing plan sends to a clerical recode before the first occupation release, judged on each group's net coding bias in the released counts, while the late non-response follow-up returns (many of them proxy reports) are still to be coded and the autocoder's acceptance threshold is lowered for that last stretch",
   "objective": "data-quality-monitoring",
-  "shape": "07",
+  "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Put five streams on second-pass verification for November, Brightmoor Comp's first reports (BMC-FROI), Wattlebird's extras claims (WBH-EXTR), Coolabah's income protection claims (CIP-IPCL), Whinfell's pet claims (WPC-PETC) and Hollings & Pryce's typed claims (HPY-TYPD), and leave the other six off.",
-  "answer_source": "task230/submission.md block 1 (generator/figures.json call)",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "time",
     "population"
   ],
   "pattern": [
-    "A"
+    "none"
   ],
   "generators": [
-    "G13",
     "G14",
-    "G17"
+    "G13",
+    "G6"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "causal_design",
-  "decisive_rule_filed": true,
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "capacity_report",
-  "stakeholder_role": "head of operations at a BPO insurance-claims capture centre, who runs its pooled day and night first-pass queues and sets the monthly second-pass verification list with the day and night queue managers",
-  "role_family": "operations_director",
-  "scoring_unit": "per accepted item",
+  "stakeholder_role": "the deputy registrar general for census outputs, who signs the processing plan's recode list with the head of census coding",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per certified output",
   "spine": {
-    "file": "first_pass_verifications_2026q3.parquet",
-    "rows": 1259599,
-    "entity": "one first-pass verification event on one captured claim document (the key-field screen a verifier submits)",
-    "grain": "document x verification event (a session timeout writes a second event for the same document)",
-    "source": "synthetic",
-    "note": "first_pass_verifications_2026q3.parquet as built: 1,259,599 screens (the timed-out screens included); the audit, the largest file, 2,381,352 rows"
+    "file": "census2026_coding_qc_sample.csv",
+    "rows": 0,
+    "entity": "one occupation write-in in the coding quality-control sample, with its production code, the autocoder's top suggestion and score, and the adjudicated reference code",
+    "grain": "person record",
+    "source": "synthetic"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "professional_services",
+  "forum": "executive_team",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "government_agency",
   "world": {
-    "geography": "India, West Bengal (Kolkata)",
-    "currency": "INR internally; USD, GBP and AUD by client contract",
-    "org_type": "business-process outsourcing firm's insurance-claims data-capture centre serving US, UK and Australian clients from pooled day and night first-pass verification queues",
+    "geography": "fictional country (Aldmere), an English-speaking island state",
+    "currency": "none in the pack",
+    "org_type": "the Office of the Registrar General, which runs the 2026 Census of Population and Housing",
     "invented_names": [
-      "Tamralipta Data Services",
-      "Kessington Benefit Administrators",
-      "Northgate Dental Services",
-      "Brightmoor Comp",
-      "Harbison Pharmacy Benefits",
-      "Wattlebird Health",
-      "Coolabah Income Protection",
-      "Thistlecombe Motor",
-      "Whinfell Pet Cover",
-      "Hollings & Pryce"
+      "Aldmere",
+      "Office of the Registrar General of Aldmere"
     ],
     "people": [
-      "Dipta Mukhopadhyay",
-      "Raghav Bajwa",
-      "Vasana Reddy"
+      "Timothy Taggart",
+      "Lesley Ahearne",
+      "Tracey Brien",
+      "Erica Phayre"
     ]
   },
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:pooled-queue-error-prevalence-sets-human-detection",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:late-channel-coding-bias-under-a-changed-acceptance-rule",
   "layer1": [
-    "a first-pass verification event log that needs sessionising: a session timeout writes a second event for the same document and only the later submission counts, and night shifts cross midnight so the shift-day is not the calendar day (human-factors technique 2)",
-    "verifier identifiers reissued after attrition, resolved through the workforce register's effective-dated assignments",
-    "each client's own audit findings, where capture errors sit beside business rejections (eligibility, coverage, duplicate claim) under client-specific reason codes, and a re-reviewed finding supersedes the first",
-    "client volume forecasts in each client's own unit, calendar and revision cycle (the latest accepted revision, not the latest delivered)",
-    "form specifications whose versions take effect mid-month and change the key fields per document",
-    "a second-pass session log that carries weekly calibration sessions on a fixed calibration set beside production",
-    "contract rate cards with volume tiers set on the client account's total across its streams, and anniversary indexation part-way through a month"
+    "write-ins captured three ways (typed online, ICR-transcribed paper, enumerator-keyed follow-up) with their own spelling and abbreviation habits",
+    "form identifiers that differ between the field system and the coding system, joined through the receipt register",
+    "processing batches re-opened after a coder's work was redone, so a record carries more than one production code over time",
+    "ISCO-08 codes with the national extension's fifth digit on some records and four digits on others",
+    "a field operations report in calendar weeks against coding weeks that run Monday to Sunday from census day"
   ],
   "deliverables": [
-    "november_second_pass_plan.xlsx",
-    "second_pass_november.pptx"
+    "occupation_recode_plan_2026.xlsx",
+    "occupation_coding_bias_2026.png"
   ],
   "opening_move": "question-first",
-  "driver": "A unit's forward residual depends on a detection step whose hit rate is not a fixed property of the detector, the unit or the shift but falls as targets become rarer in the shared pool the detector works, so a near-clean source joining the pool lowers detection on every other unit's items and a target-rich unit leaving one pool for another raises detection there; every route that carries each unit's measured hit rate forward, stratified by unit, shift, detector or tenure, or ties detection to the unit's own target share, clears units that will breach and keeps units that will not.",
-  "driver_concrete": "Rebuild each shift-day pool's key-field OCR error rate from the blind re-key audit and the first-pass edit log, estimate first-pass detection against it within verifier and field type (signal detection's low-prevalence effect: verifiers miss more as errors in the queue they work become rarer), the one model the closed quarter's shift-days leave standing (every attribute-only model's night and Saturday terms are that rate's gaps), and apply it to the November plan, where the motor claims leaving for nights and Hollings & Pryce's typed claims at about 0.6 per cent cut the day pool from about 4.3 to about 1.9 per cent and the motor claims lift the night pool from about 2.5 to about 5.0 per cent.",
-  "stump": "A competent solver dedupes the timeout re-verifications, measures each stream's first-pass misses from the blind re-key audit, models detection on verifier, stream, field type, tenure, shift, time on shift, workload and day of week, takes the best-fitting of those models on a clean month-by-month back-test, and applies it to the November plan (the motor claims on nights, Hollings & Pryce on days, the roster moves), keeping Kessington's two streams, Northgate, Brightmoor, Harbison and the motor claims on second pass and the day streams off; the step that lands it there is treating detection as a property of the verifier, stream, shift or day when it rises and falls with the error rate of the shift's whole pool, which the plan cuts on the day queue (about 4.3 to 1.9 per cent) and raises on the night queue (about 2.5 to 5.0).",
+  "question_form": "which",
+  "driver": "The decisive quantity is a category count's net classification bias in an output whose last part is still to be processed: that part comes from a late channel whose inputs are vaguer and move items out of specific categories into default ones, and it will be processed under a looser acceptance rule than the part already checked, so the bias measured on the checked part, or carried by channel under the old rule, understates the output's bias in the categories the late channel feeds and drains.",
+  "driver_concrete": "Each sub-major group's coding bias in the release (count coded to the group against the count the adjudicated reference coding puts there) is built by response route, because the non-response follow-up's proxy write-ins ('works at the hospital', 'office', 'labourer') are coded into default groups and out of specific ones, and the remaining follow-up returns are mostly proxies; and for the returns still to be coded, records the autocoder scores from 0.80 to 0.90 will take its suggestion instead of a clerical code, so their production code is the stored suggestion, not the clerical code the quality-control sample recorded.",
+  "stump": "A competent solver estimates each sub-major group's coding bias from the quality-control sample coded so far (count coded to the group against the count the adjudicated reference puts there, weighted by the sample's strata) and applies it to the whole release, flagging only ICT technicians (35) and the building and related labourers' group (93); the step that lands them there is treating the coded-so-far records as the release, when the follow-up returns still to be coded are mostly proxy reports whose vague write-ins drain specific groups into default ones, and will be coded with the autocoder's suggestion wherever it scores 0.80 to 0.90, so the release's bias also pushes ICT and business professionals (25, 24), the metal and machinery trades (72), science technicians (31) and general clerks (41) past 2 per cent.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who sessionises the log, dedupes the timeout re-verifications, resolves reissued verifier IDs, reads QCP-04 and every quality schedule correctly, and models first-pass detection on every visible attribute (verifier, stream, field type, tenure, shift, time on shift, workload, day of week), taking the best-fitting of them on a clean month-by-month back-test, still keeps the four night streams and the motor claims on second pass and leaves the day streams and Hollings & Pryce off, because detection follows the error rate of the pool each verifier works, which no row carries and the November plan lowers on days and raises on nights.",
-  "domain_test": "The deciding quantity is each stream's first-pass residual next month, which human reliability assessment estimates as a verification task's non-detection probability under the conditions it will run in, and the condition that moves is target prevalence (signal detection's low-prevalence effect: observers shift their criterion and miss more when targets are rare, so detection measured in one pool does not travel to a pool with a different error rate); a generalist's corrections (stratify by stream, shift, verifier or tenure, reweight to the new mix, add controls for time on shift, workload and day of week) treat detection as a fixed property of an attribute and never construct the pool's error rate; with an automated validation rule in place of the verifiers there is no criterion shift and the task stops reading the same.",
+  "analyst_test": "A strong analyst who joins the coding records to the receipt register, reads the output quality standard and the processing plan correctly and estimates every group's net coding bias from the quality-control sample with its design weights, applied to the release as a whole, flags only groups 35 and 93, the default path's answer.",
+  "domain_test": "The deciding quantity is each occupation group's coding bias in the census release, which census processing quality assurance estimates from independently recoded and adjudicated samples by response route, because proxy reporting in non-response follow-up yields vague write-ins that coding moves into default groups, and the bias of the release is the route-weighted bias of a workload whose late part is mostly proxy and will be coded under the processing plan's own rules; with another field's nouns there is no follow-up proxy reporting and no published census count whose bias the release carries, so the task stops making sense.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task33": "task33 projects a breach's forward yield, which stops at a filed intervention recovered by back-testing closed actions; here nothing is back-tested or filed: a human detector's hit rate moves with the target prevalence of the pool it works, and the forward pool's prevalence is set by the operating plan",
-    "task114": "task114's demand exists only when two parties share a site on a day, so site records add up short; here every record is exact and the hit rate of a human verification step depends on the error prevalence of the shared queue, which a new near-clean source dilutes",
-    "task46": "task46 reconstructs a cumulative service-exposure clock from a movement log for a wear rate; here there is no clock or accumulation: detection responds to the prevalence of targets in the pool at the time, a perceptual criterion shift that reverses when the pool's mix reverses"
+    "task131": "task131 projects a randomised tariff trial's household load response onto a design day's heat; this build carries a recoded quality sample's classification bias to the late part of a census coding workload by report route and by the processing rule in force, with no trial, load or weather.",
+    "task183": "task183 forecasts repeat failures from each part's failure history; this build estimates the net classification bias of published category counts from an adjudicated recode sample, and the late workload's route and acceptance rule decide it, not any unit's history."
   },
   "lineage": [
     {
@@ -128,8 +118,26 @@
       "fate": "hardened 2026-10-11: round 1 landed the call on the solver's step 6, each switched patient's reference level carried by the week-by-week movement of patients still on 6.8 in the same CRM engagement segment, checked against never-switched patients and a group-rate index; that step is now a lower rung that completes and returns the wrong set, because inside every segment the pool still on 6.8 drifts toward phones below 7.0's minimum OS",
       "driver": "A switch reaches heavy users first, so its effect has to be read against users who have not switched yet in the same weeks, but those users are a lighter mix whose seasonal trend runs harder than the switched users' own; taking the whole not-yet-switched pool as the counterfactual books part of the season as the switch's doing, and only a counterfactual built within each usage band, or reweighted to the switched users' band mix, reads the switch alone, which moves units across the tolerance in both directions.",
       "layer2_pattern": "product-analytics/observational-causal-inference/1"
+    },
+    {
+      "architecture": "v2",
+      "fate": "retired 2026-10-14 at the author's request after shipping (SHIPPED 2026-10-12, pending review): the task type human-reliability-assessment serves Forecasting in the client taxonomy, not Data Quality, so the domain read as a backdrop for a DQ call; re-rooted into official statistics",
+      "domain": "human-factors-ergonomics",
+      "subdomain": "human-reliability-assessment",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "causal_design",
+      "decision_type": "designation_set",
+      "driver": "A unit's forward residual depends on a detection step whose hit rate is not a fixed property of the detector, the unit or the shift but falls as targets become rarer in the shared pool the detector works, so a near-clean source joining the pool lowers detection on every other unit's items and a target-rich unit leaving one pool for another raises detection there; every route that carries each unit's measured hit rate forward, stratified by unit, shift, detector or tenure, or ties detection to the unit's own target share, clears units that will breach and keeps units that will not.",
+      "stump": "A competent solver dedupes the timeout re-verifications, measures each stream's first-pass misses from the blind re-key audit, models detection on verifier, stream, field type, tenure, shift, time on shift, workload and day of week, takes the best-fitting of those models on a clean month-by-month back-test, and applies it to the November plan (the motor claims on nights, Hollings & Pryce on days, the roster moves), keeping Kessington's two streams, Northgate, Brightmoor, Harbison and the motor claims on second pass and the day streams off; the step that lands it there is treating detection as a property of the verifier, stream, shift or day when it rises and falls with the error rate of the shift's whole pool, which the plan cuts on the day queue (about 4.3 to 1.9 per cent) and raises on the night queue (about 2.5 to 5.0)."
     }
   ],
-  "notes": "Pattern A decisive (gap time): each stream's measured Q3 residual is a correct statement about Q3's pools, and the November plan moves both pools' error rates outside anything a Q3 month showed (inside the range Q3's shift-days span), so the forward residual has to be built from detection as a function of the pool's rate; G14 supports (detection conditioned on a property of the shift-day pool, a different entity from the stream), G13 supports (retrospective actuals against a prospective month), G17 supports (separating the pool's rate from shift, day of week, tenure and workload). Gate method_or_model_selection: the design forces the method (determinism-check section 1, form 1): QCP-04 files the estimand (4.1), the rule (4.2) and the records with one method for every stream (4.3), never a method or a selection criterion, and the closed quarter's shift-days rule out every attribute-only model (within each queue the misses move with the shift-day pool's error rate, and the night and Saturday terms are its gaps). Strategy causal_design for interference: one client's volume changes other clients' residuals through the shared verifier pool; not forecast_method_backtest: nothing filed selects a method, the textbook monthly back-test is clean on every attribute model, and what decides is constructing the interference channel. Subdomain human-reliability-assessment: the quantity is a verification task's human error probability under next month's conditions; the taxonomy lists the task type under Forecasting, and the build keeps Data Quality Monitoring because the object is the capture pipeline's delivered accuracy and the call is which streams its second verification control covers. validated_decoy false: no certified figure set ships, and the closed record refutes fixed detection at the shift grain. calibration_form none: the blind re-key audit is the primary measurement, not a calibration organ, and no back-test is filed. Deliverables and opening move follow the phase A prompt.txt draft (voice-check PASS), to be re-checked against the golden at the build. The Drumlee world was not kept (task181 holds hospital_or_health_provider in the three-draw window). Furniture redrawn at registration, the draw otherwise unchanged: task229's design 2, registered first, holds compliance_or_audit and operations_log, so the requester is the centre's head of operations (operations_director), who runs both first-pass queues, staffs the second pass from the verification floor and answers for the credits it protects, with the same stakes and the same call; context artifact capacity_report: the November operating plan the head of operations works from (stream routing, daily key fields by stream, the verifier roster, the October list), where the month's change is filed. Furniture, 2026-10-12 (author's decisions): the forum is renamed from committee_or_panel to line_manager_or_team (the head of operations sets the list with the queue managers; the pack names no council), which clears task446 and every build whose three-draw window holds task230; org_family professional_services is kept under the author's waiver against task445 only (quantitative-finance ETL against claims-capture quality control, unrelated builds), recorded here for the registration-order view; the guard's draw order (date, then number) does not put task445 in task230's window, so the check returns no BLOCK and no --force was used. Pattern stays A: relabelling E first (detection conditioned on the pool's rate) would meet task445's loop-2 card on gap time, pattern E and Gate G (test.same_driver_older, test.same_puzzle_older).",
-  "question_form": "which"
+  "notes": "Re-root at the author's request (2026-10-14). Org family government_agency: the census is run by a registrar general's office, not the statistics office. Design targets at the draw (to be fixed by the ladder): default path flags 35 and 93; golden flags 24, 25, 31, 35, 41, 72 and 93; one layer alone lands a third set.",
+  "registered": "2026-10-14T00:22:54Z"
 }
