@@ -1,111 +1,161 @@
-"""Seasonal adjustment of a region's monthly payroll jobs, January 2021 to March 2027, and the trigger's test: the
-seasonally adjusted average of January to March 2027 against the unadjusted average of the twelve months of 2026.
+"""Every route to the redesign's effect on the published unemployment rate, read on month x region x rotation group
+cells, and the restated trigger, the designation, the back series and the fourth-quarter dwelling count built on it.
 
-The step-aware family estimates the seasonal pattern with the January 2026 change of placement removed as a level
-shift (or the history restated to the new placement, or the pattern taken from the months before the change); the
-default family estimates it across the change."""
+The design-implied route: each month in sample on the redesigned questionnaire against the same month in sample on
+the previous one (month and region held fixed, the previous questionnaire's month-in-sample pattern estimated from
+every month before July 2025), the six month-in-sample effects averaged as the published estimate averages the six
+rotation groups."""
 import numpy as np
-import pandas as pd
 
-from stl import stl
+import world as W
 
-BREAK = "2026-01"
-
-
-class Frame:
-    def __init__(self, months):
-        self.months = list(months)
-        self.n = len(self.months)
-        self.t = np.arange(self.n)
-        self.mo = np.array([int(m[5:7]) for m in self.months])
-        self.yr = np.array([int(m[:4]) for m in self.months])
-        self.brk = self.months.index(BREAK) if BREAK in self.months else self.n
-        self.q1 = self.yr == 2027
-        self.y26 = self.yr == 2026
-        self.q1_26 = (self.yr == 2026) & (self.mo <= 3)
+NEWM = np.array([[1 if W.redesigned(t, g) else 0 for g in range(6)] for t in range(W.T)])
+MISM = np.array([[W.mis(t, g) for g in range(6)] for t in range(W.T)])
 
 
-def pct(F, sa, y):
-    """per cent: the quarter's seasonally adjusted average against 2026's unadjusted average"""
-    return 100.0 * (sa[F.q1].mean() / y[F.y26].mean() - 1.0)
+def cells_from(une, lab):
+    """month x region x group rate (per cent) and weighted labour force from weighted counts"""
+    une, lab = np.asarray(une, float), np.asarray(lab, float)
+    t, r, g = np.meshgrid(np.arange(W.T), np.arange(W.R), np.arange(6), indexing="ij")
+    return dict(t=t.ravel(), r=r.ravel(), g=g.ravel(), y=(100.0 * une / lab).ravel(), w=lab.ravel(),
+                new=NEWM[t, g].ravel(), m=MISM[t, g].ravel())
 
 
-def classical(F, lv, mult=True):
-    """the classical decomposition: a centred 2x12 moving average, each month's mean ratio (or difference) to it,
-    normalised; returned as log factors (mult) or level factors"""
-    y = np.exp(lv) if mult else lv
-    s = pd.Series(y)
-    tr = (0.5 * s.shift(6) + sum(s.shift(k) for k in range(-5, 6)) + 0.5 * s.shift(-6)) / 12.0
-    d = (s / tr) if mult else (s - tr)
-    pos = np.arange(F.n) % 12
-    f = d.groupby(pos).mean().reindex(range(12)).values
-    f = f / f.mean() if mult else f - f.mean()
-    return np.log(f[pos]) if mult else f[pos]
+def arm_gap(F, months=None):
+    """January to May of the phase-in (July to November 2025): the groups on the redesigned questionnaire against
+    those still on the previous one, month by month, averaged"""
+    months = months or range(W.PHASE, W.PHASE + 5)
+    out = []
+    for k in months:
+        a = F["t"] == k
+        n1, n0 = a & (F["new"] == 1), a & (F["new"] == 0)
+        out.append((F["y"][n1] * F["w"][n1]).sum() / F["w"][n1].sum() - (F["y"][n0] * F["w"][n0]).sum() / F["w"][n0].sum())
+    return float(np.mean(out))
 
 
-def regression(F, lv, knots_every=12, start=0):
-    """log jobs on month effects, a trend with a knot every `knots_every` months and a level shift from January 2026;
-    returns the centred month effects for every month and the level shift"""
-    M = np.zeros((F.n, 12))
-    M[F.t, F.mo - 1] = 1.0
-    knots = [np.maximum(0, F.t - k) for k in range(knots_every, F.n, knots_every)]
-    X = np.column_stack([M, F.t, (F.t >= F.brk).astype(float)] + knots)
-    use = F.t >= start
-    b, *_ = np.linalg.lstsq(X[use], lv[use], rcond=None)
-    eff = b[:12] - b[:12].mean()
-    return eff[F.mo - 1], b[13]
+def fe(F, cols, use, weighted=True, mis_fe=True, by_region=True):
+    t, r = F["t"][use], F["r"][use]
+    key = t * W.R + r if by_region else t
+    _, idx = np.unique(key, return_inverse=True)
+    X = [np.eye(idx.max() + 1)[idx]]
+    if mis_fe:
+        X.append(np.column_stack([(F["m"][use] == j) for j in range(2, 7)]).astype(float))
+    X += [np.asarray(c)[use][:, None].astype(float) for c in cols]
+    X = np.hstack(X)
+    sw = np.sqrt(F["w"][use] / F["w"][use].mean()) if weighted else np.ones(int(use.sum()))
+    beta = np.linalg.lstsq(X * sw[:, None], F["y"][use] * sw, rcond=None)[0]
+    return beta[-len(cols):]
 
 
-def pre_factors(F, se_pre):
-    """the last year's factors before the change, carried to every month"""
-    pre = F.t < F.brk
-    f = np.zeros(12)
-    f[F.mo[pre][-12:] - 1] = se_pre[-12:]
-    return f[F.mo - 1]
+def mis_effects(F, use=None, weighted=True, by_region=True):
+    """the redesign's effect at each month in sample (1 to 6)"""
+    use = np.ones(len(F["y"]), bool) if use is None else use
+    return fe(F, [F["new"] * (F["m"] == j) for j in range(1, 7)], use, weighted, by_region=by_region)
 
 
-GOLDEN = ("reg12", "reg24", "reg12_2023", "ls_stl", "ls_stl13", "ls_classical", "pre_stl", "pre_classical",
-          "splice_stl", "annual_ratio_stl", "q1_ratio_stl", "ls_stl_robust")
-DEFAULT = ("stl", "stl_levels", "classical", "classical_additive")
-OTHER = ("stl13", "stl_robust", "yoy")
+def golden_break(F):
+    e = mis_effects(F)
+    return float(e.mean()), e
 
 
-def all_methods(F, y):
-    """every route's per cent for one region's series y (jobs, unrounded or whole)"""
-    y = np.asarray(y, dtype=float)
-    lv = np.log(y)
-    r = {}
-    sf, ls = regression(F, lv)
-    lk = lv + np.where(F.t < F.brk, ls, 0.0)
-    pre = F.t < F.brk
-    r["reg12"] = pct(F, np.exp(lv - sf), y)
-    r["reg24"] = pct(F, np.exp(lv - regression(F, lv, 24)[0]), y)
-    r["reg12_2023"] = pct(F, np.exp(lv - regression(F, lv, 12, start=24)[0]), y)
-    r["ls_stl"] = pct(F, np.exp(lv - stl(lk)[0]), y)
-    r["ls_stl13"] = pct(F, np.exp(lv - stl(lk, seasonal=13)[0]), y)
-    r["ls_classical"] = pct(F, np.exp(lv - classical(F, lk)), y)
-    r["pre_stl"] = pct(F, np.exp(lv - pre_factors(F, stl(lv[pre])[0])), y)
-    r["pre_classical"] = pct(F, np.exp(lv - pre_factors(F, _classical_pre(F, lv))), y)
-    sp = lv[F.brk] - lv[F.brk - 1]
-    r["splice_stl"] = pct(F, np.exp(lv - stl(lv + np.where(pre, sp, 0.0))[0]), y)
-    ar = np.log(y[F.yr == 2026].mean() / y[F.yr == 2025].mean())
-    r["annual_ratio_stl"] = pct(F, np.exp(lv - stl(lv + np.where(pre, ar, 0.0))[0]), y)
-    q = np.log(y[(F.yr == 2026) & (F.mo <= 3)].mean() / y[(F.yr == 2025) & (F.mo <= 3)].mean())
-    r["q1_ratio_stl"] = pct(F, np.exp(lv - stl(lv + np.where(pre, q, 0.0))[0]), y)
-    r["ls_stl_robust"] = pct(F, np.exp(lv - stl(lk, robust=True)[0]), y)
-    r["stl"] = pct(F, np.exp(lv - stl(lv)[0]), y)
-    r["stl_levels"] = pct(F, y - stl(y)[0], y)
-    r["classical"] = pct(F, np.exp(lv - classical(F, lv)), y)
-    r["classical_additive"] = pct(F, y - classical(F, y, mult=False), y)
-    r["stl13"] = pct(F, np.exp(lv - stl(lv, seasonal=13)[0]), y)
-    r["stl_robust"] = pct(F, np.exp(lv - stl(lv, robust=True)[0]), y)
-    r["yoy"] = 100.0 * (np.mean(y[F.q1] / y[F.q1_26]) - 1.0)
-    r["level_shift"] = 100.0 * (np.exp(ls) - 1.0)
-    return r
+def variants(F):
+    """the design-implied break under every reasonable implementation: the months before the phase-in that set the
+    month-in-sample pattern (24, 36 or all 42), December 2025 kept or left out, weighted or unweighted cells, region
+    and month or month alone held fixed, each month-in-sample effect free or the second to sixth sharing one"""
+    out = {}
+    for pre in (24, 36, 42):
+        for dec in (True, False):
+            use = F["t"] >= W.PHASE - pre
+            if not dec:
+                use = use & (F["t"] != W.PHASE + 5)
+            for wt in (True, False):
+                for byr in (True, False):
+                    e = mis_effects(F, use, wt, byr)
+                    out[(pre, dec, wt, byr, "each")] = float(e.mean())
+                    b = fe(F, [F["new"], F["new"] * (F["m"] >= 2)], use, wt, by_region=byr)
+                    out[(pre, dec, wt, byr, "first/later")] = float(b[0] + 5.0 / 6.0 * b[1])
+    return out
 
 
-def _classical_pre(F, lv):
-    """the classical factors estimated on the months before the change"""
-    pre = F.t < F.brk
-    G = Frame(F.months[:F.brk])
-    return classical(G, lv[pre])
+def wrong_routes(F, nat):
+    """the default and the other easy routes, each a number of points"""
+    out = {"R0 none": 0.0, "R1 arm gap": arm_gap(F)}
+    use = F["t"] >= W.PHASE - 36
+    out["R1 rotation letter held fixed"] = float(
+        fe(F, [F["new"]] + [(F["g"] == j) for j in range(1, 6)], use, True, mis_fe=False)[0])
+    single = {}
+    for pre in (24, 36, 42):
+        for wt in (True, False):
+            for byr in (True, False):
+                u = F["t"] >= W.PHASE - pre
+                single[(pre, wt, byr)] = float(fe(F, [F["new"]], u, wt, by_region=byr)[0])
+    out["R2 one effect"] = single
+    later = {}
+    for pre in (24, 36, 42):
+        for wt in (True, False):
+            u = F["t"] >= W.PHASE - pre
+            later[(pre, wt)] = float(mis_effects(F, u, wt)[1:].mean())
+    out["R3 continuing households"] = later
+    out["event 2026 against 2024"] = float(np.mean(nat[W.Y26:]) - np.mean(nat[W.Y26 - 24:W.Y26 - 12]))
+    out["event second half 2025 against 2024"] = None
+    return out
+
+
+def restated(break_points):
+    return round(W.TRIGGER + round(break_points + 1e-9, 1), 1)
+
+
+def averages_2026(reg_published_1dp):
+    """each region's 2026 average: the mean of its twelve monthly rates as published (one decimal place)"""
+    return np.asarray(reg_published_1dp)[W.Y26:].mean(0)
+
+
+def designated(avg, trigger):
+    return [W.RCODE[i] for i in range(W.R) if avg[i] >= trigger - 1e-9]
+
+
+def back_series(reg_published_1dp, nat_published_1dp, break_1dp):
+    """the series on the redesigned basis (the note's section 4): months before July 2025 restated by adding the change
+    as determined (one decimal place) to the rate as published, every region alike; July to November 2025, both
+    questionnaires in the field, carried as published; from December 2025 as published"""
+    reg = np.asarray(reg_published_1dp, float)
+    nat = np.asarray(nat_published_1dp, float)
+    add = np.where(np.arange(W.T) < W.PHASE, break_1dp, 0.0)
+    return np.round(reg + add[:, None], 1), np.round(nat + add, 1), add
+
+
+def dwellings_q4(rows, psu_region):
+    """responding dwellings in October to December 2026, each dwelling once: a dwelling is its slot together with the
+    month it entered the sample; responding means a complete (11) or partial (12) interview"""
+    seen = set()
+    for r in rows:
+        if r["outcome"] in (11, 12):
+            seen.add((r["dwelling_ref"], r["in_sample_from"], psu_region[r["psu"]]))
+    by = {c: 0 for c in W.RCODE}
+    for _, _, c in seen:
+        by[c] += 1
+    by["all"] = sum(by[c] for c in W.RCODE)
+    return by
+
+
+def dwellings_q4_stops(rows, psu_region):
+    """the ask's wrong stops: slots counted as dwellings; responding interviews counted; every dwelling counted
+    whether it responded or not; complete interviews only"""
+    def count(keyf, keep):
+        s = set()
+        for r in rows:
+            if keep(r):
+                s.add(keyf(r))
+        by = {c: 0 for c in W.RCODE}
+        for k in s:
+            by[k[-1]] += 1
+        by["all"] = sum(by[c] for c in W.RCODE)
+        return by
+    reg = lambda r: psu_region[r["psu"]]
+    return {
+        "slots": count(lambda r: (r["dwelling_ref"], reg(r)), lambda r: r["outcome"] in (11, 12)),
+        "interviews": count(lambda r: (r["dwelling_ref"], r["contact_month"], reg(r)), lambda r: r["outcome"] in (11, 12)),
+        "every dwelling": count(lambda r: (r["dwelling_ref"], r["in_sample_from"], reg(r)), lambda r: True),
+        "complete only": count(lambda r: (r["dwelling_ref"], r["in_sample_from"], reg(r)), lambda r: r["outcome"] == 11),
+        "eligible": count(lambda r: (r["dwelling_ref"], r["in_sample_from"], reg(r)), lambda r: r["outcome"] not in (31, 32, 33)),
+    }

@@ -19,24 +19,18 @@ sys.path.insert(0, HERE)
 warnings.filterwarnings("ignore")
 
 import docs as DC           # noqa: E402
-import firms as FM          # noqa: E402
 import pack as P            # noqa: E402
 import postprocess as PP    # noqa: E402
-import sim as S             # noqa: E402
+import survey as S          # noqa: E402
 import world as W           # noqa: E402
 
 TASK = os.path.dirname(HERE)
-LOCAL = dt.timezone(dt.timedelta(hours=-4))
-STAMP = dt.datetime(2027, 5, 7, 16, 10, tzinfo=LOCAL)       # the folder as the bureau assembled it
+LOCAL = dt.timezone(dt.timedelta(hours=13))
+STAMP = dt.datetime(2027, 1, 25, 15, 40, tzinfo=LOCAL)       # the folder as Labour Market Statistics assembled it
 
 
 def simulate():
-    R = S.regional()
-    C = S.cells(R)
-    pre = S.preliminary(C)
-    F = FM.build(R, C[S.MAR26], C[S.MAR27])
-    FM.polish(F, C[S.MAR26], C[S.MAR27])
-    return dict(R=R, cells=C, prelim=pre, firms=F, lines=FM.lines(F), lfs=S.lfs(R), pop=S.population(R))
+    return S.simulate()
 
 
 def build(out, quiet=False, world=None):
@@ -46,31 +40,32 @@ def build(out, quiet=False, world=None):
     w = world or simulate()
     f = lambda k: os.path.join(out, P.FILES[k])
     n = {}
-    n["wide"] = P.write_wide(w["cells"], f("wide"))
-    n["long"] = P.write_long(w["cells"], w["prelim"], f("long"))
-    n["rev"] = P.write_revisions(w["cells"], w["prelim"], f("rev"))
-    n["work"] = P.write_workplaces(w["lines"], f("work"))
-    n["dict"] = P.write_dictionary(f("dict"))
+    pub = P.published_tables(w)
+    numbers, reg = S.psu_regions()
+    n["old"] = P.write_old(w, f("old"))
+    n["new"] = P.write_new(w, f("new"))
+    n["release"] = P.write_release(pub, f("release"))
+    n["field"] = P.write_fieldwork(w["q4"], f("field"))
+    n["psu"] = P.write_psu(numbers, reg, f("psu"))
     n["conc"] = P.write_concordance(f("conc"))
-    n["lfs"] = P.write_lfs(w["lfs"], f("lfs"))
-    n["pop"] = P.write_population(w["pop"], f("pop"))
-    n["trans"] = P.write_transmittal(f("trans"), n)
-    DC.write_regulation(f("reg"))
-    DC.write_release_note(f("note"))
-    unit = "Revenue Statistics Unit"
-    mgr = W.PEOPLE["manager"][0]
-    PP.normalize_ooxml(f("wide"), unit, unit, "2024-02-26T14:05:00Z", "2024-03-04T19:41:22Z", excel=True,
-                       company=W.AGENCY)
-    PP.normalize_ooxml(f("conc"), mgr, mgr, "2019-04-02T13:20:00Z", "2025-01-14T15:02:37Z", excel=True,
-                       company=W.BUREAU)
-    PP.normalize_ooxml(f("pop"), "Demographic Estimates", "Demographic Estimates", "2026-09-28T13:00:00Z",
-                       "2026-09-29T17:48:05Z", excel=True, company=W.BUREAU)
-    PP.normalize_pdf(f("reg"), b"D:20260702094512-04'00'", b"D:20260702101130-04'00'")
-    PP.normalize_pdf(f("note"), b"D:20260216083010-05'00'", b"D:20260216084522-05'00'")
+    n["pop"] = P.write_population(S.population(), f("pop"))
+    n["seas"] = P.write_seasonal(f("seas"))
+    n["resp"] = P.write_response(w, f("resp"))
+    n["dict"] = P.write_dictionary(f("dict"))
+    n["manifest"] = P.write_manifest(f("manifest"), n)
+    DC.write_note(f("note"))
+    DC.write_act(f("act"))
+    PP.normalize_ooxml(f("release"), "Labour Market Statistics", "Labour Market Statistics", "2022-02-14T21:05:00Z",
+                       "2027-01-20T22:41:37Z", excel=True, company=W.OFFICE)
+    PP.normalize_ooxml(f("resp"), W.PEOPLE["operations"], W.PEOPLE["operations"], "2025-02-03T20:12:00Z",
+                       "2027-01-22T03:18:51Z", excel=True, company=W.OFFICE)
+    PP.normalize_pdf(f("note"), b"D:20250616093012+12'00'", b"D:20250616094455+12'00'")
+    PP.normalize_pdf(f("act"), b"D:20250701080000+12'00'", b"D:20250701081207+12'00'")
     stamp = STAMP.timestamp()
     for name in os.listdir(out):
         os.utime(os.path.join(out, name), (stamp, stamp))
     w["counts"] = n
+    w["published"] = pub
     if not quiet:
         print("built %s: %d files; %s" % (out, len(os.listdir(out)), ", ".join("%s %d" % kv for kv in n.items())))
     return w
@@ -83,7 +78,7 @@ def digest(folder):
 def cut_zip(root):
     import zipfile
     folder = os.path.join(root, "target")
-    stamp = (2027, 5, 7, 16, 10, 0)
+    stamp = (2027, 1, 25, 15, 40, 0)
     zp = os.path.join(root, "target.zip")
     with zipfile.ZipFile(zp, "w") as z:
         for name in sorted(os.listdir(folder)):

@@ -1,115 +1,115 @@
 {
-  "task": "task453",
-  "architecture": "v2",
-  "drawn": "2026-10-14",
-  "slot_note": "v2 re-rooted 2026-10-14 inside ETL with the number kept: v1 (a placement step removed before seasonal adjustment) stays readable as a dated step, and its hardening was a method fork; v2 stays in official time-series production and restates a labour force survey's published rate across a questionnaire redesign phased in through a rotating panel.",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "seasonal-adjustment-official-time-series-production",
-  "niche": "restating a labour force survey's published unemployment rate across a questionnaire redesign phased in through incoming rotation groups, to restate a statutory trigger",
-  "objective": "etl",
-  "shape": "other",
-  "decision_type": "dial_setting",
-  "answer_unit": "rate_or_share",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "time",
-    "population"
-  ],
-  "pattern": [
+ "task": "task453",
+ "architecture": "v2",
+ "drawn": "2026-10-14",
+ "slot_note": "v2 re-rooted 2026-10-14 inside ETL with the number kept: v1 (a placement step removed before seasonal adjustment) stays readable as a dated step, and its hardening was a method fork; v2 stays in official time-series production and restates a labour force survey's published rate across a questionnaire redesign phased in through a rotating panel.",
+ "domain": "survey-research-official-statistics",
+ "subdomain": "seasonal-adjustment-official-time-series-production",
+ "niche": "restating a labour force survey's published unemployment rate across a questionnaire redesign phased in through incoming rotation groups, to restate a statutory trigger",
+ "objective": "etl",
+ "shape": "other",
+ "decision_type": "dial_setting",
+ "answer_unit": "rate_or_share",
+ "answer": "Restate the Regional Employment Support Act's trigger at 6.5 per cent, which designates Eastern Ranges, Western Coast, River Delta and Highlands for 2027.",
+ "answer_source": "task453/submission.md, Final Recommendation; golden trigger_restatement_determination_2027.pdf",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G6",
+  "G13",
+  "G16"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "parallel_run_overlap",
+ "stump_strategy": "causal_design",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "published_series",
+ "stakeholder_role": "head of labour market methodology at a national statistics office, who drafts the Government Statistician's restatement of the statutory trigger",
+ "role_family": "statistical_office_head",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "lfs_cai2014_estimation_cells_2022-01_2025-11.csv",
+  "rows": 72090,
+  "entity": "one rotation group's weighted persons (thousands) in one labour force status, region, sex and age group in one month, on the previous questionnaire",
+  "grain": "month x region x rotation group x sex x age group x labour force status",
+  "source": "synthetic (constructed in the layout of a statistics office's labour force survey estimation cells)"
+ },
+ "forum": "other",
+ "forcing_event": "cutover_or_migration",
+ "org_family": "research_or_statistics_office",
+ "world": {
+  "geography": "a fictional English-speaking country of about 45 million (its national statistics office, nine regions on the 2025 classification, no real agency named; personas drawn on the New Zealand index)",
+  "currency": "NZD",
+  "org_type": "national statistics office; the labour ministry's regional employment support scheme",
+  "invented_names": [],
+  "people": [
+   "Jared Elliott",
+   "Debra O'Brien",
+   "Gabrielle Esson"
+  ]
+ },
+ "deliverables": [
+  "trigger_restatement_determination_2027.pdf",
+  "regional_unemployment_redesigned_basis_2024-2026.csv"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-much",
+ "driver": "The size of a change in how a rotating panel is measured has to be read from the months in which only the units newest to the panel received the new measurement, while every unit's answers drift with how many times it has been asked, so the two arms' difference carries that drift; and the change acts differently on a unit's first answer than on its later ones, so the change in the published figure, which averages every occasion equally, is the mean of the per-occasion effects, each read against the same occasion before the change, which neither the arms' difference nor one effect with the occasion held fixed returns.",
+ "driver_concrete": "The redesigned questionnaire went only to dwellings entering the sample from July 2025, so in each phase-in month (July to November 2025) its arm is dwellings on their first interviews and the previous arm dwellings on their last, and first interviews always read high (rotation-group bias); its dependent interviewing works only from a dwelling's second interview, so the change in the published rate, which averages the six rotation groups, is the mean of the six month-in-sample effects, each read against the same month in sample before July 2025.",
+ "stump": "A competent analyst takes the redesign's effect as the gap between the rotation groups on the redesigned questionnaire and those still on the previous one in July to November 2025 (+1.2 points, a trigger of 7.2 per cent designating River Delta and Highlands), or as one effect with month in sample, month and region held fixed (+0.3 to +0.4, 6.3 or 6.4), or as the continuing dwellings' effect (+0.7, 6.7); only the mean of the six month-in-sample effects (+0.5) restates the trigger at 6.5 per cent, designating Eastern Ranges, Western Coast, River Delta and Highlands.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who conforms both collection systems' exports and the rotation schedule correctly and reads the Act's section 9 takes the redesign's effect as the gap between the rotation groups on the redesigned questionnaire and those still on the previous one in July to November 2025, +1.2 points, and restates the 6.0 per cent trigger at 7.2, designating River Delta and Highlands; holding month in sample fixed with one effect gives +0.3 to +0.4 and 6.3 or 6.4, and neither is the 6.5 the six month-in-sample effects average to.",
+ "domain_test": "The deciding quantity is the redesign's effect on the published unemployment rate, read the way a statistics office reads a questionnaire change phased in through a rotating panel: each month-in-sample group on the new questionnaire against the same month in sample before the change, rotation-group bias and the second-interview start of dependent interviewing built in; with hospital or grid nouns there is no rotation group, month in sample, first-interview bias or dependent interviewing, and the task stops parsing.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task453": "v1 removed a dated placement step as a level shift before estimating seasonal factors; v2 has no seasonal adjustment and no dated step: the break is read inside the phase-in, within month in sample, and averaged over the six interviews",
+  "task125": "task125 diagnoses an aggregate distortion that builds as filtered intakes rotate through a panel; here the panel's own first-interview bias confounds a phase-in comparison and the redesign acts differently from the second interview, so the break is read within month in sample and averaged over the six",
+  "task450": "task450 links two test forms through the items both groups answered and screens drifting items; here no common items exist: two questionnaires are compared through a rotating panel's months in sample, and the effect differs by interview"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "fate": "shipped 2026-10-13 (judge pass 1 DETERMINISTIC, APPROVE) and re-rooted 2026-10-14 at the author's request for a stronger stump: the decisive step (the January 2026 placement step removed as a level shift before the seasonal factors) is a dated step an event study finds, and the hardening that would have hidden it (the canneries' 2021 to 2023 reclassification) was judged NOT_DETERMINISTIC, SEND_BACK, as a fork between direct and indirect adjustment, and reverted.",
+   "domain": "survey-research-official-statistics",
+   "subdomain": "seasonal-adjustment-official-time-series-production",
+   "objective": "etl",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G6",
-    "G13",
-    "G16"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "parallel_run_overlap",
-  "stump_strategy": "causal_design",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "published_series",
-  "stakeholder_role": "head of labour market methodology at a national statistics office, who drafts the Government Statistician's restatement of the statutory trigger",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "lfs_cai_rotation_cells_2022-01_2026-05.csv",
-    "rows": 0,
-    "entity": "one rotation group's weighted persons in one labour force status, region, sex and age band in one month, on the current questionnaire",
-    "grain": "month x region x rotation group x sex x age band x status",
-    "source": "synthetic (constructed in the layout of a statistics office's labour force survey estimation cells)"
-  },
-  "forum": "other",
-  "forcing_event": "cutover_or_migration",
-  "org_family": "research_or_statistics_office",
-  "world": {
-    "geography": "New Zealand (a fictional island state's national statistics office; fictional regions, no real agency named)",
-    "currency": "NZD",
-    "org_type": "national statistics office; the labour ministry's regional employment support scheme",
-    "invented_names": [],
-    "people": [
-      "Jared Elliott",
-      "Debra O'Brien",
-      "Gabrielle Esson",
-      "Mereana Paterson"
-    ]
-  },
-  "deliverables": [
-    "trigger_restatement_notice_2027.pdf",
-    "lfs_redesign_basis_regional_2024-2026.csv"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "The size of a change in how a rotating panel is measured has to be read from the months in which only the units newest to the panel received the new measurement, while every unit's answers drift with how many times it has been asked, so the two arms' difference carries that drift; and the change acts differently on a unit's first answer than on its later ones, so the change in the published figure, which averages every occasion equally, is the mean of the per-occasion effects, each read against the same occasion before the change, which neither the arms' difference nor one effect with the occasion held fixed returns.",
-  "driver_concrete": "The redesigned questionnaire went only to households entering the sample from January 2026, so in each phase-in month its arm is households on their first interviews and the old arm households on their last, and first interviews always read high (rotation-group bias); its dependent interviewing works only from a household's second interview, so the break in the published rate, which averages the six rotation groups, is the mean of the six month-in-sample effects, each read against the same month in sample before January 2026.",
-  "stump": "A competent analyst takes the redesign's effect as the gap between the rotation groups on the redesigned questionnaire and those still on the old one in January to May 2026 (about +0.9 points, trigger 6.9 per cent), or as one effect with month in sample, month and region held fixed (about +0.2, 6.2), or as the effect on continuing households (about +0.4, 6.4); only the mean of the six month-in-sample effects (about +0.3) restates the trigger at 6.3 per cent.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms both collection systems' exports and the rotation schedule correctly and reads the Act's restatement clause takes the redesign's effect as the difference between the rotation groups answering the redesigned questionnaire and those still on the old one in January to May 2026, about +0.9 points, and restates the 6.0 per cent trigger at 6.9; holding month in sample fixed with one effect gives about +0.2 and 6.2, and neither is the 6.3 the six month-in-sample effects average to.",
-  "domain_test": "The deciding quantity is the redesign's effect on the published unemployment rate, read the way a statistics office reads a questionnaire change phased in through a rotating panel: each month-in-sample group on the new questionnaire against the same month in sample before the change, rotation-group bias and the second-interview start of dependent interviewing built in; with hospital or grid nouns there is no rotation group, month in sample, first-interview bias or dependent interviewing, and the task stops parsing.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task453": "v1 removed a dated placement step as a level shift before estimating seasonal factors; v2 has no seasonal adjustment and no dated step: the break is read inside the phase-in, within month in sample, and averaged over the six interviews",
-    "task125": "task125 diagnoses an aggregate distortion that builds as filtered intakes rotate through a panel; here the panel's own first-interview bias confounds a phase-in comparison and the redesign acts differently from the second interview, so the break is read within month in sample and averaged over the six",
-    "task450": "task450 links two test forms through the items both groups answered and screens drifting items; here no common items exist: two questionnaires are compared through a rotating panel's months in sample, and the effect differs by interview"
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "fate": "shipped 2026-10-13 (judge pass 1 DETERMINISTIC, APPROVE) and re-rooted 2026-10-14 at the author's request for a stronger stump: the decisive step (the January 2026 placement step removed as a level shift before the seasonal factors) is a dated step an event study finds, and the hardening that would have hidden it (the canneries' 2021 to 2023 reclassification) was judged NOT_DETERMINISTIC, SEND_BACK, as a fork between direct and indirect adjustment, and reverted.",
-      "domain": "survey-research-official-statistics",
-      "subdomain": "seasonal-adjustment-official-time-series-production",
-      "objective": "etl",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G16",
-        "G6"
-      ],
-      "gate_g": "etl_conformance",
-      "decision_type": "designation_set",
-      "stump_strategy": "population_selection",
-      "driver": "The decisive quantity compares two periods that both lie after a documented change in where the source places what it counts, so the change looks irrelevant, but the seasonal pattern used to adjust them is estimated from a history spanning it, and an adjustment that does not first remove the change as a level shift lets it leak into the seasonal factors and moves the latest period most where the change was largest, in either direction.",
-      "driver_concrete": "Each region's first-quarter 2027 seasonally adjusted payroll jobs are set against its 2026 average, both on the workplace placement the revenue agency's statistics have used since January 2026, when jobs that had sat at employers' account addresses (head offices in Wickmoor and Saltmere) moved to their mines, mills, plants, hospitals and stores; a default seasonal adjustment estimates the seasonal pattern across that step, pulling the quarter down in the regions that gained (Kestrow North, Varrenby Shore) and up in the Capital, while official practice removes the step as a level shift in the regARIMA pre-adjustment (or restates the earlier history) before the seasonal filters run."
-    }
-  ],
-  "notes": "Re-rooted 2026-10-14 (architecture 2). Strategy causal_design (F9: the naive arm difference is not the effect, a contaminated comparison arm); the overlap of the two questionnaires inside each phase-in month is the parallel_run_overlap organ. Gap time first: month in sample is a clock (rotation-group bias by time since a household entered the panel), and the evidence (phase-in arms dominated by first interviews) differs from the steady state the trigger bets on.",
-  "client_domain": "survey-research-official-statistics",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:rotation-group-bias-in-a-phased-questionnaire-redesign",
-  "layer1": [
-    "two collection systems' exports in different layouts (the old system's long file of weighted persons in thousands by status, the new system's wide file in persons)",
-    "region codes renumbered in the 2025 classification review, joined through the office's concordance",
-    "the 2022 to 2024 cells in two vintages, the original weights and the 2025 reweighting to the new population base",
-    "rotation groups labelled by letter, with each household's month in sample given only by the rotation schedule in the methodology note",
-    "the release workbook's header blocks, footnotes and phase-in markers",
-    "distractors: the survey's response-rate and fieldwork report and the seasonally adjusted national series"
-  ],
-  "registered": "2026-10-14T13:23:21Z"
+   ],
+   "generators": [
+    "G16",
+    "G6"
+   ],
+   "gate_g": "etl_conformance",
+   "decision_type": "designation_set",
+   "stump_strategy": "population_selection",
+   "driver": "The decisive quantity compares two periods that both lie after a documented change in where the source places what it counts, so the change looks irrelevant, but the seasonal pattern used to adjust them is estimated from a history spanning it, and an adjustment that does not first remove the change as a level shift lets it leak into the seasonal factors and moves the latest period most where the change was largest, in either direction.",
+   "driver_concrete": "Each region's first-quarter 2027 seasonally adjusted payroll jobs are set against its 2026 average, both on the workplace placement the revenue agency's statistics have used since January 2026, when jobs that had sat at employers' account addresses (head offices in Wickmoor and Saltmere) moved to their mines, mills, plants, hospitals and stores; a default seasonal adjustment estimates the seasonal pattern across that step, pulling the quarter down in the regions that gained (Kestrow North, Varrenby Shore) and up in the Capital, while official practice removes the step as a level shift in the regARIMA pre-adjustment (or restates the earlier history) before the seasonal filters run."
+  }
+ ],
+ "notes": "Re-rooted 2026-10-14 (architecture 2). Strategy causal_design (F9: the naive arm difference is not the effect, a contaminated comparison arm); the overlap of the two questionnaires inside each phase-in month is the parallel_run_overlap organ. Gap time first: month in sample is a clock (rotation-group bias by time since a household entered the panel), and the evidence (phase-in arms dominated by first interviews) differs from the steady state the trigger bets on.",
+ "client_domain": "survey-research-official-statistics",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:rotation-group-bias-in-a-phased-questionnaire-redesign",
+ "layer1": [
+  "two collection systems' exports in different layouts and units (CAI 2014's long file of weighted persons in thousands by status code, ICS's wide file of weighted persons)",
+  "region codes renumbered in the 2025 classification review: CAI 2014's months to December 2024 on the 2019 codes, joined through the office's concordance",
+  "sex and age coded differently in each export (1 and 2 against M and F, age groups 1 to 5 against bands)",
+  "rotation groups labelled by letter, with each dwelling's month in sample given only by the replacement schedule in the methodology note",
+  "the release workbook's header blocks, footnotes and phase-in markers",
+  "the fieldwork log keyed by a sample reference that survives the replacement of its dwelling (the ask)",
+  "distractors: the response-rate workbook, the population benchmarks and the projected 2027 seasonal factors"
+ ],
+ "registered": "2026-10-14T13:23:21Z"
 }

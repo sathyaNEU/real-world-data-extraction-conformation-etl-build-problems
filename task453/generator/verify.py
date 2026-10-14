@@ -1,176 +1,174 @@
-"""An independent check of the goldens from the shipped bundle alone: its own readers (csv, openpyxl), its own
-regression and classical decomposition, its own workplace and employer counts. It imports nothing from the
-generator but the file names."""
-import collections
+"""Independent verifier: reads only the shipped bundle and the goldens, on its own code path (csv, openpyxl and pyarrow
+readers, a within-transformation fixed-effects fit), and recomputes the change, the restated trigger, the designation,
+the regional series on the redesigned basis and the fourth-quarter dwelling count."""
 import csv
-import json
-import math
 import os
+import re
 import sys
 
 import numpy as np
-import openpyxl
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-from world import FILES   # noqa: E402  (file names only)
-
-
-def regions_of(target):
-    wb = openpyxl.load_workbook(os.path.join(target, FILES["conc"]), read_only=True)
-    out, names = {}, {}
-    for r in list(wb["Municipalities"].iter_rows(values_only=True))[1:]:
-        if r[0]:
-            out[str(r[0])] = str(r[3])
-            names[str(r[3])] = str(r[4])
-    return out, names
+OLD = "lfs_cai2014_estimation_cells_2022-01_2025-11.csv"
+NEW = "lfs_ics_estimation_cells_2025-07_2026-12.csv"
+REL = "lfs_release_2026-12_tables.xlsx"
+CONC = "region_classification_concordance_2019_2025.csv"
+FIELD = "lfs_fieldwork_contacts_2026q4.parquet"
+PSU = "lfs_psu_region_lookup_2025.csv"
+PDF = "trigger_restatement_determination_2027.pdf"
+CSVG = "regional_unemployment_redesigned_basis_2024-2026.csv"
 
 
-def monthly(target):
-    reg, names = regions_of(target)
-    tot = collections.defaultdict(float)
-    wb = openpyxl.load_workbook(os.path.join(target, FILES["wide"]), read_only=True)
-    for year in ("2021", "2022", "2023"):
-        started = False
-        for r in wb[year].iter_rows(values_only=True):
-            if r and r[0] == "Municipality code":
-                started = True
-                continue
-            if started and r and r[0]:
-                for k in range(12):
-                    tot[("%s-%02d" % (year, k + 1), reg[str(r[0])])] += float(r[3 + k])
-    revised = collections.defaultdict(float)
-    rev_months = set()
-    with open(os.path.join(target, FILES["rev"]), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            revised[(r["reference_month"], reg[r["municipality_code"]])] += float(r["payroll_jobs"])
-            rev_months.add(r["reference_month"])
-    with open(os.path.join(target, FILES["long"]), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            if r["reference_month"] not in rev_months:
-                tot[(r["reference_month"], reg[r["municipality_code"]])] += float(r["payroll_jobs"])
-    tot.update(revised)
-    months = sorted({m for m, _ in tot})
-    codes = sorted({c for _, c in tot})
-    Y = np.array([[tot[(m, c)] for c in codes] for m in months])
-    return months, codes, names, Y
+def month_index(ym):
+    y, m = int(ym[:4]), int(ym[5:7])
+    return (y - 2022) * 12 + (m - 1)
 
 
-def shares(months):
-    mo = np.array([int(m[5:]) for m in months])
-    yr = np.array([int(m[:4]) for m in months])
-    return mo, yr
+def months_in_sample(ym, letter):
+    """group A's dwellings are replaced in January and July, B's in February and August, ... (the note, section 1)"""
+    m = int(ym[5:7])
+    return ((m - 1 - "ABCDEF".index(letter)) % 6) + 1
 
 
-def level_shift_regression(months, y):
-    """log jobs on twelve month dummies, a trend with a knot each January from 2022 and a step from January 2026"""
-    mo, yr = shares(months)
-    n = len(months)
-    t = np.arange(n, dtype=float)
-    cols = [(mo == k).astype(float) for k in range(1, 13)] + [t, (np.array(months) >= "2026-01").astype(float)]
-    for y0 in range(2022, 2028):
-        k = months.index("%d-01" % y0) if "%d-01" % y0 in months else None
-        if k is not None:
-            cols.append(np.maximum(0.0, t - k))
-    X = np.column_stack(cols)
-    b = np.linalg.lstsq(X, np.log(y), rcond=None)[0]
-    eff = b[:12] - b[:12].mean()
-    return eff[mo - 1], b[13]
+def read_cells(target):
+    to25 = {}
+    with open(os.path.join(target, CONC), newline="") as f:
+        for r in csv.DictReader(f):
+            to25[r["region_2019"]] = r["region_2025"]
+    cells = {}
+    with open(os.path.join(target, OLD), newline="") as f:
+        for r in csv.DictReader(f):
+            ym = r["REF_MTH"][:4] + "-" + r["REF_MTH"][4:]
+            reg = to25[r["REGION"]] if ym < "2025-01" else r["REGION"]
+            k = (ym, reg, r["ROTGRP"], 0)
+            u, l = cells.get(k, (0.0, 0.0))
+            v = float(r["WTD000"]) * 1000.0
+            if r["LFSTAT"] == "2":
+                cells[k] = (u + v, l + v)
+            elif r["LFSTAT"] == "1":
+                cells[k] = (u, l + v)
+            else:
+                cells.setdefault(k, (u, l))
+    with open(os.path.join(target, NEW), newline="") as f:
+        for r in csv.DictReader(f):
+            k = (r["period"], r["region"], r["rotation_group"], 1)
+            u, l = cells.get(k, (0.0, 0.0))
+            cells[k] = (u + float(r["unemployed"]), l + float(r["unemployed"]) + float(r["employed"]))
+    return cells
 
 
-def classical_factors(months, y):
-    mo, _ = shares(months)
-    n = len(y)
-    trend = np.full(n, np.nan)
-    for i in range(6, n - 6):
-        trend[i] = (0.5 * y[i - 6] + y[i - 5:i + 6].sum() + 0.5 * y[i + 6]) / 12.0
-    ratio = y / trend
-    pos = np.arange(n) % 12
-    f = np.array([np.nanmean(ratio[pos == k]) for k in range(12)])
-    f = f / f.mean()
-    return f[pos]
+def fit_effects(cells):
+    """rate = month-region effect + month-in-sample effect (2..6) + the redesign's effect at each month in sample,
+    weighted by labour force; fixed effects swept out by weighted demeaning within each month and region"""
+    keys = sorted(cells)
+    y = np.array([100.0 * cells[k][0] / cells[k][1] for k in keys])
+    w = np.array([cells[k][1] for k in keys])
+    mis = np.array([months_in_sample(k[0], k[2]) for k in keys])
+    new = np.array([k[3] for k in keys])
+    X = np.column_stack([(mis == j).astype(float) for j in range(2, 7)] +
+                        [((mis == j) & (new == 1)).astype(float) for j in range(1, 7)])
+    grp = {}
+    for i, k in enumerate(keys):
+        grp.setdefault((k[0], k[1]), []).append(i)
+    yd, Xd = y.copy(), X.copy()
+    for idx in grp.values():
+        ww = w[idx] / w[idx].sum()
+        yd[idx] -= (ww * y[idx]).sum()
+        Xd[idx] -= (ww[:, None] * X[idx]).sum(0)
+    sw = np.sqrt(w / w.mean())
+    beta = np.linalg.lstsq(Xd * sw[:, None], yd * sw, rcond=None)[0]
+    return beta[5:]
 
 
-def test(months, y, sa):
-    q1 = [i for i, m in enumerate(months) if m in ("2027-01", "2027-02", "2027-03")]
-    y26 = [i for i, m in enumerate(months) if m.startswith("2026")]
-    return 100.0 * (np.mean(sa[q1]) / np.mean(y[y26]) - 1.0)
+def read_release(target):
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(target, REL), read_only=True, data_only=True)
+    head = [c for c in next(wb["Table 2"].iter_rows(min_row=4, max_row=4, values_only=True))]
+    regs = [h.split(" ")[0] for h in head[1:] if h]
+    rates = {}
+    for row in wb["Table 2"].iter_rows(min_row=5, values_only=True):
+        if row[0] and re.match(r"[A-Z][a-z]{2}-\d{4}$", str(row[0])):
+            rates[str(row[0])] = [float(v) for v in row[1:1 + len(regs)]]
+    nat = {}
+    for row in wb["Table 1"].iter_rows(min_row=5, values_only=True):
+        if row[0] and re.match(r"[A-Z][a-z]{2}-\d{4}$", str(row[0])):
+            nat[str(row[0])] = float(row[4])
+    return regs, rates, nat
 
 
-def workplaces(target):
-    reg, _ = regions_of(target)
-    jobs = collections.defaultdict(lambda: [0, 0])
-    emp = collections.defaultdict(set)
-    with open(os.path.join(target, FILES["work"]), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            region = reg[r["municipality_code"]]
-            k = 0 if r["reference_month"] == "2026-03" else 1
-            n = int(r["payroll_jobs"])
-            jobs[(region, r["municipality_code"], r["street_address"])][k] += n
-            if k == 1 and n > 0:
-                emp[region].add(r["payroll_account"][:9])
-    lost = collections.defaultdict(lambda: [0, 0])
-    for (region, _, _), (a, b) in jobs.items():
-        if b < a:
-            lost[region][0 if b == 0 else 1] += a - b
-    return lost, {k: len(v) for k, v in emp.items()}
+def q4_dwellings(target):
+    import pyarrow.parquet as pq
+    t = pq.read_table(os.path.join(target, FIELD)).to_pydict()
+    reg = {}
+    with open(os.path.join(target, PSU), newline="") as f:
+        for r in csv.DictReader(f):
+            reg[r["psu"]] = r["region_2025"]
+    seen = set()
+    for m, ref, k, out, p in zip(t["contact_month"], t["dwelling_ref"], t["interview_no"], t["outcome"], t["psu"]):
+        if out in (11, 12):
+            seen.add((ref, month_index(m) - int(k) + 1, reg[p]))
+    by = {}
+    for _, _, r in seen:
+        by[r] = by.get(r, 0) + 1
+    by["all"] = len(seen)
+    return by
 
 
-def r10(v):
-    return int(math.floor(v / 10.0 + 0.5)) * 10
-
-
-def main(target, golden_dir):
-    months, codes, names, Y = monthly(target)
-    brk = months.index("2026-01")
-    gold, default, restated = [], [], []
-    for j, c in enumerate(codes):
-        y = Y[:, j]
-        sf, ls = level_shift_regression(months, y)
-        if test(months, y, np.exp(np.log(y) - sf)) < -1:
-            gold.append(c)
-        if test(months, y, y / classical_factors(months, y)) < -1:
-            default.append(c)
-        yr = y * np.where(np.arange(len(y)) < brk, math.exp(ls), 1.0)
-        if test(months, y, y / classical_factors(months, yr)) < -1:
-            restated.append(c)
-    lost, emp = workplaces(target)
-    problems = []
-    if gold != ["E01", "E03", "E09"]:
-        problems.append("regression with a level shift: %s" % gold)
-    if restated != gold:
-        problems.append("classical on the restated history: %s" % restated)
-    if default != ["E03", "E08", "E09", "E10"]:
-        problems.append("classical across the change: %s" % default)
-    with open(os.path.join(golden_dir, "regional_payroll_jobs_2027q1.csv"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            c = r["economic_region_code"]
-            if int(r["employers_with_payroll_jobs_2027_03"]) != emp[c]:
-                problems.append("employers %s %s against %s" % (c, r["employers_with_payroll_jobs_2027_03"], emp[c]))
-            if int(r["jobs_lost_workplaces_none_left_2027_03"]) != r10(lost[c][0]):
-                problems.append("jobs lost, none, %s" % c)
-            if int(r["jobs_lost_workplaces_kept_some_2027_03"]) != r10(lost[c][1]):
-                problems.append("jobs lost, fewer, %s" % c)
-    figs = json.load(open(os.path.join(HERE, "figures.json")))
-    if figs["call"] != [names[c] for c in gold]:
-        problems.append("figures.json call %s" % figs["call"])
-    for c in codes:
-        f = figs["regions"][names[c]]
-        lo, hi = f["pct_range"]
-        y = Y[:, codes.index(c)]
-        sf, _ = level_shift_regression(months, y)
-        v = test(months, y, np.exp(np.log(y) - sf))
-        if not (lo - 1e-9 <= round(v, 1) <= hi + 1e-9):
-            problems.append("%s regression %.2f outside its range %s" % (c, v, f["pct_range"]))
-        if r10(np.mean(y[[i for i, m in enumerate(months) if m.startswith("2026")]])) != f["avg_2026"]:
-            problems.append("%s 2026 average" % c)
-    if problems:
-        raise SystemExit("verify failed: " + "; ".join(problems))
-    print("verify: from the bundle alone, the level-shift regression and the classical decomposition on the restated "
-          "history designate %s; the classical decomposition across the change designates %s; every CSV figure and the "
-          "2026 averages recompute" % (", ".join(names[c] for c in gold), ", ".join(names[c] for c in default)))
+def main(target, golden):
+    import datetime as dt
+    fails = []
+    cells = read_cells(target)
+    eff = fit_effects(cells)
+    change = float(eff.mean())
+    trigger = round(6.0 + round(change + 1e-9, 1), 1)
+    regs, rates, nat = read_release(target)
+    lab = lambda ym: dt.date(int(ym[:4]), int(ym[5:]), 1).strftime("%b-%Y")
+    avg = np.mean([rates[lab("2026-%02d" % m)] for m in range(1, 13)], axis=0)
+    designated = [regs[i] for i in range(len(regs)) if avg[i] >= trigger - 1e-9]
+    q4 = q4_dwellings(target)
+    print("verify: change %.4f (effects %s), restated trigger %.1f, designated %s" % (
+        change, np.round(eff, 3).tolist(), trigger, designated))
+    print("verify: fourth-quarter responding dwellings %s" % q4)
+    from pypdf import PdfReader
+    text = " ".join(" ".join((p.extract_text() or "").split()) for p in PdfReader(os.path.join(golden, PDF)).pages)
+    names = {}
+    with open(os.path.join(target, PSU), newline="") as f:
+        for r in csv.DictReader(f):
+            names[r["region_2025"]] = r["region_name"]
+    for need in ("restated at %.1f per cent" % trigger, "%.1f percentage points higher" % round(change, 1),
+                 format(q4["all"], ",")):
+        if need not in text:
+            fails.append("determination lacks %r" % need)
+    for c in designated:
+        if names[c] not in text:
+            fails.append("determination lacks %s" % names[c])
+    for c in [c for c in regs if c != "all"]:
+        if format(q4[c], ",") not in text:
+            fails.append("determination lacks %s's count" % names[c])
+    rows = list(csv.DictReader(open(os.path.join(golden, CSVG), newline="")))
+    if len(rows) != 36 * len(regs):
+        fails.append("CSV rows %d" % len(rows))
+    for r in rows:
+        ym = r["month"]
+        pub = rates[lab(ym)][regs.index(r["region"])]
+        if abs(float(r["published_rate"]) - pub) > 1e-9:
+            fails.append("CSV published %s %s" % (ym, r["region"]))
+        # the note's section 4: before July 2025 the published rate plus the change as determined; from July 2025
+        # as published (the transition months carried, not restated)
+        want = round(pub + round(change + 1e-9, 1), 1) if ym < "2025-07" else pub
+        if not re.fullmatch(r"\d+\.\d", r["redesigned_basis_rate"]) or abs(float(r["redesigned_basis_rate"]) - want) > 1e-9:
+            fails.append("CSV redesigned %s %s %.3f against %.3f" % (ym, r["region"], float(r["redesigned_basis_rate"]),
+                                                                     want))
+    if trigger != 6.5 or designated != ["05", "07", "08", "09"]:
+        fails.append("call: %.1f %s" % (trigger, designated))
+    for f in fails[:12]:
+        print("VERIFY FAIL  " + f)
+    print("verify: %s (%d mismatches)" % ("PASS" if not fails else "FAIL", len(fails)))
+    if fails:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
-    T = os.path.dirname(HERE)
-    main(os.path.join(T, "target"), os.path.join(T, "golden"))
+    here = os.path.dirname(os.path.abspath(__file__))
+    task = os.path.dirname(here)
+    main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(task, "target"),
+         sys.argv[2] if len(sys.argv) > 2 else os.path.join(task, "golden"))

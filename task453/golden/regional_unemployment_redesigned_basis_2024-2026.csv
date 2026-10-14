@@ -1,0 +1,325 @@
+month,region,region_name,published_rate,redesigned_basis_rate,collected_on
+2024-01,01,Capital,3.9,4.4,previous questionnaire (restated)
+2024-01,02,Harbour,5.6,6.1,previous questionnaire (restated)
+2024-01,03,North Coast,5.8,6.3,previous questionnaire (restated)
+2024-01,04,Inland Plains,6.3,6.8,previous questionnaire (restated)
+2024-01,05,Eastern Ranges,6.0,6.5,previous questionnaire (restated)
+2024-01,06,Southern Valleys,4.7,5.2,previous questionnaire (restated)
+2024-01,07,Western Coast,6.4,6.9,previous questionnaire (restated)
+2024-01,08,River Delta,7.0,7.5,previous questionnaire (restated)
+2024-01,09,Highlands,8.4,8.9,previous questionnaire (restated)
+2024-02,01,Capital,3.9,4.4,previous questionnaire (restated)
+2024-02,02,Harbour,4.7,5.2,previous questionnaire (restated)
+2024-02,03,North Coast,5.5,6.0,previous questionnaire (restated)
+2024-02,04,Inland Plains,6.1,6.6,previous questionnaire (restated)
+2024-02,05,Eastern Ranges,5.9,6.4,previous questionnaire (restated)
+2024-02,06,Southern Valleys,4.8,5.3,previous questionnaire (restated)
+2024-02,07,Western Coast,6.5,7.0,previous questionnaire (restated)
+2024-02,08,River Delta,7.0,7.5,previous questionnaire (restated)
+2024-02,09,Highlands,7.5,8.0,previous questionnaire (restated)
+2024-03,01,Capital,3.8,4.3,previous questionnaire (restated)
+2024-03,02,Harbour,4.3,4.8,previous questionnaire (restated)
+2024-03,03,North Coast,5.4,5.9,previous questionnaire (restated)
+2024-03,04,Inland Plains,5.7,6.2,previous questionnaire (restated)
+2024-03,05,Eastern Ranges,5.4,5.9,previous questionnaire (restated)
+2024-03,06,Southern Valleys,4.9,5.4,previous questionnaire (restated)
+2024-03,07,Western Coast,6.0,6.5,previous questionnaire (restated)
+2024-03,08,River Delta,6.9,7.4,previous questionnaire (restated)
+2024-03,09,Highlands,8.1,8.6,previous questionnaire (restated)
+2024-04,01,Capital,3.3,3.8,previous questionnaire (restated)
+2024-04,02,Harbour,4.3,4.8,previous questionnaire (restated)
+2024-04,03,North Coast,5.6,6.1,previous questionnaire (restated)
+2024-04,04,Inland Plains,5.5,6.0,previous questionnaire (restated)
+2024-04,05,Eastern Ranges,4.9,5.4,previous questionnaire (restated)
+2024-04,06,Southern Valleys,3.9,4.4,previous questionnaire (restated)
+2024-04,07,Western Coast,5.3,5.8,previous questionnaire (restated)
+2024-04,08,River Delta,6.5,7.0,previous questionnaire (restated)
+2024-04,09,Highlands,7.1,7.6,previous questionnaire (restated)
+2024-05,01,Capital,3.4,3.9,previous questionnaire (restated)
+2024-05,02,Harbour,4.1,4.6,previous questionnaire (restated)
+2024-05,03,North Coast,5.3,5.8,previous questionnaire (restated)
+2024-05,04,Inland Plains,5.4,5.9,previous questionnaire (restated)
+2024-05,05,Eastern Ranges,5.3,5.8,previous questionnaire (restated)
+2024-05,06,Southern Valleys,4.1,4.6,previous questionnaire (restated)
+2024-05,07,Western Coast,5.3,5.8,previous questionnaire (restated)
+2024-05,08,River Delta,6.4,6.9,previous questionnaire (restated)
+2024-05,09,Highlands,6.8,7.3,previous questionnaire (restated)
+2024-06,01,Capital,3.1,3.6,previous questionnaire (restated)
+2024-06,02,Harbour,4.3,4.8,previous questionnaire (restated)
+2024-06,03,North Coast,4.8,5.3,previous questionnaire (restated)
+2024-06,04,Inland Plains,5.1,5.6,previous questionnaire (restated)
+2024-06,05,Eastern Ranges,5.3,5.8,previous questionnaire (restated)
+2024-06,06,Southern Valleys,3.8,4.3,previous questionnaire (restated)
+2024-06,07,Western Coast,5.7,6.2,previous questionnaire (restated)
+2024-06,08,River Delta,6.3,6.8,previous questionnaire (restated)
+2024-06,09,Highlands,6.9,7.4,previous questionnaire (restated)
+2024-07,01,Capital,3.5,4.0,previous questionnaire (restated)
+2024-07,02,Harbour,4.3,4.8,previous questionnaire (restated)
+2024-07,03,North Coast,5.0,5.5,previous questionnaire (restated)
+2024-07,04,Inland Plains,5.5,6.0,previous questionnaire (restated)
+2024-07,05,Eastern Ranges,5.5,6.0,previous questionnaire (restated)
+2024-07,06,Southern Valleys,4.0,4.5,previous questionnaire (restated)
+2024-07,07,Western Coast,5.6,6.1,previous questionnaire (restated)
+2024-07,08,River Delta,6.6,7.1,previous questionnaire (restated)
+2024-07,09,Highlands,7.7,8.2,previous questionnaire (restated)
+2024-08,01,Capital,3.5,4.0,previous questionnaire (restated)
+2024-08,02,Harbour,4.4,4.9,previous questionnaire (restated)
+2024-08,03,North Coast,5.8,6.3,previous questionnaire (restated)
+2024-08,04,Inland Plains,5.3,5.8,previous questionnaire (restated)
+2024-08,05,Eastern Ranges,5.4,5.9,previous questionnaire (restated)
+2024-08,06,Southern Valleys,4.2,4.7,previous questionnaire (restated)
+2024-08,07,Western Coast,5.7,6.2,previous questionnaire (restated)
+2024-08,08,River Delta,7.0,7.5,previous questionnaire (restated)
+2024-08,09,Highlands,8.7,9.2,previous questionnaire (restated)
+2024-09,01,Capital,3.2,3.7,previous questionnaire (restated)
+2024-09,02,Harbour,4.4,4.9,previous questionnaire (restated)
+2024-09,03,North Coast,5.7,6.2,previous questionnaire (restated)
+2024-09,04,Inland Plains,5.6,6.1,previous questionnaire (restated)
+2024-09,05,Eastern Ranges,5.4,5.9,previous questionnaire (restated)
+2024-09,06,Southern Valleys,4.3,4.8,previous questionnaire (restated)
+2024-09,07,Western Coast,5.6,6.1,previous questionnaire (restated)
+2024-09,08,River Delta,6.1,6.6,previous questionnaire (restated)
+2024-09,09,Highlands,7.1,7.6,previous questionnaire (restated)
+2024-10,01,Capital,3.0,3.5,previous questionnaire (restated)
+2024-10,02,Harbour,4.1,4.6,previous questionnaire (restated)
+2024-10,03,North Coast,5.2,5.7,previous questionnaire (restated)
+2024-10,04,Inland Plains,5.0,5.5,previous questionnaire (restated)
+2024-10,05,Eastern Ranges,5.4,5.9,previous questionnaire (restated)
+2024-10,06,Southern Valleys,3.8,4.3,previous questionnaire (restated)
+2024-10,07,Western Coast,5.8,6.3,previous questionnaire (restated)
+2024-10,08,River Delta,6.3,6.8,previous questionnaire (restated)
+2024-10,09,Highlands,7.6,8.1,previous questionnaire (restated)
+2024-11,01,Capital,3.5,4.0,previous questionnaire (restated)
+2024-11,02,Harbour,4.5,5.0,previous questionnaire (restated)
+2024-11,03,North Coast,5.5,6.0,previous questionnaire (restated)
+2024-11,04,Inland Plains,5.5,6.0,previous questionnaire (restated)
+2024-11,05,Eastern Ranges,5.2,5.7,previous questionnaire (restated)
+2024-11,06,Southern Valleys,4.0,4.5,previous questionnaire (restated)
+2024-11,07,Western Coast,5.4,5.9,previous questionnaire (restated)
+2024-11,08,River Delta,7.1,7.6,previous questionnaire (restated)
+2024-11,09,Highlands,7.3,7.8,previous questionnaire (restated)
+2024-12,01,Capital,3.8,4.3,previous questionnaire (restated)
+2024-12,02,Harbour,4.5,5.0,previous questionnaire (restated)
+2024-12,03,North Coast,6.2,6.7,previous questionnaire (restated)
+2024-12,04,Inland Plains,5.8,6.3,previous questionnaire (restated)
+2024-12,05,Eastern Ranges,5.8,6.3,previous questionnaire (restated)
+2024-12,06,Southern Valleys,4.5,5.0,previous questionnaire (restated)
+2024-12,07,Western Coast,6.1,6.6,previous questionnaire (restated)
+2024-12,08,River Delta,6.5,7.0,previous questionnaire (restated)
+2024-12,09,Highlands,8.3,8.8,previous questionnaire (restated)
+2025-01,01,Capital,3.6,4.1,previous questionnaire (restated)
+2025-01,02,Harbour,5.2,5.7,previous questionnaire (restated)
+2025-01,03,North Coast,5.9,6.4,previous questionnaire (restated)
+2025-01,04,Inland Plains,6.2,6.7,previous questionnaire (restated)
+2025-01,05,Eastern Ranges,6.2,6.7,previous questionnaire (restated)
+2025-01,06,Southern Valleys,4.4,4.9,previous questionnaire (restated)
+2025-01,07,Western Coast,6.3,6.8,previous questionnaire (restated)
+2025-01,08,River Delta,6.9,7.4,previous questionnaire (restated)
+2025-01,09,Highlands,8.7,9.2,previous questionnaire (restated)
+2025-02,01,Capital,3.8,4.3,previous questionnaire (restated)
+2025-02,02,Harbour,5.0,5.5,previous questionnaire (restated)
+2025-02,03,North Coast,6.3,6.8,previous questionnaire (restated)
+2025-02,04,Inland Plains,5.4,5.9,previous questionnaire (restated)
+2025-02,05,Eastern Ranges,5.8,6.3,previous questionnaire (restated)
+2025-02,06,Southern Valleys,4.5,5.0,previous questionnaire (restated)
+2025-02,07,Western Coast,6.3,6.8,previous questionnaire (restated)
+2025-02,08,River Delta,7.0,7.5,previous questionnaire (restated)
+2025-02,09,Highlands,7.9,8.4,previous questionnaire (restated)
+2025-03,01,Capital,3.5,4.0,previous questionnaire (restated)
+2025-03,02,Harbour,4.8,5.3,previous questionnaire (restated)
+2025-03,03,North Coast,5.8,6.3,previous questionnaire (restated)
+2025-03,04,Inland Plains,5.7,6.2,previous questionnaire (restated)
+2025-03,05,Eastern Ranges,5.6,6.1,previous questionnaire (restated)
+2025-03,06,Southern Valleys,4.1,4.6,previous questionnaire (restated)
+2025-03,07,Western Coast,6.1,6.6,previous questionnaire (restated)
+2025-03,08,River Delta,6.5,7.0,previous questionnaire (restated)
+2025-03,09,Highlands,7.5,8.0,previous questionnaire (restated)
+2025-04,01,Capital,3.7,4.2,previous questionnaire (restated)
+2025-04,02,Harbour,4.3,4.8,previous questionnaire (restated)
+2025-04,03,North Coast,5.7,6.2,previous questionnaire (restated)
+2025-04,04,Inland Plains,5.7,6.2,previous questionnaire (restated)
+2025-04,05,Eastern Ranges,5.8,6.3,previous questionnaire (restated)
+2025-04,06,Southern Valleys,3.8,4.3,previous questionnaire (restated)
+2025-04,07,Western Coast,5.6,6.1,previous questionnaire (restated)
+2025-04,08,River Delta,6.4,6.9,previous questionnaire (restated)
+2025-04,09,Highlands,7.6,8.1,previous questionnaire (restated)
+2025-05,01,Capital,3.1,3.6,previous questionnaire (restated)
+2025-05,02,Harbour,4.6,5.1,previous questionnaire (restated)
+2025-05,03,North Coast,5.4,5.9,previous questionnaire (restated)
+2025-05,04,Inland Plains,5.3,5.8,previous questionnaire (restated)
+2025-05,05,Eastern Ranges,5.5,6.0,previous questionnaire (restated)
+2025-05,06,Southern Valleys,4.0,4.5,previous questionnaire (restated)
+2025-05,07,Western Coast,5.7,6.2,previous questionnaire (restated)
+2025-05,08,River Delta,6.2,6.7,previous questionnaire (restated)
+2025-05,09,Highlands,6.8,7.3,previous questionnaire (restated)
+2025-06,01,Capital,3.0,3.5,previous questionnaire (restated)
+2025-06,02,Harbour,4.2,4.7,previous questionnaire (restated)
+2025-06,03,North Coast,5.4,5.9,previous questionnaire (restated)
+2025-06,04,Inland Plains,5.2,5.7,previous questionnaire (restated)
+2025-06,05,Eastern Ranges,5.1,5.6,previous questionnaire (restated)
+2025-06,06,Southern Valleys,4.0,4.5,previous questionnaire (restated)
+2025-06,07,Western Coast,5.5,6.0,previous questionnaire (restated)
+2025-06,08,River Delta,6.2,6.7,previous questionnaire (restated)
+2025-06,09,Highlands,7.3,7.8,previous questionnaire (restated)
+2025-07,01,Capital,3.6,3.6,both questionnaires (as published)
+2025-07,02,Harbour,4.6,4.6,both questionnaires (as published)
+2025-07,03,North Coast,5.2,5.2,both questionnaires (as published)
+2025-07,04,Inland Plains,4.9,4.9,both questionnaires (as published)
+2025-07,05,Eastern Ranges,5.4,5.4,both questionnaires (as published)
+2025-07,06,Southern Valleys,4.0,4.0,both questionnaires (as published)
+2025-07,07,Western Coast,5.7,5.7,both questionnaires (as published)
+2025-07,08,River Delta,6.7,6.7,both questionnaires (as published)
+2025-07,09,Highlands,7.6,7.6,both questionnaires (as published)
+2025-08,01,Capital,3.7,3.7,both questionnaires (as published)
+2025-08,02,Harbour,4.6,4.6,both questionnaires (as published)
+2025-08,03,North Coast,5.9,5.9,both questionnaires (as published)
+2025-08,04,Inland Plains,5.5,5.5,both questionnaires (as published)
+2025-08,05,Eastern Ranges,6.1,6.1,both questionnaires (as published)
+2025-08,06,Southern Valleys,4.2,4.2,both questionnaires (as published)
+2025-08,07,Western Coast,6.1,6.1,both questionnaires (as published)
+2025-08,08,River Delta,6.5,6.5,both questionnaires (as published)
+2025-08,09,Highlands,7.3,7.3,both questionnaires (as published)
+2025-09,01,Capital,3.6,3.6,both questionnaires (as published)
+2025-09,02,Harbour,4.7,4.7,both questionnaires (as published)
+2025-09,03,North Coast,5.5,5.5,both questionnaires (as published)
+2025-09,04,Inland Plains,5.6,5.6,both questionnaires (as published)
+2025-09,05,Eastern Ranges,5.2,5.2,both questionnaires (as published)
+2025-09,06,Southern Valleys,4.1,4.1,both questionnaires (as published)
+2025-09,07,Western Coast,6.1,6.1,both questionnaires (as published)
+2025-09,08,River Delta,6.9,6.9,both questionnaires (as published)
+2025-09,09,Highlands,7.3,7.3,both questionnaires (as published)
+2025-10,01,Capital,3.8,3.8,both questionnaires (as published)
+2025-10,02,Harbour,4.8,4.8,both questionnaires (as published)
+2025-10,03,North Coast,5.6,5.6,both questionnaires (as published)
+2025-10,04,Inland Plains,5.3,5.3,both questionnaires (as published)
+2025-10,05,Eastern Ranges,5.6,5.6,both questionnaires (as published)
+2025-10,06,Southern Valleys,4.5,4.5,both questionnaires (as published)
+2025-10,07,Western Coast,6.1,6.1,both questionnaires (as published)
+2025-10,08,River Delta,7.0,7.0,both questionnaires (as published)
+2025-10,09,Highlands,7.8,7.8,both questionnaires (as published)
+2025-11,01,Capital,4.0,4.0,both questionnaires (as published)
+2025-11,02,Harbour,5.2,5.2,both questionnaires (as published)
+2025-11,03,North Coast,6.3,6.3,both questionnaires (as published)
+2025-11,04,Inland Plains,5.9,5.9,both questionnaires (as published)
+2025-11,05,Eastern Ranges,6.5,6.5,both questionnaires (as published)
+2025-11,06,Southern Valleys,4.9,4.9,both questionnaires (as published)
+2025-11,07,Western Coast,6.0,6.0,both questionnaires (as published)
+2025-11,08,River Delta,7.4,7.4,both questionnaires (as published)
+2025-11,09,Highlands,7.9,7.9,both questionnaires (as published)
+2025-12,01,Capital,4.4,4.4,redesigned questionnaire
+2025-12,02,Harbour,5.2,5.2,redesigned questionnaire
+2025-12,03,North Coast,6.3,6.3,redesigned questionnaire
+2025-12,04,Inland Plains,6.1,6.1,redesigned questionnaire
+2025-12,05,Eastern Ranges,6.5,6.5,redesigned questionnaire
+2025-12,06,Southern Valleys,5.2,5.2,redesigned questionnaire
+2025-12,07,Western Coast,6.9,6.9,redesigned questionnaire
+2025-12,08,River Delta,7.3,7.3,redesigned questionnaire
+2025-12,09,Highlands,8.3,8.3,redesigned questionnaire
+2026-01,01,Capital,4.7,4.7,redesigned questionnaire
+2026-01,02,Harbour,5.7,5.7,redesigned questionnaire
+2026-01,03,North Coast,7.0,7.0,redesigned questionnaire
+2026-01,04,Inland Plains,6.9,6.9,redesigned questionnaire
+2026-01,05,Eastern Ranges,6.9,6.9,redesigned questionnaire
+2026-01,06,Southern Valleys,5.4,5.4,redesigned questionnaire
+2026-01,07,Western Coast,7.1,7.1,redesigned questionnaire
+2026-01,08,River Delta,8.1,8.1,redesigned questionnaire
+2026-01,09,Highlands,8.3,8.3,redesigned questionnaire
+2026-02,01,Capital,4.8,4.8,redesigned questionnaire
+2026-02,02,Harbour,5.5,5.5,redesigned questionnaire
+2026-02,03,North Coast,6.9,6.9,redesigned questionnaire
+2026-02,04,Inland Plains,6.8,6.8,redesigned questionnaire
+2026-02,05,Eastern Ranges,6.7,6.7,redesigned questionnaire
+2026-02,06,Southern Valleys,5.3,5.3,redesigned questionnaire
+2026-02,07,Western Coast,6.8,6.8,redesigned questionnaire
+2026-02,08,River Delta,7.9,7.9,redesigned questionnaire
+2026-02,09,Highlands,8.9,8.9,redesigned questionnaire
+2026-03,01,Capital,4.7,4.7,redesigned questionnaire
+2026-03,02,Harbour,5.7,5.7,redesigned questionnaire
+2026-03,03,North Coast,6.4,6.4,redesigned questionnaire
+2026-03,04,Inland Plains,6.2,6.2,redesigned questionnaire
+2026-03,05,Eastern Ranges,7.2,7.2,redesigned questionnaire
+2026-03,06,Southern Valleys,5.1,5.1,redesigned questionnaire
+2026-03,07,Western Coast,6.9,6.9,redesigned questionnaire
+2026-03,08,River Delta,7.4,7.4,redesigned questionnaire
+2026-03,09,Highlands,8.6,8.6,redesigned questionnaire
+2026-04,01,Capital,3.9,3.9,redesigned questionnaire
+2026-04,02,Harbour,5.4,5.4,redesigned questionnaire
+2026-04,03,North Coast,6.1,6.1,redesigned questionnaire
+2026-04,04,Inland Plains,6.4,6.4,redesigned questionnaire
+2026-04,05,Eastern Ranges,6.4,6.4,redesigned questionnaire
+2026-04,06,Southern Valleys,5.0,5.0,redesigned questionnaire
+2026-04,07,Western Coast,6.6,6.6,redesigned questionnaire
+2026-04,08,River Delta,7.3,7.3,redesigned questionnaire
+2026-04,09,Highlands,8.1,8.1,redesigned questionnaire
+2026-05,01,Capital,3.8,3.8,redesigned questionnaire
+2026-05,02,Harbour,4.9,4.9,redesigned questionnaire
+2026-05,03,North Coast,6.7,6.7,redesigned questionnaire
+2026-05,04,Inland Plains,5.7,5.7,redesigned questionnaire
+2026-05,05,Eastern Ranges,5.8,5.8,redesigned questionnaire
+2026-05,06,Southern Valleys,4.8,4.8,redesigned questionnaire
+2026-05,07,Western Coast,6.4,6.4,redesigned questionnaire
+2026-05,08,River Delta,6.7,6.7,redesigned questionnaire
+2026-05,09,Highlands,7.8,7.8,redesigned questionnaire
+2026-06,01,Capital,4.0,4.0,redesigned questionnaire
+2026-06,02,Harbour,5.0,5.0,redesigned questionnaire
+2026-06,03,North Coast,5.8,5.8,redesigned questionnaire
+2026-06,04,Inland Plains,6.0,6.0,redesigned questionnaire
+2026-06,05,Eastern Ranges,6.2,6.2,redesigned questionnaire
+2026-06,06,Southern Valleys,4.5,4.5,redesigned questionnaire
+2026-06,07,Western Coast,6.1,6.1,redesigned questionnaire
+2026-06,08,River Delta,7.5,7.5,redesigned questionnaire
+2026-06,09,Highlands,8.1,8.1,redesigned questionnaire
+2026-07,01,Capital,4.2,4.2,redesigned questionnaire
+2026-07,02,Harbour,5.7,5.7,redesigned questionnaire
+2026-07,03,North Coast,6.3,6.3,redesigned questionnaire
+2026-07,04,Inland Plains,6.1,6.1,redesigned questionnaire
+2026-07,05,Eastern Ranges,6.6,6.6,redesigned questionnaire
+2026-07,06,Southern Valleys,4.4,4.4,redesigned questionnaire
+2026-07,07,Western Coast,6.6,6.6,redesigned questionnaire
+2026-07,08,River Delta,7.4,7.4,redesigned questionnaire
+2026-07,09,Highlands,8.2,8.2,redesigned questionnaire
+2026-08,01,Capital,4.5,4.5,redesigned questionnaire
+2026-08,02,Harbour,5.5,5.5,redesigned questionnaire
+2026-08,03,North Coast,6.5,6.5,redesigned questionnaire
+2026-08,04,Inland Plains,5.9,5.9,redesigned questionnaire
+2026-08,05,Eastern Ranges,6.5,6.5,redesigned questionnaire
+2026-08,06,Southern Valleys,4.9,4.9,redesigned questionnaire
+2026-08,07,Western Coast,6.6,6.6,redesigned questionnaire
+2026-08,08,River Delta,7.3,7.3,redesigned questionnaire
+2026-08,09,Highlands,8.4,8.4,redesigned questionnaire
+2026-09,01,Capital,4.2,4.2,redesigned questionnaire
+2026-09,02,Harbour,5.4,5.4,redesigned questionnaire
+2026-09,03,North Coast,6.6,6.6,redesigned questionnaire
+2026-09,04,Inland Plains,5.9,5.9,redesigned questionnaire
+2026-09,05,Eastern Ranges,6.8,6.8,redesigned questionnaire
+2026-09,06,Southern Valleys,4.8,4.8,redesigned questionnaire
+2026-09,07,Western Coast,6.6,6.6,redesigned questionnaire
+2026-09,08,River Delta,7.4,7.4,redesigned questionnaire
+2026-09,09,Highlands,8.1,8.1,redesigned questionnaire
+2026-10,01,Capital,4.1,4.1,redesigned questionnaire
+2026-10,02,Harbour,5.1,5.1,redesigned questionnaire
+2026-10,03,North Coast,6.2,6.2,redesigned questionnaire
+2026-10,04,Inland Plains,5.9,5.9,redesigned questionnaire
+2026-10,05,Eastern Ranges,6.2,6.2,redesigned questionnaire
+2026-10,06,Southern Valleys,5.1,5.1,redesigned questionnaire
+2026-10,07,Western Coast,6.4,6.4,redesigned questionnaire
+2026-10,08,River Delta,7.3,7.3,redesigned questionnaire
+2026-10,09,Highlands,8.5,8.5,redesigned questionnaire
+2026-11,01,Capital,4.4,4.4,redesigned questionnaire
+2026-11,02,Harbour,5.2,5.2,redesigned questionnaire
+2026-11,03,North Coast,6.2,6.2,redesigned questionnaire
+2026-11,04,Inland Plains,6.0,6.0,redesigned questionnaire
+2026-11,05,Eastern Ranges,6.7,6.7,redesigned questionnaire
+2026-11,06,Southern Valleys,4.4,4.4,redesigned questionnaire
+2026-11,07,Western Coast,6.9,6.9,redesigned questionnaire
+2026-11,08,River Delta,7.2,7.2,redesigned questionnaire
+2026-11,09,Highlands,8.3,8.3,redesigned questionnaire
+2026-12,01,Capital,4.5,4.5,redesigned questionnaire
+2026-12,02,Harbour,5.5,5.5,redesigned questionnaire
+2026-12,03,North Coast,6.6,6.6,redesigned questionnaire
+2026-12,04,Inland Plains,6.7,6.7,redesigned questionnaire
+2026-12,05,Eastern Ranges,7.0,7.0,redesigned questionnaire
+2026-12,06,Southern Valleys,5.1,5.1,redesigned questionnaire
+2026-12,07,Western Coast,6.7,6.7,redesigned questionnaire
+2026-12,08,River Delta,7.8,7.8,redesigned questionnaire
+2026-12,09,Highlands,8.5,8.5,redesigned questionnaire

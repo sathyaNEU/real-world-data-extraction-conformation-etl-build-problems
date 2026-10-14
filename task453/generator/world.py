@@ -1,205 +1,102 @@
-"""The fixed world of task453: an unnamed Canadian province whose Bureau of Statistics and Economic Analysis builds
-each economic region's monthly payroll jobs from the employer returns the Provincial Revenue Agency collects, and
-certifies to the Minister which regions the Regional Rapid Response Program Regulation designates each quarter.
+"""The world of task453: a national statistics office's monthly Labour Force Survey, kept in six rotation groups,
+moving to a redesigned questionnaire through the dwellings entering the sample from July 2025, and the statutory
+trigger of the Regional Employment Support Act 2021 that reads the survey's regional rates.
 
-From the January 2026 reference month the Agency's returns carry a workplace schedule, and its statistics place each
-job at the workplace; before, a multi-workplace employer's jobs all sat at the municipality of its account address
-(for most, the head office in Wickmoor or Saltmere). The province's total did not move; the regions did."""
-import datetime as dt
+Everything the pack holds is computed forward from these constants: the sample, the responses, the weighted cells
+both collection systems export, the published release and the fourth-quarter fieldwork log."""
+import numpy as np
 
-SEED = 4532044
+SEED = 453
 
-BUREAU = "Bureau of Statistics and Economic Analysis"
-AGENCY = "Provincial Revenue Agency"
-MINISTRY = "Ministry of Labour and Economic Development"
-PROGRAM = "Regional Rapid Response Program"
-REGULATION = "Regional Rapid Response Program Regulation"
+OFFICE = "Statistics Office"
+STATISTICIAN = "Government Statistician"
+SURVEY = "Labour Force Survey"
+ACT = "Regional Employment Support Act 2021"
+MINISTRY = "Ministry of Employment and Skills"
+OLD_SYSTEM = "CAI 2014"            # the computer-assisted interviewing system the previous questionnaire ran on
+NEW_SYSTEM = "ICS"                 # the integrated collection system the redesigned questionnaire runs on
+TRIGGER = 6.0
 
-PEOPLE = {
-    "minister": ("Joel Ferguson", "Minister of Labour and Economic Development"),
-    "chief": ("Heidi Bond", "Chief Statistician"),
-    "liaison": ("Jacqueline Chaney", "Statistical Liaison, Revenue Statistics Unit"),
-    "manager": ("Ryan Bentley", "Manager, Regional Labour Statistics"),
-}
+PEOPLE = {"statistician": "Jared Elliott", "methods": "Debra O'Brien", "operations": "Gabrielle Esson"}
 
-# the months the Agency's statistics cover, and the change of placement
-FIRST = (2021, 1)
-LAST = (2027, 3)
-BREAK = (2026, 1)
-EXTRACT_DATE = dt.date(2027, 4, 23)       # the monthly statistics file, January to March 2027 preliminary
-REVISION_DATE = dt.date(2027, 5, 7)       # the revision file and the workplace extract
-RELEASE_NOTE_DATE = dt.date(2026, 2, 16)
-CERT_DATE = dt.date(2027, 5, 13)
+# regions on the 2025 classification (code, name); the 2019 classification numbered the same regions alphabetically
+REGIONS = [("01", "Capital"), ("02", "Harbour"), ("03", "North Coast"), ("04", "Inland Plains"),
+           ("05", "Eastern Ranges"), ("06", "Southern Valleys"), ("07", "Western Coast"), ("08", "River Delta"),
+           ("09", "Highlands")]
+RCODE = [c for c, _ in REGIONS]
+RNAME = dict(REGIONS)
+CODE19 = {c: "%02d" % (1 + sorted(RNAME.values()).index(n)) for c, n in REGIONS}
+R = len(REGIONS)
 
-# economic regions: code, name, census divisions, post-2026 jobs (thousands), account address region of its branch
-# workplaces' employers, branch share of its post-2026 jobs, seasonal amplitude, irregular (sd of log), target (true
-# seasonally adjusted Q1 2027 against the 2026 average, per cent), slope of the seasonally adjusted path from July 2025
-# (per cent a year), a turn from August 2026 to March 2027 (per cent)
-REGIONS = [
-    ("E01", "Capital",         ("01", "02"), 85.13, None,                      0.000, 0.020, 0.0025, -1.70, -2.0,  0.0),
-    ("E02", "Saltmere Coast",  ("03",),      50.0, None,                      0.000, 0.032, 0.0040,  1.00,  1.2,  0.0),
-    ("E03", "Brennick Valley", ("04", "05"), 26.0, {"E01": 1.0},              0.060, 0.030, 0.0070, -2.00, -3.0,  0.0),
-    ("E04", "Dunfallow Bay",      ("06",),      20.0, {"E01": 0.3, "E02": 0.7},  0.100, 0.040, 0.0070,  0.90,  1.0,  0.0),
-    ("E05", "Quillon Plain",   ("07", "08"), 30.0, {"E01": 1.0},              0.095, 0.030, 0.0070,  1.30,  1.5,  0.0),
-    ("E06", "Hethervale Lakes",   ("09",),      17.0, {"E01": 0.25, "E02": 0.75}, 0.120, 0.045, 0.0080,  1.10,  1.2,  0.0),
-    ("E07", "Ardvane Uplands", ("10",),      15.0, {"E01": 1.0},              0.130, 0.030, 0.0080,  1.80,  2.2,  0.0),
-    ("E08", "Kestrow North",   ("11", "12"), 19.0, {"E01": 1.0},              0.220, 0.022, 0.0080, -0.20,  0.0,  0.0),
-    ("E09", "Pellmarsh Hills", ("13",),      23.0, {"E01": 1.0},              0.085, 0.028, 0.0070, -2.10, -2.6,  0.0),
-    ("E10", "Varrenby Shore",     ("14",),      15.0, {"E01": 0.9, "E02": 0.1},  0.180, 0.035, 0.0090, -0.10,  0.2,  0.0),
-]
-RCODE = [r[0] for r in REGIONS]
-RNAME = {r[0]: r[1] for r in REGIONS}
-NAME2CODE = {r[1]: r[0] for r in REGIONS}
+# months: January 2022 to December 2026; the redesign enters with the rotation group replaced in July 2025
+MONTHS = ["%d-%02d" % (y, m) for y in range(2022, 2027) for m in range(1, 13)]
+T = len(MONTHS)
+PHASE = MONTHS.index("2025-07")
+Y26 = MONTHS.index("2026-01")
+Q4 = [MONTHS.index(m) for m in ("2026-10", "2026-11", "2026-12")]
+GROUPS = "ABCDEF"                   # group A's dwellings are replaced in January and July, B's in February and August
 
-# municipalities: code, name, census division, weight within its region (post-2026 own jobs), valid from, valid to
-# (1 January 2025: Wexleigh and Dorran amalgamated as Wexleigh-Dorran, code 0814)
-MUNIS = [
-    ("0101", "Wickmoor", "01", 0.70, None, None),
-    ("0102", "Tallisford", "01", 0.09, None, None),
-    ("0103", "Askerby", "01", 0.05, None, None),
-    ("0201", "Brenlow", "02", 0.10, None, None),
-    ("0202", "Lindmere Park", "02", 0.06, None, None),
-    ("0301", "Saltmere", "03", 0.74, None, None),
-    ("0302", "Grisport", "03", 0.12, None, None),
-    ("0303", "Sealwick Cove", "03", 0.08, None, None),
-    ("0304", "Gorsedge", "03", 0.06, None, None),
-    ("0401", "Brennick", "04", 0.46, None, None),
-    ("0402", "Dowrie", "04", 0.14, None, None),
-    ("0403", "Fallow Creek", "04", 0.10, None, None),
-    ("0501", "Thornmoor", "05", 0.19, None, None),
-    ("0502", "Ivory Crossing", "05", 0.11, None, None),
-    ("0601", "Dunfallow", "06", 0.52, None, None),
-    ("0602", "Sallow Point", "06", 0.18, None, None),
-    ("0603", "Gannet Cove", "06", 0.17, None, None),
-    ("0604", "Wrayburn", "06", 0.13, None, None),
-    ("0701", "Quillon", "07", 0.41, None, None),
-    ("0702", "Cobbleford Flats", "07", 0.15, None, None),
-    ("0703", "Tarnbury", "07", 0.12, None, None),
-    ("0803", "Wexleigh", "08", 0.11, None, "2024-12-31"),
-    ("0806", "Dorran", "08", 0.07, None, "2024-12-31"),
-    ("0814", "Wexleigh-Dorran", "08", 0.18, "2025-01-01", None),
-    ("0807", "Brackenholt", "08", 0.14, None, None),
-    ("0901", "Hethervale", "09", 0.48, None, None),
-    ("0902", "Loon Narrows", "09", 0.20, None, None),
-    ("0903", "Ambrel Lake", "09", 0.17, None, None),
-    ("0904", "Skerrow Falls", "09", 0.15, None, None),
-    ("1001", "Ardvane", "10", 0.50, None, None),
-    ("1002", "Corriemoor", "10", 0.21, None, None),
-    ("1003", "High Tolland", "10", 0.16, None, None),
-    ("1004", "Rushby", "10", 0.13, None, None),
-    ("1101", "Kestrow", "11", 0.47, None, None),
-    ("1102", "Blackrill", "11", 0.17, None, None),
-    ("1201", "Ingrey", "12", 0.21, None, None),
-    ("1202", "Sorrel Lake", "12", 0.15, None, None),
-    ("1301", "Pellmarsh", "13", 0.44, None, None),
-    ("1302", "Haverleigh", "13", 0.22, None, None),
-    ("1303", "Coldmarsh Ridge", "13", 0.19, None, None),
-    ("1304", "Brockmere", "13", 0.15, None, None),
-    ("1401", "Varrenby", "14", 0.45, None, None),
-    ("1402", "Port Garra", "14", 0.24, None, None),
-    ("1403", "Selkie Bay", "14", 0.18, None, None),
-    ("1404", "Rossmuir", "14", 0.13, None, None),
-]
-CD_REGION = {cd: r[0] for r in REGIONS for cd in r[2]}
-MUNI_REGION = {m[0]: CD_REGION[m[2]] for m in MUNIS}
-MUNI_NAME = {m[0]: m[1] for m in MUNIS}
-AMALGAMATED = {"0803": "0814", "0806": "0814"}
-HEAD_OFFICE_MUNI = {"E01": "0101", "E02": "0301"}      # the account addresses of the branch employers
 
-# NAICS 2022 sectors, as the Agency's statistics have coded them from January 2024
-SECTORS = [
-    ("11", "Agriculture, forestry, fishing and hunting"),
-    ("21", "Mining, quarrying, and oil and gas extraction"),
-    ("22", "Utilities"),
-    ("23", "Construction"),
-    ("31-33", "Manufacturing"),
-    ("41", "Wholesale trade"),
-    ("44-45", "Retail trade"),
-    ("48-49", "Transportation and warehousing"),
-    ("51", "Information and cultural industries"),
-    ("52", "Finance and insurance"),
-    ("53", "Real estate and rental and leasing"),
-    ("54", "Professional, scientific and technical services"),
-    ("55", "Management of companies and enterprises"),
-    ("56", "Administrative and support, waste management and remediation services"),
-    ("61", "Educational services"),
-    ("62", "Health care and social assistance"),
-    ("71", "Arts, entertainment and recreation"),
-    ("72", "Accommodation and food services"),
-    ("81", "Other services (except public administration)"),
-    ("91", "Public administration"),
-]
-SECTOR_CODES = [s[0] for s in SECTORS]
+def mis(t, g):
+    """month in sample (1 to 6) of rotation group g (0 for A .. 5 for F) in month index t (January 2022 is 0)"""
+    return ((t - g) % 6) + 1
 
-# the Agency's industry groups before 2024 (its own grouping of employer activity codes)
-GROUPS = [
-    ("A", "Primary industries", ("11", "21")),
-    ("B", "Utilities and construction", ("22", "23")),
-    ("C", "Manufacturing", ("31-33",)),
-    ("D", "Trade", ("41", "44-45")),
-    ("E", "Transportation, warehousing and information", ("48-49", "51")),
-    ("F", "Finance, insurance and real estate", ("52", "53")),
-    ("G", "Professional, management and support services", ("54", "55", "56")),
-    ("H", "Education, health care and social assistance", ("61", "62")),
-    ("J", "Accommodation, food, arts and recreation", ("71", "72")),
-    ("K", "Other services and public administration", ("81", "91")),
-]
-SECTOR_GROUP = {s: g[0] for g in GROUPS for s in g[2]}
 
-# sector mix by kind of region (shares of own jobs), before the regional variation the simulation adds
-MIX = {
-    "city": {"11": 0.4, "21": 0.3, "22": 1.0, "23": 6.0, "31-33": 4.0, "41": 4.0, "44-45": 11.0, "48-49": 4.0,
-             "51": 2.8, "52": 4.5, "53": 1.8, "54": 6.5, "55": 1.2, "56": 4.5, "61": 8.5, "62": 15.0, "71": 1.6,
-             "72": 7.5, "81": 4.0, "91": 10.0},
-    "coast": {"11": 6.5, "21": 0.6, "22": 0.8, "23": 6.0, "31-33": 11.0, "41": 2.5, "44-45": 12.5, "48-49": 4.5,
-              "51": 0.9, "52": 2.0, "53": 1.0, "54": 2.2, "55": 0.2, "56": 3.0, "61": 8.0, "62": 16.0, "71": 1.8,
-              "72": 9.0, "81": 4.0, "91": 7.5},
-    "farm": {"11": 9.0, "21": 1.2, "22": 1.0, "23": 7.0, "31-33": 9.5, "41": 4.5, "44-45": 13.0, "48-49": 5.5,
-             "51": 0.7, "52": 2.2, "53": 0.9, "54": 2.0, "55": 0.2, "56": 2.5, "61": 8.5, "62": 15.5, "71": 1.0,
-             "72": 6.5, "81": 4.0, "91": 5.0},
-    "resource": {"11": 7.5, "21": 9.0, "22": 1.5, "23": 8.0, "31-33": 12.0, "41": 2.5, "44-45": 11.0, "48-49": 6.0,
-                 "51": 0.6, "52": 1.6, "53": 0.8, "54": 2.2, "55": 0.2, "56": 2.8, "61": 7.5, "62": 13.5, "71": 0.8,
-                 "72": 6.5, "81": 3.5, "91": 5.5},
-    "lakes": {"11": 4.0, "21": 1.0, "22": 1.0, "23": 7.0, "31-33": 5.0, "41": 2.0, "44-45": 13.5, "48-49": 4.0,
-              "51": 0.8, "52": 1.8, "53": 1.4, "54": 2.0, "55": 0.2, "56": 2.8, "61": 7.5, "62": 15.0, "71": 4.5,
-              "72": 15.0, "81": 4.0, "91": 6.0},
-}
-KIND = {"E01": "city", "E02": "coast", "E03": "farm", "E04": "coast", "E05": "farm", "E06": "lakes",
-        "E07": "resource", "E08": "resource", "E09": "farm", "E10": "coast"}
-# the employers whose account address is in Wickmoor or Saltmere and whose workplaces reach other regions: account
-# address region, sector, legal name, payroll accounts (reference and operating name), weight in its hq's branch jobs
-BRANCH_EMPLOYERS = [
-    ("E01", "62", "Northline Health Authority", (("0001", "Northline Health Authority"), ("0002", "Northline Health Authority - Hourly")), 25.0),
-    ("E01", "21", "Blackrill Mining Corp.", (("0001", "Blackrill Mining"),), 9.0),
-    ("E01", "21", "Upland Aggregates Ltd.", (("0001", "Upland Aggregates"),), 4.0),
-    ("E01", "31-33", "Kestrow Forest Products Ltd.", (("0001", "Kestrow Forest Products"),), 10.0),
-    ("E01", "11", "Kestrow Woodlands Ltd.", (("0001", "Kestrow Woodlands"),), 5.0),
-    ("E01", "31-33", "Skerryvale Seafoods Ltd.", (("0001", "Skerryvale Seafoods"),), 6.0),
-    ("E01", "44-45", "Larkmoor Foods Ltd.", (("0001", "Larkmoor Foods"), ("0002", "Larkmoor Express")), 9.0),
-    ("E01", "44-45", "Provincial Spirits and Cannabis Retail Corp.", (("0001", "Provincial Spirits"),), 4.0),
-    ("E01", "22", "Rillwater Power Corporation", (("0001", "Rillwater Power"),), 6.0),
-    ("E01", "48-49", "Plainsway Grain Handling Co-operative Ltd.", (("0001", "Plainsway Grain"),), 4.0),
-    ("E01", "52", "Tidewell Credit Union Ltd.", (("0001", "Tidewell Credit Union"),), 6.0),
-    ("E01", "91", "Provincial Services Agency", (("0001", "Provincial Services Agency"), ("0002", "Provincial Services Agency - Seasonal")), 6.0),
-    ("E02", "62", "Coastal Community Health Services", (("0001", "Coastal Community Health"), ("0002", "Coastal Community Health - Casual")), 30.0),
-    ("E02", "31-33", "Coastline Seafoods Ltd.", (("0001", "Coastline Seafoods"),), 30.0),
-    ("E02", "48-49", "Saltmere Ferries Ltd.", (("0001", "Saltmere Ferries"),), 12.0),
-    ("E02", "44-45", "Shorecrest Hardware Co. Ltd.", (("0001", "Shorecrest Hardware"),), 14.0),
-    ("E02", "52", "Coastal Savings Credit Union Ltd.", (("0001", "Coastal Savings"),), 8.0),
-]
+def entered(t, g):
+    """the month index in which group g's dwellings of month t entered the sample"""
+    return t - (mis(t, g) - 1)
 
-FILES = {
-    "wide": "pra_payroll_jobs_by_municipality_2021-2023.xlsx",
-    "long": "pra_payroll_jobs_monthly_2024-01_2027-03.csv",
-    "rev": "pra_payroll_jobs_revisions_2027-05-07.csv",
-    "work": "pra_workplace_returns_2026-03_2027-03.csv",
-    "dict": "pra_statistics_field_descriptions.csv",
-    "note": "pra_release_note_place_of_work_2026-02.pdf",
-    "conc": "bsea_municipal_concordance.xlsx",
-    "reg": "regional_rapid_response_program_regulation.pdf",
-    "trans": "pra_transmittal_2027-05-07.txt",
-    "lfs": "lfs_economic_region_estimates_2025-2027.csv",
-    "pop": "bsea_population_estimates_2024-2026.xlsx",
-}
-DISTRACTORS = ("lfs", "pop")
-DELIVERABLES = ("rapid_response_certification_2027q1.pdf", "regional_payroll_jobs_2027q1.csv")
+
+def redesigned(t, g):
+    return entered(t, g) >= PHASE
+
+
+# persons aged 15 and over (thousands, January 2026) by region; age and sex structure
+POP15 = np.array([9150, 5240, 3290, 4130, 2280, 2940, 1910, 3680, 1430], float)
+AGES = ["15-24", "25-34", "35-44", "45-54", "55+"]
+AGE_SHARE = np.array([0.155, 0.178, 0.168, 0.162, 0.337])
+SEX = ["M", "F"]
+SEX_SHARE = np.array([0.49, 0.51])
+PART = np.array([[0.63, 0.92, 0.93, 0.90, 0.44], [0.57, 0.80, 0.81, 0.79, 0.34]])   # participation, sex x age
+UFAC = np.array([[2.15, 1.10, 0.80, 0.74, 0.79], [2.02, 1.12, 0.84, 0.78, 0.74]])   # unemployment against the region
+
+# each region's 2026 unemployment rate on the redesigned questionnaire (the generator tunes the regional level to it)
+TARGET26 = {"01": 4.32, "02": 5.38, "03": 6.44, "04": 6.21, "05": 6.60, "06": 4.91, "07": 6.64, "08": 7.45, "09": 8.31}
+
+SEAS = np.array([0.45, 0.35, 0.15, -0.10, -0.30, -0.35, -0.05, 0.05, -0.15, -0.20, -0.05, 0.20])
+# the national cycle: easing through 2022 and 2023, flat into 2024, edging up from mid-2025
+NAT = np.interp(np.arange(T), [0, 12, 24, 30, 36, 42, 48, 54, 59],
+                [0.40, 0.10, -0.15, -0.25, -0.22, -0.12, 0.02, 0.10, 0.14])
+DRIFT = {"01": -0.10, "02": 0.15, "03": 0.30, "04": -0.20, "05": 0.25, "06": -0.15, "07": 0.10, "08": 0.20, "09": -0.25}
+
+# the previous questionnaire's rotation-group bias (points, by month in sample) and the redesign's effect on it
+MIS_BIAS = np.array([1.30, 0.15, -0.12, -0.30, -0.45, -0.58])
+FIRST_EFFECT = -0.45          # the revised job-search questions at a first interview
+LATER_EFFECT = 0.688          # the revised questions with dependent interviewing, second to sixth interview
+
+# the sample: primary sampling units allocated by the square root of each region's population, 12 dwellings in each
+# rotation group of a unit, one rotation group replaced each month
+PSUS = 1180
+LINES = 12
+VACANT = 0.072                # dwellings found vacant (code 31), derelict or demolished (code 32)
+DERELICT = 0.006              # of which derelict or demolished
+NONPRIVATE = 0.013            # not private dwellings (code 33)
+RESPONSE = np.array([0.82, 0.79, 0.78, 0.77, 0.76, 0.75])   # eligible dwellings responding, by month in sample
+# response is lowest in the Capital's apartment blocks and highest in the rural regions, dips over the summer holidays
+# and in July, and drifts down a little each year
+RESP_REGION = {"01": -0.050, "02": -0.024, "03": 0.011, "04": 0.026, "05": 0.017, "06": 0.004, "07": 0.031,
+               "08": -0.009, "09": 0.043}
+RESP_MONTH = np.array([-0.031, -0.009, 0.0, 0.004, 0.006, 0.003, -0.011, -0.004, 0.003, 0.005, 0.002, -0.023])
+RESP_TREND = -0.008           # a year
+RESP_SEAS_AMP = {"01": 1.35, "02": 1.15, "03": 0.95, "04": 0.80, "05": 1.00, "06": 0.85, "07": 1.10, "08": 0.90,
+                 "09": 0.70}   # the summer dip deepest in the cities
+PARTIAL = 0.06                # responding interviews only partly completed (code 12)
+PERSONS = 2.42                # persons aged 15 and over in a responding dwelling
+
+EXTRACT = "2027-01-25"
+RELEASE = "2027-01-21"        # Labour Force Survey, December 2026
+
+
+def response(t, code, m):
+    """the chance an eligible dwelling responds in month t, in region code, at month in sample m"""
+    return RESPONSE[m - 1] + RESP_REGION[code] + RESP_MONTH[t % 12] * RESP_SEAS_AMP[code] + RESP_TREND * t / 12.0

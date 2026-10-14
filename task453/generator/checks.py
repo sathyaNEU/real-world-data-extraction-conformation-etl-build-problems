@@ -1,28 +1,22 @@
-"""Assertions on the built pack, the goldens and the simulation behind them. Run by build.py after every build."""
-import collections
-import csv
+"""task453's assertions, run on every build: the input gates, the golden from the bundle, the corridor of every
+reasonable implementation, every wrong route by name, the margins, every semantic-fork row (SF1 to SF14), the
+three-rules block (R1 to R3c) on the clean truth, mess neutrality, the ask's stops and cracker, the separation of the
+ask from the main call, the distractors' deletion test and the realism sweep."""
 import json
 import os
 import re
-import sys
-import zipfile
+import shutil
+import tempfile
 
 import numpy as np
 import pandas as pd
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
+import golden as GD
+import methods as M
+import pack as P
+import survey as S
+import world as W
 
-import calc as C        # noqa: E402
-import methods as M     # noqa: E402
-import sim as S         # noqa: E402
-import world as W       # noqa: E402
-from stl import stl     # noqa: E402
-
-GOLD_SET = ["E01", "E03", "E09"]
-DEFAULT_SET = ["E03", "E08", "E09", "E10"]
-DEFAULT_ROUTES = ("stl", "stl_levels", "classical", "classical_additive", "stl13")
-COMPONENTS = ("E01", "E03", "E09", "E08", "E10")
 RESULTS = []
 
 
@@ -30,337 +24,290 @@ def ok(label, cond, detail=""):
     RESULTS.append((label, bool(cond), detail))
 
 
-def margin(df, routes):
-    return float((df[list(routes)] + 1.0).abs().min().min())
+def restate(x):
+    return M.restated(x)
 
 
-def sets_of(df, routes):
-    return {r: C.designated(df, r) for r in routes}
+def nat_cells(une, lab):
+    un, ln = une.sum(1), lab.sum(1)
+    t, g = np.meshgrid(np.arange(W.T), np.arange(6), indexing="ij")
+    return dict(t=t.ravel(), r=np.zeros(t.size, int), g=g.ravel(), y=(100 * un / ln).ravel(), w=ln.ravel(),
+                new=M.NEWM.ravel(), m=M.MISM.ravel())
 
 
-def pdf_text(path):
-    from pypdf import PdfReader
-    return "\n".join(p.extract_text() for p in PdfReader(path).pages)
+def sexage_cells(S_):
+    une = S_["une"].astype(float)
+    lab = (S_["une"] + S_["emp"]).astype(float)
+    tt, rr, gg, ss, aa = np.meshgrid(np.arange(W.T), np.arange(W.R), np.arange(6), np.arange(2), np.arange(5),
+                                     indexing="ij")
+    return dict(t=tt.ravel(), r=(rr * 10 + ss * 5 + aa).ravel(), g=gg.ravel(), y=(100 * une / lab).ravel(),
+                w=lab.ravel(), new=M.NEWM[tt, gg].ravel(), m=M.MISM[tt, gg].ravel())
 
 
-def clean_series(world):
-    """the simulation's regional series before any file is written: whole jobs, revised, no layouts or codes"""
-    rep = S.reported(world["R"])
-    idx = [S.month_label(i) for i in range(S.N)]
-    return pd.DataFrame({c: np.round(rep[c]) for c in W.RCODE}, index=idx)
-
-
-def quarterly_route(s):
-    """SF12: each region's quarterly averages, log on quarter effects, a trend with a knot a year and a level shift
-    from the first quarter of 2026; the first quarter of 2027 adjusted against the 2026 average"""
-    out = {}
-    q = s.groupby([m[:4] + "Q" + str((int(m[5:7]) - 1) // 3 + 1) for m in s.index]).mean()
-    n = len(q)
-    t = np.arange(n)
-    qi = np.array([int(k[-1]) for k in q.index])
-    brk = list(q.index).index("2026Q1")
-    Q = np.zeros((n, 4))
-    Q[t, qi - 1] = 1
-    X = np.column_stack([Q, t, (t >= brk).astype(float)] + [np.maximum(0, t - k) for k in range(4, n, 4)])
-    for c in W.RCODE:
-        lv = np.log(q[c].values)
-        b, *_ = np.linalg.lstsq(X, lv, rcond=None)
-        eff = b[:4] - b[:4].mean()
-        sa_q1 = np.exp(lv[list(q.index).index("2027Q1")] - eff[0])
-        avg26 = s[c][[m for m in s.index if m.startswith("2026")]].mean()
-        out[c] = 100 * (sa_q1 / avg26 - 1)
-    return out
-
-
-def indirect_by_division(target):
-    """SF11: each census division's series adjusted with the level-shift regression and summed to its region"""
-    conc = C.concordance(target)
-    import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(target, W.FILES["conc"]), read_only=True)
-    cd = {str(r[0]): str(r[2]) for r in list(wb["Municipalities"].iter_rows(values_only=True))[1:] if r[0]}
-    df = pd.concat([C.wide(target), C.long(target)], ignore_index=True)
-    df["cd"] = df.muni.map(cd)
-    s = df.groupby(["month", "cd"]).jobs.sum().unstack().sort_index()
-    F = M.Frame(list(s.index))
-    out = {}
-    cds = {c: [d for d in W.CD_REGION if W.CD_REGION[d] == c] for c in W.RCODE}
-    for c in W.RCODE:
-        sa = np.zeros(F.n)
-        y = np.zeros(F.n)
-        for d in cds[c]:
-            v = s[d].values.astype(float)
-            sf, _ = M.regression(F, np.log(v))
-            sa += np.exp(np.log(v) - sf)
-            y += v
-        out[c] = M.pct(F, sa, y)
-    return out
+def fe_sparse(F, cols, use, weighted):
+    from scipy import sparse
+    from scipy.sparse.linalg import lsqr
+    key = F["t"][use] * 1000 + F["r"][use]
+    _, idx = np.unique(key, return_inverse=True)
+    n = int(use.sum())
+    X1 = sparse.csr_matrix((np.ones(n), (np.arange(n), idx)))
+    M5 = sparse.csr_matrix(np.column_stack([(F["m"][use] == j) for j in range(2, 7)]).astype(float))
+    C = sparse.csr_matrix(np.column_stack([np.asarray(c)[use] for c in cols]).astype(float))
+    X = sparse.hstack([X1, M5, C]).tocsr()
+    sw = np.sqrt(F["w"][use] / F["w"][use].mean()) if weighted else np.ones(n)
+    b = lsqr(sparse.diags(sw) @ X, F["y"][use] * sw, atol=1e-12, btol=1e-12, iter_lim=50000)[0]
+    return b[-len(cols):]
 
 
 def run(target, golden_dir, world=None, meta_path=None):
     RESULTS.clear()
+    S_ = world
+    X = world["golden"] if world and "golden" in world else GD.compute(target)
     files = sorted(os.listdir(target))
     meta = json.load(open(meta_path)) if meta_path else {}
 
-    # ------------------------------------------------------------------ input gates
-    ok("gate: 10 or more files", len(files) >= 10, len(files))
+    # ---------------------------------------------------------------- input gates
+    ok("gate: ten or more files", len(files) >= 10, "%d files" % len(files))
     fmts = {f.rsplit(".", 1)[1] for f in files}
-    ok("gate: 3 or more formats", len(fmts) >= 3, sorted(fmts))
-    rows = {f: sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv")}
-    ok("gate: a file of 25,000 rows or more", max(rows.values()) >= 25000, max(rows.items(), key=lambda kv: kv[1]))
+    ok("gate: three or more formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
+    ok("gate: a file of 25,000 rows or more", world["counts"]["old"] >= 25000 and world["counts"]["field"] >= 25000,
+       "%d and %d" % (world["counts"]["old"], world["counts"]["field"]))
     dis = meta.get("distractor_files", [])
-    ok("gate: two or more distractors, shipped, none named as such", len(dis) >= 2 and all(d in files for d in dis)
-       and not any("distract" in f.lower() for f in files), dis)
-    ok("gate: the deliverables are not in the pack", not any(f in files for f in W.DELIVERABLES))
+    ok("gate: two or more distractors in metadata.json", len(dis) >= 2 and all(d in files for d in dis), dis)
+    ok("gate: no file name says distractor or answer", not any(re.search("distract|answer|known_issue", f) for f in files))
+    ok("gate: every pack file has a source and licence in metadata.json",
+       sorted(x["path"] for x in meta.get("files", [])) == files and all(x.get("license") for x in meta["files"]))
 
-    # ------------------------------------------------------------------ the main call
-    s = C.series(target)
-    df = C.routes(s)
-    fam = list(C.FAMILY)
-    ok("call: every step-aware route designates the Capital, Brennick Valley and Pellmarsh Hills",
-       all(v == GOLD_SET for v in sets_of(df, fam).values()), sets_of(df, fam))
-    ok("call: step-aware routes keep every region 0.5 or more from the line", margin(df, fam) >= 0.5, round(margin(df, fam), 3))
-    ok("call: the robust STL on the restated history agrees", C.designated(df, "ls_stl_robust") == GOLD_SET,
-       C.designated(df, "ls_stl_robust"))
-    ok("R3a analyst test: STL across the change designates Brennick Valley, Kestrow North, Varrenby Shore and Pellmarsh Hills",
-       C.designated(df, "stl") == DEFAULT_SET, C.designated(df, "stl"))
-    ok("R3a: every default route designates the same wrong four", all(v == DEFAULT_SET for v in sets_of(df, DEFAULT_ROUTES).values()),
-       sets_of(df, DEFAULT_ROUTES))
-    ok("R3a: default routes keep every region 0.3 or more from the line", margin(df, DEFAULT_ROUTES) >= 0.3,
-       round(margin(df, DEFAULT_ROUTES), 3))
-    ok("R3b decisive step alone: STL on the history restated by the level shift designates the golden",
-       C.designated(df, "ls_stl") == GOLD_SET, C.designated(df, "ls_stl"))
-    rob = C.designated(df, "stl_robust")
-    ok("rung R1: robust STL across the change files another wrong set", rob not in (GOLD_SET, DEFAULT_SET) and rob == ["E01", "E09"], rob)
-    yoy = C.designated(df, "yoy")
-    rng_out = [c for c in ("E01", "E03", "E09") if not (math_floor1(df.loc[c, fam].min()) <= round(df.loc[c, "yoy"], 1)
-                                                         <= math_ceil1(df.loc[c, fam].max()))]
-    ok("rung R1b: the year-on-year route lands the set, its Capital, Brennick Valley and Pellmarsh Hills figures outside the ranges",
-       yoy == GOLD_SET and rng_out == ["E01", "E03", "E09"], (yoy, rng_out))
-    lab = [c for c in DEFAULT_SET if c not in ("E08", "E10")]
-    ok("grid: dropping the two regions that gained most (labelling afterwards) still misses the Capital", "E01" not in lab and lab != GOLD_SET, lab)
-    for c in ("E01", "E08", "E10"):
-        side_g = {bool(df.loc[c, r] < -1) for r in fam}
-        side_d = {bool(df.loc[c, r] < -1) for r in DEFAULT_ROUTES}
-        ok("component %s: one side on every step-aware route, the other on every default route" % W.RNAME[c],
-           len(side_g) == 1 and len(side_d) == 1 and side_g != side_d, (side_g, side_d))
-    for c in ("E03", "E09"):
-        lo, hi = math_floor1(df.loc[c, fam].min()), math_ceil1(df.loc[c, fam].max())
-        outside = [r for r in DEFAULT_ROUTES if not (lo <= round(df.loc[c, r], 1) <= hi)]
-        ok("component %s: below the line on every route, the default routes' figures outside the step-aware range" % W.RNAME[c],
-           all(df.loc[c, r] < -1 for r in fam + list(DEFAULT_ROUTES)) and outside == list(DEFAULT_ROUTES), (lo, hi, outside))
-    ok("dominance: the default moves Kestrow North, Varrenby Shore and the Capital across the line by the step's sign",
-       df.loc["E08", "stl"] < df.loc["E08", "reg12"] - 1.0 and df.loc["E10", "stl"] < df.loc["E10", "reg12"] - 1.0
-       and df.loc["E01", "stl"] > df.loc["E01", "reg12"] + 0.8,
-       {c: round(df.loc[c, "stl"] - df.loc[c, "reg12"], 2) for c in ("E01", "E08", "E10")})
-    ok("the steps: the Capital and Saltmere Coast down, every other region up, Kestrow North and Varrenby Shore the largest",
-       df.loc["E01", "level_shift"] < -10 and df.loc["E02", "level_shift"] < 0
-       and all(df.loc[c, "level_shift"] > 0 for c in W.RCODE[2:])
-       and sorted(W.RCODE, key=lambda c: -df.loc[c, "level_shift"])[:2] == ["E08", "E10"],
-       df.level_shift.round(1).to_dict())
-    prov = s.sum(axis=1)
-    jump = 100 * (prov["2026-01"] / prov["2025-12"] - 1)
-    jump0 = np.mean([100 * (prov["%d-01" % y] / prov["%d-12" % (y - 1)] - 1) for y in (2022, 2023, 2024, 2025)])
-    ok("oracle: the province's total shows no break at January 2026 (its December to January change as in other years)",
-       abs(jump - jump0) < 0.6, (round(jump, 2), round(jump0, 2)))
+    # ---------------------------------------------------------------- the golden, from the bundle
+    ok("golden: change rounds to 0.5 points", X["change"] == 0.5, "%.4f" % X["G"])
+    ok("golden: restated trigger 6.5", X["trigger"] == 6.5)
+    ok("golden: designated Eastern Ranges, Western Coast, River Delta, Highlands",
+       X["designated"] == ["05", "07", "08", "09"], X["designated"])
+    F = X["F"]
+    truthF = None
+    if S_ is not None:
+        Fg = M.cells_from(S_["une"].sum(axis=(3, 4)), (S_["une"] + S_["emp"]).sum(axis=(3, 4)))
+        ok("golden: the bundle's cells equal the generator's", np.allclose(Fg["y"], F["y"], atol=5e-6) and
+           np.allclose(Fg["w"], F["w"], rtol=1e-9, atol=1.0))
 
-    # ------------------------------------------------------------------ semantic forks, each asserted
-    d1 = C.routes(C.series(target, drop_retired=True))
-    ok("SF1: Wexleigh and Dorran dropped before 2025 leaves the call", C.designated(d1, "reg12") == GOLD_SET
-       and d1.loc["E05", "reg12"] > -1, round(d1.loc["E05", "reg12"], 2))
-    for f in (W.FILES["long"], W.FILES["rev"]):
-        cols = open(os.path.join(target, f), encoding="utf-8").readline().strip().split(",")
-        ok("SF2: one measure of jobs in %s" % f, [c for c in cols if "jobs" in c] == ["payroll_jobs"], cols)
-    s_r = s.astype(float).copy()
-    pre = [m for m in s.index if m < "2026-01"]
-    s_r.loc[pre] = s_r.loc[pre] * 1.3
-    ok("SF3: the compared months are all from 2026 (scaling the earlier history leaves the 2026 average)",
-       np.allclose(s_r.loc[[m for m in s.index if m.startswith("2026")]].mean(), s.loc[[m for m in s.index if m.startswith("2026")]].mean()))
-    reg = pdf_text(os.path.join(target, W.FILES["reg"]))
-    regn = re.sub(r"\s+", " ", reg)
-    ok("SF4: the quarter's payroll jobs are the average of its three months (regulation 1(2))",
-       "average of its payroll jobs for the three months" in regn)
-    sa_sa = {}
-    for c in W.RCODE:
-        F_ = M.Frame(list(s.index))
-        y = s[c].values.astype(float)
-        sf, _ = M.regression(F_, np.log(y))
-        sa = np.exp(np.log(y) - sf)
-        sa_sa[c] = 100 * (sa[F_.q1].mean() / sa[F_.y26].mean() - 1)
-    ok("SF5: against the seasonally adjusted 2026 average the step-aware call is the same",
-       [c for c in W.RCODE if sa_sa[c] < -1] == GOLD_SET, {c: round(v, 2) for c, v in sa_sa.items()})
-    ok("SF6: no region within 0.5 of the line on any step-aware route, so at-or-below and rounded readings agree",
-       margin(df, fam) >= 0.5 and all(C.designated(df.round(1), r) == GOLD_SET for r in fam))
-    ok("SF7: eleven step-aware routes, one set", len(fam) == 11 and all(v == GOLD_SET for v in sets_of(df, fam).values()))
-    dp = C.routes(C.series(target, revised=False))
-    ok("SF8: the April file's preliminary months give the same call", all(C.designated(dp, r) == GOLD_SET for r in ("reg12", "ls_stl", "pre_classical")),
-       dp.reg12.round(2).to_dict())
-    ok("SF8: preliminary months keep every component on its side", all((dp.loc[c, "reg12"] < -1) == (c in GOLD_SET) for c in COMPONENTS))
-    ok("SF9: the regulation defines the quarter", "three months beginning on 1 January" in regn)
-    ok("SF10: the comparison is unrounded (regulation 2(2)), and rounding to one decimal gives the same set",
-       "made on unrounded figures" in regn and C.designated(df.round(1), "reg12") == GOLD_SET)
-    ind = indirect_by_division(target)
-    ok("SF11: census divisions adjusted and summed give the same call", [c for c in W.RCODE if ind[c] < -1] == GOLD_SET,
-       {c: round(v, 2) for c, v in ind.items()})
-    qr = quarterly_route(s)
-    ok("SF12: the quarterly series adjusted with quarter effects and a level shift gives the same call",
-       [c for c in W.RCODE if qr[c] < -1] == GOLD_SET, {c: round(v, 2) for c, v in qr.items()})
-    d24 = C.routes(C.series(target, from_2024=True))
-    ok("closure 8: the seasonal pattern from 2024 on only (the monthly file alone) gives the same call",
-       C.designated(d24, "reg12") == GOLD_SET and C.designated(d24, "ls_stl") == GOLD_SET)
+    # ---------------------------------------------------------------- the corridor (C3)
+    var = M.variants(F)
+    une, lab = GD.read_cells(target)
+    Fn = nat_cells(une, lab)
+    for pre in (24, 36, 42):
+        u = Fn["t"] >= W.PHASE - pre
+        var[("national", pre, "each")] = float(M.mis_effects(Fn, u, True, True).mean())
+        b = M.fe(Fn, [Fn["new"], Fn["new"] * (Fn["m"] >= 2)], u, True)
+        var[("national", pre, "first/later")] = float(b[0] + 5.0 / 6.0 * b[1])
+    if S_ is not None:
+        Fc = sexage_cells(S_)
+        u = Fc["t"] >= W.PHASE - 42
+        for wt in (True, False):
+            e = fe_sparse(Fc, [Fc["new"] * (Fc["m"] == j) for j in range(1, 7)], u, wt)
+            var[("sex and age cells", wt)] = float(e.mean())
+    vals = np.array(list(var.values()))
+    ok("C3 corridor: every implementation rounds to 0.5", all(round(v + 1e-9, 1) == 0.5 for v in vals),
+       "%.4f to %.4f over %d" % (vals.min(), vals.max(), len(vals)))
+    ok("C3 corridor: every implementation 0.02 or more from a rounding edge",
+       vals.min() >= 0.47 and vals.max() <= 0.53, "%.4f to %.4f" % (vals.min(), vals.max()))
+    ok("golden: the first-interview effect is negative and the later ones positive",
+       X["eff"][0] < -0.3 and (X["eff"][1:] > 0.4).all(), np.round(X["eff"], 3).tolist())
 
-    # ------------------------------------------------------------------ the three rules on the clean truth
-    if world is not None:
-        cs = clean_series(world)
-        cd = C.routes(cs)
-        ok("R3a on the clean truth: STL across the change files the wrong four", C.designated(cd, "stl") == DEFAULT_SET,
-           C.designated(cd, "stl"))
-        ok("R3a on the clean truth: the classical decomposition files the wrong four", C.designated(cd, "classical") == DEFAULT_SET)
-        ok("R3b on the clean truth: the level shift removed files the golden", C.designated(cd, "reg12") == GOLD_SET
-           and C.designated(cd, "ls_stl") == GOLD_SET)
-        ok("clean-data test: the pack's series equal the clean truth (the mess is all in layout, codes and revisions)",
-           (cs.values == s.values).all())
-        R = world["R"]
-        rep = S.reported(R)
-        tru = {c: S.truth(R, rep, c) for c in W.RCODE}
-        ok("truth: the simulation's own seasonal factors designate the golden", [c for c in W.RCODE if tru[c] < -1] == GOLD_SET,
-           {c: round(v, 2) for c, v in tru.items()})
-    ok("R1 raw material: the monthly municipality by sector statistics ship for every month from January 2021",
-       len(s.index) == 75 and s.index[0] == "2021-01" and s.index[-1] == "2027-03")
-    adj = []
-    for f in files:
-        if f.endswith(".csv"):
-            head = open(os.path.join(target, f), encoding="utf-8").readline().lower()
-            if "season" in head or "adjust" in head or "designat" in head or "factor" in head:
-                adj.append(f)
-    ok("R1: no shipped column holds an adjusted figure, a factor or a designation", not adj, adj)
-    ok("R2 revisions: mishandled, the call holds", C.designated(dp, "reg12") == GOLD_SET)
-    ok("R2 concordance: retired codes dropped, the call holds", C.designated(d1, "reg12") == GOLD_SET)
-    ok("R2 layouts: the yearly tables left out, the call holds", C.designated(d24, "reg12") == GOLD_SET)
-    wide = C.wide(target)
-    g24 = wide[wide.month == "2023-12"].jobs.sum()
-    lng = C.long(target)
-    ok("R2 industry codes: the yearly tables' groups and the monthly file's sectors carry whole totals (December 2023 to January 2024 within 3 per cent)",
-       abs(lng[lng.month == "2024-01"].jobs.sum() / g24 - 1) < 0.03, (int(g24), int(lng[lng.month == "2024-01"].jobs.sum())))
-    calc_src = open(os.path.join(HERE, "calc.py"), encoding="utf-8").read()
-    series_src = calc_src[calc_src.index("def series"):calc_src.index("def routes")]
-    ok("R2 workplace returns: the call reads no workplace line (separation line)", "work" not in series_src and "lfs" not in series_src
-       and "pop" not in series_src)
+    # ---------------------------------------------------------------- the wrong routes, by name
+    wr = M.wrong_routes(F, X["nat"])
+    ok("R0: no restatement files 6.0", restate(0.0) == 6.0)
+    ok("R1 (default): the arm gap files 7.2", restate(wr["R1 arm gap"]) == 7.2, "%.3f" % wr["R1 arm gap"])
+    ok("R1': the rotation-group letter held fixed files 7.2", restate(wr["R1 rotation letter held fixed"]) == 7.2,
+       "%.3f" % wr["R1 rotation letter held fixed"])
+    r2 = wr["R2 one effect"]
+    ok("R2: one effect within month in sample files 6.3 or 6.4 on every implementation",
+       all(restate(v) in (6.3, 6.4) for v in r2.values()) and max(r2.values()) <= 0.42,
+       "%.3f to %.3f" % (min(r2.values()), max(r2.values())))
+    r3 = wr["R3 continuing households"]
+    ok("R3': the continuing households' effect files 6.7", all(restate(v) == 6.7 for v in r3.values()),
+       "%.3f to %.3f" % (min(r3.values()), max(r3.values())))
+    ok("event: 2026 against 2024 in the published rate files 6.8", restate(wr["event 2026 against 2024"]) == 6.8,
+       "%.3f" % wr["event 2026 against 2024"])
+    sets = {"R0": M.designated(X["avg"], 6.0), "R2 6.3": M.designated(X["avg"], 6.3),
+            "R2 6.4": M.designated(X["avg"], 6.4), "R3'": M.designated(X["avg"], 6.7),
+            "event": M.designated(X["avg"], 6.8), "R1": M.designated(X["avg"], 7.2)}
+    ok("ladder: every wrong route designates another set",
+       all(v != X["designated"] for v in sets.values()), {k: v for k, v in sets.items()})
+    ok("ladder: R0 designates six, R2 five, the golden four, R1 two",
+       (len(sets["R0"]), len(sets["R2 6.3"]), len(sets["R2 6.4"]), len(X["designated"]), len(sets["R1"])) ==
+       (6, 5, 5, 4, 2))
+    ok("dominance: the nearest wrong routes sit 0.07 or more from the golden's corridor",
+       min(abs(np.array(list(r2.values())) - vals.min()).min(),
+           abs(np.array(list(r3.values())) - vals.max()).min()) >= 0.07)
 
-    # ------------------------------------------------------------------ the asks
-    wp = C.workplaces(target)
-    gl = C.jobs_lost(wp, "workplace")
-    for k in ("account_number", "business_address", "legal_address"):
-        o = C.jobs_lost(wp, k)
-        dmin = int((o - gl).abs().min().min())
-        ok("ask A: keyed on %s every figure misses by 15 or more" % k, dmin >= 15, dmin)
-    edge = [(c, col, int(gl.loc[c, col])) for c in W.RCODE for col in ("none", "fewer") if int(gl.loc[c, col]) % 10 not in (8, 9, 0, 1, 2)]
-    ok("ask A: every golden figure mid-bin (within 2 of its ten)", not edge, edge)
-    emp = C.employers(wp, "business")
-    for k in ("account", "legal_name", "operating_name"):
-        o = C.employers(wp, k)
-        ok("ask B: counted by %s every region misses" % k, ((o - emp).abs() >= 5).all(), (o - emp).to_dict())
-    wp["bn"] = wp.payroll_account.str[:9]
-    wp["addr"] = wp.municipality_code + "|" + wp.street_address
-    by_addr = wp.groupby("addr").agg(bns=("bn", "nunique"), accts=("payroll_account", "nunique"))
-    moved = wp[wp.addr.isin(by_addr.index[by_addr.bns > 1])]
-    ok("ask A device: five workplaces a region changed hands (an address under two businesses across the months)",
-       (moved.groupby("region").addr.nunique() == 5).all() and len(moved.addr.unique()) == 50,
-       moved.groupby("region").addr.nunique().to_dict())
-    one_month = wp.groupby(["addr", "reference_month"]).bn.nunique()
-    ok("ask A device: no address carries two businesses in one month", (one_month == 1).all())
-    ok("ask A device: a thousand or more addresses carry lines on two accounts", int((by_addr.accts > 1).sum()) >= 1000,
-       int((by_addr.accts > 1).sum()))
-    keys = wp.groupby(["reference_month", "payroll_account", "workplace_no"]).size()
-    ok("hygiene: account, workplace number and month unique (the battery passes)", (keys == 1).all())
-    ok("hygiene: no repeated row", not wp.duplicated().any())
-    ok("hygiene: every municipal code joins the concordance", wp.region.notna().all())
-    two = wp[(wp.reference_month == "2027-03") & (wp.payroll_jobs > 0)].groupby(["region", "bn"]).payroll_account.nunique()
-    two = two[two > 1].groupby(level=0).size()
-    ok("ask B device: 15 or more businesses a region pay from two accounts", (two.reindex(W.RCODE).fillna(0) >= 15).all(), two.to_dict())
-    nil = wp[(wp.reference_month == "2027-03") & (wp.payroll_jobs == 0)]
-    allb = wp[wp.reference_month == "2027-03"].groupby("region").bn.nunique()
-    ok("hazard: nil lines listed (seasonal workplaces with no employees paid)", len(nil) > 100, len(nil))
-    ok("hazard: counting nil lines' employers moves ask B in the seasonal regions", ((allb - emp).reindex(["E02", "E04", "E05", "E06", "E10"]) >= 10).all(),
-       (allb - emp).to_dict())
-    lines_m = {}
-    for m in ("2026-03", "2027-03"):
-        a = wp[wp.reference_month == m].groupby("region").payroll_jobs.sum()
-        lines_m[m] = (a.reindex(W.RCODE) == s.loc[m].reindex(W.RCODE)).all()
-    ok("oracle: the workplace returns' March totals tie to the revised statistics in both months", all(lines_m.values()), lines_m)
+    # ---------------------------------------------------------------- margins and the semantic fork table
+    edge = np.abs((X["avg"] * 100) % 1 - 0.5)
+    ok("bins: no region's 2026 average sits on a two-decimal rounding edge", edge.min() >= 0.15,
+       "%.3f" % edge.min())
+    ok("margin: no region's 2026 average within 0.04 of 6.5", np.abs(X["avg"] - 6.5).min() >= 0.04,
+       "%.3f" % np.abs(X["avg"] - 6.5).min())
+    act_text = pdf_text(os.path.join(target, P.FILES["act"]))
+    ok("SF1: the Act's trigger is 6.0 per cent", "The trigger rate is 6.0 per cent" in act_text)
+    ok("SF2: the change rounded then added equals the sum rounded",
+       round(6.0 + round(X["G"], 1), 1) == round(6.0 + X["G"] + 1e-9, 1) == 6.5)
+    ok("SF3: a comparison of periods (2026 against 2024) files another trigger",
+       restate(wr["event 2026 against 2024"]) != 6.5)
+    ok("SF4: weighted and unweighted regional cells both round to 0.5",
+       all(round(v + 1e-9, 1) == 0.5 for k, v in var.items() if isinstance(k, tuple) and len(k) == 5))
+    ok("SF5: the phase-in as seen (the arm gap) files another trigger", restate(wr["R1 arm gap"]) != 6.5)
+    ok("SF6: half up and half to even agree", round(X["G"], 1) == float(np.round(X["G"], 1)))
+    ok("SF7: at or above and strictly above designate the same regions",
+       [c for i, c in enumerate(W.RCODE) if X["avg"][i] > 6.5] == X["designated"])
+    unr = S.published(S_)[0] if S_ is not None else None
+    if unr is not None:
+        avg_unr = unr[W.Y26:].mean(0)
+        tot = (S_["une"].sum(axis=(2, 3, 4))[W.Y26:].sum(0) / (S_["une"] + S_["emp"]).sum(axis=(2, 3, 4))[W.Y26:].sum(0)) * 100
+        ok("SF8: every reading of the twelve-month average designates the same regions",
+           M.designated(avg_unr, 6.5) == X["designated"] == M.designated(tot, 6.5),
+           "North Coast %.3f %.3f %.3f" % (X["avg"][2], avg_unr[2], tot[2]))
+    ok("SF9: every rotation group answers the redesigned questionnaire in every month of 2026",
+       all(W.redesigned(t, g) for t in range(W.Y26, W.T) for g in range(6)))
+    F19 = dict(F)
+    remap = {W.RCODE.index(c): W.RCODE.index(W.CODE19[c]) for c in W.RCODE}
+    F19["r"] = np.array([remap[r] if t < W.MONTHS.index("2025-01") else r for t, r in zip(F["t"], F["r"])])
+    ok("SF10: reading the 2019 codes as 2025 codes leaves the change unchanged",
+       abs(M.golden_break(F19)[0] - X["G"]) < 1e-9)
+    gcsv = pd.read_csv(os.path.join(golden_dir, GD.CSV_NAME), dtype={"region": str})
+    pre = gcsv[gcsv["month"] < "2025-07"]
+    ok("SF11: months before July 2025 restated by the change as determined (one decimal place) for every region alike",
+       np.allclose(pre["redesigned_basis_rate"] - pre["published_rate"], X["change"], atol=1e-9))
+    ph = gcsv[gcsv["month"] >= "2025-07"]
+    ok("SF12: July 2025 on carried as published (the transition months marked)",
+       np.allclose(ph["redesigned_basis_rate"], ph["published_rate"], atol=1e-9) and
+       set(gcsv[(gcsv["month"] >= "2025-07") & (gcsv["month"] <= "2025-11")]["collected_on"]) ==
+       {"both questionnaires (as published)"})
+    gs = pd.read_csv(os.path.join(golden_dir, GD.CSV_NAME), dtype=str)
+    ok("SF12: every CSV rate carries one decimal place, as the release publishes",
+       gs["published_rate"].str.fullmatch(r"\d+\.\d").all() and gs["redesigned_basis_rate"].str.fullmatch(r"\d+\.\d").all())
+    trunc = [float(M.mis_effects(F, F["t"] <= W.PHASE + k).mean()) for k in (4, 5)]
+    ok("SF15: reading the effects only from the months before full use (to November or December 2025) files another "
+       "trigger, which the Act's 'once the change is in full use' rules out", all(restate(v) != 6.5 for v in trunc),
+       "%.3f and %.3f" % tuple(trunc))
+    fw = pd.read_parquet(os.path.join(target, P.FILES["field"]))
+    ok("SF13: the fieldwork file holds the contact months October to December 2026",
+       sorted(fw["contact_month"].unique()) == ["2026-10", "2026-11", "2026-12"])
+    st = M.dwellings_q4_stops(X["rows"], X["psu_region"])
+    ok("SF14: full interviews only gives another count", st["complete only"]["all"] != X["q4"]["all"],
+       "%d against %d" % (st["complete only"]["all"], X["q4"]["all"]))
 
-    # ------------------------------------------------------------------ distractors
-    lfs = pd.read_csv(os.path.join(target, W.FILES["lfs"]))
-    e26 = lfs[lfs.reference_month.str.startswith("2026")].groupby("economic_region_code").employment_thousands.mean()
-    e27 = lfs[lfs.reference_month.isin(["2027-01", "2027-02", "2027-03"])].groupby("economic_region_code").employment_thousands.mean()
-    lset = sorted(c for c in W.RCODE if 100 * (e27[c] / e26[c] - 1) < -1)
-    ok("distractor: the labour force survey's reading designates neither the golden nor the default", lset not in (GOLD_SET, DEFAULT_SET), lset)
-    ok("distractor: the call and the asks read neither distractor", "lfs" not in calc_src.replace("self", "") and W.FILES["pop"] not in calc_src)
+    # ---------------------------------------------------------------- the three rules, executed
+    ok("R1 the field's raw material ships: estimation cells by month, region, rotation group, sex and age on both "
+       "questionnaires", world["counts"]["old"] > 60000 and world["counts"]["new"] > 8000)
+    heads = open(os.path.join(target, P.FILES["old"])).readline() + open(os.path.join(target, P.FILES["new"])).readline()
+    ok("R1 no shipped column holds month in sample, the change or a designation",
+       not re.search(r"(?i)mis\b|month_in_sample|interview|effect|change|designat|trigger", heads), heads.strip())
+    if S_ is not None:
+        L = (S_["lf"]).sum(axis=(3, 4)).astype(float)
+        truth = (S_["p"] * S_["lf"]).sum(axis=(3, 4)) / L
+        Ft = M.cells_from(truth * L / 100.0, L)
+        ag = M.arm_gap(Ft)
+        ok("R3a analyst test: on the clean truth the arm gap files 7.2 and designates River Delta and Highlands",
+           restate(ag) == 7.2 and M.designated(X["avg"], restate(ag)) == ["08", "09"], "%.3f" % ag)
+        gt, et = M.golden_break(Ft)
+        ok("R3b the decisive step alone: the six effects averaged on the clean truth file 6.5", restate(gt) == 6.5,
+           "%.4f" % gt)
+        one = float(M.fe(Ft, [Ft["new"]], Ft["t"] >= 0, True)[0])
+        ok("R3b the first correction alone (one effect, month in sample fixed) files 6.3 or 6.4 on the clean truth",
+           restate(one) in (6.3, 6.4), "%.3f" % one)
+        ok("R3b the clean truth's effects: first interview %.2f, later %.2f (within 0.015, the sampled sex and age mix)"
+           % (W.FIRST_EFFECT, W.LATER_EFFECT),
+           abs(et[0] - W.FIRST_EFFECT) < 0.015 and np.allclose(et[1:], W.LATER_EFFECT, atol=0.015),
+           np.round(et, 3).tolist())
+    reg_rel = X["reg"]
+    rep = any((reg_rel[t] == reg_rel[t + 12]).all() for t in range(W.T - 12))
+    ok("R3c no copied or repeated block in the published regional rates", not rep)
+    docs_text = pdf_text(os.path.join(target, P.FILES["note"])) + act_text
+    ok("R3c no document states a change, a restated trigger or a designation",
+       not re.search(r"restated (trigger )?(rate )?(is|of|at) \d|\b6\.[1-9] per cent|designat\w+ (are|is) [A-Z]", docs_text))
+    Fk = dict(F)
+    oldq = np.array([not W.redesigned(t, g) for t, g in zip(F["t"], F["g"])])
+    Fk["w"] = np.where(oldq, F["w"] / 1000.0, F["w"])
+    gk = M.golden_break(Fk)[0]
+    ok("R2 mess: CAI 2014's thousands left unconverted (cells weighted 1,000 times too light) still files 6.5",
+       restate(gk) == 6.5, "%.4f" % gk)
+    early = M.designated(reg_rel[W.Y26 - 1:W.Y26 + 11].mean(0), 6.5)
+    ok("R2 mess: the release's Table 2 read one month early still designates the same regions",
+       early == X["designated"], early)
 
-    # ------------------------------------------------------------------ goldens
-    gcsv = pd.read_csv(os.path.join(golden_dir, "regional_payroll_jobs_2027q1.csv"))
-    ok("golden CSV: every region, in the Schedule's order", list(gcsv.economic_region_code) == W.RCODE)
-    ok("golden CSV: ask A figures, nearest 10", all(gcsv.jobs_lost_workplaces_none_left_2027_03 == [int(round(gl.loc[c, "none"] / 10.0)) * 10 for c in W.RCODE])
-       and all(gcsv.jobs_lost_workplaces_kept_some_2027_03 == [int(round(gl.loc[c, "fewer"] / 10.0)) * 10 for c in W.RCODE]))
-    ok("golden CSV: ask B figures", all(gcsv.employers_with_payroll_jobs_2027_03 == [int(emp[c]) for c in W.RCODE]))
-    gtxt = pdf_text(os.path.join(golden_dir, "rapid_response_certification_2027q1.pdf"))
-    ok("golden PDF: names the three designated regions", all(W.RNAME[c] in gtxt for c in GOLD_SET) and "Capital" in gtxt)
-    figs = json.load(open(os.path.join(HERE, "figures.json")))
-    ok("figures.json: the call", figs["call"] == [W.RNAME[c] for c in GOLD_SET])
-    ok("figures.json: the default call", figs["default_call"] == [W.RNAME[c] for c in DEFAULT_SET])
+    # ---------------------------------------------------------------- the ask
+    ok("ask: golden counts", X["q4"]["all"] == sum(X["q4"][c] for c in W.RCODE), X["q4"])
+    ok("ask cracker (dwelling references counted) misses every figure",
+       all(st["slots"][k] != X["q4"][k] for k in W.RCODE + ["all"]), st["slots"])
+    for k in ("interviews", "every dwelling", "complete only", "eligible"):
+        ok("ask stop '%s' misses every figure" % k, all(st[k][c] != X["q4"][c] for c in W.RCODE + ["all"]))
+    ok("ask: no golden count is round", all(X["q4"][k] % 100 for k in W.RCODE + ["all"]))
+    tmp = tempfile.mkdtemp()
+    try:
+        for f in files:
+            if f not in (P.FILES["field"], P.FILES["psu"]):
+                shutil.copy(os.path.join(target, f), tmp)
+        une2, lab2 = GD.read_cells(tmp)
+        F2 = M.cells_from(une2, lab2)
+        reg2, _ = GD.read_release(tmp)
+        ok("separation: the change and the designation need no fieldwork row or unit lookup",
+           M.golden_break(F2)[0] == X["G"] and M.designated(M.averages_2026(reg2), restate(M.golden_break(F2)[0])) ==
+           X["designated"])
+        for f in dis:
+            if os.path.exists(os.path.join(tmp, f)):
+                os.remove(os.path.join(tmp, f))
+        une3, lab3 = GD.read_cells(tmp)
+        ok("distractors: the golden is unchanged with every distractor deleted",
+           M.golden_break(M.cells_from(une3, lab3))[0] == X["G"])
+    finally:
+        shutil.rmtree(tmp)
 
-    # ------------------------------------------------------------------ realism sweep
-    vec = {tuple(s.loc[m].values) for m in s.index}
-    ok("realism: no two months share every region's total", len(vec) == len(s.index))
-    blocks = [tuple(s[c].values[k:k + 12]) for c in W.RCODE for k in range(0, len(s.index) - 12)]
-    ok("realism: no twelve-month run repeats in any region", len(set(blocks)) == len(blocks))
-    diffs = s.diff().iloc[1:]
-    flat2 = [(m, c) for c in W.RCODE for k, m in enumerate(diffs.index[1:], 1) if diffs[c].iloc[k] == 0 and diffs[c].iloc[k - 1] == 0]
-    ok("realism: no region flat three months running", not flat2, flat2)
-    graded = [v for row in gcsv.itertuples() for v in (row.jobs_lost_workplaces_none_left_2027_03, row.jobs_lost_workplaces_kept_some_2027_03)]
-    for code in GOLD_SET:
-        r = figs["regions"][W.RNAME[code]]
-        graded += [r["sa_jobs"], r["avg_2026"]]
-    ok("realism: no graded jobs figure a multiple of 100", not [v for v in graded if v % 100 == 0], [v for v in graded if v % 100 == 0])
-    same = [row.economic_region for row in gcsv.itertuples() if row.jobs_lost_workplaces_none_left_2027_03 == row.jobs_lost_workplaces_kept_some_2027_03]
-    ok("realism: no region's two ask A figures equal", not same, same)
-    note = pdf_text(os.path.join(target, W.FILES["note"]))
-    ok("realism: the release note signed by the card's liaison", W.PEOPLE["liaison"][0] in note)
-    people = {p for p, _ in W.PEOPLE.values()}
-    trans = open(os.path.join(target, W.FILES["trans"]), encoding="utf-8").read()
-    named = set(re.findall(r"(?:From|To): ([A-Z][a-z]+ [A-Z][a-z]+)", trans))
-    ok("realism: every person named in the transmittal is on the card", named and named <= people, named)
-    for f in files:
-        if f.endswith(".xlsx"):
-            z = zipfile.ZipFile(os.path.join(target, f))
-            core = z.read("docProps/core.xml").decode()
-            ok("container: %s carries no writer's name" % f, "openpyxl" not in core and "openpyxl" not in z.read("docProps/app.xml").decode())
-        if f.endswith(".pdf"):
-            b = open(os.path.join(target, f), "rb").read()
-            ok("container: %s carries no library banner" % f, b"ReportLab" not in b and b"reportlab" not in b)
-    mt = {os.path.getmtime(os.path.join(target, f)) for f in files}
-    ok("timestamps: every file stamped at the assembly time", len(mt) == 1, mt)
-    months = set(wp.reference_month)
-    ok("timestamps: no record after the extract (March 2027 the latest month)", max(months) == "2027-03" and max(s.index) == "2027-03")
-    em = [f for f in files if "\u2014" in open(os.path.join(target, f), "rb").read().decode("latin-1")]
-    ok("house: no em dash in a text file", not [f for f in files if f.endswith((".csv", ".txt")) and "\u2014" in open(os.path.join(target, f), encoding="utf-8").read()])
+    # ---------------------------------------------------------------- realism sweep
+    q4v = [X["q4"][c] for c in W.RCODE]
+    ok("realism: no two regions share a count or a 2026 average", len(set(q4v)) == W.R and
+       len(set(np.round(X["avg"], 3))) == W.R)
+    ok("realism: the published national rate is never flat for five months",
+       not any(len(set(X["nat"][t:t + 5])) == 1 for t in range(W.T - 4)))
+    cells = pd.read_csv(os.path.join(target, P.FILES["new"]))
+    g_ = cells.groupby(["region", "rotation_group", "sex", "age_band"])["unemployed"]
+    ok("realism: ICS cells vary (a weighted count repeats within under 3 per cent of cell series, as chance gives "
+       "for counts of this size)",
+       (g_.nunique() != g_.count()).mean() < 0.03, "%d of %d" % ((g_.nunique() != g_.count()).sum(), g_.ngroups))
+    people = set(W.PEOPLE.values())
+    repo = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    card = json.load(open(os.path.join(repo, ".claude", "skills", "fingerprint", "cards", "task453.json")))
+    ok("realism: every persona in the pack is on the card", people <= set(card["world"]["people"]), sorted(people))
+    raw = b"".join(open(os.path.join(target, f), "rb").read() for f in files if f.endswith((".pdf", ".xlsx")))
+    ok("realism: containers carry no writing library's name",
+       not re.search(rb"ReportLab|reportlab|openpyxl|matplotlib", raw))
+    txt = "".join(open(os.path.join(target, f), encoding="utf-8").read() for f in files if f.endswith(".csv"))
+    ok("realism: no em or en dash in any text file", "—" not in txt and "–" not in txt and
+       "—" not in docs_text and "–" not in docs_text)
+    figs = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")))
+    exc = []
+    for pre in (24, 36, 42):
+        for wt in (True, False):
+            use = (F["t"] < W.PHASE) & (F["t"] >= W.PHASE - pre)
+            b = M.fe(F, [(F["m"] == j).astype(float) for j in range(2, 7)], use, wt, mis_fe=False)
+            prof = np.concatenate([[0.0], b])
+            exc.append(prof[0] - prof.mean())
+    ok("figures: the first-interview excess rounds to 1.3 on every implementation",
+       all(round(e + 1e-9, 1) == 1.3 for e in exc) and figs["first_interview_excess_points"] == 1.3,
+       "%.3f to %.3f" % (min(exc), max(exc)))
+    ok("figures: the arm gap rounds to 1.2 and files 7.2", figs["arm_gap_points"] == 1.2 and
+       figs["arm_gap_trigger_pct"] == 7.2)
+    nc = 6.5 - float(X["avg"][W.RCODE.index("03")])
+    ok("figures: North Coast misses the restated trigger by its computed shortfall, 0.04 or more",
+       figs["north_coast_shortfall_points"] == round(nc, 2) and nc >= 0.04, "%.4f" % nc)
+    ok("figures.json: the call as computed", figs["restated_trigger_pct"] == X["trigger"] and
+       figs["change_points"] == X["change"] and figs["q4_responding_dwellings"]["all"] == X["q4"]["all"])
 
-    fails = [(l, d) for l, c, d in RESULTS if not c]
-    for l, c, d in RESULTS:
-        print("%s  %s%s" % ("PASS" if c else "FAIL", l, "" if c else "  (%s)" % (d,)))
-    print("%d checks, %d failed" % (len(RESULTS), len(fails)))
-    return not fails
+    bad = [r for r in RESULTS if not r[1]]
+    for label, good, detail in RESULTS:
+        print("%s  %s%s" % ("PASS" if good else "FAIL", label, ("  [%s]" % (detail,)) if detail != "" else ""))
+    print("checks: %d, failed %d" % (len(RESULTS), len(bad)))
+    return not bad
 
 
-def math_floor1(v):
-    import math
-    return math.floor(v * 10 + 1e-9) / 10.0
-
-
-def math_ceil1(v):
-    import math
-    return math.ceil(v * 10 - 1e-9) / 10.0
-
-
-if __name__ == "__main__":
-    T = os.path.dirname(HERE)
-    sys.exit(0 if run(os.path.join(T, "target"), os.path.join(T, "golden"), meta_path=os.path.join(T, "metadata.json")) else 1)
+def pdf_text(path):
+    from pypdf import PdfReader
+    return "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)

@@ -2,77 +2,53 @@
 
 ## Tags
 
-**Domain:** Survey Research & Official Statistics, seasonal adjustment and official time-series production (a provincial statistics bureau's monthly payroll jobs for ten economic regions, built from the revenue agency's employer return statistics and seasonally adjusted for a statutory designation).
-**Analytical objective:** Data Extraction & Conformation (ETL) (the agency's yearly tables to 2023, its monthly statistics from 2024 with the revision file's months in place of the preliminary ones and the bureau's municipal concordance conformed into each region's monthly payroll jobs, seasonally adjusted on one placement; the agency's workplace returns conformed into each region's employers and the jobs its workplaces lost).
+**Domain:** Survey Research & Official Statistics, seasonal adjustment and official time-series production (a published unemployment rate carried across a questionnaire redesign phased in through the Labour Force Survey's rotation groups, and the statutory trigger that reads it restated).
+**Analytical objective:** Data Extraction & Conformation (ETL) (the survey's two collection systems, CAI 2014 for the previous questionnaire and ICS for the redesigned one, conformed with the region concordance and the release into one series on the redesigned basis).
 
 ## 1. Final Recommendation
 
-**Certify Brennick Valley, the Capital and Pellmarsh Hills as designated for the first quarter of 2027.**
+**Restate the Regional Employment Support Act's trigger at 6.5 per cent, which designates Eastern Ranges, Western Coast, River Delta and Highlands for 2027.**
 
-With each region's seasonal pattern estimated with the January 2026 move to workplace placement removed as a level shift, their seasonally adjusted payroll jobs for January to March 2027 stand 1.8 to 2.3 per cent (Brennick Valley), 1.5 to 1.7 per cent (the Capital) and 2.0 to 2.6 per cent (Pellmarsh Hills) below their 2026 averages, and every other region stands at least 0.63 points clear of the 1.0 per cent line. Not Kestrow North and Varrenby Shore, which a seasonal adjustment estimated across the change designates at 1.6 and 1.5 per cent below: the steps of 27.6 and 23.2 per cent that brought their mines, mills and plants into their series in January 2026 leak into the first quarter's seasonal factors and pull 2027 down, and the same leak lifts the Capital, which lost 16.3 per cent, to 0.6 per cent below.
+With every rotation group answering it, the redesigned questionnaire puts the published national unemployment rate 0.5 percentage points higher than the previous questionnaire would have for the same months, read interview by interview against the same interview on the previous questionnaire. Not the gap between the two questionnaires' rotation groups in July to November 2025 (1.2 points, a trigger of 7.2 per cent): it sets the redesign's first interviews against the previous questionnaire's last ones, and first interviews ran 1.3 points above the six-interview average. Not one effect with the interview number held fixed (a trigger of 6.3 or 6.4 per cent): the redesign lowers the rate at a first interview and raises it from the second, where dependent interviewing applies, and one effect leans on the first interviews the phase-in is made of. North Coast misses the restated trigger by 0.06 points.
 
 ## 2. Critical Components
 
-1. The Capital's seasonally adjusted payroll jobs for the first quarter of 2027 are **1.5 to 1.7 per cent** below its 2026 average.
-2. Brennick Valley's are **1.8 to 2.3 per cent** below and Pellmarsh Hills' **2.0 to 2.6 per cent** below their 2026 averages.
-3. Kestrow North's and Varrenby Shore's each stand between **0.4 per cent below and 0.2 per cent above** their 2026 averages.
+1. The change in the published national rate is **+0.5** percentage points (0.4848 before rounding), the average of the six interview effects.
+2. Before July 2025 a first interview ran **1.3** points above the average of the six interviews.
+3. The restated trigger is **6.5** per cent (6.0 plus 0.5, Act section 9(2)).
+4. The 2026 twelve-month averages of the designated regions: Eastern Ranges **6.58**, Western Coast **6.64**, River Delta **7.44**, Highlands **8.32**; North Coast **6.44**.
 
 ## 3. Step-by-Step Solution
 
-1. Built each economic region's monthly payroll jobs from January 2021 to March 2027: the 2021 to 2023 sheets of pra_payroll_jobs_by_municipality_2021-2023.xlsx and pra_payroll_jobs_monthly_2024-01_2027-03.csv, with January to March 2027 from pra_payroll_jobs_revisions_2027-05-07.csv (regulation 3(2); the transmittal says the revision file replaces those months), each municipality placed in its economic region by bsea_municipal_concordance.xlsx, the retired Wexleigh and Dorran codes included.
-2. Read pra_release_note_place_of_work_2026-02.pdf: from January 2026 the statistics place jobs at the workplace, before at the employer's account address, and the earlier months were not revised; each region's series steps at January 2026, by a level shift of 16.3 per cent down in the Capital and 27.6 and 23.2 per cent up in Kestrow North and Varrenby Shore.
-3. Estimated each region's seasonal pattern on one placement: a regression of the logarithm of its monthly payroll jobs on month effects, a trend whose slope changes each January and a level shift from January 2026, the seasonally adjusted series being the jobs with the month effects removed; the ranges in block 2 span this regression with knots every one or two years and over 2023 to 2027 only; STL with a 7 or 13 year seasonal window and the classical decomposition, each on the history restated by the level shift; STL and the classical decomposition on the months before the change alone, their last year's factors carried forward; and STL on the history restated by the December to January, first-quarter or annual ratio.
-4. Averaged each region's seasonally adjusted payroll jobs over January to March 2027 and set them against the average of its payroll jobs for the twelve months of 2026 (regulation 1(2)), unrounded (2(2)): Brennick Valley 1.9, the Capital 1.6 and Pellmarsh Hills 2.1 per cent below, every other region at least 0.63 points clear of the line.
-5. Estimated across the change instead (STL or the classical decomposition over the whole history), the seasonal factors take up part of each step: Kestrow North and Varrenby Shore fall to 1.6 and 1.5 per cent below and the Capital rises to 0.6 per cent below.
-6. For the jobs lost at each region's workplaces (regulation 4(1)(a)), compared each workplace's payroll jobs in March 2026 and March 2027 in pra_workplace_returns_2026-03_2027-03.csv, a workplace being its municipality and street address: a workplace sold, or moved to another of its employer's payroll accounts, keeps its address under a new account and workplace number, and a workplace listed on two of its employer's accounts is one workplace. At each workplace whose payroll jobs fell, the fall is the jobs lost, summed by region for the workplaces with none left in March 2027 (gone from the schedules or listed with no employees paid) and for those that kept some.
-7. For each region's employers (regulation 4(1)(b)), counted the employers (the business number, a payroll account's first nine digits, of the employer that holds the account) with a March 2027 line in the region with payroll jobs above zero; an employer paying from two accounts is one employer.
-8. Recommendation: certify Brennick Valley, the Capital and Pellmarsh Hills as designated for the first quarter of 2027.
+1. Conformed lfs_cai2014_estimation_cells_2022-01_2025-11.csv (weighted thousands by LFSTAT, regions on the 2019 codes to December 2024, through region_classification_concordance_2019_2025.csv) and lfs_ics_estimation_cells_2025-07_2026-12.csv (weighted persons) into weighted unemployed and labour force by month, region and rotation group; each month reproduces Table 2 of lfs_release_2026-12_tables.xlsx.
+2. Gave each rotation group its interview number from the replacement schedule in lfs_redesigned_questionnaire_methodology_note.pdf section 1: before July 2025 a first interview ran 1.3 points above the six-interview average, and the gap between the two questionnaires' groups in July to November 2025 is 1.2 points, mostly that bias.
+3. Read the redesign's effect at each interview number against the same interview number on the previous questionnaire, month and region held fixed, January 2022 to December 2026: negative at the first interview, positive at the second to sixth.
+4. Averaged the six effects as a published estimate averages the six rotation groups (methodology note section 1): +0.4848, +0.5 points rounded (Act section 9(2)).
+5. Restated the trigger: 6.0 plus 0.5 is 6.5 per cent (sections 8 and 9).
+6. Averaged each region's twelve 2026 rates in Table 2 (section 3) and designated those at or above 6.5 (section 7): Eastern Ranges 6.58, Western Coast 6.64, River Delta 7.44 and Highlands 8.32; North Coast at 6.44 falls 0.06 short.
+7. Counted responding dwellings in lfs_fieldwork_contacts_2026q4.parquet: a dwelling is its dwelling_ref with the month it entered (contact month less interview_no plus one), responding on outcome 11 or 12, placed in its region by lfs_psu_region_lookup_2025.csv: 88,040 in all.
+8. Recommendation: restate the trigger at 6.5 per cent, designating Eastern Ranges, Western Coast, River Delta and Highlands.
 
 ## 4. Deliverable Answers
 
-### rapid_response_certification_2027q1.pdf
+### trigger_restatement_determination_2027.pdf
 
-1. The regions certified as designated for the first quarter of 2027: Brennick Valley, the Capital and Pellmarsh Hills.
-2. For each certified region (regulation 3(3)), its seasonally adjusted payroll jobs for the first quarter of 2027 as the range the step-aware routes give, nearest 10 (the certificate's own figure in brackets), and its payroll jobs for 2026, nearest 10:
-   - Brennick Valley: 24,680 to 24,800 (24,770); 2026: 25,250
-   - Capital: 81,940 to 82,070 (82,020); 2026: 83,320
-   - Pellmarsh Hills: 21,810 to 21,930 (21,930); 2026: 22,390
-3. Figure 1: a horizontal bar chart of every region's seasonally adjusted payroll jobs for the quarter against its 2026 average, in per cent to one decimal, with the designation line at 1.0 per cent below and the three certified regions dark.
+1. Restated trigger: 6.5 per cent.
+2. The change in the published unemployment rate it rests on: +0.5 percentage points.
+3. Regions designated for 2027: Eastern Ranges, Western Coast, River Delta and Highlands; not designated: Capital, Harbour, North Coast, Inland Plains and Southern Valleys.
+4. Responding dwellings, October to December 2026, each dwelling counted once:
+   - Capital: 14,827
+   - Harbour: 11,749
+   - North Coast: 9,532
+   - Inland Plains: 10,842
+   - Eastern Ranges: 7,981
+   - Southern Valleys: 9,007
+   - Western Coast: 7,532
+   - River Delta: 10,008
+   - Highlands: 6,562
+   - All regions: 88,040
+5. Line chart on page 1: the national unemployment rate as published (the original series) and on the redesigned basis, January 2024 to December 2026, July to November 2025 shaded as both questionnaires in the field, the 6.0 and 6.5 per cent triggers drawn at their values, titled with the 0.5-point change.
 
-### regional_payroll_jobs_2027q1.csv
+### regional_unemployment_redesigned_basis_2024-2026.csv
 
-One row per region in the Schedule's order (E01 to E10), with the columns economic_region_code, economic_region, employers_with_payroll_jobs_2027_03, jobs_lost_workplaces_none_left_2027_03 and jobs_lost_workplaces_kept_some_2027_03.
-
-4. Employers with payroll jobs at each region's workplaces in March 2027, whole numbers (employers_with_payroll_jobs_2027_03):
-   - Capital: 5,781
-   - Saltmere Coast: 3,490
-   - Brennick Valley: 2,125
-   - Dunfallow Bay: 1,386
-   - Quillon Plain: 2,197
-   - Hethervale Lakes: 1,288
-   - Ardvane Uplands: 1,116
-   - Kestrow North: 1,158
-   - Pellmarsh Hills: 1,617
-   - Varrenby Shore: 1,070
-5. Payroll jobs lost between March 2026 and March 2027 at each region's workplaces whose payroll jobs fell and that had none left in March 2027, nearest 10 (jobs_lost_workplaces_none_left_2027_03):
-   - Capital: 2,390
-   - Saltmere Coast: 1,430
-   - Brennick Valley: 820
-   - Dunfallow Bay: 570
-   - Quillon Plain: 940
-   - Hethervale Lakes: 490
-   - Ardvane Uplands: 340
-   - Kestrow North: 410
-   - Pellmarsh Hills: 840
-   - Varrenby Shore: 380
-6. Payroll jobs lost between March 2026 and March 2027 at each region's workplaces whose payroll jobs fell and that kept some, nearest 10 (jobs_lost_workplaces_kept_some_2027_03):
-   - Capital: 5,010
-   - Saltmere Coast: 1,760
-   - Brennick Valley: 1,670
-   - Dunfallow Bay: 740
-   - Quillon Plain: 1,220
-   - Hethervale Lakes: 690
-   - Ardvane Uplands: 540
-   - Kestrow North: 1,190
-   - Pellmarsh Hills: 1,660
-   - Varrenby Shore: 760
+6. One row per region and month, January 2024 to December 2026 (324 rows), with the published rate and the rate on the redesigned basis to one decimal place: to June 2025 the published rate plus 0.5, from July 2025 as published (July to November 2025 marked as both questionnaires in the field).

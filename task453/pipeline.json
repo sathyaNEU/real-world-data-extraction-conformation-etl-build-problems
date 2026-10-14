@@ -1,38 +1,50 @@
 {
   "task": "task453",
   "owner": "oviya1301",
-  "status": "DRAWING",
+  "status": "SHIPPED",
   "domain": "survey-research-official-statistics",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-14",
-  "stump": "The default path restates the trigger at 6.9 per cent because it reads the redesign's effect as the gap between the rotation groups on the redesigned questionnaire and those still on the old one in January to May 2026 (about +0.9 points), which sets first interviews against last ones and carries the survey's first-interview bias; read within month in sample and averaged over the six interviews the published rate averages, the break is about +0.3 points and the trigger 6.3 per cent.",
+  "stump": "The default path restates the trigger at 7.2 per cent, designating River Delta and Highlands only, because it reads the redesign's effect as the gap between the rotation groups on the redesigned questionnaire and those still on the previous one in July to November 2025 (+1.2 points), which sets mostly first interviews against last ones and carries the survey's first-interview bias; one effect with month in sample held fixed undershoots to 6.3 or 6.4; read within month in sample against the same month in sample before July 2025 and averaged over the six interviews the published rate averages, the change is +0.5 points and the trigger 6.5 per cent, designating Eastern Ranges, Western Coast, River Delta and Highlands.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-14",
+    "checks": 49
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (--asof 2027-01-25, final build)",
+    "reader": "pass 1: no decisive-step sentence, realism notes (response workbook drawn apart from the log, no code 32); pass 2: clean on the decisive step, realism notes (rectangular sample, benchmark multiples, one seasonal dip) and the count sentence closed; pass 3: clean, cosmetic notes fixed without moving a figure"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "0.06 (task184 v1 lineage); 0.05 task129 v1, task131 v1, task125, task40 lineage",
-    "note": "architecture 2 drawn 2026-10-14: guard WARN overuse.objective, repeat.gate_g, overuse.gate_g answered in the design note; v1, task125 and task450 differentiated on the card"
+    "heart": "WARN (overuse.objective, repeat.gate_g, overuse.gate_g, answered in the design note)",
+    "nearest": "0.07 (task125 v2 stump); drivers 0.06 task184 v1 lineage, 0.05 task129 v1, task131 v1, task125, task40 lineage",
+    "surface": "clean, 0 promoted (nearest task230 and task129 at 0.095)",
+    "note": "architecture 2 drawn 2026-10-14; v1, task125 and task450 differentiated on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (both passes)",
+    "disposition": "pass 1 FIX_NOW (the CSV's July to November 2025 rows estimator-dependent at two decimals; the base of the other rows open), fixed in the note's section 4 with the CSV at one decimal place; re-judge APPROVE",
+    "report": "task453/determinism_check_report.md (pass 1), task453/determinism_check_report_pass2.md (re-judge)"
   },
   "returned": [],
-  "resume": "stage 2: readability screen, fork table, ladder with tuned magnitudes, closure, literal reader, oracles, asks and prompt.txt to precut exit 0; then the v2 generator replaces v1's",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-14",
   "portal": null,
   "lineage_note": "architecture 1 shipped 2026-10-13 (judge DETERMINISTIC, APPROVE; delivered, pending review) and was re-rooted 2026-10-14 at the author's request: its decisive step was a dated level shift an event study finds, and its hardening was judged a method fork (SEND_BACK, reverted)",
-  "source_note": "seed ET10 (analytical_tasks/07_data_extraction_conformation) not used: its world sits in biomedical and pharmacology domains with no ETL-serving task type, and its rate is a stated deadline count; the pairing is the client's seasonal-adjustment official time-series production task type"
+  "source_note": "seed ET10 (analytical_tasks/07_data_extraction_conformation) not used: its world sits in biomedical and pharmacology domains with no ETL-serving task type, and its rate is a stated deadline count; the pairing is the client's seasonal-adjustment official time-series production task type",
+  "gates": {
+    "checks": "69 PASS",
+    "verify": "PASS (0 mismatches; change 0.4848)",
+    "rebuild": "byte-identical (13 target, 2 golden)",
+    "figures_check": "PASS, 52 figures",
+    "precut": "49 checks, 0 FAIL",
+    "container": "clean (target and golden)",
+    "surface": "clean, 0 promoted",
+    "heart": "WARN (overuse.objective, repeat.gate_g, overuse.gate_g; answered)"
+  }
 }
