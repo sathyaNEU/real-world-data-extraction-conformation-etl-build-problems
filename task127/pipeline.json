@@ -5,7 +5,7 @@
  "domain": "actuarial-science-insurance",
  "objective": "forecasting",
  "stage": 4,
- "stage_name": "check (architecture 3), paused while the judge runs",
+ "stage_name": "check (architecture 3): judge SEND_BACK, architecture spent",
  "updated": "2026-10-14",
  "stump": "The default path develops the stitched quarterly paid triangle with all-quarter volume-weighted factors to $316.8 million and would carry $325 million, a release of $19.6 million against the $344.6 million booked; the step that lands it there is carrying the history's development factors onto accident quarters whose represented claims have settled more slowly since the platform went live in July 2024, so the recent quarters have paid less of their ultimate at every age than the history did, and only restating the history at the closed shares the latest diagonal shows gives $399.8 million and a carried $400 million, a strengthening of $55.4 million.",
  "architecture": 3,
@@ -27,12 +27,13 @@
   "clone_check": "CLEAN, Track A 0, Track B 0: pre-flight on Sonnet at the author's request (auditor and three adjudicators, sonnet, medium); task125, task446 and task138 promoted on card axes and each adjudicated clean_shares_components (task127/clone_check_report.md)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK",
+  "report": "task127/determinism_check_report.md",
+  "note": "main call open between the closure restatement ($399.9M, 400) and frequency-severity on paid per closed feature ($343.8M, 350) or trended severity ($356.5M, 350); no filed criterion or shipped back-test forces the method; the asks reproduce to the cent; Gate G method_or_model_selection, analytical_non_defect; Gate H pass (domain, layers, analytical)"
  },
  "returned": [],
- "resume": "stage 4: the determinism judge's isolated thread is running (brief /tmp/determinism-check-task127-989732/judge_brief.md, verdict to verdict.md there, then the determinism-judge agent writes task127/determinism_check_report.md); reader and Sonnet clone check done; on APPROVE ship (status SHIPPED, ledger row, board), on FIX_NOW fix in the generator and re-judge once",
+ "resume": "architecture 3 is spent (judge SEND_BACK, the method open). The third architecture of task127, so build-pipeline retires the number unless the author lifts the cap. Awaiting the author's call: re-root as architecture 4, restore architecture 2 (shipped 10-12, judge APPROVE, its pack in git at 59aaaba), or retire",
  "approved": null,
  "delivered": null,
  "portal": null,
