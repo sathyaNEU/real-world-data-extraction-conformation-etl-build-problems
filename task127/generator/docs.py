@@ -1,265 +1,256 @@
-"""The pack's documents: the reserving basis, the two systems' notes, the legacy code list, the ledger notes, the
-close calendar and finance's preliminary reserve register."""
-from __future__ import annotations
-
-import datetime as dt
+"""The documents: the board's Winter Discharge Fund 2026/27 note, the notes that came with the three extracts, and
+the System Flow team's data request log."""
+import io
 
 from reportlab import rl_config
 
 rl_config.invariant = 1
-from reportlab.lib import colors                                                   # noqa: E402
-from reportlab.lib.pagesizes import LETTER                                         # noqa: E402
-from reportlab.lib.styles import ParagraphStyle                                    # noqa: E402
-from reportlab.lib.units import inch                                               # noqa: E402
-from reportlab.pdfbase import pdfmetrics                                           # noqa: E402
-from reportlab.pdfbase.ttfonts import TTFont                                       # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer                # noqa: E402
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import cm
+from reportlab.platypus import Paragraph, SimpleDocTemplate
 
-import common as K   # noqa: E402
-import world as W    # noqa: E402
+import core
+import postprocess as PP
 
-FONT_DIR = "/usr/share/fonts/truetype/liberation/"
-for nm, f in (("Serif", "LiberationSerif-Regular"), ("Serif-B", "LiberationSerif-Bold"), ("Sans", "LiberationSans-Regular")):
-    pdfmetrics.registerFont(TTFont(nm, FONT_DIR + f + ".ttf"))
-INK, GREY, GREEN = colors.HexColor("#1b1f1d"), colors.HexColor("#5d6661"), colors.HexColor("#2f5d3a")
-BODY = ParagraphStyle("b", fontName="Serif", fontSize=10.5, leading=14.2, textColor=INK, spaceAfter=6)
-CL = ParagraphStyle("c", parent=BODY, leftIndent=26, firstLineIndent=-26)
-H1 = ParagraphStyle("h1", fontName="Serif-B", fontSize=15, leading=19, textColor=GREEN, spaceAfter=3)
-H2 = ParagraphStyle("h2", fontName="Serif-B", fontSize=11, leading=14.5, textColor=INK, spaceBefore=10, spaceAfter=4)
-META = ParagraphStyle("m", fontName="Sans", fontSize=8.6, leading=11.5, textColor=GREY, spaceAfter=12)
+GUIDANCE = [
+    ("t", "Winter Discharge Fund 2026/27: discharge-to-assess packages"),
+    ("s", "Allocation note SF-2026-14. Issued 28 September 2026 by Lauren Simpson, Head of System Flow, for the "
+          "system coordination centre, the two acute trusts and Marchshire County Council."),
+    ("h", "1. The fund"),
+    ("p", "The board's winter discharge fund for 2026/27 buys 1,200 discharge-to-assess packages from the providers on "
+          "Marchshire County Council's home care framework, under the council's call-off contract. The packages run "
+          "from 1 December 2026 to 28 February 2027."),
+    ("h", "2. What a package is"),
+    ("p", "A discharge-to-assess package is up to four weeks of home care from a framework provider, available from "
+          "the day a patient is medically optimised for discharge, so that waiting for a care provider to start does "
+          "not keep the patient in hospital. The patient's longer-term care needs are assessed at home while the "
+          "package runs, by the council's reablement and social work teams. Each package is used once, for one "
+          "patient's discharge."),
+    ("h", "3. Who the fund covers"),
+    ("p", "Patients aged 65 and over discharged from Royal Marchford Hospital, Wendlebury Hospital, Ashby Vale "
+          "Hospital, Cleeve Park Hospital or Holmford Infirmary on discharge pathway 1 who need a new package of home "
+          "care to go home and who are registered with a general practice in Marchshire. A patient whose existing "
+          "package of care restarts when they go home does not need a new package and is not covered."),
+    ("h", "4. How the packages are split"),
+    ("p", "The split is sized on last winter. For each hospital the board takes the patients the fund would have "
+          "covered who were medically optimised for discharge from 1 December 2025 to 28 February 2026."),
+    ("p", "Each hospital's packages are valued at the average, over those patients, of the number of nights by which "
+          "a package would have shortened their stay."),
+    ("p", "No hospital receives more packages than it had of those patients."),
+    ("p", "The 1,200 packages are split between the hospitals to free as many occupied bed-days as possible. The "
+          "occupied bed-days a hospital's packages free are its packages times their value; values are carried "
+          "unrounded and the bed-days rounded to whole bed-days."),
+    ("h", "5. Call-off and use"),
+    ("p", "The board names each hospital's packages in the call-off to the framework providers by 30 October 2026. At "
+          "each hospital, packages are offered to covered patients in the order they become medically optimised, "
+          "until the hospital's packages are used. Packages a hospital has not used by 28 February 2027 lapse."),
+    ("h", "6. Monitoring"),
+    ("p", "The trusts report the packages used each week to the system coordination centre alongside the national "
+          "discharge collection. The board reviews the split at the end of January 2027."),
+]
 
 
-def _frame(left, right):
+def _styles():
+    ss = getSampleStyleSheet()
+    blue = colors.HexColor("#005EB8")
+    return dict(
+        body=ParagraphStyle("b", parent=ss["Normal"], fontName="Helvetica", fontSize=10, leading=13.5, spaceAfter=7),
+        head=ParagraphStyle("h", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=10.5, leading=14,
+                            spaceAfter=3, spaceBefore=6, textColor=blue),
+        title=ParagraphStyle("t", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=15, leading=19,
+                             spaceAfter=5),
+        small=ParagraphStyle("s", parent=ss["Normal"], fontName="Helvetica-Oblique", fontSize=8.8, leading=11.5,
+                             spaceAfter=12),
+        lh=ParagraphStyle("lh", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=10, leading=12,
+                          textColor=blue, alignment=2),
+        lh2=ParagraphStyle("lh2", parent=ss["Normal"], fontName="Helvetica", fontSize=8.5, leading=10.5,
+                           textColor=blue, alignment=2, spaceAfter=16),
+    )
+
+
+def _footer(text):
     def draw(canvas, doc):
         canvas.saveState()
-        canvas.setFillColor(GREY)
-        canvas.setFont("Sans", 7.8)
-        canvas.drawString(1.0 * inch, LETTER[1] - 0.6 * inch, left)
-        canvas.drawRightString(LETTER[0] - 1.0 * inch, LETTER[1] - 0.6 * inch, right)
-        canvas.drawRightString(LETTER[0] - 1.0 * inch, 0.55 * inch, "Page %d" % doc.page)
+        canvas.setFont("Helvetica", 7.5)
+        canvas.setFillColor(colors.HexColor("#555555"))
+        canvas.drawString(2.0 * cm, 1.2 * cm, text)
+        canvas.drawRightString(A4[0] - 2.0 * cm, 1.2 * cm, "Page %d" % doc.page)
         canvas.restoreState()
     return draw
 
 
-def write_basis(path):
-    act = K.PEOPLE["actuary"]
-    doc = SimpleDocTemplate(path, pagesize=LETTER, leftMargin=1.0 * inch, rightMargin=1.0 * inch,
-                            topMargin=0.95 * inch, bottomMargin=0.9 * inch,
-                            title="Reserving basis: private passenger auto liability, bodily injury", author=act,
-                            subject="", creator="", producer="")
-    story = [Paragraph("Reserving basis: private passenger auto liability, bodily injury", H1),
-             Paragraph("%s, Actuarial Department. Version 2026.1, issued 10 November 2026 by %s, Chief Actuary; "
-                       "replaces version 2023.2." % (K.ORG, act), META)]
-    sections = [
-        ("1. Scope", [
-            "1.1 This basis governs the actuarial central estimate of unpaid loss for private passenger auto "
-            "liability, bodily injury, on the company's business in Iowa, Nebraska and South Dakota. Other lines and "
-            "coverages have their own bases.",
-            "1.2 The basis is reviewed each year before the year-end valuation."]),
-        ("2. The estimate", [
-            "2.1 The actuarial central estimate at a valuation date is the amount of loss payments still to be made "
-            "after that date on bodily injury claimant features from accidents on or before it, including claims not "
-            "yet reported to the company.",
-            "2.2 It excludes adjusting expenses (defence and cost containment, and adjusting and other), which are "
-            "estimated separately. It is gross of reinsurance and undiscounted. Recoveries do not arise on this "
-            "coverage.",
-            "2.3 The selection of methods and assumptions is the actuary's at each review and is documented in it."]),
-        ("3. Data conventions", [
-            "3.1 The count unit is the claimant feature: one injured person's bodily injury claim on one accident.",
-            "3.2 Accident quarters are the calendar quarters of the accident date. Development is measured at quarter "
-            "ends: age 1 is the end of the accident quarter itself, age 2 the end of the following quarter, and so on.",
-            "3.3 Paid loss is net of voided checks, each void on its own date.",
-            "3.4 The company's books, and every valuation date in this basis, run on Central time.",
-            "3.5 Bodily injury features settle within forty quarters of the end of their accident quarter; the "
-            "estimate carries no development beyond age 40.",
-            "3.6 Case estimates are not used for bodily injury: the estimate rests on paid loss and claimant feature "
-            "counts."]),
-        ("4. Data sources", [
-            "4.1 Claims data come from the legacy claims system (its feature archive and payment ledger, for work "
-            "done before the conversion weekend of 29 and 30 June 2024) and from the claims platform (its feature "
-            "register, feature events and payments, for work done since 1 July 2024).",
-            "4.2 Paid loss is tied each year to general ledger account 5311, losses paid, auto bodily injury."]),
-        ("5. Booking", [
-            "5.1 Finance books a preliminary reserve at each quarter end from its roll-forward of the carried "
-            "reserves; the reviewed estimate replaces it in the close."]),
+def guidance_pdf(path):
+    st = _styles()
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=A4, leftMargin=2.0 * cm, rightMargin=2.0 * cm, topMargin=1.6 * cm,
+                            bottomMargin=2.0 * cm, title="Winter Discharge Fund 2026/27: discharge-to-assess packages",
+                            author="System Flow, NHS Marchshire ICB", creator="System Flow, NHS Marchshire ICB",
+                            producer="System Flow, NHS Marchshire ICB")
+    story = [Paragraph(core.ICB, st["lh"]), Paragraph("System Flow, Marchford House, 14 Castle Street, Marchford",
+                                                      st["lh2"])]
+    for kind, text in GUIDANCE:
+        sty = {"t": st["title"], "s": st["small"], "h": st["head"]}.get(kind, st["body"])
+        story.append(Paragraph(text, sty))
+    foot = _footer("Winter Discharge Fund 2026/27, allocation note SF-2026-14, 28 September 2026")
+    doc.build(story, onFirstPage=foot, onLaterPages=foot)
+    open(path, "wb").write(buf.getvalue())
+    PP.normalize_pdf(path, b"D:20260928101347+01'00'", "System Flow, NHS Marchshire ICB")
+
+
+def guidance_text():
+    return "\n".join(t for _, t in GUIDANCE)
+
+
+def acute_notes():
+    return """NHS Marchshire ICB data warehouse: acute discharges, patients aged 65 and over
+Extract run 5 October 2026 07:40 for the System Flow team from the two trusts' monthly submissions.
+
+acute_discharges_65plus_2024-12_2026-09.csv
+One row per spell submission, for spells ending in a discharge from 1 December 2024 to 30 September 2026. A trust
+that corrects a spell after submitting it submits the spell again under a new submission_id; the warehouse keeps
+every submission.
+
+submission_id          warehouse submission number
+submitted_on           date the trust submitted the row
+provider_code          RMC Marchshire Hospitals NHS Trust; RSM South Marches Healthcare NHS Foundation Trust
+site_code              the site that discharged the patient (ward_reference.csv)
+spell_number           the trust's hospital provider spell number
+nhs_number             NHS number
+local_patient_id       the trust's hospital number
+age_on_admission       age in years
+gp_practice_code       the practice the patient was registered with at admission
+postcode_district      outward code of the patient's home postcode
+admission_method       Emergency or Elective
+admission_datetime     date and time of admission
+discharge_ready_date   the date the patient was medically optimised for discharge (no longer met the criteria to
+                       reside)
+discharge_datetime     date and time the patient left hospital
+discharge_destination  where the patient went
+discharge_pathway      0 home with no new support; 1 home with care support; 2 rehabilitation or reablement bed;
+                       3 care home
+p1_care_package        pathway 1 only: New package, or Restart of existing package (the patient's care package from
+                       before admission restarted)
+
+Nights after the discharge ready date: a patient still in hospital at midnight after their discharge ready date
+has spent a night in hospital after being ready to leave. The national discharge collection counts these nights
+from the discharge ready date to the day of discharge and dates each night to the evening it begins.
+
+acute_ward_stays_2024-12_2026-09.csv
+One row per ward stay in the spells above: the ward the patient was on from ward_start to ward_end. A spell's ward
+stays run from its admission to its discharge.
+
+provider_code, spell_number   as in the discharges extract
+ward_code                     ward_reference.csv
+ward_start, ward_end          date and time the patient arrived on and left the ward
+
+ward_reference.csv
+The trusts' wards with their site, specialty and base beds.
+
+Times are UK local time.
+"""
+
+
+def ices_notes():
+    return """Marchshire Integrated Community Equipment Service (ICES): order lines
+Export run 5 October 2026 for NHS Marchshire ICB. The service is run by Marchshire County Council for the council
+and the ICB from two depots, North (Marchford) and South (Ashby). Severnside residents are served by Severnside's
+own equipment service and are not in this export.
+
+ices_order_lines_2024-12_2026-09.csv
+One row per order line, for orders due for delivery from 1 December 2024 to 30 September 2026.
+
+order_no            order reference; the lines of one order share it
+line_no             line within the order
+nhs_number          as recorded by the prescriber
+delivery_postcode   address the items go to
+item                equipment item
+route               who prescribed the order: Hospital discharge (a hospital ward or discharge team), Community
+                    nursing, Occupational therapy, Reablement, Physiotherapy
+ordered_date        date the order was placed
+required_by         date the prescriber asked for delivery by
+delivered_date      date the item was delivered (blank if it was not)
+collected_date      date the item was collected back (blank if it was not)
+depot               North or South
+status              Ordered (not yet delivered), Delivered, Collected or Cancelled
+"""
+
+
+def council_notes():
+    return """Marchshire County Council: extracts for NHS Marchshire ICB (System Flow), 5 October 2026
+
+brokerage_referrals_2024-12_2026-09.csv
+One row per referral for home care the brokerage team handled from 1 December 2024 to 30 September 2026. Referrals
+for patients in hospital come from the wards and discharge teams; the rest come from the community.
+
+referral_no      brokerage referral number
+received_at      date and time the brokerage received the referral
+source           Hospital discharge, GP practice, District nursing, Family or carer, Self-referral, Adult social care
+                 team
+referring_site   for a hospital referral, the hospital
+person_id        council person identifier
+nhs_number       as held on the person's record; not always recorded for community referrals
+care_postcode    postcode of the address where care is to be delivered, as entered on the referral
+status           Started (the provider started the package), Open (a provider has taken the package and care has
+                 not yet started), Closed (the brokerage closed the referral), Cancelled (the referrer withdrew the
+                 referral)
+provider         the framework provider that took the package
+start_date       date the provider's care started; for a hospital referral, the day the patient went home
+
+The brokerage reports its referrals by the month they were received and measures the wait for care in calendar
+days from the date a referral was received to the date care started.
+
+spot_care_invoice_lines_2025-26.csv
+Finance (Unit4) extract: invoice lines for home care bought from providers outside the home care framework (spot
+purchases), invoiced weekly, April 2025 to March 2026. Dates are dd/mm/yyyy.
+
+invoice_no      supplier invoice number
+supplier        the spot provider
+brokerage_ref   the brokerage referral the purchase was made for
+client_id       council person identifier
+service_start   the day care started under the purchase; where care was suspended and resumed, the lines
+                after the break carry the day it resumed
+week_ending     the week the line invoices (weeks end on Sunday)
+hours           hours of care delivered in the week
+rate            hourly rate in pounds
+amount          hours times rate, in pounds
+
+postcode_districts_marchshire.csv
+The council's postcode lookup: every unit postcode in Marchshire with its electoral ward and district.
+"""
+
+
+LOG_HEAD = ["file", "supplied_by", "extract_run", "covers", "notes"]
+
+
+def log_rows(files, counts):
+    return [
+        [files["spells"], "NHS Marchshire ICB data warehouse", "2026-10-05",
+         "Discharges 1 Dec 2024 to 30 Sep 2026, patients 65 and over, both trusts",
+         "%s rows; resubmitted spells kept as submitted" % format(counts["spells"], ",")],
+        [files["wards"], "NHS Marchshire ICB data warehouse", "2026-10-05", "Ward stays of the same spells",
+         "%s rows" % format(counts["wards"], ",")],
+        [files["wardref"], "Marchshire Hospitals NHS Trust; South Marches Healthcare NHS FT", "2026-09-30",
+         "Wards at the five acute sites", ""],
+        [files["acute_notes"], "NHS Marchshire ICB data warehouse", "2026-10-05", "Field notes for the two extracts",
+         ""],
+        [files["practices"], "NHS Marchshire ICB primary care team", "2026-09-30",
+         "GP practices of Marchshire and Severnside ICBs, with practices closed by merger since 2024", ""],
+        [files["ices"], "Marchshire ICES (Marchshire County Council)", "2026-10-05",
+         "Orders due for delivery 1 Dec 2024 to 30 Sep 2026", "%s rows" % format(counts["ices"], ",")],
+        [files["ices_notes"], "Marchshire ICES (Marchshire County Council)", "2026-10-05", "Field notes", ""],
+        [files["brokerage"], "Marchshire County Council, brokerage team", "2026-10-05",
+         "Referrals handled 1 Dec 2024 to 30 Sep 2026", "%s rows" % format(counts["brokerage"], ",")],
+        [files["spot"], "Marchshire County Council, finance", "2026-10-05", "Invoice lines April 2025 to March 2026",
+         "%s rows" % format(counts["spot"], ",")],
+        [files["postcodes"], "Marchshire County Council, information team", "2026-09-30", "Marchshire unit postcodes",
+         ""],
+        [files["council_notes"], "Marchshire County Council", "2026-10-05", "Field notes for the council extracts", ""],
+        [files["guidance"], "NHS Marchshire ICB, System Flow", "2026-09-28", "Allocation note SF-2026-14", ""],
+        [files["weekly"], "NHS Marchshire ICB data warehouse", "2026-10-05",
+         "National discharge collection as submitted by the two trusts, weeks ending 8 Dec 2024 to 27 Sep 2026", ""],
+        [files["census"], "System coordination centre", "2026-10-02", "Daily bed state, 1 Dec 2024 to 30 Sep 2026", ""],
+        [files["reablement"], "Marchshire County Council, adult social care performance", "2026-08-14",
+         "Reablement outcomes by quarter, Oct 2024 to Mar 2026", ""],
     ]
-    for head, paras in sections:
-        story.append(Paragraph(head, H2))
-        for p in paras:
-            story.append(Paragraph(p, CL))
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("%s, FCAS, MAAA, Chief Actuary" % act, BODY))
-    doc.build(story, onFirstPage=_frame(K.ORG, "Reserving basis 2026.1"),
-              onLaterPages=_frame(K.ORG, "Reserving basis 2026.1"))
-
-
-def write_platform_notes(path, names):
-    who = K.PEOPLE["systems"]
-    text = """# Claims platform extracts, bodily injury
-
-Run by Claims Systems at 06:10 Central on 6 January 2027. Each extract holds the platform's records for bodily injury
-(BI) claimant features as they stood at the run. Prepared by %s, Claims Systems.
-
-Timestamps (fields ending `_at`) are ISO 8601 in UTC. `accident_date` and `reported_date` are calendar dates as the
-handler recorded them.
-
-## %s
-
-One row per BI claimant feature held on the platform.
-
-| Column | Meaning |
-|---|---|
-| feature_id | the platform's feature number |
-| claim_number | the platform's claim (one accident; a claim can carry several claimant features) |
-| legacy_ref | the legacy claim and feature number, for a feature that began in the legacy system |
-| coverage | BI |
-| state | the state of the policy |
-| accident_date | the date of the accident |
-| reported_date | the date the company first had notice of the claimant's injury |
-| created_at | when the feature's platform record began: its creation, or its conversion or re-entry from the legacy system |
-| status | OPEN, CLOSED or REOPENED, at the run |
-| closed_at | the feature's latest closing at the run |
-| reopened_at | the feature's latest reopening at the run |
-| disposition | the reason recorded at the latest closing: SETTLED, DENIED, WITHDRAWN, NO_INJURY or DUPLICATE (a feature opened in error for a claimant who already has one; it is not a claimant feature) |
-
-## %s
-
-One row per event on a feature: CREATED, CONVERTED, CLOSED (with its disposition) or REOPENED, at `event_at`.
-
-## %s
-
-One row per payment the platform issued from 1 July 2024 to the run. `amount_cents` is in US cents. `method` is CHECK
-or WIRE. A payment voided after issue has `status` VOIDED and its `voided_at`; a check issued to replace a voided one
-names it in `reissue_of`.
-""" % (who, names["features"], names["events"], names["pay"])
-    open(path, "w", encoding="utf-8", newline="\n").write(text)
-
-
-def write_conversion_notes(path):
-    who = K.PEOPLE["systems"]
-    text = """# Claims conversion, June 2024
-
-Prepared by %s, Claims Systems, 8 July 2024.
-
-- Bodily injury features open on the legacy claims system at the start of Saturday 29 June 2024 were converted to the
-  claims platform over that weekend. The platform went live for all claims work on Monday 1 July 2024; no claims
-  work was processed on 29 and 30 June.
-- A converted feature keeps its legacy claim and feature number (the platform's `legacy_ref`), its accident date and
-  its report date. Its platform record starts at the conversion, with a CONVERTED event.
-- The legacy archive keeps every legacy feature. A converted feature's archive row shows disposition CV with the
-  closing date 29 June 2024.
-- Payments issued before 1 July 2024 stay in the legacy payment ledger under the legacy claim and feature number.
-  From 1 July 2024 every payment is issued on the platform.
-- The legacy system is read-only from 1 July 2024.
-""" % who
-    open(path, "w", encoding="utf-8", newline="\n").write(text)
-
-
-def write_codes(path):
-    text = ("LEGACY CLAIMS SYSTEM - BODILY INJURY FEATURE ARCHIVE\r\n"
-            "DISPOSITION CODES (DISP)\r\n"
-            "\r\n"
-            "ST   SETTLED\r\n"
-            "WD   WITHDRAWN BY CLAIMANT\r\n"
-            "DN   DENIED\r\n"
-            "NI   NO INJURY CLAIMED\r\n"
-            "XD   OPENED IN ERROR - DUPLICATE OF ANOTHER FEATURE\r\n"
-            "CV   CONVERTED TO CLAIMS PLATFORM 06/29/2024 - FEATURE CONTINUES ON PLATFORM\r\n"
-            "\r\n"
-            "CLS_DT    DATE OF THE FEATURE'S LAST CLOSING ON THE LEGACY SYSTEM\r\n"
-            "REOPEN_CT TIMES THE FEATURE WAS REOPENED ON THE LEGACY SYSTEM\r\n"
-            "DATES ARE MM/DD/YYYY. AMOUNTS IN THE PAYMENT LEDGER ARE DOLLARS; A VOID IS A NEGATIVE AMOUNT ON THE VOID DATE\r\n"
-            "AGAINST THE CHECK IT CANCELS.\r\n")
-    open(path, "w", encoding="ascii", newline="").write(text)
-
-
-def write_ledger_notes(path, names):
-    who = K.PEOPLE["controller"]
-    text = """# General ledger extract: account 5311, 2026
-
-Account 5311 is losses paid, auto bodily injury. The extract (%s) was run by Finance on 6 January 2027 for every
-journal line posted from 1 January to 31 December 2026. Prepared by %s, Controller.
-
-| Column | Meaning |
-|---|---|
-| journal_id, line | the journal and its line |
-| posting_date | the date the line was posted |
-| period | the accounting period, the posting date's month |
-| source | CLAIMS FEED, TREASURY or MANUAL |
-| batch_ref | the feed batch or the journal reference |
-| state | the state segment |
-| description | the journal's description |
-| amount | US dollars; a reduction is negative |
-
-The claims feed runs at 01:30 Central each night and posts the checks the claims platform issued the previous day,
-net of the checks voided that day, one line per state. TREASURY lines are journals posted by Treasury; MANUAL lines
-are journals posted by Finance.
-""" % (names["gl"], who)
-    open(path, "w", encoding="utf-8", newline="\n").write(text)
-
-
-def write_calendar(path):
-    from openpyxl import Workbook
-    from openpyxl.styles import Font
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Close calendar 2026"
-    ws.append(["Finance close calendar 2026"])
-    ws["A1"].font = Font(bold=True, size=12)
-    ws.append([])
-    ws.append(["Month", "Business days", "Last business day", "Ledger close (business day 5)", "Office holidays"])
-    for c in ws[3]:
-        c.font = Font(bold=True)
-    for m in range(1, 13):
-        d = dt.date(2026, m, 1)
-        days = []
-        while d.month == m:
-            if W.business(d):
-                days.append(d)
-            d += dt.timedelta(days=1)
-        ny, nm = (2027, 1) if m == 12 else (2026, m + 1)
-        hol = sorted(h for h in W._HOL if h.year == 2026 and h.month == m)
-        ws.append([dt.date(2026, m, 1).strftime("%B %Y"), len(days), days[-1], W.nth_business_day(ny, nm, 5),
-                   ", ".join(h.strftime("%d %b") for h in hol) or None])
-    for row in ws.iter_rows(min_row=4, max_row=15):
-        row[2].number_format = "yyyy-mm-dd"
-        row[3].number_format = "yyyy-mm-dd"
-    for col, w in zip("ABCDE", (16, 14, 18, 28, 24)):
-        ws.column_dimensions[col].width = w
-    wb.save(path)
-
-
-REGISTER = [
-    ("Private passenger auto liability", "Bodily injury", "Loss", None),
-    ("Private passenger auto liability", "Bodily injury", "Defence and cost containment", 52400),
-    ("Private passenger auto liability", "Bodily injury", "Adjusting and other", 11900),
-    ("Private passenger auto liability", "Property damage", "Loss", 24800),
-    ("Private passenger auto liability", "Property damage", "Defence and cost containment", 1900),
-    ("Private passenger auto liability", "Medical payments", "Loss", 6300),
-    ("Auto physical damage", "Collision and comprehensive", "Loss", 9100),
-    ("Homeowners", "All perils", "Loss", 41700),
-    ("Homeowners", "All perils", "Adjusting expense", 6200),
-]
-
-
-def write_register(path, booked):
-    from openpyxl import Workbook
-    from openpyxl.styles import Font
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Preliminary YE2026"
-    ws.append(["%s: preliminary year-end 2026 loss and adjusting expense reserves" % K.ORG])
-    ws["A1"].font = Font(bold=True, size=12)
-    ws.append(["Finance roll-forward for the close; replaced by the reviewed estimates. Amounts in $000, gross of "
-               "reinsurance. Prepared 5 January 2027."])
-    ws.append([])
-    ws.append(["Line", "Coverage", "Component", "Preliminary 31 Dec 2026 ($000)"])
-    for c in ws[4]:
-        c.font = Font(bold=True)
-    for line, cov, comp, amt in REGISTER:
-        ws.append([line, cov, comp, int(round(booked / 1000.0)) if amt is None else amt])
-    for row in ws.iter_rows(min_row=5, max_row=4 + len(REGISTER)):
-        row[3].number_format = "#,##0"
-    for col, w in zip("ABCD", (34, 30, 30, 30)):
-        ws.column_dimensions[col].width = w
-    wb.save(path)

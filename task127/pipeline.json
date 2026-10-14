@@ -1,103 +1,100 @@
 {
- "task": "task127",
- "owner": "sathay3012",
- "status": "PAUSED",
- "domain": "actuarial-science-insurance",
- "objective": "forecasting",
- "stage": 4,
- "stage_name": "check (architecture 3): judge SEND_BACK, architecture spent",
- "updated": "2026-10-14",
- "stump": "The default path develops the stitched quarterly paid triangle with all-quarter volume-weighted factors to $316.8 million and would carry $325 million, a release of $19.6 million against the $344.6 million booked; the step that lands it there is carrying the history's development factors onto accident quarters whose represented claims have settled more slowly since the platform went live in July 2024, so the recent quarters have paid less of their ultimate at every age than the history did, and only restating the history at the closed shares the latest diagonal shows gives $399.8 million and a carried $400 million, a strengthening of $55.4 million.",
- "architecture": 3,
- "loops": 0,
- "author_override": "2026-10-14: the author asked for a full refresh of data, domain and objective, tougher than architecture 2; build-pipeline re-roots in the same objective, so the move from Opportunity Sizing to Forecasting is the author's instruction, recorded here and in the design note's Draw",
- "precut": {
-  "exit": 0,
-  "date": "2026-10-14",
-  "note": "49 checks, 0 FAIL, 0 WARN on the built figures"
- },
- "leak": {
-  "leak_py": "REVIEW (no LEAK): the basis's development and method vocabulary; the close calendar's 8 January 2027 close date",
-  "reader": "pass 1 (sonnet, medium): questions 1 to 4 none (2.1 defines the quantity, not the method; the register's 344,600 is the booked comparison); question 6 an analytical choice (how the paid development is projected), nothing planted or announced; the three REVIEW lines harmless; realism notes answered by filed facts, no fix"
- },
- "duplicate_check": {
-  "heart": "WARN (repeat.question_form against task453 v2; same_puzzle_older and same_driver_older differentiated), 2026-10-14",
-  "surface": "3 promoted on card axes only (task125, task138, task446), differentiated on the card; adjudicated clone check requested by the author",
-  "nearest": "task133 v1 lineage 0.08",
-  "clone_check": "CLEAN, Track A 0, Track B 0: pre-flight on Sonnet at the author's request (auditor and three adjudicators, sonnet, medium); task125, task446 and task138 promoted on card axes and each adjudicated clean_shares_components (task127/clone_check_report.md)"
- },
- "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK",
-  "report": "task127/determinism_check_report.md",
-  "note": "main call open between the closure restatement ($399.9M, 400) and frequency-severity on paid per closed feature ($343.8M, 350) or trended severity ($356.5M, 350); no filed criterion or shipped back-test forces the method; the asks reproduce to the cent; Gate G method_or_model_selection, analytical_non_defect; Gate H pass (domain, layers, analytical)"
- },
- "returned": [],
- "resume": "architecture 3 is spent (judge SEND_BACK, the method open). The third architecture of task127, so build-pipeline retires the number unless the author lifts the cap. Awaiting the author's call: re-root as architecture 4, restore architecture 2 (shipped 10-12, judge APPROVE, its pack in git at 59aaaba), or retire",
- "approved": null,
- "delivered": null,
- "portal": null,
- "history": {
-  "architecture_1": {
-   "domain": "nonprofit-grant-making",
-   "objective": "opportunity-sizing-decision",
-   "stage": "retired",
-   "stage_name": "retired",
-   "stump": "A competent solver builds each co-op's qualifying households from the survey's joint counts, converts them at the pilot's install rate for each heating system, groups neighbourhoods onto their feeders and caps each feeder at its hosting slots, confirms that every placeable buyer's meter would be set inside the pilot's three weeks and that each co-op crew's year has room for its meters, and commits 1,480 placed slots with Lakes taking the most (420); the step that lands it there is carrying the pilot's meter-set lag to a programme several times its size, when every rebate waits on the co-op crew setting the heat-pump rate meter, Lakes' and Uplands' crews have only about ten and seven sets a week left after standing work (the ceiling each held for twelve weeks after the July 2025 exchange batches), and the autumn window's orders queue past 31 December, so 1,170 slots can be placed and Riverbend takes the most (340).",
-   "harden_loops": 0,
-   "solver_rounds": [
-    {
-     "label": "round 1, plain",
-     "date": "2026-10-10",
-     "score": 47.3,
-     "landed": false,
-     "cracked": 3,
-     "items": 9
-    }
-   ],
-   "judge": {
-    "verdict": "SEND_BACK",
-    "disposition": "retired",
-    "report": ""
-   },
-   "source_note": "analytical_tasks/04_opportunity_sizing/OS02_heat-pump-slots-feeder-headroom-split.md",
-   "retired_reason": "Determinism judge SEND_BACK (binding_constraint, analytical_non_defect); retired under build-pipeline's retirement rule, not submitted.",
-   "status": "FAILED_TO_STUMP"
-  },
-  "architecture_2": {
-   "status": "SHIPPED",
-   "domain": "healthcare-delivery-health-economics",
-   "objective": "opportunity-sizing-decision",
-   "stage": 5,
-   "stage_name": "ship (architecture 2)",
-   "updated": "2026-10-12",
-   "stump": "The default path values a discharge-to-assess package at each hospital by its covered patients' nights after the discharge ready date (every record presents them as the wait for home care, since the brokerage starts care on the day the patient goes home) and fills Ashby Vale Hospital first with 361 packages, then Cleeve Park 285, Wendlebury 350 and Royal Marchford 204, Holmford none, freeing 10,425 occupied bed-days, where the golden gives Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222 and Ashby Vale none, freeing 7,160; most of Ashby Vale's and Cleeve Park's covered patients were also waiting for community equipment from the South depot, a wait that ran alongside the care wait and that a package does not shorten.",
-   "architecture": 2,
-   "loops": 0,
-   "precut": {
+  "task": "task127",
+  "owner": "sathay3012",
+  "status": "SHIPPED",
+  "domain": "healthcare-delivery-health-economics",
+  "objective": "opportunity-sizing-decision",
+  "stage": 5,
+  "stage_name": "ship (architecture 2)",
+  "updated": "2026-10-14",
+  "stump": "The default path values a discharge-to-assess package at each hospital by its covered patients' nights after the discharge ready date (every record presents them as the wait for home care, since the brokerage starts care on the day the patient goes home) and fills Ashby Vale Hospital first with 361 packages, then Cleeve Park 285, Wendlebury 350 and Royal Marchford 204, Holmford none, freeing 10,425 occupied bed-days, where the golden gives Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222 and Ashby Vale none, freeing 7,160; most of Ashby Vale's and Cleeve Park's covered patients were also waiting for community equipment from the South depot, a wait that ran alongside the care wait and that a package does not shorten.",
+  "architecture": 2,
+  "loops": 0,
+  "precut": {
     "exit": 0,
     "date": "2026-10-12"
-   },
-   "leak": {
+  },
+  "leak": {
     "leak_py": "REVIEW (no LEAK), every line harmless (leak_check_report.md, Solver's-eye read)",
     "reader": "pass 1: nothing for questions 1 to 4, realism tells fixed; pass 2: nothing for questions 1 to 4, two forks closed and asserted, realism tells fixed with figures.json identical"
-   },
-   "duplicate_check": {
+  },
+  "duplicate_check": {
     "heart": "WARN (overuse.org_family; same_driver_older differentiated), 2026-10-12",
     "surface": "no promoted pair after the card update, 2026-10-12",
     "nearest": "task119 v2 0.08 (differentiated)"
-   },
-   "judge": {
+  },
+  "judge": {
     "verdict": "DETERMINISTIC",
     "disposition": "APPROVE",
     "report": "task127/determinism_check_report_pass2.md (pass 1 FIX_NOW: task127/determinism_check_report.md)"
-   },
-   "returned": [],
-   "resume": "shipped; next event is the author's portal result",
-   "approved": null,
-   "delivered": "2026-10-12",
-   "portal": null,
-   "replaced": "2026-10-14: replaced at the author's request ('if 127 discarded, then create a full refresh of data, domain, objective everything and create a tougher one this time'); the shipped pack stays in git history (SHIPPED 59aaaba, second-layer attempt recorded c17bf12) and its portal entry is the author's to withdraw"
-  }
- }
+  },
+  "returned": [],
+  "resume": "shipped (architecture 2, restored 10-14 after architecture 3's judge SEND_BACK); next event is the author's portal result",
+  "approved": null,
+  "delivered": "2026-10-12",
+  "portal": null,
+  "history": {
+    "architecture_1": {
+      "domain": "nonprofit-grant-making",
+      "objective": "opportunity-sizing-decision",
+      "stage": "retired",
+      "stage_name": "retired",
+      "stump": "A competent solver builds each co-op's qualifying households from the survey's joint counts, converts them at the pilot's install rate for each heating system, groups neighbourhoods onto their feeders and caps each feeder at its hosting slots, confirms that every placeable buyer's meter would be set inside the pilot's three weeks and that each co-op crew's year has room for its meters, and commits 1,480 placed slots with Lakes taking the most (420); the step that lands it there is carrying the pilot's meter-set lag to a programme several times its size, when every rebate waits on the co-op crew setting the heat-pump rate meter, Lakes' and Uplands' crews have only about ten and seven sets a week left after standing work (the ceiling each held for twelve weeks after the July 2025 exchange batches), and the autumn window's orders queue past 31 December, so 1,170 slots can be placed and Riverbend takes the most (340).",
+      "harden_loops": 0,
+      "solver_rounds": [
+        {
+          "label": "round 1, plain",
+          "date": "2026-10-10",
+          "score": 47.3,
+          "landed": false,
+          "cracked": 3,
+          "items": 9
+        }
+      ],
+      "judge": {
+        "verdict": "SEND_BACK",
+        "disposition": "retired",
+        "report": ""
+      },
+      "source_note": "analytical_tasks/04_opportunity_sizing/OS02_heat-pump-slots-feeder-headroom-split.md",
+      "retired_reason": "Determinism judge SEND_BACK (binding_constraint, analytical_non_defect); retired under build-pipeline's retirement rule, not submitted.",
+      "status": "FAILED_TO_STUMP"
+    },
+    "architecture_3": {
+      "status": "RETIRED",
+      "domain": "actuarial-science-insurance",
+      "objective": "forecasting",
+      "stage": 4,
+      "stage_name": "retired at stage 4",
+      "updated": "2026-10-14",
+      "stump": "The default path develops the stitched quarterly paid triangle with all-quarter volume-weighted factors to $316.8 million and would carry $325 million, a release of $19.6 million against the $344.6 million booked; the step that lands it there is carrying the history's development factors onto accident quarters whose represented claims have settled more slowly since the platform went live in July 2024, so the recent quarters have paid less of their ultimate at every age than the history did, and only restating the history at the closed shares the latest diagonal shows gives $399.8 million and a carried $400 million, a strengthening of $55.4 million.",
+      "architecture": 3,
+      "loops": 0,
+      "author_override": "2026-10-14: the author asked for a full refresh of data, domain and objective, tougher than architecture 2; build-pipeline re-roots in the same objective, so the move from Opportunity Sizing to Forecasting is the author's instruction, recorded here and in the design note's Draw",
+      "precut": {
+        "exit": 0,
+        "date": "2026-10-14",
+        "note": "49 checks, 0 FAIL, 0 WARN on the built figures"
+      },
+      "leak": {
+        "leak_py": "REVIEW (no LEAK): the basis's development and method vocabulary; the close calendar's 8 January 2027 close date",
+        "reader": "pass 1 (sonnet, medium): questions 1 to 4 none (2.1 defines the quantity, not the method; the register's 344,600 is the booked comparison); question 6 an analytical choice (how the paid development is projected), nothing planted or announced; the three REVIEW lines harmless; realism notes answered by filed facts, no fix"
+      },
+      "duplicate_check": {
+        "heart": "WARN (repeat.question_form against task453 v2; same_puzzle_older and same_driver_older differentiated), 2026-10-14",
+        "surface": "3 promoted on card axes only (task125, task138, task446), differentiated on the card; adjudicated clone check requested by the author",
+        "nearest": "task133 v1 lineage 0.08",
+        "clone_check": "CLEAN, Track A 0, Track B 0: pre-flight on Sonnet at the author's request (auditor and three adjudicators, sonnet, medium); task125, task446 and task138 promoted on card axes and each adjudicated clean_shares_components (task127/clone_check_report.md)"
+      },
+      "judge": {
+        "verdict": "NOT_DETERMINISTIC",
+        "disposition": "SEND_BACK",
+        "report": "task127/determinism_check_report.md at 6edd337 (architecture 3's report; its leak and clone reports are there too; the path now holds architecture 2's pass 1)",
+        "note": "main call open between the closure restatement ($399.9M, 400) and frequency-severity on paid per closed feature ($343.8M, 350) or trended severity ($356.5M, 350); no filed criterion or shipped back-test forces the method; the asks reproduce to the cent; Gate G method_or_model_selection, analytical_non_defect; Gate H pass (domain, layers, analytical)"
+      },
+      "retired_reason": "Determinism judge NOT_DETERMINISTIC, SEND_BACK (competing_defensible_answer): the reserving basis leaves the method to the actuary and frequency-severity on paid per closed feature carries $350 million against the restatement's $400 million; the author restored architecture 2 on 2026-10-14",
+      "commits": "DRAWN 9063126, PAUSED 2ca8c2f and 6edd337 (its note, generator, reports and pipeline state)"
+    }
+  },
+  "restored": "2026-10-14: architecture 3 (a full refresh at the author's request) drew judge SEND_BACK at stage 4, and the author chose to restore this architecture as task127's live build (pack unchanged from SHIPPED 59aaaba)"
 }

@@ -1,55 +1,60 @@
+# task127: the winter discharge fund's 1,200 discharge-to-assess packages across Marchshire's five acute hospitals
+
 ## Tags
 
-**Domain:** Actuarial Science & Insurance (reserving with development triangles: a motor bodily injury loss reserve).
-**Analytical objective:** Forecasting & Predictive Modeling.
+**Domain:** Healthcare Delivery & Health Economics (patient flow, beds and workforce: discharge-to-assess packages).
+**Analytical objective:** Opportunity Sizing & Decision Support.
 
 ## 1. Final Recommendation
 
-**Carry $400 million for unpaid bodily injury losses at 31 December 2026, $55.4 million more than the $344.6 million finance has booked.**
-The figure is $399.8 million: the paid triangle developed after its history is restated at the share of ultimate claimant features the latest diagonal had closed at each age, because since the claims platform went live on 1 July 2024 the book has closed a smaller share of its features at every age than before. Not the paid chain ladder on the triangle as recorded ($316.8 million, $325 million carried and a release), which carries the earlier closing pace onto quarters that are closing more slowly; not the latest diagonals' factors ($283.6 million to $314.1 million), lower still; not severity trended from the 2017 to 2019 quarters ($356.5 million), a twelve-quarter trend carried seven years.
+**Give Royal Marchford Hospital 508 packages, Wendlebury Hospital 350, Holmford Infirmary 120, Cleeve Park Hospital 222 and Ashby Vale Hospital none; they free 7,160 occupied bed-days.**
+
+A package frees 6.65 nights a covered patient at Royal Marchford, 6.24 at Wendlebury and 5.26 at Holmford, against 4.36 at Cleeve Park and 3.60 at Ashby Vale, where most covered patients were also waiting for community equipment that a package does not bring forward. Not Ashby Vale and Cleeve Park first on their nights after the discharge ready date (10.30 and 9.67), which count those equipment waits as nights a package saves.
 
 ## 2. Critical Components
 
-1. Share of ultimate claimant features closed at eight quarters: **74.4 per cent** in the 2018 to 2020 accident quarters, **71.9 per cent** for 2025 Q1; at twelve quarters **84.7 per cent** against **80.6 per cent** for 2024 Q1
-2. Paid to date at 31 December 2026 on the 40 accident quarters from 2017 Q1: **$845.4 million**
-3. Unpaid by the restated development: **$399.8 million**, carried at **$400 million**; unrestated, **$316.8 million**
+1. Covered patients last winter: Royal Marchford **508**, Wendlebury **350**, Holmford Infirmary **120**, Cleeve Park **285**, Ashby Vale **361**
+2. Nights a package frees per covered patient: Royal Marchford **6.65**, Wendlebury **6.24**, Holmford Infirmary **5.26**, Cleeve Park **4.36**, Ashby Vale **3.60**
 
 ## 3. Step-by-Step Solution
 
-1. Read the legacy payment ledger (dollars, US dates) to 30 June 2024 and the platform's payments (cents, UTC timestamps put on Central time) from 1 July 2024, each void on its own date (ninebark_reserving_basis_2026.pdf), each payment on its feature's accident quarter: $845.4 million paid to date.
-2. Took claimant features from the legacy archive without its CV and XD rows and from the platform register without its DUPLICATE rows, a legacy feature re-entered on the platform once, each closed or open at every quarter end from its closing and reopening history (archive CLS_DT, platform events).
-3. Built quarterly triangles of paid loss, reported features and closed features for accident quarters 2017 Q1 to 2026 Q4 at ages 1 to 40 (the reserving basis), and ultimate features from the reported triangle's volume-weighted factors.
-4. Compared each age's share of ultimate features closed on the latest diagonal with the history: lower at every age from seven quarters (at twelve quarters 80.6 per cent for 2024 Q1 against 84.7 per cent).
-5. Restated each accident quarter's paid history at the latest diagonal's closed share for each age, linearly between its own quarter ends, took volume-weighted factors over all accident quarters from the restated triangle and projected the paid to date with them: $399.8 million unpaid.
-6. Rounded to the nearest $25 million and set against the register's preliminary $344.6 million for bodily injury loss: carry $400 million, $55.4 million more.
-7. Tied account 5311 in gl_5311_bi_paid_loss_2026.csv to the platform's payments: a claims feed batch carries the checks of the Central day before its posting, net of that day's voids (a second batch with a day's checks is not a payment); a Treasury journal carries a month's wires by bank value date (released after 15:00, the next business day); the rest is not claims payments.
-8. Counted claimant features closed at 31 December 2026 by accident year, with a loss payment when their net payments in both ledgers to that date (a converted feature's legacy payments and a payment on its claim's duplicate feature included) exceed zero.
+1. Kept last winter's covered patients in acute_discharges_65plus_2024-12_2026-09.csv, each spell at its latest submission, per allocation note SF-2026-14 (pathway 1, a new package, a practice under NHS Marchshire ICB in gp_practices_2026-09.csv, discharge ready date 1 December 2025 to 28 February 2026): 1,624 patients.
+2. Joined each to the equipment ordered for their discharge in ices_order_lines_2024-12_2026-09.csv (route Hospital discharge, required by their discharge ready date, NHS number without spaces): 789 had equipment delivered, and no pathway-1 patient left before their delivery.
+3. Counted for each covered patient the nights from the later of the discharge ready date and that delivery to discharge, the nights home care from the ready date would have saved (patients whose care restarted left on the later of the two), and averaged them by hospital: Royal Marchford 6.65, Wendlebury 6.24, Holmford 5.26, Cleeve Park 4.36, Ashby Vale 3.60.
+4. Filled the 1,200 packages in that order, each hospital up to its covered patients, and took packages times value per the note: Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222, Ashby Vale none, 7,160 occupied bed-days.
+5. Valuing a package at the nights after the ready date instead (Ashby Vale 10.30, Cleeve Park 9.67) fills Ashby Vale and Cleeve Park first and claims 10,425 bed-days, though 129 of Ashby Vale's 361 covered patients left on the day their equipment arrived.
+6. Counted each night after the discharge ready date at the hospital of the patient's ward at that midnight (acute_ward_stays_2024-12_2026-09.csv, ward_reference.csv), dated to the evening it began per acute_extract_notes.txt: 23,541 occupied bed-days lost from December 2025 to February 2026.
+7. Counted brokerage_referrals_2024-12_2026-09.csv by month received and care-postcode district (postcode_districts_marchshire.csv), taking the start of care bought by spot purchase from the first service_start in spot_care_invoice_lines_2025-26.csv (brokerage_ref BRK and the referral's digits): 242 of last winter's closed referrals had spot-purchased care.
+8. Give Royal Marchford 508 packages, Wendlebury 350, Holmford 120, Cleeve Park 222 and Ashby Vale none, freeing 7,160 occupied bed-days.
 
 ## 4. Deliverable Answers
 
-### bi_reserve_ye2026.md
+### d2a_package_split_winter_2026-27.xlsx
 
-1. Carry $400 million for unpaid bodily injury losses at 31 December 2026, $55.4 million more than the $344.6 million booked.
-2. Bodily injury loss the ledger booked in each quarter of 2026 that was claims payments issued in an earlier quarter, and that was not claims payments at all:
-   - Q1 2026: $2,760,968.56 issued earlier; $96,250.00 not claims payments
-   - Q2 2026: $2,727,945.49 issued earlier; -$96,250.00 not claims payments
-   - Q3 2026: $3,528,113.29 issued earlier; $344,291.68 not claims payments
-   - Q4 2026: $3,821,032.50 issued earlier; -$344,291.68 not claims payments
+1. Packages for December 2026 to February 2027, whole packages:
+   - Royal Marchford Hospital: 508
+   - Wendlebury Hospital: 350
+   - Holmford Infirmary: 120
+   - Cleeve Park Hospital: 222
+   - Ashby Vale Hospital: 0
+2. Occupied bed-days each hospital's packages free, whole bed-days:
+   - Royal Marchford Hospital: 3,377
+   - Wendlebury Hospital: 2,184
+   - Holmford Infirmary: 631
+   - Cleeve Park Hospital: 968
+   - Ashby Vale Hospital: 0
+3. Total occupied bed-days freed: 7,160
+4. Hospital that gets none: Ashby Vale Hospital
+5. Referrals for home care the brokerage took with care starting no more than seven days after referral:
+   - Marchford: December 2025 169, January 2026 189, February 2026 146
+   - Ashby: December 2025 34, January 2026 35, February 2026 39
+   - Teme Valley: December 2025 92, January 2026 96, February 2026 77
 
-### bi_claim_counts_ye2026.csv
+### delayed_bed_days_winter_2025-26.svg
 
-1. Claimant features closed at 31 December 2026 with a loss payment and without one, by accident year:
-   - 2017: 5,164 with, 853 without
-   - 2018: 5,078 with, 893 without
-   - 2019: 5,225 with, 892 without
-   - 2020: 5,214 with, 931 without
-   - 2021: 5,241 with, 962 without
-   - 2022: 5,043 with, 1,014 without
-   - 2023: 4,586 with, 985 without
-   - 2024: 4,065 with, 968 without
-   - 2025: 3,697 with, 1,011 without
-   - 2026: 2,246 with, 707 without
-
-### bi_unpaid_ye2026.png
-
-1. One bar per accident year 2017 to 2026 of the unpaid carried, largest for 2026, with the carried $400 million and the booked $344.6 million noted.
+1. Grouped bar chart, a bar for each hospital and month, each labelled with the occupied bed-days lost to delayed discharge across all pathways and, in brackets, the patients delayed:
+   - Royal Marchford Hospital: December 2025 1,947 (378), January 2026 1,994 (402), February 2026 1,773 (357)
+   - Ashby Vale Hospital: December 2025 1,891 (290), January 2026 1,873 (290), February 2026 1,600 (253)
+   - Cleeve Park Hospital: December 2025 1,653 (275), January 2026 1,631 (263), February 2026 1,232 (204)
+   - Wendlebury Hospital: December 2025 1,428 (296), January 2026 1,673 (334), February 2026 1,360 (260)
+   - Holmford Infirmary: December 2025 1,121 (222), January 2026 1,296 (247), February 2026 1,069 (231)

@@ -1,134 +1,141 @@
 {
- "accident_quarters": 40,
- "actual_vs_expected": 0.968,
- "booked_musd": 344.6,
- "call": "Carry $400 million for unpaid bodily injury loss at 31 December 2026, $55.4 million more than the $344.6 million booked.",
- "carried_musd": 400.0,
- "carry_unit_musd": 25,
- "chain_ladder_carry_musd": 325.0,
- "chain_ladder_musd": 316.8,
- "closed_share_12q_history_pct": 84.7,
- "closed_share_12q_latest_aq": "2024 Q1",
- "closed_share_12q_latest_pct": 80.6,
- "closed_share_8q_history_pct": 74.4,
- "closed_share_8q_latest_aq": "2025 Q1",
- "closed_share_8q_latest_pct": 71.9,
- "counts": {
-  "2017": {
-   "open": 0,
-   "with_payment": 5164,
-   "without_payment": 853
+ "call": "Give Royal Marchford Hospital 508 packages, Wendlebury Hospital 350, Holmford Infirmary 120, Cleeve Park Hospital 222 and Ashby Vale Hospital none; they free 7,160 occupied bed-days.",
+ "packages": {
+  "Royal Marchford Hospital": "508",
+  "Wendlebury Hospital": "350",
+  "Holmford Infirmary": "120",
+  "Cleeve Park Hospital": "222",
+  "Ashby Vale Hospital": "0"
+ },
+ "bed_days": {
+  "Royal Marchford Hospital": "3,377",
+  "Wendlebury Hospital": "2,184",
+  "Holmford Infirmary": "631",
+  "Cleeve Park Hospital": "968",
+  "Ashby Vale Hospital": "0"
+ },
+ "bed_days_total": "7,160",
+ "packages_total": "1,200",
+ "no_packages": [
+  "Ashby Vale Hospital"
+ ],
+ "covered": {
+  "Royal Marchford Hospital": "508",
+  "Wendlebury Hospital": "350",
+  "Holmford Infirmary": "120",
+  "Cleeve Park Hospital": "285",
+  "Ashby Vale Hospital": "361"
+ },
+ "covered_total": "1,624",
+ "nights_per_package": {
+  "Royal Marchford Hospital": "6.65",
+  "Wendlebury Hospital": "6.24",
+  "Holmford Infirmary": "5.26",
+  "Cleeve Park Hospital": "4.36",
+  "Ashby Vale Hospital": "3.60"
+ },
+ "nights_saved_total": {
+  "Royal Marchford Hospital": "3,377",
+  "Wendlebury Hospital": "2,184",
+  "Holmford Infirmary": "631",
+  "Cleeve Park Hospital": "1,243",
+  "Ashby Vale Hospital": "1,299"
+ },
+ "rung_R1_nights": {
+  "Royal Marchford Hospital": "7.01",
+  "Wendlebury Hospital": "7.20",
+  "Holmford Infirmary": "6.18",
+  "Cleeve Park Hospital": "9.67",
+  "Ashby Vale Hospital": "10.30"
+ },
+ "rung_R1_packages": {
+  "Royal Marchford Hospital": "204",
+  "Wendlebury Hospital": "350",
+  "Holmford Infirmary": "0",
+  "Cleeve Park Hospital": "285",
+  "Ashby Vale Hospital": "361"
+ },
+ "rung_R1_bed_days": "10,425",
+ "ask_a": {
+  "Royal Marchford Hospital": {
+   "December 2025": "1,947",
+   "January 2026": "1,994",
+   "February 2026": "1,773"
   },
-  "2018": {
-   "open": 15,
-   "with_payment": 5078,
-   "without_payment": 893
+  "Ashby Vale Hospital": {
+   "December 2025": "1,891",
+   "January 2026": "1,873",
+   "February 2026": "1,600"
   },
-  "2019": {
-   "open": 74,
-   "with_payment": 5225,
-   "without_payment": 892
+  "Cleeve Park Hospital": {
+   "December 2025": "1,653",
+   "January 2026": "1,631",
+   "February 2026": "1,232"
   },
-  "2020": {
-   "open": 147,
-   "with_payment": 5214,
-   "without_payment": 931
+  "Wendlebury Hospital": {
+   "December 2025": "1,428",
+   "January 2026": "1,673",
+   "February 2026": "1,360"
   },
-  "2021": {
-   "open": 263,
-   "with_payment": 5241,
-   "without_payment": 962
-  },
-  "2022": {
-   "open": 503,
-   "with_payment": 5043,
-   "without_payment": 1014
-  },
-  "2023": {
-   "open": 906,
-   "with_payment": 4586,
-   "without_payment": 985
-  },
-  "2024": {
-   "open": 1530,
-   "with_payment": 4065,
-   "without_payment": 968
-  },
-  "2025": {
-   "open": 2221,
-   "with_payment": 3697,
-   "without_payment": 1011
-  },
-  "2026": {
-   "open": 3912,
-   "with_payment": 2246,
-   "without_payment": 707
+  "Holmford Infirmary": {
+   "December 2025": "1,121",
+   "January 2026": "1,296",
+   "February 2026": "1,069"
   }
  },
- "first_accident_year": 2017,
- "fs_trend_pct": 4.1,
- "gap_musd": 55.4,
- "indicated_musd": 399.8,
- "ledger": {
-  "Q1": {
-   "booked": 28972016.49,
-   "earlier": 2760968.56,
-   "other": 96250.0
+ "ask_a_patients": {
+  "Royal Marchford Hospital": {
+   "December 2025": "378",
+   "January 2026": "402",
+   "February 2026": "357"
   },
-  "Q2": {
-   "booked": 29454538.2,
-   "earlier": 2727945.49,
-   "other": -96250.0
+  "Ashby Vale Hospital": {
+   "December 2025": "290",
+   "January 2026": "290",
+   "February 2026": "253"
   },
-  "Q3": {
-   "booked": 33803509.25,
-   "earlier": 3528113.29,
-   "other": 344291.68
+  "Cleeve Park Hospital": {
+   "December 2025": "275",
+   "January 2026": "263",
+   "February 2026": "204"
   },
-  "Q4": {
-   "booked": 32044442.35,
-   "earlier": 3821032.5,
-   "other": -344291.68
+  "Wendlebury Hospital": {
+   "December 2025": "296",
+   "January 2026": "334",
+   "February 2026": "260"
+  },
+  "Holmford Infirmary": {
+   "December 2025": "222",
+   "January 2026": "247",
+   "February 2026": "231"
   }
  },
- "ledger_account": 5311,
- "paid_by_year_musd": {
-  "2017": 91.7,
-  "2018": 97.1,
-  "2019": 102.1,
-  "2020": 104.3,
-  "2021": 109.0,
-  "2022": 105.4,
-  "2023": 89.0,
-  "2024": 68.8,
-  "2025": 48.6,
-  "2026": 29.5
+ "ask_a_total": "23,541",
+ "ask_b": {
+  "Marchford": {
+   "December 2025": "169",
+   "January 2026": "189",
+   "February 2026": "146"
+  },
+  "Ashby": {
+   "December 2025": "34",
+   "January 2026": "35",
+   "February 2026": "39"
+  },
+  "Teme Valley": {
+   "December 2025": "92",
+   "January 2026": "96",
+   "February 2026": "77"
+  }
  },
- "paid_to_date_musd": 845.4,
- "rungs_musd": {
-  "chain_ladder": 316.8,
-  "fs_open_at_closed_average": 96.9,
-  "fs_trended_2017_2019": 356.5,
-  "latest_12": 289.3,
-  "latest_4": 314.1,
-  "latest_8": 283.6,
-  "restated_exponential": 404.9,
-  "restated_exponential_reported": 403.0,
-  "restated_latest_12": 400.1,
-  "restated_linear": 399.8,
-  "restated_reported_base": 396.5,
-  "restated_simple_average": 400.9
+ "covered_with_equipment": "789",
+ "left_on_delivery_day": {
+  "Royal Marchford Hospital": "0",
+  "Wendlebury Hospital": "0",
+  "Holmford Infirmary": "12",
+  "Cleeve Park Hospital": "101",
+  "Ashby Vale Hospital": "129"
  },
- "unpaid_by_year_musd": {
-  "2017": 0.0,
-  "2018": 0.7,
-  "2019": 3.4,
-  "2020": 6.7,
-  "2021": 12.1,
-  "2022": 23.7,
-  "2023": 42.5,
-  "2024": 72.9,
-  "2025": 99.8,
-  "2026": 138.0
- }
+ "spot_closed_winter": "242",
+ "checks": 27095
 }

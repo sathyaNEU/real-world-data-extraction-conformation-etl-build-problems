@@ -1,288 +1,242 @@
 # task127 design note
 
-Architecture 3, drawn 2026-10-14 at the author's request. Every figure below is the generator's
-(`generator/figures.json`, asserted in `generator/checks.py` and recomputed by `generator/verify.py`).
+Architecture 2, a re-root drawn on 2026-10-12 in the same objective (Opportunity Sizing) and the same number. Architecture 1 (the heat-pump rebate slots split across six rural electric co-operatives, decisive on each co-op crew's meter-set queue to year end) was built and the determinism judge returned SEND_BACK on 2026-10-10 (the participation terms read literally fill capped feeders in date order and move Uplands from 170 to 200 slots); the author re-queued the number in wave 1 as "re-root, Opportunity Sizing". Architecture 1 lives in `## Tried and rejected`, in the card's `lineage` and in git history (its generator, pack and write-up were removed from the tree at this draw; `solver_rounds/` stays as the record of its round). Everything above `## Tried and rejected` states architecture 2.
 
 ## Stage 3 build
 
-- `python3 task127/generator/build.py`: the pack (15 files), the goldens, `metadata.json` and `figures.json`; 219
-  checks; the independent verifier (target/ only) recomputes the carried $400 million, the 20 count cells and the 8
-  ledger cells; two builds byte-identical; `target.zip` cut from the final build.
-- Gates: `figures_check.py` PASS (69 figures); `voice-check.py` PASS; `leak.py` REVIEW, no LEAK (two lines, read in
-  `leak_check_report.md`); `guard.py heart` WARN (repeat.question_form against task453 v2, answered under Draw);
-  `guard.py surface` promotes task125, task138 and task446 on card axes only (gap time and quantity_figure; G16 with
-  task138 and task446), each differentiated on the card and put to the author-requested adjudicated clone check.
+- `generator/make.py`: 27,095 assertions green, the independent verifier (pandas, bundle only) agreeing on every figure, a byte-identical rebuild, and `target.zip` cut flat (16 files, 4 formats; the ward stays 138,450 rows, the warehouse extract 65,496). `figures_check.py`: 95 figures, none absent. `leak.py --asof 2026-10-12`: REVIEW, no LEAK. `guard.py heart`: WARN (overuse.org_family; test.same_driver_older differentiated); `guard.py surface`: no promoted pair once the card was brought up to the build.
+- The card had carried the first stage-2 draft's concurrent dependency (take-home medicines and transport); it now states the built one (community equipment), with calibration form and context artifact `none` (the pack carries neither organ), updated in place.
+- `golden-realism`: the chart redrawn as labelled horizontal bars with a definition and source strip; the workbook given source lines, a true footnote on who the fund covers and a rounding note. House fixes: containers clean (H1); the zip without an enclosing folder (H4); records dated after the 5 October extracts shown as not yet delivered or started, and the invoice lines held to the 2025-26 financial year (H16).
+
+## Stage 4
+
+- **Leak reader, pass 1** (one Sonnet reader on a fresh copy): questions 1 to 4 none. Question 5 quoted the valuation sentence and executed it as "a package is available from the ready day, so it would have removed all those nights": ruled harmless. The sentence asks for the counterfactual; the reader's "all those nights" adds the inference that nothing else held the patient, which the records contradict (no discharge precedes its equipment delivery; restart patients left on the later of the ready date and the delivery). That inference is the default path the stump names, not a filed reading, and the judge found the golden forced. Realism tells fixed in the generator: wards over their bed counts (patients now placed on wards with room, more wards a site, assessment units resized), the census at capacity on 7 per cent of site-nights rather than nearly all, reablement shares rounded and quarters named. Kept: finance's BRK reference format (hazard H-B2) and the fictional postcode areas.
+- **Determinism judge, pass 1** (`determinism_check_report.md`): DETERMINISTIC, FIX_NOW; every figure reproduced. Residual forks, none moving the split: a strict equipment join on orders placed after admission (24 patients' orders were dated before their admission: fixed in the data, orders now placed during the stay, the strict join asserted to give the golden); ward moves straddling midnight (23 nights: fixed in the data, no gap spans midnight, asserted); the seven-day count, the month and the spot start (pinned in the council notes). Gate G: binding constraint or decomposition, borderline single conceptual flip, analytical non-defect, no surface-read dependency. The pass ran on a bundle five of whose files (ward reference, ward stays, census, reablement, request log) were rebuilt for realism while it ran; no graded figure moved (`figures.json` unchanged).
+- **Leak reader, pass 2**: questions 1 to 4 none; the reader names the decisive step as left to the analyst ("Nothing says the value falls as packages are added"). Two forks raised, both closed: which submission of a resubmitted spell counts (the note's "corrects a spell"; SF9 asserted, no covered spell resubmitted) and which brokerage statuses count as taken (only started referrals carry a start and every spot purchase is closed, asserted). Realism tells fixed in the generator, no figure moving (`figures.json` identical): escalation beds by site, the share of a ward's beds patients aged 65 and over take (by specialty, week to week, never over the beds), every unit postcode in the lookup (30 to 120 a ward), container stamps off the minute. Kept: the date style by trust, spaced NHS numbers, the weekly return as published. Both reads are in `leak_check_report.md`.
+- **Determinism judge, pass 2** (`determinism_check_report_pass2.md`, on a bundle md5-identical to `target.zip`): DETERMINISTIC, APPROVE; the split, all 15 chart cells (23,541 bed-days) and the nine brokerage cells reproduce. Gate G: binding constraint (borderline lens swap), analytical non-defect, no surface-read dependency, not a sole data defect. Gate H: domain pass, layers pass, decisive step analytical. Watch item: the equipment gate on discharge is evidenced by the records (all 789 equipment-matched patients left on or after delivery), not by a filed sentence.
 
 ## Draw
 
-**Card.** task127 v3, registered 2026-10-14, guard PASS at the draw (NOTEs only: test.same_puzzle_older and
-test.same_driver_older, differentiated against task138 and task446 v2). Actuarial Science & Insurance (client
-domain), task type `reserving-development-triangles` (serves Forecasting in the client taxonomy), objective
-Forecasting & Predictive Modeling; shape 14 (the asks' cuts per accident year and per quarter carry the criteria;
-drawn as 02 and moved when the accident-year unpaid left the graded set, see Tried and rejected); decision
-`quantity_figure` in dollars, question form how-much; gap time; pattern none, generators G16 then G14; Gate G
-forecasting; strategy `forecast_method_backtest` (F6); Layer 2 family `field_method`; forum the executive team,
-forcing event the year-end close (`period_close`), organisation a mutual insurer (`financial_institution`), role the
-chief financial officer (`finance_controller`), context artifact the preliminary year-end reserve register;
-calibration none. People from `guard.py names --geo "United States" --seed 127`: Brian Robbins (chief actuary, signs
-the reserving basis), Ricky Evans (claims systems, signs the platform and conversion notes), Kyle Bean (controller,
-signs the ledger notes and the register); Bradley, Elizabeth, Sandra, Larry, Stephanie and William drew
-people.first WARNs and were passed over. The heart's repeat.question_form WARN (how-much beside task453 v2, drawn
-after this card) is answered by the decision: an amount to book asks how much.
-
-**The author's override.** On 2026-10-14 the author asked for "a full refresh of data, domain, objective
-everything and ... a tougher one this time" while architecture 2 (discharge-to-assess packages, Opportunity
-Sizing, shipped 59aaaba) was pending review. build-pipeline re-roots in the same objective; the move to
-Forecasting is the author's instruction, recorded in `pipeline.json` (`author_override`).
-
-**The world.** Ninebark Mutual Insurance Company, a mutual property and casualty insurer writing private
-passenger auto in Iowa, Nebraska and South Dakota (no real insurer carries the name). Bodily injury liability is
-counted per claimant feature; an accident carries one to three. Claims ran on an in-house legacy system until the
-conversion weekend of 29 and 30 June 2024, when the features open at the time moved to a vendor claims platform;
-features reported from 1 July 2024 open there. Since the platform went live the represented claims (the
-attorney-represented injuries that carry most of the dollars) have settled at 0.75 of their former pace. Nothing in
-the pack says so: the claims and payments show it only as closings and payments arriving later than they used to.
-Valuation 31 December 2026, Central time; the extracts ran at 06:10 on 6 January 2027; finance's register carries a
-preliminary $344.6 million for bodily injury loss.
-
-**The decision.** How much to carry for unpaid bodily injury loss at 31 December 2026 against the preliminary
-$344.6 million: a forward quantity (the payments still to come on accidents already incurred), committed in the
-year-end close.
-
-**Shape arithmetic.** The carried figure, the booked figure and the gap (3), the closure evidence and the paid to
-date (3), Ask A's claimant features closed with and without a loss payment for each accident year 2017 to 2026
-(20), Ask B's two figures for each quarter of 2026 (8), the chart's parts (about 4) and the three files: over 35
-criteria, each a separate figure or part.
-
-**Data-native sentence.** Bodily injury claims pay almost everything at settlement, so this book's paid
-development is its claims closing, seen in dollars; the platform slowed the closing of the represented claims that
-carry most of the dollars, and the paid triangle records that as smaller payments at every age in the quarters
-since, which a history of development factors reads as smaller ultimates rather than later ones.
-
-**Sources, one line each (what it teaches, how this build differs).**
-- Friedland, *Estimating Unpaid Claims Using Basic Techniques* (Casualty Actuarial Society, 2010), chapter 13:
-  the Berquist-Sherman adjustment of paid development to the latest diagonal's disposal rates. Here the textbook
-  move is the decisive step and nothing shipped names it.
-- Berquist and Sherman, "Loss Reserve Adequacy Testing: A Comprehensive, Systematic Approach", Proceedings of the
-  CAS (1977): the original adjustment; the restatement here uses ultimate claimant features as its base.
-- Actuarial Standard of Practice 43 (property and casualty unpaid claim estimates): the actuary considers
-  changes in claim settlement. Not shipped and not needed: the data carries the change.
-- `stumping/references/strategies.md` F6 (task46 held: a rate law stationary only in cumulative service
-  exposure rebuilt from a movement log): the proven device; here the constructed exposure is the share of
-  claimant features closed and the restatement acts on a whole triangle's history, not on each unit's state.
-- `stumping/references/client/two-layer-task-design.md` (`field_method`, development triangles): the family.
-  The actuarial domain has no rigor patterns of its own; the nearest (payment and claims analytics: complete
-  recent claims with lag-triangle factors) is the move this build's default path already makes.
-- `guard.py mechanisms --objective forecasting`: no driver on file restates a development history at a
-  resolution share; task46 (service exposure), task138 (each unit's own store) and task446 v2 (a base rate backed
-  out through error rates) are the nearest and are differentiated on the card.
+1. Card: `.claude/skills/fingerprint/cards/task127.json`, architecture "v2 (re-root after SEND_BACK: winter discharge-to-assess packages across five hospitals)", lineage v1 with its fate, registered 2026-10-12. `guard.py check` WARN only: `overuse.org_family` (government_agency: the decision belongs to the NHS integrated care board that holds the winter discharge fund, a statutory body) and `test.same_driver_older` against task36's Osterhout R1 and task83 v1, differentiated on the card. The first checks BLOCKed the role, forcing event and forum (programme_officer and budget_or_appropriation against task124, line_manager_or_team against task125) and the driver triple (objective, C, decomposition_attribution against task254 v1); the redraw puts the call with the board's head of system flow (capacity_planner), forced by the winter home-care call-off contract, acted on by the system coordination centre, with the decisive gap population first (the delayed days on file are not the days a package can remove).
+2. Pairing: Healthcare Delivery & Health Economics (client domain) / patient-flow-beds-workforce-optimization / Opportunity Sizing & Decision Support. Healthcare delivery has never been paired with Opportunity Sizing.
+3. Niche: the Marchshire Integrated Care Board (an NHS board in an English county) holds a winter discharge fund that buys 1,200 discharge-to-assess (D2A) packages from the county's home-care providers for December 2026 to February 2027. A package starts home care on the day a pathway-1 patient leaves hospital, so the patient no longer stays in hospital waiting for their regular home care to start. The board splits the packages across the county's five acute hospitals (Royal Marchford, Wendlebury, Ashby Vale, Cleeve Park, Holmford Infirmary) by the occupied bed-days they free, and has to name each hospital's packages in the call-off to the providers.
+4. Call and shape: how many packages each hospital receives and the occupied bed-days they free (`allocation_to_total`, question form how many). Shape 05 (allocation to a fixed total): five hospitals, each with its packages and its bed-days, the total and the hospitals left without packages; the arithmetic is in `## Ask sheet`.
+5. Strategy and Gate G: `decomposition_attribution` (a delayed patient's days are split between the wait a package removes and the waits it leaves in place, and the overlap decides the split), Gate G `decomposition_attribution`, decisive generator G3 (the delay on record against the operation a package changes), then G11 (who the fund covers) and G8.
+6. Data-native sentence: a pathway-1 patient who is medically optimised waits at the same time for home care to start and, often, for community equipment (a profiling bed, a hoist, a commode) to reach their home, and leaves only when both are done; the warehouse counts every night after the ready date as delay and the brokerage records care starting on the day the patient went home, so every record presents the delay as the wait for care, while the equipment service's export shows when the equipment arrived; the nights a package removes run from the later of the ready date and the delivery, which no single file carries and which are fewest where equipment is slowest.
+7. Sources, one line each:
+   - `stumping/references/client/measured-drivers.md`, held group: a dimension that lives on a different entity or in a different file (the equipment service's deliveries, keyed by NHS number on another system) and a conjunction where partial fixes land elsewhere (the delay names Ashby Vale; the restart control names Ashby Vale; counting equipment patients at nought names Cleeve Park and leaves Wendlebury short; only the per-patient overlap gives Royal Marchford, Wendlebury and Holmford their caps); the move sits upstream of every graded figure.
+   - `analytical_tasks/04_opportunity_sizing/OS36` (discharge-to-assess packages): supplies the world and the decision; its driver (a provider acknowledgement baseline showing care already arranged) is not used, and the pitfall is re-found as concurrency between two discharge dependencies.
+   - The client's patient-flow patterns in `layer2-rigor-patterns.md` and the delayed-discharge literature: delayed transfers of care are reported as one number though their causes run in parallel (the NHS discharge sitreps count patients with no criteria to reside, not the dependency that holds them); the field's own analysis of what a discharge scheme saves is the counterfactual length of stay with one dependency removed and the others left in place.
+   - task119 (nearest driver 0.07, a hospital's failed waits it could have shortened): differentiated on the card; no bed is held empty here, and the waits overlap inside one patient's stay.
+8. People, drawn with `guard.py names --geo "United Kingdom" --seed 127`: Lauren Simpson (the board's head of system flow, issuer of allocation note SF-2026-14); Dennis Mahmood and Hollie Bird drawn and not used. Invented names: Marchshire, the five hospitals, the two trusts, the county council's three districts, the ward names, the framework and spot providers.
 
 ## Default path
 
-1. Stitch the legacy payment ledger (to 28 June 2024) and the platform's payments (from 1 July 2024): legacy
-   dollars and platform cents, US dates and UTC timestamps put on Central dates, voids netted on their own dates,
-   each payment on its feature's accident quarter.
-2. Build the cumulative paid triangle by accident quarter (2017 Q1 to 2026 Q4) at quarter-end ages 1 to 40.
-3. Take volume-weighted age-to-age factors over all accident quarters, with no development past 40 quarters
-   (the reserving basis).
-4. Project each accident quarter's paid to ultimate: $316.8 million unpaid in all.
-5. Round to the nearest $25 million and set it against the $344.6 million booked: carry $325 million, a release.
+1. Read last winter's pathway-1 discharges at the five hospitals from `acute_discharges_65plus_2024-12_2026-09.csv` (one row per spell at its latest submission), with each patient's discharge ready date and discharge date.
+2. Keep the patients the fund covers (allocation note SF-2026-14, section 3): pathway 1 with a new package (`p1_care_package`), registered with a Marchshire practice (`gp_practices_2026-09.csv`, the practices closed by merger listed under the Marchshire board), discharge ready date from 1 December 2025 to 28 February 2026: 1,624 patients (Royal Marchford 508, Wendlebury 350, Ashby Vale 361, Cleeve Park 285, Holmford 120), the cap on each hospital's packages.
+3. Value a package at each hospital by its covered patients' average nights from the discharge ready date to discharge, which are the nights they waited for home care: the brokerage's start date for every one of them is the day they went home (Ashby Vale 10.30, Cleeve Park 9.67, Wendlebury 7.20, Royal Marchford 7.01, Holmford 6.18).
+4. Fill the 1,200 packages down the hospitals in that order, each up to its covered patients, and count packages times value as the bed-days they free.
 
-Ends on: carry $325 million (the chain ladder's $316.8 million), a release of $19.6 million against the $344.6 million booked
-Golden: carry $400 million (the restated development's $399.8 million), a strengthening of $55.4 million
+Ends on: Ashby Vale Hospital filled first with 361 packages, then Cleeve Park 285, Wendlebury 350 and Royal Marchford 204, Holmford Infirmary none, freeing 10,425 occupied bed-days.
+Golden: Royal Marchford 508, Wendlebury 350, Holmford Infirmary 120, Cleeve Park 222, Ashby Vale none, freeing 7,160 occupied bed-days.
 
 ## Stump sentence
 
-The default path develops the stitched quarterly paid triangle with all-quarter volume-weighted factors to $316.8
-million and would carry $325 million, a release of $19.6 million against the $344.6 million booked; the step that
-lands it there is carrying the history's development factors onto accident quarters whose represented claims have
-settled more slowly since the platform went live in July 2024, so the recent quarters have paid less of their
-ultimate at every age than the history did, and only restating the history at the closed shares the latest
-diagonal shows gives $399.8 million and a carried $400 million, a strengthening of $55.4 million.
+The default path ends on Ashby Vale Hospital filled first with 361 packages, then Cleeve Park 285, Wendlebury 350 and Royal Marchford 204, Holmford Infirmary none, freeing 10,425 occupied bed-days, where the golden gives Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222 and Ashby Vale none, freeing 7,160; the step that lands it there is valuing a package at the nights from the discharge ready date to discharge, when most of Ashby Vale's and Cleeve Park's covered patients were also waiting for community equipment from the South depot, a wait that ran alongside the wait for home care and that a package does not shorten, so a package frees only the nights from the later of the ready date and the delivery to the day the patient left (Ashby Vale 3.60 a patient against 10.30, Cleeve Park 4.36 against 9.67).
 
 ## Three rules
 
-Task type: reserving-development-triangles (Actuarial Science & Insurance), which serves Forecasting in the client taxonomy.
-Domain test: The deciding quantity is unpaid loss estimated from a development triangle, the reserving actuary's core forecast, and what decides it is the field's own response to a change in settlement speed, Berquist and Sherman's restatement of paid development at the current disposal rate.
-Swap: "How much should the utility carry for unbilled energy at year end" keeps "unpaid" and "development" but loses the claim that closes, the closure ratio a history is restated at and the reserve that is booked, so the restatement has nothing to act on and the task no longer reads the same.
-Layer 1: Two claims systems for one book (the legacy ledger and archive in US dates and dollars, the platform in UTC timestamps and cents, joined through a legacy reference), converted features closed in the legacy archive with a conversion code, legacy features reopened after the conversion and re-entered on the platform, extracts run six days after the valuation date, voided, reissued and returned checks, features opened in error (some carrying a payment) and a ledger booking a nightly check feed, monthly Treasury wire journals by bank value date and Finance's journals; each is what these systems produce and none is placed to be caught.
-Layer 2: field_method, the development triangle done right: the paid history is restated at the latest diagonal's closed shares before factors are taken, because settlement slowed inside the record.
-Decisive step: Restating the paid development history at the share of ultimate claimant features closed that the latest diagonal shows at each age (the Berquist-Sherman paid adjustment), then taking volume-weighted factors from the restated triangle.
-Not semantics: Every field read correctly (dates, clocks, units, voids, codes, the conversion) gives the right paid triangle and the right closure counts, and the paid chain ladder on that triangle still gives $316.8 million and carries $325 million.
-Not rule application: The reserving basis files the estimand, the grain, the tail and the count unit and leaves the method to the actuary; no filed rule restates development, so executing every stated rule still files the chain ladder's $325 million.
-Analyst test: A strong analyst who reads every field and rule correctly builds the quarterly paid triangle, develops it with all-quarter volume-weighted factors (or the latest diagonals' factors, lower still) and would carry $325 million, a $19.6 million release against the $344.6 million booked (executed on the clean truth in checks.py).
-Estimand: Unpaid loss on motor bodily injury claimant features from accidents on or before 31 December 2026, reported or not, excluding adjusting expenses, gross of reinsurance, undiscounted, with no development past 40 quarters, valued at 31 December 2026 Central time (ninebark_reserving_basis_2026.pdf, sections 2 and 3).
-No decoy: Nothing is planted: no prior indication, memo, staff draft or certified triangle ships, the booked $344.6 million is finance's roll-forward with no method beside it, and no record is copied, withheld or written to carry the wrong answer.
-No certified replay: No certified or published figure exists for a method to reproduce; the method is forced by the closure counts in the claims data.
-Lesson: When settlement speed changes, paid development is stationary in the share of claims closed rather than in age, so the analyst measures closed shares down each diagonal before trusting factors; no build on file restates a development history at a resolution share.
+Domain test: the bed-days a discharge scheme frees is patient-flow analysis, the counterfactual length of stay with one discharge dependency removed and the others left in place; with another field's nouns there is no medically optimised patient waiting at once for home care and for community equipment, no national delayed-discharge count fusing the two, and the task stops reading the same.
+Analyst test: an analyst who reads every field and rule correctly keeps the patients the fund covers, caps each hospital at them, and values a package at the nights after the discharge ready date, which every record presents as the wait for home care (the brokerage started care for each of them on the day they went home), and so fills Ashby Vale and Cleeve Park first, whose equipment waits ran alongside most of that wait.
+Layer 1: the two trusts' spells in one warehouse extract with a trust's resubmissions kept beside the rows they correct; ward stays from two bed systems, one writing day/month/year; NHS numbers plain in the warehouse and spaced in the equipment and brokerage exports; practices closed by merger still on patients' records; a postcode district (SV7) that straddles the county line; delayed patients moved between a trust's sites inside one spell; spot purchases invoiced weekly by finance in day/month/year under its own reference format; community referrals with postcodes typed without spaces or in lower case.
+Layer 2: the analytical pitfall is decomposing a delayed stay between concurrent dependencies: the nights a package frees are those from the later of the ready date and the equipment delivery to discharge, built per patient across the warehouse and the equipment service, while the delay on record credits the hospitals whose other wait is longest.
+
+## Strongest-solver test
+
+The strongest solver builds the covered population correctly, normalises every key, reconciles the brokerage against the warehouse (every hospital referral's start is the day the patient went home, so the delay and the care wait agree on every covered patient) and adds a control: patients whose care package restarted (care already in place) waited 0.05 to 1.11 nights on average at the five hospitals, so the control confirms that the wait is the care wait and still files Ashby Vale first. What it does not ask is what else a covered patient was waiting for on the nights after the ready date; the answer sits in a council service's order export, keyed by NHS number in another format, that no step of the default construction reads.
+
+## The decision and the answer
+
+The board names each hospital's share of the 1,200 packages in the call-off by 30 October 2026, for December 2026 to February 2027 (forward facing). The note values a package at the average nights it would have saved last winter's covered patients and fills the hospitals in that order up to their covered patients. Golden: Royal Marchford 508 packages (3,377 bed-days), Wendlebury 350 (2,184), Holmford Infirmary 120 (631), Cleeve Park 222 (968), Ashby Vale none; 7,160 occupied bed-days.
 
 ## Readability screen
 
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+| Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene battery | 6 linear arithmetic | Verdict |
 |---|---|---|---|---|---|---|---|
-| R1 the latest diagonals' factors | none | no | yes: the recent factors visibly differ, the opponent's first correction | no | no | no | readable |
-| R2 frequency-severity | none | claimant counts and closings are in the files | yes: a standard second method | no | no | no | readable |
-| R3 (decisive) the history restated at the latest closed shares | none: the basis files the estimand, grain, tail and count unit and leaves methods to the actuary; nothing names settlement speed, closings by age or a restatement | close dates exist for every feature, but no column, code or flag marks a settlement speed, a handling unit or the platform's effect | no: the default is the chain ladder, and closed shares down the diagonals are an expert's diagnostic | no control, prior indication or published figure; the latest year's payments come in at 0.968 of the chain ladder's expectation, read as favourable | the battery (keys, duplicates, unmatched joins, voids) never measures settlement speed | a restatement of every historical cell by interpolation and a re-projection, no single ratio | silent |
+| R0 every pathway-1 patient's nights after the ready date (Ashby Vale 6.46 first) | fires: the acute notes say the national collection counts nights from the ready date to discharge | fires: ready date and discharge datetime are columns, one subtraction a row | fires: delayed days are the field's dashboard measure | no | no | fires: a subtraction | readable |
+| R1 (default) the covered patients' nights after the ready date (Ashby Vale 10.30 first) | fires: the note's coverage sentence; "so that waiting for a care provider to start does not keep the patient in hospital" | fires: `p1_care_package` and the practice list's board | fires: restricting to the funded population, and the restart control confirms it | no | no | fires: a subtraction | readable |
+| R2 covered patients with a discharge equipment order counted at nought (Royal Marchford 508, Cleeve Park 285, Wendlebury 287) | no | fires once the equipment export is open: its route column makes "had an order" a row predicate | no | no | no | no | readable |
+| R3 (decisive) the nights from the later of the ready date and the discharge equipment's delivery to discharge (Royal Marchford 6.65, Wendlebury 6.24, Holmford 5.26, Cleeve Park 4.36, Ashby Vale 3.60) | no: no filed sentence names equipment, a second wait, two waits overlapping or what else keeps a patient in hospital; the note never mentions equipment (asserted) and the acute notes define nights after the ready date without causes | no: no column in the warehouse carries a cause of delay, a dependency or an equipment date, and the brokerage's start equals the discharge date on every hospital referral, so care wait and delay agree on every row; the equipment export is a council service's file of 32,943 order lines, 10,055 of them for hospital discharges, keyed by NHS number in another format, and no step of the default construction reads it | no: pooling, stratifying by hospital or district, trending, reweighting and shrinking all keep the delay; the control reflex on restart patients files Ashby Vale first because they mostly have their equipment at home already | no: no control or corpus; the restart patients tie under R1 | no: every join matches, every NHS number passes Modulus 11, no covered spell repeats | no: a per-patient maximum across two files, not a subtraction of reported figures | silent |
+
+The decisive rung's quantity is one the solver believes needs no construction: "the nights a package saves" reads as the wait for home care, and every record shows home care starting on the day the patient left.
 
 ## Semantic fork table
 
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| Id | Term or convention in the main ask or computation | Golden reading | Alternative reading | Call under the alternative | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | "unpaid ... losses" | loss only | loss and adjusting expense | same call: the pack carries no expense payment (asserted) | basis 2.2: "excludes adjusting expenses" |
-| SF2 | which claims | every bodily injury claimant feature from accidents to 31 December 2026, reported or not | reported features only | same call: unreported features carry under 1 per cent of the unpaid (asserted) | basis 2.1: "including claims not yet reported" |
-| SF3 | gross or net | gross of reinsurance | net | same call: the pack carries no ceded data (asserted) | basis 2.2 |
-| SF4 | discounting | undiscounted | discounted | same call: the pack files no rate (asserted) | basis 2.2 |
-| SF5 | the valuation clock | 31 December 2026, Central time | platform timestamps read on their UTC dates | same call: carries $400 million (asserted) | basis 3.4 and the platform notes (timestamps in UTC) |
-| SF6 | development grain | accident quarters at quarter-end ages | accident years at 12-month ages | the annual restatement lands at $387.5 million, on the $25 million edge | basis 3.2: development is measured at quarter ends |
-| SF7 | the tail | no development past 40 quarters | a fitted tail factor | same call: every feature settles by age 40 (asserted) | basis 3.5 |
-| SF8 | the count unit | claimant features | claims (accidents) | same call: carries $400 million (asserted) | basis 3.1 |
-| SF9 | voids | net, each void on its own date | gross | same call: carries $400 million (asserted) | basis 3.3 |
-| SF10 | "booked" | the register's preliminary bodily injury loss line, $344.6 million | the defence or adjusting lines | the register labels each line (asserted) | the register's labels |
-| SF11 | converted features in the legacy archive | closed in the archive by the conversion (CV), alive on the platform | closed claimant features | the closings at 29 June 2024 would move the restatement | the code list ("feature continues on platform") and the conversion notes |
-| SF12 | reopened features | open from a reopening until the next closing | closed from the latest closing alone | same call: carries $400 million (asserted) | the platform notes and the events file |
-| SF13 | rounding of the carried figure | the indicated unpaid rounded once to the nearest $25 million | the accident quarters' rounded figures summed | same call (asserted) | the prompt |
+| SF1 | "how many ... should each hospital get" | the split that frees the most occupied bed-days: hospitals filled in order of value, each up to its covered patients | a split in proportion to need (each hospital's nights saved or covered patients) | Royal Marchford 464, Wendlebury 300, Ashby Vale 179, Cleeve Park 171, Holmford 87 (by nights saved) | the note: "The 1,200 packages are split between the hospitals to free as many occupied bed-days as possible." |
+| SF2 | "how many occupied bed-days will each hospital's packages free" | packages times value | the nights of the patients a part-filled hospital would choose (Cleeve Park's best 222) | Cleeve Park 1,243 | the note: "The occupied bed-days a hospital's packages free are its packages times their value" and "packages are offered to covered patients in the order they become medically optimised" |
+| SF3 | the patients the fund covers | pathway 1, a new package, registered with a Marchshire practice (closed practices with their board), ready date in the window | (a) restarts counted; (b) the merged practices' retired codes dropped; (c) residence by postcode district | (a) Wendlebury 601, Royal Marchford 599, the rest none; (b) Royal Marchford 491, Wendlebury 336, Holmford 115, Cleeve Park 258; (c) Royal Marchford 510, Holmford 146, Cleeve Park 194 | (a) the note: "A patient whose existing package of care restarts when they go home does not need a new package and is not covered"; (b) the practice list carries the closed codes under NHS Marchshire ICB; (c) the note: "registered with a general practice in Marchshire" |
+| SF4 | "last winter" for the basis | discharge ready date 1 December 2025 to 28 February 2026 | discharged in the window | Wendlebury 351, Royal Marchford 506, Holmford 108, Cleeve Park 235 | the note: "medically optimised for discharge from 1 December 2025 to 28 February 2026" |
+| SF5 | "the number of nights" | whole nights, discharge date less the later date | elapsed days to the discharge time | same packages; every bed-day figure moves | the note's "number of nights"; the acute notes count nights to the day of discharge |
+| SF6 | "the average, over those patients" | every covered patient, nought where a package frees nothing | the patients a package helps | Wendlebury 350, Cleeve Park 285, Royal Marchford 508, Holmford 57 | the note: "over those patients" |
+| SF7 | the cap's unit | covered patients | covered spells | same call (one covered spell per patient, asserted) | same call |
+| SF8 | the equipment's date | the delivery date of the order placed for the discharge | the required-by date | the default path's call (required-by is the ready date) | the equipment notes: "delivered_date: date the item was delivered"; "required_by: date the prescriber asked for delivery by" |
+| SF9 | a spell submitted twice | the latest submission | the first, or both | same call (no covered spell was resubmitted, asserted) | same call |
+| SF10 | "each of Marchshire's five acute hospitals" | the site that discharged the patient | the site of admission | same call (every covered patient stayed at one site, asserted) | same call |
+| SF11 | the rounding path | value unrounded, packages times value rounded once; the total from the unrounded figures | value rounded to two or three places first; the total summed from rounded figures | same figures (Cleeve Park 968.23 sits mid-bin and both roundings give 968; the total 7,160 both ways; asserted) | the note: "values are carried unrounded and the bed-days rounded to whole bed-days" |
+| SF12 | the order's ties | Holmford over Cleeve Park and Cleeve Park over Ashby Vale, each 1.2 times | Royal Marchford and Wendlebury within 7 per cent | same call (both are filled; swapping them moves nothing, asserted) | same call |
+| SF13 | the window's edges | inclusive of 1 December and 28 February | exclusive of an end date | another call (patients sit on both edges) | the note's "from 1 December 2025 to 28 February 2026", whole days |
+| SF14 | "medically optimised" | `discharge_ready_date` | none | same call | the acute notes: "the date the patient was medically optimised for discharge (no longer met the criteria to reside)" |
+
+The stump is none of the readings: every row reads a term or a convention, and the default path reads each the way the golden does and fails on what a package changes.
 
 ## Ladder
 
-| Rung | Construction | Unpaid | Carried | Dies to |
-|---|---|---|---|---|
-| R0 (default) | stitched quarterly paid triangle, all-quarter volume-weighted factors | $316.8 million | $325 million, a $19.6 million release | the closure counts: since the platform went live each diagonal has closed a smaller share of its ultimate features at every age from seven quarters (asserted at each age 7 to 23) |
-| R1 | the latest 4, 8 or 12 diagonals' factors | $314.1, $283.6 and $289.3 million | $300 to $325 million, a release | the same counts: the latest diagonals mix older quarters' slowed tails with newer quarters' slow starts and carry neither pace |
-| R1a | the latest year's payments against the chain ladder's expectation | 0.968 of expected | a release, read as favourable | the same counts: lower payments mean later closings, not cheaper claims |
-| R2 | frequency-severity: open features at the average closed severity, or ultimate features at a severity trended from 2017 to 2019 | $96.9 million; $356.5 million | $100 million; $350 million | the closed features are the quick, small ones; a twelve-quarter severity trend (4.1 per cent a year) carried seven years |
-| R3 (decisive) | the history restated at the latest diagonal's closed share of ultimate features for each age (linear between quarter ends), volume-weighted factors from the restated triangle | $399.8 million | $400 million, a $55.4 million strengthening | the golden |
+Every rung is a complete analysis from the shipped files; no file computes any rung. Figures from the stage 3 build (`generator/figures.json`, asserted in `generator/checks.py`).
 
-- **Position and margin.** The booked $344.6 million sits 1.088 above the chain ladder and 1.098 above the best
-  latest-diagonal reading; every restated variant sits at least 1.151 above it (asserted at 1.06).
-- **Every correction walks one way.** R1 and R1a land at or below R0; R2's trended reading lands short of the
-  golden's carried figure by $50 million; only the restatement reaches it.
-- **Convergence of the decisive rung (C1).** Linear or exponential interpolation, closed over ultimate or over
-  reported features, volume-weighted or simple factors, all quarters or the latest twelve diagonals after
-  restatement: $396.5 million to $404.9 million, all carried at $400 million (asserted; the golden $11.6 million
-  from the nearest $25 million edge).
-- **The evidence is in the counts.** Closed share of ultimate features at eight quarters 74.4 per cent across the
-  2018 to 2020 accident quarters against 71.9 per cent for 2025 Q1; at twelve quarters 84.7 against 80.6 per cent
-  for 2024 Q1; post-cutover means below the history at every age from 7 to 23, most post-cutover cells below the
-  history's lowest (asserted).
-- **Clean truth.** On the world's own records (no Layer 1) the chain ladder still files a release and the
-  restatement still carries $400 million; the book's true unpaid is a strengthening and sits nearer the golden
-  than the chain ladder (asserted).
-- **Grid.** Two binary moves (restate or not; all or latest diagonals): the restated pair converges on the golden,
-  the unrestated pair on R0 and R1, each a named release below the booked figure.
+| Rung | Construction | Values (nights a package) | Split | Bed-days | Why a careful analyst stops here | Killed by |
+|---|---|---|---|---|---|---|
+| R0 | every pathway-1 patient's nights after the ready date | Ashby Vale 6.46, Cleeve Park 6.40, Wendlebury 4.24, Holmford 4.01, Royal Marchford 3.80 | Ashby Vale 361, Cleeve Park 285, Wendlebury 350, Holmford 120, Royal Marchford 84 | 6,441 | the national collection's own measure | the note covers only new packages for Marchshire-registered patients |
+| R1 (default) | the covered patients' nights after the ready date | Ashby Vale 10.30, Cleeve Park 9.67, Wendlebury 7.20, Royal Marchford 7.01, Holmford 6.18 | Ashby Vale 361, Cleeve Park 285, Wendlebury 350, Royal Marchford 204, Holmford 0 | 10,425 | care started on the day each left, and restart patients barely wait, so the nights look like the care wait | the equipment delivered for the discharge ran alongside the care wait |
+| R2 | covered patients with a discharge equipment order at nought | Royal Marchford 5.50, Holmford 5.21, Cleeve Park 3.62, Wendlebury 2.96, Ashby Vale 2.27 | Royal Marchford 508, Holmford 120, Cleeve Park 285, Wendlebury 287, Ashby Vale 0 | 5,300 | a patient waiting for equipment cannot leave on a package | at Wendlebury and Royal Marchford the North depot delivers within days, so most of their equipment patients still waited days for care |
+| R3 | **decisive**: the nights from the later of the ready date and the delivery to discharge | **Royal Marchford 6.65, Wendlebury 6.24, Holmford 5.26, Cleeve Park 4.36, Ashby Vale 3.60** | **Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222, Ashby Vale 0** | **7,160** | | |
+
+- **Reflexes that land wrong**, each asserted: the restart patients as a control (their average subtracted) files R1's split; the average over covered patients without equipment files R1's split; a split in proportion to nights saved files no hospital at its cap.
+- **Separation.** The default (R1) shares one figure with the golden, Wendlebury's 350 packages (its cap under both); every bed-day figure and the total differ. R0 shares Wendlebury's 350 and Holmford's 120. R2 shares Royal Marchford's 508, Holmford's 120 and Ashby Vale's none, and misses Wendlebury, Cleeve Park and every bed-day figure.
+- **Margins** at the boundaries that decide packages: Holmford over Cleeve Park 1.21 times, Cleeve Park over Ashby Vale 1.21 times (golden); Ashby Vale over Cleeve Park 1.07 times under R1, where both are filled in either order; Cleeve Park over Wendlebury 1.22 times and Wendlebury over Ashby Vale 1.30 times under R2. Royal Marchford and Wendlebury sit 7 per cent apart and both fill, so their order moves nothing.
+- **Position.** The golden's empty hospital is R1's first; the golden's partly filled hospital is filled under R1 and R2; Holmford, full in the golden, gets nothing under R1.
+- **Sign discipline.** Every correction short of R3 keeps Ashby Vale filled or Wendlebury short; only the per-patient overlap reaches the golden, and R2 overshoots it.
+- **Who moves.** The rung acts on the South depot's hospitals: 276 of Ashby Vale's 361 covered patients and 171 of Cleeve Park's 285 had discharge equipment, 129 and 101 of them leaving on the delivery day; at Royal Marchford and Wendlebury none left on the delivery day.
+- **The size check** does not apply: the candidates are five hospitals with their own covered populations, and the value is per patient.
+
+## Determinism
+
+The construction: for each hospital, the covered patients (pathway 1, a new package, a Marchshire practice, ready date 1 December 2025 to 28 February 2026, latest submission); for each, the nights from the later of the discharge ready date and the delivery date of the equipment ordered for their discharge (the order whose required-by date is their ready date; none for most) to their discharge date; the value is the hospital's average; hospitals are filled in order of value up to their covered patients; bed-days freed are packages times value. The counterfactual is forced by the records rather than by a sentence: every pathway-1 patient leaves on the later of the ready date, the care start and the delivery (no discharge precedes its delivery, asserted over 4,666 new-package patients with equipment), and the 665 restart patients with discharge equipment, whose care was already in place, left on the later of their ready date and the delivery; with home care available from the ready date, a covered patient leaves on the later of the ready date and the delivery. Every reader's join to the equipment export (the order for the discharge, the latest delivery on or before the discharge date, any delivery between admission and discharge) gives the same nights for every covered patient (asserted).
 
 ## Closure table
 
-| # | Axis | Reading | Closure |
+| # | Axis | Reading chosen | Closure |
 |---|---|---|---|
-| 1 | Population | bodily injury claimant features from accidents to 31 December 2026, reported or not | filed (basis 2.1); C1 on unreported features |
-| 2 | Unit of account | the claimant feature for counts, the dollar for the reserve | filed (basis 3.1); C1 on claims (SF8) |
-| 3 | Attribution window | accident date to accident quarter and year | the accident date field, a calendar date |
-| 4 | As-of dating | 31 December 2026, Central time; the extracts ran 6 January 2027 | filed (basis 3.4, platform notes); the events file holds the state at the valuation date |
-| 5 | Version basis | the payment as issued, a void on its own date | filed (basis 3.3, both ledgers' notes); C1 (SF9) |
-| 6 | Denominator | ultimate claimant features under the closed share | method-level, C1 across closed over ultimate and closed over reported (asserted) |
-| 7 | Weighting | volume-weighted factors over all accident quarters | method-level; simple averages carry the same (asserted) |
-| 8 | Window length | all accident quarters after restatement | C1 against the latest twelve diagonals' restated factors (asserted) |
-| 9 | Boundary inclusivity | an event at 23:59 on 31 December is in | C1, asserted on the UTC reading (SF5) |
-| 10 | Rounding path | the indicated unpaid rounded once to $25 million; ledger amounts to the cent | filed in the prompt; C1 on summed quarters (SF13) |
-| 11 | Tie-break | none: one figure | not applicable, nothing ties |
-| 12 | Maturity and censoring | every accident quarter, the latest at one quarter old | the estimand includes them; no tail past 40 quarters (filed) |
-| 13 | Order of operations | restate, then take factors, then project the actual latest diagonal | method-level; the golden's steps |
-| 14 | Row order | none matters | C1: every computation groups and sums |
-| 15 | Duplicate resolution | features opened in error (DUPLICATE, XD) are not claimant features; a reissue replaces its voided check | filed (platform notes, code list); C1 on the reserve (asserted) |
-| 16 | Identity normalisation | legacy claim and feature number to the platform's feature through the legacy reference | filed (conversion notes, platform notes) |
-| 17 | Netting against gross | voids net against payments | filed (basis 3.3) |
-| 18 | Dimensional units | legacy dollars, platform cents, ledger dollars, register thousands | filed in each file's notes and headers |
-| 19 | Code and status semantics | conversion, disposition and status codes | filed code lists; never the stump |
-| 20 | Integerisation | none on the reserve; counts are whole features | by construction |
-| 21 | Clause scope | the basis applies to motor bodily injury only | filed (basis 1.1) |
-| 22 | Forward window contents | every payment still to come on incurred accidents | the estimand; no forward driver file needed |
+| 1 | Population | covered patients: pathway 1, a new package, a Marchshire practice, ready date in the window, discharged from the five hospitals | stated (the note, sections 3 and 4); C1 (registration and residence never disagree on a covered patient; one spell per patient) |
+| 2 | Unit of account | a package for a patient; a bed-day is a night | stated (the note) |
+| 3 | Attribution window | last winter by the discharge ready date | stated (the note); SF4 |
+| 4 | As-of dating | the extract of 5 October 2026; every covered spell closed by March 2026 | C1 |
+| 5 | Version basis | the latest submission of each spell | C1 (no covered spell resubmitted) |
+| 6 | Divisor and denominator | every covered patient at the hospital, nought where a package frees nothing | stated (the note: "over those patients"); SF6 |
+| 7 | Weighting | equal weight a patient | stated (an average over patients) |
+| 8 | Measurement window length | one winter, 90 days | stated |
+| 9 | Boundary inclusivity | the window inclusive of both ends; a delivery on the ready date frees the full care wait | stated; C1 (max of two dates) |
+| 10 | Rounding path | value unrounded, bed-days rounded once | stated (the note); C1 (two and three places agree, asserted) |
+| 11 | Tie-break | none needed: the deciding boundaries are 1.2 times apart | C1, asserted |
+| 12 | Maturity and censoring | none: every covered spell ended months before the extract | C1 |
+| 13 | Order of operations | each patient's nights, then the average, then the fill; averaging the delay and subtracting an average equipment wait gives other values | C4 (R2 and the averaged subtraction land elsewhere) |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | latest submission | C1 |
+| 16 | Identity normalisation | NHS numbers plain in the warehouse, spaced in the equipment export; every covered patient's discharge order matches after removing spaces | C1, asserted |
+| 17 | Netting against gross | a patient's nights floored at nought, never netted across patients | stated by construction (a stay is never lengthened by a package) |
+| 18 | Dimensional units | nights, packages | stated |
+| 19 | Code and status semantics | `p1_care_package` New package; equipment status Delivered with a delivery date; route Hospital discharge | dictionary semantics; a cancelled order has no delivery |
+| 20 | Integerisation | packages whole by construction (caps are counts) | C1 |
+| 21 | Scope of a stated clause | the note's sections 3 and 4 govern the split; section 6 governs nothing graded | stated |
+| 22 | Forward window contents | the 2026/27 split is sized on last winter's patients, nothing projected | stated (the note: "The split is sized on last winter") |
 
 ## Literal reader
 
-Executed word for word, the prompt and the reserving basis fix the estimand (unpaid loss on bodily injury
-claimant features from accidents to 31 December 2026, reported or not, gross, undiscounted, quarter-end development
-to age 40, Central time) and leave the method to the actuary; the data forces it, since the diagonals since the
-platform went live close a smaller share of their ultimate features at every age from seven quarters (asserted),
-and every settlement-aware variant of the restatement carries the golden's $400 million (asserted, C1), while the
-unrestated developments land on named releases below the booked figure.
+Executed word for word, the prompt (how many of the 1,200 packages each hospital should get for December 2026 to February 2027 and how many occupied bed-days each hospital's packages free) and the note (covered patients; each hospital's packages valued at the average, over last winter's covered patients, of the nights by which a package would have shortened their stay; no hospital more packages than it had of those patients; split to free as many bed-days as possible; bed-days freed are packages times value, carried unrounded) give one computation once the counterfactual is read off the records: a package makes home care available from the ready date and changes nothing else, and the records show every patient leaving on the later of the ready date, the care start and the equipment delivery, so a package shortens a stay by the nights from the later of the ready date and the delivery to discharge. Every term in the main ask has a row above; each alternative is ruled out by a quoted sentence or converges. The default path's figure is not another reading of the estimand: it is the same estimand computed as if nothing but home care held the patient, which the deliveries on file contradict.
 
 ## Oracles
 
-None on the main call: no prior indication, certified triangle, published reserve or consultant's figure ships.
-The booked $344.6 million is a figure with no method beside it, below the golden and above every unrestated rung, so
-it confirms nothing on either path. The ledger (Ask B) ties to the claims payments on every basis and carries no
-reserve; the earned car-years and the property damage triangle (distractors) bear on neither.
+None. The pack ships no per-hospital delayed-days report (the national weekly return is by trust and counts pathway-1 nights by the week of discharge, tying the delay under every method), no evaluation of an earlier discharge scheme, no package uptake, and no cause-of-delay field. The brokerage's start dates equal the discharge dates for every hospital referral and tie under R1 and the golden alike; the restart patients tie under R1.
 
 ## Ask sheet
 
-| Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
-|---|---|---|---|---|---|---|---|---|
-| A, for each accident year 2017 to 2026, the claimant features closed at 31 December with a loss payment and those closed without one | 20 | the audit trail of the claimant counts the reserve stands on | the annual statement's claim count exhibit beside the reserve | D9 split evidence: a loss payment is a fact of the two payment ledgers, not of the disposition code; a converted feature's advance sits in the legacy ledger under its legacy number, a withdrawn or denied feature may have been paid an advance, a settled feature may have been settled on the vehicle claim, and a settlement may sit on the claim's duplicate feature (legacy XD or platform DUPLICATE) | D1 (legacy features closed before the conversion and reopened after it were re-entered on the platform under new numbers with the legacy reference, while the archive keeps their closed rows, not coded CV); D2 (checks returned in the first week of January voided after the valuation); D2 (the register's status at the 6 January run); D8 (UTC timestamps against the Central year end); D5 (features opened in error, filed) | legacy_bi_claims_archive.csv (CLM_NO, FEAT_NO, LOSS_DT, RPT_DT, CLS_DT, DISP), platform_bi_features_2027-01-06.csv (feature_id, claim_number, legacy_ref, accident_date, reported_date, disposition), platform_feature_events_2027-01-06.csv (feature_id, event, event_at), legacy_bi_payments_2017-2024.csv (CLM_NO, FEAT_NO, TRANS_CD, AMOUNT), platform_bi_payments_2024-2027.csv (feature_id, amount_cents, status, voided_at), legacy_disposition_codes.txt, claims_conversion_notes_2024.md, platform_extract_notes.md; 8 files, 20 columns | the disposition read as the payment: every year off; one ledger per system: 2017 to 2024 off; every voided check netted: 2023 to 2026 off; re-entered features counted twice: 2017 to 2024 off; duplicates' payments dropped: every year off; the answer | a conversion that keeps the legacy archive whole; old claims reopened over a lien; a check returned at year end; a settlement keyed to a duplicate feature |
-| B, for each quarter of 2026, how much of the bodily injury loss the ledger booked was claims payments issued in an earlier quarter and how much was not claims payments at all | 8 | an input reconciled to another system's total, the gap made of devices: the paid losses the reserve rests on tied to the statements | the controller's sign-off that the paid triangle is the books' paid | D4: wire settlements never pass through the nightly check feed; Treasury books each month's wires by bank value date (a wire released after 15:00 values the next business day) in one journal per state early in the next month, so a quarter's last-day late wires sit in the next quarter's second journal | D1 (the feed re-sent the 13 August batch on 15 August beside a genuine catch-up pair after the 19 May outage, reversed in October); D2 (a December 2025 vehicle-damage wire inside Treasury's journal, reclassed in April); D2 (two feed lines rejected for a missing state segment and reposted by Finance's manual journal: claims payments under the MANUAL source); D8 (the feed posts the previous Central day's checks; platform timestamps in UTC); D3 (platform cents, ledger dollars) | gl_5311_bi_paid_loss_2026.csv (posting_date, source, batch_ref, state, description, amount), platform_bi_payments_2024-2027.csv (issued_at, method, amount_cents, status, voided_at), platform_bi_features_2027-01-06.csv (state), ledger_extract_notes_2026.md, finance_close_calendar_2026.xlsx (business days); 5 files, 12 columns | each Treasury journal as the previous month's wires and every manual line as other: all 8 off; wires by issue month: every quarter's earlier off; the repeat read as payments: Q3 and Q4 off; the answer | a Treasury wire journal booked on value dates, a replayed feed batch and a reposted rejected line are what a ledger tie-out finds |
-| C, the chart | its parts | the construction | the call's own exhibit | none | none | the golden's restatement by accident year | R0 to R3 values | the reserving team's own exhibit |
+Two asks and the chart, each a component of the call's case or the audit trail of its inputs (H18): how many bed-days each hospital loses to delayed discharge across every pathway, and how quickly the home-care market the packages draw on starts care. Neither carries the decisive construction, so both are priced as device asks. Built figures (`generator/figures.json`); `generator/checks.py` asserts every stop and every cell's movement.
 
-- **Main population zero-counts.** No ask device moves the carried figure (asserted: the call recomputes at $400
-  million with the duplicates' payments dropped, the re-entered features counted twice and the January voids
-  netted at the year end); the ledger, its notes and the close calendar are read by no step of the call; deleting
-  every ask file leaves the call and Ask C unchanged.
-- **Hazard table.** D9 (A) moves closed with and without payment in every year with advances, vehicle-claim
-  settlements or duplicate-keyed payments; D1 (A) moves 2017 to 2024; D2 (A, returns) moves 2023 to 2026; D4 (B)
-  moves every quarter's earlier-quarter figure; D1 (B) moves Q3 and Q4; the reposts move Q2's and Q4's two figures
-  for a reader filing every manual line as other.
-- **Referee.** None for the primaries; the ledger notes define the feed and the extract notes the clocks, the
-  WHAT only; no filed sentence says that wires leave the feed or value-date, which features were re-entered, which
-  payment ledger holds a converted feature's advance or that a duplicate can carry a payment.
+**Ask A, each hospital's occupied bed-days lost to delayed discharge of patients aged 65 and over, across all pathways, and how many patients were delayed, in December 2025, January 2026 and February 2026** (30 figures: 15 bed-day figures and 15 patient counts, whole numbers, on the chart). Construction, per the acute notes: each night a patient spends in hospital after the discharge ready date, dated to the evening it begins and counted at the hospital whose ward the patient was on at that midnight; a patient counts at a hospital in a month when they spent a delayed night there. Golden: Royal Marchford 1,947, 1,994, 1,773; Wendlebury 1,428, 1,673, 1,360; Ashby Vale 1,891, 1,873, 1,600; Cleeve Park 1,653, 1,631, 1,232; Holmford 1,121, 1,296, 1,069 bed-days (23,541 in all), with the patients on the chart. Use: the scale of the problem the packages address at each hospital, beside the split. H18: a component (the delayed bed-days the packages draw down).
+- Primary device A1 (D7, the true key elsewhere: a spell carries the site that discharged the patient): 837 delayed rehabilitation and care-home patients were moved within their trust (Royal Marchford to Wendlebury, Ashby Vale and Holmford to Cleeve Park), 131 of them with delayed nights last winter; the spell is one row under the receiving site and the nights before the move are on the sending site's wards in the ward stays. Natural read: every night at the spell's site: Royal Marchford 1,855, 1,908, 1,654; Wendlebury 1,520, 1,759, 1,479; Ashby Vale 1,809, 1,828, 1,582; Cleeve Park 1,796, 1,774, 1,287; Holmford 1,060, 1,198, 1,032; every cell and every patient count moves (asserted) and the five-hospital total does not (23,541 both ways). Silent: each spell is one valid row, every join matches, the site column is filled and correct for what it says, and the totals tie; what finds it is a spell whose ward stays sit at two sites, a cut nothing in the ask invites.
+- Primary device A2 (D2, the record is the latest accepted): 573 rehabilitation and care-home spells (80 with delayed nights last winter) were submitted twice, the first submission with the pathway the patient was waiting for and the day the bed was booked, the correction with where they went and when they left (1 to 4 nights later). Natural reads: both rows counted (every cell up 1 to 54) or the first kept, the default of a drop-duplicates (every cell down 4 to 21); only the latest submission reproduces.
+- Hazards: H-A3 (D3) South Marches' ward stays written day/month/year beside Marchshire Hospitals' ISO times: a month-first or day-first parse of the whole column misreads one trust's times and moves every South Marches cell for a solver who reads the ward stays; H-A4 (D8) nights straddling months and the window's edges: by discharge month every cell moves (23,256 in all); a window on the ready date loses every December cell (22,701).
+- Span: the warehouse extract, the ward stays, the ward reference, the acute notes: 4 files; 11 columns (provider, spell, submission id, ready date, discharge time, pathway, NHS number, ward, ward start, ward end, ward site).
+- Stops: spell site (A1 natural); both submissions; the first submission; month of discharge; month of ready date; ready-date window; the golden.
 
-| Ask figures | Cracker's path | Cracker's value | Verdict |
+**Ask B, for each of the council's three districts and each month from December 2025 to February 2026, how many of the referrals for home care the brokerage took had care start no more than seven days after referral** (9 figures, whole numbers, in the workbook). Construction: referrals by the month the brokerage received them and the district of the care postcode (the council's lookup), care start from the brokerage or, for care bought by spot purchase, from the invoices' first service start. Golden: Marchford 169, 189, 146; Ashby 34, 35, 39; Teme Valley 92, 96, 77. Use: how quickly the framework starts care in each district, the market the call-off draws on. H18: the audit trail of the home-care market the packages are bought from.
+- Primary device B1 (D4, absence as the signal, evidenced in a file no habitual join reaches): when no framework provider can take a referral the brokerage closes it and the council's commissioners buy the care from a spot provider; the referral shows Closed with no start (160 hospital and 82 community referrals last winter), beside genuine closures with no care, and the start is the service start on finance's invoice lines. Natural read: Closed means no start: Marchford 153, 168, 126; Ashby 28, 33, 31; Teme Valley 84, 84, 65; every cell moves by 2 to 21 (asserted). Silent: every referral is a valid row with a status; Closed is the brokerage's ordinary outcome for a referral it ends; nothing in the brokerage export marks a spot purchase; what finds it is a pathway-1 patient who went home with a new package while the brokerage shows no start, or the invoices read against the referrals.
+- Hazards: H-B2 (D7) finance writes the brokerage reference as BRK and seven digits, so an exact join matches nothing; H-B3 (D3) invoice dates day/month/year: a month-first parse moves eight of nine cells; H-B4 (D7) community postcodes without spaces, in lower case or with a trailing space (30 last winter): unnormalised, seven cells move; H-B5 (D5) the SV7 postcode district straddles the county line, so mapping by postcode area loses Teme Valley's SV7 addresses (every Teme Valley cell down 7 to 13); H-B6 (D2) 57 spot purchases restarted after a week's break carry a later service start on their later lines: the latest start moves four cells.
+- Span: the brokerage export, the invoice lines, the postcode lookup, the council notes, the warehouse extract (the cross-file check): 5 files; 10 columns.
+- Stops: Closed as not started (B1 natural); a month-first date parse; the BRK reference unjoined (as B1); raw postcodes; the area prefix; the latest service start; the golden.
+
+**The chart** (`delayed_bed_days_winter_2025-26.svg`): a bar for each hospital and month of last winter, each labelled with its bed-days and patients. Built on Ask A's quantity, never on the call's: no bar is marked, ordered or titled by packages or the bed-days they free.
+
+**Hazard table**:
+
+| Device | Family | Asks moved | Rows | Main-path rows |
+|---|---|---|---|---|
+| A1 delayed patients moved within a trust | D7 | A (every cell) | 837 spells, 131 with delayed nights last winter | 0 (pathways 2 and 3) |
+| A2 corrected resubmissions | D2 | A (every bed-day cell) | 573 spells, 80 last winter | 0 (pathways 2 and 3) |
+| H-A3 ward times in two formats | D3 | A (South Marches cells) | South Marches' ward stays | 0 (the main call reads no ward stay) |
+| H-A4 nights across month ends and the window's edges | D8 | A | every spell straddling a boundary | 0 |
+| B1 spot purchases closed in the brokerage | D4 | B (every cell) | 242 referrals last winter | 0 (the main call reads no brokerage row) |
+| H-B2 finance's BRK references | D7 | B | 4,091 invoice lines | 0 |
+| H-B3 invoice dates day/month/year | D3 | B | 4,091 invoice lines | 0 |
+| H-B4 postcode typing | D7 | B | 30 referrals last winter | 0 |
+| H-B5 SV7 across the county line | D5 | B (Teme Valley) | 63 referrals last winter | 0 |
+| H-B6 restarted spot purchases | D2 | B | 57 purchases | 0 |
+
+Direction discipline: for every subset of mishandlings within an ask the composed figure leaves its bin in every cell it touches (whole numbers: any move is a miss), asserted cell by cell at stage 3.
+
+**The separation line.** The main call's declared row population: the warehouse's covered pathway-1 spells, the equipment orders of those patients and the practice list. Every device and hazard row sits in pathway-2 and pathway-3 spells, the ward stays, the brokerage export, the invoice lines and the postcode lookup; the main call reads none of the last four (deleting them leaves the split and the bed-days unchanged, asserted). No document the call reads carries an ask's organ: the note names no ward, referral or invoice.
+
+**Referee:** none.
+
+**Mirror sheet** (the same response at R1): the asks carry no construction from the call, so the mirror keeps an ask figure exactly when it escapes that figure's devices; it banks the chart's structure.
+
+**Cracker sheet** (the response that lands the split, runs the hygiene battery and executes every filed rule):
+
+| Ask row | Figures | What the cracker does | Cracker |
 |---|---|---|---|
-| A closed with a loss payment (10) | payments from both ledgers with each converted feature linked through its legacy reference, voids netted at 31 December, CV, XD and DUPLICATE rows dropped with their payments, re-entered features' archive rows kept | duplicate-keyed settlements lost and re-entered features doubled: every year off (asserted, 20 of 20 cells) | miss |
-| A closed without one (10) | the same | every year off by the same features | miss |
-| B earlier-quarter payments (4) | each Treasury journal read as the previous month's wires by issue date, every manual line as other | the quarter-end late wires and the reposted feed lines misfiled: every quarter off (asserted, 8 of 8 cells) | miss |
-| B not claims payments (4) | the same | the reposts filed as other and the vehicle-damage wire and repeat batch filed as payments: every quarter off | miss |
-| C the chart | the golden's restatement | right | outside |
+| A, Royal Marchford by month | 3 bed-days, 3 patients | dates nights by the evening and keeps the latest submission, but counts every night at the spell's site (A1): 1,855, 1,908, 1,654 against 1,947, 1,994, 1,773, and fewer patients | miss |
+| A, Wendlebury by month | 3, 3 | A1: 1,520, 1,759, 1,479 against 1,428, 1,673, 1,360 | miss |
+| A, Ashby Vale by month | 3, 3 | A1: 1,809, 1,828, 1,582 against 1,891, 1,873, 1,600 | miss |
+| A, Cleeve Park by month | 3, 3 | A1: 1,796, 1,774, 1,287 against 1,653, 1,631, 1,232 | miss |
+| A, Holmford by month | 3, 3 | A1: 1,060, 1,198, 1,032 against 1,121, 1,296, 1,069 | miss |
+| Chart, the bars and their labels | 30 values | carry A1's figures | miss |
+| B, Marchford by month | 3 | normalises postcodes, parses the lookup, counts starts within seven days, reads Closed as not started (B1): 153, 168, 126 against 169, 189, 146 | miss |
+| B, Ashby by month | 3 | B1: 28, 33, 31 against 34, 35, 39 | miss |
+| B, Teme Valley by month | 3 | B1: 84, 84, 65 against 92, 96, 77 | miss |
 
-Mirror leakage: 6 per cent of the ask weight on the most attractive wrong rung (the chain ladder): it misses every
-Ask A and Ask B cell exactly as the cracker does, and of the chart it keeps only the bar per accident year and the
-booked total, its unpaid bars and carried total being the chain ladder's.
-Pair ceiling: 34 (the cracker about 52 with the call, its components and the chart; the chain-ladder mirror about
-16).
+**Pair arithmetic** (planning weights 38 / 7 / 55: the five hospitals' packages and bed-days, the total and the hospital with none, 12 criteria, in the 38; the two files and the whole numbers in the 7; Ask A's 30, Ask B's 9 and about two structural chart criteria, 41, in the 55). Cracker on paper (A1 and B1 hold): it keeps the chart's structure (Lc = 2 / 41), C = 47.7. Escapes by insight: A1 one time in 0.3 (the opponent never asks what one row is), A2 0.75 (the latest submission is the reflex once the repeats are seen), the ward-time formats 0.75 for a solver who reads the ward stays, the month split 0.85, the window 0.75 on December and February; B1 0.45, the BRK join 0.9, the date parse 0.9, the postcodes 0.9, the earliest start 0.95, SV7 0.95 on Teme Valley: an Ask A bed-day cell 0.12, a patient cell 0.16, an Ask B cell 0.31; Lc = (1.80 + 2.39 + 2.75 + 2) / 41 = 0.218, C = 57.0. Mirror (R1): Wendlebury's 350 packages (3.2 of the 38), the 7, the asks at the same escapes (12.0): S = 22.2. A response at R2 (the equipment found and over-applied) keeps Royal Marchford's 508, Holmford's 120 and Ashby Vale's none (12.7 of the 38): 31.7.
 
-## Pre-ship check
+Pair ceiling: 39.6 (the cracker at 57.0 with realistic escapes beside the default-path mirror at 22.2; 30.3 on paper with A1 and B1 holding; about 22 with no response on the split; 44.4 in the case of two responses finding the equipment, one over-applying it).
 
-- **Rule 1, the domain:** the deciding quantity is the unpaid loss on a motor bodily injury book, estimated from a
-  paid development triangle, the reserving actuary's forecast; what decides it is the field's response to a change
-  in settlement speed: the closed share of ultimate claimant features, read down the diagonals, falls at every age
-  from seven quarters once the claims platform goes live, and the Berquist-Sherman paid adjustment restates the
-  history at the latest diagonal's closed shares before factors are taken. Swapped into unbilled energy or a
-  hospital's receivables, there is no claimant feature that closes and no closed share to restate a history at, so
-  the $83.0 million between the chain ladder's $316.8 million and the restated $399.8 million stands for nothing.
-- **Rule 2, two layers:** Layer 1 is the two claims systems for one book: the legacy ledger and archive (US dates,
-  dollars, CV and XD rows), the platform's register, events and payments (UTC timestamps, cents, DUPLICATE rows),
-  the conversion and the legacy features re-entered on the platform, voids, reissues and returned checks, the
-  extracts run six days after the valuation, and a ledger fed by a nightly check feed, monthly Treasury wire
-  journals by bank value date and Finance's journals. Mishandled, these move the asks: the cracker path misses 20 of
-  20 count cells and the face-value read misses 8 of 8 ledger cells (asserted). They do not move the call. Layer 2 is
-  the development done right: the chain ladder files $316.8 million ($325 million, a release), the latest
-  diagonals $283.6 to $314.1 million, the trended frequency-severity $356.5 million, and the restatement $399.8
-  million ($400 million), all executed on the clean truth.
-- **Rule 3, the decisive step:** the decisive step is an analytical choice: restate paid development at the latest
-  closed shares before projecting. No field, code, unit or definition says it, and no filed rule performs it (the
-  basis files the estimand and conventions and leaves the method to the actuary). Nothing is planted: no prior
-  indication, memo, certified triangle or stakeholder figure. The leak reader's question 6 reads it as an
-  analytical choice about how the paid development is projected, with nothing planted or announced.
-- **Gate G:** no shipped artifact states a carried figure or ranks methods. The register's booked $344.6 million is
-  the comparison the prompt asks for, with no method beside it. Deleting every wrong number leaves the difficulty
-  intact, because the wrong answers come from methods, not from figures in the pack. The motor PD triangle and the
-  earned car years are named distractors that argue no BI figure.
-- **Determinism:** the estimand is filed in basis 2.1 and 2.2 and the conventions in 3.1 to 3.6. Every restatement
-  variant (linear or exponential, closed over ultimate or over reported, volume-weighted or simple, all quarters or
-  the latest twelve restated diagonals) lands at $396.5 to $404.9 million, carried at $400 million. Annual
-  development is ruled out by 3.2's quarter-end ages (asserted). The asks' WHAT is in the prompt and the notes: the
-  feed's previous day, the wires' 15:00 release and value date, and a closed feature's net loss payments to the
-  valuation.
+Mirror leakage: 21.8 per cent of the ask weight (its device escapes and the chart's structure).
+
+**Criteria arithmetic.** The five hospitals' packages 5, their bed-days 5, the total 1, the hospital with none 1; Ask B's 9 cells; Ask A's 15 bed-day figures and 15 patient counts; about 2 for the chart's structure; the two files 2: 55.
+
+## Deliverables and prompt
+
+- `d2a_package_split_winter_2026-27.xlsx`: the System Flow team's split: a Split sheet (each hospital's covered patients, nights a package frees, packages and bed-days, the total, the hospital with none and why), a Brokerage starts sheet (Ask B, with the referrals received beside it) and a Notes sheet.
+- `delayed_bed_days_winter_2025-26.svg`: Ask A as a grouped bar chart, a bar for each hospital and month, labelled with bed-days and patients.
+- `prompt.txt`: one paragraph, 910 characters, question first, two files, rounding at the close; `voice-check.py task127` PASS.
+
+## Stopping rule
+
+Stage 3 stops and returns to design if any of these fail after the cut: the golden split; the margins at the deciding boundaries (1.2); R1, R0, R2 and the reflexes on their named splits; the part-filled hospital mid-bin under every rounding; every Ask A and Ask B cell moved by its primary; the main call unchanged with the ask files deleted; the verifier agreeing on every figure; a byte-identical rebuild.
+
+## Pre-ship check, on paper
+
+1. Domain test, Layer 1, Layer 2 and analyst test written (`## Three rules`); stump class analytical.
+2. Default path ends on 10,425 bed-days with Ashby Vale first; the golden 7,160 with Ashby Vale none.
+3. No filed rule, basis or formula gives another answer; the note never mentions equipment; the counterfactual is forced by the records (`## Determinism`).
+4. No artifact ranks the hospitals on the decision (the weekly return is by trust).
+5. Every ask figure moved by a silent primary; the cracker misses every row; pair ceiling 39.6.
+6. Distractors: the weekly return, the bed census and the reablement outcomes, deletion-tested.
+
+## Builder brief
+
+Stage 3 builds `generator/` (world, records, pack, docs, analysis, golden, checks, verify, make) into `target/`, the goldens and `figures.json`, with the clearance on the part-filled hospital, the realism sweep in `checks.py`, `leak.py --asof 2026-10-12`, `figures_check.py` after the write-up, `golden-realism` after the figures freeze, and the card's `answer`, `spine` and `deliverables` filled at ship.
 
 ## Tried and rejected
-
 
 - The note's decisive rung, per feeder the smaller of expected buyers and hosting slots: a stated connection standard, a per-feeder hosting map and a neighbourhood-to-feeder join whose keys line up hand it to any solver who reads them, its driver sits nearest task106's, and as labelled it BLOCKs on ban.pattern C (task119), ban.calibration pilot_log (task122) and test.same_driver_older (a signature spent in nine builds); kept as rung 2.
 - Resistance-to-heat-pump netting (each resistance conversion frees feeder headroom for oil or propane conversions): the connection standard either states a per-heat-pump assessment, which contradicts the netting and is a counter-pin, or states a net-change rule, which hands it over; a corpus of past approvals would refute the stop rung, which L1 forbids.
@@ -330,19 +284,4 @@ Pair ceiling: 34 (the cracker about 52 with the call, its components and the cha
 - Re-brokered and re-sent referrals as Ask B devices: whether a re-sent referral is a second referral the brokerage took reads two ways; cut.
 - The part-filled hospital's bed-days at 967.45: rounding the value to two places first gives 968; the clearance brings one Cleeve Park delivery forward a day, so 968.23 rounds to 968 on every path.
 - 2026-10-14, second-layer attempt after shipping (built to stage 4, not shipped): the patients the wait for home care itself sent to a rehabilitation bed or a care home (re-assessed while waiting, so the warehouse records them on pathway 2 or 3 and the default cohort conditions on the wait's own outcome), found from the brokerage's withdrawn hospital referrals, with the note's section 3 moved to "medically optimised for discharge home on pathway 1". Every free gate was green (27,838 checks, the verifier, a byte-identical rebuild, precut, leak.py), but the judge returned NOT_DETERMINISTIC and SEND_BACK on that pack (determinism_check_report_loop1.md, which covers the rejected prototype and not the shipped pack): no shipped sentence says a withdrawn hospital referral marks a patient optimised for home, and that reading alone moves Ashby Vale from 10 packages to none. Filing the population as "whatever pathway they left on" would hand over the post-treatment insight and leave only a record linkage a solver executes once told, so the call would turn on a filed rule; the leak reader also opened a fork on the package's "up to four weeks" (the re-assessed patients waited 23 to 26 nights on average). Reverted to the shipped pack, which the generator rebuilds byte-identical (27,095 checks); the shipped build's longest saving is 14 nights, so the four-week fork does not reach it.
-- 2026-10-14, re-root (architecture 3) at the author's request: architecture 2 (discharge-to-assess packages, shipped 59aaaba, pending review) replaced by a full refresh of data, domain and objective; drawn instead: a motor bodily injury reserve under Forecasting.
-- A settlement speed-up after the cutover instead of a slowdown: the paid chain ladder overstates while frequency-severity on closed claims understates, so the reflexes walk both ways and no booked figure separates them from the restatement.
-- A quarter of each claim paid in instalments over its life, with severity tied to settlement time at power 0.9: the restatement's variants fell 6 to 15 per cent below the simulated truth and 2 to 4 per cent apart; bodily injury pays at settlement (the claimant's own medical cover carries the bills), so the build pays at closing with a few advances.
-- Restating each handling unit's triangle on its own (represented claims alone): that triangle's early paid is a handful of advances, its restated early factors explode and the indication nearly doubles; no handling-unit column ships, and the restatement runs on the whole line, where every variant converges.
-- Annual development at 12-month ages: the linear and exponential restatements 4 per cent apart and closed over reported against closed over ultimate 6 per cent apart; the basis files accident quarters at quarter-end ages, where the variants converge.
-- Frequency-severity with severity trended from the mature quarters as a converging second method: a twelve-quarter trend carried seven years swings 0.6 to 1.4 of the restated indication across seeds; it is a rung (R2), asserted on the shipped data, never the golden.
-- Report lags with a long tail (2 per cent of features reported after six months): the two count bases of the restatement drift 4 to 5 per cent apart; lags now average five days with a thin tail, so both bases converge.
-- 2026-10-14, at stage 3: the unpaid for each accident year as graded figures: the latest years differ by 2 to 3 per cent across the restatement's variants (2026 between $136 million and $144 million), so neither a $1 million nor a $5 million rounding holds; the prompt asks for the carried total and the chart shows the years.
-- A carried figure rounded to $10 million: the quarterly variants spread about $8 million and straddle a $10 million edge; at $25 million the golden sits $11.6 million from an edge with every variant inside.
-- Represented claims at 0.82 of their pace: the closed shares fell 1.4 points on average after the cutover and about half the post-cutover cells stayed inside the history's range, too thin for a judge to call the restatement forced; 0.75 gives about 2 points with most cells below the history's lowest.
-- Ask A's "reported" and "open at 31 December" columns: a solver reading the register's dated fields gets them right; the ask counts closed features with and without a loss payment.
-- Ledger amounts to the nearest dollar: Q4's earlier-quarter payments came to exactly $3,821,032.50, a half-up against half-even fork; asked to the cent.
-- Ledger quarters whose only other entries were manual journals: a reader filing every manual line as other hit Q2 and Q4; two feed lines rejected for a missing state segment and reposted by manual journal (claims payments) now sit beside them.
-- An annual-development convergence assertion: the annual restatement fell at $387.5 million, on the $25 million edge; annual development is ruled out by the basis's quarter-end ages (SF6) instead.
-- Initial medical payments on every represented claim and a handling-unit column: restating the represented claims' own triangle explodes its early factors; bodily injury pays at settlement and no unit column ships.
-- Architecture 3 at stage 4 (10-14): judge NOT_DETERMINISTIC, SEND_BACK. The basis leaves the method to the actuary (2.3), and nothing shipped selects the closure restatement over a frequency-severity method on paid per closed feature developed with volume-weighted severity factors ($343.8 million, carried $350 million) or severity trended from 2017 to 2019 ($356.5 million, $350 million); the judge's one-year emergence back-test at the 2024 Q3 to 2025 Q4 valuations favours the latest diagonals' factors, not the restatement. Filing the method makes the decisive step rule application, and no selection criterion the data decides favours the restatement (the world's true unpaid is $427.9 million, above every method, because the slowdown falls on the represented claims, which cost the most, so paid does not track closed share either). The asks reproduced to the cent. Architecture spent.
+- 2026-10-14, architecture 3 (a full refresh at the author's request, built to stage 4, not shipped): actuarial reserving for a motor bodily injury book (Ninebark Mutual, year end 2026, Forecasting), the paid history restated at the latest diagonal's closed shares of claimant features (Berquist-Sherman) after a claims platform slowed settlement, $400 million carried against the paid chain ladder's $325 million. Stage 3 green, the leak reader clean and the adjudicated clone check on Sonnet CLEAN, but the judge returned NOT_DETERMINISTIC, SEND_BACK: the reserving basis leaves the method to the actuary, and frequency-severity on paid per closed feature carries $350 million with nothing shipped selecting between them, while filing the method would make the decisive step rule application. The author restored this architecture; architecture 3's note, generator and judge report are in git at 6edd337.
