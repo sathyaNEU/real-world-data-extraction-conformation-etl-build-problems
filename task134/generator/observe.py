@@ -208,6 +208,14 @@ def ask_attributes(S, O, rng):
     return A
 
 
+def case_rate(day, care):
+    """the contract rate the case system's own rate table held for the episode's start: the agreed national rate, and
+    for 2026-27 the interim uplift (the uprating run for the rate agreed on 6 November 2026 had not been made by the
+    extract)"""
+    y = W.fy(day)
+    return W.NCHC_INTERIM_2026[care] if y == 2026 else W.NCHC[y][care]
+
+
 def supplement(S, O, i, h, k):
     A = O.ask
     if A.supp_draw[i, k % 4] < A.supp_p[h]:
@@ -271,7 +279,7 @@ def placements(S, O, rng):
                 end = INF
                 reason = ""
             nmov = sum(1 for t in mv if t <= st)
-            fee = W.NCHC[W.fy(st)][S.care[i]] + supplement(S, O, i, h, nmov)
+            fee = case_rate(st, S.care[i]) + supplement(S, O, i, h, nmov)
             client = O.legacy[i] if (np.isfinite(end) and end < W.GOLIVE and O.legacy[i]) else O.cid[i]
             rows.append(dict(_i=i, _st=st, client_id=client, service_no=svc_for(S, O, i, h, st, st),
                              placement_type="PERM", route=route, care_type="Nursing" if S.care[i] else "Residential",
@@ -316,7 +324,7 @@ def short_placements(S, O, rng):
         end = en if en <= W.ASOF else INF
         if np.isfinite(end) and en + 5 > W.EXTRACT:
             end = INF
-        fee = W.NCHC[W.fy(st)][care]
+        fee = case_rate(st, care)
         rows.append(dict(_i=-1, _st=st, client_id=cid, service_no=O.svc[hk] if hk not in O.rereg_idx or st < O.rereg_idx[hk][1]
                          else O.svc_new[S.H[hk]["name"]], placement_type=ptype, route="",
                          care_type="Nursing" if care else "Residential", admitted=ds(st), start_date=ds(st),

@@ -37,7 +37,8 @@ def definitions_docx(path):
         ("h1", "3. Weekly cost"),
         P_("3.1 Weekly contribution: the amount a resident has been assessed to pay each week towards the cost of their "
            "placement under the charging policy."),
-        P_("3.2 Weekly fee: the weekly fee in the placement's contract, including any supplement agreed for the resident."),
+        P_("3.2 Weekly fee: the weekly fee payable under the placement's contract, including any supplement agreed for "
+           "the resident."),
         ("h1", "4. Sources"),
         P_("4.1 The figures are taken from the case management system and the finance system as extracted on 18 January "
            "2027. The extract notes of that date describe each file."),
@@ -53,6 +54,8 @@ def definitions_docx(path):
 def charging_policy_pdf(path):
     fpc, fnc = W.FPNC[2026]
     lo, hi = W.CAPITAL[2026]
+    lo0, hi0 = W.CAPITAL[2025]
+    lo2, hi2 = W.CAPITAL[2027]
     P_ = lambda t: ("p", t)
     blocks = [
         ("title", "Charging for care home placements: policy and rates 2026-27"),
@@ -73,12 +76,15 @@ def charging_policy_pdf(path):
         P_("3.1 A resident who asks the partnership to arrange or fund a placement has a financial assessment of their "
            "income and capital. The assessment sets the weekly contribution the resident pays towards the fee; the "
            "partnership pays the rest."),
-        P_("3.2 Capital limits from 1 April 2026: capital below £%s is disregarded; capital between £%s and £%s is "
+        P_("3.2 Capital limits from 6 April 2026: capital below £%s is disregarded; capital between £%s and £%s is "
            "treated as giving a tariff income of £1 a week for every £250, or part of £250, above the lower limit; a "
-           "resident with capital above £%s pays the full fee, less any free personal and nursing care payments."
-           % (format(lo, ","), format(lo, ","), format(hi, ","), format(hi, ","))),
+           "resident with capital above £%s pays the full fee, less any free personal and nursing care payments. The "
+           "limits had been £%s and £%s since April 2019. This is the first of the two increases the Scottish "
+           "Government announced in October 2025; from 5 April 2027 the limits will be £%s and £%s."
+           % (format(lo, ","), format(lo, ","), format(hi, ","), format(hi, ","), format(lo0, ","), format(hi0, ","),
+              format(lo2, ","), format(hi2, ","))),
         P_("3.3 Income counted includes state and occupational pensions and most social security benefits. The resident "
-           "keeps a personal expenses allowance of £%.2f a week." % W.PEA[2026]),
+           "keeps a personal expenses allowance of £%.2f a week from 6 April 2026." % W.PEA[2026]),
         P_("3.4 The value of the resident's home is disregarded for the first 12 weeks of a long-stay placement and while "
            "a partner or qualifying relative lives there. A deferred payment agreement can be offered where the home is "
            "counted."),
@@ -145,6 +151,9 @@ def draft_offer_pdf(path):
     P.normalize_pdf(path, dt.datetime(2026, 12, 8, 11, 40), doc_id=b"3C7E19A02F64B85D1E09A3C7F2B64D18")
 
 
+AGREED = {2021: (2021, 3, 12), 2022: (2022, 3, 25), 2023: (2023, 3, 10), 2024: (2024, 3, 22), 2025: (2025, 3, 14)}
+
+
 def rates_xlsx(path):
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -153,22 +162,34 @@ def rates_xlsx(path):
     ws["A1"].font = Font(bold=True, size=12)
     ws.append(["Contracts and Commissioning. Rates as agreed nationally; supplements for individual residents are recorded on the placement."])
     ws.append([])
-    hdr = ["Financial year", "Care type", "Weekly rate (£)", "Effective from"]
+    hdr = ["Financial year", "Care type", "Weekly rate (£)", "Effective from", "Basis"]
     ws.append(hdr)
-    for j in range(1, 5):
+    for j in range(1, 6):
         c = ws.cell(row=4, column=j)
         c.font = Font(bold=True)
         c.fill = PatternFill("solid", fgColor="DDEBF7")
     for y in range(2021, 2027):
+        rows = []
         for k, ct in enumerate(("Residential", "Nursing")):
-            ws.append(["%d-%02d" % (y, (y + 1) % 100), ct, W.NCHC[y][k], dt.date(y, 4, 1)])
+            if y == 2026:
+                rows.append(["%d-%02d" % (y, (y + 1) % 100), ct, W.NCHC_INTERIM_2026[k], dt.date(y, 4, 1),
+                             "Interim, 1.5% on 2025-26, pending national agreement"])
+            else:
+                rows.append(["%d-%02d" % (y, (y + 1) % 100), ct, W.NCHC[y][k], dt.date(y, 4, 1),
+                             "Agreed nationally %s" % dt.date(*AGREED[y]).strftime("%d/%m/%Y")])
+        if y == 2026:
+            for k, ct in enumerate(("Residential", "Nursing")):
+                rows.append(["%d-%02d" % (y, (y + 1) % 100), ct, W.NCHC[y][k], dt.date(y, 4, 1),
+                             "Agreed nationally %s" % W.dd(W.NCHC_AGREED_DAY).strftime("%d/%m/%Y")])
+        for r in rows:
+            ws.append(r)
     for r in range(5, ws.max_row + 1):
         ws.cell(row=r, column=3).number_format = "#,##0.00"
         ws.cell(row=r, column=4).number_format = "dd/mm/yyyy"
-    for col, w in zip("ABCD", [15, 13, 16, 14]):
+    for col, w in zip("ABCDE", [15, 13, 16, 14, 50]):
         ws.column_dimensions[col].width = w
     OX.xlsx_from_openpyxl(wb, path, PEOPLE["contracts"], PEOPLE["contracts"], dt.datetime(2021, 5, 4, 10, 2),
-                          dt.datetime(2026, 5, 11, 14, 26), seed=3101)
+                          dt.datetime(2026, 11, 9, 11, 18), seed=3101)
 
 
 def register_xlsx(df, path):
@@ -239,8 +260,8 @@ care_home_placements_2021-2026.csv
   end_date          last day of the episode; blank if open
   end_reason        FEE new weekly fee; MOVE moved to another home; SVC home re-registered; DIED; DISCH discharged
                     from care home; ENDED interim or respite placement ended
-  weekly_fee        contracted weekly fee for the episode (GBP)
-  locality          the partnership locality recorded on the placement
+  weekly_fee        weekly fee on the episode, including any supplement (GBP)
+  locality          the locality team whose caseload the resident is on (care management and reviews)
 
 fpnc_payment_lines_2021-2026.csv
   Free personal care and free nursing care paid to care homes for residents paying the full fee, by four-weekly

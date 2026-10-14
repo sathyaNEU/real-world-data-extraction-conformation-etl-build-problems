@@ -94,14 +94,14 @@ def figures(I, g, rungs, ask, counts, stops):
     for y in range(2021, 2027):
         a0, a1 = W.dn(dt.date(y, 1, 1)), W.dn(dt.date(y + 1, 1, 1))
         conv_y[str(y)] = int(((I["cf_route"] == "CONV") & (I["cf_entry"] >= a0) & (I["cf_entry"] < a1)).sum())
-    order, top = AC.chart(ask)
     cells = {}
     for loc in W.LOCS:
         for ct in ("Residential", "Nursing"):
-            c, n = ask[(loc, ct)]
-            cells["%s %s" % (loc, ct.lower())] = dict(residents=counts[(loc, ct)], contribution=round(float(c), 4),
-                                                       contribution_stated=r1(c), net=round(float(n), 4),
+            f, n = ask[(loc, ct)]
+            cells["%s %s" % (loc, ct.lower())] = dict(residents=counts[(loc, ct)], fee=round(float(f), 4),
+                                                       fee_stated="%s" % format(r1(f), ","), net=round(float(n), 4),
                                                        net_stated="%s" % format(r1(n), ","))
+    m = g["measure"]
     F = {
         "call": {W.QLABEL[k]: dict(unrounded=round(float(tot[k]), 2), stated=r10(tot[k])) for k in range(4)},
         "stock_31_december_2026": g["n_cf"],
@@ -110,18 +110,25 @@ def figures(I, g, rungs, ask, counts, stops):
                                           direct_admissions=round(float(g["direct"][k]), 1),
                                           conversions=round(float(g["conversions"][k]), 1)) for k in range(4)},
         "direct_admissions_per_month": round(float(E.direct_rate(I, g["o"]).sum()), 2),
+        "stage_1": {"date": "6 April 2026", "rise": E.RISE1, "conversions_that_day": m["on_day"],
+                    "ordinary_week": round(m["flow"], 3), "ordinary_week_stated": "%.2f" % m["flow"],
+                    "conversions_in_the_52_weeks_before": int(round(m["flow"] * 52)),
+                    "excess": round(m["excess"], 2), "weeks": round(m["w1"], 2)},
+        "stage_2": {"date": "5 April 2027", "rise": E.RISE2, "weeks": round(g["w2"], 2)},
+        "upper_capital_limit": {"to 5 April 2026": W.CAPITAL[2025][1], "from 6 April 2026": W.CAPITAL[2026][1],
+                                "from 5 April 2027": W.CAPITAL[2027][1]},
+        "ordinary_week_window_weeks": 52,
+        "pool_on_6_april_2026_still_self_funding": int((I["sf_admit"][E.pool(I)] < E.D1).sum()),
         "conversion_hazard_per_month_by_months_since_admission": haz,
         "pool_by_months_since_admission": pool,
         "pool_admitted_since": pool_since,
         "pool_at_year_end": pool_ye,
         "conversions_by_year": conv_y,
-        "default_path": {W.QLABEL[k]: round(float(rungs["R1"][k]), 1) for k in range(4)},
-        "default_path_stated": {W.QLABEL[k]: r10(rungs["R1"][k]) for k in range(4)},
-        "rungs_31_march_2028": {k: round(float(v[3]), 1) for k, v in rungs.items()},
+        "default_path": {W.QLABEL[k]: round(float(rungs["R5"][k]), 1) for k in range(4)},
+        "default_path_stated": {W.QLABEL[k]: r10(rungs["R5"][k]) for k in range(4)},
+        "rungs": {k: {W.QLABEL[j]: round(float(v[j]), 1) for j in range(4)} for k, v in rungs.items()},
         "ask": cells,
-        "chart": {"order": order, "title_locality": top,
-                  "title": "%s's nursing places cost the partnership most: £%s a week after contributions"
-                           % (top, format(r1(ask[(top, "Nursing")][1]), ","))},
+        "chart": {"order": list(W.LOCS)},
         "ask_stops": {k: [round(float(x), 2) for x in v] for k, v in stops.items()},
     }
     return F
@@ -161,7 +168,8 @@ def workbook(F, ask, counts, path):
     ws["A10"] = "On 31 December 2026: %d council-funded residents; %d self-funding residents receiving free personal care." % (
         F["stock_31_december_2026"], F["pool_31_december_2026"])
     ws["A11"] = ("Self-funders' moves onto council funding are projected from each resident's months since admission to the "
-                 "home, with deaths and discharges competing; direct admissions at the 2024 to 2026 rate.")
+                 "home, with deaths and discharges competing and the capital clocks moved on by the April 2026 and April "
+                 "2027 rises in the upper capital limit; direct admissions at the 2024 to 2026 rate.")
     for a in ("A10", "A11"):
         ws[a].font = Font(size=9)
     for col, w in zip("ABCDEF", [14, 13, 16, 16, 18, 12]):
@@ -169,12 +177,16 @@ def workbook(F, ask, counts, path):
     ws.row_dimensions[4].height = 46
     ws.freeze_panes = "A5"
     ws2 = wb.create_sheet("Weekly cost by locality")
-    ws2["A1"] = "Council-funded residents in each locality's care homes on 31 December 2026"
+    rn = [r1(ask[(l, "Residential")][1]) for l in W.LOCS]
+    nn = [r1(ask[(l, "Nursing")][1]) for l in W.LOCS]
+    ws2["A1"] = ("A council-funded place costs the partnership £%d to £%d a week residential and £%d to £%d nursing after "
+                 "contributions" % (min(rn), max(rn), min(nn), max(nn)))
     ws2["A1"].font = Font(bold=True, size=13)
-    ws2["A2"] = "Locality of the home (postcode lookup). Contribution in force on 31 December 2026; contracted weekly fee including supplements. £ a week, per resident."
+    ws2["A2"] = ("Locality of the home (postcode lookup). Weekly fee at the 2026-27 contract rate agreed on 6 November 2026, "
+                 "with supplements; contribution in force on 31 December 2026. £ a week, per resident.")
     ws2["A2"].font = Font(italic=True, size=9, color="595959")
     ws2.append([])
-    hdr2 = ["Locality", "Care type", "Residents", "Average weekly contribution (£)", "Average weekly cost to the partnership (£)"]
+    hdr2 = ["Locality", "Care type", "Residents", "Average weekly fee (£)", "Average weekly cost to the partnership after contributions (£)"]
     ws2.append(hdr2)
     for j in range(1, 6):
         c = ws2.cell(row=4, column=j)
@@ -183,16 +195,16 @@ def workbook(F, ask, counts, path):
         c.alignment = Alignment(wrap_text=True, vertical="top")
     for loc in W.LOCS:
         for ct in ("Residential", "Nursing"):
-            c, n = ask[(loc, ct)]
-            ws2.append([loc, ct, counts[(loc, ct)], r1(c), r1(n)])
+            f, n = ask[(loc, ct)]
+            ws2.append([loc, ct, counts[(loc, ct)], r1(f), r1(n)])
     for r in range(5, 15):
         for j in (4, 5):
             ws2.cell(row=r, column=j).number_format = "#,##0"
     ws2["A16"] = "Residents placed in homes outside Strathallan are in no locality and are not in the table."
     ws2["A16"].font = Font(size=9)
-    for col, w in zip("ABCDE", [14, 12, 10, 17, 19]):
+    for col, w in zip("ABCDE", [14, 12, 10, 14, 22]):
         ws2.column_dimensions[col].width = w
-    ws2.row_dimensions[4].height = 46
+    ws2.row_dimensions[4].height = 58
     ws2.freeze_panes = "A5"
     ws3 = wb.create_sheet("Notes")
     notes = [
@@ -202,9 +214,11 @@ def workbook(F, ask, counts, path):
         ("Funding date", "A conversion recorded in January 2027 but effective in December 2026 counts on 31 December 2026 (definitions 1.2)"),
         ("Deaths", "Placements still open in the case system are closed at the date of death in the NRS linkage of 15 January 2027"),
         ("Self-funders", "Self-funders are the open free personal care awards in the payment lines; months since admission from the admission date on the lines"),
+        ("Capital limits", "The upper limit rose by £5,000 on 6 April 2026 and rises by £7,000 on 5 April 2027 (charging policy 3.2). 6 April 2026 brought %d conversions against %s in an ordinary week (the 52 weeks before), %s weeks' worth; 5 April 2027 is taken as %s weeks' worth (7,000 / 5,000 of it): every self-funder's capital reaches the limit that much sooner, those within it converting that day" % (
+            F["stage_1"]["conversions_that_day"], F["stage_1"]["ordinary_week_stated"], "%.2f" % F["stage_1"]["weeks"], "%.2f" % F["stage_2"]["weeks"])),
+        ("Weekly fee", "The fee payable under the placement's contract on 31 December 2026 (definitions 3.2): the 2026-27 national rate agreed on 6 November 2026 and backdated to 1 April 2026, plus the resident's supplement; the case system still carries the interim rate on 2026-27 episodes. The 2027-28 draft rates are not agreed and are not used"),
         ("Contribution", "The assessment in force on 31 December 2026 across all of a resident's debtor references (definitions 3.1); reviews completed early but effective in 2027 are not in force"),
-        ("Weekly fee", "The placement's contracted fee on 31 December 2026 including supplements (definitions 3.2); the 2027-28 draft contract rates are not agreed and are not used"),
-        ("Locality", "The locality of the home, from its postcode in the care home register and the postcode lookup; the locality on the placement is the arranging team's"),
+        ("Locality", "The locality of the home, from its postcode in the care home register and the postcode lookup; the locality on the placement is the team holding the case"),
         ("Rounding", "Residents to the nearest 10, pounds to the nearest pound, each from the unrounded figure"),
     ]
     ws3.append(["Item", "Basis"])
@@ -247,12 +261,15 @@ def chart(F, ask, path):
     ax.spines["left"].set_color("#a3a29d")
     ax.spines["bottom"].set_color("#a3a29d")
     ax.legend(frameon=False, loc="upper right", ncol=2)
-    ax.set_title(F["chart"]["title"], loc="left", fontsize=12, fontweight="bold")
-    fig.text(0.01, 0.042, "Council-funded residents in each locality's care homes, 31 December 2026, ordered by the weekly "
-             "cost of a nursing place; homes outside Strathallan not shown.", fontsize=8, color="#52514e")
-    fig.text(0.01, 0.012, "Source: case management and finance system extracts of 18 January 2027; care home register "
-             "(December 2026) and postcode lookup. Planning and Performance.", fontsize=8, color="#52514e")
-    fig.tight_layout(rect=(0, 0.06, 1, 1))
+    ax.set_title("A council-funded nursing place costs the partnership £%d to £%d a week"
+                 % (min(r1(v) for v in nur), max(r1(v) for v in nur)), loc="left", fontsize=12, fontweight="bold")
+    fig.text(0.01, 0.072, "Council-funded residents in each locality's care homes on 31 December 2026; homes outside "
+             "Strathallan not shown.", fontsize=8, color="#52514e")
+    fig.text(0.01, 0.042, "Weekly fee at the 2026-27 contract rate agreed on 6 November 2026, with supplements, less the "
+             "contribution in force on 31 December 2026.", fontsize=8, color="#52514e")
+    fig.text(0.01, 0.012, "Source: case management and finance system extracts of 18 January 2027; contract rates; care "
+             "home register and postcode lookup. Planning and Performance.", fontsize=8, color="#52514e")
+    fig.tight_layout(rect=(0, 0.09, 1, 1))
     fig.savefig(path, metadata={"Software": None})
     plt.close(fig)
 
@@ -279,4 +296,4 @@ if __name__ == "__main__":
     with open(a.figures, "w") as f:
         json.dump(F, f, indent=1, ensure_ascii=False)
         f.write("\n")
-    print(json.dumps(F["call"]), F["chart"]["title"])
+    print(json.dumps(F["call"]))

@@ -119,9 +119,17 @@ FPNC = {2021: (193.50, 87.10), 2022: (212.85, 95.80), 2023: (233.65, 105.15), 20
         2025: (254.20, 114.75), 2026: (262.35, 118.40)}
 for y in range(2006, 2021):
     FPNC[y] = tuple(round(v * (0.975 ** (2021 - y)), 2) for v in FPNC[2021])
-CAPITAL = {2021: (18000, 28750), 2022: (18000, 28750), 2023: (20250, 32750), 2024: (21500, 34000),
-           2025: (21750, 34500), 2026: (22250, 35250)}
+# the national capital limits (lower, upper) by the financial year they apply from: frozen from April 2019, then raised
+# in two stages, on the first Monday in April 2026 and 2027
+CAPITAL = {y: (18000, 28750) for y in range(2005, 2026)}
+CAPITAL[2026] = (21000, 33750)
+CAPITAL[2027] = (25000, 40750)
 PEA = {2021: 30.15, 2022: 31.25, 2023: 33.35, 2024: 35.20, 2025: 36.40, 2026: 37.45}
+# the 2026-27 National Care Home Contract rate was agreed on 6 November 2026, backdated to 1 April 2026; until then
+# placements were paid at an interim uplift of 1.5 per cent on the 2025-26 rates, and the case system's fees still
+# carry the interim rate at the extract (its uprating run for the agreed rate had not been made)
+NCHC_INTERIM_2026 = tuple(round(v * 1.015, 2) for v in NCHC[2025])
+NCHC_AGREED_DAY = dn(dt.date(2026, 11, 6))
 
 
 def fy(day):
@@ -142,6 +150,23 @@ DEATH_BASE = 0.0290
 NURSING_DEATH = 1.07
 DISCH = 0.0015
 CONV = [(15, 0.0002), (18, 0.030), (24, 0.052), (36, 0.050), (48, 0.030), (10 ** 6, 0.012)]
+
+
+
+def uprate_day(y):
+    """the first Monday in April of year y: the day the national capital limits change"""
+    d = dt.date(y, 4, 1)
+    while d.weekday() != 0:
+        d += dt.timedelta(days=1)
+    return dn(d)
+
+
+STAGE1 = uprate_day(2026)      # 6 April 2026
+STAGE2 = uprate_day(2027)      # 5 April 2027
+# self-funders' weekly fees at 2026-27 prices (residential, nursing) before the home's own level, rising 4.5 per cent a
+# year; the partnership never holds them (a self-funder's fee is agreed with the home)
+SF_FEE_2026 = (1180.0, 1420.0)
+SF_FEE_GROWTH = 1.045
 
 PEOPLE = {
     "cfo": "Richard Lynch", "commissioning": "Martyn Rogers", "analyst": "Hollie Todd",

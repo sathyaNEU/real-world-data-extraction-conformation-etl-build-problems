@@ -50,7 +50,7 @@ MTIMES = {
     "placements": (2027, 1, 18, 9, 12), "lines": (2027, 1, 18, 9, 40), "crosswalk": (2027, 1, 18, 9, 15),
     "assess": (2027, 1, 18, 9, 44), "deaths": (2027, 1, 15, 14, 3), "register": (2026, 12, 21, 15, 47),
     "lookup": (2026, 11, 3, 10, 20), "definitions": (2027, 1, 12, 16, 8), "policy": (2026, 4, 2, 15, 5),
-    "notes": (2027, 1, 18, 11, 26), "rates": (2026, 5, 11, 14, 26), "offer": (2026, 12, 8, 11, 40),
+    "notes": (2027, 1, 18, 11, 26), "rates": (2026, 11, 9, 11, 21), "offer": (2026, 12, 8, 11, 40),
     "homecare": (2027, 1, 11, 8, 52), "grades": (2026, 12, 14, 16, 31),
 }
 PL_COLS = F.PL_COLS
@@ -61,7 +61,7 @@ FA_COLS = ["assessment_no", "debtor_ref", "completed", "effective_from", "weekly
 REG_COLS = ["service_no", "service_name", "provider", "postcode", "service_type", "registered_places", "registered",
             "cancelled", "previous_service_no"]
 ASK_SEED = 71
-ASK_ITERS = 100000
+ASK_ITERS = 60000
 
 
 def tables(S, O):
@@ -86,14 +86,23 @@ def evaluate(S):
     return res["total"], res
 
 
+def model_flow(S):
+    """the ordinary week's conversions on 6 April 2026 from the fitted hazard, on the observed files"""
+    O = OB.observe(S)
+    T = tables(S, O)
+    I, _, _ = RP.inputs(T["pl"], T["li"], T["cw"], T["dl"])
+    return E.measure(I, how="model", fitres=E.fit(I))["flow"]
+
+
 def world():
-    """the timeline after the centring moves, the observation, and the ask-side tuning"""
+    """the timeline after the flow and centring moves, the observation, and the ask-side tuning"""
     S = sim.simulate(W.SEED)
+    flow = tune.flow_moves(S, round(model_flow(S), 3))
     moves = tune.centre(S, evaluate)
     O = OB.observe(S)
     T = tables(S, O)
     rest, detail = AT.run(S, O, AC.table(T), ASK_SEED, iters=ASK_ITERS)
-    return S, O, moves, rest, detail
+    return S, O, flow, moves, rest, detail
 
 
 def write_csv(df, path, sep=","):
@@ -104,7 +113,7 @@ def build(out):
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
-    S, O, moves, rest, detail = world()
+    S, O, flow, moves, rest, detail = world()
     T = tables(S, O)
     p = lambda k: os.path.join(out, FILES[k])
     write_csv(T["pl"], p("placements"))
@@ -125,7 +134,8 @@ def build(out):
         ts = W.posix(dt.datetime(*MTIMES[k]))
         os.utime(p(k), (ts, ts))
     with open(os.path.join(HERE, "build_record.json"), "w") as f:
-        json.dump(dict(seed=W.SEED, centring_moves=[[m[0], int(m[1])] for m in moves], ask_tune_residual=round(float(rest), 4),
+        json.dump(dict(seed=W.SEED, flow_moves=[[int(m[0]), m[1], m[2]] for m in flow],
+                       centring_moves=[[m[0], int(m[1])] for m in moves], ask_tune_residual=round(float(rest), 4),
                        ask_tune_detail={k: round(float(v), 4) for k, v in detail.items()}), f, indent=1)
         f.write("\n")
     return S, O
@@ -144,8 +154,8 @@ def write_metadata():
         "distractors": [FILES[k] for k in DISTRACTORS],
         "distractor_notes": {
             FILES["offer"]: "declared wrong-basis distractor: the draft 2027-28 contract rates, not agreed; a 31 December "
-                            "2026 cost is priced at the placement's contracted 2026-27 fee (definitions 3.2), and the note "
-                            "itself says the offer is not agreed",
+                            "2026 fee is the one payable under the placement's contract (definitions 3.2), the 2026-27 "
+                            "rate, and the note itself says the offer is not agreed",
             FILES["homecare"]: "care at home hours by locality: a neighbouring service, not care home residents",
             FILES["grades"]: "inspection grades by home: no figure the forecast or the cost averages use",
         },

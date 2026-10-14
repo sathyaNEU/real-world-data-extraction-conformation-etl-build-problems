@@ -1,6 +1,6 @@
 """The ask: for the council-funded residents in each locality's care homes on 31 December 2026, residential and
-nursing, the average weekly contribution they were assessed to pay and the average weekly cost of their places to the
-partnership after it. The golden and every designed stop, from the shipped tables."""
+nursing, the average weekly fee for their places and the average weekly cost of those places to the partnership after
+the contributions the residents were assessed to pay. The golden and every designed stop, from the shipped tables."""
 import numpy as np
 import pandas as pd
 
@@ -71,13 +71,28 @@ def contributions(ass, cw, how="inforce", refs="all"):
     return out
 
 
-def compute(T, group="home", contrib="inforce", refs="all", active_only=False, fee="contract", types=("PERM",),
+def fee_of(r, how):
+    """the weekly fee of a resident's 31 December 2026 episode: 'agreed' the 2026-27 rate agreed on 6 November 2026 and
+    backdated to 1 April 2026, with the resident's supplement (the episode's fee less the interim rate it was entered
+    at); 'register' the fee on the episode; 'schedule' the agreed rate alone; 'offer' the draft 2027-28 rate with the
+    supplement"""
+    k = 1 if r["care"] == "Nursing" else 0
+    if how == "register":
+        return r["fee"]
+    supp = r["fee"] - W.NCHC_INTERIM_2026[k]
+    if how == "schedule":
+        return W.NCHC[2026][k]
+    if how == "offer":
+        return W.NCHC_DRAFT_2027[k] + supp
+    return W.NCHC[2026][k] + supp
+
+
+def compute(T, group="home", contrib="inforce", refs="all", active_only=False, fee="agreed", types=("PERM",),
             use_deaths=True, drop_mismatch=False, return_counts=False):
-    """T: dict of the shipped tables. Returns {(locality, care): (contribution, net)}"""
+    """T: dict of the shipped tables. Returns {(locality, care): (fee, net)}"""
     res = residents(T["pl"], T["cw"], T["dl"], types=types, use_deaths=use_deaths)
     hl = home_locality(T["reg"], T["lookup"], active_only)
     con = contributions(T["ass"], T["cw"], contrib, refs)
-    rate = {"Residential": W.NCHC[2026][0], "Nursing": W.NCHC[2026][1]}
     acc = {c: [] for c in CELLS}
     for r in res:
         home_loc = hl.get(r["svc"])
@@ -87,8 +102,8 @@ def compute(T, group="home", contrib="inforce", refs="all", active_only=False, f
         if loc is None:
             continue
         c = con.get(r["cl"], 0.0)
-        f = r["fee"] if fee == "contract" else rate[r["care"]]
-        acc[(loc, r["care"])].append((c, f - c))
+        f = fee_of(r, fee)
+        acc[(loc, r["care"])].append((f, f - c))
     out = {}
     for k, v in acc.items():
         a = np.array(v) if v else np.zeros((0, 2))
@@ -99,22 +114,25 @@ def compute(T, group="home", contrib="inforce", refs="all", active_only=False, f
 
 
 STOPS = {
-    "s1": dict(group="team"),
-    "s2": dict(group="team", contrib="latest"),
+    "s1": dict(fee="register"),
+    "s2": dict(group="team"),
     "s3": dict(contrib="latest"),
     "s4": dict(active_only=True),
     "s5": dict(fee="schedule"),
+    "s6": dict(fee="offer"),
     "o1": dict(drop_mismatch=True),
-    "lazy": dict(group="team", contrib="latest", fee="schedule"),
+    "lazy": dict(group="team", contrib="latest", fee="register"),
 }
-HAZARDS = {"primary": dict(group="team"), "h1": dict(contrib="latest"), "h2": dict(refs="one"),
-           "h3": dict(active_only=True), "h4": dict(fee="schedule")}
+HAZARDS = {"primary": dict(fee="register"), "second": dict(group="team"), "h1": dict(contrib="latest"),
+           "h2": dict(refs="one"), "h3": dict(active_only=True), "h4": dict(fee="schedule")}
 NECESSITY = {
+    "placements_fee_as_entered": dict(fee="register"),
     "placements_locality": dict(group="team"),
     "assessments_latest": dict(contrib="latest"),
     "crosswalk_one_ref": dict(refs="one"),
     "register_active_only": dict(active_only=True),
     "lookup_unread": dict(group="team"),
+    "rates_unread": dict(fee="register"),
     "deaths_unread": dict(use_deaths=False),
     "definitions_interim_kept": dict(types=("PERM", "INT")),
     "codes_unread": dict(types=("PERM", "INT", "RESP")),
@@ -122,19 +140,12 @@ NECESSITY = {
 
 
 def vec(out):
-    """the 20 figures in the order the workbook lists them: by locality, residential then nursing, contribution then
-    net"""
+    """the 20 figures in the order the workbook lists them: by locality, residential then nursing, fee then net"""
     v = []
     for loc in W.LOCS:
         for ct in ("Residential", "Nursing"):
             v += [out[(loc, ct)][0], out[(loc, ct)][1]]
     return np.array(v)
-
-
-def chart(out):
-    """nursing net weekly cost by locality, dearest first"""
-    order = sorted(W.LOCS, key=lambda l: -out[(l, "Nursing")][1])
-    return order, order[0]
 
 
 def kept(v, g):
@@ -150,30 +161,11 @@ def table(T):
     ha = home_locality(T["reg"], T["lookup"], active_only=True)
     cin, clat = contributions(T["ass"], T["cw"], "inforce"), contributions(T["ass"], T["cw"], "latest")
     cin1, clat1 = contributions(T["ass"], T["cw"], "inforce", "one"), contributions(T["ass"], T["cw"], "latest", "one")
-    rate = {"Residential": W.NCHC[2026][0], "Nursing": W.NCHC[2026][1]}
     rows = []
     for r in wide:
         rows.append(dict(cl=r["cl"], ptype=r["ptype"], dead_unread=r["cl"] not in alive, team=r["team"],
-                         home=hl.get(r["svc"]), home_active=ha.get(r["svc"]), care=r["care"], fee=r["fee"],
-                         sched=rate[r["care"]], c_in=cin.get(r["cl"], 0.0), c_lat=clat.get(r["cl"], 0.0),
-                         c_in1=cin1.get(r["cl"], 0.0), c_lat1=clat1.get(r["cl"], 0.0), svc=r["svc"]))
+                         home=hl.get(r["svc"]), home_active=ha.get(r["svc"]), care=r["care"], fee=fee_of(r, "agreed"),
+                         reg=fee_of(r, "register"), sched=fee_of(r, "schedule"), offer=fee_of(r, "offer"),
+                         c_in=cin.get(r["cl"], 0.0), c_lat=clat.get(r["cl"], 0.0), c_in1=cin1.get(r["cl"], 0.0),
+                         c_lat1=clat1.get(r["cl"], 0.0), svc=r["svc"]))
     return pd.DataFrame(rows)
-
-
-def fast(df, group="home", contrib="inforce", refs="all", active_only=False, fee="contract", types=("PERM",),
-         use_deaths=True, drop_mismatch=False):
-    m = df["ptype"].isin(types).values.copy()
-    if use_deaths:
-        m &= ~df["dead_unread"].values
-    hl = (df["home_active"] if active_only else df["home"]).values
-    if drop_mismatch:
-        m &= (hl == df["team"].values)
-    loc = hl if group == "home" else df["team"].values
-    col = {("inforce", "all"): "c_in", ("latest", "all"): "c_lat", ("inforce", "one"): "c_in1", ("latest", "one"): "c_lat1"}[(contrib, refs)]
-    c = df[col].values
-    f = df["fee"].values if fee == "contract" else df["sched"].values
-    out = {}
-    for cell in CELLS:
-        k = m & (loc == cell[0]) & (df["care"].values == cell[1])
-        out[cell] = (c[k].mean(), (f[k] - c[k]).mean()) if k.any() else (np.nan, np.nan)
-    return out

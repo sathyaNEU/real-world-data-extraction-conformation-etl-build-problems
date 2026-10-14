@@ -22,6 +22,10 @@ ASOF = (dt.date(2026, 12, 31) - EPOCH).days
 LO = (dt.date(2021, 4, 1) - EPOCH).days
 QE = [(d - EPOCH).days for d in (dt.date(2027, 6, 30), dt.date(2027, 9, 30), dt.date(2027, 12, 31), dt.date(2028, 3, 31))]
 LOCS = ["Allanvale", "Braeburn", "Carsefield", "Dunmorrow", "Kirkhallam"]
+# the charging policy (3.2): the upper capital limit rose from 28,750 to 33,750 on 6 April 2026 and rises to 40,750 on
+# 5 April 2027 (checked against the document's text below)
+S1, S2 = (dt.date(2026, 4, 6) - EPOCH).days, (dt.date(2027, 4, 5) - EPOCH).days
+RISE1, RISE2 = 33750 - 28750, 40750 - 33750
 
 
 def d(s):
@@ -149,14 +153,41 @@ def forecast(X):
         w = q[k] / n
         tin = (np.arange(n) + 0.5) * w
         direct[k] = rate * w * np.exp(-(H(q[k] - tin) - H(0.0))).sum()
-    pool = np.array([(ASOF - a) / M for a, e, w in aw if e > ASOF and a <= ASOF])
+    # the 6 April 2026 rise: that day's conversions against an ordinary week's (the 52 weeks before)
+    cd = np.array([e for a, e, w in aw if w == "C"])
+    on_day = int((cd == S1).sum())
+    flow = ((cd >= S1 - 364) & (cd < S1)).sum() / 52.0
+    w1 = (on_day - flow / 7.0) / flow
+    w2 = w1 * RISE2 / RISE1
+    members = [(a, e) for a, e, w in aw if e > ASOF and a <= ASOF]
+    pool = np.array([(ASOF - a) / M for a, e in members])
+    sh = np.array([w1 * 7 / M if a < S1 else 0.0 for a, e in members])
+    HC = cumh(hc)
+    tA = (S2 - ASOF) / M
+    a2 = w2 * 7 / M
     conv = np.zeros(4)
     s = np.ones(len(pool))
     t = 0.0
+    jumped = False
     while t < q[3] - 1e-9:
+        if not jumped and t >= tA - 1e-9:
+            cdur = pool + sh + t
+            pj = s * (1 - np.exp(-(HC(cdur + a2) - HC(cdur))))
+            for k in range(4):
+                if t < q[k]:
+                    conv[k] += (pj * np.exp(-(H(pool + q[k]) - H(pool + t)))).sum()
+            s = s - pj
+            sh = sh + a2
+            jumped = True
         hh = min(0.1, q[3] - t)
-        b = np.minimum((pool + t).astype(int), 179)
-        lc, lx = hc[b], hs[b]
+        if not jumped and t + hh > tA:
+            hh = tA - t
+        for qq in q:
+            if t < qq - 1e-9 < t + hh:
+                hh = qq - t
+        b = np.minimum((pool + sh + t).astype(int), 179)
+        bx = np.minimum((pool + t).astype(int), 179)
+        lc, lx = hc[b], hs[bx]
         tot = lc + lx
         p = s * np.divide(lc, tot, out=np.zeros_like(tot), where=tot > 0) * (1 - np.exp(-tot * hh))
         mid = t + hh / 2
@@ -167,12 +198,24 @@ def forecast(X):
         t += hh
     since = {"1 January %d" % y: sum(1 for a, e, w in aw if e > ASOF and (dt.date(y, 1, 1) - EPOCH).days <= a <= ASOF)
              for y in (2025, 2026)}
-    parts = dict(today_residents=surv, direct_admissions=direct, conversions=conv, rate=rate, since=since)
+    parts = dict(today_residents=surv, direct_admissions=direct, conversions=conv, rate=rate, since=since,
+                 on_day=on_day, flow=flow, w1=w1, w2=w2)
     return surv + direct + conv, len(now), len(pool), st, parts
 
 
-def ask(X, st):
+def rates_2026(tdir):
+    """the 2026-27 rows of the contract rate table: the interim rate the case system holds and the agreed rate"""
+    ws = openpyxl.load_workbook(os.path.join(tdir, "nchc_rates_2021-22_to_2026-27.xlsx"), read_only=True).active
+    interim, agreed = {}, {}
+    for r in ws.iter_rows(values_only=True):
+        if r and r[0] == "2026-27":
+            (interim if str(r[4]).startswith("Interim") else agreed)[r[1]] = float(r[2])
+    return interim, agreed
+
+
+def ask(X, st, tdir):
     who, refs, died = people(X)
+    interim, agreed = rates_2026(tdir)
     lk = dict(zip(X["lk"]["postcode"], X["lk"]["locality"]))
     home = {r["service_no"]: lk.get(r["postcode"]) for r in X["reg"].to_dict("records")}
     byp = {}
@@ -193,9 +236,11 @@ def ask(X, st):
         loc = home.get(ep.service_no)
         if loc is None:
             continue
+        assert ep.start_date >= "2026-04-01"
+        fee = float(ep.weekly_fee) - interim[ep.care_type] + agreed[ep.care_type]
         cand = [best[x] for x in byp.get(c["p"], []) if x in best]
         con = max(cand)[2] if cand else 0.0
-        cells.setdefault((loc, ep.care_type), []).append((con, float(ep.weekly_fee) - con))
+        cells.setdefault((loc, ep.care_type), []).append((fee, fee - con))
     return {k: (np.mean([a for a, b in v]), np.mean([b for a, b in v]), len(v)) for k, v in cells.items()}
 
 
@@ -222,19 +267,26 @@ def main():
     good = abs(parts["rate"] - F["direct_admissions_per_month"]) < 0.006 and parts["since"] == F["pool_admitted_since"]
     fails += not good
     print("%s  direct admissions %.3f a month; pool admitted since %s" % ("ok  " if good else "FAIL", parts["rate"], parts["since"]))
-    A = ask(X, st)
+    good = parts["on_day"] == F["stage_1"]["conversions_that_day"] and abs(parts["flow"] - F["stage_1"]["ordinary_week"]) < 1e-3 \
+        and abs(parts["w1"] - F["stage_1"]["weeks"]) < 0.006 and abs(parts["w2"] - F["stage_2"]["weeks"]) < 0.006
+    fails += not good
+    print("%s  6 April 2026: %d conversions, an ordinary week %.3f, %.2f weeks; 5 April 2027 %.2f weeks"
+          % ("ok  " if good else "FAIL", parts["on_day"], parts["flow"], parts["w1"], parts["w2"]))
+    from pypdf import PdfReader
+    pol = " ".join(p.extract_text() for p in PdfReader(os.path.join(a.target, "charging_policy_2026-27.pdf")).pages)
+    pol = " ".join(pol.split())
+    good = all(x in pol for x in ("£33,750", "£28,750", "£40,750", "6 April 2026", "5 April 2027"))
+    fails += not good
+    print("%s  the charging policy states the limits the forecast uses" % ("ok  " if good else "FAIL"))
+    A = ask(X, st, a.target)
     for loc in LOCS:
         for ct in ("Residential", "Nursing"):
-            c, n, cnt = A[(loc, ct)]
+            f, n, cnt = A[(loc, ct)]
             want = F["ask"]["%s %s" % (loc, ct.lower())]
-            good = abs(c - want["contribution"]) < 1e-3 and abs(n - want["net"]) < 1e-3 and cnt == want["residents"] \
-                and int(math.floor(c + 0.5)) == want["contribution_stated"]
+            good = abs(f - want["fee"]) < 1e-3 and abs(n - want["net"]) < 1e-3 and cnt == want["residents"] \
+                and format(int(math.floor(f + 0.5)), ",") == want["fee_stated"] and format(int(math.floor(n + 0.5)), ",") == want["net_stated"]
             fails += not good
-            print("%s  %-10s %-11s contribution %.2f net %.2f residents %d" % ("ok  " if good else "FAIL", loc, ct, c, n, cnt))
-    order = sorted(LOCS, key=lambda l: -A[(l, "Nursing")][1])
-    good = order == F["chart"]["order"] and order[0] == F["chart"]["title_locality"]
-    fails += not good
-    print("%s  chart order %s" % ("ok  " if good else "FAIL", order))
+            print("%s  %-10s %-11s fee %.2f net %.2f residents %d" % ("ok  " if good else "FAIL", loc, ct, f, n, cnt))
     print("verify: %d failed" % fails)
     return 1 if fails else 0
 

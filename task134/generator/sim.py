@@ -149,16 +149,40 @@ def simulate(seed=W.SEED, sf_surge=1.0):
             why[i] = 2
     exit_day = admit + np.floor(t_exit * MONTH) + 1          # out at the end of the day before; at least one night
     conv_day = admit + np.floor(t_conv * MONTH) + 1
+    # each self-funder's weekly drawdown on their savings: the home's fee less free personal (and nursing) care and
+    # their income. A rise in the upper capital limit brings the day their capital reaches it forward by the rise over
+    # the drawdown, and anyone within the rise of the old limit qualifies on the day it changes. The limits were frozen
+    # from 2019 and rise on 6 April 2026 and 5 April 2027. Drawn on its own stream.
+    rng_s = np.random.default_rng(seed + 31)
+    home_level = np.array([1.22 if h["name"] in W.NEW_HOMES else 1.0 for h in H])
+    lvl = rng_s.uniform(0.86, 1.14, len(H))
+    income = np.clip(rng_s.normal(235, 55, n), 150, 420)
+    hi_ = home.astype(int)
+    fee26 = np.where(care == 1, W.SF_FEE_2026[1], W.SF_FEE_2026[0]) * home_level[hi_] * lvl[hi_]
+    fpnc26 = W.FPNC[2026][0] + np.where(care == 1, W.FPNC[2026][1], 0.0)
+    draw26 = np.maximum(fee26 - fpnc26 - income, 150.0)
+    for y in range(2007, 2028):
+        D = W.uprate_day(y)
+        rise = W.CAPITAL[y][1] - W.CAPITAL[y - 1][1]
+        if rise <= 0:
+            continue
+        adv = 7.0 * rise / (draw26 * W.SF_FEE_GROWTH ** (y - 2026))
+        m = (kind == 1) & (admit < D) & (conv_day > D) & np.isfinite(conv_day)
+        conv_day[m] = np.maximum(D, np.round(conv_day[m] - adv[m]))
     conv_day[conv_day >= exit_day] = np.inf
     # nothing happens on the as-of date itself: an admission, exit or change of funding on 31 December 2026 moves to
     # the next day, so the end-of-day convention cannot move the count
     for arr in (admit, exit_day, conv_day):
         arr[arr == W.ASOF] += 1
+    # a conversion on 1 January 2027 would end its free personal care award on 31 December 2026, inside the records:
+    # it takes effect a day later, so no award ends on the as-of date either
+    conv_day[conv_day == W.ASOF + 1] += 1
     exit_day = np.maximum(exit_day, admit + 1)
     conv_day[conv_day >= exit_day] = np.inf
     S = World()
     S.H, S.kind, S.admit, S.care, S.team, S.home = H, kind.astype(int), admit, care.astype(int), team.astype(int), home.astype(int)
     S.exit, S.why, S.conv = exit_day, why, conv_day
+    S.draw26 = draw26
     S.n = n
     # home moves inside a stay (about 2.5 per cent a year), never in the first month or the last fortnight
     S.moves = {}
