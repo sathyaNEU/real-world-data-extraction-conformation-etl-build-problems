@@ -50,8 +50,8 @@ def write(target, out_path):
         "subdomain": "pricing-ratemaking-credibility (first-year funding of a self-insured claims-made professional "
                      "liability trust at an Oregon health system)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "other: the contribution with the expected number and cost of claims for each of four entities "
-                        "and seven specialty classes, the emergence chart by month, and two reconciliation asks",
+        "prompt_shape": "other: the contribution with the expected number of claims and what each of four entities "
+                        "pays toward it, the emergence chart by month and entity, and two reconciliation asks",
         "as_of": "2026-10-12",
         "deliverables": list(K.DELIVERABLES),
         "distractor_files": list(K.DISTRACTORS),

@@ -25,7 +25,7 @@ import records as R        # noqa: E402
 import world as WD         # noqa: E402
 
 TASK = os.path.dirname(HERE)
-CLAIMS_SEED = 3671         # chosen by the seed search (the design note's build record)
+CLAIMS_SEED = 1783         # chosen by the seed search (the design note's build record)
 EXPORT_STAMP = dt.datetime(2026, 10, 12, 16, 20, tzinfo=dt.timezone.utc)   # 9:20 am Pacific, the pack's hand-off
 JUNE = dt.date(2026, 6, 30)
 
@@ -33,13 +33,15 @@ JUNE = dt.date(2026, 6, 30)
 def simulate(seed=None):
     K.CLAIMS_SEED = CLAIMS_SEED if seed is None else seed
     W = WD.build()
-    incidents, notice_only = C.simulate(W)
+    incidents, notice_only, gl = C.simulate(W)
     C.valuation(incidents)
     C.valuation(incidents, JUNE, "jun")
-    sep = CR.records(incidents, notice_only, K.VALUATION, "v")
-    jun = CR.records(incidents, notice_only, JUNE, "jun")
-    return dict(W=W, incidents=incidents, notice_only=notice_only, rows=C.register(incidents), plan=WD.plan_2027(W),
-                sep=sep, jun=jun, nums=CR.number(sep))
+    C.valuation(gl, stream="gl-valuation")
+    C.valuation(gl, JUNE, "jun", stream="gl-valuation")
+    sep = CR.records(incidents, notice_only, K.VALUATION, "v", gl)
+    jun = CR.records(incidents, notice_only, JUNE, "jun", gl)
+    return dict(W=W, incidents=incidents, notice_only=notice_only, gl=gl, rows=C.register(incidents),
+                plan=WD.plan_2027(W), sep=sep, jun=jun, nums=CR.number(sep))
 
 
 def build(out, quiet=False, world=None):
@@ -55,7 +57,8 @@ def build(out, quiet=False, world=None):
     counts[K.HCM] = R.write_csv(p(K.HCM), R.HCM_COLS, R.hcm_rows(W), crlf=True)
     counts[K.CROSSWALK] = R.write_csv(p(K.CROSSWALK), R.CROSSWALK_COLS, R.crosswalk_rows(), crlf=True)
     counts[K.DIRECTORY] = R.write_csv(p(K.DIRECTORY), R.DIRECTORY_COLS, R.directory_rows())
-    counts[K.NOTICES] = R.write_csv(p(K.NOTICES), R.NOTICE_COLS, R.notice_rows(w["incidents"], w["notice_only"]))
+    counts[K.NOTICES] = R.write_csv(p(K.NOTICES), R.NOTICE_COLS,
+                                    R.notice_rows(w["incidents"], w["notice_only"], w["gl"]))
     counts[K.SC_SEP] = R.write_csv(p(K.SC_SEP), R.SC_COLS, R.sc_rows(w["sep"], w["nums"], K.VALUATION), crlf=True)
     counts[K.SAFETY] = R.write_csv(p(K.SAFETY), R.SAFETY_COLS, R.safety_rows())
     D.write_plan(p(K.PLAN), w["plan"])

@@ -1,358 +1,437 @@
-# task130: Corvane Health, the first-year contribution to its professional liability trust (architecture 4)
+# task130: Corvane Health, the first-year contribution to its professional liability trust (architecture 4, round 2)
 
 Private, never ships. Architecture 4, drawn 2026-10-12 as the author's fourth root for a number retired with three
-architectures spent (wave 1, "re-root: retired"). v1 (a 2027 large-holder designation) and v2 (the Tenter House
-replacement-unit call-off) failed on the portal; v2's hardening loop was a Template of task73 world ten at the clone
-pre-flight; v3 (Red Cedar Valley's care-management baseline, regression to the mean against an untreated analog
-cohort) was landed by the in-house solver in round 1 because its default construction, the analog, was the golden.
-Their records are under `## Retired` and `## Tried and rejected`; the card keeps all four dead identities in
-`lineage`. v3's generator, pack, goldens, write-up, metadata, prompt and its leak and clone reports were removed from
-this folder at the re-root (in history at 15fab18); `solver_rounds/` stays as its evidence. Nothing of v3's world,
-pack, prompt or asks is reused: v4 moves from a health plan's claims baseline to professional liability pricing, from
-a selected cohort to a claims-made window, and from a school district to a health system.
+architectures spent (wave 1, "re-root: retired"); v1 to v3 are under `## Retired` and `## Tried and rejected`, and the
+card keeps every dead identity in `lineage`. Round 1 of v4 shipped on 2026-10-12 (judge DETERMINISTIC, APPROVE, no
+portal result). The 10/10 audit of 2026-10-14 found it compliant with the three rules but weak: its decisive step,
+costing the claims-made window claim by claim and day by day, was visible (both claim dates are columns, the prompt
+says "first made") and close to a reflex once funding policy 3.3 and 3.4 narrowed the method to the only computation
+they allowed; the advertised default ($4,854,000) sat close to a misread of "first made"; both asks were cracked
+unaided; 22 entity and class figures rode on the call.
 
-Carried forward from v3's death, as design rules: the default path is written first and must end wrong on the data in
-hand; no pin may point at the method; no figure in the pack confirms the solver's construction for free.
+Round 2 keeps the world, the estimand and the window, and moves the decisive step past the reflex. The window costed
+day by day on the System's pooled experience, round 1's golden, is now the default path. The decisive step is the
+claims process that window runs under: Corvane's Early Resolution Program has served only Tolliver Falls and
+Alderwick (Stoneleigh adjusted the medical group's and Brennick's claims itself), and from each Transition Date every
+entity's patients can come through it (trust agreement 5.2), so the window has to be costed on the experience of the
+two hospitals that already ran it. The policy no longer narrows the method (3.4 now rates the entities alike, 3.5
+says only that each Claim is taken as recorded), both asks carry silent devices, and the call's components are the
+expected number of Claims and what each entity pays, which move only with the contribution.
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task130.json`, architecture v4, registered 2026-10-12; `guard.py check` WARN on one finding (`repeat.gate_g`, answered below); `guard.py validate` clean |
-| Domain / task type | actuarial-science-insurance / pricing-ratemaking-credibility (a client domain): funding a self-insured professional liability programme is pricing its cover |
+| Card | `.claude/skills/fingerprint/cards/task130.json`, architecture v4, round 2 updated in place on 2026-10-14 (the round 1 identity is in `lineage` as "v4 round 1"); `guard.py heart` WARN on one finding (answered below); `guard.py validate` clean |
+| Domain / task type | actuarial-science-insurance / pricing-ratemaking-credibility (a client domain): funding a self-insured professional liability programme's first claims-made year is pricing its cover on experience adjusted to the claims handling it will run |
 | Objective | Forecasting & Predictive Modeling: the expected cost of the claims that will first be made against a new trust in 2027, its first year, from the system's claims experience to 30 September 2026 |
-| Shape | other (registered 02 at the DRAWN commit; task125, drawn minutes earlier today with a lower number and shape 02, then put 02 among this build's last two, so the card was moved before any design): the contribution and its two cuts, the expected number and cost of claims first made in 2027 for each of the four entities and for each of the seven specialty classes (one figure each way adds back to the contribution), 23 criteria before the chart and the asks; no period structure, no grid of cells (07 would block task180) and no percentile cut |
+| Shape | other: the contribution, the expected number of Claims and what each of the four entities pays toward it, the chart of each entity's expected cost by the month the Claims are made, and two reconciliation asks across the four entities (about 28 criteria) |
 | Decision | `quantity_figure`, answer unit `currency`: the 2027 contribution the trustees put into the trust |
-| Mechanism | gap time (decisive: the trust pays only for claims made inside its own opening window), then population (the claims a short window can catch are a cheap subset); pattern none; generators G13 (decisive: the horizon, the claims-made window against an annual incurred cost) then G14 (the cost of a claim conditioned on how soon it is made); Gate G `forecasting`; strategy `maturity_censoring` (the window truncates the report lag: only the claims made soon after their incident arrive in time) |
-| Layer 2 family / pattern | `field_method` (exposure windows and report-lag development, the professional liability actuary's claims-made method); `own:claims-made-opening-window-cost-by-report-lag` |
-| Furniture | forum `trustees_or_governors` (the trust's board of trustees sets its annual contribution), forcing event `vote_or_meeting` (the trustees fix the 2027 contribution at their 10 November 2026 meeting, funding policy section 2; registered `purchase_order_or_contract`, each expiring occurrence policy, until task127 v2 drew it the same day with a lower number), organisation family `hospital_or_health_provider`, role family `compliance_or_audit` (the system's risk management and insurance lead), context artifact `register` (the risk management claims register the stakeholder works from), calibration `none` (the system's own claims experience is the evidence, no organ), opening `question-first`, question form `how-much` |
-| Spine | `clinician_fte_by_month_2016-01_2025-12.csv`, the legacy payroll, 114,499 rows: one employee's paid FTE in one month on one cost centre, with the job code (two code sets, the 2020 set from July 2020), entity and status payroll held that month, January 2016 to December 2025; constructed. The 2026 HCM pay lines (15,665 rows, January to September 2026) carry Ask B |
-| Deliverables | `trust_funding_2027.xlsx` (the contribution with the expected Claims and cost by entity and by specialty class, the cost by month made, the carrier loss run check, the September 2026 covered FTE), `trustees_paper_2027.pptx` (slide 1 the contribution, slide 2 the stacked chart of each entity's expected cost by the month the Claims are made) |
-| People | drawn with `guard.py names --geo "United States" --seed 130 --n 40`, skipping every name v3 used: Nancy Holland (vice president, risk management and insurance; the requester), Derek White (chief financial officer), Lori Williams (director of claims and litigation), Jerome Warren (consulting actuary), Elizabeth Nelson (director of the early resolution program), Walter Butler (chair of the trust's board of trustees); none appears in the prompt |
+| Mechanism | gap population (decisive: which experience represents the Claims the window will see), then time (the claims-made opening window); pattern none; generators G13 (decisive: the decision window runs under a claims process the experience years saw at two of the four entities, inside a claims-made opening window) then G14 (does the pooled rate apply to this pool); Gate G `forecasting`; strategy `population_selection` (the experience population the window's rate is built on) |
+| Layer 2 family / pattern | `field_method` (experience rating adjusted for a change in claims practice, in a claims-made exposure window); `own:claims-made-first-year-on-the-claims-process-the-trust-will-run` |
+| Furniture | forum `trustees_or_governors` (the trust's board of trustees sets the contribution), forcing event `cutover_or_migration` (the trust goes live on 1 January 2027, when Tolliver Falls' occurrence policy expires and its clinicians move onto it; the contribution is fixed before that cutover, at the trustees' November meeting; moved at round 2 from `vote_or_meeting`, which task128 v3 now carries), organisation family `hospital_or_health_provider`, role family `compliance_or_audit`, context artifact `register`, calibration `none`, opening `question-first`, question form `how-much` |
+| Spine | `clinician_fte_by_month_2016-01_2025-12.csv`, the legacy payroll, 121,415 rows: one employee's paid FTE in one month on one cost centre, with the job code (two code sets, the current one from July 2016), the cost centre's entity and status, January 2016 to December 2025; constructed. The 2026 HCM pay lines (16,439 rows) carry Ask B |
+| Deliverables | `trust_funding_2027.xlsx` (the contribution, the expected Claims, what each entity pays, the cost by month made, the carrier loss run check, the September 2026 covered FTE), `trustees_paper_2027.pptx` (slide 1 the contribution and the payments, slide 2 the stacked chart of each entity's expected cost by the month the Claims are made) |
+| People | drawn with `guard.py names --geo "United States" --seed 130`: Nancy Holland (vice president, risk management and insurance; the requester), Derek White (chief financial officer), Norma Hinton (director of claims and litigation; Lori Williams until round 2), Jerome Warren (consulting actuary), Walter Butler (chair of the trust's board of trustees); none appears in the prompt. Elizabeth Nelson, never named in the pack, was dropped at round 2 (task128 v3 drew the first name) |
 
-**Guard.** `guard.py check` on the scratch card: WARN, one finding (after the shape move, two: `repeat.gate_g` and `repeat.decision`, quantity_figure repeating task125: the call is one contribution in dollars, which is what the trustees set, and nothing else of task125's structure is shared). `repeat.gate_g` (forecasting repeats task124, one
-of the last two builds in draw order): forecasting is the honest mechanism, because the contribution is a bet on the
-claims that will be made in 2027 and the correctly read past (every claim's cost, every year's FTEs) pins it only
-through the window the trust's cover defines. Bans run against task120, task121 and task124, the three builds drawn
-before this one; a first draft blocked on `ban.artifact` (operations_log, task120), `ban.forum` (board_of_directors,
-task124) and the structural tests against task102 and task501 v3. The artifact and forum were redrawn (`register`,
-`trustees_or_governors`); the forcing event was moved off `cutover_or_migration` so that this card adds no block to
-task180, drawn later today with that event; the structural tests are answered by the card's differentiation lines
-(task102 moves payments across a period boundary by a release rule; task501 v3 sized a buffer on a cumulative path's
-furthest overrun; neither costs a lag-truncated window claim by claim). Gap time with pattern E was tried and blocked
-against four older builds (task117, task37, task44, task97); gap population with pattern E against task124's lineage.
-Nearest driver on file 0.07 (task121 v3); task50 v4 at 0.06 (a slow-surfacing failure projected with a run-out law) is
-the opposite move: there the unsurfaced part has to be added, here only the part surfaced inside the window counts.
+**Guard.** `guard.py heart task130` on the round 2 card: WARN, one finding. `driver.near` (0.22) is this slot's own
+round 1 driver in `lineage`: the world and the window are the same, and the decisive move differs (round 1 truncated the
+report lag; round 2 prices the truncated window on the experience of the claims process it runs under). The
+director of claims and litigation who signs the data dictionary was Lori Williams until `guard.py surface` blocked
+the first name against task129; she is Norma Hinton, a fresh draw with no people finding.
+Clearing the BLOCKs the first round 2 card met: G14 decisive repeated task124 (population, G14, forecasting) inside
+the batch, G6 repeated task125 among the last three, and G12 would have blocked task133 v2's own checks
+(population, G12, forecasting), so the decisive generator is G13, which no build within twelve either side carries
+with this gap and Gate G; the older structural match with task98 v6 is answered by the card's differentiation line;
+the forcing event moved off `vote_or_meeting` (task128 v3) to `cutover_or_migration`, which none of the three builds
+on either side carries.
 
-**Abstraction and same-puzzle tests.** Stripped of nouns, the driver is: a cover that pays only for events that both
-occur and are first reported inside its own window is costed from a full period's cost per unit of exposure, when
-inside a short window only the events reported soon after they occur can count, and here those are the cheap ones;
-the expected cost is the exposure at each point of the window times the cost of past events reported within the time
-then left. The three nearest drivers (task121 v3, events set against the same unit's exposure at the same clock hours;
-task93 v3, what raising a floor obliges a flat-rate unit to pay; task88, displaced full-rate demand on nights capacity
-fills) share no latent structure, default path or correction with it. On the maturity family's record (task181: a
-pooled reporting delay against each route's own, where the forecast needs the complete count), the move here runs the
-other way: the decision is the truncated count, and its cost, never the complete one.
+**Abstraction and same-puzzle tests.** Stripped of nouns, the driver is: a cover whose first window sees only the
+events reported soon after they occur is priced on a history in which only some units ran the process that produces
+those quick, cheap reports, while every unit runs it from the window's start; the window's cost is carried almost
+entirely by the quick events only the process's units show, so the pooled history about halves it, and the process's
+effect read over a full period of development, where it makes those units look cheaper, points the wrong way. The
+nearest sibling insight is task501 v4 (a contact matrix rebuilt from the diaries kept in the season's own regime):
+there the regime is a season of the same units and its effect has one sign; here it is a claims process carried to
+units that never ran it, its effect reverses with the horizon (the Program hospitals cost 0.79 times the System per
+FTE-year over full development and 1.88 times in the first window), and the quantity is a lag-truncated cost per day of
+exposure. task136 (an intervention's increment carried to a new site as a multiple of the site's own rate) is the other
+neighbour: here no unit's own rate can be scaled, since the medical group and Brennick have no early requests to
+scale, and the trust rates every unit alike. Both lines are on the card.
 
-**Data-native sentence.** Corvane's early resolution program meets most patients harmed by care within weeks, with an
-apology and a modest offer, and turns their requests into quick, small settlements, while the lawsuits that carry
-most of the money are filed a year or more after the incident; so a trust that each hospital and the medical group
-joins on its own policy's anniversary sees, in its first months, mostly the cheap early claims from a few months of
-incidents, and almost none of the suits.
+**Data-native sentence.** Corvane's Early Resolution Program has met the Quillan hospitals' patients within weeks of
+their care since September 2015 and turned their requests into quick, small settlements, while Stoneleigh's adjusters
+handled the medical group's and Brennick's claims only when a demand or a suit arrived a year or more later; so the
+System's 2017 to 2024 register holds 62 Claims made within 120 days of their incident, every one at Tolliver Falls or
+Alderwick, and a first claims-made window, which can only catch Claims made that quickly, is priced on the medical
+group's experience as if its patients had no Program, which from its Transition Date they will.
 
-**World (as built, claims seed 3671).** Corvane Health, a nonprofit health system in western Oregon: three hospitals and
-an employed medical group, 907.5 covered clinician FTE in September 2026 (employed physicians and advanced practice
+**World (as built, claims seed 1783).** Corvane Health, a nonprofit health system in western Oregon: three hospitals and
+an employed medical group, 957.3 covered clinician FTE in September 2026 (employed physicians and advanced practice
 clinicians in Schedule B jobs; residents, fellows, psychologists and contracted clinicians are not covered). Each entity
 has insured its employed clinicians with a commercial occurrence policy on its own anniversary; the board resolved in
 June 2026 to let each policy run to expiry and move the entity into the new Corvane Professional Liability Trust,
-claims-made, with a retroactive date equal to its transition date (incidents before it stay with the occurrence policy
-that was in force):
+claims-made, with a retroactive date equal to its transition date:
 
-- Tolliver Falls Hospital (96.3 covered FTE in September 2026), Quillan Mutual: trust from 1 January 2027, the only
-  full-year entity.
-- Alderwick Medical Center, the flagship (234.3), Quillan Mutual: trust from 1 April 2027.
-- Corvane Medical Group, the clinics (522.0), Stoneleigh Casualty: trust from 1 July 2027.
-- Brennick Community Hospital (54.9, affiliated 1 July 2019), Stoneleigh Casualty: trust from 1 October 2027.
+- Tolliver Falls Hospital (106.9 covered FTE in September 2026), Quillan Mutual: trust from 1 January 2027.
+- Alderwick Medical Center, the flagship (271.5), Quillan Mutual: trust from 1 April 2027.
+- Corvane Medical Group, the clinics (525.0), Stoneleigh Casualty: trust from 1 July 2027.
+- Brennick Community Hospital (53.9, affiliated 1 July 2019), Stoneleigh Casualty: trust from 1 October 2027.
 
-Seven specialty classes as Schedule B rates them. Since September 2015 a patient harmed by care can ask for
-compensation through the Early Resolution Program: requests come a median of 82 days after the incident and mostly
-settle small, and about one in thirteen is declined and becomes a suit (a median of 370 days after the request), which
-risk management opens as a new claim number pointing back at the request; demand letters and suits that come in
-directly arrive a median of about nineteen months after the incident (obstetrics about twenty-eight) and carry the large
-indemnity payments. Risk management logs receipts, closings and notices on business days, and the medical group's
-clinics see patients on weekdays. The experience (incidents 2017 to 2024, valued 30 September 2026) holds 328 Claims,
-one per incident, against 6,188.6 covered FTE-years: the 159 made within 120 days of their incident have a median cost
-of about $19,500 at 2027 cost level and carry 16 per cent of the experience's cost, while the 103 made more than a year
-after carry 56 per cent. Built: the default path $4,854,000, the golden $784,000.
+Since September 2015 a patient of Tolliver Falls or Alderwick harmed by care can ask for compensation through the
+Early Resolution Program: requests come a median of 90 days after the incident and mostly settle small, about one in
+thirteen is declined and becomes a suit under a new claim number pointing back at the request, and the Program resolves
+a quarter of the matters that would otherwise have come in later as demands or suits. Stoneleigh adjusts the medical
+group's and Brennick's claims itself: there demands and suits arrive a median of about eighteen months after the
+incident. The experience (incidents 2017 to 2024, valued 30 September 2026) holds 192 Claims against 6,553.3 covered
+FTE-years: 123 at the Program hospitals on 2,655.2 FTE-years (62 made within 120 days, median cost $15,000, 15 per cent
+of their cost; 22 made after a year, 46 per cent) and 69 at the medical group and Brennick on 3,898.2 (none within 120
+days; 54 made after a year, 84 per cent). Built: the default path $312,000, the golden $587,000.
 
 As-of date: the claims register extract runs Friday 2 October 2026, valued at 30 September 2026; payroll FTE runs
-through September 2026; the trustees set the 2027 contribution at their meeting on Tuesday 10 November 2026.
+through September 2026; the trustees set the 2027 contribution at their meeting on Tuesday 10 November 2026, ahead of
+the trust's go-live on 1 January 2027.
 
 ## Default path
 
-1. Read the claims register extract (one row per named defendant) and keep the rows for employed clinicians;
-   collapse them to one claim per incident, summing each claim's paid indemnity, paid defence and case reserves.
-2. Take incidents from 2017 onward, value each claim at paid plus reserve and trend it to 2027 at the funding
-   policy's rate.
-3. Sum the trended cost by specialty class, take each class's FTE-years of covered clinicians from the payroll file,
-   and form each class's annual cost per FTE-year over 2017 to 2024 as recorded (funding policy 3.2 and 3.4).
-4. Multiply by each entity's 2027 FTE by class for the months it is in the trust (twelve, nine, six, three) and add
-   the four entities; spread each entity's cost evenly over its quarters for the emergence schedule.
+The path a strong analyst takes once the claims-made window is seen (round 1's golden construction), every filed rule
+read and applied:
 
-Ends on: $4,854,000, a year of the experience's claims cost per FTE-year applied to each entity's FTE-years in the
-trust (with the mature years 2017 to 2020 alone, $5,013,000).
-Golden: $784,000, the cost of the claims made by 31 December 2027 from incidents after each entity's transition, each
-past claim's trended cost counted for the share of the window's exposure from which it would have been made in time.
+1. Read the claims register extract (one row per named defendant), keep the rows of employed clinicians in Schedule B
+   jobs, and collapse them to one Claim per incident, made on the date of its earliest claim number (trust agreement
+   1.3), its cost the paid and reserves on its covered rows, trended at 5.0 per cent a year from the incident year to
+   2027 (funding policy 3.2).
+2. Take the incidents of 2017 to 2024 and the covered paid FTE-years of the same years from the legacy payroll, by
+   specialty class (3.2, Schedule B).
+3. Because the trust is claims-made from each entity's Transition Date (2.1, Schedule A), cost each entity's window day
+   by day: each day's planned FTE (3.3) times the experience's trended cost per FTE-year of the Claims whose delay from
+   incident to first making still lands by 31 December 2027, the experience taken across all four entities within each
+   class, the same rate for every entity (3.4).
+4. Add the entities.
+
+Ends on: $312,000, the window costed day by day on the System's pooled 2017 to 2024 experience (5.6 expected Claims).
+Golden: $587,000, the same window costed on the experience of Tolliver Falls and Alderwick, the two hospitals already
+running the Early Resolution Program every entity's patients can use from its Transition Date (10.2 expected Claims).
 
 ## Stump sentence
 
-A competent solver collapses the register's defendant rows to one claim per incident, values and trends every claim
-from 2017, takes the system's annual claims cost per clinician FTE-year by specialty class, applies it to each entity's
-FTE-years in the trust and files a contribution of $4,854,000 (Ends on); the step that lands it there is costing the
-trust's opening months as a mature year, when only the claims made by 31 December 2027 from incidents after each
-entity's transition count, and those are mostly the quick, cheap requests: the golden is $784,000.
+A strong solver collapses the register to one Claim per incident, trends it, and costs each entity's claims-made window
+day by day, every experience Claim counted where its own delay brings it in by 31 December 2027, on the System's pooled
+2017 to 2024 experience by specialty class, and files $312,000 (Ends on); the step that lands it there is pricing the
+window on experience in which the medical group's and Brennick's patients had no Early Resolution Program, when from
+each Transition Date every entity's patients can come through it (trust agreement 5.2) and the window's cost is almost
+all the quick requests that only Tolliver Falls' and Alderwick's experience shows: costed on those hospitals' experience
+the contribution is $587,000.
 
 ## Three rules
 
-- **Domain test:** the deciding quantity is the expected cost of the claims first made inside a claims-made trust's
-  opening window, built from each entity's covered clinician exposure through the system's own report-lag and
-  cost-by-lag experience, which is how a professional liability actuary funds a first claims-made year; with another
-  field's nouns the retroactive dates, report lags, early resolution settlements and specialty classes have nothing
-  to attach to.
-- **Analyst test:** a strong analyst who dedupes the register and reads the trust agreement and the funding policy
-  correctly still multiplies a year's cost per FTE-year by each entity's FTE-years of cover ($4,854,000), or, having
-  seen that the cover is claims-made, prices the expected number of claims made inside each window at the average
-  claim cost ($1,784,000) or prorates a full calendar year's in-year cost share to each part year ($1,075,000); each is
-  wrong, because inside a first claims-made window only the claims made quickly count, they cost a fraction of the
-  average, and the share a part year catches falls faster than its length.
-- **Layer 1:** a claims register with one row per named defendant (employed clinicians, residents and contracted
-  clinicians in one extract, the contracted rows unpriced), claim stages that move (a request that becomes a suit is a
-  new claim number pointing back at the request; a reopened claim keeps its earlier closing date); the legacy payroll
-  by employee, month and cost centre with job codes re-mapped in July 2020 (both sets in Schedule B), dual
-  appointments on two cost centres, transfers between entities and Brennick's July 2019 affiliation; the 2026 HCM pay
-  lines at earning-code grain with the home entity stamped as of the extract; two carriers' loss runs in their own
-  layouts, one re-issued for an earlier valuation after the latest. Each is something these systems produce; none
-  decides the call.
-- **Layer 2:** the shortcut is to cost the trust's first year as a mature year, or as a share of a mature year's
-  claims at the average cost; the expert costs the claims-made window claim by claim, each past claim's trended cost
-  counted for the share of the window's exposure from which it would have been made before the year ends, entity by
-  entity from its own transition date.
+- **Task type:** actuarial-science-insurance / pricing-ratemaking-credibility: pricing the first claims-made year of a
+  self-insured professional liability trust, the task type the taxonomy tags for Forecasting.
+- **Domain test:** the deciding quantity is the expected cost of the Claims first made inside each entity's claims-made
+  opening window, a report-lag-truncated experience cost per day of covered clinician exposure by specialty class, which
+  a professional liability actuary bases on experience generated under the claims handling the cover will run: the
+  ratemaking adjustment for a change in claims practice, here the early resolution program every entity joins.
+- **Swap:** rewritten as "how much should a water utility put into its new fund for 2027 to cover the main bursts
+  first logged that year, each district moving in when its maintenance contract expires", the retroactive dates,
+  report lags, early-offer requests, the program a district's patients gain at transition and the specialty classes
+  have nothing to attach to: bursts are not reported months late through a resolution program, and the call stops
+  making sense.
+- **Layer 1:** a claims register at defendant grain (employed, resident and contracted clinicians in one extract, the
+  contracted rows unpriced; a request that turns into a suit opens a new claim number pointing back; reopened claims
+  keep their earlier closing date), written by the risk management claims system; a legacy payroll by employee, month
+  and cost centre with job codes re-mapped in July 2016, dual appointments until the HCM go-live, transfers and
+  Brennick's affiliation (payroll); HCM pay lines at earning-code grain with the worker's home entity on the record as
+  it ran (HCM); two carriers' loss runs in their own layouts, listing the entities' own claims beside the clinicians',
+  one re-issued for an earlier valuation (carriers); a notice log keyed by notice number (risk management). Each item
+  mishandled the natural way leaves the call where it was (R2, asserted); none decides it.
+- **Layer 2:** `field_method`, experience rating under a change in claims practice inside a claims-made window: the
+  capable analyst costs the window claim by claim on the System's pooled experience; the expert sees that the window is
+  carried by the early requests the Program produces, that the Program will run at every entity, and that only the
+  Program hospitals' experience was generated under it.
+- **Decisive step:** costing every entity's window on Tolliver Falls' and Alderwick's class experience (their Claims and
+  their covered FTE-years), one rate per class for all four entities, instead of the System's pooled experience.
+- **Not semantics:** every field and definition is read the same on both paths (the dictionary's matter type names the
+  Program and the hospitals it serves; trust agreement 5.2 opens it to every entity), and the default reads them
+  correctly; what flips the call is which experience generates the 2027 window's Claims, an estimation choice, never a
+  reading of a field, code or unit.
+- **Not rule application:** funding policy 3.1 to 3.7 and the trust agreement file the estimand, the experience's data,
+  trend, exposure by day, one rate for every entity, the values as recorded and the rounding; none says which
+  entities' experience to price on or that the Program changes the window's Claims, and executing every stated rule on
+  the experience as a whole files $312,000.
+- **Analyst test:** a strong analyst who dedupes the register, reads every filed rule and costs each entity's
+  claims-made window claim by claim and day by day on the System's pooled experience files $312,000; adjusting for the
+  Program by its full-year cost relativity files $273,000; the classic routes the audit measured file $3,617,000 (a
+  mature year per FTE-year), $966,000 (the window's count at the average cost) and $466,000 (a full year's in-year share
+  prorated); only the window on the Program hospitals' experience files $587,000.
+- **Estimand:** funding policy 3.1 (the expected cost, at the Plan Year's cost level, of the Claims first made against
+  the Trust during the Plan Year under the Trust Agreement), with trust agreement 1.3, 1.7, 2.1, 2.4, 5.2 and Schedule A
+  (claims-made from each entity's Transition Date, the Program open to every entity from it) and funding policy 3.2 to
+  3.4 (the experience's data, the plan's exposure by day, one rate for every entity); the 2027 Claims are unobserved and
+  are the estimand.
+- **No decoy:** nothing is planted: no memo, draft, briefing or stakeholder figure argues a contribution or a basis; no
+  file states a 2027 cost, a step factor, a lag table or a Program relativity; the Stoneleigh experience is the real
+  record of how those claims were handled; the premium history is a declared distractor pricing occurrence cover.
+- **No certified replay:** no certified or published figure is reproduced to recover the method; the window's cost is
+  estimated directly from the register and the payroll, and nothing in the pack confirms either basis.
+- **Lesson:** an early-offer program changes what a first claims-made year catches, so a trust that brings the program
+  to new participants must price their opening window on the program's own experience, where the pooled experience
+  halves the cost and the program's full-development saving points the wrong way; no build on file teaches pricing a
+  claims-made window on the claims process the cover will run.
 
 ## Gate G
 
-- **Litmus.** No. Every file is correct: the claims register, the payroll files, the staffing plan, the carriers' loss
-  runs, the trust agreement and the funding policy. No stakeholder states a number the task overturns, and no file
-  states the trust's 2027 cost.
-- **Primary mechanism:** `forecasting` (the correctly read past, every claim's cost and every year's FTE, does not pin
-  the trust's first-year cost; the claims-made window does).
+- **Litmus.** No. Every file is correct: the register, the payroll files, the staffing plan, the loss runs, the notice
+  log, the trust agreement and the funding policy. No stakeholder states a number the task overturns, and no file
+  states the trust's 2027 cost or a basis for it.
+- **Primary mechanism:** `forecasting` (the correctly read past, every Claim's cost and delay and every year's FTE,
+  does not pin the 2027 window: only the part of it generated under the claims process the window runs under does).
 - **Flags:** `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
-- **Clean-data test.** With a perfectly clean register (one row per Claim, every escalation already merged) and one
-  payroll code set, a year's cost applied to the FTE-years is still the natural cost at 6.2 times the golden, and the
-  count at the average cost is still 2.3 times it.
-- **Deletion test.** Delete the two distractors (the patient safety event extract and the premium history), the
-  carrier loss runs, the notice log and the HCM pay lines: the call recomputes to the dollar (asserted) and the default
-  path is still wrong. Nothing in the pack is wrong for the default to be wrong.
+- **Clean-data test.** On the simulation's own records (no mess, every filed rule applied) the window on the pooled
+  experience files $312,000 and on the Program hospitals' experience $587,000 (R3a and R3b, asserted).
+- **Deletion test.** Delete the two distractors, the loss runs, the notice log, the HCM lines and the dictionary: the
+  call recomputes to the dollar (asserted) and the default path is still wrong. Nothing in the pack is wrong for the
+  default to be wrong.
 - **Lens swap.** The default and the golden are not one population at one moment under two lenses: they are two
-  different quantities (a mature year's claims, by incident, against the claims made inside each entity's first
-  window), and the golden needs each claim's delay and cost together.
-- **No artifact ranks or prices the decision.** No shipped file states a 2027 cost, a claims-made factor, a report-lag
-  table or an industry step factor. The premium history ships as a plain distractor (`metadata.json`): it prices
-  occurrence cover with the carriers' loads, which the funding policy (3.1, 3.5) does not fund, and no rung reads it.
+  estimates of the same 2027 quantity from two experience populations, generated under two claims processes, and the
+  golden needs each Claim's delay, cost and entity together with the payroll's exposure by entity.
+- **No artifact ranks or prices the decision.** No shipped file states a 2027 cost, a claims-made or step factor, a
+  report-lag table or a Program effect. The premium history ships as a plain distractor: it prices occurrence cover with
+  the carriers' loads and no rung reads it.
 
 ## Readability screen
 
-Six tests per rung: 1 filed sentence names it or makes the solver ask; 2 schema (a column, key or marker); 3 a reflex
+Six tests per rung: 1 a filed sentence names it or makes the solver ask; 2 schema (a column, key or marker); 3 a reflex
 of the opponent; 4 a control or corpus scores it; 5 the hygiene battery finds it; 6 linear (one subtraction, ratio or
 half of a reported figure). Verdict last.
 
 | Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| R1 claims-made recognised: only claims made in 2027 from incidents after each transition count, priced as the share of claims made in the window at the average claim cost | fires: the trust agreement's coverage clause and the prompt's "first made against the trust that year" send every reader to it | no | yes, once asked | no | no | the count share is a ratio | readable |
-| R2 the cost-weighted share of a full year, prorated to each entity's months | no sentence prices a part year | no | partly: proration is the reflex for a part year | no | no | yes (one proration) | readable |
-| L1 escalations merged (a program request and the suit that follows it are one claim, made at the request) | the claim definition says one claim per incident, first made at the earliest request | the register's prior claim field and incident number | yes, under the definition | no | partly | no | readable |
-| R3 (decisive) each entity's window costed claim by claim: every experience claim's trended cost counted for the share of the entity's covered days from which its own delay would bring the claim in before 31 December 2027 | no sentence names the delay, the window share or the cost of early claims; the policy only pools the experience and fixes exposure by day | no column carries a claim's delay, a window share or a route; the register has no claim-source field | no: the reflexes are proration, the count share at the average cost, a step factor from memory, or a same-year filter | none ships | no | no: a convolution of each claim's delay against each entity's covered days, weighted by each claim's own cost | silent |
+| R1 claims-made recognised: only claims made in 2027 from incidents after each transition count | fires: the coverage clause and the prompt's "first made against the trust that year" | no | yes | no | no | the count share is a ratio | readable |
+| R2 the window costed claim by claim, day by day, on the pooled experience (round 1's golden, now the default) | 3.3 earns exposure by day; 1.3 dates a Claim | both claim dates are columns | yes for a strong model (the audit's reading) | no | no | no | readable |
+| L1 escalations merged into one Claim | 1.3 | prior claim number and incident number | yes | no | partly | no | readable |
+| R3 (decisive) every entity's window costed on Tolliver Falls' and Alderwick's class experience, the claims process every entity runs from its Transition Date | no sentence ties the Program to a cost, a delay or the experience; 5.2 is a claims administration clause about patients' access, and the Program's history sits in the dictionary's definition of a matter type | no column names a route, a program or a regime; the entity column is ordinary | no: the reflexes pool the experience within class (3.4 rates the entities alike), segment by visible attributes or, once the Program is seen, adjust by a full-year relativity, which points the wrong way | none ships | no: every key, count and join ties on the pooled path | no: a re-basing of the window's rate on another experience population, by class and by day | silent |
 
-The decisive rung is silent because the two facts it joins live apart: the window is filed (coverage and transition
-dates) and the cost of a claim is in the register, but the link between a claim's delay and its cost (the early
-resolution program's quick, small settlements against the late, large suits) is named by no sentence, no column and
-no file, and appears only to a reader who costs the window claim by claim instead of applying a rate.
+The decisive rung is silent because its three facts live apart and none states the link: the Program's history is a
+clause in a field definition, its extension is a claims administration clause, and the reason it decides the window
+(the window catches only the quick, cheap requests the Program produces) shows only to a reader who looks at the
+experience's delays by entity, which no rule, column or control asks for; the one adjustment an actuary reaches for
+when a claims practice changes, a relativity read over full development, makes the call worse.
 
 ## Semantic fork table
 
-One row per term of the main ask and per convention the main computation needs. `checks.py` asserts each row (the
-alternative computed and shown to move the call, or shown to converge).
+One row per term of the main ask and per convention the main computation needs. `checks.py` asserts each row.
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | "contribute" | the expected cost of the claims (funding policy 3.1), no margin, load or expense | the expected cost plus a confidence margin or the trust's expenses | higher | funding policy 3.1 and 3.5: the Contribution is the expected cost; the trust's expenses are a separate budget line and no confidence margin applies in the first Plan Year |
-| SF2 | "claims first made against the trust that year" | Claims first made from 1 January to 31 December 2027 arising from services on or after the employing entity's Transition Date | claims arising from 2027 incidents whenever made (occurrence) | the default family | trust agreement 2.1 and Schedule A: claims-made, the Retroactive Date is the Transition Date |
-| SF3 | "claim" | all demands and requests arising from one incident, one Claim, first made at the earliest | each claim number (a program request and the suit after it as two) | lower (the escalated suit's cost leaves the window) | trust agreement 1.3: all Claims arising from the same incident are one Claim, first made on the date the earliest was made |
-| SF4 | a request made through the early resolution program | a Claim | not a claim until a demand or suit | lower | trust agreement 1.3 names a request for compensation made through the Early Resolution Program as a Claim |
-| SF5 | "covered clinician" | an employed physician or advanced practice clinician in a Schedule B job | every clinician on payroll, residents and fellows included; contracted clinicians | exposure and experience move | trust agreement 1.5 and Schedule B; residents, fellows and contracted clinicians are excluded by name |
-| SF6 | a claim's cost | indemnity plus defence on its covered clinicians' rows, paid plus case reserve at the 30 September 2026 extract | paid only; indemnity only; every defendant row of the claim | lower or higher | funding policy 3.2 |
-| SF7 | trend | 5.0 per cent a year compounded from the calendar year of the incident to 2027 | from the year the claim was made, closed or valued | moves every figure | funding policy 3.2 |
-| SF8 | the experience | incidents 1 January 2017 to 31 December 2024 against clinicians covered on the incident date | all years in the register; the latest years only | moves | funding policy 3.2 |
-| SF9 | pooling | within each specialty class, across years, months and entities, claims as recorded | by entity; by incident season; a fitted delay or cost curve | moves (noise) | funding policy 3.4 |
-| SF10 | exposure | the staffing plan's covered FTE by entity, class and month from the Transition Date, earned evenly over each day of the month | from 1 January for every entity; mid-month timing; the September payroll | from 1 January 2.13 times; mid-month timing converges on the contribution (1.0009 times) and moves 7 of the 11 entity and class costs (asserted) | funding policy 3.3 |
-| SF11 | base exposure | covered paid FTE in the legacy payroll, 2017 to 2024, each month's FTE one twelfth of an FTE-year | headcount; FTE of every job | moves | funding policy 3.2 and Schedule B |
-| SF12 | a claim's specialty class | the class of the first covered clinician the claim names, from that clinician's job code in the month of the incident | the register's free-text specialty; the clinician's current job | converges (asserted: the two agree on every experience claim) | Schedule B note 2 |
-| SF13 | "each entity" | the four Participating Entities of Schedule A | the payroll's entity codes, legacy cost-centre roll-ups | same call (the forecast reads only the staffing plan, by Participating Entity) | Schedule A |
-| SF14 | "specialty class" | the seven classes of Schedule B | the payroll's job families | same call | Schedule B |
-| SF15 | claims made on 31 December 2027 | in | out (the window closing a day early) | moves the contribution 0.8 per cent (asserted) | trust agreement 1.7 and 2.1: first made during the Plan Year, a calendar year |
-| SF16 | rounding | each figure rounded once from unrounded parts; the contribution is the sum of the unrounded entity costs | the sum of rounded parts | converges (asserted: the sum of rounded entity costs equals the rounded contribution) | funding policy 3.6 |
-| SF17 | claims closed or held without indemnity | Claims, counted at their cost (defence only, or nothing) | dropped | 110 experience Claims; the count falls from 11.5 to 8.6 and the cost moves (asserted) | trust agreement 1.3: a Claim is the demand or request, whatever it costs |
-| SF18 | the Trust's limit | no cap reaches the window: the largest Claim that can be made within 364 days of its incident is $1,748,066 at 2027 cost level | each experience Claim capped at $2,000,000 | same call (asserted) | trust agreement 2.3 |
-| SF19 | the day count of each window | an incident on a date from the entity's Transition Date takes an experience Claim's delay (its made date less its incident date) and is in when that making date falls on or before 31 December 2027; exposure earned evenly over each month's days (asserted equal to the golden, computed on dates) | the days left counted with both ends (Claims made on 1 January 2028 counted); the delay counted with both ends (Claims made on 31 December 2027 dropped, as SF15); the Transition Date's incidents left with the expiring policy; the day before the Transition Date counted | $790,000; $778,000; $778,000; $790,000, each moving three or four entity costs (asserted, each ruling sentence read from the shipped PDFs) | trust agreement 1.3 (a Claim is made on the date it is first received), 1.7 and 2.4 (the Plan Year is a calendar year; a Claim first made after its end is not covered), 2.1 and 2.2 (incidents on or after the Retroactive Date; before the Transition Date, the occurrence policy), Schedule A's note (a policy period ends at 12:01 a.m. on its last date); funding policy 3.3 (exposure from the Transition Date, earned evenly over the days of the month) |
-| SF20 | a Claim's cost across its claim numbers | every claim number's rows added, each row one defendant on one claim number | the later claim number's rows alone, its payments read as carrying the request's | $782,000 (asserted) | funding policy 3.2 (the paid and reserves recorded against its Covered Clinicians in the register extract) with trust agreement 1.3 (every claim number of the incident is the one Claim); the records converge: no escalation repeats an amount set on its two claim numbers, and the carriers' September runs carry all 15 escalated matters at the two claim numbers' payments added (asserted) |
+| SF1 | "fund the expected cost" | the expected cost of the Claims (funding policy 3.1), no margin, load or expense | the expected cost plus a margin or the trust's expenses | higher | funding policy 3.1 and 3.6 |
+| SF2 | "claims first made against the trust that year" | Claims first made from 1 January to 31 December 2027 from incidents on or after the employing entity's Transition Date | claims from 2027 incidents whenever made (occurrence) | 4.86 times | trust agreement 2.1 and Schedule A: claims-made, the Retroactive Date is the Transition Date |
+| SF3 | "claim" | all demands, requests and suits from one incident are one Claim, first made at the earliest | each claim number a claim | 0.48 times | trust agreement 1.3 |
+| SF4 | a request made through the Early Resolution Program | a Claim | not a claim until a demand or suit | suits only 0.57 times | trust agreement 1.3(b) |
+| SF5 | covered clinicians | employed physicians and advanced practice clinicians in Schedule B jobs | residents and fellows counted | 0.931 times | trust agreement 1.5 and Schedule B note 1 |
+| SF6 | a Claim's cost | indemnity and defence paid plus case reserves on its covered clinicians' rows at the 30 September 2026 extract | paid only; indemnity only | moves | funding policy 3.2 |
+| SF7 | trend | 5.0 per cent a year from the incident year to 2027 | from the year made | moves | funding policy 3.2 |
+| SF8 | the experience years | incidents 2017 to 2024 | the latest years only | 2021 to 2024 only 1.107 times | funding policy 3.2 |
+| SF9 | rating each entity | one expected cost per class for every entity's exposure | each entity on its own experience (0.800 times); each Program hospital on its own (1.062 times) | moves | funding policy 3.4: a Covered Clinician's exposure in a specialty class carries the same expected cost whichever Participating Entity employs the clinician |
+| SF10 | exposure | the staffing plan's covered FTE by entity, class and month from the Transition Date, earned evenly over each day | from 1 January for every entity | 2.25 times | funding policy 3.3 |
+| SF11 | the job code sets | both legacy code sets through Schedule B | the current code set alone | same call (C1: every experience month carries the July 2016 set) | asserted |
+| SF12 | a Claim's specialty class | the first covered clinician's job in the incident month | the register's free-text specialty | same call (192 of 192 agree) | Schedule B note 2 |
+| SF13 | "each entity" | the four Participating Entities of Schedule A | payroll entity codes | same call | Schedule A |
+| SF14 | specialty classes | the seven classes of Schedule B | job families | same call | Schedule B |
+| SF15 | Claims made on 31 December 2027 | in | out | moves | trust agreement 1.7 and 2.1 |
+| SF16 | rounding | each figure rounded once from unrounded amounts; payments from the unrounded contribution | the sum of rounded parts; payments from the rounded contribution | same call (the rounded payments add to $587,000, and the rounded contribution gives the same payments) | funding policy 3.7 |
+| SF17 | Claims without indemnity | counted at their cost | dropped | count 7.7 against 10.2 | trust agreement 1.3 |
+| SF18 | the Trust's limit | no Claim able to be made inside the window reaches $2,000,000 at 2027 level (largest $1,489,000) | each Claim capped | same call | trust agreement 2.3 |
+| SF19 | the day count | incidents from the Transition Date, each made on its incident date plus an experience Claim's delay, in when made by 31 December 2027, exposure earned evenly over each month's days | the days left counted with both ends; the delay counted with both ends; the Transition Date left out; the day before counted | $592,000; $582,000; $582,000; $592,000 | trust agreement 1.3, 1.7, 2.1, 2.2, 2.4 and Schedule A's note; funding policy 3.3 (each ruling sentence read from the shipped PDFs, asserted) |
+| SF20 | a Claim's cost across its claim numbers | every claim number's rows added | the later claim number's rows alone | $585,000 | funding policy 3.2 with trust agreement 1.3 |
+| SF21 | "how much of it each entity pays" | its share of the year's Contribution in proportion to its share of the 2027 exposure under 3.3 | its own expected cost; one quarterly instalment | every payment moves | funding policy section 2 |
+| SF22 | "the expected number of those claims" | one per incident, the Claims of the window | claim numbers apart | 10.24 against 10.23, same at one decimal (the escalated suits fall outside the window) | trust agreement 1.3 |
+| SF23 | a Claim's entity | where the care was given, the position its first clinician held (entity_at_incident) | the clinician's entity on another position that month | same call (every experience Claim's entity is one its first clinician was paid by that month) | asserted |
+| SF24 | the Program's scope | open to every entity's patients from its Transition Date; until then Tolliver Falls' and Alderwick's | none (one reading) | n/a | trust agreement 5.2; the dictionary's matter type; the register (62 Claims made within 120 days, all at the two hospitals) |
+| SF25 | Ask A, "open claims" | OPEN or REOPENED at 30 September 2026, one per incident | OPEN alone | same answer (asserted) | the register's status; no incident holds two open claim numbers (asserted) |
+| SF26 | Ask A, "under its occurrence policies" | rows on the entity's own coverage line | every row of the entity's incidents, contracted ones included | same answer (asserted: each missing claim sits on its entity's line) | the dictionary's `coverage_line` |
+| SF27 | Ask A, "its carrier's latest loss run" | the run with the latest valuation, 30 September 2026 | the most recently delivered file, Quillan's revision 1 of 30 June 2026 | Alderwick 4 ($75,000) | the runs' valuation dates and revision 1's header ("Revision 1 of the run valued 06/30/2026") |
+| SF28 | Ask A, "our reserves on them" | the register's indemnity and defence reserves on our rows of the missing claims | the carrier's reserves | moves (the carrier holds no record of a missing claim) | "our" in the prompt; the register's reserve columns (asserted) |
+| SF29 | Ask A, a carrier claim under a notice whose incident record holds no claim | the register claim with the notice's entity, event date and category, where exactly one exists | a notice-only file (the matter read as missing) | every entity moves (the careful path, S2) | asserted data fact: each such file matches exactly one register claim or none, the none being the entities' own claims the dictionary sends to the general liability register |
+| SF30 | Ask B, "covered clinician FTE in September 2026" | one FTE per position held that month, covered through the crosswalk and Schedule B | FTE from the hours paid | same answer (asserted: no part month or unpaid leave in September, REG hours equal the FTE) | asserted |
+| SF31 | Ask B, "each entity's" FTE | the entity of the cost centre a position's September lines are charged to | the home entity on the worker's record | every entity moves (S4) | asserted data facts: each September position has one cost centre; the home entity of two movers is Brennick's rural clinic, which the directory opens on 1 October 2026 |
 
 The stump is none of these rows: every row is read the same way by a careful reader, and the default path reads them
-all correctly.
+all correctly. Pooled against Program-hospital experience is not a reading of any term: both are estimates of the same
+filed estimand, and only one is generated under the claims handling the estimand's Claims will meet.
 
-## Ladder (built, claims seed 3671; checks.py asserts every line)
+## Ladder (built, claims seed 1783; checks.py asserts every line)
 
-Every rung is a complete pipeline on the same literal estimand; ratios are to the golden contribution, $783,667.
+Every rung is a complete pipeline on the same literal estimand; ratios are to the golden contribution, $587,072.
 
 | Rung | Construction | Contribution | Ratio | Dies to |
 |---|---|---|---|---|
-| R0 default | a year of the experience's cost per FTE-year by class (2017 to 2024 as recorded) on each entity's FTE-years in the trust | $4,854,000 | 6.19 | the coverage clause: only claims first made in 2027 count |
-| R0m | the same on the mature years 2017 to 2020 | $5,013,000 | 6.40 | as R0 |
-| R1a | the share of mature claims made within twelve months, at the mature cost, on the FTE-years | $3,221,000 | 4.11 | a claim from a December incident has days, not a year, to be made in 2027 |
-| R1 | the expected number of claims made inside each entity's window (claim by claim, by day) at the average trended cost of a claim | $1,784,000 | 2.28 | the claims inside a short window are the cheap ones |
-| R2 | the cost-weighted in-year share of a full calendar year, on each entity's FTE-years | $1,075,000 | 1.37 | a part year catches a share that falls faster than its length |
-| R2b | the cost of claims made in their incident's calendar year, per FTE-year, on each entity's FTE-years | $1,100,000 | 1.40 | as R2 |
-| L0 (below) | the golden construction with each escalated suit kept apart from the request it follows | $378,000 | 0.48 | trust agreement 1.3: one Claim per incident, first made at the earliest request |
-| Off-pack | a first-year step factor from memory (0.30) on the mature cost | $1,504,000 | 1.92 | funding policy 3.2: the System's own experience |
-| Base FTE | the golden construction on the 2020 job codes alone | $1,314,000 | 1.68 | Schedule B lists both code sets |
-| R3 golden | each entity's window costed claim by claim | $784,000 | 1 | none |
+| R0 | a year of the pooled experience's cost per FTE-year by class on each entity's FTE-years in the trust | $3,617,000 | 6.16 | the coverage clause: only Claims first made in 2027 count |
+| R0m | the same on the mature years 2017 to 2020 | $4,738,000 | 8.07 | as R0 |
+| R1a | the share of mature Claims made within twelve months at the mature cost | $2,369,000 | 4.04 | a December incident has days, not a year, to be made in 2027 |
+| R1 | the window's expected count (by day) at the average trended cost | $966,000 | 1.65 | the Claims inside a short window are the cheap ones |
+| R2 | a full year's cost-weighted in-year share, prorated | $466,000 | 0.79 | a part year catches a share that falls faster than its length |
+| R2b | the same-calendar-year share | $432,000 | 0.74 | as R2 |
+| Off-pack | a first-year step factor (0.30) on the mature cost | $1,422,000 | 2.42 | funding policy 3.2: the System's own experience |
+| R3 default | the window costed day by day on the pooled experience | $312,000 | 0.53 | trust agreement 5.2: every entity's 2027 Claims come through the Program, whose experience only the two hospitals generated |
+| Relativity | R3 adjusted by the Program hospitals' full-year cost relativity by class | $273,000 | 0.46 | as R3, and the full-year effect points the other way in a first window |
+| By entity | each entity's window on its own experience | $470,000 | 0.80 | funding policy 3.4 (and 5.2 for the medical group and Brennick) |
+| By carrier | Quillan entities on the Program experience, Stoneleigh entities on theirs | $433,000 | 0.74 | 3.4 and 5.2 |
+| H1 | each Program hospital on its own experience, the medical group and Brennick on the Program experience | $623,000 | 1.06 | 3.4: one rate for every entity |
+| H3 | the Program experience for the medical group and Brennick, the pooled for the hospitals | $405,000 | 0.69 | 3.4 and 5.2 |
+| Mismatch | the Program hospitals' Claims over every entity's FTE-years | $305,000 | 0.52 | the experience's Claims and exposure from one population (3.2) |
+| L0 | the golden basis with each claim number apart | $283,000 | 0.48 | trust agreement 1.3 |
+| Program, classic | R0, R1, R2 and R2b on the Program hospitals' experience | $2,853,000; $1,221,000; $859,000; $955,000 | 4.86; 2.08; 1.46; 1.63 | as R0, R1 and R2 |
+| R4 golden | the window costed day by day on Tolliver Falls' and Alderwick's class experience | $587,000 | 1 | none |
 
-- **Position and margins.** The golden is bracketed: every rung that misses the window or the cost link lands above it
-  (R0, R1a, R1, R2, R2b), the one Layer 1 slip that splits escalations lands below it (L0), and the off-pack step
-  factor lands above it. The nearest rung is R2 at 1.37 times; no rung lands within 15 per cent (nearest 37 per cent).
-- **By entity.** R2 is near exact for Tolliver Falls, the full-year entity (1.02 times its $227,000), and 1.27, 1.83 and
-  3.96 times the golden for Alderwick, the medical group and Brennick; R0 is 4.5 to 15.7 times each entity's figure.
-- **Grid.** Window (mature, twelve months, full year on the FTE-years, by day per entity) x weight (count at the average
-  cost, each claim's cost) x escalations (merged, apart) x base FTE (both code sets, 2020 codes only) = 32 cells; every
-  cell other than the golden is at least 19.3 per cent from it (nearest: by day, each claim's cost, escalations apart,
-  2020 codes only, the two opposite errors), asserted.
-- **Worth on the graded figures.** R0 and R2 move all four entity costs, R1 all seven class costs, L0 the contribution
-  and every figure an escalation reaches (all 15 experience escalations were requests made within 364 days).
-- **Dominance.** The decisive construction (R0 to the golden, $4,070,000) is 7.7 times the largest Layer 1 rung's effect
-  on the contribution (the 2020 code set, $530,000), asserted.
+- **Position and margins.** The golden is bracketed: the classic rungs on either basis land above it, the default
+  (the strong solver's round 1 construction) and every rival that keeps the medical group's and Brennick's experience
+  land below it, and the relativity adjustment lands further below. Nearest named rival H1 at 6.2 per cent ($36,000,
+  ruled out by 3.4); every other rival at least 20 per cent away.
+- **Splitting the experience by delay.** The Program hospitals' Claims made within the window's reach (364 days) with
+  the slower ones pooled converges on the golden exactly (C1: only those Claims can enter the window). Split below the
+  reach, at 90, 120, 180, 270 or 330 days, it files $462,000, $475,000, $580,000, $590,000 and $589,000, each off the
+  golden's bin (asserted) and each mixing Stoneleigh-era demands into a window every entity meets under the Program.
+- **Grid.** Basis (pooled, Program hospitals) x window (mature, twelve months, full year prorated, by day) x weight
+  (count at the average cost, each Claim's cost) x escalations (merged, apart) = 32 cells; every cell other than the
+  golden is at least 20.7 per cent from it (nearest: the pooled basis, full year prorated, each Claim's cost, merged),
+  asserted.
+- **Worth on the graded figures.** The default moves the contribution, the expected count (5.6 against 10.2), every
+  entity's payment and every entity's monthly cost on the chart.
+- **Dominance.** The decisive correction applied to the default reaches the golden and moves it by $275,000 (47 per cent
+  of the golden); every Layer 1 item is neutral to the call (R2); the filed-rule rung the default path already executes,
+  escalations merged, would move it $304,000 on the right basis.
 
 ## Closure table
 
 | # | Axis | Reading and move |
 |---|---|---|
-| 1 | Population | Claims first made in 2027 from services on or after each entity's Transition Date (trust agreement 2.1, Schedule A); experience claims from 2017 to 2024 incidents against covered clinicians; filed literally; members not yet observed (2027 claims) are the estimand, projected from the experience |
-| 2 | Unit of account | one Claim per incident (trust agreement 1.3); FTE per clinician-month (funding policy 3.2); converge asserted on counts |
-| 3 | Attribution window | the Plan Year, claims made 1 January to 31 December 2027 inclusive (trust agreement 1.7, 2.1, 2.4); the window closing a day early or a day late moves the contribution 0.8 per cent either way (C4 against the sentences, SF15 and SF19, asserted) |
-| 4 | As-of dating | the register extract valued 30 September 2026 (funding policy 3.2); a single extract ships |
-| 5 | Version basis | paid plus case reserve at the extract; no earlier valuation of the register ships |
-| 6 | Denominator | covered paid FTE-years by class, 2017 to 2024, both job-code sets mapped (Schedule B); C4 against the 2020-only reading (asserted at least 6 per cent) |
-| 7 | Weighting | each claim at its own trended cost (the literal expected cost of those claims); the count-at-average rung separated (C4, about 2.5 times) |
-| 8 | Window length | the experience window is filed (2017 to 2024); the plan window per entity is filed (Schedule A) |
-| 9 | Boundary inclusivity | "on or after the Retroactive Date" and "during the Plan Year", both inclusive, counted on dates (a Claim is made on the date it is received); a day off at either end of either window moves the rounded contribution to $778,000 or $790,000, each against a sentence the PDFs carry (C4, SF19, asserted) |
-| 10 | Rounding path | each graded figure rounded once from unrounded parts (funding policy 3.6); sums of rounded entity costs equal the rounded contribution (asserted) |
-| 11 | Tie-break | a claim naming two covered clinicians of different classes takes the first-named clinician's class (Schedule B note 2) |
-| 12 | Maturity and censoring | every experience claim made within 365 days of its incident is in the extract (incidents to 31 December 2024, extract 30 September 2026); the window needs no later delays; asserted |
-| 13 | Order of operations | trend per claim before summing; merge escalations before measuring delay; C1 on the remaining orders (asserted) |
-| 14 | Row order | the register's row order changes nothing (asserted over three permutations) |
-| 15 | Duplicate resolution | defendant rows collapse to one Claim by incident; reopened claims carry one row per defendant with their totals; a Claim's claim numbers add, none repeating another's amounts (SF20); asserted counts |
-| 16 | Identity normalisation | clinician ids are payroll employee ids in both the register and payroll (no normalisation needed on the main path; asserted) |
-| 17 | Netting against gross | indemnity and defence add; no salvage or recovery exists on clinician claims (asserted zero) |
-| 18 | Dimensional units | dollars at the 2027 cost level; FTE-years; asserted in the generator |
-| 19 | Code and status semantics | claim status (open, closed, reopened) never changes a cost (paid plus reserve); job codes through Schedule B |
-| 20 | Integerisation | none: expected counts are graded to one decimal and costs to the nearest thousand |
-| 21 | Clause scope | the claims-made coverage applies entity by entity from its own Transition Date (Schedule A) |
-| 22 | Forward window contents | the staffing plan covers every month of 2027 for every entity from its Transition Date (asserted) |
+| 1 | Population | Claims first made in 2027 from incidents on or after each entity's Transition Date (trust agreement 2.1, Schedule A); experience Claims from 2017 to 2024 incidents against covered clinicians; the 2027 Claims, not yet observed, are the estimand; filed literally |
+| 2 | Unit of account | one Claim per incident (1.3); FTE per clinician-month (3.2); C1 on the count (SF22) |
+| 3 | Attribution window | the Plan Year, Claims made 1 January to 31 December 2027 inclusive (1.7, 2.1, 2.4); one day off either end moves the rounded contribution against a filed sentence (C4, SF15, SF19) |
+| 4 | As-of dating | the register extract valued 30 September 2026 (3.2); one extract ships |
+| 5 | Version basis | paid plus case reserve at the extract (3.2, 3.5); no earlier register valuation ships |
+| 6 | Denominator | covered paid FTE-years of the same entities as the Claims, by class, 2017 to 2024 (3.2); the mismatch rival (Program Claims over every entity's FTE) separated by 48 per cent (C4) |
+| 7 | Weighting | each Claim at its own trended cost (the literal expected cost); count at the average cost separated (C4, 1.65 and 2.08 times) |
+| 8 | Window length | the experience years are filed (3.2); each entity's plan window is filed (Schedule A, 3.3) |
+| 9 | Boundary inclusivity | "on or after the Retroactive Date" and "during the Plan Year", both inclusive, counted on dates (SF19, asserted against the filed sentences) |
+| 10 | Rounding path | rounded once from unrounded amounts (3.7); the payments' rounded sum equals the rounded contribution and the rounded contribution gives the same payments (SF16, asserted) |
+| 11 | Tie-break | a Claim naming clinicians of two classes takes the first-named covered clinician's class (Schedule B note 2) |
+| 12 | Maturity and censoring | every experience Claim made within 364 days of its incident is in the extract (incidents to 31 December 2024, extract 30 September 2026); asserted |
+| 13 | Order of operations | trend per Claim before summing; merge escalations before measuring delay; the basis chosen before the window (C1 on the remaining orders) |
+| 14 | Row order | the register's row order changes nothing (asserted) |
+| 15 | Duplicate resolution | defendant rows collapse to one Claim by incident; claim numbers of one matter add, none repeating another's amounts (SF20) |
+| 16 | Identity normalisation | clinician ids are payroll employee ids in both files (asserted) |
+| 17 | Netting against gross | indemnity and defence add; no recovery exists (asserted no negative amount) |
+| 18 | Dimensional units | dollars at the 2027 cost level; FTE-years |
+| 19 | Code and status semantics | status never changes a cost (R2: reopened read as closed keeps the call); job codes through Schedule B, both sets (SF11, C1) |
+| 20 | Integerisation | none: counts graded to one decimal, dollars to the nearest thousand |
+| 21 | Clause scope | claims-made from each entity's own Transition Date (Schedule A); the Program from the same date (5.2); one rate for every entity (3.4) |
+| 22 | Forward window contents | the staffing plan covers every month of 2027 for every entity (asserted) |
 
 ## Literal reader
 
-Executed word for word, the prompt, the trust agreement (1.3, 1.5, 2.1, Schedule A, Schedule B) and the funding policy
-(3.1 to 3.6) define the contribution as the expected cost, at 2027 cost level, of the claims that will first be made in
-2027 against clinicians of each entity from services on or after its Transition Date, projected within each class from
-the 2017 to 2024 experience taken as a whole and used as recorded, on the staffing plan's FTE earned by day; every term
-in the fork table resolves to one reading or converges, and the only computation those sentences license is to cost
-each entity's window from the experience claim by claim, which is the golden. Pass on paper and on the built pack:
-checks.py and the independent verifier (verify.py, its own code path from the bundle) both execute it to $784,000.
-No filed sentence costs a year at a rate per FTE-year: 3.1 alone says what is costed, 3.2 and 3.3 define the two
-exposures, 3.4 how the experience is used, and section 2 only splits the instalments by exposure share. The day count
-is the filed dates' own arithmetic, and each one-day variant contradicts a sentence the PDFs carry (SF19).
+Executed word for word, the prompt, the trust agreement (1.3, 1.5, 2.1, 2.2, 5.2, Schedules A and B) and the funding
+policy (3.1 to 3.7) define the contribution as the expected cost, at 2027 cost level, of the Claims that will first be
+made in 2027 under the Trust Agreement against clinicians of each entity from incidents on or after its Transition
+Date, estimated from the System's 2017 to 2024 experience taken as recorded, on the staffing plan's FTE earned by day,
+one rate per class for every entity. Every term in the fork table resolves to one reading or converges. No filed
+sentence names the experience basis: 3.2 names the data the estimate is made from, and 3.1 says what is estimated, the
+Claims as they will arise under the Trust Agreement, whose 5.2 opens the Program to every entity's patients; the
+experience generated under that claims handling is the Program hospitals'. Pass on paper and on the built pack:
+checks.py and the independent verifier (verify.py, its own code path from the bundle, reading the Program's hospitals
+from the dictionary) both execute it to $587,000. The pooled estimate is not a second reading of a term but a biased
+estimate of the same one: on the clean truth it files $312,000 (R3a), and no shipped sentence makes it the estimand.
 
 ## Oracles
 
-None ships. No file states a 2027 cost, a share of claims made within any period, a claims-made or step factor, a
-report-lag or cost-lag table, or the trust's expected claims; the funding policy carries no worked example; the premium
-history prices occurrence cover with carrier loads and ties to no rung. The carriers' loss runs and the notice log carry
-the carriers' view of pre-transition matters (Ask A's path), which no rung of the main call reads; the HCM pay lines
-(Ask B's path) give 2026 FTE, which the call never reads (the staffing plan is the exposure).
+None ships. No file states a 2027 cost, a share of Claims made within any period, a claims-made or step factor, a
+report-lag or cost-lag table, a Program effect or the trust's expected Claims; the funding policy carries no worked
+example; the premium history prices occurrence cover with carrier loads and ties to no rung. The carriers' loss runs
+and the notice log carry the carriers' view of pre-transition matters (Ask A's path), which no rung of the call reads;
+the HCM pay lines (Ask B's path) give 2026 FTE, which the call never reads (the staffing plan is the exposure).
 
 ## Ask sheet
 
 **Main call's declared row population:** the register's rows for incidents from 1 January 2017 to 31 December 2024
 (all defendant rows, open and closed), the legacy payroll's rows from January 2017 to December 2024, Schedule B, the
-staffing plan, the trust agreement and the funding policy. Ask A's devices live in the carriers' loss runs and the
-notice log, which no rung of the call reads; Ask B's live in the 2026 HCM pay lines, which the call never reads.
-Asserted: the call recomputes to the dollar with the loss runs, the notice log, the HCM lines and both distractors
-deleted (zero device and hazard rows in its population), and no ask figure reads any rung of the call.
+staffing plan, the trust agreement and the funding policy. Ask A's devices live in the notice log and the carriers'
+loss runs and Ask B's in the 2026 HCM pay lines, none of which the call reads. Asserted: the call recomputes to the
+dollar with the loss runs, the notice log, the HCM lines, the dictionary and both distractors deleted; the register
+keeps every claim number of a duplicated matter on one incident number (the device row is the notice log's), so no
+device or hazard row sits in the call's population; no ask figure reads any rung of the call.
 
 **Ask A. For each entity, whether any of our open claims under its occurrence policies is missing from its carrier's
-latest loss run and, if so, how many and our reserves on them** (4 counts, 4 reserve totals; 8 figures; counts whole,
-reserves to the nearest thousand dollars). Golden: Tolliver Falls none; Alderwick 2, $178,000; the medical group 1,
-$6,000; Brennick none.
+latest loss run and, if so, how many and our reserves on them** (4 counts with their "whether any", 4 reserve totals;
+counts whole, reserves to the nearest thousand dollars). Golden: Tolliver Falls none; Alderwick 1, $7,000; the medical
+group 1, $20,000; Brennick none.
 - H18 home: every open claim from before a Transition Date stays with the expiring carrier (trust agreement 2.2 and
-  5.2); the reconciliation is the audit trail of the trust's retroactive boundary, and the call does not turn on it.
+  5.3); the reconciliation is the audit trail of the trust's retroactive boundary, and the call does not turn on it.
 - Construction: open claims at 30 September 2026 in the register under each entity's coverage line, one per incident,
-  against the carrier's run with the latest valuation (30 September 2026), matched on the carrier's insured reference.
-- Primary device (D7, the true key elsewhere): risk management sends the carriers precautionary notices of serious
-  incidents, and when a noticed incident turns into a claim the carrier keeps the notice number as its insured
-  reference; those claims sit on the runs under RMN numbers, which only the notice log ties to an incident number.
-  Matching on claim numbers reports every one of them missing. Open noticed claims: Tolliver Falls 5, Alderwick 6, the
-  medical group 8, Brennick 2 (at least two each, asserted). Nothing in the pack says how the carriers reference them;
-  the tell is a run row whose reference matches no claim number.
-- Hazards: HA1 (D7, the prior-id chain): an escalated suit sits with the carrier under the request's claim number (open
-  escalated suits: Alderwick 4, the medical group 2); HA2 (D2): Quillan re-issued its 30 June 2026 run on 9 October
-  2026, after the 30 September run of 6 October, so the most recently delivered file is not the latest valuation; HA3
-  (D3): Stoneleigh strips punctuation from references ("CL20190142").
-- True gaps: a claim received from Thursday 24 September 2026 goes to the carrier in the 2 October weekly report and is
-  on no run (Alderwick's CL-2026-0177, a request received 29 September), and two 2026 requests handled in house were
-  never reported (Alderwick's CL-2026-0098 and the medical group's CL-2026-0133). Tolliver Falls and Brennick have none,
-  so "none" is a graded answer.
-- Path (6 files, 12 columns): the register, the two Quillan runs, the Stoneleigh run, the notice log, the data
-  dictionary; `claim_no`, `incident_no`, `prior_claim_no`, `status`, `coverage_line`, `indemnity_reserve`,
-  `defense_reserve`, the runs' insured reference, valuation date, named insured, carrier claim number and claim type.
-- Stops (asserted): S1 natural (open claim numbers matched on normalised claim numbers, latest valuation): 5, 12, 11
-  and 2 missing; S2 (S1 plus the prior chain): 5, 8, 9 and 2; S3 (every key right, Quillan's re-issued June run read as
-  the latest): Tolliver Falls 3 ($472,000) and Alderwick 5 ($274,000); answer: 0, 2 ($178,000), 1 ($6,000), 0.
+  against the carrier's run with the latest valuation (30 September 2026), the carrier's insured reference matched to a
+  claim number, or a notice number through the notice log.
+- Primary device (D1, the same matter under two key schemes): a matter noticed to the carrier before any claim, whose
+  claim risk management registered under a new incident record when it came in. The notice log keeps the incident number
+  given at the notice, the register carries the new one on every claim number of the matter, and the carrier keeps the
+  notice number as its reference. Matching through the notice log finds an incident record that holds no claim, and the
+  register's open claim reads as missing. One at each entity: Tolliver Falls CL-2024-0060 (notice RMN-24-0002, $479,000
+  reserved), Alderwick CL-2025-0071 (RMN-24-0088, $479,000), the medical group CL-2026-0045 (RMN-23-0075, $39,000),
+  Brennick CL-2024-0079 (RMN-23-0011, $136,000).
+- Silence: every key the careful path uses ties. Each carrier reference resolves to a claim number or a notice, each
+  notice's incident number is a real record, and the notice files of Claim or Suit type that hold no clinician claim
+  are normal on these runs: the claims against the entities alone (falls, nursing care, equipment), noticed first and
+  carried by the same carriers, which the dictionary says are kept in the general liability register (38 such files on
+  the September runs, at least one open at every entity). The only tell is a cross-file match of a notice's entity,
+  event date and category with a register claim, which nothing invites. No sentence narrates the duplicate records.
+- Fair: one handling reproduces the truth exactly: a carrier claim or suit under a notice number whose notice log
+  incident record holds no register claim is the register claim with the notice's entity, incident date and allegation,
+  where exactly one exists (asserted: 4 matched, 38 none, 0 ambiguous); the carrier's own date of loss and claim date
+  corroborate it.
+- Hazards: HA1 (D7, the prior chain): an escalated suit sits with the carrier under the request's claim number; HA2
+  (D2): Quillan re-issued its 30 June 2026 run on 9 October 2026, after the 30 September run of 6 October; HA3 (D3):
+  Stoneleigh strips punctuation from references; HA4 (D7): noticed matters carry notice numbers that only the notice log
+  ties to an incident record (round 1's primary, now a hazard the careful path clears).
+- True gaps: Alderwick's CL-2026-0049, a request handled in house and never reported; the medical group's CL-2026-0093,
+  received on 29 September 2026 and so in the 2 October weekly report, after the run. Tolliver Falls and Brennick have
+  none, so "none" is a graded answer there.
+- Path (6 files, 13 columns): the register, the two Quillan runs, the Stoneleigh run, the notice log, the data
+  dictionary; `claim_no`, `incident_no`, `prior_claim_no`, `status`, `coverage_line`, `entity_at_incident`,
+  `incident_date`, `allegation`, the reserves, the runs' insured reference, claim type and valuation date, the notice
+  log's incident number, entity, event date and category.
+- Stops (asserted, each off on count and reserves): S1, claim numbers only: Tolliver Falls 2 ($1,681,000), Alderwick 3
+  ($617,000), the medical group 9 ($494,000), Brennick 1 ($136,000); S1b, with the prior chain: 1 ($479,000), 3, 9, 1;
+  S2, the careful path (notice numbers through the notice log, claim numbers grouped by incident): 1 ($479,000), 2
+  ($486,000), 2 ($59,000), 1 ($136,000); S3, Quillan's re-issued June run read as the latest: Alderwick 4 ($75,000);
+  answer: none, 1 ($7,000), 1 ($20,000), none.
 - Lazy delta: S1 wrong on 8 of 8.
-- Realism: hospital risk managers send precautionary incident notices to their professional liability carriers, and a
-  carrier converting a notice to a claim keeps the reference it was first given; a carrier's corrected run re-sent
-  after the next quarter's is routine.
+- Realism: hospital risk managers notice serious events to their carriers before any claim, a claims analyst who
+  opens a fresh incident record for a demand rather than finding the noticed one is an everyday duplicate, and carriers
+  keep the reference they were first given; hospital professional liability runs list the entity's own claims.
 
 **Ask B. Each entity's covered clinician FTE in September 2026** (4 figures, FTE to one decimal). Golden: Tolliver Falls
-96.3, Alderwick 234.3, the medical group 522.0, Brennick 54.9.
-- H18 home: the staffing plan the contribution is costed on starts from these FTE; the figure is the audit trail of the
-  plan's starting point (an input's reconciliation), and the call reads only the plan.
+106.9, Alderwick 271.5, the medical group 525.0, Brennick 53.9.
+- H18 home: the staffing plan the contribution is costed on starts from these FTE; the figure is the audit trail of
+  the plan's starting point (an input's reconciliation), and the call reads only the plan.
 - Construction: the HCM pay lines for work month September 2026, one FTE per position, covered jobs through the HCM job
   profile crosswalk into Schedule B, on the entity of the cost centre each position's lines are charged to.
-- Primary device (D2, an attribute read current): the HCM extract stamps every line with the worker's home entity as
-  it stood when the extract ran (2 October 2026); the clinicians who moved on 1 October 2026 (three Tolliver Falls
-  hospitalists into Alderwick's hospitalist group, two medical group family physicians into Brennick's new rural clinic,
-  four Alderwick CRNAs into the medical group's surgery centre, a Brennick emergency physician to Tolliver Falls) carry
-  their new entity on their September lines while the cost centres still charge the old one. No document narrates the
-  moves; the dictionary states the field's date flatly and the tell is a September line whose cost centre belongs to
-  another entity.
-- Hazards: HB1 (D6): one line per earning code, each repeating the position's FTE, so summing lines overstates (a
-  clinician above 1.0 FTE is the tell); HB2 (D5): fellows carry clinical-sounding profiles ("Physician, Cardiology
-  Fellow") that the crosswalk maps to the excluded GME code; HB3: dual appointments hold two positions on two entities'
-  cost centres.
+- Primary device (D2, an attribute at the wrong vintage): the HCM extract carries each worker's home entity from the
+  HCM record as it stood when the extract ran on 2 October 2026; the ten clinicians who moved on 1 October 2026 (three
+  Tolliver Falls hospitalists to Alderwick, two medical group family physicians to Brennick's new rural clinic, four
+  Alderwick CRNAs to the medical group's surgery centre, a Brennick emergency physician to Tolliver Falls) carry their
+  new entity on their September lines while the cost centres still charge the old. The dictionary defines the field as
+  "The worker's home entity on their HCM record", with no date.
+- Silence: since the HCM go-live on 1 January 2026 no clinician holds positions at two entities (the dual appointments
+  closed into intercompany agreements), so the home entity and the cost centre's entity agree on every September line
+  except the ten movers' (asserted); nothing invites the comparison, and a home entity read as the entity is the
+  natural column.
+- Hazards: HB1 (D6): one line per earning code, each repeating the position's FTE; HB2 (D5): fellows carry
+  clinical-sounding profiles that the crosswalk maps to the excluded GME code; HB3 (D5): psychologists are paid in the
+  APC pay group and are not covered.
 - Path (6 files, 11 columns): the HCM extract, the crosswalk, Schedule B, the cost centre directory, the data
   dictionary, the extract log; `worker_id`, `position_id`, `work_month`, `earning_code`, `fte`, `job_profile_code`,
   `job_profile`, `cost_centre`, `home_entity`, the crosswalk's `legacy_job_code`, the directory's `entity_code`.
-- Stops (asserted, every one off the golden on all four figures unless stated): S1 (lines summed, home entity) 174.7,
-  426.7, 759.2, 98.2; S2 (one FTE per worker, home entity) 93.6, 233.2, 524.1, 54.5; S4 (one FTE per position, home
-  entity, the careful path that misses the moves) 93.6, 233.8, 525.6, 54.5; S3 (fellows read as specialists by title)
-  moves Alderwick only, 244.3.
+- Stops (asserted, every one off on all four unless stated): S1 (lines summed, home entity) 182.3, 466.3, 759.8,
+  104.0; S4 (one FTE per position, home entity: the careful path) 105.7, 269.9, 527.2, 54.5; S3 (fellows read as
+  specialists) moves Alderwick only, 281.5.
 - Lazy delta: S1 wrong on 4 of 4.
 - Realism: HR systems stamp the current organisation on historical lines in standard extracts, and an October
   reorganisation ahead of a January insurance transition is ordinary.
@@ -361,139 +440,133 @@ $6,000; Brennick none.
 
 | Hazard | Root cause | Moves | Per-ask delta (asserted as built) |
 |---|---|---|---|
-| HA1 escalation chain | a suit after a request opens a new claim number | Ask A (and the call's merge, where it is the L0 rung) | S1 against S2: Alderwick 12 against 8, the medical group 11 against 9 |
-| HA2 re-issued June run | Quillan corrected and re-sent its June valuation | Ask A | Tolliver Falls 0 to 3, Alderwick 2 to 5 |
+| HA1 prior chain | a suit after a request opens a new claim number | Ask A on the claim-number path | S1 against S1b: Tolliver Falls 2 against 1 |
+| HA2 re-issued June run | Quillan corrected and re-sent its June valuation | Ask A | Alderwick 1 to 4 |
 | HA3 reference formats | the carriers' own formats | Ask A | every Stoneleigh match |
+| HA4 notice references | carriers keep the notice number | Ask A | S1 against S2 at every entity |
 | HB1 earning-code lines | the 2026 HCM's line grain | Ask B | every figure (S1) |
-| HB2 fellows | HCM profiles for trainees | Ask B | Alderwick, 234.3 to 244.3 |
-| HB3 dual appointments | clinicians on two entities' cost centres | Ask B | every figure under one FTE per worker (S2) |
+| HB2 fellows | HCM profiles for trainees | Ask B | Alderwick, 271.5 to 281.5 |
+| HB3 psychologists | the APC pay group | Ask B on a pay-group path | the medical group |
 
 **The cracker sheet.** The cracker filed the golden contribution, ran the hygiene battery (keys unique, exact
-duplicates, every join from the register matched, no fan-out, counts tied) and executed every filed rule. Every ask
-row misses:
+duplicates, every join from the register matched, no fan-out, counts tied), used the notice log and the prior chain,
+and executed every filed rule. Every ask row misses:
 
 | Ask figures | The cracker's path | What keeps it wrong | Cracker result |
 |---|---|---|---|
-| Ask A, 4 counts and 4 reserves | open register claims merged per incident, matched to the latest valuation on normalised claim numbers and the prior chain | noticed claims sit under notice numbers on the carriers' runs | miss |
+| Ask A, 4 counts (whether any, how many) | open register claims by incident, matched to the latest valuation on normalised claim numbers, the prior chain and notice numbers through the notice log | a noticed matter registered under a new incident record reads as missing at every entity: 1, 2, 2, 1 against none, 1, 1, none | miss |
+| Ask A, 4 reserves | as above | the duplicated matters' reserves: $479,000, $486,000, $59,000, $136,000 against $0, $7,000, $20,000, $0 | miss |
 | Ask B, 4 FTE figures | one FTE per position, fellows out through the crosswalk, by the line's home entity | the 1 October movers carry their new entity on September lines | miss |
 | Slides | carried by the main call, scored with it | | outside |
 
-Mirror leakage: 10 per cent of the ask weight (the mirror stops at R2, answers both asks as the cracker does and keeps
-only method credit; no ask figure couples to the call).
+If the generated rubric grades "whether any" apart from "how many", the cracker keeps Alderwick's and the medical
+group's "yes" (2 of 12 Ask A criteria).
 
-**Pair arithmetic.** Planning weights 38 recommendation (the contribution, each entity's and each class's count and
-cost), 7 instruction following, 55 asks over 12 figures. The cracker keeps about 10 per cent of the ask weight:
-C = 38 + 7 + 5.5 = 50.5. The mirror keeps r of about 3 (the files, the slide structure) and the same 5.5:
-S = 3 + 7 + 5.5 = 15.5.
+Mirror leakage: 12.5 per cent of the ask weight (the mirror stops at the default path, $312,000, answers both asks as
+the cracker does and keeps only Alderwick's and the medical group's "yes").
 
-Pair ceiling: 33.0
+**Pair arithmetic.** Planning weights 32 recommendation and components (the contribution, the expected Claims, the
+four payments, the chart), 6 instruction following, 62 asks over 16 criteria (Ask A 12, Ask B 4), about 3.9 each. The
+cracker on the call keeps the two "yes" criteria: C = 32 + 6 + 7.8 = 45.8; the mirror keeps r of about 4 (the files,
+the slide structure, the method credit) and the same 7.8: S = 4 + 6 + 7.8 = 17.8.
 
-If the generated rubric grades the entity and class figures as asks, the cracker keeps them and the mirror does not: C
-rises to about 66 and S stays near 16, a pair of about 41; that case needs the call held by all but one response,
-which the decisive rung is built for. A response that finds the notice log keeps Ask A's 8 figures, and one that reads
-the cost centre's entity keeps Ask B's 4: each device carries its whole ask. Recomputed from the generated rubric when
-it exists.
+Pair ceiling: 31.8
+
+Assuming the strongest response also cracks the most obvious device (the home entity, Ask B's 4 criteria, 15.5): C =
+61.3 and the pair with the mirror 39.5. If both top responses land the call and neither cracks a device, the pair is
+45.8; if both land it and one cracks Ask B, 53.5, which needs the decisive step held by all but one response, which
+the regime step is built for. Recomputed from the generated rubric when it exists.
 
 ## Pins
 
 | Pin | Authority | What it fixes | Never says |
 |---|---|---|---|
-| Trust agreement 1.3 (Claim) | 2, the trust's governing contract | one claim per incident, first made at the earliest request, program requests included | anything about delay or cost |
+| Trust agreement 1.3 (Claim) | 2, the trust's governing contract | one Claim per incident, first made at the earliest, Program requests included | anything about delay, cost or the Program's reach |
 | Trust agreement 2.1 and Schedule A | 2 | claims-made from each entity's Transition Date | how a window is priced |
-| Funding policy 3.1 to 3.6 | 1, the trustees' policy | the estimand, the experience, the trend, exposure by day, pooling, rounding | delay, window share, cost by timing, step factors |
+| Trust agreement 5.2 | 2 | the Early Resolution Program is open to every entity's patients from its Transition Date | the Program's history, its effect, or the experience to price on |
+| Funding policy 3.1 to 3.7 | 1, the trustees' policy | the estimand under the Trust Agreement, the experience's data, trend, exposure by day, one rate for every entity, values as recorded, rounding | which entities' experience, delay, window share, step factors |
+| Data dictionary, `matter_type` | 4, semantics | a Claim is a demand or a Program request; the Program has run for Tolliver Falls' and Alderwick's patients since September 2015 | anything about pricing |
 | Schedule B | 2 | covered jobs and classes, both legacy code sets | FTE totals |
+
+The Program's history (the dictionary) and its extension (5.2) sit in two documents, the layout fact apart from the
+rule (`dataset-generation` 8.1); neither restates the other.
 
 ## Prompt
 
-`prompt.txt`, 908 characters, `voice-check.py` PASS: the call with its unit and the forcing fact (each entity moving in
-on its occurrence policy's expiry), the two files with what each holds, Ask A with "whether any ... and, if so" (no
-presupposition, H23), Ask B, the chart's named parts (each entity's expected cost by the month the claims are made),
-and the rounding once at the close. Reworded at the build from the precut draft: Ask A's "under its expiring policy"
-became "under its occurrence policies", Ask B lost "by specialty class", the chart names the month the claims are
-made in, and the slide sentence no longer opens "I also need two slides in" (a rare construction `guard.py surface`
-matched to task133's prompt).
+`prompt.txt`, 890 characters, `voice-check.py` PASS: the call with its unit and the forcing fact (each entity moving in
+on its occurrence policy's expiry), the two files with what each holds, the components (the expected number of those
+claims and how much of the contribution each entity pays), Ask A with "whether any ... and, if so" (no presupposition,
+H23), Ask B, the chart's named parts and the rounding once at the close. Changed at round 2 only in the workbook's
+components, from each entity's and each class's expected count and cost (22 figures riding on the call, all handed to
+a response landing it, and the by-carrier rival landing two entities exactly) to the expected count and the payments.
 
 ## Build record
 
-- Claims seed 3671 (`build.py`), chosen from 8,000 by the seed search: every rung's separation, the grid at 6 per cent
-  or more, the 23 graded figures at least 7 per cent of a bin from a rounding edge (worst: Anesthesiology's cost at 8.6
-  per cent), the rounded entity and class costs and counts adding to the rounded totals, a contribution that is not a
-  multiple of $10,000, and Ask A's facts (two or more open noticed claims per entity, "none" for at least one entity,
-  missing claims for at least two). The payroll world, documents and Ask B use their own fixed streams (seed 1301012).
-- The call: $784,000 (unrounded $783,667). Entities: Tolliver Falls 2.9 Claims, $227,000; Alderwick 4.6, $336,000; the
-  medical group 3.9, $214,000; Brennick 0.1, $7,000. Classes: Obstetrics 2.0, $148,000; Surgery 2.3, $291,000;
-  Emergency Medicine 2.0, $68,000; Anesthesiology 0.5, $65,000; Hospital and Medical Specialties 2.3, $124,000; Primary
-  Care 1.4, $26,000; Advanced Practice 1.0, $62,000. Total 11.5 Claims on 555.8 FTE-years.
-- Asks: A as above; B 96.3, 234.3, 522.0, 54.9 (907.5 in all).
-- Gates at stage 3: `checks.py` 121 of 121 (the house fixes H5, H9 and H16 wired in, and the records behind this note's
-  world and ladder figures); `verify.py` (its own path, bundle only) matches every golden figure; two
-  builds byte-identical; `figures_check.py` exit 0; `precut.py` exit 0; `leak.py` REVIEW with no LEAK (lines answered
-  below); `guard.py surface` and `heart` as recorded in `pipeline.json`.
-- Surface: `guard.py surface` promotes only task102, on the card axes (gap time, pattern G13, Gate G forecasting,
-  decision quantity_figure), answered by the card's differentiation line; no surface overlap. Two surface tells were
-  removed at the build: the extract log's column set copied task124's, and the prompt's "I also need two slides in"
-  matched task133's.
-- Leak review (`leak.py --asof 2026-10-12`: REVIEW, no LEAK), one line per REVIEW:
-  - Sweep 3, golden figures 1.4 and 2.3 in the trust agreement: they are its clause numbers (1.4 Medical Incident, 2.3
-    limits), not the Primary Care and Surgery counts.
-  - Sweep 3, the call's words in the agreement, the policy and the dictionary: those files define the trust and its
-    contribution; none states a cost, a share or a 2027 figure.
-  - Sweep 4, 6 to 8 of the stump paragraphs' words in the agreement, the policy and the dictionary (register,
-    incident, system, report, agreement, exposure, experience, payroll, centre, family): the field's and the
-    organisation's own nouns (System a defined term, report the claims reporting duties, centre the cost centre); no
-    sentence names a delay, a window share or a cost by timing.
-  - Sweep 6, entity and class names beside numbers in the agreement (Schedules A and B: dates, policy numbers, job
-    codes), the staffing plan (FTE), the cost centre directory, the premium history and Quillan's runs (claim amounts):
-    none ranks the entities or classes on the contribution; the plan is the exposure the funding policy names.
+- Round 2, 2026-10-14. Claims seed 1783 (`build.py`), chosen from about 1,400 seeds swept on the round 2 world: the
+  default at 0.70 of the golden or less (0.53); every named rival 6 per cent or more from the golden (H1 at 6.2, every
+  other at 20 or more); the 32-cell grid at 6 per cent or more (20.7); the contribution and the count at least 15 per
+  cent of a bin from a rounding edge (worst: the count at 16.7 per cent), each payment at least 12 per cent from an edge
+  on the unrounded and the rounded contribution alike and the rounded payments adding to the rounded contribution; a
+  contribution that is not within $1,500 of a multiple of $10,000; at least 110 Program hospital Claims (123); a
+  duplicated incident record open at every entity; Ask A missing claims at one entity or more (two). The payroll world,
+  documents and Ask B use their own fixed streams (seed 1301012).
+- The call: $587,000 (unrounded $587,071.71), 10.2 expected Claims (10.233). Payments: Tolliver Falls $111,000 (113.4
+  FTE-years, 18.9 per cent), Alderwick $201,000 (205.5, 34.3), the medical group $260,000 (265.4, 44.2), Brennick
+  $15,000 (15.6, 2.6); 599.9 FTE-years. The chart's yearly totals: $183,000, $250,000, $149,000, $4,000.
+- Asks: A as in the ask sheet; B 106.9, 271.5, 525.0, 53.9 (957.3 in all).
+- Gates at stage 3: `checks.py` 182 of 182 (the three-rules block R1 to R3c, every rival route of the ladder and the
+  audit, the 32-cell grid, SF1 to SF31, the asks' stops and devices, the separation line, the house fixes H5, H9 and
+  H16); `verify.py` (its own path, bundle only, reading the Program's hospitals from the dictionary) matches every
+  golden figure; two builds byte-identical with `target.zip`; `figures_check.py` exit 0; `precut.py` exit 0;
+  `voice-check.py` PASS; `leak.py --asof 2026-10-12` REVIEW, no LEAK (lines answered below); `guard.py validate` clean,
+  `heart` WARN (the slot's own round 1 driver only), `surface` 0 promoted pairs (nearest task73 at 0.100, not
+  promoted).
+- Leak review, one line per REVIEW:
+  - Sweep 3, the call's words in the agreement, the policy and the dictionary: those files define the trust, its
+    contribution and the register's fields; none states a cost, a basis or a 2027 figure. Two LEAKs at the first run
+    (the agreement's $250,000 settlement consent and $4,000,000 aggregate matching the chart's yearly totals for
+    Alderwick and Brennick in the write-up) were cleared by dropping those totals from block 4: the chart is graded on
+    the slide, and the totals were not owed figures.
+  - Sweep 4, stump-paragraph terms in the agreement, the policy and the dictionary (register, incident, system,
+    report, exposure, experience, agreement, payroll, centre, family): the field's and the organisation's own nouns; no
+    sentence names the experience basis, a delay or a window share. The two sentences carrying the decisive facts are
+    trust agreement 5.2 (the Program open to every entity's patients from its Transition Date) and the dictionary's
+    `matter_type` (the Program's history); neither names a cost, a rate or the experience to price on.
+  - Sweep 6, entity names beside numbers in the agreement (Schedules A and B: dates, policy numbers, job codes), the
+    staffing plan (FTE), the cost centre directory, the premium history and Quillan's runs (claim amounts): none ranks
+    the entities on the contribution; the plan is the exposure the funding policy names.
   - Sweep 9, 2027 dates in the premium history: the end dates of the 2026 policy terms.
-- Stage 4 (2026-10-12), the reader (Sonnet, medium) and the judge (isolated, medium) on one pack:
-  - Judge: DETERMINISTIC, APPROVE ($784,000; Gate G `forecasting`; the three rules pass), every committed figure
-    recomputed from the files. Its one sensitivity, a one-day shift in the day count ($790,000 or $778,000), is closed
-    in SF19: the filed dates give the golden, and each one-day variant contradicts a sentence the PDFs carry (asserted).
-    Report: `determinism_check_report.md`.
-  - Reader Q5: its literal execution of funding policy 3.1 to 3.4 dropped 3.1's "first made against the Trust during
-    the Plan Year"; no filed sentence prescribes a cost per FTE-year on the Plan Year's exposure (Literal reader), so
-    nothing was reworded, and the judge executed the same sentences word for word to $784,000.
-  - The reader's other readings: chained claim numbers add (SF20; the later claim number alone files $782,000).
-    "Open" is OPEN or REOPENED, and OPEN alone gives the same Ask A answer, with no incident holding two open claim
-    numbers (asserted). The latest loss run is the one valued 30 September 2026: Quillan's file of 9 October is revision
-    1 of the June valuation and says it replaces the run of 8 July (S3 on it: Tolliver Falls 3, Alderwick 5, asserted).
-    Ask B counts each position's FTE once (the dictionary's `fte` is the position's, and every September position
-    carries one REG line, one FTE and one cost centre, asserted) on its cost centre's entity, since `home_entity` is
-    the record at the extract, 2 October 2026, after the 1 October moves (S4, asserted off on all four). What is
-    covered is trust agreement 1.5 and Schedule B (SF5; the fellows through the crosswalk, HB2).
-  - Fix pass, in the generator: `checks.py` gains SF19, SF20 and the three ask convergences (130 of 130); the
-    write-up's step 5 and the golden workbook's Notes line state the day count as the date rule (no figure moved);
-    `build.py` cuts `target.zip` from the final build and compares it between the two builds. No document under
-    `target/` changed (all 16 files byte-identical to the judged pack), so the reader does not re-run; `freeze.py
-    check --mode determinism` PASS.
+- Stage 4 (the reader and the judge) is the main session's; round 1's reports (`leak_check_report.md` from this run,
+  `determinism_check_report.md` from round 1) stay as evidence until it runs.
 
 ## Pre-ship check
 
-1. Domain: the task is a professional liability actuary's funding of a claims-made trust's first year, the expected
-   cost of the Claims first made inside each entity's opening window from the system's own report lags and their
-   costs; with another field's nouns the retroactive dates, report lags, early resolution settlements and specialty
-   classes have nothing to attach to.
+At stage 3 of round 2; the main session re-reads it against the reader's and the judge's reports.
+
+1. Domain: the task is a professional liability actuary's funding of a claims-made trust's first year: the expected
+   cost of the Claims first made inside each entity's opening window, on the experience generated under the claims
+   handling the trust will run; with another field's nouns the retroactive dates, report lags, early-offer requests and
+   specialty classes have nothing to attach to.
 2. Real work, nothing planted: a claims register at defendant grain with escalations opening new claim numbers and
-   contracted defendants unpriced, a legacy payroll by employee, month and cost centre across the July 2020 job codes
-   with dual appointments and Brennick's affiliation, HCM pay lines at earning-code grain stamped with the home entity
-   at the extract, two carriers' loss runs in their own layouts with a June run re-issued after September's, and a
-   notice log keyed by notice number; each from the system's or the carriers' own systems, none on the decisive step.
-3. The flip is a method choice: each entity's window costed claim by claim, every past Claim's trended cost counted for
-   the share of the window's exposure from which it would be made by 31 December 2027; every rule in the pack (the
-   Claim, Covered Clinicians, the experience, trend, exposure by day, pooling, rounding) is read the same on both paths.
-4. The analyst test holds: a year of the experience's cost per FTE-year on each entity's FTE-years files $4,854,000,
-   the window's expected count at the average cost $1,784,000, a full year's in-year share prorated $1,075,000; only
-   the window costed claim by claim files $784,000.
-5. One defensible answer: the agreement and the policy file the estimand (Claims first made in 2027 from incidents on
-   or after each Transition Date, at 2027 cost level, from the 2017 to 2024 experience as recorded), every fork row is
-   asserted (SF1 to SF20, the day count on the filed dates in SF19), and the judge returned DETERMINISTIC, APPROVE.
-6. No decoy: no file states a 2027 cost, a claims-made or step factor or a report-lag table; the premium history prices
-   occurrence cover with the carriers' loads and is a declared distractor; no memo, draft or voice argues for a figure.
+   contracted defendants unpriced; a legacy payroll by employee, month and cost centre across the July 2016 job codes,
+   with dual appointments until the HCM go-live and Brennick's affiliation; HCM pay lines at earning-code grain with the
+   home entity on the record as it ran; two carriers' loss runs carrying the entities' own claims, a June run re-issued
+   after September's; a notice log keyed by notice number whose incident record a later claim no longer shares; each
+   from the system's or the carriers' own systems, none on the decisive step, each neutral to the call (R2).
+3. The flip is a method choice: which experience generates the 2027 window's Claims; every rule in the pack is read
+   the same on both paths.
+4. The analyst test holds: the window costed claim by claim on the System's pooled experience files $312,000, the
+   Program's full-year relativity $273,000, the classic routes $3,617,000, $966,000 and $466,000; only the window on the
+   Program hospitals' experience files $587,000.
+5. One defensible answer: the agreement and the policy file the estimand (Claims first made in 2027 under the Trust
+   Agreement from incidents on or after each Transition Date, at 2027 cost level, one rate per class for every entity),
+   every fork row is asserted (SF1 to SF31), every rival is at least 6 per cent off and the grid at least 20.7 per cent.
+6. No decoy: no file states a 2027 cost, a claims-made or step factor, a lag table or a Program effect; the premium
+   history is a declared distractor; no memo, draft or voice argues for a figure or a basis.
 7. Nothing hidden and recovered: no certified figure pins the method; the window's cost is estimated on the record.
-8. A new lesson: in a claims-made cover's opening window only the claims made soon after their incident can count, and
-   here they are the cheap ones, so a mature year's rate, and even the window's count at the average cost, overstate
-   the first year several times (`guard.py heart` WARN on `repeat.gate_g` only, nearest driver task121 v3 at 0.07).
+8. A new lesson: an early-offer program changes what a first claims-made year catches, so the window is priced on the
+   program's own experience, where the pooled experience halves it and the program's full-development saving points
+   the wrong way (`guard.py heart` WARN on the slot's own round 1 driver only).
 
 ## Retired
 
@@ -671,3 +744,55 @@ Architecture 4 build (2026-10-12):
   task127 v2 (drawn 2026-10-12, a lower number, so earlier in draw order) carried the same event and `guard.py check`
   blocked on `ban.forcing_event`; the card now names the trustees' November meeting (`vote_or_meeting`), which is what
   forces the call, and the check is back to WARN. No later-drawn build carries that event.
+
+Round 2 (2026-10-14, after the 10/10 audit):
+
+- Round 1 shipped design: weak per the 10/10 audit, because its decisive step, costing each entity's claims-made
+  window claim by claim and day by day, was visible and near a reflex (the prompt says "first made", both claim dates
+  are columns, and funding policy 3.3 and 3.4 narrowed the method to the one computation they allowed, so the judge
+  expected strong models at $0.78 to $0.79 million); the advertised default ($4,854,000) sat close to a misread of
+  "first made"; both asks were cracked unaided (RMN references beside a notice log; the home entity narrated as of the
+  extract); and 22 entity and class figures rode on the call. Its golden construction is round 2's default path.
+- Deepening the window itself (developing the open reserves, censoring the latest years, a fitted lag curve):
+  rejected, each is an estimator choice the policy must either file, which makes it rule application, or leave open,
+  which makes it a fork.
+- Pooling across settings as the decisive step (each entity or each carrier on its own experience): rejected, a
+  setting pool with no process to force it is a fork; kept as rivals the policy's one rate per class (3.4) rules out.
+- Left truncation at Brennick's 2019 affiliation: rejected, it repeats task133 round 2's device (taken-over units
+  counted only from the takeover).
+- Seasonality of incidents and receipts inside the window: rejected, a calendar effect on a first window is small
+  beside the window's own truncation, and building one in only to carry the call would be a plant.
+- The Program's diversion of direct claims as the separating fact (the Program hospitals' requests added to every
+  entity's own demands and suits): rejected as the decisive step, inside a first window the direct claims are few and
+  the route split moves the call 0.94 to 1.10 times across eight seeds; the route is no column, and split at the window's
+  reach (364 days) the experience converges on the golden. The diversion stays as the world's texture (a quarter).
+- Seed 3671 (round 1's) under the Program regime: H1 (each Program hospital on its own experience) at 1.049 and the
+  Program basis's step factor at 0.905; the seed search was re-run.
+- Seeds 1120 and 1292, the first round 2 candidates: 1120's payments sat $26 and $31 from rounding edges; 1292's
+  golden moved 2 per cent once reserves were capped at the policy limit (an open Program claim was reserved above
+  $2,000,000 at 2027 level), leaving its payments on edges. 1783 kept.
+- Reserves above the policy limit: adjusters reserve within the limits, so the generator caps an open claim's
+  indemnity reserve at the limit at the incident's cost level; it moves only claims reserved above it.
+- The July 2020 job-code remap: moved to July 2016, before the experience years. With the 2020 set alone (a natural
+  mishandling) the pooled window landed near the golden (0.55 times 1.78), and Layer 1 mess must leave the call where
+  it was (`dataset-generation` 7.1, R2); both code sets now converge (SF11).
+- Ask B with the cross-entity dual appointments running into 2026: rejected, a clinician holding positions at two
+  entities under one home entity shows any careful reader that the home entity is not the position's entity, which
+  hands over the movers; the second positions close at the HCM go-live into intercompany agreements.
+- Ask A's primary as two-hop escalation chains (request, demand, suit) with the carrier keeping the request's number:
+  rejected, incident grouping clears it; the one-hop chain stays a hazard.
+- Ask A's duplicated incident records without twins: rejected, the carriers' claim and suit files under notice
+  numbers whose incident record holds no claim stood out; the entities' own claims (general liability), noticed and
+  carried on the same runs, are now their benign twins, with at least one open at every entity.
+- Ask A's duplicated incident records only from incidents outside the experience years: dropped, Brennick had no open
+  matter to carry one on most seeds; the device row is the notice log's (the register keeps every claim number of the
+  matter on one incident number, asserted), so the matters can sit in any year without a device row in the call's
+  population.
+- Grading each entity's expected cost (round 1's components): rejected, the by-carrier rival lands Tolliver Falls' and
+  Alderwick's figures exactly; the components are the expected number of Claims and the payments, which move only
+  with the contribution. The chart's yearly totals were dropped from the write-up after `leak.py` matched two of them
+  to the agreement's $250,000 and $4,000,000.
+- Card at round 2: G14 as the decisive generator blocked against task124 inside the batch, G6 against task125 among
+  the last three, and G12 would have blocked task133 v2's own checks; G13 kept. The forcing event `vote_or_meeting`
+  now repeats task128 v3 (re-rooted since, a lower number drawn the same day); `cutover_or_migration` (the trust goes
+  live on 1 January 2027). Elizabeth Nelson, never named in the pack, dropped (task128 v3 drew the first name).

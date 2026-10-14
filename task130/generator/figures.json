@@ -1,121 +1,94 @@
 {
  "call": {
-  "contribution": "784,000",
-  "contribution_usd": "$784,000"
+  "contribution": "587,000",
+  "contribution_usd": "$587,000",
+  "expected_claims": "10.2"
  },
  "entities": {
   "TFH": {
    "name": "Tolliver Falls Hospital",
    "transition": "1 January 2027",
-   "fte_years_2027": "100.2",
-   "expected_claims": "2.9",
-   "expected_cost": "227,000"
+   "fte_years_2027": "113.4",
+   "share_pct": "18.9",
+   "pays": "111,000",
+   "expected_claims": "3.0",
+   "expected_cost": "183,000"
   },
   "AMC": {
    "name": "Alderwick Medical Center",
    "transition": "1 April 2027",
-   "fte_years_2027": "175.6",
-   "expected_claims": "4.6",
-   "expected_cost": "336,000"
+   "fte_years_2027": "205.5",
+   "share_pct": "34.3",
+   "pays": "201,000",
+   "expected_claims": "4.5",
+   "expected_cost": "250,000"
   },
   "CMG": {
    "name": "Corvane Medical Group",
    "transition": "1 July 2027",
-   "fte_years_2027": "264.9",
-   "expected_claims": "3.9",
-   "expected_cost": "214,000"
+   "fte_years_2027": "265.4",
+   "share_pct": "44.2",
+   "pays": "260,000",
+   "expected_claims": "2.7",
+   "expected_cost": "149,000"
   },
   "BCH": {
    "name": "Brennick Community Hospital",
    "transition": "1 October 2027",
-   "fte_years_2027": "15.1",
+   "fte_years_2027": "15.6",
+   "share_pct": "2.6",
+   "pays": "15,000",
    "expected_claims": "0.1",
-   "expected_cost": "7,000"
-  }
- },
- "classes": {
-  "OB": {
-   "name": "Obstetrics",
-   "fte_years_2027": "30.7",
-   "expected_claims": "2.0",
-   "expected_cost": "148,000"
-  },
-  "SUR": {
-   "name": "Surgery",
-   "fte_years_2027": "61.7",
-   "expected_claims": "2.3",
-   "expected_cost": "291,000"
-  },
-  "EM": {
-   "name": "Emergency Medicine",
-   "fte_years_2027": "43.7",
-   "expected_claims": "2.0",
-   "expected_cost": "68,000"
-  },
-  "AN": {
-   "name": "Anesthesiology",
-   "fte_years_2027": "26.7",
-   "expected_claims": "0.5",
-   "expected_cost": "65,000"
-  },
-  "HM": {
-   "name": "Hospital and Medical Specialties",
-   "fte_years_2027": "114.9",
-   "expected_claims": "2.3",
-   "expected_cost": "124,000"
-  },
-  "PC": {
-   "name": "Primary Care",
-   "fte_years_2027": "108.4",
-   "expected_claims": "1.4",
-   "expected_cost": "26,000"
-  },
-  "APC": {
-   "name": "Advanced Practice",
-   "fte_years_2027": "169.6",
-   "expected_claims": "1.0",
-   "expected_cost": "62,000"
+   "expected_cost": "4,000"
   }
  },
  "totals": {
-  "expected_claims": "11.5",
-  "expected_cost": "784,000",
-  "fte_years_2027": "555.8"
+  "fte_years_2027": "599.9",
+  "pays": "587,000",
+  "expected_cost": "587,000"
  },
  "experience": {
-  "claims": 328,
-  "claims_made_within_364_days": 225,
-  "fte_years": "6,188.6",
+  "claims_all": 192,
+  "claims_program": 123,
+  "claims_other": 69,
+  "fte_years_all": "6,553.3",
+  "fte_years_program": "2,655.2",
+  "fte_years_other": "3,898.2",
+  "within_120_program": 62,
+  "within_120_other": 0,
+  "early_days": 120,
+  "within_364_program": 101,
+  "within_364_other": 15,
   "trend_pct": "5.0"
  },
  "by_month": {
   "TFH": [
-   "0",
-   "3,000",
-   "9,000",
-   "13,000",
-   "16,000",
+   "1,000",
+   "2,000",
+   "5,000",
+   "7,000",
+   "10,000",
+   "15,000",
+   "19,000",
    "20,000",
-   "23,000",
-   "24,000",
-   "25,000",
+   "20,000",
+   "26,000",
    "28,000",
-   "31,000",
-   "36,000"
+   "30,000"
   ],
   "AMC": [
    "0",
    "0",
    "0",
-   "0",
-   "10,000",
-   "24,000",
-   "33,000",
-   "41,000",
-   "50,000",
-   "58,000",
-   "57,000",
-   "63,000"
+   "1,000",
+   "8,000",
+   "14,000",
+   "19,000",
+   "27,000",
+   "37,000",
+   "45,000",
+   "47,000",
+   "50,000"
   ],
   "CMG": [
    "0",
@@ -124,12 +97,12 @@
    "0",
    "0",
    "0",
-   "1,000",
-   "10,000",
-   "29,000",
-   "44,000",
-   "53,000",
-   "76,000"
+   "2,000",
+   "11,000",
+   "20,000",
+   "26,000",
+   "33,000",
+   "58,000"
   ],
   "BCH": [
    "0",
@@ -142,8 +115,8 @@
    "0",
    "0",
    "0",
-   "2,000",
-   "5,000"
+   "1,000",
+   "3,000"
   ]
  },
  "ask_a": {
@@ -151,48 +124,64 @@
    "any_missing": "no",
    "count": 0,
    "reserves": "0",
-   "open_claims": 10,
+   "open_claims": 2,
    "carrier": "Quillan Mutual Professional Liability Company"
   },
   "AMC": {
    "any_missing": "yes",
-   "count": 2,
-   "reserves": "178,000",
-   "open_claims": 27,
+   "count": 1,
+   "reserves": "7,000",
+   "open_claims": 12,
    "carrier": "Quillan Mutual Professional Liability Company"
   },
   "CMG": {
    "any_missing": "yes",
    "count": 1,
-   "reserves": "6,000",
-   "open_claims": 30,
+   "reserves": "20,000",
+   "open_claims": 21,
    "carrier": "Stoneleigh Casualty Insurance Company"
   },
   "BCH": {
    "any_missing": "no",
    "count": 0,
    "reserves": "0",
-   "open_claims": 4,
+   "open_claims": 1,
    "carrier": "Stoneleigh Casualty Insurance Company"
   }
  },
  "ask_b": {
-  "TFH": "96.3",
-  "AMC": "234.3",
-  "CMG": "522.0",
-  "BCH": "54.9"
+  "TFH": "106.9",
+  "AMC": "271.5",
+  "CMG": "525.0",
+  "BCH": "53.9"
  },
- "ask_b_total": "907.5",
- "rungs": {
-  "golden": "784,000",
-  "R0": "4,854,000",
-  "R0m": "5,013,000",
-  "R1a": "3,221,000",
-  "R1": "1,784,000",
-  "R2": "1,075,000",
-  "R2b": "1,100,000",
-  "L0": "378,000",
-  "step30": "1,504,000",
-  "base2020": "1,314,000"
+ "ask_b_total": "957.3",
+ "rivals": {
+  "golden": "587,000",
+  "pooled": "312,000",
+  "pooled_R0": "3,617,000",
+  "program_R0": "2,853,000",
+  "pooled_R0m": "4,738,000",
+  "program_R0m": "3,143,000",
+  "pooled_R1a": "2,369,000",
+  "program_R1a": "2,394,000",
+  "pooled_R1": "966,000",
+  "program_R1": "1,221,000",
+  "pooled_R2": "466,000",
+  "program_R2": "859,000",
+  "pooled_R2b": "432,000",
+  "program_R2b": "955,000",
+  "pooled_L0": "161,000",
+  "program_L0": "283,000",
+  "pooled_step30": "1,422,000",
+  "program_step30": "943,000",
+  "by_entity": "470,000",
+  "by_carrier": "433,000",
+  "h1_own_program_hospitals": "623,000",
+  "h3_program_for_stoneleigh_only": "405,000",
+  "program_claims_over_all_fte": "305,000",
+  "pooled_window_by_full_year_relativity": "273,000",
+  "stoneleigh_for_all": "14,000",
+  "h4_quick_program_slow_pooled": "589,000"
  }
 }

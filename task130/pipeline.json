@@ -1,43 +1,97 @@
 {
   "task": "task130",
   "owner": "sathya8571",
-  "status": "SHIPPED",
+  "status": "BUILD",
   "domain": "actuarial-science-insurance",
   "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-12",
-  "stump": "A competent solver collapses the register's defendant rows to one claim per incident, values and trends every claim from 2017, takes the system's annual claims cost per clinician FTE-year by specialty class, applies it to each entity's FTE-years in the trust and files a contribution of $4,854,000; the step that lands it there is costing the trust's opening months as a mature year, when only the claims made by 31 December 2027 from incidents after each entity's transition count, and those are mostly the quick, cheap requests: the golden is $784,000.",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-14",
+  "round": 2,
+  "stump": "A strong solver collapses the register to one Claim per incident, trends it, and costs each entity's claims-made window day by day, every experience Claim counted where its own delay brings it in by 31 December 2027, on the System's pooled 2017 to 2024 experience by specialty class, and files $312,000; the step that lands it there is pricing the window on experience in which the medical group's and Brennick's patients had no Early Resolution Program, when from each Transition Date every entity's patients can come through it (trust agreement 5.2) and the window's cost is almost all the quick requests that only Tolliver Falls' and Alderwick's experience shows: costed on those hospitals' experience the contribution is $587,000.",
   "architecture": 4,
   "loops": 0,
   "precut": {
     "exit": 0,
-    "date": "2026-10-12"
+    "date": "2026-10-14",
+    "checks": "49 checks, 0 FAIL, 0 WARN"
   },
+  "three_rules": "## Three rules carries all 13 labelled lines; checks.py R1 to R3c green (R3a: the pooled window on the clean truth files $312,000; R3b: only the experience moved to the Program hospitals files $587,000)",
   "leak": {
-    "leak_py": "REVIEW 2026-10-12 on the final cut (--asof 2026-10-12), no LEAK: sweep 3 (clause numbers 1.4 and 2.3; the call's words in the documents that define the trust), sweep 4 (the field's and the organisation's own nouns), sweep 6 (no file ranks the entities or classes on the contribution), sweep 9 (the 2026 policy terms' 2027 end dates), answered in the design note's build record",
-    "reader": "stage 4 (Sonnet, medium): Q1 to Q4 none; Q5 executed funding policy 3.1 to 3.4 without 3.1's first-made limit (about $4.85M, the default), answered in one design-note line (no filed sentence prescribes a cost per FTE-year on the Plan Year's exposure, nothing reworded; the judge executed the same sentences to $784,000); its readings (chained claim numbers, OPEN against REOPENED, the latest loss run, Ask B's pay codes and home_entity) answered and asserted (SF20 and three ask convergences); REVIEW lines harmless. No document changed after, so no re-read"
+    "leak_py": "REVIEW 2026-10-14 (--asof 2026-10-12), no LEAK after the write-up dropped the chart's yearly totals ($250,000 and $4,000 matched the agreement's settlement consent and aggregate limit): sweep 3 (the call's words in the documents defining the trust), sweep 4 (the field's nouns; the two decisive facts sit in 5.2 and the dictionary's matter_type, neither naming a cost or basis), sweep 6 (no file ranks the entities on the contribution), sweep 9 (the 2026 policy terms' 2027 end dates), answered in the design note's build record",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-12 at ship (repeat.gate_g against task125, answered at the draw); nearest text 0.08 (task102 card stump)",
-    "nearest": "guard.py heart: nearest driver task121 v3 at 0.07",
-    "surface": "2026-10-12 at ship: one promoted pair, task102, on the card axes only (answered by the card's differentiation line); people Derek White, Lori Williams, Walter Butler, all on the card"
+    "heart": "WARN 2026-10-14 (driver.near 0.22 against the slot's own round 1 driver in lineage)",
+    "nearest": "guard.py heart: nearest text 0.05 (task102 card stump; task60 v4 driver)",
+    "surface": "2026-10-14: 0 promoted pairs (nearest task73 at 0.100, not promoted); people Derek White, Norma Hinton, Walter Butler, all on the card",
+    "validate": "169 cards, 0 invalid"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (one pass, no re-judge); its optional note, a one-day shift in the day count ($790,000 or $778,000), closed in SF19 (the filed dates give the golden, each one-day variant contradicts a sentence the PDFs carry, asserted); write-up step 5 and the golden Notes line worded as the date rule; no figure moved",
-    "report": "task130/determinism_check_report.md",
-    "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
+    "verdict": "",
+    "disposition": "",
+    "report": "",
+    "note": "round 2 not yet judged; task130/determinism_check_report.md is round 1's"
   },
   "returned": [],
-  "resume": "shipped; next event is the author's portal result",
+  "round2": {
+    "date": "2026-10-14",
+    "trigger": "10/10 audit COMPLIANT_WEAK (round2-brief): the decisive step (cost-weighted report-lag truncation per day) visible and near a reflex, the funding policy narrowing the method to it, the advertised default ($4,854,000) close to a misread of 'first made', both asks cracked unaided, 22 entity and class figures riding on the call",
+    "redesign": "the window costed day by day on the pooled experience (round 1's golden) is the default path ($312,000); the decisive step is the claims process the window runs under: the Early Resolution Program served only Tolliver Falls and Alderwick (dictionary matter_type) and is open to every entity's patients from its Transition Date (trust agreement 5.2), so the window is costed on those hospitals' class experience, one rate for every entity (funding policy 3.4): $587,000, 10.2 Claims; policy 3.4 and 3.5 reworded (rated alike; values as recorded), the job-code remap moved to July 2016 (neutral), dual appointments closed at the HCM go-live; components the expected Claims and the four payments; Ask A's primary a noticed matter registered under a new incident record (twins: the entities' own claims on the runs), Ask B's the home entity read without a date",
+    "seed": 1783,
+    "call": "$587,000",
+    "default": "$312,000",
+    "rivals": "relativity $273,000; by entity $470,000; by carrier $433,000; H1 $623,000; R0 $3,617,000; R1 $966,000; R2 $466,000; grid nearest 20.7 per cent",
+    "asks": "A: TFH none, AMC 1 ($7,000), CMG 1 ($20,000), BCH none (careful path 1, 2, 2, 1); B: 106.9, 271.5, 525.0, 53.9 (home entity 105.7, 269.9, 527.2, 54.5)",
+    "pair_ceiling": "31.8 (39.5 if the strongest also cracks Ask B's home entity)"
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "shipped": "2026-10-12",
+      "stump": "A competent solver collapses the register's defendant rows to one claim per incident, values and trends every claim from 2017, takes the system's annual claims cost per clinician FTE-year by specialty class, applies it to each entity's FTE-years in the trust and files a contribution of $4,854,000; the step that lands it there is costing the trust's opening months as a mature year, when only the claims made by 31 December 2027 from incidents after each entity's transition count, and those are mostly the quick, cheap requests: the golden is $784,000.",
+      "judge": {
+        "verdict": "DETERMINISTIC",
+        "disposition": "APPROVE (one pass, no re-judge); its optional note, a one-day shift in the day count ($790,000 or $778,000), closed in SF19 (the filed dates give the golden, each one-day variant contradicts a sentence the PDFs carry, asserted); write-up step 5 and the golden Notes line worded as the date rule; no figure moved",
+        "report": "task130/determinism_check_report.md",
+        "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+        "gate_h": "domain pass, layers pass, decisive_step analytical"
+      },
+      "leak": {
+        "leak_py": "REVIEW 2026-10-12 on the final cut (--asof 2026-10-12), no LEAK: sweep 3 (clause numbers 1.4 and 2.3; the call's words in the documents that define the trust), sweep 4 (the field's and the organisation's own nouns), sweep 6 (no file ranks the entities or classes on the contribution), sweep 9 (the 2026 policy terms' 2027 end dates), answered in the design note's build record",
+        "reader": "stage 4 (Sonnet, medium): Q1 to Q4 none; Q5 executed funding policy 3.1 to 3.4 without 3.1's first-made limit (about $4.85M, the default), answered in one design-note line (no filed sentence prescribes a cost per FTE-year on the Plan Year's exposure, nothing reworded; the judge executed the same sentences to $784,000); its readings (chained claim numbers, OPEN against REOPENED, the latest loss run, Ask B's pay codes and home_entity) answered and asserted (SF20 and three ask convergences); REVIEW lines harmless. No document changed after, so no re-read"
+      },
+      "duplicate_check": {
+        "heart": "WARN 2026-10-12 at ship (repeat.gate_g against task125, answered at the draw); nearest text 0.08 (task102 card stump)",
+        "nearest": "guard.py heart: nearest driver task121 v3 at 0.07",
+        "surface": "2026-10-12 at ship: one promoted pair, task102, on the card axes only (answered by the card's differentiation line); people Derek White, Lori Williams, Walter Butler, all on the card"
+      },
+      "build": {
+        "claims_seed": 3671,
+        "checks": "130 of 130 (SF1 to SF20, the ask stops and convergences, house fixes H5, H9, H16)",
+        "verify": "match (own code path from the bundle: call, default, 4 entities, 7 classes, ask A, ask B)",
+        "rebuild": "byte-identical (target/, golden/, metadata.json, figures.json, target.zip)",
+        "figures_check": "exit 0 (49 figures)",
+        "call": "$784,000",
+        "default": "$4,854,000",
+        "date": "2026-10-12",
+        "precut": "exit 0 (38 checks)",
+        "freeze": "freeze.py check --mode determinism PASS (snapshot taken before the stage 4 fix pass)",
+        "house_fixes": "pass (H1 golden container clean, H4 and H7 zip members equal the pack, H8 citations resolve)",
+        "final_rebuild": "target/ byte-identical to the cut the reader and the judge read (16 files); golden workbook changed in its Notes line only; pptx, metadata.json and figures.json unchanged",
+        "target_zip": "16 members, 1405167 bytes, sha256 b1240baa6b1ca96e44209eca9a9a56d22d0199672338b11006ef0793ef4787c2"
+      },
+      "target_zip_sha256": "b1240baa6b1ca96e44209eca9a9a56d22d0199672338b11006ef0793ef4787c2"
+    }
+  ],
+  "resume": "stage 4: reader and judge",
   "approved": null,
-  "delivered": "2026-10-12",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
+  "wave": "wave 1 (re-root: retired), the author's fourth root",
+  "delivered": null,
   "lineage": [
     {
       "architecture": "v1",
@@ -88,21 +142,21 @@
       "target_zip_sha256": "149049c424d397052c999f5d42997215d15c93fd0bd2397ed12703c0eba9af7a"
     }
   ],
-  "wave": "wave 1 (re-root: retired), the author's fourth root",
   "build": {
-    "claims_seed": 3671,
-    "checks": "130 of 130 (SF1 to SF20, the ask stops and convergences, house fixes H5, H9, H16)",
-    "verify": "match (own code path from the bundle: call, default, 4 entities, 7 classes, ask A, ask B)",
+    "claims_seed": 1783,
+    "checks": "182 of 182 (R1 to R3c, every rival and audit route, the 32-cell grid, SF1 to SF31, the asks' stops and devices, the separation line, H5, H9, H16)",
+    "verify": "match (own code path from the bundle, the Program's hospitals read from the dictionary: call, count, payments, default, ask A, ask B)",
     "rebuild": "byte-identical (target/, golden/, metadata.json, figures.json, target.zip)",
-    "figures_check": "exit 0 (49 figures)",
-    "call": "$784,000",
-    "default": "$4,854,000",
-    "date": "2026-10-12",
-    "precut": "exit 0 (38 checks)",
-    "freeze": "freeze.py check --mode determinism PASS (snapshot taken before the stage 4 fix pass)",
-    "house_fixes": "pass (H1 golden container clean, H4 and H7 zip members equal the pack, H8 citations resolve)",
-    "final_rebuild": "target/ byte-identical to the cut the reader and the judge read (16 files); golden workbook changed in its Notes line only; pptx, metadata.json and figures.json unchanged",
-    "target_zip": "16 members, 1405167 bytes, sha256 b1240baa6b1ca96e44209eca9a9a56d22d0199672338b11006ef0793ef4787c2"
-  },
-  "target_zip_sha256": "b1240baa6b1ca96e44209eca9a9a56d22d0199672338b11006ef0793ef4787c2"
+    "figures_check": "exit 0 (40 figures)",
+    "voice_check": "PASS (890 characters)",
+    "call": "$587,000",
+    "default": "$312,000",
+    "date": "2026-10-14",
+    "target_zip": {
+      "sha256": "c09e63d39c386d6adbb84a16426e1486e84833d2a876f98a313541b97e72ebcf",
+      "bytes": 1460925,
+      "members": 16
+    },
+    "gates": "precut 49 checks 0 FAIL 0 WARN; leak.py --asof 2026-10-12 REVIEW, no LEAK; guard validate 169 cards 0 invalid; heart WARN exit 0 (own round 1 lineage driver 0.22); surface exit 0, personas Derek White, Norma Hinton, Walter Butler"
+  }
 }

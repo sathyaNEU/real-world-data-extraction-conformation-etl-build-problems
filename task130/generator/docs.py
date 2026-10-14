@@ -128,10 +128,12 @@ def write_agreement(path):
     for no, text in [
         ("5.1", "The System's Risk Management and Insurance department administers Claims for the Trust, keeps the "
                 "claims register and reports to the Trustees each quarter."),
-        ("5.2", "Each Participating Entity continues to report to its expiring carrier every Claim and every "
+        ("5.2", "The System's Early Resolution Program is open to the patients of every Participating Entity from its "
+                "Transition Date."),
+        ("5.3", "Each Participating Entity continues to report to its expiring carrier every Claim and every "
                 "precautionary notice of a Medical Incident that occurred before its Transition Date, for as long as "
                 "that carrier's policy responds."),
-        ("5.3", "Defence counsel is appointed from the panel the Trustees approve. No settlement above $250,000 is made "
+        ("5.4", "Defence counsel is appointed from the panel the Trustees approve. No settlement above $250,000 is made "
                 "without the consent of the Trustees' claims committee."),
     ]:
         s.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (no, text), CLAUSE))
@@ -147,7 +149,7 @@ def write_agreement(path):
     s.append(Paragraph("Each expiring policy is the last term of the entity's annual occurrence programme with its "
                        "carrier and is not renewed. A policy period ends at 12:01 a.m. on its last date.", NOTE))
     s.append(Paragraph("Schedule B. Covered jobs and specialty classes", H2))
-    rows = [["Specialty class", "Job code to June 2020", "Job code from July 2020", "Job title"]]
+    rows = [["Specialty class", "Job code to June 2016", "Job code from July 2016", "Job title"]]
     for cls in K.CLASSES:
         for j in K.JOBS:
             if j[4] == cls:
@@ -182,7 +184,7 @@ def write_policy(path):
     for no, text in [
         ("3.1", "For each Plan Year the Participating Entities together contribute the expected cost, at the Plan "
                 "Year's cost level, of the Claims that will be first made against the Trust during the Plan Year "
-                "(the Contribution)."),
+                "under the Trust Agreement (the Contribution)."),
         ("3.2", "The expected cost is estimated from the System's own claims experience: the Claims arising from "
                 "Medical Incidents from 1 January 2017 to 31 December 2024 against Covered Clinicians, each valued at "
                 "the indemnity and defence paid and the case reserves recorded against its Covered Clinicians in the "
@@ -193,12 +195,13 @@ def write_policy(path):
         ("3.3", "The Plan Year's exposure is the Covered Clinician FTE in the System's staffing plan for the Plan "
                 "Year, for each Participating Entity, specialty class and month from the entity's Transition Date. "
                 "Each month's FTE counts as one twelfth of an FTE-year, earned evenly over the days of the month."),
-        ("3.4", "The experience is used as recorded and taken as a whole within each specialty class: it is not "
-                "divided by year, month or entity, no development or tail factor is applied to it, and no "
-                "distribution is fitted to it."),
-        ("3.5", "The first Plan Year's Contribution carries no provision for the Trust's administrative expenses, "
+        ("3.4", "The Trust rates its Participating Entities alike: a Covered Clinician's exposure in a specialty "
+                "class carries the same expected cost whichever Participating Entity employs the clinician."),
+        ("3.5", "Each Claim in the experience is taken at its value as recorded in the extract: no development, tail "
+                "or credibility factor is applied and no distribution is fitted."),
+        ("3.6", "The first Plan Year's Contribution carries no provision for the Trust's administrative expenses, "
                 "investment income, excess insurance or a margin; the Trustees budget those separately."),
-        ("3.6", "Figures reported to the Trustees are rounded once, from unrounded amounts; a total is the rounded sum "
+        ("3.7", "Figures reported to the Trustees are rounded once, from unrounded amounts; a total is the rounded sum "
                 "of its unrounded parts."),
     ]:
         s.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (no, text), CLAUSE))
@@ -270,8 +273,8 @@ def write_plan(path, plan):
 
 
 QM_HEADER = ["Policy Number", "Policy Period", "Named Insured", "Claim Number", "Insured Reference", "Date of Loss",
-             "Date Reported", "Claim Type", "Status", "Indemnity Paid", "Expense Paid", "Indemnity Reserve",
-             "Expense Reserve", "Total Incurred"]
+             "Date Reported", "Claim Made", "Claim Type", "Status", "Indemnity Paid", "Expense Paid",
+             "Indemnity Reserve", "Expense Reserve", "Total Incurred"]
 
 
 def write_qm_run(path, recs, nums, valued, run_date, revision=None):
@@ -296,25 +299,25 @@ def write_qm_run(path, recs, nums, valued, run_date, revision=None):
         for x in block:
             a, b = x["period"]
             vals = [x["policy"], "%s-%s" % (a.strftime("%m/%d/%Y"), b.strftime("%m/%d/%Y")), names[e],
-                    nums[x["incident_no"]], x["ref"], x["date_of_loss"], x["created"], x["ctype"], x["status"],
-                    x["paid_ind"], x["paid_exp"], x["res_ind"], x["res_exp"],
+                    nums[x["incident_no"]], x["ref"], x["date_of_loss"], x["created"], x["claim_rptd"], x["ctype"],
+                    x["status"], x["paid_ind"], x["paid_exp"], x["res_ind"], x["res_exp"],
                     round(x["paid_ind"] + x["paid_exp"] + x["res_ind"] + x["res_exp"], 2)]
             for c, v in enumerate(vals, start=1):
                 cell = ws.cell(row=r, column=c, value=v)
-                if c in (6, 7):
+                if c in (6, 7, 8):
                     cell.number_format = "mm/dd/yyyy"
-                if c >= 10:
+                if c >= 11:
                     cell.number_format = "#,##0.00"
             for k in range(5):
-                tot[k] += vals[9 + k]
+                tot[k] += vals[10 + k]
             r += 1
         ws.cell(row=r, column=3, value="Total %s (%d claims and incidents)" % (names[e], len(block))).font = BOLD
         for k in range(5):
-            cell = ws.cell(row=r, column=10 + k, value=round(tot[k], 2))
+            cell = ws.cell(row=r, column=11 + k, value=round(tot[k], 2))
             cell.number_format = "#,##0.00"
             cell.font = BOLD
         r += 2
-    for c, w in zip(range(1, 15), [17, 23, 24, 13, 17, 12, 13, 11, 10, 15, 14, 16, 15, 15]):
+    for c, w in zip(range(1, 16), [17, 23, 24, 13, 17, 12, 13, 12, 11, 10, 15, 14, 16, 15, 15]):
         ws.column_dimensions[get_column_letter(c)].width = w
     ws.freeze_panes = "A8"
     wb.save(path)
@@ -393,7 +396,9 @@ def write_dictionary(path, counts):
         ("entity_at_incident", "Entity where the care was given."),
         ("incident_date", "Date of the care the claim arises from."),
         ("claim_made_date", "Date risk management received the claim under this claim number."),
-        ("matter_type", "Claim (a demand or request for compensation) or Suit (a civil proceeding served)."),
+        ("matter_type", "Claim (a demand for compensation, or a request through the Early Resolution Program, which "
+                        "risk management has run for the patients of Tolliver Falls Hospital and Alderwick Medical "
+                        "Center since September 2015) or Suit (a civil proceeding served)."),
         ("allegation", "Principal allegation."),
         ("status", "OPEN, CLOSED or REOPENED at the valuation date. A reopened claim keeps its earlier closing date."),
         ("closed_date", "Date the claim number was last closed."),
@@ -415,7 +420,7 @@ def write_dictionary(path, counts):
     for f, d in [
         ("pay_month", "Month paid, YYYY-MM."),
         ("employee_id", "Payroll employee id."),
-        ("job_code, job_title", "Job held in the month. Codes changed with the job architecture project on 1 July 2020."),
+        ("job_code, job_title", "Job held in the month. Codes changed with the job architecture project on 1 July 2016."),
         ("cost_centre", "Company and department, ccc-dddd."),
         ("entity_code", "Entity of the cost centre."),
         ("fte", "Paid FTE for the month on this cost centre."),
@@ -437,14 +442,14 @@ def write_dictionary(path, counts):
         ("fte", "FTE of the position."),
         ("job_profile_code, job_profile", "HCM job profile of the position; legacy job codes through the crosswalk."),
         ("cost_centre", "Cost centre the line is charged to."),
-        ("home_entity", "The worker's home entity on their HCM record at the time of the extract."),
+        ("home_entity", "The worker's home entity on their HCM record."),
         ("pay_group", "PHYS, APC or GME."),
     ]:
         a("- `%s`: %s" % (f, d))
     a("")
     a("## %s and %s" % (K.CROSSWALK, K.DIRECTORY))
     a("")
-    a("The HCM job profile crosswalk maps each HCM job profile to the legacy job code (2020 code set) it replaced. The "
+    a("The HCM job profile crosswalk maps each HCM job profile to the legacy job code (July 2016 code set) it replaced. The "
       "cost centre directory gives each cost centre's company, entity and department with the dates it is effective.")
     a("")
     a("## %s" % K.NOTICES)
@@ -457,7 +462,8 @@ def write_dictionary(path, counts):
     a("")
     a("%s, %s and %s are the carriers' files as received, in their own layouts and field names. Quillan Mutual insures "
       "Tolliver Falls Hospital and Alderwick Medical Center; Stoneleigh Casualty insures Corvane Medical Group and "
-      "Brennick Community Hospital." % (K.QM_SEP, K.QM_JUN, K.SC_SEP))
+      "Brennick Community Hospital. A run lists every file the carrier holds under the entity's policies, on its "
+      "employed clinicians and on the entity itself." % (K.QM_SEP, K.QM_JUN, K.SC_SEP))
     a("")
     a("## %s" % K.SAFETY)
     a("")
