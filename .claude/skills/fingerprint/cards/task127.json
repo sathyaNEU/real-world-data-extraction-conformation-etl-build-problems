@@ -1,148 +1,150 @@
 {
-  "task": "task127",
-  "architecture": "v3 (author-requested full refresh: a motor bodily injury reserve at the 2026 year end, settlement slowed after a claims-platform cutover)",
-  "drawn": "2026-10-14",
-  "slot_note": "re-root of task127 at the author's request on 2026-10-14 (new domain, objective and data while v2 was pending review); the move off Opportunity Sizing is the author's instruction against build-pipeline's same-objective rule",
-  "domain": "actuarial-science-insurance",
-  "subdomain": "reserving-development-triangles",
-  "client_domain": "actuarial-science-insurance",
-  "niche": "a Midwestern mutual auto insurer setting its private passenger bodily injury loss reserve at the 2026 year-end close on paid losses and claimant counts, two and a half years after a claims-platform cutover slowed the settlement of the represented claims that carry most of the dollars",
-  "objective": "forecasting",
-  "shape": "02",
-  "decision_type": "quantity_figure",
-  "answer_unit": "currency",
-  "answer": "Carry about $330 million for unpaid motor bodily injury losses at 31 December 2026, about $35 million more than the $295 million booked (figures fixed at ship).",
-  "answer_source": "task127/generator/figures.json (call, carried, booked, strengthening, unpaid by accident year), asserted in task127/generator/checks.py",
-  "gap": [
-    "time"
+ "task": "task127",
+ "architecture": "v3 (author-requested full refresh: a motor bodily injury reserve at the 2026 year end, settlement slowed after a claims-platform cutover)",
+ "drawn": "2026-10-14",
+ "slot_note": "re-root of task127 at the author's request on 2026-10-14 (new domain, objective and data while v2 was pending review); the move off Opportunity Sizing is the author's instruction against build-pipeline's same-objective rule",
+ "domain": "actuarial-science-insurance",
+ "subdomain": "reserving-development-triangles",
+ "client_domain": "actuarial-science-insurance",
+ "niche": "a Midwestern mutual auto insurer setting its private passenger bodily injury loss reserve at the 2026 year-end close on paid losses and claimant counts, two and a half years after a claims-platform cutover slowed the settlement of the represented claims that carry most of the dollars",
+ "objective": "forecasting",
+ "shape": "14",
+ "decision_type": "quantity_figure",
+ "answer_unit": "currency",
+ "answer": "Carry $400 million for unpaid bodily injury losses at 31 December 2026, $55.4 million more than the $344.6 million finance has booked.",
+ "answer_source": "task127/generator/figures.json (call, carried_musd, booked_musd, gap_musd, indicated_musd), asserted in task127/generator/checks.py, recomputed by task127/generator/verify.py",
+ "gap": [
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G16",
+  "G14"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "none",
+ "stump_strategy": "forecast_method_backtest",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "register",
+ "stakeholder_role": "the chief financial officer, who books the motor bodily injury reserve at the year-end close on the reserving indication",
+ "role_family": "finance_controller",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "legacy_bi_payments_2017-2024.csv",
+  "rows": 38260,
+  "entity": "one loss payment, void or reissue on a bodily injury claimant feature in the legacy claims system",
+  "grain": "payment transaction",
+  "source": "synthetic"
+ },
+ "forum": "executive_team",
+ "forcing_event": "period_close",
+ "org_family": "financial_institution",
+ "world": {
+  "geography": "United States (Iowa, Nebraska and South Dakota)",
+  "currency": "USD",
+  "org_type": "a mutual property and casualty insurer writing private passenger auto in three states",
+  "invented_names": [
+   "Ninebark Mutual Insurance Company"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G16",
-    "G14"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "forecast_method_backtest",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "register",
-  "stakeholder_role": "the chief financial officer, who books the motor bodily injury reserve at the year-end close on the reserving indication",
-  "role_family": "finance_controller",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "legacy_bi_payments_2017-2024.csv",
-    "rows": 0,
-    "entity": "one loss payment, void or reissue on a bodily injury claimant feature in the legacy claims system",
-    "grain": "payment transaction",
-    "source": "synthetic"
+  "people": [
+   "Brian Robbins",
+   "Ricky Evans",
+   "Kyle Bean"
+  ]
+ },
+ "deliverables": [
+  "bi_reserve_ye2026.md",
+  "bi_claim_counts_ye2026.csv",
+  "bi_unpaid_ye2026.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-much",
+ "driver": "The decisive quantity is a forward total projected from a history of cumulative progress by age in which the units carrying most of the amount began resolving more slowly partway through the record; the share of the amount settled tracks the share of units resolved rather than age, so the history has to be restated at the resolution shares the latest observations show before its age-to-age ratios are carried forward, and carrying them unrestated, or taking them from the latest periods alone, understates the total.",
+ "driver_concrete": "Motor bodily injury unpaid at 31 December 2026 is projected from a quarterly paid triangle in which represented claims have settled at three quarters of their former pace since the claims platform went live in July 2024; paid development tracks the share of claimant features closed, so the triangle's history is restated at the latest diagonal's closed shares (Berquist and Sherman) before volume-weighted factors are taken, giving $399.8 million and a carried $400 million against the $344.6 million booked, where the unrestated paid chain ladder gives $316.8 million and a release.",
+ "stump": "A competent solver stitches both claims systems' payments into a quarterly paid triangle, develops it with volume-weighted factors over all accident quarters to $316.8 million and would carry $325 million, a $19.6 million release against the $344.6 million booked; the step that lands it there is carrying the history's development factors onto accident quarters whose represented claims have settled more slowly since the July 2024 platform cutover, and only restating the history at the latest diagonal's closed shares gives $399.8 million and a carried $400 million, a strengthening of $55.4 million.",
+ "stump_class": "analytical",
+ "analyst_test": "An analyst who reads every field and rule correctly stitches the two systems' payments into a quarterly paid triangle, develops it with volume-weighted factors over all accident quarters (the latest diagonals' factors land lower still) and would carry $325 million, a $19.6 million release against the $344.6 million booked; the triangle and every filed rule are right, and the figure is wrong because the factors carry the pre-cutover settlement pace onto quarters that are settling more slowly (executed on the clean truth in checks.py).",
+ "domain_test": "Unpaid loss from a development triangle is the reserving actuary's core estimate, and restating paid development at the current disposal rate (Berquist and Sherman) is the field's own response when claims settle at a changed speed; with a utility's or a hospital's nouns there is no claim that closes, no closure ratio to restate paid development at and no booked reserve to strengthen, and the task stops reading the same.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task46": "task46's forward burden comes from a failure rate stationary in cumulative service exposure rebuilt per unit from a movement log; here nothing fails: a whole triangle's history is re-clocked at the share of claims closed, restated at the latest diagonal's closure ratios after a slowdown inside the record",
+  "task127": "v1 queued rebate slots behind a crew's meter-set capacity and v2 valued discharge packages by the care wait's excess over a concurrent equipment wait; here the decisive move is the field's settlement-rate restatement of paid development",
+  "task138": "task138 starts each unit's forward drawdown from the store the unit actually holds, rebuilt from its own last replenishment; here no unit's state is rebuilt: the whole history's age-to-age development is restated at the closure ratios the latest diagonal shows, because settlement slowed partway through the record",
+  "task446": "task446 backs a moved base rate out of a screen's flag share through error rates that carry across years; here nothing is screened and no base rate moves: the amount's development is re-clocked from age to the share of claims closed",
+  "task125": "task125 separates a fieldwork artifact in a rotating panel whose filtered intakes carry a difference for a fixed run; here no intake is filtered and no panel rotates: a claims history's paid development is restated at the share of claims closed after a settlement slowdown"
+ },
+ "lineage": [
+  {
+   "domain": "nonprofit-grant-making",
+   "subdomain": "giving-strategy-program-funding",
+   "objective": "opportunity-sizing-decision",
+   "shape": "05",
+   "decision_type": "allocation_to_total",
+   "answer_unit": "count",
+   "gap": [
+    "time",
+    "objective",
+    "population"
+   ],
+   "pattern": [
+    "none",
+    "C",
+    "E"
+   ],
+   "generators": [
+    "G7",
+    "G8",
+    "G14",
+    "G16"
+   ],
+   "gate_g": "binding_constraint",
+   "driver": "The decisive quantity is how many of the period's placeable units a fixed team can finish before the period closes, because each unit counts only once that team performs one last step for it, the team's spare weekly capacity is visible only as the ceiling it held through an earlier unrelated surge, and the decision's own volume, bunched by its filed calendar into weeks no closed period approached, queues the later units past the close; the closed record's lag and an annual capacity check both pass, so the placeable count overstates the in-period total wherever the team is small and the units are many.",
+   "architecture": "v1 (heat-pump rebate slots across six co-ops, the crew meter-set queue)",
+   "drawn": "2026-10-10",
+   "fate": "spent 2026-10-10: the determinism judge returned SEND_BACK (binding_constraint, analytical_non_defect): the participation terms' 'an install proceeds only where the feeder has that capacity remaining' read literally fills capped feeders in date order, which moves Uplands from 170 to 200 slots, a competing defensible answer on the main call"
   },
-  "forum": "executive_team",
-  "forcing_event": "period_close",
-  "org_family": "financial_institution",
-  "world": {
-    "geography": "United States (Iowa, Nebraska and South Dakota)",
-    "currency": "USD",
-    "org_type": "a mutual property and casualty insurer writing private passenger auto in three states",
-    "invented_names": [
-      "Ninebark Mutual Insurance Company"
-    ],
-    "people": [
-      "Brian Robbins",
-      "Ricky Evans",
-      "Kyle Bean"
-    ]
-  },
-  "deliverables": [
-    "bi_reserve_ye2026.md",
-    "bi_claim_counts_ye2026.csv",
-    "bi_unpaid_ye2026.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "The decisive quantity is a forward total projected from a history of cumulative progress by age in which the units carrying most of the amount began resolving more slowly partway through the record; the share of the amount settled tracks the share of units resolved rather than age, so the history has to be restated at the resolution shares the latest observations show before its age-to-age ratios are carried forward, and carrying them unrestated, or taking them from the latest periods alone, understates the total.",
-  "driver_concrete": "Motor bodily injury unpaid at 31 December 2026 is projected from a quarterly paid triangle in which represented claims have settled more slowly since the July 2024 claims-platform cutover; paid development tracks the share of claimant features closed, so the triangle's history is restated at the latest diagonal's closure ratios (Berquist and Sherman) before volume-weighted factors are taken, giving about $330 million against the $295 million booked, where the unrestated paid chain ladder gives about $270 million and a release.",
-  "stump": "A competent solver stitches both claims systems' payments into a quarterly paid triangle, develops it with volume-weighted factors over all accident quarters and carries about $270 million, releasing about $25 million of the $295 million booked; the step that lands it there is carrying the history's development factors onto accident quarters whose represented claims have settled more slowly since the July 2024 platform cutover, so recent quarters have paid less of their ultimate at each age than the history did, and only restating the history at the latest diagonal's closure ratios gives about $330 million, a strengthening of about $35 million.",
-  "stump_class": "analytical",
-  "analyst_test": "An analyst who reads every field and rule correctly stitches the two systems' payments into a quarterly paid triangle, develops it with volume-weighted factors over all accident quarters (the latest diagonals' factors land lower still) and carries about $270 million, a release against the $295 million booked; the triangle and every filed rule are right, and the figure is wrong because the factors carry the pre-cutover settlement pace onto quarters that are settling more slowly.",
-  "domain_test": "Unpaid loss from a development triangle is the reserving actuary's core estimate, and restating paid development at the current disposal rate (Berquist and Sherman) is the field's own response when claims settle at a changed speed; with a utility's or a hospital's nouns there is no claim that closes, no closure ratio to restate paid development at and no booked reserve to strengthen, and the task stops reading the same.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task46": "task46's forward burden comes from a failure rate stationary in cumulative service exposure rebuilt per unit from a movement log; here nothing fails: a whole triangle's history is re-clocked at the share of claims closed, restated at the latest diagonal's closure ratios after a slowdown inside the record",
-    "task127": "v1 queued rebate slots behind a crew's meter-set capacity and v2 valued discharge packages by the care wait's excess over a concurrent equipment wait; here the decisive move is the field's settlement-rate restatement of paid development",
-    "task138": "task138 starts each unit's forward drawdown from the store the unit actually holds, rebuilt from its own last replenishment; here no unit's state is rebuilt: the whole history's age-to-age development is restated at the closure ratios the latest diagonal shows, because settlement slowed partway through the record",
-    "task446": "task446 backs a moved base rate out of a screen's flag share through error rates that carry across years; here nothing is screened and no base rate moves: the amount's development is re-clocked from age to the share of claims closed"
-  },
-  "lineage": [
-    {
-      "domain": "nonprofit-grant-making",
-      "subdomain": "giving-strategy-program-funding",
-      "objective": "opportunity-sizing-decision",
-      "shape": "05",
-      "decision_type": "allocation_to_total",
-      "answer_unit": "count",
-      "gap": [
-        "time",
-        "objective",
-        "population"
-      ],
-      "pattern": [
-        "none",
-        "C",
-        "E"
-      ],
-      "generators": [
-        "G7",
-        "G8",
-        "G14",
-        "G16"
-      ],
-      "gate_g": "binding_constraint",
-      "driver": "The decisive quantity is how many of the period's placeable units a fixed team can finish before the period closes, because each unit counts only once that team performs one last step for it, the team's spare weekly capacity is visible only as the ceiling it held through an earlier unrelated surge, and the decision's own volume, bunched by its filed calendar into weeks no closed period approached, queues the later units past the close; the closed record's lag and an annual capacity check both pass, so the placeable count overstates the in-period total wherever the team is small and the units are many.",
-      "architecture": "v1 (heat-pump rebate slots across six co-ops, the crew meter-set queue)",
-      "drawn": "2026-10-10",
-      "fate": "spent 2026-10-10: the determinism judge returned SEND_BACK (binding_constraint, analytical_non_defect): the participation terms' 'an install proceeds only where the feeder has that capacity remaining' read literally fills capped feeders in date order, which moves Uplands from 170 to 200 slots, a competing defensible answer on the main call"
-    },
-    {
-      "domain": "healthcare-delivery-health-economics",
-      "subdomain": "patient-flow-beds-workforce-optimization",
-      "objective": "opportunity-sizing-decision",
-      "shape": "05",
-      "decision_type": "allocation_to_total",
-      "answer_unit": "count",
-      "gap": [
-        "population",
-        "objective"
-      ],
-      "pattern": [
-        "C"
-      ],
-      "generators": [
-        "G3",
-        "G11",
-        "G8"
-      ],
-      "gate_g": "decomposition_attribution",
-      "driver": "The decisive quantity is the part of each unit's recorded wait that the offered intervention removes, because the recorded wait fuses the step the intervention replaces with a concurrent step it leaves in place, so only the replaced step's excess over the concurrent one, built by joining separate operational logs, counts; ranking units by the recorded wait, or by the replaced step measured from the same start, credits the units whose concurrent step is slowest.",
-      "stump_strategy": "decomposition_attribution",
-      "architecture": "v2 (re-root after SEND_BACK: winter discharge-to-assess packages across five hospitals)",
-      "drawn": "2026-10-12",
-      "fate": "replaced 2026-10-14 at the author's request (a full refresh of data, domain and objective, tougher) while pending review: shipped 2026-10-12 (59aaaba) with the judge's APPROVE; a second layer tried on 2026-10-14 (patients the home-care wait itself sent to a bed or a care home) drew SEND_BACK and was reverted (c17bf12)"
-    }
-  ],
-  "notes": "v3 drawn 2026-10-14 by sathay3012 at the author's request for a full refresh (new data, domain and objective, tougher). No seed: the world, decision and quantity are drawn fresh; the pitfall comes from the claims data's own settlement process.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:paid-development-restated-at-the-current-closure-ratios",
-  "layer1": [
-    "two claims systems for one book: the legacy system's payment ledger and closed-feature archive (US dates, dollar amounts, legacy claim and feature numbers) and the platform's payments and feature register (UTC timestamps, amounts in cents, platform ids), joined through the platform's legacy reference",
-    "the July 2024 conversion: features open at the cutover were closed in the legacy archive with a conversion code and live on in the platform register",
-    "extracts run in January 2027, after the valuation date, so the register's status fields stand at the run date",
-    "voided and reissued checks in both payment ledgers",
-    "the general ledger booking the platform's nightly feed by posting date on Central time",
-    "features opened in error and closed as duplicates on the platform"
-  ],
-  "registered": "2026-10-14T13:31:45Z"
+  {
+   "domain": "healthcare-delivery-health-economics",
+   "subdomain": "patient-flow-beds-workforce-optimization",
+   "objective": "opportunity-sizing-decision",
+   "shape": "05",
+   "decision_type": "allocation_to_total",
+   "answer_unit": "count",
+   "gap": [
+    "population",
+    "objective"
+   ],
+   "pattern": [
+    "C"
+   ],
+   "generators": [
+    "G3",
+    "G11",
+    "G8"
+   ],
+   "gate_g": "decomposition_attribution",
+   "driver": "The decisive quantity is the part of each unit's recorded wait that the offered intervention removes, because the recorded wait fuses the step the intervention replaces with a concurrent step it leaves in place, so only the replaced step's excess over the concurrent one, built by joining separate operational logs, counts; ranking units by the recorded wait, or by the replaced step measured from the same start, credits the units whose concurrent step is slowest.",
+   "stump_strategy": "decomposition_attribution",
+   "architecture": "v2 (re-root after SEND_BACK: winter discharge-to-assess packages across five hospitals)",
+   "drawn": "2026-10-12",
+   "fate": "replaced 2026-10-14 at the author's request (a full refresh of data, domain and objective, tougher) while pending review: shipped 2026-10-12 (59aaaba) with the judge's APPROVE; a second layer tried on 2026-10-14 (patients the home-care wait itself sent to a bed or a care home) drew SEND_BACK and was reverted (c17bf12)"
+  }
+ ],
+ "notes": "v3 drawn 2026-10-14 by sathay3012 at the author's request for a full refresh (new data, domain and objective, tougher). No seed: the world, decision and quantity are drawn fresh; the pitfall comes from the claims data's own settlement process. Shape moved from 02 to 14 at stage 3 when the accident-year unpaid left the graded set (it differs by 2 to 3 per cent across the restatement's variants in the latest years).",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:paid-development-restated-at-the-current-closure-ratios",
+ "layer1": [
+  "two claims systems for one book: the legacy system's payment ledger and closed-feature archive (US dates, dollar amounts, legacy claim and feature numbers) and the platform's payments and feature register (UTC timestamps, amounts in cents, platform ids), joined through the platform's legacy reference",
+  "the July 2024 conversion: features open at the cutover were closed in the legacy archive with a conversion code and live on in the platform register",
+  "extracts run in January 2027, after the valuation date, so the register's status fields stand at the run date",
+  "voided and reissued checks in both payment ledgers",
+  "the general ledger booking the platform's nightly feed by posting date on Central time",
+  "features opened in error and closed as duplicates on the platform",
+  "Finance's reposts of feed lines the ledger rejected, and a monthly Treasury wire journal booked on bank value dates"
+ ],
+ "registered": "2026-10-14T13:31:45Z"
 }

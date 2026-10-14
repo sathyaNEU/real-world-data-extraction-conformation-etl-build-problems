@@ -1,30 +1,30 @@
 {
  "task": "task127",
  "owner": "sathay3012",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "actuarial-science-insurance",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design (architecture 3)",
+ "stage": 4,
+ "stage_name": "check (architecture 3), paused while the judge runs",
  "updated": "2026-10-14",
- "stump": "The default path develops the stitched quarterly paid triangle with all-quarter volume-weighted factors and carries $270 million, releasing $25 million of the $295 million booked; the step that lands it there is carrying the history's development factors onto accident quarters whose represented claims have settled more slowly since the July 2024 platform cutover, so the recent quarters have paid less of their ultimate at every age than the history did, and only restating the history at the closure ratios the latest diagonal shows gives $330 million, a $35 million strengthening.",
+ "stump": "The default path develops the stitched quarterly paid triangle with all-quarter volume-weighted factors to $316.8 million and would carry $325 million, a release of $19.6 million against the $344.6 million booked; the step that lands it there is carrying the history's development factors onto accident quarters whose represented claims have settled more slowly since the platform went live in July 2024, so the recent quarters have paid less of their ultimate at every age than the history did, and only restating the history at the closed shares the latest diagonal shows gives $399.8 million and a carried $400 million, a strengthening of $55.4 million.",
  "architecture": 3,
  "loops": 0,
  "author_override": "2026-10-14: the author asked for a full refresh of data, domain and objective, tougher than architecture 2; build-pipeline re-roots in the same objective, so the move from Opportunity Sizing to Forecasting is the author's instruction, recorded here and in the design note's Draw",
  "precut": {
   "exit": 0,
   "date": "2026-10-14",
-  "note": "49 checks, 0 FAIL; the paper figures are the prototype's and are re-run after the generator"
+  "note": "49 checks, 0 FAIL, 0 WARN on the built figures"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK): the basis's development and method vocabulary; the close calendar's 8 January 2027 close date",
+  "reader": "pass 1 (sonnet, medium): questions 1 to 4 none (2.1 defines the quantity, not the method; the register's 344,600 is the booked comparison); question 6 an analytical choice (how the paid development is projected), nothing planted or announced; the three REVIEW lines harmless; realism notes answered by filed facts, no fix"
  },
  "duplicate_check": {
-  "heart": "",
-  "surface": "",
-  "nearest": "",
-  "clone_check": ""
+  "heart": "WARN (repeat.question_form against task453 v2; same_puzzle_older and same_driver_older differentiated), 2026-10-14",
+  "surface": "3 promoted on card axes only (task125, task138, task446), differentiated on the card; adjudicated clone check requested by the author",
+  "nearest": "task133 v1 lineage 0.08",
+  "clone_check": "CLEAN, Track A 0, Track B 0: pre-flight on Sonnet at the author's request (auditor and three adjudicators, sonnet, medium); task125, task446 and task138 promoted on card axes and each adjudicated clean_shares_components (task127/clone_check_report.md)"
  },
  "judge": {
   "verdict": "",
@@ -32,7 +32,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 3: write the generator (world, records, pack, documents, analysis, checks, verify, golden), replace the prototype figures in the note with figures.json's, re-run precut",
+ "resume": "stage 4: the determinism judge's isolated thread is running (brief /tmp/determinism-check-task127-989732/judge_brief.md, verdict to verdict.md there, then the determinism-judge agent writes task127/determinism_check_report.md); reader and Sonnet clone check done; on APPROVE ship (status SHIPPED, ledger row, board), on FIX_NOW fix in the generator and re-judge once",
  "approved": null,
  "delivered": null,
  "portal": null,
