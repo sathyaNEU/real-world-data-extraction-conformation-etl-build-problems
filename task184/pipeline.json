@@ -1,37 +1,41 @@
 {
  "task": "task184",
  "owner": "oviya13ya",
- "status": "PAUSED",
- "domain": "supply-chain-logistics",
+ "status": "DRAWING",
+ "domain": "criminology-justice",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-14",
- "stump": "A competent solver runs the planning standard on each airport's 2027 design days and summer roster pattern with the unit's three lanes added and posts the unit to Cullinvale (697,500 passengers moved within the standard); the step that lands it there is taking the roster pattern as the lanes open on both arms, when the checkpoints' own lane counts show seven of the eight opening fewer lanes at their banks every day of the summer, Eskerford two fewer, so the posting moves the most at Eskerford (342,200).",
- "architecture": 1,
- "loops": 1,
+ "stump": "to be written at stage 2, once the ladder's figures are cut",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-14"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK)",
-  "reader": "nothing quoted for question 1; question 5 lands on the default; question 6 names rule application"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "BLOCK on ban.pattern and ban.role against task140, a build drawn after task184 shipped; neither axis moved in the hardening",
-  "nearest": "0.07 task114"
+  "heart": "",
+  "nearest": "0.08 task121 v3, task180 v4 (check verdict WARN)"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK",
-  "report": "task184/determinism_check_report.md",
-  "date": "2026-10-14",
-  "gate_g": "surface_read_rejection with surface_read_dependency",
-  "gate_h": "decisive step read as planted (unstated regularities in the lane feed)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
- "returned": [],
- "resume": "The hardening is built and every free gate is green (11,719 checks, independent verifier, two byte-identical builds, figures_check 50, precut 49 with one WARN answered, leak.py REVIEW), but judge pass 3 returned SEND_BACK: the forward lanes are not filed, so the counterfactual arm is inferred from 2026, and the difficulty is a refusal of an official artifact (Gate G surface_read_rejection). The architecture is spent. Re-root at stage 1 in the same number and objective with a Layer 2 family that does not rest on a plan the records contradict, or retire the number; do not ship this build.",
+ "returned": [
+  {
+   "date": "2026-10-14",
+   "portal": "judge SEND_BACK at the hardening (not a portal return)",
+   "repair": "re-root",
+   "commit": "3329b92"
+  }
+ ],
+ "resume": "Architecture 2 drawn and registered (Criminology & Justice, aoristic hotspot slate). Next: stage 2, the ladder on paper (rungs 0 to 3, the readability screen, the fork table, the closure table and the asks), then prompt.txt, then precut.py.",
  "approved": null,
  "delivered": "2026-10-12",
  "portal": null,

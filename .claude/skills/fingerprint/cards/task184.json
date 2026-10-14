@@ -1,19 +1,19 @@
 {
   "task": "task184",
-  "architecture": "v1",
-  "drawn": "2026-10-12",
-  "slot_note": "oviya13ya's Anomaly Detection lane, wave 2; seed AD07 (world, decision and quantity kept; the seed's idle-position cap is F3's dead per-candidate constraint, so the pitfall is re-found)",
-  "domain": "supply-chain-logistics",
-  "subdomain": "other",
-  "niche": "posting a national screening agency's one mobile screening unit to one of eight flagged airports for the summer, judged by the passengers it moves within the 20-minute queue standard, when host airports stand down their own lanes while the unit is there",
+  "architecture": "v2",
+  "drawn": "2026-10-14",
+  "slot_note": "re-root after the v1 architecture was sent back at Gate C and Gate G; same number and objective",
+  "domain": "criminology-justice",
+  "subdomain": "crime-incidence-hotspot-analysis",
+  "niche": "night-time economy hotspot patrol slate timed off offences whose occurrence time is a range",
   "objective": "anomaly-detection",
-  "shape": "13",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "Post the mobile screening unit to Eskerford from 15 June to 31 August 2027: it moves 342,200 passengers within the 20-minute standard, against 272,600 at Halloran Bay, and 13 per cent is the smallest whole per cent shortfall in Eskerford's forecast passengers at which another posting would move more.",
-  "answer_source": "task184/submission.md, Final Recommendation; generator/figures.json",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "objective",
+    "population",
     "time"
   ],
   "pattern": [
@@ -21,71 +21,92 @@
   ],
   "generators": [
     "G1",
-    "G3"
+    "G7"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "pilot_log",
-  "stump_strategy": "causal_design",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stakeholder_role": "head of screening operations at a national aviation security agency, who posts the agency's one mobile screening team for the summer peak",
-  "role_family": "operations_director",
-  "scoring_unit": "units served",
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "community safety manager of a city partnership, who commissions the 2027 hotspot patrol slate",
+  "role_family": "programme_officer",
+  "scoring_unit": "per episode",
   "spine": {
-    "file": "checkpoint_lane_counts_20260615_20260831.csv",
-    "rows": 279417,
-    "entity": "one screening lane in one 15-minute interval at one central checkpoint, summer 2026, with people through its divest point (passenger lanes, the mobile unit's positions, two staff and aircrew lanes)",
-    "grain": "lane x 15-minute interval x day",
-    "source": "synthetic (fictional national screening agency's lane sensors)"
+    "file": "",
+    "rows": 0,
+    "entity": "one recorded offence",
+    "grain": "offence x occurrence window",
+    "source": "synthetic"
   },
-  "forum": "operations_desk",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "government_agency",
+  "forum": "committee_or_panel",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "local_government",
   "world": {
-    "geography": "fictional country (Kestland), North Atlantic island republic, English-speaking",
-    "currency": "EUR",
-    "org_type": "national aviation security agency that screens passengers at ten airports and keeps one mobile screening unit",
-    "invented_names": [
-      "Kestland",
-      "Kestland Aviation Security"
-    ],
+    "geography": "Kelverstoke, a fictional city in a UK-like island state",
+    "currency": "GBP",
+    "org_type": "city community safety partnership",
+    "invented_names": [],
     "people": [
-      "Ruairi Barnett",
-      "Alana Marnan",
-      "Fergus Rynne",
-      "Leon O'Boyle"
+      "Bethan Murray",
+      "Adrian Daniels",
+      "Rosie Kelly",
+      "Joshua Davies"
     ]
   },
-  "deliverables": [
-    "mobile_team_posting_summer_2027.pdf",
-    "mobile_team_effect_2027.xlsx"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "The decisive quantity is what a shared resource adds to a site, and both arms of that difference are taken from the site's own filed plan when the site's records show it never meets the plan: the untreated arm has to be read from what the site does on its own, and the shortfall its treated periods show against the plan has to be split into the part the resource caused and the part that was there anyway, so subtracting the whole shortfall while keeping the plan as the untreated arm, the obvious correction, ranks the sites wrongly too.",
-  "driver_concrete": "Seven of the eight checkpoints open fewer lanes at their banks than their roster pattern plans, every day of the summer and whether or not the mobile unit is there (Eskerford two fewer), and on posted days their duty managers stand down more on top; run on the 2027 design days, the planning standard's passengers moved within 20 minutes follow the lanes open, so the posting is worth most at Eskerford (342,200 against Halloran Bay's 272,600), while taking the pattern as the lanes open on both arms names Cullinvale (697,500) and taking it on the untreated arm alone names Halloran Bay (272,600 against Eskerford's 208,700).",
-  "stump": "A competent solver runs the planning standard on each airport's 2027 design days and summer roster pattern with the unit's three lanes added and posts the unit to Cullinvale (697,500 passengers moved within the standard); the step that lands it there is taking the roster pattern as the lanes that will be open on both arms of the comparison, when the checkpoints' own lane counts show seven of the eight opening fewer lanes at their banks than the pattern plans on every day of the summer, Eskerford two fewer, so the posting moves the most at Eskerford (342,200).",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the planning standard, the summer 2027 design days and roster patterns, the lane feed and the postings file correctly adds the unit's three lanes to each airport's roster pattern, runs the standard and posts the unit to Cullinvale, 697,500 passengers moved; wrong, because no checkpoint but Halloran Bay opens the lanes its pattern plans at its banks, on its own days or its posted days, so the pattern is the wrong record on both arms.",
-  "domain_test": "The deciding analysis is checkpoint capacity planning: a fluid queue on 15-minute arrivals against the lanes actually open, scored against the 20-minute wait standard, with both arms of the comparison, the lanes open without the posting and with it, built from the checkpoint's own lane counts rather than from its roster pattern; with another field's nouns there is no lane, no bank of departures, no queue carried from one 15 minutes to the next and no roster pattern the establishment staffs and the shift does not, so the untreated arm has nothing to be read off and the task stops making sense.",
-  "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "Seed AD07's own mechanism (the team opens lanes only where a lane position stands idle, a per-airport cap that re-places the pick) is the dead F3 shape (58 v3 and v4) and its pick-one shape 01 is banned against task181 and task183; the decision and quantity are kept, the pitfall is re-found as interference: the host's response to the posting. Shape 13 (each airport's posting a scenario, the flip the host release at peak that would move the call) because 07 and 01 are banned against task180 and task181. Forum redrawn at build from line_manager_or_team to operations_desk (Screening Operations posts the unit directly under the deployment policy) after task137, drawn the same day, took line_manager_or_team.",
-  "client_domain": "urban-regional-science",
+  "question_form": "which",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:counterfactual-arm-read-from-the-plan-not-the-record",
+  "layer2_pattern": "own:aoristic-weight-against-a-point-in-time",
   "layer1": [
-    "lane sensor counts at 15-minute grain with the mobile unit's positions and two staff and aircrew lanes per checkpoint in the same file",
-    "queue-camera times with gaps from camera resets",
-    "lane faults on the unit's off days, logged separately",
-    "the roster patterns beside the lanes actually open",
-    "a superseded 2023 edition of the planning standard beside the 2026 one",
-    "hotel invoices whose every line carries the stay's officer-nights, with a credit note",
-    "a claims export appended from monthly batches, one batch twice",
-    "travel claimed on the Sunday before a posting week",
-    "the 2027 roster pattern in the new rostering tool's layout, one column per checkpoint"
-  ]
+    "offence records whose occurrence time is a window (occurred_from and occurred_to) and whose report time is a third timestamp",
+    "two recording systems across the window, the force's legacy incident export to March 2026 and the new records management system after it, with different column names and time formats",
+    "the same offence present in both exports across the cut-over fortnight under two reference numbers",
+    "a licensed premises register whose addresses match the offence locations only through a gazetteer with two spellings per street",
+    "night-time economy footfall counts from four pedestrian sensors with gaps where a sensor was down",
+    "a patrol tasking plan in a spreadsheet, one sheet per quarter, hours written as text",
+    "offences recorded under a British Summer Time local clock across two clock changes",
+    "an offence class whose counts jump when a national counting rule changed, documented in the extract notes"
+  ],
+  "driver": "The decisive unit is not the event but the event-hour it could have happened in: a large share of the events are recorded with a window rather than a time, the windows are long exactly for the events the decision exists to catch, and the slate is set on the weight those windows put on each slot, so assigning each event to one hour, whichever hour, or keeping only the precisely timed events, each names a different slate.",
+  "driver_concrete": "A large share of Harbourgate's night-time offences are recorded with an occurrence window rather than a time, and the windows are longest for the overnight burglaries and vehicle offences the patrol is commissioned against, so the weight each four-hour slot carries is the sum of each offence's window overlap with it; taking the window's start, its midpoint, its report time, or only the precisely timed offences each names a different six-slot slate.",
+  "stump": "A competent solver reconciles the two recording systems, drops the duplicates, assigns each offence to the start of its occurrence window, sums by day and four-hour slot and commissions the six heaviest; the step that lands it there is treating a window as a time, when the windows of the overnight offences the patrol exists to catch run for hours, so the slate the weighted windows name is different.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every column correctly, reconciles the two recording systems, drops the cross-system duplicates and fixes the gazetteer takes each offence's occurrence time as the start of its window (or its report time), sums offences by day and four-hour slot, and commissions the six heaviest slots; wrong, because for the offences the patrol exists to catch the window is hours or days long and a point in it is not where the offence happened.",
+  "domain_test": "The deciding analysis is aoristic crime analysis: an offence known only to have happened between two times contributes a fraction of itself to every hour in its window, and the hotspot's timing is the sum of those fractions per day and four-hour slot; with another field's nouns there is no offence discovered on return and no last-seen and found pair, so there is no window to spread and the task stops making sense.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task180": "t180 distorts the hourly profile by the instruments' sensitivity following a daily cycle, so small events are missing from the record; here every event is in the record and it is the precision of its time that varies, so the distortion is in where the recorded events are placed, not in which are recorded."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent 2026-10-14: judge SEND_BACK at the hardening (Gate C, the forward lanes are not filed, so the counterfactual arm is inferred from last summer; Gate G surface_read_rejection, the difficulty is the refusal of an official artifact). Shipped 10-12 as the single-layer version and left off the portal's approved list.",
+      "driver": "The decisive quantity is what a shared resource adds to a site, and both arms of that difference are taken from the site's own filed plan when the site's records show it never meets the plan: the untreated arm has to be read from what the site does on its own, and the shortfall its treated periods show against the plan has to be split into the part the resource caused and the part that was there anyway, so subtracting the whole shortfall while keeping the plan as the untreated arm, the obvious correction, ranks the sites wrongly too.",
+      "stump": "A competent solver runs the planning standard on each airport's 2027 design days and summer roster pattern with the unit's three lanes added and posts the unit to Cullinvale (697,500 passengers moved within the standard); the step that lands it there is taking the roster pattern as the lanes that will be open on both arms of the comparison, when the checkpoints' own lane counts show seven of the eight opening fewer lanes at their banks than the pattern plans on every day of the summer, Eskerford two fewer, so the posting moves the most at Eskerford (342,200).",
+      "domain": "supply-chain-logistics",
+      "subdomain": "other",
+      "niche": "posting a national screening agency's one mobile screening unit to one of eight flagged airports for the summer, judged by the passengers it moves within the 20-minute queue standard, when host airports stand down their own lanes while the unit is there",
+      "shape": "13",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "objective",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G1",
+        "G3"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "causal_design",
+      "answer": "Post the mobile screening unit to Eskerford from 15 June to 31 August 2027: it moves 342,200 passengers within the 20-minute standard, against 272,600 at Halloran Bay, and 13 per cent is the smallest whole per cent shortfall in Eskerford's forecast passengers at which another posting would move more."
+    }
+  ],
+  "notes": "WARNs answered in DESIGN_NOTE.md ## Draw: strategy_risk (the unit of analysis is the offence-hour the weighted window puts on a slot, a quantity the solver builds, not a field it reads, and the analyst test files a wrong slate with every field read correctly); repeat and overuse of gate_g method_or_model_selection (the mechanism here is the weight a windowed event puts on each slot, not a model chosen from a menu); repeat.question_form which (the decision is a slate under a cap, so the leading question asks which slots).",
+  "registered": "2026-10-14T01:52:34Z"
 }
