@@ -257,6 +257,37 @@ def main():
        not set(F["folio"]) & set(r26s["folio"]))
     ok("separation: the call is unchanged with the occupancy file and building table removed",
        same_bins(E.golden(dict(pack, occ=None, buildings=None), P, F)["yearly"], g))
+    # ---------------------------------------------------------------- stage 4 readings (reader and judge)
+    ok("SF19 the five-year total rounded once from 13,005.4 and the rounded years summed then rounded both file 13,000",
+       gt == int(round(g.sum() / 500.0) * 500) == int(round(sum(gr) / 500.0) * 500) == 13000, (round(g.sum(), 1), sum(gr)))
+    fh = pack["fh"]
+    late = set(pack["sched"]["folio"]) - set(r26["folio"])
+    born = fh[fh["new_folio"].isin(late)]
+    ok("SF20 Ask B at the 2026 roll: methodology 5.3 dates it 31 October of the year before, and every Schedule A folio "
+       "missing from the 2026 roll was created after 31 October 2025",
+       "31 October of the year before the roll year" in meth and born["new_folio"].nunique() == len(late)
+       and (born["event_date"] > "2025-10-31").all() and E.ask_b(pack, "schedule") != Bg, (len(late), born["event_date"].min()))
+    anc_b = E.station_of_folio(pack)
+    on_b = r26[r26["folio"].isin(anc_b)]
+    ok("SF21 Ask B: no strata plan summary record on the order's lots (each strata lot its own folio within 800 m)",
+       not on_b["use"].str.contains("plan summary", case=False).any())
+    occ = pack["occ"]
+    pu = pack["permits"].set_index("permit_no")["dwelling_units_created"]
+    bl = pack["buildings"]
+    nb = bl.groupby("permit_no").size()
+    bu = bl.set_index(["permit_no", "building_no"])["dwelling_units"]
+    ob = np.array([bu[(a, c)] for a, c in zip(occ["permit_no"], occ["building_no"])])
+    dif = occ[occ["dwelling_units"].values != ob]
+    ok("SF22 Ask A: every occupancy record differing from its building's units carries the permit's total on a permit "
+       "of two or more buildings (%d rows), and each permit's building units sum to its total" % len(dif),
+       len(dif) > 0 and (dif["dwelling_units"].values == dif["permit_no"].map(pu).values).all()
+       and (dif["permit_no"].map(nb) > 1).all()
+       and (bl.groupby("permit_no")["dwelling_units"].sum() == pu.loc[nb.index]).all())
+    sb = on_b[on_b["use"] == "Strata residential"]
+    flag = (sb["unit_no"].fillna("") == "") & sb["floor"].isna()
+    ok("SF23 Ask B: a value cut anywhere between $95,000 and $310,000 marks exactly the stalls (no unit, no floor area)",
+       all(((sb["value"] < c) == flag).all() for c in (95000, 200000, 310000)))
+
     dists = [os.path.join(TARGET, B.FILES[k]) for k in B.DISTRACTORS]
     ok("distractors exist and the estimators never open them", all(os.path.exists(x) for x in dists)
        and not any(B.FILES[k] in open(os.path.join(HERE, "estimators.py")).read() for k in B.DISTRACTORS))

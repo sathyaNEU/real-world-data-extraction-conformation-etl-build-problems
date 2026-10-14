@@ -135,6 +135,11 @@ One row per term of the main ask and per convention the main computation needs. 
 | SF16 | floor area in permits | square feet to 2019, square metres from 2020 | one unit | never enters the call | the extract notes |
 | SF17 | the grain of the rate | by kind of lot | by kind and location (station areas, neighbourhoods, City Centre) | same call (12,960, asserted) | asserted |
 | SF18 | the zone in a permit year | the zone in force that year | the zone the roll records at its valuation date | same call (asserted: the only rezoning inside the record that changes feasibility is none) | asserted |
+| SF19 | the five-year total's rounding path (the stage 4 reader's reading) | 13,005.4 rounded once to the nearest 500 | the yearly figures rounded to 100 and summed (13,000), then rounded to 500 | same call (both 13,000, asserted); the prompt's sentence rounds the total, and the golden is the direct rounding | the prompt's rounding sentence |
+| SF20 | Ask B: "at the 2026 roll" (the reader's reading against methodology 5.3) | the 2026 roll's records, which stand as at its condition date, 31 October 2025 | homes at 31 December 2026, or Schedule A's later strata folios added (S4, 21,615) | moves Ask B only; every Schedule A folio missing from the 2026 roll was created after 31 October 2025 (asserted) | the prompt ("at the 2026 roll"), methodology 5.3, the extract notes' property records date |
+| SF21 | Ask B: strata records (the reader's reading of the extract notes' scope) | within 800 m each strata lot is its own folio; plan summary records only beyond | a plan summary record counted for its strata lots | same Ask B figures (no plan summary record sits on the order's lots, asserted) | the extract notes' SCOPE paragraph |
+| SF22 | Ask A: a building's completed homes (the judge's first soft spot) | the building's dwelling units in permit_buildings at its first occupancy | the occupancy record's dwelling_units (S2, 5,024) | moves Ask A (its designed device); on all 334 rows where the two differ the occupancy figure is the permit's total on a permit of two or more buildings, and each permit's building units sum to its total (asserted) | the permit buildings file and methodology 5.2 ("the building it is in") |
+| SF23 | Ask B: parking and storage strata lots (the judge's second soft spot) | a strata lot is a home when it carries a unit number or a floor area | every strata lot (S1, 23,505); missing floor area as parking (S2, 19,381) | moves Ask B (its designed device); the assessed values split the same lots with no lot between $95,000 and $310,000, and a value cut anywhere in that gap reproduces the golden grid exactly (asserted) | methodology 5.3 ("dwelling units"), the roll's assessed values |
 
 The stump is none of these rows: every row is read the same way by a careful reader, and the default path reads them
 all correctly. Capacity at a take-up against yield at the best-paying building is not a reading of any term: both are
@@ -323,6 +328,25 @@ Pair ceiling: 30.2 (the pair's average, (46.2 + 14.2) / 2, rerun from the genera
 - Sweep 4, stump terms (record, history, permit, methodology, release, projection) in the notes, index and methodology: generic words of the extracts and the methodology; none names the move; harmless.
 - Sweep 8, `ACTUAL_USE`: the assessment roll's own field name in its former layout; harmless.
 - Sweep 9, the folder index's dates in January 2027: the dates the branch received the extracts (the work is prepared on 15 January 2027 from records to 31 December 2026); harmless.
+- Stage 4 reader (architecture 3): Q1 to Q5 nothing quoted; Q6 an analytical choice, no decoy. Its three readings are SF19 to SF21 (asserted). The reference tables' homes-in-a-building recipe, which the reader called a mild helper, is the branch's standing unit-size table and states no use; harmless. The mixed file times (minor realism) are the extracts' own save times, each on or before 15 January 2027 (asserted); harmless.
+
+## Determinism
+
+The stage 4 judge returned DETERMINISTIC and APPROVE, with every figure reproduced (`determinism_check_report_arch3.md`). Its two soft spots are SF22 and SF23, both asserted. Both optional wording notes are declined because each would change a document under `target/` and remove a designed ask device: whether the occupancy record's units are per building or per permit (Ask A's device), and what a missing floor area means for a strata lot (Ask B's device).
+
+## Pre-ship check (client two-layer standard)
+
+1. Domain: urban land economics' forecast of a rezoning's housing yield. Lot by lot, the residual land value of the best-paying permitted building is set against the assessed value of the existing use, and feasible lots are rebuilt at the observed rate for their kind. Swap in another field's nouns (licences against a quota) and there is no residual value, no wood-frame to concrete cost step and no existing use to outbid, so the task empties.
+2. Layer 1: the 2019 roll layout change, zone codes renamed in 2020, acres among square feet, strata plans retiring and creating folios, permits in square feet then square metres, superseded, cancelled and expired permits, demolitions on two permits, interim and final occupancies, and Schedule A as at 30 June 2026 against the roll's October 2025 records. All of it is what a roll, a permit system and an order produce. None of it is planted and each item is asserted neutral to the call. The judge confirmed it is authentic and unplanted.
+3. The flipping step is analytical: feasibility at the best-paying building and the rate of rebuilding by kind. No field, code or stated rule decides it (Gate H analytical; reader Q6 analytical).
+4. Analyst test: after every field and rule is read correctly, zoned capacity at the corridors' take-up files 20,400 (4,078 a year) against 13,000. One pooled feasible rate files 20,700, an unconditional rate 4,100, and no depletion 14,000 (judge's sensitivity; `## Ladder`).
+5. The methodology files the estimand (2.1 to 2.6). The method stays open and the data force it: every counted rebuild in 2014 to 2026 falls on a feasible lot-year, the rate is flat by year, area and margin, and every reasonable variant lands in the golden's bins (SF10 to SF19).
+6. No decoy: no memo, forecast, capacity figure or realisation rate ships.
+7. No certified-figure pin: no shipped figure ties to any rung (`## Oracles`).
+8. The lesson is taught by no earlier build. The nearest driver is at 0.06, and `guard.py heart` returns WARN with no BLOCK.
+- Asks: Ask A has 20 counts and Ask B has 12. The cracker misses every cell, mirror leakage is 5.6 per cent of the ask weight, and the pair ceiling is 30.2.
+- Input gates: 15 files in 4 formats, with a 155,399-row roll extract and two distractors (the population projections and the rental market survey). Both are named in `metadata.json` and the estimators never open them.
+- Final rebuild: `checks.py` 135 of 135, `verify.py` PASS from the zip, two byte-identical rebuilds (target.zip sha256 cffb3ab8), `figures_check.py` exit 0, `precut.py` exit 0, `voice-check.py` PASS, `leak.py --asof 2026-12-31` REVIEW with no LEAK, `guard.py surface` exit 0, `heart` WARN, `validate` 0 invalid, and `freeze.py check --mode determinism` PASS.
 
 ## Tried and rejected
 

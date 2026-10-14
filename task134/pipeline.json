@@ -1,11 +1,11 @@
 {
   "task": "task134",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "urban-regional-science",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-14",
   "stump": "A strong solver takes each transit-area lot's capacity under the order (lot area times its band's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the corridors have delivered each year since their 2013 rezoning, and files about 4,100 net new homes a year, 20,400 over 2027 to 2031, against 13,000 falling from 2,800 to 2,400; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.",
   "architecture": 3,
@@ -74,17 +74,17 @@
     }
   ],
   "leak": {
-    "leak_py": "REVIEW 2026-10-14 (no LEAK; every REVIEW line answered in ## Leak review)",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-14 on the final rebuild (no LEAK; every REVIEW line answered in ## Leak review)",
+    "reader": "stage 4 2026-10-14: nothing quoted for Q1 to Q5; Q6 analytical, no decoy; its three readings recorded as SF19 to SF21 and asserted; realism: mixed file times (minor, harmless)"
   },
   "duplicate_check": {
     "heart": "WARN (overuse.org_family, repeat.gate_g and repeat.decision against task127; test.same_puzzle_older differentiated against task54)",
     "nearest": "driver 0.06 (task103 v3, task447, task137 v1); surface exit 0, three pairs promoted for adjudication (task133, task448, task54), none BLOCK"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE; soft spots recorded as SF22 and SF23 and asserted; both optional wording notes declined (each would change a document under target/ and remove an ask device)",
+    "report": "task134/determinism_check_report_arch3.md"
   },
   "solver_rounds": [
     {
@@ -110,17 +110,22 @@
     }
   ],
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-14",
   "portal": null,
   "builder": "",
-  "resume": "stage 4: reader and judge",
+  "resume": "",
   "gates": {
-    "checks_py": "130 of 130",
+    "checks_py": "135 of 135",
     "verify_py": "PASS from target.zip",
     "rebuilds": "byte-identical (target.zip sha256 cffb3ab8)",
     "figures_check": "exit 0",
+    "precut": "exit 0",
     "voice_check": "PASS",
-    "guard_validate": "0 invalid"
+    "leak_py": "REVIEW, no LEAK (--asof 2026-12-31)",
+    "guard_surface": "exit 0",
+    "guard_heart": "WARN, no BLOCK",
+    "guard_validate": "0 invalid",
+    "freeze": "check --mode determinism PASS"
   },
   "call": "13,000 net new homes over 2027 to 2031: 2,800, 2,700, 2,600, 2,500 and 2,400"
 }
