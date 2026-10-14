@@ -1,4 +1,155 @@
-# task129: which shipped change gets Sønderå Medier's Q4 operations squad
+# task129 design note
+
+Architecture 2 is current: drawn 2026-10-14 at the author's request. Architecture 1 (Sønderå Medier's page-delivery
+service level, shipped 2026-10-13) sat in a house domain (business operations, client domain General Statistics)
+though its decisive method was web performance engineering, which no client domain carries, so its domain read as a
+backdrop; its record is kept under the Architecture 1 record heading below and its identity in the card's lineage.
+Architecture 2 keeps Root-Cause Analysis and moves to Energy Systems & Utilities, grid reliability outage analysis,
+with two analytical layers on the call.
+
+## Draw
+
+- **Card:** `.claude/skills/fingerprint/cards/task129.json`, architecture v2, drawn and registered 2026-10-14.
+  Domain Energy Systems & Utilities (client domain), task type `grid-reliability-outage-analysis` (serves Root-Cause
+  Analysis and Anomaly Detection), objective Root-Cause Analysis: the call names the driver of each district's rise
+  in tree-caused outages, every rival ruled out on evidence. Shape 07 (grid): each district's tree-caused outage rate
+  per 100 miles of overhead primary in each year 2021 to 2025, beside the three district calls. Decision
+  `root_cause_named`, question form what. Gap population (the units a rate is read on), then time (the regrowth
+  clock); no A to E pattern; generators G4 (attribution at a handover), G14 (a rate read at the same time since trim
+  and the same trees within falling distance). Gate G `decomposition_attribution`: the reported rise is correct, and
+  the work is booking it to the right driver. Strategy `decomposition_attribution`. Layer 2 family
+  `estimand_identification` (the right comparison: the outgoing contractor's work of the same months, and every unit
+  read at the same time since trim). Calibration none. Context artifact `filed_standard` (the cooperative's
+  right-of-way maintenance policy and its reliability reporting policy).
+- **World:** Vessey County Electric Cooperative, a member-owned rural electric cooperative in a fictional United
+  States county, serves its members over overhead primary lines in three districts (North, East, South). Its
+  right-of-way is trimmed on a four-year cycle by contract crews, each district's trim units (about half a mile of
+  line each) worked circuit by circuit. Trimming clears the right-of-way; a tree standing beyond it is reached only by
+  the hazard-tree removal the policy describes. North's trimming passed from the outgoing contractor to a new one on 1
+  July 2024, the outgoing contractor finishing the work orders it already held; East's passed on 1 April 2025 after the
+  outgoing contractor stopped taking new work orders in January; South kept its contractor. The Manager of
+  Right-of-Way and Vegetation Management sets the 2027 right-of-way programme for each district this autumn.
+- **Pairing:** the deciding quantity is each district's tree-caused outage rate read as vegetation management reads it:
+  on the regrowth clock (time since each trim unit was last trimmed, built from the trimming history) and against the
+  trees within falling distance of the line (the span-level right-of-way survey), with the new contractor's work read
+  against the outgoing contractor's work of the same months. A noun swap leaves nothing to stand on: no regrowth
+  since a trim, no right-of-way with trees standing beyond it, no ash mortality falling in from outside it.
+- **Data-native sentence:** trimming clears only the right-of-way, so ash dying beyond it falls onto the line whatever
+  the time since trim, and in North that mortality reached the line in the months the new contractor took over; the
+  rise therefore shows on the units the new contractor trimmed, and only the units the outgoing contractor trimmed in
+  the same months, with every unit read at its own time since trim, show it as a shift no trimming removes. East's
+  handover left the units due that spring past the four-year cycle, so East's rise sits on the regrowth clock, and
+  South's follows the year's storms.
+- **Personas:** drawn with `guard.py names --locale en_US --seed 129`: Lori Rodriguez (Manager of Right-of-Way and
+  Vegetation Management), Dennis Garcia (Reliability Engineer), Wesley Thomas (Right-of-Way Forester), Brian
+  Montgomery (Manager of Operations).
+- **Guard:** `check` PASS at registration (ban windows against task230, task459 and task184); `heart` PASS. Two
+  first names drawn first (Pamela, Jessica) warned against task131 and task104 and were redrawn from the same pool.
+- **Sources, one line each.** The client's two-layer standard: its canonical expert move is a staggered rollout read
+  against units not yet treated; here the not-yet-treated units are the outgoing contractor's units of the same
+  months, and the move is only half the call, because the shift it uncovers still has to be read on the regrowth
+  clock and the trees within falling distance. `strategies.md` F8 (attribution: a correct movement booked to the
+  visible owner): the visible owner is the contractor that took over, the shared external driver is ash mortality
+  beyond the right-of-way. F1's legal form (a clock process estimated from every unit that went through it) supplies
+  the regrowth clock, which East's call stands on. The dead list's dated-cause warning: the handover is a dated cause
+  whose step an event study finds, which is why it is the wrong answer here and the decisive driver is a chronic one
+  with no date. task121 v3 (exposure set against the same unit's exposure at the same clock hours on other days) and
+  task13 (outcomes re-attributed by physical evidence over a filed reason label) spend other insights: here every
+  outage's cause code is right and no label is overturned.
+
+## Default path
+
+1. From the outage management export (restoration-step rows) take each outage once, keep the sustained outages
+   (over five minutes) on overhead primary whose cause is TREE, and drop the major event days the reliability
+   reporting policy identifies by the IEEE 1366 2.5 beta method from the five years before each year.
+2. Divide each district's count by its overhead primary miles in service that year (trim-unit register, in-service
+   and retirement dates) for the rate per 100 miles in each year 2021 to 2025.
+3. North's rate steps up from the second half of 2024 and nearly doubles in 2025; East's jumps in 2025; South's
+   rises a little.
+4. Read the trimming contract register: North passed to a new contractor on 1 July 2024 and East on 1 April 2025;
+   South kept its contractor. Read the weather: South's 2025 had more days of high gusts.
+5. File the call: re-bid the trimming contract in North and in East; nothing new in South (storms).
+
+Ends on: North re-bid the trimming contract, East re-bid the trimming contract, South nothing new
+Golden: North hazard-tree removal beyond the right-of-way, East catch-up trimming, South nothing new
+
+## Stump sentence
+
+Reading each district's rise against the trimming contract register files a re-bid of the trimming contract in
+North and East and nothing new in South (Ends on: North re-bid, East re-bid, South nothing new); the step that lands
+it there is booking North's rise to the new contractor whose freshly trimmed units carry it, when the outages come
+from ash dying beyond the right-of-way, rising by the same amount at every time since trim and with the ash standing
+within falling distance, so the outgoing contractor's units trimmed in the same months fail alike, and booking East's
+to the contractor, when its rise sits on the units the handover left past the four-year cycle.
+
+## Three rules
+
+Task type: `grid-reliability-outage-analysis` (Energy Systems & Utilities), which serves Root-Cause Analysis in the
+client taxonomy; the call names each district's driver of a correctly reported rise in tree-caused outages.
+
+Domain test: the quantity that decides each district's call is its tree-caused outage rate read the way utility
+vegetation management reads it, on the regrowth clock (time since each trim unit was last trimmed, from the trimming
+history) and against the trees within falling distance (the right-of-way survey), with the new contractor's work set
+beside the outgoing contractor's work of the same months.
+
+Swap: "what drove the rise in falls on each of the hospital's three wards, and should each ward's budget fund
+catch-up rounding, a re-bid of the agency nurses, removal of hazards beyond the ward, or nothing" stops making sense:
+no regrowth runs from a rounding, no cleared corridor has hazards standing beyond it, and nothing dies outside a ward
+to fall into it.
+
+Layer 1: an outage management export at restoration-step grain in local time across daylight-saving changes (the
+cooperative's outage system); a trimming completions register with completion and acceptance dates, the contractor
+and units renumbered where a line was rebuilt (the contractors' work-order system); a span-level right-of-way survey
+by species group (the forester's survey); overhead mileage that changes as units go underground (the trim-unit
+register); daily peak gusts in UTC from three weather stations; the IEEE 1366 major event day rule applied from each
+year's five prior years (the reliability reporting policy); contractor invoices with credit memos and re-issued
+invoice numbers (accounts payable). Nothing is placed to be caught; each mishandling is asserted to leave the three
+calls where they are.
+
+Layer 2: `estimand_identification`: the right comparison for a rise that begins with a handover is the outgoing
+contractor's units of the same months, and every unit read at its own time since trim; North's rise is then a shift
+the regrowth clock does not carry, scaling with the ash within falling distance, and East's sits on the units past
+the cycle.
+
+Decisive step: reading North's 2025 tree-outage rate at the same time since trim and the same months for both
+contractors' units, and against the ash standing within falling distance, which shows a shift that no trim removes
+(trees falling in from beyond the right-of-way) where the district series shows a step at the handover.
+
+Not semantics: every outage's cause code (TREE) is right, every field reads as the dictionary says, and no field
+separates a tree growing into the line from one falling onto it; read correctly, the district series and the
+contract register still point at the new contractor.
+
+Not rule application: the right-of-way maintenance policy files the four-year cycle and what trimming clears, and the
+reliability reporting policy files the rate and the major event days; executing both gives each district's rate and
+leaves the driver open, and no filed rule or procedure reads a rise against the outgoing contractor's concurrent
+units, the regrowth clock or the trees within falling distance.
+
+Analyst test: a strong analyst who counts outages (not restoration steps), drops the major event days, rates each
+district per 100 miles in service, reads the rise against the contract register and checks the storms files the
+default path's answer (Ends on: North re-bid the trimming contract, East re-bid the trimming contract, South nothing
+new); `checks.py` runs it on the generator's clean truth.
+
+Estimand: the reliability reporting policy defines the tree-caused outage rate (sustained outages on overhead primary
+with cause TREE, outside major event days, per 100 miles of overhead primary in service in the year); the call names,
+for each district, the driver that accounts for most of its 2025 rate above its 2021 to 2023 average, and the
+programme the right-of-way maintenance policy assigns to that driver.
+
+No decoy: no memo, briefing, draft or stakeholder figure argues for a re-bid, a cycle change or the storms; the
+contract register records the handovers as the cooperative's own contract history, the invoices record billing, and
+nothing in the pack names a cause for any district's rise.
+
+No certified replay: no published or certified figure is reproduced to recover a method; the reliability report's
+indices are the rule the rates are computed under, and the driver is estimated from the records.
+
+Lesson: a rise that begins with a change of provider is read against the outgoing provider's work of the same months
+and on the asset's own clock before it is booked to the newcomer; no build on file teaches vegetation outage
+attribution or a handover read against concurrent outgoing work.
+
+## Architecture 1 record (re-rooted 2026-10-14)
+
+Architecture 1 (Sønderå Medier's page-delivery service level: which shipped change the operations squad fixes in Q4)
+as it stood when it shipped on 2026-10-13; it binds nothing. Its generator, pack and goldens stay in git history.
+The original title was "task129: which shipped change gets Sønderå Medier's Q4 operations squad".
 
 Drawn 2026-10-10 from the world, decision and quantity of seed RC02 (`analytical_tasks/06_root_cause/`), the
 pitfall re-found from the data. Reworked 2026-10-12 under the client's 10/10 rules (wave 1, resume 2): the
@@ -7,7 +158,7 @@ roster's resemblance to the wrong answer, the service level's sentence licensing
 four voices), the ask layer was rebuilt on silent devices, and the prompt was rewritten question-first. This is
 the build's one design note.
 
-## Draw
+### Draw
 
 ```
 Domain: business-operations-analytics (house), subdomain service-operations-sla; client domain
@@ -65,7 +216,7 @@ default path, not its stump. Measured traps #13 (validates on one population, ap
 headline trap, misses the quiet one) in `stumping/references/client/measured-traps.md` are the family; the in-house
 record is FC01 and OS01's held calls on the same pairing.
 
-## Default path
+### Default path
 
 The pipeline a competent analyst builds from the prompt's words, the service level and the files' grain:
 
@@ -91,7 +242,7 @@ The pipeline a competent analyst builds from the prompt's words, the service lev
 Ends on: A, the header-bidding ad stack, 1,230,000 views a month, runner-up C, the front end, at 800,000
 Golden: C, Bølge's front end, 1,460,000 views a month, runner-up A, the ad stack, at 610,000
 
-## Stump sentence
+### Stump sentence
 
 A competent solver aligns the six Bølge template groups for the joint effect of the ad stack and the front end,
 separates the two with the puzzles pages (the ad stack alone) and subscribers' ad-free views of the redesigned
@@ -103,7 +254,7 @@ release-train deploy and the ad stack mostly on its later views, and both separa
 first views against about three quarters on the ad-supported views, so carried within that state the front end's
 fix brings back 1,460,000 views a month and the ad stack's 610,000.
 
-## Three rules
+### Three rules
 
 Task type: general-statistics-data-science interpretability (root-cause): attributing an outcome to two causes that
 only ever occurred together, where a marginal reading of each cause's effect misattributes and the conditional one
@@ -191,7 +342,7 @@ stops at the visible composition that is this build's wrong answer).
   First moves (one-period group-by, the event study, the separating groups raw and standardised, every visible
   covariate) all land on the ad stack or on the banner.
 
-## Decisive rung
+### Decisive rung
 
 Measured trap #13, validates on one population and applies to another: each separating group's effect fits every
 view it can be checked on and is carried to views that differ on one axis, with the evidence of the difference left
@@ -201,7 +352,7 @@ joint ramp to within 0.02 point, and the solver stops confirmed. The decisive ru
 only its size: the default path's figure for the golden's change (800,000) and the golden figure (1,460,000) sit
 44 per cent apart, and the named change moves from the ad stack to the front end.
 
-## Readability screen
+### Readability screen
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene battery | 6 linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -214,7 +365,7 @@ The decisive rung's honest exposure is the release train log's bundle hash colum
 means for a device that comes back finds the state. That is the intended discovery path; the log is an operational
 record with no commentary.
 
-## Semantic fork table
+### Semantic fork table
 
 | Id | Term or convention in the main ask or computation | Golden reading | Alternative reading | Call under the alternative | Ruled out by |
 |---|---|---|---|---|---|
@@ -238,7 +389,7 @@ record with no commentary.
 The stump is none of these readings: the default path executes every golden reading and differs only in what it
 carries the separating groups' effects on.
 
-## Ladder
+### Ladder
 
 | Rung | Gap | Construction | Names | Why a careful analyst stops here | Killed by (one shipped fact or construction) |
 |---|---|---|---|---|---|
@@ -262,7 +413,7 @@ view and both groups carry the same first-view share, so any classification of v
 proxy, any visible column, none) splits each phone class's joint ramp into two figures that sum to it; only the
 phone-blind raw split leaves a residual, and the registry's band closes it, which is what makes R1 feel finished.
 
-## Physical model (the generator's targets)
+### Physical model (the generator's targets)
 
 - One platform bundle per release-train deploy (content-hashed, re-issued at every deploy), shared by every Bølge
   template; the puzzles pages have their own bundle, re-issued at the same deploys. About two departures a week on
@@ -283,7 +434,7 @@ phone-blind raw split leaves a residual, and the registry's band closes it, whic
 - Sampling: collector v1 one device in 200 to 2 June; v2 from 3 June, signed-out devices one in 600, signed-in and
   puzzles devices one in 50, carried row by row in `sample_weight`.
 
-## Closure table
+### Closure table
 
 | # | Axis | Reading and closure |
 |---|---|---|
@@ -310,7 +461,7 @@ phone-blind raw split leaves a residual, and the registry's band closes it, whic
 | 21 | Scope of a clause | "latest full month's traffic" is all of August's scored views on the pages and layouts the change is live on today (service level section 4, SF14), forside's from 1 August; C1: `sample_weight` summed by title equals the close-out's August mobile views exactly (asserted) |
 | 22 | Forward window contents | Q4 valued at August's traffic by the filed convention; no projection enters |
 
-## Literal reader
+### Literal reader
 
 Executing the prompt and the service level word for word, a reader values each change's fix on the mobile phone
 views it acts on, scored views only, at August's traffic, with each change's effect read over the 28 days either
@@ -322,7 +473,7 @@ on the front end at a figure outside its bin (the correction grid), and every fi
 visible column). Every row of the semantic fork table is ruled out by a quotable sentence or converges, and the
 default path's answer comes from an easy method on the same literal estimand.
 
-## Oracles
+### Oracles
 
 - The joint ramp on ad-supported views: ties under the default path and the golden (complete-partition invariance);
   it confirms both splits and selects neither.
@@ -334,7 +485,7 @@ default path's answer comes from an easy method on the same literal estimand.
   roster of the first draft (a record every method reproduced, with a planted resemblance to the ad stack's puzzles
   read) is cut.
 
-## Organs and pack
+### Organs and pack
 
 - **Filed pins, one statement each.** Service level v3 (scope, the line, the 28-day reading, the valuation); paywall
   terms (the ad-free layout for signed-in subscribers, the ad-supported layout for everyone else); the registry header
@@ -349,7 +500,7 @@ default path's answer comes from an easy method on the same literal estimand.
   close-out, the image CDN delivery log and its vendor appendix, the field guide, the prep thread, the export manifest
   and the three distractors: 18 files in six formats.
 
-## Ask sheet
+### Ask sheet
 
 Two asks and the first slide, each a component of the call's case on rows the call never reads, each with a silent
 primary riding something the organisation's own systems did, plus shared hazards. A third ask from the first draft
@@ -411,7 +562,7 @@ measured figure replaces it at build.
 Pair ceiling: 33.0 (the one-cracker case at a 0.10 ask allowance per top response, r about 3: (38 + 7 + 5.5 + 3 + 7 +
 5.5) / 2)
 
-## Realism debts
+### Realism debts
 
 - Equal joint cost in both states and equal first-view shares in the two groups: forced by complete-partition
   invariance, without which a split leaves a residual that invites the search. Mitigation: neither shows without
@@ -424,7 +575,7 @@ Pair ceiling: 33.0 (the one-cracker case at a 0.10 ask allowance per top respons
 - First views and later views share one baseline before any change: physically a first view is a little slower; the
   generator keeps the baselines equal so the state shows only through the changes' costs.
 
-## Leak check
+### Leak check
 
 - leak.py --asof 2026-09-07: REVIEW, no LEAK. Each line: "the model's band" in the field guide is a device model's benchmark band (harmless); the service level carries most words of the call because it files the decision's basis (a fix valued on the mobile views it brings back, one fix a quarter) and names no change, order or figure (harmless); the stump terms in the service level, the paywall terms and the field guide are their ordinary vocabulary (device, release, deploy, registry, puzzles) and no sentence names a view's place after a deploy (the reader is asked); `device_model` and `device_class` are the registry's join key and the CDN vendor's own class column (harmless); the subscription register's 181 dates after 7 September are end dates of subscriptions cancelled in September, which run to the end of the following month (harmless, forward-dated by nature).
 - Reader, first read: nothing quoted for question 1, no file ranks or answers, the deciding step an analytical choice (question 6); every question-5 sentence fixes a WHAT. Realism tells fixed in the generator: the change register now lists every platform change the release log cites, the release notes carry change numbers, versions and a two-manager rota, the prep thread states no view on a change, the AMP report's constant column and the desktop summary's rounding are gone.
@@ -432,7 +583,6 @@ Pair ceiling: 33.0 (the one-cracker case at a 0.10 ask allowance per top respons
 - Reader, third read (after the section 4 and paywall 4.2 wording): clean on questions 1 to 6; its tells are the rollout log's weekly schedule and single signer, change numbers assigned when raised, and a thin prep thread, all true to the fiction.
 
 ## Tried and rejected
-
 - The note's CPU-class standardisation as the decisive rung (draw, 2026-10-10): the registry join is visible from the schema and standardising a natural-experiment group on a joined covariate is reflex for this solver, so it would be executed as routine; kept as rung 2's partial correction.
 - Cache state as a cost on the framework alone, the ad stack insensitive (draw): the state correction would then move C without moving A, so the phone-standardised split leaves a residual against the joint ramp, an arithmetic symptom that invites the search; replaced by opposite state dependence with equal surpluses, so every split ties.
 - The image pipeline riding the redesign as a third co-shipped change, its go-live a null step (draw): the image service's request log by template family lines up with the rollout log on one key, a schema-visible join, and separating it from the framework needs a hero-against-text contrast that rests on an untestable equal-effect assumption.
@@ -471,3 +621,9 @@ Pair ceiling: 33.0 (the one-cracker case at a 0.10 ask allowance per top respons
 - The window boundary and the valuation population left to the plain reading (stage 4, judge FIX_NOW): calendar days moved the front end to 1,470,000, every August view to 1,470,000 and 610,000, views after each switch-on to 1,440,000 and 570,000; the service level now files the deploy instant (section 3) and that month's scored views the change now reaches (section 4), the WHAT only.
 - A change register listing only the review's five changes, release notes cycling a dozen phrases under one approver (stage 4, leak reader): the register now carries every platform change the release log cites, with the release managers' rota.
 - The valuation population and the subscriber group left to the wording after the pass-1 pins (stage 4, pass 2 notes): "that month's scored views that the change now reaches" still let a per-view reading drop forside's views of 1 to 3 August (ad stack 600,000), and paywall 4.2 named no title, so a subscription counted on its own title's pages moved the front end to 1,470,000; section 4 now says "all of that month's scored views on the pages and layouts the change is live on today" and 4.2 "on all three titles' sites whichever titles their product includes", the WHAT only, the same forks closed further.
+- Architecture 1 re-rooted at the author's request (2026-10-14): its decisive method was web performance engineering in a house domain (business operations, client domain General Statistics), so the domain read as a backdrop; redrawn in Energy Systems & Utilities, grid reliability outage analysis.
+- A protection change (lateral fuses switched from fuse saving to fuse blowing) as the decisive cause (draw, 2026-10-14): a dated cause whose step an event study finds, and the cause code on every converted outage stays the initiating tree, so the move reads off one device column.
+- An underground cable failure analysis by age and vintage (draw): the at-risk population is survivors (population_selection), banned against task459 in the last three builds.
+- One network-wide vegetation call (draw): the handover read and the regrowth clock would carry a single answer each, so a careful analyst fixing one rung lands the call; three districts with three drivers make each one-story answer wrong somewhere.
+- A utility owner with an executive team or a board deciding (draw): utility_or_infrastructure banned against task459, executive_team against task230 and board_of_directors against task459; the cooperative's manager of operations sets the right-of-way programme inside the approved budget.
+- A UK distribution network operator in a fictional country with ash dieback (draw): the regulator's interruption incentive scheme would have to be described accurately to stay realistic; a United States rural cooperative under IEEE 1366 carries the same mechanism with a public standard.

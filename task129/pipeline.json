@@ -1,53 +1,89 @@
 {
-  "task": "task129",
-  "owner": "perssathya",
-  "status": "SHIPPED",
-  "domain": "business-operations-analytics",
-  "objective": "root-cause",
-  "stage": 5,
-  "stage_name": "shipped",
-  "updated": "2026-10-13",
-  "stump": "A competent solver aligns the six Bølge template groups for the joint effect of the ad stack and the front end, separates the two with the puzzles pages (the ad stack alone) and subscribers' ad-free views of the redesigned templates (the front end alone), standardises both groups to the ad-supported views' phone mix through the device registry, which closes the joint ramp to within 0.02 point, and names the ad stack at 1,230,000 views a month with the front end second at 800,000; the step that lands it there is carrying each group's effect to the ad-supported views as one figure per phone class, when the front end costs a view mostly on a device's first view after a release-train deploy and the ad stack mostly on its later views, and both separating groups are about a quarter first views against about three quarters on the ad-supported views, so carried within that state the front end's fix brings back 1,460,000 views a month and the ad stack's 610,000.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-13",
-    "pair_ceiling": 33.0,
-    "mirror_leakage": 0.0
-  },
-  "leak": {
-    "leak_py": "REVIEW (0 LEAK) at --asof 2026-09-07, every line answered in the design note",
-    "reader": "three isolated reads: nothing quoted for question 1, no ranking file, the deciding step an analytical choice, every filed sentence a WHAT; first-read realism tells fixed in the generator, later tells true to the fiction"
-  },
-  "duplicate_check": {
-    "heart": "WARN only (repeat.gate_g against task122, answered in the design note)",
-    "surface": "1 pair promoted on labels alone (task36, surface 0.077), answered in the design note; personas Caroline Mortensen, Elin Lauritsen, Gunhild Lund on the card",
-    "nearest": "0.08 (task98 v4 lineage)",
-    "clone_check": ""
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (pass 2)",
-    "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2)",
-    "pass": 2,
-    "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical",
-    "fix_cycles": 1,
-    "notes": "pass 1 FIX_NOW: four conventions open (page-class reading of the dated steps, window boundary, view-time against current masthead, valuation population); closed by removing the tag gap and dating the edition move before the export (convergence, asserted) and by filing the deploy instant (section 3) and that month's scored views the change now reaches (section 4) in the service level; pass 2 APPROVE: every figure reproduced (front end 1,459,976, ad stack 609,889), no variant moves the call; its two optional notes (a per-view reading of section 4, a subscription counted on its own title's pages) closed further at authority (service level section 4, paywall terms 4.2), the WHAT only, no figure moved, so no third judge"
-  },
-  "returned": [],
-  "resume": "shipped after the 10/10 rework; waiting for the portal",
-  "approved": null,
-  "delivered": "2026-10-13",
-  "portal": null,
-  "source_note": "analytical_tasks/06_root_cause/RC02_slow-views-partial-exposure-cpu-mix.md",
-  "history": {
-    "10/10 rework": "2026-10-12: card answered the three rules; roster, page-weight basis, three voices, the cohort grid ask and the crawl ask cut; asks rebuilt on silent devices; prompt.txt question-first; precut exit 0",
-    "before": {
+ "task": "task129",
+ "owner": "perssathya",
+ "status": "DESIGN",
+ "domain": "energy-systems-utilities",
+ "objective": "root-cause",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-14",
+ "stump": "Reading each district's rise against the trimming contract register files a re-bid of the trimming contract in North and East and nothing new in South; the step that lands it there is booking North's rise to the new contractor whose freshly trimmed units carry it, when the outages come from ash dying beyond the right-of-way and the outgoing contractor's units trimmed in the same months fail alike, and East's to the contractor, when its rise sits on the units the handover left past the four-year cycle.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "PASS at registration",
+  "nearest": "0.05 task500 v2 lineage"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [
+  {
+   "date": "2026-10-14",
+   "portal": "author request",
+   "repair": "re-root (domain fit: house domain to a client domain)",
+   "commit": ""
+  }
+ ],
+ "resume": "stage 2: design the ladder, fork table, closure and ask sheet for the vegetation outage root cause, then precut.py",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "lineage": [
+  {
+   "architecture": 1,
+   "fate": "re-rooted 2026-10-14 at the author's request (house domain, decisive method web performance engineering); shipped 2026-10-13, no portal result",
+   "record": {
+    "domain": "business-operations-analytics",
+    "objective": "root-cause",
+    "stump": "A competent solver aligns the six Bølge template groups for the joint effect of the ad stack and the front end, separates the two with the puzzles pages (the ad stack alone) and subscribers' ad-free views of the redesigned templates (the front end alone), standardises both groups to the ad-supported views' phone mix through the device registry, which closes the joint ramp to within 0.02 point, and names the ad stack at 1,230,000 views a month with the front end second at 800,000; the step that lands it there is carrying each group's effect to the ad-supported views as one figure per phone class, when the front end costs a view mostly on a device's first view after a release-train deploy and the ad stack mostly on its later views, and both separating groups are about a quarter first views against about three quarters on the ad-supported views, so carried within that state the front end's fix brings back 1,460,000 views a month and the ad stack's 610,000.",
+    "precut": {
+     "exit": 0,
+     "date": "2026-10-13",
+     "pair_ceiling": 33.0,
+     "mirror_leakage": 0.0
+    },
+    "leak": {
+     "leak_py": "REVIEW (0 LEAK) at --asof 2026-09-07, every line answered in the design note",
+     "reader": "three isolated reads: nothing quoted for question 1, no ranking file, the deciding step an analytical choice, every filed sentence a WHAT; first-read realism tells fixed in the generator, later tells true to the fiction"
+    },
+    "duplicate_check": {
+     "heart": "WARN only (repeat.gate_g against task122, answered in the design note)",
+     "surface": "1 pair promoted on labels alone (task36, surface 0.077), answered in the design note; personas Caroline Mortensen, Elin Lauritsen, Gunhild Lund on the card",
+     "nearest": "0.08 (task98 v4 lineage)",
+     "clone_check": ""
+    },
+    "judge": {
+     "verdict": "DETERMINISTIC",
+     "disposition": "APPROVE (pass 2)",
+     "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2)",
+     "pass": 2,
+     "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+     "gate_h": "domain pass, layers pass, decisive_step analytical",
+     "fix_cycles": 1,
+     "notes": "pass 1 FIX_NOW: four conventions open (page-class reading of the dated steps, window boundary, view-time against current masthead, valuation population); closed by removing the tag gap and dating the edition move before the export (convergence, asserted) and by filing the deploy instant (section 3) and that month's scored views the change now reaches (section 4) in the service level; pass 2 APPROVE: every figure reproduced (front end 1,459,976, ad stack 609,889), no variant moves the call; its two optional notes (a per-view reading of section 4, a subscription counted on its own title's pages) closed further at authority (service level section 4, paywall terms 4.2), the WHAT only, no figure moved, so no third judge"
+    },
+    "delivered": "2026-10-13",
+    "source_note": "analytical_tasks/06_root_cause/RC02_slow-views-partial-exposure-cpu-mix.md",
+    "history": {
+     "10/10 rework": "2026-10-12: card answered the three rules; roster, page-weight basis, three voices, the cohort grid ask and the crawl ask cut; asks rebuilt on silent devices; prompt.txt question-first; precut exit 0",
+     "before": {
       "status": "FAILED_TO_STUMP",
       "stage": 2,
       "updated": "2026-10-11"
+     }
     }
+   }
   }
+ ]
 }
