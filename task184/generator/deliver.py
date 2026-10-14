@@ -65,7 +65,7 @@ def eur(x):
 
 def chart_png(F):
     fig_ = AN.figures(F)
-    order = sorted(W.CODES, key=lambda c: F["tot"]["interval"][c])
+    order = sorted(W.CODES, key=lambda c: F["tot"]["actual"][c])
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8.4, "axes.edgecolor": INK2,
                          "axes.labelcolor": INK2, "xtick.color": INK2, "ytick.color": INK2})
     fig, ax = plt.subplots(figsize=(6.9, 3.05), dpi=170)
@@ -91,7 +91,7 @@ def chart_png(F):
     ax.tick_params(length=0)
     h, lab = ax.get_legend_handles_labels()
     ax.legend(h, lab, frameon=False, fontsize=7.6, loc="lower right", ncol=3)
-    ax.set_title("Halloran Bay: the unit's three lanes all reach its morning and evening banks", fontsize=9.2,
+    ax.set_title("Eskerford: the unit's three lanes reach banks its own roster leaves two lanes short", fontsize=9.2,
                  color=INK, loc="left", fontweight="bold")
     fig.tight_layout()
     buf = io.BytesIO()
@@ -122,7 +122,7 @@ def _grid(rows, widths, bold_rows=(), head=True):
 def write_pdf(path, F, png):
     fg = AN.figures(F)
     pick, runner = F["pick"], F["runner"]
-    tot = F["tot"]["interval"]
+    tot = F["tot"]["actual"]
     head = W.PEOPLE["head"]
     analyst = W.PEOPLE["analyst"]
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=17 * mm,
@@ -136,47 +136,48 @@ def write_pdf(path, F, png):
     mt.setStyle(TableStyle([("TOPPADDING", (0, 0), (-1, -1), 0.6), ("BOTTOMPADDING", (0, 0), (-1, -1), 0.6),
                             ("LINEBELOW", (0, -1), (-1, -1), 0.6, C_INK)]))
     s += [mt, Spacer(1, 8)]
-    s.append(Paragraph("Post the unit to Halloran Bay: it moves %s passengers within the 20-minute standard this "
-                       "summer, against %s at %s" % (n0(fg["pick_total"]), n0(fg["runner_total"]), W.NAME[runner]),
-                       TITLE))
+    s.append(Paragraph("Post the unit to %s: it moves %s passengers within the 20-minute standard this "
+                       "summer, against %s at %s" % (W.NAME[pick], n0(fg["pick_total"]), n0(fg["runner_total"]),
+                                                     W.NAME[runner]), TITLE))
     s.append(Paragraph(
-        "Posted to Halloran Bay from 15 June to 31 August, the unit would move %s passengers through screening within "
+        "Posted to %s from 15 June to 31 August, the unit would move %s passengers through screening within "
         "the 20-minute standard who would otherwise wait longer. The next best posting, %s, would move %s; every "
-        "other airport less." % (n0(fg["pick_total"]), W.NAME[runner], n0(fg["runner_total"])), BODY))
+        "other airport less." % (W.NAME[pick], n0(fg["pick_total"]), W.NAME[runner], n0(fg["runner_total"])), BODY))
     s.append(Paragraph(
-        "On the summer roster patterns with the unit's three lanes added, %s would come first and Halloran Bay fifth. "
-        "That is not what a posting adds. In every posting week last summer the host's duty managers stood down lanes "
-        "of their own while the unit screened: at seven of the eight airports two lanes for the whole of the unit's "
-        "day, and more in the quieter hours after the banks, so the unit added one lane at their banks, not three. "
-        "Halloran Bay kept all five of its lanes open through both banks and stood its officers down only once each "
-        "bank was over. With the new based operator's first full summer its banks are the heaviest against its lanes "
-        "of the eight, and the unit's three lanes bring every passenger there within the standard."
-        % W.NAME[F["rank"]["gross"][0]], BODY))
+        "On the summer roster patterns with the unit's three lanes added, %s would come first and %s fourth. That is "
+        "not what a posting adds. In every posting week last summer the host's duty managers stood down lanes of "
+        "their own while the unit screened, two through the evening bank at all eight and through the morning "
+        "bank at six of them, and more in the quiet middle of the day, so at those banks the unit added one lane "
+        "and not three." %
+        (W.NAME[F["rank"]["gross"][0]], W.NAME[pick]), BODY))
     s.append(Paragraph(
-        "Spread evenly over the unit's day, Halloran Bay's stand-down looks like a little over two lanes and %s comes "
-        "out ahead; but "
-        "Halloran Bay releases four lanes for almost nine hours a day and none of them while its queues build, so the "
-        "figures here take each host's stand-down interval by interval, as the lane counts show it." %
-        W.NAME[F["rank"]["average"][0]], BODY))
+        "Nor is a roster pattern what a checkpoint opens. Seven of the eight open fewer lanes at their banks than "
+        "their pattern staffs, every day of the summer and whether or not the unit is there, because the pattern's "
+        "shoulders go uncovered: two lanes of them at %s, one at the other six. Judged against the patterns, the posting "
+        "at %s is worth %s and %s comes first; judged against the lanes %s itself opens on its own days, which is "
+        "what this summer looks like without the unit, it is worth %s and comes first." %
+        (W.NAME[pick], W.NAME[pick], n0(AN.rnd100(F["tot"]["interval"][pick])), fg["interval_leader"], W.NAME[pick],
+         n0(fg["pick_total"])), BODY))
     s.append(Image(io.BytesIO(png), width=170 * mm, height=170 * mm * 3.05 / 6.9))
     s.append(Paragraph("Design days of Capacity Planning's summer 2027 planning sheet, each standing for every day of "
                        "its period, run through KAS-STD-07 sections 4 and 6.", SMALL))
     s.append(Paragraph(
-        "<b>How far the forecast can fall.</b> Halloran Bay stays the better posting unless its forecast passengers "
+        "<b>How far the forecast can fall.</b> %s stays the better posting unless its forecast passengers "
         "fall short by %d per cent or more across the summer, the smallest whole per cent shortfall at which a "
         "posting at %s would move more."
-        % (fg["flip_pct"], W.NAME[runner]), BODY))
+        % (W.NAME[pick], fg["flip_pct"], W.NAME[runner]), BODY))
     s.append(PageBreak())
     s.append(Paragraph("Passengers the unit would move within the standard over the summer, by posting", H2))
-    rows = [["Posting", "Host's own lanes stood down through its banks, 2026", "Lanes the unit adds at the banks",
+    rows = [["Posting", "Bank lanes the pattern plans and the checkpoint does not open",
+             "Own lanes stood down, morning bank", "Own lanes stood down, evening bank",
              "Passengers moved, 15 June to 31 August 2027"]]
     order = sorted(W.CODES, key=lambda c: -tot[c])
     for c in order:
-        r_all = W.RELEASE[c][0]
-        rows.append([W.NAME[c], str(r_all), str(W.TEAM_LANES - r_all), n0(fg["moved_total"][W.NAME[c]])])
-    s.append(_grid(rows, [40 * mm, 46 * mm, 36 * mm, 48 * mm], bold_rows=(1,)))
-    s.append(Paragraph("Nearest hundred, from unrounded counts. Every host also stood down more lanes in the quieter "
-                       "hours after its banks, which leaves the passengers moved unchanged.", SMALL))
+        rows.append([W.NAME[c], str(W.SHORT[c][0]), str(W.RELEASE[c][0]), str(W.RELEASE[c][1]),
+                     n0(fg["moved_total"][W.NAME[c]])])
+    s.append(_grid(rows, [34 * mm, 42 * mm, 29 * mm, 29 * mm, 36 * mm], bold_rows=(1,)))
+    s.append(Paragraph("Nearest hundred, from unrounded counts. Every host also stood down lanes in the quiet middle "
+                       "of the day and the last 45 minutes, where no queue builds.", SMALL))
     s.append(Spacer(1, 6))
     s.append(Paragraph("Last summer at each airport", H2))
     a = fg
@@ -194,15 +195,17 @@ def write_pdf(path, F, png):
         "with the posting it was made for, travel to and from the posting included.", SMALL))
     s.append(Paragraph("Method", H2))
     s.append(Paragraph(
-        "Each checkpoint's lanes with the unit there are its summer 2027 roster pattern, less the lanes its duty "
-        "managers stood down in each 15 minutes of every posted day last summer (the 2026 lane counts against the "
-        "summer 2026 roster pattern), plus the unit's three lanes from 05:00 to 21:00. The stand-down was the same on "
-        "every posted day at every host, Ardcarrig's two weeks running included. The passengers moved are those "
-        "outside the standard on the roster pattern alone less those outside it with the unit, on each design day, "
-        "times the days in the period (16, 31 and 31).", BODY))
+        "Each checkpoint's lanes without the unit are the lanes it opens on its own days: its summer 2027 roster "
+        "pattern less the bank lanes it does not open, read off the 2026 lane counts on the days the unit was "
+        "elsewhere against the summer 2026 roster pattern, which plans the same lanes as the 2027 one. Its lanes with "
+        "the unit are those less the lanes its duty managers stood down in each 15 minutes of every posted day last "
+        "summer, plus the unit's three lanes from 05:00 to 21:00. Both the unopened lanes and the stand-down were the "
+        "same on every day of the summer at every checkpoint, Ardcarrig's two posted weeks running included. The "
+        "passengers moved are those outside the standard without the unit less those outside it with the unit, on "
+        "each design day, times the days in the period (16, 31 and 31).", BODY))
     s.append(Paragraph(
-        "At the other seven airports the unit's posting moves fewer passengers than at Halloran Bay in every period, "
-        "because one lane at the banks is all it adds there.", BODY))
+        "Taking each roster pattern as the lanes open, rather than what the checkpoint opens, moves the figures at "
+        "seven of the eight airports and the posting to %s." % fg["interval_leader"], BODY))
     s.append(Spacer(1, 6))
     s.append(Paragraph("%s<br/>%s" % analyst, BODY))
 
@@ -218,7 +221,7 @@ def write_pdf(path, F, png):
 
 def write_xlsx(path, F):
     fg = AN.figures(F)
-    tot = F["tot"]["interval"]
+    tot = F["tot"]["actual"]
     order = sorted(W.CODES, key=lambda c: -tot[c])
     wb = openpyxl.Workbook()
     bold = Font(bold=True)
@@ -229,26 +232,25 @@ def write_xlsx(path, F):
     ws["A1"].font = Font(bold=True, size=12)
     ws["A2"] = "Nearest hundred, from unrounded counts. %s, %s." % (REF, W.MEMO_DATE.strftime("%-d %B %Y"))
     ws.append([])
-    ws.append(["Airport", "Code", "Host's own lanes stood down through its banks (2026)",
-               "Lanes the unit adds at the banks", "Passengers moved, 15 Jun to 31 Aug 2027"])
+    ws.append(["Airport", "Code", "Bank lanes planned and not opened", "Own lanes stood down, morning bank",
+               "Own lanes stood down, evening bank", "Passengers moved, 15 Jun to 31 Aug 2027"])
     for cell in ws[4]:
         cell.font = bold
         cell.alignment = Alignment(horizontal="center", wrap_text=True, vertical="center")
         cell.border = Border(bottom=thin)
     ws.row_dimensions[4].height = 44
     for c in order:
-        r_all = W.RELEASE[c][0]
-        ws.append([W.NAME[c], c, r_all, W.TEAM_LANES - r_all, fg["moved_total"][W.NAME[c]]])
-        ws.cell(row=ws.max_row, column=5).number_format = "#,##0"
+        ws.append([W.NAME[c], c, W.SHORT[c][0], W.RELEASE[c][0], W.RELEASE[c][1], fg["moved_total"][W.NAME[c]]])
+        ws.cell(row=ws.max_row, column=6).number_format = "#,##0"
     pick_row = 5
-    for col in range(1, 6):
+    for col in range(1, 7):
         ws.cell(row=pick_row, column=col).font = bold
         ws.cell(row=pick_row, column=col).fill = PatternFill("solid", fgColor="F6EBE5")
     ws.append([])
-    ws.append(["Smallest whole per cent shortfall in Halloran Bay's forecast passengers at which another posting "
-               "moves more", None, None, None, "%d%%" % fg["flip_pct"]])
-    ws.cell(row=ws.max_row, column=5).alignment = Alignment(horizontal="right")
-    for col, wdt in zip("ABCDE", (20, 7, 22, 16, 20)):
+    ws.append(["Smallest whole per cent shortfall in %s's forecast passengers at which another posting "
+               "moves more" % W.NAME[F["pick"]], None, None, None, None, "%d%%" % fg["flip_pct"]])
+    ws.cell(row=ws.max_row, column=6).alignment = Alignment(horizontal="right")
+    for col, wdt in zip("ABCDEF", (20, 7, 19, 17, 17, 20)):
         ws.column_dimensions[col].width = wdt
     ws.freeze_panes = "A5"
 
@@ -279,10 +281,11 @@ def write_xlsx(path, F):
         "Notes",
         "Planning basis: KAS-STD-07 (2026 edition), sections 4 and 6; the design days of the summer 2027 planning "
         "sheet, each standing for every day of its period (15 to 30 June 16 days, July 31, August 31).",
-        "Lanes with the unit posted: the summer 2027 roster pattern, less the lanes the host's duty managers stood "
-        "down in each 15 minutes of every posted day in 2026 (lane counts against the summer 2026 roster pattern), "
-        "plus the unit's three lanes from 05:00 to 21:00. The summer figure is the sum of the three periods' design "
-        "days times their days, rounded once.",
+        "Lanes without the unit: the lanes the checkpoint opens on its own days, the summer 2027 roster pattern less "
+        "the bank lanes it does not open (2026 lane counts on the days the unit was elsewhere, against the summer "
+        "2026 roster pattern, which plans the same lanes). Lanes with the unit: those less the lanes the host's duty "
+        "managers stood down in each 15 minutes of every posted day in 2026, plus the unit's three lanes from 05:00 "
+        "to 21:00. The summer figure is the sum of the three periods' design days times their days, rounded once.",
         "Passengers screened in 2026: passenger lanes and the unit's lanes, 15 June to 31 August 2026; staff and "
         "aircrew searched at the shift changes excluded.",
         "Hotel cost per officer-night: invoices and credit notes on each posting's purchase order, as paid including "

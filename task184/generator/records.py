@@ -445,11 +445,27 @@ def write_faults(path, world):
 
 FEEDBACK_TEXT = [
     ("Queue for security went back past the shops.", (1, 2)), ("Waited about 40 minutes at security.", (1, 2)),
-    ("Security staff were friendly, queue moved fine.", (4, 5)), ("Only half the lanes open while the queue built up.", (1, 2)),
+    ("Security staff were friendly, queue moved fine.", (4, 5)), ("Nobody told us how long the wait would be.", (1, 2)),
     ("Missed my boarding call because of the security queue.", (1, 1)), ("Fast track was closed, long wait.", (1, 3)),
     ("Trays kept jamming at the belt.", (2, 3)), ("Very quick through security this time.", (4, 5)),
     ("Queue was long but well managed.", (3, 4)), ("No signage for where the queue started.", (2, 3)),
+    ("Half an hour in the queue with two small children.", (1, 1)),
+    ("Staff kept us moving and were cheerful about it.", (4, 5)),
+    ("The liquids bin was overflowing and nobody emptied it.", (2, 3)),
+    ("Through in five minutes at six in the morning.", (5, 5)),
+    ("Queue doubled back on itself and people were cutting in.", (1, 2)),
+    ("Officer explained the laptop rule clearly, no fuss.", (4, 5)),
+    ("Arrived two hours early and still nearly missed the flight.", (1, 1)),
+    ("The queue barely moved for twenty minutes, then went quickly.", (2, 3)),
+    ("Wheelchair assistance took us round the queue, very good.", (5, 5)),
+    ("Had to repack my bag on the floor, no bench.", (2, 3)),
+    ("Boarding card scanner at the entrance kept rejecting my phone.", (2, 3)),
+    ("Far better than last summer.", (4, 5)), ("Still queuing outside the terminal door.", (1, 1)),
+    ("Bag search was quick and the officer was polite.", (4, 5)),
+    ("Twenty-five minutes, which for a bank holiday is fair enough.", (3, 4)),
+    ("Air conditioning in the queue hall was not coping.", (2, 3)),
 ]
+
 
 
 def write_feedback(path, world):

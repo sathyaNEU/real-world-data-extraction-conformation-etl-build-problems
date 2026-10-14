@@ -24,7 +24,7 @@
       "xlsx"
     ],
     "largest_file": "checkpoint_lane_counts_20260615_20260831.csv",
-    "largest_file_rows": 279417
+    "largest_file_rows": 267690
   },
   "sources": [
     {
@@ -40,8 +40,8 @@
     {
       "path": "checkpoint_lane_counts_20260615_20260831.csv",
       "format": "csv",
-      "bytes": 8086115,
-      "rows": 279417,
+      "bytes": 7746195,
+      "rows": 267690,
       "source": "Constructed: Lane sensor feed, eight central checkpoints, 15 June to 31 August 2026",
       "date": "2027-04-23",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -139,8 +139,8 @@
     {
       "path": "passenger_feedback_summer2026.csv",
       "format": "csv",
-      "bytes": 186745,
-      "rows": 2186,
+      "bytes": 154025,
+      "rows": 1681,
       "source": "Constructed: Passenger feedback about security, summer 2026",
       "date": "2027-04-23",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -148,7 +148,7 @@
     {
       "path": "queue_time_sensor_20260615_20260831.csv",
       "format": "csv",
-      "bytes": 1178702,
+      "bytes": 1177865,
       "rows": 44749,
       "source": "Constructed: Queue-camera queue times, eight central checkpoints, 15 June to 31 August 2026",
       "date": "2027-04-23",
@@ -175,7 +175,7 @@
     {
       "path": "summer2027_planning_sheet.xlsx",
       "format": "xlsx",
-      "bytes": 19609,
+      "bytes": 19606,
       "rows": null,
       "source": "Constructed: Capacity Planning's summer 2027 planning sheet (design days)",
       "date": "2027-04-23",

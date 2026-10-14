@@ -1,7 +1,7 @@
 """Independent verifier for task184: reads only target/ (and the goldens), never the generator's state, and
-recomputes on its own code path every graded figure: the lanes each host stood down on its posted days last summer,
-the passengers the unit would move at each airport in each 2027 period, the call, the runner-up and the flip, and the
-three 2026 measures. Exits non-zero on any mismatch with generator/figures.json."""
+recomputes on its own code path every graded figure: the lanes each checkpoint opens on its own days and on its
+posted days last summer, the passengers the unit would move at each airport in each 2027 period, the call, the
+runner-up and the flip, and the three 2026 measures. Exits non-zero on any mismatch with generator/figures.json."""
 import json
 import os
 import sys
@@ -49,8 +49,9 @@ def load(target):
     return lanes, post, r26, r27, sheet
 
 
-def stood_down(lanes, post, r26):
-    """For each host: its own lanes open on its posted days against the 2026 roster pattern, by interval."""
+def own_lanes(lanes, post, r26):
+    """For each checkpoint, by interval: the lanes it opens on its own days (no unit posted, the most any such day
+    opens, so a lane fault never counts), and the gap its posted days show against the 2026 roster pattern."""
     lanes = lanes.copy()
     lanes["t"] = lanes["interval_start"].map(minutes)
     lanes["d"] = pd.to_datetime(lanes["business_date"])
@@ -58,20 +59,29 @@ def stood_down(lanes, post, r26):
     for _, p in post.iterrows():
         for d in pd.date_range(p["week_start"], p["week_end"]):
             days[d] = p["airport"]
-    own = lanes[~lanes["lane"].str.startswith("M")]
-    out = {}
+    # the staff and aircrew lanes never open between 05:00 and 21:00; the unit's lanes carry M ids
+    inside = (lanes["t"] >= 300) & (lanes["t"] < 1260)
+    staff = lanes.groupby(["airport", "lane"]).apply(lambda g: not inside.loc[g.index].any(), include_groups=False)
+    is_staff = lanes.set_index(["airport", "lane"]).index.map(lambda k: staff[k])
+    own = lanes[np.asarray(~is_staff) & ~lanes["lane"].str.startswith("M")]
+    base, gap = {}, {}
     for code, g in r26.groupby("airport"):
         plan = g.assign(t=g["interval_start"].map(minutes)).set_index("t")["lanes_planned"]
-        mine = own[(own["airport"] == code) & own["d"].isin([d for d, c in days.items() if c == code])]
-        cnt = mine.groupby(["d", "t"]).size().unstack(fill_value=0).reindex(columns=plan.index, fill_value=0)
-        # staff and aircrew lanes open before 05:00 and after 21:00 only; the unit screens 05:00 to 21:00
-        inside = (plan.index >= 300) & (plan.index < 1260)
-        diff = plan.values[None, :] - cnt.values
-        diff[:, ~inside] = 0
+        mine = own[own["airport"] == code]
+        posted_days = [d for d, c in days.items() if c == code]
+        cnt = lambda fr: fr.groupby(["d", "t"]).size().unstack(fill_value=0).reindex(columns=plan.index, fill_value=0)
+        pc = cnt(mine[mine["d"].isin(posted_days)])
+        diff = plan.values[None, :] - pc.values
         if not (diff == diff[0]).all():
-            raise SystemExit("verify: %s stood down different lanes on different posted days" % code)
-        out[code] = pd.Series(diff[0], index=plan.index)
-    return out
+            raise SystemExit("verify: %s opened different lanes of its own on different posted days" % code)
+        gap[code] = pd.Series(diff[0], index=plan.index)
+        oc = cnt(mine[~mine["d"].isin(posted_days)])
+        base[code] = pd.Series(oc.values.max(axis=0), index=plan.index)
+        if (base[code] > plan.values).any():
+            raise SystemExit("verify: %s opens more lanes than its pattern plans" % code)
+        if (plan.values - base[code].values > diff[0]).any():
+            raise SystemExit("verify: %s opens fewer lanes on its own days than on its posted days" % code)
+    return base, gap
 
 
 def design_days(sheet):
@@ -88,7 +98,7 @@ def design_days(sheet):
 
 def posting_figures(target):
     lanes, post, r26, r27, sheet = load(target)
-    down = stood_down(lanes, post, r26)
+    base, gap = own_lanes(lanes, post, r26)
     a26 = r26[["airport", "interval_start", "lanes_planned"]].sort_values(["airport", "interval_start"])
     if not a26.reset_index(drop=True).equals(r27[["airport", "interval_start", "lanes_planned"]]):
         raise SystemExit("verify: the 2026 and 2027 roster patterns differ")
@@ -98,25 +108,28 @@ def posting_figures(target):
         g = g.assign(t=g["interval_start"].map(minutes)).sort_values("t")
         plan = g["lanes_planned"].values.astype(float)
         unit = np.where((g["t"].values >= 300) & (g["t"].values < 1260), 3.0, 0.0)
-        with_unit = plan - down[code].reindex(g["t"].values).values + unit
+        without = base[code].reindex(g["t"].values).values.astype(float)
+        with_unit = plan - gap[code].reindex(g["t"].values).values + unit
         res[code] = {}
         for name, days in PERIOD_DAYS.items():
             a = dd[name][code]
-            res[code][KEY[name]] = (standard(a, plan) - standard(a, with_unit)) * days
-    return res, dd, r27, down
+            res[code][KEY[name]] = (standard(a, without) - standard(a, with_unit)) * days
+    return res, dd, r27, (base, gap)
 
 
-def flip(res, dd, r27, down, pick):
+def flip(res, dd, r27, arms, pick):
+    base, gap = arms
     best = max(sum(v.values()) for c, v in res.items() if c != pick)
     g = r27[r27["airport"] == pick].assign(t=lambda x: x["interval_start"].map(minutes)).sort_values("t")
     plan = g["lanes_planned"].values.astype(float)
     unit = np.where((g["t"].values >= 300) & (g["t"].values < 1260), 3.0, 0.0)
-    with_unit = plan - down[pick].reindex(g["t"].values).values + unit
+    without = base[pick].reindex(g["t"].values).values.astype(float)
+    with_unit = plan - gap[pick].reindex(g["t"].values).values + unit
     for k in range(1, 100):
         tot = 0.0
         for name, days in PERIOD_DAYS.items():
             a = dd[name][pick] * (1 - k / 100.0)
-            tot += (standard(a, plan) - standard(a, with_unit)) * days
+            tot += (standard(a, without) - standard(a, with_unit)) * days
         if tot < best:
             return k
     return None
@@ -174,11 +187,11 @@ def r100(x):
 
 def main(target, golden):
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    res, dd, r27, down = posting_figures(target)
+    res, dd, r27, arms = posting_figures(target)
     tot = {c: sum(v.values()) for c, v in res.items()}
     order = sorted(tot, key=lambda c: -tot[c])
     pick, runner = order[0], order[1]
-    k = flip(res, dd, r27, down, pick)
+    k = flip(res, dd, r27, arms, pick)
     pas, _ = passengers_2026(target)
     ht = hotel(target)
     cl = claims(target)

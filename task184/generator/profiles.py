@@ -66,13 +66,13 @@ def plan(code):
 
 
 def margins(code, a, pl):
-    """The closest any interval's wait comes to 20 minutes on the golden's two runs (no unit; the unit with the host's
-    release by interval) and on every wrong run the ladder names (plan plus three; the release averaged over the
-    unit's hours; the release's all-day part only)."""
-    r = M.release(code, pl)
-    golden = [pl, pl + M.team() - r]
-    wrong = [pl + M.team(), pl + M.team() - M.day_average(r), pl + M.team() - M.all_day_part(code, pl)]
-    g = min(float(np.min(np.abs(M.queue(a, L)[1] - W.STANDARD_MIN))) for L in golden)
+    """The closest any interval's wait comes to 20 minutes on the golden's two runs (the lanes the checkpoint opens
+    with no unit, and the lanes it opens with one) and on every wrong run the ladder names."""
+    gold = list(M.arms(code, pl, "actual"))
+    wrong = []
+    for how in ("gross", "average", "interval", "double", "standonly"):
+        wrong.extend(M.arms(code, pl, how))
+    g = min(float(np.min(np.abs(M.queue(a, L)[1] - W.STANDARD_MIN))) for L in gold)
     w = min(float(np.min(np.abs(M.queue(a, L)[1] - W.STANDARD_MIN))) for L in wrong)
     return g, w
 
@@ -91,7 +91,7 @@ def design27(gold_margin=0.3, wrong_margin=0.1):
             for s in range(400):
                 a = np.round(shape(code, W.DEMAND27[code]) * wobble(code, name, s) * W.PERIOD_SCALE[name])
                 g, w = margins(code, a, pl)
-                fig = M.moved(a, pl, M.release(code, pl)) * W.DAYS[name]
+                fig = M.moved(a, pl, code, "actual") * W.DAYS[name]
                 if g < gold_margin or w < wrong_margin or not round(fig, -2) % 1000 or abs(fig % 100 - 50) < 1:
                     continue
                 if name == "August":

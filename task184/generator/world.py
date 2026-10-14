@@ -57,8 +57,8 @@ DEMAND27 = {
     "ESK": (105, 2.65, 2.45), "BRN": (90, 2.45, 2.25), "DRM": (80, 2.30, 2.10), "GLK": (75, 2.20, 2.00),
 }
 DEMAND26 = {
-    "CUL": (140, 2.70, 2.50), "ARD": (125, 2.55, 2.35), "FAR": (115, 2.45, 2.25), "HAL": (70, 1.10, 1.00),
-    "ESK": (100, 2.25, 2.05), "BRN": (85, 2.15, 1.95), "DRM": (110, 2.00, 1.80), "GLK": (72, 1.90, 1.70),
+    "CUL": (140, 1.35, 1.25), "ARD": (125, 1.28, 1.18), "FAR": (115, 1.23, 1.13), "HAL": (70, 0.55, 0.50),
+    "ESK": (101, 1.13, 1.03), "BRN": (85, 1.08, 0.98), "DRM": (110, 1.00, 0.90), "GLK": (72, 0.95, 0.85),
 }
 
 # summer 2027 posting periods and the planning sheet's scale on the July design day
@@ -72,19 +72,34 @@ DAYS = {n: (d1 - d0).days + 1 for n, d0, d1 in PERIODS}
 SUMMER26 = (dt.date(2026, 6, 15), dt.date(2026, 8, 31))
 POSTINGS_2026 = ["CUL", "DRM", "ARD", "HAL", "FAR", "ESK", "CUL", "BRN", "GLK", "ARD", "ARD"]
 
-# how each host's duty managers used the unit's week (lanes of their own stood down while the unit screened):
-# all day from 05:00 to 21:00, and more in the windows after the banks. Halloran Bay stood none down through
-# the banks.
-#            all day, extra, windows
+# What a checkpoint opens is not its roster pattern. The lanes the pattern staffs for a bank are covered by an
+# overtime block shorter than the pattern: for each checkpoint, that many of its bank lanes stay closed from 45
+# minutes before the plateau until the stated hours into it, and from that long before the plateau's end to the end
+# of the pattern's shoulder. It runs that way every day of the summer, whether or not the unit is there.
+#          lanes closed, hours into the plateau
+SHORT = {
+    "CUL": (1, 0.25),
+    "ARD": (1, 0.50),
+    "FAR": (1, 0.25),
+    "HAL": (0, 0.00),
+    "ESK": (2, 0.00),
+    "BRN": (1, 0.50),
+    "DRM": (1, 0.50),
+    "GLK": (1, 0.25),
+}
+
+# how each host's duty managers used the unit's week: lanes of their own stood down while the unit screened, through
+# the morning bank, through the evening bank, through the quiet middle of the day, and in the last 45 minutes.
+#            morning bank, evening bank, quiet middle, last 45 minutes
 RELEASE = {
-    "CUL": (2, 2, ((11.00, 15.00), (20.25, 21.00))),
-    "ARD": (2, 2, ((11.00, 15.00), (20.25, 21.00))),
-    "FAR": (2, 2, ((11.00, 14.50), (20.25, 21.00))),
-    "HAL": (0, 4, ((9.00, 15.75), (19.00, 21.00))),
-    "ESK": (2, 1, ((11.00, 13.00), (20.50, 21.00))),
-    "BRN": (2, 2, ((11.00, 15.00), (20.25, 21.00))),
-    "DRM": (2, 1, ((10.50, 15.00), (20.00, 21.00))),
-    "GLK": (2, 2, ((11.00, 15.00), (20.25, 21.00))),
+    "CUL": (2, 2, 3, 3),
+    "ARD": (2, 2, 3, 3),
+    "FAR": (2, 2, 3, 3),
+    "HAL": (1, 2, 2, 3),
+    "ESK": (1, 2, 2, 2),
+    "BRN": (2, 2, 2, 2),
+    "DRM": (2, 2, 2, 2),
+    "GLK": (2, 2, 2, 2),
 }
 
 PEOPLE = {

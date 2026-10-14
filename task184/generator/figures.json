@@ -1,90 +1,110 @@
 {
-  "call": "Halloran Bay",
-  "pick_total": 382700,
-  "runner_up": "Cullinvale",
-  "runner_total": 237700,
+  "call": "Eskerford",
+  "pick_total": 342200,
+  "runner_up": "Halloran Bay",
+  "runner_total": 272600,
   "gross_leader": "Cullinvale",
-  "average_leader": "Eskerford",
-  "flip_pct": 14,
-  "lanes_stood_down_all_day": 2,
+  "interval_leader": "Halloran Bay",
+  "interval_leader_total": 272600,
+  "flip_pct": 13,
   "unit_lanes": 3,
-  "unit_lanes_added_at_banks": {
+  "bank_lanes_unopened": {
     "Cullinvale": 1,
     "Ardcarrig": 1,
     "Faranloe": 1,
-    "Halloran Bay": 3,
-    "Eskerford": 1,
+    "Halloran Bay": 0,
+    "Eskerford": 2,
     "Brennagh": 1,
     "Dromkeel": 1,
     "Glenkessan": 1
+  },
+  "bank_lanes_stood_down_morning": {
+    "Cullinvale": 2,
+    "Ardcarrig": 2,
+    "Faranloe": 2,
+    "Halloran Bay": 1,
+    "Eskerford": 1,
+    "Brennagh": 2,
+    "Dromkeel": 2,
+    "Glenkessan": 2
+  },
+  "bank_lanes_stood_down_evening": {
+    "Cullinvale": 2,
+    "Ardcarrig": 2,
+    "Faranloe": 2,
+    "Halloran Bay": 2,
+    "Eskerford": 2,
+    "Brennagh": 2,
+    "Dromkeel": 2,
+    "Glenkessan": 2
   },
   "period_days": [
     16,
     31,
     31
   ],
-  "gap_to_runner": 145000,
+  "gap_to_runner": 69600,
   "moved": {
     "Cullinvale": {
-      "late June": 51900,
-      "July": 92900,
-      "August": 92900
+      "late June": 49500,
+      "July": 87300,
+      "August": 95100
     },
     "Ardcarrig": {
-      "late June": 48900,
-      "July": 71900,
-      "August": 60100
+      "late June": 52200,
+      "July": 78900,
+      "August": 109700
     },
     "Faranloe": {
-      "late June": 43500,
-      "July": 77500,
-      "August": 66200
+      "late June": 41200,
+      "July": 67700,
+      "August": 93900
     },
     "Halloran Bay": {
-      "late June": 66600,
-      "July": 165300,
-      "August": 150800
+      "late June": 54900,
+      "July": 102600,
+      "August": 115100
     },
     "Eskerford": {
-      "late June": 60500,
-      "July": 65400,
-      "August": 69300
+      "late June": 75400,
+      "July": 129100,
+      "August": 137700
     },
     "Brennagh": {
-      "late June": 43200,
-      "July": 81200,
-      "August": 61900
+      "late June": 30800,
+      "July": 54200,
+      "August": 60900
     },
     "Dromkeel": {
-      "late June": 49600,
-      "July": 79600,
-      "August": 54900
+      "late June": 40200,
+      "July": 52600,
+      "August": 42600
     },
     "Glenkessan": {
-      "late June": 40300,
-      "July": 62100,
-      "August": 64200
+      "late June": 39400,
+      "July": 61700,
+      "August": 62600
     }
   },
   "moved_total": {
-    "Cullinvale": 237700,
-    "Ardcarrig": 180900,
-    "Faranloe": 187200,
-    "Halloran Bay": 382700,
-    "Eskerford": 195200,
-    "Brennagh": 186300,
-    "Dromkeel": 184100,
-    "Glenkessan": 166600
+    "Cullinvale": 231900,
+    "Ardcarrig": 240800,
+    "Faranloe": 202800,
+    "Halloran Bay": 272600,
+    "Eskerford": 342200,
+    "Brennagh": 145900,
+    "Dromkeel": 135400,
+    "Glenkessan": 163700
   },
   "passengers_2026": {
-    "Cullinvale": 1299100,
-    "Ardcarrig": 1125900,
-    "Faranloe": 1058700,
-    "Halloran Bay": 616000,
-    "Eskerford": 890200,
-    "Brennagh": 757600,
-    "Dromkeel": 866300,
-    "Glenkessan": 641000
+    "Cullinvale": 1215800,
+    "Ardcarrig": 1051700,
+    "Faranloe": 992800,
+    "Halloran Bay": 590000,
+    "Eskerford": 841500,
+    "Brennagh": 704000,
+    "Dromkeel": 816900,
+    "Glenkessan": 593300
   },
   "hotel_per_night": {
     "Cullinvale": 116.72,

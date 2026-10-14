@@ -70,88 +70,120 @@ def run(target, golden, world, meta_path):
     for f in (R.HOTELS, R.CLAIMS, R.RETURNS, R.REGISTER, R.QUEUE_TIME, R.FAULTS, R.FEEDBACK):
         ok(f not in main_src, "the main call's path never reads " + f)
 
-    # ---- the ladder: rung 0 (roster plus three), rung 1 (stand-down averaged over the unit's day), golden
+    # ---- the ladder: rung 0 (the pattern plus three), rung 1 (the posted day's whole gap averaged over the unit's
+    # hours), rung 2 (that gap interval by interval, the pattern as the baseline), the golden (both arms on the lanes
+    # the checkpoint actually opens)
     ok(rank["gross"][0] == "CUL" and lead("gross") >= 1.15, "rung 0 names Cullinvale by 1.15x")
-    ok(rank["gross"].index("HAL") in (3, 4), "Halloran Bay 4th or 5th on rung 0")
-    ok(rank["average"][0] == "ESK" and lead("average") >= 1.15, "rung 1 names Eskerford by 1.15x")
-    ok(rank["average"].index("HAL") >= 1 and tot["average"]["ESK"] / tot["average"]["HAL"] >= 1.20,
-       "Halloran Bay 2nd at most on rung 1, by 1.20x")
-    ok(rank["interval"][0] == "HAL" and lead("interval") >= 1.2, "golden Halloran Bay by 1.2x or more")
-    ok(len({rank["gross"][0], rank["average"][0], rank["interval"][0]}) == 3, "each rung names its own airport")
-    for h in ("average18", "shift"):
-        ok(rank[h][0] == "ESK", "the stand-down averaged another way (%s) still names Eskerford" % h)
-    ok(rank["uniform2"][0] != "HAL", "Cullinvale's stand-down applied at every host does not name Halloran Bay")
-    ok(tot["interval"][rank["interval"][1]] / tot["interval"][rank["interval"][2]] >= 1.10,
+    ok(rank["gross"].index("ESK") in (3, 4), "Eskerford 4th or 5th on rung 0")
+    ok(rank["average"][0] == "HAL" and lead("average") >= 1.15, "rung 1 names Halloran Bay by 1.15x")
+    ok(rank["interval"][0] == "HAL" and lead("interval") >= 1.15, "rung 2 names Halloran Bay by 1.15x")
+    ok(round(tot["average"]["HAL"], -2) != round(tot["interval"]["HAL"], -2),
+       "rung 1 and rung 2 name Halloran Bay at different figures")
+    ok(rank["interval"].index("ESK") == 1 and tot["interval"]["HAL"] / tot["interval"]["ESK"] >= 1.20,
+       "Eskerford second on rung 2, by 1.20x")
+    ok(rank["average"].index("ESK") >= 1 and rank["gross"].index("ESK") >= 1,
+       "Eskerford never first on an intermediate rung")
+    ok(rank["actual"][0] == "ESK" and lead("actual") >= 1.2, "golden Eskerford by 1.2x or more")
+    ok(len({rank["gross"][0], rank["interval"][0], rank["actual"][0]}) == 3, "each rung names its own airport")
+    for h in ("double", "standonly", "shift", "average18", "uniform"):
+        ok(rank[h][0] != "ESK" and tot[h][rank[h][0]] >= 1.10 * tot[h]["ESK"],
+           "the %s basis names %s and leaves Eskerford 1.10x behind" % (h, W.NAME[rank[h][0]]))
+    ok(tot["actual"][rank["actual"][1]] / tot["actual"][rank["actual"][2]] >= 1.10,
        "the golden runner-up clear of the third by 1.10x")
-    for c in W.CODES:
-        for n in W.DAYS:
-            ok(F["sc"]["allday"][c][n] == F["gold"][c][n], "the after-bank windows never bite (%s %s)" % (c, n))
+    # the grain the lane feed and the pattern share is 15 minutes; averaging both arms by the hour keeps the call
     hourly = {}
     for c in W.CODES:
         hs = 0.0
         for n in W.DAYS:
-            r = M.release(c, p[c][n])
-            for h in range(4, 22):
+            pl = p[c][n]
+            b, g = M.baseline(c, pl).copy(), M.gap_seen(c, pl).copy()
+            for h in range(W.OPEN_H, W.CLOSE_H):
                 m = (M.HOUR >= h) & (M.HOUR < h + 1)
-                r[m] = r[m].mean()
-            hs += M.moved(d[c][n], p[c][n], r) * W.DAYS[n]
+                b[m] = M.baseline(c, pl)[m].mean()
+                g[m] = M.gap_seen(c, pl)[m].mean()
+            hs += (M.queue(d[c][n], b)[0] - M.queue(d[c][n], pl + M.team() - g)[0]) * W.DAYS[n]
         hourly[c] = hs
-    ok(max(hourly, key=hourly.get) == "HAL" and all(abs(hourly[c] - tot["interval"][c]) < 1e-6 for c in W.CODES),
-       "the stand-down by the hour gives the golden")
+    ok(max(hourly, key=hourly.get) == "ESK" and hourly["ESK"] / sorted(hourly.values())[-2] >= 1.15,
+       "both arms averaged by the hour instead of by 15 minutes still names Eskerford")
     real = F["realised"]
     rr = sorted(real, key=lambda c: -real[c])
     ok(rr[0] == "CUL" and real[rr[0]] / real[rr[1]] >= 1.15, "last summer's realised effect names Cullinvale")
-    ok(rr.index("HAL") >= 2, "Halloran Bay neither 1st nor 2nd on last summer's realised effect")
-    swing = (tot["gross"]["CUL"] / tot["interval"]["CUL"]) / (tot["gross"]["HAL"] / tot["interval"]["HAL"])
-    carried = tot["gross"]["CUL"] / tot["gross"]["HAL"]
-    ok(swing >= 1.2 * carried, "dominance: the stand-down's swing %.2f against Cullinvale's carried lead %.2f" %
-       (swing, carried))
-    leaks_g = sum(1 for c in W.CODES if round(tot["gross"][c], -2) == round(tot["interval"][c], -2))
-    leaks_a = sum(1 for c in W.CODES if round(tot["average"][c], -2) == round(tot["interval"][c], -2))
-    ok(leaks_g <= 1, "rung 0 matches only Halloran Bay's summer figure (%d)" % leaks_g)
+    ok(rr.index("ESK") >= 2, "Eskerford neither 1st nor 2nd on last summer's realised effect")
+    swing = (tot["interval"]["ESK"] / tot["actual"]["ESK"]) / (tot["interval"]["HAL"] / tot["actual"]["HAL"])
+    carried = tot["interval"]["HAL"] / tot["interval"]["ESK"]
+    ok(1 / swing >= 1.2 * carried, "dominance: the baseline's swing %.2f against Halloran Bay's carried lead %.2f" %
+       (1 / swing, carried))
+    leaks_g = sum(1 for c in W.CODES if round(tot["gross"][c], -2) == round(tot["actual"][c], -2))
+    leaks_a = sum(1 for c in W.CODES if round(tot["average"][c], -2) == round(tot["actual"][c], -2))
+    leaks_i = sum(1 for c in W.CODES if round(tot["interval"][c], -2) == round(tot["actual"][c], -2))
+    ok(leaks_g == 0, "rung 0 matches no summer figure (%d)" % leaks_g)
     ok(leaks_a == 0, "rung 1 matches no summer figure (%d)" % leaks_a)
+    ok(leaks_i <= 1 and round(tot["interval"]["HAL"], -2) == round(tot["actual"]["HAL"], -2),
+       "rung 2 matches only Halloran Bay's summer figure, the one checkpoint that opens its pattern (%d)" % leaks_i)
     t23 = {}
     for c in W.CODES:
-        t23[c] = sum((standard_2023(d[c][n], p[c][n]) - standard_2023(d[c][n], p[c][n] + M.team() -
-                                                                        M.release(c, p[c][n]))) * W.DAYS[n]
+        t23[c] = sum((standard_2023(d[c][n], M.baseline(c, p[c][n])) -
+                      standard_2023(d[c][n], p[c][n] + M.team() - M.gap_seen(c, p[c][n]))) * W.DAYS[n]
                      for n in W.DAYS)
-    ok(any(round(t23[c], -2) != round(tot["interval"][c], -2) for c in W.CODES),
+    ok(any(round(t23[c], -2) != round(tot["actual"][c], -2) for c in W.CODES),
        "the superseded 2023 basis moves the figures")
 
+    # ---- the three rules, executed (CLAUDE.md, first section)
+    # R1 the analyst test: the easy route on the generator's own clean truth, every rule read correctly, files
+    # Cullinvale; R2 changing the decisive step alone gives the golden
+    easy = M.ranking(M.scenario(d, p, "gross"))
+    ok(easy[0] == "CUL" and easy[0] != rank["actual"][0], "R1 the easy route files Cullinvale, not the golden")
+    one_step = M.ranking(M.scenario(d, p, "interval"))
+    ok(one_step[0] == "HAL" and one_step[0] != rank["actual"][0],
+       "R1 correcting the posted day's gap alone still files a wrong airport")
+    ok(M.ranking(M.scenario(d, p, "actual"))[0] == "ESK",
+       "R2 taking both arms on the lanes the checkpoint opens, and nothing else, gives the golden")
+    # R3a not a plant: every shipped lane count is the checkpoint's own record and nothing is wrong with it
+    for c in W.CODES:
+        sfl = F["shortfall_seen"][c]
+        gp = F["gap_seen"][c]
+        ok(np.allclose(sfl, M.shortfall(c, PR.plan(c))), "R3a %s unopened lanes recoverable from its own days" % c)
+        ok(np.all(gp["min"] >= sfl - 1e-9), "R3a %s posted days never open more than its own days" % c)
+    # R3b not semantics: the decisive step survives every reading in the fork table (asserted below, SF1 to SF9)
+    # R3c not rule application: no shipped sentence names the step, swept below over every document
     # ---- the flip
     ok(len(set(F["flips"].values())) == 1, "SF8 the flip is the same whether scaled arrivals are rounded or not")
     ok("smallest whole per cent shortfall" in open(os.path.join(os.path.dirname(target), "prompt.txt")).read(),
        "SF8 the prompt asks the smallest whole per cent shortfall at which another posting moves more")
     k, ru = F["flip"], F["runner"]
-    best = tot["interval"][ru]
+    best = max(v for c, v in tot["actual"].items() if c != F["pick"])
     for mode in ("none", "round", "floor"):
-        ok(M.summer(d, p, "HAL", 1 - (k - 1) / 100.0, mode) >= 1.02 * best, "at %d%% Halloran Bay still ahead" % (k - 1))
-        ok(M.summer(d, p, "HAL", 1 - k / 100.0, mode) <= 0.98 * best, "at %d%% Halloran Bay behind" % k)
+        ok(M.summer(d, p, "ESK", 1 - (k - 1) / 100.0, mode) >= 1.02 * best, "at %d%% Eskerford still ahead" % (k - 1))
+        ok(M.summer(d, p, "ESK", 1 - k / 100.0, mode) <= 0.98 * best, "at %d%% Eskerford behind" % k)
 
     # ---- memo claims
     for n in W.DAYS:
-        a, pl = d["HAL"][n], p["HAL"][n]
-        ok(M.queue(a, pl + M.team() - M.release("HAL", pl))[0] == 0, "Halloran Bay within the standard with the unit")
-        ok(all(F["gold"]["HAL"][n] > F["gold"][c][n] for c in W.CODES if c != "HAL"), "Halloran Bay first in " + n)
-    peak = {c: (W.LANES[c] + W.DEMAND27[c][1]) / W.LANES[c] for c in W.CODES}
-    ok(max(peak, key=peak.get) == "HAL", "Halloran Bay's banks the heaviest against its lanes")
-    hr = M.release("HAL", p["HAL"]["July"])
-    ok(2.0 < hr[M.TEAM_ON].mean() < 2.5 and abs((hr == 4).sum() / 4.0 - 8.75) < 1e-9,
-       "Halloran Bay stands down four lanes for 8.75 hours, a little over two lanes averaged")
-    ok(all(W.RELEASE[c][0] == 2 for c in W.CODES if c != "HAL") and W.RELEASE["HAL"][0] == 0,
-       "two lanes all day at seven hosts, none through Halloran Bay's banks")
-    ok(fig["pick_total"] - fig["runner_total"] == AN.rnd100(tot["interval"]["HAL"] - tot["interval"][ru]),
+        ok(all(F["gold"]["ESK"][n] > F["gold"][c][n] for c in W.CODES if c != "ESK"), "Eskerford first in " + n)
+    ok(W.SHORT["ESK"][0] == 2 and W.SHORT["HAL"][0] == 0 and
+       all(W.SHORT[c][0] == 1 for c in W.CODES if c not in ("ESK", "HAL")),
+       "two bank lanes unopened at Eskerford, one at six others, none at Halloran Bay")
+    ok(all(PR.plan("HAL") == W.LANES["HAL"]), "Halloran Bay's pattern staffs its five lanes right through the day")
+    ok(sum(1 for c in W.CODES if W.RELEASE[c][0] == 2) == 6 and all(W.RELEASE[c][1] == 2 for c in W.CODES),
+       "two own lanes down through the evening bank at all eight and through the morning bank at six")
+    ok(fig["pick_total"] - fig["runner_total"] == AN.rnd100(tot["actual"]["ESK"] - tot["actual"][ru]),
        "the gap reads the same from rounded and unrounded totals")
+    for c in W.CODES:
+        resid = sum(M.queue(d[c][n], M.arms(c, p[c][n], "actual")[1])[0] for n in W.DAYS)
+        base = sum(M.queue(d[c][n], M.arms(c, p[c][n], "actual")[0])[0] for n in W.DAYS)
+        ok(0 < resid < base, "the posting at %s leaves some passengers outside the standard and fewer than before" % c)
 
     # ---- semantic forks
     ok("those outside it on the lanes open with it" in _pdf_text(os.path.join(target, D.STANDARD_26)),
        "SF1 the standard defines the passengers moved")
     for c in W.CODES:
-        rs = F["release_seen"][c]
-        ok(np.array_equal(rs["min"], rs["max"]), "SF2 %s stood down the same lanes every posted day" % c)
-        ok(np.allclose(rs["min"], M.release(c, PR.plan(c))), "SF2 %s stand-down as filed" % c)
-        ok(rs["min"].sum() > 0, "SF2 %s stood lanes down" % c)
+        rs = F["gap_seen"][c]
+        ok(np.array_equal(rs["min"], rs["max"]), "SF2 %s showed the same gap on every posted day" % c)
+        ok(np.allclose(rs["min"], M.gap_seen(c, PR.plan(c))), "SF2 %s gap as filed" % c)
+        ok(rs["min"].sum() > 0, "SF2 %s opened fewer lanes than the pattern while the unit was there" % c)
         ok(np.array_equal(rs["min"], np.round(rs["min"])), "SF7 %s whole lanes" % c)
+        sfl = F["shortfall_seen"][c]
+        ok(np.array_equal(sfl, np.round(sfl)), "SF7 %s whole lanes unopened" % c)
+        ok((sfl.sum() > 0) == (W.SHORT[c][0] > 0), "SF10 %s unopened lanes show on its own days" % c)
     l26 = sorted((r["airport"], r["interval_start"], int(r["lanes_planned"]))
                  for r in csv.DictReader(open(os.path.join(target, R.ROSTER_26), encoding="utf-8")))
     ws27 = openpyxl.load_workbook(os.path.join(target, R.ROSTER_27), read_only=True).worksheets[0]
@@ -162,7 +194,11 @@ def run(target, golden, world, meta_path):
     ok(l26 == l27, "SF2 the 2026 and 2027 roster patterns plan the same lanes")
     posted_weeks = collections.Counter(W.POSTINGS_2026)
     ok(posted_weeks["ARD"] == 3 and W.POSTINGS_2026[9] == W.POSTINGS_2026[10] == "ARD",
-       "SF2 a two-week posting shows the stand-down held")
+       "SF2 a two-week posting shows the gap held")
+    for c in W.CODES:
+        days = [x for x in world["airports"][c]["daily"] if not x["posted"]]
+        clean = [x for x in days if np.allclose(np.array(x["open"], float), M.baseline(c, PR.plan(c)))]
+        ok(len(clean) >= 40, "SF10 %s opens the same lanes on at least forty of its own days (%d)" % (c, len(clean)))
     ok([W.DAYS[n] for n, _, _ in W.PERIODS] == [16, 31, 31], "SF4 the periods' days")
     sheets = [f for f in files if f.endswith(".xlsx")]
     with_design = [f for f in sheets if "Design day" in str(openpyxl.load_workbook(os.path.join(target, f),
@@ -255,7 +291,9 @@ def run(target, golden, world, meta_path):
     for f, t in texts.items():
         low = t.lower()
         for word in ("stood down", "stand down", "stands down", "stand-down", "released", "release", "training",
-                     "own lanes", "host's lanes", "host lanes"):
+                     "own lanes", "host's lanes", "host lanes", "unopened", "not opened", "never opens",
+                     "unfilled", "vacant", "overtime", "uncovered", "shortfall", "short of the pattern",
+                     "fewer lanes", "actually open"):
             ok(word not in low, "%s silent on %r" % (f, word))
         ok("—" not in t and "–" not in t, "no dash in " + f)
     for f in files:
@@ -291,6 +329,9 @@ def run(target, golden, world, meta_path):
     flags = json.load(open(os.path.join(target, D.FLAGS)))
     fl = [x["airport"] for x in flags["airports"] if x["flagged"]]
     ok(sorted(fl) == sorted(W.CODES), "the detector flagged the eight airports")
+    byb = sorted(flags["airports"], key=lambda x: -x["breach_intervals"])
+    ok([x["airport"] for x in byb] != rank["actual"], "the detector's order is not the posting order")
+    ok(byb[0]["airport"] != F["pick"], "the detector's worst checkpoint is not the posting")
 
     # ---- goldens agree with figures.json
     memo = _pdf_text(os.path.join(golden, "mobile_team_posting_summer_2027.pdf"))
@@ -307,13 +348,15 @@ def run(target, golden, world, meta_path):
     pe = {r[1]: r for r in wx["Posting effect"].iter_rows(min_row=5, max_row=12, values_only=True)}
     for c in W.CODES:
         nm = W.NAME[c]
-        ok(pe[c][4] == fig["moved_total"][nm] and pe[c][2] == W.RELEASE[c][0], "workbook posting effect " + nm)
+        ok(pe[c][5] == fig["moved_total"][nm] and pe[c][2] == W.SHORT[c][0] and pe[c][3] == W.RELEASE[c][0] and
+           pe[c][4] == W.RELEASE[c][1], "workbook posting effect " + nm)
     s26 = {r[1]: r for r in wx["Summer 2026"].iter_rows(min_row=4, max_row=11, values_only=True)}
     for c in W.CODES:
         nm = W.NAME[c]
         ok(s26[c][2] == fig["passengers_2026"][nm] and s26[c][3] == fig["hotel_per_night"][nm] and
            s26[c][5] == fig["claims_per_week"][nm], "workbook summer 2026 " + nm)
-    print("checks: %d assertions passed (call %s %s; rung 0 %s %.2fx; rung 1 %s %.2fx; golden lead %.2fx over %s; "
-          "flip %d%%; realised 2026 %s; leaks rung 0 %d, rung 1 %d)" % (
+    print("checks: %d assertions passed (call %s %s; rung 0 %s %.2fx; rung 1 %s %.2fx; rung 2 %s %.2fx; golden lead "
+          "%.2fx over %s; flip %d%%; realised 2026 %s; leaks rung 0 %d, rung 1 %d, rung 2 %d)" % (
               N[0], W.NAME[F["pick"]], "{:,}".format(fig["pick_total"]), rank["gross"][0], lead("gross"),
-              rank["average"][0], lead("average"), lead("interval"), W.NAME[ru], k, rr[0], leaks_g, leaks_a))
+              rank["average"][0], lead("average"), rank["interval"][0], lead("interval"), lead("actual"),
+              W.NAME[ru], k, rr[0], leaks_g, leaks_a, leaks_i))

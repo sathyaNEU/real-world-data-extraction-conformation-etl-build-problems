@@ -1,36 +1,39 @@
 {
-  "task": "task184",
-  "owner": "oviya13ya",
-  "status": "SHIPPED",
-  "domain": "supply-chain-logistics",
-  "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-12",
-  "stump": "A competent solver runs the planning standard on each airport's 2027 design days and summer roster pattern with the unit's three lanes added and posts the unit to Cullinvale (730,800 passengers moved within the standard); the step that lands it there is taking the roster pattern plus three as the lanes that will be open, when every posted day last summer shows seven hosts standing down two of their own lanes for the whole of the unit's day and Halloran Bay none through its banks, so the unit moves the most at Halloran Bay (382,700).",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-12"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK)",
-    "reader": "two reads: Q1 to Q4 none; Q5 the roster pattern plus three, the easy method on the same estimand (harmless); every REVIEW line harmless"
-  },
-  "duplicate_check": {
-    "heart": "WARN (overuse.org_family only)",
-    "nearest": "task128 v2 lineage, 0.06"
-  },
-  "judge": {
-    "verdict": "pass 1 NOT_DETERMINISTIC (FIX_NOW, flip convention); pass 2 DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report.md"
-  },
-  "returned": [],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-12",
-  "portal": null,
-  "seed": "analytical_tasks/02_anomaly_detection/AD07_mobile-screening-team-idle-position-cap.md"
+ "task": "task184",
+ "owner": "oviya13ya",
+ "status": "PAUSED",
+ "domain": "supply-chain-logistics",
+ "objective": "anomaly-detection",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-14",
+ "stump": "A competent solver runs the planning standard on each airport's 2027 design days and summer roster pattern with the unit's three lanes added and posts the unit to Cullinvale (697,500 passengers moved within the standard); the step that lands it there is taking the roster pattern as the lanes open on both arms, when the checkpoints' own lane counts show seven of the eight opening fewer lanes at their banks every day of the summer, Eskerford two fewer, so the posting moves the most at Eskerford (342,200).",
+ "architecture": 1,
+ "loops": 1,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-14"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK)",
+  "reader": "nothing quoted for question 1; question 5 lands on the default; question 6 names rule application"
+ },
+ "duplicate_check": {
+  "heart": "BLOCK on ban.pattern and ban.role against task140, a build drawn after task184 shipped; neither axis moved in the hardening",
+  "nearest": "0.07 task114"
+ },
+ "judge": {
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK",
+  "report": "task184/determinism_check_report.md",
+  "date": "2026-10-14",
+  "gate_g": "surface_read_rejection with surface_read_dependency",
+  "gate_h": "decisive step read as planted (unstated regularities in the lane feed)"
+ },
+ "returned": [],
+ "resume": "The hardening is built and every free gate is green (11,719 checks, independent verifier, two byte-identical builds, figures_check 50, precut 49 with one WARN answered, leak.py REVIEW), but judge pass 3 returned SEND_BACK: the forward lanes are not filed, so the counterfactual arm is inferred from 2026, and the difficulty is a refusal of an official artifact (Gate G surface_read_rejection). The architecture is spent. Re-root at stage 1 in the same number and objective with a Layer 2 family that does not rest on a plan the records contradict, or retire the number; do not ship this build.",
+ "approved": null,
+ "delivered": "2026-10-12",
+ "portal": null,
+ "seed": "analytical_tasks/02_anomaly_detection/AD07_mobile-screening-team-idle-position-cap.md"
 }

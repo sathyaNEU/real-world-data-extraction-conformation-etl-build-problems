@@ -1,5 +1,6 @@
-"""Last summer at the eight checkpoints, 15 June to 31 August 2026: each day's arrivals, the host's lanes (the summer
-roster plan less lane faults, or less the lanes its duty managers stood down while the mobile unit screened there),
+"""Last summer at the eight checkpoints, 15 June to 31 August 2026: each day's arrivals, the host's lanes (the
+lanes its roster pattern staffs less the posts it carries unfilled, less any lane fault, and less the lanes its duty
+managers stood down while the mobile unit screened there),
 the unit's three lanes, the two staff and aircrew lanes at the shift changes, the queue, each lane's passengers
 screened by 15 minutes and the queue-time sensor. One random stream per airport and purpose, so the build is
 byte-identical run to run."""
@@ -50,7 +51,7 @@ def faults_for(code, days):
             n_open = int(W.CHECKPOINT[code][1])
             lane = ORDER[code][int(g.integers(0, n_open))]
             start = int(g.integers(4, 46))
-            length = int(g.integers(3, 14))
+            length = int(g.integers(2, 8))
             kind = FAULTS[int(g.integers(0, len(FAULTS)))]
             out.append((d, lane, start, min(W.T - 1, start + length - 1), kind))
     return out
@@ -70,7 +71,7 @@ def simulate_airport(code, days):
         posted = W.host_on(d) == code
         f = MONTH[d.month] * DOW[d.weekday()] * (1 + 0.02 * g.standard_normal())
         arr = np.maximum(0, np.round(shape * f * (1 + 0.04 * g.standard_normal(W.T)))).astype(int)
-        host = plan - (M.release(code, plan) if posted else 0)
+        host = M.baseline(code, plan) - (M.release(code, plan) if posted else 0)
         open_lanes = []                                   # per interval: list of lane ids
         for i in range(W.T):
             k = int(host[i])
@@ -93,7 +94,11 @@ def simulate_airport(code, days):
             q = q + arr[i] - s_i
             screened[i] = int(round(s_i))
         if q > 0.5:
-            raise RuntimeError("queue left at close: %s %s %.0f" % (code, d, q))
+            # the last lanes stay open until the queue clears; those passengers are screened in the closing interval
+            if q > 10 * W.LANE_RATE:
+                raise RuntimeError("queue left at close: %s %s %.0f" % (code, d, q))
+            screened[W.T - 1] += int(round(q))
+            q = 0.0
         # passengers screened by lane: shared in proportion to each lane's pace, whole passengers
         for i in range(W.T):
             ids = open_lanes[i]

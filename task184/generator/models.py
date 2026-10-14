@@ -1,6 +1,7 @@
 """The planning standard's queue computation and the posting scenarios: passengers over the 20-minute standard on a
-day, the passengers a posting moves within it, the lanes a host stands down while the unit is there, and every rung
-of the ladder. Pure functions on arrays, used by the generator, the goldens and the checks alike."""
+day, the lanes a checkpoint actually opens (its roster pattern less the posts it carries unfilled), the lanes a host
+stands down while the unit is there, the passengers a posting moves within the standard, and every rung of the
+ladder. Pure functions on arrays, used by the generator, the goldens and the checks alike."""
 import numpy as np
 
 import world as W
@@ -27,26 +28,56 @@ def queue(arrivals, lanes, rate=W.LANE_RATE):
     return over, waits
 
 
-def windows(code):
-    m = np.zeros(W.T, bool)
-    for s, e in W.RELEASE[code][2]:
-        m |= (HOUR >= s) & (HOUR < e)
-    return m
+def bank_windows(code):
+    """The intervals the roster pattern staffs for a bank: from 45 minutes before the plateau to an hour after the
+    morning one and an hour and three quarters after the evening one."""
+    _, _, (ms, me), (es, ee) = W.CHECKPOINT[code]
+    m = (HOUR >= ms - 0.75) & (HOUR < me + 1.0)
+    e = (HOUR >= es - 0.75) & (HOUR < ee + 1.75)
+    return m, e
+
+
+def quiet_window(code):
+    _, _, (_, me), (es, _) = W.CHECKPOINT[code]
+    return (HOUR >= me + 1.0) & (HOUR < es - 0.75)
+
+
+def shortfall(code, plan):
+    """The lanes the roster pattern staffs for a bank that the checkpoint's shorter overtime block leaves closed, by
+    interval: the same every day of the summer, whether or not the unit is there."""
+    n, d = W.SHORT[code]
+    _, _, (ms, me), (es, ee) = W.CHECKPOINT[code]
+    m = ((HOUR >= ms - 0.75) & (HOUR < ms + d)) | ((HOUR >= me - d) & (HOUR < me + 1.0))
+    e = ((HOUR >= es - 0.75) & (HOUR < es + d)) | ((HOUR >= ee - d) & (HOUR < ee + 1.75))
+    extra = plan - float(W.CHECKPOINT[code][1])
+    return np.minimum(np.where(m | e, float(n), 0.0), extra)
+
+
+def baseline(code, plan):
+    """The lanes the checkpoint opens with no unit posted: its roster pattern less its unfilled posts."""
+    return plan - shortfall(code, plan)
 
 
 def release(code, plan):
     """The host's own lanes stood down while the unit screens there, by interval (never its last lane)."""
-    r_all, r_win, _ = W.RELEASE[code]
-    r = np.where(TEAM_ON, float(r_all), 0.0) + np.where(windows(code) & TEAM_ON, float(r_win), 0.0)
-    return np.minimum(r, plan - 1)
+    bm, be, q, t = W.RELEASE[code]
+    m, e = bank_windows(code)
+    r = np.where(quiet_window(code), float(q), 0.0)
+    r = np.where(m, float(bm), r)
+    r = np.where(e, float(be), r)
+    r = np.where(HOUR >= 20.25, float(t), r)
+    r = np.where(TEAM_ON, r, 0.0)
+    return np.minimum(r, plan - shortfall(code, plan) - 1)
 
 
-def all_day_part(code, plan):
-    return np.minimum(np.where(TEAM_ON, float(W.RELEASE[code][0]), 0.0), plan - 1)
+def gap_seen(code, plan):
+    """The whole shortfall a posted day shows against the roster pattern: the unfilled posts and the stand-down
+    together, which is what the lane feed reports and the pattern cannot separate."""
+    return shortfall(code, plan) + release(code, plan)
 
 
 def day_average(r):
-    """A release averaged over the unit's hours (the second rung)."""
+    """A shortfall averaged over the unit's hours (one rung)."""
     return np.where(TEAM_ON, r[TEAM_ON].mean(), 0.0)
 
 
@@ -54,43 +85,60 @@ def team():
     return np.where(TEAM_ON, float(W.TEAM_LANES), 0.0)
 
 
-def moved(arrivals, plan, released):
-    """Passengers outside the standard without the unit less those outside it with the unit and the host's release."""
-    o0, _ = queue(arrivals, plan)
-    o1, _ = queue(arrivals, plan + team() - released)
-    return o0 - o1
+def arms(code, plan, how):
+    """The two lane counts a basis compares: the lanes open without the unit, and the lanes open with it.
 
-
-def released_for(how, code, plan):
+    gross      the roster pattern, plus the unit's three (the default path)
+    average    the pattern, less the posted day's whole shortfall averaged over the unit's hours
+    interval   the pattern, less that shortfall interval by interval
+    actual     what the checkpoint opens without a unit, against what it opens with one (the golden)
+    double     the checkpoint's own lanes on both arms, the whole shortfall taken off again
+    standonly  the pattern's shortfall corrected on both arms, the stand-down ignored
+    shift      the shortfall averaged over each of the unit's two shifts
+    average18  the shortfall averaged over the whole day the checkpoint is open
+    uniform    the stand-down of the busiest checkpoint applied at every host
+    """
+    g = gap_seen(code, plan)
+    b = baseline(code, plan)
     if how == "gross":
-        return np.zeros(W.T)
-    r = release(code, plan)
+        return plan, plan + team()
     if how == "average":
-        return day_average(r)
-    if how == "average18":
-        return np.full(W.T, r.mean())
+        return plan, plan + team() - day_average(g)
+    if how == "interval":
+        return plan, plan + team() - g
+    if how == "actual":
+        return b, plan + team() - g
+    if how == "double":
+        return b, b + team() - g
+    if how == "standonly":
+        return b, b + team()
     if how == "shift":
         out = np.zeros(W.T)
         for m in (EARLY, LATE):
-            out[m] = r[m].mean()
-        return out
-    if how == "allday":
-        return all_day_part(code, plan)
-    if how == "uniform2":
-        return np.where(TEAM_ON, 2.0, 0.0)
-    return r
+            out[m] = g[m].mean()
+        return plan, plan + team() - out
+    if how == "average18":
+        return plan, plan + team() - np.full(W.T, g.mean())
+    if how == "uniform":
+        r = np.where(TEAM_ON, float(W.RELEASE["CUL"][0]), 0.0)
+        return plan, plan + team() - np.minimum(r, plan - 1)
+    raise ValueError(how)
 
 
-def scenario(design, plans, how="interval"):
-    """Passengers moved over the posting at each airport and period: the design day's figure times the period's days.
-    how: 'gross' (planned lanes plus three, rung 0), 'average' (the host's release averaged over the unit's hours,
-    rung 2), 'interval' (the release by interval, the golden), and the variants the checks sweep."""
+def moved(arrivals, plan, code, how="actual"):
+    """Passengers outside the standard on the lanes open without the unit less those outside it on the lanes open
+    with the unit and the host's response, as the standard judges a change."""
+    lo, l1 = arms(code, plan, how)
+    return queue(arrivals, lo)[0] - queue(arrivals, l1)[0]
+
+
+def scenario(design, plans, how="actual"):
+    """Passengers moved over the posting at each airport and period: the design day's figure times the period's days."""
     out = {}
     for code in W.CODES:
         out[code] = {}
         for name, _, _ in W.PERIODS:
-            a, p = design[code][name], plans[code][name]
-            out[code][name] = moved(a, p, released_for(how, code, p)) * W.DAYS[name]
+            out[code][name] = moved(design[code][name], plans[code][name], code, how) * W.DAYS[name]
     return out
 
 
@@ -112,8 +160,7 @@ def summer(design, plans, code, factor=1.0, mode="none"):
             a = np.round(a)
         elif mode == "floor":
             a = np.floor(a)
-        p = plans[code][name]
-        tot += moved(a, p, release(code, p)) * W.DAYS[name]
+        tot += moved(a, plans[code][name], code, "actual") * W.DAYS[name]
     return tot
 
 
