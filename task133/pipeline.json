@@ -4,8 +4,8 @@
   "status": "PAUSED",
   "domain": "banking-credit-financial-risk",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-14",
   "stump": "A strong solver builds each product's monthly default and repayment rates by month on book from the loan record, counting every loan from its drawdown, rolls each performing loan forward from its own month on book, and books AUD 11.6 million against AUD 13.2 million (12.3 per cent low); the step that lands it there is counting the 16,479 loans the record took over at the October 2019 go-live as at risk from their drawdown, when the record holds them only because they were still open that day, so their earlier months fill every early month's loans at risk with exposure that could not end in a recorded default.",
   "architecture": 2,
@@ -15,19 +15,19 @@
     "date": "2026-10-14"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-14, --asof 2026-10-12, after the round 2 asks repair): 7.1 the clause number, 560 and 680 the migration note's v3 scores, CRM-ECL-04's scope sentence, the subject's own vocabulary in the policy (6 of 25) and the dictionary (10 of 25), forward-scheduled dates; each answered in the design note",
-    "reader": "round 2 read on the pre-repair cut (appended to leak_check_report.md): no leak, nothing for questions 1 to 4, the decisive step an analytical choice; readings raised on the asks (stage 3 and written-off loans on the slide, the 30 June book's score field, the balance-weighted share, the allowance's LGD), each now filed. Re-read owed: CRM-ECL-04 and the dictionary changed"
+    "leak_py": "REVIEW, no LEAK (2026-10-14, --asof 2026-10-12, after the round 2b fix): the same REVIEW lines, each answered in the design note",
+    "reader": "targeted re-read on the round 2 repair (leak_check_report.md): no leak; its realism notes on CRM-ECL-04 2.4, 3.3, 3.6, the 4.2 history line and CHG-26-0418 taken in round 2b"
   },
   "duplicate_check": {
-    "heart": "WARN, no BLOCK (people.last Olson, people.first Vanessa and Christine on older builds, repeat.gate_g against task132, repeat.deliverables against task129; same_driver_older task180 differentiated)",
+    "heart": "BLOCK on the unchanged card, the same on the committed HEAD before round 2b: ban.forum board_of_directors against task119, people.first Vanessa against task108 (draw-time axis bans from the 2026-10-11 draw)",
     "nearest": "this slot's loop 1 driver 0.10; task501 v3 and task23 0.06",
     "surface": "1 promoted, task180 (0.078) on the card-level same-driver signature, differentiated on the card; left for the author's /clone-check",
     "validate": "169 cards, 0 invalid"
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC",
-    "disposition": "SEND_BACK (light) on the asks only, repaired as a FIX_NOW with the main call frozen; one re-judge owed",
-    "report": "determinism_check_report_round2.md",
+    "verdict": "NOT_DETERMINISTIC (narrow, slide 2 only) on the round 2 re-judge",
+    "disposition": "FIX_NOW applied as prescribed (the dictionary records each loan book extract's run clock), asserted; no third judge (the same fork closed)",
+    "report": "determinism_check_report_round2b.md",
     "main_call": "forced and reproduced (13.179; 10.584 and 2.595; 3,266 stage 2 loans; 1.0555)",
     "v1": "DETERMINISTIC, APPROVE on pass 2 (determinism_check_report.md, determinism_check_report_pass2.md), before loop 1"
   },
@@ -67,7 +67,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 4: targeted re-read (CRM-ECL-04 2.2 and 3.3 and the dictionary changed) and one re-judge on the asks; the main-call runs stay valid",
+  "resume": "stage 5, the author's call: the round 2b determinism fix is in and every gate is green but precut's three ask lines (ask B has no device once the June clock is filed) and the pre-existing heart BLOCK. Either reship as is (status SHIPPED, returned entry, ledger row RESHIPPED round 2, commit RESHIPPED, /fix-rubric owed on ask B if the portal returns over 50), or draw a new silent device for ask B first (moves ask B figures: a rubric-mode repair and one re-judge)",
   "approved": null,
   "delivered": "2026-10-11 (re-shipped after portal round 1: hardened ladder from loop 1, asks hardened at 6b)",
   "portal": {
@@ -202,5 +202,19 @@
       "decisive_step": "analytical (conditioning a crude cohort default curve on survival of both exits, default and repayment in full)"
     },
     "prompt": "prompt.txt at ship, 840 characters, question-first plain text under the author's ten points; every ask, unit and rounding word for word; prompt.md removed"
+  },
+  "round2b": {
+    "date": "2026-10-14",
+    "from": "0b122ff and the round 2 re-judge (scratchpad judge-task133r2b): main call, stage amounts and all eight loss shares reproduce; Gate H analytical; stump power high; FIX_NOW on slide 2 (the June days_past_due clock unfiled)",
+    "filed": "ecl_extract_dictionary.txt: each loan book line records its run clock (June days_past_due counted to the run date, 1 July 2026; September to the reporting date); CHG-26-0418 a plain change line. CRM-ECL-04: 2.4 and 3.6 without their justifications, 3.3 without the Collections clause, 4.2 history line \"Annual review: 2.2 and 3.3 revised\"",
+    "target_changed": [
+      "CRM-ECL-04_expected_credit_loss_personal_loans.docx",
+      "ecl_extract_dictionary.txt"
+    ],
+    "figures": "unchanged (freeze check --mode determinism PASS)",
+    "asserted": "SF25: the verifier parses both clocks from the dictionary; literal June clock gives all 16 golden counts, unadjusted gives the judge's literal row (14 of 16 move)",
+    "pair": "moved: B3 spent by the filed clock. Both careful 65.2 (cracker 81.7, mirror 48.7, 16 of 24 each); cracker only 49.1; neither 33.1; habitual 28.5; ask A holds (careful 0 of 8)",
+    "gates": "checks.py PASS 581, verify.py PASS, two rebuilds byte-identical to target/, target.zip and golden/, figures_check exit 0 (65 figures), voice-check PASS, leak.py REVIEW no LEAK, guard validate 169 valid, surface 1 promoted (task180, unchanged), heart BLOCK pre-existing, freeze check --mode determinism PASS; precut FAIL 3 (pair ceiling 65.2, mirror leakage 66.7, the cracker keeps ask B)",
+    "target_zip_sha256": "c0b378982524fd69a82f7fea41ff514ebc89108966a2b16cacc8571eefb9c9bf"
   }
 }

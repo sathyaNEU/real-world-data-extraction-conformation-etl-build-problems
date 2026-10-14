@@ -16,7 +16,11 @@ business gave its own loss shares and counts. The asks repair (2026-10-14, main 
 lender would write: 3.3 measures a loan the record shows written off on what it recovered, pools the share by balance
 and keeps 70 and 76 per cent in force; the dictionary says what the receipts file's loan number and Wirraway's
 reference hold, that a closed loan is in no stage, and records the job's move to the end-of-day snapshot at
-CHG-26-0418; 2.2 says when a cancelled arrangement stops. No graded figure moved; the re-read and re-judge run next.
+CHG-26-0418; 2.2 says when a cancelled arrangement stops. No graded figure moved. The re-judge (round 2b) reproduced the main call,
+the stage amounts and all eight loss shares and found one gap, slide 2's June clock: no file said the June extract counts
+days past due to its run date. The dictionary's two loan book lines now record each extract's run clock (the judge's
+prescribed fix), CRM-ECL-04 2.4, 3.3, 3.6 and the 4.2 history line read plainer, and ask B is left with no device
+against a careful reader (Ask sheet, pair line).
 
 ## Draw
 
@@ -158,7 +162,7 @@ Lesson: A loan-level record that took over a predecessor's open loans watched th
 | SF22 | a case Collections closed as cured that the loan record shows written off or settled | measured on what it recovered: the 59 cured on arrangements withdrawn before they started, every one written off | every cure at its word (the judge's round 2 build); every withdrawn cure doubted | off on all 8; off on 7 of 8 | 3.3: "a loan the loan record shows written off or settled for less did not return to performing, whatever resolution Collections recorded, and is measured on what it recovered"; the record and the register select the same 59 (C1) and every other cure is repaid in full or open (asserted) |
 | SF23 | "every amount received" on a loan | each remittance on the account placed under the reference it quotes that day | the receipts file's posted loan (the judge's round 2 build); the reference's latest placement; reissued references dropped | off on all 8 each | the dictionary: the loan number is the one "the receipt was posted to; an agency remittance is posted on the Wirraway reference its narrative quotes", and the Agency Ref is "Wirraway's reference for the account while it is placed"; each of the 20,902 remittances falls inside exactly one placement of its reference, none on a first or last day, and each of the 2,034 posted elsewhere arrives outside the posted account's own placement (asserted) |
 | SF24 | the sale proceeds | each sold account's face value at the cut-off times 3.85 cents | the receipt spread over the written-off cases | off on all 8 | 3.3 counts the proceeds of the debt's sale; the schedule prices each account |
-| SF25 | stage at 30 June | section 2 with days past due at close of business on 30 June | the June extract's days past due as they stand (the judge's round 2 build) | 14 of 16 counts move | 1.3; the dictionary's change log: since CHG-26-0418 (21 July 2026) the extract is "read from the quarter-end day's end-of-day snapshot, not the live system at the run", so the June extract, run 1 July, counts days past due to 1 July; the record dates the default of the 6 loans it shows at 90 days to July, the 15 at 180 had not been written off by 1.4's June batch, and 0 of 1,827 values sit on a due date counted to 30 June (asserted) |
+| SF25 | stage at 30 June | section 2 with days past due at close of business on 30 June | the June extract's days past due as they stand (the judge's round 2 build) | 14 of 16 counts move | 1.3 and the dictionary's loan book lines: the June extract's days_past_due "counted to the run date, 1 July 2026", the September extract's "counted to the reporting date, 30 September 2026"; executed literally (each June value put back by the day between) all 16 counts are the golden, read unadjusted 14 move (both asserted, the clock parsed from the dictionary by the verifier); the record dates the default of the 6 loans at 90 days to July and the 15 at 180 had not been written off by 1.4's June batch |
 | SF26 | the June behaviour score | the month-end run on the 30 June position, made 1 July | the run made before 30 June | 16 of 16 move | 2.1 at the reporting date; the runs file names the month ends it scores and dates each run by the day it was made |
 | SF27 | "the number closed" | June loans absent from the September extract | the record's Closed status in the quarter | same call (3,317, asserted) | the dictionary: a loan leaves the extract once it closes |
 | SF28 | hardship in force at 30 June | 2.2's dates | the September status label | 16 of 16 move | 2.2 |
@@ -315,11 +319,10 @@ which the call never reads.
   468, 658, 115, 123; PL60 stage 1 17,724, 831, 46, 1,180; PL60 stage 2 560, 942, 140, 112.
 - Named use and H18 home: the board sees the quarter's deterioration and cures behind the stage 2 amount it signs; the
   audit trail of the staging the call consumes.
-- Primary device B3 (D8, a clock against a filed cutoff): ECL_QE_BOOK read the June extract from the live system at its
-  07:30 run on 1 July; CHG-26-0418 (21 July) moved it to the quarter-end day's end-of-day snapshot, as the job's change
-  log in the dictionary records, so each of the 1,827 June loans in arrears reads a day further than at close of
-  business on 30 June (1.3). Read as extracted, 14 of the 16 counts move. The change log records the source and says
-  nothing about days past due; the step from the source to the count is the solver's.
+- B3, filed since round 2b (D8 spent): the dictionary records the June extract's days_past_due as counted to its run
+  date, 1 July, and the September extract's as counted to the reporting date; staging at 30 June under 1.3 puts each
+  June value in arrears back a day. Read unadjusted, 14 of the 16 counts move; a reader who executes the dictionary line
+  keeps all 16. The step from the run clock to the count stays the solver's, but it is no longer silent.
 - In-world evidence, consistent with the filed source: 0 of the 1,827 June values sit on a due date counted back from
   30 June and every one from 1 July; the 15 loans at 180 days were at 179 when the June batch ran (1.4); the loan record
   dates the default of each of the 6 loans the extract shows at 90 days to the July month end (at close of business on
@@ -341,7 +344,7 @@ which the call never reads.
   written off as stage 3 4.
 
 **Necessity matrix** (one device mishandled, everything else right): A2 8 of 8, A1 (filed) 8 of 8, the sale left out 8,
-not discounted 8, every cure on its receipts 8, the sale spread 8, the mean of loan shares 8; B3 14 of 16, B1 the label
+not discounted 8, every cure on its receipts 8, the sale spread 8, the mean of loan shares 8; B3 (filed since round 2b) 14 of 16, B1 the label
 16, B1 every cancelled out 14, B2 the May run 16, more than 60 points 12, the end date excluded 6, written off as stage
 3 4.
 
@@ -354,31 +357,37 @@ cent, under every handling of A1 and A2.
 | Ask | The cracker's path (lands the call, runs the battery, executes every filed rule it points at) | Figures kept | Verdict |
 |---|---|---|---|
 | A, 8 realised losses | 3.3 as filed (pooled, the cure sentence on the record, the sale by face value, monthly discounting); remittances as the receipts file posts them, every join landing | 0 of 8 (nearest 0.55 points) | miss |
-| B, 16 migration counts | the 1 July run, 2.2's dates, 60 or more on whole points, closed loans in no stage; June days past due as the extract gives them | 2 of 16 (PL36 into stage 2 from either June stage: 680 and 658) | miss |
+| B, 16 migration counts | the 1 July run, 2.2's dates, 60 or more on whole points, closed loans in no stage; June days past due put back to 30 June by the dictionary's run clock | 16 of 16 | lands |
 
-Mirror leakage: 8.3 per cent of the ask weight (the mirror, on the default path, takes the same ask paths, A1 a filed
-rule it executes too, and keeps the same 2 of 24 counts).
+Mirror leakage: 66.7 per cent of the ask weight (the mirror takes the same ask paths and keeps ask B's 16 counts).
 
-Pair ceiling: 33.1 (planning weights 38 / 7 / 55, r = 5: cracker 49.6, mirror 16.6), unchanged by the repair: the cracker
-sheet already had the cracker resolving the cure, which 3.3 now files for every path, so A1's death as a device moves no
-sheet and no replacement is drawn. With the mirror on R1 or R2 also keeping stage 2's component, 35.6; both top
-responses on the call, 49.6; the habitual sheet 28.5. The residual risks, priced and now likelier, because the filed
-text that makes the asks literal also names what A2 and B3 turn on: the cracker resolving A2 puts the pair at 42.3, B3
-at 49.1, both at 58.3; both top responses resolving A2 at 51.4, B3 at 65.2. A2 needs the remittance dates set against
-the placement windows, which no join of the battery makes; B3 needs the change log's source set against 1.3 and the
-definition of days past due, and the June extract's own population line still reads close of business. Ask B carries
-two-thirds of the ask weight and no second device that a literal reader could resolve was found (Tried and rejected).
+Pair ceiling: 65.2 after round 2b (planning weights 38 / 7 / 55, r = 5; `checks.py` RECORD lines): cracker 81.7 (16 of 24), mirror
+48.7 (16 of 24), pair 65.2, over the bar of 50. Only the cracker executing the June clock, 49.1; neither (both read the
+June column as it stands), 33.1; both on the call, 81.7; the habitual sheet 28.5 (asserted under 40). Ask A still
+holds: the careful path keeps 0 of 8 (nearest 0.55 points). The judge's prescribed fix makes the June clock literal and
+so spends B3, ask B's only device; freeze.py holds every ask B figure, so no replacement device could be cut in this
+repair. Owed: `/fix-rubric` on ask B if the portal returns the rubric at or over 50 (main side frozen).
 
 **Span floor.** Ask B 8 files; ask A 7 on the golden's path since the cure is read off the record (3.3), the register an
 eighth route to the same 59.
 
-**Guard lines (heart WARN, no BLOCK).** people.last Olson (task181) and people.first Vanessa (task108), Christine
+**Guard lines.** At the round 2b reship `guard.py heart` reads BLOCK on the unchanged card, as it does on the
+committed HEAD before the repair: ban.forum board_of_directors against task119 (now among the three builds drawn before
+this one in the guard's draw order) and people.first Vanessa (the hardship register's job account) against task108.
+Both are draw-time axis bans from the slot's 2026-10-11 draw, not moved by this repair; left for the author.
+Earlier (heart WARN, no BLOCK): people.last Olson (task181) and people.first Vanessa (task108), Christine
 (task104): older builds only, names drawn by guard.py. repeat.gate_g forecasting against task132: both in the
 Forecasting block, mechanisms differ (renewal against left truncation). repeat.deliverables pptx and xlsx against
 task129: the deliverables are the slot's since v1. Driver nearest 0.10 (this slot's loop 1), 0.06 task501 v3 and task23;
 same_driver_older against task180 differentiated on the card.
 
 ## Leak review and stage 3 gates
+
+- Round 2b (2026-10-14, after the re-judge's fix): `checks.py` PASS 581, `verify.py` PASS (the June clock parsed from
+  the dictionary), two rebuilds byte-identical to `target/`, `target.zip` and `golden/`, `figures_check.py` exit 0,
+  `precut.py` 49 PASS, voice-check PASS, `leak.py --asof 2026-10-12` REVIEW no LEAK (the same lines as below), freeze
+  check --mode determinism PASS, guard validate 169 valid, surface as below, heart BLOCK pre-existing (Guard lines).
+  Documents changed under `target/`: `ecl_extract_dictionary.txt` and the CRM-ECL-04 docx.
 
 - `leak.py task133 --asof 2026-10-12` (rerun after the round 2 asks repair): REVIEW, no LEAK. Each line:
   - 7.1 in CRM-ECL-04: the limitations clause number, which the write-up cites, not a figure.
@@ -461,3 +470,4 @@ same_driver_older against task180 differentiated on the card.
 - The June clock left out of the change log (round 2 judge): the judge read the June column as close of business and the 6 loans at 90 days with July defaults as a defect; CHG-26-0418 now records the move from the live system at the run to the quarter-end day's end-of-day snapshot, the job's source and nothing about days past due (the line above still holds against a sentence naming the clock; the judge showed the clock needs its source filed to be literal). Not taken: dropping the clock (ask B would carry no device), removing the loans at 89 and 179 days at the June close (the clock would stay with nothing filed to resolve it), a run log or a position-date column (a new file, or a load stamp marking the June file).
 - Moving the 82 June loans that fall exactly 60 points off the threshold (round 2 judge): a gap at exactly 60 on whole-point scores would itself be a tell; 2.1 says 60 or more and the migration note rounds the converted score to a whole point, so the boundary is literal (SF32).
 - A second device on ask B that a literal reader could resolve (round 2 repair): ask B classifies filed fields and every condition is pinned (1.3, 2.1 to 2.3, the runs file's dates, the register's dates); a backdated hardship approval, a superseded scoring run and a silently partial June extract each need a filed rule or lose the truth. Not built; the risk is priced on the pair line.
+- The June clock left silent behind the change log's source (round 2 re-judge, FIX_NOW on slide 2 only): the judge's literal build read the June column unadjusted (PL36 stage 1 14,450 / 680 / 39 / 1,582) and no file said the June days past due count to the run date. Applied as prescribed: the dictionary's loan book lines record each extract's run clock, and B3 dies as a device (pair 65.2 with both careful, 49.1 cracker only). Not taken: restating the June column at close of business (the re-judge's alternative), which leaves ask B a plain read; re-keying slide 2 to the literal counts, which the re-judge ruled out and freeze.py holds.

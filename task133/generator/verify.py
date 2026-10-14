@@ -270,13 +270,27 @@ def lgd(target, cures="gold", refs="asof", sale_in=True):
     return {kq: 100.0 * num[kq] / den[kq] for kq in den}
 
 
+def dpd_clock(target, extract):
+    """the dictionary's run clock for one loan book extract: (the close of business its loans are open at, the date its
+    days_past_due are counted to), read from the extract's line in section A"""
+    txt = " ".join(open(os.path.join(target, "ecl_extract_dictionary.txt")).read().split())
+    m = re.search(re.escape(extract) + r" run [^:]+: every loan open at close of business on (\d{1,2} \w+ \d{4}); "
+                  r"days_past_due counted to the [a-z ]+, (\d{1,2} \w+ \d{4})", txt)
+    if m is None:
+        return None
+    f = lambda x: dt.datetime.strptime(x, "%d %B %Y").date()
+    return f(m.group(1)), f(m.group(2))
+
+
 def migration(target, june="dates", run="2026-07-01", dpd="close"):
-    """the June extract was run at 07:30 on 1 July and counts days past due to the run: at close of business on 30 June
-    a loan in arrears was one day less in arrears ('close'); 'extract' reads the column as it stands"""
+    """the June extract's days past due are counted to the date its dictionary line gives: 'close' puts a loan in
+    arrears back to close of business on 30 June (1.3) by the days between the two; 'extract' reads the column as it
+    stands"""
     bk, hd, mult, conv = read_inputs(target)
     jb = pd.read_csv(os.path.join(target, "personal_loan_book_2026-06-30.csv"))
     if dpd == "close":
-        jb["days_past_due"] = np.maximum(jb["days_past_due"].to_numpy() - 1, 0)
+        close, counted = dpd_clock(target, "personal_loan_book_2026-06-30.csv")
+        jb["days_past_due"] = np.maximum(jb["days_past_due"].to_numpy() - (counted - close).days, 0)
     sc = pd.read_parquet(os.path.join(target, "behaviour_score_runs_2026-03_2026-08.parquet"))
     sc["run_date"] = pd.to_datetime(sc["run_date"]).dt.strftime("%Y-%m-%d")
     pick = sc[sc["run_date"] == run]
@@ -354,6 +368,10 @@ def main(target=T, golden=G):
         print(("OK  " if apart else "FAIL"), "ask A stop %-30s" % name, " ".join("%.1f" % x[q] for q in sorted(x)))
         if not apart:
             fails.append("ask A stop " + name)
+    cj = dpd_clock(target, "personal_loan_book_2026-06-30.csv")
+    cs = dpd_clock(target, "personal_loan_book_2026-09-30.csv")
+    chk("June extract days past due counted days after its close", (cj[1] - cj[0]).days if cj else None, 1)
+    chk("September extract days past due counted days after its close", (cs[1] - cs[0]).days if cs else None, 0)
     M = migration(target)
     seen = 0
     for r in wb["Stage migration"].iter_rows(min_row=4, max_row=7, values_only=True):

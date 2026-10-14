@@ -141,8 +141,8 @@ def workbook(f, path):
         "from the day it is cancelled), or a behaviour score 60 or more points below origination on v4 from the month-end "
         "run on the position at the date; v3 origination scores converted as 1.12 x v3 - 18, rounded. At 30 June the "
         "June month-end run (made 1 July) supplies the scores, and days past due are put back to close of business on "
-        "30 June: the June extract was read from the live system at its 07:30 run on 1 July, before CHG-26-0418 moved "
-        "the job to the quarter-end day's end-of-day snapshot, so each loan in arrears reads a day further. A closed "
+        "30 June: the June extract counts them to its run date, 1 July, so each loan in arrears reads a day further. "
+        "A closed "
         "loan, one written off included, is in no stage.",
         "PD(k): for each product and month on book (calendar months from the drawdown month), the share of the loans "
         "open and not in default at its start that defaulted in it, and the share that closed without a default, over "

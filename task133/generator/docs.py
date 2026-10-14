@@ -64,9 +64,8 @@ def methodology_docx(path):
           "before the comparison in 2.1."), "3.1")
     add(P("2.4 Transfers between stages are symmetrical. A loan returns to stage 1 at the first reporting date on which "
           "none of the conditions in 2.1 holds, and a loan that is no longer 90 or more days past due is staged under 2.1. "
-          "There is no probation period, because the behaviour score already reflects a loan's recent repayment conduct."),
-        "1.0", edits=[("There is no probation period, because the behaviour score already reflects a loan's recent "
-                       "repayment conduct.", "4.0")])
+          "There is no probation period."),
+        "1.0", edits=[("There is no probation period.", "4.0")])
     add(P("2.5 The presumption in AASB 9 5.5.11 that credit risk has increased significantly when contractual payments "
           "are more than 30 days past due is not rebutted; the 30 or more days past due condition in 2.1 meets it."), "1.0")
     add(("h1", "3. Expected credit loss"), "1.0")
@@ -97,7 +96,7 @@ def methodology_docx(path):
           "including the proceeds of any sale of the debt, count at the end of the month in which they are received and are "
           "discounted to the default month end monthly at the contract rate, as in 3.5. A loan that returns to performing, "
           "its arrears made good or a collections hardship arrangement started, has lost nothing; a loan the loan record "
-          "shows written off or settled for less did not return to performing, whatever resolution Collections recorded, "
+          "shows written off or settled for less did not return to performing "
           "and is measured on what it recovered."),
         "1.0", edits=[("76 per cent", "4.1"),
                       (", the rates in force until the Audit and Risk Committee approves a change", "4.2"),
@@ -108,15 +107,12 @@ def methodology_docx(path):
                        "of the month in which they are received and are discounted to the default month end monthly at "
                        "the contract rate, as in 3.5. A loan that returns to performing, its arrears made good or a "
                        "collections hardship arrangement started, has lost nothing; a loan the loan record shows written "
-                       "off or settled for less did not return to performing, whatever resolution Collections recorded, "
-                       "and is measured on what it recovered.", "4.2")])
+                       "off or settled for less did not return to performing and is measured on what it recovered.", "4.2")])
     add(P("3.4 EAD(k) is the balance outstanding at the start of month k when the current balance is repaid over the "
           "remaining term in equal monthly instalments at the contract rate."), "1.0")
     add(P("3.5 DF(k) discounts month k at the contract rate: (1 + contract rate / 12) to the power -k."), "1.0")
     add(P("3.6 The contract rate is used as the effective interest rate. Establishment fees are taken to income when "
-          "charged and are not deferred into the effective interest rate, because the effect on interest income and on "
-          "the gross carrying amount is immaterial; the Chief Financial Officer approved this treatment in November 2019 "
-          "and Group Finance confirms it at each year end."), "1.0")
+          "charged and are not deferred into the effective interest rate."), "1.0")
     add(P("3.7 ECL is calculated for each loan and the allowance is their total; figures are rounded only when they are "
           "reported."), "1.0")
     add(("h1", "4. Forward-looking information"), "1.0")
@@ -162,8 +158,7 @@ def methodology_docx(path):
                    ["4.1", "May 2026", "Hardship arrangements added to the stage 2 conditions; LGD for PL60 raised from 74 to "
                                        "76 per cent; the allowance reported to the Board after the Audit and Risk "
                                        "Committee's review"],
-                   ["4.2", "Aug 2026", "Annual review: the measure for the annual LGD review set out in 3.3; 2.2 restated "
-                                       "for cancelled arrangements"]],
+                   ["4.2", "Aug 2026", "Annual review: 2.2 and 3.3 revised"]],
          [1100, 1300, 6600], 19),
         "1.0", rows=["1.0", "1.0", "2.0", "3.0", "3.1", "4.0", "4.1", "4.2"])
     blocks = [b for b, _ in B]
@@ -266,8 +261,10 @@ A. LOAN SYSTEM EXTRACTS (job ECL_QE_BOOK)
 
 The job runs at 07:30 on the first day after each quarter end, once the month-end batch has finished.
 
-  personal_loan_book_2026-09-30.csv      run 1 October 2026: every loan open at close of business on 30 September 2026
-  personal_loan_book_2026-06-30.csv      run 1 July 2026: every loan open at close of business on 30 June 2026
+  personal_loan_book_2026-09-30.csv      run 1 October 2026: every loan open at close of business on 30 September 2026;
+                                         days_past_due counted to the reporting date, 30 September 2026
+  personal_loan_book_2026-06-30.csv      run 1 July 2026: every loan open at close of business on 30 June 2026;
+                                         days_past_due counted to the run date, 1 July 2026
   loan_record_2026-09-30.parquet         run 1 October 2026: every loan held, open or closed, at 30 September 2026
   write_offs_2025-07_2026-09.csv         run 1 October 2026
 
@@ -320,8 +317,7 @@ Changes to ECL_QE_BOOK
   CHG-23-0207    6 Feb 2023     loan record added to the quarter-end run
   CHG-24-0251    1 Jul 2024     origination_scorecard added for the move to scorecard v4
   CHG-25-0112    3 Mar 2025     write-offs extract added to the quarter-end run
-  CHG-26-0418    21 Jul 2026    current_score_v4 added; read from the quarter-end day's end-of-day snapshot, not the
-                                live system at the run
+  CHG-26-0418    21 Jul 2026    current_score_v4 added; extract taken from the quarter-end end-of-day snapshot
 
 
 B. HARDSHIP REGISTER

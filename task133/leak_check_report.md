@@ -7,9 +7,9 @@ LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's sol
 Stump terms swept: record, taken-over, repayment, decisive, drawdown, device, asserted, status, go-live, months, million, population, earlier, arrangement, sentence, points, dictionary, take-over, survival, sample, platform, silent, agency, truncation, reading
 
 ## 3 answer figures in the pack (REVIEW 4)
-- **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: golden figure 7.1 appears: ...e modelled allowance. 7. Limitations 7.1 PD is set by product and month on book only. Risk...
-- **REVIEW** `scorecard_v4_migration_note.pdf`: golden figure 560 appears: ...point. Selected scores on the two scales: v3 520 560 600 640 680 720 760 800 v4 564 609 654 699 744 78...
+- **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: golden figure 7.1 appears: ...modelled allowance. 7. Limitations 7.1 PD is set by product and month on book only. Risk...
 - **REVIEW** `scorecard_v4_migration_note.pdf`: golden figure 680 appears: ...ted scores on the two scales: v3 520 560 600 640 680 720 760 800 v4 564 609 654 699 744 788 833 878 Ap...
+- **REVIEW** `scorecard_v4_migration_note.pdf`: golden figure 560 appears: ...point. Selected scores on the two scales: v3 520 560 600 640 680 720 760 800 v4 564 609 654 699 744 78...
 - **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: carries 9 of 10 distinctive words of the committed call: 'Book a collective expected credit loss allowance of AUD 13.2 million on the PL36 and PL60 personal loans at 30 September'
 
 ## 4 design-note vocabulary (REVIEW 2)
@@ -45,3 +45,16 @@ Q1 to Q4: none (CRM-ECL-04 3.3 says what the loss share measures, not how to ass
 The read above was made on the cut before the round 2 asks repair. The repair changed two documents under `target/`
 (CRM-ECL-04 2.2, 3.3 and its version history; the dictionary's loan book paragraph, the receipts file's loan_no, the
 placement report's Agency Ref and the job's change log), so the targeted re-read is owed on the current cut.
+
+## Solver's-eye read (targeted, after the asks repair)
+
+On CRM-ECL-04 and the extract dictionary. Q1 to Q4: none for the main allowance (3.2 and 2.4 are method rules naming no step; no file states an allowance, stage amount, loss share or count; the policy's 70 and 76 per cent are the rates in force). Q5: 3.7, 1.1, 3.1, 3.2 and 4 fix the per-loan sum over loans open and under 90 days at 30 September; not computed. Q6: analytical (estimating PD(k) from the loan record as a conditional hazard); the take-over not found. Realism: pre-emptive justifications in 2.4 and 3.6; 3.3 long and steering against the Collections file; the version history names the areas 3.3 and 2.2 changed; the dictionary's snapshot provenance line and pause explanation pointed. These bear on the asks' devices (A2, B3, the cure rule), not on the main call; the asks' residual pair risk is recorded in the design note. Readings: slide 2's stage 3 and closed (the dictionary: a closed loan is in no stage); the 2.4 scalar against section 2.4; the stacked scalar and multiplier capped at one; the long-tail month on book; September 2026 drawdowns' month on book; the financial-year 2023-24 and quarter of default; the sale proceeds per account; stage amounts as allowance by stage (section 5).
+
+## After the round 2 re-judge (2026-10-14, leak.py only)
+
+The prescribed fix and the realism softening changed two documents under `target/`: the dictionary's two loan book lines now
+carry each extract's run clock (June's days_past_due counted to the run date, 1 July; September's to the reporting date)
+and CHG-26-0418 reads as a plain change line; CRM-ECL-04 drops the justifications in 2.4 and 3.6 and the Collections
+clause in 3.3, and its 4.2 history line reads "Annual review: 2.2 and 3.3 revised". leak.py --asof 2026-10-12 above:
+REVIEW, no LEAK, the same REVIEW lines as before. The pause explanation in the hardship register's entry is kept: 3.2's
+remaining term on the main call reads it.

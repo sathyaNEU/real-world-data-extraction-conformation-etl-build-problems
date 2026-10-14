@@ -424,7 +424,7 @@ def attribute(target, led, refs="asof"):
 
 def record_gone(target):
     """the loans the loan record shows closed as written off or settled for less (CRM-ECL-04 3.3: such a loan did not
-    return to performing, whatever resolution Collections recorded)"""
+    return to performing)"""
     rec = _cached(("closures", target), lambda: pd.read_parquet(os.path.join(target, F["record"]), columns=["loan_no", "closure_reason"]))
     return set(rec.loc[rec["closure_reason"].isin(["Written off", "Settled"]), "loan_no"])
 
@@ -636,12 +636,14 @@ def migration(target, june_rule="dates", run="june", sept_rule="dates", june_dpd
     at 30 September and how many have closed (not in the September extract). 'june' takes the scores of the month-end
     run on the 30 June position (made on 1 July); 'may' the last run made on or before 30 June; 'sept' the September
     extract's scores. june_dpd 'close' takes days past due at close of business on 30 June (CRM-ECL-04 1.3): the June
-    extract, read from the live system at its 07:30 run on 1 July before CHG-26-0418 moved the job to the end-of-day
-    snapshot, counts them to 1 July, a day more for a loan in arrears; 'extract' takes the column as it stands"""
+    extract counts them to its run date, 1 July (the dictionary), a day more for a loan in arrears; an integer puts each
+    value back by that many days; 'extract' takes the column as it stands"""
     bk, hd, mapping = load_staging(target)
     jb = pd.read_csv(os.path.join(target, F["june"]))
     if june_dpd == "close":
         jb["days_past_due"] = (jb["days_past_due"] - 1).clip(lower=0)
+    elif isinstance(june_dpd, int):
+        jb["days_past_due"] = (jb["days_past_due"] - june_dpd).clip(lower=0)
     elif june_dpd != "extract":
         raise ValueError(june_dpd)
     sc = score_runs(target)
