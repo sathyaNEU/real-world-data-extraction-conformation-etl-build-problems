@@ -32,7 +32,7 @@ def simulate():
     reg = CS.regional_2028()
     reg_total = sum(reg[c] for c in W.COUNTIES)
     prof, basis = CS.profile()
-    P, raw, Ctrue = CS.survey(nat)
+    parts, contacts = CS.survey(nat)
     opts = CS.options_paper(reg_total, prof)
     people, events, practices, merges = S.register(reg_total)
     gp = S.references(np.random.default_rng(W.SEED + 110), people, events, practices)
@@ -40,7 +40,7 @@ def simulate():
     other = S.other_queries(len(rows))
     log = S.finish_register(people, events, rows, other)
     cases, lab = S.cases()
-    return dict(nat=nat, reg=reg, reg_total=reg_total, prof=prof, P=P, raw=raw, Ctrue=Ctrue, opts=opts,
+    return dict(nat=nat, reg=reg, reg_total=reg_total, prof=prof, parts=parts, contacts=contacts, opts=opts,
                 people=people, events=events, merges=merges, log=log, cases=cases, lab=lab, stock=S.stock())
 
 
@@ -52,7 +52,10 @@ def write_pack(out, w):
     n = {}
     n["profile"] = PK.write_profile(p("profile"))
     n["projection"] = PK.write_projection(p("projection"), w["reg"])
-    PK.write_survey(p("survey"), w["P"], w["nat"])
+    prow, crow = PK.survey_rows(w["parts"], w["contacts"])
+    n["participants"] = PK.write_participants(p("participants"), prow)
+    n["contacts"] = PK.write_contacts(p("contacts"), crow)
+    PK.write_codebook(p("codebook"), w["nat"], len(prow), len(crow))
     n["people"] = PK.write_people(p("people"), w["people"], S.ACTIVE)
     n["events"] = PK.write_events(p("events"), w["events"])
     n["merges"] = PK.write_merges(p("merges"), w["merges"])
@@ -70,7 +73,7 @@ def write_pack(out, w):
     DOC.fields(p("fields"))
     PK.write_transmittal(p("transmittal"), n)
     # containers: owners and saved stamps from the fiction, no library banners
-    PP.normalize_ooxml(p("survey"), "NSCS survey team", "NSCS survey team", "2023-11-29T10:14:00Z",
+    PP.normalize_ooxml(p("codebook"), "NSCS survey team", "NSCS survey team", "2024-02-19T10:14:00Z",
                        "2024-03-08T16:02:00Z", excel=True)
     PP.normalize_ooxml(p("notes"), W.PEOPLE["register"], W.PEOPLE["register"], "2027-07-04T15:21:00Z",
                        "2027-07-05T08:47:00Z", title="Register extract notes")

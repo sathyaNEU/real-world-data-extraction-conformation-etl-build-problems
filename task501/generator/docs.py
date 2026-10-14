@@ -98,9 +98,10 @@ def standard(path):
            "option, or none, to the executive management team, which funds at most one catch-up a year."),
          Paragraph("3 The winter assessment", st["h2"]),
          P("3.1&nbsp;&nbsp;The department's aim is that measles cannot sustain transmission in the region through the "
-           "winter: the reproduction number, with the year's programme in place, is below one."),
+           "winter, December to February: the reproduction number, the average number of people one case infects, "
+           "stays below one throughout, with the year's programme in place."),
          P("3.2&nbsp;&nbsp;The department plans on a basic reproduction number (R0) of 15 for measles: the "
-           "reproduction number measles would have in the region if nobody in it were immune."),
+           "reproduction number measles would have in the region over the winter if nobody in it were immune."),
          P("3.3&nbsp;&nbsp;The winter is assessed on the region's population and immunity on 1 January of the winter's "
            "second year, using the department's projection of the region's usual residents for that date."),
          P("3.4&nbsp;&nbsp;Immunity by year of birth is taken from the national immunisation programme's latest measles "
@@ -326,8 +327,10 @@ def extract_notes(path):
         ("date_of_birth, sex", "As registered."),
         ("lho_code", "Local health office of the person's address as recorded on lho_recorded."),
         ("lho_recorded", "Date the person's address was last recorded."),
+        ("postcode", "Postcode of that address, where one was recorded."),
         ("registered_on", "Date the registration was opened."),
-        ("gp_practice", "Practice the person is registered with, from the GP returns."),
+        ("gp_practice", "Practice the person is registered with, from the GP returns; blank where no practice holds "
+                        "the person."),
         ("event_number", "Register event number."),
         ("person_number (events)", "The registration the event was loaded to."),
         ("product", "Vaccine product as returned."),

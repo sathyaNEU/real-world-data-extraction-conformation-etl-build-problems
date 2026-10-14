@@ -1,6 +1,6 @@
-"""Independent verifier for task501: reads only the shipped bundle (the target folder) with the csv module, openpyxl and
-pdfplumber, shares no code with the generator, recomputes the call and every ask figure, and compares them with
-generator/figures.json.
+"""Independent verifier for task501: reads only the shipped bundle (the target folder) with the csv module and pdfplumber,
+shares no code with the generator, recomputes the call (the next-generation matrix from the survey's diaries kept in
+school term) and every ask figure, and compares them with generator/figures.json.
 
     python3 task501/generator/verify.py <target> <figures.json>"""
 import csv
@@ -46,9 +46,21 @@ def call(target):
         N[g] += n
         S[g] += n * (1 - prof[y])
         by_yob[y] = by_yob.get(y, 0) + n
-    import openpyxl
-    ws = openpyxl.load_workbook(os.path.join(target, find(target, "nscs_2023")), read_only=True)["Table 2"]
-    M = np.array([[float(x) for x in r[1:16]] for r in ws.iter_rows(min_row=3, max_row=17, values_only=True)])
+    # the contact matrix from the survey's public use file: the diaries kept in school term (May 2023), mean contacts
+    # per participant by participant band (columns) and contact band (rows), contacts of unknown age left out
+    labels = ["%d-%d" % g if g[1] < 200 else "70+" for g in GROUPS]
+    band = {lab: k for k, lab in enumerate(labels)}
+    term = {}
+    for r in rows(target, find(target, "nscs_2023_participants")):
+        if dt.date.fromisoformat(r["diary_date"]).month == 5:
+            term[r["part_id"]] = band[r["age_band"]]
+    n = np.bincount(list(term.values()), minlength=15).astype(float)
+    C = np.zeros((15, 15))
+    for r in rows(target, find(target, "nscs_2023_contacts")):
+        j = term.get(r["part_id"])
+        if j is not None and r["contact_age_band"] in band:
+            C[band[r["contact_age_band"]], j] += 1
+    M = (C / n[None, :]).T
     import pdfplumber
     with pdfplumber.open(os.path.join(target, find(target, "mmr_catch_up_options"))) as pdf:
         text = " ".join((p.extract_text() or "") for p in pdf.pages)
@@ -89,7 +101,8 @@ def residents(target):
     people = {}
     for r in rows(target, find(target, "register_people")):
         code, rec = r["lho_code"], dt.date.fromisoformat(r["lho_recorded"])
-        here = code in region or (code == "LH27" and rec < cut)
+        in_state = not r["postcode"].strip().upper().startswith("BT")
+        here = in_state and (code in region or (code == "LH27" and rec < cut))
         people[r["person_number"]] = (dt.date.fromisoformat(r["date_of_birth"]), here)
     return people
 
@@ -130,19 +143,39 @@ def doses(target, people, unresolved_out=False):
 
 
 def cases(target):
-    rs = rows(target, find(target, "nds_measles_cases"))
-    legacy = {r["legacy_ref"] for r in rs if r["legacy_ref"]}
-    out = []
-    for r in rs:
-        if r["classification"] != "Confirmed":
-            continue
-        onset = dt.datetime.strptime(r["onset_date"], "%d/%m/%Y").date()
-        if not (dt.date(2019, 1, 1) <= onset <= dt.date(2027, 6, 30)):
-            continue
+    """Confirmed cases with onset in the window, one per person and illness: a record carrying a migrated record's legacy
+    number in its comments is that illness again, and so is a record with the same date of birth, sex and onset."""
+    rs = [r for r in rows(target, find(target, "nds_measles_cases")) if r["classification"] == "Confirmed"]
+    rs = [r for r in rs if dt.date(2019, 1, 1) <= dt.datetime.strptime(r["onset_date"], "%d/%m/%Y").date()
+          <= dt.date(2027, 6, 30)]
+    idx = {r["case_id"]: i for i, r in enumerate(rs)}
+    root = list(range(len(rs)))
+
+    def top(i):
+        while root[i] != i:
+            i = root[i]
+        return i
+
+    def join(i, j):
+        a, b = top(i), top(j)
+        if a != b:
+            root[max(a, b)] = min(a, b)
+    by_legacy = {r["legacy_ref"]: i for i, r in enumerate(rs) if r["legacy_ref"]}
+    seen = {}
+    for i, r in enumerate(rs):
         m = re.search(r"Legacy no\.\s*(MZ\d{2}/\d{4})", r["comments"])
-        if m and m.group(1) in legacy:
-            continue
-        out.append((dt.datetime.strptime(r["date_of_birth"], "%d/%m/%Y").date().year, r["importation"] == "Imported"))
+        if m and m.group(1) in by_legacy:
+            join(i, by_legacy[m.group(1)])
+        k = (r["date_of_birth"], r["sex"], r["onset_date"])
+        if k in seen:
+            join(i, seen[k])
+        else:
+            seen[k] = i
+    assert len(idx) == len(rs)
+    out = []
+    for i, r in enumerate(rs):
+        if top(i) == i:
+            out.append((dt.datetime.strptime(r["date_of_birth"], "%d/%m/%Y").date().year, r["importation"] == "Imported"))
     return out
 
 
@@ -182,8 +215,8 @@ def main(argv):
         for b in bad:
             print("VERIFY MISMATCH", b)
         raise SystemExit(1)
-    print("VERIFY   independent recomputation matches figures.json: 6 reproduction numbers, the call, 25 ask figures; "
-          "the dose counts do not move with unresolved queries read as not standing")
+    print("VERIFY   independent recomputation matches figures.json: 6 reproduction numbers from the term-time diaries, "
+          "the call, 25 ask figures; the dose counts do not move with unresolved queries read as not standing")
 
 
 if __name__ == "__main__":

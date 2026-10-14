@@ -2,10 +2,10 @@
   "task": "task501",
   "architecture": "v4",
   "drawn": "2026-10-12",
-  "slot_note": "architecture 4 of the slot, re-rooted at stage 1 on 2026-10-12: architectures 1 to 3 were private-markets liquidity forecasts for a Swiss pension foundation (v1 retired on the client's rules, v2 landed on the portal, v3 spent at stage 4 on two failed judge passes); the re-root moves to Epidemiology & Public Health, infectious-disease transmission modelling, a new world and a new driver; bar top two under 50, build to 40",
+  "slot_note": "architecture 4 of the slot, re-rooted at stage 1 on 2026-10-12: architectures 1 to 3 were private-markets liquidity forecasts for a Swiss pension foundation (v1 retired on the client's rules, v2 landed on the portal, v3 spent at stage 4 on two failed judge passes); the re-root moved to Epidemiology & Public Health, infectious-disease transmission modelling. Round 2 on 2026-10-14 redesigned the decisive step in the same world after the 10/10 audit found the round 1 step (the next-generation matrix itself) a textbook reflex: the matrix is now the rung below, and the step is the contact regime the winter runs on. Bar top two under 50, build to 40",
   "domain": "epidemiology-public-health",
   "subdomain": "infectious-disease-transmission-modeling",
-  "niche": "a regional health authority's department of public health choosing which birth cohort its one autumn 2027 MMR catch-up targets, or none, so that measles cannot keep spreading in winter 2027-28, when the cohort whose uptake fell in a 2010-12 vaccine scare is aged 15-19 on 1 January 2028, the ages that mix mostly with each other",
+  "niche": "a regional health authority's department of public health choosing which birth cohort its one autumn 2027 MMR catch-up targets, or none, so that measles cannot keep spreading in winter 2027-28, when the cohort whose uptake fell in a 2010-12 vaccine scare is aged 15-19, and the national contact survey's public use file kept two thirds of its diaries in the school summer holidays, when teenagers' contacts with each other collapse",
   "objective": "forecasting",
   "shape": "07",
   "decision_type": "pick_one_of_n",
@@ -13,20 +13,20 @@
   "answer": "We should fund option B, the MMR catch-up for those born 2008 to 2012: it is the only option that brings measles' reproduction number in the region below one for winter 2027-28 (0.9, against 1.3 with no catch-up).",
   "answer_source": "task501/submission.md, 1. Final Recommendation, first sentence (bold markers removed); figures in task501/generator/figures.json, written with golden/winter_measles_2027.xlsx and golden/measles_readiness_2027.pptx by generator/golden.py from target/ and recomputed by generator/verify.py",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G16",
     "G13",
+    "G16",
     "G6"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "other",
+  "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
@@ -36,7 +36,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "register_mmr_events_born_1993-2017.csv",
-    "rows": 278746,
+    "rows": 279819,
     "entity": "one MMR dose event loaded to one person's record in the regional immunisation register",
     "grain": "person x dose event",
     "source": "synthetic (fictional regional immunisation register)"
@@ -65,22 +65,25 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "Whether a structured population can sustain a chain process is set by the dominant eigenvalue of its who-passes-to-whom matrix, so removing propensity from the subgroup that mixes most densely within itself can pull the system below its threshold while the system-average propensity, a contact-weighted average, the least-protected subgroup and the subgroup holding the most unprotected members all say the system is already below it or point at a subgroup whose removal leaves it above.",
-  "driver_concrete": "On 1 January 2028 the region is 94.6 per cent immune, above the 93.3 per cent that measles at R0 15 needs, so R0 times the susceptible share is 0.81; but the cohort born 2008-12, whose MMR uptake fell in the 2010-12 vaccine scare, is then 15-19, the ages whose contacts the national survey shows falling mostly on each other, so the dominant eigenvalue of the next-generation matrix is 1.3 and only a catch-up for that cohort brings it below one (0.9), while the options for the 30-34 and 25-34-year-olds, the least immune and the most people made immune, leave it at 1.3.",
-  "stump": "A competent solver joins the immunity profile to the population projection, finds the region 94.7 per cent immune at 1 January 2028 against the 93.3 per cent measles at R0 15 needs, puts the reproduction number at 0.8 (R0 times the susceptible share) and files that no catch-up is needed; the step that lands it there is treating the region as one well-mixed pool, when the national contact survey shows the 15-19-year-olds' contacts falling mostly on each other, so the next-generation matrix's dominant eigenvalue is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
+  "driver": "Whether a structured population can sustain a chain process through a coming season is set by the dominant eigenvalue of its who-passes-to-whom matrix under the conditions that season runs in, and the only measurement of the matrix pools observation days from two regimes, one in which the subgroup holding a large unprotected share passes mostly within itself and one, the larger share of the days, in which it does not; the pooled matrix and every textbook treatment of it put the system below its threshold, as do the system-average and contact-weighted propensities, while the matrix rebuilt from the days under the season's own regime puts it above and points at that subgroup.",
+  "driver_concrete": "On 1 January 2028 the region is 95.2 per cent immune, above the 93.3 per cent measles at R0 15 needs, so R0 times the susceptible share is 0.7, and the next-generation matrix built from all 7,560 diaries of the National Social Contact Survey 2023 gives 0.9; but 5,040 of those diaries were kept from 3 July to 18 August 2023, with the schools closed, when 15 to 19-year-olds have under a fifth of their contacts with each other against more than half in the May term diaries, and the winter runs in term; built from the term-time diaries the reproduction number is 1.3, and only the catch-up for those born 2008-12, 11.2 per cent susceptible, brings it below one (0.9), while D and E, the least immune cohort and the most people made immune, leave it at 1.3.",
+  "stump": "A competent solver builds the next-generation matrix from every diary in the National Social Contact Survey's public use file, scales it to R0 15 and puts measles' reproduction number at 0.9 without a catch-up, so files that no catch-up is needed; the step that lands it there is pooling the 5,040 diaries kept from 3 July to 18 August 2023, in the school summer holidays, with the 2,520 kept in May term time, when the winter's transmission runs on term-time contacts: built from the term-time diaries the reproduction number is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every dose, validity rule, profile basis and survey table right and compares the region's immunity with the herd immunity threshold, or computes R0 times the susceptible share (0.8), or weights each age group's susceptible share by its contacts (0.9), files that no catch-up is needed; one who ranks cohorts by their immunity gap targets the 30-34-year-olds (option D) or the most people made immune (option E); none of them brings the reproduction number below one.",
-  "domain_test": "The deciding quantity is measles' reproduction number in winter 2027 under each catch-up option, which infectious-disease epidemiology computes as the dominant eigenvalue of the next-generation matrix built from age-specific susceptibility and the social contact matrix; with another field's nouns there is no transmission between age groups, no contact survey and no susceptibility left by vaccine history, so the task stops reading the same.",
+  "analyst_test": "A strong analyst who reads every field, dose rule, profile basis and filed clause right and compares the region's 95.2 per cent immunity with the 93.3 per cent threshold (0.7), weights each band's susceptible share by its contacts (0.7), or builds the next-generation matrix from every diary in the survey, as computed, made reciprocal on either population, density-adjusted, transposed or with unknown ages spread (0.9), or with the two fieldwork periods averaged (1.0), files that no catch-up is needed; ranking cohorts by immunity gap or people made immune picks D or E, both left at 1.3.",
+  "domain_test": "The deciding quantity is measles' reproduction number through winter 2027-28 under each option, which infectious-disease epidemiology computes as the dominant eigenvalue of the next-generation matrix built from the contact matrix of the transmission season and age-specific susceptibility; measles transmission is forced by the school calendar, so the winter's matrix is the term-time one. With another field's nouns there are no contact diaries, no school term and no susceptibility left by a vaccine history, so the task stops making sense.",
   "layer2_family": "field_method",
   "layer2_pattern": "epidemiology-public-health/infectious-disease-transmission-modeling/2",
   "layer1": [
-    "immunity published by year of birth against contacts tabulated by five-year age group, joined through a projection at 1 January 2028",
-    "a contact survey matrix published by participant row and contact column, corrected for reciprocity against the national population",
+    "immunity published by year of birth against a contact survey released in five-year age bands, joined through a projection at 1 January 2028",
+    "survey microdata as a public use file: participants and contacts in two files on part_id, contact ages Unknown where not given, proxy diaries for children, a contact in several settings, participants numbered in release order",
     "options defined by birth years and delivery settings, with expected people made immune per option",
     "a register extract loaded as received from GP returns, school sessions, hospitals and records from abroad",
     "GP return lines queried by the immunisation office and corrected or withdrawn in a separate log",
     "local health office codes revised on 1 July 2024, one retired code reassigned to an area in another region",
+    "pupils living across the border recorded by the school team with a UK postcode and the school's area code",
+    "postcodes recorded only for addresses set since Eircodes were issued in July 2015; practices cleared when a person leaves",
     "a surveillance system migrated in March 2021, with the 2019 outbreak's cases back-entered to its outbreak module",
+    "a case notified by both a GP and a hospital, two records unlinked",
     "laboratory results keyed to surveillance case numbers, legacy numbers before the migration",
     "a dose extract run three days after its as-of date"
   ],
@@ -88,7 +91,10 @@
   "differentiation": {
     "task104": "task104 re-thresholds a self-adapting scorer's log under a setting it never ran; here nothing is replayed: the deciding quantity is the dominant eigenvalue of an age-structured who-infects-whom matrix",
     "task134": "task134 (v1 a competing-exit horizon probability, v2 a conversion hazard by time since entry) is a time-to-event estimand; here there is no hazard or follow-up at all, the threshold is set by the contact structure between age groups",
-    "task70": "task70 constructs a per-record date from an event log under a class-conditional cut; here no record is dated or classed, the method is the eigenvalue the mixing structure forces"
+    "task70": "task70 constructs a per-record date from an event log under a class-conditional cut; here no record is dated or classed, the method is the eigenvalue the mixing structure forces",
+    "task122": "task122 v2 credits late outcomes back to the session that showed the exposure; here nothing is attributed: the deciding quantity is an eigenvalue of contacts, built from the diaries of the regime the winter runs in where the survey pooled two",
+    "task229": "task229 v2 rebuilds a population share from checks that see a unit just before resetting it; here no unit is checked or reset: the next-generation matrix is rebuilt from the term-time diaries of a survey whose larger share of days fell in the school holidays",
+    "task501": "round 1 of this slot made the eigenvalue itself the decisive step; round 2 keeps the world, the quantity and the eigenvalue as the rung below (it lands on no catch-up) and makes the season's contact regime decisive, so the driver shares the slot's structure by design"
   },
   "lineage": [
     {
@@ -171,7 +177,27 @@
       ],
       "domain": "quantitative-finance",
       "subdomain": "liquidity-funding-balance-sheet"
+    },
+    {
+      "architecture": "v4 round 1",
+      "drawn": "2026-10-12",
+      "fate": "shipped 2026-10-12, judged weak by the 10/10 audit on 2026-10-13: the decisive step was the next-generation matrix itself, a textbook reflex for a pack shipping a contact matrix whose only use was that method; the leak reader and the re-judge both built it unprompted and named B, and every textbook variant of the eigenvalue landed the call; round 2 keeps the world and moves the decisive step to the season the matrix is built for",
+      "driver": "Whether a structured population can sustain a chain process is set by the dominant eigenvalue of its who-passes-to-whom matrix, so removing propensity from the subgroup that mixes most densely within itself can pull the system below its threshold while the system-average propensity, a contact-weighted average, the least-protected subgroup and the subgroup holding the most unprotected members all say the system is already below it or point at a subgroup whose removal leaves it above.",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "generators": [
+        "G16",
+        "G13",
+        "G6"
+      ]
     }
   ],
-  "notes": "Re-root drawn 2026-10-12 after architecture 3 was spent at stage 4. The decisive step is the field's method for the reproduction number of a structured population (the dominant eigenvalue of the next-generation matrix built from age-specific susceptibility and the national contact survey); no sentence names it and the guidance files R0, the immunity profile, the protection rules and the assessment date only. Strategy 'other' (transmission structure); none of the listed strategies is honest. Personas drawn with guard.py names --geo Ireland --seed 501. WARN repeat.deliverables (docx+xlsx against task180) answered by drawing xlsx+pptx. Figures on the card are the build's, except the stump's 94.7 per cent immune, the prototype's (the build gives 94.6), kept verbatim because freeze.py holds the stump from the stage-4 fix onwards."
+  "notes": "Round 2 on 2026-10-14 (architecture 4): the decisive step is the contact regime of the winter (the next-generation matrix built from the survey's term-time diaries), with the pooled-survey eigenvalue and its textbook variants the rung below, landing on no catch-up; no sentence names term, holidays or which diaries, and PS-07 files the window (December to February, below one throughout) and R0 over the winter. Strategy forecast_method_backtest (a seasonal regime makes the natural estimate wrong for the forward window): the pooled survey is the natural estimate and the winter's term regime the window; composition_mix fits as well and is banned against task448, so the reviewer's key is taken. Personas drawn with guard.py names --geo Ireland --seed 501. WARN repeat.deliverables (docx+xlsx against task180) answered at the draw by xlsx+pptx.",
+  "registered": "2026-10-14T01:01:05Z"
 }

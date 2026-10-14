@@ -46,7 +46,7 @@ MMR2_GIVEN_MMR1 = {1993: .74, 1994: .75, 1995: .72, 1996: .74, 1997: .77, 1998: 
 
 class Person:
     __slots__ = ("pid", "dob", "sex", "lho", "lho_recorded", "registered", "practice", "born_in_region", "status",
-                 "area")
+                 "area", "dest", "postcode", "shown_practice")
 
     def __init__(self, **k):
         for a, b in k.items():
@@ -172,18 +172,99 @@ def register(reg_total):
                     lho = mover_codes[int(rng.choice(len(mover_codes), p=mover_p))] if kind == "transferred" else area
                 people.append(Person(pid=None, dob=dob, sex=sex, lho=lho, lho_recorded=lho_recorded,
                                      registered=registered, practice=practice, born_in_region=born_here,
-                                     status=status, area=area))
+                                     status=status, area=area, dest=lho, postcode="", shown_practice=practice))
     ids = _person_ids(rng, len(people) + 9000)
     order = rng.permutation(len(people))
     for k, i in enumerate(order):
         people[i].pid = ids[k]
     spare = ids[len(people):]
+    # pupils living in Northern Ireland, recorded by the school immunisation team; numbers from the end of the spare
+    # block, so every other registration keeps its number
+    ni = _ni_pupils(np.random.default_rng(W.SEED + 108), practices)
+    for k, q in enumerate(ni):
+        q.pid = spare[len(spare) - 1 - k]
+    spare = spare[:len(spare) - len(ni)]
+    people.extend(ni)
+    _practice_shown(np.random.default_rng(W.SEED + 109), people)
     events = _doses(rng_dose, people)
     merges = _merges(np.random.default_rng(W.SEED + 106), people, events, spare)
+    _postcodes(np.random.default_rng(W.SEED + 107), people)
     return people, events, practices, merges
 
 
-ACTIVE = ("resident", "moved", "portlaoise")
+def _ni_pupils(rng, practices):
+    """Children living in Northern Ireland who go to school in the region. The school immunisation team opens a
+    register record at the first session it vaccinates them, with the home address; no local health office covers a
+    UK address, so the record takes the school's area, in the code scheme in force that day."""
+    out = []
+    areas = list(W.NI_SCHOOL_AREAS)
+    ap = np.array([W.NI_SCHOOL_AREAS[a][0] for a in areas])
+    for y in range(1993, 2018):
+        lo, hi = next(v for r, v in W.NI_PUPILS_PER_YEAR.items() if y in r)
+        for _ in range(int(rng.integers(lo, hi))):
+            while True:
+                dob = _rand_date(rng, D(y, 1, 1), D(y, 12, 31))
+                if not (dob.month == 2 and dob.day == 29):
+                    break
+            sex = "F" if rng.random() < 0.493 else "M"
+            area = areas[int(rng.choice(len(areas), p=ap))]
+            first = _school_session_date(rng, dob, 12 if y <= 1994 else 5)
+            registered = first - dt.timedelta(days=int(rng.integers(0, 9)))
+            lho_recorded = registered
+            t = registered
+            while True:
+                t = t + dt.timedelta(days=int(rng.exponential(365 * 9)))
+                if t > D(2027, 6, 25):
+                    break
+                lho_recorded = t
+            if D(2024, 6, 24) <= lho_recorded <= D(2024, 7, 8):
+                lho_recorded = lho_recorded + dt.timedelta(days=15)
+            if area == "LH27" and lho_recorded >= W.CUTOVER:
+                lho = "LH26"
+            else:
+                lho = area
+            district = W.NI_SCHOOL_AREAS[area][1][int(rng.integers(0, len(W.NI_SCHOOL_AREAS[area][1])))]
+            pc = "%s %d%s%s" % (district, int(rng.integers(0, 10)), "ABDEFGHJLNPQRSTUWXYZ"[int(rng.integers(0, 20))],
+                                "ABDEFGHJLNPQRSTUWXYZ"[int(rng.integers(0, 20))])
+            practice = practices[area if area in practices else "LH26"][0]
+            shown = practices[area][int(rng.integers(0, len(practices[area])))] if rng.random() < W.NI_WITH_GP else ""
+            out.append(Person(pid=None, dob=dob, sex=sex, lho=lho, lho_recorded=lho_recorded, registered=registered,
+                              practice=practice, born_in_region=False, status="ni", area=area, dest=lho, postcode=pc,
+                              shown_practice=shown))
+    return out
+
+
+def _practice_shown(rng, people):
+    """The practice the extract shows: cleared when the practice deregisters someone who has left it."""
+    for p in people:
+        if p.status in ("moved", "portlaoise") and rng.random() < 0.6:
+            p.shown_practice = ""
+
+
+EIRCODE_CHARS = "0123456789ACDEFHKNPRTVWXY"
+
+
+def _postcodes(rng, people):
+    """The address's postcode, where one was recorded: an Eircode for an address in the State recorded from July 2015,
+    blank for one recorded before; a UK postcode for an address in Northern Ireland."""
+    for p in sorted(people, key=lambda q: q.pid):
+        if p.status == "ni":
+            continue
+        if p.lho_recorded < W.EIRCODE_FROM:
+            p.postcode = ""
+            continue
+        code = p.dest
+        if p.status == "resident":
+            key = "LH27_old" if code == "LH27" else ("LH26_new" if (code == "LH26" and p.lho_recorded >= W.CUTOVER)
+                                                     else code)
+        else:
+            key = code
+        keys = W.ROUTING_KEYS[key]
+        rk = keys[int(rng.integers(0, len(keys)))]
+        p.postcode = "%s %s" % (rk, "".join(EIRCODE_CHARS[int(rng.integers(0, len(EIRCODE_CHARS)))] for _ in range(4)))
+
+
+ACTIVE = ("resident", "moved", "portlaoise", "ni")
 
 
 def _merges(rng, people, events, spare):
@@ -255,6 +336,8 @@ def _doses(rng, people):
     """True doses as the register received them, one event each, before any return-line query."""
     ev = []
     for p in people:
+        if p.status == "ni":
+            continue
         y = p.dob.year
         doses = []
         if p.born_in_region:
@@ -325,11 +408,28 @@ def _doses(rng, people):
             ev.append(Event(eid=None, pid=p.pid, product=None, date=d, given_by=by, source_ref=None, loaded=None,
                             kind="dose", owner=p.pid))
     # a few doses given on 1 and 2 July 2027, loaded before the 3 July run
-    adults = [p for p in people if p.dob.year <= 2009]
+    adults = [p for p in people if p.dob.year <= 2009 and p.status != "ni"]
     for k in range(13):
         p = adults[int(rng.integers(0, len(adults)))]
         ev.append(Event(eid=None, pid=p.pid, product=None, date=D(2027, 7, 1 + (k % 2)),
                         given_by="Pharmacy", source_ref=None, loaded=None, kind="dose", owner=p.pid))
+    # pupils living in Northern Ireland: the school team's doses only (their GP doses are given and recorded in
+    # Northern Ireland)
+    rng_ni = np.random.default_rng(W.SEED + 111)
+    for p in people:
+        if p.status != "ni":
+            continue
+        doses = []
+        if rng_ni.random() < 0.92:
+            doses.append(p.registered + dt.timedelta(days=int(rng_ni.integers(0, 9))))
+        if p.dob.year >= 1995 and rng_ni.random() < 0.06:
+            d2 = _school_session_date(rng_ni, p.dob, 12)
+            if not doses or (d2 - doses[-1]).days > 60:
+                doses.append(d2)
+        for d in doses:
+            if d <= D(2027, 6, 30):
+                ev.append(Event(eid=None, pid=p.pid, product=None, date=d, given_by="School team", source_ref=None,
+                                loaded=None, kind="dose", owner=p.pid))
     return ev
 
 
@@ -439,12 +539,12 @@ def queries(people, events, gp_lines):
         raised = e.loaded + dt.timedelta(days=int(rng.integers(5, 40)))
         took = int(rng.integers(6, 75))
         closed = raised + dt.timedelta(days=took)
-        if outcome == "confirmed" and closed > W.AS_AT:
+        if closed > W.AS_AT:
+            # still open when the 30 June extract was prepared: the register chased it and closed it by then, or it
+            # was raised too late to close and is not in the log
             closed = _chased(raised, took)
             if closed is None:
                 continue
-        elif closed > W.RUN:
-            continue
         qn += 1
         replaced_by = ""
         if outcome == "replaced":
@@ -535,12 +635,10 @@ def other_queries(n_existing):
         closed = raised + dt.timedelta(days=took)
         if raised > W.RUN:
             continue
-        if kind == "confirmed" and closed > W.AS_AT:
+        if closed > W.AS_AT:
             closed = _chased(raised, took)
             if closed is None:
                 continue
-        elif closed > W.RUN:
-            continue
         cl = closed or raised
         rep = ""
         if kind == "replaced":
@@ -607,6 +705,16 @@ def _case(cid, onset, dob, sex, county, cls, imp, outbreak="", epi="", hosp="N",
     return dict(case_id=cid, legacy_ref=legacy, notified=notified or onset + dt.timedelta(days=4), onset_date=onset,
                 date_of_birth=dob, sex=sex, county=county, classification=cls, importation=imp, outbreak_ref=outbreak,
                 epi_link=epi, hospitalised=hosp, mmr_doses_reported=doses, comments=comments, kind=kind, key=key)
+
+
+RENOTIFIED = [  # (onset, date of birth, the second notifier's note, days after the first notification, outbreak record)
+    (D(2023, 7, 19), D(2017, 2, 9), "GP notification", 2, None),
+    (D(2024, 2, 22), D(2011, 9, 7), "Hospital notification, Drogheda", 1, ""),
+    (D(2024, 3, 6), D(2006, 2, 18), "Hospital notification, Drogheda", 2, ""),
+    (D(2025, 1, 15), D(2012, 10, 11), "GP notification", 3, None),
+    (D(2026, 2, 9), D(2005, 7, 27), "Hospital notification, Cavan", 1, None),
+    (D(2027, 4, 2), D(1996, 5, 21), "GP notification", 2, None),
+]
 
 
 def cases():
@@ -771,6 +879,15 @@ def cases():
     N_(D(2027, 4, 17), D(1992, 1, 24), "M", "Meath", "Confirmed", "Import-related", doses="Unknown", hosp="Y",
        tag="sec27b")
     N_(D(2027, 5, 29), D(2020, 8, 5), "F", "Louth", "Probable", "Import-related", doses="0")
+    # a case notified twice, by the GP and by a hospital, and not linked on the system: two records, one illness
+    for onset, dob, note, later, outbreak in RENOTIFIED:
+        o = next(r for r in new if r[0] == onset and r[1] == dob)
+        kw = dict(o[6])
+        kw.pop("tag", None)
+        kw.update(comments=note, lab=False, notified=onset + dt.timedelta(days=4 + later))
+        if outbreak is not None:
+            kw["outbreak"] = outbreak
+        new.append(o[:6] + (kw,))
     new.sort(key=lambda r: (r[0], r[1]))
     cnt = {}
     tags = {}
@@ -796,7 +913,8 @@ def cases():
             epi = prev[0]["case_id"] if prev else ""
             comments = "Household contact of imported case"
         row = _case(cid, onset, dob, sex, county, cls, imp, outbreak=kw.get("outbreak", ""), epi=epi,
-                    hosp=kw.get("hosp", "N"), doses=kw.get("doses", "0"), comments=comments, kind="new")
+                    hosp=kw.get("hosp", "N"), doses=kw.get("doses", "0"), comments=comments, kind="new",
+                    notified=kw.get("notified"))
         C.append(row)
         if cls in ("Confirmed", "Discarded") and kw.get("lab", True):
             L(cid, onset + dt.timedelta(days=int(rng.integers(1, 5))), "Oral fluid" if rng.random() < 0.5 else "Serum",

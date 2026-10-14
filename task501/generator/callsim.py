@@ -1,6 +1,8 @@
 """The records the main call reads: the national population behind the contact survey, the survey itself (its
 participants' reported contacts and the reciprocity-corrected matrix it publishes), the department's projection of
 the region's residents at 1 January 2028, the national immunity profile and the options paper's figures."""
+import datetime as dt
+
 import numpy as np
 
 import world as W
@@ -58,14 +60,15 @@ def published_population(nat):
     return np.round(N * (1 + rng.normal(0, W.NAT_PUBLISHED_SD, size=len(N)))).astype(int)
 
 
-# --- the contact model: contacts per participant per day by single year, then by survey group -------------------------
+# --- the contact survey: contacts per day by setting and single year, four kinds of day ---------------------------
 def _gauss(d, s):
     return np.exp(-d * d / (2.0 * s * s))
 
 
-def contact_single_year(nat, p=None):
-    """M[a, b]: mean daily contacts a participant aged b has with people aged a (single years 0-89, 90 = 90 and over),
-    built from school, work, household and community components and made reciprocal on the national population."""
+def components(nat, day, p=None):
+    """Expected contacts a person aged b has with people aged a on a day of kind `day` ('tw' a school-term weekday,
+    'te' a term weekend day, 'hw' a summer-holiday weekday, 'he' a holiday weekend day), by setting, single years
+    0-89 and 90 for 90 and over: {setting: M[a, b]}, before reciprocity."""
     p = p or W.CONTACT
     ages = np.arange(0, 91).astype(float)
     pop = nat[:91].astype(float).copy()
@@ -79,57 +82,146 @@ def contact_single_year(nat, p=None):
         K = kernel * pop[:, None]
         K = K / np.maximum(K.sum(axis=0, keepdims=True), 1e-12)
         return K * intensity[None, :]
-
-    M = np.zeros((91, 91))
-    s_int = np.interp(b, [3, 4, 8, 12, 13, 17, 18, 19], [0, p["s_prim"], p["s_prim"], p["s_mid"], p["s_sec"], p["s_sec"],
-                                                         p["s_sec"] * 0.6, 0])
-    s_sig = np.interp(b, [4, 12, 13, 18], [p["sig_prim"], p["sig_prim"], p["sig_sec"], p["sig_sec"]])
-    M += comp(s_int, _gauss(D, s_sig[None, :]) * ((A >= 3) & (A <= 20)))
-    w_int = np.interp(b, [17, 18, 22, 25, 60, 66, 67], [0, p["work"] * 0.8, p["work"], p["work"], p["work"],
-                                                         p["work"] * 0.5, 0])
-    M += comp(w_int, _gauss(D, p["sig_work"]) * ((A >= 18) & (A <= 70)))
+    out = {}
+    term = day[0] == "t"
+    wkday = day[1] == "w"
+    z = np.zeros((91, 91))
+    school = z.copy()
+    if term and wkday:
+        sp = np.interp(b, [3, 4, 12, 12.5], [0, p["s_prim"], p["s_prim"], 0])
+        school += comp(sp, _gauss(D, p["sig_prim"]) * ((A >= 4) & (A <= 13)))
+        ss = np.interp(b, [12, 13, 17, 18, 19], [0, p["s_sec"], p["s_sec"], p["s_sec"] * 0.5, 0])
+        school += comp(ss, _gauss(D, p["sig_sec"]) * ((A >= 12) & (A <= 19)))
+        tch = np.where((b >= 4) & (b <= 18), p["teach"], 0.0)
+        school += comp(tch, ((A >= 25) & (A <= 64)).astype(float))
+        cl = np.interp(b, [17, 18, 22, 24], [0, p["col"], p["col"], 0])
+        school += comp(cl, _gauss(D, p["sig_col"]) * ((A >= 17) & (A <= 26)))
+    out["school"] = school
+    care = z.copy()
+    if wkday:
+        cr = np.interp(b, [0, 1, 4, 5], [0, p["creche"], p["creche"], 0])
+        care += comp(cr, _gauss(D, 1.0) * (A <= 5))
+    out["childcare"] = care
+    wk = np.interp(b, [17, 18, 22, 25, 60, 66, 67], [0, p["work"] * 0.7, p["work"], p["work"], p["work"],
+                                                     p["work"] * 0.5, 0])
+    f = 1.0
+    if not term:
+        f *= p["work_hol"]
+    if not wkday:
+        f *= p["work_wkend"]
+    out["work"] = comp(wk * f, _gauss(D, p["sig_work"]) * ((A >= 18) & (A <= 70)))
     pc = np.interp(b, [0, 18, 25, 30, 45, 55, 70, 90], [p["hh_pc"], p["hh_pc"], p["hh_pc"] * 0.5, p["hh_pc"], p["hh_pc"],
                                                          p["hh_pc"] * 0.6, p["hh_pc"] * 0.3, p["hh_pc"] * 0.2])
-    M += comp(pc, _gauss(D - 30, 5) + _gauss(D + 30, 5))
-    M += comp(np.where(b >= 20, p["hh_partner"], 0.0), _gauss(D, 3) * (A >= 20))
-    M += comp(np.where(b <= 20, p["hh_sib"], 0.0), _gauss(D, 3) * (A <= 22))
-    c_int = np.interp(b, [0, 5, 15, 25, 65, 80, 90], [p["comm"] * 0.6, p["comm"], p["comm"] * 1.2, p["comm"],
-                                                       p["comm"] * 0.9, p["comm"] * 0.6, p["comm"] * 0.5])
-    M += comp(c_int, np.ones((91, 91)))
-    T = M * pop[None, :]
-    T = 0.5 * (T + T.T)
-    return T / pop[None, :], pop
+    home = comp(pc, _gauss(D - 31, 5) + _gauss(D + 31, 5))
+    home += comp(np.where(b >= 20, p["hh_partner"], 0.0), _gauss(D, 3) * (A >= 20))
+    home += comp(np.where(b <= 20, p["hh_sib"], 0.0), _gauss(D, 3) * (A <= 22))
+    out["home"] = home
+    cm = np.interp(b, [0, 5, 15, 25, 65, 80, 90], [p["comm"] * 0.5, p["comm"] * 0.8, p["comm"], p["comm"],
+                                                    p["comm"] * 0.9, p["comm"] * 0.6, p["comm"] * 0.5])
+    if not wkday:
+        cm = cm * p["comm_wkend"]
+    out["other"] = comp(cm, np.ones((91, 91)))
+    lt = np.interp(b, [10, 13, 16, 20, 25, 30], [0, p["leis_teen"], p["leis_teen"], p["leis_teen"], p["leis_teen"] * 0.6, 0])
+    if not term:
+        lt = lt * p["leis_hol"]
+    if not wkday:
+        lt = lt * p["leis_wkend"]
+    out["leisure"] = comp(lt, _gauss(D, p["sig_leis"]) * ((A >= 10) & (A <= 32)))
+    return out, pop
 
 
-def contact_groups(nat, p=None):
-    """C[i, j]: the true mean daily contacts a person in survey group j has with group i."""
-    M, pop = contact_single_year(nat, p)
-    g = np.array([group_of_age(min(a, 100)) for a in range(91)])
-    C = np.zeros((W.NG, W.NG))
-    for i in range(W.NG):
-        for j in range(W.NG):
-            ri, cj = g == i, g == j
-            C[i, j] = (M[np.ix_(ri, cj)].sum(axis=0) * pop[cj]).sum() / pop[cj].sum()
-    return C
+def reciprocal_components(nat, day, p=None):
+    """Each setting made reciprocal on the population: the contacts a group has with another equal, in total, those
+    the other has with it."""
+    comps, pop = components(nat, day, p)
+    out = {}
+    for k, M in comps.items():
+        T = M * pop[None, :]
+        T = 0.5 * (T + T.T)
+        out[k] = T / pop[None, :]
+    return out, pop
+
+
+GROUP_OF_AGE_91 = np.array([group_of_age(min(a, 100)) for a in range(91)])
+DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+
+def _dates_by_weekday(a, b):
+    out = {k: [] for k in range(7)}
+    d = a
+    while d <= b:
+        out[d.weekday()].append(d)
+        d += dt.timedelta(days=1)
+    return out
 
 
 def survey(nat, p=None, seed=None):
-    """The survey: each participant's reported contacts by group (negative binomial around the true means), the
-    weighted mean matrix by participant group, and the matrix the survey publishes, corrected for reciprocity on the
-    national population and rounded to two decimals. Returned with participant rows: P[participant, contact]."""
+    """The survey's public use file. Each participant kept a diary for one assigned day in one of the two fieldwork
+    periods; the day's contacts are drawn around the expected contacts for the participant's single year of age and
+    kind of day, with a participant-level multiplier, up to the diary's 45 lines. Returns (participants, contacts):
+    participants as dicts (part, band, age, date, period); contacts as tuples (part, contact band or -1 for an age
+    the participant could not give, setting drawn from)."""
     seed = W.SURVEY_SEED if seed is None else seed
     rng = np.random.default_rng(seed)
-    C = contact_groups(nat, p)
-    raw = np.zeros((W.NG, W.NG))
-    k = W.SURVEY_DISPERSION
-    for j in range(W.NG):
-        lam = C[:, j]
-        draws = rng.negative_binomial(k, k / (k + lam[None, :]), size=(W.SURVEY_PARTICIPANTS[j], W.NG))
-        raw[j, :] = draws.mean(axis=0)
-    N = to_groups(nat)
-    T = raw * N[:, None]                  # total contacts reported by group j's population with group i
-    pub = (0.5 * (T + T.T)) / N[:, None]
-    return np.round(pub, 2), raw, C
+    pop = nat[:91].astype(float).copy()
+    pop[90] = nat[90:].sum()
+    comps = {}
+    for day in ("tw", "te", "hw", "he"):
+        comps[day], _ = reciprocal_components(nat, day, p)
+    parts, contacts = [], []
+    pid = 0
+    for period, a, b, n in W.SURVEY_PERIODS:
+        wd = _dates_by_weekday(a, b)
+        for band in range(W.NG):
+            ages = np.where(GROUP_OF_AGE_91 == band)[0]
+            w = pop[ages] / pop[ages].sum()
+            per_day = n // 7
+            for dow in range(7):
+                for _ in range(per_day):
+                    d = wd[dow][int(rng.integers(0, len(wd[dow])))]
+                    age = int(rng.choice(ages, p=w))
+                    wk = d.weekday() < 5
+                    day = ("t" if period == "May" else "h") + ("w" if wk else "e")
+                    lam = {s: comps[day][s][:, age] for s in comps[day]}
+                    mult = rng.gamma(W.SURVEY_DISPERSION, 1.0 / W.SURVEY_DISPERSION)
+                    pid += 1
+                    parts.append(dict(part=pid, band=band, age=age, date=d, period=period))
+                    cnt = []
+                    for s, v in lam.items():
+                        nn = rng.poisson(v * mult)
+                        for a_ in np.nonzero(nn)[0]:
+                            cnt.extend([(s, int(a_))] * int(nn[a_]))
+                    if len(cnt) > W.SURVEY_CAP:
+                        idx = rng.choice(len(cnt), size=W.SURVEY_CAP, replace=False)
+                        cnt = [cnt[i] for i in sorted(idx)]
+                    for s, a_ in cnt:
+                        cb = int(GROUP_OF_AGE_91[a_]) if rng.random() >= W.SURVEY_UNKNOWN_AGE else -1
+                        contacts.append((pid, cb, s, a_))
+    return parts, contacts
+
+
+def survey_matrix(parts, contacts, periods=None, unknown="drop"):
+    """C[i, j]: mean contacts a participant in band j reported with band i, over the diaries of the given periods
+    (None: every diary). unknown: 'drop' leaves contacts of unknown age out; 'spread' shares them over the
+    participant band's known bands in proportion."""
+    band = {q["part"]: q["band"] for q in parts if periods is None or q["period"] in periods}
+    n = np.zeros(W.NG)
+    for q in parts:
+        if q["part"] in band:
+            n[q["band"]] += 1
+    C = np.zeros((W.NG, W.NG))
+    unk = np.zeros(W.NG)
+    for c in contacts:
+        j = band.get(c[0])
+        if j is None:
+            continue
+        if c[1] < 0:
+            unk[j] += 1
+        else:
+            C[c[1], j] += 1
+    if unknown == "spread":
+        C = C + unk[None, :] * C / np.maximum(C.sum(axis=0, keepdims=True), 1e-9)
+    return C / n[None, :]
 
 
 # --- the profile and the options ------------------------------------------------------------------------------------

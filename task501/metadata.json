@@ -15,7 +15,7 @@
     "mmr_stock_return_2027-06-30.csv"
   ],
   "input_gates": {
-    "files": 19,
+    "files": 21,
     "formats": [
       "csv",
       "docx",
@@ -24,7 +24,7 @@
       "xlsx"
     ],
     "largest_file": "register_mmr_events_born_1993-2017.csv",
-    "largest_file_rows": 278746
+    "largest_file_rows": 279819
   },
   "sources": [
     {

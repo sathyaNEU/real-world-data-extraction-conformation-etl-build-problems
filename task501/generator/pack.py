@@ -11,7 +11,9 @@ import world as W
 FILES = {
     "profile": "measles_immunity_profile_oriel_2027-05.csv",
     "projection": "population_projection_oriel_2028-01-01.csv",
-    "survey": "nscs_2023_published_tables.xlsx",
+    "participants": "nscs_2023_participants.csv",
+    "contacts": "nscs_2023_contacts.csv",
+    "codebook": "nscs_2023_public_file_codebook.xlsx",
     "options": "mmr_catch_up_options_autumn_2027.pdf",
     "standard": "ps07_measles_winter_planning_standard.pdf",
     "people": "register_people_active_born_1993-2017.csv",
@@ -30,7 +32,7 @@ FILES = {
     "transmittal": "transmittal_list_2027-07-12.csv",
 }
 DISTRACTORS = ("uptake", "stock")
-CALL_FILES = ("profile", "projection", "survey", "options", "standard")
+CALL_FILES = ("profile", "projection", "participants", "contacts", "codebook", "options", "standard")
 ASK_FILES = ("people", "events", "merges", "queries", "lho", "circular", "notes", "guidelines", "cases", "lab", "fields")
 
 
@@ -71,60 +73,179 @@ def write_projection(path, reg):
     return write_csv(path, ["county", "age_at_1_january_2028", "year_of_birth", "persons"], rows)
 
 
-def write_survey(path, P, nat):
+OCCUPATIONS = {0: ["Pre-school"], 1: ["School pupil"], 2: ["School pupil"], 3: ["School pupil", "Student", "Employed"],
+               4: ["Student", "Employed", "Unemployed"]}
+DURATIONS = ["Less than 5 minutes", "5 to 15 minutes", "15 minutes to 1 hour", "1 to 4 hours", "4 hours or more"]
+FREQUENCIES = ["Daily or almost daily", "About once a week", "About once a month", "Less often", "First time"]
+SETTING_COLS = ["at_home", "at_school", "at_work", "at_leisure", "in_transport", "elsewhere"]
+
+
+def _occupation(rng, band, age):
+    if band in OCCUPATIONS and band < 3:
+        return OCCUPATIONS[band][0]
+    if band == 3:
+        return "School pupil" if age <= 17 else ("Student" if rng.random() < 0.55 else "Employed")
+    if band == 4:
+        u = rng.random()
+        return "Student" if u < 0.42 else ("Employed" if u < 0.9 else "Unemployed")
+    if band >= 13:
+        return "Retired" if rng.random() < 0.86 else "Employed"
+    u = rng.random()
+    if band == 12:
+        return "Employed" if u < 0.62 else ("Retired" if u < 0.82 else "Home duties")
+    return "Employed" if u < 0.8 else ("Home duties" if u < 0.89 else ("Unemployed" if u < 0.95 else "Student"))
+
+
+def _household(rng, band):
+    if band <= 3:
+        return int(rng.choice([2, 3, 4, 5, 6, 7], p=[0.08, 0.22, 0.34, 0.24, 0.09, 0.03]))
+    if band <= 5:
+        return int(rng.choice([1, 2, 3, 4, 5], p=[0.12, 0.30, 0.25, 0.22, 0.11]))
+    if band <= 10:
+        return int(rng.choice([1, 2, 3, 4, 5, 6], p=[0.10, 0.22, 0.20, 0.28, 0.15, 0.05]))
+    return int(rng.choice([1, 2, 3, 4], p=[0.30, 0.50, 0.14, 0.06]))
+
+
+SETTING_OF = {"home": "at_home", "school": "at_school", "childcare": "at_school", "work": "at_work",
+              "leisure": "at_leisure"}
+PHYSICAL = {"at_home": 0.72, "at_school": 0.34, "at_work": 0.18, "at_leisure": 0.38, "in_transport": 0.06,
+            "elsewhere": 0.12}
+DURATION_P = {"at_home": [0.04, 0.08, 0.20, 0.30, 0.38], "at_school": [0.10, 0.18, 0.28, 0.30, 0.14],
+              "at_work": [0.16, 0.22, 0.26, 0.24, 0.12], "at_leisure": [0.12, 0.20, 0.32, 0.30, 0.06],
+              "in_transport": [0.55, 0.30, 0.12, 0.03, 0.0], "elsewhere": [0.48, 0.28, 0.16, 0.06, 0.02]}
+FREQUENCY_P = {"at_home": [0.86, 0.08, 0.03, 0.02, 0.01], "at_school": [0.78, 0.14, 0.03, 0.03, 0.02],
+               "at_work": [0.62, 0.20, 0.06, 0.06, 0.06], "at_leisure": [0.30, 0.34, 0.14, 0.12, 0.10],
+               "in_transport": [0.10, 0.10, 0.08, 0.30, 0.42], "elsewhere": [0.12, 0.16, 0.12, 0.28, 0.32]}
+
+
+def survey_rows(parts, contacts):
+    """The public use file's rows: participants renumbered in a random order (the release order), their contacts with
+    sex, settings, physical contact, duration and frequency drawn on the texture stream."""
+    import numpy as np
+    rng = np.random.default_rng(W.SURVEY_TEXTURE_SEED)
+    order = rng.permutation(len(parts))
+    newid = {}
+    for k, i in enumerate(order):
+        newid[parts[i]["part"]] = 230001 + k
+    prow = []
+    for q in parts:
+        band = q["band"]
+        sex = "F" if rng.random() < (0.55 if band >= 13 else 0.5) else "M"
+        by = "Parent or guardian" if band <= 1 else ("Self, with a parent's help" if band == 2 else "Self")
+        prow.append([newid[q["part"]], W.GROUP_LABELS[band], sex, _household(rng, band), _occupation(rng, band, q["age"]),
+                     by, q["date"].isoformat(), q["date"].strftime("%A")])
+    prow.sort(key=lambda r: r[0])
+    by_part = {}
+    for c in contacts:
+        by_part.setdefault(c[0], []).append(c)
+    crow = []
+    cid = 0
+    for q in sorted(parts, key=lambda q: newid[q["part"]]):
+        cs = by_part.get(q["part"], [])
+        perm = rng.permutation(len(cs)) if cs else []
+        for i in perm:
+            _, cb, setting, age = cs[i]
+            col = SETTING_OF.get(setting)
+            if col is None:
+                col = "in_transport" if rng.random() < 0.3 else "elsewhere"
+            flags = {k: "N" for k in SETTING_COLS}
+            flags[col] = "Y"
+            if rng.random() < 0.06:
+                extra = SETTING_COLS[int(rng.integers(0, len(SETTING_COLS)))]
+                flags[extra] = "Y"
+            u = rng.random()
+            csex = "" if u < 0.018 else ("F" if u < 0.509 else "M")
+            phys = "Y" if rng.random() < PHYSICAL[col] else "N"
+            dur = DURATIONS[int(rng.choice(5, p=DURATION_P[col]))]
+            freq = FREQUENCIES[int(rng.choice(5, p=FREQUENCY_P[col]))]
+            cid += 1
+            crow.append([cid, newid[q["part"]], "Unknown" if cb < 0 else W.GROUP_LABELS[cb], csex]
+                        + [flags[k] for k in SETTING_COLS] + [phys, dur, freq])
+    return prow, crow
+
+
+def write_participants(path, prow):
+    return write_csv(path, ["part_id", "age_band", "sex", "household_size", "occupation", "diary_completed_by",
+                            "diary_date", "diary_day"], prow)
+
+
+def write_contacts(path, crow):
+    return write_csv(path, ["contact_id", "part_id", "contact_age_band", "contact_sex"] + SETTING_COLS
+                     + ["physical", "duration", "frequency"], crow)
+
+
+def write_codebook(path, nat, n_parts, n_contacts):
     import openpyxl
     from openpyxl.styles import Alignment, Font
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Notes"
-    notes = [
+    ws.title = "About"
+    (p1, a1, b1, q1), (p2, a2, b2, q2) = W.SURVEY_PERIODS
+    about = [
         ("National Social Contact Survey 2023", True),
-        ("Published tables, version 1.1, 8 March 2024", False),
+        ("Public use file, release 1.0, %s" % W.SURVEY_RELEASE.strftime("%-d %B %Y"), False),
         ("", False),
-        ("Fieldwork ran from 16 January to 26 May 2023 on school days and weekends, outside the February mid-term and "
-         "Easter breaks.", False),
-        ("%s participants each recorded everyone they had contact with on one assigned day: a conversation of at least "
-         "three words in each other's presence, or any skin-to-skin contact. Contacts were recorded with their age or an "
-         "age range; a range was assigned to its midpoint." % format(sum(W.SURVEY_PARTICIPANTS), ","), False),
-        ("Children under 10 were reported by a parent or guardian; participants aged 10 to 15 completed the diary with a "
+        ("The survey asked a sample of people living in Ireland to record in a diary everyone they had contact with on "
+         "one assigned day: a conversation of at least three words in each other's presence, or any skin-to-skin "
+         "contact. A person met more than once on the day is recorded once.", False),
+        ("Fieldwork: diaries were kept for days from %s to %s and from %s to %s. Participants were recruited to a quota "
+         "in each five-year age band in each fieldwork period (%d per band in the first period, %d in the second), and "
+         "diary days were assigned so that each day of the week carries one seventh of each band's diaries in each "
+         "period." % (a1.strftime("%-d %B"), b1.strftime("%-d %B %Y"), a2.strftime("%-d %B"), b2.strftime("%-d %B %Y"),
+                       q1, q2), False),
+        ("%s participants returned a diary, listing %s contacts." % (format(n_parts, ","), format(n_contacts, ",")), False),
+        ("Children under 10 were reported by a parent or guardian; participants aged 10 to 14 completed the diary with a "
          "parent's help.", False),
-        ("Participants are weighted by age group, sex, region and day of the week to the population at 1 January 2023.", False),
-        ("Table 2 gives the mean number of contacts per participant per day, by the participant's age group (rows) and the "
-         "age group of the person contacted (columns), corrected for reciprocity: for every pair of age groups the total "
-         "number of contacts is made the same in both directions, using the population in Table 1.", False),
-        ("Contacts with the same person on the day are counted once.", False),
+        ("Ages of participants and of their contacts are released in five-year bands, with 70 and over in one band. A "
+         "contact whose age the participant could not estimate is coded Unknown. The diary had room for 45 contacts.",
+         False),
+        ("A contact can be recorded in more than one setting. School includes college and childcare.", False),
+        ("Geography below the State is not released in the public file.", False),
         ("", False),
-        ("Survey team: National Social Contact Survey, 2023 round. Tables may be reproduced with acknowledgement.", False),
+        ("Files: nscs_2023_participants.csv (one row per participant) and nscs_2023_contacts.csv (one row per contact "
+         "listed), joined on part_id. The Population sheet gives the statistics office's estimate of the population of "
+         "the State at 1 January 2023 by age band.", False),
+        ("Please cite as: National Social Contact Survey 2023, public use file, release 1.0 (2024).", False),
     ]
-    for i, (t, b) in enumerate(notes, start=1):
+    for i, (t, b) in enumerate(about, start=1):
         if t:
-            ws.cell(row=i, column=1, value=t).font = Font(bold=b, size=12 if b else 11)
+            c = ws.cell(row=i, column=1, value=t)
+            c.font = Font(bold=b, size=12 if b else 11)
+            c.alignment = Alignment(wrap_text=True, vertical="top")
     ws.column_dimensions["A"].width = 120
-    t1 = wb.create_sheet("Table 1")
-    t1.append(["Table 1. Participants and population by age group"])
-    t1["A1"].font = Font(bold=True)
-    t1.append(["Age group", "Participants", "Participants, weighted (%)", "Population, 1 January 2023"])
-    N = CS.published_population(nat)
-    wshare = N / N.sum() * 100
+    f1 = wb.create_sheet("Participants file")
+    f1.append(["Field", "Description"])
+    for r in [("part_id", "Participant number."), ("age_band", "Age band of the participant on the diary day."),
+              ("sex", "F or M."), ("household_size", "People living in the participant's household, the participant "
+                                    "included."),
+              ("occupation", "Main activity: Pre-school, School pupil, Student, Employed, Unemployed, Home duties or "
+                             "Retired."),
+              ("diary_completed_by", "Self; Self, with a parent's help; or Parent or guardian."),
+              ("diary_date", "The day the diary was kept (yyyy-mm-dd)."), ("diary_day", "Day of the week of diary_date.")]:
+        f1.append(list(r))
+    f2 = wb.create_sheet("Contacts file")
+    f2.append(["Field", "Description"])
+    for r in [("contact_id", "Contact number."), ("part_id", "The participant who listed the contact."),
+              ("contact_age_band", "Age band of the contact, as estimated by the participant; Unknown if not given."),
+              ("contact_sex", "F or M; blank if not given."),
+              ("at_home, at_school, at_work, at_leisure, in_transport, elsewhere",
+               "Y where the contact took place in that setting; school includes college and childcare."),
+              ("physical", "Y for any skin-to-skin contact."),
+              ("duration", "Total time spent with the contact on the day, in five bands."),
+              ("frequency", "How often the participant usually sees the contact.")]:
+        f2.append(list(r))
+    f3 = wb.create_sheet("Population")
+    f3.append(["Age band", "Population, 1 January 2023"])
+    Np = CS.published_population(nat)
     for k, lab in enumerate(W.GROUP_LABELS):
-        t1.append([lab, W.SURVEY_PARTICIPANTS[k], round(float(wshare[k]), 1), int(N[k])])
-    t1.append(["All ages", sum(W.SURVEY_PARTICIPANTS), 100.0, int(N.sum())])
-    for col, wdt in zip("ABCD", (14, 14, 26, 28)):
-        t1.column_dimensions[col].width = wdt
-    t2 = wb.create_sheet("Table 2")
-    t2.append(["Table 2. Mean contacts per participant per day, by age group of participant (rows) and age group of "
-               "contact (columns), all settings, corrected for reciprocity"])
-    t2["A1"].font = Font(bold=True)
-    t2.append(["Participant age group"] + W.GROUP_LABELS)
-    for i, lab in enumerate(W.GROUP_LABELS):
-        t2.append([lab] + [float("%.2f" % P[i, j]) for j in range(W.NG)])
-        for j in range(W.NG):
-            t2.cell(row=i + 3, column=j + 2).number_format = "0.00"
-    t2.column_dimensions["A"].width = 22
-    for r in t2.iter_rows(min_row=2, max_row=2):
-        for c in r:
+        f3.append([lab, int(Np[k])])
+    f3.append(["All ages", int(Np.sum())])
+    for sh in (f1, f2, f3):
+        for c in sh[1]:
             c.font = Font(bold=True)
-            c.alignment = Alignment(horizontal="center")
+        sh.column_dimensions["A"].width = 34
+        sh.column_dimensions["B"].width = 96
+    f3.column_dimensions["B"].width = 28
     wb.save(path)
 
 
@@ -132,9 +253,10 @@ def write_survey(path, P, nat):
 def write_people(path, people, active):
     rows = []
     for p in sorted((p for p in people if p.status in active), key=lambda p: p.pid):
-        rows.append([p.pid, iso(p.dob), p.sex, p.lho, iso(p.lho_recorded), iso(p.registered), p.practice])
-    return write_csv(path, ["person_number", "date_of_birth", "sex", "lho_code", "lho_recorded", "registered_on",
-                            "gp_practice"], rows, crlf=True)
+        rows.append([p.pid, iso(p.dob), p.sex, p.lho, iso(p.lho_recorded), p.postcode, iso(p.registered),
+                     p.shown_practice])
+    return write_csv(path, ["person_number", "date_of_birth", "sex", "lho_code", "lho_recorded", "postcode",
+                            "registered_on", "gp_practice"], rows, crlf=True)
 
 
 def write_events(path, events):
@@ -198,7 +320,11 @@ TRANSMITTAL = [
      "National immunisation programme", "2027-05-14"),
     ("projection", "Projected usual residents at 1 January 2028 by county and single year of age",
      "Department of Public Health, health intelligence", "2027-03-22"),
-    ("survey", "National Social Contact Survey 2023, published tables (version 1.1)", "National Social Contact Survey",
+    ("participants", "National Social Contact Survey 2023, public use file: participants", "National Social Contact Survey",
+     "2024-03-08"),
+    ("contacts", "National Social Contact Survey 2023, public use file: contacts", "National Social Contact Survey",
+     "2024-03-08"),
+    ("codebook", "National Social Contact Survey 2023, public use file: codebook", "National Social Contact Survey",
      "2024-03-08"),
     ("options", "Autumn 2027 MMR catch-up: options paper", "Regional Immunisation Office", "2027-06-09"),
     ("standard", "PS-07 Measles winter planning standard (version 3.0)", "Department of Public Health", "2026-03-10"),

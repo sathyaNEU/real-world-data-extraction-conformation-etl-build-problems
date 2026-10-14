@@ -18,18 +18,32 @@ def _yob(df):
     return pd.to_datetime(df["date_of_birth"]).dt.year
 
 
+def outside_state(people):
+    """An address with a UK postcode (Northern Ireland): not in the State, so not in the region, whatever area code the
+    record carries."""
+    return people["postcode"].fillna("").str.upper().str.startswith("BT")
+
+
 def in_region(people, how="golden"):
-    """Who the register holds as living in the region. golden: LH20-LH26 under either scheme, LH27 only where it was
-    recorded before 1 July 2024 (Monaghan West). current: the current code list (LH27 is Portlaoise). old: every LH27
-    read as Monaghan West. all: every active registration."""
+    """Who the register holds as living in the region. golden: an address in the State whose local health office,
+    read in the scheme in force when it was recorded, is in the region (LH20-LH26 under either scheme, LH27 only where
+    it was recorded before 1 July 2024, Monaghan West). Stops: current (the current code list, every address),
+    lh27 (LH27 read by its recorded date, every address: the circular cracked), state (the current code list, addresses
+    in the State only), old (every LH27 read as Monaghan West, addresses in the State), all (every active registration)."""
     code = people["lho_code"]
     rec = pd.to_datetime(people["lho_recorded"])
+    by_code = code.isin(REGION_CODES) | ((code == "LH27") & (rec < CUT))
+    here = ~outside_state(people)
     if how == "golden":
-        return code.isin(REGION_CODES) | ((code == "LH27") & (rec < CUT))
+        return by_code & here
     if how == "current":
         return code.isin(REGION_CODES)
+    if how == "lh27":
+        return by_code
+    if how == "state":
+        return code.isin(REGION_CODES) & here
     if how == "old":
-        return code.isin(REGION_CODES | {"LH27"})
+        return code.isin(REGION_CODES | {"LH27"}) & here
     if how == "all":
         return pd.Series(True, index=people.index)
     raise ValueError(how)
@@ -129,25 +143,53 @@ def ask2(people, events, log, merges=None, pop="golden", ev_how="golden", merge_
 LEGACY_IN_COMMENT = re.compile(r"Legacy no\.\s*(MZ\d{2}/\d{4})")
 
 
+def _components(rows, links):
+    """Union of records into one illness per person: links is a list of (i, j) index pairs."""
+    parent = {i: i for i in rows}
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    for i, j in links:
+        a, b = find(i), find(j)
+        if a != b:
+            parent[max(a, b)] = min(a, b)
+    return {i: find(i) for i in rows}
+
+
 def dedup_cases(cases, how="golden", lab=None):
-    """Confirmed cases with rash onset in the window, one row per person and illness.
-    golden: a record whose comments name a legacy number held by a migrated record is that record again.
-    none: every row a case. dob_sex: one per date of birth and sex. dob_sex_onset: one per date of birth, sex and
-    onset. window14: date of birth and sex with onsets within 14 days. lab: confirmed cases with a positive result in
-    the laboratory file."""
+    """Confirmed cases with rash onset in the window, one per person and illness.
+    golden: a back-entered record whose comments name a legacy number held by a migrated record is that record again,
+    and records with the same date of birth, sex and onset are one illness notified twice; every record joined by
+    either is one case. Stops: none (every row a case); legacy (the comments only); key (date of birth, sex and onset
+    only); dob_sex (one per date of birth and sex); window14 (date of birth and sex with onsets within 14 days); lab
+    (confirmed cases with a positive result in the laboratory file)."""
     c = cases[(cases["classification"] == "Confirmed")].copy()
     c["onset"] = pd.to_datetime(c["onset_date"])
     c = c[(c["onset"] >= pd.Timestamp(W.WINDOW[0])) & (c["onset"] <= pd.Timestamp(W.WINDOW[1]))]
-    if how == "golden":
-        held = set(cases["legacy_ref"].dropna()) - {""}
-        ref = c["comments"].fillna("").str.extract(LEGACY_IN_COMMENT)[0]
-        return c[~ref.isin(held)]
+    if how in ("golden", "legacy", "key"):
+        links = []
+        if how in ("golden", "legacy"):
+            by_legacy = {r: i for i, r in c["legacy_ref"].items() if r}
+            ref = c["comments"].fillna("").str.extract(LEGACY_IN_COMMENT)[0]
+            links += [(i, by_legacy[r]) for i, r in ref.items() if isinstance(r, str) and r in by_legacy]
+        if how in ("golden", "key"):
+            first = {}
+            for i, r in c.iterrows():
+                k = (r["date_of_birth"], r["sex"], r["onset_date"])
+                if k in first:
+                    links.append((i, first[k]))
+                else:
+                    first[k] = i
+        comp = _components(list(c.index), links)
+        keep = sorted({v for v in comp.values()})
+        return c.loc[keep]
     if how == "none":
         return c
     if how == "dob_sex":
         return c.drop_duplicates(["date_of_birth", "sex"])
-    if how == "dob_sex_onset":
-        return c.drop_duplicates(["date_of_birth", "sex", "onset_date"])
     if how == "window14":
         c = c.sort_values(["date_of_birth", "sex", "onset"])
         keep, last = [], {}

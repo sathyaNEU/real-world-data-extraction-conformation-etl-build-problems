@@ -28,15 +28,36 @@ def call_inputs(target):
             y = 1927 if r["year_of_birth"].startswith("1927") else int(r["year_of_birth"])
             persons[a] = persons.get(a, 0) + int(r["persons"])
             yob[a] = y
-    import openpyxl
-    wb = openpyxl.load_workbook(path(target, "survey"), data_only=True)
-    t2 = wb["Table 2"]
-    rows = list(t2.iter_rows(min_row=3, max_row=2 + W.NG, values_only=True))
-    P = np.array([[float(v) for v in r[1:1 + W.NG]] for r in rows])
-    t1 = wb["Table 1"]
-    natpop = np.array([float(r[3]) for r in t1.iter_rows(min_row=3, max_row=2 + W.NG, values_only=True)])
+    parts, contacts = survey_from_pack(target)
+    natpop = population_from_codebook(target)
     opts = options_from_paper(target)
-    return CM.CallInputs(prof, persons, yob, P, natpop, opts)
+    inp = CM.CallInputs(prof, persons, yob, CM.survey_matrix(parts, contacts, CM.term_diary).T, natpop, opts)
+    inp.survey = (parts, contacts)
+    return inp
+
+
+def survey_from_pack(target):
+    """The public use file read back: participants as (part_id, band index, diary date), contacts as (part_id, band
+    index, -1 for Unknown)."""
+    band = {lab: k for k, lab in enumerate(W.GROUP_LABELS)}
+    parts = []
+    with open(path(target, "participants"), encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            parts.append((r["part_id"], band[r["age_band"]], r["diary_date"]))
+    contacts = []
+    with open(path(target, "contacts"), encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            contacts.append((r["part_id"], band.get(r["contact_age_band"], -1)))
+    return parts, contacts
+
+
+def population_from_codebook(target):
+    import openpyxl
+    wb = openpyxl.load_workbook(path(target, "codebook"), data_only=True)
+    ws = wb["Population"]
+    rows = list(ws.iter_rows(min_row=2, max_row=1 + W.NG, values_only=True))
+    assert [r[0] for r in rows] == W.GROUP_LABELS
+    return np.array([float(r[1]) for r in rows])
 
 
 def options_from_paper(target):

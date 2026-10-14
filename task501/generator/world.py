@@ -40,7 +40,7 @@ EFFECTIVENESS = 0.97
 OPTIONS = {
     "A": dict(years=(2013, 2017), uptake=0.45, setting="School immunisation team in primary schools (fifth and sixth "
               "class) and first and second year of secondary school, with GP follow-up", cost=412_000),
-    "B": dict(years=(2008, 2012), uptake=0.45, setting="School immunisation team in secondary schools (third to sixth "
+    "B": dict(years=(2008, 2012), uptake=0.38, setting="School immunisation team in secondary schools (third to sixth "
               "year) and further education colleges, GP invitation for school leavers", cost=438_000),
     "C": dict(years=(2003, 2007), uptake=0.35, setting="Clinics at the three third-level campuses in the region and GP "
               "invitation", cost=401_000),
@@ -64,6 +64,13 @@ PROFILE_NOTE_BASIS = {
 def profile_values():
     """Per cent immune by year of birth, 1927-and-earlier to 2027, and the basis of each value."""
     v, basis = {}, {}
+    table = {1985: 95.5, 1986: 95.5, 1987: 95.0, 1988: 95.5, 1989: 95.0,
+             1990: 95.0, 1991: 94.5, 1992: 93.0, 1993: 89.0, 1994: 88.0, 1995: 87.5, 1996: 88.5, 1997: 89.5,
+             1998: 93.5, 1999: 94.5, 2000: 94.5, 2001: 95.0, 2002: 95.5,
+             2003: 95.0, 2004: 95.5, 2005: 95.0, 2006: 95.5, 2007: 94.0,
+             2008: 91.0, 2009: 88.5, 2010: 87.0, 2011: 87.5, 2012: 90.0,
+             2013: 93.5, 2014: 95.0, 2015: 95.5, 2016: 96.0, 2017: 96.0,
+             2018: 96.0, 2019: 95.5, 2020: 95.5, 2021: 96.0, 2022: 95.5, 2023: 95.5, 2024: 96.0, 2025: 95.5}
     for y in range(1927, 2028):
         if y <= 1967:
             p, b = 99.5, "old"
@@ -71,22 +78,10 @@ def profile_values():
             p, b = 99.0, "old"
         elif y <= 1984:
             p, b = 96.0, "sero"
-        elif y <= 1989:
-            p, b = 95.5, "sero"
-        elif y <= 1997:
-            p, b = {1990: 93.0, 1991: 91.5, 1992: 89.5, 1993: 86.5, 1994: 85.0, 1995: 84.5, 1996: 85.5, 1997: 87.0}[y], "sero"
-        elif y <= 2002:
-            p, b = {1998: 92.0, 1999: 92.5, 2000: 92.5, 2001: 93.0, 2002: 93.0}[y], "sero"
-        elif y <= 2007:
-            p, b = {2003: 93.5, 2004: 93.0, 2005: 93.5, 2006: 94.0, 2007: 93.5}[y], "sero"
         elif y <= 2012:
-            p, b = {2008: 91.0, 2009: 88.5, 2010: 87.0, 2011: 87.5, 2012: 90.0}[y], "sero"
-        elif y <= 2017:
-            p, b = {2013: 94.0, 2014: 94.5, 2015: 95.0, 2016: 95.5, 2017: 96.0}[y], "uptake"
-        elif y <= 2021:
-            p, b = {2018: 95.5, 2019: 95.5, 2020: 95.0, 2021: 95.5}[y], "uptake"
+            p, b = table[y], "sero"
         elif y <= 2025:
-            p, b = {2022: 95.0, 2023: 94.5, 2024: 95.0, 2025: 94.5}[y], "uptake"
+            p, b = table[y], "uptake"
         elif y == 2026:
             p, b = 91.0, "proj26"
         else:
@@ -105,15 +100,25 @@ REG_SHAPE = [6.0, 6.4, 7.3, 7.2, 6.2, 5.9, 6.4, 7.5, 8.1, 7.6, 6.9, 6.4, 5.9, 5.
 COUNTY_SHARE = {"Louth": 0.272, "Meath": 0.441, "Cavan": 0.159, "Monaghan": 0.128}
 COUNTY_AGE_TILT = {"Louth": 0.0, "Meath": -0.0022, "Cavan": 0.0014, "Monaghan": 0.0016}   # share change per year of age past 40
 
-# --- contact model (contacts per participant per day, single years) ----------------------------------------------
-CONTACT = dict(s_prim=7.0, s_mid=7.0, s_sec=10.8, sig_prim=1.0, sig_sec=1.2, work=4.0, sig_work=10.0, hh_pc=1.0,
-               hh_partner=0.9, hh_sib=0.8, comm=3.5)
-SURVEY_PARTICIPANTS = [512, 548, 603, 641, 466, 421, 455, 507, 533, 509, 471, 437, 398, 352, 518]
-SURVEY_DISPERSION = 1.6
-SURVEY_SEED = 9024
-# Table 1 publishes the statistics office's 1 January 2023 estimate by group, not the smooth national shape: each
-# group within about a quarter of a per cent of the shape's total (stream kept: Table 2 stays reciprocal on it to its
-# rounding, the weighted shares unchanged, the golden family's largest move 0.006 and nearest edge 0.033)
+# --- the contact survey (National Social Contact Survey 2023, public use file) ------------------------------------
+# Contacts per day by setting, built by single year of age for four kinds of day: a school-term weekday and weekend
+# day, a summer-holiday weekday and weekend day. School, college and the teachers' contacts with pupils run on
+# term weekdays only; childcare runs on weekdays all year; work is lighter in the summer and at weekends.
+CONTACT = dict(s_prim=9.0, sig_prim=0.8, s_sec=20.0, sig_sec=0.9, teach=0.8, col=5.0, sig_col=2.0, creche=3.0,
+               work=13.0, sig_work=12.0, work_hol=0.8, work_wkend=0.15, hh_pc=1.2, hh_partner=1.0, hh_sib=0.8,
+               comm=3.5, comm_wkend=1.3, leis_teen=0.5, sig_leis=2.5, leis_hol=1.1, leis_wkend=1.4)
+# two fieldwork periods; participants recruited to a quota per five-year band in each, diary days spread evenly
+# over the days of the week (each quota a multiple of seven)
+SURVEY_PERIODS = (("May", dt.date(2023, 5, 2), dt.date(2023, 5, 26), 168),
+                  ("Summer", dt.date(2023, 7, 3), dt.date(2023, 8, 18), 336))
+SURVEY_DISPERSION = 2.2       # participant-level gamma multiplier on the day's expected contacts
+SURVEY_CAP = 45               # the diary has room for 45 contacts
+SURVEY_UNKNOWN_AGE = 0.012    # contacts whose age band the participant could not give
+SURVEY_SEED = 9029            # contacts drawn; texture (sex, settings, duration) on its own stream
+SURVEY_TEXTURE_SEED = 9031
+SURVEY_RELEASE = dt.date(2024, 3, 8)
+# Table 1 publishes the statistics office's 1 January 2023 estimate by group, each group within about a quarter of a
+# per cent of the national shape's total (its own stream)
 NAT_PUBLISHED_SEED = SEED + 1358
 NAT_PUBLISHED_SD = 0.0025
 
@@ -153,6 +158,26 @@ MOVER_AREA_WEIGHTS = {"LH01": 4, "LH02": 3, "LH03": 6, "LH04": 2, "LH05": 2, "LH
                       "LH17": 1, "LH18": 1, "LH19": 1, "LH28": 1, "LH29": 1, "LH30": 1, "LH31": 2, "LH32": 2,
                       "LH33": 1, "LH34": 1, "LH35": 1, "LH36": 1}
 PORTLAOISE_MOVERS_PER_COHORT_YEAR = (5, 14)   # moved to the new LH27 since July 2024, per year of birth (range)
+# pupils living in Northern Ireland who attend school in the region: the school immunisation team opens a record at their
+# first session, with the home address (a UK postcode) and, as no local health office covers it, the school's area
+NI_PUPILS_PER_YEAR = {range(1993, 1995): (22, 35), range(1995, 2018): (38, 57)}
+NI_SCHOOL_AREAS = {"LH20": (0.55, ["BT34", "BT35"]), "LH25": (0.20, ["BT92", "BT93", "BT94"]),
+                   "LH26": (0.15, ["BT60", "BT61", "BT68", "BT69", "BT70", "BT71"]),
+                   "LH27": (0.10, ["BT60", "BT68", "BT92"])}
+NI_WITH_GP = 0.30             # of those, registered with a practice in the region
+EIRCODE_FROM = dt.date(2015, 7, 13)
+ROUTING_KEYS = {"LH20": ["A91"], "LH21": ["A92"], "LH22": ["C15"], "LH23": ["A84", "A85", "A86"], "LH24": ["A82", "A83"],
+                "LH25": ["H12", "H14", "H16"], "LH26": ["H18", "A75", "A81"], "LH27_old": ["H23", "H18"],
+                "LH26_new": ["H18", "A75", "A81", "H23"],
+                "LH01": ["D01", "D03", "D07", "D09"], "LH02": ["D07", "D11", "D15"], "LH03": ["K32", "K36", "K45", "K67"],
+                "LH04": ["D08", "D12"], "LH05": ["D04", "D06", "D14"], "LH06": ["A94", "A96"],
+                "LH07": ["D22", "D24", "K78"], "LH08": ["A98", "A63", "A67"], "LH09": ["W23", "W12"],
+                "LH10": ["W91", "R51", "W34"], "LH11": ["N37", "N91", "N39"], "LH12": ["R35", "R42"],
+                "LH13": ["Y35", "Y21", "Y34"], "LH14": ["R95", "R93"], "LH15": ["X91", "X35"], "LH16": ["E91", "E21", "E32"],
+                "LH17": ["T23", "P31"], "LH18": ["T12", "P43"], "LH19": ["V92", "V93"], "LH27": ["R32"],
+                "LH28": ["V94", "V35"], "LH29": ["V95", "V15"], "LH30": ["E45", "E53"], "LH31": ["R32", "R14"],
+                "LH32": ["H91", "H53", "H54"], "LH33": ["F23", "F28", "F31"], "LH34": ["F42", "F45"],
+                "LH35": ["F91", "N41"], "LH36": ["F92", "F93", "F94"]}
 
 # --- register design ------------------------------------------------------------------------------------------------
 REGISTER_COVERAGE = {range(1993, 2003): 0.86, range(2003, 2018): 0.935}   # residents held, of the projection

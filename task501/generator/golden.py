@@ -31,18 +31,27 @@ def compute(target):
     S = inp.groups(inp.sus_age())
     share = S / N
     region_share = S.sum() / N.sum()
+    pool = inp.with_matrix(inp.matrix(None))
+    R_all = CM.golden(pool)
+    Ps = inp.matrix(CM.summer_diary)
+    parts, _ = inp.survey
     f = B.ask_frames(target)
     a1 = A.ask1(f["people"])
     a2 = A.ask2(f["people"], f["events"], f["log"], f["merges"])
     a3 = A.ask3(f["cases"])
     return dict(inp=inp, R=R, r1=r1, call="B", share_1519=float(share[3]), region_share=float(region_share),
-                immune_pct=float(100 * (1 - region_share)), R_avg=CM.R_average(inp), ask1=a1, ask2=a2, ask3=a3,
-                made={k: sum(p["made"] for p in inp.options[k]) for k in W.OPTION_KEYS},
-                own_share_1519=float(inp.P[3, 3] / inp.P[3].sum()))
+                immune_pct=float(100 * (1 - region_share)), R_avg=CM.R_average(inp), R_all=R_all, ask1=a1, ask2=a2,
+                ask3=a3, made={k: sum(p["made"] for p in inp.options[k]) for k in W.OPTION_KEYS},
+                own_term=float(inp.P[3, 3] / inp.P[3].sum()), own_summer=float(Ps[3, 3] / Ps[3].sum()),
+                n_term=sum(1 for q in parts if CM.term_diary(q[2])), n_summer=sum(1 for q in parts if CM.summer_diary(q[2])))
 
 
 def pct1(x):
     return "%.1f" % (np.floor(x * 1000 + 0.5) / 10)
+
+
+def pct0(x):
+    return "%d" % int(np.floor(x * 100 + 0.5))
 
 
 def figures(c):
@@ -54,9 +63,11 @@ def figures(c):
         "region_immune_per_cent": pct1(1 - c["region_share"]),
         "herd_immunity_threshold_per_cent": "93.3",
         "default_R0_times_susceptible_share": "%.1f" % CM.round1(c["R_avg"]),
+        "default_every_diary_reproduction_number": "%.1f" % CM.round1(c["R_all"]["none"]),
         "susceptible_share_15_19_per_cent": pct1(c["share_1519"]),
         "susceptible_share_region_per_cent": pct1(c["region_share"]),
-        "own_group_contact_share_15_19_per_cent": "%d" % int(np.floor(c["own_share_1519"] * 100 + 0.5)),
+        "diaries_term": "{:,}".format(c["n_term"]),
+        "diaries_summer": "{:,}".format(c["n_summer"]),
         "people_made_immune": {k: "{:,}".format(c["made"][k]) for k in W.OPTION_KEYS},
         "ask1_register_residents": {k: "{:,}".format(c["ask1"][k]) for k in W.OPTION_KEYS},
         "ask2_no_valid_dose": {k: "{:,}".format(c["ask2"][k]["none"]) for k in W.OPTION_KEYS},
@@ -67,9 +78,9 @@ def figures(c):
         "assessment_date": "1 January 2028",
         "register_as_at": "30 June 2027",
         "case_window": "1 January 2019 to 30 June 2027",
-        "dates": ["1 July 2024", "28 days"],
+        "dates": ["1 July 2024", "28 days", "2 to 26 May 2023", "3 July to 18 August 2023"],
         "age_group_teenagers": "15 to 19",
-        "citations": ["PS-07 3.2", "PS-07 3.3", "PS-07 3.4", "PS-07 3.5", "PS-07 3.6", "guidelines 12.5"],
+        "citations": ["PS-07 3.1", "PS-07 3.2", "PS-07 3.3", "PS-07 3.4", "PS-07 3.5", "PS-07 3.6", "guidelines 12.5"],
     }
 
 
@@ -123,17 +134,21 @@ def write_xlsx(path, c):
                 ws.cell(row=r, column=j).font = Font(bold=True)
     notes = [
         "Reproduction number: the dominant eigenvalue of the next-generation matrix, built from the National Social Contact "
-        "Survey 2023 (Table 2, contacts per day by age group) and each age group's susceptible share on 1 January 2028, "
-        "scaled so that a wholly susceptible region gives the R0 of 15 in PS-07 3.2.",
+        "Survey 2023 diaries kept in school term (2 to 26 May 2023, contacts per day by age band) and each age band's "
+        "susceptible share on 1 January 2028, scaled so that a wholly susceptible region gives the R0 of 15 in PS-07 3.2. "
+        "The winter is school term apart from the Christmas and February breaks, and PS-07 3.1 needs the figure below "
+        "one throughout.",
         "Susceptible shares: the national immunity profile (May 2027) by year of birth, weighted by the department's "
         "projection of residents at 1 January 2028 (PS-07 3.3, 3.4).",
         "Each option takes the options paper's expected people made immune off the susceptibles of its birth years "
         "(PS-07 3.5); option E as the paper splits it between those born 1993 to 1997 and 1998 to 2002.",
         "On the region's average immunity alone (%s per cent immune, above the %s per cent herd immunity threshold for R0 "
-        "15) the figure would be %s, but the 15 to 19-year-olds have about half their contacts with each other and %s "
-        "per cent of them are susceptible, against %s per cent across the region." % (
-            pct1(1 - c["region_share"]), "93.3", "%.1f" % CM.round1(c["R_avg"]), pct1(c["share_1519"]),
-            pct1(c["region_share"])),
+        "15) the figure would be %s, and on every diary in the survey %s. But two thirds of the diaries were kept from 3 "
+        "July to 18 August 2023, in the school summer holidays, when the 15 to 19-year-olds have under a fifth of their "
+        "contacts with each other, against more than half in term; %s per cent of them are susceptible, against %s per "
+        "cent across the region." % (
+            pct1(1 - c["region_share"]), "93.3", "%.1f" % CM.round1(c["R_avg"]), "%.1f" % CM.round1(c["R_all"]["none"]),
+            pct1(c["share_1519"]), pct1(c["region_share"])),
     ]
     rn = r0 + len(SCEN) + 2
     ws.cell(row=rn, column=1, value="Notes").font = Font(bold=True, color=navy)
@@ -171,14 +186,15 @@ def write_xlsx(path, c):
                 cell.number_format = "#,##0"
     rn = 4 + len(W.OPTION_KEYS) + 2
     notes2 = [
-        "Living in the region: active registrations whose local health office, read in the scheme in force when it was "
-        "recorded, is in the region; LH27 recorded before 1 July 2024 is Monaghan West (circular 03/2024).",
+        "Living in the region: active registrations with an address in the State whose local health office, read in the "
+        "scheme in force when it was recorded, is in the region; LH27 recorded before 1 July 2024 is Monaghan West "
+        "(circular 03/2024). Records with a UK postcode, pupils living in Northern Ireland, are not living in the region.",
         "Valid doses: MMR events re-pointed through the register's merges to the registration they now belong to, less "
         "GP return lines the query log shows replaced or withdrawn, counted under the guidelines' 12.5 (on or after the "
         "first birthday, at least 28 days after the previous valid dose), given on or before 30 June 2027.",
-        "Cases: confirmed cases, one per person and illness; the 2019 outbreak's cases back-entered to the outbreak "
-        "module in May 2021 (legacy number in the comments) are counted once, with their migrated records. Option E "
-        "includes option D's birth years.",
+        "Cases: confirmed cases, one per person and illness: the 2019 outbreak's cases back-entered to the outbreak "
+        "module in May 2021 (legacy number in the comments) count once with their migrated records, and a case "
+        "notified twice (the same date of birth, sex and rash onset) once. Option E includes option D's birth years.",
     ]
     ws2.cell(row=rn, column=1, value="Notes").font = Font(bold=True, color=navy)
     for i, t in enumerate(notes2, start=1):
@@ -215,8 +231,8 @@ def chart_png(c):
     ax.axhline(1.0, color="#b23a3a", linestyle="--", linewidth=1.4)
     ax.text(-0.42, 1.5, "Dashed line at 1.0: below it, measles cannot keep spreading", color="#b23a3a", fontsize=9.5,
             ha="left", va="center")
-    ax.annotate("only option\nbelow one", xy=(2, vals[2] / 2), ha="center", va="center", fontsize=9, color="white",
-                fontweight="bold")
+    ax.annotate("only\noption\nbelow one", xy=(2, vals[2] / 2), ha="center", va="center", fontsize=8.5,
+                color="white", fontweight="bold", linespacing=1.3)
     ax.set_xticks(range(6))
     ax.set_xticklabels(labels, fontsize=9.5)
     ax.set_ylim(0, 1.6)
@@ -282,22 +298,24 @@ def write_pptx(path, c):
             size=26, bold_first=True)
     png = chart_png(c)
     s.shapes.add_picture(io.BytesIO(png), Emu(900000), Emu(1150000), width=Emu(10300000))
-    footer(s, 2, "Dominant eigenvalue of the next-generation matrix: National Social Contact Survey 2023, national "
-                 "immunity profile May 2027, projection at 1 January 2028, scaled to R0 15 (PS-07 3.2).")
+    footer(s, 2, "Dominant eigenvalue of the next-generation matrix: National Social Contact Survey 2023 term-time "
+                 "diaries, national immunity profile May 2027, projection at 1 January 2028, scaled to R0 15 (PS-07 3.2).")
     # 3: why the teenagers
     s = prs.slides.add_slide(blank)
     textbox(s, 600000, 350000, 11000000, 600000, ["Why the 15 to 19-year-olds decide it"], size=26, bold_first=True)
     textbox(s, 600000, 1250000, 11000000, 4500000, [
         "The region is %s per cent immune, above the %s per cent that R0 15 needs, so on the average no catch-up looks "
         "needed (%s)." % (pct1(1 - c["region_share"]), "93.3", "%.1f" % CM.round1(c["R_avg"])),
-        "But people do not mix at random. In the national contact survey about half of the contacts of 15 to "
-        "19-year-olds are with others of that age.",
+        "All the contact survey's diaries together give %s, but two thirds were kept in July and August with the schools "
+        "closed. The winter runs in term." % ("%.1f" % CM.round1(c["R_all"]["none"])),
+        "In the May diaries, kept in term, more than half of the contacts of 15 to 19-year-olds are with others of that "
+        "age; in the summer diaries, under a fifth.",
         "The cohort born 2008 to 2012, whose uptake fell in the 2010-12 vaccine scare, is 15 to 19 on 1 January 2028 and "
-        "%s per cent susceptible, against %s per cent across the region." % (pct1(c["share_1519"]), pct1(c["region_share"])),
-        "Chains of infection can run inside that group, which is why only option B takes the reproduction number below "
-        "one. Options D and E reach the least immune adults and the most people, but adults mix too little with each "
-        "other to move it."], size=18)
-    footer(s, 3, "National Social Contact Survey 2023, Table 2; national immunity profile, May 2027")
+        "%s per cent susceptible, against %s per cent across the region. In term, chains of infection run inside that "
+        "group, so only option B takes the reproduction number below one; D and E reach the least immune adults and the "
+        "most people and leave it at %s." % (pct1(c["share_1519"]), pct1(c["region_share"]), "%.1f" % c["r1"]["D"])],
+        size=17)
+    footer(s, 3, "National Social Contact Survey 2023 public use file; national immunity profile, May 2027")
     # 4: what each option involves
     s = prs.slides.add_slide(blank)
     textbox(s, 600000, 350000, 11000000, 600000, ["What each option involves"], size=26, bold_first=True)
@@ -341,13 +359,17 @@ def write_pptx(path, c):
     s = prs.slides.add_slide(blank)
     textbox(s, 600000, 350000, 11000000, 600000, ["Method and sources"], size=26, bold_first=True)
     textbox(s, 600000, 1250000, 11000000, 4800000, [
-        "PS-07 section 3: R0 15, the winter assessed on 1 January 2028, immunity from the national profile, each option "
-        "counted for the people the options paper expects it to make immune.",
-        "Next-generation matrix: contacts per day by age group (survey Table 2) times each age group's susceptible "
-        "share, scaled so a wholly susceptible region gives 15; the reproduction number is its dominant eigenvalue.",
-        "Register: local health office codes read in the scheme in force when recorded; events through the merge "
-        "table; GP return lines replaced or withdrawn removed; doses counted under guidelines 12.5.",
-        "Cases: notifiable disease system extract of 6 July 2027; the 2019 outbreak's back-entered records counted once."],
+        "PS-07 section 3: the reproduction number below one throughout the winter, December to February, with R0 15 over "
+        "the winter; population and immunity on 1 January 2028 from the national profile; each option counted for the "
+        "people the options paper expects it to make immune.",
+        "Next-generation matrix: contacts per day by age band from the survey's term-time diaries (2 to 26 May 2023) "
+        "times each band's susceptible share, scaled so a wholly susceptible region gives 15; the reproduction number "
+        "is its dominant eigenvalue, which has to stay below one through the term weeks of the winter (PS-07 3.1).",
+        "Register: addresses in Northern Ireland are outside the region; local health office codes read in the scheme "
+        "in force when recorded; events through the merge table; GP return lines replaced or withdrawn removed; doses "
+        "counted under guidelines 12.5.",
+        "Cases: notifiable disease system extract of 6 July 2027; the 2019 outbreak's back-entered records and cases "
+        "notified twice counted once."],
         size=16)
     footer(s, 5, "PS-07 Measles winter planning standard, version 3.0; options paper of 9 June 2027")
     prs.save(path)

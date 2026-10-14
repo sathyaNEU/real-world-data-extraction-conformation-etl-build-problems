@@ -1,33 +1,34 @@
 {
   "task": "task501",
   "owner": "sathya8571",
-  "status": "SHIPPED",
+  "status": "BUILD",
   "domain": "epidemiology-public-health",
   "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-12",
-  "stump": "A competent solver joins the immunity profile to the population projection, finds the region 94.7 per cent immune on 1 January 2028 against the 93.3 per cent measles at R0 15 needs, puts the reproduction number at 0.8 and files that no catch-up is needed; the step that lands it there is treating the region as one well-mixed pool, when the national contact survey shows the 15-19-year-olds' contacts falling mostly on each other, so the next-generation matrix's dominant eigenvalue is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-14",
+  "stump": "A competent solver builds the next-generation matrix from every diary in the National Social Contact Survey's public use file, scales it to R0 15 and puts measles' reproduction number at 0.9 without a catch-up, so files that no catch-up is needed; the step that lands it there is pooling the 5,040 diaries kept from 3 July to 18 August 2023, in the school summer holidays, with the 2,520 kept in May term time, when the winter's transmission runs on term-time contacts: built from the term-time diaries the reproduction number is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
   "architecture": 4,
+  "round": 2,
   "loops": 0,
   "precut": {
     "exit": 0,
-    "date": "2026-10-12"
+    "date": "2026-10-14"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-12 on the final rebuild (--asof 2027-07-12), no LEAK, sweep 11 clean; every REVIEW line answered in the design note's Build record (one sweep-4 line new at ship, the register extract notes' own words, after the ship-time note entered the swept paragraphs)",
-    "reader": "2026-10-12 (architecture 4): nothing quoted for questions 1 to 4, its own reconstruction names B, its realism notes fixed in the generator; targeted re-read of the two changed documents (options paper, NSCS tables): nothing quoted for question 1, realism clean"
+    "leak_py": "REVIEW 2026-10-14 on the final round 2 rebuild (--asof 2027-07-12), no LEAK, sweep 11 clean; sweeps 3, 4 and 9 answered in the design note's Build record",
+    "reader": "pending (stage 4, round 2); the round 1 reads were on the round 1 pack"
   },
   "duplicate_check": {
-    "heart": "PASS 2026-10-12 at the final rebuild (nearest driver 0.05 task95; no BLOCK)",
-    "nearest": "surface 0 hard tells; task104 and task70 promoted on card axes only, differentiated on the card"
+    "heart": "WARN 2026-10-14 at the round 2 build, no BLOCK (nearest driver off the slot 0.06, task32; this slot's round 1 driver differentiated on the card)",
+    "nearest": "surface 0 promoted pairs (nearest task132 at 0.100); validate 168 cards, 0 invalid"
   },
   "judge": {
-    "verdict": "DETERMINISTIC 2026-10-12 (judge-task501d, re-judge): APPROVE, no fix; main call forced, B 0.89 against 1.29 to 1.31",
-    "disposition": "APPROVE, shipped as judged (the judged pack byte-identical to the shipped one); the low-risk residual on Ask 2 (13 doses given by 30 June 2027, loaded on 1 or 2 July) closed by the extract notes' date_given definition, no document or prompt edit; pass 1 (judge-task501c) NOT_DETERMINISTIC on one ask fork, fixed in the data (SF17)",
-    "report": "determinism_check_report_pass2.md (pass 1: determinism_check_report.md)",
-    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; no reported figure is wrong",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
+    "verdict": "pending (stage 4, round 2)",
+    "disposition": "",
+    "report": "determinism_check_report.md and determinism_check_report_pass2.md on disk are round 1's, judged on the round 1 pack",
+    "gate_g": "",
+    "gate_h": ""
   },
   "returned": [
     {
@@ -35,9 +36,15 @@
       "portal": "v2: landed by 2 of 2 (filed walk-forward executed)",
       "repair": "design",
       "commit": ""
+    },
+    {
+      "date": "2026-10-13",
+      "portal": "10/10 audit 2026-10-13 COMPLIANT_WEAK (round 2): the next-generation matrix eigenvalue a textbook reflex, the contact survey a single-purpose signpost, Ask 1 cracked by the circular's table alone",
+      "repair": "design",
+      "commit": ""
     }
   ],
-  "resume": "shipped; next event is the author's portal result",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": "2026-10-12",
   "portal": [
