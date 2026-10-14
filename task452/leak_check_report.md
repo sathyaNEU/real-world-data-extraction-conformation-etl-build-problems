@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: design, points, rejected, strata, stratum, agreement, estimator, period, preliminary, decisive, default, method, definition, reporting, adjudication, window, weights, article, asserted, population, stratified, weight, golden, rating, inventory
+Stump terms swept: design, points, rejected, stratum, strata, agreement, estimator, preliminary, period, decisive, default, method, definition, reporting, adjudication, asserted, counts, window, weights, article, population, stratified, weight, stated, golden
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `emission_reductions_payment_agreement_extract.pdf`: carries 13 of 13 distinctive words of the committed call: 'The Lowland Forest Emission Reductions Program can offer the Rainforest Results Facility 23,229,780 tonnes of emission r'
@@ -12,9 +12,9 @@ Stump terms swept: design, points, rejected, strata, stratum, agreement, estimat
 
 ## 4 design-note vocabulary (REVIEW 4)
 - **REVIEW** `emission_reductions_payment_agreement_extract.pdf`: 5 of 25 stump-paragraph terms appear (agreement, period, definition, reporting, article); read whether the document names the move
-- **REVIEW** `forest_reference_level_2015-2022_summary.pdf`: 5 of 25 stump-paragraph terms appear (points, agreement, period, reporting, inventory); read whether the document names the move
+- **REVIEW** `forest_reference_level_2015-2022_summary.pdf`: 4 of 25 stump-paragraph terms appear (points, agreement, period, reporting); read whether the document names the move
 - **REVIEW** `monitoring_plan_extract.pdf`: 4 of 25 stump-paragraph terms appear (points, period, definition, reporting); read whether the document names the move
-- **REVIEW** `reference_sampling_design_2026-01.pdf`: 9 of 25 stump-paragraph terms appear (design, points, strata, stratum, period, preliminary); read whether the document names the move
+- **REVIEW** `reference_sampling_design_2026-01.pdf`: 10 of 25 stump-paragraph terms appear (design, points, stratum, strata, preliminary, period); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 1, INFO 2)
 - **REVIEW** `final_change_map_v2_statistics.xlsx`: names 9 of 10 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -61,4 +61,12 @@ Stump terms swept: design, points, rejected, strata, stratum, agreement, estimat
 - **REVIEW lines** all harmless; the design report "borderline, leaning harmless": it states the design facts the correct method needs and never says to weight by them or warns against the final map.
 - **Realism notes** minor: interpretation and quality-control dates on every day of the week and operators' workloads near equal, the adjudication dates spread evenly, the district land areas round in the statistics institute's figures (as in pass 1).
 - **After pass 2** (figure-neutral, no random stream moved; checks, verify and the free gates re-run): interpretation and quality-control dates fall on working days (a draw on a Saturday becomes Friday's, on a Sunday Monday's) and two of the seven interpreters carry double loads; the adjudication dates (13 to 17 April 2026, Monday to Friday) and the statistics institute's round district land areas are kept.
+
+### Pass 3 (2026-10-14, isolated Sonnet reader at medium effort, after the prompt repair: "how many tonnes, if any", "what would the Facility pay")
+
+- **Q1** none states the move; the reader assembled the design report's strata, the release note's "Version 2.0 is the map the 2024-2025 monitoring report presents" and the plan's 4.1 and 4.2, and itself took the re-stratification on the final map as the route (the default path): the documents state facts, and the choice stays the analyst's.
+- **Q2 to Q4** none ranks the candidates or states the tonnes, the payment or the interval; the statistics workbook's "Country 82665.36" is the final map's pixel count over the whole country, the easy route's raw material, not the estimate.
+- **Q5** every filed rule quoted (articles 1, 2, 4(2), 5, 6; the plan's 3.1 to 3.3, 4.1, 4.3 to 4.5); no sentence fixes the weights.
+- **Q6** an analytical choice (the estimator and its strata); the forest definition, the adjudication, the district layers and the rounding are secondary.
+- **Prompt read** "if any" keeps none grammatical (article 5 provides for none); no phrase presupposes a non-zero quantity, a subset or a direction; none is a grammatical answer to every question and ask.
 

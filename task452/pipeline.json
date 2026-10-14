@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (2026-10-14, --asof 2026-05-22; no LEAK)",
-    "reader": "pass 1 and pass 2 clean on the decisive step (Q1 none, Q6 analytical); realism repaired between and after"
+    "reader": "passes 1 to 3 clean on the decisive step (pass 3 on the repaired prompt)"
   },
   "duplicate_check": {
     "heart": "WARN (overuse.objective, overuse.gate_g, repeat.decision, repeat.question_form, answered in ## Draw)",
@@ -29,7 +29,14 @@
     "disposition": "APPROVE (pass 1 on the first cut, pass 2 the re-judge on the final pack)",
     "report": "determinism_check_report.md, determinism_check_report_pass2.md"
   },
-  "returned": [],
+  "returned": [
+    {
+      "date": "2026-10-14",
+      "portal": "none (self-found before review)",
+      "repair": "prompt: H23 presupposition (if any, would)",
+      "commit": ""
+    }
+  ],
   "resume": "",
   "approved": null,
   "delivered": "2026-10-14",
