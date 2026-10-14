@@ -1,0 +1,236 @@
+{
+ "call": [
+  "Adam Andersen",
+  "Alexis Drake",
+  "Fernando Baldwin",
+  "Henry Grimes",
+  "Jillian Luna",
+  "Johnathan Kaiser",
+  "Judith Valenzuela",
+  "Kerry Leach",
+  "Kirsten Middleton",
+  "Kyle Avery",
+  "Pedro Hampton",
+  "Ruth Rosario",
+  "Stacie Black",
+  "Traci Ware",
+  "Vickie Nolan"
+ ],
+ "call_members": [
+  {
+   "name": "Adam Andersen",
+   "department": "Orthopaedic Surgery",
+   "manufacturer": "Glenarde Joint Technologies, Inc.",
+   "disclosed_2026": 128000
+  },
+  {
+   "name": "Kyle Avery",
+   "department": "Hematology and Oncology",
+   "manufacturer": "Norvell Therapeutics, Inc.",
+   "disclosed_2026": 92000
+  },
+  {
+   "name": "Fernando Baldwin",
+   "department": "Hematology and Oncology",
+   "manufacturer": "Ambrell Biologics, Inc.",
+   "disclosed_2026": 41000
+  },
+  {
+   "name": "Stacie Black",
+   "department": "Orthopaedic Surgery",
+   "manufacturer": "Clevedon Surgical, Inc.",
+   "disclosed_2026": 54000
+  },
+  {
+   "name": "Alexis Drake",
+   "department": "Gastroenterology and Hepatology",
+   "manufacturer": "Fallowfield Therapeutics, Inc.",
+   "disclosed_2026": 102000
+  },
+  {
+   "name": "Henry Grimes",
+   "department": "Neurology",
+   "manufacturer": "Dunmere Neurotherapeutics, Inc.",
+   "disclosed_2026": 115000
+  },
+  {
+   "name": "Pedro Hampton",
+   "department": "Gastroenterology and Hepatology",
+   "manufacturer": "Morvanne Pharmaceuticals, Inc.",
+   "disclosed_2026": 53000
+  },
+  {
+   "name": "Johnathan Kaiser",
+   "department": "Cardiovascular Medicine",
+   "manufacturer": "Pinewold Vascular, LLC",
+   "disclosed_2026": 48000
+  },
+  {
+   "name": "Kerry Leach",
+   "department": "Cardiovascular Medicine",
+   "manufacturer": "Kelsall Vascular, LLC",
+   "disclosed_2026": 54000
+  },
+  {
+   "name": "Jillian Luna",
+   "department": "Dermatology",
+   "manufacturer": "Varrick Pharmaceuticals, Inc.",
+   "disclosed_2026": 53000
+  },
+  {
+   "name": "Kirsten Middleton",
+   "department": "Cardiovascular Medicine",
+   "manufacturer": "Tilbrook Heart Technologies, Inc.",
+   "disclosed_2026": 109000
+  },
+  {
+   "name": "Vickie Nolan",
+   "department": "Urology",
+   "manufacturer": "Carrowmore Pharmaceuticals, Inc.",
+   "disclosed_2026": 51000
+  },
+  {
+   "name": "Ruth Rosario",
+   "department": "Neurology",
+   "manufacturer": "Pallister Neurotherapeutics, Inc.",
+   "disclosed_2026": 41000
+  },
+  {
+   "name": "Judith Valenzuela",
+   "department": "Hematology and Oncology",
+   "manufacturer": "Yarrowby Oncology, Inc.",
+   "disclosed_2026": 53000
+  },
+  {
+   "name": "Traci Ware",
+   "department": "Orthopaedic Surgery",
+   "manufacturer": "Saltmere Joint Technologies, Inc.",
+   "disclosed_2026": 51000
+  }
+ ],
+ "first_left_off": "Angelica Gentry",
+ "faculty_estimated_2026": 278,
+ "faculty_estimated_2025": 308,
+ "weighting_k_lines": 2,
+ "december_filers_on_docket": [
+  "Stacie Black",
+  "Pedro Hampton",
+  "Kerry Leach",
+  "Jillian Luna",
+  "Judith Valenzuela"
+ ],
+ "under_reporters": [
+  "Fernando Baldwin",
+  "Johnathan Kaiser",
+  "Vickie Nolan",
+  "Ruth Rosario",
+  "Traci Ware"
+ ],
+ "whole_year_reading_instead": [
+  "Melvin Blackwell",
+  "Angelica Gentry",
+  "Cory Harper",
+  "Hector Mahoney",
+  "Carly Singleton"
+ ],
+ "whole_year_reading_drops": [
+  "Stacie Black",
+  "Pedro Hampton",
+  "Kerry Leach",
+  "Jillian Luna",
+  "Judith Valenzuela"
+ ],
+ "ask_a": {
+  "Anesthesiology": {
+   "owed": 144,
+   "not_submitted": 11
+  },
+  "Cardiovascular Medicine": {
+   "owed": 116,
+   "not_submitted": 6
+  },
+  "Dermatology": {
+   "owed": 45,
+   "not_submitted": 1
+  },
+  "Emergency Medicine": {
+   "owed": 95,
+   "not_submitted": 2
+  },
+  "Gastroenterology and Hepatology": {
+   "owed": 69,
+   "not_submitted": 6
+  },
+  "Hematology and Oncology": {
+   "owed": 95,
+   "not_submitted": 5
+  },
+  "Internal Medicine": {
+   "owed": 203,
+   "not_submitted": 9
+  },
+  "Neurology": {
+   "owed": 91,
+   "not_submitted": 7
+  },
+  "Obstetrics and Gynecology": {
+   "owed": 107,
+   "not_submitted": 4
+  },
+  "Ophthalmology": {
+   "owed": 55,
+   "not_submitted": 1
+  },
+  "Orthopaedic Surgery": {
+   "owed": 98,
+   "not_submitted": 6
+  },
+  "Pediatrics": {
+   "owed": 198,
+   "not_submitted": 12
+  },
+  "Psychiatry": {
+   "owed": 100,
+   "not_submitted": 4
+  },
+  "Radiology": {
+   "owed": 114,
+   "not_submitted": 6
+  },
+  "Surgery": {
+   "owed": 127,
+   "not_submitted": 10
+  },
+  "Urology": {
+   "owed": 38,
+   "not_submitted": 1
+  }
+ },
+ "ask_a_total": {
+  "owed": 1695,
+  "not_submitted": 91
+ },
+ "ask_b": {
+  "Consulting fees": 4531000,
+  "Services other than consulting, including speaking outside continuing education": 1387000,
+  "Honoraria": 768000,
+  "Faculty or speaker, accredited or certified continuing education": 254000,
+  "Faculty or speaker, unaccredited continuing education": 190000
+ },
+ "ask_b_total": 7131000,
+ "ask_c": {
+  "Consulting or advisory board": 57000,
+  "Speaking or teaching": 11000,
+  "Expert testimony": 126000,
+  "Other paid services": 3000
+ },
+ "ask_c_total": 197000,
+ "conformed_rows": 9987,
+ "deadline_eastern": "11:59",
+ "policy_sections_cited": [
+  "2.1",
+  "2.2",
+  "5.2",
+  "5.4"
+ ]
+}

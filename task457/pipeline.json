@@ -1,26 +1,35 @@
 {
   "task": "task457",
   "owner": "oviya1301",
-  "status": "DRAWING",
+  "status": "PAUSED",
   "domain": "survey-research-official-statistics",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-14",
-  "stump": "",
+  "stump": "The default path files the whole-year docket (five faculty whose earlier December disclosures make them look like under-reporters in place of five who submitted their 2026 disclosures in early December) because it compares each disclosure with the register's whole program year although a disclosure carries only what each company had paid by the day it was submitted; counted to each submission's day, the December 2026 disclosures grossed up by the same manufacturer's share of the year by that date, the weighted matched-line ratio comes closest on 2025 and files the golden docket.",
   "architecture": 1,
-  "loops": 0,
-  "precut": null,
-  "leak": null,
-  "duplicate_check": {
-    "heart": null,
-    "nearest": "0.08 task127, 0.07 task95, 0.06 task86 lineage, task51 lineage",
-    "note": "drawn 2026-10-14: guard WARN overuse.objective, repeat.gate_g, overuse.gate_g answered in ## Draw; task136, task185 and task80 differentiated on the card for the older same-driver signature",
-    "surface": null
+  "loops": 1,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-14"
   },
-  "judge": null,
+  "leak": {
+    "leak_py": "REVIEW (no LEAK)",
+    "reader": "pass 1 (first design): filed the golden docket with a dollar-shrunk matched-line ratio; stump re-centred; pass 2 running"
+  },
+  "duplicate_check": {
+    "heart": "WARN (driver.near 0.14 own lineage; overuse.objective, repeat.gate_g, overuse.gate_g)",
+    "nearest": "0.10 task130 v4 lineage, 0.09 task259, 0.09 task445 lineage",
+    "note": "drawn 2026-10-14: guard WARN overuse.objective, repeat.gate_g, overuse.gate_g answered in ## Draw; task136, task185 and task80 differentiated on the card for the older same-driver signature",
+    "surface": "promoted task136, task185, task80 (older same-driver signature, differentiated on the card) and task450 (retired, surface only)"
+  },
+  "judge": {
+    "pass_1": "DETERMINISTIC / FIX_NOW (ask wording: CSV population, the 2025 publication); stump moderate; Gate H pass",
+    "pass_2": "running"
+  },
   "returned": [],
-  "resume": "stage 2: default path, stump sentence, three rules, ladder, fork table, closure, ask sheet, prompt.txt to precut exit 0",
+  "resume": "stage 4 pass 2: read the leak reader (/tmp/leakread-task457-1792019786/reader_answers.md) and the judge thread's verdict (/tmp/determinism-check-task457-20261014T231654/verdict.md), send the verdict path to the determinism-judge agent for determinism_check_report.md, fix every finding in the generator in one pass, then ship",
   "approved": null,
   "delivered": null,
   "portal": null,

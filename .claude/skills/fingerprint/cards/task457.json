@@ -5,13 +5,13 @@
  "slot_note": "",
  "domain": "survey-research-official-statistics",
  "subdomain": "census-register-administrative-data-quality",
- "niche": "an academic medical center's conflict-of-interest docket built for a year the federal Open Payments register has not yet published: faculty self-disclosures of industry remuneration corrected by each discloser's completeness measured against the register's closed years",
+ "niche": "an academic medical center's conflict-of-interest docket built for a year the federal Open Payments register has not yet published: faculty self-disclosures of industry remuneration, each compared with the register's payments made by the day it was submitted, corrected by each discloser's weighted amount-reporting ratio and grossed up where submitted before the year closed",
  "objective": "etl",
  "shape": "01",
  "decision_type": "ranked_slate_under_cap",
  "answer_unit": "set_of_items",
- "answer": "",
- "answer_source": "",
+ "answer": "Docket for 11 February 2027: Adam Andersen, Kyle Avery, Fernando Baldwin, Stacie Black, Alexis Drake, Henry Grimes, Pedro Hampton, Johnathan Kaiser, Kerry Leach, Jillian Luna, Kirsten Middleton, Vickie Nolan, Ruth Rosario, Judith Valenzuela, Traci Ware (five December 2026 filers grossed up for the payments made after they filed, five long-record under-reporters corrected)",
+ "answer_source": "task457/submission.md block 1; generator/figures.json",
  "gap": [
   "rule",
   "time"
@@ -35,8 +35,8 @@
  "role_family": "compliance_or_audit",
  "scoring_unit": "other",
  "spine": {
-  "file": "open_payments_general_payments_2021-2025_extract.csv",
-  "rows": 0,
+  "file": "open_payments_general_2021-2025_jan2027_extract.csv",
+  "rows": 88544,
   "entity": "one general payment record in the Open Payments register, for a covered recipient the office's extract matched to the medical center's faculty by name or NPI",
   "grain": "payment record (program year, record ID, change type)",
   "source": "synthetic (constructed in the layout of the CMS Open Payments general payments file)"
@@ -63,23 +63,30 @@
  ],
  "opening_move": "question-first",
  "question_form": "who",
- "driver": "Each unit's amount in the latest period is seen only through its own report, which misses a share that differs by unit; the share is measured on the unit's closed periods, where a complete record exists, and a unit's own measured share is noise when its history is thin, so each unit's correction is weighted between its own history and the common share by the volume of that history, the weighting chosen by how well it reproduces the last closed period.",
- "driver_concrete": "Each faculty member's 2026 remuneration from each manufacturer is known only from the faculty member's own disclosure, Open Payments publishing 2026 only in June 2027; the disclosure's completeness is measured against the register for 2021 to 2025, and a faculty member's own completeness from a few payments is noise, so each is credibility-weighted toward the faculty-wide completeness by the dollars of their history, the weighting the one that best reproduces 2025 from the years before it.",
- "stump": "A competent analyst corrects each 2026 disclosure by its author's own completeness ratio from the register's closed years, and faculty whose thin histories happened to leave a payment or two undisclosed take docket places from faithful disclosers the golden keeps; the disclosures at face value, or all scaled by the faculty-wide ratio, rank alike and leave out the long-record under-disclosers.",
+ "driver": "Each unit's amount in the latest period is seen only through its own report, which covers only what had happened by the day the report was made, while the closed periods' records date every event in the full period; the unit's reporting error must be measured with each earlier report compared against the events up to its own date, and the latest report grossed up for the part of the period it could not yet see, so units that reported early look like under-reporters and units that reported early this time look small to the natural full-period comparison.",
+ "driver_concrete": "Each faculty member's 2026 remuneration from a manufacturer is known only from the disclosure, Open Payments publishing 2026 in June 2027, and the disclosure system opens on 1 December; a disclosure carries what each company had paid by the day it was submitted, so each earlier matched manufacturer-year's register side is counted to that day before the faculty member's amount-reporting ratio is measured and weighted toward the faculty's by matched lines, and a 2026 disclosure submitted in December is grossed up by the share of the year the same manufacturer had paid by that date in 2025; the filed back-test on 2025 selects it.",
+ "stump": "A strong analyst builds each faculty member's matched-line ratio weighted toward the faculty's, compares every disclosure with the register's whole program year, finds it closest to 2025 among the whole-year corrections and sends five faculty whose earlier December disclosures made them look like under-reporters in place of five who submitted their 2026 disclosures in early December, before their retainers' December installments.",
  "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms the register and the disclosures and reads every field correctly corrects each 2026 disclosure by its author's own completeness ratio measured on 2021 to 2025 and files a docket in which thin-history faculty displace faithful disclosers; the uncorrected disclosures, or the faculty-wide ratio (which changes no rank), file a docket without the long-record under-disclosers.",
- "domain_test": "The deciding quantity is each faculty member's 2026 single-manufacturer remuneration, nowcast the way official statistics fills a register's unpublished period from a timely self-report: the report's error measured against the register on the closed years, each reporter's error rate credibility-weighted by the volume of its history and the weighting validated on the last closed year; at face value, pooled, or person by person unweighted, the docket changes, and with another field's nouns the deciding quantity is no longer a register-calibrated self-report.",
+ "analyst_test": "A strong analyst who conforms the register and the disclosures, reads every field correctly, builds the matched-line ratio weighted toward the faculty-wide ratio and applies the filed back-test (the stage-4 leak reader's route) files the whole-year docket: Melvin Blackwell, Angelica Gentry, Cory Harper, Hector Mahoney and Carly Singleton in place of Stacie Black, Pedro Hampton, Kerry Leach, Jillian Luna and Judith Valenzuela.",
+ "domain_test": "The deciding quantity is each faculty member's 2026 single-manufacturer remuneration, estimated the way a record-check study corrects a self-report against an administrative register: each report compared with the register over the window it could cover, the reporter's amount error measured on matched reports and credibility-weighted by their number, and the latest report grossed up for the part of the period it preceded; with nouns from a field whose reports all follow the period's close the reference windows match and the task collapses to a ratio.",
  "mechanism_source": "design_note",
  "differentiation": {
   "task136": "task136 chooses which ratio of an intervention's increment is stable enough to carry to a new site; here the ratio is fixed (a report's completeness against the register) and the move is shrinking each reporter's own ratio toward the pooled one by the volume of its history, the strength chosen on the last closed year.",
   "task185": "task185 sizes one instrument conversion by the level being converted; here no instrument changes, the correction is sized per reporter, and the decisive property is how far a thin record is trusted against the pool.",
   "task80": "task80 dates a status from the event that conferred it rather than its first observed period; here nothing is dated, and the decisive step is a credibility-weighted estimate of each reporter's under-report."
  },
- "lineage": [],
- "notes": "Personas drawn with guard.py names --geo 'United States' --seed 457. calibration_form censored_or_lagged_release: the register's closed program years are the truth the disclosures are measured against, and its publication lag is why 2026 is seen only through the disclosures. decisive_rule_filed false: the policy files the estimand (remuneration received from a single entity in the calendar year) and, in general terms, the criterion by which the office's correction is chosen (the one that best reproduces the latest published year from the years before it), never the method. forum line_manager_or_team: the office's director sets the docket the office takes to the committee's February meeting (the forcing event); the committee reviews the cases, it does not choose them.",
+ "lineage": [
+  {
+   "architecture": "v1 (first decisive step, replaced at stage 4 before ship)",
+   "fate": "landed: the stage-4 leak reader, reading blind, filed the golden docket with a matched-line ratio shrunk by dollars; judge stump power moderate",
+   "driver": "Each unit's amount in the latest period is seen only through its own report, which leaves some items out entirely and understates the amounts of those it keeps, each unit at its own rate; the correction for a kept item's amount is the unit's understatement measured on the items its report kept in the closed periods, not its overall share reported (which carries the items it left out), and that measure is noise on a short record, so it is weighted toward the common rate by the number of items the record holds; the grain alone or the weighting alone each reproduce the last closed period worse than no correction.",
+   "stump": "A competent analyst measures each faculty member's completeness as the share of their 2021 to 2025 register remuneration they disclosed, back-tests it on 2025 against the faculty-wide ratio and the disclosures at face value, finds face value closest and sends five faithful disclosers in place of five long-record under-reporters; each person's matched-line ratio unweighted sends thin-record faculty instead, and the overall share weighted by the record sends the faculty who leave small relationships out."
+  }
+ ],
+ "notes": "Personas drawn with guard.py names --geo 'United States' --seed 457. calibration_form censored_or_lagged_release: the register's closed program years are the truth the disclosures are measured against, and its publication lag is why 2026 is seen only through the disclosures. decisive_rule_filed false: the policy files the estimand (remuneration received from a single entity in the calendar year) and, in general terms, the criterion by which the office's correction is chosen (the one that best reproduces the latest published year from the years before it), never the method. forum line_manager_or_team: the office's director sets the docket the office takes to the committee's February meeting (the forcing event); the committee reviews the cases, it does not choose them. Re-centred at stage 4 on 2026-10-14: the first decisive step (the matched-line grain with a credibility weighting) was landed by the leak reader and moved to lineage; the decisive step is now the reference-period alignment of each disclosure with the register's dated payments.",
  "client_domain": "survey-research-official-statistics",
  "layer2_family": "field_method",
- "layer2_pattern": "own:reporter-completeness-credibility-against-a-lagged-register",
+ "layer2_pattern": "own:reporter-error-on-aligned-reference-periods-against-a-lagged-register",
  "layer1": [
   "several sources for one picture: the Open Payments register (manufacturer-reported, by program year, a year and a half late), the faculty disclosure system (self-reported, timely), the human resources roster",
   "imperfect keys: the register's covered-recipient profile IDs and NPIs, NPIs missing on older records and on some faculty, names spelled differently, manufacturers named by their submitting entity and typed by faculty in their own words",

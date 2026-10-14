@@ -1,0 +1,176 @@
+{
+ "task": "task457",
+ "architecture": 1,
+ "title": "Which fifteen faculty an academic medical center's conflict-of-interest office sends to its February committee, 2026 remuneration from a single manufacturer estimated before Open Payments publishes the year",
+ "domain": "Survey Research & Official Statistics",
+ "subdomain": "census-register-administrative-data-quality (the faculty's self-reported disclosures validated against the Open Payments register on the years both cover, the amount-reporting error measured on matched reports and credibility-weighted by the number of them, carried to the year the register has not published)",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "01: a ranked list under a cap (the committee's fifteen), with a chart, three supporting tables and the conformed faculty-by-year file",
+ "as_of": "2027-01-27",
+ "deliverables": [
+  "coi_committee_docket_2027-02.docx",
+  "faculty_remuneration_2026_conformed.csv"
+ ],
+ "distractor_files": [
+  "open_payments_research_2021-2025_extract.csv",
+  "nih_awards_marrowfield_fy2025.csv",
+  "open_payments_general_py2025_jun2026_extract.csv"
+ ],
+ "stated_inputs": [
+  "15",
+  "2026",
+  "2027",
+  "2025",
+  "2021",
+  "11:59",
+  "1,000"
+ ],
+ "input_gates": {
+  "files": 14,
+  "formats": [
+   "csv",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "open_payments_general_2021-2025_jan2027_extract.csv",
+  "largest_file_rows": 90088
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task457/generator/build.py (seeded, deterministic) in the public layouts of Open Payments general and research payments and its covered-recipient profile supplement, an NIH RePORTER export, a human resources appointment extract and a conflict-of-interest disclosure system's export; the medical center, its office, faculty, manufacturers, companies and people are fictional.",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work)"
+  }
+ ],
+ "created": "2027-01-21",
+ "generator": "task457/generator/build.py",
+ "files": [
+  {
+   "path": "clinical_faculty_appointments.csv",
+   "format": "csv",
+   "bytes": 995589,
+   "rows": 11099,
+   "source": "Constructed: the human resources system's clinical faculty appointment terms since July 2019",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "coi_disclosure_form_guide_2026.pdf",
+   "format": "pdf",
+   "bytes": 42296,
+   "rows": null,
+   "source": "Constructed: the office's guide to the 2026 edition of the annual disclosure form",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "coi_disclosures_2021-2026_export.xlsx",
+   "format": "xlsx",
+   "bytes": 569296,
+   "rows": null,
+   "source": "Constructed: the disclosure system's export of every annual disclosure for 2021 to 2026 and every submitted version's items",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "coi_entity_list.csv",
+   "format": "csv",
+   "bytes": 10243,
+   "rows": 130,
+   "source": "Constructed: the conflict-of-interest disclosure system's company list",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "coi_policy_2024.pdf",
+   "format": "pdf",
+   "bytes": 67896,
+   "rows": null,
+   "source": "Constructed: the medical center's conflict-of-interest policy for the clinical faculty (June 2024)",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "coi_submission_history.csv",
+   "format": "csv",
+   "bytes": 634625,
+   "rows": 11273,
+   "source": "Constructed: the disclosure system's submission history",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "department_codes.csv",
+   "format": "csv",
+   "bytes": 958,
+   "rows": 21,
+   "source": "Constructed: the clinical department codes, with the Department of Medicine's divisions that became departments on 1 July 2025",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "nih_awards_marrowfield_fy2025.csv",
+   "format": "csv",
+   "bytes": 30560,
+   "rows": 310,
+   "source": "Constructed: NIH awards for fiscal year 2025 with a faculty member as contact principal investigator, in the RePORTER export layout",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "open_payments_covered_recipient_profiles.csv",
+   "format": "csv",
+   "bytes": 224352,
+   "rows": 2339,
+   "source": "Constructed: the covered-recipient profiles of every profile the extracts carry, in the Open Payments profile supplement layout",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "open_payments_general_2021-2025_jan2027_extract.csv",
+   "format": "csv",
+   "bytes": 44583457,
+   "rows": 90088,
+   "source": "Constructed: an academic medical center's extract of Open Payments general payments, program years 2021 to 2025, January 2027 publication, for the covered recipients matched to its clinical faculty since 2021, in the Open Payments public file layout",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "open_payments_general_py2025_jun2026_extract.csv",
+   "format": "csv",
+   "bytes": 9196273,
+   "rows": 18770,
+   "source": "Constructed: the same office's earlier extract of program year 2025 as Open Payments first published it (June 2026)",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "open_payments_research_2021-2025_extract.csv",
+   "format": "csv",
+   "bytes": 175895,
+   "rows": 656,
+   "source": "Constructed: Open Payments research payments naming a faculty member as principal investigator, in the public file layout",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "oricoi_export_contents_2027-01-21.csv",
+   "format": "csv",
+   "bytes": 1205,
+   "rows": 13,
+   "source": "Constructed: the list of the export's files of 21 January 2027",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "oricoi_field_definitions.xlsx",
+   "format": "xlsx",
+   "bytes": 10222,
+   "rows": null,
+   "source": "Constructed: the field descriptions of the data files",
+   "date": "2027-01-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  }
+ ]
+}
