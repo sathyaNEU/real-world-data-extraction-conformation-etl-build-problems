@@ -18,6 +18,7 @@ SEED = 1380206
 # ---------------------------------------------------------------------------------------------------- calendar
 WEATHER_START = dt.date(1995, 10, 1)
 WEATHER_END = dt.date(2027, 1, 31)        # the record runs through the day before the order is due
+WINTER_FULL = dt.date(2026, 1, 27)        # the 2025-26 winter's last rain before the 2026 season: every root zone full
 DISTRICT_STATION_START = dt.date(2014, 4, 1)
 SPLICE = dt.date(2014, 5, 1)              # WOP 6.1: station 39 to 30 April 2014, the District station from 1 May
 REPLAY_YEARS = list(range(1997, 2027))    # WOP 2.3: the thirty weather years 1997 to 2026
@@ -51,7 +52,7 @@ PEOPLE = {
     "gm": "Brittany Wall",                # General Manager (signs the procedure's tables)
     "watermaster": "Colleen Ramsey",      # Water Master (riders, meter book, tail weir sheets)
     "scada": "Dennis Zhang",              # SCADA and Instrumentation Technician (flumes, the yard station)
-    "engineer": "Catherine Bradford",     # District Engineer (structures, the Lateral 5 connector)
+    "engineer": "Travis Grimes",          # District Engineer (structures, the Lateral 5 to 6 connector)
     "authority": "Adam Arnold",           # Water Accounting, Tolan Valley Water Authority
     "conservation": "Kristin Lucas",      # Water Conservation Coordinator (requests, crop report)
 }
@@ -60,7 +61,7 @@ LATERALS = ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9"]
 LATERAL_NAME = {l: "Lateral %s" % l[1:] for l in LATERALS}
 # turnouts numbered on each lateral as built; the Lateral 5 tail turnouts keep their 5-numbers after the realignment
 TURNOUTS_PER_LATERAL = {"L1": 52, "L2": 48, "L3": 38, "L4": 55, "L5": 58, "L6": 40, "L7": 41, "L8": 36, "L9": 44}
-MOVED = ["05-%03d" % k for k in range(45, 59)]   # Lateral 5's last 14 turnouts, served from Lateral 6 from REALIGN
+MOVED = ["05-%03d" % k for k in range(21, 35)]   # the Lateral 5 west spur, served from Lateral 6 from REALIGN
 ROUTE_DAY = {"L1": 0, "L2": 1, "L3": 2, "L4": 3, "L5": 0, "L6": 1, "L7": 2, "L8": 3, "L9": 4}  # weekday of the read
 
 # ---------------------------------------------------------------------------------------------------- the procedure's tables
@@ -90,12 +91,6 @@ SOILS = {
 # Tables 2 and 3 are the District's planning values. Every root zone's allowable depletion in inches is an odd number of
 # hundred-thousandths (allowable depletion fraction, capacity and rooting depth each an odd number of their last unit),
 # so no day's depletion, on any station's reported decimals, can land exactly on it.
-# The fields as they are, which the growers' own irrigation answers to (never shipped): rooting depth (ft), crop
-# coefficients and, per map unit, available water capacity (in/ft) and depth limit (ft).
-PHYS_ROOT_FT = {"ALM": 5.0, "PIS": 6.0, "WAL": 6.0, "GRW": 4.0, "CIT": 4.0, "ALF": 5.0, "PAS": 2.5}
-PHYS_KC = {c: list(v) for c, v in KC.items()}
-PHYS_KC["WAL"][5] = 1.10
-PHYS_SOILS = {"128": (1.25, None), "141": (1.65, 3.0), "150": (0.80, None), "163": (1.40, None), "175": (1.75, 2.3)}
 SOIL_P = [0.30, 0.18, 0.15, 0.27, 0.10]
 METHODS = ["Drip", "Micro-sprinkler", "Sprinkler", "Border"]
 EA = {"Drip": 0.90, "Micro-sprinkler": 0.85, "Sprinkler": 0.75, "Border": 0.70}                   # Table 4
@@ -104,9 +99,29 @@ METHOD_BY_CROP = {"ALM": ["Micro-sprinkler", "Drip"], "PIS": ["Drip", "Micro-spr
                   "ALF": ["Border", "Sprinkler"], "PAS": ["Border", "Sprinkler"]}
 CROP_SHARE = {"ALM": 0.33, "PIS": 0.14, "WAL": 0.08, "GRW": 0.12, "CIT": 0.08, "ALF": 0.15, "PAS": 0.10}
 # Table 5: loss allowances (share of the water put into the lateral; the main canal's of the headgate diversion)
-LOSS = {"L1": 0.072, "L2": 0.105, "L3": 0.064, "L4": 0.138, "L5": 0.091, "L6": 0.118, "L7": 0.083, "L8": 0.097,
+LOSS = {"L1": 0.072, "L2": 0.105, "L3": 0.066, "L4": 0.138, "L5": 0.091, "L6": 0.118, "L7": 0.083, "L8": 0.097,
         "L9": 0.126}
-MAIN_LOSS = 0.041
+MAIN_LOSS = 0.042
+
+# How the growers run their water (never shipped). Border growers water a field when it has dried to their own
+# threshold and run the set until the field is full. Drip, micro-sprinkler and sprinkler growers hold a working
+# deficit: each set puts back about what the crop used since the last one, so the field stays near the grower's target
+# depletion (a share of its total available water) and is not taken back to field capacity; the targets rise through
+# the regulated-deficit stages (almond hull split, pistachio shell hardening, wine grapes after fruit set).
+REFILL_METHODS = ("Border",)
+TARGET = {   # share of total available water after a set, January to December
+    "ALM": [0.20, 0.20, 0.20, 0.20, 0.25, 0.25, 0.44, 0.44, 0.36, 0.36, 0.36, 0.36],
+    "PIS": [0.20, 0.20, 0.20, 0.22, 0.44, 0.44, 0.26, 0.26, 0.40, 0.40, 0.40, 0.40],
+    "WAL": [0.15, 0.15, 0.15, 0.15, 0.18, 0.18, 0.20, 0.20, 0.26, 0.26, 0.26, 0.26],
+    "GRW": [0.20, 0.20, 0.20, 0.20, 0.22, 0.46, 0.46, 0.46, 0.42, 0.42, 0.42, 0.42],
+    "CIT": [0.28, 0.28, 0.28, 0.28, 0.30, 0.30, 0.32, 0.32, 0.34, 0.34, 0.34, 0.34],
+    "ALF": [0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.22, 0.22, 0.22, 0.22],
+    "PAS": [0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.22, 0.22, 0.22, 0.22],
+}
+TRIGGER_IN = {"Drip": (0.30, 0.50), "Micro-sprinkler": (0.45, 0.75), "Sprinkler": (0.60, 0.95)}
+FLOW_PER_ACRE = {"Drip": (0.024, 0.034), "Micro-sprinkler": (0.030, 0.044), "Sprinkler": (0.050, 0.070),
+                 "Border": (0.14, 0.20)}
+MAX_SET_HOURS = {"Drip": 60.0, "Micro-sprinkler": 48.0, "Sprinkler": 48.0, "Border": 40.0}
 
 # each crop's 2026 last set after harvest (month, day) to (month, day)
 LAST_SET_WINDOW = {"ALM": ((9, 4), (9, 28)), "PIS": ((9, 24), (10, 14)), "WAL": ((9, 17), (10, 8)),
@@ -174,6 +189,15 @@ def write_csv(path, cols, rows, crlf=False):
 def ceil_hundred(x):
     import math
     return int(math.ceil(x / 100.0 - 1e-12) * 100)
+
+
+ORDER_STEP = 1000      # WOP 2.3: the order in whole thousands of acre-feet
+MONTH_STEP = 100       # WOP 5.1: each month to the nearest 100 acre-feet
+
+
+def ceil_to(x, step):
+    import math
+    return int(math.ceil(x / float(step) - 1e-12) * step)
 
 
 def round_to(x, step):

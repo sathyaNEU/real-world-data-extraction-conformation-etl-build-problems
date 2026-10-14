@@ -4,7 +4,7 @@
   "domain": "Physical & Environmental Sciences",
   "subdomain": "hydrology-flood-frequency (a season's irrigation requirement at a 24-in-30 non-exceedance level from replayed weather traces through a daily root-zone water balance, at a California irrigation district)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "02: the order and its monthly schedule (nine months), the weather year whose replay sets it and its requirement, the replays chart, and two per-lateral asks on the 2026 season (deliveries and the share not delivered; tail weir spill)",
+  "prompt_shape": "13: the thirty weather-year replays with the order at the 24th smallest (the order in whole thousands of acre-feet, the replays chart), and four per-lateral asks on the 2026 season (turnout deliveries, the water put in at the heading, the share of it not delivered, the tail weir spill)",
   "as_of": "2027-02-01",
   "deliverables": [
     "kbid_order_2027.xlsx",
@@ -25,7 +25,7 @@
       "xlsx"
     ],
     "largest_file": "kbid_irrigation_orders_2023-2026.csv",
-    "largest_file_rows": 64887
+    "largest_file_rows": 107067
   },
   "sources": [
     {
@@ -36,12 +36,13 @@
     }
   ],
   "created": "2026-10-12",
+  "revised": "2026-10-14",
   "generator": "task138/generator/build.py",
   "files": [
     {
       "path": "KBID_WOP_tables_2027_order.xlsx",
       "format": "xlsx",
-      "bytes": 11111,
+      "bytes": 11158,
       "rows": null,
       "source": "Constructed: The Water Order Procedure's Tables 1 to 5 for the 2027 order (crop coefficients, crops, soil units, application efficiency, loss allowances)",
       "date": "2027-02-01",
@@ -50,7 +51,7 @@
     {
       "path": "KBID_Water_Order_Procedure_rev2025.pdf",
       "format": "pdf",
-      "bytes": 75637,
+      "bytes": 75681,
       "rows": null,
       "source": "Constructed: Kestrel Bend Irrigation District Water Order Procedure (Resolution 2019-07, revised Resolution 2025-18)",
       "date": "2027-02-01",
@@ -59,7 +60,7 @@
     {
       "path": "README_order_working_files.txt",
       "format": "txt",
-      "bytes": 2318,
+      "bytes": 2335,
       "rows": null,
       "source": "Constructed: Working-files note: each file, what it is and where it came from",
       "date": "2027-02-01",
@@ -77,7 +78,7 @@
     {
       "path": "kbid_canal_operations_log_2026.docx",
       "format": "docx",
-      "bytes": 38490,
+      "bytes": 38990,
       "rows": null,
       "source": "Constructed: Canal operations log, 2026 season",
       "date": "2027-02-01",
@@ -86,7 +87,7 @@
     {
       "path": "kbid_canal_structures.xlsx",
       "format": "xlsx",
-      "bytes": 9056,
+      "bytes": 8999,
       "rows": null,
       "source": "Constructed: District Engineer's structures inventory: tail weirs, lateral headings, main canal",
       "date": "2027-02-01",
@@ -95,8 +96,8 @@
     {
       "path": "kbid_crop_report_2026.csv",
       "format": "csv",
-      "bytes": 34656,
-      "rows": 636,
+      "bytes": 35825,
+      "rows": 648,
       "source": "Constructed: The District's 2026 crop survey by field",
       "date": "2027-02-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -104,7 +105,7 @@
     {
       "path": "kbid_data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 8328,
+      "bytes": 8219,
       "rows": null,
       "source": "Constructed: Data dictionary for the order working files",
       "date": "2027-02-01",
@@ -113,8 +114,8 @@
     {
       "path": "kbid_field_register_2027-02-01.csv",
       "format": "csv",
-      "bytes": 44700,
-      "rows": 636,
+      "bytes": 45534,
+      "rows": 648,
       "source": "Constructed: Field register (GIS): fields, former field ids, turnouts, laterals, soil units, GIS acres",
       "date": "2027-02-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -131,8 +132,8 @@
     {
       "path": "kbid_irrigation_orders_2023-2026.csv",
       "format": "csv",
-      "bytes": 6433010,
-      "rows": 64887,
+      "bytes": 10617455,
+      "rows": 107067,
       "source": "Constructed: Irrigation orders (sets) for the 2023 to 2026 seasons from the District's ordering system",
       "date": "2027-02-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -140,8 +141,8 @@
     {
       "path": "kbid_lateral_headings_daily_2026.csv",
       "format": "csv",
-      "bytes": 150221,
-      "rows": 2457,
+      "bytes": 145667,
+      "rows": 2425,
       "source": "Constructed: Daily volume at each lateral heading, 2026 season (SCADA daily report)",
       "date": "2027-02-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -149,8 +150,8 @@
     {
       "path": "kbid_meter_book_2026.csv",
       "format": "csv",
-      "bytes": 865128,
-      "rows": 16334,
+      "bytes": 914615,
+      "rows": 16311,
       "source": "Constructed: Riders' turnout meter reads for 2026",
       "date": "2027-02-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -158,16 +159,16 @@
     {
       "path": "kbid_meter_shop_log_2026.xlsx",
       "format": "xlsx",
-      "bytes": 26142,
+      "bytes": 28920,
       "rows": null,
-      "source": "Constructed: Meter shop log: 2026 meter changes and the meters in service",
+      "source": "Constructed: Meter shop log: the 2026 work orders and the meter inventory",
       "date": "2027-02-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "kbid_station_daily_2014-2027.csv",
       "format": "csv",
-      "bytes": 210546,
+      "bytes": 210540,
       "rows": 4681,
       "source": "Constructed: Daily weather at the District's yard station, April 2014 to January 2027, logger export",
       "date": "2027-02-01",
@@ -176,7 +177,7 @@
     {
       "path": "kbid_tail_weir_sheets_2026.csv",
       "format": "csv",
-      "bytes": 132703,
+      "bytes": 132411,
       "rows": 2417,
       "source": "Constructed: Riders' tail weir sheets, 2026 season",
       "date": "2027-02-01",
@@ -185,7 +186,7 @@
     {
       "path": "kbid_water_requests_2027.xlsx",
       "format": "xlsx",
-      "bytes": 53252,
+      "bytes": 53820,
       "rows": null,
       "source": "Constructed: Growers' 2027 water requests, every version, from the District's request log",
       "date": "2027-02-01",
@@ -194,7 +195,7 @@
     {
       "path": "station39_daily_1995-2027.csv",
       "format": "csv",
-      "bytes": 1087097,
+      "bytes": 1087105,
       "rows": 11446,
       "source": "Constructed: Daily weather at state agricultural weather network station 39 (Kestrel Bend South), October 1995 to January 2027, in the network's export layout",
       "date": "2027-02-01",

@@ -19,7 +19,7 @@ SOURCES = {
     K.YARD: "Daily weather at the District's yard station, April 2014 to January 2027, logger export",
     K.ORDERS: "Irrigation orders (sets) for the 2023 to 2026 seasons from the District's ordering system",
     K.METER_BOOK: "Riders' turnout meter reads for 2026",
-    K.SHOP_LOG: "Meter shop log: 2026 meter changes and the meters in service",
+    K.SHOP_LOG: "Meter shop log: the 2026 work orders and the meter inventory",
     K.HEADINGS: "Daily volume at each lateral heading, 2026 season (SCADA daily report)",
     K.WEIRS: "Riders' tail weir sheets, 2026 season",
     K.STRUCTURES: "District Engineer's structures inventory: tail weirs, lateral headings, main canal",
@@ -55,9 +55,10 @@ def write(target, out_path):
                      "from replayed weather traces through a daily root-zone water balance, at a California irrigation "
                      "district)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "02: the order and its monthly schedule (nine months), the weather year whose replay sets it "
-                        "and its requirement, the replays chart, and two per-lateral asks on the 2026 season "
-                        "(deliveries and the share not delivered; tail weir spill)",
+        "prompt_shape": "13: the thirty weather-year replays with the order at the 24th smallest (the order in whole "
+                        "thousands of acre-feet, the replays chart), and four per-lateral asks on the 2026 season "
+                        "(turnout deliveries, the water put in at the heading, the share of it not delivered, the tail "
+                        "weir spill)",
         "as_of": "2027-02-01",
         "deliverables": [K.GOLD_BOOK, K.GOLD_CHART],
         "distractor_files": list(K.DISTRACTORS),
@@ -71,6 +72,7 @@ def write(target, out_path):
                                "survey's public series, used descriptively.",
                      "date": "2027-02-01", "license": "CC0-1.0 (original work)"}],
         "created": "2026-10-12",
+        "revised": "2026-10-14",
         "generator": "task138/generator/build.py",
         "files": files,
     }

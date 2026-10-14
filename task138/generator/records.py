@@ -109,15 +109,15 @@ def orders_rows(W):
 
 # ---------------------------------------------------------------------------------------------------- the ask paths
 
-BOOK_COLS = ["route", "turnout", "meter", "read_date", "read_time", "reading", "rider", "note"]
+BOOK_COLS = ["route", "turnout", "meter", "read_date", "read_time", "reading", "reg_units", "rider", "note"]
 
 
 def book_rows(W):
     r = K.rng("book-file")
     riders = {lat: "DR-%02d" % (k + 3) for k, lat in enumerate(K.LATERALS)}
     out = []
-    for x in sorted(W.reads, key=lambda x: (x["when"].date(), x["lateral"], x["turnout"])):
-        lat = x["lateral"]
+    for x in sorted(W.reads, key=lambda x: (x["when"].date(), x["route"], x["turnout"])):
+        lat = x["route"]
         note = ""
         if r.random() < 0.012:
             note = str(r.choice(["gate leaking", "meter fogged, read through lens", "no water", "turnout locked",
@@ -125,11 +125,12 @@ def book_rows(W):
         reading = ("%.2f" % x["value"]) if x["units"] == "AF" else "%d" % x["value"]
         out.append(dict(route="Route %s" % lat[1:], turnout=tid_book(x["turnout"]), meter=x["serial"],
                         read_date=x["when"].strftime("%m/%d/%Y"), read_time=x["when"].strftime("%H:%M"),
-                        reading=reading, rider=riders[lat], note=note))
+                        reading=reading, reg_units="AF" if x["units"] == "AF" else "CCF", rider=riders[lat],
+                        note=note))
     return out
 
 
-HEAD_COLS = ["date", "lateral", "structure", "volume_af", "quality"]
+HEAD_COLS = ["date", "lateral", "structure", "volume_af"]
 HEAD_STRUCT = {"L1": "Replogle flume", "L2": "Replogle flume", "L3": "Parshall flume", "L4": "Replogle flume",
                "L5": "Replogle flume", "L6": "Parshall flume", "L7": "Replogle flume", "L8": "Replogle flume",
                "L9": "Parshall flume"}
@@ -140,7 +141,7 @@ def heading_rows(W):
     for h in sorted(W.headings, key=lambda h: (h["date"], h["lateral"])):
         out.append(dict(date=h["date"].isoformat(), lateral=K.LATERAL_NAME[h["lateral"]],
                         structure="%s heading %s" % (K.LATERAL_NAME[h["lateral"]], HEAD_STRUCT[h["lateral"]]),
-                        volume_af="%.2f" % h["af"], quality=h["quality"]))
+                        volume_af="%.2f" % h["af"]))
     return out
 
 

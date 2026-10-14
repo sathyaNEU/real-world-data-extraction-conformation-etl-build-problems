@@ -1,6 +1,6 @@
 """Independent verifier for task138. Reads only the shipped bundle (target/ and golden/), shares no code with the
-generator (no calc.py, no numpy), and recomputes the order, its schedule, the replay that sets it, the default path,
-and both asks; the golden workbook is used only as the expectations.
+generator (no calc.py, no numpy), and recomputes the order, the replay that sets it, the default path (each field's
+last 2026 set taken as a refill) and the four lateral asks; the golden workbook is used only as the expectations.
 
     python3 task138/generator/verify.py [target] [golden]"""
 from __future__ import annotations
@@ -101,15 +101,49 @@ class Pack:
             depth = self.root[f["crop"]] if lim is None else min(self.root[f["crop"]], lim)
             f["taw"] = awc * depth
             f["raw"] = self.mad[f["crop"]] * f["taw"]
-        # each field's last delivered set in 2026
+        # each field's 2026 orders: the delivered sets' water by day (the ordered flow for the hours it ran that day)
+        # and the last delivered set's day
         self.last = {}
+        self.water = {}
         for r in rows(find(target, "kbid_irrigation_orders", ".csv")):
-            if r["season"] == "2026" and r["status"] == "Delivered":
-                d = dt.date.fromisoformat(r["set_end"][:10])
-                if r["field_id"] not in self.last or d > self.last[r["field_id"]]:
-                    self.last[r["field_id"]] = d
+            if r["season"] != "2026" or r["status"] != "Delivered":
+                continue
+            a = dt.datetime.strptime(r["set_start"], "%Y-%m-%d %H:%M")
+            b = dt.datetime.strptime(r["set_end"], "%Y-%m-%d %H:%M")
+            q = float(r["ordered_cfs"])
+            t = a
+            while t < b:
+                nxt = min(b, dt.datetime(t.year, t.month, t.day) + dt.timedelta(days=1))
+                key = (r["field_id"], t.date())
+                self.water[key] = self.water.get(key, 0.0) + q * (nxt - t).total_seconds() / 43560.0
+                t = nxt
+            if r["field_id"] not in self.last or b.date() > self.last[r["field_id"]]:
+                self.last[r["field_id"]] = b.date()
 
     def depletion_31jan(self, f):
+        """The root zone at the end of 31 January 2027: the 2026 season from field capacity at the end of 27 January
+        2026 (the winter's rains had every root zone full, see winter_full), each day's delivered water at the method's
+        efficiency, then the winter."""
+        D = 0.0
+        ea = self.ea[f["method"]]
+        for d in days(dt.date(2026, 1, 28), dt.date(2027, 1, 31)):
+            e, rain = self.wx[d]
+            w = self.water.get((f["id"], d), 0.0) * 12.0 / f["acres"] * ea
+            D = min(f["taw"], max(0.0, D + self.kc[f["crop"]][d.month - 1] * e - rain - w))
+        return D
+
+    def winter_full(self, f):
+        """The field's root zone at the end of 27 January 2026 from 1 November 2025, starting empty (at its total
+        available water) and full: both zero if the winter's rains filled it."""
+        out = []
+        for D in (f["taw"], 0.0):
+            for d in days(dt.date(2025, 11, 1), dt.date(2026, 1, 27)):
+                e, rain = self.wx[d]
+                D = min(f["taw"], max(0.0, D + self.kc[f["crop"]][d.month - 1] * e - rain))
+            out.append(D)
+        return max(out)
+
+    def depletion_from_last_set(self, f):
         D = 0.0
         for d in days(self.last[f["id"]] + dt.timedelta(days=1), dt.date(2027, 1, 31)):
             e, rain = self.wx[d]
@@ -150,31 +184,29 @@ class Pack:
         return gap
 
     def order(self, start):
-        reqs, months = {}, {}
+        reqs = {}
         for y in range(1997, 2027):
-            mo = self.replay(y, start)
-            months[y] = mo
-            reqs[y] = sum(mo.values())
+            reqs[y] = sum(self.replay(y, start).values())
         ranked = sorted(reqs.items(), key=lambda kv: kv[1])
         y24, v24 = ranked[23]
-        order = int(math.ceil(v24 / 100.0 - 1e-12) * 100)
-        tot = {m: sum(months[y][m] for y in reqs) for m in range(2, 11)}
-        grand = sum(tot.values())
-        sched = [half_up(order * tot[m] / grand, 10) for m in range(2, 10)]
-        sched.append(order - sum(sched))
-        return dict(order=order, year=y24, req=v24, schedule=sched, ranked=ranked)
+        order = int(math.ceil(v24 / 1000.0 - 1e-12) * 1000)
+        return dict(order=order, year=y24, req=v24, ranked=ranked, reqs=reqs)
 
 
 def asks(target):
+    import re
+    import docx
     meters = {}
     ms = find(target, "kbid_meter_shop_log", ".xlsx")
-    head, body = after_header(sheet(ms, "Meters in service"), "Meter")
+    head, body = after_header(sheet(ms, "Meter inventory"), "Meter")
     for r in body:
         meters[r[0]] = (r[3] == "acre-feet", float(str(r[4]).replace(",", "")))
-    head, body = after_header(sheet(ms, "2026 changes"), "Date")
+    head, body = after_header(sheet(ms, "Work orders 2026"), "WO no.")
+    col = {h: k for k, h in enumerate(head)}
     change = {}
     for r in body:
-        change[(r[3], r[5])] = (float(r[4]), float(r[6]))
+        if r[col["Meter out"]]:
+            change[(r[col["Meter out"]], r[col["Meter in"]])] = (float(r[col["Reg. out"]]), float(r[col["Reg. in"]]))
     reg = {}
     for r in rows(find(target, "kbid_field_register", ".csv")):
         t = r["turnout_id"]
@@ -190,9 +222,9 @@ def asks(target):
         built = "L%d" % int(tid.split("-")[0])
         for (t0, s0, v0), (t1, s1, v1) in zip(rd, rd[1:]):
             if s0 == s1:
-                af, cap = meters[s0]
+                isaf, cap = meters[s0]
                 vol = (v1 - v0) % cap
-                vol = vol if af else vol / 435.6
+                vol = vol if isaf else vol / 435.6
             else:
                 rem, ins = change[(s0, s1)]
                 af0, cap0 = meters[s0]
@@ -207,6 +239,13 @@ def asks(target):
     inflow = {l: 0.0 for l in LATS}
     for r in rows(find(target, "kbid_lateral_headings", ".csv")):
         inflow["L" + r["lateral"].split()[-1]] += float(r["volume_af"])
+    log = docx.Document(find(target, "kbid_canal_operations_log", ".docx")).tables[0]
+    for row in log.rows[1:]:
+        text = row.cells[2].text
+        m = re.search(r"^Lateral (\d) heading: .*the days without a total, acre-feet: (.*)\.$", text)
+        if m:
+            for part in m.group(2).split(", "):
+                inflow["L" + m.group(1)] += float(part.split(" ")[-1])
     share = {l: 100 * (inflow[l] - deliv[l]) / inflow[l] for l in LATS}
     st = find(target, "kbid_canal_structures", ".xlsx")
     head, body = after_header(sheet(st, "Tail weirs"), "Lateral")
@@ -222,55 +261,62 @@ def asks(target):
         for d in days(dt.date(2026, 2, 1), dt.date(2026, 10, 31)):
             if d in sheets[l]:
                 g, rem = sheets[l][d]
-                rem = rem.lower().strip()
-                if rem[:5].count(":") == 1 and rem[:2].isdigit():
-                    rem = rem[5:].strip()
-                if rem == "pulled boards":
-                    boards = 0
-                elif rem.startswith("pulled") and rem.endswith("board"):
-                    boards -= 1
-                elif "2-inch board" in rem:
+                words = rem.lower().split()
+                if words[:1] in (["set"], ["added"]) and "brd" in words:
                     boards += 1
+                elif words[:2] == ["pulled", "1"]:
+                    boards -= 1
+                elif words[:2] == ["brds", "out"]:
+                    boards = 0
                 cur = (g, boards)
             g, b = cur
             h = g - crest - b * (2.0 / 12.0)
             if h > 0:
                 tot += c * L * h ** 1.5 * 86400.0 / 43560.0
         spill[l] = tot
-    return deliv, share, spill
+    return deliv, inflow, share, spill
 
 
 def main(target, golden):
     P = Pack(target)
+    assert all(P.winter_full(f) == 0.0 for f in P.fields), "a root zone short of field capacity on 27 January 2026"
     starts = {f["id"]: P.depletion_31jan(f) for f in P.fields}
     gold = P.order(starts)
-    full = P.order({f["id"]: 0.0 for f in P.fields})
-    deliv, share, spill = asks(target)
+    default = P.order({f["id"]: P.depletion_from_last_set(f) for f in P.fields})
+    deliv, inflow, share, spill = asks(target)
     # expectations from the golden workbook
     book = os.path.join(golden, "kbid_order_2027.xlsx")
     o = sheet(book, "Order 2027")
     lab = {r[0]: r[1] for r in o if r and r[0]}
     assert lab["2027 order (acre-feet)"] == gold["order"], (lab["2027 order (acre-feet)"], gold["order"])
-    assert lab["Weather year whose replay sets the order"] == gold["year"]
-    assert lab["Headgate requirement in that replay (acre-feet)"] == half_up(gold["req"], 10)
-    months = [lab[m] for m in ("February", "March", "April", "May", "June", "July", "August", "September", "October")]
-    assert months == gold["schedule"], (months, gold["schedule"])
+    assert lab["Replay that sets the order"] == gold["year"]
+    head, body = after_header(sheet(book, "Replays"), "Weather year")
+    for r in body:
+        assert r[1] == half_up(gold["reqs"][r[0]], 10), (r[0], r[1], gold["reqs"][r[0]])
     lt = sheet(book, "Laterals 2026")
     head, body = after_header(lt, "Lateral")
     for r in body:
+        if r[0] == "Nine laterals":
+            tin, tdl = sum(inflow.values()), sum(deliv.values())
+            assert r[1] == half_up(tdl, 10) and r[2] == half_up(tin, 10), ("total row", r[1], r[2])
+            assert abs(r[3] - half_up(1000.0 * (tin - tdl) / tin, 1) / 10.0) < 1e-9, ("total share", r[3])
+            assert r[4] == half_up(sum(spill.values()), 10), ("total spill", r[4])
+            continue
         l = "L" + r[0].split()[-1]
-        assert r[2] == half_up(deliv[l], 10), (l, r[2], deliv[l])
-        assert abs(r[3] - half_up(share[l], 0.1)) < 1e-9, (l, r[3], share[l])
+        assert r[1] == half_up(deliv[l], 10), (l, r[1], deliv[l])
+        assert r[2] == half_up(inflow[l], 10), (l, r[2], inflow[l])
+        assert abs(r[3] - half_up(share[l] * 10, 1) / 10.0) < 1e-9, (l, r[3], share[l])
         assert r[4] == half_up(spill[l], 10), (l, r[4], spill[l])
-    assert full["order"] != gold["order"] and full["year"] != gold["year"]
+    assert default["order"] != gold["order"], "the default path files the golden"
+    assert gold["order"] - default["order"] >= 5000, (gold["order"], default["order"])
     gap = P.closest_approach(starts)
     assert gap > 1e-7, gap
-    print("verify.py: order %s AF set by %d (%s AF), schedule %s; default path (full on 1 February) %s AF set by %d; "
-          "closest approach to an allowable depletion %.1e in; Ask A and Ask B recomputed on 9 laterals each; all match the "
-          "golden" % (
-              "{:,}".format(gold["order"]), gold["year"], "{:,}".format(half_up(gold["req"], 10)), gold["schedule"],
-              "{:,}".format(full["order"]), full["year"], gap))
-    return gold, full
+    print("verify.py: order %s AF set by %d (24th %.1f AF); default path (each last 2026 set taken as a refill) %s AF "
+          "set by %d; closest approach to an allowable depletion %.1e in; the four lateral asks recomputed on 9 "
+          "laterals each; all match the golden" % (
+              "{:,}".format(gold["order"]), gold["year"], gold["req"], "{:,}".format(default["order"]),
+              default["year"], gap))
+    return gold, default
 
 
 if __name__ == "__main__":

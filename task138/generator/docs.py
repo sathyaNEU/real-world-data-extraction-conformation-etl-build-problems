@@ -84,13 +84,14 @@ def write_wop(path):
         ("2.1", "The irrigation season runs from 1 February to 31 October. The main canal and the laterals are dry from "
                 "1 November to 31 January for maintenance."),
         ("2.2", "The order for a season is due at the Authority by 1 February of that year."),
-        ("2.3", "The order is the smallest whole number of hundreds of acre-feet that would have covered the season's "
+        ("2.3", "The order is the smallest whole number of thousands of acre-feet that would have covered the season's "
                 "headgate requirement in at least 24 of the thirty most recent complete weather years (for the 2027 order, "
                 "1997 to 2026)."),
         ("2.4", "A weather year's headgate requirement is the water the District's headgate would take from 1 February "
                 "to 31 October of the coming season if that weather year's weather from 1 February to 31 October fell "
                 "on the coming season (a replay of that weather year, its 29 February included in a leap year): every "
-                "field on the coming season's water requests is run day by day through the crop water model of Section 3 under that year's reference "
+                "field on the coming season's water requests is run day by day through the crop water model of Section 3, "
+                "from its root zone as it stands at the end of 31 January, under that year's reference "
                 "evapotranspiration and rainfall, and the fields' deliveries are carried to the headgate with the "
                 "loss allowances of Section 4.")])
     sec("3 The crop water model", [
@@ -104,9 +105,9 @@ def write_wop(path):
                 "times the rooting depth: the crop's root depth (Table 2) or the soil unit's depth limit (Table 3), "
                 "whichever is less. Its allowable depletion is the crop's allowable depletion fraction (Table 2) times "
                 "its total available water."),
-        ("3.4", "An irrigation returns the root zone to field capacity: a field ends the day of an irrigation at zero "
-                "depletion. In a replay, a field is irrigated on any day at whose end its depletion has reached or "
-                "passed its allowable depletion."),
+        ("3.4", "In a replay, a field is irrigated on any day at whose end its depletion has reached or passed its "
+                "allowable depletion, and the irrigation returns its root zone to field capacity: the field ends that "
+                "day at zero depletion."),
         ("3.5", "The water a replay delivers to a field on the day of an irrigation is the depletion it replaces divided "
                 "by the application efficiency of the field's irrigation method (Table 4), over the field's acres.")])
     sec("4 Losses", [
@@ -117,7 +118,7 @@ def write_wop(path):
     sec("5 The monthly schedule", [
         ("5.1", "The order is scheduled by month. A month's share is that month's headgate requirement summed over the "
                 "thirty replays, over the thirty replays' total. Each month's amount is the order times its share, "
-                "rounded to the nearest 10 acre-feet; October takes the difference, so that the months add to the "
+                "rounded to the nearest 100 acre-feet; October takes the difference, so that the months add to the "
                 "order."),
         ("5.2", "During the season the District may ask the Authority to move water between months. The order is not "
                 "revised after 1 February.")])
@@ -190,7 +191,8 @@ def write_wop_tables(path):
     for k, (name, awc, lim) in K.SOILS.items():
         ws3.append([int(k), name, awc, lim if lim is not None else "none"])
     ws4 = wb.create_sheet("T4 Application efficiency")
-    _title_rows(ws4, "Table 4. Application efficiency", "Water Order Procedure, tables for the 2027 order.")
+    _title_rows(ws4, "Table 4. Application efficiency", "Water Order Procedure, tables for the 2027 order.",
+                "The share of the water delivered to a field that its root zone receives.")
     _head(ws4, ["Irrigation method", "Application efficiency"], [22, 22])
     for m in K.METHODS:
         ws4.append([m, K.EA[m]])
@@ -237,19 +239,25 @@ def write_requests(path, W):
 def write_shop_log(path, W):
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "2026 changes"
-    _title_rows(ws, "Meter shop: turnout meters removed and installed, 2026 season",
-                "Kestrel Bend Irrigation District, Water Master's office. Registers as read by the shop at the change.")
-    hr = _head(ws, ["Date", "Time", "Turnout", "Meter removed", "Register at removal", "Meter installed",
-                    "Register at installation", "Reason", "New or rebuilt"], [11, 7, 9, 13, 18, 14, 20, 28, 14])
-    for c in sorted(W.changes, key=lambda c: c["when"]):
-        ws.append([c["when"].date(), c["when"].strftime("%H:%M"), R.tid_gis(c["turnout"]), c["removed_serial"],
-                   c["removal"], c["installed_serial"], c["installation"], c["reason"], c["unit"]])
-        ws.cell(row=ws.max_row, column=1).number_format = "yyyy-mm-dd"
-        ws.cell(row=ws.max_row, column=5).number_format = "0.00"
+    ws.title = "Work orders 2026"
+    _title_rows(ws, "Meter shop work orders, 2026 season",
+                "Kestrel Bend Irrigation District, Water Master's office. Registers as the shop read them on site.")
+    hr = _head(ws, ["WO no.", "Date", "Time", "Turnout", "Work", "Meter out", "Reg. out", "Meter in", "Reg. in",
+                    "Reason", "Unit"], [9, 11, 7, 9, 26, 11, 11, 11, 11, 24, 9])
+    rows = []
+    for c in W.changes:
+        rows.append((c["when"], R.tid_gis(c["turnout"]), "Meter changed", c["removed_serial"], c["removal"],
+                     c["installed_serial"], c["installation"], c["reason"], c["unit"]))
+    for o in W.shop_other:
+        rows.append((o["when"], R.tid_gis(o["turnout"]), o["work"], None, None, None, None, o["reason"], None))
+    rows.sort(key=lambda x: (x[0], x[1]))
+    for k, x in enumerate(rows):
+        ws.append(["26-%03d" % (k + 14), x[0].date(), x[0].strftime("%H:%M")] + list(x[1:]))
+        ws.cell(row=ws.max_row, column=2).number_format = "yyyy-mm-dd"
         ws.cell(row=ws.max_row, column=7).number_format = "0.00"
+        ws.cell(row=ws.max_row, column=9).number_format = "0.00"
     ws.freeze_panes = ws.cell(row=hr + 1, column=1)
-    ws2 = wb.create_sheet("Meters in service")
+    ws2 = wb.create_sheet("Meter inventory")
     _title_rows(ws2, "Turnout meters in service at 1 February 2026 and installed since",
                 "Register units and the register's capacity (the reading after the largest value is zero).")
     _head(ws2, ["Meter", "Turnout", "Type", "Register units", "Register capacity", "Installed", "Removed"],
@@ -274,12 +282,12 @@ def write_structures(path):
                 "(revised March 2025).", "Sharp-crested rectangular weirs, free discharge: Q (cfs) = C x L x H^1.5, "
                 "H the head over the crest in feet.")
     _head(ws, ["Lateral", "Weir", "Crest length L (ft)", "Crest gauge reading (ft)", "Coefficient C",
-               "Flashboard slots", "Spills to"], [11, 22, 17, 21, 13, 16, 24])
+               "Spills to"], [11, 22, 17, 21, 13, 24])
     drains = {"L1": "Cottonwood Drain", "L2": "Cottonwood Drain", "L3": "Mill Slough", "L4": "Mill Slough",
               "L5": "South Drain", "L6": "South Drain", "L7": "Badger Drain", "L8": "Badger Drain", "L9": "Heron Slough"}
     for l in K.LATERALS:
         L, crest = WD.WEIR[l]
-        ws.append([K.LATERAL_NAME[l], "%s tail weir" % K.LATERAL_NAME[l], L, crest, WD.WEIR_C, 2, drains[l]])
+        ws.append([K.LATERAL_NAME[l], "%s tail weir" % K.LATERAL_NAME[l], L, crest, WD.WEIR_C, drains[l]])
     ws2 = wb.create_sheet("Lateral headings")
     _title_rows(ws2, "Lateral heading structures", "Each heading's flume logs to the SCADA system; daily volumes are "
                 "the logger's totals.")
@@ -302,7 +310,7 @@ def write_structures(path):
 
 def ops_entries(W):
     """The Water Master's 2026 log: (date, time, initials, entry), each entry written when it happened. A figure quoted
-    in an entry is read from the records (the yard's rain)."""
+    in an entry is read from the records (the yard's rain, the Water Master's heading estimates)."""
     rain = {d: W.yard_rep[d]["rain_in"] for d in W.yard_rep if dt.date(2026, 2, 1) <= d <= dt.date(2026, 4, 30)}
     storm = max(sorted(rain), key=lambda d: rain[d])
     D = dt.date
@@ -322,39 +330,54 @@ def ops_entries(W):
         (D(2026, 3, 9), "10:30", "DZ", "Check 2 overshot gate actuator replaced; no interruption to deliveries."),
         (D(2026, 3, 24), "09:00", "CR", "Aquatic weed treatment on Laterals 2 and 3 under the District's permit."),
         (D(2026, 4, 2), "11:20", "CR", "Gopher damage on the Lateral 8 bank near turnout 08-019 repaired."),
-        (D(2026, 4, 14), "07:50", "DZ", "Lateral 9 heading flume: level sensor failed. Daily volumes estimated by the "
-                                        "Water Master from the heading gate opening and the Check 4 level."),
-        (D(2026, 4, 18), "15:30", "DZ", "Lateral 9 heading level sensor replaced; logger totals again from 19 April."),
         (D(2026, 5, 20), "16:30", "CR", "Lateral 4 turnout 04-031 gate stem broken; repaired same day."),
         (D(2026, 5, 26), "07:15", "CR", "Wind overnight; trash racks at Checks 3 and 4 cleared."),
-        (D(2026, 6, 2), "08:30", "DZ", "Lateral 4 heading flume logger lost power (solar regulator). Volumes estimated "
-                                       "from the gate."),
-        (D(2026, 6, 7), "14:10", "DZ", "Lateral 4 heading logger regulator replaced; logger totals again from 8 June."),
-        (D(2026, 6, 13), "06:30", "CR", "Lateral 5 tail reach below Check 5-9 shut off for the connector tie-in."),
-        (D(2026, 6, 15), "16:20", "CR", "Lateral 5 to 6 connector in service. Turnouts 05-045 to 05-058 now fed from "
-                                        "Lateral 6 through the connector; Lateral 5 below Check 5-9 abandoned. Meters on "
-                                        "the reach read today."),
+        (D(2026, 6, 13), "06:30", "CR", "Lateral 5 west spur shut off at the spur head gate for the connector tie-in."),
+        (D(2026, 6, 15), "16:20", "CR", "Lateral 5 to 6 connector in service. Turnouts 05-021 to 05-034 on the west spur "
+                                        "now fed from Lateral 6 through the connector; the spur head gate on Lateral 5 "
+                                        "closed and locked. Meters on the spur read today."),
         (D(2026, 6, 24), "07:00", "CR", "Safety tailgate meeting with the ditch riders; canal rescue gear checked."),
         (D(2026, 7, 14), "11:05", "CR", "Small bank slough on Lateral 3 at station 22 repaired; deliveries kept on."),
-        (D(2026, 7, 21), "08:20", "DZ", "Lateral 2 heading flume: logger card fault. Volumes estimated from the gate."),
-        (D(2026, 7, 24), "16:40", "DZ", "Lateral 2 logger card replaced; logger totals again from 25 July."),
-        (D(2026, 8, 10), "07:35", "DZ", "Lateral 6 heading flume: stilling well silted, logger reading low. Volumes "
-                                        "estimated from the gate."),
-        (D(2026, 8, 12), "17:20", "DZ", "Lateral 6 stilling well cleaned out; logger checked against the staff gauge, "
-                                        "totals good from midnight."),
         (D(2026, 9, 2), "14:00", "CR", "Almond harvest under way; orders falling on Laterals 1, 4 and 9."),
         (D(2026, 9, 22), "10:15", "CR", "Bank mowing on Laterals 5 and 6 done."),
         (D(2026, 11, 1), "00:10", "CR", "Deliveries closed for the season at midnight. Headgate closed."),
         (D(2026, 11, 6), "16:35", "CR", "Closing reads taken on every turnout meter this week on the usual route days."),
-        (D(2026, 11, 9), "08:00", "CB", "Winter maintenance: Lateral 7 lining repairs (stations 112 to 140) and Check "
+        (D(2026, 11, 9), "08:00", "TG", "Winter maintenance: Lateral 7 lining repairs (stations 112 to 140) and Check "
                                         "3 gate seals."),
         (D(2026, 11, 30), "16:00", "CR", "Meter book closed for 2026."),
-        (D(2026, 12, 4), "15:20", "CB", "Lateral 7 lining repairs complete."),
-        (D(2026, 12, 14), "13:00", "CB", "Lateral 4 culvert at Road 156 replaced."),
+        (D(2026, 12, 4), "15:20", "TG", "Lateral 7 lining repairs complete."),
+        (D(2026, 12, 14), "13:00", "TG", "Lateral 4 culvert at Road 156 replaced."),
         (D(2027, 1, 11), "15:45", "CR", "Weed control on the main canal banks complete."),
-        (D(2027, 1, 20), "11:30", "CB", "Check 3 gate seals replaced and the gates worked through their travel."),
+        (D(2027, 1, 20), "11:30", "TG", "Check 3 gate seals replaced and the gates worked through their travel."),
         (D(2027, 1, 25), "09:10", "CR", "Main canal fill for the 2027 season scheduled from 28 January."),
     ]
+    # each heading logger's modem outage: logged when it stopped reporting, and the Water Master's daily estimates from
+    # the heading gate opening logged when it came back
+    check = {"L1": "Check 1", "L2": "Check 1", "L3": "Check 2", "L4": "Check 2", "L5": "Check 3", "L6": "Check 3",
+             "L7": "Check 4", "L8": "Check 4", "L9": "Check 4"}
+    fault = {"L1": ("lost power (solar regulator)", "regulator replaced"),
+             "L2": ("logger card fault", "card replaced"),
+             "L3": ("level sensor reading zero", "level sensor replaced"),
+             "L4": ("lost power (battery)", "battery replaced"),
+             "L5": ("logger card fault", "card replaced"),
+             "L6": ("stilling well silted, level sensor stuck", "stilling well cleaned out and the sensor checked "
+                    "against the staff gauge"),
+             "L7": ("lost power (solar regulator)", "regulator replaced"),
+             "L8": ("logger not recording after a firmware fault", "logger reloaded"),
+             "L9": ("level sensor failed", "level sensor replaced")}
+    r = K.rng("ops-log-outage")
+    for lat, (s0, n) in sorted(WD.OUTAGES.items(), key=lambda kv: kv[1][0]):
+        name = K.LATERAL_NAME[lat]
+        down, fix = fault[lat]
+        e.append((s0, "%02d:%02d" % (int(r.integers(7, 10)), int(r.integers(0, 60))), "DZ",
+                  "%s heading flume: %s. No logger total; Water Master estimating the heading from the gate opening "
+                  "and the %s level." % (name, down, check[lat])))
+        back = s0 + dt.timedelta(days=n)
+        est = ", ".join("%d %s %.1f" % (d.day, d.strftime("%B"), W.heading_estimates[(lat, d)])
+                        for d in (s0 + dt.timedelta(days=k) for k in range(n)))
+        e.append((back, "%02d:%02d" % (int(r.integers(8, 12)), int(r.integers(0, 60))), "DZ",
+                  "%s heading: %s yesterday evening; logger totals again from midnight. Water Master's estimates for "
+                  "the days without a total, acre-feet: %s." % (name, fix, est)))
     return sorted(e, key=lambda x: (x[0], x[1]))
 
 
@@ -406,11 +429,11 @@ DICT = [
     (K.REGISTER, "gis_acres", "Field area measured in the GIS."),
     (K.REGISTER, "last_edit", "Date the record was last edited."),
     (K.ORDERS, "order_no", "Order number (season-sequence)."),
-    (K.ORDERS, "field_id", "Field the set waters: the field id at the time of the order (former ids before March "
-                           "2025)."),
-    (K.ORDERS, "ordered_cfs", "Flow ordered for the set, cubic feet per second."),
-    (K.ORDERS, "set_start", "Start of the set, local time."),
-    (K.ORDERS, "set_end", "End of the set, local time."),
+    (K.ORDERS, "field_id", "Field the set waters: the former field id on the 2023 and 2024 seasons' orders, the current "
+                           "id from the 2025 season (the ordering system was re-keyed with the March 2025 re-mapping)."),
+    (K.ORDERS, "ordered_cfs", "Flow ordered for the set, cubic feet per second; the rider sets the turnout to it."),
+    (K.ORDERS, "set_start", "Start of the set (water on at the turnout), local time."),
+    (K.ORDERS, "set_end", "End of the set (water off at the turnout), local time."),
     (K.ORDERS, "status", "Delivered: water ran for the set. Cancelled: cancelled before water ran; no water was "
                          "delivered."),
     (K.ST39, "ETo (mm), Precip (mm)", "Daily reference evapotranspiration and precipitation as published by the state "
@@ -422,14 +445,10 @@ DICT = [
                      "not recorded either."),
     (K.METER_BOOK, "turnout", "Turnout as written in the riders' books (lateral-number)."),
     (K.METER_BOOK, "meter", "Serial of the meter read."),
-    (K.METER_BOOK, "reading", "The meter's register at the read, in the meter's register units (meter shop log, "
-                              "Meters in service)."),
-    (K.SHOP_LOG, "Register at removal", "The removed meter's register when it came out."),
-    (K.SHOP_LOG, "Register at installation", "The installed meter's register when it went in."),
-    (K.HEADINGS, "volume_af", "Water that passed the lateral's heading structure on the day, acre-feet."),
-    (K.HEADINGS, "quality", "Blank: the logger's daily total. E: estimated by the Water Master from the heading gate "
-                            "opening and the upstream check level for a day the logger did not record. Both are the "
-                            "District's record of the day."),
+    (K.METER_BOOK, "reading", "The meter's register at the read."),
+    (K.METER_BOOK, "reg_units", "Register units: AF, acre-feet; CCF, hundred cubic feet."),
+    (K.HEADINGS, "volume_af", "Water that passed the lateral's heading structure on the day, acre-feet (the heading "
+                              "logger's daily total)."),
     (K.WEIRS, "gauge_ft", "Staff gauge at the tail weir, feet, read at read_time. A reading stands for its day and for "
                           "each following day until the weir's next reading."),
     (K.WEIRS, "remarks", "The rider's notes."),

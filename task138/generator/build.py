@@ -61,7 +61,7 @@ def build(out, quiet=False, W=None):
          "Yard logger export, 1 February 2027"),
         (K.ORDERS, "Irrigation orders, 2023 to 2026 seasons", "Ordering system, exported 1 February 2027"),
         (K.METER_BOOK, "Riders' turnout meter reads, 2026", "Meter book, closed 30 November 2026"),
-        (K.SHOP_LOG, "Meter changes in 2026 and meters in service", "Meter shop"),
+        (K.SHOP_LOG, "Meter shop work orders, 2026 season, and the meter inventory", "Meter shop"),
         (K.HEADINGS, "Daily volume at each lateral heading, 2026 season", "SCADA daily report"),
         (K.WEIRS, "Riders' tail weir sheets, 2026 season", "Water Master's office"),
         (K.STRUCTURES, "Tail weirs, lateral headings and main canal structures", "District Engineer's inventory"),

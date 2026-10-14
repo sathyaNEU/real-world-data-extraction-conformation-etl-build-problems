@@ -27,8 +27,10 @@ RAIN_IN = [2.15, 2.05, 1.95, 0.90, 0.38, 0.12, 0.01, 0.02, 0.20, 0.62, 1.10, 1.8
 WET_P = [0.29, 0.27, 0.25, 0.14, 0.07, 0.03, 0.006, 0.01, 0.04, 0.08, 0.15, 0.25]   # chance a day is wet
 PERSIST = [0.48, 0.46, 0.44, 0.36, 0.30, 0.25, 0.10, 0.15, 0.25, 0.33, 0.40, 0.47]  # wet after wet
 
-# the wetness of the 2026-27 water year (October to January in the record) is a draw like any other's, fixed here
+# the wetness of the 2026-27 water year (October to January in the record) is a draw like any other's, fixed here; the
+# 2025-26 water year before it was a wet one
 DRY_WINTER_FACTOR = 0.10
+WET_2026_FACTOR = 1.9
 
 
 def _days_in(y, m):
@@ -79,6 +81,8 @@ def simulate():
             wet = float(r.gamma(4.0, 0.25))
             if wy == 2027:
                 wet = DRY_WINTER_FACTOR
+            elif wy == 2026:
+                wet = WET_2026_FACTOR
             wy_state[wy] = dict(r=r, wet=wet, heat=float(r.normal(0, 0.9)), tanom=0.0, wet_prev=False)
         s = wy_state[wy]
         r = s["r"]

@@ -59,8 +59,10 @@ def build_district(W):
                 meth = meths[0] if r.random() < 0.68 else meths[-1]
                 acres = float(np.clip(r.lognormal(math.log(56), 0.52), 6.0, 240.0))
                 f = dict(id=new_id(), turnout=tid, lateral=t["lateral"], crop=crop, soil=soil, method=meth,
-                         acres=round(acres, 2), grower_thr=float(r.uniform(0.38, 0.62)),
-                         grower_depth=float(r.uniform(0.88, 1.12)), lag=int(r.integers(0, 3)))
+                         acres=round(acres, 2), grower_thr=float(r.uniform(0.45, 0.62)),
+                         grower_depth=float(r.uniform(0.95, 1.05)), lag=int(r.integers(0, 3)),
+                         refill=float(r.uniform(1.10, 1.25)), target_off=float(r.uniform(-0.04, 0.04)),
+                         trigger=float(r.uniform(*K.TRIGGER_IN.get(meth, (0.5, 0.5)))))
                 fields.append(f)
                 t["fields"].append(f["id"])
     # former field ids (before the 2025 re-mapping); a parcel split gave two new fields one former id
@@ -81,10 +83,10 @@ def build_district(W):
 
 
 def taw(f):
-    """The field's root zone as it is (the growers' irrigation answers to it), not the procedure's planning tables."""
-    awc, lim = K.PHYS_SOILS[f["soil"]]
-    depth = K.PHYS_ROOT_FT[f["crop"]] if lim is None else min(K.PHYS_ROOT_FT[f["crop"]], lim)
-    return awc * depth
+    """The field's total available water. The procedure's planning tables describe the fields."""
+    _, awc, lim = K.SOILS[f["soil"]]
+    root = K.ROOT_FT[f["crop"]]
+    return awc * (root if lim is None else min(root, lim))
 
 
 def assign_2027(W):
@@ -107,108 +109,157 @@ def _last_set_date(f, year, r):
 HARVEST = {"ALM": ((8, 5), (8, 28)), "PIS": ((9, 1), (9, 20)), "WAL": ((9, 1), (9, 15)), "GRW": ((8, 10), (8, 28))}
 
 
-def grower_season(W, f, year, true_wx):
-    """The grower's own sets for one field and season: water when the field (as the grower judges it) has dried to
-    the grower's own threshold, a refill of about the depletion, a dry-down before nut harvest, and a last set after
-    harvest on a date of the grower's choosing. Each field and season draws from its own streams, the last set's date
-    first. Returns a list of (start datetime, end datetime, cfs)."""
+def set_water_by_day(start, end, cfs):
+    """Acre-feet a set delivers on each calendar day it runs (the ordered flow for the hours it ran that day)."""
+    out = {}
+    t = start
+    while t < end:
+        seg_end = min(end, dt.datetime(t.year, t.month, t.day) + dt.timedelta(days=1))
+        out[t.date()] = out.get(t.date(), 0.0) + cfs * (seg_end - t).total_seconds() / K.CUFT_PER_AF
+        t = seg_end
+    return out
+
+
+def _season_plan(f, year):
     r_last = K.rng("last-set", f["id"], year)
-    r = K.rng("grower", f["id"], year)
-    t_aw = taw(f)
-    thr = f["grower_thr"] * t_aw
-    kc = K.PHYS_KC[f["crop"]]
-    ea = K.EA[f["method"]]
     last = _last_set_date(f, year, r_last)
-    last_hour = int(r_last.choice([6, 7, 7, 8]))
     hv = HARVEST.get(f["crop"])
     if hv:
         (hm1, hd1), (hm2, hd2) = hv
         ha, hb = dt.date(year, hm1, hd1), dt.date(year, hm2, hd2)
         harvest = ha + dt.timedelta(days=int(r_last.integers(0, (hb - ha).days + 1)))
-        cutoff = harvest - dt.timedelta(days=int(r_last.integers(10, 21)))
+        cutoff = harvest - dt.timedelta(days=int(r_last.integers(5, 10)))
     else:
         harvest = cutoff = None
-    # cfs: border and sprinkler sets take a big head, drip and micro a steady small one
-    per_acre = {"Drip": 0.028, "Micro-sprinkler": 0.036, "Sprinkler": 0.040, "Border": 0.090}[f["method"]]
-    cfs = max(1.0, round(f["acres"] * per_acre * float(r_last.uniform(0.85, 1.2)), 1))
-    sets = []
-    D = float(r.uniform(0, 0.25)) * t_aw   # the grower's sense of the field on 1 February
-    thr = thr * {"Drip": 0.42, "Micro-sprinkler": 0.58, "Sprinkler": 0.85, "Border": 1.0}[f["method"]]
-    max_hours = {"Drip": 60.0, "Micro-sprinkler": 48.0, "Sprinkler": 36.0, "Border": 30.0}[f["method"]]
-    busy_until = dt.datetime(year, 2, 1)
-    last_start = dt.datetime(last.year, last.month, last.day, last_hour, 0)
+    lo, hi = K.FLOW_PER_ACRE[f["method"]]
+    cfs = max(0.5, round(f["acres"] * float(r_last.uniform(lo, hi)), 1))
+    last_hour = int(r_last.choice([5, 6, 6, 7]))
+    return dict(last=last, harvest=harvest, cutoff=cutoff, cfs=cfs, last_hour=last_hour)
+
+
+def simulate_field(f, true_wx):
+    """The grower's own sets on one field over the 2023 to 2026 seasons, and the field's root zone as it is: a daily
+    balance from field capacity on 1 February 2023 through 31 January 2027 under the true weather, each set's water
+    reaching the root zone as it runs (the delivered water times the method's efficiency, water beyond field capacity
+    draining). Returns ({season: [(start, end, cfs)]}, {date: depletion at the end of the day})."""
+    t_aw = taw(f)
+    kc = K.KC[f["crop"]]
+    ea = K.EA[f["method"]]
+    meth = f["method"]
+    refill = meth in K.REFILL_METHODS
+    plans = {y: _season_plan(f, y) for y in K.ORDER_SEASONS}
+    sets = {y: [] for y in K.ORDER_SEASONS}
+    path = {}
+    D = 0.0
+    pending = {}
+    busy_until = dt.datetime(2023, 1, 1)
     wait = -1
-    for d in K.season_days(year):
-        e, rain = true_wx[d]
-        D = min(t_aw, max(0.0, D + kc[d.month - 1] * e - rain))
-        if d > last:
-            continue
-        if cutoff and cutoff <= d < harvest:
-            continue
-        due = D >= thr or d == last
-        if due and wait < 0:
-            wait = f["lag"] if d != last else 0
-        if (wait == 0 or d == last) and (d == last or dt.datetime(d.year, d.month, d.day, 23, 0) > busy_until):
-            depth = D * f["grower_depth"] / ea                       # inches of water at the turnout
-            vol_af = max(depth * f["acres"] / 12.0, 0.35 * f["acres"] / 12.0)
-            hours = vol_af / cfs * 12.1                              # 1 cfs for 12.1 hours is about an acre-foot
-            if d == last:
-                # the season's last set runs in daylight on the one day
-                hours = min(hours, 15.5)
-                start = last_start
+    streams = {y: K.rng("grower", f["id"], y) for y in K.ORDER_SEASONS}
+    spur = f["turnout"] in K.MOVED
+    tie_in = (dt.datetime(2026, 6, 13, 6, 0), dt.datetime(2026, 6, 16, 0, 0))
+    for d in K.daterange(dt.date(2023, 2, 1), K.WEATHER_END):
+        y = d.year
+        p = plans.get(y)
+        in_season = p is not None and (2, 1) <= (d.month, d.day) <= (10, 31) and d <= p["last"]
+        shut = spur and tie_in[0].date() <= d < tie_in[1].date()
+        if in_season and not shut and not (p["cutoff"] and p["cutoff"] <= d < p["harvest"]):
+            r = streams[y]
+            last = d == p["last"]
+            day0 = dt.datetime(d.year, d.month, d.day)
+            last_start = dt.datetime(p["last"].year, p["last"].month, p["last"].day, p["last_hour"], 0)
+            # a grower holds a set when the forecast has rain for the next two days
+            wet_ahead = sum(true_wx.get(d + dt.timedelta(days=k), (0.0, 0.0))[1] for k in (1, 2)) >= 0.12
+            if refill:
+                due = D >= f["grower_thr"] * t_aw and not wet_ahead
             else:
-                start = dt.datetime(d.year, d.month, d.day, int(r.choice([6, 7, 8, 18, 19])), int(r.choice([0, 30])))
-                start = max(start, busy_until + dt.timedelta(hours=1))
-                hours = min(hours, max_hours)
-                # every earlier set ends a day before the last one starts
-                room = (last_start - dt.timedelta(hours=24) - start).total_seconds() / 3600.0
-                if room < 2.0:
-                    wait = -1
-                    continue
-                hours = min(hours, room)
-            hours = max(2.0, round(hours * 2) / 2)
-            end = start + dt.timedelta(hours=hours)
-            sets.append((start, end, cfs))
-            busy_until = end
-            applied = cfs * hours / 12.1 * 12.0 / f["acres"] * ea       # inches into the root zone
-            D = max(0.0, D - applied)
-            wait = -1
-        elif wait > 0:
-            wait -= 1
-    assert all(sets[k][1] <= sets[k + 1][0] for k in range(len(sets) - 1)), (f["id"], year)
-    # the last set is the season's last delivered water for the field
-    assert sets and sets[-1][0].date() == last == sets[-1][1].date(), (f["id"], year)
-    return sets
+                due = (D >= K.TARGET[f["crop"]][d.month - 1] * t_aw + f["target_off"] * t_aw + f["trigger"]
+                       and not wet_ahead)
+            if due and wait < 0:
+                wait = f["lag"] if refill else 0
+            go = last or (wait == 0 and day0 + dt.timedelta(hours=23) > busy_until)
+            if go:
+                if refill:
+                    # a border set runs until the water reaches the bottom of the field, past field capacity
+                    net = (D + 0.35) * f["refill"]
+                else:
+                    tgt = (K.TARGET[f["crop"]][d.month - 1] + f["target_off"]) * t_aw
+                    net = max(0.0, D - tgt) * f["grower_depth"]
+                gross_af = net / ea * f["acres"] / 12.0
+                cfs = p["cfs"]
+                if last:
+                    start = last_start
+                    max_h = (23.5 if refill else 21.0) - p["last_hour"]
+                    if refill:
+                        # the last set fills the field in one day: the grower orders the head it needs
+                        cfs = max(cfs, min(round(gross_af * K.CUFT_PER_AF / 3600.0 / (max_h - 0.5) + 0.05, 1),
+                                           round(0.40 * f["acres"], 1)))
+                    hours = min(max_h, gross_af * K.CUFT_PER_AF / 3600.0 / cfs)
+                else:
+                    if refill:
+                        h0 = int(r.choice([5, 6, 6, 7, 18]))
+                    else:
+                        h0 = int(r.choice([6, 7, 18, 19, 20]))
+                    start = max(day0 + dt.timedelta(hours=h0), busy_until + dt.timedelta(hours=1))
+                    hours = min(K.MAX_SET_HOURS[meth], gross_af * K.CUFT_PER_AF / 3600.0 / cfs)
+                    room = (last_start - dt.timedelta(hours=24) - start).total_seconds() / 3600.0
+                    if spur and start < tie_in[0]:
+                        # no water ran to the spur while the connector was tied in
+                        room = min(room, (tie_in[0] - start).total_seconds() / 3600.0)
+                    if room < 2.0:
+                        wait = -1
+                        hours = 0.0
+                    hours = min(hours, room)
+                if hours >= 2.0 or last:
+                    hours = max(2.0, round(hours * 2) / 2)
+                    end = start + dt.timedelta(hours=hours)
+                    sets[y].append((start, end, cfs))
+                    for dd, af in set_water_by_day(start, end, cfs).items():
+                        pending[dd] = pending.get(dd, 0.0) + af
+                    busy_until = end
+                wait = -1
+            elif wait > 0:
+                wait -= 1
+        e, rain = true_wx[d]
+        net_in = pending.pop(d, 0.0) * 12.0 / f["acres"] * ea
+        D = min(t_aw, max(0.0, D + kc[d.month - 1] * e - rain - net_in))
+        path[d] = D
+    for y, ss in sets.items():
+        assert all(ss[k][1] <= ss[k + 1][0] for k in range(len(ss) - 1)), (f["id"], y)
+        assert ss and ss[-1][0].date() == plans[y]["last"] == ss[-1][1].date(), (f["id"], y)
+    return sets, path
 
 
 def build_orders(W, true_wx):
     """Every season's orders. Order numbers run by season; a share of orders were cancelled before water ran (one
     in about twenty-five), and some growers placed and cancelled a further order after their last set."""
     rows = []
+    W.true_path = {}
+    all_sets = {}
+    for f in W.fields:
+        all_sets[f["id"]], W.true_path[f["id"]] = simulate_field(f, true_wx)
     for year in K.ORDER_SEASONS:
         r = K.rng("orders", year)
         sets_all = []
         for f in W.fields:
-            if True:
-                ss = grower_season(W, f, year, true_wx)
-                for s in ss:
-                    sets_all.append((s[0], f["id"], s, "Delivered"))
-                # cancelled orders: a few through the season, and for some fields one after the last set
-                rc = K.rng("cancel", f["id"], year)
-                n_c = int(rc.poisson(0.55))
-                for _ in range(n_c):
-                    a = ss[int(rc.integers(0, len(ss)))][0] + dt.timedelta(days=int(rc.integers(2, 9)))
-                    if a.date() < ss[-1][0].date():
-                        hrs = float(rc.choice([8.0, 10.0, 12.0, 24.0]))
-                        sets_all.append((a, f["id"], (a, a + dt.timedelta(hours=hrs), ss[0][2]), "Cancelled"))
-                rp = K.rng("cancel-after", f["id"], year)
-                if rp.random() < 0.24:
-                    a = ss[-1][0] + dt.timedelta(days=int(rp.integers(5, 31)))
-                    if a.date() <= dt.date(year, 10, 31):
-                        sets_all.append((a, f["id"], (a, a + dt.timedelta(hours=10.0), ss[-1][2]), "Cancelled"))
+            ss = all_sets[f["id"]][year]
+            for s in ss:
+                sets_all.append((s[0], f["id"], s, "Delivered"))
+            rc = K.rng("cancel", f["id"], year)
+            n_c = int(rc.poisson(0.55))
+            for _ in range(n_c):
+                a = ss[int(rc.integers(0, len(ss)))][0] + dt.timedelta(days=int(rc.integers(2, 9)))
+                if a.date() < ss[-1][0].date():
+                    hrs = float(rc.choice([8.0, 10.0, 12.0, 24.0]))
+                    sets_all.append((a, f["id"], (a, a + dt.timedelta(hours=hrs), ss[0][2]), "Cancelled"))
+            rp = K.rng("cancel-after", f["id"], year)
+            if rp.random() < 0.36:
+                a = ss[-1][0] + dt.timedelta(days=int(rp.integers(5, 31)))
+                if a.date() <= dt.date(year, 10, 31):
+                    hrs = float(rp.choice([12.0, 18.0, 24.0, 36.0]))
+                    # the ordering system takes no set running past the canal's close at midnight on 31 October
+                    if a + dt.timedelta(hours=hrs) < dt.datetime(year, 11, 1):
+                        sets_all.append((a, f["id"], (a, a + dt.timedelta(hours=hrs), ss[-1][2]), "Cancelled"))
         sets_all.sort(key=lambda x: (x[0], x[1]))
-        # each order is taken in office hours one to three working days ahead of its set; order numbers run in the
-        # order the orders were entered
         taken = []
         for a, fid, s, status in sets_all:
             d, lead = a.date(), int(r.choice([1, 1, 1, 2, 2, 3]))
@@ -252,7 +303,6 @@ def simulate():
     assign_2027(W)
     build_orders(W, true_wx)
     build_requests(W)
-    clear_tie_in(W)
     build_meters(W)
     build_laterals(W)
     return W
@@ -263,10 +313,11 @@ def simulate():
 TIE_IN = (dt.date(2026, 6, 13), dt.date(2026, 6, 15))
 ASK_SALT = 0     # the draw of the 2026 meters, headings and weir sheets (the ask paths only)
 NEW_METER_SHARE = 0.4   # replacements fitted new from the factory; the rest are the shop's rebuilt meters
+UNIT_SALT = 14          # the draw of which replacements came new from the factory
 # per lateral: a calibration offset shared by the lateral's meters (the batch it was tested against), and the scale of
 # its tail spill
-METER_OFFSET = {"L1": -0.000147, "L2": 0.0, "L3": -0.000292, "L4": 0.0, "L5": 0.0, "L6": 0.000263, "L7": 0.000229,
-                "L8": 0.0, "L9": 0.000226}
+METER_OFFSET = {"L1": -0.000257, "L2": 0.0, "L3": -0.000292, "L4": 0.00009, "L5": -0.00011, "L6": 0.000263,
+                "L7": 0.000229, "L8": 0.00026, "L9": 0.000116}
 SPILL_SCALE = {"L1": 1.00807, "L2": 1.00644, "L3": 1.0, "L4": 1.01765, "L5": 1.0, "L6": 1.00575, "L7": 1.0,
                "L8": 0.99074, "L9": 1.0065}
 
@@ -367,11 +418,9 @@ def build_meters(W):
         cur = meters[-1]
         # read days: the lateral's route weekday, from the last one before the canal opens to the first after it closes
         sched = []
-        lat_by_day = lambda d: lateral_on(t, dt.datetime(d.year, d.month, d.day, 12))
         d = dt.date(2026, 1, 19)
         while d <= dt.date(2026, 11, 13):
-            lat = lat_by_day(d)
-            if d.weekday() == K.ROUTE_DAY[lat]:
+            if d.weekday() == K.ROUTE_DAY[t["lateral_built"]]:
                 sched.append(d)
             d += dt.timedelta(days=1)
         if t["moved"] and dt.date(2026, 6, 15) not in sched:
@@ -408,7 +457,7 @@ def build_meters(W):
                 # the replacement comes off the shop's shelf: a new meter goes in with its register at zero, a rebuilt
                 # one with the register it carried out of its last service (the draw is kept for the stream either way)
                 new_reg0 = float(r.uniform(300, 7400))
-                unit = "New" if K.rng("meter-unit", tid).random() < NEW_METER_SHARE else "Rebuilt"
+                unit = "New" if K.rng("meter-unit", tid, UNIT_SALT).random() < NEW_METER_SHARE else "Rebuilt"
                 if unit == "New":
                     new_reg0 = 0.0
                 nm = dict(serial=serial("P"), turnout=tid, kind="P", units="AF", capacity=10000.0, installed=ch.date(),
@@ -429,15 +478,31 @@ def build_meters(W):
             else:
                 value = int(round((m["reg0"] + vol * 435.6) % m["capacity"]))
             reads.append(dict(turnout=tid, when=when, serial=m["serial"], value=value, units=m["units"],
-                              lateral=lateral_on(t, when)))
+                              lateral=lateral_on(t, when), route=t["lateral_built"]))
     W.meters, W.reads, W.changes = meters, reads, changes
+    # the shop's other work through the season on meters left in place (no register changes)
+    r_o = K.rng("shop-other")
+    other = []
+    for k in range(47):
+        t = W.turnouts[int(r_o.integers(0, len(W.turnouts)))]
+        day = dt.date(2026, 2, 2) + dt.timedelta(days=int(r_o.integers(0, 270)))
+        while day.weekday() >= 5:
+            day += dt.timedelta(days=1)
+        when = dt.datetime(day.year, day.month, day.day, int(r_o.integers(7, 16)), int(r_o.choice([0, 15, 30, 45])))
+        work, reason = [(a, b) for a, b in (
+            ("Register lens replaced", "lens fogged"), ("Lid and hasp replaced", "lid damaged"),
+            ("Tested in place, passed", "annual test"), ("Gasket replaced", "leaking at flange"),
+            ("Register cleaned", "register sticking"), ("Straightening vanes cleared", "trash in pipe"))][
+            int(r_o.choice(6, p=[0.16, 0.18, 0.30, 0.12, 0.12, 0.12]))]
+        other.append(dict(turnout=t["id"], when=when, work=work, reason=reason))
+    W.shop_other = other
 
 
 # the 2026 season's conveyance loss on each lateral (seepage and spill), as a share of the water put into it
 LOSS_2026_BASE = {"L1": 0.072, "L2": 0.105, "L3": 0.064, "L4": 0.138, "L5": 0.091, "L6": 0.118, "L7": 0.083,
                   "L8": 0.097, "L9": 0.126}
-LOSS_2026_FACTOR = {"L1": 1.20473, "L2": 0.93, "L3": 1.34788, "L4": 1.08295, "L5": 0.8835, "L6": 1.17353,
-                    "L7": 0.96498, "L8": 1.27, "L9": 1.04}
+LOSS_2026_FACTOR = {"L1": 1.20773, "L2": 0.93, "L3": 1.35138, "L4": 1.08445, "L5": 0.8875, "L6": 1.17353,
+                    "L7": 0.96498, "L8": 1.2715, "L9": 1.0415}
 WEIR = {  # crest length ft, crest gauge reading ft with no flashboards, coefficient (ft^0.5/s)
     "L1": (4.0, 1.18), "L2": (5.0, 1.42), "L3": (3.0, 0.96), "L4": (6.0, 1.55), "L5": (4.0, 1.21),
     "L6": (5.0, 1.36), "L7": (4.0, 1.09), "L8": (3.0, 1.12), "L9": (5.0, 1.47)}
@@ -466,11 +531,11 @@ def boards_on(lat, day):
 def build_laterals(W):
     """Each lateral's daily heading volume (what its turnouts took that day, its seepage and its spill, measured by
     the heading flume) and its tail weir's 07:00 readings with the riders' remarks. Seepage runs at a steady rate set
-    so that the season's loss stands near the lateral's allowance (LOSS_2026_FACTOR)."""
+    so that the season's loss stands near the lateral's allowance (LOSS_2026_FACTOR). Every heading logger lost a few
+    days to its cellular modem in 2026; the historian keeps no total for a day the logger did not report, and the
+    Water Master estimated those days from the heading gate opening and the upstream check level (OUTAGES)."""
     flows = W.flows
-    W.headings, W.weir_rows, W.spill_true = [], [], {}
-    est = {"L2": (dt.date(2026, 7, 21), 4), "L4": (dt.date(2026, 6, 2), 6), "L6": (dt.date(2026, 8, 10), 3),
-           "L9": (dt.date(2026, 4, 14), 5)}
+    W.headings, W.weir_rows, W.spill_true, W.heading_estimates, W.heading_true = [], [], {}, {}, {}
     days = K.season_days(2026)
     for lat in K.LATERALS:
         r_l = K.rng("lateral", lat, ASK_SALT)
@@ -492,10 +557,9 @@ def build_laterals(W):
         target_loss = share / (1 - share) * sum(deliv)
         spill_af = sum(q * K.AF_PER_CFS_DAY for q in q_spill)
         seep_rate = max(0.5, (target_loss - spill_af) / sum(jit))
-        e_days = set()
-        if lat in est:
-            s0, n = est[lat]
-            e_days = {s0 + dt.timedelta(days=k) for k in range(n)}
+        s0, n_out = OUTAGES[lat]
+        out_days = {s0 + dt.timedelta(days=k) for k in range(n_out)}
+        r_est = K.rng("heading-estimate", lat)
         prev_boards = 0
         alt = ALTERNATE.get(lat)
         read_today = True
@@ -503,10 +567,12 @@ def build_laterals(W):
         for k, d in enumerate(days):
             true_in = deliv[k] + q_spill[k] * K.AF_PER_CFS_DAY + seep_rate * jit[k]
             meas = true_in * (1 + float(r_l.normal(0, 0.008)))
-            q = "E" if d in e_days else ""
-            if d in e_days:
-                meas = true_in * (1 + float(r_l.normal(0, 0.03)))
-            W.headings.append(dict(date=d, lateral=lat, af=round(meas, 2), quality=q))
+            W.heading_true[(lat, d)] = true_in
+            if d in out_days:
+                # the Water Master's estimate from the gate opening, to the tenth of an acre-foot
+                W.heading_estimates[(lat, d)] = round(true_in * (1 + float(r_est.normal(0, 0.025))), 1)
+            else:
+                W.headings.append(dict(date=d, lateral=lat, af=round(meas, 2)))
             W.spill_true[(lat, d)] = q_spill[k]
             # the 07:00 reading at the tail weir
             nb = boards_on(lat, d)
@@ -521,26 +587,31 @@ def build_laterals(W):
             else:
                 gauge = crest_eff - float(r_l.uniform(0.03, 0.25))
             remark = ""
-            if nb != prev_boards:
-                if nb > prev_boards:
-                    remark = "set one 2-inch board" if prev_boards == 0 else "added a 2-inch board"
-                else:
-                    remark = "pulled boards" if nb == 0 else "pulled one board"
+            changed = nb != prev_boards
+            if changed:
                 read_today = True
             elif r_l.random() < 0.035:
-                remark = str(r_l.choice(["trash on weir, cleaned", "tules cut back", "gauge board muddy, wiped",
-                                         "low spill", "moss on crest"]))
-            changed = nb != prev_boards
-            prev_boards = nb
+                remark = str(r_l.choice(["trash on weir, cleaned", "tules cut back", "gauge muddy, wiped",
+                                         "low spill", "moss on crest", "drain running high", "gopher hole by weir"]))
             if read_today:
                 minute = int(r_l.integers(0, 50))
                 if changed:
                     # the rider sets or pulls the board on arrival and notes the time, then reads the gauge
                     t = dt.datetime(d.year, d.month, d.day, 7, minute) - dt.timedelta(minutes=int(r_note.integers(3, 13)))
-                    remark = "%s %s" % (t.strftime("%H:%M"), remark)
+                    hhmm = t.strftime("%H%M")
+                    if nb > prev_boards:
+                        remark = ("set 2in brd %s" % hhmm) if prev_boards == 0 else ("added 2in brd %s" % hhmm)
+                    else:
+                        remark = ("brds out %s" % hhmm) if nb == 0 else ("pulled 1 brd %s" % hhmm)
                 W.weir_rows.append(dict(date=d, lateral=lat, time="07:%02d" % minute, gauge=round(gauge, 2),
                                         remarks=remark))
+            prev_boards = nb
 
+
+# every heading logger's modem outage in 2026: first day and days lost
+OUTAGES = {"L1": (dt.date(2026, 5, 12), 3), "L2": (dt.date(2026, 7, 21), 4), "L3": (dt.date(2026, 7, 7), 3),
+           "L4": (dt.date(2026, 6, 2), 5), "L5": (dt.date(2026, 8, 18), 2), "L6": (dt.date(2026, 8, 10), 3),
+           "L7": (dt.date(2026, 6, 23), 4), "L8": (dt.date(2026, 9, 8), 3), "L9": (dt.date(2026, 4, 14), 5)}
 
 
 # ---------------------------------------------------------------------------------------------------- the 2027 requests
@@ -609,13 +680,9 @@ def build_requests(W):
     k = 0
     for f in sorted(W.fields, key=lambda f: (f["turnout"], f["id"])):
         acct, ranch = growers[f["turnout"]]
-        # 2026 attributes: about one field in twenty changed its method for 2027
+        # every field keeps its 2026 irrigation system and acres for 2027
         f["method_2026"] = f["method"]
         f["acres_2026"] = f["acres"]
-        if r.random() < 0.05:
-            other = [m for m in K.METHOD_BY_CROP[f["crop"]] if m != f["method"]]
-            if other:
-                f["method_2026"] = other[0]
         received = K.REQUESTS_OPEN + dt.timedelta(days=int(r.integers(0, 55)))
         k += 1
         base = dict(acct=acct, ranch=ranch, field=f["id"], turnout=f["turnout"], crop=f["crop"])

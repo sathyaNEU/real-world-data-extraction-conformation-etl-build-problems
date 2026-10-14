@@ -1,7 +1,6 @@
-"""The golden deliverables: kbid_order_2027.xlsx (the order, its monthly schedule, the replay that sets it, the thirty
-replays, the root zone on 31 January 2027 by crop, and the 2026 lateral balances) and kbid_order_2027.svg (the
-thirty replays from smallest to largest with the order drawn across), plus generator/figures.json. Every figure is
-computed from the shipped pack (calc.py)."""
+"""The golden deliverables: kbid_order_2027.xlsx (the order, the thirty replays, the 2026 lateral balances and the
+notes) and kbid_order_2027.svg (the thirty replays from smallest to largest with the order drawn across), plus
+generator/figures.json. Every figure is computed from the shipped pack (calc.py)."""
 from __future__ import annotations
 
 import json
@@ -27,47 +26,37 @@ def share1(x):
 def compute(target):
     M = C.load(target)
     lad = C.ladder(M)
-    g = lad["R3"]
+    g = lad["R4"]
     A = C.load_asks(target)
     deliv, share, inflow = C.ask_a(A)
     spill = C.ask_b(A)
-    # the root zone on 31 January 2027 by crop (acre-weighted depletion, inches)
-    D = M.D_golden
-    by_crop = {}
-    for i, f in enumerate(M.fields):
-        x = by_crop.setdefault(f["crop"], dict(n=0, acres=0.0, dep=0.0, over=0))
-        x["n"] += 1
-        x["acres"] += M.acres[i]
-        x["dep"] += D[i] * M.acres[i]
-        x["over"] += int(D[i] >= M.raw[i])
-    return dict(M=M, lad=lad, g=g, A=A, deliv=deliv, share=share, inflow=inflow, spill=spill, by_crop=by_crop)
+    meth = np.array([f["method"] for f in M.fields])
+    held = meth != "Border"
+    return dict(M=M, lad=lad, g=g, A=A, deliv=deliv, share=share, inflow=inflow, spill=spill, held=held)
 
 
 def figures(c):
-    g, lad = c["g"], c["lad"]
+    g, lad, M = c["g"], c["lad"], c["M"]
     out = {
-        "call": {"order_af": "{:,}".format(g["order"]), "setting_year": g["year"],
-                 "setting_requirement_af": "{:,}".format(K.round_to(g["req"], 10)),
-                 "schedule_af": {m: "{:,}".format(v) for m, v in zip(MONTHS, g["months"])}},
+        "call": {"order_af": "{:,}".format(g["order"])},
         "steps": {
-            "fields": c["M"].n, "acres": "{:,.0f}".format(c["M"].acres.sum()),
-            "requirement_24th_unrounded": "{:,.2f}".format(g["req"]),
-            "requirement_23rd": "{:,}".format(K.round_to(g["ranked"][22][1], 10)),
-            "requirement_25th": "{:,}".format(K.round_to(g["ranked"][24][1], 10)),
-            "year_23rd": g["ranked"][22][0], "year_25th": g["ranked"][24][0],
-            "mean_depletion_31jan_in": "%.2f" % (float((c["M"].D_golden * c["M"].acres).sum() / c["M"].acres.sum())),
-            "fields_at_allowable_31jan": int((c["M"].D_golden >= c["M"].raw).sum()),
-            "replays_af": {str(y): "{:,}".format(K.round_to(v, 10)) for y, v in sorted(g["reqs"].items())},
+            "fields": M.n, "acres": "{:,.0f}".format(M.acres.sum()),
+            "held_fields": int(c["held"].sum()),
+            # the 24th smallest replay lies inside the order's thousand (every converging construction too)
+            "setting_replay_between_af": ["{:,}".format(g["order"] - K.ORDER_STEP), "{:,}".format(g["order"])],
+            "setting_year": g["year"],
+            "replays_covered": 24,
+            "order_af": "{:,}".format(g["order"]),
             # the Water Order Procedure clauses the write-up's steps cite
-            "procedure_clauses": ["2.3", "2.4", "3.1", "3.3", "3.4", "3.5", "4.1", "5.1", "6.1", "6.2"],
+            "procedure_clauses": ["2.3", "2.4", "3.1", "3.3", "3.4", "3.5", "4.1", "6.1", "6.2"],
+            "table": "4",
         },
-        "default_path": {"order_af": "{:,}".format(lad["R0"]["order"]), "setting_year": lad["R0"]["year"],
-                         "setting_requirement_af": "{:,}".format(K.round_to(lad["R0"]["req"], 10))},
+        "default_path": {"order_af": "{:,}".format(lad["R3"]["order"]), "setting_year": lad["R3"]["year"]},
         "rungs": {k: {"order_af": "{:,}".format(v["order"]), "setting_year": v["year"]} for k, v in lad.items()},
-        "ask_a": {l: {"deliveries_af": "{:,}".format(K.round_to(c["deliv"][l], 10)),
-                      "not_delivered_pct": "%.1f" % share1(c["share"][l]),
-                      "water_in_af": "{:,}".format(K.round_to(c["inflow"][l], 10))} for l in K.LATERALS},
-        "ask_b": {l: "{:,}".format(K.round_to(c["spill"][l], 10)) for l in K.LATERALS},
+        "ask_deliveries_af": {l: "{:,}".format(K.round_to(c["deliv"][l], 10)) for l in K.LATERALS},
+        "ask_water_in_af": {l: "{:,}".format(K.round_to(c["inflow"][l], 10)) for l in K.LATERALS},
+        "ask_not_delivered_pct": {l: "%.1f" % share1(c["share"][l]) for l in K.LATERALS},
+        "ask_tail_weir_af": {l: "{:,}".format(K.round_to(c["spill"][l], 10)) for l in K.LATERALS},
     }
     return out
 
@@ -88,14 +77,16 @@ def write_book(path, c, figs):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Order 2027"
-    ws["A1"] = "Kestrel Bend Irrigation District: 2027 water order, Tolan Valley Project"
+    ws["A1"] = "Kestrel Bend Irrigation District orders %s acre-feet from the Tolan Valley Project for 2027" % (
+        "{:,}".format(g["order"]))
     ws["A1"].font = Font(name="Calibri", bold=True, size=13)
-    ws["A2"] = "Water Order Procedure (rev. December 2025), Tables for the 2027 order. Prepared 1 February 2027."
+    ws["A2"] = ("Water Resources, under the Water Order Procedure (rev. December 2025) and its tables for the 2027 order. "
+                "Prepared 1 February 2027.")
     ws["A2"].font = Font(name="Calibri", italic=True, size=10, color="595959")
     rows = [("2027 order (acre-feet)", g["order"]),
-            ("Weather year whose replay sets the order", g["year"]),
-            ("Headgate requirement in that replay (acre-feet)", K.round_to(g["req"], 10)),
-            ("Replayed seasons the order covers", "24 of 30 (weather years 1997 to 2026)")]
+            ("Season", "1 February to 31 October 2027"),
+            ("Replayed seasons the order covers", "24 of 30 (weather years 1997 to 2026)"),
+            ("Replay that sets the order", g["year"])]
     r = 4
     for label, v in rows:
         ws.cell(row=r, column=1, value=label).font = Font(name="Calibri", bold=True)
@@ -103,24 +94,17 @@ def write_book(path, c, figs):
         if isinstance(v, int) and v > 3000:
             cell.number_format = "#,##0"
         r += 1
+    ws.column_dimensions["A"].width = 40
+    ws.column_dimensions["B"].width = 38
     r += 1
-    ws.cell(row=r, column=1, value="Monthly schedule (WOP 5.1)").font = Font(name="Calibri", bold=True, size=11)
-    r += 1
-    _head(ws, r, ["Month", "Acre-feet"], [52, 22])
-    for m, v in zip(MONTHS, g["months"]):
-        r += 1
-        ws.cell(row=r, column=1, value=m)
-        ws.cell(row=r, column=2, value=v).number_format = "#,##0"
-    r += 1
-    ws.cell(row=r, column=1, value="Season").font = Font(name="Calibri", bold=True)
-    ws.cell(row=r, column=2, value=sum(g["months"])).number_format = "#,##0"
-    r += 2
-    ws.cell(row=r, column=1, value="Each replay starts from the root-zone depletion each field carries at the end of "
-                                    "31 January 2027 (its last 2026 delivery, then the record's weather to 31 January).")
+    ws.cell(row=r, column=1, value="Each replay starts every field from its root zone at the end of 31 January 2027, "
+                                    "from its 2026 water and the record's weather since (Notes).")
     ws.cell(row=r, column=1).font = Font(name="Calibri", italic=True, size=9, color="595959")
 
     ws2 = wb.create_sheet("Replays")
-    ws2["A1"] = "Headgate requirement of the 2027 fields in each replayed weather year (WOP 2.4)"
+    ws2["A1"] = "The order covers 24 of the 30 replayed weather years; six would need more"
+    ws2["A2"] = "Headgate requirement of the 2027 fields with each weather year's 1 February to 31 October weather (WOP 2.4)."
+    ws2["A2"].font = Font(name="Calibri", italic=True, size=10, color="595959")
     ws2["A1"].font = Font(name="Calibri", bold=True, size=12)
     ranked = [y for y, _ in g["ranked"]]
     _head(ws2, 3, ["Weather year", "Headgate requirement (acre-feet)", "Rank (smallest = 1)", "Covered by the order"],
@@ -135,49 +119,38 @@ def write_book(path, c, figs):
     ws2.freeze_panes = "A4"
     ws2.print_title_rows = "3:3"
 
-    ws3 = wb.create_sheet("Root zone 31 Jan")
-    ws3["A1"] = "Root zone at the end of 31 January 2027, 2027 fields by crop"
-    ws3["A1"].font = Font(name="Calibri", bold=True, size=12)
-    _head(ws3, 3, ["Crop", "Fields", "Acres", "Mean depletion (in, acre-weighted)", "Fields at or past allowable depletion"],
-          [20, 9, 11, 22, 22])
-    rr = 3
-    for crop in K.CROPS:
-        x = c["by_crop"].get(crop)
-        if not x:
-            continue
-        rr += 1
-        ws3.cell(row=rr, column=1, value=K.CROP_NAME[crop])
-        ws3.cell(row=rr, column=2, value=x["n"])
-        ws3.cell(row=rr, column=3, value=round(x["acres"], 0)).number_format = "#,##0"
-        ws3.cell(row=rr, column=4, value=round(x["dep"] / x["acres"], 2)).number_format = "0.00"
-        ws3.cell(row=rr, column=5, value=x["over"])
-    rr += 1
-    M = c["M"]
-    tot = [("All 2027 fields", None), (M.n, None), (round(float(M.acres.sum()), 0), "#,##0"),
-           (round(float((M.D_golden * M.acres).sum() / M.acres.sum()), 2), "0.00"), (int((M.D_golden >= M.raw).sum()), None)]
-    for k, (v, fmt) in enumerate(tot, 1):
-        cell = ws3.cell(row=rr, column=k, value=v)
-        cell.font = Font(name="Calibri", bold=True)
-        cell.border = Border(top=Side(style="thin", color="7F7F7F"))
-        if fmt:
-            cell.number_format = fmt
-    ws3.freeze_panes = "A4"
-
     ws4 = wb.create_sheet("Laterals 2026")
-    ws4["A1"] = "2026 season on each lateral, from the meter book, the heading flumes and the tail weir sheets"
+    top = max(K.LATERALS, key=lambda l: c["share"][l])
+    ws4["A1"] = "%s lost the largest share of its water in 2026: %.1f per cent against a %.1f per cent allowance" % (
+        K.LATERAL_NAME[top], share1(c["share"][top]), round(K.LOSS[top] * 100, 1))
     ws4["A1"].font = Font(name="Calibri", bold=True, size=12)
-    _head(ws4, 3, ["Lateral", "Water put in at the heading (acre-feet)", "Turnout deliveries (acre-feet)",
+    ws4["A2"] = ("From the riders' meter book with the meter shop's work orders, the heading loggers' daily totals with the "
+                 "Water Master's estimates, and the riders' tail weir sheets.")
+    ws4["A2"].font = Font(name="Calibri", italic=True, size=10, color="595959")
+    _head(ws4, 3, ["Lateral", "Turnout deliveries (acre-feet)", "Water put in at the heading (acre-feet)",
                    "Share of the water put in not delivered (%)", "Over the tail weir (acre-feet)",
-                   "Loss allowance, Table 5 (%)"], [12, 22, 20, 22, 18, 16])
+                   "Loss allowance, Table 5 (%)"], [12, 20, 22, 22, 18, 16])
     rr = 3
     for l in K.LATERALS:
         rr += 1
         ws4.cell(row=rr, column=1, value=K.LATERAL_NAME[l])
-        ws4.cell(row=rr, column=2, value=K.round_to(c["inflow"][l], 10)).number_format = "#,##0"
-        ws4.cell(row=rr, column=3, value=K.round_to(c["deliv"][l], 10)).number_format = "#,##0"
+        ws4.cell(row=rr, column=2, value=K.round_to(c["deliv"][l], 10)).number_format = "#,##0"
+        ws4.cell(row=rr, column=3, value=K.round_to(c["inflow"][l], 10)).number_format = "#,##0"
         ws4.cell(row=rr, column=4, value=share1(c["share"][l])).number_format = "0.0"
         ws4.cell(row=rr, column=5, value=K.round_to(c["spill"][l], 10)).number_format = "#,##0"
         ws4.cell(row=rr, column=6, value=round(K.LOSS[l] * 100, 1)).number_format = "0.0"
+    rr += 1
+    tin = sum(c["inflow"].values())
+    tdl = sum(c["deliv"].values())
+    for k, v in enumerate(["Nine laterals", K.round_to(tdl, 10), K.round_to(tin, 10), share1(100.0 * (tin - tdl) / tin),
+                           K.round_to(sum(c["spill"].values()), 10), None], 1):
+        cell = ws4.cell(row=rr, column=k, value=v)
+        cell.font = Font(name="Calibri", bold=True)
+        cell.border = Border(top=Side(style="thin", color="7F7F7F"))
+        if k in (2, 3, 5):
+            cell.number_format = "#,##0"
+        elif k == 4:
+            cell.number_format = "0.0"
     ws4.freeze_panes = "B4"
     ws4.page_setup.orientation = "landscape"
 
@@ -186,26 +159,26 @@ def write_book(path, c, figs):
     ws5["A1"].font = Font(name="Calibri", bold=True, size=12)
     _head(ws5, 3, ["Item", "Note"], [24, 112])
     notes = [
-        ("Order", "The smallest whole number of hundreds of acre-feet that would have covered the 2027 headgate "
-                  "requirement in at least 24 of the thirty weather years 1997 to 2026 (WOP 2.3)."),
-        ("Fields", "Each field on its latest accepted 2027 water request, with the crop, irrigation method and acres "
-                   "on the request and the turnout, lateral and soil unit in the field register as it stood on 1 "
-                   "February 2027 (WOP 6.2). Withdrawn requests and superseded versions are not run."),
-        ("Start of each replay", "The root-zone depletion each field carries at the end of 31 January 2027: zero at "
-                                 "the end of the day of its last delivered 2026 set in the irrigation orders, then "
-                                 "the daily balance of WOP 3.1 on the District's weather record to 31 January."),
+        ("Order", "Smallest whole number of thousands of acre-feet that would have covered the 2027 headgate "
+                  "requirement in at least 24 of the weather years 1997 to 2026 (WOP 2.3)."),
+        ("Fields", "Latest accepted 2027 request for each field: crop, method and acres from the request; turnout, "
+                   "lateral and soil unit from the register as it stood on 1 February 2027 (WOP 6.2). Withdrawn "
+                   "requests and superseded versions not run."),
+        ("Root zone at 31 January", "Each field run day by day through the WOP 3.1 balance from the end of 27 January "
+                                    "2026, when the winter's rains had every root zone at field capacity, to the end "
+                                    "of 31 January 2027: each delivered 2026 set in the irrigation orders at its "
+                                    "ordered flow for the hours it ran, times the Table 4 efficiency of the field's "
+                                    "method, on the record's weather. Cancelled orders carry no water."),
         ("Weather record", "Station 39 to 30 April 2014 and the yard station from 1 May 2014; a day the yard station "
                            "did not record takes station 39's values (WOP 6.1)."),
-        ("Monthly schedule", "The order times each month's share of the thirty replays' summed monthly requirements, "
-                             "to the nearest 10 acre-feet; October takes the difference (WOP 5.1)."),
-        ("Laterals 2026", "Deliveries from the riders' meter reads, each meter changed during the season chained "
-                          "through the meter shop's removal and installation readings; the Lateral 5 tail turnouts "
-                          "(05-045 to 05-058) on Lateral 5 to their 15 June 2026 reads and on Lateral 6 after. Water "
-                          "put in from the heading flumes' daily volumes, the Water Master's estimated days included. "
-                          "Tail weir spill from the riders' morning gauge readings, each standing until the next "
-                          "reading, the crest raised 2 inches for each flashboard in place."),
-        ("Rounding", "The order to the whole hundred acre-feet, other volumes to the nearest 10 acre-feet, shares to "
-                     "one decimal place; figures are carried unrounded until shown."),
+        ("Laterals 2026", "Deliveries from the riders' meter reads, a meter changed in the season chained through the "
+                          "shop's register readings at the change; the west spur turnouts (05-021 to 05-034) on "
+                          "Lateral 5 to their 15 June reads and on Lateral 6 after. Water put in from the heading "
+                          "loggers' daily totals, with the Water Master's estimates (operations log) for the days a "
+                          "logger kept no total. Tail weir spill from the riders' morning gauge readings, each standing "
+                          "until the next reading, the crest raised 2 inches for each board in place."),
+        ("Rounding", "Order to the whole thousand acre-feet; other volumes to the nearest 10 acre-feet; shares to one "
+                     "decimal place. Figures carried unrounded until shown."),
     ]
     rr = 3
     for item, note in notes:
@@ -244,7 +217,7 @@ def write_chart(path, c, figs):
     ax.text(0.2, order_k + 0.6, "Order %s acre-feet" % "{:,}".format(g["order"]), color=ink, fontsize=10,
             va="bottom", ha="left", zorder=5)
     k24 = 23
-    ax.annotate("%d sets it: %s AF" % (ranked[k24][0], "{:,}".format(K.round_to(ranked[k24][1], 10))),
+    ax.annotate("%d replay sets the order" % ranked[k24][0],
                 xy=(k24, vals[k24]), xytext=(k24 - 9.5, vals[k24] + 5.5), color=muted, fontsize=9,
                 arrowprops=dict(arrowstyle="-", color=muted, linewidth=0.8))
     lo = math.floor(min(vals) / 10.0) * 10

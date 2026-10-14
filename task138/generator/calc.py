@@ -1,6 +1,6 @@
-"""The Water Order Procedure's arithmetic and every rung of the ladder, on inputs read from the pack (load) or handed
-over from the simulation. Vectorised over fields with numpy; the verifier recomputes the same figures on its own
-code path."""
+"""The Water Order Procedure's arithmetic, every rung of the ladder and the four lateral asks, on inputs read from the
+pack (load, load_asks). Vectorised over fields with numpy; verify.py recomputes the graded figures on its own code
+path."""
 from __future__ import annotations
 
 import csv
@@ -15,7 +15,7 @@ import common as K
 class Model:
     """The 2027 fields as the procedure sees them, the District's weather record and the procedure's tables."""
 
-    def __init__(self, fields, wx, tables, last_delivery=None, turnout_last=None, cancelled_last=None):
+    def __init__(self, fields, wx, tables, last_delivery=None, turnout_last=None, cancelled_last=None, record=None):
         self.fields = fields
         self.ids = [f["id"] for f in fields]
         self.n = len(fields)
@@ -38,6 +38,8 @@ class Model:
         self.last_delivery = last_delivery
         self.turnout_last = turnout_last
         self.cancelled_last = cancelled_last
+        # the 2026 record: (field id, set start, set end, cfs, status) for every 2026 order on a 2027 field
+        self.record = record or []
 
     # -------------------------------------------------------------------------------------------- the daily balance
     def day(self, D, d, cap=True):
@@ -89,17 +91,92 @@ class Model:
         z = np.zeros(self.n)
         return lambda y: z
 
-    def start_golden(self):
+    def start_last_set(self):
+        """R3: each field's last delivered 2026 set taken as returning its root zone to field capacity (zero at the end
+        of the set's day), then the record's weather to 31 January 2027."""
         D = self.carry([self.last_delivery[i] for i in self.ids])
+        self.D_last_set = D
+        return lambda y: D
+
+    # -------------------------------------------------------------------------------------------- the 2026 record
+    def set_water(self, statuses=("Delivered",), split="hourly", acres=None):
+        """{date: AF reaching each field that day} from the 2026 orders. split: hourly (the ordered flow for the
+        hours the set ran each day), start (all on the set's first day) or end (all on its last day)."""
+        idx = {f: i for i, f in enumerate(self.ids)}
+        out = {}
+        for fid, a, b, cfs, status in self.record:
+            if status not in statuses or fid not in idx:
+                continue
+            i = idx[fid]
+            if split == "hourly":
+                t = a
+                while t < b:
+                    seg = min(b, dt.datetime(t.year, t.month, t.day) + dt.timedelta(days=1))
+                    out.setdefault(t.date(), np.zeros(self.n))[i] += cfs * (seg - t).total_seconds() / K.CUFT_PER_AF
+                    t = seg
+            else:
+                day = a.date() if split == "start" else b.date()
+                out.setdefault(day, np.zeros(self.n))[i] += cfs * (b - a).total_seconds() / K.CUFT_PER_AF
+        return out
+
+    def hindcast(self, water, start=K.WINTER_FULL + dt.timedelta(days=1), D0=None, use_ea=True, acres=None,
+                 order="net", cap=True, upto=None):
+        """Each field's root zone run day by day from `start` (field capacity unless D0) to the end of 31 January 2027
+        through the procedure's daily balance on the record's weather, each day's irrigation water reaching the root
+        zone at the field's application efficiency (Table 4). order: net (the day's ET, rain and irrigation together,
+        then the floor and cap), after (the irrigation after the day's floor and cap) or before (the irrigation before
+        the day's ET and rain)."""
+        D = np.zeros(self.n) if D0 is None else D0.copy()
+        ac = self.acres if acres is None else acres
+        eff = self.ea if use_ea else 1.0
+        upto = upto or K.WEATHER_END
+        for d in K.daterange(start, upto):
+            e, r = self.wx[d]
+            net = water[d] * 12.0 / ac * eff if d in water else 0.0
+            et = self.kc[:, d.month - 1] * e
+            if order == "net":
+                D = np.maximum(D + et - r - net, 0.0)
+            elif order == "after":
+                D = np.maximum(D + et - r, 0.0)
+                D = np.minimum(D, self.taw) if cap else D
+                D = np.maximum(D - net, 0.0)
+            else:
+                D = np.maximum(D - net, 0.0)
+                D = np.maximum(D + et - r, 0.0)
+            D = np.minimum(D, self.taw) if cap else D
+        return D
+
+    def start_golden(self):
+        """The golden start: each field's root zone as it stands at the end of 31 January 2027, its 2026 season run
+        through the balance on the water its delivered sets put in, from field capacity at the end of 27 January 2026,
+        when the 2025-26 winter's rains had every root zone full."""
+        D = self.hindcast(self.set_water())
         self.D_golden = D
         return lambda y: D
 
-    def start_turnout(self):
-        D = self.carry([self.turnout_last[i] for i in self.ids])
+    def start_first_set(self):
+        """R3c: the 2026 season run on the record from each field's first delivered set, taken as returning it to field
+        capacity."""
+        water = self.set_water()
+        first = {}
+        for fid, a, b, cfs, status in self.record:
+            if status == "Delivered":
+                first[fid] = min(first.get(fid, b.date()), b.date())
+        a_ord = np.array([first[i].toordinal() for i in self.ids])
+        D = np.zeros(self.n)
+        for d in K.daterange(K.WINTER_FULL + dt.timedelta(days=1), K.WEATHER_END):
+            e, r = self.wx[d]
+            net = water[d] * 12.0 / self.acres * self.ea if d in water else 0.0
+            nd = np.minimum(np.maximum(D + self.kc[:, d.month - 1] * e - r - net, 0.0), self.taw)
+            D = np.where(d.toordinal() > a_ord, nd, np.where(d.toordinal() == a_ord, 0.0, nd))
+        return lambda y: D
+
+    def start_gross(self):
+        D = self.hindcast(self.set_water(), use_ea=False)
         return lambda y: D
 
     def start_cancelled(self):
-        D = self.carry([max(self.last_delivery[i], self.cancelled_last.get(i, self.last_delivery[i])) for i in self.ids])
+        D = self.hindcast(self.set_water(statuses=("Delivered", "Cancelled")))
         return lambda y: D
 
     def start_canal_close(self):
@@ -107,7 +184,7 @@ class Model:
         return lambda y: D
 
     def start_nocap(self):
-        D = self.carry([self.last_delivery[i] for i in self.ids], cap=False)
+        D = self.hindcast(self.set_water(), cap=False)
         return lambda y: D
 
     def _model_season_then_winter(self, year, D):
@@ -138,21 +215,21 @@ class Model:
 
 
 def order_from(req):
-    """WOP 2.3: the smallest whole number of hundreds covering the requirement in at least 24 of 30 years."""
+    """WOP 2.3: the smallest whole number of thousands covering the requirement in at least 24 of 30 years."""
     ranked = sorted(req.items(), key=lambda kv: kv[1])
     y24, v24 = ranked[23]
-    return dict(order=K.ceil_hundred(v24), year=y24, req=v24, ranked=ranked)
+    return dict(order=K.ceil_to(v24, K.ORDER_STEP), year=y24, req=v24, ranked=ranked)
 
 
 def schedule(order, mon):
-    """WOP 5.1: shares of the thirty years' summed monthly requirements, each month to the nearest 10 acre-feet,
+    """WOP 5.1: shares of the thirty years' summed monthly requirements, each month to the nearest 100 acre-feet,
     October the difference."""
     tot_m = np.zeros(9)
     for y in K.REPLAY_YEARS:
         tot_m += mon[y]
     shares = tot_m / tot_m.sum()
     raw = order * shares
-    months = [K.round_to(x, 10) for x in raw[:8]]
+    months = [K.round_to(x, K.MONTH_STEP) for x in raw[:8]]
     months.append(order - sum(months))
     return months, raw, shares
 
@@ -263,21 +340,23 @@ def load(target):
     rows = read_csv(os.path.join(target, K.ORDERS))
     head = rows[0]
     ix = {c: head.index(c) for c in head}
-    last, tlast, canc, t_of = {}, {}, {}, {}
+    last, tlast, canc, t_of, record = {}, {}, {}, {}, []
     for r in rows[1:]:
         if r[ix["season"]] != "2026":
             continue
-        day = dt.date.fromisoformat(r[ix["set_start"]][:10])
-        end_day = dt.date.fromisoformat(r[ix["set_end"]][:10])
+        a = dt.datetime.fromisoformat(r[ix["set_start"]])
+        b = dt.datetime.fromisoformat(r[ix["set_end"]])
+        day, end_day = a.date(), b.date()
         fid, tid = r[ix["field_id"]], r[ix["turnout"]]
         t_of[fid] = tid
+        record.append((fid, a, b, float(r[ix["ordered_cfs"]]), r[ix["status"]]))
         if r[ix["status"]] == "Delivered":
             last[fid] = max(last.get(fid, end_day), end_day)
             tlast[tid] = max(tlast.get(tid, end_day), end_day)
         elif r[ix["status"]] == "Cancelled":
             canc[fid] = max(canc.get(fid, day), day)
     turnout_last = {f["id"]: tlast[t_of[f["id"]]] for f in fields}
-    M = Model(fields, wx, T, last_delivery=last, turnout_last=turnout_last, cancelled_last=canc)
+    M = Model(fields, wx, T, last_delivery=last, turnout_last=turnout_last, cancelled_last=canc, record=record)
     M.s39, M.yard = s39, yard
     M.requests = reqs
     M.register = reg
@@ -290,10 +369,12 @@ RUNGS = [("R0", "full on 1 February", "start_full"),
          ("R1", "each weather year's own preceding autumn and winter", "start_own_winter"),
          ("R2", "the replay rule run through 2026, then the observed winter", "start_model_2026"),
          ("R2b", "full at the canal's close (31 October 2026), then the observed winter", "start_canal_close"),
-         ("R2c", "each turnout's last delivered 2026 set for every field on it", "start_turnout"),
-         ("R2d", "a field's last 2026 order whatever its status", "start_cancelled"),
-         ("R3", "each field's own last delivered 2026 set through the observed winter (golden)", "start_golden"),
-         ("O2", "the golden start with the winter cap dropped", "start_nocap")]
+         ("R3", "each field's last delivered 2026 set taken as a refill, then the observed winter", "start_last_set"),
+         ("R3c", "the 2026 record run from each field's first delivered set taken as a refill", "start_first_set"),
+         ("R4g", "the 2026 record run at each set's delivered water with no application efficiency", "start_gross"),
+         ("R2d", "the 2026 record run with cancelled sets counted as water", "start_cancelled"),
+         ("R4", "the 2026 record run at the water each delivered set put in (golden)", "start_golden"),
+         ("O2", "the golden start with the root-zone cap dropped", "start_nocap")]
 
 
 def ladder(M):
@@ -329,10 +410,9 @@ def tid_from_gis(x):
 def load_asks(target):
     import openpyxl
     A = {}
-    # meters in service and the season's changes
     wb = openpyxl.load_workbook(os.path.join(target, K.SHOP_LOG), data_only=True)
     units, cap = {}, {}
-    rows = list(wb["Meters in service"].iter_rows(values_only=True))
+    rows = list(wb["Meter inventory"].iter_rows(values_only=True))
     hi = next(i for i, r in enumerate(rows) if r and r[0] == "Meter")
     for r in rows[hi + 1:]:
         if not r or r[0] is None:
@@ -340,17 +420,21 @@ def load_asks(target):
         units[r[0]] = "AF" if r[3] == "acre-feet" else "HCF"
         cap[r[0]] = float(str(r[4]).replace(",", ""))
     changes = []
-    rows = list(wb["2026 changes"].iter_rows(values_only=True))
-    hi = next(i for i, r in enumerate(rows) if r and r[0] == "Date")
+    rows = list(wb["Work orders 2026"].iter_rows(values_only=True))
+    hi = next(i for i, r in enumerate(rows) if r and r[0] == "WO no.")
+    head = list(rows[hi])
     for r in rows[hi + 1:]:
         if not r or r[0] is None:
             continue
-        day = r[0].date() if isinstance(r[0], dt.datetime) else r[0]
-        hh, mm = (int(x) for x in str(r[1]).split(":"))
-        changes.append(dict(turnout=tid_from_gis(r[2]), when=dt.datetime(day.year, day.month, day.day, hh, mm),
-                            old=r[3], removal=float(r[4]), new=r[5], installation=float(r[6])))
+        x = dict(zip(head, r))
+        if not x["Meter out"]:
+            continue
+        day = x["Date"].date() if isinstance(x["Date"], dt.datetime) else x["Date"]
+        hh, mm = (int(v) for v in str(x["Time"]).split(":"))
+        changes.append(dict(turnout=tid_from_gis(x["Turnout"]), when=dt.datetime(day.year, day.month, day.day, hh, mm),
+                            old=x["Meter out"], removal=float(x["Reg. out"]), new=x["Meter in"],
+                            installation=float(x["Reg. in"]), unit=x["Unit"]))
     A["units"], A["cap"], A["changes"] = units, cap, changes
-    # the riders' reads
     reads = {}
     rows = read_csv(os.path.join(target, K.METER_BOOK))
     head = rows[0]
@@ -359,25 +443,25 @@ def load_asks(target):
         m, d_, y = (int(x) for x in r[ix["read_date"]].split("/"))
         hh, mm = (int(x) for x in r[ix["read_time"]].split(":"))
         tid = tid_from_book(r[ix["turnout"]])
-        reads.setdefault(tid, []).append((dt.datetime(y, m, d_, hh, mm), r[ix["meter"]], float(r[ix["reading"]])))
+        reads.setdefault(tid, []).append((dt.datetime(y, m, d_, hh, mm), r[ix["meter"]], float(r[ix["reading"]]),
+                                          r[ix["reg_units"]]))
     for v in reads.values():
         v.sort()
     A["reads"] = reads
-    # the register's (current) lateral by turnout
     lat = {}
     rows = read_csv(os.path.join(target, K.REGISTER))
     head = rows[0]
     for r in rows[1:]:
         lat[tid_from_gis(r[head.index("turnout_id")])] = "L" + r[head.index("lateral")].split()[-1]
     A["lateral"] = lat
-    # headings
     heads = []
     rows = read_csv(os.path.join(target, K.HEADINGS))
     head = rows[0]
     for r in rows[1:]:
-        heads.append((dt.date.fromisoformat(r[0]), "L" + r[1].split()[-1], float(r[3]), r[4]))
+        heads.append((dt.date.fromisoformat(r[head.index("date")]), "L" + r[head.index("lateral")].split()[-1],
+                      float(r[head.index("volume_af")])))
     A["headings"] = heads
-    # tail weirs and their structure
+    A["estimates"] = heading_estimates(target)
     wb = openpyxl.load_workbook(os.path.join(target, K.STRUCTURES), data_only=True)
     weir = {}
     rows = list(wb["Tail weirs"].iter_rows(values_only=True))
@@ -391,11 +475,31 @@ def load_asks(target):
     rows = read_csv(os.path.join(target, K.WEIRS))
     for r in rows[1:]:
         m, d_, y = (int(x) for x in r[0].split("/"))
-        sheets.setdefault("L" + r[1].split()[-1], []).append((dt.date(y, m, d_), float(r[4]), r[5]))
+        sheets.setdefault("L" + r[1].split()[-1], []).append((dt.date(y, m, d_), float(r[4]), r[5], r[3]))
     for v in sheets.values():
         v.sort()
     A["sheets"] = sheets
     return A
+
+
+def heading_estimates(target):
+    """The Water Master's heading estimates for the days a heading logger kept no total, from the operations log:
+    {(lateral, date): AF}."""
+    import docx
+    import re
+    t = docx.Document(os.path.join(target, K.OPS_LOG)).tables[0]
+    out = {}
+    for row in t.rows[1:]:
+        c = [x.text for x in row.cells]
+        day = dt.date.fromisoformat(c[0])
+        m = re.match(r"Lateral (\d) heading: .*estimates for the days without a total, acre-feet: (.*)\.$", c[2])
+        if not m:
+            continue
+        for part in m.group(2).split(", "):
+            dd, month, v = part.split(" ")
+            when = dt.datetime.strptime("%s %s %d" % (dd, month, day.year), "%d %B %Y").date()
+            out[("L" + m.group(1), when)] = float(v)
+    return out
 
 
 MOVED_FROM = dt.date(2026, 6, 15)
@@ -414,7 +518,7 @@ def turnout_intervals(A, tid, mode="chain"):
         d = (b - a) % c
         return d / 435.6 if A["units"][serial] == "HCF" else d
 
-    for (t0, s0, v0), (t1, s1, v1) in zip(rd, rd[1:]):
+    for (t0, s0, v0, _u0), (t1, s1, v1, _u1) in zip(rd, rd[1:]):
         if s0 == s1:
             out.append((t1, af(s0, v0, v1)))
         elif mode == "chain":
@@ -426,7 +530,9 @@ def turnout_intervals(A, tid, mode="chain"):
     return out
 
 
-def ask_a(A, mode="chain", as_of=True, drop_estimated=False):
+def ask_deliveries(A, mode="chain", as_of=True):
+    """Each lateral's 2026 deliveries: every turnout's metered water on each read interval, on the lateral that fed
+    the turnout over that interval (the west spur on Lateral 5 through its 15 June read, Lateral 6 after)."""
     deliv = {l: 0.0 for l in K.LATERALS}
     for tid in A["reads"]:
         reg_lat = A["lateral"][tid]
@@ -437,28 +543,41 @@ def ask_a(A, mode="chain", as_of=True, drop_estimated=False):
             else:
                 lat = reg_lat
             deliv[lat] += v
+    return deliv
+
+
+def ask_inflow(A, estimates=True):
+    """Each lateral's 2026 water put in at its heading: the logger's daily totals and, for the days a logger kept no
+    total, the Water Master's estimates."""
     inflow = {l: 0.0 for l in K.LATERALS}
-    for d, l, v, q in A["headings"]:
-        if drop_estimated and q == "E":
-            continue
+    for d, l, v in A["headings"]:
         inflow[l] += v
+    if estimates:
+        for (l, d), v in A["estimates"].items():
+            inflow[l] += v
+    return inflow
+
+
+def ask_a(A, mode="chain", as_of=True, estimates=True):
+    deliv = ask_deliveries(A, mode, as_of)
+    inflow = ask_inflow(A, estimates)
     share = {l: 100.0 * (inflow[l] - deliv[l]) / inflow[l] for l in K.LATERALS}
     return deliv, share, inflow
 
 
 def board_counts(A, lat):
-    """Boards in place at each reading, from the riders' remarks (a change is made before that day's reading)."""
+    """Boards in place at each reading, from the riders' remarks (a board set, added or pulled before that day's
+    reading, its time noted)."""
+    import re
     n = 0
     out = {}
-    for d, g, rem in A["sheets"][lat]:
-        rem = (rem or "").lower()
-        if len(rem) > 6 and rem[2] == ":" and rem[:2].isdigit() and rem[3:5].isdigit():
-            rem = rem[6:]          # the time the rider noted for the change, ahead of that sheet's reading
-        if rem in ("set one 2-inch board", "added a 2-inch board"):
+    for d, g, rem, rt in A["sheets"][lat]:
+        rem = (rem or "").lower().strip()
+        if re.match(r"^set 2in brd \d{4}$", rem) or re.match(r"^added 2in brd \d{4}$", rem):
             n += 1
-        elif rem == "pulled one board":
+        elif re.match(r"^pulled 1 brd \d{4}$", rem):
             n -= 1
-        elif rem == "pulled boards":
+        elif re.match(r"^brds out \d{4}$", rem):
             n = 0
         out[d] = n
     return out
@@ -469,7 +588,7 @@ def ask_b(A, boards=True, fill=True):
     for lat in K.LATERALS:
         L, crest, C_ = A["weir"][lat]
         bc = board_counts(A, lat)
-        rd = {d: g for d, g, _ in A["sheets"][lat]}
+        rd = {d: g for d, g, _, _ in A["sheets"][lat]}
         tot = 0.0
         cur = None
         for d in K.season_days(2026):
