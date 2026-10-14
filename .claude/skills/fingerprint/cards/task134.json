@@ -1,94 +1,154 @@
 {
   "task": "task134",
-  "architecture": "v2",
-  "drawn": "2026-10-11",
-  "slot_note": "architecture 2 of 3, a re-root of v1 (spent at hardening loop 1: its default construction was the golden); drawn fresh in Forecasting & Predictive Modeling; seed FC05 (battery siting) still not used, energy with forecasting being banned against task132",
-  "domain": "healthcare-delivery-health-economics",
-  "subdomain": "utilization-access-demand-forecasting",
-  "niche": "a Scottish health and social care partnership forecasting how many care home residents it will be paying for at each quarter end of 2027-28, when the second stage of a rise in the upper capital limit on 5 April 2027 brings every self-funding resident's savings to the limit sooner, a step the history saw once, smaller, on 6 April 2026",
+  "architecture": "v3",
+  "drawn": "2026-10-14",
+  "slot_note": "architecture 3 of 3, the slot's last: a re-root drawn fresh in Forecasting & Predictive Modeling on 2026-10-14 after architecture 2's round 2 redesign was sent back by the determinism judge (a decisive step sized from one past event); architecture 1 (criminology, recidivism) and architecture 2 (Scottish care home funding, both rounds) are in lineage with their fates. Bar top two under 50, build to 40",
+  "domain": "urban-regional-science",
+  "subdomain": "land-use-spatial-development-modeling",
+  "client_domain": "urban-regional-science",
+  "niche": "a provincial housing ministry setting the five-year housing target for a suburban city's transit-oriented areas, forecasting the net new homes that building permits will add each year 2027 to 2031 on the lots the 2027 order upzones around four rapid transit stations to 3.0, 4.0 and 5.0 FAR, where concrete towers do not pay",
   "objective": "forecasting",
-  "shape": "07",
+  "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "Budget for 790, 800, 810 and 810 council-funded long-stay care home residents on 30 June, 30 September and 31 December 2027 and 31 March 2028.",
-  "answer_source": "task134/submission.md, 1. Final Recommendation",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G13",
     "G14",
-    "G5"
+    "G1",
+    "G13"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "forecast_method_backtest",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "none",
-  "stakeholder_role": "planning and performance analyst at a health and social care partnership, preparing the care home line of the integration joint board's 2027-28 budget",
-  "role_family": "research_desk",
-  "scoring_unit": "per active unit per period",
+  "context_artifact": "published_series",
+  "stakeholder_role": "senior analyst in the provincial housing ministry's housing targets branch, preparing the city's 2027 to 2031 target order",
+  "role_family": "policy_adviser",
+  "scoring_unit": "per certified output",
   "spine": {
-    "file": "fpnc_payment_lines_2021-2026.csv",
-    "rows": 50528,
-    "entity": "one 4-weekly free personal or nursing care payment line for one self-funding care home resident",
-    "grain": "self-funding resident x payment component x 4-weekly payment period",
-    "source": "synthetic"
+    "file": "roll_extracts_2014-2026.csv",
+    "rows": 0,
+    "entity": "one folio (a legal lot, or a strata lot in a strata plan) on one year's assessment roll",
+    "grain": "folio x roll year",
+    "source": "synthetic (constructed in the layout of a BC Assessment roll extract)"
   },
-  "forum": "executive_team",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "local_government",
+  "forum": "minister_or_cabinet",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "government_agency",
   "world": {
-    "geography": "United Kingdom, Scotland",
-    "currency": "GBP",
-    "org_type": "health and social care partnership (council and NHS board integration authority) commissioning and funding care home places",
+    "geography": "Canada, British Columbia (a fictional suburban city on a fictional rapid transit line)",
+    "currency": "CAD",
+    "org_type": "provincial housing ministry (housing targets branch) setting a municipal housing target order",
     "invented_names": [
-      "Strathallan Health and Social Care Partnership",
-      "Strathallan Council",
-      "Strathallan Integration Joint Board",
-      "Strathallan Care Finance Team",
-      "Larchgrove House",
-      "Pinewell Lodge",
-      "Allanvale",
-      "Braeburn",
-      "Carsefield",
-      "Dunmorrow",
-      "Kirkhallam"
+      "City of Calderbrook",
+      "Ridgemont Line",
+      "Calderbrook Centre",
+      "Pell Road",
+      "Ellery",
+      "Westerly",
+      "North Calder",
+      "Ravensdale",
+      "Fernlea",
+      "Halvorsen Land Economics",
+      "Corvane Cost Consulting"
     ],
     "people": [
-      "Richard Lynch",
-      "Martyn Rogers",
-      "Hollie Todd",
-      "Ruth Wong",
-      "Joseph Morris",
-      "Margaret Booth"
+      "Tonya Bartlett",
+      "Zachary Tyler",
+      "Monique Knapp",
+      "Alec Heath"
     ]
   },
   "deliverables": [
-    "care_home_funding_forecast_2027-28.xlsx",
-    "care_home_costs_by_locality.png"
+    "tod_housing_target_2027-31.xlsx",
+    "tod_permits_2022-26.png"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "The decisive quantity is the inflow a pool sends over a forward window that holds an announced step in the threshold ending each member's duration clock: the hazard fitted on the history carries none of it, its size is read from the one smaller step the history holds as that day's excess entries over an ordinary week in units of clock time, scaled by the ratio of the steps, and it enters the forecast as a jump in every member's clock that brings in those it carries past the threshold on the day and moves the rest on.",
-  "driver_concrete": "Self-funding care home residents come onto council funding when their capital reaches the upper limit; the limit, frozen since 2019, rose by 5,000 pounds on 6 April 2026 and rises by 7,000 on 5 April 2027, so the conversion hazard by months since admission fitted on 2021 to 2026 misses the 2027 step; 6 April 2026 brought 8 conversions against 1.6 in an ordinary week (4.8 weeks of drawdown), so 5 April 2027 is 6.7 weeks, applied as a jump in every self-funder's clock on top of the 4.8 weeks the 2026 pool already carries.",
-  "stump": "A strong solver who builds the conversion hazard by months since admission from the payment lines, with deaths and discharges competing, and projects today's 581 self-funders through it files 770, 780, 790 and 790 (768.7, 778.0, 787.2 and 794.1) against 790, 800, 810 and 810; the step that lands it there is projecting the 2021 to 2026 hazard through 5 April 2027, when the upper capital limit rises by 7,000 pounds and every self-funder's savings reach it about 6.7 weeks sooner, a step the history saw once, at 5,000 pounds on 6 April 2026 (8 conversions that day against 1.6 in an ordinary week).",
+  "driver": "The forward yield of a raised allowance is each unit's chance of being rebuilt, nil until the best-paying option the allowance permits is worth more than what stands there and then the steady rate units of its kind have shown once rebuilding paid, times that option's output, which past a cost step in the construction method stays below the allowance; the allowance's capacity at a past change's take-up, a model on the visible attributes, or the option the allowance names all miss it.",
+  "driver_concrete": "Under the 2027 transit-area order a lot is rebuilt only once the building that pays best, priced from the market study's values and the cost guide's costs, is worth more than the assessed value of what stands on it, and then at the rate lots of its kind (houses, commercial sites, rental apartments) have shown since 2014 once rebuilding paid; at the four suburban stations concrete towers never pay, so the 4.0 and 5.0 FAR tiers yield the same six-storey wood frame as the 3.0 tier, and zoned capacity at the 2018 corridor rezoning's take-up overstates the yield.",
+  "stump": "A strong solver takes each transit-area lot's capacity under the order (lot area times its tier's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the 2018 corridor rezoning has delivered each year, and files about 2,800 net new homes a year for 2027 to 2031 against about 2,050 falling to 1,750; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stitches stays through the crosswalk, closes them at the linked deaths, applies the budget definitions and projects the self-funders through the conversion hazard by months since admission with deaths competing files 770, 780, 790 and 790; the stated 5 April 2027 rise in the upper capital limit, sized from the 6 April 2026 conversions in weeks and applied as a jump in every self-funder's clock, gives 790, 800, 810 and 810.",
-  "domain_test": "The deciding quantity is the flow of self-funding care home residents onto public funding as their capital reaches the means-test limit, forecast on each resident's capital clock and moved by a change in the limit; with another field's nouns there is no means test, no statutory limit raised in stages, no capital running down to it and no day on which a raised limit makes members eligible at once.",
+  "analyst_test": "A strong analyst who stitches the two roll layouts, links permits to lots through the folio history and reads the order's tiers and the target methodology correctly computes zoned capacity on the transit-area lots and applies the take-up the 2018 corridor rezoning has shown, filing about 2,800 net new homes a year; only each lot's feasibility at the building that pays best, and the rate feasible lots of each kind have redeveloped, gives about 2,050 falling to 1,750.",
+  "domain_test": "The deciding quantity is the housing a rezoning will actually produce, which urban land economics estimates lot by lot from development feasibility (the residual land value of the best-paying permitted building against the value of the existing use) and the observed redevelopment rate of sites once feasible; with another field's nouns there is no residual land value, no construction-type cost step and no existing use for a new building to outbid.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "urban-regional-science/land-use-spatial-development-modeling/2",
+  "layer1": [
+    "assessment roll extracts in two layouts, a 2019 schema change renaming and splitting the value columns, with lot area in square feet for most folios and in acres for the larger ones",
+    "folios retired and new folios created when lots are consolidated or subdivided, linked only through a folio history table",
+    "strata plans carried as one folio per strata lot, each with its own assessed value",
+    "building permits keyed by civic address and one or more folio numbers, a consolidated site's permit listing every folio it spans",
+    "floor area recorded in square feet before the permit system's 2020 metric switch and in square metres after",
+    "demolished homes recorded both on the new-building permit and on a separate demolition permit for the same lot",
+    "permits cancelled, expired or superseded by a revised permit after issue",
+    "secondary suites and laneway homes permitted under their own permit types",
+    "zone codes on the roll as in force at the roll's valuation date, renamed in the 2020 bylaw consolidation",
+    "the order's schedule of lots as at its date, some folios since consolidated or renumbered"
+  ],
   "mechanism_source": "design_note",
   "differentiation": {
-    "task102": "task102 moves payments across a period boundary by a business-day rule and breaks a cap; task134's forward year holds a step in the eligibility threshold that ends each member's depletion clock, sized from the one smaller step the history holds and applied as a jump in every clock.",
-    "task130": "task130 costs a short cover window from the events reported within the time left in it; task134 sizes a dated threshold step on a duration clock from a natural-experiment day in clock time and scales it to a larger forward step, with no reporting delay anywhere.",
-    "task501": "task501 rebuilds a contact matrix from the days under the coming season's regime to find an eigenvalue; task134 reads a step's worth in weeks from the day the history's step fell and moves every member's clock by the scaled forward step."
+    "task54": "task54 multiplies a loss per excursion by the packs still aboard along a planned run sequence; task134 conditions each lot's redevelopment on whether the building that pays best outbids the value of what stands on it, at the rate its kind of lot has shown once that held, and counts that building's homes rather than the allowance's"
   },
   "lineage": [
+    {
+      "domain": "healthcare-delivery-health-economics",
+      "subdomain": "utilization-access-demand-forecasting",
+      "niche": "a Scottish health and social care partnership forecasting how many care home residents it will be paying for at each quarter end of 2027-28, when the second stage of a rise in the upper capital limit on 5 April 2027 brings every self-funding resident's savings to the limit sooner, a step the history saw once, smaller, on 6 April 2026",
+      "objective": "forecasting",
+      "shape": "07",
+      "decision_type": "quantity_figure",
+      "answer_unit": "count",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G14",
+        "G5"
+      ],
+      "gate_g": "forecasting",
+      "calibration_form": "none",
+      "stump_strategy": "forecast_method_backtest",
+      "context_artifact": "none",
+      "role_family": "research_desk",
+      "forum": "executive_team",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "local_government",
+      "layer2_family": "field_method",
+      "layer2_pattern": "own:capital-limit-step-on-the-depletion-clock",
+      "driver": "The decisive quantity is the inflow a pool sends over a forward window that holds an announced step in the threshold ending each member's duration clock: the hazard fitted on the history carries none of it, its size is read from the one smaller step the history holds as that day's excess entries over an ordinary week in units of clock time, scaled by the ratio of the steps, and it enters the forecast as a jump in every member's clock that brings in those it carries past the threshold on the day and moves the rest on.",
+      "driver_concrete": "Self-funding care home residents come onto council funding when their capital reaches the upper limit; the limit, frozen since 2019, rose by 5,000 pounds on 6 April 2026 and rises by 7,000 on 5 April 2027, so the conversion hazard by months since admission fitted on 2021 to 2026 misses the 2027 step; 6 April 2026 brought 8 conversions against 1.6 in an ordinary week (4.8 weeks of drawdown), so 5 April 2027 is 6.7 weeks, applied as a jump in every self-funder's clock on top of the 4.8 weeks the 2026 pool already carries.",
+      "stump": "A strong solver who builds the conversion hazard by months since admission from the payment lines, with deaths and discharges competing, and projects today's 581 self-funders through it files 770, 780, 790 and 790 (768.7, 778.0, 787.2 and 794.1) against 790, 800, 810 and 810; the step that lands it there is projecting the 2021 to 2026 hazard through 5 April 2027, when the upper capital limit rises by 7,000 pounds and every self-funder's savings reach it about 6.7 weeks sooner, a step the history saw once, at 5,000 pounds on 6 April 2026 (8 conversions that day against 1.6 in an ordinary week).",
+      "answer": "Budget for 790, 800, 810 and 810 council-funded long-stay care home residents on 30 June, 30 September and 31 December 2027 and 31 March 2028.",
+      "spine": {
+        "file": "fpnc_payment_lines_2021-2026.csv",
+        "rows": 50528,
+        "entity": "one 4-weekly free personal or nursing care payment line for one self-funding care home resident",
+        "grain": "self-funding resident x payment component x 4-weekly payment period",
+        "source": "synthetic"
+      },
+      "deliverables": [
+        "care_home_funding_forecast_2027-28.xlsx",
+        "care_home_costs_by_locality.png"
+      ],
+      "architecture": "v2 round 2",
+      "drawn": "2026-10-14",
+      "fate": "built to stage 3 on 2026-10-14 and sent back by the determinism judge the same day (NOT_DETERMINISTIC, margin_or_boundary_fragility): the decisive step, the 5 April 2027 capital-limit rise, was sized from one past event (8 conversions on 6 April 2026), the golden sat 2.7 to 4.0 residents from its rounding edges, and the pull-forward construction (4.81 and 6.73 weeks, a clock shift for the earlier pool) was one bespoke choice among several that land on other tens; the author re-rooted the slot to architecture 3, the last"
+    },
     {
       "architecture": "v2 round 1",
       "drawn": "2026-10-11",
@@ -188,20 +248,6 @@
       ]
     }
   ],
-  "notes": "Re-root drawn 2026-10-11 after architecture 1 was spent at hardening loop 1 (design note, Hardening loop 1, on paper); architecture 1's identity is in lineage with its fate. Coding: decisive gap time (the transfer history describes past self-funding pools, the forecast bets on a pool whose time-since-admission mix the window never saw), pattern none with G14 decisive (does the pooled transfer rate apply to this pool), Gate G method_or_model_selection (the transfer forecasting method). The pattern-E codings collided with spent signatures (task117, task37, task44, task97; task31, task56, task76) and were not used. Forum committee_or_panel is the integration joint board. Paper design 2026-10-11 (precut exit 0): the call is the four 2027-28 quarter-end counts; the ask is the average assessed contribution and net weekly cost by the home's locality and care type on 31 December 2026 with a chart on it, so the chart deliverable is care_home_costs_by_locality.png and not a chart of the call; the nursing split of the call was dropped (a care-type-change fork on a forecast). Built 2026-10-12 (stage 3, world seed 13494): golden 759.07, 770.52, 780.08 and 788.96 against the default's 742.6, 742.0, 741.1 and 740.3; the ask's cost clause brought back to the ask sheet's words (the average weekly cost) at the build. Stage 4 2026-10-12: the leak reader clean on the main call, the judge DETERMINISTIC and APPROVE; one realism pass (placement and assessment numbers reissued, one NIL label, the definitions' version table and the extract notes' row counts removed), no graded figure moved. Round 2 (2026-10-14, after the 10/10 audit): the card edited in place (the draw date, pairing, world and people kept); the round 1 decisive step moved into lineage as 'v2 round 1'. Decisive step now the 5 April 2027 rise in the upper capital limit, sized from the 6 April 2026 rise (stump_strategy forecast_method_backtest, Gate G forecasting, G13 decisive); the hazard by months since admission is the default path. Asks: the average weekly fee and the net weekly cost by the home's locality, primary device the case system's interim 2026-27 fee, the placement's locality filed as the team holding the case. Forum recoded at round 2 from committee_or_panel to executive_team: task133's round 2 redraw took committee_or_panel and sits before task134 in draw order; the care home line's figures are agreed by the partnership's senior management team (the chief officer and the chief finance officer) before the IJB's budget meeting, which the card's stakeholder line already names.",
-  "client_domain": "healthcare-delivery-health-economics",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:capital-limit-step-on-the-depletion-clock",
-  "layer1": [
-    "a social care case system replaced in July 2023, with client identifiers reissued, a crosswalk to the old numbers and the finance system's debtor references, and merged duplicate records that keep two debtor references",
-    "care home placements split into episodes at every change of home, weekly fee or service number, so one stay spans several register rows",
-    "permanent, interim and respite placements in one register, told apart by a placement-type code",
-    "the locality on a placement is the locality team holding the case, filed as such, not the locality the home is in",
-    "the case system's 2026-27 placement fees still at the interim uplift, its uprating run for the national rate agreed in November not yet made",
-    "4-weekly free personal and nursing care payment lines with April rate changes, hospital-absence reductions and retrospective adjustment lines",
-    "financial assessments reviewed every year, with reviews completed up to five weeks before they take effect and decisions backdated to when funding began",
-    "deaths linked from National Records of Scotland with a match status and a registration lag",
-    "care homes re-registered on a change of owner under a new service number, the old number cancelled, and some open placements not yet moved to the new number",
-    "National Care Home Contract rates by year, interim and agreed, beside the draft 2027-28 offer, and placement fees that carry supplements above the contract rate"
-  ]
+  "notes": "Re-root drawn 2026-10-14 (architecture 3, the slot's last) after architecture 2's round 2 was sent back by the determinism judge. Coding: decisive gap population (the lots that will actually yield homes, and the building each yields, against every lot's zoned allowance), time second (the order's allowance is one the history never saw on these lots); pattern none with G14 decisive (a past rezoning's take-up does not apply to a pool whose best-paying building and feasibility differ), G1 (the unit of yield is the best-paying building's homes, not the allowance), G13 (the forward window holds a zoning the record never had). Strategy composition_mix: the yield is conditioned on a property no column names, rebuilt from the roll, the market study and the cost guide. Forum minister_or_cabinet (the minister issues the target order); forcing event statutory_or_regulatory_filing (the order's statutory date). Layer 2 pattern urban-regional-science/land-use-spatial-development-modeling/2 (zoned capacity is not likely development); the client's version pins a feasibility rule, this one files none and estimates the rate from the record.",
+  "registered": "2026-10-14T14:09:26Z"
 }
