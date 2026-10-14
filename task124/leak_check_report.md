@@ -39,3 +39,7 @@ Stump terms swept: unknown, verified, galvanized, decisive, services, district, 
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read (round 2)
+
+Q1 to Q4: none (plan 4.3 states the method's shape, not which data estimates the share; the plan's priority order, the unit costs and the $25.4M are inputs; the field notes and code list are ordinary documentation; no file states a cost, a finish year or a schedule). Q5: plan 5.3 with 4.2 to 4.4 and 5.2; the reader's literal execution took era hit rates from the verified no-tap-card lines (0.85, 0.70, 0.22) and filed RZ-06 in 2042: the default path, so the stump held; it read the gap to the golden as a determinism risk (the estimator's sample is open by design; the judge to rule). Q6: an analytical choice (how the Lead Status Unknown share is estimated). REVIEW lines: all harmless (the plan's call-word match is vocabulary, its candidate list is the priority order, the unit cost schedule's zones are inputs). Realism: none found. Readings: paid per full replacement (base, extras, change orders); quarter by UTC or Eastern (the progress report states Eastern); RECLOSED rows; signed agreements with tracker E-SIGNED rows, the zone source and WITHDRAWN rows; expected counts rounded to ten.

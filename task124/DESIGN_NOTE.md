@@ -235,6 +235,7 @@ inside the deadline.
 | SF16 | the lines plan 4.3's share is expected among | the district's Lead Status Unknown lines of the era, all fourteen zones | the twelve plan zones only; each zone at its own lines' mix | the same twelve finish years; the same call (asserted) | plan 4.3's words ("the district's Lead Status Unknown lines of its construction era") |
 | SF17 | the result a verified line found | its first verification's result, a line found lead or GRR and since replaced counted as found | the inventory's current class (a replaced line read as non-lead) | 2034 (asserted) | the field notes: REPLACED is found lead or GRR and replaced in full |
 | SF18 | the cards that show a main's kind | every tap card on the main | only cards on lines built before 1989 with a known year | 2037 | same call: the same kind for every main, and every unknown line's main carries such a card (asserted) |
+| SF19 | the rounding path of the intermediate quantities (the era shares, the expected lines, the running total) | carried unrounded; the prompt's rounding applies to the reported figures only | the era shares rounded to two decimals (0.39, 0.27, 0.07) before they are applied | 2037, the same twelve finish years; lines move one step in RZ-04, RZ-10 and RZ-06, costs in RZ-04, RZ-12, RZ-08, RZ-10 and RZ-06, the total to $267.9 million (asserted); three decimals move nothing (M26) | same call; for the ask cells, the prompt's one closing rounding sentence ("Round lines to the nearest ten, zone costs to the nearest $100,000 and the 2026 payments to the nearest dollar.") names the reported figures and no share, so a literal reader carries the shares unrounded; the golden is that path (asserted) |
 
 ## Ladder
 
@@ -287,7 +288,7 @@ Figures as built, asserted in `generator/checks.py` from the shipped files and r
 | 7 | Weighting | lines unweighted within a kind of main | C1: by era, by route and by decade the kind shares agree (M11, M12) |
 | 8 | Window length | every verification on file | C1: dropping the legacy rows, a 2023-on window and 2026 alone keep the twelve finish years (M17) |
 | 9 | Boundary inclusivity | eras before 1930, 1930 to 1949, 1950 to 1988; 1989 on non-lead | pinned (plan 4.4, 2.3); C1: no unknown line built in 1989 or after (M20) |
-| 10 | Rounding path | unrounded through the running total, rounded once for display | C1: whole lines first, or shares to three decimals, move no finish year and no rounded count (M15, M26) |
+| 10 | Rounding path | unrounded through the running total, rounded once for display | C1: whole lines first, or shares to three decimals, move no finish year and no rounded count (M15, M26); shares to two decimals keep the call and move three zone line counts and five zone costs by one step, closed by the prompt's closing rounding sentence (SF19) |
 | 11 | Tie-break | none needed | C1 |
 | 12 | Maturity and censoring | a dig's result is final | C1: re-verifications agree (M19) |
 | 13 | Order of operations | kind shares, era shares, zone costs, running total | C1 |
@@ -316,7 +317,7 @@ unknown lines do over the eras, so the share expected among the unknown lines is
 mix of mains: 0.389, 0.268, 0.074. Why the careful computation still lands wrong: every era-wide rate (every
 verification 2042, the mains verified whole 2040, the tap cards 2039, each with or without the lead already found) is
 a correct rate for lines that sit on different mains; every literal reading of the prompt's and the plan's terms lands
-on 2037 once the share is built within each kind of main (SF1 to SF18), and the easy answers come only from easier
+on 2037 once the share is built within each kind of main (SF1 to SF19), and the easy answers come only from easier
 estimators on the same estimand.
 
 ## Oracles
@@ -467,8 +468,8 @@ read as they did, and every term keeps its meaning under the new world.
 ## Build record
 
 Round 2, stage 3, 2026-10-14. `python3 task124/generator/build.py` builds the pack into `target/`, the goldens into
-`golden/`, `metadata.json` and `generator/figures.json`, runs `generator/checks.py` (134 assertions, 0 failed: G1 to
-G9, RS1 to RS9 the realism sweep, S1 to S6, M1 to M26, SF1 to SF18, W1 to W4, the three-rules block R1, R2, R3a, R3b
+`golden/`, `metadata.json` and `generator/figures.json`, runs `generator/checks.py` (135 assertions, 0 failed: G1 to
+G9, RS1 to RS9 the realism sweep, S1 to S6, M1 to M26, SF1 to SF19, W1 to W4, the three-rules block R1, R2, R3a, R3b
 and R3c, C1 to C3, A1 to A11, B1 to B10, H1 to H6, D1, F1 to F4) and `generator/verify.py` (its own parsers: each
 main's kind from the cards, the kind shares 13 in 14 and 1 in 19, the call 2037 against the tap cards 2039, the mains
 verified whole 2040 and the default path 2042, 12 zones, 12 payments and 12 agreement counts against the golden
@@ -520,7 +521,7 @@ over `target/` and `golden/`).
   same ones (M11). Mitigation: the rates are visible only to a solver who has already split by kind (the decisive
   step), a constant renewal rate on lead streets is the world's own mechanism, and the cell sizes differ (19 to 1,176).
 - **`figures_check.py`:** exit 0 (83 figures in blocks 1 to 4, none absent from `figures.json`).
-- **`precut.py`:** exit 0 (49 checks, 0 FAIL, 0 WARN, 18 fork rows); voice-check PASS on the unchanged prompt.
+- **`precut.py`:** exit 0 (49 checks, 0 FAIL, 0 WARN, 19 fork rows); voice-check PASS on the unchanged prompt.
 - **`guard.py`:** validate 169 cards, 0 invalid; heart WARN (`driver.near` 0.16 against this slot's own v5 lineage,
   the remainder accounting this round replaces; `test.same_driver_older` differentiated against task132), no BLOCK;
   surface exit 0, two pairs promoted on card axes, task125 (the same decisive generator G6, back to back) and task132
@@ -563,11 +564,26 @@ container audit clean. Each REVIEW line:
   ranking on finish year or cost. The unit cost schedule names 8 zones beside unit costs (prices only); the progress
   report and the change order log name the three contractors beside counts and change order amounts (no cost per
   replacement, no zone ranking). Harmless.
-- The reader (questions 1 to 6) is the main session's at stage 4.
+- The reader, stage 4 (appended to `leak_check_report.md`): no decisive-step sentence, no ranking or helping file, no
+  answer-like figure; its literal execution of plan 4.3 took era shares from the verified no-tap-card lines and filed
+  2042, the default path; question 6 an analytical choice. Its REVIEW verdicts all harmless, no realism tell.
 
 ## Pre-ship check
 
-Round 2: written at stage 4 by the main session.
+Round 2, stage 5, 2026-10-14. The judge (one isolated thread on the round-2 cut): DETERMINISTIC, APPROVE, every
+graded figure reproduced (`determinism_check_report_round2.md`). Its residual risks, disposed with no pack or figure
+moving (`freeze.py check --mode determinism` PASS, `target/`, `golden/`, `figures.json` and `metadata.json`
+byte-identical to the stage-3 cut): the unnamed estimator in plan 4.3 is method selection the data forces (SF15, no
+change); the share rounding path is row SF19 (the prompt's closing rounding sentence names the reported figures and no
+share; two-decimal shares keep the call and move three zone line counts and five zone costs one step, asserted); the
+era-level application and the agreement count's withdrawn-form rule are one clause each in steps 4 and 6 of the
+write-up, no new figure. The 10/10 rules re-read against the built pack: the decisive step is still analytical (each
+unknown line's kind of main read from the tap cards on its main, the within-kind share carried to the unknown lines'
+own mix; the reader and the judge both rate it so), and the mess is still only Layer 1 (crosswalk padding, result
+codes, re-verifications, date formats, zero years, the ask files' devices), none of it moving the call (R2). Gates on
+the final rebuild: checks 135/0, verify green, two builds byte-identical, `figures_check.py` 0, `precut.py` 0 (19 fork
+rows), voice-check 0, `leak.py --asof 2027-01-11` REVIEW (answered above), surface 0, heart WARN (as at stage 3),
+validate 169/0, freeze PASS; `target.zip` 17 members, each byte-identical to `target/`.
 
 ## Tried and rejected
 
@@ -713,3 +729,4 @@ Round 2: written at stage 4 by the main session.
 - Round 2 stage 3, the board paper's "the district laid the services on a main together, in one material": lead and
   GRR share a main and renewals put copper cards on lead streets, so the sentence was a rule the record does not obey
   (H6); it now says the cards that survive on a main show what its lines without a card are likely to be.
+- Ship, round 2, the judge's optional prompt pin (share rounding to three decimals or none): the prompt's closing sentence already names only the reported figures, so the literal reading carries the shares unrounded; recorded as SF19 and asserted, the prompt left unchanged.

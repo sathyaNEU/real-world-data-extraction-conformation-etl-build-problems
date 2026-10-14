@@ -576,6 +576,33 @@ def run(target, golden, world=None, meta_path=None):
     ok("M26 the unknown-line shares rounded to three decimals keep every finish year and every rounded line count",
        finish_list(z3d) == golden_years and
        [round_to(x, 10) for x in z3d.replacements] == [round_to(x, 10) for x in z.replacements])
+    # SF19: the rounding path. The prompt's one rounding sentence names the reported figures (lines, zone costs, the
+    # 2026 payments) and no share, so a literal reader carries the era shares unrounded; the golden is that path.
+    task_root = os.path.dirname(os.path.abspath(target))
+    prompt_txt = open(os.path.join(task_root, "prompt.txt"), encoding="utf-8").read().strip()
+    figs = json.load(open(os.path.join(task_root, "generator", "figures.json"), encoding="utf-8"))
+    closing = prompt_txt.rsplit(". ", 1)[-1]
+    z2d = AN.zone_costs(rem, {e: round(pu[e], 2) for e in range(3)}, ap, prices, mob)
+    lines_moved = [a.zone for a, b in zip(z.itertuples(), z2d.itertuples())
+                   if round_to(a.replacements, 10) != round_to(b.replacements, 10)]
+    costs_moved = [a.zone for a, b in zip(z.itertuples(), z2d.itertuples())
+                   if round_to(a.cost, 100_000) != round_to(b.cost, 100_000)]
+    unrounded_is_golden = all(
+        figs["zones"][a.zone]["lead_and_grr_to_replace"] == "{:,}".format(round_to(a.replacements, 10)) and
+        figs["zones"][a.zone]["plan_cost"] == "{:,}".format(round_to(a.cost, 100_000)) and
+        figs["zones"][a.zone]["finish_year"] == int(a.finish_year) for a in z.itertuples()) and \
+        figs["total_plan_cost_million"] == "%.1f" % (round_to(z.cum_cost.iloc[-1], 100_000) / 1e6)
+    ok("SF19 rounding path: the prompt's closing sentence rounds the reported lines, zone costs and payments and no "
+       "share, the golden carries the era shares unrounded; shares rounded to two decimals keep every finish year and "
+       "the call but move lines in RZ-04, RZ-10 and RZ-06 and costs in RZ-04, RZ-12, RZ-08, RZ-10 and RZ-06 by one "
+       "step and the total to 267.9",
+       closing == "Round lines to the nearest ten, zone costs to the nearest $100,000 and the 2026 payments to the "
+                  "nearest dollar." and not re.search(r"share|decimal|per cent|%", closing, re.I) and
+       unrounded_is_golden and finish_list(z2d) == golden_years and
+       lines_moved == ["RZ-04", "RZ-10", "RZ-06"] and
+       costs_moved == ["RZ-04", "RZ-12", "RZ-08", "RZ-10", "RZ-06"] and
+       "%.1f" % (round_to(z2d.cum_cost.iloc[-1], 100_000) / 1e6) == "267.9",
+       (closing, unrounded_is_golden, finish_list(z2d), lines_moved, costs_moved, z2d.cum_cost.iloc[-1]))
     if world is not None:
         lines, ev = world["lines"], world["ev"]
         sweeps = set(world["sweeps"])
