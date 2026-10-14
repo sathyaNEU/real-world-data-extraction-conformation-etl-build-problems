@@ -23,6 +23,7 @@ SOURCES = {
     K.CHANGE_ORDERS: "Engineering change order log, 2026 replacement contracts",
     K.CONTRACTS: "Purchasing contract register: the 2026 replacement contracts and their vendor records",
     K.AGREEMENTS: "Right-of-entry agreement forms on lines open in the plan, 2022 to January 2027",
+    K.OUTREACH: "LSLR programme office outreach tracker: letters, portal invitations and the portal's status by line",
     K.TAP_SAMPLES: "Lead and copper compliance samples at tier 1 sites, 2025 and 2026",
     K.METER_EXCHANGES: "Automated meter exchanges, April 2023 to December 2025",
 }

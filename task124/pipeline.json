@@ -1,24 +1,24 @@
 {
   "task": "task124",
   "owner": "sathya8571",
-  "status": "SHIPPED",
+  "status": "BUILD",
   "domain": "energy-systems-utilities",
   "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-13",
-  "stump": "A competent solver joins the verification log to the inventory through the migration crosswalk, keeps the lines that had no tap card record, prices each zone's unknown lines at the share found lead or GRR in each construction era across every verification (0.763, 0.585 and 0.217) and files the plan as missing the deadline, its last zone finished in 2040; the step that lands it there is pricing the lines still unknown at the share found where something sent a crew, and the solver who sees the selection and takes the shares on the 78 main segments verified whole (0.556, 0.316 and 0.083) still lands past the deadline, in 2038, because those are the shares across every line of the era with no tap card while the unknown lines are what the targeted visits left: the whole-segment share of the era's lines less the lead the visits already found, over the lines still unknown, is 0.497, 0.279 and 0.075, the plan costs $274.1 million rather than $284.4 million (or $347.2 million on the default path), and the last zone is finished in 2037, inside the deadline.",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-14",
+  "stump": "A competent solver joins the verification log to the inventory through the migration crosswalk, keeps the verified lines with no tap card and prices each zone's unknown lines at the share found lead or GRR in each construction era (0.852, 0.703 and 0.225), filing the plan as missing the deadline with its last zone finished in 2042; the step that lands it there is carrying an era-wide rate to lines that sit on other streets, and the careful solver still misses the deadline wherever it takes its era-wide rate, on the 78 main segments verified whole (2040, with or without the lead already found taken out) or on the share of tap cards that read lead or galvanized (2039), because every one of those samples sits on mains whose cards read lead or galvanized far more often than the unknown lines do (91, 98 and 67 per cent of them before 1930 against 38 per cent of the unknown lines); a service line takes its main's material, which the tap cards on the other services of its main record, and within each kind of main every verification route returns the same share, 13 in 14 on lead or galvanized mains and 1 in 19 on copper or plastic ones, so the unknown lines carry 0.389, 0.268 and 0.074, the plan costs $268.3 million over 10.56 programme years and the last zone is finished in 2037, inside the deadline.",
   "architecture": 2,
-  "loops": 1,
+  "loops": 2,
   "precut": {
     "exit": 0,
-    "date": "2026-10-13",
-    "checks": "49 checks, 0 FAIL, 0 WARN (17 fork rows)"
+    "date": "2026-10-14",
+    "checks": "49 checks, 0 FAIL, 0 WARN (18 fork rows)"
   },
   "three_rules": {
-    "domain": "pass (a water utility's estimate of the lead or GRR share among its Lead Status Unknown service lines, from the one sample that did not choose its lines, corrected for what targeted verification took out of the unknown pool)",
-    "layers": "pass (Layer 1: the migration crosswalk, field codes, re-verifications, assessor years, REPLACED lines; Layer 2: estimand identification under selection, the depleted pool)",
-    "decisive_step": "analytical (the share among the unknown lines is the whole-segment expectation less what the verifications found, over the lines left; every estimator carrying a measured rate straight to the unknown lines files 2038 or later)"
+    "domain": "pass (a water utility's estimate of the lead or GRR share among its Lead Status Unknown service lines, made the way inventory practice infers an unknown service from the cards of the services laid with it on the same main, transported from verification samples drawn street by street toward lead to the unknown lines' own mix of mains)",
+    "layers": "pass (Layer 1: the migration crosswalk and its padding, route-specific result codes, re-verifications and two date formats, assessor zero years, and the ask paths' exports; Layer 2: estimand identification under a shifted mix of mains, the share stable only within the kind of main)",
+    "decisive_step": "analytical (each unknown line's kind of main read from the tap cards on the other services of its main, the share within each kind carried to the unknown lines' own mix; every era-wide rate, the every-verification share 2042, the mains verified whole 2040 and the tap cards 2039, misses the deadline, the nearest 1.99 programme years past; asserted R1 to R3c in checks.py)"
   },
   "lineage": [
     {
@@ -64,19 +64,21 @@
   ],
   "reroot": "done 2026-10-12: architecture 2 drawn in Forecasting & Predictive Modeling (energy-systems-utilities, asset-condition-maintenance: Hollins Ford Regional Water District's lead service line replacement schedule)",
   "leak": {
-    "leak_py": "REVIEW 2026-10-13 on the loop-1 cut (--asof 2027-01-11), no LEAK: sweeps 3, 4 and 6 answered in the design note's build record",
-    "reader": "loop-1 cut: no decisive-step sentence, ranking, helping file or answer-like figure; plan 4.3 read as the share among the unverified lines (the golden's estimand); its own execution carried a sample's shares straight to the unknown lines and filed 2039 (the whole-segment rung). Re-read on the final prompt (the first ask's 'expect to replace'): clean; ask readings are the asks' designed devices. Realism tells ruled in the leak report."
+    "leak_py": "REVIEW 2026-10-14 on the round-2 cut (--asof 2027-01-11), no LEAK: sweeps 3, 4 and 6 answered in the design note's leak review",
+    "reader": "",
+    "previous": "loop-1 cut: no decisive-step sentence, ranking, helping file or answer-like figure; plan 4.3 read as the share among the unverified lines (the golden's estimand); its own execution carried a sample's shares straight to the unknown lines and filed 2039 (the whole-segment rung). Re-read on the final prompt (the first ask's 'expect to replace'): clean; ask readings are the asks' designed devices. Realism tells ruled in the leak report."
   },
   "duplicate_check": {
-    "heart": "BLOCK on ban.pattern alone (G14 against task121 v3, a retired re-root drawn later on 2026-10-12 whose lower number sorts it first; an ordering tie, recorded in the design note), WARN driver.near against this slot's loop-0 driver (0.20)",
-    "nearest": "surface 0 promoted, nearest task111 at 0.100"
+    "heart": "WARN 2026-10-14 (driver.near 0.16 against this slot's own v5 lineage; test.same_driver_older differentiated against task132), no BLOCK",
+    "nearest": "this slot's v5 0.16, v4 0.07; task107 v1, task229 v2, task116 v3 0.06",
+    "surface": "exit 0, two pairs promoted on card axes (task125 G6 back to back, task132 gap, generator and Gate G), each differentiated on the card; left for the author's /clone-check; personas as drawn",
+    "validate": "169 cards, 0 invalid"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (loop 1, one isolated thread on the loop-1 cut)",
-    "disposition": "APPROVE; its optional point taken (the first ask reads 'lines we expect to replace')",
-    "report": "task124/determinism_check_report_loop1.md (loop 0: determinism_check_report.md, _pass2.md)",
-    "gate_g": "statistical_rigor (the note's forecasting), analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
+    "verdict": "",
+    "disposition": "",
+    "report": "",
+    "previous": "loop 1: DETERMINISTIC (loop 1, one isolated thread on the loop-1 cut), APPROVE (task124/determinism_check_report_loop1.md); superseded by round 2"
   },
   "returned": [
     {
@@ -84,9 +86,15 @@
       "portal": "call landed: the top response filed 2037 (the whole-segment shares, announced by the field notes and separated by coverage)",
       "repair": "design",
       "commit": "the RESHIPPED (task124) commit of 2026-10-13"
+    },
+    {
+      "date": "2026-10-14",
+      "portal": "10/10 audit: COMPLIANT_WEAK (round 2 brief)",
+      "repair": "design",
+      "commit": "PAUSED (task124): round 2 redesign, stage 3 green, waiting on the reader and judge"
     }
   ],
-  "resume": "shipped; next event is the author's portal result",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": "2026-10-13",
   "portal": null,
@@ -94,15 +102,25 @@
   "portal_status": "",
   "portal_status_date": "",
   "build": {
-    "date": "2026-10-13",
-    "checks": "114 assertions, 0 failed (SF1 to SF17, S1 to S6, M1 to M26, W1 to W4, A1 to A11, B1 to B7, R1 to R9, F1 to F4)",
-    "verify": "green (own parsers; the accounting district-wide and off the whole segments; call 2037, whole-segment rung 2038, default 2040; 12 zones, 12 payments, 12 agreement counts)",
+    "date": "2026-10-14",
+    "checks": "134 assertions, 0 failed (G1 to G9, RS1 to RS9, S1 to S6, M1 to M26, SF1 to SF18, W1 to W4, R1 to R3c, C1 to C3, A1 to A11, B1 to B10, H1 to H6, D1, F1 to F4)",
+    "verify": "green (own parsers; the kind shares 13 in 14 and 1 in 19; call 2037, tap cards 2039, mains verified whole 2040, default 2042; 12 zones, 12 payments, 12 agreement counts)",
     "byte_identical": true,
-    "input_gates": "16 files, 5 formats, 87,410-row spine, 2 distractors (deletion moves nothing)",
-    "figures_check": "exit 0 (84 figures)",
-    "asks_frozen": "every ask file byte-identical to the loop-0 cut; payments, completions and agreement counts equal the shipped figures.json",
+    "input_gates": "17 files, 5 formats, 87,410-row spine, 2 distractors (deletion moves nothing)",
+    "figures_check": "exit 0 (83 figures)",
     "house_fixes": "pass, recorded in the design note's build record",
-    "answer": "last zone RZ-10 Lakeview Terrace finished 2037 (whole-segment rung 2038, default path 2040); $274.1 million over 10.79 programme years at $25.4 million a year"
+    "answer": "last zone RZ-06 Wexley finished 2037 (tap cards 2039, mains verified whole 2040, default path 2042); $268.3 million over 10.56 programme years at $25.4 million a year"
   },
-  "target_zip": "16 members, 2,443,128 bytes, sha256 44b98dea681cff3b, each byte-identical to target/"
+  "target_zip": "17 members, 2,721,030 bytes, sha256 72236a00a38488e2, each byte-identical to target/",
+  "rounds": [
+    {
+      "round": 2,
+      "date": "2026-10-14",
+      "trigger": "10/10 audit COMPLIANT_WEAK: loop 1 stacked a rung above the solved whole-segment step; the field notes' 'two ways' paragraph handed over the whole-segment rung; the call rested on one 0.2-year step; plan 4.3 and 6.1 sat close to the remainder estimator; the swap held only on the estimation sample; Ask B's form zone fell to an inventory join",
+      "redesign": "decisive step replaced from scratch in the same world: the kind of main an unknown line taps, read from the tap cards on the other services of its main; the whole-segment shares and the remainder accounting are now wrong rivals (2040), not rungs; field notes' verification account cut; Ask B's new primary device: portal forms the agreement system's import refused, visible only in the programme office's outreach tracker (new file)",
+      "answer": "RZ-06 Wexley last, finished 2037; $268.3 million over 10.56 programme years; shares 0.389, 0.268, 0.074",
+      "rivals": "every verification 2042 (+4.65 years), logistic and reweighting 2042, mains verified whole 2040 (+3.30), tap cards 2039 (+2.27), tap cards less what was found 2039 (+1.99, the nearest)",
+      "pair_ceiling": 33.5
+    }
+  ]
 }

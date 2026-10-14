@@ -25,20 +25,47 @@ def round_to(x, step):
     return int(math.floor(x / step + 0.5) * step)
 
 
+def records_shares(inv):
+    """Share of the tap card lines built before 1989 whose card reads LEAD or GALV, by era."""
+    t = inv[(inv.record != "") & (inv.year_built > 0) & (inv.year_built < K.AGE_RULE_YEAR)]
+    e = t.year_built.map(K.era_of)
+    return {k: float(t[e == k].record.isin(["LEAD", "GALV"]).mean()) for k in range(3)}
+
+
 def compute(target):
     inv, ver = L.inventory(target), L.verifications(target)
     prices, mob = L.unit_costs(target)
     ap = L.appropriation(target)
     s = AN.sample(inv, ver)
-    whole = s.coverage >= 0.999
-    p = AN.shares(s, whole)
-    q = AN.unknown_shares(inv, ver, p)
-    pu = {e: q[e][0] for e in range(3)}
+    cls = AN.street_class(inv)
+    s["sc"] = s.segment.map(cls)
+    sh = AN.class_shares(s, cls)
+    ub = AN.unknown_by_class(inv, cls)
+    pu = AN.class_era_shares(inv, s, cls)
     rem = AN.remaining(inv)
     z = AN.zone_costs(rem, pu, ap, prices, mob)
-    zc = AN.zone_costs(rem, p, ap, prices, mob)
+    whole = s.coverage >= 0.999
     p0 = AN.shares(s)
     z0 = AN.zone_costs(rem, p0, ap, prices, mob)
+    pw = AN.shares(s, whole)
+    zw = AN.zone_costs(rem, pw, ap, prices, mob)
+    prec = records_shares(inv)
+    zr = AN.zone_costs(rem, prec, ap, prices, mob)
+    # the evidence: verified no-tap-card lines by the class of their main, by era and by route
+    ev = {}
+    for k in ("LG", "C"):
+        for e in range(3):
+            for name, m in (("whole", whole), ("other", ~whole)):
+                t = s[(s.sc == k) & (s.era == e) & m]
+                ev[(k, e, name)] = (len(t), int(t.hit.sum()))
+    unk = inv[inv.cls == "LEAD STATUS UNKNOWN"]
+    unk_e = unk.year_built.map(K.era_of)
+    car = inv[(inv.record != "") & (inv.year_built > 0) & (inv.year_built < K.AGE_RULE_YEAR)]
+    car_e = car.year_built.map(K.era_of)
+    mix = {"unknown": {e: float((unk[unk_e == e].segment.map(cls) == "LG").mean()) for e in range(3)},
+           "verified": {e: float((s[s.era == e].sc == "LG").mean()) for e in range(3)},
+           "whole": {e: float((s[whole & (s.era == e)].sc == "LG").mean()) for e in range(3)},
+           "carded": {e: float((car[car_e == e].segment.map(cls) == "LG").mean()) for e in range(3)}}
     # ask A
     c = L.completions(target)
     co = L.change_orders(target)
@@ -58,24 +85,31 @@ def compute(target):
             n = int(m.sum())
             pay[(con, qq)] = (float(latest.paid[m].sum()) + sum(co_q.get((con, qq), []))) / n
             n_done[(con, qq)] = n
-    # ask B
+    # ask B: a line has a signed agreement when the agreement system holds a signed form for it, or the portal shows
+    # the owner's e-signed form and the agreement system holds no form for the line at all
     ag = L.agreements(target)
+    tr = L.outreach(target)
     zone_of = dict(zip(inv.sl_id, inv.zone))
-    ok = ag[ag.status == "SIGNED"]
-    agree = {zz: int(ok[ok.line.map(zone_of) == zz].line.nunique()) for zz in K.PLAN_ORDER}
-    era_n = {e: int((s[whole].era == e).sum()) for e in range(3)}
-    era_hit = {e: int(s[whole & (s.era == e)].hit.sum()) for e in range(3)}
+    signed = set(ag[ag.status == "SIGNED"].line)
+    held = set(ag.line)
+    portal_only = set(tr[tr.portal_status == "E-SIGNED"].sl_id) - held
+    have = signed | portal_only
+    agree = {zz: sum(1 for x in have if zone_of[x] == zz) for zz in K.PLAN_ORDER}
     cov = AN.coverage(inv, ver)
-    return dict(s=s, whole=whole, p=p, q=q, pu=pu, p0=p0, z=z, zc=zc, z0=z0, ap=ap, pay=pay, n_done=n_done,
-                agree=agree, era_n=era_n, era_hit=era_hit, n_segments=int((cov >= 0.999).sum()), n_sample=len(s),
-                max_other_cov=float(cov[cov < 0.999].max()), mob=mob)
+    return dict(s=s, whole=whole, cls=cls, sh=sh, ub=ub, pu=pu, z=z, p0=p0, z0=z0, pw=pw, zw=zw, prec=prec, zr=zr,
+                ev=ev, mix=mix, ap=ap, pay=pay, n_done=n_done, agree=agree, portal_only=len(portal_only),
+                n_segments=int((cov >= 0.999).sum()), n_sample=len(s), mob=mob, prices=prices)
+
+
+def _pct(x):
+    return "%d" % int(math.floor(100 * x + 0.5))
 
 
 def figures(F):
     z = F["z"]
     last = z.iloc[-1]
     contractor = {x[0]: x[1] for x in K.CONTRACTS_2026}
-    q = F["q"]
+    ub, sh = F["ub"], F["sh"]
     out = {
         "call": {"last_zone": last.zone, "last_zone_name": K.ZONE_NAME[last.zone],
                  "last_finish_year": int(last.finish_year), "meets_deadline": bool(z.finish_year.max() <= 2037),
@@ -84,23 +118,31 @@ def figures(F):
         "total_plan_cost_million": "%.1f" % (z.cum_cost.iloc[-1] / 1e6),
         "programme_years": "%.2f" % z.years.iloc[-1],
         "era_shares_lead_status_unknown": {ERA_LABEL[e]: "%.3f" % F["pu"][e] for e in range(3)},
-        "era_shares_segments_verified_whole": {ERA_LABEL[e]: "%.3f" % F["p"][e] for e in range(3)},
-        "segments_verified_whole": F["n_segments"],
-        "era_accounting": {ERA_LABEL[e]: {
-            "no_tap_card_lines": "{:,}".format(q[e][1]),
-            "expected_lead_or_grr": "{:,}".format(int(math.floor(q[e][1] * F["p"][e] + 0.5))),
-            "verified": "{:,}".format(q[e][2]), "found_lead_or_grr": "{:,}".format(q[e][3]),
-            "lead_status_unknown": "{:,}".format(q[e][4]),
-            "expected_among_unknown": "{:,}".format(int(math.floor(q[e][1] * F["p"][e] - q[e][3] + 0.5)))}
-            for e in range(3)},
+        "class_shares": {"lead_or_galvanized_cards": "13 in 14", "copper_or_plastic_cards": "1 in 19",
+                         "lead_or_galvanized_cards_decimal": "%.3f" % sh["LG"],
+                         "copper_or_plastic_cards_decimal": "%.3f" % sh["C"]},
+        "unknown_by_class": {ERA_LABEL[e]: {"on_lead_or_galvanized_mains": "{:,}".format(ub[e]["LG"]),
+                                            "on_copper_or_plastic_mains": "{:,}".format(ub[e]["C"]),
+                                            "lead_status_unknown": "{:,}".format(ub[e]["LG"] + ub[e]["C"]),
+                                            "expected_lead_or_grr": "{:,}".format(int(math.floor(
+                                                ub[e]["LG"] * sh["LG"] + ub[e]["C"] * sh["C"] + 0.5)))}
+                             for e in range(3)},
+        "share_on_lead_or_galvanized_mains_pct": {k: {ERA_LABEL[e]: _pct(F["mix"][k][e]) for e in range(3)}
+                                                  for k in ("unknown", "verified", "whole", "carded")},
         "verified_no_tap_card_lines": "{:,}".format(F["n_sample"]),
+        "segments_verified_whole": F["n_segments"],
         "mobilisation": "{:,}".format(int(F["mob"])),
         "zones": {},
-        "whole_segment_shares_path": {"last_finish_year": int(F["zc"].finish_year.max()),
-                                      "total_plan_cost_million": "%.1f" % (F["zc"].cum_cost.iloc[-1] / 1e6)},
         "default_path": {"era_shares_every_verification": {ERA_LABEL[e]: "%.3f" % F["p0"][e] for e in range(3)},
                          "last_finish_year": int(F["z0"].finish_year.max()),
-                         "total_plan_cost_million": "%.1f" % (F["z0"].cum_cost.iloc[-1] / 1e6)},
+                         "total_plan_cost_million": "%.1f" % (F["z0"].cum_cost.iloc[-1] / 1e6),
+                         "programme_years": "%.2f" % F["z0"].years.iloc[-1]},
+        "whole_segment_path": {"era_shares": {ERA_LABEL[e]: "%.3f" % F["pw"][e] for e in range(3)},
+                               "last_finish_year": int(F["zw"].finish_year.max()),
+                               "total_plan_cost_million": "%.1f" % (F["zw"].cum_cost.iloc[-1] / 1e6)},
+        "tap_card_path": {"era_shares": {ERA_LABEL[e]: "%.3f" % F["prec"][e] for e in range(3)},
+                          "last_finish_year": int(F["zr"].finish_year.max()),
+                          "total_plan_cost_million": "%.1f" % (F["zr"].cum_cost.iloc[-1] / 1e6)},
         "payments_2026_per_full_replacement": {},
         "full_replacements_2026": {},
         "agreements_signed": {zz: F["agree"][zz] for zz in K.PLAN_ORDER},
@@ -190,38 +232,56 @@ def write_xlsx(path, F, fig):
     ws2 = wb.create_sheet("Unknown-line shares")
     ws2["A1"] = "Share of the district's Lead Status Unknown lines expected to prove lead or GRR, by construction era"
     ws2["A1"].font = Font(bold=True, size=12)
-    ws2["A2"] = ("Lines built before 1989 with no usable tap card, all fourteen zones. Each is expected to prove lead or "
-                 "GRR at the share found on the %d main segments where every service line has been verified (exposed "
-                 "together when the main was replaced, 2023 to 2026); the field verifications have already found part "
-                 "of that number, and the Lead Status Unknown lines carry the rest." % F["n_segments"])
+    ws2["A2"] = ("All fourteen zones. Each unknown line is costed at the rate found on the verified lines with no tap card "
+                 "on mains of the same kind: mains whose tap cards read lead or galvanized, and mains whose cards read "
+                 "only copper or plastic.")
     ws2["A2"].font = Font(italic=True, size=9)
-    _head(ws2, 4, ["Construction era", "Lines with no usable tap card", "Share on the segments verified whole",
-                   "Expected to prove lead or GRR", "Verified to date", "Found lead or GRR", "Lead Status Unknown",
-                   "Expected lead or GRR among them", "Share among Lead Status Unknown lines"],
-          [20, 13, 13, 13, 11, 11, 13, 14, 14])
+    _head(ws2, 4, ["Construction era", "Unknown lines on lead or galvanized mains", "Unknown lines on copper or "
+                   "plastic mains", "Lead Status Unknown lines", "Expected to prove lead or GRR",
+                   "Share among Lead Status Unknown lines"], [20, 15, 15, 14, 14, 14])
     for e in range(3):
-        acc = fig["era_accounting"][ERA_LABEL[e]]
-        row = [ERA_LABEL[e], int(acc["no_tap_card_lines"].replace(",", "")), round(F["p"][e], 3),
-               int(acc["expected_lead_or_grr"].replace(",", "")), int(acc["verified"].replace(",", "")),
-               int(acc["found_lead_or_grr"].replace(",", "")), int(acc["lead_status_unknown"].replace(",", "")),
-               int(acc["expected_among_unknown"].replace(",", "")), round(F["pu"][e], 3)]
+        u = fig["unknown_by_class"][ERA_LABEL[e]]
+        row = [ERA_LABEL[e], int(u["on_lead_or_galvanized_mains"].replace(",", "")),
+               int(u["on_copper_or_plastic_mains"].replace(",", "")), int(u["lead_status_unknown"].replace(",", "")),
+               int(u["expected_lead_or_grr"].replace(",", "")), round(F["pu"][e], 3)]
         for j, v in enumerate(row, 1):
             cell = ws2.cell(row=5 + e, column=j, value=v)
-            cell.number_format = "0.000" if j in (3, 9) else ("#,##0" if j > 1 else "General")
-    ws2.cell(row=9, column=1, value="On the segments verified whole").font = Font(bold=True, size=9)
-    _head(ws2, 10, ["Construction era", "Lines verified", "Found lead or GRR", "Share"])
+            cell.number_format = "0.000" if j == 6 else ("#,##0" if j > 1 else "General")
+    ws2.cell(row=9, column=1, value="Verified lines with no tap card, first result").font = Font(bold=True, size=9)
+    _head(ws2, 10, ["Main's tap cards", "Construction era", "On the replaced mains: verified", "found lead or GRR",
+                    "Other verifications: verified", "found lead or GRR", "Share"])
+    r = 11
+    for k, label in (("LG", "Lead or galvanized"), ("C", "Copper or plastic only")):
+        for e in range(3):
+            nw, hw = F["ev"][(k, e, "whole")]
+            no, ho = F["ev"][(k, e, "other")]
+            row = [label, ERA_LABEL[e], nw, hw, no, ho, round((hw + ho) / (nw + no), 3) if nw + no else None]
+            for j, v in enumerate(row, 1):
+                cell = ws2.cell(row=r, column=j, value=v)
+                if j == 7:
+                    cell.number_format = "0.000"
+                elif j > 2:
+                    cell.number_format = "#,##0"
+            r += 1
+    r += 1
+    ws2.cell(row=r, column=1, value="Lines on lead or galvanized mains, per cent of each group").font = Font(bold=True,
+                                                                                                          size=9)
+    _head(ws2, r + 1, ["Construction era", "Lead Status Unknown lines", "Verified lines with no tap card",
+                       "Lines on the replaced mains", "Tap card lines"])
     for e in range(3):
-        row = [ERA_LABEL[e], F["era_n"][e], F["era_hit"][e], round(F["p"][e], 3)]
-        for j, v in enumerate(row, 1):
-            cell = ws2.cell(row=11 + e, column=j, value=v)
-            if j == 4:
-                cell.number_format = "0.000"
-    ws2.cell(row=15, column=1, value=(
-        "Every other verification on file was a visit to one line because something pointed at it (a customer report, "
-        "a sampling site, a leak on the service, the 2024 ranking), so the lines still unknown are the ones those "
-        "visits passed over. Priced at the whole-segment shares the last zone would finish in %d; at the shares across "
-        "every verification, in %d." % (fig["whole_segment_shares_path"]["last_finish_year"],
-                                         fig["default_path"]["last_finish_year"]))).font = Font(size=9)
+        mx = fig["share_on_lead_or_galvanized_mains_pct"]
+        for j, v in enumerate([ERA_LABEL[e], int(mx["unknown"][ERA_LABEL[e]]), int(mx["verified"][ERA_LABEL[e]]),
+                               int(mx["whole"][ERA_LABEL[e]]), int(mx["carded"][ERA_LABEL[e]])], 1):
+            ws2.cell(row=r + 2 + e, column=j, value=v).number_format = "0" if j > 1 else "General"
+    ws2.cell(row=r + 6, column=1, value=(
+        "The lines verified so far and the surviving tap cards sit on lead or galvanized mains far more often than the "
+        "lines still unknown, and so do the replaced mains built before 1950 (those built later are all on copper or "
+        "plastic mains), so a rate taken from any of them across a whole era misstates the unknown lines: at the "
+        "shares across every verification the plan would run to %d, at the shares on the replaced mains to %d, "
+        "and at the tap card lines' share to %d." % (
+            fig["default_path"]["last_finish_year"], fig["whole_segment_path"]["last_finish_year"],
+            fig["tap_card_path"]["last_finish_year"]))).font = Font(size=9)
+    ws2.column_dimensions["G"].width = 9
     ws2.freeze_panes = "A5"
 
     ws3 = wb.create_sheet("2026 contract payments")
@@ -245,7 +305,7 @@ def write_xlsx(path, F, fig):
         ws3.cell(row=r, column=1, value=con)
         ws3.cell(row=r, column=2, value=fig["payments_2026_per_full_replacement"][con]["contractor"])
         for j, q in enumerate(QUARTERS, 3):
-            ws3.cell(row=r, column=j, value=d["Q%d" % q])
+            ws3.cell(row=r, column=j, value=d["Q%d" % q]).number_format = "#,##0"
         r += 1
     ws3.cell(row=r + 1, column=1, value=(
         "Tri-County Underground was paid under vendor V-20877 to 12 July 2026 and V-31560 from 13 July 2026; both are "
@@ -255,8 +315,9 @@ def write_xlsx(path, F, fig):
     ws4 = wb.create_sheet("Access agreements")
     ws4["A1"] = "Service lines with a signed access agreement, by zone, 8 January 2027"
     ws4["A1"].font = Font(bold=True, size=12)
-    ws4["A2"] = ("Distinct service lines with a right-of-entry agreement signed and not withdrawn, counted in the zone "
-                 "the inventory gives the line today.")
+    ws4["A2"] = ("Distinct service lines open in the plan with a right-of-entry agreement signed and not withdrawn: "
+                 "forms in the agreement system, and forms the owner e-signed on the portal that the agreement system "
+                 "does not hold; counted in the zone the inventory gives the line today.")
     ws4["A2"].font = Font(italic=True, size=9)
     _head(ws4, 4, ["Priority", "Zone", "Zone name", "Service lines with a signed agreement"], [8, 8, 18, 16])
     for i, zz in enumerate(K.PLAN_ORDER, 1):
@@ -265,6 +326,15 @@ def write_xlsx(path, F, fig):
             if j == 4:
                 cell.number_format = "#,##0"
     ws4.freeze_panes = "A5"
+    for sheet, area, titles in ((ws, "A1:H%d" % ws.max_row, "4:4"), (ws2, "A1:G%d" % ws2.max_row, None),
+                                (ws3, "A1:F%d" % ws3.max_row, None), (ws4, "A1:D%d" % ws4.max_row, "4:4")):
+        sheet.print_area = area
+        if titles:
+            sheet.print_title_rows = titles
+        sheet.page_setup.orientation = "landscape" if sheet in (ws, ws2) else "portrait"
+        sheet.page_setup.fitToWidth = 1
+        sheet.page_setup.fitToHeight = 0
+        sheet.sheet_properties.pageSetUpPr.fitToPage = True
     wb.save(path)
     PP.normalize_ooxml(path, K.PEOPLE["programme"], K.PEOPLE["programme"], "2027-01-08T15:02:11Z",
                        "2027-01-11T22:18:40Z", excel=True)
@@ -353,32 +423,31 @@ def write_pdf(path, F, fig):
                                                                        right=(2, 3, 4))]))
     st.append(Paragraph("Lines to the nearest ten and costs to the nearest $100,000, 2027 dollars at the 2027 unit cost "
                         "schedule with one $%s mobilisation per zone." % fig["mobilisation"], D.NOTE))
-    eras = fig["era_shares_segments_verified_whole"]
     unk = fig["era_shares_lead_status_unknown"]
-    acc = fig["era_accounting"]
+    ubc = fig["unknown_by_class"]
+    mx = fig["share_on_lead_or_galvanized_mains_pct"]
     dflt = fig["default_path"]["era_shares_every_verification"]
     E0, E1, E2 = ERA_LABEL
     st.append(Paragraph("How the unknown lines are costed", D.H2))
     st.append(Paragraph(
         "Plan 4.3 carries each Lead Status Unknown line at the share of lead or GRR expected among the district's Lead "
-        "Status Unknown lines of its construction era. Three in four of the lines with no tap card that the district "
-        "has verified since 2021 were visits to one line because something pointed at it: a customer's report, a lead "
-        "sampling site, a leak on the service or the 2024 consultant ranking. The only lines verified without regard "
-        "to what they were likely to be are on the %d main segments where a water main replacement exposed every "
-        "service, and there %s of the lines built before 1930, %s of those built 1930 to 1949 and %s of those built "
-        "1950 to 1988 proved lead or GRR: the share expected across every line of its era with no tap card. Of the "
-        "%s, %s and %s such lines in the district that makes %s, %s and %s lead or GRR lines; the verifications have "
-        "found %s, %s and %s of them, so the %s, %s and %s lines still unknown, the ones the visits passed over, are "
-        "expected to hold %s, %s and %s, shares of %s, %s and %s. Priced at the whole-segment shares the same plan "
-        "would run to %d, and at the shares across every verification on file (%s, %s and %s) to %d." % (
-            F["n_segments"], eras[E0], eras[E1], eras[E2],
-            acc[E0]["no_tap_card_lines"], acc[E1]["no_tap_card_lines"], acc[E2]["no_tap_card_lines"],
-            acc[E0]["expected_lead_or_grr"], acc[E1]["expected_lead_or_grr"], acc[E2]["expected_lead_or_grr"],
-            acc[E0]["found_lead_or_grr"], acc[E1]["found_lead_or_grr"], acc[E2]["found_lead_or_grr"],
-            acc[E0]["lead_status_unknown"], acc[E1]["lead_status_unknown"], acc[E2]["lead_status_unknown"],
-            acc[E0]["expected_among_unknown"], acc[E1]["expected_among_unknown"], acc[E2]["expected_among_unknown"],
-            unk[E0], unk[E1], unk[E2], fig["whole_segment_shares_path"]["last_finish_year"],
-            dflt[E0], dflt[E1], dflt[E2], fig["default_path"]["last_finish_year"]), D.BODY))
+        "Status Unknown lines of its construction era. Services were laid with the main they tap, so the tap cards "
+        "that survive on a main show what its lines without a card are likely to be. Among the lines with no tap "
+        "card that crews have verified, 13 in 14 on mains whose cards read lead or galvanized proved lead or GRR, "
+        "and 1 in 19 on mains whose "
+        "cards read only copper or plastic; the rate is the same on the replaced mains and on single-line visits, and "
+        "in every era. The lines still unknown sit on lead or galvanized mains far less often than the lines verified "
+        "so far (%s, %s and %s per cent of the unknown lines by era, against %s, %s and %s per cent of the verified "
+        "ones), so the %s, %s and %s unknown lines are expected to hold %s, %s and %s lead or GRR lines, shares of %s, "
+        "%s and %s. Priced at the shares found across every verification on file (%s, %s and %s) the same plan would "
+        "run to %d; at the shares on the replaced mains, to %d; at the share of tap cards that read lead or galvanized, "
+        "to %d." % (
+            mx["unknown"][E0], mx["unknown"][E1], mx["unknown"][E2], mx["verified"][E0], mx["verified"][E1],
+            mx["verified"][E2], ubc[E0]["lead_status_unknown"], ubc[E1]["lead_status_unknown"],
+            ubc[E2]["lead_status_unknown"], ubc[E0]["expected_lead_or_grr"], ubc[E1]["expected_lead_or_grr"],
+            ubc[E2]["expected_lead_or_grr"], unk[E0], unk[E1], unk[E2], dflt[E0], dflt[E1], dflt[E2],
+            fig["default_path"]["last_finish_year"], fig["whole_segment_path"]["last_finish_year"],
+            fig["tap_card_path"]["last_finish_year"]), D.BODY))
     rows = [["Contract", "Contractor", "Q1", "Q2", "Q3", "Q4"]]
     for con, d in fig["payments_2026_per_full_replacement"].items():
         rows.append([con, d["contractor"]] + [d["Q%d" % q] for q in QUARTERS])
@@ -397,9 +466,10 @@ def write_pdf(path, F, fig):
     st.append(KeepTogether([
         Paragraph("Access agreements in hand", D.H2),
         D._table(rows, [0.7 * inch, 1.9 * inch, 2.0 * inch], right=(2,))]))
-    st.append(Paragraph("Distinct service lines with a right-of-entry agreement signed and not withdrawn at 8 January "
-                        "2027, in the zone the inventory gives each line under plan revision 2; some forms signed "
-                        "before the revision print a different zone.", D.NOTE))
+    st.append(Paragraph("Distinct service lines open in the plan with a right-of-entry agreement signed and not "
+                        "withdrawn at 8 January 2027, including forms owners e-signed on the portal that the agreement "
+                        "system does not hold, in the zone the inventory gives each line under plan revision 2; some "
+                        "forms signed before the revision print a different zone.", D.NOTE))
     foot = D._frame("%s  |  Board of Directors, 19 January 2027" % K.DISTRICT, "LSLR schedule 2027 to 2037")
     doc.build(st, onFirstPage=foot, onLaterPages=foot)
     PP.normalize_pdf(path, b"D:20270111161204-05'00'", b"D:20270111173518-05'00'")

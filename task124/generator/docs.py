@@ -166,18 +166,23 @@ def write_progress(path, t):
                        "December 2026. This report counts work done; it does not schedule the plan or estimate its "
                        "cost. Version 1.0." % K.PEOPLE["programme"], META)]
     story.append(Paragraph("1&nbsp;&nbsp;The year", H2))
+    all_2026 = t["replaced_by_year"].get(2026, 0)
+    if all_2026 != t["replaced_year"]:
+        done = ("replaced %s in full, %s of them under the three 2026 replacement contracts" % (
+            "{:,}".format(all_2026), "{:,}".format(t["replaced_year"])))
+    else:
+        done = "replaced %s in full under the three 2026 replacement contracts" % "{:,}".format(t["replaced_year"])
     story.append(Paragraph(
-        "District and contractor crews verified the material of %s service lines in 2026, and the three 2026 "
-        "replacement contracts completed %s full replacements. The last verification of the season was on 18 "
-        "December 2026; the 2027 season opens in April." % ("{:,}".format(t["verified_year"]),
-                                                             "{:,}".format(t["replaced_year"])), BODY))
+        "District and contractor crews verified the material of %s service lines in 2026 and %s. The last "
+        "verification of the season was on 18 December 2026; the 2027 season opens in April." % (
+            "{:,}".format(t["verified_year"]), done), BODY))
     story.append(Paragraph("2&nbsp;&nbsp;Work by quarter", H2))
     rows = [["Quarter of 2026", "Service lines verified", "Full replacements completed"]]
     for q in (1, 2, 3, 4):
         rows.append(["Q%d" % q, "{:,}".format(t["verified_q"][q]), "{:,}".format(t["replaced_q"][q])])
     story.append(_table(rows, [1.6 * inch, 1.8 * inch, 2.1 * inch], right=(1, 2)))
     story.append(Paragraph("Quarters are calendar quarters in Eastern time. A line verified in two quarters is counted in "
-                           "each. The first quarter's replacements were lines found lead in the 2025 season.", NOTE))
+                           "each. Most of the first quarter's replacements were lines found lead in the 2025 season.", NOTE))
     story.append(Paragraph("3&nbsp;&nbsp;Full replacements by year", H2))
     rows = [["Year"] + [str(y) for y in sorted(t["replaced_by_year"])],
             ["Full replacements"] + ["{:,}".format(t["replaced_by_year"][y]) for y in sorted(t["replaced_by_year"])]]
@@ -272,11 +277,10 @@ def _header(ws, row, cols):
         cell.alignment = Alignment(wrap_text=True, vertical="top")
 
 
-SYSTEM_RATES = (12_400, 2_390)
+SYSTEM_RATES = (13_400, 2_450)
 RATE_BASIS = {
     "RZ-02": "Downtown: pavement restoration and traffic control on both items",
     "RZ-04": "Long services on deep setbacks; curb stops under pavement",
-    "RZ-06": "System full replacement; dig restores sidewalk at the curb stop",
     "RZ-07": "Short services, lawn restoration; dig restores sidewalk at the curb stop",
     "RZ-08": "System full replacement; dig restores sidewalk at the curb stop",
     "RZ-09": "System full replacement; dig restores sidewalk at the curb stop",
@@ -383,12 +387,6 @@ as of 8 January 2027.
 One row per field verification of a service line's material, 4 January 2021 to 18 December 2026. A line verified
 more than once has a row for each visit.
 
-Lines come to be verified in one of two ways. When a water main is replaced under the distribution system renewal
-programme (from 2023), every service on the replaced main is exposed and its material recorded before it is
-reconnected. Every other row is a visit to a single line, raised by a customer reporting lead or galvanized pipe or
-asking for a check, a leak on the service, a lead and copper sampling site (2021 and 2022) or the 2024 consultant
-ranking of services likely to be lead (2024 and 2025).
-
 - `source`: CIS for the customer system's service orders (to 12 March 2023), WMS for the work management system
   (from 13 March 2023).
 - `wo_no`: service order (CIS) or work order (WMS) number.
@@ -445,6 +443,17 @@ Agreements on lines since replaced or verified non-lead are archived and are not
 - `zone_on_form`: the replacement zone printed on the form.
 - `status`, `status_date`: SIGNED or WITHDRAWN, and the date of that status.
 
+## {out}
+
+The programme office's outreach tracker: one row per line open in the plan (Lead, GRR or Lead Status Unknown in the
+twelve zones of plan revision 2).
+
+- `zone`: the line's replacement zone under plan revision 2.
+- `letter_1_mailed`: the date the first outreach letter for the line went to its owner.
+- `portal_invite_sent`: the date the owner was invited to the right-of-entry form on the customer portal.
+- `portal_status`, `portal_status_date`: the portal's status for the line and its date: NOT OPENED, OPENED, STARTED,
+  E-SIGNED (the owner signed the right-of-entry form on the portal) or DECLINED.
+
 ## Documents
 
 - {plan}: the replacement plan, revision 2.
@@ -457,7 +466,8 @@ Agreements on lines since replaced or verified non-lead are archived and are not
 - {tap}: lead and copper compliance samples at the tier 1 sites, 2025 and 2026, from the laboratory system.
 - {mx}: meter exchanges under the automated metering rollout, April 2023 to December 2025, from the meter shop.
 """.format(log=K.EXTRACT_LOG, inv=inv, ver=K.VERIFICATIONS, xw=K.CROSSWALK, codes=K.CODES, comp=K.COMPLETIONS,
-           con=K.CONTRACTS, co=K.CHANGE_ORDERS, ag=K.AGREEMENTS, plan=K.PLAN, cap=K.CAPITAL, uc=K.UNIT_COSTS,
+           con=K.CONTRACTS, co=K.CHANGE_ORDERS, ag=K.AGREEMENTS, out=K.OUTREACH, plan=K.PLAN, cap=K.CAPITAL,
+           uc=K.UNIT_COSTS,
            prog=K.PROGRESS, tap=K.TAP_SAMPLES, mx=K.METER_EXCHANGES)
     with open(path, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(text)

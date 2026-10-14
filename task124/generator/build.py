@@ -31,10 +31,13 @@ EXTRACT_LOG_COLS = ["file", "system_of_record", "extracted_or_issued_on", "data_
 
 def simulate():
     segs, lines, sweeps, ev, projects = W.build()
+    lines = W.lead_cards(lines)
     moved = A.redraw(segs, lines)
     lines, st, co = A.completions(lines)
     ag = A.agreements(lines, moved)
-    return dict(segs=segs, lines=lines, sweeps=sweeps, ev=ev, projects=projects, moved=moved, st=st, co=co, ag=ag)
+    tracker = A.outreach(lines, ag)
+    return dict(segs=segs, lines=lines, sweeps=sweeps, ev=ev, projects=projects, moved=moved, st=st, co=co, ag=ag,
+                tracker=tracker)
 
 
 def progress_tables(inv, ver, comp):
@@ -66,7 +69,7 @@ def build(out, quiet=False, world=None):
     w = world or simulate()
     lines, ev, st, co, ag = w["lines"], w["ev"], w["st"], w["co"], w["ag"]
     counts = {}
-    inv = R.inventory(W.lead_cards(lines), ev)
+    inv = R.inventory(lines, ev)
     counts[K.INVENTORY] = R.write_csv(p(K.INVENTORY), R.INV_COLS, list(inv.itertuples(index=False)))
     ver = R.verifications(ev, lines)
     counts[K.VERIFICATIONS] = R.write_csv(p(K.VERIFICATIONS), R.VER_COLS, list(ver.itertuples(index=False)),
@@ -78,6 +81,7 @@ def build(out, quiet=False, world=None):
     counts[K.COMPLETIONS] = R.write_csv(p(K.COMPLETIONS), R.COMP_COLS, list(comp.itertuples(index=False)), crlf=True)
     counts[K.CONTRACTS] = R.write_csv(p(K.CONTRACTS), R.CONTRACT_COLS, R.contracts())
     counts[K.AGREEMENTS] = R.write_csv(p(K.AGREEMENTS), R.AG_COLS, R.agreements(ag))
+    counts[K.OUTREACH] = R.write_csv(p(K.OUTREACH), R.OUTREACH_COLS, R.outreach(w["tracker"]))
     counts[K.TAP_SAMPLES] = R.write_csv(p(K.TAP_SAMPLES), R.TAP_COLS, R.tap_samples(lines))
     counts[K.METER_EXCHANGES] = R.write_csv(p(K.METER_EXCHANGES), R.METER_COLS, R.meter_exchanges(lines), crlf=True)
     contractor_of = {c[0]: c[1] for c in K.CONTRACTS_2026}
@@ -107,6 +111,8 @@ def build(out, quiet=False, world=None):
          "approved change orders, 2026 contracts"),
         (K.AGREEMENTS, "Right-of-entry agreement system", "2027-01-08", counts[K.AGREEMENTS],
          "LSLR programme office", "agreement forms on lines open in the plan, 2022 to 2027"),
+        (K.OUTREACH, "LSLR programme office outreach tracker (customer portal status by line)", "2027-01-08",
+         counts[K.OUTREACH], "LSLR programme office", "every line open in the plan's twelve zones"),
         (K.PLAN, "Engineering", "2026-10-20", "", "Engineering", "lead service line replacement plan, revision 2"),
         (K.CAPITAL, "Finance", "2026-12-14", "", "Finance", "capital improvement plan 2027 to 2037, board draft"),
         (K.UNIT_COSTS, "Engineering", "2026-11-02", counts[K.UNIT_COSTS], "Engineering",

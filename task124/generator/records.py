@@ -185,7 +185,7 @@ CONTRACT_COLS = ["contract_no", "contractor", "vendor_no", "vendor_name", "vendo
 def contracts() -> list:
     out = []
     award = {"2026-LSL-01": "2025-12-09", "2026-LSL-02": "2025-12-09", "2026-LSL-03": "2025-12-16"}
-    nte = {"2026-LSL-01": "5,400,000.00", "2026-LSL-02": "4,350,000.00", "2026-LSL-03": "1,280,000.00"}
+    nte = {"2026-LSL-01": "4,950,000.00", "2026-LSL-02": "4,200,000.00", "2026-LSL-03": "3,350,000.00"}
     for no, name, vendors, zones, price, rate in K.CONTRACTS_2026:
         for k, v in enumerate(vendors):
             frm = "2026-01-01" if k == 0 else K.TC_SWITCH.isoformat()
@@ -200,8 +200,17 @@ AG_COLS = ["agreement_no", "signed_on", "channel", "premise_no", "sl_id", "zone_
 
 
 def agreements(ag: pd.DataFrame) -> list:
+    """The agreement system's open file: the forms it holds (a portal form its import refused is not among them)."""
     return [(a.agreement_no, a.signed_on.isoformat(), a.channel, a.premise_no, a.form_sl_id, a.zone_on_form,
-             a.status, a.status_date.isoformat()) for a in ag.itertuples()]
+             a.status, a.status_date.isoformat()) for a in ag.itertuples() if a.imported]
+
+
+OUTREACH_COLS = ["sl_id", "zone", "letter_1_mailed", "portal_invite_sent", "portal_status", "portal_status_date"]
+
+
+def outreach(tr: pd.DataFrame) -> list:
+    return [(t.sl_id, t.zone, t.letter_1_mailed.isoformat(), t.portal_invite_sent.isoformat(), t.portal_status,
+             t.portal_status_date.isoformat()) for t in tr.sort_values("sl_id").itertuples()]
 
 
 # ------------------------------------------------------------------------------------------------ distractors

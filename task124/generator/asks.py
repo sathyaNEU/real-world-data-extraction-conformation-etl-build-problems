@@ -33,9 +33,14 @@ def redraw(segs: pd.DataFrame, lines: pd.DataFrame) -> dict:
 
 
 # ------------------------------------------------------------------------------------------- ask B: agreements
+PORTAL_REJECT = 0.14       # portal forms whose attachment the agreement system's nightly import refused
+
+
 def agreements(lines: pd.DataFrame, moved: dict) -> pd.DataFrame:
-    """One row per agreement form. Lines open in the plan at the extract only (agreements on lines since replaced or
-    verified non-lead are archived out of the system's open file)."""
+    """One row per agreement form, with `imported`: a portal form the agreement system's import refused (its deed or
+    ID attachment over the import's size limit) stays in the portal and never reaches the agreement system's file.
+    Lines open in the plan at the extract only (agreements on lines since replaced or verified non-lead are archived
+    out of the system's open file). A withdrawal is only ever recorded against a form the system holds."""
     scope = lines[lines.zone.isin(K.PLAN_ORDER) & lines.cls.isin(IN_SCOPE)].sort_values("sl_id")
     prio = {z: i for i, z in enumerate(K.OUTREACH_ORDER)}
     last = K.INVENTORY_DATE - dt.timedelta(days=1)
@@ -60,8 +65,10 @@ def agreements(lines: pd.DataFrame, moved: dict) -> pd.DataFrame:
                 ch2 = "PAPER"
             if d2 <= last:
                 forms.append((d2, ch2))
+        rj = K.stream("portal-import", ln.sl_id)
+        imported = [not (fch == "PORTAL" and rj.random() < PORTAL_REJECT) for fd, fch in forms]
         status, status_date = "SIGNED", None
-        if len(forms) == 1 and r.random() < 0.026:
+        if len(forms) == 1 and r.random() < 0.026 and imported[0]:
             wd = d + dt.timedelta(days=int(r.integers(20, 301)))
             if wd <= last:
                 status, status_date = "WITHDRAWN", wd
@@ -73,19 +80,54 @@ def agreements(lines: pd.DataFrame, moved: dict) -> pd.DataFrame:
                              form_sl_id="" if legacy else ln.sl_id, zone_on_form=zone_on_form,
                              status=status if k == 0 else "SIGNED",
                              status_date=status_date if (k == 0 and status == "WITHDRAWN") else fd,
-                             zone=ln.zone))
+                             zone=ln.zone, imported=imported[k]))
     df = pd.DataFrame(rows).sort_values(["signed_on", "sl_id", "channel"]).reset_index(drop=True)
     seq = {}
     nos = []
-    for d in df.signed_on:
+    for d, imp in zip(df.signed_on, df.imported):
+        if not imp:
+            nos.append("")
+            continue
         seq[d.year] = seq.get(d.year, 0) + 1
         nos.append("AA-%d-%05d" % (d.year, seq[d.year]))
     df.insert(0, "agreement_no", nos)
     return df
 
 
+def outreach(lines: pd.DataFrame, ag: pd.DataFrame) -> pd.DataFrame:
+    """The programme office's outreach tracker: one row per line open in the plan, its first letter, its portal
+    invitation and the portal's own status for the line. The portal knows only what happened on the portal: an
+    e-signed form shows E-SIGNED whether or not the agreement system took it in, and a later withdrawal (taken by the
+    programme office) never reaches it."""
+    scope = lines[lines.zone.isin(K.PLAN_ORDER) & lines.cls.isin(IN_SCOPE)].sort_values("sl_id")
+    prio = {z: i for i, z in enumerate(K.OUTREACH_ORDER)}
+    portal = ag[ag.channel == "PORTAL"].set_index("sl_id").signed_on.to_dict()
+    rows = []
+    for ln in scope.itertuples():
+        r = K.stream("outreach", ln.sl_id)
+        i = prio[ln.zone]
+        letter = dt.date(2022, 2, 7) + dt.timedelta(days=29 * i + int(r.integers(0, 12)))
+        while letter.weekday() >= 5:
+            letter += dt.timedelta(days=1)
+        invite = max(K.PORTAL_OPEN, letter) + dt.timedelta(days=int(r.integers(0, 45)))
+        while invite.weekday() >= 5:
+            invite += dt.timedelta(days=1)
+        if ln.sl_id in portal:
+            status, sdate = "E-SIGNED", portal[ln.sl_id]
+            invite = min(invite, sdate)
+        else:
+            status = str(r.choice(["NOT OPENED", "OPENED", "STARTED", "DECLINED"], p=[0.52, 0.30, 0.12, 0.06]))
+            lo = invite + dt.timedelta(days=1)
+            hi = K.INVENTORY_DATE - dt.timedelta(days=1)
+            sdate = invite if status == "NOT OPENED" else lo + dt.timedelta(days=int(r.integers(0, max(1, (hi - lo).days))))
+        rows.append(dict(sl_id=ln.sl_id, zone=ln.zone, letter_1_mailed=letter, portal_invite_sent=invite,
+                         portal_status=status, portal_status_date=sdate))
+    return pd.DataFrame(rows)
+
+
 def agreements_answer(ag: pd.DataFrame) -> dict:
-    """Distinct lines with an agreement signed and not withdrawn by the extract, by the inventory's zone."""
+    """Distinct lines with an agreement signed and not withdrawn by the extract, wherever the signed form is held, by
+    the inventory's zone."""
     ok = ag[ag.status == "SIGNED"]
     return {z: int(ok[ok.zone == z].sl_id.nunique()) for z in K.PLAN_ORDER}
 
@@ -184,7 +226,8 @@ def completions(lines: pd.DataFrame):
     """Returns (lines with the quarter-end completions moved, sites, change orders). sites: one row per completed
     full replacement (local completion time, paid columns); change orders: one row each with its sites."""
     lines = lines.copy()
-    rep = lines[lines.replaced.map(lambda d: isinstance(d, dt.date) and d.year == 2026)].copy()
+    rep = lines[lines.replaced.map(lambda d: isinstance(d, dt.date) and d.year == 2026) &
+                lines.zone.isin(K.PLAN_ORDER)].copy()
     rep["contract"] = rep.zone.map(contract_of)
     rep = rep.sort_values("sl_id")
     # paid columns for every site
@@ -211,7 +254,7 @@ def completions(lines: pd.DataFrame):
     for n_qe, qe in enumerate(K.QUARTER_ENDS):
         for c in K.CONTRACTS_2026:
             r = K.stream("quarter-end", qe.isoformat(), c[0])
-            pool = st[(st.contract == c[0]) & (st.date >= qe - dt.timedelta(days=16)) & (st.date < qe)]
+            pool = st[(st.contract == c[0]) & (st.date >= qe - dt.timedelta(days=35)) & (st.date < qe)]
             big = n_qe != 1
             k = 1 if (c[0] == "2026-LSL-03" or not big) else 2
             take = list(r.choice(sorted(pool.sl_id), size=k, replace=False))

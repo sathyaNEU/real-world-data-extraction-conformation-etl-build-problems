@@ -34,6 +34,43 @@ def sample(inv: pd.DataFrame, ver: pd.DataFrame) -> pd.DataFrame:
 
 
 
+def street_class(inv: pd.DataFrame) -> pd.Series:
+    """main segment -> LG when any tap card on it reads LEAD or GALV, else C (cards only COPPER or PLASTIC)."""
+    carded = inv[inv.record != ""]
+    lg = carded.groupby("segment").record.apply(lambda s: bool(s.isin(["LEAD", "GALV"]).any()))
+    return lg.map({True: "LG", False: "C"})
+
+
+def lg_card_share(inv: pd.DataFrame) -> pd.Series:
+    """main segment -> the share of its tap cards that read LEAD or GALV."""
+    carded = inv[inv.record != ""]
+    return carded.groupby("segment").record.apply(lambda s: float(s.isin(["LEAD", "GALV"]).mean()))
+
+
+def class_shares(s: pd.DataFrame, cls: pd.Series, mask=None) -> dict:
+    """Share of the verified no-tap-card lines found lead or GRR, by the class of the main they tap."""
+    t = s if mask is None else s[mask]
+    t = t.assign(sc=t.segment.map(cls))
+    return {k: float(t[t.sc == k].hit.mean()) for k in ("LG", "C")}
+
+
+def unknown_by_class(inv: pd.DataFrame, cls: pd.Series) -> dict:
+    """{era: {class: Lead Status Unknown lines}} over the whole district."""
+    u = inv[inv.cls == "LEAD STATUS UNKNOWN"]
+    e = u.year_built.map(K.era_of)
+    c = u.segment.map(cls)
+    return {k: {x: int(((e == k) & (c == x)).sum()) for x in ("LG", "C")} for k in range(3)}
+
+
+def class_era_shares(inv: pd.DataFrame, s: pd.DataFrame, cls: pd.Series, mask=None) -> dict:
+    """The share of lead or GRR expected among the district's Lead Status Unknown lines of each era: each unknown line
+    carries the share found on the verified no-tap-card lines of mains of its class, averaged over the era's unknown
+    lines."""
+    sh = class_shares(s, cls, mask)
+    ub = unknown_by_class(inv, cls)
+    return {e: sum(ub[e][x] * sh[x] for x in ("LG", "C")) / sum(ub[e].values()) for e in range(3)}
+
+
 def unknown_shares(inv: pd.DataFrame, ver: pd.DataFrame, p) -> dict:
     """The share of lead or GRR expected among the district's Lead Status Unknown lines of each era: every line of the
     era with no usable tap card is expected to prove lead or GRR at the whole-segment share p, the verifications have

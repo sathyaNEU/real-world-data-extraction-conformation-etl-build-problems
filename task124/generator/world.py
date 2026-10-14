@@ -1,8 +1,17 @@
 """The district as it stands on 8 January 2027: every service line, its records, the material that is really in the
 ground, and every field verification and replacement from January 2021 to December 2026.
 
-Nothing here is written to disk; records.py turns these frames into the files the district's systems export.
-The ground truth of unverified lines never leaves this module."""
+A street's services were laid by the district in one material when its main went in: lead or galvanized on the older
+streets, copper (later plastic) after. The district's tap cards record that material on the services whose cards
+survive, and the 1991-92 lead survey added cards on the streets it found lead or galvanized. A line with no usable card
+is a lost original or a service the district never laid, so on a lead or galvanized street it proves lead or GRR at
+13 in 14 and on a copper street at 1 in 19. Every verification route the district ran (main replacements coordinated
+with lead streets, the 2024 ranking, the 2021-22 sampling-site recruitment, checks after the lead letters) went to the
+lead and galvanized streets far more than to the copper ones; within a street, which lines were verified does not
+depend on their own material.
+
+Nothing here is written to disk; records.py turns these frames into the files the district's systems export. The
+ground truth of unverified lines and every street's class never leave this module."""
 from __future__ import annotations
 
 import datetime as dt
@@ -12,20 +21,18 @@ import pandas as pd
 
 import common as K
 
-# population shares of lead or GRR among lines with no usable record, by era
-P_LGRR = (14 / 25, 8 / 25, 2 / 25)
-# on the swept segments the share is exact in every construction decade: 5 in 9, 6 in 19, 1 in 12
-SWEPT_DEN = (9, 19, 12)
-SWEPT_HIT = (5, 6, 1)
-P_SWEPT = tuple(h / d for h, d in zip(SWEPT_HIT, SWEPT_DEN))
-LEAD_OF_LGRR = (0.84, 0.52, 0.12)                    # of the lead or GRR lines, the share whose service is lead
-SELECTION_RATIO = 4.2                                # odds a lead or GRR line is dug for cause, against a non-lead one
-RECORD_MIX = {                                       # tap card material by era, among lines with a usable card
-    0: (("LEAD", 0.55), ("GALV", 0.25), ("COPPER", 0.20)),
-    1: (("LEAD", 0.25), ("GALV", 0.35), ("COPPER", 0.40)),
-    2: (("LEAD", 0.02), ("GALV", 0.10), ("COPPER", 0.80), ("PLASTIC", 0.08)),
-    3: (("COPPER", 0.70), ("PLASTIC", 0.30)),
-}
+# streets serviced in lead or galvanized (LG) by era of the main, and of those the share laid in lead
+STREET_LG = {0: 0.55, 1: 0.38, 2: 0.06}
+L_OF_LG = {0: 0.70, 1: 0.40, 2: 0.15}
+S_LG = (13, 14)            # no-card lines proving lead or GRR on an LG street, exact on every verified cell
+S_C = (1, 19)              # on a copper street
+COVER = {"LG": 1.50, "C": 0.85}   # tap card survival, relative, by street class (the 1991-92 survey on LG streets)
+RENEW = 0.03               # copper renewal cards among the cards on LG streets
+LEAD_OF_HIT = {"L": 0.93, "G": 0.08, "C": 0.5}   # of a no-card line proving lead or GRR, the share that is lead
+DIG_RATE = 0.062
+DIG_MULT = {"LG": 3.0, "C": 0.35}
+SWEEP_W = {"LG": 6.0, "C": 0.5}
+N_SWEEPS = 78
 DISTRICT_CREWS = ["SLV1", "SLV2", "SLV3", "SLV4", "SLV5"]
 CONTRACT_CREWS = ["BRN-1", "BRN-2", "TCU-1", "TCU-2", "KPU-1"]
 STREETS = [
@@ -63,7 +70,18 @@ def _segments():
             rows.append((zc, "WM-%05d" % seg_no, era, base, size, street, block))
             left -= size
             k += 1
-    return pd.DataFrame(rows, columns=["zone", "segment", "seg_era", "base_year", "n", "street", "block"])
+    segs = pd.DataFrame(rows, columns=["zone", "segment", "seg_era", "base_year", "n", "street", "block"])
+    # the class of material the district laid each street's services in
+    cls, sub = [], []
+    for s in segs.itertuples():
+        r = K.stream("street-class", s.segment)
+        if s.seg_era == 3 or r.random() >= STREET_LG[s.seg_era]:
+            cls.append("C"); sub.append("C")
+        else:
+            cls.append("LG"); sub.append("L" if r.random() < L_OF_LG[s.seg_era] else "G")
+    segs["sclass"] = cls
+    segs["ssub"] = sub
+    return segs
 
 
 def _lines(segs):
@@ -79,126 +97,128 @@ def _lines(segs):
                 y = max(1882, min(1988, y))
             sl += int(r.integers(1, 4))
             house = seg.block + 2 * i + int(r.integers(0, 2))
-            out.append((seg.zone, seg.segment, "SL%07d" % sl, y, house, seg.street))
-    df = pd.DataFrame(out, columns=["zone", "segment", "sl_id", "year_built", "house_no", "street"])
+            out.append((seg.zone, seg.segment, "SL%07d" % sl, y, house, seg.street, seg.sclass, seg.ssub))
+    df = pd.DataFrame(out, columns=["zone", "segment", "sl_id", "year_built", "house_no", "street", "sclass", "ssub"])
     df["era"] = df["year_built"].map(K.era_of)
     return df
 
 
-def _records(lines):
-    """Tap card material for each line, blank where no usable card survives."""
+def _cards(lines):
+    """Whether each line's tap card survives, and its material. Every pre-1989 street keeps at least two cards."""
     rc_of = {z[0]: z[5] for z in K.ZONES}
-    rec = []
-    for row in lines.itertuples():
-        r = K.stream("record", row.sl_id)
-        e = row.era
-        if e == 3:
-            p_rec = 0.85
-        else:
-            p_rec = min(0.95, rc_of[row.zone] * (0.8, 1.0, 1.2)[e])
-        if r.random() < p_rec:
-            mats, ps = zip(*RECORD_MIX[e])
-            rec.append(str(r.choice(mats, p=np.array(ps) / sum(ps))))
-        else:
-            rec.append("")
     lines = lines.copy()
-    lines["record"] = rec
+    card, mat = [], []
+    for ln in lines.itertuples():
+        r = K.stream("card", ln.sl_id)
+        if ln.era == 3:
+            p = 0.85
+        else:
+            p = min(0.95, rc_of[ln.zone] * (0.8, 1.0, 1.2)[ln.era] * COVER[ln.sclass])
+        has = r.random() < p
+        card.append(has)
+        u = r.random()
+        if ln.sclass == "C" or ln.era == 3:
+            plastic = (ln.era == 3 and u < 0.30) or (ln.era == 2 and u < 0.10)
+            mat.append("PLASTIC" if plastic else "COPPER")
+        else:
+            mat.append("COPPER" if u < RENEW else ("LEAD" if ln.ssub == "L" else "GALV"))
+    lines["card"] = card
+    lines["card_mat"] = mat
+    pre = lines.era.between(0, 2)
+    for sg, idx in lines[pre].groupby("segment").groups.items():
+        idx = sorted(idx, key=lambda i: lines.at[i, "sl_id"])
+        have = int(lines.loc[idx, "card"].sum())
+        if have < 2:
+            r = K.stream("min-cards", sg)
+            free = [i for i in idx if not lines.at[i, "card"]]
+            for i in r.choice(free, size=min(2 - have, len(free)), replace=False):
+                lines.at[i, "card"] = True
+    for sg, idx in lines[pre & (lines.sclass == "LG")].groupby("segment").groups.items():
+        idx = sorted(idx, key=lambda i: lines.at[i, "sl_id"])
+        if not any(lines.at[i, "card"] and lines.at[i, "card_mat"] in ("LEAD", "GALV") for i in idx):
+            r = K.stream("lg-card", sg)
+            i = idx[int(r.integers(len(idx)))]
+            lines.at[i, "card"] = True
+            lines.at[i, "card_mat"] = "LEAD" if lines.at[i, "ssub"] == "L" else "GALV"
+    lines["record"] = np.where(lines.card, lines.card_mat, "")
+    lines["no_record"] = (lines.record == "") & pre
     return lines
 
 
 def _pick_sweeps(segs, lines):
-    """Main replacement projects 2023 to 2026: segments whose every service was exposed and verified. Old cast iron
-    mains are replaced first, so the projects lean to the oldest segments; every construction decade from the 1880s
-    to the 1980s carries at least 30 no-record lines on a replaced main."""
+    """Main replacement projects 2023 to 2026: the renewal programme took mains where the services could be renewed
+    with the main, so its segments run on lead and galvanized streets; every service on a replaced main is exposed."""
     r = K.stream("sweeps")
-    cand = segs[(segs.seg_era < 3) & segs.zone.isin(K.PLAN_ORDER)].copy()
-    cand = cand.sort_values("segment").reset_index(drop=True)
-    nr = lines[lines.no_record]
-    nr_dec = nr.assign(dec=(nr.year_built // 10) * 10).groupby(["segment", "dec"]).size()
-    seg_dec = {}
-    for (seg, d), n in nr_dec.items():
-        seg_dec.setdefault(seg, {})[d] = n
-    chosen = []
-
-    def counts():
-        c = {}
-        for seg in chosen:
-            for d, n in seg_dec.get(seg, {}).items():
-                c[d] = c.get(d, 0) + n
-        return c
-
-    for d in range(1880, 1990, 10):
-        tries = 0
-        while counts().get(d, 0) < 30:
-            pool = [sg for sg in cand.segment if sg not in chosen and seg_dec.get(sg, {}).get(d, 0) >= 6]
-            chosen.append(str(r.choice(sorted(pool))))
-            tries += 1
-            assert tries < 40
-    w = cand.seg_era.map({0: 5.0, 1: 1.8, 2: 0.7}).to_numpy()
+    cand = segs[(segs.seg_era < 3) & segs.zone.isin(K.PLAN_ORDER)].sort_values("segment")
+    w = cand.sclass.map(SWEEP_W).to_numpy() * cand.seg_era.map({0: 3.0, 1: 1.6, 2: 0.8}).to_numpy()
     w = w / w.sum()
-    while len(chosen) < 78:
-        sg = str(r.choice(cand.segment.to_numpy(), p=w))
-        if sg not in chosen:
-            chosen.append(sg)
-    return chosen
+    return sorted(str(s) for s in r.choice(cand.segment.to_numpy(), size=N_SWEEPS, replace=False, p=w))
 
 
-def _trim_sweep_sample(lines):
-    """On swept segments, give a tap card to just enough no-record lines that each decade's no-record count is a
-    multiple of its era's denominator, so the swept share is exactly the era's share in every decade."""
+def _digs(lines):
+    """Lines with no usable card dug for cause, away from the replaced mains: the street decides, not the line."""
+    era_t = (1.30, 1.00, 0.75)
+    dug = []
+    for ln in lines.itertuples():
+        if not ln.no_record or ln.swept:
+            dug.append(False)
+            continue
+        r = K.stream("dig", ln.sl_id)
+        dug.append(bool(r.random() < DIG_RATE * DIG_MULT[ln.sclass] * era_t[ln.era]))
+    return np.array(dug)
+
+
+def _exact(lines):
+    """Each (street class, era, route) cell of verified no-card lines holds a multiple of its class's denominator:
+    excess digs are not made (the line stays unknown); excess lines on a replaced main get the card the 2026 records
+    search found for them."""
     lines = lines.copy()
-    sw = lines[lines.swept & lines.no_record]
-    dec = (sw.year_built // 10) * 10
-    for d, idx in sw.groupby(dec).groups.items():
+    v = lines[lines.no_record & (lines.swept | lines.dug)]
+    route = np.where(v.swept, "main", "cause")
+    for (c, e, rt), idx in v.groupby([v.sclass, v.era, route]).groups.items():
+        den = (S_LG if c == "LG" else S_C)[1]
         idx = sorted(idx, key=lambda i: lines.at[i, "sl_id"])
-        den = SWEPT_DEN[K.era_of(int(d))]
         excess = len(idx) % den
-        if len(idx) - excess < 2 * den:
-            raise AssertionError("decade %d has %d swept no-record lines" % (d, len(idx)))
-        r = K.stream("trim", d)
-        drop = list(r.choice(idx, size=excess, replace=False)) if excess else []
-        for i in drop:
-            e = int(lines.at[i, "era"])
-            mats, ps = zip(*RECORD_MIX[e])
-            lines.at[i, "record"] = str(r.choice(mats, p=np.array(ps) / sum(ps)))
-            lines.at[i, "no_record"] = False
+        if not excess:
+            continue
+        r = K.stream("exact", c, e, rt)
+        for i in r.choice(idx, size=excess, replace=False):
+            if rt == "cause":
+                lines.at[i, "dug"] = False
+            else:
+                lines.at[i, "record"] = lines.at[i, "card_mat"]
+                lines.at[i, "no_record"] = False
     return lines
 
 
 def _truth(lines):
-    """Material in the ground: LEAD, GRR or NON-LEAD. Exact era shares on the swept no-record lines, decade by
-    decade; independent draws everywhere else; records-known lines are what their card says."""
+    """Material in the ground. Carded lines are what their card says; verified no-card lines carry their class's share
+    exactly in every (class, era, route) cell, spread over the cell's construction years; every other no-card line is
+    an independent draw at its class's share."""
     lines = lines.copy()
     truth = np.array(["NON-LEAD"] * len(lines), dtype=object)
     rec = lines.record.to_numpy()
     truth[rec == "LEAD"] = "LEAD"
     truth[rec == "GALV"] = "GRR"
-    # swept no-record lines: exact counts per decade
-    sw = lines[lines.swept & lines.no_record]
-    dec = (sw.year_built // 10) * 10
-    for d, idx in sw.groupby(dec).groups.items():
-        idx = sorted(idx, key=lambda i: lines.at[i, "sl_id"])
-        e = int(lines.at[idx[0], "era"])
-        den, per_block = SWEPT_DEN[e], SWEPT_HIT[e]
-        assert len(idx) % den == 0
-        k = len(idx) // den * per_block
-        r = K.stream("truth-swept", d)
-        # spread the hits evenly over the decade's years (blocks of den lines in year order, the era's share in each
-        # block), so no year inside an era carries a share of its own
+
+    def lead_or_grr(i, r):
+        return "LEAD" if r.random() < LEAD_OF_HIT[lines.at[i, "ssub"]] else "GRR"
+    v = lines[lines.no_record & (lines.swept | lines.dug)]
+    route = np.where(v.swept, "main", "cause")
+    for (c, e, rt), idx in v.groupby([v.sclass, v.era, route]).groups.items():
+        num, den = S_LG if c == "LG" else S_C
         order = sorted(idx, key=lambda i: (lines.at[i, "year_built"], lines.at[i, "sl_id"]))
-        hit = []
+        assert len(order) % den == 0
+        r = K.stream("truth-verified", c, e, rt)
         for b in range(0, len(order), den):
-            block = order[b:b + den]
-            hit.extend(r.choice(block, size=per_block, replace=False))
-        assert len(hit) == k
-        for i in hit:
-            truth[lines.index.get_loc(i)] = "LEAD" if r.random() < LEAD_OF_LGRR[e] else "GRR"
-    # every other no-record line
-    other = lines[lines.no_record & ~lines.swept]
+            for i in r.choice(order[b:b + den], size=num, replace=False):
+                truth[lines.index.get_loc(i)] = lead_or_grr(i, r)
+    other = lines[lines.no_record & ~(lines.swept | lines.dug)]
     for i, row in zip(other.index, other.itertuples()):
         r = K.stream("truth", row.sl_id)
-        if r.random() < P_LGRR[row.era]:
-            truth[lines.index.get_loc(i)] = "LEAD" if r.random() < LEAD_OF_LGRR[row.era] else "GRR"
+        num, den = S_LG if row.sclass == "LG" else S_C
+        if r.random() < num / den:
+            truth[lines.index.get_loc(i)] = lead_or_grr(i, r)
     lines["truth"] = truth
     return lines
 
@@ -224,22 +244,13 @@ def _any_date(r, lo=K.LOG_START, hi=K.LOG_END):
     return min(d, hi)
 
 
-TARGET_BASE = 0.0455
-ERA_TARGET = (1.30, 1.00, 0.75)
-
-
 def _verifications(lines, sweeps):
     """Field verification events. Returns (events, sweep projects). Each event: sl_id, date, cause (never shipped),
     method, crew. A line verified twice gets a pothole, then an excavation."""
     ev = []
-    # 1. digs for cause on no-record lines away from the swept segments
-    cand = lines[lines.no_record & ~lines.swept]
-    for row in cand.itertuples():
+    # 1. digs for cause on no-card lines away from the replaced mains
+    for row in lines[lines.dug].itertuples():
         r = K.stream("target", row.sl_id)
-        hit = row.truth != "NON-LEAD"
-        p = TARGET_BASE * ERA_TARGET[row.era] * (SELECTION_RATIO if hit else 1.0)
-        if r.random() >= p:
-            continue
         cause = str(r.choice(["customer", "leak", "ranked", "sampling"], p=[0.55, 0.20, 0.15, 0.10]))
         if cause == "ranked":
             d = _season_date(r, lo=dt.date(2024, 4, 1), hi=dt.date(2025, 11, 20))
@@ -277,6 +288,7 @@ def _verifications(lines, sweeps):
     projects = []
     i = 0
     pno = 0
+    by_seg = {sg: t for sg, t in lines[lines.segment.isin(sweeps)].groupby("segment")}
     while i < len(order):
         k = int(r.integers(2, 5))
         group = order[i:i + k]
@@ -289,15 +301,13 @@ def _verifications(lines, sweeps):
         end = min(start + dt.timedelta(days=7 * weeks), dt.date(year, 11, 20))
         projects.append((pno, year, start, end, tuple(group)))
         for seg in group:
-            segl = lines[lines.segment == seg]
-            for row in segl.itertuples():
+            for row in by_seg[seg].itertuples():
                 rr = K.stream("sweep-day", row.sl_id)
                 d = start + dt.timedelta(days=int(rr.integers(0, (end - start).days + 1)))
                 while d.weekday() >= 5:
                     d += dt.timedelta(days=1)
                 ev.append((row.sl_id, min(d, end), "main"))
     evdf = pd.DataFrame(ev, columns=["sl_id", "date", "cause"]).sort_values(["date", "sl_id"]).reset_index(drop=True)
-    # methods and crews: drawn from overlapping mixes so neither separates a main project from a dig for cause
     meth, crew = [], []
     for row in evdf.itertuples():
         r = K.stream("method", row.sl_id, row.date.isoformat(), row.cause)
@@ -337,67 +347,19 @@ def _replacements(lines, ev):
     return rep
 
 
-# the 2026 records search as it was run: its picks were drawn against the 2026 engineer's prices and mobilisation
-SEARCH_PRICES = {
-    "RZ-07": (11_400, 2_420), "RZ-02": (13_800, 2_540), "RZ-11": (12_400, 2_540), "RZ-04": (12_500, 2_540),
-    "RZ-09": (12_400, 2_420), "RZ-01": (12_400, 2_390), "RZ-05": (12_400, 2_390), "RZ-12": (12_400, 2_390),
-    "RZ-03": (12_400, 2_390), "RZ-08": (12_400, 2_420), "RZ-10": (12_400, 2_390), "RZ-06": (12_400, 2_420),
-}
-SEARCH_MOBILISATION = 185_000
-
-
-def _tune_records(lines):
-    """A tap card turns up for a handful of unverified no-record lines in some zones (a records search the district
-    ran in 2026)."""
-    import itertools
-    lines = lines.copy()
-    p = P_SWEPT
-    for z in K.OUTREACH_ORDER:
-        t = lines[(lines.zone == z) & lines.no_record & ~lines.swept & lines.verified.isna()]
-        uf, ud = SEARCH_PRICES[z]
-        zl = lines[lines.zone == z]
-        lgrr = int(zl.cls.isin(["LEAD", "GRR"]).sum())
-        unk = zl[zl.cls == "LEAD STATUS UNKNOWN"]
-        u = [int((unk.era == e).sum()) for e in range(3)]
-        best = None
-        for k in itertools.product(range(0, 13), repeat=3):
-            uu = [u[e] - k[e] for e in range(3)]
-            exp_u = sum(uu[e] * p[e] for e in range(3))
-            repl = lgrr + exp_u
-            cost = repl * uf + (sum(uu) - exp_u) * ud + SEARCH_MOBILISATION
-            e_repl = abs((repl / 10) % 1 - 0.5) * 10
-            e_cost = abs((cost / 1e5) % 1 - 0.5) * 1e5
-            if e_repl >= 2.6 and e_cost >= 16000:
-                if best is None or sum(k) < sum(best):
-                    best = k
-        assert best is not None, z
-        r = K.stream("records-search", z)
-        for e in range(3):
-            pool = sorted(t[t.era == e].sl_id)
-            for sl in r.choice(pool, size=best[e], replace=False) if best[e] else []:
-                i = lines.index[lines.sl_id == sl][0]
-                lines.at[i, "record"] = "COPPER"
-                lines.at[i, "no_record"] = False
-                lines.at[i, "cls"] = "NON-LEAD"
-                lines.at[i, "basis"] = "RECORDS"
-                lines.at[i, "truth"] = "NON-LEAD"
-    return lines
-
-
 def _never_built(lines):
     """Lots platted with a tap but never built on, or merged into a neighbour, leave no service line: a few dozen
-    in each zone, all of them on records-known or new-build streets nobody has dug."""
-    cov = lines.groupby("segment").verified.apply(lambda s: s.notna().mean())
+    in each zone, all of them on records-known or new-build lines nobody has dug."""
     out = []
     for z in [x[0] for x in K.ZONES]:
         r = K.stream("never-built", z)
         t = lines[(lines.zone == z) & (lines.cls == "NON-LEAD") & lines.basis.isin(["RECORDS", "CONSTRUCTION DATE"]) &
-                  lines.verified.isna() & ~lines.swept & (lines.segment.map(cov) <= 0.25)]
+                  lines.verified.isna() & ~lines.swept]
         out.extend(r.choice(sorted(t.sl_id), size=int(r.integers(13, 78)), replace=False))
         if z not in K.PLAN_ORDER:
-            # services abandoned when lots were merged, galvanized by the tap card, in the two zones outside the plan
             g = lines[(lines.zone == z) & (lines.cls == "GRR") & (lines.basis == "RECORDS") & lines.verified.isna()]
-            out.extend(r.choice(sorted(g.sl_id), size=int(r.integers(1, 4)), replace=False))
+            if len(g):
+                out.extend(r.choice(sorted(g.sl_id), size=min(len(g), int(r.integers(1, 4))), replace=False))
     return lines[~lines.sl_id.isin(set(out))].reset_index(drop=True)
 
 
@@ -430,38 +392,30 @@ def addresses(segs, lines):
     return pd.Series(out, index=lines.index)
 
 
-
 def lead_cards(lines):
-    """The inventory's view of the tap cards: in six zones a few lines no crew has dug carry a lead card where the
-    world's draw gave a copper one (cards from before 1950), so each zone's expected replacements sit clear of their
-    rounding edges. Nothing else reads these lines: they have no verification, completion or agreement."""
+    """On a few lead or galvanized streets per zone, a card read as a copper renewal is the street's original material
+    after all (K.LEAD_CARDS_ADDED), so each zone's expected replacements and cost sit clear of their rounding edges.
+    Only lines no crew has dug and nobody has replaced: nothing else reads them before the plan."""
     lines = lines.copy()
     for z, k in sorted(K.LEAD_CARDS_ADDED.items()):
-        pool = sorted(lines[(lines.zone == z) & (lines.record == "COPPER") & lines.era.isin([0, 1]) & ~lines.swept &
-                            lines.verified.isna() & lines.replaced.isna()].sl_id)
+        if not k:
+            continue
+        pool = sorted(lines[(lines.zone == z) & (lines.record == "COPPER") & (lines.sclass == "LG") &
+                            lines.era.between(0, 2) & ~lines.swept & lines.verified.isna() &
+                            lines.replaced.isna()].sl_id)
         r = K.stream("lead-cards", z)
         for sl in r.choice(pool, size=k, replace=False):
             i = lines.index[lines.sl_id == sl][0]
-            lines.at[i, "record"] = "LEAD"
-            lines.at[i, "cls"] = "LEAD"
+            mat = "LEAD" if lines.at[i, "ssub"] == "L" else "GALV"
+            lines.at[i, "record"] = mat
+            lines.at[i, "card_mat"] = mat
+            lines.at[i, "truth"] = "LEAD" if mat == "LEAD" else "GRR"
+            lines.at[i, "cls"] = "LEAD" if mat == "LEAD" else "GRR"
             lines.at[i, "basis"] = "RECORDS"
     return lines
 
-def build():
-    segs = _segments()
-    lines = _lines(segs)
-    lines = _records(lines)
-    lines["no_record"] = (lines.record == "") & (lines.era.between(0, 2))
-    sweeps = _pick_sweeps(segs, lines)
-    lines["swept"] = lines.segment.isin(sweeps)
-    lines = _trim_sweep_sample(lines)
-    lines = _truth(lines)
-    ev, projects = _verifications(lines, sweeps)
-    lines = lines.set_index("sl_id", drop=False)
-    rep = _replacements(lines, ev)
-    first = ev.sort_values("date").groupby("sl_id").date.first()
-    lines["verified"] = lines.sl_id.map(first)
-    lines["replaced"] = lines.sl_id.map(rep)
+
+def classify(lines):
     cls, basis = [], []
     for row in lines.itertuples():
         if row.era == 3:
@@ -470,7 +424,7 @@ def build():
             cls.append("NON-LEAD"); basis.append("REPLACED")
         elif isinstance(row.verified, dt.date):
             cls.append(row.truth); basis.append("FIELD VERIFIED")
-        elif row.record in ("LEAD",):
+        elif row.record == "LEAD":
             cls.append("LEAD"); basis.append("RECORDS")
         elif row.record == "GALV":
             cls.append("GRR"); basis.append("RECORDS")
@@ -478,9 +432,28 @@ def build():
             cls.append("NON-LEAD"); basis.append("RECORDS")
         else:
             cls.append("LEAD STATUS UNKNOWN"); basis.append("")
+    lines = lines.copy()
     lines["cls"] = cls
     lines["basis"] = basis
-    lines = _tune_records(lines.reset_index(drop=True))
+    return lines
+
+
+def build():
+    segs = _segments()
+    lines = _lines(segs)
+    lines = _cards(lines)
+    sweeps = _pick_sweeps(segs, lines)
+    lines["swept"] = lines.segment.isin(sweeps)
+    lines["dug"] = _digs(lines)
+    lines = _exact(lines)
+    lines = _truth(lines)
+    ev, projects = _verifications(lines, sweeps)
+    lines = lines.set_index("sl_id", drop=False)
+    rep = _replacements(lines, ev)
+    first = ev.sort_values("date").groupby("sl_id").date.first()
+    lines["verified"] = lines.sl_id.map(first)
+    lines["replaced"] = lines.sl_id.map(rep)
+    lines = classify(lines.reset_index(drop=True))
     lines = _never_built(lines)
     lines["legacy_premise"] = _premises(lines)
     lines["address"] = addresses(segs, lines)
@@ -492,9 +465,3 @@ if __name__ == "__main__":
     print(len(ev), "events", ev.cause.value_counts().to_dict())
     print(lines.cls.value_counts().to_dict())
     print(len(segs), "segments", len(lines), "lines")
-    print(lines.groupby("zone").size())
-    sw = lines[lines.swept & lines.no_record]
-    sw = sw.assign(decade=(sw.year_built // 10) * 10, hit=sw.truth != "NON-LEAD")
-    print(sw.groupby("decade").hit.agg(["size", "mean"]))
-    nr = lines[lines.no_record & ~lines.swept]
-    print("non-swept no-record by era:", nr.groupby("era").size().to_dict(), (nr.truth != "NON-LEAD").groupby(nr.era).mean().round(3).to_dict())

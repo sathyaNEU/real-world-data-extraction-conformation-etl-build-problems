@@ -83,8 +83,17 @@ def main(target=None, golden=None):
         seg_lines[r["main_segment"]] += 1
         seg_seen[r["main_segment"]] += r["sl_id"] in visits
     whole = {s for s in seg_lines if seg_seen[s] == seg_lines[s]}
+    # the class of each main, read from the tap cards on it: lead or galvanized if any card reads LEAD or GALV
+    lg_main = defaultdict(bool)
+    has_card = set()
+    for r in inv:
+        if r["tap_card_material"]:
+            has_card.add(r["main_segment"])
+            lg_main[r["main_segment"]] |= r["tap_card_material"] in ("LEAD", "GALV")
+    klass = {m: ("LG" if lg_main[m] else "C") for m in has_card}
     n = {k: [0, 0, 0] for k in ("whole", "all")}
     h = {k: [0, 0, 0] for k in ("whole", "all")}
+    cn, ch = Counter(), Counter()
     for r in inv:
         y = int(r["year_built"])
         if r["sl_id"] in visits and r["tap_card_material"] == "" and 0 < y < 1989:
@@ -93,16 +102,30 @@ def main(target=None, golden=None):
                 if k == "all" or r["main_segment"] in whole:
                     n[k][era(y)] += 1
                     h[k][era(y)] += hit
+            cn[klass[r["main_segment"]]] += 1
+            ch[klass[r["main_segment"]]] += hit
     shares = {k: [h[k][e] / n[k][e] for e in range(3)] for k in n}
+    cshare = {k: ch[k] / cn[k] for k in cn}
+    assert abs(cshare["LG"] - 13 / 14) < 1e-12 and abs(cshare["C"] - 1 / 19) < 1e-12, cshare
     order = plan_order(target)
     prices, mob = unit_costs(target)
     ap = appropriation(target)
     lgrr, unk = Counter(), defaultdict(lambda: [0, 0, 0])
+    unk_cls = defaultdict(Counter)
     for r in inv:
         if r["sl_class"] in ("LEAD", "GRR"):
             lgrr[r["zone"]] += 1
         elif r["sl_class"] == "LEAD STATUS UNKNOWN":
-            unk[r["zone"]][era(int(r["year_built"]))] += 1
+            e = era(int(r["year_built"]))
+            unk[r["zone"]][e] += 1
+            unk_cls[e][klass[r["main_segment"]]] += 1
+    rec_n, rec_h = [0, 0, 0], [0, 0, 0]
+    for r in inv:
+        y = int(r["year_built"])
+        if r["tap_card_material"] and 0 < y < 1989:
+            rec_n[era(y)] += 1
+            rec_h[era(y)] += r["tap_card_material"] in ("LEAD", "GALV")
+    rec_share = [rec_h[e] / rec_n[e] for e in range(3)]
 
     def schedule(p):
         out, cum = [], 0.0
@@ -113,40 +136,20 @@ def main(target=None, golden=None):
             cum += cost
             out.append((z, lgrr[z] + exp, cost, cum, 2027 + math.ceil(cum / ap - 1e-9) - 1))
         return out
-    # plan 4.3: the share expected among the district's Lead Status Unknown lines of each era. Every no-tap-card line
-    # of the era is expected to prove lead or GRR at the whole-segment share; the verifications have found some; the
-    # unknown lines carry the rest. Computed district-wide and again off the whole segments only (the same shares).
-    n_all, h_all, u_all = [0, 0, 0], [0, 0, 0], [0, 0, 0]
-    n_off, d_off, h_off = [0, 0, 0], [0, 0, 0], [0, 0, 0]
-    n_unk = [0, 0, 0]
-    for r in inv:
-        y = int(r["year_built"])
-        if r["tap_card_material"] != "" or not 0 < y < 1989:
-            continue
-        e = era(y)
-        seen = r["sl_id"] in visits
-        hit = seen and sorted(visits[r["sl_id"]])[0][1] in ("LEAD", "GRR")
-        n_all[e] += 1
-        h_all[e] += hit
-        u_all[e] += not seen
-        n_unk[e] += r["sl_class"] == "LEAD STATUS UNKNOWN"
-        if r["main_segment"] not in whole:
-            n_off[e] += 1
-            d_off[e] += seen
-            h_off[e] += hit
-    assert u_all == n_unk, (u_all, n_unk)
-    left = [(n_all[e] * shares["whole"][e] - h_all[e]) / u_all[e] for e in range(3)]
-    left_off = [(n_off[e] * shares["whole"][e] - h_off[e]) / (n_off[e] - d_off[e]) for e in range(3)]
-    assert all(abs(left[e] - left_off[e]) < 1e-9 for e in range(3)), (left, left_off)
+    # plan 4.3: the share expected among the district's Lead Status Unknown lines of each era. Each unknown line
+    # carries the share found on the verified no-tap-card lines of mains of its class; the era's share is their average
+    left = [sum(unk_cls[e][k] * cshare[k] for k in ("LG", "C")) / sum(unk_cls[e].values()) for e in range(3)]
     gold = schedule(left)
     whole_path = schedule(shares["whole"])
     dflt = schedule(shares["all"])
-    print("verify: %d segments verified whole; whole-segment shares %s; unknown-line shares %s; every verification %s"
-          % (len(whole), ["%.4f" % x for x in shares["whole"]], ["%.4f" % x for x in left],
-             ["%.4f" % x for x in shares["all"]]))
-    print("verify: last zone %s finished %d (whole-segment shares %d, default path %d); plan cost $%.1f million over "
-          "%.2f programme years" % (gold[-1][0], gold[-1][4], whole_path[-1][4], dflt[-1][4], gold[-1][3] / 1e6,
-                                    gold[-1][3] / ap))
+    card_path = schedule(rec_share)
+    print("verify: %d segments verified whole; class shares %s; unknown-line shares %s; every verification %s; whole "
+          "segments %s; tap cards %s" % (len(whole), {k: "%.4f" % v for k, v in cshare.items()},
+                                         ["%.4f" % x for x in left], ["%.4f" % x for x in shares["all"]],
+                                         ["%.4f" % x for x in shares["whole"]], ["%.4f" % x for x in rec_share]))
+    print("verify: last zone %s finished %d (tap cards %d, whole segments %d, default path %d); plan cost $%.1f million "
+          "over %.2f programme years" % (gold[-1][0], gold[-1][4], card_path[-1][4], whole_path[-1][4], dflt[-1][4],
+                                         gold[-1][3] / 1e6, gold[-1][3] / ap))
 
     # ask A
     comp = rows(target, "lsl_completions_2026.csv")
@@ -178,14 +181,19 @@ def main(target=None, golden=None):
         tot[keys.pop()] += amt
     pay = {k: tot[k] / cnt[k] for k in cnt}
 
-    # ask B
+    # ask B: the agreement system's signed forms, and the lines the portal shows e-signed that the agreement system
+    # holds no form for
     zone = {r["sl_id"]: r["zone"] for r in inv}
     agreed = defaultdict(set)
+    held = set()
     for r in rows(target, "access_agreements_2022_2026.csv"):
-        if r["status"] != "SIGNED":
-            continue
         sl = r["sl_id"] or xw[r["premise_no"].rjust(8, "0")]
-        agreed[zone[sl]].add(sl)
+        held.add(sl)
+        if r["status"] == "SIGNED":
+            agreed[zone[sl]].add(sl)
+    for r in rows(target, find(target, r"lslr_outreach_tracker_\d{8}\.csv")):
+        if r["portal_status"] == "E-SIGNED" and r["sl_id"] not in held:
+            agreed[zone[r["sl_id"]]].add(r["sl_id"])
 
     # the golden workbook
     gw = openpyxl.load_workbook(os.path.join(golden, "lslr_2027_programme.xlsx"), data_only=True)
@@ -203,8 +211,8 @@ def main(target=None, golden=None):
         if r[1] in order and r[3] != len(agreed[r[1]]):
             bad.append(("agree", r[1], r[3], len(agreed[r[1]])))
     assert not bad, bad
-    assert gold[-1][4] == 2037 and whole_path[-1][4] == 2038 and dflt[-1][4] >= 2039, (gold[-1], whole_path[-1],
-                                                                                    dflt[-1])
+    assert gold[-1][4] == 2037 and card_path[-1][4] == 2039 and whole_path[-1][4] == 2040 and dflt[-1][4] == 2042, (
+        gold[-1], card_path[-1], whole_path[-1], dflt[-1])
     print("verify: golden workbook agrees on 12 zones' lines, costs and finish years, 12 payments and 12 agreement "
           "counts")
     return gold, pay, agreed

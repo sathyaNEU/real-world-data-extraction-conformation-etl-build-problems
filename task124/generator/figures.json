@@ -1,243 +1,275 @@
 {
  "call": {
-  "last_zone": "RZ-10",
-  "last_zone_name": "Lakeview Terrace",
+  "last_zone": "RZ-06",
+  "last_zone_name": "Wexley",
   "last_finish_year": 2037,
   "meets_deadline": true,
   "deadline": "1 November 2037"
  },
  "appropriation_million": "25.4",
- "total_plan_cost_million": "274.1",
- "programme_years": "10.79",
+ "total_plan_cost_million": "268.3",
+ "programme_years": "10.56",
  "era_shares_lead_status_unknown": {
-  "Built before 1930": "0.497",
-  "Built 1930 to 1949": "0.279",
-  "Built 1950 to 1988": "0.075"
+  "Built before 1930": "0.389",
+  "Built 1930 to 1949": "0.268",
+  "Built 1950 to 1988": "0.074"
  },
- "era_shares_segments_verified_whole": {
-  "Built before 1930": "0.556",
-  "Built 1930 to 1949": "0.316",
-  "Built 1950 to 1988": "0.083"
+ "class_shares": {
+  "lead_or_galvanized_cards": "13 in 14",
+  "copper_or_plastic_cards": "1 in 19",
+  "lead_or_galvanized_cards_decimal": "0.929",
+  "copper_or_plastic_cards_decimal": "0.053"
  },
- "segments_verified_whole": 78,
- "era_accounting": {
+ "unknown_by_class": {
   "Built before 1930": {
-   "no_tap_card_lines": "12,983",
-   "expected_lead_or_grr": "7,213",
-   "verified": "2,855",
-   "found_lead_or_grr": "2,177",
-   "lead_status_unknown": "10,128",
-   "expected_among_unknown": "5,036"
+   "on_lead_or_galvanized_mains": "3,822",
+   "on_copper_or_plastic_mains": "6,117",
+   "lead_status_unknown": "9,939",
+   "expected_lead_or_grr": "3,871"
   },
   "Built 1930 to 1949": {
-   "no_tap_card_lines": "10,612",
-   "expected_lead_or_grr": "3,351",
-   "verified": "1,281",
-   "found_lead_or_grr": "749",
-   "lead_status_unknown": "9,331",
-   "expected_among_unknown": "2,602"
+   "on_lead_or_galvanized_mains": "2,215",
+   "on_copper_or_plastic_mains": "6,808",
+   "lead_status_unknown": "9,023",
+   "expected_lead_or_grr": "2,415"
   },
   "Built 1950 to 1988": {
-   "no_tap_card_lines": "13,279",
-   "expected_lead_or_grr": "1,107",
-   "verified": "775",
-   "found_lead_or_grr": "168",
-   "lead_status_unknown": "12,504",
-   "expected_among_unknown": "939"
+   "on_lead_or_galvanized_mains": "359",
+   "on_copper_or_plastic_mains": "14,210",
+   "lead_status_unknown": "14,569",
+   "expected_lead_or_grr": "1,081"
   }
  },
- "verified_no_tap_card_lines": "4,911",
- "mobilisation": "160,000",
+ "share_on_lead_or_galvanized_mains_pct": {
+  "unknown": {
+   "Built before 1930": "38",
+   "Built 1930 to 1949": "25",
+   "Built 1950 to 1988": "2"
+  },
+  "verified": {
+   "Built before 1930": "91",
+   "Built 1930 to 1949": "74",
+   "Built 1950 to 1988": "20"
+  },
+  "whole": {
+   "Built before 1930": "98",
+   "Built 1930 to 1949": "60",
+   "Built 1950 to 1988": "0"
+  },
+  "carded": {
+   "Built before 1930": "67",
+   "Built 1930 to 1949": "53",
+   "Built 1950 to 1988": "10"
+  }
+ },
+ "verified_no_tap_card_lines": "3,409",
+ "segments_verified_whole": 78,
+ "mobilisation": "230,000",
  "zones": {
   "RZ-07": {
    "priority": 1,
    "name": "Orchard Ridge",
-   "lead_and_grr_to_replace": "1,560",
-   "plan_cost": "21,500,000",
-   "plan_cost_million": "21.5",
-   "cumulative_cost_million": "21.5",
-   "programme_years_cumulative": "0.85",
+   "lead_and_grr_to_replace": "1,250",
+   "plan_cost": "20,700,000",
+   "plan_cost_million": "20.7",
+   "cumulative_cost_million": "20.7",
+   "programme_years_cumulative": "0.81",
    "finish_year": 2027
   },
   "RZ-02": {
    "priority": 2,
    "name": "Canal Street",
-   "lead_and_grr_to_replace": "2,020",
-   "plan_cost": "33,700,000",
-   "plan_cost_million": "33.7",
-   "cumulative_cost_million": "55.2",
-   "programme_years_cumulative": "2.17",
+   "lead_and_grr_to_replace": "1,820",
+   "plan_cost": "34,000,000",
+   "plan_cost_million": "34.0",
+   "cumulative_cost_million": "54.7",
+   "programme_years_cumulative": "2.15",
    "finish_year": 2029
   },
   "RZ-11": {
    "priority": 3,
    "name": "Southgate",
-   "lead_and_grr_to_replace": "1,830",
-   "plan_cost": "28,500,000",
-   "plan_cost_million": "28.5",
-   "cumulative_cost_million": "83.7",
-   "programme_years_cumulative": "3.30",
+   "lead_and_grr_to_replace": "1,650",
+   "plan_cost": "28,400,000",
+   "plan_cost_million": "28.4",
+   "cumulative_cost_million": "83.1",
+   "programme_years_cumulative": "3.27",
    "finish_year": 2030
   },
   "RZ-04": {
    "priority": 4,
    "name": "North Linden",
-   "lead_and_grr_to_replace": "1,420",
-   "plan_cost": "23,800,000",
-   "plan_cost_million": "23.8",
-   "cumulative_cost_million": "107.5",
-   "programme_years_cumulative": "4.23",
+   "lead_and_grr_to_replace": "1,180",
+   "plan_cost": "23,000,000",
+   "plan_cost_million": "23.0",
+   "cumulative_cost_million": "106.1",
+   "programme_years_cumulative": "4.18",
    "finish_year": 2031
   },
   "RZ-09": {
    "priority": 5,
    "name": "Burkhart",
-   "lead_and_grr_to_replace": "1,730",
-   "plan_cost": "27,100,000",
-   "plan_cost_million": "27.1",
-   "cumulative_cost_million": "134.6",
-   "programme_years_cumulative": "5.30",
+   "lead_and_grr_to_replace": "1,380",
+   "plan_cost": "25,000,000",
+   "plan_cost_million": "25.0",
+   "cumulative_cost_million": "131.1",
+   "programme_years_cumulative": "5.16",
    "finish_year": 2032
   },
   "RZ-01": {
    "priority": 6,
    "name": "Foundry Hill",
-   "lead_and_grr_to_replace": "1,840",
-   "plan_cost": "27,300,000",
-   "plan_cost_million": "27.3",
-   "cumulative_cost_million": "161.9",
-   "programme_years_cumulative": "6.37",
+   "lead_and_grr_to_replace": "1,540",
+   "plan_cost": "26,000,000",
+   "plan_cost_million": "26.0",
+   "cumulative_cost_million": "157.1",
+   "programme_years_cumulative": "6.18",
    "finish_year": 2033
   },
   "RZ-05": {
    "priority": 7,
    "name": "Depot Square",
-   "lead_and_grr_to_replace": "1,640",
-   "plan_cost": "25,700,000",
-   "plan_cost_million": "25.7",
-   "cumulative_cost_million": "187.6",
-   "programme_years_cumulative": "7.38",
+   "lead_and_grr_to_replace": "1,390",
+   "plan_cost": "24,500,000",
+   "plan_cost_million": "24.5",
+   "cumulative_cost_million": "181.6",
+   "programme_years_cumulative": "7.15",
+   "finish_year": 2034
+  },
+  "RZ-12": {
+   "priority": 8,
+   "name": "Kittering Village",
+   "lead_and_grr_to_replace": "760",
+   "plan_cost": "14,700,000",
+   "plan_cost_million": "14.7",
+   "cumulative_cost_million": "196.3",
+   "programme_years_cumulative": "7.73",
    "finish_year": 2034
   },
   "RZ-03": {
-   "priority": 8,
-   "name": "Millrace",
-   "lead_and_grr_to_replace": "1,230",
-   "plan_cost": "19,600,000",
-   "plan_cost_million": "19.6",
-   "cumulative_cost_million": "207.2",
-   "programme_years_cumulative": "8.16",
-   "finish_year": 2035
-  },
-  "RZ-12": {
    "priority": 9,
-   "name": "Kittering Village",
-   "lead_and_grr_to_replace": "890",
-   "plan_cost": "14,800,000",
-   "plan_cost_million": "14.8",
-   "cumulative_cost_million": "222.0",
-   "programme_years_cumulative": "8.74",
+   "name": "Millrace",
+   "lead_and_grr_to_replace": "1,050",
+   "plan_cost": "19,100,000",
+   "plan_cost_million": "19.1",
+   "cumulative_cost_million": "215.4",
+   "programme_years_cumulative": "8.48",
    "finish_year": 2035
   },
   "RZ-08": {
    "priority": 10,
    "name": "Elm Park",
-   "lead_and_grr_to_replace": "1,310",
-   "plan_cost": "21,400,000",
-   "plan_cost_million": "21.4",
-   "cumulative_cost_million": "243.4",
-   "programme_years_cumulative": "9.58",
+   "lead_and_grr_to_replace": "1,170",
+   "plan_cost": "21,500,000",
+   "plan_cost_million": "21.5",
+   "cumulative_cost_million": "236.9",
+   "programme_years_cumulative": "9.33",
+   "finish_year": 2036
+  },
+  "RZ-10": {
+   "priority": 11,
+   "name": "Lakeview Terrace",
+   "lead_and_grr_to_replace": "670",
+   "plan_cost": "13,300,000",
+   "plan_cost_million": "13.3",
+   "cumulative_cost_million": "250.2",
+   "programme_years_cumulative": "9.85",
    "finish_year": 2036
   },
   "RZ-06": {
-   "priority": 11,
-   "name": "Wexley",
-   "lead_and_grr_to_replace": "1,040",
-   "plan_cost": "18,000,000",
-   "plan_cost_million": "18.0",
-   "cumulative_cost_million": "261.4",
-   "programme_years_cumulative": "10.29",
-   "finish_year": 2037
-  },
-  "RZ-10": {
    "priority": 12,
-   "name": "Lakeview Terrace",
-   "lead_and_grr_to_replace": "750",
-   "plan_cost": "12,700,000",
-   "plan_cost_million": "12.7",
-   "cumulative_cost_million": "274.1",
-   "programme_years_cumulative": "10.79",
+   "name": "Wexley",
+   "lead_and_grr_to_replace": "890",
+   "plan_cost": "18,100,000",
+   "plan_cost_million": "18.1",
+   "cumulative_cost_million": "268.3",
+   "programme_years_cumulative": "10.56",
    "finish_year": 2037
   }
  },
- "whole_segment_shares_path": {
-  "last_finish_year": 2038,
-  "total_plan_cost_million": "284.4"
- },
  "default_path": {
   "era_shares_every_verification": {
-   "Built before 1930": "0.763",
-   "Built 1930 to 1949": "0.585",
-   "Built 1950 to 1988": "0.217"
+   "Built before 1930": "0.852",
+   "Built 1930 to 1949": "0.703",
+   "Built 1950 to 1988": "0.225"
+  },
+  "last_finish_year": 2042,
+  "total_plan_cost_million": "386.4",
+  "programme_years": "15.21"
+ },
+ "whole_segment_path": {
+  "era_shares": {
+   "Built before 1930": "0.908",
+   "Built 1930 to 1949": "0.574",
+   "Built 1950 to 1988": "0.053"
   },
   "last_finish_year": 2040,
-  "total_plan_cost_million": "347.2"
+  "total_plan_cost_million": "352.2"
+ },
+ "tap_card_path": {
+  "era_shares": {
+   "Built before 1930": "0.651",
+   "Built 1930 to 1949": "0.523",
+   "Built 1950 to 1988": "0.096"
+  },
+  "last_finish_year": 2039,
+  "total_plan_cost_million": "325.9"
  },
  "payments_2026_per_full_replacement": {
   "2026-LSL-01": {
    "contractor": "Brannigan Excavating Inc",
-   "Q1": "13,890",
-   "Q2": "13,494",
-   "Q3": "13,416",
-   "Q4": "13,673"
+   "Q1": "14,395",
+   "Q2": "13,488",
+   "Q3": "13,407",
+   "Q4": "13,344"
   },
   "2026-LSL-02": {
    "contractor": "Tri-County Underground",
-   "Q1": "14,509",
-   "Q2": "13,937",
-   "Q3": "13,903",
-   "Q4": "13,568"
+   "Q1": "14,634",
+   "Q2": "13,985",
+   "Q3": "13,922",
+   "Q4": "13,867"
   },
   "2026-LSL-03": {
    "contractor": "Kestrel Pipe and Utility",
-   "Q1": "14,488",
-   "Q2": "14,459",
-   "Q3": "15,008",
-   "Q4": "14,784"
+   "Q1": "15,294",
+   "Q2": "14,515",
+   "Q3": "14,636",
+   "Q4": "14,444"
   }
  },
  "full_replacements_2026": {
   "2026-LSL-01": {
-   "Q1": 71,
-   "Q2": 90,
-   "Q3": 162,
-   "Q4": 61
+   "Q1": 33,
+   "Q2": 87,
+   "Q3": 194,
+   "Q4": 31
   },
   "2026-LSL-02": {
-   "Q1": 41,
-   "Q2": 85,
-   "Q3": 132,
-   "Q4": 53
+   "Q1": 30,
+   "Q2": 83,
+   "Q3": 137,
+   "Q4": 35
   },
   "2026-LSL-03": {
-   "Q1": 23,
-   "Q2": 20,
-   "Q3": 21,
-   "Q4": 13
+   "Q1": 34,
+   "Q2": 56,
+   "Q3": 103,
+   "Q4": 30
   }
  },
  "agreements_signed": {
-  "RZ-07": 975,
-  "RZ-02": 1217,
-  "RZ-11": 1118,
-  "RZ-04": 954,
-  "RZ-09": 1017,
-  "RZ-01": 857,
-  "RZ-05": 889,
-  "RZ-03": 626,
-  "RZ-12": 518,
-  "RZ-08": 663,
-  "RZ-06": 539,
-  "RZ-10": 368
+  "RZ-07": 960,
+  "RZ-02": 1186,
+  "RZ-11": 1077,
+  "RZ-04": 1020,
+  "RZ-09": 991,
+  "RZ-01": 878,
+  "RZ-05": 846,
+  "RZ-12": 504,
+  "RZ-03": 633,
+  "RZ-08": 685,
+  "RZ-10": 386,
+  "RZ-06": 607
  }
 }

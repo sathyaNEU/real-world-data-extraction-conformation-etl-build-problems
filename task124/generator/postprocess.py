@@ -172,7 +172,9 @@ def _excel_sheet(data, key, first):
                   'xmlns:xr2="http://schemas.microsoft.com/office/spreadsheetml/2015/revision2" '
                   'xmlns:xr3="http://schemas.microsoft.com/office/spreadsheetml/2016/revision3" xr:uid="%s">'
                   % (MAIN, REL, X14AC, _guid(key, "sheet")), 1)
-    s = re.sub(r"<sheetPr>.*?</sheetPr>", "", s, count=1)
+    fit = re.search(r"<sheetPr>.*?<pageSetUpPr fitToPage=\"1\"/>.*?</sheetPr>", s)
+    s = re.sub(r"<sheetPr>.*?</sheetPr>", '<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>' if fit else "", s,
+               count=1)
     pane = re.search(r'<pane xSplit="(\d+)" ySplit="(\d+)" topLeftCell="([A-Z]+\d+)"', s)
     if pane:
         tl = pane.group(3)

@@ -24,15 +24,15 @@ DEADLINE = dt.date(2037, 11, 1)              # every lead and GRR line replaced 
 FIRST_YEAR, LAST_YEAR = 2027, 2037           # programme years the appropriation runs
 
 # Plan costs, 2027 dollars (unit cost schedule)
-UNIT_FULL = 12_400        # full replacement of a lead or GRR line, both sides, restoration included (typical)
-UNIT_DIG = 2_450          # verification excavation that finds no lead, restored (typical)
-MOBILISATION = 160_000    # once per zone, when its work starts
+UNIT_FULL = 13_400        # full replacement of a lead or GRR line, both sides, restoration included (system rate)
+UNIT_DIG = 2_450          # verification excavation that finds no lead, restored (system rate)
+MOBILISATION = 230_000    # once per zone, when its work starts
 APPROPRIATION = 25_400_000  # capital plan, lead service line construction, each programme year
 # engineer's unit costs by zone (service length, pavement, traffic control): full replacement, non-lead dig
 ZONE_PRICES = {
-    "RZ-07": (11_050, 2_440), "RZ-02": (13_950, 2_540), "RZ-11": (12_400, 2_540), "RZ-04": (12_550, 2_540),
-    "RZ-09": (12_400, 2_420), "RZ-01": (12_400, 2_390), "RZ-05": (12_400, 2_390), "RZ-12": (12_400, 2_390),
-    "RZ-03": (12_400, 2_390), "RZ-08": (12_400, 2_420), "RZ-10": (12_400, 2_390), "RZ-06": (12_400, 2_420),
+    "RZ-07": (12_500, 2_530), "RZ-02": (15_350, 2_560), "RZ-11": (13_400, 2_610), "RZ-04": (13_450, 2_620),
+    "RZ-09": (13_400, 2_490), "RZ-01": (13_400, 2_450), "RZ-05": (13_400, 2_450), "RZ-12": (13_400, 2_450),
+    "RZ-03": (13_400, 2_450), "RZ-08": (13_400, 2_490), "RZ-10": (13_400, 2_450), "RZ-06": (13_400, 2_450),
 }
 
 # Construction eras the plan reports unknown lines by
@@ -59,12 +59,15 @@ ZONES = [
     ("RZ-14", "Kittering North", "Kittering Township", 10300, (0.0, 0.0, 0.05, 0.95), 0.90),
 ]
 PLAN_ORDER = ["RZ-07", "RZ-02", "RZ-11", "RZ-04", "RZ-09", "RZ-01",
-              "RZ-05", "RZ-03", "RZ-12", "RZ-08", "RZ-06", "RZ-10"]
+              "RZ-05", "RZ-12", "RZ-03", "RZ-08", "RZ-10", "RZ-06"]
 # the order agreement outreach opened zone by zone from February 2022, the ranking before plan revision 2
 OUTREACH_ORDER = ["RZ-07", "RZ-02", "RZ-11", "RZ-04", "RZ-09", "RZ-01",
-                  "RZ-05", "RZ-12", "RZ-03", "RZ-08", "RZ-10", "RZ-06"]
-# lead tap cards on lines no crew has dug, by plan zone (the cards a crew would replace on sight)
-LEAD_CARDS_ADDED = {"RZ-07": 3, "RZ-02": 2, "RZ-11": 2, "RZ-04": 5, "RZ-09": 5, "RZ-10": 2}
+                  "RZ-05", "RZ-03", "RZ-12", "RZ-08", "RZ-06", "RZ-10"]
+# renewal tap cards (COPPER) on lead or galvanized streets that the 2026 records search read again as the street's
+# original material, by plan zone (lines no crew has dug); tuned so each zone's expected replacements and cost sit
+# clear of their rounding edges
+LEAD_CARDS_ADDED = {"RZ-07": 3, "RZ-02": 1, "RZ-11": 7, "RZ-04": 7, "RZ-09": 8, "RZ-01": 9, "RZ-12": 2,
+                    "RZ-03": 4, "RZ-08": 2, "RZ-10": 12}
 ZONE_NAME = {z[0]: z[1] for z in ZONES}
 
 
@@ -106,6 +109,7 @@ COMPLETIONS = "lsl_completions_2026.csv"
 CHANGE_ORDERS = "change_orders_2026.xlsx"
 CONTRACTS = "contracts_2026.csv"
 AGREEMENTS = "access_agreements_2022_2026.csv"
+OUTREACH = "lslr_outreach_tracker_20270108.csv"
 TAP_SAMPLES = "lcr_tap_samples_2025_2026.csv"
 METER_EXCHANGES = "ami_meter_exchanges_2023_2025.csv"
 DISTRACTORS = (TAP_SAMPLES, METER_EXCHANGES)
@@ -119,10 +123,10 @@ PEOPLE = {"programme": "Gregory Sheppard", "engineer": "Bethany Davidson", "fina
 # acquisition), zones, bid price per full replacement, extra service length rate per foot past 50 feet
 TC_SWITCH = dt.date(2026, 7, 13)
 CONTRACTS_2026 = [
-    ("2026-LSL-01", "Brannigan Excavating Inc", ("V-10482",), ("RZ-01", "RZ-05", "RZ-07", "RZ-11"), 10_480.00, 62.00),
-    ("2026-LSL-02", "Tri-County Underground", ("V-20877", "V-31560"), ("RZ-02", "RZ-03", "RZ-09", "RZ-12"),
+    ("2026-LSL-01", "Brannigan Excavating Inc", ("V-10482",), ("RZ-02", "RZ-05", "RZ-11", "RZ-12"), 10_480.00, 62.00),
+    ("2026-LSL-02", "Tri-County Underground", ("V-20877", "V-31560"), ("RZ-03", "RZ-04", "RZ-08", "RZ-09"),
      10_950.00, 58.50),
-    ("2026-LSL-03", "Kestrel Pipe and Utility", ("V-11935",), ("RZ-04", "RZ-06", "RZ-08", "RZ-10"), 11_320.00, 66.00),
+    ("2026-LSL-03", "Kestrel Pipe and Utility", ("V-11935",), ("RZ-01", "RZ-06", "RZ-07", "RZ-10"), 11_320.00, 66.00),
 ]
 CREW_CONTRACT = {"BRN-1": "2026-LSL-01", "BRN-2": "2026-LSL-01", "TCU-1": "2026-LSL-02", "TCU-2": "2026-LSL-02",
                  "KPU-1": "2026-LSL-03"}

@@ -94,3 +94,7 @@ def agreements(target) -> pd.DataFrame:
     by_premise = dict(zip(xw.legacy_premise_no, xw.sl_id))
     a["line"] = [s if s else by_premise[p.zfill(8)] for s, p in zip(a.sl_id, a.premise_no)]
     return a
+
+
+def outreach(target) -> pd.DataFrame:
+    return _csv(target, K.OUTREACH)
