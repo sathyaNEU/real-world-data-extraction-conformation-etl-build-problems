@@ -431,6 +431,19 @@ Pair ceiling: 40 (the cracker at about 63 with the call, Ask C and the chart; th
   pass with loop 0 differentiated as the slot's own lineage; the WARNs are loop 0's, answered in the Draw. guard
   surface promotes task256 (same decision type) and task259 (same decisive gap), as at loop 0; adjudication is
   author-triggered and not run.
+- Stage 4, loop 1 (2026-10-14): leak reader (one isolated read on the loop-1 cut): no decisive-step sentence, no
+  ranking or helper file, no answer figure; every literal sentence executes to the golden and none fixes how
+  the playbook moves the paint; question 6 an analytical choice; the first contentful paint never raised; the
+  realism tells loop 0's, kept (leak_check_report.md). Determinism judge: DETERMINISTIC, APPROVE
+  (determinism_check_report_loop1.md); every figure reproduced; the delay's level and the first-paint floor
+  forced by the engagements (the render delay's jump at E06 and E10, the paint landing on the first paint);
+  Matchday first across the judge's sensitivity range (the level 232 to 247 ms, the ratio 0.45 to 0.50: 4.5 to
+  4.7 million); Gate G method_or_model_selection, analytical_non_defect, no surface read, no sole data defect;
+  Gate H domain, layers and decisive step pass. Its residuals, both on asks: the live-image ask's legacy_id
+  link is defined in no document (the optional note it suggests is not applied: that link is the ask's own
+  device, D1, unchanged since loop 0's approval, and no figure moves), and Ledger's and Hearth's counts sit
+  about 0.04 million from a rounding edge under the pooled estimators (asserted at 25,000 or more under every
+  estimator), wider only if the level is taken at one engagement's extreme median.
 
 ## Pre-ship check
 

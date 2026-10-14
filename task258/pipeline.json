@@ -1,11 +1,11 @@
 {
   "task": "task258",
   "owner": "sathay3012",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "product-analytics / metric-definition-measurement-science",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check (loop 1)",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-14",
   "stump": "Carrying the past engagements onto each slow own-image load as after-over-before ratios of medians files Ledger (7.4 million page loads a month); on every engagement the image's load delay settled at 240 ms whatever it began at, which with the render delay held puts Pantry first (6.8 million), and the paint cannot come before the page's own first contentful paint, which the playbook leaves alone: most of Pantry's slow loads are on pages that first paint about three seconds after their first byte, so it moves 2.9 million and Matchday leads at 4.6 million.",
   "architecture": 1,
@@ -25,9 +25,11 @@
     "nearest": "task258 v1 lineage 0.54, differentiated; task55 0.07"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
+    "verdict": "DETERMINISTIC (loop 1)",
     "disposition": "APPROVE",
-    "report": "task258/determinism_check_report.md (two ask-figure forks pinned as WHAT in the extract log after the verdict; no graded figure moved)"
+    "report": "task258/determinism_check_report_loop1.md (loop 0: determinism_check_report.md)",
+    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "returned": [
     {
@@ -37,7 +39,7 @@
       "commit": "the RESHIPPED (task258) commit of 2026-10-14"
     }
   ],
-  "resume": "stage 4 of loop 1: the determinism judge's isolated thread is judging the loop-1 cut (verdict to /tmp/determinism-check-task258-loop1/verdict.md); then the judge's report (determinism_check_report_loop1.md), the ledger row and RESHIPPED; the leak reader is done (clean)",
+  "resume": "shipped; next event is the author's portal result",
   "approved": null,
   "delivered": "2026-10-13",
   "portal": null,
