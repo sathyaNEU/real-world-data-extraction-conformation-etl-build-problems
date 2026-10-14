@@ -4,13 +4,13 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: sample, rejected, effect, rotation, comparison, interview, section, golden, series, design, redesign, groups, decisive, points, interviews, previous, phase-in, reader, seasonal, averages, effects, references, payroll, method, office
+Stump terms swept: sample, effect, rejected, rotation, comparison, section, golden, interview, series, decisive, design, redesign, groups, points, interviews, previous, averages, phase-in, reader, seasonal, effects, references, payroll, method, office
 
 ## 4 design-note vocabulary (REVIEW 4)
 - **REVIEW** `lfs_redesigned_questionnaire_methodology_note.pdf`: 14 of 25 stump-paragraph terms appear (sample, rotation, interview, series, design, redesign); read whether the document names the move
 - **REVIEW** `regional_employment_support_act_2021_extract.pdf`: 3 of 25 stump-paragraph terms appear (section, design, points); read whether the document names the move
-- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "By how much should the Regional Employment Support Act's 6.0 per cent trigger move now that the Labour Force Survey has moved to its redesigned questionnaire, and which regions does the restated trigger designate for 202"
-- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: 'Put the restated trigger, the change in the published unemployment rate it rests on and the designated regions in trigger_restatement_determination_2027.pdf with a chart of the national unemployment rate as published and'
+- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Does the Regional Employment Support Act's 6.0 per cent trigger need restating now that the Labour Force Survey has moved to its redesigned questionnaire, and if so to what, and which regions does the trigger then design"
+- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: 'Put the trigger, the change in the published unemployment rate it rests on and the designated regions in trigger_restatement_determination_2027.pdf with a chart of the national unemployment rate as published and on the r'
 
 ## 5 announcements (REVIEW 1)
 - **REVIEW** `lfs_redesigned_questionnaire_methodology_note.pdf`: 6 Contacts Questions on this note: Labour Market Methods (Debra O'Brien).
@@ -68,3 +68,13 @@ Three isolated reader passes (Sonnet, medium), each on fresh copies of `prompt.t
 - **PDFs:** the Act extract is credible (consolidation caveat "This consolidation is not an official version", sections, definitions). Methodology note wording is mostly plausible; two tells: "about twelve sample references each, nine to fifteen with the size of the blocks a group is listed from" is clumsy; named authors (Debra O'Brien, Gabrielle Esson) look like generated names but harmless. Page 2 is nearly empty (a section 5 split across pages plus contacts). Note dated June 2025 yet says "Published estimates for July to November 2025" in the present tense and describes the Dec 2025 state as fact: a note issued 16 June 2025 cannot report that CAI "leaves the field with the November 2025 interviews" as completed; it is a plan, worded as plan. Fine but borderline. The note (June 2025) also states the 2025 classification applies from Jan 2025 and promises regional series "from January 2024", fine.
 - **CAI file:** 202201 to 202511 with 6 groups until Jun 2025 then 5,4,3,2,1 (consistent with the note); 1,620 rows per full month; early months show RESP totals roughly 140k a month; regional RESP varies 10,952 to 24,078 plausibly.
 - LLM/template tells found: none strong; the smoothness of reproduced response rates and the multiples of 10 are the only ones.
+
+### Pass 4 (2026-10-14, isolated Sonnet reader at medium effort, after the prompt repair: "Does the trigger need restating ..., and if so to what")
+
+- **Q1** none states the move; the nearest texts are the Act's section 9(2) (the estimand) and the methodology note's account of the phase-in, and neither says how the change is estimated.
+- **Q2 to Q4** none; no file states the change, the restated trigger or the designated regions.
+- **Q5** the Act's sections 3, 7(1), 9(2) and 10 and the note's sections 1 and 4 quoted, each executed as written.
+- **Q6** an analytical choice (how the questionnaire's effect is estimated from the overlapping rotation groups); nothing planted, the field semantics plain.
+- **Prompt read** "if so to what" is conditional; "which regions does the trigger then designate" keeps none grammatical; "the change ... it rests on" names a value that may be zero and asserts no direction; none is a grammatical answer to every ask.
+- **REVIEW lines** all harmless.
+

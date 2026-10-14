@@ -30,7 +30,14 @@
     "disposition": "pass 1 FIX_NOW (the CSV's July to November 2025 rows estimator-dependent at two decimals; the base of the other rows open), fixed in the note's section 4 with the CSV at one decimal place; re-judge APPROVE",
     "report": "task453/determinism_check_report.md (pass 1), task453/determinism_check_report_pass2.md (re-judge)"
   },
-  "returned": [],
+  "returned": [
+    {
+      "date": "2026-10-14",
+      "portal": "none (self-found before review)",
+      "repair": "prompt: H23 presupposition (whether the trigger needs restating, and if so to what)",
+      "commit": ""
+    }
+  ],
   "resume": "",
   "approved": null,
   "delivered": "2026-10-14",
