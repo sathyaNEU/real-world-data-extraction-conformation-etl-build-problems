@@ -163,9 +163,9 @@ def directory_rows():
 NOTICE_COLS = ["notice_no", "incident_no", "entity_code", "carrier", "sent_date", "event_date", "event_category"]
 
 
-def notice_rows(incidents, notice_only, gl=()):
+def notice_rows(incidents, notice_only):
     out = []
-    for inc in incidents + notice_only + list(gl):
+    for inc in incidents + notice_only:
         if inc.notice is None:
             continue
         out.append([inc.notice_no, inc.incident_no, inc.entity, K.CARRIERS[K.ENTITIES[inc.entity]["carrier"]],
@@ -176,8 +176,8 @@ def notice_rows(incidents, notice_only, gl=()):
 
 # ------------------------------------------------------------------------------------------------ Stoneleigh loss run
 SC_COLS = ["POLICY_NO", "POL_EFF", "POL_EXP", "INSURED_NAME", "CLAIM_NO", "INSURED_REF", "DATE_OF_LOSS",
-           "DATE_RPTD", "CLM_MADE_DT", "CLM_TYPE", "CLM_STATUS", "IND_PAID", "EXP_PAID", "IND_RESV", "EXP_RESV",
-           "TOTAL_INCURRED", "VALUATION_DT"]
+           "DATE_RPTD", "CLM_TYPE", "CLM_STATUS", "IND_PAID", "EXP_PAID", "IND_RESV", "EXP_RESV", "TOTAL_INCURRED",
+           "VALUATION_DT"]
 SC_NAME = {"CMG": "CORVANE MEDICAL GROUP", "BCH": "BRENNICK COMMUNITY HOSP"}
 SC_TYPE = {"Claim": "CLM", "Suit": "SUIT", "Incident": "INC"}
 SC_STATUS = {"Open": "O", "Closed": "C", "Reopened": "R"}
@@ -191,8 +191,7 @@ def sc_rows(recs, nums, V):
         ref = "".join(ch for ch in r["ref"] if ch.isalnum())
         tot = r["paid_ind"] + r["paid_exp"] + r["res_ind"] + r["res_exp"]
         out.append([r["policy"], us(r["period"][0]), us(r["period"][1]), SC_NAME[r["entity"]], nums[r["incident_no"]],
-                    ref, us(r["date_of_loss"]), us(r["created"]), us(r["claim_rptd"]), SC_TYPE[r["ctype"]],
-                    SC_STATUS[r["status"]],
+                    ref, us(r["date_of_loss"]), us(r["created"]), SC_TYPE[r["ctype"]], SC_STATUS[r["status"]],
                     "%.2f" % r["paid_ind"], "%.2f" % r["paid_exp"], "%.2f" % r["res_ind"], "%.2f" % r["res_exp"],
                     "%.2f" % tot, us(V)])
     out.sort(key=lambda x: (x[0], x[4]))

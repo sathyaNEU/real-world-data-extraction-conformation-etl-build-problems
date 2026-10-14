@@ -9,16 +9,15 @@ import common as K
 
 
 def _on_line(inc):
-    return any(d.line != "CONTRACT" for c in inc.claims for d in c.defendants) or inc.route in ("NOTICE", "GL")
+    return any(d.line != "CONTRACT" for c in inc.claims for d in c.defendants) or inc.route == "NOTICE"
 
 
-def records(incidents, notice_only, Vr, key, gl=()):
-    """Every carrier claim open or closed on the carrier's books at valuation date Vr: the clinician matters, the
-    precautionary notices that never became claims, and the claims against an entity alone (general liability)."""
+def records(incidents, notice_only, Vr, key):
+    """Every carrier claim open or closed on the carrier's books at valuation date Vr."""
     rng = K.claims_stream("carrier-reserves")
     factors = {}
     out = []
-    for inc in incidents + notice_only + list(gl):
+    for inc in incidents + notice_only:
         f = float(rng.uniform(0.8, 1.6))
         if not _on_line(inc):
             continue
@@ -43,17 +42,14 @@ def records(incidents, notice_only, Vr, key, gl=()):
                 status = "Reopened"
             else:
                 status = "Closed"
-            on = (lambda c: 1.0) if inc.route == "GL" else \
-                (lambda c: sum(d.share for d in c.defendants if d.line != "CONTRACT"))
+            on = lambda c: sum(d.share for d in c.defendants if d.line != "CONTRACT")
             paid_i = sum(c.vals[key]["paid_ind"] * on(c) for c in known)
             paid_e = sum(c.vals[key]["paid_def"] * on(c) for c in known)
             ri = sum(c.vals[key]["res_ind"] * on(c) for c in known)
             re_ = sum(c.vals[key]["res_def"] * on(c) for c in known)
             res_i = float(int(ri * f / 5000 + 0.5) * 5000) if status != "Closed" else 0.0
             res_e = float(int(re_ * f / 1000 + 0.5) * 1000) if status != "Closed" else 0.0
-        claim_rptd = min(c.report for c in known) if known else None
         out.append(dict(incident_no=inc.incident_no, entity=inc.entity, created=created, ref=ref,
-                        claim_rptd=claim_rptd, route=inc.route,
                         date_of_loss=inc.date, ctype=ctype, status=status, paid_ind=round(paid_i, 2),
                         paid_exp=round(paid_e, 2), res_ind=res_i, res_exp=res_e,
                         policy=K.policy_number(inc.entity, inc.date), period=K.policy_period(inc.entity, inc.date)))

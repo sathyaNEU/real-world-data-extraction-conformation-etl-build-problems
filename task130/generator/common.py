@@ -22,13 +22,12 @@ LEGACY_FIRST, LEGACY_LAST = (2016, 1), (2025, 12)   # legacy payroll history in 
 HCM_FIRST, HCM_LAST = (2026, 1), (2026, 9)
 WORLD_FIRST = (2012, 1)                   # the simulation starts here (claims from older incidents are in the register)
 ERP_START = dt.date(2015, 9, 1)           # the Early Resolution Program takes requests from this date
-ERP_ENTITIES = ("TFH", "AMC")             # the Quillan hospitals; Stoneleigh adjusts its own insureds' claims
 EXPERIENCE = (dt.date(2017, 1, 1), dt.date(2024, 12, 31))
 PLAN_YEAR = 2027
 PLAN_START, PLAN_END = dt.date(2027, 1, 1), dt.date(2027, 12, 31)
 TREND = 0.05
 MEETING = dt.date(2026, 11, 10)           # trustees set the 2027 contribution
-CODE_SWITCH = (2016, 7)                   # legacy job architecture: 2016 code set from July 2016
+CODE_SWITCH = (2020, 7)                   # legacy job architecture: 2020 code set from July 2020
 MOVE_DATE = dt.date(2026, 10, 1)          # the October 2026 moves (HCM home entity re-stamped)
 LIMIT_PER_CLAIM = 2_000_000
 
@@ -56,7 +55,7 @@ CLASSES = ["OB", "SUR", "EM", "AN", "HM", "PC", "APC"]
 CLASS_NAME = {"OB": "Obstetrics", "SUR": "Surgery", "EM": "Emergency Medicine", "AN": "Anesthesiology",
               "HM": "Hospital and Medical Specialties", "PC": "Primary Care", "APC": "Advanced Practice"}
 
-# jobs: key, old code, July 2016 code, payroll title, class (None: not a Covered Clinician), HCM profiles, FTE mix
+# jobs: key, 2016 code, 2020 code, payroll title, class (None: not a Covered Clinician), HCM profiles, FTE mix
 JOBS = [
     ("OBG", "21410", "PHY-OBG", "Physician - Obstetrics and Gynecology", "OB",
      [("JP-20141", "Physician, Obstetrics & Gynecology")], "phys"),
@@ -116,14 +115,12 @@ DEPTS = {
             ("6510", "Hospital Medicine", ["HOS"]), ("6520", "Critical Care", ["CCM"]), ("6530", "Cardiology", ["CAR"]),
             ("6535", "Gastroenterology", ["GAS"]), ("6540", "Oncology", ["ONC"]), ("6545", "Neurology", ["NEU"]),
             ("6550", "Diagnostic Imaging", ["RAD"]), ("6560", "Inpatient Psychiatry", ["PSY"]),
-            ("6610", "Hospital APC Services", ["NP", "PA"]), ("6620", "Alderwick Primary Care", ["FAM", "INT", "NP"]),
-            ("6630", "Pediatrics", ["PED"]), ("6910", "Graduate Medical Education", ["RES", "FEL"])],
+            ("6610", "Hospital APC Services", ["NP", "PA"]), ("6910", "Graduate Medical Education", ["RES", "FEL"])],
     "TFH": [("6105", "Women's Services", ["OBG", "OBL", "CNM"]), ("6210", "Surgical Services", ["GSU", "URO", "ENT"]),
             ("6220", "Orthopaedics", ["ORT"]), ("6310", "Emergency Department", ["EMR"]),
             ("6410", "Anesthesia", ["ANE", "CRNA"]), ("6510", "Hospital Medicine", ["HOS"]),
             ("6520", "Intensive Care", ["CCM"]), ("6530", "Cardiology", ["CAR"]), ("6550", "Imaging", ["RAD"]),
-            ("6610", "Hospital APC Services", ["NP", "PA"]), ("6915", "Family Medicine Center", ["FAM", "INT"]),
-            ("6910", "Family Medicine Residency", ["RES"])],
+            ("6610", "Hospital APC Services", ["NP", "PA"]), ("6910", "Family Medicine Residency", ["RES"])],
     "BCH": [("6210", "Surgery", ["GSU", "ORT"]), ("6310", "Emergency Department", ["EMR"]),
             ("6410", "Anesthesia", ["ANE", "CRNA"]), ("6510", "Hospital Medicine", ["HOS", "CAR"]),
             ("6550", "Imaging", ["RAD"]), ("6610", "APC Services", ["NP", "PA"]),
@@ -216,5 +213,5 @@ EXTRACT_LOG = "extract_log_2026-10.csv"
 DISTRACTORS = (SAFETY, PREMIUMS)
 DELIVERABLES = ("trust_funding_2027.xlsx", "trustees_paper_2027.pptx")
 
-PEOPLE = {"requester": "Nancy Holland", "cfo": "Derek White", "claims": "Norma Hinton", "actuary": "Jerome Warren",
-          "chair": "Walter Butler"}
+PEOPLE = {"requester": "Nancy Holland", "cfo": "Derek White", "claims": "Lori Williams", "actuary": "Jerome Warren",
+          "erp": "Elizabeth Nelson", "chair": "Walter Butler"}

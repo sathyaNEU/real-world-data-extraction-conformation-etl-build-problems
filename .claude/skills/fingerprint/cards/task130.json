@@ -2,7 +2,7 @@
   "task": "task130",
   "architecture": "v4",
   "drawn": "2026-10-12",
-  "slot_note": "fourth root of task130 (wave 1, re-root: retired): v1 and v2 failed on the portal, v3 was landed in house because its default construction was the golden; v4 round 2 (2026-10-14) keeps the world and the estimand and moves the decisive step from the claims-made window's lag truncation (weak per the 10/10 audit) to the claims process the window runs under",
+  "slot_note": "fourth root of task130 (wave 1, re-root: retired): v1 and v2 failed on the portal, v3 was landed in house because its default construction was the golden; same objective, new subdomain, new graded quantity, new Layer 2 pitfall",
   "domain": "actuarial-science-insurance",
   "subdomain": "pricing-ratemaking-credibility",
   "niche": "first-year funding of a health system's new self-insured professional liability trust that each hospital and the employed medical group joins, claims-made, on the day its commercial occurrence policy expires",
@@ -10,11 +10,11 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "Corvane Health should put $587,000 into its professional liability trust for 2027. That is the expected cost of the 10.2 claims expected to be first made against the trust in 2027 from incidents on or after each entity's Transition Date.",
+  "answer": "Corvane Health should put $784,000 into its professional liability trust for 2027. That is the expected cost of the 11.5 claims expected to be first made against the trust in 2027 from incidents on or after each entity's Transition Date.",
   "answer_source": "task130/submission.md, 1. Final Recommendation, first two sentences (bold markers removed); figures in task130/generator/figures.json, written with golden/trust_funding_2027.xlsx and golden/trustees_paper_2027.pptx by generator/deliver.py from target/ and recomputed by generator/verify.py",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
@@ -25,7 +25,7 @@
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "stump_strategy": "maturity_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
@@ -35,13 +35,13 @@
   "scoring_unit": "per resolved case",
   "spine": {
     "file": "clinician_fte_by_month_2016-01_2025-12.csv",
-    "rows": 121415,
+    "rows": 114499,
     "entity": "one employee's paid full-time equivalent in one month on one cost centre, with the job code, entity and status payroll held that month (employed clinicians, residents, fellows and psychologists)",
     "grain": "employee x month x cost centre",
     "source": "synthetic"
   },
   "forum": "trustees_or_governors",
-  "forcing_event": "cutover_or_migration",
+  "forcing_event": "vote_or_meeting",
   "org_family": "hospital_or_health_provider",
   "world": {
     "geography": "United States, Oregon",
@@ -55,8 +55,9 @@
     "people": [
       "Nancy Holland",
       "Derek White",
-      "Norma Hinton",
+      "Lori Williams",
       "Jerome Warren",
+      "Elizabeth Nelson",
       "Walter Butler"
     ]
   },
@@ -66,19 +67,17 @@
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
-  "driver": "A cover whose first window sees only the events reported soon after they occur is priced on a history in which only some units ran the process that produces those quick, cheap reports, while every unit runs it from the window's start; the window's cost is carried almost entirely by the quick events that only the process's units show, so the history pooled across every unit about halves it, and the process's effect read over a full period of development, where it makes the units look cheaper, points the wrong way; the window is costed at each point of its exposure on the experience of the units that already ran the process, one rate for every unit.",
-  "driver_concrete": "From each Transition Date every entity's patients can request compensation through the Early Resolution Program, which until now served only Tolliver Falls and Alderwick while Stoneleigh adjusted the medical group's and Brennick's claims; a first claims-made window catches mostly those quick requests, so the System's pooled 2017 to 2024 experience, diluted by the medical group's and Brennick's exposure without the Program, prices the window at about half, and the Program hospitals' lower full-year cost per FTE-year would cut it further; the 2027 cost is each entity's window costed day by day on Tolliver Falls' and Alderwick's class experience, one rate per class for all four entities.",
-  "stump": "A strong solver collapses the register to one Claim per incident, trends it, and costs each entity's claims-made window day by day, every experience Claim counted where its own delay brings it in by 31 December 2027, on the System's pooled 2017 to 2024 experience by specialty class, and files $312,000; the step that lands it there is pricing the window on experience in which the medical group's and Brennick's patients had no Early Resolution Program, when from each Transition Date every entity's patients can come through it (trust agreement 5.2) and the window's cost is almost all the quick requests only Tolliver Falls' and Alderwick's experience shows: costed on those hospitals' experience the contribution is $587,000.",
+  "driver": "A cover that pays only for events that both occur and are first reported inside its own window is costed from a full period's cost per unit of exposure, when inside a short window only the events reported soon after they occur can count and here those are the cheap ones; the expected cost is the exposure at each point of the window times the cost of past events reported within the time then left, which neither a full period's cost, its prorated share nor the share of events reported within a year at the average cost gives.",
+  "driver_concrete": "Each hospital and the employed medical group joins the new trust, claims-made, on the day its commercial occurrence policy expires, so the trust's 2027 cost is the claims first made by 31 December 2027 from incidents after each entity's transition; the system's early-resolution programme turns most claims into quick, small settlements while the lawsuits that carry most of the money are made a year or more after the incident, so the expected cost is each day's covered clinician exposure times the trended cost of the system's past claims made within the days then left in 2027, not a year's cost per FTE-year applied to each entity's FTE-years in the trust.",
+  "stump": "A competent solver collapses the register's defendant rows to one claim per incident, values and trends every claim from 2017, takes the system's annual claims cost per clinician FTE-year by specialty class, applies it to each entity's FTE-years in the trust and files a contribution of $4,854,000; the step that lands it there is costing the trust's opening months as a mature year, when only the claims made by 31 December 2027 from incidents after each entity's transition count, and those are mostly the quick, cheap requests: the golden is $784,000.",
   "stump_class": "analytical",
-  "analyst_test": "a strong analyst who dedupes the register, reads the trust agreement and the funding policy and costs each entity's claims-made window claim by claim and day by day still prices it on the System's pooled experience by class and files $312,000 (adjusting for the Program by its full-year cost relativity, $273,000), because the medical group's and Brennick's experience holds no early requests while every entity's patients can make them from its Transition Date; costed on the Program hospitals' experience the window is $587,000.",
-  "domain_test": "the deciding quantity is the expected cost of the claims first made in a claims-made trust's opening window, an exposure-weighted, report-lag-truncated experience rate by specialty class that a professional liability actuary must base on experience generated under the claims handling the trust will run (the early resolution program every entity joins), the ratemaking adjustment for a change in claims practice; with another field's nouns the retroactive dates, report lags, early-offer requests and specialty classes have nothing to attach to.",
+  "analyst_test": "a strong analyst who dedupes the claims and reads the trust agreement and funding policy correctly still multiplies a mature year's cost per FTE by each entity's 2027 months of cover, or applies the share of claims made within a year of the incident at the average claim cost, and overfunds the trust, because inside a first claims-made window only the claims made quickly count and they cost a fraction of the average.",
+  "domain_test": "the deciding quantity is the expected cost of claims first made inside a claims-made trust's opening window, built from each entity's covered clinician exposure through the system's own report-lag and cost-by-lag experience, which is how a professional liability actuary funds a first claims-made year; with another field's nouns the retroactive dates, report lags, early-resolution settlements and specialty classes have nothing to attach to.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task102": "task102 moves payments across a period boundary by a business-day release rule; here nothing moves across a boundary: a claims-made window keeps only the claims made soon after their incident, which are the cheap early-resolution ones, so the cost is the exposure at each point of each entity's months of cover times the cost of past claims made within the time then left.",
-    "task501": "task501 v3 sized a buffer on a cumulative path's furthest overrun, and v4 rebuilds a contact matrix from the diaries kept in one season's regime; here the regime is not a season of the same units but a claims process some units ran and every unit runs from the window's start, its effect reverses with the horizon (cheaper over full development, dearer in a first claims-made window), and the window is a lag-truncated cost per day of exposure carried to units that never ran the process.",
-    "task136": "task136 carries an intervention's increment to a new site as a multiple of the site's own recent rate; here no unit's own rate is scaled: the units that never ran the claims process have no early requests to scale, the trust rates every unit alike, and the window is costed on the process units' class experience, a lag-truncated cost per day of exposure.",
-    "task124": "task124 takes the unexamined units' rate from the exhaustively examined groups less the outcomes already found; here nothing is netted and no unit is unexamined: every claim of the experience is recorded, the medical group's and Brennick's simply arose under another claims process, and the first claims-made window sees only the quick claims the Program produces.",
-    "task98": "task98 v6 counts units leaving a class when a scheduled improvement lifts some over a score threshold, the step recovered from improved and unimproved twins; here nothing crosses a threshold and no twin step is recovered: the expected cost of a claims-made opening window is priced on the experience of the units that already ran the claims process every unit runs from the window's start, a lag-truncated cost per day of exposure at one rate for every unit."
+    "task501": "task501 v3 sized a buffer on the furthest a cumulative path ran ahead of its forecast inside a test horizon; here no path maximum or buffer is involved: the cost of a claims-made opening window is a lag-truncated, cost-weighted share of exposure, entity by entity.",
+    "task134": "task134 v2 round 2 forecasts a pool's inflow over a window holding an announced threshold step, the step's size scaled from a smaller one the history holds; here no threshold steps and nothing is scaled: a claims-made opening window keeps only the claims made soon after their incident, the cheap early-resolution ones, so the cost is each day's covered exposure times the trended cost of past claims made within the days then left."
   },
   "lineage": [
     {
@@ -114,21 +113,23 @@
       "stump_strategy": "forecast_method_backtest"
     },
     {
-      "architecture": "v4 round 1",
-      "fate": "shipped 2026-10-12 (judge DETERMINISTIC, APPROVE); weak per the 10/10 audit of 2026-10-14: the decisive step (cost-weighted report-lag truncation, per day) was visible and near a reflex for a strong model, the funding policy narrowed the method to it, and both asks were cracked unaided; round 2 keeps the window as a lower rung and moves the decisive step to the claims process the window runs under",
-      "driver": "A cover that pays only for events that both occur and are first reported inside its own window is costed from a full period's cost per unit of exposure, when inside a short window only the events reported soon after they occur can count and here those are the cheap ones; the expected cost is the exposure at each point of the window times the cost of past events reported within the time then left, which neither a full period's cost, its prorated share nor the share of events reported within a year at the average cost gives."
+      "architecture": "v4 round 2",
+      "domain": "actuarial-science-insurance",
+      "subdomain": "pricing-ratemaking-credibility",
+      "stump_strategy": "population_selection",
+      "fate": "sent back by the judge 2026-10-14 (NOT_DETERMINISTIC, SEND_BACK): funding policy 3.2's \"the System's own claims experience\" read literally gives the pooled $312,000 against the golden $587,000 (a main-call fork), and two ask bases (the entity split, the September 2026 FTE attribution) were open; the author kept round 1 as shipped ($784,000) and every task130 file was restored to 9bf3cbc",
+      "driver": "A cover whose first window sees only the events reported soon after they occur is priced on a history in which only some units ran the process that produces those quick, cheap reports, while every unit runs it from the window's start; the window's cost is carried almost entirely by the quick events that only the process's units show, so the history pooled across every unit about halves it, and the process's effect read over a full period of development, where it makes the units look cheaper, points the wrong way; the window is costed at each point of its exposure on the experience of the units that already ran the process, one rate for every unit."
     }
   ],
-  "notes": "Re-rooted as v4 on 2026-10-12 (wave 1, the author's fourth root for a retired number). v4 moves to professional liability pricing: the first-year contribution to a new claims-made trust. stump_strategy maturity_censoring: the claims-made window truncates the report lag, so only early-made claims count, and early claims are the cheap early-resolution settlements. Pattern none, decisive G13 (horizon: the window the decision covers) then G14 (cost conditioned on early reporting). Calibration none: the system's own claims experience is the evidence, no organ. context_artifact register: the risk management claims register extract the stakeholder works from. Shape moved from 02 to other after the DRAWN commit (task125 drew 02 minutes earlier). Built 2026-10-12 on claims seed 3671: default $4,854,000 against the golden $784,000. Forcing event moved from purchase_order_or_contract to vote_or_meeting after the PAUSED commit: task127 v2, drawn the same day with a lower number, drew purchase_order_or_contract and so sits among this build's last three; the trustees fix the contribution at their 10 November 2026 meeting (funding policy section 2), which is what forces the call now. Round 2 (2026-10-14), after the 10/10 audit found the round 1 decisive step (lag truncation per day) visible and near a reflex: the world gains the Early Resolution Program's history (Tolliver Falls and Alderwick since September 2015, the medical group and Brennick adjusted by Stoneleigh), trust agreement 5.2 opens the Program to every entity from its Transition Date and funding policy 3.4 rates the entities alike; the decisive step is pricing the window on the Program hospitals' experience; the round 1 golden construction (the window on the pooled experience) is the new default path. stump_strategy population_selection (which experience represents the window's claims), gap population then time, generators G13 (decisive: the decision window runs under a claims process the experience years saw at only two of the four entities, and inside a claims-made opening window) then G14 (does the pooled rate apply to this pool). Claims seed 1783: default $312,000 against the golden $587,000. Asks redesigned with silent devices (a claim registered under a new incident record while the notice log keeps the notice's; the HCM home entity read without a date). Forcing event moved at round 2 from vote_or_meeting to cutover_or_migration: task128 v3 (a lower number drawn the same day, re-rooted since) now carries vote_or_meeting and sits among this build's last three; the trust goes live on 1 January 2027, when Tolliver Falls' occurrence policy expires and its clinicians move onto the trust, and the contribution has to be fixed before that cutover. Elizabeth Nelson (never named in the pack) dropped from the people at round 2, task128 v3 drew the first name Elizabeth. Lori Williams (director of claims and litigation, who signs the data dictionary) renamed Norma Hinton at round 2: guard.py surface blocked the first name Lori against task129.",
+  "notes": "Re-rooted as v4 on 2026-10-12 (wave 1, the author's fourth root for a retired number). v4 moves to professional liability pricing: the first-year contribution to a new claims-made trust. stump_strategy maturity_censoring: the claims-made window truncates the report lag, so only early-made claims count, and early claims are the cheap early-resolution settlements. Pattern none, decisive G13 (horizon: the window the decision covers) then G14 (cost conditioned on early reporting). Calibration none: the system's own claims experience is the evidence, no organ. context_artifact register: the risk management claims register extract the stakeholder works from. Shape moved from 02 to other after the DRAWN commit (task125 drew 02 minutes earlier). Built 2026-10-12 on claims seed 3671: default $4,854,000 against the golden $784,000. Forcing event moved from purchase_order_or_contract to vote_or_meeting after the PAUSED commit: task127 v2, drawn the same day with a lower number, drew purchase_order_or_contract and so sits among this build's last three; the trustees fix the contribution at their 10 November 2026 meeting (funding policy section 2), which is what forces the call now. Round 2 (2026-10-14, PAUSED f44902f) moved the decisive step to the Early Resolution Program's class experience ($587,000) and was sent back by the judge; the author kept round 1, so this card carries round 1's identity again and round 2 sits in lineage. At the restore, guard.py heart BLOCKs on people.first (Elizabeth, against task128) and ban.forcing_event (vote_or_meeting, against task128 v3), both from task128's re-root after round 1 shipped; round 1's pack is kept as shipped, so neither is redrawn.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:claims-made-first-year-on-the-claims-process-the-trust-will-run",
+  "layer2_pattern": "own:claims-made-opening-window-cost-by-report-lag",
   "layer1": [
     "a risk management claims register with one row per named defendant: employed clinicians, residents and contracted clinicians in one extract, the contracted rows unpriced",
     "claim stages that move: an early-resolution request that later becomes a suit is a new claim number pointing back at the request; reopened claims keep their earlier closing date; claims closed without indemnity carry defence costs",
-    "legacy payroll by employee, month and cost centre with job codes re-mapped on 1 July 2016 (both code sets in the trust's schedule), dual appointments on two entities' cost centres until the 2026 HCM go-live, transfers between entities and one hospital's mid-2019 affiliation",
-    "a 2026 HCM pay-line extract at earning-code grain repeating the position's FTE on each line, the worker's home entity from the HCM record when it ran, and job profiles that map to legacy codes only through a crosswalk",
-    "two expiring carriers' loss runs in their own layouts and reference formats, listing the entities' own claims beside the clinicians', one carrier's corrected run for an earlier valuation delivered after its latest run, and noticed matters carried under the notice number",
-    "a notice log keyed by notice number holding the incident record opened at the notice, which a claim registered later under a new incident record no longer shares",
+    "legacy payroll by employee, month and cost centre with job codes re-mapped on 1 July 2020 (both code sets in the trust's schedule), dual appointments on two entities' cost centres, transfers between entities and one hospital's mid-2019 affiliation",
+    "a 2026 HCM pay-line extract at earning-code grain repeating the position's FTE on each line, the worker's home entity stamped as of the extract date, and job profiles that map to legacy codes only through a crosswalk",
+    "two expiring carriers' loss runs in their own layouts and reference formats, one carrier's corrected run for an earlier valuation delivered after its latest run, and noticed matters carried under the notice number",
     "each entity's transition date, expiring policy and the trust's coverage terms in the trust agreement, the costing basis in a separate funding policy"
   ]
 }

@@ -4,7 +4,7 @@
   "domain": "Actuarial Science & Insurance",
   "subdomain": "pricing-ratemaking-credibility (first-year funding of a self-insured claims-made professional liability trust at an Oregon health system)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "other: the contribution with the expected number of claims and what each of four entities pays toward it, the emergence chart by month and entity, and two reconciliation asks",
+  "prompt_shape": "other: the contribution with the expected number and cost of claims for each of four entities and seven specialty classes, the emergence chart by month, and two reconciliation asks",
   "as_of": "2026-10-12",
   "deliverables": [
     "trust_funding_2027.xlsx",
@@ -23,7 +23,7 @@
       "xlsx"
     ],
     "largest_file": "clinician_fte_by_month_2016-01_2025-12.csv",
-    "largest_file_rows": 121415
+    "largest_file_rows": 114499
   },
   "sources": [
     {
@@ -39,7 +39,7 @@
     {
       "path": "CPLT_funding_policy_adopted_2026-09-22.pdf",
       "format": "pdf",
-      "bytes": 65821,
+      "bytes": 65107,
       "rows": null,
       "source": "Constructed: Trust funding policy as adopted by the Trustees",
       "date": "2026-10-12",
@@ -48,7 +48,7 @@
     {
       "path": "CPLT_trust_agreement_executed_2026-08-14.pdf",
       "format": "pdf",
-      "bytes": 109568,
+      "bytes": 109205,
       "rows": null,
       "source": "Constructed: Corvane Professional Liability Trust Agreement as executed (extract: definitions, coverage, claims administration, Schedules A and B)",
       "date": "2026-10-12",
@@ -57,7 +57,7 @@
     {
       "path": "QMPL_loss_run_Corvane_val_2026-06-30_rev1.xlsx",
       "format": "xlsx",
-      "bytes": 47931,
+      "bytes": 43647,
       "rows": null,
       "source": "Constructed: Quillan Mutual loss run valued 30 June 2026, revision 1 issued 9 October 2026",
       "date": "2026-10-12",
@@ -66,7 +66,7 @@
     {
       "path": "QMPL_loss_run_Corvane_val_2026-09-30.xlsx",
       "format": "xlsx",
-      "bytes": 48721,
+      "bytes": 44635,
       "rows": null,
       "source": "Constructed: Quillan Mutual loss run for Tolliver Falls Hospital and Alderwick Medical Center, valued 30 September 2026",
       "date": "2026-10-12",
@@ -75,8 +75,8 @@
     {
       "path": "Stoneleigh_lossrun_CORVANE_20260930.csv",
       "format": "csv",
-      "bytes": 50431,
-      "rows": 321,
+      "bytes": 72449,
+      "rows": 471,
       "source": "Constructed: Stoneleigh Casualty loss run for Corvane Medical Group and Brennick Community Hospital, valued 30 September 2026",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -84,8 +84,8 @@
     {
       "path": "clinician_fte_by_month_2016-01_2025-12.csv",
       "format": "csv",
-      "bytes": 8108778,
-      "rows": 121415,
+      "bytes": 7500797,
+      "rows": 114499,
       "source": "Constructed: Legacy payroll history: paid FTE by employee, month and cost centre for employed clinicians, residents, fellows and psychologists, January 2016 to December 2025",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -93,7 +93,7 @@
     {
       "path": "clinician_staffing_plan_2027.xlsx",
       "format": "xlsx",
-      "bytes": 9170,
+      "bytes": 9053,
       "rows": null,
       "source": "Constructed: 2027 staffing plan: covered clinician FTE by entity, specialty class and month",
       "date": "2026-10-12",
@@ -102,8 +102,8 @@
     {
       "path": "cost_centre_directory_2026.csv",
       "format": "csv",
-      "bytes": 4599,
-      "rows": 57,
+      "bytes": 4360,
+      "rows": 54,
       "source": "Constructed: General ledger cost centre directory: company, entity and department",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -111,7 +111,7 @@
     {
       "path": "data_dictionary_rm_extracts.md",
       "format": "md",
-      "bytes": 5178,
+      "bytes": 4913,
       "rows": null,
       "source": "Constructed: Data dictionary for the risk management extracts",
       "date": "2026-10-12",
@@ -129,8 +129,8 @@
     {
       "path": "hcm_clinician_pay_lines_2026-01_2026-09.csv",
       "format": "csv",
-      "bytes": 1786826,
-      "rows": 16439,
+      "bytes": 1700674,
+      "rows": 15665,
       "source": "Constructed: HCM pay lines for clinicians, one row per worker, position, work month and earning code, January to September 2026",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -156,7 +156,7 @@
     {
       "path": "patient_safety_events_2019-01_2026-09.csv",
       "format": "csv",
-      "bytes": 2511273,
+      "bytes": 2504077,
       "rows": 34864,
       "source": "Constructed: Patient safety event reports, January 2019 to September 2026",
       "date": "2026-10-12",
@@ -165,8 +165,8 @@
     {
       "path": "rm_carrier_notices_2012_2026.csv",
       "format": "csv",
-      "bytes": 79304,
-      "rows": 683,
+      "bytes": 76990,
+      "rows": 666,
       "source": "Constructed: Precautionary notices risk management sent to the carriers, 2012 to September 2026",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -174,8 +174,8 @@
     {
       "path": "rm_claims_register_extract_20261002.csv",
       "format": "csv",
-      "bytes": 76081,
-      "rows": 408,
+      "bytes": 115400,
+      "rows": 618,
       "source": "Constructed: Risk management claims register extract: every clinician named on a claim number, valued 30 September 2026",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"

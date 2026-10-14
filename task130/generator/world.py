@@ -15,10 +15,10 @@ import common as K
 # Sept 2026 FTE by entity and job (before the October 2026 moves)
 TARGET = {
     "TFH": dict(OBG=4.0, OBL=2.0, CNM=2.0, GSU=4.0, URO=2.0, ENT=2.0, ORT=4.0, EMR=16.0, ANE=7.0, CRNA=8.0, HOS=16.0,
-                CCM=3.0, CAR=2.0, RAD=3.0, NP=9.0, PA=10.0, FAM=8.0, INT=4.0, RES=8.0),
+                CCM=3.0, CAR=2.0, RAD=3.0, NP=9.0, PA=10.0, RES=8.0),
     "AMC": dict(OBG=6.0, OBL=5.0, MFM=3.0, CNM=3.0, GSU=9.0, ORT=9.0, URO=5.0, ENT=4.0, VAS=4.0, EMR=30.0, ANE=22.0,
-                CRNA=24.0, HOS=30.0, CCM=9.0, CAR=8.0, GAS=4.0, ONC=4.0, NEU=4.0, RAD=9.0, PSY=3.0, NP=26.0, PA=15.0,
-                FAM=12.0, INT=16.0, PED=9.0, RES=42.0, FEL=10.0),
+                CRNA=24.0, HOS=30.0, CCM=9.0, CAR=8.0, GAS=4.0, ONC=4.0, NEU=4.0, RAD=9.0, PSY=3.0, NP=22.0, PA=15.0,
+                RES=42.0, FEL=10.0),
     "CMG": dict(FAM=120.0, INT=62.0, PED=34.0, OBG=26.0, MFM=2.0, CNM=10.0, CAR=18.0, VAS=3.0, GAS=14.0, ONC=14.0,
                 NEU=10.0, PSY=14.0, PSYC=14.0, ORT=18.0, URO=8.0, ENT=8.0, GSU=8.0, NP=92.0, PA=60.0),
     "BCH": dict(GSU=3.0, ORT=2.0, EMR=11.0, ANE=3.0, CRNA=5.0, HOS=9.0, CAR=1.0, RAD=1.0, NP=10.0, PA=7.0),
@@ -227,15 +227,12 @@ def _active_on(W, d, entity=None, job=None):
 
 
 def _dual_appointments(W):
-    """A few specialists held a second position at another entity: CMG cardiologists, urologists and orthopaedic
-    surgeons covering the hospitals' clinics and on-call rotas, and Alderwick radiologists reading for Brennick. The
-    second positions closed when HCM went live on 1 January 2026: since then each clinician holds one position at the
-    home entity and the other entity pays for the sessions under an intercompany services agreement."""
+    """A few specialists hold a second position at another entity: CMG cardiologists, urologists and orthopaedic
+    surgeons covering the hospitals' clinics and on-call rotas, and Alderwick radiologists reading for Brennick."""
     rng = K.stream("dual")
     plan = [("CMG", "CAR", "TFH", "6530"), ("CMG", "CAR", "BCH", "6510"), ("CMG", "URO", "TFH", "6210"),
             ("CMG", "ORT", "BCH", "6210"), ("CMG", "GAS", "AMC", "6535"), ("AMC", "RAD", "BCH", "6550"),
             ("CMG", "ONC", "TFH", "6530"), ("AMC", "CAR", "CMG", "7510")]
-    last = dt.date(2025, 12, 31)
     for k, (e, j, e2, dept2) in enumerate(plan):
         start = dt.date(2016 + k % 6, 1 + (3 * k) % 12, 1)
         if e2 == "BCH" and start < K.ENTITIES["BCH"]["joined"]:
@@ -245,12 +242,10 @@ def _dual_appointments(W):
         cands.sort(key=lambda p: p.pid)
         p = cands[int(rng.integers(0, len(cands)))]
         split = 0.3 if k % 3 else 0.2
-        before = p.fte_in(start.year, start.month)
-        p.fte_changes.append(((start.year, start.month), round(before - split, 1)))
-        q = Position(W.new_pid(rng), p.emp, j, e2, dept2, split, start, last, primary=False)
+        p.fte_changes.append(((start.year, start.month), round(p.fte_in(start.year, start.month) - split, 1)))
+        q = Position(W.new_pid(rng), p.emp, j, e2, dept2, split, start, None, primary=False)
         q.hcm_profile = p.hcm_profile
         W.positions.append(q)
-        p.fte_changes.append(((2026, 1), round(before, 1)))
 
 
 def _historic_transfers(W):

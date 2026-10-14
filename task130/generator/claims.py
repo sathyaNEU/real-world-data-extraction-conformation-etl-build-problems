@@ -22,7 +22,6 @@ F_DIRECT = {"OB": 0.070, "SUR": 0.045, "EM": 0.031, "AN": 0.024, "HM": 0.016, "P
 F_ERP = {"OB": 0.084, "SUR": 0.062, "EM": 0.051, "AN": 0.036, "HM": 0.027, "PC": 0.020, "APC": 0.011}
 F_RESIDENT = 0.012
 ESCALATE = 0.065
-DIVERT = 0.75             # direct demands and suits at the Program's hospitals, against the Stoneleigh entities
 ERP_LAG_MEDIAN = {"OB": 96, "SUR": 90, "EM": 84, "AN": 86, "HM": 90, "PC": 88, "APC": 86}
 ERP_LAG_SIGMA = 0.50
 DIRECT_LAG_MEDIAN = {"OB": 800, "SUR": 520, "EM": 470, "AN": 500, "HM": 520, "PC": 560, "APC": 500}
@@ -94,7 +93,6 @@ class ClaimNo:
     claim_no: str = ""
     report: dt.date | None = None    # reported to the carrier
     v: dict = field(default_factory=dict)   # amounts at valuation (filled in valuation())
-    cap: float = 0.0                 # the policy limit at the incident's cost level (adjusters reserve within it)
 
 
 @dataclass
@@ -195,11 +193,8 @@ def simulate(W):
                     incidents.append(_resident_incident(rng, index, p, y, m))
             continue
         d0 = dt.date(y, m, 1)
-        # the Program has met the Quillan hospitals' patients since September 2015 and resolves some of the matters
-        # that would otherwise have come in later as demands or suits; Stoneleigh adjusts its insureds' claims itself
-        program = p.entity in K.ERP_ENTITIES and d0 >= dt.date(erp_start.year, erp_start.month, 1)
-        lam_d = f * F_DIRECT[cls] / 12.0 * (DIVERT if program else 1.0)
-        lam_e = f * F_ERP[cls] / 12.0 if program else 0.0
+        lam_d = f * F_DIRECT[cls] / 12.0
+        lam_e = f * F_ERP[cls] / 12.0 if d0 >= dt.date(erp_start.year, erp_start.month, 1) else 0.0
         nd, ne = rng.poisson(lam_d), rng.poisson(lam_e)
         for route, n in (("DIRECT", nd), ("ERP", ne)):
             for _ in range(int(n)):
@@ -225,10 +220,8 @@ def simulate(W):
     incidents.sort(key=lambda i: (i.date, i.entity, i.claims[0].made))
     _carrier_timing(incidents)
     notice_only = _notice_only(W)
-    gl = _gl_matters()
-    _dup_incidents(incidents)
-    _numbering(incidents, notice_only, gl)
-    return incidents, notice_only, gl
+    _numbering(incidents, notice_only)
+    return incidents, notice_only
 
 
 def _codefendants(rng, index, p, d, erp):
@@ -328,7 +321,6 @@ def _cap(ind, dfn, level):
 def _claims_for(rng, inc, defendants, cls, ctr):
     level = _cost_level(inc.date.year) * float(np.exp(0.04 * rng.standard_normal()))
     defs = _defs(rng, inc.entity, defendants, ctr)
-    cap = CAP_2020 * level
     if inc.route == "ERP":
         lag = int(min(330, max(12, round(_lognormal(rng, ERP_LAG_MEDIAN[cls], ERP_LAG_SIGMA)))))
         made = bday(inc.date + dt.timedelta(days=lag))
@@ -367,8 +359,6 @@ def _claims_for(rng, inc, defendants, cls, ctr):
             c.reopen = bday(close + dt.timedelta(days=int(rng.integers(60, 501))))
             c.reopen_reserve = float(rng.choice([5000, 10000, 15000, 25000, 40000]))
         inc.claims = [c]
-    for c in inc.claims:
-        c.cap = cap
     # a precautionary notice to the carrier for serious events, sent before any claim
     p_notice = 0.35 if inc.route == "DIRECT" else 0.05
     if inc.cls is not None or any(d.line != "CONTRACT" for d in defs):
@@ -411,10 +401,10 @@ def _carrier_timing(incidents):
         inc.unreported = False
     on_line = lambda inc: any(d.line != "CONTRACT" for d in inc.claims[0].defendants)
     # two Early Resolution Program requests from 2026 that were settled in house and never reported
-    cands = [inc for inc in incidents if inc.route == "ERP" and on_line(inc) and inc.entity in ("AMC", "TFH")
+    cands = [inc for inc in incidents if inc.route == "ERP" and on_line(inc) and inc.entity in ("AMC", "CMG")
              and len(inc.claims) == 1 and dt.date(2026, 3, 1) <= inc.claims[0].made <= dt.date(2026, 8, 31)
              and _open_at(inc.claims[0], V) and inc.notice is None]
-    for e in ("AMC", "TFH"):
+    for e in ("AMC", "CMG"):
         ce = [inc for inc in cands if inc.entity == e]
         if ce:
             pick = ce[int(rng.integers(0, len(ce)))]
@@ -460,112 +450,7 @@ def _notice_only(W):
     return out
 
 
-GL_RATE = {"TFH": 1.3, "AMC": 2.6, "CMG": 0.9, "BCH": 0.9}     # claims against an entity alone, a year
-GL_ALLEGATIONS = {
-    "hosp": ["Fall with injury", "Medication error", "Failure to monitor", "Pressure injury", "Birth injury",
-             "Hospital-acquired infection", "Equipment failure", "Delay in treatment", "Communication/consent"],
-    "clinic": ["Fall with injury", "Medication error", "Communication/consent", "Delay in diagnosis",
-               "Procedure complication", "Equipment failure"],
-}
-
-
-def _gl_matters():
-    """Claims against an entity alone (nursing and facility care, equipment, falls, premises): risk management keeps
-    them in the general liability register, not the clinician claims register, and reports them to the entity's
-    carrier under the entity's own policy; a serious event is noticed to the carrier first."""
-    rng = K.claims_stream("gl-matters")
-    out = []
-    for (y, m) in K.months(K.WORLD_FIRST, K.HCM_LAST):
-        for e in K.ENTITY_ORDER:
-            if K.ENTITIES[e]["joined"] and dt.date(y, m, 1) < K.ENTITIES[e]["joined"]:
-                continue
-            for _ in range(int(rng.poisson(GL_RATE[e] / 12.0))):
-                d = dt.date(y, m, int(rng.integers(1, K.days_in_month(y, m) + 1)))
-                if e == "CMG":
-                    d = clinic_day(d)
-                lag = int(min(2400, max(30, round(_lognormal(rng, 330, 0.7)))))
-                made = bday(d + dt.timedelta(days=lag))
-                suit = rng.random() < 0.45
-                level = _cost_level(d.year)
-                if rng.random() < 0.45:
-                    ind = _lognormal(rng, 120000, 0.8) * level
-                    dfn = _lognormal(rng, 45000, 0.5) * level
-                else:
-                    ind, dfn = 0.0, _lognormal(rng, 18000 if suit else 6000, 0.6) * level
-                close = bday(made + dt.timedelta(days=int(rng.integers(300, 1301) if suit else rng.integers(90, 721))))
-                opts = GL_ALLEGATIONS["clinic" if e == "CMG" else "hosp"]
-                inc = Incident(d, e, None, "GL", [], opts[int(rng.integers(0, len(opts)))])
-                inc.claims = [ClaimNo(made, "Suit" if suit else "Claim", [], ind, dfn, close)]
-                if rng.random() < 0.5:
-                    nd = bday(d + dt.timedelta(days=int(rng.integers(3, 61))))
-                    if nd < made and not (GAP_FIRST <= made <= K.VALUATION):
-                        inc.notice = nd
-                for c in inc.claims:
-                    c.report = carrier_report_date(c.made)
-                inc.unreported = False
-                out.append(inc)
-    # each entity has at least one open claim against it alone that the carrier first heard of as a notice: where none
-    # is, the entity's most recent claim against it alone made before the last week of September is still open (a
-    # suit takes years) and was noticed first
-    V = K.VALUATION
-    for e in K.ENTITY_ORDER:
-        opn = [inc for inc in out if inc.entity == e and inc.claims[0].made < GAP_FIRST and _open_at(inc.claims[0], V)]
-        if any(inc.notice is not None for inc in opn):
-            continue
-        spare = [inc for inc in opn if (inc.claims[0].made - inc.date).days >= 20]
-        if not spare:
-            recent = sorted((inc for inc in out if inc.entity == e and inc.claims[0].made < GAP_FIRST -
-                             dt.timedelta(days=14) and (inc.claims[0].made - inc.date).days >= 20),
-                            key=lambda i: (i.claims[0].made, i.date))
-            if not recent:
-                continue
-            inc = recent[-1]
-            c = inc.claims[0]
-            c.matter_type = "Suit"
-            c.close = bday(V + dt.timedelta(days=int(rng.integers(200, 601))))
-            spare = [inc]
-        inc = spare[int(rng.integers(0, len(spare)))]
-        gap = (inc.claims[0].made - inc.date).days
-        nd = bday(inc.date + dt.timedelta(days=int(rng.integers(3, min(61, gap - 5)))))
-        if nd < inc.claims[0].made:
-            inc.notice = nd
-    return out
-
-
-def _dup_incidents(incidents):
-    """Noticed matters whose claim risk management registered under a new incident record when it came in, instead of
-    the record opened at the notice: the claims register carries the new incident number on every claim number of the
-    matter, and the notice log keeps the one given at the notice. Each entity has at least one such matter open at the
-    valuation date. The register's grouping of claim numbers by incident is untouched; only the notice log's incident
-    number for the notice differs from the register's."""
-    rng = K.claims_stream("dup-incidents")
-    V = K.VALUATION
-    on_line = lambda inc: any(d.line != "CONTRACT" for d in inc.claims[0].defendants)
-    for inc in incidents:
-        inc.dup = False
-    for e in K.ENTITY_ORDER:
-        base = [inc for inc in incidents if inc.entity == e and on_line(inc)
-                and inc.claims[0].made < GAP_FIRST and any(_open_at(c, V) for c in inc.claims)
-                and not getattr(inc, "unreported", False)]
-        cands = [inc for inc in base if inc.notice is not None]
-        if not cands:
-            spare = [inc for inc in base if inc.notice is None and (inc.claims[0].made - inc.date).days >= 20]
-            if not spare:
-                continue
-            inc = spare[int(rng.integers(0, len(spare)))]
-            gap = (inc.claims[0].made - inc.date).days
-            nd = bday(inc.date + dt.timedelta(days=int(rng.integers(4, min(61, gap - 5)))))
-            if nd >= inc.claims[0].made:
-                continue
-            inc.notice = nd
-            cands = [inc]
-        cands.sort(key=lambda i: (i.date, i.claims[0].made))
-        k = 2 if (len(cands) >= 3 and rng.random() < 0.5) else 1
-        for i in sorted(int(x) for x in rng.choice(len(cands), size=k, replace=False)):
-            cands[i].dup = True
-
-
-def _numbering(incidents, notice_only, gl=()):
+def _numbering(incidents, notice_only):
     """Claim numbers by the year a claim is made, incident numbers by the year risk management opened the incident,
     notice numbers by the year a notice went out, each in date order with the gaps the other lines of business
     leave."""
@@ -586,26 +471,15 @@ def _numbering(incidents, notice_only, gl=()):
         c.claim_no = "CL-%d-%04d" % (y, seq[y])
     for inc in notice_only:
         inc.rm_opened = inc.date + dt.timedelta(days=int(rng.integers(0, 4)))
-    rg = K.claims_stream("numbers-gl")
-    for inc in gl:
-        inc.rm_opened = inc.notice or min(inc.claims[0].made, inc.date + dt.timedelta(days=int(rg.integers(1, 15))))
-    gseq = {}
-    for inc in sorted(gl, key=lambda i: (i.claims[0].made, i.date, i.entity)):
-        y = inc.claims[0].made.year
-        gseq[y] = gseq.get(y, 0) + int(rg.integers(1, 5))
-        inc.claims[0].claim_no = "GL-%d-%04d" % (y, gseq[y])
-    tagged = [(inc.rm_opened, inc.date, 0, i, inc, "incident_no") for i, inc in enumerate(incidents)] + \
-             [(inc.rm_opened, inc.date, 1, i, inc, "incident_no") for i, inc in enumerate(notice_only)] + \
-             [(inc.rm_opened, inc.date, 2, i, inc, "incident_no") for i, inc in enumerate(gl)] + \
-             [(inc.claims[0].made, inc.date, 3, i, inc, "reg_incident_no") for i, inc in enumerate(incidents)
-              if getattr(inc, "dup", False)]
+    tagged = [(inc.rm_opened, inc.date, 0, i, inc) for i, inc in enumerate(incidents)] + \
+             [(inc.rm_opened, inc.date, 1, i, inc) for i, inc in enumerate(notice_only)]
     tagged.sort(key=lambda t: t[:4])
     iseq = {}
-    for opened, _, _, _, inc, attr in tagged:
-        y = opened.year
+    for *_, inc in tagged:
+        y = inc.rm_opened.year
         iseq[y] = iseq.get(y, 0) + int(rng.integers(3, 40))
-        setattr(inc, attr, "IR-%d-%05d" % (y, iseq[y]))
-    noticed = sorted(((inc.notice, inc.date, t, i, inc) for t, group in enumerate((incidents, notice_only, gl))
+        inc.incident_no = "IR-%d-%05d" % (y, iseq[y])
+    noticed = sorted(((inc.notice, inc.date, t, i, inc) for t, group in enumerate((incidents, notice_only))
                       for i, inc in enumerate(group) if inc.notice is not None), key=lambda t: t[:4])
     nseq = {}
     for *_, inc in noticed:
@@ -618,11 +492,11 @@ def _round_to(x, step):
     return float(int(x / step + 0.5) * step)
 
 
-def valuation(incidents, V=K.VALUATION, key="v", stream="valuation"):
+def valuation(incidents, V=K.VALUATION, key="v"):
     """Paid and case reserves for every claim number made by V, as risk management records them on V: closed claims
     paid out, open claims with the defence paid so far and the adjuster's reserves, reopened claims with a fresh
     defence reserve."""
-    rng = K.claims_stream(stream, V.isoformat())
+    rng = K.claims_stream("valuation", V.isoformat())
     for inc in incidents:
         for c in inc.claims:
             if c.made > V:
@@ -649,8 +523,6 @@ def valuation(incidents, V=K.VALUATION, key="v", stream="valuation"):
                 else:
                     res_ind = 0.0
                 res_def = max(0.0, _round_to(c.defense * u2 - paid_def, 1000))
-                if c.cap and paid_def + res_ind + res_def > c.cap:
-                    res_ind = max(0.0, math.floor((c.cap - paid_def - res_def) / 1000.0) * 1000.0)
                 st = dict(status="OPEN", closed=None, paid_ind=0.0, paid_def=paid_def, res_ind=res_ind,
                           res_def=res_def)
             c.__dict__.setdefault("vals", {})[key] = st
@@ -669,8 +541,7 @@ def rows_of(inc, c, key="v"):
             amt = (round(st["paid_ind"] * d.share, 2), round(st["paid_def"] * d.share, 2),
                    _round_to(st["res_ind"] * d.share, 1000) if st["res_ind"] else 0.0,
                    _round_to(st["res_def"] * d.share, 1000) if st["res_def"] else 0.0)
-        out.append(dict(claim_no=c.claim_no, incident_no=getattr(inc, "reg_incident_no", "") or inc.incident_no,
-                        defendant_seq=seq,
+        out.append(dict(claim_no=c.claim_no, incident_no=inc.incident_no, defendant_seq=seq,
                         clinician_id=d.clinician_id, defendant_role=d.role, specialty=d.specialty,
                         coverage_line=d.line, entity_at_incident=inc.entity, incident_date=inc.date,
                         claim_made_date=c.made, matter_type=c.matter_type, allegation=inc.allegation,
@@ -728,6 +599,6 @@ def experience_from_rows(rows, job_of=None):
             parts3.append(((pm - inc_date).days, pc, pm.year == inc_date.year))
         out.append(dict(incident_no=ino, cls=K.CLASS_OF_JOB[j], lag=(made - inc_date).days, cost=cost,
                         year=inc_date.year, same_year=made.year == inc_date.year, parts=parts, parts3=parts3,
-                        n_claim_nos=len(parts), ent=rs[0]["entity_at_incident"]))
+                        n_claim_nos=len(parts)))
     out.sort(key=lambda c: c["incident_no"])
     return out

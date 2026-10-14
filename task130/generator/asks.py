@@ -2,7 +2,7 @@
 
 Ask A: for each entity, the open claims under its occurrence policies that are missing from its carrier's latest loss
 run, how many and the register's reserves on them.
-Ask B: each entity's covered clinician FTE in September 2026, from the HCM pay lines."""
+Ask B: each entity's covered clinician FTE in September 2026 by specialty class, from the HCM pay lines."""
 from __future__ import annotations
 
 import csv
@@ -22,130 +22,100 @@ def norm(ref):
     return "".join(ch for ch in str(ref).upper() if ch.isalnum())
 
 
-def _dt(v):
-    if v in (None, ""):
-        return None
-    if isinstance(v, dt.datetime):
-        return v.date()
-    if isinstance(v, dt.date):
-        return v
-    m, d, y = str(v).split("/")
-    return dt.date(int(y), int(m), int(d))
-
-
 def load_qm(target, fname):
     wb = openpyxl.load_workbook(os.path.join(target, fname), data_only=True)
     ws = wb["Loss Run"]
     valued = None
     for row in ws.iter_rows(min_row=1, max_row=6, values_only=True):
         if row[0] and str(row[0]).startswith("Valuation Date"):
-            valued = _dt(str(row[0]).split(": ")[1])
+            m, d, y = str(row[0]).split(": ")[1].split("/")
+            valued = dt.date(int(y), int(m), int(d))
     out = []
     for row in ws.iter_rows(min_row=8, values_only=True):
         if not row[3]:
             continue
-        out.append(dict(entity=QM_NAMES[row[2]], ref=row[4], loss=_dt(row[5]), ctype=row[8], status=row[9]))
+        out.append(dict(entity=QM_NAMES[row[2]], ref=row[4], ctype=row[7], status=row[8]))
     return valued, out
 
 
 def load_sc(target):
     out = []
     valued = None
-    types = {"CLM": "Claim", "SUIT": "Suit", "INC": "Incident"}
     with open(os.path.join(target, K.SC_SEP), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
-            out.append(dict(entity=SC_NAMES[r["INSURED_NAME"]], ref=r["INSURED_REF"], loss=_dt(r["DATE_OF_LOSS"]),
-                            ctype=types[r["CLM_TYPE"]], status=r["CLM_STATUS"]))
-            valued = _dt(r["VALUATION_DT"])
+            out.append(dict(entity=SC_NAMES[r["INSURED_NAME"]], ref=r["INSURED_REF"], ctype=r["CLM_TYPE"],
+                            status=r["CLM_STATUS"]))
+            m, d, y = r["VALUATION_DT"].split("/")
+            valued = dt.date(int(y), int(m), int(d))
     return valued, out
 
 
 def load_notices(target):
     with open(os.path.join(target, K.NOTICES), encoding="utf-8") as fh:
-        return {r["notice_no"]: r for r in csv.DictReader(fh)}
+        return {r["notice_no"]: r["incident_no"] for r in csv.DictReader(fh)}
 
 
-def _matters(rows, line):
-    """Register incidents with a row on the coverage line: open or not, their reserves on the line, and the keys
-    a carrier record can carry for them."""
-    opn, res, keys = set(), {}, {}
+def _open_by_incident(rows, line):
+    opn, res = {}, {}
     for r in rows:
-        if r["coverage_line"] != line:
-            continue
-        ino = r["incident_no"]
-        if r["status"] in ("OPEN", "REOPENED"):
-            opn.add(ino)
-        res[ino] = res.get(ino, 0.0) + (r["indemnity_reserve"] or 0.0) + (r["defense_reserve"] or 0.0)
+        if r["coverage_line"] == line and r["status"] in ("OPEN", "REOPENED"):
+            opn[r["incident_no"]] = True
+    for r in rows:
+        if r["coverage_line"] == line and r["incident_no"] in opn:
+            res[r["incident_no"]] = res.get(r["incident_no"], 0.0) + (r["indemnity_reserve"] or 0.0) + \
+                (r["defense_reserve"] or 0.0)
     return sorted(opn), res
 
 
 def ask_a(target, rows=None):
     rows = rows if rows is not None else AN.load_register(target)
     notices = load_notices(target)
-    claim_inc = {norm(r["claim_no"]): r["incident_no"] for r in rows}
-    prior_of = {norm(r["claim_no"]): norm(r["prior_claim_no"]) for r in rows if r["prior_claim_no"]}
-    reg_incidents = {r["incident_no"] for r in rows}
-    # (entity, incident date, allegation) of every register incident, for the notices whose incident record differs
-    sig = {}
+    claim_inc = {}
     for r in rows:
-        sig.setdefault((r["entity_at_incident"], r["incident_date"], r["allegation"]), set()).add(r["incident_no"])
-    notice_inc = {norm(k): v["incident_no"] for k, v in notices.items()}
-    notice_sig = {norm(k): (v["entity_code"], dt.date.fromisoformat(v["event_date"]), v["event_category"])
-                  for k, v in notices.items()}
+        claim_inc[norm(r["claim_no"])] = r["incident_no"]
+    notice_inc = {norm(k): v for k, v in notices.items()}
     qm_v, qm = load_qm(target, K.QM_SEP)
     qmj_v, qmj = load_qm(target, K.QM_JUN)
     sc_v, sc = load_sc(target)
     assert qm_v == K.VALUATION and sc_v == K.VALUATION and qmj_v == dt.date(2026, 6, 30)
     latest = {"TFH": qm, "AMC": qm, "CMG": sc, "BCH": sc}
-    june = {"TFH": qmj, "AMC": qmj, "CMG": sc, "BCH": sc}
+    delivered_last = {"TFH": qmj, "AMC": qmj, "CMG": sc, "BCH": sc}
 
-    def found(run, e, how):
-        """Register incidents a carrier run holds for entity e. how: 'claimno' (references matched to claim numbers
-        only), 'careful' (claim numbers with the incident's other claim numbers, notice numbers through the notice
-        log's incident number), 'golden' (careful, and a notice whose incident record holds no claim matched to the
-        register incident with the notice's entity, event date and category)."""
+    def mapped(run, e, use_notices=True):
         out = set()
         for x in run:
             if x["entity"] != e:
                 continue
             k = norm(x["ref"])
             if k in claim_inc:
-                out.add(claim_inc[k] if how != "claimno" else "#" + k)
-            elif how != "claimno" and k in notice_inc:
-                ino = notice_inc[k]
-                if ino in reg_incidents:
-                    out.add(ino)
-                elif how == "golden" and x["ctype"] in ("Claim", "Suit"):
-                    m = sig.get(notice_sig[k], set())
-                    if len(m) == 1:
-                        out.add(next(iter(m)))
+                out.add(claim_inc[k])
+            elif use_notices and k in notice_inc:
+                out.add(notice_inc[k])
         return out
 
     res = {}
     for e in K.ENTITY_ORDER:
         line = K.ENTITIES[e]["line"]
-        opn, reserve = _matters(rows, line)
-        gold = found(latest[e], e, "golden")
-        careful = found(latest[e], e, "careful")
-        miss = [i for i in opn if i not in gold]
-        s2 = [i for i in opn if i not in careful]
-        s3 = [i for i in opn if i not in found(june[e], e, "golden")]
-        # S1: open claim numbers matched on normalised claim numbers alone
-        refs = found(latest[e], e, "claimno")
-        open_nos = sorted({norm(r["claim_no"]) for r in rows if r["coverage_line"] == line
-                           and r["status"] in ("OPEN", "REOPENED")})
+        opn, reserve = _open_by_incident(rows, line)
+        found = mapped(latest[e], e)
+        miss = [i for i in opn if i not in found]
+        # stops
+        refs = {norm(x["ref"]) for x in latest[e] if x["entity"] == e}
+        open_nos = sorted({r["claim_no"] for r in rows if r["coverage_line"] == line and r["status"] in ("OPEN", "REOPENED")})
         res_no = {}
+        prior = {}
         for r in rows:
-            if r["coverage_line"] == line and norm(r["claim_no"]) in open_nos:
-                res_no[norm(r["claim_no"])] = res_no.get(norm(r["claim_no"]), 0.0) + \
-                    (r["indemnity_reserve"] or 0.0) + (r["defense_reserve"] or 0.0)
-        s1 = [c for c in open_nos if "#" + c not in refs]
-        # S1b: S1 with the prior chain followed one step
-        s1b = [c for c in s1 if not (c in prior_of and "#" + prior_of[c] in refs)]
+            if r["coverage_line"] == line and r["claim_no"] in open_nos:
+                res_no[r["claim_no"]] = res_no.get(r["claim_no"], 0.0) + (r["indemnity_reserve"] or 0.0) + \
+                    (r["defense_reserve"] or 0.0)
+                prior[r["claim_no"]] = r["prior_claim_no"]
+        s1 = [c for c in open_nos if norm(c) not in refs]
+        s2 = [c for c in open_nos if norm(c) not in refs and norm(prior[c]) not in refs]
+        found_j = mapped(delivered_last[e], e)
+        s3 = [i for i in opn if i not in found_j]
         res[e] = dict(open=len(opn), missing=miss, count=len(miss), reserves=sum(reserve[i] for i in miss),
-                      s1=(len(s1), sum(res_no[c] for c in s1)), s1b=(len(s1b), sum(res_no[c] for c in s1b)),
-                      s2=(len(s2), sum(reserve[i] for i in s2)), s3=(len(s3), sum(reserve[i] for i in s3)),
-                      dup=sorted(set(s2) - set(miss)))
+                      s1=(len(s1), sum(res_no[c] for c in s1)), s2=(len(s2), sum(res_no[c] for c in s2)),
+                      s3=(len(s3), sum(reserve[i] for i in s3)))
     return res
 
 
