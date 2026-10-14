@@ -16,7 +16,7 @@ domain General Statistics) though its decisive method is web performance enginee
 **Progress (2026-10-14):** the board's `review` collection is still empty, so every shipped build stays in scope. The
 author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 re-rooted in a client domain (done,
 reshipped), then the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last
-(next: task232, after re-reading the board's `review` collection).
+(task232 and task229 assessed 10-14: no clean second layer, kept as shipped; task231's second layer, the 2025 rise in closures, was built and returned SEND_BACK at the re-judge, so it was reverted and the shipped build stands; task122 prototyped 10-14: informative hyperkalaemia stops leave the MAR estimators apart and short of the counterfactual, so no clean second layer, kept as shipped; task131 assessed 10-14: no clean second layer, kept as shipped; task123 kept as shipped at the author's call (no Energy task type serves ETL, so its tag is its only legal home). The review is complete; verdicts sit in the board's `assessment` collection. Next: wave 2 (task233 to task236) or task228, at the author's call.)
 
 **task230: RESHIPPED 2026-10-14 (architecture 3, re-rooted at the author's request); waiting on the portal.**
 - The Office of the Registrar General of Aldmere's 2026 census (Survey Research & Official Statistics,
