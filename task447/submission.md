@@ -35,7 +35,7 @@ The deciding figure is the $2.2 million projected increase against the $2.0 mill
 ### N25-014_preliminary_review.pdf
 
 1. Proceed to a cost and market impact review.
-2. The increase in commercial spending the deal will cause in 2026: $2.2 million.
+2. How much the deal will change commercial spending in 2026: an increase of $2.2 million.
 3. Commercial outpatient services Manitowoc and Kewaunee county residents received in 2024, with the share Brightwater's physicians referred:
    - Manitowoc County, imaging: 3,269 services, 40.6%
    - Manitowoc County, endoscopy: 1,574 services, 52.9%

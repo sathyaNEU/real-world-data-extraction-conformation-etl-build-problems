@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: product, referral, placement, projection, decisive, acquisitions, carrier, capture, acquirer, records, method, history, claims, exhibit, earlier, sentence, reproduces, purchases, readable, repeats, acquisition, specialty, closed, placements, eligibility
+Stump terms swept: product, referral, placement, projection, decisive, acquisitions, carrier, capture, records, acquirer, method, history, claims, exhibit, earlier, sentence, reproduces, purchases, readable, repeats, appendix, acquisition, specialty, closed, placements
 
 ## 3 answer figures in the pack (REVIEW 5)
 - **REVIEW** `N25-014_notice_of_material_change.pdf`: golden figure 014 appears: ...ost Review under s. 153.86 Item Notice number N25-014 Received 8 October 2025 (complete on receipt) Fil...
@@ -15,9 +15,9 @@ Stump terms swept: product, referral, placement, projection, decisive, acquisiti
 
 ## 4 design-note vocabulary (REVIEW 4)
 - **REVIEW** `N25-014_notice_of_material_change.pdf`: 3 of 25 stump-paragraph terms appear (carrier, exhibit, specialty); read whether the document names the move
-- **REVIEW** `apcd_extract_data_dictionary.pdf`: 5 of 25 stump-paragraph terms appear (product, carrier, claims, acquisition, eligibility); read whether the document names the move
-- **REVIEW** `market_oversight_technical_appendix.pdf`: 8 of 25 stump-paragraph terms appear (product, records, history, claims, exhibit, acquisition); read whether the document names the move
-- **REVIEW** `ohccr_rule_4_preliminary_review.pdf`: 6 of 25 stump-paragraph terms appear (product, projection, history, claims, exhibit, acquisition); read whether the document names the move
+- **REVIEW** `apcd_extract_data_dictionary.pdf`: 4 of 25 stump-paragraph terms appear (product, carrier, claims, acquisition); read whether the document names the move
+- **REVIEW** `market_oversight_technical_appendix.pdf`: 8 of 25 stump-paragraph terms appear (product, records, history, claims, exhibit, appendix); read whether the document names the move
+- **REVIEW** `ohccr_rule_4_preliminary_review.pdf`: 7 of 25 stump-paragraph terms appear (product, projection, history, claims, exhibit, appendix); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -128,3 +128,13 @@ Read 2, isolated, on the final pack (after the appendix pins).
 7. dictionary stump terms: harmless, layout and field definitions; only version netting is stated, no instruction on the decisive step.
 8. appendix stump terms: harmless, it defines exhibits and joining by acquisition as method definitions, does not name the decisive step or the wrong path (one open point noted in Q5: A3 does not say which taxonomy source or whether quantity counts, a determinism matter rather than a leak).
 9. rule stump terms: harmless, 4.04/4.05 state the projection mechanics as rules; they do not announce which step is decisive.
+
+### Read after the prompt repair (2026-10-14, isolated Sonnet reader at medium effort: "how much the deal will change commercial spending")
+
+- **Q1** no sentence names a pitfall or an easy route; the nearest are rules 4.04(b) and 4.05, the filed method for the share that moves.
+- **Q2 to Q4** none; the only threshold is 4.06's $2,000,000, a rule and not a result.
+- **Q5** rules 4.02(c) to 4.06 and appendix A2 to A5 quoted; one visible difference noted (A2 and A3 count exhibit services "whenever paid" while 4.03 cuts the baseline at 30 June), the two governing different figures.
+- **Q6** the reader judged the main call mainly rule application (4.03 to 4.06 with appendix A2 to A5, the 4.05 share definition deciding), as read 1's author note did; the judge's Gate H read it analytical (the share follows each patient's tier for the acquirer in the projection year). An open design concern for the author, not a leak and not moved by the repair.
+- **Prompt read** "how much the deal will change commercial spending" is neutral; nothing presupposes the answer; none, zero or a fall is a grammatical answer to every question and ask.
+- **REVIEW lines** all harmless.
+

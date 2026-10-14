@@ -54,5 +54,13 @@
     "gates": "19 files, 4 formats (csv, json, pdf, xlsx), eligibility spans 102,665 rows, 2 distractors in metadata.json",
     "figures_check": "PASS, 43 figures",
     "target_zip_sha256": "760cadac3a50b825431c2ddc866cc62396bc61b5e5a16509d66239d67afc0e6a"
-  }
+  },
+  "returned": [
+    {
+      "date": "2026-10-14",
+      "portal": "none (self-found before review)",
+      "repair": "prompt: H23 presupposition (the change the deal will cause)",
+      "commit": ""
+    }
+  ]
 }

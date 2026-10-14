@@ -782,3 +782,5 @@ remove the stump and is not taken.
   it would settle the Exhibit 2 device by a filed sentence the cracker executes; A3 defines specialty as
   the classification of the physician's taxonomy instead, which closes the code-to-specialty reading
   without naming a source.
+- 2026-10-14, after shipping: the prompt's "That turns on the increase in commercial spending the deal will cause in 2026 ... Put the call and that increase ... Give the increase to one decimal". Rejected on the house-fix register's H23: "the increase the deal will cause" presupposes a rise, a fact only the analysis establishes (rule 4.06's projected increase may be zero or less); it reads "how much the deal will change commercial spending in 2026", "that change" and "the change", every figure, file and rounding kept, and the reader re-run on the repaired prompt (clean on the prompt; its Q6 repeats read 1's view that 4.04 and 4.05 leave the call to rule application, against the judge's analytical, an open concern for the author).
+
