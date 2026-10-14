@@ -6,32 +6,32 @@
   "domain": "physical-environmental-sciences",
   "subdomain": "emissions-inventory",
   "client_domain": "physical-environmental-sciences",
-  "niche": "a public power utility's emissions performance standard determination for a baseload request for offers: each offered gas unit's carbon dioxide per net megawatt-hour while delivering its contract capacity in every hour, built from the units' hourly emissions monitoring records, the federal generation and fuel survey and the unit-to-generator crosswalk, against the state standard of 925 pounds",
+  "niche": "a public power utility's emissions performance standard determination for a baseload request for offers: each offered gas plant's carbon dioxide per net megawatt-hour while delivering its contract capacity in every hour, built from the plants' hourly emissions monitoring records and revenue meters, against the state standard of 925 pounds, and the utility's 1,000 MW need filled from the complying offers in order of capacity price",
   "objective": "etl",
-  "shape": "10",
-  "decision_type": "designation_set",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Juniper Draw, Kessling Creek and Ashby Gulch: 990 MW of the 1,000 MW need",
+  "answer_source": "generator/figures.json (slate, slate_mw)",
   "gap": [
     "time",
     "population"
   ],
   "pattern": [
-    "A"
+    "E"
   ],
   "generators": [
+    "G14",
     "G13",
-    "G7",
     "G17"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "forecast_method_backtest",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "capacity_report",
+  "context_artifact": "none",
   "stakeholder_role": "manager of resource planning at a public power utility",
   "role_family": "capacity_planner",
   "scoring_unit": "other",
@@ -55,7 +55,7 @@
       "Kessling Creek Generating Station",
       "Tamarack Landing Power Project",
       "Ochre Flat Energy Facility",
-      "Pelton Mill Generating Plant",
+      "Brenmoor Mill Generating Plant",
       "Juniper Draw Power Station",
       "Lindgren Hill Generating Station",
       "Ashby Gulch Energy Center",
@@ -70,15 +70,15 @@
   },
   "deliverables": [
     "eps_determination_rfo_2027.pdf",
-    "offered_plants_emissions_2025.xlsx"
+    "offered_plants_eps_2027.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "The decisive quantity is a ratio of input to output that depends on the operating level, falling as output rises and rising again once a supplementary stage is engaged above a unit's base capability, so the ratio over a closed period reflects the levels the unit happened to run at; the decision commits each unit to one stated level in every interval, a level some units rarely held and others can reach only with the supplementary stage, so the ratio has to be read at that level from the interval records, not carried from the period average.",
   "driver_concrete": "Each offered gas unit's CO2 per net MWh under the baseload commitment is its rate at the contract capacity in every hour: cycling combined cycles whose 2024 and 2025 records are full of starts and part-load hours look above 925 pounds on their annual averages yet sit well under it at full output, while a base-loaded unit offered at a contract capacity above its unfired capability will run its duct burners in every contract hour and lands above 925 though its annual average is under it.",
-  "stump": "The default path rates each offered plant on its 2025 annual pounds of CO2 per net MWh (the monitored CO2 over the metered or surveyed net generation), which fails the cycling combined cycles Sorrel Butte, Kessling Creek and Ashby Gulch on their starts and part-load hours and passes Tamarack Landing, whose annual average is mostly unfired base operation; read at each offer's contract capacity, the rate passes the three cycling plants and fails Tamarack Landing, offered at a capacity it reaches only with its duct burners firing in every hour.",
+  "stump": "The default path rates each offered plant on its 2025 annual pounds of CO2 per net MWh, which fails the cycling combined cycles Sorrel Butte, Kessling Creek and Ashby Gulch on their starts and part-load hours and passes Tamarack Landing, whose annual average is mostly unfired base operation, so the price-ordered fill takes Tamarack Landing and Moraine Point for 905 MW; read at each offer's contract capacity, the rate passes the three cycling plants and fails Tamarack Landing, offered at a capacity it reaches only with its duct burners firing in every hour, and the fill takes Juniper Draw, Kessling Creek and Ashby Gulch for 990 MW.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the hourly emissions records to the plants, aligns them with the metered net generation and computes each plant's 2025 pounds of CO2 per net MWh against 925 signs Tamarack Landing, Ochre Flat, Juniper Draw, Lindgren Hill and Moraine Point and turns down Sorrel Butte, Kessling Creek and Ashby Gulch; reading each plant's rate at its offered contract capacity signs Sorrel Butte, Kessling Creek, Ochre Flat, Juniper Draw, Lindgren Hill, Ashby Gulch and Moraine Point and turns down Tamarack Landing.",
+  "analyst_test": "A strong analyst who conforms the hourly emissions records to the plants, aligns them with the metered net generation, computes each plant's 2025 pounds of CO2 per net MWh against 925 and fills the 1,000 MW need by the request for offers' rule takes Tamarack Landing and Moraine Point for 905 MW; reading each plant's rate at its offered contract capacity, the same rule takes Juniper Draw, Kessling Creek and Ashby Gulch for 990 MW.",
   "domain_test": "The deciding quantity is each unit's carbon dioxide per net megawatt-hour at the committed output, which emissions accounting for generating units builds from hourly heat input against load because a gas unit's heat rate falls with load, carries start-up fuel and rises with supplementary duct firing; with a hospital's or a school's nouns there is no heat input, no part-load penalty, no duct burner and no gross-to-net station service, so the task stops reading.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:emission-rate-at-committed-operating-level",
@@ -89,16 +89,18 @@
     "the generation and fuel survey's monthly net generation and fuel by prime mover at plant level, with combined-cycle steam turbines (CA) carrying generation and no fuel",
     "offers in net MW at the point of delivery under sellers' trade names, against the survey's plant names and codes",
     "a plant's monitoring units renumbered at a mid-2025 monitor replacement, carried in the monitoring plan history",
-    "seasonal capability test results in net MW, summer and winter"
+    "the sellers' outage-log entries per unit in the GADS event format and UTC, against the evaluation's Pacific year: plant trips on every unit's line, re-entries under new numbers (extensions, and three first estimates of return that ran long), maintenance, planned and reserve records beside the forced (the asks' rows, not the call's)"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
     "task230": "task230's forward residual turns on a detection rate that falls as targets grow rare in a pool shared across units; here each plant's emission rate is a physical function of its own output level, read at the committed output from its own hourly records, with no shared pool and no detection step",
     "task114": "task114's demand appears only when parties share a site, so merging sites creates it; here nothing merges or appears: each plant's rate depends on the output level the commitment fixes, read from its own interval records",
     "task33": "task33's forward yield stops at a filed intervention and is recovered by back-testing closed actions against an acceptance bar; here there is no intervention and no back-test: the committed output differs from the levels the plant ran at, and the rate is read at that level",
-    "task452": "task452 prices unsampled days through a concentration-discharge curve because the samples miss the storms; here every hour is recorded and nothing is sampled: the error is carrying a closed period's average to an operating level the commitment fixes and the plant rarely held, and the duct-fired plants reverse it"
+    "task452": "task452 prices unsampled days through a concentration-discharge curve because the samples miss the storms; here every hour is recorded and nothing is sampled: the error is carrying a closed period's average to an operating level the commitment fixes and the plant rarely held, and the duct-fired plants reverse it",
+    "task445": "task445 completes a still-open quarter's unreported 13F holders, where index sponsors keep a fixed fraction of each company so their shares move with its share count, and a filed back-test selects the completion basis; here nothing is unreported or completed and nothing is back-tested: each plant's hourly records are complete, its emission rate is a non-linear function of its own output (part load, starts, duct firing), and the commitment fixes the output the rate is read at, with the duct-fired plant moving the other way",
+    "task256": "task256 standardises a fit rate to a user population's body-size mix; here the mix is of a plant's own operating hours, and the commitment replaces it with one fixed output level that some plants reach only by duct firing"
   },
   "lineage": [],
-  "notes": "",
+  "notes": "Redesigned before any review from shape 10 (the megawatts that comply) to shape 01 (the 1,000 MW need filled from the complying offers in price order) after task230 v3 took shape 10 and the capacity report artifact the draw before. The analysis, the pack and the asks are unchanged; the call adds the request for offers' fill rule, stated once (RFO 5.2), after the decisive step. The sellers' capability tests were cut, so the pack carries no context artifact: the offers log is an operating extract the call reads, and the generator inventory a lookup. Stage 4 (2026-10-14): the judge passed the call, Gates F to H and hygiene and returned the workbook asks as unfiled readings; repaired in place (rates graded on their ranges, the dictionary's Pacific year and plant outage, clock hours and CO2 resting on substitute data in the ask, RP-7 5.3 as the evidence relied on, the request for offers' baseload sentence and three-item data package), with a records-forced re-entry device at three plants so the cracker's union path still misses every Ask A figure; re-judged once.",
   "registered": "2026-10-14T00:30:01Z"
 }

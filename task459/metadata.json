@@ -1,0 +1,153 @@
+{
+  "task": "task459",
+  "architecture": 1,
+  "title": "How much of a public utility district's 1,000 MW baseload need its offers can fill under the state's 925-pound emissions performance standard, and from which plants: each offered gas plant's carbon dioxide per net megawatt-hour under its commitment, conformed from EPA's hourly emissions and the plants' revenue meters",
+  "domain": "Physical & Environmental Sciences",
+  "subdomain": "emissions-inventory (a power-sector carbon dioxide inventory for ten offered gas plants: EPA hourly emissions per monitored stack, revenue-meter net generation, the EIA generator and generation surveys and the EPA-EIA crosswalk conformed into each plant's emission rate)",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "01: a ranked list under a cap, the 1,000 MW need filled in order of capacity price from the offers whose plants meet the 925-pound standard; every offered plant's emission rate, its 2025 forced outage hours and outages and its 2025 hours of substitute data",
+  "as_of": "2026-11-04",
+  "deliverables": [
+    "eps_determination_rfo_2027.pdf",
+    "offered_plants_eps_2027.xlsx"
+  ],
+  "distractor_files": [
+    "eia923_2024-2025_generation_and_fuel_offered_plants.xlsx",
+    "rfo2026_offer_planned_outages_2027.csv"
+  ],
+  "stated_inputs": [
+    "925",
+    "1,000"
+  ],
+  "input_gates": {
+    "files": 12,
+    "formats": [
+      "csv",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "camd_hourly_emissions_offered_units_2024-2025.csv",
+    "largest_file_rows": 245616
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task459/generator/build.py (seeded, deterministic) in the layouts of EPA's Clean Air Markets hourly emissions and monitoring plan exports, the EPA-EIA crosswalk, Forms EIA-860 and EIA-923, revenue-meter interval data and NERC GADS event records; the district, the plants and their owners are fictional.",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-11-04",
+  "generator": "task459/generator/build.py",
+  "files": [
+    {
+      "path": "calder_pud_rp7_resource_procurement_procedure.pdf",
+      "format": "pdf",
+      "bytes": 66267,
+      "rows": null,
+      "source": "Constructed: the district's Resource Procurement Procedure RP-7, revised 9 June 2026",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "camd_hourly_emissions_offered_units_2024-2025.csv",
+      "format": "csv",
+      "bytes": 37283504,
+      "rows": 245616,
+      "source": "Constructed: EPA Clean Air Markets hourly emissions of the offered plants' monitored units, 2024 and 2025, in the layout of the CAMPD hourly export",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "camd_monitoring_plans_offered_units.csv",
+      "format": "csv",
+      "bytes": 4145,
+      "rows": 15,
+      "source": "Constructed: the monitored units' monitoring plan records",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "eia860_2025_generator_offered_plants.xlsx",
+      "format": "xlsx",
+      "bytes": 8980,
+      "rows": null,
+      "source": "Constructed: Form EIA-860 2025 generator data for the offered plants' EIA plant codes",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "eia923_2024-2025_generation_and_fuel_offered_plants.xlsx",
+      "format": "xlsx",
+      "bytes": 26154,
+      "rows": null,
+      "source": "Constructed: Form EIA-923 Page 1 generation and fuel, 2024 and 2025, for the offered plants' EIA plant codes",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "epa_eia_crosswalk_2025.csv",
+      "format": "csv",
+      "bytes": 3621,
+      "rows": 27,
+      "source": "Constructed: EPA-EIA power sector data crosswalk rows for the offered plants",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rfo2026_baseload_request_for_offers.pdf",
+      "format": "pdf",
+      "bytes": 86076,
+      "rows": null,
+      "source": "Constructed: the district's 2026 Baseload Request for Offers, issued 1 June 2026",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rfo2026_evaluation_data_dictionary.txt",
+      "format": "txt",
+      "bytes": 4044,
+      "rows": null,
+      "source": "Constructed: the district's field descriptions for the evaluation data",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rfo2026_offer_gads_events_2025.csv",
+      "format": "csv",
+      "bytes": 189165,
+      "rows": 1542,
+      "source": "Constructed: the respondents' 2025 GADS event records, compiled by the district",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rfo2026_offer_meter_data_2024-2025.csv",
+      "format": "csv",
+      "bytes": 11220991,
+      "rows": 175440,
+      "source": "Constructed: the respondents' hourly revenue-meter net generation, 2024 and 2025, compiled by the district",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rfo2026_offer_planned_outages_2027.csv",
+      "format": "csv",
+      "bytes": 1287,
+      "rows": 13,
+      "source": "Constructed: the respondents' planned and maintenance outages for 2027",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rfo2026_offers_received.xlsx",
+      "format": "xlsx",
+      "bytes": 7449,
+      "rows": null,
+      "source": "Constructed: the district's log of the offers received under its 2026 baseload request for offers",
+      "date": "2026-11-04",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

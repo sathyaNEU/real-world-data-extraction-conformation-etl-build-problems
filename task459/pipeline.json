@@ -1,23 +1,37 @@
 {
   "task": "task459",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "physical-environmental-sciences",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "shipped",
   "updated": "2026-10-14",
-  "stump": "The default path rates each offered plant on its 2025 annual pounds of CO2 per net MWh, which turns down the cycling combined cycles Sorrel Butte, Kessling Creek and Ashby Gulch on their starts and part-load hours and signs Tamarack Landing on mostly unfired base operation; read at each offer's contract capacity, the rate signs the three cycling plants and turns down Tamarack Landing, which reaches its contract capacity only with its duct burners firing in every hour.",
+  "stump": "The default path rates each offered plant on its 2025 annual CO2 per net MWh, which turns down the cycling combined cycles Sorrel Butte, Kessling Creek and Ashby Gulch on their starts and part-load hours and passes Tamarack Landing on mostly unfired base operation, so the price-ordered fill takes Tamarack Landing and Moraine Point for 905 MW; read at each offer's Contract Capacity, the rate passes the three cyclers and fails Tamarack Landing, which reaches its Contract Capacity only with its duct burners firing, and the fill takes Juniper Draw, Kessling Creek and Ashby Gulch for 990 MW.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "0.09 (task258)", "note": "guard check 2026-10-14: WARN only (overuse.objective, repeat.gate_g, overuse.gate_g); same_puzzle and same_driver against task230, task114 and task33 differentiated on the card"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-14"
+  },
+  "leak": {
+    "leak_py": "REVIEW (no LEAK)",
+    "reader": "three passes: 5.3 reworded twice, realism tells fixed; questions 1 to 4 none, question 6 analytical"
+  },
+  "duplicate_check": {
+    "heart": "WARN",
+    "nearest": "0.09 (task258)",
+    "note": "guard check and heart WARN only (overuse.objective, overuse.gate_g); surface promotes the task445 pair on the gap, pattern and Gate G signature for the author's read, differentiated on the card; shape 01 after task230 v3 took shape 10"
+  },
+  "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report.md (round 1 NOT_DETERMINISTIC on the workbook asks, repaired in place; round 2 DETERMINISTIC FIX_NOW, extract author properties; round 3 DETERMINISTIC APPROVE)"
+  },
   "returned": [],
   "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-14",
   "portal": null,
   "source_note": "seed ET16 (analytical_tasks/07_data_extraction_conformation): kept the world (gas units in one footprint, a planning team's list), the decision (which units make the list) and the quantity (efficiency, read as CO2 per net MWh); the seed's mechanisms (combined-cycle steam turbines with no fuel, CHP fuel, generator fan-out) survive only as Layer 1"
 }
