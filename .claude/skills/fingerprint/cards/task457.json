@@ -1,0 +1,92 @@
+{
+ "task": "task457",
+ "architecture": "v1",
+ "drawn": "2026-10-14",
+ "slot_note": "",
+ "domain": "survey-research-official-statistics",
+ "subdomain": "census-register-administrative-data-quality",
+ "niche": "an academic medical center's conflict-of-interest docket built for a year the federal Open Payments register has not yet published: faculty self-disclosures of industry remuneration corrected by each discloser's completeness measured against the register's closed years",
+ "objective": "etl",
+ "shape": "01",
+ "decision_type": "ranked_slate_under_cap",
+ "answer_unit": "set_of_items",
+ "answer": "",
+ "answer_source": "",
+ "gap": [
+  "rule",
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G16",
+  "G13",
+  "G12"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "censored_or_lagged_release",
+ "stump_strategy": "forecast_method_backtest",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "register",
+ "stakeholder_role": "the director of the medical center's conflict-of-interest office, setting the committee's docket",
+ "role_family": "compliance_or_audit",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "open_payments_general_payments_2021-2025_extract.csv",
+  "rows": 0,
+  "entity": "one general payment record in the Open Payments register, for a covered recipient the office's extract matched to the medical center's faculty by name or NPI",
+  "grain": "payment record (program year, record ID, change type)",
+  "source": "synthetic (constructed in the layout of the CMS Open Payments general payments file)"
+ },
+ "forum": "line_manager_or_team",
+ "forcing_event": "vote_or_meeting",
+ "org_family": "hospital_or_health_provider",
+ "world": {
+  "geography": "United States: Ohio (a fictional academic medical center; Open Payments' real layout and publication calendar; the faculty, manufacturers and people fictional)",
+  "currency": "USD",
+  "org_type": "an academic medical center's office of research integrity and conflicts of interest",
+  "invented_names": [
+   "Marrowfield University Health"
+  ],
+  "people": [
+   "Karen Shea",
+   "Diana Hickman",
+   "Herbert Dean"
+  ]
+ },
+ "deliverables": [
+  "coi_committee_docket_2027-02.docx",
+  "faculty_remuneration_2026_conformed.csv"
+ ],
+ "opening_move": "question-first",
+ "question_form": "who",
+ "driver": "Each unit's amount in the latest period is seen only through its own report, which misses a share that differs by unit; the share is measured on the unit's closed periods, where a complete record exists, and a unit's own measured share is noise when its history is thin, so each unit's correction is weighted between its own history and the common share by the volume of that history, the weighting chosen by how well it reproduces the last closed period.",
+ "driver_concrete": "Each faculty member's 2026 remuneration from each manufacturer is known only from the faculty member's own disclosure, Open Payments publishing 2026 only in June 2027; the disclosure's completeness is measured against the register for 2021 to 2025, and a faculty member's own completeness from a few payments is noise, so each is credibility-weighted toward the faculty-wide completeness by the dollars of their history, the weighting the one that best reproduces 2025 from the years before it.",
+ "stump": "A competent analyst corrects each 2026 disclosure by its author's own completeness ratio from the register's closed years, and faculty whose thin histories happened to leave a payment or two undisclosed take docket places from faithful disclosers the golden keeps; the disclosures at face value, or all scaled by the faculty-wide ratio, rank alike and leave out the long-record under-disclosers.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who conforms the register and the disclosures and reads every field correctly corrects each 2026 disclosure by its author's own completeness ratio measured on 2021 to 2025 and files a docket in which thin-history faculty displace faithful disclosers; the uncorrected disclosures, or the faculty-wide ratio (which changes no rank), file a docket without the long-record under-disclosers.",
+ "domain_test": "The deciding quantity is each faculty member's 2026 single-manufacturer remuneration, nowcast the way official statistics fills a register's unpublished period from a timely self-report: the report's error measured against the register on the closed years, each reporter's error rate credibility-weighted by the volume of its history and the weighting validated on the last closed year; at face value, pooled, or person by person unweighted, the docket changes, and with another field's nouns the deciding quantity is no longer a register-calibrated self-report.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task136": "task136 chooses which ratio of an intervention's increment is stable enough to carry to a new site; here the ratio is fixed (a report's completeness against the register) and the move is shrinking each reporter's own ratio toward the pooled one by the volume of its history, the strength chosen on the last closed year.",
+  "task185": "task185 sizes one instrument conversion by the level being converted; here no instrument changes, the correction is sized per reporter, and the decisive property is how far a thin record is trusted against the pool.",
+  "task80": "task80 dates a status from the event that conferred it rather than its first observed period; here nothing is dated, and the decisive step is a credibility-weighted estimate of each reporter's under-report."
+ },
+ "lineage": [],
+ "notes": "Personas drawn with guard.py names --geo 'United States' --seed 457. calibration_form censored_or_lagged_release: the register's closed program years are the truth the disclosures are measured against, and its publication lag is why 2026 is seen only through the disclosures. decisive_rule_filed false: the policy files the estimand (remuneration received from a single entity in the calendar year) and, in general terms, the criterion by which the office's correction is chosen (the one that best reproduces the latest published year from the years before it), never the method. forum line_manager_or_team: the office's director sets the docket the office takes to the committee's February meeting (the forcing event); the committee reviews the cases, it does not choose them.",
+ "client_domain": "survey-research-official-statistics",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:reporter-completeness-credibility-against-a-lagged-register",
+ "layer1": [
+  "several sources for one picture: the Open Payments register (manufacturer-reported, by program year, a year and a half late), the faculty disclosure system (self-reported, timely), the human resources roster",
+  "imperfect keys: the register's covered-recipient profile IDs and NPIs, NPIs missing on older records and on some faculty, names spelled differently, manufacturers named by their submitting entity and typed by faculty in their own words",
+  "vintages and revisions: each program year published at the end of June and refreshed in January, records new, changed, unchanged or deleted between publications; the 2021 schema change that renamed the physician fields to covered-recipient fields",
+  "documentation that has to be read: the register's natures of payment, the disclosure form's categories and its 2024 change, the policy's significant financial interest",
+  "genuine overlap: one payment reported by a manufacturer and its affiliate's agent, disclosures resubmitted after correction",
+  "real coverage: faculty joining and leaving during the years, a manufacturer outside Open Payments' reach (no product covered by Medicare or Medicaid) seen only in the disclosures"
+ ],
+ "registered": "2026-10-14T20:10:18Z"
+}
