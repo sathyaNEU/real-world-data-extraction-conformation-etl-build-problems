@@ -34,9 +34,12 @@ RATING = {"R1": "Residential - owner occupied", "R2": "Residential - not owner o
 
 
 def feeder_on(n, d):
-    if n["locality"] == "Yarrabin North" and d < K.TRANSFER_DATE:
-        return "YRB23"
-    return n["feeder"]
+    """The feeder an NMI was on at date d."""
+    f = n["hist"][0][1]
+    for start, fd in n["hist"][1:]:
+        if d >= start:
+            f = fd
+    return f
 
 
 def status_date(a):
@@ -56,7 +59,7 @@ def register_rows(W):
         legacy = a.get("legacy_no")
         kw = "" if legacy else ("%.2f" % a["kw"] if a["kw"] is not None else "")
         kwp = "%.2f" % a["kwp"] if a["kwp"] is not None else ""
-        batt = "%.1f" % a["battery"] if a["battery"] else ""
+        batt = "%.2f" % a["battery"] if a["battery"] else ""
         connected = a["connected"]
         if a["status"] == "Removed":
             connected = a["connected"]
@@ -109,7 +112,7 @@ def der_rows(W):
         for d in s["devices"]:
             yield [s["ac"], s["nmi"], d["type"], d["brand"], d["model"],
                    "%.2f" % d["rated"] if d["rated"] is not None else "",
-                   "%.2f" % s["storage"] if d["type"] == "Battery" else "",
+                   "%.2f" % d["storage"] if d["type"] == "Battery" else "",
                    s["status"], K.iso(s["decom"] or s["registered"]), K.iso(s["registered"]), s["installer"],
                    s["feeder"]]
 

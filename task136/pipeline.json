@@ -1,41 +1,81 @@
 {
   "task": "task136",
   "owner": "sathya8571",
-  "status": "SHIPPED",
+  "status": "BUILD",
   "domain": "energy-systems-utilities",
   "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-12",
-  "stump": "A competent solver collapses alterations, builds NPP-114's base trend, carries the past bulk-buys' systems per home letterboxed onto the 2027 letterbox drops and files YRB22 at about 1.5 MW over hosting capacity; the step that lands it there is transferring each campaign's yield per contacted address instead of per owner-occupied house still without rooftop PV in its suburb, which leaves YRB24's untouched Bindarra Waters estate with well under half its campaign: the golden is YRB24 at about 1.9 MW.",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-14",
+  "stump": "A competent solver builds NPP-114's base forecast, carries the seven past bulk-buys onto the 2026 suburbs at the council's pooled participation rate per home letterboxed and files YRB24 at about 1.8 MW over hosting capacity, and the textbook correction, per owner-occupied house still without PV when sign-ups open, files YRB24 at 3.0; the step that lands both there is carrying a campaign's yield on a pool of houses instead of on the suburb's own uptake (about 1.17 systems per first application its owner-occupied houses lodged in the year before sign-ups opened), which gives Bindarra Waters' large, slow estate two to five times its campaign and Wattleview's fast one less than half of its: the golden is YRB27 at about 1.9 MW.",
   "architecture": 1,
   "loops": 0,
+  "round": 2,
+  "round2": {
+    "date": "2026-10-14",
+    "trigger": "10/10 audit COMPLIANT_WEAK (round2-brief): the eligible-pool denominator a textbook reflex the program terms name, a rough pool estimate landing the call, the seven campaigns agreeing within 0.6 per cent, Ask A's temporary NMIs resolved through the re-allocation log, Ask B's repeated capacity cracked by grouping",
+    "redesign": "decisive step moved to the yield carried on each suburb's own uptake (first applications from owner-occupied houses in the year before sign-ups open); the round-1 basis is rung 1 (the reflex); campaigns moved to spring 2026; realistic campaign scatter (cv 0.085); NPP-114 4.2 files the pooled rate; runner-up moved to YRB24; four per-feeder DER Register asks on new devices; prompt rewritten",
+    "call": "YRB27, 1.9 MW over hosting capacity at 31 August 2029; runner-up YRB24 1.4; gap 0.5; Bindarra Waters 0.4 MW, Wattleview 1.7 MW"
+  },
   "precut": {
     "exit": 0,
-    "date": "2026-10-12"
+    "date": "2026-10-14"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-12 on the final rebuild (--asof 2026-10-12), no LEAK, sweep 11 clean; the same seven lines, each answered in the design note's Build record (sweep 4's terms shifted at ship when the pre-ship check entered the swept paragraphs, answered there)",
-    "reader": "2026-10-12 on the stage-3 pack: nothing quoted for questions 1 to 4, its per-letterbox reading priced and refused by the records (SF16), its realism tell fixed; targeted re-read of the two changed documents (dictionary, assessment): nothing quoted for questions 1 to 4, its realism notes on the assessment not acted on (each a change beyond a date for no graded figure, in the design note's Tried and rejected)"
+    "leak_py": "REVIEW 2026-10-14 on the round-2 build (--asof 2026-10-12), no LEAK, sweep 11 clean; every REVIEW line answered in the design note's Build record (the write-up's quoted 2029 hosting capacity, an assessment input, swept LEAK and was dropped)",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-12 at the final rebuild (overuse.gate_g, repeat.question_form, answered under Guard); nearest text 0.08 task137's card stump; no BLOCK",
-    "nearest": "0.07 task86 v2 (driver); surface 0 promoted, nearest 0.094 task95 and task73"
+    "heart": "WARN 2026-10-14 (overuse.gate_g only, answered under Guard); no BLOCK",
+    "nearest": "0.21 this slot's round-1 lineage (driver, differentiated), 0.06 task94 v3; surface exit 0, four pairs promoted on card axes (task138, task185, task80 v2, task450 retired), each differentiated on the card; personas clear after Christopher Sheppard was renamed Ian Fletcher"
   },
   "judge": {
-    "verdict": "DETERMINISTIC 2026-10-12 (judge-task136b, re-judge): APPROVE, no fix; the call forced (YRB24 1.9 MW, YRB22 1.5, gap 0.4), every supplementary figure reproduced; one watch item, Ask B's repeated battery capacity",
-    "disposition": "APPROVE, shipped; the watch item left unwritten in the pack, its one reading asserted in checks.py and recorded in the design note's Ask B; the dictionary's date moved from 2 to 7 September (its properties and the manifest, a date only), the shipped pack's one difference from the judged one; pass 1 (judge-task136) DETERMINISTIC with a FIX_NOW, applied (SF23, SF24, SF16) with no graded figure moved",
-    "report": "determinism_check_report_pass2.md (pass 1: determinism_check_report.md)",
-    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; no reported number is wrong",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
+  "rounds": [
+    {
+      "round": 1,
+      "shipped": "2026-10-12",
+      "stump": "A competent solver collapses alterations, builds NPP-114's base trend, carries the past bulk-buys' systems per home letterboxed onto the 2027 letterbox drops and files YRB22 at about 1.5 MW over hosting capacity; the step that lands it there is transferring each campaign's yield per contacted address instead of per owner-occupied house still without rooftop PV in its suburb, which leaves YRB24's untouched Bindarra Waters estate with well under half its campaign: the golden is YRB24 at about 1.9 MW.",
+      "judge": {
+        "verdict": "DETERMINISTIC 2026-10-12 (judge-task136b, re-judge): APPROVE, no fix; the call forced (YRB24 1.9 MW, YRB22 1.5, gap 0.4), every supplementary figure reproduced; one watch item, Ask B's repeated battery capacity",
+        "disposition": "APPROVE, shipped; the watch item left unwritten in the pack, its one reading asserted in checks.py and recorded in the design note's Ask B; the dictionary's date moved from 2 to 7 September (its properties and the manifest, a date only), the shipped pack's one difference from the judged one; pass 1 (judge-task136) DETERMINISTIC with a FIX_NOW, applied (SF23, SF24, SF16) with no graded figure moved",
+        "report": "determinism_check_report_pass2.md (pass 1: determinism_check_report.md)",
+        "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; no reported number is wrong",
+        "gate_h": "domain pass, layers pass, decisive_step analytical"
+      },
+      "leak": {
+        "leak_py": "REVIEW 2026-10-12 on the final rebuild (--asof 2026-10-12), no LEAK, sweep 11 clean; the same seven lines, each answered in the design note's Build record (sweep 4's terms shifted at ship when the pre-ship check entered the swept paragraphs, answered there)",
+        "reader": "2026-10-12 on the stage-3 pack: nothing quoted for questions 1 to 4, its per-letterbox reading priced and refused by the records (SF16), its realism tell fixed; targeted re-read of the two changed documents (dictionary, assessment): nothing quoted for questions 1 to 4, its realism notes on the assessment not acted on (each a change beyond a date for no graded figure, in the design note's Tried and rejected)"
+      },
+      "duplicate_check": {
+        "heart": "WARN 2026-10-12 at the final rebuild (overuse.gate_g, repeat.question_form, answered under Guard); nearest text 0.08 task137's card stump; no BLOCK",
+        "nearest": "0.07 task86 v2 (driver); surface 0 promoted, nearest 0.094 task95 and task73"
+      },
+      "precut": {
+        "exit": 0,
+        "date": "2026-10-12"
+      },
+      "audit": "10/10 audit 2026-10-14 COMPLIANT_WEAK (scratchpad/audit/task136.md)"
+    }
+  ],
   "returned": [],
-  "resume": "shipped; next event is the author's portal result",
+  "resume": "stage 4: reader and judge",
   "approved": null,
-  "delivered": "2026-10-12",
+  "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "wave": "wave 2 (new), seed FC07"
+  "wave": "wave 2 (new), seed FC07",
+  "gates": {
+    "checks": "429 assertions",
+    "verify": "88 checks",
+    "rebuild": "two builds byte-identical, target.zip sha256 ac3475bded2eb1f3ea79258844f004fc74d980cd1526bfce07932626770db88a",
+    "figures_check": "72 figures, 0 absent",
+    "precut": "49 checks, 0 FAIL, 0 WARN",
+    "voice_check": "PASS"
+  }
 }

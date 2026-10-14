@@ -6,6 +6,7 @@ campaign figures are targets the construction meets exactly, and every analysis 
 written files (calc.py)."""
 from __future__ import annotations
 
+import collections
 import datetime as dt
 import math
 
@@ -15,8 +16,8 @@ import common as K
 
 # Organic adoption pace by calendar year (relative units per year): the Solar Bonus Scheme surge of 2010-2012, the
 # lull after the feed-in tariff closed, and the steady rise with cheaper panels from 2017.
-PACE = {2009: 0.40, 2010: 1.20, 2011: 2.15, 2012: 1.95, 2013: 0.90, 2014: 0.80, 2015: 0.85, 2016: 0.95, 2017: 1.20,
-        2018: 1.40, 2019: 1.50, 2020: 1.55, 2021: 1.60, 2022: 1.50, 2023: 1.45, 2024: 1.40, 2025: 1.40, 2026: 1.40,
+PACE = {2009: 0.40, 2010: 1.20, 2011: 2.15, 2012: 1.95, 2013: 0.90, 2014: 0.95, 2015: 1.20, 2016: 1.35, 2017: 1.40,
+        2018: 1.40, 2019: 1.40, 2020: 1.40, 2021: 1.40, 2022: 1.40, 2023: 1.40, 2024: 1.40, 2025: 1.40, 2026: 1.40,
         2027: 1.40, 2028: 1.40, 2029: 1.40, 2030: 1.40}
 HORIZON = dt.date(2030, 12, 31)
 
@@ -73,6 +74,20 @@ def inv_pace(start, amount):
     return None
 
 
+BOOM_END = dt.date(2013, 1, 1)
+
+
+def adopt_date(start, e, lam_boom, lam):
+    """The date a unit exponential e is reached by the cumulative hazard from start: lam_boom per unit of pace in the
+    Solar Bonus Scheme years, lam from 2013."""
+    if start < BOOM_END:
+        h = lam_boom * cum_pace(start, BOOM_END)
+        if e <= h:
+            return inv_pace(start, e / lam_boom)
+        return inv_pace(BOOM_END, (e - h) / lam)
+    return inv_pace(start, e / lam)
+
+
 def inverter_size(r, d, kind="res"):
     """Inverter rating (kW AC) and panel capacity (kWp) for a system connected on d."""
     y = d.year
@@ -106,6 +121,15 @@ def make_nmi(r, used):
             return n
 
 
+def feeder_on(n, d):
+    """The feeder an NMI was on at date d (the network model's history of load transfers)."""
+    f = n["hist"][0][1]
+    for start, fd in n["hist"][1:]:
+        if d is not None and d >= start:
+            f = fd
+    return f
+
+
 def build_places(W):
     """Properties, NMIs and the cross-reference, locality by locality."""
     used_nmi, used_prop = set(), set()
@@ -114,6 +138,7 @@ def build_places(W):
     pool = list(STREETS)
     r_streets.shuffle(pool)
     sidx = 0
+    transfers = {t[0]: t[1:] for t in K.TRANSFERS}
     for loc in K.LOCALITIES:
         r = K.rng("place", loc.get("stream", loc["name"]))
         name, feeder = loc["name"], loc["feeder"]
@@ -129,8 +154,22 @@ def build_places(W):
             base = pool[sidx % len(pool)]
             sidx += 1
             streets.append("%s %s" % (base, SUFFIX[int(r.integers(0, len(SUFFIX)))]))
+        # a load transfer moves the whole locality, or the streets of one section of it
+        moved, hist_of = set(), None
+        if name in transfers:
+            share, frm, to, when = transfers[name]
+            rt = K.rng("transfer", name)
+            k = len(streets) if share >= 1.0 else int(round(share * len(streets)))
+            moved = set(streets) if share >= 1.0 else set(rt.choice(streets, size=k, replace=False))
+
+            def hist_of(st, frm=frm, to=to, when=when):
+                return [(None, frm), (when, to)] if st in moved else [(None, frm)]
+        else:
+            def hist_of(st, feeder=feeder):
+                return [(None, feeder)]
         lo, hi = loc["built"]
         infill = loc.get("infill", 0)
+        estate = loc["kind"] == "campaign26"
         # houses built in the estate's own years; infill houses (knock-down rebuilds and splits) 2019 to 2026
         house_idx = [i for i, k in enumerate(kinds) if k.startswith("house")]
         infill_set = set(int(x) for x in r.choice(house_idx, size=infill, replace=False)) if infill else set()
@@ -140,9 +179,13 @@ def build_places(W):
             if i in infill_set:
                 handover = K.add_days(dt.date(2019, 3, 1), int(r.integers(0, 2700)))
                 built = handover.year
-            elif loc["kind"] == "campaign27" and name == "Bindarra Waters":
-                # stages handed over 2019 to June 2025
-                handover = K.add_days(dt.date(2019, 4, 1), int(r.integers(0, 2245)))
+            elif estate and name == "Bindarra Waters":
+                # stages handed over March 2018 to May 2023
+                handover = K.add_days(dt.date(2018, 3, 1), int(r.integers(0, 1900)))
+                built = handover.year
+            elif estate and name == "Wattleview":
+                # stages handed over January 2019 to June 2023
+                handover = K.add_days(dt.date(2019, 1, 14), int(r.integers(0, 1620)))
                 built = handover.year
             else:
                 built = int(r.integers(lo, hi + 1))
@@ -172,12 +215,13 @@ def build_places(W):
                                                     ("R1" if r.random() < 0.45 else "R2"))
             p = dict(property_no=prop_no, lot=lot, address=addr, locality=name, postcode=postcode,
                      land_use=lu, rating=occ, area=area, built=built, handover=handover, kind=kind,
-                     infill=(i in infill_set) or (name == "Bindarra Waters"), feeder=feeder, loc=loc)
+                     infill=(i in infill_set) or estate, feeder=feeder, loc=loc, street=street)
             W.props.append(p)
             nmi = make_nmi(r, used_nmi)
-            n = dict(nmi=nmi, feeder=feeder, tariff="Residential", address=addr, locality=name,
+            hist = hist_of(street)
+            n = dict(nmi=nmi, feeder=hist[-1][1], hist=hist, tariff="Residential", address=addr, locality=name,
                      postcode=postcode, status="Active", energised=handover, prop=p, temp=None,
-                     transformer="%s-T%04d" % (feeder, int(r.integers(1, 420))))
+                     transformer="%s-T%04d" % (hist[-1][1], int(r.integers(1, 420))))
             p["nmis"] = [n]
             W.nmis.append(n)
         # business NMIs on their own commercial properties
@@ -193,12 +237,13 @@ def build_places(W):
                      address=addr, locality=name, postcode=postcode, land_use=str(r.choice(["11", "17", "27", "41"])),
                      rating="C1", area=int(r.integers(400, 3000)), built=built,
                      handover=dt.date(built, int(r.integers(1, 13)), int(r.integers(1, 28))), kind="biz", infill=False,
-                     feeder=feeder, loc=loc)
+                     feeder=feeder, loc=loc, street=street)
             W.props.append(p)
             nmi = make_nmi(r, used_nmi)
-            n = dict(nmi=nmi, feeder=feeder, tariff="Business", address=addr, locality=name, postcode=postcode,
-                     status="Active", energised=p["handover"], prop=p, temp=None,
-                     transformer="%s-T%04d" % (feeder, int(r.integers(1, 420))))
+            hist = hist_of(street)
+            n = dict(nmi=nmi, feeder=hist[-1][1], hist=hist, tariff="Business", address=addr, locality=name,
+                     postcode=postcode, status="Active", energised=p["handover"], prop=p, temp=None,
+                     transformer="%s-T%04d" % (hist[-1][1], int(r.integers(1, 420))))
             p["nmis"] = [n]
             W.nmis.append(n)
         # vacant lots on the roll (no NMI)
@@ -211,14 +256,16 @@ def build_places(W):
             W.props.append(dict(property_no=prop_no, lot="%dSP%06d" % (int(r.integers(1, 400)), int(r.integers(100000, 399999))),
                                 address="%d %s" % (int(r.integers(1, 260)), street), locality=name,
                                 postcode=postcode, land_use="01", rating="V1", area=int(r.integers(380, 900)),
-                                built=None, handover=None, kind="vacant", infill=False, feeder=feeder, loc=loc, nmis=[]))
+                                built=None, handover=None, kind="vacant", infill=False, feeder=feeder, loc=loc, nmis=[],
+                                street=street))
     # dual occupancy: a granny flat with its own NMI on a few rest-locality houses
     r = K.rng("dual")
     rest_houses = [p for p in W.props if p["kind"] == "house_oo" and p["loc"]["kind"] == "rest"]
     for p in [rest_houses[int(i)] for i in r.choice(len(rest_houses), size=41, replace=False)]:
         n0 = p["nmis"][0]
         nmi = make_nmi(r, used_nmi)
-        n = dict(nmi=nmi, feeder=n0["feeder"], tariff="Residential", address="%s (secondary dwelling)" % p["address"],
+        n = dict(nmi=nmi, feeder=n0["feeder"], hist=n0["hist"], tariff="Residential",
+                 address="%s (secondary dwelling)" % p["address"],
                  locality=p["locality"], postcode=n0["postcode"], status="Active",
                  energised=K.add_days(max(p["handover"], dt.date(2012, 1, 1)), int(r.integers(200, 3000))),
                  prop=p, temp=None, transformer=n0["transformer"], secondary=True)
@@ -226,10 +273,10 @@ def build_places(W):
             n["energised"] = K.add_days(K.BASE, -int(r.integers(30, 400)))
         p["nmis"].append(n)
         W.nmis.append(n)
-    # new builds since 2019 were first supplied on a builder's temporary NMI
+    # new builds handed over since 1 July 2019 were first supplied on a builder's temporary NMI
     r = K.rng("temp")
     for p in W.props:
-        if p["kind"] in ("house_oo", "house_rent") and p["infill"] and p["handover"] >= dt.date(2019, 1, 1):
+        if p["kind"] in ("house_oo", "house_rent") and p["infill"] and p["handover"] >= dt.date(2019, 7, 1):
             n = p["nmis"][0]
             n["temp"] = make_nmi(r, used_nmi)
             n["temp_from"] = K.add_days(p["handover"], -int(r.integers(120, 300)))
@@ -241,9 +288,9 @@ def build_places(W):
         if n is None or not n.get("temp") or p["loc"]["kind"] not in ("rest", "transfer"):
             continue
         demolished = K.add_days(n["temp_from"], -int(r.integers(7, 60)))
-        old = dict(nmi=make_nmi(r, used_nmi), feeder=n["feeder"], tariff="Residential", address=p["address"],
-                   locality=p["locality"], postcode=n["postcode"], status="Abolished", energised=None, prop=p, temp=None,
-                   transformer=n["transformer"], demolished=demolished, abolished=True)
+        old = dict(nmi=make_nmi(r, used_nmi), feeder=n["feeder"], hist=n["hist"], tariff="Residential",
+                   address=p["address"], locality=p["locality"], postcode=n["postcode"], status="Abolished",
+                   energised=None, prop=p, temp=None, transformer=n["transformer"], demolished=demolished, abolished=True)
         if demolished < dt.date(2022, 7, 1) and r.random() < 0.55:
             old["pv"] = True
         W.old_nmis.append(old)
@@ -251,93 +298,92 @@ def build_places(W):
     W.nmi_by = {n["nmi"]: n for n in W.nmis}
 
 
-
 # ----------------------------------------------------------------------------------------------------------------
 # adoption
 
-def solve_exact(E, H, n_target):
-    """A propensity under which exactly n_target of the houses (latent exponentials E over exposures H) adopt."""
-    ratio = np.where(H > 0, E / np.maximum(H, 1e-12), np.inf)
-    order = np.sort(ratio)
-    assert n_target < len(order) and np.isfinite(order[n_target - 1]), (n_target, len(order))
-    lo, hi = order[n_target - 1], order[n_target]
-    return float(lo + (hi - lo) * 0.5)
+def stratified_exponentials(r, starts):
+    """Unit exponentials for houses listed with their start dates: quantiles laid out along a low-discrepancy sequence
+    in order of start, so every cohort of handovers spans the whole distribution and the houses taking up PV in any
+    stretch of time number close to their expectation instead of wandering with sampling noise."""
+    n = len(starts)
+    order = sorted(range(n), key=lambda i: (starts[i], i))
+    q = np.empty(n)
+    off = float(r.uniform(0.0, 1.0))
+    for rank, i in enumerate(order):
+        q[i] = (off + rank * 0.6180339887498949) % 1.0
+    q = np.clip(q, 0.5 / n, 1.0 - 0.5 / n)
+    return -np.log1p(-q)
 
 
-def application_dates(r, decided, program=False, close=None):
-    """received, approved and connected dates for an application lodged on the decision date."""
+def application_dates(r, decided, program=False, close=None, lags=None):
+    """received, approved and connected dates for an application lodged on the decision date (lags, when given, are
+    the days to approval and from approval to connection)."""
     received = K.business_day(decided)
-    approved = K.business_day(K.add_days(received, int(r.integers(2, 16))))
+    a_lag = lags[0] if lags else int(r.integers(2, 16))
+    approved = K.business_day(K.add_days(received, a_lag))
     if program:
         connected = K.business_day(K.add_days(max(approved, close), int(r.integers(14, 130))))
     else:
-        connected = K.business_day(K.add_days(approved, int(r.integers(18, 95))))
+        c_lag = lags[1] if lags else int(r.integers(18, 95))
+        connected = K.business_day(K.add_days(approved, c_lag))
     return received, approved, connected
 
 
 def simulate(W):
     """Every NMI's applications: (nmi, dict(...)) in the order they were lodged."""
     W.apps = []
-    W.camp_pool = {}
+    W.camp_pool, W.camp_n12, W.camp_systems = {}, {}, {}
     loc_props = {}
     for p in W.props:
         loc_props.setdefault(p["locality"], []).append(p)
-    targets_rest = {"Merindah Heights": 0.44, "Hollow Creek": 0.47, "Tanners Flat": 0.36, "Yarrabin North": 0.40,
-                    "Myrtle Vale": 0.52, "Coachwood Park": 0.41, "Bloodwood": 0.49, "Jacaranda Gardens": 0.43,
-                    "Ferndale Rise": 0.42}
     for loc in K.LOCALITIES:
-        name = loc["name"]
+        name, lam = loc["name"], loc["lam"]
+        lam_boom = loc.get("lam_boom", lam)
         r = K.rng("adopt", loc.get("stream", name))
         props = loc_props[name]
         oo = [p for p in props if p["kind"] == "house_oo"]
-        start = np.array([max(K.WORLD_START, p["handover"]) for p in oo])
-        E = r.exponential(1.0, len(oo))
+        start = [max(K.WORLD_START, p["handover"]) for p in oo]
         builder = set()
-        if name == "Bindarra Waters" or any(p["infill"] for p in oo):
-            cands = [i for i, p in enumerate(oo) if p["infill"] and p["handover"] >= dt.date(2019, 1, 1)]
+        cands = [i for i, p in enumerate(oo) if p["infill"] and p["handover"] >= dt.date(2019, 7, 1)]
+        if cands:
             if name == "Bindarra Waters":
                 nb = 112
+            elif name == "Wattleview":
+                nb = int(round(len(cands) * 0.18))
             else:
                 nb = max(1, int(round(len(cands) * 0.42)))
             builder = set(int(i) for i in r.choice(cands, size=min(nb, len(cands)), replace=False))
-        if loc["kind"] == "campaign":
-            c = K.CAMP[loc["camp"]]
-            when, target = c["open"], c["pv_open"]
-        elif loc["kind"] == "campaign27":
-            c = [x for x in K.CAMPAIGNS_2027 if x["suburb"] == name][0]
-            when, target = K.BASE, c["pv_base"] - len(builder)
-        else:
-            when, target = K.BASE, None
-        H = np.array([cum_pace(s, when) for s in start])
-        H_eff = H.copy()
-        for i in builder:
-            H_eff[i] = 0.0          # builder systems are not organic decisions
-        if target is None:
-            share = targets_rest[name]
-            target = int(round(share * len(oo))) - len(builder)
-        prop = solve_exact(E, H_eff, target)
+        organic = [i for i in range(len(oo)) if i not in builder]
+        E = stratified_exponentials(r, [start[i] for i in organic])
         decided = [None] * len(oo)
-        for i, p in enumerate(oo):
-            if i in builder:
-                continue
-            t = inv_pace(start[i], E[i] / prop)
-            decided[i] = t
-        W.loc_prop = getattr(W, "loc_prop", {})
-        W.loc_prop[name] = prop
-        # campaign conversions among the houses untapped at the opening
+        for e, i in zip(E, organic):
+            decided[i] = adopt_date(start[i], float(e), lam_boom, lam)
+        # campaign conversions among the houses untapped at the opening: about UPLIFT times the suburb's owner-occupied
+        # first applications in the year before sign-ups opened
         program = {}
         if loc["kind"] == "campaign":
             c = K.CAMP[loc["camp"]]
-            pool = [i for i in range(len(oo)) if i not in builder and
-                    (decided[i] is None or K.business_day(decided[i]) >= c["open"])]
-            # the pool as the generator sees it: untapped at the opening (no successful application before it)
-            W.camp_pool[c["key"]] = len(pool)
+            op = c["open"]
+
+            def recv(i):
+                return K.business_day(decided[i]) if decided[i] is not None else None
+            pool = [i for i in organic if decided[i] is None or recv(i) >= op]
+            n12 = sum(1 for i in organic if decided[i] is not None and op - dt.timedelta(days=365) <= recv(i) < op)
+            systems = int(round(K.UPLIFT * n12 * (1.0 + c["eps"])))
+            W.camp_pool[c["key"]], W.camp_n12[c["key"]], W.camp_systems[c["key"]] = len(pool), n12, systems
             rc = K.rng("convert", c["key"])
-            chosen = [pool[int(j)] for j in rc.choice(len(pool), size=c["systems"], replace=False)]
+            chosen = [pool[int(j)] for j in rc.choice(len(pool), size=systems, replace=False)]
             span = (c["close"] - c["open"]).days
             for i in chosen:
                 program[i] = K.add_days(c["open"], int(rc.integers(4, span + 40)))
                 decided[i] = None
+        # the days to approval and connection, spread evenly along the order in which the houses applied
+        lag_of, rl = {}, K.rng("lags", loc.get("stream", name))
+        o1, o2 = float(rl.uniform(0, 1)), float(rl.uniform(0, 1))
+        for rank, i in enumerate(sorted((i for i in organic if decided[i] is not None and i not in program),
+                                        key=lambda i: (decided[i], i))):
+            lag_of[i] = (2 + int(((o1 + rank * 0.6180339887498949) % 1.0) * 14),
+                         20 + int(((o2 + rank * 0.7548776662466927) % 1.0) * 43))
         # build the applications
         for i, p in enumerate(oo):
             n = p["nmis"][0]
@@ -346,23 +392,23 @@ def simulate(W):
             elif i in program:
                 add_program_system(W, r, n, p, loc["camp"], program[i])
             elif decided[i] is not None and decided[i] <= dt.date(2026, 12, 31):
-                add_organic_system(W, r, n, decided[i])
+                add_organic_system(W, r, n, decided[i], lags=lag_of[i])
             maybe_withdrawn(W, r, n, decided[i] if i not in program else program[i], p)
         # rented houses, townhouses, units
         for p in props:
             if p["kind"] == "house_rent":
-                mult = 0.22
+                mult = 0.05
             elif p["kind"] == "town":
-                mult = 0.08 if p["rating"] == "R1" else 0.03
+                mult = 0.02 if p["rating"] == "R1" else 0.01
             else:
                 continue
             n = p["nmis"][0]
-            p_builder = 0.02 if name == "Bindarra Waters" else 0.35
-            if p["infill"] and p["handover"] >= dt.date(2019, 1, 1) and p["kind"] == "house_rent" and r.random() < p_builder:
+            p_builder = {"Bindarra Waters": 0.02, "Wattleview": 0.10}.get(name, 0.35)
+            if p["infill"] and p["handover"] >= dt.date(2019, 7, 1) and p["kind"] == "house_rent" and r.random() < p_builder:
                 add_builder_system(W, r, n, p)
                 continue
             s = max(K.WORLD_START, p["handover"])
-            t = inv_pace(s, r.exponential(1.0) / (prop * mult))
+            t = adopt_date(s, float(r.exponential(1.0)), lam_boom * mult, lam * mult)
             if t is not None and t <= dt.date(2026, 12, 31):
                 add_organic_system(W, r, n, t)
         # secondary dwellings (granny flats) rarely carry their own PV
@@ -376,8 +422,8 @@ def simulate(W):
             hi_d = K.add_days(o["demolished"], -400)
             if hi_d <= lo_d:
                 continue
-            decided = K.add_days(lo_d, int(r.integers(0, (hi_d - lo_d).days)))
-            app = add_organic_system(W, r, o, decided)
+            dd = K.add_days(lo_d, int(r.integers(0, (hi_d - lo_d).days)))
+            app = add_organic_system(W, r, o, dd)
             app["removed"] = o["demolished"]
             app["old"] = True
         # business NMIs
@@ -399,8 +445,8 @@ def add_system(W, r, n, received, approved, connected, kind="res", program=None,
     return app
 
 
-def add_organic_system(W, r, n, decided, kind="res"):
-    received, approved, connected = application_dates(r, decided)
+def add_organic_system(W, r, n, decided, kind="res", lags=None):
+    received, approved, connected = application_dates(r, decided, lags=lags)
     return add_system(W, r, n, received, approved, connected, kind=kind)
 
 
@@ -445,11 +491,16 @@ def maybe_withdrawn(W, r, n, decided, p):
 def finish(W):
     """Alterations, removals, the base-date statuses, program withdrawals, battery retrofits."""
     r = K.rng("finish")
+    rb = K.rng("battery-product")
     new_apps = []
     for a in W.apps:
         if a["status"] != "Connected" or a.get("old"):
             continue
         c = a["connected"]
+        # a new system installed with a battery
+        if a["type"] == "New" and c.year >= 2020 and r.random() < (0.10 if c.year >= 2023 else 0.06):
+            a["bat"] = battery_product(rb)
+            a["battery"] = a["bat"]["total"]
         if a["builder"] or a["program"]:
             p_alt = 0.05
         elif c.year <= 2012:
@@ -468,20 +519,19 @@ def finish(W):
                 approved = K.business_day(K.add_days(received, int(r.integers(2, 14))))
                 connected = K.business_day(K.add_days(approved, int(r.integers(14, 70))))
                 battery_retro = connected.year >= 2021 and r.random() < 0.45
+                bat = None
                 if battery_retro:
                     kw = max(a["kw"], 5.0)
-                    batt = float(r.choice([9.6, 10.2, 12.8, 13.5, 15.4], p=[0.18, 0.22, 0.20, 0.25, 0.15]))
+                    bat = battery_product(rb)
+                    batt = bat["total"]
                 else:
                     kw = float(r.choice([5.0, 6.0, 8.0, 10.0], p=[0.35, 0.15, 0.30, 0.20]))
                     kw = min(max(kw, a["kw"] + 1.0), 30.0) if kw <= a["kw"] else kw
-                    batt = 0.0
+                    batt, bat = a["battery"], a.get("bat")
                 new_apps.append(dict(nmi=a["nmi"], type="Alteration", received=received, approved=approved,
                                      connected=connected, kw=kw, kwp=round(kw * float(r.choice([1.1, 1.2, 1.32])), 2),
-                                     battery=batt, program=None, builder=False, status="Connected", n=a["n"],
-                                     removed=None, alters=a))
-        # a new system installed with a battery
-        if a["type"] == "New" and c.year >= 2020 and r.random() < (0.10 if c.year >= 2023 else 0.06):
-            a["battery"] = float(r.choice([9.6, 10.2, 12.8, 13.5, 15.4], p=[0.18, 0.22, 0.20, 0.25, 0.15]))
+                                     battery=batt, bat=bat, program=None, builder=False, status="Connected",
+                                     n=a["n"], removed=None, alters=a))
     W.apps.extend(new_apps)
     # removals (house demolished for a rebuild, or panels taken off at a re-roof and not reinstated)
     altered = set(id(x["alters"]) for x in new_apps)
@@ -553,42 +603,43 @@ def legacy_rows(W):
 # ----------------------------------------------------------------------------------------------------------------
 # the national DER Register, as the distributor extracts it for one zone substation
 
-BATTERIES = [("Tesla", "Powerwall 2", 13.5, 1), ("BYD", "Battery-Box Premium HVS", None, 0),
-             ("Sungrow", "SBR HV battery", None, 0), ("Alpha ESS", "SMILE-G3 battery", 10.1, 1),
-             ("LG Energy Solution", "RESU 10H Prime", 9.6, 1), ("GoodWe", "Lynx Home U", None, 0)]
-MODULE_KWH = {"Battery-Box Premium HVS": 2.56, "SBR HV battery": 3.2, "Lynx Home U": 5.4}
-BATTERY_SHARE = [0.25, 0.24, 0.17, 0.12, 0.08, 0.14]
+# Home battery products: brand, model, module size (kWh), whether the product is modular, its market share, and how
+# the installer's commissioning app lodges a modular product's devices with the DER Register: one device per module
+# carrying the module's size ("module"), or one device per module each carrying the system's total ("system").
+BATTERIES = [
+    dict(brand="Tesla", model="Powerwall 2", kwh=13.5, modular=False, share=0.25, lodged="module"),
+    dict(brand="BYD", model="Battery-Box Premium HVS", kwh=2.56, modular=True, share=0.24, lodged="module", n=(3, 5)),
+    dict(brand="Sungrow", model="SBR HV battery", kwh=3.2, modular=True, share=0.17, lodged="system", n=(3, 5)),
+    dict(brand="Alpha ESS", model="SMILE-G3 battery", kwh=10.1, modular=False, share=0.12, lodged="module"),
+    dict(brand="LG Energy Solution", model="RESU 10H Prime", kwh=9.6, modular=False, share=0.08, lodged="module"),
+    dict(brand="GoodWe", model="Lynx Home U", kwh=5.4, modular=True, share=0.14, lodged="module", n=(2, 3)),
+]
 INVERTERS = [("Fronius", "Primo"), ("SMA", "Sunny Boy"), ("Sungrow", "SG-RS"), ("Goodwe", "DNS"),
              ("Huawei", "SUN2000-L1"), ("Enphase", "IQ8 system"), ("SolarEdge", "Home Wave"), ("Growatt", "MIN TL-X")]
 
 
-def battery_spec(r, kwh_target):
-    """A battery product near the target size: single-unit products carry their own size; modular products are a
-    module count times the module size."""
-    brand, model, size, single = BATTERIES[int(r.choice(len(BATTERIES), p=BATTERY_SHARE))]
-    if single:
-        return brand, model, size, 1
-    m = MODULE_KWH[model]
-    count = int(min(5, max(2, round(kwh_target / m))))
-    return brand, model, round(m * count, 2), count
+def battery_product(r):
+    """The battery a household buys: a single unit, or a modular product of two to five modules. The connection
+    application states the system's total storage."""
+    b = BATTERIES[int(r.choice(len(BATTERIES), p=[x["share"] for x in BATTERIES]))]
+    count = int(r.integers(b["n"][0], b["n"][1] + 1)) if b["modular"] else 1
+    return dict(brand=b["brand"], model=b["model"], module=b["kwh"], count=count, lodged=b["lodged"],
+                total=round(b["kwh"] * count, 2))
 
 
 def der_register(W):
-    """Device rows: one per inverter and one per battery module; the AC connection's storage capacity is carried on
-    each of its battery rows. Installers lodge within days of installation; a builder's system is lodged against the
-    temporary supply NMI on the job sheet."""
+    """Device rows: one per inverter and one per battery device. Installers lodge within days of installation; a
+    builder's system is lodged against the temporary supply NMI on the job sheet. The extract is as at 31 August
+    2026, and Mirrabee's extraction stamps each AC connection with the feeder its NMI was on when it was lodged."""
     r = K.rng("der")
-    rows = []
     ac_seq = [400000]
 
     def next_ac():
         ac_seq[0] += int(r.integers(3, 40))
         return "AC%07d" % ac_seq[0]
 
-    by_nmi = {}
-    for a in W.apps:
-        by_nmi.setdefault(a["nmi"], []).append(a)
     W.der_systems = []
+    by_app = {}
     for a in sorted(W.apps, key=lambda x: (x.get("connected") or x.get("connected_actual") or x["received"], x["nmi"])):
         if a["status"] == "Withdrawn":
             continue
@@ -606,10 +657,8 @@ def der_register(W):
             continue                      # never lodged by the installer
         lag = int(r.choice([1, 2, 3, 5, 8, 12, 18, 26, 35], p=[0.10, 0.12, 0.14, 0.16, 0.16, 0.12, 0.10, 0.06, 0.04]))
         registered = K.business_day(K.add_days(installed, lag))
-        if registered > K.DER_RUN:
+        if registered > K.BASE:
             continue                      # not yet on the register at the extract
-        if registered > K.BASE and a["status"] in ("Connected", "Removed") and a["connected"] <= K.BASE:
-            registered = K.BASE           # lodged by the installer before the meter change was completed
         n = a["n"]
         use_temp = a["builder"] and n.get("temp") and installed < n["prop"]["handover"]
         nmi10 = n["temp"] if use_temp else n["nmi"]
@@ -617,32 +666,98 @@ def der_register(W):
         ac = next_ac()
         status, decom = "Active", None
         # an alteration's new connection: the old connection is decommissioned, or left active by the installer
+        # (never one that carries a battery, which the new connection lists again)
         if a["type"] == "Alteration":
-            old = [x for x in W.der_systems if x["app"] is a.get("alters")]
+            old = by_app.get(id(a.get("alters")), [])
             for o in old:
-                if r.random() < 0.72:
+                if r.random() < 0.72 or o["storage"] > 0:
                     o["status"], o["decom"] = "Decommissioned", registered
+                else:
+                    o["left_active"] = registered
         if a.get("removed"):
             if r.random() < 0.5:
                 status, decom = "Decommissioned", K.add_days(a["removed"], int(r.integers(5, 60)))
-                if decom > K.DER_RUN:
+                if decom > K.BASE:
                     status, decom = "Active", None
-        sysrec = dict(app=a, ac=ac, nmi=nmi_out, nmi10=nmi10, perm=n["nmi"], feeder=n["feeder"], registered=registered,
-                      status=status, decom=decom, installer=a["installer"], kw=a["kw"], battery=a["battery"], devices=[])
-        brand, model = INVERTERS[int(r.integers(0, len(INVERTERS)))]
-        n_inv = 2 if (a["kw"] >= 15 and r.random() < 0.5) else 1
+        sysrec = dict(app=a, ac=ac, nmi=nmi_out, nmi10=nmi10, perm=n["nmi"], feeder=feeder_on(n, registered),
+                      registered=registered, status=status, decom=decom, installer=a["installer"], kw=a["kw"],
+                      battery=a["battery"], devices=[])
+        brand, family = INVERTERS[int(r.integers(0, len(INVERTERS)))]
+        # a larger system often runs two inverters (an east and a west string, or a business roof)
+        n_inv = 2 if (a["kw"] >= 10 and r.random() < (0.5 if a["kw"] >= 15 else 0.22)) else 1
+        if brand == "Enphase":
+            n_inv = 1                     # a microinverter system is lodged as one device
+        each = round(a["kw"] / n_inv, 2)
+        model = family if brand == "Enphase" else "%s %.1f" % (family, each)
+        # the older installer portal asked for one rating per inverter and installers entered the connection's
+        # total there, so an older two-inverter lodgement carries the total on both inverter rows
+        rated = a["kw"] if (n_inv > 1 and registered < K.PORTAL_SWITCH) else each
         for k in range(n_inv):
-            sysrec["devices"].append(dict(type="Inverter", brand=brand, model=model,
-                                          rated=round(a["kw"] / n_inv, 2), storage=None))
+            sysrec["devices"].append(dict(type="Inverter", brand=brand, model=model, rated=rated, storage=None))
         if a["battery"] and a["battery"] > 0:
-            bb, bm, size, count = battery_spec(r, a["battery"])
-            for k in range(count):
-                sysrec["devices"].append(dict(type="Battery", brand=bb, model=bm, rated=None, storage=size))
-            sysrec["storage"] = size
+            bt = a["bat"]
+            sysrec["devices"].extend(battery_devices(bt))
+            sysrec["storage"] = bt["total"]
         else:
             sysrec["storage"] = 0.0
         W.der_systems.append(sysrec)
+        by_app.setdefault(id(a), []).append(sysrec)
     return W.der_systems
+
+
+def battery_devices(bt):
+    return [dict(type="Battery", brand=bt["brand"], model=bt["model"], rated=None,
+                 storage=bt["total"] if bt["lodged"] == "system" else bt["module"]) for _ in range(bt["count"])]
+
+
+def settle_ask_bins(W):
+    """Keep each feeder's DER Register inverter capacity and battery storage clear of a rounding edge (the asks are
+    graded to the nearest 10 kW and 10 kWh): where a feeder's total sits within a kilowatt of one, an old connection
+    an installer left active after an alteration is recorded as decommissioned on the day its replacement was lodged,
+    or a household's modular battery carries one module more or fewer. Neither touches the connection register's
+    capacity, so the call is unchanged."""
+    nmi_by = {n["nmi"]: n for n in W.nmis}
+    BAT = {b["model"]: b for b in BATTERIES}
+
+    def totals():
+        inv, bat = collections.defaultdict(float), collections.defaultdict(float)
+        for s in W.der_systems:
+            if s["status"] == "Active" and s["perm"] in nmi_by:
+                f = nmi_by[s["perm"]]["feeder"]
+                inv[f] += s["kw"]
+                bat[f] += s["storage"]
+        return inv, bat
+
+    def room(x):
+        k = x / 10.0
+        return abs((k - math.floor(k)) - 0.5)
+
+    for _ in range(60):
+        inv, bat = totals()
+        bad_c = [f for f in K.FEEDERS if room(inv[f]) < 0.1]
+        bad_b = [f for f in K.FEEDERS if room(bat[f]) < 0.1]
+        if not bad_c and not bad_b:
+            return
+        for f in bad_c:
+            cand = [s for s in W.der_systems if s.get("left_active") and s["status"] == "Active" and s["perm"] in nmi_by
+                    and nmi_by[s["perm"]]["feeder"] == f]
+            s = cand[0]
+            s["status"], s["decom"] = "Decommissioned", s.pop("left_active")
+        for f in bad_b:
+            cand = [s for s in W.der_systems if s["status"] == "Active" and s["perm"] in nmi_by and s["storage"] > 0
+                    and nmi_by[s["perm"]]["feeder"] == f and BAT[s["app"]["bat"]["model"]]["modular"]]
+            bt = cand[0]["app"]["bat"]
+            lo, hi = BAT[bt["model"]]["n"]
+            bt["count"] += 1 if bt["count"] < hi else -1
+            bt["total"] = round(bt["module"] * bt["count"], 2)
+            for a in W.apps:
+                if a.get("bat") is bt:
+                    a["battery"] = bt["total"]
+            for s in W.der_systems:
+                if s["app"].get("bat") is bt:
+                    s["devices"] = [d for d in s["devices"] if d["type"] != "Battery"] + battery_devices(bt)
+                    s["storage"] = bt["total"]
+    raise AssertionError("ask bins did not settle")
 
 
 def reallocations(W):

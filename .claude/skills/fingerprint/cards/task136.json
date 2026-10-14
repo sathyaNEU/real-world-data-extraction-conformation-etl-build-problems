@@ -2,30 +2,31 @@
   "task": "task136",
   "architecture": "v1",
   "drawn": "2026-10-12",
-  "slot_note": "wave 2 (new). Seed FC07: world, decision and quantity kept (a distributor's one accelerated feeder upgrade for rooftop solar beyond hosting capacity in the 2029 design year, two neighbourhood campaigns next spring); the pitfall re-found from the data (a bulk-buy reaches only the owner-occupied houses still without solar in its suburb, a pool behind the rates-roll join); no published control set, reproduction clause or filed back-test.",
+  "slot_note": "wave 2 (new), round 2 on 2026-10-14. Seed FC07: world, decision and quantity kept (a distributor's one accelerated feeder upgrade for rooftop solar beyond hosting capacity in the 2029 design year, two council bulk-buys). Round 2 moves the decisive step off the eligible-pool reflex (round 1's golden, now rung 1) to the yield carried on each suburb's own uptake; no published control set, reproduction clause or filed back-test.",
   "domain": "energy-systems-utilities",
   "subdomain": "load-forecasting",
   "client_domain": "energy-systems-utilities",
-  "niche": "an Australian distribution network's rooftop PV forecast for its FY2027-28 capital program: which of the eight 22 kV feeders out of one peri-urban zone substation gets the single accelerated hosting-capacity upgrade, sized on rooftop PV connected at 31 August 2029, when the city council runs solar bulk-buy campaigns in two suburbs in spring 2027",
+  "niche": "an Australian distribution network's rooftop PV forecast for its FY2027-28 capital program: which of the eight 22 kV feeders out of one peri-urban zone substation gets the single accelerated hosting-capacity upgrade, sized on rooftop PV connected at 31 August 2029, when the city council runs solar bulk-buys this spring in a large, slow-adopting new estate and a smaller, fast-adopting one",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "YRB24 should get the accelerated hosting capacity augmentation in the FY2027-28 capital works program. Its rooftop PV will sit 1.9 MW above its hosting capacity at 31 August 2029, 0.4 MW more than YRB22's 1.5 MW, because the Bindarra Waters bulk-buy will add about 240 systems to a feeder that hosts little.",
+  "answer": "YRB27 should get the accelerated hosting capacity augmentation in the FY2027-28 capital works program. Its rooftop PV will sit 1.9 MW above its hosting capacity at 31 August 2029, 0.5 MW more than YRB24's 1.4 MW, because the Wattleview bulk-buy will add 1.7 MW to it.",
   "answer_source": "task136/submission.md, 1. Final Recommendation, first two sentences (bold markers removed); figures in task136/generator/figures.json, written with golden/feeder_upgrade_2029.xlsx and golden/yarrabin_pv_vs_hosting_2029.png by generator/deliver.py from target/ and recomputed by generator/verify.py",
   "gap": [
+    "rule",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G8",
+    "G16",
     "G14"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
@@ -35,7 +36,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "eg_connection_applications_20260901.csv",
-    "rows": 17590,
+    "rows": 18626,
     "entity": "one micro embedded generation (rooftop PV) connection application at a national meter identifier",
     "grain": "connection application (new system or alteration) x NMI",
     "source": "constructed (the distributor's embedded generation connection register)"
@@ -57,7 +58,7 @@
     ],
     "people": [
       "Wanda Thornton",
-      "Christopher Sheppard",
+      "Ian Fletcher",
       "Julie Cochran",
       "Bryan Nichols",
       "Linda Ruiz",
@@ -71,24 +72,46 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A scheduled intervention's yield is carried to new sites from its past runs, and it is stable only per member who can still respond, those inside the intervention's area who qualify and have not already responded, a pool built by joining a membership roll through a link file to the response log; per contacted member, per qualifying member, per member without a response or per whole site each fits the past runs no better than the raw counts, so every such transfer leaves the site with the largest untouched pool at a third to a half of its yield and the call with a rival.",
-  "driver_concrete": "Each of the council's seven past solar bulk-buys added the same share (about 4.6 per cent) of its suburb's owner-occupied houses that had no rooftop PV when it opened, a pool reached only by joining the council's rates roll through the distributor's NMI-to-property cross-reference to its connection register; feeder YRB24's new Bindarra Waters estate holds more such houses than any past suburb, so its spring 2027 campaign adds about 1.5 MW and puts YRB24 furthest over hosting capacity in August 2029, where a transfer per home letterboxed, per owner-occupied house or per home without PV adds a third to two thirds of that and leaves the upgrade with YRB22.",
-  "stump": "A competent solver files YRB22 at about 1.5 MW over hosting capacity by carrying the past campaigns' installations per home letterboxed onto the 2027 letterbox drops; the step that lands it there is transferring the yield per contacted home instead of per owner-occupied house still without rooftop PV in the suburb, which leaves YRB24's untouched new estate with well under half its campaign: the golden is YRB24 at about 1.9 MW.",
+  "driver": "A scheduled intervention's increment at a new site is carried from its past runs as a multiple of the site's own recent rate of the outcome, rebuilt per site behind a three-file join; every share of a pool (contacted, eligible, eligible and not yet responded) scatters several-fold across the past runs and hands the site with the largest untouched but slow pool several times its increment, so the call goes to that site instead of the fast one.",
+  "driver_concrete": "Each of the council's seven past solar bulk-buys installed about 1.17 systems for every first rooftop PV application its suburb's owner-occupied houses lodged in the year before sign-ups opened (1.03 to 1.35), a count rebuilt from the connection register through the rates roll and the NMI-to-property cross-reference, while per home letterboxed, per owner-occupied house or per house still without PV they scatter several-fold; Wattleview (209 first applications a year) adds 1.7 MW to YRB27 and Bindarra Waters (52, on a pool twice the size) 0.4 MW to YRB24, so YRB27 is furthest over hosting capacity in August 2029, where every pool basis puts YRB24 first.",
+  "stump": "A competent solver carries the past bulk-buys per home letterboxed and files YRB24 at about 1.8 MW over hosting capacity, and the textbook correction per owner-occupied house still without PV files YRB24 at 3.0; the step that lands both there is carrying a campaign's yield on a pool of houses instead of on the suburb's own uptake (about 1.17 systems per first application in the year before sign-ups opened), which gives Bindarra Waters' large, slow estate two to five times its campaign: the golden is YRB27 at about 1.9 MW.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the forecasting procedure, collapses alterations to one system per NMI and takes each past campaign's installations correctly still carries them to the 2027 suburbs per home letterboxed and files YRB22; per owner-occupied house, per home without PV, per feeder, by rate ratio or as an average count also leave YRB24's campaign at 26 to 140 systems against about 240 and the upgrade with YRB22.",
-  "domain_test": "The deciding quantity is each feeder's design-point rooftop PV against its hosting capacity, with a bulk-buy campaign's installations forecast from the rooftops that can still take it up (owner-occupied houses with no PV yet), which is how a distribution planner forecasts DER for an augmentation; with another field's nouns, hosting capacity, inverter ratings, rooftop ownership and the embedded generation register have nothing to attach to.",
+  "analyst_test": "A strong analyst who reads the forecasting procedure, collapses alterations, joins legacy inverters, places NMIs on the network model and pools the past campaigns' rate per home letterboxed files YRB24 at about 1.8 MW; per owner-occupied house still without PV (the textbook reflex) files YRB24 at 3.0, and fitted models on penetration, pool, letterboxes and houses file YRB24 at 1.7 to 2.9.",
+  "domain_test": "The deciding quantity is each feeder's design-point rooftop PV against its spring minimum-demand hosting capacity, with a council bulk-buy's increment forecast as an uplift on the suburb's own baseline uptake estimated from past programs, which is how DER forecasters carry a program's increment; with another field's nouns, inverter ratings, hosting capacity, rooftop PV applications and the embedded generation register have nothing to attach to.",
   "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "Calibration none: the seven past campaigns are the distributor's and the council's own history from which the programme component is estimated (natural experiments in the register), not an organ confirming a filed criterion. Pattern none, decisive G8 (reachability: a house that already has PV, a rented house or a unit cannot take the bulk-buy, binary per dwelling) then G14 (the yield conditioned on that reachable pool); Gate G method_or_model_selection because the transfer basis is the method, and only one basis reproduces all seven past campaigns. Layer 2 pattern product-analytics/feature-adoption-diffusion-modeling/2 (the eligible denominator at risk) on a new structure: a campaign transfer across suburbs behind a three-file join, not a product's adoption rate.",
+  "differentiation": {
+    "task136": "round 1 carried the yield per eligible house not yet adopted (the pool); round 2 carries it on the suburb's own uptake, and the pool is the wrong rung",
+    "task185": "task185 converts between an old and a new measuring device at the value converted, for an anomaly count; here a past intervention's increment is carried to new sites as a multiple of each site's own baseline adoption, chosen by fit to the past runs, for a forecast pick",
+    "task80": "task80 dates a fixed-term status from the event that conferred it, for an ETL count; here a program's increment is carried on each site's own uptake rate, chosen by fit to seven past runs, and no status or dating is involved",
+    "task138": "task138 starts each replayed weather trace from the store each unit holds at the forecast date (a water order, gap time); here a past program's increment is carried to new sites on each site's own baseline adoption, chosen by fit among pool, contact and uptake bases (a feeder pick, gap rule)",
+    "task450": "task450 links two test administrations through a screened common subset (ETL conformance); here a program's increment transfers on local uptake; the surface proximity is shared vocabulary, and task450 is retired"
+  },
+  "lineage": [
+    {
+      "architecture": "v1 round 1",
+      "fate": "superseded 2026-10-14 at round 2: the 10/10 audit (COMPLIANT_WEAK) found the decisive step (a bulk-buy's yield per owner-occupied house still without PV) the textbook addressable-pool reflex for adoption forecasts, named by the program terms; a rough pool estimate landed the golden; the seven campaigns agreed within 0.6 per cent, a generator constant a denominator search recovers; Ask A's temporary NMIs resolved through the re-allocation log and Ask B's repeated battery capacity fell to grouping by connection; never on the portal",
+      "domain": "energy-systems-utilities",
+      "objective": "forecasting",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "driver": "A scheduled intervention's yield is carried to new sites from its past runs, and it is stable only per member who can still respond, those inside the intervention's area who qualify and have not already responded, a pool built by joining a membership roll through a link file to the response log; per contacted member, per qualifying member, per member without a response or per whole site each fits the past runs no better than the raw counts, so every such transfer leaves the site with the largest untouched pool at a third to a half of its yield and the call with a rival."
+    }
+  ],
+  "notes": "Calibration none: the seven past campaigns are the distributor's and the council's own history from which the program component is estimated, not an organ confirming a filed criterion. Pattern none, G16 then G14 (strategies F6: the rate is stationary only in a constructed exposure, each suburb's uptake rebuilt per opening from received dates through the rates roll and the cross-reference; the basis selected by fit among pool, contact and uptake bases, NPP-114 4.1 sending the program to the records of past programs); gap rule then population; Gate G method_or_model_selection because the transfer basis is the method and only the uptake basis reproduces the seven campaigns (coefficient of variation 0.085 against 0.61 to 0.80). NPP-114 4.2 files only the pooling (total over total). Layer 2 own:program-increment-on-local-uptake: a program's increment carried as an uplift on the area's own adoption, against the eligible-pool reflex (product-analytics/feature-adoption-diffusion-modeling/2, this slot's round 1).",
   "layer2_family": "field_method",
-  "layer2_pattern": "product-analytics/feature-adoption-diffusion-modeling/2",
+  "layer2_pattern": "own:program-increment-on-local-uptake",
   "layer1": [
-    "an embedded generation connection register at application grain, where an alteration (added panels, a replaced inverter, a battery retrofit) is a new application carrying the NMI's whole configuration after the work, with withdrawn and approved-not-connected applications beside connected ones",
-    "the feeder recorded at application against the feeder in the network model at the base date, after a 2023 load transfer of one locality between two feeders",
-    "NMIs keyed by the distributor, properties keyed by the council's property number and lot on plan, joined only through the GIS NMI-to-property cross-reference with dual-occupancy and granny-flat NMIs",
-    "inverter rating in kW AC beside panel capacity in kWp, rows migrated from the pre-2019 system with panel capacity only and the inverter in a separate equipment table",
-    "the council's bulk-buy log in its own workbook layout (title block, merged headers, footnotes) with homes letterboxed, registrations, contracts and systems installed",
-    "a national DER Register extract at device grain (modular batteries one row per module, decommissioned connections, NMIs with a checksum digit from the newer installer portal, builders' systems under temporary supply NMIs) and the NMI re-allocation log on the ask paths"
+    "an embedded generation connection register at application grain, where an alteration is a new application carrying the NMI's whole configuration after the work, with withdrawn, under-assessment and approved-not-connected applications and removals beside connected ones",
+    "the feeder recorded at application against the network model at the base date, after five load transfers between 2023 and 2025",
+    "NMIs keyed by the distributor, properties keyed by the council's property number, joined only through the GIS NMI-to-property cross-reference with dual-occupancy NMIs and abolished NMIs of rebuilt houses",
+    "inverter rating in kW AC beside panel capacity in kWp, rows migrated from the pre-2019 system with the inverter in a separate equipment table",
+    "the council's bulk-buy log in its own workbook layout (title block, wrapped headers, footnotes, a program terms sheet)",
+    "a national DER Register extract at device grain on the ask paths: checksum NMIs from the newer installer portal, builders' systems under temporary supply NMIs with the re-allocation log, decommissioned connections, the feeder stamped at lodgement, per-product battery lodgement and the older portal's per-inverter field"
   ]
 }

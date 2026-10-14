@@ -1,165 +1,191 @@
 {
  "call": {
-  "feeder": "YRB24",
+  "feeder": "YRB27",
   "excess_mw": "1.9",
-  "runner_up": "YRB22",
-  "runner_up_excess_mw": "1.5",
-  "gap_mw": "0.4",
-  "bindarra_waters_systems": 240,
-  "wattleview_systems": 30
+  "runner_up": "YRB24",
+  "runner_up_excess_mw": "1.4",
+  "gap_mw": "0.5",
+  "bindarra_waters_mw": "0.4",
+  "wattleview_mw": "1.7"
  },
  "steps": {
   "connected_kw": {
-   "YRB21": "16,136",
-   "YRB22": "13,690",
-   "YRB23": "10,742",
-   "YRB24": "3,064",
-   "YRB25": "6,459",
-   "YRB26": "11,984",
-   "YRB27": "12,540",
-   "YRB28": "10,567"
+   "YRB21": "13,600",
+   "YRB22": "20,336",
+   "YRB23": "10,662",
+   "YRB24": "4,637",
+   "YRB25": "4,733",
+   "YRB26": "10,370",
+   "YRB27": "17,938",
+   "YRB28": "10,078"
   },
   "trend_kw": {
-   "YRB21": "928",
-   "YRB22": "826",
-   "YRB23": "576",
-   "YRB24": "432",
-   "YRB25": "510",
-   "YRB26": "690",
-   "YRB27": "754",
-   "YRB28": "563"
+   "YRB21": "776",
+   "YRB22": "1,054",
+   "YRB23": "498",
+   "YRB24": "498",
+   "YRB25": "372",
+   "YRB26": "504",
+   "YRB27": "1,852",
+   "YRB28": "540"
+  },
+  "base_kw": {
+   "YRB21": "15,928",
+   "YRB22": "23,499",
+   "YRB23": "12,157",
+   "YRB24": "6,130",
+   "YRB25": "5,851",
+   "YRB26": "11,884",
+   "YRB27": "23,495",
+   "YRB28": "11,698"
   },
   "forecast_kw": {
-   "YRB21": "18,920",
-   "YRB22": "16,168",
-   "YRB23": "12,468",
-   "YRB24": "6,112",
-   "YRB25": "7,988",
-   "YRB26": "14,053",
-   "YRB27": "15,007",
-   "YRB28": "12,257"
+   "YRB21": "15,928",
+   "YRB22": "23,499",
+   "YRB23": "12,157",
+   "YRB24": "6,525",
+   "YRB25": "5,851",
+   "YRB26": "11,884",
+   "YRB27": "25,202",
+   "YRB28": "11,698"
   },
   "hosting_mw": {
-   "YRB21": "17.81",
-   "YRB22": "14.66",
-   "YRB23": "12.03",
-   "YRB24": "4.22",
-   "YRB25": "6.75",
-   "YRB26": "14.71",
-   "YRB27": "13.99",
-   "YRB28": "11.54"
+   "YRB21": "14.82",
+   "YRB22": "22.29",
+   "YRB23": "11.72",
+   "YRB24": "5.13",
+   "YRB25": "4.79",
+   "YRB26": "12.54",
+   "YRB27": "23.30",
+   "YRB28": "10.99"
   },
   "excess_mw": {
    "YRB21": "1.1",
-   "YRB22": "1.5",
+   "YRB22": "1.2",
    "YRB23": "0.4",
-   "YRB24": "1.9",
-   "YRB25": "1.2",
+   "YRB24": "1.4",
+   "YRB25": "1.1",
    "YRB26": "-0.7",
-   "YRB27": "1.0",
+   "YRB27": "1.9",
    "YRB28": "0.7"
   },
-  "pooled_rate_pct": "4.58",
   "campaigns": {
    "GLM18": {
-    "untapped": "740",
-    "systems": 34,
-    "rate_pct": "4.59"
+    "first_applications": 16,
+    "systems": 19,
+    "per_first_application": "1.19"
    },
    "KJP19": {
-    "untapped": "1,054",
-    "systems": 48,
-    "rate_pct": "4.55"
+    "first_applications": 162,
+    "systems": 180,
+    "per_first_application": "1.11"
    },
    "TWR21": {
-    "untapped": "2,270",
-    "systems": 104,
-    "rate_pct": "4.58"
+    "first_applications": 43,
+    "systems": 53,
+    "per_first_application": "1.23"
    },
    "SKO22": {
-    "untapped": "810",
-    "systems": 37,
-    "rate_pct": "4.57"
+    "first_applications": 81,
+    "systems": 109,
+    "per_first_application": "1.35"
    },
    "IBH22": {
-    "untapped": "885",
-    "systems": 41,
-    "rate_pct": "4.63"
+    "first_applications": 41,
+    "systems": 48,
+    "per_first_application": "1.17"
    },
    "BNR23": {
-    "untapped": "1,207",
-    "systems": 55,
-    "rate_pct": "4.56"
+    "first_applications": 33,
+    "systems": 34,
+    "per_first_application": "1.03"
    },
    "PBG24": {
-    "untapped": "851",
-    "systems": 39,
-    "rate_pct": "4.58"
+    "first_applications": 55,
+    "systems": 62,
+    "per_first_application": "1.13"
    }
   },
-  "bindarra_untapped_base": "5,299",
-  "bindarra_adopt_fy": 24,
-  "bindarra_untapped_open": "5,275",
-  "wattleview_untapped_base": "720",
-  "wattleview_adopt_fy": 52,
-  "wattleview_untapped_open": "668",
-  "bindarra_systems_unrounded": "241.6",
-  "wattleview_systems_unrounded": "30.6",
-  "avg_kw_yrb24": "7.25",
-  "avg_kw_yrb27": "6.67",
-  "program_kw_yrb24": "1,752",
-  "program_kw_yrb27": "204",
-  "winner_forecast_mw": "6.1",
-  "winner_hosting_mw": "4.22"
+  "campaign_first_applications_total": 431,
+  "campaign_systems_total": 505,
+  "pooled_per_first_application": "1.172",
+  "basis_cv": {
+   "letterboxed": "0.72",
+   "oo": "0.61",
+   "untapped": "0.71",
+   "uplift": "0.09"
+  },
+  "bindarra_first_applications": 52,
+  "wattleview_first_applications": 209,
+  "bindarra_systems_unrounded": "60.9",
+  "wattleview_systems_unrounded": "244.9",
+  "avg_kw_yrb24": "6.50",
+  "avg_kw_yrb27": "6.97",
+  "program_kw_yrb24": "396",
+  "program_kw_yrb27": "1,707",
+  "winner_forecast_mw": "25.2",
+  "winner_hosting_mw": "23.30"
  },
  "default_path": {
-  "feeder": "YRB22",
-  "excess_mw": "1.5",
-  "bindarra_waters_systems": 90,
-  "wattleview_systems": 50
+  "feeder": "YRB24",
+  "excess_mw": "1.8",
+  "bindarra_waters_mw": "0.8",
+  "wattleview_mw": "0.7"
  },
- "ask_a": {
+ "reflex_path": {
+  "feeder": "YRB24",
+  "excess_mw": "3.0",
+  "bindarra_waters_mw": "2.0",
+  "wattleview_mw": "1.1"
+ },
+ "der": {
   "YRB21": {
-   "connected_not_on_der": 12,
-   "der_active_not_connected": 11
+   "active_sites": 2323,
+   "first_lodged_fy2025_26": 82,
+   "inverter_kw": "14,000",
+   "storage_kwh": "1,940"
   },
   "YRB22": {
-   "connected_not_on_der": 8,
-   "der_active_not_connected": 12
+   "active_sites": 3448,
+   "first_lodged_fy2025_26": 130,
+   "inverter_kw": "20,680",
+   "storage_kwh": "2,410"
   },
   "YRB23": {
-   "connected_not_on_der": 11,
-   "der_active_not_connected": 10
+   "active_sites": 1713,
+   "first_lodged_fy2025_26": 65,
+   "inverter_kw": "10,860",
+   "storage_kwh": "1,310"
   },
   "YRB24": {
-   "connected_not_on_der": 2,
-   "der_active_not_connected": 8
+   "active_sites": 702,
+   "first_lodged_fy2025_26": 68,
+   "inverter_kw": "4,730",
+   "storage_kwh": "750"
   },
   "YRB25": {
-   "connected_not_on_der": 6,
-   "der_active_not_connected": 5
+   "active_sites": 717,
+   "first_lodged_fy2025_26": 44,
+   "inverter_kw": "4,850",
+   "storage_kwh": "650"
   },
   "YRB26": {
-   "connected_not_on_der": 14,
-   "der_active_not_connected": 4
+   "active_sites": 1996,
+   "first_lodged_fy2025_26": 35,
+   "inverter_kw": "10,830",
+   "storage_kwh": "1,710"
   },
   "YRB27": {
-   "connected_not_on_der": 14,
-   "der_active_not_connected": 9
+   "active_sites": 2729,
+   "first_lodged_fy2025_26": 252,
+   "inverter_kw": "18,040",
+   "storage_kwh": "2,950"
   },
   "YRB28": {
-   "connected_not_on_der": 12,
-   "der_active_not_connected": 4
+   "active_sites": 1781,
+   "first_lodged_fy2025_26": 62,
+   "inverter_kw": "10,340",
+   "storage_kwh": "1,380"
   }
- },
- "ask_b": {
-  "YRB21": "2,440",
-  "YRB22": "1,770",
-  "YRB23": "1,800",
-  "YRB24": "390",
-  "YRB25": "900",
-  "YRB26": "1,590",
-  "YRB27": "1,740",
-  "YRB28": "1,310"
  }
 }

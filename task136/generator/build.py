@@ -33,6 +33,7 @@ def simulate():
     WD.simulate(W)
     W.legacy = WD.legacy_rows(W)
     WD.der_register(W)
+    WD.settle_ask_bins(W)
     W.realloc = WD.reallocations(W)
     return W
 
@@ -60,7 +61,7 @@ def program_rows(W):
 
 def hca_table(W, base_kw, golden_add_kw):
     """The assessment's figures: hosting capacity for the 2029 case set from each feeder's base forecast and its
-    target excess (YRB24's from its golden excess); the 2029 minimum demand and route length; the 2026 case from the
+    target excess (YRB27's from its golden excess); the 2029 minimum demand and route length; the 2026 case from the
     change in each feeder's spring minimum demand between the two cases, at a sensitivity inside the report's own
     0.6 to 1.2 MW of hosting capacity per MW of minimum demand. Minimum demand falls on the established feeders by
     up to 0.7 MW (or rises a little) and rises on YRB24 as the Bindarra Waters estate fills, so the two cases differ
@@ -71,8 +72,8 @@ def hca_table(W, base_kw, golden_add_kw):
     out = {}
     cust = {f: sum(1 for n in W.nmis if n["feeder"] == f and n["energised"] <= dt.date(2026, 6, 30)) for f in K.FEEDERS}
     for f in K.FEEDERS:
-        if f == "YRB24":
-            hc29 = round((base_kw[f] + golden_add_kw) / 1000.0 - K.TARGET_GOLDEN_YRB24, 2)
+        if f == "YRB27":
+            hc29 = round((base_kw[f] + golden_add_kw) / 1000.0 - K.TARGET_GOLDEN_YRB27, 2)
         else:
             hc29 = round(base_kw[f] / 1000.0 - K.TARGET_BASE_EXCESS[f], 2)
         r.uniform(0.26, 0.58)
@@ -114,16 +115,16 @@ def build(out, quiet=False, W=None):
     counts[K.REBATE] = K.write_csv(p(K.REBATE), R.REBATE_COLS, R.rebate_rows(W))
     prog = program_rows(W)
     DOC.write_program_log(p(K.PROGRAM_LOG), prog)
-    letter = {s: sum(1 for x in W.nmis if x["locality"] == s and x["tariff"] == "Residential")
-              for s in ("Bindarra Waters", "Wattleview")}
+    letter = {c["suburb"]: sum(1 for x in W.nmis if x["locality"] == c["suburb"] and x["tariff"] == "Residential")
+              for c in K.CAMPAIGNS_2026}
     DOC.write_letter(p(K.LETTER), letter)
     # the hosting capacity table is set from the base forecast computed on the written files
     L = C.load(out, partial=True)
     base = C.base_forecast(L["reg"])
-    camps, pools = C.campaigns(L), C.pools_2027(L)
-    lift = C.lifts(camps, pools, "untapped")
+    camps, pools = C.campaigns(L), C.pools_2026(L)
+    lift = C.lifts(camps, pools, "uplift")
     avgkw = C.avg_new_kw(L["reg"])
-    golden_add = lift["Bindarra Waters"] * avgkw["YRB24"]
+    golden_add = lift["Wattleview"] * avgkw["YRB27"]
     W.hca = hca_table(W, base["base"], golden_add)
     DOC.write_hca(p(K.HCA), W.hca)
     DOC.write_npp(p(K.NPP))
@@ -140,15 +141,15 @@ def build(out, quiet=False, W=None):
          "NMIs on Yarrabin feeders to Merindah City Council property numbers"),
         (K.RATES, "Merindah City Council rating system", "2026-08-03", counts[K.RATES], "Merindah City Council",
          "2026-27 rates roll, western rating area"),
-        (K.DER, "DER Register (national) via Mirrabee extraction", "2026-09-05", counts[K.DER], K.PEOPLE["connections"],
-         "AC connections and devices at NMIs on Yarrabin feeders, all statuses"),
+        (K.DER, "DER Register (national) via Mirrabee extraction", "2026-09-01", counts[K.DER], K.PEOPLE["connections"],
+         "AC connections and devices at NMIs on Yarrabin feeders at 31 August 2026, all statuses"),
         (K.REALLOC, "Market systems (NMI standing data)", "2026-09-01", counts[K.REALLOC], K.PEOPLE["connections"],
          "NMIs replaced at Yarrabin premises since 1 July 2019"),
         (K.REBATE, "Queensland home battery rebate (state program)", "2026-07-14", counts[K.REBATE],
          K.PEOPLE["customer"], "approvals for Merindah addresses, FY2025-26"),
         (K.PROGRAM_LOG, "Merindah City Council", "2025-03-03", "", "Merindah City Council",
          "Solar Streets campaign summary 2018 to 2024, as received"),
-        (K.LETTER, "Merindah City Council", "2026-08-14", "", "Merindah City Council", "letter on the 2027 campaigns"),
+        (K.LETTER, "Merindah City Council", "2026-08-14", "", "Merindah City Council", "letter on the 2026 campaigns"),
         (K.NPP, "Network Planning", "2026-03-02", "", K.PEOPLE["planning"], "procedure, revision 3"),
         (K.HCA, "Buchanan Power Engineering", "2026-07-24", "", K.PEOPLE["consultant"], "assessment report BPE-2026-031"),
         (K.PEAK, "Network Planning", "2026-05-12", "", K.PEOPLE["planning"], "summer peak demand forecast by feeder"),

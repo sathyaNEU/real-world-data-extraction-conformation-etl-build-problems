@@ -1,5 +1,5 @@
 """The pack's documents: NPP-114 (the distributor's planning procedure), the 2026 hosting capacity assessment, the
-council's letter on the 2027 campaigns and its program workbook, the data dictionary and the network's peak demand
+council's letter on the 2026 campaigns and its program workbook, the data dictionary and the network's peak demand
 forecast."""
 from __future__ import annotations
 
@@ -113,9 +113,11 @@ def write_npp(path):
     s.append(Paragraph("4.1&nbsp;&nbsp;A program scheduled on a feeder, whose sign-up window closes at least six months "
                        "before the design point, adds to the base forecast the number of systems that the "
                        "distributor's records of past programs of the same kind indicate it will bring.", CLAUSE))
-    s.append(Paragraph("4.2&nbsp;&nbsp;Each such system is taken at the average inverter capacity of the micro EG "
+    s.append(Paragraph("4.2&nbsp;&nbsp;A rate taken from past programs is their total systems divided by their "
+                       "combined total of the quantity the rate is expressed per.", CLAUSE))
+    s.append(Paragraph("4.3&nbsp;&nbsp;Each such system is taken at the average inverter capacity of the micro EG "
                        "systems first connected on that feeder in the last complete financial year.", CLAUSE))
-    s.append(Paragraph("4.3&nbsp;&nbsp;A program that has not been confirmed in writing by its sponsor is not "
+    s.append(Paragraph("4.4&nbsp;&nbsp;A program that has not been confirmed in writing by its sponsor is not "
                        "forecast.", CLAUSE))
     s.append(Paragraph("5 Hosting capacity", H2))
     s.append(Paragraph("5.1&nbsp;&nbsp;A feeder's hosting capacity is the figure in the current hosting capacity "
@@ -128,7 +130,7 @@ def write_npp(path):
     s.append(Paragraph("7.1&nbsp;&nbsp;Forecasts are carried unrounded and rounded once for reporting: capacity and "
                        "excess in MW to one decimal, systems to the nearest ten.", CLAUSE))
     s.append(Spacer(1, 8))
-    s.append(Paragraph("Revision 3 moved the design point from 1 October to 31 August and added clause 4.3. Approved: "
+    s.append(Paragraph("Revision 3 moved the design point from 1 October to 31 August and added clauses 4.2 and 4.4. Approved: "
                        "%s, Manager Network Planning, 26 February 2026." % K.PEOPLE["planning"], NOTE))
     _doc(path, "NPP-114 Forecasting micro embedded generation for distribution augmentation (rev 3)",
          K.PEOPLE["planning"]).build(s, onFirstPage=_footer("Mirrabee Energy  |  NPP-114 rev 3", "Uncontrolled when printed"),
@@ -191,26 +193,26 @@ def write_letter(path, counts):
              "lh2", fontName=SERIF, fontSize=9, leading=12, textColor=GREY, spaceAfter=16)),
          Paragraph("14 August 2026", LTR),
          Paragraph("Network Planning<br/>Mirrabee Energy<br/>Locked Bag 7<br/>Merindah QLD 4510", LTR),
-         Paragraph("Our reference: SS/2027/01", LTR),
-         Paragraph("Solar Streets 2027", LTRB),
-         Paragraph("Council's 2026-27 budget, adopted on 30 July 2026, includes two Solar Streets bulk-buy campaigns in "
-                   "spring 2027. Sign-ups will open on Monday 6 September 2027 and close on Friday 26 November 2027 in "
+         Paragraph("Our reference: SS/2026/02", LTR),
+         Paragraph("Solar Streets 2026", LTRB),
+         Paragraph("Council's 2026-27 budget, adopted on 30 July 2026, includes two Solar Streets bulk-buy campaigns "
+                   "this spring. Sign-ups will open on Tuesday 1 September 2026 and close on Friday 27 November 2026 in "
                    "both suburbs:", LTR),
          Paragraph("&bull;&nbsp;&nbsp;Bindarra Waters, where the letterbox drop will go to all {:,} residential "
                    "addresses;".format(counts["Bindarra Waters"]), LTR),
          Paragraph("&bull;&nbsp;&nbsp;Wattleview, where the letterbox drop will go to all {:,} residential "
                    "addresses.".format(counts["Wattleview"]), LTR),
-         Paragraph("Council will appoint the installer by tender in February 2027. As in earlier campaigns, the "
-                   "installer will lodge each connection application with the program reference, and installations "
-                   "will follow over the summer after sign-ups close. Information sessions will be held at the "
-                   "Bindarra Waters community centre and the Wattleview library in early September 2027.", LTR),
-         Paragraph("Please treat this letter as Council's written confirmation of the 2027 campaigns for your network "
+         Paragraph("Council has appointed Riverstone Solar for both campaigns. As in earlier campaigns, the installer "
+                   "will lodge each connection application with the program reference, and installations will follow "
+                   "over the summer after sign-ups close. Information sessions will be held at the Bindarra Waters "
+                   "community centre and the Wattleview library in the first week of September.", LTR),
+         Paragraph("Please treat this letter as Council's written confirmation of the 2026 campaigns for your network "
                    "planning. A summary of the earlier campaigns is attached.", LTR),
          Spacer(1, 10),
          Paragraph("Yours sincerely,", LTR),
          Spacer(1, 16),
          Paragraph("%s<br/>Sustainability Programs Officer" % K.PEOPLE["council"], LTR)]
-    _doc(path, "Solar Streets 2027", K.PEOPLE["council"]).build(s)
+    _doc(path, "Solar Streets 2026", K.PEOPLE["council"]).build(s)
 
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -295,7 +297,7 @@ def write_dictionary(path, counts):
         (K.XREF, "One row per NMI: the council property it supplies."),
         (K.RATES, "One row per rateable property in Merindah's western rating area, 2026-27 roll."),
         (K.DER, "One row per device (inverter or battery) of each AC connection the DER Register holds at an NMI "
-                "on a Yarrabin feeder."),
+                "on a Yarrabin feeder. An NMI can hold more than one AC connection."),
         (K.REALLOC, "One row per NMI replaced by another NMI at the same premises."),
         (K.REBATE, "One row per home battery rebate approval for a Merindah address in FY2025-26, as the state "
                    "program sent it."),
@@ -358,7 +360,7 @@ def write_dictionary(path, counts):
             ("ac_connection_status", "Active or Decommissioned."), ("status_date", "Date of the status shown."),
             ("registered_date", "Date the installer lodged the AC connection."),
             ("installer_accreditation_no", "Installer's accreditation number."),
-            ("feeder", "Feeder, added by Mirrabee's extraction from its NMI history."),
+            ("feeder", "Feeder, added by Mirrabee's extraction."),
         ],
         "NMI re-allocations": [
             ("old_nmi", "NMI no longer in use."), ("new_nmi", "NMI that replaced it at the same premises."),

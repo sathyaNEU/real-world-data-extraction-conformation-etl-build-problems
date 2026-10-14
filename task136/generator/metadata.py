@@ -16,10 +16,10 @@ SOURCES = {
     K.XREF: "GIS cross-reference of NMIs to Merindah City Council property numbers",
     K.RATES: "Merindah City Council 2026-27 rates roll, western rating area",
     K.PROGRAM_LOG: "Merindah City Council Solar Streets campaign summary, 2018 to 2024, with the program terms",
-    K.LETTER: "Merindah City Council letter of 14 August 2026 confirming the two spring 2027 campaigns",
+    K.LETTER: "Merindah City Council letter of 14 August 2026 confirming the two spring 2026 campaigns",
     K.NPP: "Mirrabee Energy Network Planning Procedure NPP-114 revision 3 (micro EG forecasting for augmentation)",
     K.HCA: "Hosting capacity assessment BPE-2026-031 for the Yarrabin 22 kV feeders",
-    K.DER: "DER Register extract (AC connections and devices) for NMIs on the Yarrabin feeders, 5 September 2026",
+    K.DER: "DER Register extract (AC connections and devices) for NMIs on the Yarrabin feeders, as at 31 August 2026",
     K.REALLOC: "NMI re-allocation log for Yarrabin premises since 1 July 2019",
     K.DICTIONARY: "Data dictionary for the extracts",
     K.MANIFEST: "Export manifest: each file's source system, date, rows, owner and scope",
@@ -50,9 +50,9 @@ def write(target, out_path):
         "subdomain": "load-forecasting (rooftop PV forecast to an augmentation's design point, with two council "
                      "solar bulk-buy campaigns, at a Queensland distribution network)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "other: the feeder, its rooftop PV above hosting capacity, the runner-up and gap, each 2027 "
-                        "bulk-buy's systems, the chart, and two per-feeder asks (a DER Register reconciliation and "
-                        "battery storage)",
+        "prompt_shape": "other: the feeder, its rooftop PV above hosting capacity, the runner-up and gap, the PV each "
+                        "2026 bulk-buy adds, the chart, and four per-feeder DER Register figures (active sites, sites "
+                        "first lodged in FY2025-26, inverter capacity, battery storage)",
         "as_of": "2026-10-12",
         "deliverables": [K.GOLD_BOOK, K.GOLD_CHART],
         "distractor_files": list(K.DISTRACTORS),
