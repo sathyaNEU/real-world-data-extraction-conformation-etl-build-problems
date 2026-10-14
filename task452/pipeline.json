@@ -1,11 +1,11 @@
 {
   "task": "task452",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "physical-environmental-sciences",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-14",
   "stump": "The default path offers 3,382,582 tonnes for USD 16,912,910 because it estimates the deforested area from the final change map's error matrix with the final map's class areas as weights (171,600 ha, only 8,300 under the reference level's 179,900 for the two years), though the reference points were drawn on the preliminary map: the 124 points the final map moved out of the preliminary deforestation stratum stand for 329 ha each, not 2,367; the stratified estimator on the strata the sample was drawn from gives 122,900 ha and 23,229,780 tonnes offered for USD 116,148,900.",
   "architecture": 2,
@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (2026-10-14, --asof 2026-05-22; no LEAK)",
-    "reader": "pass 1 clean on the decisive step (Q1 none, Q6 analytical), realism repaired; pass 2 on the retuned pack running at pause"
+    "reader": "pass 1 and pass 2 clean on the decisive step (Q1 none, Q6 analytical); realism repaired between and after"
   },
   "duplicate_check": {
     "heart": "WARN (overuse.objective, overuse.gate_g, repeat.decision, repeat.question_form, answered in ## Draw)",
@@ -26,13 +26,13 @@
   },
   "judge": {
     "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (pass 1, first cut)",
-    "report": "determinism_check_report.md; pass 2 on the retuned pack running at pause"
+    "disposition": "APPROVE (pass 1 on the first cut, pass 2 the re-judge on the final pack)",
+    "report": "determinism_check_report.md, determinism_check_report_pass2.md"
   },
   "returned": [],
-  "resume": "stage 4: collect the leak reader's second read and the judge's second pass on the final pack (reference level 89,950 ha a year); if their reports are lost with the container, re-run both on a fresh unzip of target.zip (the judge through the determinism-judge agent's brief, report determinism_check_report_pass2.md); fix any finding in the generator, then ship: ledger row SHIPPED, pipeline SHIPPED, card current, commit SHIPPED (task452) with target.zip and golden/ force-added",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-14",
   "portal": null,
   "source_note": "seed ET09 (analytical_tasks/07_data_extraction_conformation) not used: its world is health economics, held by task451; the pairing is the client's emissions-inventory ETL task type",
   "lineage_note": "architecture 1 shipped 2026-10-13 (judge pass 1 FIX_NOW, re-judge DETERMINISTIC, APPROVE; delivered, pending review) and was re-rooted 2026-10-14 at the author's request: its decisive step, a concentration-discharge rating curve, is the field's standard load method"

@@ -25,7 +25,7 @@ The tonnes rest on 122,900 hectares of deforestation, estimated from the referen
 4. Set monitored emissions of 122,900 hectares at 497.0 tonnes of CO2e a hectare, 61,081,300 tonnes, against reference level emissions of 89,950 hectares a year for two years at the same factor, 89,410,300 tonnes (articles 1, 2 and 4): emission reductions of 28,329,000 tonnes.
 5. Set aside the 18 per cent buffer and dropped the fraction of a tonne: 23,229,780 tonnes offered, which the Facility pays for at USD 5.00 a tonne, USD 116,148,900 (articles 5 and 6).
 6. Took each district's area as the part of the estimate its points contribute, as section 4 of monitoring_plan_extract.pdf sets the district figures, the points' 2019 district codes being the accounting area's layer.
-7. Placed each polygon of final_change_map_v2_polygons.parquet in its 2019 district through district_concordance_2019_2025.csv (LT-05 and LT-06 both La Esperanza, the highland districts outside the accounting area) and summed area_ha over patch_ha, each polygon's share of the patch it delivers, by the patch's size: 30,548 patches, 12,206 under 1 hectare and 3,221 of 5 hectares or more.
+7. Placed each polygon of final_change_map_v2_polygons.parquet in its 2019 district through district_concordance_2019_2025.csv, LT-05 and LT-06 both falling in La Esperanza and the highland districts SR-01 to SR-06 left out as outside the accounting area, and summed area_ha over patch_ha, each polygon's share of the patch it delivers, by the patch's size: 30,548 patches, 12,206 under 1 hectare and 3,221 of 5 hectares or more.
 8. Recommendation: offer 23,229,780 tonnes for USD 116,148,900.
 
 ## 4. Deliverable Answers

@@ -27,6 +27,15 @@ def district_boxes():
     return boxes
 
 
+def _workday(d):
+    """the laboratory and the ministry interpret on working days: a draw on a Saturday is Friday's, on a Sunday
+    Monday's"""
+    return d - dt.timedelta(days=1) if d.weekday() == 5 else (d + dt.timedelta(days=1) if d.weekday() == 6 else d)
+
+
+OPERATORS = ["OP01", "OP02", "OP02", "OP03", "OP04", "OP04", "OP05", "OP06", "OP07"]   # two interpreters on half time
+
+
 def _date(rng, start, end):
     a, b = dt.date.fromisoformat(start), dt.date.fromisoformat(end)
     return a + dt.timedelta(days=int(rng.integers(0, (b - a).days + 1)))
@@ -45,8 +54,8 @@ def points():
         x0, y0, w, h = boxes[d]
         p = dict(plot_id="LFM26-%05d" % i, stratum=s, district=d, true=t, final=f,
                  x=int(x0 + rng.random() * w), y=int(y0 + rng.random() * h),
-                 operator="OP%02d" % (1 + int(rng.integers(0, 9))),
-                 interpreted=_date(rng, "2026-02-03", "2026-03-27"))
+                 operator=OPERATORS[int(rng.integers(0, 9))],
+                 interpreted=_workday(_date(rng, "2026-02-03", "2026-03-27")))
         u = rng.random()
         if t == "D":
             p["lc24"] = 1 if u < 0.6 else 2
@@ -135,7 +144,7 @@ def qc_campaign(pts):
     for k in chosen:
         p = pts[k]
         q = dict(plot_id=p["plot_id"], stratum=p["stratum"], operator="QC%02d" % (1 + int(rng.integers(0, 3))),
-                 interpreted=_date(rng, "2026-03-09", "2026-04-10"), lc24=p["lc24"], cc24=p["cc24"], lc25=p["lc25"],
+                 interpreted=_workday(_date(rng, "2026-03-09", "2026-04-10")), lc24=p["lc24"], cc24=p["cc24"], lc25=p["lc25"],
                  cc25=p["cc25"], change=p["change"], loss_year=p["loss_year"], loss_month=p["loss_month"],
                  confidence=p["confidence"])
         u = rng.random()
