@@ -1,0 +1,161 @@
+{
+ "activated": [
+  "Northeast",
+  "Upper Cumberland",
+  "South Central",
+  "West"
+ ],
+ "not_activated": [
+  "East",
+  "Southeast",
+  "Mid-State",
+  "Memphis Delta"
+ ],
+ "regions_activated": 4,
+ "share_pct": {
+  "Northeast": 50,
+  "East": 20,
+  "Southeast": 10,
+  "Upper Cumberland": 50,
+  "Mid-State": 10,
+  "South Central": 70,
+  "West": 80,
+  "Memphis Delta": 10
+ },
+ "share_unrounded": {
+  "Northeast": 0.528,
+  "East": 0.179,
+  "Southeast": 0.103,
+  "Upper Cumberland": 0.521,
+  "Mid-State": 0.124,
+  "South Central": 0.679,
+  "West": 0.789,
+  "Memphis Delta": 0.112
+ },
+ "share_unrounded_pct": {
+  "Northeast": 52.8,
+  "East": 17.9,
+  "Southeast": 10.3,
+  "Upper Cumberland": 52.1,
+  "Mid-State": 12.4,
+  "South Central": 67.9,
+  "West": 78.9,
+  "Memphis Delta": 11.2
+ },
+ "hospitals": {
+  "Northeast": 9,
+  "East": 12,
+  "Southeast": 10,
+  "Upper Cumberland": 5,
+  "Mid-State": 14,
+  "South Central": 6,
+  "West": 7,
+  "Memphis Delta": 12
+ },
+ "hospitals_all": 75,
+ "hospital_days": {
+  "Northeast": 252,
+  "East": 336,
+  "Southeast": 280,
+  "Upper Cumberland": 140,
+  "Mid-State": 392,
+  "South Central": 168,
+  "West": 196,
+  "Memphis Delta": 336
+ },
+ "hospital_days_all": 2100,
+ "feed_full_day_rate_pct": {
+  "census": 33,
+  "board": 89,
+  "transfer center": 24
+ },
+ "feed_ordinary_day_rate_pct": {
+  "census": 0.8,
+  "board": 35,
+  "transfer center": 1.6
+ },
+ "flagged_days": {
+  "census": 216,
+  "board": 1085,
+  "transfer center": 176,
+  "no census report": 82
+ },
+ "any_feed_share_pct": {
+  "Northeast": 66.3,
+  "East": 46.1,
+  "Southeast": 41.1,
+  "Upper Cumberland": 66.4,
+  "Mid-State": 44.6,
+  "South Central": 75.6,
+  "West": 82.7,
+  "Memphis Delta": 43.8
+ },
+ "any_feed_regions": 8,
+ "two_of_three_share_pct": {
+  "Northeast": 23.8,
+  "East": 8.9,
+  "Southeast": 5.4,
+  "Upper Cumberland": 23.6,
+  "Mid-State": 5.6,
+  "South Central": 31.5,
+  "West": 32.1,
+  "Memphis Delta": 5.4
+ },
+ "two_of_three_regions": 0,
+ "placements_out_of_region": {
+  "Northeast": 70,
+  "East": 40,
+  "Southeast": 32,
+  "Upper Cumberland": 45,
+  "Mid-State": 49,
+  "South Central": 65,
+  "West": 58,
+  "Memphis Delta": 28
+ },
+ "placements_out_of_region_all": 387,
+ "diversion_hours": {
+  "Northeast": 80,
+  "East": 133,
+  "Southeast": 132,
+  "Upper Cumberland": 27,
+  "Mid-State": 147,
+  "South Central": 46,
+  "West": 64,
+  "Memphis Delta": 69
+ },
+ "diversion_hours_all": 698,
+ "diversion_hours_unrounded": {
+  "Northeast": 80.17,
+  "East": 132.83,
+  "Southeast": 132.1,
+  "Upper Cumberland": 26.7,
+  "Mid-State": 147.25,
+  "South Central": 46.13,
+  "West": 63.62,
+  "Memphis Delta": 69.18
+ },
+ "closed_hours": {
+  "Northeast": 752,
+  "East": 642,
+  "Southeast": 475,
+  "Upper Cumberland": 357,
+  "Mid-State": 745,
+  "South Central": 513,
+  "West": 616,
+  "Memphis Delta": 623
+ },
+ "closed_hours_all": 4723,
+ "closed_hours_unrounded": {
+  "Northeast": 751.77,
+  "East": 642.2,
+  "Southeast": 475.13,
+  "Upper Cumberland": 356.82,
+  "Mid-State": 745.13,
+  "South Central": 512.72,
+  "West": 616.27,
+  "Memphis Delta": 622.88
+ },
+ "window_days": 28,
+ "threshold": "one in three",
+ "rounding_shares_pct": 10
+}
