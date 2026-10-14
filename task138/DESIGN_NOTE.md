@@ -275,6 +275,8 @@ Water Order Procedure; T1 to T5 its tables.
 | SF31 | Ask 4: when a board change takes effect | at the reading the note sits on (each of the 24 notes timed ahead of its sheet's reading, asserted) | from the next day | Lateral 2 640, Lateral 4 280, Lateral 6 660 (asserted) | the notes' own times |
 | SF32 | Ask 4: a day without a sheet | the last reading stands until the next | the day at zero | Lateral 3 410, Lateral 7 490, Lateral 8 410 (asserted) | the dictionary ("A reading stands for its day and for each following day until the weir's next reading") |
 | SF33 | Ask 1: a swap's registers | the shop's `Reg. out` and `Reg. in` (new meters at 0.00, rebuilt meters with the register they carried) | (none: the registers bracket the book's reads) | converges: each removal register sits just past the old meter's last read and each installation register at or just under the new meter's first (asserted) | the records converge |
+| SF34 | crediting the 2026 record to a root zone (the judge's round 2 residual: WOP never says in so many words to credit past deliveries) | the root zone as it stands at the end of 31 January 2027 is the one the record's delivered sets, the weather and the T1 coefficients left | no delivered set credited (full on 1 February, R0); a simulated 2026 season in place of the delivered sets (the replay rule run through 2026, R2) | 196,000; 199,000 | WOP 2.4 ("as it stands": a state of the fields, not of a model); the data: on the generator's clean truth the record run misses the fields as they are by 0.027 in acre-weighted, the full start by 4.33 in and the simulated season by 2.93 in (asserted); WOP 3.4's refill is scoped to a replay; no sentence is added to WOP |
+| SF35 | what decides the call (the reader's round 2 Q6: the replay is filed, so the call reads as rule application) | an analytical choice: WOP 2.3 and 2.4 file the WHAT (the order rule, the start's date and that it is the fields' own state), and no filed sentence says how that state is estimated | executing the filed rules alone | (no order: the filed rules leave the 31 January state to be estimated; the easy estimator, the last set as a refill, files 209,000) | the estimand and the data: no document names a start (R3c, asserted), and on the clean truth, every rule read correctly, the two estimators of the same filed state stand a full order apart (209,000 against 215,000, R3a and R3b), the last set as a refill missing the fields as they are by 0.96 in acre-weighted (asserted) |
 
 The stump is none of these rows: every term is read the same way by a careful reader, and the default path reads them
 all as the golden does. SF9 lists starts the filed estimand rules out; the two estimators of the filed state that the
@@ -283,7 +285,9 @@ every one of the 501 held fields, the crop's use less rain from the day it was l
 exceeds the water its sets put in by at least the depletion the record run leaves (asserted), so a refill at the last
 set needs water the record never delivered. The judge's round 1 residual (the 1 February start) is closed by WHAT
 (WOP 2.4), and every defensible construction of the record run (SF12 to SF17, SF22, SF27 and the converging cells of
-SF6 to SF8) lands within 267 acre-feet of the golden's 24th replay, inside its thousand.
+SF6 to SF8) lands within 267 acre-feet of the golden's 24th replay, inside its thousand. The judge's round 2 residual (crediting past deliveries) and the reader's round 2 Q6 (the call as rule application) are
+SF34 and SF35, each closed by the estimand and the data and asserted on the clean truth; WOP gains no method sentence
+(that would file the HOW and make the decisive step rule application).
 
 ## Ladder
 
@@ -543,7 +547,7 @@ setting year and its requirement are no longer asked (`## Tried and rejected`).
   holds, a last set on one day; each field simulated day by day from 1 February 2023 to 31 January 2027 on the yard's
   true weather), the orders, the requests, the 2026 meters, swaps and work orders, the heading loggers and their
   outages, the weirs, `records.py` and `docs.py` the files, `calc.py` the procedure and every rung, `deliver.py` the
-  goldens and `figures.json`, `checks.py` (the three-rules block on the clean truth, every rung and floor, SF1 to SF33,
+  goldens and `figures.json`, `checks.py` (the three-rules block on the clean truth, every rung and floor, SF1 to SF35,
   the asks with every stop, the separation line, the gates and the realism sweep), `verify.py` (an independent
   recompute from the shipped files alone), `metadata.py`.
 - Texture knobs, each on the ask paths only and each tuned so every ask figure sits mid-bin (asserted at 2.5 acre-feet
@@ -579,6 +583,19 @@ setting year and its requirement are no longer asked (`## Tried and rejected`).
   sentence are the domain's ordinary words (record, January, fields, weather, replay, balance, orders, winter
   maintenance), and the procedure files the start state as WHAT (WOP 2.4) without naming the record run; the yard
   logger's `Flag` column is its export's own missing-day flag, defined in the dictionary.
+- Stage 4, round 2 (2026-10-14). Judge: DETERMINISTIC, APPROVE, no fix; every graded figure reproduced (the 24th replay
+  2012 at 214,499, the order 215,000); Gate H analytical; stump power moderate (`determinism_check_report_round2.md`).
+  Its residual, that WOP never says in so many words to credit past deliveries to the root zone, is SF34, closed by the
+  estimand and the data, asserted on the clean truth; no method sentence is added to WOP. Reader: no figure handed over;
+  its Q6 leaned to rule application without computing (it did not reach how the 31 January state is built), recorded
+  as SF35, closed the same way. The pack, the goldens and every graded figure are unchanged (`freeze.py check --mode
+  determinism` clean; `target.zip` byte-identical to the stage 3 cut).
+- Realism notes from the reader, left as they are: the operations log's sensor failure and recovery pairs with the
+  Water Master's estimate lists read alike because the log is the District's own standing form for an outage, and those
+  entries carry the estimates Ask 2 and 3 read (SF29, the days without a logger total exactly the estimated days,
+  asserted); rewording them, the shop log's repair dates or the 15 June connector entry would change a document an ask
+  reads and need another reader pass for a presentation note that moves no figure. Kept for a later round if the
+  portal raises realism.
 
 ## Pre-ship check
 
@@ -598,7 +615,7 @@ Round 2, written at stage 3 against the built pack; the reader and judge lines a
    pack is read the same on the default path.
 4. The analyst test holds: the default path files 209,000, the audit's routes 196,000 to 199,000, the near corrections
    210,000 to 214,000; only the record run files 215,000 (and on the generator's clean truth the same two figures).
-5. One defensible answer: WOP 2.3, 2.4, 3.1 to 3.5, 4.1, 6.1 and 6.2 file the estimand, the start state included; the 33
+5. One defensible answer: WOP 2.3, 2.4, 3.1 to 3.5, 4.1, 6.1 and 6.2 file the estimand, the start state included; the 35
    fork rows are each asserted; every defensible construction of the record run lands within 267 acre-feet of the 24th
    replay, 499 from either edge of its thousand.
 6. No decoy: no file states a 2027 figure, a past requirement, a field's state or a schedule; the groundwater levels, the
@@ -607,6 +624,10 @@ Round 2, written at stage 3 against the built pack; the reader and judge lines a
 8. A new lesson: a forecast's initial condition rebuilt by tracking an operation's recorded inputs through the season,
    because a unit held at a working deficit never returns to full; round 1's last-input-as-reset is this build's default
    path.
+9. Leak reader (stage 4): nothing quoted that hands over a figure; its Q6 lean to rule application is SF35 (no filed
+   sentence builds the 31 January state; the two estimators separate on the clean truth); REVIEW lines harmless.
+10. Judge (stage 4): DETERMINISTIC, APPROVE, no fix; Gate H analytical; the residual is SF34, closed without a WOP
+   sentence.
 
 ## Tried and rejected
 
@@ -670,3 +691,6 @@ Round 2, written at stage 3 against the built pack; the reader and judge lines a
   full then: four dry days after the 27 January rain left every field up to 0.17 inches short on 1 February, so the note
   was not true of the record (H6); the run now starts from the end of 27 January 2026, when every root zone was full
   from any November state (asserted), and files the same state on 31 January 2027.
+- A WOP sentence crediting each field's 2026 delivered sets to its root zone, to answer the judge's round 2 residual:
+  refused. It files the HOW, the decisive step's own estimator, and turns the record run into rule application; the
+  residual is closed by the estimand and the data instead (SF34, asserted on the clean truth).

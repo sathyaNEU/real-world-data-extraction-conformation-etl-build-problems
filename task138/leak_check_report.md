@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: record, refill, january, default, fields, winter, weather, delivered, replay, balance, requirement, deficit, replays, forecast, readable, orders, decisive, efficiency, depletion, asserted, quantity, rebuilt, working, decision, capacity
+Stump terms swept: record, refill, january, default, fields, winter, weather, delivered, replay, balance, requirement, deficit, replays, decisive, forecast, readable, orders, efficiency, asserted, depletion, quantity, rebuilt, working, decision, capacity
 
 ## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `KBID_Water_Order_Procedure_rev2025.pdf`: \bthe model\b x1: ...with the loss allowances of Section 4. 3 The crop water model 3.1 The model keeps a daily balance for each field of the water in its root zone, a...
@@ -39,3 +39,7 @@ Stump terms swept: record, refill, january, default, fields, winter, weather, de
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read (round 2)
+
+Q1: the reader quoted WOP 2.3 and 2.4 (the 24-of-30 order rule, and each replay run "from its root zone as it stands at the end of 31 January") as the main call stated as a rule. Q2 to Q4: none (meter, heading and weir records are raw inputs; the tables hold coefficients; the README and dictionary are plausible working-paper files; the contract quantity and allocation are a cap). Q5: WOP 2.3, 2.4, 3.1 to 3.5, 4.1, 6.1 and 6.2; not computed. Q6: the reader leaned to rule application because the replay is filed; it did not compute and so did not reach the open step, how the 31 January state is built (2.4 files only the WHAT; the record run of 2026's applied water against the last set taken as a refill is the analytical choice, asserted on the clean truth: 209,000 against 215,000). REVIEW lines: harmless (the procedure's order basis is its own rule; coincidental digit strings; a logger Flag column); the prompt's "thirty replayed seasons ... smallest to largest" gives the chart's structure, no figure. Realism: the operations log's near-identical sensor failure and recovery pairs with Water Master estimate lists read templated; every meter, flume and sheet repair is neatly dated; the 15 June connector entry is clean prose. Readings: the west spur's lateral before and after 15 June for the 2026 lateral figures; water put in with the Water Master's estimates on logger-down days; the weir head with boards set; meter swaps and CCF against AF (the asks' devices).

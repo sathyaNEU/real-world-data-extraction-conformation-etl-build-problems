@@ -1,5 +1,5 @@
 """task138 assertions: the input gates, every rung of the ladder and its separation, the three-rules block on the clean
-truth (R1 to R3c), every semantic fork row (SF1 to SF33), the graded figures' distances to their rounding edges, the four
+truth (R1 to R3c), every semantic fork row (SF1 to SF35), the graded figures' distances to their rounding edges, the four
 lateral asks with their stops and devices, the separation line between the call and the asks, the distractors' deletion
 test, and the realism and hygiene sweeps. Run by build.py on every build; prints the ladder and the measured figures
 the design note quotes."""
@@ -145,6 +145,20 @@ def run(target, golden, W=None, meta_path=None):
         true31 = np.array([W.true_path[i][K.WEATHER_END] for i in M.ids])
         ok(float(np.abs(true31 - D).max()) < 0.35 and abs(float((true31 - D) @ M.acres) / M.acres.sum()) < 0.03,
            ("R3b: the record run against the fields as they are", float(np.abs(true31 - D).max())))
+        # SF34: the root zone as it stands is the one the record's water left: a start that credits no delivered set
+        # (full on 1 February, R0) or a simulated 2026 season in place of the delivered sets (the replay rule run through
+        # 2026, R2) misses the fields as they are by inches, the record run by hundredths
+        aw = lambda X: float(np.abs(X - true31) @ M.acres) / M.acres.sum()
+        e4, e0, e2, e3 = aw(D), aw(np.zeros(M.n)), aw(M.start_model_2026()(g["year"])), aw(D3)
+        ok(e4 < 0.03 and e0 > 4.0 and e2 > 2.5, ("SF34 the record's water against a full or simulated 2026 start",
+                                                e4, e0, e2))
+        # SF35: the decisive step is the estimator of the filed state, not a filed rule: no document names a start
+        # (R3c below), and on the clean truth the two estimators of the same filed state stand a full order apart, the
+        # last set as a refill missing the fields as they are by close to an inch
+        ok(t3["order"] <= t4["order"] - K.ORDER_STEP and e3 > 0.5 and e3 > 20 * e4,
+           ("SF35 the estimators of the filed state separate on the clean truth", t3["order"], t4["order"], e3, e4))
+        print("  SF34 and SF35 on the clean truth: acre-weighted miss of the fields as they are, record run %.3f in, "
+              "last set %.3f, simulated 2026 %.3f, full %.3f" % (e4, e3, e2, e0))
         print("  three rules on the clean truth: default path %s, the record run %s; the fields as they are within "
               "%.3f in (acre-weighted %+.4f)" % (af(t3["order"]), af(t4["order"]), float(np.abs(true31 - D).max()),
                                                  float((true31 - D) @ M.acres / M.acres.sum())))

@@ -1,11 +1,11 @@
 {
   "task": "task138",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "physical-environmental-sciences",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-14",
   "stump": "A competent solver starts every replay from each field's root zone at the end of 31 January 2027 as WOP 2.4 files it, takes each field's last delivered 2026 set as a refill to field capacity, carries it through the record's dry October to January and files 209,000 acre-feet; the step that lands it there is not running each field's 2026 season through the balance on the water its delivered sets put in, from the wet winter's field capacity, which shows that the 501 drip, micro-sprinkler and sprinkler fields ended the season 0.48 to 3.99 inches short of field capacity after their last sets: the golden is 215,000 acre-feet.",
   "architecture": 1,
@@ -13,7 +13,7 @@
   "precut": {
     "exit": 0,
     "date": "2026-10-14",
-    "checks": "49 checks, 0 FAIL, 0 WARN (33 fork rows)"
+    "checks": "49 checks, 0 FAIL, 0 WARN (35 fork rows)"
   },
   "three_rules": {
     "domain": "pass (a season's headgate irrigation requirement read at 24 in 30 replayed weather years through a daily root-zone balance, every replay from each field's root zone as it stands at the end of 31 January, which irrigation hydrology rebuilds by tracking the balance on the season's applied water)",
@@ -21,8 +21,8 @@
     "decisive_step": "analytical (each field's 2026 season run through the balance on the water its delivered sets put in, from the wet winter's field capacity; the default path, the last set as a refill, files 209,000; asserted R1 to R3c in checks.py on the clean truth)"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-14 on the round-2 cut (--asof 2027-02-01), no LEAK, sweep 11 clean: sweeps 2, 3, 4 and 8 answered in the design note's build record",
-    "reader": "",
+    "leak_py": "REVIEW 2026-10-14 on the final round-2 rebuild (--asof 2027-02-01), no LEAK, sweep 11 clean: the same lines as stage 3, answered in the design note's build record",
+    "reader": "2026-10-14 round 2: no figure handed over; Q1 quoted WOP 2.3 and 2.4 (the WHAT); Q2 to Q4 none; Q6 leaned to rule application without computing, closed as SF35 (asserted on the clean truth); realism notes on the operations log left as they are (the design note's build record); appended to task138/leak_check_report.md",
     "previous": "2026-10-12 on the stage 3 pack: Q1 to Q4 none, REVIEW lines harmless, every reading raised closed in the fork table (SF8, SF16, SF25 to SF29); targeted re-read of the four changed files (dictionary, operations log, meter shop log, request remarks): Q1 to Q4 none, readings closed by SF26, SF27 and the filed loss share, realism notes left as minor"
   },
   "duplicate_check": {
@@ -37,9 +37,9 @@
     }
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": "",
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE, no fix; every graded figure reproduced (2012 at 214,499; order 215,000); Gate H analytical; stump power moderate; residual (WOP never says to credit past deliveries) closed as SF34 by the estimand and the data, no WOP sentence added",
+    "report": "task138/determinism_check_report_round2.md",
     "previous": "round 1: DETERMINISTIC 2026-10-12: APPROVE, no fix; every graded figure reproduced (the 24th replay 2012 at 202,658 acre-feet, the order 202,700) (task138/determinism_check_report.md); superseded by round 2"
   },
   "returned": [
@@ -48,12 +48,14 @@
       "portal": "10/10 audit: COMPLIANT_WEAK (round 2 brief)",
       "repair": "design",
       "round": 2,
-      "paused_commit": "PAUSED (task138): round 2 redesign, stage 3 green, waiting on the reader and judge"
+      "paused_commit": "PAUSED (task138): round 2 redesign, stage 3 green, waiting on the reader and judge",
+      "commit": "RESHIPPED (task138): round 2, order 215,000 acre-feet from the Tolan Valley Project for the 2027 season",
+      "reshipped": "2026-10-14"
     }
   ],
-  "resume": "stage 4: reader and judge",
+  "resume": "",
   "approved": null,
-  "delivered": "2026-10-12",
+  "delivered": "2026-10-14",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -61,7 +63,7 @@
   "wave": "wave 2 (new), seed FC09",
   "build": {
     "date": "2026-10-14",
-    "checks": "213,898 assertions, 0 failed (three-rules block R1 to R3c on the clean truth, ladder floors, SF1 to SF33, the asks with every stop and edge, the separation line, input gates, realism sweep, closure axes 14 to 16)",
+    "checks": "213,900 assertions, 0 failed (three-rules block R1 to R3c on the clean truth, ladder floors, SF1 to SF35, the asks with every stop and edge, the separation line, input gates, realism sweep, closure axes 14 to 16)",
     "verify": "green from the bundle alone: order 215,000 set by 2012 (24th 214,499.4), default 209,000, closest approach 5.9e-06 in, the winter-full fact, 36 lateral figures and the total row",
     "byte_identical": true,
     "input_gates": "18 files, 5 formats, the orders file 107,067 rows, 3 distractors (deletion moves nothing)",
@@ -80,5 +82,20 @@
       "rivals": "default (last set as a refill) 209,000; no efficiency 210,000; first set as a refill 212,000; cancelled sets as water 214,000; no cap 216,000; flat addition 216,000; full start 196,000; full at the canal's close 197,000; own winter 199,000; replay rule through 2026 199,000",
       "pair_ceiling": 38.2
     }
-  ]
+  ],
+  "final_gates": {
+    "date": "2026-10-14",
+    "checks": "213,900 passed",
+    "verify": "green",
+    "byte_identical": true,
+    "target_zip_unchanged_from_stage3": true,
+    "figures_check": "exit 0 (60 figures)",
+    "precut": "exit 0 (49 checks, 0 FAIL, 0 WARN, 35 fork rows)",
+    "voice_check": "exit 0",
+    "leak_py": "REVIEW, no LEAK",
+    "guard_surface": "exit 0 (task126 and task82 on card axes alone, as at stage 3)",
+    "guard_heart": "WARN (repeat.decision against task137; NOTEs differentiated), no BLOCK",
+    "guard_validate": "171 cards, 0 invalid",
+    "freeze": "check --mode determinism PASS"
+  }
 }
