@@ -124,7 +124,7 @@ OPTIONS = {
 OPTION_ORDER = ["P", "R", "T", "D", "V"]
 BASE = {"PH": (371, 505), "BKL": (520, 680), "SEH": (680, 885), "TTR": (675, None), "AED": (None, 332)}
 OPTION_EFFECT = {"P": {"PH": (-25, 0), "TTR": (-25, 0)}, "R": {"PH": (0, 25), "SEH": (-25, 0), "BKL": (0, -1)},
-                 "T": {"AED": (0, 60), "TTR": (-20, 0)}, "D": {"BKL": (0, 45)}, "V": {"SEH": (0, 30)}}
+                 "T": {"AED": (0, 60), "TTR": (-20, 0)}, "D": {"BKL": (0, 45)}, "V": {"SEH": (0, 40)}}
 CONFIGS = [  # letter, options, price per bus
     ("A", [], 0),
     ("B", ["P", "R"], 1850),
@@ -139,8 +139,8 @@ LINE = 0.95
 
 
 # the fit trials' own readings: a configuration's limits are not quite the sum of its options' effects
-TRIAL_TRIM = {"A": {"SEH": (0, -1)}, "C": {"SEH": (0, -1)}, "F": {"SEH": (0, -1)}, "G": {"SEH": (0, -1)},
-              "H": {"BKL": (0, 1)}}
+TRIAL_TRIM = {"A": {"SEH": (0, -1), "TTR": (-1, 0)}, "B": {"BKL": (1, 0)}, "C": {"SEH": (0, -1)}, "F": {"SEH": (0, -1), "PH": (-1, 0)},
+              "G": {"SEH": (0, -1)}, "H": {"BKL": (0, 1)}}
 
 
 def envelope(opts, config=None):
@@ -248,6 +248,57 @@ def employees():
 def true_weight(p, d):
     """A person's weight on a date: today's build less the drift since."""
     return p["w"] - p["drift"] * (AS_OF - d).days / 365.25
+
+
+# ---------------------------------------------------------------- Halvard's measurement of the Authority's operators
+TRIAL_FROM, TRIAL_TO = dt.date(2026, 8, 4), dt.date(2026, 8, 14)
+TRIAL_N = 140
+# what this workforce's bodies do that the survey's workers' did not: they sit taller for their stature and weight
+TRUE_OFFSET = {"SEH": 29.17}
+TRIAL_PULL = (1.0, 0.3)             # the shorter and lighter operators came forward more often (stature, weight)
+
+
+def survey_conditional(sx):
+    """The survey's within-sex normal of the five fit dimensions given stature and weight: the mean at the survey's
+    stature and weight, the regression on them and the spread left about it."""
+    mu, cov = survey_params(sx, FIT_DIMS + ["S", "W"])
+    k = len(FIT_DIMS)
+    s11, s12, s22 = cov[:k, :k], cov[:k, k:], cov[k:, k:]
+    beta = s12 @ np.linalg.inv(s22)
+    return mu[:k], mu[k:], beta, s11 - beta @ s12.T
+
+
+def fit_trial(people):
+    """Halvard's anthropometrist measured the sitting eye height of operators who volunteered at the Ridgeway
+    division's open sessions between 4 and 14 August 2026, with stature and weight on the day."""
+    rng = stream("fit_trial")
+    pool = [p for p in people if p["left"] is None and p["job"] == "BUS OPERATOR" and p["division"] == "Ridgeway"]
+    z = np.zeros((len(pool), 2))
+    for sx in ("M", "F"):
+        ix = [i for i, p in enumerate(pool) if p["sex"] == sx]
+        x = np.array([[pool[i]["s"], pool[i]["w"]] for i in ix])
+        z[ix] = (x - x.mean(axis=0)) / x.std(axis=0)
+    odds = np.exp(-(z @ np.array(TRIAL_PULL)))
+    pick = rng.choice(len(pool), TRIAL_N, replace=False, p=odds / odds.sum())
+    days = [TRIAL_FROM + dt.timedelta(days=i) for i in range((TRIAL_TO - TRIAL_FROM).days + 1)]
+    days = [d for d in days if d.weekday() < 5]
+    k = FIT_DIMS.index("SEH")
+    out = []
+    for i in pick:
+        p = pool[int(i)]
+        day = days[int(rng.integers(0, len(days)))]
+        s_true, w_true = p["s"], true_weight(p, day)
+        mfit, mgiv, beta, resid = survey_conditional(p["sex"])
+        mean = mfit[k] + beta[k] @ (np.array([s_true, w_true]) - mgiv) + TRUE_OFFSET["SEH"]
+        seh = rng.normal(mean, np.sqrt(resid[k, k])) + rng.normal(0.0, 1.5)
+        # as the sheet records them: stature and eye height to the millimetre, weight to a tenth of a kilogram
+        out.append({"day": day, "sex": p["sex"], "emp": p["emp"],
+                    "s": float(round(s_true + float(rng.normal(0.0, 3.0)))),
+                    "w": round(w_true + float(rng.normal(0.0, 0.4)), 1), "seh": float(round(seh))})
+    out.sort(key=lambda t: (t["day"], hint("trial", t["emp"])))
+    for k, t in enumerate(out):
+        t["participant"] = "FT-%03d" % (k + 1)
+    return out
 
 
 # ---------------------------------------------------------------- examinations and tests

@@ -6,27 +6,40 @@
   "objective": "descriptive-distribution",
   "stage": 5,
   "stage_name": "ship",
-  "updated": "2026-10-13",
-  "stump": "The default path files Configuration B (95.6 per cent of the survey's workers at the roster's sex mix, 82.3 per cent of the operators); stature alone files E and predicted dimensions C; each operator's conditional distribution given stature and weight files G (96.4 per cent; E 93.2, F 92.9).",
+  "updated": "2026-10-14",
+  "stump": "The default path files Configuration B (95.6 per cent of the survey's workers at the roster's sex mix); stature alone files E and predicted dimensions C; each operator's conditional distribution on the survey as published files G (96.4), and moving it by the volunteers' raw mean eye heights leaves G (96.3); only the survey's eye height raised by how far the 140 operators Halvard measured sit above it at their own stature and weight (28.0 mm men, 27.6 women) files H (97.0; G 93.0).",
   "architecture": 1,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
-    "date": "2026-10-13",
+    "date": "2026-10-14",
     "checks": 49
   },
   "leak": {
-    "leak_py": "REVIEW, every line harmless (rulings in the report)",
-    "reader": "two reads, no decisive-step sentence, no ranking file, question 6 analytical"
+    "leak_py": "REVIEW (no LEAK) on the loop-1 cut",
+    "reader": "loop 1: one read on the new cut; no decisive-step sentence, no ranking file, question 6 analytical; the measured operators read as calibration evidence, nothing names the move"
   },
   "duplicate_check": {
-    "heart": "WARN (org family, shape and Gate G overuse, answered in the note)",
-    "surface": "2 pairs promoted for adjudication, not run (author-triggered)",
-    "nearest": "task116 0.05 (driver)"
+    "heart": "WARN (org family, shape and Gate G overuse, answered in the note; own lineage differentiated on the card)",
+    "surface": "4 pairs promoted for adjudication on the loop-1 cut (not run: author-triggered)",
+    "nearest": "task256 v1 lineage 0.74, differentiated; task259 0.06"
   },
-  "judge": "pass 1 DETERMINISTIC, FIX_NOW (the measurement record, filed in standard 3.2); pass 2 DETERMINISTIC, APPROVE",
-  "returned": [],
-  "resume": null,
+  "judge": {
+    "verdict": "DETERMINISTIC (loop 1)",
+    "disposition": "APPROVE",
+    "report": "task256/determinism_check_report_loop1.md (loop 0: determinism_check_report.md, determinism_check_report_pass2.md)",
+    "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
+  },
+  "returned": [
+    {
+      "date": "2026-10-14",
+      "portal": "none: hardened at the author's request for a second stumping layer before any portal result",
+      "repair": "design",
+      "commit": "the RESHIPPED (task256) commit of 2026-10-14"
+    }
+  ],
+  "resume": "shipped; next event is the author's portal result",
   "approved": null,
   "delivered": "2026-10-13",
   "portal": null,

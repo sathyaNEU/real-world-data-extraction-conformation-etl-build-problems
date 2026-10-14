@@ -23,7 +23,7 @@ def world_state():
     wos = W.work_orders(buses)
     W.off_the_first(buses)
     return {"people": ppl, "enc": enc, "buses": buses, "wos": wos,
-            "comfort": W.comfort_survey(ppl), "claims": W.comp_claims(ppl)}
+            "comfort": W.comfort_survey(ppl), "claims": W.comp_claims(ppl), "trial": W.fit_trial(ppl)}
 
 
 # ---------------------------------------------------------------- the operators the standard counts
@@ -89,9 +89,107 @@ def prob_inside(means, resid, lo, hi, n_log2=15):
     return out
 
 
-def acc_carried(ops, env, given=COND_ON, plug=False, n_log2=15, per_op=False):
+SEH = FIT.index("SEH")
+
+
+def _seh_pred(sx, x, given=COND_ON):
+    mfit, mgiv, beta, _ = conditional(sx, given)
+    return mfit[SEH] + (np.asarray(x)[:, :len(given)] - mgiv) @ beta[SEH]
+
+
+def trial_offsets(trial, how="per_sex", given=COND_ON):
+    """How far the operators Halvard measured sit from the survey's within-sex normal given their own stature and
+    weight (or stature alone): the mean departure of their sitting eye heights by sex (pooled over both sexes, or
+    its median), the shift the survey's eye height takes for this workforce; the other four dimensions unmoved."""
+    dev = {}
+    for sx in ("M", "F"):
+        tr = [t for t in trial if t["sex"] == sx]
+        dev[sx] = np.array([t["seh"] for t in tr]) - _seh_pred(sx, [[t["s"], t["w"]] for t in tr], given)
+    if how == "pooled":
+        m = float(np.mean(np.r_[dev["M"], dev["F"]]))
+        val = {sx: m for sx in dev}
+    elif how == "median":
+        val = {sx: float(np.median(dev[sx])) for sx in dev}
+    else:
+        val = {sx: float(np.mean(dev[sx])) for sx in dev}
+    return {sx: np.where(np.arange(len(FIT)) == SEH, val[sx], 0.0) for sx in dev}
+
+
+def trial_refit(trial, cols=2):
+    """Each sex's sitting eye height regressed on stature and weight (or stature alone) among the operators
+    measured; the eye height mean it gives each operator, in place of the survey's."""
+    out = {}
+    for sx in ("M", "F"):
+        tr = [t for t in trial if t["sex"] == sx]
+        X = np.c_[np.ones(len(tr)), [[t["s"], t["w"]][:cols] for t in tr]]
+        b = np.linalg.lstsq(X, np.array([t["seh"] for t in tr]), rcond=None)[0]
+        out[sx] = (lambda b, sx: (lambda x: np.outer(np.c_[np.ones(len(x)), np.asarray(x)[:, :cols]] @ b
+                                                     - _seh_pred(sx, x), np.eye(len(FIT))[SEH])))(b, sx)
+    return out
+
+
+def trial_ratio(trial, pure=False):
+    """Ratio scaling: the operators measured's mean ratio of sitting eye height to stature against the survey's
+    ratio of means, the difference times each operator's stature added to the survey's eye height (or, pure, each
+    operator's eye height their stature times the measured ratio)."""
+    out = {}
+    for sx in ("M", "F"):
+        mu, _ = W.survey_params(sx, FIT + ["S"])
+        e_v = float(np.mean([t["seh"] / t["s"] for t in trial if t["sex"] == sx]))
+        de = e_v - mu[SEH] / mu[len(FIT)]
+        if pure:
+            out[sx] = (lambda e_v, sx: (lambda x: np.outer(e_v * np.asarray(x)[:, 0] - _seh_pred(sx, x),
+                                                           np.eye(len(FIT))[SEH])))(e_v, sx)
+        else:
+            out[sx] = (lambda de: (lambda x: np.outer(de * np.asarray(x)[:, 0], np.eye(len(FIT))[SEH])))(de)
+    return out
+
+
+def trial_marginal(trial, ops=None):
+    """The operators measured's mean sitting eye height by sex against the survey's mean (or, given the roster,
+    against the mean the survey carried through stature and weight gives the counted operators): a shift read off
+    the raw means, the volunteers' own build left in it."""
+    out = {}
+    for sx in ("M", "F"):
+        v = float(np.mean([t["seh"] for t in trial if t["sex"] == sx]))
+        if ops is None:
+            mu, _ = W.survey_params(sx, FIT)
+            ref = float(mu[SEH])
+        else:
+            ref = float(np.mean(_seh_pred(sx, [[o["s"], o["w"]] for o in ops if o["sex"] == sx])))
+        out[sx] = np.where(np.arange(len(FIT)) == SEH, v - ref, 0.0)
+    return out
+
+
+def trial_weights(trial, ops):
+    """Each operator measured weighted to the counted operators of the same sex on stature and weight: the odds of
+    a logistic model of being measured against being on the roster, inverted."""
+    w = {}
+    for sx in ("M", "F"):
+        xo = np.array([[o["s"], o["w"]] for o in ops if o["sex"] == sx])
+        tr = [t for t in trial if t["sex"] == sx]
+        xt = np.array([[t["s"], t["w"]] for t in tr])
+        X = np.r_[xo, xt]
+        mu, sd = X.mean(axis=0), X.std(axis=0)
+        Xd = np.c_[np.ones(len(X)), (X - mu) / sd]
+        y = np.r_[np.zeros(len(xo)), np.ones(len(xt))]
+        b = np.zeros(Xd.shape[1])
+        for _ in range(100):
+            pr = 1 / (1 + np.exp(-Xd @ b))
+            step = np.linalg.solve((Xd * (pr * (1 - pr))[:, None]).T @ Xd, Xd.T @ (y - pr))
+            b += step
+            if np.max(np.abs(step)) < 1e-10:
+                break
+        pt = 1 / (1 + np.exp(-Xd[len(xo):] @ b))
+        w[sx] = (tr, (1 - pt) / pt)
+    return w
+
+
+def acc_carried(ops, env, given=COND_ON, plug=False, n_log2=15, per_op=False, offset=None):
     """Accommodation of the counted operators: each operator's probability of fitting under the survey's
-    conditional normal given the named measurements (or, plugged, whether the conditional mean fits), averaged."""
+    conditional normal given the named measurements, its means shifted by the workforce's offsets when given (a
+    shift by sex, or one worked out from each operator's stature and weight), or, plugged, whether the conditional
+    mean fits; averaged."""
     lo, hi = bounds(env)
     probs = []
     for sx in ("M", "F"):
@@ -99,6 +197,9 @@ def acc_carried(ops, env, given=COND_ON, plug=False, n_log2=15, per_op=False):
         mfit, mgiv, beta, resid = conditional(sx, given)
         x = np.array([[o["s"], o["w"]][:len(given)] if given == COND_ON else [o["s"]] for o in rows])
         means = mfit + (x - mgiv) @ beta.T
+        if offset is not None:
+            means = means + (offset[sx](np.array([[o["s"], o["w"]] for o in rows])) if callable(offset[sx])
+                             else offset[sx])
         if plug:
             p = np.all((means >= lo) & (means <= hi), axis=1).astype(float)
         else:
@@ -149,10 +250,14 @@ def pick(values):
 def rungs(st, ops=None):
     ops = ops or counted(st)
     mix = {sx: sum(1 for o in ops if o["sex"] == sx) / len(ops) for sx in ("M", "F")}
-    out = {"G": {}, "R1": {}, "R2": {}, "R3": {}, "R0a": {}, "Rind": {}, "R0b": {}}
+    off = trial_offsets(st["trial"])
+    marg = trial_marginal(st["trial"])
+    out = {"G": {}, "R4": {}, "Rmarg": {}, "R1": {}, "R2": {}, "R3": {}, "R0a": {}, "Rind": {}, "R0b": {}}
     for c, opts, _ in W.CONFIGS:
         env = W.ENVELOPES[c]
-        out["G"][c] = acc_carried(ops, env)
+        out["G"][c] = acc_carried(ops, env, offset=off)
+        out["R4"][c] = acc_carried(ops, env)
+        out["Rmarg"][c] = acc_carried(ops, env, offset=marg)
         out["R1"][c] = acc_survey(env, mix)
         out["R2"][c] = acc_carried(ops, env, given=["S"])
         out["R3"][c] = acc_carried(ops, env, plug=True)
@@ -254,6 +359,19 @@ def figures(st):
         "roster": {"day": W.AS_OF.day, "year": W.AS_OF.year},
         "survey": {"men_n": W.SAMPLE["M"], "women_n": W.SAMPLE["F"], "year": W.SURVEY_YEAR},
     }
+    # what Halvard measured: the operators, their build and how far their eye heights sit from the survey's normal
+    tr = st["trial"]
+    off = trial_offsets(tr)
+    marg = trial_marginal(tr)
+    fig["trial"] = {"n": len(tr), "men": sum(1 for t in tr if t["sex"] == "M"),
+                    "women": sum(1 for t in tr if t["sex"] == "F"),
+                    "eye_height_offset_mm": {sx: round(float(off[sx][SEH]), 1) for sx in ("M", "F")},
+                    "eye_height_offset_exact": {sx: round(float(off[sx][SEH]), 9) for sx in ("M", "F")},
+                    "raw_eye_height_gap_mm": {sx: round(float(marg[sx][SEH]), 1) for sx in ("M", "F")},
+                    "stature_mean": {sx: round(float(np.mean([t["s"] for t in tr if t["sex"] == sx])), 1)
+                                     for sx in ("M", "F")},
+                    "weight_mean": {sx: round(float(np.mean([t["w"] for t in tr if t["sex"] == sx])), 1)
+                                    for sx in ("M", "F")}}
     # the operators' build at their latest physical against the survey's workers (for the note, never graded)
     for sx in ("M", "F"):
         s = np.array([o["s"] for o in ops if o["sex"] == sx])

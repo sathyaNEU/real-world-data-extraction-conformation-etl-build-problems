@@ -19,6 +19,7 @@ RETROFITS = "retrofit_campaigns_2019-2026.csv"
 WORK_ORDERS = "operator_area_work_orders_2019-01_2026-09.csv"
 COMFORT = "operator_comfort_survey_2023.xlsx"
 CLAIMS = "workers_comp_claims_transportation_2019-2026.csv"
+TRIAL = "halvard_operator_measurements_2026-08.csv"
 
 OPT_CODE = {"P": "PDL", "R": "RSR", "T": "TEL", "D": "TRK", "V": "HDR"}
 OST_SERVICE = {"PHYS": "DOT PHYSICAL", "RECERT": "DOT PHYSICAL - RECERT", "DRUG-RAND": "DRUG SCREEN - RANDOM",
@@ -248,3 +249,14 @@ def write_claims(path, rows):
             w.writerow([r["claim"], emp_text(r["emp"]), r["date"].isoformat(), r["job"], r["body"], r["cause"],
                         r["lost"], "%.2f" % r["paid"], r["status"]])
     return len(rows)
+
+
+def write_trial(path, trial):
+    """Halvard's measurement sheet: one row per operator measured, eye height in the survey's posture."""
+    with open(path, "w", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(["subject", "session_date", "sex", "stature_mm", "weight_kg", "eye_height_sitting_mm"])
+        for t in trial:
+            w.writerow([t["participant"], t["day"].isoformat(), t["sex"], "%.0f" % t["s"], "%.1f" % t["w"],
+                        "%.0f" % t["seh"]])
+    return len(trial)

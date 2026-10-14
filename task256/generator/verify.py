@@ -73,7 +73,7 @@ def envelopes(path):
 
 def main(target, golden):
     sv = survey(find(target, "brennard"))
-    env, prices = envelopes(find(target, "halvard"))
+    env, prices = envelopes(find(target, "halvard_fit_report"))
     std = pdf_text(find(target, "tvrta_standard"))
     line = 0.95 if "accommodation is at least 95 per cent" in std else None
     assert line and "whatever their duty status" in std
@@ -100,6 +100,20 @@ def main(target, golden):
                  int(r["wt_lb"]))
     assert set(latest) == set(ops), "an operator without a physical"
 
+    # how far the operators Halvard measured sit above the survey's eye height for their own stature and weight
+    shift = {}
+    for sx in ("M", "F"):
+        mu, sd, r = sv[sx]
+        cov = np.outer(sd, sd) * r
+        k = cov[np.ix_(FIT, GIVEN)] @ np.linalg.inv(cov[np.ix_(GIVEN, GIVEN)])
+        dev = []
+        for t in csv.DictReader(open(find(target, "halvard_operator_measurements"))):
+            if t["sex"] != sx:
+                continue
+            m = mu[FIT] + k @ (np.array([float(t["stature_mm"]), float(t["weight_kg"])]) - mu[GIVEN])
+            dev.append(float(t["eye_height_sitting_mm"]) - m[2])
+        shift[sx] = np.array([0.0, 0.0, float(np.mean(dev)), 0.0, 0.0])
+
     acc = {}
     for c in "ABCDEFGH":
         lo = np.array([-np.inf if env[c][k][0] is None else env[c][k][0] for k in range(5)], float)
@@ -116,7 +130,7 @@ def main(target, golden):
                 if s != sx:
                     continue
                 _, h, w = latest[emp]
-                m = mu[a] + k @ (np.array([h * 25.4, w * 0.45359237]) - mu[b])
+                m = mu[a] + k @ (np.array([h * 25.4, w * 0.45359237]) - mu[b]) + shift[sx]
                 tot += mv.cdf(hi - m, lower_limit=lo - m, rng=np.random.default_rng(emp))
         acc[c] = tot / len(ops)
     order = sorted(prices, key=prices.get)
@@ -156,7 +170,7 @@ def main(target, golden):
     rate = {o: cost[o] / (months[o] / 12) for o in code.values()}
     opt_of = {"Power-adjustable pedal set": "PDL", "Extended-range seat riser": "RSR",
               "Tilt-telescope steering column": "TEL", "Deep-travel seat track": "TRK", "Raised header and visor": "HDR"}
-    t = pdf_text(find(target, "halvard")).split("4 Fit envelopes")[0]
+    t = pdf_text(find(target, "halvard_fit_report")).split("4 Fit envelopes")[0]
     twelve = {}
     for c in "ABCDEFGH":
         row = re.search(r"\b%s (.*?)\$([\d,]+)" % c, t).group(1)

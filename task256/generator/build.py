@@ -29,10 +29,10 @@ FILES = {
     "roster": R.ROSTER, "ostrander": R.OSTRANDER, "fernhill": R.FERNHILL, "fleet": R.FLEET, "disposals": R.DISPOSALS,
     "retrofits": R.RETROFITS, "work_orders": R.WORK_ORDERS, "comfort": R.COMFORT, "claims": R.CLAIMS,
     "standard": D.STANDARD, "fit": D.FIT_REPORT, "survey": D.SURVEY, "notes_hr": D.NOTES_HR,
-    "notes_fleet": D.NOTES_FLEET,
+    "notes_fleet": D.NOTES_FLEET, "trial": R.TRIAL,
 }
 DISTRACTORS = ("comfort", "claims")
-CALL_FILES = ("standard", "fit", "survey", "roster", "ostrander", "fernhill", "notes_hr")
+CALL_FILES = ("standard", "fit", "survey", "roster", "ostrander", "fernhill", "notes_hr", "trial")
 ASK_FILES = ("fleet", "disposals", "retrofits", "work_orders", "notes_fleet")
 
 
@@ -53,6 +53,7 @@ def build(out, quiet=False, st=None):
     counts["work_orders"] = R.write_work_orders(p("work_orders"), st["wos"])
     counts["comfort"] = R.write_comfort(p("comfort"), st["comfort"])
     counts["claims"] = R.write_claims(p("claims"), st["claims"])
+    counts["trial"] = R.write_trial(p("trial"), st["trial"])
     D.write_standard(p("standard"))
     D.write_fit_report(p("fit"))
     D.write_survey(p("survey"))

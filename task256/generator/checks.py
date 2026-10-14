@@ -1,6 +1,6 @@
 """The generator's assertions on the built pack: the input gates, the call and every configuration's accommodation,
 each rung's own pick, the three rules' analyst test run on the generator's clean truth, the semantic fork table
-(SF1 to SF14), the convergences, the ask's figures and devices, rounding margins and the goldens' agreement with
+(SF1 to SF18), the convergences, the ask's figures and devices, rounding margins and the goldens' agreement with
 figures.json."""
 import csv
 import datetime as dt
@@ -85,16 +85,32 @@ def run(target, golden, st, meta_path):
     # ---- the call and every configuration
     acc = fig["acc"]
     order = [c for c, _, _ in W.CONFIGS]
-    ok(fig["call"]["config"] == "G" and acc["G"] >= W.LINE, "the call is Configuration G at 95 per cent or more")
-    ok(all(acc[c] < W.LINE for c in order[:order.index("G")]), "every cheaper configuration falls short")
-    ok(acc["G"] - W.LINE >= 0.012, "G clears the line by 1.2 points or more (%.4f)" % acc["G"])
-    ok(W.LINE - max(acc[c] for c in order[:6]) >= 0.007, "the nearest cheaper configuration is 0.7 points or more short")
+    ok(fig["call"]["config"] == "H" and acc["H"] >= W.LINE, "the call is Configuration H at 95 per cent or more")
+    ok(all(acc[c] < W.LINE for c in order[:order.index("H")]), "every cheaper configuration falls short")
+    ok(acc["H"] - W.LINE >= 0.012, "H clears the line by 1.2 points or more (%.4f)" % acc["H"])
+    ok(W.LINE - max(acc[c] for c in order[:7]) >= 0.015, "the nearest cheaper configuration is 1.5 points or more short")
     ok(all(edge(acc[c]) >= 0.02 for c in order), "SF7: every share 0.02 points or more from a rounding edge (%s)"
        % ", ".join("%s %.3f" % (c, edge(acc[c])) for c in order))
     ok(all(abs(acc[c] - W.LINE) >= 0.005 for c in order), "SF7: no configuration within half a point of 95.0")
     picks = fig["rung_picks"]
-    ok(picks == {"G": "G", "R1": "B", "R2": "E", "R3": "C", "R0a": "A", "Rind": "B", "R0b": "B"},
-       "each rung files its own configuration: %s" % picks)
+    ok(picks == {"G": "H", "R4": "G", "Rmarg": "G", "R1": "B", "R2": "E", "R3": "C", "R0a": "A", "Rind": "B",
+                 "R0b": "B"}, "each rung files its own configuration: %s" % picks)
+    r4 = fig["rungs"]["R4"]
+    ok(r4["G"] - W.LINE >= 0.012 and W.LINE - max(r4[c] for c in order[:6]) >= 0.015,
+       "the survey carried to the operators uncorrected files G with its margins (%.4f)" % r4["G"])
+    tr = st["trial"]
+    ft = fig["trial"]
+    ok(ft["n"] == 140 and all(ft["stature_mean"][sx] <= fig["build"][sx]["stature_mean"] - 50 for sx in ("M", "F")),
+       "the operators measured are 140 volunteers, 50 mm or more shorter than the roster (%s)" % ft["stature_mean"])
+    eo = ft["eye_height_offset_mm"]
+    ok(min(eo.values()) >= 20, "the operators measured sit taller than the survey gives their stature and weight "
+       "(eye height %s mm)" % eo)
+    ok(max(abs(v) for v in ft["raw_eye_height_gap_mm"].values()) <= 8,
+       "their raw mean eye heights sit within 8 mm of the survey's (%s mm): their build hides the gap"
+       % ft["raw_eye_height_gap_mm"])
+    rm = fig["rungs"]["Rmarg"]
+    ok(rm["G"] - W.LINE >= 0.012 and W.LINE - max(rm[c] for c in order[:6]) >= 0.015,
+       "the survey moved by the raw mean gap files G with its margins (%.4f)" % rm["G"])
     r1 = fig["rungs"]["R1"]
     ok(r1["B"] - W.LINE >= 0.005 and W.LINE - r1["A"] >= 0.01, "the default path's B clears its line by half a point")
 
@@ -103,22 +119,27 @@ def run(target, golden, st, meta_path):
     mix = {sx: sum(1 for o in truth if o["sex"] == sx) / len(truth) for sx in ("M", "F")}
     easy = AN.pick({c: AN.acc_survey(W.ENVELOPES[c], mix) for c in order})
     ok(easy == "B", "analyst test: the easy route on clean truth (the survey's workers at the sex mix) files B")
-    decisive = AN.pick({c: AN.acc_carried(truth, W.ENVELOPES[c]) for c in order})
-    ok(decisive == "G", "analyst test: the decisive step alone on clean truth files G")
+    carried = AN.pick({c: AN.acc_carried(truth, W.ENVELOPES[c]) for c in order})
+    ok(carried == "G", "analyst test: the survey carried to the operators on clean truth, uncorrected, files G")
+    true_off = {sx: np.array([W.TRUE_OFFSET.get(d, 0.0) for d in AN.FIT]) for sx in ("M", "F")}
+    decisive = AN.pick({c: AN.acc_carried(truth, W.ENVELOPES[c], offset=true_off) for c in order})
+    ok(decisive == "H", "analyst test: the decisive step alone on clean truth (the workforce's own offset) files H")
 
     # ---- the semantic fork table
+    off = AN.trial_offsets(st["trial"])
     act = AN.counted(st, active_only=True)
-    ok(AN.pick({c: AN.acc_carried(act, W.ENVELOPES[c]) for c in order}) == "G", "SF1: operators on active duty only, G")
+    ok(AN.pick({c: AN.acc_carried(act, W.ENVELOPES[c], offset=off) for c in order}) == "H",
+       "SF1: operators on active duty only, H")
     ok(picks["R0a"] == "A", "SF2: each dimension at 95 per cent on its own files A")
     shifted = {}
     for c, opts, _ in W.CONFIGS:
         env = W.ENVELOPES[c]
         shifted[c] = AN.acc_carried(ops, {k: (None if lo is None else lo + 0.5, None if hi is None else hi - 0.5)
-                                          for k, (lo, hi) in env.items()})
-    ok(AN.pick(shifted) == "G", "SF3: limits read half a millimetre inside, G")
+                                          for k, (lo, hi) in env.items()}, offset=off)
+    ok(AN.pick(shifted) == "H", "SF3: limits read half a millimetre inside, H")
     mean_ops = AN.counted(st, latest=False)
-    ok(AN.pick({c: AN.acc_carried(mean_ops, W.ENVELOPES[c]) for c in order}) == "G", "SF4: the mean of each "
-       "operator's physicals, G")
+    ok(AN.pick({c: AN.acc_carried(mean_ops, W.ENVELOPES[c], offset=off) for c in order}) == "H", "SF4: the mean of "
+       "each operator's physicals, H")
     std0 = pdf_text(os.path.join(target, D.STANDARD))
     ok("each operator as measured at the operator's latest DOT physical examination on or before that date" in std0,
        "SF4 and SF16: the standard takes each operator as measured at the latest DOT physical examination")
@@ -136,21 +157,49 @@ def run(target, golden, st, meta_path):
     ok(sv.count("Percentiles are computed from the normal distribution with the mean and standard deviation shown") == 2,
        "SF10: the survey's percentiles are normal")
     ok(abs(W.IN_TO_MM - 25.4) < 1e-12 and abs(W.LB_TO_KG - 0.45359237) < 1e-12, "SF11: exact conversions")
-    half = {c: _count_over_half(ops, W.ENVELOPES[c]) for c in order}
-    ok(AN.pick(half) not in ("G", None) and order.index(AN.pick(half)) < order.index("G"),
-       "SF12: counting operators above one half files %s, cheaper than G" % AN.pick(half))
+    half = {c: _count_over_half(ops, W.ENVELOPES[c], off) for c in order}
+    ok(AN.pick(half) not in ("H", None) and order.index(AN.pick(half)) < order.index("H"),
+       "SF12: counting operators above one half files %s, cheaper than H" % AN.pick(half))
     ok(sv.count("Correlations between dimensions, working") == 2 and "both sexes" not in sv.lower(),
        "SF13: within-sex correlations only")
-    mc = {c: _monte_carlo(ops, W.ENVELOPES[c]) for c in order}
-    ok(AN.pick(mc) == "G" and all(abs(mc[c] - acc[c]) < 0.001 for c in order),
+    mc = {c: _monte_carlo(ops, W.ENVELOPES[c], off) for c in order}
+    ok(AN.pick(mc) == "H" and all(abs(mc[c] - acc[c]) < 0.001 for c in order),
        "SF14: Monte Carlo with 200,000 draws per sex agrees within 0.1 point")
-    pl = {c: _pearson_lawley(ops, W.ENVELOPES[c]) for c in order}
-    ok(AN.pick(pl) == "G" and max(pl[c] for c in order[:6]) <= W.LINE - 0.005,
-       "convergence: a bivariate normal fitted to the operators' statures and weights files G, every cheaper "
+    pl = {c: _pearson_lawley(ops, W.ENVELOPES[c], off) for c in order}
+    ok(AN.pick(pl) == "H" and max(pl[c] for c in order[:7]) <= W.LINE - 0.005,
+       "convergence: a bivariate normal fitted to the operators' statures and weights files H, every cheaper "
        "configuration half a point short (%s)" % ", ".join("%s %.2f" % (c, 100 * pl[c]) for c in order))
     light = [dict(o, w=o["w"] - 1.0) for o in ops]
-    ok(AN.pick({c: AN.acc_carried(light, W.ENVELOPES[c]) for c in order}) == "G",
-       "SF16: weights less a kilogram of clothing, G")
+    ok(AN.pick({c: AN.acc_carried(light, W.ENVELOPES[c], offset=off) for c in order}) == "H",
+       "SF16: weights less a kilogram of clothing, H")
+    # SF18: how the measured operators move the survey's eye height: by sex or pooled, the mean or the median
+    # departure, given stature alone, a regression refitted to them, ratio scaling, or weighted to the roster;
+    # every reading files H
+    def _v(o):
+        return {c: AN.acc_carried(ops, W.ENVELOPES[c], offset=o) for c in order}
+
+    sf18 = [("pooled over both sexes", AN.trial_offsets(tr, how="pooled"), 0.01),
+            ("the median departure", AN.trial_offsets(tr, how="median"), 0.01),
+            ("given stature alone", AN.trial_offsets(tr, given=["S"]), 0.01),
+            ("a regression on stature and weight refitted to them", AN.trial_refit(tr), 0.01),
+            ("a regression on stature alone refitted to them", AN.trial_refit(tr, cols=1), 0.005),
+            ("ratio scaling added to the survey", AN.trial_ratio(tr), 0.005),
+            ("pure ratio scaling", AN.trial_ratio(tr, pure=True), 0.005),
+            ("each operator measured weighted to the roster", _weighted_offsets(tr, ops), 0.01)]
+    for tag, o2, m in sf18:
+        v2 = _v(o2)
+        ok(AN.pick(v2) == "H" and v2["H"] - W.LINE >= m and W.LINE - max(v2[c] for c in order[:7]) >= m,
+           "SF18: the offsets %s file H, %.1f point clear on both sides (G %.2f, H %.2f)"
+           % (tag, 100 * m, 100 * v2["G"], 100 * v2["H"]))
+    sheet = list(csv.reader(open(os.path.join(target, R.TRIAL))))
+    ok(sheet[0] == ["subject", "session_date", "sex", "stature_mm", "weight_kg", "eye_height_sitting_mm"]
+       and all(r[0].startswith("FT-") for r in sheet[1:]) and len(sheet) == 141
+       and "with their stature and weight on the day" in fit_text,
+       "SF19: the sheet carries its own subject numbers, no employee number, stature and weight taken on the day")
+    mr = AN.trial_marginal(tr, ops)
+    v4 = _v(mr)
+    ok(AN.pick(v4) == "G" and v4["G"] - W.LINE >= 0.012, "the raw mean eye heights against the roster's carried "
+       "mean (%s mm) file G (%.2f)" % ({sx: round(float(mr[sx][AN.SEH]), 1) for sx in mr}, 100 * v4["G"]))
     hr_notes = open(os.path.join(target, D.NOTES_HR)).read()
     ok(hr_notes.count("without shoes") == 2, "SF15: both providers measure height without shoes")
     ok("DOT physical examinations, recertifications after a short certificate" in hr_notes and
@@ -169,13 +218,13 @@ def run(target, golden, st, meta_path):
                 last_dot[e["emp"]] = e
     rc_last = {o["emp"] for o in ops if last_dot[o["emp"]]["type"] == "RECERT"}
     no_rc = [o for o in ops if o["emp"] not in rc_last]
-    acc_rc = {c: AN.acc_carried(no_rc, W.ENVELOPES[c]) for c in order}
-    ok(rc_last and AN.pick(acc_rc) == "G" and all("%.1f" % (100 * acc_rc[c]) == "%.1f" % (100 * acc[c]) for c in order),
+    acc_rc = {c: AN.acc_carried(no_rc, W.ENVELOPES[c], offset=off) for c in order}
+    ok(rc_last and AN.pick(acc_rc) == "H" and all("%.1f" % (100 * acc_rc[c]) == "%.1f" % (100 * acc[c]) for c in order),
        "SF17: leaving out the %d operators whose latest DOT visit is a recertification moves no share at one decimal"
        % len(rc_last))
     recent = [o for o in ops if (W.AS_OF - _latest_date(st, o["emp"])).days <= 730]
-    ok(AN.pick({c: AN.acc_carried(recent, W.ENVELOPES[c]) for c in order}) == "G",
-       "convergence: operators whose latest physical is within two years only (%d), G" % len(recent))
+    ok(AN.pick({c: AN.acc_carried(recent, W.ENVELOPES[c], offset=off) for c in order}) == "H",
+       "convergence: operators whose latest physical is within two years only (%d), H" % len(recent))
 
     # ---- the survey report and the fit report carry what the model reads
     for sx in ("M", "F"):
@@ -256,7 +305,7 @@ def run(target, golden, st, meta_path):
     svg = open(os.path.join(golden, "operator_accommodation_2027.svg")).read()
     for c in order:
         ok("%.1f%%" % fig["acc_pct"][c] in svg, "chart label %s" % c)
-    ok("95 per cent" in svg and "Recommended: G" in svg, "chart line and marker")
+    ok("95 per cent" in svg and "Recommended: H" in svg, "chart line and marker")
     print("checks: %d assertions passed" % len(CHECKS))
     return len(CHECKS)
 
@@ -276,12 +325,22 @@ def _truth(st, ops):
     return [dict(o, s=by[o["emp"]]["s"], w=by[o["emp"]]["w"]) for o in ops]
 
 
-def _count_over_half(ops, env):
-    per = AN.acc_carried(ops, env, per_op=True)
+def _weighted_offsets(trial, ops):
+    """The operators measured's departures from the survey's eye height, averaged with weights that move them to
+    the counted operators' statures and weights."""
+    out = {}
+    for sx, (tr, w) in AN.trial_weights(trial, ops).items():
+        dev = np.array([t["seh"] for t in tr]) - AN._seh_pred(sx, [[t["s"], t["w"]] for t in tr])
+        out[sx] = np.where(np.arange(len(AN.FIT)) == AN.SEH, float(np.sum(w * dev) / np.sum(w)), 0.0)
+    return out
+
+
+def _count_over_half(ops, env, off=None):
+    per = AN.acc_carried(ops, env, per_op=True, offset=off)
     return float(np.mean([p > 0.5 for p in per.values()]))
 
 
-def _monte_carlo(ops, env, n=200000):
+def _monte_carlo(ops, env, off, n=200000):
     """Each operator's conditional normal sampled with pseudo-random draws: 200,000 per sex, spread over the sex's
     operators."""
     rng = np.random.default_rng(91)
@@ -290,14 +349,14 @@ def _monte_carlo(ops, env, n=200000):
     for sx in ("M", "F"):
         rows = [o for o in ops if o["sex"] == sx]
         mfit, mgiv, beta, resid = AN.conditional(sx)
-        means = mfit + (np.array([[o["s"], o["w"]] for o in rows]) - mgiv) @ beta.T
+        means = mfit + (np.array([[o["s"], o["w"]] for o in rows]) - mgiv) @ beta.T + off[sx]
         k = max(1, n // len(rows))
         z = rng.standard_normal((len(rows), k, 5)) @ np.linalg.cholesky(resid).T + means[:, None, :]
         hit += np.all((z >= lo) & (z <= hi), axis=2).mean(axis=1).sum()
     return hit / len(ops)
 
 
-def _pearson_lawley(ops, env):
+def _pearson_lawley(ops, env, off):
     """The operators' statures and weights replaced by a bivariate normal fitted within sex, carried the same way."""
     lo, hi = AN.bounds(env)
     tot = 0.0
@@ -306,7 +365,7 @@ def _pearson_lawley(ops, env):
         x = np.array([[o["s"], o["w"]] for o in rows])
         mfit, mgiv, beta, resid = AN.conditional(sx)
         mu_x, cov_x = x.mean(axis=0), np.cov(x.T)
-        m = mfit + (mu_x - mgiv) @ beta.T
+        m = mfit + (mu_x - mgiv) @ beta.T + off[sx]
         c = resid + beta @ cov_x @ beta.T
         pts = AN.normal_points(17) @ np.linalg.cholesky(c).T + m
         tot += len(rows) * float(np.mean(np.all((pts >= lo) & (pts <= hi), axis=1)))

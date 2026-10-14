@@ -29,7 +29,8 @@ def write_workbook(path, fig):
     ws["A2"].font = Font(bold=True, size=11)
     ws["A3"] = ("Standard %s, section 3; the {:,} bus operators on the roster of 30 September 2026 at their latest DOT "
                 "physical; envelopes and prices from %s's fit report of 28 August 2026; body dimensions from the %s "
-                "(%d), within sex.".format(ops["n"]) % (W.STANDARD, W.MAKER.split()[0], W.SURVEY, W.SURVEY_YEAR))
+                "(%d), within sex, moved to the operators Halvard measured in August 2026.".format(ops["n"])
+                % (W.STANDARD, W.MAKER.split()[0], W.SURVEY, W.SURVEY_YEAR))
     ws["A3"].font = Font(italic=True, color=GREYTXT, size=9)
     ws.append([])
     heads = ["Configuration", "Options", "Price per bus", "Bus operators it fits", "At least 95 per cent",
@@ -59,9 +60,15 @@ def write_workbook(path, fig):
          "({:,} men, {:,} women)".format(ops["n"], ops["men"], ops["women"])),
         ("Share fitted", "each operator's probability that all five fit dimensions lie within the envelope, under the "
          "survey's within-sex normal distribution of the five given the operator's stature and weight at the latest "
-         "DOT physical, averaged over the operators"),
-        ("Nearest cheaper configuration", "%s, %.1f per cent; %s, the next price down, %.1f per cent"
-         % (call["nearest_cheaper"], call["nearest_cheaper_pct"], call["next_cheaper"], call["next_cheaper_pct"])),
+         "DOT physical, its eye height raised by how far the {:,} operators Halvard measured in August 2026 sit "
+         "above the survey's eye height for their own stature and weight ({:+.1f} mm for men, {:+.1f} mm for "
+         "women), averaged over the operators".format(
+             fig["trial"]["n"], fig["trial"]["eye_height_offset_mm"]["M"], fig["trial"]["eye_height_offset_mm"]["F"])),
+        ("Nearest cheaper configuration",
+         ("%s, the next price down, %.1f per cent" % (call["next_cheaper"], call["next_cheaper_pct"]))
+         if call["nearest_cheaper"] == call["next_cheaper"] else
+         ("%s, %.1f per cent; %s, the next price down, %.1f per cent"
+          % (call["nearest_cheaper"], call["nearest_cheaper_pct"], call["next_cheaper"], call["next_cheaper_pct"]))),
         ("Twelve-year cost per bus", "the price per bus plus twelve years of each option's maintenance at its "
          "2021 to 2025 cost per bus-year (sheet Option maintenance)"),
     ]
@@ -109,9 +116,10 @@ def write_workbook(path, fig):
         "buttock-knee length, eye height sitting, thumb-tip reach, abdominal extension depth sitting) lie within its "
         "envelope; the Authority specifies the lowest-priced configuration that fits at least 95 per cent of its bus "
         "operators." % W.STANDARD,
-        "The fit dimensions are not measured on our operators. Their stature and weight are, at each DOT physical "
-        "(%s to June 2021, %s since); heights in inches and weights in pounds are taken in millimetres and kilograms."
-        % (W.OLD, W.NEW),
+        "The fit dimensions are not measured on our operators, apart from the sitting eye height of the %d Halvard "
+        "measured at Ridgeway in August 2026. Their stature and weight are, at each DOT physical (%s to June 2021, %s "
+        "since); heights in inches and weights in pounds are taken in millimetres and kilograms."
+        % (W.TRIAL_N, W.OLD, W.NEW),
         "Shares are compared with 95 per cent unrounded and shown to one decimal.",
         "Option maintenance: parts and labor on work orders billed to TVRTA, counted once for each work order's "
         "labor, by the month the order closed; work billed to Halvard's warranty or to the 2024 retrofit project is "
@@ -170,7 +178,8 @@ def write_chart(path, fig, fmt="svg"):
                  fontsize=10.5, loc="left")
     f.text(0.01, 0.012, "{:,} bus operators on the roster of 30 September 2026 at their latest DOT physical; envelopes "
            "and prices from Halvard's fit report, 28 August 2026;\nbody dimensions from the Brennard survey of 2012, "
-           "within sex, given each operator's stature and weight.".format(fig["operators"]["n"]), fontsize=7.2,
+           "within sex, given each operator's stature and weight, moved to the operators Halvard measured in August "
+           "2026.".format(fig["operators"]["n"]), fontsize=7.2,
            color="#" + GREYTXT)
     f.tight_layout(rect=(0, 0.06, 1, 1))
     if fmt == "svg":

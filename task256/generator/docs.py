@@ -200,7 +200,13 @@ def write_fit_report(path):
                     "2025 on the XE40 workstation: an operator whose five dimensions all lie within a configuration's "
                     "limits can set the seat, pedals and column to drive in the posture the trials set, see the road "
                     "over the dash and the signals under the header, and reach every control."
-                    % (W.SURVEY, W.INSTITUTE, W.SURVEY_YEAR), S_BODY)]
+                    % (W.SURVEY, W.INSTITUTE, W.SURVEY_YEAR), S_BODY),
+          Paragraph("6  The Authority's operators", S_H2),
+          Paragraph("At the Authority's request Halvard's anthropometrist measured the sitting eye height of %d bus "
+                    "operators who came to open sessions at the Ridgeway division between 4 and 14 August 2026, in the "
+                    "survey's posture, with their stature and weight on the day, unshod and in light clothing. The "
+                    "measurements are delivered with this report as %s, one row for each operator measured."
+                    % (W.TRIAL_N, "halvard_operator_measurements_2026-08.csv"), S_BODY)]
     foot = "%s | Operator workstation fit report | %s 2027 order" % (W.MAKER, W.AUTH_SHORT)
     doc.build(s, onFirstPage=_frame(W.MAKER, "XE40 2027 order", foot, "Sans"),
               onLaterPages=_frame(W.MAKER, "XE40 2027 order", foot, "Sans"))
