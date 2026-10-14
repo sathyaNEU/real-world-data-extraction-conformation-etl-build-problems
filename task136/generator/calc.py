@@ -184,6 +184,7 @@ def suburb_stats(L, name, opening, first=None, first_conn=None):
     for w in (365, 730, 1095):
         out["n%d" % w] = uptake(first, oo_nmis, op - pd.Timedelta(days=w), op)
         out["u%d" % w] = len(untapped(rates, xref, first, name, op - pd.Timedelta(days=w)))
+    out["n182"] = uptake(first, oo_nmis, op - pd.Timedelta(days=182), op)
     out["n365_conn"] = uptake(first_conn, oo_nmis, op - pd.Timedelta(days=365), op)
     out["n365_all"] = uptake(first, set(nmis), op - pd.Timedelta(days=365), op)
     # person-time at risk in the year before: each untapped house's days until its first application or the opening
@@ -246,6 +247,8 @@ def denominator(c, basis, variant="n365"):
             return c["n730"] / 2.0
         if variant == "n1095":
             return c["n1095"] / 3.0
+        if variant == "n182":            # the six months before, at a yearly rate
+            return c["n182"] * 365.0 / 182.0
         if variant == "conn":
             return c["n365_conn"]
         if variant == "all":

@@ -23,6 +23,12 @@ recovers a rule, and no record blesses the wrong method.
   asks replace the two, each on its own silent device.
 - **What stayed.** The world, the decision, NPP-114's base forecast, the eight feeders, the people, the files and their
   layouts, the forum and the forcing event.
+- **Stage 4 (2026-10-14).** Leak reader: no leak; its literal route (per home letterboxed) files YRB24, the default path;
+  it called the call rule application without seeing that NPP-114 4.2 leaves the rate's basis open. Judge
+  (`determinism_check_report_round2.md`): DETERMINISTIC, APPROVE, every figure reproduced. Its secondary forks are
+  filed as SF27 (the register's stale feeder) and SF28 (first lodged at site level), the six-month window measured into
+  SF13 (same call, gap 0.4), and the assessment's customer counts asserted against its 30 June model; no file under
+  `target/`, no golden and no graded figure moved (`freeze.py` determinism PASS, `target.zip` byte-identical).
 
 ## Draw
 
@@ -217,7 +223,7 @@ alternative computed and shown to move a figure or to converge, and the ruling s
 | SF10 | each added system's size | the feeder's FY2025-26 average new inverter | the past campaigns' own average (6.80 kW) | same call and figures | NPP-114 4.3 |
 | SF11 | a first application's date | received date of the NMI's earliest application other than a withdrawn one | the first connection date | converges: every graded figure (asserted) | the records converge |
 | SF12 | whose first applications | the suburb's owner-occupied houses (rates roll land use 02, rating R1, through the cross-reference) | every residential address in the suburb | converges | the records converge |
-| SF13 | the window | the 12 months before sign-ups opened | the yearly average over 24 or 36 months | converges | the records converge |
+| SF13 | the window | the 12 months before sign-ups opened | the yearly average over 24 or 36 months; the six months before at a yearly rate | 24 and 36 months converge; six months: same call, runner-up, excesses and bulk-buys at one decimal (YRB27 1.863, YRB24 1.435, Bindarra Waters 0.435, Wattleview 1.668 MW), the gap 0.428 a bin lower | the records converge on the 24 and 36 months (asserted); six months is a half-year of a seasonal series with no filed sentence against it, the call held (asserted), the residual recorded at round 2 |
 | SF14 | a suburb | the rates roll's locality | the network model's locality | same rows | the records converge |
 | SF15 | the estimator on the seven campaigns | pooled, total systems over total first applications | the mean or median of the seven rates; a regression through the origin or with an intercept | same call under every one (YRB27 at 1.81 to 1.92 across the windows) | NPP-114 4.2 ("total systems divided by their combined total of the quantity the rate is expressed per"), asserted in the PDF |
 | SF16 | transfer per home letterboxed (R0, the default) | refused | the council's participation rate, pooled | YRB24 at 1.8 | the records: the seven rates scatter 0.715 and the pooled rate misses Glenmorrow by 222 per cent |
@@ -231,9 +237,12 @@ alternative computed and shown to move a figure or to converge, and the ruling s
 | SF24 | a withdrawn application | not a first application: nothing was connected under it | any status counted | converges (same graded figures) | the dictionary's status definition, asserted |
 | SF25 | the uplift as a hazard | first applications in the year before | the year-before hazard on the pool times the pool at the opening; first applications per house-year at risk | converges | the records converge |
 | SF26 | "how much PV each bulk-buy will add" | its systems at the feeder's FY2025-26 average new inverter, in MW | a count of systems | the prompt asks how much PV and gives MW to one decimal; NPP-114 4.3 sizes each system | the prompt and NPP-114 4.3 |
+| SF27 | the feeder a DER site is on (asks 1 to 4) | the network model's feeder for the site's NMI | the DER extract's `feeder` (stamped at lodgement; 438 active connections at 432 sites differ) | the call unread; Ask 1 YRB27 2,830 and YRB23 1,904 (all 8 off) | the prompt's "sites it supplies" and the dictionary: the network model's feeder is the "Feeder supplying the NMI at 31 August 2026", the extract's only "added by Mirrabee's extraction" (asserted) |
+| SF28 | "first lodged" (ask 2) | the site's earliest `registered_date` over every AC connection at it, decommissioned included | the earliest of the active connections only | the call unread; YRB21 120, YRB27 278 (all 8 off) | the prompt counts sites ("how many of them"); the dictionary dates each AC connection ("Date the installer lodged the AC connection") and keeps a replaced one as Decommissioned (asserted) |
 
 The stump is none of these rows: a careful reader reads every one the same way, and the default path reads them all
-correctly. SF16 to SF20 are methods, listed so that each competing basis is priced and refused by the records.
+correctly. SF16 to SF20 are methods, listed so that each competing basis is priced and refused by the records. SF27 and
+SF28 are the asks' own terms (each ask's primary device, `supplemental-stumping`); the call reads neither.
 
 ## Ladder
 
@@ -481,7 +490,8 @@ Stage 3 of round 2, built 2026-10-14 by `python3 task136/generator/build.py` (pa
 - **Clean truth (R3).** On the world's records before any file is written: per letterbox YRB24 1.8 (runner-up YRB22
   1.2, gap 0.6), the reflex YRB24 3.0, the uplift YRB27 1.9 with every golden figure; the pack read by its filed rules
   reproduces the world's connected capacity, trend, averages, campaign counts and pools exactly (R2).
-- **Gates.** `checks.py` 429 assertions; `verify.py` 88 checks from the bundle alone; two builds byte-identical
+- **Gates.** `checks.py` 429 assertions (442 at the round-2 reship, with SF13's six months, SF27, SF28 and the
+  assessment's customer counts); `verify.py` 88 checks from the bundle alone; two builds byte-identical
   (`target.zip` sha256 ac3475bd...); `figures_check.py` 72 figures, none absent; `precut.py` 49 checks, 0 FAIL;
   `voice-check.py` PASS; container audit clean on the pack and the goldens; the archive's 15 members equal the pack.
   `guard.py validate` clean; `heart` WARN (`overuse.gate_g`, answered under Guard), no BLOCK; `surface` exit 0, the
@@ -617,3 +627,16 @@ Stage 3 of round 2, built 2026-10-14 by `python3 task136/generator/build.py` (pa
 - Christopher Sheppard as the Manager Network Planning: `guard.py surface` blocked `people.first` on the round-2 pack
   (task450, among the twelve most recent builds, took the first name after round 1); renamed Ian Fletcher, drawn by
   `guard.py names`, and the pack rebuilt with every figure unchanged.
+- Rewriting NPP-114's revision 3 note, the council letter's program-reference sentence or the program summary's footnote
+  on SS references (the stage-4 reader's realism notes): not done at the reship; each is a document rewrite after the
+  reader and the judge read the pack, needing another read, for no graded figure or call input. The revision note
+  records what a procedure owner records (the clauses a revision added), and the letter and footnote say how the
+  council's own campaigns are lodged, which the register's program references show anyway.
+- Moving the hosting capacity assessment's customer counts or its cited model date (the judge's cosmetic note that they
+  equal the 31 August model's counts): not done; the report, issued 24 July 2026, counts the NMIs energised by its 30
+  June 2026 model, and no NMI was energised, abolished or moved between feeders in July or August 2026 (the latest first
+  energisation is 14 June), so the two dates hold the same set; asserted in `checks.py`, and any other count would
+  contradict the network model.
+- Filing a 12-month window to close SF13's six-month reading (gap 0.428, a bin under the golden's 0.506, the call,
+  runner-up and bulk-buys unchanged): rejected, a filed window names the first-application basis and hands over the
+  stump; the reading is recorded and asserted as the same call.

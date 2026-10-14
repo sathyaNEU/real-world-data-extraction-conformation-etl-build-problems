@@ -1,11 +1,11 @@
 {
   "task": "task136",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "energy-systems-utilities",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-14",
   "stump": "A competent solver builds NPP-114's base forecast, carries the seven past bulk-buys onto the 2026 suburbs at the council's pooled participation rate per home letterboxed and files YRB24 at about 1.8 MW over hosting capacity, and the textbook correction, per owner-occupied house still without PV when sign-ups open, files YRB24 at 3.0; the step that lands both there is carrying a campaign's yield on a pool of houses instead of on the suburb's own uptake (about 1.17 systems per first application its owner-occupied houses lodged in the year before sign-ups opened), which gives Bindarra Waters' large, slow estate two to five times its campaign and Wattleview's fast one less than half of its: the golden is YRB27 at about 1.9 MW.",
   "architecture": 1,
@@ -15,24 +15,27 @@
     "date": "2026-10-14",
     "trigger": "10/10 audit COMPLIANT_WEAK (round2-brief): the eligible-pool denominator a textbook reflex the program terms name, a rough pool estimate landing the call, the seven campaigns agreeing within 0.6 per cent, Ask A's temporary NMIs resolved through the re-allocation log, Ask B's repeated capacity cracked by grouping",
     "redesign": "decisive step moved to the yield carried on each suburb's own uptake (first applications from owner-occupied houses in the year before sign-ups open); the round-1 basis is rung 1 (the reflex); campaigns moved to spring 2026; realistic campaign scatter (cv 0.085); NPP-114 4.2 files the pooled rate; runner-up moved to YRB24; four per-feeder DER Register asks on new devices; prompt rewritten",
-    "call": "YRB27, 1.9 MW over hosting capacity at 31 August 2029; runner-up YRB24 1.4; gap 0.5; Bindarra Waters 0.4 MW, Wattleview 1.7 MW"
+    "call": "YRB27, 1.9 MW over hosting capacity at 31 August 2029; runner-up YRB24 1.4; gap 0.5; Bindarra Waters 0.4 MW, Wattleview 1.7 MW",
+    "shipped": "2026-10-14"
   },
   "precut": {
     "exit": 0,
     "date": "2026-10-14"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-14 on the round-2 build (--asof 2026-10-12), no LEAK, sweep 11 clean; every REVIEW line answered in the design note's Build record (the write-up's quoted 2029 hosting capacity, an assessment input, swept LEAK and was dropped)",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-14 on the final rebuild (--asof 2026-10-12), no LEAK, sweep 11 clean; the same six lines as stage 3 (sweep 4's terms shifted with the design note), each answered in the design note's Build record",
+    "reader": "2026-10-14 round 2: no leak, nothing quoted for questions 1 to 4; its literal route (per home letterboxed) files YRB24, the default path; it called the call rule application, not seeing that NPP-114 4.2 leaves the rate's basis open; realism notes (NPP-114 revision note, the letter's program-reference sentence, the summary's footnote) not acted on, in Tried and rejected"
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-14 (overuse.gate_g only, answered under Guard); no BLOCK",
-    "nearest": "0.21 this slot's round-1 lineage (driver, differentiated), 0.06 task94 v3; surface exit 0, four pairs promoted on card axes (task138, task185, task80 v2, task450 retired), each differentiated on the card; personas clear after Christopher Sheppard was renamed Ian Fletcher"
+    "heart": "WARN 2026-10-14 at the final rebuild (overuse.gate_g only, answered under Guard); no BLOCK",
+    "nearest": "0.21 this slot's round-1 lineage (driver, differentiated), 0.06 task94 v3; surface exit 0, four pairs promoted on card axes (task138, task185, task80 v2, task450 retired), each differentiated on the card; personas Ian Fletcher, Julie Cochran, Tammy Buchanan clear"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC 2026-10-14 (judge-task136r2): APPROVE, no fix; every figure reproduced; the rate's basis unnamed by design, the campaigns separating it (pool bases CV 0.61 to 0.72, first-application bases 0.08 to 0.12, all the same call)",
+    "disposition": "APPROVE, shipped; secondary forks filed as SF27 (the register's stale feeder) and SF28 (first lodged at site level), the six-month window measured into SF13 (same call, gap 0.4, recorded), the assessment's customer counts asserted against its 30 June model (no NMI energised, abolished or transferred in July or August 2026); no file under target/, no golden and no graded figure moved",
+    "report": "determinism_check_report_round2.md",
+    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "rounds": [
     {
@@ -61,21 +64,31 @@
       "audit": "10/10 audit 2026-10-14 COMPLIANT_WEAK (scratchpad/audit/task136.md)"
     }
   ],
-  "returned": [],
-  "resume": "stage 4: reader and judge",
+  "returned": [
+    {
+      "date": "2026-10-14",
+      "portal": "10/10 audit COMPLIANT_WEAK (round 1)",
+      "repair": "design (round 2 redesign of the decisive step)",
+      "round": 2,
+      "commit": "RESHIPPED (task136): round 2, YRB27 gets the FY2027-28 hosting capacity augmentation, 1.9 MW over hosting capacity at 31 August 2029 (YRB24 1.4, gap 0.5)"
+    }
+  ],
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-14",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
   "wave": "wave 2 (new), seed FC07",
   "gates": {
-    "checks": "429 assertions",
+    "checks": "442 assertions",
     "verify": "88 checks",
-    "rebuild": "two builds byte-identical, target.zip sha256 ac3475bded2eb1f3ea79258844f004fc74d980cd1526bfce07932626770db88a",
+    "rebuild": "two builds byte-identical, target.zip sha256 ac3475bded2eb1f3ea79258844f004fc74d980cd1526bfce07932626770db88a (unchanged from the judged pack)",
     "figures_check": "72 figures, 0 absent",
     "precut": "49 checks, 0 FAIL, 0 WARN",
-    "voice_check": "PASS"
+    "voice_check": "PASS",
+    "freeze": "determinism PASS against the stage-4 snapshot",
+    "guard": "validate 0 invalid, surface 0, heart WARN"
   }
 }

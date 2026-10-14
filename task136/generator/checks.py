@@ -1,6 +1,6 @@
 """task136 generator checks (round 2): the call and its bins, the uplift corridor under NPP-114 4.2, the ladder and
 every rival route the audit measured, the past campaigns' fit, the three-rules block on the clean truth (R1 to R3c),
-every semantic fork row (SF1 to SF26), the closure axes, the four asks' stops, hazards and devices, the distractors,
+every semantic fork row (SF1 to SF28), the closure axes, the four asks' stops, hazards and devices, the distractors,
 the input gates and the realism sweep. Run by build.py on the built pack; raises on the first failure and prints the
 count of assertions passed."""
 from __future__ import annotations
@@ -490,6 +490,11 @@ def run(target, golden, W=None, meta_path=None):
     for sf, var in (("SF11", "conn"), ("SF12", "all"), ("SF13", "n730"), ("SF13", "n1095"), ("SF25", "rate"),
                     ("SF25", "persontime")):
         SF_SEEN["%s %s" % (sf, var)] = graded(band[var])
+    # SF13 the six months before, at a yearly rate: the same call, runner-up and bulk-buys; the gap rounds a bin lower
+    v6 = C.forecast(L, basis="uplift", estimator="pooled", variant="n182", base=base, camps=camps, pools=pools)
+    g6, gg = graded(v6), golden_tuple()
+    ok(g6[:4] == gg[:4] and g6[5:] == gg[5:], "SF13 six months moves the call, runner-up or a bulk-buy: %s" % (g6,))
+    SF_SEEN["SF13 n182"] = (g6, round(v6["gap"], 3))
     # SF14 a suburb by the network model's locality: the same NMIs
     for c in camps + list(pools.values()):
         r_, nm = C.houses(L["rates"], L["xref"], c["suburb"])
@@ -592,6 +597,26 @@ def run(target, golden, W=None, meta_path=None):
         ok(max(collections.Counter(g.values()).values()) <= 2, "ask %s: three feeders share a figure" % name)
     ok(all(C.ask_a(L, "stamp")[f] == gold_asks["A first lodged"][f] for f in K.FEEDERS),
        "ask A: the feeder stamp moves a site first lodged after the last transfer")
+    # SF27 the feeder that supplies a DER site: the network model's, never the extract's stamp (the prompt's "it
+    # supplies"; the network model's feeder is the feeder supplying the NMI at 31 August 2026, the extract's is only
+    # "added by Mirrabee's extraction"); SF28 a site first lodged: the earliest lodgement at the site, decommissioned
+    # connections included (the prompt counts sites, "how many of them"; the register dates each AC connection)
+    prompt_txt = open(os.path.join(os.path.dirname(os.path.abspath(target)), "prompt.txt")).read()
+    ok("how many active DER Register sites it supplies" in prompt_txt and "how many of them were first lodged" in prompt_txt,
+       "SF27 and SF28 the prompt's wording")
+    wbd_ = openpyxl.load_workbook(os.path.join(target, K.DICTIONARY), read_only=True)
+    ddef = {r_[0]: r_[1] for r_ in wbd_["DER Register extract"].iter_rows(values_only=True) if r_ and r_[0]}
+    ndef = {r_[0]: r_[1] for r_ in wbd_["Network model"].iter_rows(values_only=True) if r_ and r_[0]}
+    ok(ndef.get("feeder") == "Feeder supplying the NMI at 31 August 2026." and
+       ddef.get("feeder") == "Feeder, added by Mirrabee's extraction.", "SF27 the dictionary's two feeders")
+    ok(ddef.get("registered_date") == "Date the installer lodged the AC connection." and
+       ddef.get("ac_connection_status") == "Active or Decommissioned.", "SF28 the dictionary's lodgement and status")
+    st_ = C.ask_d(L, "stamp")
+    ok(sum(st_[f] != gold_asks["D sites"][f] for f in K.FEEDERS) == 8, "SF27 the stamp lands a feeder")
+    af_ = C.ask_a(L, "active_first")
+    ok(sum(af_[f] != gold_asks["A first lodged"][f] for f in K.FEEDERS) == 8, "SF28 active-only lands a feeder")
+    SF_SEEN["SF27 the extract's feeder"] = st_
+    SF_SEEN["SF28 active connections only"] = af_
     if figs:
         for f in K.FEEDERS:
             d = figs["der"][f]
@@ -736,6 +761,21 @@ def run(target, golden, W=None, meta_path=None):
         ok(lo_ - 0.0051 <= dh <= hi_ + 0.0051, "%s 2026 case %.2f against minimum demand" % (f, h26))
         steps26.append(dh)
     ok(min(steps26) < 0 < max(steps26) and len({round(x, 2) for x in steps26}) == 8, "the 2026 case steps alike")
+    # the assessment's customers (its network model of 30 June 2026) against the 31 August network model: equal because
+    # no NMI was energised, abolished or moved between feeders in July or August 2026 (the judge's cosmetic note)
+    cust_hc = {m.group(1): int(m.group(3).replace(",", "")) for m in re.finditer(
+        r"(YRB2\d) ([\d.]+) ([\d,]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)", hca_txt)}
+    net_ = L["net"]
+    cust30 = net_[net_.first_energised <= "2026-06-30"].groupby("feeder").size().to_dict()
+    ok(cust_hc == {f: int(cust30.get(f, 0)) for f in K.FEEDERS}, "the assessment's customers against the 30 June model")
+    ok("network model of 30 June 2026" in hca_txt and "issued 24 July 2026" in hca_txt, "the assessment's model date")
+    ok(net_.first_energised.max() <= "2026-06-30", "an NMI first energised after the assessment's model date")
+    if W is not None:
+        jun30 = dt.date(2026, 6, 30)
+        ok(max(n["energised"] for n in W.nmis) <= jun30, "an NMI energised in July or August 2026")
+        ok(max(n["temp_from"] for n in W.nmis if n.get("temp")) <= jun30, "a temporary supply opened after 30 June 2026")
+        ok(max(o["demolished"] for o in W.old_nmis) <= jun30, "an NMI abolished after 30 June 2026")
+        ok(all(st <= jun30 for n in W.nmis for st, _ in n["hist"][1:]), "a load transfer after 30 June 2026")
     ok(abs(up["slope"] * 100 - round(up["slope"] * 100)) > 0.05, "a round pooled rate")
     report(L, camps, pools, rr, fc, rungs, band)
     print("checks: %d assertions passed (call %s at %.3f MW, runner-up %s at %.3f, gap %.3f; Bindarra Waters %.3f MW "
