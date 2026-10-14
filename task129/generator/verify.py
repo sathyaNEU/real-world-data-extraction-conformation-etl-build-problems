@@ -1,247 +1,196 @@
-"""task129 independent verifier.
+"""task129 verifier: recomputes every figure the write-up states from the shipped bundle alone, with its own code (never
+the generator's estimators), and compares each with figures.json at the stated rounding
 
-    python3 task129/generator/verify.py <target dir> [--record build_record.json]
-
-Reads only the shipped files under <target dir>. Imports nothing from the generator, reads every
-date and rule it needs from the shipped documents and logs, recomputes every rung, rival read,
-graded figure (the call, the dated changes by title, image delivery by month), checks the ladder's shape and every
-figure's rounding bin,
-and (with --record) checks agreement with the generator's build record."""
-import argparse
+    python3 task129/generator/verify.py <target dir> <figures.json>
+"""
 import json
 import os
-import re
 import sys
 
 import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
 
-CZ = "Europe/Copenhagen"
-RESULTS = []
+DIST = ["North", "East", "South"]
+OC, NC = "Hollenbeck Line Clearance, Inc.", "Garrity Vegetation Services, LLC"
 
 
-def check(name, cond, info=""):
-    RESULTS.append((name, bool(cond), info))
-    print(("PASS " if cond else "FAIL ") + name + (f"  {info}" if info != "" else ""))
+def f1(x):
+    return "{:,.1f}".format(x)
 
 
-def to_utc(series):
-    return pd.to_datetime(series, utc=True).dt.tz_convert(None)
+def read(target, name):
+    return pd.read_csv(os.path.join(target, name), dtype=str, keep_default_na=False)
 
 
-def pdf_text(path):
-    from pypdf import PdfReader
-    return " ".join(" ".join(p.extract_text().split()) for p in PdfReader(path).pages)
+def outages(target):
+    """one row per outage record (ENG-REL-02 2.1, 3.1), then the records of a device already out folded into its
+    interruption: a record starting before the device's latest restoration so far is the same outage"""
+    X = read(target, "oms_outage_export_2016-2025.csv")
+    s = pd.to_datetime(X.start_local)
+    r = pd.to_datetime(X.step_restored_local)
+    X = X.assign(s=s, r=r, cmin=X.members_restored.astype(int) * (r - s).dt.total_seconds() / 60.0)
+    O = X.groupby("outage_id").agg(s=("s", "min"), e=("r", "max"), dev=("device_id", "first"), lvl=("level", "first"),
+                                   d=("service_area", "first"), cause=("cause_code", "first"), unit=("unit_id", "first"),
+                                   mem=("members_out", "first"), cm=("cmin", "sum")).reset_index()
+    O["mem"] = O.mem.astype(int)
+    O = O.sort_values(["dev", "s", "outage_id"]).reset_index(drop=True)
+    prior = O.groupby("dev").e.transform(lambda z: z.cummax().shift())
+    O = O[~(O.s <= prior)].copy()
+    O["sus"] = (O.e - O.s).dt.total_seconds() > 300
+    O["day"] = O.s.dt.normalize()
+    O["yr"] = O.s.dt.year
+    return O
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("target")
-    ap.add_argument("--record", default=None)
-    a = ap.parse_args()
-    T = a.target
-    f = {n: os.path.join(T, n) for n in os.listdir(T)}
-    find = lambda pat: next(p for n, p in f.items() if re.search(pat, n))
-
-    # ---------------------------------------------------------------- the filed rules
-    sla = pdf_text(find(r"service_level"))
-    pay = pdf_text(find(r"paywall"))
-    m = re.search(r"exceeds ([0-9.]+) seconds", sla)
-    line_ms = float(m.group(1)) * 1000
-    win_days = int(re.search(r"the (\d+) days either side", sla).group(1))
-    check("rules.read_from_sla", line_ms == 4000 and win_days == 28, (line_ms, win_days))
-    check("rules.adfree_from_paywall", "ad-free layout on every template" in pay)
-
-    reg = pd.read_csv(find(r"device_registry"), dtype=str)
-    rel = pd.read_csv(find(r"release_train"), dtype=str, keep_default_na=False)
-    ro = pd.read_csv(find(r"rollout"), dtype=str, keep_default_na=False)
-    subs = pd.read_csv(find(r"subscription_register"), dtype=str, keep_default_na=False)
-    eds = pd.read_csv(find(r"edition_register"), dtype=str, keep_default_na=False)
-    chg = pd.read_excel(find(r"change_register"), header=3, dtype=str)
-    letters = {"A": "Header-bidding", "B": "Image pipeline", "C": "Bølge front end",
-               "D": "Consent banner", "E": "Brand web fonts"}
-    cid = {k: chg[chg.Name.str.startswith(v)].Change.iloc[0] for k, v in letters.items()}
-    deploys = np.sort(to_utc(rel.deployed_at).values)
-
-    def rel_time(*pats):
-        mm = np.ones(len(rel), bool)
-        for p_ in pats:
-            mm &= rel.notes.str.contains(p_, regex=False).values
-        assert mm.sum() == 1, pats
-        return to_utc(rel.deployed_at[mm]).iloc[0]
-    t_dated = {k: rel_time(cid[k]) for k in "EBD"}
-    t_puz = rel_time(cid["A"], "Spil")
-    ads = ro[ro.layout == "ad-supported"]
-    cohorts = list(ads.template_groups)
-    t_coh = {r.template_groups: to_utc(pd.Series([r.switched_on])).iloc[0] for r in ads.itertuples()}
-    t_sub = to_utc(ro[ro.layout != "ad-supported"].switched_on).iloc[0]
-
-    # ---------------------------------------------------------------- the beacon frame
-    tbl = pq.read_table(find(r"\.parquet$")).to_pandas()
-    tbl = tbl.sort_values("beacon_id").drop_duplicates("pv_id")
-    # a second beacon for one page view under another key: same device, page and timings within ten minutes
-    sc_ = tbl[tbl.lcp_ms.notna()].sort_values(["device_key", "url_path", "lcp_ms", "ttfb_ms", "cls", "ts_utc", "pv_id"])
-    same = ((sc_.device_key.values[1:] == sc_.device_key.values[:-1]) & (sc_.url_path.values[1:] == sc_.url_path.values[:-1])
-            & (sc_.lcp_ms.values[1:] == sc_.lcp_ms.values[:-1]) & (sc_.ttfb_ms.values[1:] == sc_.ttfb_ms.values[:-1])
-            & (sc_.cls.values[1:] == sc_.cls.values[:-1]) & (sc_.pv_id.values[1:] != sc_.pv_id.values[:-1]))
-    gap_s = np.diff(sc_.ts_utc.values.astype("datetime64[s]").astype(np.int64))
-    rep = np.r_[False, same & (gap_s <= 600)]
-    n_rep = int(rep.sum())
-    tbl = tbl.drop(index=sc_.index[rep])
-    phone = reg[reg.form_factor == "phone"].set_index("device_model").perf_band
-    x = tbl[tbl.device_model.isin(phone.index)].copy()
-    x["pc"] = x.device_model.map(phone)
-    x["t"] = x.ts_utc.dt.tz_convert(None)
-    lt = x.ts_utc.dt.tz_convert(CZ)
-    x["mon"] = lt.dt.month
-    x["day"] = lt.dt.tz_localize(None).dt.normalize()
-    x["sc"] = x.lcp_ms.notna()
-    x["ov"] = x.lcp_ms.fillna(0) > line_ms
-    x["w"] = x.sample_weight.astype(float)
-    x["ed"] = x.url_path.str.extract(r"^/lokal/([^/]+)/")[0]
-    cur = eds[eds.valid_to == ""].set_index("edition_slug").masthead
-    x["mast"] = np.where(x.ed.notna(), x.ed.map(cur), x.title)
-    # state: the device's first view since the latest deploy (shift-based, not array diff)
-    x = x.sort_values(["device_key", "t"], kind="mergesort")
-    x["dep"] = np.searchsorted(deploys, x.t.values, side="right")
-    prev_dev = x.device_key.shift(1)
-    prev_dep = x.dep.shift(1)
-    x["first"] = (prev_dev != x.device_key) | (prev_dep != x.dep)
-    # subscribers at view time
-    s2 = subs.assign(st=pd.to_datetime(subs.start_date),
-                     en=pd.to_datetime(subs.end_date.replace("", "2099-12-31")))
-    j = x[["account_key", "day"]].reset_index().merge(s2[["account_key", "st", "en"]], on="account_key")
-    j = j[(j.day >= j.st) & (j.day <= j.en)]
-    x["sub"] = x.index.isin(j["index"].unique())
-    tp = x.template
-    x["grp"] = np.select([tp.isin(cohorts) & x["sub"], tp.isin(cohorts), (tp == "spil") & ~x["sub"]],
-                         ["sub", "base", "puz"], "other")
-    xs = x[x.sc]
-
-    def rate(d, keys):
-        g = d.assign(o=d.w * d.ov).groupby(keys)[["o", "w"]].sum()
-        return g.o / g.w
-
-    W = pd.Timedelta(days=win_days)
-
-    def eff(grp, keys):
-        d = xs[xs.grp == grp]
-        if grp == "base":
-            pre = pd.concat([d[(d.template == c) & (d.t >= t_coh[c] - W) & (d.t < t_coh[c])] for c in cohorts])
-            post = pd.concat([d[(d.template == c) & (d.t >= t_coh[c]) & (d.t < t_coh[c] + W)] for c in cohorts])
-        else:
-            t0 = t_puz if grp == "puz" else t_sub
-            pre, post = d[(d.t >= t0 - W) & (d.t < t0)], d[(d.t >= t0) & (d.t < t0 + W)]
-        if not keys:
-            return (post.w * post.ov).sum() / post.w.sum() - (pre.w * pre.ov).sum() / pre.w.sum()
-        return rate(post, keys) - rate(pre, keys)
-
-    aug = xs[xs.mon == 8]
-
-    def value(d, e, keys):
-        if not keys:
-            return d.w.sum() * e
-        vol = d.groupby(keys).w.sum()
-        return float((vol * e.reindex(vol.index)).sum())
-
-    B_, S_, Z_ = aug[aug.grp == "base"], aug[aug.grp == "sub"], aug[aug.grp == "puz"]
+def meds(O, target):
+    """IEEE 1366 2.5 beta per ENG-REL-02 3.2"""
+    M = read(target, "member_counts_2015-2025.csv")
+    served = M.assign(n=M.members_at_year_end.astype(int)).groupby(M.year.astype(int)).n.sum()
+    u = O[(O.cause != "PLANNED") & O.sus]
+    daily = u.groupby("day").cm.sum()
+    saidi = daily / np.array([served[d.year] for d in daily.index])
     out = {}
-    for name, keys in (("raw", []), ("phone", ["pc"]), ("state", ["pc", "first"])):
-        eA, eC = eff("puz", keys), eff("sub", keys)
-        out[name] = {"A": value(B_, eA, keys) + value(Z_, eA, keys),
-                     "C": value(B_, eC, keys) + value(S_, eC, keys)}
-        if name == "state":
-            out["grid"] = {c: {"A": value(B_[B_.template == c], eA, keys),
-                               "C": value(B_[B_.template == c], eC, keys) + value(S_[S_.template == c], eC, keys)}
-                           for c in cohorts}
-            out["eA"], out["eC"] = eA, eC
-    A4, C4 = out["state"]["A"], out["state"]["C"]
-    A3, C3 = out["phone"]["A"], out["phone"]["C"]
+    for y in range(2021, 2026):
+        h = saidi[(saidi.index.year >= y - 5) & (saidi.index.year < y) & (saidi > 0)]
+        th = np.exp(np.log(h).mean() + 2.5 * np.log(h).std(ddof=1))
+        out[y] = sorted(saidi[(saidi.index.year == y) & (saidi > th)].index)
+    return out
 
-    # ---------------------------------------------------------------- dated changes by title
-    sc = chg[chg.Name.str.startswith(letters["B"])].Scope.iloc[0]
-    hero = {x.strip() for x in re.search(r"\((.*)\)", sc).group(1).split(",")}
-    titles = {"ST": "Sønderå Tidende", "LA": "Lindå Avis", "KD": "Kærby Dagblad"}
-    Tv = {}
-    for k in "DBE":
-        d = xs if k != "B" else xs[xs.template.isin(hero)]
-        t0 = t_dated[k]
-        pre, post, au = d[(d.t >= t0 - W) & (d.t < t0)], d[(d.t >= t0) & (d.t < t0 + W)], d[d.mon == 8]
-        Tv[k] = {}
-        for ti in titles:
-            p1, p0 = post[post.mast == ti], pre[pre.mast == ti]
-            e = (p1.w * p1.ov).sum() / p1.w.sum() - (p0.w * p0.ov).sum() / p0.w.sum()
-            Tv[k][ti] = float(au[au.mast == ti].w.sum() * e)
-    tot = {k: sum(Tv[k].values()) for k in "DBE"}
-    pz = xs[xs.grp == "puz"]
-    a_puz = aug[aug.grp == "puz"].w.sum() * (
-        rate(pz[(pz.t >= t_puz) & (pz.t < t_puz + W)].assign(k=1), ["k"]).iloc[0]
-        - rate(pz[(pz.t >= t_puz - W) & (pz.t < t_puz)].assign(k=1), ["k"]).iloc[0])
 
-    # ---------------------------------------------------------------- the ladder
-    r2 = {"D": tot["D"], "B": tot["B"], "E": tot["E"], "A": a_puz}
-    o2 = sorted(r2, key=r2.get, reverse=True)
-    check("R0.D_leads", o2[0] == "D" and r2["D"] / r2[o2[1]] >= 1.15, {k: round(v) for k, v in r2.items()})
-    check("R1raw.A_leads", out["raw"]["A"] > out["raw"]["C"], out["raw"])
-    r3 = {"A": A3, "C": C3, **tot}
-    o3 = sorted(r3, key=r3.get, reverse=True)
-    check("R1.A_leads_C_second", o3[:2] == ["A", "C"] and A3 / C3 >= 1.2, (round(A3), round(C3)))
-    r4 = {"A": A4, "C": C4, **tot}
-    o4 = sorted(r4, key=r4.get, reverse=True)
-    check("R3.C_leads_A_second", o4[:2] == ["C", "A"] and C4 / A4 >= 1.5, (round(C4), round(A4)))
+def register(target):
+    R = read(target, "trim_unit_register.csv")
+    R["mi"] = R.miles.astype(float)
+    R["a"] = pd.to_datetime(R.in_service_date)
+    R["b"] = pd.to_datetime(R.retired_date.where(R.retired_date != "", "2200-01-01"))
+    return R
 
-    # ---------------------------------------------------------------- image delivery
-    cdn = pd.read_csv(find(r"image_cdn_delivery"))
-    cdn = cdn[(cdn.device_class == "smartphone") & ~cdn.ua_family.isin(["CFNetwork", "okhttp"])].copy()
-    cdn["bytes"] = np.where(cdn.vendor == "fallback", cdn.bytes_served * 1000.0, cdn.bytes_served)
-    cdn["req"] = cdn.edge_hits + cdn.origin_fills
-    cdn["m"] = cdn.log_date.str[:7]
-    lm = x.ts_utc.dt.tz_convert(CZ).dt.strftime("%Y-%m")
-    pv_m = x.assign(lm=lm).groupby("lm").w.sum()
-    Iv = {m: (cdn[cdn.m == m].req.sum() / pv_m[m], cdn[cdn.m == m].bytes.sum() / 1000 / pv_m[m])
-          for m in ["2026-%02d" % k for k in range(3, 9)]}
-    co = pd.read_excel(find(r"closeout"), sheet_name="By title", header=3)
-    for ti, name in titles.items():
-        for mo in (7, 8):
-            d = x[(x.mon == mo) & (x.mast == ti)]
-            row = co[(co.Month == f"2026-{mo:02d}") & (co.Title == name)].iloc[0]
-            check(f"closeout.reproduces[{ti},{mo}]", int(row["Mobile page views"]) == int(d.w.sum())
-                  and int(row["Over-line views"]) == int((d.w * (d.sc & d.ov)).sum()))
-    check("closeout.q3_only", sorted(co.Month.unique()) == ["2026-07", "2026-08"], sorted(co.Month.unique()))
 
-    # ---------------------------------------------------------------- bins
-    def edge(v_, b):
-        q = v_ / b - np.floor(v_ / b)
-        return b * abs(q - 0.5)
-    check("bin.C", edge(C4, 1e4) >= 1500, round(C4))
-    check("bin.A", edge(A4, 1e4) >= 1500, round(A4))
-    for k in "DBE":
-        for ti in titles:
-            check(f"bin.T[{k},{ti}]", edge(Tv[k][ti], 1e4) >= 1500, round(Tv[k][ti]))
-        check(f"bin.T_total[{k}]", edge(tot[k], 1e4) >= 1500, round(tot[k]))
-    for mo, (rq, kb) in Iv.items():
-        check(f"bin.I[{mo}]", edge(rq, 0.1) >= 0.012 and edge(kb, 10) >= 1.2, (round(rq, 3), round(kb, 2)))
-    check("repeats.found", n_rep > 0, n_rep)
+def miles_in_year(R, y):
+    """miles averaged over the days of the year (ENG-REL-02 2.2): a unit is in service from its in-service date to
+    the day before its retirement date"""
+    lo, hi = pd.Timestamp(y, 1, 1), pd.Timestamp(y + 1, 1, 1)
+    days = (np.minimum(R.b, hi) - np.maximum(R.a, lo)).dt.days.clip(lower=0)
+    return (R.mi * days / (hi - lo).days).groupby(R.district).sum()
 
-    figs = {"C": C4, "A": A4, "T": Tv, "I": Iv, "rung3": {"A": A3, "C": C3}, "raw": out["raw"],
-            "D": tot["D"], "B": tot["B"], "E": tot["E"]}
-    if a.record:
-        rec = json.load(open(a.record))
-        rf = rec["figures"]
-        check("record.C", abs(rf["C"] - C4) < 0.5, (rf["C"], C4))
-        check("record.A", abs(rf["A"] - A4) < 0.5, (rf["A"], A4))
-        for k in "DBE":
-            for ti in titles:
-                check(f"record.T[{k},{ti}]", abs(rf["T"][k][ti] - Tv[k][ti]) < 0.5)
-        for mo, (rq, kb) in Iv.items():
-            check(f"record.I[{mo}]", abs(rec["I"][mo][0] - rq) < 1e-9 and abs(rec["I"][mo][1] - kb) < 1e-6)
-        check("record.repeats", rec.get("n_second_beacons") == n_rep, (rec.get("n_second_beacons"), n_rep))
-    n_ok = sum(1 for r in RESULTS if r[1])
-    print(f"verify: {n_ok} of {len(RESULTS)} checks pass")
-    print(json.dumps({"C": round(C4), "A": round(A4)}, ensure_ascii=False))
-    sys.exit(0 if n_ok == len(RESULTS) else 1)
+
+def clocks(target, R):
+    """each unit's regrowth clock resets: accepted trims by completion date (OPS-ROW-01 3.1, 4.2), and a unit built
+    from 2024 on from its in-service date (3.2)"""
+    T = read(target, "row_trim_completions_2012-2025.csv")
+    T = T[T.audit_status == "ACCEPTED"]
+    resets = {u: sorted(zip(pd.to_datetime(g.completed_date), g.contractor)) for u, g in T.groupby("unit_id")}
+    for u, a in zip(R.unit_id, R.a):
+        if a.year >= 2024 or u not in resets:
+            resets[u] = sorted(resets.get(u, []) + [(a, "(new)")])
+    return resets
+
+
+def main(target, fig_path):
+    fig = json.load(open(fig_path))
+    bad = []
+
+    def eq(label, got, want):
+        if got != want:
+            bad.append("%s: got %s, figures.json %s" % (label, got, want))
+
+    O = outages(target)
+    md = meds(O, target)
+    allmed = {d for y in md for d in md[y]}
+    eq("major event days 2025", [d.strftime("%-d %B %Y") for d in md[2025]], fig["med_days"])
+    R = register(target)
+    tree = O[(O.cause == "TREE") & (O.lvl == "PRIMARY") & O.sus & ~O.day.isin(allmed)]
+    rate = {}
+    for y in range(2021, 2026):
+        mi = miles_in_year(R, y)
+        n = tree[tree.yr == y].groupby("d").size().reindex(DIST, fill_value=0)
+        rate[y] = {d: 100.0 * n[d] / mi[d] for d in DIST}
+        rate[y]["all"] = 100.0 * n.sum() / mi[DIST].sum()
+    eq("rate 2025", f1(rate[2025]["all"]), fig["rate_2025"])
+    eq("rate 2021 to 2023", f1(np.mean([rate[y]["all"] for y in (2021, 2022, 2023)])), fig["rate_base"])
+    for d in DIST:
+        for y in range(2021, 2026):
+            eq("rate %s %d" % (d, y), f1(rate[y][d]), fig["district_rates"][d][str(y)])
+    eq("North 2025", f1(rate[2025]["North"]), fig["north_rate_2025"])
+    eq("North 2021 to 2023", f1(np.mean([rate[y]["North"] for y in (2021, 2022, 2023)])), fig["north_rate_base"])
+    # the regrowth clock: North's mile-years and tree-caused outages by year, time since the last reset (whole years,
+    # four and over together) and the contractor of that reset
+    resets = clocks(target, R)
+    north = R[R.district == "North"]
+    days = pd.date_range("2021-01-01", "2025-12-31", freq="D")
+    yr = days.year.values
+    expo = {}
+    for u, mi, a, b in zip(north.unit_id, north.mi, north.a, north.b):
+        on = (days >= a) & (days < b)
+        if not on.any():
+            continue
+        rd = np.array([x[0] for x in resets[u]], "datetime64[ns]")
+        who = np.array([x[1] for x in resets[u]], object)
+        k = np.maximum(np.searchsorted(rd, days.values, side="right") - 1, 0)
+        band = np.minimum(((days.values - rd[k]) / np.timedelta64(1, "D") / 365.25).astype(int), 4)
+        df = pd.DataFrame({"y": yr[on], "b": band[on], "c": who[k][on]})
+        for key, n in df.groupby(["y", "b", "c"]).size().items():
+            expo[key] = expo.get(key, 0.0) + mi * n / 365.25
+    expo = pd.Series(expo)
+    nt = tree[(tree.d == "North") & (tree.yr >= 2021)]
+    ob = {}
+    for u, s_, y in zip(nt.unit, nt.s, nt.yr):
+        prior = [x for x in resets[u] if x[0] <= s_]
+        key = (y, min(int((s_ - prior[-1][0]).days / 365.25), 4), prior[-1][1])
+        ob[key] = ob.get(key, 0) + 1
+    ob = pd.Series(ob).reindex(expo.index, fill_value=0)
+    young = {}
+    for y in range(2021, 2026):
+        sel = [k for k in expo.index if k[0] == y and k[1] <= 1]
+        young[y] = 100.0 * ob[sel].sum() / expo[sel].sum()
+    eq("North young shift", f1(young[2025] - np.mean([young[y] for y in (2021, 2022, 2023)])), fig["north_young_shift"])
+    # each contractor's units against North's 2025 rates at the same time since trim
+    k25 = [k for k in expo.index if k[0] == 2025]
+    e25, o25 = expo[k25], ob[k25]
+    pooled = o25.groupby(level=1).sum() / e25.groupby(level=1).sum()
+    for c in (OC, NC):
+        kc = [k for k in k25 if k[2] == c]
+        expected = sum(expo[k] * pooled[k[1]] for k in kc)
+        eq("contractor ratio %s" % c, "{:.2f}".format(o25[kc].sum() / expected), fig["contractor_ratio"][c])
+    # ask A: trimming miles billed by contractor and quarter of the work, credit memos at the reversed invoice's month
+    I = read(target, "ap_invoices_row_trimming_2024-12_2025-12.csv")
+    svc = I.drop_duplicates("invoice_no").set_index("invoice_no").service_month
+    tr = I[I.item_code.str.startswith("TRIM")].copy()
+    tr["m"] = np.where(tr.service_month != "", tr.service_month, tr.applies_to_invoice.map(svc))
+    tr["mi"] = tr.quantity.astype(float) / np.where(tr.uom == "LF", 5280.0, 1.0)
+    tr = tr[tr.m.str.startswith("2025")]
+    tr["q"] = "Q" + ((tr.m.str[5:].astype(int) + 2) // 3).astype(str)
+    g = tr.groupby(["vendor", "q"]).mi.sum()
+    for v in (OC, NC):
+        for q in ("Q1", "Q2", "Q3", "Q4"):
+            eq("billing %s %s" % (v, q), f1(g.get((v, q), 0.0)), fig["billing"]["%s %s" % (v, q)])
+    # ask B: 2025's major event days by district (unplanned sustained outages, primary and secondary)
+    m25 = O[(O.cause != "PLANNED") & O.sus & O.day.isin(set(md[2025]))]
+    for d in DIST:
+        x = m25[m25.d == d]
+        eq("MED outages %s" % d, "{:,}".format(len(x)), fig["med"][d]["outages"])
+        eq("MED members %s" % d, "{:,}".format(int(x.mem.sum())), fig["med"][d]["members"])
+        eq("MED customer-minutes %s" % d, "{:,}".format(int(round(x.cm.sum()))), fig["med"][d]["customer_minutes"])
+    # ask C: overhead primary in service on 31 December 2025
+    end = pd.Timestamp(2025, 12, 31)
+    on = R[(R.a <= end) & (R.b > end)].groupby("district").mi.sum()
+    for d in DIST:
+        eq("miles %s" % d, f1(on[d]), fig["miles"][d])
+    # the call: North carries the rise, and its 2025 shift on units within two years of a trim is most of it
+    rise = {d: rate[2025][d] - np.mean([rate[y][d] for y in (2021, 2022, 2023)]) for d in DIST}
+    if max(rise, key=rise.get) != "North":
+        bad.append("the rise does not sit in North")
+    mi25 = miles_in_year(R, 2025)
+    total = sum(rise[d] * mi25[d] for d in DIST)
+    share = (young[2025] - np.mean([young[y] for y in (2021, 2022, 2023)])) * mi25["North"] / total
+    if share < 0.5:
+        bad.append("North's shift is %.2f of the rise" % share)
+    if fig["call"] != "hazard-tree removal beyond the right-of-way":
+        bad.append("call: %s" % fig["call"])
+    if bad:
+        raise SystemExit("verify FAILED:\n  " + "\n  ".join(bad))
+    print("verify: every stated figure recomputes from the bundle (North's shift %.2f of the rise)" % share)
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1], sys.argv[2])

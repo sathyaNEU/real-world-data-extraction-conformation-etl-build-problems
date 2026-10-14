@@ -1,326 +1,273 @@
-"""task129 generator: the filed documents, the social layer, the distractors and the manifest."""
+"""task129 documents: the reliability reporting policy (docx), the right-of-way maintenance policy (pdf), the
+trimming contracts register (xlsx) and the data dictionary (xlsx)"""
 import os
-from datetime import date, datetime, timedelta
 
-import numpy as np
-import pandas as pd
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import mm
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from docx import Document
+from docx.shared import Pt, RGBColor
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.utils import get_column_letter
 from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 import params as P
-from golden import F
+import postprocess
+
+COMPANY = "Vessey County Electric Cooperative"
 
 
-def _pdf(path, title, author, blocks):
+def _styles():
     ss = getSampleStyleSheet()
-    body = ParagraphStyle("b", parent=ss["BodyText"], fontName="Helvetica", fontSize=9.5,
-                          leading=13)
-    h = ParagraphStyle("h", parent=ss["Heading2"], fontName="Helvetica-Bold", fontSize=11,
-                       spaceBefore=8, spaceAfter=3)
-    t = ParagraphStyle("t", parent=ss["Title"], fontName="Helvetica-Bold", fontSize=14,
-                       alignment=0, spaceAfter=4)
-    small = ParagraphStyle("s", parent=body, fontSize=8, textColor=colors.HexColor("#555555"))
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=22 * mm, rightMargin=22 * mm,
-                            topMargin=20 * mm, bottomMargin=18 * mm, title=title, author=author,
-                            invariant=1)
-    flow = []
-    for kind, val in blocks:
-        if kind == "title":
-            flow.append(Paragraph(val, t))
-        elif kind == "h":
-            flow.append(Paragraph(val, h))
-        elif kind == "p":
-            flow.append(Paragraph(val, body))
-        elif kind == "small":
-            flow.append(Paragraph(val, small))
-        elif kind == "sp":
-            flow.append(Spacer(1, val))
-        elif kind == "table":
-            tb = Table(val, hAlign="LEFT")
-            tb.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 8.5),
-                                    ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.5),
-                                    ("GRID", (0, 0), (-1, -1), 0.4, colors.grey),
-                                    ("VALIGN", (0, 0), (-1, -1), "TOP")]))
-            flow.append(tb)
-    doc.build(flow)
+    body = ParagraphStyle("body", parent=ss["Normal"], fontName="Helvetica", fontSize=9.5, leading=13, spaceAfter=5)
+    h1 = ParagraphStyle("h1", parent=ss["Heading1"], fontName="Helvetica-Bold", fontSize=14, leading=18, spaceAfter=4)
+    h2 = ParagraphStyle("h2", parent=ss["Heading2"], fontName="Helvetica-Bold", fontSize=10.5, leading=14, spaceBefore=8,
+                        spaceAfter=4)
+    small = ParagraphStyle("small", parent=body, fontSize=8, leading=10, textColor=colors.HexColor("#444444"))
+    return dict(body=body, h1=h1, h2=h2, small=small)
 
 
-def service_level(path):
-    _pdf(path, "Page delivery service level v3", "Elin Lauritsen", [
-        ("title", "Page delivery service level, version 3"),
-        ("small", "Sønderå Medier, Digital operations. In force from 1 January 2026. Owner: Elin "
-                  "Lauritsen, head of digital operations. Agreed at the quarterly service review of "
-                  "9 December 2025."),
-        ("h", "1. Scope"),
-        ("p", "This service level covers delivery of pages to readers of Sønderå Tidende, Lindå Avis "
-              "and Kærby Dagblad on mobile phones. A mobile view is a page view on a device whose "
-              "model the device registry lists with form factor phone. Tablets and desktop "
-              "browsers are reported separately and are not part of this service level."),
-        ("h", "2. The line"),
-        ("p", "A page view misses the line when its largest contentful paint exceeds 4.0 seconds. A "
-              "view with no paint timing (a page restored from the back-forward cache) is not "
-              "scored. The service level is the share of scored mobile views that miss the line, "
-              "reported monthly by title in the digital operations close-out."),
-        ("h", "3. Reading a change"),
-        ("p", "Before-and-after comparisons of the share for a change use the 28 days either side of "
-              "the moment the release that switched it on was deployed."),
-        ("h", "4. Valuing a fix"),
-        ("p", "A fix is valued on the mobile views it brings back under the line at the latest full "
-              "month's traffic, counted over all of that month's scored views on the pages and layouts the "
-              "change is live on today. The operations squad works on one fix a quarter."),
-        ("h", "5. Review"),
-        ("p", "The quarterly service review is chaired by the head of digital operations, with the "
-              "three editors-in-chief, ad sales and the group digital director. It reviews the "
-              "close-out and allocates the operations squad's next quarter."),
-        ("h", "6. Data"),
-        ("p", "Field data is the RUM beacon export described in the field guide."),
-        ("sp", 10),
-        ("small", "Internal. Not for distribution outside Sønderå Medier. Next revision due December "
-                  "2026."),
-    ])
+def _footer(text):
+    def draw(canvas, doc):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7.5)
+        canvas.setFillColor(colors.HexColor("#555555"))
+        canvas.drawString(0.75 * inch, 0.5 * inch, text)
+        canvas.drawRightString(letter[0] - 0.75 * inch, 0.5 * inch, "Page %d" % doc.page)
+        canvas.restoreState()
+    return draw
 
 
-def paywall(path):
-    _pdf(path, "Subscriber terms, digital layout", "Sønderå Medier Abonnement", [
-        ("title", "Subscriber terms: digital layout and access (extract)"),
-        ("small", "Sønderå Medier A/S, Abonnementsservice. Version 2026-01, applies to Digital, "
-                  "Digital+ and Weekend + digital."),
-        ("h", "4. Layout"),
-        ("p", "4.1 Digital access covers every article, front page, gallery, live blog and puzzle on "
-              "the title or titles the product includes."),
-        ("p", "4.2 Signed-in subscribers are served the ad-free layout on every template, on all three titles' "
-              "sites whichever titles their product includes."),
-        ("p", "4.3 Readers who are not signed in to an active subscription, including readers with a "
-              "free account, are served the ad-supported layout. Article access for them is metered "
-              "at five articles a month."),
-        ("h", "5. Term and cancellation"),
-        ("p", "5.1 A subscription runs from its start date until it is cancelled. Cancellation takes "
-              "effect at the end of the paid period, which the subscription register records as the "
-              "end date."),
-        ("p", "5.2 Prices are set out in the price list in force; changes are announced 30 days ahead."),
-        ("h", "6. Devices"),
-        ("p", "6.1 A subscription may be used on up to five devices at a time, in the apps or in the "
-              "browser."),
-        ("sp", 8),
-        ("small", "Sønderå Medier A/S, CVR on request. Kundeservice hverdage 7-17."),
-    ])
+def _pdf(path, story, title, author, footer, stamp):
+    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.8 * inch, rightMargin=0.8 * inch, topMargin=0.7 * inch,
+                            bottomMargin=0.8 * inch, title=title, author=author, creator=author, invariant=1)
+    doc.build(story, onFirstPage=_footer(footer), onLaterPages=_footer(footer))
+    postprocess.scrub(path, author, stamp)
 
 
-def vendor_appendix(path):
-    rows = [["Field", "Meaning"],
-            ["log_date", "UTC calendar day of the requests"],
-            ["pop", "Edge location (IATA code of the city)"],
-            ["vendor", "primary, or fallback (the secondary vendor engaged from 9 June to 21 July)"],
-            ["device_class", "Vendor's classification of the client from its user agent"],
-            ["ua_family", "Client browser or agent family"],
-            ["edge_hits", "Requests answered from the edge cache"],
-            ["origin_fills", "Requests that missed the edge and were answered from origin. A request\n"
-                             "is counted in edge_hits or in origin_fills, never in both."],
-            ["bytes_served", "Bytes delivered to clients for both kinds of request. The fallback\n"
-                             "vendor reports this field in kilobytes (1,000 bytes), as its contract sets."]]
-    _pdf(path, "Image CDN: delivery log appendix", "Digital operations", [
-        ("title", "Image delivery: daily log, appendix C"),
-        ("small", "Sønderå Medier, Digital operations. Covers the image hosts img. and pix. "
-                  "sonderaa-medier.dk. One row per day, edge location, vendor, device class and agent "
-                  "family."),
-        ("sp", 6),
-        ("table", rows),
-        ("sp", 8),
-        ("p", "From 9 June to 21 July the primary vendor's Copenhagen capacity was reduced and part of "
-              "the traffic was routed to the fallback vendor. Both vendors' rows are in the log for "
-              "those days."),
-        ("sp", 6),
-        ("small", "Internal. Vendor contract references on file with digital operations."),
-    ])
+HEAD = Font(name="Calibri", bold=True, color="FFFFFF")
+FILL = PatternFill("solid", fgColor="2F4F3A")
 
 
-GUIDE = """# RUM beacon export: field guide
-
-Digital operations, maintained by Gunhild Lund. Applies to `rum_mobile_views_2026.parquet` and the
-registers and logs filed beside it. Last edited 4 September 2026.
-
-## The beacon export
-
-One row per beacon the collector received. A page view sends one beacon; `pv_id` is the page-view
-key. The export holds mobile web and app-webview page views on the three titles' sites from
-1 February to 31 August 2026 (Copenhagen dates). Reporting months are Copenhagen calendar months.
-
-Sampling is by device key: when a device is sampled, every page view it makes is in the export.
-`sample_weight` is the number of page views the row stands for; sum it to count views.
-
-| Field | Meaning |
-|---|---|
-| beacon_id | Collector receipt number, increasing in order of receipt |
-| pv_id | Page-view key |
-| ts_utc | Navigation start of the page view, UTC |
-| device_key | Hashed device identifier, stable for the life of the device |
-| account_key | Account the device is signed in to; empty when not signed in |
-| title | Masthead the page was published under at the time of the view (ST Sønderå Tidende, LA Lindå Avis, KD Kærby Dagblad) |
-| template | Page template |
-| url_path | Path of the page on the title's site; local-edition pages sit under /lokal/<edition>/ |
-| device_model | Model string as the client reports it; resolve it against the device registry |
-| os, browser | Client operating system and browser (app webviews report the app) |
-| effective_connection_type | Network Information API value at navigation start |
-| navigation_type | navigate, reload or back_forward |
-| referrer_class | internal, search, social, direct, newsletter, push, app or other |
-| ttfb_ms | Time to first byte, milliseconds |
-| lcp_ms | Largest contentful paint, milliseconds; empty when the browser reported no paint |
-| cls | Cumulative layout shift |
-| sample_weight | Page views the row stands for |
-
-Collector v2 came with the platform release of 3 June 2026 (see the release train log); sampling
-rates are set per collector and are carried row by row in `sample_weight`.
-
-## Registers and logs
-
-- `device_registry_2026-09.csv`: one row per device model. `form_factor` is phone or tablet;
-  `perf_band` (low, mid, high) is the model's band on the group's CPU benchmark and is the phone
-  class used in performance reporting.
-- `subscription_register_extract_2026-09-05.csv`: one row per subscription. A subscription is
-  active from `start_date` to `end_date` inclusive; an empty `end_date` means it is running.
-- `edition_register.csv`: masthead of each local edition, effective-dated; an empty `valid_to`
-  is the current row.
-- `release_train_log_2026.csv`: one row per platform deploy. `deployed_at` is local time with its
-  offset. `platform_bundle` and `puzzles_bundle` are the content hashes of the JavaScript bundles
-  the deploy shipped.
-- `boelge_rollout_log.csv`: one row per Bølge wave, with the release that switched it on.
-- `image_cdn_delivery_2026.csv`: fields in the vendor appendix (appendix C).
-
-Throughout these extracts a kilobyte (kB) is 1,000 bytes.
-"""
+def _sheet(ws, header, rows, widths=None, wrap=False, start=1):
+    for i, h in enumerate(header, start=1):
+        c = ws.cell(row=start, column=i, value=h)
+        c.font = HEAD
+        c.fill = FILL
+        c.alignment = Alignment(vertical="top", wrap_text=True)
+    for r_i, r in enumerate(rows, start=start + 1):
+        for c_i, v in enumerate(r, start=1):
+            c = ws.cell(row=r_i, column=c_i, value=v)
+            c.font = Font(name="Calibri", size=11)
+            if wrap:
+                c.alignment = Alignment(vertical="top", wrap_text=True)
+    if widths:
+        for i, w in enumerate(widths, start=1):
+            ws.column_dimensions[get_column_letter(i)].width = w
+    ws.freeze_panes = ws.cell(row=start + 1, column=1)
 
 
-def field_guide(path):
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(GUIDE)
+def _save(wb, path, who, created, modified):
+    wb.properties.creator = who
+    wb.properties.lastModifiedBy = who
+    wb.save(path)
+    postprocess.scrub(path, who, modified[:10])
+    postprocess.finish_office(path, created, modified, COMPANY)
 
 
-THREAD = """From: Elin Lauritsen <elin.lauritsen@sonderaa-medier.dk>
-To: digital-ops-review@sonderaa-medier.dk
-Date: Wed, 2 Sep 2026 08:14:52 +0200
-Subject: Q4 squad: prep for the service review on the 17th
-
-Hi all,
-
-The share over the line has gone up on all three titles since spring and the review on the 17th
-gives the squad its Q4. One fix, so it has to be the right one. The August extract lands on Friday
-and I'll make the call at the review; if there is anything I should look at first, say so now.
-
-Elin
-
-----
-From: Caroline Mortensen <caroline.mortensen@sonderaa-medier.dk>
-Date: Wed, 2 Sep 2026 09:12:40 +0200
-
-Could the CDN team's delivery log go in the folder this time, with their appendix? The pictures
-come up at every editors' meeting and I'd rather we look at what was actually served.
-
-Caroline
-
-----
-From: Gunhild Lund <gunhild.lund@sonderaa-medier.dk>
-Date: Wed, 2 Sep 2026 10:30:55 +0200
-
-The beacon export for February to August goes out on the 5th with the registers and the release log;
-the field guide has the collector v2 change in it now. I've asked the CDN team for their daily log
-for the same months and appendix C, so both will be in the folder too.
-
-Gunhild
-
-----
-From: Elin Lauritsen <elin.lauritsen@sonderaa-medier.dk>
-Date: Wed, 2 Sep 2026 11:02:31 +0200
-
-Thanks both.
-
---
-Sønderå Medier, Digital operations. Internal: do not forward.
-"""
-
-
-def thread(path):
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(THREAD)
-
-
-# ------------------------------------------------------------------ distractors
-def desktop_summary(rng, path):
-    rows = []
-    vol = {"ST": 9.8e6, "LA": 7.4e6, "KD": 5.6e6}
-    for m in range(2, 9):
-        for t in P.TITLES:
-            v = int(round(vol[t] * P.SEASON[m] * rng.uniform(0.97, 1.03)))
-            sh = 6.1 + (0.4 if m >= 3 else 0) + (0.5 if m >= 4 else 0) + (0.6 if m >= 5 else 0) \
-                + rng.uniform(-0.25, 0.25) + {"ST": 0.4, "LA": 0.0, "KD": -0.3}[t]
-            rows.append((f"2026-{m:02d}", P.TITLE_NAME[t], v, round(sh, 2),
-                         int(round(rng.uniform(1480, 1720)))))
-    pd.DataFrame(rows, columns=["month", "title", "desktop_page_views", "share_over_line_pct",
-                                "p75_lcp_ms"]).to_csv(path, index=False, lineterminator="\n")
-
-
-def amp_report(rng, path):
-    rows = []
-    vol = {"ST": 2.1e6, "LA": 1.6e6, "KD": 1.2e6}
-    for m in range(2, 9):
-        fade = 1 - 0.035 * (m - 2)
-        for t in P.TITLES:
-            v = int(round(vol[t] * fade * rng.uniform(0.96, 1.04)))
-            rows.append((f"2026-{m:02d}", P.TITLE_NAME[t], v, int(round(v * rng.uniform(2.1, 2.4))),
-                         round(rng.uniform(4.8, 6.4), 2), int(round(rng.uniform(1650, 1980)))))
-    pd.DataFrame(rows, columns=["month", "title", "amp_landing_views", "amp_ad_requests",
-                                "share_over_line_pct", "p75_lcp_ms"]).to_csv(
-        path, index=False, lineterminator="\n")
-
-
-def newsletter_sends(rng, path):
-    rows = []
-    d = date(2026, 2, 1)
-    lists = {"ST": ["Morgen", "Sport", "Aften"], "LA": ["Morgen", "Lokalt"], "KD": ["Morgen", "Lokalt"]}
-    subs = {"ST": 41800, "LA": 30200, "KD": 22600}
-    while d <= date(2026, 8, 31):
-        for t in P.TITLES:
-            for nl in lists[t]:
-                if nl == "Sport" and d.weekday() not in (0, 3):
-                    continue
-                n = int(subs[t] * {"Morgen": 1.0, "Sport": 0.42, "Aften": 0.55, "Lokalt": 0.61}[nl]
-                        * rng.uniform(0.985, 1.01))
-                hour = {"Morgen": "06:00", "Sport": "07:30", "Aften": "18:30", "Lokalt": "06:30"}[nl]
-                op = rng.uniform(0.38, 0.47)
-                rows.append((d.isoformat(), hour, P.TITLE_NAME[t], nl, n, int(n * op),
-                             int(n * op * rng.uniform(0.18, 0.26))))
-        d += timedelta(days=1)
-    pd.DataFrame(rows, columns=["send_date", "send_time_local", "title", "newsletter", "recipients",
-                                "unique_opens", "unique_clicks"]).to_csv(path, index=False,
-                                                                         lineterminator="\n")
-
-
-# ------------------------------------------------------------------ provenance
-MANIFEST = [
-    ("spine", "RUM beacon export, mobile web and app webviews, three titles", "2026-02-01 to 2026-08-31", "Gunhild Lund", "Export from the RUM collector (v1 to 2 June, v2 from 3 June), pulled 2026-09-05"),
-    ("release", "Release train log", "2026-01-05 to 2026-08-31", "Mette Johansen", "Export from the release tool"),
-    ("rollout", "Bølge rollout log", "Waves 1 to 6", "Finn Thygesen", "Maintained by the front-end platform team"),
-    ("changes", "Platform change register, 2026 extract", "Changes live since February", "Mette Johansen", "Extract of the change register"),
-    ("registry", "Device registry", "Models seen on group sites, benchmark bands", "Simone Thorsen", "Registry snapshot, September 2026"),
-    ("subs", "Subscription register extract", "Accounts signed in on sampled devices", "Gunhild Lund", "Extract from the subscription system, 2026-09-05"),
-    ("editions", "Edition register", "Local editions and their mastheads", "Caroline Mortensen", "Editorial register"),
-    ("sla", "Page delivery service level, version 3", "In force from 2026-01-01", "Elin Lauritsen", "Filed document"),
-    ("paywall", "Subscriber terms, layout and access (extract)", "Version 2026-01", "Abonnementsservice", "Filed document"),
-    ("closeout", "Q3 service close-out, mobile page delivery", "2026-07 to 2026-08", "Gunhild Lund", "Computed from the RUM export, v1.2"),
-    ("cdn", "Image CDN daily delivery log", "2026-02-01 to 2026-08-31, both vendors", "Gunhild Lund", "Merged vendor exports"),
-    ("cdnapp", "Image CDN delivery log, appendix C", "Field definitions", "Digital operations", "Filed document"),
-    ("guide", "RUM export field guide", "Beacon export, registers and logs", "Gunhild Lund", "Filed document"),
-    ("thread", "Service review prep thread", "2 September 2026", "digital-ops-review list", "Mail export"),
-    ("desktop", "Desktop field summary", "2026-02 to 2026-08", "Gunhild Lund", "Computed from the desktop RUM export"),
-    ("amp", "AMP landing-view report", "2026-02 to 2026-08", "Gunhild Lund", "Export from the AMP analytics report"),
-    ("news", "Newsletter send log", "2026-02-01 to 2026-08-31", "Caroline Mortensen", "Export from the newsletter platform"),
+# ------------------------------------------------------------------------------------------------ reliability policy (docx)
+REL = [
+    ("1 Purpose", [
+        "1.1 This policy sets how the cooperative counts its outages and reports its reliability to the board of "
+        "directors and in the annual reliability report to the members. It applies to the distribution system from the "
+        "substation breakers to the members' meters."]),
+    ("2 Outages and the tree-caused outage rate", [
+        "2.1 An outage is an interruption of supply by one device opening, with every member it took out and every "
+        "restoration step that brought them back. A device that has opened stays open until it is restored, so a device "
+        "is in one outage at a time; the outage management system records outages under ticket numbers. An outage is "
+        "sustained when power stays off for more than five "
+        "minutes, from the outage's start to its last restoration step; an outage restored within five minutes is "
+        "momentary. An outage belongs to the day, and to the year, in which it starts, in Central local time.",
+        "2.2 The tree-caused outage rate, for a district or for the cooperative in a year, is the number of sustained "
+        "outages on overhead primary with cause code TREE, outside major event days, per 100 miles of overhead primary "
+        "in service, the miles averaged over the days of the year from each trim unit's in-service and retirement "
+        "dates."]),
+    ("3 Reliability indices and major event days", [
+        "3.1 The reliability figures (SAIFI, SAIDI and CAIDI) count the unplanned sustained outages on primary and "
+        "secondary alike; planned outages are not in them. The members interrupted by an outage are the members it "
+        "took out; its customer-minutes add, for each restoration step, the members restored at that step times the "
+        "minutes from the outage's start to that step.",
+        "3.2 Major event days follow IEEE Std 1366. For each year, the natural logarithms of the daily SAIDI of the "
+        "five years before it, leaving out days with no customer-minutes, give a mean and a standard deviation, and a "
+        "day of the year whose SAIDI exceeds the exponential of the mean plus 2.5 standard deviations is a major event "
+        "day. Daily SAIDI is the customer-minutes of the day's unplanned sustained outages over the members served "
+        "at the end of that year.",
+        "3.3 Outages on major event days are reported separately and are taken out of the reliability figures and of "
+        "the tree-caused outage rate."]),
+    ("4 Reliability reviews", [
+        "4.1 When the cooperative's tree-caused outage rate in a year stands above its average over the three years "
+        "before the year preceding it, Engineering and Operations review the rise. The review names the driver that "
+        "accounts for most of the difference and the programme the right-of-way maintenance policy assigns to that "
+        "driver, and the programme is carried into the next budget the board approves."]),
+    ("5 Records", [
+        "5.1 The outage management system is the record of outages. Members served are counted by Member Services at "
+        "each year's end. Overhead primary miles are carried in the trim-unit register kept with the engineering GIS."]),
 ]
 
 
-def manifest(path, names):
-    rows = [(F[k], what, cov, owner, how) for k, what, cov, owner, how in MANIFEST]
-    df = pd.DataFrame(rows, columns=["file", "what_it_is", "covers", "owner", "how_produced"])
-    assert sorted(df.file) == sorted(n for n in names if n != F["manifest"]), "manifest set"
-    df.to_csv(path, index=False, lineterminator="\n")
+def reliability_policy(path):
+    d = Document()
+    st = d.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(11)
+    for name in ("Heading 1", "Heading 2", "Title"):
+        d.styles[name].font.name = "Calibri"
+        d.styles[name].font.color.rgb = RGBColor(0x2F, 0x4F, 0x3A)
+    d.add_heading("Reliability Reporting Policy", level=1)
+    p = d.add_paragraph("Vessey County Electric Cooperative. Policy ENG-REL-02, revision 4, adopted by the board of "
+                        "directors 21 March 2023. Policy owner: Dennis Garcia, Reliability Engineer.")
+    p.runs[0].font.size = Pt(9)
+    for head, paras in REL:
+        d.add_heading(head, level=2)
+        for t in paras:
+            d.add_paragraph(t)
+    d.core_properties.title = "Reliability Reporting Policy ENG-REL-02"
+    d.core_properties.author = "Dennis Garcia"
+    d.core_properties.revision = 9
+    d.save(path)
+    postprocess.scrub(path, "Dennis Garcia", "2023-03-21")
+    postprocess.finish_office(path, "2023-02-06T15:02:00Z", "2023-03-21T19:44:00Z", COMPANY)
+
+
+# ------------------------------------------------------------------------------------------------ right-of-way policy (pdf)
+ROW = [
+    ("1 Scope", ["This policy covers the right-of-way of the cooperative's overhead primary lines in the North, East and "
+                 "South districts. Secondary lines and service drops are cleared on member request."]),
+    ("2 Clearance", ["Trimming clears the right-of-way: fifteen feet either side of the pole line, ground to sky. Every "
+                     "tree inside it is cut back or removed and brush is cut or treated. Trees standing beyond the "
+                     "right-of-way are not trimmed."]),
+    ("3 Cycle", ["3.1 Each trim unit is trimmed every four years. A unit is past its cycle when more than four years have "
+                 "passed since its last accepted trim.",
+                 "3.2 A unit built or rebuilt is cleared at construction, and its cycle runs from its in-service date."]),
+    ("4 Contract work", ["4.1 Trimming is let by district to contractors under the contracts in the trimming contracts "
+                         "register. Work orders are issued by circuit, and a circuit's units are trimmed as one campaign.",
+                         "4.2 The forester audits each completed unit against the clearance in section 2. A unit that "
+                         "fails the audit is re-trimmed at the contractor's cost, and its trim is accepted when it passes.",
+                         "4.3 Contractors bill the units they complete under their contract's terms, by the month of "
+                         "the work."]),
+    ("5 Hazard trees", ["A hazard tree is a tree standing beyond the right-of-way that would reach the line if it fell. "
+                        "The forester's span survey counts the trees within falling distance of each span by species. "
+                        "Hazard-tree removal fells such trees with the landowner's consent."]),
+    ("6 Programmes", ["6.1 Catch-up trimming answers units past their cycle.",
+                      "6.2 A re-bid of a district's trimming contract answers trimming that falls short of the clearance "
+                      "in section 2.",
+                      "6.3 Hazard-tree removal answers trees falling onto the line from beyond the right-of-way.",
+                      "6.4 Weather below major event days calls for nothing new."]),
+]
+
+
+def row_policy(path):
+    s = _styles()
+    st = [Paragraph("Right-of-Way Maintenance Policy", s["h1"]),
+          Paragraph("Vessey County Electric Cooperative, Operations. Policy OPS-ROW-01, revision 6, effective 2 January "
+                    "2024. Policy owner: Lori Rodriguez, Manager of Right-of-Way and Vegetation Management. Approved by "
+                    "Brian Montgomery, Manager of Operations.", s["small"]), Spacer(1, 6)]
+    for head, paras in ROW:
+        st.append(Paragraph(head, s["h2"]))
+        for t in paras:
+            st.append(Paragraph(t, s["body"]))
+    _pdf(path, st, "Right-of-Way Maintenance Policy OPS-ROW-01", "Lori Rodriguez",
+         "OPS-ROW-01 rev. 6, effective 2 January 2024", "2024-01-02")
+
+
+# ------------------------------------------------------------------------------------------------ contracts (xlsx)
+def contracts(path):
+    rows = [
+        ["North", "ROW-N-2020", P.OUTGOING, "2020-01-01", "2023-12-31",
+         "Work orders issued before 1 January 2024 completed under this contract."],
+        ["North", "ROW-N-2024", P.INCOMING, "2024-01-01", "2028-12-31", ""],
+        ["East", "ROW-E-2021", P.OUTGOING, "2021-04-01", "2025-03-31",
+         "No new work orders issued after 31 December 2024."],
+        ["East", "ROW-E-2025", P.INCOMING, "2025-04-01", "2030-03-31", ""],
+        ["South", "ROW-S-2022", P.OUTGOING, "2022-01-01", "2026-12-31", ""],
+        ["North", "ROW-N-2016", P.OUTGOING, "2016-01-01", "2019-12-31", ""],
+        ["East", "ROW-E-2017", P.OUTGOING, "2017-04-01", "2021-03-31", ""],
+        ["South", "ROW-S-2018", P.OUTGOING, "2018-01-01", "2021-12-31", ""],
+    ]
+    rows.sort(key=lambda r: (r[0], r[3]))
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Contracts"
+    _sheet(ws, ["District", "Contract", "Contractor", "Start", "End", "Notes"], rows, widths=[10, 13, 34, 12, 12, 60],
+           wrap=True)
+    _save(wb, path, "Lori Rodriguez", "2016-06-14T13:20:00Z", "2025-03-27T16:05:00Z")
+
+
+# ------------------------------------------------------------------------------------------------ data dictionary (xlsx)
+DICT = {
+    "outages": ("One row per restoration step of an outage ticket; a ticket's rows share its outage_id.", [
+        ("outage_id", "Ticket number in the outage management system"),
+        ("start_local", "When the outage began, Central local time"),
+        ("level", "PRIMARY (overhead primary line) or SECONDARY (transformer or service drop)"),
+        ("service_area", "District"), ("circuit", "Circuit (substation and feeder)"),
+        ("unit_id", "Trim unit the opened device or the transformer sits on"),
+        ("device_type", "FUSE, RECLOSER, BREAKER, SWITCH, TRANSFORMER or SERVICE"),
+        ("device_id", "The device or equipment that opened"),
+        ("cause_code", "TREE, ANIMAL, EQUIPMENT, LIGHTNING, VEHICLE, UNKNOWN or PLANNED"),
+        ("members_out", "Members the outage took out"), ("step", "Restoration step number"),
+        ("step_restored_local", "When power returned to the members restored at this step, Central local time"),
+        ("members_restored", "Members restored at this step")]),
+    "register": ("One row per trim unit.", [
+        ("unit_id", "Trim unit"), ("district", "District"), ("substation", "Substation"), ("circuit", "Circuit"),
+        ("miles", "Overhead primary in the unit, miles"), ("in_service_date", "Date the unit entered service"),
+        ("retired_date", "Date the unit leaves service"), ("retire_reason", "REBUILT or UNDERGROUND"),
+        ("replaced_by", "Unit that replaced a rebuilt unit")]),
+    "completions": ("One row per trim of a unit.", [
+        ("record_id", "Completion record"), ("work_order", "Work order (one circuit campaign)"),
+        ("unit_id", "Trim unit"), ("contractor", "Contractor that did the work"), ("crew", "Crew"),
+        ("completed_date", "Date the crew completed the unit"), ("audit_status", "ACCEPTED or REJECTED at the forester's audit; PENDING until the audit is done"),
+        ("accepted_date", "Date the trim was accepted")]),
+    "survey": ("One row per span and species group with trees found.", [
+        ("span_id", "Span (circuit and the pole it starts from)"), ("unit_id", "Trim unit"),
+        ("survey_date", "Date surveyed"), ("species_code", "Species group as recorded by the survey tool"),
+        ("trees_within_falling_distance", "Trees that would reach the line if they fell")]),
+    "weather": ("One row per station and day.", [
+        ("station_id", "Station"), ("station_name", "Station name"), ("date_utc", "Day, UTC"),
+        ("peak_gust_mph", "Peak gust, miles per hour"), ("precipitation_in", "Precipitation, inches")]),
+    "members": ("One row per district and year.", [
+        ("district", "District"), ("year", "Year"), ("members_at_year_end", "Members served at 31 December")]),
+    "invoices": ("One row per invoice line.", [
+        ("vendor", "Contractor"), ("invoice_no", "Invoice or credit memo number"), ("invoice_date", "Document date"),
+        ("doc_type", "INVOICE or CREDIT MEMO"), ("applies_to_invoice", "Invoice a credit memo reverses"),
+        ("work_order", "Work order billed"), ("service_month", "Month of the work billed"),
+        ("line_no", "Line"), ("item_code", "Contract item"), ("description", "Item description"),
+        ("quantity", "Quantity billed"), ("uom", "Unit of measure"), ("unit_price", "Unit price, USD"),
+        ("amount", "Line amount, USD")]),
+}
+DICT_FILES = {"outages": "oms_outage_export_2016-2025.csv", "register": "trim_unit_register.csv",
+              "completions": "row_trim_completions_2012-2025.csv", "survey": "row_tree_survey_2023-2024.parquet",
+              "weather": "weather_daily_2016-2025.csv", "members": "member_counts_2015-2025.csv",
+              "invoices": "ap_invoices_row_trimming_2024-12_2025-12.csv"}
+
+
+def dictionary(path):
+    wb = Workbook()
+    first = True
+    for name, (grain, fields) in DICT.items():
+        ws = wb.active if first else wb.create_sheet()
+        first = False
+        ws.title = name[:31]
+        ws["A1"] = DICT_FILES[name] + ": " + grain
+        ws["A1"].font = Font(name="Calibri", italic=True)
+        _sheet(ws, ["Field", "Description"], [list(f) for f in fields], widths=[30, 90], start=3)
+    _save(wb, path, "Dennis Garcia", "2021-02-01T14:00:00Z", "2026-01-13T17:30:00Z")
+
+
+def write_all(target, FILES, U, T, M):
+    reliability_policy(os.path.join(target, FILES["rel_policy"]))
+    row_policy(os.path.join(target, FILES["row_policy"]))
+    contracts(os.path.join(target, FILES["contracts"]))
+    dictionary(os.path.join(target, FILES["dictionary"]))
+    return {"counts": {}}

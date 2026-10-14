@@ -1,43 +1,50 @@
 {
  "task": "task129",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities",
  "objective": "root-cause",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-14",
- "stump": "Reading each district's rise against the trimming contract register files a re-bid of the trimming contract in North and East and nothing new in South; the step that lands it there is booking North's rise to the new contractor whose freshly trimmed units carry it, when the outages come from ash dying beyond the right-of-way and the outgoing contractor's units trimmed in the same months fail alike, and East's to the contractor, when its rise sits on the units the handover left past the four-year cycle.",
+ "stump": "Reading each district's rise against the trimming contract register files a re-bid of the trimming contract (Ends on: a re-bid of the trimming contract); the step that lands it there is booking North's rise, most of the cooperative's, to the new contractor whose freshly trimmed units carry it, when the outages come from ash dying beyond the right-of-way, rising by the same amount at every time since trim and with the ash standing within falling distance, so each contractor's units fail at North's rate for their time since trim and no trimming, sooner or better, removes them.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-14"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (0 LEAK) at --asof 2026-01-13, every line answered in the design note",
+  "reader": "two isolated reads: question 1 none on both, no ranking file, question 5 executes to 21.9 and 11.2 (and, after the pin, folds the second tickets as the golden: 160, 123, 112), question 6 an analytical choice; realism tells (circuit energising dates, peer miles and names, retirement-date reading) fixed in the generator"
  },
  "duplicate_check": {
-  "heart": "PASS at registration",
-  "nearest": "0.05 task500 v2 lineage"
+  "heart": "PASS (nearest 0.05, task500 v2 lineage)",
+  "surface": "promotes task128 (back to back, gap population shared; banking collections, another mechanism and decision) and task230 (corpus top 1 per cent on surface vocabulary; census coding quality, another mechanism); answered in the design note",
+  "nearest": "0.05 task500 v2 lineage",
+  "clone_check": ""
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "pass 2 DETERMINISTIC; its one FIX_NOW item (a block 4 chart line answering no ask) removed, no figure moved",
+  "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2)",
+  "pass": 2,
+  "gate_g": "decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "fix_cycles": 1,
+  "notes": "pass 1 FIX_NOW: ask B fork (a second ticket of a device already open folded or counted); closed with policy 2.1's WHAT (a device is in one outage at a time; outages under ticket numbers), the dictionary's grain line, and genuine outages kept off an open device in the generator (East's ask B 123, 3,559, 1,203,168); pass 2 DETERMINISTIC, every figure reproduced, its block 4 chart item removed and its ask 1 note answered by policy 4.3 and the dictionary, so no third judge"
  },
  "returned": [
   {
    "date": "2026-10-14",
    "portal": "author request",
    "repair": "re-root (domain fit: house domain to a client domain)",
-   "commit": ""
+   "commit": "RESHIPPED (task129), 2026-10-14"
   }
  ],
- "resume": "stage 2: design the ladder, fork table, closure and ask sheet for the vegetation outage root cause, then precut.py",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-14",
  "portal": null,
  "lineage": [
   {
@@ -85,5 +92,12 @@
     }
    }
   }
- ]
+ ],
+ "build": {
+  "seed": 129227,
+  "checks": 119,
+  "verify": "every stated figure recomputes",
+  "byte_identical": true,
+  "target_zip_sha256": "d6bd8f7d65da6edc14046d44f64876af3e8ae6d86c24c521fca774092066e2d8"
+ }
 }

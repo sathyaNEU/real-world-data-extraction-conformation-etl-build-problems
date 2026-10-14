@@ -1,7 +1,7 @@
 # perssathya: where work stopped
 
-Updated 2026-10-14 (task230 reshipped as architecture 3). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
-task129, task229, task131, task122, task231 and task232 (2026-10-13) and task230 (reshipped 2026-10-14) are SHIPPED
+Updated 2026-10-14 (task230 and task129 reshipped at the author's request). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is shipped apart from task228, which waits on the author's
 call (a fifth architecture and a G16 waiver). Wave 2: task231 and task232 shipped; task233 to task236 not started.
 
@@ -14,8 +14,9 @@ serves Forecasting in the taxonomy, not Data Quality, and task129 sits in a hous
 domain General Statistics) though its decisive method is web performance engineering.
 
 **Progress (2026-10-14):** the board's `review` collection is still empty, so every shipped build stays in scope. The
-author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 re-rooted in a client domain (next), then
-the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last.
+author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 re-rooted in a client domain (done,
+reshipped), then the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last
+(next: task232, after re-reading the board's `review` collection).
 
 **task230: RESHIPPED 2026-10-14 (architecture 3, re-rooted at the author's request); waiting on the portal.**
 - The Office of the Registrar General of Aldmere's 2026 census (Survey Research & Official Statistics,
@@ -29,6 +30,20 @@ the second-layer reviews in the order task232, task231, task229, task122, task13
   four isolated leak reads (questions 1 to 4 none); judge pass 1 sent back two ask figures (fixed), pass 2
   DETERMINISTIC, APPROVE. Surface screen promotes task231 (back to back on the same pairing, another task type) and
   task131 and task183 (same-driver signature, differentiated): the adjudicated clone check is the author's call.
+
+**task129: RESHIPPED 2026-10-14 (architecture 2, re-rooted at the author's request); waiting on the portal.**
+- Vessey County Electric Cooperative, a rural electric cooperative (Energy Systems & Utilities,
+  grid-reliability-outage-analysis x Root-Cause Analysis). Call: fund hazard-tree removal beyond the right-of-way
+  with the 2027 right-of-way budget increase. The rise in tree-caused outages, 11.2 per 100 miles of overhead primary
+  on average over 2021 to 2023 to 21.9 in 2025, is mostly ash beyond North's right-of-way falling onto the line: North's
+  2025 rise is as large within two years of a trim (18.8) as late in the cycle and climbs with the ash within falling
+  distance, and each contractor's units fail at North's rate for their time since trim (Garrity 0.98, Hollenbeck 1.01).
+  The district series against the contract register files a re-bid (North's rise began with its January 2024
+  handover); the regrowth reading files catch-up trimming.
+- Gates: 119 generator assertions, verify.py green, byte-identical rebuilds, figures_check, precut 49 checks, leak.py
+  REVIEW only; leak reader two reads (question 1 none); judge pass 1 FIX_NOW on ask B's ticket fold (closed by policy
+  2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC. Surface screen promotes task128 (back to back) and task230
+  (surface vocabulary), neither sharing domain, objective or mechanism: the adjudicated clone check is the author's call.
 
 **task232: SHIPPED 2026-10-13 (wave 2, second build); waiting on the portal.**
 - A regional local health district's public health unit on the New South Wales and Queensland border (Epidemiology &

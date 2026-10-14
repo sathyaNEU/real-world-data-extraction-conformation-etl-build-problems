@@ -26,8 +26,9 @@ with two analytical layers on the call.
   right-of-way is trimmed on a four-year cycle by contract crews, each district's trim units (about half a mile of
   line each) worked circuit by circuit. Trimming clears the right-of-way; a tree standing beyond it is reached only by
   the hazard-tree removal the policy describes. North's trimming passed from the outgoing contractor to a new one on 1
-  July 2024, the outgoing contractor finishing the work orders it already held; East's passed on 1 April 2025 after the
-  outgoing contractor stopped taking new work orders in January; South kept its contractor. The Manager of
+  January 2024, the outgoing contractor finishing through 2024 the work orders issued to it before then; East's passed
+  on 1 April 2025, no new work orders going to the outgoing contractor after 31 December 2024, so the campaigns due
+  in East that spring started months late; South kept its contractor. The Manager of
   Right-of-Way and Vegetation Management sets the 2027 right-of-way programme for each district this autumn.
 - **Pairing:** the deciding quantity is each district's tree-caused outage rate read as vegetation management reads it:
   on the regrowth clock (time since each trim unit was last trimmed, built from the trimming history) and against the
@@ -45,6 +46,10 @@ with two analytical layers on the call.
   Montgomery (Manager of Operations).
 - **Guard:** `check` PASS at registration (ban windows against task230, task459 and task184); `heart` PASS. Two
   first names drawn first (Pamela, Jessica) warned against task131 and task104 and were redrawn from the same pool.
+  Stage 3: `heart` PASS (nearest 0.05, task500 v2 in lineage); `surface` promotes task128 (back to back, the gap
+  `population` shared on the cards; banking collections and opportunity sizing, another mechanism and decision) and
+  task230 (the corpus top 1 per cent on surface vocabulary; census coding quality and data quality monitoring,
+  another mechanism); no shared invented name; the adjudicated clone check is the author's call.
 - **Sources, one line each.** The client's two-layer standard: its canonical expert move is a staggered rollout read
   against units not yet treated; here the not-yet-treated units are the outgoing contractor's units of the same
   months, and the move is only half the call, because the shift it uncovers still has to be read on the regrowth
@@ -62,88 +67,328 @@ with two analytical layers on the call.
 1. From the outage management export (restoration-step rows) take each outage once, keep the sustained outages
    (over five minutes) on overhead primary whose cause is TREE, and drop the major event days the reliability
    reporting policy identifies by the IEEE 1366 2.5 beta method from the five years before each year.
-2. Divide each district's count by its overhead primary miles in service that year (trim-unit register, in-service
-   and retirement dates) for the rate per 100 miles in each year 2021 to 2025.
-3. North's rate steps up from the second half of 2024 and nearly doubles in 2025; East's jumps in 2025; South's
-   rises a little.
-4. Read the trimming contract register: North passed to a new contractor on 1 July 2024 and East on 1 April 2025;
-   South kept its contractor. Read the weather: South's 2025 had more days of high gusts.
-5. File the call: re-bid the trimming contract in North and in East; nothing new in South (storms).
+2. Divide each district's count by its overhead primary miles in service (trim-unit register, averaged over the days
+   of the year) for the rate per 100 miles in 2025 and in 2021 to 2023.
+3. North's rate steps up in 2024 and again in 2025, to about two and a half times its 2021 to 2023 level; East's
+   rises in 2025; South's rises a little. North carries most of the cooperative's rise.
+4. Read the trimming contract register: North passed to a new contractor on 1 January 2024 and East on 1 April 2025;
+   South kept its contractor. Each district's rise begins with its handover.
+5. File the call: the rise is the new contractor's trimming, so the 2027 budget increase funds a re-bid of the
+   trimming contract.
 
-Ends on: North re-bid the trimming contract, East re-bid the trimming contract, South nothing new
-Golden: North hazard-tree removal beyond the right-of-way, East catch-up trimming, South nothing new
+Ends on: a re-bid of the trimming contract
+Golden: hazard-tree removal beyond the right-of-way
 
 ## Stump sentence
 
-Reading each district's rise against the trimming contract register files a re-bid of the trimming contract in
-North and East and nothing new in South (Ends on: North re-bid, East re-bid, South nothing new); the step that lands
-it there is booking North's rise to the new contractor whose freshly trimmed units carry it, when the outages come
-from ash dying beyond the right-of-way, rising by the same amount at every time since trim and with the ash standing
-within falling distance, so the outgoing contractor's units trimmed in the same months fail alike, and booking East's
-to the contractor, when its rise sits on the units the handover left past the four-year cycle.
+Reading each district's rise against the trimming contract register files a re-bid of the trimming contract (Ends on:
+a re-bid of the trimming contract); the step that lands it there is booking North's rise, most of the cooperative's,
+to the new contractor whose freshly trimmed units carry it, when the outages come from ash dying beyond the
+right-of-way, rising by the same amount at every time since trim and with the ash standing within falling distance, so
+the outgoing contractor's units trimmed in the same months fail alike and no trimming, sooner or better, removes them.
 
 ## Three rules
 
 Task type: `grid-reliability-outage-analysis` (Energy Systems & Utilities), which serves Root-Cause Analysis in the
-client taxonomy; the call names each district's driver of a correctly reported rise in tree-caused outages.
+client taxonomy; the call names the driver of a correctly reported rise in tree-caused outages and the programme that
+answers it.
 
-Domain test: the quantity that decides each district's call is its tree-caused outage rate read the way utility
-vegetation management reads it, on the regrowth clock (time since each trim unit was last trimmed, from the trimming
-history) and against the trees within falling distance (the right-of-way survey), with the new contractor's work set
-beside the outgoing contractor's work of the same months.
+Domain test: the quantity that decides the call is the tree-caused outage rate read the way utility vegetation
+management reads it, on the regrowth clock (time since each trim unit was last trimmed, from the trimming history)
+and against the trees within falling distance of the line (the right-of-way survey), with the new contractor's work
+set beside the outgoing contractor's work of the same months, and each driver sized against the cooperative's rise.
 
-Swap: "what drove the rise in falls on each of the hospital's three wards, and should each ward's budget fund
-catch-up rounding, a re-bid of the agency nurses, removal of hazards beyond the ward, or nothing" stops making sense:
-no regrowth runs from a rounding, no cleared corridor has hazards standing beyond it, and nothing dies outside a ward
-to fall into it.
+Swap: "what drove the rise in falls on the hospital's wards, and should the budget fund catch-up rounding, a re-bid
+of the agency nurses, removal of hazards beyond the wards, or nothing" stops making sense: no regrowth runs from a
+rounding, no cleared corridor has hazards standing beyond it, and nothing dies outside a ward to fall into it.
 
-Layer 1: an outage management export at restoration-step grain in local time across daylight-saving changes (the
-cooperative's outage system); a trimming completions register with completion and acceptance dates, the contractor
-and units renumbered where a line was rebuilt (the contractors' work-order system); a span-level right-of-way survey
-by species group (the forester's survey); overhead mileage that changes as units go underground (the trim-unit
-register); daily peak gusts in UTC from three weather stations; the IEEE 1366 major event day rule applied from each
-year's five prior years (the reliability reporting policy); contractor invoices with credit memos and re-issued
-invoice numbers (accounts payable). Nothing is placed to be caught; each mishandling is asserted to leave the three
-calls where they are.
+Layer 1: an outage management export at restoration-step grain in local time across daylight-saving changes, primary
+and secondary outages together (the cooperative's outage system); a trimming completions register with completion and
+acceptance dates, the contractor, and units renumbered where a line was rebuilt (the contractors' work-order system); a
+span-level right-of-way survey by species group with a 2024 re-survey of rebuilt lines in another code list (the
+forester's survey tools); overhead mileage that changes as units are converted to underground (the trim-unit
+register); daily peak gusts and rainfall in UTC from three weather stations; the IEEE 1366 major event day rule
+applied from each year's five prior years (the reliability reporting policy); contractor invoices with credit memos
+and re-issued invoice numbers (accounts payable). Nothing is placed to be caught; each mishandling is asserted to
+leave the call where it is.
 
-Layer 2: `estimand_identification`: the right comparison for a rise that begins with a handover is the outgoing
-contractor's units of the same months, and every unit read at its own time since trim; North's rise is then a shift
-the regrowth clock does not carry, scaling with the ash within falling distance, and East's sits on the units past
-the cycle.
+Layer 2: `estimand_identification`: the right comparison for a rise that begins with a handover is each
+contractor's units read at their own time since trim (the outgoing contractor's units of the same months, and every
+unit against the district's rate at the same time since trim); North's rise is then a shift the regrowth clock does
+not carry, scaling with the ash within falling distance, and it outweighs East's units left past the cycle and South's
+storms.
 
-Decisive step: reading North's 2025 tree-outage rate at the same time since trim and the same months for both
-contractors' units, and against the ash standing within falling distance, which shows a shift that no trim removes
-(trees falling in from beyond the right-of-way) where the district series shows a step at the handover.
+Decisive step: reading North's tree-outage rate at the same time since trim for both contractors' units and against
+the ash standing within falling distance, which shows a shift that no trim removes (trees falling in from beyond the
+right-of-way) where the district series shows a step at the handover, and sizing it against East's overdue units and
+South's storms.
 
 Not semantics: every outage's cause code (TREE) is right, every field reads as the dictionary says, and no field
-separates a tree growing into the line from one falling onto it; read correctly, the district series and the
-contract register still point at the new contractor.
+separates a tree growing into the line from one falling onto it; read correctly, the district series and the contract
+register still point at the new contractor.
 
-Not rule application: the right-of-way maintenance policy files the four-year cycle and what trimming clears, and the
-reliability reporting policy files the rate and the major event days; executing both gives each district's rate and
-leaves the driver open, and no filed rule or procedure reads a rise against the outgoing contractor's concurrent
-units, the regrowth clock or the trees within falling distance.
+Not rule application: the right-of-way maintenance policy files the four-year cycle, what trimming clears and what
+each programme answers, and the reliability reporting policy files the rate and the major event days; executing both
+gives each district's rate and leaves the driver open, and no filed rule or procedure reads a rise against the
+outgoing contractor's concurrent units, the regrowth clock or the trees within falling distance.
 
 Analyst test: a strong analyst who counts outages (not restoration steps), drops the major event days, rates each
 district per 100 miles in service, reads the rise against the contract register and checks the storms files the
-default path's answer (Ends on: North re-bid the trimming contract, East re-bid the trimming contract, South nothing
-new); `checks.py` runs it on the generator's clean truth.
+default path's answer (Ends on: a re-bid of the trimming contract); `checks.py` runs it on the generator's clean truth.
 
 Estimand: the reliability reporting policy defines the tree-caused outage rate (sustained outages on overhead primary
-with cause TREE, outside major event days, per 100 miles of overhead primary in service in the year); the call names,
-for each district, the driver that accounts for most of its 2025 rate above its 2021 to 2023 average, and the
-programme the right-of-way maintenance policy assigns to that driver.
+with cause TREE, outside major event days, per 100 miles of overhead primary in service averaged over the year's
+days); its root-cause clause has a review name the driver that accounts for most of a rise in that rate against the
+three years before the year preceding it, and the right-of-way maintenance policy assigns each driver its programme.
 
 No decoy: no memo, briefing, draft or stakeholder figure argues for a re-bid, a cycle change or the storms; the
 contract register records the handovers as the cooperative's own contract history, the invoices record billing, and
 nothing in the pack names a cause for any district's rise.
 
-No certified replay: no published or certified figure is reproduced to recover a method; the reliability report's
-indices are the rule the rates are computed under, and the driver is estimated from the records.
+No certified replay: no published or certified figure is reproduced to recover a method; the policies file the rate
+and the major event day rule, and the driver is estimated from the records.
 
 Lesson: a rise that begins with a change of provider is read against the outgoing provider's work of the same months
 and on the asset's own clock before it is booked to the newcomer; no build on file teaches vegetation outage
 attribution or a handover read against concurrent outgoing work.
+
+## Readability screen
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0 the district rise against the contract register (re-bid) | no sentence names a cause | the contract register dates the handovers | the event study at a handover | no | no | no | readable |
+| R1 the rise split by each unit's last trimmer, read as faster regrowth (catch-up trimming) | the policy files the cycle | the completions carry the contractor; time since trim is a join to the history | trim-cycle compliance is the field's own KPI | no | no | no | readable |
+| R2 East's units past the cycle alone (catch-up trimming) | the policy files the four-year cycle | past the cycle from the history | the overdue share | no | no | no | readable |
+| R3 South's storms (nothing new) | the policy files major event days, not storms below them | gusts in the weather file | the weather check | no | no | no | readable |
+| R4 North's shift at every time since trim, scaling with the ash within falling distance, sized against East and South (decisive) | no sentence names it; the policy says what trimming clears and what hazard-tree removal reaches | no column separates a growing tree from a falling one; time since trim from the history, ash from the span survey keyed by span then unit | the reflexes (event study, overdue share, storms, the regrowth reading) land on R0 or R1 | no control ties under one reading only | no | no | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "tree-caused outages" | sustained outages (over five minutes) on overhead primary with cause TREE, outside major event days | with secondary and service outages; with major event days; with momentary events | same call | reliability reporting policy 2.1 (asserted for each) |
+| SF2 | "per 100 miles of overhead primary" | miles in service averaged over the year's days, a unit out of service from its retirement date | miles at year end; miles at year start; every unit ever on the register; a unit still in service on its retirement date | same call; the last gives the same one-decimal rates | policy 2.2 and the dictionary's "date the unit leaves service" (asserted) |
+| SF3 | an outage | one device opening: a ticket's restoration-step rows, and a second ticket of a device already open, are one outage | each step row an outage; each ticket an outage | same call (the second tickets fall on major event days, outside the rate; the ticket reading moves only ask B) | reliability policy 2.1, "a device is in one outage at a time", and the dictionary's grain line (asserted) |
+| SF4 | "2025" | the calendar year of the outage's start in local time | UTC start; restoration date | same call | policy 2.1 (asserted) |
+| SF5 | "the rise" | 2025 against the 2021 to 2023 average | against 2024; against 2021 to 2024 | same call | policy 4.1, the root-cause clause (asserted for each) |
+| SF6 | "drove" | the driver accounting for most of the rise | any driver with a material share | same call | policy 4.1, and the prompt asks for one programme |
+| SF7 | each driver's programme | the right-of-way maintenance policy's assignment (units past the cycle: catch-up trimming; trimming below the clearance specification: a re-bid; trees beyond the right-of-way: hazard-tree removal; weather below major event days: nothing new) | none | same call | right-of-way maintenance policy 6 |
+| SF8 | "past the cycle" | more than four years since the unit's last accepted trim | by completion date rather than acceptance; four and a half years | same call | policy 3.1 (asserted) |
+| SF9 | major event days | IEEE 1366 2.5 beta on system daily SAIDI of unplanned sustained outages, the five prior years | with planned outages; the year's own days | same call | reliability reporting policy 3.2 (asserted) |
+| SF10 | a district's outage | the outage's trim unit's district | the member's billing district | same call | the trim-unit register (every unit in one district) |
+
+## Ladder
+
+Measured on the built pack (seed 129227) and asserted in `checks.py`. Grid: the comparison made at the handover
+(district series, split by last trimmer, same time since trim) against the reading of the shift (regrowth, units
+past the cycle, trees beyond the right-of-way); each cell is a named programme.
+
+| Rung | Construction | Files | Killing fact (measured) |
+|---|---|---|---|
+| R0 default | the district rise against the contract register: North 30.2 per 100 miles in 2025 against 11.1 on average over 2021 to 2023, the step starting in 2024 (20.5), the year of North's 1 January handover | a re-bid | each contractor's North units fail at North's 2025 rate for their time since trim (Hollenbeck 443 outages against 440.1 expected, 1.01; Garrity 88 against 89.5, 0.98), and the units each firm first trimmed in 2024 fail alike in 2025 (Hollenbeck 25.7 per 100 miles on 218.0 miles, Garrity 21.2 on 198.0) |
+| R1 | the rise split by last trimmer and read on the regrowth clock as faster regrowth after North's wet 2024 summer (May to September rainfall 22.1 inches against 15.0 on average over 2021 to 2023) | catch-up trimming | the rise is as large within two years of a trim (18.8 per 100 miles) as two to four years after (19.7), where two years of regrowth seldom reach the line, and it climbs with the ash share (4.2, 10.5, 20.3 and 42.0 per 100 miles by quartile of North's units) |
+| R2 | East's units past the cycle (131.2 mile-years in 2025 against 3.5 to 12.3 in 2021 to 2024, failing at 49.5 per 100 miles), sized as the rise | catch-up trimming | North's shift is 0.75 of the cooperative's rise, East's units past the cycle 0.11 |
+| R3 | South's windier 2025 (mean daily peak gust 40.9 mph against 36.3 to 36.8 in 2021 to 2023) | nothing new | South's whole rise is 0.06 of the cooperative's; North's and East's gusts sit at their 2021 to 2023 level |
+| R4 golden | North's shift at every time since trim, climbing with the ash share, sized against East and South | hazard-tree removal | |
+
+Margins, asserted: North's shift at least 0.6 of the rise (0.75); East's units past the cycle between 0.05 and 0.35
+(0.11); South's weather at most 0.25 (0.06); each contractor's standardised ratio within 0.85 to 1.15 and the
+same-months ratio within 0.80 to 1.25 (0.83); North's 2025 rise within a quarter of its mean at every time since trim
+(15.8, 22.2, 21.7 and 17.1 per 100 miles against 19.2) and the rise within two years of a trim 0.96 of the rise two
+to four years after. The default path files the re-bid on the generator's clean truth and on the bundle (R3a); the
+decisive step alone files hazard-tree removal (R3b). Reflexes, asserted: the event study at each handover (re-bid),
+the overdue share (catch-up), the storm check (nothing new for South, no change elsewhere), the regrowth reading
+(catch-up). The call is categorical, so each rung's worth is a different programme; the asks are decoupled from it.
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | sustained TREE outages on overhead primary, outside major event days, 2021 to 2025 | policy 2.1; C1 for secondary and momentary rows (asserted) |
+| 2 | Unit of account | the outage, not the restoration step | dictionary grain line; asserted same call |
+| 3 | Attribution window | the outage's start date, local time | policy 2.1; C1 at the year edges |
+| 4 | As-of dating | the trim history and unit register as of 31 December 2025 | export manifest dates; static after |
+| 5 | Version basis | the unit register as it stood each day (in-service and retirement dates) | policy 2.2 |
+| 6 | Denominator | miles in service averaged over the year's days | policy 2.2; C4 against year-end miles (same call, asserted) |
+| 7 | Weighting | outages over mile-years, pooled within a district | policy 2.2; same call under per-unit means (asserted) |
+| 8 | Window length | 2025 against 2021 to 2023 | policy 4.1; same call against 2024 and 2021 to 2024 (asserted) |
+| 9 | Boundary inclusivity | over five minutes is sustained | policy 2.1; C1, no outage between 5 and 6 minutes moves the call |
+| 10 | Rounding path | rates per 100 miles on unrounded counts and miles | the prompt's rounding sentence; asserted |
+| 11 | Tie-break | none needed: the drivers' shares are apart | C4 |
+| 12 | Maturity and censoring | 2025 complete at the January 2026 export | export manifest; no outage after 31 December |
+| 13 | Order of operations | major event days found on the whole system before the TREE filter | policy 3.2; asserted same call |
+| 14 | Row order | none | asserted over shuffles |
+| 15 | Duplicate resolution | step rows collapse to outages; no outage repeats | C1 |
+| 16 | Identity normalisation | renumbered units carry their district | trim-unit register; asserted |
+| 17 | Netting against gross | none on the call | n/a: no netting enters the call |
+| 18 | Dimensional units | miles everywhere on the call | the register in miles |
+| 19 | Code and status semantics | cause TREE; outage level PRIMARY; trim status ACCEPTED | dictionary; never the stump |
+| 20 | Integerisation | none | n/a: outages are whole by construction |
+| 21 | Clause scope | the root-cause clause covers the cooperative's rate | policy 4.1 |
+| 22 | Forward window contents | the 2027 programme answers the driver of 2025's rise | right-of-way maintenance policy 6 |
+
+## Literal reader
+
+Executing the prompt, the reliability reporting policy (2.1, 2.2, 3.2, 4.1) and the right-of-way maintenance policy
+(3.1, 6) word for word: the rate and the major event days are fixed, the rise is 2025 against 2021 to 2023, and the
+call is the programme the policy assigns to the driver accounting for most of the rise; no sentence names a driver,
+and the records alone separate them. Every alternative in the fork table returns the same call (asserted).
+
+## Oracles
+
+- The trimming contract register: dates the handovers; it ties to every reading and names no cause.
+- The contractor invoices: billing only; they feed one ask and never the call.
+- none ties only under the golden.
+
+## Ask sheet
+
+Three asks, each on rows outside the main call's population or in columns the call never reads, each carrying a
+silent device against the careful solver's path. Figures, stops and deltas are design targets until the build
+measures them; `checks.py` asserts each stop's direction and that the golden sits outside every stop's bin.
+
+**Ask A, contractor billing.** For each trimming contractor, the miles of right-of-way it billed the cooperative for
+trimming done in each quarter of 2025 (2 contractors x 4 quarters, miles to one decimal). H18 home: the audit trail of
+the contractor rival (what each contractor delivered in the year the handover reading blames). Use: the manager
+checks delivered miles before any re-bid. File: `ap_invoices_row_trimming_2024-12_2025-12.csv` (14 columns). Primary device
+(D1, a replay under fresh ids beside genuine pairs): a disputed invoice is voided by a credit memo and re-issued under
+a new invoice number with the same work order, service month and miles, while long work orders are billed in two
+genuine progress invoices. Hazards: the new contractor bills trimming in linear feet, the outgoing one in miles (D3,
+visible in `uom`); non-trimming lines (hazard-tree removal each, herbicide acres, mobilisation lump sums) carry other
+units (D5); the quarter is the service month's, invoices dated the month after (D8). Stops: positive trimming lines
+only (the natural read) overstates every quarter holding a re-issue; one invoice a work order (the over-clean)
+understates every quarter holding a progress invoice; the invoice date's quarter shifts every quarter's miles; the
+golden nets credit memos against their invoices. Realism: accounts payable extracts carry credit memos and re-issued
+invoices, and contractors bill in their own units.
+
+**Ask B, major event day reconciliation.** For each district, how many outages, members interrupted and
+customer-minutes of interruption 2025's major event days took out of the reliability figures (3 districts x 3, whole
+numbers). H18 home: a
+reconciliation of the rates the call reads (what the major event day rule removed). Use: the reliability report's
+footnote. File: `oms_outage_export_2016-2025.csv` (rows on major event days only, outside the call's population).
+Primary device (D6, an event's quantity on every line it covers): customer-minutes come from the restoration steps
+(each step's restored members times the minutes to that step); the outage's total members times its final
+restoration minutes overstates every district. Second device (D1, a resubmission that opens no second case): in storm
+mode the outage system opens a ticket per cluster of member calls, so some device outages carry a second ticket with
+its own number, a start a few minutes apart and the same restoration steps; the policy's outage is one device opening,
+and a device is in one outage at a time (2.1, the WHAT, filed after the stage 4 judge), so the second ticket is the same
+outage, and counting every ticket overstates the outages and members. No column flags the second ticket; the
+generator keeps genuine outages off a device that is already open, so the fold removes exactly the second tickets
+(asserted). Hazards: the reliability figures count
+unplanned sustained outages on primary and secondary alike (a primary-only or TREE-only count understates); planned
+outages are not in them. Stops: every ticket (overstates outages and members), outage-level
+customer-minutes (overstates minutes), primary only and TREE only (understate all three), the golden. Realism: storm-mode duplicates and staged
+restoration are how outage systems record a storm.
+
+**Ask C, miles in service.** For each district, the miles of overhead primary in service at the end of 2025 (3
+districts, miles to one decimal). H18 home: the audit trail of the rate's denominator. Use: the reliability report's
+system description. File: `trim_unit_register.csv` (9 columns). Primary device (D4, absence as the signal, its
+over-clean half): units scheduled for conversion to underground in 2026 already carry their planned retirement date,
+so "retired date blank" drops units still in service on 31 December 2025; the careless read keeps units retired in
+2024 and 2025. Hazard: renumbered units (an old id retired and a new id in service days later). Stops: every overhead
+unit (overstates), blank retirement only (understates), the golden.
+
+**The main population's zero-counts** (asserted in `checks.py`): no second storm-mode ticket, planned outage or major event day
+row among the call's outages; no invoice row in any file the call reads; the survey's re-surveyed and retired spans
+leave every unit's ash share for the years it was in service unchanged (Layer 1, no ask carries them).
+
+**Hazard table.**
+
+| Hazard | Asks moved | Per-ask delta (design target) |
+|---|---|---|
+| retirements and renumbering in the unit register | C | about 2 per cent |
+| restoration steps | B | customer-minutes about 30 per cent |
+| local time against UTC | B | at most a few outages a district |
+
+**Referee:** none; every control ties under every handling.
+
+**Cracker sheet** (the response that lands the call, runs the hygiene battery and executes every filed rule it
+points at):
+
+| Ask figure | Cracker's path | Result |
+|---|---|---|
+| A, outgoing contractor, four quarters | positive trimming lines, units converted, service quarter | miss |
+| A, new contractor, four quarters | the same | miss |
+| B, outages by district | every ticket on the major event days | miss |
+| B, members interrupted by district | every ticket's members on the major event days | miss |
+| B, customer-minutes by district | the outage's members times its final minutes | miss |
+| C, miles by district | overhead units with a blank retirement date | miss |
+
+**Mirror sheet.** The response stopping on R0 or R1 files the same ask values as the cracker (the asks are
+decoupled from the call).
+
+Mirror leakage: 0 per cent of ask weight (every row above misses for the mirror as for the cracker).
+
+Pair ceiling: 31.0 (the one-cracker case at the 0.10 allowance a top response, r about 5: (38 + 7 + 5.5 + 5 + 7 + 5.5) / 2 with the two components banked by both).
+
+## Leak check
+
+`leak.py --asof 2026-01-13`: REVIEW, no LEAK. Each REVIEW line:
+- `reliability_reporting_policy.docx`, six stump-paragraph terms: harmless; they are the policy's own vocabulary, and
+  4.1 files the review's task (name the driver of most of the difference and its programme), never the move.
+- `right_of_way_maintenance_policy.pdf`, six terms: harmless; it defines clearance, the cycle, hazard trees and the
+  programme each driver calls for, as a real policy does, and says nothing about which driver acts.
+- `oms_outage_export_2016-2025.csv`, `device_type` and `device_id`: harmless; outage systems export the device that
+  opened.
+- `trim_unit_register.csv`, dates after 2026-01-13: the allow-list, conversions to underground scheduled for 2026
+  (ask C's device), asserted in `checks.py` (H16).
+- `trimming_contracts_register.xlsx`, dates after 2026-01-13: contract end dates, validity windows.
+
+Isolated reader (stage 4, one read): question 1 none (the nearest sentences, reliability policy 4.1 and right-of-way
+policy 6, file the review's task and the programme each driver calls for, not how to apportion the rise); question 2
+none; question 3 the dictionary and the manifest (the extracts' registers); question 4 none; question 5, policy 2.1,
+2.2 and 3.1 to 3.3 executed literally give 21.9 in 2025 and 11.2 on average over 2021 to 2023, the golden; question
+6 an analytical choice (decomposing the rise into its drivers). Its realism tells, fixed in the generator: every
+original unit in service on 1 January 1968 (each circuit now carries its energising date and some units a later
+extension's); constant peer miles in the statewide survey (now drifting with conversions); the retirement date read
+as exclusive (counting a unit in service on its retirement date gives the same one-decimal rates, asserted under SF2).
+Kept as true to the fiction: three-decimal GIS lengths, round contract unit rates, one extract date for the batch.
+
+Second read (policy 2.1 and the dictionary changed after the judge's pass 1): questions 1, 2 and 4 none, question 3
+the registers; question 5 executes to 21.9 and 11.2 and, under 2.1's "a device is in one outage at a time", folds the
+second tickets as the golden does (North 160, East 123, South 112 outages on 2025's major event days); question 6 an
+analytical choice. Its realism tell, the statewide survey's fourteen peers running alphabetically A to N with smooth
+growth, is fixed: fourteen invented names with uneven initials, none shared with another card, and roughened member
+growth and miles. Its "borderline" on right-of-way policy 6 (the programme each driver calls for tells the solver what
+to test, not which driver wins) is the filed standard the question needs.
+
+## Determinism judge
+
+Pass 1 (`determinism_check_report.md`): DETERMINISTIC, FIX_NOW. Every graded figure and the call reproduced; one fork
+on ask B, a second ticket of a device already open folded or counted (182, 135 and 128 outages against 160, 122 and
+112). Fixed at authority with the WHAT (policy 2.1: a device is in one outage at a time; outages recorded under ticket
+numbers) and in the generator (genuine outages kept off an open device, so the fold removes exactly the second
+tickets, asserted).
+
+Pass 2 (`determinism_check_report_pass2.md`): DETERMINISTIC; the pass-1 fork closed and every figure reproduced (East's
+ask B now 123, 3,559 and 1,203,168). Its FIX_NOW was a solution-block item: block 4 listed the memo's chart as a
+deliverable answer the prompt never asks for; the line is gone, the chart stays in the memo, no figure, prompt or data
+moved, so no third judge. Its ask 1 note (credits ignored, or placed at the credit memo's date) it rates as favouring
+the golden: policy 4.3 bills by the month of the work, and the dictionary's `service_month` (month of the work billed)
+and `applies_to_invoice` (invoice a credit memo reverses) put a credit at the reversed invoice's month; ignoring it
+counts a voided invoice beside its re-issue.
+
+Gate G: `decomposition_attribution`, `analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`.
+Gate H: domain pass, layers pass, decisive_step analytical.
+
+## Pre-ship check
+
+The 10/10 rules re-read against the built pack (seed 129227):
+- Domain: the deciding quantity is the tree-caused outage rate read on the regrowth clock and against the ash within
+  falling distance, each contractor's units against North's rate at the same time since trim; with a hospital's nouns
+  there is no regrowth after a trim, no cleared corridor with trees standing beyond it and nothing dying outside it.
+  Both judge passes: Gate H domain pass.
+- Layer 1 stays Layer 1: restoration-step rows, storm-mode second tickets, audits pending at the extract, renumbered
+  rebuilt units, two survey code lists, mileage changing with conversions, UTC weather, credit memos and linear feet;
+  each mishandling asserted to leave the call (R2, SF1 to SF10), and the second tickets fall on major event days only.
+- Layer 2 decides: the default path files the re-bid on the generator's clean truth and on the bundle (R3a); the
+  decisive step alone files hazard-tree removal (R3b); both reader reads and both judge passes named the decisive step
+  an analytical choice.
+- Gate G: no artifact ranks the programmes; the statewide survey and the AMI blink counts are distractors named in
+  `metadata.json` and unused by the golden route (asserted).
+- Asks decoupled: no ask device in the call's population (the call never reads the invoices; the second tickets sit on
+  major event days), asserted.
+- Figures: `figures_check.py` exit 0; the verifier recomputes every stated figure from the bundle; two builds
+  byte-identical; containers clean.
 
 ## Architecture 1 record (re-rooted 2026-10-14)
 
@@ -627,3 +872,8 @@ Pair ceiling: 33.0 (the one-cracker case at a 0.10 ask allowance per top respons
 - One network-wide vegetation call (draw): the handover read and the regrowth clock would carry a single answer each, so a careful analyst fixing one rung lands the call; three districts with three drivers make each one-story answer wrong somewhere.
 - A utility owner with an executive team or a board deciding (draw): utility_or_infrastructure banned against task459, executive_team against task230 and board_of_directors against task459; the cooperative's manager of operations sets the right-of-way programme inside the approved budget.
 - A UK distribution network operator in a fictional country with ash dieback (draw): the regulator's interruption incentive scheme would have to be described accurately to stay realistic; a United States rural cooperative under IEEE 1366 carries the same mechanism with a public standard.
+- The contractor read on the first seed's cells (stage 3, measured): units each firm first trimmed in 2024 failed 1.29 times apart in 2025 and the firms' rates at one time-since-trim band up to 2.5 times apart, cells of 15 to 25 outages where the truth carries no contractor effect; the memo's comparison moved to each contractor's units against North's 2025 rate at the same time since trim (indirect standardisation over every unit), North grew to 1,800 miles, the circuits' woodland scatter fell from 0.35 to 0.20, and the seed was drawn from a scan of forty against every check.
+- Circuit campaigns started at a uniform random point of the first cycle (stage 3, measured): South had no campaign from May to September 2025, so the outgoing contractor billed nothing in Q3 and the billing ask's cell was an empty zero every reading shared; each district's circuits are now spread evenly over the four-year cycle.
+- Seed 129215 (stage 3, measured): it passed every check then in force, but North's 2025 rise grew with time since trim (16 to 26 per 100 miles, a 2.7 standard-error draw against a flat mean over eight seeds) and would have blurred the decisive chart; the additive check now holds each band within a quarter of the mean rise and the rise within two years of a trim within 0.85 to 1.18 of the rise two to four years after.
+- Credit memos and audit acceptances dated after the 13 January 2026 extract (stage 3, H16): a trim not yet audited at the extract now reads PENDING with no acceptance date, and a late invoice's credit memo follows within the days left before the extract.
+- Policy 2.1's "the outage management system records each outage under an outage number" beside "one device opening" (stage 4, judge pass 1 FIX_NOW): read as one ticket, one outage, it counted the storm-mode second tickets and moved ask B (182, 135 and 128 outages against 160, 122 and 112); 2.1 now files that a device is in one outage at a time and records outages under ticket numbers, the dictionary's grain line says ticket, and eighteen pairs of genuine outages the generator had put on one recloser or breaker at once now take a free device (East's ask B moved to 123 outages; the call and every other figure unchanged).

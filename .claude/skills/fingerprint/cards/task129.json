@@ -11,8 +11,8 @@
   "shape": "07",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Fund hazard-tree removal beyond the right-of-way with the 2027 right-of-way budget increase: the rise in tree-caused outages, from 11.2 per 100 miles of overhead primary on average over 2021 to 2023 to 21.9 in 2025, is mostly ash beyond North's right-of-way falling onto the line.",
+  "answer_source": "task129/submission.md block 1; task129/generator/figures.json (call, rate_2025, rate_base)",
   "gap": [
     "population",
     "time"
@@ -35,8 +35,8 @@
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "row_trim_completions_2015-2025.csv",
-    "rows": 0,
+    "file": "row_trim_completions_2012-2025.csv",
+    "rows": 29820,
     "entity": "one completed trim of one trim unit",
     "grain": "trim unit x trim",
     "source": "synthetic"
@@ -65,10 +65,10 @@
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "A rise is booked to the provider that took over a region's maintenance because it shows on the units that provider serviced, but it arises outside the zone the maintenance touches and scales with a property of each unit's surroundings, so units the outgoing provider serviced in the same months fail alike; read at the same time since servicing and the same surroundings it is a shift no servicing removes, while a second region's rise is servicing that fell behind at its own handover and a third's is weather.",
-  "driver_concrete": "In the North district the tree-outage rise lands on the circuits the new trimming contractor trimmed after taking over on 1 July 2024, but the outages come from ash dying beyond the cleared right-of-way and rise with the ash standing within falling distance of each trim unit at every time since trim, so the units the outgoing contractor trimmed in the same months under its open work orders fail at the same rate; the East district's rise sits on units its April 2025 handover left past the four-year cycle, and the South district's is the year's storms.",
-  "stump": "A competent solver counts each district's tree-caused outages per 100 miles of overhead primary, finds the North and East rises beginning with each trimming-contract handover (North 1 July 2024, East 1 April 2025), and files a re-bid of the trimming contract in both districts and nothing in South; the step that lands it there is booking North's rise to the contractor whose freshly trimmed units carry it, when the outages come from ash dying beyond the right-of-way and the outgoing contractor's units trimmed in the same months fail at the same rate.",
+  "driver_concrete": "In the North district the tree-outage rise lands on the circuits the new trimming contractor trimmed after taking over on 1 January 2024, but the outages come from ash dying beyond the cleared right-of-way and rise with the ash standing within falling distance of each trim unit by the same amount at every time since trim, so the units the outgoing contractor trimmed in the same months under its open work orders fail at the same rate and each contractor's units fail at North's rate for their time since trim; the East district's smaller rise sits on units its April 2025 handover left past the four-year cycle, and the South district's on a windier year.",
+  "stump": "A competent solver counts each district's tree-caused outages per 100 miles of overhead primary, finds North's rise (most of the cooperative's) beginning with its trimming-contract handover on 1 January 2024 and East's with its own on 1 April 2025, and files a re-bid of the trimming contract; the step that lands it there is booking North's rise to the contractor whose freshly trimmed units carry it, when the outages come from ash dying beyond the right-of-way, the rise is as large on units trimmed within two years as on units late in their cycle, and each contractor's units fail at North's rate for their time since trim.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who counts outage events (not restoration steps), drops the IEEE 1366 major event days, rates each district per 100 miles of overhead primary in service, reads the rise against the contract register and checks the storms, files a re-bid of the trimming contract in North and East (each rise began with its handover) and nothing in South.",
+  "analyst_test": "A strong analyst who counts outages (one per device interruption, not restoration steps or storm-mode tickets), drops the IEEE 1366 major event days, rates each district per 100 miles of overhead primary in service, reads the rise against the trimming contract register and checks the storms, files a re-bid of the trimming contract: North carries most of the rise and it began with North's handover.",
   "domain_test": "The deciding quantity is each district's tree-outage rate read the way utility vegetation management reads it, on the regrowth clock (time since each trim unit was last trimmed) and on the trees within falling distance of the line, with the new contractor's work compared against the outgoing contractor's work of the same months; with another field's nouns there is no regrowth since a trim, no cleared right-of-way with trees standing beyond it, and no ash mortality to fall in from outside it.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:handover-rise-read-against-the-outgoing-provider's-concurrent-work-at-the-same-time-since-servicing",
@@ -112,6 +112,6 @@
       "stump": "A competent solver aligns the redesign's cohort-by-cohort switch-on for the joint effect of the ad stack and the framework, separates them with the puzzles pages, which took the header-bidding wrapper alone on one date, and subscribers' ad-free views of the redesigned templates (found through the subscription register), standardises both groups to the ad-supported views' phone mix through the device registry, which closes the joint ramp exactly, and names the ad stack; the step that lands it there is reading each change's cost as one figure per phone class, when the framework costs a view mostly on a device's first load after each release-train deploy and the ad stack mostly on reloads of the cached bundle, and the daily players and daily readers who make up both separating groups are mostly cached reloads while most ad-supported views are first loads, so reweighted to the ad-supported views' first-load share the framework fix brings back the most views a month."
     }
   ],
-  "notes": "Re-root at the author's request (2026-10-14). Personas drawn with guard.py names --locale en_GB --seed 129. The decisive rung is North's: the rise read against the outgoing contractor's concurrent transitional work and the ash within falling distance at the same time since cut; East's backlog and South's storms are the lower rungs a careful analyst also needs.",
+  "notes": "Re-root at the author's request (2026-10-14). Personas drawn with guard.py names --locale en_US --seed 129. The decisive rung is North's: the rise read against the outgoing contractor's concurrent transitional work and the ash within falling distance at the same time since cut; East's backlog and South's storms are the lower rungs a careful analyst also needs. Reshipped 2026-10-14 (architecture 2): seed 129227 drawn from a scan of forty against every check; judge pass 1 FIX_NOW on ask B (ticket fold, closed by policy 2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC; leak reader two reads, question 1 none.",
   "registered": "2026-10-14T04:07:32Z"
 }

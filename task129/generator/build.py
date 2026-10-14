@@ -1,157 +1,143 @@
-"""task129 generator: build the evidence pack.
-
-    python3 task129/generator/build.py [--out DIR] [--record FILE]
-
-Writes DIR/target/ and DIR/metadata.json (DIR defaults to the task folder), asserts every check in
-checks.py on the files as written, scrubs container metadata, normalises mtimes, and fails loudly
-at the first assertion that does not hold."""
-import argparse
-import json
+"""build the pack: the world, the processes, the records, the documents, the two distractors and the manifest"""
+import csv
 import os
-import shutil
-import sys
-from datetime import datetime
 
 import numpy as np
 import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
-sys.path.insert(0, os.path.join(REPO, ".claude", "skills", "reduce-house-fixes", "scripts"))
+import docs
+import params as P
+import records as R
+import sim
+import world as W
 
-import params as P          # noqa: E402
-import spine                # noqa: E402
-import ship                 # noqa: E402
-import docs                 # noqa: E402
-import cdn                  # noqa: E402
-import golden as G          # noqa: E402
-from golden import F        # noqa: E402
-
-PRODUCER = "Sonderaa Medier Digital"
-
-# in-fiction write time of each file (local)
-MTIME = {
-    "spine": "2026-09-05 06:40", "release": "2026-09-04 17:02", "rollout": "2026-08-04 09:12",
-    "changes": "2026-09-04 16:20", "registry": "2026-09-01 08:30", "subs": "2026-09-05 06:55",
-    "editions": "2026-01-12 10:05", "sla": "2025-12-10 14:30", "paywall": "2026-01-05 09:00",
-    "closeout": "2026-09-05 07:02", "cdn": "2026-09-02 05:15",
-    "cdnapp": "2026-06-12 13:20", "guide": "2026-09-04 15:42", "thread": "2026-09-02 11:03",
-    "manifest": "2026-09-05 07:10", "desktop": "2026-09-04 11:20", "amp": "2026-09-03 10:00",
-    "news": "2026-09-01 07:00",
-}
-PDF_STAMP = {"sla": "2025-12-10", "paywall": "2026-01-05", "cdnapp": "2026-06-12"}
-
-
-def rngk(k):
-    return np.random.default_rng([P.SEED, k])
+FILES = dict(
+    outages="oms_outage_export_2016-2025.csv",
+    register="trim_unit_register.csv",
+    completions="row_trim_completions_2012-2025.csv",
+    survey="row_tree_survey_2023-2024.parquet",
+    weather="weather_daily_2016-2025.csv",
+    members="member_counts_2015-2025.csv",
+    invoices="ap_invoices_row_trimming_2024-12_2025-12.csv",
+    contracts="trimming_contracts_register.xlsx",
+    row_policy="right_of_way_maintenance_policy.pdf",
+    rel_policy="reliability_reporting_policy.docx",
+    dictionary="data_dictionary.xlsx",
+    manifest="export_manifest.csv",
+    benchmark="statewide_cooperative_reliability_2020-2024.csv",
+    ami="ami_momentary_events_2025.csv",
+)
+DISTRACTORS = ("benchmark", "ami")
 
 
-def write_pack(out):
-    tgt = os.path.join(out, "target")
-    if os.path.isdir(tgt):
-        shutil.rmtree(tgt)
-    os.makedirs(tgt)
-    p = lambda k: os.path.join(tgt, F[k])
-    R = spine.build(np.random.default_rng(P.SEED))
-    ship.spine(R["S"], p("spine"))
-    ship.registry(p("registry"))
-    ship.editions(p("editions"))
-    rel = ship.release_log(rngk(1), R["dep"], p("release"))
-    ship.rollout_log(rel, p("rollout"))
-    ship.subscriptions(rngk(2), R["dev"], p("subs"))
-    ship.change_register(rel, p("changes"))
-    L0 = {"spine": pd.read_parquet(p("spine"))}
-    for k in ["release", "registry", "subs", "editions"]:
-        L0[k] = pd.read_csv(p(k), keep_default_na=False, dtype=str)
-    v = G.views(L0)
-    ship.closeout(ship.closeout_table(v), p("closeout"))
-    daily = v.groupby(v.day.dt.date).w.sum()
-    ship.cdn_file(cdn.delivery_log(rngk(4), daily), p("cdn"))
-    docs.service_level(p("sla"))
-    docs.paywall(p("paywall"))
-    docs.vendor_appendix(p("cdnapp"))
-    docs.field_guide(p("guide"))
-    docs.thread(p("thread"))
-    docs.desktop_summary(rngk(6), p("desktop"))
-    docs.amp_report(rngk(7), p("amp"))
-    docs.newsletter_sends(rngk(8), p("news"))
-    names = [F[k] for k in F]
-    docs.manifest(p("manifest"), names)
-    scrub(tgt)
-    return tgt, R
+def write_csv(path, df):
+    df.to_csv(path, index=False, lineterminator="\n", quoting=csv.QUOTE_MINIMAL)
+    return len(df)
 
 
-def scrub(tgt):
-    import scrub_producer_metadata as S
-    for k, stamp in PDF_STAMP.items():
-        S.scrub_pdf(os.path.join(tgt, F[k]), PRODUCER, stamp, floor="2025-11-01",
-                    ceiling="2026-09-07")
+def write_parquet(path, df):
+    t = pa.Table.from_pandas(df, preserve_index=False)
+    pq.write_table(t, path, compression="snappy", use_dictionary=True, write_statistics=False)
+    return len(df)
 
 
-def set_mtimes(tgt):
-    for k, when in MTIME.items():
-        ts = pd.Timestamp(when).tz_localize(P.TZ).timestamp()
-        os.utime(os.path.join(tgt, F[k]), (ts, ts))
+def run(target):
+    ss = np.random.SeedSequence(P.SEED).spawn(10)
+    r = [np.random.default_rng(s) for s in ss]
+    U = W.energised(W.network(r[0]))
+    U = W.changes(U, r[1])
+    M = W.members(r[2])
+    S = W.survey(U, r[3])
+    dens = W.ash_density(S, U)
+    Wx = sim.weather(r[4])
+    T = sim.trims(U, r[5])
+    O = sim.outages(U, T, Wx, dens, M, r[6])
+    X, K = R.outage_export(O, r[7])
+    I = R.invoices(T, U, r[8])
+    counts = {}
+    f = lambda k: os.path.join(target, FILES[k])
+    counts["outages"] = write_csv(f("outages"), X)
+    counts["register"] = write_csv(f("register"), R.unit_register(U))
+    counts["completions"] = write_csv(f("completions"), R.completions(T, r[9]))
+    counts["survey"] = write_parquet(f("survey"), R.survey_rows(S))
+    counts["weather"] = write_csv(f("weather"), R.weather_rows(Wx))
+    Mo = M.rename(columns={"members": "members_at_year_end"})
+    counts["members"] = write_csv(f("members"), Mo)
+    counts["invoices"] = write_csv(f("invoices"), I)
+    counts["benchmark"] = write_csv(f("benchmark"), distractor_benchmark(np.random.default_rng(P.SEED + 61)))
+    counts["ami"] = write_csv(f("ami"), distractor_ami(X, U, np.random.default_rng(P.SEED + 62)))
+    facts = docs.write_all(target, FILES, U, T, M)
+    counts.update(facts.get("counts", {}))
+    write_manifest(f("manifest"), counts)
+    return dict(U=U, M=M, S=S, dens=dens, Wx=Wx, T=T, O=O, X=X, K=K, I=I, counts=counts, facts=facts)
 
 
-def metadata(out, tgt):
-    files = []
-    fmts = set()
-    biggest, rows = None, 0
-    for name in sorted(os.listdir(tgt)):
-        ext = name.rsplit(".", 1)[1]
-        fmts.add(ext)
-        path = os.path.join(tgt, name)
-        n = None
-        if ext == "parquet":
-            import pyarrow.parquet as pq
-            n = pq.ParquetFile(path).metadata.num_rows
-        elif ext == "csv":
-            n = sum(1 for _ in open(path, encoding="utf-8")) - 1
-        if n and n > rows:
-            biggest, rows = name, n
-        files.append({"path": name, "format": ext, "bytes": os.path.getsize(path), "rows": n,
-                      "source": "Constructed for this task: fictional regional news group "
-                                "Sønderå Medier; no third-party data",
-                      "date": "2026-09-05", "license": "CC0-1.0 (original work)"})
-    meta = {
-        "task": "task129",
-        "title": "Which shipped change the operations squad fixes in Q4",
-        "domain": "Business & Operations Analytics",
-        "subdomain": "service-operations-sla",
-        "objective": "Root-Cause Analysis",
-        "prompt_shape": "11 (before and after with a control)",
-        "as_of": P.AS_OF.isoformat(),
-        "deliverables": ["q4_squad_call.pptx", "q4_squad_call_workings.xlsx"],
-        "distractor_files": [F[k] for k in G.DISTRACTORS],
-        "input_gates": {"files": len(files), "formats": sorted(fmts), "largest_file": biggest,
-                        "largest_file_rows": rows},
-        "files": files,
+def distractor_benchmark(rng):
+    """the state cooperative association's yearly reliability survey of its member cooperatives: each cooperative's
+    reported indices as it filed them, excluding major event days by its own method"""
+    names = ["Brask Valley Electric Cooperative", "Callender Bend REC", "Corvell County Electric",
+             "Dunsford Rural Electric", "Gorrell Valley Electric", "Harrow Fork Electric Cooperative",
+             "Lomax Prairie Electric", "Merrin County Power", "Orlen Rural Electric", "Pinnow River Electric",
+             "Quarry Bend Electric", "Sallow Creek Cooperative", "Selden Hills REC", "Yarrow Plains Electric"]
+    rows = []
+    for n in names:
+        mi = rng.uniform(900, 5200)
+        mem = mi * rng.uniform(3.2, 8.5)
+        base_saidi = rng.uniform(95, 260)
+        base_saifi = rng.uniform(0.9, 2.4)
+        tree = rng.uniform(0.18, 0.46)
+        for y in range(2020, 2025):
+            f = float(np.exp(rng.normal(0, 0.12)))
+            mi_y = mi * (1 - 0.003 * (y - 2020)) * float(np.exp(rng.normal(0, 0.004)))   # conversions to underground
+            mem_y = mem * (1 + rng.uniform(0.002, 0.016)) ** (y - 2020) * float(np.exp(rng.normal(0, 0.004)))
+            rows.append((n, y, int(mem_y), round(mi_y, 0), round(base_saidi * f, 1),
+                         round(base_saifi * f ** 0.6, 2), round(tree * float(np.exp(rng.normal(0, 0.1))), 3)))
+    return pd.DataFrame(rows, columns=["cooperative", "year", "members", "overhead_miles", "saidi_minutes_excl_med",
+                                       "saifi_excl_med", "tree_share_of_saidi"])
+
+
+def distractor_ami(X, U, rng):
+    """meter last-gasp and restore pairs under five minutes (blinks) the AMI head end counted by circuit and month in
+    2025: what members saw of the reclosers' momentary operations"""
+    X = X.drop_duplicates("outage_id")
+    st = pd.to_datetime(X.start_local)
+    en = pd.to_datetime(X.step_restored_local)
+    mom = X[((en - st).dt.total_seconds() <= 300) & (st.dt.year == 2025)]
+    mom = mom.assign(month=pd.to_datetime(mom.start_local).dt.month)
+    g = mom.groupby(["circuit", "month"]).members_out.sum()
+    circuits = sorted(U.circuit.unique())
+    rows = []
+    for c in circuits:
+        meters = int(U[(U.circuit == c)].miles.sum() * 4.3)
+        for m in range(1, 13):
+            base = g.get((c, m), 0)
+            rows.append((c, "2025-%02d" % m, meters, int(base * rng.uniform(0.85, 1.0) + rng.poisson(meters * 0.03))))
+    return pd.DataFrame(rows, columns=["circuit", "month", "meters_reporting", "blink_events"])
+
+
+def write_manifest(path, counts):
+    desc = {
+        "outages": ("Outage management system", "Every outage opened from 1 January 2016 to 31 December 2025, one row per restoration step"),
+        "register": ("Engineering GIS", "Trim units of overhead primary with in-service and retirement dates"),
+        "completions": ("Right-of-way work order system", "Trimming completions and audit results from 2012"),
+        "survey": ("Forestry survey tool", "Trees within falling distance of each span, 2023 survey and 2024 re-survey of rebuilt lines"),
+        "weather": ("Weather station network", "Daily peak gust and precipitation at the three district stations"),
+        "members": ("Member services", "Members served at the end of each year by district"),
+        "invoices": ("Accounts payable", "Right-of-way trimming invoices and credit memos for service December 2024 to December 2025"),
+        "contracts": ("Purchasing", "Trimming contracts by district"),
+        "row_policy": ("Operations", "Right-of-way maintenance policy"),
+        "rel_policy": ("Engineering", "Reliability reporting policy"),
+        "dictionary": ("Engineering", "Field definitions for the exports"),
+        "benchmark": ("State cooperative association", "Member cooperatives' reported reliability indices, 2020 to 2024"),
+        "ami": ("AMI head end", "Meter-level momentary interruptions (blinks) by circuit and month, 2025"),
     }
-    with open(os.path.join(out, "metadata.json"), "w", encoding="utf-8") as f:
-        json.dump(meta, f, ensure_ascii=False, indent=1)
-        f.write("\n")
-    return meta
-
-
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default=os.path.abspath(os.path.join(HERE, "..")))
-    ap.add_argument("--record", default=None)
-    ap.add_argument("--no-checks", action="store_true")
-    a = ap.parse_args()
-    tgt, R = write_pack(a.out)
-    meta = metadata(a.out, tgt)
-    if not a.no_checks:
-        import checks
-        rec = checks.run(a.out, tgt, R, meta)
-        if a.record:
-            with open(a.record, "w") as f:
-                json.dump(rec, f, indent=1, default=str)
-    set_mtimes(tgt)
-    print("build ok:", tgt)
-
-
-if __name__ == "__main__":
-    main()
+    rows = []
+    for k, f in FILES.items():
+        if k == "manifest":
+            continue
+        src, what = desc[k]
+        rows.append((f, src, what, counts.get(k, ""), "2026-01-13"))
+    df = pd.DataFrame(rows, columns=["file", "source_system", "contents", "rows", "extracted"])
+    df.to_csv(path, index=False, lineterminator="\n")

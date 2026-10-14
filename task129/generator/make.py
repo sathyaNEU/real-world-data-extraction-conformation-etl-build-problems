@@ -1,84 +1,181 @@
-"""Build task129 into its task folder: the pack under target/, every check, the goldens under golden/,
-generator/figures.json and metadata.json, the independent verifier, a second pack build into a scratch folder
-compared byte for byte, then target.zip cut from the final build.
+"""Build the pack, compute every owed figure, write the goldens, figures.json and metadata.json, run the checks and the
+independent verifier, rebuild into a scratch folder and require byte-identical output, then cut target.zip.
 
-    python3 task129/generator/make.py
+    python3 task129/generator/make.py            (full: two builds, the zip)
+    python3 task129/generator/make.py --once     (one build, no zip)
 """
+import datetime as dt
 import hashlib
 import json
 import os
 import shutil
-import subprocess
 import sys
 import tempfile
 import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import build as B      # noqa: E402
-import checks as C     # noqa: E402
-import deliver as DV   # noqa: E402
+import build as B
+import estim as E
+import golden as GD
+import params as P
 
 TASK = os.path.dirname(HERE)
-STAMP = (2026, 9, 5, 7, 10, 0)
+TARGET = os.path.join(TASK, "target")
+GOLDEN = os.path.join(TASK, "golden")
+STAMP = (2026, 1, 13, 17, 30, 0)
+
+
+def answers(target):
+    D = E.load(target)
+    rt = E.rates(D)
+    comp = E.components(rt)
+    ev = E.evidence(D)
+    call = E.golden_call(ev)
+    dflt, rise = E.default_path(D, rt)
+    med, med_days = E.ask_med(D)
+    A = dict(call=call, programme=E.PROGRAMMES[call], default=dflt, rates=rt, comp=comp, rise=rise,
+             shares=ev["shares"], by_band=ev["by_band"], by_con_band=ev["by_con_band"], same=ev["same"], std=ev["std"],
+             by_ash=ev["by_ash"], young=ev["young"], billing=E.ask_billing(D), med=med, med_days=med_days,
+             miles=E.ask_miles(D))
+    return A, D, ev
+
+
+def f1(x):
+    return "{:,.1f}".format(x)
+
+
+def figures(A):
+    fig = {
+        "call": A["programme"],
+        "rate_2025": f1(A["comp"]["rate_2025"]),
+        "rate_base": f1(A["comp"]["rate_base"]),
+        "district_rates": {d: {str(y): f1(A["rates"][y][d]) for y in range(2021, 2026)} for d in E.DISTRICTS},
+        "billing": {"%s %s" % (v, q): f1(x) for (v, q), x in A["billing"].items()},
+        "med": {d: {"outages": "{:,}".format(A["med"][d][0]), "members": "{:,}".format(A["med"][d][1]),
+                    "customer_minutes": "{:,}".format(A["med"][d][2])} for d in E.DISTRICTS},
+        "med_days": [d.strftime("%-d %B %Y") for d in A["med_days"]],
+        "miles": {d: f1(A["miles"][d]) for d in E.DISTRICTS},
+        "years": ["2021", "2022", "2023", "2024", "2025", "2027"], "cycle_years": "4", "per": "100",
+        "minutes": "5", "beta": "2.5", "five_years": "5", "standard": "IEEE 1366", "quarters": ["Q1", "Q2", "Q3", "Q4"],
+        "handovers": ["1 January 2024", "1 April 2025"], "clauses_cited": ["2.1", "2.2", "3.1", "3.2", "3.3", "4.1",
+                                                                            "3.1", "6.1", "6.2", "6.3", "6.4"],
+        "north_rate_2025": f1(A["rates"][2025]["North"]),
+        "north_rate_base": f1(sum(A["rates"][y]["North"] for y in E.BASE) / 3.0),
+        "north_young_shift": f1(A["young"]["North"]),
+        "contractor_ratio": {c: "{:.2f}".format(A["std"][c][2]) for c in A["std"]},
+    }
+    with open(os.path.join(HERE, "figures.json"), "w") as fh:
+        json.dump(fig, fh, indent=1, ensure_ascii=False)
+        fh.write("\n")
+    return fig
+
+
+def metadata(target):
+    files = []
+    for k, f in B.FILES.items():
+        p = os.path.join(target, f)
+        rows = None
+        if f.endswith(".csv"):
+            rows = sum(1 for _ in open(p, encoding="utf-8")) - 1
+        elif f.endswith(".parquet"):
+            import pyarrow.parquet as pq
+            rows = pq.ParquetFile(p).metadata.num_rows
+        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
+                      "source": "Constructed (seeded generator)", "date": "2026-01-13",
+                      "license": "CC0-1.0 (original work)"})
+    big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
+    meta = {
+        "task": "task129",
+        "title": "What drove a rural electric cooperative's 2025 rise in tree-caused outages, and which right-of-way "
+                 "programme the 2027 budget increase funds",
+        "domain": "Energy Systems & Utilities",
+        "subdomain": "grid reliability and outage analysis (vegetation outage root cause on overhead primary)",
+        "objective": "Root-Cause Analysis",
+        "prompt_shape": "07: the call over four programmes with the cooperative's rate, then grids of contractor x quarter "
+                        "billing, district x major-event-day outages, members and customer-minutes, and district miles",
+        "as_of": "2026-01-13",
+        "deliverables": [GD.DOCX, GD.XLSX],
+        "distractor_files": [B.FILES[k] for k in B.DISTRACTORS],
+        "field_terms": [],
+        "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
+                        "largest_file": big["path"], "largest_file_rows": big["rows"]},
+        "sources": [{"files": "all files under target/",
+                     "origin": "generated by task129/generator/make.py (seeded, deterministic) around a fictional rural "
+                               "electric cooperative in a fictional United States county; no real person, member, "
+                               "contractor or utility is depicted. IEEE Std 1366 is cited by name for its major event "
+                               "day method, which the cooperative's policy restates in its own words.",
+                     "date": "2026-01-13", "license": "CC0-1.0 (original work)"}],
+        "created": "2026-10-14",
+        "generator": "task129/generator/make.py",
+        "files": files,
+    }
+    with open(os.path.join(TASK, "metadata.json"), "w") as fh:
+        json.dump(meta, fh, indent=2)
+        fh.write("\n")
+
+
+def stamp(folder):
+    t = dt.datetime(*STAMP, tzinfo=dt.timezone.utc).timestamp()
+    for f in os.listdir(folder):
+        os.utime(os.path.join(folder, f), (t, t))
 
 
 def digest(folder):
-    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest()
-            for f in sorted(os.listdir(folder))}
+    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in sorted(os.listdir(folder))}
 
 
 def cut_zip():
     zp = os.path.join(TASK, "target.zip")
-    tgt = os.path.join(TASK, "target")
-    with zipfile.ZipFile(zp, "w") as z:
-        for f in sorted(os.listdir(tgt)):
+    with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
+        for f in sorted(os.listdir(TARGET)):
             zi = zipfile.ZipInfo(f, date_time=STAMP)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
-            z.writestr(zi, open(os.path.join(tgt, f), "rb").read())
+            z.writestr(zi, open(os.path.join(TARGET, f), "rb").read())
     return zp
 
 
-def main():
-    tgt, R = B.write_pack(TASK)
-    meta = B.metadata(TASK, tgt)
-    rec = C.run(TASK, tgt, R, meta)
-    B.set_mtimes(tgt)
-    A, fig = DV.write(rec, os.path.join(TASK, "golden"), os.path.join(HERE, "figures.json"))
-    tmp = tempfile.mkdtemp(prefix="t129rec")
-    recp = os.path.join(tmp, "record.json")
-    with open(recp, "w") as fh:
-        json.dump(rec, fh, default=str)
-    v = subprocess.run([sys.executable, os.path.join(HERE, "verify.py"), tgt, "--record", recp],
-                       capture_output=True, text=True)
-    print(v.stdout.strip().splitlines()[-2] if v.stdout.strip() else v.stderr[-2000:])
-    if v.returncode != 0:
-        print(v.stdout[-4000:])
-        raise SystemExit("verify failed")
-    # second build: the pack, the goldens from the same record, compared byte for byte
-    t2 = tempfile.mkdtemp(prefix="t129b2")
-    tgt2, _ = B.write_pack(t2)
-    B.set_mtimes(tgt2)
-    g2 = os.path.join(t2, "golden")
-    DV.write(rec, g2, os.path.join(t2, "figures.json"))
-    same_t = digest(tgt) == digest(tgt2)
-    same_g = digest(os.path.join(TASK, "golden")) == digest(g2)
-    same_f = open(os.path.join(HERE, "figures.json"), "rb").read() == open(os.path.join(t2, "figures.json"), "rb").read()
-    shutil.rmtree(t2)
-    shutil.rmtree(tmp)
-    if not (same_t and same_g and same_f):
-        raise SystemExit("second build differs: target %s, golden %s, figures %s" % (same_t, same_g, same_f))
-    zp = cut_zip()
-    with zipfile.ZipFile(zp) as z:
-        inside = {i.filename: hashlib.sha256(z.read(i.filename)).hexdigest() for i in z.infolist()}
-    if inside != digest(tgt):
-        raise SystemExit("target.zip differs from target/")
-    print("two builds byte-identical (%d target files, %d golden files, figures.json); target.zip sha256 %s" % (
-        len(inside), len(os.listdir(os.path.join(TASK, "golden"))), hashlib.sha256(open(zp, "rb").read()).hexdigest()[:16]))
-    print(json.dumps({"call": fig["call"], "views": fig["call_views_month"], "runner_up": fig["runner_up"],
-                      "runner_views": fig["runner_up_views_month"]}, ensure_ascii=False))
+def fresh(folder):
+    if os.path.isdir(folder):
+        for f in os.listdir(folder):
+            os.remove(os.path.join(folder, f))
+    os.makedirs(folder, exist_ok=True)
+
+
+def main(second=True, checks=True):
+    fresh(TARGET)
+    res = B.run(TARGET)
+    stamp(TARGET)
+    A, D, ev = answers(TARGET)
+    fresh(GOLDEN)
+    GD.write(GOLDEN, A)
+    stamp(GOLDEN)
+    fig = figures(A)
+    metadata(TARGET)
+    if checks:
+        import checks as C
+        n = C.run(TARGET, GOLDEN, res, A, D, ev)
+        print("checks: %d passed" % n)
+        import verify as V
+        V.main(TARGET, os.path.join(HERE, "figures.json"))
+    if second:
+        tmp = tempfile.mkdtemp(dir=os.environ.get("TMPBUILD"))
+        t2, g2 = os.path.join(tmp, "target"), os.path.join(tmp, "golden")
+        os.makedirs(t2)
+        B.run(t2)
+        stamp(t2)
+        os.makedirs(g2)
+        GD.write(g2, answers(t2)[0])
+        stamp(g2)
+        d1, d2 = digest(TARGET), digest(t2)
+        assert d1 == d2, [f for f in d1 if d1[f] != d2.get(f)]
+        assert digest(GOLDEN) == digest(g2), "golden differs between builds"
+        shutil.rmtree(tmp)
+        zp = cut_zip()
+        print("byte-identical; target.zip sha256", hashlib.sha256(open(zp, "rb").read()).hexdigest())
+    return A, fig
 
 
 if __name__ == "__main__":
-    main()
+    main(second="--once" not in sys.argv, checks="--nochecks" not in sys.argv)

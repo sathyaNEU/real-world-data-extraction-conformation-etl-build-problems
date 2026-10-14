@@ -1,68 +1,108 @@
 {
- "I": {
-  "April": {
-   "kb_per_view": "710",
-   "requests_per_view": "12.2"
+ "call": "hazard-tree removal beyond the right-of-way",
+ "rate_2025": "21.9",
+ "rate_base": "11.2",
+ "district_rates": {
+  "North": {
+   "2021": "11.6",
+   "2022": "11.2",
+   "2023": "10.4",
+   "2024": "20.5",
+   "2025": "30.2"
   },
-  "August": {
-   "kb_per_view": "790",
-   "requests_per_view": "12.6"
+  "East": {
+   "2021": "11.9",
+   "2022": "11.7",
+   "2023": "8.7",
+   "2024": "10.7",
+   "2025": "17.1"
   },
-  "July": {
-   "kb_per_view": "760",
-   "requests_per_view": "12.3"
-  },
-  "June": {
-   "kb_per_view": "770",
-   "requests_per_view": "12.5"
-  },
-  "March": {
-   "kb_per_view": "530",
-   "requests_per_view": "11.4"
-  },
-  "May": {
-   "kb_per_view": "750",
-   "requests_per_view": "12.4"
+  "South": {
+   "2021": "11.8",
+   "2022": "12.0",
+   "2023": "11.4",
+   "2024": "12.4",
+   "2025": "14.2"
   }
  },
- "T": {
-  "Brand web fonts": {
-   "Kærby Dagblad": "80,000",
-   "Lindå Avis": "80,000",
-   "Sønderå Tidende": "110,000"
+ "billing": {
+  "Hollenbeck Line Clearance, Inc. Q1": "66.5",
+  "Hollenbeck Line Clearance, Inc. Q2": "80.9",
+  "Hollenbeck Line Clearance, Inc. Q3": "84.4",
+  "Hollenbeck Line Clearance, Inc. Q4": "56.6",
+  "Garrity Vegetation Services, LLC Q1": "94.7",
+  "Garrity Vegetation Services, LLC Q2": "136.3",
+  "Garrity Vegetation Services, LLC Q3": "114.9",
+  "Garrity Vegetation Services, LLC Q4": "178.5"
+ },
+ "med": {
+  "North": {
+   "outages": "160",
+   "members": "5,956",
+   "customer_minutes": "1,821,820"
   },
-  "Consent banner": {
-   "Kærby Dagblad": "110,000",
-   "Lindå Avis": "140,000",
-   "Sønderå Tidende": "180,000"
+  "East": {
+   "outages": "123",
+   "members": "3,559",
+   "customer_minutes": "1,203,168"
   },
-  "Image pipeline": {
-   "Kærby Dagblad": "90,000",
-   "Lindå Avis": "110,000",
-   "Sønderå Tidende": "130,000"
+  "South": {
+   "outages": "112",
+   "members": "3,598",
+   "customer_minutes": "1,150,972"
   }
  },
- "call": "Bølge front end",
- "call_views_month": "1,460,000",
- "default_path": {
-  "A": "1,230,000",
-  "C": "800,000"
+ "med_days": [
+  "18 June 2025",
+  "9 December 2025"
+ ],
+ "miles": {
+  "North": "1,773.3",
+  "East": "1,237.8",
+  "South": "1,138.3"
  },
- "first_view_share_pct": {
-  "base": "75",
-  "puz": "24",
-  "sub": "23"
- },
- "five": {
-  "Brand web fonts": "270,000",
-  "Bølge front end": "1,460,000",
-  "Consent banner": "430,000",
-  "Header-bidding ad stack": "610,000",
-  "Image pipeline": "330,000"
- },
- "joint_points": "4.74",
- "puzzles_step_views": "160,000",
- "raw_points": "4.27",
- "runner_up": "Header-bidding ad stack",
- "runner_up_views_month": "610,000"
+ "years": [
+  "2021",
+  "2022",
+  "2023",
+  "2024",
+  "2025",
+  "2027"
+ ],
+ "cycle_years": "4",
+ "per": "100",
+ "minutes": "5",
+ "beta": "2.5",
+ "five_years": "5",
+ "standard": "IEEE 1366",
+ "quarters": [
+  "Q1",
+  "Q2",
+  "Q3",
+  "Q4"
+ ],
+ "handovers": [
+  "1 January 2024",
+  "1 April 2025"
+ ],
+ "clauses_cited": [
+  "2.1",
+  "2.2",
+  "3.1",
+  "3.2",
+  "3.3",
+  "4.1",
+  "3.1",
+  "6.1",
+  "6.2",
+  "6.3",
+  "6.4"
+ ],
+ "north_rate_2025": "30.2",
+ "north_rate_base": "11.1",
+ "north_young_shift": "18.8",
+ "contractor_ratio": {
+  "Hollenbeck Line Clearance, Inc.": "1.01",
+  "Garrity Vegetation Services, LLC": "0.98"
+ }
 }
