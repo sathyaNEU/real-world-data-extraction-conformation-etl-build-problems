@@ -11,8 +11,8 @@
   "shape": "single-figure",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Building permits will add 13,000 net new homes on the lots in the Ridgemont Line transit-oriented area order over 2027 to 2031: 2,800 in 2027, 2,700 in 2028, 2,600 in 2029, 2,500 in 2030 and 2,400 in 2031.",
+  "answer_source": "task134/submission.md block 1; task134/golden/tod_housing_target_2027-31.xlsx; generator/figures.json",
   "gap": [
     "population",
     "time"
@@ -36,8 +36,8 @@
   "role_family": "policy_adviser",
   "scoring_unit": "per certified output",
   "spine": {
-    "file": "roll_extracts_2014-2026.csv",
-    "rows": 0,
+    "file": "roll_extract_2014-2018.csv and roll_extract_2019-2026.csv",
+    "rows": 168000,
     "entity": "one folio (a legal lot, or a strata lot in a strata plan) on one year's assessment roll",
     "grain": "folio x roll year",
     "source": "synthetic (constructed in the layout of a BC Assessment roll extract)"
@@ -46,7 +46,7 @@
   "forcing_event": "statutory_or_regulatory_filing",
   "org_family": "government_agency",
   "world": {
-    "geography": "Canada, British Columbia (a fictional suburban city on a fictional rapid transit line)",
+    "geography": "Canada, British Columbia (a fictional suburban city of about 640,000 on a fictional rapid transit line)",
     "currency": "CAD",
     "org_type": "provincial housing ministry (housing targets branch) setting a municipal housing target order",
     "invented_names": [
@@ -56,11 +56,13 @@
       "Pell Road",
       "Ellery",
       "Westerly",
+      "Haldane",
       "North Calder",
       "Ravensdale",
       "Fernlea",
+      "Kerslake Road",
       "Halvorsen Land Economics",
-      "Corvane Cost Consulting"
+      "Brockmore Cost Consulting"
     ],
     "people": [
       "Tonya Bartlett",
@@ -71,29 +73,29 @@
   },
   "deliverables": [
     "tod_housing_target_2027-31.xlsx",
-    "tod_permits_2022-26.png"
+    "tod_completions_2022-26.png"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "The forward yield of a raised allowance is each unit's chance of being rebuilt, nil until the best-paying option the allowance permits is worth more than what stands there and then the steady rate units of its kind have shown once rebuilding paid, times that option's output, which past a cost step in the construction method stays below the allowance; the allowance's capacity at a past change's take-up, a model on the visible attributes, or the option the allowance names all miss it.",
-  "driver_concrete": "Under the 2027 transit-area order a lot is rebuilt only once the building that pays best, priced from the market study's values and the cost guide's costs, is worth more than the assessed value of what stands on it, and then at the rate lots of its kind (houses, commercial sites, rental apartments) have shown since 2014 once rebuilding paid; at the four suburban stations concrete towers never pay, so the 4.0 and 5.0 FAR tiers yield the same six-storey wood frame as the 3.0 tier, and zoned capacity at the 2018 corridor rezoning's take-up overstates the yield.",
-  "stump": "A strong solver takes each transit-area lot's capacity under the order (lot area times its tier's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the 2018 corridor rezoning has delivered each year, and files about 2,800 net new homes a year for 2027 to 2031 against about 2,050 falling to 1,750; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.",
+  "driver_concrete": "Under the 2027 transit-area order a lot is rebuilt only once the building that pays best, priced from the reference tables' sale values and all-in costs, is worth more than the assessed value of what stands on it, and then at the rate lots of its kind (houses 3.0, commercial sites 8.5, rental buildings 2.0 per cent a year) have shown since 2014 once rebuilding paid, each lot once; at the four suburban stations concrete towers never pay, so the 4.0 and 5.0 FAR bands yield the same six-storey wood frame as the 3.0 band, and zoned capacity at the corridors' take-up since their 2013 rezoning overstates the yield.",
+  "stump": "A strong solver takes each transit-area lot's capacity under the order (lot area times its band's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the corridors have delivered each year since their 2013 rezoning, and files about 4,100 net new homes a year, 20,400 over 2027 to 2031, against 13,000 falling from 2,800 to 2,400; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stitches the two roll layouts, links permits to lots through the folio history and reads the order's tiers and the target methodology correctly computes zoned capacity on the transit-area lots and applies the take-up the 2018 corridor rezoning has shown, filing about 2,800 net new homes a year; only each lot's feasibility at the building that pays best, and the rate feasible lots of each kind have redeveloped, gives about 2,050 falling to 1,750.",
+  "analyst_test": "A strong analyst who stitches the two roll layouts, links permits to lots through the folio history and reads the order's bands and the target methodology correctly computes zoned capacity on the transit-area lots and applies the take-up the corridors have shown since their 2013 rezoning, filing about 4,100 net new homes a year (20,400 over 2027 to 2031); only each lot's feasibility at the building that pays best, and the rate feasible lots of each kind have redeveloped, gives 13,000, falling from 2,800 to 2,400.",
   "domain_test": "The deciding quantity is the housing a rezoning will actually produce, which urban land economics estimates lot by lot from development feasibility (the residual land value of the best-paying permitted building against the value of the existing use) and the observed redevelopment rate of sites once feasible; with another field's nouns there is no residual land value, no construction-type cost step and no existing use for a new building to outbid.",
   "layer2_family": "field_method",
   "layer2_pattern": "urban-regional-science/land-use-spatial-development-modeling/2",
   "layer1": [
-    "assessment roll extracts in two layouts, a 2019 schema change renaming and splitting the value columns, with lot area in square feet for most folios and in acres for the larger ones",
-    "folios retired and new folios created when lots are consolidated or subdivided, linked only through a folio history table",
-    "strata plans carried as one folio per strata lot, each with its own assessed value",
-    "building permits keyed by civic address and one or more folio numbers, a consolidated site's permit listing every folio it spans",
-    "floor area recorded in square feet before the permit system's 2020 metric switch and in square metres after",
+    "assessment roll extracts in two layouts, a 2019 schema change renaming columns and replacing actual use codes with use groups, with lot area in square feet for most folios and in acres for the few of an acre or more",
+    "zone codes on the roll as at the roll's valuation date, renamed in the 2020 bylaw consolidation",
+    "folios retired and new folios created when strata plans are deposited, with remainder parcels for phased projects, linked only through a folio history",
+    "strata plans carried as one folio per strata lot within the station areas, stalls among them, and as one summary record per plan elsewhere",
+    "building permits keyed by folio, floor area in square feet before the permit system's 2020 metric switch and in square metres after",
     "demolished homes recorded both on the new-building permit and on a separate demolition permit for the same lot",
     "permits cancelled, expired or superseded by a revised permit after issue",
-    "secondary suites and laneway homes permitted under their own permit types",
-    "zone codes on the roll as in force at the roll's valuation date, renamed in the 2020 bylaw consolidation",
-    "the order's schedule of lots as at its date, some folios since consolidated or renumbered"
+    "secondary suites and laneway houses permitted under their own permit types",
+    "interim and final occupancy permits, each carrying the dwelling units entered on the building permit",
+    "the order's schedule of lots as at its date, some folios since replaced by strata plans"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
@@ -248,6 +250,6 @@
       ]
     }
   ],
-  "notes": "Re-root drawn 2026-10-14 (architecture 3, the slot's last) after architecture 2's round 2 was sent back by the determinism judge. Coding: decisive gap population (the lots that will actually yield homes, and the building each yields, against every lot's zoned allowance), time second (the order's allowance is one the history never saw on these lots); pattern none with G14 decisive (a past rezoning's take-up does not apply to a pool whose best-paying building and feasibility differ), G1 (the unit of yield is the best-paying building's homes, not the allowance), G13 (the forward window holds a zoning the record never had). Strategy composition_mix: the yield is conditioned on a property no column names, rebuilt from the roll, the market study and the cost guide. Forum minister_or_cabinet (the minister issues the target order); forcing event statutory_or_regulatory_filing (the order's statutory date). Layer 2 pattern urban-regional-science/land-use-spatial-development-modeling/2 (zoned capacity is not likely development); the client's version pins a feasibility rule, this one files none and estimates the rate from the record. Re-registered 2026-10-14 after task453 (architecture 2) and task127 (architecture 3) were filed first in parallel: context artifact moved from published_series (task453) to operations_log (the city's permit system log, the outcome record), shape from 02 (task127) to single-figure: the call is the five-year target total, the order's statutory unit, with its yearly path as critical components. repeat.gate_g (forecasting, against task127) answered: a forecasting call's Gate G is forecasting; task127 reads a settlement speed-up in a development triangle, this build a rezoning's yield from development feasibility.",
+  "notes": "Re-root drawn 2026-10-14 (architecture 3, the slot's last) after architecture 2's round 2 was sent back by the determinism judge. Coding: decisive gap population (the lots that will actually yield homes, and the building each yields, against every lot's zoned allowance), time second (the order's allowance is one the history never saw on these lots); pattern none with G14 decisive (a past rezoning's take-up does not apply to a pool whose best-paying building and feasibility differ), G1 (the unit of yield is the best-paying building's homes, not the allowance), G13 (the forward window holds a zoning the record never had). Strategy composition_mix: the yield is conditioned on a property no column names, rebuilt from the roll, the market study and the cost guide. Forum minister_or_cabinet (the minister issues the target order); forcing event statutory_or_regulatory_filing (the order's statutory date). Layer 2 pattern urban-regional-science/land-use-spatial-development-modeling/2 (zoned capacity is not likely development); the client's version pins a feasibility rule, this one files none and estimates the rate from the record. Re-registered 2026-10-14 after task453 (architecture 2) and task127 (architecture 3) were filed first in parallel: context artifact moved from published_series (task453) to operations_log (the city's permit system log, the outcome record), shape from 02 (task127) to single-figure: the call is the five-year target total, the order's statutory unit, with its yearly path as critical components. repeat.gate_g (forecasting, against task127) answered: a forecasting call's Gate G is forecasting; task127 reads a settlement speed-up in a development triangle, this build a rezoning's yield from development feasibility. Built 2026-10-14: the corridor rezoning moved to 2013 (before the record) so that no rezoning inside the record changes feasibility; deliverable renamed tod_completions_2022-26.png; Haldane, Kerslake Road and Brockmore Cost Consulting replace Calderbrook Centre as a station, King George Way and Corvane Cost Consulting (near-real or reused names).",
   "registered": "2026-10-14T14:12:07Z"
 }

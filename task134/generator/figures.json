@@ -1,0 +1,556 @@
+{
+ "call": {
+  "total": 13000,
+  "yearly": {
+   "2027": 2800,
+   "2028": 2700,
+   "2029": 2600,
+   "2030": 2500,
+   "2031": 2400
+  }
+ },
+ "unrounded": {
+  "total": 13005.4,
+  "yearly": {
+   "2027": 2805.4,
+   "2028": 2698.1,
+   "2029": 2596.2,
+   "2030": 2499.1,
+   "2031": 2406.6
+  }
+ },
+ "components": {
+  "standing_lots": 3701,
+  "standing_by_kind": {
+   "house": 3317,
+   "comm": 140,
+   "rental": 244
+  },
+  "rates_pct": {
+   "house": 3.0,
+   "comm": 8.5,
+   "rental": 2.0
+  },
+  "rates_exact": {
+   "house": 0.02997,
+   "comm": 0.08498,
+   "rental": 0.01993
+  },
+  "rebuilds": {
+   "house": 490,
+   "comm": 2016,
+   "rental": 209
+  },
+  "feasible_lot_years": {
+   "house": 16349,
+   "comm": 23723,
+   "rental": 10487
+  },
+  "net_homes_once_rebuilt": 85906,
+  "net_homes_by_kind": {
+   "house": 75275,
+   "comm": 5187,
+   "rental": 5444
+  },
+  "best_building": "MR6 at 3.0 FAR on every standing lot",
+  "standing_lots_r_min": 1.34,
+  "lots_2026_permits_excluded": 17
+ },
+ "order": {
+  "band_m": [
+   200,
+   400,
+   800
+  ],
+  "far": [
+   5.0,
+   4.0,
+   3.0
+  ],
+  "storeys": [
+   20,
+   12,
+   8
+  ],
+  "mr6_far": 3.0,
+  "net_to_gross": 0.85,
+  "home_sqft": 820
+ },
+ "ask_a": {
+  "Ellery": {
+   "2022": 191,
+   "2023": 311,
+   "2024": 202,
+   "2025": 206,
+   "2026": 172
+  },
+  "Westerly": {
+   "2022": 193,
+   "2023": 267,
+   "2024": 327,
+   "2025": 280,
+   "2026": 258
+  },
+  "Haldane": {
+   "2022": 147,
+   "2023": 243,
+   "2024": 180,
+   "2025": 96,
+   "2026": 204
+  },
+  "Pell Road": {
+   "2022": 357,
+   "2023": 229,
+   "2024": 84,
+   "2025": 327,
+   "2026": 20
+  }
+ },
+ "ask_a_totals": {
+  "by_year": {
+   "2022": 888,
+   "2023": 1050,
+   "2024": 793,
+   "2025": 909,
+   "2026": 654
+  },
+  "by_station": {
+   "Ellery": 1082,
+   "Westerly": 1325,
+   "Haldane": 870,
+   "Pell Road": 1017
+  },
+  "all": 4294
+ },
+ "ask_b": {
+  "Ellery": {
+   "Within 200 m": 1028,
+   "200 m to 400 m": 1497,
+   "400 m to 800 m": 2804
+  },
+  "Westerly": {
+   "Within 200 m": 973,
+   "200 m to 400 m": 1554,
+   "400 m to 800 m": 2680
+  },
+  "Haldane": {
+   "Within 200 m": 851,
+   "200 m to 400 m": 1582,
+   "400 m to 800 m": 2727
+  },
+  "Pell Road": {
+   "Within 200 m": 985,
+   "200 m to 400 m": 1569,
+   "400 m to 800 m": 2844
+  }
+ },
+ "ask_b_totals": {
+  "by_station": {
+   "Ellery": 5329,
+   "Westerly": 5207,
+   "Haldane": 5160,
+   "Pell Road": 5398
+  },
+  "by_band": {
+   "Within 200 m": 3837,
+   "200 m to 400 m": 6202,
+   "400 m to 800 m": 11055
+  },
+  "all": 21094
+ },
+ "default": {
+  "takeup_pct": 3.72,
+  "capacity": 109531,
+  "yearly": 4078,
+  "yearly_100": 4100,
+  "total": 20389,
+  "total_500": 20500,
+  "corridor_capacity": 149614,
+  "corridor_homes": 72411
+ },
+ "rivals": {
+  "R0 default: capacity at the corridors' take-up": {
+   "yearly": [
+    4078,
+    4078,
+    4078,
+    4078,
+    4078
+   ],
+   "total": 20389,
+   "total_500": 20500
+  },
+  "R0b default, declining": {
+   "yearly": [
+    4078,
+    3926,
+    3780,
+    3639,
+    3504
+   ],
+   "total": 18926,
+   "total_500": 19000
+  },
+  "R0c default, take-up 2019 to 2026": {
+   "yearly": [
+    3325,
+    3325,
+    3325,
+    3325,
+    3325
+   ],
+   "total": 16625,
+   "total_500": 16500
+  },
+  "R0d default, standing lots only": {
+   "yearly": [
+    4048,
+    4048,
+    4048,
+    4048,
+    4048
+   ],
+   "total": 20240,
+   "total_500": 20000
+  },
+  "R0e hybrid: best-building capacity at the take-up": {
+   "yearly": [
+    3198,
+    3198,
+    3198,
+    3198,
+    3198
+   ],
+   "total": 15991,
+   "total_500": 16000
+  },
+  "R0f hybrid, declining": {
+   "yearly": [
+    3198,
+    3079,
+    2965,
+    2854,
+    2748
+   ],
+   "total": 14844,
+   "total_500": 15000
+  },
+  "R1 covariate logit (FAR), homes at the allowance": {
+   "yearly": [
+    3251,
+    3067,
+    2903,
+    2755,
+    2621
+   ],
+   "total": 14598,
+   "total_500": 14500
+  },
+  "R1b covariate logit (FAR), best building": {
+   "yearly": [
+    2340,
+    2217,
+    2107,
+    2007,
+    1916
+   ],
+   "total": 10587,
+   "total_500": 10500
+  },
+  "R1c covariate logit (log FAR), homes at the allowance": {
+   "yearly": [
+    4834,
+    4507,
+    4213,
+    3946,
+    3703
+   ],
+   "total": 21203,
+   "total_500": 21000
+  },
+  "R1d covariate logit (log FAR), best building": {
+   "yearly": [
+    3483,
+    3265,
+    3068,
+    2889,
+    2725
+   ],
+   "total": 15430,
+   "total_500": 15500
+  },
+  "R1e smooth logit in the ratio": {
+   "yearly": [
+    3596,
+    3437,
+    3286,
+    3141,
+    3003
+   ],
+   "total": 16463,
+   "total_500": 16500
+  },
+  "R1f smooth logit in the log ratio": {
+   "yearly": [
+    4222,
+    4004,
+    3798,
+    3602,
+    3417
+   ],
+   "total": 19043,
+   "total_500": 19000
+  },
+  "R1g smooth logit in the ratio and kind": {
+   "yearly": [
+    1674,
+    1629,
+    1585,
+    1544,
+    1504
+   ],
+   "total": 7937,
+   "total_500": 8000
+  },
+  "R2 feasibility at the allowed type, homes at the allowance": {
+   "yearly": [
+    1436,
+    1382,
+    1331,
+    1282,
+    1236
+   ],
+   "total": 6667,
+   "total_500": 6500
+  },
+  "R2b feasibility at the best building, homes at the allowance": {
+   "yearly": [
+    3473,
+    3340,
+    3215,
+    3095,
+    2981
+   ],
+   "total": 16104,
+   "total_500": 16000
+  },
+  "R2c one pooled rate": {
+   "yearly": [
+    4613,
+    4365,
+    4131,
+    3909,
+    3699
+   ],
+   "total": 20718,
+   "total_500": 20500
+  },
+  "R2d rates by kind on every upzoned lot": {
+   "yearly": [
+    1366,
+    1318,
+    1273,
+    1230,
+    1191
+   ],
+   "total": 6378,
+   "total_500": 6500
+  },
+  "R2e rates by kind on every upzoned lot, homes at the allowance": {
+   "yearly": [
+    1697,
+    1637,
+    1581,
+    1530,
+    1481
+   ],
+   "total": 7926,
+   "total_500": 8000
+  },
+  "L1 no depletion": {
+   "yearly": [
+    2805,
+    2805,
+    2805,
+    2805,
+    2805
+   ],
+   "total": 14027,
+   "total_500": 14000
+  },
+  "L2 gross (no netting)": {
+   "yearly": [
+    3027,
+    2914,
+    2806,
+    2704,
+    2606
+   ],
+   "total": 14057,
+   "total_500": 14000
+  },
+  "T trend of the order's lots 2019 to 2026": {
+   "yearly": [
+    743,
+    743,
+    743,
+    743,
+    743
+   ],
+   "total": 3714,
+   "total_500": 3500
+  }
+ },
+ "family": {
+  "threshold 1.10": {
+   "yearly": [
+    2805.4,
+    2698.1,
+    2596.2,
+    2499.1,
+    2406.6
+   ],
+   "total": 13005.4
+  },
+  "threshold 1.25": {
+   "yearly": [
+    2805.4,
+    2698.1,
+    2596.2,
+    2499.1,
+    2406.6
+   ],
+   "total": 13005.4
+  },
+  "prior year's values and costs": {
+   "yearly": [
+    2805.4,
+    2698.1,
+    2596.2,
+    2499.1,
+    2406.6
+   ],
+   "total": 13005.4
+  },
+  "prior roll's assessed values": {
+   "yearly": [
+    2805.4,
+    2698.1,
+    2596.2,
+    2499.1,
+    2406.6
+   ],
+   "total": 13005.4
+  },
+  "window 2016 to 2026": {
+   "yearly": [
+    2808.3,
+    2701.0,
+    2598.8,
+    2501.6,
+    2409.0
+   ],
+   "total": 13018.7
+  },
+  "window 2018 to 2026": {
+   "yearly": [
+    2798.1,
+    2691.3,
+    2589.8,
+    2493.1,
+    2401.0
+   ],
+   "total": 12973.4
+  },
+  "window 2020 to 2026": {
+   "yearly": [
+    2808.7,
+    2701.3,
+    2599.1,
+    2501.9,
+    2409.2
+   ],
+   "total": 13020.3
+  },
+  "window 2022 to 2026": {
+   "yearly": [
+    2793.7,
+    2687.1,
+    2585.7,
+    2489.3,
+    2397.4
+   ],
+   "total": 12953.2
+  },
+  "feasible read as an apartment zone": {
+   "yearly": [
+    2805.4,
+    2698.1,
+    2596.2,
+    2499.1,
+    2406.6
+   ],
+   "total": 13005.4
+  },
+  "mean of the yearly rates": {
+   "yearly": [
+    2804.9,
+    2697.7,
+    2595.7,
+    2498.7,
+    2406.3
+   ],
+   "total": 13003.3
+  },
+  "continuous hazard": {
+   "yearly": [
+    2805.4,
+    2698.1,
+    2596.2,
+    2499.1,
+    2406.6
+   ],
+   "total": 13005.4
+  },
+  "zone as the roll records it": {
+   "yearly": [
+    2805.4,
+    2698.1,
+    2596.2,
+    2499.1,
+    2406.6
+   ],
+   "total": 13005.4
+  },
+  "homes unrounded": {
+   "yearly": [
+    2862.9,
+    2753.6,
+    2649.7,
+    2550.8,
+    2456.5
+   ],
+   "total": 13273.5
+  },
+  "logit on feasibility and kind": {
+   "yearly": [
+    2805.4,
+    2698.1,
+    2596.2,
+    2499.1,
+    2406.6
+   ],
+   "total": 13005.4
+  },
+  "rates by kind and location": {
+   "yearly": [
+    2795.7,
+    2688.7,
+    2587.0,
+    2490.2,
+    2398.1
+   ],
+   "total": 12959.8
+  }
+ }
+}

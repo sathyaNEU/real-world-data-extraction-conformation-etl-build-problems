@@ -1,0 +1,32 @@
+{
+  "task": "task134",
+  "objective": "Forecasting & Predictive Modeling",
+  "domain": "Urban & Regional Science",
+  "task_type": "Land use and spatial development modeling",
+  "distractor_files": [
+    "target/population_projections_2026-2036.csv",
+    "target/rental_market_survey_oct2026.xlsx"
+  ],
+  "deliverables": [
+    "tod_housing_target_2027-31.xlsx",
+    "tod_completions_2022-26.png"
+  ],
+  "as_of": "2026-12-31",
+  "sources": {
+    "roll_extract_2014-2018.csv": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "roll_extract_2019-2026.csv": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "building_permits_2014-2026.csv": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "permit_buildings.csv": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "occupancy_permits_2018-2026.csv": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "folio_history_2014-2026.csv": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "zoning_schedule_2014-2026.csv": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "extract_notes_2027-01-12.txt": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "tod_order_schedule_a.xlsx": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "tod_area_order_ridgemont_2026.pdf": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "housing_target_methodology_2026.pdf": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "housing_reference_tables_2026.xlsx": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "population_projections_2026-2036.csv": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "rental_market_survey_oct2026.xlsx": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0",
+    "folder_index_2027-01-15.txt": "constructed in the layout of the issuing organisation's own export; synthetic, released with the task under CC BY 4.0"
+  }
+}

@@ -19,10 +19,10 @@ Private, never ships. Architecture 3 of 3, the slot's last, re-rooted on 2026-10
 | Decision | quantity_figure (no repeat.decision against task129, a root cause) |
 | Stakeholder | a senior analyst in the provincial housing ministry's housing targets branch, preparing the City of Calderbrook's 2027 to 2031 housing target order, which the minister signs (minister_or_cabinet; statutory_or_regulatory_filing: the order's statutory date); organisation government_agency (the WARN overuse.org_family, 27 builds, is answered by who sets the target: the province, not the city, which would be local_government and is banned against task184) |
 | Context artifact / calibration | operations_log (the city's permit system log, the outcome record; published_series was banned against task453, filed first in parallel) / none |
-| World | City of Calderbrook, British Columbia, a fictional suburban city of about 210,000 on the fictional Ridgemont Line; four stations (Calderbrook Centre, Ellery, Westerly, Pell Road); the province's Transit-Oriented Area Order (Ridgemont Line) in force 1 January 2027 makes the city allow at least 5.0 FAR within 200 m of a station, 4.0 FAR within 400 m and 3.0 FAR within 800 m. The city's own rezonings: City Centre to 5.5 FAR (2016), arterial corridors from 2.0 to 3.0 FAR (2018), townhouse infill at 1.2 FAR in three neighbourhoods (2019). CAD |
+| World | City of Calderbrook, British Columbia, a fictional suburban city of about 640,000 on the fictional Ridgemont Line; four stations (Ellery, Westerly, Haldane, Pell Road) on the line's run along the city's north side, with the city centre (Calderbrook Centre) off the line; the province's Transit-Oriented Area Order (Ridgemont Line), made 30 June 2026 and in force 1 January 2027, makes the city allow at least 5.0 FAR within 200 m of a station, 4.0 FAR within 400 m and 3.0 FAR within 800 m on the lots in its Schedule A. The city's own rezonings: arterial corridors to 3.0 FAR mixed use (Bylaw 13-044, April 2013, before the record opens, so every corridor lot is feasible throughout 2014 to 2026), the City Centre from 3.0 to 5.5 FAR (2016; towers pay there, and feasibility does not change), townhouse infill at 1.2 FAR in North Calder, Ravensdale and Fernlea (2019; never paid). Consultants in the reference tables' notes: Halvorsen Land Economics (sale values), Brockmore Cost Consulting (costs). CAD |
 | People | Tonya Bartlett, Zachary Tyler, Monique Knapp, Alec Heath (`guard.py names --geo Canada --seed 134`; Anthony Hines and Rebecca Francis replaced on people.first WARNs, Corey Lloyd likewise); none in the prompt |
-| As-of | records to 31 December 2026: the 2026 roll (valuation date 1 July 2025, used as the 2026 roll), permits issued to 31 December 2026; the market study and cost guide with 2026 figures |
-| Guard | `guard.py register` WARN only, re-registered after task453 and task127 were filed first in parallel (context artifact and shape redrawn). The differentiation line for task54 clears the older same-puzzle test (task54 multiplies a loss per excursion by the packs aboard along a planned run; this build conditions each lot's redevelopment on its development economics). WARNs answered: overuse.org_family above; repeat.gate_g and repeat.decision against task127 (a forecasting call's Gate G is forecasting and its answer a quantity; task127 reads a settlement speed-up in a development triangle with gap time, this build a rezoning's yield from development feasibility with gap population, so the brief's back-to-back echo of gap time with quantity_figure does not arise) |
+| As-of | records to 31 December 2026: the 2026 roll (values at 1 July 2025, property records at 31 October 2025), permits, occupancies and folio events to 31 December 2026 (pulled 11 January 2027), the reference tables of 20 November 2026; the branch's folder index is dated 15 January 2027 |
+| Guard | `guard.py register` WARN only, re-registered after task453 and task127 were filed first in parallel (context artifact and shape redrawn). The differentiation line for task54 clears the older same-puzzle test (task54 multiplies a loss per excursion by the packs aboard along a planned run; this build conditions each lot's redevelopment on its development economics). WARNs answered: overuse.org_family above; repeat.gate_g and repeat.decision against task127 (a forecasting call's Gate G is forecasting and its answer a quantity; task127 reads a settlement speed-up in a development triangle with gap time, this build a rezoning's yield from development feasibility with gap population, so the brief's back-to-back echo of gap time with quantity_figure does not arise). At stage 3, `guard.py heart` WARN (no BLOCK) and `guard.py surface` exit 0 with three pairs promoted for the author's adjudicated `/clone-check`: task133 back to back on gap population and quantity_figure (its pattern and its maturity driver differ), task448 on surface similarity (0.102), task54 differentiated at the draw |
 
 **Data-native sentence.** Homes come from lots, not from zoning: a lot is rebuilt once the building that pays best on it is worth more than what stands there, and then at the pace lots of its kind have kept once rebuilding paid, so the order's allowances are capacity while the roll (what stands on each lot and what it is worth), the market study (what new homes sell for at each station) and the cost guide (what each kind of building costs) decide the yield; the permit record holds only the lots that went.
 
@@ -51,71 +51,278 @@ What they leave: no build on file forecasts what a rezoning yields, and none con
 - `strategies.md` F5 (composition): the pooled rate does not fit this pool because of a property no column names; here the property is a lot's development economics at the best-paying building, rebuilt from three files.
 - `references/client/measured-drivers.md`, held group ("a quantity believed to need no construction"): zoned capacity looks finished; the yield needs a construction the solver does not suspect.
 
-**Prompt shape and criteria arithmetic.** The call: the five-year total and its five annual figures, with the committed sentence (6 to 7). Ask A: net new homes permitted on the order's lots by station area and year, 2022 to 2026 (20). Ask B: the homes standing on the order's lots at the 2026 roll by station area and tier (12). The chart: one stacked bar a year 2022 to 2026, a segment per station area, each segment labelled (3 to 4). Instruction following: the two files and the rounding (2 to 3). About 43 criteria, none stacked. The asks are designed at stage 2 (`supplemental-stumping`); the counts here are the draw's.
+**Prompt shape and criteria arithmetic.** The call: the five-year total and its five annual figures (6). Ask A: the homes completed on the order's lots by station area and year, 2022 to 2026 (20). Ask B: the homes standing on the order's lots at the 2026 roll by station area and distance tier (12). The chart: one stacked bar a year 2022 to 2026, a segment per station area, each segment labelled (4). Instruction following: the two files and the rounding (2 to 3). About 45 criteria, none stacked; the asks are set out in `## Ask sheet`.
 
 ## Default path
 
-The pipeline a strong analyst builds unsteered, from the prompt's words, the files' grain and planning's textbook for a rezoning's housing (zoned capacity at the take-up a comparable rezoning has shown). Paper figures from the scratch prototype (`proto/sim7.py`, seed 7); the build measures it again on the pack and replaces them.
+The pipeline a strong analyst builds unsteered, from the prompt's words, the files' grain and planning's textbook for a rezoning's housing (zoned capacity at the take-up a comparable rezoning has shown). Figures measured on the built pack (`generator/estimators.py`, asserted in `checks.py`).
 
-1. Read the order (`tod_area_order_ridgemont_2026.pdf`): within 200 m of a station at least 5.0 FAR, within 400 m 4.0 FAR, within 800 m 3.0 FAR; carry its schedule of lots to their current folios through the folio history (consolidations and subdivisions since the order's date).
-2. Stitch the two roll layouts and take each lot's area (acres converted to square feet) and the homes standing on it at the 2026 roll (strata lots counted one home each, rental buildings at their recorded units).
-3. Zoned capacity: lot area times the tier's FAR (or the lot's own zoning where higher), at 85 per cent net over 820 square feet a home, less the homes standing.
-4. Take-up: the 2018 corridor rezoning (2.0 to 3.0 FAR), net new homes permitted on the corridor lots in 2019 to 2026 (permits linked to lots through their folio lists, demolitions netted once, cancelled and superseded permits out) over the capacity it added, per year.
+1. Read the order (`tod_area_order_ridgemont_2026.pdf`): within 200 m of a station at least 5.0 FAR, within 400 m 4.0 FAR, within 800 m 3.0 FAR, on the folios of Schedule A; carry them to their current folios through the folio history.
+2. Stitch the two roll layouts and take each lot's area (acres converted to square feet) and the homes standing on it at the 2026 roll (a house one, two with a suite, a rental building its units).
+3. Zoned capacity: lot area times the band's FAR (or the lot's own zoning where higher), at the reference tables' 85 per cent net over 820 square feet a home, less the homes standing: 109,531 homes.
+4. Take-up: the corridors rezoned to 3.0 FAR mixed use in 2013, net new homes permitted on them in 2014 to 2026 (permits linked to lots through their folios, demolitions netted once, cancelled and superseded permits out) over the capacity the rezoning gave them at the 2014 roll, per year: 3.72 per cent.
 5. Each year 2027 to 2031: the order's capacity times that take-up.
 
-**Ends on:** about 2,800 net new homes a year (2,769 in the prototype, every year 2027 to 2031).
+**Ends on:** about 4,100 net new homes a year, 20,400 over 2027 to 2031 (4,078 a year, 20,389 in all).
 
-**Golden:** about 2,050 falling to 1,750 (2,059, 1,973, 1,892, 1,815 and 1,742 in the prototype): lot by lot, the building that pays best among those the lot's zoning permits (residual land value from the market study's values and the cost guide's costs), whether it outbids the assessed value of what stands there, and the rate feasible lots of that kind (houses, commercial sites, rental apartments) were rebuilt in 2014 to 2026; each lot rebuilt once, so the feasible stock falls year on year; homes net of those the rebuilt lots carried.
+**Golden:** 13,000 over 2027 to 2031, falling from 2,800 to 2,400 (2,805.4, 2,698.1, 2,596.2, 2,499.1 and 2,406.6; 13,005.4 in all): lot by lot, the building that pays best among those the lot's zoning permits (residual land value from the reference tables' values and costs), whether it outbids the assessed value of what stands there, and the rate feasible lots of that kind (houses 3.0, commercial sites 8.5, rental buildings 2.0 per cent a year) were rebuilt in 2014 to 2026; each lot rebuilt once, so the feasible stock falls year on year; homes net of those the rebuilt lots carried.
 
-The other natural routes also land off the golden (prototype, five-year totals against 9,481): the permit trend 2019 to 2026 (4,516, minus 52 per cent); a redevelopment logit on the visible attributes (lot area, assessed land and improvement values, allowed FAR, kind of lot) with homes at the allowance (16,833, plus 78) or at the best-paying building (12,613, plus 33); feasibility at the building type the order's FAR names, concrete in the 4.0 and 5.0 tiers (5,049 or 6,895, minus 47 or 27); feasibility at the best-paying building with homes at the allowance (11,870, plus 25); feasibility with one pooled rate for every kind of lot (13,405, plus 41).
+The other natural routes also land off the golden (five-year totals against 13,005; `## Ladder`): the take-up on best-building capacity (15,991 flat, 14,844 declining); a redevelopment logit on the visible attributes with homes at the allowance (14,598 or 21,203) or at the best building (10,587 or 15,430); feasibility at the building type the order's FAR names, concrete in the 4.0 and 5.0 bands (6,667); feasibility at the best building with homes at the allowance (16,104); one pooled rate (20,718); rates by kind on every upzoned lot without feasibility (6,378); the permit trend (3,714).
 
 ## Stump sentence
 
-A strong solver takes each transit-area lot's capacity under the order (lot area times its tier's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the 2018 corridor rezoning has delivered each year, and files about 2,800 net new homes a year for 2027 to 2031 (2,769 in the prototype) against about 2,050 falling to 1,750; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.
+A strong solver takes each transit-area lot's capacity under the order (lot area times its band's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the corridors have delivered each year since their 2013 rezoning, and files about 4,100 net new homes a year, 20,400 over 2027 to 2031 (4,078 a year), against 13,000 falling from 2,800 to 2,400; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.
 
 ## Three rules
 
 - **Task type:** urban-regional-science / land-use-spatial-development-modeling, which serves Forecasting & Predictive Modeling in the taxonomy; the call is the net new homes building permits will add on the order's lots in each year 2027 to 2031.
 - **Domain test:** the deciding quantity is the housing a rezoning will produce, which urban land economics estimates lot by lot from development feasibility (the residual land value of the best-paying permitted building, from sale values and construction costs, against the assessed value of the existing use) and the observed redevelopment rate of sites once feasible.
 - **Swap:** "how many homes will the rezoned lots yield" read as "how many licences will the enlarged quota yield" has no residual land value, no cost step between wood frame and concrete, no floor area ratio and no existing use for a new building to outbid, so the analysis stops making sense.
-- **Layer 1:** two roll layouts (a 2019 schema change), lot areas in acres and square feet, folios retired and created on consolidation and subdivision (a folio history), strata lots as separate folios, permits keyed by address and one or more folios, floor area in square feet then square metres (a 2020 metric switch), demolitions recorded on both the new-building and the demolition permit, cancelled, expired and superseded permits, suites and laneway homes under their own permit types, zone codes renamed in the 2020 bylaw consolidation, the order's schedule as at its date; each is what an assessment roll, a permit system or a provincial order produces, and none decides the call.
+- **Layer 1:** two roll layouts (the 2019 schema change: renamed columns, use codes against use groups, suites in the old use code), lot areas in acres for the few folios of an acre or more, zone codes at the roll's valuation date and renamed in the 2020 bylaw consolidation, folios retired and created when strata plans are deposited (with remainder parcels for phased projects, in a folio history), strata lots as separate folios (stalls among them, Ask B), permits keyed by folio with floor area in square feet to 2019 and square metres from 2020, demolitions recorded on both the new-building and the demolition permit, cancelled, expired and superseded permits, suites and laneway houses under their own permit types, interim and final occupancy permits each carrying the permit's dwelling units (Ask A), Schedule A as at 30 June 2026 against the roll's October 2025 records; each is what an assessment roll, a permit system or a provincial order produces, and each is asserted neutral to the call (`checks.py`, R2).
 - **Layer 2:** field_method (development feasibility and redevelopment probability): the shortcut carries the order's capacity at a past rezoning's take-up; the expert asks of each lot which permitted building pays best and whether it outbids what stands there, and applies the rate lots of its kind have kept once that held.
-- **Decisive step:** lot by lot, the building that pays best among those the lot's zoning permits (residual land value from the market study's values per net square foot and the cost guide's costs per gross square foot), whether it outbids the assessed value of the existing use, and the rate at which feasible lots of that kind were rebuilt in 2014 to 2026; at the four stations concrete towers never pay, so the 4.0 and 5.0 FAR tiers yield the same six-storey wood frame as the 3.0 tier.
-- **Not semantics:** reading every field, code, unit, tier and definition correctly (the order's minimum allowances, the methodology's net new homes, the roll's use codes, square metres and acres) still leaves capacity at the corridor take-up the natural route and the forecast near 2,800 a year; no term read two ways moves the call (`## Semantic fork table`).
+- **Decisive step:** lot by lot, the building that pays best among those the lot's zoning permits (residual land value from the reference tables' sale values per net square foot and all-in costs per gross square foot), whether it outbids the assessed value of the existing use, and the rate at which feasible lots of that kind were rebuilt in 2014 to 2026; at the four stations concrete towers never pay, so the 4.0 and 5.0 FAR bands yield the same six-storey wood frame as the 3.0 band.
+- **Not semantics:** reading every field, code, unit, band and definition correctly (the order's minimum allowances, the methodology's net new homes, the roll's use codes, square metres and acres) still leaves capacity at the corridors' take-up the natural route and the forecast near 4,100 a year; no term read two ways moves the call (`## Semantic fork table`).
 - **Not rule application:** the order states what the city must allow and the methodology what is counted; no filed rule or procedure says which lots will be rebuilt, which building pays or how fast feasible lots go, so executing every stated rule leaves the yield unforecast.
-- **Analyst test:** a strong analyst who stitches the rolls, links permits to lots through the folio history and reads the order's tiers and the methodology correctly computes zoned capacity on the order's lots at the take-up the 2018 corridor rezoning has shown and files about 2,800 net new homes a year (2,769 in the prototype); only feasibility at the best-paying building and the rate by kind give about 2,050 falling to 1,750.
-- **Estimand:** the province's Housing Target Methodology (2026), section 2, fixes the population (the lots in the order's schedule, carried to their current folios), the outcome (net new homes: dwelling units in building permits issued, less the dwelling units on the lots those permits clear), the window (each calendar year 2027 to 2031 by issue date), the unit (homes, whole numbers) and the conditions (no rezoning beyond the order in force; prices and building costs as they stood in 2026).
+- **Analyst test:** a strong analyst who stitches the rolls, links permits to lots through the folio history and reads the order's bands and the methodology correctly computes zoned capacity on the order's lots at the take-up the corridors have shown since their 2013 rezoning and files about 4,100 net new homes a year, 20,400 over 2027 to 2031 (4,078 a year); only feasibility at the best-paying building and the rate by kind give 13,000, falling from 2,800 to 2,400.
+- **Estimand:** the province's Housing Target Methodology 2026, section 2, fixes the population (the lots in the order's Schedule A, carried to the parcels they become, 2.1), the outcome (net new homes: dwelling units in building permits issued for new buildings, less the dwelling units standing on the lots the permitted work clears, 2.2), the window (each calendar year 2027 to 2031 by issue date, 2.3 and 2.6), the unit (homes) and the condition (the zoning in force when the order takes effect, no other rezoning, 2.5); `housing_target_methodology_2026.pdf`.
 - **No decoy:** no memo, draft, briefing, stakeholder figure, capacity estimate or realisation rate ships; the order's allowances are what the city must permit, not a forecast, and nothing in the pack argues for any number of homes.
 - **No certified replay:** no forecast, target, published realisation or certified count ships, so the method is not recovered by reproducing certified figures; the only past counts are the solver's own from the permit record, and they refute the capacity routes in-sample (rebuilds come only where the best-paying building outbid the existing use).
 - **Lesson:** a rezoning's yield is decided lot by lot by whether the building that pays best outbids what stands there and, if so, by the pace lots of that kind keep, and past a construction-method cost step an extra allowance adds nothing; no build on file forecasts a rezoning's yield or conditions a yield on development economics (nearest driver on file at 0.06).
 
 ## Readability screen
 
-Stage 2 (written with the ladder before any data is cut).
+Six tests per rung: 1 a filed sentence names it or makes the solver ask; 2 schema (a column, key or marker); 3 a reflex
+of the opponent; 4 a control or corpus scores it; 5 the hygiene battery finds it; 6 linear (one subtraction, ratio or
+half of a reported figure). Verdict last.
+
+| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0 zoned capacity under the order at the take-up the corridors have shown since their 2013 rezoning | fires: the order's bands and the methodology's net new homes are the first things read | Schedule A's band column and the roll's areas | yes, planning's textbook | no | no | capacity times a ratio | readable |
+| R1 a redevelopment model on the lots' visible attributes (area, land and improvement values, allowed FAR, use) applied at the order's FAR | no | every covariate is a column | yes for a strong model | no | no | no | readable |
+| R2 a feasibility screen at the building the order's density names (concrete towers in the 4.0 and 5.0 bands) | no | the reference tables list building types beside the FAR each reaches | yes once values and costs are seen | no | no | no | readable |
+| L1 net of the homes the permits clear; each lot rebuilt once | the methodology's definition of net new homes and its counting of revisions | the roll's use and units | yes | no | yes | one subtraction | readable |
+| R3 (decisive) each lot's best-paying permitted building, whether it outbids what stands there, and the rate lots of its kind were rebuilt once that held | no sentence ties a forecast to development economics: the order states what the city must allow, the methodology what is counted, the reference tables carry values and costs as the branch's standing inputs with no worked use | no column names feasibility, a lot's best building, a kind of lot or a rate; the roll's use code is ordinary, and the permits record what was built where it was built (six-storey wood frame on the corridors, concrete towers in the City Centre), never what a lot would carry under another allowance | no: the reflexes price capacity, fit the visible attributes, or price the building the allowance names, each of which lands off | none ships: no past forecast, realisation rate or feasibility count | no: every key, join and count ties on the capacity path | no: a residual land value per lot and building type over three files, a ratio to the roll's value, a rate per kind over thirteen years and a depleting projection | silent |
+
+The decisive rung is silent because its facts live in three files that each have their own standing purpose (the roll
+values lots for tax, the permits record what was built, the reference tables carry the branch's values, costs, unit
+sizes and efficiencies), and the link between them (a lot goes only when the building that pays best outbids its
+assessed value, and then at its kind's pace) shows only to a reader who prices the permitted buildings lot by lot and
+reads the record against that, which no rule, column or control asks for. The one history that looks like a precedent
+for the 4.0 and 5.0 FAR bands, the City Centre's towers at 5.5 FAR, points the wrong way: towers pay there and not at
+the four stations.
 
 ## Semantic fork table
 
-Stage 2.
+One row per term of the main ask and per convention the main computation needs. `checks.py` asserts each row.
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "net new homes" | dwelling units in building permits issued for new buildings, less the dwelling units standing on the lots those permits clear | gross units | 14,057 (1.08 times) | methodology 2.2 |
+| SF2 | "building permits" | permits counted in the year issued; cancelled and expired permits out; a revision counted once, in the year of the permit it revises | each permit for new construction a rebuild | same call (asserted, 0.7 per cent) | methodology 2.3 |
+| SF3 | "the lots in the order" | the folios of Schedule A, carried to the parcels they become | every lot within 800 m of a station | same call (every 2026-roll folio in a station area is a Schedule A folio or an ancestor of one, asserted) | the order's sections 1 and 5, Schedule A |
+| SF4 | secondary suites and laneway houses | outside the target | counted | moves | methodology 2.4 |
+| SF5 | "each of those years" | calendar years 2027 to 2031 by permit issue date | fiscal years | moves | methodology 2.3 and 2.6 |
+| SF6 | the zoning the forecast runs on | the order's minimum densities on Schedule A from 1 January 2027, the city's zoning where higher, no other rezoning | a further rezoning assumed | moves | methodology 2.5 |
+| SF7 | homes standing on a house lot | two where the roll records a suite or laneway house | one per house | same call (asserted, 1.1 per cent) | methodology 2.2 |
+| SF8 | the 17 lots whose permits were issued in 2026 | rebuilt, out of the 2027 risk set | at risk in 2027 | moves | methodology 2.3: a later permit for the same buildings revises the first and is counted once |
+| SF9 | homes in a building | net floor area over the average home, rounded down | unrounded | 13,273 (13,500) | the reference tables' note: "rounded down to a whole home" |
+| SF10 | the feasibility threshold | the best building's value above the assessed land and improvements | any margin up to 1.25 times | same call (no standing lot between 0.8 and 1.3, 2 of 140,480 record lot-years between 0.8 and 1.25, asserted) | asserted |
+| SF11 | values and costs for a lot-year | that year's tables against that year's roll | the prior year's tables, the prior roll | same call (asserted) | asserted |
+| SF12 | the record's window | 2014 to 2026 | any start from 2016 to 2022 | same call (12,953 to 13,020, asserted) | asserted |
+| SF13 | the annual rate | rebuilds over feasible lot-years, pooled | the mean of the yearly rates; a continuous hazard | same call (asserted) | asserted |
+| SF14 | rounding | the total and each year rounded once from unrounded figures | the rounded years summed | same call (the rounded years add to 13,000) | the prompt's rounding sentence |
+| SF15 | lot area | square feet, acres converted | acres read as square feet | same call (no standing lot is in acres, asserted) | the extract notes |
+| SF16 | floor area in permits | square feet to 2019, square metres from 2020 | one unit | never enters the call | the extract notes |
+| SF17 | the grain of the rate | by kind of lot | by kind and location (station areas, neighbourhoods, City Centre) | same call (12,960, asserted) | asserted |
+| SF18 | the zone in a permit year | the zone in force that year | the zone the roll records at its valuation date | same call (asserted: the only rezoning inside the record that changes feasibility is none) | asserted |
+
+The stump is none of these rows: every row is read the same way by a careful reader, and the default path reads them
+all correctly. Capacity at a take-up against yield at the best-paying building is not a reading of any term: both are
+estimates of the same filed estimand, and only one is generated by how lots are actually rebuilt.
 
 ## Ladder
 
-Stage 2.
+Built pack, `generator/estimators.py`; `checks.py` asserts every line. Ratios are to the golden total, 13,005.4.
+
+| Rung | Construction | 2027 to 2031 total | Ratio | Dies to |
+|---|---|---|---|---|
+| R0 default | zoned capacity at the order's FAR, less homes standing, at the corridors' take-up since 2013, flat | 20,389 | 1.57 | the record: lots are rebuilt by kind once the best building pays, not by capacity; the townhouse rezoning's capacity took up nothing |
+| R0b | the same take-up, declining as capacity is used | 18,926 | 1.46 | as R0 |
+| R0c | the take-up of 2019 to 2026 only | 16,625 | 1.28 | as R0 |
+| R0d | capacity of the standing lots only | 20,240 | 1.56 | as R0 |
+| R0e, R0f | the take-up on best-building capacity, flat and declining | 15,991; 14,844 | 1.23; 1.14 | the corridors' take-up is their commercial sites' pace, not the station areas' houses' |
+| R1 | a redevelopment logit on area, land and improvement values, allowed FAR and use, homes at the allowance | 14,598 (FAR), 21,203 (log FAR) | 1.12, 1.63 | the 4.0 and 5.0 FAR bands are an extrapolation; the record's yield sits at the best building |
+| R1b | the same logits, homes at the best building | 10,587, 15,430 | 0.81, 1.19 | the allowance's coefficient prices towers that never pay |
+| R1c | smooth logits in the ratio, its log, the ratio and kind | 16,463; 19,043; 7,937 | 1.27; 1.46; 0.61 | the record's step: no rebuild below a ratio of 1, a flat rate by kind above it |
+| R2 | feasibility at the building the order's density names (concrete in the 4.0 and 5.0 bands), homes at the allowance | 6,667 | 0.51 | the six-storey wood frame pays and the tower does not |
+| R2b | feasibility at the best-paying building, homes at the allowance | 16,104 | 1.24 | the best building is the wood frame at 3.0 FAR |
+| R2c | feasibility and the best building, one pooled rate | 20,718 | 1.59 | commercial sites go about three times as fast as houses |
+| R2d | rates by kind on every upzoned lot (no feasibility), best building or allowance | 6,378; 7,926 | 0.49; 0.61 | the townhouse rezoning's lots never paid and were never rebuilt |
+| L1 | the golden without depletion; gross | 14,027; 14,057 | 1.08; 1.08 | each lot is rebuilt once; methodology 2.2 |
+| Trend | the order's lots' net homes 2019 to 2026, flat | 3,714 | 0.29 | the new allowance on the station areas' houses |
+| R3 golden | the best-paying building lot by lot, feasible against the roll's value, the rate by kind, each lot once | 13,005.4 | 1 | none |
+
+- **Position and margins.** Every rival is at least two bins off the golden total (13,000 to the nearest 500) and off
+  every yearly figure but the first under the one flat construction that shares the golden's first year (no
+  depletion). Nearest: no depletion and gross (+7.9 and +8.1 per cent, 14,000), the best-building covariate logit
+  (-18.6 per cent, 10,500), the declining hybrid (+14.1 per cent, 15,000), the level-FAR covariate logit (+12.2 per cent,
+  14,500).
+- **The family (C1, C3).** Thresholds 1.0 to 1.25, the prior year's values and costs, the prior roll, windows starting
+  2016 to 2022, an apartment-zone proxy for feasibility, the mean of the yearly rates, a continuous hazard, the zone as
+  the roll records it, a logit on feasibility and kind, rates by kind and location: every member files 2,800, 2,700,
+  2,600, 2,500 and 2,400 and 13,000 (asserted; totals 12,953 to 13,020). The yearly figures sit 5.4, 1.9, 3.8, 0.9
+  and 6.6 homes from their bins' centres; the nearest edge is 43.4 homes away.
+- **Dominance.** The decisive correction applied to the default reaches the golden and moves the total by 7,384 homes
+  (57 per cent of the golden); every Layer 1 item is neutral to the call (R2 block).
+- **Worth on the graded figures.** The default moves the total and all five yearly figures.
 
 ## Closure table
 
-Stage 2.
+| # | Axis | Reading and move |
+|---|---|---|
+| 1 | Population | the folios of Schedule A carried to the parcels they become (methodology 2.1, the order's section 1); every lot exists at the as-of date; C1 with the 800 m reading (SF3) |
+| 2 | Unit of account | the lot (folio) for the risk, the dwelling unit for the count (methodology 2.2) |
+| 3 | Attribution window | calendar years by permit issue date (methodology 2.3); no forward boundary question |
+| 4 | As-of dating | records to 31 December 2026: the 2026 roll, permits to 31 December 2026, the reference tables' 2026 values and costs |
+| 5 | Version basis | a revision replaces the permit it revises, counted once (methodology 2.3); the latest roll for the forward |
+| 6 | Denominator | rebuilds over feasible lot-years of the kind; the alternatives (upzoned lot-years, all lot-years) separated (R2d, 0.49) |
+| 7 | Weighting | each lot at its own homes; the pooled rate separated (R2c, 1.59) |
+| 8 | Window length | any start from 2016 to 2022 gives the same rounded figures (C1/C3, SF12) |
+| 9 | Boundary inclusivity | the feasibility threshold sits in a gap: no standing lot between 0.8 and 1.3 (C3, SF10) |
+| 10 | Rounding path | each figure rounded once from unrounded figures; the rounded years add to the rounded total (SF14) |
+| 11 | Tie-break | two buildings paying equally never occurs: the six-storey wood frame leads the next building on every standing lot |
+| 12 | Maturity and censoring | permits are events at issue; nothing is unfinished at the as-of date |
+| 13 | Order of operations | feasibility before the rate; depletion inside each year's projection; C1 on the rest |
+| 14 | Row order | file order changes nothing |
+| 15 | Duplicate resolution | a demolition on both the new-building and the demolition permit counted once (methodology 2.2); the golden nets from the roll |
+| 16 | Identity normalisation | folios through the folio history; permits through their folios |
+| 17 | Netting against gross | net of the homes cleared (SF1) |
+| 18 | Dimensional units | lot area in square feet (acres converted); permit floor area square feet then square metres, unread by the call (SF15, SF16) |
+| 19 | Code and status semantics | the roll's use codes and groups; cancelled, expired and superseded permits (SF2); never the stump |
+| 20 | Integerisation | homes per building rounded down (SF9, filed in the reference tables) |
+| 21 | Clause scope | the order applies to Schedule A from 1 January 2027; the city's zoning where higher (SF6) |
+| 22 | Forward window contents | the order's FAR and the 2026 values and costs carry the window; no lot changes zoning inside it (methodology 2.5) |
 
 ## Literal reader
 
-Stage 2.
+Executed word for word, the prompt, the order (sections 1 to 6 and Schedule A) and the methodology (sections 2.1 to
+2.6) define the call as the net new homes that building permits issued in each calendar year 2027 to 2031 will add on
+the folios of Schedule A carried to the parcels they become, net of the dwelling units standing on the lots the
+permits clear, on the zoning the order puts in force and no other. Every term in the fork table resolves to one reading
+or converges. No filed sentence names a method: the methodology says what is counted, the order what the city must
+allow, and the reference tables carry values, costs, unit sizes and efficiencies without a worked use. Capacity at a
+take-up is not a second reading of a term but an estimate of the same one that the record refutes in-sample (the
+townhouse rezoning's capacity took up nothing; the corridors' houses and commercial sites went at their own paces).
+Pass on paper and on the built pack: checks.py and the independent verifier (verify.py, its own code path from the
+zip, reading each zone as the roll records it) both execute it to 13,000.
 
 ## Oracles
 
-Stage 2.
+None ships. No file states a forecast, a target, a take-up or realisation rate, a feasibility count, a redevelopment
+rate or a past ministry estimate; the reference tables carry values, costs, unit sizes and efficiencies only, and the
+order carries minimum densities, not yields. The permit record is the outcome record the rates are read from; it
+refutes the capacity rungs in-sample rather than confirming any. The occupancy records and the roll's strata folios
+(the asks' paths) tie to no rung of the call. The two distractors (the population projections by station area and the
+rental market survey) carry demand and rents, which no rung reads and which bind nothing: projected household growth
+in the station areas exceeds every rung's yield.
 
 ## Ask sheet
 
-Stage 2.
+**Main call's declared row population:** the roll's house, commercial and rental folios for 2014 to 2026; building
+permits for new construction; the folio history; the order and Schedule A; the methodology; the reference tables.
+Ask A's device lives in the occupancy records and the permits' building table, which the call does not read; Ask B's in
+the strata lots of the 2026 roll, which sit on rebuilt lots and older strata plans (out of the risk set). Asserted: the
+call recomputes unchanged with the occupancy file and building table removed; no strata lot is among the call's 3,701
+standing lots; no ask figure reads any rung of the call.
+
+**Ask A. The homes completed on the order's lots in each station area in each year 2022 to 2026** (20 counts, whole
+numbers). Golden 4,294 in all, by year 888, 1,050, 793, 909 and 654.
+- H18 home: what the order's lots have delivered lately, the monitoring measure of methodology 5.1 that the target is
+  read against; the call forecasts permits and never reads occupancy.
+- Construction: each building's first occupancy (methodology 5.2), mapped to Schedule A through the permit's folio
+  and the folio history, the building's dwelling units from the permit's building table.
+- Primary device (D6, an event's quantity on every line it covers): the permit system enters the permit's dwelling
+  units on every occupancy permit issued under it, so a project of two or three buildings occupied in different years
+  carries its full count on each building's record. Every cell holds at least one such building (generator-enforced).
+- Silence: every key ties (occupancy to permit to folio); the building number is filled on every record (1 on single
+  buildings); the notes call the field "dwelling_units ... as entered on the occupancy permit"; only a tie of each
+  permit's occupancy units back to the permit's units shows the repeat, which nothing invites.
+- Fair: each building's units from the building table at its first occupancy reproduce the truth exactly (asserted).
+- Hazards: HA1 (D7, the folio chain): completed strata buildings sit on new folios, so the permit's folio is no longer
+  in Schedule A; HA2 (D1, seen): an interim then a final occupancy for some buildings, both carrying units.
+- Path (5 files, 12 columns): occupancy permits, building permits, permit buildings, the folio history, Schedule A.
+- Stops (asserted): S1 occupancy units summed on folios found directly in Schedule A, 1,988 (20 cells off); S2 the
+  careful path (folio chain, first occupancy, the occupancy record's units), 5,024 (20 off); S3 each permit's units once
+  at its first occupancy, 4,254 (18 off); answer 4,294.
+- Lazy delta: S1 wrong in 20 of 20 cells.
+- Realism: permit systems carry a project's unit count on the permit header and copy it onto each occupancy issued
+  under the permit; phased occupancy of multi-building sites is ordinary.
+
+**Ask B. The homes standing on the order's lots at the 2026 roll by station area and distance band** (12 counts,
+whole numbers). Golden 21,094 in all.
+- H18 home: the trail from an input the call consumes (the roll's dwelling units on the order's lots, which net the
+  forecast) to its control total; the call reads the standing houses' and rental buildings' units, never the strata
+  lots of rebuilt sites.
+- Construction: the 2026 roll's folios that are Schedule A's or their ancestors: a house its dwelling units, a rental
+  building its units, a strata lot that is a home one, a commercial site or a cleared lot none (methodology 5.3).
+- Primary device (D5, a category crossed by label): parking and storage stalls registered as strata lots, each a folio
+  under the "Strata residential" use group with no unit number and no floor area, beside residential strata lots that
+  also lack a floor area (plans registered since 2023) or a unit number (older townhouse strata with their own civic
+  numbers): no single column separates them; a missing unit number and floor area together, or the assessed values, do.
+  Every cell holds stalls (asserted).
+- Silence: the strata lot count per plan ties to nothing on the call's path; the natural count completes and reconciles.
+- Fair: a strata lot is a home exactly when it carries a unit number or a floor area; every stall is assessed under
+  $95,000 and every home at $310,000 or more (asserted).
+- Hazards: HB1 (D2, the schedule as at its date): Schedule A lists folios as at 30 June 2026, and plans deposited after
+  the roll's October 2025 records appear there as strata folios the 2026 roll does not hold; HB2 (seen): suites.
+- Path (4 files, 10 columns): the 2026 roll, Schedule A, the folio history, the extract notes.
+- Stops (asserted): S1 every strata folio a home, 23,505 (12 cells off); S2 strata folios without a floor area dropped,
+  19,381 (12 off); S3 strata folios without a unit number dropped, 20,788 (7 off); S4 Schedule A's own folios counted,
+  21,615 (8 off); answer 21,094.
+- Lazy delta: S1 wrong in 12 of 12 cells.
+- Realism: stalls and lockers registered as strata lots are common in British Columbia's strata plans and are assessed
+  as residential strata lots; recent plans lack captured floor areas.
+
+**The chart.** One stacked bar a year 2022 to 2026, a labelled segment per station area: Ask A's figures; the same
+device reaches every segment.
+
+**Hazard table**
+
+| Hazard | Root cause | Moves | Per-ask delta (asserted as built) |
+|---|---|---|---|
+| HA1 folio chain | completed strata buildings registered onto new folios | Ask A, every station | S1 against S2 in every cell |
+| HA2 interim occupancy | an interim then a final occupancy on some buildings | Ask A | the cells holding them |
+| HB1 schedule date | Schedule A as at 30 June 2026 against the roll's October 2025 records | Ask B | S4, 8 cells |
+| HB2 suites | the roll's suite and laneway codes | Ask B and the call's netting alike | read right on the call's path |
+
+**The cracker sheet.** The cracker filed the golden call, ran the hygiene battery (keys unique, exact duplicates,
+every join matched through the folio history, no fan-out, counts tied), counted first occupancies once and executed
+every filed rule. Every ask row misses:
+
+| Ask figures | The cracker's path | What keeps it wrong | Cracker result |
+|---|---|---|---|
+| Ask A, 20 counts | first occupancies on Schedule A's lots through the folio history, the occupancy record's units | each phased building repeats its permit's total units (5,024 against 4,294) | miss |
+| Ask B, 12 counts | the 2026 roll's folios on the order's lots, houses with suites as two, rental units, strata lots one each | parking and storage stalls counted as homes (23,505 against 21,094) | miss |
+| Chart, segment labels | Ask A's counts | as Ask A | miss |
+
+Mirror leakage: 5.6 per cent of the ask weight (the mirror stops at the default path, answers both asks as the
+cracker does and keeps only the chart's structure, 2 of 36 ask criteria).
+
+**Pair arithmetic.** Planning weights 36 recommendation and components (the total and five yearly figures), 7
+instruction following (the two files, the rounding), 57 asks over 36 criteria (Ask A 20, Ask B 12, the chart 4), about
+1.6 each. The cracker on the call keeps the chart's structure (2 criteria): C = 36 + 7 + 3.2 = 46.2; the mirror keeps
+r of about 4 (the files and the method's credit) and the same 3.2: S = 4 + 7 + 3.2 = 14.2.
+
+Pair ceiling: 30.2 (the pair's average, (46.2 + 14.2) / 2, rerun from the generated rubric at stage 4).
+
+## Leak review
+
+`leak.py task134 --asof 2026-12-31`: REVIEW, no LEAK. Each REVIEW line:
+- Sweep 3, the order's bands and densities (200, 400, 800 m; 5.0, 4.0, 3.0) in the order and the extract notes: the order's own facts, which the call reads as inputs; harmless.
+- Sweep 3, the call's words in the notes, index, methodology and order: the institution's vocabulary (net new homes, building permits, the Ridgemont Line order); no figure of the answer appears; harmless.
+- Sweep 4, stump terms (record, history, permit, methodology, release, projection) in the notes, index and methodology: generic words of the extracts and the methodology; none names the move; harmless.
+- Sweep 8, `ACTUAL_USE`: the assessment roll's own field name in its former layout; harmless.
+- Sweep 9, the folder index's dates in January 2027: the dates the branch received the extracts (the work is prepared on 15 January 2027 from records to 31 December 2026); harmless.
 
 ## Tried and rejected
 
@@ -216,3 +423,9 @@ Stage 2.
 - Architecture 3 prototype, a smooth redevelopment hazard (logistic in the log of residual land value over existing value): defensible estimators split widely on the same data (a logit in the ratio itself 31 to 35 per cent under, decile bins 9 to 20 per cent over), because the lots the order upzones sit in the upper band of a skewed record; the hazard is now a step (nil until the best-paying building outbids the existing use, then the rate of the lot's kind), which every ratio estimator recovers within 3 per cent.
 - Architecture 3 prototype, one pooled rate for every feasible lot: zoned capacity at the corridor take-up landed within 1.4 per cent of the golden, the capacity's overstatement (the 4.0 and 5.0 FAR tiers) cancelling the take-up's dilution; the record's commercial sites are rebuilt about three times as fast as houses once feasible (one owner, no assembly, no residents), so the rate is by kind of lot, and the corridors' commercial-heavy take-up now misses upward with the capacity.
 - Architecture 3 prototype, concrete feasible but second-best at the stations: the route that prices each lot at the building type the order's FAR names then mixed feasible and infeasible tower lots and landed within 6 per cent; concrete costs are set so towers do not pay at any of the four stations (they pay in the City Centre), and that route now drops the 4.0 and 5.0 FAR tiers and misses by 27 to 47 per cent.
+- Architecture 3 build, the corridor rezoning inside the record (2018): the roll records each lot's zone at its valuation date, a year behind a rezoning in force from February, so a solver taking the roll's zone for the permit year read the corridors' first-year rebuilds as infeasible and filed rates 7 per cent low (bins flipped); the corridors are rezoned in April 2013, before the record opens, and no rezoning inside the record changes any lot's feasibility.
+- Architecture 3 build, City Centre fringe houses rezoned in 2016 and a low-rise rental zone raised from 1.5 to 2.0 FAR in 2018: the same valuation-date lag, and the rental lots' feasibility ratio sat near 1 (a low-rise at 1.5 FAR on a valuable rental building); both groups dropped, and the rental buildings sit on the corridors.
+- Architecture 3 build, the first history compositions: the covariate logit in log FAR with homes at the best building landed in the golden's bin (-0.4 per cent), and in another the smooth logit in the ratio (+1.5 per cent) and the declining hybrid (-0.9 per cent); compositions searched on the truth (`proto/search.py`) and the record set at 500 corridor houses, 600 corridor commercial sites and 150 corridor rental buildings a neighbourhood, 700 and 150 in the City Centre and 1,200 townhouse lots a neighbourhood, where every rival sits two bins or more off.
+- Architecture 3 build, suites and laneway houses at 0.75 per cent a year on the station areas' houses: read as rebuilds they took 9 per cent of the houses out of the risk set and moved the call 4.9 per cent (an R2 failure); 0.15 per cent a year in the station areas (0.75 on townhouse lots), now 1.0 per cent.
+- Architecture 3 build, revisions on 3 per cent of permits and lapsed applications on 2.5: counting every permit for new construction as a rebuild moved the call 2.6 per cent; 1.0 and 0.8 per cent, now 0.7.
+- Architecture 3 build, 16,000 square foot commercial lots: the record's permits ran to 13,500 homes a year, beyond any suburban city; 12,000 square feet (7,500 in the City Centre) and a city of about 640,000, the record now 10,700 homes in 2014 falling to 4,900 in 2026.
