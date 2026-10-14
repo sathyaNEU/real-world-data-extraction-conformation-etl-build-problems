@@ -23,6 +23,7 @@ GRADES = ["A", "B", "C", "D", "E"]
 SCENARIOS = [("Base", 0.55, 1.00), ("Downside", 0.30, 1.28), ("Upside", 0.15, 0.81)]
 STAGE2_SCALAR = 2.4                    # filed in CRM-ECL-04 3.2
 SICR_DROP = 60                         # behaviour score fall (current scorecard points) that triggers stage 2
+SCORE_RERUN_PARTITION = "34"            # the scoring engine's partition the 1 July 2026 run could not score
 SCORE_MAP = (1.12, -18.0)              # v3 -> v4: v4 = 1.12 * v3 - 18, rounded
 SCORECARD_SWITCH = dt.date(2024, 7, 1)  # applications received on or after this date are scored on v4
 SYD = ZoneInfo("Australia/Sydney")

@@ -46,7 +46,7 @@ Stage 1 carries AUD 10.6 million and stage 2 AUD 2.6 million. Not default and re
    - PL60, January to March 2024: 73.2
    - PL60, April to June 2024: 79.3
 
-### board_ecl_q3_2026.pptx
+### arc_ecl_q3_2026.pptx
 
 1. Slide 1 states the AUD 13.2 million allowance with stage 1 at AUD 10.6 million and stage 2 at AUD 2.6 million.
 2. Slide 2 charts where each product's stage 1 and stage 2 loans at 30 June 2026 stand at 30 September 2026, stacked bars with every segment labelled:

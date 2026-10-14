@@ -1,4 +1,4 @@
-"""The golden deliverables: the allowance workbook and the two board slides."""
+"""The golden deliverables: the allowance workbook and the two Audit and Risk Committee slides."""
 import copy
 import datetime as dt
 import os
@@ -140,7 +140,8 @@ def workbook(f, path):
         "Stage 2: 30 or more days past due, a hardship arrangement in force on the date (start to end, both included, not "
         "from the day it is cancelled), or a behaviour score 60 or more points below origination on v4 from the month-end "
         "run on the position at the date; v3 origination scores converted as 1.12 x v3 - 18, rounded. At 30 June the "
-        "June month-end run (made 1 July) supplies the scores, and days past due are put back to close of business on "
+        "June month end's run supplies the scores (made 1 July; for the loans that run carried forward, the rerun made 2 "
+        "July), and days past due are put back to close of business on "
         "30 June: the June extract counts them to its run date, 1 July, so each loan in arrears reads a day further. "
         "A closed "
         "loan, one written off included, is in no stage.",
@@ -216,7 +217,7 @@ def deck(f, path):
     def footer(slide, n):
         tb = slide.shapes.add_textbox(Cm(1.6), Cm(17.7), Cm(30.5), Cm(0.8))
         r = tb.text_frame.paragraphs[0].add_run()
-        r.text = "Bellbird Personal Finance  |  Board, 23 October 2026  |  Credit Risk Reporting  |  %d" % n
+        r.text = "Bellbird Personal Finance  |  Audit and Risk Committee, 23 October 2026  |  Credit Risk Reporting  |  %d" % n
         r.font.size = Pt(9)
         r.font.color.rgb = GREY
 
@@ -327,7 +328,7 @@ def build(target=None, out=None):
     f = figures(target)
     wbp = os.path.join(out, "ecl_allowance_2026Q3.xlsx")
     workbook(f, wbp)
-    dp = os.path.join(out, "board_ecl_q3_2026.pptx")
+    dp = os.path.join(out, "arc_ecl_q3_2026.pptx")
     deck(f, dp)
     P.office_container(dp, "Joseph Mitchell", "Joseph Mitchell", dt.datetime(2026, 10, 8, 16, 41), PREPARED,
                        "Microsoft Office PowerPoint", revision=3)

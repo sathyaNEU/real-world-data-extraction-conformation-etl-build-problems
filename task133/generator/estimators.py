@@ -635,7 +635,8 @@ def migration(target, june_rule="dates", run="june", sept_rule="dates", june_dpd
     """the loans in stage 1 and stage 2 at 30 June 2026, by product and June stage: how many are in stage 1, 2 and 3
     at 30 September and how many have closed (not in the September extract). 'june' takes the scores of the month-end
     run on the 30 June position (made on 1 July); 'may' the last run made on or before 30 June; 'sept' the September
-    extract's scores. june_dpd 'close' takes days past due at close of business on 30 June (CRM-ECL-04 1.3): the June
+    extract's scores; 'june1' the run dated 1 July as it stands, 'june1_scored' its Scored rows only, 'june_latest'
+    each loan's latest June month-end row. june_dpd 'close' takes days past due at close of business on 30 June (CRM-ECL-04 1.3): the June
     extract counts them to its run date, 1 July (the dictionary), a day more for a loan in arrears; an integer puts each
     value back by that many days; 'extract' takes the column as it stands"""
     bk, hd, mapping = load_staging(target)
@@ -647,8 +648,15 @@ def migration(target, june_rule="dates", run="june", sept_rule="dates", june_dpd
     elif june_dpd != "extract":
         raise ValueError(june_dpd)
     sc = score_runs(target)
-    if run == "june":
+    if run == "june":                       # the June month end's score: its run's Scored rows, the 2 July rerun included
+        pick = sc[(sc["run_date"] > PRIOR) & (sc["run_date"] < dt.date(2026, 8, 1)) & (sc["score_status"] == "Scored")]
+    elif run == "june1":                    # the run dated 1 July as it stands, carried-forward scores included
         pick = sc[sc["run_date"] == dt.date(2026, 7, 1)]
+    elif run == "june1_scored":             # the run dated 1 July, its Scored rows only
+        pick = sc[(sc["run_date"] == dt.date(2026, 7, 1)) & (sc["score_status"] == "Scored")]
+    elif run == "june_latest":              # each loan's latest row of the June month end, whatever its status
+        x = sc[(sc["run_date"] > PRIOR) & (sc["run_date"] < dt.date(2026, 8, 1))].sort_values("run_date")
+        pick = x.groupby("loan_no").tail(1)
     elif run == "may":
         pick = sc[sc["run_date"] == max(d for d in sc["run_date"].unique() if d <= PRIOR)]
     elif run == "july":

@@ -4,17 +4,17 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: record, taken-over, repayment, decisive, drawdown, device, asserted, status, go-live, months, million, population, earlier, arrangement, sentence, points, dictionary, take-over, survival, sample, platform, silent, agency, truncation, reading
+Stump terms swept: record, taken-over, device, repayment, decisive, drawdown, asserted, status, dictionary, population, earlier, go-live, months, million, extract, silent, arrangement, sentence, points, take-over, survival, sample, platform, counts, agency
 
 ## 3 answer figures in the pack (REVIEW 4)
 - **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: golden figure 7.1 appears: ...modelled allowance. 7. Limitations 7.1 PD is set by product and month on book only. Risk...
-- **REVIEW** `scorecard_v4_migration_note.pdf`: golden figure 680 appears: ...ted scores on the two scales: v3 520 560 600 640 680 720 760 800 v4 564 609 654 699 744 788 833 878 Ap...
 - **REVIEW** `scorecard_v4_migration_note.pdf`: golden figure 560 appears: ...point. Selected scores on the two scales: v3 520 560 600 640 680 720 760 800 v4 564 609 654 699 744 78...
+- **REVIEW** `scorecard_v4_migration_note.pdf`: golden figure 680 appears: ...ted scores on the two scales: v3 520 560 600 640 680 720 760 800 v4 564 609 654 699 744 788 833 878 Ap...
 - **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: carries 9 of 10 distinctive words of the committed call: 'Book a collective expected credit loss allowance of AUD 13.2 million on the PL36 and PL60 personal loans at 30 September'
 
 ## 4 design-note vocabulary (REVIEW 2)
 - **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: 6 of 25 stump-paragraph terms appear (record, repayment, status, months, arrangement, points); read whether the document names the move
-- **REVIEW** `ecl_extract_dictionary.txt`: 10 of 25 stump-paragraph terms appear (record, repayment, drawdown, status, months, earlier); read whether the document names the move
+- **REVIEW** `ecl_extract_dictionary.txt`: 11 of 25 stump-paragraph terms appear (record, repayment, drawdown, status, dictionary, earlier); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 3)
 - **REVIEW** `hardship_register_2026-09-30.xlsx`: 742 ISO dates after 2026-10-12, e.g. 2026-10-13, 2026-10-14, 2026-10-15, 2026-10-16, 2026-10-17
@@ -58,3 +58,12 @@ and CHG-26-0418 reads as a plain change line; CRM-ECL-04 drops the justification
 clause in 3.3, and its 4.2 history line reads "Annual review: 2.2 and 3.3 revised". leak.py --asof 2026-10-12 above:
 REVIEW, no LEAK, the same REVIEW lines as before. The pause explanation in the hardship register's entry is kept: 3.2's
 remaining term on the main call reads it.
+
+## After round 2c (2026-10-14, leak.py only; the re-read and re-judge are owed)
+
+Round 2c changed under `target/`: `behaviour_score_runs_2026-03_2026-08.parquet` (a `score_status` column and its
+description; the June month end's partition carried forward in the run dated 1 July and rescored in a run dated 2
+July), `CRM-ECL-04_expected_credit_loss_personal_loans.docx` (section 5 and the 4.1 history line report to the Audit and
+Risk Committee) and `hardship_register_2026-09-30.xlsx` (the job account's last-modified-by persona). leak.py --asof
+2026-10-12 above: REVIEW, no LEAK, the same lines as before (the dictionary's stump-term overlap now 11 of 25, the
+subject's own words). Neither the dictionary nor the policy mentions the rerun (asserted in `checks.py`).

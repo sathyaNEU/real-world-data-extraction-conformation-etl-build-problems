@@ -282,7 +282,7 @@ def dpd_clock(target, extract):
     return f(m.group(1)), f(m.group(2))
 
 
-def migration(target, june="dates", run="2026-07-01", dpd="close"):
+def migration(target, june="dates", run="june", dpd="close"):
     """the June extract's days past due are counted to the date its dictionary line gives: 'close' puts a loan in
     arrears back to close of business on 30 June (1.3) by the days between the two; 'extract' reads the column as it
     stands"""
@@ -293,7 +293,10 @@ def migration(target, june="dates", run="2026-07-01", dpd="close"):
         jb["days_past_due"] = np.maximum(jb["days_past_due"].to_numpy() - (counted - close).days, 0)
     sc = pd.read_parquet(os.path.join(target, "behaviour_score_runs_2026-03_2026-08.parquet"))
     sc["run_date"] = pd.to_datetime(sc["run_date"]).dt.strftime("%Y-%m-%d")
-    pick = sc[sc["run_date"] == run]
+    if run == "june":       # the June month end's run: rows made after 30 June and before the July month end's run, as scored
+        pick = sc[(sc["run_date"] > "2026-06-30") & (sc["run_date"] < "2026-08-01") & (sc["score_status"] == "Scored")]
+    else:
+        pick = sc[sc["run_date"] == run]
     score = jb["loan_no"].map(dict(zip(pick["loan_no"], pick["score_v4"])))
     if june == "dates":
         hd2 = hd
@@ -382,7 +385,8 @@ def main(target=T, golden=G):
     for name, kw in (("days past due as extracted", dict(dpd="extract")),
                      ("labels, May run", dict(june="label", run="2026-06-01", dpd="extract")),
                      ("cancelled out, May run", dict(june="excl", run="2026-06-01", dpd="extract")),
-                     ("dates, May run", dict(run="2026-06-01", dpd="extract")), ("cancelled out, June run", dict(june="excl"))):
+                     ("dates, May run", dict(run="2026-06-01", dpd="extract")), ("cancelled out, June run", dict(june="excl")),
+                     ("the 1 July run as it stands", dict(run="2026-07-01"))):
         x = migration(target, **kw)
         moved = sum(x[c] != M[c] for c in M)
         print(("OK  " if moved >= 6 else "FAIL"), "ask B stop %-24s moves %d of 16" % (name, moved))

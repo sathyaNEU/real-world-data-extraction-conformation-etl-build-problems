@@ -120,8 +120,8 @@ def methodology_docx(path):
           "probability-weighted sum of the scenario ECLs. Group Finance sets the scenarios and their weights each quarter "
           "from the economic outlook, and the Audit and Risk Committee approves them before the reporting date."), "1.0")
     add(("h1", "5. Reporting"), "1.0")
-    add(P("The allowance is reported each quarter to the Board, after the Audit and Risk Committee has reviewed it, in "
-          "Australian dollars by stage and product, with the coverage ratio for each."), "4.1")
+    add(P("The allowance is reported each quarter to the Audit and Risk Committee, in Australian dollars by stage and "
+          "product, with the coverage ratio for each."), "4.1")
     add(("h1", "6. Post-model adjustments"), "2.0")
     add(P("An overlay is made only for a risk this method does not capture. It is approved by the Audit and Risk Committee "
           "with the condition for its release and reported separately from the modelled allowance."), "2.0")
@@ -156,8 +156,7 @@ def methodology_docx(path):
                    ["3.1", "Aug 2024", "Score condition moved to scorecard v4, with v3 origination scores converted"],
                    ["4.0", "Jun 2025", "Stage 2 scalar of 2.4 on PD(k) introduced (MV-2025-07)"],
                    ["4.1", "May 2026", "Hardship arrangements added to the stage 2 conditions; LGD for PL60 raised from 74 to "
-                                       "76 per cent; the allowance reported to the Board after the Audit and Risk "
-                                       "Committee's review"],
+                                       "76 per cent; section 5 restated"],
                    ["4.2", "Aug 2026", "Annual review: 2.2 and 3.3 revised"]],
          [1100, 1300, 6600], 19),
         "1.0", rows=["1.0", "1.0", "2.0", "3.0", "3.1", "4.0", "4.1", "4.2"])

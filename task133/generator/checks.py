@@ -37,6 +37,7 @@ if len(sys.argv) > 2:
     T, G = os.path.abspath(sys.argv[1]), os.path.abspath(sys.argv[2])
 R = W.REPORT
 JUNE = W.PRIOR_QE
+RERUN = dt.date(2026, 7, 2)                # the June month end's partition, run again
 n_ok = 0
 LOG = []
 
@@ -113,7 +114,7 @@ def gates():
     ok(len(meta["distractors"]) >= 2 and all(d in files for d in meta["distractors"]), "two or more distractors on disk")
     ok(set(meta["distractors"]) == set(DISTRACTORS), "the distractors are the roll-rate workbook and the aggregate write-off file")
     ok(sorted(x["path"] for x in meta["input_files"]) == files, "metadata lists every shipped file")
-    ok(meta["deliverables"] == ["ecl_allowance_2026Q3.xlsx", "board_ecl_q3_2026.pptx"]
+    ok(meta["deliverables"] == ["ecl_allowance_2026Q3.xlsx", "arc_ecl_q3_2026.pptx"]
        and all(os.path.exists(os.path.join(G, d)) for d in meta["deliverables"]), "two deliverables, both built")
     for f in files:
         ok(not any(w in f.lower() for w in ("answer", "golden", "trap", "clean", "_v2", "test_", "distract", "legacy",
@@ -528,16 +529,37 @@ def june_extract():
 
 def scoring_runs():
     sc = E.score_runs(T)
-    ok(list(sc.columns) == ["loan_no", "run_date", "score_v4"], "the scoring file carries loan, run date and score")
+    ok(list(sc.columns) == ["loan_no", "run_date", "score_v4", "score_status"], "the scoring file carries loan, run date, "
+                                                                               "score and status")
     runs = sorted(sc["run_date"].unique())
-    ok(runs == [dt.date(2026, m, 1) for m in range(4, 10)], "six runs, made on the first day of April to September 2026")
+    ok(runs == sorted([dt.date(2026, m, 1) for m in range(4, 10)] + [RERUN]), "six month-end runs made on the first day of "
+       "April to September 2026, and the June month end's partition made again on 2 July")
     ok(not sc.duplicated(["loan_no", "run_date"]).any(), "one score per loan per run")
+    # SF34: the June month end's run. The 1 July run could not score one partition of the engine's book and wrote each of
+    # those loans its last score as Carried forward; the partition was run again on 2 July. Every loan scored for the June
+    # month end has exactly one Scored row among the rows made after 30 June and before the July month end's run
+    cf = sc[sc["score_status"] == "Carried forward"]
+    ok(set(sc["score_status"]) == {"Scored", "Carried forward"} and (cf["run_date"] == dt.date(2026, 7, 1)).all(),
+       "SF34: Carried forward appears only in the run dated 1 July (%d loans)" % len(cf))
+    rr = sc[sc["run_date"] == RERUN]
+    ok(set(rr["loan_no"]) == set(cf["loan_no"]) and (rr["score_status"] == "Scored").all(), "SF34: the 2 July rows score "
+       "exactly the loans carried forward on 1 July")
+    jm = sc[(sc["run_date"] > JUNE) & (sc["run_date"] < dt.date(2026, 8, 1)) & (sc["score_status"] == "Scored")]
+    ok(jm["loan_no"].is_unique, "SF34: each loan has one Scored row for the June month end")
+    may = sc[sc["run_date"] == dt.date(2026, 6, 1)].set_index("loan_no")["score_v4"]
+    has_may = cf["loan_no"].isin(may.index)
+    ok((cf.loc[has_may, "score_v4"].to_numpy() == may.loc[cf.loc[has_may, "loan_no"]].to_numpy()).all() and has_may.mean() > 0.9,
+       "SF34: each carried-forward score repeats the loan's May month-end score (%d of %d; the rest first scored in June "
+       "carry the application score)" % (int(has_may.sum()), len(cf)))
+    alt = rr.set_index("loan_no")["score_v4"]
+    ok((alt.loc[cf["loan_no"]].to_numpy() != cf["score_v4"].to_numpy()).mean() > 0.8, "SF34: the 2 July score differs from "
+       "the carried-forward one for most of the partition")
     meta = meta_of(os.path.join(T, E.F["scores"]))
     ok(meta["runs"] == "the March, April, May, June, July and August 2026 month ends" and meta["run_date"] == "date the run was made"
        and all(c in meta for c in sc.columns), "SF26: the file names the six month ends it scores, dates each run by the day "
                                                "it was made, and describes every column in one form")
     jb = pd.read_csv(os.path.join(T, E.F["june"]))
-    jun = sc[sc["run_date"] == dt.date(2026, 7, 1)]
+    jun = jm
     due = set(jb.loc[pd.to_datetime(jb["first_repayment_date"]) <= pd.Timestamp(JUNE), "loan_no"])
     ok(set(jun["loan_no"]) == due, "the June month-end run scores exactly the June loans whose first repayment has fallen due (%d)" % len(due))
     bk = pd.read_csv(os.path.join(T, E.F["book"]))
@@ -546,7 +568,9 @@ def scoring_runs():
     o4 = pd.Series(o4, index=orig.index)
     shares = {}
     for d in runs:
-        x = sc[sc["run_date"] == d]
+        if d == RERUN:
+            continue
+        x = sc[(sc["run_date"] == d) & (sc["score_status"] == "Scored")] if d != dt.date(2026, 7, 1) else jm
         x = x[x["loan_no"].isin(o4.index)]
         shares[d.isoformat()] = float(((o4.loc[x["loan_no"]].to_numpy() - x["score_v4"].to_numpy()) >= 60).mean())
     vals = list(shares.values())
@@ -759,7 +783,10 @@ ASK_B_STOPS = [("June days past due as extracted", dict(june_dpd="extract")),
                ("labels, June run", dict(june_rule="label", june_dpd="extract")),
                ("labels with start dates, May run", dict(june_rule="label_dated", run="may", june_dpd="extract")),
                ("July run", dict(run="july", june_dpd="extract")),
-               ("end date excluded", dict(june_rule="end_exclusive", june_dpd="extract"))]
+               ("end date excluded", dict(june_rule="end_exclusive", june_dpd="extract")),
+               ("the 1 July run as it stands", dict(run="june1", june_dpd=1)),
+               ("the 1 July run, Scored rows only", dict(run="june1_scored", june_dpd=1)),
+               ("the 1 July run as it stands, June days past due as extracted", dict(run="june1", june_dpd="extract"))]
 
 
 def ask_b():
@@ -893,6 +920,23 @@ def ask_forks(s, g_a, m_b):
        "extract shows at 180 days were at 179 when the June month-end batch ran, so 1.4 had not written them off")
     moved_b = sum(a != b for a, b in zip(flat(jb_), flat(m_b)))
     ok(moved_b >= 12, "SF25: the June column read unadjusted moves %d of 16" % moved_b)
+    # SF34: the June behaviour score. 2.1 compares the score at the reporting date; the scoring file dates each run by the
+    # day it was made and marks a score the run could not calculate as Carried forward (the last score held). Read
+    # literally, the June month end's score is its Scored row: the 1 July run's, or the 2 July rerun's for the partition the
+    # 1 July run carried forward. Each loan's latest June month-end row gives the same (C1); the run dated 1 July taken as
+    # it stands, or its Scored rows alone, miss
+    meta_s = meta_of(os.path.join(T, E.F["scores"]))
+    ok(meta_s["score_status"].startswith("Scored, or Carried forward (the run could not score the loan and repeats the last "
+                                         "score the scoring engine holds for it)"), "SF34: the scoring file says what a "
+                                                                                    "Carried forward score is")
+    ok(E.migration(T, run="june_latest") == m_b, "SF34: each loan's latest June month-end row gives all sixteen counts (C1)")
+    for nm_, run_ in (("the run dated 1 July as it stands", "june1"), ("its Scored rows only", "june1_scored")):
+        x = E.migration(T, run=run_)
+        mv = sum(x[k] != m_b[k] for k in m_b)
+        ok(mv >= 12, "SF34: %s moves %d of 16, ruled out by the file's own status and run dates" % (nm_, mv))
+        out["b4 " + nm_] = mv
+    vx = V.migration(T, run="2026-07-01")
+    ok(sum(vx[k] != m_b[k] for k in m_b) >= 12, "SF34: the verifier's own build on the run dated 1 July as it stands misses")
     # SF31: 2.2, cancelled arrangements and the end date, at 30 June
     dic = " ".join(open(os.path.join(T, "ecl_extract_dictionary.txt")).read().split())
     stops_day = "one that is cancelled stops being in force on the day it is cancelled"
@@ -932,7 +976,8 @@ def ask_forks(s, g_a, m_b):
     _, _, mapping = E.load_staging(T)
     a_, b_ = mapping
     o4 = np.where(jx["origination_scorecard"] == "v3", np.floor(a_ * jx["origination_score"] + b_ + 0.5), jx["origination_score"])
-    js = jx["loan_no"].map(sc[sc["run_date"] == dt.date(2026, 7, 1)].set_index("loan_no")["score_v4"])
+    jm_ = sc[(sc["run_date"] > JUNE) & (sc["run_date"] < dt.date(2026, 8, 1)) & (sc["score_status"] == "Scored")]
+    js = jx["loan_no"].map(jm_.set_index("loan_no")["score_v4"])
     at60 = int(((o4 - js) == 60).sum())
     st_ = E.migration(T, strict_fall=True)
     mv = sum(st_[k] != m_b[k] for k in m_b)
@@ -1149,6 +1194,9 @@ def residue_and_pins():
     for w in ("reissu", "first placement", "first placed", "loader", "re-used", "reused", "recycl", "wrong loan", "earlier holder"):
         ok(w not in dic.lower() and w not in pol.lower(), "the filed text says what each field holds and narrates no reissue or "
                                                           "posting rule (%r)" % w)
+    for w in ("rerun", "re-run", "run again", "partition", "carried forward", "2 july"):
+        ok(w not in dic.lower() and w not in pol.lower(), "the dictionary and the policy say nothing of the June month end's "
+                                                          "scoring rerun (%r)" % w)
     for w in ("a day more", "one day more", "day further", "clock", "subtract", "put back", "minus"):
         ok(w not in dic.lower() and w not in pol.lower(), "the dictionary records each extract's run clock and says nothing "
                                                           "of recounting days past due (%r)" % w)
@@ -1168,7 +1216,7 @@ def residue_and_pins():
                 ok('defaultThemeVersion="166925"' in z.read("xl/workbook.xml").decode(), "%s: workbook theme version 166925" % f)
                 ok(made < "2023-07-01" or who == W.JOB_ACCOUNT, "%s: created %s, before the 2023 theme, or by the job" % (f, made))
             if f == E.F["hardship"]:
-                ok(who == W.JOB_ACCOUNT and "<cp:lastModifiedBy>Vanessa King<" in core, "the register is written by the job's account")
+                ok(who == W.JOB_ACCOUNT and "<cp:lastModifiedBy>Declan Wallace<" in core, "the register is written by the job's account")
     with zipfile.ZipFile(POLICY()) as z:
         app = z.read("docProps/app.xml").decode()
         doc = z.read("word/document.xml").decode()
@@ -1213,7 +1261,9 @@ def audits(s, out, g_a, m_b):
         x = E.lgd_path(T, **kw)
         mat[name] = 8 - hit_a(x)
         ok(mat[name] == 8, "%s moves all eight ask A figures" % name)
-    for name, kw in (("B3: June days past due as extracted, read live at the 07:30 run", dict(june_dpd="extract")),
+    for name, kw in (("B4: the run dated 1 July as it stands", dict(run="june1")),
+                     ("B4: the run dated 1 July, Scored rows only", dict(run="june1_scored")),
+                     ("B3 (filed): June days past due as extracted", dict(june_dpd="extract")),
                      ("B1: the label after the switch", dict(june_rule="label")),
                      ("B1: every cancelled out", dict(june_rule="excl_cancel")),
                      ("B2: the run made before the date", dict(run="may"))):
@@ -1244,7 +1294,7 @@ def audits(s, out, g_a, m_b):
     worst_b = 16
     for dpd in ("close", "extract"):
         for rule in ("dates", "label", "excl_cancel", "ignore_cancel", "end_exclusive"):
-            for run in ("june", "may", "july", "sept"):
+            for run in ("june", "june1", "june1_scored", "may", "july", "sept"):
                 if (dpd, rule, run) == ("close", "dates", "june"):
                     continue
                 worst_b = min(worst_b, 16 - hit_b(E.migration(T, june_rule=rule, run=run, june_dpd=dpd)))
@@ -1252,45 +1302,45 @@ def audits(s, out, g_a, m_b):
     res["composed_b_min_moved"] = worst_b
     # the pair simulation. The cracker lands the call, runs the hygiene battery and executes every filed rule it points at
     # (3.3's measure: the share pooled by balance, the sale by face value, receipts discounted monthly from the default
-    # month end, a cure the record shows written off measured on its recoveries; dishonours netted, the 1 July run,
-    # hardship by 2.2's dates, the June days past due put back to 30 June by the dictionary's run clock). The battery's
-    # joins (receipts to the defaults, the record and the sale schedule) all land, so it takes the remittances as posted;
-    # the mirror stops on the default path and takes the same ask paths, A1 and the June clock being filed text both
-    # execute. Since the June clock is filed (the round 2 re-judge's prescribed fix), ask B carries no device against
-    # this path: the sheet is recorded as measured, and the bar is asserted only on the habitual pair
+    # month end, a cure the record shows written off measured on its recoveries; dishonours netted; hardship by 2.2's
+    # dates; the June days past due put back to 30 June by the dictionary's run clock). The battery's joins all land: the
+    # receipts to the defaults, the record and the sale schedule, so it takes the remittances as posted (A2); the June
+    # extract to the scoring run dated 1 July, every loan past its first repayment scored, so it takes that run as it
+    # stands, carried-forward scores included (B4). The mirror stops on the default path and takes the same ask paths
     mirror_main = out[MAIN[0][0]]
     ok(all(M(mirror_main[n]) != M(s[n]) for n in FIG), "the mirror sheet misses the call")
     careful_a = E.lgd_path(T, cures="gold", refs="posted")
-    crack_a = careful_a
-    careful_b = E.migration(T, june_dpd=1)
-    old_b = E.migration(T, june_dpd="extract")
-    c_hits = hit_a(crack_a) + hit_b(careful_b)
-    m_hits = hit_a(careful_a) + hit_b(careful_b)
-    ok(hit_a(crack_a) == 0 and hit_b(careful_b) == 16 and hit_b(old_b) == 2, "pair simulation: the careful path keeps 0 of "
-       "8 loss shares and, executing the filed June clock, all 16 counts (2 of 16 without it)")
+    careful_b = E.migration(T, june_dpd=1, run="june1")
+    crack_b4 = E.migration(T, june_dpd=1)
+    c_hits = hit_a(careful_a) + hit_b(careful_b)
+    m_hits = c_hits
+    ok(hit_a(careful_a) == 0 and hit_b(careful_b) <= 1 and hit_b(crack_b4) == 16, "pair simulation: the careful path keeps "
+       "%d of 8 loss shares and %d of 16 counts; with the June month end's rerun read as well, all 16" % (hit_a(careful_a), hit_b(careful_b)))
     cracker = REC_W + IF_W + ASK_W * c_hits / 24.0
     mirror = R_KEEP + IF_W + ASK_W * m_hits / 24.0
     pair = (cracker + mirror) / 2
-    print("RECORD pair simulation: cracker %.1f (%d of 24), mirror %.1f (%d of 24), pair %.1f" % (cracker, c_hits, mirror, m_hits, pair))
+    ok(pair <= 40.0, "pair simulation: cracker %.1f (%d of 24), mirror %.1f (%d of 24), pair %.1f" % (cracker, c_hits, mirror, m_hits, pair))
+    ok(100.0 * m_hits / 24 < 35.0, "mirror leakage %.1f per cent of the ask weight" % (100.0 * m_hits / 24))
     both_on = (2 * (REC_W + IF_W) + ASK_W * (c_hits + m_hits) / 24.0) / 2
+    ok(both_on < 50.0, "both top responses on the call, each executing the June clock: pair %.1f" % both_on)
     # a mirror on rung 1 or 2 lands stage 2's bin by offsetting errors and may keep that component too
     mirror_s2 = R_KEEP + 5.0 + IF_W + ASK_W * m_hits / 24.0
-    mirror_old = R_KEEP + IF_W + ASK_W * (hit_a(careful_a) + hit_b(old_b)) / 24.0
-    cracker_only = (cracker + mirror_old) / 2
-    print("RECORD both on the call %.1f; mirror keeping stage 2 %.1f; only the cracker executing the June clock %.1f; "
-          "neither %.1f" % (both_on, (cracker + mirror_s2) / 2, cracker_only,
-                            (REC_W + IF_W + ASK_W * (hit_a(crack_a) + hit_b(old_b)) / 24.0 + mirror_old) / 2))
-    b3_crack = cracker
-    b_both = pair
-    a_both = (REC_W + IF_W + ASK_W * (8 + hit_b(careful_b)) / 24.0 + R_KEEP + IF_W + ASK_W * (8 + hit_b(careful_b)) / 24.0) / 2
+    ok((cracker + mirror_s2) / 2 <= 40.0, "pair with a mirror on rung 1 or 2 keeping stage 2: %.1f" % ((cracker + mirror_s2) / 2))
+    # the most obvious device is A2 (the dictionary's loan_no entry names the posting); the cracker cracking it
+    a2_crack = REC_W + IF_W + ASK_W * (8 + hit_b(careful_b)) / 24.0
+    ok((a2_crack + mirror) / 2 <= 40.0, "the cracker cracking A2, the most obvious device: pair %.1f" % ((a2_crack + mirror) / 2))
+    b4_crack = REC_W + IF_W + ASK_W * (hit_a(careful_a) + 16) / 24.0
+    print("RECORD residuals: the cracker cracking B4 instead %.1f, both A2 and B4 %.1f; both top responses cracking A2 %.1f, "
+          "B4 %.1f" % ((b4_crack + mirror) / 2, (REC_W + IF_W + ASK_W + mirror) / 2,
+                        (2 * (REC_W + IF_W) + ASK_W * 2 * (8 + hit_b(careful_b)) / 24.0) / 2,
+                        (2 * (REC_W + IF_W) + ASK_W * 2 * (hit_a(careful_a) + 16) / 24.0) / 2))
     res["pair"] = dict(cracker=cracker, mirror=mirror, pair=pair, cracker_hits=c_hits, mirror_hits=m_hits,
-                       cracker_only_executes_june_clock=cracker_only,
-                       before_the_june_clock_was_filed=(REC_W + IF_W + ASK_W * (hit_a(crack_a) + hit_b(old_b)) / 24.0 + mirror_old) / 2,
-                       mirror_leakage=100.0 * m_hits / 24, both_on_call=both_on, cracker_cracks_b3=(b3_crack + mirror) / 2,
-                       cracker_cracks_a2=(REC_W + IF_W + ASK_W * (8 + hit_b(careful_b)) / 24.0 + mirror) / 2,
-                       cracker_cracks_both=(REC_W + IF_W + ASK_W * 24 / 24.0 + mirror) / 2,
-                       both_crack_b3=b_both, both_crack_a2=a_both, mirror_keeping_stage2=(cracker + mirror_s2) / 2,
-                       cracker_cracks_both_and_mirror_b=(REC_W + IF_W + ASK_W + mirror) / 2)
+                       mirror_leakage=100.0 * m_hits / 24, both_on_call=both_on,
+                       cracker_cracks_a2=(a2_crack + mirror) / 2, cracker_cracks_b4=(b4_crack + mirror) / 2,
+                       cracker_cracks_both=(REC_W + IF_W + ASK_W + mirror) / 2,
+                       both_crack_a2=(2 * (REC_W + IF_W) + ASK_W * 2 * (8 + hit_b(careful_b)) / 24.0) / 2,
+                       both_crack_b4=(2 * (REC_W + IF_W) + ASK_W * 2 * (hit_a(careful_a) + 16) / 24.0) / 2,
+                       mirror_keeping_stage2=(cracker + mirror_s2) / 2)
     habit_a = E.lgd_path(T, cures="label", sale="none", disc="none", refs="posted")
     habit_b = E.migration(T, june_rule="excl_cancel", run="may", june_dpd="extract")
     h_hits = hit_a(habit_a) + hit_b(habit_b)
@@ -1332,7 +1382,8 @@ def audits(s, out, g_a, m_b):
     sc = E.score_runs(T)
     ok(not sc.duplicated(["loan_no", "run_date"]).any(), "the scoring runs carry one row per loan and run")
     jb = pd.read_csv(os.path.join(T, E.F["june"]), dtype=str)
-    ok(set(sc.loc[sc["run_date"] == dt.date(2026, 7, 1), "loan_no"]) <= set(jb["loan_no"]), "every June-run loan joins the June extract")
+    ok(set(sc.loc[(sc["run_date"] > JUNE) & (sc["run_date"] < dt.date(2026, 8, 1)), "loan_no"]) <= set(jb["loan_no"]),
+       "every loan of the June month end's run joins the June extract")
     pl = pd.read_csv(os.path.join(T, E.F["placements"]), dtype=str)
     ok(pl["Client Ref"].is_unique and not pl.duplicated().any(), "the placement report lists each account once, no duplicate rows")
     a2 = E.attribute(T, pd.read_csv(os.path.join(T, E.F["receipts"]), dtype={"loan_no": str, "receipt_ref": str}), "asof")
@@ -1373,7 +1424,7 @@ def deliverables(s, g_a, m_b):
         for j, x in enumerate(("stage 1", "stage 2", "stage 3", "closed")):
             cells[(p, s0, x)] = mg.cell(r, 3 + j).value
     ok(cells == m_b, "workbook: the sixteen migration counts")
-    prs = Presentation(os.path.join(G, "board_ecl_q3_2026.pptx"))
+    prs = Presentation(os.path.join(G, "arc_ecl_q3_2026.pptx"))
     s1, s2 = prs.slides[0], prs.slides[1]
     t1 = " ".join(sh.text_frame.text for sh in s1.shapes if sh.has_text_frame)
     tb = [sh.table for sh in s1.shapes if sh.has_table][0]
@@ -1406,7 +1457,7 @@ def deliverables(s, g_a, m_b):
         ok(line in sub, "submission: %s" % line)
     pr = open(os.path.join(TASK, "prompt.txt")).read().strip()
     ok(len(pr) < 1000, "the prompt is under 1,000 characters (%d)" % len(pr))
-    ok(all(d in pr for d in ("ecl_allowance_2026Q3.xlsx", "board_ecl_q3_2026.pptx")), "the prompt names both deliverables")
+    ok(all(d in pr for d in ("ecl_allowance_2026Q3.xlsx", "arc_ecl_q3_2026.pptx")), "the prompt names both deliverables")
     for f in ("prompt.txt", "submission.md", "DESIGN_NOTE.md"):
         ok("\u2014" not in open(os.path.join(TASK, f)).read(), "no em dash in %s" % f)
     found = Counter(f for _, _, fs in os.walk(TASK) for f in fs if f in ("submission.md", "prompt.txt"))
