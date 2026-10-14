@@ -172,9 +172,10 @@ were; the pitfall is the field's own (measles' seasonality is set by the school 
 ## Semantic fork table
 
 One row per term in the main ask and per convention the main computation needs, and the ask conventions a judge could
-open (SF17, SF23, SF24). The stump (which diaries measure the winter's contacts) is not a reading and has no row: every
-set of diaries computes the same literal estimand, and only the survey's two regimes and the estimand's window separate
-them (Literal reader).
+open (SF17, SF23, SF24, SF27). The stump (which diaries measure the winter's contacts) is not a reading and has no row:
+every set of diaries computes the same literal estimand, and only the survey's two regimes and the estimand's window
+separate them (Literal reader). SF25 records the one premise under that choice that no file states as a calendar, the
+school regime the winter runs in, and how the pack closes it without naming the step.
 
 | SF | Term or convention | Golden reading | Alternative and the call under it | Ruled out by |
 |---|---|---|---|---|
@@ -200,8 +201,11 @@ them (Literal reader).
 | SF20 | the reproduction number over a week | over every day of the term weeks | school days only (term weekdays): 1.41, B 0.94 (same call, figures off) | standard 3.1, "the average number of people one case infects", over an infection that runs across the week's days |
 | SF21 | the age grain | the public use file's fifteen five-year bands | none shipped finer | C1: the bands are the only ages the file releases (asserted) |
 | SF22 | R0 over the winter | 15 for the winter's own contacts | 15 set on the survey as a whole and its per-contact rate carried to term contacts: an implied 17.6 over the winter, B 1.05, fallback names B (same call, figures off) | standard 3.2, R0 15 "over the winter" |
-| SF23 | Ask 1: a record with a UK postcode and a regional area code | not living in the region (an address in Northern Ireland) | living in the region by its code: every figure up by 200 to 428 | the extract notes define lho_code as the local health office of the person's address, the national code list holds no office outside the State, and the postcode places the address outside it (asserted: every UK postcode is a pupil living across the border) |
-| SF24 | Ask 3: two confirmed records with one date of birth, sex, rash onset and county | one illness notified twice | two cases: every figure up by one or two | the ask counts cases; the six pairs agree on importation and county and neither carries an epi-link to the other, while the 2024 twins share date of birth and sex with onsets apart and an epi-link (asserted) |
+| SF23 | Ask 1: a record with a UK postcode and a regional area code | not living in the region (an address in Northern Ireland) | living in the region by its code: Ask 1 up by 200 to 428 (B 33,435) and Ask 2 with it; the call reads no register file (same call) | the meaning of living in the region (an address in its four counties, in the State): the extract notes define postcode as the postcode of the person's address and lho_code as the local health office of that address, every recorded postcode is an Eircode or a BT postcode, a BT postcode is an address in the UK, and the national code list holds no office outside the State, so the school's code beside it cannot be the address's (asserted: every UK postcode is a pupil living across the border); the register's own region code does not decide it, by design |
+| SF24 | Ask 3: two confirmed records with one date of birth, sex, rash onset and county | one illness notified twice | two cases: every figure up by one or two | the ask counts cases; the six pairs agree on importation and county and neither carries an epi-link to the other, while the 2024 twins, a boy and a girl, differ in sex and onset and the second is epi-linked to the first (asserted) |
+| SF25 | the school regime the winter runs in (a premise of "through winter 2027-28" that no file states as a calendar) | the winter is in the school year, schools open apart from the Christmas and February breaks, so its binding weeks carry the regime of the May diaries | the winter read as school holidays (the summer diaries 0.83) or its regime left unknown and every diary pooled (0.88): no catch-up | not a reading of a filed term: the survey's own at_school field identifies the regimes (at-school contacts 17.5 per cent of all contacts in the May diaries against 2.2 in July and August; 15 to 19-year-olds 59.8 against 1.1), the options paper puts the school team's sessions in schools from 15 September to 20 November, and standard 3.1 binds the figure throughout December to February (asserted); a filed calendar or a sentence naming term was refused, since it would make the choice of diaries a rule to execute (Tried and rejected) |
+| SF26 | a contact | every contact the diary lists: the codebook's conversation of at least three words in each other's presence, or any skin-to-skin contact | physical contacts only: 1.46, B 0.96 (same call, figures off) | the codebook's definition read literally (asserted), with standard 3.1's people one case infects; measles needs no touch |
+| SF27 | Ask 3: the person key joining one person's records | any person key once the 2019 back-entries are joined through the legacy numbers in their comments: date of birth and sex, with or without onset, a 14-day window or county | a key without sex (date of birth alone, or with county) joins the 2024 twins: B 9 confirmed | C1: every person key gives the golden (asserted in checks.py and verify.py); no two people share date of birth, sex and county among the case records, every such group being one person joined by its legacy number or its single onset (asserted); a key without sex joins a boy and a girl and is no person key |
 
 ## Ladder
 
@@ -372,15 +376,17 @@ June 2027 were born in its years, and whether any and if so how many of them wer
 - Second device (D1, a report from a second source that opens a second record): six illnesses notified by both a GP and a
   hospital (2023 to 2027, one in every option's cohort and one imported case in each), two records unlinked, identical
   on date of birth, sex, onset and county; only a person-level key finds them.
-- Over-cleaning half: the 2024 twins (born 2010, same sex, onsets 12 days apart, epi-linked) merge under a date of birth
-  and sex key; no key alone lands any figure, because the back-entries' moved dates survive every key.
+- Over-cleaning half: the 2024 twins (a boy and a girl born on one day in 2010, onsets 12 days apart, the girl
+  epi-linked to her brother) merge only under a key without sex, which is no person key (SF27); every person key lands
+  the golden once the back-entries are joined, and no key alone lands any figure, because the back-entries' moved dates
+  survive every key.
 - Hazards: probable, possible and discarded cases; hospital-laboratory confirmations with no reference specimen;
   import-related against imported (the field notes).
 - Span (3 files, 10 columns): case export (case_id, legacy_ref, onset_date, date_of_birth, sex, county,
   classification, importation, epi_link, comments), laboratory results (case_id), field notes.
 - Stops (measured, asserted): every row counted A 16 and 4, B 16 and 4, C 18 and 5, D 16 and 5, E 25 and 7; the comments
   only (the back-entries cracked) 10/3, 12/3, 13/4, 11/4, 17/6; date of birth, sex and onset only (the second notices
-  cracked) 13/3, 13/3, 13/4, 14/4, 23/6; date of birth and sex, or within 14 days, 11/3, 11/3, 12/4, 12/4, 19/6;
+  cracked) 13/3, 13/3, 13/4, 14/4, 23/6; date of birth and sex, or within 14 days, 11/3, 12/3, 12/4, 12/4, 19/6;
   reference-laboratory positives only 8/1, 9/2, 10/2, 9/3, 14/5; golden 9/2, 10/2, 11/3, 10/3, 16/5.
 - Realism: a migration keeps legacy records, an outbreak team re-keys a line list, and a GP and an emergency department
   both notify the cases they see.
@@ -395,7 +401,7 @@ June 2027 were born in its years, and whether any and if so how many of them wer
 | Merged registrations, events on the retired one | 2 | none 15 to 39, one 495 to 1,030 |
 | Back-entered 2019 outbreak cases | 3 | every figure |
 | Cases notified twice | 3 | every figure by one or two |
-| Twins in the 2024 outbreak | 3 | B under a date of birth and sex key |
+| Twins in the 2024 outbreak | 3 | B's confirmed figure one lower under a key without sex |
 
 **Referee.** None needed: no designed disagreement between two systems is arbitrated by a third file.
 
@@ -441,7 +447,7 @@ cases whole, in the last sentence. It names no method, convention, input file, s
   golden on the term diaries, the family and the rungs; `sim.py` the register (people, events, merges, pupils living
   across the border, postcodes) and the surveillance records (with the six twice-notified illnesses); `asks.py` the three
   asks and every stop; `pack.py`/`docs.py` the files; `golden.py` the two deliverables, figures.json and metadata.json;
-  `writeup.py` renders submission.md from figures.json; `checks.py` (290 assertions, the three-rules block and every
+  `writeup.py` renders submission.md from figures.json; `checks.py` (307 assertions, the three-rules block and every
   rival route the audit measured) and `verify.py` (independent, csv + pdfplumber) recompute; `build.py` runs it and the
   byte-identical rebuild.
 - **Main call, built:** 538,039 residents, 95.2 per cent immune. Term-time eigenvalue without a catch-up 1.299 (R0 x
@@ -450,16 +456,18 @@ cases whole, in the last sentence. It names no method, convention, input file, s
 - **Asks, built:** Ask 1 35,346 / 33,217 / 29,398 / 30,625 / 57,865. Ask 2 (none, one) 3,545/4,720, 4,286/6,091,
   2,857/3,960, 4,971/7,302, 8,526/11,793. Ask 3 (confirmed, imported) 9/2, 10/2, 11/3, 10/3, 16/5. Every stop asserted;
   the call computes from its seven files alone and is unchanged with both distractors deleted.
-- **Free gates (round 2, 2026-10-14):** generator checks 290 PASS (the three-rules block R1 to R3c, every SF row,
-  every rival route the audit measured: R0 x share, the contact-weighted share, the eigenvalue on every diary as
-  computed, transposed, reciprocal on either population, density-adjusted, with unknown ages spread and with the
-  mean-contacts scaling, the two periods averaged, the summer diaries); verify.py PASS (csv + pdfplumber, the term
-  diaries selected by date, the open-query reading included); two builds byte-identical (21 pack files, 2 goldens,
-  figures.json), and the zip build a third; input gates 21 files, 5 formats (csv, docx, pdf, txt, xlsx), the events
-  extract 279,819 rows and the survey's contacts 85,393, 2 distractors; figures_check.py exit 0 (59 figures);
-  precut.py exit 0 (24 fork rows); voice-check.py exit 0; leak.py --asof 2027-07-12 REVIEW (no LEAK), sweep 11 clean;
-  the container audit clean on target/ and golden/; guard.py surface 0 promoted pairs (nearest task132 at 0.100); guard.py
-  heart WARN, no BLOCK (nearest driver off the slot 0.06, task32); guard.py validate 168 cards, 0 invalid.
+- **Free gates (round 2, final rebuild after the stage 4 fix pass, 2026-10-14):** generator checks 307 PASS (the
+  three-rules block R1 to R3c, every SF row SF1 to SF27, every rival route the audit measured: R0 x share, the
+  contact-weighted share, the eigenvalue on every diary as computed, transposed, reciprocal on either population,
+  density-adjusted, with unknown ages spread and with the mean-contacts scaling, the two periods averaged, the summer
+  diaries); verify.py PASS (csv + pdfplumber, the term diaries selected by date, the open-query reading and the date of
+  birth and sex key included); two builds byte-identical (21 pack files, 2 goldens, figures.json), and the zip build a
+  third; input gates 21 files, 5 formats (csv, docx, pdf, txt, xlsx), the events extract 279,819 rows and the survey's
+  contacts 85,393, 2 distractors; figures_check.py exit 0 (59 figures); precut.py exit 0 (27 fork rows);
+  voice-check.py exit 0; leak.py --asof 2027-07-12 REVIEW (no LEAK), sweep 11 clean; the container audit clean on
+  target/ and golden/; guard.py surface 0 promoted pairs (nearest task132 at 0.100); guard.py heart WARN, no BLOCK
+  (nearest driver off the slot 0.06, task32); guard.py validate 169 cards, 0 invalid; freeze.py check --mode
+  determinism PASS against the round 2 snapshot.
 - **leak.py REVIEW lines, answered (final rebuild, --asof 2027-07-12):** sweep 3, the options paper and the standard
   carry the committed call's words (option B, catch-up, measles, reproduction number) because they are the decision's
   own vocabulary, and neither gives an option's reproduction number, a contact matrix, a fieldwork period or which
@@ -473,12 +481,25 @@ cases whole, in the last sentence. It names no method, convention, input file, s
 - **Golden realism (round 2):** the deck's chart annotation fitted inside option B's bar; the method slide names the
   window and R0 over the winter; the contact shares stated in words (more than half, under a fifth) so no reading of the
   denominator moves them; real hospital names replaced by the notifier's town in the twice-notified records.
-- **Stage 4 (pending):** the leak reader and the determinism judge, spawned by the main session; the reports on disk
-  (determinism_check_report.md, determinism_check_report_pass2.md) are round 1's, judged on the round 1 pack.
+- **Stage 4 (round 2, 2026-10-14):** the leak reader found no leak (Q1 to Q4 none; Q5 PS-07 3.3 to 3.6 read with
+  population-average mixing gives 0.72, rung 0, not the golden; Q6 an analytical choice) and the determinism judge
+  returned DETERMINISTIC, APPROVE, every figure reproduced (determinism_check_report_round2.md, verdict verbatim with
+  its Disposition; determinism_check_report.md and determinism_check_report_pass2.md are round 1's history). One
+  generator pass closed the judge's four residual forks and the reader's realism tells, no graded figure moved: the
+  winter's school regime as SF25 (not pinned, closed in the data), the weekday and physical-only matrices as SF20 and
+  SF26 (the literal reading), option B's twins as a boy and a girl with SF27 (every person key converges), the BT
+  postcodes as SF23 (the meaning of living in the region); the extract notes' container scrubbed and the stock lots in
+  their manufacturers' formats. The reader's readings, each harmless: the method for R unfiled (forced by the data,
+  the Literal reader); the open-ended rows (the profile's 1927 and earlier joins the projection's 100 and over on the
+  same label, SF4; the survey's 70+ band, SF8); option E's overlap with D (the options paper splits E's people made
+  immune by span, SF9); people who moved away still active (their codes are outside the region, Ask 1's hazard);
+  imported against import-related (the field notes define both, and the ask counts Imported); migrated duplicate cases
+  (SF24, SF27). No re-judge and no second read: the verdict was APPROVE and no document's text or the prompt changed.
 
 ## Pre-ship check
 
-Written at round 2's stage 3; re-read against the built pack at stage 5.
+Written at round 2's stage 3; re-read against the built pack at stage 5, after the stage 4 fix pass of 2026-10-14
+(one sex in the case export, the stock return's lot numbers, the extract notes' container): every point stands.
 
 1. Domain: a regional department of public health's choice of one autumn MMR catch-up, judged on measles' reproduction
    number for the coming winter; the quantity that decides is the dominant eigenvalue of the next-generation matrix built
@@ -492,7 +513,7 @@ Written at round 2's stage 3; re-read against the built pack at stage 5.
 4. The analyst test holds: R0 times the susceptible share files no catch-up at 0.7, the contact-weighted share 0.7, the
    eigenvalue on every diary 0.9 under every textbook treatment, the two periods averaged 1.0; only the term-time
    diaries put the region at 1.3 and B alone below one (0.892 against A's 1.288).
-5. One defensible answer: PS-07 3.1 to 3.6 file the estimand and window, every fork row is asserted (SF1 to SF24), the
+5. One defensible answer: PS-07 3.1 to 3.6 file the estimand and window, every fork row is asserted (SF1 to SF27), the
    40-member family moves no figure by more than 0.020 and none within 0.031 of a rounding edge.
 6. No decoy: no file states a reproduction number or a matrix; no memo or voice argues an option or a method; the
    uptake report and the stock return are declared distractors.
@@ -602,3 +623,23 @@ Written at round 2's stage 3; re-read against the built pack at stage 5.
   query still open when the extract was prepared is now chased and closed by 30 June whatever its outcome, asserted.
 - Infants born 2027 wholly susceptible (SF13) under round 2: B moves to 0.93, the call unchanged; the profile states the
   share, so the row is refused by standard 3.4 rather than asserted as the same bin.
+- A filed sentence that the winter runs in school term, or the 2027-28 school calendar (the round 2 judge's optional pin,
+  its residual fork on the winter's school regime): declined, because it names the decisive step and files it as a rule
+  to execute; the premise is SF25, closed in the data (at-school contacts 17.5 per cent of all contacts in the May diaries
+  against 2.2 in July and August), with the options paper's school sessions from 15 September and standard 3.1's
+  "throughout", asserted.
+- A filed definition of a duplicate case record (the same judge's other optional pin, its residual fork on option B's
+  confirmed cases, 10 against 9): declined, because a sentence saying which records are one case adjudicates both Ask 3
+  devices. The fork lived in the 2024 twins built as two boys (NDS-24-000133 and NDS-24-000244), whom a date of birth and
+  sex key joined; the twins are now a boy and a girl, one field on one record, so every person key lands the golden once
+  the back-entries are joined (SF27, asserted in checks.py and verify.py) and no graded figure moved.
+- The stock return's batch numbers as MR or PX and five digits (round 2 leak reader): read generated, a prefix spelling
+  the product; each lot now carries its manufacturer's format (MSD a letter and six digits, GSK A69C, a letter, three
+  digits and A), the letters following the expiry. The file is a distractor and nothing reads it.
+- The extract notes' container as the writing library left it (round 2 leak reader): a template thumbnail, a customXml
+  bibliography store and the preview setting, and the template's empty Company element left beside the filled one in
+  app.xml; the parts dropped in post.py with their references and the two Company elements made one (asserted in
+  checks.py), the body and every other part unchanged byte for byte against the round 2 pack (their CRCs compared).
+- Rewording the options paper's budget sentence (2.3, read as slightly editorial by the round 2 leak reader): left as
+  filed, because a document change under target/ would need another reader pass, and the sentence states the budget and
+  that only one catch-up can run, which the cost column already shows; no figure or reading turns on it.

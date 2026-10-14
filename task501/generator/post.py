@@ -282,6 +282,36 @@ def excel_dialect(items, key, app_version="16.0300"):
     return [(nm, parts[nm]) for nm in order]
 
 
+TEMPLATE_PARTS = ("docProps/thumbnail.jpeg", "customXml/")
+
+
+def drop_template_parts(items):
+    """A document Word saves carries no preview picture unless the author asks for one and no bibliography store when
+    it cites nothing; the writing library's template carries both. Drop those parts, every reference to them and the
+    setting that asks for a preview; every other part, the body included, is unchanged."""
+    gone = [n for n, _ in items if n == TEMPLATE_PARTS[0] or n.startswith(TEMPLATE_PARTS[1])]
+    out = []
+    for name, data in items:
+        if name in gone:
+            continue
+        if name == "[Content_Types].xml":
+            data = re.sub(rb'<Override PartName="/customXml/[^"]*" ContentType="[^"]*"/>', b"", data)
+            if not any(n.endswith(".jpeg") for n, _ in items if n not in gone):
+                data = data.replace(b'<Default Extension="jpeg" ContentType="image/jpeg"/>', b"")
+        elif name == "_rels/.rels":
+            data = re.sub(rb'<Relationship Id="rId\d+" Type="[^"]*/metadata/thumbnail" Target="docProps/thumbnail\.jpeg"/>',
+                          b"", data)
+        elif name == "word/_rels/document.xml.rels":
+            data = re.sub(rb'<Relationship Id="rId\d+" Type="[^"]*/relationships/customXml" '
+                          rb'Target="\.\./customXml/item\d+\.xml"/>', b"", data)
+        elif name == "word/settings.xml":
+            data = data.replace(b"<w:savePreviewPicture/>", b"")
+        out.append((name, data))
+    for name, data in out:
+        assert b"customXml/" not in data and b"thumbnail" not in data, name
+    return out
+
+
 def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False):
     """created and modified as ISO stamps (UTC, ending Z). Entries keep their names and order (a workbook's
     take Excel's, with its strings shared and an XML declaration on every part); every entry gets the 1980
@@ -306,9 +336,13 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
         elif name == "docProps/app.xml":
             data = re.sub(rb"<Application>[^<]*</Application>", b"<Application>" + app_name.encode() + b"</Application>", data)
             data = re.sub(rb"<AppVersion>[^<]*</AppVersion>", b"<AppVersion>" + app_ver.encode() + b"</AppVersion>", data)
-            if b"<Company>" not in data:
+            if ext == ".docx" and b"<Company/>" in data:
+                data = data.replace(b"<Company/>", b"<Company>" + COMPANY.encode() + b"</Company>", 1)
+            elif b"<Company>" not in data:
                 data = data.replace(b"</Properties>", b"<Company>" + COMPANY.encode() + b"</Company></Properties>")
         out.append((name, data))
+    if ext == ".docx":
+        out = drop_template_parts(out)
     if ext == ".xlsx":
         out = [(n, d if d.startswith(b"<?xml") else XML_DECL + d) for n, d in share_strings(out)]
         if excel:

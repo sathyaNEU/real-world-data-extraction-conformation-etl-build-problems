@@ -206,11 +206,41 @@ def dedup_cases(cases, how="golden", lab=None):
     raise ValueError(how)
 
 
-def ask3(cases, how="golden", lab=None):
-    c = dedup_cases(cases, how, lab)
+def _by_option(c):
     y = _yob(c)
     out = {}
     for k, (a, b) in OPTION_YEARS.items():
         sel = (y >= a) & (y <= b)
         out[k] = {"confirmed": int(sel.sum()), "imported": int((sel & (c["importation"] == "Imported")).sum())}
     return out
+
+
+def ask3(cases, how="golden", lab=None):
+    return _by_option(dedup_cases(cases, how, lab))
+
+
+PERSON_KEYS = {"date of birth and sex": (("date_of_birth", "sex"), None),
+               "date of birth, sex and onset": (("date_of_birth", "sex", "onset_date"), None),
+               "date of birth and sex, onsets within 14 days": (("date_of_birth", "sex"), 14),
+               "date of birth, sex and county": (("date_of_birth", "sex", "county"), None)}
+
+
+def ask3_person_key(cases, name):
+    """Ask 3 with the back-entries joined to their migrated records through the legacy number in their comments, and
+    records sharing the person key `name` (PERSON_KEYS) joined as one illness (SF27)."""
+    cols, window = PERSON_KEYS[name]
+    c = cases[(cases["classification"] == "Confirmed")].copy()
+    c["onset"] = pd.to_datetime(c["onset_date"])
+    c = c[(c["onset"] >= pd.Timestamp(W.WINDOW[0])) & (c["onset"] <= pd.Timestamp(W.WINDOW[1]))]
+    by_legacy = {r: i for i, r in c["legacy_ref"].items() if r}
+    ref = c["comments"].fillna("").str.extract(LEGACY_IN_COMMENT)[0]
+    links = [(i, by_legacy[r]) for i, r in ref.items() if isinstance(r, str) and r in by_legacy]
+    seen = {}
+    for i, r in c.iterrows():
+        k = tuple(r[x] for x in cols)
+        for j in seen.get(k, []):
+            if window is None or abs((r["onset"] - c.at[j, "onset"]).days) <= window:
+                links.append((i, j))
+        seen.setdefault(k, []).append(i)
+    comp = _components(list(c.index), links)
+    return _by_option(c.loc[sorted(set(comp.values()))])

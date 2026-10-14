@@ -142,9 +142,10 @@ def doses(target, people, unresolved_out=False):
     return count
 
 
-def cases(target):
+def cases(target, key=("date_of_birth", "sex", "onset_date")):
     """Confirmed cases with onset in the window, one per person and illness: a record carrying a migrated record's legacy
-    number in its comments is that illness again, and so is a record with the same date of birth, sex and onset."""
+    number in its comments is that illness again, and so is a record with the same date of birth, sex and onset (key;
+    any person key must give the same counts once the legacy numbers are joined)."""
     rs = [r for r in rows(target, find(target, "nds_measles_cases")) if r["classification"] == "Confirmed"]
     rs = [r for r in rs if dt.date(2019, 1, 1) <= dt.datetime.strptime(r["onset_date"], "%d/%m/%Y").date()
           <= dt.date(2027, 6, 30)]
@@ -166,7 +167,7 @@ def cases(target):
         m = re.search(r"Legacy no\.\s*(MZ\d{2}/\d{4})", r["comments"])
         if m and m.group(1) in by_legacy:
             join(i, by_legacy[m.group(1)])
-        k = (r["date_of_birth"], r["sex"], r["onset_date"])
+        k = tuple(r[x] for x in key)
         if k in seen:
             join(i, seen[k])
         else:
@@ -198,6 +199,7 @@ def main(argv):
            for r in rows(target, find(target, "gp_return_queries"))):
         bad.append(("query log", "an unresolved query", "every query closed"))
     cs = cases(target)
+    cs_ds = cases(target, ("date_of_birth", "sex"))
     for k, (a, b) in OPTS.items():
         res = [p for p, (dob, here) in people.items() if here and a <= dob.year <= b]
         n0 = sum(1 for p in res if cnt.get(p, 0) == 0)
@@ -206,6 +208,8 @@ def main(argv):
             bad.append(("open-query reading " + k, "moves the dose counts", "no move"))
         conf = sum(1 for y, imp in cs if a <= y <= b)
         imp = sum(1 for y, i in cs if a <= y <= b and i)
+        if (conf, imp) != (sum(1 for y, i in cs_ds if a <= y <= b), sum(1 for y, i in cs_ds if a <= y <= b and i)):
+            bad.append(("person key " + k, "date of birth and sex moves the case counts", "no move"))
         for label, val, key in (("residents", len(res), "ask1_register_residents"), ("none", n0, "ask2_no_valid_dose"),
                                 ("one", n1, "ask2_one_valid_dose"), ("confirmed", conf, "ask3_confirmed_cases"),
                                 ("imported", imp, "ask3_imported")):
@@ -216,7 +220,8 @@ def main(argv):
             print("VERIFY MISMATCH", b)
         raise SystemExit(1)
     print("VERIFY   independent recomputation matches figures.json: 6 reproduction numbers from the term-time diaries, "
-          "the call, 25 ask figures; the dose counts do not move with unresolved queries read as not standing")
+          "the call, 25 ask figures; the dose counts do not move with unresolved queries read as not standing, nor the "
+          "case counts with records joined on date of birth and sex")
 
 
 if __name__ == "__main__":

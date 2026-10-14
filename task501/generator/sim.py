@@ -832,7 +832,7 @@ def cases():
     ob24 = [
         (D(2024, 2, 5), D(1994, 8, 30), "F", "Louth", "Confirmed", "Imported", "0"),
         (D(2024, 2, 18), D(2010, 4, 16), "M", "Louth", "Confirmed", "Import-related", "0"),
-        (D(2024, 3, 1), D(2010, 4, 16), "M", "Louth", "Confirmed", "Import-related", "0"),   # twin, epi-linked
+        (D(2024, 3, 1), D(2010, 4, 16), "F", "Louth", "Confirmed", "Import-related", "0"),   # his twin sister, epi-linked
         (D(2024, 2, 22), D(2011, 9, 7), "F", "Louth", "Confirmed", "Import-related", "0"),
         (D(2024, 2, 27), D(2012, 1, 29), "M", "Meath", "Confirmed", "Import-related", "1", False),
         (D(2024, 3, 4), D(2013, 7, 5), "F", "Louth", "Confirmed", "Import-related", "0"),
@@ -937,6 +937,18 @@ def cases():
 # =================================================================================================================
 # Distractor records
 # =================================================================================================================
+def _lot(prod, expiry, v):
+    """A batch number in its manufacturer's lot format: MSD numbers M-M-RVAXPRO lots with a letter and six digits, GSK
+    numbers Priorix lots A69C, a letter, three digits and A; the letters advance with the date of manufacture, which
+    the expiry follows."""
+    import hashlib
+    h = int(hashlib.sha256(("%s/%d" % (prod, v)).encode()).hexdigest(), 16)
+    if prod.startswith("M-M"):
+        return "%s%06d" % ("X" if expiry < D(2028, 7, 1) else "Y", h % 40000)
+    half = (expiry.year - 2027) * 2 + (expiry.month > 6)
+    return "A69C%s%03dA" % ("ABCDE"[half], h % 1000)
+
+
 def stock():
     """The cold-chain stock return at 30 June 2027: MMR doses by store, product, batch and expiry."""
     rng = np.random.default_rng(W.SEED + 301)
@@ -948,7 +960,7 @@ def stock():
         for prod in ("M-M-RVAXPRO", "Priorix"):
             for b in range(int(rng.integers(1, 4))):
                 exp = _rand_date(rng, D(2027, 9, 1), D(2029, 3, 31))
-                batch = ("%s%05d" % ("MR" if prod.startswith("M-M") else "PX", int(rng.integers(10000, 99999))))
+                batch = _lot(prod, exp, int(rng.integers(10000, 99999)))
                 doses = int(rng.integers(2, 60)) * 10 if "store" in s else int(rng.integers(3, 40)) * 10
                 rows.append(dict(store=s, product=prod, batch=batch, expiry=exp, doses_on_hand=doses,
                                  counted_on=D(2027, 6, 30)))

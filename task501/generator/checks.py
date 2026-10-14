@@ -1,5 +1,5 @@
 """The generator's assertions on the shipped pack and goldens: the input gates, the three-rules block (R1 to R3c), the
-main call's golden and every semantic fork row (SF1 to SF22), the rungs below it and every rival route the round 1
+main call's golden and every semantic fork row (SF1 to SF27), the rungs below it and every rival route the round 1
 audit measured, the bins, the asks' goldens and every stop of their ladders, the separation of the call's files from
 the asks' devices, the distractors' deletion test, the realism sweep and the container scrub. Every check prints one
 line; any failure raises."""
@@ -262,6 +262,44 @@ def run(target, golden_dir, w, c):
                 sch[t] = sch.get(t, 0) + 1
     ok(sch.get(True, 0) > 4000 and sch.get(False, 0) < 0.05 * sch.get(True, 0), "the data: school contacts of 5 to "
        "19-year-olds %d in May, %d in July and August" % (sch.get(True, 0), sch.get(False, 0)))
+    # SF25: the school regime the winter runs in, a premise of the window that no file states as a calendar (a pin naming
+    # term would file the decisive step): the survey's own at_school field separates its two periods, the options paper
+    # puts the school team in schools from 15 September, and standard 3.1 binds the figure throughout December to February
+    band_of = {lab: k for k, lab in enumerate(W.GROUP_LABELS)}
+    n_all, n_sch, n_1519, s_1519, phys = {True: 0, False: 0}, {True: 0, False: 0}, {True: 0, False: 0}, \
+        {True: 0, False: 0}, []
+    with open(os.path.join(target, PK.FILES["contacts"]), encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            t = CM.term_diary(pdate[r["part_id"]])
+            n_all[t] += 1
+            n_sch[t] += r["at_school"] == "Y"
+            if pband[r["part_id"]] == 3:
+                n_1519[t] += 1
+                s_1519[t] += r["at_school"] == "Y"
+            if r["physical"] == "Y":
+                phys.append((r["part_id"], band_of.get(r["contact_age_band"], -1)))
+    sh = {t: n_sch[t] / n_all[t] for t in (True, False)}
+    sh15 = {t: s_1519[t] / n_1519[t] for t in (True, False)}
+    ok(0.170 < sh[True] < 0.180 and 0.017 < sh[False] < 0.027 and 0.59 < sh15[True] and sh15[False] < 0.015,
+       "SF25 closure in the data: at-school contacts are %.1f per cent of all contacts in the May diaries against %.1f "
+       "in July and August (15 to 19-year-olds %.1f against %.1f)" % (100 * sh[True], 100 * sh[False], 100 * sh15[True],
+                                                                       100 * sh15[False]))
+    ok("between 15 September and 20 November" in opt_text and "stays below one throughout" in std_text,
+       "SF25: the options paper's school sessions run from 15 September and standard 3.1 binds the figure throughout "
+       "December to February")
+    ok(not re.search(r"term time|term-time|school term|school holiday|summer holiday|school calendar|school year",
+                     (std_text + " " + opt_text).lower()),
+       "SF25: no call document names term, the holidays or a school calendar (the pin refused, Tried and rejected)")
+    # SF26: a contact is the codebook's (a conversation or skin-to-skin); physical contacts alone keep the call
+    import openpyxl
+    about = " ".join(str(v[0]) for v in openpyxl.load_workbook(os.path.join(target, PK.FILES["codebook"]),
+                                                              read_only=True)["About"].iter_rows(values_only=True) if v[0])
+    ok("a conversation of at least three words in each other's presence, or any skin-to-skin contact" in about,
+       "SF26: the codebook defines a contact as a conversation or any skin-to-skin contact")
+    rph = CM.scenarios(inp, P=CM.survey_matrix(parts, phys, CM.term_diary).T)
+    ok(call_of(rph) == "B" and rph["none"] > R["none"] and not same_bins(rph, R),
+       "SF26: physical contacts alone on the term diaries keep the call with other figures (%s), refused by the "
+       "codebook's contact" % fmt(rph))
     ok(abs(c["immune_pct"] - 95.17) < 0.02, "the region is %.2f per cent immune" % c["immune_pct"])
     # ---------------------------------------------------------------- the asks
     f = B.ask_frames(target)
@@ -283,6 +321,18 @@ def run(target, golden_dir, w, c):
        "SF23: the national code list holds no office outside the State, so no area code places a UK address")
     notes = zipfile.ZipFile(os.path.join(target, PK.FILES["notes"])).read("word/document.xml").decode("utf-8")
     ok("Local health office of the person's address" in notes, "SF23: the extract notes define lho_code by the address")
+    ok("Postcode of that address, where one was recorded." in notes,
+       "SF23: the extract notes define postcode as the postcode of the person's address")
+    pcs = ppl["postcode"].fillna("")
+    eircode = pcs.str.fullmatch(r"(?:[AC-FHKNPRTV-Y][0-9]{2}|D6W) [0-9AC-FHKNPRTV-Y]{4}")
+    ukpc = pcs.str.fullmatch(r"BT[0-9]{1,2} [0-9][A-Z]{2}")
+    ok(bool((eircode | ukpc | (pcs == "")).all()) and int(ukpc.sum()) == int(bt.sum()),
+       "SF23: every recorded postcode is an Eircode or a BT postcode (%d), and a BT postcode is an address in the UK, "
+       "outside the State and so outside the region's four counties" % int(ukpc.sum()))
+    a1_kept = A.ask1(f["people"], "lh27")
+    ok(all(a1_kept[k] > a1[k] for k in a1) and not (set(PK.CALL_FILES) & {"people", "events", "merges", "lho", "notes"}),
+       "SF23: the BT postcodes counted as living in the region raise every Ask 1 figure (%s) and no call figure, since "
+       "the call reads no register file (same call)" % ", ".join("%s +%d" % (k, a1_kept[k] - a1[k]) for k in a1))
     y = A._yob(ppl)
     for k, (lo, hi) in A.OPTION_YEARS.items():
         n = int((bt & (y >= lo) & (y <= hi)).sum())
@@ -371,10 +421,30 @@ def run(target, golden_dir, w, c):
            and not (set(grp["epi_link"]) & set(grp["case_id"])),
            "SF24 ask 3 fairness: %s notified twice agrees on importation and county, neither linked to the other"
            % "/".join(grp["case_id"]))
-    twins = conf[conf.duplicated(["date_of_birth", "sex"], keep=False) & ~conf.index.isin(dup.index)
+    # SF27: one case per person and illness, whatever person key joins the records once the back-entries are joined
+    twins = conf[conf.duplicated(["date_of_birth", "county"], keep=False) & ~conf.index.isin(dup.index)
                  & ~conf.index.isin(legacy_pairs)]
-    ok(len(twins) == 2 and twins["onset_date"].nunique() == 2 and (twins["epi_link"] != "").sum() == 1,
-       "SF24 ask 3 over-cleaning: the 2024 twins share date of birth and sex, onsets apart, the second epi-linked")
+    tw_on = sorted(dt.date.fromisoformat(x) for x in twins["onset_date"])
+    ok(len(twins) == 2 and twins["sex"].nunique() == 2 and (tw_on[1] - tw_on[0]).days == 12
+       and set(twins["epi_link"]) == {"", twins.sort_values("onset_date")["case_id"].iloc[0]},
+       "SF27: the 2024 twins, a boy and a girl, share date of birth and county with onsets 12 days apart, the second "
+       "epi-linked to the first (%s)" % "/".join(twins["case_id"]))
+    by_ref = {r: i for i, r in cs["legacy_ref"].items() if r}
+    split = []
+    for key, grp in cs.groupby(["date_of_birth", "sex", "county"]):
+        if len(grp) < 2:
+            continue
+        idx = list(grp.index)
+        links = [(i, by_ref[r]) for i, r in refs.items() if i in idx and by_ref.get(r) in idx]
+        links += [(i, j) for i in idx for j in idx if i < j and cs.at[i, "onset_date"] == cs.at[j, "onset_date"]]
+        if len(set(A._components(idx, links).values())) > 1:
+            split.append("/".join(grp["case_id"]))
+    ok(not split, "SF27: no two people share date of birth, sex and county among the case records: every such group is "
+       "one person, joined by its legacy number or its single onset (%d groups)" %
+       sum(1 for _, g in cs.groupby(["date_of_birth", "sex", "county"]) if len(g) > 1))
+    for name in A.PERSON_KEYS:
+        ok(A.ask3_person_key(cs, name) == a3, "SF27 C1: the back-entries joined through their legacy numbers and "
+           "records joined on %s give every ask 3 figure" % name)
     on = cs["onset_date"]
     ok(not on.between("2018-12-25", "2019-01-07").any() and not on.between("2027-06-23", "2027-07-07").any(),
        "ask 3 C1: no onset within a week of the window's ends")
@@ -424,6 +494,25 @@ def run(target, golden_dir, w, c):
         raw = open(os.path.join(target, fn), "rb").read()
         ok(b"ReportLab" not in raw and b"reportlab" not in raw and b"openpyxl" not in raw and b"python-docx" not in raw,
            "scrub: no library name in %s" % fn)
+    for fn in files:
+        if not fn.endswith((".docx", ".xlsx")):
+            continue
+        with zipfile.ZipFile(os.path.join(target, fn)) as z:
+            names = z.namelist()
+            ct = z.read("[Content_Types].xml").decode()
+            targets = []
+            for rel in (n for n in names if n.endswith(".rels")):
+                base = rel.replace("_rels/", "").rsplit(".rels", 1)[0]
+                folder = base.rsplit("/", 1)[0] + "/" if "/" in base else ""
+                for t in re.findall(r'Target="([^"]+)"', z.read(rel).decode()):
+                    p_ = t[1:] if t.startswith("/") else folder + t
+                    targets.append(os.path.normpath(p_).replace("\\", "/"))
+            app = z.read("docProps/app.xml").decode()
+        ok(not any(n.startswith("customXml/") or "thumbnail" in n for n in names) and "customXml" not in ct
+           and "savePreviewPicture" not in texts.get(fn, ""),
+           "scrub: %s carries no template thumbnail, bibliography store or preview setting" % fn)
+        ok(all(t in names for t in targets) and app.count("<Company") == 1,
+           "scrub: every relationship in %s points at a part it holds, and one Company" % fn)
     allnames = " ".join(texts.values())
     import json as _json
     card = os.path.join(os.path.dirname(os.path.dirname(target)), ".claude", "skills", "fingerprint", "cards", "task501.json")
