@@ -1,118 +1,197 @@
 {
- "call": [
-  "BMC-FROI",
-  "WBH-EXTR",
-  "CIP-IPCL",
-  "WPC-PETC",
-  "HPY-TYPD"
+ "warned": "24, 25, 35, 41, 71 and 93",
+ "warned_bias": {
+  "24": "-3.1",
+  "25": "-2.5",
+  "35": "4.6",
+  "41": "3.2",
+  "71": "-2.3",
+  "93": "6.9"
+ },
+ "bias": {
+  "11": "-0.2",
+  "12": "-0.4",
+  "13": "0.0",
+  "14": "-0.8",
+  "21": "-0.3",
+  "22": "-0.7",
+  "23": "0.0",
+  "24": "-3.1",
+  "25": "-2.5",
+  "26": "-1.1",
+  "31": "0.6",
+  "32": "-0.2",
+  "33": "0.9",
+  "34": "0.1",
+  "35": "4.6",
+  "41": "3.2",
+  "42": "0.0",
+  "43": "1.0",
+  "44": "0.1",
+  "51": "0.0",
+  "52": "0.0",
+  "53": "0.8",
+  "54": "-0.2",
+  "61": "-0.2",
+  "62": "-0.1",
+  "63": "0.0",
+  "71": "-2.3",
+  "72": "-1.1",
+  "73": "0.0",
+  "74": "-0.1",
+  "75": "-0.2",
+  "81": "-0.9",
+  "82": "0.0",
+  "83": "0.3",
+  "91": "-0.1",
+  "92": "0.6",
+  "93": "6.9",
+  "94": "-0.2",
+  "95": "0.0",
+  "96": "-0.8"
+ },
+ "coded": {
+  "online self-response": "321,660",
+  "paper self-response": "122,864",
+  "follow-up, household member": "71,258",
+  "follow-up, proxy": "15,330"
+ },
+ "still": {
+  "online self-response": "3,344",
+  "paper self-response": "1,925",
+  "follow-up, household member": "44,986",
+  "follow-up, proxy": "53,112"
+ },
+ "coded_total": "531,112",
+ "still_total": "103,367",
+ "release_total": "634,479",
+ "default_flags": "35 and 93",
+ "rule_flags": "35, 41 and 93",
+ "bt_new_flags": "24, 35, 41 and 93",
+ "route_old_flags": "24, 35, 71 and 93",
+ "teams": {
+  "Coding Team 1": {
+   "writeins": "4,160",
+   "hours": "295.75"
+  },
+  "Coding Team 2": {
+   "writeins": "3,746",
+   "hours": "270.75"
+  },
+  "Coding Team 3": {
+   "writeins": "4,206",
+   "hours": "283.00"
+  },
+  "Coding Team 4": {
+   "writeins": "3,112",
+   "hours": "229.50"
+  },
+  "Coding Team 5": {
+   "writeins": "2,680",
+   "hours": "176.00"
+  }
+ },
+ "regions": {
+  "Port Aldmere": {
+   "calls": "20,016",
+   "nocontact": "8,208"
+  },
+  "Ardvale": {
+   "calls": "10,468",
+   "nocontact": "4,215"
+  },
+  "Brackenmoor": {
+   "calls": "9,289",
+   "nocontact": "3,798"
+  },
+  "Kilmarran": {
+   "calls": "10,084",
+   "nocontact": "4,163"
+  },
+  "Fernholt": {
+   "calls": "8,380",
+   "nocontact": "3,367"
+  },
+  "Rathcolm": {
+   "calls": "8,867",
+   "nocontact": "3,611"
+  },
+  "Strathmoyle": {
+   "calls": "8,438",
+   "nocontact": "3,471"
+  },
+  "Glenwarren": {
+   "calls": "7,435",
+   "nocontact": "3,055"
+  }
+ },
+ "warning_line": "2.0",
+ "warning_lines": [
+  "-2.0",
+  "+2.0"
  ],
- "q3_rate_pct": {
-  "D": "4.3",
-  "N": "2.5"
- },
- "nov_rate_pct": {
-  "D": "1.9",
-  "N": "5.2"
- },
- "slope": "-0.63",
- "ratio_over": "1.1",
- "ratio_under": "0.9",
- "ratio_golden": {
-  "KBA-INST": "0.76",
-  "KBA-PROF": "0.77",
-  "NDS-DENT": "0.79",
-  "BMC-FROI": "1.22",
-  "HPB-UCF": "0.75",
-  "WBH-HOSP": "0.73",
-  "WBH-EXTR": "1.26",
-  "CIP-IPCL": "1.25",
-  "WPC-PETC": "1.26",
-  "TCM-FNOL": "0.80",
-  "HPY-TYPD": "1.22"
- },
- "ratio_default": {
-  "KBA-INST": "1.13",
-  "KBA-PROF": "1.15",
-  "NDS-DENT": "1.08",
-  "BMC-FROI": "1.68",
-  "HPB-UCF": "1.14",
-  "WBH-HOSP": "0.51",
-  "WBH-EXTR": "0.87",
-  "CIP-IPCL": "0.87",
-  "WPC-PETC": "0.80",
-  "TCM-FNOL": "1.17",
-  "HPY-TYPD": "0.86"
- },
- "forecast": {
-  "KBA-INST": "1.5",
-  "KBA-PROF": "4.0",
-  "NDS-DENT": "6.6",
-  "BMC-FROI": "9.0",
-  "HPB-UCF": "1.7",
-  "WBH-HOSP": "2.8",
-  "WBH-EXTR": "5.8",
-  "CIP-IPCL": "10.4",
-  "WPC-PETC": "6.4",
-  "TCM-FNOL": "15.1",
-  "HPY-TYPD": "0.9"
- },
- "limit": {
-  "KBA-INST": "2.0",
-  "KBA-PROF": "5.2",
-  "NDS-DENT": "8.3",
-  "BMC-FROI": "7.4",
-  "HPB-UCF": "2.3",
-  "WBH-HOSP": "3.8",
-  "WBH-EXTR": "4.6",
-  "CIP-IPCL": "8.3",
-  "WPC-PETC": "5.1",
-  "TCM-FNOL": "18.9",
-  "HPY-TYPD": "0.77"
- },
- "hours": {
-  "KBA-INST": "985",
-  "KBA-PROF": "882",
-  "NDS-DENT": "771",
-  "BMC-FROI": "348",
-  "HPB-UCF": "589",
-  "WBH-HOSP": "2,035",
-  "WBH-EXTR": "3,097",
-  "CIP-IPCL": "1,139",
-  "WPC-PETC": "1,731",
-  "TCM-FNOL": "2,217",
-  "HPY-TYPD": "2,526"
- },
- "client_audit": {
-  "WBH-HOSP": "1.52",
-  "WBH-EXTR": "3.89",
-  "CIP-IPCL": "5.73",
-  "WPC-PETC": "4.27",
-  "TCM-FNOL": "14.53",
-  "KBA-INST": "0.14",
-  "KBA-PROF": "0.97",
-  "NDS-DENT": "1.29",
-  "BMC-FROI": "1.45",
-  "HPB-UCF": "0.19"
- },
- "rates": {
-  "handwritten": "3.122",
-  "mixed": "2.163",
-  "printed": "1.587",
-  "typed": "1.238"
- },
- "leader": "WBH-EXTR",
- "chart_order": [
-  "WBH-EXTR",
-  "HPY-TYPD",
-  "TCM-FNOL",
-  "WBH-HOSP",
-  "WPC-PETC",
-  "CIP-IPCL",
-  "KBA-INST",
-  "KBA-PROF",
-  "NDS-DENT",
-  "HPB-UCF",
-  "BMC-FROI"
+ "group_codes": [
+  "11",
+  "12",
+  "13",
+  "14",
+  "21",
+  "22",
+  "23",
+  "24",
+  "25",
+  "26",
+  "31",
+  "32",
+  "33",
+  "34",
+  "35",
+  "41",
+  "42",
+  "43",
+  "44",
+  "51",
+  "52",
+  "53",
+  "54",
+  "61",
+  "62",
+  "63",
+  "71",
+  "72",
+  "73",
+  "74",
+  "75",
+  "81",
+  "82",
+  "83",
+  "91",
+  "92",
+  "93",
+  "94",
+  "95",
+  "96"
  ],
- "heldout_ratio": "1.52"
+ "clauses_cited": [
+  "2.1",
+  "3.1",
+  "3.3",
+  "4.1",
+  "5.3",
+  "5.5"
+ ],
+ "new_accept": "0.80",
+ "old_accept": "0.90",
+ "intervals": [
+  "10",
+  "4",
+  "2"
+ ],
+ "dates": [
+  "13 November",
+  "16 November",
+  "31 October",
+  "30 March 2027"
+ ],
+ "groups": "40"
 }

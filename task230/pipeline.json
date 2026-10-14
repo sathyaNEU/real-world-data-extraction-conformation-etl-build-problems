@@ -2,10 +2,10 @@
  "task": "task230",
  "domain": "survey-research-official-statistics",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-14",
- "stump": "Applying the coded-so-far sample's coding bias to the whole census release flags only occupation groups 35 and 93; building it by response route on the release's own route mix, with the late follow-up returns coded under the 0.80 acceptance rule, flags 24, 25, 31, 35, 41, 72 and 93 (design targets).",
+ "stump": "Taking the coding quality study's coded-so-far bias as the release's warns only 35 and 93; carried route by route to the release's own route mix (the 103,367 write-ins still to code are 54 per cent follow-up proxy returns against 18) under the 0.80 acceptance score in force from 16 November, the release warns 24, 25, 35, 41, 71 and 93.",
  "architecture": 3,
  "loops": 0,
  "lineage": [
@@ -58,12 +58,13 @@
   "furniture": "role_family operations_director (was compliance_or_audit), context_artifact capacity_report (was operations_log), both redrawn after task229 design 2 registered first; forum, forcing event and organisation family unchanged"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (sweep 3: the standard's 2.0 line, its clause number 3.2 and the 0.90 acceptance score coincide with golden figures; sweep 4: generic document vocabulary); no LEAK; containers clean (target and golden)",
+  "reader": "four isolated reads (Sonnet, medium), the fourth on the shipped cut: questions 1 to 4 none in each, question 6 analytical in each; read 1 and judge pass 1 drove the two ask rewordings, read 2 the procedures' month-end sentence and the LFS CVs, read 3 the autocoder's nightly run; read 4's at-the-time team figures match the golden"
  },
  "duplicate_check": {
-  "heart": "WARN",
-  "nearest": "0.06 task500 lineage, task183"
+  "heart": "WARN (overuse.strategy maturity_censoring 3 of 12; overuse.org_family government_agency; repeat.question_form which against task454; NOTE same_driver_older differentiated against task131 v2 and task183)",
+  "nearest": "0.06 task500 lineage, task183",
+  "surface": "promotes task231 (back to back, same pairing survey-research-official-statistics x data-quality-monitoring, gap time, designation_set; another task type), task131 and task183 (same-driver signature gap time, G14, forecasting; differentiated on the card); adjudicated clone check left to the author"
  },
  "solver_rounds": [
   {
@@ -154,41 +155,40 @@
   }
  ],
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task230/determinism_check_report.md: pass 1 NOT_DETERMINISTIC, SEND_BACK on two ask figures only (the main call forced and reproduced), fixed in the prompt and the dictionary; pass 2 DETERMINISTIC, APPROVE, Gate G forecasting / analytical_non_defect / surface_read_dependency no, Gate H domain pass, layers pass, decisive_step analytical; its advisory literal reading of OQ-4 3.1 (exact extract counts against the study's reference, 17 groups) closed after approval by OQ-4 3.3 (SF14), no graded figure moved"
  },
  "approved": null,
- "delivered": "2026-10-12",
+ "delivered": "2026-10-14",
  "portal": null,
  "deferred": [],
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-14"
  },
  "build": {
-  "date": "2026-10-12",
-  "checks": 172,
+  "date": "2026-10-14",
+  "checks": 121,
   "verify": "green",
   "byte_identical": true,
-  "target_zip_sha256": "c85b4b2fe697dfeddb73389328d693fad9616914a98cee2643fda50e63d49267",
-  "golden": "N4, D2, D3, D4, D6 (BMC-FROI, WBH-EXTR, CIP-IPCL, WPC-PETC, HPY-TYPD)",
-  "asks": "hours (session baskets, rework), client-audited residual (documents per claim, received business date); credit ask dropped",
   "figures_check": "exit 0",
   "precut": "exit 0",
-  "pair_ceiling": "29.0 measured, 34.5 at the 0.10 allowance"
+  "golden": "24, 25, 35, 41, 71 and 93",
+  "architecture": 3,
+  "target_zip_sha256": "c0157a4749dd1cf25ae32d26bc0e6922d09ce6b7975cd617eaf821554bb4f1c0"
  },
- "status": "DESIGN",
+ "status": "SHIPPED",
  "owner": "perssathya",
  "returned": [
   {
    "date": "2026-10-14",
    "portal": "author request",
    "repair": "re-root (domain fit)",
-   "commit": ""
+   "commit": "RESHIPPED (task230), 2026-10-14"
   }
  ],
- "resume": "stage 2: ladder calibration (route flows, acceptance band), fork table, closure, ask sheet, prompt.txt, precut",
+ "resume": "",
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",

@@ -1,5 +1,5 @@
-"""Build the pack, run the checks, write the goldens, the owed figures and metadata.json, run the independent
-verifier, rebuild into a scratch folder and require byte-identical output, then cut target.zip.
+"""Build the pack, compute every owed figure, write the goldens, figures.json and metadata.json, run the checks and the
+independent verifier, rebuild into a scratch folder and require byte-identical output, then cut target.zip.
 
     python3 task230/generator/make.py            (full: two builds, the zip)
     python3 task230/generator/make.py --once     (one build, no zip)
@@ -15,128 +15,102 @@ import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import analysis as AN
 import build as B
-import checks as C
-import golden as G
-import pack as PK
-import verify as V
+import estim as E
+import golden as GD
+import params as P
 import world as W
 
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 GOLDEN = os.path.join(TASK, "golden")
-STAMP = (2026, 10, 28, 9, 30, 0)
-
-SOURCES = {
-    "spine": "Capture platform first-pass verification log, shift-days 1 July to 30 September 2026",
-    "edits": "Capture platform field edits on submitted first-pass screens, Q3 2026",
-    "audit": "QA tool blind re-key audit of first-pass output, Q3 2026",
-    "workforce": "HRMS export: employees, badge allocation and the Q3 queue rota",
-    "streams": "Stream register",
-    "plan": "November 2026 operating plan of record, version 3",
-    "qcp": "Controlled procedure QCP-04 First-pass quality control, version 5.0",
-    "schedules": "Client quality schedules extract, 2026",
-    "pilot": "Hollings & Pryce pilot report, 6 October 2026",
-    "sessions": "Second-pass workflow export, September 2026",
-    "labour": "Second-pass labour planning note, revised 19 October 2026",
-    "forms": "Form specifications: versions and key fields",
-    "fc_kba": "Kessington Benefit Administrators volume forecast revisions for November 2026",
-    "fc_us": "Northgate, Brightmoor and Harbison volume forecast revisions for November 2026",
-    "fc_au": "Wattlebird Health and Coolabah volume forecast revisions, FY27 weeks, with the FY27 calendar",
-    "fc_uk": "Whinfell Pet Cover and Thistlecombe Motor volume forecast revisions",
-    "fc_hpy": "Hollings & Pryce volume forecast revisions in bundles",
-    "ca_kba": "Kessington client audit findings, Q3 2026 deliveries",
-    "ca_us": "Northgate, Brightmoor and Harbison client audit returns, Q3 2026",
-    "ca_au": "Wattlebird and Coolabah client audit returns, Q3 2026",
-    "ca_uk": "Whinfell and Thistlecombe partner portal audit export, Q3 2026",
-    "manifests": "SFTP gateway delivery manifests, 25 June to 3 October 2026",
-    "index": "SFTP gateway delivery index, one row per document delivered, 25 June to 3 October 2026",
-    "ocr": "OCR engine confidence summary by stream, field and month, Q3 2026",
-    "keys": "Desktop agent keystroke telemetry by badge and login date, Q3 2026",
-    "notes": "MIS extract notes: data dictionary and provenance",
-}
+STAMP = (2026, 11, 13, 18, 0, 0)
+ROUTE_NAME = {"O": "online self-response", "P": "paper self-response", "FS": "follow-up, household member",
+              "FP": "follow-up, proxy"}
 
 
-def rows_of(path):
-    if path.endswith(".parquet"):
-        import pyarrow.parquet as pq
-        return pq.ParquetFile(path).metadata.num_rows
-    if path.endswith(".csv"):
-        return sum(1 for _ in open(path)) - 1
-    return None
+def answers(target):
+    D = E.load(target)
+    out, R = E.rungs(D)
+    gold = out["golden"]
+    A = dict(warned=E.flags(gold), bias={g: float(v) for g, v in zip(W.GROUPS, gold)},
+             bias_r={g: float(f"{v:.1f}") + 0.0 for g, v in zip(W.GROUPS, gold)},
+             coded={r: int(R[r]["nc"]) for r in P.ROUTES}, still={r: int(R[r]["m"]) for r in P.ROUTES},
+             rung_flags={k: E.flags(v) for k, v in out.items()}, rung_values={k: [float(x) for x in v] for k, v in out.items()},
+             teams=E.ask_teams(D), regions=E.ask_regions(D))
+    return A, D, out, R
 
 
-def answers(out):
-    A = out["asks"]
-    L = out["limits"]
-    call = AN.designate(out["R"]["golden"], L)
-    return dict(call=call, limits=L, hours=A["A"]["golden"], client_audit=A["C"]["golden"], chart_order=A["order"])
+def _list(gs):
+    return ", ".join(gs[:-1]) + " and " + gs[-1] if len(gs) > 1 else gs[0]
 
 
-def figures(out, ans):
-    """the figures the write-up owes, as it states them"""
-    R = out["R"]
-    L = out["limits"]
-    Qr, sc = out["Qr"], out["sc"]
-    q3 = {q: v for q, v in Qr.monthly_pool().items()}
-    q3q = {}
-    for q in ("D", "N"):
-        f = Qr.scr[Qr.scr.queue == q].groupby("day").key_fields.sum()
-        p = Qr.pool.xs(q, level="queue")
-        q3q[q] = float((p * f).sum() / f.sum())
-    nov = out["nov_rate"]
+def figures(A):
+    f1 = lambda x: f"{x:.1f}".replace("-0.0", "0.0")
     fig = {
-        "call": [W.SID[c] for c in ans["call"]],
-        "q3_rate_pct": {q: f"{100 * v:.1f}" for q, v in q3q.items()},
-        "nov_rate_pct": {q: f"{100 * v:.1f}" for q, v in nov.items()},
-        "slope": f"{out['slope'][0]:.2f}",
-        "ratio_over": "1.1",
-        "ratio_under": "0.9",
-        "ratio_golden": {W.SID[c]: f"{R['golden'][c] / L[c]:.2f}" for c in W.ORDER},
-        "ratio_default": {W.SID[c]: f"{R['R1'][c] / L[c]:.2f}" for c in W.ORDER},
-        "forecast": {W.SID[c]: f"{R['golden'][c]:.1f}" for c in W.ORDER},
-        "limit": {W.SID[c]: (f"{L[c]:.2f}" if c == "D6" else f"{L[c]:.1f}") for c in W.ORDER},
-        "hours": {W.SID[c]: f"{ans['hours'][c]:,}" for c in W.ORDER},
-        "client_audit": {W.SID[c]: f"{v:.2f}" for c, v in ans["client_audit"].items()},
-        "rates": {k: f"{v:.3f}" for k, v in out["asks"]["rates"][("document", "all")].items()},
-        "leader": W.SID[ans["chart_order"][0]],
-        "chart_order": [W.SID[c] for c in ans["chart_order"]],
-        "heldout_ratio": f"{min(v for k, v in out['heldout'].items() if k != 'golden') / out['heldout']['golden']:.2f}",
+        "warned": _list(A["warned"]),
+        "warned_bias": {g: f1(A["bias"][g]) for g in A["warned"]},
+        "bias": {g: f1(A["bias"][g]) for g in W.GROUPS},
+        "coded": {ROUTE_NAME[r]: "{:,}".format(A["coded"][r]) for r in P.ROUTES},
+        "still": {ROUTE_NAME[r]: "{:,}".format(A["still"][r]) for r in P.ROUTES},
+        "coded_total": "{:,}".format(sum(A["coded"].values())),
+        "still_total": "{:,}".format(sum(A["still"].values())),
+        "release_total": "{:,}".format(sum(A["coded"].values()) + sum(A["still"].values())),
+        "default_flags": _list(A["rung_flags"]["default"]),
+        "rule_flags": _list(A["rung_flags"]["rule"]),
+        "bt_new_flags": _list(A["rung_flags"]["bt_new"]),
+        "route_old_flags": _list(A["rung_flags"]["route_old"]),
+        "teams": {t: {"writeins": "{:,}".format(A["teams"][t][0]), "hours": "{:,.2f}".format(A["teams"][t][1])}
+                  for t in W.TEAMS},
+        "regions": {n: {"calls": "{:,}".format(A["regions"][n][0]), "nocontact": "{:,}".format(A["regions"][n][1])}
+                    for _, n, _ in W.REGIONS},
+        "warning_line": "2.0", "warning_lines": ["-2.0", "+2.0"], "group_codes": list(W.GROUPS),
+        "clauses_cited": ["2.1", "3.1", "3.3", "4.1", "5.3", "5.5"],
+        "new_accept": "0.80", "old_accept": "0.90", "intervals": ["10", "4", "2"],
+        "dates": ["13 November", "16 November", "31 October", "30 March 2027"], "groups": "40",
     }
     with open(os.path.join(HERE, "figures.json"), "w") as fh:
-        json.dump(fig, fh, indent=1)
+        json.dump(fig, fh, indent=1, ensure_ascii=False)
         fh.write("\n")
     return fig
 
 
 def metadata(target):
     files = []
-    for k, f in PK.FILES.items():
+    for k, f in B.FILES.items():
         p = os.path.join(target, f)
-        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                      "source": "Constructed: " + SOURCES[k], "date": "2026-10-28",
-                      "license": "CC0-1.0 (original work, constructed for this task)"})
+        rows = None
+        if f.endswith(".csv"):
+            rows = sum(1 for _ in open(p, encoding="utf-8")) - 1
+        elif f.endswith(".parquet"):
+            import pyarrow.parquet as pq
+            rows = pq.ParquetFile(p).metadata.num_rows
+        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
+                      "source": "Constructed (seeded generator)", "date": "2026-11-13",
+                      "license": "CC0-1.0 (original work)" if k != "aoc" else
+                      "ISCO-08 structure and titles: International Labour Office, International Standard Classification "
+                      "of Occupations 2008 (reproduced for statistical use); national extension CC0-1.0"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task230",
-        "title": "Which client streams go on second-pass verification in November at an insurance-claims capture centre",
-        "domain": "Human Factors & Ergonomics",
-        "subdomain": "human reliability assessment (first-pass human verification of OCR-captured key fields)",
+        "title": "Which occupation groups carry the coding quality warning in the census's first occupation release",
+        "domain": "Survey Research & Official Statistics",
+        "subdomain": "census, register and administrative data quality (occupation coding bias in a census release)",
         "objective": "Data Quality Monitoring & Alerting",
-        "prompt_shape": "07 (grid of cells): eleven client streams by the second-pass call, second-pass hours and the "
-                        "client-audited third-quarter residual, plus a chart of the hours",
-        "as_of": "2026-10-28",
-        "deliverables": [G.WORKBOOK, G.SLIDE],
-        "distractor_files": [PK.FILES[k] for k in PK.DISTRACTORS],
+        "prompt_shape": "10: scorecard, each of the 40 ISCO-08 sub-major groups' coding bias against the plus or minus 2.0 "
+                        "per cent warning line, with two asks (five coding teams, eight regions)",
+        "as_of": "2026-11-13",
+        "deliverables": [GD.XLSX, GD.PNG],
+        "distractor_files": [B.FILES[k] for k in B.DISTRACTORS],
+        "field_terms": [],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",
-                     "origin": "constructed for this task by task230/generator/make.py (seeded, deterministic) around a fictional "
-                               "Kolkata claims-capture centre (Tamralipta Data Services) and fictional clients; no real person, "
-                               "claimant, organisation or contract is depicted.",
-                     "date": "2026-10-28", "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-11",
+                     "origin": "generated by task230/generator/make.py (seeded, deterministic) around a fictional "
+                               "island state's census office (the Office of the Registrar General of Aldmere); no real "
+                               "person, address or return is depicted. ISCO-08 titles as published by the ILO.",
+                     "date": "2026-11-13", "license": "CC0-1.0 (original work); ISCO-08 titles ILO"}],
+        "created": "2026-10-14",
         "generator": "task230/generator/make.py",
         "files": files,
     }
@@ -166,40 +140,44 @@ def cut_zip():
     return zp
 
 
-def one(target, golden_dir):
-    B.build(target)
-    stamp(target)
-    out = C.run(target)
-    ans = answers(out)
-    G.write(ans, golden_dir)
-    stamp(golden_dir)
-    return out, ans
+def fresh(folder):
+    if os.path.isdir(folder):
+        for f in os.listdir(folder):
+            os.remove(os.path.join(folder, f))
+    os.makedirs(folder, exist_ok=True)
 
 
-def main(second=True):
-    out, ans = one(TARGET, GOLDEN)
-    fig = figures(out, ans)
+def main(second=True, checks=True):
+    fresh(TARGET)
+    S, U, Cd, T, counts, facts = B.run(TARGET)
+    stamp(TARGET)
+    A, D, out, R = answers(TARGET)
+    fresh(GOLDEN)
+    GD.write(GOLDEN, A)
+    stamp(GOLDEN)
+    fig = figures(A)
     metadata(TARGET)
-    V.main(TARGET, GOLDEN)
-    n = len(out["checks"])
-    print(f"checks: {n} passed")
-    if os.environ.get("CHECKS_OUT"):
-        with open(os.environ["CHECKS_OUT"], "w") as fh:
-            json.dump(out["checks"], fh, indent=1)
+    if checks:
+        import checks as C
+        n = C.run(TARGET, GOLDEN, S, U, Cd, T, A, D, out, R, facts)
+        print("checks: %d passed" % n)
+        import verify as V
+        V.main(TARGET, os.path.join(HERE, "figures.json"))
     if second:
         tmp = tempfile.mkdtemp(dir=os.environ.get("TMPBUILD"))
         t2, g2 = os.path.join(tmp, "target"), os.path.join(tmp, "golden")
-        B.build(t2)
+        B.run(t2)
         stamp(t2)
-        G.write(ans, g2)
+        GD.write(g2, answers(t2)[0])
         stamp(g2)
-        assert digest(TARGET) == digest(t2), [f for f in digest(TARGET) if digest(TARGET)[f] != digest(t2).get(f)]
+        d1, d2 = digest(TARGET), digest(t2)
+        assert d1 == d2, [f for f in d1 if d1[f] != d2.get(f)]
         assert digest(GOLDEN) == digest(g2), "golden differs between builds"
         shutil.rmtree(tmp)
         zp = cut_zip()
         print("byte-identical; target.zip sha256", hashlib.sha256(open(zp, "rb").read()).hexdigest())
-    return out, ans, fig
+    return A, fig
 
 
 if __name__ == "__main__":
-    main(second="--once" not in sys.argv)
+    main(second="--once" not in sys.argv, checks="--nochecks" not in sys.argv)

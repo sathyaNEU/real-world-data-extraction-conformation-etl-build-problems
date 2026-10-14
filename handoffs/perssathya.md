@@ -1,8 +1,8 @@
 # perssathya: where work stopped
 
-Updated 2026-10-13 (task232 shipped). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
-task230 (2026-10-12), task129, task229, task131, task122, task231 and task232 (2026-10-13) are SHIPPED and wait on the
-portal; task123's determinism repair is RESHIPPED. Wave 1 is shipped apart from task228, which waits on the author's
+Updated 2026-10-14 (task230 reshipped as architecture 3). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+task129, task229, task131, task122, task231 and task232 (2026-10-13) and task230 (reshipped 2026-10-14) are SHIPPED
+and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is shipped apart from task228, which waits on the author's
 call (a fifth architecture and a G16 waiver). Wave 2: task231 and task232 shipped; task233 to task236 not started.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
@@ -12,6 +12,23 @@ call (a fifth architecture and a G16 waiver). Wave 2: task231 and task232 shippe
 the current one under the 10/10 rules. Two tags already look weak: task230's task type (human-reliability-assessment)
 serves Forecasting in the taxonomy, not Data Quality, and task129 sits in a house domain (business operations, client
 domain General Statistics) though its decisive method is web performance engineering.
+
+**Progress (2026-10-14):** the board's `review` collection is still empty, so every shipped build stays in scope. The
+author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 re-rooted in a client domain (next), then
+the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last.
+
+**task230: RESHIPPED 2026-10-14 (architecture 3, re-rooted at the author's request); waiting on the portal.**
+- The Office of the Registrar General of Aldmere's 2026 census (Survey Research & Official Statistics,
+  census-register-administrative-data-quality x Data Quality Monitoring). Call: the first occupation release (30 March
+  2027) warns six sub-major groups, 24, 25, 35, 41, 71 and 93. The coding quality study's coded-so-far bias warns only
+  35 and 93. The 103,367 write-ins still to code are 54 per cent follow-up proxy returns (18 per cent among the coded
+  follow-up) and take the 0.80 acceptance score from 16 November, so the bias is carried route by route under that
+  score. The follow-up batches carried as one warn 24, 35, 41 and 93; the routes under the old score warn 24, 35, 71
+  and 93.
+- Gates: 121 generator checks, verify green, byte-identical rebuilds, figures_check, precut, leak.py REVIEW only;
+  four isolated leak reads (questions 1 to 4 none); judge pass 1 sent back two ask figures (fixed), pass 2
+  DETERMINISTIC, APPROVE. Surface screen promotes task231 (back to back on the same pairing, another task type) and
+  task131 and task183 (same-driver signature, differentiated): the adjudicated clone check is the author's call.
 
 **task232: SHIPPED 2026-10-13 (wave 2, second build); waiting on the portal.**
 - A regional local health district's public health unit on the New South Wales and Queensland border (Epidemiology &
@@ -65,8 +82,6 @@ domain General Statistics) though its decisive method is web performance enginee
 - Gates: 1,697 generator assertions, verify.py 313 checks, byte-identical rebuilds, figures_check, precut,
   leak.py REVIEW only; leak reader clean on two reads; judge pass 1 DETERMINISTIC, APPROVE.
 
-**task230: SHIPPED 2026-10-12** (asks rebuilt, judge APPROVE, leak reader clean twice); waiting on the
-portal.
 
 **task228: paused by the author.**
 - Branch `perssathya/task228-guardrail-alert-metric` at 9120146.

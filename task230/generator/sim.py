@@ -1,265 +1,282 @@
-"""The closed quarter as it happened: volumes, the workforce, every key field's OCR value, first-pass
-detection, timeouts, the blind re-key audit, second-pass sessions and the client audits.
+"""Simulate the census: addresses and households, self-response and the follow-up (visits, proxies from the third
+visit, re-interviews, late self-responses), the receipt register, persons with occupation write-ins, the coding front,
+the autocoder and the clerical coders, and the coding quality study.
 
-The detection truth: the miss logit on an OCR error is a constant plus the field family, the field type,
-the verifier's skill, tenure, a small time-on-shift and time-of-night term, minus 0.6 times the log of the
-OCR error rate of every key field the shift-day's queue carried. Nothing here is shipped directly; pack.py
-writes the exports from it."""
-import datetime as dt
-import math
+structure() draws everything the coding parameters do not touch; coding() draws the write-ins and their codes from fixed
+uniforms, so a parameter change moves only what it governs."""
+from datetime import date, timedelta
 
 import numpy as np
-import pandas as pd
 
+import params as P
 import world as W
 
-DAY = dt.timedelta(days=1)
+D0 = date(2026, 1, 1)
 
 
-def days(a, b):
-    out, d = [], a
-    while d <= b:
-        out.append(d)
-        d += DAY
-    return out
+def dn(d):
+    return (d - D0).days
 
 
-def logit(x):
-    return math.log(x / (1 - x))
+def dd(n):
+    return D0 + timedelta(days=int(n))
 
 
-ALPHA = logit(W.TRUTH["base_miss"]) + W.TRUTH["g"] * math.log(W.TRUTH["base_pool"])
-
-
-# ----------------------------------------------------------------------------------------------- volumes
-def cycle_day(d):
-    """the last two and the first working days of a month, when hospitals' cycle billing reaches Kessington"""
-    nxt = d + DAY
-    while nxt.weekday() >= 5:
-        nxt += DAY
-    nxt2 = nxt + DAY
-    while nxt2.weekday() >= 5:
-        nxt2 += DAY
-    prv = d - DAY
-    while prv.weekday() >= 5:
-        prv -= DAY
-    return nxt.month != d.month or nxt2.month != d.month or prv.month != d.month
-
-
-def q3_key_fields(rng, scale=None):
-    """daily key fields by stream for every Q3 shift-day (and the pilot), before conversion to documents"""
-    scale = scale or {}
-    rows = []
-    for d in days(*W.Q3):
-        wd = d.weekday()
-        if wd == 6:
+def structure(seed=P.SEED):
+    ss = np.random.SeedSequence(seed)
+    r_addr, r_nrfu, r_form, r_pers = [np.random.default_rng(x) for x in ss.spawn(4)]
+    rng = r_addr
+    eds = W.eds(rng)
+    ed_code = np.array([e[0] for e in eds])
+    ed_region = np.array([e[1] for e in eds])
+    n_eds = len(eds)
+    # addresses
+    per_ed = rng.poisson(P.ADDR_PER_ED, n_eds)
+    a_ed = np.repeat(np.arange(n_eds), per_ed)
+    n_a = len(a_ed)
+    u = rng.random(n_a)
+    kind = np.where(u < P.VACANT, "VAC", np.where(u < P.VACANT + P.NONRES, "DEL", "OCC"))
+    # self-response before the follow-up list
+    u = rng.random(n_a)
+    early = np.full(n_a, "", object)
+    occ = kind == "OCC"
+    early[occ & (u < P.EARLY_SR["O"])] = "O"
+    early[occ & (u >= P.EARLY_SR["O"]) & (u < P.EARLY_SR["O"] + P.EARLY_SR["P"])] = "P"
+    # receipt dates of early self-response
+    rec = np.full(n_a, -1, int)
+    m = early == "O"
+    k = m.sum()
+    mixu = rng.random(k)
+    r_on = np.where(mixu < 0.24, rng.uniform(dn(P.ONLINE_OPEN), dn(P.CENSUS_DAY), k),
+                    np.where(mixu < 0.95, dn(P.CENSUS_DAY) + rng.exponential(8.5, k),
+                             rng.uniform(dn(P.CENSUS_DAY), dn(P.NRFU_LIST), k)))
+    rec[m] = np.minimum(r_on.astype(int), dn(P.NRFU_LIST))
+    m = early == "P"
+    k = m.sum()
+    rec[m] = np.minimum((dn(P.CENSUS_DAY) - 2 + rng.gamma(2.2, 6.5, k)).astype(int), dn(P.NRFU_LIST))
+    # the follow-up: every address without a self-response by the list cut
+    nrfu = early == ""
+    idx = np.where(nrfu)[0]
+    rng = r_nrfu
+    visits = []      # (address, visit_no, day, minute, outcome, respondent)
+    route = early.copy()
+    final_day = rec.copy()
+    reint = np.zeros(n_a, bool)
+    first = (dn(P.NRFU_START) + rng.beta(1.25, 1.9, len(idx)) * (dn(P.FIRST_VISIT_BY) - dn(P.NRFU_START))).astype(int)
+    late_u = rng.random(len(idx))
+    for j, a in enumerate(idx):
+        day = int(first[j])
+        if kind[a] != "OCC":
+            n_v = 1 if rng.random() < 0.72 else 2
+            for v in range(n_v):
+                out = kind[a] if v == n_v - 1 else "NC"
+                visits.append((a, v + 1, day, _minute(rng), out, ""))
+                day += 4 + int(rng.exponential(5))
             continue
-        for code, s in W.STREAMS.items():
-            c = s["client"]
-            region = W.CLIENTS[c]["region"]
-            if code == "D6":
-                if W.PILOT[0] <= d <= W.PILOT[1]:
-                    kf = W.PILOT_KF * (0.85 if wd == 5 else 1.0) * math.exp(rng.normal(0, 0.15))
-                else:
+        # late self-response closes the case administratively
+        late = ""
+        if late_u[j] < P.LATE_SR["O"]:
+            late = "O"
+        elif late_u[j] < P.LATE_SR["O"] + P.LATE_SR["P"]:
+            late = "P"
+        late_day = day + int(rng.gamma(1.3, 14)) if late else 10 ** 6
+        done = False
+        proxied = False
+        for v in range(6):
+            if day > dn(P.FIELD_CLOSE):
+                break
+            if late and late_day <= day:
+                break
+            hh = rng.random() < P.HH_P[v]
+            if hh:
+                visits.append((a, v + 1, day, _minute(rng), "HH", ""))
+                if proxied:
+                    reint[a] = True
+                route[a] = "FS"
+                final_day[a] = day
+                done = True
+                break
+            if proxied:
+                visits.append((a, v + 1, day, _minute(rng), "NC", ""))
+                break
+            mop = day >= dn(P.MOPUP)
+            if v >= 2 and rng.random() < (P.PX_MOP[v] if mop else P.PX_P[v]):
+                resp = rng.choice(["NEIGHBOUR", "LANDLORD", "RELATIVE ELSEWHERE", "BUILDING MANAGER"],
+                                  p=[0.71, 0.13, 0.11, 0.05])
+                visits.append((a, v + 1, day, _minute(rng), "PX", resp))
+                route[a] = "FP"
+                final_day[a] = day
+                if rng.random() < P.REINTERVIEW and v < 5 and day < dn(P.REINTERVIEW_BY):
+                    proxied = True
+                    day += 3 + int(rng.exponential(4))
                     continue
-            elif wd == 5:
-                if code not in W.SAT_KF:
-                    continue
-                kf = W.SAT_KF[code] * math.exp(rng.normal(0, 0.16))
+                done = True
+                break
+            out = "RF" if rng.random() < P.REFUSE else "NC"
+            visits.append((a, v + 1, day, _minute(rng), out, ""))
+            if day >= dn(P.MOPUP):
+                day += P.GAP_MOP[0] + int(rng.exponential(P.GAP_MOP[1]))
             else:
-                if region == "US" and d in W.US_HOLIDAYS_Q3:
-                    if code not in W.SAT_KF:
-                        continue
-                    kf = W.SAT_KF[code] * 1.1 * math.exp(rng.normal(0, 0.12))
-                elif region == "UK" and d in W.UK_HOLIDAYS_Q3:
-                    continue
-                else:
-                    prof = W.PROFILE.get(code, W.PROFILE["TCM" if code == "D5" else region])[wd]
-                    sd = W.DAILY_SD.get(code, 0.22)
-                    kf = s["kf"] * scale.get(code, 1.0) * prof * math.exp(rng.normal(0, sd) - sd * sd / 2)
-                    if code in W.CYCLE and cycle_day(d):
-                        kf *= W.CYCLE[code]
-            rows.append((d, code, W.STREAMS[code]["q3"] or "D", kf))
-    df = pd.DataFrame(rows, columns=["day", "code", "queue", "kf_raw"])
-    df["version"] = [W.version_on(c, d) for c, d in zip(df.code, df.day)]
-    df["kfpd"] = [len(W.fields(c, v)) for c, v in zip(df.code, df.version)]
-    df["docs"] = np.maximum(1, np.round(df.kf_raw / df.kfpd)).astype(int)
-    df["kf"] = df.docs * df.kfpd
-    return df.drop(columns="kf_raw")
+                day += P.GAP_MIN + int(rng.exponential(P.GAP_MEAN))
+        if proxied and route[a] == "FP":
+            done = True
+        if not done and late and late_day <= dn(P.FIELD_CLOSE):
+            route[a] = late
+            final_day[a] = late_day
+            visits.append((a, None, late_day, None, "SR", ""))
+    rng = r_form
+    # a field form reaches the receipt register when the tablet syncs (the same evening or the next day; every form is
+    # in by the close of field operations); a late self-response is registered on the day it is received
+    rec = np.where(np.isin(route, ["FS", "FP"]), np.minimum(final_day + rng.integers(0, 2, n_a), dn(P.FIELD_CLOSE)),
+                   final_day)
+    # forms received by the close of field operations
+    has_form = (route != "") & (rec <= dn(P.FIELD_CLOSE))
+    route = np.where(has_form, route, "")
+    # batches: created on receipt (online, field) or after scanning (paper)
+    lag = np.where(route == "P", rng.integers(5, 26, n_a), np.where(route == "O", 1, rng.integers(1, 3, n_a)))
+    bdate = rec + lag
+    # persons with a write-in, persons in employment, usual residents
+    wv, wp = zip(*P.WRITEINS)
+    n_w = rng.choice(wv, size=n_a, p=wp)
+    n_w = np.where(has_form, n_w, 0)
+    blank_p = np.array([P.BLANK.get(r, 0.0) for r in route])
+    n_blank = rng.binomial(np.where(has_form, n_w + 1, 0), blank_p)
+    n_emp = n_w + n_blank
+    n_res = n_emp + rng.choice([0, 1, 2, 3], size=n_a, p=[0.42, 0.33, 0.17, 0.08])
+    n_res = np.where(has_form, np.maximum(n_res, 1), 0)
+    # persons
+    rng = r_pers
+    owner = np.repeat(np.arange(n_a), n_w)
+    n_p = len(owner)
+    sm = np.array(W.GROUPS)
+    sh = np.array([W.SHARE[g] for g in W.GROUPS])
+    g_i = rng.choice(len(sm), size=n_p, p=sh / sh.sum())
+    mix = W.unit_mix()
+    unit = np.empty(n_p, object)
+    for gi, g in enumerate(sm):
+        mm = np.where(g_i == gi)[0]
+        us, w = mix[g]
+        unit[mm] = np.array(us, object)[rng.choice(len(us), size=len(mm), p=w)]
+    person_no = np.concatenate([np.arange(1, c + 1) for c in n_w[n_w > 0]]) if n_p else np.zeros(0, int)
+    S = dict(n_a=n_a, a_ed=a_ed, ed_code=ed_code, ed_region=ed_region, kind=kind, route=route, rec=rec, bdate=bdate,
+             has_form=has_form, reint=reint, visits=visits, n_w=n_w, n_emp=n_emp, n_res=n_res, owner=owner,
+             p_route=route[owner], p_unit=unit, p_group=np.array([x[:2] for x in unit]), person_no=person_no,
+             p_bdate=bdate[owner], early=early)
+    S["coded"] = S["p_bdate"] <= dn(P.CUT)
+    S["rng_state"] = rng.bit_generator.state
+    return S
 
 
-# ----------------------------------------------------------------------------------------------- workforce
-def workforce(rng):
-    """persons, badges (with reissues), hire dates, skills, and the monthly group rotation"""
-    persons = []
-    base_hires = sorted(rng.choice(np.arange(0, 2400), size=30, replace=False))
-    for i in range(30):
-        hire = dt.date(2026, 6, 15) - dt.timedelta(days=int(base_hires[i]) + 40)
-        persons.append(dict(emp=f"E{41207 + i * 37}", badge=f"V{3101 + i * 7:04d}", hire=hire, leave=None,
-                            group="ABC"[i % 3], skill=float(rng.normal(0, W.TRUTH["skill_sd"]))))
-    # three leavers in July; their badges are reissued to three August joiners in the same group
-    leavers = [4, 13, 23]
-    leave_days = [dt.date(2026, 7, 10), dt.date(2026, 7, 24), dt.date(2026, 7, 31)]
-    join_days = [dt.date(2026, 8, 3), dt.date(2026, 8, 10), dt.date(2026, 8, 17)]
-    for k, (i, ld, jd) in enumerate(zip(leavers, leave_days, join_days)):
-        persons[i]["leave"] = ld
-        persons.append(dict(emp=f"E{43350 + k * 11}", badge=persons[i]["badge"], hire=jd, leave=None,
-                            group="B" if persons[i]["group"] == "C" else persons[i]["group"],
-                            skill=float(rng.normal(0, W.TRUTH["skill_sd"]))))
-    # two late-August joiners on new badges, four October joiners for November
-    for k, (jd, g) in enumerate([(dt.date(2026, 8, 24), "B"), (dt.date(2026, 8, 24), "A")]):
-        persons.append(dict(emp=f"E{43402 + k * 13}", badge=f"V{3340 + k * 9:04d}", hire=jd, leave=None, group=g,
-                            skill=float(rng.normal(0, W.TRUTH["skill_sd"]))))
-    for k in range(4):
-        persons.append(dict(emp=f"E{43511 + k * 17}", badge=f"V{3372 + k * 6:04d}", hire=dt.date(2026, 10, 12), leave=None,
-                            group="O", skill=float(rng.normal(0, W.TRUTH["skill_sd"]))))
-    P = pd.DataFrame(persons)
-    P["pid"] = np.arange(len(P))
-    # HRMS numbers: employee numbers by date of joining, badges by issue date, both with the gaps a real
-    # register carries (numbers taken by other centres and by people who never started)
-    order = sorted(range(len(P)), key=lambda i: (P.hire[i], i))
-    emp = _seq(40388, len(P), 9, 71, 1)
-    new_badge = [i for i in order if (P.badge == P.badge[i]).sum() == 1 or P.hire[i] == P[P.badge == P.badge[i]].hire.min()]
-    bno = dict(zip([P.badge[i] for i in new_badge], _seq(2716, len(new_badge), 2, 19, 2)))
-    P["emp"] = [None] * len(P)
-    for r, i in enumerate(order):
-        P.at[i, "emp"] = f"E{emp[r]}"
-    P["badge"] = [f"V{bno[b]:04d}" for b in P.badge]
-    return P
+def _minute(rng):
+    """local minute of day of a doorstep visit: daytime, evening and Saturday-like spread"""
+    return int(np.clip(rng.normal(15.3 * 60, 150), 9 * 60, 20 * 60 + 55))
 
 
-def _seq(start, n, lo, hi, salt):
-    """n increasing numbers from start with irregular gaps between lo and hi"""
-    import hashlib
-    out, v = [], start
-    for i in range(n):
-        out.append(v)
-        v += lo + int(hashlib.md5(f"{salt}-{i}".encode()).hexdigest(), 16) % (hi - lo + 1)
-    return out
-
-
-ROTATION = {7: {"A": "D", "B": "D", "C": "N"}, 8: {"A": "D", "B": "N", "C": "D"}, 9: {"A": "N", "B": "D", "C": "D"}}
-
-
-def on_shift(P, d):
-    """(pid, queue) for every verifier working shift-day d: the group's queue for the month, one rest day a week"""
-    out = []
-    for r in P.itertuples():
-        if r.group not in ROTATION.get(d.month, {}):
-            continue
-        if d < r.hire or (r.leave and d > r.leave):
-            continue
-        if d.weekday() == (r.pid % 6):
-            continue
-        out.append((r.pid, ROTATION[d.month][r.group]))
-    return out
-
-
-def tenure_term(days_in):
-    if days_in < 90:
-        return W.TRUTH["ten_new"]
-    if days_in < 180:
-        return W.TRUTH["ten_mid"]
-    return 0.0
-
-
-# ----------------------------------------------------------------------------------------------- the quarter
-def shift_start(d, q):
-    h, m = W.SHIFT[q][:2]
-    return dt.datetime(d.year, d.month, d.day, h, m)
-
-
-def simulate(seed=W.SEED, scale=None):
-    scale = W.Q3_SCALE if scale is None else scale
+def uniforms(S, seed=P.SEED + 7):
     rng = np.random.default_rng(seed)
-    vol = q3_key_fields(rng, scale)
-    P = workforce(rng)
-    T = W.TRUTH
-    skill = P.skill.values
-    hire = P.hire.values
-
-    # documents ---------------------------------------------------------------------------------
-    doc_rows = []
-    for r in vol.itertuples():
-        doc_rows.append(pd.DataFrame({"code": r.code, "day": r.day, "queue": r.queue, "version": r.version,
-                                      "kf": r.kfpd, "n": np.arange(r.docs)}))
-    docs = pd.concat(doc_rows, ignore_index=True)
-    docs["doc"] = np.arange(len(docs))
-    # capture numbers: two-digit year, day of year, queue letter and the queue-day's capture sequence
-    seqn = np.empty(len(docs), dtype=np.int64)
-    for (d, q), g in docs.groupby(["day", "queue"], sort=True):
-        seqn[g.doc.values] = 1 + rng.permutation(len(g))
-    doy = pd.to_datetime(docs.day).dt.dayofyear.values
-    docs["doc_id"] = [f"26{a:03d}{q}{n:06d}" for a, q, n in zip(doy, docs.queue.values, seqn)]
-    # dispatch: every queue-day's documents shuffled across the verifiers on shift, times spread over the shift
-    pid = np.empty(len(docs), dtype=np.int32)
-    tmin = np.empty(len(docs))
-    for (d, q), g in docs.groupby(["day", "queue"], sort=True):
-        crew = [p for p, qq in on_shift(P, d) if qq == q]
-        idx = g.doc.values
-        pid[idx] = rng.choice(crew, size=len(idx))
-        tmin[idx] = rng.uniform(4, 535, size=len(idx))
-    docs["pid"] = pid
-    docs["tmin"] = tmin
-    docs["audited"] = False
-    for (code, d), g in docs.groupby(["code", "day"], sort=True):
-        share = W.audit_share(code)
-        k = int(round(share * len(g)))
-        docs.loc[rng.choice(g.doc.values, size=k, replace=False), "audited"] = True
-
-    # fields ------------------------------------------------------------------------------------
-    parts = []
-    for (code, version), g in docs.groupby(["code", "version"], sort=True):
-        flist = W.fields(code, version)
-        mult = np.array([W.FIELD_TYPES[t][0] for _, t in flist])
-        pr = W.STREAMS[code]["p"] * mult / mult.mean()
-        n, k = len(g), len(flist)
-        err = rng.random((n, k)) < pr
-        parts.append(pd.DataFrame({"doc": np.repeat(g.doc.values, k), "fpos": np.tile(np.arange(k, dtype=np.int8), n),
-                                   "err": err.ravel()}))
-    F = pd.concat(parts, ignore_index=True)
-    F = F.merge(docs[["doc", "code", "version", "day", "queue", "pid", "tmin", "audited"]], on="doc", how="left")
-    pool = F.groupby(["day", "queue"]).err.mean().rename("pool")
-    F = F.join(pool, on=["day", "queue"])
-    F["ftype"] = _ftype_vec(F)
-    fam = F.code.map({c: T["fam"][W.STREAMS[c]["family"]] for c in W.STREAMS}).values
-    ftm = F.ftype.map({t: v[1] for t, v in W.FIELD_TYPES.items()}).values
-    tenure_days = (pd.to_datetime(F.day).values - pd.to_datetime(hire[F.pid.values]).values).astype("timedelta64[D]").astype(int)
-    ten = np.where(tenure_days < 90, T["ten_new"], np.where(tenure_days < 180, T["ten_mid"], 0.0))
-    hours = F.tmin.values / 60.0
-    tos = T["tos"] * np.maximum(0.0, hours - 5.0)
-    ton = np.where((F.queue.values == "N") & (hours >= 5.5), T["ton"], 0.0)
-    z = ALPHA + fam + ftm + skill[F.pid.values] + ten + tos + ton - T["g"] * np.log(F.pool.values)
-    pm = 1 / (1 + np.exp(-z))
-    u = rng.random(len(F))
-    F["miss"] = F.err.values & (u < pm)
-    F["fa"] = (~F.err.values) & (rng.random(len(F)) < T["fa"])
-    F["pmiss"] = np.where(F.err.values, pm, np.nan)
-    F["tenure_days"] = tenure_days
-
-    # timeouts: an earlier screen that timed out, by a verifier on the same shift ---------------------
-    to = rng.random(len(docs)) < 0.035
-    docs["timeout"] = to
-    docs["to_pid"] = -1
-    docs["to_tmin"] = np.nan
-    for (d, q), g in docs[to].groupby(["day", "queue"], sort=True):
-        crew = [p for p, qq in on_shift(P, d) if qq == q]
-        docs.loc[g.index, "to_pid"] = rng.choice(crew, size=len(g))
-        docs.loc[g.index, "to_tmin"] = np.maximum(0.5, g.tmin.values - rng.uniform(18, 95, size=len(g)))
-    return dict(vol=vol, P=P, docs=docs, F=F, pool=pool.reset_index(), rng=rng)
+    n = len(S["owner"])
+    names = ["v", "ph", "txt", "sc", "sc2", "rec", "slip", "spec", "nat", "adj", "title", "cin", "cnat"]
+    return {k: rng.random(n) for k in names}
 
 
-def _ftype_vec(F):
-    out = np.empty(len(F), dtype=object)
-    for (code, version), idx in F.groupby(["code", "version"], sort=True).indices.items():
-        types = np.array([t for _, t in W.fields(code, version)], dtype=object)
-        out[idx] = types[F.fpos.values[idx]]
-    return out
+def coding(S, U, prm=None):
+    """write-ins and codes from fixed uniforms: vague or specific, the autocoder's suggestion and score, the clerical
+    code, the production code under the old rule (coded so far) and under the new rule (the rest)"""
+    prm = prm or dict(PHRASES=P.PHRASES, VAGUE=P.VAGUE, SELF_MULT=P.SELF_MULT, RECOVER=P.RECOVER, SLIP_MULT=P.SLIP_MULT)
+    n = len(S["owner"])
+    route = S["p_route"]
+    unit = S["p_unit"]
+    grp = S["p_group"]
+    vague = np.zeros(n, bool)
+    phrase = np.full(n, "", object)
+    for g, (sv, pv, smx, pmx) in prm["VAGUE"].items():
+        for r in P.ROUTES:
+            m = (grp == g) & (route == r)
+            rate = pv if r == "FP" else sv * prm["SELF_MULT"][r]
+            mix = pmx if r == "FP" else smx
+            hit = m & (U["v"] < rate)
+            keys = list(mix)
+            cum = np.cumsum([mix[k] for k in keys])
+            cum = cum / cum[-1]
+            pick = np.searchsorted(cum, U["ph"][hit], side="right")
+            phrase[hit] = np.array(keys, object)[np.minimum(pick, len(keys) - 1)]
+            vague[hit] = True
+    # specific write-ins: suggestion and score; a slip puts the suggestion in a related unit group of another sub-major
+    # group, a miss in another unit group of the same sub-major group
+    sugg = unit.copy()
+    score = np.zeros(n)
+    spec = ~vague
+    mix = W.unit_mix()
+    pairs, pmult = slip_pairs(prm)
+    has_pair = np.array([u_ in pairs for u_ in unit])
+    m_u = np.array([pmult.get(u_, 1.0) for u_ in unit])
+    s_u = U["spec"]
+    slip = spec & has_pair & (s_u >= 1 - P.SPEC_SLIP * m_u)
+    same = spec & ~slip & (s_u >= P.SPEC_RIGHT) & (s_u < 1 - P.SPEC_SLIP * m_u)
+    for g in W.GROUPS:
+        us, w = mix[g]
+        m = np.where(same & (grp == g))[0]
+        if len(us) > 1 and len(m):
+            pos = np.array([us.index(x) for x in unit[m]])
+            alt = np.minimum((U["nat"][m] * (len(us) - 1)).astype(int), len(us) - 2)
+            alt = np.where(alt >= pos, alt + 1, alt)
+            sugg[m] = np.array(us, object)[alt]
+    sugg[slip] = np.array([pairs[x] for x in unit[slip]], object)
+    right = spec & (sugg == unit)
+    sc = U["sc"]
+    score[right] = np.where(sc[right] < 0.84, 0.90 + 0.095 * U["sc2"][right],
+                            np.where(sc[right] < 0.94, 0.80 + 0.10 * U["sc2"][right], 0.62 + 0.18 * U["sc2"][right]))
+    wrong = spec & ~right
+    score[wrong] = 0.70 + 0.25 * U["sc2"][wrong]
+    for ph, (dflt, lo, hi) in prm["PHRASES"].items():
+        m = phrase == ph
+        sugg[m] = dflt
+        score[m] = lo + (hi - lo) * U["sc"][m]
+    score = np.round(score, 3)
+    # clerical code (five-digit national code)
+    rec_p = np.array([prm["RECOVER"][r] for r in route])
+    cler_unit = np.where(vague & (U["rec"] >= rec_p), sugg, unit)
+    cslip = spec & has_pair & (U["slip"] < P.CLER_SLIP * m_u)
+    cler_unit[cslip] = np.array([pairs[x] for x in unit[cslip]], object)
+    # clerical coders also slip inside the sub-major group (another unit group, or another national code of the unit)
+    inside = spec & ~cslip & (U["cin"] < P.CLER_INSIDE)
+    for g in W.GROUPS:
+        us, w = mix[g]
+        m = np.where(inside & (grp == g))[0]
+        if len(us) > 1 and len(m):
+            pos = np.array([us.index(x) for x in cler_unit[m]])
+            alt = np.minimum((U["cnat"][m] * (len(us) - 1)).astype(int), len(us) - 2)
+            alt = np.where(alt >= pos, alt + 1, alt)
+            cler_unit[m] = np.array(us, object)[alt]
+    nat_u = np.where(U["cnat"] < P.CLER_NATIONAL, U["cnat"] / P.CLER_NATIONAL, U["nat"])
+    cler = np.array([_nat(x, v) for x, v in zip(cler_unit, nat_u)], object)
+    ref = np.array([_nat(x, v) for x, v in zip(unit, U["nat"])], object)
+    old_a = score >= P.OLD_ACCEPT
+    new_a = score >= P.NEW_ACCEPT
+    prod_old = np.where(old_a, sugg, cler)
+    prod_new = np.where(new_a, sugg, cler)
+    return dict(vague=vague, phrase=phrase, sugg=sugg, score=score, cler=cler, ref=ref, prod_old=prod_old,
+                prod_new=prod_new, path_old=np.where(old_a, "A", "C"))
 
 
-def fname_vec(F):
-    out = np.empty(len(F), dtype=object)
-    for (code, version), idx in F.groupby(["code", "version"], sort=True).indices.items():
-        names = np.array([n for n, _ in W.fields(code, version)], dtype=object)
-        out[idx] = names[F.fpos.values[idx]]
-    return out
+def slip_pairs(prm):
+    """each unit group's related group across a sub-major boundary and the pair's slip-rate multiplier (a unit group in
+    two pairs takes the later one)"""
+    pairs, mult = {}, {}
+    for k, (a, b) in enumerate(P.SLIP_PAIRS):
+        m = prm.get("SLIP_MULT", {}).get(k, 1.0) if prm else 1.0
+        pairs[a] = b
+        pairs[b] = a
+        mult[a] = m
+        mult[b] = m
+    return pairs, mult
+
+
+_NAT = {}
+
+
+def _nat(unit, u):
+    if unit not in _NAT:
+        _NAT[unit] = W.national_codes(unit)
+    c = _NAT[unit]
+    return c[min(int(u * len(c)), len(c) - 1)]

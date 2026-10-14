@@ -1,8 +1,6 @@
-"""Assertions on the built pack: the ladder by rung and by grid cell, SF1 to SF16, the form 1 separation, the
-rigorous family, the clean-data and lens-swap tests, the asks and the pair simulation, the input gates and the
-realism sweep. run() returns the results and raises on any failure."""
-import datetime as dt
-import glob
+"""task230 checks: the input gates, the three rules executed on the clean truth (R1 to R3c), the ladder's rungs and
+margins, the estimators' convergence, the reflex routes, the semantic fork rows (SF1 to SF14), Layer 1 neutrality, the
+ask devices and their separation from the main call, the context artifact, the bins and the realism sweep."""
 import json
 import os
 import re
@@ -11,276 +9,286 @@ import zipfile
 import numpy as np
 import pandas as pd
 
-import analysis as AN
-import asks as AK
-import pack as PK
-import variants as VA
+import estim as E
+import params as P
+import sim
 import world as W
 
-GOLDEN_SET = ["N4", "D2", "D3", "D4", "D6"]
-SETS = {"R0": ["N1", "N2", "N3", "N4", "N5"], "R1": ["N1", "N2", "N3", "N4", "N5", "D5"],
-        "R2": ["N1", "N2", "N3", "N4", "N5", "D2", "D3", "D4", "D5", "D6"], "R3": ["N4", "D2", "D3", "D4"], "R4": GOLDEN_SET}
-BANNED = re.compile(r"\b(pool|pooled|prevalence|vigilance|criterion|criteria)\b", re.I)
+G = W.GROUPS
+GOLD = ["24", "25", "35", "41", "71", "93"]
+LADDER = {"default": ["35", "93"], "rule": ["35", "41", "93"], "bt_old": ["35", "93"], "bt_new": ["24", "35", "41", "93"],
+          "route_old": ["24", "35", "71", "93"], "golden": GOLD}
+MARGIN = 0.20     # every rung clears the warning line by at least this many points (1.1 times the line)
+PEOPLE = ["Timothy Taggart", "Lesley Ahearne", "Tracey Brien", "Erica Phayre"]
 
 
-class Rec:
-    def __init__(self):
-        self.rows = []
-
-    def __call__(self, name, ok, detail=""):
-        self.rows.append((name, bool(ok), str(detail)))
-
-    def failures(self):
-        return [r for r in self.rows if not r[1]]
+def margin(b, tg):
+    return min((abs(v) - P.WARNING) if g in tg else (P.WARNING - abs(v)) for g, v in zip(G, b))
 
 
-def _text_of(path):
-    if path.endswith(".docx"):
-        from docx import Document
-        d = Document(path)
-        t = "\n".join(p.text for p in d.paragraphs)
-        for tb in d.tables:
-            for row in tb.rows:
-                t += "\n" + " ".join(c.text for c in row.cells)
-        return t
-    if path.endswith(".pdf"):
-        from pypdf import PdfReader
-        return "\n".join(p.extract_text() for p in PdfReader(path).pages)
-    if path.endswith(".xlsx"):
-        from openpyxl import load_workbook
-        wb = load_workbook(path, read_only=True)
-        out = []
-        for ws in wb.worksheets:
-            out.append(ws.title)
-            for row in ws.iter_rows(values_only=True):
-                out.extend(str(x) for x in row if isinstance(x, str))
-        return "\n".join(out)
-    if path.endswith(".parquet"):
-        import pyarrow.parquet as pq
-        return " ".join(pq.read_schema(path).names)
-    if path.endswith((".csv", ".md", ".json")):
-        return open(path, encoding="utf-8").read()
-    return ""
+def bin_margin(vals):
+    """distance of every variant from the edges of the golden's one-decimal bin"""
+    v = np.vstack(vals)
+    b = np.array([float(f"{x:.1f}") for x in v[0]])
+    return float(np.min(np.minimum(v.min(0) - (b - 0.05), (b + 0.05) - v.max(0))))
 
 
-def sets_equal(res, limits, want):
-    return AN.designate(res, limits) == want
+def run(target, golden, S, U, Cd, T, A, D, out, R, facts):
+    n = [0]
 
+    def ok(c, label):
+        assert c, label
+        n[0] += 1
 
-def run(target, quiet=True, strict=True):
-    ck = Rec()
-    pk = AN.Pack(target)
-    out = VA.run(pk)
-    L = out["limits"]
-    R = out["R"]
-    Qr, sc = out["Qr"], out["sc"]
-
-    # ------------------------------------------------------------------ the ladder
-    named = {"R0": R["R0"], "R1": R["R1"], "R2": R["R2"], "R3": R["R3"], "R4": R["golden"]}
-    for k, r in named.items():
-        ck(f"ladder {k} set", AN.designate(r, L) == SETS[k], AN.designate(r, L))
-        need = 0.10 if k == "R4" else 0.05
-        ck(f"ladder {k} margin", AN.margin(r, L) >= need, round(AN.margin(r, L), 3))
-    ck("golden designation set", AN.designate(R["golden"], L) == GOLDEN_SET, AN.designate(R["golden"], L))
-    ck("default path picks the best-fitting attribute model", out["best"] == min(out["aic"], key=out["aic"].get), out["best"])
-    for name, r in out["att"].items():
-        ck(f"attribute family files R1: {name}", AN.designate(r, L) == SETS["R1"], AN.designate(r, L))
-    grid_sets = {k: tuple(AN.designate(r, L)) for k, r in out["grid"].items()}
-    ck("grid: the roster toggle never moves a set", all(grid_sets[(0,) + k[1:]] == grid_sets[(1,) + k[1:]] for k in grid_sets), "")
-    ck("grid: the answer only with both effects and the new client inside", [k for k, v in grid_sets.items() if list(v) == GOLDEN_SET] == [(0, 1, 1, 1), (1, 1, 1, 1)], "")
-    ck("grid: six distinct sets", len(set(grid_sets.values())) == 6, sorted(set(grid_sets.values())))
-    ck("grid: every cell feasible", all(len(v) < len(W.ORDER) for v in grid_sets.values()), "")
-
-    ck("write-up bands: every rigorous variant puts the five above 1.1 and the six below 0.9 times their limits",
-       all(min(r[c] / L[c] for c in GOLDEN_SET) > 1.1 and max(r[c] / L[c] for c in W.ORDER if c not in GOLDEN_SET) < 0.9
-           for r in list(out["V"].values()) + [R["golden"]]), "")
-
-    # ------------------------------------------------------------------ the rigorous family
-    for name, r in out["V"].items():
-        ck(f"rigorous variant on the answer: {name}", AN.designate(r, L) == GOLDEN_SET, AN.designate(r, L))
-        ck(f"rigorous variant margin 0.10: {name}", AN.margin(r, L) >= 0.10, round(AN.margin(r, L), 3))
-
-    # ------------------------------------------------------------------ form 1 separation
-    b, se = out["slope"]
-    for q, (bq, sq) in out["slopes_within"].items():
-        ck(f"form 1: rate slope clear of zero in queue {q}", bq + 1.96 * sq < 0, f"{bq:.3f} se {sq:.3f}")
-    (bd, sd), (bn, sn) = out["slopes_within"]["D"], out["slopes_within"]["N"]
-    ck("form 1: one slope on both queues", abs(bd - bn) < 1.96 * (sd ** 2 + sn ** 2) ** 0.5 and abs(bd - bn) < 1.96 * max(sd, sn) * 1.6, f"{bd:.3f} vs {bn:.3f}")
-    for fam, (bf, sf) in out["fam_slopes"].items():
-        ck(f"form 1: one slope across families ({fam})", abs(bf - b) < 1.96 * (sf ** 2 + se ** 2) ** 0.5, f"{bf:.3f} se {sf:.3f}")
-    g_ho = out["heldout"]["golden"]
-    for name, v in out["heldout"].items():
-        if name == "golden":
-            continue
-        ck(f"form 1: held-out shift-days 15% worse: {name}", v >= 1.15 * g_ho, round(v / g_ho, 3))
-    ck("form 1: shares add nothing once the rate is in", out["mix"]["p"] > 0.05, out["mix"])
-    ck("form 1: November mix outside every closed shift-day", out["nov_share"]["D6"] > 3 * out["q3_max_share"]["D6"] and out["q3_max_share"]["D5"] == 0.0,
-       (out["nov_share"], out["q3_max_share"]))
-    ck("support: ten shift-days at or below November's day rate", out["support"]["D"] >= 10, out["support"])
-    ck("support: ten shift-days at or above November's night rate", out["support"]["N"] >= 10, out["support"])
-    ck("support: every roster verifier of the closed quarter worked both queues", out["verifiers_both_queues"], "")
-    for nm, v in out["collapse"].items():
-        if "hol" in nm:
-            continue
-        ck(f"queue and Saturday term collapses once the rate is in: {nm}", abs(v["z_with"]) < 2.0 and (abs(v["with_rate"]) < abs(v["without"]) or abs(v["z_without"]) < 2.0), v)
-    for (q, m), v in out["monthly_pool"].items():
-        lo, hi = (0.042, 0.044) if q == "D" else (0.024, 0.026)
-        ck(f"monthly OCR error rate band {q} {m}", lo <= v <= hi, round(v * 100, 3))
-    ck("default path's month-by-month back-test clean (every stream-month within 3 overdispersed standard errors)", out["backtest"][out["best"]] < 3.0, round(out["backtest"][out["best"]], 2))
-
-    # ------------------------------------------------------------------ clean-data and lens swap
-    for nm, d in out["T"].items():
-        ck(f"clean-data: {nm}: golden unchanged", AN.designate(d["golden"], L) == GOLDEN_SET, AN.designate(d["golden"], L))
-        ck(f"clean-data: {nm}: default unchanged", AN.designate(d["default"], L) == SETS["R1"], AN.designate(d["default"], L))
-    gm = out["golden_model"]
-    bm = AN.fit_spec(Qr, [a for a in AN.ATTRIBUTE if a["name"] == out["best"]][0])
-    import glm
-    C = Qr.C
-    pg = glm.predict(gm, glm.design(C, AN._terms(AN.GOLDEN), gm["lv"])[0]) * C.n
-    pb = glm.predict(bm, glm.design(C, AN._terms(bm["spec"]), bm["lv"])[0]) * C.n
-    t = C.assign(pg=pg, pb=pb).groupby(["code", "month"])[["pg", "pb"]].sum()
-    gap = float((abs(t.pg - t.pb) / t.pg).max())
-    ck("lens swap: both models reproduce the closed quarter by stream-month (within 6%)", gap < 0.06, round(gap, 4))
-    ck("lens swap: one November, two forecasts, two sets", AN.designate(R["golden"], L) != AN.designate(R["R1"], L), "")
-    ck("own-stream-rate model files a fixed-detection set", AN.designate(out["own"], L) != GOLDEN_SET, AN.designate(out["own"], L))
-
-    # ------------------------------------------------------------------ semantic forks
-    qcp = _text_of(os.path.join(target, PK.FILES["qcp"]))
-    ck("SF1 the whole month (4.2 'for the month')", "on second-pass verification for the month" in qcp, "")
-    ck("SF2 value after first pass (4.1)", "value after first pass differs from the image" in qcp, "")
-    ck("SF3 the plan's routing (4.1, 4.3) and R0 differs", "operating plan of record" in qcp and AN.designate(R["R0"], L) != GOLDEN_SET, "")
-    ck("SF4 no forecast within 0.10 of its limit", AN.margin(R["golden"], L) >= 0.10, round(AN.margin(R["golden"], L), 3))
-    sch = _text_of(os.path.join(target, PK.FILES["schedules"]))
-    pairs = re.findall(r"([A-Z]{3}-[A-Z0-9]{3,4})\s+(\d+\.\d+)\s+(\d+\.\d+)%", sch)
-    ck("SF5 limit and accuracy print one number", len(pairs) == 11 and all(abs(100 - float(l) / 10 - float(a)) < 1e-9 for _, l, a in pairs), len(pairs))
-    kf = pk.kfields
-    keyset = set(zip(kf.Stream, kf["Form version"], kf.Field))
-    ck("SF6 the audit re-keys key fields only", set(zip(pk.au.stream_code, pk.au.form_version, pk.au.field_name)) <= keyset, "")
-    ck("SF7 shift-days, not calendar days: same call", AN.designate(sf7_calendar(Qr, sc, gm), L) == GOLDEN_SET, "")
-    ck("SF8 eleven streams", len(pk.streams.stream_code.unique()) == 11 and len(sc.plan.code.unique()) == 11, "")
-    ck("SF9 the closed quarter is July to September", Qr.scr.day.max() <= dt.date(2026, 9, 30) and Qr.scr.day.min() >= dt.date(2026, 7, 1), "")
-    ck("SF10 monthly-average November rates: same call", AN.designate(out["V"]["November rates as monthly averages"], L) == GOLDEN_SET, "")
-    ck("SF11 misses from field edits plus the audit: same call", AN.designate(out["V"]["rate from field edits plus audited misses"], L) == GOLDEN_SET, "")
-    ck("SF12 the closed quarter's roster: same call", AN.designate(out["T"]["closed-quarter roster"]["golden"], L) == GOLDEN_SET, "")
-    ck("SF13 Hollings & Pryce routed from 1 November", "D6" in set(sc.plan.code) and sc.plan[sc.plan.code == "D6"].kf.sum() > 0, "")
-    ck("SF14 verifier-introduced errors dropped: same call", AN.designate(out["T"]["verifier-introduced errors dropped"]["golden"], L) == GOLDEN_SET, "")
-    ck("SF15 the divisor is key fields first-pass verified", "per 1,000 key fields first-pass verified" in qcp, "")
-    kfq = sc.plan.groupby("code").kf.sum()
-    qres = {}
-    for q in ("D", "N"):
-        cs = [c for c in W.ORDER if W.STREAMS[c]["nov"] == q]
-        v = sum(kfq[c] * R["golden"][c] for c in cs) / sum(kfq[c] for c in cs)
-        for c in cs:
-            qres[c] = v
-    sf16 = AN.designate(qres, L)
-    ck("SF16 the stream's own documents (4.1), and the queue-wide residual files another set",
-       "the stream's own documents" in qcp and sf16 != GOLDEN_SET, sf16)
-    out["sf16_set"] = sf16
-
-    # ------------------------------------------------------------------ asks and the pair simulation
-    A = AK.run(target, pk, sc)
-    for ask, stops in (("A", A["A"]), ("C", A["C"])):
-        g = stops["golden"]
-        for nm, v in stops.items():
-            if nm == "golden":
-                continue
-            moved = [c for c in g if v[c] != g[c]]
-            ck(f"ask {ask} stop {nm} differs from the golden", len(moved) >= 1, f"{len(moved)} of {len(g)} figures")
-    for nm in ("basket", "basket_dedupe", "basket_lines", "dedupe", "lines"):
-        miss = [c for c in W.ORDER if abs(A["A"][nm][c] - A["A"]["golden"][c]) >= 1]
-        ck(f"ask A: stop {nm} misses every stream by an hour or more", len(miss) == len(W.ORDER), f"{len(miss)} of 11")
-    for nm in ("one_doc", "cracker_received"):
-        miss = [c for c in AK.ten_streams() if A["C"][nm][c] != A["C"]["golden"][c]]
-        ck(f"ask C: stop {nm} misses every stream", len(miss) == 10, f"{len(miss)} of 10")
-    miss = [c for c in AK.ten_streams() if A["C"]["received"][c] != A["C"]["golden"][c]]
-    ck("ask C hazard: the received business date read as the delivery date moves every stream", len(miss) == 10, f"{len(miss)} of 10")
-    for c in W.ORDER:
-        frac = A["A_unrounded"][c] % 1
-        ck(f"ask A {c} clear of the rounding edge", abs(frac - 0.5) > 0.1, round(frac, 3))
-    for c in AK.ten_streams():
-        u = A["C_unrounded"][c] * 100 % 1
-        ck(f"ask C {c} clear of the rounding edge", abs(u - 0.5) > 0.05, round(A["C_unrounded"][c], 5))
-    ck("ask A: the basket's family differs from the document's on some line in every family",
-       all(abs(A["rates"][("basket", "all")][f] / A["rates"][("document", "all")][f] - 1) > 0.01 for f in A["rates"][("document", "all")]),
-       {f: round(A["rates"][("basket", "all")][f] / A["rates"][("document", "all")][f] - 1, 4) for f in A["rates"][("document", "all")]})
-    ck("chart: the basket reading names another stream with the most hours", A["cracker_order"][0] != A["order"][0],
-       (A["cracker_order"][0], A["order"][0]))
-    ck("pair simulation: every cracker row missed", all(r[2] for r in A["cracker_rows"]), [r for r in A["cracker_rows"] if not r[2]])
-    ck("pair ceiling at or under 40", A["pair_ceiling_allowance"] <= 40, A["pair_ceiling_allowance"])
-    # separation: no ask record sits in the main call's files, and the sessions and claims are the main log's documents
-    ses = pd.read_csv(os.path.join(target, PK.FILES["sessions"]), dtype={"document_id": str})
-    ck("separation: every second-pass document is in the first-pass log", ses.document_id.isin(set(pk.sp.document_id)).all(), "")
-    ix = pd.read_parquet(os.path.join(target, PK.FILES["index"]))
-    q3docs = ix[ix.file_name.str.split("_").str[2].between("20260701", "20260930")]
-    ck("separation: the delivery index's Q3 documents are the first-pass log's documents",
-       q3docs.document_id.isin(set(pk.sp.document_id)).all(), "")
-    ck("separation: one claim per document in the index", not ix.document_id.duplicated().any(), "")
-
-    # ------------------------------------------------------------------ input gates and realism
     files = sorted(os.listdir(target))
-    ck("input gate: 10 or more files", len(files) >= 10, len(files))
-    fmts = {f.rsplit(".", 1)[1] for f in files}
-    ck("input gate: 3 or more formats", len(fmts) >= 3, sorted(fmts))
-    ck("input gate: a file of 25,000 rows or more", len(pk.sp) >= 25000, len(pk.sp))
-    ck("input gate: two distractors, unread by the solution", len(PK.DISTRACTORS) >= 2 and distractors_unread(), [PK.FILES[d] for d in PK.DISTRACTORS])
-    ck("input gate: no billing register or rate card in the pack", not any(("billing" in f or "rate_card" in f) for f in files), "")
-    banned_hits, dash_hits = [], []
+    task = os.path.dirname(target)
+    meta = json.load(open(os.path.join(task, "metadata.json")))
+    gold = out["golden"]
+    # ---------------------------------------------------------------- input gates
+    ok(len(files) >= 10, "gate: 10 or more files")
+    ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "gate: 3 or more formats")
+    ok(max(len(D["reg"]), len(D["ext"]), len(D["vis"])) >= 25000, "gate: a file of 25,000 rows or more")
+    ok(len(meta["distractor_files"]) >= 2 and all(d in files for d in meta["distractor_files"]), "gate: two distractors")
+    ok(not any("distractor" in f.lower() for f in files), "gate: no file named after its role")
+    # ---------------------------------------------------------------- R1: the field's raw material ships
     for f in files:
-        txt = _text_of(os.path.join(target, f))
-        if BANNED.search(txt):
-            banned_hits.append((f, BANNED.search(txt).group(0)))
-        if "—" in txt:
-            dash_hits.append(f)
-        if f.endswith((".csv",)):
-            hdr = open(os.path.join(target, f)).readline()
-            if BANNED.search(hdr):
-                banned_hits.append((f, "header"))
-    ck("no pack sentence or column carries the banned words", not banned_hits, banned_hits)
-    ck("no em dash in the pack", not dash_hits, dash_hits)
-    meth = re.compile(r"(logistic|regression|back-test|backtest|leave-one-out|model selection|best[- ]fitting|forecast method)", re.I)
-    mhits = [f for f in files if f.endswith((".docx", ".pdf", ".md")) and meth.search(_text_of(os.path.join(target, f)))]
-    ck("no pack document names, selects or scores a forecast method", not mhits, mhits)
-    v = Qr.scr.groupby(["code", "day"]).key_fields.sum()
-    dup = v.drop(index="D6", level=0).groupby(level=0).apply(lambda s: s.duplicated().mean())
-    ck("realism: few repeated stream-day key-field totals", dup.max() < 0.15, dup.round(3).to_dict())
-    ck("realism: no round headline totals", all(x % 1000 for x in [len(pk.sp), len(pk.ed), len(pk.au)]), "")
-    ck("realism: no constant daily stream", v.groupby(level=0).std().min() > 0, "")
-    mx = pd.to_datetime(pk.sp.closed_at).max()
-    ck("realism: no record after the setting", mx < pd.Timestamp(W.ASOF), str(mx))
-    office = [f for f in files if f.endswith((".xlsx", ".docx", ".pdf", ".pptx"))]
-    import postprocess as PP
-    s = PP._scrubber()
-    bad = []
-    for f in office:
-        names, b2 = s.audit(os.path.join(target, f), PP.FLOOR, PP.CEILING)
-        if names or b2:
-            bad.append(f)
-    ck("realism: every container scrubbed", not bad, bad)
-    fails = ck.failures()
-    out["asks"] = A
-    out["checks"] = ck.rows
-    if fails and strict:
-        raise AssertionError("\n".join(f"FAIL {n}: {d}" for n, _, d in fails))
-    return out
+        if f.endswith(".csv"):
+            head = open(os.path.join(target, f), encoding="utf-8").readline().lower()
+            ok("bias" not in head and "warning" not in head, "R1: no column holds a bias or a warning (%s)" % f)
+    ok({"reference_code", "production_code", "autocoder_code", "autocoder_score", "selection_interval"} <= set(D["stu"].columns)
+       and len(D["stu"]) > 50000, "R1: the study ships its write-ins with production, suggested and reference codes")
+    ok("proxy_respondent" in D["vis"].columns and "questionnaire_id" in D["reg"].columns,
+       "R1: the route of every form is in the field and receipt records, never a column of the study")
+    ok("route" not in D["stu"].columns and "route" not in D["ext"].columns, "R1: no shipped column states the route")
+    # ---------------------------------------------------------------- the clean truth (generator side)
+    K = len(G)
+    gi = {g: i for i, g in enumerate(G)}
+    grp = lambda a: np.array([gi[x[:2]] for x in a])
+    po, pn, ref = grp(Cd["prod_old"]), grp(Cd["prod_new"]), grp(Cd["ref"])
+    coded = S["coded"]
+    Ct = np.bincount(np.where(coded, po, pn), minlength=K)
+    Tt = np.bincount(ref, minlength=K)
+    truth = 100 * (Ct - Tt) / Tt
+    ok(E.flags(truth) == GOLD, "truth: the release's own coding bias carries the golden flags")
+    ok(margin(truth, set(GOLD)) >= 0.10, "truth: margin %.3f" % margin(truth, set(GOLD)))
+    # ---------------------------------------------------------------- R3a, R3b: the ladder
+    for k, want in LADDER.items():
+        ok(E.flags(out[k]) == want, "rung %s files %s (got %s)" % (k, want, E.flags(out[k])))
+    ok(margin(out["default"], {"35", "93"}) >= MARGIN, "R3a: the default path's margin %.3f" % margin(out["default"], {"35", "93"}))
+    ok(margin(out["rule"], {"35", "41", "93"}) >= MARGIN, "rung rule margin")
+    ok(margin(out["route_old"], {"24", "35", "71", "93"}) >= MARGIN, "rung route_old margin")
+    ok(margin(gold, set(GOLD)) >= MARGIN, "R3b: the golden's margin %.3f" % margin(gold, set(GOLD)))
+    ok(P.WARNING - abs(out["bt_new"][gi["71"]]) >= 0.20, "rung bt_new leaves 71 under the line")
+    ok(len({tuple(LADDER[k]) for k in LADDER}) == 5, "separation: five distinct sets on six rungs (bt_old repeats default)")
+    ok(set(E.flags(out["default"])) < set(GOLD), "R3a: the easy route's set is a strict subset: it under-warns")
+    # each rung's single correction leaves a wrong answer: rule only, batch type, route only
+    for k in ("rule", "bt_old", "bt_new", "route_old"):
+        ok(E.flags(out[k]) != GOLD, "R3b: %s alone is wrong" % k)
+    # ---------------------------------------------------------------- C1: estimator convergence (the bins)
+    o_ps, _ = E.rungs(D, weights="poststrat")
+    variants = [gold, out["golden_sw"], out["golden_cd"], o_ps["golden"]]
+    for v in variants[1:]:
+        ok(E.flags(v) == GOLD, "C1: a defensible estimator variant gives the golden flags")
+    for cols in (["region_code"], ["proxy_respondent"]):
+        variants.append(E.carry_finer(D, cols))
+        ok(E.flags(variants[-1]) == GOLD, "C1/H14: the carry inside %s cells gives the golden flags" % cols[0])
+    bm = bin_margin(variants)
+    ok(bm >= 0.002, "C1: every group's bias stays in its one-decimal bin under every variant (%.4f)" % bm)
+    # ---------------------------------------------------------------- reflex routes land wrong
+    for f in (E.reflex_recent, E.reflex_trend, E.reflex_recode_all):
+        b = f(D)
+        ok(E.flags(b) != GOLD, "reflex %s lands wrong (%s)" % (f.__name__, E.flags(b)))
+    tr = E.reflex_trend(D)
+    away = max([P.WARNING - abs(tr[gi[g]]) for g in GOLD] + [abs(v) - P.WARNING for g, v in zip(G, tr) if g not in GOLD])
+    ok(away >= 0.10, "reflex trend misses by %.3f" % away)
+    o_uw, _ = E.rungs(D, weights="unweighted")
+    ok(E.flags(o_uw["default"]) != GOLD, "reflex: the unweighted study on the default path lands wrong")
+    # ---------------------------------------------------------------- the design forces the route carry
+    reg = E.routes(D)
+    stu = D["stu"].merge(reg[["doc_id", "route"]], on="doc_id")
+    stu["ld"] = pd.to_datetime("20" + stu.load_batch.str[-6:], format="%Y%m%d")
+    for r in ("FS", "FP"):
+        s = stu[stu.route == r]
+        cut = s.ld.median()
+        early, late = s[s.ld <= cut], s[s.ld > cut]
+        e1 = (early.production_code.str[:2] != early.reference_code.str[:2]).mean()
+        e2 = (late.production_code.str[:2] != late.reference_code.str[:2]).mean()
+        p_ = (e1 * len(early) + e2 * len(late)) / len(s)
+        se = np.sqrt(p_ * (1 - p_) * (1 / len(early) + 1 / len(late)))
+        ok(abs(e1 - e2) < 2.5 * se, "design: %s write-ins code alike in the season's two halves (%.4f, %.4f, se %.4f)"
+           % (r, e1, e2, se))
+    fu = stu[stu.batch_type == "FOLLOW-UP"]
+    px_early = (fu[fu.ld < pd.Timestamp("2026-07-20")].route == "FP").mean()
+    px_late = (fu[fu.ld >= pd.Timestamp("2026-07-20")].route == "FP").mean()
+    ok(px_late > px_early + 0.15, "design: the proxy share of follow-up returns climbs through the season")
+    m_px = R["FP"]["m"] / (R["FS"]["m"] + R["FP"]["m"])
+    c_px = R["FP"]["nc"] / (R["FS"]["nc"] + R["FP"]["nc"])
+    ok(m_px > c_px + 0.25, "data-native: proxies are %.3f of the follow-up still to code against %.3f coded" % (m_px, c_px))
+    # ---------------------------------------------------------------- the 0.80 rule: the study saw these coded clerically
+    band = D["stu"][(D["stu"].autocoder_score.astype(float) >= 0.80) & (D["stu"].autocoder_score.astype(float) < 0.90)]
+    ok((band.coding_path == "CLERICAL").all() and len(band) > 1000,
+       "layer B: write-ins scoring 0.80 to 0.90 were coded clerically, and the autocoder's suggestion is stored on them")
+    # ---------------------------------------------------------------- SF rows
+    aoc = pd.read_csv(os.path.join(target, "aoc2026_occupation_classification.csv"), dtype=str)
+    ok(sorted(aoc.isco08_sub_major.unique()) == G, "SF1: 40 sub-major groups, no armed forces")
+    ok((aoc.aoc_code.str[:2] == aoc.isco08_sub_major).all() and set(D["stu"].reference_code.str[:2]) <= set(G),
+       "SF2: a five-digit AOC code and a four-digit ISCO code share their sub-major group's first two digits")
+    Rr = E.bias_table(D)
+    Dn = sum(Rr[r]["do"] for r in Rr) + sum(Rr[r]["dn"] * Rr[r]["m"] / Rr[r]["nc"] for r in Rr)
+    Tn = sum(Rr[r]["t"] for r in Rr) + sum(Rr[r]["t"] * Rr[r]["m"] / Rr[r]["nc"] for r in Rr)
+    alt = 100 * Dn / (Tn + Dn)
+    ok(E.flags(alt) == GOLD, "SF3: bias on the coded count instead of the reference count: same call")
+    ok(min(abs(abs(v) - P.WARNING) for v in gold) > 0.2, "SF4: beyond 2.0 or at least 2.0: same call (no group near 2.0)")
+    still_self = R["O"]["m"] + R["P"]["m"]
+    R2 = E.bias_table(D)
+    for r in ("O", "P"):
+        R2[r]["m"] = 0.0
+    ok(E.flags(E.carry(R2, "dn", [[r] for r in P.ROUTES])) == GOLD,
+       "SF5: self-response forms not yet loaded left out (%d write-ins): same call" % still_self)
+    vis = D["vis"]
+    closes = vis[vis.outcome_code.isin(["10", "20"])]
+    reg_q = set(D["reg"].questionnaire_id)
+    orphan = closes[~closes.questionnaire_id.isin(reg_q)].questionnaire_id.nunique()
+    ok(orphan == int(S["reint"].sum()), "SF6: every closing call's questionnaire is registered but the withdrawn proxies "
+                                        "(%d)" % orphan)
+    ok((pd.to_datetime(D["reg"].received_date) <= pd.Timestamp(P.FIELD_CLOSE)).all(),
+       "SF6: every registered form was received by the close of field operations")
+    ok((D["ext"].groupby(["doc_id", "person_no"]).size() == 1).all(), "SF7: one write-in a person")
+    ok(int(D["reg"].occupation_writeins.astype(int).sum()) == len(S["owner"]), "SF7: write-ins are persons with a write-in")
+    ok(abs(sum(Rr[r]["sw"] for r in Rr) / sum(Rr[r]["nc"] for r in Rr) - 1) < 0.002,
+       "SF8: the study's selection intervals give back the coded count")
+    for r in P.ROUTES:
+        ok(abs(Rr[r]["sw"] / Rr[r]["nc"] - 1) < 0.01, "SF9: route %s's weighted study count within 1 per cent" % r)
+    for closing in ("any_proxy", "last_call", "first_call", "sr_as_followup"):
+        o2, _ = E.rungs(D, reg=E.routes(D, closing))
+        ok(E.flags(o2["golden"]) == GOLD, "SF10/R2: route read as %s: same call" % closing)
+    ok(all(float(f"{v:.1f}") == A["bias_r"][g] for g, v in zip(G, gold)), "SF11: one decimal on the unrounded bias")
+    ok(all(str(A["bias_r"][g]) != "-0.0" for g in G), "SF11: a bias rounding to nothing is shown as 0.0")
+    plan_dec = "write-ins already coded keep their codes"
+    ok(plan_dec in open_xlsx_text(os.path.join(target, "census2026_processing_plan_nov2026.xlsx")).lower(),
+       "SF12: the plan files that coded write-ins keep their codes")
+    ok("not yet been coded on the date of an assessment is part of the release population" in docx_text(
+        os.path.join(target, "OQ-4_occupation_output_quality_standard.docx")), "SF13: OQ-4 files the unobserved members")
+    # SF14: the release count of the coded write-ins taken from the extract against the study's reference count
+    ext_g = np.bincount(E._grp(D["ext"].production_code.values), minlength=K).astype(float)
+    live = [r for r in R if R[r]["m"] > 0]
+    m_rel = sum(R[r]["cn"] * R[r]["m"] / R[r]["nc"] for r in live)
+    m_ref = sum(R[r]["t"] * R[r]["m"] / R[r]["nc"] for r in live)
+    m_dn = sum(R[r]["dn"] * R[r]["m"] / R[r]["nc"] for r in live)
+    t_all = sum(R[r]["t"] for r in R) + m_ref
+    mixed = 100 * (ext_g + m_rel - t_all) / t_all
+    ok(len(E.flags(mixed)) >= 10, "SF14: exact extract counts against the study's reference count warn %d groups on "
+       "sampling noise" % len(E.flags(mixed)))
+    d_co = sum(R[r]["do"] for r in R)
+    diff = 100 * (d_co + m_dn) / (ext_g - d_co + m_ref)
+    ok(E.flags(diff) == GOLD and np.max(np.abs(diff - gold)) < 0.1,
+       "SF14: the difference estimator (exact counts less the study's net difference) gives the same call")
+    ok("are both estimated from the same studied write-ins" in docx_text(
+        os.path.join(target, "OQ-4_occupation_output_quality_standard.docx")), "SF14: OQ-4 3.3 files both counts from "
+       "the same studied write-ins")
+    # ---------------------------------------------------------------- R2: Layer 1 neutrality (each item mishandled)
+    ok(E.flags(E.rungs(D, reg=E.routes(D, "any_proxy"))[0]["golden"]) == GOLD, "R2: re-interviews read as proxy")
+    ok(E.flags(E.rungs(D, reg=E.routes(D, "sr_as_followup"))[0]["golden"]) == GOLD, "R2: late self-responses read as follow-up")
+    ok(set(D["ext"].production_code.str.len()) == {4, 5}, "R2: four- and five-digit production codes both ship")
+    ok(D["ext"].coding_week.min() == 1 and D["ext"].coding_week.max() == 28, "R2: coding weeks 1 to 28")
+    # ---------------------------------------------------------------- R3c: no plant
+    plan_txt = open_xlsx_text(os.path.join(target, "census2026_processing_plan_nov2026.xlsx"))
+    ok(not re.search(r"\b(24|25|35|41|71|93)\b.*warning", plan_txt), "R3c: no document lists warned groups")
+    ok("proxy" not in plan_txt.lower(), "R3c: the capacity report never speaks of proxies")
+    oq = docx_text(os.path.join(target, "OQ-4_occupation_output_quality_standard.docx"))
+    ok("route" not in oq.lower() and "proxy" not in oq.lower(), "R3c: the standard files no route and no method")
+    # ---------------------------------------------------------------- the context artifact recomputes
+    fu_still = int(D["reg"][D["reg"].capture_mode == "FIELD"].occupation_writeins.astype(int).sum()) - int(
+        D["ext"].load_batch.str.startswith("FUP").sum())
+    ok(facts["plan"]["Follow-up"] == fu_still, "artifact: the plan's follow-up still to code recomputes")
+    # ---------------------------------------------------------------- study design
+    stu_n = D["stu"].groupby(["load_batch", "coding_path"]).size()
+    ext_n = D["ext"].groupby(["load_batch", "coding_path"]).size()
+    k_of = lambda lb, p: P.STUDY_K[("NRFU" if lb.startswith("FUP") else "SELF", "A" if p == "AUTO" else "C")]
+    bad = 0
+    for (lb, p), cnt in ext_n.items():
+        k = k_of(lb, p)
+        got = int(stu_n.get((lb, p), 0))
+        if not (cnt // k <= got <= cnt // k + 1):
+            bad += 1
+    ok(bad == 0, "study: every batch and path holds its systematic share")
+    ok(set(D["stu"].doc_id) <= set(D["ext"].doc_id), "study: drawn from the coded write-ins")
+    # ---------------------------------------------------------------- asks
+    teams, regions = A["teams"], A["regions"]
+    ok(len(set(v[0] for v in teams.values())) == 5 and len(set(v[1] for v in teams.values())) == 5, "ask A: no tied team")
+    ok(len(set(v[0] for v in regions.values())) == 8 and len(set(v[1] for v in regions.values())) == 8, "ask B: no tied region")
+    cur = E.ask_teams(D, "current")
+    ok(all(cur[t][0] != teams[t][0] for t in W.TEAMS), "ask A device: the register as at 13 November moves every team's write-ins")
+    for m in ("drop_negative", "entered_on"):
+        x = E.ask_teams(D, m)
+        ok(all(x[t][1] != teams[t][1] for t in W.TEAMS), "ask A hazard %s moves every team's hours" % m)
+    # ask A readings that converge in the records: a write-in coded after midnight belongs to the night shift that
+    # started the day before; no night shift crosses a month end and no coder id changes team between the two days
+    cl = D["ext"][(D["ext"].coding_path == "CLERICAL") & (D["ext"].coded_at >= "2026-05-01")]
+    sday = cl.coded_at.dt.normalize() - pd.to_timedelta((cl.coded_at.dt.hour < 7).astype(int), unit="D")
+    ok(int((sday.dt.month != cl.coded_at.dt.month).sum()) == 0,
+       "ask A fork: every clerical write-in is coded in the month its shift started (month-end night closure)")
+    oc = cl[(cl.coded_at >= "2026-09-30") & (cl.coded_at < "2026-11-02")]
+    oday = oc.coded_at.dt.normalize() - pd.to_timedelta((oc.coded_at.dt.hour < 7).astype(int), unit="D")
+    asg_ = E.assignments(D["moves"])
+    ok((E.team_on(asg_, "coder_id", oc.coder_id.values, oc.coded_at.dt.normalize())
+        == E.team_on(asg_, "coder_id", oc.coder_id.values, oday)).all(),
+       "ask A fork: a coder's team on the day coded is the team on the day the shift started")
+    key = E.ask_regions(D, "key_dedupe")
+    ok(all(key[r][0] > regions[r][0] and key[r][1] > regions[r][1] for r in regions),
+       "ask B device: re-sent calls survive a call-number dedupe in every region, calls and no-contact calls")
+    day = E.ask_regions(D, "day_dedupe")
+    ok(all(day[r][0] < regions[r][0] and day[r][1] < regions[r][1] for r in regions),
+       "ask B over-clean: an address-and-day dedupe drops genuine same-day calls in every region")
+    syn = E.ask_regions(D, "synced")
+    ok(sum(syn[r][0] != regions[r][0] for r in regions) >= 6, "ask B hazard: the sync time is not the call's time")
+    # separation: no device row reaches the main call
+    vis_clean = vis.sort_values(["synced_at", "visit_id"]).drop_duplicates(["address_id", "visit_time", "outcome_code"])
+    D2 = dict(D)
+    D2["vis"] = vis_clean
+    ok(E.flags(E.rungs(D2)[0]["golden"]) == GOLD and np.allclose(E.rungs(D2)[0]["golden"], gold),
+       "separation: the re-sent calls move no figure of the main call")
+    resent = len(vis) - len(vis_clean)
+    ok(resent == int(T["vis"]["replay"].sum()) and resent > 0, "separation: the re-sent calls are exactly the replays")
+    rr = vis[vis.outcome_code.isin(["10", "20"])]
+    dup_q = rr[rr.duplicated("questionnaire_id", keep=False)]
+    ok((dup_q.groupby("questionnaire_id").outcome_code.nunique() == 1).all(),
+       "separation: a re-sent closing call repeats its questionnaire's outcome")
+    # ---------------------------------------------------------------- registers (H9)
+    man = pd.read_csv(os.path.join(target, "export_manifest.csv"), dtype=str)
+    ok(set(man.file) == set(files) - {"export_manifest.csv"}, "H9: the manifest lists every shipped file")
+    with zipfile.ZipFile(os.path.join(target, "census2026_data_dictionary.xlsx")) as z:
+        dtext = " ".join(re.findall(r"<t[^>]*>([^<]*)</t>", z.read("xl/sharedStrings.xml").decode("utf-8")))
+    scope = [f for f in files if f.endswith((".csv", ".parquet")) and f not in meta["distractor_files"]
+             and f != "export_manifest.csv"]
+    ok(all(f in dtext for f in scope), "H9: the dictionary names every extract and reference file literally")
+    # ---------------------------------------------------------------- distractors
+    ok(not any(d in open(E.__file__).read() for d in meta["distractor_files"]), "distractors: the golden route never reads them")
+    # ---------------------------------------------------------------- realism sweep
+    for f in files:
+        p_ = os.path.join(target, f)
+        if f.endswith(".csv"):
+            txt = open(p_, encoding="utf-8").read()
+            ok("—" not in txt and "–" not in txt, "realism: no em or en dash (%s)" % f)
+    for f in ("OQ-4_occupation_output_quality_standard.docx",):
+        t_ = docx_text(os.path.join(target, f))
+        ok("—" not in t_ and "–" not in t_, "realism: no dash in %s" % f)
+    names = re.findall(r"[A-Z][a-z]+ [A-Z][a-z]+", oq + plan_txt)
+    ok(all(any(p in oq + plan_txt for p in PEOPLE) for _ in [0]), "realism: personas drawn by the guard")
+    ok(len(set(D["reg"].ed_code)) > 1000, "realism: over a thousand enumeration districts")
+    tot = [sum(v[0] for v in teams.values()), sum(v[0] for v in regions.values())]
+    ok(all(x % 100 != 0 for x in tot), "realism: no round totals")
+    ok(D["vis"].visit_time.str[11:16].nunique() > 600, "realism: call times spread through the day")
+    return n[0]
 
 
-def distractors_unread():
-    here = os.path.dirname(os.path.abspath(__file__))
-    src = "".join(open(os.path.join(here, f)).read() for f in ("analysis.py", "asks.py", "variants.py"))
-    return all(PK.FILES[d] not in src for d in PK.DISTRACTORS)
+def docx_text(path):
+    with zipfile.ZipFile(path) as z:
+        x = z.read("word/document.xml").decode("utf-8")
+    return " ".join(re.findall(r"<w:t[^>]*>([^<]*)</w:t>", x))
 
 
-def sf7_calendar(Qr, sc, gm):
-    """November's night rates read by calendar day (half of each night shift on the next date): same call"""
-    pl = sc.plan.copy()
-    n = pl[pl.queue == "N"]
-    nxt = n.assign(day=n.day + dt.timedelta(days=1), kf=n.kf / 2)
-    pl2 = pd.concat([pl[pl.queue == "D"], n.assign(kf=n.kf / 2), nxt])
-    pl2 = pl2[pl2.day <= W.NOV[1]]
-    orig = sc.plan
-    sc.plan = pl2.groupby(["code", "day", "queue", "kfpd"], as_index=False).kf.sum()
-    sc.plan["docs"] = sc.plan.kf / sc.plan.kfpd
-    try:
-        return AN.forecast(Qr, sc, gm)
-    finally:
-        sc.plan = orig
+def open_xlsx_text(path):
+    with zipfile.ZipFile(path) as z:
+        s = z.read("xl/sharedStrings.xml").decode("utf-8") if "xl/sharedStrings.xml" in z.namelist() else ""
+    return " ".join(re.findall(r"<t[^>]*>([^<]*)</t>", s))

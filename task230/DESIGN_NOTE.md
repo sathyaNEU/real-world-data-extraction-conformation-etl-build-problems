@@ -2,9 +2,9 @@
 
 Architecture 3 is current: drawn 2026-10-14 at the author's request. Architecture 2 (human factors, a capture
 centre's second-pass verification, shipped 2026-10-12) sat in a task type the client taxonomy lists under
-Forecasting, not Data Quality, so its domain read as a backdrop for a monitoring call; its record is kept under
-`## Architecture 2 record` and its identity in the card's lineage. Architecture 3 keeps the lane and moves to
-Survey Research & Official Statistics, with two analytical layers on the main call.
+Forecasting, not Data Quality, so its domain read as a backdrop for a monitoring call; its record is kept under the
+Architecture 2 record heading below and its identity in the card's lineage. Architecture 3 keeps the lane and moves
+to Survey Research & Official Statistics, with two analytical layers on the main call.
 
 ## Draw
 
@@ -12,62 +12,67 @@ Survey Research & Official Statistics, with two analytical layers on the main ca
   Domain Survey Research & Official Statistics (client domain), task type `census-register-administrative-data-quality`,
   objective Data Quality Monitoring & Alerting: the object is the coding quality of the census occupation counts, and
   the call is which occupation groups' published counts carry the coding quality warning. Shape 10 (scorecard): each of
-  the 40 civilian ISCO-08 sub-major groups' projected coding bias against the plus or minus 2 per cent warning line.
+  the 40 ISCO-08 sub-major groups' coding bias in the release against the plus or minus 2.0 per cent warning line.
   Decision `designation_set`, question form which. Gap time then population; no A to E pattern; generators G14 (does the
-  rate measured so far apply to the late workload), G13 (the release covers returns not yet coded), G6. Gate G
-  `forecasting`. Strategy `maturity_censoring`: the coded-so-far records are the early, self-reported part of the
-  release. Calibration none. Context artifact `capacity_report` (the processing plan for the last stretch of coding).
+  rate measured so far apply to the late workload), G13 (the release covers write-ins not yet coded), G6. Gate G
+  `forecasting`. Strategy `maturity_censoring`: the coded-so-far write-ins are the early, mostly self-reported part of
+  the release. Calibration none. Context artifact `capacity_report` (the processing plan's November update).
   Stakeholder: the deputy registrar general for census outputs (`statistical_office_head`), with the census programme
   board (`executive_team`), ahead of the statutory first-release date (`statutory_or_regulatory_filing`), in a
   registrar general's office (`government_agency`).
-- **World:** the Office of the Registrar General of Aldmere, a fictional English-speaking island state, runs the 2026
-  Census of Population and Housing (census day Tuesday 21 April 2026). Self-response online and on paper closed in June;
-  non-response follow-up (NRFU) ran June to 31 October, with proxy reports (a household member or neighbour answering
-  for an absent person) allowed from the third visit. Occupation write-ins (job title and main tasks) are coded to
-  ISCO-08 by an autocoder, which accepts its suggestion when it scores 0.90 or more and sends the rest to clerical coders;
-  a quality-control sample of coded records is recoded independently and adjudicated. As of the extract (Friday 13
-  November 2026) every self-response return and about a third of the NRFU returns are coded; from Monday 16 November the
-  processing plan lowers the acceptance score to 0.80 to finish coding before the first release (Tuesday 30 March 2027).
+- **World:** the Office of the Registrar General of Aldmere, a fictional English-speaking island state with no armed
+  forces, runs the 2026 Census of Population and Housing (census day Tuesday 21 April 2026). Self-response online and on
+  paper ran to the follow-up list cut on 19 June; non-response follow-up ran 22 June to 31 October, proxy interviews (a
+  neighbour, landlord, relative living elsewhere or building manager answering for the household) allowed from the third
+  call, and from 1 September a mop-up phase in which supervisors push open cases to a close. Occupation write-ins are
+  coded to ISCO-08 by CODA's autocoder, which accepts its suggestion at a score of 0.90 or more and sends the rest to five
+  clerical coding teams; the coding quality study recodes a systematic selection from every load batch (self-response 1
+  in 10 automatic and 1 in 4 clerical, follow-up 1 in 2), adjudicated, never written back. Batches are coded first in,
+  first out: at the extract (Friday 13 November) every write-in loaded by 13 August is coded, 531,112 in all, and 103,367
+  are still to code, 53,112 of them follow-up proxy returns. From Monday 16 November the processing plan lowers the
+  acceptance score to 0.80 so coding closes by 22 January 2027; the first occupation release is Tuesday 30 March 2027.
   Personas (`guard.py names --geo Ireland --seed 230`): Timothy Taggart, Lesley Ahearne, Tracey Brien, Erica Phayre.
-- **Data-native sentence:** the census's follow-up returns arrive last and are mostly proxy reports, whose write-ins are
-  vague ("works at the hospital", "office", "labourer", "does computers") and are coded into default groups and out of
-  specific ones, so the coded-so-far records, almost all self-reports, carry a fraction of the release's coding bias;
-  and the returns still to be coded will take the autocoder's suggestion wherever it scores 0.80 to 0.90, where the
-  quality-control sample saw a clerical code instead.
+- **Data-native sentence:** the census's follow-up returns arrive last and the late ones are mostly proxy reports, whose
+  write-ins are vague ("works at the hospital", "accounts", "labourer", "IT") and are coded into default groups and out
+  of specific ones, so the coded-so-far write-ins (17.7 per cent proxy among the follow-up ones) carry a fraction of the
+  release's coding bias (54.1 per cent proxy among the follow-up write-ins still to code); and the write-ins still to code
+  will take the autocoder's suggestion wherever it scores 0.80 to 0.90, where the study saw a clerical code instead.
 - **Second layer (the author's request):** two analytical steps decide the call, each moving it on its own: the bias
   carried by response route to the release's own route mix (decisive), and the processing rule in force for the
-  returns still to be coded (second layer), whose production code is the autocoder's stored suggestion, not the clerical
-  code the sample recorded.
+  write-ins still to code (second layer), whose production code is the autocoder's stored suggestion, not the clerical
+  code the study recorded. Route alone files 24, 35, 71 and 93; the rule alone files 35, 41 and 93.
 - **Guard:** `guard.py check` WARN, no BLOCK (`overuse.strategy` maturity_censoring 3 of 12; `overuse.org_family`
   government_agency; `repeat.question_form` which against task454; `test.same_driver_older` differentiated against
   task131 and task183); `heart` WARN, nearest drivers 0.06 (task500 lineage, task183). WARN answers: the strategy is the
   honest key (the early part of an incomplete process); a registrar general's office is a government agency, not the
   statistics office; the question form follows the decision, a set of groups.
 - **Sources:** the client's census-register pattern 2 (net and gross classification error differ) is a lower rung here,
-  not the stump; the decisive step is the field's own NRFU proxy-reporting effect on coding, carried by route, which no
-  card on file holds; lane record: task231 (closures recorded late), task232 (incubation-window attribution), task229
-  (a convex conversion at a daily mean), task228 (error separation) spend other insights.
+  not the stump (net bias is filed); the decisive step is the field's own follow-up proxy-reporting effect on coding,
+  carried by route, which no card on file holds; lane record: task231 (closures recorded late), task232
+  (incubation-window attribution), task229 (a convex conversion at a daily mean), task228 (error separation) spend other
+  insights.
 
 ## Default path
 
-1. From the coding extract take every coded record's production code; join the quality-control sample's adjudicated
-   reference codes.
-2. For each sub-major group, estimate the count coded to it and the count the reference puts there from the sample,
-   weighted by its strata (production route and coding week), and the group's net coding bias.
-3. Apply each group's bias to the release (every person in employment enumerated by the close of field operations).
-4. Flag every group whose bias is beyond plus or minus 2 per cent (the output quality standard).
+1. From census2026_coding_quality_study.csv take every studied write-in's production code and adjudicated reference
+   code, each weighted by its selection interval (OQ-4 3.3).
+2. For each sub-major group, the weighted count coded to the group less the weighted count the reference puts there, as
+   a percentage of the latter (OQ-4 3.1): the coding bias the study measures.
+3. Take that bias as the release's (the write-ins still to code are coded by the same operation).
+4. Warn every group beyond plus or minus 2.0 per cent (OQ-4 4.1).
 
-Ends on: groups 35 and 93 (design target)
-Golden: groups 24, 25, 31, 35, 41, 72 and 93 (design target)
+Ends on: groups 35 and 93
+Golden: groups 24, 25, 35, 41, 71 and 93
 
 ## Stump sentence
 
-A competent solver estimates each sub-major group's coding bias from the quality-control sample coded so far and
-applies it to the whole release, flagging only groups 35 and 93 (the default path's Ends on); the returns still to be
-coded are mostly NRFU proxy reports whose vague write-ins drain specific groups into default ones, and they will be coded
-with the autocoder's suggestion wherever it scores 0.80 to 0.90, so building the bias by route on the release's own
-route mix and coding the late returns under the rule in force flags 24, 25, 31, 35, 41, 72 and 93; carrying the routes
-under the old rule, or the new rule on the coded-so-far mix, lands on a third set.
+A competent solver estimates each sub-major group's coding bias from the coding quality study with its selection
+weights and takes it as the release's, warning only groups 35 and 93 (the default path's Ends on); the 103,367
+write-ins still to code are 54 per cent follow-up proxy returns against 18 per cent of the coded follow-up ones, and
+their vague write-ins drain specific groups into default ones, and they will be coded with the autocoder's suggestion
+wherever it scores 0.80 to 0.90, so building the bias route by route on the release's own route mix under the rule in
+force warns 24, 25, 35, 41, 71 and 93; carrying the routes under the old rule warns 24, 35, 71 and 93, the new rule on
+the coded-so-far mix 35, 41 and 93, and the follow-up batches carried as one 24, 35, 41 and 93.
 
 ## Three rules
 
@@ -75,39 +80,204 @@ under the old rule, or the new rule on the coded-so-far mix, lands on a third se
   Quality Monitoring & Alerting: the object is the coding quality of the census's published occupation counts and the
   call is the release's quality warning on each group.
 - Domain test: the deciding quantity is each occupation group's coding bias in the census release, which census
-  processing quality assurance estimates from independently recoded, adjudicated samples by response route, because NRFU
-  proxy reporting yields vague write-ins that coding moves into default groups; the release's bias is the route-weighted
-  bias of a workload whose late part is mostly proxy and is coded under the processing plan's rule for that stretch.
+  processing quality assurance estimates from an independently recoded, adjudicated study by response route, because
+  follow-up proxy reporting yields vague write-ins that coding moves into default groups; the release's bias is the
+  route-weighted bias of a workload whose late part is mostly proxy and is coded under the processing plan's rule for
+  that stretch.
 - Swap: "which product categories' counts in the catalogue report carry a warning" has no follow-up proxy reporting, no
   respondent answering for an absent person, no census release and no coding rule tied to a processing deadline; the
   route that decides the bias does not exist, so the task stops making sense.
-- Layer 1: write-ins captured three ways (typed online, ICR-transcribed paper, enumerator-keyed follow-up), form numbers
-  that differ between the field and coding systems (joined through the receipt register), batches reopened after a
-  coder's work was redone, five-digit national codes beside four-digit ISCO codes, calendar weeks against coding weeks;
-  each comes from the system that writes it and none moves the call.
+- Layer 1: write-ins captured three ways (typed online, ICR-recognised paper with its character confusions,
+  enumerator-keyed follow-up with abbreviations), questionnaire numbers in the field system against CODA document
+  numbers (joined through the receipt register), four-digit ISCO codes on the automatic path beside five-digit AOC codes
+  on the clerical path, coding weeks against calendar dates, a proxy questionnaire withdrawn when a re-interview replaced
+  it, late self-responses closing follow-up cases administratively (outcome 60); each comes from the system that writes
+  it and none moves the call (R2 in `checks.py`).
 - Layer 2: `forecast_uncertainty` in the field-method family: the release's bias is projected from the coded-so-far
-  sample to a late workload whose report route and processing rule differ.
-- Decisive step: building each group's coding bias by response route from the sample and weighting the routes by the
-  release's own route mix, the late follow-up returns included, then coding those returns under the rule in force (the
-  autocoder's suggestion from 0.80), instead of applying the coded-so-far bias to the whole release.
-- Not semantics: every field can be read correctly (production, suggested and reference codes, scores, routes, weeks)
-  and every definition followed (the standard's coding bias, the plan's acceptance score), and the coded-so-far bias
-  still files the default path's answer; no field states a group's bias in the release.
-- Not rule application: the output quality standard defines the bias and the warning line and the processing plan
-  states the acceptance score from 16 November; neither says how the release's bias is estimated from a sample taken on
-  a different workload under a different rule, so executing every stated rule files the default path's answer.
+  study to a late workload whose report route and processing rule differ.
+- Decisive step: building each group's coding bias by response route from the study and carrying the routes to the
+  release's own route mix, the late follow-up proxy returns included, coded under the rule in force (the autocoder's
+  suggestion from 0.80), instead of taking the study's bias as the release's.
+- Not semantics: every field can be read correctly (production, suggested and reference codes, scores, routes, outcome
+  codes) and every definition followed (the standard's coding bias and population, the plan's acceptance score), and
+  the study's bias taken as the release's still files the default path's answer; no field states a group's bias.
+- Not rule application: the output quality standard defines the bias, the population and the warning line, and the
+  processing plan states the acceptance score from 16 November; neither says how the release's bias is estimated from a
+  study taken on a different workload under a different rule, so executing every stated rule files 35 and 93.
 - Analyst test: a strong analyst who joins the coding records to the receipt register, reads the standard and the plan
-  correctly and estimates every group's net coding bias from the sample with its design weights, applied to the release
-  as a whole, flags only groups 35 and 93 (the default path's Ends on).
-- Estimand: output quality standard OQ-4 fixes it: a group's coding bias is the count coded to the group less the count
-  the adjudicated reference coding puts there, as a percentage of the latter, over every person in employment enumerated
-  by the close of field operations whose occupation is coded from a write-in, coded or still to be coded.
-- No decoy: nothing is planted; proxy write-ins, the coding route, the acceptance score and the sample are what a census
+  correctly and estimates every group's net coding bias from the study with its selection weights, taken as the
+  release's, warns only groups 35 and 93 (the default path's Ends on); `checks.py` R3a runs it on the clean truth.
+- Estimand: output quality standard OQ-4 fixes it: a group's coding bias is the number of persons in the release
+  population the release codes to the group less the number the reference coding puts there, as a percentage of the
+  latter, over every person in employment enumerated by the close of field operations whose occupation is coded from a
+  write-in, coded or still to be coded on the date of an assessment (OQ-4 2.1 and 3.1).
+- No decoy: nothing is planted; proxy write-ins, the coding route, the acceptance score and the study are what a census
   processing operation records, and no memo, draft or dashboard carries a warning list or a bias for any group.
-- No certified replay: no published or certified figure is reproduced to recover the method; the sample is the raw
+- No certified replay: no published or certified figure is reproduced to recover the method; the study is the raw
   material of an estimate.
 - Lesson: a quality measure taken on the early part of a workload describes the release only once it is carried by the
-  route and rule each later record will meet; no build on file teaches census coding bias carried to the NRFU proxy tail.
+  route and rule each later record will meet; no build on file teaches census coding bias carried to the follow-up proxy
+  tail.
+
+## Readability screen
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R1 the 0.80 rule on the coded-so-far mix | the plan's Decision names the score | the study stores the suggestion and score | no | no | no | no | readable |
+| R2 follow-up batches carried as one (either rule) | the plan reports write-ins still to code by batch type | `batch_type` in the study | stratify by the study's strata | no | no | no | readable |
+| R3 routes carried under the 0.90 rule | no sentence names a route projection | no route column in any coding file; the route is a closing call in the field system | stops at batch type | no | no | no | silent |
+| R4 routes carried under the 0.80 rule (decisive) | no sentence names it | no column; route from the visit log, rule from the plan, suggestion from the study | the reflexes (strata, recent weeks, a time trend) land on R2 or miss 71 | no control ties under the golden | the battery finds nothing | not one subtraction or ratio | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "the 40 occupation sub-major groups" | the 40 ISCO-08 sub-major groups of AOC 2026 | armed forces groups 01 to 03 | same call | the classification file holds 40 groups; Aldmere keeps no armed forces |
+| SF2 | a production code's group | first two digits of a four- or five-digit code | map the five-digit code through the AOC file | same call | coding procedures 7: the outputs aggregate to the first two digits of either code |
+| SF3 | "coding bias" denominator | the reference count (OQ-4 3.1) | the coded count | same call | OQ-4 3.1, "as a percentage of the latter"; asserted same flags |
+| SF4 | "beyond plus or minus 2.0 per cent" | strictly beyond, on the unrounded bias | at least 2.0 | same call | no group within 0.26 of the line (asserted) |
+| SF5 | self-response forms not yet loaded (5,269 write-ins) | in the release population | left out | same call | OQ-4 2.1, "not yet been coded ... is part of the release population" |
+| SF6 | "enumerated by the close of field operations" | forms registered by 31 October | interviews dated by 31 October | same call | every closing call's questionnaire is registered (bar the withdrawn proxies) and every form was received by 31 October (asserted) |
+| SF7 | a write-in | one person's occupation answer | a form | same call | the register counts persons with a write-in; the extract has one row a person (asserted) |
+| SF8 | the study's weight | its selection interval | unweighted | the unweighted default lands 41 and 93 (wrong) | OQ-4 3.3 |
+| SF9 | carrying factor | still-to-code over coded write-ins by route | over the study's weighted count | same call, same one-decimal values | C1: weighted counts within 1 per cent of the coded counts (asserted) |
+| SF10 | a follow-up form's route | the outcome of the call that completed its questionnaire | any proxy call, last call, first call, a late self-response read as follow-up | same call | field manual 5.5 (last accepted outcome, the proxy questionnaire withdrawn); asserted for each reading |
+| SF11 | rounding | one decimal on the unrounded bias | rounding before the test | same call | OQ-4 4.1 |
+| SF12 | the coded write-ins under the new rule | keep their codes | recoded at 0.80 | recoding all lands 24, 25, 26, 35, 41, 71, 72, 81 and 93 (wrong) | the plan's Decision, "write-ins already coded keep their codes" |
+| SF13 | the release population's unobserved members | coded or still to code | coded so far | the default (wrong) | OQ-4 2.1 files the unobserved members; the default path keeps them in and takes their bias as the coded part's, a method, not a reading |
+| SF14 | the number the release codes to a group, for the coded write-ins | estimated from the studied write-ins, beside the reference count from the same write-ins | the extract's exact count against the study's estimated reference count | 17 groups warned on sampling noise (wrong) | OQ-4 3.3, both counts estimated from the same studied write-ins; the difference estimator (exact counts less the study's net difference) gives the same call (asserted) |
+
+## Ladder
+
+Grid: the carry's granularity (none, batch type, route) against the rule for the write-ins still to code (0.90 as
+studied, 0.80 in force); every cell is a named answer, asserted in `checks.py` with its margin from the line (the
+nearest group's distance from 2.0).
+
+| Rung | Construction | Warns | Margin | Killing fact |
+|---|---|---|---|---|
+| R0 default | the study's bias taken as the release's | 35, 93 | 0.27 | OQ-4 2.1: the still-to-code write-ins are in the release, and they are 54 per cent proxy against 18 |
+| R1 | R0 with the 0.80 rule for the share still to code | 35, 41, 93 | 0.37 | the coded-so-far mix is not the mix still to code |
+| R2a | follow-up batches carried as one, 0.90 | 35, 93 | 0.42 | proxies are 18 per cent of the coded follow-up and 54 per cent of the rest |
+| R2b | follow-up batches carried as one, 0.80 | 24, 35, 41, 93 | 0.22 | the same |
+| R3 | routes carried, 0.90 | 24, 35, 71, 93 | 0.22 | the plan's Decision: write-ins coded from 16 November take the suggestion from 0.80 |
+| R4 golden | routes carried, 0.80 | 24, 25, 35, 41, 71, 93 | 0.27 | |
+
+Position: the golden set is not reached by any single correction; route alone (R3) misses 25 and 41, the rule alone
+(R1) misses 24, 25 and 71, the batch type (R2b) misses 25 and 71. Reflexes, asserted: the last four weeks' follow-up
+batches carried (24, 35, 41, 93); a weighted linear trend of the follow-up error on the load date read at the
+still-to-code forms' mean date (24, 25, 35, 41, 93; 71 at -1.85); the 0.80 rule applied to every write-in (nine
+groups). The design forces the route carry: inside each route the study's error rate is flat over the season (the two
+halves within 2.5 standard errors, asserted), and the route of every still-to-code form is shipped. Worth on the graded
+figures: the default path matches the golden's one-decimal bias on 10 of 40 groups, R2b on 20, R3 on 22. Every rung clears the line by at least 0.22 points (1.1 times the line), the price of keeping all 40 published biases inside their one-decimal bins under six estimator variants.
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | persons in employment enumerated by 31 October with a write-in, coded or not | filed, OQ-4 2.1; SF5, SF6 asserted |
+| 2 | Unit of account | the person (one write-in each) | SF7 asserted |
+| 3 | Attribution window | release: forms registered by 31 October; asks: October (coding time; hours by the shift's date, no shift straddling a month) and September (the call's own time), local time | filed in the dictionary (work_date is the shift's start) and the procedures (no night shift on a month's last working night); C1 |
+| 4 | As-of dating | coded by the extract of 13 November; the rest coded from 16 November | filed: the plan's Decision |
+| 5 | Version basis | production codes as at the extract; coded codes stand | filed: the plan's Decision; SF12 |
+| 6 | Denominator | the reference count | filed, OQ-4 3.1; SF3 |
+| 7 | Weighting | selection interval | filed, OQ-4 3.3; post-stratified variant same bins (C1) |
+| 8 | Window length | the whole study (every coded batch) | C1, no window to choose |
+| 9 | Boundary inclusivity | beyond 2.0 | C1, no golden group within 0.26 |
+| 10 | Rounding path | test on the unrounded bias, state one decimal | filed, OQ-4 4.1; bins asserted under six variants (design weights, post-stratified, weighted-count factor, coded-less-net denominator, route by region, route by proxy respondent), 0.0061 clear |
+| 11 | Tie-break | none needed | C1, no ties in any figure (asserted) |
+| 12 | Maturity and censoring | the write-ins still to code are in the population | filed, OQ-4 2.1; how they are projected is the stump (HOW) |
+| 13 | Order of operations | weight, sum by group, then divide | C1: ratio of sums against difference estimator, same bins |
+| 14 | Row order | none | C1, every sum order-free |
+| 15 | Duplicate resolution | re-sent calls once (address, call time, outcome); a questionnaire's closing call once | asserted; the main call is unchanged with re-sent calls removed |
+| 16 | Identity normalisation | document, questionnaire and address ids joined through the register; coder id to person by the movements log | dictionary semantics |
+| 17 | Netting against gross | net bias per group | filed, OQ-4 3.1 |
+| 18 | Dimensional units | per cent; hours; counts | units stated in the prompt |
+| 19 | Code and status semantics | outcome codes, coding paths, five-digit codes | field manual 5.3, procedures 3 and 7; never the stump |
+| 20 | Integerisation | counts whole; hours sums of quarter hours to two decimals | C1, exact |
+| 21 | Clause scope | 0.80 applies to write-ins coded from 16 November | filed scope, the plan's Decision |
+| 22 | Forward window contents | the still-to-code workload's route and rule | shipped: the register and visit log give each form's route, the plan the rule, the study the suggestions |
+
+## Literal reader
+
+Executing the prompt, OQ-4 2.1, 3.1, 3.3 and 4.1 and the plan's Decision word for word: the release population holds
+the 103,367 write-ins still to code; their release codes are the codes the 0.80 rule will give them; the reference is
+the study's; the one step no sentence performs is carrying the study's evidence to the write-ins still to code (HOW),
+and the data forces it (each route's error rate flat over the season, each still-to-code form's route shipped). Every
+SF alternative gives the same call or is ruled out by a quoted sentence, asserted in `checks.py`.
+
+## Oracles
+
+- The processing plan's position and capacity sheets: they recompute from the register and the extract (asserted) and
+  tie under every basis; they hold no bias and no proxy share.
+- The study's `reference_basis` (agreed or adjudicated): confirms nothing about any group's bias.
+- The two distractors (the Labour Force Survey's third-quarter estimates, the 2021 census's published counts): levels
+  from other sources; neither ties to anything under the golden or the default.
+- None ties only under the golden.
+
+## Ask sheet
+
+| Ask | Use (H18) | Primary device (silent) | Hazards | Span (causal files) |
+|---|---|---|---|---|
+| A. October, each clerical coding team: write-ins it coded and hours it spent on occupation coding (10 figures; whole write-ins, hours to two decimals) | the coding record behind the coded-so-far part of the release, which the board reads beside the warnings | D2/D7, a team at the wrong vintage: the staff register holds one row a person (the team now, or the team left) and the October transfers (OC208 Team 4 to 1 on 5 October, OC104 and OC204 Team 2 to 5 on 12 October, OC102 Team 1 to 3 on 19 October, OC207 Team 3 to 4 on 27 October) live only in the movements log; a clean coder-id join to the register moves every team's write-ins (-481 to +682) and hours (-33.25 to +44.50) | H1 correction lines (dropping the negative lines adds 1.75 to 3.00 hours a team); H2 lines taken by the date entered (+2.25 to +17.00 hours); H3 reissued coder ids (OC205, OC206, OC210), resolved by the register's own dates; H4 the export's pay fortnights run 21 September to 1 November; the night shift does not run on the last working night of a month, so no shift straddles a month | extract (coding path, coder id, coded at), staff register, movements log, timesheets, coding procedures 4 |
+| B. September, each region: follow-up calls enumerators made and how many of them made no contact (16 figures, whole numbers) | the field's record for its last month, the month the warnings' late proxy returns came in | D1, a replay under fresh ids with the key changed: a replacement tablet's first sync re-sent its last 14 days of calls under new call numbers (two tablets a region, 8 to 25 September); a dedupe on address and call number keeps them: calls +64 to +108 and no-contact calls +20 to +46 in every region | over-clean half: genuine repeat calls the same day at an address (an address-and-day dedupe drops 59 to 181 calls a region, every one a no-contact call); H5 the sync time read as the call's time (+148 to +434 calls); H6 administrative closures (60) are not calls | visit log, enumeration districts, field manual 5.3 and 5.6 |
+
+**Separation.** Zero device rows reach the main call: the re-sent calls never change a questionnaire's closing outcome
+and the main call is identical with them removed (asserted); the staff register, movements log and timesheets are never
+read by the main call; the region and team splits are columns the main call never reads.
+
+**Cracker sheet.** The response that landed the call, ran the hygiene battery (key uniqueness, exact duplicates,
+unmatched joins, fan-out) and executed every filed rule:
+
+| Ask row | What the cracker does | Against the golden | Cracker |
+|---|---|---|---|
+| A, write-ins coded in October, five teams | joins the extract's coder id to the staff register's team, the holder by the register's dates | every team off, -481 to +682 | miss |
+| A, hours spent on occupation coding in October, five teams | joins timesheet staff numbers to the register's team, keeps the correction lines, filters on the shift date | every team off, -33.25 to +44.50 | miss |
+| B, September calls, eight regions | dedupes on address and call number | every region +64 to +108 | miss |
+| B, September calls that made no contact, eight regions | counts outcome 31 at the same calls | every region +20 to +46 | miss |
+
+**Mirror sheet.** The response on R2b files the same ask values as the cracker (both asks are decoupled from the call).
+
+Mirror leakage: 0 per cent of ask weight (every row above misses for the mirror as for the cracker).
+
+Pair ceiling: 34.0 (the one-cracker case at the 0.10 allowance a top response, r about 5: (38 + 7 + 5.5 + 5 + 7 + 5.5) / 2).
+
+## Pre-ship check
+
+1. Domain: census processing quality assurance's own estimate of each occupation group's net coding bias in a release,
+   taken from an independently recoded, adjudicated study and carried by response route, because follow-up proxy
+   reports give vague write-ins that coding moves into default groups; with a catalogue's product counts in its place
+   there is no proxy reporting, no follow-up tail and no coding rule tied to a release deadline to carry.
+2. Real work, nothing planted: on the call's path, three capture modes' write-in styles, questionnaire and document
+   numbers joined through the receipt register, four- and five-digit codes, coding weeks, withdrawn proxy
+   questionnaires and late self-responses closing follow-up cases; off it, the staff register's one row a person, the
+   movements log, reissued coder ids, correction lines and three pay fortnights in the timesheets, re-sent tablet
+   calls, same-day repeat calls, vacant and not-a-dwelling closings. Each is a record the office's systems produce, and
+   none moves the call (R2 and the separation assertions in `checks.py`).
+3. The step that flips the call is methodological: carrying the study's evidence to the write-ins still to code by
+   response route on the release's own route mix, under the acceptance rule those write-ins will meet, not taking the
+   coded-so-far bias as the release's.
+4. Analyst test: the default path (the study's bias taken as the release's) warns 35 and 93; the rule alone warns 35,
+   41 and 93; the follow-up batches carried as one warn 24, 35, 41 and 93; the routes under the old rule warn 24, 35,
+   71 and 93 (asserted on the clean truth, `checks.py` R3a and R3b); the reflexes (recent weeks, a time trend, the new
+   rule on every write-in) each land wrong.
+5. OQ-4 2.1, 3.1, 3.3 and 4.1 define the estimand (the release population with its unobserved members, the bias, the
+   reference coding, the study weights with both counts from the same studied write-ins, the warning line) and the
+   processing plan's Decision the rule for write-ins
+   coded from 16 November; no sentence says how the study's evidence reaches the write-ins still to code, and the data
+   forces it (each route's error rate flat over the season, every form's route shipped).
+6. No decoy: no memo, dashboard or earlier list carries a warning or a group's bias; the processing plan answers
+   capacity only (its follow-up score shares are input rows on the Capacity sheet) and the two distractors are other
+   sources' levels.
+7. Nothing is recovered from certified figures: the study is the raw material of an estimate.
+8. The lesson (a quality measure taken on the early part of a workload holds for the release only once carried by
+   the route and rule each later record meets) is on no other card: nearest drivers 0.06.
+9. Stage 4: four isolated reads, questions 1 to 4 none and question 6 analytical in each, every fork they raised
+   settled by a shipped sentence or the records (asserted); the judge's pass 1 sent back two ask figures with two
+   readings each (fixed in the prompt and the dictionary), and pass 2 is DETERMINISTIC, APPROVE (Gate G forecasting,
+   analytical_non_defect; Gate H domain, layers and decisive step pass); its advisory literal reading of OQ-4 3.1 is
+   closed by 3.3 (SF14). Surface screen: task231 back to back on the same pairing (another task type, the closure
+   share of a business survey's silent firms), and task131 and task183 on the same-driver signature (differentiated
+   on the card); the adjudicated clone check is the author's call.
 
 ## Architecture 2 record (spent 2026-10-14)
 
@@ -1306,3 +1476,14 @@ inert or close.
 - The slide charting hours against the client-audited residual, ordered by the residual: Hollings & Pryce has no client audit before 2027, so its place in the order would be a fork; the slide charts the hours, most to fewest.
 - The card's pattern relabelled E first (detection conditioned on the pool's rate): it meets task445's loop-2 card on gap time, pattern E and Gate G (guard BLOCK test.same_driver_older and test.same_puzzle_older), so the card keeps pattern A.
 - Architecture 2 retired at the author's request (2026-10-14): human-reliability-assessment serves Forecasting in the client taxonomy, not Data Quality, so the monitoring call read as a forecast in a backdrop domain; re-rooted into census occupation coding quality.
+- Architecture 3 design targets (golden 24, 25, 31, 35, 41, 72 and 93) at the draw: the expected-value calibration could not hold 31 and 72 apart from the route rung with any margin; the ladder was re-targeted to 24, 25, 35, 41, 71 and 93.
+- A quality-control sample at production rates (2, 5, 12 and 20 per cent): sampling noise of 0.6 to 2.7 points on the group biases against margins of 0.3; replaced by the coding quality study (measurement only, never written back) at 1 in 10 and 1 in 4 for self-response and 1 in 2 for follow-up.
+- A proxy share rising linearly through the season: a weighted time trend of the follow-up error on the load date, read at the still-to-code forms' mean date, landed the golden flags; the mop-up phase from 1 September (proxy take-up from the third call rises, calls come closer together) makes the ramp convex and the trend leaves 71 inside the line.
+- Proxies from the second call in the mop-up phase: contradicts the field manual's third-call rule unless filed, and filing it points at the late proxy share; take-up from the third call is raised instead.
+- The follow-up ask in October: the mop-up closed the field by the end of September (3,496 October calls, two regions tied on households); the ask moved to September.
+- Tablet replays of open cases that kept their call numbers: a business-key dedupe (address and call number) caught them; the replacement tablet renumbers the re-sent calls and re-sends its closed cases' calls too.
+- A staff register with one row per assignment: the team history sat in one file and any date-aware join found it; the register holds one row a person and the history only the movements log.
+- Background coding slips into the tiny groups (63 subsistence farmers, 95 street vendors): a handful of slips swung their bias by over a point; dropped.
+- Stage 4 (reader and judge, 2026-10-14): two ask figures read two ways. Hours "logged that month" read by shift date or by the date the line was entered (the prompt now asks the hours each team spent on occupation coding that month, the dictionary says hours worked and corrections as negative lines, and the night shift no longer straddles a month); households "enumerated at those calls" counted per interview or once (a household proxied and then re-interviewed in September counts twice per interview); counted once, the re-sent closing calls stop moving it, so the figure became the calls that made no contact (outcome 31), which the re-sent calls move in every region. The main call reproduced in full (all 40 biases, the six warnings, every rival set).
+- Stage 4 second read (2026-10-14): the procedures said CODA closes on "the last working night of each month", but the records close the night of the month's last working day, so Thursday 29 October showed night coding. A reader could take that as a contradiction. The procedures now name the night of the last working day, and checks.py asserts that every clerical write-in is coded in the month its shift started, with the same team on both days. The LFS distractor's coefficients of variation fell smoothly with group size, so each group now carries its own design effect.
+- Stage 4 pass 2 (judge DETERMINISTIC, APPROVE, 2026-10-14) raised an advisory literal reading. Taken word for word, OQ-4 3.1 lets the coded write-ins' release count come from the extract's exact codes while the reference count comes from the study. That reading warns 17 groups on sampling noise alone. OQ-4 3.3 now estimates both counts from the same studied write-ins (SF14). The difference estimator gives the same call within 0.06 and is asserted. In the same pass, the processing plan's one-row "Clerical share" sheet, which the first read and the pass 1 judge took as written for the task, became input rows on its Capacity sheet. The autocoder's stamps, which had been spread evenly from 01:00 to 05:00, became a nightly first-in-first-out run stamped to the second. No graded figure moved.

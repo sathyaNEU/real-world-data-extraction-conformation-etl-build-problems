@@ -6,13 +6,13 @@
   "domain": "survey-research-official-statistics",
   "subdomain": "census-register-administrative-data-quality",
   "client_domain": "survey-research-official-statistics",
-  "niche": "census occupation coding quality: which ISCO-08 sub-major groups the census processing plan sends to a clerical recode before the first occupation release, judged on each group's net coding bias in the released counts, while the late non-response follow-up returns (many of them proxy reports) are still to be coded and the autocoder's acceptance threshold is lowered for that last stretch",
+  "niche": "census occupation coding quality: which ISCO-08 sub-major groups carry the coding quality warning in the census's first occupation release, judged on each group's coding bias in the release, while the late follow-up returns (mostly proxy reports) are still to be coded and the autocoder's acceptance score is lowered for that last stretch",
   "objective": "data-quality-monitoring",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "24, 25, 35, 41, 71 and 93",
+  "answer_source": "task230/submission.md block 1; golden/occupation_coding_warnings_2026.xlsx",
   "gap": [
     "time",
     "population"
@@ -36,10 +36,10 @@
   "role_family": "statistical_office_head",
   "scoring_unit": "per certified output",
   "spine": {
-    "file": "census2026_coding_qc_sample.csv",
-    "rows": 0,
-    "entity": "one occupation write-in in the coding quality-control sample, with its production code, the autocoder's top suggestion and score, and the adjudicated reference code",
-    "grain": "person record",
+    "file": "census2026_coding_quality_study.csv",
+    "rows": 101947,
+    "entity": "one occupation write-in selected for the coding quality study, with its production code, the autocoder's suggestion and score, and the adjudicated reference code",
+    "grain": "person write-in",
     "source": "synthetic"
   },
   "forum": "executive_team",
@@ -63,23 +63,24 @@
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "own:late-channel-coding-bias-under-a-changed-acceptance-rule",
   "layer1": [
-    "write-ins captured three ways (typed online, ICR-transcribed paper, enumerator-keyed follow-up) with their own spelling and abbreviation habits",
-    "form identifiers that differ between the field system and the coding system, joined through the receipt register",
-    "processing batches re-opened after a coder's work was redone, so a record carries more than one production code over time",
-    "ISCO-08 codes with the national extension's fifth digit on some records and four digits on others",
-    "a field operations report in calendar weeks against coding weeks that run Monday to Sunday from census day"
+    "write-ins captured three ways (typed online, ICR-recognised paper, enumerator-keyed follow-up) with their own spelling, case and abbreviation habits",
+    "questionnaire numbers in the field system against CODA document numbers, joined through the receipt register",
+    "four-digit ISCO-08 codes on the automatic path beside five-digit AOC 2026 codes on the clerical path",
+    "coding weeks (Monday to Sunday from 4 May) against calendar dates",
+    "a proxy questionnaire withdrawn when a later household-member interview replaced it",
+    "late self-responses closing follow-up cases administratively (outcome 60)"
   ],
   "deliverables": [
-    "occupation_recode_plan_2026.xlsx",
+    "occupation_coding_warnings_2026.xlsx",
     "occupation_coding_bias_2026.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is a category count's net classification bias in an output whose last part is still to be processed: that part comes from a late channel whose inputs are vaguer and move items out of specific categories into default ones, and it will be processed under a looser acceptance rule than the part already checked, so the bias measured on the checked part, or carried by channel under the old rule, understates the output's bias in the categories the late channel feeds and drains.",
   "driver_concrete": "Each sub-major group's coding bias in the release (count coded to the group against the count the adjudicated reference coding puts there) is built by response route, because the non-response follow-up's proxy write-ins ('works at the hospital', 'office', 'labourer') are coded into default groups and out of specific ones, and the remaining follow-up returns are mostly proxies; and for the returns still to be coded, records the autocoder scores from 0.80 to 0.90 will take its suggestion instead of a clerical code, so their production code is the stored suggestion, not the clerical code the quality-control sample recorded.",
-  "stump": "A competent solver estimates each sub-major group's coding bias from the quality-control sample coded so far (count coded to the group against the count the adjudicated reference puts there, weighted by the sample's strata) and applies it to the whole release, flagging only ICT technicians (35) and the building and related labourers' group (93); the step that lands them there is treating the coded-so-far records as the release, when the follow-up returns still to be coded are mostly proxy reports whose vague write-ins drain specific groups into default ones, and will be coded with the autocoder's suggestion wherever it scores 0.80 to 0.90, so the release's bias also pushes ICT and business professionals (25, 24), the metal and machinery trades (72), science technicians (31) and general clerks (41) past 2 per cent.",
+  "stump": "A competent solver estimates each sub-major group's coding bias from the coding quality study with its selection weights and takes it as the release's, warning only 35 (Information and communications technicians) and 93 (Labourers in mining, construction, manufacturing and transport); the step that lands them there is treating the coded-so-far study as the release, when the 103,367 write-ins still to code are 54 per cent follow-up proxy returns against 18 per cent of the coded follow-up ones, whose vague write-ins drain specific groups into default ones, and they will be coded with the autocoder's suggestion wherever it scores 0.80 to 0.90; built route by route on the release's own route mix under the rule in force, the release also warns 24 (Business and administration professionals), 25 (ICT professionals), 41 (General and keyboard clerks) and 71 (Building and related trades workers).",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins the coding records to the receipt register, reads the output quality standard and the processing plan correctly and estimates every group's net coding bias from the quality-control sample with its design weights, applied to the release as a whole, flags only groups 35 and 93, the default path's answer.",
+  "analyst_test": "A strong analyst who joins the coding records to the receipt register, reads the output quality standard and the processing plan correctly and estimates every group's net coding bias from the study with its selection weights, taken as the release's, warns only groups 35 and 93, the default path's answer (checks.py R3a on the clean truth).",
   "domain_test": "The deciding quantity is each occupation group's coding bias in the census release, which census processing quality assurance estimates from independently recoded and adjudicated samples by response route, because proxy reporting in non-response follow-up yields vague write-ins that coding moves into default groups, and the bias of the release is the route-weighted bias of a workload whose late part is mostly proxy and will be coded under the processing plan's own rules; with another field's nouns there is no follow-up proxy reporting and no published census count whose bias the release carries, so the task stops making sense.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -138,6 +139,6 @@
       "stump": "A competent solver dedupes the timeout re-verifications, measures each stream's first-pass misses from the blind re-key audit, models detection on verifier, stream, field type, tenure, shift, time on shift, workload and day of week, takes the best-fitting of those models on a clean month-by-month back-test, and applies it to the November plan (the motor claims on nights, Hollings & Pryce on days, the roster moves), keeping Kessington's two streams, Northgate, Brightmoor, Harbison and the motor claims on second pass and the day streams off; the step that lands it there is treating detection as a property of the verifier, stream, shift or day when it rises and falls with the error rate of the shift's whole pool, which the plan cuts on the day queue (about 4.3 to 1.9 per cent) and raises on the night queue (about 2.5 to 5.0)."
     }
   ],
-  "notes": "Re-root at the author's request (2026-10-14). Org family government_agency: the census is run by a registrar general's office, not the statistics office. Design targets at the draw (to be fixed by the ladder): default path flags 35 and 93; golden flags 24, 25, 31, 35, 41, 72 and 93; one layer alone lands a third set.",
+  "notes": "Re-root at the author's request (2026-10-14). Org family government_agency: the census is run by a registrar general's office, not the statistics office. Built ladder: default 35, 93; the 0.80 rule on the coded-so-far mix 35, 41, 93; follow-up batches as one 24, 35, 41, 93; routes under 0.90 24, 35, 71, 93; golden 24, 25, 35, 41, 71, 93; every rung at least 0.22 points from the 2.0 line, and all 40 published biases inside their one-decimal bins under six estimator variants. Shipped 2026-10-14: judge pass 2 DETERMINISTIC, APPROVE (Gate G analytical_non_defect, Gate H pass); four isolated leak reads, questions 1 to 4 none; 121 generator checks; OQ-4 3.3 estimates both counts from the same studied write-ins (SF14).",
   "registered": "2026-10-14T00:22:54Z"
 }

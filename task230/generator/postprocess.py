@@ -10,7 +10,7 @@ import zipfile
 OFFICE_ENTRY_TIME = (1980, 1, 1, 0, 0, 0)
 DECL = b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
 NS_REL = b"http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-FLOOR, CEILING = "2023-01-01", "2026-11-18"
+FLOOR, CEILING = "2019-01-01", "2026-11-16"
 
 
 def _scrubber():

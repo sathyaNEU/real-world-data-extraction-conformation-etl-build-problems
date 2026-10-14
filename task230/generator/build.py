@@ -1,229 +1,193 @@
-"""Build the pack under target/: simulate, write the exports, set the limits, write the filed documents."""
-import datetime as dt
+"""Write the pack under target/ from the simulated census."""
+import csv
 import os
-import shutil
+from datetime import date, datetime
 
 import numpy as np
-import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
 
-import analysis as AN
-import asks_sim as AS
-import docs as DC
-import nov
-import pack as PK
+import docs
+import isco08
+import params as P
+import records as R
 import sim
-import tune
 import world as W
 
-
-def _stream_rates(Fk, dd, rcv, capture):
-    """one stream's client-audited residual three ways: golden (delivery date, every document of the claim), the
-    received business date read as the delivery date, and one document per claim"""
-    out = []
-    for clock, per_claim in (("delivered", "index"), ("received", "index"), ("delivered", "one")):
-        if clock == "delivered":
-            ld = Fk.file.map(dd)
-        else:
-            ld = pd.Series([rcv[(f, c)] for f, c in zip(Fk.file, Fk.claim)], index=Fk.index)
-        df = Fk[(ld >= W.Q3[0]) & (ld <= W.Q3[1])]
-        cl = df.drop_duplicates("claim")
-        den = (cl.kf if per_claim == "index" else cl.kf / cl.nd).sum()
-        f = df[df.seq > 0]
-        last = f.groupby(["claim", "seq"]).rnd.transform("max")
-        f = f[(f.rnd == last) & f.reason.isin(capture)]
-        out.append(len(f) / den * 1000)
-    return out
-
-
-def _clear(g, r, o):
-    edge = abs((g * 100) % 1 - 0.5) < 0.05
-    bad_r = abs(r - g) < 0.008 or round(r, 2) == round(g, 2)
-    bad_o = round(o, 2) == round(g, 2)
-    return not (edge or bad_r or bad_o)
+FILES = dict(
+    extract="census2026_occupation_coding_extract.parquet",
+    study="census2026_coding_quality_study.csv",
+    register="census2026_receipt_register.csv",
+    visits="field_visit_log_jun_oct_2026.csv",
+    aoc="aoc2026_occupation_classification.csv",
+    eds="enumeration_districts_2026.csv",
+    staff="coding_staff_register.csv",
+    moves="coding_staff_movements_2026.csv",
+    timesheets="coding_timesheets_21sep_01nov2026.csv",
+    lfs="lfs_2026q3_employment_by_occupation.csv",
+    c2021="census2021_occupation_by_region.csv",
+    standard="OQ-4_occupation_output_quality_standard.docx",
+    procedures="census2026_coding_procedures.pdf",
+    manual="census2026_followup_field_manual.pdf",
+    plan="census2026_processing_plan_nov2026.xlsx",
+    dictionary="census2026_data_dictionary.xlsx",
+    manifest="export_manifest.csv",
+)
+DISTRACTORS = ["lfs", "c2021"]
 
 
-def tune_client_audits(Fd, D, I, log=None):
-    """the client audit device and its hazard, stream by stream: the golden residual clear of its two-decimal edge,
-    the one-document reading off the golden, and the received business date read as the delivery date moving the
-    residual by more than its decimal. Each stream is settled by the smallest change to what the client sampled:
-    a clean boundary claim that carries a capture finding, or clean claims sampled or not in mid-quarter files."""
-    import asks
-    from zoneinfo import ZoneInfo
-    utc = D.set_index("file").sent_utc
-    dd = {f: pd.Timestamp(t).tz_localize("UTC").tz_convert(ZoneInfo(W.CLIENTS[c]["tz"])).date()
-          for f, t, c in zip(D.file, D.sent_utc, D.client)}
-    claims = I.groupby(["file", "code", "client", "day", "claim"], sort=True).size().rename("nd").reset_index()
-    rcv = {(f, cl): AS.received_business_date(utc[f], c, cl) for f, c, cl in zip(Fd.file, Fd.client, Fd.claim)}
-    q3 = lambda x: W.Q3[0] <= x <= W.Q3[1]
-    mid = lambda d: W.Q3[0] + dt.timedelta(days=4) < d < W.Q3[1] - dt.timedelta(days=4)
-    changed = 0
-    parts = []
-    for k in [c for c in W.ORDER if c != "D6"]:
-        Fk = Fd[Fd.code == k].copy()
-        cap = asks.CAPTURE[W.STREAMS[k]["client"]]
-        if _clear(*_stream_rates(Fk, dd, rcv, cap)):
-            parts.append(Fk)
-            continue
-        clean = Fk[Fk.seq == 0]
-        boundary = [i for i, f, c in zip(clean.index, clean.file, clean.claim) if q3(dd[f]) != q3(rcv[(f, c)])]
-        have = set(Fk.claim)
-        pool = claims[(claims.code == k) & claims.day.map(mid) & ~claims.claim.isin(have)]
-        for r in pool.itertuples():
-            rcv[(r.file, r.claim)] = AS.received_business_date(utc[r.file], r.client, r.claim)
-        inner_clean = [i for i, d in zip(clean.index, clean.day) if mid(d)]
-        trials = [("finding", [i]) for i in boundary[:30]]
-        for n in range(1, 41):
-            trials += [("add", n), ("drop", n)]
-        done = False
-        for kind, arg in trials:
-            if kind == "finding":
-                G = Fk.copy()
-                for i in arg:
-                    G.loc[i, ["seq", "kind", "reason", "rnd", "final"]] = [1, "CAP", AS.CAPTURE_CODES[W.STREAMS[k]["client"]][0], 1, True]
-            elif kind == "add":
-                if arg > len(pool):
-                    continue
-                pick = pool.iloc[np.linspace(0, len(pool) - 1, arg).astype(int)]
-                extra = pd.DataFrame([dict(claim=int(r.claim), code=r.code, client=r.client, file=r.file, day=r.day,
-                                           kf=int(r.nd) * W.kfpd(r.code, r.day), nd=int(r.nd), seq=0, kind="", reason="",
-                                           rnd=1, final=True) for r in pick.itertuples()])
-                G = pd.concat([Fk, extra], ignore_index=True)
-            else:
-                if arg > len(inner_clean):
-                    continue
-                G = Fk.drop(index=inner_clean[:arg])
-            if _clear(*_stream_rates(G, dd, rcv, cap)):
-                parts.append(G)
-                changed += arg if isinstance(arg, int) else len(arg)
-                done = True
-                break
-        if not done:
-            raise AssertionError(f"client audit tuning: no clear setting for {k}")
-    Fd = pd.concat(parts, ignore_index=True)
-    if log is not None:
-        log.append(changed)
-    return Fd
+def _v(x):
+    if x is None:
+        return ""
+    if isinstance(x, datetime):
+        return x.strftime("%Y-%m-%d %H:%M")
+    if isinstance(x, date):
+        return x.isoformat()
+    if isinstance(x, (float, np.floating)):
+        return repr(float(x))
+    return str(x)
 
 
-def tune_sessions(L, plan):
-    """keep every stream's second-pass hours clear of its rounding edge: a few seconds on the family's longest lines"""
-    fam = L.code.map(lambda c: W.STREAMS[c]["family"])
-    docs = plan.groupby("code").docs.sum()
-    L = L.copy()
-    for f in ("printed", "mixed", "handwritten", "typed"):
-        codes = [c for c in W.ORDER if W.STREAMS[c]["family"] == f]
-        m = (fam == f).values
-        n = L[m].doc_id.nunique()
-        base = L[m].secs.sum()
-        order = L[m].sort_values(["secs", "doc_id", "session"], ascending=[False, True, True]).index
-        for step in [0] + [s * k for k in range(1, 400) for s in (60, -60)]:
-            rate = (base + step) / 60.0 / n
-            fr = [(docs[c] * rate / 60) % 1 for c in codes]
-            if all(abs(x - 0.5) > 0.12 for x in fr):
-                break
-        else:
-            raise AssertionError(f"no clear setting for {f}")
-        if step:
-            k = abs(step)
-            idx = order[:k] if k <= len(order) else order
-            per = 1 if step > 0 else -1
-            L.loc[idx, "secs"] = L.loc[idx, "secs"] + per * (k // len(idx))
-            rem = k - (k // len(idx)) * len(idx)
-            if rem:
-                L.loc[idx[:rem], "secs"] = L.loc[idx[:rem], "secs"] + per
-    return L
+def write_csv(path, header, cols):
+    n = len(cols[0])
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f, lineterminator="\r\n")
+        w.writerow(header)
+        for i in range(n):
+            w.writerow([_v(c[i]) for c in cols])
+    return n
 
 
-def _fam_rates(L):
-    fam = L.code.map(lambda c: W.STREAMS[c]["family"])
-    lines = fam.value_counts()
-    u = L.assign(fam=fam).drop_duplicates(["session", "part"])
-    return (u.groupby("fam").minutes.sum() / lines).to_dict()
+def run(target, seed=P.SEED):
+    os.makedirs(target, exist_ok=True)
+    S = sim.structure(seed)
+    U = sim.uniforms(S)
+    Cd = sim.coding(S, U)
+    T = R.build_tables(S, U, Cd)
+    counts = {}
+    # the coding extract
+    e = T["ext"]
+    tab = pa.Table.from_arrays([
+        pa.array(list(e["doc_id"]), pa.string()), pa.array(e["person_no"].astype(np.int8), pa.int8()),
+        pa.array(list(e["load_batch"]), pa.string()), pa.array(e["coding_week"].astype(np.int16), pa.int16()),
+        pa.array(list(e["autocoder_code"]), pa.string()), pa.array(e["autocoder_score"].astype(float), pa.float64()),
+        pa.array(list(e["coding_path"]), pa.string()), pa.array(list(e["production_code"]), pa.string()),
+        pa.array([c if c else None for c in e["coder_id"]], pa.string()),
+        pa.array(list(e["coded_at"]), pa.timestamp("s"))],
+        names=["doc_id", "person_no", "load_batch", "coding_week", "autocoder_code", "autocoder_score", "coding_path",
+               "production_code", "coder_id", "coded_at"]).replace_schema_metadata(None)
+    pq.write_table(tab, os.path.join(target, FILES["extract"]), compression="snappy", row_group_size=131072,
+                   use_dictionary=True, write_statistics=True, store_schema=False)
+    counts["extract"] = len(e["doc_id"])
+    s = T["stu"]
+    hdr = ["study_ref", "doc_id", "person_no", "load_batch", "batch_type", "coding_path", "selection_interval",
+           "occupation_writein", "autocoder_code", "autocoder_score", "production_code", "reference_code", "reference_basis"]
+    counts["study"] = write_csv(os.path.join(target, FILES["study"]), hdr,
+                                [s[h] if h != "autocoder_score" else ["%.3f" % x for x in s[h]] for h in hdr])
+    g = T["reg"]
+    hdr = ["doc_id", "questionnaire_id", "address_id", "ed_code", "capture_mode", "received_date", "load_batch",
+           "usual_residents", "in_employment", "occupation_writeins"]
+    counts["register"] = write_csv(os.path.join(target, FILES["register"]), hdr, [g[h] for h in hdr])
+    v = T["vis"]
+    hdr = ["visit_id", "address_id", "ed_code", "staff_id", "visit_no", "visit_time", "outcome_code", "proxy_respondent",
+           "questionnaire_id", "tablet_id", "synced_at"]
+    counts["visits"] = write_csv(os.path.join(target, FILES["visits"]), hdr,
+                                [v["device_id" if h == "tablet_id" else h] for h in hdr])
+    # the classification
+    rows = []
+    sm = dict(isco08.sub_major())
+    for u, t in isco08.units():
+        nat = W.NATIONAL.get(u)
+        for d, nt in (nat or [("0", t)]):
+            rows.append((u + d, nt, u, t, u[:2], sm[u[:2]]))
+    counts["aoc"] = write_csv(os.path.join(target, FILES["aoc"]),
+                              ["aoc_code", "aoc_title", "isco08_unit_group", "isco08_unit_title", "isco08_sub_major",
+                               "isco08_sub_major_title"], list(zip(*rows)))
+    # enumeration districts
+    reg = {c: n for c, n, _ in W.REGIONS}
+    n_addr = np.bincount(S["a_ed"], minlength=len(S["ed_code"]))
+    counts["eds"] = write_csv(os.path.join(target, FILES["eds"]), ["ed_code", "region_code", "region_name", "addresses_listed"],
+                              [S["ed_code"], S["ed_region"], [reg[x] for x in S["ed_region"]], n_addr])
+    st = T["staff"]
+    hdr = ["staff_no", "coder_id", "team", "role", "contract", "status", "started", "left"]
+    counts["staff"] = write_csv(os.path.join(target, FILES["staff"]), hdr, [[r[h] for r in st] for h in hdr])
+    mv = T["moves"]
+    hdr = ["staff_no", "coder_id", "movement", "team_from", "team_to", "effective_date"]
+    counts["moves"] = write_csv(os.path.join(target, FILES["moves"]), hdr, [[r[h] for r in mv] for h in hdr])
+    ts = T["ts"]
+    hdr = ["staff_no", "work_date", "activity", "hours", "entered_on", "note"]
+    counts["timesheets"] = write_csv(os.path.join(target, FILES["timesheets"]), hdr,
+                                     [[("%.2f" % r[h]) if h == "hours" else r[h] for r in ts] for h in hdr])
+    counts["lfs"] = distractor_lfs(os.path.join(target, FILES["lfs"]), S)
+    counts["c2021"] = distractor_2021(os.path.join(target, FILES["c2021"]), S)
+    facts = docs.write_all(target, FILES, S, T, Cd)
+    counts.update(facts.get("counts", {}))
+    write_manifest(os.path.join(target, FILES["manifest"]), counts)
+    return S, U, Cd, T, counts, facts
 
 
-def _credit(plan):
-    out = {}
-    pl = plan.assign(client=plan.code.map(lambda c: W.STREAMS[c]["client"]))
-    acct = pl.groupby("client").docs.sum()
-    for c in W.ORDER:
-        cl = W.STREAMS[c]["client"]
-        b = W.BANDS[cl]
-        bi = max(i for i, f in enumerate(b["floors"]) if acct[cl] >= f)
-        base = b["price"][c][bi]
-        amt = 0.0
-        for r in pl[pl.code == c].itertuples():
-            p = base
-            if "index" in b and r.day >= b["index"][0]:
-                p = round(base * (1 + b["index"][1] / 100.0), 4)
-            amt += r.docs * p
-        out[c] = W.CREDIT_PCT[c] / 100.0 * amt
-    return out
+def distractor_lfs(path, S):
+    """the Labour Force Survey's third-quarter estimates of employment by sub-major group (thousands, with the
+    coefficient of variation): the survey's own sample and weighting, not the census"""
+    rng = np.random.default_rng(P.SEED + 61)
+    tot = len(S["owner"]) * 1.031 / 1000.0
+    deff = np.random.default_rng(P.SEED + 62)
+    rows = []
+    for g in W.GROUPS:
+        est = tot * W.SHARE[g] / sum(W.SHARE.values()) * float(np.exp(rng.normal(0, 0.05)))
+        # the design effect varies by group (clustering of an occupation within households and areas)
+        cv = min(45.0, 100 * 0.9 / np.sqrt(max(est, 0.2) * 9) * float(np.exp(deff.normal(0, 0.22))))
+        rows.append(("2026Q3", g, W.SUB[g], "%.1f" % est, "%.1f" % cv))
+    return write_csv(path, ["quarter", "isco08_sub_major", "sub_major_title", "employed_thousands", "cv_percent"],
+                     list(zip(*rows)))
 
 
-def tune_volumes(fc, L):
-    """keep every stream's hours and credit at stake off a rounding edge by a document or a bundle in the accepted
-    forecast's first full November week"""
-    rate = _fam_rates(L)
-    for _ in range(300):
-        plan = nov.plan_daily(fc)
-        hrs = {c: plan[plan.code == c].docs.sum() * rate[W.STREAMS[c]["family"]] / 60 for c in W.ORDER}
-        cr = _credit(plan)
-        edge = [c for c in W.ORDER if abs(hrs[c] % 1 - 0.5) < 0.08 or abs(cr[c] % 1 - 0.5) < 0.04]
-        if not edge:
-            return fc, plan
-        c = edge[0]
-        idx = fc[(fc.code == c) & fc.accepted & (fc.week_start >= dt.date(2026, 11, 1))].index[0]
-        fc.loc[idx, "units"] += 1
-    raise AssertionError("volume tuning did not converge")
+def distractor_2021(path, S):
+    """the 2021 census's published persons in employment by region and sub-major group"""
+    rng = np.random.default_rng(P.SEED + 67)
+    rows = []
+    tot = len(S["owner"]) * 0.957
+    for code, name, sh in W.REGIONS:
+        for g in W.GROUPS:
+            n = tot * sh * W.SHARE[g] / sum(W.SHARE.values()) * float(np.exp(rng.normal(0, 0.08)))
+            rows.append((code, name, g, W.SUB[g], int(round(n))))
+    return write_csv(path, ["region_code", "region_name", "isco08_sub_major", "sub_major_title", "persons_in_employment"],
+                     list(zip(*rows)))
 
 
-def build(target, quiet=False):
-    if os.path.isdir(target):
-        shutil.rmtree(target)
-    os.makedirs(target)
-    S = sim.simulate()
-    rng = np.random.default_rng(W.SEED + 5)
-    L0 = AS.second_pass_sessions(S, rng)   # the sessions the plan of record's volumes were settled against; not shipped
-    fc, plan = tune_volumes(nov.weekly_forecasts(), L0)
-    roster = nov.roster(S["P"])
-    sp, ed = PK.spine_and_edits(S, target)
-    au = PK.audit(S, target)
-    PK.workforce_register(S, target)
-    PK.stream_register(target)
-    PK.form_specs(target)
-    PK.operating_plan(S, plan, roster, target)
-    PK.forecasts(fc, target)
-    L = AS.second_pass_v2(S, np.random.default_rng(W.SEED + 61))
-    L = tune_sessions(L, plan)
-    PK.sessions_export(L, target)
-    D, I = AS.deliveries_v2(S, np.random.default_rng(W.SEED + 67))
-    A = AS.client_audits_v2(S, D, I, np.random.default_rng(W.SEED + 71))
-    Fd = AS.findings(A, np.random.default_rng(W.SEED + 73))
-    added = []
-    Fd = tune_client_audits(Fd, D, I, added)
-    PK.manifests(D, target)
-    PK.delivery_index(I, target)
-    PK.client_audit_files(Fd, D, target)
-    PK.ocr_summary(S, target)
-    PK.keystroke_telemetry(sp, target)
-    # limits from the closed quarter as the shipped audit measures it
-    pk = AN.Pack.__new__(AN.Pack)
-    pk.t = target
-    pk.sp, pk.ed, pk.au = sp, ed, au
-    pk.emp = AN._xl(os.path.join(target, PK.FILES["workforce"]), "Employees")
-    pk.badge = AN._xl(os.path.join(target, PK.FILES["workforce"]), "Badge allocation")
-    pk.streams = pd.read_csv(os.path.join(target, PK.FILES["streams"]))
-    pk.kfields = AN._xl(os.path.join(target, PK.FILES["forms"]), "Key fields")
-    Qr = AN.Quarter(pk)
-    q3m = Qr.q3_measured()
-    limits = tune.limits(q3m)
-    DC.qcp04(target)
-    DC.quality_schedules(target, limits)
-    a = Qr.a[Qr.a.code == "D6"]
-    s6 = Qr.scr[Qr.scr.code == "D6"]
-    P = dict(days=int(s6.day.nunique()), docs=int(len(s6)), kf=int(s6.key_fields.sum()), audited=int(len(a)),
-             ocr_pct=100 * a.err.mean(), residual=q3m["D6"], docs_per_day=int(round(len(s6) / s6.day.nunique(), -1)))
-    DC.pilot_report(target, P)
-    DC.labour_note(target)
-    DC.notes(target, dict(spine=len(sp), edits=len(ed), audit=len(au), sessions=len(L)))
-    return dict(S=S, limits=limits, q3m=q3m, findings_added=added[0], plan=plan)
+def write_manifest(path, counts):
+    desc = [
+        ("extract", "Coding system extract: every occupation write-in coded by Friday 13 November 2026, one row per person "
+                    "write-in, with its autocoder suggestion and score, coding path, production code and the coder on the "
+                    "clerical path", "Coding system (CODA)", "Census Processing"),
+        ("study", "Coding quality study: the write-ins selected from each load batch and recoded by the classification "
+                  "specialists, with the adjudicated reference code", "CODA study module", "Methodology Division"),
+        ("register", "Receipt register: every census form received by the close of field operations, with its coding "
+                     "document number and load batch", "Receipt and registration system", "Census Processing"),
+        ("visits", "Field operations system visit log: every follow-up call recorded on an enumerator tablet, 22 June to 31 "
+                   "October 2026, and the administrative closures", "Field operations system (FOS)", "Field Operations"),
+        ("aoc", "Aldmere Occupational Classification 2026 with the ISCO-08 structure", "Classification management",
+                "Methodology Division"),
+        ("eds", "Enumeration districts and regions as at census day", "Address register", "Field Operations"),
+        ("staff", "Coding staff register at 13 November 2026: everyone who has worked in census coding, with their team",
+                  "HR and rostering", "Census Processing"),
+        ("moves", "Coding staff movements since coding began on 4 May 2026: starters, transfers between teams and leavers",
+                  "HR and rostering", "Census Processing"),
+        ("timesheets", "Timesheet export for the pay fortnights from 21 September to 1 November 2026", "Timesheet system",
+                       "Census Processing"),
+        ("lfs", "Labour Force Survey, third quarter 2026: employment by ISCO-08 sub-major group", "LFS estimation system",
+                "Labour Market Statistics"),
+        ("c2021", "2021 Census of Population: persons in employment by region and ISCO-08 sub-major group (published)",
+                  "Census 2021 dissemination tables", "Census Outputs"),
+        ("standard", "Output quality standard OQ-4: occupation", "Quality management", "Methodology Division"),
+        ("procedures", "Census 2026 coding procedures, version 3", "Census Processing", "Census Processing"),
+        ("manual", "Census 2026 follow-up field manual (enumerators and field supervisors)", "Field Operations",
+                   "Field Operations"),
+        ("plan", "Census 2026 processing plan: coding capacity to the coding close, November 2026 update",
+                 "Census Processing", "Census Processing"),
+        ("dictionary", "Data dictionary for the extracts in this pack", "Census Processing", "Census Processing"),
+    ]
+    rows = []
+    for k, d, src, own in desc:
+        rows.append((FILES[k], d, counts.get(k, ""), src, own, "2026-11-13"))
+    write_csv(path, ["file", "description", "rows", "source_system", "owner", "extracted"], list(zip(*rows)))
