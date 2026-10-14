@@ -53,3 +53,7 @@ Stump terms swept: special, golden, member, release, conditioned, change, decisi
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read (round 2)
+
+Q1 to Q4: none (procedure 6.1 names the closed campaigns as the basis and SOW 2.1 the minutes per event, neither the step; the treasury workbook's whole-book maturities are ask context on a different basis; the extract notes are a glossary; 5,250 appears nowhere). Q5: the reader's literal pooled route (all seven closed campaigns, minutes per closed case, times 18,400) gives about 4,553, booked 4,500: below the golden, a lower rung. Q6: analytical (pooling the closed campaigns without asking how the 2027 list differs); it did not find the special-money class. REVIEW lines: all harmless (a 4.00 pm shift time, the 4-year posted rate, shared vocabulary, future maturity dates). Realism: files stamped 3 November against a 4 November email (the extract's date, coherent); recurring briefs near-identical (plausible). Readings: per-month against total rounding (SF13, closed); Ask A's reinvest into a new account, partial renewal, transfer to a joint or related account, part-retained counting (the prompt's clause and the asserted rows); Ask B's migrated-certificate double count (the device); "not on the list" (procedure 3.1 and 3.3).

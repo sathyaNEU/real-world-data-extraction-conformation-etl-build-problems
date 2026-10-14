@@ -1,15 +1,15 @@
 {
   "task": "task137",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "banking-credit-financial-risk",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-14",
   "stump": "A competent solver washes the numbers, prices dialling per mix of callable numbers from the seven closed campaigns, conditions the past share of conversations that went to the retention offer on each deposit's drop from its locked rate to the card it reinvests at and books 4,250 agent-hours (Ends on); the step that lands it there is reading that share off every past conversation at the drop instead of off the conversations about the same class of money: 10,697 of the 18,400 deposits are money the 2023 four-year special won at 5.65 per cent, and money a special won went to the offer at 87 per cent at its first maturity whatever its drop, where past conversations at the special's 1.65-point drop, almost all about member money, went to the offer about a third of the time: the golden is 5,250.",
   "architecture": 1,
-  "loops": 0,
+  "loops": 1,
   "round": 2,
   "round2": {
     "date": "2026-10-14",
@@ -22,17 +22,19 @@
     "date": "2026-10-14"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-14 on the round-2 build (--asof 2026-11-04), no LEAK, sweep 11 clean; every REVIEW line answered in the design note's Build record",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-14 on the final round 2 rebuild (--asof 2026-11-04), no LEAK, sweep 11 clean; the same lines as at stage 3 (sweeps 3, 4 and 9), each answered in the design note's Build record",
+    "reader": "round 2 read 2026-10-14 on the round 2 pack: Q1 to Q4 none; Q5 the literal pooled route about 4,553 (booked 4,500, a lower rung); Q6 analytical, the special-money class not found; REVIEW lines harmless; its readings each on a fork row (SF13, SF18, SF20, SF23, SF24), two assertions added for SF18 and SF20 with no pack change; appended to leak_check_report.md; no second read, since no document or the prompt changed"
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-14 (repeat.gate_g only, answered under Guard); no BLOCK",
+    "heart": "WARN 2026-10-14 at the final rebuild (repeat.gate_g only, answered under Guard); no BLOCK",
     "nearest": "0.06 task35 lineage (driver), 0.14 this slot's round-1 lineage (differentiated); surface exit 0, five pairs promoted on card axes (task138, task117, task37, task97, task44), each differentiated on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC 2026-10-14 (judge-task137r2, round 2 pack): APPROVE, no fix; every figure reproduced (5,280.9; 1,206.9, 2,013.3, 2,060.7; every ask row), rigorous variants 5,192 to 5,281, margins 94 hours to 5,375 and 156 to 5,125; the about-5,500 routes refused by procedure 4.2 and 4.3",
+    "disposition": "APPROVE, shipped; the shipped pack byte-identical to the judged one; the minor point (the 2027Q1 brief titled draft while its card is approved by ALCO) left with its reason in the design note; no graded figure moved",
+    "report": "determinism_check_report_round2.md (round 1: determinism_check_report.md and determinism_check_report_pass2.md, kept as history)",
+    "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "rounds": [
     {
@@ -60,22 +62,33 @@
       }
     }
   ],
-  "returned": [],
-  "resume": "stage 4: reader and judge",
+  "returned": [
+    {
+      "date": "2026-10-13",
+      "portal": "10/10 audit COMPLIANT_WEAK (round 2): the drop the strong model's reflex, a locked-rate-by-term logit landing the golden bin, Ask B's file name announcing the overlap, Ask A's clause signalling its device, the swap test passed narrowly",
+      "repair": "design",
+      "commit": "the RESHIPPED (task137) commit of 2026-10-14"
+    }
+  ],
+  "resume": "shipped (round 2); next event is the author's portal result",
   "approved": null,
-  "delivered": "2026-10-12",
+  "delivered": "2026-10-14",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
   "wave": "wave 2 (new), seed FC08",
   "gates_round2": {
-    "checks": "604 assertions",
+    "checks": "606 assertions (two added at stage 4 for the reader's Ask A readings)",
     "verify": "34 checks from the bundle alone",
     "rebuild": "two builds byte-identical; target.zip sha256 e9d6e93637fe658acbc03425898c8a8d79a6b3e4c47d36238c0cb3c4c655d5c9",
     "figures_check": "exit 0, 111 figures",
     "voice_check": "PASS",
     "guard_validate": "clean",
-    "container": "target and golden clean"
+    "container": "target and golden clean",
+    "precut": "exit 0, 49 checks",
+    "leak_py": "REVIEW, no LEAK",
+    "surface": "exit 0, five pairs promoted on card axes, each differentiated",
+    "heart": "WARN (repeat.gate_g)"
   }
 }

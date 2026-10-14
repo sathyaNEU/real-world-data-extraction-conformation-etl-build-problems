@@ -453,6 +453,18 @@ def run(target, golden, Wd=None, H=None, meta_path=None):
     ok(len(into_td) > 1000 and all(to in opens and opens[to][0].isoformat() == d_
                                    for to, d_ in zip(into_td["to_account"], into_td["value_date"])),
        "SF20 a listed deposit's principal went into a term deposit not opened that day")
+    ev_holder = dict(zip(ev["account"], ev["customer_no"]))
+    lst_holder = dict(zip(lists["account"], lists["customer_no"]))
+    ok(all(ev_holder.get(to) == lst_holder[s_] for s_, to in zip(
+        [AK.source_of(fa, nar) for fa, nar in zip(into_td["from_account"], into_td["narrative"])],
+        into_td["to_account"])),
+       "SF20 a listed deposit's principal went into a term deposit another member holds (joint or related)")
+    mat_amt = {(a, d_): am for a, d_, t, am in zip(ev["account"], ev["event_date"], ev["event_type"], ev["amount"])
+               if t == "MATURE"}
+    rein_amt = [(am, mat_amt.get((a, d_))) for a, d_, t, am in zip(ev["account"], ev["event_date"], ev["event_type"],
+                                                                  ev["amount"]) if t == "REINVEST"]
+    ok(len(rein_amt) > 1000 and all(m_ is not None and abs(r_ - m_) < 0.005 for r_, m_ in rein_amt),
+       "SF18 a deposit renewed part of its principal on its own account")
     ok(not lists.duplicated(["campaign", "customer_no"]).any(), "SF21 a holder with two deposits on one list")
     ok(all(st["A"]["holder"][q][0] > ga[q][0] for q in W.PAST), "SF21 the holder's new money changes no count")
 

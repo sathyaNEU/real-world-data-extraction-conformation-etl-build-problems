@@ -236,9 +236,9 @@ asserted in `generator/checks.py`.
 | SF15 | a dial that does not reach the holder | NOA, BSY, VML, DIS and WNG, at 1.5 minutes | wrong party as a conversation | SOW schedules 2 and 3 |
 | SF16 | the dialling calendar | no listed deposit has fewer dialling days between release and maturity than the six dials per number need | maturity truncating dials | C1, asserted over every maturity date |
 | SF17 | a deposit's term | the list's term | term from the start and maturity dates | the same on every row (C1, asserted) |
-| SF18 | Ask A: a deposit that moved part of its principal into a new term deposit and paid the rest out | counted, at the part on term deposit 30 days after maturity | counted only when kept whole (every count and amount low); at its whole principal (every amount 3.2 to 3.7 per cent high); at the new deposit's whole principal, new money included (every amount 0.9 to 1.1 per cent high) | the prompt's wording: how much of the principal on its list was still on term deposit, and from how many of its deposits; executed on the extracts it files the golden (asserted) |
+| SF18 | Ask A: a deposit that moved part of its principal into a new term deposit and paid the rest out | counted, at the part on term deposit 30 days after maturity | counted only when kept whole (every count and amount low); at its whole principal (every amount 3.2 to 3.7 per cent high); at the new deposit's whole principal, new money included (every amount 0.9 to 1.1 per cent high) | the prompt's wording: how much of the principal on its list was still on term deposit, and from how many of its deposits; executed on the extracts it files the golden (asserted); a part renewed on the deposit's own account does not arise, every REINVEST equal to its MATURE amount (C1, asserted) |
 | SF19 | Ask A: principal switched into an investment certificate | not on term deposit | counted as kept | same answer: no listed deposit's principal reaches a certificate (C1, asserted) |
-| SF20 | Ask A: principal paid into the holder's other term deposit | on term deposit with us, so counted | only a term deposit opened that day counts | same answer: every payment of a listed deposit's principal into a term deposit goes to one opened that day (C1, asserted) |
+| SF20 | Ask A: principal paid into the holder's other term deposit | on term deposit with us, so counted | only a term deposit opened that day counts | same answer: every payment of a listed deposit's principal into a term deposit goes to one opened that day, held by the deposit's own holder, so a joint or related member's account never arises (C1, asserted) |
 | SF21 | Ask A: the unit counted | per deposit, the list's grain | per holder; or a deposit counted kept when its holder opened any term deposit within 30 days | same answer per holder (C1, asserted); a holder's other new deposit is new money, not the deposit's principal (the wording), and that reading puts every count 30 to 56 high (asserted) |
 | SF22 | the class of money (a convention of the golden's construction) | a rate 0.40 points or more above the lowest rate of the same list's deposits of its term opened in the same quarter | any gap from 0.30 to 0.45; the posted rate of the opening quarter where a brief carries it; the cohort's mode or mean as the base | C1, asserted: no premium sits between 0.25 and 0.50, so every gap from 0.30 to 0.45 classes the same deposits on every list, and each cohort's lowest rate equals its brief's posted rate wherever a brief covers the opening quarter; the mode is refused because the four-year cohort of January to March 2023 is mostly the special, so its mode classes the special as member money |
 | SF23 | Ask B: a certificate both on the platform's register and in the core | counted once, at the core's principal | at the register's principal (every month 120,000 to 165,000 dollars low); in both (high) | the register is the platform's at 30 June 2026 and the holdings view the core's at the cut (extract notes); every core certificate matches exactly one register certificate on issue date, maturity date, rate and term, and for every logged migration that match is the logged certificate (asserted) |
@@ -502,7 +502,7 @@ gone.
   class of money, the new rate path and specials, the settlement account and the hand-moved certificates. Seeded per
   purpose (`world.rng`), fixed mtimes, office containers and PDFs normalised to the fiction's owners and stamps.
 - Pack: 27 files in 6 formats (csv, pdf, docx, eml, txt, xlsx); the dial log 269,175 rows; target.zip 10.5 MB.
-- Checks: 604 assertions, among them the three-rules block on the clean truth (R1, R2 per mess item, R3a, R3b, R3c),
+- Checks: 606 assertions (604 at stage 3, two added at stage 4 for the reader's Ask A readings), among them the three-rules block on the clean truth (R1, R2 per mess item, R3a, R3b, R3c),
   every SF row, the rungs and 22 rival bases each at least two bins under the golden and off every month, the
   40-member corridor, the flip, the domain claims the note and write-up make, both asks' goldens, stops and C1
   conditions, separation and distractor deletion, the realism sweep and the goldens against figures.json, all green;
@@ -525,8 +525,26 @@ gone.
   members), and none names a special, a class of money or a rate against its cohort; the dates after 4 November 2026
   are maturity dates of deposits and certificates still running (the coming list, the holdings view, the register and
   the events extract's maturity_date column; every event and value date is on or before 31 October 2026).
-- Stage 4 (the leak reader and the determinism judge) is not run in this pass: the main session spawns both on this
-  pack.
+- Stage 4 (2026-10-14), on this pack: the leak reader found no leak (Q1 to Q4 none; Q5 its literal pooled route about
+  4,553, booked 4,500, a lower rung; Q6 analytical, the special-money class not found); its readings each have a fork
+  row: per-month against total rounding SF13, Ask A's reinvestment into a new account SF20, a partial renewal and the
+  part-retained count SF18 (a part renewed on the deposit's own account never arises, asserted), a transfer to a joint
+  or related member's account SF20 (every payment of a listed deposit's principal into a term deposit goes to the
+  deposit's own holder, asserted), Ask B's migrated-certificate double count SF23, "not on the list" SF24 (procedures
+  3.1 and 3.3). The judge returned DETERMINISTIC, APPROVE, no fix (`determinism_check_report_round2.md`): every figure
+  reproduced (5,280.9; 1,206.9, 2,013.3, 2,060.7; every ask row), its reproducing rule for Ask A the golden's, rigorous
+  variants 5,192 to 5,281, the about-5,500 routes refused by procedure 4.2 and 4.3 (SF10, SF11), the withdrawn
+  registrations' reading (514 against 464 deposits with no callable number, about 15 hours) closed by SF5.
+- The judge's minor point, the January to March 2027 brief titled "(draft)" while its card is "as approved by ALCO":
+  left as it stands. The brief is the society's working document to Harbourline for a quarter not yet released
+  (issued 3 November 2026, cases released from 11 December), so it stays in draft while its other sections (what the
+  agent confirms, the retention offer, contacts) can still move, and the rate table inside it is the society's approved
+  card, which the brief says in so many words; SF6 already asserts both phrases, every route reads the same card, and no answer turns on the label.
+- Final rebuild after stage 4 (the two assertions only, no pack, golden or graded figure moved): target/ byte-identical
+  to the copy the judge read, target.zip sha256 unchanged (e9d6e936...); checks 606, verify 34, two builds
+  byte-identical, `figures_check.py` exit 0 (111 figures), `precut.py` exit 0 (49 checks), `voice-check.py` PASS,
+  `leak.py --asof 2026-11-04` REVIEW with the same lines as above and no LEAK, `guard.py surface` exit 0 (the same five
+  pairs), `heart` WARN (`repeat.gate_g` only), `validate` clean, container audit clean.
 
 ## Pre-ship check
 
