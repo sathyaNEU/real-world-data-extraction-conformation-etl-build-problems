@@ -107,13 +107,14 @@ def hazards(rec, entry="transfer", by=("product",), maxm=80, clock="calendar"):
     for key, g in g0.groupby(list(by)):
         shift = (g["first_m"] - g["draw_m"]).to_numpy() if clock == "first" else 0
         x = g["x"].to_numpy() - shift
+        xr = (g["xr"].to_numpy() - shift) if "xr" in g else x      # the last month on book the loan stays at risk
         e = (g["entry"].to_numpy() - shift) if entry == "transfer" else np.full(len(g), -10 ** 6)
         t = g["ev"].to_numpy()
         d = np.zeros(maxm + 2)
         c = np.zeros(maxm + 2)
         n = np.zeros(maxm + 2)
         for m in range(1, maxm + 2):
-            risk = (e < m) & (x >= m)
+            risk = (e < m) & (xr >= m)
             k = int(risk.sum())
             n[m] = k
             if k:

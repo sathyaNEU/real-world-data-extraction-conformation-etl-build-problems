@@ -1,11 +1,11 @@
 {
   "task": "task133",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "banking-credit-financial-risk",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-14",
   "stump": "A strong solver builds each product's monthly default and repayment rates by month on book from the loan record, counting every loan from its drawdown, rolls each performing loan forward from its own month on book, and books AUD 11.6 million against AUD 13.2 million (12.3 per cent low); the step that lands it there is counting the 16,479 loans the record took over at the October 2019 go-live as at risk from their drawdown, when the record holds them only because they were still open that day, so their earlier months fill every early month's loans at risk with exposure that could not end in a recorded default.",
   "architecture": 2,
@@ -15,8 +15,8 @@
     "date": "2026-10-14"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-14, --asof 2026-10-12, after round 2c): the same REVIEW lines, each answered in the design note",
-    "reader": "re-read owed on the round 2c cut (the scoring runs parquet, CRM-ECL-04 section 5 and the prompt changed); earlier reads in leak_check_report.md"
+    "leak_py": "REVIEW, no LEAK (2026-10-14, --asof 2026-10-12, on the shipped cut)",
+    "reader": "round 2c targeted re-read: no leak (leak_check_report.md)"
   },
   "duplicate_check": {
     "heart": "WARN, no BLOCK after round 2c (forum committee_or_panel, persona Declan Wallace); people.last Olson, people.first Christine on older builds, repeat.gate_g against task132",
@@ -25,11 +25,10 @@
     "validate": "169 cards, 0 invalid"
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC (narrow, slide 2 only) on the round 2 re-judge",
-    "disposition": "FIX_NOW applied as prescribed (the dictionary records each loan book extract's run clock), asserted; no third judge (the same fork closed)",
-    "report": "determinism_check_report_round2b.md",
-    "main_call": "forced and reproduced (13.179; 10.584 and 2.595; 3,266 stage 2 loans; 1.0555)",
-    "v1": "DETERMINISTIC, APPROVE on pass 2 (determinism_check_report.md, determinism_check_report_pass2.md), before loop 1"
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE, no fix (round 2c re-judge); the optional exit-at-first-default pin not taken, closed as SF35 by 3.2's estimand and asserted",
+    "report": "determinism_check_report_round2c.md",
+    "earlier": "round 2: NOT_DETERMINISTIC on the asks (determinism_check_report_round2.md), repaired; round 2b re-judge FIX_NOW on the June clock (determinism_check_report_round2b.md), applied"
   },
   "round2": {
     "date": "2026-10-14",
@@ -62,14 +61,14 @@
   "returned": [
     {
       "date": "2026-10-14",
-      "portal": "FAILED_TO_STUMP (v1 landed at 100 per cent; loop 1 never judged)",
+      "portal": "FAILED_TO_STUMP (v1 landed at 100 per cent; loop 1 left off the approved list)",
       "repair": "design (round 2)",
-      "commit": ""
+      "commit": "RESHIPPED (task133): round 2 (this commit)"
     }
   ],
-  "resume": "stage 4: the targeted re-read (the scoring runs parquet, CRM-ECL-04 section 5, the prompt) and one re-judge on the round 2c cut; then reship (SHIPPED, returned entry, ledger row RESHIPPED round 2, commit RESHIPPED)",
+  "resume": "",
   "approved": null,
-  "delivered": "2026-10-11 (re-shipped after portal round 1: hardened ladder from loop 1, asks hardened at 6b)",
+  "delivered": "2026-10-14 (round 2: left truncation in the loan record; re-judge DETERMINISTIC, APPROVE)",
   "portal": {
     "v1": "2026-10-11: one model stumped, the other landed AUD 13,773,000 at 100 per cent"
   },
@@ -232,6 +231,11 @@
       "hardship_register_2026-09-30.xlsx"
     ],
     "gates": "checks.py PASS 600, verify.py PASS, two rebuilds byte-identical, figures_check exit 0, precut 49 PASS, voice-check PASS, leak.py REVIEW no LEAK, guard validate 169 valid, surface 1 promoted (task180), heart WARN, freeze rubric PASS (determinism mode names only the deck rename, no figure moved)",
-    "target_zip_sha256": "1fb3303f0f3c7d34219c8de135dcad6e5c245a1e984407d20b5a1a22c91c2f5a"
+    "target_zip_sha256": "1fb3303f0f3c7d34219c8de135dcad6e5c245a1e984407d20b5a1a22c91c2f5a",
+    "ship": {
+      "date": "2026-10-14",
+      "target_zip_sha256": "1fb3303f0f3c7d34219c8de135dcad6e5c245a1e984407d20b5a1a22c91c2f5a",
+      "gates": "checks.py PASS 601 (SF35 added), verify.py PASS, final rebuild byte-identical to the round 2c cut, figures_check exit 0, precut 49 PASS, leak.py REVIEW no LEAK, guard heart WARN no BLOCK, validate 169 valid"
+    }
   }
 }

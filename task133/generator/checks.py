@@ -342,6 +342,25 @@ def forks():
                                                           "record, open and not in default at a, first defaulting at a + k")
     ok("Months on book are calendar months counted from the month the loan was drawn, so a loan is in month on book 0 in the "
        "month it is drawn." in pol, "SF5: 3.2 counts months on book from the drawdown month")
+    # SF35: exit at first default (round 2c re-judge's residual fork). 3.2's estimand is the probability that a loan open
+    # and not in default at a first defaults at a + k, so a loan leaves the loans at risk at its first default. Keeping
+    # the defaulted loans that were not written off or settled at risk from their default month (an instant cure) books
+    # AUD 13.1 million; the record carries no cure date, and 343 of the 761 still open are 90 or more days past due at 30
+    # September, so the data do not support an instant cure either
+    rec_ = E.record(T)
+    kept = (rec_["ev"] == "D") & ~rec_["closure_reason"].isin(["Written off", "Settled"])
+    cd_ = pd.to_datetime(rec_["closed_date"])
+    cm_ = (cd_.dt.year * 12 + cd_.dt.month - 1)
+    rec_["xr"] = np.where(kept, np.where(cm_.notna(), cm_.fillna(0).astype(int), E.RM) - rec_["draw_m"], rec_["x"])
+    ic = E.solve(T, rec=rec_)
+    bk_ = pd.read_csv(os.path.join(T, E.F["book"]))
+    op = rec_[kept & (rec_["status"] == "Open")].merge(bk_[["loan_no", "days_past_due"]], on="loan_no")
+    ok("first defaults in month on book a + k" in pol and "default_month" in rec_.columns and not any("cure" in c for c in rec_.columns)
+       and int((op["days_past_due"] >= 90).sum()) >= 0.3 * len(op) and M(ic["total"]) == 13.1,
+       "SF35: kept at risk from the default month, the %d defaulted loans not written off or settled book AUD %.1f million "
+       "(%.1f, %.1f); ruled out by 3.2's 'first defaults' and by the record (no cure date; %d of the %d still open are 90 or "
+       "more days past due at 30 September)" % (int(kept.sum()), M(ic["total"]), M(ic["stage1"]), M(ic["stage2"]),
+                                               int((op["days_past_due"] >= 90).sum()), len(op)))
     ok("Stage 2 loans carry the significant-increase scalar of 2.4 on PD(k)." in pol, "SF6: the scalar sits on PD(k)")
     ok("PD is set by product and month on book only. Risk grade, channel and state do not enter it, and the record's experience "
        "is used as it stands, with no curve fitted to it or smoothing." in pol, "SF7, SF8: 7.1 sets PD by product and month on "

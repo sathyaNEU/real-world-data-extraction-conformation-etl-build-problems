@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: record, taken-over, device, repayment, decisive, drawdown, asserted, status, dictionary, population, earlier, go-live, months, million, extract, silent, arrangement, sentence, points, take-over, survival, sample, platform, counts, agency
+Stump terms swept: record, taken-over, device, repayment, asserted, decisive, drawdown, status, million, dictionary, population, earlier, go-live, months, extract, silent, arrangement, sentence, points, take-over, survival, sample, platform, counts, agency
 
 ## 3 answer figures in the pack (REVIEW 4)
 - **REVIEW** `CRM-ECL-04_expected_credit_loss_personal_loans.docx`: golden figure 7.1 appears: ...modelled allowance. 7. Limitations 7.1 PD is set by product and month on book only. Risk...
@@ -67,3 +67,7 @@ July), `CRM-ECL-04_expected_credit_loss_personal_loans.docx` (section 5 and the 
 Risk Committee) and `hardship_register_2026-09-30.xlsx` (the job account's last-modified-by persona). leak.py --asof
 2026-10-12 above: REVIEW, no LEAK, the same lines as before (the dictionary's stump-term overlap now 11 of 25, the
 subject's own words). Neither the dictionary nor the policy mentions the rerun (asserted in `checks.py`).
+
+## Solver's-eye read (targeted, round 2c)
+
+On the prompt, the scoring runs parquet, CRM-ECL-04 section 5 and its history, and the dictionary. Q1 to Q4: none. Q5: 3.7 with 1.1, 2.1 and 3.1 (the per-loan sum over stage 1 and 2 loans at 30 September); 3.2's PD estimand stated; not computed. Q6: the reader called the filed text mostly rule application and semantics because it found no step on the main figure beyond 3.2's PD construction; it did not find the October 2019 take-over (delayed entry), which no sentence names and which the judge has twice ruled the analytical decisive step (Gate H). Its rule-application points (2.2, 3.2's pause, the June clock, the carried-forward scores) all sit on the asks, which rule 3 does not bind. Realism: pre-emptive clauses (3.2's pause reason, 3.3's measure, 7.1's no-smoothing, 2.4's no probation); history rows pointing at revised sections, section 5 one line under "restated"; the dictionary's current_score_v4 added 21 July against a 2 July rerun (the book column, not the scoring file). Readings: slide 2's stage 3 and closed (the dictionary: a closed loan is in no stage); which June run governs (the device B4, resolvable from score_status); the June clock (filed); section 5's coverage ratios beyond the prompt.
