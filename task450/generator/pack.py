@@ -21,7 +21,7 @@ FILES = {
     "dictionary": "data_dictionary.xlsx",
 }
 DISTRACTORS = ("projection", "learning")
-FIX_POS = 38                     # the 2026 item whose key the bank carried wrongly
+FIX_POS = 4                      # the 2026 item whose key the bank carried wrongly
 STRANDS = [("Number and operations", ["5.2A", "5.2B", "5.3A", "5.3E", "5.3G", "5.3K", "5.3L"]),
            ("Algebraic reasoning", ["5.4A", "5.4B", "5.4C", "5.4F", "5.4H"]),
            ("Geometry and measurement", ["5.5A", "5.6A", "5.6B", "5.7A", "5.8C"]),
@@ -55,6 +55,8 @@ def items(F, rng):
             if iid not in tag:
                 s = STRANDS[int(rng.choice(5, p=[0.36, 0.26, 0.22, 0.10, 0.06]))]
                 tag[iid] = (s[0], s[1][int(rng.integers(len(s[1])))])
+    for p in F["drift"]:
+        tag[F["ids25"][p - 1]] = W.DRIFT_TAG          # the three shared items on simplifying numerical expressions
     bk = bank_key(F)
     for p in range(1, W.N_ITEMS + 1):
         a, b = F["ids25"][p - 1], F["ids26"][p - 1]

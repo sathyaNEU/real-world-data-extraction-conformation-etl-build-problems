@@ -31,6 +31,12 @@ def bank(target):
     return [dict(item=r[0], key=r[4], pos25=r[6], pos26=r[7]) for r in rows]
 
 
+def bank_rows(target):
+    """the item bank's rows as written (item, strand, TEKS, type, key, points, 2025 position, 2026 position, first used)"""
+    ws = openpyxl.load_workbook(os.path.join(target, P.FILES["bank"]), read_only=True)["Items"]
+    return [r for r in ws.iter_rows(min_row=2, values_only=True)]
+
+
 def directory(target):
     ws = openpyxl.load_workbook(os.path.join(target, P.FILES["directory"]), read_only=True)["Campuses"]
     out = {}

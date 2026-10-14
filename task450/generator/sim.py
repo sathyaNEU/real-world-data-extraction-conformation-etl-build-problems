@@ -2,7 +2,8 @@
 
 Students answer items under a Rasch model. The 2025 form and the 2026 form share 25 items in the same positions;
 the 2026 form's other 25 items are harder, and the 2026 cohort (the first taught the district's new curriculum
-from grade 3) is stronger. The 2025-26 enrollment history lives in the new student information system, which went
+from grade 3) is stronger. The new curriculum teaches simplifying numerical expressions a year earlier, so the three
+shared items written to that standard are far easier for the 2026 cohort than its ability elsewhere implies. The 2025-26 enrollment history lives in the new student information system, which went
 live on 5 January 2026: students then mid-transfer were carried over at their old campus under one new id and
 registered at their new campus under another, and the duplicate ids were merged in August 2026."""
 import datetime as dt
@@ -34,6 +35,12 @@ def forms(rng, hard):
     for i, p in enumerate(pos_u):
         b25[p - 1] = u25[i]
         b26[p - 1] = u26[i]
+    # the shared items the new curriculum teaches a year earlier answer far more often for the 2026 cohort
+    order = sorted((b25[p - 1], p) for p in W.ANCHOR_POS)
+    mid = len(order) // 2
+    drift = sorted(p for _, p in order[mid - W.DRIFT_N // 2: mid - W.DRIFT_N // 2 + W.DRIFT_N])
+    for p in drift:
+        b26[p - 1] = b25[p - 1] - W.DRIFT_LOGITS
     key25 = LETTERS[rng.integers(0, 4, W.N_ITEMS)]
     key26 = key25.copy()
     for p in pos_u:
@@ -44,7 +51,7 @@ def forms(rng, hard):
     new = ["M5%05d" % x for x in rng.choice(np.arange(41000, 47999), len(pos_u), replace=False)]
     for i, p in enumerate(pos_u):
         ids26[p - 1] = new[i]
-    return dict(b25=b25, b26=b26, key25=key25, key26=key26, ids25=ids25, ids26=ids26, pos_u=pos_u)
+    return dict(b25=b25, b26=b26, key25=key25, key26=key26, ids25=ids25, ids26=ids26, pos_u=pos_u, drift=drift)
 
 
 def respond(rng, theta, b, key, nr_rate=0.0):
@@ -287,7 +294,7 @@ def _shape_2025(A, F, C, seed):
     raise SystemExit("sim: a 2025 community share stays on a round value or an edge")
 
 
-def simulate(seed=W.SEED, gain=0.11, hard=0.24):
+def simulate(seed=W.SEED, gain=0.11, hard=0.42):
     rng = np.random.default_rng(seed)
     F = forms(rng, hard)
     C = campuses(rng)

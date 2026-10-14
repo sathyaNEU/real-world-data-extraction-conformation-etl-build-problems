@@ -65,7 +65,7 @@
     {
       "path": "dma_item_bank_grade5_math.xlsx",
       "format": "xlsx",
-      "bytes": 9538,
+      "bytes": 9537,
       "rows": null,
       "source": "Constructed: the district item bank's grade-5 mathematics items, release of 6 April 2026",
       "date": "2026-10-09",
@@ -74,7 +74,7 @@
     {
       "path": "dma_key_correction_2026-05-19.pdf",
       "format": "pdf",
-      "bytes": 40831,
+      "bytes": 40830,
       "rows": null,
       "source": "Constructed: the assessment office's key correction notice of 19 May 2026",
       "date": "2026-10-09",
@@ -92,7 +92,7 @@
     {
       "path": "dma_technical_report_2025_excerpt.pdf",
       "format": "pdf",
-      "bytes": 43510,
+      "bytes": 43518,
       "rows": null,
       "source": "Constructed: the District Mathematics Assessment technical report, spring 2025 (excerpt)",
       "date": "2026-10-09",
@@ -119,7 +119,7 @@
     {
       "path": "grade5_math_responses_2026.csv",
       "format": "csv",
-      "bytes": 16744205,
+      "bytes": 16744217,
       "rows": 317050,
       "source": "Constructed: the assessment platform's export of spring 2026 grade-5 mathematics answers, one row per answer",
       "date": "2026-10-09",

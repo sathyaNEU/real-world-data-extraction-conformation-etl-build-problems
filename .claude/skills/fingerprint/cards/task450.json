@@ -10,7 +10,7 @@
   "shape": "14",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Place the 2027 mathematics intervention coaches at the 15 campuses where fewer than 40 per cent of tested full-academic-year grade-5 students met the standard: Wolfberry Trail, Javelina Run, Arriaga, Gallardo, Rosedale Terrace, Sotol Mesa, Guayacan Hill, Elmhurst Avenue, Old Mill Road, Agarita Bend, Caliche Ridge, Tobar, Lechuguilla Gap, Mabry and Vance Avenue.",
+  "answer": "Place the 2027 mathematics intervention coaches at the 15 campuses where fewer than 40 per cent of tested full-academic-year grade-5 students met the standard: Wolfberry Trail, Javelina Run, Arriaga, Sotol Mesa, Rosedale Terrace, Gallardo, Caliche Ridge, Old Mill Road, Agarita Bend, Ursuline Avenue, Lechuguilla Gap, Tobar, Guayacan Hill, Mabry and Vance Avenue.",
   "answer_source": "task450/submission.md, 1. Final Recommendation",
   "gap": [
     "population",
@@ -68,11 +68,11 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "Two administrations of a measuring instrument differ both in the instrument and in the group measured, and the only quantities both groups answered are a shared subset, so the instrument's change has to be estimated from the groups' performance on that subset and removed before any group is placed against a fixed line; reading the new results through the old conversion, or matching the two groups' whole distributions, books the group's real change as the instrument's.",
-  "driver_concrete": "The 2026 grade-5 mathematics form is linked to the 2025 reporting scale through the 25 items both forms share, which separate the new items' difficulty from the 2026 cohort's higher ability, before each campus's share of tested full-academic-year students meeting the standard is counted; the 2025 conversion, or equating that assumes the two cohorts are equivalent, files a larger set of campuses under the line.",
-  "stump": "The default path designates 30 campuses because it converts the 2026 raw scores with the 2025 form's conversion (passing raw score 27), and matching the 2026 raw-score distribution to 2025's designates 21 (passing raw score 26), crediting the stronger 2026 cohort's gain to nobody or to an easier form; linked through the 25 items both forms share, the 2026 form's passing raw score is 25 and 15 campuses fall under the 40 per cent line.",
+  "driver": "Two administrations of a measuring instrument differ both in the instrument and in the group measured, and the only quantities both groups answered are a shared subset, so the instrument's change has to be estimated from the groups' performance on that subset and removed before any group is placed against a fixed line; and a few members of the shared subset changed for the new group alone, so the subset is screened for members whose behaviour moved far more than the rest and the link runs through those that held; reading the new results through the old conversion, matching the groups' distributions, or linking through the whole subset each files another set.",
+  "driver_concrete": "The 2026 grade-5 mathematics form is linked to the 2025 reporting scale through the 22 of its 25 shared items whose difficulty held between the cohorts: the three written to TEKS 5.4F, which the new curriculum teaches a year earlier, rose 28 to 30 points for the 2026 cohort against 1.8 on the rest, and every standard screen sets them aside; the 2025 conversion, equating that assumes the cohorts equivalent, or the link through all 25 shared items files another set of campuses.",
+  "stump": "The default path designates 32 campuses because it converts the 2026 raw scores with the 2025 form's conversion (passing raw score 27); matching the 2026 raw-score distribution to 2025's designates 23 (26); the textbook common-item link through all 25 shared items designates 13 or 6 (24 or 23 by method), because three shared items on one standard the new curriculum teaches a year earlier rose about 28 points for the 2026 cohort against 1.8 on the rest and the link credits that rise to the whole cohort; screened for that change and linked through the 22 that held, the 2026 form's passing raw score is 25 and 15 campuses fall under the line.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who scores every response with the corrected key, places every test through the crosswalk and the enrollment extract, applies every policy rule and links the 2026 form by matching its raw-score distribution to 2025's designates 21 campuses (passing raw score 26), six more than the golden's 15; one who applies the 2025 conversion as published designates 30.",
+  "analyst_test": "A strong analyst who scores every response with the corrected key, places every test through the crosswalk and the enrollment extract, applies every policy rule and, seeing that the cohorts differ on the shared items, links the 2026 form through all 25 of them designates 13 campuses (passing raw score 24) or 6 (23) by method, against the golden's 15; one who matches the raw-score distributions designates 23, and one who applies the 2025 conversion as published designates 32.",
   "domain_test": "The deciding quantity is each school's proficiency rate on the reporting scale, which psychometrics gets by equating the new form through the anchor items under a non-equivalent groups design; with a hospital's nouns there are no test forms, no anchor items and no reporting scale to link, so the task stops reading.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -104,10 +104,10 @@
       "driver_concrete": "A gathering system's large-release methane over the qualification year books each release a crew fixed from the start its work order records to its repair, and each sighting of a release the crew found already stopped (the wet-gas systems' recurring tank flashes) as the measured rate of the month its flight sampled; dropping those sightings puts Pursley Creek and Bluelick under the 0.10 per cent cap they exceed, and booking every sighting at its month's hours puts Owens Ridge over it."
     }
   ],
-  "notes": "Architecture 2 drawn 2026-10-13 after v1 was spent at the judge's pass 2 (see lineage). Forum redrawn at design (2026-10-13) from trustees_or_governors to executive_team: task255, drawn at 00:38 UTC before this architecture's draw at 01:56, holds trustees_or_governors in the window; the board approved the designation rules and the superintendent's cabinet places the coaches under them.",
+  "notes": "Architecture 2 drawn 2026-10-13 after v1 was spent at the judge's pass 2 (see lineage). Forum redrawn at design (2026-10-13) from trustees_or_governors to executive_team: task255, drawn at 00:38 UTC before this architecture's draw at 01:56, holds trustees_or_governors in the window; the board approved the designation rules and the superintendent's cabinet places the coaches under them. Hardened 2026-10-13 after shipping with a second layer (the client's equating pattern 2 on top of pattern 3): the shared items screened for a change in difficulty before they link; the layer2 family moves to estimation_fit for the decisive screen, the first layer staying estimand_identification.",
   "client_domain": "education-learning-sciences",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "education-learning-sciences/item-response-theory-test-equating/3",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "education-learning-sciences/item-response-theory-test-equating/2",
   "layer1": [
     "item responses with omits and not-reached items under the scoring key",
     "a scoring-key correction issued after the window for one item",

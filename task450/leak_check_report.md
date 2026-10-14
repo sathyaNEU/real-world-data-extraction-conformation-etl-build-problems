@@ -1,18 +1,18 @@
 # leak check, task450
 
-**Verdict: REVIEW.** 13 files read, 92 golden figures and 65 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 98 golden figures and 65 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: conversion, rejected, design, cohort, student, scores, golden, system, full-academic-year, cohorts, shared, decisive, method, reporting, tested, passing, linking, designates, groups, policy, alternative, answered, carried, vendor, matching
+Stump terms swept: shared, conversion, screen, cohort, rejected, change, design, cohorts, method, golden, decisive, passing, student, scores, curriculum, difficulty, system, tested, full-academic-year, groups, linking, reporting, designates, report, alternative
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `campus_designation_rules_2026-27.pdf`: golden figure 300 appears: ...ich the district set on its 2025 grade-5 form, is 300 or above. Results from later forms are reported o...
 - **REVIEW** `dma_technical_report_2025_excerpt.pdf`: golden figure 300 appears: ...chose a linear scale so that the standard sits at 300 and each raw point on the 2025 form is worth six...
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `campus_designation_rules_2026-27.pdf`: 5 of 25 stump-paragraph terms appear (design, student, full-academic-year, reporting, tested); read whether the document names the move
-- **REVIEW** `dma_technical_report_2025_excerpt.pdf`: 4 of 25 stump-paragraph terms appear (conversion, student, scores, reporting); read whether the document names the move
+- **REVIEW** `campus_designation_rules_2026-27.pdf`: 6 of 25 stump-paragraph terms appear (design, student, tested, full-academic-year, reporting, report); read whether the document names the move
+- **REVIEW** `dma_technical_report_2025_excerpt.pdf`: 5 of 25 stump-paragraph terms appear (conversion, student, scores, reporting, report); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Name them in intervention_schools_2027.docx with the share each was designated on, charted against the line, and put every rated campus's share with the two counts behind it in grade5_math_results_2026.xlsx, along with, "
 
 ## 6 ranking artifacts (REVIEW 1, INFO 1)
@@ -35,7 +35,6 @@ Stump terms swept: conversion, rejected, design, cohort, student, scores, golden
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
-
 ## Solver's-eye read
 
 Two isolated reader passes (general-purpose, Sonnet, medium), each on fresh copies of prompt.txt and target/ from target.zip.
@@ -124,3 +123,38 @@ An analytical choice. The decisive step is placing the 2026 form on the 2025 sca
 - dma_technical_report_2025_excerpt.pdf: the "chose a linear scale so that the standard sits at 300" and "raw 26.5" line is neat enough to look designed. Real technical reports would carry reliability, SEM and test information, and a district rarely publishes a bare linear raw-to-scale table.
 - data_dictionary.xlsx: the dictionary is complete for each file with no gaps. The 2025 file's "I01 to I50" row is the one compressed row.
 - math_professional_learning_hours_2025-26.csv: zeros for October for campus 101 (0.0 hours, 0 sessions) with constant teacher counts per month suggest synthetic regularity. It is clearly a distractor.
+
+# Leak read, task450 r3 (solver's-eye, hardening loop 1: the shared items screened before the link)
+
+## 1. Sentence or file that tells you the decisive step
+None names it. The nearest are the technical report 4.1 ("The conversion applies to raw scores on the 2025 form only.") and the rules' section 2 ("Results from later forms are reported on the same scale."): together they say the 2026 form needs placing on the 2025 scale, never how. The item bank's two position columns show which items both forms carry: raw data, not an instruction. Nothing mentions a screen, an item's change between the years or the curriculum.
+
+## 2. File that already ranks or scores the campuses
+None. The directory, the professional learning hours and the enrollment projection carry campus-level numbers, none a rate or rank on the question.
+
+## 3. File that exists only to help the analyst
+None. The data dictionary is the weakest case and is plausible for a district; the id merges and the key correction notice read as operational records; the two distractors read as real records.
+
+## 4. Figure or name that reads as the answer
+None. 300 is the standard; the technical report's 26.5 is a 2025-form fact (a lure for the wrong path, not the answer); no campus is named or flagged.
+
+## 5. Filed sentences that fix the computation, with literal result
+Rules section 2 (300 or above on the scale set on the 2025 form; later forms on the same scale): no 2026 conversion is filed, so it leaves the 2026 cut open. Technical report 4.1: the 141 + 6 x raw conversion must not be applied to 2026 raw scores. Rules 3 to 7 (full academic year, the rate, the closed campus with its receiving campus, ten or more tested, under 40 per cent) and the key notice fix the population, the window and the scoring. The reader did not compute the cut; the filed text fixes the population and window and leaves the 2026 cut to the analysis. Each executes to the golden's population (checked by the main thread).
+
+## 6. What decides the main answer
+An analytical choice: how to carry the 2025 standard onto the 2026 form. No sentence says to equate on the common items or gives the 2026 cut; the rest (full academic year, the closure, the key correction, the id merges, the n-size rule) is Layer 1 following stated text.
+
+## Review lines
+- campus_designation_rules_2026-27.pdf, 300: harmless, the filed standard itself.
+- dma_technical_report_2025_excerpt.pdf, 300: harmless, the 2025 form's scale definition.
+- campus_designation_rules_2026-27.pdf, 5 stump terms: harmless, generic terms; the document never names linking or equating.
+- dma_technical_report_2025_excerpt.pdf, 4 stump terms: harmless; 4.1 scopes the table without describing a step.
+- prompt sentence with stump terms: harmless, deliverables and rounding.
+- campus_directory_2026-27.xlsx, candidates beside numbers: harmless, campus numbers, opening years and status, no results.
+
+## Realism tells
+- The item bank's creator differs from the other workbooks' (plausible for a district office).
+- Every 2026 test taker has a row for each of the 50 items, blanks encoded in-row as the dictionary describes (the platform's long export writes one row per item served).
+- Otherwise none.
+
+Main thread rulings (2026-10-13): no question-1 sentence, no question-2 or question-3 file, every question-5 sentence executes to the golden's population, question 6 analytical; the review lines harmless as read; the two realism observations are the platform's export format and a second author, kept.

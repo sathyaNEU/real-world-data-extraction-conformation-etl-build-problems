@@ -61,14 +61,40 @@ def run(target, golden, world=None, meta_path=None):
         ok(not any(w in f for f in files for w in ("distract", "decoy", "unused")), "input gate: no file named as a distractor")
     # ------------------------------------------------------------------------------- the golden from the pack ----
     L = RD.load(target)
-    out, rg, info = C.methods(L["S25"], L["S26"], L["anchor"], rasch=True)
+    # the shared items' stability: every standard screen sets aside the same three, written to one standard
+    fl, st = C.drift_screens(L["S25"], L["S26"], L["anchor"])
+    drift = sorted(p - 1 for p in world["F"]["drift"]) if world else fl["robust z"]
+    for nm_, f_ in fl.items():
+        ok(f_ == drift, "SF13 the %s screen sets aside the three shared items that moved" % nm_,
+           ", ".join(str(j + 1) for j in f_))
+    scr = [j for j in L["anchor"] if j not in drift]
+    ok(scr == C.screened(L["S25"], L["S26"], L["anchor"]) and len(scr) == 22, "SF13 the link runs through 22 shared items")
+    bank_tags = {int(r[6]) - 1: r[2] for r in RD.bank_rows(target) if r[6] and r[7]}
+    ok({bank_tags[j] for j in drift} == {W.DRIFT_TAG[1]}, "R1 data-native: the three are written to one standard (TEKS %s)"
+       % W.DRIFT_TAG[1])
+    gap = st["gap"]
+    moved = [g for j, g in zip(L["anchor"], gap) if j in drift]
+    held = [g for j, g in zip(L["anchor"], gap) if j not in drift]
+    ok(min(moved) > 4 * max(abs(g) for g in held), "SF13 the three moved more than four times any other shared item",
+       "%.3f against %.3f" % (min(moved), max(abs(g) for g in held)))
+    out, rg, info = C.methods(L["S25"], L["S26"], scr, rasch=True)
     r_by = {k: C.passing(f) for k, f in out.items()}
     r_hi = {k: C.passing(f, cut=C.HI) for k, f in out.items()}
-    ok(set(r_by.values()) == {25} and set(r_hi.values()) == {25}, "SF2 every common-item method gives passing raw 25",
-       "%d methods" % len(out))
+    ok(set(r_by.values()) == {25} and set(r_hi.values()) == {25},
+       "SF2 every common-item method through the 22 gives passing raw 25", "%d methods" % len(out))
     lo, hi, E = C.corridor(out, 25)
     ok(lo >= 0.20 and hi >= 0.20, "SF1 SF2 the corridor holds at both edges of the rounding band",
        "e(25) - 26.5 >= %.3f, 26.4167 - e(24) >= %.3f" % (lo, hi))
+    one_more = set()
+    for j in scr:
+        oj, _, _ = C.methods(L["S25"], L["S26"], [k for k in scr if k != j], rasch=False)
+        one_more |= {C.passing(f) for f in oj.values()}
+    ok(one_more == {25}, "SF14 any one more shared item set aside: passing raw 25 on every method")
+    blind, _, _ = C.methods(L["S25"], L["S26"], L["anchor"], rasch=True)
+    r_blind = {k: C.passing(f) for k, f in blind.items()}
+    ok(set(r_blind.values()) <= {23, 24} and len(set(r_blind.values())) >= 1,
+       "R2 linked through all 25 shared items: passing raw 23 or 24 on every method",
+       ", ".join("%s %d" % kv for kv in sorted(r_blind.items())))
     rgr = {k: C.passing(f) for k, f in rg.items()}
     ok(rgr["identity (the 2025 conversion)"] == 27, "R0 the 2025 conversion: passing raw 27")
     ok(rgr["random groups linear"] == 26 and rgr["random groups equipercentile"] == 26,
@@ -79,15 +105,19 @@ def run(target, golden, world=None, meta_path=None):
     ok(len(gold) == 15 and len(tab) == 54, "golden: 15 of 54 rated campuses designated", ", ".join(x[:-11] for x in GOLD))
     d27 = RD.designated(RD.campus_table(L, 27))
     d26 = RD.designated(RD.campus_table(L, 26))
-    ok(len(d27) == 30 and set(gold) < set(d27), "R0 default path: 30 campuses, the golden's 15 among them")
-    ok(len(d26) == 21 and set(gold) < set(d26), "R1 random groups: 21 campuses, the golden's 15 among them")
+    d24 = RD.designated(RD.campus_table(L, 24))
+    d23 = RD.designated(RD.campus_table(L, 23))
+    ok(len(d27) == 32 and set(gold) < set(d27), "R0 default path: 32 campuses, the golden's 15 among them")
+    ok(len(d26) == 23 and set(gold) < set(d26), "R1 random groups: 23 campuses, the golden's 15 among them")
+    ok(len(d24) == 13 and len(d23) == 6 and set(d23) < set(d24) < set(gold),
+       "R2 linked through all 25: 13 or 6 campuses, inside the golden's 15")
     # the sample variants
     tested_fay = np.array([RD.fay_campus(L["spells"].get(L["xw"][t], [])) is not None for t in L["takers"]])
     blank25 = ((L["R25"] == "") | (L["R25"] == "*")).any(1)
     blank26 = ((L["R26"] == "") | (L["R26"] == "*")).any(1)
     for nm, a, b in (("2026 full-academic-year only", L["S25"], L["S26"][tested_fay]),
                      ("complete tests only", L["S25"][~blank25], L["S26"][~blank26])):
-        o2, _, _ = C.methods(a, b, L["anchor"], rasch=True)
+        o2, _, _ = C.methods(a, b, scr, rasch=True)
         l2, h2, _ = C.corridor(o2, 25)
         ok(l2 >= 0.15 and h2 >= 0.15 and {C.passing(f) for f in o2.values()} == {25},
            "SF3 linking sample %s: passing raw 25" % nm, "margins %.3f / %.3f" % (l2, h2))
@@ -96,11 +126,11 @@ def run(target, golden, world=None, meta_path=None):
     X25[L["R25"] == ""] = np.nan
     X26 = L["S26"].astype(float)
     X26[L["R26"] == ""] = np.nan
-    uni = [j for j in range(W.N_ITEMS) if j not in L["anchor"]]
+    uni = [j for j in range(W.N_ITEMS) if j not in scr]
     n1, n2 = len(X25), len(X26)
     M = np.full((n1 + n2, W.N_ITEMS + len(uni)), np.nan)
     M[:n1, :W.N_ITEMS] = X25
-    M[n1:, L["anchor"]] = X26[:, L["anchor"]]
+    M[n1:, scr] = X26[:, scr]
     M[n1:, W.N_ITEMS:] = X26[:, uni]
     bh = C._jml(M)
     bX = bh[:W.N_ITEMS]
@@ -111,11 +141,11 @@ def run(target, golden, world=None, meta_path=None):
        "e(25) %.3f, e(24) %.3f" % (e[25], e[24]))
     # ---------------------------------------------------------------------------------------------- the rungs ----
     Lw = RD.load(target, corrected=False)
-    ow, _, _ = C.methods(Lw["S25"], Lw["S26"], Lw["anchor"], rasch=False)
+    ow, _, _ = C.methods(Lw["S25"], Lw["S26"], C.screened(Lw["S25"], Lw["S26"], Lw["anchor"]), rasch=False)
     rw = C.passing(ow[G.GOLD_METHOD])
     dw = RD.designated(RD.campus_table(Lw, rw))
-    ok(rw == 25 and names(L, set(dw) - set(gold)) == ["Dewberry Terrace Elementary"] and set(gold) <= set(dw),
-       "R2a SF4 the bank's original key: passing raw 25, Dewberry Terrace added", "r %d" % rw)
+    ok(rw == 25 and names(L, set(gold) - set(dw)) == ["Vance Avenue Elementary"] and set(dw) < set(gold),
+       "R2a SF4 the bank's original key: passing raw 25, Vance Avenue out", "r %d" % rw)
     da = RD.designated(RD.campus_table(L, 25, merge_closed=False))
     ok(names(L, set(da) - set(gold)) == ["Delgadillo Elementary"] and names(L, set(gold) - set(da)) == ["Tobar Elementary"],
        "R2b SF7 the closed campus rated apart: Delgadillo in, Tobar out")
@@ -130,9 +160,10 @@ def run(target, golden, world=None, meta_path=None):
     hits = []
     for key_ok in (True, False):
         LL = L if key_ok else Lw
-        oo, rr, _ = C.methods(LL["S25"], LL["S26"], LL["anchor"], rasch=False)
+        oo, rr, _ = C.methods(LL["S25"], LL["S26"], C.screened(LL["S25"], LL["S26"], LL["anchor"]), rasch=False)
+        ob, _, _ = C.methods(LL["S25"], LL["S26"], LL["anchor"], rasch=False)
         conv = {"common-item": C.passing(oo[G.GOLD_METHOD]), "random groups": C.passing(rr["random groups equipercentile"]),
-                "2025 conversion": 27}
+                "2025 conversion": 27, "common-item through all 25": C.passing(ob[G.GOLD_METHOD])}
         for cv, r in conv.items():
             for fay, merge, nmin in itertools.product((True, False), (True, False), (W.N_MIN, 1)):
                 st = RD.designated(RD.campus_table(LL, r, use_fay=fay, merge_closed=merge, n_min=nmin))
@@ -141,8 +172,8 @@ def run(target, golden, world=None, meta_path=None):
                     hits.append((cv, key_ok, fay, merge, nmin))
                 else:
                     distinct.add(tuple(st))
-    ok(cells == 48 and hits == [("common-item", True, True, True, W.N_MIN)],
-       "grid: of 48 cells only the golden's handling designates the golden's 15", "%d distinct wrong sets" % len(distinct))
+    ok(cells == 64 and hits == [("common-item", True, True, True, W.N_MIN)],
+       "grid: of 64 cells only the golden's handling designates the golden's 15", "%d distinct wrong sets" % len(distinct))
     # separation: every rated campus two or more students from the line at 25 and at 27
     for r in (25, 27):
         t = RD.campus_table(L, r)
@@ -219,11 +250,19 @@ def run(target, golden, world=None, meta_path=None):
         tested = [Bw["stu"][i] for i in idx]
         fay_of = [C.fay(s["spells"]) for s in tested]
         camp = [s["spells"][-1][0] for s in tested]
-        oc, rc, _ = C.methods(S25, S26, [p - 1 for p in W.ANCHOR_POS], rasch=False)
-        easy = C.designated(C.campus_rates(S26.sum(1), camp, fay_of, C.passing(rc["random groups equipercentile"])))
-        right = C.designated(C.campus_rates(S26.sum(1), camp, fay_of, C.passing(oc[G.GOLD_METHOD])))
-        ok(sorted(easy) == names(L, d26), "three rules: the analyst's easy route on the clean truth files the 21 (R1)")
-        ok(sorted(right) == GOLD, "three rules: the decisive step alone, on the clean truth, files the golden's 15")
+        shared = [p - 1 for p in W.ANCHOR_POS]
+        held = [p - 1 for p in W.ANCHOR_POS if p not in F["drift"]]
+        oc, rc, _ = C.methods(S25, S26, shared, rasch=False)
+        oh, _, _ = C.methods(S25, S26, held, rasch=False)
+        rate = lambda r: C.designated(C.campus_rates(S26.sum(1), camp, fay_of, r))
+        easy = rate(C.passing(oc[G.GOLD_METHOD]))
+        lower = rate(C.passing(rc["random groups equipercentile"]))
+        right = rate(C.passing(oh[G.GOLD_METHOD]))
+        ok(sorted(easy) == names(L, d23), "three rules: the analyst's easy route on the clean truth (common-item linking "
+           "through every shared item) files the 6 (R2)")
+        ok(sorted(lower) == names(L, d26), "three rules: the lower rung (random groups) on the clean truth files the 23 (R1)")
+        ok(sorted(right) == GOLD, "three rules: the decisive step alone (the shared items that moved set aside), on the "
+           "clean truth, files the golden's 15")
     # --------------------------------------------------------------------------------------- the documents ----
     T = doc_text(target)
     allt = " ".join(T.values())
@@ -238,11 +277,12 @@ def run(target, golden, world=None, meta_path=None):
                    (DC.REPORT, "An answer left blank, whether omitted or not reached, and an answer with more than one choice marked score zero.")):
         ok(s_ in T[f_], "pin filed once: %s" % s_[:60])
         ok(allt.count(s_) == 1, "pin stated once in the pack: %s" % s_[:40])
-    ok("The conversion applies to raw scores on the 2025 form only." in T[DC.REPORT] and len(d27) == 30,
-       "SF13 the 2025 conversion on the 2026 raw scores files 30 and the report scopes it to the 2025 form only")
+    ok("The conversion applies to raw scores on the 2025 form only." in T[DC.REPORT] and len(d27) == 32,
+       "SF12 the 2025 conversion on the 2026 raw scores files 32 and the report scopes it to the 2025 form only")
     low = allt.lower()
     for word in ("anchor", "equat", "common item", "common-item", "linking", "link the", "shared item", "random group",
-                 "nonequivalent", "non-equivalent", "cohort", "carried over", "renumber", "duplicate id", "ghost"):
+                 "nonequivalent", "non-equivalent", "cohort", "carried over", "renumber", "duplicate id", "ghost",
+                 "drift", "screen", "invarian", "differential item", "curriculum"):
         ok(word not in low, "R3 no document names the decisive step or a device (%s)" % word)
     # -------------------------------------------------------------------------------------- realism, hygiene ----
     dates = []

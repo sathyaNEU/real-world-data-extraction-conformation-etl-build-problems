@@ -1,39 +1,46 @@
 {
-  "task": "task450",
-  "owner": "oviya1301",
-  "status": "SHIPPED",
-  "domain": "education-learning-sciences",
-  "objective": "etl",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-13",
-  "stump": "The default path designates 30 campuses because it converts the 2026 raw scores with the 2025 form's conversion (passing raw score 27), and matching the 2026 raw-score distribution to 2025's designates 21 (passing raw score 26), crediting the stronger 2026 cohort's gain to nobody or to an easier form; linked through the 25 items both forms share, the 2026 form's passing raw score is 25 and 15 campuses fall under the 40 per cent line.",
-  "architecture": 2,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-13"
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK) 2026-10-13",
-    "reader": "pass 1: Q1 to Q4 none, Q5 main-call fork (the 2025 conversion read onto the 2026 form), fixed with the technical report's scope sentence (SF13); pass 2 on the fixed pack: Q1 to Q4 none, Q5 linking forced by the records, Q6 analytical"
-  },
-  "duplicate_check": {
-    "heart": "WARN (repeat.question_form, answered in the design note) 2026-10-13",
-    "nearest": "0.07 (task49, task62 lineage)",
-    "note": "architecture 2 drawn 2026-10-13: guard WARN repeat.question_form answered in the design note; v1 differentiated on the card"
-  },
-  "judge": {
-    "verdict": "pass 1 DETERMINISTIC, APPROVE",
-    "disposition": "APPROVE (optional ask-3 wording note applied)",
-    "report": "determinism_check_report.md",
-    "gate_g": "method_or_model_selection, analytical_non_defect",
-    "gate_h": "domain pass, layers pass, decisive step analytical"
-  },
-  "returned": [],
-  "resume": "shipped; waiting for the portal",
-  "approved": null,
-  "delivered": "2026-10-13",
-  "portal": null,
-  "source_note": "architecture 1 (Physical & Environmental Sciences, methane overflights) spent 2026-10-13 at the determinism judge's pass 2 (SEND_BACK, Gate C); re-rooted inside ETL with the number kept; seed ET07 still not drawn (its task types banned in the window)"
+ "task": "task450",
+ "owner": "oviya1301",
+ "status": "SHIPPED",
+ "domain": "education-learning-sciences",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-14",
+ "stump": "The default path designates 32 campuses because it converts the 2026 raw scores with the 2025 form's conversion (passing raw score 27); matching the raw-score distributions designates 23 (26); the textbook common-item link through all 25 shared items designates 13 or 6 (24 or 23 by method), because three shared items on TEKS 5.4F, which the new curriculum teaches a year earlier, rose about 28 points for the 2026 cohort against 1.8 on the rest and the link credits that rise to the whole cohort; screened and linked through the 22 that held, the passing raw score is 25 and 15 campuses fall under the line.",
+ "architecture": 2,
+ "loops": 1,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-13"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK) 2026-10-13, hardening loop 1, --asof 2026-10-12",
+  "reader": "pass 1: Q1 to Q4 none, Q5 main-call fork (the 2025 conversion read onto the 2026 form), fixed with the technical report's scope sentence (SF13); pass 2 on the fixed pack: Q1 to Q4 none, Q5 linking forced by the records, Q6 analytical; pass 3 (hardening loop 1): Q1 to Q4 none, Q5 the filed text fixes population, window and scoring and leaves the cut to the analysis, Q6 analytical"
+ },
+ "duplicate_check": {
+  "heart": "hardening loop 1: BLOCK ban.shape and ban.forum against task258 and task259, both drawn on 2026-10-13 and ordered before task450 only by task number (task450 v2 was drawn first); the draw axes are unchanged by the hardening, the driver's nearest neighbours 0.06 (task98 v7, task106, task188)",
+  "nearest": "0.07 (task49, task62 lineage)",
+  "note": "architecture 2 drawn 2026-10-13: guard WARN repeat.question_form answered in the design note; v1 differentiated on the card"
+ },
+ "judge": {
+  "verdict": "pass 1 DETERMINISTIC, APPROVE; pass 2 (hardening loop 1) DETERMINISTIC, APPROVE, no FIX_NOW",
+  "disposition": "APPROVE (the wrong-route figure for the link through all 25 stated as 24 or below, 13 or fewer campuses, since implementations differ on it)",
+  "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2)",
+  "gate_g": "method_or_model_selection, analytical_non_defect (the screen noted as partly defect-shaped for live testing to confirm)",
+  "gate_h": "domain pass, layers pass, decisive step analytical"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-14",
+ "portal": null,
+ "source_note": "architecture 1 (Physical & Environmental Sciences, methane overflights) spent 2026-10-13 at the determinism judge's pass 2 (SEND_BACK, Gate C); re-rooted inside ETL with the number kept; seed ET07 still not drawn (its task types banned in the window)",
+ "hardening": [
+  {
+   "loop": 1,
+   "date": "2026-10-14",
+   "change": "second layer: the shared items screened for a change in difficulty before the link (client equating pattern 2 on pattern 3); three TEKS 5.4F items drift for the new-curriculum cohort; the call moves from Elmhurst Avenue to Ursuline Avenue, still 15 campuses at passing raw score 25"
+  }
+ ]
 }

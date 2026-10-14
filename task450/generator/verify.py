@@ -1,6 +1,7 @@
 """Independent verifier for task450: reads only the shipped bundle with DuckDB and NumPy, on its own code path (no
-calc.py, reader.py or generator state), links the 2026 form to the 2025 scale through the items both forms carry
-(chained equipercentile and Tucker, written here), recomputes every campus's figures, the designated campuses and the
+calc.py, reader.py or generator state), screens the items both forms carry for a change in difficulty between the
+cohorts (the delta plot and the change in share correct, written here), links the 2026 form to the 2025 scale through
+the shared items that held (chained equipercentile and Tucker, written here), recomputes every campus's figures, the designated campuses and the
 two asks, and compares them with the golden workbook, the golden memo and figures.json.
 
     python3 task450/generator/verify.py [target] [golden]
@@ -75,7 +76,30 @@ def main(target=None, golden=None):
               ",".join("('%s','%s')" % kv for kv in key26.items()))
     q.execute("CREATE TABLE p26 AS SELECT * FROM (VALUES %s) AS v(item_id, pos)" %
               ",".join("('%s',%d)" % kv for kv in pos26.items()))
-    sh = ",".join(str(p) for p in shared)
+    # each shared item's share answering correctly in each year, and the delta plot (written here) that screens
+    # them for a change in difficulty between the cohorts before any link is made
+    from scipy.stats import norm
+    q.execute("""CREATE TABLE pc26 AS SELECT p.pos AS pos, avg((r.response = k.k)::INT) AS pc
+                 FROM read_csv('%s', all_varchar=true) r JOIN k26 k USING (item_id) JOIN p26 p USING (item_id)
+                 GROUP BY 1""" % t("grade5_math_responses_2026.csv"))
+    pc26 = dict(q.execute("SELECT pos, pc FROM pc26").fetchall())
+    pc25 = {}
+    for p_ in shared:
+        pc25[p_] = q.execute("SELECT avg((coalesce(I%02d, '') = '%s')::INT) FROM read_csv('%s', all_varchar=true)" % (
+            p_, key25[p_], t("grade5_math_responses_2025.csv"))).fetchone()[0]
+    x = np.array([13 + 4 * norm.ppf(1 - pc25[p_]) for p_ in shared])
+    y = np.array([13 + 4 * norm.ppf(1 - pc26[p_]) for p_ in shared])
+    cxy = np.mean((x - x.mean()) * (y - y.mean()))
+    slope = (y.var() - x.var() + np.sqrt((y.var() - x.var()) ** 2 + 4 * cxy ** 2)) / (2 * cxy)
+    dist = (slope * x - y + y.mean() - slope * x.mean()) / np.sqrt(slope ** 2 + 1)
+    flagged = [p_ for p_, d in zip(shared, dist) if abs(d) > 1.5]
+    gap = np.array([pc26[p_] - pc25[p_] for p_ in shared])
+    mad = np.median(np.abs(gap - np.median(gap))) * 1.4826
+    flagged_gap = [p_ for p_, g in zip(shared, gap) if abs(g - np.median(gap)) > 4 * mad]
+    if flagged != flagged_gap or len(flagged) != 3:
+        raise SystemExit("VERIFY: the screens disagree on the shared items that moved: %s, %s" % (flagged, flagged_gap))
+    linking = [p_ for p_ in shared if p_ not in flagged]
+    sh = ",".join(str(p) for p in linking)
     # 2026: scored answers per test taker
     q.execute("""CREATE TABLE s26 AS SELECT r.test_taker_id AS tt, sum((r.response = k.k)::INT) AS raw,
                  sum(CASE WHEN p.pos IN (%s) THEN (r.response = k.k)::INT ELSE 0 END) AS v
@@ -83,14 +107,14 @@ def main(target=None, golden=None):
                  GROUP BY 1""" % (sh, t("grade5_math_responses_2026.csv")))
     # 2025: wide by position
     cols = ", ".join("(coalesce(I%02d, '') = '%s')::INT" % (p, key25[p]) for p in range(1, 51))
-    vcols = ", ".join("(coalesce(I%02d, '') = '%s')::INT" % (p, key25[p]) for p in shared)
+    vcols = ", ".join("(coalesce(I%02d, '') = '%s')::INT" % (p, key25[p]) for p in linking)
     q.execute("""CREATE TABLE s25 AS SELECT SCHOOL_NAME AS nm, SCHOOL_CODE AS code, list_sum([%s]) AS raw,
                  list_sum([%s]) AS v FROM read_csv('%s', all_varchar=true)""" % (cols, vcols, t("grade5_math_responses_2025.csv")))
     X, V1 = (np.array(c, int) for c in zip(*q.execute("SELECT raw, v FROM s25").fetchall()))
     Y, V2 = (np.array(c, int) for c in zip(*q.execute("SELECT raw, v FROM s26").fetchall()))
     cut = 26.5 - 0.5 / 6
     passes = {}
-    for nm, f in (("chained equipercentile", eq_chain(X, V1, Y, V2, 50, len(shared))), ("Tucker", eq_tucker(X, V1, Y, V2))):
+    for nm, f in (("chained equipercentile", eq_chain(X, V1, Y, V2, 50, len(linking))), ("Tucker", eq_tucker(X, V1, Y, V2))):
         passes[nm] = min(y for y in range(51) if f(y) >= cut)
     if len(set(passes.values())) != 1:
         raise SystemExit("VERIFY: the two links disagree on the passing raw score: %s" % passes)
@@ -180,6 +204,8 @@ def main(target=None, golden=None):
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     if fig["passing_raw"] != str(r) or sorted(fig["designated"]) != sorted(names[c] for c in des):
         fail.append("figures.json")
+    if fig.get("flagged_positions") != [str(p_) for p_ in flagged] or fig.get("kept_items") != str(len(linking)):
+        fail.append("figures.json: the shared items set aside")
     from docx import Document
     doc = Document(os.path.join(golden, "intervention_schools_2027.docx"))
     text = " ".join(p.text for p in doc.paragraphs) + " " + " ".join(c.text for tb in doc.tables for row in tb.rows

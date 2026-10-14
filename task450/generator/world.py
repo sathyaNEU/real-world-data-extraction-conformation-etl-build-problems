@@ -76,5 +76,11 @@ N_MIN = 10                                # campuses with fewer full-academic-ye
 # the forms: 50 items each, 25 carried from the 2025 form to the 2026 form in the same positions
 N_ITEMS = 50
 ANCHOR_POS = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49]
+# the 2026 cohort is the first the new curriculum has taught since grade 3, and it teaches simplifying numerical
+# expressions a year earlier: the three shared items nearest the middle of the shared set's difficulty, written to
+# that standard, are far easier for the 2026 students than their ability elsewhere implies (logits below 2025)
+DRIFT_N = 3
+DRIFT_LOGITS = 1.5
+DRIFT_TAG = ("Algebraic reasoning", "5.4F")
 FORM25 = "G5M-25"
 FORM26 = "G5M-26"

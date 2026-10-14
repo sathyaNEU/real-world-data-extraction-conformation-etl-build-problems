@@ -78,8 +78,11 @@ def ask_untested(L, merged=True):
 
 def compute(target):
     L = RD.load(target)
-    out, rg, info = C.methods(L["S25"], L["S26"], L["anchor"], rasch=False)
+    scr = C.screened(L["S25"], L["S26"], L["anchor"])
+    out, rg, info = C.methods(L["S25"], L["S26"], scr, rasch=False)
     r = C.passing(out[GOLD_METHOD])
+    blind, _, _ = C.methods(L["S25"], L["S26"], L["anchor"], rasch=True)
+    rb = sorted({C.passing(f) for f in blind.values()})
     tab = RD.campus_table(L, r)
     des = RD.designated(tab)
     X = dict(L=L, r=r, tab=tab, des=des, info=info,
@@ -88,8 +91,14 @@ def compute(target):
              a25=ask_2025(L), un=ask_untested(L))
     X["des_identity"] = RD.designated(RD.campus_table(L, X["r_identity"]))
     X["des_rg"] = RD.designated(RD.campus_table(L, X["r_rg"]))
-    X["V1"] = float(L["S25"][:, L["anchor"]].sum(1).mean())
-    X["V2"] = float(L["S26"][:, L["anchor"]].sum(1).mean())
+    X["scr"] = scr
+    X["flagged"] = [j for j in L["anchor"] if j not in scr]
+    X["r_blind"] = rb
+    X["des_blind"] = {x: RD.designated(RD.campus_table(L, x)) for x in rb}
+    X["V1"] = float(L["S25"][:, scr].sum(1).mean())
+    X["V2"] = float(L["S26"][:, scr].sum(1).mean())
+    X["p_flag"] = [(float(L["S25"][:, j].mean()), float(L["S26"][:, j].mean())) for j in X["flagged"]]
+    X["p_kept"] = (float(L["S25"][:, scr].mean()), float(L["S26"][:, scr].mean()))
     X["X"] = float(L["S25"].sum(1).mean())
     X["Y"] = float(L["S26"].sum(1).mean())
     return X
@@ -97,6 +106,10 @@ def compute(target):
 
 def name(L, c):
     return L["directory"][c]["name"]
+
+
+def pct1(p):
+    return "%.1f" % (100.0 * p)
 
 
 def figures(X):
@@ -116,6 +129,14 @@ def figures(X):
         anchor_2025="%.2f" % X["V1"], anchor_2026="%.2f" % X["V2"], anchor_gain="%.2f" % (X["V2"] - X["V1"]),
         raw_2025="%.2f" % X["X"], raw_2026="%.2f" % X["Y"],
         shared_items=str(len(L["anchor"])),
+        kept_items=str(len(X["scr"])),
+        flagged_positions=[str(j + 1) for j in X["flagged"]],
+        flagged_correct_2025=[pct1(a) for a, b in X["p_flag"]],
+        flagged_correct_2026=[pct1(b) for a, b in X["p_flag"]],
+        kept_correct_2025=pct1(X["p_kept"][0]), kept_correct_2026=pct1(X["p_kept"][1]),
+        flagged_teks=W.DRIFT_TAG[1],
+        passing_raw_blind=[str(x) for x in X["r_blind"]],
+        designated_blind=[str(len(X["des_blind"][x])) for x in X["r_blind"]],
         district_rate=pct(tk, tn), district_tested=fmt(tn), district_meeting=fmt(tk),
         rated_campuses=str(len(tab)),
         campuses={name(L, c): dict(tested=fmt(n), meeting=fmt(k), rate=pct(k, n))
@@ -239,17 +260,30 @@ def write_docx(X, F, path):
         "positions and replaces the other %s with new ones, so the 2025 conversion (141 + 6 x raw score) belongs to "
         "the 2025 form only. On the %s shared items the 2026 students averaged %s points against the 2025 students' "
         "%s: this cohort is stronger, while its average raw score on the whole form fell from %s to %s, so the new "
-        "items are harder by more than the cohort gained. Linked to the 2025 scale through the shared items, a 2026 "
+        "items are harder by more than the cohort gained. Linked to the 2025 scale through those shared items, a 2026 "
         "raw score of %s converts to 300 or more and %s to less, so %s is the passing raw score on the 2026 form."
-        % (F["shared_items"], 50 - int(F["shared_items"]), F["shared_items"], F["anchor_2026"], F["anchor_2025"],
+        % (F["shared_items"], 50 - int(F["shared_items"]), F["kept_items"], F["anchor_2026"], F["anchor_2025"],
            F["raw_2025"], F["raw_2026"], F["passing_raw"], int(F["passing_raw"]) - 1, F["passing_raw"]))
+    doc.add_paragraph(
+        "Which shared items carry the link. Before linking, each shared item's difficulty was compared across the two "
+        "years. Items %s, %s and %s, all written to TEKS %s (simplifying numerical expressions), moved far more than "
+        "the rest: the 2026 students answered them correctly %s, %s and %s per cent of the time against %s, %s and %s "
+        "per cent in 2025, while the other %s rose from %s to %s per cent on average. The new curriculum reaches that "
+        "standard a year earlier, so those three items no longer measure the same thing in both years, and the link "
+        "runs through the other %s. Every standard screen flags the same three (the change in Rasch difficulty, "
+        "Mantel-Haenszel, the delta plot)."
+        % (tuple(F["flagged_positions"]) + (F["flagged_teks"],) + tuple(F["flagged_correct_2026"]) +
+           tuple(F["flagged_correct_2025"]) + (F["kept_items"], F["kept_correct_2025"], F["kept_correct_2026"],
+                                               F["kept_items"])))
     doc.add_paragraph(
         "Why not the published conversion. Read through the 2025 conversion, the passing raw score stays at %s and %s "
         "campuses fall under the line; matching the 2026 score distribution to 2025's, which assumes the two cohorts "
         "are alike, puts it at %s and designates %s. The shared items show the cohorts are not alike: the 2025 conversion "
         "counts the new items' difficulty against every student, and matching the distributions reads this cohort's gain "
-        "as an easier form."
-        % (F["passing_raw_identity"], F["designated_identity"], F["passing_raw_rg"], F["designated_rg"]))
+        "as an easier form. Linked through all %s shared items, the three items' rise is credited to the whole cohort: "
+        "the passing raw score falls to %s or below, depending on the method, and %s or fewer campuses are designated."
+        % (F["passing_raw_identity"], F["designated_identity"], F["passing_raw_rg"], F["designated_rg"],
+           F["shared_items"], F["passing_raw_blind"][-1], F["designated_blind"][-1]))
     notes = doc.add_paragraph()
     rn = notes.add_run(
         "Notes. Item %s was scored with key %s, as the notice of 19 May 2026 corrects the bank's %s. Delgadillo "

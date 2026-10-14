@@ -12,6 +12,7 @@ from reportlab.pdfbase import pdfmetrics                                   # noq
 from reportlab.pdfbase.ttfonts import TTFont                               # noqa: E402
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
+import pack as P
 import world as W   # noqa: E402
 
 REPORT = "dma_technical_report_2025_excerpt.pdf"
@@ -147,7 +148,7 @@ def write_notice(path, item_id, wrong, right):
                    T_SUB)]
     s.append(Paragraph("Item %s, position %d on the 2026 grade-5 form (%s), was entered in the item bank with key %s. "
                        "The content review of 14 May 2026 found that the correct answer is %s. Score the item with key "
-                       "%s for every 2026 test." % (item_id, 38, W.FORM26, wrong, right, right), T_BODY))
+                       "%s for every 2026 test." % (item_id, P.FIX_POS, W.FORM26, wrong, right, right), T_BODY))
     s.append(Paragraph("The item bank's release of 6 April 2026 still shows the key as entered; the summer release "
                        "will carry the correction.", T_BODY))
     s.append(Spacer(1, 10))

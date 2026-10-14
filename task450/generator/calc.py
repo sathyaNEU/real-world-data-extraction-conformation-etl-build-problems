@@ -160,6 +160,55 @@ def corridor(out, r, ni=W.N_ITEMS):
     return lo, hi, E
 
 
+# ---------------------------------------------------------------------------------- the shared items' stability ----
+def drift_screens(S25, S26, anchor_idx):
+    """The standard screens of the shared items for a change in difficulty between the cohorts, each returning the
+    flagged positions (0-based): the robust z of each item's Rasch difficulty change, each form calibrated on its own
+    year (|z| over 2.7); Mantel-Haenszel D-DIF between the years, matched on the shared-item score (|D| of 1.5 or
+    more); the delta plot's perpendicular distance from its major axis (over 1.5); the change in proportion correct
+    against the median change (over four median absolute deviations)."""
+    from scipy.stats import norm
+    idx = list(anchor_idx)
+    out = {}
+    b1, b2 = _jml(S25.astype(float)), _jml(S26.astype(float))
+    d = b2[idx] - b1[idx]
+    q1, q3 = np.percentile(d, [25, 75])
+    z = (d - np.median(d)) / (0.74 * (q3 - q1))
+    out["robust z"] = sorted(idx[j] for j in np.where(np.abs(z) > 2.7)[0])
+    V1, V2 = S25[:, idx].sum(1), S26[:, idx].sum(1)
+    mh = []
+    for it in idx:
+        num = den = 0.0
+        for v in range(len(idx) + 1):
+            m1, m2 = V1 == v, V2 == v
+            n1, n2 = int(m1.sum()), int(m2.sum())
+            if n1 == 0 or n2 == 0:
+                continue
+            a = S25[m1, it].sum()
+            c = S26[m2, it].sum()
+            num += a * (n2 - c) / (n1 + n2)
+            den += (n1 - a) * c / (n1 + n2)
+        mh.append(-2.35 * np.log(num / den))
+    out["Mantel-Haenszel"] = sorted(idx[j] for j in np.where(np.abs(mh) >= 1.5)[0])
+    p1 = np.clip(S25[:, idx].mean(0), 1e-4, 1 - 1e-4)
+    p2 = np.clip(S26[:, idx].mean(0), 1e-4, 1 - 1e-4)
+    x, y = 13 + 4 * norm.ppf(1 - p1), 13 + 4 * norm.ppf(1 - p2)
+    sx, sy, sxy = x.var(), y.var(), np.cov(x, y, bias=True)[0, 1]
+    slope = (sy - sx + np.sqrt((sy - sx) ** 2 + 4 * sxy ** 2)) / (2 * sxy)
+    dist = (slope * x - y + y.mean() - slope * x.mean()) / np.sqrt(slope ** 2 + 1)
+    out["delta plot"] = sorted(idx[j] for j in np.where(np.abs(dist) > 1.5)[0])
+    g = p2 - p1
+    mad = np.median(np.abs(g - np.median(g))) * 1.4826
+    out["proportion correct"] = sorted(idx[j] for j in np.where(np.abs(g - np.median(g)) > 4 * mad)[0])
+    return out, dict(d=d, z=z, mh=np.array(mh), dist=dist, gap=g)
+
+
+def screened(S25, S26, anchor_idx):
+    """The shared items the robust-z screen keeps: the link runs through these."""
+    flagged = set(drift_screens(S25, S26, anchor_idx)[0]["robust z"])
+    return [j for j in anchor_idx if j not in flagged]
+
+
 # ------------------------------------------------------------------------------------------- the campuses ----
 def fay(spells, snapshot=W.SNAPSHOT, first=W.WINDOW[0]):
     """The campus a student is full academic year at, or None: enrolled there on the snapshot date and every day
