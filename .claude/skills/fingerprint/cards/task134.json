@@ -8,7 +8,7 @@
   "client_domain": "urban-regional-science",
   "niche": "a provincial housing ministry setting the five-year housing target for a suburban city's transit-oriented areas, forecasting the net new homes that building permits will add each year 2027 to 2031 on the lots the 2027 order upzones around four rapid transit stations to 3.0, 4.0 and 5.0 FAR, where concrete towers do not pay",
   "objective": "forecasting",
-  "shape": "02",
+  "shape": "single-figure",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
   "answer": "",
@@ -31,7 +31,7 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "published_series",
+  "context_artifact": "operations_log",
   "stakeholder_role": "senior analyst in the provincial housing ministry's housing targets branch, preparing the city's 2027 to 2031 target order",
   "role_family": "policy_adviser",
   "scoring_unit": "per certified output",
@@ -248,6 +248,6 @@
       ]
     }
   ],
-  "notes": "Re-root drawn 2026-10-14 (architecture 3, the slot's last) after architecture 2's round 2 was sent back by the determinism judge. Coding: decisive gap population (the lots that will actually yield homes, and the building each yields, against every lot's zoned allowance), time second (the order's allowance is one the history never saw on these lots); pattern none with G14 decisive (a past rezoning's take-up does not apply to a pool whose best-paying building and feasibility differ), G1 (the unit of yield is the best-paying building's homes, not the allowance), G13 (the forward window holds a zoning the record never had). Strategy composition_mix: the yield is conditioned on a property no column names, rebuilt from the roll, the market study and the cost guide. Forum minister_or_cabinet (the minister issues the target order); forcing event statutory_or_regulatory_filing (the order's statutory date). Layer 2 pattern urban-regional-science/land-use-spatial-development-modeling/2 (zoned capacity is not likely development); the client's version pins a feasibility rule, this one files none and estimates the rate from the record.",
-  "registered": "2026-10-14T14:09:26Z"
+  "notes": "Re-root drawn 2026-10-14 (architecture 3, the slot's last) after architecture 2's round 2 was sent back by the determinism judge. Coding: decisive gap population (the lots that will actually yield homes, and the building each yields, against every lot's zoned allowance), time second (the order's allowance is one the history never saw on these lots); pattern none with G14 decisive (a past rezoning's take-up does not apply to a pool whose best-paying building and feasibility differ), G1 (the unit of yield is the best-paying building's homes, not the allowance), G13 (the forward window holds a zoning the record never had). Strategy composition_mix: the yield is conditioned on a property no column names, rebuilt from the roll, the market study and the cost guide. Forum minister_or_cabinet (the minister issues the target order); forcing event statutory_or_regulatory_filing (the order's statutory date). Layer 2 pattern urban-regional-science/land-use-spatial-development-modeling/2 (zoned capacity is not likely development); the client's version pins a feasibility rule, this one files none and estimates the rate from the record. Re-registered 2026-10-14 after task453 (architecture 2) and task127 (architecture 3) were filed first in parallel: context artifact moved from published_series (task453) to operations_log (the city's permit system log, the outcome record), shape from 02 (task127) to single-figure: the call is the five-year target total, the order's statutory unit, with its yearly path as critical components. repeat.gate_g (forecasting, against task127) answered: a forecasting call's Gate G is forecasting; task127 reads a settlement speed-up in a development triangle, this build a rezoning's yield from development feasibility.",
+  "registered": "2026-10-14T14:12:07Z"
 }
