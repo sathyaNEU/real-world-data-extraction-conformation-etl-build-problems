@@ -228,7 +228,8 @@ def not_cured(target, rows):
 
 
 def lgd(target, cures="gold", refs="asof", sale_in=True):
-    """realised loss on the 2023-24 defaults by product and quarter of the default month, in per cent (CRM-ECL-04 3.3)"""
+    """realised loss on the 2023-24 defaults by product and quarter of the default month, in per cent (CRM-ECL-04 3.3):
+    the quarter's balance at default not recovered, summed over its defaults, over their total balance at default"""
     rows = list(csv.DictReader(open(os.path.join(target, "collections_defaults_2023-24.csv"))))
     led = list(csv.DictReader(open(os.path.join(target, "collections_receipts_2023-07_2026-09.csv"))))
     ws = openpyxl.load_workbook(os.path.join(target, "debt_sale_2026-03_schedule.xlsx"), data_only=True).worksheets[0]
@@ -238,6 +239,10 @@ def lgd(target, cures="gold", refs="asof", sale_in=True):
     face = {r[0]: float(r[3]) for r in vals if r[0] and str(r[0]).startswith("BPL")}
     loans = {r["loan_no"]: r for r in rows}
     withdrawn, stale = not_cured(target, rows)
+    # CRM-ECL-04 3.3: a loan the loan record shows written off or settled for less did not return to performing,
+    # whatever resolution Collections recorded
+    shut = pd.read_parquet(os.path.join(target, "loan_record_2026-09-30.parquet"), columns=["loan_no", "closure_reason"])
+    gone = {l for l, c in zip(shut["loan_no"], shut["closure_reason"]) if c in ("Written off", "Settled")}
     got_pv = defaultdict(float)
     bulk = None
     for r, owner in zip(led, owners(target, led, refs)):
@@ -256,7 +261,8 @@ def lgd(target, cures="gold", refs="asof", sale_in=True):
         disc = (1 + r / 12) ** (-(mi(bulk["received_date"]) - mi(x["default_month"])))
         sale = face.get(lno, 0.0) * price if sale_in else 0.0
         label = x["resolution"] == "Cured"
-        cured = {"gold": label and lno not in stale, "label": label, "no_withdrawn": label and lno not in withdrawn}[cures]
+        cured = {"gold": label and lno not in gone, "register": label and lno not in stale, "label": label,
+                 "no_withdrawn": label and lno not in withdrawn}[cures]
         loss = 0.0 if cured else B - got_pv[lno] - sale * disc
         q = ((int(x["default_month"][5:7]) - 7) % 12) // 3 + 1
         num[(x["product"], q)] += loss

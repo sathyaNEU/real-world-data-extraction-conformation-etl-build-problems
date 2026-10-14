@@ -348,8 +348,8 @@ def forks():
     ok("Repayment dates during a payment pause count as repayments fallen due" in pol
        and "A loan past its contractual maturity that is not in stage 3 has a remaining term of one month." in pol,
        "SF9, SF10: 3.2 pins pause dates and past-maturity loans")
-    ok("A hardship arrangement is in force from its start date to its end date, unless it has been cancelled." in pol,
-       "SF11: 2.2 states the in-force rule")
+    ok("A hardship arrangement is in force from its start date to its end date; one that is cancelled stops being in force "
+       "on the day it is cancelled." in pol, "SF11, SF28: 2.2 states the in-force rule and when a cancelled arrangement stops")
     ok("Origination scores recorded on the v3 scorecard are converted to v4 with the published migration formula" in pol,
        "SF12: 2.3 converts v3")
     ok("scales PD(k) by its multiplier. The allowance is the probability-weighted sum of the scenario ECLs." in pol,
@@ -491,10 +491,11 @@ def june_extract():
     ok((pd.to_datetime(new["drawdown_date"]) > pd.Timestamp(JUNE)).all(), "every September loan missing from June was drawn after 30 June (%d)" % len(new))
     up = both[(both["days_past_due_j"] == 0) & (both["days_past_due_s"] == 0)]
     ok((up["current_balance_s"] < up["current_balance_j"]).mean() > 0.95, "up-to-date loans pay their balances down over the quarter")
-    # B3: the June extract was run at 07:30 on 1 July before CHG-26-0418 and counts days past due to the run. The records
-    # show it three ways: every loan in arrears sits that many days after a due date counted to 1 July, not 30 June; the
-    # month-end batch writes off at 180 days at close of business (1.4), yet loans show 180; and the loan record dates the
-    # default of every loan the extract shows at exactly 90 days to a later month end than June's
+    # B3: the June extract was read from the live system at its 07:30 run on 1 July, before CHG-26-0418 moved the job to
+    # the quarter-end day's end-of-day snapshot (the dictionary's change log), so it counts days past due to 1 July. The
+    # records agree three ways: every loan in arrears sits that many days after a due date counted to 1 July, not 30 June;
+    # the month-end batch writes off at 180 days at close of business (1.4), yet loans show 180; and the loan record dates
+    # the default of every loan the extract shows at exactly 90 days to a later month end than June's
     run = JUNE + dt.timedelta(days=1)
     late = jb[jb["days_past_due"] > 0]
     to_run = to_close = 0
@@ -804,6 +805,155 @@ def ask_b():
     return m, stops, facts, hz_moved
 
 
+# ---------------------------------------------------------------------------------------------------------- ask forks (round 2)
+
+# the round 2 judge's literal builds, as its verdict describes them: every non-sale receipt on the loan the receipts file
+# posts it to, the sale by face value at 3.85 cents on 27 March 2026, monthly discounting by whole months, every Collections
+# cure at its word, pooled by balance; the June stages from the June extract's days past due as they stand
+JUDGE_R2_A = {("PL36", 1): 60.5, ("PL36", 2): 55.6, ("PL36", 3): 65.2, ("PL36", 4): 66.8,
+              ("PL60", 1): 67.7, ("PL60", 2): 69.1, ("PL60", 3): 67.8, ("PL60", 4): 74.7}
+JUDGE_R2_B = [14450, 680, 39, 1582, 488, 658, 118, 124, 17706, 830, 43, 1176, 578, 943, 143, 113]
+NOW = ("stage 1", "stage 2", "stage 3", "closed")
+GROUPS = [("PL36", 1), ("PL36", 2), ("PL60", 1), ("PL60", 2)]
+
+
+def ask_forks(s, g_a, m_b):
+    """SF22, SF23, SF25 and SF29 to SF33: every reading the asks' wording and the filed text leave, closed by a quoted
+    sentence or converging; and the judge's round 2 builds reproduced, each parting from the golden only where the repaired
+    filed text now rules"""
+    keys = sorted(g_a)
+    hit_a = lambda x: sum(round(x[k], 1) == round(g_a[k], 1) for k in keys)
+    flat = lambda m: [m[(p, s0, x)] for p, s0 in GROUPS for x in NOW]
+    pol = docx_text(POLICY())
+    out = {}
+    # the judge's round 2 builds reproduce its verdict to the figure
+    ja = E.lgd_path(T, cures="label", refs="posted")
+    ok(all(round(ja[k], 1) == JUDGE_R2_A[k] for k in keys), "the judge's round 2 loss-share build reproduces its eight figures")
+    jb_ = E.migration(T, june_dpd="extract")
+    ok(flat(jb_) == JUDGE_R2_B, "the judge's round 2 slide 2 build reproduces its sixteen counts")
+    # each step where it parts from the golden is now ruled on by a filed sentence, and changing only that step walks to it
+    a1 = E.lgd_path(T, cures="gold", refs="posted")
+    a2 = E.lgd_path(T, cures="label", refs="asof")
+    ok(hit_a(a1) == 0 and hit_a(a2) == 0 and hit_a(E.lgd_path(T)) == 8, "SF22, SF23: the judge's build parts from the golden "
+       "at two steps only, the cure and the attribution; either one alone still misses all eight, both together give all eight")
+    ok(flat(E.migration(T)) == flat(m_b), "SF25: the judge's slide 2 build with only the June clock read from the change log "
+                                          "gives all sixteen counts")
+    # SF22: 3.3's cure sentence, executed on the loan record, selects the same cases the hardship register does (C1)
+    fy, led, _, _, _ = E.collections(T)
+    withdrawn, stale = E.withdrawn_cures(T, fy, led)
+    gone = E.record_gone(T)
+    cured_label = set(fy.loc[fy["resolution"] == "Cured", "loan_no"])
+    ok(cured_label & gone == stale and len(stale) >= 30, "SF22: the cases Collections closed as cured that the record shows "
+       "written off or settled for less (%d) are exactly those cured on an arrangement withdrawn before it started" % len(stale))
+    rec = pd.read_parquet(os.path.join(T, E.F["record"]), columns=["loan_no", "closure_reason", "status"])
+    rc = rec[rec["loan_no"].isin(cured_label - gone)]
+    ok(set(rc["closure_reason"].fillna("open")) <= {"Repaid in full", "open"}, "SF22: every other cure is repaid in full or still "
+       "open (%d), so 3.3's sentence moves no genuine cure" % len(rc))
+    reg = E.realised_lgd(T, cures="register")
+    ok(all(abs(reg[k] - g_a[k]) < 1e-9 for k in keys), "SF22: the cure read through the register gives the same eight figures (C1)")
+    # SF23: what the receipts file's loan number and the agency's reference hold, and the placement report's dates
+    pl = E.placements(T)
+    ag = led[led["source"] == "Agency remittance"].copy()
+    ag["ref"] = ag["narrative"].str.extract(r"ref (\d+)$")[0].astype(int)
+    ag["day"] = pd.to_datetime(ag["received_date"])
+    m = ag.reset_index().merge(pl[["Agency Ref", "Client Ref", "placed", "closed"]], left_on="ref", right_on="Agency Ref")
+    win = m[(m["placed"] <= m["day"]) & (m["closed"].isna() | (m["day"] <= m["closed"]))]
+    ok(win["index"].is_unique and len(win) == len(ag), "SF23: every one of the %d remittances falls inside exactly one placement "
+       "of the reference it quotes" % len(ag))
+    edge_days = int(((m["day"] == m["placed"]) | (m["day"] == m["closed"])).sum())
+    asof = m[m["placed"] <= m["day"]].sort_values("placed").groupby("index").tail(1).set_index("index")["Client Ref"]
+    ok(edge_days == 0 and (asof.sort_index() == win.set_index("index")["Client Ref"].sort_index()).all(),
+       "SF23: no remittance falls on a placement's first or last day, and the placement last placed under the reference on "
+       "or before the day gives the same account (C1)")
+    own = ag.reset_index().merge(pl[["Agency Ref", "Client Ref", "placed", "closed"]], left_on=["ref", "loan_no"],
+                                 right_on=["Agency Ref", "Client Ref"], how="left")
+    outside = own[own["placed"].isna() | (own["day"] < own["placed"]) | (own["closed"].notna() & (own["day"] > own["closed"]))]
+    moved = int((win.set_index("index")["Client Ref"] != ag["loan_no"]).sum())
+    ok(len(outside) == moved >= 500, "SF23: each of the %d remittances posted to another account than the one placed under its "
+       "reference that day arrives outside the posted account's own placement, so the posted reading has Wirraway remitting "
+       "on accounts it no longer held" % moved)
+    out["misposted"] = moved
+    # SF25: the June clock. The change log records the source; read from the live system at 07:30 on 1 July, a loan in
+    # arrears counts a day more than at close of business on 30 June (1.3), which the record and 1.4 bear out
+    jx = pd.read_csv(os.path.join(T, E.F["june"]))
+    lr = pd.read_parquet(os.path.join(T, E.F["record"]), columns=["loan_no", "default_month"])
+    x90 = jx[jx["days_past_due"] == 90].merge(lr, on="loan_no")
+    ok(len(x90) >= 3 and (x90["default_month"] == "2026-07").all(), "SF25: the %d loans the June extract shows at 90 days were at "
+       "89 at close of business, in stage 2 at 30 June, and the record dates each default to the July month end" % len(x90))
+    ok(int((jx["days_past_due"] >= 180).sum()) == int((jx["days_past_due"] == 180).sum()) >= 5, "SF25: the loans the June "
+       "extract shows at 180 days were at 179 when the June month-end batch ran, so 1.4 had not written them off")
+    moved_b = sum(a != b for a, b in zip(flat(jb_), flat(m_b)))
+    ok(moved_b >= 12, "SF25: the June column read as close of business moves %d of 16" % moved_b)
+    # SF31: 2.2, cancelled arrangements and the end date, at 30 June
+    dic = " ".join(open(os.path.join(T, "ecl_extract_dictionary.txt")).read().split())
+    stops_day = "one that is cancelled stops being in force on the day it is cancelled"
+    for name, kw, quote, where in (("every cancelled arrangement out, whenever cancelled", dict(june_rule="excl_cancel"), stops_day, pol),
+                                   ("the cancellation ignored", dict(june_rule="ignore_cancel"), stops_day, pol),
+                                   ("the end date excluded", dict(june_rule="end_exclusive"),
+                                    "last day of the varied repayments, as approved", dic)):
+        x = E.migration(T, **kw)
+        mv = sum(x[k] != m_b[k] for k in m_b)
+        ok(mv >= 6 and quote in where, "SF31: %s moves %d of 16, ruled out by %r" % (name, mv, quote))
+        out[name] = mv
+    ok(E.migration(T, june_rule="cancel_inclusive") == m_b, "SF31: no cancellation falls on 30 June, so the cancellation day "
+                                                            "reads either way (C1)")
+    # SF29: pooled by balance against the mean of the loans' own shares
+    mean = E.realised_lgd(T, pool="mean")
+    ok(hit_a(mean) == 0, "SF29: the mean of each loan's own share misses all eight (nearest %.2f), ruled out by 3.3's share summed "
+       "over the quarter's defaults" % min(abs(mean[k] - g_a[k]) for k in keys))
+    out["mean_nearest"] = min(abs(mean[k] - g_a[k]) for k in keys)
+    # SF30: the realised losses in place of the filed LGDs would move the allowance; 3.3 keeps 70 and 76 in force
+    fyq = fy.assign(B=fy["balance_at_default"].astype(float), q=[((int(mm[5:7]) - 7) % 12) // 3 + 1 for mm in fy["default_month"]])
+    bal = fyq.groupby(["product", "q"])["B"].sum()
+    by_p = {p: sum(g_a[(p, q)] * bal[(p, q)] for q in (1, 2, 3, 4)) / sum(bal[(p, q)] for q in (1, 2, 3, 4)) / 100 for p in ("PL36", "PL60")}
+    L = s["loans"]
+    alt = float(sum(L.loc[L["product"] == p, "ecl"].sum() * by_p[p] / E.LGD[p] for p in by_p))
+    ok(M(alt) != M(s["total"]) and "the rates in force until the Audit and Risk Committee approves a change" in pol,
+       "SF30: the realised losses (PL36 %.1f, PL60 %.1f per cent) in place of 70 and 76 would book AUD %.1f million, ruled out by "
+       "3.3's rates in force" % (100 * by_p["PL36"], 100 * by_p["PL60"], M(alt)))
+    out["lgd_swap_allowance"] = alt
+    # SF32: the 60-point fall on integer scores, the converted v3 score rounded as the migration note states
+    note = " ".join(p_.extract_text() for p_ in E.PdfReader(os.path.join(T, E.F["note"])).pages)
+    ok("v4 = 1.12 x v3 - 18, rounded to the nearest whole point" in " ".join(note.split()), "SF32: the migration note rounds the "
+                                                                                           "converted score to a whole point")
+    frac = ((1.12 * jx.loc[jx["origination_scorecard"] == "v3", "origination_score"] - 18) % 1 - 0.5).abs()
+    sc = E.score_runs(T)
+    ok(frac.min() >= 0.015 and (sc["score_v4"] % 1 == 0).all(), "SF32: no v3 score converts within %.2f of a half point and every "
+       "score is a whole number, so each fall is a whole number of points" % frac.min())
+    _, _, mapping = E.load_staging(T)
+    a_, b_ = mapping
+    o4 = np.where(jx["origination_scorecard"] == "v3", np.floor(a_ * jx["origination_score"] + b_ + 0.5), jx["origination_score"])
+    js = jx["loan_no"].map(sc[sc["run_date"] == dt.date(2026, 7, 1)].set_index("loan_no")["score_v4"])
+    at60 = int(((o4 - js) == 60).sum())
+    st_ = E.migration(T, strict_fall=True)
+    mv = sum(st_[k] != m_b[k] for k in m_b)
+    ok(at60 >= 30 and mv >= 6 and "60 or more points below" in pol, "SF32: %d June loans fall exactly 60 points and are in stage 2 "
+       "under 2.1's 60 or more; reading it as more than 60 moves %d of 16" % (at60, mv))
+    out["june_at_60"], out["strict_fall_moved"] = at60, mv
+    # SF33: a written-off loan is closed, in no stage; read as stage 3 instead, the counts move
+    bk = pd.read_csv(os.path.join(T, E.F["book"]))
+    jc = jx.assign(days_past_due=(jx["days_past_due"] - 1).clip(lower=0))
+    _, hd_, mp_ = E.load_staging(T)
+    jst = E.stage(jc, hd_, mp_, at=JUNE, score=js)
+    gone_q = jc.assign(st=jst.values)[~jc["loan_no"].isin(set(bk["loan_no"]))].merge(rec, on="loan_no")
+    ok((gone_q["status"] == "Closed").all(), "SF33: every June loan missing from September is Closed in the record")
+    grp = gone_q[gone_q["st"] < 3]
+    wo_g = grp[grp["closure_reason"] == "Written off"].groupby(["product", "st"]).size()
+    alt = dict(m_b)
+    for (p_, s0), n_ in wo_g.items():
+        alt[(p_, int(s0), "stage 3")] += int(n_)
+        alt[(p_, int(s0), "closed")] -= int(n_)
+    mv33 = sum(alt[k] != m_b[k] for k in m_b)
+    ok(int(wo_g.sum()) >= 2 and mv33 >= 2, "SF33: %d loans of the four groups were written off by 30 September; counted in stage "
+       "3 rather than closed they move %d of 16, ruled out by the dictionary's 'a closed loan is in no stage'" % (int(wo_g.sum()), mv33))
+    out["closed_written_off"], out["written_off_as_stage3_moved"] = int(wo_g.sum()), mv33
+    # the literal build of the repaired text, on the verifier's own code: the golden
+    vl, vm = V.lgd(T), V.migration(T)
+    ok(all(abs(vl[k] - g_a[k]) < 1e-9 for k in keys) and vm == m_b, "the literal execution of the filed text on the verifier's "
+       "own code path gives all eight loss shares and all sixteen counts")
+    return out
+
+
 # ---------------------------------------------------------------------------------------------------------- separation
 
 def separation(s):
@@ -958,19 +1108,34 @@ def residue_and_pins():
        "the default month is a field definition, in the Collections file and the loan record")
     ok("including the proceeds of any sale of the debt" in pol and "count at the end of the month in which they are received" in pol
        and "discounted to the default month end monthly at the contract rate, as in 3.5" in pol
-       and "A loan that returns to performing, its arrears made good or a collections hardship arrangement started, has lost nothing." in pol,
-       "SF21, SF22: 3.3 files the realised loss measure and when a loan has lost nothing")
+       and "A loan that returns to performing, its arrears made good or a collections hardship arrangement started, has lost "
+           "nothing; a loan the loan record shows written off or settled for less did not return to performing, whatever "
+           "resolution Collections recorded, and is measured on what it recovered." in pol,
+       "SF21, SF22: 3.3 files the realised loss measure, when a loan has lost nothing and when a cure does not count")
+    ok("for each product and quarter of default, the balance at default not recovered since, summed over the quarter's "
+       "defaults, as a share of their total balance at default" in pol, "SF29: 3.3 files the share pooled by balance over each "
+                                                                       "product and quarter of default")
+    ok("LGD is 70 per cent for PL36 and 76 per cent for PL60, the rates in force until the Audit and Risk Committee approves "
+       "a change." in pol, "SF30: 3.3 files 70 and 76 per cent as the rates in force for the allowance")
     ok("Version 4.2" in pol and "Effective 1 September 2026" in pol and "the measure for the annual LGD review set out in 3.3" in pol
        and "PD read each quarter from the loan record by month on book" in pol, "the version history files the record (3.0) and "
                                                                                "the LGD review (4.2)")
     ok("CHG-26-0418 21 Jul 2026 current_score_v4 added" in dic and dic.count("CHG-") == 6
        and "CHG-23-0207 6 Feb 2023 loan record added to the quarter-end run" in dic,
        "the dictionary keeps the job's change log, six entries, the record added in February 2023")
-    ok("A loan leaves the extract once it closes: repaid in full, settled or written off." in dic, "SF27: the dictionary says what closes a loan")
-    for w in ("reissu", "first placement", "posted to", "loader", "re-used", "reused", "recycl"):
-        ok(w not in dic.lower() and w not in pol.lower(), "nothing narrates the agency reference device (%r)" % w)
-    for w in ("counted to the run", "a day more", "one day more", "clock"):
-        ok(w not in dic.lower(), "nothing narrates the June arrears clock (%r)" % w)
+    ok("A loan leaves the extract once it closes: repaid in full, settled or written off; a closed loan is in no stage." in dic,
+       "SF27, SF33: the dictionary says what closes a loan and that a closed loan, one written off included, is in no stage")
+    ok("loan number the receipt was posted to; an agency remittance is posted on the Wirraway reference its narrative quotes" in dic
+       and "Agency Ref Wirraway's reference for the account while it is placed" in dic,
+       "SF23: the dictionary says what the receipts file's loan number and the agency's reference hold")
+    ok("current_score_v4 added; read from the quarter-end day's end-of-day snapshot, not the live system at the run" in dic,
+       "SF25: the job's change log records that the extract has been read from the end-of-day snapshot since CHG-26-0418")
+    for w in ("reissu", "first placement", "first placed", "loader", "re-used", "reused", "recycl", "wrong loan", "earlier holder"):
+        ok(w not in dic.lower() and w not in pol.lower(), "the filed text says what each field holds and narrates no reissue or "
+                                                          "posting rule (%r)" % w)
+    for w in ("counted to the run", "a day more", "one day more", "day further", "clock", "subtract", "put back"):
+        ok(w not in dic.lower() and w not in pol.lower(), "the change log records the source and says nothing of recounting "
+                                                          "days past due (%r)" % w)
     for f in sorted(os.listdir(T)):
         if not f.endswith((".docx", ".xlsx")):
             continue
@@ -1022,7 +1187,7 @@ def audits(s, out, g_a, m_b):
     ok(16 - hit_b(lazy_b) >= 12, "the lazy path misses at least 12 ask B counts")
     res["lazy"] = (8 - hit_a(lazy_a), 16 - hit_b(lazy_b))
     mat = {}
-    for name, kw in (("A1 (silent): cases closed as cured taken at their word", dict(cures="label")),
+    for name, kw in (("A1 (filed in 3.3): cases closed as cured taken at their word", dict(cures="label")),
                      ("A2 (silent): remittances on the loan the receipts file posts them to", dict(refs="posted")),
                      ("A: the sale left out", dict(sale="none")), ("A: receipts not discounted", dict(disc="none")),
                      ("A: every cure measured on its receipts", dict(cures="receipts")),
@@ -1030,7 +1195,7 @@ def audits(s, out, g_a, m_b):
         x = E.lgd_path(T, **kw)
         mat[name] = 8 - hit_a(x)
         ok(mat[name] == 8, "%s moves all eight ask A figures" % name)
-    for name, kw in (("B3 (silent): June days past due as extracted, to the 07:30 run", dict(june_dpd="extract")),
+    for name, kw in (("B3: June days past due as extracted, read live at the 07:30 run", dict(june_dpd="extract")),
                      ("B1: the label after the switch", dict(june_rule="label")),
                      ("B1: every cancelled out", dict(june_rule="excl_cancel")),
                      ("B2: the run made before the date", dict(run="may"))):
@@ -1067,32 +1232,37 @@ def audits(s, out, g_a, m_b):
                 worst_b = min(worst_b, 16 - hit_b(E.migration(T, june_rule=rule, run=run, june_dpd=dpd)))
     ok(worst_b >= 6, "composed ask B paths: every one moves at least %d of the 16 counts" % worst_b)
     res["composed_b_min_moved"] = worst_b
-    # the pair simulation. The cracker lands the call, runs the hygiene battery, executes every filed rule it points at
-    # (the sale shared by face value, receipts discounted monthly from the default month end, dishonours netted, the
-    # 1 July run, hardship by 2.2's dates) and cracks the most obvious device, A1 (3.3's "a collections hardship arrangement
-    # started" sends it to the register); the mirror stops on the default path and takes the careful ask paths
+    # the pair simulation. The cracker lands the call, runs the hygiene battery and executes every filed rule it points at
+    # (3.3's measure: the share pooled by balance, the sale by face value, receipts discounted monthly from the default
+    # month end, a cure the record shows written off measured on its recoveries; dishonours netted, the 1 July run,
+    # hardship by 2.2's dates). The battery's joins (receipts to the defaults, the record and the sale schedule) all land,
+    # so it takes the remittances as posted and the June days past due as the extract gives them; the mirror stops on the
+    # default path and takes the same ask paths, A1 now being a filed rule both execute
     mirror_main = out[MAIN[0][0]]
     ok(all(M(mirror_main[n]) != M(s[n]) for n in FIG), "the mirror sheet misses the call")
-    careful_a = E.lgd_path(T, cures="label", refs="posted")
-    crack_a = E.lgd_path(T, cures="gold", refs="posted")
+    careful_a = E.lgd_path(T, cures="gold", refs="posted")
+    crack_a = careful_a
     careful_b = E.migration(T, june_dpd="extract")
     c_hits = hit_a(crack_a) + hit_b(careful_b)
     m_hits = hit_a(careful_a) + hit_b(careful_b)
     cracker = REC_W + IF_W + ASK_W * c_hits / 24.0
     mirror = R_KEEP + IF_W + ASK_W * m_hits / 24.0
     pair = (cracker + mirror) / 2
-    ok(pair <= 40.0, "pair simulation: cracker %.1f (A1 cracked, %d of 24), mirror %.1f (%d of 24), pair %.1f" % (cracker, c_hits, mirror, m_hits, pair))
+    ok(pair <= 40.0, "pair simulation: cracker %.1f (%d of 24), mirror %.1f (%d of 24), pair %.1f" % (cracker, c_hits, mirror, m_hits, pair))
     ok(100.0 * m_hits / 24 < 35.0, "mirror leakage %.1f per cent of the ask weight" % (100.0 * m_hits / 24))
     both_on = (2 * (REC_W + IF_W) + ASK_W * (c_hits + m_hits) / 24.0) / 2
-    ok(both_on < 50.0, "both top responses on the call, one cracking A1: pair %.1f" % both_on)
+    ok(both_on < 50.0, "both top responses on the call: pair %.1f" % both_on)
     # a mirror on rung 1 or 2 lands stage 2's bin by offsetting errors and may keep that component too
     mirror_s2 = R_KEEP + 5.0 + IF_W + ASK_W * m_hits / 24.0
     ok((cracker + mirror_s2) / 2 <= 40.0, "pair with a mirror on rung 1 or 2 keeping stage 2: %.1f" % ((cracker + mirror_s2) / 2))
     b3_crack = REC_W + IF_W + ASK_W * (hit_a(careful_a) + hit_b(m_b)) / 24.0
+    b_both = (b3_crack + R_KEEP + IF_W + ASK_W * (hit_a(careful_a) + 16) / 24.0) / 2
+    a_both = (REC_W + IF_W + ASK_W * (8 + hit_b(careful_b)) / 24.0 + R_KEEP + IF_W + ASK_W * (8 + hit_b(careful_b)) / 24.0) / 2
     res["pair"] = dict(cracker=cracker, mirror=mirror, pair=pair, cracker_hits=c_hits, mirror_hits=m_hits,
-                       mirror_leakage=100.0 * m_hits / 24, both_on_call=both_on, cracker_cracks_b3_instead=(b3_crack + mirror) / 2,
-                       both_devices_of_a_cracked=(REC_W + IF_W + ASK_W * (8 + hit_b(careful_b)) / 24.0 + mirror) / 2,
-                       mirror_keeping_stage2=(cracker + mirror_s2) / 2)
+                       mirror_leakage=100.0 * m_hits / 24, both_on_call=both_on, cracker_cracks_b3=(b3_crack + mirror) / 2,
+                       cracker_cracks_a2=(REC_W + IF_W + ASK_W * (8 + hit_b(careful_b)) / 24.0 + mirror) / 2,
+                       cracker_cracks_both=(REC_W + IF_W + ASK_W * 24 / 24.0 + mirror) / 2,
+                       both_crack_b3=b_both, both_crack_a2=a_both, mirror_keeping_stage2=(cracker + mirror_s2) / 2)
     habit_a = E.lgd_path(T, cures="label", sale="none", disc="none", refs="posted")
     habit_b = E.migration(T, june_rule="excl_cancel", run="may", june_dpd="extract")
     h_hits = hit_a(habit_a) + hit_b(habit_b)
@@ -1276,6 +1446,7 @@ def main():
     cf = collections_files()
     g_a, stops_a = ask_a()
     m_b, stops_b, facts, hz = ask_b()
+    af = ask_forks(s, g_a, m_b)
     sep = separation(s)
     pause, stale = readings(s)
     residue_and_pins()
@@ -1306,6 +1477,7 @@ def main():
         x = stops_b[name]
         say("ask B  %-40s moves %2d/16" % (name, sum(x[k] != m_b[k] for k in m_b)))
     say("register at 30 June %s; September label staging moves %d counts" % (facts, hz))
+    say("ask forks %s" % af)
     say("separation %s" % sep)
     say("pause dates out: %d loans, %d dates, %d main figures move, allowance %.0f; stale labels %d, bulk COVID-19 rows %d" % (pause + stale))
     say("audits %s" % au)

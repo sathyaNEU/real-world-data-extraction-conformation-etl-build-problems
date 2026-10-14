@@ -1,7 +1,7 @@
 {
   "task": "task133",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "banking-credit-financial-risk",
   "objective": "forecasting",
   "stage": 4,
@@ -15,19 +15,20 @@
     "date": "2026-10-14"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-14, --asof 2026-10-12): 7.1 the clause number, 560 and 680 the migration note's v3 scores, CRM-ECL-04's scope sentence, the subject's own vocabulary in the policy (6 of 25) and the dictionary (9 of 25), forward-scheduled dates; each answered in the design note",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (2026-10-14, --asof 2026-10-12, after the round 2 asks repair): 7.1 the clause number, 560 and 680 the migration note's v3 scores, CRM-ECL-04's scope sentence, the subject's own vocabulary in the policy (6 of 25) and the dictionary (10 of 25), forward-scheduled dates; each answered in the design note",
+    "reader": "round 2 read on the pre-repair cut (appended to leak_check_report.md): no leak, nothing for questions 1 to 4, the decisive step an analytical choice; readings raised on the asks (stage 3 and written-off loans on the slide, the 30 June book's score field, the balance-weighted share, the allowance's LGD), each now filed. Re-read owed: CRM-ECL-04 and the dictionary changed"
   },
   "duplicate_check": {
     "heart": "WARN, no BLOCK (people.last Olson, people.first Vanessa and Christine on older builds, repeat.gate_g against task132, repeat.deliverables against task129; same_driver_older task180 differentiated)",
     "nearest": "this slot's loop 1 driver 0.10; task501 v3 and task23 0.06",
     "surface": "1 promoted, task180 (0.078) on the card-level same-driver signature, differentiated on the card; left for the author's /clone-check",
-    "validate": "1 card valid"
+    "validate": "169 cards, 0 invalid"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": "",
+    "verdict": "NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK (light) on the asks only, repaired as a FIX_NOW with the main call frozen; one re-judge owed",
+    "report": "determinism_check_report_round2.md",
+    "main_call": "forced and reproduced (13.179; 10.584 and 2.595; 3,266 stage 2 loans; 1.0555)",
     "v1": "DETERMINISTIC, APPROVE on pass 2 (determinism_check_report.md, determinism_check_report_pass2.md), before loop 1"
   },
   "round2": {
@@ -40,7 +41,23 @@
     "rivals": "grade from drawdown 11.7; repayment censored from drawdown 12.2, from the take-over 14.1; crude routes 8.6 to 24.8; EAD double count 12.4; C4 cells 12.5 to 15.3; convergent 13.17 to 13.23",
     "asks": "A 8 losses (67.9 65.8 70.7 70.9 / 70.2 77.4 73.2 79.3), B 16 counts unchanged; pair 33.1 (cracker cracks A1), both on the call 49.6, cracker cracking B3 instead 49.1",
     "gates": "checks.py PASS 543 (three-rules block R1 to R3c, every rival route the audit measured, SF1 to SF28), verify.py PASS, two rebuilds byte-identical to target/, target.zip and golden/, figures_check 65 figures 0 absent, precut 49 PASS, voice-check PASS, leak.py --asof 2026-10-12 REVIEW no LEAK, guard surface 1 promoted (task180 card signature, differentiated), heart WARN, validate 1 card valid",
-    "target_zip_sha256": "8b017e0083885d5f7b7b1d4274400298170588694421423fb71d6ca96a143927"
+    "target_zip_sha256": "8b017e0083885d5f7b7b1d4274400298170588694421423fb71d6ca96a143927",
+    "asks_repair": {
+      "date": "2026-10-14",
+      "from": "3db99aa (stage 3 green) and the stage 4 judge: NOT_DETERMINISTIC on the asks, SEND_BACK light",
+      "found": "independent builds reproduce the judge's figures exactly (loss shares 60.5 55.6 65.2 66.8 / 67.7 69.1 67.8 74.7; slide 2 14,450 / 680 / 39 / 1,582 ...); the loss shares part from the golden at the cure (59 Cured cases the record shows written off) and the remittance attribution (2,034 posted to the account first placed under a reissued reference), slide 2 at the June clock (the extract read live at 07:30 on 1 July); sale, discounting, window, dishonours and pooling agree",
+      "filed": "CRM-ECL-04 3.3: the share pooled by balance per product and quarter of default; a loan the record shows written off or settled measured on what it recovered, whatever Collections recorded; 70 and 76 per cent the rates in force until the Audit and Risk Committee approves a change. 2.2: a cancelled arrangement stops on the day it is cancelled (version history 4.2). Dictionary: the receipts file's loan number is the one the receipt was posted to, an agency remittance posted on the Wirraway reference it quotes; the Agency Ref is Wirraway's reference for the account while it is placed; a closed loan is in no stage; CHG-26-0418 also moved the extract to the quarter-end day's end-of-day snapshot, not the live system at the run",
+      "devices": "A1 now a filed rule (dead as a device, no replacement: the cracker sheet already had it resolved); A2 and B3 kept, their fields described and nothing narrating the reissue, the posting rule or the recount",
+      "target_changed": [
+        "CRM-ECL-04_expected_credit_loss_personal_loans.docx",
+        "ecl_extract_dictionary.txt"
+      ],
+      "figures": "unchanged: allowance 13.2 (10.6, 2.6); loss shares PL36 67.9 65.8 70.7 70.9, PL60 70.2 77.4 73.2 79.3; slide 2 14,470 680 42 1,586 / 468 658 115 123 / 17,724 831 46 1,180 / 560 942 140 112",
+      "forks": "SF22, SF23, SF25 rewritten; SF29 pooled share, SF30 LGD in force, SF31 cancelled arrangement and end date, SF32 the 60-point fall on whole points (82 June loans at exactly 60, 12 of 16 move under more than 60), SF33 written off closed not stage 3; the judge's builds and the literal build asserted in checks.py",
+      "pair": "33.1 unchanged (cracker 49.6, mirror 16.6, mirror leakage 8.3); residuals likelier now: cracker resolves A2 42.3, B3 49.1, both 58.3; both top responses resolve A2 51.4, B3 65.2",
+      "gates": "checks.py PASS 577 (the three-rules block, every rival route, SF1 to SF33, the judge's two builds and the literal build), verify.py PASS, two rebuilds byte-identical to target/, target.zip and golden/, figures_check exit 0, precut 49 PASS, voice-check PASS, leak.py REVIEW no LEAK, guard validate 169 valid, heart WARN no BLOCK, surface 1 promoted (task180), freeze check --mode rubric exit 0",
+      "target_zip_sha256": "7e79c8bc8aad6946b52af8447819fc606f5d3cfb66b955f56b0f355faaf3af31"
+    }
   },
   "returned": [
     {
@@ -50,7 +67,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: targeted re-read (CRM-ECL-04 2.2 and 3.3 and the dictionary changed) and one re-judge on the asks; the main-call runs stay valid",
   "approved": null,
   "delivered": "2026-10-11 (re-shipped after portal round 1: hardened ladder from loop 1, asks hardened at 6b)",
   "portal": {

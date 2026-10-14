@@ -57,8 +57,9 @@ def methodology_docx(path):
           "a hardship arrangement is in force; or its behaviour score is 60 or more points below its score at origination, "
           "both on the current (v4) scorecard. Otherwise it is in stage 1."), "1.0",
         edits=[("a hardship arrangement is in force; ", "4.1"), ("both on the current (v4) scorecard", "3.1")])
-    add(P("2.2 A hardship arrangement is in force from its start date to its end date, unless it has been cancelled."),
-        "4.1")
+    add(P("2.2 A hardship arrangement is in force from its start date to its end date; one that is cancelled stops being in "
+          "force on the day it is cancelled."),
+        "4.1", edits=[("; one that is cancelled stops being in force on the day it is cancelled.", "4.2")])
     add(P("2.3 Origination scores recorded on the v3 scorecard are converted to v4 with the published migration formula "
           "before the comparison in 2.1."), "3.1")
     add(P("2.4 Transfers between stages are symmetrical. A loan returns to stage 1 at the first reporting date on which "
@@ -89,19 +90,26 @@ def methodology_docx(path):
                ("Repayment dates during a payment pause count as repayments fallen due, because a pause does not change "
                 "the repayment schedule or the maturity date. ", "2.0"),
                ("A loan past its contractual maturity that is not in stage 3 has a remaining term of one month.", "3.0")])
-    add(P("3.3 LGD is 70 per cent for PL36 and 76 per cent for PL60. Credit Risk Modelling reviews both each year against "
-          "the realised loss on defaults with at least two years of recoveries behind them: the share of the balance at "
-          "default not recovered since. Recoveries, including the proceeds of any sale of the debt, count at the end of "
-          "the month in which they are received and are discounted to the default month end monthly at the contract "
-          "rate, as in 3.5. A loan that returns to performing, its arrears made good or a collections hardship arrangement "
-          "started, has lost nothing."),
+    add(P("3.3 LGD is 70 per cent for PL36 and 76 per cent for PL60, the rates in force until the Audit and Risk Committee "
+          "approves a change. Credit Risk Modelling reviews both each year against the realised loss on defaults with at "
+          "least two years of recoveries behind them: for each product and quarter of default, the balance at default not "
+          "recovered since, summed over the quarter's defaults, as a share of their total balance at default. Recoveries, "
+          "including the proceeds of any sale of the debt, count at the end of the month in which they are received and are "
+          "discounted to the default month end monthly at the contract rate, as in 3.5. A loan that returns to performing, "
+          "its arrears made good or a collections hardship arrangement started, has lost nothing; a loan the loan record "
+          "shows written off or settled for less did not return to performing, whatever resolution Collections recorded, "
+          "and is measured on what it recovered."),
         "1.0", edits=[("76 per cent", "4.1"),
+                      (", the rates in force until the Audit and Risk Committee approves a change", "4.2"),
                       ("Credit Risk Modelling reviews both each year against the realised loss on defaults with at least "
-                       "two years of recoveries behind them: the share of the balance at default not recovered since. "
-                       "Recoveries, including the proceeds of any sale of the debt, count at the end of the month in "
-                       "which they are received and are discounted to the default month end monthly at the contract "
-                       "rate, as in 3.5. A loan that returns to performing, its arrears made good or a collections "
-                       "hardship arrangement started, has lost nothing.", "4.2")])
+                       "two years of recoveries behind them: for each product and quarter of default, the balance at "
+                       "default not recovered since, summed over the quarter's defaults, as a share of their total "
+                       "balance at default. Recoveries, including the proceeds of any sale of the debt, count at the end "
+                       "of the month in which they are received and are discounted to the default month end monthly at "
+                       "the contract rate, as in 3.5. A loan that returns to performing, its arrears made good or a "
+                       "collections hardship arrangement started, has lost nothing; a loan the loan record shows written "
+                       "off or settled for less did not return to performing, whatever resolution Collections recorded, "
+                       "and is measured on what it recovered.", "4.2")])
     add(P("3.4 EAD(k) is the balance outstanding at the start of month k when the current balance is repaid over the "
           "remaining term in equal monthly instalments at the contract rate."), "1.0")
     add(P("3.5 DF(k) discounts month k at the contract rate: (1 + contract rate / 12) to the power -k."), "1.0")
@@ -154,7 +162,8 @@ def methodology_docx(path):
                    ["4.1", "May 2026", "Hardship arrangements added to the stage 2 conditions; LGD for PL60 raised from 74 to "
                                        "76 per cent; the allowance reported to the Board after the Audit and Risk "
                                        "Committee's review"],
-                   ["4.2", "Aug 2026", "Annual review: the measure for the annual LGD review set out in 3.3"]],
+                   ["4.2", "Aug 2026", "Annual review: the measure for the annual LGD review set out in 3.3; 2.2 restated "
+                                       "for cancelled arrangements"]],
          [1100, 1300, 6600], 19),
         "1.0", rows=["1.0", "1.0", "2.0", "3.0", "3.1", "4.0", "4.1", "4.2"])
     blocks = [b for b, _ in B]
@@ -263,8 +272,8 @@ The job runs at 07:30 on the first day after each quarter end, once the month-en
   write_offs_2025-07_2026-09.csv         run 1 October 2026
 
 Loan book extracts: one row per loan open in the loan system, loans in arrears included, sorted by loan number. A loan
-leaves the extract once it closes: repaid in full, settled or written off. Loans are written off in the month-end
-batch once 180 or more days past due.
+leaves the extract once it closes: repaid in full, settled or written off; a closed loan is in no stage. Loans are
+written off in the month-end batch once 180 or more days past due.
 
   loan_no                  loan number, allocated at application: BPL, six digits and a check digit
   product                  PL36 (36-month term) or PL60 (60-month term)
@@ -311,7 +320,8 @@ Changes to ECL_QE_BOOK
   CHG-23-0207    6 Feb 2023     loan record added to the quarter-end run
   CHG-24-0251    1 Jul 2024     origination_scorecard added for the move to scorecard v4
   CHG-25-0112    3 Mar 2025     write-offs extract added to the quarter-end run
-  CHG-26-0418    21 Jul 2026    current_score_v4 added
+  CHG-26-0418    21 Jul 2026    current_score_v4 added; read from the quarter-end day's end-of-day snapshot, not the
+                                live system at the run
 
 
 B. HARDSHIP REGISTER
@@ -354,7 +364,8 @@ collections_receipts_2023-07_2026-09.csv (Collections): one row per amount recei
 off, July 2023 to September 2026.
 
   receipt_ref              receipt number
-  loan_no                  loan number
+  loan_no                  loan number the receipt was posted to; an agency remittance is posted on the Wirraway
+                           reference its narrative quotes
   received_date            date received
   amount_aud               amount received (AUD); a dishonoured direct debit is reversed by a negative entry
   source                   Direct debit, BPAY, Card, Agency remittance (Wirraway Mercantile Agents, on written-off
@@ -368,7 +379,7 @@ wirraway_placements_2026-09-30.csv (Wirraway Mercantile Agents): the agency's cl
 September 2026, downloaded from its client portal on 2 October 2026. One row per account Bellbird has placed with the
 agency since October 2019, in the order placed.
 
-  Agency Ref               the agency's account reference
+  Agency Ref               Wirraway's reference for the account while it is placed
   Client Ref               loan number
   Placed                   date placed (DD/MM/YYYY)
   Placed Balance           balance placed (AUD)

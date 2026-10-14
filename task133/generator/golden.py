@@ -141,8 +141,9 @@ def workbook(f, path):
         "from the day it is cancelled), or a behaviour score 60 or more points below origination on v4 from the month-end "
         "run on the position at the date; v3 origination scores converted as 1.12 x v3 - 18, rounded. At 30 June the "
         "June month-end run (made 1 July) supplies the scores, and days past due are put back to close of business on "
-        "30 June: the June extract ran at 07:30 on 1 July, before CHG-26-0418, and counts each loan in arrears a day "
-        "further.",
+        "30 June: the June extract was read from the live system at its 07:30 run on 1 July, before CHG-26-0418 moved "
+        "the job to the quarter-end day's end-of-day snapshot, so each loan in arrears reads a day further. A closed "
+        "loan, one written off included, is in no stage.",
         "PD(k): for each product and month on book (calendar months from the drawdown month), the share of the loans "
         "open and not in default at its start that defaulted in it, and the share that closed without a default, over "
         "every loan in the loan record. Each loan counts only in the months the record held it: a loan the loan system "
@@ -154,15 +155,15 @@ def workbook(f, path):
         "EAD re-amortises the current balance over the remaining term at the contract rate; each month is discounted at "
         "the contract rate; LGD 70 per cent PL36, 76 per cent PL60; scenarios 55 / 30 / 15 per cent on multipliers "
         "1.00 / 1.28 / 0.81 (weighted %.4f)." % s["mult"],
-        "Realised loss (3.3): receipts after default to 30 September 2026 from the Collections receipts file, plus each "
-        "sold account's share of the March 2026 sale (face value at cut-off x %.2f cents), each taken at the end of the "
-        "month received and discounted to the default month end monthly at the contract rate; loans back to performing "
-        "lose nothing. A Wirraway remittance counts against the account that held the agency reference it quotes on the "
-        "day it was received, from the agency's placement report: the agency reissues the references of closed "
-        "placements, and the receipts file posts a reissued reference to the account that first held it. Collections "
-        "closes a case as cured when it approves a hardship arrangement; where the arrangement was withdrawn before it "
-        "started and the loan was later written off or settled for less, its arrears were never made good and the loan "
-        "is measured on its receipts." % W.SALE_PRICE_CENTS,
+        "Realised loss (3.3): for each product and quarter of default, the balance at default not recovered, summed over "
+        "the quarter's defaults, as a share of their total balance at default. Recoveries are the receipts after default "
+        "to 30 September 2026 in the Collections receipts file, plus each sold account's share of the March 2026 sale "
+        "(face value at cut-off x %.2f cents), each taken at the end of the month received and discounted to the "
+        "default month end monthly at the contract rate. A Wirraway remittance counts against the account placed under "
+        "the reference it quotes on the day it was received, from the agency's placement report; the receipts file posts "
+        "it to the account first placed under that reference, an earlier account where Wirraway has reissued it. Loans "
+        "back to performing lose nothing; a case Collections closed as cured on an arrangement withdrawn before it "
+        "started, the loan later written off, is measured on what the loan recovered." % W.SALE_PRICE_CENTS,
         "Amounts are reported in AUD million to one decimal from loan-level results, so stage amounts may not add exactly.",
     ]
     for i, t in enumerate(notes, 1):

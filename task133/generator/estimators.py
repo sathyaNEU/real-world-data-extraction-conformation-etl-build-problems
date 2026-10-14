@@ -159,9 +159,10 @@ def in_force(hd, at, rule="dates"):
     return set(hd.loc[sel, "loan_no"])
 
 
-def stage(bk, hd, mapping, use_hardship=True, map_v3=True, at=REPORT, rule="dates", score=None):
+def stage(bk, hd, mapping, use_hardship=True, map_v3=True, at=REPORT, rule="dates", score=None, strict_fall=False):
     """CRM-ECL-04 section 2 at day `at`: stage 3 at 90 or more days past due; stage 2 at 30 or more, a hardship
-    arrangement in force, or a behaviour score 60 or more points below the origination score on v4 (v3 converted)"""
+    arrangement in force, or a behaviour score 60 or more points below the origination score on v4 (v3 converted).
+    strict_fall reads the score condition as more than 60 points, a misreading of 2.1 the ask B fork row prices"""
     a, b = mapping
     o = bk["origination_score"].astype(float)
     if map_v3:
@@ -169,7 +170,8 @@ def stage(bk, hd, mapping, use_hardship=True, map_v3=True, at=REPORT, rule="date
     sc = bk["current_score_v4"] if score is None else score
     drop = pd.Series(o, index=bk.index) - pd.Series(sc, index=bk.index)
     st = pd.Series(1, index=bk.index)
-    st[(bk["days_past_due"] >= 30) | (drop >= 60).fillna(False)] = 2
+    fell = (drop > 60) if strict_fall else (drop >= 60)
+    st[(bk["days_past_due"] >= 30) | fell.fillna(False)] = 2
     if use_hardship:
         st[bk["loan_no"].isin(in_force(hd, at, rule))] = 2
     st[bk["days_past_due"] >= 90] = 3
@@ -420,6 +422,32 @@ def attribute(target, led, refs="asof"):
     return led.drop(columns="_ref")
 
 
+def record_gone(target):
+    """the loans the loan record shows closed as written off or settled for less (CRM-ECL-04 3.3: such a loan did not
+    return to performing, whatever resolution Collections recorded)"""
+    rec = _cached(("closures", target), lambda: pd.read_parquet(os.path.join(target, F["record"]), columns=["loan_no", "closure_reason"]))
+    return set(rec.loc[rec["closure_reason"].isin(["Written off", "Settled"]), "loan_no"])
+
+
+def cured_mask(fy, cures, withdrawn, written_off, gone):
+    """which 2023-24 defaults lost nothing. 'gold' is 3.3 as filed: a case Collections closed as cured, unless the loan
+    record shows the loan written off or settled for less; 'register' reaches the same set through the hardship register
+    (the cure recorded on an arrangement withdrawn before it started, the loan then written off or settled); 'label' takes
+    every cure at its word; 'no_withdrawn' doubts every cure on a withdrawn arrangement; 'receipts' takes none"""
+    label = fy["resolution"] == "Cured"
+    if cures == "gold":
+        return label & ~fy["loan_no"].isin(gone)
+    if cures == "register":
+        return label & ~fy["loan_no"].isin(written_off)
+    if cures == "label":
+        return label
+    if cures == "no_withdrawn":
+        return label & ~fy["loan_no"].isin(withdrawn)
+    if cures == "receipts":
+        return label & False
+    raise ValueError(cures)
+
+
 def withdrawn_cures(target, fy, led):
     """the 2023-24 defaults Collections closed as cured on a collections hardship arrangement that was withdrawn before it
     started: the register holds an arrangement received after the default month end, starting on the case's resolution
@@ -439,15 +467,15 @@ def withdrawn_cures(target, fy, led):
     return withdrawn, withdrawn & gone
 
 
-def realised_lgd(target, variant="gold", cures="gold", refs="asof"):
+def realised_lgd(target, variant="gold", cures="gold", refs="asof", pool="balance"):
     """what the 2023-24 defaults have lost, as a share of their balance at default, by product and quarter of the
     default month, in per cent. 'gold' is CRM-ECL-04 3.3: every amount received after default to the reporting date, the
     loan's share of the March 2026 sale proceeds (its face value at the cut-off times the price) included, counted at the
     end of the month it was received and discounted to the default month end monthly at the contract rate; a loan that
-    returned to performing has lost nothing. cures: 'gold' takes a loan as returned to performing when Collections closed
-    it as cured, unless the arrangement it was closed on never started and the loan was written off; 'label' takes every
-    case closed as cured at its word; 'no_withdrawn' takes none closed on a withdrawn arrangement (the over-cleaner).
-    refs: how agency remittances are given to loans (attribute). The other variants are the stops on the ask's ladder"""
+    returned to performing has lost nothing, and a loan the loan record shows written off or settled for less did not
+    return to performing whatever Collections recorded. cures: as in cured_mask. refs: how agency remittances are given
+    to loans (attribute). pool 'balance' is 3.3's share (the quarter's balance not recovered over its total balance at
+    default); 'mean' averages each loan's own share instead. The other variants are the stops on the ask's ladder"""
     fy, led, sale, price, head = collections(target)
     led = attribute(target, led, refs)
     fy = fy.copy()
@@ -480,15 +508,7 @@ def realised_lgd(target, variant="gold", cures="gold", refs="asof"):
     fy["sale_pv_start"] = fy["sale"] * (1 + fy["r"] / 12) ** (-(sale_m - fy["M"] - 1))
     fy["sale_pv_annual"] = fy["sale"] * (1 + fy["r"]) ** (-(sale_m - fy["M"]) / 12.0)
     withdrawn, written_off = withdrawn_cures(target, fy, led)
-    label = fy["resolution"] == "Cured"
-    if cures == "gold":
-        cured = label & ~fy["loan_no"].isin(written_off)
-    elif cures == "label":
-        cured = label
-    elif cures == "no_withdrawn":
-        cured = label & ~fy["loan_no"].isin(withdrawn)
-    else:
-        raise ValueError(cures)
+    cured = cured_mask(fy, cures, withdrawn, written_off, record_gone(target))
     wo = fy["resolution"] == "Written off"
     pop = None
     if variant == "gold":
@@ -534,16 +554,22 @@ def realised_lgd(target, variant="gold", cures="gold", refs="asof"):
     if pop is not None:
         d = d[pop]
     g = d.groupby(["product", "q"])
-    val = 100.0 * g["loss"].sum() / g["B"].sum()
+    if pool == "balance":
+        val = 100.0 * g["loss"].sum() / g["B"].sum()
+    elif pool == "mean":
+        val = 100.0 * (d["loss"] / d["B"]).groupby([d["product"], d["q"]]).mean()
+    else:
+        raise ValueError(pool)
     return {(p, int(q)): float(v) for (p, q), v in val.items()}
 
 
 def lgd_path(target, cures="gold", sale="share", disc="monthly", refs="asof"):
-    """the ask A figures along one path, each knob a way of handling one device or hazard: cures 'gold', 'label' (every
-    case closed as cured at its word), 'no_withdrawn' (none closed on a withdrawn arrangement) or 'receipts' (every loan on
-    its receipts); sale 'share' (each sold loan's face value times the price), 'none', 'spread' (the receipt over the
-    2023-24 written-off cases by balance) or 'flat' (shares not discounted); disc 'monthly' (3.3 and 3.5), 'none',
-    'annual' ((1 + r) ** (-n / 12)), 'days' or 'month_start'; refs as in attribute"""
+    """the ask A figures along one path, each knob a way of handling one device or hazard: cures as in cured_mask ('gold'
+    3.3 as filed, 'register' the same set through the hardship register, 'label' every case closed as cured at its word,
+    'no_withdrawn' none closed on a withdrawn arrangement, 'receipts' every loan on its receipts); sale 'share' (each
+    sold loan's face value times the price), 'none', 'spread' (the receipt over the 2023-24 written-off cases by
+    balance) or 'flat' (shares not discounted); disc 'monthly' (3.3 and 3.5), 'none', 'annual' ((1 + r) ** (-n / 12)),
+    'days' or 'month_start'; refs as in attribute"""
     fy, led, sale_sch, price, head = collections(target)
     led = attribute(target, led, refs)
     fy = fy.copy()
@@ -590,9 +616,7 @@ def lgd_path(target, cures="gold", sale="share", disc="monthly", refs="asof"):
     else:
         raise ValueError(sale)
     withdrawn, written_off = withdrawn_cures(target, fy, led)
-    label = fy["resolution"] == "Cured"
-    cured = {"gold": label & ~fy["loan_no"].isin(written_off), "label": label,
-             "no_withdrawn": label & ~fy["loan_no"].isin(withdrawn), "receipts": label & False}[cures]
+    cured = cured_mask(fy, cures, withdrawn, written_off, record_gone(target))
     loss = np.where(cured, 0.0, fy["B"] - fy["pv"] - fy["sale_pv"])
     g = fy.assign(loss=loss).groupby(["product", "q"])
     val = 100.0 * g["loss"].sum() / g["B"].sum()
@@ -607,13 +631,13 @@ def score_runs(target):
     return sc
 
 
-def migration(target, june_rule="dates", run="june", sept_rule="dates", june_dpd="close"):
+def migration(target, june_rule="dates", run="june", sept_rule="dates", june_dpd="close", strict_fall=False):
     """the loans in stage 1 and stage 2 at 30 June 2026, by product and June stage: how many are in stage 1, 2 and 3
     at 30 September and how many have closed (not in the September extract). 'june' takes the scores of the month-end
     run on the 30 June position (made on 1 July); 'may' the last run made on or before 30 June; 'sept' the September
     extract's scores. june_dpd 'close' takes days past due at close of business on 30 June (CRM-ECL-04 1.3): the June
-    extract, run at 07:30 on 1 July before CHG-26-0418, counts them to the run, a day more; 'extract' takes the column
-    as it stands"""
+    extract, read from the live system at its 07:30 run on 1 July before CHG-26-0418 moved the job to the end-of-day
+    snapshot, counts them to 1 July, a day more for a loan in arrears; 'extract' takes the column as it stands"""
     bk, hd, mapping = load_staging(target)
     jb = pd.read_csv(os.path.join(target, F["june"]))
     if june_dpd == "close":
@@ -632,8 +656,8 @@ def migration(target, june_rule="dates", run="june", sept_rule="dates", june_dpd
     else:
         raise ValueError(run)
     score = jb["loan_no"].map(dict(zip(pick["loan_no"], pick["score_v4"])))
-    jst = stage(jb, hd, mapping, at=PRIOR, rule=june_rule, score=score)
-    sst = stage(bk, hd, mapping, rule=sept_rule)
+    jst = stage(jb, hd, mapping, at=PRIOR, rule=june_rule, score=score, strict_fall=strict_fall)
+    sst = stage(bk, hd, mapping, rule=sept_rule, strict_fall=strict_fall)
     now = dict(zip(bk["loan_no"], sst))
     cells = {}
     for p in ("PL36", "PL60"):
