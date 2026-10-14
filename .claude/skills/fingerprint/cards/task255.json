@@ -35,7 +35,7 @@
   "scoring_unit": "per covered member",
   "spine": {
     "file": "liability_loss_run_2026-09-30.csv and liability_loss_run_legacy_2014-2020.xlsx",
-    "rows": 1466,
+    "rows": 1458,
     "entity": "one liability occurrence the pool handled (above its member's deductible), with the member's deductible and the pool's paid and reserved amounts",
     "grain": "occurrence",
     "source": "synthetic (constructed pool records, declared)"
@@ -63,12 +63,12 @@
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
-  "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, so the fit has to carry each item's floor as truncation and the ceiling as censoring, both at the cost level the curve is fitted at; fitting the recorded sizes as a complete sample thins the tail and sets the dial two steps too low, and treating only the ceiling still leaves it a step and more short.",
-  "driver_concrete": "Ground-up liability severity is fitted at 2027 cost to the closed occurrences of accident years 2014 to 2021 with each occurrence left-truncated at the deductible its member carried on the date of loss and the occurrences that reached the pool's retention right-censored there, both thresholds brought to 2027 cost with the claim cost index; the expected 2027 occurrences above each quoted attachment (the actuary's count above $25,000 times the fitted tail ratio) first fall to one at $4.0 million, while the lognormal fitted to the recorded costs as complete clears one at $2.0 million and the fit censoring only the capped occurrences at $2.5 million.",
-  "stump": "The default path brings each closed occurrence's recorded ground-up cost (deductible plus the pool's payments) to 2027 cost and fits the policy's lognormal by maximum likelihood as a complete sample, which thins the tail (0.04 expected occurrences above $4.0 million) and ends on $2.0 million; censoring the 108 occurrences stopped at the retention ends on $2.5 million; carrying each deductible as truncation as well, both thresholds at 2027 cost, files $4.0 million (1.25 above $3.0 million, 0.74 above $4.0 million).",
+  "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, and whose largest items stay unfinished long after the small ones finish; the fit has to carry each item's floor as truncation and the ceiling as censoring at the fitted cost level over every item of the window, the unfinished ones included as the censored observations they are, because fitting only the finished items selects on size and thins the tail a step short, and fitting the recorded sizes as complete thins it more.",
+  "driver_concrete": "Ground-up liability severity is fitted at 2027 cost to every occurrence of accident years 2014 to 2021 in the pool's record (800 closed and 20 suits still open while the excess insurer defends them, each with the pool's layer paid), each occurrence left-truncated at its member's deductible and the 108 that reached the retention right-censored there, both at 2027 cost; the expected 2027 occurrences above each quoted attachment first fall to one at $4.0 million, while the same fit on the closed files alone clears one at $3.0 million and the lognormal fitted to the closed files' costs as complete at $2.0 million.",
+  "stump": "The default path keeps the closed occurrences of 2014 to 2021, whose costs are final, brings each recorded ground-up cost to 2027 cost and fits the policy's lognormal by maximum likelihood as a complete sample, which thins the tail and ends on $2.0 million; censoring the 88 closed occurrences stopped at the retention ends on $2.5 million; carrying each deductible as truncation as well, both thresholds at 2027 cost, still ends on $3.0 million (0.70 above it) because the 20 open suits, every one past the retention, were set aside; the same fit on every file of the window files $4.0 million (1.25 above $3.0 million, 0.74 above $4.0 million).",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and every filed rule, brings each occurrence to 2027 cost and fits the policy's lognormal by maximum likelihood to the recorded ground-up costs files $2.0 million, and even with the occurrences at the retention treated as censored files $2.5 million, because the record holds only occurrences that exhausted their member's deductible and the easy fit reads that window as the whole curve.",
-  "domain_test": "The call turns on the ground-up severity distribution of liability occurrences, estimated the way loss models are fitted to insurance data observed through deductibles and policy limits (a truncated and censored likelihood with each observation's own thresholds at the fitted cost level), and on its tail at each quoted attachment; with another field's nouns there is no deductible below which losses never reach the record, no retention at which they stop being recorded, and no excess attachment to set, so the task stops reading the same.",
+  "analyst_test": "A strong analyst who reads every field and every filed rule, keeps the closed files of 2014 to 2021 for their final costs, brings each to 2027 cost and fits the policy's lognormal by maximum likelihood to the recorded ground-up costs files $2.0 million, with the occurrences at the retention censored files $2.5 million, and with each deductible as truncation as well still files $3.0 million, because the open suits it set aside are a fifth of the occurrences that reached the retention.",
+  "domain_test": "The call turns on the ground-up severity distribution of liability occurrences, estimated the way loss models are fitted to insurance data observed through deductibles and policy limits (a truncated and censored likelihood with each observation's own thresholds at the fitted cost level) over a claims record whose largest files settle last, and on its tail at each quoted attachment; with another field's nouns there is no deductible below which losses never reach the record, no retention at which they stop being recorded, no excess insurer defending the suits past it, and no excess attachment to set.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:ground-up-severity-from-deductible-truncated-retention-censored-occurrences",
   "layer1": [
@@ -81,8 +81,26 @@
   ],
   "mechanism_source": "design_note",
   "differentiation": {
-    "task254": "task254 v2 (spent at stage 2, never built) cut a time-to-event distribution censored by a lock date with entries crowding toward it; this build fits a size distribution truncated at each item's own deductible and censored at a retention that moved, and the call is the fitted tail far beyond the record, so no observation window or entry-date structure is involved"
+    "task254": "task254 v2 (spent at stage 2, never built) cut a time-to-event distribution censored by a lock date with entries crowding toward it; this build fits a size distribution truncated at each item's own deductible and censored at a retention that moved, and the call is the fitted tail far beyond the record, so no observation window or entry-date structure is involved",
+    "task255": "loop 1 keeps loop 0's truncated and censored likelihood and adds the open suits of the window: loop 0's construction on the closed files is now a rung at $3.0 million, wrong because settlement is selected on size"
   },
-  "lineage": [],
-  "notes": "slot DA05 number; redrawn into Descriptive & Distribution Analysis (the seed's waiting-list world has no Descriptive task type). stump_strategy maturity_censoring names the censoring family: here limit censoring at the pool's retention with deductible truncation, no maturity element."
+  "lineage": [
+    {
+      "architecture": "v1 (loop 0): the likelihood of the record on a window whose every occurrence had closed",
+      "fate": "hardened at the author's request for a second layer (2026-10-13, before any portal result); kept as rung R3 of loop 1, where the suits past the retention stay open under the excess insurer's defence and the closed-file construction files $3.0 million",
+      "domain": "actuarial-science-insurance",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "dial_setting",
+      "stump_strategy": "maturity_censoring",
+      "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, so the fit has to carry each item's floor as truncation and the ceiling as censoring, both at the cost level the curve is fitted at; fitting the recorded sizes as a complete sample thins the tail and sets the dial two steps too low, and treating only the ceiling still leaves it a step and more short."
+    }
+  ],
+  "notes": "slot DA05 number; redrawn into Descriptive & Distribution Analysis (the seed's waiting-list world has no Descriptive task type). stump_strategy maturity_censoring names the censoring family: here limit censoring at the pool's retention with deductible truncation, no maturity element.; loop 1 (2026-10-13, the author's request for a second layer): the suits past the retention stay open under the excess insurer's defence, so the window's record holds 20 open files that a closed-file fit drops; the strategy stays maturity_censoring (open files beside limit censoring)"
 }

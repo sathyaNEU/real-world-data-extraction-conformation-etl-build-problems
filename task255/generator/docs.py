@@ -92,10 +92,10 @@ POLICY_CLAUSES = [
     ("4  The severity curve", [
         ("4.1", "The pool's ground-up severity curve for a coverage year is the distribution of the cost of an "
                 "occurrence, at the coverage year's cost level, over all of the members' liability occurrences."),
-        ("4.2", "The curve is lognormal. It is estimated by maximum likelihood from the pool's record of the "
-                "occurrences of the latest eight accident years in which every occurrence has closed (for the 2027 "
-                "coverage year, the accident years 2014 to 2021), with the record brought to the coverage year's cost "
-                "level by the ratio of the coverage year's claim cost index to the accident year's."),
+        ("4.2", "The curve is lognormal. It is estimated by maximum likelihood from the pool's claims record for "
+                "the eight accident years before the latest five (for the 2027 coverage year, the accident years 2014 "
+                "to 2021), with the record brought to the coverage year's cost level by the ratio of the coverage "
+                "year's claim cost index to the accident year's."),
         ("4.3", "The expected number of the coverage year's occurrences costing more than an amount is the actuary's "
                 "expected number costing more than $25,000, times the curve's probability that an occurrence costs "
                 "more than the amount, divided by the curve's probability that an occurrence costs more than $25,000."),
@@ -153,8 +153,7 @@ def memo_sections():
             "includes the deductible: $250,000 for occurrences in 2014 to 2017 and $500,000 for occurrences from "
             "1 January 2018.",
             "Above the retention the excess insurer of the occurrence's year pays the cost directly, up to $10,000,000 "
-            "for each occurrence. The excess insurer's payments are not entered in the pool's claims system; once the "
-            "pool's share is paid, the pool's administrator closes the pool's file on the occurrence.",
+            "for each occurrence. The excess insurer's payments are not entered in the pool's claims system.",
         ]),
         ("4  Administration and records", [
             "%s administered the pool's claims from 1 January 2014 to 30 June 2020, and %s from 1 July 2020, when "
@@ -274,7 +273,7 @@ def write_quotes(path):
 NOTES_TEXT = """# Extract notes: 2027 retention review
 
 Finance office, {pool}. Files pulled for the trustees' November 2026 meeting; questions on the claims files to
-{claims}, on the declarations and schedules to the finance office. The documents beside them are as issued:
+{claims}, on the declarations and schedules to the finance office. Filed with them as issued:
 {policy}, {memo}, {study} and {quotes}.
 
 ## {legacy}
@@ -299,7 +298,11 @@ date, indemnity and defense, in dollars.
 The transaction log of the pool's vehicle schedule system from its opening load (dated 1 January 2022), with
 every entry keyed through 19 October 2026: one row for each add, delete or change of a unit on a member's schedule. effective_date is when
 the change applies to coverage; entered_date is when it was keyed. stated_value is the value carried for physical
-damage cover, blank on deletes.
+damage cover, blank on deletes. A vehicle is identified by its VIN, or by its serial number where it has no VIN.
+On 4 March 2024 the regional fleet consortium's lists for the members in it were loaded under the consortium's asset
+numbers (FMC-); the members' earlier unit numbers for the same vehicles were left on the schedule, and the renewal
+revaluations still reach them. Since the load the consortium's adds, changes and deletes for those vehicles come
+under its asset numbers.
 
 ## {decl}
 

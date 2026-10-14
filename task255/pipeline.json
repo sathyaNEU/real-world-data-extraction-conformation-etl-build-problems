@@ -6,18 +6,17 @@
   "objective": "descriptive-distribution",
   "stage": 5,
   "stage_name": "ship",
-  "updated": "2026-10-13",
-  "stump": "The default path fits the policy's lognormal to the 820 recorded ground-up costs as a complete sample and ends on $2.0 million; censoring the 108 capped occurrences ends on $2.5 million; carrying each deductible as truncation too, both thresholds at 2027 cost, files $4.0 million.",
+  "updated": "2026-10-14",
+  "stump": "The default path fits the closed files' recorded costs as a complete sample and files $2.0 million; censoring the capped closed files files $2.5 million; the truncated and censored likelihood at 2027 cost on the closed files still files $3.0 million, because the 20 open suits of 2014 to 2021, every one past the retention, were set aside; the same likelihood on every file files $4.0 million.",
   "architecture": 1,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
-    "date": "2026-10-13",
-    "checks": 49
+    "date": "2026-10-14"
   },
   "leak": {
-    "leak_py": "REVIEW, every line harmless (rulings in the report)",
-    "reader": "two reads, no decisive-step sentence, no ranking file, question 6 analytical; realism tells fixed in the generator"
+    "leak_py": "REVIEW (no LEAK) on the loop-1 cut",
+    "reader": "loop 1: three reads; the memorandum's file-closing clause contradicted the open suits and was cut; no decisive-step sentence; nothing names the open suits"
   },
   "duplicate_check": {
     "heart": "WARN (Gate G overuse, answered in the note)",
@@ -25,12 +24,21 @@
     "nearest": "task93 0.07 (driver), task254 v2 lineage differentiated on the card"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (pass 1)",
-    "report": "task255/determinism_check_report.md"
+    "verdict": "DETERMINISTIC (loop 1 pass 2)",
+    "disposition": "APPROVE",
+    "report": "task255/determinism_check_report_loop1_pass2.md (pass 1 NOT_DETERMINISTIC on the vehicle count, fixed: determinism_check_report_loop1.md; loop 0: determinism_check_report.md)",
+    "gate_g": "analytical, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
-  "returned": [],
-  "resume": "shipped; next: task256 (wave 2)",
+  "returned": [
+    {
+      "date": "2026-10-14",
+      "portal": "none: hardened at the author's request for a second stumping layer before any portal result",
+      "repair": "design",
+      "commit": "the RESHIPPED (task255) commit of 2026-10-14"
+    }
+  ],
+  "resume": "shipped; next event is the author's portal result",
   "approved": null,
   "delivered": "2026-10-13",
   "portal": null,

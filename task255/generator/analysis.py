@@ -15,15 +15,23 @@ import world as W
 STARTS = ([10.0, 1.5], [11.5, 1.0], [9.0, 2.2], [12.0, 0.8], [8.0, 2.8])
 
 
-def fit_rows(rec):
-    """The record rows the curve is fitted to: closed occurrences of the policy's accident years, with the
-    recorded ground-up cost (deductible plus the pool's payments), the deductible and the retention."""
+def fit_rows(rec, closed_only=False, open_at="incurred"):
+    """The record rows the curve is fitted to: every occurrence of the policy's accident years in the pool's record,
+    with its recorded ground-up cost (the deductible plus what the pool has paid and still reserves), the deductible
+    and the retention; closed_only keeps the closed files alone, and open_at="paid" reads an open file at its payments
+    to date."""
     out = []
     for r in rec:
-        if r["ay"] in W.FIT_YEARS and r["status"] == "closed":
-            g = round(r["ded"] + r["paid_ind"] + r["paid_def"], 2)
-            out.append({"ay": r["ay"], "f": W.factor(r["ay"]), "ded": r["ded"], "ret": r["ret"], "cost": g,
-                        "capped": g >= r["ret"] - 0.005})
+        if r["ay"] not in W.FIT_YEARS or r["status"] == "untendered":
+            continue
+        if closed_only and r["status"] != "closed":
+            continue
+        g = r["ded"] + r["paid_ind"] + r["paid_def"]
+        if r["status"] == "open" and open_at == "incurred":
+            g += r["res_ind"] + r["res_def"]
+        g = round(g, 2)
+        out.append({"ay": r["ay"], "f": W.factor(r["ay"]), "ded": r["ded"], "ret": r["ret"], "cost": g,
+                    "capped": g >= r["ret"] - 0.005, "open": r["status"] == "open"})
     return out
 
 
@@ -106,12 +114,41 @@ RUNGS = {
 }
 
 
-def ladder(rows):
+def closed_only_summary(rec):
+    """The loop-0 construction on the closed files alone: every correction made, the open suits left out."""
+    rows = fit_rows(rec, closed_only=True)
+    mu, sg, _ = mle(rows)
+    c = counts(mu, sg)
+    return {"n": len(rows), "capped": sum(r["capped"] for r in rows), "mu": mu, "sigma": sg, "pick": pick(c),
+            "counts_2dp": {str(a): round(c[a], 2) for a in W.OPTIONS}}
+
+
+# the ladder: the default path and its corrections on the closed files, then the golden on every file
+LADDER = {
+    "R0": ("closed", dict(trunc=False, cens=False)),   # the closed files' costs as a complete sample
+    "R1": ("closed", dict(trunc=False, cens=True)),    # the capped closed files censored, the deductible ignored
+    "R2": ("closed", dict(trunc=True, cens=False)),    # the deductible as truncation, the capped costs read as exact
+    "R3": ("closed", dict()),                          # truncation and censoring at 2027 cost, the open suits left out
+    "G": ("all", dict()),                              # the same likelihood on every file of the policy's years
+}
+# the same corrections with the open suits kept, and the golden with its thresholds left nominal
+CROSS = {
+    "R0_all": ("all", dict(trunc=False, cens=False)),
+    "R1_all": ("all", dict(trunc=False, cens=True)),
+    "R2_all": ("all", dict(trunc=True, cens=False)),
+    "G_nominal": ("all", dict(trend_thresholds=False)),
+    "R3_nominal": ("closed", dict(trend_thresholds=False)),
+}
+
+
+def ladder(rec, table=None):
+    rows = {"closed": fit_rows(rec, closed_only=True), "all": fit_rows(rec)}
     out = {}
-    for k, kw in RUNGS.items():
-        mu, sg, _ = mle(rows, **kw)
+    for k, (which, kw) in (table or LADDER).items():
+        mu, sg, _ = mle(rows[which], **kw)
         c = counts(mu, sg)
-        out[k] = {"mu": mu, "sigma": sg, "counts": c, "pick": pick(c), "crossing": crossing(mu, sg)}
+        out[k] = {"mu": mu, "sigma": sg, "counts": c, "pick": pick(c), "crossing": crossing(mu, sg),
+                  "n": len(rows[which])}
     return out
 
 
@@ -210,7 +247,7 @@ def figures(st):
         ms = [m for m in toe if kind[m] == k]
         by[k] = {"members": len(ms), "toe_000": round(sum(toe[m] for m in ms) / 1000),
                  "units": sum(units.get(m, 0) for m in ms)}
-    lad = ladder(rows)
+    lad = ladder(rec)
     return {
         "call": {"attachment": call, "runner_up": runner, "count": round(cnt[call], 2),
                  "runner_up_count": round(cnt[runner], 2),
@@ -221,7 +258,9 @@ def figures(st):
         "curve": {"mu": mu, "sigma": sg, "mu_2dp": round(mu, 2), "sigma_2dp": round(sg, 2)},
         "fit": {"n": len(rows), "capped": sum(r["capped"] for r in rows),
                 "capped_250k": sum(1 for r in rows if r["capped"] and r["ret"] == 250_000),
-                "capped_500k": sum(1 for r in rows if r["capped"] and r["ret"] == 500_000)},
+                "capped_500k": sum(1 for r in rows if r["capped"] and r["ret"] == 500_000),
+                "open": sum(r["open"] for r in rows), "closed": sum(not r["open"] for r in rows)},
+        "closed_only": closed_only_summary(rec),
         "premiums": prem,
         "exposure": {"toe": T, "toe_000": round(T / 1000), "units": U, "members": len(toe)},
         "by_class": by,

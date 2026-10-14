@@ -64,8 +64,9 @@ def write_workbook(path, fig):
     lines = [
         ("Severity curve (lognormal, cost from the first dollar at 2027 cost)",
          "log mean %.2f, log standard deviation %.2f" % (fig["curve"]["mu"], fig["curve"]["sigma"])),
-        ("Fitted to", "%d closed occurrences of accident years 2014 to 2021, %d of them stopped at the retention"
-         % (fig["fit"]["n"], fig["fit"]["capped"])),
+        ("Fitted to", "%d occurrences of accident years 2014 to 2021 in the pool's record (%d closed, %d suits still "
+         "open with the pool's layer paid), %d of them stopped at the retention"
+         % (fig["fit"]["n"], fig["fit"]["closed"], fig["fit"]["open"], fig["fit"]["capped"])),
         ("How the record enters the fit", "each occurrence truncated at its member's deductible and, where it reached "
          "the pool's retention, censored there; costs, deductibles and retentions at 2027 cost by the claim cost index"),
         ("Runner-up", "%s: %.2f expected occurrences above it, more than the policy's one"
@@ -169,8 +170,8 @@ def write_chart(path, fig):
     ax.set_title("%s is the lowest quoted attachment the pool expects to be exceeded once a year or less"
                  % millions(rec), fontsize=10.5, loc="left")
     ax.legend(loc="upper right", frameon=False, fontsize=8.8)
-    f.text(0.01, 0.012, "%s, November 2026 trustees' meeting. Ground-up lognormal at 2027 cost fitted to the closed "
-           "occurrences of 2014 to 2021;\n%.1f expected 2027 occurrences above $25,000 (actuary's study, October 9, "
+    f.text(0.01, 0.012, "%s, November 2026 trustees' meeting. Ground-up lognormal at 2027 cost fitted to the pool's "
+           "record of 2014 to 2021, open suits included;\n%.1f expected 2027 occurrences above $25,000 (actuary's study, October 9, "
            "2026); attachments as quoted October 2, 2026." % (W.POOL, W.COUNT_25K), fontsize=7.2, color="#5D646C")
     f.tight_layout(rect=(0, 0.05, 1, 1))
     f.savefig(path, metadata={"Software": None})

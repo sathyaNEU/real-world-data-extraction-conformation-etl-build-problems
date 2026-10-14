@@ -1,7 +1,7 @@
 """Assertions on the built pack and goldens: the input gates; the three rules executed on the generator's clean truth
 (R1 the field's raw material ships, R2 each Layer 1 item is neutral, R3a the easy route files the wrong attachment,
 R3b the decisive step alone files the golden, R3c no plant); every rung at its named attachment with its margin; the
-convergent variants; the semantic forks SF1 to SF14; the rounding bins; the ask devices against the truth and every
+convergent variants; the semantic forks SF1 to SF16; the rounding bins; the ask devices against the truth and every
 wrong path outside the golden in every class and at every attachment; the main population's separation from the
 asks; the distractors; the realism sweep; and the goldens agreeing with figures.json."""
 import collections
@@ -61,15 +61,25 @@ def run(target, golden, st, metadata):
 
     # ------------------------------------------------------------ the record the call reads
     rows = A.fit_rows(rec)
-    ok(len(rows) == fig["fit"]["n"] == 820, "820 closed occurrences of 2014 to 2021")
-    ok(all(r["status"] == "closed" for r in rec if r["ay"] in W.FIT_YEARS), "every 2014 to 2021 occurrence closed")
-    ok(any(r["status"] == "open" for r in rec if r["ay"] == 2022), "2022 still has an open occurrence (2021 is the latest closed year)")
-    ok(all(r["close"] <= dt.date(2026, 6, 30) for r in rec if r["ay"] in W.FIT_YEARS), "closed by 30 June 2026 (C1 on the as-of)")
+    ok(len(rows) == fig["fit"]["n"] == 820, "820 occurrences of 2014 to 2021 in the pool's record")
+    ok(fig["fit"]["open"] == 20 and fig["fit"]["closed"] == 800, "800 closed and 20 still open")
+    fy_open = [r for r in rec if r["ay"] in W.FIT_YEARS and r["status"] == "open"]
+    ok(all(r["capped"] and r["res_ind"] + r["res_def"] == 0 and
+           abs(r["ded"] + r["paid_ind"] + r["paid_def"] - r["ret"]) < 0.006 for r in fy_open),
+       "every open file of 2014 to 2021 is a suit past the retention whose layer the pool has paid in full")
+    ok(all(r["status"] == "closed" for r in rec if r["ay"] in W.FIT_YEARS and not r["capped"]
+           and r["status"] != "untendered"), "every occurrence of 2014 to 2021 below the retention is closed")
+    ok(all(r["close"] <= dt.date(2026, 6, 30) for r in rec if r["ay"] in W.FIT_YEARS and r["status"] == "closed"),
+       "closed files closed by 30 June 2026 (C1 on the as-of)")
+    late = sum(1 for r in fy_open if r["ay"] >= 2019)
+    ok(late >= 15, "the open suits sit in the latest accident years (%d of %d from 2019 to 2021)" % (late, len(fy_open)))
     leg = {r["legacy_no"] for r in rec if r["system"] == "legacy"}
     conv = {r.get("legacy_no") for r in rec if r["system"] == "current" and r["converted"]}
     ok(not (leg & conv), "no claim in both administrators' runs (axis 15)")
     ok(fig["fit"]["capped"] == 108 and fig["fit"]["capped_250k"] == 67 and fig["fit"]["capped_500k"] == 41,
        "108 occurrences stopped at the retention (67 at $250,000, 41 at $500,000)")
+    ok(fig["closed_only"]["n"] == 800 and fig["closed_only"]["capped"] == 88,
+       "the closed files alone hold 88 of the 108 that reached the retention")
     ok(min(r["ret"] - r["cost"] for r in rows if not r["capped"]) > 10, "no uncapped cost within $10 of a retention (axis 9)")
     ok(min(r["cost"] - r["ded"] for r in rows) > 0, "every recorded cost above its deductible")
     ok(all(r["x"] > r["ded"] for r in rec), "the record holds only occurrences above the deductible")
@@ -91,26 +101,37 @@ def run(target, golden, st, metadata):
        "R1: the policy files no truncation or censoring")
 
     # ------------------------------------------------------------ the ladder and R3
-    lad = A.ladder(rows)
+    lad = A.ladder(rec)
+    cross = A.ladder(rec, A.CROSS)
     picks = {k: v["pick"] for k, v in lad.items()}
-    ok(picks == {"R0": 2_000_000, "R1": 2_500_000, "R2": 2_000_000, "R3": 4_000_000, "G": 4_000_000},
+    ok(picks == {"R0": 2_000_000, "R1": 2_500_000, "R2": 2_000_000, "R3": 3_000_000, "G": 4_000_000},
        "rungs at their named attachments %s" % picks)
     ok(lad["G"]["pick"] == fig["call"]["attachment"] == 4_000_000, "golden $4.0 million")
     g = lad["G"]["counts"]
     ok(g[4_000_000] <= 0.76 and g[3_000_000] >= 1.24, "golden margins: 0.74 at $4.0m, 1.25 at $3.0m")
     ok(1.0 / g[4_000_000] >= 1.3 and g[3_000_000] >= 1.25, "margins 1.36x and 1.25x")
-    ok(lad["R0"]["counts"][2_000_000] <= 0.62 and lad["R0"]["counts"][1_500_000] >= 1.5, "R0 at $2.0 million with margin")
+    ok(lad["R0"]["counts"][2_000_000] <= 0.62 and lad["R0"]["counts"][1_500_000] >= 1.15, "R0 at $2.0 million with margin")
     ok(lad["R1"]["counts"][2_500_000] < 1.0 < lad["R1"]["counts"][2_000_000], "R1 at $2.5 million")
-    ok(lad["R2"]["counts"][2_000_000] <= 0.71 and lad["R2"]["counts"][1_500_000] >= 1.4, "R2 at $2.0 million")
-    ok(lad["R3"]["counts"][4_000_000] <= 0.66 and lad["R3"]["counts"][3_000_000] >= 1.3, "R3 converges on $4.0 million")
-    ok(g[4_000_000] / lad["R1"]["counts"][4_000_000] >= 3.4, "the decisive move multiplies the count above $4.0m by 3.6")
-    # R3a: the easy route on the clean truth, every filed rule applied (window, cost, index, formula, line)
-    ok(picks["R0"] == 2_000_000, "R3a analyst test: the complete-sample fit files $2.0 million")
-    ok(picks["R1"] == 2_500_000, "R3a: censoring the capped occurrences alone files $2.5 million")
-    # R3b: the decisive step alone (truncation added to the censored fit) files the golden; each single correction
-    # from the default leaves a wrong answer
-    ok(picks["G"] == 4_000_000 and picks["R1"] != 4_000_000 and picks["R2"] != 4_000_000,
-       "R3b: truncation with censoring files $4.0 million; either alone does not")
+    ok(lad["R2"]["counts"][2_000_000] <= 0.71 and lad["R2"]["counts"][1_500_000] >= 1.05, "R2 at $2.0 million")
+    ok(lad["R3"]["counts"][3_000_000] <= 0.72 and lad["R3"]["counts"][4_000_000] <= 0.40,
+       "R3 (the closed files, every correction made) at $3.0 million: %.2f above $3.0m, %.2f above $4.0m" % (
+           lad["R3"]["counts"][3_000_000], lad["R3"]["counts"][4_000_000]))
+    cp = {k: v["pick"] for k, v in cross.items()}
+    ok(cp == {"R0_all": 2_000_000, "R1_all": 2_500_000, "R2_all": 2_000_000, "G_nominal": 4_000_000,
+              "R3_nominal": 3_000_000}, "every single correction with the open suits kept stays wrong %s" % cp)
+    ok(g[4_000_000] / lad["R3"]["counts"][4_000_000] >= 1.9,
+       "the open suits nearly double the count above $4.0m (%.2f against %.2f)" % (g[4_000_000],
+                                                                                  lad["R3"]["counts"][4_000_000]))
+    # R3a: the easy routes on the clean truth, every filed rule applied (window, cost, index, formula, line)
+    ok(picks["R0"] == 2_000_000, "R3a analyst test: the complete-sample fit to the closed files files $2.0 million")
+    ok(picks["R3"] == 3_000_000, "R3a: truncation and censoring at 2027 cost on the closed files files $3.0 million")
+    # R3b: the decisive step alone (the open suits kept, at the retention their layer reached) files the golden
+    ok(picks["G"] == 4_000_000 and picks["R3"] != 4_000_000,
+       "R3b: the same likelihood with the open suits in files $4.0 million; without them it does not")
+    paid = A.fit_rows(rec, open_at="paid")
+    mu_p, sg_p, _ = A.mle(paid)
+    ok(abs(mu_p - lad["G"]["mu"]) < 1e-6 and abs(sg_p - lad["G"]["sigma"]) < 1e-6,
+       "SF15: an open suit read at its payments or at payments and reserves is the same record (the layer paid)")
     # the same likelihood in each accident year's dollars, rows shuffled, and a common floor
     mu_y, sg_y = A.mle_accident_year_dollars(rows)
     ok(abs(mu_y - lad["G"]["mu"]) < 1e-4 and abs(sg_y - lad["G"]["sigma"]) < 1e-4, "accident-year dollars give the same fit")
@@ -160,18 +181,24 @@ def run(target, golden, st, metadata):
     memo = texts[D.MEMO]
     quotes = texts[D.QUOTES]
     study = texts[D.STUDY]
+    ok("closes the pool's file" not in memo, "the memorandum says nothing on when the pool's file closes")
+    notes1 = " ".join(texts[D.NOTES].split())
+    ok("A vehicle is identified by its VIN, or by its serial number where it has no VIN" in notes1 and
+       "the members' earlier unit numbers for the same vehicles were left on the schedule" in notes1 and
+       "deletes for those vehicles come under its asset numbers" in notes1,
+       "SF16: the notes file a vehicle's identity and how the consortium's numbers relate to the earlier ones")
     ok("from its first dollar and inclusive of the member's deductible" in pol and
        "inclusive of the member's deductible" in quotes, "SF1: attachments from the first dollar, inclusive")
     nos = [r["claim_no"] for r in rec if r["system"] == "current" and r["status"] != "untendered"]
     ok(len(nos) == len(set(nos)) and len(leg) == st["counts"]["legacy"], "SF2: one row per occurrence in both runs")
     ind = [dict(r, cost=round(q["ded"] + q["paid_ind"], 2)) for r, q in
-           zip(rows, [q for q in rec if q["ay"] in W.FIT_YEARS and q["status"] == "closed"])]
+           zip(rows, [q for q in rec if q["ay"] in W.FIT_YEARS and q["status"] != "untendered"])]
     pk, _, _, _ = _pick_of(ind)
     ok(pk == 2_000_000 and "damages and defense costs together" in pol, "SF3: damages only files $2.0 million; ruled out by 2.2")
     pk, _, _, _ = _pick_of([dict(r, f=1.0) for r in rows])
     ok(pk == 2_500_000 and "ratio of the coverage year's claim cost index to the accident year's" in pol,
        "SF4: no trend files $2.5 million; ruled out by 4.2")
-    cur = [r for r, q in zip(rows, [q for q in rec if q["ay"] in W.FIT_YEARS and q["status"] == "closed"])
+    cur = [r for r, q in zip(rows, [q for q in rec if q["ay"] in W.FIT_YEARS and q["status"] != "untendered"])
            if q["system"] == "current"]
     pk, cc, _, _ = _pick_of(cur)
     ok(pk is None and "were converted to" in texts[D.NOTES], "SF5: the current run alone passes no attachment")
@@ -182,10 +209,11 @@ def run(target, golden, st, metadata):
             allc.append({"ay": q["ay"], "f": W.factor(q["ay"]), "ded": q["ded"], "ret": q["ret"], "cost": cst,
                          "capped": cst >= q["ret"] - 0.005})
     pk, _, _, _ = _pick_of(allc)
-    ok(pk == 4_000_000 and "2014 to 2021" in pol, "SF6: closed occurrences of every year converge on $4.0 million")
+    ok(pk != 4_000_000 and "the accident years 2014 to 2021" in pol,
+       "SF6: the closed files of every accident year (%s) ruled out by policy 4.2's years" % pk)
     ok("divided by the curve's probability that an occurrence costs more than $25,000" in pol, "SF7: policy 4.3 filed")
     ok(min(abs(v - 1.0) for v in g.values()) >= 0.25, "SF8: no count within 0.25 of the line")
-    ok(picks["R3"] == 4_000_000, "SF9: thresholds left nominal give $4.0 million")
+    ok(cp["G_nominal"] == 4_000_000, "SF9: thresholds left nominal give $4.0 million (other counts: a rung)")
     byno = {m["no"]: m for m in mem}
     ok(all(r["ded"] == W.deductible_on(byno[r["member"]], r["date"]) for r in rec), "SF10: each row's deductible is the one in force")
     ok("lowest attachment quoted for that year" in pol and fig["call"]["attachment"] in W.OPTIONS, "SF11: quoted attachments only")
@@ -233,7 +261,7 @@ def run(target, golden, st, metadata):
         for t_, u_ in ((Tc, Uc), (T, Uc), (Tc, U), (T, sum(A.units_naive(st["log"], mode="dedup_live").values()))):
             ok(round(A.premium(t_, u_, a)) != good, "a wrong exposure path misses the premium at %d" % a)
     # the mirror's counts (R1) and the default's (R0) differ from the golden at two decimals at every attachment
-    for k in ("R0", "R1", "R2"):
+    for k in ("R0", "R1", "R2", "R3"):
         ok(all(round(lad[k]["counts"][a], 2) != round(g[a], 2) for a in W.OPTIONS), "%s's counts miss at every attachment" % k)
     # the main population holds no ask device: the fit reads no declaration or log row
     ok(fig["call"]["attachment"] == A.pick(A.counts(*A.mle(A.fit_rows(rec))[:2])), "the call reads only the loss runs")

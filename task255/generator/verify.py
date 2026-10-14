@@ -46,7 +46,8 @@ def main(target, golden):
     assert len(opts) == 7 and len(index) >= 14, (len(opts), len(index))
     line = 1.0 if "is one or fewer" in policy else None
 
-    # the pool's record of the closed occurrences of the policy's years, both administrators
+    # the pool's record of every occurrence of the policy's years, both administrators, an open file at what the pool
+    # has paid and still reserves
     occ = []
     wb = openpyxl.load_workbook(find(target, "liability_closed_claims"), read_only=True)
     for name in wb.sheetnames:
@@ -60,9 +61,10 @@ def main(target, golden):
     for r in csv.DictReader(open(find(target, "liability_loss_run"))):
         ay = int(r["loss_date"][:4])
         occ.append((ay, float(r["deductible"]), float(r["deductible"]) + float(r["paid_indemnity"]) +
-                    float(r["paid_defense"]), r["status"] == "Closed"))
+                    float(r["paid_defense"]) + float(r["reserve_indemnity"]) + float(r["reserve_defense"]),
+                    r["status"] == "Closed"))
     fit = [o for o in occ if o[0] in years]
-    assert all(o[3] for o in fit), "an occurrence of the policy's years is open"
+    assert sum(1 for o in fit if not o[3]) == 20, "the policy's years hold twenty open files"
     f = np.array([index[2027] / index[o[0]] for o in fit])
     x = np.log(np.array([o[2] for o in fit]) * f)
     d = np.log(np.array([o[1] for o in fit]) * f)

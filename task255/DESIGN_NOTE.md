@@ -18,7 +18,19 @@
 - **Data-native sentence:** a pool's claims record is a window on its members' losses: an occurrence enters it only
   once its member has paid the deductible in force that year, and stops at the pool's retention, beyond which the
   excess insurer pays and the pool records nothing; both thresholds were fixed in each year's dollars, so at 2027
-  cost every occurrence carries its own floor and its own ceiling.
+  cost every occurrence carries its own floor and its own ceiling; and the occurrences that pierced the retention are
+  suits the excess insurer goes on defending for years after the pool has paid its layer, so the pool's files on
+  exactly those occurrences stay open long after the small ones close (20 of the 108 from 2014 to 2021 are open).
+- **Loop 1 (2026-10-13, the author's request for a second layer of stumping):** the world no longer forces every
+  occurrence of 2014 to 2021 closed; an occurrence past the retention runs a suit about three years longer (the excess
+  insurer's defence), and once it has used the pool's layer the pool's file stays open until the excess insurer
+  closes its own. Twenty such suits of 2014 to 2021 are open at 30 September 2026, every one with the layer paid in
+  full and nothing reserved. The policy's window is now named without closure ("the eight accident years before the
+  latest five"), so the record of those years holds open files. The golden is unchanged ($4.0 million, 0.74 and
+  1.25): the loop-0 construction on every file. The loop-0 construction on the closed files alone, the natural way
+  to fit severity to final costs, drops a fifth of the occurrences that reached the retention and files $3.0
+  million. No file, column or sentence was added; the strategy stays maturity_censoring (open files of the window,
+  beside the retention's censoring), the second layer a selection by settlement.
 - **Guard:** WARN repeat.gate_g and overuse.gate_g (method_or_model_selection after task450 and task501): the
   mechanism here is a loss model's observation process, deductible truncation and retention censoring in the
   likelihood, against task450's emissions grain and task501's transmission model; the vocabulary's nearest honest key.
@@ -41,11 +53,12 @@
 ## Default path
 
 1. Read the current administrator's loss run (csv) and the legacy administrator's closed-claim archive (xlsx, one
-   sheet per accident year) and keep the liability occurrences of accident years 2014 to 2021: 820, every one closed.
+   sheet per accident year) and keep the closed liability occurrences of accident years 2014 to 2021, the ones whose
+   costs are final: 800 (the 20 open files set aside).
 2. Take each occurrence's ground-up cost as its member's deductible plus the pool's payments (damages and defence)
    and bring it to 2027 cost with the claim cost index (the 2027 index over the accident year's).
-3. Fit the policy's lognormal by maximum likelihood to the 820 costs at 2027 cost, the mean and standard deviation of
-   their logs: log mean 12.08, log standard deviation 0.87.
+3. Fit the policy's lognormal by maximum likelihood to the 800 costs at 2027 cost, the mean and standard deviation of
+   their logs: log mean 12.04, log standard deviation 0.85.
 4. Expected 2027 occurrences above each quoted attachment: the actuary's 228.7 above $25,000 times the fitted
    probability of exceeding the attachment over that of exceeding $25,000.
 5. Take the lowest quoted attachment where that is one or fewer.
@@ -55,11 +68,14 @@ Golden: $4.0 million
 
 ## Stump sentence
 
-The default path fits the policy's lognormal to the 820 recorded ground-up costs as if they were the whole curve and
-ends on $2.0 million (0.60 expected 2027 occurrences above it), because the pool's record holds only occurrences that
-exhausted their member's deductible and stops at the retention; censoring the 108 occurrences that reached the
-retention still ends on $2.5 million, and only the fit carrying each deductible as truncation as well, both thresholds
-at 2027 cost, files $4.0 million (1.25 occurrences above $3.0 million, 0.74 above $4.0 million).
+The default path fits the policy's lognormal to the 800 closed occurrences' recorded ground-up costs as if they were
+the whole curve and ends on $2.0 million (0.43 expected 2027 occurrences above it), because the pool's record holds
+only occurrences that exhausted their member's deductible and stops at the retention; censoring the 88 closed ones
+that reached the retention still ends on $2.5 million; carrying each deductible as truncation as well, both thresholds
+at 2027 cost, ends on $3.0 million (0.70) while the 20 open suits stay set aside, because the occurrences that pierced
+the retention are the ones still open; only the same fit on every file of 2014 to 2021, the open suits censored at
+the retention their paid layer reached, files $4.0 million (1.25 occurrences above $3.0 million, 0.74 above $4.0
+million).
 
 ## Three rules
 
@@ -81,41 +97,50 @@ at 2027 cost, files $4.0 million (1.25 occurrences above $3.0 million, 0.74 abov
   they are when mishandled (asserted).
 - **Layer 2:** estimation_fit: the likelihood of the record the pool actually holds, each occurrence left-truncated at
   its member's deductible and right-censored at the retention when it reached it, both at 2027 cost, instead of a
-  complete-sample fit of the recorded costs; it raises the expected count above $4.0 million from 0.21 to 0.74 and
-  moves the call from $2.0 million (or $2.5 million) to $4.0 million.
+  complete-sample fit of the recorded costs, on every file of the window rather than the closed ones, whose closure
+  is selected on size (the suits past the retention run on under the excess insurer's defence); the open suits lift
+  the expected count above $4.0 million from 0.38 to 0.74 and move the call from $3.0 million to $4.0 million.
 - **Decisive step:** fitting the ground-up severity with the record's own observation process in the likelihood,
-  truncation at each member's deductible and censoring at the pool's retention, at the cost level of the fit.
-- **Not semantics:** every field reads plainly (the deductible, the pool's payments, the retention in the coverage
-  memorandum), and a solver who reads them all and knows the capped occurrences stopped at the retention still files
-  $2.5 million when it fits without the deductible's truncation: no field, code or definition says how the record's
-  floor enters an estimate.
+  truncation at each member's deductible and censoring at the pool's retention, at the cost level of the fit, over
+  every file of the window: an open suit whose layer is paid is a complete censored observation, and leaving the open
+  files out selects the record on settlement, which here is selection on size.
+- **Not semantics:** every field reads plainly (the deductible, the pool's payments and reserves, the status, the
+  retention in the coverage memorandum), and a solver who reads them all and knows the capped occurrences stopped at
+  the retention still files $2.5 million when it fits without the deductible's truncation, and $3.0 million when it
+  fits only the files whose costs are final: no field, code or definition says how the record's floor enters an
+  estimate or whether an open file belongs in it.
 - **Not rule application:** the policy files the family (lognormal), the estimator (maximum likelihood), the record,
-  the window, the cost level, the count formula and the line; it files no likelihood, and executing every filed rule
-  on the recorded costs files $2.0 million; writing the likelihood of a deductible-truncated, retention-censored
-  record is the step no rule performs.
+  the window, the cost level, the count formula and the line; it files no likelihood and nothing on open files, and
+  executing every filed rule on the recorded costs files $2.0 million; writing the likelihood of a
+  deductible-truncated, retention-censored record, with the open suits in it as the censored observations they are,
+  is the step no rule performs.
 - **Analyst test:** a strong analyst who cleans both loss runs, reads every field and rule, brings the costs to 2027
-  cost and fits the lognormal by maximum likelihood to the 820 recorded ground-up costs files $2.0 million, and with
-  the 108 capped occurrences censored files $2.5 million (the default path's Ends on: $2.0 million).
+  cost and fits the lognormal by maximum likelihood to the 800 closed files' recorded ground-up costs files $2.0
+  million (the default path's Ends on: $2.0 million), with the 88 closed capped occurrences censored files $2.5
+  million, and with truncation and censoring at 2027 cost on the closed files still files $3.0 million.
 - **Estimand:** the trustees' risk financing policy fixes the curve as the distribution of what a member's liability
   occurrence costs from its first dollar, damages and defence together, at 2027 cost, over all the members' liability
-  occurrences, estimated by maximum likelihood from the pool's record of the closed occurrences of accident years
-  2014 to 2021, and the retention as the lowest quoted attachment whose expected 2027 count above it is one or fewer
-  (risk_financing_policy_2026.pdf).
+  occurrences, estimated by maximum likelihood from the pool's claims record for accident years 2014 to 2021 (the
+  eight before the latest five), and the retention as the lowest quoted attachment whose expected 2027 count above
+  it is one or fewer (risk_financing_policy_2026.pdf).
 - **No decoy:** nothing is planted: no memo, draft, briefing or stakeholder figure states an attachment, a fit or a
   count; the loss runs are the administrators' own records and every row is a real occurrence.
 - **No certified replay:** no certified or published figure is reproduced by the method: the actuary's exhibits file
   the index and the count above $25,000 and no severity parameter, count above any other amount or layer cost.
 - **Lesson:** a loss distribution fitted to what a pool records is fitted to a window, floored at each member's
-  deductible and cut at the retention; reading the window as the whole curve thins the tail exactly where an excess
-  attachment sits. No build on file fits a size distribution through truncation and censoring.
+  deductible and cut at the retention, and the files still open are not a random few: the largest losses settle
+  last; reading the window as the whole curve, or its closed files as the whole window, thins the tail exactly where
+  an excess attachment sits. No build on file fits a size distribution through truncation, censoring and
+  settlement.
 
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| R1, the 108 occurrences at the retention censored ($2.5m) | the memorandum says the excess insurer pays above the retention, outside the pool's system | 108 costs sit exactly at $250,000 or $500,000 | a solver used to limited losses censors them | none | no | no | readable |
+| R1, the closed files' 88 occurrences at the retention censored ($2.5m) | the memorandum says the excess insurer pays above the retention, outside the pool's system | 88 closed costs sit exactly at $250,000 or $500,000 | a solver used to limited losses censors them | none | no | no | readable |
 | R2, each deductible as truncation, the capped costs read as exact ($2.0m) | the memorandum's tender sentence says how an occurrence reaches the pool, naming no truncation | the deductible is an ordinary loss-run column, no row predicate | not a default | none | no | no | silent |
-| G (decisive), truncation at each deductible with censoring at the retention, both at 2027 cost ($4.0m) | no sentence names a truncation, a censoring or a likelihood; the policy says all occurrences, the memorandum how one reaches the pool | no flag or marker; the floor differs by member and year | the opponent's default fits the recorded costs, or censors only the visible caps | nothing scores a fit: no severity parameter, no count above any amount, no excess-layer experience ships | the battery sees no floor | a likelihood, no ratio or subtraction | silent |
+| R3, truncation and censoring at 2027 cost on the closed files ($3.0m) | no sentence names a truncation, a censoring or a likelihood | no flag; the floor differs by member and year | the opponent fits severity to final costs: closed files only | none | no | a likelihood | silent |
+| G (decisive), the same likelihood on every file of 2014 to 2021, the open suits censored at the retention their paid layer reached ($4.0m) | no sentence names a truncation, a censoring, a likelihood or open files; the policy names the record of the years, the notes say the current run holds open and closed files | the status column reads Open on 20 rows whose payments reach the retention, nothing marks them as belonging to a fit | not a reflex: the reflexes fit the recorded costs, censor only the visible caps, or keep the closed files for their final costs | nothing scores a fit: no severity parameter, no count above any amount, no excess-layer experience ships | the battery sees no floor and treats open files as unfinished | a likelihood, no ratio or subtraction | silent |
 
 ## Semantic fork table
 
@@ -126,7 +151,7 @@ at 2027 cost, files $4.0 million (1.25 occurrences above $3.0 million, 0.74 abov
 | SF3 | cost | the deductible plus the pool's paid damages and defence | damages only ($2.0m) | $2.0 million | policy 4.1: damages and defence costs together |
 | SF4 | 2027 cost | the 2027 index over the accident year's | no trend ($2.5m) | $2.5 million | policy 4.2 names the index and the ratio |
 | SF5 | the record | the legacy archive and the current run together | the current run alone (no attachment passes) | none | the extract notes: the archive holds the claims the legacy administrator closed before 1 July 2020, the current run every claim handled since |
-| SF6 | closed occurrences of 2014 to 2021 | the 820, every one closed at 30 September 2026 | closed occurrences of every year ($4.0m) | same call | policy 4.2 names the years; convergent besides |
+| SF6 | the record of 2014 to 2021 | the 820 files of those years, open and closed | the closed files of every accident year ($2.5m) | $2.5 million | policy 4.2 names the years |
 | SF7 | expected number above an attachment | 228.7 times the fitted tail ratio to $25,000 | counts read off the record | not a count of 2027 occurrences | policy 4.3 |
 | SF8 | one or fewer | at most 1.0, inclusive | strictly under 1.0 | same call: 1.25 and 0.74 at $3.0m and $4.0m | same call |
 | SF9 | thresholds' cost level | each deductible and retention at 2027 cost with the occurrence | left in each year's dollars | same call ($4.0m, 0.65 and 1.31) | same call |
@@ -135,27 +160,32 @@ at 2027 cost, files $4.0 million (1.25 occurrences above $3.0 million, 0.74 abov
 | SF12 | rounding | counts unrounded until compared, shown to two decimals; premiums rounded once at the total | rounded before comparing | same call | same call |
 | SF13 | the anchor amount | $25,000 from the first dollar at 2027 cost | at each year's cost | not the actuary's figure | the actuary's exhibit states its count at 2027 cost from the first dollar |
 | SF14 | maximum likelihood | the maximum over the lognormal's two parameters, one optimum | a local optimum | same call | same call: five starting points reach one optimum (asserted) |
+| SF15 | an open file's recorded cost | the deductible plus what the pool has paid and still reserves | the deductible plus payments to date | same record (asserted): every open file of 2014 to 2021 has its layer paid in full and nothing reserved | same call and same counts |
+| SF16 | a vehicle on the schedule (the asks) | one vehicle by its VIN, or its serial without a VIN, on the schedule at 30 September 2026 by effective date, a consortium vehicle by its FMC- record | the last row across every number the vehicle holds, any of its numbers in force (6,387), every unit number in force (8,233) | other premiums and class vehicles | the extract notes: a vehicle is identified by its VIN or serial; the members' earlier numbers were left on the schedule and still take the revaluations; since 4 March 2024 the consortium's adds, changes and deletes come under its asset numbers (filed after loop 1's judge pass 1) |
 
 ## Ladder
 
 | Rung | Likelihood | Log mean, log SD | Expected 2027 occurrences above $3.0m and $4.0m | Call |
 |---|---|---|---|---|
-| R0 | the recorded costs as a complete sample | 12.08, 0.87 | 0.13, 0.04 | $2.0 million (0.60 above it, 1.59 above $1.5m) |
-| R1 | the capped occurrences censored, no truncation | 12.14, 0.98 | 0.54, 0.21 | $2.5 million (0.95 above it, 1.82 above $2.0m) |
-| R2 | each deductible as truncation, caps read as exact | 11.07, 1.22 | 0.24, 0.10 | $2.0 million (0.70 above it) |
-| R3 | truncation and censoring, thresholds left nominal | 11.76, 1.23 | 1.31, 0.65 | $4.0 million (same call) |
-| G | truncation and censoring at 2027 cost | 10.18, 1.71 | 1.25, 0.74 | $4.0 million |
+| R0 | the closed files' recorded costs as a complete sample (800) | 12.04, 0.85 | 0.08, 0.02 | $2.0 million (0.43 above it, 1.20 above $1.5m) |
+| R1 | the closed files, the 88 capped censored, no truncation | 12.10, 0.94 | 0.30, 0.11 | $2.5 million (0.56 above it, 1.16 above $2.0m) |
+| R2 | the closed files, each deductible as truncation, caps read as exact | 11.05, 1.18 | 0.16, 0.07 | $2.0 million (0.50 above it) |
+| R3 | the closed files, truncation and censoring at 2027 cost (the loop-0 construction) | 10.45, 1.53 | 0.70, 0.38 | $3.0 million (1.02 above $2.5m) |
+| G | every file of 2014 to 2021, truncation and censoring at 2027 cost, the 20 open suits censored at the retention | 10.18, 1.71 | 1.25, 0.74 | $4.0 million |
 
 - **Position:** the golden is the sixth of seven attachments; rung 0 takes the third. Every correction walks one way
-  (up the attachments); only the decisive move reaches $4.0 million.
+  (up the attachments); only the decisive move (the open suits kept, at the retention their paid layer reached)
+  reaches $4.0 million.
 - **Margins:** at $4.0 million 0.74 (1.36x under the line); at $3.0 million, the runner-up, 1.25 (1.25x over it).
-  R1's own pick is thin (0.95 at $2.5m; $3.0m under small variations): either is wrong.
-- **Worth:** the decisive move (R1 to G) multiplies the expected count above $4.0 million by 3.6 and above $3.0 million
-  by 2.3; the obvious correction (R0 to R1) moves the call one attachment.
-- **Grid:** the four single-error cells (R0, R1, R2, R3) each file a quoted attachment: $2.0m, $2.5m, $2.0m, $4.0m.
-- **Convergence asserted:** the same likelihood in each accident year's dollars (the curve's log mean moving with the
-  index) gives 10.18 and 1.71; a fit truncated at one common floor ($215,600, the $100,000 deductible at 2014's
-  factor) gives $4.0 million (0.90, 1.47); thresholds left nominal give $4.0 million.
+  R3's own pick is thin (1.02 at $2.5m): a variant of it lands on $2.5 million, either wrong.
+- **Worth:** the decisive move (R3 to G) nearly doubles the expected count above $4.0 million (0.38 to 0.74) and
+  moves the call one attachment; R1 to G multiplies it by 7.0.
+- **Every single correction with the open suits kept** (asserted): the complete sample $2.0 million, censoring alone
+  $2.5 million, truncation alone $2.0 million; thresholds left nominal with the open suits in $4.0 million (0.65 and
+  1.31, other counts: a rung on the asks), on the closed files $3.0 million.
+- **Convergence asserted:** the same likelihood in each accident year's dollars gives 10.18 and 1.71; a fit truncated
+  at one common floor ($215,600) gives $4.0 million; an open suit read at its payments or at payments and reserves is
+  the same record.
 - **Flip:** $3.0 million would pass if the actuary's count above $25,000 were 182.5 or lower; $4.0 million fails
   only above 310.0.
 
@@ -189,21 +219,23 @@ at 2027 cost, files $4.0 million (1.25 occurrences above $3.0 million, 0.74 abov
 ## Literal reader
 
 Executed word for word, the policy fixes the curve as the distribution of all the members' liability occurrences from
-the first dollar at 2027 cost (4.1), estimated by maximum likelihood from the pool's record of the closed occurrences
-of 2014 to 2021 (4.2); the coverage memorandum files how that record came to exist (an occurrence reaches the pool when
-its member's payments exhaust the deductible in force, and the pool records nothing above its retention), so the
-likelihood of the record is the truncated and censored one, and its literal execution gives a log mean of 10.18, a log
-standard deviation of 1.71 and $4.0 million. Every row of the fork table violates a quoted sentence or converges on
-$4.0 million; the easy answers ($2.0 million, $2.5 million) come from an easier likelihood on the same estimand, not
-from another reading.
+the first dollar at 2027 cost (4.1), estimated by maximum likelihood from the pool's claims record for accident years
+2014 to 2021 (4.2); the record of those years holds 820 files, 800 closed and 20 open, every open one a suit whose
+payments have reached the retention; the coverage memorandum files how that record came to exist (an occurrence
+reaches the pool when its member's payments exhaust the deductible in force, and the pool records nothing above its
+retention), so the likelihood of the record is the truncated and censored one over every file, and its literal
+execution gives a log mean of 10.18, a log standard deviation of 1.71 and $4.0 million. Every row of the fork table
+violates a quoted sentence or converges on $4.0 million; the easy answers ($2.0 million, $2.5 million, $3.0 million)
+come from an easier likelihood or from setting files of the named years aside, not from another reading.
 
 ## Oracles
 
 - The actuary's 228.7 occurrences above $25,000: an input of every rung; it ties to nothing.
 - The claim cost index: an input; it ties to nothing.
 - The liability triangles (distractor): the pool's paid and incurred, net of deductibles and limited to its
-  retention, by accident year and evaluation; the latest diagonal ties to the loss runs under every handling, and
-  it carries no ground-up cost, no count above any amount and no severity parameter.
+  retention, by accident year and evaluation, with the counts tendered and closed; the latest diagonal ties to the
+  loss runs under every handling, its closed counts show the twenty open files of 2014 to 2021 as the loss run does,
+  and it carries no ground-up cost, no count above any amount and no severity parameter.
 - The member deductible history (distractor): agrees with the deductible on every loss-run row; it scores no fit.
 - The open accident years 2022 to 2026 in the current run: outside the policy's window and immature; the pack carries
   no development pattern to bring their counts to ultimate, so they score no fit (their counts at the retention are
@@ -217,7 +249,7 @@ from another reading.
 |---|---|---|---|---|---|---|---|---|
 | A, the 2027 premium of each quoted attachment | 7 | a measure every candidate carries that the call does not turn on | the trustees see each attachment's cost beside the policy's test | D6: an online declaration repeats the member's total operating expenditure, a member-level figure, on every department line (a paper declaration keyed by staff carries it on its first line only) | D1 (the consortium replay moves the vehicles in every premium); D8 (log rows effective after 30 September) | declarations (member, department, expenditure), schedule log (member, unit, type, effective date, VIN, serial), indications (two rates per attachment), roster (class), extract notes; 5 files, 12 columns | expenditure summed over lines and units counted raw: 3.41 to 3.45 times the golden across the attachments; expenditure once, units raw: 10 to 11 per cent high; expenditure summed, units right: 3.29 to 3.34 times; expenditure once, units deduplicated among those in force: 3.0 to 3.2 per cent high; the answer | a member portal flattens a header field onto each detail line; paper forms are keyed line by line |
 | B, the rated exposure by member class | 14 (expenditure and vehicles, seven classes) | the audit trail of the premium's exposure | the board confirms the exposure the market rated | D1: on 4 March 2024 the fleet consortium's lists re-added sixteen members' fleets (the largest in each class) under the consortium's asset numbers; the pool's numbers were never deleted, and the consortium's later disposals reach the pool on its numbers only | D6 (expenditure); D7 (VINs keyed in lower case or with a space or dash; trailers and equipment with "NONE", "N/A", "UNKNOWN", "SEE SERIAL" or a blank VIN and a serial) | schedule log, roster, declarations, extract notes; 4 files, 9 columns | in-force unit numbers 8,233 (every class high); in-force units deduplicated by normalised VIN 6,387; raw-VIN dedup 6,563; VIN-only dedup (placeholders collapsed) 6,045; the answer 5,649 | a bulk load from a member's own system adds what it duplicates without closing the old records |
-| C, the policy's test per attachment and the chart | 7 counts (in the call's question) and 5 chart parts | the construction | the call's own table | none | none | the golden fit | R0 and R1 values | the actuary's exhibit layout |
+| C, the policy's test per attachment and the chart | 7 counts (in the call's question) and 5 chart parts | the construction | the call's own table | none | none | the golden fit | R0, R1 and R3 values (R3: 5.50, 2.71, 1.58, 1.02, 0.70, 0.38, 0.23) | the actuary's exhibit layout |
 
 - **Main population zero-counts:** no row of the declarations or the schedule log sits in the loss runs, the policy,
   the memorandum, the actuary's exhibits or the attachments the call reads; the call and every component are unchanged
@@ -236,7 +268,7 @@ from another reading.
 | C counts and chart | the golden's construction | right | outside |
 
 Mirror leakage: about 8 per cent of the ask weight (the chart's two presence parts of 26 ask criteria; the mirror's
-counts and chart values are R1's).
+counts and chart values are R1's or R3's, each missing every count at two decimals, asserted).
 Pair ceiling: 36 (the cracker at about 56 with the call and its counts, the mirror at about 15; if the rubric grades
 the seven counts as asks the pair is about 40).
 
@@ -280,6 +312,34 @@ the seven counts as asks the pair is about 40).
   independent verifier. No re-judge: the disposition was APPROVE and no estimand, rule or sentence the call reads
   changed.
 
+- Loop 1 (2026-10-13, the author's request for a second layer). Stage 3: the world lets an occurrence past the
+  retention run a suit about three years longer, the pool's layer paid by about three and a half years after tender
+  and its file left open until the excess insurer closes its own; no clamp closes those suits by mid-2026, the
+  uncapped files of 2014 to 2021 still close by then. 20 open suits in the window (8 converted from the legacy
+  administrator, 18 from 2019 to 2021), every one with the layer paid and nothing reserved; the legacy archive now
+  421 occurrences, the current run 399 of the window's. Policy 4.2 names the window without closure. The golden fit,
+  call, counts, premiums and class exposure are the loop-0 values to the last digit; the closed files alone file $3.0
+  million. 202 assertions (the analyst test now runs the closed-file construction on the clean truth, R3 at $3.0
+  million, and the golden only with the open suits in); the verifier reads open files at payments and reserves and
+  finds the twenty; two builds byte-identical; figures_check 93 figures.
+
+- Loop 1, stage 4. Leak reader, first read: no decisive-step sentence; it quoted the memorandum's "once the pool's
+  share is paid, the pool's administrator closes the pool's file on the occurrence", which the twenty open suits
+  contradict: the clause is cut (the memorandum now says only that the excess insurer's payments are not entered),
+  and the extract notes' "The documents beside them are as issued" reads "Filed with them as issued". Second read: no
+  decisive-step sentence, no contradiction, nothing names the open suits. Judge pass 1 (one isolated thread):
+  NOT_DETERMINISTIC on the asks only, the main call forced and reproduced (820 files, 20 open, 108 at the retention,
+  10.18 and 1.71, $4.0 million; closed files alone $3.0 million): the vehicle count behind the premiums and the class
+  vehicles turned on a rule no file stated (the consortium's FMC- numbers against the members' earlier numbers, which
+  still take the revaluations). Fixed in the generator: the extract notes file a vehicle's identity (its VIN, or its
+  serial without one) and how the consortium's numbers relate to the earlier ones (SF16, asserted); no figure moved.
+  Third read (on the fix): no decisive-step sentence; it asked whether the unit count is by effective or entered
+  date, which the notes file (effective_date is when the change applies to coverage). Judge pass 2 (the one re-judge):
+  DETERMINISTIC, APPROVE; every figure reproduced, the premiums and the class figures included; the competing fits
+  (closed files alone, the open suits read as exact, no truncation, censoring alone, no trend) all miss; entered dates
+  for the vehicles would move each premium by about $825, against the notes' effective-date definition; Gate G
+  analytical, Gate H domain, layers and decisive step pass.
+
 ## Leak record
 
 - leak.py REVIEW, no LEAK: the policy carries the call's own nouns (retention, attachment, occurrence), harmless; four
@@ -301,17 +361,23 @@ the seven counts as asks the pair is about 40).
 
 - Call: keep the first $4,000,000 of each 2027 liability occurrence (the $4.0 million quoted attachment), 0.74
   expected 2027 occurrences above it and 1.25 above $3.0 million; curve log mean 10.18, log standard deviation 1.71
-  on 820 closed occurrences of 2014 to 2021, 108 stopped at the retention.
-- Default path: the complete-sample fit files $2.0 million; censoring alone $2.5 million; truncation alone
-  $2.0 million; thresholds left nominal $4.0 million (convergent); a common floor at $215,600 $4.0 million.
-- Gates: 196 assertions with the three-rules block and SF1 to SF14; the independent verifier from target/ alone; two
-  builds byte-identical; figures_check 88 figures; precut 49 checks; voice-check PASS; scrub clean on target and
-  golden; leak.py REVIEW, no LEAK; guard surface 0 promoted; heart WARN (Gate G overuse, answered in the Draw).
+  on the 820 files of 2014 to 2021 (800 closed, 20 open suits with the layer paid), 108 stopped at the retention.
+- Default path: the complete-sample fit to the closed files files $2.0 million; censoring alone $2.5 million;
+  truncation alone $2.0 million; truncation and censoring at 2027 cost on the closed files $3.0 million; thresholds
+  left nominal $4.0 million (convergent call); a common floor at $215,600 $4.0 million.
+- 10/10 rules re-read against the built pack: the deciding quantity is the ground-up severity tail fitted through the
+  record's own observation process (the field's construction); the mess (two administrators, converted numbers,
+  member codes, text dates, the schedule's bulk load, the declarations' repeated totals) leaves the call and the
+  components where they are when mishandled (asserted); the decisive step is analytical (the likelihood of a
+  truncated, censored record over every file, the open suits being the censored observations a closed-file fit
+  drops); no planted figure, no withheld rule, nothing flips on reading a field.
+- Gates: 204 assertions with the three-rules block and SF1 to SF16; the independent verifier from target/ alone; two
+  builds byte-identical; figures_check 93 figures; precut 49 checks; voice-check PASS; leak.py REVIEW (no LEAK); guard
+  heart BLOCK in task-number order on task229 v3 and task231, both registered after this build's draw (06:41 and 17:18
+  against 00:38 on 13 October), WARN in registration order (Gate G overuse, answered in the Draw).
 - Deliverables: retention_2027.xlsx (the test and premium at seven attachments, the rated exposure by class, notes)
   and attachment_test_2027.png; target.zip from the final rebuild, 12 files.
-- Leak: two isolated reads, no decisive-step sentence, no ranking file, question 6 analytical.
-- Judge: pass 1 DETERMINISTIC, APPROVE (determinism_check_report.md).
-- Card current: answer, spine rows 1466, stump and driver at the built values.
+- Card current: answer, spine rows, stump and driver at the built values.
 
 ## Tried and rejected
 
@@ -338,3 +404,15 @@ the seven counts as asks the pair is about 40).
   dropped for the repeated member figure.
 - The expiring 2026 programme summary as a distractor: its premium and rated exposure would refute the repeated
   expenditure at a glance (an oracle for the ask); not shipped.
+- The loop-0 design as the final rung: every occurrence of 2014 to 2021 forced closed by mid-2026 (the window named
+  "the latest eight accident years in which every occurrence has closed"), so the likelihood of the record decided
+  alone; at the author's request for a second layer the clamp was lifted for the suits past the retention, which
+  the excess insurer goes on defending, and the closed-file construction became R3 ($3.0 million).
+- Open suits carrying a case reserve to the rest of the pool's layer: reading them at payments to date as exact costs
+  files $3.0 million, but censoring them at their payments (the ultimate is at least what is paid) gives the golden
+  call with other counts at two decimals, a fork on the seven graded counts; the window's open suits have their
+  layer paid in full (a suit past the retention has used the layer within about three and a half years of tender),
+  so every reading of an open file is the same record.
+- A window extended to the open years 2022 and 2023 with their reserves developed: the development of individual
+  large files from aggregate triangles is the actuary's judgment, several defensible factors and several counts;
+  the window kept at 2014 to 2021, where the only open files are the paid-up suits.

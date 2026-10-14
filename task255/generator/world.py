@@ -247,6 +247,9 @@ PART_MIX = {"city": (0.31, 0.27, 0.24, 0.10, 0.08), "fire district": (0.36, 0.40
 
 # courts closed for much of 2020 and the administrator changed that July, so claims tendered then closed slower
 SLOWDOWN = {2019: 1.12, 2020: 1.48, 2021: 1.31, 2022: 1.14}
+# an occurrence past the retention: the median years its suit adds to the file
+EXCESS_SUIT_YEARS = 3.0
+EXHAUST_DAYS = 1280            # by about three and a half years after tender a suit past the retention has used the layer
 # each accident year's own mix of suits and settlements
 AY_PACE = {2014: 0.94, 2015: 1.09, 2016: 0.97, 2017: 1.13, 2018: 0.91, 2019: 1.06, 2020: 0.95, 2021: 1.04,
            2022: 0.90, 2023: 1.10, 2024: 0.97, 2025: 1.05, 2026: 1.00}
@@ -275,11 +278,15 @@ def development(rng, mem, occ):
         tender = o["date"] + dt.timedelta(days=int(18 + rng.gamma(1.5, 80.0)))
         dur = (float(rng.lognormal(math.log(250.0 * (x / 40_000.0) ** 0.25), 0.55)) * SLOWDOWN.get(tender.year, 1.0)
                * AY_PACE.get(o["ay"], 1.0))
+        cap = o["ret"]
+        if x >= cap:
+            # an occurrence past the retention is a suit the excess insurer defends too: it runs years longer, and
+            # the pool keeps its file open until the excess insurer closes its own
+            dur += 365.25 * float(rng.lognormal(math.log(EXCESS_SUIT_YEARS), 0.45))
         close = tender + dt.timedelta(days=int(30 + dur))
-        if o["ay"] in FIT_YEARS and close > dt.date(2026, 6, 30):
+        if o["ay"] in FIT_YEARS and close > dt.date(2026, 6, 30) and x < cap:
             close = dt.date(2026, 6, 30) - dt.timedelta(days=int(rng.integers(0, 200)))
             close = max(close, tender + dt.timedelta(days=30))
-        cap = o["ret"]
         pool_ult = _cents(min(x, cap) - o["ded"])
         r = {"ay": o["ay"], "date": o["date"], "member": o["member"], "ded": o["ded"], "ret": cap, "x": x,
              "x27": o["x27"], "part": part, "s": s, "tender": tender, "close": close, "pool_ult": pool_ult,
@@ -299,8 +306,16 @@ def development(rng, mem, occ):
         elif r["status"] == "open":
             frac = ((AS_OF - tender).days / max(1, (close - tender).days)) ** 1.3
             paid = _cents(pool_ult * min(0.92, frac))
-            reserve = _cents(max(0.0, (pool_ult - paid) * float(rng.lognormal(0.0, 0.35))))
-            reserve = min(reserve, _cents(cap - o["ded"] - paid))
+            if r["capped"] and (AS_OF - tender).days >= EXHAUST_DAYS:
+                # the pool has paid its whole layer and the excess insurer defends the suit; the pool's file stays
+                # open until the excess insurer closes its own
+                paid, reserve = pool_ult, 0.0
+            elif r["capped"]:
+                # once the excess insurer is on notice the pool reserves the rest of its layer
+                reserve = _cents(cap - o["ded"] - paid)
+            else:
+                reserve = _cents(max(0.0, (pool_ult - paid) * float(rng.lognormal(0.0, 0.35))))
+                reserve = min(reserve, _cents(cap - o["ded"] - paid))
         else:
             paid = reserve = 0.0
         pi = _cents(paid * (1 - s))
