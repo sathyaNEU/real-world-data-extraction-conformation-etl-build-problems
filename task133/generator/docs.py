@@ -71,32 +71,37 @@ def methodology_docx(path):
     add(("h1", "3. Expected credit loss"), "1.0")
     add(P("3.1 ECL = sum over future months k of PD(k) x LGD x EAD(k) x DF(k). Stage 1 loans use the next 12 months or the "
           "remaining term if shorter; stage 2 loans use the remaining term."), "1.0")
-    add(P("3.2 PD(k), the probability of default in the k-th month after the reporting date, comes from Credit Risk "
-          "Modelling's current cumulative default curve for the loan's product (PLPD-2026.06). Stage 2 loans carry the "
-          "significant-increase scalar of 2.4 on "
-          "PD(k). A loan's remaining term is its contractual term less the number of monthly repayments that have fallen "
-          "due on or before the reporting date. Repayment dates during a payment pause count as repayments fallen due, "
-          "because a pause does not change the repayment schedule or the maturity date. A loan past its contractual "
-          "maturity that is not in stage 3 is treated as being in the final month of its term, with a remaining term of "
-          "one month."), "1.0",
-        edits=[("comes from Credit Risk Modelling's current cumulative default curve for the loan's product", "3.0"),
-               ("(PLPD-2026.06)", "4.2"),
+    add(P("3.2 PD(k), the probability that the loan defaults in the k-th month after the reporting date, is read at each "
+          "reporting date from the default and repayment experience of every loan of its product in the loan record: for "
+          "a loan in month on book a at the reporting date, it is the probability that a loan of the product that is open "
+          "and not in default at the end of month on book a first defaults in month on book a + k. Months on book are "
+          "calendar months counted from the month the loan was drawn, so a loan is in month on book 0 in the month it is "
+          "drawn. Stage 2 loans carry the significant-increase scalar of 2.4 on PD(k). A loan's remaining term is its "
+          "contractual term less the number of monthly repayments that have fallen due on or before the reporting date. "
+          "Repayment dates during a payment pause count as repayments fallen due, because a pause does not change the "
+          "repayment schedule or the maturity date. A loan past its contractual maturity that is not in stage 3 has a "
+          "remaining term of one month."), "1.0",
+        edits=[("is read at each reporting date from the default and repayment experience of every loan of its product "
+                "in the loan record", "3.0"),
+               ("Months on book are calendar months counted from the month the loan was drawn, so a loan is in month on "
+                "book 0 in the month it is drawn. ", "3.0"),
                ("Stage 2 loans carry the significant-increase scalar of 2.4 on PD(k). ", "4.0"),
                ("Repayment dates during a payment pause count as repayments fallen due, because a pause does not change "
                 "the repayment schedule or the maturity date. ", "2.0"),
-               ("A loan past its contractual maturity that is not in stage 3 is treated as being in the final month of its "
-                "term, with a remaining term of one month.", "3.0")])
+               ("A loan past its contractual maturity that is not in stage 3 has a remaining term of one month.", "3.0")])
     add(P("3.3 LGD is 70 per cent for PL36 and 76 per cent for PL60. Credit Risk Modelling reviews both each year against "
           "the realised loss on defaults with at least two years of recoveries behind them: the share of the balance at "
           "default not recovered since. Recoveries, including the proceeds of any sale of the debt, count at the end of "
           "the month in which they are received and are discounted to the default month end monthly at the contract "
-          "rate, as in 3.5. A loan that returns to performing has lost nothing."),
+          "rate, as in 3.5. A loan that returns to performing, its arrears made good or a collections hardship arrangement "
+          "started, has lost nothing."),
         "1.0", edits=[("76 per cent", "4.1"),
                       ("Credit Risk Modelling reviews both each year against the realised loss on defaults with at least "
                        "two years of recoveries behind them: the share of the balance at default not recovered since. "
                        "Recoveries, including the proceeds of any sale of the debt, count at the end of the month in "
                        "which they are received and are discounted to the default month end monthly at the contract "
-                       "rate, as in 3.5. A loan that returns to performing has lost nothing.", "4.2")])
+                       "rate, as in 3.5. A loan that returns to performing, its arrears made good or a collections "
+                       "hardship arrangement started, has lost nothing.", "4.2")])
     add(P("3.4 EAD(k) is the balance outstanding at the start of month k when the current balance is repaid over the "
           "remaining term in equal monthly instalments at the contract rate."), "1.0")
     add(P("3.5 DF(k) discounts month k at the contract rate: (1 + contract rate / 12) to the power -k."), "1.0")
@@ -117,7 +122,8 @@ def methodology_docx(path):
     add(P("An overlay is made only for a risk this method does not capture. It is approved by the Audit and Risk Committee "
           "with the condition for its release and reported separately from the modelled allowance."), "2.0")
     add(("h1", "7. Limitations"), "1.0")
-    add(P("7.1 PD is set by product only. Risk grade, channel and state do not enter it."), "3.0")
+    add(P("7.1 PD is set by product and month on book only. Risk grade, channel and state do not enter it, and the record's "
+          "experience is used as it stands, with no curve fitted to it or smoothing."), "3.0")
     add(P("7.2 The stage 2 scalar was calibrated on arrears outcomes from 2023 to 2025 and is reviewed each year with the "
           "validation."), "4.0")
     add(P("7.3 LGD is a portfolio average for each product and does not vary with time in arrears or with the size of the "
@@ -138,17 +144,18 @@ def methodology_docx(path):
         cells={(1, 2): "4.2", (2, 1): "4.1", (2, 2): "4.2", (3, 1): "4.0", (3, 2): "4.2", (4, 1): "4.1", (4, 2): "4.2"})
     add(("h2", "8.3 Version history"), "1.0")
     add(("table", [["Version", "Date", "Change"],
-                   ["1.0", "Nov 2019", "First issue, at the launch of the personal loan portfolio"],
+                   ["1.0", "Nov 2019", "First issue, when the personal loan book moved to the loan system"],
                    ["2.0", "Jun 2020", "COVID-19 payment deferrals not treated as a significant increase in credit risk on "
                                        "their own; COVID-19 overlay introduced"],
-                   ["3.0", "Jun 2023", "Default curves rebuilt on Bellbird's own loan history; COVID-19 overlay released"],
+                   ["3.0", "Jun 2023", "PD read each quarter from the loan record by month on book; COVID-19 overlay "
+                                       "released"],
                    ["3.1", "Aug 2024", "Score condition moved to scorecard v4, with v3 origination scores converted"],
                    ["4.0", "Jun 2025", "Stage 2 scalar of 2.4 on PD(k) introduced (MV-2025-07)"],
                    ["4.1", "May 2026", "Hardship arrangements added to the stage 2 conditions; LGD for PL60 raised from 74 to "
                                        "76 per cent; the allowance reported to the Board after the Audit and Risk "
                                        "Committee's review"],
-                   ["4.2", "Aug 2026", "Annual review: PD from the PLPD-2026.06 curves (3.2); the measure for the "
-                                       "annual LGD review set out in 3.3"]], [1100, 1300, 6600], 19),
+                   ["4.2", "Aug 2026", "Annual review: the measure for the annual LGD review set out in 3.3"]],
+         [1100, 1300, 6600], 19),
         "1.0", rows=["1.0", "1.0", "2.0", "3.0", "3.1", "4.0", "4.1", "4.2"])
     blocks = [b for b, _ in B]
     history = [h for _, h in B]
@@ -252,6 +259,7 @@ The job runs at 07:30 on the first day after each quarter end, once the month-en
 
   personal_loan_book_2026-09-30.csv      run 1 October 2026: every loan open at close of business on 30 September 2026
   personal_loan_book_2026-06-30.csv      run 1 July 2026: every loan open at close of business on 30 June 2026
+  loan_record_2026-09-30.parquet         run 1 October 2026: every loan held, open or closed, at 30 September 2026
   write_offs_2025-07_2026-09.csv         run 1 October 2026
 
 Loan book extracts: one row per loan open in the loan system, loans in arrears included, sorted by loan number. A loan
@@ -278,6 +286,17 @@ batch once 180 or more days past due.
   state                    state of the borrower's residential address; blank for an overseas address
   channel                  origination channel: Broker, Online or Direct
 
+Loan record: one row per loan the loan system has held since it went live on 1 October 2019, when it took over the
+personal loan book from the earlier platform, whether still open or since repaid, settled or written off, sorted by
+loan number. The fields named as in the loan book extracts are as described there, and
+
+  default_month            month of the first month end at which the loan system recorded the loan 90 or more days past
+                           due (YYYY-MM); empty if it never has
+  status                   Open or Closed at close of business on 30 September 2026
+  closed_date              date the loan closed
+  closure_reason           Repaid in full (by its final repayment or ahead of its term), Settled (for less than it owed)
+                           or Written off
+
 Write-offs extract: one row per month.
 
   month                    month (YYYY-MM)
@@ -289,6 +308,7 @@ Write-offs extract: one row per month.
 Changes to ECL_QE_BOOK
   CHG-21-0157    12 Apr 2021    state added
   CHG-22-0384    9 Aug 2022     channel added
+  CHG-23-0207    6 Feb 2023     loan record added to the quarter-end run
   CHG-24-0251    1 Jul 2024     origination_scorecard added for the move to scorecard v4
   CHG-25-0112    3 Mar 2025     write-offs extract added to the quarter-end run
   CHG-26-0418    21 Jul 2026    current_score_v4 added
@@ -344,6 +364,17 @@ off, July 2023 to September 2026.
 debt_sale_2026-03_schedule.xlsx (Collections): the written-off accounts sold to Tarwin Receivables Pty Ltd in March
 2026, sale BPF-DS-2026-01, with each account's face value at the cut-off.
 
+wirraway_placements_2026-09-30.csv (Wirraway Mercantile Agents): the agency's client placement report as at 30
+September 2026, downloaded from its client portal on 2 October 2026. One row per account Bellbird has placed with the
+agency since October 2019, in the order placed.
+
+  Agency Ref               the agency's account reference
+  Client Ref               loan number
+  Placed                   date placed (DD/MM/YYYY)
+  Placed Balance           balance placed (AUD)
+  Closed                   date the placement closed (DD/MM/YYYY); blank while open
+  Close Reason             Paid in full, Settled, Returned (handed back by the agency) or Recalled (by Bellbird)
+
 
 D. OTHER FILES IN THE RUN FOLDER
 
@@ -352,19 +383,14 @@ D. OTHER FILES IN THE RUN FOLDER
   ifrs9_scenarios_2026Q3.xlsx
       Group Finance: the scenario weights, PD multipliers and economic assumptions approved by the Audit and Risk
       Committee for the quarter, the prior quarter's on a second sheet. Filed for the run.
-  pd_curve_personal_loans_2026-06.csv
-      Credit Risk Modelling: the PLPD-2026.06 default curves for PL36 and PL60. PLPD-2026.06 was approved on 24 June
-      2026 and this is the first quarter-end run on it, so its release package (the curves and the development sample)
-      is filed for the external auditors' review of the PD model change.
-  pd_model_development_sample.parquet
-      Credit Risk Modelling: the PLPD-2026.06 development sample. Filed with the curves.
   behaviour_score_runs_2026-03_2026-08.parquet
       Behaviour Scoring: the month-end scoring runs for March to August 2026. Filed for the stage migration report.
   scorecard_v4_migration_note.pdf
       Credit Risk Modelling: the scorecard v4 migration note of June 2024. Filed for the v3 to v4 conversion.
   arrears_roll_rates_fy26.xlsx
       Collections MI: month-end roll rates between arrears buckets, FY26. Filed for the Audit and Risk Committee pack.
-  collections_defaults_2023-24.csv, collections_receipts_2023-07_2026-09.csv, debt_sale_2026-03_schedule.xlsx
+  collections_defaults_2023-24.csv, collections_receipts_2023-07_2026-09.csv, debt_sale_2026-03_schedule.xlsx,
+  wirraway_placements_2026-09-30.csv
       Collections (section C). Filed for the annual LGD review.
 """
     with open(path, "w", newline="\r\n") as f:

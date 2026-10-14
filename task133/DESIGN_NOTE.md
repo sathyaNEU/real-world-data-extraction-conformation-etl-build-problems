@@ -1,431 +1,377 @@
 # task133 design note: Bellbird personal loans, the 30 September 2026 ECL allowance
 
-Private, never ships. Architecture v1, hardening loop 1 (2026-10-11). The portal round: one model was stumped, the
-other landed AUD 13,773,000 at 100 per cent by dividing the curve's increments by survival to date, and every ask went
-with it because each was an output of the same construction. This loop takes the main rung one step deeper (the curve
-is now the crude default share of every loan drawn, so survival to date is itself a wrong rung) and replaces the asks
-with two that the call's construction never touches. Seed FC04 (station maturity) was not used: its forward-maturity
-driver repeats the age-forward structure of task132 drawn the same day. Stage 6b (2026-10-11) answers the loop 1 round,
-whose careful solver missed the call and cracked both asks: each ask now sits under a silent device on rows the call never
-reads, the deferred forks are pinned, CRM-ECL-04 and the run-folder dictionary read as working documents, and PLPD-2026.06
-is released smoothed. The prompt, the call, the ladder and every golden figure are unchanged.
+Private, never ships. Round 2 (2026-10-14), the slot's second architecture under the same draw. The 10/10 audit found
+the loop 1 build compliant but weak: its decisive step (conditioning a crude cohort curve on survival of both exits) sat
+one rung above the step the v1 portal winner solved, and the development sample's prepaid outcomes beside a "share of
+every loan drawn" header signposted it. Round 2 moves the decisive step inside the same world. There is no filed curve
+any more: CRM-ECL-04 3.2 files the PD estimand and points at the loan system's record of every loan it has held, and the
+record holds the earlier platform's loans only from the 1 October 2019 go-live, when the loan system took over those
+still open. A competent PD build (monthly default and repayment rates by month on book, repayment as a competing exit,
+the textbook survival product) counts those loans from their drawdown and fills every early month's loans at risk with
+months the record never observed. The allowance is now reported in AUD million to one decimal. Ask A gains a second
+silent device (reissued agency references); ask B keeps its June arrears clock, now with the record's default month as
+in-world evidence. Stage 3 green; the reader and the judge run next (stage 4).
 
-## DRAW
+## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task133.json`, rewritten for loop 1 with the v1 driver in `lineage`, opening move deliverable-first since the pre-round repair, `layer1` brought up to the 6b pack; check and heart WARN only, surface 2 promoted on the deliverable order alone (GUARD below) |
+| Card | `.claude/skills/fingerprint/cards/task133.json`, edited in place for round 2 (the slot's 2026-10-11 draw kept: world, forum, forcing event, organisation), v1 and loop 1 in `lineage`; heart WARN, no BLOCK (GUARD lines in Ask sheet's tail and below) |
 | Domain / task type | banking-credit-financial-risk / expected-credit-loss-provisioning (client domain itself) |
-| Objective | Forecasting & Predictive Modeling: the allowance is the expected loss over each loan's next 12 months or remaining life |
+| Objective | Forecasting & Predictive Modeling: the allowance is the expected loss over each performing loan's next 12 months or remaining life, its PD estimated from the record's default and repayment experience |
 | Shape | 02: one committed figure with its stage split, plus two grids (realised loss by product and quarter, 8 cells; the June book's stages by where they stand at 30 September, 16 cells) |
 | Gate G mechanism | forecasting |
-| Gap, pattern | time (each loan's forward default probability given that it is still open and performing); pattern none |
-| Generators | G9 downstream survival against upstream acquisition, G13 horizon mismatch, G16 method selection |
-| Stump strategy | stated_rule_hard_construction |
-| Layer 2 family / pattern | field_method / `own:attrition-conditioned-lifetime-pd` |
-| Decisive rule filed | yes: CRM-ECL-04 3.2 files PD(k) as the probability of default in the k-th month after the reporting date from the model team's curve; the curve header defines its column as the share of the loans drawn in the development window that had defaulted by the end of each month on book. The step from one to the other is not written, and no sentence anywhere says anything about dividing, conditioning, survival or early repayment (asserted) |
+| Gap, pattern | population (who is at risk in each month on book: a taken-over loan only from the take-over), then time; pattern none, the generators leading with G12 |
+| Generators | G12 absence of record against record of absence, G9 downstream survival against upstream acquisition, G13 horizon mismatch |
+| Stump strategy | maturity_censoring (relabelled from stated_rule_hard_construction): left truncation, the record watching the taken-over loans only from the go-live; population_selection names the same risk-set error from the denominator side and is banned against task132 at this draw |
+| Layer 2 family / pattern | estimation_fit / `own:delayed-entry-for-a-taken-over-book` |
+| Decisive rule filed | no: 3.2 files the estimand (PD(k) for a loan in month on book a is the probability that a loan of the product open and not in default at the end of a first defaults at a + k, from every loan of the product in the record) and no method; nothing filed names entry, truncation, the risk set or the take-over's effect (asserted) |
 | Official decoy, validated decoy | no, no |
 | Decision | quantity_figure, currency |
-| Stakeholder | Head of Credit Risk Reporting (finance_controller), to the board (board_of_directors) with the Audit and Risk Committee chair presenting, at the quarter close (period_close) |
-| Context artifact | filed_model (the PLPD-2026.06 curve and its development sample) |
-| Calibration form | none: the curve is filed and complete, the method is filed, the difficulty is the construction |
+| Stakeholder | Head of Credit Risk Reporting (finance_controller), to the board (board_of_directors), at the quarter close (period_close) |
+| Context artifact | register: the loan record, the loan system's list of every loan it has held |
+| Calibration form | none |
 | World | New South Wales, AUD; Bellbird Personal Finance (fictional non-bank lender); PL36, PL60; Wirraway Mercantile Agents (collections agency) and Tarwin Receivables Pty Ltd (debt buyer), both invented |
-| People | Matthew Gardner, Stephanie Manning, Joseph Mitchell, Tamara Farrell, Adam Gordon, Renee Foster, Troy Olson, Natalie Hanna, Kayla Stokes, Christine Fletcher (guard.py names, en_AU, seed 133) |
+| People | Matthew Gardner, Stephanie Manning, Joseph Mitchell, Tamara Farrell, Adam Gordon, Renee Foster, Troy Olson, Natalie Hanna, Vanessa King, Christine Fletcher (guard.py names, en_AU, seed 133; Vanessa King replaces Kayla Stokes, whose first name the guard now blocks against task118) |
 
-**Data-native sentence.** A model team that develops its curve on complete-term cohorts publishes the crude default
-share of every loan drawn, because that is what a closed cohort gives without any modelling, and a young unsecured book
-repays early in volume: 41 per cent of the PL36 and 54 per cent of the PL60 development loans were repaid in full before
-term, and at the book's median month on book (14 for PL36, 21 for PL60) 14.6 and 22.3 per cent of the cohort have
-already left that way, so a performing loan's forward PD has to be measured against the loans still open, which only
-the sample's outcomes give.
+**Data-native sentence.** Bellbird's loan system went live on 1 October 2019 and took over only the loans still open and
+under 90 days past due on the earlier platform, so the record's 2014 to 2019 vintages are survivors (163 loans from 2014
+against 5,271 from 2018, mostly PL60s from before 2017): 16,479 loans the record holds only from their month on book at
+30 September 2019, whose earlier months could not end in a recorded default or closing, sit in every early month on
+book's loans at risk if each loan is counted from its drawdown, and the young book (median month on book 14 for PL36,
+21 for PL60) reads its PD from exactly those months.
+
+**Sources.** `layer2-rigor-patterns.md`, banking (PD term structures from loan-level performance with prepayment as a
+competing risk): teaches the default path's own construction; here the competing exit is the reflex and the step past it
+is where exposure starts. `exemplars.md` (the client's ECL and survival tasks): the depth of a staged ECL build; none
+turns on entry to observation. task134 v1 (an estimator under censoring with competing exits, landed): the reason the
+audit's suggestion (Aalen-Johansen on right-censored vintages) was not taken; censoring and competing exits are the
+default path here. task255 (deductibles carried as truncation on a size distribution): truncation of sizes by a floor;
+here it is truncation in time, by the date a record began. task132 (module-age band rates over a go-live window with
+renewal): a renewal process; here a loan defaults once and the issue is which months the record watched.
 
 **Layer 1 (the mess, and the systems that make it).** A loan system extract that gives drawdown and first-repayment
-dates rather than months on book; loans 90 or more days past due still on the book until write-off at 180; a hardship
-register of approved, active, completed and cancelled arrangements whose status is set by a Tuesday-night batch and
-read as at 30 September, with the 2020 and 2021 COVID-19 deferrals loaded in bulk and never moved on; origination scores
-on two scorecard versions with a published conversion; a smoothed curve file with one curve per product and a model
-version, beside the complete-term development sample it was fitted to; scenario weights in a committee workbook beside
-the prior quarter's; the June quarter-end extract from the same job without the behaviour score column (added by a
-change in July) and, from before the same change, counting days past due to its 07:30 run, beside month-end scoring runs
-stamped with the day each run was made; a Collections MI file whose case resolution is set when the case closes, so a
-cure recorded on an approved arrangement stands after the arrangement is withdrawn; a receipts ledger across every
-cohort with dishonoured direct debits reversed by negative rows and one debt-sale receipt carried without a loan number,
-and the sale schedule priced in cents per dollar of face value; a write-off file (settlement shortfalls included) and a
-roll-rate workbook that set nothing.
+dates rather than months on book, repayment dates moved to the next NSW business day; a loan record carrying the earlier
+platform's loans under their own lower numbering block, defaults at month ends and closures by reason; a hardship
+register of approved, active, completed and cancelled arrangements whose status is set by a Tuesday-night batch and read
+as at 30 September, with the 2020 and 2021 COVID-19 deferrals loaded in bulk and never moved on; origination scores on
+two scorecard versions with a published conversion; scenario weights in a committee workbook beside the prior quarter's;
+the June quarter-end extract from the same job without the behaviour score column (added by a change in July) and, from
+before the same change, counting days past due to its 07:30 run, beside month-end scoring runs stamped with the day each
+run was made; a Collections MI file whose case resolution is set when the case closes, so a cure recorded on an approved
+arrangement stands after the arrangement is withdrawn; a receipts ledger across every cohort with dishonoured direct
+debits reversed by negative rows, one debt-sale receipt carried without a loan number and agency remittances posted by
+the reference they quote; the agency's placement report with its own column names and day-first dates, whose references
+the agency reissues after a placement closes; the sale schedule priced in cents per dollar of face value; a write-off
+file and a roll-rate workbook that set nothing.
 
-**Layer 2 (the shortcut, and why an expert refuses it).** The textbook conditional PD for a loan that has survived to
-month a is the curve's increment divided by one less the curve to date. That is right for a curve of default against
-the loans still at risk, and wrong for this one: the header says the shares are of every loan drawn, so a loan repaid in
-full at month 10 is still in the base at month 20. A performing loan at month a is one of the development loans that
-have neither defaulted nor been repaid by then, so the divisor is S(a) = 1 - C(a) - Cl(a), with Cl(a) read from the
-sample. The over-correction (a default hazard rolled forward with no repayment) and the double count (S(a) plus a second
-repayment factor on EAD) are also wrong.
+**Layer 2 (the shortcut, and why an expert refuses it).** The textbook PD build from a loan-level record: for each
+product and month on book, the share of the loans open and not in default at its start that default in it and the share
+that close, then PD(k) as the default rate at a + k times the survival through a + 1 to a + k - 1. Every step of that is
+right except who is at risk: the record holds a loan drawn in 2016 only because it was still open in October 2019, so its
+months on book before then are months nobody watched it could have defaulted in. Counting it from drawdown puts it among
+the loans at risk in months where only survivors appear, which drives every early month's default rate down; an expert
+counts each taken-over loan only from its first month on book after the take-over (delayed entry), or reads the rates off
+the loans the record watched from drawdown, and either way lands the same figure.
 
-## GATE G
+## Default path
 
-- **Litmus.** No reported figure is overturned: the curve, the sample, the book, the scenarios and the method are all
-  correct. Litmus: no.
-- **Primary mechanism:** `forecasting` (lifetime and 12-month expected losses), with the attrition-conditioned PD as the
-  decisive construction.
-- `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
-- **Clean-data and instrument tests.** No file is incomplete or stale in a way the call rests on. Replacing every
-  instrument with a perfect one (a forward PD curve per month on book for loans still open) would hand over the answer,
-  but no model team ships that object: a crude cohort curve plus its development sample is the standard deliverable, and
-  conditioning it is the analyst's construction.
-- **Lens swap.** Not one population under two lenses: every rung uses the same loans and the same curve, and they differ
-  in the divisor.
+1. Stage `personal_loan_book_2026-09-30.csv` under CRM-ECL-04 sections 1 and 2: 3,266 loans in stage 2, 343 in stage 3.
+2. Read `loan_record_2026-09-30.parquet`: each loan's month on book of first default (default_month), of closing without
+   a default (closed_date), or the month it has reached if still open, counted in calendar months from its drawdown month
+   (3.2).
+3. For each product and month on book m, take the loans open and not in default at the start of m, every loan counted
+   from month on book 1, and the shares of them that first default in m and that close in m.
+4. PD(k) for a loan at month on book a: the default share at a + k times the shares neither defaulting nor closing in
+   each month a + 1 to a + k - 1; the 2.4 scalar on stage 2 (3.2).
+5. Apply LGD, the re-amortised balance and monthly discounting at the contract rate over 12 months or the remaining term
+   (3.1, 3.3 to 3.5), and the probability-weighted multiplier 1.0555 from the Q1 FY27 sheet (section 4).
+6. Sum: AUD 11,551,554.
 
-## THE STUMP
+Ends on: AUD 11.6 million
+Golden: AUD 13.2 million
 
-A competent solver stages the book, reads the PD curve as cumulative default by months on book, conditions each
-performing loan's forward increments on survival to date by dividing by 1 - C(a), and books about AUD 11.74 million,
-10.8 per cent low; the step that lands it there is taking the curve's shares as shares of loans still open when the
-header says they are shares of every loan drawn, so the loans repaid in full by month a stay in the at-risk base and
-every forward PD is understated. That decisive step is the one the v1 portal response completed, and it now returns the
-wrong answer.
+## Stump sentence
 
-## LADDER (allowance against the answer, measured by checks.py and verify.py)
+A strong solver builds each product's monthly default and repayment rates by month on book from the loan record,
+counting every loan from its drawdown, rolls each performing loan forward from its own month on book, and books AUD 11.6
+million against AUD 13.2 million (12.3 per cent low); the step that lands it there is counting the 16,479 loans the
+record took over at the October 2019 go-live as at risk from their drawdown, when the record holds them only because
+they were still open that day, so their earlier months fill every early month's loans at risk with exposure that could
+not end in a recorded default.
 
-| Rung | Construction | Allowance | vs answer |
-|---|---|---|---|
-| R0 | Curve read from origination for every loan | 18,265,903 | +38.80% |
-| Rh | Default hazard from the sample rolled forward with no early repayment (any default-only survival or Kaplan-Meier rebuild lands here) | 14,069,675 | +6.91% |
-| **Answer** | Increment from months on book divided by S(a) = 1 - C(a) - Cl(a), stage 2 scalar, scenarios, re-amortised EAD, discounted | **13,160,123, AUD 13,160,000** | |
-| R4b | S(a) conditioning plus a second early-repayment survival factor on EAD (repayment counted twice) | 12,366,781 | -6.03% |
-| R4 | Divided by 1 - C(a), survival to date (v1's answer, the path the portal response took) | 11,736,900 | -10.81% |
-| R3 | Shifted to months on book, no division (the loop 1 round's answer) | 11,421,233 | -13.21% |
+## Three rules
 
-Every rung misses the allowance and both stage amounts at the nearest thousand and sits at least 5 per cent from the
-answer (asserted in checks.py and verify.py; the nearest are R4b at 6.03 per cent and Rh at 6.91 per cent, with nothing
-planted to widen either). The answer's stage amounts are AUD 10,563,202 and 2,596,921. Off the curve: no discounting is
-+9.32 per cent, the balance held flat +16.66 per cent; dropping the hardship register moves 470 loans out of stage 2 and
-the allowance -1.76 per cent, skipping the v3 conversion moves 786 and -0.85 per cent (floors of 300 and 100 loans
-asserted).
+Task type: expected-credit-loss-provisioning, the banking domain's task type that serves Forecasting & Predictive Modeling: each performing loan's expected loss over its next 12 months or remaining life at 30 September 2026.
+Domain test: The deciding quantity is each loan's AASB 9 12-month or lifetime ECL, whose PD term is the product's default probability by month on book estimated from a loan-level performance record with repayment as a competing exit, then staged, scenario-weighted, re-amortised and discounted at the contract rate.
+Swap: Written as a maintenance reserve on pump leases from a lease register, the survival estimate survives, but staging on a significant increase in credit risk, the 2.4 scalar, LGD from recoveries, re-amortised EAD and probability-weighted scenarios have nothing to attach to, so the call stops reading the same.
+Layer 1: Dates rather than months on book (loan system), the earlier platform's numbering block (take-over), as-at hardship statuses moved by a Tuesday batch and stale COVID-19 rows (hardship workflow), v3 and v4 scores (scorecard migration), a June extract without the score column and counting arrears to its run, runs stamped the next day (batch scheduler), a blank-key sale receipt and reissued agency references (collections ledger); none carries the call.
+Layer 2: Estimation that fits the data (estimation_fit): left truncation; a record that took over the earlier platform's open loans watched them only from the go-live, so each taken-over loan enters the loans at risk at its month on book after 30 September 2019, not at drawdown.
+Decisive step: Delayed entry in the PD's life table: each loan taken over at the 1 October 2019 go-live counts among the loans at risk only from its first month on book after September 2019, because the earlier platform's loans that defaulted or closed before then never reached the record.
+Not semantics: Every field, the record's population sentence and 3.2's estimand read correctly still leave the textbook build counting each loan from drawdown, AUD 11.6 million; the miss is in which months a loan was observed at risk, an estimation choice, not the meaning of any field or code.
+Not rule application: CRM-ECL-04 3.2 files what PD(k) is and that it comes from every loan of the product in the record; no filed sentence says how to estimate it, when a loan enters the loans at risk, or anything about the take-over's effect (asserted), so executing every stated rule still files AUD 11.6 million.
+Analyst test: A strong analyst who stages the book cleanly, reads CRM-ECL-04 and the record's dictionary entry correctly and builds the textbook PD from monthly default and repayment rates by month on book over every loan in the record, each counted from its drawdown, books AUD 11.6 million against AUD 13.2 million, 12.3 per cent low.
+Estimand: CRM-ECL-04 1.1, 3.1 and 3.2 fix the population (loans open at close of business on 30 September 2026 in stages 1 and 2), the outcome (first default in month on book a + k for a loan open and not in default at the end of a, from every loan of the product in the loan record), the window (12 months or the remaining term), the unit (loan, 3.7) and the AUD allowance.
+No decoy: Nothing is planted to carry the wrong answer: no memo, draft, briefing, prior allowance, fitted curve or stakeholder figure ships; the record, the book, the register, the scenarios and the policy are all correct, and the distractors are the roll-rate workbook and the write-off file.
+No certified replay: No certified, published or prior-quarter allowance or PD ships, so the method cannot be recovered by reproducing a figure; the estimators that respect what the record watched (delayed entry, the taken-over loans left out, landmark shares) agree with each other, not with a filed number.
+Lesson: A loan-level record that took over a predecessor's open loans watched them only from the take-over, so a life table built from it must enter each taken-over loan at its age then; no build on file teaches left truncation of a taken-over cohort (nearest drivers 0.10 and below, task255's size truncation and task134's right censoring differentiated).
 
-**The released curve (6b).** PLPD-2026.06 is released smoothed, as a model team releases a curve (loop 1 shipped the
-sample's crude share, with a step in each product's last month). From month on book 4 the log of each month's increment
-is a natural cubic spline in month on book (knots and coefficients in world.py), fitted to the sample's monthly default
-shares weighted by the defaults in each month, the final month (which collects every default recorded after the last
-repayment date) left out of the fit; months 1 to 3 are the sample's own shares. `tune_curve.py` then moves the
-coefficients as little as the fit allows so the allowance and both stage amounts come out as they do on the sample's own
-shares, with the divisor's default share read from the curve and from the sample (closure row 6). Asserted: within 0.001
-of the sample before the term; increments positive and peaking in months 5 to 7, as the sample's do; roughness past the
-peak 0.084 (PL36) and 0.031 (PL60) of the sample's, with 2 turns against 15 and 39; lifetime shares 0.0893 and 0.1056
-against the sample's 0.0926 and 0.1066. The header says the column is smoothed and how, and still defines it as a share
-of every loan drawn.
+## Readability screen
 
-## SURVIVAL PROPERTIES
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R1 risk grade added to the rates, from drawdown | 7.1 says PD is by product and month on book only | risk_grade is a column | the covariate reflex itself | none | no | no | readable |
+| R2 repayment censored (default-only survival), from drawdown | 3.2's "open and not in default ... first defaults" | closure_reason column | the textbook Kaplan-Meier reflex | none | no | no | readable |
+| R3 each taken-over loan held from its month on book at the go-live (decisive) | no: 3.2 and the dictionary state the record's population, never entry, exposure or the take-over's effect (asserted) | no: no flag, entry or month-on-book column; the taken-over loans are known only by drawdown before the go-live | no: the reflexes (pool, stratify, censor, compete, smooth) all land wrong (R0 to R2b, the audit's crude routes) | no: no control, corpus or published PD scores the risk set | no: keys unique, no duplicates, every join lands; thin early vintages read as a smaller old book | no: rebuilding every month's loans at risk, not one ratio | silent |
 
-1. Not written: 3.2 names the curve (PLPD-2026.06) and defines PD(k); the header defines the curve's shares as of every
-   loan drawn, smoothed. No sentence says how a performing loan reads it, and the header and the policy carry no word
-   about dividing, conditioning, survival, attrition, early repayment or payout (asserted; "performing" appears in the
-   policy only in 3.3's cure clause, in the LGD review).
-2. The divisor sits in a second file: only the development sample's outcomes give Cl(a), and CRM-ECL-04 carries no
-   sentence about the sample (asserted), so nothing points a solver at it and nothing forbids it. The sample is in the
-   run folder for an in-world reason the dictionary states: PLPD-2026.06 was approved on 24 June 2026, this is the
-   first quarter-end run on it, so its release package (the curves and the sample) is filed for the external auditors'
-   review of the PD model change; the entry says nothing about the sample's use (asserted).
-3. The textbook move is the wrong one: 1 - C(a) is the standard survival divisor, so a careful solver who conditions
-   at all reaches it first; it is wrong only because of the curve's denominator.
-4. No arithmetic symptom: an allowance on 1 - C(a) reconciles to every control the pack has.
-5. Not a row predicate and not an enumeration: each loan's PD path depends on its own month on book along two filed
-   shares, and no column carries a conditional PD or a survival share.
-6. No cutover date.
-7. Survives deletion: nothing wrong to delete; deleting the asks' files moves nothing on the call (asserted).
+## Semantic fork table
 
-## THREE RULES (client update, 10/10)
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "collective expected credit loss allowance" | stages 1 and 2 | stage 3 included | off (and no PD for stage 3) | 1.1: stage 3 is assessed under CRM-ECL-06, outside this method |
+| SF2 | "our PL36 and PL60 loans at 30 September 2026" | the September extract, loans open at close of business | the record's Open loans | same call (the same 40,897 loans, asserted) | same call |
+| SF3 | "every loan of its product in the loan record" | every loan, the taken-over ones included, each where the record held it | the taken-over loans left out | same call, 13.2 (AUD 13,226,802) | same call |
+| SF4 | "open and not in default at the end of month on book a ... first defaults in month on book a + k" | default with repayment as a competing exit | repayment treated as censoring (default-only survival) | 14.1 | 3.2: a loan repaid before a + k never first defaults at a + k |
+| SF5 | months on book | calendar months from the drawdown month | counted from the first repayment month | same call, 13.2 | 3.2 pins the drawdown month; same call |
+| SF6 | the significant-increase scalar | on PD(k) | on the monthly default rate | 13.1 | 3.2: "Stage 2 loans carry the significant-increase scalar of 2.4 on PD(k)" |
+| SF7 | PD's dimensions | product and month on book | grade added | 13.3 | 7.1: "PD is set by product and month on book only" |
+| SF8 | "the record's experience is used as it stands" | rates read off the record, no fit | landmark shares read off the loans followed that far | same call, 13.2 | same call |
+| SF9 | a loan past contractual maturity | one month remaining | nothing remaining | same call, 13.2 | 3.2; same call |
+| SF10 | pause dates | count as repayments fallen due | left out | same call (AUD 13,192,848) | 3.2; same call |
+| SF11 | hardship in force at 30 September | 2.2's dates | the status label; the register ignored | label same call; ignored 12.9 | 2.2; 2.1 names the condition |
+| SF12 | v3 origination scores | converted to v4 | read as v4 | 13.1 | 2.3 |
+| SF13 | scenario weighting | probability-weighted multiplier 1.0555 | base only; the prior quarter's sheet | 12.5; 13.0 | section 4: the quarter's approved workbook, probability-weighted |
+| SF14 | EAD(k) | re-amortised current balance | balance held flat | 15.3 | 3.4 |
+| SF15 | DF(k) | monthly at the contract rate | none | 14.4 | 3.5 |
+| SF16 | rounding path | loan totals, rounded when reported | stage amounts rounded first | same call (10.6 + 2.6 = 13.2) | 3.7; same call |
+| SF17 | the record's default | first month end at 90 or more days past due | the day 90 was reached | not computable from the record | the record's field definition (1.2) |
+| SF18 | the record's window | events to 30 September 2026 | events to an earlier cut | not offered by the files | the record's population note |
+| SF19 | "the loans that defaulted in 2023-24" | the Collections MI file, July 2023 to June 2024 | calendar 2023 and 2024 | not offered by the files | the file's own population and name |
+| SF20 | "by product and quarter" | quarter of the default month within 2023-24 | quarter of resolution | off on all 8 | the MI file's default month; the prompt ties the ask to the defaults |
+| SF21 | "actually lost as a share of their balance at default" | 3.3's measure: receipts and the sale share, monthly discounting to the default month end | undiscounted; by days; from the month start; at the annual rate | off on 6 to 8 | 3.3 and 3.5 |
+| SF22 | a case closed as cured on an arrangement withdrawn before it started | lost nothing if it caught up; measured if it never made good its arrears (written off or settled for less) | every cure at its word; every withdrawn cure doubted | off on all 8; off on 7 of 8 | 3.3: "A loan that returns to performing, its arrears made good or a collections hardship arrangement started, has lost nothing"; the register, the receipts and the record agree on which (asserted) |
+| SF23 | "every amount received" on a loan | each remittance on the placement that carried its reference that day | the ledger's posted loan; the reference's latest placement; reissued references dropped | off on all 8 each | the records: each remittance falls inside exactly one placement of its reference; the posted read puts 719 on accounts sold in March 2026, after the sale |
+| SF24 | the sale proceeds | each sold account's face value at the cut-off times 3.85 cents | the receipt spread over the written-off cases | off on all 8 | 3.3 counts the proceeds of the debt's sale; the schedule prices each account |
+| SF25 | stage at 30 June | section 2 with days past due at close of business on 30 June | the June extract's days past due as they stand | 14 of 16 counts move | 1.3; the records show the June column counted to the 07:30 run: 0 of 1,827 values on a due date counted to 30 June, 15 loans at 180 days after a batch writing off at 180 (1.4), and the record dates the default of all 6 loans shown at 90 days after June |
+| SF26 | the June behaviour score | the month-end run on the 30 June position, made 1 July | the run made before 30 June | 16 of 16 move | 2.1 at the reporting date; the runs file names the month ends it scores and dates each run by the day it was made |
+| SF27 | "the number closed" | June loans absent from the September extract | the record's Closed status in the quarter | same call (3,317, asserted) | the dictionary: a loan leaves the extract once it closes |
+| SF28 | hardship in force at 30 June | 2.2's dates | the September status label | 16 of 16 move | 2.2 |
 
-- **Domain (swap test).** The deciding quantity is each loan's 12-month or lifetime expected credit loss under AASB 9:
-  a crude cumulative default curve under competing early repayment, turned into forward monthly PDs for loans still open
-  and performing, staged on significant-increase triggers, scenario-weighted, re-amortised and discounted at the contract
-  rate. Swap the nouns into another field and staging, LGD, EAD, prepayment and the coverage ratios have nothing to
-  attach to, so the task does not read the same.
-- **Two layers.** Layer 1 as above, all of it what a lender's systems produce. Layer 2: conditioning a crude cohort curve
-  on surviving both exits.
-- **Decisive step: analytical.** Analyst test: a strong analyst who cleans the book and reads 3.2 and the curve header
-  correctly conditions the curve on survival to date, dividing by 1 - C(a) as the textbook conditional PD, and books
-  about AUD 11.74 million against AUD 13,160,000. The v1 portal response did exactly that. The staging inputs (the
-  hardship dates rule, the v3 conversion, the 90-day filter) are stated rules and move the stage split, not the call.
+## Ladder
 
-## CLOSURE TABLE (22 axes, the main call)
+Measured by `checks.py` and `verify.py` on the shipped pack (allowance, AUD; reported to AUD 0.1 million):
 
-| # | Axis | Reading and closure |
+| Rung | Construction | Allowance | Reported | vs answer |
+|---|---|---|---|---|
+| R0 (default path) | life table by product and month on book, every loan from its drawdown, repayment competing | 11,551,554 | 11.6 | -12.35% |
+| R1 | the covariate reflex: rates by product, grade and month on book, from drawdown | 11,653,209 | 11.7 | -11.58% |
+| R2 | the textbook survival curve: repayment censored, from drawdown | 12,243,098 | 12.2 | -7.10% |
+| R3 (decisive) | each taken-over loan held from its month on book at the go-live | 13,178,713 | 13.2 | answer |
+| R2b | repayment censored, held from the take-over (over-correction) | 14,073,342 | 14.1 | +6.79% |
+
+- Every correction walks up and only the over-correction overshoots; the decisive move is the largest (+14.1 per cent
+  over the default path). R0 misses the allowance and both stage amounts; R1 and R2 miss the allowance and stage 1 and
+  land stage 2's bin (2.64 and 2.57 against 2.59) by offsetting errors, priced in the pair simulation.
+- The audit's routes on the record (a crude cumulative default share and its conditional readings) all land off:
+  resolved loans over 1 - C(a) 14.8, over the share still open 17.1, plain increments 14.3; every loan over 1 - C(a)
+  8.6, over the share still open 9.2; read from month on book 0 24.8; repayment counted again on EAD, on top of the
+  competing exit, 12.4 (-5.92 per cent).
+- C4 cells, each off the bin and ruled out by a quoted sentence: grade held from the take-over 13.3 (7.1), the scalar on
+  the default rate 13.1 (3.2), v3 read as v4 13.1 (2.3), hardship ignored 12.9 (2.1, 2.2), base scenario only 12.5
+  (section 4), EAD flat 15.3 (3.4), no discounting 14.4 (3.5).
+- C3 corridor: the answer and every convergent estimator sit inside AUD 13.15 to 13.25 million (13,174,979 to
+  13,226,802: taken-over loans left out, landmark shares, the first-repayment clock, past-maturity nil, the status label).
+  The answer sits 0.29 of a bin from its lower edge, stage 1 0.34, stage 2 0.45 (asserted at 0.2 or more).
+- R3a and R3b (three-rules block): the easy route with every filed rule executed files AUD 11.6 million on the answer's
+  stages and multiplier; changing only the entry of the taken-over loans files the answer to the cent.
+
+## Closure table
+
+| Axis | Reading | Closure |
 |---|---|---|
-| 1 | Population | loans open at close of business 30 September, stage 3 out (CRM-ECL-04 1.1) |
-| 2 | Unit | loan |
-| 3 | Attribution window | default month k after the reporting date (3.2) |
-| 4 | As-of dating | stage at the reporting date; days past due at close of business (1.3); hardship in force on the date under 2.2's dates; the behaviour score from the September month-end scoring run (the book's current_score_v4) |
-| 5 | Version basis | the Q1 FY27 scenarios sheet, not the prior quarter's (sheet named; ARC approval date); the PLPD-2026.06 curve |
-| 6 | Divisor | S(a) from the sample. C1 converge: the divisor's default share read from the curve (13,160,123) or from the sample's own shares (13,160,122), and the curve rebuilt from the sample unsmoothed (13,160,130), put all three figures in their bins with 5 per cent to spare (asserted in checks.py and verify.py; the smoothing is fitted under exactly these constraints); Cl(a) as repaid early only or early or at term gives 13,160,123 (nothing matures before its term at the months the book uses, asserted) |
-| 7 | Weighting | probability-weighted scenarios, linear in PD, one multiplier of 1.06 |
-| 8 | Window | 12 months stage 1, remaining term stage 2 (3.1); a loan past maturity outside stage 3 has one month remaining (3.2); read as carrying nothing instead, 13,160,056 (C3 corridor: 28 loans, AUD 66) |
-| 9 | Boundary | 30 and 90 days past due, 60-point score fall: "or more" (filed) |
-| 10 | Rounding | unrounded loan level (3.7); every graded figure at least 5 per cent of its bin from the edge under every kept reading (asserted; the allowance sits 0.377 of a bin from its edge, stage 1 0.298, stage 2 0.421; the nearest kept reading is the status-label staging at 13,160,286) |
-| 11 | Tie-break | none |
-| 12 | Maturity | months on book as repayments fallen due, pause dates counted (3.2, the curve header, the sample metadata, the dictionary); read without them (1,413 loans, 3,272 dates) the allowance is 13,204,961 and all three main figures move, so the pin is load-bearing (asserted) |
-| 13 | Order of operations | multipliers commute with sums |
-| 14 | Row order | sums only |
-| 15 | Duplicates | none in the book; register rows per arrangement |
-| 16 | Identity | loan_no joins book and register |
-| 17 | Netting | none |
-| 18 | Units | AUD; annual contract rate over 12 (3.5) |
-| 19 | Codes | a cancelled arrangement is not in force (2.2: "unless it has been cancelled"; no cancellation falls on 30 September or 30 June, asserted); two arrangements that ended 29 September still show Active, and staging on the label keeps the allowance in its bin (13,160,286, asserted); the 384 bulk-loaded COVID-19 rows still read Active and every one sits on a loan closed before 2026 (asserted) |
-| 20 | Integerisation | none |
-| 21 | Clause scope | the 2.4 scalar applies to PD(k) for stage 2 only (3.2) |
-| 22 | Forward window | the decisive axis, the attrition-conditioned curve. Exits are counted to the end of month a, as the header counts defaults; counting payouts in month a as still at risk, Cl(a-1) for Cl(a), lands 13,010,833 (-1.13 per cent) with stage 1 at 10,445,239 and stage 2 at 2,565,594, all three off their bins (asserted in checks.py and verify.py). The sample's metadata pins it: outcome_month_on_book is the month on book by the end of which the loan had defaulted, been repaid in full or matured, in the header's own words ("by the end of that month on book"), with nothing about conditioning, survival, open loans or the allowance (asserted) |
+| 1 Population | allowance: loans open at close of business 30 September 2026 in stages 1 and 2; PD: every loan of the product in the record | 1.1, 3.2 filed; C1: taken-over loans in or out land the same bin (SF3) |
+| 2 Unit of account | the loan | 3.7: ECL per loan, the allowance their total |
+| 3 Attribution window | forward months k from October 2026 | 3.1, 3.2; the record's events dated at month ends and closing dates |
+| 4 As-of dating | close of business 30 September 2026 | 1.3 and the extract and record headers |
+| 5 Version basis | CRM-ECL-04 v4.2, the Q1 FY27 scenario sheet | the document control; the sheet name; the prior quarter's sheet lands 13.0 (SF13) |
+| 6 Denominator | PD: loans open and not in default at the start of each month on book, each where the record held it | 3.2 files the estimand; the method is forced by the record's structure and every valid estimator converges (C3); the stump lives here as HOW |
+| 7 Weighting | 55 / 30 / 15 per cent on the scenario multipliers | section 4 and the approved sheet |
+| 8 Window length | the record's whole history | 3.2 "every loan of its product in the record"; C1 across own-only and landmark |
+| 9 Boundary inclusivity | 30, 90 and 60-point thresholds inclusive; arrangement dates inclusive | 2.1, 1.2, 2.2; C1: no arrangement ends or is cancelled on 30 September (asserted) |
+| 10 Rounding path | loan level, rounded when reported, AUD million one decimal | 3.7 and the prompt; stage amounts add (asserted) |
+| 11 Tie-break | none (one figure) | not applicable, asserted single answer |
+| 12 Maturity and censoring | open loans followed to September 2026; taken-over loans entered at the go-live; past-maturity loans one month | 3.2; the record's population; C3 |
+| 13 Order of operations | scalar on PD(k), then the multiplier (both multiply PD) | 3.2, section 4; the scalar on the rate is SF6 (13.1) |
+| 14 Row order | sums | C1, order-free |
+| 15 Duplicate resolution | one row per loan in every extract | asserted unique keys |
+| 16 Identity normalisation | loan numbers join book, record and register | asserted; the earlier platform's lower block joins as it stands |
+| 17 Netting against gross | per-loan ECL, no netting | 3.7 |
+| 18 Dimensional units | AUD; annual rates divided by 12 | 3.4, 3.5 |
+| 19 Code and status semantics | hardship status against dates; v3 against v4; closure reasons | 2.2, 2.3, the record's field definitions; never the stump |
+| 20 Integerisation | repayments fallen due counted on the business-day schedule | 3.2 and the dictionary's repayment day rule |
+| 21 Clause scope | 7.1 applies to PD; 3.2's estimand per product | 7.1, 3.2 |
+| 22 Forward window contents | PD from the record's experience, multipliers on PD, EAD on schedule | 3.2, section 4, 7.4 |
 
-## ASK LEDGER (supplemental-stumping Part 9, step 4; hardened at 6b)
+## Literal reader
 
-The loop 1 round's solver missed the call (R3, AUD 11,421,000) and banked both asks: it shared the lump sale receipt out
-at 3.85 cents a dollar of face value, netted the dishonours, discounted monthly from the default month end, set cures to
-nothing, scored June from the 1 July run and took hardship in force by 2.2's dates. Every device it beat sat on the
-hygiene battery's path (a blank loan number) or behind a filed rule it executed (3.3's sale clause, the run_date note,
-2.2's wording). 6b keeps those devices as hazards and puts one silent device under each ask, on rows the call never
-reads, visible only at a cross-file or cross-grain cut nothing invites, and resolved uniquely by the pack's own records.
-No golden figure moved: each device changes what the careful path reads, not what happened.
+A reader executing CRM-ECL-04 3.2 word for word estimates, per product and month on book, the probability that a loan
+open and not in default at the end of a first defaults at a + k, from every loan of the product in the loan record; the
+record files its own population as every loan the loan system has held since it went live on 1 October 2019, when it took
+over the earlier platform's book, so the earlier platform's loans in it are there because they were open at the go-live,
+and a literal estimate cannot treat their months before the go-live as months watched; every literal method that keeps to
+what the record holds (delayed entry, the taken-over loans left out, landmark shares) files AUD 13.2 million (C3,
+asserted), and the default path is an easy method on the same estimand, never another reading of it. The ask readings
+are closed in SF19 to SF28 by quoted sentences and by records each device leaves behind.
 
-**The main call's declared row population** (checks.py `separation`): the September book's loans in stages 1 and 2, the
-arrangements in force at 30 September, the curve and the development sample. Zero-counts asserted: none of the 59
-withdrawn collections arrangements and none of the 384 bulk COVID-19 rows is in force at 30 September or at 30 June,
-none of them sits on a loan in either book, and no written-off withdrawn cure is a stage 1 or 2 loan; the 1,827 June
-loans whose days past due the June extract counts to its run sit in a file the call never reads; of the 506
-arrangements in force at 30 June and not at 30 September (57 cancelled after June), none is in force at 30 September
-and none of the cancelled ones reads Active. Deleting the June extract, the scoring runs, the Collections files and the
-sale schedule leaves the allowance and both stage amounts identical; deleting the curve and the sample leaves all 24 ask
-figures identical; deleting the two distractors moves nothing. The September book, the receipts ledger, the sale
-schedule, the scenarios and the migration note are byte-identical to loop 1.
+## Oracles
 
-**Ask A, realised loss of the 2023-24 defaults by product and quarter (8 figures, per cent to one decimal, in the workbook)**
+- The write-offs extract (distractor): monthly write-offs and recoveries, totals invariant under either attribution of
+  agency remittances (D9, asserted); it states no PD, loss rate or allowance.
+- The roll-rate workbook (distractor): FY26 arrears roll rates by count; no PD by month on book, no allowance.
+- The scenario workbook's prior-quarter sheet: last quarter's multipliers (1.04 weighted), off the bin (13.0) and ruled
+  out by section 4's "the quarter's approved scenario workbook".
+- The sale schedule's header: face value times 3.85 cents equals the consideration and the blank-key receipt to the
+  cent under every reading of ask A.
+- The receipts total: the same under either attribution.
+- None ties only under the golden; no document states a graded figure (asserted).
 
-- Answer (unchanged): PL36 67.9, 65.8, 70.7, 70.9; PL60 70.4, 77.3, 73.5, 79.3 (July to September 2023 through April to
-  June 2024).
-- Named use: the auditors set the 70 and 76 per cent LGDs (CRM-ECL-04 3.3) against what the defaults have lost; it enters
-  the call as the audit trail of the LGD input (H18).
+## Ask sheet
+
+Both asks are decoupled from the call: neither reads the PD (asserted by running both with the PD code disabled), and
+the main call reads none of the June extract, the scoring runs, the Collections files, the sale schedule or the
+placement report (deleting them leaves the allowance identical, asserted). Zero device and hazard rows sit in the main
+call's population: none of the 72 withdrawn collections arrangements and none of the 1,334 bulk COVID-19 rows is in force
+at 30 September or 30 June or sits on a loan in either book; the 1,827 June loans whose arrears the extract counts to its
+run sit in a file the call never reads; the reissued references sit in the receipts ledger and the placement report,
+which the call never reads.
+
+**Ask A, realised loss of the 2023-24 defaults by product and quarter (8 figures, per cent to one decimal, workbook)**
+
+- Answer: PL36 67.9, 65.8, 70.7, 70.9; PL60 70.2, 77.4, 73.2, 79.3 (July to September 2023 through April to June 2024).
+- Named use and H18 home: the LGDs in 3.3 (70 and 76 per cent) are reviewed against what the defaults have lost; the
+  audit trail of the LGD input the call consumes.
 - Primary device A1, silent (D2, a stored label taken before a silent switch): Collections closes a default case as cured
-  when it approves a collections hardship arrangement, dated from the arrangement's start, and does not reopen the case
-  when the arrangement is withdrawn. 59 arrangements approved on 2023-24 defaults were withdrawn before they started: on
-  43 loans that stayed in default, were written off and were still paying Wirraway at the March 2026 sale (so none was
-  sold), and on 16 that caught up instead. The MI file reads Cured for all 59. Taking every label at its word (the
-  careful path) zeroes 43 written-off losses and lands every figure 2.4 to 3.1 points low.
-- Why it survives the battery: keys unique, no duplicate rows, every receipt and every case joins, every cure carries a
-  date, and 3.3's cure clause ("A loan that returns to performing has lost nothing.") reads as executed. The
-  inconsistency exists only across files: a case closed as cured whose loan the agency later collects from (the
-  dictionary's source field: agency remittances fall on written-off accounts), and whose arrangement the register shows
-  cancelled before its start.
-- Resolution, unique: the 43 never returned to performing (the arrangement never began, no catch-up, write-off and agency
-  recoveries followed), so 3.3 measures them on their receipts; the register rule and the ledger rule select the same 43
-  (asserted), and the rule the golden states holds over every case (every arrangement approved after a 2023-24 default
-  closed its case as cured, dated from its start: 120 of 120, 61 completed and 59 withdrawn). Over-cleaning half: the 16 that caught up did return to
-  performing and lose nothing (each has its catch-up receipt); doubting every cure on a withdrawn arrangement lands every
-  figure 0.8 to 1.6 points high.
-- Sizing (generator, asserted): in each product and quarter the written-off cases are drawn until the loss their labels
-  hide is at least 2 points of the cell's balance at default and 1 point more than the sale recovered there, so taking
-  the labels at their word and leaving the sale out cannot cancel; the caught-up cases until their doubted loss is at
-  least 0.8 points.
-- Hazards crossed (the careful solver executes these): the sale receipt with no loan number (D6, shared out by face
-  value), the cure clause, the discount clock (3.3 and 3.5), the dishonour reversals (texture: dropping them moves no
-  figure).
-- Pins for the deferred forks, in 3.3: "A loan that returns to performing has lost nothing." (reading a cure as its full
-  balance recovered at the cure and discounted moves all 8) and "discounted to the default month end monthly at the
-  contract rate, as in 3.5" (the annual rate per whole month moves all 8). Neither names a device.
-- Organ pair: CRM-ECL-04 3.3 with the register (the withdrawn arrangement) and the ledger (agency remittances); the
-  referee is the sale schedule's consideration, AUD 1,499,480.34, face value times 3.85 cents and the blank receipt to
-  the cent.
-- File path (6 files): collections_defaults_2023-24.csv, collections_receipts_2023-07_2026-09.csv,
-  debt_sale_2026-03_schedule.xlsx, hardship_register_2026-09-30.xlsx, CRM-ECL-04 (3.3, 3.5), ecl_extract_dictionary.txt
-  (section C).
-- Columns (15): loan_no, product, contract_rate, default_month, balance_at_default, resolution, resolution_date;
-  received_date, amount_aud, source; face_value_aud and the Price line; arrangement_start, arrangement_status,
-  cancelled_date.
-- Stops (PL36 then PL60, Q1 to Q4; none equals the answer at one decimal on any figure, each at least 0.15 points off):
-  - careful, this round's path with every cure at its word: 65.11 63.38 67.92 68.37 67.92 74.64 70.87 76.21
-  - s3, the per-loan sum, no sale, cures at their word: 66.32 64.58 69.17 69.69 69.03 76.02 72.17 77.76
-  - s1, written-off cases only, undiscounted, no sale: 74.63 78.78 80.43 81.02 82.79 84.39 83.09 88.03
-  - s2, cures in, undiscounted, no sale: 61.94 61.49 65.88 66.63 66.16 73.44 69.15 75.87
-  - s4, the sale receipt spread over the written-off cases by balance: 61.18 59.63 63.89 64.03 64.08 70.47 66.74 71.76
-  - over-cleaner, every cure on a withdrawn arrangement doubted: 69.22 66.83 71.58 72.29 71.99 78.37 74.33 80.16
-  - answer: 67.90 65.81 70.71 70.92 70.41 77.30 73.48 79.32
-  - also off on all 8: cures from their receipts, cures left out, the sale undiscounted, everything undiscounted, the lazy
-    path; 3.3 misread by days 7 of 8, from the month start, at the annual rate or with the cure discounted 8 of 8.
-- Composed mishandlings (cure rule by sale handling by discounting, 79 paths): every path with one or two mishandled
-  devices misses all 8, the days misreading aside; three at once reach at most 2 (asserted).
-- Insulation: reads no curve, no sample and no September staging; identical with them deleted (asserted).
+  when it approves a collections arrangement, dated from the arrangement's start, and does not reopen it when the
+  arrangement is withdrawn. Drawn at the rate Collections sees by how each case ended (55 per cent of the caught-up, 9
+  per cent of the written off and settled): 72 withdrawn, 59 on loans never made good (written off or settled; some sold
+  in March 2026) and 13 that caught up. Taking every label at its word zeroes the 59.
+- Primary device A2, silent (D7, codes reissued to other entities): Wirraway reissues the reference of a placement it
+  closed at least 90 days earlier to some new placements from its November 2024 platform move, the most recently freed
+  first, and Bellbird's receipts loader posts a remittance to the first placement on file with the reference it quotes:
+  639 references carried twice or more, 2,034 remittances posted to the wrong loan, 719 of them on accounts sold to
+  Tarwin in March 2026, after the sale. The posted read credits 2023-24 loans with later accounts' remittances.
+- Why both survive the battery: keys unique, no duplicate rows, every receipt joins the record, every cure carries a date,
+  the receipts and write-off totals tie under every handling. The inconsistencies exist only across files: a case closed
+  as cured whose arrangement the register shows cancelled before its start and whose loan the record closes as written
+  off; a remittance on an account whose placement had closed, or that was sold, and whose reference the placement report
+  shows on another account that day.
+- Resolution, unique: 3.3's cure clause with the register, the receipts and the record (the 59 never returned to
+  performing; the 13 have their catch-up receipts); each remittance to the placement holding its reference on the day it
+  was received (exactly one per remittance, asserted).
+- Hazards crossed: the sale receipt with no loan number (shared by face value), the dishonour reversals (texture), the
+  discount clock (3.3, 3.5).
+- File path (8 files): collections_defaults_2023-24.csv, collections_receipts_2023-07_2026-09.csv,
+  debt_sale_2026-03_schedule.xlsx, wirraway_placements_2026-09-30.csv, hardship_register_2026-09-30.xlsx,
+  loan_record_2026-09-30.parquet (closure reasons), CRM-ECL-04 (3.3, 3.5), ecl_extract_dictionary.txt.
+- Columns (19): loan_no, product, contract_rate, default_month, balance_at_default, resolution, resolution_date;
+  received_date, amount_aud, source, narrative; face_value_aud and the Price line; Agency Ref, Client Ref, Placed, Closed;
+  arrangement_start, cancelled_date (with arrangement_status); closure_reason.
+- Stops (nearest figure to the answer, every figure off at one decimal, asserted): careful (cures at their word,
+  remittances as posted) 2.50; A1 cracked, as posted 0.55; A2 cracked, cures at their word 1.96; over-cleaner (every
+  withdrawn cure doubted), as posted 0.36; the reference's latest placement 0.87; reissued references dropped 0.87;
+  latest placement with cures at their word 0.61; the sale left out 1.10; the sale spread 4.39; not discounted 2.77;
+  every cure on its receipts 8.00. Composed (cure rule by sale by discounting by attribution, 319 paths): at most 1 of 8
+  with one, two or three mishandlings: the over-cleaner that also cracks A2 hits PL60 April to June (no caught-up case
+  there was withdrawn), with the annual rate as well PL60 July to September, and the sale left out with no discounting
+  and the latest placement PL60 January to March.
+- Realism: an approved arrangement closing a case is how collections MI records a cure; agencies reissue account
+  references and a lookup on the first match is an ordinary loader's behaviour; the placement report is the agency's
+  standard client export.
 
 **Ask B, where the loans in stage 1 and stage 2 at 30 June stand at 30 September (16 counts, deck slide 2)**
 
-- Answer (unchanged; stage 1, stage 2, stage 3, closed at 30 September): PL36 stage 1 at June 14,470, 680, 42, 1,586;
-  PL36 stage 2 468, 658, 115, 123; PL60 stage 1 17,724, 831, 46, 1,180; PL60 stage 2 560, 942, 140, 112.
-- Named use: the board sees the quarter's deterioration, cures and closures behind the stage 2 amount it signs; it enters
-  the call as the audit trail of the staging the call consumes (H18).
+- Answer (stage 1, stage 2, stage 3, closed at 30 September): PL36 stage 1 at June 14,470, 680, 42, 1,586; PL36 stage 2
+  468, 658, 115, 123; PL60 stage 1 17,724, 831, 46, 1,180; PL60 stage 2 560, 942, 140, 112.
+- Named use and H18 home: the board sees the quarter's deterioration and cures behind the stage 2 amount it signs; the
+  audit trail of the staging the call consumes.
 - Primary device B3, silent (D8, a clock against a filed cutoff): ECL_QE_BOOK ran the June extract at 07:30 on 1 July,
-  before CHG-26-0418, when it counted days past due to its run, so every one of the 1,827 June loans in arrears reads a
-  day further than at close of business on 30 June: the 69 at 29 days read 30 and the 6 at 89 read 90. Read as
-  extracted, 14 of the 16 counts move.
-- Why it survives the battery: the column parses, keys join, the two extracts agree on every static field, the
-  dictionary describes both as loans open at close of business on the quarter end, and the change log records only
-  CHG-26-0418's new column. The inconsistency exists only across grains: no June value sits on a due date counted back
-  from 30 June (0 of 1,827, asserted), and 15 loans read 180 days after a batch that writes off at 180.
-- Resolution, unique: 1.3 takes days past due at close of business on the reporting date, one day less than the extract
-  shows, floored at 0.
-- Hazards crossed (the careful solver executes these): B1 the status label after the switch and the cancellations (2.2's
-  dates), B2 the run dated 1 July for the June month end (the runs file names the month ends it scores), 2.2's end date,
-  the September status lag (2 counts).
-- Pin for the deferred fork: the dictionary says a loan leaves the extract once it closes (repaid in full, settled or
-  written off), and stage 3 is a stage (1.1, 1.2), so the slide's four states are stages 1, 2 and 3 and closed.
-- File path (7 files): personal_loan_book_2026-06-30.csv, personal_loan_book_2026-09-30.csv,
+  before CHG-26-0418, when it counted days past due to its run, so each of the 1,827 June loans in arrears reads a day
+  further than at close of business on 30 June. Read as extracted, 14 of the 16 counts move.
+- In-world evidence: 0 of the 1,827 June values sit on a due date counted back from 30 June and every one from 1 July;
+  15 loans read 180 days after a month-end batch that writes off at 180 (1.4); the loan record dates the default of each
+  of the 6 loans the extract shows at 90 days to the July month end, and of every loan above 90 to June or before.
+- Hazards crossed: B1 the status label and the cancellations (2.2's dates), B2 the run dated 1 July for the June month
+  end, 2.2's end date, the September status lag (2 counts).
+- File path (8 files): personal_loan_book_2026-06-30.csv, personal_loan_book_2026-09-30.csv,
   behaviour_score_runs_2026-03_2026-08.parquet, hardship_register_2026-09-30.xlsx, scorecard_v4_migration_note.pdf,
-  CRM-ECL-04 (1.3, 2.1 to 2.3), ecl_extract_dictionary.txt.
-- Columns (13): loan_no, product, days_past_due, first_repayment_date, origination_score, origination_scorecard at both
-  dates; run_date, score_v4; arrangement_start, arrangement_end, cancelled_date, arrangement_status; current_score_v4.
-- Stops (counts moved of 16, every pair distinct, asserted): careful, as extracted with the 1 July run and 2.2's dates,
-  14; 1 labels and the May run 16; 2 dates without any cancelled and the May run 16; 3 dates and the May run 16; 4 dates
-  without any cancelled and the June run 11; 5 cancellation ignored 14; 6 September scores for June 16; labels and the
-  June run 16; the July run 16; the end date excluded 14. Every composed path (days past due by hardship rule by run, 39
-  paths) moves at least 6.
-- Insulation: reads no curve and no sample; the September staging it uses is the call's, which no device touches.
+  loan_record_2026-09-30.parquet (default months), CRM-ECL-04 (1.3, 1.4, 2.1 to 2.3), ecl_extract_dictionary.txt.
+- Columns (14): loan_no, product, days_past_due, first_repayment_date, origination_score, origination_scorecard at both
+  dates; run_date, score_v4; arrangement_start, arrangement_end, cancelled_date, arrangement_status; current_score_v4;
+  default_month.
+- Stops (counts moved of 16, every pair distinct, asserted): careful (as extracted, the 1 July run, 2.2's dates) 14; labels
+  and the May run 16; dates without any cancelled and the May run 16; dates and the May run 16; dates without any
+  cancelled and the June run 11; cancellation ignored 14; September scores for June 16; the July run 16; the end date
+  excluded 14. Every composed path moves at least 6.
 
-**Necessity matrix** (one device mishandled, everything else right): A1 the cure labels at their word 8 of 8, the sale
-left out 8, receipts undiscounted 8, every cure measured on its receipts 8, the sale spread over every write-off 8; B3
-the June arrears as extracted 14 of 16, B1 the label 16, B1 every cancelled out 14, B2 the May run 16.
+**Necessity matrix** (one device mishandled, everything else right): A1 8 of 8, A2 8 of 8, the sale left out 8, not
+discounted 8, every cure on its receipts 8, the sale spread 8; B3 14 of 16, B1 the label 16, B1 every cancelled out 14,
+B2 the May run 16.
 
-**Pair simulation** (planning weights 38 / 7 / 55; r = 5, the stage 2 count and the multiplier surviving a wrong curve
-reading). Both top responses are this round's careful solver: the hygiene battery applied, every filed rule it points at
-executed, every field read as its file describes it. Each keeps 2 of the 24 ask figures (the two PL36 counts into stage
-2 that B3 does not move). One on the call: cracker 49.6, mirror 16.6, pair **33.1**. Neither on the call: 16.6. The
-habitual sheet (per-loan sums, the last run made by the date, hardship off the status label) keeps none: pair 28.5. What
-the pass rests on: the two silent devices. Both responses catching A1 alone would put the pair at 51.4, B3 alone at 65.2,
-both at 83.5.
+**Hazard table.** Sale receipt (A, 8 figures, 1.1 to 1.6 points); discounting (A, 8, 2.8 to 5.5); dishonours (A, none:
+texture); B1 label (B, 16); B2 run date (B, 16); the September status lag (B, 2 counts).
 
-**Span floor.** Not met: ask A spans 6 files and ask B 7, against a floor of 8. Neither ask may read the curve or the
-development sample (the separation that keeps both decoupled from the call), which leaves 11 of the 13 files the
-solution uses, and no further file enters either computation without a dependency written for the purpose.
+**Referee.** The sale schedule's consideration, AUD 1,800,666.58: face value times 3.85 cents and the blank receipt to the
+cent, under every handling of A1 and A2.
 
-## PROMPT
+| Ask | The cracker's path (lands the call, runs the battery, executes every filed rule, cracks A1) | Figures kept | Verdict |
+|---|---|---|---|
+| A, 8 realised losses | cures by 3.3 with the register and the record; remittances as the ledger posts them | 0 of 8 (nearest 0.55 points) | miss |
+| B, 16 migration counts | the 1 July run, 2.2's dates; June days past due as extracted | 2 of 16 (PL36 into stage 2 from either June stage: 680 and 658) | miss |
 
-`prompt.txt`, 840 characters and 145 words in one plain-text paragraph with no markdown characters, written at ship
-under the author's ten prompt points; `prompt.md` is gone. The economy check (voice-check, run on `prompt.txt`) gives
-20.7 words a sentence, two sentences under eight words, one rounding tag, no "because", and reads the opening as
-question-first.
+Mirror leakage: 8.3 per cent of the ask weight (the mirror, on the default path, keeps the same 2 of 24 counts).
 
-The ten points, walked once:
-1. The question leads: "What collective expected credit loss allowance should we book on our PL36 and PL60 loans at
-   30 September 2026, built the way CRM-ECL-04 sets out with this quarter's approved scenarios?"
-2. Cut: Stephanie Manning, the Audit and Risk Committee, the board's 23 October sign-off, "my team's" and "the
-   auditors". None moves a figure: no rung, pin or ask reads a date after 30 September 2026 or a person.
-3. Kept because a figure could move without it: 30 September 2026, PL36 and PL60, CRM-ECL-04, this quarter's
-   approved scenarios, the 30 June groups, and the tie between the realised-loss ask and the LGDs (it is what puts the
-   ask on CRM-ECL-04 3.3's basis, discounted to the default month end; without it an undiscounted share is a second
-   reading).
-4. Every ask carries over word for word: both file names, "built the way CRM-ECL-04 sets out with this quarter's
-   approved scenarios", "where each product's stage 1 and stage 2 loans at 30 June stood at 30 September, giving for
-   each of those four groups the number in each stage and the number closed", "what the loans that defaulted in 2023-24
-   have actually lost as a share of their balance at default", "by product and quarter", "in Australian dollars to the
-   nearest thousand", "in per cent to one decimal".
-5. Meaning held: "add that" now names the workbook, where the golden carries it; the nearest-thousand rounding now
-   also names the stage amounts, which the golden already states to the thousand and which sum to the allowance.
-6. One paragraph, ordered question, files, rounding; no list and no "then".
-7. The two rounding rules are stated once, in the last sentence.
-8. Asked, not specified: "Put it with", "add that", "I also need".
-9. No opinion argues for a wrong answer.
-10. The answer turns on analysis: the conditioning base of a cumulative default curve (THE STUMP), not on a field or a
-    stated procedure.
+Pair ceiling: 33.1 (planning weights 38 / 7 / 55, r = 5: cracker 49.6 with A1 cracked, mirror 16.6). With the mirror on
+R1 or R2 also keeping stage 2's component, 35.6; both top responses on the call, 49.6; the habitual sheet 28.5. The
+residual risks, priced: the cracker cracking B3 instead of A1 puts the pair at 49.1, and cracking both A devices at 42.3;
+A1 is taken as the most obvious device because 3.3's "a collections hardship arrangement started" sends a careful reader
+to the register, while B3's evidence needs a cross-grain cut against the due dates, the write-off batch or the record's
+default month.
 
-6b left the old prompt word for word. The conversion at ship changes no ask, unit or rounding. This is a returned
-task (portal round 1), so it ships from design, build and commit without a reader, solver round or judge.
+**Span floor.** Met: ask A 8 files, ask B 8 files.
 
-## PRE-SHIP CHECK (the client's three rules and two layers)
+**Guard lines (heart WARN, no BLOCK).** people.last Olson (task181) and people.first Vanessa (task108), Christine
+(task104): older builds only, names drawn by guard.py. repeat.gate_g forecasting against task132: both in the
+Forecasting block, mechanisms differ (renewal against left truncation). repeat.deliverables pptx and xlsx against
+task129: the deliverables are the slot's since v1. Driver nearest 0.10 (this slot's loop 1), 0.06 task501 v3 and task23;
+same_driver_older against task180 differentiated on the card.
 
-1. Domain: the deciding quantity is the AASB 9 allowance from staging, an attrition-conditioned crude default curve,
-   LGD, re-amortised EAD, scenario weights and discounting; with another field's nouns none of that has anything to
-   attach to.
-2. The inputs take real work (dates rather than months on book, a register read as at September, two scorecard
-   versions, a June extract without the score and counting arrears to its morning run, runs stamped the next day, a
-   sale receipt with no loan number, Collections cases closed as cured on arrangements later withdrawn) and none of it
-   is planted: each is how the lender's systems record it.
-3. The flipping step is methodological: a crude cohort curve conditioned on surviving both exits. Not a planted catch,
-   not a field reading, not a stated rule applied.
-4. Analyst test: an analyst who reads every rule and the header correctly and divides by survival to date books
-   AUD 11,737,000; the portal's v1 response did exactly that.
-5. 3.2 defines PD(k) as the probability of default in the k-th month after the reporting date, and the header defines
-   the curve as a share of every loan drawn; for a loan still open and performing only the attrition-conditioned
-   increment is that probability.
-6. No decoy memo, staff draft or briefing; the distractors are the roll-rate workbook and the write-off file.
-7. No certified, published or prior-quarter allowance in the pack, so nothing pins the method by replay.
-8. The lesson (condition a crude cohort curve on both exits) is not one an earlier build teaches: guard heart WARN, the
-   nearest driver task134 at 0.18, differentiated.
+## Leak review and stage 3 gates
 
-## GUARD (guard.py check and heart, WARN only; surface 2 promoted on the deliverable order alone)
-
-- three_rules.strategy_risk: the analyst test is the answer; the easy route that still fails once every rule is read is
-  dividing by survival to date.
-- driver.near task134 (0.18, heart 0.14): differentiated on the card. task134 estimates the probability that a released
-  unit has an event within a fixed horizon from censored follow-up with competing exits, an estimator under incomplete
-  observation; here the curve is filed and every development cohort is complete, nothing is censored or estimated, and
-  the move is conditioning a filed crude cohort curve on each performing loan having come through both exits.
-- driver.near task133 v1 (0.27, this slot): differentiated; the loop moves the decisive rung from survival to date to
-  survival of both exits on the same curve.
-- people.first Kayla (task118) and Christine (task104): older builds only, ordinary first names, drawn by guard.py names.
-- repeat.gate_g forecasting (task130 v3, task132): both sit in the Forecasting block with different mechanisms.
-- people: the only persona the cut pack names is Stephanie Manning, on the card.
-
-Surface after the pre-round repair: two pairs promoted, task124 (0.149) and task89 (0.143), and the one axis that moved
-is the deliverable species, which the screen reads in the order the prompt names the files. The prompt now names the
-deck before the workbook, as both of those prompts do. Neither pair shares wording, a file name, a schema, a persona
-or an invented name with task133, and before the repair the same pairs scored 0.089 and 0.083. Naming the workbook
-first again would undo the prompt-order repair, so the pairs are left for the author's /clone-check.
-
-6b: `guard.py check` and `heart task133` WARN with the same lines as above and no BLOCK; `surface task133` promotes the
-same two pairs at the same scores (task124 0.149, task89 0.143) and nothing new; the card's `layer1` now names the
-June extract's arrears clock, the Collections case closure, the bulk COVID-19 statuses and the smoothed curve.
-
-## LEAK REVIEW
-
-- `leak.py --asof 2026-10-12` on the loop 1 cut: REVIEW, no LEAK. Each line:
-  - author vocabulary "the model" in CRM-ECL-04 3.2: it is the model team, the department that owns the curve.
-  - golden figures 680 and 560 in the scorecard migration note: v3 scores in its conversion table, not the migration
-    counts they coincide with.
-  - CRM-ECL-04 carries 8 of 9 words of the call: its scope sentence names the allowance it governs, with no figure.
-  - stump-term overlap (CRM-ECL-04 10 of 25: staging, status, months, forward, reporting, repayment; the dictionary 8
-    of 25: sample, months, reporting, repayment, arrangement, performing): the subject's own words, with "performing"
-    only in the cure definitions of 3.3 and the Collections fields; neither document names the move, and neither says
-    anything about dividing, conditioning, survival or early repayment (asserted).
-  - dates after the setting: in the register, the end dates of arrangements in force and the dates of approved ones
-    not yet started; in the September book, the first repayment dates of loans drawn in September.
-- v1's four reader rounds left these in the generator, and they stand: the pause pin and the past-maturity pin in 3.2,
-  the curve header, the sample metadata and the dictionary; Office 2013-2022 containers with in-fiction creators and
-  dates; the development sample extracted Tuesday 2 June 2026; the plain clauses 1.5, 1.6, 1.7, 2.4, 2.5, 3.6 and 3.7;
-  57 blank states for overseas addresses and a few pre-July 2020 cases with no reason; the Tuesday-night status batch;
-  the policy's statistics and revision ids; the register written by svc_crr_batch and last saved by Kayla Stokes; the
-  migration note left as LibreOffice output; the 2021 lockdown pauses on loans closed before 30 September.
-- Loop 1 changed documents under `target/` and the prompt, so the main session's reader pass runs on this cut.
-- Pre-round repair of the loop 1 read. The reader found no sentence that hands over the step and no file that states
-  the answer. Its question 3 (the development sample read as there only to help) is answered by a filing note under
-  the sample's entry in the run folder's list of other files. The fork on the main call (whether a loan repaid in full
-  during month on book a is still on the books at a) is closed by closure row 22's pin. The filing note is not repeated
-  in the sample's own description, which was written at extraction on 2 June 2026, before the approval. leak.py on the
-  repaired cut: REVIEW, no LEAK, the same files and lines as above. Under `target/` only `ecl_extract_dictionary.txt`
-  and `pd_model_development_sample.parquet` changed, so the next read covers those two files and the prompt.
-- The same commit replaces two stale blobs left under `target/` at 22d2dfd, the September book (three rows) and the
-  roll-rate workbook, each an older build's file of the same byte size, which git never saw change. `target.zip` and
-  the generator already carried the current files; on the stale folder BPL2247062 stays in stage 1 (3,265 in stage 2
-  against 3,266) and two ask B counts move.
-- 6b cut, `leak.py --asof 2026-10-12`: REVIEW, no LEAK. The "the model" line is gone (3.2 now names Credit Risk
-  Modelling and PLPD-2026.06). Each remaining line:
-  - golden figures 560 and 680 in the migration note: v3 scores in its conversion table, as before.
-  - CRM-ECL-04 carries 8 of 9 words of the call: its scope sentence, with no figure.
-  - stump-term overlap, CRM-ECL-04 9 of 25 (months, performing, reporting, staging, nothing, status, repayment,
-    arrangement, forward): the subject's own words; "performing" and "nothing" sit only in 3.3's cure clause, about the
-    LGD review, and "forward" is section 4's heading. The dictionary 9 of 25 (sample, months, reporting, nothing,
-    development, repayment, arrangement, dictionary, register): field definitions and its own section names; "nothing"
-    is the pause's "nothing payable". Neither names the move or says anything about dividing, conditioning, survival or
-    early repayment (asserted).
-  - dates after the setting: unchanged (arrangement end dates and approved starts; first repayments of September
-    drawdowns).
-- 6b changed documents under `target/` (CRM-ECL-04, the dictionary, the curve header, the descriptions in both parquet
-  files) and data on the ask paths (the June extract's days past due, the Collections MI file, the register's new rows
-  and COVID-19 statuses, the write-off file), so a reader's pass on this cut is owed before the round or the judge
-  reads it; the earlier reader sections stay appended to the report.
-- `leak.py --asof 2026-10-12` again at ship, sweeping `prompt.txt`: the same REVIEW lines as the 6b cut and no LEAK; sweeps 4, 5 and 11 read the new prompt clean.
+- `leak.py task133 --asof 2026-10-12`: REVIEW, no LEAK. Each line:
+  - 7.1 in CRM-ECL-04: the limitations clause number, which the write-up cites, not a figure.
+  - 560 and 680 in the migration note: v3 scores in its conversion table, not the counts they coincide with.
+  - CRM-ECL-04 carries 9 of 10 words of the call: its scope sentence (1.1) names the allowance it governs, with no figure.
+  - stump-term overlap, CRM-ECL-04 6 of 25 (record, repayment, status, months, points, arrangement) and the dictionary 9
+    of 25 (record, drawdown, repayment, status, months, earlier, among them): the subject's own words. The dictionary's
+    "earlier platform" and "took over" are the loan record's population sentence, the filed WHAT the literal reader
+    needs; neither document says anything about entry, exposure, truncation, the loans at risk or how to count a
+    taken-over loan (asserted in `forks`).
+  - dates after the setting: arrangement end dates and approved starts in the register; first repayment dates of loans
+    drawn in September in the book and the record.
+- `guard.py surface task133`: 1 pair promoted, task180 (surface 0.078, corpus percentile 52), on the card-level
+  same-driver signature (gap population, pattern G12, Gate G forecasting), not on wording, file names, schema or
+  personas; differentiated on the card (task180 restores events a detector masked, so its record misses events that
+  happened; here every default after the take-over is recorded and what the record lacks is the taken-over loans'
+  earlier months). Left for the author's `/clone-check`. The only persona the cut pack names is Stephanie Manning.
+- `guard.py validate`: 1 card valid. `guard.py heart task133`: WARN, no BLOCK (lines in the Ask sheet's tail).
+- `golden-realism`: no edit. Named sheets, findings as titles, precision by quantity (AUD million, whole loans, the
+  multiplier to two decimals, balances to the cent, losses to one decimal), source lines from the fiction, the rounding
+  convention and the method on a notes sheet; the deck's titles are findings with a source strip and slide numbers.
+- `reduce-house-fixes`: H1 container audit clean on `target/` and `golden/`; H4 the zip holds the 15 files flat; H6 the
+  golden's attribution rule holds for every remittance (one placement each) and its cure rule for every case (asserted);
+  H7 two rebuilds byte-identical to the shipped `target/`, `target.zip` and `golden/`; H8 every clause cited resolves;
+  H9 every shipped file named in the run folder's dictionary and in `metadata.json` (asserted); H11 one write-up and one
+  prompt; H16 no record dated after its extract; H24 the constructed-pack statement sits only in `metadata.json`.
 
 ## Tried and rejected
 
@@ -458,3 +404,18 @@ June extract's arrears clock, the Collections case closure, the bulk COVID-19 st
 - Agency remittances carried gross of Wirraway's commission as a span-adding ask A device (6b): needs a filed "net of commission" rule the careful solver would execute and a commission source; not built.
 - The caught-up half of the cure-label device sized at 0.3 points (6b): doubting every cure on a withdrawn arrangement and leaving the sale share undiscounted then cancelled to the answer in one cell; the caught-up cases are drawn to 0.8 points.
 - The 8-file span floor for both asks (6b): not met (6 and 7 files). The asks may not read the curve or the sample, and every other file left (the scenarios, the two distractors) could enter only through a dependency written for the purpose.
+- Round 1 shipped design: weak per the 10/10 audit, because its decisive step (dividing a crude cohort curve's increments by the share of the cohort neither defaulted nor repaid, read from the development sample) sat one rung above the step the v1 portal winner had already solved, and the sample's prepaid outcome column beside a curve header saying "share of every loan drawn" pointed straight at it; round 2 ships no curve and no sample and moves the decisive step to where a taken-over loan's exposure starts.
+- The audit's suggestion, a crude curve rebuilt by Aalen-Johansen from right-censored recent vintages: an estimator under censoring with competing exits is task134 v1's driver, whose default construction landed; censoring and the competing repayment exit are this build's default path instead, and the decisive move is left truncation.
+- EAD at default (re-amortised against the balance at default) as the decisive step: 3.4 files EAD, so the step would be rule application.
+- A cure followed by a re-default as the PD's decisive step: the cure clause either blesses the wrong answer or announces the check (already rejected for ask A at 6b).
+- Hazard against landmark estimation as the stump: both are valid on the record and land the same bin, so the choice between them is no stump; both sit in the corridor.
+- LGD development (recoveries not yet complete) as the main call's step: 3.3 files the LGDs, so the call estimates none.
+- Scenario weighting as the step (the weighted multiplier against weighting scenario ECLs): linear in PD, identical; no stump.
+- The allowance at the nearest AUD thousand: the estimators that respect what the record watched (taken-over loans left out, landmark shares, the first-repayment clock) sit 0.1 to 0.4 per cent apart and split the thousand-dollar bins; reported in AUD million to one decimal they all file 13.2 (C3).
+- Stage amounts at two decimals of a million: leaving the taken-over loans out moves stage 2 from 2.59 to 2.62; one decimal keeps the corridor, and R1 and R2 then land stage 2's bin by offsetting errors (accepted and priced: the call and stage 1 miss on both).
+- The earlier platform's loans numbered as a separate go-live block: a marker column in all but name; they keep their own BPL numbers, below the loan system's range.
+- The first-repayment clock at -2.9 per cent: an artefact of reading rates on one clock and positions on the other; on one clock throughout it lands the answer's bin (13.2), so SF5 converges.
+- Withdrawn-arrangement cures drawn at one rate for every 2023-24 case (6 or 12 per cent): the over-cleaner hit 6 or 7 cells; drawn by how each case ended (55 per cent of the caught-up, 9 per cent of the written off and settled) it misses every cell unless it also cracks A2, then 1 (PL60 April to June, where no caught-up case was withdrawn).
+- A2 with references reissued from the go-live, at random or oldest first: new 2023-24 placements took references first held by 2019 to 2022 write-offs, so the posted read raised losses 1 to 4 points while A1 lowered them, the two composed to within 0.1 point of the answer in two cells, and the reference's latest holder reproduced the answer in seven cells; reissued from the agency's November 2024 platform move, the most recently freed first, the posted read sits below the answer in every cell and the latest holder above it.
+- A second silent device for ask B (a superseded re-run of the June scoring run; an origination scorecard label corrected between the June and September extracts; paused loans left out of the June extract): the first two need a filed rule to adjudicate them, the third loses the truth; B3 stays the one silent primary, with the loan record's default month added as its in-world evidence, and the pair is priced with A1 as the most obvious device and B3 as the residual risk (49.1).
+- The change log naming the June arrears clock (the audit's suggested WHAT for B3): a filed sentence on the ask's path is executed by the cracker; 1.3 files the WHAT (close of business) and three records show the June column counts to the run, so the device stays unnarrated.

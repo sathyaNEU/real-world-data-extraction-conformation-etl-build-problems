@@ -10,7 +10,7 @@ import numpy as np
 
 import world as W
 
-EPOCH = dt.date(2019, 1, 1)
+EPOCH = dt.date(2014, 1, 1)
 BIG = 10 ** 7
 J = 66                      # instalment slots: a 60-month term plus six months of post-maturity arrears
 REASONS = ["Unemployment", "Reduced income", "Illness or injury", "Relationship breakdown", "Increased expenses", "Other"]
@@ -94,15 +94,18 @@ def luhn(q):
 
 # ---------------------------------------------------------------------------------------------- originations
 
-def originations(rng, cal):
-    R = dn(W.REPORT)
+def originations(rng, cal, legacy=False):
+    """every loan drawn in the window: on the loan system from its go-live to the reporting date, or (legacy) on the
+    earlier platform from July 2014 to the day before the go-live"""
+    start, end = (W.LEGACY_START, W.LEGACY_END) if legacy else (W.GO_LIVE, W.REPORT)
+    R = dn(end)
     draws = []
-    m = W.GO_LIVE
-    vol = W.VOL_START
-    while m <= W.REPORT:
-        if m > W.GO_LIVE:
-            vol *= math.exp(W.period_value(W.VOL_GROWTH, m))
-        lam = vol * W.SEASON[m.month] * W.VOL_SHOCK.get((m.year, m.month), 1.0)
+    m = start
+    vol = W.LEGACY_VOL_START if legacy else W.VOL_START
+    while m <= end:
+        if m > start:
+            vol *= math.exp(W.LEGACY_GROWTH if legacy else W.period_value(W.VOL_GROWTH, m))
+        lam = vol * W.SEASON[m.month] * (1.0 if legacy else W.VOL_SHOCK.get((m.year, m.month), 1.0))
         n = int(rng.poisson(lam))
         nxt = dt.date(m.year + (m.month == 12), m.month % 12 + 1, 1)
         days = cal.bdays(dn(m), min(dn(nxt) - 1, R))
@@ -118,7 +121,7 @@ def originations(rng, cal):
     yrs = np.array([d.year for d in dates])
     ch = np.zeros(N, int)
     uc = rng.random(N)
-    for y, (pb, po, _) in W.CHANNEL_MIX.items():
+    for y, (pb, po, _) in (W.LEGACY_CHANNEL if legacy else W.CHANNEL_MIX).items():
         sel = yrs == y
         ch[sel] = np.where(uc[sel] < pb, 0, np.where(uc[sel] < pb + po, 1, 2))
     L["channel"] = ch
@@ -134,16 +137,17 @@ def originations(rng, cal):
     L["app"] = app
     app_dates = [dd(x) for x in app]
     # borrower state, by channel and year
-    yrf = np.array([1.0 + W.STATE_HOME_TILT[0] * math.exp(-(y - 2019) / W.STATE_HOME_TILT[1]) for y in range(2019, 2027)])
+    y0, y1 = (2014, 2019) if legacy else (2019, 2026)
+    yrf = np.array([1.0 + W.STATE_HOME_TILT[0] * math.exp(-(y - y0) / W.STATE_HOME_TILT[1]) for y in range(y0, y1 + 1)])
     st = np.zeros(N, int)
     us = rng.random(N)
     for c in range(3):
-        for y in range(2019, 2027):
+        for y in range(y0, y1 + 1):
             sel = (ch == c) & (yrs == y)
             if not sel.any():
                 continue
             w = np.array(W.STATE_BASE) * np.array([m[c] for m in W.STATE_CHANNEL])
-            w[0] *= yrf[y - 2019]
+            w[0] *= yrf[y - y0]
             st[sel] = np.searchsorted(np.cumsum(w / w.sum()), us[sel], side="right")
     L["state"] = np.minimum(st, len(W.STATES) - 1)
     # application score (v3 scale), truncated at the approval floor in force when the application was received
@@ -224,7 +228,9 @@ def originations(rng, cal):
     # never funded
     order = np.lexsort((rng.random(N), app))
     seq = np.zeros(N, np.int64)
-    seq[order] = 100100 + np.cumsum(1 + rng.poisson(1.35, N))
+    step = np.cumsum(1 + rng.poisson(1.35, N))
+    # the earlier platform allocated the same numbers from July 2014, up to the block the loan system started at
+    seq[order] = (100100 + step) if not legacy else (100100 - 40 - int(step[-1]) + step)
     L["loan_no"] = np.array(["BPL%06d%d" % (q, luhn(q)) for q in seq])
     return L
 
@@ -236,9 +242,20 @@ class Sim:
 
 
 def simulate(seed=W.SEED):
-    rng = np.random.default_rng(seed)
+    """the loan system's loans: its own, drawn from the go-live, then the earlier platform's loans it took over at the
+    go-live (open and under 90 days past due at close of business on 30 September 2019), appended in drawdown order"""
     cal = Calendar()
-    L = originations(rng, cal)
+    own = simulate_window(seed, cal)
+    old = simulate_window(W.LEGACY_SEED, cal, legacy=True)
+    t = dn(W.LEGACY_END)
+    took = np.nonzero(open_at(old, t) & (dpd_at(old, t) < 90))[0]
+    took = took[np.lexsort((old.L["app"][took], old.L["draw"][took]))]
+    return merge(own, old, took)
+
+
+def simulate_window(seed, cal, legacy=False):
+    rng = np.random.default_rng(seed)
+    L = originations(rng, cal, legacy)
     N = len(L["draw"])
     R = dn(W.REPORT)
     T = L["T"]
@@ -308,20 +325,44 @@ def simulate(seed=W.SEED):
     S.m_def = np.zeros(N, np.int64)
     S.res_kind = np.zeros(N, np.int8)          # how a default was resolved: 1 caught up, 2 collections hardship
     S.res_day = np.full(N, BIG, np.int64)      # arrangement, 3 written off, 4 settled; and the day it was
+    S.legacy = legacy
     defaults(S)
     hardship(S)
-    finish(S)
-    lockdowns_2021(S)
+    finish(S, tune=not legacy)
+    lockdowns_2021(S, W.SEED + 21 + (2014 if legacy else 0))
     return S
 
 
-def lockdowns_2021(S):
+def merge(own, old, took):
+    """one book: the loan system's own loans first (their positions unchanged), then the loans it took over, in drawdown
+    order, with the numbers the earlier platform gave them"""
+    S = Sim()
+    S.cal, S.R, S.J, S.rng = own.cal, own.R, own.J, own.rng
+    n0 = own.N
+    pos = {int(i): n0 + k for k, i in enumerate(took)}
+    S.N = n0 + len(took)
+    S.N_own = n0
+    L = {}
+    for key, v in own.L.items():
+        L[key] = np.concatenate([v, old.L[key][took]])
+    S.L = L
+    for key in ("T", "P", "nom", "due", "final_nom", "haz", "j0", "clear", "cash", "close", "close_type", "cured", "susp",
+                "e_def", "m_def", "res_kind", "res_day", "early"):
+        setattr(S, key, np.concatenate([getattr(own, key), getattr(old, key)[took]]))
+    S.extras = list(own.extras) + [(pos[l], x, a) for l, x, a in old.extras if l in pos]
+    S.arr = list(own.arr) + [dict(a, loan=pos[a["loan"]]) for a in old.arr if a["loan"] in pos]
+    S.taken_over = np.zeros(S.N, bool)
+    S.taken_over[n0:] = True
+    return S
+
+
+def lockdowns_2021(S, seed):
     """hardship requests during the 2021 lockdowns in Greater Sydney, Melbourne and Canberra: payment pauses of one to
     three months. They are drawn only on loans repaid or written off before the reporting date, from their own random
     stream, and are recorded in the register without replaying the loan's repayments, so no loan on the book, and no
     figure taken from the repayment histories, moves"""
     cal, R, L = S.cal, S.R, S.L
-    rng = np.random.default_rng(W.SEED + 21)
+    rng = np.random.default_rng(seed)
     onset_due = np.where(S.j0 > 0, S.due[np.arange(S.N), np.maximum(S.j0 - 1, 0)], BIG)
     taken = {}
     for a in S.arr:
@@ -647,7 +688,7 @@ def hardship(S):
         S.arr.append(rec)
 
 
-def finish(S):
+def finish(S, tune=True):
     """made-good dates in order, loan closures, extra repayments"""
     cal, rng, R, N = S.cal, S.rng, S.R, S.N
     np.maximum.accumulate(S.clear, axis=1, out=S.clear)
@@ -694,7 +735,7 @@ def finish(S):
         if x is not None and x < S.close[i]:
             S.close[i], S.close_type[i] = int(cal.next_bd[x]), 2
             S.early[i] = True
-    for key, amt in sorted(W.TUNE.items()):
+    for key, amt in (sorted(W.TUNE.items()) if tune else []):
         i = int(key) - 1
         last = int(S.nom[i][S.nom[i] <= R].max()) if (S.nom[i] <= R).any() else int(L["draw"][i])
         lastdue = int(S.due[i][S.due[i] <= R].max()) if (S.due[i] <= R).any() else last

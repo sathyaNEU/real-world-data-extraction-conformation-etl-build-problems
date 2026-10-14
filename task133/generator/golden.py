@@ -33,12 +33,13 @@ ORDER = [("PL36", 1), ("PL36", 2), ("PL60", 1), ("PL60", 2)]
 NOW = ["stage 1", "stage 2", "stage 3", "closed"]
 
 
-def k(x):
-    return int(round(x / 1000.0)) * 1000
+def mil(x):
+    """AUD million to one decimal, as the allowance is reported"""
+    return round(x / 1e6, 1)
 
 
 def money(x):
-    return "${:,}".format(k(x))
+    return "$%.1f million" % mil(x)
 
 
 def figures(target):
@@ -62,9 +63,9 @@ def workbook(f, path):
     ws["A1"].font = Font(bold=True, size=13)
     ws["A2"] = "Credit Risk Reporting, 9 October 2026. CRM-ECL-04 v4.2; scenarios approved 18 September 2026."
     ws["A2"].font = Font(italic=True, color="5B6670")
-    rows = [("Collective ECL allowance (AUD)", k(s["total"]), '"$"#,##0'),
-            ("Stage 1 allowance (AUD)", k(s["stage1"]), '"$"#,##0'),
-            ("Stage 2 allowance (AUD)", k(s["stage2"]), '"$"#,##0'),
+    rows = [("Collective ECL allowance (AUD million)", mil(s["total"]), '0.0'),
+            ("Stage 1 allowance (AUD million)", mil(s["stage1"]), '0.0'),
+            ("Stage 2 allowance (AUD million)", mil(s["stage2"]), '0.0'),
             (None, None, None),
             ("Loans in stage 1", s["n1"], "#,##0"),
             ("Loans in stage 2", s["n2"], "#,##0"),
@@ -79,7 +80,7 @@ def workbook(f, path):
     for c in (ws["A4"], ws["B4"]):
         c.font = Font(bold=True)
     ws["A13"] = ("Source: loan system extract ECL_QE_BOOK at close of business 30 September 2026 (run 1 October); "
-                 "PLPD-2026.06 curve and development sample; Q1 FY27 scenario sheet.")
+                 "loan record at 30 September 2026; Q1 FY27 scenario sheet.")
     ws["A13"].font = Font(italic=True, color="5B6670")
     ws.column_dimensions["A"].width = 46
     ws.column_dimensions["B"].width = 16
@@ -142,21 +143,27 @@ def workbook(f, path):
         "June month-end run (made 1 July) supplies the scores, and days past due are put back to close of business on "
         "30 June: the June extract ran at 07:30 on 1 July, before CHG-26-0418, and counts each loan in arrears a day "
         "further.",
-        "PD(k): the PLPD-2026.06 curve gives, for every loan drawn in the development window, the share defaulted by each "
-        "month on book. A loan a months on book that is still open and has not defaulted takes (C(a+k) - C(a+k-1)) / S(a), "
-        "where S(a) is the share of the development sample still open and never defaulted at the end of month a "
-        "(1 - C(a) less the share repaid in full by then). Stage 2 PD carries the 2.4 scalar. A loan past its maturity "
-        "outside stage 3 has one month remaining (3.2).",
+        "PD(k): for each product and month on book (calendar months from the drawdown month), the share of the loans "
+        "open and not in default at its start that defaulted in it, and the share that closed without a default, over "
+        "every loan in the loan record. Each loan counts only in the months the record held it: a loan the loan system "
+        "took over from the earlier platform at the October 2019 go-live counts from its first month on book after "
+        "30 September 2019, because the loans that defaulted or were repaid before then never came across. A loan at "
+        "month on book a takes the default rate at a + k times the share neither defaulting nor closing in each month "
+        "from a + 1 to a + k - 1. Stage 2 PD carries the 2.4 scalar. A loan past its maturity outside stage 3 has one "
+        "month remaining (3.2).",
         "EAD re-amortises the current balance over the remaining term at the contract rate; each month is discounted at "
         "the contract rate; LGD 70 per cent PL36, 76 per cent PL60; scenarios 55 / 30 / 15 per cent on multipliers "
-        "1.00 / 1.30 / 0.80 (weighted %.2f)." % s["mult"],
+        "1.00 / 1.28 / 0.81 (weighted %.4f)." % s["mult"],
         "Realised loss (3.3): receipts after default to 30 September 2026 from the Collections receipts file, plus each "
         "sold account's share of the March 2026 sale (face value at cut-off x %.2f cents), each taken at the end of the "
         "month received and discounted to the default month end monthly at the contract rate; loans back to performing "
-        "lose nothing. Collections closes a case as cured when it approves a hardship arrangement; where the arrangement "
-        "was withdrawn before it started and the loan went on to write-off (agency remittances follow), the loan is "
-        "measured on its receipts." % W.SALE_PRICE_CENTS,
-        "Amounts are rounded to the nearest thousand dollars from loan-level results, so stage amounts may not add exactly.",
+        "lose nothing. A Wirraway remittance counts against the account that held the agency reference it quotes on the "
+        "day it was received, from the agency's placement report: the agency reissues the references of closed "
+        "placements, and the receipts file posts a reissued reference to the account that first held it. Collections "
+        "closes a case as cured when it approves a hardship arrangement; where the arrangement was withdrawn before it "
+        "started and the loan was later written off or settled for less, its arrears were never made good and the loan "
+        "is measured on its receipts." % W.SALE_PRICE_CENTS,
+        "Amounts are reported in AUD million to one decimal from loan-level results, so stage amounts may not add exactly.",
     ]
     for i, t in enumerate(notes, 1):
         ws.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
@@ -240,14 +247,14 @@ def deck(f, path):
     note = s1.shapes.add_textbox(Cm(1.6), Cm(11.6), Cm(30.5), Cm(4.0)).text_frame
     note.word_wrap = True
     r = note.paragraphs[0].add_run()
-    r.text = ("Each performing loan's monthly default probability comes from the PLPD-2026.06 curve from its months on book, "
-              "conditioned on the share of the development loans still open and not in default at that point; stage 2 "
-              "carries the 2.4 scalar and the scenarios are weighted 55 / 30 / 15 per cent (multiplier %.2f). "
-              "Amounts to the nearest thousand dollars." % s["mult"])
+    r.text = ("Each performing loan's monthly default probability is read from its product's default and repayment rates "
+              "by month on book in the loan record, counting the loans taken over at the 2019 go-live only from then; "
+              "stage 2 carries the 2.4 scalar and the scenarios are weighted 55 / 30 / 15 per cent (multiplier %.2f). "
+              "Amounts in AUD million." % s["mult"])
     r.font.size = Pt(12)
     r.font.color.rgb = GREY
     src = s1.shapes.add_textbox(Cm(1.6), Cm(16.8), Cm(30.5), Cm(0.8)).text_frame.paragraphs[0].add_run()
-    src.text = "Source: loan system extract at 30 September 2026; PLPD-2026.06 curve; scenarios approved 18 September 2026"
+    src.text = "Source: loan system extract and loan record at 30 September 2026; scenarios approved 18 September 2026"
     src.font.size = Pt(9)
     src.font.color.rgb = GREY
     footer(s1, 1)
@@ -338,6 +345,7 @@ if __name__ == "__main__":
     a = ap.parse_args()
     f = build(a.target, a.out)
     s = f["s"]
-    print("total", k(s["total"]), "stage1", k(s["stage1"]), "stage2", k(s["stage2"]))
+    print("total %.0f (%.1f)" % (s["total"], mil(s["total"])), "stage1 %.0f (%.1f)" % (s["stage1"], mil(s["stage1"])),
+          "stage2 %.0f (%.1f)" % (s["stage2"], mil(s["stage2"])))
     print("lgd", {"%s Q%d" % key: round(v, 1) for key, v in sorted(f["lgd"].items())})
     print("migration", f["mig"])

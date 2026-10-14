@@ -23,55 +23,51 @@ TASK = os.path.dirname(HERE)
 FILES = {
     "book": "personal_loan_book_2026-09-30.csv",
     "june": "personal_loan_book_2026-06-30.csv",
-    "curve": "pd_curve_personal_loans_2026-06.csv",
     "method": "CRM-ECL-04_expected_credit_loss_personal_loans.docx",
     "scen": "ifrs9_scenarios_2026Q3.xlsx",
     "hardship": "hardship_register_2026-09-30.xlsx",
     "note": "scorecard_v4_migration_note.pdf",
     "dictionary": "ecl_extract_dictionary.txt",
-    "dev": "pd_model_development_sample.parquet",
+    "record": "loan_record_2026-09-30.parquet",
     "scores": "behaviour_score_runs_2026-03_2026-08.parquet",
     "defaults": "collections_defaults_2023-24.csv",
     "receipts": "collections_receipts_2023-07_2026-09.csv",
     "sale": "debt_sale_2026-03_schedule.xlsx",
+    "placements": "wirraway_placements_2026-09-30.csv",
     "writeoffs": "write_offs_2025-07_2026-09.csv",
     "rolls": "arrears_roll_rates_fy26.xlsx",
 }
 DISTRACTORS = ["writeoffs", "rolls"]
 # Sydney wall-clock times each file was last saved
 MTIMES = {
-    "book": (2026, 10, 1, 7, 34), "june": (2026, 7, 1, 7, 33), "curve": (2026, 6, 24, 16, 2),
+    "book": (2026, 10, 1, 7, 34), "june": (2026, 7, 1, 7, 33), "record": (2026, 10, 1, 7, 41),
     "method": (2026, 8, 26, 9, 14), "scen": (2026, 9, 18, 16, 52), "hardship": (2026, 10, 1, 8, 2),
-    "note": (2024, 6, 20, 15, 5), "dictionary": (2026, 10, 2, 10, 6), "dev": (2026, 6, 2, 11, 45),
+    "note": (2024, 6, 20, 15, 5), "dictionary": (2026, 10, 2, 10, 6),
     "scores": (2026, 9, 2, 10, 17), "defaults": (2026, 10, 2, 9, 41), "receipts": (2026, 10, 2, 9, 38),
-    "sale": (2026, 3, 27, 14, 5), "writeoffs": (2026, 10, 1, 8, 5), "rolls": (2026, 7, 14, 9, 50),
+    "sale": (2026, 3, 27, 14, 5), "placements": (2026, 10, 2, 9, 31), "writeoffs": (2026, 10, 1, 8, 5), "rolls": (2026, 7, 14, 9, 50),
 }
 SCORE_RUN_ENDS = [SM.dn(dt.date(2026, m + 1, 1)) - 1 for m in range(3, 9)]     # the March to August 2026 month ends
-CURVE_HEADER = """# Bellbird Personal Finance - Credit Risk Modelling
-# PLPD-2026.06 personal loan default curves, PL36 and PL60; approved by the Model Risk Committee on 24 June 2026
-# Developed on the PLPD-2026.06 development sample, performance to 31 May 2026: every PL36 loan drawn October 2019 to March 2023 and every PL60 loan drawn October 2019 to March 2021, the loan system's go-live to the last complete-term vintages
-# Default: 90 or more days past due at a month end. All risk grades pooled
-# month_on_book: number of monthly repayments fallen due; repayment dates during a payment pause count
-# cumulative_pd: share of the loans drawn in the development window that had defaulted by the end of that month on book, smoothed
-# Smoothing: from month on book 4 the monthly increments are fitted on the log scale by a natural cubic spline; the final month on book, which also collects every default recorded after the last repayment date, is left out of the fit
-"""
-DEV_META = {
-    "dataset": "PLPD-2026.06 development sample",
-    "owner": "Credit Risk Modelling",
-    "extracted": "2026-06-02",
-    "population": "every PL36 loan drawn October 2019 to March 2023 and every PL60 loan drawn October 2019 to March 2021: "
-                  "the loan system's go-live to the last complete-term vintages",
-    "performance_to": "2026-05-31",
-    "loan_key": "sample key",
+RECORD_META = {
+    "dataset": "Loan record, personal loans",
+    "owner": "Loan Operations",
+    "extracted": "2026-10-01",
+    "population": "every PL36 and PL60 loan the loan system has held since it went live on 1 October 2019, when it took "
+                  "over the personal loan book from the earlier platform, open or closed, as at close of business on 30 "
+                  "September 2026",
+    "loan_no": "loan number",
     "product": "PL36 or PL60",
     "risk_grade": "grade at approval, A to E",
-    "drawdown_month": "month the loan was funded (YYYY-MM)",
+    "drawdown_date": "date the loan was funded",
+    "first_repayment_date": "date of the first scheduled repayment",
     "term_months": "contractual term in months",
-    "outcome": "default (90 or more days past due at a month end), prepaid (repaid in full before the end of the term) or "
-               "matured",
-    "outcome_month_on_book": "month on book of the outcome: the loan had defaulted, been repaid in full or matured by "
-                             "the end of that month on book (the number of monthly repayments fallen due, repayment "
-                             "dates during a payment pause included)",
+    "contract_rate": "annual contract rate, decimal",
+    "original_amount": "amount financed, whole dollars, including the establishment fee",
+    "default_month": "month of the first month end at which the loan system recorded the loan 90 or more days past due "
+                     "(YYYY-MM); empty if it never was",
+    "status": "Open or Closed at close of business on 30 September 2026",
+    "closed_date": "date the loan closed",
+    "closure_reason": "Repaid in full (by its final repayment or ahead of its term), Settled (for less than it owed) or "
+                      "Written off",
 }
 SCORE_META = {
     "dataset": "Behaviour score v4: month-end scoring runs",
@@ -113,17 +109,8 @@ def register_xlsx(hd, path):
     ws.auto_filter.ref = "A1:%s%d" % (OX.col_letter(len(cols)), n)
     # written by the job under its service account; an analyst in Credit Risk Reporting added the header fill, the
     # frozen header row and the filter before the run folder was released
-    OX.xlsx_from_openpyxl(wb, path, W.JOB_ACCOUNT, "Kayla Stokes", dt.datetime(2026, 10, 1, 7, 36, 5),
+    OX.xlsx_from_openpyxl(wb, path, W.JOB_ACCOUNT, "Vanessa King", dt.datetime(2026, 10, 1, 7, 36, 5),
                           dt.datetime(2026, 10, 1, 8, 2, 44), seed=1001)
-
-
-def curve_csv(curves, path):
-    lines = [CURVE_HEADER.rstrip("\n"), "product,month_on_book,cumulative_pd,model_version"]
-    for prod, term in W.PRODUCTS.items():
-        for m, v in enumerate(curves[prod]):
-            lines.append("%s,%d,%.6f,PLPD-2026.06" % (prod, m, v))
-    with open(path, "w") as f:
-        f.write("\n".join(lines) + "\n")
 
 
 def parquet(df, path, meta):
@@ -194,9 +181,7 @@ def build(out):
     X.withdrawn_arrangements(S)
     hd = X.hardship(S, np.random.default_rng(W.SEED + 2))
     register_xlsx(hd, p("hardship"))
-    dev = X.development_sample(S)
-    curve_csv(X.curve(dev), p("curve"))
-    parquet(dev, p("dev"), DEV_META)
+    parquet(X.loan_record(S).drop(columns=["_i"]), p("record"), RECORD_META)
     D.methodology_docx(p("method"))
     D.scenarios_xlsx(p("scen"))
     D.scorecard_pdf(p("note"))
@@ -204,8 +189,9 @@ def build(out):
     D.dictionary_txt(p("dictionary"))
     C = X.collections(S)
     X.fy24_defaults(S).drop(columns=["_i", "_dme"]).to_csv(p("defaults"), index=False, lineterminator="\n")
-    C["ledger"].drop(columns=["_i", "_d", "_amt"]).to_csv(p("receipts"), index=False, lineterminator="\n")
+    C["ledger"].drop(columns=["_i", "_post", "_d", "_amt"]).to_csv(p("receipts"), index=False, lineterminator="\n")
     D.sale_xlsx(X.sale_schedule(S), C["consideration"], p("sale"))
+    X.placement_report(S).to_csv(p("placements"), index=False, lineterminator="\r\n")
     X.write_offs(S).to_csv(p("writeoffs"), index=False, lineterminator="\n")
     loss_history(S)
     Q.roll_rates_xlsx(p("rolls"), X.roll_rates(S))

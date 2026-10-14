@@ -1,6 +1,6 @@
-"""System extracts and model-team files, all read off the simulated book: the loan book at close of business on the
-reporting date, the hardship register, the PD curve and its development sample, write-offs and recoveries, and the
-month-end arrears roll rates."""
+"""System extracts, all read off the simulated book: the loan book at close of business on the reporting date, the loan
+record, the hardship register, the June extract, the month-end scoring runs, write-offs and recoveries, the Collections
+files, and the month-end arrears roll rates."""
 import datetime as dt
 
 import numpy as np
@@ -154,7 +154,7 @@ def score_runs(S, ends):
     the same event and fresh draws (their own stream) for an event the September run did not see"""
     P = S.score_parts
     L = S.L
-    N = S.N
+    N = getattr(S, "N_own", S.N)                # the runs score loans open in 2026: the loan system's own loans
     rng = np.random.default_rng(W.SEED + 41)
     sa, sb = W.SCORE_MAP
     rows_R = P["rows"]
@@ -175,7 +175,7 @@ def score_runs(S, ends):
     shock_day[rows_R] = np.where(on_R[rows_R], S.R - rng.integers(0, 365, len(rows_R)), shock_day[rows_R] - 365)
     u_shock = np.where(on_R, 0.0, np.where(np.isin(np.arange(N), rows_R), np.where(u_old < 0.047, 0.0, 1.0),
                                            np.where(u_old < 0.09, 0.0, 1.0)))
-    onset = np.where(S.j0 > 0, S.due[np.arange(N), np.maximum(S.j0 - 1, 0)], SM.BIG)
+    onset = np.where(S.j0[:N] > 0, S.due[np.arange(N), np.maximum(S.j0[:N] - 1, 0)], SM.BIG)
     D = np.full(N, np.nan)
     aD = np.full(N, -1)
     D[rows_R], aD[rows_R] = P["D"], P["a"]
@@ -183,6 +183,7 @@ def score_runs(S, ends):
     out = {}
     for t in sorted(ends, reverse=True):
         rows = np.nonzero(SM.open_at(S, t))[0]
+        assert (rows < N).all(), "a loan taken over at the go-live is still open in 2026"
         a = mob_at(S, rows, t)
         rows, a = rows[a >= 1], a[a >= 1]
         n = len(rows)
@@ -237,9 +238,10 @@ def hardship(S, rng):
     # after the end date, so an arrangement that ended since the last run still shows Active
     last_run = SM.dn(W.REPORT) - (W.REPORT.weekday() - W.STATUS_RUN_WEEKDAY) % 7
     rows = []
+    live = SM.dn(W.GO_LIVE)
     for x in S.arr:
-        if x["received"] > R or x["received"] >= S.close[x["loan"]]:
-            continue
+        if x["received"] > R or x["received"] >= S.close[x["loan"]] or x["received"] < live:
+            continue                            # the register starts at the go-live: earlier requests stayed behind
         x = dict(x)
         shut = int(S.close[x["loan"]])
         if shut <= R and x["end"] > shut and not (x["cancel"] is not None and x["cancel"] <= shut):
@@ -289,85 +291,34 @@ def hardship(S, rng):
     return out
 
 
-def dev_rows(S):
-    """the development sample's loans: every loan drawn from go-live to the product's last complete-term vintage"""
-    L = S.L
-    sel = np.zeros(S.N, bool)
-    for p, (lo, hi) in W.DEV_WINDOW.items():
-        sel |= (L["pl60"] == (p == "PL60")) & (L["draw"] >= SM.dn(lo)) & (L["draw"] <= SM.dn(hi))
-    return np.nonzero(sel)[0]
-
-
-def development_sample(S):
-    """every development loan and what had become of it by 31 May 2026: defaulted (90 or more days past due at a month
-    end), repaid in full before the end of its term, or matured. The windows end at the last vintages whose loans had all
-    reached one of the three, so no loan is still open"""
-    obs = SM.dn(W.DEV_OBS_END)
-    L = S.L
-    rows = dev_rows(S)
-    T = S.T[rows]
-    due = S.due[rows]
-    inside = np.arange(SM.J)[None, :] < T[:, None]
-    close, ct = S.close[rows], S.close_type[rows]
-    dflt = S.e_def[rows] <= obs
-    mob_close = ((due <= close[:, None]) & inside).sum(1)
-    shut = (close <= obs) & ~dflt
-    mat = shut & (ct == 2) & (mob_close >= T)
-    pre = shut & ((ct == 1) | ((ct == 2) & (mob_close < T)))
-    outcome = np.select([dflt, pre, mat], ["default", "prepaid", "matured"], "open")
-    assert (outcome != "open").all(), "%d development loans still open at 31 May 2026" % (outcome == "open").sum()
-    month = np.select([dflt, pre, mat], [S.m_def[rows], mob_close, T], 0)
-    return pd.DataFrame(dict(
-        loan_key=(rows + 1).astype(np.int64),
-        product=np.where(L["pl60"][rows], "PL60", "PL36"),
-        risk_grade=np.array(W.GRADES)[L["grade"][rows]],
-        drawdown_month=[SM.dd(x).strftime("%Y-%m") for x in L["draw"][rows]],
-        term_months=T.astype(np.int64),
-        outcome=outcome,
-        outcome_month_on_book=month.astype(np.int64),
+def loan_record(S):
+    """the loan system's record of every loan it has held, one row per loan, as at close of business on the reporting
+    date: its own loans from the go-live and the earlier platform's loans it took over that day. The default month is the
+    first month end at which the loan system saw the loan 90 or more days past due (so never before the go-live), and a
+    closed loan carries the day it closed and how: repaid in full (by its final repayment or ahead of its term),
+    settled for less than it owed, or written off"""
+    L, R = S.L, S.R
+    rows = np.arange(S.N)
+    dme = collections(S)["dme"]
+    closed = S.close <= R
+    reason = np.select([S.close_type == 3, S.close_type == 4], ["Written off", "Settled"], "Repaid in full")
+    first = np.array([SM.dd(x) for x in S.nom[rows, 0]])
+    df = pd.DataFrame(dict(
+        loan_no=L["loan_no"],
+        product=np.where(L["pl60"], "PL60", "PL36"),
+        risk_grade=np.array(W.GRADES)[L["grade"]],
+        drawdown_date=[SM.dd(x) for x in L["draw"]],
+        first_repayment_date=first,
+        term_months=S.T.astype(np.int64),
+        contract_rate=np.round(L["rate"], 4),
+        original_amount=L["financed"].astype(np.int64),
+        default_month=[SM.dd(x).strftime("%Y-%m") if x < SM.BIG else None for x in dme],
+        status=np.where(closed, "Closed", "Open"),
+        closed_date=[SM.dd(x) if c else None for x, c in zip(S.close, closed)],
+        closure_reason=np.where(closed, reason, None),
     ))
-
-
-def crude_curve(dev):
-    """of every loan drawn in the development window, the share that had defaulted by the end of each month on book"""
-    out = {}
-    for p, T in W.PRODUCTS.items():
-        g = dev[dev["product"] == p]
-        dm = np.sort(g.loc[g["outcome"] == "default", "outcome_month_on_book"].values)
-        out[p] = np.searchsorted(dm, np.arange(T + 1), side="right") / len(g)
-    return out
-
-
-def ns_basis(x, knots):
-    """natural cubic spline basis in the truncated power form: 1, x and K - 2 cubic terms that are linear past the last
-    knot"""
-    x = np.asarray(x, float)
-    k = np.asarray(knots, float)
-    K = len(k)
-
-    def d(j):
-        return (np.clip(x - k[j], 0, None) ** 3 - np.clip(x - k[K - 1], 0, None) ** 3) / (k[K - 1] - k[j])
-    cols = [np.ones_like(x), x] + [d(j) - d(K - 2) for j in range(K - 2)]
-    return np.stack(cols, 1)
-
-
-def smooth_curve(crude, fit):
-    """the released curve: the crude shares to month on book 3, then each month's increment exp(spline), cumulated"""
-    out = {}
-    for p, T in W.PRODUCTS.items():
-        m = np.arange(W.CURVE_FROM, T + 1, dtype=float)
-        inc = np.diff(crude[p]).copy()
-        inc[W.CURVE_FROM - 1:] = np.exp(ns_basis(m, W.CURVE_KNOTS[p]) @ np.asarray(fit[p], float))
-        out[p] = np.concatenate([[0.0], np.cumsum(inc)])
-    return out
-
-
-def curve(dev):
-    """Credit Risk Modelling's cumulative default curve by month on book, PLPD-2026.06 as released: the smoothed share of
-    every loan drawn in the development window that defaults by the end of each month on book, to six decimals"""
-    crude = crude_curve(dev)
-    sm = smooth_curve(crude, W.CURVE_FIT) if W.CURVE_FIT else crude      # tune_curve.py builds on the crude shares
-    return {p: np.round(c, 6) for p, c in sm.items()}
+    df["_i"] = rows
+    return df.sort_values("loan_no", kind="stable").reset_index(drop=True)
 
 
 def recoveries(S, rng):
@@ -405,6 +356,63 @@ def recoveries(S, rng):
                 flows.append((k, int(cal.next_bd[w + int(rng.integers(30, 900))]),
                               float(rng.choice([20, 25, 30, 40, 50, 50, 75, 100, 100, 150, 200])), "odd"))
     return wo, bal, flows
+
+
+def placements(S, wo, wbal, flows_by, sold):
+    """Wirraway's placements: Bellbird places every written-off account with the agency a few business days after the
+    write-off. The placement closes when the plan clears the debt (paid in full), when the borrower settles with
+    Bellbird (settled), when the agency hands it back once nothing more is coming (returned: about six months after the
+    last remittance, or about a year after placement if nothing came), or when Bellbird recalls it for the March 2026
+    sale (recalled at the cut-off); open otherwise. Each placement takes the agency's next reference, except that from
+    its platform move the agency reissues, to some new placements, the reference of a placement it closed at least
+    AGENCY_REISSUE_GAP days earlier, the most recently freed first. Returns the placements in the order made and, for
+    each reference, the loan of the first placement that carried it (where the receipts loader posts its remittances)"""
+    cal, R = S.cal, S.R
+    rng = np.random.default_rng(W.AGENCY_SEED)
+    cut = SM.dn(W.SALE_CUTOFF)
+    rows = []
+    for k, i in enumerate(wo):
+        i = int(i)
+        w = int(S.close[i])
+        placed = int(cal.next_bd[w + int(rng.integers(5, 21))])
+        fl = flows_by.get(i, [])
+        plan = [(d, a) for d, a, kind in fl if kind == "plan"]
+        settle = [d for d, a, kind in fl if kind == "settle"]
+        if plan:
+            last = max(d for d, a in plan)
+            if sum(a for d, a in plan) >= float(wbal[k]) - 1:
+                closed, why = int(cal.next_bd[last + int(rng.integers(3, 11))]), "Paid in full"
+            else:
+                closed, why = int(cal.next_bd[last + int(rng.integers(150, 211))]), "Returned"
+        elif settle:
+            closed, why = int(settle[0]), "Settled"
+        else:
+            closed, why = int(cal.next_bd[placed + int(rng.integers(330, 401))]), "Returned"
+        if i in sold and placed <= cut < closed:
+            closed, why = cut, "Recalled"
+        if placed > R:
+            continue
+        rows.append([placed, i, closed if closed <= R else SM.BIG, why if closed <= R else "", float(wbal[k])])
+    rows.sort(key=lambda r: (r[0], S.L["loan_no"][r[1]]))
+    start = SM.dn(W.AGENCY_REISSUE_FROM)
+    nxt = W.AGENCY_REF_START
+    cur = {}                                     # each reference: the closing day of the placement now carrying it
+    first = {}
+    for r in rows:
+        t = r[0]
+        ref = None
+        if t >= start and rng.random() < W.AGENCY_REISSUE:
+            free = [(c, x) for x, c in cur.items() if c <= t - W.AGENCY_REISSUE_GAP]
+            if free:
+                ref = max(free)[1]
+        if ref is None:
+            nxt += 1 + int(rng.poisson(0.35))
+            ref = nxt
+        r.append(ref)
+        first.setdefault(ref, r[1])
+        cur[ref] = r[2]
+    pl = pd.DataFrame(rows, columns=["placed", "i", "closed", "why", "bal", "ref"])
+    return pl, first
 
 
 def month_end_defaults(S):
@@ -457,7 +465,9 @@ def collections(S):
             sold[i] = face
     price = W.SALE_PRICE_CENTS / 100.0
     consideration = round(sum(sold.values()) * price, 2)
-    rec = []                                     # (day, loan or -1, amount, source, narrative)
+    pl, first = placements(S, wo, wbal, flows_by, sold)
+    ref_of = dict(zip(pl["i"].tolist(), pl["ref"].tolist()))
+    rec = []                                     # (day, loan or -1, amount, source, narrative, loan posted to)
 
     def pay_source(mix):
         u = rng.random()
@@ -473,27 +483,29 @@ def collections(S):
         stop = min(rday, R)
         for x, a in extras_by.get(i, []):
             if t0 < x <= stop and not (kind in (3, 4) and x >= rday):
-                rec.append((x, i, a, pay_source(W.PART_PAY_MIX), ""))
+                rec.append((x, i, a, pay_source(W.PART_PAY_MIX), "", i))
         if kind == 1:
             j0, T = int(S.j0[i]), int(S.T[i])
             caught = (S.clear[i, :T] == rday) & (np.arange(T) >= j0 - 1) & (S.cash[i, :T] > 0)
-            rec.append((rday, i, round(float(S.cash[i, :T][caught].sum()), 2), pay_source(W.CATCH_UP_MIX), ""))
+            rec.append((rday, i, round(float(S.cash[i, :T][caught].sum()), 2), pay_source(W.CATCH_UP_MIX), "", i))
         elif kind == 4:
             b = float(SM.balances(S, [i], [rday])[0])
             rec.append((rday, i, float(np.round(b * rng.uniform(*W.SETTLEMENT_SHARE) / 50) * 50), "Settlement",
-                        "Settlement in full and final"))
+                        "Settlement in full and final", i))
         elif kind == 3:
             for d, a, fk in flows_by.get(i, []):
                 if d > R or (i in sold and d > cut):
                     continue
                 if fk == "plan":
-                    rec.append((d, i, a, "Agency remittance", "%s remittance %s" % (W.COLLECTION_AGENCY, SM.dd(d).strftime("%b %Y"))))
+                    ref = ref_of[i]
+                    rec.append((d, i, a, "Agency remittance", "%s remittance %s ref %d" % (
+                        W.COLLECTION_AGENCY, SM.dd(d).strftime("%b %Y"), ref), first[ref]))
                 elif fk == "settle":
-                    rec.append((d, i, a, "Settlement", "Settlement in full and final"))
+                    rec.append((d, i, a, "Settlement", "Settlement in full and final", i))
                 else:
-                    rec.append((d, i, a, "BPAY" if rng.random() < 0.6 else "Card", ""))
+                    rec.append((d, i, a, "BPAY" if rng.random() < 0.6 else "Card", "", i))
     rec.append((settled, -1, consideration, "Debt sale",
-                "%s: purchase of written-off accounts, sale %s" % (W.SALE_BUYER, W.SALE_REF)))
+                "%s: purchase of written-off accounts, sale %s" % (W.SALE_BUYER, W.SALE_REF), -1))
     lo = SM.dn(dt.date(2023, 7, 1))
     rec = [r for r in rec if lo <= r[0] <= R]
     rec.sort(key=lambda r: (r[0], r[1]))
@@ -505,70 +517,55 @@ def collections(S):
             x = int(cal.prev_bd[r[0] - int(rng.integers(4, 9))])
             back = int(cal.next_bd[x + 2])
             if cal.mi_of[x] == cal.mi_of[back] == cal.mi_of[r[0]] and x > int(dme[r[1]]):
-                out.append((x, r[1], r[2], "Direct debit", "", "attempt"))
-                out.append((back, r[1], -r[2], "Direct debit", "", "reversal"))
-                r = (r[0], r[1], r[2], "BPAY", "")
+                out.append((x, r[1], r[2], "Direct debit", "", r[5], "attempt"))
+                out.append((back, r[1], -r[2], "Direct debit", "", r[5], "reversal"))
+                r = (r[0], r[1], r[2], "BPAY", "", r[5])
         out.append(r + ("",))
-    out.sort(key=lambda r: (r[0], r[1], r[5] == "reversal"))
+    out.sort(key=lambda r: (r[0], r[1], r[6] == "reversal"))
     seq = 4411870 + np.cumsum(1 + np.random.default_rng(W.SEED + 32).poisson(0.6, len(out)))
     refs = ["RC%07d" % q for q in seq]
     last_attempt = {}
     narr = []
     for ref, r in zip(refs, out):
-        if r[5] == "attempt":
+        if r[6] == "attempt":
             last_attempt[(r[1], r[2])] = ref
             narr.append("")
-        elif r[5] == "reversal":
+        elif r[6] == "reversal":
             narr.append("Dishonour of %s" % last_attempt[(r[1], -r[2])])
         else:
             narr.append(r[4])
     ledger = pd.DataFrame(dict(
         receipt_ref=refs,
-        loan_no=[L["loan_no"][r[1]] if r[1] >= 0 else None for r in out],
+        loan_no=[L["loan_no"][r[5]] if r[5] >= 0 else None for r in out],
         received_date=[SM.dd(r[0]).isoformat() for r in out],
         amount_aud=["%.2f" % r[2] for r in out],
         source=[r[3] for r in out],
         narrative=narr,
     ))
     ledger["_i"] = [r[1] for r in out]
+    ledger["_post"] = [r[5] for r in out]
     ledger["_d"] = [r[0] for r in out]
     ledger["_amt"] = [r[2] for r in out]
     S._coll = dict(dme=dme, sold=sold, consideration=consideration, ledger=ledger, wo=wo, wbal=wbal,
-                   flows_by=flows_by)
+                   flows_by=flows_by, placements=pl, first_holder=first)
     return S._coll
 
 
 def withdrawn_arrangements(S):
-    """collections hardship arrangements approved on 2023-24 defaults and withdrawn before they started, drawn from their
-    own random stream and recorded in the register without touching any repayment history: on loans that went on to be
-    written off (and were still paying the agency at the March 2026 sale, so not sold), and on loans that caught up
-    instead. Collections closes a default case as cured when it approves an arrangement, dated from the arrangement's
-    start, and does not reopen the case when the arrangement is withdrawn: S.mi_cure maps each such loan to that date.
-    In each product and quarter of default the written-off loans are drawn until the loss their cure label hides is at
-    least 2 points of the cell's balance at default and at least 1 point more than the March 2026 sale recovered on the
-    cell (so taking the labels at their word and leaving the sale out cannot cancel), and loans that caught up are drawn
-    until the loss they would show, were their cures doubted too, is at least 0.8 points"""
+    """collections hardship arrangements approved on 2023-24 defaults and withdrawn before they started (the borrower did
+    not return the signed variation, or found the money elsewhere), drawn from their own random stream at the rate
+    Collections sees and recorded in the register without touching any repayment history: on defaults that went on to be
+    written off, settled for less, or caught up. Collections closes a default case as cured when it approves an
+    arrangement, dated from the arrangement's start, and does not reopen the case when the arrangement is withdrawn:
+    S.mi_cure maps each such loan to that date"""
     if getattr(S, "mi_cure", None) is not None:
         return S.mi_cure
     C = collections(S)
-    cal, L = S.cal, S.L
+    cal = S.cal
     rng = np.random.default_rng(W.WITHDRAWN_SEED)
     dme = C["dme"]
     lo, hi = SM.dn(dt.date(2023, 7, 1)), SM.dn(dt.date(2024, 6, 30))
     rows = np.nonzero((dme >= lo) & (dme <= hi))[0]
-    led = C["ledger"]
-    agency = set(int(i) for i in led.loc[led["source"] == "Agency remittance", "_i"])
-    bal = dict(zip(rows.tolist(), SM.balances(S, rows, dme[rows])))
-    mi = lambda d: int(cal.mi_of[d])
-    pv = {}
-    for i, d, a in zip(led["_i"], led["_d"], led["_amt"]):
-        i = int(i)
-        if i in bal:
-            pv[i] = pv.get(i, 0.0) + a * (1 + L["rate"][i] / 12) ** (-(mi(d) - mi(dme[i])))
-    price, sale_m = W.SALE_PRICE_CENTS / 100.0, mi(SM.dn(W.SALE_SETTLED))
-    cells = {}
-    for i in rows.tolist():
-        cells.setdefault((bool(L["pl60"][i]), ((SM.dd(dme[i]).month - 7) % 12) // 3), []).append(i)
     taken = {}
     for a in S.arr:
         taken.setdefault(int(a["loan"]), []).append((a["received"], a["end"]))
@@ -581,77 +578,61 @@ def withdrawn_arrangements(S):
         js = np.nonzero(S.due[i, :T] >= after)[0]
         return (int(js[0]), int(S.due[i, js[0]])) if len(js) else (None, None)
 
-    def try_written_off(i):
-        t0, wo = int(dme[i]), int(S.close[i])
-        span = wo - 50 - (t0 + 3)
-        if span < 5:
-            return None
-        r = int(cal.next_bd[t0 + 3 + int(rng.integers(0, span))])
-        d = int(cal.next_bd[r + int(rng.integers(2, 8))])
-        js, s = first_due(i, d + 2)
-        if js is None or s >= wo - 20:
-            return None
-        days = cal.bdays(d + 1, s - 1)
-        if len(days) == 0:
-            return None
-        return r, js, s, int(days[int(rng.integers(len(days)))])
-
-    def try_caught_up(i):
+    def place(i):
+        """received while the case was open; a caught-up loan's arrangement was to start after the catch-up and was
+        withdrawn when the arrears cleared, a written-off or settled loan's was withdrawn before its first varied
+        repayment fell due"""
         t0, x = int(dme[i]), int(S.res_day[i])
-        days = cal.bdays(t0 + 3, x - 8)
-        if len(days) == 0:
+        if int(S.res_kind[i]) == 1:
+            days = cal.bdays(t0 + 3, x - 8)
+            if len(days) == 0:
+                return None
+            r = int(days[int(rng.integers(len(days)))])
+            d = int(cal.next_bd[r + int(rng.integers(2, 6))])
+            if d >= x:
+                return None
+            js, st = first_due(i, max(d + 2, x + 1))
+            if js is None:
+                return None
+            c = int(cal.next_bd[x + int(rng.integers(0, 4))])
+        else:
+            span = x - 50 - (t0 + 3)
+            if span < 5:
+                return None
+            r = int(cal.next_bd[t0 + 3 + int(rng.integers(0, span))])
+            d = int(cal.next_bd[r + int(rng.integers(2, 8))])
+            js, st = first_due(i, d + 2)
+            if js is None or st >= x - 20:
+                return None
+            gap = cal.bdays(d + 1, st - 1)
+            if len(gap) == 0:
+                return None
+            c = int(gap[int(rng.integers(len(gap)))])
+        if c >= st:
             return None
-        r = int(days[int(rng.integers(len(days)))])
-        d = int(cal.next_bd[r + int(rng.integers(2, 6))])
-        if d >= x:
-            return None
-        js, s = first_due(i, max(d + 2, x + 1))
-        if js is None:
-            return None
-        c = int(cal.next_bd[x + int(rng.integers(0, 4))])
-        if c >= s:
-            return None
-        return r, js, s, c
+        return r, js, st, c
 
     S.mi_cure = {}
     plan = []
-    for key in sorted(cells):
-        ids = sorted(cells[key], key=lambda i: L["loan_no"][i])
-        Bc = sum(bal[i] for i in ids)
-        sale_pts = 100 * sum(C["sold"][i] * price * (1 + L["rate"][i] / 12) ** (-(sale_m - mi(dme[i])))
-                             for i in ids if i in C["sold"]) / Bc
-        for name in ("written_off", "caught_up"):
-            if name == "written_off":
-                pool = [i for i in ids if S.res_kind[i] == 3 and i not in C["sold"] and i in agency]
-                maker, need = try_written_off, max(2.0, sale_pts + 1.0)
-            else:
-                pool = [i for i in ids if S.res_kind[i] == 1]
-                maker, need = try_caught_up, 0.8
-            hidden, got = 0.0, 0
-            for i in rng.permutation(pool):
-                i = int(i)
-                pts = 100 * (bal[i] - pv.get(i, 0.0)) / Bc
-                for attempt in range(6):
-                    made = maker(i)
-                    if made is not None:
-                        break
-                if made is None:
-                    continue
-                r, js, s, c = made
-                n = int(rng.choice([3, 4, 6]))
-                end = min(SM.add_months(s, n) - 1, int(S.final_nom[i]))
-                if not free(i, r, end):
-                    continue
-                plan.append(dict(loan=i, received=r, start=s, end=end, kind="Reduced repayments", outcome="withdrawn",
-                                 reduced=SM.reduced_amount(rng, S, i, js), reason=SM.pick_reason(rng, r), cancel=c))
-                taken.setdefault(i, []).append((r, end))
-                S.mi_cure[i] = s
-                hidden += pts
-                got += 1
-                if hidden >= need and got >= (2 if name == "written_off" else 1):
-                    break
-            assert hidden >= need and got >= (2 if name == "written_off" else 1), \
-                "%s: %d placed in %s, %.2f of %.2f points" % (name, got, key, hidden, need)
+    for i in rows.tolist():
+        if S.res_kind[i] not in W.WITHDRAWN_RATE or rng.random() >= W.WITHDRAWN_RATE[int(S.res_kind[i])]:
+            continue
+        made = None
+        for attempt in range(4):
+            made = place(i)
+            if made is not None:
+                break
+        if made is None:
+            continue
+        r, js, st, c = made
+        n = int(rng.choice([3, 4, 6]))
+        end = min(SM.add_months(st, n) - 1, int(S.final_nom[i]))
+        if not free(i, r, end):
+            continue
+        plan.append(dict(loan=i, received=r, start=st, end=end, kind="Reduced repayments", outcome="withdrawn",
+                         reduced=SM.reduced_amount(rng, S, i, js), reason=SM.pick_reason(rng, r), cancel=c))
+        taken.setdefault(i, []).append((r, end))
+        S.mi_cure[i] = st
     S.arr.extend(plan)
     return S.mi_cure
 
@@ -692,6 +673,22 @@ def sale_schedule(S):
         written_off=[SM.dd(S.close[i]).strftime("%Y-%m") for i in ids],
         face_value_aud=[C["sold"][i] for i in ids],
     ))
+
+
+def placement_report(S):
+    """Wirraway's client placement report for Bellbird as at 30 September 2026: every account placed since the loan
+    system went live, in the order placed, with the agency's own column names and Australian dates"""
+    C = collections(S)
+    pl = C["placements"]
+    L = S.L
+    return pd.DataFrame({
+        "Agency Ref": pl["ref"].astype(np.int64).values,
+        "Client Ref": [L["loan_no"][i] for i in pl["i"]],
+        "Placed": [SM.dd(x).strftime("%d/%m/%Y") for x in pl["placed"]],
+        "Placed Balance": ["%.2f" % b for b in pl["bal"]],
+        "Closed": [SM.dd(x).strftime("%d/%m/%Y") if x < SM.BIG else "" for x in pl["closed"]],
+        "Close Reason": pl["why"].values,
+    })
 
 
 def write_offs(S, rng=None):
