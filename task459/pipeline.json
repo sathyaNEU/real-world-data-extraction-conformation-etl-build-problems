@@ -1,0 +1,23 @@
+{
+  "task": "task459",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-14",
+  "stump": "The default path rates each offered plant on its 2025 annual pounds of CO2 per net MWh, which turns down the cycling combined cycles Sorrel Butte, Kessling Creek and Ashby Gulch on their starts and part-load hours and signs Tamarack Landing on mostly unfired base operation; read at each offer's contract capacity, the rate signs the three cycling plants and turns down Tamarack Landing, which reaches its contract capacity only with its duct burners firing in every hour.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {"exit": null, "date": ""},
+  "leak": {"leak_py": "", "reader": ""},
+  "duplicate_check": {"heart": "", "nearest": "0.09 (task258)", "note": "guard check 2026-10-14: WARN only (overuse.objective, repeat.gate_g, overuse.gate_g); same_puzzle and same_driver against task230, task114 and task33 differentiated on the card"},
+  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "returned": [],
+  "resume": "",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET16 (analytical_tasks/07_data_extraction_conformation): kept the world (gas units in one footprint, a planning team's list), the decision (which units make the list) and the quantity (efficiency, read as CO2 per net MWh); the seed's mechanisms (combined-cycle steam turbines with no fuel, CHP fuel, generator fan-out) survive only as Layer 1"
+}

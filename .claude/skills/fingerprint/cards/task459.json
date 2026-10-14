@@ -1,0 +1,104 @@
+{
+  "task": "task459",
+  "architecture": "v1",
+  "drawn": "2026-10-14",
+  "slot_note": "Seed ET16 (a planning team's list of the most efficient gas plants from EIA-923) sits in power generation, a domain whose task types serve no ETL objective, so the pairing is the client's emissions-inventory task type: each offered gas unit's carbon dioxide per net megawatt-hour, conformed from hourly emissions monitoring, the generation survey and the unit-generator crosswalk. Kept: the world (gas units in one footprint, a planning team's list), the decision (which units make the list) and the quantity (efficiency, read as CO2 per net MWh).",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a public power utility's emissions performance standard determination for a baseload request for offers: each offered gas unit's carbon dioxide per net megawatt-hour while delivering its contract capacity in every hour, built from the units' hourly emissions monitoring records, the federal generation and fuel survey and the unit-to-generator crosswalk, against the state standard of 925 pounds",
+  "objective": "etl",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "A"
+  ],
+  "generators": [
+    "G13",
+    "G7",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "manager of resource planning at a public power utility",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "camd_hourly_emissions_offered_units_2024_2025.csv",
+    "rows": 0,
+    "entity": "one monitored unit's operation in one clock hour",
+    "grain": "unit x hour",
+    "source": "synthetic (constructed in the layout of EPA's Clean Air Markets hourly emissions export)"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "United States: Washington and Oregon (the Pacific Northwest)",
+    "currency": "USD",
+    "org_type": "a public utility district buying baseload capacity, the sellers' gas-fired plants, the state emissions performance standard",
+    "invented_names": [
+      "Calder County Public Utility District No. 1",
+      "Sorrel Butte Energy Center",
+      "Kessling Creek Generating Station",
+      "Tamarack Landing Power Project",
+      "Ochre Flat Energy Facility",
+      "Pelton Mill Generating Plant",
+      "Juniper Draw Power Station",
+      "Lindgren Hill Generating Station",
+      "Ashby Gulch Energy Center",
+      "Moraine Point Generating Station",
+      "Coldbrook Combined Cycle"
+    ],
+    "people": [
+      "Victor Carr",
+      "Adrian Dunn",
+      "Julie Jackson"
+    ]
+  },
+  "deliverables": [
+    "eps_determination_rfo_2027.pdf",
+    "offered_plants_emissions_2025.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "The decisive quantity is a ratio of input to output that depends on the operating level, falling as output rises and rising again once a supplementary stage is engaged above a unit's base capability, so the ratio over a closed period reflects the levels the unit happened to run at; the decision commits each unit to one stated level in every interval, a level some units rarely held and others can reach only with the supplementary stage, so the ratio has to be read at that level from the interval records, not carried from the period average.",
+  "driver_concrete": "Each offered gas unit's CO2 per net MWh under the baseload commitment is its rate at the contract capacity in every hour: cycling combined cycles whose 2024 and 2025 records are full of starts and part-load hours look above 925 pounds on their annual averages yet sit well under it at full output, while a base-loaded unit offered at a contract capacity above its unfired capability will run its duct burners in every contract hour and lands above 925 though its annual average is under it.",
+  "stump": "The default path rates each offered plant on its 2025 annual pounds of CO2 per net MWh (the monitored CO2 over the metered or surveyed net generation), which fails the cycling combined cycles Sorrel Butte, Kessling Creek and Ashby Gulch on their starts and part-load hours and passes Tamarack Landing, whose annual average is mostly unfired base operation; read at each offer's contract capacity, the rate passes the three cycling plants and fails Tamarack Landing, offered at a capacity it reaches only with its duct burners firing in every hour.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the hourly emissions records to the plants, aligns them with the metered net generation and computes each plant's 2025 pounds of CO2 per net MWh against 925 signs Tamarack Landing, Ochre Flat, Juniper Draw, Lindgren Hill and Moraine Point and turns down Sorrel Butte, Kessling Creek and Ashby Gulch; reading each plant's rate at its offered contract capacity signs Sorrel Butte, Kessling Creek, Ochre Flat, Juniper Draw, Lindgren Hill, Ashby Gulch and Moraine Point and turns down Tamarack Landing.",
+  "domain_test": "The deciding quantity is each unit's carbon dioxide per net megawatt-hour at the committed output, which emissions accounting for generating units builds from hourly heat input against load because a gas unit's heat rate falls with load, carries start-up fuel and rises with supplementary duct firing; with a hospital's or a school's nouns there is no heat input, no part-load penalty, no duct burner and no gross-to-net station service, so the task stops reading.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:emission-rate-at-committed-operating-level",
+  "layer1": [
+    "hourly emissions monitoring records per combustion-turbine stack in local standard time, with partial operating hours, gross load in MW, heat input in mmBtu, CO2 in short tons and substitute-data hours under their method codes",
+    "combined cycles monitored per turbine stack but metered and surveyed per plant and generator (combustion turbines and the steam turbine), joined through the EPA-EIA unit-to-generator crosswalk, many-to-many",
+    "the balancing authority's revenue-meter net generation per plant per hour in local prevailing time (daylight saving), negative while a plant sits idle and draws station service",
+    "the generation and fuel survey's monthly net generation and fuel by prime mover at plant level, with combined-cycle steam turbines (CA) carrying generation and no fuel",
+    "offers in net MW at the point of delivery under sellers' trade names, against the survey's plant names and codes",
+    "a plant's monitoring units renumbered at a mid-2025 monitor replacement, carried in the monitoring plan history",
+    "seasonal capability test results in net MW, summer and winter"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task230": "task230's forward residual turns on a detection rate that falls as targets grow rare in a pool shared across units; here each plant's emission rate is a physical function of its own output level, read at the committed output from its own hourly records, with no shared pool and no detection step",
+    "task114": "task114's demand appears only when parties share a site, so merging sites creates it; here nothing merges or appears: each plant's rate depends on the output level the commitment fixes, read from its own interval records",
+    "task33": "task33's forward yield stops at a filed intervention and is recovered by back-testing closed actions against an acceptance bar; here there is no intervention and no back-test: the committed output differs from the levels the plant ran at, and the rate is read at that level",
+    "task452": "task452 prices unsampled days through a concentration-discharge curve because the samples miss the storms; here every hour is recorded and nothing is sampled: the error is carrying a closed period's average to an operating level the commitment fixes and the plant rarely held, and the duct-fired plants reverse it"
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-14T00:30:01Z"
+}
