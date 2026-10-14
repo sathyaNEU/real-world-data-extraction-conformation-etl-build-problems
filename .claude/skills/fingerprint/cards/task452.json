@@ -1,106 +1,120 @@
 {
   "task": "task452",
-  "architecture": "v1",
-  "drawn": "2026-10-13",
-  "slot_note": "Seed ET09 (hospital cost-report peers) is health economics, which task451 now holds among the last three draws, so no seed world is kept. The pairing comes from the client's ETL task types: emissions-inventory, never drawn, as a lake basin's waterborne phosphorus load inventory, where each tributary's annual load is estimated from sparse grab samples and a complete daily discharge record.",
+  "architecture": "v2",
+  "drawn": "2026-10-14",
+  "slot_note": "v2 re-rooted 2026-10-14 inside ETL with the number kept: v1 (tributary phosphorus loads by rating curve) is a standard method careful solvers apply; v2 stays in the emissions inventory task type, in the land-use sector a results-based payment reads, where the activity data are estimated from a reference sample drawn on a preliminary change map that the final map later revised.",
   "domain": "physical-environmental-sciences",
   "subdomain": "emissions-inventory",
   "client_domain": "physical-environmental-sciences",
-  "niche": "an interstate lake compact commission's water-year phosphorus load inventory: each monitored tributary's annual total phosphorus load, estimated from monthly and storm grab samples and the gage's discharge record, against the tributary allocations of the lake's phosphorus agreement",
+  "niche": "a jurisdictional forest program's emission reductions for a results-based payment: the deforestation area of the reporting period estimated from a stratified reference sample of visually interpreted points, the sample drawn on the preliminary change map and the final map reprocessed after it",
   "objective": "etl",
-  "shape": "01",
-  "decision_type": "ranked_slate_under_cap",
-  "answer_unit": "set_of_items",
-  "answer": "Fund the 2027 tributary restoration projects in the Kestle River, the Hessick River and Varrow Brook.",
-  "answer_source": "task452/submission.md, 1. Final Recommendation",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
+    "G9",
     "G16",
-    "G17"
+    "G12"
   ],
   "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "other",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
-  "stakeholder_role": "water quality program manager at an interstate lake compact commission",
-  "role_family": "programme_officer",
+  "stakeholder_role": "head of the university forest monitoring laboratory that prepares the program's emission reductions monitoring report for the ministry and the fund",
+  "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "merrifield_unit_values_wy2026_approved.csv",
-    "rows": 350400,
-    "entity": "one gage's discharge at one 15-minute interval",
-    "grain": "station x 15 minutes",
-    "source": "synthetic (constructed in the layout of a hydrometric agency's instantaneous-value export)"
+    "file": "forest_change_polygons_final_2024-2025.parquet",
+    "rows": 0,
+    "entity": "one polygon of the final forest change map, with its area, district and detection date",
+    "grain": "change polygon",
+    "source": "synthetic (constructed in the layout of a national forest monitoring system's change-map vector export)"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "government_agency",
+  "forum": "funder_or_donor",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "university_or_school",
   "world": {
-    "geography": "United States: northern New England (Vermont and New Hampshire)",
+    "geography": "a fictional Spanish-speaking tropical country (personas drawn on the Mexico index; no real agency, fund or program named)",
     "currency": "USD",
-    "org_type": "an interstate lake compact commission, two state environmental agencies' monitoring programs, a university watershed laboratory, a hydrometric service and the permitted wastewater facilities",
-    "invented_names": [
-      "Brannoch Lake Commission",
-      "Lake Brannoch",
-      "Ashgrove College Watershed Laboratory",
-      "Merrifield Hydrometrics",
-      "Fallowmere Brook",
-      "Kestle River",
-      "Orrinwood Brook",
-      "Tamsell River",
-      "Varrow Brook",
-      "Hessick River",
-      "Pellow Brook",
-      "Ambrey River",
-      "Dunmarsh Brook",
-      "Corriden River",
-      "2027 Tributary Restoration Fund"
-    ],
+    "org_type": "a national university's forest monitoring laboratory, which prepares the program's monitoring report under contract to the ministry of environment; a results-based climate fund's trustee",
+    "invented_names": [],
     "people": [
-      "Matthew Douglas",
-      "Kathy Dominguez",
-      "Troy Ramirez",
-      "Loretta Soto"
+      "Lilia Solano",
+      "César Verduzco",
+      "Raquel Saavedra"
     ]
   },
   "deliverables": [
-    "restoration_slate_2027.docx",
-    "tributary_loads_wy2026.csv"
+    "er_monitoring_report_2024-2025.pdf",
+    "reference_sample_conformed_2024-2025.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "The decisive quantity is a period total of the product of two series, one recorded at every interval and one sampled on a few intervals that mostly catch the quiet state; the sampled factor rises with the recorded one, so carrying the sampled values across the unsampled intervals, by averaging or interpolating, misprices the busy intervals that carry most of the total, and the total has to be built from the relationship between the two factors applied to every recorded interval.",
-  "driver_concrete": "Each tributary's water-year 2026 phosphorus load is the sum over days of discharge times concentration; concentration is sampled on the Commission's fixed rounds (the first and third Tuesdays), which fall mostly away from storms, plus a few college storm samples, and it rises with discharge, so interpolating or averaging the samples across the year prices the high-flow days at the readings of the days around them, while a rating curve of concentration on discharge, applied to every day of the gage record, prices them from the relationship.",
-  "stump": "The default path funds Varrow Brook, Orrinwood Brook and Ambrey River because it interpolates each tributary's sampled concentrations across the water year's daily discharge, pricing the storm days that carry most of the phosphorus at base-flow or stretched storm readings; the concentration-discharge rating curve applied to every day of the record, retransformed for the mean, funds Kestle River, Hessick River and Varrow Brook.",
+  "question_form": "how-much",
+  "driver": "An area is estimated from reference observations drawn with stratum-specific inclusion probabilities from a preliminary classification that was revised before the estimate; the revised classification's own count and the textbook estimator stratified by its classes both misweight the observations, because the oversampled observations the revision moved between classes keep the inclusion probabilities of the classes they were drawn from, and only weighting each observation by its own design weight recovers the area.",
+  "driver_concrete": "The 2024-2025 reference points were drawn in January 2026 by stratified random sampling on the preliminary change map (400 in its deforestation class, 2,400 in stable forest, 1,200 in non-forest); the final map reprocessed in April with radar and late-season imagery removed most of the preliminary map's cloud-shadow false alarms and some true clearings, so an error matrix on the final map's classes pools heavily sampled former-deforestation points with lightly sampled stable-forest points and overstates the deforestation the final map omitted, while the final map's own area misses a third of it; only the stratified estimator on the sampling strata, each point weighted by its stratum's area over its sample size, gives the area the emission reductions rest on.",
+  "stump": "A competent analyst builds the error matrix of the final change map against the reference sample and estimates the deforested area from it by the stratified estimator, the final map's classes as strata (about 180,000 ha, above the reference level, so no emission reductions), or takes the final map's own deforestation area (about 83,000 ha, about 31 MtCO2e); only the stratified estimator on the strata the sample was drawn from, each point weighted by its preliminary stratum's area over its sample size, gives the area (about 121,000 ha) and the emission reductions (about 12 MtCO2e before the buffer) the payment rests on.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the laboratory results (units, fractions, quality-control samples, non-detects), builds daily mean discharge from the approved gage records and computes each tributary's load by interpolating the sampled concentrations across the year's days funds Varrow Brook, Orrinwood Brook and Ambrey River; estimating each day's concentration from its discharge with a rating curve retransformed for the mean funds Kestle River, Hessick River and Varrow Brook.",
-  "domain_test": "The deciding quantity is each tributary's annual phosphorus load, which water quality science estimates from intermittent concentration samples and a continuous flow record with a concentration-discharge rating curve (the regression method of load estimation) because concentration depends on discharge and samples miss the storms; with a hospital's or a utility's nouns there is no discharge, no concentration that rises with flow and no rating curve, so the task stops reading.",
+  "analyst_test": "A strong analyst who conforms the interpretation campaigns to the national forest definition and the reporting period and reads the payment agreement correctly assesses the final map, the map the monitoring report presents, with the textbook error-matrix estimator stratified by its classes, and files about 180,000 ha of deforestation and no emission reductions; the final map's own area files about 31 MtCO2e; neither is the about 12 MtCO2e the sample's own design gives.",
+  "domain_test": "The deciding quantity is the reporting period's deforested area, estimated the way forest monitoring estimates activity data for an emissions inventory: from a probability sample of reference points interpreted on high-resolution imagery, analysed by the design it was drawn under (strata from the map used for sampling, the final map only reporting where change sits), and turned into emission reductions against the reference level with the inventory's emission factor; with a hospital's nouns there is no change map, no interpreted reference point, no reference level or emission factor, and the task stops reading.",
   "mechanism_source": "design_note",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:rating-curve-load-estimation-retransformed",
-  "layer1": [
-    "laboratory results exported in a water quality exchange layout: characteristic name variants, total and dissolved fractions, mg/L and ug/L after a laboratory change, quality-control replicates and blanks, rejected and preliminary results, non-detects with their reporting limits",
-    "discharge as 15-minute instantaneous values in UTC with provisional, estimated and ice-affected qualifiers, aggregated to local daily means",
-    "two monitoring organisations with their own station identifiers for shared sites, joined through the commission's station register",
-    "one water quality station downstream of its gage, its discharge carried by drainage-area ratio",
-    "water years (October to September) against calendar-year documents",
-    "wastewater discharge monitoring reports with statistical-base codes, resubmitted months and pounds per day against milligrams per litre",
-    "agricultural practice contracts whose fields straddle watershed boundaries"
-  ],
   "differentiation": {
-    "task135": "task135 v1 turned on returning a log-scale regression's prediction to the mean; here the decisive step is pricing the unsampled days through the concentration-discharge relationship instead of carrying the samples across them, and the retransformation sits on a lower rung",
-    "task134": "task134 sizes a forward inflow from a conversion hazard by time since entry applied to each member's entry date; here a closed water year's total is rebuilt day by day from a concentration-discharge relationship because the samples catch mostly base flow, a pricing of unsampled intervals, not a hazard over a cohort"
+    "task452": "v1 priced unsampled days through a concentration-discharge rating curve; v2 has no rating curve or time series: the decisive step is design-based estimation of an area from a sample whose strata are a map revised after the draw",
+    "task459": "task459 sets an emissions performance standard on plants' heat rates by operating level; v2 estimates a land-use activity datum from a stratified reference sample",
+    "task230": "task230 corrects a census count for net classification bias in a channel still to be processed; v2 weights a classified sample by the design it was drawn under, the map that defined the strata having been revised",
+    "task448": "task448 completes a register from a second list whose capture depends on route; v2 has no capture-recapture: a single probability sample, analysed by its design weights rather than by the revised map's classes",
+    "task133": "task133 books a collective credit-loss allowance on loan pools; v2 estimates a land area from a probability sample analysed by its design weights, with no loans, stages or pools",
+    "task255": "task255 corrects an estimate for a misclassified share; v2's decisive step is the inclusion probability each reference point carries from the preliminary map it was drawn on, which the revised map's classes do not carry",
+    "task253": "task253 estimates a population count from a sample whose response rate varies by frame; v2 has full response: the decisive step is analysing a stratified sample by its own strata after the map that defined them was revised",
+    "task139": "task139 reads a randomised intervention per assigned unit rather than per surviving recorded case; v2 has no intervention, arms or costs: each reference point is weighted by the inclusion probability of the stratum it was drawn from, not by the class the revised map now gives it"
   },
-  "lineage": [],
-  "notes": "Drawn 2026-10-13. Built 2026-10-13 (world seed 4522): every rating-curve variant on the record (seasonal or not, smearing, the normal-theory correction or none, a quadratic term, calibrated on one, two or three water years, the Commission's samples alone) funds Kestle, Hessick and Varrow, the third at least 244 kg above the fourth; interpolation funds Ambrey, Orrinwood and Varrow, the sample mean times volume Varrow and Orrinwood, the flow-weighted mean and the monthly product Ambrey, Orrinwood and Varrow. The retransformation correction is part of the golden method and no rung turns on it (task135 v1 spent that insight as a decisive step). Asks (rebuilt at stage 4): the upstream wastewater phosphorus turns on quarterly reports standing for their period's days, with the stream network second; the cover crop acres turn on a contract's acres repeated on each enrolled field's line, with fields straddling a divide second."
+  "notes": "Re-rooted 2026-10-14 (architecture 2). Strategy population_selection (who each reference point stands for: its inclusion probability follows the preliminary strata it was drawn from, not the final map's class it now sits in). The reference sample is the gold_standard_subsample organ. Gap population first (the final map is not the deforested area, and its classes are not the sampling frame); time second (the final map postdates the sample).",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:design-weights-when-the-sampling-map-is-revised",
+  "layer1": [
+    "two interpretation campaigns exported from the collection tool in different layouts (the main campaign and a quality-control re-interpretation of one point in five), disagreements settled by an adjudicator",
+    "interpreters' land-cover legend (dense and open forest, plantation, cropland, pasture, settlement, water) against the national forest definition (canopy cover of 30 per cent or more over 0.5 ha, plantations excluded)",
+    "the year of loss recorded per point, so losses in 2023 that the change map caught late fall outside the reporting period",
+    "map areas reported in pixels of the 30 m grid in one file and in hectares in another",
+    "district codes renumbered in the 2025 administrative reform, joined through the national statistics office's concordance",
+    "distractors: the national forest inventory's plot measurements and the fire hotspot detections"
+  ],
+  "lineage": [
+    {
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "objective": "etl",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G16",
+        "G17"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "ranked_slate_under_cap",
+      "stump_strategy": "other",
+      "driver": "The decisive quantity is a period total of the product of two series, one recorded at every interval and one sampled on a few intervals that mostly catch the quiet state; the sampled factor rises with the recorded one, so carrying the sampled values across the unsampled intervals, by averaging or interpolating, misprices the busy intervals that carry most of the total, and the total has to be built from the relationship between the two factors applied to every recorded interval.",
+      "driver_concrete": "Each tributary's water-year 2026 phosphorus load is the sum over days of discharge times concentration; concentration is sampled on the Commission's fixed rounds (the first and third Tuesdays), which fall mostly away from storms, plus a few college storm samples, and it rises with discharge, so interpolating or averaging the samples across the year prices the high-flow days at the readings of the days around them, while a rating curve of concentration on discharge, applied to every day of the gage record, prices them from the relationship.",
+      "architecture": "v1",
+      "fate": "shipped 2026-10-13 (judge pass 1 FIX_NOW, re-judge DETERMINISTIC, APPROVE) and re-rooted 2026-10-14 at the author's request for a stronger stump: the decisive step (a concentration-discharge rating curve applied to every day of the gage record) is the field's standard load method, which careful solvers reach for; two second layers after shipping (season, retransformation) and two hardening prototypes (a dense automated sampler, a kinked relation) were rejected as too thin for one answer or a choice between standard practices."
+    }
+  ],
+  "registered": "2026-10-14T15:05:56Z"
 }

@@ -1,37 +1,38 @@
 {
   "task": "task452",
   "owner": "oviya1301",
-  "status": "SHIPPED",
+  "status": "DRAWING",
   "domain": "physical-environmental-sciences",
   "objective": "etl",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-13",
-  "stump": "The default path funds Varrow Brook, Orrinwood Brook and Ambrey River because step 4 interpolates each tributary's sampled concentrations across the water year's daily discharge, pricing the storm days that carry most of the phosphorus at whatever the nearest samples read (mostly base flow, now and then a caught storm stretched across the days around it); estimating each day's concentration from its discharge through the concentration-discharge rating curve, retransformed for the mean, funds Kestle River, Hessick River and Varrow Brook.",
-  "architecture": 1,
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-14",
+  "stump": "The default path offers no emission reductions for 2024-2025 because it estimates the deforested area with the textbook stratified estimator on the final map's classes (about 180,000 hectares, above the reference level), though the reference points were drawn on the preliminary map; the stratified estimator on the strata the sample was drawn from gives about 121,000 hectares and about 9.7 MtCO2e to offer.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-13"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), --asof 2027-01-12",
-    "reader": "pass 1: no decisive-step sentence, two ask readings closed in the generator; pass 2 (rebuilt asks): clean, every sweep line harmless"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (organisation family, objective, shape, Gate G overuse; task134 differentiated); surface: task451 and task134 pairs answered in the pre-ship check",
-    "nearest": "0.09 (task184)",
-    "note": "drawn 2026-10-13: guard WARN (overuse.org_family, overuse.objective, overuse.shape, repeat.gate_g, overuse.gate_g; task134 differentiated)"
+    "heart": "",
+    "nearest": "0.07 (task253 v1 lineage); 0.05 task95, task37 lineage, task69 lineage",
+    "note": "architecture 2 drawn 2026-10-14: guard WARN overuse.objective, overuse.gate_g, repeat.decision, repeat.question_form answered in the design note; v1, task459, task230, task448, task133, task255, task253, task139 differentiated on the card"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (both passes)",
-    "disposition": "pass 1 FIX_NOW (cover crop acres read two ways, loads on rounding edges, a UTC hour at the clock changes), repaired; pass 2 APPROVE",
-    "report": "task452/determinism_check_report.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "",
+  "resume": "stage 2: readability screen, fork table, ladder with tuned magnitudes on the generator's seed, closure, literal reader, oracles, the asks and prompt.txt to precut exit 0; then the v2 generator replaces v1's",
   "approved": null,
-  "delivered": "2026-10-13",
+  "delivered": null,
   "portal": null,
-  "source_note": "seed ET09 (analytical_tasks/07_data_extraction_conformation) not used: its world is health economics, held by task451; the pairing is the client's emissions-inventory ETL task type"
+  "source_note": "seed ET09 (analytical_tasks/07_data_extraction_conformation) not used: its world is health economics, held by task451; the pairing is the client's emissions-inventory ETL task type",
+  "lineage_note": "architecture 1 shipped 2026-10-13 (judge pass 1 FIX_NOW, re-judge DETERMINISTIC, APPROVE; delivered, pending review) and was re-rooted 2026-10-14 at the author's request: its decisive step, a concentration-discharge rating curve, is the field's standard load method"
 }
