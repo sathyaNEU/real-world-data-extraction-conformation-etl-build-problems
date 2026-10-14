@@ -61,34 +61,74 @@ def compute(target):
             nr=float((R * G["U"] * has * sel).sum()), conv=float((R * G["C"] * has * sel).sum()),
             ret=float((R * G["C"] * G["p"] * has * sel).sum()), hours=G["months"][k])
     cv = cases[cases["conv"]]
-    hi = cv[cv["drop"] >= 2.5]
-    lo = cv[cv["drop"] < 0]
-    special = (F["term"] == 4) & (F["rate"] == 5.65)
+    sp = F[F["special"]]
+    assert sp["term"].nunique() == 1 and sp["rate"].nunique() == 1 and sp["drop"].nunique() == 1
+    term_sp, rate_sp, drop_sp = int(sp["term"].iloc[0]), float(sp["rate"].iloc[0]), float(sp["drop"].iloc[0])
+    oq = C.opening_quarter(sp["opened"])
+    assert oq.nunique() == 1
+    cohort = F[(F["term"] == term_sp) & (C.opening_quarter(F["opened"]) == oq.iloc[0])]
+    lo_band = float(np.floor(drop_sp / 0.25 + 1e-9) * 0.25)
+    band = cv[(cv["drop"] >= lo_band - 1e-9) & (cv["drop"] < lo_band + 0.25 - 1e-9)]
+    specials = sorted({(int(t), float(r)) for t, r in zip(cv.loc[cv["special"], "term"], cv.loc[cv["special"], "rate"])})
     A = AK.load(target)
     ask_a = AK.ask_a(A, "golden")
     ask_b = AK.ask_b(A, "golden")
     listed = A["lists"].groupby("campaign").size().to_dict()
     return dict(L=L, G=G, Rg=Rg, F=F, cases=cases, per_month=per_month, pooled=float(cv["ret"].mean()),
-                n_conv_past=len(cv), share_hi=float(hi["ret"].mean()), n_hi=len(hi), share_neg=float(lo["ret"].mean()),
-                special=int(special.sum()), card4=L["cards"][W.FWD][4], no_callable=int((~has).sum()),
-                ask_a=ask_a, ask_b=ask_b, listed=listed, A=A)
+                n_conv_past=len(cv), n_special_past=int(cv["special"].sum()),
+                share_special=float(cv[cv["special"]]["ret"].mean()),
+                share_member=float(cv[~cv["special"]]["ret"].mean()),
+                band_lo=lo_band, share_band_all=float(band["ret"].mean()),
+                share_band_special=float(band[band["special"]]["ret"].mean()),
+                share_band_member=float(band[~band["special"]]["ret"].mean()),
+                special=len(sp), term_sp=term_sp, rate_sp=rate_sp, drop_sp=drop_sp,
+                cohort_lowest=float(cohort["rate"].min()), card_sp=L["cards"][W.FWD][term_sp],
+                specials=specials, no_callable=int((~has).sum()), ask_a=ask_a, ask_b=ask_b, listed=listed, A=A,
+                opened_sp=str(oq.iloc[0]))
+
+
+WORD = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
+
+
+def specials_phrase(specials):
+    """'the one-year deposits at 6.35, 5.45 and 5.10 per cent, the two-year at 6.30 and the three-year at 6.00'."""
+    by = {}
+    for t, r in specials:
+        by.setdefault(t, []).append("%.2f" % r)
+    parts = []
+    for i, t in enumerate(sorted(by)):
+        rs = sorted(by[t], key=float, reverse=True)
+        rates = ", ".join(rs[:-1]) + " and " + rs[-1] if len(rs) > 1 else rs[0]
+        parts.append(("the %s-year deposits at %s per cent" if i == 0 else "the %s-year at %s") % (WORD[t], rates))
+    return ", ".join(parts[:-1]) + " and " + parts[-1] if len(parts) > 1 else parts[0]
+
+
+def pct(x):
+    return "%d" % int(np.floor(100 * x + 0.5))
 
 
 def figures(c_):
     G, pm, Rg = c_["G"], c_["per_month"], c_["Rg"]
     share = G["ret"] / G["conv"]
+    rv = Rg["rivals"]
     out = {
-        "call": {"booking_hours": c(h250(G["total"])),
+        "call": {"quarter": W.q_label(W.FWD), "booking_hours": c(h250(G["total"])),
                  "hours_by_month": {MONTHS[k]: c(h250(pm[k]["hours"])) for k in (1, 2, 3)}},
         "components": {
             "no_callable_number": c(c_["no_callable"]),
-            "deposits_at_5_65_four_year": c(c_["special"]),
-            "locked_rate_pct": "5.65", "card_four_year_pct": "%.2f" % c_["card4"],
-            "drop_points": "%.2f" % (5.65 - c_["card4"]),
-            "past_share_at_2_5_or_more_pct": "%d" % int(np.floor(100 * c_["share_hi"] + 0.5)),
+            "special_deposits": c(c_["special"]),
+            "special_opened": W.q_label(c_["opened_sp"]),
+            "special_term_years": "%d" % c_["term_sp"],
+            "special_rate_pct": "%.2f" % c_["rate_sp"],
+            "cohort_lowest_rate_pct": "%.2f" % c_["cohort_lowest"],
+            "card_pct": "%.2f" % c_["card_sp"],
+            "drop_points": "%.2f" % c_["drop_sp"],
+            "past_special_share_pct": pct(c_["share_special"]),
+            "past_band_special_share_pct": pct(c_["share_band_special"]),
+            "past_band_member_share_pct": pct(c_["share_band_member"]),
             "expected_conversations": c(n500(G["conv"])),
-            "retention_share_pct": "%d" % int(np.floor(100 * share + 0.5)),
-            "past_pooled_share_pct": "%d" % int(np.floor(100 * c_["pooled"] + 0.5)),
+            "retention_share_pct": pct(share),
+            "past_pooled_share_pct": pct(c_["pooled"]),
         },
         "steps": {
             "listed_deposits": c(len(c_["F"])),
@@ -96,24 +136,28 @@ def figures(c_):
             "release_share_pct": "%.1f" % (100 * G["R"]),
             "non_reaching_dials": c(n100(G["nr"])),
             "past_conversations": c(c_["n_conv_past"]),
-            "past_conversations_at_2_5_or_more": c(c_["n_hi"]),
-            "past_share_negative_drop_pct": "%.1f" % (100 * c_["share_neg"]),
+            "past_special_conversations": c(c_["n_special_past"]),
+            "special_gap_points": "%.2f" % C.SPECIAL_GAP,
+            "band_points": "0.25",
+            "band_from_points": "%.2f" % c_["band_lo"],
+            "band_to_points": "%.2f" % (c_["band_lo"] + 0.25),
+            "past_specials": specials_phrase(c_["specials"]),
             "hours_unrounded": "{:,.1f}".format(G["total"]),
             "hours_by_month_unrounded": {MONTHS[k]: "{:,.1f}".format(pm[k]["hours"]) for k in (1, 2, 3)},
-            "band_points": "0.25",
-            "drop_threshold_points": "2.5",
         },
         "rules": {"minutes_not_reached": "1.5", "minutes_conversation": "8", "minutes_retention": "22",
                   "release_days_before_maturity": "21", "days_after_maturity": "30", "listing_threshold_nzd": "25,000"},
         "default_path": {
-            "pooled_share_hours": c(h250(Rg["R1_pooled"])), "latest_campaign_hours": c(h250(Rg["R2a_latest"])),
-            "by_term_hours": c(h250(Rg["R2b_term"])), "by_locked_rate_hours": c(h250(Rg["R2c_locked"])),
-            "trend_hours": c(h250(Rg["R2d_trend"])), "latest_hours_per_listed_deposit": c(h250(Rg["R0_latest"])),
-            "drop_without_release_share_hours": c(h250(Rg["R3_no_release"]))},
+            "pooled_share_hours": c(h250(rv["pooled"][0])), "drop_hours": c(h250(rv["drop bands"][0])),
+            "latest_campaign_hours": c(h250(rv["latest"][0])), "by_term_hours": c(h250(rv["term"][0])),
+            "by_locked_rate_hours": c(h250(rv["locked rate"][0])), "trend_hours": c(h250(rv["trend"][0])),
+            "locked_rate_by_term_logit_hours": c(h250(rv["locked rate by term logit"][0])),
+            "latest_hours_per_listed_deposit": c(h250(Rg["R0_latest"])),
+            "without_release_share_hours": c(h250(Rg["R3_no_release"]))},
         "ask_a": {q: {"campaign": CAMPAIGN_LABEL[q], "deposits": c(n), "principal_nzd": c(k1000(a))}
                   for q, (n, a) in c_["ask_a"].items()},
-        "ask_b": {MONTHS[k]: {"maturing_nzd": c(k1000(t)), "not_on_list_nzd": c(k1000(n))}
-                  for k, (t, n) in c_["ask_b"].items()},
+        "ask_b": {"maturing_nzd": {MONTHS[k]: c(k1000(c_["ask_b"][k])) for k in (1, 2, 3)},
+                  "quarter_not_on_list_nzd": c(k1000(c_["ask_b"]["off"]))},
     }
     return out
 
@@ -176,13 +220,22 @@ def write_book(path, c_, figs):
         ("Dialling", "Non-reaching dials and the chance of a conversation per released case, by the mix of callable "
                      "number types, from the release log, dial log and close-outs of the seven closed campaigns."),
         ("Retention offer", "Each deposit's chance that a conversation goes to the retention offer is the share of past "
-                            "conversations at the same drop from the locked rate to the reinvestment rate for its term "
-                            "(0.25-point bands). The list's drops are read against the January to March 2027 rates in "
-                            "the campaign brief: %s four-year deposits at 5.65 per cent meet the %s per cent card, a "
-                            "drop of %s points, where %s per cent of past conversations went to the retention offer." % (
-                                figs["components"]["deposits_at_5_65_four_year"],
-                                figs["components"]["card_four_year_pct"], figs["components"]["drop_points"],
-                                figs["components"]["past_share_at_2_5_or_more_pct"])),
+                            "conversations of its class at the same drop from its rate to the reinvestment rate for its "
+                            "term (0.25-point bands). Money a special won (a rate %s points or more above the lowest rate "
+                            "of the deposits of its term opened in the same quarter) went to the offer at %s per cent of "
+                            "%s conversations in the seven campaigns, much the same at every drop; other deposits far less often, more "
+                            "as the drop grows (%s per cent at drops of %s to %s points, where special money ran at %s). "
+                            "%s %s-year deposits opened at the %s per cent special (the other %s-year deposits of January "
+                            "to March 2023 from %s per cent) meet the %s per cent rate for January to March 2027, a drop of "
+                            "%s points." % (
+                                figs["steps"]["special_gap_points"], figs["components"]["past_special_share_pct"],
+                                figs["steps"]["past_special_conversations"],
+                                figs["components"]["past_band_member_share_pct"], figs["steps"]["band_from_points"],
+                                figs["steps"]["band_to_points"], figs["components"]["past_band_special_share_pct"],
+                                figs["components"]["special_deposits"], figs["components"]["special_term_years"],
+                                figs["components"]["special_rate_pct"], figs["components"]["special_term_years"],
+                                figs["components"]["cohort_lowest_rate_pct"], figs["components"]["card_pct"],
+                                figs["components"]["drop_points"])),
         ("Minutes", "1.5 per dial that does not reach the holder, 8 per conversation, 22 per retention-offer "
                     "conversation (schedule 2). Hours to book rounded to the nearest 250 (procedure 6.1)."),
     ]
@@ -192,54 +245,64 @@ def write_book(path, c_, figs):
         cell = ws.cell(row=r, column=2, value=v)
         ws.merge_cells(start_row=r, start_column=2, end_row=r, end_column=8)
         cell.alignment = Alignment(wrap_text=True, vertical="top")
-        ws.row_dimensions[r].height = 42 if len(v) > 190 else 30
+        ws.row_dimensions[r].height = 56 if len(v) > 380 else (42 if len(v) > 190 else 30)
     for j, w in enumerate([22, 13, 13, 15, 14, 13, 13, 13], 1):
         ws.column_dimensions[get_column_letter(j)].width = w
     ws.freeze_panes = "A5"
 
     ws2 = wb.create_sheet("Kept at 30 days")
-    ws2["A1"] = "Deposits on each closed campaign's list still on term deposit with the Society 30 days after maturity"
+    ws2["A1"] = "Principal on each closed campaign's list still on term deposit with the Society 30 days after maturity"
     ws2["A1"].font = Font(bold=True, size=12, color=NAVY)
-    ws2["A2"] = ("Reinvested on the deposit's own account at maturity, or the maturity proceeds paid that day into a "
-                 "term deposit opened with them; either still open 30 days after maturity. Principal kept: the "
-                 "deposit's principal, or the proceeds transferred into the new deposit. NZ$, nearest thousand.")
+    ws2["A2"] = ("Reinvested on the deposit's own account at maturity, or maturity proceeds paid for it that day into a "
+                 "term deposit opened with them; either still open 30 days after maturity. Principal: the deposit's "
+                 "own, or the proceeds paid into the new deposit (new money added to it excluded). NZ$, nearest thousand.")
     ws2["A2"].font = Font(italic=True, size=9)
     ws2["A2"].alignment = Alignment(wrap_text=True, vertical="top")
     ws2.merge_cells("A2:E2")
     ws2.row_dimensions[2].height = 40
-    _head(ws2, 4, ["Campaign", "Maturities", "Deposits on the list", "Still on term deposit at 30 days",
-                   "Principal still on term deposit (NZ$)"])
+    _head(ws2, 4, ["Campaign", "Maturities", "Deposits on the list", "Principal still on term deposit (NZ$)",
+                   "Deposits it came from"])
     r = 5
     for q in W.PAST:
         n, a = c_["ask_a"][q]
-        for j, v in enumerate(["TDR-%s" % q, CAMPAIGN_LABEL[q], int(c_["listed"][q]), n, k1000(a)], 1):
+        for j, v in enumerate(["TDR-%s" % q, CAMPAIGN_LABEL[q], int(c_["listed"][q]), k1000(a), n], 1):
             cell = ws2.cell(row=r, column=j, value=v)
             if j >= 3:
                 cell.number_format = "#,##0"
         r += 1
-    for j, w in enumerate([14, 24, 16, 18, 22], 1):
+    for j, w in enumerate([14, 24, 16, 24, 18], 1):
         ws2.column_dimensions[get_column_letter(j)].width = w
 
     ws3 = wb.create_sheet("Maturing Q1 2027")
     ws3["A1"] = "Principal maturing January to March 2027: term deposits and investment certificates, all members"
     ws3["A1"].font = Font(bold=True, size=12, color=NAVY)
     ws3["A2"] = ("Term deposits and certificates held in the core on 2 November 2026, each account once, and the "
-                 "certificates still on the investment platform; the part not on the TDR-2027Q1 list. NZ$, nearest "
-                 "thousand.")
+                 "certificates still on the investment platform; the quarter's part not on the TDR-2027Q1 list. NZ$, "
+                 "nearest thousand.")
     ws3["A2"].font = Font(italic=True, size=9)
     ws3["A2"].alignment = Alignment(wrap_text=True, vertical="top")
     ws3.merge_cells("A2:C2")
     ws3.row_dimensions[2].height = 40
-    _head(ws3, 4, ["Maturity month", "Principal maturing (NZ$)", "Not on the list (NZ$)"])
+    _head(ws3, 4, ["Maturity month", "Principal maturing (NZ$)"])
     r = 5
     for k in (1, 2, 3):
-        t, n = c_["ask_b"][k]
-        for j, v in enumerate(["%s 2027" % MONTHS[k], k1000(t), k1000(n)], 1):
+        for j, v in enumerate(["%s 2027" % MONTHS[k], k1000(c_["ask_b"][k])], 1):
             cell = ws3.cell(row=r, column=j, value=v)
             if j >= 2:
                 cell.number_format = "#,##0"
         r += 1
-    for j, w in enumerate([18, 24, 22], 1):
+    cell = ws3.cell(row=r, column=1, value="Quarter")
+    cell.font = Font(bold=True)
+    cell = ws3.cell(row=r, column=2, value=sum(k1000(c_["ask_b"][k]) for k in (1, 2, 3)))
+    cell.number_format = "#,##0"
+    cell.font = Font(bold=True)
+    r += 2
+    ws3.cell(row=r, column=1, value="Not on the list").font = Font(bold=True)
+    cell = ws3.cell(row=r, column=2, value=k1000(c_["ask_b"]["off"]))
+    cell.number_format = "#,##0"
+    cell.fill = KEY
+    ws3.cell(row=r, column=3, value="the quarter's maturing principal less the list's").font = Font(italic=True, size=9)
+    for j, w in enumerate([18, 24, 40], 1):
         ws3.column_dimensions[get_column_letter(j)].width = w
 
     ws4 = wb.create_sheet("Notes")
@@ -255,17 +318,24 @@ def write_book(path, c_, figs):
                         "Not rostered time."),
         ("Retention offer", "Conversations closed RTK or RTW (schedule 3)."),
         ("Drop", "The deposit's rate less the reinvestment rate for its term in the campaign brief for the quarter it "
-                 "matures in. Shares of past conversations are taken in 0.25-point bands of drop across all seven "
-                 "closed campaigns, as procedure 6.1 has the forecast draw on every closed campaign."),
+                 "matures in. Shares of past conversations are taken by class in 0.25-point bands of drop across all "
+                 "seven closed campaigns, as procedure 6.1 has the forecast draw on every closed campaign."),
+        ("Special money", "A deposit whose rate is %s points or more above the lowest rate among the same list's "
+                          "deposits of its term opened in the same quarter (the specials sold new money one rate for "
+                          "every amount; other deposits sit on the posted rate or up to 0.25 above it). In the seven "
+                          "campaigns: %s." % (figs["steps"]["special_gap_points"], figs["steps"]["past_specials"])),
         ("Not released", "Deposits whose holders have no callable number after the do-not-call wash (procedure "
                          "4.3), and the share of the rest that instruct before release (procedure 4.2)."),
         ("Rounding", "Hours to the nearest 250, each month from its own forecast (procedure 6.1); deposits whole; "
                      "NZ$ to the nearest thousand."),
-        ("Kept at 30 days", "Own-account reinvestments, and maturity proceeds paid that day into a new term deposit, "
-                            "still open 30 days after maturity; new money added to a new deposit is not counted."),
+        ("Kept at 30 days", "Own-account reinvestments, and maturity proceeds the payments system paid for the deposit "
+                            "that day into a new term deposit (its settlement payments name the matured account in "
+                            "the narrative), still open 30 days after maturity; new money added to a new deposit is "
+                            "not counted."),
         ("Maturing Q1 2027", "The core holdings view lists a joint deposit under each holder; counted once per "
-                             "account. Certificates still on the investment platform are taken from its register of "
-                             "30 June 2026, less those the migration batches moved to the core."),
+                             "account, at the core's principal. Certificates still on the investment platform are taken "
+                             "from its register of 30 June 2026, less those already in the core: moved by a migration "
+                             "batch, or moved by hand and found by issue date, maturity date, rate and term."),
     ]
     for r, (k, v) in enumerate(notes, 3):
         ws4.cell(row=r, column=1, value=k).font = Font(bold=True)
@@ -326,7 +396,7 @@ def chart_png(c_, figs):
     ax.spines["bottom"].set_color("#a7b0b8")
     ax.set_ylabel("Agent-hours", color=ink2, fontsize=8)
     ax.legend(loc="upper left", frameon=False, fontsize=7.2, labelcolor=ink2)
-    ax.set_title("Seven in ten hours are conversations, most of them retention offers",
+    ax.set_title("Conversations with holders take about two-thirds of the hours in every month",
                  fontsize=9, color=ink, loc="left", weight="bold")
     fig.subplots_adjust(left=0.11, right=0.985, top=0.9, bottom=0.17)
     buf = io.BytesIO()
@@ -379,16 +449,21 @@ def write_note(path, c_, figs):
          "Harbourline dial logs and close-outs for the seven campaigns closed since January 2025; SOW HCS-KBS-2025-01 "
          "schedule 2.", size=8, color="5B6670", after=6, italic=True)
     para("Why the block is larger per deposit than any campaign so far", bold=True, size=10.5, color=NAVY, after=2)
-    para("%s of the %s deposits on the list are four-year deposits opened at 5.65 per cent in January to March "
-         "2023. They reinvest at the %s per cent four-year rate ALCO has approved for the quarter, a drop of %s "
-         "points. In every campaign since January 2025, whether a holder Harbourline reached said they meant to move "
-         "the money, and so went through the 22-minute retention offer, followed the drop from the deposit's rate to "
-         "the rate it rolled onto: %s per cent of conversations where the rate rose, %s per cent at drops of 2.5 "
-         "points or more. The four-year deposits we have called so far were opened in 2021 and 2022, when rates were "
-         "low, and few of their holders took the offer. On this list about %s per cent of an expected %s "
-         "conversations should go to the retention offer, against %s per cent across the seven campaigns." % (
-             fc["deposits_at_5_65_four_year"], fs["listed_deposits"], fc["card_four_year_pct"], fc["drop_points"],
-             fs["past_share_negative_drop_pct"], fc["past_share_at_2_5_or_more_pct"], fc["retention_share_pct"],
+    para("%s of the %s deposits on the list are %s-year deposits opened at the %s per cent special in January to "
+         "March 2023; the other %s-year deposits opened that quarter carry %s per cent or a little more. Money a "
+         "special brings in behaves differently at its first maturity: in the seven campaigns since January 2025, "
+         "%s per cent of the conversations Harbourline held about deposits opened at a special went to the 22-minute "
+         "retention offer, much the same at every drop to the rate they rolled onto, and those about other deposits "
+         "far less often. The "
+         "special's deposits now meet a %s-point drop to the %s per cent %s-year rate. At drops of %s to %s points "
+         "past conversations about other deposits went to the offer %s per cent of the time, and they were almost "
+         "all the conversations at that drop; those about a special's money went at %s per cent. On this list about "
+         "%s per cent of an expected %s conversations should go to the retention offer, against %s per cent across "
+         "the seven campaigns." % (
+             fc["special_deposits"], fs["listed_deposits"], fc["special_term_years"], fc["special_rate_pct"],
+             fc["special_term_years"], fc["cohort_lowest_rate_pct"], fc["past_special_share_pct"], fc["drop_points"],
+             fc["card_pct"], fc["special_term_years"], fs["band_from_points"], fs["band_to_points"],
+             fc["past_band_member_share_pct"], fc["past_band_special_share_pct"], fc["retention_share_pct"],
              fc["expected_conversations"], fc["past_pooled_share_pct"]), after=6)
     para("How the hours are built", bold=True, size=10.5, color=NAVY, after=2)
     para("Harbourline bills 1.5 minutes for each dial that does not reach the holder, 8 for each conversation and 22 "

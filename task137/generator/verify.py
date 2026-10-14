@@ -1,8 +1,10 @@
 """Independent verifier for task137. Reads only the shipped bundle (target/) and the golden workbook, imports nothing
 from the generator, and recomputes on its own code path (csv, pypdf, openpyxl; no pandas): the do-not-call wash, the
-dialling yields per mix of callable number types, the release share, the share of conversations that went to the
-retention offer by 0.25-point band of drop, the hours by maturity month and the booking, the pooled-share default,
-and both asks. Exits non-zero on any disagreement with the golden.
+dialling yields per mix of callable number types, the release share, each deposit's class (money a special won: a rate
+0.40 points or more above the lowest rate of the same list's deposits of its term opened in the same quarter), the
+share of conversations that went to the retention offer by class and 0.25-point band of drop, the hours by maturity
+month and the booking, the pooled and drop-only defaults, and both asks. Exits non-zero on any disagreement with the
+golden.
 
     python3 task137/generator/verify.py [target] [golden]"""
 from __future__ import annotations
@@ -26,6 +28,7 @@ PAST = ["2025Q1", "2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2", "2026Q3"]
 LABEL = {"2025Q1": "January to March 2025", "2025Q2": "April to June 2025", "2025Q3": "July to September 2025",
          "2025Q4": "October to December 2025", "2026Q1": "January to March 2026", "2026Q2": "April to June 2026",
          "2026Q3": "July to September 2026"}
+GAP = 0.40
 
 FAIL = []
 PASSED = [0]
@@ -47,6 +50,11 @@ def day(s):
     return dt.date.fromisoformat(s)
 
 
+def dmy(s):
+    d, m, y = s.split("/")
+    return dt.date(int(y), int(m), int(d))
+
+
 def digits(s):
     return "".join(ch for ch in s if ch.isdigit())
 
@@ -62,6 +70,10 @@ def half_up(x, unit):
     return int(math.floor(x / unit + 0.5) * unit)
 
 
+def quarter(d):
+    return (d.year, (d.month - 1) // 3)
+
+
 def card(path):
     text = " ".join(" ".join((pg.extract_text() or "").split()) for pg in PdfReader(path).pages)
     m = re.search(r"Rate % p\.a\. ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)", text)
@@ -74,23 +86,36 @@ def mix(types):
     return "-".join(sorted(types))
 
 
+def classify(deps):
+    """deps: list of dicts with term, rate, opened. Sets dep['special']."""
+    low = {}
+    for d in deps:
+        k = (d["term"], quarter(d["opened"]))
+        low[k] = min(low.get(k, 99.0), d["rate"])
+    for d in deps:
+        d["special"] = d["rate"] - low[(d["term"], quarter(d["opened"]))] >= GAP - 1e-9
+
+
 def main(target, golden):
     P = lambda f: os.path.join(target, f)
     cards = {q: card(P("harbourline_campaign_brief_%s.pdf" % q)) for q in PAST + ["2027Q1"]}
     check(all(len(c) == 5 for c in cards.values()), "a brief's card did not read")
 
-    # ------------------------------------------------------------- the past lists (two layouts)
+    # ------------------------------------------------------------- the past lists (two layouts), classed per list
     listed = {}
     for r in rows(P("kbs_td_retention_lists_2025.csv")):
         q = r["Campaign"].replace("TDR ", "").replace("-Q", "Q")
-        d, m, y = r["Maturity"].split("/")
         listed[(q, digits(r["Account No"]))] = dict(term=int(r["Term (mths)"]) // 12, rate=float(r["Rate %"]),
                                                     principal=float(r["Principal"].replace(",", "")),
-                                                    maturity=dt.date(int(y), int(m), int(d)), cust=r["Customer No"])
+                                                    opened=dmy(r["Opened"]), maturity=dmy(r["Maturity"]),
+                                                    cust=r["Customer No"], q=q)
     for r in rows(P("kbs_td_retention_lists_2026.csv")):
-        listed[(r["campaign"].replace("TDR-", ""), r["account"])] = dict(
-            term=int(r["term_months"]) // 12, rate=round(float(r["int_rate"]) * 100, 2),
-            principal=float(r["principal"]), maturity=day(r["maturity_date"]), cust=r["customer_no"])
+        q = r["campaign"].replace("TDR-", "")
+        listed[(q, r["account"])] = dict(term=int(r["term_months"]) // 12, rate=round(float(r["int_rate"]) * 100, 2),
+                                         principal=float(r["principal"]), opened=day(r["start_date"]),
+                                         maturity=day(r["maturity_date"]), cust=r["customer_no"], q=q)
+    for q in PAST:
+        classify([d for (qq, _), d in listed.items() if qq == q])
 
     # ------------------------------------------------------------- past cases
     close = {}
@@ -106,10 +131,11 @@ def main(target, golden):
         if r["outcome"] in RETENTION:
             c[2] = True
     yields = defaultdict(lambda: [0, 0.0, 0.0])
-    conv_by_band = defaultdict(lambda: [0, 0])
+    by_class = defaultdict(lambda: [0, 0])
+    by_band = defaultdict(lambda: [0, 0])
     released = instructed = 0
     pooled = [0, 0]
-    hi = [0, 0]
+    special_conv = [0, 0]
     for r in rows(P("kbs_case_release_log_2025q1-2026q3.csv")):
         q = r["campaign"].replace("TDR-", "")
         if r["status"] != "RELEASED":
@@ -124,15 +150,13 @@ def main(target, golden):
         y[2] += talked
         if talked:
             dep = listed[(q, r["account"])]
-            drop = round(dep["rate"] - cards[q][dep["term"]], 2)
-            b = conv_by_band[math.floor(drop / 0.25 + 1e-9)]
-            b[0] += 1
-            b[1] += ret
-            pooled[0] += 1
-            pooled[1] += ret
-            if drop >= 2.5:
-                hi[0] += 1
-                hi[1] += ret
+            band = math.floor(round(dep["rate"] - cards[q][dep["term"]], 2) / 0.25 + 1e-9)
+            for tally in (by_class[(dep["special"], band)], by_band[band], pooled):
+                tally[0] += 1
+                tally[1] += ret
+            if dep["special"]:
+                special_conv[0] += 1
+                special_conv[1] += ret
     R = released / (released + instructed)
 
     # ------------------------------------------------------------- the coming list
@@ -144,25 +168,30 @@ def main(target, golden):
     for r in rows(P("kbs_contact_points_2026-11-02.csv")):
         if phone(r["number"]) not in blocked:
             numbers[r["customer_no"]].append(r["contact_type"][0].upper())
-    minutes = defaultdict(float)
-    conv = ret = 0.0
-    nocall = 0
-    special = 0
     fwd = rows(P("kbs_td_retention_list_2027Q1.csv"))
-    for r in fwd:
-        mth = day(r["maturity_date"]).month
-        term = int(r["term_months"]) // 12
-        rate = round(float(r["int_rate"]) * 100, 2)
-        special += (term == 4 and rate == 5.65)
-        types = numbers.get(r["customer_no"], [])
+    deps = [dict(term=int(r["term_months"]) // 12, rate=round(float(r["int_rate"]) * 100, 2),
+                 opened=day(r["start_date"]), month=day(r["maturity_date"]).month, cust=r["customer_no"],
+                 principal=float(r["principal"])) for r in fwd]
+    classify(deps)
+    minutes, minutes_pooled, minutes_drop = defaultdict(float), 0.0, 0.0
+    conv = ret = 0.0
+    nocall = special = 0
+    p_pool = pooled[1] / pooled[0]
+    for d in deps:
+        special += d["special"]
+        types = numbers.get(d["cust"], [])
         if not types:
             nocall += 1
             continue
         y = yields[mix(types)]
         U, Cv = y[1] / y[0], y[2] / y[0]
-        b = conv_by_band[math.floor(round(rate - cards["2027Q1"][term], 2) / 0.25 + 1e-9)]
-        p = b[1] / b[0]
-        minutes[mth] += R * (1.5 * U + Cv * (8 + 14 * p))
+        band = math.floor(round(d["rate"] - cards["2027Q1"][d["term"]], 2) / 0.25 + 1e-9)
+        t = by_class[(d["special"], band)]
+        p = t[1] / t[0]
+        minutes[d["month"]] += R * (1.5 * U + Cv * (8 + 14 * p))
+        minutes_pooled += R * (1.5 * U + Cv * (8 + 14 * p_pool))
+        b = by_band[band]
+        minutes_drop += R * (1.5 * U + Cv * (8 + 14 * b[1] / b[0]))
         conv += R * Cv
         ret += R * Cv * p
     hours = {m: v / 60.0 for m, v in minutes.items()}
@@ -179,69 +208,59 @@ def main(target, golden):
         elif r["event_type"] == "OPEN":
             opens[r["account"]] = r["event_date"]
     paid = defaultdict(list)
+    direct = defaultdict(list)
     for r in rows(P("kbs_member_transfers_2025-01_2026-10.csv")):
-        paid[(r["from_account"], r["value_date"])].append((r["to_account"], float(r["amount"])))
-    ask_a = {}
+        ref = re.search(r"(\d{2}-\d{4}-\d{7}-\d{3})", r["narrative"])
+        src = digits(ref.group(1)) if ref else r["from_account"]
+        paid[(src, r["value_date"])].append((r["to_account"], float(r["amount"])))
+        direct[(r["from_account"], r["value_date"])].append(r["to_account"])
+    ask_a, own_only = {}, {}
     for q in PAST:
-        n, amt = 0, 0.0
+        n, amt, n_own = 0, 0.0, 0
         for (qq, acct), dep in listed.items():
             if qq != q:
                 continue
             m = dep["maturity"]
             alive = lambda a: not any(m < x <= m + dt.timedelta(days=30) for x in gone.get(a, []))
             kept = dep["principal"] if ((acct, m.isoformat()) in reinv and alive(acct)) else 0.0
+            n_own += kept > 0
             if not kept:
                 kept = sum(v for to, v in paid.get((acct, m.isoformat()), [])
                            if opens.get(to) == m.isoformat() and alive(to))
             if kept > 0:
                 n += 1
                 amt += kept
-        ask_a[q] = (n, half_up(amt, 1000))
-    # the prompt's clause read on the extracts: a deposit counts when any of its principal sits on a term deposit
-    # with the society (any account of the events extract, opened that day or not) 30 days after maturity, and only
-    # that part counts; per deposit, as the lists carry one deposit per holder
-    clause, kept_whole, holders = {}, {}, defaultdict(int)
-    for q in PAST:
-        n, amt, nw = 0, 0.0, 0
-        for (qq, acct), dep in listed.items():
-            if qq != q:
-                continue
-            holders[(q, dep["cust"])] += 1
-            m = dep["maturity"]
-            lim = m + dt.timedelta(days=30)
-            alive = lambda a: not any(m < x <= lim for x in gone.get(a, []))
-            kept = dep["principal"] if ((acct, m.isoformat()) in reinv and alive(acct)) else 0.0
-            if not kept:
-                for k in range(31):
-                    kept += sum(v for to, v in paid.get((acct, (m + dt.timedelta(days=k)).isoformat()), [])
-                                if to in td and to != acct and alive(to))
-            if kept > 0:
-                n += 1
-                amt += kept
-                nw += abs(kept - dep["principal"]) < 0.005
-        clause[q] = (n, half_up(amt, 1000))
-        kept_whole[q] = nw
-    check(clause == ask_a, "ask A under the prompt's clause %s against %s" % (clause, ask_a))
-    check(max(holders.values()) == 1, "a holder with two deposits on one campaign's list")
-    check(all(kept_whole[q] < ask_a[q][0] for q in PAST), "ask A counting only deposits kept whole lands")
+        ask_a[q] = (half_up(amt, 1000), n)
+        own_only[q] = n_own
+    check(all(own_only[q] < ask_a[q][1] for q in PAST), "ask A: own accounts alone keep as many deposits")
+    listed_accts = {a for (_, a) in listed}
+    check(not any(opens.get(to) for (acct, _), tos in direct.items() if acct in listed_accts for to in tos),
+          "ask A: a listed deposit pays its proceeds straight into a new account")
 
     # ------------------------------------------------------------- ask B
-    seen, maturing = set(), defaultdict(float)
+    seen, maturing, core_kic = set(), defaultdict(float), set()
     for r in rows(P("kbs_term_holdings_2026-11-02.csv")):
+        if r["product"] == "KIC":
+            core_kic.add((r["start_date"], r["maturity_date"], round(float(r["int_rate"]) * 100, 2),
+                          int(r["term_months"])))
         mdate = day(r["maturity_date"])
         if r["account"] in seen or not (dt.date(2027, 1, 1) <= mdate <= dt.date(2027, 3, 31)):
             continue
         seen.add(r["account"])
         maturing[mdate.month] += float(r["principal"])
     moved = {r["cert_no"] for r in rows(P("kip_migration_batches_2026.csv")) if r["status"] == "MIGRATED"}
+    by_hand = 0
     for r in rows(P("kip_certificate_register_2026-06-30.csv")):
         mdate = day(r["maturity_date"])
-        if r["cert_no"] not in moved and dt.date(2027, 1, 1) <= mdate <= dt.date(2027, 3, 31):
-            maturing[mdate.month] += float(r["principal"])
-    on_list = defaultdict(float)
-    for r in fwd:
-        on_list[day(r["maturity_date"]).month] += float(r["principal"])
-    ask_b = {m: (half_up(maturing[m], 1000), half_up(maturing[m] - on_list[m], 1000)) for m in (1, 2, 3)}
+        if not (dt.date(2027, 1, 1) <= mdate <= dt.date(2027, 3, 31)) or r["cert_no"] in moved:
+            continue
+        if (r["issue_date"], r["maturity_date"], round(float(r["rate"]), 2), int(r["term_months"])) in core_kic:
+            by_hand += 1
+            continue
+        maturing[mdate.month] += float(r["principal"])
+    check(by_hand > 5, "ask B: no certificate moved by hand (%d)" % by_hand)
+    off = sum(maturing.values()) - sum(d["principal"] for d in deps)
+    ask_b = {m: half_up(maturing[m], 1000) for m in (1, 2, 3)}
 
     # ------------------------------------------------------------- against the golden workbook
     wb = openpyxl.load_workbook(os.path.join(golden, "td_booking_q1_2027.xlsx"), data_only=True)
@@ -257,10 +276,12 @@ def main(target, golden):
     check(abs(ws.cell(row=8, column=7).value - round(total, 1)) < 0.05, "unrounded hours")
     check(ws.cell(row=8, column=5).value == round(conv) and ws.cell(row=8, column=6).value == round(ret),
           "conversations")
-    pooled_share = pooled[1] / pooled[0]
-    check(pooled_share < 0.4 and ret / conv > 0.55, "shares %.3f %.3f" % (pooled_share, ret / conv))
+    for nm, h in (("pooled share", minutes_pooled / 60.0), ("share by drop", minutes_drop / 60.0)):
+        check(half_up(h, 250) <= half_up(total, 250) - 500, "the %s books %d, within two bins of %d" % (
+            nm, half_up(h, 250), half_up(total, 250)))
+    check(special_conv[1] / special_conv[0] > 0.8 > 0.3 > p_pool, "special money's share %.3f, pooled %.3f" % (
+        special_conv[1] / special_conv[0], p_pool))
     check(special > 9000 and nocall > 0, "special %d, no callable %d" % (special, nocall))
-    check(hi[1] / hi[0] > 0.85, "share at drops of 2.5 or more %.3f" % (hi[1] / hi[0]))
     ws2 = wb["Kept at 30 days"]
     for r, q in enumerate(PAST, 5):
         check(ws2.cell(row=r, column=2).value == LABEL[q], "campaign label %s" % q)
@@ -269,9 +290,10 @@ def main(target, golden):
                                                          ws2.cell(row=r, column=5).value), ask_a[q]))
     ws3 = wb["Maturing Q1 2027"]
     for r, m in enumerate((1, 2, 3), 5):
-        check((ws3.cell(row=r, column=2).value, ws3.cell(row=r, column=3).value) == ask_b[m],
-              "ask B month %d: workbook %s, verifier %s" % (m, (ws3.cell(row=r, column=2).value,
-                                                               ws3.cell(row=r, column=3).value), ask_b[m]))
+        check(ws3.cell(row=r, column=2).value == ask_b[m], "ask B month %d: workbook %s, verifier %s" % (
+            m, ws3.cell(row=r, column=2).value, ask_b[m]))
+    check(ws3.cell(row=10, column=2).value == half_up(off, 1000), "ask B off the list: workbook %s, verifier %s" % (
+        ws3.cell(row=10, column=2).value, half_up(off, 1000)))
     if FAIL:
         print("verify: %d checks failed" % len(FAIL))
         for f in FAIL:

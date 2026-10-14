@@ -29,7 +29,7 @@ SYN = {
     "2027Q1": {3: 850, 4: 500, 5: 900},
 }
 SPECIAL_2023Q1 = 13400      # the 2023 four-year special's deposits (all maturing in 2027Q1)
-NEW_MONEY = {("2025Q1", 1): 1380, ("2025Q2", 1): 1440, ("2025Q3", 1): 1380, ("2025Q4", 1): 1320,
+NEW_MONEY = {("2025Q1", 1): 1800, ("2025Q2", 1): 1860, ("2025Q3", 1): 1800, ("2025Q4", 1): 1320,
              ("2026Q1", 1): 1300, ("2025Q1", 2): 250}
 
 LIST_MIN = 25000.0
@@ -200,7 +200,7 @@ def _locked(r, q, term, special_rate=None, principal=0.0):
     prem = 0.10 if principal >= 250000 else 0.0
     exc = 0.0
     if r.random() < 0.07:
-        exc = float(r.choice([0.05, 0.10, 0.15, 0.20, 0.25], p=[.3, .3, .2, .12, .08]))
+        exc = float(r.choice([0.05, 0.10, 0.15], p=[.45, .35, .20]))
     return round(base + prem + exc, 2)
 
 
@@ -211,7 +211,7 @@ def new_deposit(Wd, r, holder, term, rate, principal, opened, kind, standing=Non
     d = dict(body=body, suffix=suffix, holder=holder, term=term, rate=rate, principal=principal, opened=opened,
              maturity=add_years(opened, term), kind=kind, standing=standing, chain_from=chain_from,
              interest=str(r.choice(["At maturity", "Quarterly", "Annually", "Monthly"], p=[.62, .20, .12, .06])),
-             joint=None, status="open", history=[])
+             joint=None, status="open", history=[], special=(kind == "special"))
     d["acct"] = W.acct_plain(body, suffix)
     d["acct_dashed"] = W.acct_dashed(body, suffix)
     if r.random() < 0.16:
@@ -241,7 +241,7 @@ def _holder(Wd, r, term, special, quarter):
     return c
 
 
-SPECIAL_SALES = (0.242, 0.388, 0.370)     # the 2023 special's sales by month, January (from the 16th) to March
+SPECIAL_SALES = (0.184, 0.408, 0.408)     # the 2023 special's sales by month, January (from the 16th) to March
 
 
 def seed_book(Wd):
@@ -278,12 +278,14 @@ def seed_book(Wd):
         new_deposit(Wd, rs, h, 4, rate, pr, day, "special", standing)
     rn = W.rng("book-new")
     for (oq, term), n in NEW_MONEY.items():
+        sp = W.WINDOW_SPECIALS.get((oq, term))
         for _ in range(n):
-            pr = _principal(rn)
-            rate = _locked(rn, oq, term, None, pr)
+            special = sp is not None and rn.random() < sp[1]
+            pr = _principal(rn, special)
+            rate = _locked(rn, oq, term, sp[0] if special else None, pr)
             standing = "PAY" if rn.random() < 0.07 else None
-            h = _holder(Wd, rn, term, False, W.q_add(oq, 4 * term))
-            new_deposit(Wd, rn, h, term, rate, pr, _open_day(rn, oq), "new", standing)
+            h = _holder(Wd, rn, term, special, W.q_add(oq, 4 * term))
+            new_deposit(Wd, rn, h, term, rate, pr, _open_day(rn, oq), "special" if special else "new", standing)
 
 
 def second_deposits(Wd):
@@ -368,7 +370,7 @@ def run_case(Wd, r, dep, q, release, case_ref):
                     code, talk = W.WRONG_CODE, int(r.integers(25, 140))
                     n["done"] = True
                 elif answered:
-                    if r.random() < W.p_retention(drop):
+                    if r.random() < W.p_retention(drop, dep.get("special", False)):
                         code = "RTK" if r.random() < W.RETENTION_KEPT else "RTW"
                         talk = int(np.clip(r.normal(1020, 260), 420, 2400))
                     else:
@@ -392,7 +394,8 @@ def run_case(Wd, r, dep, q, release, case_ref):
     if reason is None:
         closed_on, reason = days[-1], "MATURED"
     return dials, dict(case_ref=case_ref, closed_on=closed_on, reason=reason, outcome=outcome,
-                       callable=[(n["slot"], n["ph"]) for n in open_], drop=drop)
+                       callable=[(n["slot"], n["ph"]) for n in open_], drop=drop,
+                       special=bool(dep.get("special", False)), term=dep["term"], rate=dep["rate"])
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -437,6 +440,7 @@ def settle(Wd, r, dep, cls, uplift=0.0, listed=False, mq=None):
         ev.append((dep["acct"], m, "MATURE", dep["principal"], "", "", ""))
     out = dict(cls=cls, same=None, new=[], amount_kept=0.0)
     if cls == "SAME":
+        dep["special"] = False
         dep["rate"] = round(W.card(q, dep["term"]) + uplift, 2)
         dep["opened"] = m
         dep["maturity"] = add_years(m, dep["term"])
@@ -466,6 +470,8 @@ def settle(Wd, r, dep, cls, uplift=0.0, listed=False, mq=None):
             tr.append((m, dep["acct"], nd["acct"], amt, "MATURITY PROCEEDS"))
             if dep["principal"] - amt > 0.005:
                 tr.append((m, dep["acct"], sav, round(dep["principal"] - amt, 2), "MATURITY PROCEEDS"))
+                out["partial"] = dict(ev_open=len(ev) - 1, tr_new=len(tr) - 2, tr_sav=len(tr) - 1, nd=nd, amt=amt,
+                                      prin=dep["principal"])
             if top:
                 r.integers(0, 2)        # (a draw kept so the outcome stream is unchanged; the top-up lands on the day)
                 tr.append((m, ext_account(r), nd["acct"], top, "DEPOSIT"))
@@ -491,6 +497,43 @@ def settle(Wd, r, dep, cls, uplift=0.0, listed=False, mq=None):
         out["broken"] = bday
         out["amount_kept"] = 0.0
     return out
+
+
+def nudge_kept(Wd, q, clear=150.0):
+    """Keep a closed campaign's principal still on term deposit 30 days after maturity clear of a thousand-dollar
+    rounding edge: if it sits within NZ$150 of one, the first partial change of term on the list (by account) that was
+    not broken moves a multiple of NZ$100 between the new deposit and the savings payment (its rows rewritten)."""
+    camp = Wd.campaigns[q]
+    kept = sum(res["amount_kept"] for res in camp["outcomes"].values())
+
+    def room(x):
+        return abs((x % 1000.0) - 500.0)
+    if room(kept) >= clear:
+        return 0.0
+    cands = sorted((a, res) for a, res in camp["outcomes"].items() if res.get("partial") and not res.get("broken"))
+    for a, res in cands:
+        pa = res["partial"]
+        for s in sorted(range(-900, 901, 100), key=lambda x: (abs(x), x)):
+            if s == 0 or not (500 <= pa["amt"] + s <= pa["prin"] - 500):
+                continue
+            if room(kept + s) < clear:
+                continue
+            ev, tr = Wd.events, Wd.transfers
+            nd = pa["nd"]
+            nd["principal"] = round(nd["principal"] + s, 2)
+            e = list(ev[pa["ev_open"]])
+            e[3] = nd["principal"]
+            ev[pa["ev_open"]] = tuple(e)
+            x = list(tr[pa["tr_new"]])
+            x[3] = round(pa["amt"] + s, 2)
+            tr[pa["tr_new"]] = tuple(x)
+            y = list(tr[pa["tr_sav"]])
+            y[3] = round(pa["prin"] - pa["amt"] - s, 2)
+            tr[pa["tr_sav"]] = tuple(y)
+            res["amount_kept"] = round(pa["amt"] + s, 2)
+            pa["amt"] = round(pa["amt"] + s, 2)
+            return float(s)
+    raise AssertionError("no partial change of term clears campaign %s" % q)
 
 
 def fresh_money(Wd, r, dep, m):
@@ -593,6 +636,8 @@ def simulate():
                     continue
                 cls = "PAYSTAND" if d["standing"] == "PAY" else "UNLISTED"
                 settle(Wd, ro, d, _choose(ro, OUTCOME_P[cls]), listed=False, mq=q)
+            Wd.campaigns[q] = camp
+            nudge_kept(Wd, q)
         elif q == "2026Q4":
             for d in mat:
                 if d["maturity"] > W.CUT_FWD or d["status"] != "open":

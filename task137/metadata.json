@@ -25,7 +25,7 @@
       "xlsx"
     ],
     "largest_file": "harbourline_dial_log_2025q1-2026q3.csv",
-    "largest_file_rows": 264592
+    "largest_file_rows": 269175
   },
   "sources": [
     {
@@ -68,7 +68,7 @@
     {
       "path": "harbourline_campaign_brief_2025Q3.pdf",
       "format": "pdf",
-      "bytes": 51491,
+      "bytes": 51493,
       "rows": null,
       "source": "Constructed: the campaign brief for TDR-2025Q3, with the quarter's reinvestment rates",
       "date": "2026-10-12",
@@ -77,7 +77,7 @@
     {
       "path": "harbourline_campaign_brief_2025Q4.pdf",
       "format": "pdf",
-      "bytes": 51516,
+      "bytes": 51515,
       "rows": null,
       "source": "Constructed: the campaign brief for TDR-2025Q4, with the quarter's reinvestment rates",
       "date": "2026-10-12",
@@ -86,7 +86,7 @@
     {
       "path": "harbourline_campaign_brief_2026Q1.pdf",
       "format": "pdf",
-      "bytes": 51511,
+      "bytes": 51512,
       "rows": null,
       "source": "Constructed: the campaign brief for TDR-2026Q1, with the quarter's reinvestment rates",
       "date": "2026-10-12",
@@ -95,7 +95,7 @@
     {
       "path": "harbourline_campaign_brief_2026Q2.pdf",
       "format": "pdf",
-      "bytes": 51491,
+      "bytes": 51495,
       "rows": null,
       "source": "Constructed: the campaign brief for TDR-2026Q2, with the quarter's reinvestment rates",
       "date": "2026-10-12",
@@ -104,7 +104,7 @@
     {
       "path": "harbourline_campaign_brief_2026Q3.pdf",
       "format": "pdf",
-      "bytes": 51493,
+      "bytes": 51497,
       "rows": null,
       "source": "Constructed: the campaign brief for TDR-2026Q3, with the quarter's reinvestment rates",
       "date": "2026-10-12",
@@ -113,7 +113,7 @@
     {
       "path": "harbourline_campaign_brief_2027Q1.pdf",
       "format": "pdf",
-      "bytes": 51521,
+      "bytes": 51522,
       "rows": null,
       "source": "Constructed: the campaign brief for TDR-2027Q1, with the quarter's reinvestment rates (draft)",
       "date": "2026-10-12",
@@ -122,8 +122,8 @@
     {
       "path": "harbourline_case_closeouts_2025q1-2026q3.csv",
       "format": "csv",
-      "bytes": 4071115,
-      "rows": 55369,
+      "bytes": 4164969,
+      "rows": 56638,
       "source": "Constructed: Harbourline's case close-outs for the seven closed campaigns",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -131,8 +131,8 @@
     {
       "path": "harbourline_dial_log_2025q1-2026q3.csv",
       "format": "csv",
-      "bytes": 22014047,
-      "rows": 264592,
+      "bytes": 22394203,
+      "rows": 269175,
       "source": "Constructed: Harbourline's dial log for the seven closed campaigns",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -158,8 +158,8 @@
     {
       "path": "kbs_case_release_log_2025q1-2026q3.csv",
       "format": "csv",
-      "bytes": 5901415,
-      "rows": 59265,
+      "bytes": 6053915,
+      "rows": 60755,
       "source": "Constructed: the society's case release log for the seven closed campaigns",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -167,8 +167,8 @@
     {
       "path": "kbs_contact_points_2026-11-02.csv",
       "format": "csv",
-      "bytes": 1518514,
-      "rows": 37600,
+      "bytes": 1519548,
+      "rows": 37620,
       "source": "Constructed: contact points held at the cut for the members on the January to March 2027 list",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -176,8 +176,8 @@
     {
       "path": "kbs_do_not_call_register_2026-11-02.csv",
       "format": "csv",
-      "bytes": 476805,
-      "rows": 13844,
+      "bytes": 482899,
+      "rows": 14027,
       "source": "Constructed: the society's do-not-call register at 2 November 2026",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -185,7 +185,7 @@
     {
       "path": "kbs_extract_notes_2026-11.txt",
       "format": "txt",
-      "bytes": 3160,
+      "bytes": 3251,
       "rows": null,
       "source": "Constructed: the deposits analytics team's notes on the extracts",
       "date": "2026-10-12",
@@ -194,8 +194,8 @@
     {
       "path": "kbs_member_transfers_2025-01_2026-10.csv",
       "format": "csv",
-      "bytes": 2196407,
-      "rows": 30728,
+      "bytes": 2428003,
+      "rows": 29209,
       "source": "Constructed: transfers of principal into and out of the accounts in the events extract",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -203,8 +203,8 @@
     {
       "path": "kbs_td_account_events_2025-01_2026-10.csv",
       "format": "csv",
-      "bytes": 9452929,
-      "rows": 155533,
+      "bytes": 9611725,
+      "rows": 157143,
       "source": "Constructed: term deposit account events, January 2025 to October 2026, for the listed accounts and their holders' new term deposits",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -212,7 +212,7 @@
     {
       "path": "kbs_td_retention_list_2027Q1.csv",
       "format": "csv",
-      "bytes": 1642260,
+      "bytes": 1642257,
       "rows": 18400,
       "source": "Constructed: the society's retention list for term deposits maturing January to March 2027, cut 2 November 2026",
       "date": "2026-10-12",
@@ -221,8 +221,8 @@
     {
       "path": "kbs_td_retention_lists_2025.csv",
       "format": "csv",
-      "bytes": 3939019,
-      "rows": 33601,
+      "bytes": 3930954,
+      "rows": 33535,
       "source": "Constructed: the retention lists for the four 2025 campaigns, from the pre-upgrade core banking report",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -230,8 +230,8 @@
     {
       "path": "kbs_td_retention_lists_2026.csv",
       "format": "csv",
-      "bytes": 2289664,
-      "rows": 25664,
+      "bytes": 2428598,
+      "rows": 27220,
       "source": "Constructed: the retention lists for the three 2026 campaigns, from the upgraded core",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -248,8 +248,8 @@
     {
       "path": "kbs_term_holdings_2026-11-02.csv",
       "format": "csv",
-      "bytes": 3078366,
-      "rows": 44498,
+      "bytes": 3100249,
+      "rows": 44816,
       "source": "Constructed: the core's term holdings view at 2 November 2026 (term deposits and migrated certificates maturing January to June 2027)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -266,7 +266,7 @@
     {
       "path": "kip_certificate_register_2026-06-30.csv",
       "format": "csv",
-      "bytes": 228376,
+      "bytes": 228342,
       "rows": 3400,
       "source": "Constructed: the legacy investment platform's certificate register at 30 June 2026",
       "date": "2026-10-12",
@@ -275,8 +275,8 @@
     {
       "path": "kip_migration_batches_2026.csv",
       "format": "csv",
-      "bytes": 162104,
-      "rows": 2741,
+      "bytes": 138832,
+      "rows": 2355,
       "source": "Constructed: the investment platform to core migration batches, July to October 2026",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"

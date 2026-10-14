@@ -155,7 +155,16 @@ def event_rows(Wd):
 
 
 def transfer_rows(Wd):
-    rows = [t for t in Wd.transfers if W.EVENTS_FROM <= t[0] <= W.EVENTS_TO]
+    """The payments system's view: a deposit's maturity proceeds leave through the society's maturity settlement
+    account, the matured deposit named in the narrative in the payments system's reference format."""
+    rows = []
+    for d, a, b, amt, nar in Wd.transfers:
+        if not (W.EVENTS_FROM <= d <= W.EVENTS_TO):
+            continue
+        if nar == "MATURITY PROCEEDS":
+            rows.append((d, W.SETTLEMENT, b, amt, "TD MATURITY %s" % Wd.deposits[a]["acct_dashed"]))
+        else:
+            rows.append((d, a, b, amt, nar))
     rows.sort(key=lambda t: (t[0], t[1], t[2], t[3]))
     for d, a, b, amt, nar in rows:
         yield [d.isoformat(), a, b, "%.2f" % amt, nar]

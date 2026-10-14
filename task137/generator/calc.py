@@ -1,12 +1,13 @@
 """The call, computed from the written pack only: the hours the January to March 2027 list will use under the SOW,
 by maturity month, with every rung of the ladder and the estimator family the fork table names.
 
-Golden route: wash the coming list's numbers against the register at the cut; price dialling per ordered callable
-configuration from the seven closed campaigns (non-reaching dials and the chance of a conversation per released case);
-scale by the share of listed deposits with a callable number that reach release; give each expected conversation
-8 minutes plus 14 times the share of past conversations that went to the retention offer at the same drop from the
-deposit's locked rate to the card it reinvests at (0.25-point bins), the coming list's drops read against the January
-to March 2027 card."""
+Golden route: wash the coming list's numbers against the register at the cut; price dialling per callable mix from the
+seven closed campaigns (non-reaching dials and the chance of a conversation per released case); scale by the share of
+listed deposits with a callable number that reach release; class each deposit as money a special won (its rate 0.40
+points or more above the lowest rate of the deposits of its term opened in the same quarter on the same list) or member
+money; give each expected conversation 8 minutes plus 14 times the share of past conversations of the same class that
+went to the retention offer at the same drop from the deposit's rate to the card it reinvests at (0.25-point bands),
+the coming list's drops read against the January to March 2027 card."""
 from __future__ import annotations
 
 import math
@@ -47,13 +48,39 @@ def load_lists(target):
         "account": a["Account No"].map(W.norm_acct), "customer_no": a["Customer No"],
         "term": a["Term (mths)"].astype(int) // 12, "rate": a["Rate %"].astype(float),
         "principal": a["Principal"].str.replace(",", "").astype(float),
+        "opened": pd.to_datetime(a["Opened"], format="%d/%m/%Y"),
         "maturity": pd.to_datetime(a["Maturity"], format="%d/%m/%Y")})
     b = pd.read_csv(p(W.F_LISTS_2026), dtype=str, keep_default_na=False)
     b = pd.DataFrame({
         "campaign": b["campaign"].str.replace("TDR-", ""), "account": b["account"], "customer_no": b["customer_no"],
         "term": b["term_months"].astype(int) // 12, "rate": (b["int_rate"].astype(float) * 100).round(2),
-        "principal": b["principal"].astype(float), "maturity": pd.to_datetime(b["maturity_date"])})
-    return pd.concat([a, b], ignore_index=True)
+        "principal": b["principal"].astype(float), "opened": pd.to_datetime(b["start_date"]),
+        "maturity": pd.to_datetime(b["maturity_date"])})
+    out = pd.concat([a, b], ignore_index=True)
+    out["special"] = special_class(out, "campaign")
+    return out
+
+
+SPECIAL_GAP = 0.40
+
+
+def opening_quarter(opened):
+    return opened.dt.year.astype(str) + "Q" + ((opened.dt.month - 1) // 3 + 1).astype(str)
+
+
+def premium(df, by=None, base="lowest"):
+    """Each deposit's rate less the lowest rate (or another base) among the deposits of its term opened in the same
+    quarter on the same list."""
+    keys = ([by] if by else []) + ["term", opening_quarter(df["opened"]).rename("oq")]
+    g = df.groupby(keys)["rate"]
+    ref = {"lowest": g.transform("min"), "mode": g.transform(lambda s: s.mode().iloc[0]),
+           "mean": g.transform("mean")}[base]
+    return (df["rate"] - ref).round(2)
+
+
+def special_class(df, by=None, gap=SPECIAL_GAP, base="lowest"):
+    """Money a special won: a rate at least `gap` points above the lowest rate of its term and opening quarter."""
+    return premium(df, by, base) >= gap - 1e-9
 
 
 def load(target):
@@ -64,7 +91,8 @@ def load(target):
     L["fwd"] = pd.DataFrame({
         "account": f["account"], "customer_no": f["customer_no"], "term": f["term_months"].astype(int) // 12,
         "rate": (f["int_rate"].astype(float) * 100).round(2), "principal": f["principal"].astype(float),
-        "maturity": pd.to_datetime(f["maturity_date"])})
+        "opened": pd.to_datetime(f["start_date"]), "maturity": pd.to_datetime(f["maturity_date"])})
+    L["fwd"]["special"] = special_class(L["fwd"])
     L["release"] = pd.read_csv(p(W.F_RELEASE), dtype=str, keep_default_na=False)
     L["dials"] = pd.read_csv(p(W.F_DIALS), dtype={"case_ref": str, "kbs_ref": str, "outcome": str, "number": str},
                              keep_default_na=False)
@@ -121,7 +149,7 @@ def past_cases(L):
         rr[k] = rr[k].fillna(False).astype(bool)
     pl = L["past_lists"].set_index(["campaign", "account"])
     assert pl.index.is_unique
-    rr = rr.join(pl[["term", "rate", "principal"]], on=["campaign", "account"])
+    rr = rr.join(pl[["term", "rate", "principal", "opened", "special"]], on=["campaign", "account"])
     assert not rr["rate"].isna().any()
     rr["card"] = [L["cards"][q][t] for q, t in zip(rr["campaign"], rr["term"])]
     rr["drop"] = (rr["rate"] - rr["card"]).round(2)
@@ -380,19 +408,144 @@ def hours(F, m):
     return tot, by_month
 
 
+def class_bins(F, cases, width=0.25, offset=0.0, fallback=False, cls_f=None, cls_c=None):
+    """Each forward deposit's share from the past conversations of its own class in the same band of drop."""
+    cls_f = F["special"] if cls_f is None else cls_f
+    cls_c = cases["special"] if cls_c is None else cls_c
+    p = pd.Series(np.nan, index=F.index)
+    for cls in (True, False):
+        idx = cls_f == cls
+        if idx.any():
+            s = share_bins(cases[cls_c == cls], width, offset)
+            p[idx] = p_from_bins(F.loc[idx, "drop"], s, width, offset, fallback=fallback)
+    return p
+
+
 def golden(L, F=None, cases=None):
     F = forward_frame(L) if F is None else F
     cases = past_cases(L) if cases is None else cases
     U, C = dial_terms(F, cases, "unordered")
     R = release_share(L)
-    s = share_bins(cases, 0.25)
-    p = p_from_bins(F["drop"], s, 0.25)
+    p = class_bins(F, cases)
     m = minutes(F, U, C, R, p)
     tot, by_month = hours(F, m)
     return dict(F=F, cases=cases, U=U, C=C, R=R, p=p, m=m, total=tot, months=by_month,
                 conv=float((np.where(F["cfg"] != "", R * C, 0.0)).sum()),
                 ret=float((np.where(F["cfg"] != "", R * C * p, 0.0)).sum()),
                 nr=float((np.where(F["cfg"] != "", R * U, 0.0)).sum()))
+
+
+def _fit(X, y, iters=100):
+    beta = np.zeros(X.shape[1])
+    for _ in range(iters):
+        pz = 1 / (1 + np.exp(-(X @ beta)))
+        wv = pz * (1 - pz)
+        H = X.T @ (X * wv[:, None]) + 1e-8 * np.eye(X.shape[1])
+        step = np.linalg.solve(H, X.T @ (y - pz))
+        beta += step
+        if np.max(np.abs(step)) < 1e-10:
+            break
+    return beta
+
+
+def _sig(z):
+    return 1 / (1 + np.exp(-z))
+
+
+def _by_term_cols(df, var):
+    cols = []
+    for t in W.TERMS:
+        ind = (df["term"] == t).astype(float).values
+        cols += [ind, ind * df[var].values]
+    return np.column_stack(cols)
+
+
+def _nearest(series, keys_of):
+    keys = np.array(sorted(series.index))
+    return keys_of.map(lambda k: series[keys[np.argmin(np.abs(keys - k))]])
+
+
+def rival_shares(L, G):
+    """Every rival basis for the coming list's retention-offer share, deposit by deposit."""
+    F, cases = G["F"], G["cases"]
+    cv = cases[cases["conv"]]
+    y = cv["ret"].astype(float).values
+    out = {}
+    pooled = float(cv["ret"].mean())
+    out["pooled"] = np.full(len(F), pooled)
+    out["latest"] = np.full(len(F), float(cv[cv["campaign"] == W.PAST[-1]]["ret"].mean()))
+    out["term"] = F["term"].map(cv.groupby("term")["ret"].mean()).values
+    last = cv[cv["campaign"] == W.PAST[-1]].groupby("term")["ret"].mean()
+    out["latest by term"] = F["term"].map(last).fillna(pooled).values
+    qs = cv.groupby("campaign")["ret"].mean().reindex(W.PAST)
+    a, b = np.polyfit(np.arange(len(W.PAST)), qs.values, 1)
+    out["trend"] = np.full(len(F), float(np.clip(b + a * (len(W.PAST) + 1), 0, 1)))
+    tt = {}
+    for t, gt in cv.groupby("term"):
+        q = gt.groupby("campaign")["ret"].mean().reindex(W.PAST).dropna()
+        a, b = np.polyfit([W.PAST.index(c) for c in q.index], q.values, 1)
+        tt[t] = float(np.clip(b + a * (len(W.PAST) + 1), 0, 1))
+    out["term trend"] = F["term"].map(tt).values
+    lb = cv.groupby(np.floor(cv["rate"] / 0.25 + 1e-9))["ret"].mean()
+    out["locked rate"] = _nearest(lb, np.floor(F["rate"] / 0.25 + 1e-9)).values
+    lt = np.zeros(len(F))
+    for t in W.TERMS:
+        sub = cv[cv["term"] == t]
+        sb = sub.groupby(np.floor(sub["rate"] / 0.25 + 1e-9))["ret"].mean()
+        idx = (F["term"] == t).values
+        lt[idx] = _nearest(sb, np.floor(F.loc[idx, "rate"] / 0.25 + 1e-9)).values
+    out["locked rate within term"] = lt
+    # the drop, the field's repricing-gap reflex, and the fitted models on the list's own covariates
+    out["drop bands"] = p_from_bins(F["drop"], share_bins(cases, 0.25), 0.25, fallback=True).values
+    out["drop logit"] = p_logistic(cases, F["drop"])
+    out["drop + term logit"] = p_logistic(cases, F["drop"], F["term"], with_term=True)
+    out["drop isotonic"] = p_isotonic(cases, F["drop"])
+    bk = np.floor(cv["drop"] / 0.25 + 1e-9)
+    cell = cv.groupby([bk, cv["term"]])["ret"].agg(["mean", "size"])
+    band = cv.groupby(bk)["ret"].mean()
+    fb = np.floor(F["drop"] / 0.25 + 1e-9)
+    keys = np.array(sorted(band.index))
+    cm = {kt: v for kt, v, n in zip(cell.index, cell["mean"], cell["size"]) if n >= 30}
+    out["drop x term cells"] = np.array([cm[(k, t)] if (k, t) in cm else band[keys[np.argmin(np.abs(keys - k))]]
+                                         for k, t in zip(fb, F["term"])])
+    b = _fit(_by_term_cols(cv, "drop"), y)
+    out["drop by term logit"] = _sig(_by_term_cols(F, "drop") @ b)
+    b = _fit(_by_term_cols(cv, "rate"), y)
+    out["locked rate by term logit"] = _sig(_by_term_cols(F, "rate") @ b)
+    T = lambda df: pd.get_dummies(df["term"].astype(int)).reindex(columns=W.TERMS, fill_value=0).values.astype(float)
+    b = _fit(np.column_stack([T(cv), cv["rate"].values]), y)
+    out["term + locked rate logit"] = _sig(np.column_stack([T(F), F["rate"].values]) @ b)
+    lin = np.zeros(len(F))
+    for t in W.TERMS:
+        sub = cv[cv["term"] == t]
+        A_ = np.column_stack([np.ones(len(sub)), sub["rate"].values])
+        coef, *_ = np.linalg.lstsq(A_, sub["ret"].astype(float).values, rcond=None)
+        idx = (F["term"] == t).values
+        lin[idx] = np.clip(coef[0] + coef[1] * F.loc[idx, "rate"].values, 0, 1)
+    out["locked rate by term linear"] = lin
+    b = _fit(np.column_stack([np.ones(len(cv)), cv["drop"].values, cv["rate"].values]), y)
+    out["drop + locked rate logit"] = _sig(np.column_stack([np.ones(len(F)), F["drop"], F["rate"]]) @ b)
+    b = _fit(np.column_stack([np.ones(len(cv)), cv["drop"].values, np.log(cv["principal"].values)]), y)
+    out["drop + principal logit"] = _sig(np.column_stack([np.ones(len(F)), F["drop"], np.log(F["principal"])]) @ b)
+    rel_c = (cv["rate"] - cases.groupby(["campaign", "term", opening_quarter(cases["opened"])])["rate"].transform("mean")
+             .loc[cv.index]).values
+    rel_f = (F["rate"] - F.groupby(["term", opening_quarter(F["opened"])])["rate"].transform("mean")).values
+    b = _fit(np.column_stack([np.ones(len(cv)), cv["drop"].values, rel_c]), y)
+    out["drop + rate against cohort mean logit"] = _sig(np.column_stack([np.ones(len(F)), F["drop"], rel_f]) @ b)
+    # a deposit on its first list against one listed before (money at its first maturity on the society's lists)
+    pl, seen, first = L["past_lists"], set(), {}
+    for q in W.PAST:
+        accts = pl.loc[pl["campaign"] == q, "account"]
+        first.update({(q, a): a not in seen for a in accts})
+        seen |= set(accts)
+    fc = pd.Series([first[(q, a)] for q, a in zip(cases["campaign"], cases["account"])], index=cases.index)
+    ff = ~F["account"].isin(seen)
+    out["first listed x drop bands"] = class_bins(F, cases, cls_f=ff, cls_c=fc, fallback=True).values
+    f1 = fc.loc[cv.index].astype(float).values
+    b = _fit(np.column_stack([np.ones(len(cv)), cv["drop"].values, f1, cv["drop"].values * f1]), y)
+    f2 = ff.astype(float).values
+    out["drop by first listed logit"] = _sig(np.column_stack([np.ones(len(F)), F["drop"], f2, F["drop"].values * f2]) @ b)
+    return out
 
 
 def rungs(L, G):
@@ -410,67 +563,78 @@ def rungs(L, G):
         per[q] = float(mins_dial[camp == key].sum()) / listed[q]
     out["R0_latest"] = per["2026Q3"] * len(F) / 60.0
     out["R0_all"] = sum(per[q] * listed[q] for q in W.PAST) / listed.sum() * len(F) / 60.0
+    rv = rival_shares(L, G)
+    out["rivals"] = {k: hours(F, minutes(F, U, C, R, v)) for k, v in rv.items()}
+    out["R1_pooled"] = out["rivals"]["pooled"][0]
+    out["R2_drop"] = out["rivals"]["drop bands"][0]
+    out["R2_latest"] = out["rivals"]["latest"][0]
+    out["R2_term"] = out["rivals"]["term"][0]
+    out["R2_locked"] = out["rivals"]["locked rate"][0]
+    out["R2_trend"] = out["rivals"]["trend"][0]
+    out["R2_termxrate"] = out["rivals"]["locked rate by term logit"][0]
+    sp = F["special"].values
+    out["special_p"] = {k: float(np.mean(v[sp])) for k, v in rv.items()}
     cv = cases[cases["conv"]]
-    pooled = float(cv["ret"].mean())
-    out["R1_pooled"] = float(minutes(F, U, C, R, pooled).sum() / 60.0)
-    latest = float(cv[cv["campaign"] == "2026Q3"]["ret"].mean())
-    out["R2a_latest"] = float(minutes(F, U, C, R, latest).sum() / 60.0)
-    ts = cv.groupby("term")["ret"].mean()
-    out["R2b_term"] = float(minutes(F, U, C, R, F["term"].map(ts)).sum() / 60.0)
-    lb = np.floor(cv["rate"] / 0.25 + 1e-9)
-    ls = cv.groupby(lb)["ret"].mean()
-    fl = np.floor(F["rate"] / 0.25 + 1e-9).map(ls)
-    if fl.isna().any():   # a locked-rate band the past never carried: the nearest band
-        keys = np.array(sorted(ls.index))
-        fl = fl.fillna(np.floor(F["rate"] / 0.25 + 1e-9).map(lambda k: ls[keys[np.argmin(np.abs(keys - k))]]))
-    out["R2c_locked"] = float(minutes(F, U, C, R, fl).sum() / 60.0)
-    qs = cv.groupby("campaign")["ret"].mean().reindex(W.PAST)
-    x = np.arange(len(W.PAST))
-    a, b = np.polyfit(x, qs.values, 1)
-    trend = float(np.clip(b + a * (len(W.PAST) + 1), 0, 1))     # 2026Q3 is x=6; 2027Q1 is x=8
-    out["R2d_trend"] = float(minutes(F, U, C, R, trend).sum() / 60.0)
-    out["shares"] = dict(pooled=pooled, latest=latest, trend=trend, by_term={int(k): float(v) for k, v in ts.items()},
-                         by_campaign={k: float(v) for k, v in qs.items()})
-    # the drop without the release share (a second error)
+    out["shares"] = dict(pooled=float(cv["ret"].mean()), special=float(cv[cv["special"]]["ret"].mean()),
+                         member=float(cv[~cv["special"]]["ret"].mean()),
+                         by_campaign={k: float(v) for k, v in cv.groupby("campaign")["ret"].mean().items()})
+    # the class without the release share (a second error)
     out["R3_no_release"] = float(minutes(F, U, C, 1.0, G["p"]).sum() / 60.0)
     return out
 
 
 def family(L, G):
-    """Every member of the estimator family the fork table names (SF7, SF8, SF9): hours total and by month."""
+    """Every member of the estimator family the fork table names (SF7, SF8, SF9, SF22): hours total and by month."""
     F, cases = G["F"], G["cases"]
     R = G["R"]
     res = {}
     U0, C0 = G["U"], G["C"]
+    cv = cases[cases["conv"]]
+    y = cv["ret"].astype(float).values
+    sp_f = F["special"].astype(float).values
     for kind in ("ordered", "unordered", "count"):
         U, C = dial_terms(F, cases, kind, fallback=(kind == "ordered"))
         for w in (0.20, 0.25, 0.50):
             for off in ((0.0, 0.10) if w != 0.25 else (0.0, 0.125)):
-                s = share_bins(cases, w, off)
-                p = p_from_bins(F["drop"], s, w, off, fallback=True)
-                m = minutes(F, U, C, R, p)
-                res["%s/bins%.2f+%.3f" % (kind, w, off)] = hours(F, m)
-        for nm, p in (("logit", p_logistic(cases, F["drop"])),
-                      ("logit+term", p_logistic(cases, F["drop"], F["term"], with_term=True)),
-                      ("isotonic", p_isotonic(cases, F["drop"]))):
-            res["%s/%s" % (kind, nm)] = hours(F, minutes(F, U, C, R, p))
-    # the share by band of drop within each term, a cell with fewer than 30 past conversations taking its band's share
-    cvv = cases[cases["conv"]]
-    bk = np.floor(cvv["drop"] / 0.25 + 1e-9)
-    cell = cvv.groupby([bk, cvv["term"]])["ret"].agg(["mean", "size"])
-    band_s = cvv.groupby(bk)["ret"].mean()
-    fb = np.floor(F["drop"] / 0.25 + 1e-9)
-    p_dt = np.array([cell.loc[(k, t), "mean"] if (k, t) in cell.index and cell.loc[(k, t), "size"] >= 30 else band_s[k]
-                     for k, t in zip(fb, F["term"])])
-    res["unordered/bins0.25xterm"] = hours(F, minutes(F, U0, C0, R, p_dt))
+                p = class_bins(F, cases, w, off, fallback=True)
+                res["%s/class-bins%.2f+%.3f" % (kind, w, off)] = hours(F, minutes(F, U, C, R, p.values))
+        p = np.zeros(len(F))
+        for cls in (True, False):
+            sub = cv[cv["special"] == cls]
+            b = _fit(np.column_stack([np.ones(len(sub)), sub["drop"].values]), sub["ret"].astype(float).values)
+            idx = (F["special"] == cls).values
+            p[idx] = _sig(b[0] + b[1] * F.loc[idx, "drop"].values)
+        res["%s/class-logit" % kind] = hours(F, minutes(F, U, C, R, p))
+        p = np.zeros(len(F))
+        for cls in (True, False):
+            idx = (F["special"] == cls).values
+            p[idx] = p_isotonic(cases[cases["special"] == cls], F.loc[idx, "drop"])
+        res["%s/class-isotonic" % kind] = hours(F, minutes(F, U, C, R, p))
+        pm = p_from_bins(F["drop"], share_bins(cases[~cases["special"]], 0.25), 0.25, fallback=True).values
+        p = np.where(F["special"].values, float(cv[cv["special"]]["ret"].mean()), pm)
+        res["%s/special-pooled" % kind] = hours(F, minutes(F, U, C, R, p))
+        X = np.column_stack([np.ones(len(cv)), cv["drop"].values, cv["special"].astype(float).values])
+        b = _fit(X, y)
+        p = _sig(np.column_stack([np.ones(len(F)), F["drop"], sp_f]) @ b)
+        res["%s/drop+class-logit" % kind] = hours(F, minutes(F, U, C, R, p))
+        X = np.column_stack([X, cv["drop"].values * cv["special"].astype(float).values])
+        b = _fit(X, y)
+        p = _sig(np.column_stack([np.ones(len(F)), F["drop"], sp_f, F["drop"].values * sp_f]) @ b)
+        res["%s/drop*class-logit" % kind] = hours(F, minutes(F, U, C, R, p))
     Us, Cs, _, _ = structural_terms(L, F, cases)
-    s = share_bins(cases, 0.25)
-    res["structural/bins0.25+0.000"] = hours(F, minutes(F, Us, Cs, R, p_from_bins(F["drop"], s, 0.25)))
+    res["structural/class-bins0.25+0.000"] = hours(F, minutes(F, Us, Cs, R, class_bins(F, cases).values))
     # campaign subsets (SF7) on the golden estimator
     for nm, qs in (("latest4", W.PAST[-4:]), ("2026", W.PAST[-3:]), ("2025", W.PAST[:4])):
         sub = cases[cases["campaign"].isin(qs)]
         U, C = dial_terms(F, sub, "unordered", fallback=True)
-        s = share_bins(sub, 0.25)
-        p = p_from_bins(F["drop"], s, 0.25, fallback=True)
-        res["subset/%s" % nm] = hours(F, minutes(F, U, C, release_share(L, qs), p))
+        p = class_bins(F, sub, 0.25, 0.0, fallback=True)
+        res["subset/%s" % nm] = hours(F, minutes(F, U, C, release_share(L, qs), p.values))
+    # the class's threshold and base (SF22): every gap from 0.30 to 0.45 classes the same deposits
+    for gap in (0.30, 0.35, 0.45):
+        cf = special_class(F, None, gap)
+        cc = special_class(L["past_lists"], "campaign", gap)
+        cc = cases[["campaign", "account"]].merge(L["past_lists"][["campaign", "account"]].assign(c=cc.values),
+                                                 on=["campaign", "account"], how="left")["c"].values
+        p = class_bins(F, cases, 0.25, 0.0, fallback=True, cls_f=cf, cls_c=pd.Series(cc, index=cases.index))
+        res["class-gap%.2f" % gap] = hours(F, minutes(F, U0, C0, R, p.values))
     return res

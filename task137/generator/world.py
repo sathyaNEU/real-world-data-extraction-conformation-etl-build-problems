@@ -85,15 +85,17 @@ ONE_YEAR = {
     "2023Q1": 5.40, "2023Q2": 5.75, "2023Q3": 6.00, "2023Q4": 6.00,
     "2024Q1": 5.90, "2024Q2": 5.85, "2024Q3": 5.45, "2024Q4": 4.95,
     "2025Q1": 4.50, "2025Q2": 4.15, "2025Q3": 3.85, "2025Q4": 3.65,
-    "2026Q1": 3.40, "2026Q2": 3.30, "2026Q3": 3.15, "2026Q4": 3.00,
-    "2027Q1": 2.95,
+    "2026Q1": 3.40, "2026Q2": 3.30, "2026Q3": 3.20, "2026Q4": 3.15,
+    "2027Q1": 3.20,
 }
 
 
 def spread(q):
     y, k = int(q[:4]), int(q[-1])
     if q == "2027Q1":
-        return [0, .10, .15, .20, .30]
+        return [0, .30, .55, .80, 1.00]
+    if y == 2026:
+        return [0, .25, .50, .75, .95]
     if y <= 2021:
         return [0, .15, .30, .45, .55]
     if y == 2022 and k <= 2:
@@ -108,7 +110,7 @@ def spread(q):
         return [0, -.25, -.45, -.55, -.55]
     if y == 2025 and k == 1:
         return [0, -.10, -.15, -.15, -.10]
-    return [0, .05, .15, .25, .35]
+    return [0, .10, .25, .40, .55]
 
 
 def card(q, term):
@@ -116,8 +118,10 @@ def card(q, term):
 
 
 # New-money specials: (opening quarter, term) -> rate, and the share of that cohort's new deposits taken at it.
-SPECIALS = {("2023Q3", 3): (5.95, 0.52), ("2023Q4", 2): (6.20, 0.55), ("2024Q2", 1): (6.35, 0.50),
+SPECIALS = {("2023Q3", 3): (6.00, 0.35), ("2023Q4", 2): (6.30, 0.35), ("2024Q2", 1): (6.35, 0.35),
+            ("2024Q4", 1): (5.45, 0.22),
             ("2023Q1", 4): (5.65, 0.0)}   # the 2023Q1 four-year special: its volume is set separately
+WINDOW_SPECIALS = {("2025Q1", 1): (5.10, 0.50), ("2025Q2", 1): (4.75, 0.50), ("2025Q3", 1): (4.45, 0.50)}
 SPECIAL_NAMES = {("2023Q3", 3): "Three-year special", ("2023Q4", 2): "Two-year special",
                  ("2024Q2", 1): "One-year special", ("2023Q1", 4): "Four-year special"}
 
@@ -247,12 +251,15 @@ NONANSWER = (("NOA", 0.72), ("BSY", 0.08), ("VML", 0.20))
 DIALS_PER_NUMBER = 6
 WITHDRAW_PER_DAY = 0.004
 PRE_RELEASE_INSTRUCTED = 0.046
-RET_SLOPE, RET_MID = 2.6, 1.60
+RET_SLOPE, RET_MID = 1.8, 2.20
+SPEC_LEVEL, SPEC_SLOPE, SPEC_MID = 0.87, 6.0, 0.30
 RETENTION_KEPT = 0.55
 PLAIN = (("RNW", 0.70), ("CHG", 0.22), ("DEC", 0.08))
 
 
-def p_retention(drop):
+def p_retention(drop, special=False):
+    if special:
+        return SPEC_LEVEL / (1.0 + math.exp(-SPEC_SLOPE * (drop - SPEC_MID)))
     return 1.0 / (1.0 + math.exp(-RET_SLOPE * (drop - RET_MID)))
 
 
@@ -262,6 +269,7 @@ BANK_BRANCH = "86-0410"
 TD_SUFFIXES = ("030", "031", "032", "033", "034", "035")
 SAV_SUFFIXES = ("000", "001", "002")
 KIC_SUFFIX = "060"
+SETTLEMENT = "8604109000017099"     # the society's term deposit maturity settlement account (payments system)
 
 
 def acct_dashed(body, suffix):

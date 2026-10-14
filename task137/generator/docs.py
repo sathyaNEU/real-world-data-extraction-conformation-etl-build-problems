@@ -383,9 +383,9 @@ kbs_td_account_events_2025-01_2026-10.csv
   (decimal) and maturity_date of the deposit as opened or reinvested.
 
 kbs_member_transfers_2025-01_2026-10.csv
-  Transfers of principal into and out of the accounts in the events extract, 1 January 2025 to 31 October 2026
-  (interest payments are not included). Society accounts are 16 digits; accounts at other banks are in their bank's
-  format.
+  Transfers of principal into and out of the accounts in the events extract, with the payment of their maturity
+  proceeds, 1 January 2025 to 31 October 2026 (interest payments are not included). Society accounts are 16 digits;
+  accounts at other banks are in their bank's format. narrative: as the payments system records it.
 
 kbs_term_holdings_2026-11-02.csv
   Term deposits and investment certificates held in the core at the cut and maturing from 1 January to 30 June 2027.

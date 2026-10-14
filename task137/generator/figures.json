@@ -1,43 +1,51 @@
 {
  "call": {
-  "booking_hours": "5,500",
+  "quarter": "January to March 2027",
+  "booking_hours": "5,250",
   "hours_by_month": {
-   "January": "1,500",
+   "January": "1,250",
    "February": "2,000",
    "March": "2,000"
   }
  },
  "components": {
-  "no_callable_number": "460",
-  "deposits_at_5_65_four_year": "10,735",
-  "locked_rate_pct": "5.65",
-  "card_four_year_pct": "3.15",
-  "drop_points": "2.50",
-  "past_share_at_2_5_or_more_pct": "92",
+  "no_callable_number": "464",
+  "special_deposits": "10,697",
+  "special_opened": "January to March 2023",
+  "special_term_years": "4",
+  "special_rate_pct": "5.65",
+  "cohort_lowest_rate_pct": "5.15",
+  "card_pct": "4.00",
+  "drop_points": "1.65",
+  "past_special_share_pct": "87",
+  "past_band_special_share_pct": "88",
+  "past_band_member_share_pct": "28",
   "expected_conversations": "14,000",
-  "retention_share_pct": "62",
-  "past_pooled_share_pct": "33"
+  "retention_share_pct": "54",
+  "past_pooled_share_pct": "21"
  },
  "steps": {
   "listed_deposits": "18,400",
   "deposits_by_month": {
-   "January": "5,030",
-   "February": "6,631",
-   "March": "6,739"
+   "January": "4,474",
+   "February": "6,835",
+   "March": "7,091"
   },
-  "release_share_pct": "95.5",
-  "non_reaching_dials": "67,400",
-  "past_conversations": "45,044",
-  "past_conversations_at_2_5_or_more": "1,394",
-  "past_share_negative_drop_pct": "0.1",
-  "hours_unrounded": "5,568.0",
-  "hours_by_month_unrounded": {
-   "January": "1,479.5",
-   "February": "2,044.1",
-   "March": "2,044.4"
-  },
+  "release_share_pct": "95.2",
+  "non_reaching_dials": "66,700",
+  "past_conversations": "46,298",
+  "past_special_conversations": "4,093",
+  "special_gap_points": "0.40",
   "band_points": "0.25",
-  "drop_threshold_points": "2.5"
+  "band_from_points": "1.50",
+  "band_to_points": "1.75",
+  "past_specials": "the one-year deposits at 6.35, 5.45, 5.10, 4.75 and 4.45 per cent, the two-year at 6.30 and the three-year at 6.00",
+  "hours_unrounded": "5,280.9",
+  "hours_by_month_unrounded": {
+   "January": "1,206.9",
+   "February": "2,013.3",
+   "March": "2,060.7"
+  }
  },
  "rules": {
   "minutes_not_reached": "1.5",
@@ -48,63 +56,59 @@
   "listing_threshold_nzd": "25,000"
  },
  "default_path": {
-  "pooled_share_hours": "4,500",
-  "latest_campaign_hours": "4,750",
-  "by_term_hours": "4,000",
-  "by_locked_rate_hours": "5,000",
-  "trend_hours": "4,750",
-  "latest_hours_per_listed_deposit": "4,750",
-  "drop_without_release_share_hours": "5,750"
+  "pooled_share_hours": "4,250",
+  "drop_hours": "4,250",
+  "latest_campaign_hours": "4,250",
+  "by_term_hours": "3,750",
+  "by_locked_rate_hours": "4,250",
+  "trend_hours": "4,500",
+  "locked_rate_by_term_logit_hours": "4,500",
+  "latest_hours_per_listed_deposit": "4,250",
+  "without_release_share_hours": "5,500"
  },
  "ask_a": {
   "2025Q1": {
    "campaign": "January to March 2025",
-   "deposits": "6,520",
-   "principal_nzd": "486,794,000"
+   "deposits": "6,700",
+   "principal_nzd": "497,825,000"
   },
   "2025Q2": {
    "campaign": "April to June 2025",
-   "deposits": "7,007",
-   "principal_nzd": "526,875,000"
+   "deposits": "7,186",
+   "principal_nzd": "537,491,000"
   },
   "2025Q3": {
    "campaign": "July to September 2025",
-   "deposits": "6,902",
-   "principal_nzd": "504,704,000"
+   "deposits": "7,226",
+   "principal_nzd": "532,430,000"
   },
   "2025Q4": {
    "campaign": "October to December 2025",
-   "deposits": "6,917",
-   "principal_nzd": "500,989,000"
+   "deposits": "7,172",
+   "principal_nzd": "536,002,000"
   },
   "2026Q1": {
    "campaign": "January to March 2026",
-   "deposits": "6,860",
-   "principal_nzd": "503,624,000"
+   "deposits": "7,591",
+   "principal_nzd": "562,096,000"
   },
   "2026Q2": {
    "campaign": "April to June 2026",
-   "deposits": "6,933",
-   "principal_nzd": "512,433,000"
+   "deposits": "7,494",
+   "principal_nzd": "557,067,000"
   },
   "2026Q3": {
    "campaign": "July to September 2026",
-   "deposits": "7,001",
-   "principal_nzd": "521,207,000"
+   "deposits": "7,765",
+   "principal_nzd": "573,831,000"
   }
  },
  "ask_b": {
-  "January": {
-   "maturing_nzd": "467,102,000",
-   "not_on_list_nzd": "60,860,000"
+  "maturing_nzd": {
+   "January": "415,506,000",
+   "February": "646,816,000",
+   "March": "672,944,000"
   },
-  "February": {
-   "maturing_nzd": "633,665,000",
-   "not_on_list_nzd": "74,665,000"
-  },
-  "March": {
-   "maturing_nzd": "633,034,000",
-   "not_on_list_nzd": "80,661,000"
-  }
+  "quarter_not_on_list_nzd": "214,491,000"
  }
 }
