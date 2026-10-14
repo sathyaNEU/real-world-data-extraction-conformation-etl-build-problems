@@ -1,38 +1,38 @@
 {
   "task": "task453",
   "owner": "oviya1301",
-  "status": "SHIPPED",
+  "status": "DRAWING",
   "domain": "survey-research-official-statistics",
   "objective": "etl",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-13",
-  "stump": "The default path designates Brennick Valley, Kestrow North, Varrenby Shore and Pellmarsh Hills because step 4 estimates each region's seasonal pattern across the January 2026 move to workplace placement without removing it: the step leaks into the first-quarter seasonal factors in proportion to its size, pulling the first quarter of 2027 below the line in Kestrow North and Varrenby Shore, whose mines, mills and plants the agency counted at head offices in Wickmoor until 2026, and lifting the Capital, which lost those jobs, above it; removing the step as a level shift before the seasonal pattern is estimated (or restating the earlier history to the new placement) designates Brennick Valley, the Capital and Pellmarsh Hills.",
-  "architecture": 1,
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-14",
+  "stump": "The default path restates the trigger at 6.9 per cent because it reads the redesign's effect as the gap between the rotation groups on the redesigned questionnaire and those still on the old one in January to May 2026 (about +0.9 points), which sets first interviews against last ones and carries the survey's first-interview bias; read within month in sample and averaged over the six interviews the published rate averages, the break is about +0.3 points and the trigger 6.3 per cent.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-13"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), --asof 2027-05-07",
-    "reader": "three passes (isolated, Sonnet, medium): no decisive-step sentence, analytical; the ask readings (employer, workplace, none left, loss) and the realism tells fixed in the generator; pass 3 clean"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.question_form against task451 v2)",
-    "surface": "0 promoted pairs; personas in the pack are the card's four",
-    "nearest": "0.07 (task30 round 3 and task17 revision 3, lineage)",
-    "note": "drawn 2026-10-13: guard WARN (repeat.question_form); task139 and task30 differentiated"
+    "heart": "",
+    "nearest": "0.06 (task184 v1 lineage); 0.05 task129 v1, task131 v1, task125, task40 lineage",
+    "note": "architecture 2 drawn 2026-10-14: guard WARN overuse.objective, repeat.gate_g, overuse.gate_g answered in the design note; v1, task125 and task450 differentiated on the card"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report.md (pass 1, on the cut before the reader's fixes; Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical)"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "",
+  "resume": "stage 2: readability screen, fork table, ladder with tuned magnitudes, closure, literal reader, oracles, asks and prompt.txt to precut exit 0; then the v2 generator replaces v1's",
   "approved": null,
-  "delivered": "2026-10-13",
+  "delivered": null,
   "portal": null,
+  "lineage_note": "architecture 1 shipped 2026-10-13 (judge DETERMINISTIC, APPROVE; delivered, pending review) and was re-rooted 2026-10-14 at the author's request: its decisive step was a dated level shift an event study finds, and its hardening was judged a method fork (SEND_BACK, reverted)",
   "source_note": "seed ET10 (analytical_tasks/07_data_extraction_conformation) not used: its world sits in biomedical and pharmacology domains with no ETL-serving task type, and its rate is a stated deadline count; the pairing is the client's seasonal-adjustment official time-series production task type"
 }
