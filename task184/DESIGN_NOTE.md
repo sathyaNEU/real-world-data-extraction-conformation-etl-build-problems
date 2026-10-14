@@ -57,13 +57,17 @@ arm, are in `## Tried and rejected` and in the card's lineage. Nothing of the ai
 5. Sum the offences per slot over the two seasons on record, divide by the seasons, and commission the six slots with
    the most offences.
 
-Ends on: <to be built: the six-slot slate the window-start route names, and its covered-offence figure>
-Golden: <to be built: the slate the weighted windows name, and its covered-offence figure>
+Ends on: the seven 20:00 to 24:00 slots and Friday 16:00 to 20:00, covering 3,199.5 contracted offences a season, 0.758 of what the golden slate covers.
+Golden: Saturday 20:00, Sunday 00:00, Friday 20:00, Saturday 00:00, Sunday 04:00, Saturday 04:00, Thursday 20:00 and Wednesday 20:00, covering 4,223.1 contracted offences a season.
 
 ## Stump sentence
 
-<to be built once the ladder's figures are cut: the slate the default path commissions and the step, treating each
-occurrence window as the point in time it starts, that lands it there.>
+A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps
+the contracted classes in the quarter, takes each offence's occurrence time as `occurred_from` and commissions the
+seven 20:00 to 24:00 slots and Friday 16:00 to 20:00, covering 3,199.5 contracted offences a season; the step that
+lands it there is treating a window as the point in time it starts, when nine in ten of these offences have a window
+over four hours long and the weight those windows put on the quarter's after-midnight and early-morning slots is
+what the patrol is bought for.
 
 ## Three rules
 
@@ -90,7 +94,11 @@ occurrence window as the point in time it starts, that lands it there.>
 - **Not rule application:** no filed sentence says how to treat an occurrence window. The counting rules say when an
   offence is recorded and under what class; the tasking contract says how many slots it buys; neither says what a
   slot's offence weight is.
-- **Analyst test:** <the analyst test's named wrong slate, filed once the ladder is cut; the card carries its prose>
+- **Analyst test:** a strong analyst who reads every column correctly, conforms the legacy export to the new records
+  management export, drops the cross-system duplicates, fixes the gazetteer and keeps the contracted classes takes
+  each offence's occurrence time as `occurred_from` and commissions the seven 20:00 to 24:00 slots and Friday 16:00
+  to 20:00, 3,199.5 covered offences a season; wrong, because for nine in ten of these offences the window runs over
+  four hours and a point in it is not where the offence happened.
 - **Estimand:** the offences of the contracted classes in the Harbourgate quarter whose occurrence window overlaps a
   slot, weighted by the share of the window that falls in it, summed over the seasons on record and divided by the
   seasons; filed in the tasking contract's definition of a covered offence and the quarter's boundary.
@@ -102,6 +110,43 @@ occurrence window as the point in time it starts, that lands it there.>
   windows has to be built on the weight each window puts on each one. No build on file teaches it: task180 turns on
   which events reach the record, task181 on the opportunities that generate them, task85 on each unit's own
   observation window, and none on the precision of a recorded time.
+
+## Readability screen
+
+Each rung is the move a solver makes to leave the rung below; the decisive rung has to be silent on all six tests.
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 1, the window's other end, the discovery time | no | yes, `occurred_to` sits beside `occurred_from` | yes, "when was it found" is the first thing a reader asks of a window | no | no | yes, one column swapped | readable |
+| 2, the window's midpoint | no | no, the midpoint is computed | yes, the statistically minded correction to a range | no | no | yes, one mean of two columns | readable |
+| 3, the weight each window puts on each slot (decisive) | no: no shipped sentence says an offence contributes to more than one slot, names a weight, or says what to do with a window; the counting rules say when an offence is recorded and under which class, the tasking contract says how many slots it buys and that a covered offence is one that occurred in the quarter while the patrol was on duty, and neither says how to treat a window (asserted by word sweep over every document) | no: no column holds a weight, a duration or a slot, and the weight is built from two timestamps against a recurring grid the solver lays down itself | no: the window's start, its end, its midpoint and the precisely timed subset each name a different slate, and the first three are the three reflexes | no: no shipped figure ranks or scores a slot; the patrol's own tasking plan records the hours worked, not the offences they met | no: keys unique once the cut-over duplicates go, every join matched, no missing day | no: the weight is a sum over 42 recurring blocks of each window's overlap with them, and 92 per cent of the windows cross a block boundary | silent |
+
+## Ladder
+
+Built values from the prototype generator. Offence-equivalents a season, the mean of the two seasons on record.
+
+| Rung | Construction | Slate | Covered a season |
+|---|---|---|---|
+| 0, default | each offence at `occurred_from` | Sat, Fri, Thu, Wed, Sun, Mon and Tue at 20:00, Fri at 16:00 | 3,199.5 (0.758 of the golden) |
+| 1 | each offence at `occurred_to`, when it was found | Sun and Sat at 08:00, Sun and Sat at 04:00, Fri, Thu and Mon at 08:00, Fri at 16:00 | 2,628.2 (0.622) |
+| 2 | each offence at its window's midpoint | Sun, Sat, Fri, Thu, Mon, Tue and Wed at 00:00, Fri at 12:00 | 2,880.3 (0.682) |
+| 3, golden | each offence spread across the slots its window touches | Sat 20:00, Sun 00:00, Fri 20:00, Sat 00:00, Sun 04:00, Sat 04:00, Thu 20:00, Wed 20:00 | 4,223.1 |
+
+- **The golden's eight, in order:** Saturday 20:00 630.8, Sunday 00:00 628.5, Friday 20:00 614.7, Saturday 00:00
+  559.6, Sunday 04:00 539.0, Saturday 04:00 468.8, Thursday 20:00 395.1, Wednesday 20:00 386.5. Ninth is Monday
+  20:00 at 347.4, so the cap falls on an 11.2 per cent gap.
+- **Why only the spread finds it:** each wrong route concentrates the slate in one band, the evening starts, the
+  morning discoveries or the after-midnight midpoints. The golden slate is the only one that spans all three, and
+  the two 04:00 to 08:00 slots no reflex reaches are its fifth and sixth members.
+- **Variants (asserted):** spreading in one-hour steps instead of 15-minute steps gives the same slate and the same
+  covered figure; spreading in proportion to the quarter's own hourly profile of precisely timed offences, the
+  refinement in the literature, gives the same slate and the same figure, because the quarter trades from 04:00 at
+  the fish market and its taxi rank clears at 05:00, so that profile is not empty in the early morning; and the
+  slate computed from the offences' true times, which the generator holds and the pack never ships, is the same
+  eight slots. The hygiene reflex has nothing to keep: every contracted offence's window runs at least two hours
+  and nine in ten run over four, so dropping the imprecise records empties the population rather than cleaning it.
+- **Worth:** every one of the 42 slot figures is wrong on every wrong basis, and the covered figure is 24 to 38 per
+  cent low; a rung-0 response keeps four of the eight slot names and not one figure.
 
 ## Tried and rejected
 

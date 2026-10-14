@@ -1,13 +1,13 @@
 {
  "task": "task184",
  "owner": "oviya13ya",
- "status": "DRAWING",
+ "status": "PAUSED",
  "domain": "criminology-justice",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-14",
- "stump": "to be written at stage 2, once the ladder's figures are cut",
+ "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, takes each offence's occurrence time as occurred_from and commissions the seven 20:00 to 24:00 slots and Friday 16:00 to 20:00, 3,199.5 covered offences a season; the step that lands it there is treating a window as the point in time it starts, when nine in ten of these offences have a window over four hours long.",
  "architecture": 2,
  "loops": 0,
  "precut": {
@@ -35,7 +35,7 @@
    "commit": "3329b92"
   }
  ],
- "resume": "Architecture 2 drawn and registered (Criminology & Justice, aoristic hotspot slate). Next: stage 2, the ladder on paper (rungs 0 to 3, the readability screen, the fork table, the closure table and the asks), then prompt.txt, then precut.py.",
+ "resume": "Stage 2 part done: the ladder is cut and in the note (golden slate Sat 20:00, Sun 00:00, Fri 20:00, Sat 00:00, Sun 04:00, Sat 04:00, Thu 20:00, Wed 20:00; 4,223.1 covered a season; rung 0 the window start at 0.758, rung 1 the window end at 0.622, rung 2 the midpoint at 0.682; the one-hour grain, the activity-weighted refinement and the offences' true times all give the golden slate). prompt.txt written and voice-check PASS. generator/world.py holds the tuned constants and generator/offences_proto.py the prototype that produced the figures. STILL OWED at stage 2: the semantic fork table, the 22-axis closure table, the literal reader line, the oracles line, the ask sheet with its three devices and the pair arithmetic, then precut.py exit 0. Then stage 3: the full generator and pack (two recording-system exports, the gazetteer, the footfall sensors, the tasking plan, the counting rules, the contract), goldens, checks, verifier, metadata.",
  "approved": null,
  "delivered": "2026-10-12",
  "portal": null,
