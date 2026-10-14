@@ -12,7 +12,7 @@ import pandas as pd
 
 import common as K
 
-PARTS = ("lcp_ms", "ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms")
+PARTS = ("fcp_ms", "lcp_ms", "ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms")
 
 
 def _csv(target, name, **kw):

@@ -15,7 +15,7 @@ from openpyxl.utils import get_column_letter
 import common as K
 import world as W
 
-INT_COLS = ("lcp_ms", "ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms")
+INT_COLS = ("fcp_ms", "lcp_ms", "ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms")
 
 
 def _utc(t) -> str:
@@ -45,8 +45,8 @@ def _beacon_rows(df, cols):
     return out
 
 
-BEACON_COLS = ["beacon_id", "origin", "page_path", "form_factor", "navigation_type", "fired_at_utc", "lcp_ms",
-               "lcp_element", "lcp_url", "ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms"]
+BEACON_COLS = ["beacon_id", "origin", "page_path", "form_factor", "navigation_type", "fired_at_utc", "fcp_ms",
+               "lcp_ms", "lcp_element", "lcp_url", "ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms"]
 
 
 def write_beacons(path, nov):
@@ -54,8 +54,8 @@ def write_beacons(path, nov):
 
 
 def write_engagement_beacons(path, eng):
-    cols = ["beacon_id", "engagement", "origin", "page_path", "form_factor", "navigation_type", "fired_at_utc", "lcp_ms",
-            "lcp_element", "lcp_url", "ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms"]
+    cols = ["beacon_id", "engagement", "origin", "page_path", "form_factor", "navigation_type", "fired_at_utc", "fcp_ms",
+            "lcp_ms", "lcp_element", "lcp_url", "ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms"]
     e = eng.copy()
     e["beacon_id"] = [W._hexid("review", i) for i in range(len(e))]
     return _write(path, cols, _beacon_rows(e, cols))

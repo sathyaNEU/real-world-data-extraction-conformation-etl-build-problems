@@ -11,7 +11,7 @@
   "shape": "14",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Pantry: its hero-image playbook would move 6.3 million page loads a month into the good LCP band, 1.36 times Tideline's 4.6 million",
+  "answer": "Matchday: its hero-image playbook would move 4.6 million page loads a month into the good LCP band, 1.40 times Ledger's 3.3 million",
   "answer_source": "submission.md, Final Recommendation; golden performance_squad_q1_2027.md",
   "gap": [
     "time",
@@ -36,7 +36,7 @@
   "scoring_unit": "units served",
   "spine": {
     "file": "rum_lcp_beacons_2026-11.csv",
-    "rows": 157066,
+    "rows": 157825,
     "entity": "one row is one sampled page load's RUM beacon with its Largest Contentful Paint attribution (element, resource URL and the four parts of the paint)",
     "grain": "page load",
     "source": "synthetic"
@@ -80,15 +80,15 @@
   ],
   "opening_move": "question-first",
   "question_form": "where",
-  "driver": "The decisive quantity is how many units an intervention moves across a threshold when it acts on two of the four additive parts of each unit's value, and the record of past interventions shows one of those parts settling at a fixed level rather than shrinking in proportion, rising where it began below that level, so the units it can move are those whose untouched parts leave room under the threshold once that part sits at its level, built unit by unit; carrying the past effect as a ratio of medians, or as one cut to the whole value, picks a candidate whose small starting part the ratio shrinks further.",
-  "driver_concrete": "Each property's November page loads whose Largest Contentful Paint element is an image it serves itself are carried through the squad's hero-image playbook part by part from their RUM attribution: time to first byte and render delay untouched, the image's load time scaled as the past engagements' load times scaled, and its load delay set at the level the past engagements' delays settled at (the group image CDN's connection), so the property whose hero images waited on lazy loading gains most, while the after-over-before ratio of medians favours the property whose short delays it shrinks to nothing and a flat cut to the whole paint favours a third.",
-  "stump": "A competent analyst carries the squad's past engagements onto each slow own-image page load as ratios, the image's load delay and load time each cut by the after-over-before ratio of medians, and files Ledger, 7.4 million page loads a month into the good band; the step that lands it there is treating the delay as shrinking in proportion, when on every engagement the delay settled at one level, 240 ms, the connection to the group image CDN, rising where a site's images were found early on its own origin, so Ledger moves 3.3 million and Pantry, whose hero images wait longest to start, leads at 6.3 million.",
+  "driver": "The decisive quantity is how many units an intervention moves across a threshold when it acts on two of the four additive parts of each unit's value: the record of past interventions shows one part settling at a fixed level rather than shrinking in proportion, and each unit's value never falling below a second measure of the same unit that the intervention leaves alone, which on a share of units sits beyond the threshold; built unit by unit with the level and that floor, the candidate the level favours most loses most of its gain to the floor and a third leads, while a ratio of the past effect picks a candidate whose small starting part it shrinks further and the level without the floor picks the floored candidate.",
+  "driver_concrete": "Each property's November page loads whose Largest Contentful Paint element is an image it serves itself are carried through the squad's hero-image playbook part by part from their RUM attribution: time to first byte as it is, the image's load time scaled as the engagements' load times scaled, its load delay at the level the engagements' delays settled at (the group image CDN's connection), and the paint taken no sooner than the load's own first contentful paint, which the playbook leaves alone and which on pages held by the experimentation tool's anti-flicker snippet sits about three seconds after the first byte; most of Pantry's slow loads are on such pages, so Matchday leads, while the after-over-before ratio of medians favours Ledger and the level with the render delay held favours Pantry.",
+  "stump": "A competent analyst carries the squad's past engagements onto each slow own-image page load as ratios, the image's load delay and load time each cut by the after-over-before ratio of medians and the rest of the paint held, and files Ledger, 7.4 million page loads a month into the good band; the delay settles at one level instead (240 ms, the CDN connection), which puts Pantry first at 6.8 million with the render delay held, and the paint cannot come before the page's own first contentful paint, which the playbook leaves where it is: most of Pantry's slow loads sit on pages that first paint about three seconds after their first byte, so it moves 2.9 million and Matchday leads at 4.6 million.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who weights the November beacons to page loads, keeps the loads whose paint element is an image the property serves itself, splits each load's paint into its four parts and applies the past engagements' after-over-before ratios to the image's delay and load time files Ledger (7.4 million page loads a month); the preload rule of thumb (no delay) files Ledger too (8.4 million); carrying the delay at the level the engagements settled at (240 ms) files Pantry (6.3 million).",
-  "domain_test": "The call turns on how many page loads a month cross under the 2,500 ms Largest Contentful Paint line when a hero-image playbook changes two of the paint's four parts (time to first byte, resource load delay, resource load duration, element render delay), estimated as web performance engineers do from RUM attribution and the playbook's measured effect on each part; with a hospital's or a utility's nouns there is no paint split into parts and no preload or image CDN connection to settle a delay, and the task stops reading the same.",
+  "analyst_test": "A strong analyst who weights the November beacons to page loads, keeps the loads whose paint element is an image the property serves itself, splits each load's paint into its four parts and applies the past engagements' after-over-before ratios to the image's delay and load time files Ledger (7.4 million page loads a month); the preload rule of thumb (no delay) files Ledger too (8.4 million); the delay at the level the engagements settled at (240 ms) with the render delay held files Pantry (6.8 million); only the level with each paint floored at its own first contentful paint files Matchday (4.6 million).",
+  "domain_test": "The call turns on how many page loads a month cross under the 2,500 ms Largest Contentful Paint line when a hero-image playbook changes two of the paint's four parts (time to first byte, resource load delay, resource load duration, element render delay) and leaves the page's first contentful paint where it is, estimated as web performance engineers do from RUM attribution and the playbook's measured effect on each part; with a hospital's or a utility's nouns there is no paint split into parts, no preload or image CDN connection to settle a delay and no first paint a page cannot beat, and the task stops reading the same.",
   "mechanism_source": "design_note",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:paint-parts-counterfactual-with-a-delay-that-settles-at-a-level",
+  "layer2_pattern": "own:paint-parts-counterfactual-with-a-delay-that-settles-at-a-level-and-a-first-paint-floor",
   "layer1": [
     "RUM sampling rates set per origin in an effective-dated configuration and changed mid-month for two properties",
     "an extract cut on whole UTC days around a Sydney-time month",
@@ -99,7 +99,27 @@
     "CrUX rows by origin and form factor beside the group's own RUM; analytics page views at another grain",
     "ask paths: hourly image-host rollups in UTC mixing slot sizes and 304 revalidations; a legacy server's own log on Sydney time; a DAM export with three renditions an asset, library records kept beside migrated assets, retired assets, and assets filed under the property they were uploaded for"
   ],
-  "differentiation": {},
-  "lineage": [],
-  "notes": "drawn 2026-10-13 ahead of task257 (DA07), whose world turns on the duty-cycle mix (composition_mix), barred by ban.strategy against task256; the seed's own decisive hint (fixes only moved loads whose paint element was the property's own image) is kept as a lower rung (the reachable population), never decisive; the decisive move is the shape of the playbook's effect on the image's load delay Stage 3 (2026-10-13): built; the sampling rates were evened so that no wrong rung lands on Pantry without weights, Trailhead resized so Pantry sits 5th on rung 0, the engagements' samples tightened so every estimator of the level and ratio gives the same rounded counts. Gap re-read at stage 3: the decisive step carries a backward-measured effect (the past engagements, mostly on long delays) forward to properties whose starting delays differ (gap 1, time); the reach (the slow file is not the loads the playbook can move, gap 2) is the lower rung."
+  "differentiation": {
+    "task258": "loop 0 is this slot's own lineage, kept as rung R4: the level alone with the render delay held files Pantry; loop 1 adds the floor each paint meets at the load's own first contentful paint, which the playbook leaves alone, and the call moves to Matchday"
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (loop 0): each slow own-image load rebuilt part by part with the image's load delay at the level the engagements settled at (240 ms) and its load time at their ratio, time to first byte and render delay held",
+      "fate": "hardened at the author's request for a second layer (2026-10-14, before any portal result); kept as rung R4 of loop 1, where each load's first contentful paint ships and the rebuilt paint can come no sooner than it, so the level with the render delay held files Pantry (6.8 million) and the golden moves to Matchday",
+      "domain": "product-analytics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "stump_strategy": "population_selection",
+      "driver": "The decisive quantity is how many units an intervention moves across a threshold when it acts on two of the four additive parts of each unit's value, and the record of past interventions shows one of those parts settling at a fixed level rather than shrinking in proportion, rising where it began below that level, so the units it can move are those whose untouched parts leave room under the threshold once that part sits at its level, built unit by unit; carrying the past effect as a ratio of medians, or as one cut to the whole value, picks a candidate whose small starting part the ratio shrinks further."
+    }
+  ],
+  "notes": "drawn 2026-10-13 ahead of task257 (DA07), whose world turns on the duty-cycle mix (composition_mix), barred by ban.strategy against task256; the seed's own decisive hint (fixes only moved loads whose paint element was the property's own image) is kept as a lower rung (the reachable population), never decisive; the decisive move is the shape of the playbook's effect on the image's load delay Stage 3 (2026-10-13): built; the sampling rates were evened so that no wrong rung lands on Pantry without weights, Trailhead resized so Pantry sits 5th on rung 0, the engagements' samples tightened so every estimator of the level and ratio gives the same rounded counts. Gap re-read at stage 3: the decisive step carries a backward-measured effect (the past engagements, mostly on long delays) forward to properties whose starting delays differ (gap 1, time); the reach (the slow file is not the loads the playbook can move, gap 2) is the lower rung. Loop 1 (2026-10-14, the author's second layer before any portal result): each beacon carries the page's first contentful paint; pages on sections that wait on the experimentation tool's anti-flicker snippet (five of the six properties, and two engaged sites) first paint about three seconds after their first byte, so the rebuilt paint is floored there; the loop-0 construction (the level, render delay held) is rung R4 and files Pantry; Matchday's own-image share, hero delays and other loads and Pantry's traffic retuned so the ladder's positions hold."
 }

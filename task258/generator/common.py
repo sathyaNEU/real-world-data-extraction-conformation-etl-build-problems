@@ -42,8 +42,8 @@ PROPERTIES = [
          parts=((700, .50), (500, .70), (700, .60), (450, .60)), other=(2350, .45),
          devices=(0.71, 0.25, 0.04), hero=(1200, 675)),
     dict(code="matchday", name="Matchday", kind="sport", origin="matchday.brolga.au",
-         img="images.matchday.brolga.au", alias=None, cdn_share=0.06, loads=36.5, own=0.30,
-         parts=((1000, .45), (650, .70), (650, .60), (600, .60)), other=(2600, .45),
+         img="images.matchday.brolga.au", alias=None, cdn_share=0.06, loads=36.5, own=0.31,
+         parts=((1000, .45), (1300, .70), (650, .60), (600, .60)), other=(1800, .45),
          devices=(0.78, 0.18, 0.04), hero=(1200, 675)),
     dict(code="hearth", name="Hearth", kind="home", origin="hearth.brolga.au",
          img="images.hearth.brolga.au", alias=("media.hearth.brolga.au", dt.date(2026, 8, 14), 0.14), cdn_share=0.0,
@@ -58,7 +58,7 @@ PROPERTIES = [
          cdn_share=0.0, loads=8.0, own=0.72, parts=((1300, .40), (700, .60), (1300, .50), (350, .50)),
          other=(2700, .45), devices=(0.69, 0.27, 0.04), hero=(1600, 900)),
     dict(code="pantry", name="Pantry", kind="food", origin="pantry.brolga.au",
-         img="images.pantry.brolga.au", alias=None, cdn_share=0.25, loads=9.62, own=0.70,
+         img="images.pantry.brolga.au", alias=None, cdn_share=0.25, loads=10.2, own=0.70,
          parts=((400, .45), (3200, .50), (900, .50), (220, .50)), other=(2200, .40),
          devices=(0.81, 0.15, 0.04), hero=(1080, 1080)),
 ]
@@ -79,6 +79,14 @@ SAMPLING = {
 LEVEL_MS = 240          # the hero image's load delay once it is preloaded from the group image CDN (the connection)
 LEVEL_SD_MS = 15      # the connection's spread from load to load
 LOAD_TIME_RATIO = 0.48  # AVIF at the slot size against the source JPEG or PNG, across the engagements
+# The group experimentation tool's anti-flicker snippet keeps a page hidden until the tool's script arrives or the
+# snippet's timeout runs out. On these sections (and on two engaged sites) the script waits behind the consent
+# manager and never arrives in time, so the page first paints at the timeout after its first byte; the image playbook
+# leaves it where it is (never shipped as a figure)
+GATED_SECTIONS = {"tideline": ("news", "politics"), "matchday": ("tennis",), "hearth": ("interiors",),
+                  "trailhead": ("deals",), "pantry": ("recipes", "dinner", "quick-meals", "healthy")}
+GATED_ENGAGEMENTS = ("E06", "E10")
+GATE_TIMEOUT_MS = 3000
 
 # Past engagements on the group's smaller sites: site, origin, (start of the before window, change shipped),
 # before-window medians for the hero image's load delay and load time (ms), time to first byte and render delay,

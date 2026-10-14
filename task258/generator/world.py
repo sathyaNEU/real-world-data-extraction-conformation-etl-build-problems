@@ -20,8 +20,8 @@ HOUR_W = HOUR_W / HOUR_W.sum()
 OTHER_KIND = {"news": (0.55, 0.20, 0.15, 0.10), "sport": (0.35, 0.25, 0.15, 0.25), "home": (0.45, 0.30, 0.20, 0.05),
               "personal finance": (0.75, 0.10, 0.15, 0.0), "travel": (0.35, 0.35, 0.20, 0.10),
               "food": (0.40, 0.30, 0.25, 0.05)}   # text, agency image, ad creative, video poster
-COLUMNS = ["origin", "page_path", "device", "navigation_type", "fired_at_utc", "lcp_ms", "lcp_element", "lcp_url",
-           "ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms"]
+COLUMNS = ["origin", "page_path", "device", "navigation_type", "fired_at_utc", "fcp_ms", "lcp_ms", "lcp_element",
+           "lcp_url", "ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms"]
 
 
 def _hours(start=None, end=None):
@@ -195,21 +195,42 @@ def _property_beacons(p, hours, key):
     text_el = np.array(["H1", "P", "DIV"])[rq.choice(3, m, p=[0.6, 0.25, 0.15])]
     element = np.where(own, "IMG", np.where(which == 0, text_el, np.where(which == 3, "VIDEO", "IMG")))
     path = cat["path"][page]
+    # a page on a section held by the anti-flicker snippet shows nothing until the snippet's timeout has run from its
+    # first byte: its first paint comes then, its largest paint no sooner, and the render delay carries the wait
+    gated = np.isin(cat["sec"][page], K.GATED_SECTIONS.get(p["code"], ())) & ~pre & ~restore
+    lcp, fcp = _first_paint(K.stream(key, "paint", p["code"]), parts, gated, pre)
     df = pd.DataFrame({
         "origin": p["origin"], "page_path": path,
         "device": device, "navigation_type": np.where(restore, "back_forward", nav),
-        "fired_at_utc": pd.to_datetime(fired), "lcp_ms": pd.array(np.where(restore, -1, lcp), dtype="Int64"),
+        "fired_at_utc": pd.to_datetime(fired), "fcp_ms": pd.array(np.where(restore, -1, fcp), dtype="Int64"),
+        "lcp_ms": pd.array(np.where(restore, -1, lcp), dtype="Int64"),
         "lcp_element": np.where(restore, "", element), "lcp_url": np.where(restore, "", url),
         "ttfb_ms": pd.array(np.where(restore, -1, parts[0]), dtype="Int64"),
         "load_delay_ms": pd.array(np.where(restore, -1, parts[1]), dtype="Int64"),
         "load_time_ms": pd.array(np.where(restore, -1, parts[2]), dtype="Int64"),
         "render_delay_ms": pd.array(np.where(restore, -1, parts[3]), dtype="Int64")})
-    for c in ("lcp_ms", "ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms"):
+    for c in ("fcp_ms", "lcp_ms", "ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms"):
         df.loc[restore, c] = pd.NA
     df = df.sort_values(["fired_at_utc", "page_path"], kind="mergesort").reset_index(drop=True)
     ids = [_hexid(key, p["code"], i) for i in range(len(df))]
     df.insert(0, "beacon_id", ids)
     return df
+
+
+def _first_paint(r, parts, gated, pre=None):
+    """First and largest paint for each load, the parts in place (the render delay grows where the page was held).
+    A page that is not held paints first soon after its first byte (its styles are inlined); a held page first paints
+    when the anti-flicker snippet's timeout runs out, and its largest paint cannot come before that."""
+    n = parts.shape[1]
+    shown = parts[0] + K.GATE_TIMEOUT_MS + np.rint(r.uniform(60, 200, n)).astype(np.int64)
+    early = parts[0] + np.rint(r.uniform(110, 230, n)).astype(np.int64)
+    lcp0 = parts.sum(0)
+    lcp = np.where(gated, np.maximum(lcp0, shown), lcp0)
+    parts[3] += lcp - lcp0
+    fcp = np.where(gated, shown, np.minimum(early, lcp))
+    if pre is not None:
+        fcp = np.where(pre, lcp, fcp)
+    return lcp, fcp
 
 
 def _hexid(*keys) -> str:
@@ -308,10 +329,12 @@ def engagement_beacons() -> pd.DataFrame:
                 load = u_b * ratio * net * np.exp(0.35 * z_load)
                 urls = ["https://%s/%s/i/1200x675/%s/%s.avif" % (K.CDN_HOST, code, y, hx[k]) for y, k in zip(ym, page)]
             parts = np.rint(np.vstack([ttfb, delay, load, render])).astype(np.int64)
+            lcp, fcp = _first_paint(K.stream("engagement", eid, "paint", window), parts,
+                                    np.full(n, eid in K.GATED_ENGAGEMENTS))
             frames.append(pd.DataFrame({
                 "origin": origin, "page_path": ["/article/%d" % ids[k] for k in page],
                 "device": device, "navigation_type": "navigate", "fired_at_utc": pd.to_datetime(fired),
-                "lcp_ms": parts.sum(0), "lcp_element": "IMG", "lcp_url": urls, "ttfb_ms": parts[0],
+                "fcp_ms": fcp, "lcp_ms": lcp, "lcp_element": "IMG", "lcp_url": urls, "ttfb_ms": parts[0],
                 "load_delay_ms": parts[1], "load_time_ms": parts[2], "render_delay_ms": parts[3],
                 "engagement": eid}))
     df = pd.concat(frames, ignore_index=True).sort_values(["engagement", "fired_at_utc", "page_path"],

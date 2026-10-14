@@ -1,5 +1,5 @@
 """task258's generator checks: the input gates, the ladder (winners, margins, position), the three rules executed on
-the clean truth (R1 to R3c), every semantic fork row (SF1 to SF12), the estimator corridor behind every graded
+the clean truth (R1 to R3c), every semantic fork row (SF1 to SF16), the estimator corridor behind every graded
 count, both asks' ladders and the separation line, the goldens against figures.json, and the realism sweep."""
 from __future__ import annotations
 
@@ -96,19 +96,28 @@ def run(target, golden, st, meta_path):
     eff = AN.effect(e)
     R = AN.rungs(nov, eff)
     want = {"slow_all": "Tideline", "R1_reach": "Hearth", "R2_parts": "Ledger", "R2_whole": "Ledger",
-            "R3_zero": "Ledger", "shift": "Ledger", "golden": "Pantry"}
+            "R3_zero": "Ledger", "shift": "Ledger", "R4_held": "Pantry", "golden": "Matchday"}
     for col, who in want.items():
         w, v, second, margin = AN.winner(R[col])
         ck("ladder: %s files %s" % (col, who), w == who, (w, v))
         ck("ladder: %s margin 1.15x or more" % col, margin >= 1.15, margin)
     ck("ladder: the golden's margin 1.2x or more", AN.winner(R.golden)[3] >= 1.2)
-    rank = {c: list(R[c].sort_values(ascending=False).index).index("Pantry") + 1 for c in want}
-    ck("position: Pantry 4th or 5th on every slow load and on the default path",
+    for col in ("R2_floor", "R3_floor", "shift_floor"):
+        ck("grid: the floor without the level (%s) files Ledger" % col, AN.winner(R[col])[0] == "Ledger",
+           AN.winner(R[col]))
+    rank = {c: list(R[c].sort_values(ascending=False).index).index("Matchday") + 1 for c in want}
+    ck("position: Matchday 4th or 5th on every slow load and on the default path",
        rank["slow_all"] in (4, 5) and rank["R2_parts"] in (4, 5), rank)
-    ck("position: Pantry never 1st on an intermediate rung, 2nd on at most one",
-       all(rank[c] > 1 for c in want if c != "golden") and sum(rank[c] == 2 for c in want if c != "golden") <= 1, rank)
-    ck("figures: the call", fig["call_property"] == "Pantry" and fig["call_loads_moved_m"] ==
-       round(AN.round_to(R.loc["Pantry", "golden"], 1e5) / 1e6, 1))
+    ck("position: Matchday never 1st on an intermediate rung, 2nd on at most one, and there 1.20x behind",
+       all(rank[c] > 1 for c in want if c != "golden") and sum(rank[c] == 2 for c in want if c != "golden") <= 1
+       and all(AN.winner(R[c])[3] >= 1.2 for c in want if c != "golden" and rank[c] == 2), rank)
+    coincide = {c: [n for n in AN.NAMES if AN.round_to(R.loc[n, c], 1e5) == AN.round_to(R.loc[n, "golden"], 1e5)]
+                for c in want if c != "golden"}
+    ck("mirror: no wrong rung shares more than two of the six rounded counts with the golden (the held rung only "
+       "Hearth's and Ledger's)", all(len(v) <= 2 for v in coincide.values()) and
+       set(coincide["R4_held"]) == {"Hearth", "Ledger"}, coincide)
+    ck("figures: the call", fig["call_property"] == "Matchday" and fig["call_loads_moved_m"] ==
+       round(AN.round_to(R.loc["Matchday", "golden"], 1e5) / 1e6, 1))
     ck("engagements: the level the delay settled at is 240 ms", eff["level"] == 240.0, eff["level"])
     afters = [v["after"]["load_delay_ms"] for v in eff["by"].values()]
     befores = [v["before"]["load_delay_ms"] for v in eff["by"].values()]
@@ -117,10 +126,33 @@ def run(target, golden, st, meta_path):
     ratios = [v["after"]["load_time_ms"] / v["before"]["load_time_ms"] for v in eff["by"].values()]
     ck("engagements: the load time scales (every ratio within 0.44 to 0.52)", 0.44 <= min(ratios) and
        max(ratios) <= 0.52, ratios)
-    for part in ("ttfb_ms", "render_delay_ms"):
+    for part in ("ttfb_ms", "fcp_ms"):
         rr = [v["after"][part] / v["before"][part] for v in eff["by"].values()]
         ck("SF10: engagements: %s unchanged (every ratio within 0.95 to 1.05)" % part, 0.95 <= min(rr) and max(rr) <= 1.05,
            rr)
+    held_eng = set(K.GATED_ENGAGEMENTS)
+    rr = {k: v["after"]["render_delay_ms"] / v["before"]["render_delay_ms"] for k, v in eff["by"].items()}
+    ck("SF15: engagements: the render delay held where the pages first painted soon after their first byte",
+       all(0.95 <= rr[k] <= 1.05 for k in rr if k not in held_eng), rr)
+    ck("SF15: engagements: the render delay rose more than threefold on the two sites whose pages first painted "
+       "about three seconds after their first byte", all(rr[k] > 3 for k in held_eng), rr)
+    late = {k: float((g.fcp_ms - g.ttfb_ms).median()) for k, g in e.groupby("engagement")}
+    ck("SF15: first paint about three seconds after the first byte on those two sites, under 300 ms on the rest",
+       all(3000 <= late[k] <= 3250 for k in held_eng) and all(late[k] < 300 for k in late if k not in held_eng), late)
+    ck("SF15: no load's LCP before its first contentful paint (November and the engagements)",
+       bool((nov.lcp_ms >= nov.fcp_ms).all()) and bool((e.lcp_ms >= e.fcp_ms).all()))
+    # the engagements' own loads choose the paint's model: each before window carried through the playbook,
+    # floored at its own first paint, lands on the after window's median paint; held, it misses the two sites
+    for eid, g in e.groupby("engagement"):
+        b, a = g[g.window == "before"], g[g.window == "after"]
+        hb = b.ttfb_ms + eff["level"] + eff["r_load"] * b.load_time_ms + b.render_delay_ms
+        obs = float(a.lcp_ms.median())
+        fl, hd = float(np.maximum(hb, b.fcp_ms).median()), float(hb.median())
+        ck("SF15: %s: the floored rebuild of the before window within 5 per cent of the after window's paint" % eid,
+           abs(fl / obs - 1) < 0.05, (fl, obs))
+        if eid in held_eng:
+            ck("SF15: %s: the rebuild with the render delay held misses the after window by over 25 per cent" % eid,
+               abs(hd / obs - 1) > 0.25, (hd, obs))
     delay_ratios = [a / b for a, b in zip(afters, befores)]
     ck("engagements: the delay's ratio ranges from under 0.1 to over 1.5 (it is no ratio)",
        min(delay_ratios) < 0.1 and max(delay_ratios) > 1.5, delay_ratios)
@@ -136,8 +168,12 @@ def run(target, golden, st, meta_path):
     ck("R3a: the analyst test, ratios of medians part by part on the clean truth, files Ledger",
        AN.winner(TR.R2_parts)[0] == "Ledger", AN.winner(TR.R2_parts))
     ck("R3a: the preload rule of thumb (no delay) on the clean truth files Ledger", AN.winner(TR.R3_zero)[0] == "Ledger")
-    ck("R3b: the decisive step alone (the delay at the engagements' level) files Pantry on the clean truth",
-       AN.winner(TR.golden)[0] == "Pantry")
+    ck("R3a: the delay at the engagements' level with the render delay held files Pantry on the clean truth",
+       AN.winner(TR.R4_held)[0] == "Pantry", AN.winner(TR.R4_held))
+    ck("R3b: the decisive step (the level, each paint floored at the load's own first paint) files Matchday on the "
+       "clean truth", AN.winner(TR.golden)[0] == "Matchday", AN.winner(TR.golden))
+    ck("R3b: the floor without the level (a ratio, no delay or a fixed cut) files Ledger on the clean truth",
+       all(AN.winner(TR[c])[0] == "Ledger" for c in ("R2_floor", "R3_floor", "shift_floor")))
     ck("R3b: the reach correction alone (every slow own-image load) files Hearth", AN.winner(TR.R1_reach)[0] == "Hearth")
     ck("R3b: clean truth and pack agree on every rounded count", rounded(TR) == rounded(R), (rounded(TR), rounded(R)))
     # R2: every Layer 1 item mishandled leaves the call and the rounded counts where they were
@@ -149,7 +185,7 @@ def run(target, golden, st, meta_path):
            rounded(AN.rungs(nov, ce)) == rounded(R))
     utc = AN.page_loads(target, month=(np.datetime64("2026-11-01"), np.datetime64("2026-12-01")))
     RU = AN.rungs(utc, eff)
-    ck("R2 SF2: November in UTC: the same call", AN.winner(RU.golden)[0] == "Pantry")
+    ck("R2 SF2: November in UTC: the same call", AN.winner(RU.golden)[0] == "Matchday")
     rates = L.sampling(target)
 
     def rate_at(origin, t):
@@ -162,11 +198,12 @@ def run(target, golden, st, meta_path):
         pick = {o: rate_at(o, t) for o in rates}
         R1r = AN.rungs(AN.page_loads(target, weights=lambda df, pick=pick: 1.0 / df.origin.map(pick).to_numpy()), eff)
         ck("R2 SF4: one sampling rate a property (the month's %s): the same call" % which,
-           AN.winner(R1r.golden)[0] == "Pantry")
+           AN.winner(R1r.golden)[0] == "Matchday")
         ck("R2 SF4: one rate (the %s) moves a count" % which, rounded(R1r) != rounded(R))
     unw = AN.rungs(AN.page_loads(target, weights=lambda df: np.ones(len(df))), eff)
-    for col in ("slow_all", "R1_reach", "R2_parts", "R2_whole", "R3_zero", "shift"):
-        ck("R2: sampling weights ignored: %s still files a wrong property" % col, AN.winner(unw[col])[0] != "Pantry",
+    for col in ("slow_all", "R1_reach", "R2_parts", "R2_whole", "R3_zero", "shift", "R4_held", "R2_floor", "R3_floor",
+                "shift_floor"):
+        ck("R2: sampling weights ignored: %s still files a wrong property" % col, AN.winner(unw[col])[0] != "Matchday",
            AN.winner(unw[col]))
     no_pre = nov[nov.navigation_type != "prerender"]
     ck("R2 SF1: prerendered loads left out: the same rounded counts", rounded(AN.rungs(no_pre, eff)) == rounded(R))
@@ -180,7 +217,7 @@ def run(target, golden, st, meta_path):
     own_only["own"] = AN.own_image(nov, {n: ({h for h in hs if h.startswith("images.")}, "/nowhere/")
                                          for n, (hs, _) in hosts.items()})
     RO = AN.rungs(own_only, eff)
-    ck("R2 SF6: own image host only: the same call", AN.winner(RO.golden)[0] == "Pantry")
+    ck("R2 SF6: own image host only: the same call", AN.winner(RO.golden)[0] == "Matchday")
     ck("R2 SF6: the alias and CDN paths move counts (the runbook decides)", rounded(RO) != rounded(R))
     ck("R2: the distractors and the ask files are never read by the call",
        not {K.CRUX, K.ANALYTICS, K.IMG_LOGS, K.LEGACY_LOGS, K.AVIF_TABLE, K.CONTRACT, K.DAM} &
@@ -190,6 +227,11 @@ def run(target, golden, st, meta_path):
     body = [ln.split(",", 1)[1] for ln in b]
     ck("R3c: no copied block of beacons (no run of 3 identical consecutive rows past the first column)",
        not any(body[i] == body[i + 1] == body[i + 2] for i in range(len(body) - 2)))
+    shipped_text = " ".join(open(os.path.join(target, f), encoding="utf-8").read() for f in files if f.endswith(".md"))
+    shipped_text += " ".join(p.extract_text() for f in files if f.endswith(".pdf")
+                             for p in __import__("pypdf").PdfReader(os.path.join(target, f)).pages)
+    ck("R3c: no shipped document names the experimentation tool, its snippet, consent or a page held from showing",
+       not re.search(r"flicker|experiment|consent|snippet|held from|first paint", shipped_text, re.I))
     for doc in (K.RUNBOOK, K.NOTES):
         txt = open(os.path.join(target, doc), encoding="utf-8").read()
         ck("R3c: %s states no load delay, level, ratio or moved count" % doc,
@@ -198,7 +240,7 @@ def run(target, golden, st, meta_path):
     # ---------------------------------------------------------------- semantic forks
     ck("SF3: no load on 2,500 ms now", float((nov.lcp_ms == GOOD).sum()) == 0)
     cf = nov.ttfb_ms + eff["level"] + eff["r_load"] * nov.load_time_ms + nov.render_delay_ms
-    strict = (nov.lcp_ms > GOOD) & nov.own & (cf < GOOD)
+    strict = (nov.lcp_ms > GOOD) & nov.own & (np.maximum(cf, nov.fcp_ms) < GOOD)
     RS = (strict * nov.weight).groupby(nov.prop).sum().reindex(AN.NAMES)
     ck("SF3: under 2,500 ms in place of 2,500 ms or less after the playbook: the same rounded counts",
        {n: AN.round_to(RS[n], 1e5) for n in AN.NAMES} == rounded(R))
@@ -229,16 +271,37 @@ def run(target, golden, st, meta_path):
               for d in ("mobile", "desktop", "tablet")}
     t, u, q, dv = nov.ttfb_ms, nov.load_time_ms, nov.render_delay_ms, nov.device
     reach = (nov.lcp_ms > GOOD) & nov.own
-    by_dev = reach & (t + dv.map(dev_lv) + dv.map(dev_rl) * u + q <= GOOD)
+    by_dev = reach & (np.maximum(t + dv.map(dev_lv) + dv.map(dev_rl) * u + q, nov.fcp_ms) <= GOOD)
     RDV = (by_dev * nov.weight).groupby(nov.prop).sum().reindex(AN.NAMES)
     ck("SF8/SF9: level and ratio by device: the same rounded counts",
        {n: AN.round_to(RDV[n], 1e5) for n in AN.NAMES} == rounded(R))
     ecdf = np.sort(A.load_delay_ms.to_numpy())
     slack = GOOD - (t + eff["r_load"] * u + q)
     pr = np.searchsorted(ecdf, slack.to_numpy(), side="right") / len(ecdf)
-    REC = pd.Series(reach.to_numpy() * pr * nov.weight.to_numpy(), index=nov.index).groupby(nov.prop).sum()
+    REC = pd.Series(reach.to_numpy() * (nov.fcp_ms <= GOOD).to_numpy() * pr * nov.weight.to_numpy(),
+                    index=nov.index).groupby(nov.prop).sum()
     ck("SF8: the after-delay's whole distribution in place of its median: the same rounded counts",
        {n: AN.round_to(REC[n], 1e5) for n in AN.NAMES} == rounded(R))
+    # SF16: the render work after the first paint counted after the later of the image and the first paint
+    ready0 = t + nov.load_delay_ms + u
+    ready1 = t + eff["level"] + eff["r_load"] * u
+    alt = np.maximum(ready1, nov.fcp_ms) + (nov.lcp_ms - np.maximum(ready0, nov.fcp_ms))
+    RA = ((reach & (alt <= GOOD)) * nov.weight).groupby(nov.prop).sum().reindex(AN.NAMES)
+    ck("SF16: the paint's own work counted after the later of the image and the first paint: the same rounded counts",
+       {n: AN.round_to(RA[n], 1e5) for n in AN.NAMES} == rounded(R))
+    worst = min(worst, min(edge_m(RA[n]) for n in AN.NAMES))
+    # a partial floor, only where the hero painted in the first paint, keeps the held render delay on the held pages
+    # whose hero arrived after the page showed: it files Pantry, and the two held engagements refute it
+    held_now = t + eff["level"] + eff["r_load"] * u + q
+    partial = np.where(nov.lcp_ms == nov.fcp_ms, np.maximum(held_now, nov.fcp_ms), held_now)
+    RP = ((reach & (partial <= GOOD)) * nov.weight).groupby(nov.prop).sum().reindex(AN.NAMES)
+    ck("SF15: the floor only where LCP equals the first paint files Pantry", AN.winner(RP)[0] == "Pantry", AN.winner(RP))
+    for eid in K.GATED_ENGAGEMENTS:
+        b, a = e[(e.engagement == eid) & (e.window == "before")], e[(e.engagement == eid) & (e.window == "after")]
+        hb = b.ttfb_ms + eff["level"] + eff["r_load"] * b.load_time_ms + b.render_delay_ms
+        pb = np.where(b.lcp_ms == b.fcp_ms, np.maximum(hb, b.fcp_ms), hb)
+        ck("SF15: %s: the partial floor misses the after window's paint by over 25 per cent" % eid,
+           abs(float(np.median(pb)) / float(a.lcp_ms.median()) - 1) > 0.25)
     worst = min(worst, min(edge_m(R.loc[n, "golden"]) for n in AN.NAMES))
     ck("bins: every graded count at least 25,000 loads from a rounding edge under every estimator", worst >= 0.025,
        worst)

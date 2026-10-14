@@ -1,13 +1,13 @@
 {
- "call_loads_moved_m": 6.3,
- "call_margin_x": 1.36,
- "call_property": "Pantry",
+ "call_loads_moved_m": 4.6,
+ "call_margin_x": 1.4,
+ "call_property": "Matchday",
  "cdn_rate_aud_per_gb": 0.071,
  "egress_aud": {
   "Hearth": 149,
   "Ledger": 75,
   "Matchday": 86,
-  "Pantry": 44,
+  "Pantry": 46,
   "Tideline": 140,
   "Trailhead": 47
  },
@@ -15,7 +15,7 @@
   "Hearth": 2102,
   "Ledger": 1056,
   "Matchday": 1208,
-  "Pantry": 616,
+  "Pantry": 653,
   "Tideline": 1971,
   "Trailhead": 667
  },
@@ -24,6 +24,18 @@
  "engagement_before_delay_max_ms": 2991,
  "engagement_before_delay_min_ms": 129,
  "engagements": 11,
+ "gated_engagements": [
+  "E06",
+  "E10"
+ ],
+ "gated_render_after_ms": [
+  2321,
+  2245
+ ],
+ "gated_render_before_ms": [
+  377,
+  462
+ ],
  "gb_bytes": 1000000000,
  "good_ms": 2500,
  "hero_images": {
@@ -37,20 +49,24 @@
  "level_ms": 240,
  "load_time_ratio": 0.48,
  "loads_moved_m": {
-  "Hearth": 4.2,
+  "Hearth": 3.2,
   "Ledger": 3.3,
-  "Matchday": 4.4,
-  "Pantry": 6.3,
-  "Tideline": 4.6,
-  "Trailhead": 2.3
+  "Matchday": 4.6,
+  "Pantry": 2.9,
+  "Tideline": 3.1,
+  "Trailhead": 1.8
  },
+ "rung_level_held": [
+  "Pantry",
+  6.8
+ ],
  "rung_own_slow": [
   "Hearth",
-  20.0
+  20.4
  ],
  "rung_ratio_whole": [
   "Ledger",
-  13.4
+  13.1
  ],
  "rung_ratios_parts": [
   "Ledger",
@@ -58,12 +74,12 @@
  ],
  "rung_slow_all": [
   "Tideline",
-  26.9
+  36.6
  ],
  "rung_zero_delay": [
   "Ledger",
   8.4
  ],
- "runner_up": "Tideline",
- "runner_up_loads_moved_m": 4.6
+ "runner_up": "Ledger",
+ "runner_up_loads_moved_m": 3.3
 }

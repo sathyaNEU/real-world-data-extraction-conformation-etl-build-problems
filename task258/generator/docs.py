@@ -192,6 +192,7 @@ def write_notes(path, names):
         "timings run from the moment it was shown); `back_forward` (restored from the back-forward cache, which "
         "reports no LCP, so its timing columns are blank).",
         "- `fired_at_utc`: when the page load started, UTC.",
+        "- `fcp_ms`: First Contentful Paint.",
         "- `lcp_ms`: Largest Contentful Paint.",
         "- `lcp_element`: the tag of the LCP element (`IMG`, `H1`, `P`, `DIV`, `VIDEO`).",
         "- `lcp_url`: the URL of the LCP element's image or poster; blank for text.",

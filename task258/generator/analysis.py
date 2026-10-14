@@ -72,7 +72,7 @@ def engagement_frame(target, clock="sydney"):
 def effect(e: pd.DataFrame) -> dict:
     """The playbook as the engagements' beacons record it: each part's median before and after, pooled and by
     engagement; the level the image's load delay settled at; the load time's ratio of medians."""
-    parts = ("ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms", "lcp_ms")
+    parts = ("ttfb_ms", "load_delay_ms", "load_time_ms", "render_delay_ms", "fcp_ms", "lcp_ms")
     pooled = {w: {c: float(e[e.window == w][c].median()) for c in parts} for w in ("before", "after")}
     by = {eid: {w: {c: float(g[g.window == w][c].median()) for c in parts} for w in ("before", "after")}
           for eid, g in e.groupby("engagement")}
@@ -87,18 +87,26 @@ def rungs(nov: pd.DataFrame, eff: dict, level=None, r_load=None) -> pd.DataFrame
     """Page loads a month per property under every rung."""
     lv = eff["level"] if level is None else level
     ru = eff["r_load"] if r_load is None else r_load
-    t, d, u, q = nov.ttfb_ms, nov.load_delay_ms, nov.load_time_ms, nov.render_delay_ms
+    t, d, u, q, f = nov.ttfb_ms, nov.load_delay_ms, nov.load_time_ms, nov.render_delay_ms, nov.fcp_ms
     slow = nov.lcp_ms > GOOD
     reach = slow & nov.own
+    ratio = t + eff["r_delay"] * d + ru * u + q
+    zero = t + ru * u + q
+    shift = t + np.maximum(d - eff["shift"], 0) + ru * u + q
+    held = t + lv + ru * u + q
     cols = {
         "slow_all": slow,
         "R1_reach": reach,
-        "R2_parts": reach & (t + eff["r_delay"] * d + ru * u + q <= GOOD),
+        "R2_parts": reach & (ratio <= GOOD),
         "R2_whole": reach & (eff["r_whole"] * nov.lcp_ms <= GOOD),
-        "R3_zero": reach & (t + ru * u + q <= GOOD),
-        "shift": reach & (t + np.maximum(d - eff["shift"], 0) + ru * u + q <= GOOD),
-        "golden": reach & (t + lv + ru * u + q <= GOOD),
-        "pushed_out": nov.own & ~slow & (t + lv + ru * u + q > GOOD),
+        "R3_zero": reach & (zero <= GOOD),
+        "shift": reach & (shift <= GOOD),
+        "R4_held": reach & (held <= GOOD),
+        "golden": reach & (np.maximum(held, f) <= GOOD),
+        "R2_floor": reach & (np.maximum(ratio, f) <= GOOD),
+        "R3_floor": reach & (np.maximum(zero, f) <= GOOD),
+        "shift_floor": reach & (np.maximum(shift, f) <= GOOD),
+        "pushed_out": nov.own & ~slow & (np.maximum(held, f) > GOOD),
         "good_now": ~slow,
         "loads": pd.Series(True, index=nov.index),
         "own_loads": nov.own,

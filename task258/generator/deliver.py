@@ -43,6 +43,10 @@ def compute(target):
         "rung_ratios_parts": [AN.winner(R.R2_parts)[0], m(R.R2_parts.max())],
         "rung_ratio_whole": [AN.winner(R.R2_whole)[0], m(R.R2_whole.max())],
         "rung_zero_delay": [AN.winner(R.R3_zero)[0], m(R.R3_zero.max())],
+        "rung_level_held": [AN.winner(R.R4_held)[0], m(R.R4_held.max())],
+        "gated_engagements": list(K.GATED_ENGAGEMENTS),
+        "gated_render_before_ms": [int(round(eff["by"][k]["before"]["render_delay_ms"])) for k in K.GATED_ENGAGEMENTS],
+        "gated_render_after_ms": [int(round(eff["by"][k]["after"]["render_delay_ms"])) for k in K.GATED_ENGAGEMENTS],
         "engagement_after_delay_min_ms": int(round(min(by_after.values()))),
         "engagement_after_delay_max_ms": int(round(max(by_after.values()))),
         "engagement_before_delay_min_ms": int(round(min(by_before.values()))),
@@ -92,19 +96,36 @@ def write_note(path, res):
     L.append("")
     L.append("The playbook can only move a page load slower than 2,500 ms whose LCP element is the property's own "
              "hero image (charter 2.4). Each of those loads was rebuilt part by part the way the squad's %d past "
-             "engagements landed. Time to first byte and render delay stay as they are, since the playbook does no "
-             "work on them. The image's load time falls to %.2f of what it was (AVIF at the slot size). The image's "
-             "load delay goes to %d ms, whatever it was before: on every engagement the after-window median sat "
-             "between %d and %d ms, from before-window medians of a little over 100 ms to nearly 3,000 ms, because "
-             "a preloaded hero waits only on the connection to the image CDN."
+             "engagements landed. Time to first byte stays as it is. The image's load time falls to %.2f of what it "
+             "was (AVIF at the slot size). The image's load delay goes to %d ms, whatever it was before: on every "
+             "engagement the after-window median sat between %d and %d ms, from before-window medians of a little "
+             "over 100 ms to nearly 3,000 ms, because a preloaded hero waits only on the connection to the image CDN."
              % (f["engagements"], f["load_time_ratio"], f["level_ms"], f["engagement_after_delay_min_ms"],
                 f["engagement_after_delay_max_ms"]))
     L.append("")
-    L.append("That last step decides the quarter. Carried as a ratio of medians, or as a preload that removes the "
-             "delay, the engagements put Ledger first (%s and %s), because they shrink Ledger's already short "
-             "delays further. On the image CDN those delays rise to the connection time, and Ledger moves %s. "
-             "Pantry's hero images wait longest of all to start loading today, so the same step takes most of its slow "
-             "loads clear of the line."
+    site = {e[0]: e[1] for e in K.ENGAGEMENTS}
+    g0, g1 = f["gated_engagements"]
+    L.append("The rebuilt paint then comes no sooner than the page's own first contentful paint, which the playbook "
+             "leaves where it is: the squad does no work on scripts, fonts or the render path (charter 3.2). At %s "
+             "(%s) and %s (%s) the render delay's median went from %s and %s ms to %s and %s ms once the hero arrived "
+             "early, and the paint landed on the page's first paint, about three seconds after its first byte. On "
+             "the other %s engagements the pages first painted soon after their first byte and the render delay held."
+             % (site[g0], g0, site[g1], g1, "{:,}".format(f["gated_render_before_ms"][0]),
+                "{:,}".format(f["gated_render_before_ms"][1]), "{:,}".format(f["gated_render_after_ms"][0]),
+                "{:,}".format(f["gated_render_after_ms"][1]),
+                {9: "nine"}.get(f["engagements"] - len(f["gated_engagements"]),
+                                str(f["engagements"] - len(f["gated_engagements"])))))
+    L.append("")
+    L.append("That floor decides the quarter. With the render delay held as it is today, Pantry comes first (%s), "
+             "because its hero images wait longest of all to start loading. But most of Pantry's slow loads are on "
+             "its recipes, dinner, quick-meals and healthy pages, which first paint about three seconds after their "
+             "first byte, and no faster image brings those under the line: Pantry moves %s. Most of %s's pages "
+             "first paint soon after their first byte, so most of its gain stands."
+             % (_m(f["rung_level_held"][1]), _m(f["loads_moved_m"]["Pantry"]), call))
+    L.append("")
+    L.append("Carried as a ratio of medians, or as a preload that removes the delay, the engagements put Ledger first "
+             "(%s and %s), because they shrink Ledger's already short delays further. On the image CDN those delays "
+             "rise to the connection time, and Ledger moves %s."
              % (_m(f["rung_ratios_parts"][1]), _m(f["rung_zero_delay"][1]), _m(f["loads_moved_m"]["Ledger"])))
     L.append("")
     L.append("Hearth has the most slow page loads on its own images (%s), but its paint is held by time to first "
