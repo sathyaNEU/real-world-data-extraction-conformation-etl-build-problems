@@ -67,9 +67,22 @@ def months_in(e):
 def lag_profile(m):
     out = []
     for lo, hi, label in LAG_BANDS:
-        cl = [c for c in m["ex"] if lo <= c["lag"] <= hi]
+        cl = [c for c in m["post"] if lo <= c["lag"] <= hi]
         out.append((label, len(cl), sum(c["cost"] for c in cl) / len(cl) if cl else 0.0,
                     sum(c["cost"] for c in cl)))
+    return out
+
+
+def month_year(d):
+    return d.strftime("%B %Y")
+
+
+def quick_by_year(m):
+    """Claims (one per incident) made within 30 days of the incident, by incident year and entity, 2016 to 2024."""
+    out = {}
+    for c in m["ex"]:
+        if c["lag"] <= 30:
+            out[(c["entity"], c["year"])] = out.get((c["entity"], c["year"]), 0) + 1
     return out
 
 
@@ -77,9 +90,17 @@ def figures(c):
     m, a, b = c["m"], c["a"], c["b"]
     fig = {"call": {"contribution": "{:,}".format(m["rounded"]), "contribution_usd": "$" + "{:,}".format(m["rounded"])}}
     fig["components"] = {"experience_claims": "{:,}".format(m["exp_claims"]),
-                         "experience_fte_years": "{:,.1f}".format(r1(m["exp_fte_years"]))}
+                         "experience_fte_years": "{:,.1f}".format(r1(m["exp_fte_years"])),
+                         "claims_since_starts": "{:,}".format(m["post_claims"]),
+                         "fte_years_since_starts": "{:,.1f}".format(r1(m["post_fte_years"])),
+                         "quick_claims_since_starts": "{:,}".format(sum(1 for c in m["post"] if c["lag"] <= 30)),
+                         "quick_claims_2016_to_2018": "{:,}".format(sum(1 for c in m["ex"] if c["lag"] <= 30 and
+                                                                         c["year"] <= 2018)),
+                         "quick_window_days": "30", "whole_experience_figure": "{:,}".format(
+                             CA.rounded(m["full"]["golden"]))}
     fig["entities"] = {e: {"name": K.ENTITIES[e]["name"], "transition": long_date(K.ENTITIES[e]["transition"]),
-                           "months_in_2027": months_in(e)} for e in K.ENTITY_ORDER}
+                           "months_in_2027": months_in(e), "experience_from": month_year(m["starts"][e])}
+                       for e in K.ENTITY_ORDER}
     fig["ask_a"] = {}
     for e in K.ENTITY_ORDER:
         v = a[e]
@@ -127,24 +148,43 @@ def write_book(path, c):
     ws["C4"].font = NOTE_FONT
     ws["A6"] = "Entities in the Trust, 2027"
     ws["A6"].font = B
-    _head(ws, 7, ["Participating Entity", "Transition Date", "Months in the Trust in 2027"])
+    _head(ws, 7, ["Participating Entity", "Transition Date", "Months in the Trust in 2027",
+                  "Experience used from"])
     r = 8
     for e in K.ENTITY_ORDER:
         ws.cell(row=r, column=1, value=K.ENTITIES[e]["name"])
         ws.cell(row=r, column=2, value=long_date(K.ENTITIES[e]["transition"])).alignment = Alignment(horizontal="right")
         ws.cell(row=r, column=3, value=months_in(e))
+        ws.cell(row=r, column=4, value=month_year(m["starts"][e])).alignment = Alignment(horizontal="right")
         r += 1
     r += 1
     ws.cell(row=r, column=1, value="Experience").font = B
     r += 1
-    for label, val, fmt in (("Claims from 2016 to 2024 incidents naming Covered Clinicians", m["exp_claims"], "#,##0"),
-                            ("Covered FTE-years, 2016 to 2024 payroll", r1(m["exp_fte_years"]), "#,##0.0")):
+    for label, val, fmt in (("Claims from 2016 to 2024 incidents naming Covered Clinicians (held by the Trust)",
+                             m["exp_claims"], "#,##0"),
+                            ("Covered FTE-years, 2016 to 2024 payroll", r1(m["exp_fte_years"]), "#,##0.0"),
+                            ("Claims used: incidents from each entity's first disclosure settlement to December 2024",
+                             m["post_claims"], "#,##0"),
+                            ("Covered FTE-years over the same months", r1(m["post_fte_years"]), "#,##0.0")):
         ws.cell(row=r, column=1, value=label)
         cell = ws.cell(row=r, column=3, value=val)
         cell.number_format = fmt
         r += 1
     r += 1
-    ws.cell(row=r, column=1, value="Experience Claims by delay from incident to first making").font = B
+    ws.cell(row=r, column=1, value="Claims made within 30 days of the incident, by incident year").font = B
+    r += 1
+    _head(ws, r, ["Incident year"] + [K.ENTITIES[e]["name"] for e in K.ENTITY_ORDER] + ["All entities"])
+    r += 1
+    qy = quick_by_year(m)
+    for y in range(K.EXPERIENCE[0].year, K.EXPERIENCE[1].year + 1):
+        ws.cell(row=r, column=1, value=str(y))
+        for j, e in enumerate(K.ENTITY_ORDER):
+            ws.cell(row=r, column=2 + j, value=qy.get((e, y), 0)).number_format = "#,##0"
+        ws.cell(row=r, column=2 + len(K.ENTITY_ORDER), value=sum(qy.get((e, y), 0) for e in K.ENTITY_ORDER)
+                ).number_format = "#,##0"
+        r += 1
+    r += 1
+    ws.cell(row=r, column=1, value="Experience used, by delay from incident to first making").font = B
     r += 1
     _head(ws, r, ["Delay", "Claims", "Average cost, 2027 level ($)", "Share of the experience's cost"])
     r += 1
@@ -159,14 +199,18 @@ def write_book(path, c):
         r += 1
     r += 1
     for t in ("Only Claims made by 31 December 2027 from incidents on or after each entity's Transition Date fall in "
-              "2027. In the experience the Claims made within weeks of the care are disclosed harm settled through the "
-              "Early Resolution Program, those made in the following months mostly small program requests, and the "
-              "cost sits in the demands and suits made a year or more after the care.",
+              "2027. In the experience the Claims made within weeks of the care are harm the care team disclosed and "
+              "the Early Resolution Program settled, those made in the following months mostly small program "
+              "requests, and the cost sits in the demands and suits made a year or more after the care.",
+              "The disclosure settlements begin at each entity in 2019 and run in every year since; no 2016 to 2018 "
+              "incident has one. The 2027 window is costed on each entity's experience from the month of its first "
+              "settlement, the claims process 2027 will have; the whole 2016 to 2024 experience would give "
+              "$%s." % "{:,}".format(CA.rounded(m["full"]["golden"])),
               "Source: risk management claims register extract valued 30 September 2026; legacy payroll 2016 to 2024; "
               "clinician staffing plan 2027, version 2026-09-29. Definitions on the Notes sheet."):
         ws.cell(row=r, column=1, value=t).font = NOTE_FONT
         r += 1
-    for col, wd in zip(range(1, 5), [58, 18, 30, 30]):
+    for col, wd in zip(range(1, 7), [58, 24, 24, 24, 24, 16]):
         ws.column_dimensions[get_column_letter(col)].width = wd
 
     ws3 = wb.create_sheet("Carrier loss runs")
@@ -268,11 +312,22 @@ def write_book(path, c):
                               "fellows, psychologists and contracted or locum clinicians are excluded."),
         ("Window", "Each entity from its Transition Date (its Retroactive Date) to 31 December 2027: Claims made in "
                    "2027 from incidents on or after that date."),
-        ("Experience", "The %s Claims from incidents in 2016 to 2024 naming Covered Clinicians, valued at paid plus "
-                       "case reserves on the Covered Clinicians' rows of the register extract valued 30 September "
-                       "2026 and trended at 5.0%% a year from the incident year to 2027, against %s covered FTE-years "
-                       "in the payroll for the same years, pooled within each specialty class (funding policy 3.2 to "
-                       "3.4)." % ("{:,}".format(m["exp_claims"]), "{:,.1f}".format(r1(m["exp_fte_years"])))),
+        ("Experience", "The %s Claims from incidents naming Covered Clinicians from each entity's first disclosure "
+                       "settlement (%s) to December 2024, valued at paid plus case reserves on the Covered Clinicians' "
+                       "rows of the register extract valued 30 September 2026 and trended at 5.0%% a year from the "
+                       "incident year to 2027, against %s covered FTE-years in the payroll for the same entities and "
+                       "months, by specialty class (funding policy 3.2 to 3.4). The Trust holds %s Claims from 2016 "
+                       "to 2024 on %s FTE-years (3.3)." % (
+                           "{:,}".format(m["post_claims"]),
+                           ", ".join("%s %s" % (K.ENTITIES[e]["name"], month_year(m["starts"][e]))
+                                     for e in K.ENTITY_ORDER),
+                           "{:,.1f}".format(r1(m["post_fte_years"])), "{:,}".format(m["exp_claims"]),
+                           "{:,.1f}".format(r1(m["exp_fte_years"])))),
+        ("Experience period", "A disclosure settlement is a Claim made within 30 days of its incident; none is made "
+                              "from an incident before each entity's month above, and they run in every year since. "
+                              "The 2027 Claims will be made under this claims process (funding policy 3.1), so the "
+                              "months before it are left out. Every delay the 2027 window can use (under a year) is "
+                              "complete in the extract for every incident to December 2024."),
         ("Exposure", "The staffing plan's covered FTE for each month from the Transition Date, a month one twelfth of "
                      "an FTE-year, held through the month's days."),
         ("Expected cost", "Each experience Claim stands for the Claims its class would make in 2027 at the same delay "
@@ -402,12 +457,14 @@ def write_deck(path, c, chart_png):
     text(s1, 1.6, 10.6, 30.6, 6.6, [
         "The Trust is claims-made, each entity's Transition Date its Retroactive Date: in 2027 it pays only for the "
         "Claims made by 31 December from incidents after the entity joined.",
-        "Those are the Claims the System's experience makes within the year: harm disclosed and settled within weeks "
-        "of the care, which is costly, and program requests a few months on, which settle small. The demands and "
-        "suits that carry most of the experience's cost come a year or more after the care, after 2027 for every "
-        "entity.",
-        "Each 2016 to 2024 experience Claim was costed at its own delay from incident to first making against the "
-        "days each entity is in the Trust in 2027, within its specialty class.",
+        "Those are the Claims the System's experience makes within the year: harm the care team disclosed, settled "
+        "within weeks of the care, which is costly, and program requests a few months on, which settle small. The "
+        "demands and suits that carry most of the experience's cost come a year or more after the care, after 2027 "
+        "for every entity.",
+        "The disclosure settlements began at each entity in 2019 and have run every year since, so the window is "
+        "costed on each entity's experience from its first settlement to 2024, each Claim at its own delay from "
+        "incident to first making against the days each entity is in the Trust in 2027, within its specialty class. "
+        "The 2016 to 2018 years have none and would understate 2027.",
         "No provision for expenses, investment income, excess insurance or margin (funding policy 3.5)."], size=12)
 
     s2 = prs.slides.add_slide(blank)

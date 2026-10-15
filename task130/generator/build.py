@@ -25,7 +25,7 @@ import records as R        # noqa: E402
 import world as WD         # noqa: E402
 
 TASK = os.path.dirname(HERE)
-CLAIMS_SEED = 2077         # chosen by the seed search (the design note's build record)
+CLAIMS_SEED = 3006         # chosen by the seed search (the design note's build record)
 EXPORT_STAMP = dt.datetime(2026, 10, 12, 16, 20, tzinfo=dt.timezone.utc)   # 9:20 am Pacific, the pack's hand-off
 JUNE = dt.date(2026, 6, 30)
 

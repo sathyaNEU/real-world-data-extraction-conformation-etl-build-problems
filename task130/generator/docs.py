@@ -178,14 +178,15 @@ def write_policy(path):
     s.append(Paragraph("3. The Contribution", H2))
     for no, text in [
         ("3.1", "For each Plan Year the Participating Entities together contribute the expected cost, at the Plan "
-                "Year's cost level, of the Claims that will be first made against the Trust during the Plan Year "
-                "(the Contribution)."),
-        ("3.2", "Exposure is measured in Covered Clinician FTE-years. The experience's exposure is the Covered "
-                "Clinicians' paid FTE in the System's payroll over the experience period. The Plan Year's exposure is "
-                "the Covered Clinician FTE in the System's staffing plan for the Plan Year, for each Participating "
-                "Entity, specialty class and month from the entity's Transition Date."),
-        ("3.3", "The experience is the Claims arising from Medical Incidents from 1 January 2016 to 31 December 2024 "
-                "against Covered Clinicians, pooled within each specialty class of Schedule B."),
+                "Year's cost level, of the Claims that will be first made against the Trust during the Plan Year, as "
+                "Claims against the System's clinicians will arise and be made in that year (the Contribution)."),
+        ("3.2", "Exposure is measured in Covered Clinician FTE-years: in the System's claims experience, the Covered "
+                "Clinicians' paid FTE in the System's payroll; in the Plan Year, the Covered Clinician FTE in the "
+                "System's staffing plan for the Plan Year, for each Participating Entity, specialty class and month "
+                "from the entity's Transition Date."),
+        ("3.3", "The claims experience the Trust holds is the System's Claims arising from Medical Incidents from 1 "
+                "January 2016 to 31 December 2024 against Covered Clinicians, rated by the specialty classes of "
+                "Schedule B."),
         ("3.4", "Each experience Claim is valued at the indemnity and defence paid and the case reserves recorded "
                 "against its Covered Clinicians in the risk management claims register extract valued 30 September "
                 "2026, and brought to the Plan Year's cost level at 5.0 per cent a year compounded from the calendar "

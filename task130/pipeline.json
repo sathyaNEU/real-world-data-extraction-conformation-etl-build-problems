@@ -7,7 +7,7 @@
   "stage": 4,
   "stage_name": "check",
   "updated": "2026-10-15",
-  "stump": "A strong solver who reads the claims-made window correctly counts the Claims the 2016 to 2024 experience would make by 31 December 2027 from each entity's Transition Date and prices them at each specialty class's average trended Claim cost, filing $2,500,000; the step that lands it there is pricing the window's Claims at the cost of all Claims, when the Claims a first claims-made year catches are the disclosed-harm settlements made within weeks and the program requests made months later, while the average carries the demands and suits made a year or more later; costing each experience Claim at its own delay against each entity's days in the trust gives $1,250,000.",
+  "stump": "A strong solver who reads the claims-made window correctly and prices it the field's way, each 2016 to 2024 Claim at its own trended cost against the 2027 FTE-years with its own delay left (the loss-weighted claims-made step factor), files $1,000,000; the step that lands it there is pooling the whole experience the trust holds, when the Claims a first claims-made year catches are mostly the Early Resolution Program's disclosure settlements, made within weeks, which began at each entity only between January and July 2019 and have run every year since, so 2016 to 2018 understate the window by a quarter; costing the window on each entity's experience from its first settlement, each Claim at its own delay, gives $1,250,000.",
   "architecture": 4,
   "loops": 0,
   "precut": {
@@ -16,22 +16,22 @@
     "checks": 49
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-15 (--asof 2026-10-12), no LEAK: sweep 3 (the call's words in the documents that define the trust), sweep 4 (six of the stump's nouns in the funding policy, the field's own), sweep 6 (entity names beside numbers in schedules, runs, plan, directory, premium history; none ranks the entities on the contribution), sweep 9 (the 2026 policy terms' 2027 end dates); answered in the design note's build record",
-    "reader": "pending: stage 4, the main session's"
+    "leak_py": "REVIEW 2026-10-15 (--asof 2026-10-12), no LEAK: sweep 3 (the premium history's $1,000,000 per-claim limit; the call's words in the documents that define the trust), sweep 4 (stump terms in the policy, the agreement and the dictionary, their own terms), sweep 6 (entity names beside numbers; none ranks the entities on the contribution), sweep 9 (the 2026 policy terms' 2027 end dates); answered in the design note's build record",
+    "reader": "pending: stage 4, a fresh read on round 3b, the main session's"
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-15 (people.first: Lori against task129, an older build); driver 0.40 against this slot's round 1, differentiated",
-    "nearest": "task85 0.07 (other slots)",
+    "heart": "WARN 2026-10-15 (people.first: Lori against task129, an older build); driver 0.32 against this slot's round 1 and 0.14 against round 2, differentiated",
+    "nearest": "task457 0.06 (other slots)",
     "surface": "2026-10-15: one promoted pair, task102, on the card axes only (answered by the card's differentiation line); people Derek White, Lori Williams, Walter Butler, all on the card",
-    "validate": "184 cards, 0 invalid"
+    "validate": "185 cards, 0 invalid"
   },
   "judge": {
     "verdict": "pending",
-    "disposition": "pending: stage 4, the main session's",
-    "previous": "round 1 DETERMINISTIC, APPROVE (determinism_check_report.md is round 1's)"
+    "disposition": "pending: stage 4, a fresh judge on round 3b, the main session's",
+    "previous": "round 3a (cut fac4903f) DETERMINISTIC, APPROVE, Gate H analytical (scratchpad judge-task130r3/verdict.md); round 1 DETERMINISTIC, APPROVE (determinism_check_report.md is round 1's)"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: a fresh reader and a fresh judge on round 3b",
   "approved": null,
   "delivered": "2026-10-12",
   "portal": null,
@@ -111,20 +111,20 @@
   ],
   "wave": "wave 1 (re-root: retired), the author's fourth root",
   "build": {
-    "claims_seed": 2077,
-    "checks": "190 of 190 (the three-rules block R1, R2 one line per Layer 1 item, R3a on the clean truth, R3b, R3c; 20 natural routes a full bin off, 10 converging constructions in the bin, one sigma, dominance, the population-truth oracle; SF1 to SF30; the asks' stops, fairness and convergences; separation, distractor deletion; realism and hygiene; H5, H9, H16)",
-    "verify": "match (own code path from the bundle: call, default, ask A, ask B)",
+    "claims_seed": 3006,
+    "checks": "275 of 275 (the claims-process block; the three-rules block R1, R2 one line per Layer 1 item, R3a on the clean truth and the pack, R3b, R3c; 37 whole-experience routes a full bin off with two offsets recorded, 18 round 1 routes since the starts a full bin off, 16 converging constructions and 10 start handlings in the bin, the judge's round 3a variants, one sigma, dominance, the population-truth oracle; SF1 to SF35; the asks' stops, fairness and convergences; separation, distractor deletion; realism and hygiene; H5, H9, H16)",
+    "verify": "match (own code path from the bundle: the starts, the call, the whole-experience default, ask A, ask B)",
     "rebuild": "byte-identical (target/, golden/, metadata.json, figures.json, target.zip)",
-    "figures_check": "exit 0 (32 figures)",
-    "call": "$1,250,000 ($1,263,838 unrounded; Poisson SE $75,623)",
-    "default": "$2,500,000 ($2,605,268, the window's count at each class's average cost)",
+    "figures_check": "exit 0 (38 figures)",
+    "call": "$1,250,000 ($1,281,536 unrounded; Poisson SE $65,916, bootstrap $65,247)",
+    "default": "$1,000,000 ($961,261, the loss-weighted step factor on the whole 2016 to 2024 experience)",
     "date": "2026-10-15",
     "precut": "exit 0 (49 checks, 0 WARN)",
     "voice_check": "PASS (881 characters)",
     "house_fixes": "pass (H1 pack and golden containers clean on the scrub audit; H9, H16, H5 asserted in checks.py)",
-    "target_zip": "17 members, 2678226 bytes, sha256 fac4903fd0b45a274cf8052995c88f70fda88598dd47375f1d5fa39fb1a01a3d"
+    "target_zip": "17 members, 2713865 bytes, sha256 710fb603268fb100550d4d4d360898c87cbaeda2a291d61f54bdc000dba4b337"
   },
-  "target_zip_sha256": "fac4903fd0b45a274cf8052995c88f70fda88598dd47375f1d5fa39fb1a01a3d",
+  "target_zip_sha256": "710fb603268fb100550d4d4d360898c87cbaeda2a291d61f54bdc000dba4b337",
   "round_2": {
     "date": "2026-10-14",
     "commit": "f44902f",
@@ -144,6 +144,23 @@
     "decisive_step": "each window Claim costed at its own report lag (the experience's cost is non-monotone in the lag and class-specific); the lag truncation is the default path's own construction",
     "default_and_rivals": "$2,500,000 (count at the class average); $750,000 (within-a-year average); $1,000,000 (log-linear curve, gamma GLMs, half-year bands, same-year average); $1,500,000 (lognormal mean, gamma log-lag); $1,750,000 to $13,000,000 (calendar shortcuts, mature year)",
     "asks": "A: open claims under each expiring carrier's policies missing from its latest run (device: the coverage line holds the current programme on claims former carriers insure); B: paid covered FTE July to September 2026 (device: residents' moonlighting positions under attending profiles); pair ceiling 37.1",
-    "world_changes": "establishment doubled; experience from 2016; claims routes disclosed / program request / direct; escalation 2.2 per cent; per-diem clinicians; residents' moonlighting in HCM; carrier histories (Halberd, Corrigan Lane, Westerholm, Tallis) with Quillan from 2021 and 2019, Stoneleigh from 2019 and 2022; invoices distractor; premium history now read by Ask A"
+    "world_changes": "establishment doubled; experience from 2016; claims routes disclosed / program request / direct; escalation 2.2 per cent; per-diem clinicians; residents' moonlighting in HCM; carrier histories (Halberd, Corrigan Lane, Westerholm, Tallis) with Quillan from 2021 and 2019, Stoneleigh from 2019 and 2022; invoices distractor; premium history now read by Ask A",
+    "round_3a": {
+      "date": "2026-10-15",
+      "commit": "265e1ed",
+      "target_zip_sha256": "fac4903fd0b45a274cf8052995c88f70fda88598dd47375f1d5fa39fb1a01a3d",
+      "call": "$1,250,000 ($1,263,838), default $2,500,000 (the count at the class average)",
+      "judge": "DETERMINISTIC, APPROVE, Gate H analytical; variants in the bin: day counts, all defendants valued, trend to mid-2027, one pooled class, unmerged claim numbers, delay bins 3/6/8, kernels 5 to 40 days, the $2M cap; out (not defensible): an 80-day kernel, a mis-specified quadratic, no trend",
+      "reader": "no leak; one fork flagged (the immature 2023 and 2024 incident years), closed in 3b as SF32",
+      "re_audit": "PASS, stump moderate: the loss-weighted step factor is the golden's own construction (its monthly probe $1,263,621)"
+    },
+    "round_3b": {
+      "date": "2026-10-15",
+      "decisive_step": "the experience the 2027 window inherits: the Early Resolution Program's disclosure settlements began at each entity between January and July 2019 (none before, steady after), so the window is costed on each entity's experience from its first settlement, each Claim at its own report lag",
+      "policy": "3.1 adds the WHAT (as Claims will arise and be made in the Plan Year); 3.2 only how exposure is measured; 3.3 the experience the trust holds, 2016 to 2024, rated by class, with no pooling sentence",
+      "default_and_rivals": "$1,000,000 (the loss-weighted step factor on the whole experience, $961,261); $3,750,000 and $3,250,000 (the count at the class average, whole and since the starts); $750,000 and $1,000,000 (the within-a-year average); two offsets on the whole experience recorded (the prorated full-year share lands, a quadratic on log cost rounds to $1,000,000)",
+      "constructions": "ten start handlings $1,251,953 to $1,283,204 and every judge variant in the bin; one sigma $65,916",
+      "asks": "unchanged devices; Ask A figures moved with the claims seed (Tolliver Falls 1 $1,465,000, Alderwick 3 $7,000, the medical group 4 $54,000, Brennick none); Ask B unchanged; pair ceiling 37.2"
+    }
   }
 }

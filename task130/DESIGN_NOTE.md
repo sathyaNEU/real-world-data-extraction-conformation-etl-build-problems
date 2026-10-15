@@ -1,50 +1,60 @@
-# task130: Corvane Health, the first-year contribution to its professional liability trust (architecture 4, rule 3 rework)
+# task130: Corvane Health, the first-year contribution to its professional liability trust (architecture 4, rule 3 rework 3b)
 
 Private, never ships. Architecture 4, drawn 2026-10-12 as the author's fourth root for a number retired with three
 architectures spent; shipped 2026-10-12 at $784,000 (round 1); a round 2 redesign was sent back by the judge on
 2026-10-14 and round 1 restored. On 2026-10-15 the rule 3 audit read round 1 AT_RISK: funding policy 3.4 ("used as
 recorded ... no development or tail factor ... no distribution is fitted") filed the estimator by eliminating every
 rival, 3.2 read as a cost-per-FTE-year recipe, and the headline wrong answer ($4,854,000) was a contract misreading,
-not an analysis. This note is the rework of that build, kept in the same world (Corvane Health, the trust, its four
-entities and their Transition Dates, the 2027 Plan Year): the funding policy now files only the WHAT, the lag
-truncation that decided round 1 is now the default path's own construction, and the decisive step is the cost each
-window Claim carries, which this experience ties to its own report lag. The earlier architectures' records are under
+not an analysis. Round 3a reworked it in the same world (Corvane Health, the trust, its four entities and their
+Transition Dates, the 2027 Plan Year): the funding policy filed only the WHAT, the lag truncation became the default
+path's own construction, and the decisive step was the cost each window Claim carries at its own report lag. The
+judge read 3a DETERMINISTIC, APPROVE (Gate H analytical), and the rule 3 re-audit passed it with a moderate stump: the
+field's loss-weighted claims-made step factor is the golden's own construction, so a strong solver lands it without
+seeing the lag-cost link. This note is round 3b, a second analytical layer that the step factor on the whole
+experience misses by a bin: the Early Resolution Program's disclosure settlements, the Claims a first claims-made year
+catches most of, began at each entity on its own date between January and July 2019, none came from earlier
+incidents and they run every year since, so the 2027 window inherits the claims process since each entity's start and
+the 2016 to 2018 years, pooled in, understate it by a quarter. The earlier architectures' records are under
 `## Retired` and `## Tried and rejected`; the card keeps every dead identity in `lineage`.
 
 Carried forward as design rules: the default path is written first and must end wrong on the data in hand; no filed
-sentence names or narrows the estimator; no figure in the pack confirms the solver's construction for free.
+sentence names or narrows the estimator or the experience period; no figure in the pack confirms the solver's
+construction for free.
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task130.json`, architecture v4 (rule 3 rework, edited in place 2026-10-15); `guard.py validate` clean; `guard.py heart` WARN (one finding, `people.first` Lori against task129, an older build; Lori Williams stays, she signs the data dictionary) |
+| Card | `.claude/skills/fingerprint/cards/task130.json`, architecture v4 (rule 3 rework 3b, edited in place 2026-10-15); `guard.py validate` clean; `guard.py heart` WARN (one finding, `people.first` Lori against task129, an older build; Lori Williams stays, she signs the data dictionary); the driver sits at 0.32 against this slot's round 1 and 0.14 against round 2, both differentiated |
 | Domain / task type | actuarial-science-insurance / pricing-ratemaking-credibility (a client domain): funding a self-insured professional liability programme's first claims-made year is pricing its cover |
-| Objective | Forecasting & Predictive Modeling: the expected cost of the Claims that will first be made against a new trust in 2027, its first Plan Year, from the system's 2016 to 2024 claims experience valued 30 September 2026 |
+| Objective | Forecasting & Predictive Modeling: the expected cost of the Claims that will first be made against a new trust in 2027, its first Plan Year, from the system's 2016 to 2024 claims experience valued 30 September 2026, on the claims process 2027 will run under |
 | Shape | other: the contribution (one figure), then two reconciliation asks across the four entities (open claims under each expiring carrier's policies missing from its latest loss run, with our reserves on them; the covered clinician FTE the payroll paid in each of July, August and September 2026) and a chart of the second; 28 criteria before the files and rounding |
 | Decision | `quantity_figure`, answer unit `currency`: the 2027 contribution the trustees put into the trust, to the nearest $250,000 |
-| Mechanism | gap time (the trust pays only for Claims made inside its own opening window), then population (the Claims a short window catches are a different mix from the experience's average); pattern none; generators G13 (the window the decision covers) then G14 (the cost of a Claim conditioned on how soon it is made); Gate G `forecasting`; strategy `maturity_censoring` (the window censors each Claim's report lag, and the Claims it keeps carry a cost profile of their own) |
-| Layer 2 family / pattern | `field_method` (the professional liability actuary's claims-made pricing from the system's own report-lag experience); `own:claims-made-first-year-cost-conditioned-on-report-lag` |
+| Mechanism | gap time (the trust pays only for Claims made inside its own opening window), then population (the Claims a short window catches are a different mix from the experience's average, and that mix began at each entity in 2019); pattern none; generators G13 (the window the decision covers), G14 (the cost of a Claim conditioned on how soon it is made) and G6 (the claims process shifted under the experience); Gate G `forecasting`; strategy `maturity_censoring` (the window censors each Claim's report lag, and the Claims it keeps carry a cost profile and a history of their own) |
+| Layer 2 family / pattern | `field_method` (the professional liability actuary's claims-made pricing from the system's own report-lag experience, on the experience period that matches the claims handling the window will see); `own:claims-made-first-year-cost-conditioned-on-report-lag` |
 | Furniture | forum `trustees_or_governors`, forcing event `launch_or_rollout` (the trust launches on 1 January 2027 and takes the entities in on their anniversaries; the first contribution has to be fixed before it; moved from `vote_or_meeting`, which task128's later re-root put among this card's last three), organisation family `hospital_or_health_provider`, role family `compliance_or_audit`, context artifact `register`, calibration `none`, opening `question-first`, question form `how-much` |
 | Spine | `clinician_fte_by_month_2016-01_2025-12.csv`, the legacy payroll, 224,767 rows: one employee's paid FTE in one month on one cost centre, with the job code (two code sets, the 2020 set from July 2020), entity and status; constructed. The 2026 HCM pay lines (30,764 rows) carry Ask B |
 | Deliverables | `trust_funding_2027.xlsx` (the contribution, the entities' Transition Dates, the experience behind it, the carrier loss run check, the paid covered FTE for July to September 2026, notes), `trustees_paper_2027.pptx` (slide 1 the contribution, slide 2 the grouped chart of each entity's paid covered FTE in the three months) |
 | People | from round 1's draw (`guard.py names --geo "United States" --seed 130`): Nancy Holland (vice president, risk management and insurance; the requester; author of the premium history and the goldens), Derek White (chief financial officer; the staffing plan), Lori Williams (director of claims and litigation; the data dictionary), Walter Butler (chair of the trustees; signs the agreement and the policy). Elizabeth Nelson and Jerome Warren were dropped: no shipped file names them and Elizabeth now collides with task128 |
 
-**Guard.** `guard.py heart task130`: WARN. The rework first tried `composition_mix` (ban.strategy against task125, and it
-would have banned task137), so the strategy stays `maturity_censoring`; the forcing event moved to `launch_or_rollout`
-(no ban on this card or on task136 to task138, checked); the driver sits at 0.40 against this slot's own round 1 driver
-and carries a differentiation line (round 1 decided on the window's truncation; here the truncation is the default and
-the decision is the cost each window Claim carries). Nearest other driver task85 at 0.07.
+**Guard.** `guard.py heart task130`: WARN (Lori against task129, an older build). Round 3a first tried
+`composition_mix` (ban.strategy against task125, and it would have banned task137), so the strategy stays
+`maturity_censoring`; the forcing event is `launch_or_rollout` (no ban on this card or on task136 to task138, checked).
+Round 3b adds generator G6 (the claims process shifted under the experience). The driver sits at 0.32 against this
+slot's round 1 driver and 0.14 against round 2's, both carrying a differentiation line (round 2 split the history by
+unit, every year pooled; here every unit's own history is used from its own start); nearest other driver task457 at
+0.06.
 
-**Data-native sentence.** Corvane's Early Resolution Program meets a patient within days when the care team discloses
-serious harm and settles within weeks at tens of thousands of dollars; most other patients who ask for compensation do
-so through the program months after the care, once treatment and bills are done, and settle for a few thousand; the
-demands and suits that carry nearly all the money arrive a year or more after the incident. So the Claims a trust's
-first months can catch are the costly disclosed-harm settlements and the cheap program requests, in proportions set by
-how many days each entity has left in the year, and neither the average Claim nor the average of the Claims made within
-a year prices them.
+**Data-native sentence.** Since 2019 Corvane's care teams disclose serious harm through the Early Resolution Program,
+which meets the patient within days and settles within weeks at tens of thousands of dollars; each entity began on its
+own date between January and July 2019, and before that the same harm surfaced a year or more later as a demand or a
+suit, or not at all. Most other patients who ask for compensation do so through the program months after the care,
+once treatment and bills are done, and settle for a few thousand; the demands and suits that carry nearly all the money
+arrive a year or more after the incident. So the Claims a trust's first months can catch are the disclosure
+settlements and the cheap program requests, in proportions set by how many days each entity has left in the year, and
+only the years since each entity's first settlement show them at the rate 2027 will.
 
-**World (as built, claims seed 2077).** Corvane Health, a nonprofit health system in western Oregon: three hospitals and
+**World (as built, claims seed 3006).** Corvane Health, a nonprofit health system in western Oregon: three hospitals and
 an employed medical group, about 1,800 covered clinician FTE paid in September 2026 (employed physicians and advanced
 practice clinicians in Schedule B jobs, per-diem clinicians by the shifts paid). Each entity has insured its employed
 clinicians with an annual occurrence policy on its own anniversary; the board resolved to let each run to expiry and
@@ -60,15 +70,23 @@ transition date:
 - Brennick Community Hospital (108.2, affiliated 1 July 2019), Stoneleigh Casualty since 1 October 2022 (Tallis
   Reciprocal before): trust from 1 October 2027.
 
-Seven specialty classes as Schedule B rates them. In the experience (incidents 2016 to 2024, valued 30 September 2026)
-there are 3,043 Claims, one per incident, against 13,747.1 covered FTE-years. By route (generator truth, not shipped):
-240 disclosed-harm settlements made a median of 18 days after the care; 2,527 program requests made a median of 242
-days after, 54 of them declined and followed by a suit a median of 178 days later (one Claim, made at the request); 300
-direct demands and suits made a median of 830 days after (obstetrics 1,215). The register carries no route: it shows
-the 208 Claims made within 30 days at an average of $54,543 (2027 level, 7.2 per cent of the experience's cost), the
-2,512 made in days 91 to 364 at about $8,600 (13.7 per cent), and the 277 made a year or more after at $442,614 (77.9
-per cent). The expected cost of the 2027 window is $1,263,838 (about 47 Claims at about $27,000 each against an
-experience average of $51,726).
+Seven specialty classes as Schedule B rates them. The Early Resolution Program has taken patients' requests since
+September 2015; its disclosure arm (the care team discloses serious harm and the program settles within weeks) began
+at Alderwick in January 2019, Tolliver Falls in March, the medical group in May and Brennick at its affiliation in
+July (generator truth, `disclosure_from`); before an entity's start such a harm became a demand or a suit a year or
+more later (55 per cent) or no claim. In the experience (incidents 2016 to 2024, valued 30 September 2026) there are
+3,320 Claims, one per incident, against 13,747.1 covered FTE-years. By route (generator truth, not shipped): 320
+disclosure settlements made a median of 17 days after the care at an average of $27,814 (2027 level), all from
+incidents after their entity's start; 2,592 program requests made a median of 238 days after at $7,911; 408 direct
+demands and suits made a median of 782 days after at $423,024. The register carries no route and no programme code:
+it shows no Claim made within 40 days of a 2016 to 2018 incident, and from each entity's first such Claim (Alderwick
+January 2019, Tolliver Falls April, the medical group May, Brennick July: the data's months) 40 to 64 a year made
+within 30 days, 25 to 43 per 1,000 covered FTE-years in every year from 2020 to 2025 with no trend (asserted). Since
+those months the experience is 2,288 Claims on 9,330.0 FTE-years (32.1 per cent of the exposure falls before them):
+295 made within 30 days at $28,209, 38 in days 31 to 90 at $17,391, 1,768 in days 91 to 364 at about $9,300 and 187 a
+year or more after at $420,503. The expected cost of the 2027 window is $1,281,536 (68.4 expected Claims at about
+$18,700 each, four fifths of the cost in the disclosure settlements); on the whole 2016 to 2024 experience the same
+construction gives $961,261.
 
 As-of date: the claims register extract runs Friday 2 October 2026, valued 30 September 2026; the HCM pay lines run
 through work month September 2026; the loss runs arrive 5 to 9 October; the pack is handed over on 12 October 2026.
@@ -78,68 +96,72 @@ through work month September 2026; the loss runs arrive 5 to 9 October; the pack
 1. Read the claims register (one row per named defendant), keep the rows whose clinician is a Covered Clinician (a
    Schedule B job in the legacy payroll in the incident month), merge each incident's claim numbers into one Claim made
    on its earliest claim made date (trust agreement 1.3), class it by its first-named Covered Clinician (Schedule B
-   Note 2), and take incidents from 2016 to 2024 (funding policy 3.3): 3,043 Claims.
+   Note 2), and take the experience the trust holds, incidents from 2016 to 2024 (funding policy 3.3): 3,320 Claims.
 2. Value each Claim at paid plus case reserves on its Covered Clinicians' rows and trend it at 5 per cent a year from
    the incident year to 2027 (3.4); sum the payroll's covered paid FTE over 2016 to 2024 by class, each month one
    twelfth of an FTE-year: 13,747.1 FTE-years.
 3. Read the claims-made window correctly: from each entity's Transition Date to 31 December 2027, only Claims made by
-   year end count, so for each day of each entity's plan exposure count the class's experience Claims per FTE-year
-   whose delay from incident to first making fits in the days left: about 47 expected Claims.
-4. Price them the way a frequency-severity build does, at each class's average trended Claim cost, and add the
-   classes.
+   year end count, so for each day of each entity's plan exposure take the class's experience Claims per FTE-year
+   whose delay from incident to first making fits in the days left.
+4. Price the window the field's way, with the loss-weighted report pattern: each experience Claim at its own trended
+   cost, counted for the 2027 FTE-years of its class with at least its own delay left (the claims-made step factor on
+   loss dollars, claim by claim or by month of delay), and add the classes.
 
-Ends on: $2,500,000 ($2,605,268 unrounded), the window's expected Claims at each class's average Claim cost; a
-severity from the Claims made within a year gives $750,000 ($642,835), a log-linear severity curve on the delay
-$1,000,000 ($907,953), a lognormal class severity $1,500,000 ($1,530,870).
-Golden: $1,250,000 ($1,263,838 unrounded), each experience Claim's own trended cost counted for the 2027 FTE-years of
-its class with at least its own delay left before 31 December 2027, per FTE-year of its class's experience.
+Ends on: $1,000,000 ($961,261 unrounded; by whole months of delay at mid-month exposure, the re-audit's probe,
+$970,859), the whole 2016 to 2024 experience priced at each Claim's own delay. The frequency-severity build of the same
+window misses higher, on the whole experience $3,750,000 ($3,697,267) and since each entity's start $3,250,000
+($3,283,884); a severity from the Claims made within a year gives $750,000 ($782,973).
+Golden: $1,250,000 ($1,281,536 unrounded), the same construction on each entity's experience from the month of its
+first disclosure settlement to December 2024 (2,288 Claims on 9,330.0 FTE-years).
 
 ## Stump sentence
 
-A strong solver who reads the claims-made window correctly counts the Claims the 2016 to 2024 experience would make by
-31 December 2027 from each entity's Transition Date and prices them at each specialty class's average trended Claim
-cost, filing $2,500,000 (Ends on); the step that lands it there is pricing the window's Claims at the cost of all
-Claims, when the Claims made inside a first claims-made year are the disclosed-harm settlements made within weeks (about
-$54,500 each) and the program requests made months later (about $8,600 each), weighted toward the earliest because more
-of each entity's days leave room for a short delay, while the average carries the demands and suits made a year or
-more later (about $443,000 each); the cheaper refinements miss too, a within-a-year severity low ($750,000) and every
-monotone severity curve on the delay one way or the other ($1,000,000 to $2,750,000). Costing each experience Claim at
-its own delay against each entity's days in the trust gives $1,250,000.
+A strong solver who reads the claims-made window correctly and prices it the field's way, each 2016 to 2024 Claim at
+its own trended cost against the 2027 FTE-years with its own delay left (the loss-weighted claims-made step factor),
+files $1,000,000 (Ends on); the step that lands it there is pooling the whole experience the trust holds, when the
+Claims a first claims-made year catches are mostly the Early Resolution Program's disclosure settlements, made within
+weeks (about $28,000 each), which began at each entity only between January and July 2019 and have run at the same
+rate every year since: 2016 to 2018 and each entity's first months of 2019 carry the program's requests and the late
+suits but none of the settlements, a third of the exposure at a fifth of the window's cost per FTE-year, so the pooled
+pattern understates the window by a quarter. Costing the window on each entity's experience from its first settlement gives
+$1,250,000; the count route at the class average misses on either experience ($3,750,000 whole, $3,250,000 since the
+starts), so both layers are needed.
 
 ## Three rules
 
 - **Task type:** actuarial-science-insurance / pricing-ratemaking-credibility, pricing the first claims-made year of a self-insured professional liability trust; the type serves Forecasting & Predictive Modeling in the taxonomy.
-- **Domain test:** the deciding quantity is the expected cost of Claims first made inside a claims-made trust's opening window, built from each entity's covered exposure through the system's own report-lag experience with each Claim's cost tied to its own lag, which is how a professional liability actuary prices a first claims-made year; the swap below breaks it.
-- **Swap:** put warranty claims and units sold in for clinicians and FTE-years and the task stops making sense: there is no claims-made trigger, retroactive date, disclosed-harm settlement, program request or late suit, so nothing makes a claim's cost depend on how soon it is reported.
-- **Layer 1:** a register with one row per named defendant (residents and contracted clinicians in it, contracted rows unpriced), requests that become suits under new claim numbers, reopened claims, a legacy payroll across the July 2020 job codes with per-diem rows at two decimals, dual appointments, transfers and unpaid leave; each mishandled leaves the call in its bin (R2, asserted one line each).
-- **Layer 2:** the field's frequency-severity reflex prices the window's expected Claims at the average Claim cost; the expert sees that this experience's cost depends on the report lag, high within weeks, low over the following months and highest after a year, and costs each window Claim at its own lag.
-- **Decisive step:** costing the 2027 window Claim by Claim, each experience Claim's own trended cost counted for the 2027 FTE-years of its class with at least its own delay left, instead of the window's count at any average or fitted severity.
-- **Not semantics:** a solver who reads the claims-made trigger, the Claim definition, Schedule A and B, the funding policy and every column correctly, and truncates every lag right, still files $2,500,000 at the class average, $750,000 at the within-a-year average or $1,000,000 on a log-linear curve.
-- **Not rule application:** the funding policy files the estimand, the two exposures, the experience period and its pooling within class, the valuation and the trend; no sentence names a severity, a lag, a curve or a weighting, and executed word for word the filed sentences give $13,000,000 or $2,500,000, never the golden (Literal reader, R3a asserted).
-- **Analyst test:** a strong analyst who dedupes the register, merges claim numbers, reads the claims-made window and counts the window's expected Claims right still prices them at the class average and files $2,500,000 ($2,605,268 on the generator's clean truth, asserted), a full bin and more above the golden $1,250,000.
-- **Estimand:** funding policy 3.1 (expected cost at 2027 level of Claims first made in the 2027 Plan Year) with trust agreement 1.3, 1.7, 2.1, 2.4 and Schedule A (claims-made from each Transition Date); the population includes Claims not yet observed (2027 incidents), projected from the experience of 3.3 on the exposures of 3.2.
-- **No decoy:** no memo, draft, briefing or stakeholder figure argues a contribution; no file states a 2027 cost, a step factor, a lag table or a severity curve; the safety events and the defence invoices are plain distractors no route reads.
-- **No certified replay:** no certified or published figure is reproduced to recover the method; the window's cost is estimated directly from the register and the payroll, and nothing in the pack confirms the construction.
-- **Lesson:** inside a first claims-made window the claims' cost is not the average claim's: when cost depends on report lag, and not monotonically, only costing each claim at its own lag prices the window; round 1's lesson (truncate the lag) is this build's default, not its answer.
+- **Domain test:** the deciding quantity is the expected cost of Claims first made inside a claims-made trust's opening window, built from each entity's covered exposure through the system's own report-lag experience, each Claim at its own cost and lag, on the experience period that matches the claims handling the window will run under, which is how a professional liability actuary prices a first claims-made year after a change in claims handling; the swap below breaks it.
+- **Swap:** put warranty claims and units sold in for clinicians and FTE-years and the task stops making sense: there is no claims-made trigger, retroactive date, disclosure settlement, program request or late suit, so nothing makes a claim's cost depend on how soon it is reported or a disclosure programme change when claims are made.
+- **Layer 1:** a register with one row per named defendant (residents and contracted clinicians in it, contracted rows unpriced), requests that become suits under new claim numbers, reopened claims, a legacy payroll across the July 2020 job codes with per-diem rows at two decimals, dual appointments, transfers and unpaid leave; each mishandled leaves the call in its bin (R2, asserted one line each), and none touches the claim dates the second layer lives in.
+- **Layer 2:** two steps an expert takes and the field's reflexes skip. The window's Claims cost what their own lag says, high within weeks, low over the following months and highest after a year, so each window Claim is costed at its own lag (the count at an average misses); and the quick, costly Claims began at each entity in 2019 and run steadily since, so the window is priced on the experience from each entity's start, not the whole 2016 to 2024 pool (the loss-weighted step factor on every year misses by a bin).
+- **Decisive step:** costing the 2027 window on each entity's experience from the month of its first disclosure settlement, each Claim's own trended cost counted for the 2027 FTE-years of its class with at least its own delay left, instead of the loss-weighted step factor on the whole experience the trust holds or the window's count at any average or fitted severity.
+- **Not semantics:** no field, code or definition marks the change: the register carries no route, channel or programme code, matter type is Claim or Suit on both sides of 2019, and a solver who reads the trigger, the Claim definition, Schedules A and B, the policy and every column correctly, and truncates every lag right, still files $1,000,000 on the whole experience; the change is visible only in the claim dates, as the lag mix by incident year and entity.
+- **Not rule application:** the funding policy files the estimand (the cost of the Claims first made in the Plan Year, as Claims will arise and be made in that year), how exposure is measured, the experience the trust holds (2016 to 2024, rated by class), the valuation and the trend; no sentence names a start date, a break, a weighting of years, a lag treatment or a severity, and executed word for word on the whole experience held the filed sentences give $1,000,000 or $3,750,000, never the golden (Literal reader, R3a asserted).
+- **Analyst test:** a strong analyst who dedupes the register, merges claim numbers, reads the claims-made window and costs every window Claim at its own delay, the field's loss-weighted step factor, still files $1,000,000 on the whole 2016 to 2024 experience ($961,288 on the generator's clean truth, asserted), a full bin and more below the golden $1,250,000.
+- **Estimand:** funding policy 3.1 (expected cost at 2027 level of Claims first made in the 2027 Plan Year, as Claims will arise and be made in that year) with trust agreement 1.3, 1.7, 2.1, 2.4 and Schedule A (claims-made from each Transition Date); the population includes Claims not yet observed (2027 incidents), projected from the experience of 3.3 on the exposures of 3.2, under the claims process the register shows every year since each entity's first disclosure settlement.
+- **No decoy:** no memo, draft, briefing or stakeholder figure argues a contribution or an experience period; no file states a 2027 cost, a step factor, a lag table, a severity curve or the programme's dates; the safety events and the defence invoices are plain distractors no route reads.
+- **No certified replay:** no certified or published figure is reproduced to recover the method; the window's cost is estimated directly from the register and the payroll, and nothing in the pack confirms the construction or the start months.
+- **Lesson:** a first claims-made window inherits the claims process in force when it opens: when the quick, costly claims it catches began part way through the experience, unit by unit, the window is priced on each unit's experience since its start, each claim at its own lag; the whole history's loss-weighted step factor, round 3a's golden, is this build's default.
 
 ## Gate G
 
 - **Litmus.** No. Every file is correct: the register, the payroll files, the staffing plan, the loss runs, the premium
   history, the trust agreement and the funding policy. No stakeholder states a number the task overturns and no file
-  states the trust's 2027 cost.
-- **Primary mechanism:** `forecasting` (the correctly read past pins the 2027 window's cost only through the cost each
-  window Claim carries at its own lag).
+  states the trust's 2027 cost or the programme's dates.
+- **Primary mechanism:** `forecasting` (the correctly read past pins the 2027 window's cost only through the claims
+  process since each entity's first disclosure settlement and the cost each window Claim carries at its own lag).
 - **Flags:** `surface_read_dependency: no` · `stumping_family: analytical_non_defect` · `sole_data_defect: no`.
 - **Clean-data test.** On the generator's clean truth (true jobs, unrounded paid FTE, every escalation merged) the
-  default path files $2,605,358 against the golden $1,263,876, and every natural route still misses by a full bin
-  (nearest the lognormal severity, $267,054 off), asserted (R3a).
+  default path files $961,288 against the golden $1,281,570, every route on the whole experience still misses by a
+  full bin except the two that offset (Ladder), and every round 1 route on the experience since the starts misses by
+  a full bin (nearest a gamma GLM linear in the delay, $285,551 off), asserted (R3a).
 - **Deletion test.** Delete the two distractors, the loss runs, the notice log, the premium history and the HCM pay
   lines: the call recomputes to the dollar (asserted) and the default path is still wrong.
-- **Lens swap.** The default and the golden count the same Claims in the same window; they differ only in the cost
-  each carries, the class average against its own.
+- **Lens swap.** The default and the golden count the same window by the same construction; they differ only in the
+  experience years each entity contributes, the whole held period against each entity's months since its start.
 - **No artifact ranks or prices the decision.** No shipped file states a 2027 cost, a claims-made factor, a report-lag
-  table, a severity by lag or a curve. The premium history prices occurrence cover (a mature year with carrier loads)
-  and is read only by Ask A, for the carriers' terms.
+  table, a severity by lag, a curve or a start month. The premium history prices occurrence cover (a mature year with
+  carrier loads) and is read only by Ask A, for the carriers' terms.
 
 ## Readability screen
 
@@ -151,44 +173,45 @@ half of a reported figure). Verdict last.
 |---|---|---|---|---|---|---|---|
 | R0 the claims-made window: only Claims made in 2027 from incidents after each Transition Date count | fires: trust agreement 2.1 and 2.4 and the prompt's "first made against the trust that year" | the register's incident and claim made dates | yes, once read | no | no | the count share is a ratio | readable |
 | R1 the window's expected count per day of exposure, each delay against the days left | the window is filed; the day count follows from dates | incident and made dates give each delay | yes, for an actuary who read R0 | no | no | a convolution, but the textbook one | readable |
+| R2 each window Claim at its own cost (the loss-weighted step factor) | no sentence | incident and made dates and the amounts | yes: the field's claims-made pricing on loss dollars | no | no | a convolution | readable |
 | R1y a severity from the Claims made within a year (or the same calendar year) | no sentence | the made date | partly: "use the severity of the claims that count" | no | no | yes (one filter) | readable |
-| F a severity curve fitted on the delay (log-log, log-linear, gamma) | no sentence | none | yes for a modeller | no | no | no | readable |
-| R3 (decisive) each window Claim at its own cost, counted for the exposure with its own delay left | no sentence names a severity, a lag, a curve or a weighting; the policy pools within class and values each Claim | no column carries a route, a lag or a severity; the register's matter type (Claim or Suit) does not separate disclosed harm from requests | no: the reflexes are the class average, the within-a-year average and a smooth curve | none ships | no | no: each Claim's cost against each entity's days by its own delay | silent |
+| R3 (decisive) the experience from each entity's first disclosure settlement, not the whole period held | no sentence names a start, a break or a weighting of years; 3.3 says what the trust holds and 3.1 that the cost is of Claims as they will be made in 2027 | no column carries a route, a channel, a programme or a lag; matter type reads Claim or Suit on both sides | no: the reflex is to pool every year the policy names, and the step factor gives a smooth pattern on them | none ships | no: every row is complete and correct | no: each entity's own start read off the claim dates, then the whole construction re-run on its months | silent |
 
-The decisive rung is silent because the link between a Claim's delay and its cost lives only in the rows: the window is
-filed and the cost of each Claim is in the register, but nothing names the three regimes (weeks, months, years), no
-column marks a disclosed-harm settlement or a program request, and only a reader who looks at cost against delay, or
-costs the window Claim by Claim instead of at a severity, sees that the window's Claims are neither average nor cheap.
+The decisive rung is silent because the change lives only in the claim dates: the register shows a Claim made within
+weeks of its incident from no 2016 to 2018 incident and in every year from each entity's first month in 2019, but
+nothing names the disclosure arm, its dates or the years it changed; only a reader who looks at the lag and cost mix
+by incident year and entity sees that the experience the window inherits starts there, and that the pooled years
+carry the window's cheap requests without its costly settlements.
 
 ## Semantic fork table
 
 One row per term of the main ask and per convention the computation needs. `checks.py` asserts each row (the
-alternative computed and shown to converge, or moved and closed by the sentence named).
+alternative computed and shown to converge, or moved and closed by the sentence and data fact named).
 
 | Id | Term or convention | Golden reading | Alternative (as built) | Ruled out by |
 |---|---|---|---|---|
 | SF1 | "contribute" | the expected cost, no margin, load or expense | a 5 per cent margin: $1,250,000, same call | funding policy 3.1 and 3.5 (no provision for expenses, investment income, excess insurance or a margin); same call |
-| SF2 | "claims first made against the trust that year" | Claims made 1 January to 31 December 2027 from incidents on or after each Transition Date | every Claim from 2027 incidents whenever made (occurrence): $13,101,078 | trust agreement 2.1 and 2.4, Schedule A (claims-made, retroactive date the Transition Date) |
-| SF3 | "Claim" | all claim numbers of one incident, one Claim, first made at the earliest | each claim number apart: $1,184,886 | trust agreement 1.3; same call |
-| SF4 | "Covered Clinician" | employed physicians and APCs in Schedule B jobs | residents and fellows counted (their Claims, rows and FTE): $1,230,744 | trust agreement 1.5; same call |
-| SF5 | the cost of a Claim | indemnity and defence paid plus case reserves on its Covered Clinicians' rows | paid only $1,251,304 (same call); indemnity only $996,359 | funding policy 3.4 (indemnity and defence, paid and case reserves) |
-| SF6 | the trend base year | the incident year | the year the Claim was made: $1,255,658 | funding policy 3.4 ("from the calendar year of its Medical Incident"); same call |
-| SF7 | the experience period | incidents 2016 to 2024 | 2017 to 2024 $1,264,166; 2020 to 2024 $1,234,117 | funding policy 3.3; same call |
-| SF8 | pooling | within each specialty class | all classes pooled $1,185,857 (same call); each entity on its own experience $1,269,557 (same call) | funding policy 3.3 ("pooled within each specialty class"); same call |
-| SF9 | the exposure's start | each entity's Transition Date | every entity from 1 January: $2,610,342 | funding policy 3.2 ("month from the entity's Transition Date") and Schedule A |
-| SF10 | a month's exposure within the month | held through the month's days | mid-month $1,278,776, month end $1,145,035, calendar-day $1,267,616 (same call); all at the month's first day $1,387,788 | the staffing plan's note ("budgeted covered FTE for each month, held through the month"); the others same call |
-| SF11 | a Claim's class | the first-named Covered Clinician's payroll job in the incident month | the register's specialty text | Schedule B Note 2; converges on all 3,043 Claims (asserted) |
+| SF2 | "claims first made against the trust that year" | Claims made 1 January to 31 December 2027 from incidents on or after each Transition Date | every Claim from 2027 incidents whenever made (occurrence): $12,625,971 | trust agreement 2.1 and 2.4, Schedule A (claims-made, retroactive date the Transition Date) |
+| SF3 | "Claim" | all claim numbers of one incident, one Claim, first made at the earliest | each claim number apart: $1,243,001 | trust agreement 1.3; same call |
+| SF4 | "Covered Clinician" | employed physicians and APCs in Schedule B jobs | residents and fellows counted (their Claims, rows and FTE): $1,250,154 | trust agreement 1.5; same call |
+| SF5 | the cost of a Claim | indemnity and defence paid plus case reserves on its Covered Clinicians' rows | paid only $1,259,015 (same call); indemnity only $902,246 | funding policy 3.4 (indemnity and defence, paid and case reserves) |
+| SF6 | the trend base year | the incident year | the year the Claim was made: $1,272,987 | funding policy 3.4 ("from the calendar year of its Medical Incident"); same call |
+| SF7 | the experience the window is costed on | each entity's Claims and exposure from the month of its first disclosure settlement (a Claim made within 30 days) to December 2024, inside the 2016 to 2024 experience the trust holds | the whole 2016 to 2024 experience $961,261; 2017 to 2024 $1,024,269; 2020 to 2024 $1,251,953 (same call) | funding policy 3.1 ("as Claims against the System's clinicians will arise and be made in that year") with the asserted data fact: no Claim from an incident before its entity's start was made within 40 days, none within 30 days from any 2016 to 2018 incident, and from each start 25 to 43 a year per 1,000 covered FTE-years in every year from 2020 to 2025 with no trend (`regime.*`); 3.3 states what the trust holds and no sentence pools, weights or drops years |
+| SF8 | the rating unit | each specialty class of Schedule B, the System's experience | all classes pooled $1,210,173 (same call); each entity on its own experience $1,259,592 (same call) | funding policy 3.3 ("rated by the specialty classes of Schedule B"); same call |
+| SF9 | the exposure's start | each entity's Transition Date | every entity from 1 January: $2,713,397 | funding policy 3.2 ("month from the entity's Transition Date") and Schedule A |
+| SF10 | a month's exposure within the month | held through the month's days | mid-month $1,296,821, month end $1,159,029, calendar-day $1,285,212 (same call); all at the month's first day $1,405,046 | the staffing plan's note ("budgeted covered FTE for each month, held through the month"); the others same call |
+| SF11 | a Claim's class | the first-named Covered Clinician's payroll job in the incident month | the register's specialty text | Schedule B Note 2; converges on all 3,320 Claims (asserted) |
 | SF12 | entities and classes | four entities, seven classes | none | the staffing plan covers every pair it plans (asserted) |
-| SF13 | the day count | made on its received date; the Transition Date in; 31 December in | each one-day variant: $1,255,814 to $1,271,883 | trust agreement 1.3, 1.7, 2.1, 2.4; every variant same call |
+| SF13 | the day count | made on its received date; the Transition Date in; 31 December in | each one-day variant: $1,273,418 to $1,289,665 | trust agreement 1.3, 1.7, 2.1, 2.4; every variant same call |
 | SF14 | rounding | once, to the nearest $250,000 from unrounded | rounding parts first | funding policy 3.6 and the prompt |
-| SF15 | Claims with no indemnity | counted at their defence cost | left out: $1,203,453 | trust agreement 1.3 (a demand, request or suit is a Claim) and 3.4; same call |
-| SF16 | the per-Claim limit | cannot bind inside the window | capped at $2,000,000 | the largest Claim made within a year is $565,398 (asserted) |
-| SF17 | a Claim's claim numbers | amounts added | the later claim number alone: $1,262,019 | the register's amounts are per claim number (no repeated amount set, asserted); same call |
-| SF18 | per-diem payroll rows | paid FTE at their shifts | dropped: $1,270,603 | funding policy 3.2 (paid FTE); same call |
-| SF19 | a month in FTE-years | one twelfth, as each payroll month in the experience | days over 365: $1,267,616 | funding policy 3.2 (the experience's months); same call |
-| SF20 | 2025 and 2026 incidents | outside the experience | 2025 added: $1,290,409 | funding policy 3.3; same call |
-| SF21 | an escalated suit's date | the request's (the Claim's first making) | the suit's own date: $1,184,886 | trust agreement 1.3; same call (as SF3) |
-| SF22 | the experience's job codes | both code sets of Schedule B | the 2020 code set's exposure under every Claim: $2,338,918 | Schedule B (both code sets listed) |
+| SF15 | Claims with no indemnity | counted at their defence cost | left out: $1,237,416 | trust agreement 1.3 (a demand, request or suit is a Claim) and 3.4; same call |
+| SF16 | the per-Claim limit | cannot bind inside the window | capped at $2,000,000 | the largest Claim made within a year since the starts is $1,333,702; the cap changes nothing (asserted) |
+| SF17 | a Claim's claim numbers | amounts added | the later claim number alone: $1,280,847 | the register's amounts are per claim number (no repeated amount set, asserted); same call |
+| SF18 | per-diem payroll rows | paid FTE at their shifts | dropped: $1,287,639 | funding policy 3.2 (paid FTE); same call |
+| SF19 | a month in FTE-years | one twelfth, as each payroll month in the experience | days over 365: $1,285,212 | funding policy 3.2 (the experience's months); same call |
+| SF20 | 2025 and 2026 incidents | outside the experience | 2025 added: $1,336,835 | funding policy 3.3 (the experience held runs to 2024); same call |
+| SF21 | an escalated suit's date | the request's (the Claim's first making) | the suit's own date: $1,243,001 | trust agreement 1.3; same call (as SF3) |
+| SF22 | the experience's job codes | both code sets of Schedule B | the 2020 code set's exposure under every Claim: $1,622,763 | Schedule B (both code sets listed) |
 | SF23 | Ask A "open" | OPEN or REOPENED | OPEN alone | same answer (asserted) |
 | SF24 | Ask A "how many" | one per incident | one per claim number | no incident holds two open claim numbers (asserted) |
 | SF25 | Ask A "latest loss run" | the latest valuation, 30 September 2026 | Quillan's revision 1 of its June run, received last | its own header (valuation 30 June 2026, "replaces the run of 07/08/2026") |
@@ -197,61 +220,79 @@ alternative computed and shown to converge, or moved and closed by the sentence 
 | SF28 | Ask B paid FTE | hours paid over 173.33 | hours over 2,080 / 12 | the dictionary ("173.33 hours a month at 1.0 FTE"); same answer (asserted) |
 | SF29 | Ask B trainees | a worker holding a resident or fellow position that month | any 2026 month | same answer (asserted) |
 | SF30 | Ask B "at the entity" | the entity of the cost centre charged | none ships | the HCM lines carry no other entity (asserted) |
+| SF31 | each entity's start | the first incident month with a Claim made within 30 days of its incident | within 14 or 39 days; a quarter or six months later; the latest or the earliest start for every entity; whole incident years from 2019, 2020 or 2021: $1,251,953 to $1,283,204 | same call on all ten (asserted); no sentence dates the program |
+| SF32 | development of the 2023 and 2024 incident years | none for the window | a tail on the recent years' Claim counts or costs | every delay the window can use (under 365 days) is in the extract for every incident to 31 December 2024 (made by 30 December 2025, 274 days before the valuation; asserted); 3.4 values each Claim as recorded |
+| SF33 | the trend's end point | the Plan Year's cost level from the incident's calendar year | trended to mid-2027: $1,313,183 | funding policy 3.4; same call |
+| SF34 | the rows valued | the Covered Clinicians' rows | every priced defendant row: $1,289,264 | funding policy 3.4 ("against its Covered Clinicians"); same call |
+| SF35 | how finely cost follows the delay | each Claim's own delay | 3, 6 or 8 equal delay bins and Gaussian kernels of 5 to 40 days: $1,225,392 to $1,287,100 | same call (asserted); a kernel of 80 days $1,138,463 lands too |
 
-## Ladder (built, claims seed 2077; checks.py asserts every line)
+## Ladder (built, claims seed 3006; checks.py asserts every line)
 
-Every rung is a complete pipeline on the same literal estimand; ratios are to the golden, $1,263,838.
+Every rung is a complete pipeline on the same literal estimand, on the whole 2016 to 2024 experience the trust holds
+and on each entity's experience from its first disclosure settlement; ratios are to the golden, $1,281,536.
 
-| Rung | Construction | Contribution | Ratio | Rounds | Dies to |
-|---|---|---|---|---|---|
-| R0 | a year of the experience's cost per FTE-year by class on each entity's 2027 FTE-years (no window) | $13,101,078 | 10.37 | $13,000,000 | trust agreement 2.1 and 2.4: only Claims made in 2027 count |
-| R3 window filter | the Claims whose delay is shorter than the entity's window, full cost, per FTE-year, on its FTE-years | $2,003,669 | 1.59 | $2,000,000 | a Claim from a late incident has days, not the whole window, to be made |
-| R1 default | the window's expected count (each delay against each day's days left) at each class's average cost | $2,605,268 | 2.06 | $2,500,000 | the window's Claims are not the average Claim |
-| R1m | the same at the 2016 to 2020 average | $2,839,725 | 2.25 | $2,750,000 | as R1 |
-| R1p | the same at the pooled average | $2,424,214 | 1.92 | $2,500,000 | as R1, and 3.3 |
-| R1a / R1t | the same at the average by allegation / by matter type (Claim or Suit) | $2,572,963 / $1,772,566 | 2.04 / 1.40 | $2,500,000 / $1,750,000 | neither field separates disclosed harm from requests |
-| R1g | the same at a lognormal class mean | $1,530,870 | 1.21 | $1,500,000 | the fitted mean is still all Claims' |
-| R1y | the same at the average of the Claims made within a year | $642,835 | 0.51 | $750,000 | the window weights the weeks-old Claims far more than the months-old |
-| R1c | the same at the average of the Claims made in the incident's calendar year | $954,937 | 0.76 | $1,000,000 | as R1y |
-| R1w | each entity's count at the average of its classes' Claims made within the entity's window length | $788,464 | 0.62 | $750,000 | as R1y, entity by entity |
-| F1 / F3 | log cost on log delay, by class / pooled, smeared | $2,734,706 / $2,473,911 | 2.16 / 1.96 | $2,750,000 / $2,500,000 | the cost falls and then rises with the delay |
-| F2 | log cost on the delay, by class | $907,953 | 0.72 | $1,000,000 | as F1 |
-| F4 / F5 | gamma GLM, class factors, log delay / delay | $1,577,449 / $890,065 | 1.25 / 0.70 | $1,500,000 / $1,000,000 | as F1 |
-| F6 | gamma GLM, quadratic in the delay, by class | $878,676 | 0.70 | $1,000,000 | the quadratic cannot follow the weeks |
-| B1 | half-year delay bands, each band's average cost on its window count | $935,007 | 0.74 | $1,000,000 | the first band mixes the weeks with the months |
-| R2 / R2b | the in-year cost share of a full year (prorated delay / same calendar year) on the FTE-years | $1,639,322 / $1,678,250 | 1.30 / 1.33 | $1,750,000 | a part year catches a share that falls faster than its length |
-| golden | each Claim at its own cost against the exposure with its own delay left | $1,263,838 | 1 | $1,250,000 | none |
+| Rung | Construction | Whole experience | Rounds | Since the starts | Rounds | Dies to |
+|---|---|---|---|---|---|---|
+| R0 | a year of the experience's cost per FTE-year by class on each entity's 2027 FTE-years (no window) | $16,793,397 | $16,750,000 | $12,625,971 | $12,750,000 | trust agreement 2.1 and 2.4: only Claims made in 2027 count |
+| R1 | the window's expected count (each delay against each day's days left) at each class's average cost | $3,697,267 | $3,750,000 | $3,283,884 | $3,250,000 | the window's Claims are not the average Claim |
+| R1m | the same at the 2016 to 2020 average | $5,012,645 | $5,000,000 | $4,258,778 | $4,250,000 | as R1 |
+| R1p / R1a / R1t | at the pooled average / by allegation / by matter type (Claim or Suit) | $3,398,119 / $3,689,491 / $2,419,721 | $3,500,000 / $3,750,000 / $2,500,000 | $3,108,864 / $3,321,213 / $2,155,997 | $3,000,000 / $3,250,000 / $2,250,000 | neither field separates the settlements from the requests |
+| R1g | at a lognormal class mean | $2,034,110 | $2,000,000 | $1,776,083 | $1,750,000 | the fitted mean is still all Claims' |
+| R1y | at the average of the Claims made within a year | $782,973 | $750,000 | $890,646 | $1,000,000 | the window weights the weeks-old Claims far more than the months-old |
+| R1c | at the average of the Claims made in the incident's calendar year | $989,262 | $1,000,000 | $1,061,731 | $1,000,000 | as R1y (since the starts it rounds elsewhere inside a bin) |
+| R1w | each entity's count at its classes' average within the entity's window length | $754,114 | $750,000 | $957,515 | $1,000,000 | as R1y, entity by entity |
+| F1 / F3 | log cost on log delay, by class / pooled | $2,456,194 / $2,222,142 | $2,500,000 / $2,250,000 | $3,923,977 / $3,899,748 | $4,000,000 / $4,000,000 | the cost falls and then rises with the delay |
+| F2 | log cost on the delay, by class | $945,548 | $1,000,000 | $1,169,811 | $1,250,000 | on the whole experience as the step factor; since the starts a smooth curve that happens to land (both steps taken) |
+| F4 / F5 / F6 | gamma GLM: class factors and log delay / delay; quadratic in the delay by class | $1,603,762 / $846,127 / $801,949 | $1,500,000 / $750,000 / $750,000 | $1,694,809 / $995,990 / $995,066 | $1,750,000 / $1,000,000 / $1,000,000 | as F1 |
+| S2 | a quadratic in the delay on log cost, by class | $1,079,244 | $1,000,000 | $1,754,748 | $1,750,000 | as F1; on the whole experience two errors that offset inside a bin (recorded, not asserted) |
+| B1 | half-year delay bands, each band's average cost on its window count | $815,943 | $750,000 | $1,045,033 | $1,000,000 | the first band mixes the weeks with the months (rounds elsewhere inside a bin) |
+| R2 | the in-year cost share of a full year (prorated delay) on the FTE-years | $1,365,675 | $1,250,000 | $1,699,021 | $1,750,000 | a part year catches a share that falls faster than its length; on the whole experience its over-count of the part-year entities offsets the missing settlements and lands (two errors, recorded, not asserted) |
+| R2b | the same-calendar-year cost share on the FTE-years | $1,645,452 | $1,750,000 | $1,630,648 | $1,750,000 | as R2 |
+| R3 | the Claims shorter than the entity's window, full cost, per FTE-year | $1,778,739 | $1,750,000 | $2,048,586 | $2,000,000 | a late incident has days, not the whole window, to be made |
+| Default | each Claim at its own cost against the exposure with its own delay left (the loss-weighted step factor) | $961,261 | $1,000,000 | $1,281,536 | $1,250,000 | the whole experience pools three years and four entities' first months without the settlements |
+| Default by month | the same by whole months of delay at mid-month exposure (the re-audit's probe) | $970,859 | $1,000,000 | $1,296,821 | $1,250,000 | as the default |
 
-The constructions that condition the cost on the delay finely enough converge in the golden's bin (asserted): 30-day
-bands $1,261,391; bands at 30, 90, 180 and 365 days $1,265,132; at 90, 180 and 365 $1,257,941; quarters $1,250,865; at
-120 and 365 $1,189,630; a gamma spline in log delay by class $1,297,226; a quadratic in the delay on log cost by class
-$1,208,024; with the classes pooled (filed against by 3.3, same call anyway) $1,185,857 to $1,250,518.
+The constructions that cost each Claim at its own delay on the experience since the starts converge in the golden's
+bin (asserted): 30-day bands $1,278,605; bands at 30, 90, 180 and 365 days $1,293,688; at 90, 180 and 365
+$1,286,160; quarters $1,269,078; at 120 and 365 $1,264,430; 3, 6 and 8 equal bins $1,225,392, $1,280,469 and
+$1,280,236; Gaussian kernels of 5, 10, 20 and 40 days $1,280,060 to $1,287,100; a gamma spline in log delay by class
+$1,289,863; with the classes pooled $1,210,173 to $1,261,042. Every start handling converges too (SF31): each
+entity's first Claim within 30 days $1,281,536 (the golden), within 14 days $1,283,204, within 39 days $1,281,536; a
+quarter later $1,262,928; six months later $1,267,027; the latest start (July 2019) for every entity $1,265,507; the
+earliest (January 2019) for every entity $1,253,730; incident years from 2019 $1,253,730, from 2020 $1,251,953, from
+2021 $1,262,442. The judge's round 3a variants stay in the bin: every priced defendant row valued $1,289,264, the
+trend to mid-2027 $1,313,183, claim numbers unmerged $1,243,001, one pooled class $1,210,173, the $2,000,000 limit
+applied $1,281,536.
 
-- **Margins.** The nearest natural route is R1g, $267,032 (1.07 bins) above; every natural route is a full bin or more
-  away and rounds elsewhere (asserted on the pack and on the clean truth). The golden sits $13,838 from the bin's
-  centre and $111,162 from its edge.
-- **Sampling.** The golden's Poisson standard error is $75,623 (6.0 per cent; bootstrap $78,776): one sigma either way
-  rounds to $1,250,000 (asserted). 2,766 experience Claims carry the window; the largest carries 1.2 per cent of the
-  golden, the ten largest 8.5 per cent (asserted): the decisive step is sized on hundreds of Claims in each regime.
-- **Dominance.** The decisive step (R1 to the golden, $1,341,430) is 14.6 times the largest Layer 1 slip's effect on
-  the contribution (claims and exposure from July 2020 only, $91,612), asserted.
+- **Margins.** The golden sits $31,536 above the bin's centre and $93,464 below its upper edge. The default misses by
+  $320,275 (1.28 bins) and rounds to $1,000,000; the nearest asserted route on the whole experience is the bands at
+  120 and 365 days, $267,981 (1.07 bins) off; the nearest round 1 route since the starts is the gamma GLM linear in
+  the delay, $285,546 (1.14 bins) off. Two routes on the whole experience offset two errors and sit inside a bin: R2
+  in the golden's bin ($84,139 above) and S2 rounding to $1,000,000; since the starts, R1c and B1 round to
+  $1,000,000 inside a bin, and F2 and an 80-day kernel land, both after both steps.
+- **Sampling.** The golden's Poisson standard error is $65,916 (5.1 per cent; bootstrap $65,247) on the 2,288 Claims
+  since the starts: one sigma either way, $1,215,620 to $1,347,452, rounds to $1,250,000 (asserted). 2,101 Claims
+  carry the window; the largest carries 1.1 per cent of the golden, the ten largest 6.4 per cent (asserted).
+- **Dominance.** The regime step (the default to the golden, $320,275) is 5.8 times the largest Layer 1 slip's effect
+  (claims and exposure from July 2020 only, $55,538) and the cost step (the count route to the golden on the same
+  experience, $2,002,348) 36.1 times, asserted.
 
 ## Closure table
 
 | # | Axis | Reading and move |
 |---|---|---|
-| 1 | Population | Claims first made in 2027 from incidents on or after each entity's Transition Date (trust agreement 2.1, Schedule A), members not yet observed included (2027 incidents), projected from Claims of 2016 to 2024 incidents against Covered Clinicians (3.3) |
+| 1 | Population | Claims first made in 2027 from incidents on or after each entity's Transition Date (trust agreement 2.1, Schedule A), members not yet observed included (2027 incidents), projected from the Claims against Covered Clinicians of incidents from each entity's first disclosure settlement to 31 December 2024, inside the 2016 to 2024 experience the trust holds (3.1, 3.3) |
 | 2 | Unit of account | one Claim per incident (1.3); FTE per employee-month (3.2); the contribution in dollars at 2027 level |
 | 3 | Attribution window | the Plan Year, 1 January to 31 December 2027 inclusive (1.7, 2.1, 2.4); a day off at either end moves the unrounded figure under 1 per cent, same call (SF13) |
 | 4 | As-of dating | the register extract valued 30 September 2026 (3.4); one extract ships |
 | 5 | Version basis | paid plus case reserves at the extract (3.4); no other register valuation ships |
-| 6 | Denominator | covered paid FTE-years by class, 2016 to 2024, both job code sets (3.2, Schedule B); the 2020 set alone moves the call (SF22) |
-| 7 | Weighting | each window Claim at its own cost; the class average, the within-a-year average and fitted curves are the ladder's rungs |
-| 8 | Window length | experience 2016 to 2024 (3.3); each entity's window from its Transition Date (Schedule A) |
+| 6 | Denominator | covered paid FTE-years by class over the same entity-months, both job code sets (3.2, Schedule B); the 2020 set alone moves the call (SF22) |
+| 7 | Weighting | each window Claim at its own cost, each entity's months from its start at full weight and none before; the class average, the within-a-year average, fitted curves and the whole-period pattern are the ladder's rungs |
+| 8 | Window length | the experience from each entity's first disclosure settlement (January to July 2019) to December 2024 (3.1, 3.3, the regime facts); each entity's window from its Transition Date (Schedule A); every start handling same call (SF31) |
 | 9 | Boundary inclusivity | "on or after the Retroactive Date" and "during the Plan Year", both inclusive on dates; one-day variants same call (SF13) |
 | 10 | Rounding path | the contribution rounded once to the nearest $250,000 (3.6, the prompt); ask dollars to the thousand, FTE to one decimal |
 | 11 | Tie-break | a Claim naming two Covered Clinicians takes the first-named's class (Note 2); the specialty text converges (SF11) |
-| 12 | Maturity and censoring | every experience Claim made within 365 days of its incident is in the extract (incidents to 31 December 2024, extract 30 September 2026), asserted; the window needs no later delays |
+| 12 | Maturity and censoring | every experience Claim made within 365 days of its incident is in the extract (incidents to 31 December 2024, made by 30 December 2025, extract 30 September 2026), asserted; the window needs no later delays and the 2023 and 2024 incident years no development (SF32) |
 | 13 | Order of operations | trend per Claim before summing; merge claim numbers before measuring a delay; any order of the class and day sums gives one figure |
 | 14 | Row order | the register's row order changes nothing (asserted over three shuffles) |
 | 15 | Duplicate resolution | defendant rows sum within a claim number; claim numbers of one incident add (SF17, no repeated amount set) |
@@ -259,7 +300,7 @@ $1,208,024; with the classes pooled (filed against by 3.3, same call anyway) $1,
 | 17 | Netting against gross | indemnity and defence add; no recovery or negative amount (asserted) |
 | 18 | Dimensional units | dollars at 2027 level; FTE-years (a payroll month one twelfth) |
 | 19 | Code and status semantics | open, closed or reopened never changes a cost (paid plus reserve); job codes through Schedule B, both sets |
-| 20 | Integerisation | none on the call; the expected count (46.87) moves under one-day variants and is not stated as a graded figure |
+| 20 | Integerisation | none on the call; the expected count (68.38) moves under one-day variants (67.80 to 68.83) and is not stated as a graded figure |
 | 21 | Clause scope | claims-made from each entity's own Transition Date (Schedule A); 2.2 keeps earlier incidents with the occurrence policies |
 | 22 | Forward window contents | the staffing plan covers every month of 2027 for every entity and class it plans (asserted) |
 
@@ -269,42 +310,48 @@ Every shipped sentence bearing on how the contribution is computed, and what eac
 
 - Prompt: "fund the expected cost of the claims first made against the trust that year, with each hospital and the
   medical group moving into the trust on the day its occurrence policy expires": the estimand and the forcing fact.
-- Funding policy 3.1: the expected cost at the Plan Year's cost level of the Claims first made during the Plan Year.
-  3.2: exposure in FTE-years; the experience's is the paid FTE in the payroll over the experience period; the Plan
-  Year's is the staffing plan's FTE by entity, class and month from the Transition Date. 3.3: the experience is the
-  Claims from 2016 to 2024 incidents against Covered Clinicians, pooled within each class. 3.4: each Claim at paid plus
-  case reserves on its Covered Clinicians' rows at 30 September 2026, trended at 5 per cent from its incident year.
-  3.5: no loadings. 3.6: rounded once. Section 2 splits the instalments by exposure share.
-- Trust agreement 1.3 (one Claim per incident, made when first received), 1.5 (Covered Clinician), 1.6 and Schedule A
-  (Transition Dates), 1.7 (the calendar Plan Year), 2.1 and 2.4 (claims-made, incident on or after the Retroactive
-  Date, nothing made after the Plan Year), 2.2 (earlier incidents stay with the occurrence policies), 2.3 (limits),
-  Schedule B with Note 2 (classes, both code sets).
+- Funding policy 3.1: the expected cost at the Plan Year's cost level of the Claims first made during the Plan Year,
+  "as Claims against the System's clinicians will arise and be made in that year". 3.2: exposure in FTE-years; in the
+  experience, the paid FTE in the payroll; in the Plan Year, the staffing plan's FTE by entity, class and month from
+  the Transition Date. 3.3: the claims experience the trust holds is the Claims from 2016 to 2024 incidents against
+  Covered Clinicians, rated by the specialty classes of Schedule B. 3.4: each Claim at paid plus case reserves on its
+  Covered Clinicians' rows at 30 September 2026, trended at 5 per cent from its incident year. 3.5: no loadings. 3.6:
+  rounded once. Section 2 splits the instalments by exposure share.
+- Trust agreement 1.3 (one Claim per incident, made when first received; a request through the Early Resolution
+  Program is a Claim), 1.5 (Covered Clinician), 1.6 and Schedule A (Transition Dates), 1.7 (the calendar Plan Year),
+  2.1 and 2.4 (claims-made, incident on or after the Retroactive Date, nothing made after the Plan Year), 2.2 (earlier
+  incidents stay with the occurrence policies), 2.3 (limits), Schedule B with Note 2 (classes, both code sets).
 - The staffing plan's note: "budgeted covered FTE for each month, held through the month".
 
-Executed word for word on clean data these give no estimator: they fix the population, the window, the exposures, the
-experience, its pooling and its valuation, and leave open how the window's expected cost is drawn from the experience.
-The two executions a literal reader can build from them both miss: experience cost per FTE-year on the Plan Year's
-FTE-years (3.2 with 3.4, the window dropped) $13,101,078, against 3.1's "first made during the Plan Year"; and the
-window's expected count (3.1, 2.1, Schedule A) at each class's average valued Claim (3.3, 3.4) $2,605,268, which
-satisfies every filed sentence. Neither is $1,263,838; the golden needs the analyst's choice to cost each window Claim
-at its own delay, which no sentence states (asserted as R3a and R3b).
+Executed word for word these give no estimator and no experience period: they fix the population, the window, how
+exposure is measured, the data the trust holds, the rating unit and the valuation, and leave open which years of what
+is held stand for 2027 and how the window's expected cost is drawn from them. The executions a literal reader builds
+on the whole experience held all miss: its cost per FTE-year on the Plan Year's FTE-years (the window dropped)
+$16,793,397; the window's expected count at each class's average valued Claim $3,697,267; each Claim at its own delay
+against the days left $961,261. The golden needs two analyst's choices no sentence states: reading off the claim dates
+that the settlements a first window catches began at each entity in 2019 and run steadily since, so that 3.1's Claims
+as they will be made in 2027 are priced on each entity's experience from its start, and costing each window Claim at
+its own delay (asserted as R3a and R3b). Nothing instructs the reverse either: no sentence pools, weights, credits or
+drops a year (`R3c.no_weighting_sentence`).
 
 ## Oracles
 
 None ships. No file states a 2027 cost, a share of Claims made within any period, a claims-made or step factor, a
-report-lag table, a severity by lag or a fitted curve; the funding policy carries no worked example; the premium
-history prices occurrence cover.
+report-lag table, a severity by lag, a fitted curve or the dates the disclosure settlements began; the funding policy
+carries no worked example; the premium history prices occurrence cover.
 
 Outside the pack, the generator's own parameters give the population truth (never shipped, `oracle.population_truth`
 in `checks.py`): the expected cost of the 2027 window from the claims world's frequencies, report lags and cost
-distributions at the 2027 cost level is $1,337,809 on 48.34 expected Claims. The golden is 0.945 of it, inside one
-standard error and in the same bin; the default path is 1.95 times it. The estimator is right, not merely filed.
+distributions at the 2027 cost level, every entity past its disclosure start, is $1,282,953 on 66.85 expected Claims.
+The golden is 0.999 of it, inside one standard error and in the same bin; the default path is 0.75 of it. The
+estimator and its experience period are right, not merely filed.
 
 ## Ask sheet
 
 **Main call's declared row population:** the register's rows for incidents from 1 January 2016 to 31 December 2024
-(every defendant row, open and closed), the legacy payroll's rows from January 2016 to December 2024, Schedule B, the
-staffing plan, the trust agreement and the funding policy. Ask A's organs are the premium history's carrier terms, the
+(every defendant row, open and closed; the claim dates of every row read for each entity's start), the legacy
+payroll's rows from January 2016 to December 2024, Schedule B, the staffing plan, the trust agreement and the funding
+policy. Ask A's organs are the premium history's carrier terms, the
 carriers' loss runs and the notice log, none of which the call reads, and the coverage line's meaning, which the call
 uses only to set contracted rows aside; Ask B's are the 2026 HCM pay lines, which the call never reads. Asserted: the
 call recomputes to the dollar with the runs, the notices, the premium history, the HCM lines and both distractors
@@ -313,8 +360,8 @@ deleted, and the register's coverage line recoded to each incident's own carrier
 
 **Ask A. For each entity, whether any of our open claims under its policies with the carrier it is leaving is missing
 from that carrier's latest loss run and, if so, how many and our reserves on them** (4 answers, 4 counts, 4 reserve
-totals; counts whole, reserves to the nearest thousand dollars). Golden: Tolliver Falls none; Alderwick 4, $839,000;
-the medical group 5, $16,000; Brennick none.
+totals; counts whole, reserves to the nearest thousand dollars). Golden: Tolliver Falls 1, $1,465,000; Alderwick 3,
+$7,000; the medical group 4, $54,000; Brennick none.
 - H18 home: the trust covers no incident before a Transition Date (trust agreement 2.1, 2.2), so every open matter
   under an expiring carrier's policies stays with that carrier; the reconciliation is the audit trail of the trust's
   retroactive boundary, and the call does not turn on it.
@@ -323,10 +370,10 @@ the medical group 5, $16,000; Brennick none.
   reference on that carrier's run valued 30 September 2026 (claim numbers; RMN notice numbers through the notice log;
   a suit under its earlier claim number).
 - Primary device (D2, an attribute at the wrong vintage): the claims system holds each entity's current programme line
-  on every defendant row, carrier code first (QM-TFH on a 2015 Tolliver Falls suit), so the coverage line reads as
+  on every defendant row, carrier code first (QM-TFH on a 2018 Tolliver Falls suit), so the coverage line reads as
   "insured by Quillan" or "by Stoneleigh" on claims that Halberd's, Corrigan Lane's, Westerholm's or Tallis's
   occurrence policies insure. Those claims are on no run of the expiring carrier and read as missing. Open claims
-  under a former carrier: Tolliver Falls 1, Alderwick 2, the medical group 9, Brennick 2 (at least one each,
+  under a former carrier: Tolliver Falls 4, Alderwick 6, the medical group 11, Brennick 1 (at least one each,
   asserted). The tells sit in other files: the runs' own policy periods begin at each carrier's first term, the
   premium history dates every term's carrier, and the notice log names the carrier each notice went to. Nothing
   narrates the changes of carrier; the dictionary describes the field as "the entity insurance programme line the
@@ -335,19 +382,20 @@ the medical group 5, $16,000; Brennick none.
   suit carried under its request's claim number; HA3 (D2) Quillan's revision 1 of its June run, received 9 October,
   after the September run of 6 October; HA4 (D3) Stoneleigh strips punctuation from references; HA5 (D5) claims naming
   only contracted clinicians carry the CONTRACT line and are insured by the clinicians' own groups.
-- True gaps: claims received from Thursday 24 September 2026 go to the carriers in the 2 October report (Alderwick 3,
-  the medical group 4), and two program requests settled in house were never reported (Alderwick's IR-2026-00766, the
-  medical group's IR-2025-06129); Tolliver Falls and Brennick have none, so "none" is a graded answer.
+- True gaps: claims received from Thursday 24 September 2026 go to the carriers in the 2 October report (Tolliver
+  Falls 1, a demand on a December 2023 incident reserved at $1,465,000; Alderwick 2; the medical group 3), and two
+  program requests settled in house were never reported (Alderwick's IR-2026-02574, the medical group's
+  IR-2025-08954); Brennick has none, so "none" is a graded answer.
 - Path (7 files, 14 columns): the register, the premium history, the two Quillan runs, the Stoneleigh run, the notice
   log, the data dictionary; `claim_no`, `incident_no`, `incident_date`, `prior_claim_no`, `status`, `coverage_line`,
   `indemnity_reserve`, `defense_reserve`, the runs' insured reference, policy period, named insured and valuation date,
   the premium history's carrier and term.
-- Stops (asserted): S1, the cracker's (every open claim on the coverage line, every key right): 1 ($11,000), 6
-  ($894,000), 14 ($718,000), 2 ($60,000); S2 (notice numbers unmatched): 6, 17, 23, 2; S3 (claim numbers matched one by
-  one, suits not through their earlier number): Tolliver Falls 3 ($275,000), Alderwick 9 ($1,206,000), the medical
-  group 21; S4 (the June revision read as latest): Tolliver Falls 4, Alderwick 22; S5 (by entity of care, contracted
-  claims in): Tolliver Falls 4, Brennick 1.
-- Lazy delta: S1 wrong on 8 of 8 figures and on both "none" answers.
+- Stops (asserted): S1, the cracker's (every open claim on the coverage line, every key right): 5 ($2,906,000), 9
+  ($679,000), 15 ($961,000), 1 ($1,676,000); S2 (notice numbers unmatched): 5, 8, 22, 2; S3 (claim numbers matched one
+  by one, suits not through their earlier number): Tolliver Falls 2 ($1,634,000), Alderwick 7 ($447,000), the medical
+  group 15 ($1,099,000); S4 (the June revision read as latest): Tolliver Falls 5, Alderwick 13; S5 (by entity of care,
+  contracted claims in): Tolliver Falls 2, Alderwick 10, Brennick 1.
+- Lazy delta: S1 wrong on 8 of 8 figures and on the "none" answer.
 - Realism: health systems move their clinician programmes between carriers on anniversaries; a claims system that
   holds a programme line per entity carries the current one on converted claims; a carrier converting a notice keeps
   its first reference; a corrected run re-sent after the next quarter's is routine.
@@ -389,11 +437,11 @@ FTE to one decimal). Golden: Tolliver Falls 188.6, 187.1, 188.0; Alderwick 464.5
 
 | Hazard | Root cause | Moves | Per-ask delta (asserted as built) |
 |---|---|---|---|
-| HA1 notice references | carriers keep a noticed matter's first reference | Ask A | S2 against the golden: 6, 17, 23, 2 against 0, 4, 5, 0 |
+| HA1 notice references | carriers keep a noticed matter's first reference | Ask A | S2 against the golden: 5, 8, 22, 2 against 1, 3, 4, 0 |
 | HA2 escalation chain | a suit after a request opens a new claim number | Ask A (and the call's merge, same call there) | S3: Tolliver Falls, Alderwick, the medical group |
-| HA3 re-issued June run | Quillan corrected and re-sent its June valuation | Ask A | Tolliver Falls 0 to 4, Alderwick 4 to 22 |
+| HA3 re-issued June run | Quillan corrected and re-sent its June valuation | Ask A | Tolliver Falls 1 to 5, Alderwick 3 to 13 |
 | HA4 reference formats | the carriers' own formats | Ask A | every Stoneleigh match |
-| HA5 contracted claims | the clinicians' own groups insure them | Ask A | Tolliver Falls 0 to 4 |
+| HA5 contracted claims | the clinicians' own groups insure them | Ask A | Tolliver Falls 1 to 2, Alderwick 3 to 10, Brennick 0 to 1 |
 | HB1 per-diem | shift pay with no scheduled FTE | Ask B | S5 on 12 of 12; S2 on 11 of 12 |
 | HB2 paid time off | the 2026 HCM's line grain | Ask B | S3 on 12 of 12 |
 | HB3 line grain | one line per earning code | Ask B | S4 on 12 of 12 |
@@ -405,27 +453,28 @@ executed every filed rule. Every ask row misses:
 | Ask figures | The cracker's path | What keeps it wrong | Cracker result |
 |---|---|---|---|
 | Ask A, 4 counts and 4 reserve totals | open claims on each coverage line, one per incident, matched to the latest valuation by reference, notices through the log, suits through `prior_claim_no` | the coverage line holds the current programme on claims the former carriers insure | miss |
-| Ask A, "none" for Tolliver Falls and Brennick | as above | each has an open claim under its former carrier, so the cracker answers yes | miss |
+| Ask A, "none" for Brennick | as above | it has an open claim under its former carrier, so the cracker answers yes | miss |
 | Ask B, 12 FTE figures | paid hours over 173.33 on every covered position by cost centre, per-diem by shifts, paid time off in, GME profiles out | residents' additional moonlighting positions sit under attending profiles | miss |
 | Slide 2, the chart's 12 values | the same figures | as Ask B | miss |
 
-The cracker keeps the "yes" for Alderwick and the medical group, where a grader scores it apart from the count, and
-slide 2's structure (a chart of each entity's FTE in the three months).
+The cracker keeps the "yes" for Tolliver Falls, Alderwick and the medical group, where a grader scores it apart
+from the count, and slide 2's structure (a chart of each entity's FTE in the three months).
 
-Mirror leakage: 11 per cent of the ask weight (the mirror, off the call, lands Ask A on S1 or S4 and Ask B on S1 or S2,
-and keeps the same two "yes" answers and the chart's structure).
+Mirror leakage: 15 per cent of the ask weight (the mirror, off the call on the whole experience, lands Ask A on S1 or
+S4 and Ask B on S1 or S2, and keeps the same three "yes" answers and the chart's structure).
 
 **Pair arithmetic.** Planning weights: recommendation and components 38 (the contribution 30, the two experience
-components 8), instruction following 7, asks 55 over 27 criteria (Ask A 12, Ask B 12, slide 2's chart 3). The cracker
-keeps the two "yes" answers and two chart criteria, 4 of 27: C = 38 + 7 + 8.1 = 53.1. The mirror keeps the components
-(r = 8), the two "yes" answers and one chart criterion: S = 8 + 7 + 6.1 = 21.1. A response that lands Ask A's carrier
+components 8: the experience the trust holds, and the settlements' start in 2019 with the window costed from it),
+instruction following 7, asks 55 over 27 criteria (Ask A 12, Ask B 12, slide 2's chart 3). The cracker keeps the
+three "yes" answers and two chart criteria, 5 of 27: C = 38 + 7 + 10.2 = 55.2. The mirror, on the whole experience,
+keeps the first component (r = 4), the three "yes" answers and one chart criterion: S = 4 + 7 + 8.1 = 19.1. A response that lands Ask A's carrier
 eras keeps its 12 criteria, one that reads 1.5 at the person keeps Ask B's 12: each device carries its whole ask, and no
 ask figure rides on the call.
 
-Pair ceiling: 37.1
+Pair ceiling: 37.2
 
 If the generated rubric folds each "whether" into its count, the cracker keeps only the chart's structure and the pair
-falls to about 35; recomputed from the generated rubric when it exists.
+falls to about 34; recomputed from the generated rubric when it exists.
 
 ## Pins
 
@@ -433,7 +482,7 @@ falls to about 35; recomputed from the generated rubric when it exists.
 |---|---|---|---|
 | Trust agreement 1.3 (Claim) | 2, the trust's governing contract | one Claim per incident, first made at the earliest, program requests included | anything about delay or cost |
 | Trust agreement 2.1, 2.4 and Schedule A | 2 | claims-made from each entity's Transition Date, nothing made after the Plan Year | how a window is priced |
-| Funding policy 3.1 to 3.6 | 1, the trustees' policy | the estimand, the two exposures, the experience period and its pooling within class, valuation, trend, no loadings, rounding once | a severity, a delay, a curve, a weighting, a development or tail factor |
+| Funding policy 3.1 to 3.6 | 1, the trustees' policy | the estimand (Claims as they will arise and be made in the Plan Year), how exposure is measured, the experience the trust holds and its rating by class, valuation, trend, no loadings, rounding once | a start date, a break, a weighting or dropping of years, a severity, a delay, a curve, a development or tail factor |
 | Schedule B | 2 | covered jobs and classes, both legacy code sets, class by the first-named clinician | FTE totals |
 | The staffing plan's note | 3, Finance's plan | each month's FTE held through the month; per-diem at budgeted average FTE | how exposure is weighted |
 | The data dictionary | 5, semantics only | each field's meaning; 173.33 hours a month at 1.0 FTE | any device, any route, any carrier change |
@@ -445,25 +494,33 @@ on its occurrence policy's expiry), the workbook with Ask A ("whether any ... an
 Ask B (the FTE "the payroll paid", which fixes paid FTE against the position's scheduled FTE), the deck with slide 2's
 chart named, and the rounding once at the close (the contribution to the nearest $250,000, a budget-scale figure the
 trustees set). The call sentence is round 1's word for word; the entity and class breakdowns, which rode on the call,
-are gone.
+are gone. Round 3b changes nothing in the prompt: the second layer lives in the register and the funding policy's WHAT.
 
 ## Build record
 
-- Claims seed 2077 (`build.py`), from a search of seeds 2000 to 2239 on the final claims world (escalation at 2.2 per
-  cent of requests): 9 of 240 passed every criterion (each of the 19 routes the search measured a full bin off and rounding elsewhere, every
-  converging construction in the golden's bin, the golden at least 1.25 standard errors inside its bin, an open claim
-  under a former carrier at every entity, "none" for one entity and missing claims for at least two); 2077 was built
-  and checked first and kept, 2095 and 2154 (nearer the bin's centre) are the fallbacks. The payroll world, documents
-  and Ask B use their own fixed streams (seed 1301012).
-- The call: $1,250,000 (unrounded $1,263,838; Poisson SE $75,623). Experience: 3,043 Claims on 13,747.1 covered
-  FTE-years. Asks: A as above; B as above.
-- Gates at stage 3: `checks.py` 190 of 190 (the three-rules block R1 to R3c, every natural route a full bin off and every converging construction in the bin on the pack and on the clean truth, one sigma, dominance, the population-truth oracle, SF1 to SF30, the asks' stops, fairness and convergences, separation, distractor deletion, realism, H5, H9, H16); `verify.py` (its own code path, bundle only) matches every golden figure; two builds byte-identical (target/, golden/, metadata.json, figures.json, target.zip); `figures_check.py` exit 0 (32 figures); `precut.py` exit 0 (49 checks, 0 WARN); `voice-check.py` PASS (881 characters); `leak.py --asof 2026-10-12` REVIEW with no LEAK (lines below); `guard.py validate` clean, `heart` WARN (Lori against task129, an older build), `surface` one promoted pair (task102, on the card axes only, answered by the card's differentiation line); the scrub audit clean on target/ and golden/. Stage 4 (the reader and the judge) is the main session's.
+- Claims seed 3006 (`build.py`), from searches of seeds 3000 to 3699 on the round 3b claims world (583 measured; 142
+  passed the six criteria: the golden at most a quarter-bin from the centre with one sigma inside, the whole-experience
+  step factor a full bin off and rounding elsewhere, the count route a full bin off on either experience, every
+  start handling and banded or kernel construction in the bin, the within-a-year route rounding elsewhere, and Ask A's
+  facts: an open claim under a former carrier at every entity, "none" for one entity and missing claims for at least
+  two). 3006 holds the fewest whole-experience routes in the golden's bin (R2 alone) with every start handling and
+  every judge variant inside it; the fallbacks are 3564 (no whole-experience route in the bin, but S2 and R2 within
+  $10,000 of the bin's edges) and 3442 and 3603 (nearer the centre, the month-end convention within $4,000 of the
+  edge). The payroll world, documents and Ask B use their own fixed streams (seed 1301012).
+- The call: $1,250,000 (unrounded $1,281,536; Poisson SE $65,916, bootstrap $65,247). Experience: 3,320 Claims on
+  13,747.1 covered FTE-years held; 2,288 Claims on 9,330.0 FTE-years since the starts (Alderwick January 2019,
+  Tolliver Falls April, the medical group May, Brennick July). Asks: A as above; B as above (unchanged).
+- Gates at stage 3: `checks.py` 275 of 275 (the claims-process block: every start in 2019, no Claim within 40 days before one, Claims within 30 days every year after at a steady rate, every delay the window uses complete; the three-rules block R1 to R3c with the analyst test on the clean truth and on the pack; 37 of the 39 routes on the whole experience a full bin off and rounding elsewhere, the two that offset recorded; the 18 round 1 routes since the starts a full bin off, two more rounding elsewhere; 16 converging constructions and 10 start handlings in the bin; the judge's round 3a variants in the bin; one sigma (Poisson and bootstrap), dominance, the population-truth oracle; SF1 to SF35; the asks' stops, fairness and convergences; separation, distractor deletion, realism, H5, H9, H16); `verify.py` (its own code path, bundle only: the starts, the golden, the whole-experience default, both asks) matches every golden figure; two builds byte-identical (target/, golden/, metadata.json, figures.json, target.zip: 17 members, 2,713,865 bytes, sha256 710fb603268fb100550d4d4d360898c87cbaeda2a291d61f54bdc000dba4b337); `figures_check.py` exit 0 (38 figures); `precut.py` exit 0 (49 checks, 0 WARN); `voice-check.py` PASS (881 characters, the prompt unchanged); `leak.py --asof 2026-10-12` REVIEW with no LEAK (lines below); `guard.py validate` clean (185 cards), `heart` WARN (Lori against task129, an older build), `surface` one promoted pair (task102, on the card axes only, answered by the card's differentiation line); the scrub audit clean on target/ and golden/. Stage 4 (a fresh reader and a fresh judge on this cut) is the main session's.
 - Leak review: REVIEW, no LEAK, one line per REVIEW:
-  - Sweep 3, the call's distinctive words in the agreement, the policy and the dictionary: those files name the
-    trust and Corvane Health; none states a contribution or any 2027 figure.
-  - Sweep 4, six stump-paragraph nouns in the funding policy (record, register, experience, carries, report,
-    exposure): the policy's own terms for the register it values and the exposure it defines; no sentence names a
-    severity, a delay, a curve or a weighting.
+  - Sweep 3, a write-up figure in the pack: the premium history's "$1,000,000 / $3,000,000" is each occurrence
+    policy's per-claim and aggregate limit, not the whole-experience figure the write-up rejects; and the call's
+    distinctive words in the agreement, the policy and the dictionary: those files name the trust and Corvane Health,
+    and none states a contribution or any 2027 figure.
+  - Sweep 4, stump-paragraph terms in the funding policy (experience, record, register, incident), the agreement
+    (register, period, incident, programme) and the dictionary (register, period, incident, change, programme,
+    history): each document's own terms for the register, the experience the trust holds, the July 2020 job-code
+    change and the programme line; no sentence names the disclosure settlements, their start, a break or a choice
+    of years (`R3c.no_sentence_names_the_start`, `R3c.no_weighting_sentence`).
   - Sweep 6, entity names beside numbers in the agreement's schedules, the Quillan runs, the staffing plan, the
     cost centre directory and the premium history: dates, policy numbers, job codes, claim amounts, FTE and
     premiums; none ranks the entities on the contribution.
@@ -473,27 +530,32 @@ are gone.
 
 1. Domain: the task is a professional liability actuary's pricing of a claims-made trust's first year, the expected
    cost of the Claims first made inside each entity's opening window, from the system's own report lags with each
-   Claim's cost tied to its own lag; with another field's nouns the trigger, the retroactive dates, the disclosed-harm
-   settlements, the program requests and the late suits have nothing to attach to.
+   Claim's cost tied to its own lag, on the experience period that matches the claims handling the window will see;
+   with another field's nouns the trigger, the retroactive dates, the disclosure settlements, the program requests and
+   the late suits have nothing to attach to.
 2. Real work, nothing planted: a defendant-grain register with escalations under new claim numbers and contracted rows
    unpriced, a legacy payroll across the July 2020 job codes with per-diem rows, dual appointments, transfers and
    unpaid leave, HCM pay lines at earning-code grain with residents' moonlighting positions, two carriers' runs in their
    own layouts with a June run re-issued after September's, a notice log, a premium history across a change of carrier
-   at each entity; each from the system's or the carriers' own systems, none on the decisive step (R2 asserted).
-3. The flip is a method choice: each window Claim at its own cost against the exposure with its own delay left; every
-   rule in the pack is read the same on both paths, and the window's truncation is on both.
-4. The analyst test holds: the window's count at the class average files $2,500,000, at the within-a-year average
-   $750,000, on a log-linear curve $1,000,000, on a lognormal mean $1,500,000; only each Claim at its own cost files
+   at each entity; each from the system's or the carriers' own systems, none on the decisive steps (R2 asserted). The
+   disclosure arm's start is the program's own roll-out, recorded only as the claim dates it produced.
+3. The flips are analysis: the experience period the window inherits, read off the lag mix by incident year and
+   entity, and each window Claim at its own cost against the exposure with its own delay left; every rule in the pack
+   is read the same on both paths, and the window's truncation is on both.
+4. The analyst test holds: the field's loss-weighted step factor on the whole experience files $1,000,000, the count
+   route at the class average $3,750,000 on the whole experience and $3,250,000 since the starts, a within-a-year
+   severity $750,000; only the experience since each entity's first settlement, each Claim at its own cost, files
    $1,250,000 (R3a on the clean truth, asserted).
-5. One defensible answer: the policy files the WHAT, every fork row is asserted (SF1 to SF30), every converging
-   construction rounds to $1,250,000, and one standard error either way does too.
-6. No decoy: no file states a 2027 cost, a factor, a lag table or a curve; no memo, draft or voice argues a figure; the
-   two distractors are plain.
-7. Nothing hidden and recovered: no certified figure pins the method; the window is estimated on the record, and the
-   generator's population truth agrees with the golden inside one standard error.
-8. A new lesson: inside a first claims-made window the claims' cost is neither the average claim's nor the average of
-   the claims made within a year, when cost depends on the report lag non-monotonically (`guard.py heart` WARN, Lori
-   against an older build only).
+5. One defensible answer: the policy files the WHAT (the estimand as Claims as they will be made in 2027, the data
+   held), every fork row is asserted (SF1 to SF35), every start handling and converging construction rounds to
+   $1,250,000, and one standard error either way does too.
+6. No decoy: no file states a 2027 cost, a factor, a lag table, a curve or the program's dates; no memo, draft or voice
+   argues a figure or a period; the two distractors are plain.
+7. Nothing hidden and recovered: no certified figure pins the method or the period; the window is estimated on the
+   record, and the generator's population truth agrees with the golden to 0.1 per cent.
+8. A new lesson: a first claims-made window inherits the claims process in force when it opens, so a change in how
+   quickly claims are made, unit by unit, sets the experience period (`guard.py heart` WARN, Lori against an older
+   build only).
 
 ## Retired
 
@@ -724,3 +786,45 @@ Rule 3 rework (2026-10-15):
 - Per-diem shifts on the regular salary earning code: an HCM pays shift work on its own code; PDM.
 - Entity and class breakdowns of the call in the workbook and the ask list: cut, they rode on the call (the audit's
   22 coupled figures); the asks are now reconciliations the call does not reach.
+
+Rule 3 rework, round 3b (2026-10-15):
+
+- Round 3a: the dollar-weighted step factor lands the golden, per the rule 3 re-audit. The field's claims-made step
+  factor on loss dollars, applied to the occurrence pure premium and convolved over each entity's days left, is the
+  golden's own construction (the re-audit's monthly probe gave $1,263,621 on 3a's $1,263,838), so a strong solver
+  landed 3a without seeing the lag-cost link; 3b keeps that construction as the default and adds the experience period
+  as a second layer it misses by a bin.
+- Claims seed 2077 (3a's) under the second layer: rejected, the golden $1,232,055 with every route right but Ask A
+  answered yes at every entity, so "none" was no longer a graded answer.
+- A larger world (the establishment scaled three to four times) to tighten the smaller post-start sample: rejected on
+  the prototype, the golden's standard error in dollars grows with the square root of the scale, so a fixed $250,000
+  bin holds one sigma less well; the disclosure settlements carry four fifths of the mean and nine tenths of the
+  variance, so more and cheaper settlements (twice 3a's frequency at 0.41 of its cost) are what tighten it.
+- Later starts (2020 and 2021 at the larger entities): rejected, the pooled-date constructions (incident years from
+  2020 or 2021, the latest start for every entity) scattered 0.84 to 1.10 of the golden on the smaller post-start
+  sample and incident years from 2019 took in a year of the old process; the starts sit between January and July
+  2019 and every start handling lands within 3 per cent.
+- The program's requests starting with the disclosure arm (no requests before each entity's start): rejected on the
+  prototype, claim counts by incident year jump three to six fold at each start, a break any count by year shows, and
+  the prorated full-year share on the whole experience still landed within 15 per cent of the golden; only the
+  disclosure arm is staggered, the requests have run since 2015, and the change shows only in the lag mix.
+- Requests later in the year (medians of nine to ten months, none before four) to push the prorated full-year share
+  on the whole experience off the golden: rejected after four configurations, the share stayed within 5 per cent of the
+  golden (its over-count of the part-year entities' requests is what offsets the pooled years' missing settlements)
+  while the golden fell to $1.05 to $1.17 million and its error rose to 6 per cent.
+- Every whole-experience route a full bin off: rejected as infeasible. With the pooled years at 0.75 of the golden, any
+  round 1 route whose own error on that experience lies between 1.07 and 1.6 lands within a bin, and the round 1 routes
+  fill that range (the quadratic on log cost 1.12, the prorated full-year share 1.42); they are recorded in the ladder
+  as two errors that offset and never asserted to miss, and seed 3006 holds only the prorated share in the golden's
+  bin.
+- A programme or channel code on the register marking the disclosure settlements: rejected, the break would become a
+  field reading (the call flipping on one code) and a column a schema test finds; the change lives only in the claim
+  dates.
+- Funding policy 3.3 "pooled within each specialty class" over 2016 to 2024: cut, it reads as an instruction to pool
+  every year equally; 3.3 now says what the trust holds (2016 to 2024, rated by the classes of Schedule B), 3.1 files
+  the estimand as the Claims as they will arise and be made in the Plan Year, and nothing instructs the reverse.
+- Funding policy 3.2 "over the experience period": cut, it tied the exposure to the whole period held; 3.2 now says only
+  how exposure is measured in the experience and in the Plan Year.
+- The start read at 30 days alone: kept as the golden's reading with 14 and 39 days as constructions (they move one
+  entity by a month and the call by under 0.2 per cent); 40 days or more would take in the earliest program requests,
+  which are not the settlements.

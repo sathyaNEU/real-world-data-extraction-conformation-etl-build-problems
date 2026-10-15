@@ -40,7 +40,7 @@
     {
       "path": "CPLT_funding_policy_adopted_2026-09-22.pdf",
       "format": "pdf",
-      "bytes": 64957,
+      "bytes": 64980,
       "rows": null,
       "source": "Constructed: Trust funding policy as adopted by the Trustees",
       "date": "2026-10-12",
@@ -58,7 +58,7 @@
     {
       "path": "QMPL_loss_run_Corvane_val_2026-06-30_rev1.xlsx",
       "format": "xlsx",
-      "bytes": 79499,
+      "bytes": 91759,
       "rows": null,
       "source": "Constructed: Quillan Mutual loss run valued 30 June 2026, revision 1 issued 9 October 2026",
       "date": "2026-10-12",
@@ -67,7 +67,7 @@
     {
       "path": "QMPL_loss_run_Corvane_val_2026-09-30.xlsx",
       "format": "xlsx",
-      "bytes": 81691,
+      "bytes": 93729,
       "rows": null,
       "source": "Constructed: Quillan Mutual loss run for Tolliver Falls Hospital and Alderwick Medical Center, valued 30 September 2026",
       "date": "2026-10-12",
@@ -76,8 +76,8 @@
     {
       "path": "Stoneleigh_lossrun_CORVANE_20260930.csv",
       "format": "csv",
-      "bytes": 243800,
-      "rows": 1560,
+      "bytes": 252448,
+      "rows": 1615,
       "source": "Constructed: Stoneleigh Casualty loss run for Corvane Medical Group and Brennick Community Hospital, valued 30 September 2026",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -121,8 +121,8 @@
     {
       "path": "defense_panel_invoices_2026Q3.csv",
       "format": "csv",
-      "bytes": 10969,
-      "rows": 92,
+      "bytes": 10383,
+      "rows": 87,
       "source": "Constructed: Defence panel invoices received for service from July to September 2026",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -175,8 +175,8 @@
     {
       "path": "rm_carrier_notices_2012_2026.csv",
       "format": "csv",
-      "bytes": 93314,
-      "rows": 838,
+      "bytes": 101388,
+      "rows": 918,
       "source": "Constructed: Precautionary notices risk management sent to the carriers, 2012 to September 2026",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -184,8 +184,8 @@
     {
       "path": "rm_claims_register_extract_20261002.csv",
       "format": "csv",
-      "bytes": 799174,
-      "rows": 4265,
+      "bytes": 862012,
+      "rows": 4592,
       "source": "Constructed: Risk management claims register extract: every clinician named on a claim number, valued 30 September 2026",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"

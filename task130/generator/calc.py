@@ -152,7 +152,9 @@ def routes(claims, E, plan, trans, classes, entities):
 
     # the frequency-severity family: the expected count of Claims made in the window, at a severity
     out["R1_count_x_class_average"] = sum(win[k] * mean(byk[k]) for k in classes)
-    out["R1m_count_x_mature_average"] = sum(win[k] * mean([c for c in byk[k] if c["year"] <= 2020]) for k in classes)
+    if all(any(c["year"] <= 2020 for c in byk[k]) for k in classes):
+        out["R1m_count_x_mature_average"] = sum(win[k] * mean([c for c in byk[k] if c["year"] <= 2020])
+                                                for k in classes)
     lnm = {}
     for k in classes:
         x = np.array([c["cost"] for c in byk[k] if c["cost"] > 0])
@@ -246,6 +248,10 @@ def routes(claims, E, plan, trans, classes, entities):
     out["E3_bands_90_180_365"] = bands([0, 91, 181, 365])
     out["E4_quarter_bands"] = bands([0, 92, 183, 275, 365])
     out["E5_bands_120_365"] = bands([0, 121, 365])
+    for nb in (3, 6, 8):
+        out["E%d_equal_bins" % nb] = bands([int(round(i * 365 / nb)) for i in range(nb)] + [365])
+    for h in (5, 10, 20, 40, 80):
+        out["K%d_kernel_severity" % h] = kernel(claims, a, classes, h)
 
     # the classes pooled (the funding policy pools within each class)
     tot_cost = sum(c["cost"] for c in claims)
@@ -278,6 +284,97 @@ def routes(claims, E, plan, trans, classes, entities):
         t += sum(c["cost"] for c in byk[k] if c["lag"] < L) / E[k] * fy
     out["R3_window_length_filter"] = t
     return out, a
+
+
+def kernel(claims, a, classes, h):
+    """Each window Claim at its class's Gaussian kernel-smoothed cost at its own delay (bandwidth h days)."""
+    tot = 0.0
+    for k in classes:
+        ck = [c for c in claims if c["cls"] == k]
+        if not ck:
+            continue
+        L = np.array([c["lag"] for c in ck], dtype=float)
+        y = np.array([c["cost"] for c in ck])
+        for c in ck:
+            if c["lag"] < NDAYS:
+                w = np.exp(-0.5 * ((L - c["lag"]) / h) ** 2)
+                tot += a[k][c["lag"]] * float(np.dot(w, y) / w.sum())
+    return tot
+
+
+# ------------------------------------------------------------------------------------------------ the claims process
+def regime_starts(rows, thresh=30):
+    """Each entity's first month with an incident whose claim number was made within `thresh` days of it (register
+    rows naming an employed clinician): the month the disclosure-and-offer Claims begin at that entity."""
+    first = {}
+    for r in rows:
+        if r["coverage_line"] == "CONTRACT":
+            continue
+        if (r["claim_made_date"] - r["incident_date"]).days <= thresh:
+            e = r["entity_at_incident"]
+            if e not in first or r["incident_date"] < first[e]:
+                first[e] = r["incident_date"]
+    return {e: dt.date(d.year, d.month, 1) for e, d in first.items()}
+
+
+def exposure(Eekm, classes, starts=None, first=None, last=None):
+    """FTE-years by class from {(entity, class, (y, m)): FTE-years}, each entity from its start month (or every month
+    when starts is None), within the months first to last when given."""
+    E = {k: 0.0 for k in classes}
+    for (e, k, ym), v in Eekm.items():
+        if starts is not None and ym < (starts[e].year, starts[e].month):
+            continue
+        if (first is not None and ym < first) or (last is not None and ym > last):
+            continue
+        E[k] += v
+    return E
+
+
+def after(claims, starts):
+    """The Claims from incidents on or after their entity's start month."""
+    return [c for c in claims if c["date"] >= dt.date(starts[c["entity"]].year, starts[c["entity"]].month, 1)]
+
+
+def next_quarter(d):
+    m = ((d.month - 1) // 3 + 1) * 3 + 1
+    return dt.date(d.year + (m > 12), (m - 1) % 12 + 1, 1)
+
+
+def months_after(d, n):
+    m = d.month - 1 + n
+    return dt.date(d.year + m // 12, m % 12 + 1, 1)
+
+
+def constructions(claims, Eekm, plan, trans, classes, entities, starts, rows=None):
+    """The post-start golden under each defensible handling of the start dates (claim by claim): each entity's own
+    start month, a quarter or six months after it, the latest start for every entity, whole incident years from 2020
+    or 2021, and (given the register rows) the start read from the first Claim made within 14 or 39 days."""
+    def g(st):
+        cl = after(claims, st)
+        return golden(cl, lag_weights(plan, trans, exposure(Eekm, classes, st), classes, entities))
+    last = max(starts.values())
+    out = {"starts_by_entity": g(starts),
+           "next_quarter_by_entity": g({e: next_quarter(d) for e, d in starts.items()}),
+           "six_months_after_each_start": g({e: months_after(d, 6) for e, d in starts.items()}),
+           "latest_start_for_all": g({e: last for e in entities}),
+           "incident_years_2020_on": g({e: dt.date(2020, 1, 1) for e in entities}),
+           "incident_years_2021_on": g({e: dt.date(2021, 1, 1) for e in entities})}
+    if rows is not None:
+        for t in (14, 39):
+            out["first_claim_within_%d_days" % t] = g(regime_starts(rows, t))
+    return out
+
+
+def rivals(claims, Eekm, plan, trans, classes, entities, starts):
+    """Start handlings a solver may take that are not the estimand's: the whole experience (no start), incident years
+    from 2019 (each entity's months before its start in 2019 kept), the earliest start for every entity."""
+    def g(st):
+        cl = after(claims, st) if st is not None else claims
+        return golden(cl, lag_weights(plan, trans, exposure(Eekm, classes, st), classes, entities))
+    first = min(starts.values())
+    return {"whole_experience": g(None),
+            "incident_years_2019_on": g({e: dt.date(2019, 1, 1) for e in entities}),
+            "earliest_start_for_all": g({e: first for e in entities})}
 
 
 def conventions(claims, E, plan, trans, classes, entities):

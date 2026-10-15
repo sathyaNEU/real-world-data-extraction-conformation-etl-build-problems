@@ -1,5 +1,9 @@
 """The main call from the shipped pack: the register, the legacy payroll, Schedule B, Schedule A and the staffing plan
-read back from target/, and the golden, every route and every convention computed on them (calc.py)."""
+read back from target/, and the golden, every route and every construction computed on them (calc.py).
+
+The golden prices the 2027 window on the experience the System's claims process now produces: each entity's
+Claims and exposure from the month its incidents first brought a Claim made within 30 days (the disclosure-and-offer
+Claims), each window Claim at its own cost against the exposure with its own delay left."""
 from __future__ import annotations
 
 import csv
@@ -18,17 +22,21 @@ schedule_b = A.schedule_b
 
 
 def load_payroll(target, first="2016-01", last="2024-12"):
-    """job[(employee, YYYY-MM)] (the first row's job code) and the experience FTE-years by class over the payroll
-    months first to last, each month's paid FTE one twelfth of an FTE-year."""
+    """job[(employee, YYYY-MM)] (the first row's job code), the experience FTE-years by class over the payroll months
+    first to last, and {(entity, class, (y, m)): FTE-years} for those months; each month's paid FTE one twelfth of an
+    FTE-year."""
     sb = schedule_b()
-    job, E = {}, {k: 0.0 for k in K.CLASSES}
+    job, E, Eekm = {}, {k: 0.0 for k in K.CLASSES}, {}
     with open(os.path.join(target, K.PAYROLL), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
             job.setdefault((r["employee_id"], r["pay_month"]), r["job_code"])
             k = sb.get(r["job_code"])
             if k and first <= r["pay_month"] <= last:
-                E[k] += float(r["fte"]) / 12.0
-    return job, E
+                v = float(r["fte"]) / 12.0
+                E[k] += v
+                key = (r["entity_code"], k, (int(r["pay_month"][:4]), int(r["pay_month"][5:])))
+                Eekm[key] = Eekm.get(key, 0.0) + v
+    return job, E, Eekm
 
 
 def load_plan(target):
@@ -54,24 +62,32 @@ def job_lookup(job):
     return lambda cid, d: code_to_key.get(job.get((cid, K.month_key(d.year, d.month))))
 
 
-def experience(target, rows=None, payroll=None):
+def experience(target, rows=None, payroll=None, **kw):
     rows = rows if rows is not None else load_register(target)
-    job, E = payroll if payroll is not None else load_payroll(target)
-    return C.experience_from_rows(rows, job_of=job_lookup(job)), E
+    job, E, Eekm = payroll if payroll is not None else load_payroll(target)
+    return C.experience_from_rows(rows, job_of=job_lookup(job), **kw), E
 
 
 def main_call(target, rows=None):
     rows = rows if rows is not None else load_register(target)
     pay = load_payroll(target)
-    ex, E = experience(target, rows, pay)
+    job, E_full, Eekm = pay
+    ex, _ = experience(target, rows, pay)
     plan = load_plan(target)
     tr = transitions()
-    rts, a = CA.routes(ex, E, plan, tr, K.CLASSES, K.ENTITY_ORDER)
+    starts = CA.regime_starts(rows)
+    post = CA.after(ex, starts)
+    E = CA.exposure(Eekm, K.CLASSES, starts)
+    rts, a = CA.routes(post, E, plan, tr, K.CLASSES, K.ENTITY_ORDER)
+    full, a_full = CA.routes(ex, E_full, plan, tr, K.CLASSES, K.ENTITY_ORDER)
     g = rts["golden"]
-    conv = CA.conventions(ex, E, plan, tr, K.CLASSES, K.ENTITY_ORDER)
-    parts = CA.by_entity_class(ex, plan, tr, E, K.CLASSES, K.ENTITY_ORDER)
+    conv = CA.conventions(post, E, plan, tr, K.CLASSES, K.ENTITY_ORDER)
+    cons = CA.constructions(ex, Eekm, plan, tr, K.CLASSES, K.ENTITY_ORDER, starts, rows)
+    riv = CA.rivals(ex, Eekm, plan, tr, K.CLASSES, K.ENTITY_ORDER, starts)
+    conv_full = CA.conventions(ex, E_full, plan, tr, K.CLASSES, K.ENTITY_ORDER)
     X = CA.fte_years(plan, tr, K.ENTITY_ORDER, K.CLASSES)
-    return dict(rows=rows, job=pay[0], ex=ex, E=E, plan=plan, a=a, routes=rts, conv=conv, parts=parts, total=g,
-                rounded=CA.rounded(g), sd=CA.poisson_sd(ex, a), boot_sd=CA.bootstrap_sd(ex, a),
-                count=CA.count(ex, a), fte_years_2027=sum(X.values()), exp_claims=len(ex),
-                exp_fte_years=sum(E.values()))
+    return dict(rows=rows, job=job, ex=ex, post=post, E=E, E_full=E_full, Eekm=Eekm, plan=plan, a=a, a_full=a_full,
+                starts=starts, routes=rts, full=full, conv=conv, conv_full=conv_full, cons=cons, rivals=riv, total=g,
+                rounded=CA.rounded(g), sd=CA.poisson_sd(post, a), boot_sd=CA.bootstrap_sd(post, a),
+                count=CA.count(post, a), fte_years_2027=sum(X.values()), exp_claims=len(ex),
+                exp_fte_years=sum(E_full.values()), post_claims=len(post), post_fte_years=sum(E.values()))
