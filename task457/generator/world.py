@@ -7,7 +7,7 @@ import datetime as dt
 import numpy as np
 
 SEED = 457_317
-SPLIT_SALT = 7          # the register's record stream (natures, blank NPIs, third-party fees), chosen so no 2025 total by nature sits near a rounding edge
+SPLIT_SALT = 35         # the register's record stream (natures, blank NPIs, third-party fees), chosen so no 2025 total by nature sits near a rounding edge
 
 ORG = "Marrowfield University Health"
 HOSPITAL = "Marrowfield University Hospital"
@@ -256,15 +256,19 @@ NONREPORTING = [
 # them), which became applicable manufacturers when a product was cleared and reported to Open Payments from program
 # year 2025; their paid work with the faculty began in 2026
 NOW_REPORTING = ["Quorvia Digital Therapeutics, Inc.", "Kilnworth Genomics, Inc."]
+# Quorvia was Somnalis Health, Inc. until early 2026: it reported program year 2025 under that name, and the office
+# renamed its entry on the list when faculty first named it as Quorvia
+NOW_REPORTING_FORMER = {"Quorvia Digital Therapeutics, Inc.": "Somnalis Health, Inc."}
+NOW_REPORTING_RENAMED_ON = dt.date(2026, 3, 2)
 NOW_REPORTING_LINES = [
-    ("Quorvia Digital Therapeutics, Inc.", "advisory", 4000, 8500),
-    ("Quorvia Digital Therapeutics, Inc.", "consulting", 3000, 7000),
+    ("Quorvia Digital Therapeutics, Inc.", "advisory", 4500, 8500),
+    ("Quorvia Digital Therapeutics, Inc.", "consulting", 3500, 7000),
     ("Quorvia Digital Therapeutics, Inc.", "speaking", 2500, 6000),
-    ("Quorvia Digital Therapeutics, Inc.", "other", 1500, 4000),
+    ("Quorvia Digital Therapeutics, Inc.", "speaking", 2000, 4500),
+    ("Quorvia Digital Therapeutics, Inc.", "expert", 5000, 9000),
+    ("Quorvia Digital Therapeutics, Inc.", "other", 1800, 4000),
     ("Kilnworth Genomics, Inc.", "consulting", 4000, 9000),
     ("Kilnworth Genomics, Inc.", "speaking", 2000, 5000),
-    ("Kilnworth Genomics, Inc.", "expert", 5000, 9000),
-    ("Kilnworth Genomics, Inc.", "other", 1500, 3500),
 ]
 NOW_REPORTING_STATE = {"Quorvia Digital Therapeutics, Inc.": "MA", "Kilnworth Genomics, Inc.": "OH"}
 

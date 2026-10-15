@@ -168,14 +168,16 @@ def pools(cf, year, form, aligned=False):
     return cf._ocache[key]
 
 
-def line_values(cf, year, grain, handling, K=0.0, form="sum", fallback="line", filed=None, align="none", cover="pair"):
-    """{emp_id: {manufacturer: corrected value}} for the faculty with remuneration disclosed for `year`."""
+def line_values(cf, year, grain, handling, K=0.0, form="sum", fallback="line", filed=None, align="none", cover="pair",
+                pool_form=None):
+    """{emp_id: {manufacturer: corrected value}} for the faculty with remuneration disclosed for `year` (pool_form: the
+    faculty-wide ratio formed another way than the person's)."""
     persons = sorted({e for (e, y) in cf.by_person_year if y == year})
     if filed is not None:
         persons = [e for e in persons if e in filed]
     ah = align in ("hist", "both")
     at = align in ("target", "both")
-    pool_line, pool_all = pools(cf, year, form, ah)
+    pool_line, pool_all = pools(cf, year, pool_form or form, ah)
 
     def handle(c, n, usd, yrs, pool):
         if handling == "face":
@@ -231,9 +233,10 @@ def _best(vals):
     return best
 
 
-def estimates(cf, year, grain, handling, K=0.0, form="sum", fallback="line", filed=None, align="none", cover="pair"):
+def estimates(cf, year, grain, handling, K=0.0, form="sum", fallback="line", filed=None, align="none", cover="pair",
+              pool_form=None):
     """{emp_id: (estimate, manufacturer of the estimate)}: each faculty member's largest corrected line."""
-    lv = line_values(cf, year, grain, handling, K, form, fallback, filed, align, cover)
+    lv = line_values(cf, year, grain, handling, K, form, fallback, filed, align, cover, pool_form)
     return {e: _best(v) for e, v in lv.items()}
 
 
@@ -265,14 +268,15 @@ def truth(cf, year, persons):
     return {e: max(cf.pub_by_person_year.get((e, year), {}).values() or [0.0]) for e in persons}
 
 
-def backtest(cf, grain, handling, K=0.0, form="sum", fallback="line", align="none", cover="pair"):
-    est = estimates(cf, 2025, grain, handling, K, form, fallback, align=align, cover=cover)
+def backtest(cf, grain, handling, K=0.0, form="sum", fallback="line", align="none", cover="pair", pool_form=None):
+    est = estimates(cf, 2025, grain, handling, K, form, fallback, align=align, cover=cover, pool_form=pool_form)
     tr = truth(cf, 2025, est)
     return sum(abs(est[e][0] - tr[e]) for e in est)
 
 
-def docket(cf, grain, handling, K=0.0, form="sum", fallback="line", filed=None, n=15, align="none", cover="pair"):
-    est = estimates(cf, 2026, grain, handling, K, form, fallback, filed=filed, align=align, cover=cover)
+def docket(cf, grain, handling, K=0.0, form="sum", fallback="line", filed=None, n=15, align="none", cover="pair",
+           pool_form=None):
+    est = estimates(cf, 2026, grain, handling, K, form, fallback, filed=filed, align=align, cover=cover, pool_form=pool_form)
     ranked = sorted(est.items(), key=lambda kv: (-kv[1][0], kv[0]))
     return [e for e, _ in ranked[:n]], ranked
 

@@ -1,6 +1,7 @@
 """An independent check of task457's goldens from the bundle alone, on its own code path (pandas): the docket under
 the matched-line weighting chosen on 2025 with each disclosure counted to the day it was submitted, the whole-year
-reading's docket, and every figure of the three supporting tables, each compared with the deliverables."""
+reading's docket, the disclosure cycle's two counts and every figure of the two supporting tables, each compared with
+the deliverables."""
 import datetime as dt
 import os
 import sys
@@ -31,9 +32,43 @@ def load(t):
     return reg, prof, ros, ent, disc, items, hist, depts
 
 
+def profile_npi(prof):
+    """Each profile's NPI; a profile without one takes the NPI of the profile that has one under the same name and
+    address, where exactly one does."""
+    p = prof.copy()
+    p["k"] = (p["Covered_Recipient_Profile_First_Name"].str.strip().str.lower() + "|"
+              + p["Covered_Recipient_Profile_Last_Name"].str.strip().str.lower() + "|"
+              + p["Covered_Recipient_Profile_Address_Line_1"].str.strip().str.lower() + "|"
+              + p["Covered_Recipient_Profile_Zipcode"].str.strip())
+    has = p[p["Covered_Recipient_NPI"] != ""]
+    n = has.groupby("k")["Covered_Recipient_NPI"].nunique()
+    one = has[has["k"].isin(n[n == 1].index)].drop_duplicates("k").set_index("k")["Covered_Recipient_NPI"]
+    p["npi"] = np.where(p["Covered_Recipient_NPI"] != "", p["Covered_Recipient_NPI"], p["k"].map(one).fillna(""))
+    return p.set_index("Covered_Recipient_Profile_ID")["npi"]
+
+
+def register_names(reg, ent):
+    names = dict(zip(reg["Applicable_Manufacturer_or_Applicable_GPO_Making_Payment_Name"].str.strip().str.lower(),
+                     reg["Applicable_Manufacturer_or_Applicable_GPO_Making_Payment_ID"]))
+    names.update(dict(zip(ent.loc[ent["open_payments_id"] != "", "entity_name"].str.strip().str.lower(),
+                          ent.loc[ent["open_payments_id"] != "", "open_payments_id"])))
+    return names
+
+
+def entity_ids(reg, ent, items):
+    """Each listed company's Open Payments ID: the list's own, else any name the list has shown for it (today or on an
+    earlier item) that the register carries."""
+    names = register_names(reg, ent)
+    shown = pd.concat([ent[["entity_id", "entity_name"]], items.loc[items["entity_id"] != "", ["entity_id", "entity_name"]]])
+    shown["op"] = shown["entity_name"].str.strip().str.lower().map(names).fillna("")
+    found = shown[shown["op"] != ""].sort_values(["entity_id", "op"]).drop_duplicates("entity_id").set_index("entity_id")["op"]
+    own = ent.set_index("entity_id")["open_payments_id"]
+    return {e: (own[e] or found.get(e, "")) for e in own.index}
+
+
 def conformed(reg, prof, ros, ent, disc, items):
     npi_emp = ros.drop_duplicates("npi").set_index("npi")["emp_id"]
-    pnpi = prof.set_index("Covered_Recipient_Profile_ID")["Covered_Recipient_NPI"]
+    pnpi = profile_npi(prof)
     r = reg[reg["Nature_of_Payment_or_Transfer_of_Value"].isin(REMUN)
             & (reg["Third_Party_Payment_Recipient_Indicator"] == "No Third Party Payment")].copy()
     r["emp"] = r["Covered_Recipient_Profile_ID"].map(pnpi).map(npi_emp)
@@ -44,11 +79,8 @@ def conformed(reg, prof, ros, ent, disc, items):
     r["date"] = pd.to_datetime(r["Date_of_Payment"], format="%m/%d/%Y")
     pay = r[["emp", "op", "year", "date", "amt"]]
     pub = r.groupby(["emp", "op", "year"])["amt"].sum().reset_index()
-    names = dict(zip(reg["Applicable_Manufacturer_or_Applicable_GPO_Making_Payment_Name"].str.strip().str.lower(),
-                     reg["Applicable_Manufacturer_or_Applicable_GPO_Making_Payment_ID"]))
-    names.update(dict(zip(ent.loc[ent["open_payments_id"] != "", "entity_name"].str.strip().str.lower(),
-                          ent.loc[ent["open_payments_id"] != "", "open_payments_id"])))
-    eid = dict(zip(ent["entity_id"], ent["open_payments_id"]))
+    names = register_names(reg, ent)
+    eid = entity_ids(reg, ent, items)
     it = items.merge(disc[["disclosure_id", "emp_id", "disclosure_year", "current_version"]], on="disclosure_id")
     it = it[(it["version"] == it["current_version"]) & it["relationship_type"].isin(TYPES)].copy()
     listed = it["entity_id"].map(eid).fillna("")
@@ -133,14 +165,11 @@ def main(target, golden_dir):
     checks.append(("verify: the fifteenth stands clear of the sixteenth", top["est"].iloc[14] / top["est"].iloc[15] > 1.13,
                    round(top["est"].iloc[14] / top["est"].iloc[15], 3)))
     # ask A: a faculty member is a person, the employee numbers sharing an NPI one faculty member
+    import re
     ros["s"] = pd.to_datetime(ros["term_start"])
     ros["e"] = pd.to_datetime(ros["term_end"])
     day = pd.Timestamp("2026-12-31")
-    on = ros[(ros["s"] <= day) & (ros["e"] >= day)]
-    prim = on[on["appointment_type"] == "Primary"].drop_duplicates("npi").set_index("npi")
-    succ = dict(zip(depts["formed_from"], depts["dept_code"]))
-    dept = prim.apply(lambda r: succ["MED/" + r["division_code"]] if r["dept_code"] == "MED" else r["dept_code"], axis=1)
-    owed = set(on["npi"])
+    owed = set(ros[(ros["s"] <= day) & (ros["e"] >= day)]["npi"])
     emp_npi = ros.drop_duplicates("emp_id").set_index("emp_id")["npi"]
     d26 = disc[disc["disclosure_year"] == "2026"].set_index("disclosure_id")["emp_id"]
     h = hist[(hist["event"] == "Submitted") & hist["disclosure_id"].isin(d26.index)].copy()
@@ -149,25 +178,21 @@ def main(target, golden_dir):
     first = h.groupby("npi")["t"].min()
     deadline = pd.Timestamp("2027-01-16 04:59:59")
     late = {p for p in owed if p not in first.index or first[p] > deadline}
-    tA = {row.cells[0].text: (int(row.cells[1].text.replace(",", "")), int(row.cells[2].text.replace(",", "")))
-          for row in doc.tables[1].rows[1:-1]}
-    code_name = {r["dept_code"]: r["dept_name"] for _, r in depts.iterrows()}
-    vA = {}
-    for p in sorted(owed):
-        nm = code_name[dept[p]]
-        o, l = vA.get(nm, (0, 0))
-        vA[nm] = (o + 1, l + (p in late))
-    checks.append(("verify: ask A's sixteen departments match the deliverable", vA == tA, [(k, vA.get(k), tA.get(k)) for k in tA if vA.get(k) != tA.get(k)][:3]))
+    text = "\n".join(p.text for p in doc.paragraphs)
+    hit = re.search(r"([\d,]+) faculty members owed a 2026 disclosure, and ([\d,]+) of them had not submitted it", text)
+    tA = (int(hit.group(1).replace(",", "")), int(hit.group(2).replace(",", ""))) if hit else None
+    checks.append(("verify: ask A's two counts match the deliverable", (len(owed), len(late)) == tA, ((len(owed), len(late)), tA)))
+    checks.append(("verify: ask A's counts are the figures file's", tA == (figs["ask_a"]["owed"], figs["ask_a"]["not_submitted"]), tA))
     # ask B
     npi_emp = ros.drop_duplicates("npi").set_index("npi")["emp_id"]
-    pnpi = prof.set_index("Covered_Recipient_Profile_ID")["Covered_Recipient_NPI"]
+    pnpi = profile_npi(prof)
     r = reg[(reg["Program_Year"] == "2025") & reg["Nature_of_Payment_or_Transfer_of_Value"].isin(REMUN)
             & (reg["Third_Party_Payment_Recipient_Indicator"] == "No Third Party Payment")].copy()
     r["emp"] = r["Covered_Recipient_Profile_ID"].map(pnpi).map(npi_emp)
     held = set(ros[(ros["s"] <= pd.Timestamp("2025-12-31")) & (ros["e"] >= pd.Timestamp("2025-01-01"))]["emp_id"])
     r = r[r["emp"].isin(held)]
     vB = r.assign(a=r["Total_Amount_of_Payment_USDollars"].astype(float)).groupby("Nature_of_Payment_or_Transfer_of_Value")["a"].sum()
-    tB = [int(row.cells[1].text.replace("$", "").replace(",", "")) for row in doc.tables[2].rows[1:-1]]
+    tB = [int(row.cells[1].text.replace("$", "").replace(",", "")) for row in doc.tables[1].rows[1:]]
     order = ["Consulting Fee", "Compensation for services other than consulting, including serving as faculty or as a speaker "
              "at a venue other than a continuing education program", "Honoraria",
              "Compensation for serving as faculty or as a speaker for an accredited or certified continuing education program",
@@ -176,15 +201,14 @@ def main(target, golden_dir):
     # ask C
     it = items.merge(disc[["disclosure_id", "disclosure_year", "current_version"]], on="disclosure_id")
     it = it[(it["disclosure_year"] == "2026") & (it["version"] == it["current_version"]) & it["relationship_type"].isin(TYPES)].copy()
-    names_op = set(reg["Applicable_Manufacturer_or_Applicable_GPO_Making_Payment_Name"].str.strip().str.lower()) | set(
-        ent.loc[ent["open_payments_id"] != "", "entity_name"].str.strip().str.lower())
-    eid = dict(zip(ent["entity_id"], ent["open_payments_id"]))
+    names_op = set(register_names(reg, ent))
+    eid = entity_ids(reg, ent, items)
     listed_op = it["entity_id"].map(eid).fillna("") != ""
     nr = it[~listed_op & ~it["entity_name"].str.strip().str.lower().isin(names_op)]
     vC = nr.assign(a=nr["amount_usd"].astype(float)).groupby("relationship_type")["a"].sum()
-    tC = {row.cells[0].text: int(row.cells[1].text.replace("$", "").replace(",", "")) for row in doc.tables[3].rows[1:-1]}
+    tC = {row.cells[0].text: int(row.cells[1].text.replace("$", "").replace(",", "")) for row in doc.tables[2].rows[1:]}
     checks.append(("verify: ask C's four types match the deliverable",
-                   all(int(round(vC.get(k, 0.0) / 1000.0)) * 1000 == v for k, v in tC.items()), tC))
+                   len(tC) == 4 and all(int(round(vC.get(k, 0.0) / 1000.0)) * 1000 == v for k, v in tC.items()), tC))
     bad = [c for c in checks if not c[1]]
     for c in checks:
         print("%s  %s%s" % ("PASS" if c[1] else "FAIL", c[0], ("  [%s]" % (c[2],)) if not c[1] and len(c) > 2 else ""))

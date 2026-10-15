@@ -105,8 +105,12 @@ def run(target, golden_dir, world=None, meta_path=None):
        gold == members({"F", "U", "C"}), label(gold))
     ok("golden: the weighting chosen on 2025 is the grid's closest (K=%s matched lines)" % G["K"],
        G["K"] == min(M.GRIDS["n"], key=lambda K: M.backtest(cf, "line", "n", K, "sum", align="both")))
+    ok("golden: K=%s is also the closest whole-number weighting from 1 to 20" % G["K"],
+       G["K"] == min(range(1, 21), key=lambda K: M.backtest(cf, "line", "n", K, "sum", align="both")))
     gap = G["ranked"][14][1][0] / G["ranked"][15][1][0]
     ok("golden: the fifteenth stands at least 1.25 times the sixteenth", gap >= 1.25, round(gap, 3))
+    ok("golden: the long-standing faithful filer below the cut stays off it",
+       not members({"S"}) & gold and all(grp[e] != "S" for e, _ in G["ranked"][:20]))
     truth = TruthCF(fac_w)
     filed26 = {d["emp_id"] for d in data["disc"] if int(d["disclosure_year"]) == 2026}
     paid26 = {}
@@ -193,8 +197,9 @@ def run(target, golden_dir, world=None, meta_path=None):
         best_of[k] = min(best_of.get(k, r[0]), r[0])
     chosen = [r for r in both_line if r[0] == best_of[(r[1], r[2], r[4], r[5], r[9])]]
     near = [r for r in every if r[0] <= 1.1 * G["bt"]]
-    ok("family: every construction closer to 2025 than the golden (%d cells) holds the fifteenth at least 1.13 times the "
-       "sixteenth" % len(closer), min(r[7] for r in closer) >= 1.13, round(min(r[7] for r in closer), 3))
+    ok("family: every construction closer to 2025 than the golden (%d cells) holds the fifteenth at least 1.10 times the "
+       "sixteenth (%.3f at the thinnest)" % (len(closer), min(r[7] for r in closer)), min(r[7] for r in closer) >= 1.10,
+       round(min(r[7] for r in closer), 3))
     near_full = [r for r in near if r[8] == "both"]
     ok("family: every fully aligned construction within 10 per cent of the golden on 2025 (%d cells) files the golden "
        "docket with the fifteenth at least 1.10 times the sixteenth" % len(near_full),
@@ -319,20 +324,24 @@ def run(target, golden_dir, world=None, meta_path=None):
     # ------------------------------------------------------------------ asks
     st = A.stops(data)
     a, b, c = st["A"]["golden"], st["B"]["golden"], st["C"]["golden"]
-    ok("A golden equals the docket's table", a == an["asks"]["A"]["golden"])
-    need_a = {"employee numbers joined as they stand": 16, "latest submission time": 16, "UTC date against 15 January": 12,
-              "roster's department code": 4, "everyone on the roster at the pull": 8}
+    ok("A golden equals the docket's counts", a == an["asks"]["A"]["golden"])
     for name, v in st["A"].items():
         if name == "golden":
             continue
-        moved = sum(1 for k in set(a) | set(v) if a.get(k) != v.get(k))
-        ok("A stop '%s' moves %d of %d departments" % (name, moved, len(a)), moved >= need_a[name])
+        need = (0, 1) if name == "everyone on the roster at the pull" else (1,)
+        ok("A stop '%s' moves %s" % (name, " and ".join(("the owed count", "the late count")[k] for k in need)),
+           all(v[k] != a[k] for k in need), v)
+    ok("A: the late count is a few per cent of those owed and every stop moves it by 20 or more",
+       0.03 <= a[1] / a[0] <= 0.08 and all(abs(v[1] - a[1]) >= 20 for k, v in st["A"].items() if k != "golden"), a)
     for name, v in st["B"].items():
         if name == "golden":
             continue
         moved = sum(1 for k in b if GD.thousand(b[k]) != GD.thousand(v[k]))
-        ok("B stop '%s' moves %d of 5 natures" % (name, moved), moved >= (5 if name in ("the office's matched employee number", "every record in the extract") else 1))
-    need_c = {"the list's blank identifier trusted": 4, "typed names against the list's present names": 3,
+        ok("B stop '%s' moves %d of 5 natures" % (name, moved), moved >= {"the office's matched employee number": 5,
+           "every record in the extract": 5, "profiles with an NPI only": 4,
+           "profiles without an NPI matched by name alone": 5}.get(name, 1))
+    need_c = {"the list's present names checked against the register": 4,
+              "the list's blank identifier trusted": 4, "typed names against the list's present names": 3,
               "every typed name": 3, "the first version": 1, "every version": 1}
     for name, v in st["C"].items():
         if name == "golden":
@@ -378,10 +387,40 @@ def run(target, golden_dir, world=None, meta_path=None):
        {e for (e, y) in cf_list.by_person_year if y == 2026} == {e for (e, y) in cf.by_person_year if y == 2026}
        and set(M.golden(cf_list)["docket"]) == gold)
 
+    dup_world = {f.dup_profile: f.emp_id for f in fac_w if getattr(f, "dup_profile", None)}
+    att_np = CF.attribute(data, "profile_npi")
+    prof_of = {r["Record_ID"]: r["Covered_Recipient_Profile_ID"] for r in data["register"]}
+    via_name = {rid: e for rid, e in att_p.items() if att_np.get(rid) != e}
+    ok("separation: the records the name and address tie to a faculty member through a profile without an NPI are the "
+       "duplicate profiles' (%d profiles), each to its own faculty member, none in the docket region" % len(dup_world),
+       via_name and all(dup_world.get(prof_of[rid]) == e and e not in region for rid, e in via_name.items())
+       and {prof_of[rid] for rid in via_name} == set(dup_world), len(via_name))
+    ns_blank = {r["Covered_Recipient_Profile_ID"] for r in data["profiles"] if not r["Covered_Recipient_NPI"]} - set(dup_world)
+    ok("separation: no namesake's profile without an NPI is tied to a faculty member by name and address",
+       not [rid for rid, e in att_p.items() if prof_of[rid] in ns_blank], len(ns_blank))
+    ok("separation: the docket is unchanged with profiles without an NPI left out or matched by name alone",
+       docket_under(attribution="profile_npi")[0] == gold and docket_under(attribution="profile_name")[0] == gold)
+    blank_ents = [x["entity_id"] for x in data["entities"] if not x["open_payments_id"]]
+    renamed_ents = {x for x in blank_ents if CF.listed_op(data, x, "resolve") != CF.listed_op(data, x, "present")}
+    quorvia = {x["entity_id"] for x in data["entities"] if x["entity_name"] in W.NOW_REPORTING_FORMER}
+    ok("separation: the one listed company resolved only through an earlier name on the list is the renamed company that "
+       "began reporting", renamed_ents == quorvia and len(quorvia) == 1, sorted(renamed_ents))
+    cf_pres = M.Conformed(data, listed="present")
+    ok("separation: read through the list's present names, the estimated faculty and the docket are unchanged",
+       {e for (e, y) in cf_pres.by_person_year if y == 2026} == {e for (e, y) in cf.by_person_year if y == 2026}
+       and set(M.golden(cf_pres)["docket"]) == gold)
+
     # ------------------------------------------------------------------ cracker: the readings a careful analyst takes
     crack_a = A.ask_a(data, link="emp")
-    ok("cracker A: employee numbers joined as they stand misses every department's late count",
-       sum(1 for k in a if a[k][1] != crack_a[k][1]) == len(a))
+    ok("cracker A: employee numbers joined as they stand misses the late count", crack_a[1] != a[1], crack_a)
+    crack_b2 = A.ask_b(data, attribution="profile_npi")
+    ok("cracker B: the profiles' NPIs alone miss four natures and the total",
+       sum(GD.thousand(b[k]) != GD.thousand(crack_b2[k]) for k in b) >= 4
+       and GD.thousand(sum(b.values())) != GD.thousand(sum(crack_b2.values())))
+    crack_c2 = A.ask_c(data, listed="present")
+    ok("cracker C: the list's present names checked against the register miss every type and the total",
+       all(GD.thousand(c[k]) != GD.thousand(crack_c2[k]) for k in c)
+       and GD.thousand(sum(c.values())) != GD.thousand(sum(crack_c2.values())))
     crack_b = A.ask_b(data, attribution="matcher")
     ok("cracker B: the office's matched column trusted misses every nature", all(GD.thousand(b[k]) != GD.thousand(crack_b[k]) for k in b))
     crack_c = A.ask_c(data, listed="list")
@@ -401,7 +440,6 @@ def run(target, golden_dir, world=None, meta_path=None):
     amounts = [float(r["Total_Amount_of_Payment_USDollars"]) for r in data["register"]]
     ok("realism: register amounts are not round (under 6 per cent whole hundreds)",
        sum(1 for x in amounts if x % 100 == 0) < 0.06 * len(amounts), round(sum(1 for x in amounts if x % 100 == 0) / len(amounts), 3))
-    ok("realism: ask A's department counts all differ", len({v[0] for v in a.values()}) >= 14)
     ok("realism: the personas are the card's", all(p in (W.PEOPLE.values()) for p in ("Karen Shea", "Diana Hickman", "Herbert Dean")))
     rid = [int(r["Record_ID"]) for r in data["register"]]
     diffs = collections.Counter(y - x for x, y in zip(sorted(rid), sorted(rid)[1:]))

@@ -108,9 +108,8 @@
    "disclosed_2026": 51000
   }
  ],
- "first_left_off": "Angelica Gentry",
- "faculty_estimated_2026": 278,
- "faculty_estimated_2025": 308,
+ "faculty_estimated_2026": 279,
+ "faculty_estimated_2025": 309,
  "weighting_k_lines": 2,
  "december_filers_on_docket": [
   "Stacie Black",
@@ -141,91 +140,23 @@
   "Judith Valenzuela"
  ],
  "ask_a": {
-  "Anesthesiology": {
-   "owed": 144,
-   "not_submitted": 11
-  },
-  "Cardiovascular Medicine": {
-   "owed": 116,
-   "not_submitted": 6
-  },
-  "Dermatology": {
-   "owed": 45,
-   "not_submitted": 1
-  },
-  "Emergency Medicine": {
-   "owed": 95,
-   "not_submitted": 2
-  },
-  "Gastroenterology and Hepatology": {
-   "owed": 69,
-   "not_submitted": 6
-  },
-  "Hematology and Oncology": {
-   "owed": 95,
-   "not_submitted": 5
-  },
-  "Internal Medicine": {
-   "owed": 203,
-   "not_submitted": 9
-  },
-  "Neurology": {
-   "owed": 91,
-   "not_submitted": 7
-  },
-  "Obstetrics and Gynecology": {
-   "owed": 107,
-   "not_submitted": 4
-  },
-  "Ophthalmology": {
-   "owed": 55,
-   "not_submitted": 1
-  },
-  "Orthopaedic Surgery": {
-   "owed": 98,
-   "not_submitted": 6
-  },
-  "Pediatrics": {
-   "owed": 198,
-   "not_submitted": 12
-  },
-  "Psychiatry": {
-   "owed": 100,
-   "not_submitted": 4
-  },
-  "Radiology": {
-   "owed": 114,
-   "not_submitted": 6
-  },
-  "Surgery": {
-   "owed": 127,
-   "not_submitted": 10
-  },
-  "Urology": {
-   "owed": 38,
-   "not_submitted": 1
-  }
- },
- "ask_a_total": {
-  "owed": 1695,
+  "owed": 1696,
   "not_submitted": 91
  },
  "ask_b": {
-  "Consulting fees": 4531000,
-  "Services other than consulting, including speaking outside continuing education": 1387000,
-  "Honoraria": 768000,
-  "Faculty or speaker, accredited or certified continuing education": 254000,
-  "Faculty or speaker, unaccredited continuing education": 190000
+  "Consulting fees": 4463000,
+  "Services other than consulting, including speaking outside continuing education": 1366000,
+  "Honoraria": 819000,
+  "Faculty or speaker, accredited or certified continuing education": 325000,
+  "Faculty or speaker, unaccredited continuing education": 198000
  },
- "ask_b_total": 7131000,
  "ask_c": {
-  "Consulting or advisory board": 57000,
+  "Consulting or advisory board": 56000,
   "Speaking or teaching": 11000,
-  "Expert testimony": 126000,
+  "Expert testimony": 97000,
   "Other paid services": 3000
  },
- "ask_c_total": 197000,
- "conformed_rows": 9987,
+ "conformed_rows": 9994,
  "deadline_eastern": "11:59",
  "policy_sections_cited": [
   "2.1",

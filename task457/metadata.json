@@ -33,7 +33,7 @@
    "xlsx"
   ],
   "largest_file": "open_payments_general_2021-2025_jan2027_extract.csv",
-  "largest_file_rows": 90088
+  "largest_file_rows": 90140
  },
  "sources": [
   {
@@ -49,8 +49,8 @@
   {
    "path": "clinical_faculty_appointments.csv",
    "format": "csv",
-   "bytes": 995589,
-   "rows": 11099,
+   "bytes": 995339,
+   "rows": 11096,
    "source": "Constructed: the human resources system's clinical faculty appointment terms since July 2019",
    "date": "2027-01-21",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -67,7 +67,7 @@
   {
    "path": "coi_disclosures_2021-2026_export.xlsx",
    "format": "xlsx",
-   "bytes": 569296,
+   "bytes": 568152,
    "rows": null,
    "source": "Constructed: the disclosure system's export of every annual disclosure for 2021 to 2026 and every submitted version's items",
    "date": "2027-01-21",
@@ -94,8 +94,8 @@
   {
    "path": "coi_submission_history.csv",
    "format": "csv",
-   "bytes": 634625,
-   "rows": 11273,
+   "bytes": 634834,
+   "rows": 11277,
    "source": "Constructed: the disclosure system's submission history",
    "date": "2027-01-21",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -112,7 +112,7 @@
   {
    "path": "nih_awards_marrowfield_fy2025.csv",
    "format": "csv",
-   "bytes": 30560,
+   "bytes": 30282,
    "rows": 310,
    "source": "Constructed: NIH awards for fiscal year 2025 with a faculty member as contact principal investigator, in the RePORTER export layout",
    "date": "2027-01-21",
@@ -121,8 +121,8 @@
   {
    "path": "open_payments_covered_recipient_profiles.csv",
    "format": "csv",
-   "bytes": 224352,
-   "rows": 2339,
+   "bytes": 227889,
+   "rows": 2363,
    "source": "Constructed: the covered-recipient profiles of every profile the extracts carry, in the Open Payments profile supplement layout",
    "date": "2027-01-21",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -130,8 +130,8 @@
   {
    "path": "open_payments_general_2021-2025_jan2027_extract.csv",
    "format": "csv",
-   "bytes": 44583457,
-   "rows": 90088,
+   "bytes": 44593652,
+   "rows": 90140,
    "source": "Constructed: an academic medical center's extract of Open Payments general payments, program years 2021 to 2025, January 2027 publication, for the covered recipients matched to its clinical faculty since 2021, in the Open Payments public file layout",
    "date": "2027-01-21",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -139,8 +139,8 @@
   {
    "path": "open_payments_general_py2025_jun2026_extract.csv",
    "format": "csv",
-   "bytes": 9196273,
-   "rows": 18770,
+   "bytes": 9085731,
+   "rows": 18558,
    "source": "Constructed: the same office's earlier extract of program year 2025 as Open Payments first published it (June 2026)",
    "date": "2027-01-21",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -148,7 +148,7 @@
   {
    "path": "open_payments_research_2021-2025_extract.csv",
    "format": "csv",
-   "bytes": 175895,
+   "bytes": 175932,
    "rows": 656,
    "source": "Constructed: Open Payments research payments naming a faculty member as principal investigator, in the public file layout",
    "date": "2027-01-21",
@@ -166,7 +166,7 @@
   {
    "path": "oricoi_field_definitions.xlsx",
    "format": "xlsx",
-   "bytes": 10222,
+   "bytes": 10226,
    "rows": null,
    "source": "Constructed: the field descriptions of the data files",
    "date": "2027-01-21",

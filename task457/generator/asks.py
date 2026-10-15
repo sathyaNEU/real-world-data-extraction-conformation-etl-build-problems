@@ -1,15 +1,15 @@
-"""The three supporting tables, each with the readings a careful analyst might take (the stops of its ladder).
+"""The three supporting asks, each with the readings a careful analyst might take (the stops of its ladder).
 
-A  the 2026 disclosure cycle by department: faculty who owed a 2026 disclosure (an appointment on 31 December 2026,
-   by the department of the primary appointment that day) and how many of them had not submitted it by 11:59 p.m.
-   Eastern on 15 January 2027 (no submission at or before 2027-01-16 04:59:59 UTC). A faculty member is a person:
-   one whose employee number changed in 2026 holds the appointment under the new number and filed under the number
-   the disclosure system knew, the two tied by the NPI they share.
+A  the 2026 disclosure cycle: faculty who owed a 2026 disclosure (an appointment on 31 December 2026) and how many
+   of them had not submitted it by 11:59 p.m. Eastern on 15 January 2027 (no submission at or before
+   2027-01-16 04:59:59 UTC). A faculty member is a person: one whose employee number changed in 2026 holds the
+   appointment under the new number and filed under the number the disclosure system knew, the two tied by the
+   NPI they share.
 B  the register's 2025 remuneration by nature, to the faculty who held an appointment at any time in 2025: records
    tied to a faculty member through the covered-recipient profile, payments to the faculty member personally.
 C  2026 remuneration disclosed from companies that do not report to Open Payments, by relationship type: the
    current version's items whose company has no Open Payments identifier and appears under no name in the register
-   (a typed name or a listed company resolved through the register's present and earlier names)."""
+   (a typed name, or a listed company under any name the list has shown for it, against the register's names)."""
 import datetime as dt
 from collections import defaultdict
 
@@ -22,15 +22,12 @@ NATURE_LABEL = ["Consulting fees", "Services other than consulting, including sp
                 "Faculty or speaker, unaccredited continuing education"]
 
 
-def ask_a(data, time_rule="first", clock="utc", dept_rule="mapped", owed_rule="dec31", link="npi"):
-    """{dept: [owed, not submitted by the deadline]}"""
+def ask_a(data, time_rule="first", clock="utc", owed_rule="dec31", link="npi"):
+    """(owed, not submitted by the deadline)"""
     fac = C.faculty(data)
     day = dt.date(2026, 12, 31) if owed_rule == "dec31" else dt.date(2027, 1, 20)
     person = (lambda e: fac[e]["npi"]) if link == "npi" else (lambda e: e)
-    owed = {}
-    for e, f in fac.items():
-        if C.holds(f, day):
-            owed.setdefault(person(e), e)
+    owed = {person(e) for e, f in fac.items() if C.holds(f, day)}
     did = {d["disclosure_id"]: d for d in data["disc"] if int(d["disclosure_year"]) == 2026}
     first = {}
     for ev in data["history"]:
@@ -43,19 +40,11 @@ def ask_a(data, time_rule="first", clock="utc", dept_rule="mapped", owed_rule="d
         v = d["last_submitted_utc"]
         last[person(d["emp_id"])] = v if isinstance(v, dt.datetime) else dt.datetime.strptime(v, "%Y-%m-%d %H:%M:%S")
     when = first if time_rule == "first" else last
-    out = defaultdict(lambda: [0, 0])
-    for p in sorted(owed):
-        f = fac[owed[p]]
-        if dept_rule == "mapped":
-            dept = C.dept_on(data, f, day)
-        else:
-            prim = sorted(t for t in f["terms"] if t[4] and t[0] <= day)
-            dept = prim[-1][2]
+    late = 0
+    for p in owed:
         t = when.get(p)
-        late = t is None or (t > DEADLINE_UTC if clock == "utc" else t.date() > dt.date(2027, 1, 15))
-        out[dept][0] += 1
-        out[dept][1] += int(late)
-    return {k: tuple(v) for k, v in sorted(out.items())}
+        late += int(t is None or (t > DEADLINE_UTC if clock == "utc" else t.date() > dt.date(2027, 1, 15)))
+    return (len(owed), late)
 
 
 def ask_b(data, attribution="profile", personal=True, scope="held2025"):
@@ -97,9 +86,7 @@ def ask_c(data, typed="resolve", version="latest", listed="resolve"):
         if version == "first" and it["version"] != first[it["disclosure_id"]]:
             continue
         if it["entity_id"]:
-            op = ent[it["entity_id"]]["open_payments_id"]
-            if not op and listed == "resolve":
-                op = C.name_to_op(data).get(it["entity_name"].strip().lower())
+            op = C.listed_op(data, it["entity_id"], listed)
         else:
             op = n2op.get(it["entity_name"].strip().lower())
         if not op:
@@ -113,13 +100,15 @@ def stops(data):
         "A": {"golden": ask_a(data), "employee numbers joined as they stand": ask_a(data, link="emp"),
               "latest submission time": ask_a(data, time_rule="last"),
               "UTC date against 15 January": ask_a(data, clock="date"),
-              "roster's department code": ask_a(data, dept_rule="raw"),
               "everyone on the roster at the pull": ask_a(data, owed_rule="pull")},
         "B": {"golden": ask_b(data), "the office's matched employee number": ask_b(data, attribution="matcher"),
+              "profiles with an NPI only": ask_b(data, attribution="profile_npi"),
+              "profiles without an NPI matched by name alone": ask_b(data, attribution="profile_name"),
               "records carrying an NPI only": ask_b(data, attribution="npi"),
               "payments to the university kept": ask_b(data, personal=False),
               "every record in the extract": ask_b(data, scope="all")},
-        "C": {"golden": ask_c(data), "the list's blank identifier trusted": ask_c(data, listed="list"),
+        "C": {"golden": ask_c(data), "the list's present names checked against the register": ask_c(data, listed="present"),
+              "the list's blank identifier trusted": ask_c(data, listed="list"),
               "typed names against the list's present names": ask_c(data, typed="present"),
               "every typed name": ask_c(data, typed="list"), "the first version": ask_c(data, version="first"),
               "every version": ask_c(data, version="sum")},

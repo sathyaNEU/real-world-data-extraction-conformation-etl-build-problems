@@ -333,7 +333,7 @@ def roster():
 
 # ---------------------------------------------------------------------------------------------- relationships
 def _habits(f, r):
-    f.mu = float(r.normal(np.log(0.97), 0.03) if r.random() < 0.7 else r.normal(np.log(0.56), 0.08))
+    f.mu = float(r.normal(np.log(0.96), 0.05) if r.random() < 0.7 else r.normal(np.log(0.60), 0.15))
     f.o = 0.04 if r.random() < 0.65 else 0.35
     f.ppart = PPART
     f.rounding = float(r.choice([100.0, 100.0, 100.0, 500.0, 1000.0]))
@@ -397,7 +397,7 @@ def relationships(fac, mfrs):
             rel = new_relationship(None, kind, rp, company=name)
             rel["base"] = float(np.exp(r.normal(np.log(6000), 0.8)))
             for y in range(y0, min(2026, y0 + int(r.integers(1, 4))) + 1):
-                rel["years"][y] = min(60000.0, rel["base"] * float(np.exp(r.normal(0, 0.2))))
+                rel["years"][y] = min(42000.0, rel["base"] * float(np.exp(r.normal(0, 0.2))))
             f.rels.append(rel)
         for rel in f.rels:
             pay_out(rel, rp)
@@ -502,9 +502,10 @@ def now_reporting_relationships(fac, mfrs):
 # X faithful filers who filed in early December in earlier years (their retainers' December installments missing from
 # those disclosures), in January 2026, with a new large relationship; P faithful January filers just below; O faculty
 # who leave small relationships out and report the ones they name in full; T new faculty with one matched line read
-# low. The comparison year (2025) carries U25, O25, T25, C25 and X25.
+# low; B ordinary large faithful disclosers below the docket; S a long-standing faithful January filer below it. The
+# comparison year (2025) carries U25, O25, T25, C25 and X25.
 GROUPS = [("F", 5), ("U", 5), ("C", 5), ("X", 5), ("P", 5), ("O", 5), ("T", 5), ("B", 12),
-          ("U25", 7), ("O25", 8), ("T25", 7), ("C25", 7), ("X25", 7)]
+          ("U25", 7), ("O25", 8), ("T25", 7), ("C25", 7), ("X25", 7), ("S", 1)]
 GROUP_DEPTS = {"F": ["CARD", "ORTH", "HEON", "NEUR", "GAST"],
                "U": ["ORTH", "CARD", "NEUR", "UROL", "HEON"],
                "C": ["CARD", "ORTH", "GAST", "HEON", "DERM"],
@@ -517,8 +518,9 @@ GROUP_DEPTS = {"F": ["CARD", "ORTH", "HEON", "NEUR", "GAST"],
                "O25": ["PSYC", "IMED", "NEUR", "HEON", "DERM", "GAST", "CARD", "ORTH"],
                "T25": ["CARD", "ORTH", "UROL", "NEUR", "DERM", "OPHT", "GAST"],
                "C25": ["CARD", "ORTH", "HEON", "NEUR", "GAST", "UROL", "DERM"],
-               "X25": ["ORTH", "CARD", "NEUR", "HEON", "OPHT", "GAST", "UROL"]}
-NAMED = ("F", "U", "C", "X", "P")         # the kinds that can stand in the top sixteen take the fixed names
+               "X25": ["ORTH", "CARD", "NEUR", "HEON", "OPHT", "GAST", "UROL"],
+               "S": ["UROL"]}
+NAMED = ("F", "U", "C", "X", "P", "S")    # the kinds that can stand in the top sixteen take the fixed names
 
 
 def _lu(r, lo, hi):
@@ -582,9 +584,15 @@ def _plan(kind, f, mfrs, r, taken):
         P.append((pick(f.dept), str(r.choice(["consulting", "advisory"])), "monthly", 1,
                   {y: mo * float(np.exp(r.normal(0, 0.08))) for y in years(int(r.integers(2021, 2023)), Y - 1)}, True))
         extras(int(r.integers(0, 2)), Y - 1)
+    elif base == "S":
+        lvl = _lu(r, 40000, 43000)
+        s0 = int(r.choice([2021, 2022]))
+        P.append((pick(f.dept, True), "consulting", str(r.choice(["quarterly", "monthly", "events"])), 1,
+                  {y: lvl * float(np.exp(r.normal(0, 0.05))) for y in years(s0, Y)}, True))
+        extras(int(r.integers(2, 4)), Y)
     elif base == "B":
         lvl = _lu(r, 24800, 43000)
-        s0 = int(r.choice([2021, 2022, 2023]))
+        s0 = int(r.choice([2021, 2022, 2023, 2026, 2026]))
         P.append((pick(f.dept, True), str(r.choice(["consulting", "consulting", "advisory"])),
                   str(r.choice(["quarterly", "monthly", "events"])), 1,
                   {y: lvl * float(np.exp(r.normal(0, 0.08))) for y in years(s0, 2026)}, True))
@@ -659,7 +667,7 @@ def _member(kind, q, r, mfrs):
     base = kind[0]
     f.mu = float(np.log(r.uniform(0.50, 0.62))) if base == "U" else float(np.log(r.uniform(0.95, 0.99)))
     f.o = 0.92 if base == "O" else 0.03
-    f.ppart = 0.0 if base in ("F", "C", "X", "P", "U", "B") else PPART
+    f.ppart = 0.0 if base in ("F", "C", "X", "P", "U", "B", "S") else PPART
     f.rounding = float(r.choice([100.0, 100.0, 500.0]))
     f.contact = True
     taken = set()
@@ -741,6 +749,9 @@ def _member_ok(kind, f):
         return 0.92 <= ca <= 1.0 and 0.92 * true <= d <= 1.0 * true and true <= 46000
     if base == "B":
         return 0.93 <= ca <= 1.0 and 0.93 <= c <= 1.0 and 0.93 * true <= d <= 1.0 * true and true <= 44000
+    if base == "S":
+        return (0.94 <= ca <= 1.0 and 0.94 <= c <= 1.0 and 0.95 * true <= d <= 1.0 * true and 40000 <= true <= 43500
+                and n >= 8)
     if base == "O":
         return 0.90 <= c <= 1.0 and co is not None and co <= 0.55 and n >= 5 and d <= true <= 44000
     if base == "T":

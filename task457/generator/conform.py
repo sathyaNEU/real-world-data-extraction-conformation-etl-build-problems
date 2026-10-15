@@ -2,7 +2,9 @@
 disclosures, each tied to a faculty member and an Open Payments manufacturer, by year.
 
 Every reading is a switch, so the checks can run the golden method with any one convention mishandled:
-    attribution   "profile" (the covered-recipient profile's NPI), "matcher" (the office's column), "npi" (records
+    attribution   "profile" (the covered-recipient profile's NPI; a profile without one through the NPI-bearing profile
+                  with the same name and address), "profile_npi" (profiles carrying an NPI only), "profile_name" (a
+                  profile without an NPI through the same name alone), "matcher" (the office's column), "npi" (records
                   carrying an NPI only)
     personal      drop payments made to a third party (True) or keep them
     natures       "remun" (the policy's five) or "all"
@@ -101,10 +103,29 @@ def attribute(data, how="profile"):
     for e, f in sorted(fac.items()):
         by_npi.setdefault(f["npi"], e)          # a faculty member whose number changed: the number their records began under
     prof = {r["Covered_Recipient_Profile_ID"]: r["Covered_Recipient_NPI"] for r in data["profiles"]}
+    prof_raw = {r["Covered_Recipient_Profile_ID"]: r for r in data["profiles"]}
+    if how in ("profile", "profile_name"):
+        # a profile without an NPI belongs to the physician whose NPI-bearing profile has the same name and address
+        # ("profile_name": the same name, whatever the address)
+        pkey = lambda r: (r["Covered_Recipient_Profile_First_Name"].strip().lower(),
+                          r["Covered_Recipient_Profile_Last_Name"].strip().lower()) + (() if how == "profile_name" else (
+                          r["Covered_Recipient_Profile_Address_Line_1"].strip().lower(),
+                          r["Covered_Recipient_Profile_Zipcode"].strip()))
+        with_npi = {}
+        for r in data["profiles"]:
+            if r["Covered_Recipient_NPI"]:
+                with_npi.setdefault(pkey(r), set()).add(r["Covered_Recipient_NPI"])
+        for r in data["profiles"]:
+            if not r["Covered_Recipient_NPI"]:
+                hit = with_npi.get(pkey(r), set())
+                if len(hit) == 1:
+                    prof[r["Covered_Recipient_Profile_ID"]] = next(iter(hit))
     out = {}
     for r in data["register"]:
         if how == "matcher":
             e = r["ORICOI_Matched_Emp_ID"]
+        elif how == "profile_npi":
+            e = by_npi.get(prof_raw.get(r["Covered_Recipient_Profile_ID"], {}).get("Covered_Recipient_NPI", ""))
         elif how == "npi":
             e = by_npi.get(r["Covered_Recipient_NPI"]) if r["Covered_Recipient_NPI"] else None
         else:
@@ -202,6 +223,35 @@ def name_to_op(data):
     return m
 
 
+def entity_names(data):
+    """entity_id -> every name the list has shown for it: its present name and the names on earlier items."""
+    if "entity_names" in data:
+        return data["entity_names"]
+    out = defaultdict(set)
+    for e in data["entities"]:
+        out[e["entity_id"]].add(e["entity_name"].strip().lower())
+    for it in data["items"]:
+        if it["entity_id"]:
+            out[it["entity_id"]].add(it["entity_name"].strip().lower())
+    data["entity_names"] = dict(out)
+    return data["entity_names"]
+
+
+def listed_op(data, entity_id, listed="resolve"):
+    """A listed company's Open Payments ID: the list's own, else (resolve) any name the list has shown for it that the
+    register carries, else (present) its present name in the register, else (list) none."""
+    ent = data.setdefault("_ent", {e["entity_id"]: e for e in data["entities"]})[entity_id]
+    if ent["open_payments_id"] or listed == "list":
+        return ent["open_payments_id"]
+    n2op = name_to_op(data)
+    if listed == "present":
+        return n2op.get(ent["entity_name"].strip().lower(), "")
+    for nm in sorted(entity_names(data).get(entity_id, ())):
+        if nm in n2op:
+            return n2op[nm]
+    return ""
+
+
 def disclosed(data, version="latest", typed="resolve", reporting_only=True, listed="resolve"):
     """(emp_id, manufacturer id or company name, year) -> remuneration disclosed. Keys for companies outside Open
     Payments are ('', name) pairs folded into the second element as 'NR:<name>'."""
@@ -222,8 +272,8 @@ def disclosed(data, version="latest", typed="resolve", reporting_only=True, list
             continue
         if it["relationship_type"] not in REMUN_TYPES:
             continue
-        if it["entity_id"] and (ent[it["entity_id"]]["open_payments_id"] or typed != "resolve" or listed != "resolve"):
-            op = ent[it["entity_id"]]["open_payments_id"]
+        if it["entity_id"]:
+            op = listed_op(data, it["entity_id"], listed if typed == "resolve" else "list")
         else:
             nm = it["entity_name"].strip().lower()
             op = n2op.get(nm)

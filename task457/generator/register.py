@@ -56,7 +56,9 @@ def _nature(r, kind):
 
 
 def profiles(fac, r):
-    """Each faculty member's covered-recipient profile ids (a few carry two)."""
+    """Each faculty member's covered-recipient profile ids (a few carry two). Some manufacturers registered a faculty
+    member under a profile of their own without the NPI (the duplicate profile carries the faculty member's name and
+    practice address); that manufacturer's records sit on it."""
     pid = 410000
     for f in fac:
         pid += int(r.integers(3, 900))
@@ -64,6 +66,21 @@ def profiles(fac, r):
         if f.group == "bg" and r.random() < 0.02:
             pid += int(r.integers(3, 900))
             f.profiles.append(str(pid))
+    rd = np.random.default_rng([W.SEED, 16])
+    want = {"consulting": 7, "speaking": 9, "honoraria": 5, "advisory": 3}
+    pool = [f for f in fac if f.group == "bg" and f.cred in ("MD", "DO") and f.holds(D(2025, 12, 31))]
+    order = [pool[int(k)] for k in rd.permutation(len(pool))]
+    for f in order:
+        rels = [rel for rel in f.rels if rel["mfr"] and 2025 in rel["years"] and want.get(rel["kind"], 0) > 0
+                and not rel.get("now_reporting") and not rel.get("typed_former")]
+        if not rels:
+            continue
+        rel = rels[int(rd.integers(len(rels)))]
+        want[rel["kind"]] -= 1
+        pid += int(rd.integers(3, 900))
+        f.dup_profile, f.dup_mfr = str(pid), rel["mfr"]
+        if not any(want.values()):
+            break
     return pid
 
 
@@ -107,10 +124,12 @@ def records(fac, mfrs, namesakes):
             for y, a in sorted(rel["years"].items()):
                 if y > 2025:
                     continue
+                dup = getattr(f, "dup_mfr", None) == rel["mfr"]
                 for day, amt in rel["pay"][y]:
                     rec = Rec(f=f, year=y, mfr=m, amount=amt, date=day,
                               nature=nat if rr.random() < 0.85 else _nature(rr, rel["kind"]),
-                              personal=True, npi_blank=rr.random() < blank_rate, kind=rel["kind"], remun=True)
+                              personal=True, npi_blank=dup or rr.random() < blank_rate, kind=rel["kind"], remun=True,
+                              dup=dup)
                     out.append(rec)
                 if third and rel["kind"] == "speaking" and rr.random() < 0.6:
                     # a speaker fee the faculty member directed to the university

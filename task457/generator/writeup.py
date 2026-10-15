@@ -51,57 +51,57 @@ def main():
              "closer than any that reads a disclosure as covering its whole year.\n" % f["faculty_estimated_2025"])
     L.append("## 3. Step-by-Step Solution\n")
     L.append("1. Tied each record in open_payments_general_2021-2025_jan2027_extract.csv to a faculty member through its "
-             "covered-recipient profile's NPI (open_payments_covered_recipient_profiles.csv) and the NPI in "
+             "covered-recipient profile's NPI (open_payments_covered_recipient_profiles.csv; a profile without one through "
+             "the profile with an NPI, the same name and the same address) and the NPI in "
              "clinical_faculty_appointments.csv, and kept the five remuneration natures paid to the faculty member personally "
              "(policy 2.1 and 2.2), each payment with its Open Payments manufacturer ID and date of payment.")
     L.append("2. Took the version in force of each disclosure in coi_disclosures_2021-2026_export.xlsx with the Eastern date "
              "it was submitted, kept its remuneration items and gave each company its Open Payments ID from "
-             "coi_entity_list.csv, a typed name or a listed company without an ID through the names manufacturers reported "
-             "under in the register.")
-    L.append("3. On each manufacturer-year from 2021 to 2025 that both sources carry, compared the amount disclosed with the "
-             "payments the register shows made by the day that disclosure was submitted, and weighted each faculty member's "
-             "disclosed-to-paid ratio toward the faculty-wide ratio by n/(n+%d), n their manufacturer-years: the weighting "
-             "of this estimate that comes closest under policy 5.4 when the %d faculty members' 2025 estimates are compared "
-             "with their largest 2025 single-manufacturer remuneration in the January 2027 publication."
+             "coi_entity_list.csv, a typed name or a listed company without an ID (under any name the list has shown for it) "
+             "through the names manufacturers reported under in the register.")
+    L.append("3. On the manufacturer-years from 2021 to 2025 that both sources carry, took each faculty member's total "
+             "disclosed over the total the register shows paid by the day each of those disclosures was submitted, and "
+             "weighted it toward the same ratio of totals over the whole faculty by n/(n+%d), n their manufacturer-years: "
+             "of whole-number weightings, the one at which this estimate comes closest under policy 5.4 when the %d faculty "
+             "members' 2025 estimates are compared with their largest 2025 single-manufacturer remuneration in the January "
+             "2027 publication; the forms of the estimate that come closer still name the same fifteen."
              % (f["weighting_k_lines"], f["faculty_estimated_2025"]))
     L.append("4. Divided each 2026 amount disclosed for a manufacturer by the faculty member's weighted ratio and, where the "
              "disclosure in force was submitted in December 2026, by the share of the same manufacturer's 2025 payments to "
              "them made by that month and day (the faculty-wide share where it paid them nothing by then in 2025); took the "
-             "largest for each of the %d faculty members and ranked them: the fifteen above lead, and the sixteenth is %s."
-             % (f["faculty_estimated_2026"], f["first_left_off"]))
-    a = f["ask_a_total"]
-    L.append("5. Counted the faculty holding an appointment on 31 December 2026, one per NPI, by the department of the primary "
-             "appointment that day (department_codes.csv giving the Department of Medicine's successors), and those with no "
-             "submission of the 2026 disclosure under any of their employee numbers in coi_submission_history.csv by %s p.m. "
-             "Eastern on 15 January 2027: %s owed, %d not submitted." % (f["deadline_eastern"], "{:,}".format(a["owed"]),
-                                                                        a["not_submitted"]))
+             "largest for each of the %d faculty members and ranked them: the fifteen above lead."
+             % f["faculty_estimated_2026"])
+    a = f["ask_a"]
+    L.append("5. Counted the faculty holding an appointment on 31 December 2026 in clinical_faculty_appointments.csv, one "
+             "per NPI, and those with no submission of the 2026 disclosure under any of their employee numbers in "
+             "coi_submission_history.csv by %s p.m. Eastern on 15 January 2027 (04:59:59 UTC on 16 January): %s owed, %d "
+             "not submitted." % (f["deadline_eastern"], "{:,}".format(a["owed"]), a["not_submitted"]))
     L.append("6. Summed by nature the 2025 remuneration records tied through the profiles to the faculty holding an "
-             "appointment at any time in 2025, payments made to the university excluded: %s." % money(f["ask_b_total"]))
+             "appointment at any time in 2025, payments made to the university excluded: consulting fees the largest, %s."
+             % money(f["ask_b"]["Consulting fees"]))
     L.append("7. Summed by relationship type the 2026 remuneration items in force whose company appears in the register under "
-             "no name: %s." % money(f["ask_c_total"]))
+             "no name, the names a listed company has carried on the list included: expert testimony the largest, %s."
+             % money(f["ask_c"]["Expert testimony"]))
     L.append("8. Recommendation: the fifteen above form the docket for 11 February 2027.\n")
     L.append("## 4. Deliverable Answers\n")
     L.append("### coi_committee_docket_2027-02.docx\n")
     L.append("1. The fifteen faculty members on the docket, each with the manufacturer of their largest 2026 remuneration:")
     for m in mem:
         L.append("   - %s: %s" % (m["name"], m["manufacturer"]))
-    L.append("2. Horizontal bar chart on page 2: the fifteen members' estimated 2026 remuneration from a single manufacturer "
-             "and, in grey below a dashed line, the sixteenth, %s." % f["first_left_off"])
-    L.append("3. Faculty who owed a 2026 disclosure and, of them, those who had not submitted it by %s p.m. Eastern on 15 "
-             "January 2027, by department:" % f["deadline_eastern"])
-    for k, v in f["ask_a"].items():
-        L.append("   - %s: %s owed, %d not submitted" % (k, "{:,}".format(v["owed"]), v["not_submitted"]))
-    L.append("   - All departments: %s owed, %d not submitted" % ("{:,}".format(a["owed"]), a["not_submitted"]))
-    L.append("4. The 2025 remuneration Open Payments last published to faculty with appointments in 2025, by nature of "
+    L.append("2. Horizontal bar chart on page 2: the fifteen members' estimated 2026 remuneration from a single "
+             "manufacturer, largest first, the December 2026 submissions in a lighter shade.")
+    L.append("3. Faculty who owed a 2026 disclosure: %s" % "{:,}".format(a["owed"]))
+    L.append("4. Of them, faculty who had not submitted it by %s p.m. Eastern on 15 January 2027: %d"
+             % (f["deadline_eastern"], a["not_submitted"]))
+    L.append("5. The 2025 remuneration Open Payments last published to faculty with appointments in 2025, by nature of "
              "payment, to the nearest thousand dollars:")
     for k, v in f["ask_b"].items():
         L.append("   - %s: %s" % (k, money(v)))
-    L.append("   - All five natures: %s" % money(f["ask_b_total"]))
-    L.append("5. 2026 remuneration the faculty disclosed from companies that do not report to Open Payments, by relationship "
+    L.append("6. 2026 remuneration the faculty disclosed from companies that do not report to Open Payments, by relationship "
              "type, to the nearest thousand dollars:")
     for k, v in f["ask_c"].items():
         L.append("   - %s: %s" % (k, money(v)))
-    L.append("   - All types: %s\n" % money(f["ask_c_total"]))
+    L[-1] += "\n"
     L.append("### faculty_remuneration_2026_conformed.csv\n")
     L.append("1. %s rows, one per faculty member and year from 2021 to 2026 in which they owed a disclosure, under the "
              "employee number holding the appointment that 31 December, each with the remuneration disclosed, the number of "

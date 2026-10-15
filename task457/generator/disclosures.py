@@ -102,7 +102,9 @@ def build(fac, mfrs):
                 extra.append(("", "Royalty income, Marrowfield University technology license", "Royalties or licensing",
                               float(rr.integers(2, 30)) * 500.0))
             for c in equity.get((f.emp_id, y), []):
-                extra.append((by_company[c]["entity_id"], c, "Equity", None))
+                # the item shows the company's name as the list carried it when the item was entered
+                shown = W.NOW_REPORTING_FORMER.get(c, c) if D(y + 1, 1, 20) < W.NOW_REPORTING_RENAMED_ON else c
+                extra.append((by_company[c]["entity_id"], shown, "Equity", None))
 
             def version_lines(t, perturb=None):
                 got = PE.lines_at(f, y, t)
@@ -151,7 +153,7 @@ def build(fac, mfrs):
                     if nr and y == 2026:
                         k = nr[int(rr.integers(len(nr)))]
                         e, nm, ty, d, key = cand[k]
-                        cand[k] = (e, nm, ty, max(100.0, round(d * float(rr.choice([0.5, 0.75, 1.5, 2.0])) / 100) * 100), key)
+                        cand[k] = (e, nm, ty, max(100.0, round(d * float(rr.choice([0.5, 0.7, 1.5, 2.0])) / 100) * 100), key)
                     elif cand and rr.random() < 0.6:
                         movable = [k for k, row in enumerate(cand) if row[4] is not None]
                         if movable:

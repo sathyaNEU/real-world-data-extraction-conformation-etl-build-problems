@@ -45,6 +45,9 @@ OP_COLUMNS = [
     "Name_of_Drug_or_Biological_or_Device_or_Medical_Supply_1", "Program_Year", "Payment_Publication_Date",
     "ORICOI_Matched_Emp_ID",
 ]
+NS_CITIES = [("Toledo", "OH"), ("Dayton", "OH"), ("Akron", "OH"), ("Youngstown", "OH"), ("Canton", "OH"), ("Erie", "PA"),
+             ("Wheeling", "WV"), ("Fort Wayne", "IN"), ("Lansing", "MI"), ("Evansville", "IN"), ("Peoria", "IL"),
+             ("Duluth", "MN"), ("Spokane", "WA"), ("Tulsa", "OK"), ("Reno", "NV")]
 TRAVEL = [("Chicago", "IL"), ("Orlando", "FL"), ("Boston", "MA"), ("San Diego", "CA"), ("New Orleans", "LA"),
           ("Philadelphia", "PA"), ("Nashville", "TN"), ("Denver", "CO"), ("Atlanta", "GA"), ("Las Vegas", "NV")]
 AREAS = {"CARD": "Cardiology", "ORTH": "Orthopedics", "HEON": "Oncology", "NEUR": "Neurology", "PSYC": "Psychiatry",
@@ -88,10 +91,8 @@ def register_rows(recs, mfrs, namesakes_by_npi):
         is_ns = rec.get("namesake", False)
         prof = _profile(rec)
         if is_ns:
-            city = ["Toledo", "Dayton", "Akron", "Youngstown", "Canton", "Erie", "Wheeling", "Fort Wayne", "Lansing",
-                    "Evansville", "Peoria", "Duluth", "Spokane", "Tulsa", "Reno"][int(f.city)]
-            st = ["OH", "OH", "OH", "OH", "OH", "PA", "WV", "IN", "MI", "IN", "IL", "MN", "WA", "OK", "NV"][int(f.city)]
-            addr = ("%d %s" % (200 + int(f.npi[-4:]) % 4000, "Professional Drive"), city, st, "%05d" % (40000 + int(f.npi[-5:]) % 9000))
+            city, st = NS_CITIES[int(f.city)]
+            addr = (_ns_street(f.npi), city, st, "%05d" % (40000 + int(f.npi[-5:]) % 9000))
             spec = W.SPECIALTY[f.twin.dept]
             ptype = "Medical Doctor"
             lic = st
@@ -107,6 +108,8 @@ def register_rows(recs, mfrs, namesakes_by_npi):
         npi = "" if rec["npi_blank"] else f.npi
         name_m = f.middle if r.random() < 0.6 else ""
         mname = W.former_name(m) if (m["index"] in W.RENAMED and rec["year"] <= 2024) else m["name"]
+        if m["name"] in W.NOW_REPORTING_FORMER and rec["year"] <= 2025:
+            mname = W.NOW_REPORTING_FORMER[m["name"]]
         nature = rec["nature"]
         travel = ("", "", "")
         if nature == "Travel and Lodging":
@@ -149,6 +152,8 @@ def _profile(rec):
     f = rec["f"]
     if rec.get("namesake"):
         return f.profile
+    if rec.get("dup"):
+        return f.dup_profile
     return f.profiles[-1] if (len(f.profiles) > 1 and rec["date"].toordinal() % 3 == 0) else f.profiles[0]
 
 
@@ -204,6 +209,15 @@ def write_register(rows, path):
     return _w(path, OP_COLUMNS, rows)
 
 
+NS_STREETS = ["Professional Drive", "Medical Park Boulevard", "Corporate Drive", "Physicians Plaza", "Wellness Way",
+              "Commerce Parkway", "Executive Court", "Healthplex Drive", "Main Street", "Oak Grove Road"]
+
+
+def _ns_street(npi):
+    """A namesake's practice address in another city."""
+    return "%d %s" % (200 + int(npi[-4:]) % 4000, NS_STREETS[int(npi[-7:-4]) % len(NS_STREETS)])
+
+
 def write_profiles(fac, namesakes, path):
     rows = []
     for f in fac:
@@ -212,8 +226,14 @@ def write_profiles(fac, namesakes, path):
             rows.append([p, f.npi, f.first, f.middle, f.last, "", "MEDICAL DOCTOR" if f.cred in ("MD", "DO") else
                          ("NURSE PRACTITIONER" if f.cred == "NP" else "PHYSICIAN ASSISTANT"), street, W.CITY, W.STATE,
                          zp, "OH"])
+        if getattr(f, "dup_profile", None):
+            street, zp = W.CAMPUS[f.dept]
+            rows.append([f.dup_profile, "", f.first, "", f.last, "", "MEDICAL DOCTOR", street, W.CITY, W.STATE, zp, ""])
     for ns in namesakes:
-        rows.append([ns.profile, ns.npi, ns.first, ns.middle, ns.last, "", "MEDICAL DOCTOR", "", "", "", "", ""])
+        city, st = NS_CITIES[int(ns.city)]
+        rows.append([ns.profile, ns.npi if int(ns.npi[-1]) % 3 else "", ns.first, ns.middle, ns.last, "", "MEDICAL DOCTOR",
+                     _ns_street(ns.npi), city, st,
+                     "%05d" % (40000 + int(ns.npi[-5:]) % 9000), st])
     rows.sort(key=lambda x: int(x[0]))
     header = ["Covered_Recipient_Profile_ID", "Covered_Recipient_NPI", "Covered_Recipient_Profile_First_Name",
               "Covered_Recipient_Profile_Middle_Name", "Covered_Recipient_Profile_Last_Name",
@@ -350,10 +370,10 @@ def write_nih(fac, path):
         num = int(r.integers(100000, 999999))
         amt = int(np.exp(r.normal(np.log(410000), 0.6)))
         rows.append(["%s%s%06d-%02d" % ("1" if r.random() < 0.3 else "5", act, num, int(r.integers(1, 6))), act, ic,
-                     "%s, %s" % (f.last.upper(), f.first.upper()), f.npi if r.random() < 0.0 else "", W.ORG.upper(),
+                     "%s, %s" % (f.last.upper(), f.first.upper()), W.ORG.upper(),
                      "MARROWFIELD", "OH", "2025", str(amt)])
     rows.sort(key=lambda x: x[0])
-    header = ["project_number", "activity_code", "administering_ic", "contact_pi_name", "contact_pi_npi", "organization",
+    header = ["project_number", "activity_code", "administering_ic", "contact_pi_name", "organization",
               "org_city", "org_state", "fiscal_year", "total_cost"]
     return _w(path, header, rows)
 
@@ -395,7 +415,7 @@ DICT_FIELDS = [
     ("open_payments_general_*_extract.csv", "Payment_Publication_Date", "The date of the publication the row comes from."),
     ("open_payments_general_*_extract.csv", "ORICOI_Matched_Emp_ID", "The employee number the office's extract routine attached to the record when it pulled the extract."),
     ("open_payments_covered_recipient_profiles.csv", "Covered_Recipient_Profile_ID", "Open Payments' identifier of the profile."),
-    ("open_payments_covered_recipient_profiles.csv", "Covered_Recipient_NPI", "The NPI Open Payments holds for the profile."),
+    ("open_payments_covered_recipient_profiles.csv", "Covered_Recipient_NPI", "The NPI Open Payments holds for the profile; blank where it holds none."),
     ("clinical_faculty_appointments.csv", "emp_id", "The employee number the term was issued under."),
     ("clinical_faculty_appointments.csv", "npi", "The faculty member's NPI."),
     ("clinical_faculty_appointments.csv", "dept_code, division_code", "The department of the term and, where the department had divisions, the division."),

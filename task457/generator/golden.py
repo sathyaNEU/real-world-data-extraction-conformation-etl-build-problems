@@ -1,8 +1,8 @@
 """The two deliverables and figures.json, computed from the bundle alone.
 
 coi_committee_docket_2027-02.docx   the office's docket memo to the committee: the fifteen, each with department and
-                                    manufacturer, a chart of the fifteen estimates beside the sixteenth, and the three
-                                    supporting tables
+                                    manufacturer, a chart of the fifteen estimates, the 2026
+                                    disclosure cycle's two counts and the two supporting tables
 faculty_remuneration_2026_conformed.csv  each faculty member's remuneration from manufacturers for each year 2021 to 2026
                                     they owed a disclosure, disclosed and as Open Payments published it"""
 import csv
@@ -68,21 +68,20 @@ def chart(members, path):
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8.5, "svg.hashsalt": "task457",
                          "pdf.fonttype": 42})
     rows = list(reversed(members))
-    fig, ax = plt.subplots(figsize=(6.6, 4.6), dpi=200)
+    fig, ax = plt.subplots(figsize=(6.6, 4.4), dpi=200)
     labels = ["%s, %s" % (m["last"], m["first"][0] + ".") for m in rows]
     vals = [m["estimate"] / 1000.0 for m in rows]
-    cols = ["#b9bcc2" if k == 0 else "#6b1f2a" for k in range(len(rows))]
+    cols = ["#9c5b64" if m["december"] else "#6b1f2a" for m in rows]
     ax.barh(range(len(rows)), vals, color=cols, height=0.68)
     ax.set_yticks(range(len(rows)))
     ax.set_yticklabels(labels)
     ax.set_xlabel("Estimated 2026 remuneration from one manufacturer (thousands of US dollars)")
-    for k, v in enumerate(vals):
-        ax.text(v + 1.2, k, "%d" % round(v), va="center", fontsize=7.5, color="#1b1d21")
-    ax.axhline(0.5, color="#5d6168", linestyle="--", linewidth=0.8)
-    ax.text(max(vals) * 0.62, 0.0, "first faculty member left off", va="center", fontsize=7.5, color="#5d6168")
+    ax.xaxis.grid(True, color="#e3e4e7", linewidth=0.6)
+    ax.set_axisbelow(True)
     ax.spines[["top", "right"]].set_visible(False)
-    ax.set_xlim(0, max(vals) * 1.12)
-    ax.set_title("The docket's fifteen and the first faculty member left off", fontsize=9.5, loc="left")
+    ax.set_xlim(0, (int(max(vals) / 25) + 1) * 25)
+    ax.set_title("The docket's fifteen, by estimated 2026 remuneration from a single manufacturer", fontsize=9.5,
+                 loc="left")
     fig.tight_layout()
     buf = io.BytesIO()
     fig.savefig(buf, format="png", metadata={"Software": None})
@@ -154,15 +153,16 @@ def write_docket(an, path, png):
          "manufacturer, and all of them were estimated." % an["n2026"], space=6)
     para("Section 5.4 has the office use the estimate that comes closest to the latest year Open Payments has published. "
          "Made from the 2025 disclosures and the years before them, and compared with what Open Payments' January 2027 "
-         "publication shows for each of the %d faculty members estimated for 2025, this one comes closest of the estimates "
-         "the office built. A disclosure carries what each company had paid by the day it was submitted, so a disclosure "
-         "submitted in December misses the payments made after it. Each faculty member's reporting share is measured on "
-         "the manufacturer-years for which both a disclosure and a publication show remuneration, 2021 to 2025, against "
-         "the payments made by the day each disclosure was submitted, and weighted toward the share across the whole "
-         "faculty by the number of those manufacturer-years. Each 2026 amount is divided by that share and, where the "
-         "disclosure was submitted in December, by the share of the year's payments the same manufacturer had made by "
-         "that date the year before. A faculty member's estimate is the largest of their manufacturers'." % an["n2025"],
-         space=6)
+         "publication shows for each of the %d faculty members estimated for 2025, this one comes closer than any estimate "
+         "that reads a disclosure as covering its whole year, and the variants of it that come closer still name the same "
+         "fifteen. A disclosure carries what each company had paid by the day it was submitted, so a disclosure submitted "
+         "in December misses the payments made after it. Each faculty member's reporting share is the total they disclosed "
+         "over the total the register shows paid by the day each disclosure was submitted, on the manufacturer-years for "
+         "which both a disclosure and a publication show remuneration, 2021 to 2025, weighted toward the same share across "
+         "the whole faculty by n/(n+%d), n the number of those manufacturer-years, the whole-number weighting that comes "
+         "closest. Each 2026 amount is divided by that share and, where the disclosure was submitted in December, by the share of the year's "
+         "payments the same manufacturer had made by that date the year before. A faculty member's estimate is the "
+         "largest of their manufacturers'." % (an["n2025"], an["golden"]["K"]), space=6)
     para(("%s of the fifteen submitted their 2026 disclosure in the first days of December, before their retainers' "
           "December installments; corrected as if every disclosure covered the whole year, %s of them would give way to "
           "faculty whose earlier December disclosures made them look like under-reporters. The record also carries "
@@ -179,24 +179,21 @@ def write_docket(an, path, png):
          "from the 2026 disclosure in force on 21 January 2027, rounded to the nearest thousand dollars; an asterisk marks "
          "a disclosure submitted in December 2026.", size=8, italic=True, color="5D6168", space=10)
     doc.add_picture(png, width=Mm(165))
-    para("The sixteenth bar, in grey, is the first faculty member left off: %s (%s)." % (an["members"][15]["name"],
-         an["members"][15]["dept"]), size=8, italic=True, color="5D6168", space=10)
+    para("The lighter bars are the disclosures submitted in December 2026.", size=8, italic=True, color="5D6168",
+         space=10)
 
     ask = an["asks"]
     para("The 2026 disclosure cycle", bold=True, size=11, space=3)
     a = ask["A"]["golden"]
-    rows = [[W.DEPT_NAME[k], "{:,}".format(v[0]), "{:,}".format(v[1])] for k, v in a.items()]
-    rows.append(["All departments", "{:,}".format(sum(v[0] for v in a.values())), "{:,}".format(sum(v[1] for v in a.values()))])
-    table(["Department", "Owed a 2026 disclosure", "Not submitted by the deadline"], rows, [70, 40, 50], right=(1, 2))
-    para("Owed: an appointment on 31 December 2026, each faculty member counted once, in the department of the primary "
-         "appointment that day; a faculty member whose employee number changed in 2026 filed under the number the "
-         "disclosure system holds. Not submitted by the deadline: no submission of the 2026 disclosure by 11:59 p.m. "
-         "Eastern time on 15 January 2027; the disclosure system records times in UTC.", size=8, italic=True,
+    para("%s faculty members owed a 2026 disclosure, and %s of them had not submitted it by 11:59 p.m. Eastern time on "
+         "15 January 2027." % ("{:,}".format(a[0]), "{:,}".format(a[1])), space=3)
+    para("Owed: an appointment on 31 December 2026, each faculty member counted once; a faculty member whose employee "
+         "number changed in 2026 filed under the number the disclosure system holds. Not submitted: no submission of the "
+         "2026 disclosure by the deadline; the disclosure system records times in UTC.", size=8, italic=True,
          color="5D6168", space=10)
     para("Open Payments, 2025: remuneration to the faculty", bold=True, size=11, space=3)
     b = ask["B"]["golden"]
     rows = [[A.NATURE_LABEL[k], "${:,.0f}".format(thousand(v))] for k, v in b.items()]
-    rows.append(["All five", "${:,.0f}".format(thousand(sum(b.values())))])
     table(["Nature of payment", "Published for 2025"], rows, [110, 40], right=(1,))
     para("Open Payments' publication of 15 January 2027. Faculty members who held an appointment at any time in 2025, all "
          "of their 2025 records; records tied to faculty through Open Payments' covered-recipient profiles; payments made "
@@ -205,7 +202,6 @@ def write_docket(an, path, png):
     para("2026 remuneration from companies outside Open Payments", bold=True, size=11, space=3)
     c = ask["C"]["golden"]
     rows = [[k, "${:,.0f}".format(thousand(v))] for k, v in c.items()]
-    rows.append(["All types", "${:,.0f}".format(thousand(sum(c.values())))])
     table(["Relationship type", "Disclosed for 2026"], rows, [110, 40], right=(1,))
     para("From the 2026 disclosures in force: companies that appear in Open Payments under no name, the names "
          "manufacturers reported under in earlier years included; two companies the entity list still shows without an "
@@ -255,7 +251,7 @@ def main(target, out, figures_path):
     os.makedirs(out, exist_ok=True)
     an = analysis(target)
     png = os.path.join(os.path.dirname(figures_path), "docket_chart.png")
-    chart(an["members"], png)
+    chart(an["members"][:15], png)
     write_docket(an, os.path.join(out, DOCKET), png)
     os.remove(png)
     n_rows = write_conformed(an, os.path.join(out, CONFORMED))
@@ -265,7 +261,6 @@ def main(target, out, figures_path):
         "call": sorted(m["name"] for m in mem[:15]),
         "call_members": [{"name": m["name"], "department": m["dept"], "manufacturer": m["manufacturer"],
                           "disclosed_2026": thousand(m["disclosed"])} for m in sorted(mem[:15], key=lambda m: (m["last"], m["first"]))],
-        "first_left_off": mem[15]["name"],
         "faculty_estimated_2026": an["n2026"],
         "faculty_estimated_2025": an["n2025"],
         "weighting_k_lines": an["golden"]["K"],
@@ -273,12 +268,9 @@ def main(target, out, figures_path):
         "under_reporters": an["under"],
         "whole_year_reading_instead": an["unaligned_in"],
         "whole_year_reading_drops": an["unaligned_out"],
-        "ask_a": {W.DEPT_NAME[k]: {"owed": v[0], "not_submitted": v[1]} for k, v in a.items()},
-        "ask_a_total": {"owed": sum(v[0] for v in a.values()), "not_submitted": sum(v[1] for v in a.values())},
+        "ask_a": {"owed": a[0], "not_submitted": a[1]},
         "ask_b": {A.NATURE_LABEL[k]: thousand(v) for k, v in b.items()},
-        "ask_b_total": thousand(sum(b.values())),
         "ask_c": {k: thousand(v) for k, v in c.items()},
-        "ask_c_total": thousand(sum(c.values())),
         "conformed_rows": n_rows,
         "deadline_eastern": "11:59",
         "policy_sections_cited": ["2.1", "2.2", "5.2", "5.4"],
