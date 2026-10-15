@@ -1,0 +1,74 @@
+"""Write task455/metadata.json from the built pack."""
+import json
+import os
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import pack as P    # noqa: E402
+
+F = P.FILES
+SOURCES = {
+    F["deaths"]: "the State Office of Vital Records death records extract for Wendmoor County residents wherever they died and deaths occurring in the county, data years 2019 to 2026, every registered version, as extracted on 11 May 2027",
+    F["receipts"]: "the State Office of Vital Records interstate exchange log of Wendmoor County residents' out-of-state death records and amendments received",
+    F["status"]: "the State Office of Vital Records data year status (close dates)",
+    F["review"]: "the State Office of the Medical Examiner's review of the 2025 drug overdose deaths of Wendmoor County residents (12 February 2027)",
+    F["agreement"]: "the Overdose Reduction Initiative grant agreement ORI-2024-01 with Schedules A and B (22 January 2024)",
+    F["ems"]: "the Wendmoor County EMS Data System patient care reports with naloxone given or a poisoning, overdose, altered mental status or unresponsiveness impression, 2021 to 2026, in the NEMSIS idiom",
+    F["dict"]: "the department's descriptions of the extract's files, fields and code groups",
+    F["manifest"]: "the list of the files in the department's 11 May 2027 extract",
+    F["pop"]: "July 1 population estimates for Wendmoor County by age group and sex, 2019 to 2026",
+    F["naloxone"]: "the initiative's naloxone kit distribution by month and channel, 2024 to 2026",
+}
+DISTRACTORS = [F["pop"], F["naloxone"]]
+DELIVERABLES = ["ori_phase_one_outcome_certification_2026.pdf", "ori_outcome_measures_2019_2026.xlsx"]
+
+
+def rows_of(path):
+    if path.endswith(".csv"):
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            return sum(1 for _ in fh) - 1
+    return None
+
+
+def write(target, out_path):
+    files = []
+    for f in sorted(os.listdir(target)):
+        p = os.path.join(target, f)
+        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
+                      "source": "Constructed: " + SOURCES[f], "date": "2027-05-11",
+                      "license": "CC0-1.0 (original work, constructed for this task)"})
+    big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
+    meta = {
+        "task": "task455",
+        "architecture": 1,
+        "title": "Whether a county's residents' opioid overdose deaths fell at least 20 per cent from 2021 to 2023 to 2026, "
+                 "the death certificates corrected for classification error measured by a medical examiner's full review of "
+                 "2025, so a recovery foundation releases phase two of its overdose initiative",
+        "domain": "Survey Research & Official Statistics",
+        "subdomain": "census-register-administrative-data-quality (a cause-of-death register's two-way classification "
+                     "error measured against a gold-standard review of one year and corrected in every year's count)",
+        "objective": "Data Extraction & Conformation (ETL)",
+        "prompt_shape": "03: a bridge between two totals (for 2021, 2022, 2023 and 2026, the deaths certified with an "
+                        "opioid, the opioid deaths certified without one, the deaths certified with an opioid that no "
+                        "opioid caused, the outcome), with each year's file at its close and the quarterly EMS measure",
+        "as_of": "2027-06-02",
+        "deliverables": DELIVERABLES,
+        "distractor_files": DISTRACTORS,
+        "stated_inputs": ["2026", "2021", "2023", "20", "17", "2027", "2019", "2025"],
+        "field_terms": [],
+        "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
+                        "largest_file": big["path"], "largest_file_rows": big["rows"]},
+        "sources": [{"files": "all files under target/",
+                     "origin": "constructed for this task by task455/generator/build.py (seeded, deterministic) in the "
+                               "idiom of a state vital records death extract with ICD-10 multiple-cause coding, a medical "
+                               "examiner's case review and a NEMSIS-based EMS data system; Wendmoor County, its agencies, "
+                               "decedents, patients and people are fictional.",
+                     "date": "2027-05-11", "license": "CC0-1.0 (original work)"}],
+        "created": "2027-05-11",
+        "generator": "task455/generator/build.py",
+        "files": files,
+    }
+    json.dump(meta, open(out_path, "w"), indent=1)
+    open(out_path, "a").write("\n")
+    return meta

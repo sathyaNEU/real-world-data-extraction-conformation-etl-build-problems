@@ -1,0 +1,118 @@
+{
+ "after_close": {
+  "2019": {
+   "among": 332,
+   "joined": 8,
+   "today": 340
+  },
+  "2020": {
+   "among": 376,
+   "joined": 3,
+   "today": 379
+  },
+  "2021": {
+   "among": 383,
+   "joined": 4,
+   "today": 387
+  },
+  "2022": {
+   "among": 408,
+   "joined": 3,
+   "today": 411
+  },
+  "2023": {
+   "among": 403,
+   "joined": 10,
+   "today": 413
+  },
+  "2024": {
+   "among": 404,
+   "joined": 5,
+   "today": 409
+  }
+ },
+ "baseline": 253,
+ "baseline_years": {
+  "2021": 248,
+  "2022": 262,
+  "2023": 249
+ },
+ "bridge": {
+  "2021": {
+   "certified": 245,
+   "false": 28,
+   "missed": 31,
+   "outcome": 248
+  },
+  "2022": {
+   "certified": 264,
+   "false": 35,
+   "missed": 33,
+   "outcome": 262
+  },
+  "2023": {
+   "certified": 262,
+   "false": 44,
+   "missed": 31,
+   "outcome": 249
+  },
+  "2026": {
+   "certified": 241,
+   "false": 75,
+   "missed": 24,
+   "outcome": 190
+  }
+ },
+ "call": "release",
+ "certified_2026": 241,
+ "certified_baseline_avg": 257.0,
+ "certified_change_pct": 6.2,
+ "change_pct": 24.9,
+ "ems": {
+  "2021Q1": 360,
+  "2021Q2": 372,
+  "2021Q3": 391,
+  "2021Q4": 376,
+  "2022Q1": 364,
+  "2022Q2": 370,
+  "2022Q3": 369,
+  "2022Q4": 359,
+  "2023Q1": 339,
+  "2023Q2": 360,
+  "2023Q3": 368,
+  "2023Q4": 336,
+  "2024Q1": 334,
+  "2024Q2": 339,
+  "2024Q3": 345,
+  "2024Q4": 318,
+  "2025Q1": 326,
+  "2025Q2": 334,
+  "2025Q3": 332,
+  "2025Q4": 319,
+  "2026Q1": 294,
+  "2026Q2": 310,
+  "2026Q3": 322,
+  "2026Q4": 296
+ },
+ "outcome_2026": 190,
+ "pending_2026": 6,
+ "pending_2026_words": "Six",
+ "release_line": 202.5,
+ "review": {
+  "deaths": 408,
+  "opioid": 216,
+  "opioid_certified_no_drug_or_other": 27,
+  "opioid_certified_with_opioid": 189,
+  "other": 64,
+  "other_certified_with_opioid": 0,
+  "sensitivity": 0.875,
+  "stimulant": 128,
+  "stimulant_certified_neither": 16,
+  "stimulant_certified_stimulant_only": 48,
+  "stimulant_certified_with_opioid": 64,
+  "stimulant_listed_with_opioid": 0.5
+ },
+ "rogan_gladen_change_pct": 12.1,
+ "rogan_gladen_false_listing_rate": 0.333,
+ "threshold_pct": 20.0
+}

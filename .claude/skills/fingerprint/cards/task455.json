@@ -10,8 +10,8 @@
   "shape": "03",
   "decision_type": "go_hold_or_stop",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Release phase two: Wendmoor County residents' opioid overdose deaths in 2026 were 24.9 per cent below their 2021 to 2023 average (190 against 253 a year)",
+  "answer_source": "task455/submission.md block 1, from generator/figures.json",
   "gap": [
     "population"
   ],
@@ -34,8 +34,8 @@
   "role_family": "statistical_office_head",
   "scoring_unit": "per certified output",
   "spine": {
-    "file": "death_records_residents_2019_2026.csv",
-    "rows": 0,
+    "file": "wendmoor_death_records_2019_2026.csv",
+    "rows": 55576,
     "entity": "one death record (original or amended) of a county resident or a death occurring in the county",
     "grain": "death record version",
     "source": "synthetic (constructed in the layout of a state vital records death file with multiple-cause ICD-10 codes)"
@@ -60,15 +60,15 @@
   },
   "deliverables": [
     "ori_phase_one_outcome_certification_2026.pdf",
-    "resident_opioid_overdose_deaths_2019_2026.xlsx"
+    "ori_outcome_measures_2019_2026.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "whether",
   "driver": "A register's count of one class is wrong in both directions: it misses some of the class and files in it some units of one neighbouring class only, a class that grows while the counted one shrinks; a full review of one period measures each true class's chance of being filed in each register category, so each period's count is solved from its own register categories, the false entries scaled by the neighbouring class's own visible entries; any multiplicative correction leaves the period-on-period change untouched, and a two-way error rate pooled over every unit outside the class misplaces the false entries as the neighbouring class grows.",
-  "driver_concrete": "Death certificates miss one resident opioid overdose death in eight (certified as an unspecified drug) and list an opioid in a quarter of stimulant overdose deaths where the medical examiner rules it incidental; stimulant deaths roughly doubled from 2021 to 2026 while other drug deaths fell, so the certified opioid count understates the fall. The 2025 full review gives each true class's chance of each certificate category, and only the count solved with the false listings scaled to each year's stimulant certificates meets the 20 per cent target (figures fixed at build).",
-  "stump": "A strong analyst corrects the certified counts with the 2025 review's sensitivity and its false-listing rate over all non-opioid drug deaths (the standard two-by-two correction) and does not certify, because the pooled rate puts the false listings level while the stimulant deaths that produce them grew; the count as certified, a net ratio or the review's predictive values leave the fall where the certificates put it.",
+  "driver_concrete": "The coroner's certificates name no drug on one overdose death in eight (an opioid death so certified is missed) and list fentanyl found but not contributing on half of the methamphetamine and cocaine deaths and on none of the other drug deaths; stimulant deaths grew from about 56 in 2021 to about 149 in 2026 while other drug deaths fell from about 83 to 61. The medical examiner's full review of 2025 gives each class's chance of each certificate category; solving each year's classes from its three certificate categories puts 2026 at 190 against a 2021 to 2023 average of 253, 24.9 per cent below, where the two-by-two correction with one false-listing rate over all non-opioid deaths files 12.1 per cent and the certificates 6.2.",
+  "stump": "A strong analyst corrects every year with the 2025 review's sensitivity (0.875) and one false-listing rate over all non-opioid drug overdose deaths (0.333, the Rogan-Gladen two-by-two) and files a 12.1 per cent fall, the first year of phase two only, because the pooled rate keeps the false listings in step with a pool whose stimulant share rose from 0.40 to 0.71; the certified count, a net ratio and the predictive values file 6.2 to 7.3, rates conditioned on the certificate's drug pattern 9.6 to 13.2.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the death file (residents, final amended records, the drug poisoning underlying causes, the multiple-cause codes), reads the initiative's measure and the medical examiner's 2025 review correctly and corrects each year with the review's sensitivity and specificity over all drug overdose deaths finds the 2026 count short of 20 per cent below the 2021 to 2023 average and does not certify; the certified count, a net ratio and the predictive values do not certify either.",
+  "analyst_test": "A strong analyst who conforms the death file (latest versions, voids, residents wherever they died, the drug poisoning underlying causes, the multiple-cause codes with and without the decimal point), reads Schedule B and the medical examiner's 2025 review correctly and corrects each year with the review's sensitivity and one specificity over all non-opioid drug overdose deaths files a 12.1 per cent fall and the first year of phase two only; the certified count, a net ratio and the predictive values file 6.2 to 7.3 per cent.",
   "domain_test": "The deciding quantity is each year's resident opioid overdose deaths corrected for certificate misclassification, worked as official statistics measures a register's gross classification error against a gold-standard review (a full re-examination of one year) and solves each year's true classes from its register categories through the measured error matrix; with another field's nouns no register files units of a growing neighbouring class into the counted one, and the net-versus-gross distinction has nothing to act on.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -78,7 +78,8 @@
     "task458": "task458 completes a condition count for members observed briefly against a selected full-year reference; task455 measures a certificate's two-way error on a full review and the trap is the pool the false entries come from, with no exposure window.",
     "task230": "task230 measures a category count's net classification bias on the processed part of an output and carries it to a late part processed under a looser rule; task455 has no unprocessed part and no rule change: it measures a register's gross error in both directions on a full review of one year and solves every year's true classes through that error matrix, the decisive point being that the false entries scale with a growing neighbouring class, so the net bias is the wrong object.",
     "task253": "task253 counts units under a line from noisy small-sample averages (shrinkage and posterior probabilities); its lineage adjusts survey nonresponse within classes; task455 has one complete register and a full review of one year, no sampling noise to separate and no nonresponse: the error is classification, measured directly.",
-    "task68": "task68 reads a like-for-like change on a matched panel of continuing units with the qualifying basis recovered from a corpus of settled dispositions; task455 reads a register's change between periods through a measured classification error matrix, with no panel, no succession linking and no corpus."
+    "task68": "task68 reads a like-for-like change on a matched panel of continuing units with the qualifying basis recovered from a corpus of settled dispositions; task455 reads a register's change between periods through a measured classification error matrix, with no panel, no succession linking and no corpus.",
+    "task446": "task446 backs a base rate out of a flagged share through a screen's two error rates, which carry across years while the yield moves; task455 starts where that ends: the two-by-two error rates do not carry here, because the false listings come only from stimulant deaths, a class whose share of the non-opioid deaths doubles, so the pooled false-listing rate moves with the mix, and only the error matrix by true class (opioid, stimulant, other) applied to each year's own certificate categories carries; task446's method is task455's second wrong rung."
   },
   "lineage": [],
   "notes": "Resumed 2026-10-15 from the paused draw of 2026-10-13 (the SROS x ETL pairing ban against task453 has lapsed). Personas from guard.py names --geo 'United States' --seed 455. org_family foundation_or_funder and forum trustees_or_governors: the regional recovery foundation that holds the county's opioid settlement share releases phase two of its grant when its trustees accept the phase-one outcome certification; forcing_event period_close: the phase-one grant period closed with 2026. context_artifact close_out_summary: the phase-one outcome certification. Decisive generator G6 (the composition of the non-opioid drug deaths shifts toward stimulants), G12 and G16 behind it.",
@@ -87,9 +88,9 @@
   "layer1": [
     "several sources for one picture: the state death file extract, the medical examiner's 2025 review, the population estimates, the initiative's measure",
     "vintages and revisions: original and amended death records (a cause pending investigation, later amended)",
-    "imperfect keys: residents dying in other counties and out of state, non-residents dying in the county, the review keyed by state file number",
-    "documentation that has to be read: ICD-10 underlying and record-axis multiple-cause codes, manner of death, resident and occurrence geography",
-    "genuine overlap: the occurrence county's and the residence county's copies of one death",
+    "imperfect keys: residents dying in other counties and out of state, non-residents dying in the county, the review keyed by state file number, an out-of-state death the sending state sent twice under two of the office's numbers",
+    "documentation that has to be read: ICD-10 underlying and record-axis multiple-cause codes, manner of death, resident and occurrence geography, ICD-10-CM poisoning against adverse-effect codes in the EMS impressions",
+    "genuine overlap: the occurrence county's and the residence county's copies of one death; a fire crew's and the ambulance's reports on one patient, the fire districts' ages by year of birth",
     "real coverage: the 2026 file closed at the extract date with amendments arriving"
   ],
   "registered": "2026-10-15T04:30:59Z"
