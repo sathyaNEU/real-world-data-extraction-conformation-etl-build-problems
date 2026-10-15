@@ -1,0 +1,97 @@
+{
+  "task": "task141",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "wave 2 (new). Seed FC12 (a serverless platform's warm-pool memory reservation for next quarter) was read at its header and Situation only, and its world, decision and quantity are not kept: a quarterly compute reservation struck at a capacity cut-off reads as the same project as task140 (a compute cell's quarterly batch guarantee, shipped the day before), so the world is drawn fresh in a client domain no forecasting build has used (criminology-justice, recidivism-risk-assessment). The pitfall is found in how a release decision makes the outcome record: a pretrial outcome exists only for a defendant a magistrate released.",
+  "domain": "criminology-justice",
+  "subdomain": "recidivism-risk-assessment",
+  "client_domain": "criminology-justice",
+  "niche": "a North Carolina county's presumptive pretrial release tier for 2027: which pretrial assessment scores the revised local bail policy releases on a written promise at first appearance without the magistrate's discretion, when every past pretrial outcome on file belongs to a defendant a magistrate chose to release",
+  "objective": "forecasting",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "index_or_score",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G9",
+    "G12",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_model",
+  "stakeholder_role": "the research analyst in the county's Pretrial Services office, who prepares the score tier for the bail policy revision",
+  "role_family": "research_desk",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "first_appearances_2024-03-04_2026-09-30.csv",
+    "rows": 0,
+    "entity": "one defendant's first appearance before a magistrate after an arrest",
+    "grain": "first appearance",
+    "source": "constructed (the court case management system's first-appearance export)"
+  },
+  "forum": "other",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States: North Carolina (a fictional county, Dorrance County, and its judicial district; the court structure is North Carolina's, the people, systems and data are fictional)",
+    "currency": "USD",
+    "org_type": "county pretrial services office and the district's magistrates",
+    "invented_names": [
+      "Dorrance County",
+      "Dorrance County Pretrial Services",
+      "Pretrial Assessment Scale",
+      "Halsey County"
+    ],
+    "people": [
+      "Lauren Mullins",
+      "Teresa Diaz",
+      "Kristen Thompson",
+      "Zachary Henson",
+      "Jeffrey Francis",
+      "Gina Yoder",
+      "Colleen Cameron"
+    ]
+  },
+  "deliverables": [
+    "presumptive_release_tier_2027.docx",
+    "presumptive_release_tier_2027.xlsx",
+    "held_bed_days_by_score.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "Outcomes are recorded only for the units a decision-maker let through, and the decision-makers, who sit by rota and so meet like caseloads, let through very different shares; a rule that lets every unit at a level through has to be priced at the rate the whole level would show, read from how outcomes per unit rise with each decision-maker's let-through share out to all let through, while any rate, model or reweighting fitted on the units already let through keeps the decision-makers' own selection and understates it.",
+  "driver_concrete": "Dorrance County's magistrates hold at first appearance the eligible defendants they judge riskiest from what the Pretrial Assessment Scale cannot see, and the magistrates on the duty rota hold from about 2 to 30 per cent of score-4 defendants, so the presumptive tier's projected safety rate at each score is read from the new-offence arrests per eligible first appearance each magistrate's caseload shows against the share that magistrate released, carried out to every eligible defendant released: score 4 falls below the policy's 85 per cent floor, while the score-4 defendants magistrates released show about 87 per cent.",
+  "stump": "A competent solver links the screens to the first appearances, keeps the eligible charges, counts a new-offence arrest within 365 days of release or before disposition, takes each score's safety rate among the eligible defendants magistrates released (or fits a model on them) and files scores 1 to 4 (score 4 at about 87 per cent); the step that lands it there is reading the released defendants as the tier's population, when magistrates held the score-4 defendants they judged riskiest and the tier releases them all: read from the magistrates' differing release shares, score 4 falls to about 81 per cent and the tier is scores 1 to 3.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who links every file correctly, applies the policy's eligibility rules and the 365-day window and computes each score's safety rate among the eligible defendants magistrates released (or fits a logistic model with the defendants' charges and records on them, or reweights them to the eligible population) files scores 1 to 4, score 4 at about 87 per cent; only reading each score's rate for every eligible defendant from the magistrates' differing release shares drops score 4 below 85 per cent and files scores 1 to 3.",
+  "domain_test": "The deciding quantity is the pretrial new-offence rate each score's eligible defendants would show if every one were released, which pretrial research estimates from the release shares and outcomes of magistrates assigned by rota (the selective-labels problem of risk assessment: outcomes exist only for the released); with another field's nouns there is no first appearance, no pretrial window to disposition and no duty rota of magistrates, and replacing the leniency estimate with the released defendants' own rate files a different tier.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "criminology-justice/recidivism-risk-assessment/5",
+  "layer1": [
+    "a court case management system replaced on 4 March 2024, so first appearances come in two exports with different layouts, case-number formats and magistrate keys (initials before, employee numbers after)",
+    "pretrial screens keyed by booking number and name and date of birth, joined to first appearances that carry the court's own party and case numbers",
+    "jail booking and release times in UTC beside court times in Eastern local time",
+    "a state arrest extract matched to defendants by state identification number, with arrests for warrants on old offences mixed in with new-offence arrests",
+    "offence codes recoded at the system change, joined through the clerk's crosswalk",
+    "dispositions in a separate export, some cases still open at the extract",
+    "documents that have to be read (the current bail policy, the draft revision, the scale's scoring guide, the extract notes)"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Client domain criminology-justice, task type recidivism-risk-assessment (forecasting): the call is the pretrial new-offence rate each score's eligible defendants would show in 2027 under a tier that releases all of them, a forecast for a population the outcome record has never seen whole. Stump strategy population_selection (F7): the outcome record covers only the defendants magistrates released, a selection on what the magistrates saw; the correction is the comparison the rota's quasi-random assignment allows (each magistrate's rearrests per eligible case against that magistrate's release share), never a reweighting on what the record shows. Gate G forecasting: the history is read correctly and the decision turns on the projection for a population the history covers only in part. Generators: G9 decisive (the measured outcome exists only for the kept units), G12 (a held defendant's missing outcome is a non-answer, never a zero), G13 (the 365-day window and the open cases at the extract). Calibration none. Forum other: the district's senior resident superior court judge issues the local bail policy after consulting the chief district court judge, a judicial order rather than a forum. Forcing event statutory_or_regulatory_filing: the revised policy has to be issued and filed with the clerk by 1 December 2026 to take effect on 1 January 2027. Context artifact filed_model: the Pretrial Assessment Scale's scoring guide (items, points, the six-point new-criminal-activity scale), which states no outcome rate. Role family research_desk.",
+  "registered": "2026-10-15T01:03:47Z"
+}
