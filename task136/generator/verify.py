@@ -1,7 +1,8 @@
 """Independent verifier for task136. Reads only the shipped bundle (target/) and the golden workbook, imports nothing
-from the generator, and recomputes on its own code path (csv, openpyxl, pypdf; no pandas): the base forecast, the
-seven campaigns and the yield carried on each suburb's own uptake, the 2026 campaigns, every feeder's excess, the
-call, the default path, the textbook reflex and the window variants, and the four DER Register figures by feeder.
+from the generator, and recomputes on its own code path (csv, openpyxl, pypdf; no pandas): the base forecast, what each
+of the seven campaigns added against suburbs whose campaign had not yet run (and against never-treated suburbs), the
+2026 campaigns, every feeder's excess, the call, the default path, the textbook transfer and each suburb's own before
+and after, and the four DER Register figures by feeder.
 Exits non-zero on any disagreement with the golden.
 
     python3 task136/generator/verify.py [target] [golden]"""
@@ -162,57 +163,43 @@ def avg_new(B):
 
 
 # ------------------------------------------------------------------------------------------------------------------
-# the campaigns: each suburb's owner-occupied houses, their first applications, the pool at the opening
+# the campaigns: each suburb's owner-occupied houses and the day each first applied
 
-def first_dates(B, use="received"):
+def add_months(d, n):
+    y, m = divmod(d.month - 1 + n, 12)
+    return dt.date(d.year + y, m + 1, d.day)
+
+
+def house_first(B):
+    """Locality -> list of first-application dates (None for a house without one) over its owner-occupied houses
+    (land use 02, rating R1), each house's earliest non-withdrawn application across its NMIs."""
     first = {}
     for a in B["apps"]:
         if a["status"] == "Withdrawn":
             continue
-        d = a["received"] if use == "received" else a["connected"]
-        if d is not None and (a["nmi"] not in first or d < first[a["nmi"]]):
-            first[a["nmi"]] = d
-    return first
-
-
-def oo_nmis(B, suburb):
-    out = []
+        if a["nmi"] not in first or a["received"] < first[a["nmi"]]:
+            first[a["nmi"]] = a["received"]
+    out = defaultdict(list)
     for r in B["rates"]:
-        if r["land_use_code"] == "02" and r["rating_category"] == "R1" and r["locality"] == suburb.upper():
-            out.extend(B["xref"].get(r["property_no"], []))
+        if r["land_use_code"] == "02" and r["rating_category"] == "R1":
+            ds = [first[n] for n in B["xref"].get(r["property_no"], []) if n in first]
+            out[r["locality"]].append(min(ds) if ds else None)
     return out
 
 
-def suburb_feeder(B, suburb):
-    c = Counter(B["feeder"][n] for n, loc in B["locality"].items() if loc == suburb)
-    assert len(c) == 1, (suburb, c)
-    return next(iter(c))
+def between(ds, a, b):
+    return sum(1 for d in ds if d is not None and a <= d < b)
 
 
-def stats(B, name, opening, first, firstc):
-    nm = oo_nmis(B, name)
-    res = [n for n, loc in B["locality"].items() if loc == name and B["tariff"][n] == "Residential"]
-
-    def count(f, nmis, days):
-        return sum(1 for n in nmis if n in f and opening - dt.timedelta(days=days) <= f[n] < opening)
-    out = dict(feeder=suburb_feeder(B, name), oo=len(nm), n365=count(first, nm, 365), n730=count(first, nm, 730) / 2.0,
-               n1095=count(first, nm, 1095) / 3.0, conn=count(firstc, nm, 365), all=count(first, res, 365), res=len(res))
-    out["untapped"] = sum(1 for n in nm if not (n in first and first[n] < opening))
-    u365 = sum(1 for n in nm if not (n in first and first[n] < opening - dt.timedelta(days=365)))
-    t0 = opening - dt.timedelta(days=365)
-    pt = 0.0
-    for n in nm:
-        d = first.get(n)
-        if d is None or d >= opening:
-            pt += 1.0
-        elif d >= t0:
-            pt += (d - t0).days / 365.0
-    out["rate"] = out["n365"] / u365 * out["untapped"]
-    out["persontime"] = out["n365"] / pt * out["untapped"]
-    return out
+def without(ds, t):
+    return sum(1 for d in ds if d is None or d >= t)
 
 
-def campaigns(B, first, firstc):
+def campaign_rows(B, HF, mode="nyt", pre=12, prepost=False):
+    """For each past campaign: the houses without PV at the opening, the program-referenced systems, the first
+    applications in the 12 months before and in the 36 months from the opening (to the base date when sooner), what
+    the suburb would have lodged without the campaign (its own pre-year count scaled by the change in suburbs whose
+    campaign had not yet run), and what the campaign added."""
     refs = defaultdict(list)
     for a in B["apps"]:
         if a["program"] and a["type"] == "New" and a["status"] in LIVE:
@@ -222,30 +209,56 @@ def campaigns(B, first, firstc):
         locs = Counter(B["locality"][a["nmi"]] for a in xs)
         assert len(locs) == 1, (ref, locs)
         ref_suburb[next(iter(locs))] = ref
+    opening = {}
+    for row in B["log"]:
+        d = row["Sign-ups opened"]
+        opening[row["Suburb"]] = d.date() if isinstance(d, dt.datetime) else d
+    for s in SUBURBS_2026:
+        opening[s] = OPEN_2026
+    campaign_suburbs = set(opening)
+    never = sorted({loc for loc in B["locality"].values()} - campaign_suburbs)
     out = []
     for row in B["log"]:
         name = row["Suburb"]
-        opening = row["Sign-ups opened"]
-        opening = opening.date() if isinstance(opening, dt.datetime) else opening
-        st = stats(B, name, opening, first, firstc)
-        st.update(suburb=name, opening=opening, letterboxed=int(row["Homes letterboxed"]),
-                  systems=len(refs[ref_suburb[name]]), systems_log=int(row["Systems installed"]))
-        out.append(st)
-    return out
+        op = opening[name]
+        end = min(add_months(op, 36), BASE + dt.timedelta(days=1))
+        p0 = add_months(op, -pre)
+        ds = HF[name.upper()]
+        post, pre_n = between(ds, op, end), between(ds, p0, op)
+        if prepost:
+            cf = pre_n * ((end - op).days / 365.25) / (pre / 12.0)
+        else:
+            comp = [s for s, o in opening.items() if o >= end and s != name] if mode in ("nyt", "both") else []
+            if mode in ("never", "both"):
+                comp = comp + never
+            cp = sum(between(HF[s.upper()], op, end) for s in comp)
+            cq = sum(between(HF[s.upper()], p0, op) for s in comp)
+            cf = pre_n * cp / cq
+        res = [n for n, loc in B["locality"].items() if loc == name and B["tariff"][n] == "Residential"]
+        out.append(dict(suburb=name, opening=op, pool=without(ds, op), systems=len(refs[ref_suburb[name]]),
+                        systems_log=int(row["Systems installed"]), letterboxed=int(row["Homes letterboxed"]),
+                        res=len(res), oo=len(ds), post=post, pre=pre_n, cf=cf, net=post - cf))
+    return out, never
 
 
-def pools(B, first, firstc):
+def pools_2026(B, HF):
     out = {}
     for name in SUBURBS_2026:
-        st = stats(B, name, OPEN_2026, first, firstc)
-        st.update(letterboxed=B["letter"][name])
-        out[name] = st
+        ds = HF[name.upper()]
+        res = [n for n, loc in B["locality"].items() if loc == name and B["tariff"][n] == "Residential"]
+        out[name] = dict(feeder=suburb_feeder(B, name), pool=without(ds, OPEN_2026), oo=len(ds),
+                         letterboxed=B["letter"][name], res=len(res))
     return out
 
 
-def pooled_lift(camps, pl, basis):
-    """NPP-114 4.2: the past programs' total systems over their combined total of the quantity the rate is per."""
-    rate = sum(c["systems"] for c in camps) / sum(c[basis] for c in camps)
+def suburb_feeder(B, suburb):
+    c = Counter(B["feeder"][n] for n, loc in B["locality"].items() if loc == suburb)
+    assert len(c) == 1, (suburb, c)
+    return next(iter(c))
+
+
+def pooled_lift(rows, pl, measure, basis):
+    rate = sum(c[measure] for c in rows) / sum(c[basis] for c in rows)
     return rate, {k: rate * p[basis] for k, p in pl.items()}
 
 
@@ -333,32 +346,24 @@ def main(target, golden):
     B = read(target)
     feeders = B["feeders"]
     check(len(feeders) == 8 and set(B["hc29"]) == set(feeders), "eight feeders with a 2029 hosting capacity")
-    check("A rate taken from past programs is their total systems divided by their combined total of the quantity the "
-          "rate is expressed per." in B["npp"], "NPP-114 4.2")
+    check("the impact on the feeder's connected capacity at the design point of each program" in B["npp"], "NPP-114 4.1")
+    check("rate taken from past programs" not in B["npp"].lower(), "NPP-114 files a pooled rate")
     check("1 September 2026" in B["letter_text"], "the letter's opening date")
     cap, trend, base = base_forecast(B)
     avg = avg_new(B)
-    first, firstc = first_dates(B), first_dates(B, "connected")
-    camps = campaigns(B, first, firstc)
-    pl = pools(B, first, firstc)
-    check(len(camps) == 7, "seven past campaigns")
+    HF = house_first(B)
+    camps, never = campaign_rows(B, HF)
+    pl = pools_2026(B, HF)
+    check(len(camps) == 7 and len(never) >= 5, "seven past campaigns, suburbs never treated %s" % never)
     for c in camps:
         check(c["systems"] == c["systems_log"], "%s: program references %d, council log %d" % (c["suburb"], c["systems"], c["systems_log"]))
         check(c["letterboxed"] == c["res"], "%s: letterboxed %d, residential NMIs %d" % (c["suburb"], c["letterboxed"], c["res"]))
+        check(c["systems"] >= 1.7 * c["net"], "%s installed only %.2f times what it added" % (c["suburb"], c["systems"] / c["net"]))
     for k, p in pl.items():
         check(p["letterboxed"] == p["res"], "%s: letter %d, residential NMIs %d" % (k, p["letterboxed"], p["res"]))
 
-    # the basis: the seven campaigns agree only per first application in the year before
-    def cv(basis):
-        v = [c["systems"] / c[basis] for c in camps]
-        return statistics.stdev(v) / statistics.fmean(v)
-    cv_up = cv("n365")
-    check(0.06 <= cv_up <= 0.12, "uplift spread %.3f" % cv_up)
-    for basis in ("letterboxed", "oo", "untapped"):
-        check(cv(basis) >= 5 * cv_up, "basis %s spreads only %.3f" % (basis, cv(basis)))
-
-    # the call
-    rate, lift = pooled_lift(camps, pl, "n365")
+    # the call: what each campaign added per house without PV at the opening, pooled, on each 2026 suburb
+    rate, lift = pooled_lift(camps, pl, "net", "pool")
     fc, ex, order, add = forecast(B, base, avg, pl, lift)
     w, ru = order[0], order[1]
     gap = ex[w] - ex[ru]
@@ -376,30 +381,38 @@ def main(target, golden):
         check(abs(row[0] - cap[f]) <= 0.5 + 1e-6 and abs(row[2] - base[f]) <= 0.5 + 1e-6 and abs(row[5] - fc[f]) <= 0.5 + 1e-6,
               "%s forecast row %s against %.1f %.1f %.1f" % (f, row, cap[f], base[f], fc[f]))
         check(abs(row[7] - one_dp(ex[f])) < 1e-9 and row[8] == order.index(f) + 1, "%s excess and rank" % f)
-
-    # the window, the date and the population of the uplift converge on every graded figure
     graded = (w, ru, one_dp(ex[w]), one_dp(ex[ru]), one_dp(gap), one_dp(add["Bindarra Waters"]), one_dp(add["Wattleview"]))
-    for basis in ("n730", "n1095", "conn", "all", "rate", "persontime"):
-        _, lf = pooled_lift(camps, pl, basis)
+
+    def grade(lf):
         _, e2, o2, a2 = forecast(B, base, avg, pl, lf)
-        g2 = (o2[0], o2[1], one_dp(e2[o2[0]]), one_dp(e2[o2[1]]), one_dp(e2[o2[0]] - e2[o2[1]]),
-              one_dp(a2["Bindarra Waters"]), one_dp(a2["Wattleview"]))
-        check(g2 == graded, "uplift variant %s files %s" % (basis, g2))
-    # the default path and the reflex
-    _, lf = pooled_lift(camps, pl, "letterboxed")
-    _, e0, o0, _ = forecast(B, base, avg, pl, lf)
-    check(o0[0] == "YRB24" and e0["YRB24"] / e0[o0[1]] >= 1.15 and o0.index("YRB27") + 1 in (4, 5),
-          "default path files %s (YRB27 %d)" % (o0[0], o0.index("YRB27") + 1))
-    _, lf = pooled_lift(camps, pl, "untapped")
-    _, e1, o1, _ = forecast(B, base, avg, pl, lf)
-    check(o1[0] == "YRB24" and e1["YRB24"] / e1[o1[1]] >= 1.15, "the reflex files %s" % o1[0])
-    _, lf = pooled_lift(camps, pl, "oo")
-    _, e3, o3, _ = forecast(B, base, avg, pl, lf)
-    check(o3[0] != "YRB27", "per owner-occupied house files %s" % o3[0])
+        return (o2[0], o2[1], one_dp(e2[o2[0]]), one_dp(e2[o2[1]]), one_dp(e2[o2[0]] - e2[o2[1]]),
+                one_dp(a2["Bindarra Waters"]), one_dp(a2["Wattleview"])), e2, o2
+    # the comparison read against never-treated suburbs, or both, and other pre-periods: the same figures
+    for mode in ("never", "both"):
+        for pre in (12, 24, 36):
+            rows_, _ = campaign_rows(B, HF, mode=mode, pre=pre)
+            g2, _, _ = grade(pooled_lift(rows_, pl, "net", "pool")[1])
+            check(g2 == graded, "comparison %s, %d months before, files %s" % (mode, pre, g2))
+    for pre in (24, 36):
+        rows_, _ = campaign_rows(B, HF, pre=pre)
+        g2, _, _ = grade(pooled_lift(rows_, pl, "net", "pool")[1])
+        check(g2 == graded, "not yet treated, %d months before, files %s" % (pre, g2))
+    # the default path (installed systems per home letterboxed), the textbook transfer (per house without PV) and
+    # each suburb's own before and after
+    g0_, e0, o0 = grade(pooled_lift(camps, pl, "systems", "letterboxed")[1])
+    check(o0[0] == "YRB24" and e0["YRB24"] - e0["YRB27"] >= 0.1, "default path files %s" % o0[0])
+    g1_, e1, o1 = grade(pooled_lift(camps, pl, "systems", "pool")[1])
+    check(o1[0] == "YRB24" and e1["YRB24"] - e1["YRB27"] >= 0.1, "the textbook transfer files %s" % o1[0])
+    for pre in (12, 24, 36):
+        rows_, _ = campaign_rows(B, HF, pre=pre, prepost=True)
+        g3, e3, o3 = grade(pooled_lift(rows_, pl, "net", "pool")[1])
+        check(o3[0] == "YRB24", "before and after (%d months) files %s" % (pre, o3[0]))
+    g4, _, o4 = grade({k: 0.0 for k in pl})
+    check(o4[0] not in ("YRB27", "YRB24"), "no campaigns files %s" % o4[0])
     # NPP-114 5.1 and the prompt name the design year's case; the 2026 case beside it is another quantity
     check("for the design year's spring minimum-demand case" in B["npp"], "NPP-114 5.1")
-    _, e4, o4, _ = forecast(dict(B, hc29=B["hc26"]), base, avg, pl, lift)
-    check(o4[0] != w or abs(e4[w] - ex[w]) > 0.05, "the 2026 case gives the 2029 figures")
+    _, e5, o5, _ = forecast(dict(B, hc29=B["hc26"]), base, avg, pl, lift)
+    check(o5[0] != w or abs(e5[w] - ex[w]) > 0.05, "the 2026 case gives the 2029 figures")
 
     # the DER Register figures
     sites, new, inv, bat = der_figures(B)
@@ -416,7 +429,7 @@ def main(target, golden):
             print("VERIFY FAIL:", m)
         raise SystemExit(1)
     print("verify: %d checks passed from the bundle alone (%s %.3f MW above hosting capacity, runner-up %s %.3f, gap "
-          "%.3f; Bindarra Waters %.3f MW and Wattleview %.3f MW; %.3f systems per first application)"
+          "%.3f; Bindarra Waters %.3f MW and Wattleview %.3f MW; %.5f systems added per house without PV)"
           % (PASSED[0], w, ex[w], ru, ex[ru], gap, add["Bindarra Waters"], add["Wattleview"], rate))
     return PASSED[0]
 

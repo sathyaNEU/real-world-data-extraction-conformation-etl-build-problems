@@ -54,42 +54,42 @@ PEOPLE = {
 # lam_boom (default lam) its propensity in the Solar Bonus Scheme years 2009 to 2012.
 # Campaign suburbs carry their campaign key.
 LOCALITIES = [
-    dict(name="Glenmorrow", feeder="YRB21", kind="campaign", camp="GLM18", res=3159, oo=1200, rent=520, town=170,
-         biz=38, built=(1972, 1996), lam=0.0240, lam_boom=0.1200),
-    dict(name="Paperbark Grove", feeder="YRB21", kind="campaign", camp="PBG24", res=2881, oo=2072, rent=360, town=120,
-         biz=22, built=(1988, 2004), lam=0.0320, lam_boom=0.0080),
+    dict(name="Glenmorrow", feeder="YRB21", kind="campaign", camp="GLM18", res=3600, oo=2700, rent=600, town=150,
+         biz=38, built=(1972, 1996), lam=0.0208, lam_boom=0.1000),
+    dict(name="Paperbark Grove", feeder="YRB21", kind="campaign", camp="PBG24", res=3000, oo=2400, rent=300, town=150,
+         biz=22, built=(1995, 2010), lam=0.0218, lam_boom=0.0500),
     dict(name="Merindah Heights", feeder="YRB21", kind="rest", res=1150, oo=650, rent=230, town=60, biz=31,
-         built=(1979, 2012), infill=22, lam=0.0246),
-    dict(name="Kurrajong Park", feeder="YRB22", kind="campaign", camp="KJP19", res=4106, oo=3012, rent=480, town=160,
-         biz=26, built=(1985, 2003), lam=0.0750, lam_boom=0.0200),
-    dict(name="Hollow Creek", feeder="YRB22", kind="rest", res=2850, oo=1880, rent=470, town=150, biz=46,
-         built=(1983, 2008), infill=30, lam=0.0269),
-    dict(name="Silky Oak", feeder="YRB23", kind="campaign", camp="SKO22", res=3087, oo=1854, rent=420, town=230,
-         biz=27, built=(1976, 1999), lam=0.0710, lam_boom=0.0060),
+         built=(1979, 2012), infill=22, lam=0.0211),
+    dict(name="Kurrajong Park", feeder="YRB22", kind="campaign", camp="KJP19", res=4500, oo=3600, rent=500, town=160,
+         biz=26, built=(1985, 2003), lam=0.0219, lam_boom=0.0600),
+    dict(name="Hollow Creek", feeder="YRB22", kind="rest", res=3800, oo=2700, rent=600, town=160, biz=46,
+         built=(1996, 2012), infill=30, lam=0.0206),
+    dict(name="Silky Oak", feeder="YRB23", kind="campaign", camp="SKO22", res=4400, oo=3400, rent=500, town=300,
+         biz=27, built=(1976, 1999), lam=0.0203, lam_boom=0.0600),
     dict(name="Tanners Flat", feeder="YRB23", kind="rest", res=1600, oo=880, rent=330, town=90, biz=58,
-         built=(1968, 2006), infill=18, lam=0.0189),
+         built=(1968, 2006), infill=18, lam=0.0200),
     dict(name="Yarrabin North", feeder="YRB21", postcode="4514", kind="transfer", res=380, oo=250, rent=70, town=20, biz=6,
          built=(1990, 2010), infill=6, lam=0.0216),
-    dict(name="Bindarra Waters", feeder="YRB24", kind="campaign26", camp="BDW26", res=6240, oo=5570, rent=390,
-         town=210, biz=24, built=(2018, 2023), lam=0.0073),
+    dict(name="Bindarra Waters", feeder="YRB24", kind="campaign26", camp="BDW26", res=10440, oo=7040, rent=2500,
+         town=500, biz=24, built=(2005, 2014), lam=0.0212, lam_boom=0.0120),
     dict(name="Myrtle Vale", stream="Bindarra Road", feeder="YRB24", kind="rest", res=420, oo=330, rent=60, town=0, biz=9,
-         built=(1975, 2015), infill=10, lam=0.0311),
-    dict(name="Tallowwood Rise", feeder="YRB25", kind="campaign", camp="TWR21", res=5222, oo=2552, rent=2210, town=150,
-         biz=21, built=(2012, 2018), lam=0.0140),
+         built=(1975, 2015), infill=10, lam=0.0209),
+    dict(name="Tallowwood Rise", feeder="YRB25", kind="campaign", camp="TWR21", res=9000, oo=7400, rent=1200, town=200,
+         biz=21, built=(2005, 2013), lam=0.0205, lam_boom=0.0500),
     dict(name="Coachwood Park", feeder="YRB25", kind="rest", res=950, oo=560, rent=200, town=50, biz=17,
-         built=(1990, 2010), infill=14, lam=0.0224),
-    dict(name="Bunya Ridge", feeder="YRB26", kind="campaign", camp="BNR23", res=5154, oo=2622, rent=760, town=340,
-         biz=44, built=(1980, 2002), lam=0.0210, lam_boom=0.1050),
+         built=(1990, 2010), infill=14, lam=0.0213),
+    dict(name="Bunya Ridge", feeder="YRB26", kind="campaign", camp="BNR23", res=4000, oo=3000, rent=500, town=300,
+         biz=44, built=(1980, 2002), lam=0.0210, lam_boom=0.0900),
     dict(name="Bloodwood", stream="Mount Cotter", feeder="YRB26", kind="rest", res=650, oo=500, rent=110, town=0, biz=12,
-         built=(1970, 2016), infill=12, lam=0.0285),
-    dict(name="Wattleview", feeder="YRB27", kind="campaign26", camp="WTV26", res=5240, oo=4790, rent=150, town=60,
-         biz=18, built=(2019, 2023), lam=0.0538),
-    dict(name="Jacaranda Gardens", feeder="YRB27", kind="rest", res=2600, oo=1620, rent=520, town=140, biz=37,
-         built=(1980, 2009), infill=24, lam=0.0238),
-    dict(name="Ironbark Hill", feeder="YRB28", kind="campaign", camp="IBH22", res=2481, oo=1820, rent=300, town=90,
-         biz=16, built=(1986, 2002), lam=0.0300, lam_boom=0.0500),
-    dict(name="Ferndale Rise", feeder="YRB28", kind="rest", res=2200, oo=1380, rent=420, town=120, biz=33,
-         built=(1982, 2011), infill=20, lam=0.0231),
+         built=(1970, 2016), infill=12, lam=0.0218),
+    dict(name="Wattleview", feeder="YRB27", kind="campaign26", camp="WTV26", res=3060, oo=2790, rent=180, town=90,
+         biz=18, built=(2007, 2014), lam=0.0207, lam_boom=0.0120),
+    dict(name="Jacaranda Gardens", feeder="YRB27", kind="rest", res=3400, oo=2400, rent=560, town=140, biz=37,
+         built=(1998, 2012), infill=24, lam=0.0204),
+    dict(name="Ironbark Hill", feeder="YRB28", kind="campaign", camp="IBH22", res=4100, oo=3400, rent=450, town=150,
+         biz=16, built=(1986, 2002), lam=0.0215, lam_boom=0.0600),
+    dict(name="Ferndale Rise", feeder="YRB28", kind="rest", res=3200, oo=2300, rent=500, town=120, biz=33,
+         built=(1996, 2012), infill=20, lam=0.0210),
 ]
 
 # Load transfers between feeders: (locality, share of its streets moved, from, to, date). Yarrabin North moved whole
@@ -107,33 +107,37 @@ TRANSFERS = [
 # campaign's own departure from the suburb's uplift (the installer's offer, the season, the sessions).
 CAMPAIGNS = [
     dict(key="GLM18", suburb="Glenmorrow", open=dt.date(2018, 9, 3), close=dt.date(2018, 11, 23),
-         installer="SunCoast Solar Installations", sessions=2, eps=0.0060),
+         installer="SunCoast Solar Installations", sessions=2, eps=0.0330),
     dict(key="KJP19", suburb="Kurrajong Park", open=dt.date(2019, 9, 2), close=dt.date(2019, 11, 22),
-         installer="Brightline Energy Solutions", sessions=2, eps=-0.0580),
+         installer="Brightline Energy Solutions", sessions=2, eps=-0.0370),
     dict(key="TWR21", suburb="Tallowwood Rise", open=dt.date(2021, 9, 6), close=dt.date(2021, 11, 26),
-         installer="Brightline Energy Solutions", sessions=3, eps=0.0450),
+         installer="Brightline Energy Solutions", sessions=3, eps=0.0180),
     dict(key="SKO22", suburb="Silky Oak", open=dt.date(2022, 3, 7), close=dt.date(2022, 5, 27),
-         installer="Greenhaven Electrical", sessions=2, eps=0.1400),
+         installer="Greenhaven Electrical", sessions=2, eps=0.0450),
     dict(key="IBH22", suburb="Ironbark Hill", open=dt.date(2022, 9, 5), close=dt.date(2022, 11, 25),
-         installer="Greenhaven Electrical", sessions=2, eps=-0.0080),
+         installer="Greenhaven Electrical", sessions=2, eps=-0.0140),
     dict(key="BNR23", suburb="Bunya Ridge", open=dt.date(2023, 9, 4), close=dt.date(2023, 11, 24),
-         installer="SunCoast Solar Installations", sessions=3, eps=-0.1270),
+         installer="SunCoast Solar Installations", sessions=3, eps=-0.0410),
     dict(key="PBG24", suburb="Paperbark Grove", open=dt.date(2024, 9, 2), close=dt.date(2024, 11, 22),
-         installer="Riverstone Solar", sessions=2, eps=-0.0450),
+         installer="Riverstone Solar", sessions=2, eps=0.0070),
 ]
-UPLIFT = 1.18          # a campaign's systems per first application from its suburb's owner-occupied houses in the
-                       # year before sign-ups opened (the clean truth; each campaign departs from it by eps)
+HARVEST_DAYS = 730     # households whose own first application would have come within two years of the opening
+HARVEST_Q0, HARVEST_Q1 = 0.95, 0.55   # the share of them who take the campaign, from the opening to two years on
+CLEAR_DAYS = 1200      # households the campaign brings in from outside the market: no application of their own for
+                       # at least this long
+NEW_B = 0.0415         # households brought in from outside the market, per owner-occupied house without PV at the
+                       # opening (the clean truth; each campaign departs from it by eps)
 CAMPAIGNS_2026 = [
     dict(key="BDW26", suburb="Bindarra Waters", feeder="YRB24", open=dt.date(2026, 9, 1), close=dt.date(2026, 11, 27)),
     dict(key="WTV26", suburb="Wattleview", feeder="YRB27", open=dt.date(2026, 9, 1), close=dt.date(2026, 11, 27)),
 ]
 CAMP = {c["key"]: c for c in CAMPAIGNS}
 
-# Base excess over hosting capacity (MW) before the 2026 campaigns, by feeder: the hosting capacity assessment's
-# 2029 figures are set from these after the simulation; YRB27's is set from its golden excess.
-TARGET_BASE_EXCESS = {"YRB21": 1.112, "YRB22": 1.208, "YRB23": 0.438, "YRB24": 1.004, "YRB25": 1.063,
-                      "YRB26": -0.657, "YRB28": 0.712}
-TARGET_GOLDEN_YRB27 = 1.903
+# Excess over hosting capacity (MW) at the design point: the assessment's 2029 figures are set from these after the
+# simulation, the two campaign feeders' from their golden excess (base forecast plus what each 2026 campaign adds),
+# every other feeder's from its base forecast.
+TARGET_GOLDEN = {"YRB27": 1.902, "YRB24": 1.698}
+TARGET_BASE_EXCESS = {"YRB21": 0.862, "YRB22": 1.398, "YRB23": 0.433, "YRB25": 0.968, "YRB26": -0.657, "YRB28": 0.712}
 
 # File names (the pack)
 REGISTER = "eg_connection_applications_20260901.csv"

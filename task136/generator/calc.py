@@ -129,179 +129,247 @@ def base_forecast(reg):
 
 
 # ------------------------------------------------------------------------------------------------------------------
-# the campaigns
+# the campaigns: each suburb's owner-occupied houses and the day each first applied
 
-def houses(rates, xref, suburb=None, oo_only=True):
-    r = rates[(rates.land_use_code == "02")]
-    if oo_only:
-        r = r[r.rating_category == "R1"]
-    if suburb:
-        r = r[r.locality.str.upper() == suburb.upper()]
-    nm = xref[xref.property_no.isin(r.property_no)]
-    return r, nm
+NEVER = [l["name"] for l in K.LOCALITIES if l["kind"] in ("rest", "transfer")]
 
 
-def first_app(reg, by="received_date"):
-    """Each NMI's first successful (not withdrawn) application, by its received (or connection) date."""
-    ok = reg[reg.status != "Withdrawn"]
-    return ok.groupby("nmi")[by].min()
+def house_first(L, by="received_date"):
+    """Every owner-occupied house on the rates roll (land use 02, rating R1) with its locality and the date of its
+    first application other than a withdrawn one (NaT if it has none), matched through the GIS cross-reference; a
+    house with two NMIs takes the earlier. Also the program reference of that first application."""
+    key = "_houses_" + by
+    if key in L:
+        return L[key]
+    rates, xref, reg = L["rates"], L["xref"], L["reg"]
+    r = rates[(rates.land_use_code == "02") & (rates.rating_category == "R1")][["property_no", "locality"]]
+    ok = reg[reg.status != "Withdrawn"].sort_values([by, "application_id"])
+    g = ok.groupby("nmi")
+    f, prog = g[by].first(), g.program_ref.first()
+    xr = xref[xref.property_no.isin(r.property_no)][["nmi", "property_no"]]
+    xr = xr.assign(first=xr.nmi.map(f), prog=xr.nmi.map(prog).fillna(""))
+    per = xr.sort_values(["first", "nmi"]).groupby("property_no").agg(first=("first", "first"), prog=("prog", "first"))
+    out = r.set_index("property_no").join(per, how="left")
+    out["prog"] = out["prog"].fillna("")
+    L[key] = out
+    return out
 
 
-def tapped_props(xref, first, date):
-    d = pd.Timestamp(date)
-    t = first[first < d]
-    return set(xref[xref.nmi.isin(t.index)].property_no)
+def suburb_first(L, name, by="received_date"):
+    H = house_first(L, by)
+    return H[H.locality == name.upper()]["first"]
 
 
-def untapped(rates, xref, first, suburb, date):
-    r, nm = houses(rates, xref, suburb)
-    tp = tapped_props(nm, first, date)
-    return r[~r.property_no.isin(tp)]
+def n_between(first, a, b):
+    return int(((first >= a) & (first < b)).sum())
 
 
-def uptake(first, nmis, start, end):
-    """First applications (not withdrawn) received in [start, end) at the given NMIs."""
-    f = first[first.index.isin(nmis)]
-    return int(((f >= pd.Timestamp(start)) & (f < pd.Timestamp(end))).sum())
+def without_pv(first, t):
+    return int((first.isna() | (first >= t)).sum())
+
+
+def openings(L):
+    """Each campaign suburb's sign-up opening: the council's summary for 2018 to 2024, its letter for 2026."""
+    out = {}
+    for row in L["log"]:
+        d = row["Sign-ups opened"]
+        out[row["Suburb"]] = pd.Timestamp(d.date() if hasattr(d, "date") else d)
+    for c in K.CAMPAIGNS_2026:
+        out[c["suburb"]] = pd.Timestamp(c["open"])
+    return out
+
+
+def window_end(op, months=36):
+    """The end of a campaign's window: months after its opening, or the day after the base date if sooner."""
+    return min(pd.Timestamp(op) + pd.DateOffset(months=months), pd.Timestamp(K.BASE) + pd.Timedelta(days=1))
+
+
+def comparison(L, op, end, mode="nyt", own=None):
+    """The suburbs a campaign is read against. nyt: suburbs whose own campaign opens after the window closes (not yet
+    treated through it); never: suburbs with no campaign; both: the two; all: every other suburb, campaigns already
+    run included."""
+    ops = openings(L)
+    nyt = [s for s, o in ops.items() if o >= end and s != own]
+    if mode == "nyt":
+        return nyt
+    if mode == "never":
+        return list(NEVER)
+    if mode == "both":
+        return nyt + list(NEVER)
+    if mode == "all":
+        return [s for s in ops if s != own] + list(NEVER)
+    raise KeyError(mode)
+
+
+def _sorted_days(first):
+    return np.sort(first.dropna().values.astype("datetime64[ns]"))
+
+
+def _monthly(first, edges):
+    """First applications in each month between consecutive edges, and houses without PV at each month's start."""
+    d = _sorted_days(first)
+    pos = np.searchsorted(d, np.array(edges, dtype="datetime64[ns]"), side="left")
+    return np.diff(pos), len(first) - pos[:-1]
+
+
+def campaign_effect(L, suburb, op, months=36, pre=12, mode="nyt", form="ratio", by="received_date"):
+    """What a campaign added to its suburb's owner-occupied houses with PV by the end of its window. post: the
+    suburb's first applications (program and otherwise) from the opening to the window's end; cf: what the suburb would
+    have lodged without the campaign. ratio: its own first applications in the pre months before the opening, scaled
+    by the comparison suburbs' change over the same calendar months; hazard: its pre-months rate per house without
+    PV, scaled month by month by the comparison's, run forward on its houses without PV at the opening; cs: the ratio
+    month by month against the suburbs not yet treated in that month; prepost: its own pre months carried at their
+    rate over the window."""
+    op = pd.Timestamp(op)
+    first = suburb_first(L, suburb, by)
+    end = window_end(op, months)
+    p0 = op - pd.DateOffset(months=pre)
+    post = n_between(first, op, end)
+    pre_n = n_between(first, p0, op)
+    span = (end - op).days / 365.25
+    if form == "prepost":
+        cf = pre_n * span / (pre / 12.0)
+    elif form == "ratio":
+        comp = comparison(L, op, end, mode, suburb)
+        cp = sum(n_between(suburb_first(L, s, by), op, end) for s in comp)
+        cq = sum(n_between(suburb_first(L, s, by), p0, op) for s in comp)
+        cf = pre_n * cp / cq
+    elif form in ("hazard", "cs"):
+        nm = int(round((end - op).days / 30.4375))
+        post_edges = [op + pd.DateOffset(months=k) for k in range(nm)] + [end]
+        pre_edges = [p0 + pd.DateOffset(months=k) for k in range(pre)] + [op]
+        ops = openings(L)
+        if form == "hazard":
+            comp = comparison(L, op, end, mode, suburb)
+            ca = np.zeros(len(post_edges) - 1)
+            cr = np.zeros(len(post_edges) - 1)
+            qa = qr = 0.0
+            for s in comp:
+                a, rk = _monthly(suburb_first(L, s, by), post_edges)
+                ca, cr = ca + a, cr + rk
+                a0, r0 = _monthly(suburb_first(L, s, by), pre_edges)
+                qa, qr = qa + a0.sum(), qr + r0.sum()
+            a_s, r_s = _monthly(first, pre_edges)
+            h_pre = a_s.sum() / r_s.sum()
+            n = float(without_pv(first, op))
+            cf = 0.0
+            for k in range(len(ca)):
+                h = h_pre * (ca[k] / cr[k]) / (qa / qr)
+                cf += h * n
+                n -= h * n
+        else:
+            pool = [s for s, o in ops.items() if s != suburb] + list(NEVER)
+            series = {s: (_monthly(suburb_first(L, s, by), post_edges)[0], n_between(suburb_first(L, s, by), p0, op))
+                      for s in pool}
+            cf = 0.0
+            for k in range(len(post_edges) - 1):
+                m1 = post_edges[k + 1]
+                live = [s for s in pool if s in NEVER or ops[s] >= m1] if mode == "both" else \
+                       [s for s in pool if s not in NEVER and ops[s] >= m1]
+                num = sum(series[s][0][k] for s in live)
+                den = sum(series[s][1] for s in live) / float(pre)
+                cf += (pre_n / float(pre)) * num / den
+    else:
+        raise KeyError(form)
+    return dict(post=post, pre=pre_n, cf=cf, net=post - cf, pool=without_pv(first, op), span=span)
 
 
 def key_feeder(suburb):
     return [l["feeder"] for l in K.LOCALITIES if l["name"] == suburb][0]
 
 
-def suburb_stats(L, name, opening, first=None, first_conn=None):
-    """Everything a transfer basis can be built on, for one suburb at one sign-up opening."""
-    reg, rates, xref, net = L["reg"], L["rates"], L["xref"], L["net"]
-    first = first if first is not None else first_app(reg)
-    first_conn = first_conn if first_conn is not None else first_app(reg, "connection_date")
-    op = pd.Timestamp(opening)
-    oo_r, oo_n = houses(rates, xref, name)
-    oo_nmis = set(oo_n.nmi)
-    res_net = net[net.tariff_class == "Residential"]
-    nmis = res_net[res_net.locality.str.upper() == name.upper()].nmi
-    out = dict(suburb=name, feeder=key_feeder(name), opening=opening, oo=len(oo_r), res_nmis=int(len(nmis)))
-    out["untapped"] = len(untapped(rates, xref, first, name, opening))
-    for w in (365, 730, 1095):
-        out["n%d" % w] = uptake(first, oo_nmis, op - pd.Timedelta(days=w), op)
-        out["u%d" % w] = len(untapped(rates, xref, first, name, op - pd.Timedelta(days=w)))
-    out["n182"] = uptake(first, oo_nmis, op - pd.Timedelta(days=182), op)
-    out["n365_conn"] = uptake(first_conn, oo_nmis, op - pd.Timedelta(days=365), op)
-    out["n365_all"] = uptake(first, set(nmis), op - pd.Timedelta(days=365), op)
-    # person-time at risk in the year before: each untapped house's days until its first application or the opening
-    f = first[first.index.isin(oo_nmis)]
-    t0 = op - pd.Timedelta(days=365)
-    xr = oo_n.assign(first=oo_n.nmi.map(f))
-    pf = xr.groupby("property_no")["first"].min().reindex(oo_r.property_no)
-    at_risk = pf.isna() | (pf >= t0)
-    days = np.where(pf.isna() | (pf >= op), 365.0, (pf - t0).dt.days.astype(float))
-    out["pt365"] = float(days[at_risk.values].sum() / 365.0)
-    out["udw"] = int((~nmis.isin(set(first[first < op].index))).sum())
-    all_oo, all_n = houses(rates, xref, None)
-    all_n = all_n.assign(feeder=all_n.nmi.map(L["feeder"]))
-    f_props = set(all_n[all_n.feeder == out["feeder"]].property_no)
-    out["feeder_unt"] = len(f_props - tapped_props(all_n, first, opening))
-    return out
+def residential_nmis(L, name):
+    net = L["net"]
+    return int(((net.tariff_class == "Residential") & (net.locality.str.upper() == name.upper())).sum())
 
 
-def campaigns(L):
+def campaigns(L, months=36, pre=12, mode="nyt", form="ratio", by="received_date"):
+    """The seven past campaigns: the council's figures, the program-referenced systems, the suburb's owner-occupied
+    houses and those without PV at the opening, and what each campaign added by the end of its window."""
     reg = L["reg"]
-    first, first_conn = first_app(reg), first_app(reg, "connection_date")
+    ops = openings(L)
     out = []
     for row in L["log"]:
         name = row["Suburb"]
-        key = [c for c in K.CAMPAIGNS if c["suburb"] == name][0]
-        opening = row["Sign-ups opened"]
-        opening = opening.date() if hasattr(opening, "date") else opening
-        st = suburb_stats(L, name, opening, first, first_conn)
-        ref = "SS-%s-%s" % (key["key"][-2:], key["key"][:3])
+        key = [c for c in K.CAMPAIGNS if c["suburb"] == name][0]["key"]
+        op = ops[name]
+        e = campaign_effect(L, name, op, months, pre, mode, form, by)
+        ref = "SS-%s-%s" % (key[-2:], key[:3])
         sysn = reg[(reg.program_ref == ref) & (reg.application_type == "New") & reg.status.isin(CONNECTED)]
-        st.update(key=key["key"], letterboxed=int(row["Homes letterboxed"]), systems_log=int(row["Systems installed"]),
-                  systems=len(sysn), kw_program=float(sysn.kw.sum()))
-        out.append(st)
+        first = suburb_first(L, name)
+        e.update(key=key, suburb=name, feeder=key_feeder(name), opening=op.date(), letterboxed=int(row["Homes letterboxed"]),
+                 systems_log=int(row["Systems installed"]), systems=len(sysn), kw_program=float(sysn.kw.sum()),
+                 oo=len(first), n365=n_between(first, op - pd.DateOffset(months=12), op), res_nmis=residential_nmis(L, name))
+        out.append(e)
     return out
 
 
 def pools_2026(L):
-    reg = L["reg"]
-    first, first_conn = first_app(reg), first_app(reg, "connection_date")
     out = {}
     for c in K.CAMPAIGNS_2026:
-        st = suburb_stats(L, c["suburb"], c["open"], first, first_conn)
-        st.update(key=c["key"], letterboxed=L["letter"][c["suburb"]])
-        out[c["suburb"]] = st
+        name = c["suburb"]
+        first = suburb_first(L, name)
+        op = pd.Timestamp(c["open"])
+        out[name] = dict(suburb=name, key=c["key"], feeder=key_feeder(name), opening=c["open"], oo=len(first),
+                         pool=without_pv(first, op), n365=n_between(first, op - pd.DateOffset(months=12), op),
+                         letterboxed=L["letter"][name], res_nmis=residential_nmis(L, name))
     return out
 
 
-BASES = ["count", "letterboxed", "oo", "udw", "feeder_unt", "untapped", "uplift"]
+BASES = ["count", "letterboxed", "oo", "n365", "pool"]
 BASIS_NAME = {"count": "an average campaign", "letterboxed": "per home letterboxed", "oo": "per owner-occupied house",
-              "udw": "per address without PV", "feeder_unt": "per untapped owner-occupied house on the feeder",
-              "untapped": "per owner-occupied house without PV in the suburb",
-              "uplift": "per first application from the suburb's owner-occupied houses in the year before"}
+              "n365": "per first application in the year before sign-ups",
+              "pool": "per owner-occupied house without PV at the opening"}
 
 
-def denominator(c, basis, variant="n365"):
-    if basis == "uplift":
-        if variant == "n365":
-            return c["n365"]
-        if variant == "n730":
-            return c["n730"] / 2.0
-        if variant == "n1095":
-            return c["n1095"] / 3.0
-        if variant == "n182":            # the six months before, at a yearly rate
-            return c["n182"] * 365.0 / 182.0
-        if variant == "conn":
-            return c["n365_conn"]
-        if variant == "all":
-            return c["n365_all"]
-        if variant == "rate":            # hazard on the pool a year before, times the pool at the opening
-            return c["n365"] / c["u365"] * c["untapped"]
-        if variant == "persontime":      # hazard on house-years at risk, times the pool at the opening
-            return c["n365"] / c["pt365"] * c["untapped"]
-        raise KeyError(variant)
-    return c[basis]
-
-
-def rate_of(camps, basis, estimator="pooled", variant="n365"):
-    s = np.array([c["systems"] for c in camps], float)
+def rate_of(camps, measure="net", basis="pool", estimator="pooled"):
+    """A rate per unit of basis across the past campaigns, for what they added (net) or what they installed
+    (systems)."""
+    y = np.array([c[measure] for c in camps], float)
     if basis == "count":
-        return dict(slope=float(s.mean()), icpt=0.0, values=s, cv=float(s.std(ddof=1) / s.mean()))
-    d = np.array([denominator(c, basis, variant) for c in camps], float)
-    v = s / d
+        return dict(slope=float(y.mean()), icpt=0.0, values=y, cv=float(y.std(ddof=1) / y.mean()))
+    d = np.array([c[basis] for c in camps], float)
+    v = y / d
     if estimator == "pooled":
-        slope, icpt = float(s.sum() / d.sum()), 0.0
+        slope, icpt = float(y.sum() / d.sum()), 0.0
     elif estimator == "mean":
         slope, icpt = float(v.mean()), 0.0
     elif estimator == "median":
         slope, icpt = float(np.median(v)), 0.0
     elif estimator == "origin":
-        slope, icpt = float((s * d).sum() / (d * d).sum()), 0.0
+        slope, icpt = float((y * d).sum() / (d * d).sum()), 0.0
     elif estimator == "ols":
-        slope, icpt = (float(x) for x in np.polyfit(d, s, 1))
+        slope, icpt = (float(x) for x in np.polyfit(d, y, 1))
     else:
         raise KeyError(estimator)
     return dict(slope=slope, icpt=icpt, values=v, cv=float(v.std(ddof=1) / v.mean()))
 
 
-def lifts(camps, pools, basis, estimator="pooled", variant="n365"):
-    """Systems each 2026 campaign adds under a transfer basis."""
-    rr = rate_of(camps, basis, estimator, variant)
-    out = {}
-    for name, p in pools.items():
-        if basis == "count":
-            out[name] = rr["slope"]
-        else:
-            out[name] = rr["slope"] * denominator(p, basis, variant) + rr["icpt"]
-    return out
+def ratio_se(camps, measure="net", basis="pool"):
+    """The standard error of the pooled ratio across the campaigns (the ratio estimator's linearised variance)."""
+    y = np.array([c[measure] for c in camps], float)
+    d = np.array([c[basis] for c in camps], float)
+    rr = y.sum() / d.sum()
+    n = len(y)
+    return float(np.sqrt(((y - rr * d) ** 2).sum() / (n * (n - 1))) / d.mean())
 
 
-def forecast(L, basis="uplift", estimator="pooled", variant="n365", hc_case="hc29", base=None, camps=None,
-             pools=None, lift=None):
+def lifts(camps, pools, measure="net", basis="pool", estimator="pooled"):
+    """What each 2026 campaign adds by its suburb's three-year horizon (systems), on a transfer basis."""
+    rr = rate_of(camps, measure, basis, estimator)
+    if basis == "count":
+        return {name: rr["slope"] for name in pools}
+    return {name: rr["slope"] * p[basis] + rr["icpt"] for name, p in pools.items()}
+
+
+def forecast(L, measure="net", basis="pool", estimator="pooled", hc_case="hc29", base=None, camps=None, pools=None,
+             lift=None):
     base = base or base_forecast(L["reg"])
     camps = camps or campaigns(L)
     pools = pools or pools_2026(L)
     avgkw = avg_new_kw(L["reg"])
     if lift is None:
-        lift = lifts(camps, pools, basis, estimator, variant) if basis != "none" else {k: 0.0 for k in pools}
+        lift = lifts(camps, pools, measure, basis, estimator) if measure != "none" else {k: 0.0 for k in pools}
     fc = dict(base["base"])
     add = {}
     for name, n in lift.items():

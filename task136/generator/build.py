@@ -35,6 +35,7 @@ def simulate():
     WD.der_register(W)
     WD.settle_ask_bins(W)
     W.realloc = WD.reallocations(W)
+    WD.never_applied(W)
     return W
 
 
@@ -60,28 +61,27 @@ def program_rows(W):
 
 
 def hca_table(W, base_kw, golden_add_kw):
-    """The assessment's figures: hosting capacity for the 2029 case set from each feeder's base forecast and its
-    target excess (YRB27's from its golden excess); the 2029 minimum demand and route length; the 2026 case from the
-    change in each feeder's spring minimum demand between the two cases, at a sensitivity inside the report's own
-    0.6 to 1.2 MW of hosting capacity per MW of minimum demand. Minimum demand falls on the established feeders by
-    up to 0.7 MW (or rises a little) and rises on YRB24 as the Bindarra Waters estate fills, so the two cases differ
-    by feeder in size and sign. Stream "hca" keeps its four draws per feeder (the 2029 minimum and the route length
-    unchanged); the 2026 case draws from its own stream."""
+    """The assessment's figures: hosting capacity for the 2029 case set from each feeder's forecast and its target
+    excess (the two campaign feeders' from their golden forecast, base plus campaign); the 2029 minimum demand and
+    route length; the 2026 case from the change in each feeder's spring minimum demand between the two cases, at a
+    sensitivity inside the report's own 0.6 to 1.2 MW of hosting capacity per MW of minimum demand. Minimum demand
+    falls on most feeders by up to 0.7 MW (or rises a little), so the two cases differ by feeder in size and sign.
+    Stream "hca" keeps its four draws per feeder (the 2029 minimum and the route length); the 2026 case draws from
+    its own stream."""
     r = K.rng("hca")
     r26 = K.rng("hca", "2026 case")
     out = {}
     cust = {f: sum(1 for n in W.nmis if n["feeder"] == f and n["energised"] <= dt.date(2026, 6, 30)) for f in K.FEEDERS}
     for f in K.FEEDERS:
-        if f == "YRB27":
-            hc29 = round((base_kw[f] + golden_add_kw) / 1000.0 - K.TARGET_GOLDEN_YRB27, 2)
+        if f in K.TARGET_GOLDEN:
+            hc29 = round((base_kw[f] + golden_add_kw.get(f, 0.0)) / 1000.0 - K.TARGET_GOLDEN[f], 2)
         else:
             hc29 = round(base_kw[f] / 1000.0 - K.TARGET_BASE_EXCESS[f], 2)
         r.uniform(0.26, 0.58)
         min29 = round(float(r.uniform(0.4, 2.2)), 2)
         r.uniform(0.25, 0.9)
         route_km = round(float(r.uniform(11, 46)), 1)
-        lo, hi = (-0.40, -0.15) if f == "YRB24" else (-0.12, 0.70)
-        min26 = round(min29 + float(r26.uniform(lo, hi)), 2)
+        min26 = round(min29 + float(r26.uniform(-0.12, 0.70)), 2)
         hc26 = round(hc29 + float(r26.uniform(0.6, 1.2)) * (min26 - min29), 2)
         out[f] = dict(route_km=route_km, customers=cust[f], min26=min26, min29=min29, hc26=hc26, hc29=hc29)
     return out
@@ -122,9 +122,9 @@ def build(out, quiet=False, W=None):
     L = C.load(out, partial=True)
     base = C.base_forecast(L["reg"])
     camps, pools = C.campaigns(L), C.pools_2026(L)
-    lift = C.lifts(camps, pools, "uplift")
+    lift = C.lifts(camps, pools)
     avgkw = C.avg_new_kw(L["reg"])
-    golden_add = lift["Wattleview"] * avgkw["YRB27"]
+    golden_add = {pools[n]["feeder"]: lift[n] * avgkw[pools[n]["feeder"]] for n in lift}
     W.hca = hca_table(W, base["base"], golden_add)
     DOC.write_hca(p(K.HCA), W.hca)
     DOC.write_npp(p(K.NPP))

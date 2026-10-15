@@ -16,9 +16,9 @@ import common as K
 
 # Organic adoption pace by calendar year (relative units per year): the Solar Bonus Scheme surge of 2010-2012, the
 # lull after the feed-in tariff closed, and the steady rise with cheaper panels from 2017.
-PACE = {2009: 0.40, 2010: 1.20, 2011: 2.15, 2012: 1.95, 2013: 0.90, 2014: 0.95, 2015: 1.20, 2016: 1.35, 2017: 1.40,
-        2018: 1.40, 2019: 1.40, 2020: 1.40, 2021: 1.40, 2022: 1.40, 2023: 1.40, 2024: 1.40, 2025: 1.40, 2026: 1.40,
-        2027: 1.40, 2028: 1.40, 2029: 1.40, 2030: 1.40}
+PACE = {2009: 0.40, 2010: 1.20, 2011: 2.15, 2012: 1.95, 2013: 0.90, 2014: 0.95, 2015: 0.90, 2016: 0.95, 2017: 1.02,
+        2018: 1.10, 2019: 1.19, 2020: 1.28, 2021: 1.37, 2022: 1.66, 2023: 2.00, 2024: 2.02, 2025: 2.20, 2026: 2.34,
+        2027: 2.34, 2028: 2.34, 2029: 2.34, 2030: 2.34}
 HORIZON = dt.date(2030, 12, 31)
 
 STREETS = ["Banksia", "Kookaburra", "Wattle", "Grevillea", "Bottlebrush", "Lilly Pilly", "Mahogany", "Ironwood",
@@ -75,6 +75,7 @@ def inv_pace(start, amount):
 
 
 BOOM_END = dt.date(2013, 1, 1)
+REFERENCE = dt.date(2015, 1, 1)
 
 
 def adopt_date(start, e, lam_boom, lam):
@@ -100,8 +101,10 @@ def inverter_size(r, d, kind="res"):
         kw = float(r.choice([3.0, 4.0, 4.6, 5.0], p=[0.18, 0.20, 0.12, 0.50]))
     elif y <= 2020:
         kw = float(r.choice([5.0, 6.0, 8.0, 8.2, 10.0], p=[0.58, 0.10, 0.14, 0.08, 0.10]))
-    else:
+    elif d < dt.date(2025, 7, 1):
         kw = float(r.choice([5.0, 6.0, 8.0, 8.2, 10.0], p=[0.42, 0.12, 0.20, 0.10, 0.16]))
+    else:
+        kw = float(r.choice([5.0, 6.0, 8.0, 10.0, 13.2], p=[0.10, 0.07, 0.15, 0.58, 0.10]))
     over = float(r.choice([1.0, 1.1, 1.2, 1.32], p=[0.20, 0.25, 0.30, 0.25]))
     return kw, round(kw * over + float(r.choice([0.0, 0.06, 0.12, -0.06])), 2)
 
@@ -169,8 +172,7 @@ def build_places(W):
                 return [(None, feeder)]
         lo, hi = loc["built"]
         infill = loc.get("infill", 0)
-        estate = loc["kind"] == "campaign26"
-        # houses built in the estate's own years; infill houses (knock-down rebuilds and splits) 2019 to 2026
+        # houses built in the locality's own years; infill houses (knock-down rebuilds and splits) 2019 to 2026
         house_idx = [i for i, k in enumerate(kinds) if k.startswith("house")]
         infill_set = set(int(x) for x in r.choice(house_idx, size=infill, replace=False)) if infill else set()
         unit_blocks = {}
@@ -178,14 +180,6 @@ def build_places(W):
             street = streets[int(r.integers(0, len(streets)))]
             if i in infill_set:
                 handover = K.add_days(dt.date(2019, 3, 1), int(r.integers(0, 2700)))
-                built = handover.year
-            elif estate and name == "Bindarra Waters":
-                # stages handed over March 2018 to May 2023
-                handover = K.add_days(dt.date(2018, 3, 1), int(r.integers(0, 1900)))
-                built = handover.year
-            elif estate and name == "Wattleview":
-                # stages handed over January 2019 to June 2023
-                handover = K.add_days(dt.date(2019, 1, 14), int(r.integers(0, 1620)))
                 built = handover.year
             else:
                 built = int(r.integers(lo, hi + 1))
@@ -215,7 +209,7 @@ def build_places(W):
                                                     ("R1" if r.random() < 0.45 else "R2"))
             p = dict(property_no=prop_no, lot=lot, address=addr, locality=name, postcode=postcode,
                      land_use=lu, rating=occ, area=area, built=built, handover=handover, kind=kind,
-                     infill=(i in infill_set) or estate, feeder=feeder, loc=loc, street=street)
+                     infill=i in infill_set, feeder=feeder, loc=loc, street=street)
             W.props.append(p)
             nmi = make_nmi(r, used_nmi)
             hist = hist_of(street)
@@ -333,6 +327,7 @@ def simulate(W):
     """Every NMI's applications: (nmi, dict(...)) in the order they were lodged."""
     W.apps = []
     W.camp_pool, W.camp_n12, W.camp_systems = {}, {}, {}
+    W.camp_new, W.camp_harvest, W.camp_pipeline = {}, {}, {}
     loc_props = {}
     for p in W.props:
         loc_props.setdefault(p["locality"], []).append(p)
@@ -346,20 +341,26 @@ def simulate(W):
         builder = set()
         cands = [i for i, p in enumerate(oo) if p["infill"] and p["handover"] >= dt.date(2019, 7, 1)]
         if cands:
-            if name == "Bindarra Waters":
-                nb = 112
-            elif name == "Wattleview":
-                nb = int(round(len(cands) * 0.18))
-            else:
-                nb = max(1, int(round(len(cands) * 0.42)))
+            nb = max(1, int(round(len(cands) * 0.42)))
             builder = set(int(i) for i in r.choice(cands, size=min(nb, len(cands)), replace=False))
         organic = [i for i in range(len(oo)) if i not in builder]
         E = stratified_exponentials(r, [start[i] for i in organic])
         decided = [None] * len(oo)
         for e, i in zip(E, organic):
             decided[i] = adopt_date(start[i], float(e), lam_boom, lam)
-        # campaign conversions among the houses untapped at the opening: about UPLIFT times the suburb's owner-occupied
-        # first applications in the year before sign-ups opened
+        # from the reference date every house still without PV faces the same hazard (the boom long over), so their
+        # remaining waits are laid on one even grid: the houses taking up PV in any stretch after it number their
+        # expectation to within one
+        rs = K.rng("adopt-after", loc.get("stream", name))
+        later = [i for i in organic if start[i] < REFERENCE and (decided[i] is None or decided[i] >= REFERENCE)]
+        if later:
+            u = float(rs.uniform(0.0, 1.0))
+            qs = (np.arange(len(later)) + u) / len(later)
+            rs.shuffle(qs)
+            for qv, i in zip(qs, later):
+                decided[i] = adopt_date(REFERENCE, float(-np.log1p(-qv)), lam, lam)
+        # a campaign takes most of the households about to buy anyway (those whose own application would have come in
+        # the next two years, the nearest most likely) and brings in a few from outside the market
         program = {}
         if loc["kind"] == "campaign":
             c = K.CAMP[loc["camp"]]
@@ -368,13 +369,27 @@ def simulate(W):
             def recv(i):
                 return K.business_day(decided[i]) if decided[i] is not None else None
             pool = [i for i in organic if decided[i] is None or recv(i) >= op]
-            n12 = sum(1 for i in organic if decided[i] is not None and op - dt.timedelta(days=365) <= recv(i) < op)
-            systems = int(round(K.UPLIFT * n12 * (1.0 + c["eps"])))
-            W.camp_pool[c["key"]], W.camp_n12[c["key"]], W.camp_systems[c["key"]] = len(pool), n12, systems
+            win_end = K.add_days(op, K.HARVEST_DAYS)
+            pipeline = sorted((i for i in pool if decided[i] is not None and recv(i) < win_end),
+                              key=lambda i: (decided[i], i))
+            clear = K.add_days(op, K.CLEAR_DAYS)
+            outside = [i for i in pool if decided[i] is None or recv(i) >= clear]
             rc = K.rng("convert", c["key"])
-            chosen = [pool[int(j)] for j in rc.choice(len(pool), size=systems, replace=False)]
+            off = float(rc.uniform(0, 1))
+            harvested = []
+            for rank, i in enumerate(pipeline):
+                tau = (recv(i) - op).days / float(K.HARVEST_DAYS)
+                q = K.HARVEST_Q0 + (K.HARVEST_Q1 - K.HARVEST_Q0) * tau
+                if (off + rank * 0.6180339887498949) % 1.0 < q:
+                    harvested.append(i)
+            n_new = int(round(K.NEW_B * (1.0 + c["eps"]) * len(pool)))
+            new = [outside[int(j)] for j in rc.choice(len(outside), size=n_new, replace=False)]
+            n12 = sum(1 for i in organic if decided[i] is not None and op - dt.timedelta(days=365) <= recv(i) < op)
+            W.camp_pool[c["key"]], W.camp_n12[c["key"]] = len(pool), n12
+            W.camp_systems[c["key"]] = len(harvested) + len(new)
+            W.camp_new[c["key"]], W.camp_harvest[c["key"]], W.camp_pipeline[c["key"]] = len(new), len(harvested), len(pipeline)
             span = (c["close"] - c["open"]).days
-            for i in chosen:
+            for i in harvested + new:
                 program[i] = K.add_days(c["open"], int(rc.integers(4, span + 40)))
                 decided[i] = None
         # the days to approval and connection, spread evenly along the order in which the houses applied
@@ -382,8 +397,8 @@ def simulate(W):
         o1, o2 = float(rl.uniform(0, 1)), float(rl.uniform(0, 1))
         for rank, i in enumerate(sorted((i for i in organic if decided[i] is not None and i not in program),
                                         key=lambda i: (decided[i], i))):
-            lag_of[i] = (2 + int(((o1 + rank * 0.6180339887498949) % 1.0) * 14),
-                         20 + int(((o2 + rank * 0.7548776662466927) % 1.0) * 43))
+            lag_of[i] = (2 + int(((o1 + rank * 0.6180339887498949) % 1.0) * 6),
+                         8 + int(((o2 + rank * 0.7548776662466927) % 1.0) * 17))
         # build the applications
         for i, p in enumerate(oo):
             n = p["nmis"][0]
@@ -403,8 +418,7 @@ def simulate(W):
             else:
                 continue
             n = p["nmis"][0]
-            p_builder = {"Bindarra Waters": 0.02, "Wattleview": 0.10}.get(name, 0.35)
-            if p["infill"] and p["handover"] >= dt.date(2019, 7, 1) and p["kind"] == "house_rent" and r.random() < p_builder:
+            if p["infill"] and p["handover"] >= dt.date(2019, 7, 1) and p["kind"] == "house_rent" and r.random() < 0.35:
                 add_builder_system(W, r, n, p)
                 continue
             s = max(K.WORLD_START, p["handover"])
@@ -777,3 +791,65 @@ def reallocations(W):
         out.append((old, n["nmi"], when, reason))
     out.sort(key=lambda t: (t[2], t[0]))
     return out
+
+
+def never_applied(W):
+    """Houses and units on the rates roll whose owners have never applied for PV (a shaded or heritage roof, a strata
+    roof the body corporate has not opened up). Drawn last, each locality on its own stream, so nothing drawn before
+    moves; every one sits on a street of its locality, on the feeder and transformer of a neighbour."""
+    used_prop = {p["property_no"] for p in W.props}
+    W.no_pv = {}
+    for loc in K.LOCALITIES:
+        name = loc["name"]
+        r = K.rng("no-pv", loc.get("stream", name))
+        mine = [p for p in W.props if p["locality"] == name and p["kind"] in ("house_oo", "house_rent", "town", "unit")]
+        streets = sorted({p["street"] for p in mine})
+        by_street = {}
+        for p in mine:
+            by_street.setdefault(p["street"], p)
+        n_units = loc["res"] - loc["oo"] - loc["rent"] - loc["town"]
+        k = {"house_oo": int(r.integers(6, 39)), "house_rent": int(r.integers(2, 20)), "unit": int(r.integers(3, 28))}
+        while k["house_oo"] % 10 == 0:
+            k["house_oo"] += 1
+        while k["house_rent"] % 10 == 0:
+            k["house_rent"] += 1
+        while (n_units + k["unit"]) % 10 == 0 or (k["house_oo"] + k["house_rent"] + k["unit"]) % 10 == 0:
+            k["unit"] += 1
+        lo, hi = loc["built"]
+        W.no_pv[name] = dict(k)
+        for kind in ("house_oo", "house_rent", "unit"):
+            for _ in range(k[kind]):
+                street = streets[int(r.integers(0, len(streets)))]
+                nb = by_street[street]
+                n0 = nb["nmis"][0]
+                built = int(r.integers(lo, hi + 1))
+                handover = dt.date(built, int(r.integers(1, 13)), int(r.integers(1, 28)))
+                prop_no = "%07d" % int(r.integers(1000000, 9999999))
+                while prop_no in used_prop:
+                    prop_no = "%07d" % int(r.integers(1000000, 9999999))
+                used_prop.add(prop_no)
+                if kind == "unit":
+                    lu, rating = "08", ("R1" if r.random() < 0.45 else "R2")
+                    lot = "%dBUP%06d" % (int(r.integers(1, 60)), int(r.integers(100000, 110000)))
+                    addr = "%d/%d %s" % (int(r.integers(1, 48)), int(r.integers(1, 200)), street)
+                    area = 0
+                else:
+                    lu, rating = "02", ("R1" if kind == "house_oo" else "R2")
+                    plan = "RP" if built < 2000 else "SP"
+                    lot = "%d%s%06d" % (int(r.integers(1, 400)), plan, int(r.integers(100000, 399999)))
+                    addr = "%d %s" % (int(r.integers(1, 260)), street)
+                    area = int(r.integers(420, 900)) if name not in ("Myrtle Vale", "Bloodwood") else int(
+                        r.integers(4000, 20000))
+                p = dict(property_no=prop_no, lot=lot, address=addr, locality=name, postcode=nb["postcode"],
+                         land_use=lu, rating=rating, area=area, built=built, handover=handover, kind=kind,
+                         infill=False, feeder=nb["feeder"], loc=loc, street=street, no_pv=True)
+                W.props.append(p)
+                n = dict(nmi=make_nmi(r, W.used_nmi), feeder=n0["feeder"], hist=list(n0["hist"]), tariff="Residential",
+                         address=addr, locality=name, postcode=n0["postcode"], status="Active", energised=handover,
+                         prop=p, temp=None, transformer=n0["transformer"])
+                p["nmis"] = [n]
+                W.nmis.append(n)
+                W.nmi_by[n["nmi"]] = n
+        camp = loc.get("camp")
+        if camp in W.camp_pool:
+            W.camp_pool[camp] += k["house_oo"]

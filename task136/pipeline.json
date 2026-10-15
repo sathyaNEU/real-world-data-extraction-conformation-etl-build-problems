@@ -1,41 +1,22 @@
 {
   "task": "task136",
   "owner": "sathya8571",
-  "status": "SHIPPED",
+  "status": "BUILD",
   "domain": "energy-systems-utilities",
   "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-14",
-  "stump": "A competent solver builds NPP-114's base forecast, carries the seven past bulk-buys onto the 2026 suburbs at the council's pooled participation rate per home letterboxed and files YRB24 at about 1.8 MW over hosting capacity, and the textbook correction, per owner-occupied house still without PV when sign-ups open, files YRB24 at 3.0; the step that lands both there is carrying a campaign's yield on a pool of houses instead of on the suburb's own uptake (about 1.17 systems per first application its owner-occupied houses lodged in the year before sign-ups opened), which gives Bindarra Waters' large, slow estate two to five times its campaign and Wattleview's fast one less than half of its: the golden is YRB27 at about 1.9 MW.",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-15",
+  "stump": "A competent solver builds NPP-114's base forecast, takes each 2026 bulk-buy's impact as the systems it will install at the council's participation rate per home letterboxed and files YRB24 at about 4.2 MW over hosting capacity; per owner-occupied house still without PV it files YRB24 at 3.9, and each suburb's own before and after files YRB24 at 2.4; the step that lands all three there is counting a campaign's installed systems, or its suburb's rise over its own past, as what it adds, when more than half of the households the past campaigns signed up would have gone solar within three years anyway and uptake rose across the zone over the same years: read against the suburbs whose campaign had not yet run, the seven added 4.09 systems per 100 owner-occupied houses without PV, Bindarra Waters adds 1.7 MW, and the golden is YRB27 at about 1.9 MW.",
   "architecture": 1,
   "loops": 0,
-  "round": 2,
-  "round2": {
-    "date": "2026-10-14",
-    "trigger": "10/10 audit COMPLIANT_WEAK (round2-brief): the eligible-pool denominator a textbook reflex the program terms name, a rough pool estimate landing the call, the seven campaigns agreeing within 0.6 per cent, Ask A's temporary NMIs resolved through the re-allocation log, Ask B's repeated capacity cracked by grouping",
-    "redesign": "decisive step moved to the yield carried on each suburb's own uptake (first applications from owner-occupied houses in the year before sign-ups open); the round-1 basis is rung 1 (the reflex); campaigns moved to spring 2026; realistic campaign scatter (cv 0.085); NPP-114 4.2 files the pooled rate; runner-up moved to YRB24; four per-feeder DER Register asks on new devices; prompt rewritten",
-    "call": "YRB27, 1.9 MW over hosting capacity at 31 August 2029; runner-up YRB24 1.4; gap 0.5; Bindarra Waters 0.4 MW, Wattleview 1.7 MW",
-    "shipped": "2026-10-14"
-  },
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-14"
-  },
-  "leak": {
-    "leak_py": "REVIEW 2026-10-14 on the final rebuild (--asof 2026-10-12), no LEAK, sweep 11 clean; the same six lines as stage 3 (sweep 4's terms shifted with the design note), each answered in the design note's Build record",
-    "reader": "2026-10-14 round 2: no leak, nothing quoted for questions 1 to 4; its literal route (per home letterboxed) files YRB24, the default path; it called the call rule application, not seeing that NPP-114 4.2 leaves the rate's basis open; realism notes (NPP-114 revision note, the letter's program-reference sentence, the summary's footnote) not acted on, in Tried and rejected"
-  },
-  "duplicate_check": {
-    "heart": "WARN 2026-10-14 at the final rebuild (overuse.gate_g only, answered under Guard); no BLOCK",
-    "nearest": "0.21 this slot's round-1 lineage (driver, differentiated), 0.06 task94 v3; surface exit 0, four pairs promoted on card axes (task138, task185, task80 v2, task450 retired), each differentiated on the card; personas Ian Fletcher, Julie Cochran, Tammy Buchanan clear"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC 2026-10-14 (judge-task136r2): APPROVE, no fix; every figure reproduced; the rate's basis unnamed by design, the campaigns separating it (pool bases CV 0.61 to 0.72, first-application bases 0.08 to 0.12, all the same call)",
-    "disposition": "APPROVE, shipped; secondary forks filed as SF27 (the register's stale feeder) and SF28 (first lodged at site level), the six-month window measured into SF13 (same call, gap 0.4, recorded), the assessment's customer counts asserted against its 30 June model (no NMI energised, abolished or transferred in July or August 2026); no file under target/, no golden and no graded figure moved",
-    "report": "determinism_check_report_round2.md",
-    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical"
+  "round": 3,
+  "round3": {
+    "date": "2026-10-15",
+    "trigger": "rule 3 audit AT_RISK (hidden rule, rule application): the prompt bound the call to NPP-114 ('forecasting rooftop PV as NPP-114 sets out'); NPP-114 4.2 filed the pooling formula with its denominator blank; the winning basis (first applications in the year before sign-ups) found only by a denominator search over seven campaigns",
+    "redesign": "NPP-114 4.2's pooling clause and the prompt's binding removed (4.2 is now the sponsor's written confirmation); 4.1 files only the estimand, the impact on the feeder's connected capacity at the design point; the prompt asks how much each bulk-buy will raise its feeder's PV by that date; the decisive step moved to the bulk-buys' net addition, each past campaign suburb read against the suburbs whose campaign had not yet run over the same months; world regenerated (campaigns harvest the near-term pipeline and bring in a few new households, a pace step from 2022, established 2026 suburbs, never-applied houses on their own stream); asks unchanged in wording and device",
+    "call": "YRB27, 1.9 MW over hosting capacity at 31 August 2029; runner-up YRB24 1.7; gap 0.2; Bindarra Waters 1.7 MW, Wattleview 0.7 MW",
+    "default_path": "installed systems per home letterboxed: YRB24 4.2 (runner-up YRB27 2.5; Bindarra Waters 4.2, Wattleview 1.3); per house without PV YRB24 3.9; each suburb's own before and after YRB24 2.4 to 2.6"
   },
   "rounds": [
     {
@@ -62,6 +43,44 @@
         "date": "2026-10-12"
       },
       "audit": "10/10 audit 2026-10-14 COMPLIANT_WEAK (scratchpad/audit/task136.md)"
+    },
+    {
+      "round": 2,
+      "shipped": "2026-10-14",
+      "trigger": "10/10 audit COMPLIANT_WEAK (round2-brief): the eligible-pool denominator a textbook reflex the program terms name, a rough pool estimate landing the call, the seven campaigns agreeing within 0.6 per cent, Ask A's temporary NMIs resolved through the re-allocation log, Ask B's repeated capacity cracked by grouping",
+      "redesign": "decisive step moved to the yield carried on each suburb's own uptake (first applications from owner-occupied houses in the year before sign-ups open); the round-1 basis is rung 1 (the reflex); campaigns moved to spring 2026; realistic campaign scatter (cv 0.085); NPP-114 4.2 files the pooled rate; runner-up moved to YRB24; four per-feeder DER Register asks on new devices; prompt rewritten",
+      "call": "YRB27, 1.9 MW over hosting capacity at 31 August 2029; runner-up YRB24 1.4; gap 0.5; Bindarra Waters 0.4 MW, Wattleview 1.7 MW",
+      "stump": "A competent solver builds NPP-114's base forecast, carries the seven past bulk-buys onto the 2026 suburbs at the council's pooled participation rate per home letterboxed and files YRB24 at about 1.8 MW over hosting capacity, and the textbook correction, per owner-occupied house still without PV when sign-ups open, files YRB24 at 3.0; the step that lands both there is carrying a campaign's yield on a pool of houses instead of on the suburb's own uptake (about 1.17 systems per first application its owner-occupied houses lodged in the year before sign-ups opened), which gives Bindarra Waters' large, slow estate two to five times its campaign and Wattleview's fast one less than half of its: the golden is YRB27 at about 1.9 MW.",
+      "judge": {
+        "verdict": "DETERMINISTIC 2026-10-14 (judge-task136r2): APPROVE, no fix; every figure reproduced; the rate's basis unnamed by design, the campaigns separating it (pool bases CV 0.61 to 0.72, first-application bases 0.08 to 0.12, all the same call)",
+        "disposition": "APPROVE, shipped; secondary forks filed as SF27 (the register's stale feeder) and SF28 (first lodged at site level), the six-month window measured into SF13 (same call, gap 0.4, recorded), the assessment's customer counts asserted against its 30 June model (no NMI energised, abolished or transferred in July or August 2026); no file under target/, no golden and no graded figure moved",
+        "report": "determinism_check_report_round2.md",
+        "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+        "gate_h": "domain pass, layers pass, decisive_step analytical"
+      },
+      "leak": {
+        "leak_py": "REVIEW 2026-10-14 on the final rebuild (--asof 2026-10-12), no LEAK, sweep 11 clean; the same six lines as stage 3 (sweep 4's terms shifted with the design note), each answered in the design note's Build record",
+        "reader": "2026-10-14 round 2: no leak, nothing quoted for questions 1 to 4; its literal route (per home letterboxed) files YRB24, the default path; it called the call rule application, not seeing that NPP-114 4.2 leaves the rate's basis open; realism notes (NPP-114 revision note, the letter's program-reference sentence, the summary's footnote) not acted on, in Tried and rejected"
+      },
+      "duplicate_check": {
+        "heart": "WARN 2026-10-14 at the final rebuild (overuse.gate_g only, answered under Guard); no BLOCK",
+        "nearest": "0.21 this slot's round-1 lineage (driver, differentiated), 0.06 task94 v3; surface exit 0, four pairs promoted on card axes (task138, task185, task80 v2, task450 retired), each differentiated on the card; personas Ian Fletcher, Julie Cochran, Tammy Buchanan clear"
+      },
+      "precut": {
+        "exit": 0,
+        "date": "2026-10-14"
+      },
+      "gates": {
+        "checks": "442 assertions",
+        "verify": "88 checks",
+        "rebuild": "two builds byte-identical, target.zip sha256 ac3475bded2eb1f3ea79258844f004fc74d980cd1526bfce07932626770db88a (unchanged from the judged pack)",
+        "figures_check": "72 figures, 0 absent",
+        "precut": "49 checks, 0 FAIL, 0 WARN",
+        "voice_check": "PASS",
+        "freeze": "determinism PASS against the stage-4 snapshot",
+        "guard": "validate 0 invalid, surface 0, heart WARN"
+      },
+      "audit": "rule 3 audit 2026-10-15 AT_RISK, hidden rule and rule application (scratchpad/rule3/task136.md)"
     }
   ],
   "returned": [
@@ -71,9 +90,16 @@
       "repair": "design (round 2 redesign of the decisive step)",
       "round": 2,
       "commit": "RESHIPPED (task136): round 2, YRB27 gets the FY2027-28 hosting capacity augmentation, 1.9 MW over hosting capacity at 31 August 2029 (YRB24 1.4, gap 0.5)"
+    },
+    {
+      "date": "2026-10-15",
+      "portal": "rule 3 audit AT_RISK (round 2): hidden rule and rule application",
+      "repair": "design (round 3 rework of the decisive step: the bulk-buys' net addition against not-yet-treated suburbs)",
+      "round": 3,
+      "commit": "PAUSED (task136): rule 3 rework, stage 3 green, waiting on the reader and judge"
     }
   ],
-  "resume": "",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": "2026-10-14",
   "portal": null,
@@ -81,14 +107,34 @@
   "portal_status": "",
   "portal_status_date": "",
   "wave": "wave 2 (new), seed FC07",
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-15"
+  },
+  "leak": {
+    "leak_py": "REVIEW 2026-10-15 on the stage-3 pack (--asof 2026-10-12), no LEAK, sweep 11 clean; five lines (NPP-114 carries the call's words; NPP-114, the letter and the assessment share ordinary nouns with the stump paragraph; device_type), each answered in the design note's Build record",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "WARN 2026-10-15 (people.first, Julie against task139, answered under Guard); no BLOCK",
+    "nearest": "0.16 this slot's round-2 lineage (driver, differentiated), 0.06 task142 and task94 v3; heart text nearest 0.04; surface exit 0, one pair promoted (task450, surface proximity, retired, differentiated on the card); personas Ian Fletcher, Julie Cochran, Tammy Buchanan"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": "",
+    "gate_g": "",
+    "gate_h": ""
+  },
   "gates": {
-    "checks": "442 assertions",
-    "verify": "88 checks",
-    "rebuild": "two builds byte-identical, target.zip sha256 ac3475bded2eb1f3ea79258844f004fc74d980cd1526bfce07932626770db88a (unchanged from the judged pack)",
-    "figures_check": "72 figures, 0 absent",
+    "checks": "483 assertions (the three-rules block R1 to R3c, 33 constructions, one sigma, every rival route the audit measured)",
+    "verify": "97 checks from the bundle alone",
+    "rebuild": "two builds byte-identical, target.zip sha256 8e187f80ae5fea899468e00c3e0b59a6acdb19899dbdcd92a0e00aed3874d948",
+    "figures_check": "70 figures, 0 absent",
     "precut": "49 checks, 0 FAIL, 0 WARN",
     "voice_check": "PASS",
-    "freeze": "determinism PASS against the stage-4 snapshot",
-    "guard": "validate 0 invalid, surface 0, heart WARN"
+    "leak_py": "REVIEW, no LEAK, sweep 11 clean",
+    "container": "target and golden clean; archive members equal the pack (15)",
+    "guard": "validate 0 invalid, check WARN, heart WARN, surface exit 0"
   }
 }

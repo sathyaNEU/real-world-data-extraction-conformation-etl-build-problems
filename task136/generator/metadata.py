@@ -50,9 +50,10 @@ def write(target, out_path):
         "subdomain": "load-forecasting (rooftop PV forecast to an augmentation's design point, with two council "
                      "solar bulk-buy campaigns, at a Queensland distribution network)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "other: the feeder, its rooftop PV above hosting capacity, the runner-up and gap, the PV each "
-                        "2026 bulk-buy adds, the chart, and four per-feeder DER Register figures (active sites, sites "
-                        "first lodged in FY2025-26, inverter capacity, battery storage)",
+        "prompt_shape": "other: the feeder, its rooftop PV above hosting capacity, the runner-up and gap, how much "
+                        "each 2026 bulk-buy raises its feeder's PV by 31 August 2029, the chart, and four per-feeder DER "
+                        "Register figures (active sites, sites first lodged in FY2025-26, inverter capacity, battery "
+                        "storage)",
         "as_of": "2026-10-12",
         "deliverables": [K.GOLD_BOOK, K.GOLD_CHART],
         "distractor_files": list(K.DISTRACTORS),

@@ -7,19 +7,13 @@ import json
 import os
 
 import openpyxl
+import pandas as pd
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 
 import calc as C
 import common as K
 import postprocess as PP
-
-BASIS_ROWS = [("letterboxed", "Per 100 homes letterboxed (the council's participation rate)"),
-              ("oo", "Per 100 owner-occupied houses in the suburb"),
-              ("untapped", "Per 100 owner-occupied houses without PV when sign-ups opened"),
-              ("uplift", "Per first application from the suburb's owner-occupied houses in the 12 months before "
-                         "sign-ups opened")]
-
 
 def r1(x):
     return round(x + 1e-12, 1)
@@ -35,18 +29,33 @@ def compute(target):
     camps = C.campaigns(L)
     pools = C.pools_2026(L)
     fc = C.forecast(L, base=base, camps=camps, pools=pools)
-    default = C.forecast(L, basis="letterboxed", base=base, camps=camps, pools=pools)
-    reflex = C.forecast(L, basis="untapped", base=base, camps=camps, pools=pools)
-    bases = {b: C.rate_of(camps, b) for b, _ in BASIS_ROWS}
+    default = C.forecast(L, measure="systems", basis="letterboxed", base=base, camps=camps, pools=pools)
+    reflex = C.forecast(L, measure="systems", basis="pool", base=base, camps=camps, pools=pools)
+    prepost = C.forecast(L, base=base, camps=C.campaigns(L, form="prepost"), pools=pools)
+    ratios = {}
+    ops = C.openings(L)
+    for x in camps:
+        op = pd.Timestamp(x["opening"])
+        end = C.window_end(op)
+        comp = C.comparison(L, op, end, "nyt", x["suburb"])
+        cp = sum(C.n_between(C.suburb_first(L, s, "received_date"), op, end) for s in comp)
+        cq = sum(C.n_between(C.suburb_first(L, s, "received_date"), op - pd.DateOffset(months=12), op) for s in comp)
+        ratios[x["key"]] = dict(comp=comp, post=cp, pre=cq, end=(end - pd.Timedelta(days=1)).date())
     asks = dict(sites=C.ask_d(L), first=C.ask_a(L), storage=C.ask_b(L), inverter=C.ask_c(L))
-    return dict(L=L, base=base, camps=camps, pools=pools, fc=fc, default=default, reflex=reflex, bases=bases,
-                asks=asks)
+    return dict(L=L, base=base, camps=camps, pools=pools, fc=fc, default=default, reflex=reflex, prepost=prepost,
+                rate=C.rate_of(camps), gross=C.rate_of(camps, "systems"), se=C.ratio_se(camps), ratios=ratios,
+                asks=asks, openings=ops)
+
+
+def path_block(v):
+    return {"feeder": v["winner"], "excess_mw": "%.1f" % r1(v["excess"][v["winner"]]), "runner_up": v["runner"],
+            "bindarra_waters_mw": "%.1f" % r1(v["add_mw"]["Bindarra Waters"]),
+            "wattleview_mw": "%.1f" % r1(v["add_mw"]["Wattleview"])}
 
 
 def figures(c):
     fc, pools = c["fc"], c["pools"]
     w, ru = fc["winner"], fc["runner"]
-    up = c["bases"]["uplift"]
     a = c["asks"]
     out = {
         "call": {"feeder": w, "excess_mw": "%.1f" % r1(fc["excess"][w]), "runner_up": ru,
@@ -60,15 +69,19 @@ def figures(c):
             "forecast_kw": {f: "{:,}".format(int(round(fc["fc"][f]))) for f in K.FEEDERS},
             "hosting_mw": {f: "%.2f" % c["L"]["hca"][f]["hc29"] for f in K.FEEDERS},
             "excess_mw": {f: "%.1f" % r1(fc["excess"][f]) for f in K.FEEDERS},
-            "campaigns": {x["key"]: {"first_applications": x["n365"], "systems": x["systems"],
-                                     "per_first_application": "%.2f" % (x["systems"] / x["n365"])}
+            "campaigns": {x["key"]: {"houses_without_pv": "{:,}".format(x["pool"]), "systems": x["systems"],
+                                     "first_applications_12_months_before": x["pre"],
+                                     "first_applications_in_window": x["post"],
+                                     "expected_without_campaign": "%.1f" % x["cf"], "added": "%.1f" % x["net"],
+                                     "added_per_100_houses": "%.2f" % (100.0 * x["net"] / x["pool"])}
                           for x in c["camps"]},
-            "campaign_first_applications_total": sum(x["n365"] for x in c["camps"]),
-            "campaign_systems_total": sum(x["systems"] for x in c["camps"]),
-            "pooled_per_first_application": "%.3f" % up["slope"],
-            "basis_cv": {b: "%.2f" % c["bases"][b]["cv"] for b, _ in BASIS_ROWS},
-            "bindarra_first_applications": pools["Bindarra Waters"]["n365"],
-            "wattleview_first_applications": pools["Wattleview"]["n365"],
+            "campaign_systems_total": "{:,}".format(sum(x["systems"] for x in c["camps"])),
+            "campaign_houses_without_pv_total": "{:,}".format(sum(x["pool"] for x in c["camps"])),
+            "campaign_added_total": "%.1f" % sum(x["net"] for x in c["camps"]),
+            "added_per_100_houses": "%.2f" % (100.0 * c["rate"]["slope"]),
+            "installed_per_100_houses": "%.2f" % (100.0 * c["gross"]["slope"]),
+            "bindarra_houses_without_pv": "{:,}".format(pools["Bindarra Waters"]["pool"]),
+            "wattleview_houses_without_pv": "{:,}".format(pools["Wattleview"]["pool"]),
             "bindarra_systems_unrounded": "%.1f" % fc["lift"]["Bindarra Waters"],
             "wattleview_systems_unrounded": "%.1f" % fc["lift"]["Wattleview"],
             "avg_kw_yrb24": "%.2f" % fc["avgkw"]["YRB24"], "avg_kw_yrb27": "%.2f" % fc["avgkw"]["YRB27"],
@@ -77,14 +90,9 @@ def figures(c):
             "winner_forecast_mw": "%.1f" % r1(fc["fc"][w] / 1000.0),
             "winner_hosting_mw": "%.2f" % c["L"]["hca"][w]["hc29"],
         },
-        "default_path": {"feeder": c["default"]["winner"],
-                         "excess_mw": "%.1f" % r1(c["default"]["excess"][c["default"]["winner"]]),
-                         "bindarra_waters_mw": "%.1f" % r1(c["default"]["add_mw"]["Bindarra Waters"]),
-                         "wattleview_mw": "%.1f" % r1(c["default"]["add_mw"]["Wattleview"])},
-        "reflex_path": {"feeder": c["reflex"]["winner"],
-                        "excess_mw": "%.1f" % r1(c["reflex"]["excess"][c["reflex"]["winner"]]),
-                        "bindarra_waters_mw": "%.1f" % r1(c["reflex"]["add_mw"]["Bindarra Waters"]),
-                        "wattleview_mw": "%.1f" % r1(c["reflex"]["add_mw"]["Wattleview"])},
+        "default_path": path_block(c["default"]),
+        "reflex_path": path_block(c["reflex"]),
+        "prepost_path": path_block(c["prepost"]),
         "der": {f: {"active_sites": a["sites"][f], "first_lodged_fy2025_26": a["first"][f],
                     "inverter_kw": "{:,}".format(ten(a["inverter"][f])),
                     "storage_kwh": "{:,}".format(ten(a["storage"][f]))} for f in K.FEEDERS},
@@ -126,8 +134,10 @@ def write_book(path, c, figs):
         ("Runner-up feeder", ru, None),
         ("Runner-up above hosting capacity (MW)", float(figs["call"]["runner_up_excess_mw"]), "0.0"),
         ("Gap between them (MW)", float(figs["call"]["gap_mw"]), "0.0"),
-        ("Solar Streets 2026, Bindarra Waters (YRB24): PV added (MW)", float(figs["call"]["bindarra_waters_mw"]), "0.0"),
-        ("Solar Streets 2026, Wattleview (YRB27): PV added (MW)", float(figs["call"]["wattleview_mw"]), "0.0"),
+        ("Solar Streets 2026, Bindarra Waters (YRB24): PV added by 31 Aug 2029 (MW)",
+         float(figs["call"]["bindarra_waters_mw"]), "0.0"),
+        ("Solar Streets 2026, Wattleview (YRB27): PV added by 31 Aug 2029 (MW)", float(figs["call"]["wattleview_mw"]),
+         "0.0"),
     ]
     for i, (k, v, fmt) in enumerate(rows, 4):
         ws.cell(row=i, column=1, value=k)
@@ -139,19 +149,15 @@ def write_book(path, c, figs):
     ws.column_dimensions["A"].width = 60
     ws.column_dimensions["B"].width = 14
     notes = [
-        "%s's rooftop PV is forecast at %s MW on 31 August 2029 against a 2029 hosting capacity of %s MW; %s MW of "
-        "it is the Wattleview bulk-buy." % (w, st["winner_forecast_mw"], st["winner_hosting_mw"],
-                                            figs["call"]["wattleview_mw"]),
-        "Past Solar Streets campaigns installed about %s systems for every first application their suburb's "
-        "owner-occupied houses lodged in the year before sign-ups opened (%d systems on %d applications over the "
-        "seven campaigns). That is the only basis on which the seven agree; per home letterboxed or per house "
-        "without PV they vary several-fold (Solar Streets sheet)." % (
-            "%.2f" % float(st["pooled_per_first_application"]), st["campaign_systems_total"],
-            st["campaign_first_applications_total"]),
-        "Wattleview's owner-occupiers lodged %d first applications in the year to August 2026 and Bindarra Waters' "
-        "lodged %d, so Wattleview's campaign is expected to add about four times as much PV although Bindarra "
-        "Waters has more houses still without it." % (st["wattleview_first_applications"],
-                                                      st["bindarra_first_applications"]),
+        "%s forecast %s MW at 31 Aug 2029 against 2029 hosting capacity %s MW; %s MW of it is the Wattleview "
+        "bulk-buy." % (w, st["winner_forecast_mw"], st["winner_hosting_mw"], figs["call"]["wattleview_mw"]),
+        "Bulk-buys counted at what they add by the design point, not systems installed. The seven past campaigns "
+        "installed %s systems per 100 houses without PV, but more than half of those households would have gone "
+        "solar within three years anyway; read against suburbs whose campaign had not yet run, they added %s per "
+        "100 (Solar Streets tab)." % (st["installed_per_100_houses"], st["added_per_100_houses"]),
+        "Installed-systems basis puts YRB24 first. On the added basis Bindarra Waters (%s houses without PV) adds "
+        "%s MW and YRB24 stays %s MW short of YRB27." % (st["bindarra_houses_without_pv"],
+                                                       figs["call"]["bindarra_waters_mw"], figs["call"]["gap_mw"]),
     ]
     for i, t in enumerate(notes, 13):
         ws.cell(row=i, column=1, value=t).font = Font(size=9)
@@ -161,7 +167,7 @@ def write_book(path, c, figs):
     f["A1"] = "Forecast rooftop PV (micro EG) at 31 August 2029 by feeder"
     f["A1"].font = Font(bold=True, size=11)
     _head(f, 3, ["Feeder", "Connected 31 Aug 2026 (kW)", "Trend (kW a year, FY2023-24 to FY2025-26)",
-                 "Base forecast 31 Aug 2029 (kW)", "Solar Streets 2026 systems", "Program capacity (kW)",
+                 "Base forecast 31 Aug 2029 (kW)", "Systems the 2026 bulk-buy adds", "Bulk-buy addition (kW)",
                  "Forecast 31 Aug 2029 (kW)", "Hosting capacity, 2029 case (MW)",
                  "Above hosting capacity (MW)", "Rank"], [9, 13, 15, 14, 12, 12, 14, 13, 13, 7])
     camp_of = {p["feeder"]: (name, fc["lift"][name]) for name, p in pools.items()}
@@ -191,10 +197,10 @@ def write_book(path, c, figs):
         cc.font = Font(bold=True)
         if fmt:
             cc.number_format = fmt
-    f["A14"] = ("Connected capacity: each NMI's latest connected configuration on the network model's feeder; trend: "
-                "the yearly increase in connected capacity less program systems first connected that year; program "
-                "systems at the feeder's FY2025-26 average inverter rating (NPP-114 3.2, 4.1 to 4.3). Systems are "
-                "carried unrounded.")
+    f["A14"] = ("Connected capacity: each NMI's latest connected configuration on the network model's feeder. Trend: "
+                "yearly increase in connected capacity less program systems first connected that year (NPP-114 3.2). "
+                "Bulk-buy addition: systems the campaign adds by 31 Aug 2029 at the feeder's FY2025-26 average new "
+                "inverter (4.1, 4.3). Carried unrounded.")
     f["A14"].font = Font(size=9, italic=True)
     f.freeze_panes = "B4"
     f.page_setup.orientation = "landscape"
@@ -203,63 +209,67 @@ def write_book(path, c, figs):
     f.print_title_rows = "3:3"
 
     p = wb.create_sheet("Solar Streets")
-    p["A1"] = "Solar Streets: what a campaign installs, carried from the seven past campaigns"
+    p["A1"] = "Solar Streets: systems installed against systems added, seven past campaigns"
     p["A1"].font = Font(bold=True, size=11)
-    _head(p, 3, ["Campaign", "Suburb", "Feeder", "Sign-ups opened",
-                 "First applications from owner-occupied houses, 12 months before sign-ups opened",
-                 "Systems installed (program reference)", "Systems per first application"],
-          [10, 18, 9, 13, 20, 14, 13], height=58)
+    _head(p, 3, ["Campaign", "Suburb", "Feeder", "Sign-ups opened", "Window to",
+                 "Owner-occupied houses without PV at opening", "Systems installed (program ref)",
+                 "First applications, 12 months before", "First applications in window (all, incl. program)",
+                 "Comparison suburbs: window / 12 months before", "Expected in window without campaign",
+                 "Added by campaign", "Added per 100 houses without PV"],
+          [10, 17, 8, 12, 12, 13, 12, 12, 14, 14, 13, 11, 12], height=72)
     for i, x in enumerate(c["camps"], 4):
-        vals = [x["key"], x["suburb"], x["feeder"], x["opening"], x["n365"], x["systems"],
-                round(x["systems"] / x["n365"], 2)]
+        rt = c["ratios"][x["key"]]
+        vals = [x["key"], x["suburb"], x["feeder"], x["opening"], rt["end"], x["pool"], x["systems"], x["pre"], x["post"],
+                round(rt["post"] / rt["pre"], 3), round(x["cf"], 1), round(x["net"], 1),
+                round(100.0 * x["net"] / x["pool"], 2)]
         for j, v in enumerate(vals, 1):
             cc = p.cell(row=i, column=j, value=v)
-            if j == 4:
+            if j in (4, 5):
                 cc.number_format = "d mmm yyyy"
-            elif j == 7:
+            elif j in (6, 7, 8, 9):
+                cc.number_format = "#,##0"
+            elif j == 10:
+                cc.number_format = "0.000"
+            elif j in (11, 12):
+                cc.number_format = "#,##0.0"
+            elif j == 13:
                 cc.number_format = "0.00"
     n = 4 + len(c["camps"])
     p.cell(row=n, column=1, value="All seven").font = Font(bold=True)
-    p.cell(row=n, column=5, value=st["campaign_first_applications_total"]).font = Font(bold=True)
-    p.cell(row=n, column=6, value=st["campaign_systems_total"]).font = Font(bold=True)
-    cc = p.cell(row=n, column=7, value=round(c["bases"]["uplift"]["slope"], 3))
-    cc.number_format = "0.000"
-    cc.font = Font(bold=True)
-    _head(p, n + 2, ["Basis tried", "", "", "", "Pooled rate over the seven", "Lowest campaign", "Highest campaign",
-                     "Coefficient of variation"], height=30)
-    for i, (b, label) in enumerate(BASIS_ROWS, n + 3):
-        rr = c["bases"][b]
-        pct = b != "uplift"
-        scale = 100.0 if pct else 1.0
-        p.cell(row=i, column=1, value=label)
-        for j, v in ((5, rr["slope"] * scale), (6, min(rr["values"]) * scale), (7, max(rr["values"]) * scale)):
-            q = p.cell(row=i, column=j, value=round(float(v), 2 if pct else 3))
-            q.number_format = "0.00" if pct else "0.000"
-        p.cell(row=i, column=8, value=round(rr["cv"], 2)).number_format = "0.00"
-    m = n + 3 + len(BASIS_ROWS) + 1
-    _head(p, m, ["2026 campaign", "Suburb", "Feeder", "Sign-ups open",
-                 "First applications from owner-occupied houses, 1 Sep 2025 to 31 Aug 2026", "Systems added",
-                 "Average inverter (kW, FY2025-26)", "PV added (MW)"], height=58)
+    for j, v, fmt in ((6, sum(x["pool"] for x in c["camps"]), "#,##0"), (7, sum(x["systems"] for x in c["camps"]), "#,##0"),
+                      (12, round(sum(x["net"] for x in c["camps"]), 1), "#,##0.0"),
+                      (13, round(100.0 * c["rate"]["slope"], 2), "0.00")):
+        cc = p.cell(row=n, column=j, value=v)
+        cc.number_format = fmt
+        cc.font = Font(bold=True)
+    p.cell(row=n + 1, column=1, value="Installed per 100 houses without PV, all seven: %s" % st["installed_per_100_houses"]).font = \
+        Font(size=9)
+    m = n + 3
+    _head(p, m, ["2026 campaign", "Suburb", "Feeder", "Sign-ups open", "", "Owner-occupied houses without PV, 1 Sep 2026",
+                 "Systems added by 31 Aug 2029", "Average new inverter (kW, FY2025-26)", "PV added (MW)"], height=58)
     for i, cm in enumerate(K.CAMPAIGNS_2026, m + 1):
         name = cm["suburb"]
         pl = pools[name]
-        vals = [cm["key"], name, pl["feeder"], cm["open"], pl["n365"], round(fc["lift"][name], 1),
+        vals = [cm["key"], name, pl["feeder"], cm["open"], None, pl["pool"], round(fc["lift"][name], 1),
                 round(fc["avgkw"][pl["feeder"]], 2), r1(fc["add_mw"][name])]
         for j, v in enumerate(vals, 1):
             cc = p.cell(row=i, column=j, value=v)
             if j == 4:
                 cc.number_format = "d mmm yyyy"
             elif j == 6:
-                cc.number_format = "0.0"
+                cc.number_format = "#,##0"
             elif j == 7:
-                cc.number_format = "0.00"
-            elif j == 8:
                 cc.number_format = "0.0"
-    p.column_dimensions["H"].width = 13
+            elif j == 8:
+                cc.number_format = "0.00"
+            elif j == 9:
+                cc.number_format = "0.0"
     p.cell(row=m + 4, column=1, value=(
-        "Owner-occupied house: rates roll land use 02 with rating R1, matched to NMIs through the GIS cross-reference. "
-        "A first application is the earliest application at the NMI, other than a withdrawn one. Systems installed "
-        "are the connected new systems lodged with the campaign's reference.")).font = Font(size=9, italic=True)
+        "Owner-occupied house: rates roll land use 02, rating R1, matched to NMIs via the GIS cross-reference. First "
+        "application: earliest application at the house other than a withdrawn one, by received date. Window: 36 months "
+        "from sign-ups opening, or to 31 Aug 2026 for BNR23 and PBG24. Comparison: suburbs whose own campaign opens "
+        "after the window (not yet treated). Expected without campaign = suburb's first applications in the 12 months "
+        "before x comparison suburbs' window / 12-month ratio.")).font = Font(size=9, italic=True)
 
     d = wb.create_sheet("DER Register")
     d["A1"] = "Active DER Register sites by feeder, extract as at 31 August 2026"
@@ -297,9 +307,9 @@ def write_book(path, c, figs):
                              "minimum-demand case (clause 5.1)."),
         ("Solar Streets 2026", "Merindah City Council letter of 14 August 2026 (reference SS/2026/02): sign-ups "
                                "1 September to 27 November 2026 in Bindarra Waters and Wattleview."),
-        ("Past campaigns", "The council's Solar Streets summary, 2018 to 2024, for sign-up dates; systems counted from "
-                           "program references in the connection register, which agree with the council's systems "
-                           "installed for every campaign. The rate is pooled over the seven (clause 4.2)."),
+        ("Past campaigns", "Council Solar Streets summary 2018 to 2024 for sign-up dates; systems from program "
+                           "references in the connection register, which match the council's systems installed. What each "
+                           "campaign added is read against suburbs whose campaign had not yet run over the same months."),
         ("DER Register", "Extract as at 31 August 2026, AC connections and devices at NMIs on the Yarrabin feeders; "
                          "the NMI re-allocation log for builders' temporary supply NMIs."),
         ("Rounding", "Carried unrounded and rounded once: MW to one decimal (clause 7.1); inverter capacity to the "

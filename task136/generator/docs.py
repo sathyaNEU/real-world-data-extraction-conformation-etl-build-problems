@@ -110,15 +110,14 @@ def write_npp(path):
                        "average, over the last three complete financial years, of the year's increase in connected "
                        "capacity less the capacity of the program systems first connected in that year.", CLAUSE))
     s.append(Paragraph("4 Programs", H2))
-    s.append(Paragraph("4.1&nbsp;&nbsp;A program scheduled on a feeder, whose sign-up window closes at least six months "
-                       "before the design point, adds to the base forecast the number of systems that the "
-                       "distributor's records of past programs of the same kind indicate it will bring.", CLAUSE))
-    s.append(Paragraph("4.2&nbsp;&nbsp;A rate taken from past programs is their total systems divided by their "
-                       "combined total of the quantity the rate is expressed per.", CLAUSE))
-    s.append(Paragraph("4.3&nbsp;&nbsp;Each such system is taken at the average inverter capacity of the micro EG "
-                       "systems first connected on that feeder in the last complete financial year.", CLAUSE))
-    s.append(Paragraph("4.4&nbsp;&nbsp;A program that has not been confirmed in writing by its sponsor is not "
+    s.append(Paragraph("4.1&nbsp;&nbsp;The forecast at the design point is the base forecast plus the impact on the "
+                       "feeder's connected capacity at the design point of each program scheduled on the feeder whose "
+                       "sign-up window closes at least six months before the design point.", CLAUSE))
+    s.append(Paragraph("4.2&nbsp;&nbsp;A program that has not been confirmed in writing by its sponsor is not "
                        "forecast.", CLAUSE))
+    s.append(Paragraph("4.3&nbsp;&nbsp;Systems a forecast counts that are not connected at the base date are taken at "
+                       "the average inverter capacity of the micro EG systems first connected on the feeder in the last "
+                       "complete financial year.", CLAUSE))
     s.append(Paragraph("5 Hosting capacity", H2))
     s.append(Paragraph("5.1&nbsp;&nbsp;A feeder's hosting capacity is the figure in the current hosting capacity "
                        "assessment for the design year's spring minimum-demand case.", CLAUSE))
@@ -130,7 +129,7 @@ def write_npp(path):
     s.append(Paragraph("7.1&nbsp;&nbsp;Forecasts are carried unrounded and rounded once for reporting: capacity and "
                        "excess in MW to one decimal, systems to the nearest ten.", CLAUSE))
     s.append(Spacer(1, 8))
-    s.append(Paragraph("Revision 3 moved the design point from 1 October to 31 August and added clauses 4.2 and 4.4. Approved: "
+    s.append(Paragraph("Revision 3 moved the design point from 1 October to 31 August and added clause 4.2. Approved: "
                        "%s, Manager Network Planning, 26 February 2026." % K.PEOPLE["planning"], NOTE))
     _doc(path, "NPP-114 Forecasting micro embedded generation for distribution augmentation (rev 3)",
          K.PEOPLE["planning"]).build(s, onFirstPage=_footer("Mirrabee Energy  |  NPP-114 rev 3", "Uncontrolled when printed"),

@@ -126,7 +126,8 @@ def rebate_rows(W):
     """The state home battery rebate's approvals for addresses in Merindah, FY2025-26 (approval does not mean a
     battery was installed; the scheme pays on installation)."""
     r = K.rng("rebate")
-    houses = [p for p in W.props if p["kind"] in ("house_oo",) and p["handover"] < dt.date(2025, 1, 1)]
+    houses = [p for p in W.props if p["kind"] in ("house_oo",) and p["handover"] < dt.date(2025, 1, 1)
+              and not p.get("no_pv")]
     out = []
     for i, p in enumerate([houses[int(j)] for j in r.choice(len(houses), size=612, replace=False)]):
         make = str(r.choice(["Tesla Powerwall 3", "Sigenergy SigenStor", "BYD Battery-Box HVS", "Alpha ESS SMILE-G3",
