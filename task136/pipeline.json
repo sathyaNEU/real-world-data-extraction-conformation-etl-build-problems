@@ -1,11 +1,11 @@
 {
   "task": "task136",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "energy-systems-utilities",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-15",
   "stump": "A competent solver builds NPP-114's base forecast, takes each 2026 bulk-buy's impact as the systems it will install at the council's participation rate per home letterboxed and files YRB24 at about 4.2 MW over hosting capacity; per owner-occupied house still without PV it files YRB24 at 3.9, and each suburb's own before and after files YRB24 at 2.4; the step that lands all three there is counting a campaign's installed systems, or its suburb's rise over its own past, as what it adds, when more than half of the households the past campaigns signed up would have gone solar within three years anyway and uptake rose across the zone over the same years: read against the suburbs whose campaign had not yet run, the seven added 4.09 systems per 100 owner-occupied houses without PV, Bindarra Waters adds 1.7 MW, and the golden is YRB27 at about 1.9 MW.",
   "architecture": 1,
@@ -16,7 +16,8 @@
     "trigger": "rule 3 audit AT_RISK (hidden rule, rule application): the prompt bound the call to NPP-114 ('forecasting rooftop PV as NPP-114 sets out'); NPP-114 4.2 filed the pooling formula with its denominator blank; the winning basis (first applications in the year before sign-ups) found only by a denominator search over seven campaigns",
     "redesign": "NPP-114 4.2's pooling clause and the prompt's binding removed (4.2 is now the sponsor's written confirmation); 4.1 files only the estimand, the impact on the feeder's connected capacity at the design point; the prompt asks how much each bulk-buy will raise its feeder's PV by that date; the decisive step moved to the bulk-buys' net addition, each past campaign suburb read against the suburbs whose campaign had not yet run over the same months; world regenerated (campaigns harvest the near-term pipeline and bring in a few new households, a pace step from 2022, established 2026 suburbs, never-applied houses on their own stream); asks unchanged in wording and device",
     "call": "YRB27, 1.9 MW over hosting capacity at 31 August 2029; runner-up YRB24 1.7; gap 0.2; Bindarra Waters 1.7 MW, Wattleview 0.7 MW",
-    "default_path": "installed systems per home letterboxed: YRB24 4.2 (runner-up YRB27 2.5; Bindarra Waters 4.2, Wattleview 1.3); per house without PV YRB24 3.9; each suburb's own before and after YRB24 2.4 to 2.6"
+    "default_path": "installed systems per home letterboxed: YRB24 4.2 (runner-up YRB27 2.5; Bindarra Waters 4.2, Wattleview 1.3); per house without PV YRB24 3.9; each suburb's own before and after YRB24 2.4 to 2.6",
+    "shipped": "2026-10-15"
   },
   "rounds": [
     {
@@ -26,7 +27,7 @@
       "judge": {
         "verdict": "DETERMINISTIC 2026-10-12 (judge-task136b, re-judge): APPROVE, no fix; the call forced (YRB24 1.9 MW, YRB22 1.5, gap 0.4), every supplementary figure reproduced; one watch item, Ask B's repeated battery capacity",
         "disposition": "APPROVE, shipped; the watch item left unwritten in the pack, its one reading asserted in checks.py and recorded in the design note's Ask B; the dictionary's date moved from 2 to 7 September (its properties and the manifest, a date only), the shipped pack's one difference from the judged one; pass 1 (judge-task136) DETERMINISTIC with a FIX_NOW, applied (SF23, SF24, SF16) with no graded figure moved",
-        "report": "determinism_check_report_pass2.md (pass 1: determinism_check_report.md)",
+        "report": "determinism_check_report_pass2.md (pass 1: determinism_check_report_round1.md)",
         "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; no reported number is wrong",
         "gate_h": "domain pass, layers pass, decisive_step analytical"
       },
@@ -96,12 +97,12 @@
       "portal": "rule 3 audit AT_RISK (round 2): hidden rule and rule application",
       "repair": "design (round 3 rework of the decisive step: the bulk-buys' net addition against not-yet-treated suburbs)",
       "round": 3,
-      "commit": "PAUSED (task136): rule 3 rework, stage 3 green, waiting on the reader and judge"
+      "commit": "RESHIPPED (task136): rule 3 rework, each bulk-buy's net addition read against suburbs not yet treated; YRB27 at 1.9 MW"
     }
   ],
-  "resume": "stage 4: reader and judge",
+  "resume": "",
   "approved": null,
-  "delivered": "2026-10-14",
+  "delivered": "2026-10-15",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -112,29 +113,34 @@
     "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-15 on the stage-3 pack (--asof 2026-10-12), no LEAK, sweep 11 clean; five lines (NPP-114 carries the call's words; NPP-114, the letter and the assessment share ordinary nouns with the stump paragraph; device_type), each answered in the design note's Build record",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-15 on the shipped pack (--asof 2026-10-12), no LEAK, sweep 11 clean; the same five lines (NPP-114 carries the call's words; NPP-114, the letter and the assessment share ordinary nouns with the stump paragraph, 'network' entering sweep 4 from the design note; device_type), each answered in the design note's Build record and the report's Solver's-eye read",
+    "reader": "2026-10-15 round 3: clean on Q1 to Q4, Q6 analytical; its natural route take-up on eligible owner-occupied houses, the textbook route the design sets up to fail; every REVIEW line harmless; its ask readings (the feeder source, 'first lodged', the battery kWh source, sites as NMIs) governed by the literal reading per the judge"
   },
   "duplicate_check": {
     "heart": "WARN 2026-10-15 (people.first, Julie against task139, answered under Guard); no BLOCK",
     "nearest": "0.16 this slot's round-2 lineage (driver, differentiated), 0.06 task142 and task94 v3; heart text nearest 0.04; surface exit 0, one pair promoted (task450, surface proximity, retired, differentiated on the card); personas Ian Fletcher, Julie Cochran, Tammy Buchanan"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": "",
-    "gate_g": "",
-    "gate_h": ""
+    "verdict": "DETERMINISTIC 2026-10-15 (judge-task136r3): APPROVE, no fix; every figure reproduced (YRB27 1.90, YRB24 1.70, gap 0.20, YRB22 1.39, increments 1.7 and 0.7 MW, net 627.8 systems on 15,349 houses or 4.09 per 100, all 32 DER cells); margin to the flip 0.85 per 100",
+    "disposition": "APPROVE, shipped as judged with nothing under target/ moved; the optional prompt pin ('the increment over what the suburb would have lodged anyway') declined because it hands over the decisive step (SF19, Tried and rejected); the two literal-reading notes filed (SF5 the trend on the network model's feeder at the base date; SF27 and SF28 the DER asks on the literal reading)",
+    "report": "determinism_check_report.md (round 1: determinism_check_report_round1.md and determinism_check_report_pass2.md; round 2: determinism_check_report_round2.md)",
+    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "gates": {
     "checks": "483 assertions (the three-rules block R1 to R3c, 33 constructions, one sigma, every rival route the audit measured)",
     "verify": "97 checks from the bundle alone",
     "rebuild": "two builds byte-identical, target.zip sha256 8e187f80ae5fea899468e00c3e0b59a6acdb19899dbdcd92a0e00aed3874d948",
     "figures_check": "70 figures, 0 absent",
-    "precut": "49 checks, 0 FAIL, 0 WARN",
+    "precut": "49 checks, 0 FAIL, 0 WARN (re-run 2026-10-15 at ship)",
     "voice_check": "PASS",
     "leak_py": "REVIEW, no LEAK, sweep 11 clean",
     "container": "target and golden clean; archive members equal the pack (15)",
-    "guard": "validate 0 invalid, check WARN, heart WARN, surface exit 0"
+    "guard": "validate 0 invalid, check WARN, heart WARN, surface exit 0",
+    "target_zip": "8e187f80ae5fea899468e00c3e0b59a6acdb19899dbdcd92a0e00aed3874d948 (the judged and read pack, shipped unchanged)"
+  },
+  "rule3": {
+    "verdict": "PASS 2026-10-15 (re-audit of round 3, scratchpad/rule3/task136_r3.md): planted none, semantics pass, rule application pass, analyst test yes, Layer 1 does not carry the stump",
+    "accepted_risks": "stump strength about one of the top two; both could land if both build a never-treated difference-in-differences (the never-treated comparison sits inside the corridor); the untreated suburbs' counts rise very smoothly (design note, Accepted risks)"
   }
 }

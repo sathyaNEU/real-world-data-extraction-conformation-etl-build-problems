@@ -96,7 +96,7 @@ none. Optional only: one line in data_dictionary.xlsx on module-row repetition f
 
 ## Disposition
 
-Approved as judged (judge-task136b, the re-judge after the pass-1 FIX_NOW in determinism_check_report.md). No graded
+Approved as judged (judge-task136b, the re-judge after the pass-1 FIX_NOW in determinism_check_report_round1.md). No graded
 figure, document text, golden, write-up or prompt changed.
 
 1. **Watch item (Ask B's repeated battery capacity).** Left unwritten in the pack: a dictionary line saying the value

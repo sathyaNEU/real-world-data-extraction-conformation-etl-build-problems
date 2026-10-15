@@ -26,8 +26,9 @@ that recovers a rule, and no record blesses the wrong method.
 - **What stayed.** The decision (one augmentation, eight feeders, the 31 August 2029 design point, the two spring 2026
   bulk-buys), NPP-114's definitions, base forecast, sizing, hosting basis and assignment, the people, the files and
   their layouts, the forum, the forcing event and the four DER Register asks with their devices.
-- **Where it stands.** Stage 3 green (Build record); stage 4, the leak reader and the determinism judge, is run by the
-  main session.
+- **Where it stands.** Reshipped 2026-10-15 on the stage-3 pack unchanged (`target.zip` sha256 8e187f80ae5fea89...):
+  the judge DETERMINISTIC, APPROVE, Gate H analytical (`determinism_check_report.md`), the leak reader round 3 clean
+  with Q6 analytical (`leak_check_report.md`), the rule 3 re-audit PASS (Accepted risks).
 
 ## Draw
 
@@ -228,7 +229,7 @@ alternative computed and shown to move a figure or to converge, and the ruling s
 | SF2 | a system's capacity | the inverter capacity (kW AC) of the NMI's latest connected configuration | every connected application summed; panel capacity | summed: YRB22 at 4.3; panel: YRB24 at 6.1 | NPP-114 2.2 ("An alteration replaces the configuration it alters"; "inverter capacity (kW, AC rating)") and the dictionary's `inverter_kw_ac` |
 | SF3 | migrated rows (blank `inverter_kw_ac`) | the inverter from the legacy equipment table on the legacy application number | the rows dropped; their panel capacity | dropped: YRB27 at -1.7; panel: YRB24 at 2.6 | NPP-114 2.2 and the dictionary ("Blank on applications migrated from the legacy system"), asserted |
 | SF4 | "connected" at a date | status Connected, connection date on or before the date, not removed by it | approved but not connected counted | same call (YRB27 at 2.0); every base moves under 2 per cent | NPP-114 2.2 |
-| SF5 | the feeder of an NMI | the network model at 31 August 2026 | the feeder recorded on the application | same call (YRB27 at 2.5, runner-up YRB23) | NPP-114 3.1 |
+| SF5 | the feeder of an NMI | the network model at 31 August 2026 | the feeder recorded on the application | same call (YRB27 at 2.5, runner-up YRB23); the feeder at application for the trend alone (the round-3 judge) gives YRB27 and YRB24 base forecasts of 15,426 and 23,583 kW, same call, the runner-up at 1.6 | NPP-114 3.1 and 2.2: the trend, like every other step, uses the network model's feeder at the base date, the literal reading and the golden (the round-3 judge) |
 | SF6 | the base date | 31 August 2026, the extracts' as-at date | 30 June 2026 | same call (YRB27 at 1.7, gap 0.4); no record exists after 31 August | NPP-114 3.1 and the extracts' dates (the manifest) |
 | SF7 | the trend | the average yearly increase in connected capacity over FY2023-24 to FY2025-26 less program systems first connected that year | new connections only; program systems left in | same call under both (1.8; 1.9 with runner-up YRB21) | NPP-114 3.2 |
 | SF8 | the years carried | three | 3.25 or 2.92 | same call, figures move | NPP-114 2.4 and 3.2 |
@@ -242,7 +243,7 @@ alternative computed and shown to move a figure or to converge, and the ruling s
 | SF16 | the comparison suburbs | those whose campaign opens after the window closes (not yet treated, the 2026 suburbs included) | the suburbs that never had a campaign; both together | converges (asserted) | the records converge; every other suburb, treated ones included, is refused by the records (each treated suburb's other first applications run at a quarter of the expected level for two years after its opening, asserted): YRB27 at 2.0 with every figure off |
 | SF17 | the year before | the 12 months before sign-ups opened | 24 or 36 months at a yearly rate | converges (asserted) | the records converge |
 | SF18 | the counterfactual's form | counts: the year before times the comparison's change | hazards on the houses without PV; month by month with each suburb leaving the comparison when its campaign opens | converges (asserted) | the records converge |
-| SF19 | how much a bulk-buy raises its feeder's PV by the design point | its feeder's PV at 31 August 2029 with the campaign against without it | the PV the campaign's installer connects | YRB24 (an installed-count route) | the prompt's "raise its feeder's PV by that date" and NPP-114 4.1's "impact on the feeder's connected capacity at the design point"; a reader who takes the golden reading still files YRB24 when it estimates the impact as the installed count, so the stump is the estimate, not this row |
+| SF19 | how much a bulk-buy raises its feeder's PV by the design point | its feeder's PV at 31 August 2029 with the campaign against without it | the PV the campaign's installer connects | YRB24 (an installed-count route) | the prompt's "raise its feeder's PV by that date" and NPP-114 4.1's "impact on the feeder's connected capacity at the design point"; a reader who takes the golden reading still files YRB24 when it estimates the impact as the installed count, so the stump is the estimate, not this row; the round-3 judge's optional prompt pin ("the increment over what the suburb would have lodged anyway") is declined: it names the counterfactual and hands over the decisive step, and the judge found the call forced without it (the flat own-baseline and net-per-letterbox readings are separated by the data and the wording, margin 0.85 per 100) |
 | SF20 | the transfer basis | per owner-occupied house without PV at the opening | per home letterboxed; per owner-occupied house; per first application in the year before; per campaign | YRB24 at 1.8; YRB27 at 1.8 with every figure off; YRB24 at 2.8; YRB27 at 2.0 with runner-up YRB22 | the records: the seven additions spread 0.046 per house without PV and 0.146 to 0.244 on every other basis (asserted at 1.5 times or more) |
 | SF21 | hosting capacity | the assessment's spring 2029 minimum-demand case | the 2026 case beside it | YRB24 by 0.1 MW | NPP-114 5.1 ("for the design year's spring minimum-demand case") and 2.4, asserted; the prompt's "at 31 August 2029" |
 | SF22 | the excess, the runner-up and the gap | unrounded, ranked, rounded once to 0.1 MW | rounded figures subtracted | converges (asserted) | NPP-114 6.1 and 7.1 |
@@ -250,8 +251,8 @@ alternative computed and shown to move a figure or to converge, and the ruling s
 | SF24 | a withdrawn application | not a first application: nothing was connected under it | any status counted | same call (YRB27 at 1.8), figures move | the dictionary's status definition, asserted |
 | SF25 | the two campaigns whose window the base date cuts (BNR23, PBG24) | kept, at their shorter windows | dropped | converges (asserted) | the records converge |
 | SF26 | "how much each bulk-buy will raise its feeder's PV" | its systems at the feeder's FY2025-26 average new inverter, in MW | a count of systems | the prompt gives megawatts to one decimal; NPP-114 4.3 sizes each system | the prompt and NPP-114 4.3, asserted |
-| SF27 | the feeder a DER site is on (asks 1 to 4) | the network model's feeder for the site's NMI | the DER extract's `feeder` (stamped at lodgement; 491 active connections at 431 sites differ) | the call unread; Ask 1 YRB27 1,933 and YRB23 2,336 (all 8 off) | the prompt's "sites it supplies" and the dictionary: the network model's feeder is the "Feeder supplying the NMI at 31 August 2026", the extract's only "added by Mirrabee's extraction" (asserted) |
-| SF28 | "first lodged" (ask 2) | the site's earliest `registered_date` over every AC connection at it, decommissioned included | the earliest of the active connections only | the call unread; YRB27 170, YRB26 108 (all 8 off) | the prompt counts sites ("how many of them"); the dictionary dates each AC connection ("Date the installer lodged the AC connection") and keeps a replaced one as Decommissioned (asserted) |
+| SF27 | the feeder a DER site is on (asks 1 to 4) | the network model's feeder for the site's NMI | the DER extract's `feeder` (stamped at lodgement; 491 active connections at 431 sites differ) | the call unread; Ask 1 YRB27 1,933 and YRB23 2,336 (all 8 off) | the prompt's "sites it supplies" and the dictionary: the network model's feeder is the "Feeder supplying the NMI at 31 August 2026", the extract's only "added by Mirrabee's extraction" (asserted); the round-3 judge reproduced every DER cell on this literal reading |
+| SF28 | "first lodged" (ask 2) | the site's earliest `registered_date` over every AC connection at it, decommissioned included | the earliest of the active connections only | the call unread; YRB27 170, YRB26 108 (all 8 off) | the prompt counts sites ("how many of them"); the dictionary dates each AC connection ("Date the installer lodged the AC connection") and keeps a replaced one as Decommissioned (asserted); the round-3 judge: the literal reading is the golden (active connections only adds 12 to 53 sites a feeder) |
 | SF29 | a house with two NMIs | the earlier first application | the later | converges: no house in a campaign suburb has two NMIs (asserted) | the records converge |
 
 The stump is none of these rows: a careful reader reads every one the same way, and the default path reads them all
@@ -551,8 +552,63 @@ Stage 3 of round 3, built 2026-10-15 by `python3 task136/generator/build.py` (pa
   (campaign, suburb, application) and the assessment (systems, connected, design) share the stump paragraph's ordinary
   nouns, and none names a comparison, a counterfactual, a pulled-forward install or a share; `device_type` is the DER
   Register's own device field.
-- **Not run here.** The leak reader and the determinism judge (stage 4) are the main session's; nothing in this round
-  has been read by either.
+- **Stage 4.** Judge (`determinism_check_report.md`, round 3; rounds 1 and 2 in `determinism_check_report_round1.md`,
+  `determinism_check_report_pass2.md` and `determinism_check_report_round2.md`): DETERMINISTIC, APPROVE, no fix;
+  every figure reproduced (YRB27 1.90, YRB24 1.70, gap 0.20, YRB22 1.39, the increments 1.7 and 0.7 MW, 627.8 net
+  systems on 15,349 houses or 4.09 per 100, all 32 DER cells); Gate G `method_or_model_selection`,
+  `analytical_non_defect`, no surface-read dependency, no sole data defect; Gate H domain, layers and decisive step
+  analytical. Its optional prompt pin is declined (SF19, Tried and rejected); its two literal-reading notes are filed
+  (SF5: the trend on the network model's feeder at the base date; SF27 and SF28: the DER asks on the literal reading).
+  Leak reader round 3: Q1 to Q4 clean, Q6 analytical, every REVIEW line harmless (`leak_check_report.md`, Solver's-eye
+  read). Nothing under `target/` moved after either read.
+
+## Pre-ship check
+
+1. Domain: the task is a distribution network planner's choice of the one feeder that gets the FY2027-28 accelerated
+   hosting-capacity augmentation, judged on each feeder's rooftop PV at the 31 August 2029 design point against its
+   spring 2029 hosting capacity; the quantity that decides is what each spring 2026 bulk-buy adds by that date, net of
+   the installs it only pulls forward, estimated as program evaluators estimate a solar bulk-buy's net effect; with
+   another field's nouns, inverter ratings, hosting capacity and a PV purchase pulled forward from a later year have
+   nothing to attach to (the judge's Gate H domain pass).
+2. Real work, nothing planted: the connection register at application grain (alterations, withdrawn and
+   approved-not-connected applications, removals, 2019 migrated rows with a legacy equipment table), the feeder at
+   application after five load transfers, the rates roll joined to NMIs only through the GIS cross-reference, the
+   council's workbook in its own layout, and on the ask paths the DER Register extract at device grain; each what these
+   systems produce, read by the filed rules to the world's own figures (R2, asserted), none deciding the call. The
+   post-opening dip is the campaigns' own harvest, visible in the register, not a doctored block (the re-audit).
+3. The flip is analysis: the counterfactual for a past campaign (its installed systems, its own before and after, or
+   the suburbs whose campaign had not yet run over the same months); every field, code and rule is read the same on
+   every path, and no sentence names a comparison, a counterfactual or an estimator (the re-audit: semantics pass, rule
+   application pass).
+4. The analyst test holds on the built pack: installed per home letterboxed files YRB24 at 4.2 MW, per house without
+   PV YRB24 at 3.9, each suburb's own before and after YRB24 at 2.4 to 2.6; only the net addition against the
+   not-yet-treated suburbs files YRB27 at 1.9 (R3a and R3b on the clean truth, asserted; the judge recomputed the
+   gross routes to YRB24).
+5. One defensible answer: NPP-114 4.1 files the estimand only, every fork row is asserted (SF1 to SF29), the 33
+   constructions and one standard error either way sit inside every bin, and the judge returned DETERMINISTIC, APPROVE
+   with every graded figure reproduced and the margin to the flip at 0.85 per 100.
+6. No decoy: no file states a 2029 forecast, an excess, a participation rate, a campaign's addition or a share; the
+   council's installed counts are true history; the peak demand forecast and the battery rebate approvals are declared
+   distractors; no memo or voice argues for a feeder or a method.
+7. Nothing hidden and recovered: no certified figure pins the method; NPP-114 has no pooling clause and the prompt no
+   binding to it; each campaign's addition is estimated from the register itself.
+8. A new lesson: a program's installed count is not what it adds when its participants were about to adopt anyway;
+   its addition at a later date is read against comparable areas not yet treated over the same months (`guard.py
+   heart` WARN on `people.first` only, nearest heart text 0.04; `surface` exit 0).
+
+## Accepted risks
+
+The rule 3 re-audit (PASS, `scratchpad/rule3/task136_r3.md`) left three residual notes, accepted at the reship and
+not acted on, because each fix would move the pack after the judge and the reader read it, or would weaken the
+stump's determinism:
+
+- Stump strength is about one of the top two: a solver who takes the council's installed counts as the addition files
+  YRB24, but the second may not; the asks carry the bar.
+- Both of the top two could land if both build the suburb-by-year panel and run a never-treated difference-in-differences:
+  the never-treated comparison sits inside the corridor (SF16 converges by design, for determinism), so any 2x2
+  difference-in-differences lands every graded figure.
+- The untreated suburbs' yearly first applications rise very smoothly and monotonically (the even hazard grid that
+  makes the two comparisons agree), which a realism reader may flag.
 
 ## Tried and rejected
 
@@ -738,3 +794,7 @@ Stage 3 of round 3, built 2026-10-15 by `python3 task136/generator/build.py` (pa
 - The golden's note that most participating households "would have gone solar within two years anyway": two years is
   the generator's harvest window, which the records show only as the post-opening dip; the note now says what the
   records show, more than half of the seven campaigns' households within three years (asserted).
+- The round-3 judge's optional prompt pin, having "raise" say "the increment over what the suburb would have lodged
+  anyway": declined at the reship; it names the counterfactual and hands over the decisive step (the WHAT turned into
+  the comparison), and the judge found the call forced without it, the flat own-baseline and net-per-letterbox
+  readings separated by the data and the wording (SF19).
