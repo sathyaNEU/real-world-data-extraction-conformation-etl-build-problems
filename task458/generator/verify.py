@@ -126,8 +126,13 @@ def main(target, golden):
             problems.append(("prescribers", r[0], r[2], v["n"]))
         if r[3] != int(round(v["smi"] / 10.0)) * 10 or r[4] != int(round(v["oud"] / 10.0)) * 10:
             problems.append(("need", r[0], r[3], r[4], v["smi"], v["oud"]))
-        if abs(r[5] - v["s1"]) > 1e-6 or abs(r[7] - v["s2"]) > 1e-6 or abs(r[9] - v["s3"]) > 1e-9:
-            problems.append(("standards", r[0]))
+        n10, o10 = int(round(v["smi"] / 10.0)) * 10, int(round(v["oud"] / 10.0)) * 10
+        seen = int((mem.loc[mem["county"] == r[0], "smi"] & mem.loc[mem["county"] == r[0], "seen"]).sum())
+        if (abs(r[5] - round(v["n"] / n10 * 1000, 1)) > 1e-9 or abs(r[7] - round(v["n"] / o10 * 1000, 1)) > 1e-9
+                or abs(r[9] - round(seen / n10 * 100) / 100) > 1e-9):
+            problems.append(("standards", r[0], r[5], r[7], r[9]))
+        if (r[6] == "Yes") != (v["s1"] >= 16.5) or (r[8] == "Yes") != (v["s2"] >= 23.0) or (r[10] == "Yes") != (v["s3"] >= 0.68):
+            problems.append(("verdicts", r[0]))
         if (r[12] == "Yes") != (v["fails"] >= 2):
             problems.append(("designated", r[0]))
     ws2 = wb["FFS payments"]

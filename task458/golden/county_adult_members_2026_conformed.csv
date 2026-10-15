@@ -1,0 +1,41 @@
+county_fips,county,elig_group_cd,elig_group,adult_members,ffs_paid_bh_prescriber_usd
+53001,Adams,SSI-DIS,Disabled adults (SSI-related),433,5196
+53001,Adams,ADULT-EXP,Expansion adults,4142,13916
+53001,Adams,PARENT-CR,Parents and caretaker relatives,1365,3071
+53001,Adams,AGED-65,Adults 65 and over,280,1459
+53005,Benton,SSI-DIS,Disabled adults (SSI-related),2477,126041
+53005,Benton,ADULT-EXP,Expansion adults,9964,250651
+53005,Benton,PARENT-CR,Parents and caretaker relatives,4171,71966
+53005,Benton,AGED-65,Adults 65 and over,1293,23219
+53007,Chelan,SSI-DIS,Disabled adults (SSI-related),1015,61983
+53007,Chelan,ADULT-EXP,Expansion adults,4593,129327
+53007,Chelan,PARENT-CR,Parents and caretaker relatives,1901,43319
+53007,Chelan,AGED-65,Adults 65 and over,602,12805
+53017,Douglas,SSI-DIS,Disabled adults (SSI-related),644,17421
+53017,Douglas,ADULT-EXP,Expansion adults,2731,54289
+53017,Douglas,PARENT-CR,Parents and caretaker relatives,1158,18618
+53017,Douglas,AGED-65,Adults 65 and over,321,4384
+53021,Franklin,SSI-DIS,Disabled adults (SSI-related),1115,62105
+53021,Franklin,ADULT-EXP,Expansion adults,9213,147975
+53021,Franklin,PARENT-CR,Parents and caretaker relatives,3618,47824
+53021,Franklin,AGED-65,Adults 65 and over,605,16529
+53025,Grant,SSI-DIS,Disabled adults (SSI-related),1302,50580
+53025,Grant,ADULT-EXP,Expansion adults,9616,103286
+53025,Grant,PARENT-CR,Parents and caretaker relatives,3510,27777
+53025,Grant,AGED-65,Adults 65 and over,800,17242
+53037,Kittitas,SSI-DIS,Disabled adults (SSI-related),618,12736
+53037,Kittitas,ADULT-EXP,Expansion adults,2441,23323
+53037,Kittitas,PARENT-CR,Parents and caretaker relatives,809,6151
+53037,Kittitas,AGED-65,Adults 65 and over,310,1606
+53047,Okanogan,SSI-DIS,Disabled adults (SSI-related),900,22667
+53047,Okanogan,ADULT-EXP,Expansion adults,3623,61516
+53047,Okanogan,PARENT-CR,Parents and caretaker relatives,1405,15655
+53047,Okanogan,AGED-65,Adults 65 and over,502,5228
+53071,Walla Walla,SSI-DIS,Disabled adults (SSI-related),633,21840
+53071,Walla Walla,ADULT-EXP,Expansion adults,5208,97061
+53071,Walla Walla,PARENT-CR,Parents and caretaker relatives,1505,22848
+53071,Walla Walla,AGED-65,Adults 65 and over,301,6022
+53077,Yakima,SSI-DIS,Disabled adults (SSI-related),5143,204231
+53077,Yakima,ADULT-EXP,Expansion adults,21869,306265
+53077,Yakima,PARENT-CR,Parents and caretaker relatives,8758,102027
+53077,Yakima,AGED-65,Adults 65 and over,2566,40772

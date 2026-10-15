@@ -85,7 +85,8 @@ def write_policy(path):
           "county's adult members who have the condition. A member who has the condition counts whether or not a claim or "
           "encounter in the contract year identifies it. Network Analytics estimates the number of members with each "
           "condition in each county from the plan's enrollment, claims and encounter records, and measures each county "
-          "from its own members."),
+          "from its own members; a member enrolled in all twelve months of the contract year whom no claim or encounter "
+          "identifies is counted as not having the condition."),
         P("2.6&nbsp;&nbsp;<i>Behavioral-health prescriber</i>: a clinician whose primary taxonomy in NPPES on 1 November 2026 "
           "is one of the codes Appendix B lists, or, for an NPI deactivated by that day, whose primary taxonomy was one of "
           "them before its deactivation. NPPES on 1 November 2026 means the monthly file as the weekly incremental files "

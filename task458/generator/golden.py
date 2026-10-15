@@ -28,12 +28,15 @@ def figures(a):
     f = {"designated": designated, "counties": {}, "payments": {}, "conformed": {}}
     for c in CF.COUNTIES:
         x = sc.loc[c]
+        # the ratios and the reach as the board's table shows them: from the counts rounded to the nearest 10 (each
+        # standard is judged on the unrounded values, NP-31 3.2)
+        n_smi, n_oud = r10(x["est_smi"]), r10(x["est_oud"])
         f["counties"][c] = {
             "prescribers": int(x["prescribers"]), "members": int(x["members"]),
-            "smi": r10(x["est_smi"]), "oud": r10(x["est_oud"]), "smi_unrounded": round(float(x["est_smi"]), 2),
+            "smi": n_smi, "oud": n_oud, "smi_unrounded": round(float(x["est_smi"]), 2),
             "oud_unrounded": round(float(x["est_oud"]), 2), "seen": int(x["seen_smi"]),
-            "s_smi": round(float(x["s_smi"]), 1), "s_oud": round(float(x["s_oud"]), 1),
-            "s_reach_pct": int(round(float(x["s_reach"]) * 100)),
+            "s_smi": round(int(x["prescribers"]) / n_smi * 1000, 1), "s_oud": round(int(x["prescribers"]) / n_oud * 1000, 1),
+            "s_reach_pct": int(round(int(x["seen_smi"]) / n_smi * 100)),
             "meets_smi": not bool(x["fail_smi"]), "meets_oud": not bool(x["fail_oud"]),
             "meets_reach": not bool(x["fail_reach"]), "fails": int(x["fails"]), "designated": bool(x["designated"])}
         f["payments"][c] = {q: dollars(a["pay"][(c, q)]) for q, _, _ in CF.QUARTERS}
@@ -50,11 +53,11 @@ def figures(a):
     # the same window, two kinds of member: expansion adults enrolled three months against the expansion adults enrolled
     # all year within their first three months
     exp = mem[mem["group"] == "ADULT-EXP"]
-    three = exp[exp["months"] == 3]
+    two = exp[exp["months"] == 2]
     fy = exp[exp["full_year"]]
-    f["window_yield_pct"] = {"exp_three_months": round(float(three["rec_smi"].mean()) * 100, 1),
-                             "exp_full_year_first_three": round(float((fy["first_smi"] <= 3).mean()) * 100, 1),
-                             "exp_three_months_n": int(len(three))}
+    f["window_yield_pct"] = {"exp_two_months": round(float(two["rec_smi"].mean()) * 100, 1),
+                             "exp_full_year_first_two": round(float((fy["first_smi"] <= 2).mean()) * 100, 1),
+                             "exp_two_months_n": int(len(two))}
     # the reader's route and the default path: the full-year members' prevalence carried to every member, by group
     import methods as MT
     R = MT.routes(a)
@@ -106,8 +109,8 @@ def write_scorecard(a, f, path):
     for c in CF.COUNTIES:
         x = f["counties"][c]
         sc = a["scorecard"].loc[c]
-        ws.append([c, x["members"], x["prescribers"], x["smi"], x["oud"], float(sc["s_smi"]), yes if x["meets_smi"] else no,
-                   float(sc["s_oud"]), yes if x["meets_oud"] else no, float(sc["s_reach"]), yes if x["meets_reach"] else no,
+        ws.append([c, x["members"], x["prescribers"], x["smi"], x["oud"], x["s_smi"], yes if x["meets_smi"] else no,
+                   x["s_oud"], yes if x["meets_oud"] else no, x["s_reach_pct"] / 100, yes if x["meets_reach"] else no,
                    x["fails"], yes if x["designated"] else no])
         r = ws.max_row
         for k in range(1, 14):
@@ -132,8 +135,8 @@ def write_scorecard(a, f, path):
     ws.append([])
     ws.append(["Designated: %s (each fails at least two of the three standards)." % ", ".join(f["designated"])])
     ws.cell(row=ws.max_row, column=1).font = Font(name="Calibri", size=10, bold=True)
-    ws.append(["Members with a condition are rounded to the nearest 10; the ratios and the reach are computed from the "
-               "unrounded counts. See Notes."])
+    ws.append(["Members with a condition are rounded to the nearest 10, and the ratios and the reach shown are computed "
+               "from those counts; each standard is judged on the unrounded values (NP-31 3.2). See Notes."])
     ws.cell(row=ws.max_row, column=1).font = Font(name="Calibri", size=9, italic=True, color="5B6268")
     widths = [13, 10, 13, 14, 14, 15, 7, 15, 7, 17, 7, 9, 10]
     for k, wdt in enumerate(widths, start=1):
@@ -186,6 +189,9 @@ def write_scorecard(a, f, path):
          "county's members with a condition are the sum over its identified members."),
         ("Reach", "Members with a serious mental illness who had an Appendix C service from a behavioral-health prescriber "
          "(every such member is among those a claim identifies), over the county's members with a serious mental illness."),
+        ("Rounding", "Members with a condition are shown to the nearest 10, and the ratios (one decimal) and the reach (whole "
+         "per cent) in the table are computed from the counts as shown. Whether a county meets a standard is decided on "
+         "the unrounded estimates, as NP-31 3.2 requires; no county lies within 7 per cent of a threshold."),
         ("Practising prescribers", "NPPES monthly file of October 2026 updated by the weekly files through 1 November 2026; "
          "primary taxonomy in Appendix B; NPI active on 1 November; practice location ZIP code assigned to the county holding "
          "the larger share of its business addresses (HUD-USPS, second quarter 2026); rendering provider of a final claim or "

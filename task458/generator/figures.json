@@ -211,9 +211,9 @@
    "oud": 330,
    "oud_unrounded": 329.21,
    "prescribers": 12,
-   "s_oud": 36.5,
+   "s_oud": 36.4,
    "s_reach_pct": 90,
-   "s_smi": 23.6,
+   "s_smi": 23.5,
    "seen": 457,
    "smi": 510,
    "smi_unrounded": 509.26
@@ -228,7 +228,7 @@
    "oud": 200,
    "oud_unrounded": 200.75,
    "prescribers": 3,
-   "s_oud": 14.9,
+   "s_oud": 15.0,
    "s_reach_pct": 58,
    "s_smi": 8.8,
    "seen": 196,
@@ -281,7 +281,7 @@
    "prescribers": 7,
    "s_oud": 50.0,
    "s_reach_pct": 91,
-   "s_smi": 24.2,
+   "s_smi": 24.1,
    "seen": 263,
    "smi": 290,
    "smi_unrounded": 289.18
@@ -313,7 +313,7 @@
    "oud": 350,
    "oud_unrounded": 350.36,
    "prescribers": 10,
-   "s_oud": 28.5,
+   "s_oud": 28.6,
    "s_reach_pct": 74,
    "s_smi": 17.9,
    "seen": 415,
@@ -457,8 +457,8 @@
   "rec_smi": 7109
  },
  "window_yield_pct": {
-  "exp_full_year_first_three": 4.1,
-  "exp_three_months": 2.1,
-  "exp_three_months_n": 8726
+  "exp_full_year_first_two": 3.2,
+  "exp_two_months": 1.6,
+  "exp_two_months_n": 7698
  }
 }

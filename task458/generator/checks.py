@@ -262,6 +262,23 @@ def run(target, golden_dir, world=None, meta_path=None):
     ok("SF18: each county measured from its own members (2.5): the capture shares from each county's own full-year "
        "members file the same five and the same counts", R["ipw_cell"][1] == GOLD and
        all(round(nd["golden"][i][c] / 10) == round(nd["ipw_cell"][i][c] / 10) for i in (0, 1) for c in CF.COUNTIES))
+    # SF19: a full-year member no claim identifies, counted as not having the condition (2.5); a constant hazard carried
+    # past the twelfth month (each identified member over 1 - (1 - q)^m, q the full-year members' July share) counts some
+    import numpy as np
+    import pandas as pd
+    mem_ = a["members"]
+    unt = []
+    for cond in ("smi", "oud"):
+        fy_ = mem_[mem_["full_year"] & mem_["rec_" + cond]]
+        q = float((fy_["first_" + cond] == 1).mean())
+        rec_ = mem_[mem_["rec_" + cond]]
+        w_ = 1.0 / (1 - (1 - q) ** rec_["months"].values)
+        unt.append(pd.Series(w_, index=rec_.index).groupby(rec_["county"]).sum().reindex(CF.COUNTIES))
+    seen_ = (mem_["rec_smi"] & mem_["seen"]).groupby(mem_["county"]).sum().reindex(CF.COUNTIES)
+    st_u = MT.designated(MT.standards({c: len(v) for c, v in a["practising"].items()}, unt[0], unt[1], seen_))
+    moved = sum(1 for i in (0, 1) for c in CF.COUNTIES if round(unt[i][c] / 10) != round(nd["golden"][i][c] / 10))
+    ok("SF19: a full-year member no claim identifies counts as not having the condition (2.5); a hazard carried past "
+       "twelve months moves %d of twenty counts, same call" % moved, st_u == GOLD and moved > 0, (st_u, moved))
     # the double-error grid: a Layer 1 slip with each wrong completion
     slips = {"member numbers": dict(key="member"), "October file only": dict(weeks="none"),
              "no service requirement": dict(require_service=False), "any taxonomy": dict(taxonomy="any"),
@@ -317,7 +334,8 @@ def run(target, golden_dir, world=None, meta_path=None):
     ok("realism: no em dash in the policy", "—" not in txt)
     ok("realism: the policy states the five filed pins (2.2 person, 2.3 county, 2.5 whether or not, 2.7 service, 3.2)",
        all(s in re.sub(r"\s+", " ", txt) for s in ("counts once", "last day of enrollment", "whether or not a claim",
-                                                   "rendering provider of at least one claim", "unrounded")))
+                                                   "rendering provider of at least one claim", "unrounded",
+                                                   "is counted as not having the condition")))
     for f in files:
         if f.endswith(".csv"):
             head = open(os.path.join(target, f), encoding="utf-8").read(200000)

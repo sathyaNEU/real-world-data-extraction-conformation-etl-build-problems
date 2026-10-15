@@ -51,7 +51,7 @@
   {
    "path": "NPPES_Deactivated_NPI_Report_20261110.xlsx",
    "format": "xlsx",
-   "bytes": 57806,
+   "bytes": 58028,
    "rows": null,
    "source": "Constructed: the NPPES deactivated NPI report of 10 November 2026, in the CMS report layout",
    "date": "2026-11-12",
@@ -105,7 +105,7 @@
   {
    "path": "network_adequacy_time_distance_2026q2.xlsx",
    "format": "xlsx",
-   "bytes": 6907,
+   "bytes": 6823,
    "rows": null,
    "source": "Constructed: the plan's network adequacy time and distance report for behavioral-health prescribers, second quarter of 2026",
    "date": "2026-11-12",
@@ -123,7 +123,7 @@
   {
    "path": "np31_prescriber_service_area_designation.pdf",
    "format": "pdf",
-   "bytes": 46951,
+   "bytes": 46995,
    "rows": null,
    "source": "Constructed: the plan's Network Policy NP-31, Prescriber Service Area Designation (approved 21 May 2026)",
    "date": "2026-11-12",
@@ -141,8 +141,8 @@
   {
    "path": "npidata_pfile_wa_20261012-20261018.csv",
    "format": "csv",
-   "bytes": 30203,
-   "rows": 73,
+   "bytes": 33083,
+   "rows": 82,
    "source": "Constructed: the NPPES weekly incremental file of 12 to 18 October 2026, same selection and layout",
    "date": "2026-11-12",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -150,8 +150,8 @@
   {
    "path": "npidata_pfile_wa_20261019-20261025.csv",
    "format": "csv",
-   "bytes": 26260,
-   "rows": 63,
+   "bytes": 33802,
+   "rows": 84,
    "source": "Constructed: the NPPES weekly incremental file of 19 to 25 October 2026, same selection and layout",
    "date": "2026-11-12",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -159,8 +159,8 @@
   {
    "path": "npidata_pfile_wa_20261026-20261101.csv",
    "format": "csv",
-   "bytes": 26494,
-   "rows": 63,
+   "bytes": 33621,
+   "rows": 84,
    "source": "Constructed: the NPPES weekly incremental file of 26 October to 1 November 2026, same selection and layout",
    "date": "2026-11-12",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -168,8 +168,8 @@
   {
    "path": "npidata_pfile_wa_20261102-20261108.csv",
    "format": "csv",
-   "bytes": 27035,
-   "rows": 65,
+   "bytes": 28296,
+   "rows": 69,
    "source": "Constructed: the NPPES weekly incremental file of 2 to 8 November 2026, same selection and layout",
    "date": "2026-11-12",
    "license": "CC0-1.0 (original work, constructed for this task)"

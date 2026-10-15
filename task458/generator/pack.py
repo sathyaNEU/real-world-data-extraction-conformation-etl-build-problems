@@ -303,9 +303,23 @@ def monthly_and_weeks(recs):
             weeks[week_of(rec["deactivated"])].append(nppes_row(r, rec, "blank"))
             continue
         monthly.append(nppes_row(r, rec, "active"))
+    # NPIs of other Washington providers deactivated in each week (deaths, retirements, closed practices, duplicate
+    # enumerations), the record reduced to its NPI and deactivation date
+    bg = [n for n in sorted(recs) if recs[n].get("kind") in ("background", "background_org")]
+    gone = set()
+    for k, (a, b) in enumerate(W.WEEKS):
+        for npi in r.choice(bg, size=int(r.integers(2, 6)), replace=False):
+            npi = str(npi)
+            if npi in gone:
+                continue
+            gone.add(npi)
+            day = a + dt.timedelta(days=int(r.integers(0, 5)))
+            recs[npi]["deactivated"] = day
+            recs[npi]["bg_deact"] = True
+            weeks[k].append(nppes_row(r, recs[npi], "blank"))
     # the routine updates each week carries: phone numbers, suites, a renewed license, a corrected name
     pool = [n for n in sorted(recs) if recs[n].get("kind") in ("background", "background_org", "prescriber", "therapist",
-                                                                  "pcp", "dark", "tele", "ed")]
+                                                                  "pcp", "dark", "tele", "ed") and n not in gone]
     for k, (a, b) in enumerate(W.WEEKS):
         for npi in r.choice(pool, size=int(r.integers(55, 80)), replace=False):
             rec = dict(recs[str(npi)])
@@ -336,7 +350,7 @@ def write_deactivations(recs, path):
     from openpyxl.styles import Font
     r = np.random.default_rng([W.SEED, 32])
     rows = [(rec["npi"], rec["deactivated"]) for rec in recs.values() if rec.get("deactivated") and
-            rec.get("kind") in ("deact", "react", "deact_late_before", "deact_late_after")]
+            (rec.get("kind") in ("deact", "deact_late_before", "deact_late_after") or rec.get("bg_deact"))]
     taken = set(recs)
     start, end = D(2019, 1, 2), D(2026, 11, 6)
     span = (end - start).days
@@ -579,7 +593,7 @@ def write_adequacy(path, persons):
         n = june[c]
         n60 = int(round(n * min(0.999, P60[c] + 0.004 * (r.random() - 0.5))))
         n30 = int(round(n60 * (0.64 + 0.3 * r.random())))
-        ws.append([c, n, n30, n60, n60 / n, "Y" if n60 / n >= 0.90 else "N"])
+        ws.append([c, n, n30, n60, round(n60 / n, 3), "Y" if n60 / n >= 0.90 else "N"])
     ws["A1"].font = Font(bold=True)
     for cell in ws[4]:
         cell.font = Font(bold=True)
