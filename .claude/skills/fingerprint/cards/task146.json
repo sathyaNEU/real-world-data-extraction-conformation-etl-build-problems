@@ -1,0 +1,96 @@
+{
+  "task": "task146",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "wave 3, new; numbered from seed FC17 (the jobless-claims nowcast published before the Thursday release), world, decision and quantity only",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "seasonal-adjustment-official-time-series-production",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a bank economics desk's call, published to clients before the unemployment insurance board's Thursday release, for a small country's national unadjusted initial claims in the first claims week of a quarter, the week whose Sunday effective date is the first to move every claim's base period forward",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G11",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "other",
+  "stakeholder_role": "the senior economist on a bank's economics desk who writes the weekly unemployment claims preview the bank sends its clients before the department's Thursday release",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "ic_by_industry_weekly (the board's open-data initial claims by region, industry division of the last employer and claim type, January 2023 onward)",
+    "rows": 0,
+    "entity": "one claims week (Sunday to Saturday) for one region, one industry division of the claimant's last employer and one claim type (new or additional), with the initial claims taken that week",
+    "grain": "claims week x region x industry division x claim type",
+    "source": "constructed (the unemployment insurance board's open-data extract, industry coded on the 2006 classification and on its 2023 revision)"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "other",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "a fictional English-speaking country of about 9 million in eight regions (its unemployment insurance board, the bank, the employers and the people are fictional; personas on the New Zealand index)",
+    "currency": "XXX",
+    "org_type": "a bank's economics desk and the country's unemployment insurance department",
+    "invented_names": [
+      "Unemployment Insurance Board",
+      "Rothwell Bank"
+    ],
+    "people": [
+      "Stacey Baxter",
+      "Tia Hewitt",
+      "Nicola Pedersen",
+      "Timothy Laing"
+    ]
+  },
+  "deliverables": [
+    "ic_preview_2026-10-10.docx",
+    "ic_preview_2026-10-10.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "A step that a weekly count takes each time a calendar period turns is not a fixed seasonal share of the count: it is released by the turn from a pool the closing period built, units refused at their first attempt because their qualifying record had not yet caught up and admitted once the period moves, so its size is that pool times the rate past turns show; when the closing period refused far more units than usual, every seasonal, year-on-year or level-driven forecast of the first week understates it.",
+  "driver_concrete": "The week ended 10 October 2026 is the first claims week whose Sunday effective date falls in the fourth quarter, so claimants found monetarily ineligible in July to September, whose second-quarter 2026 earnings now enter the base period, file again in it; the department's program statistics put the third quarter's monetarily ineligible determinations at more than twice a usual quarter's, and past quarter turns send a stable share of the closing quarter's ineligible determinations back in the first week, so the week's claims sit a quarter above what the average quarter-start step carried on the level calls.",
+  "stump": "Carrying the step the first claims week of a quarter takes on average onto the level of the last four weeks calls about 14,000 initial claims for the week ended 10 October 2026; the step that lands it there is treating the quarter-start rise as seasonal when it is claimants found monetarily ineligible in the third quarter filing again once the fourth quarter moves their base period, and the third quarter's ineligible determinations, more than twice a usual quarter's, put the week at about 16,000.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field, the department's technical notes and the program statistics correctly forecasts the week ended 10 October 2026 from seasonal factors for the first claims week of each quarter carried on the level of the last four weeks and calls about 14,000; the year-on-year ratio, a regression with a quarter-start term and the level, and a quarter-start step scaled on the third quarter's claims all call 13,000 to 14,000, and only the quarter-start step rebuilt as the third quarter's monetarily ineligible determinations times the share of them past quarter turns sent back in the first week calls about 16,000.",
+  "domain_test": "The deciding quantity is the administrative surge an official weekly claims series takes in the first week of a quarter, which the field models as a regression effect with its own driver (the closing quarter's monetarily ineligible determinations, re-admitted when the base period moves) beside the seasonal component rather than leaving it in the seasonal factor; with another field's nouns (a hospital's admissions, a utility's megawatt-hours) there is no base period, no monetary determination and no claim filed again, so the quantity that decides the call has nothing to stand on.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:quarter-start-refiling-surge-driven-by-the-closing-quarter-ineligible-determinations",
+  "layer1": [
+    "the department's open-data initial claims extract in two claims-system layouts (legacy to the week ended 26 June 2021, current from the week beginning 27 June 2021): column names, date formats, week labelled by its Saturday in one and its Sunday in the other, region codes against region names",
+    "the industry section of the claimant's last employer coded on the 2006 classification to June 2021 and on the 2023 revision after it",
+    "advance figures for the latest week beside revised figures for every earlier week",
+    "the monthly program statistics workbook organised by fiscal year (July to June), its layout changed with the claims system, counts assigned to months by the claim week's Sunday",
+    "monetary determinations in units beside benefits paid in thousands of dollars",
+    "public holidays shifting claims between weeks",
+    "a region boundary change in April 2019 restating two regions' history",
+    "layoff notices filed on the legacy and current notices portals, amended and withdrawn, multi-site notices",
+    "page-view dumps by hour in UTC against claims weeks in local time, with titles renamed"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task134": "task134 forecasts the homes a raised zoning allowance yields, each lot rebuilt once the best-paying building it permits is worth more than what stands, at the rate its kind of lot has shown, and its lineage carries an inflow a pool sends on a conversion hazard by time since entry; here nothing is priced or converts by age: a calendar turn releases claims refused in the closing quarter all at once into one week, so the step is that quarter's ineligible determinations times the share past turns sent back, and no duration clock or hazard enters.",
+    "task54": "task54 multiplies a per-event loss borne by every unit in custody across a re-sequenced plan (an exposure integral at unchanged rates); here no custody, exposure or sequence: the forward week's count carries a refiling surge sized by the pool of claims the closing quarter refused."
+  },
+  "lineage": [],
+  "notes": "stump_strategy composition_mix: the quarter-start step is carried as a pooled seasonal share of the level, while its size is set by the mix of the closing quarter's claims (the share found monetarily ineligible), which this quarter sits far outside every past quarter but the 2020 surge. Decisive G14 (the first week's yield conditioned on the closing quarter's ineligible pool), G11 (the pool is the claims that failed a monetary eligibility test), G13 (the week whose Sunday opens the quarter). No back-test organ, no filed method: the behaviour (claims filed again at the quarter turn, in proportion to the closing quarter's ineligible determinations) is inferred from the history of quarter turns, which rejects the seasonal-share step by a wide margin. Furniture: forum customer_or_counterparty (the bank's clients receive the preview), forcing event other (the department's Thursday 08:30 release), organisation family financial_institution (a bank's economics desk). Context artifact other: the department's open-data extracts and technical notes and the desk's own tracked-pages list; no stakeholder memo or model ships.",
+  "registered": "2026-10-15T12:19:51Z"
+}
