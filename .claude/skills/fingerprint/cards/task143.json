@@ -1,0 +1,93 @@
+{
+  "task": "task143",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "wave 3 (new). Seed FC14 (a laptop maker's warranty reserve for a new cell lot's three-cell packs) was read at its header and Situation only; its world (a cell lot qualified on 100 cycles, an early-life model of record, whole formation trays sampled), decision (the reserve booked at lot release) and quantity (packs expected to fall below 80 per cent within the 600-cycle warranty) are kept, and the pitfall is re-found from how the data comes to exist: the release model's error is mostly a formation-tray effect that only whole trays cycled to the end show, and the pack line builds every pack from tray-mates.",
+  "domain": "general-statistics-data-science",
+  "subdomain": "bayesian-modeling-posterior-inference",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a German business-notebook maker's battery warranty reserve for one supplier cell lot's 7,200 three-cell series packs, booked at lot release from 100-cycle qualification tests on whole formation trays and an early-life cycle-life model of record, when each pack's three cells come off one formation tray",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G10",
+    "G2",
+    "G17",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_model",
+  "stakeholder_role": "the notebook division's product finance controller, who books the battery warranty reserve on the day a cell lot is released",
+  "role_family": "finance_controller",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "qualification_cycles_first100.csv",
+    "rows": 0,
+    "entity": "one cycle of one qualification cell on the reliability lab's qualification protocol, for the first 100 cycles of every qualification cell from the lots released since October 2024 and the lot under release",
+    "grain": "cell x cycle",
+    "source": "constructed (the battery reliability lab's cycler exports, two cycler fleets)"
+  },
+  "forum": "other",
+  "forcing_event": "other",
+  "org_family": "manufacturer",
+  "world": {
+    "geography": "Germany (a fictional notebook maker with its pack plant and battery lab in Germany; the cell supplier's plant in Czechia)",
+    "currency": "EUR",
+    "org_type": "a business-notebook maker's battery reliability lab, pack plant, service operations and product finance",
+    "invented_names": [
+      "Kalvenhorst Systeme GmbH",
+      "Zelvora Cell s.r.o."
+    ],
+    "people": [
+      "Frieder Henschel",
+      "Christiana Harloff",
+      "Dietmar Schaaf",
+      "Annelie Geisel"
+    ]
+  },
+  "deliverables": [
+    "z2638_warranty_reserve.xlsx",
+    "z2638_reserve_note.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is the chance that the weakest of a few members taken together from one new group falls below a threshold, when the predictor's error is mostly a group effect the members share and shows only in the outcomes of whole groups followed to the end; compounding each member's marginal chance as if the members were independent overstates the count, and only carrying the group's share of the error into the members' joint chance gives it.",
+  "driver_concrete": "Every Model K pack takes its three series cells from one formation tray, and the release model's prediction error is mostly a tray effect (about 0.19 on the log scale between trays against about 0.05 within a tray, visible only in the life tests of earlier lots whose whole trays were cycled to 80 per cent), so the reserve is the expectation over a new tray's shared error of the chance that any of its three cells reaches 80 per cent of rated capacity before 600 cycles, about 400 packs, where compounding each cell's chance of about 2.6 per cent over three independent cells files about 550.",
+  "stump": "A competent solver computes the release model's features for the lot's 120 qualification cells, predicts each cell's life with the model's validation error, averages each cell's chance of reaching 80 per cent before 600 cycles and compounds it over a pack's three cells as if they were independent, filing about 550 packs; the step that lands it there is treating a pack's cells as independent draws when they are tray-mates whose model error is mostly shared, so a pack's chance is the tray-shared joint chance and the reserve about 400.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stacks both cycler exports, computes the release model's features exactly as the qualification memo defines them, predicts every qualification cell's life with the model's validation error and counts a pack as failing when its weakest cell does files about 550 packs by compounding the cell chance over three independent cells (checking the qualification sample's own predictions for a tray effect finds none and files the same); only carrying the tray-mates' shared part of the model error, seen in the earlier lots' whole-tray life tests, into each pack's joint chance files about 400.",
+  "domain_test": "The deciding quantity is the posterior predictive chance that the weakest of three new members of a new group falls below the warranty line, which a hierarchical model of the release model's error gets by integrating the between-tray variance over the members a pack shares; replacing that predictive with the pooled cell-level error compounded independently (the generic summary of the model's accuracy) moves the reserve from about 400 to about 550 packs, so the call turns on the task type's own object, the predictive for new groups with between-group variance.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "general-statistics-data-science/bayesian-modeling-posterior-inference/2",
+  "layer1": [
+    "two cycler fleets exporting the qualification cycles in different layouts (column names, date formats, cycle numbering from 0 or 1), cells split across both by channel availability",
+    "cell serials in the supplier's cell data package against the cycler's and the pack plant's scanned forms",
+    "the supplier's cell data package changing its tray key format between lots",
+    "cycler exports pulled in overlapping windows, so some cycles arrive twice",
+    "life tests stopped by channel faults before a cell reached 80 per cent",
+    "packs completed from part trays when a tray lost a cell at incoming inspection",
+    "documents that have to be read (the release reserve policy, the qualification memo with the model of record, the Model K pack specification, the extract notes)"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task98": "task98 v7 sums two removal lists in which some members stand twice, a member duplicated across two dated schedules; here no record is duplicated: the release model's error for a formation tray is one draw that the three cells of every pack built from that tray share, and the reserve is the chance that the weakest of them falls below the warranty line, which compounding three independent cell chances overstates"
+  },
+  "lineage": [],
+  "notes": "Client domain general-statistics-data-science, task type bayesian-modeling-posterior-inference (forecasting): the call is the expected number of the lot's Model K packs that will fall below 80 per cent of rated capacity within 600 cycles, a predictive for the members of new formation trays that a hierarchical model of the release model's error gives. Stump strategy grain_or_unit (F2): the file's row is a cell and the reserve pays on a pack of three tray-mates; building the pack's chance with the shared tray component of the model error moves the answer. Pattern none; generators G10 decisive (the tray's share of the model error is one real draw that the default path counts as three independent cell draws), G2 frame (the pack as the reserve's unit), G17 (the model's error carried into the predictive at all, the plug-in rung), G6 (the lot under release predicts shorter lives than the earlier lots, so the history's own pack rate understates). Gate G forecasting: the record is read correctly and the call turns on the projection for packs whose cells were never tested. Calibration none. Forum other: finance books the reserve under the release reserve policy, no forum. Forcing event other: the lot's release for shipment. Context artifact filed_model: the qualification memo files the release model of record, its feature definitions and validation error, with no reserve figure or method. Role finance_controller. A first card labelled the decisive generator G2 (BLOCK ban.pattern against task142, whose G2 is the independent unit of a period total) and pattern D (spent in fourteen builds); the step is the tray's error shared across a pack's cells, which the house labels G10 (task131 v1: sibling sub-units sharing a parent), so the card carries G10.",
+  "registered": "2026-10-15T05:56:20Z"
+}
