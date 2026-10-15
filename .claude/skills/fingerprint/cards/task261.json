@@ -1,0 +1,89 @@
+{
+  "task": "task261",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "wave 3, sathay3012, Descriptive lane; seed DA11's world kept (a life insurer's retirement range segmented into runs of adjacent age groups by median household net worth from a clustered, multiply imputed national wealth survey); its natural stump family waited for task260's uncertainty_hold to leave the guard's last three",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "complex-survey-estimation-variance",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "segmenting a life insurer's 2027 retirement range into runs of adjacent age groups by whether neighbouring groups' median household net worth differs by more than 1.96 standard errors of the difference, estimated from a stratified, clustered, multiply imputed household wealth survey with bootstrap replicate weights",
+  "objective": "descriptive-distribution",
+  "shape": "14",
+  "decision_type": "structural_verdict",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "rule"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G17",
+    "G16"
+  ],
+  "gate_g": "signal_vs_noise_or_hold",
+  "calibration_form": "none",
+  "stump_strategy": "uncertainty_hold",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the life insurer's head of retirement products, who takes the segment structure to the retirement product committee",
+  "role_family": "product_manager",
+  "scoring_unit": "other",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:contrast-error-shared-clusters",
+  "layer1": [
+    "five implicates per household stacked as rows of the summary extract",
+    "a household summary keyed by household and implicate beside a person file keyed by household and person number",
+    "the survey's reference person chosen by an income hierarchy, so the older partner is often the other adult",
+    "replicate weights released in their own file",
+    "the results bulletin published by the reference person's age, medians rounded and errors as relative standard errors",
+    "negative net worth where debts exceed assets"
+  ],
+  "spine": {
+    "file": "nhws2025_household_summary.csv",
+    "rows": 30000,
+    "entity": "one household in one implicate",
+    "grain": "household x implicate",
+    "source": "synthetic (constructed in the layout of a multiply imputed national household wealth survey's public-use summary extract)"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "Australia (a fictional national household wealth survey run by a fictional research centre; a fictional life insurer)",
+    "currency": "AUD",
+    "org_type": "life insurer",
+    "invented_names": [
+      "Kelvane Life",
+      "Household Finance Research Centre",
+      "National Household Wealth Survey"
+    ],
+    "people": [
+      "Tracey Zimmerman",
+      "Ryan Ferrell",
+      "Wendy Koch"
+    ]
+  },
+  "deliverables": [
+    "retirement_segments_2027.docx",
+    "retirement_segments_2027.xlsx",
+    "adjacent_differences_2027.svg"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The decisive quantity is whether two subgroup statistics estimated from one clustered sample differ by more than a multiple of the standard error of their difference; subgroups that share the sample's clusters move together, so that error has to come from the difference recomputed on every replicate of the design, and adding the two subgroups' own errors as if they were independent overstates it and merges groups that differ.",
+  "driver_concrete": "Each adjacent pair of age groups, households placed by the older partner, is kept apart when its difference in median household net worth exceeds 1.96 standard errors of the difference: taken from the difference recomputed on the survey's 200 replicate weights with the between-implicate variance added, 55-64 and 65-74 stand apart (z about 2.4) while 65-74 and 75 and over share a segment (z about -1.6); the two groups' own standard errors added in quadrature give z about 1.6 and merge 55-64, 65-74 and 75 and over into one segment.",
+  "stump": "A competent analyst places households by the older partner, averages the five implicates, computes each age group's median and the survey's standard error for it, adds the two groups' variances for each adjacent difference and files four segments with 55-64, 65-74 and 75 and over merged; the age groups share the survey's sampling areas, so their medians move together and only the difference recomputed on each replicate weight keeps 55-64 apart.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the extract, person file, replicate weights, user guide and brief correctly places each household by the older partner, averages the implicates, reproduces the survey's standard error for each age group (replicates on implicate 1 plus 1.2 times the between-implicate variance) and takes the error of each adjacent difference as the square root of the two groups' variances added; 55-64 and 65-74 then fall short of 1.96 (z about 1.6) and 55-64 to 75 and over is filed as one segment, four segments in all, when the difference's own replicate error keeps 55-64 apart and files five.",
+  "domain_test": "The deciding quantity is the design-based standard error of a contrast between two domain medians in a stratified, clustered, multiply imputed household wealth survey, estimated with its replicate weights and the between-implicate variance, the complex-survey estimation field's own analysis; with another field's nouns and an independent-samples error in its place the boundaries move, and without the survey's clusters, implicates and replicate weights the question has no estimator to choose.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-15T06:16:36Z"
+}
