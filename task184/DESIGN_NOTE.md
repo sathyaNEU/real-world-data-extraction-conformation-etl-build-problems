@@ -41,10 +41,12 @@ arm, are in `## Tried and rejected` and in the card's lineage. Nothing of the ai
   `repeat.decision` (`ranked_slate_under_cap` against task459): the cap is the contract's standing count and the
   graded structure is the 42-cell grid, not a ranked list, so the prompt and the deliverables read nothing like an
   emissions slate; the answer type is where the two touch and it is the one axis the decision itself fixes.
-  `repeat.gate_g` and `overuse.gate_g` (method_or_model_selection, six of the last twelve): the mechanism here is the
-  weight a windowed event puts on each candidate slot, not a model picked from a menu, and the batch's variation sits
-  in the generators (G1 and G7, neither used on this objective since task85). `repeat.question_form` (which): the
-  decision is a slate under a cap, so the leading question asks which slots.
+  `repeat.gate_g` and `overuse.gate_g` (method_or_model_selection, seven of the last twelve): the mechanism here is
+  the weight a windowed event puts on each candidate slot, not a model picked from a menu, and the batch's variation
+  sits in the generators (G1 and G7, neither used on this objective since task85). `repeat.question_form` (which,
+  against task456): the decision is a slate under a cap, so the leading question asks which slots.
+  `people.last` (Webb against task262, Kelly against task260): both are older builds, the first names differ, and
+  only one of the four personas reaches the cut pack.
 - **Same-puzzle test:** no build on file shares gap population, pattern none and decision `ranked_slate_under_cap`;
   the nearest drivers are 0.08 (task121 v3, task180 v4) and the card carries a differentiation line against task180,
   whose hourly distortion is in which events reach the record at all, where this one's is in where recorded events
@@ -65,17 +67,17 @@ arm, are in `## Tried and rejected` and in the card's lineage. Nothing of the ai
 5. Sum the offences per slot over the two seasons on record, divide by the seasons, and commission the six slots with
    the most offences.
 
-Ends on: the week's seven 20:00 to 24:00 slots and Friday 08:00 to 12:00, filed as covering 7,838 contracted offences a season; the eight it names meet 3,355 of the 4,232 the golden's eight meet, 0.793 of it.
-Golden: Saturday 20:00, Sunday 00:00, Friday 20:00, Sunday 04:00, Saturday 00:00, Saturday 04:00, Thursday 20:00 and Wednesday 20:00, covering 4,232 contracted offences a season, 4,250 to the nearest fifty.
+Ends on: the five evening slots Saturday, Friday, Wednesday, Thursday and Sunday 20:00 to 00:00 and the three late afternoons Friday, Saturday and Wednesday 16:00 to 20:00, filed as covering 6,200 contracted offences a season; the eight it names meet 3,300 of the 4,050 the golden's eight meet, 0.821 of it.
+Golden: Saturday 20:00, Friday 20:00, Sunday 00:00, Saturday 00:00, Sunday 04:00, Wednesday 20:00, Thursday 20:00 and Saturday 04:00, covering 4,048 contracted offences a season, 4,050 to the nearest fifty.
 
 ## Stump sentence
 
 A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps
 the contracted classes in the quarter, takes each offence's occurrence time as `occurred_from` and commissions the
-week's seven 20:00 to 24:00 slots and Friday 08:00 to 12:00, filing 7,838 covered offences a season; the step that
-lands it there is treating a window as the point in time it starts, when nine in ten of these offences have a window
-over four hours long, 96 per cent of them cross a slot boundary, and the weight those windows put on the quarter's
-after-midnight and early-morning slots is what the patrol is bought for.
+week's five busiest evening slots and three late afternoons, filing 6,200 covered offences a season; the step that
+lands it there is treating a window as the point in time it starts, when seven in eight of these offences have a
+window longer than a patrol slot, 94 per cent of them cross a slot boundary, and the weight those windows put on the
+quarter's after-midnight and early-morning slots is what the patrol is bought for.
 
 ## Three rules
 
@@ -89,10 +91,12 @@ after-midnight and early-morning slots is what the patrol is bought for.
   reported when it happens, and the task stops making sense.
 - **Layer 1:** two recording systems across a cut-over with different column names and time formats; occurrence
   windows reported in round clock hours, as victims give them; the same offence in both exports under two reference
-  numbers for one fortnight; a gazetteer with two spellings per street; four
-  footfall sensors with outages; a tasking plan spreadsheet with hours as text; two clock changes inside the seasons;
-  one offence class whose counts jump when a national counting rule changed, documented in the notes. Each is what
-  these systems produce, none decides the call.
+  numbers for one fortnight; an extract pulled on the street name, which also catches the Cranstoun length of
+  Harbourgate Street; a gazetteer with two spellings of two streets; a location code entered for every offence under
+  a tasking agreement and for only four fifths of the rest; four footfall sensors whose heads spend part of a season
+  counting one direction only, in a fault log beside the feed; a feed stamped in UTC against records and trading
+  hours in local time; one offence class whose counts jump when the recording basis changed with the migration,
+  documented in the notes. Each is what these systems produce, none decides the call.
 - **Layer 2:** the shortcut is to treat a recorded offence as an event at a point in time; the expert treats it as a
   distribution over the window it is known to lie in, and sums those distributions into the slot weights.
 - **Decisive step:** spreading each offence's weight across the hours of its occurrence window instead of assigning
@@ -113,9 +117,11 @@ after-midnight and early-morning slots is what the patrol is bought for.
   default path executes the same four sentences and files the wrong slate.
 - **Analyst test:** a strong analyst who reads every column correctly, conforms the legacy export to the new records
   management export, drops the cross-system duplicates, fixes the gazetteer and keeps the contracted classes takes
-  each offence's occurrence time as `occurred_from` and commissions the week's seven 20:00 to 24:00 slots and Friday
-  08:00 to 12:00, filed as covering 7,838 contracted offences a season; wrong, because for nine in ten of these
-  offences the window runs over four hours and a point in it is not where the offence happened.
+  each offence's occurrence time as `occurred_from` and commissions the five evening slots Saturday, Friday,
+  Wednesday, Thursday and Sunday 20:00 to 00:00 and the three late afternoons Friday, Saturday and Wednesday 16:00
+  to 20:00, filed as covering 6,200 contracted offences a season, when its eight meet 3,300 of the golden's 4,050;
+  wrong, because for seven in eight of these offences the window runs longer than a slot and a point in it is not
+  where the offence happened.
 - **Estimand:** how many offences of the contracted classes occurred in each slot in the Harbourgate quarter, per
   season over the two on record. Filed literally, and only as the WHAT: the tasking contract defines a covered
   offence as one of its scheduled classes that occurred inside the quarter while the patrol was on duty, the tasking
@@ -142,7 +148,7 @@ Each rung is the move a solver makes to leave the rung below; the decisive rung 
 |---|---|---|---|---|---|---|---|
 | 1, the window's other end, the discovery time | no | yes, `occurred_to` sits beside `occurred_from` | yes, "when was it found" is the first thing a reader asks of a window | no | no | yes, one column swapped | readable |
 | 2, the window's midpoint | no | no, the midpoint is computed | yes, the statistically minded correction to a range | no | no | yes, one mean of two columns | readable |
-| 3, the weight each window puts on each slot (decisive) | no: no shipped sentence says an offence contributes to more than one slot, names a weight, or says what to do with a window; the counting rules say when an offence is recorded and under which class, the tasking contract says how many slots it buys and that a covered offence is one that occurred in the quarter while the patrol was on duty, and neither says how to treat a window (asserted by word sweep over every document) | no: no column holds a weight, a duration or a slot, and the weight is built from two timestamps against a recurring grid the solver lays down itself | no: the window's start, its end, its midpoint and the precisely timed subset each name a different slate, and the first three are the three reflexes | no: no shipped figure ranks or scores a slot; the patrol's own tasking plan records the hours worked, not the offences they met | no: keys unique once the cut-over duplicates go, every join matched, no missing day | no: the weight is a sum over 42 recurring blocks of each window's overlap with them, and 96 per cent of the windows cross a block boundary | silent |
+| 3, the weight each window puts on each slot (decisive) | no: no shipped sentence says an offence contributes to more than one slot, names a weight, or says what to do with a window; the counting rules say when an offence is recorded and under which class, the tasking contract says how many slots it buys and that a covered offence is one that occurred in the quarter while the patrol was on duty, and neither says how to treat a window (asserted by word sweep over every document) | no: no column holds a weight, a duration or a slot, and the weight is built from two timestamps against a recurring grid the solver lays down itself | no: the window's start, its end, its midpoint and the precisely timed subset each name a different slate, and the first three are the three reflexes | no: no shipped figure ranks or scores a slot; the patrol's own tasking plan records the hours worked, not the offences they met | no: keys unique once the cut-over duplicates go, every join matched, no missing day | no: the weight is a sum over 42 recurring blocks of each window's overlap with them, and 94 per cent of the windows cross a block boundary | silent |
 
 ## Ladder
 
@@ -151,29 +157,35 @@ two seasons on record; the figure each rung files is the figure its own basis gi
 
 | Rung | Construction | Slate | Files | Meets, on the golden's basis |
 |---|---|---|---|---|
-| 0, default | each offence at `occurred_from`, the earliest time it can have happened | the 20:00 slot on all seven nights, and Friday 08:00 | 7,838 | 3,355 (0.793) |
-| 1 | each offence at `occurred_to`, when it was found | the 08:00 slot on all seven mornings, and Friday 16:00 | 5,448 | 2,170 (0.513) |
-| 2 | each offence at its window's midpoint | the 00:00 slot on all seven nights, and Friday 12:00 | 6,869 | 2,893 (0.684) |
-| 3, golden | each offence spread across the slots its window touches, in proportion to the window in each | Sat 20:00, Sun 00:00, Fri 20:00, Sun 04:00, Sat 00:00, Sat 04:00, Thu 20:00, Wed 20:00 | 4,232 | 4,232 |
+| 0, default | each offence at `occurred_from`, the earliest time it can have happened | five evening slots (Sat, Fri, Wed, Thu, Sun 20:00) and three late afternoons (Fri, Sat, Wed 16:00) | 6,200 | 3,300 (0.821) |
+| 1 | each offence at `occurred_to`, when it was found | seven morning slots (Sun, Sat 08:00, Sun, Sat 04:00, Fri, Thu, Mon 08:00) and Friday 16:00 | 4,450 | 2,450 (0.602) |
+| 2 | each offence at its window's midpoint | six 00:00 slots (Sun, Sat, Thu, Fri, Mon, Wed) and two middays (Fri, Sat 12:00) | 5,550 | 2,800 (0.691) |
+| 3, golden | each offence spread across the slots its window touches, in proportion to the window in each | Sat 20:00, Fri 20:00, Sun 00:00, Sat 00:00, Sun 04:00, Wed 20:00, Thu 20:00, Sat 04:00 | 4,050 | 4,050 |
 
-- **The golden's eight, in order:** Saturday 20:00 647.2, Sunday 00:00 642.5, Friday 20:00 590.2, Sunday 04:00
-  557.4, Saturday 00:00 538.6, Saturday 04:00 455.2, Thursday 20:00 405.0 and Wednesday 20:00 395.7. Ninth is
-  Tuesday 20:00 at 347.2, so the cap falls on a 14.0 per cent gap.
-- **Why only the spread finds it:** each wrong basis puts the whole slate in one band, the evening starts, the
-  morning discoveries or the after-midnight midpoints, and each files a figure between 1.3 and 1.9 times the
+- **The golden's eight, in order:** Saturday 20:00 654.4, Friday 20:00 640.8, Sunday 00:00 564.6, Saturday 00:00
+  517.1, Sunday 04:00 437.3, Wednesday 20:00 421.6, Thursday 20:00 413.0 and Saturday 04:00 398.9, 4,047.6 in all.
+  Ninth is Sunday 20:00 at 340.1, so the cap falls on a 17.3 per cent gap.
+- **The bins.** Every one of the eight commissioned cells and the covered total sits at least 3.4 offences from a
+  half of fifty, and the four lightest of the 42 cells sit 2.0 to 3.6 from one. The margin is small on those four
+  because 42 cells of one week cluster, and it is enough because no defensible route moves a cell at all: the
+  spreading grain is exact to 3e-10 (SF7), the two weighted routes are ruled out by the agreement's clause 4.4
+  (SF8, SF10), no window leaves its own season so there is nothing to clip, and the independent verifier rebuilds
+  every cell by a different arithmetic, minute by minute, and lands on the same figures.
+- **Why only the spread finds it:** each wrong basis puts the whole slate in one band, the evenings and late
+  afternoons, the morning discoveries or the after-midnight midpoints, and each files a figure 1.1 to 1.5 times the
   coverage its own eight actually meet. The golden slate is the only one that spans three bands, and the two 04:00
-  to 08:00 slots no reflex reaches are its fourth and sixth members.
-- **Variants (asserted):** spreading in hourly, 15-minute or 5-minute steps gives figures identical to the exact
-  overlap share to within 4e-10, because every window is recorded on the hour at both ends (SF7); spreading in
-  proportion to the quarter's own hourly profile of precisely timed offences, the refinement in the literature,
-  gives the same eight slots, because the quarter trades from 04:00 at the fish market and its taxi rank clears at
-  05:00, so that profile is not empty in the early morning; and the slate computed from the offences' true times,
-  which the generator holds and the pack never ships, is the same eight slots in the same order. The hygiene reflex
-  has nothing to keep: every contracted offence's window runs at least two hours and nine in ten run over four, so
-  dropping the imprecise records empties the population rather than cleaning it.
-- **Worth:** every one of the 42 cell figures is wrong on every wrong basis, the covered total is 24 to 49 per cent
-  low or 30 to 85 per cent high depending on which basis files it, and a rung-0 response keeps four of the eight
-  slot names and not one figure.
+  to 08:00 slots no reflex reaches are its fifth and eighth members.
+- **Variants:** hourly, 15-minute and 5-minute spreading give the exact overlap share's figures to within 3e-10,
+  because every window is recorded on the hour at both ends (SF7, asserted). The two weighted refinements, by the
+  other classes' hourly profile and by the pedestrian feed's footfall at the offence's location, file different
+  slates (SF8 and SF10, asserted), and clause 4.4 is what rules them out. The slate from the offences' true times,
+  which the generator holds and the pack never ships, is the golden's eight (asserted). The hygiene reflex has
+  nothing to keep: seven in eight windows run longer than a slot, so dropping the imprecise records empties the
+  population rather than cleaning it.
+- **Worth:** at least 40 of the 42 cell figures are wrong on every wrong basis and not one of the eight
+  commissioned cells survives any of them; the covered total each wrong basis files is 1.10 to 1.53 times the
+  golden's 4,050 while the eight slots it names would meet only 0.60 to 0.82 of it; and a rung-0 response keeps
+  three of the eight slot names and not one of the 43 figures.
 
 ## Semantic fork table
 
@@ -184,9 +196,10 @@ two seasons on record; the figure each rung files is the figure its own basis gi
 | SF3 | the week's four-hour slots | the 42 slots from midnight, Monday first, as the tasking schedule lists them | slots aligned to another hour | a different slate | the tasking schedule lists the slot boundaries (asserted present) |
 | SF4 | the quarter | the five locations in the quarter's location register | a radius or a ward boundary | same slate under either (asserted) | the location register is the only boundary in the pack |
 | SF5 | the seasons on record | 1 April to 30 September 2025 and the same months of 2026 | calendar years; the whole extract | same slate (asserted); the figures halve or change by a sixth | the contract's season dates and the extract's own span |
-| SF6 | the figure's period | one season, the mean of the two on record | the two seasons added | same slate, every figure doubled | the question asks for the 2027 season and the contract buys a season |
+| SF6 | the figure's period | one season, the mean of the two on record | the two seasons added; the 2026 season alone; a 2027 projection | same slate under each (asserted), the figures doubled or moved by a fiftieth | the question's own words, that the figure is what the patrol would meet in a season averaged over the seasons on record |
 | SF7 | an offence's weight on a slot | the share of its occurrence window that falls in the slot | the window sampled in hourly, 15-minute or 5-minute steps | identical to the last decimal place, so the same slate and the same 42 figures (asserted: the largest difference between the three grains and the exact share is under 1e-9 on every slot) | every window is recorded on the hour at both ends, so each whole hour of a window lies inside one slot and every grain dividing an hour returns the exact share; there is no grain to choose |
-| SF8 | the hourly profile a weight might use | none: the weight is uniform across the window | the quarter's own hourly profile of offences, as the refinement in the literature | same slate (asserted) | no contracted record carries a point in time, so the contracted classes supply no profile, and the classes that do are other offences with their own hours |
+| SF8 | the hourly profile a weight might use | none: the window itself, every moment in it on the same footing | the quarter's own hourly profile of precisely timed offences, as the refinement in the literature | a different slate, one slot in eight (asserted) | the agreement's clause 4.4, that no other offence may be used to place an offence inside its window; no covered offence carries a point in time either, so the covered classes supply no profile of their own |
+| SF10 | the source that places an offence inside its window | the window itself, every moment in it on the same footing | the pedestrian feed's hourly profile at the offence's location; the licensed premises' terminal hours; the hourly profile of the witnessed classes' precisely timed offences | a different slate and every figure different (asserted: the footfall-weighted route moves two of the eight and lifts the covered total by a quarter) | the agreement's clause 4.4, that a count of the offences it covers is built from the force's record of those offences and from nothing else, and that no other offence, data source or proxy may be used to place an offence inside its occurrence window; the third route is also structurally empty, since no covered offence carries a time (SF8) |
 | SF9 | rounding path | the figure rounded once at the end to the nearest fifty; shares to one decimal | each offence's share rounded to a decimal place first and the rounded parts summed | some cells differ by fifty (asserted: the paths part by up to 11.4 offences on a cell, because a share of a seven-hour window rounds down every time) | the question asks for the figures to the nearest fifty, which rounds once the figure it asks for; nothing in the pack reports or asks for a rounded part, and no graded figure is the sum of figures the pack rounds |
 
 ## Closure table
@@ -250,13 +263,23 @@ offence row carries a device, no contracted row has a blank location code, and t
 files). Each ask is a measure the tasking paper carries anyway and the slate does not turn on (H18), and no two share
 a primary device or a file path.
 
-**Ask 1. The quarter's recorded offences of each class, each season (18 figures, nearest ten).**
+**The wording pinned after the first judge pass.** Each ask names its own population in the question, because a
+literal reader otherwise has two defensible answers: "each class in the extract" (all nine, not the five the
+contract covers), "the share of all of them at each of the quarter's five locations" (the base is the quarter's
+recorded offences of every class), and "the footfall each sensor's location saw per trading hour" (the footfall that
+passed, not what the counter reported, so the hours the fault log covers cannot be counted). None of the three names
+a device, a file or a repair.
+
+**Ask 1. The quarter's recorded offences of each class in the extract, each season (18 figures, nearest ten).**
 - Use: the volume behind the slate, the first table of any tasking paper.
 - Primary device (D1, a replay under fresh ids with the key kept): the move to the new records management system ran
   class by class, so for the fortnight of 14 to 27 July 2025 the three classes still held by the legacy system,
   assault without injury, public order and shoplifting, were written to both, each offence under its own crime
   reference in each. The occurrence details match; the references do not, so a union double counts those three
   classes and a de-duplication on the crime reference changes nothing.
+- Hazard (shared with ask 2): the extract was pulled on the street name, so it also holds the Cranstoun length of
+  Harbourgate Street, numbered above the register's 178. Those rows are in the quarter's extract and not in the
+  quarter, and they move all eighteen figures, the five contracted classes included, by 26 to 215 offences.
 - Hazard: the two systems name the classes differently (the crosswalk in the extract notes), so a concatenation
   yields twelve class labels for nine classes.
 - Span (5 files, 11 columns): the two exports, the extract notes' crosswalk, the counting rules, the location
@@ -269,10 +292,11 @@ a primary device or a file path.
 **Ask 2. The share of the quarter's recorded offences at each of its five locations, each season (10 figures, one
 decimal).**
 - Use: where in the quarter the offences sit, the paper's second table.
-- Primary device (D7, the true key elsewhere): the legacy export carries a free-text address and no location code,
-  so those rows reach a location only through the gazetteer, which lists two of the quarter's streets under two
-  spellings; and the location register's Harbourgate Street range stops at number 178, so the addresses above it,
-  which read as in the quarter, are not.
+- Primary device (D7, the true key elsewhere): a location code is entered for every offence of a class under a
+  tasking agreement, because the agreement is settled on them, and for only four fifths of the rest (recording
+  standard 7.2), so those rows reach a location only through their address; the legacy export carries no location
+  code at all; the gazetteer lists two of the quarter's streets under two spellings; and the register's Harbourgate
+  Street range stops at number 178, so the addresses above it, which read as in the quarter, are not.
 - Hazard: a share of the legacy rows have no address at all and are reachable only through the beat code.
 - Span (5 files, 12 columns): the legacy export, the new export, the gazetteer, the location register, the beat map.
 - Stops: grouped on the raw address string; the gazetteer applied with the out-of-range addresses kept; the blanks
@@ -280,17 +304,23 @@ decimal).**
 - Realism: a gazetteer with spelling variants and a register whose street ranges stop mid-street is what a city
   address list looks like.
 
-**Ask 3. Each pedestrian sensor's count per trading hour, each season (8 figures, nearest hundred).**
-- Use: the quarter's footfall beside the offence volume, the paper's context table.
-- Primary device (D4, a reporter drained down in stages): each sensor's outages are in a separate availability log
-  and the counts file simply has no rows for those hours, so a count over the season's hours divides by hours the
-  sensor was not counting; the outages differ by sensor and by season.
-- Hazard: the counts file holds genuine zero rows for hours the quarter was closed, which a repair that treats
-  missing and zero alike destroys.
-- Span (4 files, 9 columns): the counts file, the availability log, the sensor register, the trading-hours schedule.
-- Stops: the count over the season's hours; the count over the hours with rows; the count over the hours with
-  non-zero rows; the golden, the count over the hours the availability log shows the sensor up.
-- Realism: a footfall feed with gaps and an availability log beside it is how these sensors are reported.
+**Ask 3. The footfall each sensor's location saw per trading hour, each season (8 figures, nearest ten).**
+- Use: the quarter's footfall beside the offence volume, the paper's context table. The ask is for the
+  footfall the location saw, not for what the counter reported, which is why the fault hours cannot be counted.
+- Primary device (D4, a channel drained down in stages): a sensor head counts both directions, and when one
+  direction fails or the unit is retrying its connection the feed still publishes a count for every hour, a part of
+  the footfall that passed. Every hour of both seasons has a row, so nothing is missing to notice; the supplier's
+  fault log is the only record of which hours those were, and each sensor carries one in each season, 2 to 21 days
+  long at 33 to 57 per cent of the footfall.
+- Hazard: the feed carries genuine near-zero rows for the hours the quarter is closed, so a count over every hour
+  of the season is a fifth low, and the trading-hours schedule is the only thing that separates them.
+- Hazard: the feed is stamped in UTC and the trading hours are local, an hour apart through both seasons.
+- Span (4 files, 9 columns): the counts file, the fault log, the sensor register, the trading-hours schedule.
+- Stops: the count over every hour of the season; over the quarter's trading hours with the fault hours left in;
+  over the trading hours with the fault hours out of the count but still in the hours; the golden, with the fault
+  hours out of both. The nearest stop to a golden figure is 15 against a bin of 5.
+- Realism: a pedestrian counter that loses one of its two heads, keeps publishing, and is written up in the
+  supplier's fault log is how these feeds are reported.
 
 **The cracker sheet.** The cracker landed the slate, ran the hygiene battery (crime references unique, no exact
 duplicates, every join matched, no fan-out) and executed every filed rule:
@@ -299,7 +329,7 @@ duplicates, every join matched, no fan-out) and executed every filed rule:
 |---|---|---|---|
 | Ask 1, offences by class and season (18) | both exports unioned, de-duplicated on the crime reference | the parallel fortnight wrote each offence under two references | miss |
 | Ask 2, location shares (10) | the gazetteer applied to the address text, every row in the quarter kept | two spellings per street and the register's range stopping at 178 | miss |
-| Ask 3, sensor counts per trading hour (8) | the season's counts over the season's trading hours | the hours each sensor was not counting | miss |
+| Ask 3, footfall per trading hour (8) | the feed's counts over the quarter's trading hours | the hours a head was counting one direction only, in the fault log alone | miss |
 | The 42 cell figures and the covered total (43) | the aoristic weights, which is the call | scored with the recommendation and its critical components | outside |
 
 The mirror sheet (stopped at the window start, rung 0) shares no slot name's figure and no device figure with the
@@ -315,6 +345,36 @@ leaves 36 graded ask figures, all of them device figures, and the cracker sheet 
 figure. The margin over the bar is in the construction layer: the mirror loses the 42 cells as well as the slate.
 
 Pair ceiling: 28.5
+
+## Leak sweep and the pre-ship check
+
+`leak.py --asof 2027-01-22`: REVIEW, sweeps 1, 2, 3, 5, 7, 8, 9 and 11 clean. The two REVIEW lines:
+
+- Sweep 4, `harbourgate_patrol_tasking_contract_2027.pdf` carries four of the stump paragraph's terms (occurred,
+  nothing, records, covered). They are the words a tasking agreement uses to say what it buys and what counts as a
+  covered offence; the document names no weight, share, duration, proportion or spreading, asserted by a word sweep
+  over every shipped document in `checks.py` (R1).
+- Sweep 6, the two offence extracts name five of six candidate names beside numbers. The names the sweep found are
+  the quarter's five locations, which the asks are about; the candidates the decision ranks are the week's 42 slots,
+  and no shipped file pairs a slot with an offence figure, asserted in `checks.py` (R1) by a sweep for a three-digit
+  figure within forty characters of every slot label in every document.
+
+The pre-ship check, read against the built pack:
+
+- The decisive step is still analytical: the weight an occurrence window puts on a four-hour slot. Nothing is
+  planted (every window is the force's own record and every record is right), the two timestamps' meaning is filed
+  in the data dictionary and the recording standard so the reading is free, and no filed sentence says what a slot's
+  offence weight is.
+- The mess is all Layer 1: the two systems, the parallel fortnight, the extract's street-name scope, the two
+  spellings, the uncoded rows, the fault log, the UTC feed. Deleting every one of them leaves the call exactly as
+  hard, because the call reads one file's two timestamps and the register's five codes.
+- The asks are separated: no contracted quarter row carries a device, every contracted quarter row carries a
+  location code, no Cranstoun row carries a quarter code, and the main path opens none of the ask files (asserted).
+- Input gates: 16 files, four formats, the records management extract at 33,719 rows, two distractors named in
+  `metadata.json` (the 2026 patrol plan and the licensed premises register), every file with source, date and
+  licence.
+- Gate G: no shipped artifact ranks the slots; the 2026 patrol plan records the hours the patrol worked and carries
+  no offence figure, and the footfall feed ranks the slots differently from every basis in the ladder.
 
 ## Tried and rejected
 
@@ -370,3 +430,30 @@ Pair ceiling: 28.5
   is refused and no forward fact has to be inferred from a past regularity: every offence's window is in the record
   and the estimand is defined over it.
 - Estimand filed as the window-weighted count, 2026-10-15: it read as the tasking contract filing the share weighting, which would make the decisive step rule application under the client's rule 3. Refiled as the unobserved count the contract defines, with the weighting attributed to the records' structure and the word sweep asserting no document states one.
+- A single eight-hour shift start as the decision (a dial over twelve start hours), 2026-10-15: tested on the built
+  windows and the spreading washes out at that width, the aoristic pick and the midpoint pick are both 20:00 and the
+  gap to the runner-up is 3.9 per cent. The four-hour slot is what makes the window's spread decide anything.
+- Windows at any minute, 2026-10-15: it left a spreading-grain fork (the exact overlap share against a 15-minute or
+  hourly sampling differed by up to 3.7 offences on a graded slot, which crosses a bin). Replaced by windows
+  recorded on the hour at both ends, which is how victims give them: every grain that divides an hour then returns
+  the exact share, to 4e-10.
+- Ask 3 as missing rows for the hours a sensor was down, 2026-10-15: dividing by the rows present then equals the
+  golden, so the availability log was free and the device did nothing. Replaced by a head counting one direction
+  only, with a row published for every hour and the fault log the only record.
+- Grading the 42 cells to the nearest ten, 2026-10-15: no draw in 14,400 puts 43 figures that far from a rounding
+  edge at that bin. The nearest fifty, with the worst figure 4.09 offences from a half of fifty.
+- Judge pass 1 (2026-10-15) returned NOT_DETERMINISTIC on four unpinned conventions, with Gate G and Gate H passing
+  and the trap confirmed: the season basis of the slot figures (the mean of the two seasons was not filed, and 2026
+  alone moved Wednesday and Thursday 20:00 from 400 to 450), the class set behind ask 1, the base behind ask 2's
+  shares, and the treatment of the fault hours in ask 3. All four are now pinned in the question, which is where the
+  judge said the fix belonged; the main call, the ladder and the decisive step are untouched.
+- The leak reader's pass 1 (2026-10-15) weighted each window by the pedestrian feed's footfall at the offence's
+  location and filed a different slate, and the witnessed classes' hourly profile does the same once the window
+  shapes are realistic. Both are now ruled out by the agreement's clause 4.4, which confines the count to the
+  force's record of the covered offences and forbids any other offence, source or proxy from placing an offence
+  inside its window; `checks.py` asserts the clause is present and that both routes would file another slate, so it
+  is load bearing rather than decorative.
+- Windows of a single shape per class, 2026-10-15: the leak reader read the regularity as generated (criminal damage
+  and business burglary always 20:00 to 22:00 against 07:00 to 10:00). Each class is now a mixture, a shop shut
+  overnight or over a bank holiday weekend or the damage found before closing, which also widened the length
+  distribution (median 10 hours, a tenth at 4 and a tenth over 30).

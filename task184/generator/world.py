@@ -4,7 +4,8 @@ seasons on record. Every other module reads its constants from here."""
 import datetime as dt
 
 SEED = 184
-NUDGE = 455                               # fixed at design: the draw whose 43 graded figures sit mid-bin
+LOC_SHIFT = 0.9675                         # fixed at design: the quarter's location shares sit mid-bin
+NUDGE = 26                               # fixed at design: the draw whose 43 graded figures sit mid-bin
 CITY = "Kelverstoke"
 QUARTER = "Harbourgate"
 PARTNERSHIP = "Kelverstoke Community Safety Partnership"
@@ -29,14 +30,14 @@ LOCATIONS = ["Harbourgate Street", "Quayside Multi-Storey", "Lamphouse Lane", "F
 # closed_hours (a premises closed or a thing last seen in the evening and found in the morning),
 # absence (a dwelling empty for a working day or a trip)
 CLASSES = {
-    "Theft from a motor vehicle": (2600, "mixed_park",   [1.15, 1.10, 1.32, 1.20, 1.35, 1.25, 0.85]),
-    "Theft of a pedal cycle":     (2100, "lockup",       [1.20, 1.20, 1.15, 1.20, 1.30, 0.95, 0.70]),
-    "Criminal damage":            (3800, "closed_hours", [0.760, 0.760, 1.000, 1.281, 3.125, 4.950, 1.978]),
-    "Burglary business":          (2660, "closed_hours", [1.281, 1.281, 1.559, 1.281, 1.786, 1.000, 0.396]),
-    "Burglary residential":       (1350, "absence",      [1.20, 1.20, 1.15, 1.10, 1.20, 0.90, 0.80]),
+    "Theft from a motor vehicle": (2600, "mixed_park",   [0.94, 0.92, 1.32, 1.22, 1.42, 1.30, 0.86]),
+    "Theft of a pedal cycle":     (2100, "lockup",       [0.98, 0.96, 1.16, 1.22, 1.38, 1.00, 0.70]),
+    "Criminal damage":            (3800, "closed_hours", [0.690, 0.670, 1.000, 1.330, 3.240, 5.050, 1.978]),
+    "Burglary business":          (2660, "closed_hours", [1.060, 1.040, 1.559, 1.320, 1.880, 1.000, 0.396]),
+    "Burglary residential":       (1350, "absence",      [1.02, 0.99, 1.16, 1.12, 1.28, 0.92, 0.80]),
     "Theft from the person":      (780,  "point_day",    [1.10, 1.05, 1.05, 1.15, 1.35, 1.45, 0.75]),
-    "Assault without injury":     (1180, "point_night",  [0.90, 0.80, 1.00, 1.30, 2.20, 2.70, 1.30]),
-    "Public order":               (1460, "point_night",  [0.80, 0.80, 1.00, 1.20, 2.30, 2.80, 1.30]),
+    "Assault without injury":     (1186, "point_night",  [0.90, 0.80, 1.00, 1.30, 2.20, 2.70, 1.30]),
+    "Public order":               (1465, "point_night",  [0.80, 0.80, 1.00, 1.20, 2.30, 2.80, 1.30]),
     "Shoplifting":                (2240, "point_day",    [1.20, 1.10, 1.10, 1.20, 1.40, 1.50, 0.60]),
 }
 
@@ -48,7 +49,7 @@ PEOPLE = {
     "manager": ("Bethan Murray", "Community Safety Manager"),
     "analyst": ("Mitchell Webb", "Community Safety Analyst"),
     "inspector": ("Rosie Kelly", "Neighbourhood Inspector"),
-    "chair": ("Joshua Davies", "Chair of the Partnership Board"),
+    "chair": ("Joshua Davies", "Chair of the council's Community Safety Committee"),
 }
 
 

@@ -10,8 +10,8 @@
   "shape": "07",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Commission Saturday 20:00 to 00:00, Friday 20:00 to 00:00, Sunday 00:00 to 04:00, Saturday 00:00 to 04:00, Sunday 04:00 to 08:00, Wednesday 20:00 to 00:00, Thursday 20:00 to 00:00 and Saturday 04:00 to 08:00, which together meet 4,050 of the offences the tasking contract covers in a season.",
+  "answer_source": "task184/golden/harbourgate_patrol_slate_2027.pdf and harbourgate_slot_weights.xlsx",
   "gap": [
     "population",
     "time"
@@ -34,14 +34,15 @@
   "role_family": "programme_officer",
   "scoring_unit": "per episode",
   "spine": {
-    "file": "",
-    "rows": 0,
-    "entity": "one recorded offence",
-    "grain": "offence x occurrence window",
-    "source": "synthetic"
+    "file": "kcp_rms_offence_extract_2027-01-22.csv",
+    "rows": 33699,
+    "row_meaning": "one recorded offence, with the earliest and the latest time it can have occurred",
+    "grain": "offence",
+    "source_dataset": "constructed",
+    "entity": "a recorded offence"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "season_or_peak",
+  "forum": "council_or_assembly",
+  "forcing_event": "period_close",
   "org_family": "local_government",
   "world": {
     "geography": "Kelverstoke, a fictional city in a UK-like island state",
@@ -55,7 +56,10 @@
       "Joshua Davies"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "harbourgate_patrol_slate_2027.pdf",
+    "harbourgate_slot_weights.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "layer2_family": "estimand_identification",
@@ -72,7 +76,7 @@
   ],
   "driver": "The decisive unit is not the event but the event-hour it could have happened in: a large share of the events are recorded with a window rather than a time, the windows are long exactly for the events the decision exists to catch, and the slate is set on the weight those windows put on each slot, so assigning each event to one hour, whichever hour, or keeping only the precisely timed events, each names a different slate.",
   "driver_concrete": "A large share of Harbourgate's night-time offences are recorded with an occurrence window rather than a time, and the windows are longest for the overnight burglaries and vehicle offences the patrol is commissioned against, so the weight each four-hour slot carries is the sum of each offence's window overlap with it; taking the window's start, its midpoint, its report time, or only the precisely timed offences each names a different six-slot slate.",
-  "stump": "A competent solver reconciles the two recording systems, drops the duplicates, assigns each offence to the start of its occurrence window, sums by day and four-hour slot and commissions the six heaviest; the step that lands it there is treating a window as a time, when the windows of the overnight offences the patrol exists to catch run for hours, so the slate the weighted windows name is different.",
+  "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, takes each offence's occurrence time as occurred_from and commissions the week's five busiest evening slots and three late afternoons, filing 6,200 covered offences a season when its eight meet 3,300 of the golden's 4,050; the step that lands it there is treating a window as the point in time it starts, when seven in eight of these offences have a window longer than a patrol slot and 94 per cent of them cross a slot boundary.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who reads every column correctly, reconciles the two recording systems, drops the cross-system duplicates and fixes the gazetteer takes each offence's occurrence time as the start of its window (or its report time), sums offences by day and four-hour slot, and commissions the six heaviest slots; wrong, because for the offences the patrol exists to catch the window is hours or days long and a point in it is not where the offence happened.",
   "domain_test": "The deciding analysis is aoristic crime analysis: an offence known only to have happened between two times contributes a fraction of itself to every hour in its window, and the hotspot's timing is the sum of those fractions per day and four-hour slot; with another field's nouns there is no offence discovered on return and no last-seen and found pair, so there is no window to spread and the task stops making sense.",
@@ -107,6 +111,6 @@
       "answer": "Post the mobile screening unit to Eskerford from 15 June to 31 August 2027: it moves 342,200 passengers within the 20-minute standard, against 272,600 at Halloran Bay, and 13 per cent is the smallest whole per cent shortfall in Eskerford's forecast passengers at which another posting would move more."
     }
   ],
-  "notes": "WARNs answered in DESIGN_NOTE.md ## Draw: strategy_risk (the unit of analysis is the offence-hour the weighted window puts on a slot, a quantity the solver builds, not a field it reads, and the analyst test files a wrong slate with every field read correctly); repeat and overuse of gate_g method_or_model_selection (the mechanism here is the weight a windowed event puts on each slot, not a model chosen from a menu); repeat.question_form which (the decision is a slate under a cap, so the leading question asks which slots). Redraw 2026-10-15 after task459 was registered: shape 01 to 07 (the graded unit is the week's grid of 42 day-by-band slots, each cell's covered-offence figure graded, the eight commissioned read off it), forcing event purchase_order_or_contract to season_or_peak (the 2027 season opens 1 April and the slate has to be set before it), analyst persona redrawn (Adrian collided).",
-  "registered": "2026-10-15T12:21:23Z"
+  "notes": "WARNs answered in DESIGN_NOTE.md ## Draw: strategy_risk (the unit of analysis is the offence-hour the weighted window puts on a slot, a quantity the solver builds, not a field it reads, and the analyst test files a wrong slate with every field read correctly); repeat and overuse of gate_g method_or_model_selection (the mechanism here is the weight a windowed event puts on each slot, not a model chosen from a menu); repeat.question_form which (the decision is a slate under a cap, so the leading question asks which slots). Redraw 2026-10-15 after task459 was registered: shape 01 to 07 (the graded unit is the week's grid of 42 day-by-band slots, each cell's covered-offence figure graded, the eight commissioned read off it), forcing event purchase_order_or_contract to season_or_peak (the 2027 season opens 1 April and the slate has to be set before it), analyst persona redrawn (Adrian collided). Redrawn again 2026-10-15 after task456 landed: the forum is the city council's community safety committee, which funds the patrol, and the forcing event is the close of the 2026 season and the annual review that sets the next season's slate.",
+  "registered": "2026-10-15T13:15:43Z"
 }

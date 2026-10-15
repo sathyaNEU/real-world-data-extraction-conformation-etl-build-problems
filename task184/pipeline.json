@@ -1,13 +1,13 @@
 {
  "task": "task184",
  "owner": "oviya13ya",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "criminology-justice",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-15",
- "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, takes each offence's occurrence time as occurred_from and commissions the week's seven 20:00 to 24:00 slots and Friday 08:00 to 12:00, filing 7,838 covered offences a season; the step that lands it there is treating a window as the point in time it starts, when nine in ten of these offences have a window over four hours long and 96 per cent of them cross a slot boundary.",
+ "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, takes each offence's occurrence time as occurred_from and commissions the week's five busiest evening slots and three late afternoons, filing 6,200 covered offences a season when its eight meet 3,300 of the golden's 4,050.",
  "architecture": 2,
  "loops": 0,
  "precut": {
@@ -15,17 +15,17 @@
   "date": "2026-10-15"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (sweeps 4 and 6, both answered in the design note)",
+  "reader": "two passes, nothing quoted for question 1, no ranking file, question 6 analytical at both"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "0.08 task121 v3, task180 v4 (check verdict WARN)"
+  "heart": "PASS (WARNs answered in the note)",
+  "nearest": "0.08 task121 v3, task180 v4"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC (pass 2; pass 1 NOT_DETERMINISTIC on four unpinned conventions)",
+  "disposition": "APPROVE",
+  "report": "task184/determinism_check_report.md"
  },
  "returned": [
   {
@@ -35,9 +35,9 @@
    "commit": "3329b92"
   }
  ],
- "resume": "Stage 2 complete, precut.py exit 0 (49 checks). The draw was re-registered on 2026-10-15 after task459 landed: shape 07 (the graded object is the week's 42-cell day-by-band grid, each cell's covered-offence figure graded to the nearest fifty), forcing event season_or_peak, the analyst persona redrawn to Mitchell Webb. Occurrence windows are recorded on the hour at both ends, which removes the spreading-grain fork (every grain dividing an hour returns the exact share, to 4e-10). generator/world.py carries NUDGE = 455, the draw whose 43 graded figures sit mid-bin at the nearest fifty (worst edge distance 2.64) with a 14.0 per cent gap at the cap. STILL OWED, stage 3: the generator and pack (two recording-system exports, extract notes, counting rules, contract and tasking schedule, location register, gazetteer, beat map, footfall counts, sensor availability log, sensor register, trading hours, patrol tasking plan, data dictionary, two distractors), the goldens harbourgate_patrol_slate_2027.pdf and harbourgate_slot_weights.xlsx, checks.py with every SF row, verify.py, metadata.json, figures.json, two byte-identical builds, then stage 4.",
+ "resume": "",
  "approved": null,
- "delivered": "2026-10-12",
+ "delivered": "2026-10-15",
  "portal": null,
  "seed": "analytical_tasks/02_anomaly_detection/AD07_mobile-screening-team-idle-position-cap.md"
 }

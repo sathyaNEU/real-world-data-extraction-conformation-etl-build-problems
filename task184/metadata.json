@@ -1,194 +1,188 @@
 {
   "task": "task184",
-  "title": "Where the mobile screening unit should be posted for 15 June to 31 August 2027 among the eight airports the throughput detector flagged, how many passengers it would move within the 20-minute wait standard at each in each period, and how far the chosen airport's forecast can fall before another posting moves more",
-  "domain": "Urban & Regional Science (house domain Supply Chain & Logistics)",
-  "subdomain": "aviation passenger screening operations (checkpoint capacity and the posting of a mobile screening unit after a throughput detector's spring flags)",
+  "title": "Which eight of the week's forty-two four-hour patrol slots a city's 2027 Harbourgate hotspot patrol covers, and the contracted offences it would meet in each slot of the week, where almost every covered offence is recorded with an occurrence window rather than a time",
+  "domain": "Criminology & Justice",
+  "subdomain": "crime incidence and hotspot analysis (patrol tasking from recorded offences whose occurrence time is known only as the window the victim can vouch for)",
   "objective": "Anomaly Detection & Diagnostics",
-  "prompt_shape": "13 (scenarios and the flip point): each airport's posting in each 2027 period, the call, the flip, and three 2026 measures per airport",
-  "as_of": "2027-04-23",
+  "prompt_shape": "07 (a grid of cells): the offences met in each of the week's forty-two day-by-band slots, the eight the contract buys read off the grid with their figures and their total, the chart of the week, and the volume, location and footfall tables behind the paper",
+  "as_of": "2027-01-22",
   "deliverables": [
-    "mobile_team_posting_summer_2027.pdf",
-    "mobile_team_effect_2027.xlsx"
+    "harbourgate_patrol_slate_2027.pdf",
+    "harbourgate_slot_weights.xlsx"
   ],
   "distractor_files": [
-    "lane_fault_log_2026.csv",
-    "passenger_feedback_summer2026.csv"
+    "harbourgate_patrol_plan_2026.xlsx",
+    "harbourgate_licensed_premises.csv"
+  ],
+  "field_terms": [
+    "beat",
+    "slot"
   ],
   "input_gates": {
-    "files": 17,
+    "files": 16,
     "formats": [
       "csv",
-      "json",
       "md",
       "pdf",
       "xlsx"
     ],
-    "largest_file": "checkpoint_lane_counts_20260615_20260831.csv",
-    "largest_file_rows": 267690
+    "largest_file": "harbourgate_footfall_hourly.csv",
+    "largest_file_rows": 35136
   },
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task184/generator/build.py (seeded, deterministic) around a fictional country's aviation screening agency, its airports, staff and suppliers; no real agency, airport, hotel, person or record is depicted.",
-      "date": "2027-04-23",
+      "origin": "constructed for this task by task184/generator/build.py (seeded, deterministic) around a fictional city, police force, community safety partnership and business improvement district; no real organisation, place, person or record is depicted.",
+      "date": "2027-01-22",
       "license": "CC0-1.0 (original work)"
     }
   ],
-  "created": "2027-04-23",
+  "created": "2027-01-22",
   "generator": "task184/generator/build.py",
   "files": [
     {
-      "path": "checkpoint_lane_counts_20260615_20260831.csv",
+      "path": "footfall_sensor_availability.csv",
       "format": "csv",
-      "bytes": 7746195,
-      "rows": 267690,
-      "source": "Constructed: Lane sensor feed, eight central checkpoints, 15 June to 31 August 2026",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "bytes": 667,
+      "rows": 8,
+      "source": "Constructed: Pedestrian sensor availability log published by the sensor supplier",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "checkpoint_lane_register.csv",
+      "path": "footfall_sensor_register.csv",
       "format": "csv",
-      "bytes": 8029,
-      "rows": 94,
-      "source": "Constructed: Central checkpoint lane register",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "bytes": 353,
+      "rows": 4,
+      "source": "Constructed: Pedestrian sensor register: location, position, installation date and feed time zone",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "checkpoint_planning_standard_2023.pdf",
-      "format": "pdf",
-      "bytes": 44408,
+      "path": "harbourgate_footfall_hourly.csv",
+      "format": "csv",
+      "bytes": 1118725,
+      "rows": 35136,
+      "source": "Constructed: Business improvement district pedestrian sensor feed, hourly counts in UTC, 2025 and 2026 seasons",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "harbourgate_licensed_premises.csv",
+      "format": "csv",
+      "bytes": 382,
+      "rows": 6,
+      "source": "Constructed: Harbourgate licensed premises register with terminal hours and capacities",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "harbourgate_location_register.csv",
+      "format": "csv",
+      "bytes": 338,
+      "rows": 5,
+      "source": "Constructed: Harbourgate location register: the five registered locations, their street number ranges and beats",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "harbourgate_patrol_plan_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 8686,
       "rows": null,
-      "source": "Constructed: Checkpoint planning standard KAS-STD-07, 2023 edition (superseded)",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "source": "Constructed: Neighbourhood team's record of the hours the patrol worked in each slot under the 2026 agreement",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "checkpoint_planning_standard_2026.pdf",
+      "path": "harbourgate_patrol_tasking_contract_2027.pdf",
       "format": "pdf",
-      "bytes": 45321,
+      "bytes": 85901,
       "rows": null,
-      "source": "Constructed: Checkpoint planning standard KAS-STD-07, 2026 edition",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "source": "Constructed: Harbourgate hotspot patrol tasking agreement for the 2027 season, with the tasking schedule and the classes covered",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "expense_claims_CC4109_2026.csv",
+      "path": "harbourgate_tasking_schedule.csv",
       "format": "csv",
-      "bytes": 257628,
-      "rows": 3542,
-      "source": "Constructed: Expense claims export, cost centre CC-4109, claims approved June to October 2026",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "bytes": 1199,
+      "rows": 42,
+      "source": "Constructed: The week's patrol slots as the tasking agreement lists them",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "extract_notes_2027-04-23.md",
+      "path": "harbourgate_trading_hours.csv",
+      "format": "csv",
+      "bytes": 253,
+      "rows": 7,
+      "source": "Constructed: Harbourgate trading hours schedule",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "kcp_cis_offence_extract_2025.csv",
+      "format": "csv",
+      "bytes": 344116,
+      "rows": 3659,
+      "source": "Constructed: Crime information system offence extract for the same streets, 2025 season to 27 July 2025",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "kcp_crime_recording_standard_extract.pdf",
+      "format": "pdf",
+      "bytes": 64612,
+      "rows": null,
+      "source": "Constructed: Force extract from the Crime Recording Standard: recording, occurrence date and time, classification and location",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "kcp_rms_data_dictionary.csv",
+      "format": "csv",
+      "bytes": 1153,
+      "rows": 9,
+      "source": "Constructed: Records management system data dictionary for the offence table",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "kcp_rms_extract_notes.md",
       "format": "md",
-      "bytes": 2718,
+      "bytes": 3002,
       "rows": null,
-      "source": "Constructed: Capacity Planning extract notes, 23 April 2027",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "source": "Constructed: Performance and Analysis unit's notes on the extract: scope, the two systems, migration dates, the class crosswalk and the known differences",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "hotel_invoices_CC4109_summer2026.xlsx",
-      "format": "xlsx",
-      "bytes": 7908,
-      "rows": null,
-      "source": "Constructed: Payables lines, cost centre CC-4109, hotel invoices and credit notes, summer 2026",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "lane_fault_log_2026.csv",
+      "path": "kcp_rms_offence_extract_2027-01-22.csv",
       "format": "csv",
-      "bytes": 7387,
-      "rows": 116,
-      "source": "Constructed: Lane fault log, 2026",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "bytes": 4477355,
+      "rows": 33708,
+      "source": "Constructed: Records management system offence extract for the Harbourgate streets, 2025 and 2026 seasons, run 22 January 2027",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "mobile_screening_unit_deployment_policy_2027.pdf",
-      "format": "pdf",
-      "bytes": 42086,
-      "rows": null,
-      "source": "Constructed: Mobile screening unit deployment policy 2027",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "mobile_unit_postings_2026.csv",
+      "path": "kelverstoke_beat_map.csv",
       "format": "csv",
-      "bytes": 801,
-      "rows": 11,
-      "source": "Constructed: Mobile screening unit postings, summer 2026",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "bytes": 335,
+      "rows": 4,
+      "source": "Constructed: Kelverstoke neighbourhood beat map",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "operator_traffic_returns_2026.csv",
+      "path": "kelverstoke_street_gazetteer.csv",
       "format": "csv",
-      "bytes": 4949,
-      "rows": 96,
-      "source": "Constructed: Airport operators' monthly traffic returns, 2026",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "passenger_feedback_summer2026.csv",
-      "format": "csv",
-      "bytes": 154025,
-      "rows": 1681,
-      "source": "Constructed: Passenger feedback about security, summer 2026",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "queue_time_sensor_20260615_20260831.csv",
-      "format": "csv",
-      "bytes": 1177865,
-      "rows": 44749,
-      "source": "Constructed: Queue-camera queue times, eight central checkpoints, 15 June to 31 August 2026",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "roster_pattern_summer2027.xlsx",
-      "format": "xlsx",
-      "bytes": 8914,
-      "rows": null,
-      "source": "Constructed: Summer 2027 roster pattern from the airports' rostering tool, lanes planned by 15 minutes",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "roster_plan_summer2026.csv",
-      "format": "csv",
-      "bytes": 24841,
-      "rows": 576,
-      "source": "Constructed: Summer 2026 roster patterns, lanes planned by 15 minutes",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "summer2027_planning_sheet.xlsx",
-      "format": "xlsx",
-      "bytes": 19606,
-      "rows": null,
-      "source": "Constructed: Capacity Planning's summer 2027 planning sheet (design days)",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "throughput_detector_flags_spring2027.json",
-      "format": "json",
-      "bytes": 2344,
-      "rows": null,
-      "source": "Constructed: Throughput detector run, spring 2027",
-      "date": "2027-04-23",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "bytes": 612,
+      "rows": 12,
+      "source": "Constructed: Kelverstoke corporate street gazetteer: the quarter's streets and their alternative spellings",
+      "date": "2027-01-22",
+      "license": "CC0-1.0 (original work)"
     }
   ]
 }

@@ -1,0 +1,192 @@
+{
+ "call": {
+  "slate": [
+   "Saturday 20:00-00:00",
+   "Friday 20:00-00:00",
+   "Sunday 00:00-04:00",
+   "Saturday 00:00-04:00",
+   "Sunday 04:00-08:00",
+   "Wednesday 20:00-00:00",
+   "Thursday 20:00-00:00",
+   "Saturday 04:00-08:00"
+  ],
+  "slot_offences": {
+   "Saturday 20:00-00:00": 650,
+   "Friday 20:00-00:00": 650,
+   "Sunday 00:00-04:00": 550,
+   "Saturday 00:00-04:00": 500,
+   "Sunday 04:00-08:00": 450,
+   "Wednesday 20:00-00:00": 400,
+   "Thursday 20:00-00:00": 400,
+   "Saturday 04:00-08:00": 400
+  },
+  "covered_total": 4050,
+  "covered_total_exact": 4047.64,
+  "runner_up": "Sunday 20:00-00:00",
+  "runner_up_offences": 350,
+  "weakest_of_the_eight": 400,
+  "gap_to_the_runner_up": 50
+ },
+ "week": {
+  "Monday 00:00-04:00": 250,
+  "Monday 04:00-08:00": 200,
+  "Monday 08:00-12:00": 200,
+  "Monday 12:00-16:00": 250,
+  "Monday 16:00-20:00": 200,
+  "Monday 20:00-00:00": 300,
+  "Tuesday 00:00-04:00": 200,
+  "Tuesday 04:00-08:00": 150,
+  "Tuesday 08:00-12:00": 200,
+  "Tuesday 12:00-16:00": 250,
+  "Tuesday 16:00-20:00": 200,
+  "Tuesday 20:00-00:00": 300,
+  "Wednesday 00:00-04:00": 200,
+  "Wednesday 04:00-08:00": 150,
+  "Wednesday 08:00-12:00": 250,
+  "Wednesday 12:00-16:00": 250,
+  "Wednesday 16:00-20:00": 250,
+  "Wednesday 20:00-00:00": 400,
+  "Thursday 00:00-04:00": 300,
+  "Thursday 04:00-08:00": 250,
+  "Thursday 08:00-12:00": 250,
+  "Thursday 12:00-16:00": 250,
+  "Thursday 16:00-20:00": 250,
+  "Thursday 20:00-00:00": 400,
+  "Friday 00:00-04:00": 300,
+  "Friday 04:00-08:00": 250,
+  "Friday 08:00-12:00": 300,
+  "Friday 12:00-16:00": 300,
+  "Friday 16:00-20:00": 300,
+  "Friday 20:00-00:00": 650,
+  "Saturday 00:00-04:00": 500,
+  "Saturday 04:00-08:00": 400,
+  "Saturday 08:00-12:00": 300,
+  "Saturday 12:00-16:00": 300,
+  "Saturday 16:00-20:00": 300,
+  "Saturday 20:00-00:00": 650,
+  "Sunday 00:00-04:00": 550,
+  "Sunday 04:00-08:00": 450,
+  "Sunday 08:00-12:00": 250,
+  "Sunday 12:00-16:00": 200,
+  "Sunday 16:00-20:00": 200,
+  "Sunday 20:00-00:00": 350
+ },
+ "default_path": {
+  "slate": [
+   "Saturday 20:00-00:00",
+   "Friday 20:00-00:00",
+   "Friday 16:00-20:00",
+   "Saturday 16:00-20:00",
+   "Wednesday 20:00-00:00",
+   "Thursday 20:00-00:00",
+   "Sunday 20:00-00:00",
+   "Wednesday 16:00-20:00"
+  ],
+  "files": 6200,
+  "meets": 3300,
+  "share_of_golden": 0.821
+ },
+ "rungs": {
+  "rung0_window_start": {
+   "slate": [
+    "Saturday 20:00-00:00",
+    "Friday 20:00-00:00",
+    "Friday 16:00-20:00",
+    "Saturday 16:00-20:00",
+    "Wednesday 20:00-00:00",
+    "Thursday 20:00-00:00",
+    "Sunday 20:00-00:00",
+    "Wednesday 16:00-20:00"
+   ],
+   "files": 6200,
+   "meets": 3300,
+   "share_of_golden": 0.821
+  },
+  "rung1_window_end": {
+   "slate": [
+    "Sunday 08:00-12:00",
+    "Saturday 08:00-12:00",
+    "Sunday 04:00-08:00",
+    "Saturday 04:00-08:00",
+    "Friday 08:00-12:00",
+    "Thursday 08:00-12:00",
+    "Monday 08:00-12:00",
+    "Friday 16:00-20:00"
+   ],
+   "files": 4450,
+   "meets": 2450,
+   "share_of_golden": 0.602
+  },
+  "rung2_midpoint": {
+   "slate": [
+    "Sunday 00:00-04:00",
+    "Saturday 00:00-04:00",
+    "Thursday 00:00-04:00",
+    "Friday 00:00-04:00",
+    "Monday 00:00-04:00",
+    "Friday 12:00-16:00",
+    "Wednesday 00:00-04:00",
+    "Saturday 12:00-16:00"
+   ],
+   "files": 5550,
+   "meets": 2800,
+   "share_of_golden": 0.691
+  }
+ },
+ "asks": {
+  "offences_by_class": {
+   "Theft from a motor vehicle 2025": 2520,
+   "Theft from a motor vehicle 2026": 2680,
+   "Theft of a pedal cycle 2025": 2040,
+   "Theft of a pedal cycle 2026": 2160,
+   "Criminal damage 2025": 3690,
+   "Criminal damage 2026": 3910,
+   "Burglary business 2025": 2580,
+   "Burglary business 2026": 2740,
+   "Burglary residential 2025": 1310,
+   "Burglary residential 2026": 1390,
+   "Theft from the person 2025": 760,
+   "Theft from the person 2026": 800,
+   "Assault without injury 2025": 1150,
+   "Assault without injury 2026": 1220,
+   "Public order 2025": 1420,
+   "Public order 2026": 1510,
+   "Shoplifting 2025": 2170,
+   "Shoplifting 2026": 2310
+  },
+  "location_shares_per_cent": {
+   "Harbourgate Street 2025": 36.1,
+   "Harbourgate Street 2026": 35.1,
+   "Quayside Multi-Storey 2025": 13.4,
+   "Quayside Multi-Storey 2026": 14.0,
+   "Lamphouse Lane 2025": 19.3,
+   "Lamphouse Lane 2026": 19.5,
+   "Fishmarket Square 2025": 21.1,
+   "Fishmarket Square 2026": 21.4,
+   "Netherbow Car Park 2025": 10.1,
+   "Netherbow Car Park 2026": 10.0
+  },
+  "footfall_per_trading_hour": {
+   "FG-01 2025": 1320,
+   "FG-01 2026": 1380,
+   "FG-02 2025": 860,
+   "FG-02 2026": 890,
+   "FG-04 2025": 590,
+   "FG-04 2026": 620,
+   "FG-07 2025": 480,
+   "FG-07 2026": 500
+  }
+ },
+ "context": {
+  "slots_in_the_week": 42,
+  "contracted_offences_both_seasons": 25020,
+  "contracted_offences_a_season": 12510,
+  "share_of_windows_over_four_hours_per_cent": 87.3,
+  "share_of_windows_crossing_a_slot_per_cent": 94.4,
+  "share_of_windows_over_four_hours": 0.873,
+  "share_of_windows_crossing_a_slot": 0.944,
+  "rms_rows": 33708,
+  "legacy_rows": 3659,
+  "footfall_rows": 35136
+ }
+}
