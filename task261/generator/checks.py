@@ -323,6 +323,25 @@ def run(target, golden, st, meta_path):
                                                                             c["index"] != "Level") >= 15, "")
     ck("device D6: reversionary contracts with both lives alive", sum(1 for c in B.ann if c["life2"] is not None and
                                                                        I.alive(B, c["life1"]) and I.alive(B, c["life2"])) >= 100, "")
+    # the ask's conventions closed (judge r2): the partner a nomination names, a nominee who has died, the pull date
+    dct = texts[K.DICT]
+    ck("ask fork: the dictionary defines a Spouse or De facto partner nominee as the member's partner",
+       "Spouse (the member's husband or wife), De facto partner (a person the member lives with as a couple)" in dct, "")
+    ck("ask fork: the dictionary says the fund does not update nominee details",
+       "the fund does not update them" in dct, "")
+    ck("ask fork: the dictionary counts a household's partners alive on the date, clients or not",
+       "partners at any date, our clients or not, are those alive on that date" in dct, "")
+    ck("ask fork: the dictionary says where a partner who is not a client is known",
+       "who is not our client is known to us only from these nominations, whatever their type" in dct, "")
+    ck("ask fork: no annuity anniversary falls on the pull date", not any(
+        (c["commenced"].month, c["commenced"].day) == (K.PULL.month, K.PULL.day) for c in B.ann), "")
+    sp = F.sp.merge(F.acc[["account_no", "member_id"]], on="account_no")
+    sp["owner"] = sp["member_id"].map(F.resolve)
+    single = sp[sp["owner"].map(lambda x: len(F.members[F.by.at[x, "household_id"]]) == 1)]
+    ck("ask fork: one partner per single-client household across its nominations",
+       len(single) > 100 and (single.groupby("owner")["nominee_date_of_birth"].nunique() <= 1).all(), len(single))
+    ck("ask fork: a partner nominee in a single-client household only for a married or de facto client",
+       single["owner"].map(lambda x: F.by.at[x, "marital_status"]).isin(["Married", "De facto"]).all(), "")
 
     # ------------------------------------------------------------------ separation and distractors
     tmp = tempfile.mkdtemp(dir=os.path.dirname(target), suffix=".sep")
@@ -347,6 +366,8 @@ def run(target, golden, st, meta_path):
                                                                        texts[K.BRIEF], re.I), "")
     bul = texts[K.BULLETIN]
     ck("distractor: the bulletin is by the reference person's age", "age of the household reference person" in bul, "")
+    ck("distractor: no bulletin age band shares a boundary with the brief's groups, so no structure for them reads off it",
+       not re.search(r"\b(?:Under 35|35 to 44|45 to 54|55 to 64|65 to 74|75 and over|65 and over|55 and over)\b", bul), "")
 
     # ------------------------------------------------------------------ the goldens against figures.json
     gx = xlsx_text(os.path.join(golden, K.DELIVERABLES[1]))

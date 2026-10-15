@@ -136,6 +136,8 @@ def add_annuity(B, r, life1, partner, pcat):
             B.P[life1]["pcat"] = "client"
     lo = dt.date(max(2008, B.P[life1]["dob"].year + 58), 1, 1)
     start = rand_date(r, min(lo, dt.date(2026, 1, 1)), dt.date(2026, 12, 20))
+    if (start.month, start.day) == (PULL.month, PULL.day):
+        start -= dt.timedelta(days=1)      # no contract's anniversary falls on the pull date itself
     if rev and B.P[partner]["since"] is None:
         B.P[partner]["since"] = start
     idx = r.choice(["CPI", "Fixed 2.5%", "Level"], p=[.55, .15, .30])

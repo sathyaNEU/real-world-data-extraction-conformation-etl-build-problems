@@ -80,7 +80,7 @@ Layer 1: five implicates per household stacked as rows of the summary extract (t
 Layer 2: the field-method family; the error of a difference between two age groups' medians is taken from the difference recomputed on each replicate weight, with the between-implicate variance of the difference added, because the groups share the survey's clusters.
 Decisive step: estimating the standard error of a contrast between two domains of one clustered sample on the replicate weights, rather than combining the two domains' own standard errors in quadrature as if they were independent samples.
 Not semantics: every field, code and definition read correctly (implicates, weights, replicate weights, the person file, the older partner, the bulletin's relative errors) still leaves the analyst combining the two groups' errors as independent, which files four segments.
-Not rule application: the brief fixes the threshold and the user guide states how to compute the error of an estimate; no filed rule says how to obtain the error of a difference between two estimates, so executing both still files four segments.
+Not rule application: the brief fixes the threshold and the user guide states its general method for the error of any estimate; no filed sentence says that two age groups' medians move together or that their difference is to be treated as an estimate in its own right, so the analyst who executes the guide on each median and adds the two errors still files four segments; seeing the difference as the estimate whose error the replicates must carry is the step no rule performs.
 Analyst test: a strong analyst who places households by the older partner, averages the implicates and reproduces the survey's error for each age group, then adds the two groups' variances for each adjacent difference, files four segments, under 35 | 35-44 | 45-54 | 55 and over (Ends on), when the difference's own replicate error files five.
 Estimand: the brief files the population (households in the survey's 2025 wave, weighted), the outcome (household net worth as the survey defines it), the unit (the household, placed by the age of the older of its reference person and partner), the window (the 2025 wave) and the comparison (each adjacent pair's difference in median net worth against 1.96 standard errors of that difference).
 No decoy: nothing is planted; the bulletin is the survey's own publication, correct for its own question (the reference person's age), and no memo, draft or stakeholder figure argues a structure.
@@ -186,7 +186,7 @@ adding the two groups' errors as if they were independent samples, never from an
 ## Oracles
 
 None on the main call: the results bulletin publishes medians and relative standard errors by the reference person's
-age in five groups (65 and over as one), never a difference or the error of one; reproducing it confirms the replicate method on a
+age in the centre's ten-year bands from 30 (none sharing a boundary with the brief's groups), never a difference or the error of one; reproducing it confirms the replicate method on a
 single estimate on both the default and the golden path and is declared a wrong-basis distractor (the brief places
 households by the older partner). No study, draft or prior paper ranks the boundaries. For the asks, no file carries a
 control total: the insurer's extracts hold records, and the PDS and the annuity fact sheet hold terms and rates, none of
@@ -196,7 +196,7 @@ which ties to an ask figure under one handling only.
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
 |---|---|---|---|---|---|---|---|---|
-| A, for each of the three groups from 55, our customer households holding a Retirement Income Account pension at 31 December 2026, their combined balance and the annual payments set for them for 2026-27 | 9 | the pension book each candidate group's product would take over (a measure every group carries; the call does not turn on it) | the committee's view of the members and money each segment's product would serve | D4: a member's partner who is not a Kelvane client appears in no register; their name and date of birth sit on the member's reversionary or death benefit nomination, so a household placed by the register's clients alone sits a group too young when the non-client partner is older (benign twins: client partners already in the register, nominated children, the estate) | H1 (D8, D7): December 2026 deaths the fund learnt of in January, open at 31 December under the deceased; with a reversionary nominated the pension had passed to the survivor (the PDS), without one it had stopped; H2 (D8): January 2027 deaths, alive at 31 December, the register's status reading Deceased; H5 (D7, repaired right): 2026 client merges, the pension system still holding the retired number | ria_accounts_20261231 (account_no, member_id, balance, annual payment), crm_clients_20270112 (client_id, household_id, date_of_birth, status, date_of_death, merged_into), ria_nominations_20261231 (account_no, nomination_type, nominee_date_of_birth, relationship), the PDS (death and reversion terms), the brief (placement); 5 files, 14 columns | the register's clients only: 55-64 +11 households, 65-74 +4, 75 and over -29 (balances +2.2M, +0.5M, -11.3M); December deaths dropped: -2, -9, -3; the naive read (every account under its member, merged numbers unfollowed, every register member counted): +7, +42, -14; status filter: 75 and over -37; the answer 442, 1,168, 746 households, $207.7M, $520.5M, $249.6M, payments $11.4M, $30.3M, $18.0M | spouses outside the client register, reversions processed after the year end and merged client numbers are what a superannuation fund's member and client systems hold |
+| A, for each of the three groups from 55, our customer households holding a Retirement Income Account pension at 31 December 2026, their combined balance and the annual payments set for them for 2026-27 | 9 | the pension book each candidate group's product would take over (a measure every group carries; the call does not turn on it) | the committee's view of the members and money each segment's product would serve | H1 (D8, D7): December 2026 deaths the fund learnt of in January, open at 31 December under the deceased; with a reversionary nominated the pension had passed to the survivor (the PDS), without one it had stopped, so the pensions of members alive at 31 December miss the reverted pensions in every group | D4 (filed at stage 4): a member's partner who is not a Kelvane client appears in no register and is known only from the member's nominations (the dictionary), so a household placed by the register's clients alone sits a group too young when that partner is older; H2 (D8): January 2027 deaths, alive at 31 December, the register's status reading Deceased; H5 (D7, repaired right): 2026 client merges, the pension system still holding the retired number | ria_accounts_20261231 (account_no, member_id, balance, annual payment), crm_clients_20270112 (client_id, household_id, date_of_birth, status, date_of_death, merged_into), ria_nominations_20261231 (account_no, nomination_type, nominee_date_of_birth, relationship), the PDS (death and reversion terms), the brief (placement); 5 files, 14 columns | the register's clients only: 55-64 +11 households, 65-74 +4, 75 and over -29 (balances +2.2M, +0.5M, -11.3M); December deaths dropped: -2, -9, -3; the naive read (every account under its member, merged numbers unfollowed, every register member counted): +7, +42, -14; status filter: 75 and over -37; the answer 442, 1,168, 746 households, $207.7M, $520.5M, $249.6M, payments $11.4M, $30.3M, $18.0M | spouses outside the client register, reversions processed after the year end and merged client numbers are what a superannuation fund's member and client systems hold |
 | B, for each of the three groups from 55, our customer households being paid a lifetime annuity at 31 December 2026 and the annual income it was paying them | 6 | each candidate group's annuity book | the annuity income each segment's range would carry | D6: the valuation listing has one row per life; a reversionary annuity's second life carries the amount it would be paid after the first life's death, so the listing's amounts summed over the lives alive at 31 December add income no one was being paid (benign twins: single-life contracts; reversions already in payment, whose first life is deceased) | H3 (D2): amounts as at the 12 January 2027 pull, after the January anniversaries' increase (the fact sheet's rates); H4 (D5): deferred lifetime annuities bought but paying from 80 or 85; H2: January deaths; A's D4 for annuitants who also hold a pension | annuity_lives_20270112 (contract_no, life_no, client_id, date_of_birth, commenced, payments_start, indexation, annual_amount, life_status, date_of_death), crm_clients_20270112, ria_accounts and ria_nominations (cross-holders' partners), the annuity fact sheet (reversion, indexation and deferral terms), the data dictionary; 6 files, 17 columns | every life's amount summed (deferred left out): income +0.8M, +1.6M, +1.1M; deferred kept: households +22, +50, +13, income +0.8M, +1.9M, +0.5M; January increase kept: income +$2k to +$4k; nominations unread: 55-64 +6 households, 75 and over -7; the answer 176, 467, 284 households, $3.6M, $9.0M, $5.6M | reversionary lives in a valuation listing, an extract pulled after the January anniversaries and deferred annuities are what a life office's annuity system holds |
 | C, the chart | its parts | the construction | the call's own exhibit | none | none | the golden's differences and intervals | R0 to R3 intervals | the analyst's own exhibit |
 
@@ -207,20 +207,21 @@ which ties to an ask figure under one handling only.
   with a non-client partner nominated; H1 moves every A figure in the groups the December deaths touch (each group at
   least one, asserted); H2 moves A and B under a status filter; H3 moves every B income figure; H4 moves every B figure;
   B's D6 moves every B income figure.
-- **Referee.** None for the primaries: the data dictionary defines each column (the WHAT), the PDS states what happens
-  to a pension on death, the fact sheet when payments increase and when a deferred annuity starts paying; no file says
-  that the register lacks a partner the nominations name, which deaths reached the fund after 31 December, or that a
-  second life's amount is not being paid.
+- **Referee.** None for the primaries: the data dictionary defines each column and code (the WHAT, the household's
+  partners at a date among them), the PDS states what happens
+  to a pension on death, the fact sheet when payments increase and when a deferred annuity starts paying; the dictionary
+  files where a non-client partner is known (stage 4), and no file says which deaths reached the fund after 31
+  December or that a second life's amount is not being paid.
 - **Build figures.** The stops and answers above are the final build's (checks.py asserts every stop off the golden in
   every group, at each figure's rounding).
 
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
-| A households (3) | pensions open at 31 December, members alive then, merged numbers followed, households from the client register's living clients, placed by the oldest of them | 453, 1,172, 717 against 442, 1,168, 746 | miss |
-| A balances (3) | the same households' balances | $209.8M, $520.9M, $238.3M against $207.7M, $520.5M, $249.6M | miss |
-| A payments (3) | the same households' annual payments | $11.6M, $30.4M, $17.3M against $11.4M, $30.3M, $18.0M | miss |
-| B households (3) | annuities begun by 31 December with a life alive then, deferred annuities included, households from the register | 204, 518, 290 against 176, 467, 284 | miss |
-| B income (3) | every such life's listed amount summed | $5.4M, $12.7M, $7.1M against $3.6M, $9.0M, $5.6M | miss |
+| A households (3) | pensions open at 31 December, members alive then, merged numbers followed, households from the register's living clients and the filed non-client partners, placed by the oldest of them | 440, 1,159, 743 against 442, 1,168, 746 | miss |
+| A balances (3) | the same households' balances | $206,961,000, $514,076,000, $248,006,000 against $207,655,000, $520,479,000, $249,568,000 | miss |
+| A payments (3) | the same households' annual payments | $11,411,000, $29,938,000, $17,898,000 against $11,448,000, $30,320,000, $17,994,000 | miss |
+| B households (3) | annuities begun by 31 December with a life alive then, deferred annuities included, households from the register and the filed partners | 198, 517, 297 against 176, 467, 284 | miss |
+| B income (3) | every such life's listed amount summed | $5,312,000, $12,645,000, $7,200,000 against $3,606,000, $9,011,000, $5,614,000 | miss |
 | C the chart | the golden's intervals | right | outside |
 
 Mirror leakage: 6 per cent of the ask weight on the most attractive wrong rung (R0, quadrature): it misses every Ask A
@@ -234,17 +235,37 @@ with the six medians, the 65 and over merge it shares with the golden and the ch
 - **Generator.** `task261/generator/build.py`: world (the survey's design draw at seed 312, with the two oldest groups'
   own area effect and implicates that differ only on an imputed share of net worth; the design search is
   `search2.py` and `refine.py`, the per-group nudges `binfit.py`), the insurer's retirement book (`insurer.py`),
-  records, docs, deliver (the golden from the pack alone), checks (231 assertions: input gates, the bundle against the
+  records, docs, deliver (the golden from the pack alone), checks (240 assertions: input gates, the bundle against the
   clean truth, R1 to R3c, SF1 to SF16, every route and margin, every ask stop and the cracker sheet, separation,
   distractors, goldens, realism, H21), verify (independent: its own median, replicate and implicate arithmetic and
   table joins), two byte-identical builds, target.zip.
 - **Pack.** 14 files in four formats (CSV, XLSX, PDF, DOCX); the household summary 29,940 rows; distractors: the
-  results bulletin (declared wrong-basis: medians by the reference person's age, in five groups with 65 and over as
-  one, so no structure for the brief's six groups can be read from it) and the customer research summary.
+  results bulletin (declared wrong-basis: medians by the reference person's age in the centre's ten-year bands from
+  30, none sharing a boundary with the brief's groups, so no structure for them can be read from it) and the customer
+  research summary.
 - **Stage 4, loop 0.** Leak reader: nothing names the move, the decisive step read as an analytical choice; it noted
   that the bulletin's then six reference-person groups, their errors added in quadrature, gave rung 0's structure
-  (dataset-generation 8.3): the bulletin regrouped to its five groups, the pack rebuilt, the gates re-run, a re-read
+  (dataset-generation 8.3): the bulletin regrouped (first to five groups, at loop 5 to bands off the brief's), the pack rebuilt, the gates re-run, a re-read
   at loop 1. The judge's first preparation was discarded before its thread ran and prepared again on the final pack.
+- **Stage 4, the judge.** r2 DETERMINISTIC on the call (every figure reproduced, Gate G statistical_rigor and
+  analytical_non_defect, Gate H analytical), FIX_NOW on Ask A and B's households only: which nominee is the member's
+  partner (any nomination type or reversionary only), a partner who died in December still named on the survivor's
+  nomination, and one annuity's anniversary on the 12 January pull date. Fixed in the generator: the dictionary
+  defines the relationship codes (Spouse the member's husband or wife, De facto partner a person the member lives with
+  as a couple) and says nominee details are as the member gave them, not updated by the fund; no annuity starts on the
+  pull date's day (one contract from 12 to 11 January, its listed amount and every figure unchanged). r3 (the one
+  re-judge) DETERMINISTIC on the call again, the deceased partner and the anniversary closed, and one fork left on the
+  same households: how a partner who is not a client is known (a first household line, partners at a date those
+  alive on it, read as limiting partners to the register). Filed after the verdict, as task457 filed its second
+  pass's ask findings: the nominations file's About line says a member's spouse or de facto partner who is not a
+  client is known only from the nominations, whatever their type, and the register's household line says a household's
+  partners at any date, clients or not, are those alive on that date. The nominee placement is thereby a filed work
+  order, no longer a silent device; the cracker's path now takes it and still misses every Ask A and B figure
+  (asserted). Leak reader loops 2 to 5 on each wording; loop 5 read the bulletin's then five reference-person groups
+  (55 to 64 at $888,000 against 65 and over at $882,000) as a nudge to merge from 55, rung 0's answer, which a
+  wrong-basis distractor may not give (dataset-generation 8.3): its age table moved to the centre's ten-year bands
+  from 30, none sharing a boundary with the brief's groups (asserted), re-read at loop 6. Checks 240; every graded
+  figure unchanged through every pass.
 - **Golden.** Five segments: under 35, 35 to 44, 45 to 54, 55 to 64, 65 and over; medians $69,000, $281,000,
   $534,000, $790,000, $1,048,000, $815,000; errors of the neighbouring differences $24,000, $45,000, $77,000, $95,000,
   $149,000 (2.7 times at 65, 1.6 times at 75). Asks: 442, 1,168 and 746 pension households, $207,655,000,
@@ -273,13 +294,14 @@ with the six medians, the 65 and over merge it shares with the golden and the ch
   Layer 2 is the error of a difference between two domains that share the sample's areas: on the generator's clean
   wealth the quadrature files four segments and the difference's own replicate error five (R3a, R3b).
 - **Rule 3, the decisive step.** No shipped sentence says how to estimate the error of a difference (asserted on every
-  document); the user guide sets out the error of an estimate with a single-group example, and executing it per group
+  document); the user guide sets out its general method for any estimate with a single-group example (the judge noted
+  at r2 that it executes directly on the difference, the design's own forcing of the HOW), and executing it per group
   with the two errors added files four segments. Nothing planted, copied or withheld carries the answer (R3c); the
   bulletin answers its own question on the reference person's basis and is declared.
 - **Determinism.** Every construction of the difference's error that keeps the design (replicates on implicate 1 or
   on all five, the implicates' variance in or out, the lower or the interpolated median, z or t) gives five segments,
   every ratio at least 0.3 from 1.96; the asks' figures are exact under the filed terms (the PDS on reversion and
-  death, the key facts on indexation, reversion and deferral, the dictionary's dates), the deflation residual under a
+  death, the key facts on indexation, reversion and deferral, the dictionary's dates, codes and its household and nomination lines), the deflation residual under a
   dollar, and the cracker's path misses every ask figure (asserted).
 
 ## Tried and rejected

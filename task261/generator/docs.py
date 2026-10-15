@@ -80,10 +80,10 @@ def bulletin_figures(d):
     """The survey's own published estimates (by the reference person's age, by state, by tenure), on the public file."""
     sv = E.Survey(d["nw"], d["wgt"], d["repw"])
     out = {"age": [], "state": [], "tenure": []}
-    # the bulletin's own age groups, by the reference person's age, 65 and over as one
+    # the bulletin's own age groups (the centre's ten-year bands from 30), by the reference person's age
     ref = np.minimum(d["ref"], 85)
-    for name, lo, hi in (("Under 35", 0, 34), ("35 to 44", 35, 44), ("45 to 54", 45, 54), ("55 to 64", 55, 64),
-                         ("65 and over", 65, 120)):
+    for name, lo, hi in (("Under 30", 0, 29), ("30 to 39", 30, 39), ("40 to 49", 40, 49), ("50 to 59", 50, 59),
+                         ("60 to 69", 60, 69), ("70 and over", 70, 120)):
         m = (ref >= lo) & (ref <= hi)
         est, rep = sv.median(m)
         th, u, b, t, se = sv.combine(est, rep)
@@ -383,7 +383,8 @@ DICT = {
     K.CRM: ("Client register, pulled 12 January 2027: one row per client record, everyone who holds or has held a Kelvane "
             "product or is a life on one.", [
                 ("client_id", "Kelvane client number"),
-                ("household_id", "Household number; clients who are partners share one"),
+                ("household_id", "Household number; clients who are partners share one. A household's partners at "
+                                 "any date, our clients or not, are those alive on that date"),
                 ("date_of_birth", "Date of birth"),
                 ("sex", "M or F"),
                 ("state", "State of the postal address"),
@@ -402,12 +403,18 @@ DICT = {
                 ("payment_frequency", "Fortnightly, Monthly, Quarterly or Annually"),
                 ("annual_payment_2026_27", "Annual payment set for the 2026-27 financial year, dollars"),
                 ("balance_31_12_2026", "Account balance at 31 December 2026, dollars")]),
-    K.NOMS: ("Nominations current on each Retirement Income Account pension at 31 December 2026: one row per nominee.", [
+    K.NOMS: ("Nominations current on each Retirement Income Account pension at 31 December 2026: one row per nominee. "
+             "A member's spouse or de facto partner who is not our client is known to us only from these nominations, "
+             "whatever their type. "
+             "Nominee details are as the member gave them; the fund does not update them, and a nomination stays current "
+             "until the member replaces or revokes it.", [
                 ("account_no", "Pension account number"),
                 ("nomination_type", "Reversionary, Binding, Non-lapsing binding or Non-binding"),
                 ("nominee_name", "As written on the nomination"),
                 ("nominee_date_of_birth", "As written on the nomination; blank for the legal personal representative"),
-                ("relationship", "The nominee's relationship to the member, as the member gave it"),
+                ("relationship", "The nominee's relationship to the member, as the member gave it: Spouse (the member's "
+                                 "husband or wife), De facto partner (a person the member lives with as a couple), Child, "
+                                 "or Legal personal representative"),
                 ("share_percent", "Share of the benefit nominated"),
                 ("effective_from", "Date the nomination took effect")]),
     K.ANN: ("Lifetime annuity lives in the 31 December 2026 valuation, with contracts that began since: one row per life "

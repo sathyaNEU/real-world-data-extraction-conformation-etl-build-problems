@@ -127,12 +127,13 @@ def ask_b(F, life="alive31", in_payment=False, deflate=False, nominee=False, def
 
 A_STOPS = {"naive": dict(follow=False, keep_dead_owner=True, life="all"),
            "status": dict(life="status"),
-           "cracker": dict(),
-           "nominee only": dict(nominee=True),
+           "cracker": dict(nominee=True),
+           "register only": dict(),
            "reversion only": dict(revert=True),
            "golden": dict(nominee=True, revert=True)}
 B_STOPS = {"alive now, every life": dict(life="now"),
-           "cracker": dict(),
+           "cracker": dict(nominee=True),
+           "every life summed, register only": dict(),
            "deferred out": dict(deferred=True),
            "every life summed, deferred out": dict(deferred=True, deflate=True, nominee=True),
            "in payment, deferred out": dict(in_payment=True, deferred=True),
