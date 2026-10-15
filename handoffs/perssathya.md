@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-15 (task228 architecture 5 drawn at the author's request). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-15 (task228 architecture 5 shipped at the author's request; wave 2 continues with task233). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
-and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is shipped apart from task228, redrawn 2026-10-15 as
-architecture 5 at the author's request (a full refresh). Wave 2: task231 and task232 shipped; task233 to task236 follow task228.
+and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
+(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 and task232 shipped; task233 to task236 next.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -98,7 +98,8 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   leak.py REVIEW only; leak reader clean on two reads; judge pass 1 DETERMINISTIC, APPROVE.
 
 
-**task228: architecture 5 drawn 2026-10-15 (full refresh at the author's request), in design.**
+**task228: architecture 5 SHIPPED 2026-10-15 (full refresh at the author's request), pending review.**
+- Call: gap sessions at a hold line of 0.28 percentage points; judge DETERMINISTIC and APPROVE; reader clean twice.
 - The seed's world again (Avisly Medier's experiment platform, which data-health check its scorecard hold watches),
   with the field's own decisive step: a ratio metric's variance at the randomised install (delta method).
 - State and resume line: `task228/pipeline.json`; the design: `task228/DESIGN_NOTE.md`.

@@ -1,36 +1,39 @@
 {
  "task": "task228",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "product-analytics",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-15",
- "stump": "A competent solver tests each session-share check with the two-proportion z test over the arm's sessions, finds the gap-session check holding 5 of the 64 clean 2026 experiments, over the one-in-fifty allowance, drops it as too noisy and wires the late-session check (5 of 18 incidents held, line about 0.21 points); the step that lands it there is treating sessions as independent draws when the platform randomised installs and an install's sessions share its phone and its reader.",
+ "stump": "A competent solver tests each session-share check with the two-proportion z test over the arm's sessions, finds the gap-session check holding 4 of the 64 clean 2026 experiments, over the one-in-fifty allowance, drops it as too noisy and wires the late-session check (6 of 18 incidents held, line 0.22 points); the step that lands it there is treating sessions as independent draws when the platform randomised installs and an install's sessions share its phone and its reader.",
  "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-15",
+  "result": "49 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK on the final cut (lines ruled in the design note), --asof 2026-10-12",
+  "reader": "pass 1 questions 1 to 4 none, Q6 analytical, findings fixed; pass 2 on the fixed cut questions 1 to 4 none, Q6 analytical, realism notes fixed"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "check at the draw: task228 v1 (lineage) 0.08, task229 v1 (lineage) 0.06, both differentiated; NOTE test.same_puzzle_older task187 differentiated"
+  "heart": "WARN (three_rules.strategy_risk answered; test.same_puzzle_older task187 differentiated)",
+  "nearest": "task228 v1 lineage 0.08, task229 v1 lineage 0.06; surface promoted task52, task84, task60 (0.10, surface top 1 per cent, other mechanisms) and task187 (differentiated)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md",
+  "gate_g": "analytical_non_defect (mechanism statistical_rigor, surface_read_dependency no, sole_data_defect no)",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
  "returned": [],
- "resume": "stage 2: generator prototype calibrated in scratch (proto4.py: delta gap 10/0, late 5/0; session-level z gap 4-12 clean holds; per-install mean gap 3); next the screen, fork table, ladder, closure, literal reader, oracles, ask sheet and prompt.txt to precut exit 0",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-15",
  "portal": null,
  "draw": {
   "registered": "2026-10-15T12:53:53Z",
@@ -207,5 +210,12 @@
     "resume": "after task229 or task230 ships; architecture 4 redrawn by a designer at Opus max"
    }
   }
- ]
+ ],
+ "build": {
+  "checks": 829,
+  "verify": "pass",
+  "byte_identical": true,
+  "target_zip_sha256": "25ff0782bef124b02c9492204219c0865da996176624e86fe76746a449fd2292",
+  "figures_check": "37 of 37"
+ }
 }

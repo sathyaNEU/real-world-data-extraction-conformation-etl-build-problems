@@ -38,8 +38,8 @@ architecture 1.
 - **People** (`guard.py names --geo Denmark --seed 228`): Mathilde Knudsen, head of the data-health desk;
   Kaspar Gregersen, platform engineer who keeps the hold standard; Inge Lund, data quality analyst who keeps
   the incident register.
-- **Deliverables.** `auto_hold_check_scorecard_2027.xlsx` (the scorecard) and `auto_hold_checks_2026.png`
-  (each check's 2026 record at a glance).
+- **Deliverables.** `auto_hold_check_scorecard_2027.xlsx`, one workbook (shape 10's single file): the check and its
+  line, each check's 2026 record, the weekly review by type and the app-wide incidents.
 - **Data-native sentence.** An install's sessions share one phone and one reader, so an arm's sessions
   arrive as bundles from the installs the platform randomised: a phone whose uploader keeps failing shows
   gaps in session after session, and a reader who opens the app forty times in a fortnight holds forty
@@ -76,28 +76,26 @@ Sources, one line each (what it teaches; how this build differs):
 4. Per experiment and arm, sum sessions, gap, duplicate and late sessions and events, and count installs.
 5. Test each session share with the two-proportion z test over the arm's sessions, events per install with
    Welch's t test, and the treatment share with a binomial test against the design split.
-6. Tally each check's incidents held and clean experiments held: the gap-session check holds 5 of the 64
+6. Tally each check's incidents held and clean experiments held: the gap-session check holds 4 of the 64
    clean experiments, the duplicate-session check 4 and events per install 3, each over the allowance.
-7. Of the two checks inside it, the late-session check holds the most incidents (5 of 18, against the
-   treatment share's 3); its line for the standard experiment is 2.576 binomial standard errors, about
-   0.21 points.
+7. Of the two checks inside it, the late-session check holds the most incidents (6 of 18, against the
+   treatment share's 3); its line for the standard experiment is 2.576 binomial standard errors over the
+   sessions, 0.22 points.
 
-Ends on: the late-session check, holding 5 of the 18 confirmed incidents and no clean experiment, hold line
-about 0.21 points for the standard experiment.
+Ends on: the late-session check, holding 6 of the 18 confirmed incidents and no clean experiment, hold line
+0.22 points for the standard experiment.
 
 Golden: the gap-session check, holding 10 of the 18 confirmed incidents and no clean experiment, hold line
-about 0.34 points for the standard experiment.
-
-(Counts and lines are the prototype's; the generator fixes them and `## Ladder` carries the built figures.)
+0.28 points for the standard experiment.
 
 ## Stump sentence
 
 A competent solver tests each session-share check with the two-proportion z test over the arm's sessions,
-finds the gap-session check holding 5 of the 64 clean 2026 experiments, over the one-in-fifty allowance,
-drops it as too noisy and wires the late-session check (Ends on: the late-session check, 5 of 18 incidents
-held, line about 0.21 points); the step that lands it there is treating sessions as independent draws when
-the platform randomised installs and an install's sessions share its phone and its reader, which
-understates the gap-session variance about 3.8-fold.
+finds the gap-session check holding 4 of the 64 clean 2026 experiments, over the one-in-fifty allowance,
+drops it as too noisy and wires the late-session check (Ends on: the late-session check, 6 of 18 incidents
+held, line 0.22 points); the step that lands it there is treating sessions as independent draws when the
+platform randomised installs and an install's sessions share its phone and its reader, which understates the
+gap-session variance about threefold.
 
 ## Three rules
 
@@ -123,7 +121,7 @@ understates the gap-session variance about 3.8-fold.
   golden.
 - **Layer 2:** estimation_fit, metric-definition-measurement-science/2: each session-share check is a ratio
   of two per-install sums, and its variance is the delta-method variance at the install; the two-proportion
-  test over sessions understates it about 3.8-fold for gap sessions, and the per-install mean of shares
+  test over sessions understates it about threefold for gap sessions, and the per-install mean of shares
   fixes the variance only by changing the estimand.
 - **Decisive step:** testing each experiment's gap-session share with the variance of a ratio of per-install
   sums (the delta method, or equally a bootstrap or a cluster-robust error over installs) because installs,
@@ -138,8 +136,8 @@ understates the gap-session variance about 3.8-fold.
   variance is computed, so executing every stated rule with the textbook test for a share still files the
   late-session check.
 - **Analyst test:** with every field read and every rule applied, the two-proportion z test over sessions
-  holds 5 of the 64 clean experiments on the gap-session check, over the allowance, so the analyst drops it
-  and files the late-session check (the default path's Ends on: late-session check, 5 of 18 held); checks.py
+  holds 4 of the 64 clean experiments on the gap-session check, over the allowance, so the analyst drops it
+  and files the late-session check (the default path's Ends on: late-session check, 6 of 18 held); checks.py
   runs that route on the generator's clean truth and asserts it, then changes the variance alone and
   asserts the golden.
 - **Estimand:** the hold standard (filed in the platform handbook) fixes the population (the 82 experiments
@@ -160,6 +158,190 @@ understates the gap-session variance about 3.8-fold.
   level is a variance taken at the wrong unit; a ratio metric's variance belongs at the randomisation unit,
   and a per-unit average that repairs the variance by changing the estimand dilutes effects carried by
   heavy units. No build on file teaches the ratio metric at the randomisation unit.
+
+## Readability screen
+
+Six tests per rung (stumping 2.1): 1 a filed sentence names the decisive quantity or sends the solver to it; 2 a
+column, key or marker makes it a row predicate or a header-found join; 3 an opponent reflex reaches it; 4 a control
+or corpus scores the rules or refutes the naive read; 5 the hygiene battery finds it; 6 one subtraction, ratio or
+half of a reported figure.
+
+| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 0 moved most: duplicate sessions (69.5 per cent mean movement across the 18 incidents) | DH-3 s.5 files selection by incidents held within the allowance, so a ranking by movement is off the criterion | no | yes, the seed's shortcut | no | no | yes, one ratio a check | readable |
+| 1 session-level two-proportion z: late sessions, 6 of 18 | no sentence names a test | the shares invite a test over the arm's sessions | yes, the textbook test for a share | the 64 experiments without an incident score each check and read as noise | no | no | readable |
+| 2 per-install mean of shares, t test: late sessions, 5 of 18 | DH-3 s.3 "as a share of all sessions in the arm" rules it out for a solver who sets the estimand against the test | per-install rows invite per-install shares | partial | no | no | no | readable |
+| 3 (decisive) variance of the ratio of per-install sums at the install: gap sessions, 10 of 18 | no sentence names a variance, a unit of analysis or a method; DH-3 s.2 says only that installs are assigned by hash and keep their arm | no column, key or marker; the per-install grain serves rung 2 as much | no: the reflex for a share is rung 1 | the clean record refutes rung 1 only for a solver who asks what a 1 per cent test should hold (0.3 of 64), which is the decisive insight itself | no | no | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | data-health check | the five DH-3 s.3 lists | another check | none ships | DH-3 s.1 and s.3: "the checks it can watch", five rows |
+| SF2 | experiments with a confirmed data incident | the register's confirmed experiment entries, 18 | the reconciliation summary's confirmed findings | the same 18 | same call (C1, asserted) |
+| SF3 | experiments without one | the other 64, withdrawn suspicions included | withdrawn suspicions as incidents | gap sessions still | DH-3 s.5: "as an experiment without one otherwise" |
+| SF4 | when a check holds | two-sided 1 per cent level, hold direction | one-sided 1 per cent | recorded in checks | DH-3 s.4: "significant at the two-sided 1 per cent level" |
+| SF5 | the allowance | at most 1 of 64 (no more than 2 per cent) | 2 of 64 | gap sessions still | DH-3 s.5: "no more than 2 per cent"; same call |
+| SF6 | the full run | the export's 14 days, one row an install | part of a run | none ships | DH-3 s.4 "on the experiment's full run"; one row an install, asserted |
+| SF7 | a share of the arm's sessions | gap sessions over all sessions in the arm (ratio of sums) | the mean of per-install shares | late sessions (rung 2) | DH-3 s.3: "as a share of all sessions in the arm" |
+| SF8 | hold direction | above control for the session shares, below for events per install and the treatment share | either direction | recorded in checks | DH-3 s.4: "lies in the check's hold direction" |
+| SF9 | treatment share base | the experiment's exported installs against the design share | the registry's assigned counts | the share check holds none; gap sessions still | DH-3 s.3: "the experiment's exported installs" |
+| SF10 | service 1 arms | A control, B treatment | inverted | Q1 records move | data dictionary: "A is the control arm and B the treatment arm" |
+| SF11 | standard experiment | 10,000 installs in each arm of its export, 14 days, even split | 10,000 assigned (0.30 points) | another line | DH-3 s.6: "10,000 installs in each arm of its export" |
+| SF12 | the line's reference | both arms of the 64, pooled or arm by arm (0.281 and 0.280) | control arms only | the same two decimals here, still ruled out | DH-3 s.6: "from both arms"; pooled and arm by arm converge (C1, asserted) |
+| SF13 | tie-break | fewer holds without an incident | none needed | no tie (10 against 5) | same call |
+| SF14 | multiplicity | each check, each experiment, at 1 per cent | a correction over the five checks | gap sessions still | DH-3 s.4: "each check judges each experiment once"; same call |
+| SF15 | events per install | events received over the arm's installs | events per session | none ships | DH-3 s.3 definition |
+| SF16 | the 2026 record | the registry's 82 completed runs | other years | none ships | DH-3 s.5: "the 82 experiments run from January to September 2026" |
+| SF17 | register titles | case and spacing ignored, every entry matches one title | exact text | the exact join leaves entries unmatched, loudly | C4: after normalising every confirmed entry matches exactly one registry title (asserted) |
+| SF18 | title uniqueness | 82 titles unique after normalising | duplicates | none | asserted |
+
+## Ladder
+
+Built figures (generator/figures.json, checks.py). Each rung names its check, the record that carries it and the
+fact that kills it.
+
+| Rung | Route | Gap sessions | Late sessions | Duplicate | Events per install | Treatment share | Files | Dies to |
+|---|---|---|---|---|---|---|---|---|
+| 0 | largest mean movement over the 18 incidents | 26.8 per cent | 7.5 | 69.5 | 2.3 | 1.6 | duplicate sessions | DH-3 s.5's selection |
+| 1 (default) | two-proportion z over sessions; Welch t; binomial | 11 and 4 (out) | 6 and 0 | 4 and 4 (out) | 0 and 3 (out) | 3 and 0 | late sessions, 0.22 points | DH-3 s.2: installs, not sessions, are assigned |
+| 2 | t test on per-install shares | 3 and 0 | 5 and 0 | 3 and 0 | 0 and 3 (out) | 3 and 0 | late sessions, 0.36 points | DH-3 s.3: a share of all sessions in the arm |
+| 3 (golden) | delta method on per-install sums (or bootstrap, robust Poisson) | 10 and 0 | 5 and 0 | 3 and 0 | 0 and 3 (out) | 3 and 0 | gap sessions, 0.28 points | none |
+
+- **Margins.** Golden 10 against the runner-up's 5 (2.0x); default 6 against 3 (2.0x); rung 2, 5 against 3 (1.67x).
+  The golden check sits out of the allowance on the default path (4 holds without an incident against an
+  allowance of 1), so it is last there, not runner-up.
+- **The other install-level routes agree on every flag** (asserted case by case with a 0.22 band: log-ratio delta,
+  quasi-Poisson; robust Poisson and a 1,500-draw install bootstrap on every case within 1.2 of the line).
+  Quasi-Poisson's model-based variance (proportional to sessions) gives a line of about 0.24 points; a negative
+  binomial model, a weighted estimand, holds 9 and files gap sessions at another line. Both miss the line.
+- **Dominance.** The decisive move is the only one that reverses the call; rung 2 corrects the variance but changes
+  the estimand and stays on late sessions; one-sided, two-sided-any-direction and multiplicity-corrected
+  readings keep the call (SF4, SF8, SF14).
+- **Worth.** Name: rungs 1 and 2 file late sessions, rung 3 gap sessions. Figure: the line separates every route
+  (0.22, 0.36, 0.24, 0.28), so a response naming gap sessions by an install-level model still misses the line.
+
+## Closure table
+
+| # | Axis | Reading in this build | Closure |
+|---|---|---|---|
+| 1 | Population | the 82 completed runs of 2026, labelled 18 and 64 | DH-3 s.5 filed; C1 (register = reconciliation) |
+| 2 | Unit of account | the experiment, judged once on its full run | DH-3 s.4 |
+| 3 | Attribution window | each run's 14 days, one export row an install | DH-3 s.2 and s.4; asserted |
+| 4 | As-of dating | the pull of 12 October 2026; every run and reconciliation closed | change log and manifest |
+| 5 | Version basis | the register's final status per entry | C1: confirmed entries equal the reconciliation's findings |
+| 6 | Denominator | all sessions in the arm; installs in the arm; exported installs | DH-3 s.3 definitions |
+| 7 | Weighting | ratio of sums over the arm | DH-3 s.3 "a share of all sessions in the arm" (SF7) |
+| 8 | Window length | the full 14-day run | DH-3 s.4 |
+| 9 | Boundary inclusivity | significant at the level: no case within 0.22 of the line | C1, asserted for every valid method |
+| 10 | Rounding path | counts exact; the line and shares to two decimals, computed unrounded | prompt's close; mid-bin asserted |
+| 11 | Tie-break | fewer holds without an incident | DH-3 s.5; no tie (SF13) |
+| 12 | Maturity and censoring | every run ended and reconciled by 9 October | change log; asserted (82 completed) |
+| 13 | Order of operations | label, test, allowance, selection | DH-3 s.5 order; only one order is meaningful |
+| 14 | Row order | export row order irrelevant to sums | C1 |
+| 15 | Duplicate resolution | preliminary entries superseded by their final row | C1: any confirmed row confirms (asserted) |
+| 16 | Identity normalisation | register titles matched with case and spacing ignored | C4 (SF17, asserted) |
+| 17 | Netting against gross | a hold counts only in the hold direction | DH-3 s.4 (SF8) |
+| 18 | Dimensional units | shares in percentage points, events, installs | DH-3 s.3 and s.6 |
+| 19 | Code and status semantics | A control and B treatment; preliminary, confirmed, withdrawn | data dictionary (SF10); DH-3 s.5 (SF3) |
+| 20 | Integerisation | the allowance: no more than 2 per cent of 64 is 1 | DH-3 s.5 (SF5) |
+| 21 | Clause scope | DH-3 applies to experiments from 4 January 2027; the choice is made on the 2026 record | DH-3 s.1 and s.5 |
+| 22 | Forward window contents | the 2027 standard experiment, 10,000 exported installs an arm over 14 days | DH-3 s.6 (SF11) |
+
+## Literal reader
+
+Executed word for word, DH-3 and the prompt fix the population (the 82 completed 2026 runs, labelled by the
+register's confirmed experiment entries), the hold (two-sided 1 per cent, hold direction, full run), the
+allowance (1 of 64), the selection and the standard experiment; every term has a row above and every
+alternative reading either keeps the call (SF2, SF5, SF13, SF14) or violates a quoted sentence. No sentence fixes
+the test; the design does (installs are assigned and keep their arm), and every install-level method gives the
+same flags. The default path reads every term the same way and differs only in the test applied to a correct
+share, so the stump is analysis, never a reading.
+
+## Oracles
+
+- The 64 experiments without an incident: under every valid test gap sessions holds none of them; under the
+  session-level test it holds 4. The record scores checks; it refutes the session-level test only for a solver
+  who asks what a 1 per cent test should hold (about 0.3 of 64), which is the decisive insight, so it is the
+  bench the field validates metrics on, not a figure that ties only under the golden.
+- The reconciliation summary's server and telemetry opens confirm incidents; they never score a check.
+- No published figure, control total or prior choice of check ships; no artifact ranks the checks.
+
+## Ask sheet
+
+| Ask | Use (H18) | Primary device (silent) | Hazards | Span |
+|---|---|---|---|---|
+| A. Each check: experiments with a confirmed data incident it would have held (5 figures) | the scorecard behind the call (construction layer) | none: the decisive construction on every check | the export layout change, title drift (main path, neutral) | registry, three exports, register, standard |
+| B. Each type of confirmed incident: how many the weekly review flagged and how many it never flagged (8 figures) | the incumbent's record the hold replaces, the case for the call | D2, a label stored before a silent switch: the register's incident_type is the on-call engineer's call at opening; for 7 of the 18 the reconciliation summary established another cause; totals by type are the same under both columns | 2025 experiment keys in January reviews; notes before flags | review log, register, reconciliation summary, registry |
+| C. Each incident logged against the whole app: gap sessions it cost and their share of its window's sessions on the platforms it hit (12 figures) | what the hold cannot see (both arms alike), the qualifier on the call | D6, an event's quantity on every line it covers: the register repeats each incident's gap sessions on every platform row; summing rows doubles or triples both figures; the tell is a row whose gap sessions exceed its own sessions (4 of 6 incidents) | preliminary rows elsewhere in the register | register, standard s.7 |
+
+**Separation.** Zero device rows reach the main call: the main call reads the register's status column on
+experiment rows only (asserted unchanged when every type is rewritten), app-wide rows name no experiment, and the
+review log and reconciliation summary are never read by it.
+
+**Stops.** B: register types with any flag (every figure off: 3 and 7, 2 and 1, 2 and 0, 0 and 3 against 5 and 5,
+1 and 2, 0 and 2, 1 and 2); reconciliation causes with flags read as last action (same here, no flag is cleared on
+an incident). C: rows summed (shares 2 or 3 times the golden, from 35.1 to 98.6 per cent); one row's sessions as the
+base (shares off by 1.7 to 6.7 times); the golden.
+
+| Ask row | What the cracker does | Against the golden | Cracker |
+|---|---|---|---|
+| B, flagged, four types | groups the flagged incidents by the register's incident_type | every type off by 1 or 2 | miss |
+| B, never flagged, four types | the same grouping | every type off by 1 or 2 | miss |
+| C, gap sessions, six incidents | groups the register's app-wide rows by incident and sums gap_sessions | every incident 2 or 3 times the golden | miss |
+| C, share of the window's sessions, six incidents | the summed gap sessions over the summed sessions | every incident 2 or 3 times the golden | miss |
+
+**Mirror sheet.** The default path (late sessions) keeps ask A's events per install (0) and treatment share (3)
+and misses gap sessions (11), duplicate (4) and late (6); it misses B and C as the cracker does. Rung 2 keeps A's
+duplicate (3), late (5), events per install (0) and treatment share (3).
+
+Mirror leakage: 8 per cent of ask weight on the default path (2 of 25 ask figures); 16 per cent on rung 2.
+
+Pair ceiling: 38.4 (cracker 38 + 7 + 55 x 5/25 = 56.0; rung-2 mirror 5 + 7 + 55 x 4/25 = 20.8; mean 38.4).
+
+## Pre-ship check
+
+- **The 10/10 rules against the built pack.** The decisive step is still analytical: the shipped DH-3 states what a
+  hold is, the level, the allowance, the selection, the standard experiment and that installs are assigned and keep
+  their arm, and names no test, variance or unit of analysis (asserted: no "variance", "delta", "cluster",
+  "independent", "standard error", "bootstrap", "randomis" in its text). On the generator's clean truth the
+  session-level route files late sessions and the install-level variance alone files gap sessions (checks.py R3).
+  Layer 1 (the service 1 layout, typed titles, preliminary rows, local time against UTC, consent gaps) is neutral:
+  the shipped records equal the clean truth's under every route (asserted).
+- **Free gates.** checks.py 829 passed; verify.py independent recomputation from the bundle; two builds byte-identical
+  (final target.zip sha256 25ff0782...2292); figures_check 37 of 37; precut 49 checks, 0 FAIL; voice-check PASS (800
+  characters); container audit clean (target and golden); guard heart WARN (strategy risk answered), validate clean.
+- **leak.py REVIEW lines, ruled.** The standard and the dictionary carry the call's words because they define the five
+  checks the call chooses among (harmless: the candidate set, not the choice). The documents share general vocabulary
+  with the design note (platform, installs, telemetry), and none names the move (harmless; asserted above). The
+  booking queue's 2027 dates are a forward plan, the file a distractor (harmless; allow-listed as forward-looking).
+- **Surface screen.** Four pairs promoted for adjudication, none on a hard tell: task52, task84 and task60 at surface
+  0.10 (product-analytics vocabulary; their mechanisms are a milestone clock, competing duplicate campaigns and a
+  register of filings), and task187 on gap, pattern and decision type (differentiated on the card). Personas in the
+  pack: Mathilde Knudsen, Kaspar Gregersen, Inge Lund, Thea Koch, Justina Bach, all drawn with guard.py names.
+
+## Leak check
+
+- **leak.py**: REVIEW, no LEAK, on the final cut (as-of 2026-10-12); the REVIEW lines ruled in `## Pre-ship check`.
+- **Reader pass 1** (Sonnet, medium, isolated sandbox): questions 1 to 4 none; question 6 an analytical choice (the test's
+  unit). Fixed in the generator: the prompt's unit cue (the line is now asked in the check's own unit), the review flag
+  timing (flags on confirmed incidents at the review during the run, none cleared), DH-3 s.7 (the reconciliation
+  establishes each incident's cause), the change log's purpose clause, duplicate review stamps.
+- **Reader pass 2** (the fixed cut, run because the prompt and documents changed): questions 1 to 4 none, question 6
+  analytical. Realism notes fixed (reconciliation months named alike in the summary and the register, SDK versions
+  following the change log, varied review comments); no graded figure moved. Rulings in leak_check_report.md.
+
+## Determinism judge
+
+- One isolated thread (Sonnet, medium) on a fresh unzip: **DETERMINISTIC, APPROVE**. It reproduced every graded figure
+  (18 and 64; the five records; the line at 0.2811 pooled and 0.2806 arm by arm; the review splits; the six app-wide
+  incidents).
+- **Gate G**: analytical_non_defect (statistical rigour), surface_read_dependency no, sole_data_defect no.
+- **Gate H**: domain pass, layers pass, decisive_step analytical; the easy route it named is the session-level test,
+  which files late sessions.
+- Soft notes, neither an open fork: the test's unit is the stump by design; the incident type on the ask resolves to
+  the reconciliation's cause (now also in DH-3 s.7). Its housekeeping note (pipeline.json's stump text) fixed. It
+  counted six re-diagnosed incidents; the bundle holds seven (checked).
 
 ## Architecture 1 to 4 record (spent and paused, 2026-10-11)
 

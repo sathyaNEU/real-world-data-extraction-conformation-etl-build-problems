@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Hold experiments on the gap-sessions check from January 2027, at a hold line of 0.28 percentage points for a standard experiment (10 of the 18 incident experiments of 2026 held, none of the 64 without one).",
+  "answer_source": "task228/submission.md, block 1",
   "gap": [
     "population"
   ],
@@ -30,7 +30,7 @@
   "official_decoy": false,
   "validated_decoy": false,
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and every handbook rule correctly computes each check per arm as the handbook defines it, tests the session-share checks with the two-proportion z test over sessions, finds the gap-session check holding several of the 64 clean 2026 experiments (over the one-in-fifty allowance), drops it as too noisy, and files the late-session check, which catches far fewer confirmed incidents.",
+  "analyst_test": "A strong analyst who reads every field and every hold-standard rule correctly computes each check per arm as defined, tests the session-share checks with the two-proportion z test over sessions, finds the gap-session check holding 4 of the 64 clean 2026 experiments (over the one-in-fifty allowance), drops it as too noisy, and files the late-session check, 6 of 18 incidents, against the golden gap sessions at 10.",
   "domain_test": "The deciding quantity is each data-health check's catch and false-hold record on past experiments with confirmed outcomes (metric validation), worked with the online-experimentation variance of a ratio metric at the randomisation unit, the delta method on per-install sums; with a hospital's or a utility's nouns there is no install randomised by hash that bundles its sessions, no ratio metric whose analysis unit differs from its assignment unit and no scorecard hold, so the step has nothing to act on.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "product-analytics/metric-definition-measurement-science/2",
@@ -45,8 +45,8 @@
   "role_family": "product_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "install_summary_2026q1.csv, install_summary_2026q2.csv, install_summary_2026q3.csv",
-    "rows": 600000,
+    "file": "install_summary_2026q1.csv, install_summary_2026q2.parquet, install_summary_2026q3.parquet",
+    "rows": 659739,
     "entity": "one install in one experiment arm",
     "grain": "install x experiment",
     "source": "synthetic"
@@ -69,14 +69,13 @@
     ]
   },
   "deliverables": [
-    "auto_hold_check_scorecard_2027.xlsx",
-    "auto_hold_checks_2026.png"
+    "auto_hold_check_scorecard_2027.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "Candidate alarm signals are validated on a labelled corpus at a fixed test level and a cap on false alarms, and the counted events cluster within the units that were randomised, so each ratio's variance has to be built at those units; a test that treats the events as independent understates it severalfold and makes the most sensitive candidate appear to break the false-alarm cap, and a per-unit average of ratios restores a valid variance only by changing the estimand, which dilutes an effect concentrated in heavy units.",
-  "driver_concrete": "Gap-session rate is gap sessions over all sessions in an arm, and installs, not sessions, are randomised and carry their flaky devices and reading habits across all their sessions, so its variance is the delta-method variance of a ratio of per-install sums; the two-proportion z over sessions understates it about 3.5-fold, holds several clean 2026 experiments and drops the check, and the per-install mean of shares, valid but another estimand, dilutes loss incidents concentrated in heavy readers, so both file the late-session check.",
-  "stump": "A competent solver tests each session-share check with a two-proportion z over sessions, finds the gap-session check holding several of the 64 clean 2026 experiments, over the one-in-fifty allowance, and files the late-session check, which catches far fewer of the confirmed incidents; the step that lands it there is treating sessions as independent when installs were randomised and their sessions share a device and a reader.",
+  "driver_concrete": "Gap-session rate is gap sessions over all sessions in an arm, and installs, not sessions, are randomised and carry their flaky phones and reading habits across all their sessions, so its variance is the delta-method variance of a ratio of per-install sums; the two-proportion z over sessions understates it about threefold, holds 4 of the 64 clean 2026 experiments and drops the check, and the per-install mean of shares, valid but another estimand, dilutes loss incidents concentrated in heavy readers to 3 of 18, so both routes file the late-session check (6 and 5 of 18) against the golden gap sessions at 10 of 18 and a line of 0.28 points.",
+  "stump": "A competent solver tests each session-share check with a two-proportion z over sessions, finds the gap-session check holding 4 of the 64 clean 2026 experiments, over the one-in-fifty allowance, and files the late-session check (6 of the 18 confirmed incidents, line 0.22 points); the step that lands it there is treating sessions as independent when installs were randomised and their sessions share a phone and a reader.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task187": "task187 measures each turbine's shortfall at its own turbulence spread, so a capped, curved response does not charge a site's eddies to a blade; this build validates data-health checks on a labelled corpus of experiments, and the decisive step is the variance of a ratio metric built at the randomised install (the delta method on per-install sums): no response curve, no spread of inputs, no matching, and the per-install mean of shares is a second wrong route the turbine build has no counterpart for.",

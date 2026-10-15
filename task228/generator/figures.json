@@ -1,0 +1,144 @@
+{
+ "call": "Gap sessions",
+ "line": "0.28",
+ "runner_up": "Late sessions",
+ "record": {
+  "Gap sessions": {
+   "incidents": 10,
+   "none": 0
+  },
+  "Duplicate sessions": {
+   "incidents": 3,
+   "none": 0
+  },
+  "Late sessions": {
+   "incidents": 5,
+   "none": 0
+  },
+  "Events per install": {
+   "incidents": 0,
+   "none": 3
+  },
+  "Treatment share": {
+   "incidents": 3,
+   "none": 0
+  }
+ },
+ "experiments": 82,
+ "with_incident": 18,
+ "without": 64,
+ "allowance": 1,
+ "allowance_pct": "2",
+ "level_pct": "1",
+ "z": "2.576",
+ "standard_installs": "10,000",
+ "run_days": "14",
+ "review": {
+  "telemetry loss": {
+   "flagged": 5,
+   "never": 5
+  },
+  "duplicate delivery": {
+   "flagged": 1,
+   "never": 2
+  },
+  "late delivery": {
+   "flagged": 0,
+   "never": 2
+  },
+  "consent loss": {
+   "flagged": 1,
+   "never": 2
+  }
+ },
+ "app_wide": {
+  "DI-26-025": {
+   "gap": "10,152",
+   "share": "17.56",
+   "sessions": "57,817",
+   "opened": "11 February"
+  },
+  "DI-26-026": {
+   "gap": "1,100",
+   "share": "30.53",
+   "sessions": "3,603",
+   "opened": "29 March"
+  },
+  "DI-26-027": {
+   "gap": "12,630",
+   "share": "30.67",
+   "sessions": "41,181",
+   "opened": "6 May"
+  },
+  "DI-26-028": {
+   "gap": "23,721",
+   "share": "20.28",
+   "sessions": "116,960",
+   "opened": "18 June"
+  },
+  "DI-26-029": {
+   "gap": "34,141",
+   "share": "32.66",
+   "sessions": "104,538",
+   "opened": "3 August"
+  },
+  "DI-26-030": {
+   "gap": "5,871",
+   "share": "29.45",
+   "sessions": "19,935",
+   "opened": "15 September"
+  }
+ },
+ "default_path": {
+  "check": "Late sessions",
+  "record": {
+   "Gap sessions": {
+    "incidents": 11,
+    "none": 4
+   },
+   "Duplicate sessions": {
+    "incidents": 4,
+    "none": 4
+   },
+   "Late sessions": {
+    "incidents": 6,
+    "none": 0
+   },
+   "Events per install": {
+    "incidents": 0,
+    "none": 3
+   },
+   "Treatment share": {
+    "incidents": 3,
+    "none": 0
+   }
+  },
+  "line": "0.22"
+ },
+ "per_install_mean": {
+  "check": "Late sessions",
+  "record": {
+   "Gap sessions": {
+    "incidents": 3,
+    "none": 0
+   },
+   "Duplicate sessions": {
+    "incidents": 3,
+    "none": 0
+   },
+   "Late sessions": {
+    "incidents": 5,
+    "none": 0
+   },
+   "Events per install": {
+    "incidents": 0,
+    "none": 3
+   },
+   "Treatment share": {
+    "incidents": 3,
+    "none": 0
+   }
+  }
+ },
+ "moved_most": "Duplicate sessions"
+}
