@@ -598,6 +598,13 @@ at the close.
   109,492, 38,058 and 1,999 out, 1.208 and 0.208 in); the `freeze.py` snapshot was retaken after this change, and later
   determinism repairs are checked against it. Ask C's basis, filed in policy 2.2 since stage 4, is the pair's main
   rubric exposure (`## Ask sheet`), accepted by the main session as recorded.
+- Stage 5, 2026-10-15: shipped. `target.zip` cut from the final rebuild (sha256 203cc179...; `target/` byte-identical to
+  the pack the targeted re-read saw), forced in with `golden/`; the card's answer and its source brought current; the
+  ledger row SHIPPED, delivered 10-15, pending review; `pipeline.json` SHIPPED. Gates on the final rebuild: `build.py`
+  (2,389 assertions, `verify.py`, two builds byte-identical), `figures_check.py` (79 figures), `freeze.py check --mode
+  determinism` PASS on the retaken snapshot, `precut.py` 49 checks, 0 FAIL, `voice-check.py` PASS, `leak.py --asof
+  2026-12-14` REVIEW, no LEAK, `guard.py heart` WARN (`overuse.objective`, no BLOCK), `surface` 0 promoted pairs,
+  `validate` clean, the container audit clean on `target/` and `golden/`.
 
 ## Leak review
 
@@ -627,6 +634,49 @@ the demand note under sweep 4, and the chargeback policy at 5 of 6 call words). 
   tenant and freeze lines, the demand note's figures, the dictionary's field set, three cost centres' September budget
   steps) are recorded in the report and left, since each further rewording of a filed document risks reopening a
   closed fork for no graded figure.
+
+## Pre-ship check
+
+Written at stage 5 against the built pack (the stage 4 fixes and the precision change in); the reader and judge lines
+are stage 4's.
+
+1. Domain: the deciding quantity is the storage service's CPU per machine in service and per batch core running, a
+   two-driver regression on the cell's hourly telemetry (17,081 hours, residual s.d. 13.0 cores) read forward at the
+   quarter's 5,220 machines and the guarantee being struck; with a hospital's nouns there is no pool of reservable
+   cores at an overcommit and no machines or batch cores for a dependent service's load to be measured on, and with
+   the regression swapped for the load's own trend or share the call moves to 122,000 or 119,000.
+2. Real work, nothing planted: the export in UTC beside an operations log in Madrid time, the collector's seven
+   unrecorded hours of 19 August, the re-sent day of 17 March, tenant ids against cost-centre numbers through the
+   directory, other cells' and storage budget lines, machines installed against in service; on the ask paths the
+   scheduler's resizes, checkpoint writes that never committed, re-imaged machines under new ids, re-sent removals,
+   spares in retired machines' racks, a quota service applying changes in six-hourly runs and stopped for three days.
+   Each is what these systems write; each mishandled leaves the call and every component where they were (R2,
+   asserted).
+3. The flip is a method choice: specifying `cell-store`'s busiest hour on its drivers and reading it at the guarantee
+   being struck, so the two are one solve, instead of carrying it on its own history; no field, unit or stated rule
+   decides it, and every filed rule (CS-3 sections 2 to 5) is read the same on the default path (R3a on the clean
+   truth: 122,000).
+4. The analyst test holds: the default path files 122,000, the history and share routes 118,000 to 122,000, batch at
+   the last quarter's guarantee 120,000, the partial models 110,000 and 111,000, the load applied once at 122,000
+   106,000; only the joint solve files 109,000, on the pack and on the clean truth (R3b).
+5. One defensible answer: CS-3 2.1, 3.2, 3.3, 4.1, 4.2, 5.1 and 5.2 file the estimand, the busiest hour of the quarter
+   being reserved with batch inside that quarter's guarantee; the 38 fork rows are each asserted; every converging
+   variant floors to 109,000 (109,426 to 109,707 before the thousand), and the write-up and the goldens state each
+   figure at the precision every variant shares.
+6. No decoy: no file states a 2027 Q1 guarantee, a storage forecast, a driver or a method; the ledger's past
+   reservations and the Q3 report are history; the MAD1 cells' summary and the batch demand note are declared
+   distractors, each deleted with the call and every ask unchanged (asserted).
+7. Nothing hidden and recovered: the storage dependency is measured on the telemetry, no certified figure is
+   reproduced to find it, and the closed quarters do not score the method (SF13: the line and the drivers both within
+   500 cores of 2026 Q1 to Q4); the quarter's own 640-machine step and near-double guarantee separate them.
+8. A new lesson: a deduction that rises with the quantity being decided is modelled on its drivers and solved together
+   with that quantity; carrying it on its own history is safe only while the decision's own value stands still.
+9. Leak reader (stage 4): no leak; Q1 to Q4 none; Q6 the platform forecast as the analytical choice; the targeted
+   re-read of the seven documents changed at stage 4 clean; every REVIEW line harmless.
+10. Judge (stage 4): DETERMINISTIC, APPROVE; Gate H domain pass, layers pass, decisive step analytical; its two risks
+   closed in the record (SF29, SF30 and SF13 without a method word; chargeback policy 2.2 and SF25). The rubric's main
+   exposure is Ask C (the pair about 42.5 if a strong response reads policy 2.2 and makes the join), accepted by the
+   main session.
 
 ## Tried and rejected
 

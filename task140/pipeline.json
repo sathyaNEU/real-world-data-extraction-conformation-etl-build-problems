@@ -1,11 +1,11 @@
 {
   "task": "task140",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "supply-chain-logistics",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-15",
   "stump": "A competent solver approves the firm requests under their frozen budgets at the Q1 rate card, forecasts each platform service's busiest hour as the line through its last four quarters and files 122,000 cores (Ends on); the step that lands it there is carrying the storage service forward on its own history, when its busiest hour is set by the machines in service and the batch cores running (2.9404 and 0.20804 cores each), so the guarantee has to be solved together with the storage it brings: the golden is 109,000.",
   "architecture": 1,
@@ -15,22 +15,22 @@
     "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-15, on the stage 4 rebuild; every REVIEW line answered in the design note)",
-    "reader": "no leak (2026-10-12): Q1 to Q4 none, every Q5 sentence executes to the golden's inputs, Q6 the platform forecast as the analytical choice; realism tells and ask readings fixed or closed at stage 4 (SF19 to SF38); targeted re-read of the seven changed documents (2026-10-15): nothing quoted for Q1 to Q4, Q6 the platform forecast as the analytical choice, realism notes recorded and left"
+    "leak_py": "REVIEW 2026-10-15 on the final rebuild (no LEAK; every REVIEW line answered in ## Leak review)",
+    "reader": "stage 4 2026-10-12: no leak, Q1 to Q4 none, every Q5 sentence executes to the golden's inputs, Q6 the platform forecast as the analytical choice; its realism tells and ask readings fixed or closed at stage 4 (SF19 to SF38); targeted re-read of the seven changed documents 2026-10-15: nothing quoted for Q1 to Q4, Q6 the platform forecast analytical, realism notes recorded and left"
   },
   "duplicate_check": {
-    "heart": "WARN (overuse.objective), no BLOCK",
-    "nearest": "task32 v3 lineage 0.05; surface 0 promoted pairs"
+    "heart": "WARN (overuse.objective), no BLOCK (2026-10-15)",
+    "nearest": "driver 0.05 (task32 v3 lineage); surface 0 promoted pairs (2026-10-15)"
   },
   "judge": {
     "verdict": "DETERMINISTIC (2026-10-12), every figure reproduced; risks: the cell-store forecast method, Ask C's change date",
-    "disposition": "APPROVE; risk 1 closed in the record with no method word (SF29, SF30, SF13), the optional pin refused; risk 2 closed by chargeback policy 2.2's new sentence (SF25); no re-judge owed",
+    "disposition": "APPROVE; risk 1 closed in the record with no method word (SF29, SF30, SF13), the optional pin refused; risk 2 closed by chargeback policy 2.2's new sentence (SF25); no re-judge owed; the write-up then restated at the precision every variant shares (freeze snapshot retaken 2026-10-15)",
     "report": "task140/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: the targeted re-read of the seven documents changed at stage 4 is in leak_check_report.md (no leak); the write-up and goldens were then restated at the precision every variant shares (freeze.py snapshot retaken 2026-10-15); next the main session's re-read, then stage 5 (pre-ship check, card current, ledger row, SHIPPED commit)",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-15",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

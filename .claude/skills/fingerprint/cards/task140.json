@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "C-22 can guarantee 109,000 cores to batch training for the first quarter of 2027. That is the largest whole thousand the quarter's 726,624 reservable cores leave after the firm tenants' 577,000 and the platform services' 40,000, with cell-store reserved at its busiest hour as its own hourly use predicts it from its two drivers (2.94 cores per machine in service, 0.208 per batch core running) at 5,220 machines and the batch tier at the guarantee itself.",
+  "answer_source": "task140/submission.md, 1. Final Recommendation, first two sentences (bold markers removed); figures in task140/generator/figures.json, written with golden/c22_capacity_2027q1.xlsx and golden/c22_capacity_review_2027q1.pptx by generator/deliver.py from target/ and recomputed by generator/verify.py",
   "gap": [
     "objective"
   ],
