@@ -33,7 +33,7 @@
    "xlsx"
   ],
   "largest_file": "ui_wage_records_2024q4_2026q4.txt",
-  "largest_file_rows": 617928
+  "largest_file_rows": 616296
  },
  "sources": [
   {
@@ -103,8 +103,8 @@
   {
    "path": "qcew_private_establishments_2024q4_2026q4.csv",
    "format": "csv",
-   "bytes": 3604637,
-   "rows": 65426,
+   "bytes": 3604393,
+   "rows": 65416,
    "source": "Constructed: the quarterly contribution reports (QCEW microdata layout) of those accounts, 2024Q4 to 2026Q4",
    "date": "2027-05-14",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -112,8 +112,8 @@
   {
    "path": "sos_new_entity_filings_2025_2026.csv",
    "format": "csv",
-   "bytes": 215121,
-   "rows": 2273,
+   "bytes": 214539,
+   "rows": 2274,
    "source": "Constructed: the Secretary of State's new business entity filings with a principal office in the seven counties, 2025 and 2026",
    "date": "2027-05-14",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -121,7 +121,7 @@
   {
    "path": "ui_employer_register_extract_2027-05-14.csv",
    "format": "csv",
-   "bytes": 1244141,
+   "bytes": 1244193,
    "rows": 8315,
    "source": "Constructed: the state UI tax system's employer register, every private employer account with a worksite in the seven Lornock Valley counties open at any time from 1 October 2024 to 14 May 2027",
    "date": "2027-05-14",
@@ -130,8 +130,8 @@
   {
    "path": "ui_wage_records_2024q4_2026q4.txt",
    "format": "txt",
-   "bytes": 23745051,
-   "rows": 617928,
+   "bytes": 23683053,
+   "rows": 616296,
    "source": "Constructed: the quarterly wage reports of those accounts, one row per worker, account and quarter, with the bureau's protected worker key",
    "date": "2027-05-14",
    "license": "CC0-1.0 (original work, constructed for this task)"

@@ -336,6 +336,10 @@ alike.
 | A, 2025 births and rates | links new accounts by the stop it used for 2026 (the old account silent from the new account's first quarter): the ten in-quarter take-overs stay births, every count and rate off | miss |
 | B, 2025 deaths and rates | nets the predecessors and the sources of the continuing new accounts: the twenty-two closures taken on by established employers or merged stay deaths, every count and rate off | miss |
 
+- Measured at stage 4: the second leak reader read continuity from the closed account's side (most of a closed
+  account's last-quarter workers on one new account's payroll the next quarter), which also follows absorbed
+  businesses and in-quarter take-overs, and landed the call and every ask figure but Caldmere's deaths (53 against 54);
+  the devices hold the new-account path, the first reader's, and the pair ceiling below assumes one response on it.
 - Mirror leakage: about 5 per cent of ask weight (a response on rung 0 counts the 2025 take-overs as births and their
   sources and the absorbed businesses as deaths in every county; it keeps the chart's layout criteria only).
 - Pair ceiling: 34 (cracker 38 + 7 + 55 x 0.15 = 53.3, keeping the account list and the chart's layout; the second
@@ -363,7 +367,15 @@ golden method with the item mishandled.
 
 ## Pre-ship check
 
-- **Gates:** generator checks 142 of 142 (the golden against the generator's truth for every county's 2026 births,
+- **Stage 4:** the first pass returned DETERMINISTIC, FIX_NOW on the two 2025 conventions (determinism_check_report.md);
+  the one re-judge on the recut returned DETERMINISTIC, APPROVE (determinism_check_report_pass2.md), with the 2025
+  liability-date filter and a next-quarter-only window as residual notes on supplementary figures. The window note is
+  closed in the data for the shipped cut (the movers stay through the quarter after the new account's first, a
+  take-over in the extract's last quarter dated on its first day; SF14 asserts the variant), together with the second
+  reader's realism tells (the chain's store numbers out of sequence, a filed transfer under common ownership keeping
+  the employer identification number in about three cases in ten); every graded figure and every assertion is
+  unchanged from the judged cut, and no document or the prompt changed.
+- **Gates:** generator checks 143 of 143 (the golden against the generator's truth for every county's 2026 births,
   set-aside accounts and 2025Q4 base, and for Ask A's births and Ask B's deaths; the three-rules block on the clean
   truth, R3a filing Caldmere, Eskwell and Tolbeck on the default path and Caldmere, Dunrath and Eskwell on the new
   account's side, R3b the golden; every rung and reflex by name; SF1 to SF18; the converging variants; mess
@@ -373,8 +385,8 @@ golden method with the item mishandled.
   figures.json); target.zip cut from the final build and equal to target/ file by file; figures_check 85 of 85;
   voice-check PASS at 998 characters; precut 49 checks, 0 FAIL; leak.py REVIEW (no LEAK: county names in the
   guideline, golden digits inside wage amounts).
-- **Input gates:** 10 files in four formats (csv, txt, pdf, xlsx); the wage records at 617,928 rows and the quarterly
-  reports at 65,426; three distractors in metadata.json (the population estimates, the Secretary of State's filings,
+- **Input gates:** 10 files in four formats (csv, txt, pdf, xlsx); the wage records at 616,296 rows and the quarterly
+  reports at 65,416; three distractors in metadata.json (the population estimates, the Secretary of State's filings,
   the program's grant disbursements), none read by the golden or an ask.
 - **The 10/10 rules re-read against the built pack:** the decisive step is the field's continuity test read from the
   predecessor's side, executed on the clean truth in checks.py; the predecessor field, the addresses, names, industry

@@ -303,6 +303,9 @@ class World:
                 a.size = self.ri(4, 9)
         # 1. take-over dates in the first days of the quarter's first month
         for a in succs:
+            if a.first.day == 1 and a.first.month in (1, 4, 7, 10) and a.succ_type != "resold" and a.first.year == 2026 \
+                    and a.first.month == 10:
+                continue      # a take-over in the last quarter the extract covers keeps its old account's last day in it
             if a.first.day == 1 and a.first.month in (1, 4, 7, 10) and a.succ_type != "resold":
                 self._move_start(a, a.first + dt.timedelta(days=self.ri(0, 6 if a.succ_type == "chain" else 10)))
         used = set()
@@ -417,6 +420,10 @@ class World:
                     and p.pause is None and (p.size or 0) >= 2]
             for p in self._pick(pool, n):
                 p.pause = (self.day_in(D(2025, 10, 14), D(2025, 11, 28)), self.day_in(D(2026, 1, 19), D(2026, 3, 27)))
+        # 8. a transfer between businesses under common ownership often keeps the employer identification number
+        for a in succs:
+            if a.succ_type == "filed" and self.rng.random() < 0.3:
+                a.fein = A[a.source].fein
         self.rng, self.namer.rng = keep, keep_nm
 
     def ind_row(self, code):
@@ -705,8 +712,8 @@ class World:
             if a.kind == "succ":
                 continue
             if a.role == "chain_src":
-                a.trade = "Halvard Fuel Stop #%d" % (11 + 2 * self._chain_no(a))
-                a.legal = "Halvard Stations %d LLC" % (11 + 2 * self._chain_no(a))
+                a.trade = "Halvard Fuel Stop #%d" % self._store_no(a, "halvard")
+                a.legal = "Halvard Stations %d LLC" % self._store_no(a, "halvard")
                 nm.legal.add(a.legal)
                 continue
             a.legal, a.trade = nm.business(a.noun, a.county, a.town)
@@ -716,7 +723,7 @@ class World:
             src = self.accts[a.source]
             t = a.succ_type
             if t == "chain":
-                no = 301 + self._chain_no(src)
+                no = self._store_no(src, "pellworth")
                 a.trade = "Pellworth Market %d" % no
                 a.legal = "Pellworth Caldmere %d LLC" % no
                 nm.legal.add(a.legal)
@@ -744,6 +751,16 @@ class World:
         if not hasattr(self, "_chain_order"):
             self._chain_order = [a.idx for a in self.accts if a.role == "chain_src"]
         return self._chain_order.index(src.idx)
+
+    def _store_no(self, src, chain):
+        """Store numbers as each chain numbers its network: the seller's across its whole territory, the buyer's in its
+        own series, neither in the order of the deal."""
+        if not hasattr(self, "_store_nos"):
+            r = np.random.default_rng(W.SEED + 91)
+            k = len([a for a in self.accts if a.role == "chain_src"])
+            self._store_nos = {"halvard": [int(x) for x in r.choice(np.arange(3, 140), size=k, replace=False)],
+                               "pellworth": [int(x) for x in r.choice(np.arange(1012, 1460), size=k, replace=False)]}
+        return self._store_nos[chain][self._chain_no(src)]
 
 
 # ---------------------------------------------------------------------- workers
@@ -879,7 +896,7 @@ def staff(world):
         last = a.last or win1
         hold = hold_of(a, last) if a.last is not None else None
         fy, fq = qof(a.first)
-        keep_to = qend(*nextq(fy, fq)) if (a.handover or merging.get(a.idx)) else qend(fy, fq)
+        keep_to = qend(*nextq(fy, fq))
         for i in movers:
             run_position(a, a.first, last, first_kind="mover", prev=i, hold_until=keep_to, hold_to=hold)
         if a.expand:

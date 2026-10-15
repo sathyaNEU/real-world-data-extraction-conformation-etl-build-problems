@@ -34,7 +34,7 @@
  "scoring_unit": "other",
  "spine": {
   "file": "qcew_private_establishments_2024q4_2026q4.csv",
-  "rows": 65426,
+  "rows": 65416,
   "entity": "one employer account's report for one quarter (monthly employment, wages, county, industry)",
   "grain": "UI account x quarter",
   "source": "synthetic (constructed in the layout of a state QCEW microdata extract)"

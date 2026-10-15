@@ -293,6 +293,25 @@ def run(target, golden_dir, world=None, meta_path=None):
         alt14[a_] = "workforce" if hit else "birth"
     ok("SF14: the old account's workers taken over its last quarters with employment and with wages selects the same "
        "accounts", alt14 == base_cls, "")
+    alt14b = {}
+    for a_ in new26:
+        if a_ in B.pred:
+            alt14b[a_] = "filed"
+            continue
+        fq, ws, ls = B.links(a_)
+        fm = int(B.first_m[B.ai[a_]])
+        hit = False
+        for p, v in ls.items():
+            if v[3] >= fm:
+                continue
+            qw = np.nonzero(B.wag[B.ai[p]] > 0)[0]
+            lqw = int(qw[-1]) if len(qw) else -1
+            own_ = B.paid.get((p, lqw), set())
+            if own_ and len(own_ & B.paid.get((a_, lqw + 1), set())) / len(own_) > 0.5:
+                hit = True
+        alt14b[a_] = "workforce" if hit else "birth"
+    ok("SF14: the old account's last quarter with wages and the quarter after it only selects the same accounts",
+       alt14b == base_cls, "%d differ" % sum(1 for x in base_cls if alt14b[x] != base_cls[x]))
     ok("SF17: every unfiled continuation moved five workers or more (any minimum of two to five selects the same "
        "accounts)", min(mv) >= 5, "at least %d" % min(mv))
     side = B.classify(2026, rule="S", stop="quarter")
