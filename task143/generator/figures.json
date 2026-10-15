@@ -1,0 +1,194 @@
+{
+  "call": {
+    "reserve_packs": "400",
+    "lot": "ZC2638",
+    "packs": "7,200"
+  },
+  "components": {
+    "expected_packs_unrounded": "398.9",
+    "pack_chance_pct": "5.5",
+    "packs_three_traymates": "7,063",
+    "packs_two_and_one": "136",
+    "packs_three_trays": "1",
+    "tray_sd": "0.160",
+    "cell_sd": "0.086",
+    "tray_share_pct": "78"
+  },
+  "steps": {
+    "release_cells": "120",
+    "release_trays": "20",
+    "finished_lots": "20",
+    "life_test_cells_eol": "2,373",
+    "rl3_b0": "8.7067",
+    "rl3_b1": "-0.4265",
+    "rl3_b2": "-0.0671",
+    "rl3_rmse": "0.182",
+    "cell_chance_pct": "2.4",
+    "release_test_tray_share_pct": "2",
+    "warranty_cycles": "600",
+    "eol_pct": "80",
+    "eol_mah": "3,856"
+  },
+  "filed": {
+    "fin_rs04_clauses": [
+      "2.2",
+      "3.2",
+      "3.3",
+      "3.4"
+    ],
+    "spec_section": "4",
+    "qm07_sections": [
+      "3",
+      "5"
+    ]
+  },
+  "rungs": {
+    "finished_lots_traymate_packs": "150"
+  },
+  "default_path": {
+    "independent_pack_chance_pct": "7.1",
+    "independent_reserve_unrounded": "514",
+    "independent_reserve_packs": "500"
+  },
+  "ask_a": {
+    "DVG": {
+      "replacements": "99",
+      "average_cost_eur": "99"
+    },
+    "TMR": {
+      "replacements": "81",
+      "average_cost_eur": "102"
+    },
+    "LJQ": {
+      "replacements": "58",
+      "average_cost_eur": "112"
+    },
+    "FRC": {
+      "replacements": "79",
+      "average_cost_eur": "96"
+    }
+  },
+  "ask_a_parts": {
+    "DVG": {
+      "invoice_eur": "44.85",
+      "freight_eur": "4.03",
+      "pack_eur": "50.12"
+    },
+    "TMR": {
+      "invoice_eur": "45.99",
+      "freight_eur": "5.96",
+      "pack_eur": "50.09"
+    },
+    "LJQ": {
+      "invoice_eur": "52.59",
+      "freight_eur": "9.19",
+      "pack_eur": "50.20"
+    },
+    "FRC": {
+      "invoice_eur": "40.85",
+      "freight_eur": "5.18",
+      "pack_eur": "49.96"
+    }
+  },
+  "ask_b": {
+    "October 2025": "8",
+    "November 2025": "17",
+    "December 2025": "23",
+    "January 2026": "25",
+    "February 2026": "26",
+    "March 2026": "39",
+    "April 2026": "41",
+    "May 2026": "51",
+    "June 2026": "57",
+    "July 2026": "56",
+    "August 2026": "74",
+    "September 2026": "71"
+  },
+  "ask_b_total": "488",
+  "ask_b_region": {
+    "October 2025": {
+      "DACH": "3",
+      "FRB": "2",
+      "UKI": "1",
+      "NOR": "2",
+      "SOU": "0"
+    },
+    "November 2025": {
+      "DACH": "4",
+      "FRB": "4",
+      "UKI": "4",
+      "NOR": "2",
+      "SOU": "3"
+    },
+    "December 2025": {
+      "DACH": "6",
+      "FRB": "6",
+      "UKI": "4",
+      "NOR": "5",
+      "SOU": "2"
+    },
+    "January 2026": {
+      "DACH": "12",
+      "FRB": "2",
+      "UKI": "3",
+      "NOR": "6",
+      "SOU": "2"
+    },
+    "February 2026": {
+      "DACH": "9",
+      "FRB": "6",
+      "UKI": "3",
+      "NOR": "4",
+      "SOU": "4"
+    },
+    "March 2026": {
+      "DACH": "21",
+      "FRB": "2",
+      "UKI": "8",
+      "NOR": "4",
+      "SOU": "4"
+    },
+    "April 2026": {
+      "DACH": "13",
+      "FRB": "10",
+      "UKI": "3",
+      "NOR": "5",
+      "SOU": "10"
+    },
+    "May 2026": {
+      "DACH": "21",
+      "FRB": "9",
+      "UKI": "7",
+      "NOR": "4",
+      "SOU": "10"
+    },
+    "June 2026": {
+      "DACH": "21",
+      "FRB": "17",
+      "UKI": "9",
+      "NOR": "4",
+      "SOU": "6"
+    },
+    "July 2026": {
+      "DACH": "16",
+      "FRB": "9",
+      "UKI": "10",
+      "NOR": "9",
+      "SOU": "12"
+    },
+    "August 2026": {
+      "DACH": "23",
+      "FRB": "16",
+      "UKI": "15",
+      "NOR": "5",
+      "SOU": "15"
+    },
+    "September 2026": {
+      "DACH": "22",
+      "FRB": "16",
+      "UKI": "14",
+      "NOR": "8",
+      "SOU": "11"
+    }
+  }
+}

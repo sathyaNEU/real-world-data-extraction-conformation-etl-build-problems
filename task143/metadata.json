@@ -1,0 +1,248 @@
+{
+  "task": "task143",
+  "title": "How many of Zelvora cell lot ZC2638's 7,200 Model K packs Kalvenhorst Systeme reserves for at release: the packs expected to fall below 80 per cent of rated capacity within the 600-cycle warranty",
+  "domain": "General Statistics & Data Science",
+  "client_domain": "General Statistics & Data Science",
+  "subdomain": "bayesian-modeling-posterior-inference (the posterior predictive for the members of new groups: the chance that the weakest of a pack's three cells from one new formation tray falls below the warranty line, under the between-tray variance of the release model's error)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "single-figure: the reserve in packs, with two 2025-26 tables (the four repair partners' capacity replacements under the warranty and their average cost, the capacity replacements carried out each month) and one chart",
+  "as_of": "2026-10-15",
+  "deliverables": [
+    "z2638_warranty_reserve.xlsx",
+    "z2638_reserve_note.docx"
+  ],
+  "distractor_files": [
+    "model_j_genealogy_zc2638.csv",
+    "zelvora_certificate_of_analysis_zc2638.pdf"
+  ],
+  "input_gates": {
+    "files": 23,
+    "formats": [
+      "csv",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "qp3_first100_cycles_fleet_a.csv",
+    "largest_file_rows": 174006
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task143/generator/build.py (seeded, deterministic) around a fictional German notebook maker (Kalvenhorst Systeme GmbH, Bielefeld), its battery plant, reliability lab, service depot and people, a fictional Czech cell supplier (Zelvora Cell s.r.o., Ostrava) and four fictional repair partners; no real organisation, person, product or system is depicted.",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-15",
+  "generator": "task143/generator/build.py",
+  "files": [
+    {
+      "path": "README_battery_extracts.txt",
+      "format": "txt",
+      "bytes": 2976,
+      "rows": null,
+      "source": "Constructed: The battery reliability lab's and battery plant's note on the release extracts",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "README_service_extracts.txt",
+      "format": "txt",
+      "bytes": 3457,
+      "rows": null,
+      "source": "Constructed: Service Operations' note on the service and costing extracts",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "carrier_statement_inbound_returns_2025-09_2026-10.csv",
+      "format": "csv",
+      "bytes": 15421,
+      "rows": 222,
+      "source": "Constructed: Carrier statement of inbound consignments of returned batteries",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "depot_returns_log_2024-09_2026-09.xlsx",
+      "format": "xlsx",
+      "bytes": 127161,
+      "rows": null,
+      "source": "Constructed: Bielefeld returns depot goods-receipt log of returned batteries",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "depot_service_orders_2024-09_2026-03.xlsx",
+      "format": "xlsx",
+      "bytes": 28506,
+      "rows": null,
+      "source": "Constructed: DACH depot SAP service orders, September 2024 to 1 March 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fin_rs04_battery_warranty_reserve_policy.pdf",
+      "format": "pdf",
+      "bytes": 35634,
+      "rows": null,
+      "source": "Constructed: Product Finance policy FIN-RS-04, battery warranty reserve at lot release, revision 3",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "invoices_dauvergne_frb_2025-09_2026-09.xlsx",
+      "format": "xlsx",
+      "bytes": 36943,
+      "rows": null,
+      "source": "Constructed: Dauvergne Réparation invoices to Service Operations",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "invoices_ferrucci_sou_2025-09_2026-09.xlsx",
+      "format": "xlsx",
+      "bytes": 32738,
+      "rows": null,
+      "source": "Constructed: Ferrucci Assistenza invoices to Service Operations",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "invoices_ljungqvist_nor_2025-09_2026-09.xlsx",
+      "format": "xlsx",
+      "bytes": 29039,
+      "rows": null,
+      "source": "Constructed: Ljungqvist Service invoices to Service Operations",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "invoices_tolley_marsh_uki_2025-09_2026-09.xlsx",
+      "format": "xlsx",
+      "bytes": 35547,
+      "rows": null,
+      "source": "Constructed: Tolley Marsh Repair invoices to Service Operations",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "model_j_genealogy_zc2638.csv",
+      "format": "csv",
+      "bytes": 119846,
+      "rows": 2496,
+      "source": "Constructed: Line MES genealogy of the Model J packs built from lot ZC2638",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "model_k_genealogy_zc2638.csv",
+      "format": "csv",
+      "bytes": 1058438,
+      "rows": 21600,
+      "source": "Constructed: Line MES genealogy of the Model K packs built from lot ZC2638",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "model_k_pack_specification_rev_d.pdf",
+      "format": "pdf",
+      "bytes": 35631,
+      "rows": null,
+      "source": "Constructed: Model K battery pack specification, revision D (Product Engineering)",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "qm07_release_model_rl3_zp4820.pdf",
+      "format": "pdf",
+      "bytes": 54762,
+      "rows": null,
+      "source": "Constructed: Battery Reliability Lab memo QM-07, release model RL-3, revision 4",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "qp3_first100_cycles_fleet_a.csv",
+      "format": "csv",
+      "bytes": 13381136,
+      "rows": 174006,
+      "source": "Constructed: Cycler fleet A export of the first 100 QP-3 cycles of release-test cells",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "qp3_first100_cycles_fleet_b.csv",
+      "format": "csv",
+      "bytes": 10315133,
+      "rows": 130698,
+      "source": "Constructed: Cycler fleet B export of the first 100 QP-3 cycles of release-test cells",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "qp3_life_monitoring_results.csv",
+      "format": "csv",
+      "bytes": 75886,
+      "rows": 2400,
+      "source": "Constructed: Life test results of the finished lots' release-test cells",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "qp3_release_register.csv",
+      "format": "csv",
+      "bytes": 210430,
+      "rows": 3004,
+      "source": "Constructed: Release test register of the battery reliability lab",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "service_cases_2024-09_2026-09.csv",
+      "format": "csv",
+      "bytes": 400871,
+      "rows": 3517,
+      "source": "Constructed: Service case system extract, Model K battery cases, September 2024 to September 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "service_cost_sheet_fy2026.xlsx",
+      "format": "xlsx",
+      "bytes": 9578,
+      "rows": null,
+      "source": "Constructed: Service Operations controlling cost sheet FY2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "treasury_month_end_rates_2025-2026.csv",
+      "format": "csv",
+      "bytes": 2385,
+      "rows": 105,
+      "source": "Constructed: Treasury month-end exchange rates",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "zelvora_cell_data_zc2638.csv",
+      "format": "csv",
+      "bytes": 2073697,
+      "rows": 25920,
+      "source": "Constructed: Zelvora cell data package for lot ZC2638",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "zelvora_certificate_of_analysis_zc2638.pdf",
+      "format": "pdf",
+      "bytes": 51489,
+      "rows": null,
+      "source": "Constructed: Zelvora certificate of analysis for lot ZC2638",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
