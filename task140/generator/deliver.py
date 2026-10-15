@@ -179,7 +179,8 @@ def write_book(path, c, figs):
     ws = wb.create_sheet("cell-store")
     _title(ws, "cell-store: busiest-hour forecast from its drivers",
            "Least squares on every hour on file (%s hours, 2025-01-01 to 2026-12-13): cell-store's cores in use on "
-           "the cell's machines in service and the batch tier's cores in use. Residual s.d. %.1f cores." % (
+           "the cell's machines in service and the batch tier's cores in use. Residual s.d. %.1f cores; the low "
+           "residuals are the Tuesday restart hours and hours whose samples reached the collector late." % (
                f0(g["n"]), g["resid_sd"]))
     _head(ws, 4, ["Term", "Cores"], [40, 14])
     shown = [("Intercept", round(g["a"], 1), 1), ("Per machine in service", round(g["c"], 2), 2),

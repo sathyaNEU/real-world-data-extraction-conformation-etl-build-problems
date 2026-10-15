@@ -48,13 +48,14 @@ self-referencing rule solved in one pass) is the seed's family; here no rule is 
 load, and the one-pass solve is a lower rung.
 
 **Data-native sentence.** C-22's storage service runs a daemon on every machine in service and serves the batch
-training tier's dataset reads and checkpoint writes, so its hour-by-hour use is 2.9404 cores for each machine in service
-plus 0.20804 cores for each batch core running (the two-driver least-squares fit on the 17,081 hours on file, residual
-s.d. 13.0 cores on a 25,000-core load; the batch tier's pauses and the rack additions move the two drivers apart).
+training tier's dataset reads and checkpoint writes, so its hour-by-hour use is 2.9402 cores for each machine in service
+plus 0.20805 cores for each batch core running (the two-driver least-squares fit on the 17,081 hours on file, residual
+s.d. 62.0 cores on a 25,000 to 38,000-core load, carrying the small tenants' daily cycle, a slow drift, the Tuesday
+rolling restart and hours with late samples; the batch tier's pauses and the rack additions move the two drivers apart).
 Through 2025 and 2026 racks were added as the firm tenants grew, so the guarantee moved only between 55,000 and
 58,000 cores and the storage service's busiest hour tracked the machines; the December refresh's 580 machines lift
 the reservable cores from 637,536 in 2026 Q4 to 726,624 while the firm tenants grow from 553,400 to 576,972, so the
-guarantee nearly doubles and every core it adds brings 0.20804 cores of storage the storage service's own quarterly
+guarantee nearly doubles and every core it adds brings 0.20805 cores of storage the storage service's own quarterly
 history has never seen.
 
 **Sources read, one line each.** `guard.py mechanisms --objective forecasting` (52 builds): a reservation driven by
@@ -95,17 +96,17 @@ service from 28 December 2026); the review is on Tuesday 15 December 2026; the t
 5. Guarantee: 726,624 less 576,972 less the two platform forecasts leaves 122,235.1 cores; the largest whole thousand.
 
 Ends on: 122,000 cores (the default path's guarantee; asserted in `checks.py` and recomputed by `verify.py`).
-Golden: 109,000 cores: `cell-store` forecast from its drivers, 2.9404 cores per machine in service and 0.20804 per batch
+Golden: 109,000 cores: `cell-store` forecast from its drivers, 2.9402 cores per machine in service and 0.20805 per batch
 core running (the least-squares fit of its hourly use on the cell's machines in service and the batch tier's cores),
 at the 5,220 machines of Q1 and the batch tier at its own guarantee, so the storage reservation and the guarantee are
-solved together (109,492.0 before the whole thousand; `cell-store` 38,058.5, `cell-ctl` 1,999.2).
+solved together (109,486.5 before the whole thousand; `cell-store` 38,065.0, `cell-ctl` 1,999.2).
 
 ## Stump sentence
 
 A competent solver approves the firm requests under their frozen budgets at the Q1 rate card, forecasts each
 platform service's busiest hour as the line through its last four quarters and files 122,000 cores (Ends on); the step
 that lands it there is carrying the storage service forward on its own history, when its busiest hour is set by the
-machines in service and the batch cores running (2.9404 and 0.20804 cores each), so the guarantee has to be solved
+machines in service and the batch cores running (2.9402 and 0.20805 cores each), so the guarantee has to be solved
 together with the storage it brings: the golden is 109,000.
 
 ## Three rules
@@ -120,7 +121,7 @@ together with the storage it brings: the golden is 109,000.
   drive it before striking a residual guarantee, and replacing that regression with a summary of the service's own
   history (its trend, its share of the cell) files 122,000 or 119,000 instead of 109,000.
 - **Swap:** "C-22 can guarantee 109,000 cores to batch training in 2027 Q1, the reservable cores left after the firm
-  tenants and the platform services, the storage service reserved at 2.9404 cores per machine in service and 0.20804
+  tenants and the platform services, the storage service reserved at 2.9402 cores per machine in service and 0.20805
   per batch core" read with a hospital's nouns ("Ward 7 can promise 109 elective beds, the beds left after emergency
   admissions and support services") stops making sense: no support department occupies beds out of the pool it serves,
   and there are no reservable cores at an overcommit, machines in service or batch cores running for the dependency to
@@ -135,7 +136,11 @@ together with the storage it brings: the golden is 109,000.
   committed, a cluster manager that gives a re-imaged machine a new id and re-sent a day's removals after a restart, a
   hardware inventory carrying each asset's id history, spares that replace retired machines in the same rack, a quota
   service that applies changes in six-hourly reconciliation runs and ran none for three days after the August power
-  event. Each is what these systems write; none decides the call.
+  event; and in the storage service's own series, the hours of its weekly rolling daemon restart (Tuesday 03:00 to
+  05:00 UTC, noted in the operations log) and hours whose daemon samples reached the collector after the hour closed
+  (the dictionary's note on `cores_in_use`) both read low, beside the small tenants' daily cycle. Each is what these
+  systems write; none decides the call (the restart hours left out, the low hours left out, a Huber fit and hour-of-week
+  terms all keep 2.94, 0.208, 1.208, 38,000 and 109,000, asserted).
 - **Layer 2:** family `allocation_constraints` on a General Statistics regression: the shortcut forecasts the storage
   service as a tenant like the others (its trend, its last quarter, its share of the cell); the expert specifies its
   use on its drivers and reads the forecast at the decision's own value, solving the guarantee and the storage
@@ -166,7 +171,7 @@ together with the storage it brings: the golden is 109,000.
   the platform team's past storage reservations are history in the ledger, the Q3 capacity report covers Q3 only, and
   the batch teams' H1 2027 demand note (a distractor) states demand, not a guarantee.
 - **No certified replay:** the storage dependency is measured on the hourly telemetry (two drivers, 17,081 hours,
-  residuals of about 13 cores); no certified or published figure has to be reproduced to find it, and the past
+  residual s.d. 62 cores); no certified or published figure has to be reproduced to find it, and the past
   guarantees in the ledger are the reviews' outcomes, which the golden never reads.
 - **Lesson:** a deduction that rises with the quantity being decided has to be modelled on its drivers and solved
   together with that quantity; carrying it forward on its own history is safe only while the decision's own value
@@ -212,12 +217,12 @@ Standard.
 | SF10 | the platform services | `cell-store` and `cell-ctl` | (none) | n/a | the tenant directory (class `platform`); CS-3 4.1 |
 | SF11 | a service's use in an hour | the export's average cores in use over the hour | (none) | n/a | CS-3 4.2; the dictionary |
 | SF12 | "its busiest hour of the quarter" | the hour of the quarter with the highest average use | the 99th percentile hour | same call (asserted: `cell-ctl` 1,988.1 against 1,999.2) | CS-3 4.1 |
-| SF13 | the use forecast for `cell-store` | its use at the quarter's busiest hour from its drivers, with the batch tier at its own guarantee (R3) | its trend (R0), last value (R0b), share of the cell (R1), batch alone (R2), one pass (R2b) | each files its own guarantee (Ladder) | a method row, not a reading: CS-3 4.1 asks for a forecast and 5.2 runs batch inside its guarantee, so the busiest hour comes when batch fills it (asserted: in every quarter on file batch reached 99.9 per cent of its guarantee or more); the method is forced by the design and never filed (`## Tried and rejected`). The closed quarters do not separate the line from the drivers: the line through the four quarters before misses each of 2026 Q1 to Q4 by 26 to 489 cores, the fit on both drivers read at the quarter's opening machines and guarantee by 177 to 204 (asserted), because the history's machines rose 40 to 60 a quarter and its guarantee held between 55,000 and 58,000. The data fact that separates them is the quarter being reserved: 2027 Q1 opens 640 machines above 2026 Q4 (no quarter on file stepped more than 60, asserted), which alone puts `cell-store` 1,615 cores above the line, and its guarantee nearly doubles; the hourly fit carries both and needs both (residual s.d. 13.0 cores, against 638.5 on machines alone and 356.2 on batch alone, asserted). Each alternative is priced and refused by the telemetry's own fit |
+| SF13 | the use forecast for `cell-store` | its use at the quarter's busiest hour from its drivers, with the batch tier at its own guarantee (R3) | its trend (R0), last value (R0b), share of the cell (R1), batch alone (R2), one pass (R2b) | each files its own guarantee (Ladder) | a method row, not a reading: CS-3 4.1 asks for a forecast and 5.2 runs batch inside its guarantee, so the busiest hour comes when batch fills it (asserted: in every quarter on file batch reached 99.9 per cent of its guarantee or more); the method is forced by the design and never filed (`## Tried and rejected`). The closed quarters do not separate the line from the drivers: the line through the four quarters before misses each of 2026 Q1 to Q4 by 26 to 484 cores, the fit on both drivers read at the quarter's opening machines and guarantee by 220 to 254 (asserted), because the history's machines rose 40 to 60 a quarter and its guarantee held between 55,000 and 58,000. The data fact that separates them is the quarter being reserved: 2027 Q1 opens 640 machines above 2026 Q4 (no quarter on file stepped more than 60, asserted), which alone puts `cell-store` 1,552 cores above the line, and its guarantee nearly doubles; the hourly fit carries both and needs both (residual s.d. 62.0 cores, against 641.5 on machines alone and 361.3 on batch alone, asserted). Each alternative is priced and refused by the telemetry's own fit |
 | SF14 | the batch tier at its busiest | at its guarantee | at its historical average fill (98.9 per cent) | same call (asserted: 109,707.1 before the thousand) | CS-3 5.2 and the record (batch reached its guarantee in every quarter) |
-| SF15 | the busiest hour's excess over the fitted line | not carried | the fit's largest residual (45.4 cores) carried | same call (asserted: 109,454.4 before the thousand, `cell-store` 38,103.9) | the records converge |
+| SF15 | the busiest hour's excess over the fitted line | not carried | the fit's largest residual (95.2 cores) carried | same call (asserted: 109,407.7 before the thousand, `cell-store` 38,160.2) | the records converge |
 | SF16 | `cell-ctl`'s forecast | its busiest hour on the line through four quarters | last value; mean; fitted on the machines | same call (asserted: 1,991.4, 1,982.0, 2,078.5 cores, each 2,000 to the nearest thousand) | the records converge |
 | SF17 | the order of the solve | the guarantee and the storage reservation solved together, the whole thousand taken last, `cell-store` reserved at the guarantee | `cell-store` read at the guarantee before the thousand | same guarantee; `cell-store` 38,160.8, the same thousand (asserted) | CS-3 5.1 and 5.2 (batch runs inside the whole-thousand guarantee) |
-| SF18 | the remainder | unreserved (594.3 cores) | added to batch | n/a: the guarantee is a whole thousand | CS-3 5.2 |
+| SF18 | the remainder | unreserved (587.8 cores) | added to batch | n/a: the guarantee is a whole thousand | CS-3 5.2 |
 | SF19 | a tenant's budget line | the cost-centre number in the tenant directory ("CC-4110 Search & Discovery"), matched to the workbook's CC (4110) and its MAD1 C-22 line | by cost-centre name; every line of the cost centre summed | converges (asserted: every firm tenant has one cost centre and one C-22 line; joined by name, or with every line of the cost centre summed, the same approvals) | the tenant directory's `cost_centre`; CS-3 3.3 ("for its reserved cores in the cell") |
 | SF20 | Ask A: training lost to a preemption | the preempted run's training from the state its resumption restarted from (the restored checkpoint's write start) to the preemption | from the run's own newest committed checkpoint | every team's figure (S2, asserted) | the prompt ("training lost to a preemption"); the dictionary (`restore_checkpoint`: "the checkpoint it restored from"); the record: 65 of the quarter's 192 resumptions restored an earlier checkpoint than the preempted run's newest committed one (asserted) |
 | SF21 | Ask A: a checkpoint's training state | taken when its write started (`write_started_utc`); training carries on while it is written | the write's commit time | every redone figure (S3, asserted) | the dictionary (`write_started_utc`: "When the state at step was snapshotted and the write began; checkpoint writes run in the background.") |
@@ -248,11 +253,11 @@ cited sentence, an asserted data fact or a convergence.
 **The round-2 lessons, checked row by row.** (1) No filed sentence executes to the easy answer: CS-3 4.1 files the
 estimand and no method; the memo's platform line, the one sentence a literal reader could have taken as confining the
 forecast to the export, names no source (SF31); the budget freeze is a record, not a sizing instruction. (2) Every
-graded figure clears its edge under every variant that keeps it: the guarantee floors to 109,000 from 109,426 to 109,707
-before the thousand (SF38), the reservations sit 441 to 499 cores from their nearest-1,000 edges, and every ask figure
+graded figure clears its edge under every variant that keeps it: the guarantee floors to 109,000 from 109,408 to 109,702
+before the thousand (SF38), the reservations sit 435 to 499 cores from their nearest-1,000 edges, and every ask figure
 at least 19 per cent of a bin from its edge (asserted at 15). The guarantee before the thousand (109,492) and the two
 platform forecasts to the core (38,058 and 1,999), which Critical Components 4 and 3 stated until 2026-10-15, are the
-golden path's own numbers: the converging variants move them (109,426 to 109,707; 38,046 to 38,161; 1,982 to 2,079)
+golden path's own numbers: the converging variants move them (109,408 to 109,702; 38,057 to 38,166; 1,982 to 2,079)
 while the call and every component to the thousand stay, so the write-up and the goldens now state each figure at the
 precision every variant shares (`## Build record`, asserted). (3) Every ask's basis is closed by a cited sentence or an
 asserted data fact (SF20 to SF28, SF32 to SF37).
@@ -264,23 +269,23 @@ the pack and asserted by name in `checks.py`; the default path and the golden ar
 
 | Rung | Guarantee before the thousand | Guarantee | Against the golden |
 |---|---|---|---|
-| R-1 no budget hold, storage on its four-quarter line | 119,007.1 | 119,000 | +9.2 per cent |
-| R0 (default) both platform services on the line through their last four busiest hours | 122,235.1 | 122,000 | +11.9 per cent |
-| R0b the last quarter's busiest hour carried | 122,298.1 | 122,000 | +11.9 per cent |
-| R0c the line through all eight quarters | 122,117.0 | 122,000 | +11.9 per cent |
-| R0e the line through the last four complete quarters | 122,324.1 | 122,000 | +11.9 per cent |
-| R1 cell-store per machine at Q4's busiest hour, times 5,220 | 119,115.3 | 119,000 | +9.2 per cent |
-| R1b cell-store as Q4's share of the reservable cores | 118,755.1 | 118,000 | +8.3 per cent |
-| Monly cell-store fitted on machines alone | 120,796.6 | 120,000 | +10.1 per cent |
-| R2e the two-driver fit read with batch at Q4's 56,000 | 120,620.5 | 120,000 | +10.1 per cent |
-| R2 cell-store fitted on the batch tier alone (whole history) | 111,662.0 | 111,000 | +1.8 per cent |
-| R2c Q4's per-machine level held, the batch term added | 110,999.0 | 110,000 | +0.9 per cent |
-| R2d the two-driver fit at the 4,640 machines of the pull date | 110,903.7 | 110,000 | +0.9 per cent |
+| R-1 no budget hold, storage on its four-quarter line | 118,938.6 | 118,000 | +8.3 per cent |
+| R0 (default) both platform services on the line through their last four busiest hours | 122,166.6 | 122,000 | +11.9 per cent |
+| R0b the last quarter's busiest hour carried | 122,242.8 | 122,000 | +11.9 per cent |
+| R0c the line through all eight quarters | 122,065.3 | 122,000 | +11.9 per cent |
+| R0e the line through the last four complete quarters | 122,268.8 | 122,000 | +11.9 per cent |
+| R1 cell-store per machine at Q4's busiest hour, times 5,220 | 119,052.9 | 119,000 | +9.2 per cent |
+| R1b cell-store as Q4's share of the reservable cores | 118,692.0 | 118,000 | +8.3 per cent |
+| Monly cell-store fitted on machines alone | 120,790.8 | 120,000 | +10.1 per cent |
+| R2e the two-driver fit read with batch at Q4's 56,000 | 120,614.7 | 120,000 | +10.1 per cent |
+| R2 cell-store fitted on the batch tier alone (whole history) | 111,656.4 | 111,000 | +1.8 per cent |
+| R2c Q4's per-machine level held, the batch term added | 110,993.5 | 110,000 | +0.9 per cent |
+| R2d the two-driver fit at the 4,640 machines of the pull date | 110,898.2 | 110,000 | +0.9 per cent |
 | LedgerFit the ledger's eight cell-store reservations fitted on machines and guarantees | 110,224.4 | 110,000 | +0.9 per cent |
-| R2b the batch load applied once, at R0's guarantee | 106,840.8 | 106,000 | -2.8 per cent |
-| O1 cell-store per batch core at Q4's ratio | 101,636.0 | 101,000 | -7.3 per cent |
-| QmaxFit the eight quarterly busiest hours fitted on their machines and batch (converges) | 109,459.4 | 109,000 | +0.0 per cent |
-| R3 golden | 109,492.0 | 109,000 | 0 |
+| R2b the batch load applied once, at R0's guarantee | 106,848.4 | 106,000 | -2.8 per cent |
+| O1 cell-store per batch core at Q4's ratio | 101,566.8 | 101,000 | -7.3 per cent |
+| QmaxFit the eight quarterly busiest hours fitted on their machines and batch (converges) | 109,461.6 | 109,000 | +0.0 per cent |
+| R3 golden | 109,486.5 | 109,000 | 0 |
 
 - **Separation.** The golden is bracketed: the routes that carry `cell-store` on its own history or scale it with the
   cell file 118,000 to 122,000, the partial models file a neighbouring thousand on one side or the other (106,000 once at the
@@ -289,9 +294,9 @@ the pack and asserted by name in `checks.py`; the default path and the golden ar
   least 600 cores from the golden before the thousand (asserted). The batch-only fit files 111,000 on the whole
   history, 2026, the last two quarters and the last quarter, because the history's guarantee did not move with its
   machines.
-- **Position.** The golden's unrounded guarantee sits 492 cores above 109,000; every converging convention (SF2,
+- **Position.** The golden's unrounded guarantee sits 487 cores above 109,000; every converging convention (SF2,
   SF4, SF12, SF14 to SF17, the fit windows, the re-sent day, the gap, machines installed) keeps it inside the thousand
-  (asserted). `cell-store` (38,058.5), `cell-ctl` (1,999.2), the firm total (576,972) and the platform total (40,057.7)
+  (asserted). `cell-store` (38,065.0), `cell-ctl` (1,999.2), the firm total (576,972) and the platform total (40,064.2)
   sit at least 300 cores from their nearest-1,000 rounding edges (asserted).
 - **Grid.** The four storage routes (R0, R1, R2b, R3) by the two firm readings (held, whole) by the two rate cards
   (Q1, the one in force at the review), 16 cells computed in `checks.py`: the golden cell alone files 109,000 (asserted);
@@ -312,7 +317,7 @@ the pack and asserted by name in `checks.py`; the default path and the golden ar
 | 7 | Weighting | none: the guarantee is a difference of totals; the regression weights every hour alike (the re-sent day of March 2026 kept twice moves the per-machine coefficient by 0.00001 and the call not at all, asserted) |
 | 8 | Window length | the fit runs on every hour on file; fits on the last four quarters, on 2026 alone and from 2025 Q3 give 109,495.6, 109,495.6, 109,494.0 before the thousand (asserted: same guarantee) |
 | 9 | Boundary inclusivity | "the largest whole thousand" (floor, SF2); "the largest whole number of cores" a budget covers (SF9) |
-| 10 | Rounding path | carried unrounded to the guarantee's floor; the guarantee 109,492.0 sits 492 cores inside its thousand across every converging convention (asserted); the storage reservation, the platform total and the firm total each at least 300 cores from a nearest-1,000 edge (asserted) |
+| 10 | Rounding path | carried unrounded to the guarantee's floor; the guarantee 109,486.5 sits 487 cores inside its thousand across every converging convention (asserted); the storage reservation, the platform total and the firm total each at least 300 cores from a nearest-1,000 edge (asserted) |
 | 11 | Tie-break | none needed: one guarantee, one storage reservation |
 | 12 | Maturity and censoring | none on the call: the Q1 requests are closed; the export's last day (13 December) is complete to 23:00 UTC; the seven hours of 19 August with no rows are missing for every series alike (asserted: interpolating them gives 109,491.9 before the thousand) |
 | 13 | Order of operations | firm holds first (3.2), platform forecasts with batch at its guarantee (4.1 and 5.2), the whole thousand last (SF17) |
@@ -605,6 +610,27 @@ at the close.
   determinism` PASS on the retaken snapshot, `precut.py` 49 checks, 0 FAIL, `voice-check.py` PASS, `leak.py --asof
   2026-12-14` REVIEW, no LEAK, `guard.py heart` WARN (`overuse.objective`, no BLOCK), `surface` 0 promoted pairs,
   `validate` clean, the container audit clean on `target/` and `golden/`.
+- Realism repair, 2026-10-15 (a realism audit: a two-driver fit with a 13-core residual s.d. on a 25,000-core service
+  reads as generator output). `world._store_unmodelled` adds to cell-store's hourly load what neither driver carries:
+  the small tenants' daily cycle (Madrid's evening and midday, half on weekends), an AR(1) drift (s.d. 18, lag-one 0.75),
+  the weekly rolling daemon restart (Tuesday 03:00 to 05:00 UTC, 300 to 550 cores missing) and hours with late daemon
+  samples (4 per cent of hours, 60 to 260 cores missing); within each quarter every part is uncorrelated with the
+  machines in service, the machines out and the batch cores, and carries the same mean in every quarter, so no fit window
+  borrows a level from the rack additions. The draw (13) is the first of 40 scanned on which every assertion holds
+  except rung R-1, which no draw holds (it sat 7 cores above 119,000 and any upward texture in the busiest hours moves
+  it). The dictionary's `cores_in_use` note and one operations-log entry carry the late samples and the restart. Residual
+  s.d. 62.0 cores (largest 95.2), against 641.5 on machines alone and 361.3 on batch alone. Every graded figure held:
+  109,000, 726,624, 577,000, 38,000, 2,000, 2.94, 0.208, 1.208 and every ask figure; the path figures moved inside
+  their bins (2.9402, 0.20805, 109,486.5 before the thousand, cell-store 38,065.0, platform 40,064.2, unreserved
+  587.8), the write-up's residual s.d. from 13.0 to 62.0, and rung R-1 from 119,000 to 118,000 (not graded). Four fits a
+  careful analyst may prefer once the low hours are seen (restart hours left out, hours three s.d. below the line left
+  out, Huber, hour-of-week terms) are asserted beside the fit windows to share 2.94, 0.208, 1.208, cell-store and
+  cell-ctl to the thousand and the call (c 2.937 to 2.941, beta 0.20799 to 0.20807 across all of them). Gates:
+  `build.py` (2,397 assertions, `verify.py`, two builds byte-identical, target.zip ae9940da), `figures_check.py` 79
+  figures, `precut.py` 49 checks 0 FAIL, `leak.py --asof 2026-12-14` REVIEW with the same lines as before, `guard.py
+  surface` 0 promoted, `heart` WARN, `validate` clean, `freeze.py check --mode determinism` with the 30 moved path and
+  rung keys allowed: only the ladder and default-path sections' measured numbers moved, the container audit clean.
+  Stage 4 next: the reader (a document changed) and the judge.
 
 ## Leak review
 
@@ -732,3 +758,9 @@ are stage 4's.
   writes run in the background" for "training carries on"); the Freeze sheet's sizing instruction (SF8 is CS-3 3.2's;
   the sheet is now a freeze record); the Q3 report's "does not carry mid-quarter changes" and its gap hours (now an
   ordinary scope line and an hours-on-record note); the demand note's closing disclaimer (now a source line).
+- 2026-10-15, residual texture for the storage fit: symmetric noise at s.d. 40 to 60 (the daily cycle, a drift and
+  incidents) moved the busiest hours up by 150 to 300 cores, which took QmaxFit, R1, R0c and SF29 off their values and
+  let the per-machine term wander 2.932 to 2.949 between windows; projecting the texture off the drivers per quarter but
+  leaving each quarter its own mean put the rack additions back into the level; one-sided dips at s.d. 85 to 90 moved
+  beta between windows and broke the trimmed and Huber fits. Kept: a small symmetric part and low-reading hours, each
+  part projected off the drivers within every quarter with one mean across quarters (s.d. 62).

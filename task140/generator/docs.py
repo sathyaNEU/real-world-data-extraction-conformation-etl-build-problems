@@ -406,6 +406,8 @@ def ops_entries(W):
                       rack_txt[k % len(rack_txt)] % ("%s-%02d" % (rk["row"], rk["pos"]))))
             k += 1
     e += [
+        (U(2026, 7, 7, 8, 15), "MA", "Reminder for the new on-call rota: cell-store's rolling daemon restart runs every "
+                                     "Tuesday 03:00 to 05:00 UTC across C-22. Clients reconnect; no action needed."),
         (U(2026, 7, 21, 13, 30), "MA", "cell-store 8.4.2 rolled out across C-22, one row at a time. No client impact."),
         (U(2026, 8, 19, 1, 40), "RF", "Hall 2 UPS B failed to transfer during the weekly generator test. C-22 control "
                                       "nodes lost power, about 40 s, and restarted. Worker rows stayed up on feed A."),
@@ -549,7 +551,9 @@ DICT = [
     (K.USAGE, "hour_start_utc", "Start of the hour (UTC); the row covers the hour that starts then."),
     (K.USAGE, "cell", "Cell id."),
     (K.USAGE, "tenant", "Tenant id, as in the tenant directory."),
-    (K.USAGE, "cores_in_use", "The tenant's average cores in use over the hour."),
+    (K.USAGE, "cores_in_use", "The tenant's average cores in use over the hour. cell-store reports from each storage "
+                                 "daemon; samples that reach the collector after the hour has closed are not added "
+                                 "back, so an hour in which some daemons reported late reads low."),
     (K.CELLHOURLY, "machines_installed", "Machines installed in the cell, hourly average (in service or out for repair "
                                          "or maintenance)."),
     (K.CELLHOURLY, "machines_in_service", "Schedulable machines registered with the cell's scheduler, hourly average."),

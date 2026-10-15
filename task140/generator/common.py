@@ -70,6 +70,15 @@ STORE_PER_MACHINE = 2.94       # cell-store's daemon CPU per machine in service 
 STORE_PER_BATCH = 0.208        # cell-store's CPU per batch core running (dataset reads, checkpoint writes)
 STORE_BASE = 37.0              # cell-store's metadata servers, whatever the load (cores)
 STORE_NOISE = 13.0             # hourly jitter of a service summed over thousands of daemons (cores)
+# what the two drivers do not carry: the small tenants' own reads and writes (Madrid's evening and midday), slow drift,
+# the weekly rolling restart of the storage daemons (Tuesday 03:00 to 05:00 UTC, load falls while daemons rejoin) and
+# hours in which part of the daemons' samples reach the collector late (the hour's sum reads low)
+STORE_TENANTS = 25.0           # amplitude of the small tenants' daily cycle (cores)
+STORE_DRIFT = (18.0, 0.75)     # hour-to-hour drift: marginal s.d. (cores), lag-one correlation
+STORE_RESTART = (300.0, 550.0) # load missing in a restart hour (cores)
+STORE_LATE = (0.04, 60.0, 260.0)   # share of hours with late samples, cores missing
+STORE_LEVEL = 6.0              # the unmodelled load's mean over the export (cores)
+STORE_TEXTURE_DRAW = 13
 CTL_BASE = 1898.0              # cell-ctl at the start of 2025, before its daily swing (cores)
 Q1_MACHINES = 5220
 NEW_RACKS = 29                 # the December 2026 refresh: 29 racks of 20, in service from 28 December

@@ -238,6 +238,41 @@ def golden(M, mask=None, allowance=0.0, machines=None, use_installed=False, ctl_
                 R=R, F=F, ctl=ctl, Gu=Gu, G=G, S=S, platform=S + ctl, unreserved=R - F - ctl - S - G, M1=Mq)
 
 
+def from_terms(M, co, F=None, ctl=None):
+    """The golden's solve on another fit's terms (intercept, per machine, per batch core)."""
+    a, c, beta = (float(x) for x in co)
+    F = sum(firm_approvals(M).values()) if F is None else F
+    ctl = ctl_forecast(M) if ctl is None else ctl
+    Gu = (M.R1 - F - ctl - a - c * M.M1) / (1 + beta)
+    G = floor1000(Gu)
+    S = a + c * M.M1 + beta * G
+    return dict(a=a, c=c, beta=beta, F=F, ctl=ctl, Gu=Gu, G=G, S=S, platform=S + ctl, unreserved=M.R1 - F - ctl - S - G)
+
+
+def other_fits(M):
+    """Fits a careful analyst might prefer once the residual's low hours are seen: the Tuesday restart window left
+    out, the hours more than three residual s.d. below the line left out, a Huber fit, and hour-of-week terms."""
+    tt = [tparse(h[:20]) for h in M.hours]
+    uw = np.array([x.weekday() for x in tt])
+    uh = np.array([x.hour for x in tt])
+    out = {"restart window left out": golden(M, mask=~((uw == 1) & (uh >= 3) & (uh < 5)))}
+    co, res = fit(M, [M.mach, M.batch])
+    out["low hours left out"] = golden(M, mask=res > -3 * res.std())
+    X = np.column_stack([np.ones(len(M.store)), M.mach, M.batch])
+    b = co.copy()
+    for _ in range(50):
+        r = M.store - X @ b
+        k = 1.345 * 1.4826 * float(np.median(np.abs(r - np.median(r))))
+        w = np.where(np.abs(r) <= k, 1.0, k / np.maximum(np.abs(r), 1e-9))
+        b = np.linalg.solve(X.T @ (X * w[:, None]), (X * w[:, None]).T @ M.store)
+    out["Huber"] = from_terms(M, b)
+    how = uw * 24 + uh
+    D = np.column_stack([(how == k).astype(float) for k in range(1, 168)])
+    bd, *_ = np.linalg.lstsq(np.column_stack([X, D]), M.store, rcond=None)
+    out["hour-of-week terms"] = from_terms(M, [bd[0] + float(np.mean(D @ bd[3:])), bd[1], bd[2]])
+    return out
+
+
 def guarantee_given_store(M, S, F=None, ctl=None):
     F = sum(firm_approvals(M).values()) if F is None else F
     ctl = ctl_forecast(M) if ctl is None else ctl

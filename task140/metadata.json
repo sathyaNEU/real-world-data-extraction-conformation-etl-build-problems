@@ -96,7 +96,7 @@
     {
       "path": "c22_capacity_report_2026Q3.pdf",
       "format": "pdf",
-      "bytes": 52293,
+      "bytes": 52289,
       "rows": null,
       "source": "Constructed: C-22 capacity report for 2026 Q3",
       "date": "2026-12-14",
@@ -186,7 +186,7 @@
     {
       "path": "data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 8719,
+      "bytes": 8810,
       "rows": null,
       "source": "Constructed: Field definitions for the capacity review files",
       "date": "2026-12-14",
@@ -213,7 +213,7 @@
     {
       "path": "mad1_operations_log_2026H2.docx",
       "format": "docx",
-      "bytes": 38551,
+      "bytes": 38644,
       "rows": null,
       "source": "Constructed: MAD1 operations log, July to December 2026",
       "date": "2026-12-14",

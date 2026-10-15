@@ -57,7 +57,7 @@ def run(target, golden, W=None, meta_path=None):
     ok(g["F"] == 576972, "firm total %d" % g["F"])
     ok(abs(g["c"] - K.STORE_PER_MACHINE) < 0.01 and abs(g["beta"] - K.STORE_PER_BATCH) < 0.002,
        "the fit recovers the storage drivers: %.4f, %.4f" % (g["c"], g["beta"]))
-    ok(12.0 < g["resid_sd"] < 14.0 and g["n"] > 16000, "fit residual sd %.2f on %d hours" % (g["resid_sd"], g["n"]))
+    ok(55.0 < g["resid_sd"] < 70.0 and g["n"] > 16000, "fit residual sd %.2f on %d hours" % (g["resid_sd"], g["n"]))
     # graded figures inside their bins with margin
     ok(250 <= g["Gu"] - G <= 750, "guarantee mid-thousand: %.1f" % g["Gu"])
     for lab, v in (("cell-store", g["S"]), ("cell-ctl", g["ctl"]), ("firm", g["F"]), ("platform", g["platform"])):
@@ -75,7 +75,7 @@ def run(target, golden, W=None, meta_path=None):
     # ------------------------------------------------------------------ the ladder
     R0 = lad["R0"]
     ok(R0["G"] == 122000, "default path ends on 122,000: %d" % R0["G"])
-    expect = {"R-1": 119000, "R0": 122000, "R0b": 122000, "R0c": 122000, "R0d": 122000, "R0e": 122000,
+    expect = {"R-1": 118000, "R0": 122000, "R0b": 122000, "R0c": 122000, "R0d": 122000, "R0e": 122000,
               "R1": 119000, "R1b": 118000, "R1c": 118000, "R2": 111000, "R2b": 106000, "R2c": 110000,
               "R2d": 110000, "R2e": 120000, "Monly": 120000, "O1": 101000, "LedgerFit": 110000, "QmaxFit": 109000,
               "R3": 109000}
@@ -140,7 +140,7 @@ def run(target, golden, W=None, meta_path=None):
     af = float(np.mean([M.batch[M.q == q].mean() / M.ledger[(q, "batch-train")] for q in M.quarters]))
     Gaf = (M.R1 - g["F"] - g["ctl"] - g["a"] - g["c"] * M.M1) / (1 + g["beta"] * af)
     ok(C.floor1000(Gaf) == G, "SF14 the average fill (%.4f) converges" % af)
-    ok(C.golden(M, allowance=g["resid_max"])["G"] == G and 30 < g["resid_max"] < 70,
+    ok(C.golden(M, allowance=g["resid_max"])["G"] == G and 80 < g["resid_max"] < 120,
        "SF15 the largest residual (%.1f) carried converges" % g["resid_max"])
     for how in ("last", "mean4", "machines"):
         gg = C.golden(M, ctl_how=how)
@@ -392,6 +392,7 @@ def _shared_precision(target, golden, M, g):
     for qs in (M.quarters[2:], M.quarters[4:]):
         variants += [C.golden(M, mask=np.isin(M.q, qs)), C.golden(M, mask=np.isin(M.q, qs), use_installed=True)]
     variants += [C.golden(M, ctl_how=h) for h in ("last", "mean4", "machines")] + [C.golden(M, allowance=g["resid_max"])]
+    variants += list(C.other_fits(M).values())
     for v in variants:
         ok(("%.2f" % v["c"], "%.3f" % v["beta"], "%.3f" % (1 + v["beta"])) == ("2.94", "0.208", "1.208"),
            "shared precision: per machine %.5f, per batch core %.5f, per guaranteed core %.5f" % (
@@ -400,8 +401,9 @@ def _shared_precision(target, golden, M, g):
            K.round_to(v["ctl"], 1000) == K.round_to(g["ctl"], 1000) and 0 < v["unreserved"] < 1000,
            "shared precision: the call, cell-store and cell-ctl to the thousand, under 1,000 left (%.1f)" %
            v["unreserved"])
-    path_figures = ("109,492", "109492", "38,058", "38058", "1,999", "1999.2", "2.9404", "0.20804", "1.20804", "33.1",
-                    "594.3")
+    path_figures = ("{:,.0f}".format(g["Gu"]), "%.0f" % g["Gu"], "{:,.0f}".format(g["S"]), "%.0f" % g["S"],
+                    "{:,.0f}".format(g["ctl"]), "%.1f" % g["ctl"], "%.4f" % g["c"], "%.5f" % g["beta"],
+                    "%.5f" % (1 + g["beta"]), "%.1f" % g["a"], "%.1f" % g["unreserved"])
     sub = open(os.path.join(os.path.dirname(target), "submission.md"), encoding="utf-8").read()
     blocks13 = sub.split("## 4. Deliverable Answers")[0]
     ok(not [x for x in path_figures if x in blocks13], "the write-up's blocks 1 to 3 state no path figure: %s" %
@@ -411,7 +413,8 @@ def _shared_precision(target, golden, M, g):
     wb = openpyxl.load_workbook(os.path.join(golden, K.GOLD_BOOK), data_only=True)
     for name in ("2027 Q1", "cell-store"):
         flat = " ".join(str(v) for r in wb[name].iter_rows(values_only=True) for v in r if v is not None)
-        ok(not [x for x in ("109,492", "2.9404", "0.20804", "1.20804", "38058.5", "1999.2", "40057.7", "594.3")
+        ok(not [x for x in ("{:,.0f}".format(g["Gu"]), "%.4f" % g["c"], "%.5f" % g["beta"], "%.5f" % (1 + g["beta"]),
+                            "%.1f" % g["S"], "%.1f" % g["ctl"], "%.1f" % g["platform"], "%.1f" % g["unreserved"])
                 if x in flat], "golden sheet %s states no path figure" % name)
     top = {r[0]: r for r in wb["2027 Q1"].iter_rows(values_only=True) if r and isinstance(r[0], str)}
     ok(all(top[k][1] is None for k in ("cell-ctl", "cell-store", "Platform services", "Not reserved")) and
@@ -486,7 +489,7 @@ def _stage4_rows(target, M, g, lad, A, W, red, share, lost, owe, pre, succ, ev, 
                q, line - actual, drv - actual))
     r_m = float(C.fit(M, [M.mach])[1].std())
     r_b = float(C.fit(M, [M.batch])[1].std())
-    ok(r_m > 600 and r_b > 300 and g["resid_sd"] < 14,
+    ok(r_m > 600 and r_b > 300 and g["resid_sd"] < 70,
        "SF13 the hourly fit needs both drivers: residual s.d. %.1f on machines alone, %.1f on batch alone, %.1f on both"
        % (r_m, r_b, g["resid_sd"]))
     ok(lad["R2e"]["S"] - lad["R0"]["S"] > 1500,

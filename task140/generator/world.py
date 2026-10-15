@@ -723,10 +723,61 @@ def _firm_hourly(W):
         W.firm_h[t] = res * u
 
 
-def _store_hourly(W):
+def _store_unmodelled(W, draw=None):
+    """cell-store's load that neither driver carries, hour by hour: the small tenants' daily cycle, a slow drift, the
+    weekly rolling restart and the hours whose samples arrived late. None of it follows the machines or the batch tier:
+    within each quarter every part is uncorrelated with the machines in service, the machines out and the batch cores,
+    and each part carries the same mean in every quarter."""
+    r = K.rng("store-texture", K.STORE_TEXTURE_DRAW if draw is None else draw)
+    hrs = [H0 + dt.timedelta(hours=h) for h in range(NHOUR)]
+    loc = np.array([K.madrid(x)[0].hour for x in hrs])
+    wd = np.array([K.madrid(x)[0].weekday() for x in hrs])
+    uwd = np.array([x.weekday() for x in hrs])
+    uh = np.array([x.hour for x in hrs])
+    qid = np.array([K.QUARTERS.index(K.q_of(x)) for x in hrs])
+    drivers = np.column_stack([W.inservice_h, W.installed_h - W.inservice_h, W.batch_h])
+
+    def apart(v, rows):
+        v = v.copy()
+        for q in range(len(K.QUARTERS)):
+            m = (qid == q) & rows
+            X = drivers[m] - drivers[m].mean(axis=0)
+            co, *_ = np.linalg.lstsq(X, v[m] - v[m].mean(), rcond=None)
+            v[m] -= X @ co
+        return v
+    prof = np.exp(-((loc - 20.5) / 2.8) ** 2) + 0.45 * np.exp(-((loc - 12.0) / 2.5) ** 2)
+    prof = prof / prof.max()
+    tenants = K.STORE_TENANTS * (np.where(wd >= 5, 0.5, 1.0) * prof - 0.5)
+    sd, phi = K.STORE_DRIFT
+    e = r.normal(0, sd * math.sqrt(1 - phi ** 2), NHOUR)
+    drift = np.zeros(NHOUR)
+    for i in range(1, NHOUR):
+        drift[i] = phi * drift[i - 1] + e[i]
+    restart = (uwd == 1) & (uh >= 3) & (uh < 5)
+    p_late, lo, hi = K.STORE_LATE
+    late = (r.random(NHOUR) < p_late) & ~restart
+    cont = apart(apart(tenants + drift, ~restart & ~late), restart | late)
+    for q in range(len(K.QUARTERS)):
+        cont[qid == q] += cont.mean() - cont[qid == q].mean()
+    rs = np.zeros(NHOUR)
+    rs[restart] = -r.uniform(K.STORE_RESTART[0], K.STORE_RESTART[1], int(restart.sum()))
+    lt = np.zeros(NHOUR)
+    lt[late] = -r.uniform(lo, hi, int(late.sum()))
+    parts = []
+    for v, rows in ((rs, restart), (lt, late)):
+        v = apart(v, rows)
+        mu = v.mean()
+        for q in range(len(K.QUARTERS)):
+            v[qid == q] *= mu / v[qid == q].mean()
+        parts.append(v)
+    out = cont + parts[0] + parts[1]
+    return out - out.mean() + K.STORE_LEVEL
+
+
+def _store_hourly(W, draw=None):
     r = K.rng("store")
     W.store_h = K.STORE_BASE + K.STORE_PER_MACHINE * W.inservice_h + K.STORE_PER_BATCH * W.batch_h + \
-        r.normal(0, K.STORE_NOISE, NHOUR)
+        r.normal(0, K.STORE_NOISE, NHOUR) + _store_unmodelled(W, draw)
 
 
 # ---------------------------------------------------------------------------------------------------- the world
