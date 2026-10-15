@@ -5,13 +5,13 @@
   "slot_note": "seed ET18 (battery cycling threshold from day-ahead prices): the world, the decision and the quantity kept (a storage owner sets next year's minimum daily day-ahead spread for cycling a 4-hour battery under a 300-cycle warranty); the seed's clock trap is Layer 1 only, and the pitfall is re-found in the data: the node's own record is one short, atypical year",
   "domain": "general-statistics-data-science",
   "subdomain": "data-integration-record-linkage-entity-resolution",
-  "niche": "an independent storage owner's 2027 cycling threshold for a 100 MW / 400 MWh battery at a congested node: the node's daily day-ahead spread distribution, seen directly for only sixteen months since the node was created, integrated with the trading hub's eight-year record through their overlap",
+  "niche": "an independent storage owner's 2027 cycling threshold for a 100 MW / 400 MWh battery at a congested node: the node's daily day-ahead spread distribution, seen directly for only eleven months since the node was created, integrated with the trading hub's eight-year record through their overlap",
   "objective": "etl",
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Load a 2027 cycling threshold of $20 per MWh (275 expected cycling days in 2027; $15 would give 323, over the warranty's 300).",
+  "answer_source": "submission.md block 1; redrock_draw_2027_cycling_threshold.xlsx, sheet 2027 threshold",
   "gap": [
     "time",
     "population"
@@ -35,11 +35,11 @@
   "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "hub_day_ahead_settlement_point_prices_2019_2026.csv",
-    "rows": 70128,
+    "file": "mpi_dam_settlement_point_prices_north_hub_2019_2026.csv",
+    "rows": 68712,
     "entity": "one settlement point's day-ahead price for one delivery hour",
     "grain": "settlement point x operating day x hour ending (prevailing time)",
-    "source": "synthetic (constructed in the layout of a wholesale market operator's day-ahead settlement point price archive)"
+    "source": "synthetic (constructed in the layout of a wholesale market operator's day-ahead settlement point price archive, two formats appended)"
   },
   "forum": "executive_team",
   "forcing_event": "purchase_order_or_contract",
@@ -66,10 +66,10 @@
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "The decisive quantity is a low quantile of a distribution seen directly only over one short and unrepresentative period; the long record of a correlated auxiliary series, carried to the target through the proportional relationship their overlap shows, gives the distribution over the full range of conditions, while the short record alone, the auxiliary record alone or the auxiliary shifted by an additive offset each set the dial at a different value.",
-  "driver_concrete": "The battery cycles on days whose day-ahead spread at its own node clears the threshold, and the warranty allows 300 cycles a year: the threshold is the node's spread exceeded on 300 days of an ordinary year, which the node's sixteen months (one mild, windy year) cannot show; the hub's eight weather years, carried to the node through the proportional relationship the overlap shows between the node's and the hub's daily spreads, give it; not the node's 2026 alone, not the hub's record alone, not the hub plus the node's average price basis.",
-  "stump": "The default path sets the threshold from the node's own 2026 day-ahead spreads, the battery's own price record, and picks a setting too low for an ordinary year; the hub's eight years alone pick lower still and the hub plus the node's average additive basis picks too high; carrying the hub's eight weather years to the node through the proportional relationship their overlap shows picks the golden setting.",
+  "driver_concrete": "The battery cycles on days whose day-ahead spread at its own node clears the threshold, and the warranty allows 300 cycles a year: the threshold is the node's spread exceeded on 300 days of an ordinary year, which the node's eleven months (one windy stretch whose average looks ordinary) cannot show; the hub's eight weather years, carried to the node through the proportional relationship the overlap shows between the node's and the hub's daily spreads, give it; not the node's 2026 alone, not the hub's record alone, not the hub plus the node's average spread premium.",
+  "stump": "The default path sets the threshold from the node's own day-ahead spreads since MPI first priced it (eleven windy months whose average looks ordinary but a third of whose days were flat) and picks $15; the hub's eight years alone pick $10 and the hub plus the node's average spread premium $30; carrying the hub's eight weather years to the node through the proportional relationship their overlap shows picks $20.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly and applies every filed rule sets the threshold from the battery's own node's 2026 day-ahead spreads and picks the setting that would have cycled it 300 times in 2026; one who wants more weather uses the hub's eight years, alone or with the node's average price basis added. None picks the golden setting.",
+  "analyst_test": "A strong analyst who reads every file correctly and applies every filed rule counts the node's own days since December 2025 and sets $15 (266 expected cycling days); one who wants more weather takes the hub's record for the node's ($10) or adds the node's average spread premium to it ($30). None picks $20.",
   "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, the node's daily-spread distribution over the full weather record built by combining its short direct record with the hub's long one through their overlap; replacing it with a summary of either source alone (the node's one year, the hub's eight) or an additive basis changes the setting picked.",
   "mechanism_source": "design_note",
   "differentiation": {
