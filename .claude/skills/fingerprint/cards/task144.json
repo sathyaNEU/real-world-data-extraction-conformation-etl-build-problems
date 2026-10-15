@@ -1,0 +1,99 @@
+{
+  "task": "task144",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "wave 3, new, numbered from seed FC15 (header and Situation only: the world, the decision and the quantity are kept; the seed's mechanism is not)",
+  "domain": "product-analytics",
+  "subdomain": "feature-adoption-diffusion-modeling",
+  "client_domain": "product-analytics",
+  "niche": "a code-hosting platform's monthly developer newsletter spotlight, with a year of sponsored CI, given to one of seven new open-source repositories by its expected external stars in its first 90 days public with the spotlight's effect included, on a platform whose home feed shows every star to the starrer's followers",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G2",
+    "G14"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "stump_class": "analytical",
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "the editor of the platform's monthly developer newsletter, who picks the spotlight repository",
+  "role_family": "other",
+  "scoring_unit": "other",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:spotlight-cascade-through-follower-feeds",
+  "layer1": [
+    "event export in UTC against the newsletter platform's Amsterdam send times",
+    "two event-schema vintages with different surface codes",
+    "unstar and restar rows (first star per account)",
+    "organisation members by dated membership spans (external at the time of the star)",
+    "bot and merged accounts",
+    "lottery log workbook whose layout changes between years",
+    "runners-up held as daily warehouse rollups by surface beside event-level rows for spotlighted and current repositories",
+    "follower counts from an account snapshot"
+  ],
+  "spine": {
+    "file": "grachtwerk_star_events_shortlisted.csv",
+    "rows": 0,
+    "entity": "one star event on Grachtwerk: an account starring (or unstarring) a repository on the Sluis shortlists, with the surface it was starred from",
+    "grain": "account x repository x star event",
+    "source": "constructed (the platform events warehouse's star stream, two schema vintages)"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "other",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "Netherlands (an Amsterdam-based code-hosting platform with a worldwide developer user base)",
+    "currency": "EUR",
+    "org_type": "a code-hosting platform's developer newsletter and open-source sponsorship programme",
+    "invented_names": [
+      "Grachtwerk",
+      "Sluis",
+      "Grachtwerk Pipelines",
+      "tracewire",
+      "slidewell"
+    ],
+    "people": [
+      "Sylvie Kramer",
+      "Twan Evers",
+      "Vigo Hulshouts",
+      "Laura Rijntjes"
+    ]
+  },
+  "deliverables": [
+    "sluis_spotlight_2026-11.xlsx",
+    "spotlight_cascade_chart.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "An intervention seeds adoptions among people whose follower reach differs from the item's own adopters', and every adoption is shown to the adopter's followers, who adopt at the item's own rate per view, so the intervention's yield is its seeded adoptions times a branching process whose ratio is that per-view rate times the seeds' reach; the measured average yield, a percentage of the forecast, the item's recent pace and its own share of adoptions that came through followers, which carries its own adopters' reach, all misprice it.",
+  "driver_concrete": "A Grachtwerk star shows in the starrer's followers' home feeds and they star from the feed card at the repository's own rate per view; the Sluis readers star whatever is spotlighted at much the same rate but reach far more followers than the forum newcomers who starred slidewell, so slidewell's spotlight sets off a feed cascade several times tracewire's, which their own feed shares hide.",
+  "stump": "A competent solver forecasts each shortlisted repository's organic 90-day external stars from its trajectory against the lottery's runners-up, adds the spotlight lottery's average lift and spotlights tracewire; the step that lands it there is carrying an average lift when the spotlight's stars are the readers' own plus the cascade they set off through their followers' feeds at each repository's own per-view rate, which puts slidewell first.",
+  "analyst_test": "A strong analyst who reads every field and the featuring memo correctly forecasts each candidate's organic stars from its trajectory against past shortlisted repositories, adds the lottery's randomised average spotlight lift and spotlights tracewire, while slidewell, whose stars barely travel through feeds, is the pick once the readers' cascade is built from its per-view rate and the readers' reach.",
+  "domain_test": "The deciding quantity is the stars a spotlight sets off on a social coding platform, the readers' own plus the cascade through their followers' home feeds at the repository's per-view rate, sized the way growth analysts size viral spread from a seed population's reach and a per-exposure conversion; with a hospital or a school there is no follow feed, starrer's reach or per-view rate, so the spotlight's yield and the pick stop making sense.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task228": "task228 v1 composes a false-alarm chance from the nights each monitored run is checked and the surface it runs on; here the yield is a cascade through a follow graph whose ratio is a per-view rate times the seeds' reach, with no run length or calibration mix in it.",
+    "task68": "task68 matches continuing units across identity successions so entrant inflow stops masking a like-for-like change; here nothing is matched or linked, and the spotlight's yield is a branching process seeded by readers whose follower reach differs from the repository's own starrers'.",
+    "task124": "task124 carries a rate within each kind of physical group to units left unexamined by symptom-driven checks; here no sample is selected, and the decisive quantity is how far seeded adoptions travel through followers' feeds at a per-view rate.",
+    "task132": "task132 restarts a wear-out curve for every replaced item in a spares forecast; here no item fails or renews, and a promotion's seeded adoptions spread through followers' feeds at a per-view rate set by the item."
+  },
+  "lineage": [],
+  "notes": "forcing_event other: the November issue's editorial close (the pick is locked on 28 October 2026 for the 3 November 2026 send). role_family other: the newsletter editor. scoring_unit other: external stars in the repository's first 90 days public.",
+  "registered": "2026-10-15T08:26:26Z"
+}
