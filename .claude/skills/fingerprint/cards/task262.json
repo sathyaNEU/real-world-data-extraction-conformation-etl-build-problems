@@ -1,0 +1,94 @@
+{
+  "task": "task262",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "seed DA12 (a commerce platform's order-notification P99) set aside at the draw: its only candidate stumps were the fulfilment-order join (data semantics, ETL-led) or censoring a seconds-scale percentile; redrawn inside Descriptive, keeping the number",
+  "domain": "sociology-demography",
+  "subdomain": "social-mobility-inequality-measurement",
+  "niche": "a regional intergenerational earnings elasticity on parents' five-year average income, when the five-year tax history exists only for the families that filed every year and the census gives one year for everyone",
+  "objective": "descriptive-distribution",
+  "shape": "07",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "the foundation's director of programs, who recommends the region for the 2027 Opportunity Pathways program to the board of trustees",
+  "role_family": "programme_officer",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "intergenerational_cohort_extract.csv",
+    "rows": 0,
+    "entity": "one child in the linked birth cohorts",
+    "grain": "child",
+    "source": "synthetic (constructed in the layout of a census-linked intergenerational income extract from a provincial research data centre)"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "foundation_or_funder",
+  "world": {
+    "geography": "Canada, an unnamed province (invented foundation, research data centre and eight invented regions)",
+    "currency": "CAD",
+    "org_type": "private charitable foundation (invented)",
+    "invented_names": [
+      "Ellery Foundation",
+      "Opportunity Pathways",
+      "Provincial Research Data Centre",
+      "Arlow Metro",
+      "Halverston",
+      "Tamsey North",
+      "Brannock Valley",
+      "Corrin Lakes",
+      "Fennick Coast",
+      "Ostler Plains",
+      "Wyecombe"
+    ],
+    "people": [
+      "Monique Webb",
+      "Carl Mcclain",
+      "Lawrence Ferguson"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is a slope on a long-run average that is measured in full only for a subsample selected on its level, while every unit carries one noisy single reading; the noise variance measured within the subsample carries to the whole population but the subsample's reliability ratio does not, because the subsample's spread of the long-run level is narrower, so the slope on the subsample's averages, the slope on the single readings and that slope rescaled by the subsample's reliability each name a different group, and only the whole population's moments corrected by the carried noise variance give the answer.",
+  "driver_concrete": "Each region's intergenerational elasticity of children's earnings on their parents' five-year average income has to cover every child, but the five-year tax history exists only for the families that filed in every year, a narrower and better-off group; the census income covers everyone for one year with a transitory part whose variance, measured within the filers' five years, holds for all families, while the filers' reliability ratio does not, so regressing on the filers' averages, on the census year, or dividing the census slope by the filers' ratio names other regions.",
+  "stump": "A strong analyst regresses children's earnings on the brief's five-year average among the families with a complete tax history and names Halverston (or, with every child on the census year, Arlow Metro; or with that slope divided by each region's filers' reliability ratio, Tamsey North), when across every child, the census year's transitory part taken out by the variance the tax history shows, Brannock Valley's elasticity stands highest.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who deflates, links and reads every field correctly takes the brief's long-run income where the tax history has five years of it, regresses children's earnings on it among the families that filed every year and files Halverston, when the whole cohort's census-year elasticity corrected by the transitory variance the tax history shows files Brannock Valley.",
+  "domain_test": "The deciding quantity is the intergenerational earnings elasticity on parents' long-run income, the social-mobility field's own measure, with the census year's transitory income taken out by the variance the five-year tax history shows; with a plant's output and its input price swapped in there is no parent-child link, no census and tax coverage split by filing and no transitory income, and the task no longer decides anything.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task256": "task256 carries a reference survey's multivariate body-measurement distribution to a workforce through conditional distributions given two recorded measurements, to a share inside a box of ranges; task262 de-attenuates a regression slope by a within-family transitory income variance measured over five tax years and carried to the census population: no conditional distribution, no box, a repeated-measures variance component separating signal from noise",
+    "task54": "task54 multiplies a forward exposure integral by event rates recovered from closed investigations (logistics, anomaly); task262 corrects a cross-sectional intergenerational elasticity for the transitory part of one year's income"
+  },
+  "lineage": [],
+  "notes": "",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "sociology-demography/social-mobility-inequality-measurement/2",
+  "layer1": [
+    "census geographies changing between decades",
+    "linked household and person files",
+    "units, time and scale (census-year dollars against constant tax-year dollars)",
+    "real coverage and missingness (non-filers absent from the tax history)",
+    "documentation that has to be read"
+  ],
+  "registered": "2026-10-15T08:18:34Z"
+}

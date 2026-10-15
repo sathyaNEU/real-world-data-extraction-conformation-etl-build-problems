@@ -1,0 +1,39 @@
+{
+  "task": "task262",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "sociology-demography",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-15",
+  "stump": "The default path names Halverston because it measures each region's elasticity only on the families with a complete five-year tax history, a narrower and better-off slice everywhere but Halverston; across every child, with the census year's transitory part taken out by the variance the tax history shows within families, Brannock Valley stands highest.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.06 (task459, task253 v3, task34 lineage); structural repeats of task256 v1 and task54 differentiated"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: region parameters (scratch refine.py: margins to 1.2 on the golden, 1.15 on each rung), semantic fork table, ladder, closure, literal reader, oracles, the asks and their devices, ask sheet, prompt.txt, then precut.py",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "draw": {
+    "card": "cards/task262.json registered 2026-10-15T08:18:34Z",
+    "guard": "WARN (question form which); nearest driver 0.06"
+  }
+}
