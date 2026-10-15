@@ -1,0 +1,223 @@
+{
+  "task": "task142",
+  "title": "How many visits of Bellbird Home Nursing's 850-visit January to March 2027 Hospital in the Home overflow block each of Ironbark Health Alliance's five members books",
+  "domain": "Healthcare Delivery & Health Economics",
+  "client_domain": "Healthcare Delivery & Health Economics",
+  "subdomain": "utilization-access-demand-forecasting (Hospital in the Home capacity: each member's 90th-percentile visit requirement for a quarter not yet open, built from planned admissions and the stays on file, against a capped block of contract visits booked in a filed order)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "05: allocation of a fixed block (850 visits in lots of 25) across five members in a filed order, with each member's requirement, two July to September 2026 tables (what the Alliance owes Bellbird by member and month; each member's referrals and Bellbird's two response shares) and one chart (payable visits by week and member)",
+  "as_of": "2026-11-03",
+  "deliverables": [
+    "hith_overflow_block_2027q1.xlsx",
+    "bellbird_weekly_visits_2026q3.png"
+  ],
+  "distractor_files": [
+    "hith_patient_experience_survey_2025-26.xlsx",
+    "bellbird_service_report_2025-26.pdf",
+    "bellbird_declined_referrals_2025-26.csv"
+  ],
+  "input_gates": {
+    "files": 20,
+    "formats": [
+      "csv",
+      "docx",
+      "jsonl",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "hith_census_daily_2025-07-01_to_2026-09-30.csv",
+    "largest_file_rows": 32517
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task142/generator/build.py (seeded, deterministic) around a fictional purchasing alliance of five Victorian public health services (Ironbark Health Alliance), its members, a fictional private home nursing provider (Bellbird Home Nursing) and their people; no real organisation, person or system is depicted. Diagnosis codes follow ICD-10-AM categories in form only.",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-15",
+  "generator": "task142/generator/build.py",
+  "files": [
+    {
+      "path": "alliance_finance_calendar_2026-27.csv",
+      "format": "csv",
+      "bytes": 15642,
+      "rows": 365,
+      "source": "Constructed: Alliance finance calendar 2026-27 with pay weeks and Victorian public holidays",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "alliance_member_campuses.csv",
+      "format": "csv",
+      "bytes": 771,
+      "rows": 9,
+      "source": "Constructed: Members' campus codes with validity dates (Altona Park merger, March 2025)",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bellbird_agreement_schedule2_2027q1_block.pdf",
+      "format": "pdf",
+      "bytes": 45433,
+      "rows": null,
+      "source": "Constructed: Bellbird agreement, Schedule 2 (Variation 9): the January to March 2027 overflow block",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bellbird_agreement_schedules3-4_fees_and_service_levels.pdf",
+      "format": "pdf",
+      "bytes": 45694,
+      "rows": null,
+      "source": "Constructed: Bellbird agreement, Schedules 3 and 4 (Variation 8): fees, referrals and service levels",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bellbird_client_accounts.csv",
+      "format": "csv",
+      "bytes": 729,
+      "rows": 7,
+      "source": "Constructed: Bellbird client accounts for the Alliance and its Members",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bellbird_declined_referrals_2025-26.csv",
+      "format": "csv",
+      "bytes": 4738,
+      "rows": 52,
+      "source": "Constructed: Referrals Bellbird declined in 2025-26, with reasons",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bellbird_intake_register_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 52363,
+      "rows": null,
+      "source": "Constructed: Bellbird intake line log, 2026",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bellbird_service_report_2025-26.pdf",
+      "format": "pdf",
+      "bytes": 52162,
+      "rows": null,
+      "source": "Constructed: Bellbird service report to the Alliance, 2025-26",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bellbird_visits_2026-07-01_to_2026-09-30.jsonl",
+      "format": "jsonl",
+      "bytes": 165138,
+      "rows": 689,
+      "source": "Constructed: Bellbird visit records for the Alliance's patients, July to September 2026 (UTC)",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bji_at_home_pathway_northgate_westmere_2026.docx",
+      "format": "docx",
+      "bytes": 10206,
+      "rows": null,
+      "source": "Constructed: Bone and joint infection at home pathway for Northgate and Westmere, August 2026",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "data_dictionary.xlsx",
+      "format": "xlsx",
+      "bytes": 9043,
+      "rows": null,
+      "source": "Constructed: Field definitions for the overflow files",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest.csv",
+      "format": "csv",
+      "bytes": 3773,
+      "rows": 19,
+      "source": "Constructed: Files in the set, with source, period and preparation",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hith_census_daily_2025-07-01_to_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 1519779,
+      "rows": 32517,
+      "source": "Constructed: Hospital in the Home daily census, 1 July 2025 to 30 September 2026, with each day's nurse visits",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hith_episodes_2024-04-01_to_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 468768,
+      "rows": 7703,
+      "source": "Constructed: Hospital in the Home episodes admitted 1 April 2024 to 30 September 2026 from the Alliance warehouse (Members' admitted episode returns)",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hith_inhouse_capacity_return_2027q1.xlsx",
+      "format": "xlsx",
+      "bytes": 7356,
+      "rows": null,
+      "source": "Constructed: In-house visit capacity return for January to March 2027",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hith_operating_plans_2026-27_rev_oct2026.xlsx",
+      "format": "xlsx",
+      "bytes": 17242,
+      "rows": null,
+      "source": "Constructed: Members' Hospital in the Home operating plans 2026-27, revision 1 of October 2026",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hith_patient_experience_survey_2025-26.xlsx",
+      "format": "xlsx",
+      "bytes": 7606,
+      "rows": null,
+      "source": "Constructed: Hospital in the Home patient experience survey 2025-26",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hith_program_stream_crosswalk_2025-07.csv",
+      "format": "csv",
+      "bytes": 1355,
+      "rows": 21,
+      "source": "Constructed: Program codes used to 30 June 2025 mapped to the July 2025 streams",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hith_program_streams_and_visit_schedule_2025-07.pdf",
+      "format": "pdf",
+      "bytes": 52637,
+      "rows": null,
+      "source": "Constructed: Hospital in the Home program streams and visit schedule, July 2025 (clinical governance)",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "referral_portal_bellbird_2026-07-01_to_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 19274,
+      "rows": 212,
+      "source": "Constructed: Referrals sent to Bellbird through the Alliance referral portal, July to September 2026",
+      "date": "2026-11-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

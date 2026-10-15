@@ -1,0 +1,179 @@
+{
+  "call": {
+    "booking": {
+      "Northgate": "300",
+      "Riverbend": "250",
+      "Westmere": "225",
+      "Kingsdale": "75",
+      "Hillcrest": "0"
+    },
+    "lots": {
+      "Northgate": "12",
+      "Riverbend": "10",
+      "Westmere": "9",
+      "Kingsdale": "3",
+      "Hillcrest": "0"
+    },
+    "block": "850",
+    "lot": "25",
+    "last_member": "Kingsdale",
+    "left": "0",
+    "first_three_visits": "775"
+  },
+  "components": {
+    "requirement_nearest_50": {
+      "Northgate": "2,400",
+      "Riverbend": "2,150",
+      "Westmere": "1,800",
+      "Kingsdale": "1,400",
+      "Hillcrest": "1,250"
+    },
+    "lots_needed_first_three": {
+      "Northgate": "12",
+      "Riverbend": "10",
+      "Westmere": "9"
+    }
+  },
+  "steps": {
+    "plan_q": {
+      "Northgate": "2,143",
+      "Riverbend": "1,905",
+      "Westmere": "1,570",
+      "Kingsdale": "1,209",
+      "Hillcrest": "1,064"
+    },
+    "capacity": {
+      "Northgate": "2,112",
+      "Riverbend": "1,911",
+      "Westmere": "1,589",
+      "Kingsdale": "1,246",
+      "Hillcrest": "1,086"
+    },
+    "pool_first_admission": "1 April 2024",
+    "pool_last_admission": "30 June 2026",
+    "quarter": "1 January to 31 March 2027",
+    "percentile": "90",
+    "schedule2_clauses": [
+      "2.2",
+      "2.3",
+      "2.4",
+      "2.5",
+      "2.6",
+      "2.7"
+    ]
+  },
+  "default_path": {
+    "booking": {
+      "Northgate": "100",
+      "Riverbend": "50",
+      "Westmere": "50",
+      "Kingsdale": "25",
+      "Hillcrest": "25"
+    },
+    "left": "600",
+    "booked": "250",
+    "requirement_nearest_50": {
+      "Northgate": "2,200",
+      "Riverbend": "1,950",
+      "Westmere": "1,600",
+      "Kingsdale": "1,250",
+      "Hillcrest": "1,100"
+    }
+  },
+  "deliverables": {
+    "owed": {
+      "Northgate": {
+        "July": "$3,819",
+        "August": "$14,501",
+        "September": "$8,112"
+      },
+      "Riverbend": {
+        "July": "$5,856",
+        "August": "$4,174",
+        "September": "$13,349"
+      },
+      "Westmere": {
+        "July": "$4,474",
+        "August": "$6,436",
+        "September": "$6,143"
+      },
+      "Kingsdale": {
+        "July": "$7,059",
+        "August": "$5,351",
+        "September": "$8,787"
+      },
+      "Hillcrest": {
+        "July": "$2,652",
+        "August": "$6,641",
+        "September": "$7,163"
+      }
+    },
+    "owed_member_quarter": {
+      "Northgate": "$26,432",
+      "Riverbend": "$23,379",
+      "Westmere": "$17,053",
+      "Kingsdale": "$21,197",
+      "Hillcrest": "$16,456"
+    },
+    "owed_month_total": {
+      "July": "$23,860",
+      "August": "$37,103",
+      "September": "$43,554"
+    },
+    "owed_total": "$104,517",
+    "referrals": {
+      "Northgate": {
+        "made": "56",
+        "accepted_2h": "42",
+        "accepted_2h_pct": "75.0",
+        "accepted": "51",
+        "visited_24h": "48",
+        "visited_24h_pct": "94.1"
+      },
+      "Riverbend": {
+        "made": "43",
+        "accepted_2h": "35",
+        "accepted_2h_pct": "81.4",
+        "accepted": "39",
+        "visited_24h": "32",
+        "visited_24h_pct": "82.1"
+      },
+      "Westmere": {
+        "made": "40",
+        "accepted_2h": "33",
+        "accepted_2h_pct": "82.5",
+        "accepted": "36",
+        "visited_24h": "34",
+        "visited_24h_pct": "94.4"
+      },
+      "Kingsdale": {
+        "made": "45",
+        "accepted_2h": "33",
+        "accepted_2h_pct": "73.3",
+        "accepted": "39",
+        "visited_24h": "33",
+        "visited_24h_pct": "84.6"
+      },
+      "Hillcrest": {
+        "made": "37",
+        "accepted_2h": "28",
+        "accepted_2h_pct": "75.7",
+        "accepted": "32",
+        "visited_24h": "29",
+        "visited_24h_pct": "90.6"
+      }
+    },
+    "chart_totals": {
+      "Northgate": "161",
+      "Riverbend": "140",
+      "Westmere": "106",
+      "Kingsdale": "130",
+      "Hillcrest": "103"
+    },
+    "chart_top": "Northgate",
+    "chart_all": "640",
+    "chart_weeks": "14",
+    "outage": "10 to 13 August 2026",
+    "linked": "14 August 2026"
+  }
+}

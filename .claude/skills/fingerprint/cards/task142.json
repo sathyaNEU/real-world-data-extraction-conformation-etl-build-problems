@@ -11,8 +11,8 @@
   "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Northgate Health books 300 visits, Riverbend Health 250, Westmere Health 225, Kingsdale Health 75 and Hillcrest Health none: the 850-visit block runs out at Kingsdale",
+  "answer_source": "submission.md (Final Recommendation) and generator/figures.json",
   "gap": [
     "population",
     "time"
@@ -36,8 +36,8 @@
   "role_family": "programme_officer",
   "scoring_unit": "units served",
   "spine": {
-    "file": "hith_census_days_2024-04-01_to_2026-09-30.csv",
-    "rows": 0,
+    "file": "hith_census_daily_2025-07-01_to_2026-09-30.csv",
+    "rows": 32517,
     "entity": "one day a member health service's admitted Hospital in the Home patient spent at home under the program, with that day's nurse visits",
     "grain": "patient x day",
     "source": "constructed (the alliance's HITH census warehouse, loaded from the members' daily census returns)"
@@ -70,7 +70,7 @@
   },
   "deliverables": [
     "hith_overflow_block_2027q1.xlsx",
-    "hith_monthly_visits_2024-26.png"
+    "bellbird_weekly_visits_2026q3.png"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
@@ -89,8 +89,9 @@
     "a course interrupted by a ward readmission returned as two HITH episodes under one patient number",
     "episodes still at home on 30 September 2026 present only to that date",
     "the provider's visit export stamped in UTC by its mobile platform",
-    "provider visits re-posted by the mobile app after offline working, under fresh visit numbers",
-    "referrals resent through the alliance portal when the first was not acknowledged, and provider acceptance times taken from its own platform"
+    "provider visits re-posted by the mobile app under fresh visit numbers, beside genuine same-day second visits",
+    "the provider's mobile app status codes changing with an app release in the quarter",
+    "a referral portal outage: referrals telephoned to the provider's intake line, and the provider's holding files under the alliance's billing account with the intake log number until the desk linked them"
   ],
   "mechanism_source": "design_note",
   "differentiation": {},
