@@ -1,0 +1,96 @@
+{
+  "task": "task460",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "seed ET17 (all-in retail electricity price in restructured states): the world and the decision kept (a national retailer siting one on-site solar pilot among its stores); the quantity moved from the price a kWh saves to the grid carbon dioxide a MWh avoids, because the energy domain has no task type serving ETL and emissions accounting does",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "a national home and garden retailer sites its 2027 on-site solar pilot at the store whose array would avoid the most grid carbon dioxide per megawatt-hour generated: the operating-margin emission rate of each store's balancing area in the hours the array would have generated in 2025, estimated hour by hour from the areas' hourly generation by fuel, against the areas' published annual average and non-baseload output rates",
+  "objective": "etl",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G7",
+    "G6",
+    "G2"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the retailer's director of energy and sustainability",
+  "role_family": "procurement_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "balancing_area_hourly_generation_2025.csv",
+    "rows": 70080,
+    "entity": "one balancing area's hour: demand, net generation by fuel and scheduled interchange",
+    "grain": "balancing area x hour (UTC)",
+    "source": "synthetic (constructed in the layout of a national hourly balancing-area operating data file)"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "retailer_or_ecommerce",
+  "world": {
+    "geography": "an unnamed country's eight balancing areas (invented), one candidate store in each",
+    "currency": "USD",
+    "org_type": "national home and garden retailer",
+    "invented_names": [
+      "Corvane Home & Garden",
+      "Gorsefield",
+      "Brackwell",
+      "Quillbury",
+      "Tennaford",
+      "Faraview",
+      "Ostlemere",
+      "Kestrel Point",
+      "Halvane"
+    ],
+    "people": [
+      "Barbara Rangel",
+      "Joel Russo"
+    ]
+  },
+  "deliverables": [
+    "solar_pilot_site_recommendation_2027.pdf",
+    "pilot_sites_hourly_avoided_emissions_2025.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The decisive quantity is what adding a new zero-rate source removes from a system's total, set by the units that respond at the margin in the intervals the new source operates; it has to be estimated from the interval-by-interval changes in the system's records and weighted by the new source's own operating profile, while the period's average rate, a published annual proxy for the margin and a margin averaged over every interval each rank the candidate locations differently.",
+  "driver_concrete": "Each candidate store's on-site array avoids the carbon dioxide of the generators its balancing area would otherwise run in the hours the array generates: the operating-margin emission rate, estimated hour by hour (season by hour of day) from the area's 2025 hourly changes in generation by fuel and the fuels' emission rates, weighted by the array's modelled hourly output; not the area's published annual average output rate, not its published non-baseload rate, not the hourly average intensity in the array's hours, not a marginal rate over all hours or over the store's own load.",
+  "stump": "The default path ranks the eight stores on the published 2025 annual average output emission rate of each store's balancing area and pilots at Brackwell, the coal-heavy area; the analyst who reads 'avoids' as the margin takes the published non-baseload rate (Quillbury) or a marginal rate estimated over all hours (Tennaford, where coal sets the margin at night); weighting the hour-by-hour marginal rate by the array's output pilots at Gorsefield, where coal sets the margin in daylight while gas carries the nights.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file correctly ranks the stores on each balancing area's published 2025 annual average output emission rate and pilots at Brackwell, or on the published non-baseload rate, the usual proxy for avoided emissions, and pilots at Quillbury; the stronger one estimates the marginal rate from the hourly data over all hours and pilots at Tennaford.",
+  "domain_test": "The deciding quantity is the grid carbon dioxide a megawatt-hour of on-site solar avoids, the operating-margin emission rate in the hours the array generates, estimated the way emissions accounting estimates a grid-connected project's effect (hourly marginal emission factors from generation changes, weighted by the project's output); with another field's nouns ('which clinic's new evening shift cuts the most waiting per hour staffed') there is no dispatch order deciding which generators respond in which hours, so the task stops reading the same.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:operating-margin-weighted-by-project-output",
+  "layer1": [
+    "several sources for one picture: hourly balancing-area generation by fuel, plant emission rates and a plant register, the array output model, the published annual rates",
+    "clocks: grid data in UTC hour ending with a local-time column, the array model in local standard time hour beginning, daylight saving in the local columns",
+    "units: emission rates in pounds per megawatt-hour, the charter's tonnes, array output in kilowatts AC for a stated DC size",
+    "genuine gaps: hours the operator imputed, a negative net generation reading for a fuel with station service, a balancing area renamed mid-year"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task105": "task105 v1 limits a new outlet's first-year take to the commitments agreed after it opens; task460 reads what a new zero-rate source removes from a system's total from the units at the margin in the hours it operates: no shared quantity, evidence or move.",
+    "task135": "task135 scales a short-interval variance of a weighted sum whose components are struck at different times of day; task460 estimates a marginal rate from interval-by-interval changes and weights it by a new source's operating profile: no shared quantity or move.",
+    "task451": "task451 completes period totals not yet observed at a cut from arrival delays that changed mid-period; task460 sets a new source's effect by the margin in its own operating hours: no shared quantity, evidence or move."
+  },
+  "lineage": [],
+  "notes": "guard WARN overuse.shape (01 in 3 of 12: a pick among eight stores is a ranked list under a cap of one) and repeat.question_form (where, after task145: a siting call asks where)",
+  "registered": "2026-10-15T10:49:29Z"
+}

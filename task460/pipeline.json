@@ -1,0 +1,23 @@
+{
+  "task": "task460",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-15",
+  "stump": "The default path ranks the eight stores on the published 2025 annual average output emission rate of each store's balancing area and pilots at Brackwell; the published non-baseload rate pilots at Quillbury and a marginal rate over all hours at Tennaford; the hour-by-hour marginal rate weighted by the array's output pilots at Gorsefield.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {"exit": null, "date": ""},
+  "leak": {"leak_py": "", "reader": ""},
+  "duplicate_check": {"heart": "", "nearest": "0.08 task94 lineage, 0.07 task123, task135, task459"},
+  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "returned": [],
+  "resume": "stage 2: write the default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet and prompt to precut exit 0; then build the dispatch generator",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET17 (analytical_tasks/07_data_extraction_conformation): a national retailer siting one on-site solar pilot kept; the quantity moved from the price a kWh saves to the grid CO2 a MWh avoids, since emissions accounting is the ETL-serving task type for this world"
+}
