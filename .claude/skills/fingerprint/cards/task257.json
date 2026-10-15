@@ -1,0 +1,90 @@
+{
+  "task": "task257",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "registered": "2026-10-15T00:12:39Z",
+  "slot_note": "wave 2 of sathay3012 (Descriptive lane); the seed DA07 (a parcel carrier's van tiers by duty-cycle fuel economy) gave the number only: its world's natural step, the duty-cycle mix, reads as the target's definition once the estimand is filed, so the world is redrawn",
+  "domain": "psychology-behavioral-science",
+  "subdomain": "psychometric-measurement-scale-validation",
+  "client_domain": "psychology-behavioral-science",
+  "niche": "deciding how many sub-scale scores a grocery chain's employee engagement dashboard reports, from the dimensionality of its 30 five-point survey items",
+  "objective": "descriptive-distribution",
+  "shape": "07",
+  "decision_type": "structural_verdict",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "head of employee listening",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "kestrava_brackenmere_2026_responses.csv",
+    "rows": 0,
+    "entity": "one respondent's answer to one survey item",
+    "grain": "respondent x item",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "retailer_or_ecommerce",
+  "world": {
+    "geography": "Canada (Ontario, Quebec and New Brunswick; a fictional grocery chain, its survey vendor and its people)",
+    "currency": "CAD",
+    "org_type": "grocery retailer",
+    "invented_names": [
+      "Brackenmere Markets",
+      "Kestrava Listening"
+    ],
+    "people": [
+      "Alexander Copeland",
+      "Maria Murray",
+      "Melissa Vang"
+    ]
+  },
+  "deliverables": [
+    "engagement_subscales_2027.xlsx",
+    "engagement_dimensions_2026.png",
+    "engagement_subscales_2027.md"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is how many distinct latent dimensions a set of ordered-category responses carries when some items sit near the top of their scale and others near the bottom; correlating the category scores as if they were measurements makes items that share a lopsided distribution correlate with each other beyond what their content shares, so a rule that keeps the dimensions standing above random data keeps artificial ones, and only correlating the responses as ordered categories of underlying continuous views shows the true number.",
+  "driver_concrete": "Thirty five-point engagement items from about 14,000 Brackenmere employees: the tools items are answered agree or strongly agree by nearly everyone and the growth items mostly disagree; Pearson correlations of the item scores give a fourth and fifth eigenvalue above the random-data values, so the reporting standard's random-data rule keeps five sub-scales with tools and growth split from their partners, while polychoric correlations keep three (resources, leadership, connection).",
+  "stump": "A competent solver reverse-scores the negative items, drops the not-applicable codes, correlates the 30 item scores, applies the standard's random-data rule and reports five sub-scales (tools and growth split off as their own); the step that lands it there is treating lopsided five-point categories as interval scores, which manufactures two dimensions out of item difficulty, so only ordinal (polychoric) correlations give the three the items measure.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the export and reads every item and rule correctly correlates the item scores, keeps the dimensions that beat random data, and reports five sub-scales; correlating the responses as ordered categories gives three.",
+  "domain_test": "The deciding quantity is the number of latent dimensions a psychological scale measures, read from the items' ordinal correlation structure with the field's retention test; swapped into a field with no latent construct measured by rating items (stock lines, hospital wards), there is no item, no category threshold and no dimensionality to test, so the task no longer reads the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "psychology-behavioral-science/psychometric-measurement-scale-validation/2",
+  "layer1": [
+    "French and English questionnaire versions with different item order, joined through the codebook's crosswalk",
+    "negatively worded items to reverse-score",
+    "not-applicable and prefer-not-to-say codes",
+    "resubmitted surveys under one invitation token",
+    "the vendor's test tokens",
+    "store and department codes renamed in a mid-year reorganisation",
+    "an effective-dated HR roster",
+    "UTC timestamps against store-local survey windows"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "v1 drawn 2026-10-15 by sathay3012 for wave 2. The seed DA07 gave the number only (its duty-cycle step reads as the target's definition once filed); the world is redrawn. WARN three_rules.strategy_risk answered by the analyst test; WARN repeat.gate_g and overuse.gate_g answered in the design note's Draw (a dimensionality count is a method choice by nature)."
+}

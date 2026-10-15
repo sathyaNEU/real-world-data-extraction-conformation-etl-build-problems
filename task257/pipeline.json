@@ -1,0 +1,39 @@
+{
+  "task": "task257",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "psychology-behavioral-science",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-15",
+  "stump": "The default path correlates the 30 five-point item scores as numbers and keeps five dimensions, splitting the tools items and the growth items into sub-scales of their own; the step that lands it there is treating answers that pile up at the top of the scale (tools) and at the bottom (growth) as interval scores, whose correlations carry the items' shared lopsidedness as a dimension of its own, so only correlating the responses as ordered categories of the employees' underlying views (polychoric correlations) shows the three dimensions the items measure.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: readability screen, semantic fork table, ladder, closure table, literal reader, oracles, ask sheet, prompt.txt, then precut.py",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "draw": {
+    "card": "cards/task257.json registered 2026-10-15",
+    "guard": "WARN (three_rules.strategy_risk, repeat.gate_g, overuse.gate_g), each answered in the design note's Draw; nearest driver 0.05"
+  }
+}
