@@ -11,13 +11,12 @@
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": 1,
-    "date": "2026-10-15",
-    "fails": "the ask sheet only (pair ceiling 58.2, mirror leakage 54, the cracker lands Ask 1): Ask 1's two devices filed for determinism"
+    "exit": 0,
+    "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-15 on the final rebuild, the same seven lines answered in the build record",
-    "reader": "no leak 2026-10-15 (Q6 analytical); realism tells and the paid-ask readings taken into the FIX_NOW pass; a targeted re-read of the three changed documents owed"
+    "leak_py": "REVIEW 2026-10-15 on the redrawn pack, the same seven lines answered in the build record",
+    "reader": "no leak 2026-10-15 (Q6 analytical) on the stage 3 pack; a targeted re-read owed of the dictionary, the pick memo, the review workbook, the manifest and the new claim merge file"
   },
   "duplicate_check": {
     "heart": "PASS 2026-10-15 on the final rebuild, nearest 0.06 (task128 ledger row)",
@@ -25,11 +24,11 @@
   },
   "judge": {
     "verdict": "NOT_DETERMINISTIC on supplementary 3 only (the main call and supplementary 1, 2 and 4 reproduce)",
-    "disposition": "FIX_NOW, applied 2026-10-15 (Ask 1's intake filed as a WHAT in the dictionary, counts unchanged; the amount line; memo paragraph 2 stated once); the one re-judge owed",
+    "disposition": "FIX_NOW, applied 2026-10-15 (Ask 1's intake filed as a WHAT in the dictionary, counts unchanged; the amount line; memo paragraph 2 stated once), then Ask 1's silent device redrawn (the claims system's merge file); the one re-judge owed",
     "report": "task139/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: the targeted re-read of claims_data_dictionary.xlsx, ay2027_indemnity_pick_ern_credit.pdf and kpa_ern_indemnity_verification_2026-06-30.xlsx, then the one re-judge; precut is red on the ask sheet (Ask 1's devices are now filed definitions, pair ceiling 58.2), so an Ask 1 rework is owed before ship, best decided before the re-judge so it sees the final ask layer",
+  "resume": "stage 4: the targeted re-read of claims_data_dictionary.xlsx, ay2027_indemnity_pick_ern_credit.pdf, kpa_ern_indemnity_verification_2026-06-30.xlsx, export_manifest.csv and the new claim_merges_2025.csv, then the one re-judge; every free gate green (precut 0 FAIL, pair ceiling 32.9)",
   "approved": null,
   "delivered": null,
   "portal": null,

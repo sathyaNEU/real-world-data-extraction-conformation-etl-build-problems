@@ -73,7 +73,7 @@ def run(target, golden, W=None, meta_path=None):
     ok(sorted(listed) == sorted(f for f in files if f != K.MANIFEST), "H9: the manifest lists every shipped file once")
     dwb = openpyxl.load_workbook(os.path.join(target, K.DICTIONARY), read_only=True)
     in_dict = {r[0] for r in dwb.worksheets[0].iter_rows(min_row=5, values_only=True) if r and r[0]}
-    ok(in_dict == {K.EXTRACT, K.REGISTER, K.NURSE_LOG, K.PAYMENTS, K.ACH_RETURNS, K.CROSSWALK},
+    ok(in_dict == {K.EXTRACT, K.MERGES, K.REGISTER, K.NURSE_LOG, K.PAYMENTS, K.ACH_RETURNS, K.CROSSWALK},
        ("H9: the dictionary names the files its scope line names", sorted(in_dict)))
 
     # ---- the pack reads back to the world (R2: every mess item resolves, nothing lost) -------------------------
@@ -346,14 +346,18 @@ def run(target, golden, W=None, meta_path=None):
     ok(len(hit5) == 63 and len(set(hit5) - set(twin)) == 1,
        ("SF22: without disability_began one converted claim listed once pairs a new-number claim", len(hit5)))
     x25p = ex[(ex["report_date"] >= "2025-01-01") & (ex["report_date"] <= "2025-12-31") & ex["segment"].isin(K.PROG)]
+    merged = set(D["merges"]["claim_no"])
     lit, lit_dates = {s: 0 for s in K.PROG}, {s: 0 for s in K.PROG}
     for r in x25p.itertuples(index=False):
         if r.claim_no in twin:                       # listed twice: counted once, on its new-number row
             continue
+        if r.claim_no in merged:                     # merged into another claim: counted with that claim
+            continue
         by_dates = r.disability_began != "" and r.disability_began <= r.report_date
         lit[r.segment] += by_dates if r.legacy_claim_no else (r.time_off_at_report == "Y")
         lit_dates[r.segment] += by_dates
-    ok(lit == a1 and lit_dates == a1, ("SF21 SF22: the dictionary executed literally is the golden", lit, a1))
+    ok(lit == a1 and lit_dates == a1, ("SF21 SF22 SF28: the dictionary and the merges executed literally are the golden",
+                                       lit, a1))
     ok([a1[s] for s in K.PROG] == [1537, 822, 939, 708, 1356, 770, 1109, 666], ("Ask 1 golden", a1))
     # the same intake definition on the main call's window: every row there is a new-system row and the flag is it
     xm = ex[(ex["report_date"] >= "2025-10-01") & (ex["report_date"] <= "2026-09-30") & ex["segment"].isin(K.PROG)]
@@ -376,9 +380,59 @@ def run(target, golden, W=None, meta_path=None):
     s6 = C.intakes(D, dt.date(2025, 1, 1), dt.date(2025, 12, 31), dedup="global")
     took25 = x25p[np.where(x25p["legacy_claim_no"] != "", (x25p["disability_began"] != "") &
                            (x25p["disability_began"] <= x25p["report_date"]), x25p["time_off_at_report"] == "Y")]
+    took25 = took25[~took25["claim_no"].isin(merged)]
     ok(all(s6[s] < a1[s] for s in K.PROG) and int((took25.groupby(pkey).size() > 1).sum()) == 148 and
        (min(a1[s] - s6[s] for s in K.PROG), max(a1[s] - s6[s] for s in K.PROG)) == (3, 34),
        ("SF22: a dedup on those fields across the year deletes genuine same-day claims in every segment", s6))
+    # SF28, Ask 1's silent device: from the upgrade to 15 September 2025 a resent first report set up a second claim,
+    # merged into the first when found; the merge sits only in the claims system's merge file
+    mg = D["merges"]
+    on_ex = set(ex["claim_no"])
+    exi = ex.set_index("claim_no")
+    ok(mg["claim_no"].is_unique and mg["merged_into"].isin(on_ex).all() and not mg["merged_into"].isin(merged).any(),
+       "SF28: one row a merged claim, each merged into a claim on the extract that was never merged itself")
+    mx = mg[mg["claim_no"].isin(on_ex)]
+    rm, sv = exi.loc[mx["claim_no"]], exi.loc[mx["merged_into"]]
+    ok(len(mx) >= 40 and (rm["time_off_at_report"] == "Y").all() and (rm["legacy_claim_no"] == "").all() and
+       (rm["claim_type"] == "MO").all() and (rm["status"] == "CLOSED").all() and
+       list(rm["closed_date"]) == list(mx["merge_date"]),
+       ("SF28: each merged claim on the extract is a new-system claim flagged Y, medical only, closed on its merge date",
+        len(mx)))
+    lag = (pd.to_datetime(rm["report_date"]).values - pd.to_datetime(sv["report_date"]).values) / np.timedelta64(1, "D")
+    ok(all(list(rm[c]) == list(sv[c]) for c in ("office", "segment", "class_code", "injury_date", "disability_began",
+                                                 "time_off_at_report")) and lag.min() >= 2 and lag.max() <= 12,
+       "SF28: a merged claim repeats its claim's first report, received 2 to 12 days later")
+    ok(rm["report_date"].min() >= "2025-06-04" and rm["report_date"].max() < "2025-09-15" and
+       sv["report_date"].min() >= "2025-06-02" and mg["merge_date"].str[:4].eq("2025").all() and
+       mg["merge_date"].max() <= "2025-12-31",
+       "SF28: every merged claim reported after the upgrade and before 15 September 2025, every merge in 2025")
+    ok(all(K.is_working(dt.date.fromisoformat(x)) for x in mg["merge_date"]), "SF28: every merge on a working day")
+    ok(not ((rm["report_date"] >= "2025-10-01") & (rm["report_date"] <= "2026-09-30")).any() and
+       not mx["merged_into"].map(exi["legacy_claim_no"]).ne("").any(),
+       "SF28: zero merged claims in the call's window and none among converted claims (the pilot's)")
+    nx = mg[~mg["claim_no"].isin(on_ex)]
+    ok(len(nx) >= 5 and (exi.loc[nx["merged_into"], "time_off_at_report"] == "N").all(),
+       "SF28: the merged claims off the extract repeat first reports that recorded no time lost")
+    kseg = {s: int(((rm["segment"] == s) & (rm["report_date"] <= "2025-12-31")).sum()) for s in K.PROG}
+    ok(min(kseg.values()) >= 3 and len(set(kseg.values())) >= 4 and
+       kseg == {"HC-SS": 17, "HC-OT": 8, "RW-SS": 11, "RW-OT": 4, "MF-SS": 11, "MF-OT": 7, "CN-SS": 9, "CN-OT": 6} and
+       (len(mg), len(mx), len(nx)) == (92, 86, 6), ("SF28: merged claims in every segment, the note's counts", kseg))
+    g5 = int((took25.groupby([k for k in pkey if k != "report_date"]).size() > 1).sum())
+    ok(g5 > 148, ("SF28: more genuine groups on the five first-report fields than on the six", g5))
+    s7 = C.intakes(D, dt.date(2025, 1, 1), dt.date(2025, 12, 31), merges=False)
+    s8 = C.intakes(D, dt.date(2025, 1, 1), dt.date(2025, 12, 31), merges="both")
+    s9 = C.intakes(D, dt.date(2025, 1, 1), dt.date(2025, 12, 31), dedup="global5", merges=False)
+    s1n = C.intakes(D, dt.date(2025, 1, 1), dt.date(2025, 12, 31), fix_vintage=False, dedup=False, merges=False)
+    ok(all(s7[s] - a1[s] == kseg[s] for s in K.PROG),
+       ("SF28: the dictionary executed with the merges unread, every segment high by its merged claims", s7))
+    ok(all(a1[s] - s8[s] == kseg[s] for s in K.PROG), ("SF28: both claims of each merge dropped, every segment low", s8))
+    ok(all(s9[s] < a1[s] for s in K.PROG), ("SF28: a dedup on the five first-report fields across the year, every "
+                                            "segment low (genuine same-day claims deleted)", s9))
+    ok(all(s1n[s] != a1[s] for s in K.PROG), ("Ask 1: the natural read misses every segment", s1n))
+    ok([s1n[s] for s in K.PROG] == [1638, 864, 1002, 738, 1453, 819, 1187, 706] and
+       [s7[s] for s in K.PROG] == [1554, 830, 950, 712, 1367, 777, 1118, 672] and
+       (min(a1[s] - s9[s] for s in K.PROG), max(a1[s] - s9[s] for s in K.PROG)) == (23, 186),
+       ("Ask 1: the note's stops S1 to S4", s1n, s7, s9))
     a2 = G["ask2"]
     t1_ = C.paid_2026(D, dedup_lines=False, drop_returns=False)
     t2_ = C.paid_2026(D, dedup_lines=True, drop_returns=False)
@@ -426,6 +480,9 @@ def run(target, golden, W=None, meta_path=None):
        "SF26: every voided check replaced by a new check")
     for s in K.PROG:
         ok(K.edge_distance(a2[s], 1000) >= 150, ("Ask 2 bin", s, a2[s]))
+    frozen2 = {"HC-SS": 3724902.87, "HC-OT": 4652050.38, "RW-SS": 1805107.0, "RW-OT": 3992889.77, "MF-SS": 4276854.09,
+               "MF-OT": 5232875.49, "CN-SS": 4999081.47, "CN-OT": 7281912.56}
+    ok(all(abs(a2[s] - frozen2[s]) < 0.005 for s in K.PROG), ("Ask 2 unchanged to the cent by the merged claims", a2))
     ok(len(set(a1.values())) == 8, "Ask 1 counts distinct")
 
     # ---- separation: the call never reads the ask files or the distractors -------------------------------------
@@ -434,6 +491,11 @@ def run(target, golden, W=None, meta_path=None):
     D3["ach"] = D["ach"].iloc[0:0]
     M3 = C.pilot_metrics(D3)
     ok(C.rung(M3, vol=v12)["teams"] == g["teams"], "the call unchanged with the payment files removed")
+    D4 = dict(D)
+    D4["merges"] = D["merges"].iloc[0:0]
+    ok(C.intakes(D4, dt.date(2025, 10, 1), K.EXTRACT_END) == v12 and
+       C.intakes(D, dt.date(2025, 10, 1), K.EXTRACT_END, merges=False) == v12,
+       "the call's fill check unchanged with the merge file removed or unread")
     for f in K.DISTRACTORS:
         ok(f in files, f)
     # the call reads none of: the draft, the survey, the staffing plan (calc.load opens none of them)

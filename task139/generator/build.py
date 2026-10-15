@@ -50,6 +50,7 @@ def build(out, quiet=False, W=None):
     counts[K.CROSSWALK] = K.write_csv(p(K.CROSSWALK), R.CROSS_COLS, R.crosswalk_rows())
     counts[K.PAYMENTS] = K.write_csv(p(K.PAYMENTS), R.PAY_COLS, R.payment_rows(W))
     counts[K.ACH_RETURNS] = K.write_csv(p(K.ACH_RETURNS), R.ACH_COLS, R.ach_rows(W), crlf=True)
+    counts[K.MERGES] = K.write_csv(p(K.MERGES), R.MERGE_COLS, R.merge_rows(W))
     counts[K.SURVEY] = K.write_csv(p(K.SURVEY), R.SURVEY_COLS, R.survey_rows(W), crlf=True)
     counts[K.REGISTER] = len(DOC.write_register(p(K.REGISTER), W))
     sheets = DOC.write_review_book(p(K.REVIEW_BOOK), W)
@@ -67,6 +68,7 @@ def build(out, quiet=False, W=None):
     files = [
         (K.EXTRACT, "Claims listing: claims reported January 2021 to September 2026 with time lost at first report or "
                     "indemnity paid or reserved", "Claims system", "2026-09-30", K.PEOPLE["data"]),
+        (K.MERGES, "Claims merged on the claims system in 2025", "Claims system", "2026-09-30", K.PEOPLE["data"]),
         (K.REGISTER, "ERN pilot assignment register", "Triage screen", "2025-03-07", K.PEOPLE["claimsops"]),
         (K.NURSE_LOG, "ERN pilot case log", "ERN case system", "2025-08-04", K.PEOPLE["clinical"]),
         (K.REVIEW_BOOK, "Kellerman Pryce verification workbook", K.KPA, "2026-06-30", K.PEOPLE["kpa"]),

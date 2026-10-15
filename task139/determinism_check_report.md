@@ -86,5 +86,12 @@ no graded figure moved.
 - **Changed under `target/`:** `claims_data_dictionary.xlsx`, `ay2027_indemnity_pick_ern_credit.pdf`,
   `kpa_ern_indemnity_verification_2026-06-30.xlsx` (the targeted re-read); every other file byte-identical. Outside it,
   the golden workbook's Notes line on 2025 intakes and the write-up's steps 3 and 6 follow the filed text.
-- **Owed.** The one re-judge. The filing makes Ask 1's two devices seen, so `precut.py` is red on the ask sheet (pair
-  ceiling 58.2, mirror leakage 54 per cent, the cracker lands Ask 1); an Ask 1 rework is owed before ship.
+- **Ask 1 redrawn after the filing.** Filing Ask 1's two devices left it nothing silent (precut red on the ask sheet, a
+  pair of 58.2), so a new device was added in rubric mode with every graded figure frozen: first reports an employer's
+  EDI resent between the upgrade and 15 September 2025 set up second claims, which claims staff merged into the first;
+  the merges sit only in the claims system's merge file, `claim_merges_2025.csv`, described flatly in the dictionary.
+  A literal reader counts a merged claim with the claim it joined, and Ask 1's figures stay 1,537/822/939/708/1,356/770/
+  1,109/666; read without the merge file every segment is 4 to 17 high, both claims dropped 4 to 17 low, a dedup on the
+  first-report fields 23 to 186 low (SF28, asserted). No merged claim falls in the fill check's window, the payment
+  register and the bank's returns change only in renumbered claim numbers, and Ask 2 is unchanged to the cent.
+- **Owed.** The targeted re-read and the one re-judge.

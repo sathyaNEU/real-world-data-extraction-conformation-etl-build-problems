@@ -36,7 +36,7 @@
   "scoring_unit": "per episode",
   "spine": {
     "file": "claims_extract_2021-01_to_2026-09.csv",
-    "rows": 59789,
+    "rows": 59875,
     "entity": "one claim reported to the carrier with time off work at first report, or one that later paid indemnity",
     "grain": "claim",
     "source": "constructed (the carrier's claims system listing of time-off and indemnity claims)"
@@ -87,6 +87,7 @@
     "a superseded draft of the programme charter beside the signed one",
     "converted claims carrying the legacy lost-time indicator in the new system's time-off flag",
     "claims keyed in both systems during the upgrade's parallel run",
+    "first reports resent by employers' EDI after the upgrade, set up as second claims and merged into the first, the merges only in the claims system's merge file",
     "a payment register exported at weekly-line grain with the payment amount on every line",
     "returned ACH payments only in the bank's return file",
     "voided checks with their replacements as new payments"

@@ -16,6 +16,7 @@ PAY_COLS = ["payment_no", "line", "claim_no", "benefit", "payee", "method", "che
             "period_from", "period_to", "amount", "status", "void_date"]
 ACH_COLS = ["return_date", "orig_settlement_date", "trace_number", "amount", "return_code", "return_reason",
             "individual_id", "company_name"]
+MERGE_COLS = ["claim_no", "merged_into", "merge_date", "claim_unit"]
 SURVEY_COLS = ["case_no", "sent", "returned", "q1_contact_prompt", "q2_explained_duties", "q3_employer_involved",
                "q4_overall", "back_at_work"]
 
@@ -42,6 +43,8 @@ def extract_rows(W):
     for c in W.claims:
         if not c.intake and c.dis_began > K.PULL_DATE:
             continue                     # a later conversion whose time lost has not begun is not on file yet
+        if c.merged_into >= 0 and not c.intake:
+            continue                     # a second claim with no time lost at first report and no indemnity
         converted = (c.report < K.UPGRADE and not c.native) or c.dup_of >= 0
         if c.dup_of >= 0:
             tor = "Y"
@@ -234,6 +237,19 @@ def payment_rows(W):
                              payee=p["payee"], method=p["method"], check_or_trace=p["ref"], issue_date=iso(p["issue"]),
                              period_from=iso(a), period_to=iso(b), amount="%.2f" % p["amount"], status=p["status"],
                              void_date=iso(p["void"])))
+    return rows
+
+
+def merge_rows(W):
+    """The claims system's merges in 2025: each second claim set up from a resent first report, the claim it was merged
+    into, the day and the unit; in merge order."""
+    rows = []
+    for d in W.claims:
+        if d.merged_into < 0:
+            continue
+        o = W.claims[d.merged_into]
+        rows.append(dict(claim_no=d.claim_no, merged_into=o.claim_no, merge_date=iso(d.closed), claim_unit=K.UNIT[d.seg]))
+    rows.sort(key=lambda r: (r["merge_date"], r["claim_no"]))
     return rows
 
 

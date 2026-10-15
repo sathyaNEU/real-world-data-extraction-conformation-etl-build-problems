@@ -114,6 +114,7 @@ class Claim:
     claim_no: str = ""
     dup_of: int = -1               # cutover duplicate: the converted copy of claim cid
     native: bool = False           # reported in the parallel run and carried on in the new system
+    merged_into: int = -1          # a second claim set up from a resent first report, merged into claim cid
     # nurse file
     files: list = field(default_factory=list)   # [(opened, closed, reason)]
 
@@ -417,9 +418,33 @@ def _cutover_duplicates(claims):
     return dups
 
 
+def _edi_resends(claims, start):
+    """From the 2 June 2025 upgrade until its duplicate check was switched back on (15 September 2025), a first report
+    that an employer's EDI sent again (no acknowledgment back within a few working days) set up a second claim; claims
+    staff merged each second claim into the first as they came across it. A resend arriving once the check was back
+    was matched to its claim and set up nothing."""
+    rg = K.rng("edi-resend")
+    out = []
+    cands = sorted([c for c in claims if K.UPGRADE <= c.report < K.EDI_FIX and c.dup_of < 0], key=lambda c: (c.report, c.cid))
+    for c in cands:
+        u, lag, gap = rg.random(), int(rg.integers(2, 8)), int(rg.integers(4, 36))
+        if u >= EDI_RESEND:
+            continue
+        rep = K.add_working(c.report, lag)
+        if rep >= K.EDI_FIX:
+            continue
+        d = Claim(cid=start + len(out), seg=c.seg, office=c.office, klass=c.klass, injury=c.injury, report=rep,
+                  intake=c.intake, dis_began=c.dis_began, triage=K.next_working(rep) if c.intake else None)
+        d.merged_into = c.cid
+        d.closed = K.add_working(rep, gap)          # merged on a working day, when claims staff came across it
+        out.append(d)
+    return out
+
+
 def intakes_window(claims, seg, a, b):
-    """True intakes (first report records time lost) reported a to b, the cutover's converted copies left out."""
-    return sum(1 for c in claims if c.seg == seg and c.intake and c.dup_of < 0 and a <= c.report <= b)
+    """True intakes (first report records time lost) reported a to b, the cutover's converted copies and the merged
+    second claims left out."""
+    return sum(1 for c in claims if c.seg == seg and c.intake and c.dup_of < 0 and c.merged_into < 0 and a <= c.report <= b)
 
 
 def allocate(value, cap):
@@ -448,6 +473,9 @@ def _total_ok(total):
     r = K.round_to(total, 100000)
     return K.edge_distance(total, 100000) > 20000 and r % 500000 != 0
 
+
+# the share of first reports received from the upgrade to 15 September 2025 that an employer's EDI sent again
+EDI_RESEND = 0.032
 
 # the payment register's stream (check-number gaps, ACH returns, voids): the first whose segment totals each sit at
 # least 150 dollars from a rounding edge at the nearest 1,000 (search.py)
@@ -502,8 +530,10 @@ def simulate(streams=None):
     for cid, rows in nurse_files.items():
         claims[cid].files = rows
     dups = _cutover_duplicates(claims)
-    _numbers(claims)
+    resends = _edi_resends(claims, len(claims) + len(dups))
+    _numbers(claims + resends)
     claims.extend(dups)
+    claims.extend(resends)
     _number_dups(claims, dups)
     by_seg = {}
     for c in claims:

@@ -66,6 +66,7 @@ def load(target):
     D["log"] = log
     D["pay"] = pd.read_csv(P(K.PAYMENTS), dtype=str, keep_default_na=False)
     D["ach"] = pd.read_csv(P(K.ACH_RETURNS), dtype=str, keep_default_na=False)
+    D["merges"] = pd.read_csv(P(K.MERGES), dtype=str, keep_default_na=False)
     return D
 
 
@@ -112,13 +113,15 @@ def pilot_metrics(D, reopen=True, inclusive=True, ind_from="claim_type", office=
     return out
 
 
-def intakes(D, a, b, fix_vintage=True, dedup=True, by="report_date", strict=False):
+def intakes(D, a, b, fix_vintage=True, dedup=True, by="report_date", strict=False, merges=True):
     """Each segment's intakes reported a to b: a first report recording time lost (the dictionary: disability_began on
     or before report_date). Rows converted at the 2 June 2025 upgrade carry the legacy LOST_TIME indicator in
     time_off_at_report, so for them the dates decide; a claim keyed in both systems in the parallel run is listed twice
-    and counted once. The rivals: fix_vintage=False reads the flag as filed; strict counts time lost beginning before
-    the report date only; dedup=False keeps both listings, "window" drops every converted claim of the parallel run,
-    "global" drops every repeat of the six fields across the period."""
+    and counted once; a claim merged into another claim (the claim merge file) is that claim, counted once. The rivals:
+    fix_vintage=False reads the flag as filed; strict counts time lost beginning before the report date only;
+    dedup=False keeps both listings, "window" drops every converted claim of the parallel run, "global" drops every
+    repeat of the six fields across the period, "global5" every repeat of the five first-report fields without the
+    report date; merges=False keeps the merged claims, "both" drops both claims of each merge."""
     ex = D["extract"]
     x = ex[(ex[by] >= a.isoformat()) & (ex[by] <= b.isoformat()) & ex["segment"].isin(K.PROG)]
     conv = x["legacy_claim_no"] != ""
@@ -135,12 +138,18 @@ def intakes(D, a, b, fix_vintage=True, dedup=True, by="report_date", strict=Fals
         x = x[~((x["legacy_claim_no"] != "") & (x["report_date"] >= a0.isoformat()) & (x["report_date"] <= b0.isoformat()))]
     elif dedup == "global":
         x = x.drop_duplicates(subset=key)
+    elif dedup == "global5":
+        x = x.drop_duplicates(subset=[k for k in key if k != "report_date"])
     elif dedup:
         nat = x[x["legacy_claim_no"] == ""]
         natkeys = set(map(tuple, nat[key].values.tolist()))
         cv = x[(x["legacy_claim_no"] != "") & (x["report_date"] >= a0.isoformat()) & (x["report_date"] <= b0.isoformat())]
         dup = cv[[tuple(r) in natkeys for r in cv[key].values.tolist()]]
         x = x.drop(dup.index)
+    if merges:
+        mg = D["merges"]
+        out = set(mg["claim_no"]) | (set(mg["merged_into"]) if merges == "both" else set())
+        x = x[~x["claim_no"].isin(out)]
     return x.groupby("segment").size().reindex(K.PROG, fill_value=0).to_dict()
 
 

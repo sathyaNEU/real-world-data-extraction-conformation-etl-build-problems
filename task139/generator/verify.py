@@ -100,12 +100,18 @@ def main(target, golden):
     dteams, dcredit = place("Vd", "L_cl")
     assert rnd(credit, 100000) == 4100000, credit
     assert rnd(dcredit, 100000) == 2000000 and dteams["HC-SS"] == 0 and dteams["RW-SS"] == 0, (dteams, dcredit)
-    # ask 1: intakes reported in 2025, the converted rows read from their dates, the parallel-run copies once
+    # ask 1: intakes reported in 2025, the converted rows read from their dates, the parallel-run copies once, a claim
+    # merged into another claim counted with that claim
     key = lambda r: (r["office"], r["segment"], r["class_code"], r["injury_date"], r["report_date"], r["disability_began"])
     natives = set(key(r) for r in ext if not r["legacy_claim_no"])
+    merged = {r["claim_no"]: r["merged_into"] for r in read_csv(f(pick(r"claim_merges")))}
+    on_file = {r["claim_no"] for r in ext}
+    assert all(m in on_file for m in merged.values()), "a merge into a claim not on the extract"
     a1 = defaultdict(int)
     for r in ext:
         if r["segment"] not in SEGS or not ("2025-01-01" <= r["report_date"] <= "2025-12-31"):
+            continue
+        if r["claim_no"] in merged:
             continue
         if r["legacy_claim_no"]:
             took = r["disability_began"] != "" and r["disability_began"] <= r["report_date"]

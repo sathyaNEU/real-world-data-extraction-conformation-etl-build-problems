@@ -22,6 +22,7 @@ SOURCES = {
     K.CROSSWALK: "Legacy segment codes and the 2025 codes they converted to",
     K.PAYMENTS: "Indemnity payment register lines, January to September 2026",
     K.ACH_RETURNS: "The bank's ACH return items on workers' compensation EFT payments, January to September 2026",
+    K.MERGES: "Claims merged on the claims system in 2025 (each claim merged, the claim it joined, the date and unit)",
     K.DICTIONARY: "Data dictionary for the pack's claims files",
     K.MANIFEST: "Export manifest: each file, its source system, as-of date and preparer",
     K.SURVEY: "The ERN pilot's worker satisfaction survey",

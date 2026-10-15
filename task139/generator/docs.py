@@ -400,6 +400,12 @@ DICT = [
     (K.EXTRACT, "status", "OPEN, CLOSED or REOPENED at the extract date."),
     (K.EXTRACT, "closed_date", "Date the claim last closed."),
     (K.EXTRACT, "reopened_date", "Date a closed claim was reopened."),
+    (K.MERGES, "", "Claims merged on the claims system in 2025: one row for each claim merged into another claim. "
+                   "Pulled 30 September 2026."),
+    (K.MERGES, "claim_no", "The claim merged."),
+    (K.MERGES, "merged_into", "The claim it was merged into."),
+    (K.MERGES, "merge_date", "Date of the merge."),
+    (K.MERGES, "claim_unit", "Claim unit that made the merge."),
     (K.REGISTER, "", "The triage screen's list of pilot intakes (see the workbook's Notes sheet)."),
     (K.REGISTER, "Claim number", "Legacy claim number."),
     (K.REGISTER, "Segment", "Legacy segment code at triage."),
@@ -438,8 +444,9 @@ def write_dictionary(path):
     ws = wb.active
     ws.title = "Fields"
     _title_rows(ws, [("Claims data dictionary", "title"),
-                     ("%s, Data Engineering. Fields of the claims extract, the pilot register, the ERN case log, the payment "
-                      "register and bank return files, and the segment crosswalk in this pack." % K.COMPANY, "sub")])
+                     ("%s, Data Engineering. Fields of the claims extract and the claim merges, the pilot register, the "
+                      "ERN case log, the payment register and bank return files, and the segment crosswalk in this pack."
+                      % K.COMPANY, "sub")])
     _head(ws, ["File", "Field", "Definition"], [40, 22, 100])
     for f, c, d in DICT:
         ws.append([f, c or "(file)", d])

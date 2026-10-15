@@ -16,7 +16,7 @@
     "medical_management_staffing_plan_2027.xlsx"
   ],
   "input_gates": {
-    "files": 15,
+    "files": 16,
     "formats": [
       "csv",
       "docx",
@@ -57,9 +57,18 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
+      "path": "claim_merges_2025.csv",
+      "format": "csv",
+      "bytes": 4543,
+      "rows": 92,
+      "source": "Constructed: Claims merged on the claims system in 2025 (each claim merged, the claim it joined, the date and unit)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
       "path": "claims_data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 8581,
+      "bytes": 8746,
       "rows": null,
       "source": "Constructed: Data dictionary for the pack's claims files",
       "date": "2026-11-09",
@@ -68,8 +77,8 @@
     {
       "path": "claims_extract_2021-01_to_2026-09.csv",
       "format": "csv",
-      "bytes": 6060729,
-      "rows": 59789,
+      "bytes": 6068001,
+      "rows": 59875,
       "source": "Constructed: Haverline Casualty's claims listing: every claim reported January 2021 to September 2026 whose first report recorded time lost or that has paid or reserved indemnity",
       "date": "2026-11-09",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -122,8 +131,8 @@
     {
       "path": "export_manifest.csv",
       "format": "csv",
-      "bytes": 1746,
-      "rows": 14,
+      "bytes": 1850,
+      "rows": 15,
       "source": "Constructed: Export manifest: each file, its source system, as-of date and preparer",
       "date": "2026-11-09",
       "license": "CC0-1.0 (original work, constructed for this task)"

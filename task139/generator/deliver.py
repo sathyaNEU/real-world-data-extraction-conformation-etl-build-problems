@@ -168,7 +168,8 @@ def write_book(path, G, F):
         "2025 intakes: claims whose first report recorded time lost (charter 4.1), disability_began on or before "
         "report_date as the data dictionary defines it; on claims converted at the June 2025 upgrade time_off_at_report "
         "holds the legacy LOST_TIME indicator, so their dates decide. A claim listed twice from the 29 May to 1 June "
-        "2025 parallel run is counted once.",
+        "2025 parallel run is counted once, and a claim merged into another claim (claim_merges_2025.csv) counts with "
+        "that claim.",
         "Indemnity paid: the payment register repeats a payment's amount on each weekly line, so each payment is counted "
         "once; voided checks and the EFTs in the bank's return file are left out.",
         "Rounding: team savings to the nearest $10,000 and the credit to the nearest $100,000, from the unrounded team "

@@ -30,7 +30,7 @@ the draw dates from 2026-10-12). `guard.py check`: PASS.
 | Mechanism | gap population (decisive: the review's file holds indemnity claims, the decision buys intakes, and which intakes become indemnity claims is the nurses' own effect), then objective (the twenty places are the scarce resource, so a team is valued per place-day, and a unit takes no more teams than its intakes keep in use); pattern none, generators G9 (downstream survival against upstream acquisition), G1 (unit of value: the place-day) and G14 (each segment's own yield); Gate G `method_or_model_selection` (two comparisons of one pilot, per verified indemnity claim and per assigned intake, the randomised design pinning the second); strategy `causal_design` |
 | Layer 2 family / pattern | `estimand_identification` (selection on an outcome the treatment moves: comparing the arms on their indemnity claims conditions on a status the nurses changed); `own:indemnity-saving-read-per-assigned-intake` (Actuarial Science has no library patterns; the nearest lines are biomedical-clinical-research/clinical-trial-design-analysis/1, analyse as randomised, and healthcare-delivery-health-economics/payment-claims-health-plan-analytics/4, a ratio of totals over the exposure that bears it) |
 | Furniture | forum `executive_team`, forcing event `launch_or_rollout` (teams live Monday 4 January 2027), organisation family `financial_institution` (a stock carrier), role family `capacity_planner`, context artifact `close_out_summary` (the independent review), calibration `gold_standard_subsample` (the review's verified ultimates on a stratified sample of the pilot's indemnity claims), opening `question-first`, question form `where` |
-| Spine | `claims_extract_2021-01_to_2026-09.csv`, the claims system's listing: one row per claim reported January 2021 to September 2026 whose first report recorded time lost or that has paid or reserved indemnity (59,789 rows); constructed |
+| Spine | `claims_extract_2021-01_to_2026-09.csv`, the claims system's listing: one row per claim reported January 2021 to September 2026 whose first report recorded time lost or that has paid or reserved indemnity (59,875 rows); constructed |
 | Deliverables | `ern_placement_ay2027.xlsx` (placement, the pilot basis, the two asks, notes), `ern_placement_note_ay2027.pdf` (one page opening with the placement and charting each segment's saving per team-year with its teams) |
 | People | drawn with `guard.py names --geo "United States" --seed 139`: Julie Winters (director of medical case management, the requester), Joanna Sullivan (consulting actuary, Kellerman Pryce Actuarial, signs the review), Kathleen Reilly (chief pricing actuary, the pick memo), Joel Kelly (ERN clinical lead, the case log), Kristen Hansen (claims operations, the triage screen and the register), Juan Castillo (data engineering, the upgrade, the extract), Gregory Friedman (president and CEO, signs the charter); none in the prompt |
 
@@ -154,9 +154,10 @@ in use, and the credit is 4,100,000 dollars.
   conversions, and a superseded charter draft beside the signed one; on the ask paths, converted rows whose
   `time_off_at_report` carries the legacy lost-time indicator, claims keyed in both systems during the parallel run, a
   payment register that repeats a payment's amount on each weekly line (the three documented in the dictionary, as a
-  data engineering team documents a migration and an export), voided checks and the bank's ACH returns. Each is what
-  these systems write; none decides the call (the call is unchanged with every ask file removed, and with the
-  reopenings dropped, asserted).
+  data engineering team documents a migration and an export), first reports an employer's EDI sent twice in the new
+  system's first weeks, each set up as a second claim and merged into the first (the claims system's merge file),
+  voided checks and the bank's ACH returns. Each is what these systems write; none decides the call (the call is
+  unchanged with every ask file removed, and with the reopenings dropped, asserted).
 - **Layer 2:** `estimand_identification`: the shortcut reads the pilot on the claims its gold-standard file holds; the
   expert reads a randomised pilot per assigned unit, frequency and severity together, because the treatment moves units
   between the classes the records keep, and values a capacity-bound team per unit of the capacity an assigned unit holds.
@@ -214,7 +215,7 @@ half of a reported figure). Verdict last.
 | R2 the per-intake saving ranked per intake, not per place-day | charter 2.2 (twenty places) | no | yes (a capacity-bound team is valued by throughput) | no | no | no | readable |
 | R2b the per-intake saving over an indemnity claim's place-days | charter 5.1 (a file is held from the day it is taken) | no | no | no | no | no | readable |
 | R3 the golden saving with no fill check | charter 3.3 | no | yes (check the places can be kept full) | no | no | no | readable |
-| R4 (decisive) each group's own indemnity-claim rate times its own verified severity, per assigned intake, as randomised | no: the memo files what the credit is (the indemnity the teams' intakes will not pay because the teams took them) and the default path answers that sentence too, with the per-claim saving; no sentence names a rate, a frequency, a conversion, a kept-at-work intake or the review's sampling on the outcome | no: no column holds an intake's indemnity under either group; `claim_type` is every claim's current type in a 59,789-row listing the default path opens only for the units' volumes, and the review's sample is 100 per group in every segment, so its counts show no difference | no: the reflex on a verified gold-standard sample is to compare its amounts, and the per-claim saving reconciles (positive in every segment, four to thirteen per cent, a plausible nurse effect) | no: no saving, placement or evaluation ships | no | no: per segment, two group rates from a 5,227-intake register joined to a 59,789-row extract, times two sample means, over a place-day mean built from a log with reopenings | silent |
+| R4 (decisive) each group's own indemnity-claim rate times its own verified severity, per assigned intake, as randomised | no: the memo files what the credit is (the indemnity the teams' intakes will not pay because the teams took them) and the default path answers that sentence too, with the per-claim saving; no sentence names a rate, a frequency, a conversion, a kept-at-work intake or the review's sampling on the outcome | no: no column holds an intake's indemnity under either group; `claim_type` is every claim's current type in a 59,875-row listing the default path opens only for the units' volumes, and the review's sample is 100 per group in every segment, so its counts show no difference | no: the reflex on a verified gold-standard sample is to compare its amounts, and the per-claim saving reconciles (positive in every segment, four to thirteen per cent, a plausible nurse effect) | no: no saving, placement or evaluation ships | no | no: per segment, two group rates from a 5,227-intake register joined to a 59,875-row extract, times two sample means, over a place-day mean built from a log with reopenings | silent |
 
 The decisive rung is silent because the question the pack raises (what does a team save on the intakes it takes) is the
 one the default path believes it has answered: the per-claim saving is a real comparison of verified amounts, and
@@ -254,6 +255,7 @@ asserts each. Ch is the charter; PM the pick memo; R the review report.
 | SF25 | Ask 2: returned EFTs | left out; the re-issued check counts | kept | every segment 10,300 to 50,186 dollars high (asserted) | the bank's return file, its ACH return items each on one register EFT by trace number; the records (271 of the 275 paid again by a check for the same claim, benefit, payee, period and amount, the other four returned on 29 September 2026; kept, a period is paid twice) |
 | SF26 | Ask 2: voided checks | left out; the replacement counts | kept | every segment 3,814 to 15,519 dollars high (asserted) | the register's status (`VOID when the check was voided before it was cashed`); the records (each of the 85 replaced by a new check for the same claim, benefit, payee, period and amount) |
 | SF27 | Ask 2: a payment's segment | its claim's segment on the extract | (none) | n/a | the records converge (every payment's claim is on the extract, asserted) |
+| SF28 | Ask 1: a claim merged into another claim | counted once, with the claim it was merged into (`claim_merges_2025.csv`) | both counted; both dropped; a dedup on office, segment, class, injury and disability dates across the year instead | both counted every segment 4 to 17 high; both dropped every segment 4 to 17 low; the dedup every segment 23 to 186 low (asserted) | the merge file (each merged claim and the claim it joined); the records (a merged claim repeats its claim's first report, received 2 to 12 days later, and is closed on its merge date) |
 
 The stump is none of these rows: every term is read the same way by a careful reader, and the default path reads them
 all as the golden does. SF20 is the reader's Q6 guard written down: the memo and the charter fix the population, outcome,
@@ -333,7 +335,8 @@ what ERN's intakes paid; the randomised design rules out every other comparison 
 resolves to one reading or converges. The asks read literally too: the dictionary files what an intake is in the
 extract's own fields and what its flag holds on converted claims (SF21), that a parallel-run claim is listed twice and on
 which fields its two rows agree (SF22), and that a payment's amount repeats on each of its lines (SF24); the bank's
-return file and the register's status close the returned EFTs and the voided checks (SF25, SF26).
+return file and the register's status close the returned EFTs and the voided checks (SF25, SF26), and the claims
+system's merge file the claims merged into other claims (SF28).
 
 ## Oracles
 
@@ -343,7 +346,8 @@ return file and the register's status close the returned EFTs and the voided che
   amounts every comparison reads alike; they tie under every basis.
 - **The review's frame count** (4,339 pilot claims with indemnity, R 3.1) is the register's intakes that paid indemnity in
   both groups together; the per-claim and per-intake readings both reproduce it, and it does not split by group.
-- **The ask paths** (the payments, the ACH returns, the 2025 intakes): no rung of the call reads them.
+- **The ask paths** (the payments, the ACH returns, the merge file, the 2025 intakes): no rung of the call reads them;
+  no merged claim is reported in the call's window or is a converted (pilot) claim, asserted.
 
 ## Ask sheet
 
@@ -351,10 +355,12 @@ return file and the register's status close the returned EFTs and the voided che
 crosswalk; the extract's `legacy_claim_no` and `claim_type` on the 5,227 pilot claims (all converted, reported March
 2023 to February 2025) and its intakes reported October 2025 to September 2026 (all new-system rows, flag as written)
 for the fill check; the charter and the memo. The asks' devices live in the extract's rows reported in 2025 (the
-converted rows' flag, the parallel-run copies) and in the payment register and the bank's return file, which no rung of
-the call reads. `checks.py` asserts the call unchanged with the payments, the returns and the three distractors removed,
-and unchanged with every 2025 row's flag as filed and every copy kept in the fill check (SF5). Zero device rows sit in
-the call's population.
+converted rows' flag, the parallel-run copies, the merged second claims of June to September 2025), in the claims
+system's merge file, and in the payment register and the bank's return file, which no rung of the call reads.
+`checks.py` asserts the call unchanged with the payments, the returns and the three distractors removed, the fill check
+unchanged with the merge file removed or unread, and the call unchanged with every 2025 row's flag as filed and every
+copy kept in the fill check (SF5). Zero device rows sit in the call's population: no merged claim is reported in
+October 2025 to September 2026, and none is a converted claim.
 
 Both asks, eight segments each (16 figures), are what the segments' claims cost now, set beside the credit in the note:
 a measure every candidate carries that the call does not turn on.
@@ -366,26 +372,35 @@ a measure every candidate carries that the call does not turn on.
   4.1), which the dictionary files as `disability_began` on or before `report_date`: the flag on new-system rows, the
   dates on the rows converted at the 2 June 2025 upgrade, whose flag holds the legacy LOST_TIME indicator; each claim
   keyed in both systems in the 29 May to 1 June parallel run counted once, its two rows paired on the six fields the
-  dictionary names (62 pairs, one to one; the four converted claims there with no new-number twin count as listed).
-- Device status since the stage 4 judge: both devices are filed. The judge's literal reader took the flag as the
-  dictionary then defined it and counted both listings of a parallel-run claim, so the golden held only under a reading
-  the author supplied; the dictionary now files the flag's definition in the extract's own fields with the converted
-  claims' indicator (D2, a label stored before a silent switch, now seen) and the double listing with its six fields (D1,
-  the same records under two key schemes, now seen). Each is the field semantics or grain statement a data engineering
-  team writes after a migration. What is left is a careful execution: the flag read as filed, the strict reading of the
-  dates, a dedup on the six fields across the year (genuine same-day claims share them, 148 groups among 2025 intakes) and
-  dropping every converted claim of the parallel run each miss. No silent device remains: an ask rework is owed before
-  ship (the cracker sheet below).
-- Path (4 files, 9 columns): the extract (`legacy_claim_no`, `segment`, `report_date`, `disability_began`,
-  `time_off_at_report`, `office`, `class_code`, `injury_date`), the dictionary, the charter (4.1), the crosswalk.
-- Stops (asserted): S1 the flag as filed, every row (1,621, 856, 991, 734, 1,442, 812, 1,178, 700): 8 of 8 off; S2 the
-  flag fixed, copies kept (1,546, 827, 947, 710, 1,362, 773, 1,118, 669): 8 of 8 off; S3 copies dropped, flag as filed
-  (1,612, 851, 983, 732, 1,436, 809, 1,169, 697): 8 of 8 off; S4 time lost beginning before the report date only: 8 of 8
-  off (37 to 124 low); S5 every converted claim of the parallel run dropped: 3 of 8 off; S6 a dedup on the six fields
-  across the year: 8 of 8 off (3 to 34 low); answer 1,537, 822, 939, 708, 1,356, 770, 1,109, 666. Lazy delta: S1 wrong
-  on 8 of 8.
-- Realism: a conversion mapping a legacy status field into a new system's narrower field, and a parallel run's double
-  keying left in the data and noted in the dictionary, are what claims-system upgrades leave behind.
+  dictionary names (62 pairs, one to one; the four converted claims there with no new-number twin count as listed);
+  each claim merged into another claim counted with the claim it joined (`claim_merges_2025.csv`).
+- Primary device (D1 with its evidence split, a resubmission that opened a second claim, the merge recorded in a file no
+  habitual join reaches): from the upgrade until its duplicate check on first reports was switched back on (15
+  September 2025), a first report an employer's EDI sent again set up a second claim, and claims staff merged each
+  second claim into the first as they came across it. In the extract each second claim is an ordinary new-system row:
+  its own number, the first report's office, segment, class, injury and disability dates and flag, received 2 to 12
+  days after the first, medical only, closed on its merge date; nothing on it or on its claim points at the other, and
+  the two share no key. The merges are only in the claims system's merge file (92 rows: 86 merged claims on the
+  extract, 4 to 17 a segment, and six second claims of first reports that recorded no time lost, off the extract),
+  which the dictionary describes flatly and no filed rule names. The tell is a medical-only claim closed within weeks
+  whose first-report fields repeat another claim's a few days earlier, which genuine same-day claims also do (148 groups
+  on the six fields, more on five), so a dedup on the extract over-cleans.
+- Seen hazards: the converted claims' flag (D2) and the parallel run's double listing (D1), both filed in the dictionary
+  since the stage 4 judge: the cracker executes them, and each still moves every segment when mishandled.
+- Path (5 files, 10 columns): the extract (`claim_no`, `legacy_claim_no`, `segment`, `report_date`,
+  `disability_began`, `time_off_at_report`, `office`, `class_code`, `injury_date`), the merge file (`claim_no`), the
+  dictionary, the charter (4.1), the crosswalk.
+- Stops (asserted): S1 the natural read, the flag as filed on every row and the merges unread (1,638, 864, 1,002, 738,
+  1,453, 819, 1,187, 706): 8 of 8 off; S2 the cracker, the dictionary executed and the merge file unread (1,554, 830,
+  950, 712, 1,367, 777, 1,118, 672): 8 of 8 off, 4 to 17 high; S3 both claims of each merge dropped: 8 of 8 off, 4 to 17
+  low; S4 a dedup on office, segment, class, injury and disability dates across the year in place of the merge file: 8
+  of 8 off, 23 to 186 low; with the merges read, the flag as filed is 24 to 80 high, both parallel-run listings 2 to 9
+  high, the strict dates 37 to 124 low, every converted claim of the parallel run dropped 3 of 8 low and a dedup on the
+  six fields 3 to 34 low; answer 1,537, 822, 939, 708, 1,356, 770, 1,109, 666. Lazy delta: S1 wrong on 8 of 8.
+- Realism: a go-live that lost a duplicate check for a few months, employers' EDI resending first reports when no
+  acknowledgment came back, and claims staff merging the second claims as they found them, leave a merge table in the
+  claims system and medical-only stubs in its listing, the way a conversion leaves a legacy flag and a parallel run a
+  double keying.
 
 **Ask 2. The indemnity paid on each segment's claims, January to September 2026** (8 figures, nearest 1,000 dollars).
 - H18 home: what each unit's claims pay now, beside the credit; the call reads the verified amounts and never the payments.
@@ -412,6 +427,7 @@ a measure every candidate carries that the call does not turn on.
 
 | Hazard | Root cause | Moves | Per-ask delta |
 |---|---|---|---|
+| HA0 merged second claims (primary, silent) | EDI resends while the duplicate check was off, 2 June to 15 September 2025 | Ask 1 | every segment, 4 to 17 |
 | HA1 converted flag (seen, filed) | the 2025 conversion mapping | Ask 1 | every segment, 24 to 80 |
 | HA2 parallel-run copies (seen, filed) | double keying 29 May to 1 June 2025 | Ask 1 | every segment, 2 to 9 |
 | HB1 weekly lines (seen, filed) | the register's export grain | Ask 2 | every segment, 1.65 to 1.84 times |
@@ -424,23 +440,24 @@ fields, grain statements and statuses):
 
 | Ask figures | The cracker's path | What keeps it wrong | Cracker result |
 |---|---|---|---|
-| Ask 1, 8 intake counts | claims reported in 2025 whose first report recorded time lost, read as the dictionary files it (the dates on converted claims), each parallel-run claim once on its six fields | nothing: both devices are filed definitions it executes | hit |
+| Ask 1, 8 intake counts | claims reported in 2025 whose first report recorded time lost, read as the dictionary files it (the dates on converted claims), each parallel-run claim once on its six fields | the merged second claims, ordinary rows of the extract whose merges sit only in the claims system's merge file: every segment 4 to 17 high | miss |
 | Ask 2, 8 paid totals | issued payments in the window, each once (the dictionary's amount line), voids out, by the claim's segment | the returned EFTs only in the bank's file: every segment 10,300 to 50,186 dollars high | miss |
 | The placement, team savings, credit and chart (recommendation block, not asks) | from the pilot | carried by the call, scored with it | outside |
 
 The mirror sheet (the same response stopped at R0, 2,000,000) differs only on the recommendation criteria: no ask couples
-to the call, so the mirror keeps Ask 1 too.
+to the call.
 
-Mirror leakage: 54 per cent of the ask weight (Ask 1's eight figures and the method credit on Ask 2's path).
+Mirror leakage: 8 per cent of the ask weight (method credit on the ask paths, no figure).
 
 **Pair arithmetic.** Planning weights 38 recommendation (eight team counts, eight team savings, the credit, the note's
-opening and chart), 7 instruction following, 55 asks over 16 figures (3.4 each). Ask 1 is now executed from filed
-definitions: C = 38 + 7 + 27.5 + 2.2 = 74.7; the mirror keeps r of about 5: S = 5 + 7 + 27.5 + 2.2 = 41.7, a pair of
-58.2. Ask 2 still holds both (its returned EFTs). Before the stage 4 judge the pair was 32.9 on two silent asks; the
-determinism repair filed Ask 1's two devices, and a pair under 40 now needs a new silent primary on Ask 1's path (or a
-replacement ask) that the records force without a sentence, which is the ask rework owed before ship.
+opening and chart), 7 instruction following, 55 asks over 16 figures (3.4 each). The cracker lands the call and cracks
+the most obvious devices, the filed ones (the converted flag, the parallel run's double listing, the repeated amount),
+and still misses every figure of both asks, each held by a device in a file its path never joins (the merge file, the
+bank's returns): C = 38 + 7 + 4.4 = 49.4 with the method credit; the mirror keeps r of about 5 (the files, the chart's
+form, the three team counts it shares): S = 5 + 7 + 4.4 = 16.4, a pair of 32.9. Both top responses on the call keep 49.4
+each, under 50. Cracking one ask's silent device as well adds 27.5: C = 76.9, a pair of 46.7.
 
-Pair ceiling: 58.2
+Pair ceiling: 32.9
 
 ## Pins
 
@@ -460,15 +477,14 @@ to 10,000, the total to 100,000, the paid indemnity to 1,000, intakes whole).
 
 ## Build record
 
-- **Generator.** `python3 generator/build.py` writes `target/` (15 files, 4 formats; the extract 59,789 rows, the
+- **Generator.** `python3 generator/build.py` writes `target/` (16 files, 4 formats; the extract 59,875 rows, the
   payment register 63,135), `golden/` (2), `metadata.json`, `generator/figures.json` and `target.zip`; runs `checks.py`
-  (326 assertions: the input gates, R1 to R3c on the clean truth, every SF row, the ladder and every figure this note
+  (343 assertions: the input gates, R1 to R3c on the clean truth, every SF row, the ladder and every figure this note
   states, the asks' stops, separation, bins, the realism sweep, the registers and the dates) and `verify.py` (the
   placement, the credit, the default path and both asks recomputed from the bundle alone with the csv module and
   openpyxl); then builds again and compares every byte: identical.
-- **Write-up and gates.** `figures_check.py` 67 figures, none absent; `voice-check.py` PASS; `precut.py` 49 checks: 0
-  FAIL before stage 4, 3 FAIL after it (the pair ceiling, the mirror leakage and the cracker's Ask 1 row), all three on
-  the ask sheet and all from filing Ask 1's two devices for determinism (the ask sheet).
+- **Write-up and gates.** `figures_check.py` 67 figures, none absent; `voice-check.py` PASS; `precut.py` 49 checks, 0
+  FAIL, 0 WARN (after the FIX_NOW pass it was red on the ask sheet until the Ask 1 redraw below).
 - **golden-realism.** The note: memo block, a finding as title, the basis paragraphs lopsided toward the call, the
   table with its total, a true footnote from the memo (run rate, the 30 June 2026 valuation, indemnity only), the chart
   with direct labels and the funded, capped and unfunded bars told apart. The workbook: named sheets, frozen headers,
@@ -520,8 +536,21 @@ to 10,000, the total to 100,000, the paid indemnity to 1,000, intakes whole).
   vary in form, date style and rate by sheet, and the memo carries Pricing's reference PR-2026-041; the control digit
   stays (it sits on the call's join). Changed under `target/`: the dictionary, the pick memo and the review workbook;
   the golden workbook's Notes line follows the dictionary. `freeze.py check` PASS in rubric and in determinism mode
-  (no graded figure moved). Owed: the targeted re-read of the three documents, the one re-judge, and an Ask 1 rework
-  (the ask sheet) before ship.
+  (no graded figure moved). It left Ask 1 with no silent device: precut red on the ask sheet (pair ceiling 58.2,
+  mirror leakage 54, the cracker landing Ask 1), redrawn next.
+- **The Ask 1 redraw** (rubric mode; the call, the placement, the credit, Ask 2 and every graded figure frozen). The new
+  primary is the claims system's merge file: from the upgrade until the duplicate check on first reports was switched
+  back on (15 September 2025), an employer's EDI resend set up a second claim, merged into the first when found (92
+  merges in 2025, 86 merged claims on the extract, 4 to 17 a program segment, six off it). The merged claims are new
+  rows of the extract and take new-system numbers in report order, so later new-system claims renumber; the payment
+  register and the bank's returns change only in those numbers (every other column identical, Ask 2 asserted to the
+  cent), and the extract without the merged claims is the old extract bar the numbers. Ask 1's figures do not move
+  (1,537, 822, 939, 708, 1,356, 770, 1,109, 666); the cracker's path lands 4 to 17 high on every segment; the fill
+  check's window holds no merged claim. SF28 asserts both readings and the over-cleaning dedup; the cracker sheet misses
+  both asks and the pair is back to 32.9. Changed under `target/` since the stage 3 pack, cumulatively: the dictionary,
+  the pick memo, the review workbook, the export manifest, the new claim merge file, and (numbers only, plus the 86
+  merged rows in the extract) the claims extract, the payment register and the ACH returns. Owed: the targeted re-read
+  and the one re-judge.
 
 ## Tried and rejected
 
@@ -562,3 +591,12 @@ to 10,000, the total to 100,000, the paid indemnity to 1,000, intakes whole).
   the estimand stated nearly literally; the credit is stated once and the counterfactual left to charter 4.2.
 - A second form for the review's control digit (stage 4 realism, 2026-10-15): the digit sits on the call's join of the
   review to the register, so a second form would be a main-path mess item; the references and remarks vary instead.
+- The FIX_NOW pass's Ask 1 (stage 4, 2026-10-15): both devices filed for determinism and nothing silent left, the cracker
+  landing all eight figures and a pair of 58.2; redrawn with the merge file.
+- A state FROI filing log carrying the cancels of claims filed in error (Ask 1 redraw, 2026-10-15): a second source of
+  reported lost-time claims in the state's voice, its originals counting later conversions as reports and a cancel for a
+  wrong-carrier report not plainly outside "intakes"; the claims system's own merge file instead.
+- A closed-outcome field on the extract (Ask 1 redraw, 2026-10-15): a value naming the device rows in the habitual file
+  is a marker, and its denied or withdrawn outcomes in the call's window would move the fill count when mishandled.
+- Legacy claims parked as unassigned (G9) and converted to GN-AL (Ask 1 redraw, 2026-10-15): the injury class cannot be
+  recovered from the class code, so the true segment would be a guess.
