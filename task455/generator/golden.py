@@ -55,7 +55,7 @@ def compute(target):
         y, q = W.QUARTERS[fm // 3]
         month = 3 * (q - 1) + fm % 3 + 1
         kind = cls[acc]
-        link = B.pred.get(acc, "") if kind == "filed" else (B.flow(acc)[0] if kind == "workforce" else "")
+        link = B.pred.get(acc, "") if kind == "filed" else (B._src[acc] if kind == "workforce" else "")
         rows.append({"account_no": acc, "county_code": B.county[acc], "county": NAME[B.county[acc]],
                      "first_month": "%d-%02d" % (y, month), "birth": "Yes" if kind == "birth" else "No",
                      "set_aside_as": {"birth": "", "filed": "Filed transfer (register predecessor)",
@@ -155,7 +155,8 @@ def write_memo(path, fig):
     s.append(Paragraph("Recommendation", HEAD))
     s.append(Paragraph("<b>Designate %s, %s and %s as Formation Counties for 2027 to 2029.</b> They had the highest "
                        "establishment birth rates in 2026: %s %.1f, %s %.1f and %s %.1f births per 100 establishments. "
-                       "%s is the runner-up at %.1f, %.1f below %s, and would be designated if one of the three declines."
+                       "%s is the first county left out at %.1f, %.1f below %s, and would be designated if one of the three "
+                       "declines."
                        % (d1, d2, d3, d1, fig["counties"][d1]["rate"], d2, fig["counties"][d2]["rate"], d3,
                           fig["counties"][d3]["rate"], ru, fig["counties"][ru]["rate"], fig["gap"], d3), BODY))
     s.append(Paragraph("2026 establishment births by county", HEAD))
@@ -187,17 +188,23 @@ def write_memo(path, fig):
         "A birth is an establishment that first reported employment in 2026 and whose business did not operate before "
         "under another employer account (guideline 3.3). Of the %d new employer accounts that first reported employment "
         "in 2026, %d continue a business the register records as their predecessor and %d continue a business the "
-        "register does not link: more than half of the workers each paid in its first quarter were paid the quarter "
-        "before by one account that then stopped reporting, as when a buyer re-registers a business it took over or a "
-        "business re-registers where it moves. Caldmere's set-aside accounts include nineteen fuel and convenience "
-        "stores re-registered by their buyer in April 2026, and Tolbeck's include businesses that moved into its "
-        "enterprise park from the other counties. New businesses that opened in premises a closed business had left, "
-        "most of them in Quarrin, hired mostly new staff and are births."
+        "register does not link: most of the staff an account paid in its last quarter with employment went on "
+        "together on the new account's first payroll, the old account reporting no employment after, as when a buyer "
+        "re-registers a business it took over or a business re-registers where it moves. Many of those new owners hired "
+        "from the first day, so the old staff are a minority of the new payroll: Caldmere's set-aside accounts include "
+        "nineteen fuel and convenience stores re-registered by their buyer in April 2026, most of them reopened as "
+        "markets with more than twice the staff, and Tolbeck's include businesses that moved into larger premises "
+        "in its enterprise park from the other counties. New businesses started by former workers of a large employer "
+        "that closed, as in Quarrin after a distribution warehouse shut in December 2025, took a handful of its staff "
+        "and are births, as are the new businesses that opened in premises a closed business had left, most of them "
+        "in Quarrin."
         % (fig["totals"]["new_2026"], fig["totals"]["filed_2026"], fig["totals"]["workforce_2026"]), BODY))
     s.append(KeepTogether([Paragraph("2025 for comparison", HEAD),
                            Image(chart(fig), width=170 * mm, height=72.9 * mm), Paragraph(
         "Births by the same definition for 2025. A death is an establishment whose last month with employment fell in "
-        "2025, that reported none in 2026 and whose business did not go on under another account. Rates per 100 "
+        "2025, that reported none in 2026 and whose business did not go on under another account: not the closures "
+        "whose staff went on together under another account, new or established, as when an established employer "
+        "of the same trade took a business on. Rates per 100 "
         "establishments employing in the fourth quarter of 2024 are in the workbook "
         "lornock_establishment_births_2026.xlsx, with every 2026 new account.", SMALL)]))
     doc.build(s, onFirstPage=frame, onLaterPages=frame)
@@ -238,13 +245,14 @@ def write_book(path, fig, rows):
     for c in ws[ws.max_row]:
         c.font = bold
     ws.append([])
-    ws.append(["Runner-up", fig["runner_up"], "Gap to the third designated county (rate points)", fig["gap"]])
+    ws.append(["First county left out", fig["runner_up"], "Gap to the third designated county (rate points)",
+               fig["gap"]])
     ws.cell(ws.max_row, 4).number_format = "0.0"
     for row in ws.iter_rows(min_row=5, max_row=ws.max_row):
         for cell in row[2:8]:
             if isinstance(cell.value, int):
                 cell.number_format = "#,##0"
-    for col, wdt in zip("ABCDEFGHIJK", (14, 9, 15, 13, 15, 11, 9, 15, 11, 7, 11)):
+    for col, wdt in zip("ABCDEFGHIJK", (21, 9, 15, 13, 15, 11, 9, 15, 11, 7, 11)):
         ws.column_dimensions[col].width = wdt
     ws.freeze_panes = "B5"
     ws.print_title_rows = "4:4"
@@ -295,9 +303,11 @@ def write_book(path, fig, rows):
         "New account: first month with employment (workers on the payroll for the pay period including the 12th) in "
         "2026, none reported before 2026.",
         "Set aside, filed transfer: the register records a predecessor account (experience transfer).",
-        "Set aside, workforce continued: more than half of the workers the account paid in its first quarter with "
-        "employment were paid the quarter before by one account that reported no employment from that first quarter "
-        "on.",
+        "Set aside, workforce continued: more than half of the workers another account paid in its last quarter with "
+        "employment were on this account's payroll in its first quarter, and that account reported no employment "
+        "after this account's first month (continues_account).",
+        "2025 deaths exclude closures most of whose last-quarter staff were paid the next quarter by one other "
+        "account, new or established.",
         "County: the county in which the worksite lies (the register's geocoded county).",
         "Prepared by %s, Business Dynamics Unit, Labor Market Information Bureau." % W.PEOPLE["economist"],
     ]:

@@ -30,7 +30,7 @@ def account_numbers(world):
                 break
     seq = 214_337
     for a in sorted((a for a in world.accts if a.reg >= W.LEGACY_CUTOVER), key=lambda a: (a.reg, a.idx)):
-        seq += int(rng.integers(3, 15))
+        seq += 1 + int(rng.geometric(1 / 41.0))
         n = "8%08d" % seq
         used.add(n)
         nums[a.idx] = n
@@ -181,7 +181,7 @@ def write_sos(path, world, nums):
             "Professional Corporation" if legal.endswith((" PC", " PLLC")) else
             "Limited Liability Partnership" if legal.endswith("LLP") else "Business Corporation")
         town = next(c for c in W.COUNTIES if c[1] == county)[2]
-        status = "Active" if rng.random() > 0.035 else "Administratively Dissolved"
+        status = "Active" if rng.random() > 0.0398 else "Administratively Dissolved"
         out.append({"filing_number": "%s%07d" % ("L" if et.startswith("Limited") else "C", 4_210_000 + 37 * i + int(rng.integers(0, 30))),
                     "filing_date": date.isoformat(), "entity_name": legal, "entity_type": et,
                     "principal_office_city": town, "principal_office_county": county, "status": status})
@@ -210,10 +210,13 @@ def write_grants(path):
     purposes = ["Small business development center staffing", "Microloan fund capitalisation",
                 "Incubator space lease", "Entrepreneur training cohort", "Storefront improvement matching grants"]
     for m in range(12):
-        d = dt.date(2025 + (m + 6) // 12, (m + 6) % 12 + 1, 1) + dt.timedelta(days=int(rng.integers(8, 20)))
+        d0 = dt.date(2025 + (m + 6) // 12, (m + 6) % 12 + 1, 1)
         for g, county, num in grantees:
             if m % 3 != 0 and rng.random() < 0.55:
                 continue
+            d = d0 + dt.timedelta(days=int(rng.integers(3, 27)))
+            while d.weekday() >= 5:
+                d += dt.timedelta(days=1)
             amt = round(float(rng.uniform(21_000, 74_000)), 2)
             ws.append([d, g, county, num, purposes[int(rng.integers(len(purposes)))], amt])
             ws.cell(ws.max_row, 1).number_format = "yyyy-mm-dd"

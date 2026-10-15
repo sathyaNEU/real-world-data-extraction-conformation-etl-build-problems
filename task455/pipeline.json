@@ -1,13 +1,13 @@
 {
   "task": "task455",
   "owner": "oviya1301",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "survey-research-official-statistics",
   "objective": "etl",
   "stage": 4,
   "stage_name": "check",
   "updated": "2026-10-15",
-  "stump": "The default path counts each county's new employer accounts first employing in 2026, net of the predecessors the register records, and designates Caldmere, Eskwell and Tolbeck (Caldmere at 11.1 per 100), because a buyer re-registered nineteen Caldmere stores and twenty-one businesses moved into Tolbeck's enterprise park under new accounts without a filed transfer; an address match catches the stores but not the moves and removes Quarrin's storefront births; counted by the workforce paid together the quarter before by one account that then stopped reporting, the designation is Dunrath, Eskwell and Quarrin.",
+  "stump": "The default path counts each county's new employer accounts first employing in 2026 net of the register's predecessors and designates Caldmere, Eskwell and Tolbeck (Caldmere at 11.1 per 100); linking accounts through the wage records by where each new account's first-quarter workers came from still designates Caldmere, Dunrath and Eskwell, because the converted stores and the park arrivals kept their whole staff and hired as many again while Quarrin's start-ups were staffed from a closed warehouse; read from the old account's side the designation is Dunrath, Eskwell and Quarrin.",
   "architecture": 2,
   "loops": 0,
   "precut": {
@@ -15,23 +15,23 @@
     "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK): golden digits inside wage amounts, the county names in the guideline",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK): county names in the guideline, golden digits inside wage amounts",
+    "reader": "first read on the 2026-10-15 cut: landed the call through the new account's share (the then-golden linkage) and every ask figure; flagged 'runner-up' as a main-call fork and realism tells; fixed in the hardening pass, reader re-run on the recut"
   },
   "duplicate_check": {
     "heart": "WARN (three_rules.strategy_risk, overuse.org_family, overuse.objective; task82 differentiated)",
     "nearest": "0.06 task87 lineage, 0.06 task98 lineage",
     "note": "architecture 2 registered 2026-10-15: guard WARN three_rules.strategy_risk, overuse.org_family, overuse.objective; task82 v2 differentiated",
-    "surface": "task82 promoted (same-driver signature, differentiated on the card); nearest task448 0.101"
+    "surface": "task457 and task453 promoted on the card pairing alone and task82 on the same-driver signature, each differentiated on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": "",
-    "brief": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "FIX_NOW",
+    "report": "task455/determinism_check_report.md",
+    "brief": "first pass: the 2025 birth definition and the 2025 county basis unpinned (closed in the prompt); re-judge thread running from /tmp/determinism-check-task455-20261015102714/judge_brief.md, its report to be task455/determinism_check_report_pass2.md"
   },
   "returned": [],
-  "resume": "stage 4: the leak reader and the judge's thread are running on the 2026-10-15 cut (target.zip sha256 4c0245c3431f23af); collect both, fix every finding in the generator in one pass, re-judge once on FIX_NOW; then ship",
+  "resume": "stage 4 re-run on the recut (target.zip sha256 47902d038ac4a919): the leak reader (/tmp/leakread-task455v2b-1792060004) and the one re-judge are running; collect both, fix any finding in the generator; a FIX_NOW or SEND_BACK now spends the architecture; then ship",
   "approved": null,
   "delivered": null,
   "portal": null,

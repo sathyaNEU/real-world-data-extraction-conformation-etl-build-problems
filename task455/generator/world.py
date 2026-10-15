@@ -192,6 +192,38 @@ CLOSE_26_OF_26 = 0.04
 # stopped reporting the quarter before; elsewhere the share is lower
 DISPLACED_HIRE = {"Quarrin": 0.42, "default": 0.06}
 
+# Unfiled continuations whose new owner added staff from the first day, so the old staff are a minority of the new
+# payroll: Caldmere's stores converted to markets ("chain"), arrivals in Tolbeck's park that took bigger premises
+# ("park"), and a few take-overs elsewhere; hires per worker kept, (low, high)
+EXPAND26 = {"chain": 16, "park": 12, "Brennock": 2, "Dunrath": 2, "Eskwell": 1, "Fennamore": 2, "Quarrin": 1}
+EXPAND25 = {"Brennock": 2, "Caldmere": 1, "Dunrath": 1, "Eskwell": 1, "Fennamore": 1, "Quarrin": 1, "Tolbeck": 1}
+EXPAND_RATIO = {"chain": (1.3, 2.4), "default": (1.1, 1.9)}
+# Large closures and the new businesses their former workers started, staffed mostly from the closed payroll:
+# (county, industry, workers, last day, new businesses, their year and quarter); the trades those businesses took up
+SPINOUT_TRADES = {"424410": ["484121", "424410", "722513", "561730", "811111", "238990"],
+                  "337110": ["337110", "236118", "238990", "811310"],
+                  "332710": ["332710", "811310", "332322", "423830"],
+                  "484121": ["484121", "811111", "561730"]}
+LAYOFFS = [("Quarrin", "424410", 192, dt.date(2025, 12, 19), 8, (2026, 1)),
+           ("Fennamore", "337110", 121, dt.date(2026, 3, 27), 3, (2026, 2)),
+           ("Brennock", "332710", 147, dt.date(2025, 6, 20), 3, (2025, 3)),
+           ("Dunrath", "484121", 108, dt.date(2025, 9, 26), 2, (2025, 4))]
+# 2025 closures whose staff an established employer of the same trade in the county took on as a block
+ABSORB25 = {"Brennock": 4, "Caldmere": 2, "Dunrath": 3, "Eskwell": 4, "Fennamore": 3, "Quarrin": 2, "Tolbeck": 2}
+ABSORB_TRADES = ["621210", "621111", "541211", "541110", "624120", "484121", "561730", "238220", "811111", "531210",
+                 "722511", "812112", "236118", "423830"]
+# 2025 unfiled take-overs that changed hands inside a quarter: the old account's last payroll in the quarter's first or
+# second month, the new account employing from the next
+HANDOVER25 = {"Brennock": 2, "Caldmere": 1, "Dunrath": 2, "Eskwell": 1, "Fennamore": 2, "Quarrin": 1, "Tolbeck": 1}
+# 2025 mergers: an unfiled take-over that also took on the staff of a second closing business
+MERGE25 = ["Brennock", "Dunrath", "Fennamore"]
+# accounts that stopped employing over the 2025 to 2026 winter (renovation, a slow season) and resumed in 2026
+PAUSE = {"Brennock": 3, "Caldmere": 1, "Dunrath": 2, "Eskwell": 2, "Fennamore": 1, "Quarrin": 2, "Tolbeck": 1}
+# summer employers' season by trade (first month, last month; every season ends in September) and the share
+# keeping one worker through the winter
+SEASON = {"713990": (5, 9), "721211": (5, 9), "722515": (4, 9), "713930": (4, 9), "561730": (3, 9)}
+CARETAKER = 0.22
+
 STREETS = ["Main", "Mill", "Church", "Elm", "Oak", "Maple", "Cedar", "Lake", "River", "Ridge", "Hill", "Park",
            "Center", "Depot", "Market", "Union", "Spring", "Walnut", "Pine", "Juniper", "Grange", "Railroad",
            "School", "Commerce", "Industrial", "Prairie", "Orchard", "Willow", "Birch", "Granite", "Quarry",

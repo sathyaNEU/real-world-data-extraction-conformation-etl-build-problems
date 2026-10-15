@@ -10,7 +10,7 @@
  "shape": "01",
  "decision_type": "ranked_slate_under_cap",
  "answer_unit": "set_of_items",
- "answer": "Designate Eskwell, Dunrath and Quarrin (11.3, 9.8 and 9.5 births per 100 establishments); Caldmere is the runner-up at 7.8, 1.7 below Quarrin.",
+ "answer": "Designate Eskwell, Dunrath and Quarrin (11.3, 9.8 and 9.5 births per 100 establishments); Caldmere is the first county left out at 7.8, 1.7 below Quarrin.",
  "answer_source": "task455/submission.md block 1; generator/figures.json",
  "gap": [
   "population"
@@ -34,7 +34,7 @@
  "scoring_unit": "other",
  "spine": {
   "file": "qcew_private_establishments_2024q4_2026q4.csv",
-  "rows": 65564,
+  "rows": 65426,
   "entity": "one employer account's report for one quarter (monthly employment, wages, county, industry)",
   "grain": "UI account x quarter",
   "source": "synthetic (constructed in the layout of a state QCEW microdata extract)"
@@ -86,12 +86,12 @@
  ],
  "opening_move": "question-first",
  "question_form": "which",
- "driver": "The units a period adds are new administrative identifiers, but some identifiers continue an existing unit under a new number: the continuity is recorded only for the units that filed it, a shared location marks it and also marks new units that replaced a closed one, and only the members who move together from an identifier that closed the period before separate the two; counting new identifiers net of the filed links, or of location matches, misranks the groups a membership-flow test ranks right.",
- "driver_concrete": "A county's 2026 establishment births are the new unemployment insurance accounts first reporting employment in 2026 that are not existing businesses continuing under a new account; continuity shows in the workers paid together the quarter before by one account that then stopped reporting, not in the employer register's predecessor field (filled only when the buyer applies to take over the predecessor's experience rating), nor in a shared worksite address (which misses the businesses that moved and catches new businesses in vacated storefronts), nor in a similar name or industry.",
- "stump": "The default path counts each county's new employer accounts first employing in 2026, nets off the predecessors the register records and designates Caldmere, Eskwell and Tolbeck (Caldmere at 11.1 per 100), because a buyer re-registered nineteen Caldmere stores and twenty-one businesses moved into Tolbeck's enterprise park under new accounts without a filed transfer; an address match catches the stores but not the moves and removes Quarrin's storefront births (Dunrath, Eskwell and Tolbeck); counted by the workforce paid together the quarter before by an account that then stopped reporting, the designation is Dunrath, Eskwell and Quarrin.",
+ "driver": "The units a period adds are new administrative identifiers, but some identifiers continue an existing unit under a new number: the continuity is recorded only for the units that filed it, a shared location marks it and also marks new units that replaced a closed one, and the member flows separate the two only when read from the old unit's side (most of its members moving together to the new identifier); read from the new identifier's side (most of its members from one closed unit), a continuation that added members reads as new and a new unit seeded by a few members of a large closed one reads as continuing, and the groups are misranked.",
+ "driver_concrete": "A county's 2026 establishment births are the new unemployment insurance accounts first reporting employment in 2026 that are not existing businesses continuing under a new account; continuity shows in the wage records as most of the workers a closed account paid in its last quarter going on to the new account's payroll, not in where the new account's first-quarter workers came from (a buyer that kept a store's whole staff and hired as many again looks new; a start-up staffed with two of a closed warehouse's 192 workers looks like its continuation), nor in the employer register's predecessor field (filled only when the buyer applies), a shared worksite address, a similar name or an industry code.",
+ "stump": "The default path counts each county's new employer accounts first employing in 2026, nets off the predecessors the register records and designates Caldmere, Eskwell and Tolbeck (Caldmere at 11.1 per 100); the strong analyst who links accounts through the wage records by where each new account's first-quarter workers came from designates Caldmere, Dunrath and Eskwell (Caldmere at 10.1), because the buyer of nineteen Caldmere stores reopened sixteen as markets with every store's staff and as many again hired, twelve Tolbeck park arrivals did the same, and eight Quarrin start-ups staffed from a closed 192-worker warehouse look like its continuation; read from the old account's side, the designation is Dunrath, Eskwell and Quarrin.",
  "stump_class": "analytical",
- "analyst_test": "A strong analyst counts each county's new accounts first employing in 2026, nets off the register's predecessors and designates Caldmere, Eskwell and Tolbeck; the more careful one also sets aside the accounts at the address of an account that closed and designates Dunrath, Eskwell and Tolbeck: re-registered stores and relocated businesses have no predecessor recorded, the relocations share no address, and the storefront re-lets do.",
- "domain_test": "The deciding quantity is each county's establishment birth rate as business demography defines it, a new establishment and not a continuing business under a new employer account, built from the UI account openings and quarterly wage records by the employment-flow continuity test official business statistics use; with hospital or school nouns there is no employer account a business re-registers under and no workforce that moves with it, so the task stops reading the same.",
+ "analyst_test": "A strong analyst counts each county's new accounts first employing in 2026, nets off the register's predecessors and designates Caldmere, Eskwell and Tolbeck; the stronger one links the rest through the wage records by where each new account's first-quarter workers came from (more than half from one account that then stopped reporting) and designates Caldmere, Dunrath and Eskwell: the expanded take-overs read as births and the start-ups staffed from a closed payroll as continuations.",
+ "domain_test": "The deciding quantity is each county's establishment birth rate as business demography defines it, a new establishment and not a continuing business under a new employer account, built from the UI account openings and quarterly wage records by the field's employment-flow continuity test read from the predecessor's side (the share of the old unit's workforce that goes on to the new identifier); with hospital or school nouns there is no employer account a business re-registers under and no workforce that moves with it, so the task stops reading the same.",
  "layer2_family": "field_method",
  "layer2_pattern": "own:establishment-continuity-from-worker-flows",
  "layer1": [
@@ -99,11 +99,14 @@
   "vintages: industry codes on two NAICS editions, county codes assigned from the ZIP code before the third quarter of 2025",
   "imperfect keys: worksite addresses in two formats from the 2025 system replacement, a business's self-reported industry code on re-registration",
   "documentation that has to be read: monthly employment on the 12th against quarterly wages, liability against registration dates, status and inactivation dates",
-  "genuine overlap: a worker on two accounts in a quarter (a job change), zero reports from open accounts, final pay after a closure"
+  "genuine overlap: a worker on two accounts in a quarter (a job change), zero reports from open accounts, final pay after a closure",
+  "seasonal and timing texture: summer employers (a few keeping a worker through the winter), winter pauses, take-overs dated in the first days of a quarter with the old owner's final days paid in the new quarter"
  ],
  "mechanism_source": "design_note",
  "differentiation": {
-  "task82": "task82's re-root credits a checkout to the channel a record names through a join; task455 v2 decides whether a new identifier is a new unit at all, from the members who move with it out of an identifier that closed, against a filed link that covers only some continuations and a location match that also catches replacements."
+  "task82": "task82's re-root credits a checkout to the channel a record names through a join; task455 v2 decides whether a new identifier is a new unit at all, from the members who move with it out of an identifier that closed, against a filed link that covers only some continuations and a location match that also catches replacements.",
+  "task457": "task457 corrects each faculty member's disclosure for the part of the year it could not yet see (an as-of reporting ratio and a gross-up against the Open Payments register); task455 decides whether a new employer account is a new establishment from where a closed account's workforce went: a different unit, evidence and move, sharing only the domain, objective and a register as the context artifact.",
+  "task453": "task453 v2 sets a seasonal-adjustment setting for a published series; task455 counts establishment births from register account openings by the continuity of the workforce: no shared quantity, evidence or move."
  },
  "lineage": [
   {
@@ -132,5 +135,11 @@
   }
  ],
  "notes": "",
- "registered": "2026-10-15T07:33:45Z"
+ "registered": "2026-10-15T07:33:45Z",
+ "invented_names": [
+  "Carden Millwork",
+  "Draper & Whitlock Freight",
+  "Garland Machine Works",
+  "Lindqvist's Foods"
+ ]
 }

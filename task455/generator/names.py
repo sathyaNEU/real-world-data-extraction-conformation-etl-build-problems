@@ -15,6 +15,11 @@ SURNAMES = [
     "Zeller", "Abernathy", "Bolling", "Castell", "Dorsey", "Eckert", "Fairbanks", "Grady", "Hollis", "Ivers",
     "Jarrell", "Keane", "Lindgren", "Mercer", "Nyberg", "Okafor", "Petrov", "Quinlan", "Rourke", "Stanek", "Trujillo",
     "Ulrich", "Voss", "Weller", "Yates", "Zamora", "Aldana", "Brannigan", "Cuthbert", "Dennehy", "Esquivel",
+    "Albright", "Barrow", "Bertrand", "Bickford", "Caine", "Carrow", "Danforth", "Dempsey", "Driscoll", "Emmons",
+    "Faraday", "Fitzroy", "Galloway", "Gatlin", "Hackett", "Hendry", "Hubbell", "Iverson", "Jansky", "Kestner",
+    "Kowalski", "Lambert", "Lindqvist", "Lunde", "Macklin", "Mattingly", "Nakamura", "Nolan", "Orcutt", "Pell",
+    "Pruett", "Quarles", "Raines", "Rasmussen", "Rutledge", "Sakai", "Schafer", "Spalding", "Strand", "Tanaka",
+    "Thibault", "Tollefson", "Urbina", "Vickery", "Wendell", "Wexford", "Whitaker", "Wilder", "Yoder", "Zielinski",
 ]
 NOUN = {
     "Remodeling": ["Remodeling", "Home Improvement", "Renovation", "Builders"],
@@ -110,20 +115,35 @@ class Namer:
         raise RuntimeError("name space exhausted")
 
     def legal_for(self, trade, suffixes=("LLC", "Inc")):
-        """A new legal entity's name keeping a trade name (a take-over that kept the shop's name)."""
-        for _ in range(100):
+        """A new legal entity's name keeping a trade name (a take-over that kept the shop's name): the new owner's own
+        entity, whatever its owner called it."""
+        rng = self.rng
+        for _ in range(200):
             stem = trade.replace("'s ", " ").split(" ")
-            choice = int(self.rng.integers(4))
-            if choice == 0:
-                legal = "%s %s" % (" ".join(stem[:2]), self.pick(["Hospitality LLC", "Ventures LLC", "Operating LLC",
-                                                                  "Acquisition LLC"]))
-            elif choice == 1:
-                initials = "".join(w[0] for w in stem if w[:1].isalpha())[:3].upper()
-                legal = "%s %s %s" % (initials, self.pick(["Holdings", "Enterprises", "Group"]), self.pick(suffixes))
-            elif choice == 2:
-                legal = "%s %s" % (self.pick(SURNAMES), self.pick(["Enterprises LLC", "Holdings LLC", "Group Inc"]))
+            r = rng.random()
+            if r < 0.22:
+                legal = "%s %s" % (self.pick(SURNAMES), self.pick(["Enterprises LLC", "Holdings LLC", "Group Inc",
+                                                                   "Ventures LLC", "Management LLC", "& Sons Inc",
+                                                                   "Family LLC", "Investments LLC"]))
+            elif r < 0.38:
+                legal = "%s & %s %s" % (self.pick(SURNAMES), self.pick(SURNAMES), self.pick(["LLC", "Inc", "LLP"]))
+            elif r < 0.52:
+                letters = "ABCDEFGHJKLMNPRSTW"
+                initials = "".join(letters[int(rng.integers(len(letters)))] for _ in range(int(rng.integers(2, 4))))
+                legal = "%s %s" % (initials, self.pick(["LLC", "Inc", "Ventures LLC", "Partners LLC", "Group LLC"]))
+            elif r < 0.66:
+                legal = "%s %s %s" % (self.pick(W.PLACE_WORDS), self.pick(["Ventures", "Partners", "Hospitality",
+                                                                           "Retail", "Services", "Brands"]),
+                                      self.pick(["LLC", "Inc"]))
+            elif r < 0.80:
+                legal = "%s %s" % (" ".join(stem), self.pick(["LLC", "Inc", "Co", "Ltd"]))
+                if legal in self.legal:
+                    legal = "%s %d LLC" % (" ".join(stem[:2]), int(rng.integers(2, 9)))
+            elif r < 0.90:
+                legal = "%s %s %s" % (self.pick(SURNAMES), " ".join(stem[1:3]) or stem[0], self.pick(suffixes))
             else:
-                legal = "%s %s" % (" ".join(stem), self.pick(["of the Valley LLC", "II LLC", "Company LLC"]))
+                legal = "%s %s LLC" % (" ".join(stem[:2]), self.pick(["Operating", "Acquisition", "Holdings",
+                                                                     "of the Valley", "Company"]))
             if legal not in self.legal:
                 self.legal.add(legal)
                 return legal

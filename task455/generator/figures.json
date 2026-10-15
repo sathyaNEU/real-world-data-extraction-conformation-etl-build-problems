@@ -104,7 +104,7 @@
   "base_2025q4": 6894,
   "births_2025": 542,
   "births_2026": 574,
-  "deaths_2025": 549,
+  "deaths_2025": 527,
   "filed_2026": 56,
   "new_2026": 702,
   "set_aside_2026": 128,
@@ -115,50 +115,50 @@
    "base_2024q4": 1621,
    "birth_rate": 7.3,
    "births": 118,
-   "death_rate": 7.1,
-   "deaths": 115
+   "death_rate": 6.8,
+   "deaths": 110
   },
   "Caldmere": {
    "base_2024q4": 703,
    "birth_rate": 7.4,
    "births": 52,
-   "death_rate": 8.0,
-   "deaths": 56
+   "death_rate": 7.7,
+   "deaths": 54
   },
   "Dunrath": {
    "base_2024q4": 1225,
    "birth_rate": 8.5,
    "births": 104,
-   "death_rate": 7.4,
-   "deaths": 91
+   "death_rate": 7.2,
+   "deaths": 88
   },
   "Eskwell": {
    "base_2024q4": 738,
    "birth_rate": 10.4,
    "births": 77,
-   "death_rate": 7.7,
-   "deaths": 57
+   "death_rate": 7.2,
+   "deaths": 53
   },
   "Fennamore": {
    "base_2024q4": 1106,
    "birth_rate": 7.3,
    "births": 81,
-   "death_rate": 7.6,
-   "deaths": 84
+   "death_rate": 7.2,
+   "deaths": 80
   },
   "Quarrin": {
    "base_2024q4": 889,
    "birth_rate": 7.1,
    "births": 63,
-   "death_rate": 11.0,
-   "deaths": 98
+   "death_rate": 10.8,
+   "deaths": 96
   },
   "Tolbeck": {
    "base_2024q4": 613,
    "birth_rate": 7.7,
    "births": 47,
-   "death_rate": 7.8,
-   "deaths": 48
+   "death_rate": 7.5,
+   "deaths": 46
   }
  }
 }

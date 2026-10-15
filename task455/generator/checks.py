@@ -18,6 +18,7 @@ RESULTS = []
 GOLD = {"Dunrath", "Eskwell", "Quarrin"}
 DEFAULT = {"Caldmere", "Eskwell", "Tolbeck"}
 ADDRESS = {"Dunrath", "Eskwell", "Tolbeck"}
+SHARE = {"Caldmere", "Dunrath", "Eskwell"}
 N = W.NAME
 
 
@@ -65,7 +66,8 @@ def truth(world):
         if a.kind == "birth" and a.year == 2025:
             t["births25"][a.county] += 1
         nz = np.nonzero(e)[0]
-        if len(nz) and 3 <= nz[-1] <= 14 and e[15:].max() == 0 and a.successor is None:
+        if (len(nz) and 3 <= nz[-1] <= 14 and e[15:].max() == 0 and a.successor is None and a.absorbed_by is None
+                and a.merged_into is None):
             t["deaths25"][a.county] += 1
     return t
 
@@ -137,6 +139,16 @@ def run(target, golden_dir, world=None, meta_path=None):
         one = {c: 100.0 * (new26[c] - filed[c] - same[c] - relet[c]) / base[c] for c in base}
         ok("R3b: the easy route with the address correction alone files a wrong set (Dunrath, Eskwell, Tolbeck)",
            set(sorted(one, key=lambda c: -one[c])[:3]) == ADDRESS, "")
+        grown = Counter(a.county for a in A if a.kind == "succ" and a.year == 2026 and a.expand)
+        spun = Counter(a.county for a in A if a.kind == "birth" and a.year == 2026 and a.spinout_of is not None)
+        strong = {c: 100.0 * (T["births26"][c] + grown[c] - spun[c]) / base[c] for c in base}
+        ok("R3a: the strong analyst's route on the clean truth (continuity read from the new account's side: the "
+           "expanded take-overs counted as births, the start-ups staffed from a closed payroll set aside) files "
+           "Caldmere, Dunrath and Eskwell", set(sorted(strong, key=lambda c: -strong[c])[:3]) == SHARE,
+           ", ".join("%s %.2f" % (c, strong[c]) for c in sorted(strong, key=lambda c: -strong[c])))
+        ok("R3b: the strong analyst's route with only the decisive step (the old account's side) files the golden",
+           set(sorted(dec, key=lambda c: -dec[c])[:3]) == GOLD and all(grown[c] != spun[c] for c in base),
+           "expanded %s, spin-outs %s" % (dict(grown), dict(spun)))
         ok("R3c: no plant: one quarterly report per account and quarter, one wage row per worker, account and quarter",
            not B.q.duplicated(["account_no", "year", "qtr"]).any()
            and not B.w.duplicated(["worker_key", "account_no", "year", "qtr"]).any(), "")
@@ -153,7 +165,10 @@ def run(target, golden_dir, world=None, meta_path=None):
         rr, oo = lad[key]
         return {N[c] for c in oo[:3]}, rr, oo
     for key, want in (("R0 default (net of filed)", DEFAULT), ("R0 every new account", DEFAULT),
-                      ("R1 address match", ADDRESS), ("R3 workforce (golden)", GOLD)):
+                      ("R1 address match", ADDRESS), ("R2 new account's share (more than half)", SHARE),
+                      ("R2 new account's share, 80 per cent", SHARE), ("R2 new account's share, no stop test", SHARE),
+                      ("R2 both shares (more than half)", SHARE), ("R2 both shares, 80 per cent", SHARE),
+                      ("R3 workforce (golden)", GOLD)):
         got, rr, oo = names_of(key)
         ok("rung: %s files %s" % (key, ", ".join(sorted(want))), got == want, ", ".join(sorted(got)))
     for key in ("R1 address, same industry, adjacent", "R1 address without suites", "name match", "address or name",
@@ -165,6 +180,14 @@ def run(target, golden_dir, world=None, meta_path=None):
            ("Caldmere" in got or "Tolbeck" in got or "Quarrin" not in got), "")
     rr, oo = lad["R1 address match"]
     ok("margin: rung 1 third over fourth 1.15x or more", rr[oo[2]] / rr[oo[3]] >= 1.15, "%.3f" % (rr[oo[2]] / rr[oo[3]]))
+    rr, oo = lad["R2 new account's share (more than half)"]
+    ok("margin: the share rung's third (Dunrath) over Quarrin by 1.1x or more and Caldmere above Quarrin by 1.1x",
+       rr[W.CODE["Dunrath"]] / rr[W.CODE["Quarrin"]] >= 1.1 and rr[W.CODE["Caldmere"]] / rr[W.CODE["Quarrin"]] >= 1.1,
+       "%.3f, %.3f" % (rr[W.CODE["Dunrath"]] / rr[W.CODE["Quarrin"]], rr[W.CODE["Caldmere"]] / rr[W.CODE["Quarrin"]]))
+    rr, oo = lad["either share"]
+    ok("reflex: either share designates the three but misses Quarrin's births and rate (spin-outs set aside)",
+       {N[c] for c in oo[:3]} == GOLD and round(rr[W.CODE["Quarrin"]], 1) != round(g["rates"][W.CODE["Quarrin"]], 1),
+       "%.2f against %.2f" % (rr[W.CODE["Quarrin"]], g["rates"][W.CODE["Quarrin"]]))
     rr, oo = lad["R0 default (net of filed)"]
     q, cald, tolb = W.CODE["Quarrin"], W.CODE["Caldmere"], W.CODE["Tolbeck"]
     ok("margin: rung 0 Caldmere over Quarrin 1.1x or more", rr[cald] / rr[q] >= 1.1, "%.3f" % (rr[cald] / rr[q]))
@@ -202,46 +225,88 @@ def run(target, golden_dir, world=None, meta_path=None):
     ok("SF7: every quarterly row from 2025Q4 on carries the register's county",
        (rows_read["county_code"].to_numpy() == rows_read["account_no"].map(B.county).to_numpy()).all(), "")
     ok("SF8: private accounts only", set(B.reg["ownership_code"]) == {"5"} and set(B.q["own_code"]) == {"5"}, "")
-    fl = [B.flow(a) for a in new26 if a in B.pred]
+    fl = [B.flow(a) for a in new26 if a in B.pred]   # (account, count, workers, share, stopped, old share)
     ok("SF9: every filed successor's first workforce came mostly from its predecessor",
        all(f[0] == B.pred[a] and f[3] > 0.5 for a, f in zip([a for a in new26 if a in B.pred], fl)), "")
     base_cls = g["cls"]
     for thr in (0.6, 0.7, 0.8):
-        ok("SF10: a threshold of %.0f per cent selects the same accounts" % (100 * thr),
+        ok("SF10: a threshold of %.0f per cent of the old account's workers selects the same accounts" % (100 * thr),
            B.classify(2026, threshold=thr) == base_cls, "")
-    shares = [B.flow(a) for a in new26]
-    births_share = max(f[3] for a, f in zip(new26, shares) if base_cls[a] == "birth")
-    cont_share = min(f[3] for a, f in zip(new26, shares) if base_cls[a] != "birth")
-    ok("SF10: births draw 40 per cent or less from any one account, continuations 80 per cent or more",
-       births_share <= 0.40 and cont_share >= 0.80, "births at most %.2f, continuations at least %.2f" %
-       (births_share, cont_share))
-    ok("SF11: dropping the stopped-reporting condition selects the same accounts",
-       B.classify(2026, need_stop=False) == base_cls, "")
+    pb, pc, mv = [], [], []
+    for a_ in new26:
+        if base_cls[a_] == "filed":
+            continue
+        fq, ws, ls = B.links(a_)
+        fm = int(B.first_m[B.ai[a_]])
+        stopped = {p: v for p, v in ls.items() if v[3] < fm}
+        best = max(stopped, key=lambda p: stopped[p][2]) if stopped else None
+        (pc if base_cls[a_] == "workforce" else pb).append(stopped[best][2] if best else 0.0)
+        if base_cls[a_] == "workforce":
+            lq = stopped[best][3] // 3
+            mv.append(len(B.paid[(best, lq)] & (B.paid.get((a_, lq), set()) | B.paid.get((a_, lq + 1), set()))))
+    ok("SF10: no birth took more than 35 per cent of a closed account's last-quarter workers; every continuation 80 "
+       "per cent or more", max(pb) <= 0.35 and min(pc) >= 0.8, "births at most %.2f, continuations at least %.2f" %
+       (max(pb), min(pc)))
+    ok("SF11: the stop test read by quarter, or dropped, selects the same 2026 accounts",
+       B.classify(2026, stop="quarter") == base_cls and B.classify(2026, stop="none") == base_cls, "")
     wq = {a: int(np.argmax(B.wag[B.ai[a]] > 0)) for a in new26}
     ok("SF12: every 2026 new account's first quarter with wages is its first quarter with employment",
        all(wq[a] == B.first_quarter(a) for a in new26), "")
-    alt = {}
-    for a in new26:
-        if a in B.pred:
-            alt[a] = "filed"
+    alt13 = {}
+    for a_ in new26:
+        if a_ in B.pred:
+            alt13[a_] = "filed"
             continue
-        qi = B.first_quarter(a)
-        c = Counter()
-        ws = B.paid.get((a, qi), set())
-        for wk in ws:
-            for k in range(qi - 1, -1, -1):
-                ps = [p for p in B.payers.get((wk, k), ()) if p != a]
-                if ps:
-                    for p in ps:
-                        c[p] += 1
-                    break
-        top = sorted(c.items(), key=lambda kv: (-kv[1], kv[0]))[0] if c else (None, 0)
-        alt[a] = "workforce" if top[0] and top[1] / len(ws) > 0.5 and B.stopped_by(top[0], qi) else "birth"
-    ok("SF13: the worker's last account in any earlier quarter selects the same accounts", alt == base_cls, "")
-    ok("SF14: the two-sided reading selects the same accounts", B.classify(2026, two_sided=True) == base_cls, "")
-    src_share = min(f[5] for a, f in zip(new26, shares) if base_cls[a] == "workforce")
-    ok("SF14: every continuation carries 70 per cent or more of its old account's workers", src_share >= 0.7,
-       "%.2f" % src_share)
+        fq, ws, ls = B.links(a_)
+        fm = int(B.first_m[B.ai[a_]])
+        hit = False
+        for p, v in ls.items():
+            if v[3] >= fm:
+                continue
+            lq = v[3] // 3
+            own_ = B.paid.get((p, lq), set())
+            later = set()
+            for k in range(lq, lq + 4):
+                later |= B.paid.get((a_, k), set())
+            if own_ and len(own_ & later) / len(own_) > 0.5:
+                hit = True
+        alt13[a_] = "workforce" if hit else "birth"
+    ok("SF13: the new account's payroll counted over the old account's last quarter and the three after selects the "
+       "same accounts", alt13 == base_cls, "")
+    alt14 = {}
+    for a_ in new26:
+        if a_ in B.pred:
+            alt14[a_] = "filed"
+            continue
+        fq, ws, ls = B.links(a_)
+        fm = int(B.first_m[B.ai[a_]])
+        hit = False
+        for p, v in ls.items():
+            if v[3] >= fm:
+                continue
+            qw = np.nonzero(B.wag[B.ai[p]] > 0)[0]
+            lqw = int(qw[-1]) if len(qw) else -1
+            own_ = B.paid.get((p, lqw), set()) | B.paid.get((p, v[3] // 3), set())
+            got = B.paid.get((a_, fq), set()) | B.paid.get((a_, fq + 1), set())
+            if own_ and len(own_ & got) / len(own_) > 0.5:
+                hit = True
+        alt14[a_] = "workforce" if hit else "birth"
+    ok("SF14: the old account's workers taken over its last quarters with employment and with wages selects the same "
+       "accounts", alt14 == base_cls, "")
+    ok("SF17: every unfiled continuation moved five workers or more (any minimum of two to five selects the same "
+       "accounts)", min(mv) >= 5, "at least %d" % min(mv))
+    side = B.classify(2026, rule="S", stop="quarter")
+    flipped_b = [a_ for a_, k in side.items() if k == "birth" and base_cls[a_] == "workforce"]
+    flipped_c = [a_ for a_, k in side.items() if k == "workforce" and base_cls[a_] == "birth"]
+    def old_share(a_):
+        fq, ws, ls = B.links(a_)
+        fm = int(B.first_m[B.ai[a_]])
+        return max((v[2] for v in ls.values() if v[3] < fm), default=0.0)
+    ok("SF18: read from the new account's side, every take-over it calls a birth carried 80 per cent or more of its old "
+       "account's workers, and every start-up it calls a continuation took 3.5 per cent or less of the closed payroll",
+       flipped_b and flipped_c and min(old_share(x) for x in flipped_b) >= 0.8
+       and max(old_share(x) for x in flipped_c) <= 0.035,
+       "%d take-overs called births, %d start-ups called continuations" % (len(flipped_b), len(flipped_c)))
     rr = {c: round(v, 1) for c, v in g["rates"].items()}
     ok("SF15: rounded and unrounded rates designate the same three",
        {N[c] for c in sorted(rr, key=lambda c: (-rr[c], c))[:3]} == GOLD, "")
@@ -279,9 +344,21 @@ def run(target, golden_dir, world=None, meta_path=None):
         summer = {nums[a.idx] for a in A if a.kind == "seasonal"}
         dormant = {nums[a.idx] for a in A if a.kind == "dormant"}
         base_rows = {a for a, i in B.ai.items() if B.emp[i, 12:15].max() > 0}
-        ok("separation: no summer employer among the 2026 new accounts or the 2025Q4 base, no dormant account among "
-           "the 2026 new accounts", not (summer & (set(emp_first) | base_rows)) and not (dormant & set(emp_first)),
-           "%d summer, %d dormant accounts" % (len(summer), len(dormant)))
+        keepers = {nums[a.idx] for a in A if a.kind == "seasonal" and a.caretaker}
+        ok("separation: no summer employer among the 2026 new accounts; the only ones in the 2025Q4 base keep a worker "
+           "in every month (in both bases under every reading); no dormant account among the 2026 new accounts",
+           not (summer & set(emp_first)) and (summer & base_rows) == keepers and not (dormant & set(emp_first))
+           and all(B.emp[B.ai[x]].min() > 0 for x in keepers),
+           "%d summer (%d keeping a worker), %d dormant accounts" % (len(summer), len(keepers), len(dormant)))
+        hand = {nums[a.idx] for a in A if a.handover} | {nums[a.source] for a in A if a.handover}
+        absorbed = {nums[a.idx] for a in A if a.absorbed_by is not None}
+        merged = {nums[a.idx] for a in A if a.merged_into is not None}
+        ok("separation: the in-quarter take-overs, the absorbed businesses and the mergers are all 2025 events: none "
+           "among the 2026 new accounts or their sources, none employing in 2026",
+           not (hand & set(emp_first)) and not ((hand | absorbed | merged) & {B._src.get(x) for x in emp_first})
+           and all(B.emp[B.ai[x], 15:].max() == 0 for x in absorbed | merged)
+           and all(W.QUARTERS[B.first_quarter(nums[a.idx])][0] == 2025 for a in A if a.handover),
+           "%d in-quarter, %d absorbed, %d merged" % (len(hand) // 2, len(absorbed), len(merged)))
         ok("separation: the dormant accounts employ in 2025Q4 under every reading (the base is the same however they "
            "are read)", dormant <= base_rows, "")
         minority = {nums[a.idx] for a in A if a.minority}
@@ -302,12 +379,15 @@ def run(target, golden_dir, world=None, meta_path=None):
             hit = [c for c in ref[key] if round(x[key][c], 1) == round(ref[key][c], 1)]
         return (not hit) if every else len(hit), hit
     stops = [
-        ("Ask A cracker: the extract's window and the quarterly row's county", B.ask_a(liability=False, county_from="qcew"), a, ("births", "rates")),
+        ("Ask A cracker: the old account stopped before the new account's first quarter", B.ask_a(stop="quarter"), a,
+         ("births", "rates")),
+        ("Ask A: the new account's share (the strong analyst's rung)", B.ask_a(rule="S", stop="quarter"), a, ("births",)),
         ("Ask A: the extract's window alone", B.ask_a(liability=False), a, ("births", "rates")),
-        ("Ask A: the quarterly row's county alone", B.ask_a(county_from="qcew"), a, ("births", "rates")),
-        ("Ask B cracker: the quarterly row's county", B.ask_b(county_from="qcew"), b, ("deaths", "rates")),
-        ("Ask B mirror: filed transfers only", B.ask_b(continuation=False), b, ("deaths", "rates")),
-        ("Ask B: wages for employment", B.ask_b(by="wages"), b, ("deaths", "rates")),
+        ("Ask B cracker: less the sources of the continuing new accounts only", B.ask_b(mode="new_keyed"), b,
+         ("deaths", "rates")),
+        ("Ask B: the same with the stop read by quarter", B.ask_b(mode="new_keyed_q"), b, ("deaths", "rates")),
+        ("Ask B: the new account's share", B.ask_b(mode="S"), b, ("deaths", "rates")),
+        ("Ask B mirror: filed transfers only", B.ask_b(mode="filed"), b, ("deaths", "rates")),
     ]
     for label, x, ref, keys in stops:
         for k in keys:
@@ -318,6 +398,21 @@ def run(target, golden_dir, world=None, meta_path=None):
     mirror_births = Counter(B.county[x] for x, k in mirror.items() if k in ("birth", "workforce"))
     ok("Ask A mirror (no workforce test) misses every count",
        all(mirror_births[c] != a["births"][c] for c in a["births"]), "")
+    for q_ in (2, 3):
+        ok("Ask B: the staff followed over %d quarters instead of one gives the same deaths" % q_,
+           B.ask_b(quarters=q_)["deaths"] == b["deaths"], "")
+    for thr in (0.6, 0.8):
+        ok("Ask B: a %.0f per cent threshold gives the same deaths" % (100 * thr),
+           B.ask_b(threshold=thr)["deaths"] == b["deaths"], "")
+    st25 = B.stoppers_2025()
+    wo = [B.went_on(x)[0] for x in st25]
+    ok("Ask B: no 2025 closure sent between 35 and 80 per cent of its last-quarter staff to one account",
+       not any(0.35 < v < 0.8 for v in wo), "%d went on" % sum(1 for v in wo if v > 0.5))
+    small = [x for x in st25 if B.went_on(x)[0] > 0.5 and x not in set(B.pred.values())
+             and B.went_on(x)[0] * len(B.paid[(x, int(B.last_m[B.ai[x]]) // 3)]) < 4.5]
+    ok("Ask B: every unfiled closure whose staff went on moved five workers or more", not small, "%d" % len(small))
+    ok("Ask A: the in-quarter take-overs are set aside under the golden and counted as births by the quarter stop in "
+       "every county", all(B.ask_a(stop="quarter")["births"][c] > a["births"][c] for c in a["births"]), "")
 
     rr0, oo0 = lad["R0 every new account"]
     ok("write-up: Caldmere and Tolbeck are second and third on new employer accounts per 100 establishments",
@@ -355,9 +450,16 @@ def run(target, golden_dir, world=None, meta_path=None):
        "")
     tot = [sum(g["births"].values()), sum(a["births"].values()), sum(b["deaths"].values()), sum(g["base"].values())]
     ok("realism: no round regional totals", all(t % 10 for t in tot), str(tot))
-    per = B.q.groupby("account_no")["total_qtrly_wages"].apply(lambda s: s[s > 0].round(0).value_counts().max()
+    import csv as _csv2
+    sos_rows = list(_csv2.DictReader(open(os.path.join(target, W.FILES["sos"]), encoding="utf-8")))
+    dis = sum(1 for r_ in sos_rows if r_["status"] != "Active")
+    ok("realism: the entity filings' dissolved count and row count are not round", dis % 10 and len(sos_rows) % 10,
+       "%d dissolved of %d" % (dis, len(sos_rows)))
+    per = B.q.groupby("account_no")["total_qtrly_wages"].apply(lambda s: s[s > 0].round(2).value_counts().max()
                                                               if (s > 0).any() else 0)
-    ok("realism: no account reports the same wages in three quarters", (per >= 3).sum() == 0, "%d" % (per >= 3).sum())
+    ok("realism: no account reports the same wages to the cent in three quarters, and repeats in two are chance-rare "
+       "(under ten of the accounts)", (per >= 3).sum() == 0 and (per >= 2).sum() < 10,
+       "%d with a repeat" % (per >= 2).sum())
     tn = B.reg["trade_name"].value_counts()
     ok("realism: trade names repeat only for take-overs that kept the name", (tn > 3).sum() == 0, str(tn.head(3).to_dict()))
     for f in ("register", "qcew", "wages"):

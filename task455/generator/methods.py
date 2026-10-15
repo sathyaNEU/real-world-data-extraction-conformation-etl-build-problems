@@ -88,37 +88,87 @@ class Bundle:
         """The account reported no employment in quarter `qi` or later."""
         return self.emp[self.ai[src], 3 * qi:].max() == 0
 
+    def links(self, a):
+        """Every account that paid `a`'s first-quarter workers the quarter before or in that quarter, with: the
+        number of `a`'s first-quarter workers it paid the quarter before, that number as a share of `a`'s first-quarter
+        workers, the share of its own workers in its last quarter with employment that `a` paid then or the quarter
+        after, and its last month with employment."""
+        qi = self.first_quarter(a)
+        ws = self.paid.get((a, qi), set())
+        out = {}
+        if not ws:
+            return qi, ws, out
+        prev = Counter()
+        cands = set()
+        for wk in ws:
+            for p in self.payers.get((wk, qi - 1), ()) if qi > 0 else ():
+                if p != a:
+                    prev[p] += 1
+                    cands.add(p)
+            for p in self.payers.get((wk, qi), ()):
+                if p != a:
+                    cands.add(p)
+        for p in cands:
+            lm = int(self.last_m[self.ai[p]])
+            lq = lm // 3 if lm >= 0 else -1
+            own = self.paid.get((p, lq), set()) if lq >= 0 else set()
+            here = self.paid.get((a, lq), set()) | self.paid.get((a, lq + 1), set())
+            moved = len(own & here) / len(own) if own else 0.0
+            out[p] = (prev[p], prev[p] / len(ws), moved, lm)
+        return qi, ws, out
+
     def flow(self, a, qi=None):
         """The account that paid most of `a`'s first-quarter workers the quarter before: (account, count, workers,
         share, stopped, share of the source's workers that moved)."""
-        qi = self.first_quarter(a) if qi is None else qi
-        ws = self.paid.get((a, qi), set())
-        if not ws or qi == 0:
+        fq, ws, ls = self.links(a)
+        if not ls or not any(v[0] for v in ls.values()):
             return (None, 0, len(ws), 0.0, False, 0.0)
-        c = Counter()
-        for wk in ws:
-            for p in self.payers.get((wk, qi - 1), ()):
-                if p != a:
-                    c[p] += 1
-        if not c:
-            return (None, 0, len(ws), 0.0, False, 0.0)
-        top, n = sorted(c.items(), key=lambda kv: (-kv[1], kv[0]))[0]
-        src_ws = self.paid.get((top, qi - 1), set())
-        return (top, n, len(ws), n / len(ws), self.stopped_by(top, qi), n / len(src_ws) if src_ws else 0.0)
+        top = sorted((p for p in ls if ls[p][0]), key=lambda p: (-ls[p][0], p))[0]
+        v = ls[top]
+        return (top, v[0], len(ws), v[1], self.stopped_by(top, fq), v[2])
 
-    def classify(self, year, threshold=0.5, need_stop=True, two_sided=False, liability=True, wages_quarter=True):
-        """Golden classification of the year's new accounts: 'filed', 'workforce' (continuing per the flow test) or
+    def continuing(self, a, rule="P", threshold=0.5, stop="month"):
+        """Whether new account `a` goes on from a business under another account. `rule` P (the golden): most of
+        the workers an account paid in its last quarter with employment moved to `a`; S: most of `a`'s first-quarter
+        workers came from one account the quarter before; both, either. `stop`: month (the account's last month with
+        employment before `a`'s first), quarter (none in `a`'s first quarter or later), none."""
+        fq, ws, ls = self.links(a)
+        fm = int(self.first_m[self.ai[a]])
+
+        def stopped(p):
+            lm = ls[p][3]
+            return True if stop == "none" else (lm < fm if stop == "month" else lm < 3 * fq)
+        if not ls:
+            return False, None
+        top = sorted((p for p in ls if ls[p][0]), key=lambda p: (-ls[p][0], p))
+        s_src = top[0] if top else None
+        s_ok = s_src is not None and ls[s_src][1] > threshold and stopped(s_src)
+        p_hits = sorted((p for p in ls if ls[p][2] > threshold and stopped(p)), key=lambda p: (-ls[p][2], p))
+        p_src = p_hits[0] if p_hits else None
+        if rule == "P":
+            return p_src is not None, p_src
+        if rule == "S":
+            return s_ok, s_src if s_ok else None
+        if rule == "both":
+            ok = s_ok and ls[s_src][2] > threshold
+            return ok, s_src if ok else None
+        if rule == "either":
+            return (p_src is not None or s_ok), (p_src or (s_src if s_ok else None))
+        raise ValueError(rule)
+
+    def classify(self, year, rule="P", threshold=0.5, stop="month", liability=True):
+        """The year's new accounts: 'filed' (a predecessor in the register), 'workforce' (continuing by `rule`) or
         'birth'."""
         out = {}
+        self._src = getattr(self, "_src", {})
         for a in self.new_accounts(year, liability=liability):
             if a in self.pred:
                 out[a] = "filed"
                 continue
-            top, n, nw, share, stopped, src_share = self.flow(a)
-            cont = top is not None and share > threshold and (stopped or not need_stop)
-            if two_sided:
-                cont = cont and src_share > 0.5
+            cont, src = self.continuing(a, rule=rule, threshold=threshold, stop=stop)
             out[a] = "workforce" if cont else "birth"
+            if cont and rule == "P" and threshold == 0.5 and stop == "month":
+                self._src[a] = src
         return out
 
     def rates(self, cls, base, kind="birth"):
@@ -138,18 +188,44 @@ class Bundle:
                 "filed": Counter(self.county[a] for a, k in cls.items() if k == "filed"),
                 "workforce": Counter(self.county[a] for a, k in cls.items() if k == "workforce")}
 
-    def sources(self):
-        """Accounts whose business went on under a new account: the register's predecessors and the flow test's
-        sources, for both years' new accounts."""
+    def sources(self, rule="P", stop="month"):
+        """Accounts whose business went on under a new account: the register's predecessors and the sources the
+        continuity rule finds for both years' new accounts."""
         out = set(self.pred.values())
         for y in (2025, 2026):
-            for a, k in self.classify(y).items():
-                if k == "workforce":
-                    out.add(self.flow(a)[0])
+            for a in self.new_accounts(y):
+                if a in self.pred:
+                    continue
+                cont, src = self.continuing(a, rule=rule, stop=stop)
+                if cont:
+                    out.add(src)
         return out
 
-    def ask_a(self, liability=True, county_from="register"):
-        cls = self.classify(2025, liability=liability)
+    def went_on(self, a, quarters=1):
+        """Share of the workers `a` paid in its last quarter with employment that one other account paid the quarter
+        after (or within `quarters` quarters after)."""
+        i = self.ai[a]
+        lm = int(self.last_m[i])
+        lq = lm // 3
+        own = self.paid.get((a, lq), set())
+        if not own:
+            return 0.0, None
+        c = Counter()
+        for wk in own:
+            seen = set()
+            for k in range(1, quarters + 1):
+                for p in self.payers.get((wk, lq + k), ()):
+                    if p != a and p not in seen:
+                        seen.add(p)
+            for p in seen:
+                c[p] += 1
+        if not c:
+            return 0.0, None
+        p, n = sorted(c.items(), key=lambda kv: (-kv[1], kv[0]))[0]
+        return n / len(own), p
+
+    def ask_a(self, liability=True, county_from="register", rule="P", stop="month"):
+        cls = self.classify(2025, liability=liability, rule=rule, stop=stop)
         base = self.base(0, county_from=county_from)
         if county_from == "register":
             births = Counter(self.county[a] for a, k in cls.items() if k == "birth")
@@ -158,9 +234,8 @@ class Bundle:
         rates = {c: 100.0 * births.get(c, 0) / base[c] for c in base}
         return {"births": births, "base": base, "rates": rates, "cls": cls}
 
-    def deaths_2025(self, county_from="register", continuation=True, by="employment"):
-        src = self.sources() if continuation else set(self.pred.values())
-        out = Counter()
+    def stoppers_2025(self, by="employment"):
+        out = []
         for a, i in self.ai.items():
             if by == "employment":
                 lm = self.last_m[i]
@@ -170,8 +245,33 @@ class Bundle:
                 qw = np.nonzero(self.wag[i] > 0)[0]
                 if not len(qw) or not (1 <= qw[-1] <= 4):
                     continue
-            if a in src:
+            out.append(a)
+        return out
+
+    def deaths_2025(self, county_from="register", mode="golden", by="employment", threshold=0.5, quarters=1):
+        """2025 deaths. mode golden: less the register's predecessors and every account most of whose last-quarter
+        workers one other account paid the quarter after; new_keyed: less the predecessors and the sources of the new
+        accounts the P rule continues (quarter-level stop when mode is new_keyed_q); S: the sources the S rule finds;
+        filed: the register's predecessors only."""
+        if mode == "golden":
+            gone = set(self.pred.values())
+        elif mode == "new_keyed":
+            gone = self.sources(rule="P")
+        elif mode == "new_keyed_q":
+            gone = self.sources(rule="P", stop="quarter")
+        elif mode == "S":
+            gone = self.sources(rule="S", stop="quarter")
+        elif mode == "filed":
+            gone = set(self.pred.values())
+        else:
+            raise ValueError(mode)
+        out = Counter()
+        for a in self.stoppers_2025(by=by):
+            if a in gone:
                 continue
+            if mode == "golden" and self.went_on(a, quarters=quarters)[0] > threshold:
+                continue
+            i = self.ai[a]
             if county_from == "register":
                 out[self.county[a]] += 1
             else:
@@ -179,8 +279,8 @@ class Bundle:
                 out[self.qcounty[(a, lq)]] += 1
         return out
 
-    def ask_b(self, county_from="register", continuation=True, by="employment"):
-        deaths = self.deaths_2025(county_from=county_from, continuation=continuation, by=by)
+    def ask_b(self, county_from="register", mode="golden", by="employment", threshold=0.5, quarters=1):
+        deaths = self.deaths_2025(county_from=county_from, mode=mode, by=by, threshold=threshold, quarters=quarters)
         base = self.base(0, county_from=county_from)
         return {"deaths": deaths, "base": base, "rates": {c: 100.0 * deaths.get(c, 0) / base[c] for c in base}}
 
@@ -314,6 +414,15 @@ class Bundle:
             "R2 attributes or address": self.rung_rates(filed | addr | self.attribute_matches(cross_county=True)),
             "address and workforce": self.rung_rates(filed | addr | flowc),
             "any worker from a closed account": self.rung_rates(filed | self.any_overlap()),
+            "R2 new account's share (more than half)": self.rung_rates(filed | self.cont_set("S", 0.5, "quarter")),
+            "R2 new account's share, 80 per cent": self.rung_rates(filed | self.cont_set("S", 0.8, "quarter")),
+            "R2 new account's share, no stop test": self.rung_rates(filed | self.cont_set("S", 0.5, "none")),
+            "R2 both shares (more than half)": self.rung_rates(filed | self.cont_set("both", 0.5, "month")),
+            "R2 both shares, 80 per cent": self.rung_rates(filed | self.cont_set("both", 0.8, "month")),
+            "either share": self.rung_rates(filed | self.cont_set("either", 0.5, "month")),
             "R3 workforce (golden)": self.rung_rates(filed | flowc),
         }
         return out
+
+    def cont_set(self, rule, threshold, stop, year=2026):
+        return {a for a, k in self.classify(year, rule=rule, threshold=threshold, stop=stop).items() if k == "workforce"}

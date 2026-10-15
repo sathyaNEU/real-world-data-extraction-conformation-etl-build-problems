@@ -6,7 +6,7 @@
 ## 1. Final Recommendation
 
 **Commerce should designate Eskwell, Dunrath and Quarrin as Formation Counties for 2027 to 2029.**
-Their 2026 establishment birth rates are 11.3, 9.8 and 9.5 births per 100 establishments; Caldmere is the runner-up at 7.8, 1.7 below Quarrin. Not Caldmere or Tolbeck, second and third on new employer accounts per 100 establishments, whose 29 and 27 set-aside accounts continue businesses that operated before under another account (stores a buyer re-registered, businesses that moved into Tolbeck's enterprise park).
+Their 2026 establishment birth rates are 11.3, 9.8 and 9.5 births per 100 establishments; Caldmere is the first county left out at 7.8, 1.7 below Quarrin. Not Caldmere or Tolbeck, second and third on new employer accounts per 100 establishments, whose 29 and 27 set-aside accounts continue businesses that operated before under another account (stores a buyer re-registered and restaffed, businesses that moved into Tolbeck's enterprise park).
 
 ## 2. Critical Components
 
@@ -19,11 +19,11 @@ Their 2026 establishment birth rates are 11.3, 9.8 and 9.5 births per 100 establ
 
 1. In qcew_private_establishments_2024q4_2026q4.csv, found each account's first month with employment: 702 accounts first reported employment in 2026 and none before (the guideline's birth definition).
 2. Set aside the 56 of them whose row in ui_employer_register_extract_2027-05-14.csv names a predecessor account.
-3. In ui_wage_records_2024q4_2026q4.txt, set aside the 72 others where more than half of the workers the account paid in its first quarter with employment were paid the quarter before by one account that reported no employment from that quarter on.
+3. In ui_wage_records_2024q4_2026q4.txt, set aside the 72 others that continue a business: an account whose last month with employment came before the new account's first month had more than half of the workers it paid in its last quarter with employment on the new account's payroll that quarter or the next. Read from the old account's side, this keeps as continuations the take-overs whose new owner hired from the first day and counts as births the start-ups staffed from a large closed payroll.
 4. Counted the 574 births by the register's county (where the worksite lies, per the guideline) and divided by each county's establishments with employment in a month of the fourth quarter of 2025 (the guideline's base), 6,894 in the region.
 5. Ranked the rates unrounded, as the guideline says: Eskwell 11.3, Dunrath 9.8, Quarrin 9.5, then Caldmere 7.8, 1.7 below Quarrin.
-6. Applied steps 1 to 3 to 2025, taking only accounts whose register liability date (first payroll) is in 2025: 542 births, over 6,895 establishments with employment in the fourth quarter of 2024 counted by the register's county.
-7. Counted 549 deaths in 2025: last month with employment in 2025, none in 2026, and not the predecessor or the workforce source of a new account.
+6. Counted 2025 births as 2026's are, from steps 1 to 3 on 2025, taking only accounts whose register liability date (first payroll) is in 2025: 542 births, over 6,895 establishments with employment in the fourth quarter of 2024 counted by the county where the worksite lies (the register's geocoded county).
+7. Counted 527 deaths in 2025: last month with employment in 2025, none in 2026, and the business not gone on under another account: not a register predecessor, and not an account more than half of whose last-quarter workers one other account, new or established, paid the next quarter.
 8. Designated Eskwell, Dunrath and Quarrin.
 
 ## 4. Deliverable Answers
@@ -39,7 +39,7 @@ Their 2026 establishment birth rates are 11.3, 9.8 and 9.5 births per 100 establ
    - Tolbeck: 44 births; 27 set aside; 7.2
    - Brennock: 113 births; 23 set aside; 7.0
    - Fennamore: 73 births; 15 set aside; 6.6
-3. Runner-up: Caldmere at 7.8, 1.7 below Quarrin.
+3. First county left out: Caldmere at 7.8, 1.7 below Quarrin.
 4. Chart: paired bars of each county's 2025 births and deaths, labelled with their counts, on page 2.
 
 ### lornock_establishment_births_2026.xlsx
@@ -55,10 +55,10 @@ Their 2026 establishment birth rates are 11.3, 9.8 and 9.5 births per 100 establ
    - Quarrin: 63 (7.1)
    - Tolbeck: 47 (7.7)
 4. 2025 deaths (death rate per 100 establishments employing in the fourth quarter of 2024):
-   - Brennock: 115 (7.1)
-   - Caldmere: 56 (8.0)
-   - Dunrath: 91 (7.4)
-   - Eskwell: 57 (7.7)
-   - Fennamore: 84 (7.6)
-   - Quarrin: 98 (11.0)
-   - Tolbeck: 48 (7.8)
+   - Brennock: 110 (6.8)
+   - Caldmere: 54 (7.7)
+   - Dunrath: 88 (7.2)
+   - Eskwell: 53 (7.2)
+   - Fennamore: 80 (7.2)
+   - Quarrin: 96 (10.8)
+   - Tolbeck: 46 (7.5)
