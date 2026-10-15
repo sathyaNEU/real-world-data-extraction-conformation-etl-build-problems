@@ -227,24 +227,32 @@ is `bail_policy_revision_2027_draft.docx`; the current policy is `local_bail_pol
 | SF14 | a defendant with several first appearances | each appearance a unit (the tier applies at each) | the first appearance per defendant | same call (asserted) | draft 2.2 ("at first appearance") |
 | SF15 | a first appearance's screen | the screen run at that booking, matched on the booking number (legacy numbers without the B prefix), else on name and date of birth | (none: one screen per booking in the history) | n/a | asserted: every eligible first appearance in the history matches exactly one screen |
 | SF16 | a first appearance with no screen | outside the tier (no score) | (none) | n/a | draft 2.2 ("whose screen shows a score") |
-| SF17 | Ask A "bed-days" | one for each midnight (Eastern) at which the defendant is held | days or part of a day held (S6); UTC midnights (S4) | moves every figure (asserted) | the README's detention definition ("one bed-day is counted for each midnight count at which the person is held"; the jail export "is UTC") |
-| SF18 | Ask A "in custody" | held at the detention center or boarded at Halsey County's jail | released when the jail records the defendant boarded out (S1) | moves every figure (asserted) | the prompt ("bed-days in custody"); the jail code list (`BO` boarded out to a contract facility, not a release) |
+| SF17 | Ask A "bed-days" | one for each midnight (Eastern) at which the defendant is held | days or part of a day held (S6); UTC midnights (S4) | moves every figure (asserted) | the README's detention note ("Custody is counted at midnight, each count dated with the day it begins; one bed-day is counted for each midnight count at which the person is held"; the jail export "is UTC") |
+| SF18 | Ask A "in custody" | in the Sheriff's custody, at the detention center or boarded out at Halsey County's jail | released when the jail records the defendant boarded out (S1); the detention center's own midnight counts, the boarded nights left out (S8: 1,820, 3,670, 5,040, 7,090, 2,750, 1,760) | each moves every figure (asserted) | the prompt ("bed-days in custody"); the README's detention note ("a stay runs from booking to release from the Sheriff's custody; a defendant boarded out stays in the Sheriff's custody while boarded out"); the jail code list (`BO` boarded out to a contract facility); the CJAC report's "contract beds not included" scopes its own population, a distractor's |
 | SF19 | Ask A "held after a first appearance" and the stay counted | eligible, still in custody 24 hours after the appearance; the whole stay from booking to release | the nights from the appearance only | moves the figures where a booking crosses a midnight before the appearance | the README ("a stay runs from booking to release"; "A defendant still in custody 24 hours after the appearance is held after it") |
-| SF20 | Ask A "to 30 September 2026" | the midnight counts dated up to 30 September 2026 (the count at 00:00 on 30 September the last) | the count at 00:00 on 1 October 2026 included | moves every score held at the extract (asserted) | the README's detention definition ("the count taken at midnight is dated with the day it begins") |
+| SF20 | Ask A "to 30 September 2026" | the midnight counts dated up to 30 September 2026 (the count at 00:00 on 30 September the last) | the count at 00:00 on 1 October 2026 included | moves every score held at the extract (asserted) | the README's detention note ("each count dated with the day it begins") |
 | SF21 | Ask A one defendant's custody | one stay from booking to final release across a boarding, a return booking or an annex move | each booking separately to its first release | moves every figure (asserted) | the jail code list (`BI` returned from a contract facility, `TRF` moved between housing sites); the records |
 | SF22 | Ask B "a missed court date on that appearance's charges" | an order for arrest issued for a failure to appear (the current policy's 1.4) in a case carrying a charge from the appearance, the superior court case an indictment opens included | the appearance's district case numbers only (S1); every case under the defendant's district party number (S2) | S1 moves 5 of 6 counts and 5 of 6 shares, S2 all 12 (asserted) | the prompt ("on that appearance's charges"); the current policy's 1.4; the case index (a superior court case's `district_case_ref`) |
-| SF23 | Ask B "within 90 days of release" | orders for court dates from the release day to the 90th day after it | the order's issue date in the 90 days | converges (asserted: every order issues on its court date) | the records converge |
+| SF23 | Ask B "within 90 days" | court dates from the release date through the 90th day after it, that day included | the 90th day left out (counts 348, 338, 307, 76 at scores 2 to 5; shares 10.0, 15.5, 22.5 at scores 3 to 5); the 90 days counted from the appearance (score 3's count 339); the order's issue date in the 90 days | the first two move figures (asserted); the issue date converges (asserted: every order issues on its court date), and so does the window's first day (asserted: no missed court date falls on a release day) | the README's day counts ("Days after a release are counted from the release date, and a period of days includes its last day"); the records converge on the rest |
 | SF24 | Ask B the unit and the share | each release at a first appearance a unit (a defendant released twice counts twice); releases followed by a missed date over the releases at the score | defendants | n/a | the prompt ("how many releases", "what share of those releases") |
-| SF25 | Ask C "days on electronic monitoring" | calendar days on which a monitor was on the defendant, each day counted once | the vendor's billable days summed (S1); each invoice line's enrollment dates counted (S2); each enrollment counted on its own (S3) | moves every figure (asserted) | the prompt ("the days ... of every defendant"); the vendor's invoice notes (billable days per enrollment, a day or part of a day); asserted: an equipment change ends one enrollment and opens another the same day |
+| SF25 | Ask C "days on electronic monitoring" | calendar days on which a monitor was on the defendant, each day counted once | the vendor's billable days summed (S1); each invoice line's enrollment dates counted (S2); each enrollment counted on its own (S3) | moves every figure (asserted) | the prompt ("the days ... of every defendant"); the README's monitoring note ("every day on which the defendant wore a monitor under that release's conditions"); the vendor's invoice notes (billable days per enrollment, a day or part of a day); asserted: an equipment change ends one enrollment and opens another the same day |
 | SF26 | Ask C the population | every defendant released within 24 hours of a first appearance from 1 October 2025 to 30 September 2026, any charge, by the screen's NCA score | eligible defendants only | moves the figures | the prompt ("every defendant released"); the README's release definition |
 | SF27 | Ask C "to that date" | monitoring days through 30 September 2026, open enrollments counted to it | (none) | n/a | the prompt |
 | SF28 | Ask C a vendor line with no case number | matched to the defendant by name and date of birth | dropped | moves the figures (asserted) | the records |
 | SF29 | the chart | Ask B's share by failure-to-appear score, one bar each | (none) | n/a | the prompt |
+| SF30 | the window's disposition end (draft 2.4, "before the last of the defendant's charges from the initial appearance is disposed"; the arrest extract has dates only) | an offense dated on the day the last charge is disposed counted (the window runs through that day) | the disposition day left out | same call (asserted: every construction of the gradient files scores 1 to 3, score 4 under 80 per cent and score 3 at 90 to the nearest 5 on the shared constructions; the released defendants' rate still files scores 1 to 4, score 4 among the released 88.05 against 87.92, score 5 on the line 64.76 against 63.65) | same call |
+| SF31 | the history's release at first appearance (the outcomes on file) | left the detention center within 24 hours on any condition set at the appearance: a written promise, an unsecured bond, a custody release, a secured bond posted | released on a written promise only (the tier's condition), the other releases read as held, or left out | same call on the gradient (asserted: scores 1 to 3, score 4 at 70.6 with the others read as held and 76.9 with them left out, score 3 at 89.8 and 90.7); the written-promise releases' own rate (89.8 at score 4) files scores 1 to 4, the default path's family | the README's release at first appearance ("on the conditions set at it, a secured bond posted in that time included"); draft 2.3 (the tier's population is every eligible defendant at the score, released or held) |
+| SF32 | Ask A "eligible defendants" | draft 2.1's eligible defendant: every charge a misdemeanor, none in Appendix B, no hold or detainer from another jurisdiction | the charges test alone, the defendants held on another jurisdiction's detainer kept (2,510, 4,890, 6,060, 8,420, 3,450, 2,050) | moves every figure (asserted) | draft 2.1 (the prompt's "eligible defendants" is the draft's defined term, the call's own) |
+| SF33 | Ask B the unit across an appearance's cases | a release counted once, however many of its cases or court dates were missed; every case carrying a charge of the appearance | the missed dates or the cases counted; the lead case alone (257, 344, 331, 291, 74, 20) | each moves the counts (asserted: the lead case alone 5 of 6) | the prompt ("how many releases ... were followed ... by a missed court date on that appearance's charges") |
+| SF34 | Ask C a part day | a day the monitor was worn for all or part of counts (the enrollment's first and last days included) | elapsed days, one less for each unbroken run (28,340, 26,550, 16,080, 10,260, 4,610, 2,190) | moves every figure (asserted) | the README's monitoring note ("for all or part of the day") |
+| SF35 | Ask C a vendor line with no case number, for a defendant released twice in the year | the release it serves: the latest release on or before the enrollment date | the defendant's first release in the year (5 of 6 figures move); the nearest release converges | moves the figures (asserted) | the README's monitoring note ("under that release's conditions"); the records (asserted: every enrollment starts on or after its release and ends by the defendant's next release) |
+| SF36 | Ask C a day once per release or once per defendant | once per release | once per defendant | converges at every score (asserted: no defendant is monitored under two releases on one day) | the records converge; the README's monitoring note ("counted for each release") |
 
 The stump is none of these rows: every term is read the same way by a careful reader, and the default path reads
 them all correctly. SF4 is the population row, and the draft fixes it (every eligible defendant at the score); the
 default path keeps that population and estimates its rate from the released defendants, which SF13 lists as a method
-and the records refute. SF17 to SF29 are the asks' readings, each closed by a cited sentence or an asserted data fact.
+and the records refute. SF30 and SF31 are the call's conventions closed at stage 4, each the same call. SF17 to SF29
+and SF32 to SF36 are the asks' readings, each closed by a cited sentence or an asserted data fact.
 
 ## Ladder
 
@@ -297,7 +305,7 @@ the release share (73.9), the instrument over all scores (74.6) and the most len
 | 6 | Denominator | every eligible appearance at the score (draft 2.3) |
 | 7 | Weighting | each appearance alike; the magistrate-level fit weighted by caseload or not converges (asserted) |
 | 8 | Window length | the four closed years; two years or one converge (SF9, asserted) |
-| 9 | Boundary inclusivity | "at least 85 per cent"; no estimate within 1.5 points of 85 (SF10, asserted) |
+| 9 | Boundary inclusivity | "at least 85 per cent"; no estimate within 1.5 points of 85 (SF10, asserted); the window's disposition day counted, the same call with it left out (SF30, asserted); the 365th day after release included (the README's day counts), on which no history outcome turns (asserted) |
 | 10 | Rounding path | estimates carried unrounded to the comparison; the call is a score |
 | 11 | Tie-break | none: one score decides |
 | 12 | Maturity and censoring | the history's windows closed by construction (appearances to 30 September 2025, arrests to 30 September 2026); cases open at the extract end their window at 365 days (asserted none of the history's windows is cut by the extract) |
@@ -351,8 +359,10 @@ stays and Halsey County's board bills (Ask A), the court events and the case ind
 vendor's invoices (Ask C), all on first appearances from 1 October 2025, outside the call's window. Each is a measure
 every score carries that the call does not turn on; none is keyed to the call, its construction or its figures; the
 three share no primary device and no primary file. No sentence in the pack adjudicates a device: the README states
-each file's fields, the detention count and the release definition, the jail code list each code, the vendor's note
-its billing basis.
+each file's fields, the custody count and the release definition, how days after a release are counted and how
+monitoring days are counted for a release, the jail code list each code, the vendor's note its billing basis. The
+README's custody note (stage 4, closing the judge's jail-only reading) does make Ask A's device seen rather than
+silent; Ask A below says what is left of it.
 
 **Ask A. For each new-criminal-activity score, the bed-days in custody to 30 September 2026 of eligible defendants held
 after a first appearance from 1 October 2025 to 30 September 2026** (6 figures, nearest 10): 2,210, 4,660, 5,950,
@@ -369,6 +379,11 @@ bin from an edge).
   books a return only for those who came back, while about two in five were released from Halsey, whose nights appear
   only on Halsey's monthly bills under Halsey's booking numbers (three lines in ten without Dorrance's booking number),
   matched by name and date of birth.
+- Since stage 4 the README files that a boarded-out defendant stays in the Sheriff's custody (SF18; the judge read
+  the detention center's own midnight count, S8, as a defensible reading). A reader of that note knows a boarding with
+  no return booking is a stay still open in the jail export; what stays unannounced is where it ends: on Halsey's
+  bills only, under Halsey's numbers, three lines in ten matched by name and date of birth, a day or part of a day
+  billed against midnights counted. The note names no file and no contract county.
 - Hazards: HA1 (D8) the jail's times are UTC and the count is Eastern; HA2 (D3) Halsey bills a day or part of a day;
   HA3 (D6) a stay crossing a month end sits on each month's sheet with its own date in; HA4 annex moves book the same
   defendant under a new booking number at the same minute.
@@ -377,7 +392,9 @@ bin from an edge).
   the boarded part 2,250, 4,740, 6,030, 8,450, 3,500, 2,070; S4 UTC midnights 2,190, 4,610, 5,890, 8,250, 3,400, 2,020;
   S5 `BO` chained to a return, else read as the release 1,980, 3,970, 5,360, 7,530, 2,960, 1,850; S6 days or part of a
   day 2,340, 4,950, 6,290, 8,800, 3,620, 2,160; S7 Halsey's month lines each counted from their dates 2,320, 5,040,
-  6,320, 8,730, 3,670, 2,080.
+  6,320, 8,730, 3,670, 2,080; S8 the detention center's own midnight counts, the boarded nights left out 1,820, 3,670,
+  5,040, 7,090, 2,750, 1,760; S9 a boarding with no return held on to the end of the extract (the custody note
+  executed on the jail export alone) 4,630, 12,470, 11,250, 18,580, 9,570, 4,850.
 - Span: the jail export, Halsey's bills, both first-appearance exports and the charges file, the screens, the
   crosswalk, the README, the jail code list (eight files; booking and release times, types, facility, Halsey's dates
   and names, eligibility codes, the score).
@@ -417,8 +434,11 @@ its bin from an edge).
 - H18 home: the monitoring each score's released defendants wear (a measure every release carries that the call does
   not turn on); use: the memo's account of the monitoring the county pays for at each score.
 - Construction: the vendor's monthly invoice lines, each enrollment matched to its release (court case number, else
-  name, date of birth and the latest release before the enrollment); each release's monitored days as the union of its
-  enrollments, one per calendar day, to 30 September 2026; summed by NCA score. Golden equals the clean truth (asserted).
+  name, date of birth and the latest release on or before the enrollment date); each release's monitored days as the
+  union of its enrollments, one per calendar day, a part day counted, to 30 September 2026; summed by NCA score.
+  Golden equals the clean truth (asserted). The README's monitoring note (stage 4) files the day (all or part of it)
+  and the release (counted for each release, under its conditions); it says nothing of enrollments, participant
+  numbers or an equipment change.
 - Primary device (D1, the same records under two key schemes): an equipment change ends one enrollment and opens
   another under a new participant number the same day, and the vendor bills each enrollment a day or part of a day, so
   the change day is billed twice; every participant number is unique and no line repeats, so no duplicate check fires.
@@ -427,7 +447,10 @@ its bin from an edge).
   at 30 September 2026.
 - Stops (computed and asserted, each missing all 6): S1 billable days summed 29,370, 27,510, 16,660, 10,660, 4,790,
   2,280; S3 each enrollment counted on its own (the same figures: the change day twice); S2 each line's enrollment
-  dates counted 182,160, 176,740, 100,710, 68,170, 31,880, 12,460.
+  dates counted 182,160, 176,740, 100,710, 68,170, 31,880, 12,460; S4 elapsed days (a part day not counted) 28,340,
+  26,550, 16,080, 10,260, 4,610, 2,190; S5 a line with no case number put to the defendant's first release in the year
+  28,810, 26,960, 16,120, 10,220, 4,660, 2,210 (5 of 6 missed). Each day once per defendant converges with the golden
+  at every score (no defendant is monitored under two releases on one day).
 - Span: the vendor's invoice lines, both first-appearance exports and the charges file, the screens, the jail export,
   the README (six files).
 - Realism: monitoring vendors open a new enrollment for a replacement unit and bill per enrollment-day.
@@ -452,14 +475,16 @@ join matched or explained, no fan-out, counts that tie) and executed every filed
 
 | Ask figures | The cracker's path | What keeps it wrong | Cracker result |
 |---|---|---|---|
-| Ask A, 6 bed-day figures | jail stays from booking to release, Eastern midnights, annex moves chained, `BO` to the return booking, else read as the end of custody (S5) | about two in five boarded defendants were released at Halsey, their nights only on Halsey's bills | miss |
+| Ask A, 6 bed-day figures | jail stays from booking to release, Eastern midnights, annex moves chained, `BO` to the return booking, else held on as custody under the README's note to the end of the jail export's record (S9) | about two in five boarded defendants were released at Halsey, their date out only on Halsey's bills under Halsey's booking numbers, three lines in ten without Dorrance's | miss |
 | Ask B, 6 counts | FTA events in the appearance's cases within 90 days, per release (S1) | indicted felonies continue under a superior court number found only through `district_case_ref` | miss |
 | Ask B, 6 shares | the same over the releases | the same | miss |
 | Ask C, 6 monitoring figures | each enrollment's days to its end or 30 September, summed per release (S3) | an equipment change opens a second enrollment the same day, so the change day counts twice | miss |
 
 The tier and score 4's verdict belong to the recommendation block and are carried by the main call. The mirror sheet
 (the same response stopped at R0) differs from the cracker sheet only on the recommendation criteria, so no ask is
-coupled to the call.
+coupled to the call. Ask A is the weakest row since stage 4: a cracker who takes the custody note as a reason to look
+for the boarded defendants' ends finds them on Halsey's bills and lands the golden, the case the pair arithmetic
+already plans for.
 
 Mirror leakage: 6 per cent of the ask weight (method credit on the ask paths, no figure).
 
@@ -468,7 +493,8 @@ instruction following (the three files, the chart's title and axis), 55 asks ove
 The cracker keeps about 6 per cent of the ask weight: C = 38 + 7 + 3.3 = 48.3. The mirror (R0) keeps the released
 score-4 rate it states and the same 3.3: S = 5 + 7 + 3.3 = 15.3. If the strongest response cracks the most obvious
 device (Ask A's boarding, 6 of 36 ask criteria, about 9 of 55 points), C rises to about 57.5 and the pair to about 36.4.
-Both top responses on the call with no device cracked: 48.3 each, under 50.
+Both top responses on the call with no device cracked: 48.3 each, under 50. Both top responses cracking Ask A (the
+risk the custody note adds): the pair at about 41.0, over the 40 target and under the 50 bar.
 
 Pair ceiling: 36.4
 
@@ -483,7 +509,7 @@ read. Recomputed from the generated rubric when it exists.
 | The draft revision, sections 2.1 to 2.5 | 1, the senior resident judge's draft local bail policy | eligibility, the tier's release on a written promise, the safety rate's population and window, the 85 per cent floor, the top score | how a score's rate is estimated, any magistrate, any held defendant's risk, any figure |
 | The current local bail policy (2024) | 1 | the definitions the draft cites (1.4 a failure to appear), the conditions of release, the misdemeanor classes (the guideline bond table), that magistrates sit by the chief magistrate's rota (2.3) | any outcome, any tier |
 | The scoring guide | 2 | the scale's items, points and the two six-point scores | any outcome rate |
-| The README and code lists | 4 | each file's fields, the time zones, the detention definition (midnight count), the release at first appearance (within 24 hours on the conditions set, a secured bond posted in that time included; still in custody at 24 hours is held after it), the jail and court codes, the vendor's billing basis | anything about selection, a magistrate's release share, a boarding's billing or an indictment's renumbering beyond the codes' meaning |
+| The README and code lists | 4 | each file's fields, the time zones, the detention definition (custody from booking to release from the Sheriff's custody, a boarding included; the midnight count), the release at first appearance (within 24 hours on the conditions set, a secured bond posted in that time included; still in custody at 24 hours is held after it), day counts after a release (from the release date, the last day included), days on electronic monitoring (for each release, all or part of a day), the jail and court codes, the vendor's billing basis | anything about selection, a magistrate's release share, where a boarding ends or is billed, an equipment change or an indictment's renumbering beyond the codes' meaning |
 
 ## Prompt
 
@@ -491,7 +517,8 @@ read. Recomputed from the generated rubric when it exists.
 workbook's three tables (bed-days in custody and monitoring days by NCA score; releases followed by a missed court date
 on that appearance's charges, and their share, by failure-to-appear score), the chart, and the rounding once at the
 close. 992 characters. Ask B counts releases (a defendant released twice in the period has two scores), and Ask A asks
-for bed-days in custody, the custody a boarding at Halsey continues.
+for bed-days in custody, the custody a boarding at Halsey continues. The asks' conventions sit in the README, not the
+prompt (stage 4: custody through a boarding, day counts after a release, monitoring days by release).
 
 ## Leak review
 
@@ -506,6 +533,24 @@ for bed-days in custody, the custody a boarding at Halsey continues.
   selection, a release share, a held defendant's risk or a gradient. The only sentences on assignment are the 2024
   policy's 2.3 (duty shifts by rota) and the roster's shift notes, which state how appearances are heard, not how a
   rate is estimated.
+
+Stage 4 reader (one isolated read, appended to `leak_check_report.md`): nothing quoted for questions 1 to 4; question 5
+executes to the golden (2.1, 2.4 and 2.5 fix the population, the outcome and the top-score rule, the method unfiled);
+question 6 analytical, the reader placing the difficulty at the open windows of the latest releases (a lower rung),
+not at the selection of who magistrates released (the decisive step). Its lines, each ruled:
+- Realism, the draft's writing-library template (styles with effects, a preview picture, an empty bibliography part,
+  zero counts): fixed. Both Word documents (the draft under `target/` and the golden memo) now leave the generator in
+  Word's own form (`postprocess.normalize_docx`: no template part, the styles in use only, the document's own session
+  and paragraph ids, statistics counted from the text and its layout, minute stamps and a revision count), asserted
+  in `checks.py` and `verify.py`; the text and its formatting are unchanged (python-docx and a LibreOffice rendering
+  read the same before and after).
+- The safety rate's population, released on a written promise (the prompt) against released on any condition (the
+  README): SF31, the same call on the gradient either way.
+- Ask A's eligibility with the no-detainer test: SF32, draft 2.1's defined term.
+- Missed court dates across an appearance's several cases: SF33, the prompt counts releases.
+- Part days of monitoring: SF34, the README's monitoring note.
+- The open windows of recent releases: the history stops at 30 September 2025, so every window closes inside the
+  extract (closure axis 12).
 
 ## Build record
 
@@ -527,6 +572,28 @@ Written at stage 3 green (figures from the final build):
   shipped file), H3 and H8 (the write-up's and memo's sentences against the figures and the draft's sections), H1.
 - The call: scores 1 to 3 (score 4 at 75.8 per cent on the caseload-weighted line, under 80 on every construction;
   score 3 at 90.3). The default path: scores 1 to 4 (score 4 at 87.9 among the released).
+
+Stage 4 fix pass (the judge's optional FIX_NOW on the asks and the reader's lines, one generator pass; figures from
+the final build):
+
+- What moved: under `target/`, `README_pretrial_extracts.txt` (the detention note, two new notes) and
+  `bail_policy_revision_2027_draft.docx` (its container, in Word's form; text and formatting unchanged); in
+  `golden/`, the memo's container the same way; `metadata.json` (the two files' byte counts). Every other file under
+  `target/`, the golden workbook and chart, `figures.json`, `prompt.txt` and `submission.md` are unchanged.
+- `checks.py` 193 assertions, 0 failed (SF1 to SF36 each asserted, the README's notes each in one file, the Word
+  documents' containers); `verify.py` green (the call, both tiers, every rate, all 30 ask figures, the Word documents'
+  word counts on its own path); two full builds byte-identical; `target.zip` 20 members, sha256 662eb5196dcbc2df
+  (first 16 hex digits).
+- `freeze.py check task141` in determinism and rubric modes: exit 0 (no graded figure moved). `figures_check.py`: 61
+  figures, none absent. `precut.py`: 49 checks, exit 0. `voice-check.py`: PASS (992 characters).
+- `leak.py --asof 2026-10-14`: REVIEW, no LEAK (the same REVIEW lines as at stage 3; the README's stump-term count rose
+  with the design note's own terms, `appearances` and `extract` among them, each the file's own vocabulary).
+  `scrub_producer_metadata.py` on `target/` and `golden/`: clean.
+- `guard.py heart`: PASS (nearest 0.08). `guard.py surface`: 1 promoted pair, task139 against task141, two apart:
+  the decisive gap (population) and generator (G9) coincide on the two cards, and task139 shipped on 15 October,
+  after this build's stage 3 screen. The drivers differ (a randomised pilot read per assigned intake there, a
+  selection read from the leniency gradient of rota-assigned magistrates here), recorded under the card's
+  `differentiation` and in the draw's abstraction test; the adjudicated `/clone-check` is the author's call.
 
 ## Tried and rejected
 
@@ -555,6 +622,11 @@ Written at stage 3 green (figures from the final build):
   the floor while the released defendants' rate stays near 88.
 - Ask B counted defendants: a defendant released twice in the period carries two failure-to-appear scores, so the ask
   counts releases.
+- The judge's optional prompt pins at stage 4 ("including days boarded out to Halsey County" in the bed-days ask,
+  "within 90 days of release, inclusive" in the missed-court-date ask): the prompt stands at 992 of its 1,000
+  characters and the first names the contract county, pointing at Ask A's device; the conventions went to the README
+  in Pretrial Services' voice instead (custody through a boarding, day counts after a release, monitoring days by
+  release), and the draft's 2.4 was left as filed, its disposition-day boundary a same-call row (SF30).
 - One random stream per arrest keyed by the running count of every arrest: any change to one person's history moved
   every later person's draws, so the asks' year could not be set without moving the call; streams are keyed by person
   and the person's own arrest index, and the first appearances from 1 October 2025, the failures to appear and the

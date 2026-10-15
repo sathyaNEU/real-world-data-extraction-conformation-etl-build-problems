@@ -376,7 +376,8 @@ def ask_a(T, fa, mode="golden"):
     Eastern midnight held, the count at 00:00 on 30 September the last. The stops: S1 BO read as the release; S2 BO
     chained to the defendant's next booking; S3 Halsey's billed days for the boarded part; S4 UTC midnights; S5 BO
     chained to a return, else read as the release; S6 days or part of a day; S7 Halsey's month lines each counted
-    from their dates."""
+    from their dates; S8 the detention center's own midnight counts only (the boarded nights left out); S9 a boarding
+    with no return booking held on to the end of the extract (the jail export's record alone)."""
     j = jail_segments(T)
     hs, hlines = halsey_stays(T)
     yr = fa[(fa.fa_t.dt.date >= K.FY26_START) & (fa.fa_t.dt.date <= K.EXTRACT_END) & fa.eligible & fa.nca.notna()
@@ -423,6 +424,10 @@ def ask_a(T, fa, mode="golden"):
                 if mode == "S5":
                     pieces.append((start, end, "DC"))
                     break
+                if mode == "S9":
+                    pieces.append((start, end, "DC"))
+                    pieces.append((end, None, "HC"))
+                    break
                 cand = [c for c in names.get((r.last + ", " + r.first, r.dob), []) if c.din == end.date()]
                 pieces.append((start, end, "DC"))
                 hstay = cand[0]
@@ -432,7 +437,7 @@ def ask_a(T, fa, mode="golden"):
             pieces.append((start, None if nat(end) else end, "DC"))
             break
         cnt = 0
-        if mode in ("golden", "S1", "S2", "S5"):
+        if mode in ("golden", "S1", "S2", "S5", "S9"):
             a = pieces[0][0]
             b = pieces[-1][1]
             b = end_t if b is None else b
@@ -450,13 +455,15 @@ def ask_a(T, fa, mode="golden"):
             b = pieces[-1][1]
             last = K.EXTRACT_END if b is None else min(b.date(), K.EXTRACT_END)
             cnt = (last - a.date()).days + 1
-        elif mode in ("S3", "S7"):
+        elif mode in ("S3", "S7", "S8"):
             for (a, b, where) in pieces:
                 if where == "DC":
                     bb = end_t if b is None else b
                     cnt += sum(1 for d in K.midnights(a.to_pydatetime() if hasattr(a, "to_pydatetime") else a,
                                                       bb.to_pydatetime() if hasattr(bb, "to_pydatetime") else bb)
                                if d <= K.EXTRACT_END)
+                elif mode == "S8":
+                    continue
                 else:
                     din = a.date()
                     # the Halsey bills' lines for this stay: by name, date of birth and date in
@@ -517,7 +524,11 @@ def ask_b(T, fa, mode="golden"):
 
 def ask_c(T, fa, mode="golden", eligible_only=False):
     """Days on electronic monitoring to 30 September 2026 of the defendants released at a first appearance in the
-    year, by new-criminal-activity score."""
+    year, by new-criminal-activity score. golden: each enrollment matched to its release (the court case, else name,
+    date of birth and the latest release on or before the enrollment date), each release's days the calendar days
+    its enrollments cover, a part day counted. The stops: S1 billable days summed; S2 each line's enrollment dates
+    counted; S3 each enrollment counted on its own; S4 elapsed days (one day less for each unbroken run); S5 a line
+    with no case number to the defendant's first release in the year; D each day once per defendant."""
     em = pd.read_csv(_p(T, K.EM), dtype=str, keep_default_na=False)
     em["s"] = pd.to_datetime(em.enroll_date, format="%m/%d/%Y").dt.date
     em["e"] = em.end_date.apply(lambda x: dt.datetime.strptime(x, "%m/%d/%Y").date() if x else None)
@@ -543,11 +554,29 @@ def ask_c(T, fa, mode="golden", eligible_only=False):
         k = case2rel.get(r.case) if r.case else None
         if k is None:
             c = namekey.get((r["last"].upper(), r["first"].upper(), r.dob), [])
-            c = [x for x in c if x[0] <= r.s]
-            if c:
-                k = max(c)[1]
+            if mode == "S5":
+                k = min(c)[1] if c else None
+            else:
+                c = [x for x in c if x[0] <= r.s]
+                if c:
+                    k = max(c)[1]
         owner[pno] = k if (k is not None and not pd.isna(yr.loc[k, "nca"])) else None
     res = {}
+    if mode == "D":
+        byd = {}
+        for pno, r in sorted(enr.iterrows(), key=lambda kv: (kv[1].s, kv[0])):
+            k = owner[pno]
+            if k is None:
+                continue
+            e = r.e or K.EXTRACT_END
+            dd = byd.setdefault(yr.loc[k, "sid"], {})
+            for i in range((e - r.s).days + 1):
+                dd[r.s + dt.timedelta(days=i)] = k
+        for dd in byd.values():
+            for k in dd.values():
+                sc = int(yr.loc[k, "nca"])
+                res[sc] = res.get(sc, 0) + 1
+        return res
     if mode == "S1":
         for pno, r in enr.iterrows():
             k = owner[pno]
@@ -578,7 +607,12 @@ def ask_c(T, fa, mode="golden", eligible_only=False):
             days.setdefault(k, set()).update(span)
     for k, v in days.items():
         sc = int(yr.loc[k, "nca"])
-        res[sc] = res.get(sc, 0) + (sum(v) if mode == "S3" else len(v))
+        if mode == "S4":
+            ds = sorted(v)
+            n = len(ds) - 1 - sum(1 for a, b in zip(ds, ds[1:]) if (b - a).days > 1)
+        else:
+            n = sum(v) if mode == "S3" else len(v)
+        res[sc] = res.get(sc, 0) + n
     return res
 
 

@@ -383,11 +383,27 @@ def main(target, golden):
     for s in range(1, 7):
         eq("book B %d" % s, (ws.cell(row=4 + s, column=2).value, ws.cell(row=4 + s, column=3).value,
                              "%.1f" % ws.cell(row=4 + s, column=4).value), (b[s][1], b[s][0], p1(b[s][0] / b[s][1])))
+    # the Word documents as Word leaves them: no template part, the statistics their own text gives
+    import zipfile
+    import docx
+    ns = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+    for path in [os.path.join(target, f) for f in sorted(os.listdir(target)) if f.endswith(".docx")] + \
+            [os.path.join(golden, f) for f in sorted(os.listdir(golden)) if f.endswith(".docx")]:
+        z = zipfile.ZipFile(path)
+        extra = [n for n in z.namelist() if n.startswith("customXml/") or n.endswith(("stylesWithEffects.xml",
+                                                                                     "thumbnail.jpeg", "numbering.xml"))]
+        if extra:
+            bad.append("%s carries template parts %s" % (os.path.basename(path), extra))
+        body = docx.Document(path).element.body
+        words = sum(len("".join(t.text or "" for t in p.iter(ns + "t")).split()) for p in body.iter(ns + "p"))
+        app = z.read("docProps/app.xml").decode()
+        eq("%s words" % os.path.basename(path), re.search(r"<Words>(\d+)</Words>", app).group(1), words)
     if bad:
         raise SystemExit("verify.py: %d mismatches\n  " % len(bad) + "\n  ".join(bad))
     print("verify.py: the call (top score %d, against %d on the released defendants' rate), %d scores' full-release "
           "and released rates, and all 30 ask figures recomputed from the bundle on an independent path; figures.json "
-          "and the golden workbook agree" % (E["tier"], E["tier_naive"], 6))
+          "and the golden workbook agree; the Word documents carry no template part and count their own words"
+          % (E["tier"], E["tier_naive"], 6))
 
 
 if __name__ == "__main__":

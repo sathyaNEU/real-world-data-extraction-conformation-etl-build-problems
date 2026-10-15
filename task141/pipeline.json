@@ -1,7 +1,7 @@
 {
   "task": "task141",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "criminology-justice",
   "objective": "forecasting",
   "stage": 4,
@@ -15,21 +15,21 @@
     "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-15 on the built pack (no LEAK; every REVIEW line answered in ## Leak review)",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-15 on the stage 4 rebuild (no LEAK; every REVIEW line answered in ## Leak review)",
+    "reader": "2026-10-15, one isolated read on the stage 3 pack: no leak, Q1 to Q4 none, Q5 executes to the golden, Q6 analytical (difficulty placed at follow-up censoring, a lower rung); the python-docx template tell fixed and five readings ruled (SF31 to SF34, closure 12) at the stage 4 fix pass; a targeted re-read is owed (README and both Word documents changed)"
   },
   "duplicate_check": {
-    "heart": "PASS (2026-10-15)",
-    "nearest": "driver 0.08 (task116 v1 lineage), heart nearest 0.05; surface 0 promoted pairs (2026-10-15)",
+    "heart": "PASS (2026-10-15, stage 4 rebuild)",
+    "nearest": "driver 0.08 (task116 v1 lineage); surface 1 promoted pair 2026-10-15: task139, two apart, gap population and G9 on both cards (task139 shipped 10-15), drivers differ, differentiation on the card; adjudication is the author's /clone-check",
     "note": "drawn 2026-10-15: guard PASS, no WARN"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (2026-10-15); main call forced, stump power high, Gate H analytical",
+    "disposition": "FIX_NOW optional on the asks, applied in one generator pass: README notes for custody through a boarding, day counts after a release and monitoring days by release; SF30 the disposition day a same-call row; both Word documents in Word's form; no figure moved (freeze determinism and rubric exit 0); no re-judge",
+    "report": "task141/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: targeted re-read of the README's three changed notes and both Word documents (one isolated reader, medium), then stage 5 ship",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -38,11 +38,13 @@
   "portal_status_date": "",
   "wave": "wave 2 (new), seed FC12 (world redrawn)",
   "build": {
-    "checks": "153 assertions, 0 failed",
-    "verify": "pass (independent path)",
-    "rebuild": "two builds byte-identical",
+    "checks": "193 assertions, 0 failed",
+    "verify": "pass (independent path, Word documents' word counts included)",
+    "rebuild": "two builds byte-identical (target.zip sha256 662eb5196dcbc2df)",
     "figures_check": "61 figures, exit 0",
     "voice_check": "PASS (992 characters)",
-    "containers": "clean (scrub audit, target and golden)"
+    "containers": "clean (scrub audit, target and golden; both docx in Word's form)",
+    "precut": "49 checks, exit 0",
+    "freeze": "determinism and rubric exit 0"
   }
 }

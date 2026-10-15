@@ -167,7 +167,8 @@ def write_draft(path):
         p = d.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         r = p.add_run(t)
-        r.bold = b
+        if b:
+            r.bold = True
     d.add_paragraph("Circulated to the Chief District Court Judge, the District Attorney, the Public Defender, the Chief "
                     "Magistrate, the Sheriff and the Director of Pretrial Services. Comments to the Senior Resident "
                     "Superior Court Judge's office by 6 November 2026. The revision is to be issued and filed with the "
@@ -460,11 +461,16 @@ def write_readme(path, files):
         "  The offense code crosswalk maps one to the other. The case index lists every case in the new system's format.",
         "- A first appearance is the defendant's initial appearance before a magistrate after an arrest on new charges.",
         "  Appearances on orders for arrest are not in the first-appearance exports.",
-        "- Detention: a stay runs from booking to release. The jail's population count is taken at midnight and dated",
-        "  with the day it begins; one bed-day is counted for each midnight count at which the person is held.",
+        "- Detention: a stay runs from booking to release from the Sheriff's custody; a defendant boarded out stays in",
+        "  the Sheriff's custody while boarded out. Custody is counted at midnight, each count dated with the day it",
+        "  begins; one bed-day is counted for each midnight count at which the person is held.",
         "- Release at first appearance, as Pretrial Services reports it: leaving the detention center within 24 hours of",
         "  the first appearance on the conditions set at it, a secured bond posted in that time included. A defendant",
         "  still in custody 24 hours after the appearance is held after it.",
+        "- Days after a release are counted from the release date, and a period of days includes its last day: the 365",
+        "  days after a release on 1 March 2024 run to 1 March 2025, that day included.",
+        "- Days on electronic monitoring are counted for each release: every day on which the defendant wore a monitor",
+        "  under that release's conditions, for all or part of the day.",
         "- The state arrest extract lists every arrest in North Carolina of anyone with a first appearance in either",
         "  export, from 1 October 2021, one row for each charge of an arrest.",
         "- Sentry Point bills each enrollment by the month, each day or part of a day the enrollment is active.",

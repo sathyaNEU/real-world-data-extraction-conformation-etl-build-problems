@@ -132,8 +132,9 @@ def build(out, quiet=False, W=None):
     DOC.write_crime(p(K.CRIME))
     DOC.write_readme(p(K.README), FILES)
     P = K.PEOPLE
-    PP.normalize_ooxml(p(K.DRAFT), P["srj"], P["srj"], "2026-09-21T14:12:09Z", "2026-10-06T15:48:31Z",
-                       title="Local bail policy revision for 2027 (draft)", company="Dorrance County Superior Court")
+    PP.normalize_docx(p(K.DRAFT), P["srj"], P["srj"], "2026-09-21T14:12:00Z", "2026-10-06T15:48:00Z", revision=9,
+                      total_time=214, seed="task141/draft", title="Local bail policy revision for 2027 (draft)",
+                      company="Dorrance County Superior Court")
     PP.normalize_ooxml(p(K.HALSEY), "Halsey County Sheriff", "Halsey County Sheriff", "2025-12-02T13:20:44Z",
                        "2026-10-01T12:05:10Z", excel=True, company="Halsey County Sheriff's Office")
     PP.normalize_ooxml(p(K.CROSSWALK), P["clerk"], P["clerk"], "2023-11-14T15:02:17Z", "2024-02-28T19:44:52Z",

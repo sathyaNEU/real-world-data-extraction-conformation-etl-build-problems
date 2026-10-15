@@ -360,8 +360,9 @@ def write_memo(path, c, figs):
     doc.core_properties.author = K.PEOPLE["analyst"]
     doc.core_properties.title = "Presumptive release tier 2027"
     doc.save(path)
-    PP.normalize_ooxml(path, K.PEOPLE["analyst"], K.PEOPLE["director"], "2026-10-13T14:02:51Z", "2026-10-14T20:17:09Z",
-                       title="Presumptive release tier 2027", company="Dorrance County Pretrial Services")
+    PP.normalize_docx(path, K.PEOPLE["analyst"], K.PEOPLE["director"], "2026-10-13T14:02:00Z", "2026-10-14T20:17:00Z",
+                      revision=6, total_time=167, seed="task141/memo", title="Presumptive release tier 2027",
+                      company="Dorrance County Pretrial Services")
 
 
 def main(target, golden, figures_path):
