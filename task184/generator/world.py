@@ -4,6 +4,7 @@ seasons on record. Every other module reads its constants from here."""
 import datetime as dt
 
 SEED = 184
+NUDGE = 455                               # fixed at design: the draw whose 43 graded figures sit mid-bin
 CITY = "Kelverstoke"
 QUARTER = "Harbourgate"
 PARTNERSHIP = "Kelverstoke Community Safety Partnership"
@@ -45,7 +46,7 @@ CONTRACTED = ("Theft from a motor vehicle", "Theft of a pedal cycle", "Criminal 
 
 PEOPLE = {
     "manager": ("Bethan Murray", "Community Safety Manager"),
-    "analyst": ("Adrian Daniels", "Community Safety Analyst"),
+    "analyst": ("Mitchell Webb", "Community Safety Analyst"),
     "inspector": ("Rosie Kelly", "Neighbourhood Inspector"),
     "chair": ("Joshua Davies", "Chair of the Partnership Board"),
 }
@@ -62,3 +63,40 @@ def season_days(i):
 
 def slot_label(s):
     return "%s %02d:00-%02d:00" % (DAYS[s[0]], s[1], s[1] + SLOT_H)
+
+
+# the quarter's trading hours, from the business improvement district's schedule: the fish market opens at 04:00,
+# the licensed premises close at 02:00 and the taxi rank clears at 05:00
+TRADING = {
+    0: (6, 24), 1: (6, 24), 2: (6, 24), 3: (6, 26), 4: (6, 27), 5: (4, 29), 6: (4, 24),
+}
+
+# sensor: (location, hours of the week it counts, the season it was installed)
+SENSORS = {
+    "FG-01": ("Harbourgate Street", "the quarter's main street at the ferry end"),
+    "FG-02": ("Fishmarket Square", "the market colonnade"),
+    "FG-04": ("Lamphouse Lane", "the lane between the two car parks"),
+    "FG-07": ("Quayside Multi-Storey", "the car park's pedestrian exit"),
+}
+
+# the migration from the legacy crime information system to the records management system, class by class
+MIGRATION = {
+    "Theft from a motor vehicle": dt.date(2025, 1, 13),
+    "Theft of a pedal cycle": dt.date(2025, 1, 13),
+    "Criminal damage": dt.date(2025, 2, 10),
+    "Burglary business": dt.date(2025, 2, 10),
+    "Burglary residential": dt.date(2025, 2, 10),
+    "Theft from the person": dt.date(2025, 7, 28),
+    "Assault without injury": dt.date(2025, 7, 28),
+    "Public order": dt.date(2025, 7, 28),
+    "Shoplifting": dt.date(2025, 7, 28),
+}
+PARALLEL = (dt.date(2025, 7, 14), dt.date(2025, 7, 27))      # the fortnight both systems were written to
+
+# the legacy system's own class names
+LEGACY_NAMES = {
+    "Theft from the person": "THEFT - FROM PERSON",
+    "Assault without injury": "ASSAULT - NO INJURY",
+    "Public order": "PUBLIC ORDER OFFENCE",
+    "Shoplifting": "THEFT - SHOP PREMISES",
+}

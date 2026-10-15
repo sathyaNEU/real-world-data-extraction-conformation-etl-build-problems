@@ -1,18 +1,18 @@
 {
  "task": "task184",
  "owner": "oviya13ya",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "criminology-justice",
  "objective": "anomaly-detection",
  "stage": 2,
  "stage_name": "design",
- "updated": "2026-10-14",
- "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, takes each offence's occurrence time as occurred_from and commissions the seven 20:00 to 24:00 slots and Friday 16:00 to 20:00, 3,199.5 covered offences a season; the step that lands it there is treating a window as the point in time it starts, when nine in ten of these offences have a window over four hours long.",
+ "updated": "2026-10-15",
+ "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, takes each offence's occurrence time as occurred_from and commissions the week's seven 20:00 to 24:00 slots and Friday 08:00 to 12:00, filing 7,838 covered offences a season; the step that lands it there is treating a window as the point in time it starts, when nine in ten of these offences have a window over four hours long and 96 per cent of them cross a slot boundary.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-15"
  },
  "leak": {
   "leak_py": "",
@@ -35,7 +35,7 @@
    "commit": "3329b92"
   }
  ],
- "resume": "Stage 2 part done: the ladder is cut and in the note (golden slate Sat 20:00, Sun 00:00, Fri 20:00, Sat 00:00, Sun 04:00, Sat 04:00, Thu 20:00, Wed 20:00; 4,223.1 covered a season; rung 0 the window start at 0.758, rung 1 the window end at 0.622, rung 2 the midpoint at 0.682; the one-hour grain, the activity-weighted refinement and the offences' true times all give the golden slate). prompt.txt written and voice-check PASS. generator/world.py holds the tuned constants and generator/offences_proto.py the prototype that produced the figures. STILL OWED at stage 2: the semantic fork table, the 22-axis closure table, the literal reader line, the oracles line, the ask sheet with its three devices and the pair arithmetic, then precut.py exit 0. Then stage 3: the full generator and pack (two recording-system exports, the gazetteer, the footfall sensors, the tasking plan, the counting rules, the contract), goldens, checks, verifier, metadata.",
+ "resume": "Stage 2 complete, precut.py exit 0 (49 checks). The draw was re-registered on 2026-10-15 after task459 landed: shape 07 (the graded object is the week's 42-cell day-by-band grid, each cell's covered-offence figure graded to the nearest fifty), forcing event season_or_peak, the analyst persona redrawn to Mitchell Webb. Occurrence windows are recorded on the hour at both ends, which removes the spreading-grain fork (every grain dividing an hour returns the exact share, to 4e-10). generator/world.py carries NUDGE = 455, the draw whose 43 graded figures sit mid-bin at the nearest fifty (worst edge distance 2.64) with a 14.0 per cent gap at the cap. STILL OWED, stage 3: the generator and pack (two recording-system exports, extract notes, counting rules, contract and tasking schedule, location register, gazetteer, beat map, footfall counts, sensor availability log, sensor register, trading hours, patrol tasking plan, data dictionary, two distractors), the goldens harbourgate_patrol_slate_2027.pdf and harbourgate_slot_weights.xlsx, checks.py with every SF row, verify.py, metadata.json, figures.json, two byte-identical builds, then stage 4.",
  "approved": null,
  "delivered": "2026-10-12",
  "portal": null,

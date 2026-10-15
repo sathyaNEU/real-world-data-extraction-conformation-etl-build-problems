@@ -7,7 +7,7 @@
   "subdomain": "crime-incidence-hotspot-analysis",
   "niche": "night-time economy hotspot patrol slate timed off offences whose occurrence time is a range",
   "objective": "anomaly-detection",
-  "shape": "01",
+  "shape": "07",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
   "answer": "",
@@ -41,7 +41,7 @@
     "source": "synthetic"
   },
   "forum": "committee_or_panel",
-  "forcing_event": "purchase_order_or_contract",
+  "forcing_event": "season_or_peak",
   "org_family": "local_government",
   "world": {
     "geography": "Kelverstoke, a fictional city in a UK-like island state",
@@ -50,7 +50,7 @@
     "invented_names": [],
     "people": [
       "Bethan Murray",
-      "Adrian Daniels",
+      "Mitchell Webb",
       "Rosie Kelly",
       "Joshua Davies"
     ]
@@ -107,6 +107,6 @@
       "answer": "Post the mobile screening unit to Eskerford from 15 June to 31 August 2027: it moves 342,200 passengers within the 20-minute standard, against 272,600 at Halloran Bay, and 13 per cent is the smallest whole per cent shortfall in Eskerford's forecast passengers at which another posting would move more."
     }
   ],
-  "notes": "WARNs answered in DESIGN_NOTE.md ## Draw: strategy_risk (the unit of analysis is the offence-hour the weighted window puts on a slot, a quantity the solver builds, not a field it reads, and the analyst test files a wrong slate with every field read correctly); repeat and overuse of gate_g method_or_model_selection (the mechanism here is the weight a windowed event puts on each slot, not a model chosen from a menu); repeat.question_form which (the decision is a slate under a cap, so the leading question asks which slots).",
-  "registered": "2026-10-14T01:52:34Z"
+  "notes": "WARNs answered in DESIGN_NOTE.md ## Draw: strategy_risk (the unit of analysis is the offence-hour the weighted window puts on a slot, a quantity the solver builds, not a field it reads, and the analyst test files a wrong slate with every field read correctly); repeat and overuse of gate_g method_or_model_selection (the mechanism here is the weight a windowed event puts on each slot, not a model chosen from a menu); repeat.question_form which (the decision is a slate under a cap, so the leading question asks which slots). Redraw 2026-10-15 after task459 was registered: shape 01 to 07 (the graded unit is the week's grid of 42 day-by-band slots, each cell's covered-offence figure graded, the eight commissioned read off it), forcing event purchase_order_or_contract to season_or_peak (the 2027 season opens 1 April and the slate has to be set before it), analyst persona redrawn (Adrian collided).",
+  "registered": "2026-10-15T12:21:23Z"
 }
