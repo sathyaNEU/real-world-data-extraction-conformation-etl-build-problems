@@ -594,6 +594,63 @@ the final build):
   after this build's stage 3 screen. The drivers differ (a randomised pilot read per assigned intake there, a
   selection read from the leniency gradient of rota-assigned magistrates here), recorded under the card's
   `differentiation` and in the draw's abstraction test; the adjudicated `/clone-check` is the author's call.
+- Ship (2026-10-15): the targeted re-read of the README's notes and the draft found no leak, Q6 analytical; its
+  realism notes are recorded and left (the pre-ship check, point 9). `target.zip` is cut from the final rebuild,
+  byte-identical to the stage 4 pack (sha256 662eb5196dcbc2df); guard heart PASS, validate clean, precut exit 0,
+  leak.py REVIEW on the same lines.
+
+## Pre-ship check
+
+Written at stage 5 against the built pack (the stage 4 fix pass in); the reader and judge lines are stage 4's and
+the targeted re-read's.
+
+1. Domain: the deciding quantity is each Pretrial Assessment Scale score's pretrial new-offense rate among every
+   eligible defendant a presumptive tier would release, estimated past the outcome record's selective labels from the
+   leniency gradient of the magistrates the duty rota assigns; with a hospital's nouns there is no pretrial window
+   from release to disposition, no new-offense arrest recorded only for the released and no rota of magistrates whose
+   release shares identify the held defendants' risk, and with the released defendants' own rate the call moves to
+   scores 1 to 4.
+2. Real work, nothing planted: two first-appearance exports across the clerk's system change (layouts, case numbers,
+   magistrate keys), screens keyed by booking number or by state number and time, UTC jail times against Eastern court
+   times, offense codes recoded through the crosswalk, an arrest extract mixing warrant service and older offenses
+   with new-offense arrests at one row per charge, dispositions in their own export with cases open at the extract; on
+   the ask paths a boarding at a contract county billed under its own numbers, a monitoring vendor's month lines with
+   same-day equipment changes, felonies continuing under superior court numbers. Each is what these systems write;
+   each mishandled leaves the call and the shared bounds where they were (R2, asserted), and the call reads no ask
+   file (asserted). The stage 4 README notes file conventions only (custody, day counts, monitoring days by release).
+3. The flip is a method choice: reading each score's rate for every eligible defendant from the magistrates' release
+   shares out to full release, instead of from the defendants magistrates released; no field, unit or stated rule
+   decides it (draft 2.1 to 2.5 file the estimand and leave the estimate to the analyst), and the default path reads
+   every filed rule the same (R3a on the clean truth: scores 1 to 4).
+4. The analyst test holds: the released defendants' rate files scores 1 to 4 (score 4 at 87.9 per cent); a logistic
+   model on the released, a reweighting to the eligible and the latest closed year the same; the held counted as not
+   arrested a tier above 3, the held counted as arrested scores 1 and 2; only the gradient files 1 to 3, on every
+   construction (score 4 under 80, score 3 at 90 to the nearest 5) and on the clean truth (R3b: 72.5 and 89.9).
+5. One defensible answer: draft 2.1 to 2.5 and the README's release and day-count notes file the estimand; the 36
+   fork rows are each asserted, SF30 (the disposition day) and SF31 (a written promise only) closed at stage 4 as the
+   same call; no estimate on any route sits within 1.5 points of the floor.
+6. No decoy: no file states a safety rate, a release share or a tier; the scoring guide gives items and points only;
+   the CJAC jail population report and the reported-crime series are declared distractors, read by neither the call
+   nor any ask (asserted).
+7. Nothing hidden and recovered: no certified figure or past tier ships to reproduce; the held defendants' outcomes
+   are absent by the nature of the record, not withheld, and the gradient is read from the appearances on file.
+8. A new lesson: an outcome recorded only where a decision-maker let a unit through is selected on what that
+   decision-maker saw, so a rule that lets every unit through is priced from the variation among decision-makers
+   assigned at random, out to full release; no build on file teaches selection by a decision-maker or the leniency
+   design.
+9. Leak reader (stage 4): no leak; Q1 to Q4 none; Q5 executes to the golden; Q6 analytical, the difficulty placed at
+   follow-up censoring (a lower rung); its realism tell fixed and its readings ruled (SF31 to SF34, closure axis 12).
+   The targeted re-read of the README's notes and the draft: no leak, Q6 analytical (selection named as what the easy
+   observed rate ignores); its realism notes (the README's notes reading like a specification after the pins, the
+   draft's 2.4 to 2.6 reading drafted) recorded and left, each further edit reopening a closed fork for no graded
+   figure.
+10. Judge (stage 4): DETERMINISTIC, the main call forced, stump power high, Gate H analytical
+   (`determinism_check_report.md`); its optional ask-side FIX_NOW applied in one generator pass (custody through a
+   boarding, day counts after a release, monitoring days by release, the disposition day a same-call row, both Word
+   documents in Word's form), `freeze.py` passing in both modes, so no graded figure moved; not re-judged. The
+   rubric's exposure is Ask A, whose boarding device the custody note makes seen: the pair on paper is 36.4 with one
+   response cracking it and about 41.0 with both. The clone screen promotes task139 (two apart, gap population and G9
+   on both cards) for the author's `/clone-check`; the drivers differ, recorded on the card.
 
 ## Tried and rejected
 

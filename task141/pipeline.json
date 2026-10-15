@@ -1,11 +1,11 @@
 {
   "task": "task141",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "criminology-justice",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-15",
   "stump": "A competent solver links the screens to the first appearances, keeps the eligible charges, counts a new-offence arrest within 365 days of release or before disposition, takes each score's safety rate among the eligible defendants magistrates released and files the tier at scores 1 to 4 (score 4 at 87.9 per cent); the step that lands it there is reading the released defendants as the tier's population, when magistrates held 26 per cent of eligible score-4 defendants, the ones they judged riskiest, and the tier releases them all: read from the magistrates' differing release shares, score 4 falls to about 76 per cent and the tier is scores 1 to 3.",
   "architecture": 1,
@@ -15,23 +15,23 @@
     "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-15 on the stage 4 rebuild (no LEAK; every REVIEW line answered in ## Leak review)",
-    "reader": "2026-10-15, one isolated read on the stage 3 pack: no leak, Q1 to Q4 none, Q5 executes to the golden, Q6 analytical (difficulty placed at follow-up censoring, a lower rung); the python-docx template tell fixed and five readings ruled (SF31 to SF34, closure 12) at the stage 4 fix pass; a targeted re-read is owed (README and both Word documents changed)"
+    "leak_py": "REVIEW 2026-10-15 on the final rebuild (no LEAK; every REVIEW line answered in ## Leak review)",
+    "reader": "stage 4 2026-10-15: no leak, Q1 to Q4 none, Q5 executes to the golden, Q6 analytical (difficulty placed at follow-up censoring, a lower rung); its python-docx template tell fixed and five readings ruled (SF31 to SF34, closure 12) in the fix pass; targeted re-read 2026-10-15 of the README's notes and the draft: nothing quoted for Q1 to Q4, Q6 analytical, its realism notes (the pinned notes reading like a specification) recorded and left"
   },
   "duplicate_check": {
-    "heart": "PASS (2026-10-15, stage 4 rebuild)",
-    "nearest": "driver 0.08 (task116 v1 lineage); surface 1 promoted pair 2026-10-15: task139, two apart, gap population and G9 on both cards (task139 shipped 10-15), drivers differ, differentiation on the card; adjudication is the author's /clone-check",
+    "heart": "PASS 2026-10-15 on the final rebuild, nearest 0.08 (task116 v1 lineage)",
+    "nearest": "driver 0.08 (task116 v1 lineage); surface exit 0, task139 promoted (two apart, gap population and G9 on both cards, drivers differ, differentiation on the card) for the author's /clone-check",
     "note": "drawn 2026-10-15: guard PASS, no WARN"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (2026-10-15); main call forced, stump power high, Gate H analytical",
-    "disposition": "FIX_NOW optional on the asks, applied in one generator pass: README notes for custody through a boarding, day counts after a release and monitoring days by release; SF30 the disposition day a same-call row; both Word documents in Word's form; no figure moved (freeze determinism and rubric exit 0); no re-judge",
+    "verdict": "DETERMINISTIC (2026-10-15), every figure reproduced; main call forced, stump power high, Gate H analytical",
+    "disposition": "FIX_NOW optional on the asks, applied in one generator pass (README notes for custody through a boarding, day counts after a release and monitoring days by release; SF30 the disposition day a same-call row; both Word documents in Word's form); freeze determinism and rubric exit 0, no graded figure moved; not re-judged",
     "report": "task141/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: targeted re-read of the README's three changed notes and both Word documents (one isolated reader, medium), then stage 5 ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-15",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

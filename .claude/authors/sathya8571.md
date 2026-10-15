@@ -19,3 +19,4 @@ architecture), new. A task from an objective no developer owns says so.
 | 1 | task124 (resume 3) · task134 (resume 3) · task135 (resume 3) · task501 (redesign: the portal landed v2) · task130 (re-root: retired) |
 | 2 | task136 (new) · task137 (new) · task138 (new) · task139 (new) · task140 (new) · task141 (new) |
 | 3 | task142 (new) · task143 (new) · task144 (new) · task145 (new) · task146 (new) · task147 (new) |
+| 4 | task148 (new) · task149 (new) · task150 (new) · task151 (new) · task152 (new) · task153 (new) |
