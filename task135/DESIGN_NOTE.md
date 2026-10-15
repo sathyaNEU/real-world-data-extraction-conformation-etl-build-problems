@@ -96,7 +96,7 @@ This is the pipeline the measured opponent builds unsteered, from the prompt's w
 
 ## Stump sentence
 
-A competent solver builds each holding's daily total return from the prices it is valued at, estimates the two-year covariance of daily returns, scales the portfolio's daily standard deviation by the square root of 252 at each step and sets the 2027 growth share at 70 per cent against 60; the step that lands it there is treating same-dated prices as same-moment prices, when the Kestwick funds are struck at noon from each market's last available price, so the North American fund's price carries the previous evening's New York close that the London-close UK shares have already priced, and the daily covariance misses the co-movement that arrives a day apart.
+A competent solver builds each holding's daily total return from the prices it is valued at, estimates the two-year covariance of daily returns, scales the portfolio's daily standard deviation by the square root of 252 at each step and sets the 2027 growth share at 70 per cent against 60; the step that lands it there is the estimator, the same-day covariance scaled by the square root of 252, when the Kestwick funds are struck at noon from each market's last available price and the UK shares at the London close, so the North American fund's price carries the previous evening's New York session that the mandate has already priced and the same-day covariance misses the co-movement that arrives a day apart.
 
 ## Three rules
 
@@ -106,7 +106,7 @@ A competent solver builds each holding's daily total return from the prices it i
 
 **Decisive step:** estimating the twelve-month variance from the daily returns of holdings struck at different times of day by taking in the covariances that land a day apart (the lead and lag terms, or a Newey-West sum), instead of scaling the same-day daily covariance by the square root of 252.
 
-**Not semantics:** a solver who reads every field, code, unit and the valuation points correctly (noon dealing from each market's latest prices, listed shares at the official close, daily returns under policy 4.3) still files 70 by scaling the same-day daily covariance by the square root of 252; no reading of a term moves the call, since each of the fork table's 14 rows gives the same call or is refused by a quoted sentence.
+**Not semantics:** a solver who reads every field, code, unit and the valuation points correctly (noon dealing from each market's latest prices, listed shares at the official close, daily returns under policy 4.3) still files 70 by scaling the same-day daily covariance by the square root of 252, and so does one who acts on that reading by re-dating the North American fund a day and keeping the scaling (9.43 at 70 in the judge's re-run); no reading of a term moves the call, since each of the fork table's 14 rows gives the same call or is refused by a quoted sentence.
 
 **Not rule application:** no filed rule or procedure performs the step from a day's covariance to a year's variance. Policy 4.1 to 4.4 fix the estimand (the twelve-month standard deviation, daily returns over the window, every day weighted equally, the comparison before rounding), and executing every one of them still files 70 through the square-root-of-time scaling.
 

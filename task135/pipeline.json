@@ -4,8 +4,8 @@
   "objective": "forecasting",
   "stage": 5,
   "stage_name": "ship",
-  "updated": "2026-10-13",
-  "stump": "A competent solver builds each holding's daily total return from the prices it is valued at, estimates the two-year covariance of daily returns, scales the portfolio's daily standard deviation by the square root of 252 at each step and sets the 2027 growth share at 70 per cent against 60, treating same-dated prices as same-moment prices when the Kestwick funds are struck at noon from each market's last available price, so the North American fund carries the previous evening's New York close that the London-close UK shares have already priced.",
+  "updated": "2026-10-15",
+  "stump": "A competent solver builds each holding's daily total return from the prices it is valued at, estimates the two-year covariance of daily returns, scales the portfolio's daily standard deviation by the square root of 252 at each step and sets the 2027 growth share at 70 per cent against 60: the same-day covariance misses the covariance that lands a day apart, because the Kestwick funds are struck at noon from each market's last available price and the London-close UK shares have already priced the New York session the North American fund carries.",
   "architecture": 2,
   "loops": 1,
   "precut": {
@@ -42,6 +42,12 @@
       "portal": "call landed for response 1 (60 at 9.0 per cent on Friday-to-Friday weekly returns, a route policy 4.3's 'at least 100 periods' invited without the asynchrony being seen); response 2 filed the default 70 (9.4); the asks held both (grant payments 1,298,000 against 1,260,000; title 50 against 40)",
       "repair": "design: policy 4.3 files daily returns, one for each business day; the golden family is the five daily members that take in the cross-day covariances (9.29 to 9.59 at 60, 10.65 to 10.99 at 70); the 30 multi-day and the monthly routes are refused and still land 60; asks, default, prompt and stump unchanged",
       "commit": "40196a3"
+    },
+    {
+      "date": "2026-10-15",
+      "portal": "audit: block 1 framed the default as treating the noon prices as struck at the London close, which a reviewer could read as a reading slip (data semantics)",
+      "repair": "write-up wording only: block 1 and steps 2 and 4 name the estimator choice (the same-day covariance scaled by the square root of 252 leaves out the covariance that lands a day apart); stump sentence, card stump and the Not semantics line framed the same way; the thirteen Three rules lines were already present; no pack, golden, prompt or figure change (target.zip unchanged)",
+      "commit": ""
     }
   ]
 }
