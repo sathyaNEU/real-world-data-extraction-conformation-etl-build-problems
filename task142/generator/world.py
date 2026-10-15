@@ -556,16 +556,37 @@ def bellbird_records(W):
     return recs
 
 
-def _replay(x, rr):
+def lines(t, x):
+    """Where a start time sits against every line a record's figures turn on: its Melbourne day (the weekend and
+    public holiday loadings, the month, the pay week, the quarter), 7.00 am and 6.00 pm (the weekday loading) and, for
+    the referral the record serves, the acceptance and 24 hours after it (the first-visit clock)."""
+    resp = x["ref"]["resp"]
+    return (t.date(), t.hour < 7, t.hour >= 18, t >= resp, t <= resp + dt.timedelta(hours=K.FIRST_VISIT_HOURS))
+
+
+def _keyed_again(x, r, same_side):
+    """The times a nurse keys for a visit the second time: start and end each up to 12 minutes off the first record,
+    the two overlapping; with same_side, at least 2 minutes off at the start and on the first record's side of every
+    line in lines()."""
     dur = (x["end"] - x["start"]).total_seconds() / 60
     while True:
-        ds = int(rr.integers(-12, 13))
-        de = int(rr.integers(-12, 13))
+        ds = int(r.integers(-12, 13))
+        de = int(r.integers(-12, 13))
         st = x["start"] + dt.timedelta(minutes=ds)
         en = x["end"] + dt.timedelta(minutes=de)
         ov = (min(en, x["end"]) - max(st, x["start"])).total_seconds() / 60
-        if (en - st).total_seconds() / 60 >= min(10, dur) and ov >= min(5, dur - 1):
-            break
+        if (en - st).total_seconds() / 60 >= min(10, dur) and ov >= min(5, dur - 1) and \
+                (not same_side or (abs(ds) >= 2 and lines(st, x) == lines(x["start"], x))):
+            return st, en
+
+
+def _replay(x, rr):
+    """A record the app posts again under a fresh number. The re-keyed times never cross a line the record's fee,
+    day or clocks turn on, so either record of the pair carries the same figures; a draw that would cross one is
+    redrawn from the record's own stream, leaving the shared stream (and every other pair) as it was."""
+    st, en = _keyed_again(x, rr, False)
+    if lines(st, x) != lines(x["start"], x):
+        st, en = _keyed_again(x, K.rng("replay_side", x["nurse"], x["pref"], x["start"].isoformat()), True)
     y = dict(x, start=st, end=en, replay=True, orig=x)
     y["posted"] = x["posted"] + dt.timedelta(minutes=int(rr.integers(120, 1800)))
     return y

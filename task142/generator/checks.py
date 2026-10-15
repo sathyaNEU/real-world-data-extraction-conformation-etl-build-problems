@@ -372,6 +372,26 @@ def _three_rules(target, B, G, Rv, W, texts):
 
 # ---------------------------------------------------------------------------------------------------- the asks
 
+def _count(k, word):
+    return "%d %s%s" % (k, word, "" if k == 1 else "s")
+
+
+def _xlsx_size(path):
+    """A workbook's size as a manifest gives it: its sheets when it has several, else the rows of its table (below
+    the header, down to the first totals or note row)."""
+    wb = openpyxl.load_workbook(path, data_only=True)
+    if len(wb.worksheets) > 1:
+        return _count(len(wb.worksheets), "sheet")
+    rows = list(wb.worksheets[0].iter_rows(values_only=True))
+    hi = next(i for i, r in enumerate(rows) if sum(v is not None for v in r) >= 3)
+    n = 0
+    for r in rows[hi + 1:]:
+        if sum(v is not None for v in r) < 2 or str(r[0]).startswith("All "):
+            break
+        n += 1
+    return _count(n, "row")
+
+
 def _round(x):
     return int(math.floor(x + 0.5))
 
@@ -389,6 +409,23 @@ def _asks(target, A, W):
         for mo in (7, 8, 9):
             ok(any(x["replay"] and x["member"] == m and x["start"].month == mo for x in W.bb),
                "A a re-posted record in %s %d" % (m, mo))
+    # a re-posted record and the record it repeats: one Melbourne day, one side of 7.00 am and 6.00 pm, of the
+    # referral's acceptance and of 24 hours after it, starts 0 to 12 minutes apart, the same status and kind of visit
+    pairs = [(x, x["orig"]) for x in W.bb if x["replay"]]
+    ok(len(pairs) == n_rep and all(WD.lines(x["start"], o) == WD.lines(o["start"], o) for x, o in pairs),
+       "A every re-post pair on one side of every line its fee, day and clocks turn on (%d pairs)" % len(pairs))
+    ok(all(abs((x["start"] - o["start"]).total_seconds()) <= 12 * 60 and x["status"] == o["status"] and
+           x["type"] == o["type"] and x["client"] == o["client"] and x["pref"] == o["pref"] for x, o in pairs),
+       "A re-post pairs start 0 to 12 minutes apart, one status, kind, account and reference")
+    by_pair = collections.defaultdict(list)
+    for v in A.visits:
+        if v["status"] != "cancel":
+            by_pair[(v["nurse"], v["pref"])].append(v)
+    olap = [(v, w) for lst in by_pair.values() for v, w in itertools.combinations(lst, 2)
+            if v["start"] < w["end"] and w["start"] < v["end"]]
+    ok(len(olap) == n_rep and all(v["start"].date() == w["start"].date() and
+                                  C.fee(v, A.holidays) == C.fee(w, A.holidays) for v, w in olap),
+       "A on the export: %d overlapping pairs, each on one Melbourne day at one fee" % len(olap))
     # amounts: exact cents, never on a half-dollar tie
     for k, v in a.items():
         ok(abs(v * 100 - round(v * 100)) < 1e-6 and abs((v - math.floor(v)) - 0.5) > 0.004,
@@ -485,6 +522,48 @@ def _asks(target, A, W):
     ok(sum(1 for v in A.visits if "/IL26-" in v["pref"]) >= 10, "B intake-file references on the visit export")
     ok(all(v["pref"].split("/", 1)[1] in A.intake for v in A.visits if "/IL26-" in v["pref"]),
        "B every intake-file reference is a telephoned referral's log number")
+    # whichever record of a re-post pair is kept (first or last posted, lowest or highest visit number, earliest or
+    # latest start), every amount, every pay week's count and every referral figure is the same
+    sig_b = lambda bb: {m: (bb[m]["n"], bb[m]["acc2"], bb[m]["acc"], bb[m]["v24"]) for m in K.MEMBERS}
+    for rule in C.KEEP:
+        vk = C.dedupe(A.visits, keep=rule)
+        ok(len(A.visits) - len(vk) == n_rep, "survivor %s: the overlap test removes the %d re-posts" % (rule, n_rep))
+        ak = C.ask_a(A, visits=vk)
+        ok(all(round(ak[k], 2) == round(a[k], 2) for k in a), "survivor %s: all 15 amounts to the cent" % rule)
+        ok(C.weekly(A, visits=vk) == wk, "survivor %s: every Member's count in every pay week" % rule)
+        ok(sig_b(C.ask_b(A, visits=vk)) == sig_b(b), "survivor %s: every referral count and share" % rule)
+    # the referral response's bases, as Schedule 4 clause 4.5 reviews them: the share of the referrals a Member made
+    # that Bellbird accepted within two hours, and the share of its accepted referrals first visited within 24 hours;
+    # clause 4.2's response (accepted or declined within two hours), or acceptances over accepted referrals, are other
+    # figures for every Member
+    s34 = re.sub(r"\s+", " ", pdf_text(os.path.join(target, K.SCHED34)))
+    ok("the share of the referrals the Member made in the quarter that Bellbird accepted within two hours of the "
+       "Member making them" in s34 and "the share of the Member's accepted referrals that Bellbird first visited "
+       "within 24 hours of accepting them" in s34, "B clause 4.5 files both shares' bases")
+    allrefs = C.referrals(A)
+    for m in K.MEMBERS:
+        rr = [x for x in allrefs if x["member"] == m]
+        ok(len(rr) == b[m]["n"] and all(x["resp"] is not None for x in rr), "B %s every referral has a response" % m)
+        responded = sum(1 for x in rr if (x["resp"] - x["sent"]).total_seconds() <= 7200)
+        ok(_r1(100.0 * responded / len(rr)) != _r1(b[m]["pct_acc2"]) and
+           _r1(100.0 * b[m]["acc2"] / b[m]["acc"]) != _r1(b[m]["pct_acc2"]),
+           "B %s responded within two hours, or over accepted referrals, is another figure" % m)
+    # the chart's pay weeks (the finance calendar's, Monday to Sunday): the export holds visits on the quarter's days
+    # only (Melbourne dates), so the part weeks commencing 29 June and 28 September hold the quarter's days however a
+    # straddling week is read, and each panel's total is the Member's payable visits for the quarter under any weeks
+    ok(all(K.Q3S <= v["start"].date() <= K.Q3E for v in A.visits), "chart every export record on a quarter day")
+    pay = {m: sum(1 for v in vs if v["member"] == m and v["status"] != "cancel") for m in K.MEMBERS}
+    ok(all(sum(wk[(m, w)] for w in C.WEEKS) == pay[m] for m in K.MEMBERS), "chart the 14 pay weeks hold every "
+                                                                            "payable visit of the quarter")
+    dct = openpyxl.load_workbook(os.path.join(target, K.DICTIONARY), data_only=True).worksheets[0]
+    ok(any(r[0] == K.CALENDAR and r[1] == "week_commencing" and "pay week" in (r[2] or "")
+           for r in dct.iter_rows(values_only=True)), "chart the dictionary defines the calendar's pay week")
+    # payable visits are a count of the visits a fee is payable for (clauses 3.2 to 3.5: completed and attempted);
+    # completed visits alone are another count for every Member
+    ok("the visit is an attempted visit and its fee is" in s34 and "No fee is payable for a visit cancelled" in s34,
+       "chart clauses 3.4 and 3.5 make attempted visits payable and cancelled visits not")
+    done = {m: sum(1 for v in vs if v["member"] == m and v["status"] == "done") for m in K.MEMBERS}
+    ok(all(done[m] != pay[m] for m in K.MEMBERS), "chart completed visits alone miss every Member's total")
     # the cracker sheet: every handling of the three devices (re-posts, telephoned referrals, intake files), scored
     # against the 35 ask figures (15 amounts, 15 referral figures, 5 chart totals)
     prof = {}
@@ -584,8 +663,20 @@ def _gates(target, golden, B, G, A, asks, W, texts, meta_path):
     man = C._csv(os.path.join(target, K.MANIFEST))
     ok(sorted(r["file"] for r in man) == sorted(f for f in files if f != K.MANIFEST), "H9 manifest equals the set")
     for r in man:
-        if r["rows_or_pages"].endswith("rows"):
-            ok(int(r["rows_or_pages"].split()[0]) == rows[r["file"]], "H9 manifest rows for %s" % r["file"])
+        f = r["file"]
+        path = os.path.join(target, f)
+        if f.endswith((".csv", ".jsonl")):
+            want = _count(rows[f], "row")
+        elif f.endswith(".pdf"):
+            from pypdf import PdfReader
+            want = _count(len(PdfReader(path).pages), "page")
+        elif f.endswith(".docx"):
+            with zipfile.ZipFile(path) as z:
+                want = _count(int(re.search(r"<Pages>(\d+)</Pages>", z.read("docProps/app.xml").decode()).group(1)),
+                              "page")
+        else:
+            want = _xlsx_size(path)
+        ok(r["rows_or_pages"] == want, "H9 manifest gives %s for %s (%s counted)" % (r["rows_or_pages"], f, want))
     wb = openpyxl.load_workbook(os.path.join(target, K.DICTIONARY), data_only=True)
     data_ext = (".csv", ".xlsx", ".jsonl")
     dfiles = {r[0] for r in wb.worksheets[0].iter_rows(values_only=True) if r[0] and r[0].endswith(data_ext)}

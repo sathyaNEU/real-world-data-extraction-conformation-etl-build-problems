@@ -183,8 +183,10 @@ def write_schedules34(path):
     cl("4.4", "Bellbird's nurses follow the Member's treatment orders and the Alliance Hospital in the Home visit "
               "schedule for the patient's program stream, and hand the patient back to the Member's own nurses when "
               "the Member asks.")
-    cl("4.5", "The Alliance reviews Bellbird's referral response with Bellbird each quarter. Times in this Schedule are "
-              "Melbourne time.")
+    cl("4.5", "The Alliance reviews Bellbird's referral response with Bellbird each quarter, for each Member: the share "
+              "of the referrals the Member made in the quarter that Bellbird accepted within two hours of the Member "
+              "making them, and the share of the Member's accepted referrals that Bellbird first visited within 24 "
+              "hours of accepting them. Times in this Schedule are Melbourne time.")
     s.append(Spacer(1, 10))
     s.append(Paragraph("Contacts for this Schedule: %s (Alliance, Hospital in the Home program); %s (Alliance finance, "
                        "provider payments); %s (Bellbird, account management)." % (P["requester"], P["finance"],
@@ -502,6 +504,8 @@ DICT = [
     (K.ACCOUNTS, "(file)", "Bellbird's client accounts for the Alliance and its Members."),
     (K.CALENDAR, "(file)", "Alliance finance calendar for 2026-27: every day with its pay week (weeks run Monday to "
      "Sunday), its finance period and the Victorian public holidays."),
+    (K.CALENDAR, "week_commencing", "Monday on which the day's pay week starts. The year's first pay week commences "
+     "Monday 29 June 2026."),
     (K.DECLINED, "(file)", "Referrals Bellbird declined from 1 July 2025 to 30 June 2026 with Bellbird's reason code, "
      "as Bellbird sent them with its 2025-26 service report."),
     (K.MANIFEST, "(file)", "Files in this set, with source, period and preparation."),

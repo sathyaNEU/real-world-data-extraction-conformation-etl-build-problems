@@ -1,7 +1,7 @@
 {
   "task": "task142",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "healthcare-delivery-health-economics",
   "objective": "forecasting",
   "stage": 4,
@@ -15,8 +15,8 @@
     "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (--asof 2026-11-03, 2026-10-15; every REVIEW line answered in ## Leak review)",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (--asof 2026-11-03, after the stage 4 rebuild; every REVIEW line answered in ## Leak review)",
+    "reader": "no leak, Q6 analytical; readings (referral share basis, chart weeks, payable visits as a count) closed in the fix pass; manifest sizes filled; H04 plan rows kept"
   },
   "duplicate_check": {
     "heart": "WARN (repeat.gate_g only, no BLOCK)",
@@ -25,12 +25,12 @@
     "note": "drawn 2026-10-15 after git pull (task260, task141, task458 on file): guard WARN repeat.gate_g only, answered in ## Draw"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC (one cell: the re-post survivor moved Kingsdale September, $8,787 or $8,755)",
+    "disposition": "FIX_NOW, applied in one generator pass; re-judge once next",
+    "report": "task142/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: the single re-judge on a fresh unzip of target.zip; a targeted leak re-read of the changed documents (Schedules 3 and 4 clause 4.5, the dictionary's week_commencing row, the manifest) and the prompt's chart sentence; then stage 5 ship",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -44,6 +44,26 @@
     "byte_identical": true,
     "figures_check": "PASS (98 figures)",
     "voice_check": "PASS",
+    "container_audit": "clean",
+    "date": "2026-10-15"
+  },
+  "stage4": {
+    "fix": "re-post pairs drawn on one side of every fee and clock line (BV6112106 redrawn to 18:12); six survivor rules asserted in checks.py, four in verify.py; clause 4.5 files both referral shares; dictionary week_commencing row; manifest rows_or_pages for every file; prompt chart sentence: the number of payable visits by pay week",
+    "target_changed": [
+      "bellbird_agreement_schedules3-4_fees_and_service_levels.pdf",
+      "bellbird_visits_2026-07-01_to_2026-09-30.jsonl",
+      "data_dictionary.xlsx",
+      "export_manifest.csv"
+    ],
+    "prompt_changed": true,
+    "checks": 490,
+    "verify": "agrees under four survivor rules",
+    "byte_identical": true,
+    "freeze_determinism": "PASS",
+    "figures_check": "PASS (98 figures)",
+    "precut": "49 checks, 0 FAIL",
+    "voice_check": "PASS (838 characters)",
+    "guard": "surface 0 promoted, heart WARN (repeat.gate_g), validate clean",
     "container_audit": "clean",
     "date": "2026-10-15"
   }

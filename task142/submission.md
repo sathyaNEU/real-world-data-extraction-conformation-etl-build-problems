@@ -47,4 +47,4 @@ Built from the operating plans' admissions by stream and the Alliance's stays, c
 
 ### bellbird_weekly_visits_2026q3.png
 
-4. Bellbird's payable visits (completed or attempted) by pay week, weeks commencing Monday 29 June to Monday 28 September 2026, one panel per member and one for all members; quarter totals Northgate 161, Riverbend 140, Westmere 106, Kingsdale 130, Hillcrest 103.
+4. The number of Bellbird's payable visits (completed or attempted) by pay week, weeks commencing Monday 29 June to Monday 28 September 2026, one panel per member and one for all members; quarter totals Northgate 161, Riverbend 140, Westmere 106, Kingsdale 130, Hillcrest 103.

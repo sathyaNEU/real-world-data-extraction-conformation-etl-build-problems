@@ -220,7 +220,7 @@ def write_workbook(path, B, G, owed, resp):
         "Bellbird's platform times are converted from UTC.",
         "Telephoned referrals are taken from Bellbird's intake log; Bellbird's first visits to those patients are under "
         "the intake log number until the desk linked the files on 14 August.",
-        "Shares are of the referrals made and of the accepted referrals respectively, to one decimal.",
+        "Shares are of the referrals made and of the accepted referrals respectively (clause 4.5), to one decimal.",
     ], 7, wd)
     ws.freeze_panes = ws.cell(row=hr + 1, column=2)
     _print_setup(ws, 7, row)

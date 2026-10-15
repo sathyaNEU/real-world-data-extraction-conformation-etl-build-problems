@@ -171,7 +171,9 @@ def call(target):
                 plan=plan, cap=cap, open_episodes=open_n)
 
 
-def asks(target):
+def asks(target, keep="first_recorded"):
+    """Schedule 3 amounts, payable visits by pay week and the referral response, a re-post kept as `keep` says:
+    the first or last recorded, or the earliest or latest start, of a nurse's overlapping records for a patient."""
     s3 = _pdf(_find(target, "bellbird_agreement_schedules3-4"))
     fee = {}
     for code in ("IVT", "WND", "CLN"):
@@ -210,8 +212,12 @@ def asks(target):
         member = acc[r["client_code"]] or log_patient[r["patient_ref"].split("/", 1)[1]][0]
         recs.append(dict(member=member, pref=r["patient_ref"], nurse=r["nurse_id"], type=r["visit_type"],
                          start=mel(r["start_time"]), end=mel(r["end_time"]) if r["end_time"] else None,
-                         st=status[r["status"]], rec=r["recorded_at"]))
-    recs.sort(key=lambda x: x["rec"])
+                         st=status[r["status"]], rec=r["recorded_at"], no=r["visit_no"]))
+    by_rec = lambda x: (x["rec"], x["no"])
+    by_start = lambda x: (x["start"], x["rec"], x["no"])
+    order, rev = {"first_recorded": (by_rec, False), "last_recorded": (by_rec, True),
+                  "earliest_start": (by_start, False), "latest_start": (by_start, True)}[keep]
+    recs.sort(key=order, reverse=rev)
     kept, by = [], {}
     for x in recs:
         if x["st"] == "X":
@@ -280,6 +286,10 @@ def asks(target):
 def main(target, golden):
     c = call(target)
     owed, wk, resp = asks(target)
+    cents = lambda o: {k: round(v, 2) for k, v in o.items()}
+    for keep in ("last_recorded", "earliest_start", "latest_start"):
+        o2, w2, r2 = asks(target, keep)
+        assert cents(o2) == cents(owed) and w2 == wk and r2 == resp, ("the re-post kept moves a figure", keep)
     wb = openpyxl.load_workbook(_find(golden, "hith_overflow_block"), data_only=True)
     short = {}
     ws = wb["Booking"]
@@ -314,7 +324,7 @@ def main(target, golden):
     for (m, w), v in wk.items():
         totals[m] = totals.get(m, 0) + v
     print("verify: call %s (requirements %s), default %s with %d left; %d owed cells, %d referral rows and %d chart "
-          "totals recomputed independently" % (
+          "totals recomputed independently, the same whichever record of a re-post is kept" % (
               "/".join(str(c["booking"][m]) for m in c["order"]),
               "/".join("%.1f" % c["req"][m] for m in c["order"]),
               "/".join(str(v) for v in c["default"].values()), c["default_left"], n_owed, n_ref, len(totals)))

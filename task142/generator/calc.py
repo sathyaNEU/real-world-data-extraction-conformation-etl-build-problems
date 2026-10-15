@@ -490,21 +490,31 @@ def load_asks(target):
     return A
 
 
-def dedupe(visits):
-    """One record per visit: a record whose times overlap an earlier-posted record of the same nurse and patient is
-    the same visit keyed again."""
-    keep = []
+KEEP = {"first_posted": (lambda v: (v["rec"], v["no"]), False),
+        "last_posted": (lambda v: (v["rec"], v["no"]), True),
+        "lowest_visit_no": (lambda v: v["no"], False),
+        "highest_visit_no": (lambda v: v["no"], True),
+        "earliest_start": (lambda v: (v["start"], v["rec"], v["no"]), False),
+        "latest_start": (lambda v: (v["start"], v["rec"], v["no"]), True)}
+
+
+def dedupe(visits, keep="first_posted"):
+    """One record per visit: a record whose times overlap a kept record of the same nurse and patient is the same
+    visit keyed again. `keep` names which record of such a pair survives (the golden keeps the first posted); the
+    records come back in posting order whichever survives."""
+    order, rev = KEEP[keep]
+    kept = []
     by = {}
-    for v in sorted(visits, key=lambda v: (v["rec"], v["no"])):
+    for v in sorted(visits, key=order, reverse=rev):
         if v["status"] == "cancel":
-            keep.append(v)
+            kept.append(v)
             continue
         key = (v["nurse"], v["pref"])
         dup = any(v["start"] < w["end"] and w["start"] < v["end"] for w in by.get(key, []))
         if not dup:
             by.setdefault(key, []).append(v)
-            keep.append(v)
-    return keep
+            kept.append(v)
+    return sorted(kept, key=lambda v: (v["rec"], v["no"]))
 
 
 def fee(v, holidays):

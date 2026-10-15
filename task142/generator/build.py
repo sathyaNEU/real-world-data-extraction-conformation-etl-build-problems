@@ -94,12 +94,6 @@ def build(out, quiet=False, W=None):
     DOC.write_dictionary(p(K.DICTIONARY))
     DOC.write_survey(p(K.SURVEY))
     DOC.write_bb_report(p(K.BB_REPORT))
-    rows = []
-    for f, what, src, cover, by, on in MANIFEST:
-        n = counts.get(f)
-        rows.append({"file": f, "contents": what, "source_system": src, "covers": cover, "prepared_by": by,
-                     "prepared_on": on, "rows_or_pages": "%d rows" % n if n is not None else ""})
-    counts[K.MANIFEST] = K.write_csv(p(K.MANIFEST), R.MAN_COLS, rows, crlf=True)
     P = K.PEOPLE
     PP.normalize_docx(p(K.PATHWAY), P["ng_num"], P["ng_num"], "2026-07-28T03:12:00Z", "2026-08-19T05:41:00Z",
                       revision=7, total_time=163, seed="task142/pathway", title="Bone and joint infection at home pathway",
@@ -118,6 +112,12 @@ def build(out, quiet=False, W=None):
     PP.normalize_pdf(p(K.SCHED34), b"D:20260703101844+10'00'", b"D:20260703101844+10'00'")
     PP.normalize_pdf(p(K.STREAMDOC), b"D:20250616152230+10'00'", b"D:20250616152912+10'00'")
     PP.normalize_pdf(p(K.BB_REPORT), b"D:20260728113356+10'00'", b"D:20260728113356+10'00'")
+    sizes = sizes_of(out, counts, W)
+    rows = []
+    for f, what, src, cover, by, on in MANIFEST:
+        rows.append({"file": f, "contents": what, "source_system": src, "covers": cover, "prepared_by": by,
+                     "prepared_on": on, "rows_or_pages": sizes[f]})
+    counts[K.MANIFEST] = K.write_csv(p(K.MANIFEST), R.MAN_COLS, rows, crlf=True)
     stamp = K.PACK_STAMP.timestamp()
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (stamp, stamp))
@@ -125,6 +125,33 @@ def build(out, quiet=False, W=None):
     if not quiet:
         print("built %s: %d files; %s" % (out, len(os.listdir(out)), ", ".join("%s %d" % kv for kv in counts.items())))
     return W
+
+
+def _n(k, word):
+    return "%d %s%s" % (k, word, "" if k == 1 else "s")
+
+
+def sizes_of(out, counts, W):
+    """The manifest's rows_or_pages: the rows of each data file (a workbook's table rows, below its header and above
+    any totals or notes; the plans, a sheet a Member) and the pages of each document."""
+    import re
+    import zipfile
+    from pypdf import PdfReader
+    got = {f: _n(n, "row") for f, n in counts.items()}
+    for f in os.listdir(out):
+        path = os.path.join(out, f)
+        if f.endswith(".pdf"):
+            got[f] = _n(len(PdfReader(path).pages), "page")
+        elif f.endswith(".docx"):
+            with zipfile.ZipFile(path) as z:
+                pages = re.search(r"<Pages>(\d+)</Pages>", z.read("docProps/app.xml").decode()).group(1)
+            got[f] = _n(int(pages), "page")
+    got[K.PLANS] = _n(len(K.MEMBERS), "sheet")
+    got[K.CAPACITY] = _n(len(K.MEMBERS), "row")
+    got[K.REGISTER] = _n(len(W.reg), "row")
+    got[K.DICTIONARY] = _n(len(DOC.DICT), "row")
+    got[K.SURVEY] = _n(len(K.MEMBERS) * 4, "row")
+    return got
 
 
 def digest(folder):

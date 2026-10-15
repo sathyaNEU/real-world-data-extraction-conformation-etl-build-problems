@@ -69,7 +69,7 @@
     {
       "path": "bellbird_agreement_schedules3-4_fees_and_service_levels.pdf",
       "format": "pdf",
-      "bytes": 45694,
+      "bytes": 45775,
       "rows": null,
       "source": "Constructed: Bellbird agreement, Schedules 3 and 4 (Variation 8): fees, referrals and service levels",
       "date": "2026-11-03",
@@ -132,7 +132,7 @@
     {
       "path": "data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 9043,
+      "bytes": 9108,
       "rows": null,
       "source": "Constructed: Field definitions for the overflow files",
       "date": "2026-11-03",
@@ -141,7 +141,7 @@
     {
       "path": "export_manifest.csv",
       "format": "csv",
-      "bytes": 3773,
+      "bytes": 3839,
       "rows": 19,
       "source": "Constructed: Files in the set, with source, period and preparation",
       "date": "2026-11-03",

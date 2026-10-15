@@ -324,7 +324,12 @@ to the nearest dollar) and the chart of Bellbird's payable visits by pay week an
   attempted visit and its revisit hours later, and the treating team's unscheduled returns to intravenous patients
   later the same day (on 0.01 to 0.08 of patient-days, asserted). Only the overlap of one nurse's two records for one
   patient shows a re-post; the exact-duplicate sweep finds nothing, and the same-patient-same-day sweep drops genuine
-  visits (it misses 13 of the 15 amounts; the two thin July cells have no genuine pair).
+  visits (it misses 13 of the 15 amounts; the two thin July cells have no genuine pair). The two records of a pair
+  start on the same Melbourne day and on the same side of 7.00 am, 6.00 pm, the referral's acceptance and 24 hours
+  after it (a re-keyed time that would cross one is redrawn from the record's own stream, so the shared stream and
+  every other pair are untouched), so whichever record survives (first or last posted, lowest or highest visit
+  number, earliest or latest start) every amount, pay-week count and referral figure is the same: asserted on six
+  rules in `checks.py` and four in `verify.py`, 30 pairs, starts 0 to 12 minutes apart.
 - Second device D7 (the true key elsewhere, a reflex repair wrong): the patients telephoned through during the outage
   have their visits until 14 August under the Alliance's billing account C4466, which the accounts file lists with no
   Member and no patients, and the intake log number as the patient reference; dropping or parking those records misses
@@ -339,6 +344,12 @@ to the nearest dollar) and the chart of Bellbird's payable visits by pay week an
   the finance calendar (holidays, pay weeks), the client accounts, the intake log, the dictionary.
 - Realism: tablets re-post records a nurse keyed twice, mobile platforms store UTC, an intake desk opens a holding file
   when the member system cannot take the patient, and an account note goes stale.
+- The chart's readings, closed by a WHAT: the prompt asks for the number of payable visits by pay week; the dictionary
+  says the calendar's pay weeks run Monday to Sunday, its week_commencing row that the year's first pay week commences
+  Monday 29 June 2026; the export holds visits on the quarter's days only, so the part weeks commencing 29 June and 28
+  September carry only the quarter's days however a straddling week is read, and the five graded totals are the
+  Members' payable visits for the quarter under any weeks (asserted). Payable visits are completed and attempted
+  visits (clauses 3.4 and 3.5); completed visits alone miss every total (asserted).
 
 **Ask B. Bellbird's referral response for July to September 2026, for each Member** (15 figures: the referrals the
 Member made, the share Bellbird accepted within two hours, the share of accepted referrals first visited within 24
@@ -361,6 +372,12 @@ hours of acceptance; shares in per cent to one decimal).
   dictionary.
 - Realism: portals go down for upgrades that overrun, coordinators phone instead, and the provider's desk works around
   its own system until the link is made.
+- The shares' bases, closed by a WHAT: Schedule 4 clause 4.5 reviews, for each Member, the share of the referrals it
+  made in the quarter that Bellbird accepted within two hours of the Member making them, and the share of its accepted
+  referrals first visited within 24 hours of acceptance, the prompt's own words; clause 4.2's response (accepted or
+  declined within two hours) and acceptances over accepted referrals each give another figure for every Member
+  (asserted). Bellbird's 2025-26 service report keeps its platform's responded-within-two-hours column, a neighbouring
+  measure for another year.
 
 **Criteria.** Call: five Members' lots and five requirements (10), the unbooked remainder or last Member (1), the
 booking's sum (1); Ask A 15 figures and 5 chart totals; Ask B 15 figures; files and instruction following (3): about
@@ -402,16 +419,17 @@ ask whole on one device
 | Pin | Authority | What it fixes | Never says |
 |---|---|---|---|
 | Schedule 2 (Variation 9), clauses 2.1 to 2.7 | 1, the executed agreement | the block, the order, the requirement's population and window (2.3), the 90th percentile of the quarter taken together (2.4), the plan as the expected value (2.5), lots that cover the excess (2.6), the block used in order (2.7) | how the percentile is estimated, that visits come in stays, any figure but the block |
-| Schedules 3 and 4 (Variation 8) | 1 | fees, the one highest loading, the attempted visit fee, Melbourne time and the month of a visit (3.6), a referral as a request whatever the channel (4.1), the two service levels (4.2, 4.3) | the portal, the outage, the intake log, any re-posted record |
+| Schedules 3 and 4 (Variation 8) | 1 | fees, the one highest loading, the attempted visit fee, Melbourne time and the month of a visit (3.6), a referral as a request whatever the channel (4.1), the two service levels (4.2, 4.3), the two shares the Alliance reviews each quarter (4.5) | the portal, the outage, the intake log, any re-posted record |
 | The program streams and visit schedule | 2, clinical governance | the streams, the visit schedule (wound care every second day, heart failure twice on the first two days), days at home both ends included, separation modes, a resumed course as a new episode | any length of stay, any spread |
 | The pathway | 2 | that Northgate and Westmere follow the Alliance bone and joint protocol from 1 October 2026 | any stay figure or admission count beyond the plan |
-| The dictionary, plans' and capacity return's notes | 4 | fields, UTC on Bellbird's platform, the two status vintages, the plan's visits as every visit on the month's days, the return's in-house visits | anything about selection, the outage or a re-post |
+| The dictionary, plans' and capacity return's notes | 4 | fields, UTC on Bellbird's platform, the two status vintages, the calendar's pay weeks (Monday to Sunday, the first commencing 29 June 2026), the plan's visits as every visit on the month's days, the return's in-house visits | anything about selection, the outage or a re-post |
 
 ## Prompt
 
-`prompt.txt`, unchanged since stage 2, gated by `voice-check.py` (in `precut.py`): the call as a question with the
-850-visit block, the workbook with each member's requirement, the two July to September 2026 tables, the chart, and the
-rounding once at the close. 820 characters.
+`prompt.txt`, gated by `voice-check.py` (in `precut.py`): the call as a question with the 850-visit block, the
+workbook with each member's requirement, the two July to September 2026 tables, the chart, and the rounding once at the
+close. The call sentence is unchanged since stage 2; at stage 4 the chart sentence became "the number of Bellbird's
+payable visits by pay week and member" (the leak reader's week and count readings). 838 characters.
 
 ## Leak review
 
@@ -430,6 +448,22 @@ rounding once at the close. 820 characters.
   the survey: none ranks the members on the booking; the capacity return and the plans are inputs the call needs.
 - Sweep 9, dates after 3 November 2026 in the finance calendar (the 2026-27 year) and the manifest's coverage column
   (the plans to June 2027, the quarter): forward-looking by nature, on the allow-list.
+
+Stage 4, after the fix pass rebuild: `leak.py --asof 2026-11-03` REVIEW, no LEAK, the same sweeps over the same files
+as above; sweep 4's term list follows this note's wording, and Schedules 3 and 4 match only the agreement's own words
+(the new clause 4.5 brings none of the terms). The leak reader (no leak, Q6 analytical) is kept under `## Solver's-eye
+read` in `leak_check_report.md`, every REVIEW line harmless. Its readings, ruled:
+
+- The referral share's basis (accepted within two hours against clause 4.2's response): fixed by clause 4.5, which
+  reviews the share of the referrals made that Bellbird accepted within two hours, the prompt's words (Ask B above).
+- The chart's weeks (Monday to Sunday, and the part weeks at 1 July and 30 September): fixed by "pay week" in the
+  prompt and the dictionary's week_commencing row; the part weeks cannot move a count, the export holding the
+  quarter's days only (Ask A above).
+- Payable visits as a count: fixed by "the number of" in the prompt; completed and attempted under clauses 3.4 and 3.5.
+- Time bases and status labels: harmless, documented Layer 1 (the dictionary files UTC and both status vintages).
+- Realism: the manifest's rows_or_pages now carries every file (rows, sheets or pages, asserted against the files);
+  the H04 plan rows are kept, since their October to March months feed the call and no change to them is
+  figure-neutral.
 
 ## Build record
 
@@ -452,6 +486,18 @@ rounding once at the close. 820 characters.
   three builds'), `heart` WARN (`repeat.gate_g`, answered in the Draw, no BLOCK), `validate` clean; the container audit
   (`scrub_producer_metadata.py`) clean on `target/` and `golden/`. Stage 4 (the leak reader and the determinism judge)
   is next.
+- Stage 4, 2026-10-15: the reader found no leak (three readings, ruled in `## Leak review`); the judge returned
+  NOT_DETERMINISTIC on one cell, FIX_NOW (`determinism_check_report.md`): which record of a re-post pair is the visit
+  moved Kingsdale's September amount ($8,787 or $8,755), the one pair whose starts straddled 6.00 pm. Fixed in one
+  generator pass: re-post pairs are drawn on one side of every line their fee, day and clocks turn on (one record moved,
+  BV6112106 to 6.12 pm), every survivor rule asserted to give every ask figure; clause 4.5, the dictionary's
+  week_commencing row, the manifest's sizes and the prompt's chart sentence for the readings. Gates on the final
+  rebuild: `build.py` green (490 assertions, the cracker profiles unchanged), `verify.py` agreeing under four survivor
+  rules, two builds byte-identical; `freeze.py check --mode determinism` PASS; `figures_check.py` PASS (98);
+  `precut.py` 49/0; `voice-check.py` PASS (838 characters); `leak.py` REVIEW, no LEAK; `guard.py surface` 0 promoted,
+  `heart` WARN (`repeat.gate_g`), `validate` clean; the container audit clean. Changed under `target/`: the
+  Schedules 3 and 4 PDF (clause 4.5), the visit export (one record's times), the data dictionary (one row) and the
+  manifest. The single re-judge is next.
 
 ## Tried and rejected
 
@@ -474,4 +520,13 @@ rounding once at the close. 820 characters.
 - 2026-10-15, stage 3: a guard that pushed every first visit within 36 minutes of 24 hours (and every response within
   8 minutes of two hours) past the threshold left a visible gap under each; times are whole minutes, so the guard now
   clears only near-ties (4 and 2 minutes).
+- 2026-10-15, stage 4: the judge's first fix, a dictionary line saying which record of a re-posted pair is the visit,
+  was not taken: a filed rule would adjudicate Ask A's device (supplemental-stumping, ban 1) and name it to every
+  reader; the pairs are closed in the data instead (never across a fee or clock line), so every survivor rule converges.
+- 2026-10-15, stage 4: moving the one Kingsdale record by hand was not taken either: a generation rule keeps any future
+  pair off the lines, and redrawing only a crossing draw from the record's own stream leaves the other 29 pairs as built.
+- 2026-10-15, stage 4: matching the referral share to clause 4.2 by asking for the share "responded to within two
+  hours" was dropped: it moves every graded share (82.1 against 75.0 at Northgate); clause 4.5 files the accepted basis.
+- 2026-10-15, stage 4: naturalising the H04 plan rows (a ramp in the pathway's first months) was dropped: October to
+  March admissions feed the call's expected visits and percentile, so no change there is figure-neutral.
 
