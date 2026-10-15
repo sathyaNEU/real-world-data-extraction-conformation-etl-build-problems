@@ -1,0 +1,196 @@
+{
+ "task": "task458",
+ "architecture": 1,
+ "title": "Which of a Medicaid managed care plan's ten eastern Washington counties are designated for its 2027 behavioral-health prescriber loan-repayment pilot, each county's members with a serious mental illness and with an opioid use disorder estimated from claims against enrollment",
+ "domain": "Healthcare Delivery & Health Economics",
+ "subdomain": "payment-claims-health-plan-analytics (claims-based case identification against enrollment: a lasting condition's prevalence measured on the members enrolled all year, by eligibility group, and carried to every member, for need-based workforce ratios over a contract year)",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "10: a scorecard against thresholds (three standards for each of ten counties, two of three to designate), with quarterly payments and the conformed county and eligibility-group file",
+ "as_of": "2026-11-12",
+ "deliverables": [
+  "prescriber_pilot_county_scorecard_2027.xlsx",
+  "county_adult_members_2026_conformed.csv"
+ ],
+ "distractor_files": [
+  "network_adequacy_time_distance_2026q2.xlsx",
+  "ofm_april1_population_2026.csv",
+  "npidata_pfile_wa_20261102-20261108.csv"
+ ],
+ "stated_inputs": [
+  "2027",
+  "2026",
+  "2025",
+  "31",
+  "10",
+  "1,000",
+  "16.5",
+  "23.0",
+  "68"
+ ],
+ "input_gates": {
+  "files": 16,
+  "formats": [
+   "csv",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "enrollment_spans_2025-07-01_2026-06-30.csv",
+  "largest_file_rows": 137838
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task458/generator/build.py (seeded, deterministic) in the public layouts of the NPPES downloadable files and deactivation report, the HUD-USPS ZIP-county crosswalk and the NUCC taxonomy code set, and in the idiom of a Medicaid managed care plan's claims and enrollment extracts; the plan, its agencies, practices, clinicians, members and people are fictional, as are every NPI and address.",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work)"
+  }
+ ],
+ "created": "2026-11-12",
+ "generator": "task458/generator/build.py",
+ "files": [
+  {
+   "path": "NPPES_Deactivated_NPI_Report_20261110.xlsx",
+   "format": "xlsx",
+   "bytes": 57806,
+   "rows": null,
+   "source": "Constructed: the NPPES deactivated NPI report of 10 November 2026, in the CMS report layout",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ZIP_COUNTY_062026.xlsx",
+   "format": "xlsx",
+   "bytes": 11247,
+   "rows": null,
+   "source": "Constructed: a ZIP code to county crosswalk for the second quarter of 2026 in the HUD-USPS crosswalk layout, for the ZIP codes of the plan's members and providers",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "bh_claims_encounters_dos_2025-07-01_2026-06-30.csv",
+   "format": "csv",
+   "bytes": 14259512,
+   "rows": 104860,
+   "source": "Constructed: the plan's claims system extract of behavioral-health claims and encounters with a service date in the contract year, every version, paid or accepted through 31 October 2026",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "bh_professional_fee_schedule_fy2026.csv",
+   "format": "csv",
+   "bytes": 3643,
+   "rows": 44,
+   "source": "Constructed: the plan's fee schedule for behavioral-health professional services in the contract year",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "enrollment_spans_2025-07-01_2026-06-30.csv",
+   "format": "csv",
+   "bytes": 12494828,
+   "rows": 137838,
+   "source": "Constructed: the plan's enrollment system spans for every member number with coverage in the contract year",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "extract_manifest_2026-11-12.csv",
+   "format": "csv",
+   "bytes": 1254,
+   "rows": 15,
+   "source": "Constructed: the list of the files Network Analytics pulled on 12 November 2026",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "network_adequacy_time_distance_2026q2.xlsx",
+   "format": "xlsx",
+   "bytes": 6907,
+   "rows": null,
+   "source": "Constructed: the plan's network adequacy time and distance report for behavioral-health prescribers, second quarter of 2026",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "network_analytics_data_dictionary.xlsx",
+   "format": "xlsx",
+   "bytes": 10205,
+   "rows": null,
+   "source": "Constructed: Network Analytics' descriptions of the files and their fields",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "np31_prescriber_service_area_designation.pdf",
+   "format": "pdf",
+   "bytes": 46951,
+   "rows": null,
+   "source": "Constructed: the plan's Network Policy NP-31, Prescriber Service Area Designation (approved 21 May 2026)",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "npidata_pfile_wa_20050523-20261011.csv",
+   "format": "csv",
+   "bytes": 1131229,
+   "rows": 2974,
+   "source": "Constructed: the NPPES monthly file of October 2026, the records with a Washington practice or mailing address and the plan's provider file NPIs, in the NPPES downloadable file layout (selected columns)",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "npidata_pfile_wa_20261012-20261018.csv",
+   "format": "csv",
+   "bytes": 30203,
+   "rows": 73,
+   "source": "Constructed: the NPPES weekly incremental file of 12 to 18 October 2026, same selection and layout",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "npidata_pfile_wa_20261019-20261025.csv",
+   "format": "csv",
+   "bytes": 26260,
+   "rows": 63,
+   "source": "Constructed: the NPPES weekly incremental file of 19 to 25 October 2026, same selection and layout",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "npidata_pfile_wa_20261026-20261101.csv",
+   "format": "csv",
+   "bytes": 26494,
+   "rows": 63,
+   "source": "Constructed: the NPPES weekly incremental file of 26 October to 1 November 2026, same selection and layout",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "npidata_pfile_wa_20261102-20261108.csv",
+   "format": "csv",
+   "bytes": 27035,
+   "rows": 65,
+   "source": "Constructed: the NPPES weekly incremental file of 2 to 8 November 2026, same selection and layout",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "nucc_taxonomy_261.csv",
+   "format": "csv",
+   "bytes": 4781,
+   "rows": 40,
+   "source": "Constructed: the provider taxonomy codes the NPPES records carry, in the NUCC code set layout (code, grouping, classification, specialization, display name, section)",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ofm_april1_population_2026.csv",
+   "format": "csv",
+   "bytes": 449,
+   "rows": 10,
+   "source": "Constructed: county population estimates of 1 April 2026 for the ten counties, in the layout of the state Office of Financial Management's estimates",
+   "date": "2026-11-12",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  }
+ ]
+}

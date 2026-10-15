@@ -1,0 +1,464 @@
+{
+ "capture_pct": {
+  "smi_1": 30.5,
+  "smi_3": 66.7,
+  "smi_6": 89.5
+ },
+ "conformed": {
+  "Adams|ADULT-EXP": {
+   "members": 4142,
+   "paid": 13916
+  },
+  "Adams|AGED-65": {
+   "members": 280,
+   "paid": 1459
+  },
+  "Adams|PARENT-CR": {
+   "members": 1365,
+   "paid": 3071
+  },
+  "Adams|SSI-DIS": {
+   "members": 433,
+   "paid": 5196
+  },
+  "Benton|ADULT-EXP": {
+   "members": 9964,
+   "paid": 250651
+  },
+  "Benton|AGED-65": {
+   "members": 1293,
+   "paid": 23219
+  },
+  "Benton|PARENT-CR": {
+   "members": 4171,
+   "paid": 71966
+  },
+  "Benton|SSI-DIS": {
+   "members": 2477,
+   "paid": 126041
+  },
+  "Chelan|ADULT-EXP": {
+   "members": 4593,
+   "paid": 129327
+  },
+  "Chelan|AGED-65": {
+   "members": 602,
+   "paid": 12805
+  },
+  "Chelan|PARENT-CR": {
+   "members": 1901,
+   "paid": 43319
+  },
+  "Chelan|SSI-DIS": {
+   "members": 1015,
+   "paid": 61983
+  },
+  "Douglas|ADULT-EXP": {
+   "members": 2731,
+   "paid": 54289
+  },
+  "Douglas|AGED-65": {
+   "members": 321,
+   "paid": 4384
+  },
+  "Douglas|PARENT-CR": {
+   "members": 1158,
+   "paid": 18618
+  },
+  "Douglas|SSI-DIS": {
+   "members": 644,
+   "paid": 17421
+  },
+  "Franklin|ADULT-EXP": {
+   "members": 9213,
+   "paid": 147975
+  },
+  "Franklin|AGED-65": {
+   "members": 605,
+   "paid": 16529
+  },
+  "Franklin|PARENT-CR": {
+   "members": 3618,
+   "paid": 47824
+  },
+  "Franklin|SSI-DIS": {
+   "members": 1115,
+   "paid": 62105
+  },
+  "Grant|ADULT-EXP": {
+   "members": 9616,
+   "paid": 103286
+  },
+  "Grant|AGED-65": {
+   "members": 800,
+   "paid": 17242
+  },
+  "Grant|PARENT-CR": {
+   "members": 3510,
+   "paid": 27777
+  },
+  "Grant|SSI-DIS": {
+   "members": 1302,
+   "paid": 50580
+  },
+  "Kittitas|ADULT-EXP": {
+   "members": 2441,
+   "paid": 23323
+  },
+  "Kittitas|AGED-65": {
+   "members": 310,
+   "paid": 1606
+  },
+  "Kittitas|PARENT-CR": {
+   "members": 809,
+   "paid": 6151
+  },
+  "Kittitas|SSI-DIS": {
+   "members": 618,
+   "paid": 12736
+  },
+  "Okanogan|ADULT-EXP": {
+   "members": 3623,
+   "paid": 61516
+  },
+  "Okanogan|AGED-65": {
+   "members": 502,
+   "paid": 5228
+  },
+  "Okanogan|PARENT-CR": {
+   "members": 1405,
+   "paid": 15655
+  },
+  "Okanogan|SSI-DIS": {
+   "members": 900,
+   "paid": 22667
+  },
+  "Walla Walla|ADULT-EXP": {
+   "members": 5208,
+   "paid": 97061
+  },
+  "Walla Walla|AGED-65": {
+   "members": 301,
+   "paid": 6022
+  },
+  "Walla Walla|PARENT-CR": {
+   "members": 1505,
+   "paid": 22848
+  },
+  "Walla Walla|SSI-DIS": {
+   "members": 633,
+   "paid": 21840
+  },
+  "Yakima|ADULT-EXP": {
+   "members": 21869,
+   "paid": 306265
+  },
+  "Yakima|AGED-65": {
+   "members": 2566,
+   "paid": 40772
+  },
+  "Yakima|PARENT-CR": {
+   "members": 8758,
+   "paid": 102027
+  },
+  "Yakima|SSI-DIS": {
+   "members": 5143,
+   "paid": 204231
+  }
+ },
+ "counties": {
+  "Adams": {
+   "designated": true,
+   "fails": 3,
+   "meets_oud": false,
+   "meets_reach": false,
+   "meets_smi": false,
+   "members": 6220,
+   "oud": 230,
+   "oud_unrounded": 229.8,
+   "prescribers": 4,
+   "s_oud": 17.4,
+   "s_reach_pct": 60,
+   "s_smi": 12.5,
+   "seen": 193,
+   "smi": 320,
+   "smi_unrounded": 320.17
+  },
+  "Benton": {
+   "designated": false,
+   "fails": 0,
+   "meets_oud": true,
+   "meets_reach": true,
+   "meets_smi": true,
+   "members": 17905,
+   "oud": 740,
+   "oud_unrounded": 740.15,
+   "prescribers": 30,
+   "s_oud": 40.5,
+   "s_reach_pct": 94,
+   "s_smi": 24.6,
+   "seen": 1150,
+   "smi": 1220,
+   "smi_unrounded": 1220.25
+  },
+  "Chelan": {
+   "designated": false,
+   "fails": 0,
+   "meets_oud": true,
+   "meets_reach": true,
+   "meets_smi": true,
+   "members": 8111,
+   "oud": 330,
+   "oud_unrounded": 329.21,
+   "prescribers": 12,
+   "s_oud": 36.5,
+   "s_reach_pct": 90,
+   "s_smi": 23.6,
+   "seen": 457,
+   "smi": 510,
+   "smi_unrounded": 509.26
+  },
+  "Douglas": {
+   "designated": true,
+   "fails": 3,
+   "meets_oud": false,
+   "meets_reach": false,
+   "meets_smi": false,
+   "members": 4854,
+   "oud": 200,
+   "oud_unrounded": 200.75,
+   "prescribers": 3,
+   "s_oud": 14.9,
+   "s_reach_pct": 58,
+   "s_smi": 8.8,
+   "seen": 196,
+   "smi": 340,
+   "smi_unrounded": 339.12
+  },
+  "Franklin": {
+   "designated": true,
+   "fails": 2,
+   "meets_oud": false,
+   "meets_reach": true,
+   "meets_smi": false,
+   "members": 14551,
+   "oud": 490,
+   "oud_unrounded": 490.05,
+   "prescribers": 10,
+   "s_oud": 20.4,
+   "s_reach_pct": 74,
+   "s_smi": 14.1,
+   "seen": 523,
+   "smi": 710,
+   "smi_unrounded": 710.35
+  },
+  "Grant": {
+   "designated": true,
+   "fails": 2,
+   "meets_oud": false,
+   "meets_reach": true,
+   "meets_smi": false,
+   "members": 15228,
+   "oud": 510,
+   "oud_unrounded": 510.04,
+   "prescribers": 10,
+   "s_oud": 19.6,
+   "s_reach_pct": 75,
+   "s_smi": 12.7,
+   "seen": 593,
+   "smi": 790,
+   "smi_unrounded": 789.05
+  },
+  "Kittitas": {
+   "designated": false,
+   "fails": 0,
+   "meets_oud": true,
+   "meets_reach": true,
+   "meets_smi": true,
+   "members": 4178,
+   "oud": 140,
+   "oud_unrounded": 140.07,
+   "prescribers": 7,
+   "s_oud": 50.0,
+   "s_reach_pct": 91,
+   "s_smi": 24.2,
+   "seen": 263,
+   "smi": 290,
+   "smi_unrounded": 289.18
+  },
+  "Okanogan": {
+   "designated": true,
+   "fails": 3,
+   "meets_oud": false,
+   "meets_reach": false,
+   "meets_smi": false,
+   "members": 6430,
+   "oud": 300,
+   "oud_unrounded": 300.42,
+   "prescribers": 4,
+   "s_oud": 13.3,
+   "s_reach_pct": 59,
+   "s_smi": 8.2,
+   "seen": 287,
+   "smi": 490,
+   "smi_unrounded": 490.53
+  },
+  "Walla Walla": {
+   "designated": false,
+   "fails": 0,
+   "meets_oud": true,
+   "meets_reach": true,
+   "meets_smi": true,
+   "members": 7647,
+   "oud": 350,
+   "oud_unrounded": 350.36,
+   "prescribers": 10,
+   "s_oud": 28.5,
+   "s_reach_pct": 74,
+   "s_smi": 17.9,
+   "seen": 415,
+   "smi": 560,
+   "smi_unrounded": 559.03
+  },
+  "Yakima": {
+   "designated": false,
+   "fails": 0,
+   "meets_oud": true,
+   "meets_reach": true,
+   "meets_smi": true,
+   "members": 38336,
+   "oud": 1580,
+   "oud_unrounded": 1579.96,
+   "prescribers": 41,
+   "s_oud": 25.9,
+   "s_reach_pct": 73,
+   "s_smi": 17.7,
+   "seen": 1694,
+   "smi": 2320,
+   "smi_unrounded": 2318.17
+  }
+ },
+ "designated": [
+  "Adams",
+  "Douglas",
+  "Franklin",
+  "Grant",
+  "Okanogan"
+ ],
+ "full_year_route": {
+  "designated": [
+   "Adams",
+   "Douglas",
+   "Franklin",
+   "Grant",
+   "Okanogan",
+   "Yakima"
+  ],
+  "yakima_reach_pct": 64,
+  "yakima_s_smi": 15.4,
+  "yakima_smi": 2660
+ },
+ "identified_count_designated": [
+  "Adams",
+  "Douglas",
+  "Okanogan"
+ ],
+ "payments": {
+  "Adams": {
+   "2025 Q3": 5821,
+   "2025 Q4": 5345,
+   "2026 Q1": 6927,
+   "2026 Q2": 5549
+  },
+  "Benton": {
+   "2025 Q3": 119419,
+   "2025 Q4": 118586,
+   "2026 Q1": 121273,
+   "2026 Q2": 112600
+  },
+  "Chelan": {
+   "2025 Q3": 62795,
+   "2025 Q4": 62957,
+   "2026 Q1": 65288,
+   "2026 Q2": 56395
+  },
+  "Douglas": {
+   "2025 Q3": 19718,
+   "2025 Q4": 25262,
+   "2026 Q1": 28590,
+   "2026 Q2": 21141
+  },
+  "Franklin": {
+   "2025 Q3": 66817,
+   "2025 Q4": 69652,
+   "2026 Q1": 74333,
+   "2026 Q2": 63632
+  },
+  "Grant": {
+   "2025 Q3": 47310,
+   "2025 Q4": 48047,
+   "2026 Q1": 50514,
+   "2026 Q2": 53015
+  },
+  "Kittitas": {
+   "2025 Q3": 10719,
+   "2025 Q4": 11745,
+   "2026 Q1": 12989,
+   "2026 Q2": 8363
+  },
+  "Okanogan": {
+   "2025 Q3": 28660,
+   "2025 Q4": 27203,
+   "2026 Q1": 25646,
+   "2026 Q2": 23558
+  },
+  "Walla Walla": {
+   "2025 Q3": 38512,
+   "2025 Q4": 35014,
+   "2026 Q1": 38246,
+   "2026 Q2": 35999
+  },
+  "Yakima": {
+   "2025 Q3": 164868,
+   "2025 Q4": 167226,
+   "2026 Q1": 165363,
+   "2026 Q2": 155839
+  }
+ },
+ "stated": {
+  "aged_group_age": 65,
+  "months": [
+   1,
+   3,
+   12
+  ],
+  "per_members": 1000,
+  "sections": [
+   2.2,
+   2.3,
+   2.4,
+   2.5,
+   2.6,
+   2.7,
+   2.8,
+   3.1,
+   3.2,
+   4.1
+  ],
+  "threshold_oud": 23.0,
+  "threshold_reach_pct": 68,
+  "threshold_smi": 16.5
+ },
+ "totals": {
+  "adult_members": 123460,
+  "full_year": 70377,
+  "practising": 131,
+  "rec_oud": 4421,
+  "rec_smi": 7109
+ },
+ "window_yield_pct": {
+  "exp_full_year_first_three": 4.1,
+  "exp_three_months": 2.1,
+  "exp_three_months_n": 8726
+ }
+}
