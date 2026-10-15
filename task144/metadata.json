@@ -1,0 +1,214 @@
+{
+  "task": "task144",
+  "title": "Which repository on Grachtwerk's October 2026 shortlist gets the Sluis newsletter spotlight, by its expected external stars in its first 90 days public if spotlighted",
+  "domain": "Product Analytics",
+  "client_domain": "Product Analytics",
+  "subdomain": "feature-adoption-diffusion-modeling (a newsletter spotlight's stars on a code-hosting platform: the readers' own stars and the cascade they set off through their followers' home feeds at each repository's own rate per follower view, added to each repository's organic 90-day forecast)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "other: one pick of seven with its expected 90-day external stars and the stars the spotlight adds, each repository's expected stars if spotlighted, a chart, and two tables (each Sluis issue's delivered subscribers and spotlight click-through, April to September 2026; each shortlisted repository's nominators and the share outside its organisation)",
+  "as_of": "2026-09-30",
+  "deliverables": [
+    "sluis_spotlight_2026-10.xlsx",
+    "shortlist_forecast_2026-10.png"
+  ],
+  "distractor_files": [
+    "repository_traffic_2026-08-24_to_2026-09-27.csv",
+    "trending_daily_2026-08-24_to_2026-09-27.csv"
+  ],
+  "input_gates": {
+    "files": 19,
+    "formats": [
+      "csv",
+      "json",
+      "md",
+      "parquet",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "accounts_snapshot_2026-09-27.parquet",
+    "largest_file_rows": 119210
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task144/generator/build.py (seeded, deterministic) around a fictional Amsterdam code-hosting platform (Grachtwerk B.V.), its developer newsletter (Sluis), two fictional email platforms (Postwerk, Relaymark), fictional repositories, accounts and people; no real organisation, person or system is depicted.",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-15",
+  "generator": "task144/generator/build.py",
+  "files": [
+    {
+      "path": "accounts_snapshot_2026-09-27.parquet",
+      "format": "parquet",
+      "bytes": 10492623,
+      "rows": 119210,
+      "source": "Constructed: Grachtwerk account snapshot at 27 September 2026",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_contents_2026-09-28.csv",
+      "format": "csv",
+      "bytes": 3473,
+      "rows": 18,
+      "source": "Constructed: Files in the extract, with source, period and preparation",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "grachtwerk_star_events_2024-12-08_to_2026-03-01.csv",
+      "format": "csv",
+      "bytes": 5938927,
+      "rows": 104550,
+      "source": "Constructed: Grachtwerk events warehouse star stream, schema v5, for the October 2026 Sluis shortlist and each repository the spotlight lottery featured (December 2024 to 1 March 2026)",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "grachtwerk_star_events_2026-03-02_to_2026-09-27.csv",
+      "format": "csv",
+      "bytes": 5860780,
+      "rows": 63569,
+      "source": "Constructed: Grachtwerk events warehouse star stream, schema v6 (2 March to 27 September 2026)",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "organization_memberships_2026-09-27.csv",
+      "format": "csv",
+      "bytes": 52516,
+      "rows": 1061,
+      "source": "Constructed: Organisation memberships of the shortlisted repositories' owners",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "postwerk_campaigns_2026-04_to_2026-05.csv",
+      "format": "csv",
+      "bytes": 1074,
+      "rows": 10,
+      "source": "Constructed: Postwerk campaign report, April to May 2026",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "postwerk_link_report_2026-04_to_2026-05.csv",
+      "format": "csv",
+      "bytes": 4417531,
+      "rows": 39584,
+      "source": "Constructed: Postwerk link report by subscriber, April to May 2026",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "relaymark_campaigns_2026-06_to_2026-09.json",
+      "format": "json",
+      "bytes": 9798,
+      "rows": null,
+      "source": "Constructed: Relaymark campaign export, June to September 2026",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "relaymark_link_clicks_2026-06_to_2026-09.csv",
+      "format": "csv",
+      "bytes": 15885037,
+      "rows": 110434,
+      "source": "Constructed: Relaymark click log, June to September 2026",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "repo_daily_external_stars_2024-11-24_to_2026-09-27.csv",
+      "format": "csv",
+      "bytes": 527298,
+      "rows": 14583,
+      "source": "Constructed: Daily external first stars by surface for every repository shortlisted for Sluis",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "repositories_2026-09-27.json",
+      "format": "json",
+      "bytes": 77943,
+      "rows": null,
+      "source": "Constructed: Repositories shortlisted for Sluis, January 2025 to October 2026",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "repository_renames_2026.csv",
+      "format": "csv",
+      "bytes": 1054,
+      "rows": 15,
+      "source": "Constructed: Grachtwerk repository renames in 2026",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "repository_traffic_2026-08-24_to_2026-09-27.csv",
+      "format": "csv",
+      "bytes": 44204,
+      "rows": 1163,
+      "source": "Constructed: Page traffic of the October 2026 shortlist by referrer group",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sluis_featuring_memo_2026-09.pdf",
+      "format": "pdf",
+      "bytes": 36589,
+      "rows": null,
+      "source": "Constructed: Sluis featuring memo of 15 September 2026",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sluis_nominations_2026-10.csv",
+      "format": "csv",
+      "bytes": 45084,
+      "rows": 465,
+      "source": "Constructed: October 2026 Sluis nomination form responses",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sluis_spotlight_lottery_2025-2026.xlsx",
+      "format": "xlsx",
+      "bytes": 10476,
+      "rows": null,
+      "source": "Constructed: The growth team's Sluis spotlight lottery log, 2025 and 2026 sheets",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "star_surface_code_crosswalk_2026-03-02.csv",
+      "format": "csv",
+      "bytes": 524,
+      "rows": 6,
+      "source": "Constructed: Star surface codes of schema v5 and v6",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "trending_daily_2026-08-24_to_2026-09-27.csv",
+      "format": "csv",
+      "bytes": 157122,
+      "rows": 3500,
+      "source": "Constructed: Grachtwerk daily trending lists for Go, Python, Rust and TypeScript",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "warehouse_extract_fields.md",
+      "format": "md",
+      "bytes": 5480,
+      "rows": null,
+      "source": "Constructed: Field definitions for the extract",
+      "date": "2026-09-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

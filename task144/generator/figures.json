@@ -1,0 +1,171 @@
+{
+  "call": {
+    "pick": "slidewell",
+    "pick_full_name": "pjvdlinden/slidewell",
+    "expected_external_stars_90d": 12000,
+    "stars_the_spotlight_adds": 9000,
+    "runner_up": "tracewire",
+    "runner_up_expected_stars": 9000
+  },
+  "candidates": {
+    "slidewell": {
+      "expected_external_stars_90d": 12000,
+      "expected_without_spotlight": 3000,
+      "stars_the_spotlight_adds": 9000,
+      "external_stars_to_2026_09_27": 2709,
+      "external_stars_to_2026_09_27_thousands": 3000,
+      "days_public_at_cut": 35,
+      "feed_card_stars": 160,
+      "followers_reached": 8883,
+      "stars_per_follower_view_pct": 1.801
+    },
+    "tracewire": {
+      "expected_external_stars_90d": 9000,
+      "expected_without_spotlight": 6000,
+      "stars_the_spotlight_adds": 3000,
+      "external_stars_to_2026_09_27": 3876,
+      "external_stars_to_2026_09_27_thousands": 4000,
+      "days_public_at_cut": 33,
+      "feed_card_stars": 446,
+      "followers_reached": 450226,
+      "stars_per_follower_view_pct": 0.099
+    },
+    "ferrolog": {
+      "expected_external_stars_90d": 8000,
+      "expected_without_spotlight": 4000,
+      "stars_the_spotlight_adds": 4000,
+      "external_stars_to_2026_09_27": 1892,
+      "external_stars_to_2026_09_27_thousands": 2000,
+      "days_public_at_cut": 21,
+      "feed_card_stars": 191,
+      "followers_reached": 40549,
+      "stars_per_follower_view_pct": 0.471
+    },
+    "shiftgres": {
+      "expected_external_stars_90d": 8000,
+      "expected_without_spotlight": 4000,
+      "stars_the_spotlight_adds": 4000,
+      "external_stars_to_2026_09_27": 1826,
+      "external_stars_to_2026_09_27_thousands": 2000,
+      "days_public_at_cut": 25,
+      "feed_card_stars": 140,
+      "followers_reached": 39636,
+      "stars_per_follower_view_pct": 0.353
+    },
+    "kilnkit": {
+      "expected_external_stars_90d": 7000,
+      "expected_without_spotlight": 2000,
+      "stars_the_spotlight_adds": 5000,
+      "external_stars_to_2026_09_27": 1245,
+      "external_stars_to_2026_09_27_thousands": 1000,
+      "days_public_at_cut": 30,
+      "feed_card_stars": 485,
+      "followers_reached": 75098,
+      "stars_per_follower_view_pct": 0.646
+    },
+    "hullcheck": {
+      "expected_external_stars_90d": 7000,
+      "expected_without_spotlight": 3000,
+      "stars_the_spotlight_adds": 4000,
+      "external_stars_to_2026_09_27": 1912,
+      "external_stars_to_2026_09_27_thousands": 2000,
+      "days_public_at_cut": 23,
+      "feed_card_stars": 166,
+      "followers_reached": 58747,
+      "stars_per_follower_view_pct": 0.283
+    },
+    "timeloom": {
+      "expected_external_stars_90d": 6000,
+      "expected_without_spotlight": 2000,
+      "stars_the_spotlight_adds": 4000,
+      "external_stars_to_2026_09_27": 1299,
+      "external_stars_to_2026_09_27_thousands": 1000,
+      "days_public_at_cut": 27,
+      "feed_card_stars": 16,
+      "followers_reached": 6586,
+      "stars_per_follower_view_pct": 0.243
+    }
+  },
+  "conventions": {
+    "window_days": 90,
+    "pace_window_days": 7,
+    "lottery_issues": 21
+  },
+  "inputs": {
+    "newsletter_stars_per_subscriber_pct": 0.7236,
+    "october_subscribers": 433812,
+    "october_direct_newsletter_stars": 3000,
+    "newsletter_starrers_mean_followers": 85.0,
+    "feed_starrers_mean_followers": 10.27
+  },
+  "default_path": {
+    "pick": "tracewire",
+    "expected_external_stars_90d": 11000,
+    "stars_the_spotlight_adds": 5000
+  },
+  "ask_a": {
+    "2026-04": {
+      "delivered": 391299,
+      "clicked_through": 5825,
+      "share_pct": 1.49
+    },
+    "2026-05": {
+      "delivered": 399160,
+      "clicked_through": 6075,
+      "share_pct": 1.52
+    },
+    "2026-06": {
+      "delivered": 406891,
+      "clicked_through": 6233,
+      "share_pct": 1.53
+    },
+    "2026-07": {
+      "delivered": 429444,
+      "clicked_through": 6536,
+      "share_pct": 1.52
+    },
+    "2026-08": {
+      "delivered": 429291,
+      "clicked_through": 6190,
+      "share_pct": 1.44
+    },
+    "2026-09": {
+      "delivered": 429949,
+      "clicked_through": 6404,
+      "share_pct": 1.49
+    }
+  },
+  "ask_b": {
+    "tracewire": {
+      "people": 47,
+      "outside": 43,
+      "share_outside_pct": 91.49
+    },
+    "hullcheck": {
+      "people": 26,
+      "outside": 23,
+      "share_outside_pct": 88.46
+    },
+    "timeloom": {
+      "people": 19
+    },
+    "slidewell": {
+      "people": 58
+    },
+    "kilnkit": {
+      "people": 27,
+      "outside": 22,
+      "share_outside_pct": 81.48
+    },
+    "shiftgres": {
+      "people": 31,
+      "outside": 28,
+      "share_outside_pct": 90.32
+    },
+    "ferrolog": {
+      "people": 37,
+      "outside": 30,
+      "share_outside_pct": 81.08
+    }
+  }
+}
