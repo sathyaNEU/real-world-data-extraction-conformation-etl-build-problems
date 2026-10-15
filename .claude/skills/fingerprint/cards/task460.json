@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Corvane should site its 2027 on-site solar pilot at its Gorsefield store (store 2291): its array would have avoided 0.89 t of grid carbon dioxide per MWh it generated in 2025; Halvane is the first store left out at 0.58, 0.31 below.",
+  "answer_source": "submission.md (Final Recommendation); golden/solar_pilot_site_recommendation_2027.pdf",
   "gap": [
     "time",
     "population"
@@ -35,9 +35,9 @@
   "role_family": "procurement_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "balancing_area_hourly_generation_2025.csv",
+    "file": "balancing_area_hourly_operating_data_2025.csv",
     "rows": 70080,
-    "entity": "one balancing area's hour: demand, net generation by fuel and scheduled interchange",
+    "entity": "one balancing area's clock hour of 2025: demand, net generation by fuel and scheduled interchange",
     "grain": "balancing area x hour (UTC)",
     "source": "synthetic (constructed in the layout of a national hourly balancing-area operating data file)"
   },
@@ -61,7 +61,7 @@
     ],
     "people": [
       "Barbara Rangel",
-      "Joel Russo"
+      "Russell Scott"
     ]
   },
   "deliverables": [
@@ -74,15 +74,16 @@
   "driver_concrete": "Each candidate store's on-site array avoids the carbon dioxide of the generators its balancing area would otherwise run in the hours the array generates: the operating-margin emission rate, estimated hour by hour (season by hour of day) from the area's 2025 hourly changes in generation by fuel and the fuels' emission rates, weighted by the array's modelled hourly output; not the area's published annual average output rate, not its published non-baseload rate, not the hourly average intensity in the array's hours, not a marginal rate over all hours or over the store's own load.",
   "stump": "The default path ranks the eight stores on the published 2025 annual average output emission rate of each store's balancing area and pilots at Brackwell, the coal-heavy area; the analyst who reads 'avoids' as the margin takes the published non-baseload rate (Quillbury) or a marginal rate estimated over all hours (Tennaford, where coal sets the margin at night); weighting the hour-by-hour marginal rate by the array's output pilots at Gorsefield, where coal sets the margin in daylight while gas carries the nights.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly ranks the stores on each balancing area's published 2025 annual average output emission rate and pilots at Brackwell, or on the published non-baseload rate, the usual proxy for avoided emissions, and pilots at Quillbury; the stronger one estimates the marginal rate from the hourly data over all hours and pilots at Tennaford.",
+  "analyst_test": "A strong analyst who reads every file correctly and applies every filed rule ranks the stores on each balancing area's published 2025 average output emission rate and pilots at Brackwell, or on the published non-baseload rate, the usual proxy for avoided emissions, and pilots at Quillbury; the stronger one fits one marginal rate per area to the hourly data over every hour of 2025 and pilots at Tennaford, and the one who time-matches the average to the array's hours still pilots at Brackwell. None files Gorsefield.",
   "domain_test": "The deciding quantity is the grid carbon dioxide a megawatt-hour of on-site solar avoids, the operating-margin emission rate in the hours the array generates, estimated the way emissions accounting estimates a grid-connected project's effect (hourly marginal emission factors from generation changes, weighted by the project's output); with another field's nouns ('which clinic's new evening shift cuts the most waiting per hour staffed') there is no dispatch order deciding which generators respond in which hours, so the task stops reading the same.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:operating-margin-weighted-by-project-output",
   "layer1": [
-    "several sources for one picture: hourly balancing-area generation by fuel, plant emission rates and a plant register, the array output model, the published annual rates",
-    "clocks: grid data in UTC hour ending with a local-time column, the array model in local standard time hour beginning, daylight saving in the local columns",
-    "units: emission rates in pounds per megawatt-hour, the charter's tonnes, array output in kilowatts AC for a stated DC size",
-    "genuine gaps: hours the operator imputed, a negative net generation reading for a fuel with station service, a balancing area renamed mid-year"
+    "several sources for one picture: hourly balancing-area operating data by fuel, a plant register in short tons, the agency's published annual rates, the engineering firm's array output model, the accounts-payable invoice lines",
+    "clocks: the operating data name each hour by its end in UTC with a local-time column, the array model by its start in local standard time",
+    "units: published rates in pounds per megawatt-hour, the register in short tons, the charter's metric tonnes, array output in kilowatts AC",
+    "genuine gaps and renames: demand hours the operator filled from the hour's balance (flagged), solar station service as small negative night readings, a balancing area that filed under its former code until 30 June 2025",
+    "billing (the asks only): each utility's own line wording, the metered kWh repeated on several charge lines, declining blocks, two cycles billed on an estimate and again on the actual read, gas lines on one electric bill, garden-centre meters, the supplier's loss-adjusted calendar-month quantities"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
@@ -91,6 +92,6 @@
     "task451": "task451 completes period totals not yet observed at a cut from arrival delays that changed mid-period; task460 sets a new source's effect by the margin in its own operating hours: no shared quantity, evidence or move."
   },
   "lineage": [],
-  "notes": "guard WARN overuse.shape (01 in 3 of 12: a pick among eight stores is a ranked list under a cap of one) and repeat.question_form (where, after task145: a siting call asks where)",
+  "notes": "guard WARN overuse.shape (01 in 3 of 12: a pick among eight stores is a ranked list under a cap of one) and repeat.question_form (where, after task145: a siting call asks where); stage 3 surface screen promoted task458 (prompt skeleton, reworded to a where question), task459 (same pairing back to back), task135 and task451 (same gap, pattern and Gate G, differentiated above): the adjudicated read is the author's call",
   "registered": "2026-10-15T10:49:29Z"
 }
