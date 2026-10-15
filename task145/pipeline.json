@@ -1,25 +1,50 @@
 {
   "task": "task145",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "economics-econometrics/forecasting-forecast-evaluation",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-15",
   "stump": "Carrying each gateway's formal entries per inbound shipment of the twelve months to September 2026 onto the 2027 network plan places one post at each of the five gateways and holds one; the step that lands it there is carrying the base year's routing into a plan year whose planning rates move the CAD 3,300 line in every invoice currency.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": ""},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-15"
+  },
+  "leak": {
+    "leak_py": "REVIEW (no LEAK): three-digit golden figures inside Brandmoor statement amounts, BRK-STD-03 carrying the call's words as the standard it is made under, the field's vocabulary in the documents; each answered in the design note's ## Build record",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "WARN (repeat.gate_g against task144; test.same_driver_older a NOTE, task127 v3, task138 and task446 v2 differentiated on the card)",
+    "nearest": "driver 0.08 (task253 v3), 0.07 (task98 v5 lineage, task107 v4, task258 v1)",
+    "surface": "exit 0; track A 0 promoted after the format mix was varied (task143 had been promoted on format and layout alone); task446 promoted on the card signature (gap time, G16, Gate G forecasting), the same-driver match differentiated on the card at the draw, for the author's clone-check",
+    "note": "drawn 2026-10-15 after git pull (task262, task455 and task144 on file): guard WARN repeat.gate_g answered in ## Draw"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": "",
+    "brief": ""
+  },
   "returned": [],
-  "resume": "stage 2: finish the design note (screen, fork table, ladder, closure, asks), prompt.txt, precut.py",
+  "resume": "stage 4: reader and judge. Spawn the leak reader and the determinism judge together on the 2026-10-15 cut (target.zip sha256 c150b43f87063d22); collect both, fix every finding in the generator in one pass, re-run the stage 3 gates, re-judge once on FIX_NOW; then ship",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "build": {
+    "checks": 148,
+    "verify": "from the bundle alone, equal to figures.json, the workbook and the deck",
+    "rebuild": "two builds byte-identical",
+    "figures_check": "exit 0 (98 figures)",
+    "voice_check": "PASS (867 characters)",
+    "containers": "clean (target and golden)",
+    "target_zip_sha256": "c150b43f87063d224bfee5e57cb5f6a9a538f81ec56c79da724c7ca861cbec11"
+  }
 }

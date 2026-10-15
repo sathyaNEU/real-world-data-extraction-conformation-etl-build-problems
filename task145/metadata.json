@@ -1,0 +1,251 @@
+{
+  "task": "task145",
+  "title": "Where Larchwood Express Canada's six new 2027 broker posts go across its five import gateways, or are held, on each gateway's forecast formal entries per broker post",
+  "domain": "Economics & Econometrics",
+  "client_domain": "Economics & Econometrics",
+  "subdomain": "forecasting-forecast-evaluation (a conditional forecast of each gateway's 2027 formal import entries on the network plan's exchange rates: the shipments whose value for duty, set in their invoice currency, will exceed CAD 3,300 at the plan year's rates)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "05 allocation to a fixed total: the six posts across five gateways and the held bucket, each gateway's forecast monthly formal entries and its load after the review, with two fiscal 2025-26 tables (overtime hours by desk and quarter, the contract broker's charges by desk and quarter) and a two-slide deck",
+  "as_of": "2026-10-13",
+  "deliverables": [
+    "broker_posts_2027.xlsx",
+    "establishment_review_2027.pptx"
+  ],
+  "distractor_files": [
+    "network_plan_2026_issued_2025-09.xlsx",
+    "export_declarations_monthly_2025-04_2026-09.csv"
+  ],
+  "stated_inputs": [
+    "3,300",
+    "3300",
+    "1.3400",
+    "1.6800",
+    "1.8750",
+    "0.18800",
+    "0.0092500",
+    "560"
+  ],
+  "input_gates": {
+    "files": 22,
+    "formats": [
+      "csv",
+      "docx",
+      "json",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "highvalue_check_2025Q4.csv",
+    "largest_file_rows": 67439
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task145/generator/build.py (seeded, deterministic) around a fictional Canadian express carrier (Larchwood Express Canada Ltd.), its customs brokerage desks at five import gateways, its people and systems, and a fictional contract customs broker (Brandmoor Customs Services Inc.); no real organisation, person or system is depicted, and the exchange rates are constructed.",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-15",
+  "generator": "task145/generator/build.py",
+  "files": [
+    {
+      "path": "ap_invoice_register_brandmoor_2025-04_2026-09.xlsx",
+      "format": "xlsx",
+      "bytes": 11207,
+      "rows": null,
+      "source": "Constructed: Accounts Payable register for Brandmoor Customs Services",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "brandmoor_portal_detail_2025-04_2026-03.json",
+      "format": "json",
+      "bytes": 2964140,
+      "rows": 10577,
+      "source": "Constructed: Brandmoor Customs Services client portal detail export",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "brandmoor_rate_schedule_2025.pdf",
+      "format": "pdf",
+      "bytes": 66516,
+      "rows": null,
+      "source": "Constructed: Brandmoor Customs Services contract schedule B",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "brandmoor_statements_2025-04_2026-03.pdf",
+      "format": "pdf",
+      "bytes": 121574,
+      "rows": null,
+      "source": "Constructed: Brandmoor Customs Services statements of account, April 2025 to March 2026",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "brk_std_03_brokerage_staffing_standard.pdf",
+      "format": "pdf",
+      "bytes": 53510,
+      "rows": null,
+      "source": "Constructed: Customs Brokerage standard BRK-STD-03, brokerage staffing, revision 4",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "clearance_extracts_note_2026-10-07.txt",
+      "format": "txt",
+      "bytes": 3560,
+      "rows": null,
+      "source": "Constructed: Clearance Operations' note on the clearance and brokerage extracts",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "clr_ops_11_clearance_routing.docx",
+      "format": "docx",
+      "bytes": 11099,
+      "rows": null,
+      "source": "Constructed: Clearance operations manual CLR-OPS-11, valuation, routing and the high-value check, revision 7",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_declarations_monthly_2025-04_2026-09.csv",
+      "format": "csv",
+      "bytes": 2442,
+      "rows": 90,
+      "source": "Constructed: Export desk monthly declarations report",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "finance_cost_centres_2026.csv",
+      "format": "csv",
+      "bytes": 1124,
+      "rows": 16,
+      "source": "Constructed: Finance cost-centre map, legacy and ERP 2025 schemes",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "gateway_activity_2021-01_2024-09.xlsx",
+      "format": "xlsx",
+      "bytes": 12962,
+      "rows": null,
+      "source": "Constructed: Legacy brokerage system monthly gateway report GA-02, January 2021 to September 2024",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "gateway_activity_2024-10_2026-09.csv",
+      "format": "csv",
+      "bytes": 3613,
+      "rows": 120,
+      "source": "Constructed: Clearance system monthly gateway report, October 2024 to September 2026",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "highvalue_check_2025Q4.csv",
+      "format": "csv",
+      "bytes": 7628472,
+      "rows": 67439,
+      "source": "Constructed: Clearance system high-value check extract, October to December 2025 (earlier layout)",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "highvalue_check_2026Q1.csv",
+      "format": "csv",
+      "bytes": 7351866,
+      "rows": 56005,
+      "source": "Constructed: Clearance system high-value check extract, January to March 2026",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "highvalue_check_2026Q2.csv",
+      "format": "csv",
+      "bytes": 8163771,
+      "rows": 62081,
+      "source": "Constructed: Clearance system high-value check extract, April to June 2026",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "highvalue_check_2026Q3.csv",
+      "format": "csv",
+      "bytes": 8071232,
+      "rows": 61383,
+      "source": "Constructed: Clearance system high-value check extract, July to September 2026",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hr_assignment_changes_2025-04_2026-09.csv",
+      "format": "csv",
+      "bytes": 900,
+      "rows": 12,
+      "source": "Constructed: HR extract of assignment changes on the brokerage desks",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hr_brokerage_staff_2026-10-06.xlsx",
+      "format": "xlsx",
+      "bytes": 8266,
+      "rows": null,
+      "source": "Constructed: HR extract of the brokerage desks' staff",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "network_plan_2026_issued_2025-09.xlsx",
+      "format": "xlsx",
+      "bytes": 11181,
+      "rows": null,
+      "source": "Constructed: Network plan 2026 as issued in September 2025 (Network Planning)",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "network_plan_2027.xlsx",
+      "format": "xlsx",
+      "bytes": 11178,
+      "rows": null,
+      "source": "Constructed: Network plan 2027 (Network Planning), volumes and planning assumptions",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "payroll_hr_extracts_note_2026-10-06.txt",
+      "format": "txt",
+      "bytes": 2913,
+      "rows": null,
+      "source": "Constructed: HR Systems' note on the payroll, HR and contract broker extracts",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ta_export_2025-10-27_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 595150,
+      "rows": 7668,
+      "source": "Constructed: Time and attendance export, 27 October 2025 to September 2026",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ta_legacy_export_2025-04-01_2025-10-31.csv",
+      "format": "csv",
+      "bytes": 210212,
+      "rows": 4711,
+      "source": "Constructed: Legacy time and attendance export, April to October 2025",
+      "date": "2026-10-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

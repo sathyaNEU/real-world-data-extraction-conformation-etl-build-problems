@@ -11,8 +11,8 @@
   "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Place two of the six new broker posts at Dorval and one at Calgary for 2027, and hold the other three to the next review.",
+  "answer_source": "task145/submission.md, block 1; broker_posts_2027.xlsx (Placement) and establishment_review_2027.pptx (slide 1)",
   "gap": [
     "time",
     "population"
@@ -36,7 +36,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "highvalue_check_2025Q4.csv, highvalue_check_2026Q1.csv, highvalue_check_2026Q2.csv, highvalue_check_2026Q3.csv",
-    "rows": 250000,
+    "rows": 246908,
     "entity": "one inbound international shipment released at a gateway with a value for duty of CAD 2,500 or more, with its declared value in its invoice currency, the customs rate of its date and the route the clearance system gave it",
     "grain": "shipment (waybill)",
     "source": "constructed (the clearance system's quarterly high-value check extracts, two layouts)"
