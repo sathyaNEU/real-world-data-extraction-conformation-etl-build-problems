@@ -136,15 +136,18 @@ def workbook(F, path):
                 cell.border = Border(top=THIN)
     last = r
     notes = [
-        "1  A group's chance of reaching the watch list depends only on its flag at 30 September 2026 (CRM-07 s5.2): "
-        "%.1f%% if flagged AMBER or RED, %.1f%% if not, on the basis the s5.2 test selects from the 2022 to 2025 "
-        "cohorts; see Cohorts." % (F["p_flag"] * 100, F["p_unflag"] * 100),
+        "1  A group's chance of reaching the watch list by its flag at 30 September 2026: %.1f%% if flagged AMBER or "
+        "RED, %.1f%% if not. Set from the screen's capture and false-alarm rates over the 2022 to 2025 cohorts taken "
+        "together (CRM-07 s4.3), which hold from year to year, with this year's arrival share backed out of the "
+        "September flagged share; the hit and miss rates move with each year's arrivals. See Cohorts."
+        % (F["p_flag"] * 100, F["p_unflag"] * 100),
         "2  Committed exposure per CRM-07 s6.1: every facility on which a member is an obligor, once per group (a joint "
         "facility counts in each of its groups), at its limit as it stood at the end of 30 September UK time (23:00 "
         "UTC in the limit history), in sterling at Group Treasury closing rates.",
         "3  Customers the grouping review had not yet booked are placed through their GLEIF consolidation (s2.2).",
         "4  Bands of £40m and over are worked by Restructuring, the rest by Business Support (s6.2).",
-        "5  Computed unrounded. Caseload to the nearest whole group, band figures to one decimal (s5.3); "
+        "5  Computed unrounded. Caseload to the nearest whole group; band arrivals and exposure split by flag status and "
+        "band figures to one decimal (s5.3); "
         "totals rounded from the unrounded sums.",
     ]
     for i, n in enumerate(notes):
@@ -204,7 +207,7 @@ def cohort_sheet(wb, F):
         ws.cell(row=rr, column=8).number_format = "0.00%"
 
     r += 2
-    ws.cell(row=r, column=1, value="Choice of basis (CRM-07 s5.2): each closed cohort predicted from the other three "
+    ws.cell(row=r, column=1, value="Back-test of the forecasting bases: each closed cohort predicted from the other three "
             "taken together").font = Font(bold=True, size=11)
     r += 1
     hdr = ["Basis", "Miss\n2022", "Miss\n2023", "Miss\n2024", "Miss\n2025", "Largest\nmiss", "2026 book,\nexpected"]
@@ -283,9 +286,10 @@ def notes_sheet(wb):
         ("Flag", "Any member AMBER or RED in the engine's month-end publication for the date (s3.2)."),
         ("Cohorts", "30 September 2022 to 2025. Reached: placed on the watch list, any watch level, within twelve "
                     "months of the cohort date; groups leaving the book unplaced have not reached it (s4.1, s4.2)."),
-        ("Forecast", "Monitored book at 30 September 2026 only, no new groups (s5.1). One probability for flagged "
-                     "groups and one for the rest, on the basis with the smallest largest miss when each closed "
-                     "cohort is predicted from the other three taken together (s5.2)."),
+        ("Forecast", "Monitored book at 30 September 2026 only, no new groups (s5.1, s5.2). One probability for "
+                     "flagged groups and one for the rest, from the capture and false-alarm rates (s4.3) with this "
+                     "year's arrival share backed out of the flagged share: the basis whose largest miss is smallest "
+                     "when each closed cohort is predicted from the other three taken together (see Cohorts)."),
         ("Committed exposure", "Facility and obligor extract run at 01:15 on 1 October, after the start-of-day batch; "
                                "limits taken from the limit history as at 23:00 UTC on 30 September, the end of the "
                                "day in BST (s1.3, s6.1). Facilities keyed by booking entity and facility number, "
@@ -362,7 +366,7 @@ def chart(F, path):
     fig.text(0.012, 0.922, "Expected arrivals by committed-exposure band at 30 September 2026, split by the "
              "September early-warning flag", ha="left", va="top", fontsize=11, color=ink2)
     fig.text(0.012, 0.018, "Flagged groups reach the list with probability %.1f%%, the rest %.1f%%, set from the 2022 "
-             "to 2025 cohorts taken together (CRM-07 s4.3, s5.2). Bands per s6.2."
+             "to 2025 cohorts' capture and false-alarm rates (CRM-07 s4.3) and this year's flagged share. Bands per s6.2."
              % (F["p_flag"] * 100, F["p_unflag"] * 100), ha="left", va="bottom", fontsize=8.5, color=ink2)
     fig.text(0.988, 0.018, "Credit Risk Monitoring, 27 October 2026", ha="right", va="bottom", fontsize=8.5,
              color=ink2)

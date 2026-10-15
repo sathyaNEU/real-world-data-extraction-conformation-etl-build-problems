@@ -447,16 +447,15 @@ def standard_pdf(path):
               "outside the forecast."),
         ("p", "5.2 The forecast is the number of groups in the monitored book at the cohort date expected to reach "
               "the watch list in the twelve months after it, with the book, the outcome and the groups left out as "
-              "4.1, 4.2 and 5.1 set them. Each group is given a probability of reaching the list that depends only "
-              "on whether it is flagged at the cohort date and is the same across the book; expected arrivals are "
-              "the sum of the probabilities, and expected exposure the sum of each probability times the group's "
-              "committed exposure at the cohort date. The probabilities are set from the last four closed cohorts "
-              "taken together, on whichever basis predicts those cohorts best: each cohort in turn is predicted "
-              "from its own book and flags at its cohort date, on the basis set from the other three taken "
-              "together; a basis's error is the largest of its four misses, each taken as a share of that cohort's "
-              "actual arrivals; and the basis with the smallest error is the one used."),
-        ("p", "5.3 The caseload is reported to the nearest whole group, and expected arrivals within a band to "
-              "one decimal."),
+              "4.1, 4.2 and 5.1 set them, and the committed exposure at the cohort date that those groups are "
+              "expected to bring. The Committee resources the coming year's caseload on it, and each forecast is "
+              "set against its cohort's actual arrivals once the cohort closes."),
+        ("p", "5.3 The caseload is reported to the nearest whole group. In each band of 6.2 the expected arrivals "
+              "are split into those from groups flagged at the cohort date and those from groups not flagged: each "
+              "part is the book's expected arrivals from groups of that flag status, shared among the bands in "
+              "proportion to the band's groups of that status, and the committed exposure the arrivals are expected "
+              "to bring is shared the same way, in proportion to those groups' committed exposure. Expected arrivals "
+              "within a band are reported to one decimal."),
         ("h", "6 Committed exposure and caseload bands"),
         ("p", "6.1 A group's committed exposure at a date is the sum of the committed limits, as they stood at the "
               "end of that date, of the facilities on which one or more of its members is an obligor, across "

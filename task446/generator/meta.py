@@ -66,8 +66,8 @@ def main():
         "title": "How many obligor groups from the monitored book will reach the watch list in the year to "
                  "30 September 2027",
         "domain": "Banking, Credit & Financial Risk",
-        "subdomain": "other: early-warning and watch-list monitoring of corporate obligor groups",
-        "objective": "Data Extraction & Conformation (ETL)",
+        "subdomain": "credit-scoring-pd-modeling (early-warning and watch-list monitoring of corporate obligor groups)",
+        "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "05 (allocation to a fixed total): the caseload allocated over the five exposure bands, each band "
                         "with the groups it holds, their committed exposure, expected arrivals from flagged and from "
                         "unflagged groups and the expected committed exposure arriving, with a total row",

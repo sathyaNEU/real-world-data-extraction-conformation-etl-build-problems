@@ -1,5 +1,6 @@
 """Assertions for task446 (architecture 2, loop 1). Builds the pack twice, runs the independent solver on it
-and checks the literal reading (5.2's test over the family of bases), the ladder, the convergence of the
+and checks the literal reading (5.2 files the estimand only; the back-test over the family of bases is the
+design's, never filed), the ladder, the convergence of the
 golden's variants, the bins, the ask devices and their grid, the separation of the main call from every
 device, the inert texture on the main path, the realism repairs and the input gates.
 
@@ -58,7 +59,8 @@ def n_moved(a, b):
     return sum(1 for x, y in zip(a, b) if x != y)
 
 
-# design table, CRM-07 5.2 test: worst miss (per cent) and forward figure for each basis
+# design table, the out-of-sample back-test (each closed cohort from the other three; never filed): worst miss
+# (per cent) and forward figure for each basis
 DESIGN_TEST = {
     "hit_and_miss": (40.60, 72.92), "one_share": (55.58, 52.31), "arrivals_per_flagged": (35.64, 79.72),
     "every_flagged_reaches": (198.44, 175.64), "capture_false_alarm": (1.57, 133.04),
@@ -103,14 +105,14 @@ def main():
     m = fc["measures"]
     ok(m["TP"] == 157 and m["P"] == 201 and m["FP"] == 259 and m["N"] - m["P"] == 3307, "pooled counts")
 
-    # ------------------------------------------------------------ literal reader: 5.2's test over the family
+    # ------------------------------------------------------------ the data forces the basis: back-test over the family
     test = fc["test"]
     ok(len(test) == 13, "thirteen bases swept")
     for k, (err, fw) in DESIGN_TEST.items():
         ok(abs(test[k][1] * 100 - err) < 0.01 and abs(test[k][2] - fw) < 0.01,
            "basis %s as designed (%.2f, %.2f)" % (k, test[k][1] * 100, test[k][2]))
     ranked = sorted(test, key=lambda k: test[k][1])
-    ok(ranked[0] == "capture_false_alarm" and fc["model"] == "capture_false_alarm", "the filed test selects the golden's basis")
+    ok(ranked[0] == "capture_false_alarm" and fc["model"] == "capture_false_alarm", "the back-test ranks the golden's basis first")
     ok(test[ranked[1]][1] - test[ranked[0]][1] > 0.004, "unique minimum, margin over the next basis")
     for k in test:
         if k == ranked[0]:
@@ -139,13 +141,13 @@ def main():
     btm = solve.band_table(tab, fcm, G["exp"])
     for r, q in zip(G["bands"], btm):
         ok(r1(r["exp_flagged"]) == r1(q["exp_flagged"]) and r1(r["exp_unflagged"]) == r1(q["exp_unflagged"]),
-           "mean-of-rates variant lands %s arrivals" % r["band"])
+           "SF7 mean-of-rates variant lands %s arrivals under the 5.3 split" % r["band"])
     # window violations of the answer's own basis
     cc = solve.cohort_counts(tab)
     win = {k: solve.predict(solve.basis_fit("capture_false_alarm", cs), 913, 165)
            for k, cs in dict(latest=cc[3:], last3=cc[1:], first3=cc[:3]).items()}
     ok(abs(win["latest"] - 126.82) < 0.01 and abs(win["last3"] - 132.44) < 0.01 and abs(win["first3"] - 135.01) < 0.01,
-       "window violations %s" % {k: round(v, 2) for k, v in win.items()})
+       "SF6 window violations of 4.3's last four closed cohorts taken together %s" % {k: round(v, 2) for k, v in win.items()})
 
     # ------------------------------------------------------------ the ladder
     rungs = dict(R0=test["hit_and_miss"][2], R0b=test["latest_hit_and_miss"][2],
@@ -403,7 +405,10 @@ def main():
     for word in ("lapsed", "branch", "fund-management", "successor", "capture and false-alarm", "inversion",
                  "base rate"):
         ok(word not in std_flat.lower(), "the standard names no edge case or basis: " + word)
-    ok("smallest error is the one used" in std_flat and "UK time (GMT or BST" in std_flat, "5.2 and 1.3 as filed")
+    ok("UK time (GMT or BST" in std_flat and "set against its cohort's actual arrivals" in std_flat, "5.2 and 1.3 as filed")
+    for phrase in ("predicts those cohorts best", "smallest error", "same across the book", "depends only on whether",
+                   "the other three", "probability of reaching", "set from the last four"):
+        ok(phrase not in std_flat, "5.2 files no model, fitting window or selection rule: " + phrase)
 
     # ------------------------------------------------------------ input gates
     files = sorted(os.listdir(target))

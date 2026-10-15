@@ -1,110 +1,124 @@
 {
-  "task": "task446",
-  "architecture": "v2",
-  "drawn": "2026-10-11",
-  "slot_note": "re-root of task446 after architecture 1 (obligor-group house-limit projection on the membership at the projection date) was spent at round 1 as a rule-application stump; same objective and number, new decision, new Layer 2 pitfall. The seed's GLEIF Level 2 hierarchy stays as the join that carries entity-level early-warning signals up to obligor groups, and the bank's booking systems stay as Layer 1 on the exposure asks.",
-  "domain": "banking-credit-financial-risk",
-  "subdomain": "other",
-  "niche": "a UK commercial bank's credit risk monitoring team forecasting how many obligor groups will move onto the watch list over the next twelve months, to size the 2027 watch-list caseload by exposure band, from an early-warning system's entity-level monthly signals rolled up to groups through the GLEIF consolidation hierarchy and four closed annual cohorts of watch-list outcomes",
-  "objective": "etl",
-  "shape": "05",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "Put a 2027 caseload of 133 groups to the committee: 133 of the 913 obligor groups in the monitored book at 30 September 2026 are expected to reach the watch list by 30 September 2027.",
-  "answer_source": "task446/submission.md, Final Recommendation (architecture 2, loop 1 build)",
-  "gap": [
-    "time",
-    "population"
+ "task": "task446",
+ "architecture": "v2",
+ "drawn": "2026-10-11",
+ "slot_note": "re-root of task446 after architecture 1 (obligor-group house-limit projection on the membership at the projection date) was spent at round 1 as a rule-application stump; same objective and number, new decision, new Layer 2 pitfall. The seed's GLEIF Level 2 hierarchy stays as the join that carries entity-level early-warning signals up to obligor groups, and the bank's booking systems stay as Layer 1 on the exposure asks.",
+ "domain": "banking-credit-financial-risk",
+ "subdomain": "credit-scoring-pd-modeling",
+ "niche": "a UK commercial bank's credit risk monitoring team forecasting how many obligor groups will move onto the watch list over the next twelve months, to size the 2027 watch-list caseload by exposure band, from an early-warning system's entity-level monthly signals rolled up to groups through the GLEIF consolidation hierarchy and four closed annual cohorts of watch-list outcomes",
+ "objective": "forecasting",
+ "shape": "05",
+ "decision_type": "quantity_figure",
+ "answer_unit": "count",
+ "answer": "Put a 2027 caseload of 133 groups to the committee: 133 of the 913 obligor groups in the monitored book at 30 September 2026 are expected to reach the watch list by 30 September 2027.",
+ "answer_source": "task446/submission.md, Final Recommendation (architecture 2, loop 1 build)",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G16",
+  "G13",
+  "G19"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "existing_book_actuals",
+ "stump_strategy": "composition_mix",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_model",
+ "stakeholder_role": "head of credit risk monitoring at a UK commercial bank, who sizes the watch-list and workout caseload for the executive risk committee's 2027 resourcing budget",
+ "role_family": "portfolio_manager",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "ews_entity_signals_2022-09_to_2026-09.csv",
+  "rows": 125317,
+  "entity": "one legal entity's early-warning signal (colour, score and trigger codes) at one month-end, as the early-warning engine published it, keyed by LEI",
+  "grain": "LEI x month-end",
+  "source": "synthetic"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "financial_institution",
+ "world": {
+  "geography": "United Kingdom",
+  "currency": "GBP",
+  "org_type": "UK commercial bank, credit risk monitoring",
+  "invented_names": [
+   "Halstow Bank plc"
   ],
-  "pattern": [
+  "people": [
+   "Jill Berry",
+   "Mathew Long",
+   "Abbie Stevens",
+   "Molly Ryan",
+   "Jeffrey Page",
+   "Jade Ali",
+   "Russell Hussain",
+   "Eric Williams",
+   "Victor Pratt",
+   "Dennis Bishop",
+   "Danny Foster"
+  ]
+ },
+ "deliverables": [
+  "watchlist_inflow_2027.xlsx",
+  "watchlist_inflow_2027.svg"
+ ],
+ "opening_move": "question-first",
+ "driver": "A screen's yield, the share of flagged units that turn out positive, is measured on past populations and carried onto a population whose base rate has moved; the yield is a property of the year it was measured in, the screen's two error rates are what carry across years, so the forward count comes from backing the base rate out of the share now flagged through those error rates, and the year-by-year record, where the yield moves with the base rate while the error rates hold, is what shows it.",
+ "driver_concrete": "The monitoring standard files the estimand (expected arrivals on the watch list within twelve months from the 30 September 2026 monitored book, one probability per flag status) and a leave-one-cohort-out test that selects the basis (the basis whose largest miss over the four closed cohorts, each predicted from the other three taken together, is smallest), naming no basis. The early-warning system's capture and false-alarm rates hold across the cohorts while its hit rate climbs with each cohort's share of the book reaching the list, so the hit and miss rates miss a closed cohort by 40.6 per cent and the basis that backs each year's share out of its flagged share through the two error rates (Rogan-Gladen) misses none by more than 1.6 per cent: 133 groups, not flags times hit rate (73).",
+ "stump": "A competent solver rolls the entity signals up to groups, builds the four closed cohorts and sets the probabilities from the share of flagged and of unflagged groups that reached the list over those cohorts taken together, the hit and miss rates the committee is shown each November, and files 73; the step that lands it there is carrying the hit rate onto a book whose flagged share has jumped to 18.1 per cent, when the hit rate moves with each year's share of the book reaching the list and only the screen's capture and false-alarm rates hold across the cohorts; backing this year's arrival share out of the flagged share through those two rates predicts every closed cohort within 1.6 per cent out of sample (the hit rate misses one by 40.6) and gives 133, while trending the hit rate on the flagged share misses by 8.0 and extrapolates to 147.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who conforms every entity signal to its obligor group correctly, reads every clause of CRM-07 correctly and forecasts the easy way, the probability of reaching the list given flag status as the four cohorts taken together measured it (the hit and miss rates), files 73; nothing in the standard names a basis, so only an analyst who sees that the hit rate moves with each year's base rate, and validates the forecast out of sample on the closed cohorts, reaches 133.",
+ "domain_test": "The call is a credit-monitoring forecast, the watch-list inflow a bank sizes its workout caseload on, built from an early-warning system's performance on obligor groups (signals raised on any legal entity and carried to the group through accounting consolidation, a twelve-month watch-list outcome, the committed book as the monitored population); with another field's nouns in, the group roll-up of entity signals, the watch-list outcome window and the committed-book population have nothing to attach to, and the exposure the arriving groups carry is a credit quantity.",
+ "client_domain": "banking-credit-financial-risk",
+ "layer2_family": "forecast_uncertainty",
+ "layer2_pattern": "own:screen-yield-under-a-moved-base-rate",
+ "layer1": [
+  "entity-level monthly signals from an early-warning engine keyed by LEI or by company number, including entities that do not borrow, to be carried to obligor groups",
+  "GLEIF Level 1 and Level 2 records with relationship periods, lapsed registrations, merged entities with successor LEIs, international branches, fund-management links that are not consolidation, and reporting exceptions",
+  "a credit system's group register and watch-list history in its own customer namespace, with two list categories that are one list",
+  "a consolidated facility extract from two loan ledgers at facility-and-obligor grain (the committed limit repeated on every obligor row, joint facilities whose obligors sit in two groups, ledger facility numbers that coincide across the two booking entities), run after the 1 October start-of-day batch, beside a limit history stamped in UTC; and customers the credit system has not yet booked to a group, reached through their GLEIF consolidation"
+ ],
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task127": "task127 restates an insurer's paid claims development at the latest closed shares, a run-off triangle whose tail is still developing; task446 carries an early-warning screen's error rates, not its yield, onto a book whose base rate moved, backing the base rate out of the share now flagged: no development triangle, no tail",
+  "task138": "task138 forecasts a behavioural take-up at a one-off repricing from a mixture of unit types; task446's forward count comes from a screen's capture and false-alarm rates inverted through the current flagged share, a prior-shift correction, not a mixture",
+  "task501": "task501 validates a forecast whose drivers change with an external condition; task446's decisive structure is a screen's base-rate shift, where the yield is year-specific and the two error rates carry across years",
+  "task254": "task254 selects among models for a forecast whose structure differs; task446's selection is between a screen's yield and its error rates under a moved base rate, forced by the cohorts' out-of-sample record",
+  "task446": "the same analytical driver repaired in place: v2 loop 1 filed the model and the leave-one-cohort-out selection in CRM-07 5.2, so the decisive step read as rule application; the repair files the estimand only and lets the cohorts' out-of-sample record force the basis, so the driver is unchanged by design and only its filing moved"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "fate": "spent at in-house solver round 1, 2026-10-11: the solver fixed the projection-date group and applied it to all five quarter-ends citing the limit-monitoring standard's clause, landing the call and every ask device (proxy 93.4); the decisive step was a filed clause applied, rule application",
+   "domain": "banking-credit-financial-risk",
+   "objective": "etl",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G16",
-    "G13",
-    "G19"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "existing_book_actuals",
-  "stump_strategy": "forecast_method_backtest",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_model",
-  "stakeholder_role": "head of credit risk monitoring at a UK commercial bank, who sizes the watch-list and workout caseload for the executive risk committee's 2027 resourcing budget",
-  "role_family": "portfolio_manager",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "ews_entity_signals_2022-09_to_2026-09.csv",
-    "rows": 125317,
-    "entity": "one legal entity's early-warning signal (colour, score and trigger codes) at one month-end, as the early-warning engine published it, keyed by LEI",
-    "grain": "LEI x month-end",
-    "source": "synthetic"
+   ],
+   "gate_g": "etl_conformance",
+   "decision_type": "quantity_figure",
+   "driver": "The decisive quantity is a forward projection for a group as constituted on the projection date, so every past period of its history has to be rebuilt on that membership; joining each period's records to the membership in force in that period, the point-in-time build that history work normally demands, books past changes of membership as growth or shrinkage and moves the projection, upward for groups that absorbed members and downward for groups that shed them."
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "financial_institution",
-  "world": {
-    "geography": "United Kingdom",
-    "currency": "GBP",
-    "org_type": "UK commercial bank, credit risk monitoring",
-    "invented_names": [
-      "Halstow Bank plc"
-    ],
-    "people": [
-      "Jill Berry",
-      "Mathew Long",
-      "Abbie Stevens",
-      "Molly Ryan",
-      "Jeffrey Page",
-      "Jade Ali",
-      "Russell Hussain",
-      "Eric Williams",
-      "Victor Pratt",
-      "Bruce Anderson",
-      "Dennis Bishop",
-      "Danny Foster"
-    ]
-  },
-  "deliverables": [
-    "watchlist_inflow_2027.xlsx",
-    "watchlist_inflow_2027.svg"
-  ],
-  "opening_move": "number-first",
-  "driver": "A screen's yield, the share of flagged units that turn out positive, is measured on past populations and carried onto a population whose base rate has moved; the yield is a property of the year it was measured in, the screen's two error rates are what carry across years, so the forward count comes from backing the base rate out of the share now flagged through those error rates, and the year-by-year record, where the yield moves with the base rate while the error rates hold, is what shows it.",
-  "driver_concrete": "The monitoring standard files the estimand (expected arrivals on the watch list within twelve months from the 30 September 2026 monitored book, one probability per flag status) and a leave-one-cohort-out test that selects the basis (the basis whose largest miss over the four closed cohorts, each predicted from the other three taken together, is smallest), naming no basis. The early-warning system's capture and false-alarm rates hold across the cohorts while its hit rate climbs with each cohort's share of the book reaching the list, so the hit and miss rates miss a closed cohort by 40.6 per cent and the basis that backs each year's share out of its flagged share through the two error rates (Rogan-Gladen) misses none by more than 1.6 per cent: 133 groups, not flags times hit rate (73).",
-  "stump": "A competent solver rolls the entity signals up to groups, builds the four closed cohorts and sets the probabilities from the share of flagged and of unflagged groups that reached the list over those cohorts taken together, the hit and miss rates the committee is shown each November, and files 73; one who runs the standard's test, sees that basis miss the 2024 cohort by 40.6 per cent and trends the hit and miss rates on the flagged share (worst miss 8.0 per cent) files 147; only the basis that backs each year's share of the book reaching the list out of that year's flagged share through the capture and false-alarm rates, which hold across the cohorts, predicts every closed cohort within 1.6 per cent, and it gives 133.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms every entity signal to its obligor group correctly and reads the standard's book, outcome, cohort and test clauses correctly sets the flagged and unflagged probabilities first from the share of each that reached the list over the four cohorts taken together, because that is the probability of reaching given flag status as the cohorts measured it; that easy method gives 73, its test miss is 40.6 per cent, and an analyst who then searches only among rates measured on flag status (latest, most stressed, trended on the flagged share) still files 69, 98 or 147, because the hit rate is a property of each year's share of the book reaching the list, which this year's flagged share puts far above every closed cohort.",
-  "domain_test": "The call is a credit-monitoring forecast, the watch-list inflow a bank sizes its workout caseload on, built from an early-warning system's performance on obligor groups (signals raised on any legal entity and carried to the group through accounting consolidation, a twelve-month watch-list outcome, the committed book as the monitored population); with another field's nouns in, the group roll-up of entity signals, the watch-list outcome window and the committed-book population have nothing to attach to, and the exposure the arriving groups carry is a credit quantity.",
-  "client_domain": "banking-credit-financial-risk",
-  "layer2_family": "forecast_uncertainty",
-  "layer2_pattern": "own:screen-yield-under-a-moved-base-rate",
-  "layer1": [
-    "entity-level monthly signals from an early-warning engine keyed by LEI or by company number, including entities that do not borrow, to be carried to obligor groups",
-    "GLEIF Level 1 and Level 2 records with relationship periods, lapsed registrations, merged entities with successor LEIs, international branches, fund-management links that are not consolidation, and reporting exceptions",
-    "a credit system's group register and watch-list history in its own customer namespace, with two list categories that are one list",
-    "a consolidated facility extract from two loan ledgers at facility-and-obligor grain (the committed limit repeated on every obligor row, joint facilities whose obligors sit in two groups, ledger facility numbers that coincide across the two booking entities), run after the 1 October start-of-day batch, beside a limit history stamped in UTC; and customers the credit system has not yet booked to a group, reached through their GLEIF consolidation"
-  ],
-  "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [
-    {
-      "architecture": "v1",
-      "fate": "spent at in-house solver round 1, 2026-10-11: the solver fixed the projection-date group and applied it to all five quarter-ends citing the limit-monitoring standard's clause, landing the call and every ask device (proxy 93.4); the decisive step was a filed clause applied, rule application",
-      "domain": "banking-credit-financial-risk",
-      "objective": "etl",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "etl_conformance",
-      "decision_type": "quantity_figure",
-      "driver": "The decisive quantity is a forward projection for a group as constituted on the projection date, so every past period of its history has to be rebuilt on that membership; joining each period's records to the membership in force in that period, the point-in-time build that history work normally demands, books past changes of membership as growth or shrinkage and moves the projection, upward for groups that absorbed members and downward for groups that shed them."
-    }
-  ],
-  "notes": "Re-rooted as v2 on 2026-10-11. stump_strategy forecast_method_backtest: two methods carry a screen's past performance forward, the yield (hit and miss rates) or the error rates (capture and false-alarm rates); the four closed cohorts, whose deterioration rates differ, show the yield moving with the base rate and the error rates holding, so only the second survives the back-test, and it gives the forward count by backing the base rate out of the flagged share. decisive_rule_filed false: the monitoring standard files the group-flag rule, the cohort and outcome definitions, the three performance measures and that the forecast's probability by flag status is set from them, and says nothing about which of them carries across years. calibration_form existing_book_actuals: the bank's own closed cohorts; no certified or published forecast ships, so validated_decoy is false. subdomain other: early-warning and watch-list monitoring of corporate obligor groups, which the banking task-type list does not carry. Personas drawn with guard.py names --geo 'United Kingdom' --seed 446 (Lesley Miller skipped, used by v1). Loop 1 (designer, 2026-10-11): the leak reader found standard 5.2's filed basis ('set from the performance measures in 4.3') read literally as the pooled hit rate, giving 74 against the golden 134, the defect the portal failed task445 on; 5.2 now files the estimand and the leave-one-cohort-out test that selects the basis and names none, so gate_g moves from forecasting to method_or_model_selection (forecasting support) and decisive_rule_filed stays false (the selection criterion is filed, the basis is not). Cohort counts retuned (flagged and reaching 58/32/28/39, flagged and not reaching 61/66/67/65) so the pooled basis wins the test and every convergent route lands on 133. Ask devices redrawn off architecture 1's families (D2, D3, D4): facility-obligor grain (D6), a UTC limit clock (D8), ungrouped customers through GLEIF (D7, hazard)."
+  {
+   "architecture": "v2 loop 1",
+   "fate": "returned by the client 2026-10-15 on the 10/10 rule-application rule: CRM-07 5.2 filed the model (one probability per flag status, the same across the book), the fitting window and the leave-one-cohort-out selection, so once the cohorts were built the solver ran a stated procedure; determinism and correctness held on both in-task blocks. Repaired in place: 5.2 files the estimand only and the data's own back-test forces the basis.",
+   "domain": "banking-credit-financial-risk",
+   "objective": "etl",
+   "gate_g": "method_or_model_selection",
+   "driver": "A screen's yield, the share of flagged units that turn out positive, is measured on past populations and carried onto a population whose base rate has moved; the yield is a property of the year it was measured in, the screen's two error rates are what carry across years, so the forward count comes from backing the base rate out of the share now flagged through those error rates, and the year-by-year record, where the yield moves with the base rate while the error rates hold, is what shows it."
+  }
+ ],
+ "notes": "Re-rooted as v2 on 2026-10-11. stump_strategy forecast_method_backtest: two methods carry a screen's past performance forward, the yield (hit and miss rates) or the error rates (capture and false-alarm rates); the four closed cohorts, whose deterioration rates differ, show the yield moving with the base rate and the error rates holding, so only the second survives the back-test, and it gives the forward count by backing the base rate out of the flagged share. decisive_rule_filed false: the monitoring standard files the group-flag rule, the cohort and outcome definitions, the three performance measures and that the forecast's probability by flag status is set from them, and says nothing about which of them carries across years. calibration_form existing_book_actuals: the bank's own closed cohorts; no certified or published forecast ships, so validated_decoy is false. subdomain other: early-warning and watch-list monitoring of corporate obligor groups, which the banking task-type list does not carry. Personas drawn with guard.py names --geo 'United Kingdom' --seed 446 (Lesley Miller skipped, used by v1). Loop 1 (designer, 2026-10-11): the leak reader found standard 5.2's filed basis ('set from the performance measures in 4.3') read literally as the pooled hit rate, giving 74 against the golden 134, the defect the portal failed task445 on; 5.2 now files the estimand and the leave-one-cohort-out test that selects the basis and names none, so gate_g moves from forecasting to method_or_model_selection (forecasting support) and decisive_rule_filed stays false (the selection criterion is filed, the basis is not). Cohort counts retuned (flagged and reaching 58/32/28/39, flagged and not reaching 61/66/67/65) so the pooled basis wins the test and every convergent route lands on 133. Ask devices redrawn off architecture 1's families (D2, D3, D4): facility-obligor grain (D6), a UTC limit clock (D8), ungrouped customers through GLEIF (D7, hazard). Returned 2026-10-15 on the 10/10 rule-application rule (5.2 filed the model and the selection test): 5.2 now files the estimand only, 5.3 the band split as a reporting convention, and the basis is forced by the data (every basis that validates within 2 per cent out of sample lands 133). Pairing retagged from etl with subdomain other, which no banking task type serves, to forecasting under credit-scoring-pd-modeling; prompt.txt replaces prompt.md. Stump strategy moved from forecast_method_backtest to composition_mix at the 2026-10-15 repair: with no back-test filed, the decisive move is recognising that the hit rate is a property of each year's mix of deteriorating and healthy groups while the two error rates carry across years (the in-task block's own reading, a base-rate shift under distribution change); both keys fit and this one names the move.",
+ "question_form": "how-many"
 }

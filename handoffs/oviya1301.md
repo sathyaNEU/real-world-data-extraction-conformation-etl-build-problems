@@ -20,7 +20,7 @@ the next session does first. Delete it once the work has resumed and it stops be
 
 | Task | Status on main | Branch, head | Stopped at | Next |
 |---|---|---|---|---|
-| task446 | shipped | `oviya1301/task446-portal-fix`, merged as PR #49 | portal determinism fix shipped (CRM-07 §2.2 names the ultimate parent a group member; 165 flagged groups, caseload 133) | wait for the author's portal re-test |
+| task446 | reshipped 2026-10-15 | main | the client returned it on the 10/10 rule-application rule (CRM-07 5.2 filed the model and the leave-one-cohort-out selection); repaired by perssathya at the author's request: 5.2 files the estimand only, the data forces the basis, prompt.txt, pairing to Forecasting; caseload 133 and every figure unchanged; judge DETERMINISTIC, APPROVE | wait for the author's portal re-test |
 | task445 | in build | `oviya1301/task445-hardening`, b7981df (WIP on the loop 2 design 647a2c5) | stage 3, loop 2 builder stopped mid-build | finish the build, leak reader, round 4, judge, ship |
 | task447 | in build | `oviya1301/task447-organic-deposit-growth`, d59cc9c (WIP on the built pack 19c3127) | stage 2, ask-layer designer stopped early | finish the ask design, build, leak reader and clone pre-flight, round 1, judge, ship |
 | task448, task449 | open | none | not started | the author's rule starts the next lane task when one ships; on hold until the author says |

@@ -2,8 +2,8 @@
   "task": "task446",
   "title": "How many obligor groups from the monitored book will reach the watch list in the year to 30 September 2027",
   "domain": "Banking, Credit & Financial Risk",
-  "subdomain": "other: early-warning and watch-list monitoring of corporate obligor groups",
-  "objective": "Data Extraction & Conformation (ETL)",
+  "subdomain": "credit-scoring-pd-modeling (early-warning and watch-list monitoring of corporate obligor groups)",
+  "objective": "Forecasting & Predictive Modeling",
   "prompt_shape": "05 (allocation to a fixed total): the caseload allocated over the five exposure bands, each band with the groups it holds, their committed exposure, expected arrivals from flagged and from unflagged groups and the expected committed exposure arriving, with a total row",
   "as_of": "2026-10-08",
   "deliverables": [
@@ -68,7 +68,7 @@
     {
       "path": "early_warning_and_watch_list_standard.pdf",
       "format": "pdf",
-      "bytes": 5667,
+      "bytes": 5568,
       "rows": null,
       "source": "Constructed: Early-Warning and Watch-List Monitoring Standard CRM-07 v3.1",
       "date": "2026-10-08",

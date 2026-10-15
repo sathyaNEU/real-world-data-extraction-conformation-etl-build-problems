@@ -34,7 +34,7 @@ def build(F):
     L.append("")
     L.append("**Domain:** Banking, Credit & Financial Risk (early-warning and watch-list monitoring of corporate "
              "obligor groups).  ")
-    L.append("**Analytical objective:** Data Extraction & Conformation (ETL).")
+    L.append("**Analytical objective:** Forecasting & Predictive Modeling.")
     L.append("")
     L.append("## 1. Final Recommendation")
     L.append("")
@@ -42,20 +42,21 @@ def build(F):
              "at 30 September 2026 are expected to reach the watch list by 30 September 2027.**"
              % (F["call"], F["call"], F["N1"]))
     L.append("")
-    L.append("The %d comes from the basis CRM-07 5.2's test selects: the early-warning screen's capture and "
-             "false-alarm rates over the 2022 to 2025 cohorts, with this year's share of the book reaching the list "
-             "backed out of this year's %s flagged share. Not the hit and miss rates those cohorts report, carried "
-             "onto this year's flags: the hit rate moves with each year's share of the book reaching the list, and "
-             "that basis misses a closed cohort by %s. Not the latest or the most stressed cohort on its own, nor "
-             "rates trended on the flagged share: 5.2 sets the probabilities from the last four closed cohorts "
-             "taken together, on the basis with the smallest largest miss."
-             % (F["call"], pct(F["a1"]), pct(err_hm)))
+    L.append("The %d comes from the early-warning screen's capture and false-alarm rates over the 2022 to 2025 "
+             "cohorts, which hold from year to year, with this year's share of the book reaching the list backed out "
+             "of this year's %s flagged share; predicting each closed cohort from the other three, that basis never "
+             "misses by more than %s. Not the hit and miss rates those cohorts report, carried onto this year's "
+             "flags: the hit rate moves with each year's share of the book reaching the list, and that basis misses "
+             "a closed cohort by %s. Not the latest or the most stressed cohort's rates, which carry one year's "
+             "arrival share, nor the hit and miss rates trended on the flagged share, which stretch a four-cohort "
+             "trend past every flagged share the cohorts saw and miss a closed cohort out of sample by five times as much."
+             % (F["call"], pct(F["a1"]), pct(err_ans), pct(err_hm)))
     L.append("")
     L.append("## 2. Critical Components")
     L.append("")
     L.append("1. The monitored book at 30 September 2026 is **%d** groups, **%d** of them flagged" % (F["N1"], F["F1"]))
-    L.append("2. On 5.2's test the capture and false-alarm basis misses no closed cohort by more than **%s**; the hit "
-             "and miss rates miss one by **%s**" % (pct(err_ans), pct(err_hm)))
+    L.append("2. Predicting each closed cohort from the other three, the capture and false-alarm basis misses none by "
+             "more than **%s**; the hit and miss rates miss one by **%s**" % (pct(err_ans), pct(err_hm)))
     L.append("3. Over the 2022 to 2025 cohorts taken together the capture rate is **%s** and the false-alarm rate "
              "**%s**" % (pct(m["capture"]), pct(m["false_alarm"], 2)))
     L.append("4. The flagged share of **%s** implies **%s** of the book reaches the watch list within the year"
@@ -74,8 +75,9 @@ def build(F):
         "Matched the 2022 to 2025 cohorts to watch-list placements in the following twelve months (CRM-07 4.2) and "
         "measured them taken together (4.3): capture rate %s, false-alarm rate %s."
         % (pct(m["capture"]), pct(m["false_alarm"], 2)),
-        "Ran 5.2's test, each closed cohort predicted from the other three taken together: the capture and "
-        "false-alarm basis has the smallest largest miss, %s, against %s for the hit and miss rates."
+        "Back-tested the forecasting bases, each closed cohort predicted from the other three taken together: the "
+        "hit rate moves with each cohort's arrivals while the capture and false-alarm rates hold, and that basis "
+        "misses by at most %s against %s for the hit and miss rates."
         % (pct(err_ans), pct(err_hm)),
         "Solved this year's %s flagged share for the share of the book that will reach the list through those two "
         "rates: %s, so a flagged group reaches it with probability %s and a group not flagged with %s."
@@ -85,7 +87,8 @@ def build(F):
         "Built each group's committed exposure under CRM-07 1.3 and 6.1 from facility_obligor_extract_20260930.csv, "
         "each facility (booking entity and number) once in every group with an obligor on it and customers not yet "
         "grouped placed through GLEIF (2.2), at the limit in facility_limit_history_20261008.csv as at the end of 30 "
-        "September UK time, in sterling at the units_per_gbp rates, then banded it under 6.2 for the workbook.",
+        "September UK time, in sterling at the units_per_gbp rates, then banded it under 6.2 and split each band's "
+        "arrivals and exposure by flag status under 5.3 for the workbook.",
         "Recommendation: put a 2027 caseload of %d groups to the committee." % F["call"],
     ]
     for i, s_ in enumerate(steps, start=1):
@@ -131,7 +134,22 @@ def main():
     check(text, F)
     with open(OUT, "w", encoding="utf-8") as fh:
         fh.write(text)
+    write_figures(text)
     print(text)
+
+
+def write_figures(text):
+    """figures.json: every figure blocks 1 to 4 state, as the code above formatted them from the solver's objects"""
+    import json
+    body = text[text.index("## 1."):]
+    toks = re.findall(r"£?\d[\d,]*(?:\.\d+)?%?m?", body)
+    seen = []
+    for t in toks:
+        if t not in seen:
+            seen.append(t)
+    with open(os.path.join(HERE, "figures.json"), "w", encoding="utf-8") as fh:
+        json.dump({"source": "writeup.py from deliver.figures() and solve.golden()", "figures": seen}, fh, indent=1)
+        fh.write("\n")
 
 
 if __name__ == "__main__":

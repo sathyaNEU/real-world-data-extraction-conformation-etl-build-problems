@@ -303,7 +303,7 @@ z
    <text style="font-size: 11px; font-family: Calibri, Carlito, sans-serif; text-anchor: start; fill: #5b6169" x="8.64" y="42.5076" transform="rotate(-0 8.64 42.5076)">Expected arrivals by committed-exposure band at 30 September 2026, split by the September early-warning flag</text>
   </g>
   <g id="text_32">
-   <text style="font-size: 8.5px; font-family: Calibri, Carlito, sans-serif; text-anchor: start; fill: #5b6169" x="8.64" y="429.1694" transform="rotate(-0 8.64 429.1694)">Flagged groups reach the list with probability 63.0%, the rest 3.9%, set from the 2022 to 2025 cohorts taken together (CRM-07 s4.3, s5.2). Bands per s6.2.</text>
+   <text style="font-size: 8.5px; font-family: Calibri, Carlito, sans-serif; text-anchor: start; fill: #5b6169" x="8.64" y="429.1694" transform="rotate(-0 8.64 429.1694)">Flagged groups reach the list with probability 63.0%, the rest 3.9%, set from the 2022 to 2025 cohorts' capture and false-alarm rates (CRM-07 s4.3) and this year's flagged share. Bands per s6.2.</text>
   </g>
   <g id="text_33">
    <text style="font-size: 8.5px; font-family: Calibri, Carlito, sans-serif; text-anchor: end; fill: #5b6169" x="711.36" y="429.1694" transform="rotate(-0 711.36 429.1694)">Credit Risk Monitoring, 27 October 2026</text>
