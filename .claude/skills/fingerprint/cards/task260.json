@@ -1,0 +1,97 @@
+{
+  "task": "task260",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "wave 2, sathay3012, Descriptive lane; seed DA10 gave the lane's number only (its world's natural step reads as a filed list check), world redrawn",
+  "domain": "biomedical-clinical-research",
+  "subdomain": "medical-imaging-reader-study-evaluation",
+  "client_domain": "biomedical-clinical-research",
+  "niche": "choosing an AI reading-support tool for a breast screening service from three fully crossed reader studies, one per vendor, on each tool's gain in the panel readers' average AUC",
+  "objective": "descriptive-distribution",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G17"
+  ],
+  "gate_g": "signal_vs_noise_or_hold",
+  "calibration_form": "none",
+  "stump_strategy": "uncertainty_hold",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the screening service's AI evaluation lead",
+  "role_family": "procurement_lead",
+  "scoring_unit": "index points",
+  "layer2_family": "field_method",
+  "layer2_pattern": "biomedical-clinical-research/medical-imaging-reader-study-evaluation/1",
+  "layer1": [
+    "export layout changing between platform versions",
+    "resubmitted readings kept beside the final one",
+    "practice cases at the start of each session outside the study set",
+    "per-study pseudonymous reader ids",
+    "UTC timestamps",
+    "imaging-system migration re-keying past studies",
+    "mobile units recorded under their own codes and re-hosted mid-year",
+    "technical repeats as separate studies of one episode"
+  ],
+  "spine": {
+    "file": "ris_mammography_studies_2025-10_2026-09.csv",
+    "rows": 0,
+    "entity": "one mammography study in the imaging system",
+    "grain": "study (examination) x date",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "England, United Kingdom",
+    "currency": "GBP",
+    "org_type": "breast screening service",
+    "invented_names": [
+      "Merrowdale Breast Screening Service",
+      "Quintara Mammo",
+      "Ardelle Breast",
+      "Velmora Detect",
+      "ReadPoint"
+    ],
+    "people": [
+      "Hayley Kelly",
+      "Darren Jenkins",
+      "Gary Pritchard",
+      "Leonard Hilton",
+      "Jemma Barnes",
+      "Kim Summers",
+      "Eileen Walton"
+    ]
+  },
+  "deliverables": [
+    "ai_reading_support_decision_2027.pdf",
+    "ai_tool_evaluation_2027.xlsx",
+    "reader_study_gains.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is whether an average improvement measured once, on one shared sample of raters each scoring one shared sample of items, holds for new raters and new items; an interval that resamples only the items or only the raters is too narrow for an option whose improvement swings from rater to rater or sits in a few items every rater meets, and admits it ahead of the smaller improvement that holds across both.",
+  "driver_concrete": "Each AI tool's gain in the panel readers' average AUC has to be judged with an interval that treats both the ten readers and the 300 examinations of its reader study as samples of the service's (Obuchowski-Rockette or DBM): resampling the examinations with the panel fixed admits Quintara, whose gain swings from reader to reader, resampling the readers alone admits Velmora, whose gain sits in the examinations its marks move for every reader, and only Ardelle's interval stays above zero once both are counted.",
+  "stump": "A competent analyst computes each reader's AUC with and without each tool, bootstraps the study's examinations with the panel held fixed, finds Quintara's interval clear of zero and its gain the largest that is, and recommends Quintara; holding the readers fixed ignores that Quintara's gain swings from reader to reader, and only an interval that treats readers and examinations both as samples shows Ardelle's gain alone holds.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every export, case list and protocol clause correctly computes each panel reader's empirical AUC with and without each tool, averages the gains and bootstraps the examinations with the readers held fixed (or runs DeLong's test), so Quintara qualifies with the largest gain and is filed; a paired t-test across the ten readers instead files Velmora; both are wrong, since the protocol's interval is for the service's readers and examinations and only Ardelle survives with both random.",
+  "domain_test": "The deciding quantity is the multi-reader multi-case ROC interval (Obuchowski-Rockette or DBM, readers and cases random) for each tool's gain in readers' average area under the empirical ROC curve from a fully crossed reader study against a histology-confirmed reference standard, the reader-study field's own analysis; with another field's nouns there is no reader-by-case ROC design, enriched case set or reference standard, so the question loses its estimand.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-15T03:11:20Z"
+}
