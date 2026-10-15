@@ -1,21 +1,34 @@
 {
   "task": "task260",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "biomedical-clinical-research",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-15",
-  "stump": "The default path bootstraps each reader study's examinations with its ten readers held fixed and files Quintara Mammo, whose interval clears zero and whose gain is the largest that does; the step that lands it there is treating the panel as the only readers the decision is about, when the protocol's interval is for the service's film readers reading its screening examinations and Quintara's gain swings from reader to reader, so only an interval that carries both readers and examinations as samples (Obuchowski-Rockette or DBM) shows that Ardelle Breast's smaller, steady gain is the one that holds.",
+  "stump": "The default path bootstraps each study's examinations with its ten readers held fixed and files Ondrix Mammo, whose interval clears zero and whose gain is the largest that does; the step that lands it there is treating the panel as the only readers the decision is about, when the protocol's interval is for the service's film readers reading its screening examinations and Ondrix's gain swings from reader to reader, so only an interval that carries both readers and examinations as samples (Obuchowski-Rockette or DBM) shows that Halvic Breast's smaller, steady gain is the one that holds; the opposite one-factor interval (a paired t-test across the readers) files Lumidra Detect.",
   "architecture": 1,
-  "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": ""},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "loops": 1,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-15"
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK (the call's frame words in the protocol and quotes; site and staff lists that rank nothing; forward-dated workforce rows)",
+    "reader": "three reads (loop 0, loop 1, loop 2 after the fix pass): no file names the decisive step (protocol 4.1 states the populations, no method); no ranking, no answer figure; every REVIEW line harmless; realism tells fixed in two passes"
+  },
+  "duplicate_check": {
+    "heart": "WARN",
+    "nearest": "0.05 task255 (lineage); guard surface clean, 0 promoted"
+  },
+  "judge": {
+    "verdict": "loop 0: NOT_DETERMINISTIC, FIX_NOW (Ask B's Lumidra episode count unfiled); loop 1 re-judge running",
+    "disposition": "FIX_NOW fixed in one generator pass",
+    "report": "task260/determinism_check_report.md"
+  },
   "returned": [],
-  "resume": "stage 2: semantic fork table, ladder, closure, ask sheet, prompt.txt, then precut.py",
+  "resume": "stage 4: the fix pass for the loop 0 FIX_NOW is in and green (190 checks, verify, byte-identical builds, figures_check, precut, leak.py; leak re-read loop 2 clean). The single re-judge (run 043008) was in flight at this commit: read its verdict and ship on APPROVE; if the verdict is lost, run that one re-judge again, never a second after it",
   "approved": null,
   "delivered": null,
   "portal": null,

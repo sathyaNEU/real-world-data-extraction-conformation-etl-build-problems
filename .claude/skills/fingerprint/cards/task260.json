@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "License Halvic Breast for two years from 1 April 2027: its gain of 0.026 in the readers' average AUC is the only one whose 95 per cent interval lies wholly above zero with readers and examinations both random (0.014 to 0.038); not Ondrix Mammo (0.042, -0.013 to 0.097, its gain swinging from reader to reader) or Lumidra Detect (0.047, -0.015 to 0.109, its gain varying from examination to examination)",
+  "answer_source": "task260/submission.md; task260/generator/figures.json",
   "gap": [
     "population"
   ],
@@ -47,7 +47,7 @@
   ],
   "spine": {
     "file": "ris_mammography_studies_2025-10_2026-09.csv",
-    "rows": 0,
+    "rows": 55920,
     "entity": "one mammography study in the imaging system",
     "grain": "study (examination) x date",
     "source": "synthetic"
@@ -61,9 +61,9 @@
     "org_type": "breast screening service",
     "invented_names": [
       "Merrowdale Breast Screening Service",
-      "Quintara Mammo",
-      "Ardelle Breast",
-      "Velmora Detect",
+      "Ondrix Mammo",
+      "Halvic Breast",
+      "Lumidra Detect",
       "ReadPoint"
     ],
     "people": [
@@ -84,10 +84,10 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is whether an average improvement measured once, on one shared sample of raters each scoring one shared sample of items, holds for new raters and new items; an interval that resamples only the items or only the raters is too narrow for an option whose improvement swings from rater to rater or sits in a few items every rater meets, and admits it ahead of the smaller improvement that holds across both.",
-  "driver_concrete": "Each AI tool's gain in the panel readers' average AUC has to be judged with an interval that treats both the ten readers and the 300 examinations of its reader study as samples of the service's (Obuchowski-Rockette or DBM): resampling the examinations with the panel fixed admits Quintara, whose gain swings from reader to reader, resampling the readers alone admits Velmora, whose gain sits in the examinations its marks move for every reader, and only Ardelle's interval stays above zero once both are counted.",
-  "stump": "A competent analyst computes each reader's AUC with and without each tool, bootstraps the study's examinations with the panel held fixed, finds Quintara's interval clear of zero and its gain the largest that is, and recommends Quintara; holding the readers fixed ignores that Quintara's gain swings from reader to reader, and only an interval that treats readers and examinations both as samples shows Ardelle's gain alone holds.",
+  "driver_concrete": "Each AI tool's gain in the panel readers' average AUC has to be judged with an interval that treats both the ten readers and the 300 examinations of its own reader study as samples of the service's (Obuchowski-Rockette or DBM): resampling the examinations with the panel fixed admits Ondrix (0.042, its gain swinging from reader to reader, 3 of 10 worse), testing across the readers alone admits Lumidra (0.047, its gain varying from examination to examination the same way for every reader), and only Halvic's 0.026 stays above zero once both are counted (0.014 to 0.038).",
+  "stump": "A competent analyst computes each reader's AUC with and without each tool, bootstraps the study's examinations with the panel held fixed, finds Ondrix's interval clear of zero and its gain the largest that is, and recommends Ondrix; holding the readers fixed ignores that Ondrix's gain swings from reader to reader, and only an interval that treats readers and examinations both as samples shows Halvic's gain alone holds.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every export, case list and protocol clause correctly computes each panel reader's empirical AUC with and without each tool, averages the gains and bootstraps the examinations with the readers held fixed (or runs DeLong's test), so Quintara qualifies with the largest gain and is filed; a paired t-test across the ten readers instead files Velmora; both are wrong, since the protocol's interval is for the service's readers and examinations and only Ardelle survives with both random.",
+  "analyst_test": "A strong analyst who reads every export, case list and protocol clause correctly computes each panel reader's empirical AUC with and without each tool, averages the gains and bootstraps the examinations with the readers held fixed (or runs DeLong's test), so Ondrix qualifies with the largest gain and is filed; a paired t-test across the ten readers instead files Lumidra; both are wrong, since the protocol's interval is for the service's readers and examinations and only Halvic survives with both random.",
   "domain_test": "The deciding quantity is the multi-reader multi-case ROC interval (Obuchowski-Rockette or DBM, readers and cases random) for each tool's gain in readers' average area under the empirical ROC curve from a fully crossed reader study against a histology-confirmed reference standard, the reader-study field's own analysis; with another field's nouns there is no reader-by-case ROC design, enriched case set or reference standard, so the question loses its estimand.",
   "mechanism_source": "design_note",
   "differentiation": {},

@@ -1,0 +1,75 @@
+{
+ "aided": {
+  "Halvic Breast": 0.8846,
+  "Lumidra Detect": 0.8651,
+  "Ondrix Mammo": 0.9027
+ },
+ "call": "Halvic Breast",
+ "cancers_per_study": 75,
+ "cost": {
+  "Halvic Breast": 101750,
+  "Lumidra Detect": 110745,
+  "Ondrix Mammo": 89122
+ },
+ "df": {
+  "Halvic Breast": 18.5,
+  "Lumidra Detect": 1446.4,
+  "Ondrix Mammo": 19.0
+ },
+ "episodes": 44262,
+ "examinations_per_study": 300,
+ "gain": {
+  "Halvic Breast": 0.025929,
+  "Lumidra Detect": 0.047218,
+  "Ondrix Mammo": 0.042012
+ },
+ "gain_3dp": {
+  "Halvic Breast": "0.026",
+  "Lumidra Detect": "0.047",
+  "Ondrix Mammo": "0.042"
+ },
+ "interval": {
+  "Halvic Breast": [
+   0.0136,
+   0.0383
+  ],
+  "Lumidra Detect": [
+   -0.0148,
+   0.1092
+  ],
+  "Ondrix Mammo": [
+   -0.0129,
+   0.0969
+  ]
+ },
+ "interval_level_pct": 95,
+ "panel_readers": 10,
+ "qualifies": {
+  "Halvic Breast": true,
+  "Lumidra Detect": false,
+  "Ondrix Mammo": false
+ },
+ "readers_better": {
+  "Halvic Breast": 9,
+  "Lumidra Detect": 10,
+  "Ondrix Mammo": 7
+ },
+ "readers_in_post": 27,
+ "readers_worse": {
+  "Halvic Breast": 1,
+  "Lumidra Detect": 0,
+  "Ondrix Mammo": 3
+ },
+ "studies_per_site": {
+  "CPL": 13253,
+  "CRB": 11569,
+  "TLW": 13758,
+  "WDL": 7298
+ },
+ "studies_total": 45878,
+ "unaided": {
+  "Halvic Breast": 0.8586,
+  "Lumidra Detect": 0.8179,
+  "Ondrix Mammo": 0.8607
+ }
+}
