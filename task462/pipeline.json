@@ -1,26 +1,27 @@
 {
   "task": "task462",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "physical-environmental-sciences",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-15",
-  "stump": "The default path averages each producer's plume rates over the four campaigns, counting every imaged site without a plume as zero, and rates seven producers low-methane, three of whose methane leaks from many 3 to 15 kg/h sources the survey catches on fewer than half its passes; carrying each detected source through the year instead fails the producers whose methane comes from tank dumps seen once in four passes; weighting each plume by one over the survey's detection probability at its rate, measured on blind controlled releases, before averaging the campaigns rates the golden four.",
+  "stump": "The default path averages each producer's plume rates over its passes and campaigns, counting every imaged site without a plume as zero, and rates eight producers low-methane, among them Anchell, Pinyon Draw, Pellisto and Ashmund (0.150, 0.155, 0.179 and 0.181 per cent), whose methane leaks from many 5 to 15 kg/h sources a pass catches less than half the time; carrying each detected source through the year instead rates none; only weighting each plume by one over the detection probability at its rate, fitted to the provider's blind controlled releases, rates the golden four.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK; the 150 m radius, a coincidental 350,917 in the production rows, shared vocabulary, the register's producer names)",
+    "reader": "REVIEW (2026-10-15): no decisive-step sentence, no ranking or helping file, the decisive step an analytical choice; raised the FR flaring code (Ask B's device, the basin summary its referee), the plant's prior-period adjustments and March re-issue on Ask A, and the methods note's 4.2 on the curve's form as close to the step"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "0.07 task107 lineage"
+    "heart": "WARN (overuse.shape, repeat.gate_g, repeat.deliverables, repeat.question_form; answered in the note)",
+    "nearest": "0.07 task107 lineage",
+    "surface": "4 promoted: task460 (two apart, pairing), task456, task255, task180 (card axes, differentiated)"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +29,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: generator prototype (sources, campaigns, detection curve, controlled releases, production), fix the ladder's names, then the readability screen, fork table, ladder, closure, asks and prompt to precut",
+  "resume": "stage 4: the judge thread is running on /tmp/determinism-check-task462-1792083160/ (brief judge_brief.md, verdict.md when done); hand its verdict path to the determinism-judge agent for the report, then fix every reader and judge finding in one generator pass (candidates: a dictionary line for the statement reference and revisions on Ask A; note 4.2's wording), rebuild, rerun the free gates, re-judge once on FIX_NOW, re-read only if a document or the prompt changed; then the ledger row, card, SHIPPED commit with target.zip and golden/ force-added, the board update, and task463",
   "approved": null,
   "delivered": null,
   "portal": null,

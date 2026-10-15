@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Rate four Tollaver Basin producers low-methane for 2027: Calbrent Energy, Ostrel Energy, Corrandale Petroleum and Brushy Mesa Operating (0.104, 0.108, 0.119 and 0.134 per cent against the 0.20 line; Ashmund Production, the nearest of the rest, at 0.232).",
+  "answer_source": "task462/submission.md block 1; golden tollaver_producer_methane_ratings_2027.xlsx, sheet 2027 ratings",
   "gap": [
     "population",
     "time"
@@ -35,10 +35,10 @@
   "role_family": "compliance_or_audit",
   "scoring_unit": "per certified output",
   "spine": {
-    "file": "state_gas_well_production_2026.csv",
-    "rows": 0,
-    "entity": "one well's reported gas production for one month",
-    "grain": "well x month",
+    "file": "ogc_well_production_tollaver_2025_2026.csv",
+    "rows": 38150,
+    "entity": "one well's reported gas production for one month, original or amended",
+    "grain": "well x month x report",
     "source": "synthetic (constructed in the layout of a state oil and gas commission's well production reports)"
   },
   "forum": "committee_or_panel",
@@ -50,7 +50,7 @@
     "org_type": "emissions data and ratings company",
     "invented_names": [
       "Tarvane Methane Ratings",
-      "Kestrin Aerial",
+      "Talmora Aerial",
       "Tollaver Basin",
       "Calbrent Energy",
       "Pinyon Draw Production",
@@ -60,9 +60,9 @@
       "Corrandale Petroleum",
       "Marrowind Operating",
       "Ostrel Energy",
-      "Dellmont Gas Partners",
+      "Pellisto Gas Partners",
       "Ruskmoor Exploration",
-      "Sedgeway Production",
+      "Ashmund Production",
       "Sunmere Natural Gas"
     ],
     "people": [
@@ -72,15 +72,15 @@
   },
   "deliverables": [
     "tollaver_producer_methane_ratings_2027.xlsx",
-    "kestrin_plumes_conformed_2025_2026.csv"
+    "talmora_plumes_conformed_2025_2026.csv"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is a period total of many intermittent sources seen only through a few snapshot surveys, each of which records a source only while it is active and then only with a probability that rises with its size, so a blank at a surveyed place is partly a miss: each detection has to stand for the instances its detection probability implies, measured on blind trials of known size, while counting blanks as zeros understates the units whose total sits in many small sources and carrying each detected source through the period overstates the units whose total sits in large intermittent ones.",
-  "driver_concrete": "Each producer's 2026 methane is the time-averaged emission rate of its sites over four basin-wide aerial campaigns, each plume weighted by one over the survey's probability of detecting a plume of its rate (measured on the provider's blind controlled releases), not the campaigns' detected plumes alone with blanks as zeros (which understates producers whose methane leaks from many 5 to 15 kg/h sources) nor each detected source at its detected rate all year (which overstates producers whose methane comes from tank dumps part of the time).",
-  "stump": "The default path averages each producer's plume rates over the four campaigns, counting every imaged site without a plume as zero, and rates seven producers low-methane, three of whose methane leaks from many 3 to 15 kg/h sources the survey catches on fewer than half its passes; carrying each detected source through the year instead fails the producers whose methane comes from tank dumps seen once in four passes; weighting each plume by one over the survey's detection probability at its rate, measured on blind controlled releases, before averaging the campaigns rates the golden four.",
+  "driver_concrete": "Each producer's methane over the rating year to 30 September 2026 is the time-averaged emission rate of its sites over four basin-wide aerial campaigns, each plume weighted by one over the survey's probability of detecting a plume of its rate (measured on the provider's blind controlled releases), not the campaigns' detected plumes alone with blanks as zeros (which understates producers whose methane leaks from many 5 to 15 kg/h sources) nor each detected source at its detected rate all year (which overstates producers whose methane comes from tank dumps part of the time).",
+  "stump": "The default path averages each producer's plume rates over its passes and campaigns, counting every imaged site without a plume as zero, and rates eight producers low-methane, among them Anchell, Pinyon Draw, Pellisto and Ashmund (0.150, 0.155, 0.179 and 0.181 per cent), whose methane leaks from many 5 to 15 kg/h sources a pass catches less than half the time; carrying each detected source through the year instead rates none; only weighting each plume by one over the detection probability at its rate, fitted to the provider's blind controlled releases, rates the golden four.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who attributes every plume to its producer, reads every field and applies the rating standard averages each producer's detected rates over the four campaigns with a blank counted as zero and rates seven producers low-methane, three of them over the 0.20 per cent line.",
+  "analyst_test": "A strong analyst who attributes every plume to its producer, reads every field and applies the rating standard averages each producer's detected rates over its passes and campaigns with a blank counted as zero and rates eight producers low-methane, four of them over the 0.20 per cent line though it puts them at 0.150, 0.155, 0.179 and 0.181 per cent.",
   "domain_test": "The deciding quantity is a producer's measurement-based methane intensity, built the way methane inventories build it from aerial surveys (plume rates weighted by a detection probability that depends on rate and wind, measured on controlled releases, averaged over campaigns against the methane in the gas produced); with another field's nouns the rate- and wind-dependent detection of intermittent plumes and the produced gas's methane content no longer read.",
   "mechanism_source": "design_note",
   "differentiation": {

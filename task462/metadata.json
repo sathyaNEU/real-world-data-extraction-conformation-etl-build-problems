@@ -1,0 +1,218 @@
+{
+ "task": "task462",
+ "architecture": 1,
+ "title": "Which of the Tollaver Basin's twelve gas producers carry Tarvane Methane Ratings' 2027 low-methane rating, a measured methane intensity of 0.20 per cent or less over the rating year to 30 September 2026, conformed from Talmora Aerial's four campaigns of plume detections and flight coverage, its controlled-release study, the site register and the state commission's production reports; with each producer's gas delivered to the processing plant and gas flared over the rating year",
+ "domain": "Physical & Environmental Sciences",
+ "subdomain": "emissions-inventory (a measurement-informed methane inventory of each producer's sites over the rating year, from snapshot aerial detections whose chance of detection rises with the plume's rate, against the methane its wells produced)",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "01: a slate of twelve producers each rated, with each producer's methane emitted and measured intensity, its gas delivered to the plant and flared over the rating year, an intensity chart against the 0.20 per cent line and the conformed plume file",
+ "as_of": "2026-11-18",
+ "deliverables": [
+  "tollaver_producer_methane_ratings_2027.xlsx",
+  "talmora_plumes_conformed_2025_2026.csv"
+ ],
+ "distractor_files": [
+  "ghgrp_subpart_w_tollaver_facilities_2023_2025.csv",
+  "tollaver_basin_satellite_methane_2025_2026.json"
+ ],
+ "stated_inputs": [
+  "twelve",
+  "2027",
+  "0.20",
+  "four"
+ ],
+ "input_gates": {
+  "files": 19,
+  "formats": [
+   "csv",
+   "json",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "ogc_well_production_tollaver_2025_2026.csv",
+  "largest_file_rows": 38150
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task462/generator/build.py (seeded, deterministic) in the layouts of an aerial methane survey provider's plume detections, flight coverage, controlled-release workbook and methods note, a ratings company's standard and site register, a state oil and gas commission's production, operator, flaring, lease and basin summary extracts, a processing plant's allocation statements, station list and heating values, producers' greenhouse gas reports and gas analyses, and a satellite product's basin estimates; the basin, its producers, the plant, the commission's records, the provider, the ratings company and the people are fictional.",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work)"
+  }
+ ],
+ "created": "2026-11-18",
+ "generator": "task462/generator/build.py",
+ "files": [
+  {
+   "path": "ghgrp_subpart_w_tollaver_facilities_2023_2025.csv",
+   "format": "csv",
+   "bytes": 60532,
+   "rows": 288,
+   "source": "Constructed: the producers' greenhouse gas reports (Subpart W layout) for their basin facilities, 2023 to 2025",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ogc_basin_flaring_summary_2025_2026.csv",
+   "format": "csv",
+   "bytes": 691,
+   "rows": 15,
+   "source": "Constructed: the state commission's monthly basin summary of flared and vented gas",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ogc_flaring_venting_reports_tollaver_2025_2026.csv",
+   "format": "csv",
+   "bytes": 787704,
+   "rows": 17563,
+   "source": "Constructed: the state commission's monthly flaring and venting reports by lease, original and amended",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ogc_lease_register_tollaver_2026.csv",
+   "format": "csv",
+   "bytes": 24026,
+   "rows": 506,
+   "source": "Constructed: the state commission's lease register with each operator's effective date",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ogc_operator_list_2026.csv",
+   "format": "csv",
+   "bytes": 978,
+   "rows": 17,
+   "source": "Constructed: the state commission's operator list",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ogc_well_production_tollaver_2025_2026.csv",
+   "format": "csv",
+   "bytes": 3478669,
+   "rows": 38150,
+   "source": "Constructed: the state commission's monthly well production reports for the basin, original and amended",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "talmora_controlled_release_study_2025.xlsx",
+   "format": "xlsx",
+   "bytes": 13289,
+   "rows": null,
+   "source": "Constructed: the survey provider's 2025 single-blind controlled-release study workbook",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "talmora_flight_line_coverage_tollaver_2025_2026.csv",
+   "format": "csv",
+   "bytes": 251117,
+   "rows": 3736,
+   "source": "Constructed: the survey provider's flight-line coverage: each campaign's lines, the facilities under them, the times flown and whether each line was imaged",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "talmora_plume_detections_tollaver_2025_2026.csv",
+   "format": "csv",
+   "bytes": 240812,
+   "rows": 2348,
+   "source": "Constructed: the survey provider's plume detections for its four basin campaigns of the rating year, each plume's origin, rate, wind and nearest facility",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "talmora_survey_methods_note_2026.pdf",
+   "format": "pdf",
+   "bytes": 63703,
+   "rows": null,
+   "source": "Constructed: the survey provider's technical note on its instrument, detection, quantification and validation",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tarvane_low_methane_rating_standard_2026.pdf",
+   "format": "pdf",
+   "bytes": 64689,
+   "rows": null,
+   "source": "Constructed: the ratings company's low-methane producer rating standard (version 1.1, 2 September 2026)",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tarvane_rating_folder_data_dictionary.xlsx",
+   "format": "xlsx",
+   "bytes": 8329,
+   "rows": null,
+   "source": "Constructed: the ratings team's field definitions for the folder",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tarvane_rating_folder_manifest.csv",
+   "format": "csv",
+   "bytes": 2642,
+   "rows": 18,
+   "source": "Constructed: the list of the files in the folder, with source, as-of date and terms",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tarvane_tollaver_site_register_2026.csv",
+   "format": "csv",
+   "bytes": 96952,
+   "rows": 798,
+   "source": "Constructed: the ratings company's register of the rated producers' sites in the basin",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tollaver_basin_satellite_methane_2025_2026.json",
+   "format": "json",
+   "bytes": 2019,
+   "rows": null,
+   "source": "Constructed: a satellite product's monthly methane estimates for the basin as a whole",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tollaver_gas_composite_analyses_2024_2026.csv",
+   "format": "csv",
+   "bytes": 1696,
+   "rows": 18,
+   "source": "Constructed: the producers' composite gas analyses by field, 2024 and 2026",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tollaver_plant_allocation_statements_2025_2026.csv",
+   "format": "csv",
+   "bytes": 50198,
+   "rows": 677,
+   "source": "Constructed: the processing plant's monthly allocation statement lines to its shippers",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tollaver_plant_meter_stations_2026.csv",
+   "format": "csv",
+   "bytes": 2463,
+   "rows": 39,
+   "source": "Constructed: the processing plant's meter station list",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "tollaver_plant_station_heating_values_2025_2026.csv",
+   "format": "csv",
+   "bytes": 13143,
+   "rows": 624,
+   "source": "Constructed: the processing plant's monthly heating value by meter station",
+   "date": "2026-11-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  }
+ ]
+}
