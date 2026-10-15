@@ -1,11 +1,11 @@
 {
   "task": "task144",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "product-analytics",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-15",
   "stump": "A competent solver forecasts each shortlisted repository's organic 90-day external stars from its trajectory against the lottery's runners-up, adds the lottery's average spotlight lift scaled to the October list and spotlights tracewire at about 11,000 (the spotlight adding about 5,000); the step that lands it there is carrying an average lift when the spotlight's stars are the readers' own plus the cascade they set off through their followers' home feeds at each repository's own rate per follower view: slidewell's cascade runs at its 1.8 per cent a view on the readers' 85 followers a star and puts it first at about 12,000, the spotlight adding about 9,000.",
   "architecture": 1,
@@ -16,8 +16,8 @@
     "checks": 49
   },
   "leak": {
-    "leak_py": "REVIEW after the repair, no LEAK (a TODO in a generated name fixed), answered in ## Leak sweep (2026-10-15)",
-    "reader": "first cut: Q1 to Q4 clean, Q5 the memo's 2.2 to 2.4 with the forecast open, Q6 analytical, six REVIEW lines harmless; names from fixed pools fixed (names.py); readings closed (hash resolution is device B1, the delivered denominator is the prompt's 'of them')"
+    "leak_py": "REVIEW, five lines answered in the design note, no LEAK (2026-10-15, shipped cut)",
+    "reader": "round 1 (first cut): Q1 to Q4 clean, Q6 analytical, names tell fixed, readings closed; round 2 (repaired cut): Q1, Q2, Q4 clean, Q6 analytical, names read as real, memo 5.1 and section 4 reworded, bots named for their jobs, owner, late and twice-nominated readings asserted"
   },
   "duplicate_check": {
     "heart": "WARN (repeat.decision, repeat.question_form), nearest driver 0.05 (task132, task255 v1)",
@@ -28,24 +28,26 @@
   "judge": {
     "verdict": "DETERMINISTIC",
     "disposition": "APPROVE",
-    "report": "task144/determinism_check_report.md (first cut, target.zip 224ba2c1); findings repaired: slidewell's rate on 551 feed stars (one sigma keeps every rounded figure, two sigma keeps the pick), bare-name nominations closed in the data, memo section 3 tense"
+    "report": "task144/determinism_check_report.md (the re-judge on the repaired cut, every figure reproduced; the first judge was also DETERMINISTIC and APPROVE, its points repaired)"
   },
   "returned": [],
-  "resume": "stage 4: the one re-judge and a short re-read on the repaired cut, then stage 5 ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-15",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
   "wave": "wave 3 (new), seed FC15 (world, decision and quantity kept; pitfall re-found)",
   "gates": {
-    "checks": 121,
+    "checks": 127,
     "verify": "agrees",
     "byte_identical": true,
     "figures_check": "81 figures, 0 absent",
+    "precut": "49 checks, 0 FAIL",
     "voice_check": "PASS",
     "container": "clean",
-    "freeze": "blocks 1, 2 and 4 unchanged; slidewell's evidence figures and the ladder's unrounded values moved as the repair requires"
+    "freeze": "blocks 1, 2 and 4 unchanged; slidewell's evidence figures and the ladder's unrounded values moved as the stage 4 repair requires",
+    "target_zip_sha256": "bf27b981487176ca9f1f22d87fb7518f7acd7bc89dcf77657dbfcb94bc5be71f"
   }
 }

@@ -393,6 +393,48 @@ def run(target, golden, W=None, meta_path=None):
         t = K.from_amsterdam(dt.datetime.strptime(noms.submitted_at[i], "%Y-%m-%d %H:%M:%S"))
         same_now = same_now and C.is_member(B, org, aid, t) == C.is_member(B, org, aid, t, current=True)
     ok(same_now, "Ask B membership when nominating equals membership now", "%d nominations of the shortlist" % len(on_short))
+    mem = B["members"]
+    owner_rows = set(zip(mem.organization[mem.role == "owner"], mem.account_id[mem.role == "owner"]))
+    owners_nom = 0
+    person = {}
+    for i in on_short:
+        rid = [q for q in octrow["shortlist"] if B["repos"][q]["full_name"].lower() == ren.get(refs[i], refs[i])][0]
+        aid = noms.account_id[i] if noms.account_id[i] is not None else int(by_hash[noms.email_sha256[i]])
+        while aid in merged_to:
+            aid = merged_to[aid]
+        person.setdefault(rid, []).append(aid)
+        org = C.owner_of(B, rid)
+        t = K.from_amsterdam(dt.datetime.strptime(noms.submitted_at[i], "%Y-%m-%d %H:%M:%S"))
+        if org and (org, aid) in owner_rows:
+            owners_nom += 1
+            ok(C.is_member(B, org, aid, t), "Ask B an owner of the organisation counts as a member",
+               "%s nominated by an owner of %s" % (B["repos"][rid]["name"], org))
+    ok(True, "Ask B owner-role nominators counted inside", "%d nominations by owners" % owners_nom)
+    late = [i for i in on_short if dt.datetime.strptime(noms.submitted_at[i], "%Y-%m-%d %H:%M:%S") > dt.datetime(2026, 9, 20, 23, 59, 59)]
+    ok(not late, "Ask B no nomination of the shortlist after the 20 September close", "%d late" % len(late))
+    twice = all(len(v) > len(set(v)) for v in person.values())
+    ok(twice and all(len(set(person[q])) == AB[B["repos"][q]["name"]]["people"] for q in person),
+       "Ask B a person nominating twice counts once", ", ".join("%s %d rows %d people" % (B["repos"][q]["name"], len(v), len(set(v)))
+                                                             for q, v in person.items()))
+
+    # ---------------------------------------------------------------- the pace window, back-tested on the runners-up
+    def loo(w, ages=range(21, 36)):
+        num = {a: sum(dd[q][a + 1:91].sum() for q in comp) for a in ages}
+        den = {a: sum(dd[q][a - w + 1:a + 1].sum() / w for q in comp) for a in ages}
+        errs = []
+        for q in comp:
+            d = dd[q]
+            S90 = d[1:91].sum()
+            for a in ages:
+                p = d[a - w + 1:a + 1].mean()
+                errs.append(abs(d[1:a + 1].sum() + p * (num[a] - d[a + 1:91].sum()) / (den[a] - p) - S90) / S90)
+        return 100 * float(np.mean(errs))
+    m3, m7, m14 = loo(3), loo(7), loo(14)
+    g3 = C.golden(B, {"pace_window": 3})
+    ok(m3 > m7 and m3 > m14 and same_figures(G, C.golden(B, {"pace_window": 14})),
+       "pace window: 3 days back-tests worst, 14 days gives the golden's figures",
+       "leave-one-out error 3 days %.2f, 7 days %.2f, 14 days %.2f per cent; 3 days puts shiftgres at %.0f" % (
+           m3, m7, m14, [r for r in g3["rows"] if r["name"] == "shiftgres"][0]["total"]))
 
     # ---------------------------------------------------------------- input gates and metadata
     print("input gates")

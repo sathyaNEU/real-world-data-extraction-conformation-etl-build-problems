@@ -187,6 +187,27 @@ class Accounts:
 POOL_SIZE = {"reader": 30000, "regular": 110000, "senior": 9000, "feed": 140000}
 
 
+BOT_NAMES = ["ci-runner-%02d", "pipelines-runner-%02d", "mirror-sync-%d", "nightly-indexer", "docs-preview",
+             "backup-agent-%d", "star-importer", "archive-crawler", "dep-updater", "build-farm-%02d", "release-tagger",
+             "link-checker"]
+
+
+def bot_login(a, taken):
+    """A bot account's login: some carry a -bot suffix, most are named for the job they run (from a hash of the id,
+    so no random stream moves); a name already taken is drawn again from the next hash."""
+    for k in range(60):
+        h = int(K.hexid("bot-login", a.id, k, n=8), 16)
+        if h % 4 == 0:
+            name = "%s-bot" % a.login.split("-")[0][:10]
+        else:
+            pattern = BOT_NAMES[(h // 4) % len(BOT_NAMES)]
+            name = pattern % (1 + (h // 97) % 40) if "%" in pattern else pattern
+        if name not in taken:
+            break
+    taken.add(name)
+    return name
+
+
 def mix_choice(mix, g, n):
     kinds = list(mix.keys())
     p = np.array([mix[k] for k in kinds], float)
@@ -290,7 +311,7 @@ class StarSim:
                 if kind == "bot":
                     a = self.A._new("regular", t - dt.timedelta(days=float(g.uniform(30, 900))), 0)
                     a.type = "bot"
-                    a.login = "%s-bot" % a.login.split("-")[0][:10]
+                    a.login = bot_login(a, self.A.logins)
                     account = a.id
                 else:
                     account = self.pick(kind)

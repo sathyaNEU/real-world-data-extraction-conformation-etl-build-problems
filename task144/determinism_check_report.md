@@ -1,76 +1,65 @@
-# Verdict, task144 (Sluis spotlight, October 2026)
+# Verdict, task144 re-judge
 
-- **Verdict:** DETERMINISTIC. (No SOLUTION_WRONG: every golden figure I checked reproduced.)
-- **Disposition:** APPROVE. One optional in-house tidy of the memo's tense (see Files/Hygiene). No analytic surface changes, no rerun.
+**Verdict:** DETERMINISTIC
 
-## Why
-The memo (s2.1 to 2.4) fixes the estimand: most expected external stars by end of day 90 if spotlighted, every surface counts. The 21-issue lottery log is a randomised draw of 1 of 7, so the drawn repository against its 6 runners-up gives a clean spotlight lift. That lift is not a constant: lift per newsletter star tracks each repository's feed-star rate per follower of its starrers (r = 0.995). The mean-lift route gives tracewire (about 9.8k to 11k). The route the data validates gives slidewell (about 12.0k against tracewire about 9.1k). The pick (slidewell) holds under every rate-based estimator I tried. The call is forced and the main answer is analytical.
+**Disposition:** APPROVE (no repair needed, no rerun). Residual risks listed below are optional notes, not blockers.
 
-## Evidence (recomputed from target/)
-| Item | Golden | Mine | Source |
-|---|---|---|---|
-| External stars to 27 Sep (7 repos) | tracewire 3,876; slidewell 2,709; ferrolog 1,892; shiftgres 1,826; kilnkit 1,245; hullcheck 1,912; timeloom 1,299 | identical, rebuilt from v5+v6 events (crosswalk, bots, membership-at-time, merges, first-star) and equal to the rollup for all 28 repos in the events files | events csvs, accounts parquet, memberships, rollup |
-| No-spotlight day-90 baseline | slidewell 3,000; tracewire 6,000 | 3,050; 5,723 (stars to date + 7-day pace x mean runner-up ratio, 119 complete runners-up, ratio about 5.8, sd about 0.9) | rollup |
-| Newsletter stars per subscriber | 0.7236% of 433,812 = about 3,000 | pooled 0.72361%; per-issue mean 0.7249%, median 0.7189%; Oct = 3,139 (3,119 to 3,145) | events, lottery log |
-| Feed-card stars per follower of starrers | slidewell 1.8%; tracewire 0.1% | 1.801%; 0.098% | events + snapshot followers |
-| Mean followers of newsletter / feed starrers | 85 / 10 | 84.98 / about 10.2 | same |
-| Cascade check on the 21 lottery lifts | n/a | lift/newsletter-star vs 1+r*85/(1-r*10): corr 0.997, RMSE 0.042 (sd 0.56) | rollup + events |
-| Expected 90-day stars if spotlighted | 12k / 9k / 8k / 8k / 7k / 7k / 6k | cascade 12,047 / 9,127 / 8,160 / 7,983 / 7,099 / 7,110 / 5,893; linear regression of lift on rate gives 11,908 / 8,985 / 8,183 / 7,966 / 7,178 / 7,061 / 5,827. Same rounding in all seven cases. | |
-| Added by spotlight | slidewell 9k; tracewire 3k | 8,997 / 3,404 (regression 8,858 / 3,262) | |
-| Sheet 3: Postwerk Apr / May | 391,299, 1.49% / 399,160, 1.52% | delivered = the two split sends (the 3rd-day resend is not added); unique spotlight + image clickers 5,825 and 6,075, reproduced | postwerk csvs |
-| Sheet 3: Relaymark Jun to Sep | 406,891, 1.53% / 429,444, 1.52% / 429,291, 1.44% / 429,949, 1.49% | reproduced. The repo is the `feature` + `feature_cta` tags (URL = drawn repo); tag `spotlight` points to the previous month's repo. | relaymark json + clicks |
-| Sheet 4: nominators | 47, 58, 31, 27, 26, 19, 37; outside-org 91.49, 90.32, 81.48, 88.46, 81.08 (slidewell and timeloom user-owned) | reproduced exactly (urls and case normalised, old names via renames, bare names mapped to the shortlist, signed-in and typed-email hashes unified, merged accounts to survivor; membership as at snapshot or nomination gives the same) | nominations, accounts, memberships |
-| png values | 3k, 4k, 2k, 2k, 1k, 2k, 1k | match the rounded to-date stars | |
+**Why:** Executed literally, memo s2 (external first star, non-bot, non-member at the time, UTC day 1 = made_public_at, day 90 inclusive, stars not yet made counted) plus the prompt give one answer: slidewell, about 12,000 in 90 days, about 9,000 added by the spotlight. Every figure I recomputed matches the golden. The lottery sheet holds 21 randomly drawn spotlights with full star histories. Their lift tracks each repository's feed stars per follower view, and that rate fits the lottery far better than any fixed average lift. Slidewell wins under every rate-driven lift model I tried (structural cascade, linear fit on rate).
 
-**Competing answers tested.**
-- Tracewire via average lift added to each trajectory: wrong. The lottery shows the lift is heterogeneous and tracks rate. Out-of-sample (leave-one-out) RMSE of lift per newsletter star on rate is 0.06, on feed share 0.21, on raw feed stars 0.26. Feed-share lift would give tracewire about 9.3k and slidewell about 6.1k.
-- Newsletter stars only (about 3.1k added): contradicted by memo 2.2 ("whichever surface") and by the lottery, whose lifts are 1.1x to 2.6x the newsletter stars.
-- First-order cascade without the second term (1+85r): slidewell 11.0k and 7.9k added, RMSE 0.137 against 0.042. The data separates it from the golden, so it is a worse method and not a live fork. A nonparametric 3-NN extrapolation gives about 8.2k added and 11.3k total, but slidewell's rate (0.0180) is above every lottery repository (max 0.0156), so a linear or mechanistic fit is the only sound route.
-- Other readings of the rates (pooled, mean or median newsletter rate; mean or median baseline ratio): all keep the rounded figures.
+## Evidence (recomputed from the shipped files)
 
-**Residual fragility (not blocking, Gate C thin-but-clean).**
-- Slidewell's 12k/9k rest on a rate from only 160 feed stars (rate sd about 8%). A one-sigma lower rate puts the total at about 11.5k, on the rounding line. The pick is unaffected (tracewire stays below 9.5k). The point-estimate method every validated estimator uses gives 12k and 9k.
-- Sheet 4: 173 nominations are in bare or other-owner form. Bare names (`tracewire`, `kiln-ui`, `imagelint`) are mapped to the shortlist; look-alike owners (`jorisprins/shiftgres`, `lottekuip/tracewire`) are treated as other repositories. Without the bare names the counts fall to 44/58/29/22/23/18/37. The shortlist-mapping is the natural reading but is not stated anywhere in the files. Sheet 4 is a supplementary ask and does not touch the main call.
+| Item | Result | Source |
+|---|---|---|
+| External first stars (bots out, org members at the time out, merged accounts mapped) | Matches the rollup `external_first_stars` for all 2,245 repo-days of the 28 repos with events. By 27 Sept: tracewire 3,876, slidewell 2,766, ferrolog 1,892, hullcheck 1,912, shiftgres 1,826, timeloom 1,299, kilnkit 1,245. Chart values to the nearest thousand reproduce. | event files, accounts parquet, memberships, rollup |
+| Newsletter stars per subscriber | 52,892 newsletter first stars (v5 `nl` mapped via the crosswalk) over 7,309,469 subscribers over the 21 drawn issues = 0.7236%. Times 433,812 = 3,139. | both event files, lottery xlsx |
+| Mean followers of newsletter starrers; of feed starrers | 85.0; 10.2 | accounts parquet |
+| Feed stars per follower view | slidewell 1.796%, tracewire 0.098%. Kilnkit 0.651%, ferrolog 0.463%, shiftgres 0.352%, hullcheck 0.280%, timeloom 0.243%. | events, accounts |
+| No-spotlight forecast to day 90 (stars to date + 7-day pace x runner-up ratio, 114 runner-ups) | slidewell 2,955, tracewire 5,713, ferrolog 3,695, shiftgres 3,835, kilnkit 2,133, hullcheck 3,172, timeloom 2,078 | rollup |
+| Added by spotlight, N(1 + r x 85/(1 - r x 10.2)) | slidewell 9,006, tracewire 3,403, ferrolog 4,436, shiftgres 4,113, kilnkit 5,000, hullcheck 3,908, timeloom 3,804 | derived |
+| Totals | slidewell 11,961, tracewire 9,116, ferrolog 8,131, shiftgres 7,948, kilnkit 7,133, hullcheck 7,080, timeloom 5,882. Rounded, these are 12k, 9k, 8k, 8k, 7k, 7k, 6k, as in the golden. | derived |
+| Postwerk/Relaymark delivered subscribers (first two Sluis batches per issue; test seed and Product News excluded; third send is a resend) | Apr 391,299; May 399,160; Jun 406,891; Jul 429,444; Aug 429,291; Sep 429,949. All reproduce. | campaign files |
+| Click-through share (distinct subscribers clicking the issue's spotlighted repo link in any send / distinct delivered) | 1.4886 (1.49), 1.5219 (1.52), 1.5319 (1.53), 1.5220 (1.52), 1.4419 (1.44), 1.4895 (1.49). All reproduce. | link report, click log |
+| Nominators (repository names normalised incl. URL forms and the kiln-ui and imagelint renames; people = account or email hash, merge chains followed to the final survivor) | slidewell 58; tracewire 47, 91.49%; ferrolog 37, 81.08%; shiftgres 31, 90.32%; kilnkit 27, 81.48%; hullcheck 26, 88.46%; timeloom 19. All reproduce. | nominations, renames, accounts, memberships |
 
-## Files/Hygiene
-**PASS.** 19 files; formats parquet, csv (several), json, pdf, xlsx, md. 110k-row click log, 119k-row snapshot and 169k event rows.
-- Distractors present: trending, traffic, renames, product-news campaigns.
-- Realistic: semicolon, BOM and Amsterdam-time exports, Dutch link labels, test sends, split sends plus resend.
-- No README or benchmark disclosure. xlsx and pdf metadata are in-fiction.
-- Minor temporal slip, in-house fix: memo dated 15 Sep (s3.1 to 3.3) states the 20 Sep and 23 Sep closings and the 27 Sep extract in the past tense. The lottery log (extracted 24 Sep) notes a pick "locked 30 Sep". Reword to future or planned tense. This changes no number.
-- Layer 1 mess is not planted: v5/v6 schemas, ms epoch vs ISO, UTC days, merged accounts, renames.
-- Repository names are plausibly synthetic; no contamination (no public canonical answer).
-- Not exclusion-level.
+### Literal-reading forks and the competing answers
 
-## Stump power (Gate F)
-Strong. The mean-lift route, the newsletter-only route and the feed-share route each give a specific wrong pick (tracewire, or kilnkit and tracewire). Slidewell looks weakest on every surface figure (low baseline, 59 stars/week, 8,883 follower-views) and its advantage appears only after modelling exposure. A strong model that averages the lottery lift fails. No shipped artifact ranks the seven and gets it wrong. The memo's "whichever surface" sentence is the only pointer and does not name the mechanism.
+- **Lift model (the one that moves the call).**
+  - Lottery average lift gives tracewire first, at about 9.5k to 11k, with 4k to 5k added. The lottery rejects this: the lift ratio (spotlight stars over newsletter stars) runs 1.1 to 2.6 across the 21 draws and correlates about 0.95 with the repository's feed rate.
+  - Lift scaled by a repository's own feed share is also wrong. Its correlation with the lift ratio is 0.17, and it also puts tracewire first.
+  - Rate-driven models agree on slidewell: structural cascade 11,961 against tracewire 9,116; linear fit of lift on rate 11,820 against 9,024.
+  - With a clean estimate of the spotlight's feed excess (baseline feed share held from pre-issue), the structural cascade reproduces all 21 lottery lifts to RMSE 0.029 in lift ratio. Linear leave-one-out gives 0.048.
+  - Rounded to the nearest thousand, slidewell's total and its added stars (12k and 9k) come out the same under the structural and linear models. Only a first-generation-only cascade gives 11k and 8k, and the lottery fit rejects it.
+- **Baseline method.** Pace windows of 7 and 14 days and the sum-of-ratios, mean-of-ratios and median-of-ratios variants leave every rounded total unchanged. A 3-day pace moves shiftgres to 7,487 (rounds to 7k, not 8k). A leave-one-out backtest on the runners-up puts 3-day pace at 5.2% MAPE against 3.1% for 7-day and 2.3% for 14-day. Cumulative-multiple methods are far worse (16 to 19%), so the data separates the methods.
+- **Resend.** Nothing in the files labels the third Sluis send a resend. It is forced by the data:
+  - Summing all three sends exceeds the list size in the lottery log (June: 656k against 410,609).
+  - The first two batches have zero clicker overlap, while the third overlaps both (about 20 each).
+  - Counting only first-send clickers would give 1.21% in April. Counting clicks by delivered subscribers on any send is the literal reading of "share of them who clicked through".
+- **People dedup.** Following a merge chain to the final survivor is required (3197968 to 5377621 to 7703873; 4603956 to 5464224 to 7458354). A single-hop dedup gives tracewire 48 and ferrolog 38. The accounts-file definition ("the surviving account's id") supports the chain reading.
+- **Same-name repositories under other owners** (ravi-kok/slidewell and others) do not resolve to shortlisted repositories and are correctly excluded.
 
-## Stumping type (Gate G)
-`mechanism: method_or_model_selection` (forecasting with heterogeneous treatment effect), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`.
-All reported numbers (rollup, log, lifts) are correct and nothing is a defect to catch. The difficulty is choosing the exposure-based lift model, validated on the randomised lottery. On perfectly clean data the task still stumps.
+## Files/Hygiene: PASS
 
-## Three rules (Gate H)
+19 files; formats are parquet, csv (several, semicolon and comma), json, pdf, xlsx and md. The rollup, event files, clicks and parquet are all above 25k rows. Two distractors are present and unused: the daily trending lists and the repository traffic file. Neither decides the call. Documents read as system exports or internal memos; the xlsx and pdf metadata are clean (author names are in-fiction). No authoring or benchmark language found. The parquet writer signature (arrow) and the spreadsheet "Microsoft Excel" tag are normal. Timeline is coherent: the memo is dated 15 Sep, the extract 28 Sep, and the log's October row is a no-draw note. Minor: the log is dated 24 Sep but its note mentions the 27 Sep extract and the 30 Sep meeting, which is plausible as planning text. `extract_contents` records source and date but no licence column; the data is fictional, so there is no licensing exposure. No exclusion-level finding.
+
+## Stump power
+
+Good. The easy route is the lottery's average lift (or lift on feed share) added to each trajectory. That puts tracewire first at about 9.5k to 11k, a wrong call. Getting the right one needs reasoning about feed exposure (followers of starrers), noticing the 21 randomised spotlights are heterogeneous and validating a lift model on them, plus a forward baseline built from runners-up. The extraction asks (resend and batch dedup, test seeds, rename and URL-form resolution, merge chains, pre-public versus created dates) add independent places to lose points.
+
+## Stumping type
+
+`mechanism: method_or_model_selection` (heterogeneous spotlight-lift model chosen on the randomised lottery; baseline forecast validated on runner-ups), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`.
+
+No reported number is wrong. The data is honest; the difficulty is choosing the lift model the lottery supports. On clean data the task still stumps.
+
+## Three rules
+
 `domain: pass`, `layers: pass`, `decisive_step: analytical`.
-- Domain: audience-growth forecasting and treatment-effect estimation from a randomised promotion with network spillover. This is quantity a growth analyst would estimate, and swapping "stars" for another event does not change the method.
-- Layer 1: schema v5/v6 with surface-code crosswalk, ms vs ISO timestamps, bot and membership-at-time exclusion, merged accounts and renames, split sends plus resend, Dutch/UTC times, free-text nomination keys.
-- Layer 2: lift heterogeneity by follower exposure, validated on the lottery as a natural experiment, plus a day-90 forecast calibrated on runners-up.
-- Easy route: a strong analyst who cleaned everything and read memo 2.2 correctly adds the lottery's average lift (about 4k to 5k) to each baseline. That files tracewire at 10k to 11k.
+
+- **Swap test:** the deciding quantity is expected 90-day star growth under a newsletter feature, estimated from a randomised spotlight lottery with an exposure (follower) cascade. That is product-growth and developer-relations analytics. Another field's nouns would not read the same.
+- **Layer 1:** v5/v6 schema codes, UTC against Amsterdam times, made_public against created dates, renames, merged accounts, batch sends with a resend, two ESP exports.
+- **Layer 2:** counterfactual lift modelling and a validated forward baseline.
+- **Easy route:** average (or feed-share) lift on each trajectory. A strong analyst who cleaned everything correctly still files tracewire, about 11,000 with about 5,000 added.
 
 ## Fix
-none. Optional (input_files, in-house): reword the memo's section 3 tense. Optional (prompt or sheet 4): if bare-name nominations should be unambiguous, state in the nominations file note that a name without owner refers to the shortlisted repository. Not required for determinism of the main call.
 
-## Repairs after this verdict (2026-10-15, re-judge pending)
-
-The verdict above was given on the pack cut as target.zip 224ba2c1. Its points were repaired in one generator pass:
-- Rate evidence: slidewell's launch audience now has about 11 followers per starrer, so its per-view rate rests on 551
-  feed stars instead of 160. A one-sigma move in any repository's rate keeps every rounded figure; slidewell moves
-  11,669 to 12,283, adding 8,713 to 9,327. At two sigma (slidewell's rate low, every other rate high) slidewell still
-  leads, 11,370 against 9,147. Both are asserted in checks.py. The golden is slidewell 11,973, adding 9,017
-  (12,000 and 9,000).
-- Sheet 4: the nomination form keeps only references that resolve on the host (stated once in the field notes), so no
-  reference is a bare name. Every signed-out nominator of the shortlist resolves to an account, and membership when
-  nominating equals membership now. All three are asserted, and the counts are unchanged (47, 58, 31, 27, 26, 19, 37).
-- Memo: section 3 now gives the 20 and 23 September closings, the 27 September extract and the 30 September meeting
-  as planned dates. The lottery log's October note reads as a plan.
-- Names: repository, owner, login and rename names were regenerated after the leak reader's realism note. No figure
-  depends on a name.
+none (fix location: none). Optional, not required: nothing that changes what solvers see.

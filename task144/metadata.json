@@ -42,7 +42,7 @@
     {
       "path": "accounts_snapshot_2026-09-27.parquet",
       "format": "parquet",
-      "bytes": 10596785,
+      "bytes": 10596862,
       "rows": 119157,
       "source": "Constructed: Grachtwerk account snapshot at 27 September 2026",
       "date": "2026-09-28",
@@ -51,7 +51,7 @@
     {
       "path": "extract_contents_2026-09-28.csv",
       "format": "csv",
-      "bytes": 3473,
+      "bytes": 3472,
       "rows": 18,
       "source": "Constructed: Files in the extract, with source, period and preparation",
       "date": "2026-09-28",
@@ -159,7 +159,7 @@
     {
       "path": "sluis_featuring_memo_2026-09.pdf",
       "format": "pdf",
-      "bytes": 36608,
+      "bytes": 35624,
       "rows": null,
       "source": "Constructed: Sluis featuring memo of 15 September 2026",
       "date": "2026-09-28",

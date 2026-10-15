@@ -268,6 +268,7 @@ October list (19 spotlights with complete windows).
 - **Bins.** Every graded star figure sits at least 340 stars from its rounding edge (slidewell 11,973 and 9,017;
   tracewire 9,122; ferrolog 8,160; shiftgres 7,953; kilnkit 7,115; hullcheck 7,091; timeloom 5,883); the readings in
   the closure and fork tables and the runners-up' ratio pooled, averaged or taken as a median move none of them a bin
+  (a 3-day pace window moves shiftgres to 7,493, a variant the runners-up' back-test rejects, closure row 8)
   (asserted).
 - **Worth.** Graded quantities are the pick, its expected 90-day stars and added stars and each candidate's expected
   stars, never an intermediate.
@@ -283,7 +284,7 @@ October list (19 spotlights with complete windows).
 | 5 | Version basis | the two event schema vintages, mapped through the code crosswalk; the one account snapshot | one version each; asserted every event maps |
 | 6 | Denominator | the per-view rate's followers of every account that starred (all surfaces, all stars to the extract); the direct rate's subscribers sent | design; SF13 to SF15, asserted convergent |
 | 7 | Weighting | the readers' and feed starrers' reach as means over stars (the expected exposures) | design; asserted the medians file other figures (a mean over stars is the expected count) |
-| 8 | Window length | the pace window for the organic forecast (7 days) and the lottery issues for the direct rate (21) | C1: 7 or 14 days, 21 or the last 6 issues, give the same pick and every figure in its bin (asserted) |
+| 8 | Window length | the pace window for the organic forecast (7 days) and the lottery issues for the direct rate (21) | C1: 7 or 14 days, 21 or the last 6 issues, give the same pick and every figure in its bin (asserted); a 3-day pace window puts shiftgres at 7,493 (7,000) and is a rejected variant: the runners-up' leave-one-out back-test at the shortlist's ages rates it worst (5.21 per cent error against 3.03 for 7 days and 2.18 for 14, asserted; the re-judge's note, accepted) |
 | 9 | Boundary inclusivity | day 1 is the public day, day 90 the 89th day after | filed (2.3) |
 | 10 | Rounding path | every component unrounded, each candidate's figure rounded once to the nearest thousand | the prompt; SF16 |
 | 11 | Tie-break | none arises (the pick leads by over 1.2 times) | asserted margin |
@@ -421,40 +422,77 @@ ask whole on fewer than all its devices
 
 ## Leak sweep
 
-`leak.py --asof 2026-09-30` on the repaired cut: REVIEW, no LEAK; one line per REVIEW:
+`leak.py --asof 2026-09-30` on the shipped cut: REVIEW, no LEAK; one line per REVIEW:
 - The field notes (`warehouse_extract_fields.md`) and the featuring memo carry the call's words (spotlight, Sluis,
   October, external stars, repository): the field's own vocabulary; neither states a figure, a pick or a method.
-- The field notes' design-note terms (followers, account, newsletter, snapshot, extract) are field names and their flat
+- The field notes' design-note terms (followers, account, newsletter, surface, events) are field names and their flat
   definitions ("accounts following this account at the snapshot"); no sentence names feeds, reach, a per-view rate or
-  a cascade. The memo's (lottery, account, snapshot, extract, surface) sit in its scope, rule and records clauses; its
+  a cascade. The memo's (lottery, account, surface, events) sit in its scope, rule and records clauses; its
   "whichever surface" is the estimand's own sentence (2.2).
 - The lottery log's 2026-10-06 is the October issue's date in its own row, a scheduled date the memo also states.
-- Fixed in the repair: a generated repository name carried the word TODO (sweep 2); the plugin list no longer has it.
 
-**Stage 4 reader** (isolated, on the first cut): nothing quoted for questions 1 to 4; question 5 gives the memo's 2.2
+**Reader, round 1** (isolated, on the first cut): nothing quoted for questions 1 to 4; question 5 gives the memo's 2.2
 to 2.4 as the population and window with the forecast open; question 6 analytical; the six REVIEW lines of that cut
-harmless. Its realism tell (names from fixed pools, renames swapping bird and fish names) is fixed in the generator
+harmless. Its realism tell (names from fixed pools, renames swapping bird and fish names) was fixed in the generator
 (`names.py`). The readings it raised are closed: a nominator by account and by email hash is device B1 (the snapshot's
 primary hash, every signed-out nominator of the shortlist resolving, asserted); outside the organisation is membership
 when nominating, the same as now for every nominator (asserted); the click-through's denominator is the prompt's "of
 them", the subscribers the issue was delivered to; the chart's stars by 27 September follow memo 2.2 (rollup and
 events agree, asserted); the stars the spotlight adds are "of those", the expected stars less the stars without it.
 
-**Stage 4 judge:** DETERMINISTIC, APPROVE (`determinism_check_report.md`, with the repairs that followed it).
+**Reader, round 2** (targeted re-read of the repaired cut): questions 1, 2 and 4 clean, question 6 analytical, the
+names read as real. Its small points applied: memo 5.1 now states the records kept, once, and section 4 is one line;
+bots are named for their jobs, most without a -bot suffix, with account_type the key; an owner of the organisation
+counts as a member, no nomination of the shortlist came after the 20 September close, and a person nominating twice
+counts once (each asserted).
 
-## Gates after the stage 4 repair
+**Judge:** DETERMINISTIC and APPROVE on the first cut, its points repaired; the re-judge DETERMINISTIC and APPROVE on
+the repaired cut, every figure reproduced (`determinism_check_report.md`).
 
-Generator checks 121 passed (the earlier block plus the rate-evidence assertions: one sigma on every repository's rate
-keeps every rounded figure, two sigma keeps the pick, the decisive rate on 551 feed stars; and the nominations'
-readings: every reference names an owner, every signed-out nominator of the shortlist resolves, membership when
-nominating equals membership now); `verify.py` agrees on its own code path; two consecutive builds byte-identical, and a
-second separate run cuts the same target.zip; `figures_check.py` 81 figures, none absent; precut 49 checks, 0 FAIL;
-voice-check PASS; the container audit clean; `leak.py` REVIEW answered above; `guard.py heart` WARN (repeat.decision,
-repeat.question_form); `guard.py surface` no hard tell, task124, task132 and task68 promoted on the cards alone for the
-author's `/clone-check`; `guard.py validate` clean. `freeze.py check --mode determinism`: every number in blocks 1, 2
-and 4 of the write-up unchanged; moved, as the repair requires, slidewell's stars to 27 September (2,709 to 2,766),
-feed-card stars (160 to 551), followers reached (8,883 to 30,671) and rate per view (1.801 to 1.796 per cent), allowed
-by key, and the ladder section's unrounded values (slidewell 12,084 to 11,973, adding 9,036 to 9,017).
+## Gates at ship
+
+Generator checks 127 passed. They include the rate-evidence assertions (one sigma on every repository's rate, two sigma
+on the pick, 551 feed stars behind the decisive rate) and the nominations' readings (every reference names an owner,
+every signed-out nominator resolves, membership when nominating equals membership now, an owner counts as a member, no
+nomination after the close, a person nominating twice counts once). They also include the pace-window back-test.
+- `verify.py` agrees on its own code path.
+- Each build run compares two builds byte for byte, and a second separate run cut the same target.zip (sha256
+  bf27b981).
+- `figures_check.py`: 81 figures, none absent. precut: 49 checks, 0 FAIL. voice-check: PASS.
+- The container audit is clean. `guard.py validate` is clean.
+- `leak.py`: REVIEW, answered above.
+- `guard.py heart`: WARN (repeat.decision, repeat.question_form).
+- `guard.py surface`: no hard tell; task124, task132 and task68 are promoted on the cards alone for the author's
+  `/clone-check`.
+- `freeze.py check --mode determinism` against the snapshot taken before the stage 4 repair: every number in blocks 1,
+  2 and 4 of the write-up is unchanged. Moved, as the repair requires and allowed by key: slidewell's stars to 27
+  September (2,709 to 2,766), feed-card stars (160 to 551), followers reached (8,883 to 30,671) and rate per view
+  (1.801 to 1.796 per cent). The ladder section's unrounded values also moved (slidewell 12,084 to 11,973, adding
+  9,036 to 9,017).
+
+## Pre-ship check
+
+The 10/10 rules re-read against the built pack:
+- **The domain:** the call turns on the stars a newsletter spotlight sets off through the platform's follow graph. That
+  quantity is built from each repository's feed-card stars per follower reached and from the readers' reach, the
+  diffusion estimate a growth team makes. Swapping in a clinic or a school leaves the cascade with no meaning.
+- **Two layers:** every mess item in the pack is the systems' own, and each is asserted neutral for the call:
+  - the two schema vintages and the crosswalk;
+  - unstars and restars, bots, members by span and merged accounts;
+  - Amsterdam sends against UTC events;
+  - the lottery log's two layouts;
+  - the rollup beside the events.
+
+  The decisive step is the cascade, measured on the lottery's randomised draws (correlation 0.968). It is analytical:
+  - the easy route, executed on the clean truth with every filed rule applied, files tracewire;
+  - changing only the decisive step files slidewell;
+  - nothing in the pack is planted to be caught.
+- **Determinism:** the re-judge's DETERMINISTIC and APPROVE reproduced every figure.
+- **Robustness:**
+  - one sigma on any rate keeps every rounded figure, and two sigma keeps the pick;
+  - every reading in the fork and closure tables keeps the call and its bins;
+  - the one variant that moves a figure, a 3-day pace window, is rejected by the runners-up' back-test.
+- **The asks:** the cracker misses every figure. The ask readings are either the devices or asserted single.
 
 ## Tried and rejected
 
@@ -508,3 +546,7 @@ by key, and the ladder section's unrounded values (slidewell 12,084 to 11,973, a
   host, said once in the field notes, and every signed-out nominator of the shortlist resolves to an account.
 - The memo's section 3 in the past tense for dates after its own, and the lottery log's "pick locked 30 Sep" in a
   sheet saved on 24 September: reworded as planned dates.
+- Bots all named "...-bot", which made the account type redundant (stage 4 re-read): most bots are now named for the
+  job they run, the type column the key.
+- The memo's records clause explained the extract to the analyst and its later-issues section read as filler (stage 4
+  re-read): 5.1 now states the records kept and section 4 is one line.

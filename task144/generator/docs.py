@@ -45,7 +45,7 @@ def _footer(canvas, doc):
     canvas.setFont(SANS, 8)
     canvas.setFillColor(GREY)
     canvas.drawString(2.2 * cm, 1.25 * cm, "Grachtwerk B.V.  |  Sluis editorial  |  internal")
-    canvas.drawRightString(A4[0] - 2.2 * cm, 1.25 * cm, "Featuring memo, 15 September 2026  |  page %d of 2" % doc.page)
+    canvas.drawRightString(A4[0] - 2.2 * cm, 1.25 * cm, "Featuring memo, 15 September 2026  |  page %d" % doc.page)
     canvas.restoreState()
 
 
@@ -93,16 +93,10 @@ def write_memo(path):
               "editorial meeting on Wednesday 30 September.")
     cl("3.3", "The issue goes out at 09:00 Amsterdam time on Tuesday 6 October 2026.")
     s.append(Paragraph("4. Later issues", H2))
-    cl("4.1", "Nominations close on the third Sunday before the issue and the shortlist on the Wednesday after. The "
-              "pick is made from the extract to the Sunday after the shortlist closes and locked at the editorial "
-              "meeting on the Wednesday after that. Issues go out at 09:00 Amsterdam time on the first Tuesday of the "
-              "month.")
-    cl("4.2", "If the editorial meeting cannot be held, the editor locks the pick by email the same day.")
+    cl("4.1", "Later issues keep the same timetable, counted back from the first Tuesday of the month.")
     s.append(Paragraph("5. Records", H2))
-    cl("5.1", "The lottery log stays with the growth team and the star history stays in the events warehouse. Data "
-              "engineering's extract for each pick carries the star events of the shortlist and of every repository "
-              "the lottery spotlighted, with the account snapshot and the organisation memberships.")
-    cl("5.2", "The editor records each pick and the extract it was made from in the lottery log's sheet for the year.")
+    cl("5.1", "The lottery log stays with the growth team and the star history in the events warehouse.")
+    cl("5.2", "The editor records each pick in the lottery log's sheet for the year.")
     s.append(Spacer(1, 14))
     s.append(Paragraph("%s<br/>Editor, Sluis" % P["editor"], BODY))
     doc.build(s, onFirstPage=_footer, onLaterPages=_footer)
