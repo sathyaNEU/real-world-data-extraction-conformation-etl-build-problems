@@ -72,7 +72,7 @@ def local_hour(d, clock, hrs):
     raise KeyError(clock)
 
 
-def operate(days, seed=W.SEED + 21, seed_dc=W.SEED + 13):
+def operate(days, seed=W.SEED + 21, seed_dc=W.SEED + 64):
     """Physical flows by UTC hour (MWh in the hour) and a record per operating day."""
     rng = np.random.default_rng(seed)
     rng_dc = np.random.default_rng(seed_dc)

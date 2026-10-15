@@ -183,7 +183,6 @@ def write_tests(path, dayrec):
                            "Battery was not offered to the market on the test day." % (d.isoformat(), end.strftime("%H:%M")),
                            BODY))
         s.append(Spacer(1, 6))
-    s.append(Paragraph("The BMS takes the measured usable energy as its usable-energy setting after each test.", SMALL))
     doc.build(s, onFirstPage=frame, onLaterPages=frame)
 
 

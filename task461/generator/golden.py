@@ -129,6 +129,24 @@ def write_workbook(X, path):
         c.alignment = Alignment(wrap_text=True, vertical="top")
         ws.merge_cells(start_row=ws.max_row, start_column=1, end_row=ws.max_row, end_column=3)
         ws.row_dimensions[ws.max_row].height = 62
+    ws.append([])
+    ws.append(["North Hub by year", "Average daily spread ($/MWh)", "Days with a spread under $8 (%)"])
+    hr = ws.max_row
+    for j in range(1, 4):
+        c = ws.cell(row=hr, column=j)
+        c.font = bold
+        c.fill = head
+        c.border = thin
+        c.alignment = Alignment(horizontal="center", wrap_text=True)
+    yr = X["d"]["day"].map(lambda v: v.year)
+    for y in range(2019, 2027):
+        v = X["d"].loc[yr == y, "hub_spread"]
+        ws.append([("%d" % y) + (" (to 2 November)" if y == 2026 else ""), round(float(v.mean()), 2),
+                   round(100.0 * float((v < 8).mean()))])
+        ws.cell(row=ws.max_row, column=2).number_format = "0.00"
+    ws.append(["Source: %s; the windy stretches (autumn 2019 to autumn 2020, autumn 2025 onward) carry the flat days; "
+               "2021 fell back to the ordinary share." % W.FILES["hub"]])
+    ws.cell(row=ws.max_row, column=1).font = grey
     ws.column_dimensions["A"].width = 38
     ws.column_dimensions["B"].width = 30
     ws.column_dimensions["C"].width = 14
@@ -174,7 +192,7 @@ def write_workbook(X, path):
     ws2.cell(row=r, column=5).number_format = "#,##0.0"
     ws2.append([])
     per = float(net.sum()) / float(cyc.sum())
-    ws2.append(["Day-ahead net per Full Cycle, January to October ($)", round(per)])
+    ws2.append(["Day-ahead net per Full Cycle, January to October, from the unrounded totals ($)", round(per)])
     ws2.cell(row=ws2.max_row, column=1).font = bold
     ws2.cell(row=ws2.max_row, column=2).number_format = '"$"#,##0'
     ws2.append([])

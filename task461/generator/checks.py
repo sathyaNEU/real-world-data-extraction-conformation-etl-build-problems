@@ -301,6 +301,11 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     ok("Ask B primary: the fee sits on every hour line of each day (23 to 25 lines)",
        fee_rows.groupby("operating_date").size().between(23, 25).all())
     ok("Ask C the net per cycle", int(round(float(net.sum()) / float(cyc.sum()))) == F["per_cycle"], str(F["per_cycle"]))
+    paths = [float(net.sum()) / float(cyc.sum()), round(float(net.sum()) / 1000, 1) * 1000 / round(float(cyc.sum()), 2),
+             float(net.sum()) / round(float(cyc.sum()), 2)]
+    ok("Ask C the same whole dollar on every rounding path, $0.25 or more from the edge",
+       len({round(v_) for v_ in paths}) == 1 and min(edge(v_, 1) for v_ in paths) >= 0.25,
+       ", ".join("%.2f" % v_ for v_ in paths))
     # the separation line
     tmp = tempfile.mkdtemp(dir=TASK, suffix=".chk")
     try:

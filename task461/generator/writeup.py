@@ -77,7 +77,8 @@ def write(fig_path, out_path):
              "restates the day; 20 and 21 July were repriced between initial and final), reversed MPI's sign and "
              "counted the administrative fee once per operating day, the export carrying the day's fee on every hour "
              "line.")
-    L.append("9. Divided the January to October net by the Full Cycles: $%s per cycle.\n" % format(F["per_cycle"], ","))
+    L.append("9. Divided the January to October net by the Full Cycles, both unrounded: $%s per cycle.\n" % format(
+        F["per_cycle"], ","))
     L.append("## 4. Deliverable Answers\n")
     L.append("### %s\n" % W.GOLDEN["workbook"])
     L.append("1. Threshold for 2027: $%d per MWh; the next setting down, $%d, is over the limit." % (call, below))
@@ -92,7 +93,8 @@ def write(fig_path, out_path):
     for m, name in zip(range(1, 11), MONTHS):
         L.append("   - %s: %s" % (name, format(F["net_k"][str(m)], ",.1f")))
     L.append("   - January to October: %s" % format(F["net_total_k"], ",.1f"))
-    L.append("5. Day-ahead net per Full Cycle, January to October: $%s." % format(F["per_cycle"], ","))
+    L.append("5. Day-ahead net per Full Cycle, January to October, from the unrounded totals: $%s." % format(
+        F["per_cycle"], ","))
     L.append("6. Chart: the cumulative 2026 Full Cycles at each month's end (%.2f at the end of October) against the pace "
              "to 300 by 31 December, on the Cycle chart sheet.\n" % F["cum_cycles"]["10"])
     L.append("### %s\n" % W.GOLDEN["daily"])

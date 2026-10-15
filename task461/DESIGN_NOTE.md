@@ -244,9 +244,9 @@ setting for 2027; the settlement point list's note on the hub-priced days and th
   warranty's contract months in prevailing time (D8); H2 the capacity tests left out (warranty 4.2), the September test
   logged MAINT after the June firmware update while the March one is TEST (D2, a label at the wrong vintage); H3 the
   power conversion system's AC columns beside the DC ones (D3). Stops (built, every figure outside its bin, asserted):
-  the BMS's DC discharge as exported, every month low by 0.24 to 1.49 (January 7.22 against 7.95, September 9.52
-  against 11.01); the same in UTC months (January 6.47, July 16.81); the TEST code alone left out (September 10.53); no
-  test left out (March 5.75, September 10.53); the AC column (every month low by the conversion and the dropped hours);
+  the BMS's DC discharge as exported, every month low by 0.24 to 1.49 (January 7.21 against 7.95, September 9.52
+  against 11.01); the same in UTC months (January 6.47, July 16.80); the TEST code alone left out (September 10.53); no
+  test left out (March 5.76, September 10.53); the AC column (every month low by the conversion and the dropped hours);
   the meter's delivered energy over 0.975 everywhere (every month 1.0 to 1.9 per cent low); the golden. Realism: remote battery sites run on
   cellular gateways, and portals fill missed telemetry with zeros and held states.
 - **Ask B, what the battery netted in the day-ahead market after MPI's fees in each month of 2026 through October, and
@@ -263,7 +263,8 @@ setting for 2027; the settlement point list's note on the hub-priced days and th
   to $4.1k; the initial statements, July 677.7 against 671.7; both versions, every month doubled; issue months, every
   month moved; MPI's sign kept, every figure negative; the golden.
 - **Ask C, the net per warranty cycle over January to October (1 figure, whole dollars).** Construction: Ask B's total
-  over Ask A's; inherits both primaries ($33,901 on the exported discharge, $26,167 on every fee line, against $31,339).
+  over Ask A's; inherits both primaries ($33,905 on the exported discharge, $26,170 on every fee line, against $31,342),
+  the same whole dollar whether the totals are taken unrounded or as shown (asserted).
 - **The chart:** the cumulative 2026 warranty cycles at each month's end against a line to 300 at the year's end; its
   points carry Ask A's device.
 - **The construction layer:** the expected 2027 cycling days at each setting (8) and the conformed daily-spread file
@@ -275,8 +276,8 @@ setting for 2027; the settlement point list's note on the hub-priced days and th
   months; H2 moves September (TEST code alone) and March and September (no exclusion); H3 moves every month; H4 moves
   July (initial statements) or every month (both versions); H5 flips every month's sign; H6 moves every month; H7 drops
   January to mid-March for a response filtering on the current name.
-- **Rounding edges (asserted):** every monthly cycle count at least 0.0015 from its rounding edge, every monthly net at
-  least $13 and the net per cycle at least $0.10.
+- **Rounding edges (asserted):** every monthly cycle count at least 0.001 from its rounding edge, every monthly net at
+  least $13 and the net per cycle at least $0.25 on every rounding path.
 - **Referee:** the revenue meter arbitrates the dropped hours (warranty 4.3 names it) without handing over a level: it
   ties to the BMS only on hours the export kept, at the meter's side of the conversion.
 
@@ -327,11 +328,52 @@ setting for 2027; the settlement point list's note on the hub-priced days and th
   files $20, while the hub's record alone files $10 and the hub plus the premium $30).
 - **Gates.** 13 files in 3 formats (csv, pdf, xlsx); the hub file at 68,712 rows; two distractors (the hub's
   real-time prices and the ancillary service prices) the solution never reads, each deletion leaving the call and
-  every ask unchanged; 88 checks; `verify.py` from the bundle alone; two builds byte-identical; `figures_check.py`,
+  every ask unchanged; 89 checks (the net per cycle on one whole dollar by every rounding path among them);
+  `verify.py` from the bundle alone; two builds byte-identical; `figures_check.py`,
   `precut.py` and `voice-check.py` exit 0; `leak.py` REVIEW (no LEAK); guard heart PASS; surface promoting task460
   (back to back; the shared register column sets were reshaped, what remains is the ETL lane's shared vocabulary) and
   task501 (the same gap, pattern and Gate G, differentiated on the card) for the author's read; the containers carry
   the fiction's people and dates.
+
+## Leak check
+
+- `leak.py`: REVIEW, no LEAK. Its three answer-figure lines are policy 4.2's own selection sentence and the warranty's
+  300 Full Cycles, the filed criterion, neither a 2027 setting nor a count; its two vocabulary lines are the policy and
+  the warranty in their own words (record, contract, average, prices, archive), neither naming the extension.
+- Reader, first pass (2026-10-15): questions 1 to 4 none (no sentence names the step, no file gives a 2027 setting or
+  count, no file exists only for the analyst, no figure reads as the answer); question 6 an analytical choice, the easy
+  routes the hub's record alone ($10), the node's own year ($15) and the hub scaled ($20, the golden's family). It
+  raised the record the expectation rests on as the determinism risk and two tells, both fixed in the generator in one
+  pass: the settlement point list's other storage nodes, recent enough to read as a build-out behind a new regime, now
+  enter before 2019, with the proxy-price note shortened; the capacity test report's last line (the BMS taking the
+  measured energy as its setting) removed.
+- Reader, second pass on the repaired pack (2026-10-15): CLEAN; questions 1 to 4 none; question 6 an analytical choice,
+  "which price record the expected 2027 cycling days rest on and how it is scaled to the Battery's own node", the easy
+  routes $15 and $10, the scaled record $20. The same record question raised, read on the 2026 median against 2024 and
+  2025 alone; the pack's answer is its own earlier windy stretch (October 2019 to November 2020, 29 to 52 per cent of
+  the hub's days under $8 in ten of its fourteen months, 2020's median 11.01 against 2026's 10.49, back to 14 per cent of days in
+  2021), left for the judge to weigh: filing the record would hand over the step. The fee carried on every hour line of
+  a day, read as a possible generator artefact, is Ask B's device (the QSE portal's hourly export of a daily charge) and
+  stays; the dictionary's "Field definitions visible" was the sheet's title read with its visibility state.
+
+## Determinism judge
+
+- First pass (2026-10-15, `determinism_check_report.md`): DETERMINISTIC, FIX_NOW on the solution text only. Gate G
+  forecasting with etl_conformance, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H
+  domain pass, layers pass, decisive_step analytical; every figure reproduced. The finding, fixed in one generator pass:
+  the net per cycle rounded to $31,339 or $31,338 by the cycles it was divided by; the small noise on each cycle's DC
+  energy was redrawn so every path gives $31,342 (unrounded totals $31,341.80), the submission and the workbook saying
+  it comes from the unrounded totals, asserted in `checks.py`. Its other two points stay as they are: the record the expectation rests on
+  (rated low to moderate, closed by the hub's years) and the warranty's "unavailable" on the export's held zero rows
+  (an ask-level reading; the held state and the meter's delivery make the golden the expert reading).
+- Re-judge after FIX_NOW (2026-10-15, `determinism_check_report_pass2.md`): DETERMINISTIC, APPROVE. Gate G forecasting,
+  analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step
+  analytical; every figure reproduced, the net per cycle $31,342 on every path. Every pooled estimator it tried picks $20
+  (the full years alone, an intercept regression, the mean of the daily ratios, the last three and the last five years);
+  only the node's own year ($15) and the hub unscaled ($10) move the call; margins 25 days at $20 and 23 at $15 against
+  300, about two standard errors of the pooled mean. Its one open point, the optional pin filing the expectation over
+  the price years in the extracts, is not taken: with that sentence the node's own year dies to a filed clause and the
+  step it decides would be handed over.
 
 ## Tried and rejected
 

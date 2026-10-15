@@ -44,7 +44,7 @@
   {
    "path": "cordell_capacity_tests_2026.pdf",
    "format": "pdf",
-   "bytes": 63058,
+   "bytes": 62989,
    "rows": null,
    "source": "Constructed: the battery supplier's 2026 capacity test reports",
    "date": "2026-11-06",
@@ -89,7 +89,7 @@
   {
    "path": "mpi_settlement_point_list_2026.csv",
    "format": "csv",
-   "bytes": 1563,
+   "bytes": 1506,
    "rows": 25,
    "source": "Constructed: the market operator's settlement point list",
    "date": "2026-11-06",
@@ -98,7 +98,7 @@
   {
    "path": "redrock_draw_bms_hourly_export_2026.csv",
    "format": "csv",
-   "bytes": 428735,
+   "bytes": 428739,
    "rows": 7344,
    "source": "Constructed: the battery supplier's portal export of the battery management system's hourly records, UTC",
    "date": "2026-11-06",

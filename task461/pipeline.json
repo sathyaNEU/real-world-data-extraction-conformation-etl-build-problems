@@ -1,13 +1,13 @@
 {
   "task": "task461",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "general-statistics-data-science",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-15",
-  "stump": "The default path sets Redrock Draw's 2027 cycling threshold from its own node's 2026 day-ahead spreads (one mild, windy year) and picks a setting too low for an ordinary year; the hub's eight weather years alone pick lower still and the hub plus the node's average additive basis too high; carrying the hub's record to the node through the proportional relationship their overlap shows picks the golden setting.",
+  "stump": "The default path sets the threshold from the node's own day-ahead spreads since MPI first priced it (eleven windy months whose average looks ordinary but a third of whose days were flat) and picks $15; the hub's eight years alone pick $10 and the hub plus the node's average spread premium $30; carrying the hub's eight weather years to the node through the proportional relationship their overlap shows picks $20.",
   "architecture": 1,
   "loops": 0,
   "precut": {
@@ -15,8 +15,8 @@
     "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-15)",
-    "reader": "running"
+    "leak_py": "REVIEW, no LEAK (2026-10-15, --asof 2026-11-06)",
+    "reader": "two passes CLEAN, Q6 analytical; the record question left to the hub's years (leak section of the design note)"
   },
   "duplicate_check": {
     "heart": "PASS",
@@ -24,14 +24,17 @@
     "surface": "promotes task460 (back to back, shared vocabulary; the identical register column sets fixed) and task501 (same gap, pattern and Gate G, differentiated on the card): the author's call on /clone-check"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report_pass2.md (pass 1 DETERMINISTIC FIX_NOW, determinism_check_report.md)",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "returned": [],
-  "resume": "stage 4: the isolated leak reader (scratchpad t461_reader/reader_report.md) and the judge thread (/tmp/determinism-check-task461-1792075541/verdict.md) are running; when both land, return the verdict to the determinism-judge brief agent for determinism_check_report.md, fix every finding in the generator in one pass, re-judge once on FIX_NOW, then the pre-ship check and ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-15",
   "portal": null,
-  "source_note": "seed ET18 (analytical_tasks/07_data_extraction_conformation): the storage owner's yearly cycling threshold kept; the seed's clock trap (UTC grouping, hour ending 24:00, 25-hour days) is Layer 1 only; the pitfall re-found in the data: the node's direct record is one short, unrepresentative year"
+  "source_note": "seed ET18 (analytical_tasks/07_data_extraction_conformation): the storage owner's yearly cycling threshold kept; the seed's clock trap (UTC grouping, hour ending 24:00, 25-hour days) is Layer 1 only; the pitfall re-found in the data: the node's direct record is one short, unrepresentative year",
+  "call": "Load a 2027 cycling threshold of $20 per MWh into Redrock Draw's trading system (275 expected cycling days; $15 gives 323)",
+  "target_zip_sha256_16": "6f9be07297f8fc22"
 }

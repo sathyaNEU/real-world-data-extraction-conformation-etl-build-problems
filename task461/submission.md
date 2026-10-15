@@ -24,7 +24,7 @@ At $20 the battery is expected to cycle on 275 days of 2027, within the warranty
 6. Picked the lowest setting within 300: $20 (275 days); $15 gives 323.
 7. Counted 2026's Full Cycles as warranty Schedule 4 does: the BMS's DC discharge for each hour in contract months on Central prevailing time; for the 27 hours (in 11 runs) in which the meter recorded the battery discharging while the BMS export shows zero energy with its last state held, the meter's delivered energy over 0.975, as the warranty's data clause has it; both capacity tests left out (2026-03-12, logged TEST, and 2026-09-14, logged MAINT after the June firmware update).
 8. Took the day-ahead net from the latest statement line for each hour and charge type (a final statement restates the day; 20 and 21 July were repriced between initial and final), reversed MPI's sign and counted the administrative fee once per operating day, the export carrying the day's fee on every hour line.
-9. Divided the January to October net by the Full Cycles: $31,339 per cycle.
+9. Divided the January to October net by the Full Cycles, both unrounded: $31,342 per cycle.
 
 ## 4. Deliverable Answers
 
@@ -43,15 +43,15 @@ At $20 the battery is expected to cycle on 275 days of 2027, within the warranty
 3. Full Cycles the warranty counts in each month of 2026:
    - January: 7.95
    - February: 2.98
-   - March: 4.97
+   - March: 4.98
    - April: 5.99
    - May: 9.01
-   - June: 11.02
-   - July: 18.06
-   - August: 14.03
+   - June: 11.03
+   - July: 18.05
+   - August: 14.02
    - September: 11.01
    - October: 2.99
-   - January to October: 88.01
+   - January to October: 88.00
 4. Day-ahead net after MPI's fees in each month of 2026, thousands of dollars:
    - January: 268.9
    - February: 113.9
@@ -64,8 +64,8 @@ At $20 the battery is expected to cycle on 275 days of 2027, within the warranty
    - September: 262.3
    - October: 63.5
    - January to October: 2,758.1
-5. Day-ahead net per Full Cycle, January to October: $31,339.
-6. Chart: the cumulative 2026 Full Cycles at each month's end (88.01 at the end of October) against the pace to 300 by 31 December, on the Cycle chart sheet.
+5. Day-ahead net per Full Cycle, January to October, from the unrounded totals: $31,342.
+6. Chart: the cumulative 2026 Full Cycles at each month's end (88.00 at the end of October) against the pace to 300 by 31 December, on the Cycle chart sheet.
 
 ### redrock_draw_daily_spreads_conformed.csv
 
