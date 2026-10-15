@@ -1,17 +1,17 @@
 {
   "task": "task455",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-15",
-  "slot_note": "wave 3 (oviya1301), seed ET12 (analytical_tasks/07_data_extraction_conformation): the world (a health department certifying whether a program bent the curve on a cause of death), the decision and the quantity only",
+  "slot_note": "re-root of task455 after architecture 1 (SROS vital registration misclassification) was spent on the re-judge's SEND_BACK; the seed ET12's world is not kept",
   "domain": "survey-research-official-statistics",
   "subdomain": "census-register-administrative-data-quality",
-  "niche": "a county health department's certification to its council and the state's opioid settlement oversight board that residents' opioid overdose deaths fell at least 20 per cent below their 2021 to 2023 average, the deaths counted from death certificates that both miss opioid deaths and list incidental opioids in stimulant deaths, with a medical examiner's full review of one year as the measure of the certificates' error",
+  "niche": "business demography from the unemployment insurance employer register: establishment births told apart from existing businesses re-registered under new employer accounts",
   "objective": "etl",
-  "shape": "03",
-  "decision_type": "go_hold_or_stop",
-  "answer_unit": "named_option",
-  "answer": "Release phase two: Wendmoor County residents' opioid overdose deaths in 2026 were 24.9 per cent below their 2021 to 2023 average (190 against 253 a year)",
-  "answer_source": "task455/submission.md block 1, from generator/figures.json",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population"
   ],
@@ -19,79 +19,101 @@
     "none"
   ],
   "generators": [
-    "G6",
-    "G12",
-    "G16"
+    "G3",
+    "G10"
   ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "composition_mix",
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
+  "stump_strategy": "identity_resolution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "close_out_summary",
-  "stakeholder_role": "the county health department's epidemiology and vital statistics manager",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "per certified output",
+  "context_artifact": "register",
+  "stakeholder_role": "the business dynamics economist in the state Labor Market Information bureau, who certifies the counties' 2026 establishment birth rates for the Commerce Department's designation",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
   "spine": {
-    "file": "wendmoor_death_records_2019_2026.csv",
-    "rows": 55576,
-    "entity": "one death record (original or amended) of a county resident or a death occurring in the county",
-    "grain": "death record version",
-    "source": "synthetic (constructed in the layout of a state vital records death file with multiple-cause ICD-10 codes)"
+    "file": "qcew_establishment_quarters_2024_2026.csv",
+    "rows": 0,
+    "entity": "one employer account's report for one quarter (monthly employment, wages, county, industry)",
+    "grain": "UI account x quarter",
+    "source": "synthetic (constructed in the layout of a state QCEW microdata extract)"
   },
-  "forum": "trustees_or_governors",
-  "forcing_event": "period_close",
-  "org_family": "foundation_or_funder",
+  "forum": "minister_or_cabinet",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "government_agency",
   "world": {
-    "geography": "United States (an unnamed state, an invented county)",
+    "geography": "an unnamed US state's Lornock Valley region (invented), seven counties",
     "currency": "USD",
-    "org_type": "regional opioid settlement recovery foundation and the county public health department it funds",
+    "org_type": "state workforce and commerce departments",
     "invented_names": [
-      "Wendmoor County",
-      "Wendmoor Valley Recovery Foundation",
-      "Overdose Reduction Initiative"
+      "Lornock Valley",
+      "Brennock",
+      "Caldmere",
+      "Dunrath",
+      "Eskwell",
+      "Fennamore",
+      "Quarrin",
+      "Tolbeck"
     ],
     "people": [
-      "Tammie Mcneil",
-      "Jesse Mcdonald",
-      "Leah Jackson"
+      "Kristy Townsend",
+      "Brandon Compton",
+      "Chelsey Hensley"
     ]
   },
   "deliverables": [
-    "ori_phase_one_outcome_certification_2026.pdf",
-    "ori_outcome_measures_2019_2026.xlsx"
+    "formation_county_designation_2027.pdf",
+    "lornock_establishment_births_2026.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "A register's count of one class is wrong in both directions: it misses some of the class and files in it some units of one neighbouring class only, a class that grows while the counted one shrinks; a full review of one period measures each true class's chance of being filed in each register category, so each period's count is solved from its own register categories, the false entries scaled by the neighbouring class's own visible entries; any multiplicative correction leaves the period-on-period change untouched, and a two-way error rate pooled over every unit outside the class misplaces the false entries as the neighbouring class grows.",
-  "driver_concrete": "The coroner's certificates name no drug on one overdose death in eight (an opioid death so certified is missed) and list fentanyl found but not contributing on half of the methamphetamine and cocaine deaths and on none of the other drug deaths; stimulant deaths grew from about 56 in 2021 to about 149 in 2026 while other drug deaths fell from about 83 to 61. The medical examiner's full review of 2025 gives each class's chance of each certificate category; solving each year's classes from its three certificate categories puts 2026 at 190 against a 2021 to 2023 average of 253, 24.9 per cent below, where the two-by-two correction with one false-listing rate over all non-opioid deaths files 12.1 per cent and the certificates 6.2.",
-  "stump": "A strong analyst corrects every year with the 2025 review's sensitivity (0.875) and one false-listing rate over all non-opioid drug overdose deaths (0.333, the Rogan-Gladen two-by-two) and files a 12.1 per cent fall, the first year of phase two only, because the pooled rate keeps the false listings in step with a pool whose stimulant share rose from 0.40 to 0.71; the certified count, a net ratio and the predictive values file 6.2 to 7.3, rates conditioned on the certificate's drug pattern 9.6 to 13.2.",
+  "question_form": "which",
+  "driver": "The units a period adds are new administrative identifiers, but some identifiers continue an existing unit under a new number: the continuity is recorded only for the units that filed it, a shared location marks it and also marks new units that replaced a closed one, and only the members who move together from an identifier that closed the period before separate the two; counting new identifiers net of the filed links, or of location matches, misranks the groups a membership-flow test ranks right.",
+  "driver_concrete": "A county's 2026 establishment births are the new unemployment insurance accounts with first employment in 2026 that are not existing businesses continuing under a new account; continuity shows in the workers who arrive together from an account that stopped reporting the quarter before, not in the employer register's successor field (filed only by employers taking over a predecessor's experience rating) nor in a shared address (which also catches new businesses in vacated premises).",
+  "stump": "A strong analyst counts each county's new employer accounts with first employment in 2026, nets off the successors the employer register records and the accounts sharing an address with one that closed, and designates the wrong three counties, because an acquired chain re-registered its sites without filing for the predecessor's rate (the register misses them) and a county's re-let premises hold new businesses (the address match removes them); only the workers arriving together from an account that closed the quarter before separate a continuing business from a new one.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the death file (latest versions, voids, residents wherever they died, the drug poisoning underlying causes, the multiple-cause codes with and without the decimal point), reads Schedule B and the medical examiner's 2025 review correctly and corrects each year with the review's sensitivity and one specificity over all non-opioid drug overdose deaths files a 12.1 per cent fall and the first year of phase two only; the certified count, a net ratio and the predictive values file 6.2 to 7.3 per cent.",
-  "domain_test": "The deciding quantity is each year's resident opioid overdose deaths corrected for certificate misclassification, worked as official statistics measures a register's gross classification error against a gold-standard review (a full re-examination of one year) and solves each year's true classes from its register categories through the measured error matrix; with another field's nouns no register files units of a growing neighbouring class into the counted one, and the net-versus-gross distinction has nothing to act on.",
+  "analyst_test": "A strong analyst counts each county's new accounts with first employment in 2026, nets off the successors the employer register records and the accounts sharing an address with one that closed, and designates the wrong three counties: an acquired chain re-registered its stores without filing for the predecessor's rate, and a county's re-let premises hold new businesses that an address match removes.",
+  "domain_test": "The deciding quantity is each county's establishment birth rate as business demography defines it, a new establishment and not a continuing business under a new employer account, built from the UI account openings and quarterly wage records by the employment-flow continuity test official business statistics use; with hospital or school nouns there is no employer account a business re-registers under and no workforce that moves with it, so the task stops reading the same.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:establishment-continuity-from-worker-flows",
+  "layer1": [
+    "several sources for one picture: the employer register, the quarterly establishment reports and the wage records",
+    "vintages and revisions: industry codes on two NAICS vintages, amended quarterly reports",
+    "imperfect keys: employer account numbers, worksite addresses written several ways, hashed worker identifiers",
+    "documentation that has to be read: ownership codes, status codes, monthly employment against quarterly wages",
+    "genuine overlap: a worker on two accounts in one quarter (a job change), multi-worksite employers",
+    "real coverage: the 2026 fourth-quarter reports still arriving at the extract"
+  ],
   "mechanism_source": "design_note",
   "differentiation": {
-    "task121": "task121 sets each event's exposure against the same unit's exposure at the same clock hours on other days; task455 corrects a register's classification error in both directions with an error matrix measured by a full review, the false entries coming from a neighbouring class that grows: no exposure, no daily cycle, no matched comparison.",
-    "task456": "task456 estimates a latent share from three conflicting feeds with no gold standard; task455 has a gold-standard review of one year and one register, and the decisive move is where the register's false entries come from, not a latent class model.",
-    "task448": "task448 completes a register missing whole producers from a second list's capture by route; task455 corrects false entries in and misses from one register, the false entries scaled to a neighbouring class's visible entries, and the target is a percent change that no multiplicative correction moves.",
-    "task458": "task458 completes a condition count for members observed briefly against a selected full-year reference; task455 measures a certificate's two-way error on a full review and the trap is the pool the false entries come from, with no exposure window.",
-    "task230": "task230 measures a category count's net classification bias on the processed part of an output and carries it to a late part processed under a looser rule; task455 has no unprocessed part and no rule change: it measures a register's gross error in both directions on a full review of one year and solves every year's true classes through that error matrix, the decisive point being that the false entries scale with a growing neighbouring class, so the net bias is the wrong object.",
-    "task253": "task253 counts units under a line from noisy small-sample averages (shrinkage and posterior probabilities); its lineage adjusts survey nonresponse within classes; task455 has one complete register and a full review of one year, no sampling noise to separate and no nonresponse: the error is classification, measured directly.",
-    "task68": "task68 reads a like-for-like change on a matched panel of continuing units with the qualifying basis recovered from a corpus of settled dispositions; task455 reads a register's change between periods through a measured classification error matrix, with no panel, no succession linking and no corpus.",
-    "task446": "task446 backs a base rate out of a flagged share through a screen's two error rates, which carry across years while the yield moves; task455 starts where that ends: the two-by-two error rates do not carry here, because the false listings come only from stimulant deaths, a class whose share of the non-opioid deaths doubles, so the pooled false-listing rate moves with the mix, and only the error matrix by true class (opioid, stimulant, other) applied to each year's own certificate categories carries; task446's method is task455's second wrong rung."
+    "task82": "task82's re-root credits a checkout to the channel a record names through a join; task455 v2 decides whether a new identifier is a new unit at all, from the members who move with it out of an identifier that closed, against a filed link that covers only some continuations and a location match that also catches replacements."
   },
-  "lineage": [],
-  "notes": "Resumed 2026-10-15 from the paused draw of 2026-10-13 (the SROS x ETL pairing ban against task453 has lapsed). Personas from guard.py names --geo 'United States' --seed 455. org_family foundation_or_funder and forum trustees_or_governors: the regional recovery foundation that holds the county's opioid settlement share releases phase two of its grant when its trustees accept the phase-one outcome certification; forcing_event period_close: the phase-one grant period closed with 2026. context_artifact close_out_summary: the phase-one outcome certification. Decisive generator G6 (the composition of the non-opioid drug deaths shifts toward stimulants), G12 and G16 behind it.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "survey-research-official-statistics/census-register-administrative-data-quality/2",
-  "layer1": [
-    "several sources for one picture: the state death file extract, the medical examiner's 2025 review, the population estimates, the initiative's measure",
-    "vintages and revisions: original and amended death records (a cause pending investigation, later amended)",
-    "imperfect keys: residents dying in other counties and out of state, non-residents dying in the county, the review keyed by state file number, an out-of-state death the sending state sent twice under two of the office's numbers",
-    "documentation that has to be read: ICD-10 underlying and record-axis multiple-cause codes, manner of death, resident and occurrence geography, ICD-10-CM poisoning against adverse-effect codes in the EMS impressions",
-    "genuine overlap: the occurrence county's and the residence county's copies of one death; a fire crew's and the ambulance's reports on one patient, the fire districts' ages by year of birth",
-    "real coverage: the 2026 file closed at the extract date with amendments arriving"
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent 2026-10-15 at stage 4: the leak readers missed the call twice (4.5 and 8.4 per cent, the first year only) but the one re-judge after the workbook asks' FIX_NOW returned NOT_DETERMINISTIC, SEND_BACK on the graded estimates: which drugs and certificate codes make the stimulant class behind the coroner's false opioid listings was never filed, and reading the certificate's stimulant as T43.6 alone (184 against 247, 25.5 per cent) or keeping cocaine apart (189, 25.0; 21.8 or 26.7 per cent with cocaine among the other drugs) moves the 2026 count, the baseline and the change, every variant releasing phase two.",
+      "domain": "survey-research-official-statistics",
+      "subdomain": "census-register-administrative-data-quality",
+      "objective": "etl",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G12",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "go_hold_or_stop",
+      "stump_strategy": "composition_mix",
+      "layer2_pattern": "survey-research-official-statistics/census-register-administrative-data-quality/2",
+      "driver": "A register's count of one class is wrong in both directions: it misses some of the class and files in it some units of one neighbouring class only, a class that grows while the counted one shrinks; a full review of one period measures each true class's chance of being filed in each register category, so each period's count is solved from its own register categories, the false entries scaled by the neighbouring class's own visible entries; any multiplicative correction leaves the period-on-period change untouched, and a two-way error rate pooled over every unit outside the class misplaces the false entries as the neighbouring class grows.",
+      "driver_concrete": "The coroner's certificates name no drug on one overdose death in eight (an opioid death so certified is missed) and list fentanyl found but not contributing on half of the methamphetamine and cocaine deaths and on none of the other drug deaths; stimulant deaths grew from about 56 in 2021 to about 149 in 2026 while other drug deaths fell from about 83 to 61. The medical examiner's full review of 2025 gives each class's chance of each certificate category; solving each year's classes from its three certificate categories puts 2026 at 190 against a 2021 to 2023 average of 253, 24.9 per cent below, where the two-by-two correction with one false-listing rate over all non-opioid deaths files 12.1 per cent and the certificates 6.2."
+    }
   ],
-  "registered": "2026-10-15T04:30:59Z"
+  "notes": "",
+  "registered": "2026-10-15T07:33:45Z"
 }

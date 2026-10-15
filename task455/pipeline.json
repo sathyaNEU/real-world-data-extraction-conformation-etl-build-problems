@@ -1,39 +1,39 @@
 {
   "task": "task455",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "DESIGN",
   "domain": "survey-research-official-statistics",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-15",
-  "stump": "The default path corrects every year with the 2025 review's sensitivity (0.875) and one false-listing rate over all non-opioid overdose deaths (0.333, Rogan-Gladen) and files a 12.1 per cent fall, the first year of phase two only, because the false listings are stimulant deaths with incidental fentanyl and the stimulant share of the non-opioid deaths rose from 0.40 to 0.71; solved by the medical examiner's drug class from each year's three certificate categories, 2026 is 190 against a 2021 to 2023 average of 253, 24.9 per cent below, and phase two is released.",
-  "architecture": 1,
+  "stump": "The default path counts each county's new employer accounts with first employment in 2026, net of the predecessors the register records, and designates Caldmere, Eskwell and Quarrin, because an acquired chain re-registered its Caldmere sites without filing for the predecessor's rate; counted by the workforces arriving together from accounts that stopped reporting the quarter before, the designation is Dunrath, Eskwell and Quarrin.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-15"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (sweep 3 clause-number coincidence, sweep 4 Schedule B vocabulary; answered in the note)",
-    "reader": "run 1: the main call held (4.5 per cent, first year only); both asks solved and realism tells listed, all fixed in the generator; run 2 running on the rebuilt pack (/tmp/leakread-task455-1792048034)"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (overuse.objective, overuse.gate_g)",
-    "nearest": "0.07 task98 lineage, 0.06 task445",
-    "note": "registered 2026-10-15: guard WARN overuse.objective and overuse.gate_g only; task230, task253, task68 differentiated",
-    "surface": "clean"
+    "heart": "",
+    "nearest": "0.06 task87 lineage, 0.06 task98 lineage",
+    "note": "architecture 2 registered 2026-10-15: guard WARN three_rules.strategy_risk, overuse.org_family, overuse.objective; task82 v2 differentiated",
+    "surface": ""
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC (first pass: workbook asks, 'added since' gross or net and EMS encounters with no home county)",
-    "disposition": "FIX_NOW, fixed in the generator; the one re-judge running",
-    "report": "task455/determinism_check_report.md (first pass)",
-    "brief": "being prepared by determinism-judge for the re-judge"
+    "verdict": "",
+    "disposition": "",
+    "report": "",
+    "brief": ""
   },
   "returned": [],
-  "resume": "stage 4 re-run, paused 2026-10-15 while the isolated threads run: collect leak reader run 2 (/tmp/leakread-task455-1792048034/reader_answers.md) and the re-judge thread's verdict (/tmp/determinism-check-task455-rejudge/verdict.md, brief beside it); re-invoke determinism-judge to write task455/determinism_check_report.md from the verdict; fix any finding in the generator and rebuild; then ship (ledger row, card, board, wave 4 in the SHIPPED commit) and start task460. If the /tmp outputs are gone, re-run both from a fresh unzip of target.zip.",
+  "resume": "stage 2 design for architecture 2: readability screen, semantic fork table, ladder with built magnitudes, closure table, literal reader, oracles, the asks (supplemental-stumping), prompt.txt; then the generator (UI employer register, quarterly establishment reports, wage records, program guideline) and stage 3",
   "approved": null,
   "delivered": null,
   "portal": null,
-  "source_note": "seed ET12 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept; the ICD-9 to ICD-10 comparability bridge is not used (a documented-break bridge, task453's family)"
+  "source_note": "re-root of ET12's slot: architecture 1 kept the seed's world (a health department certifying a fall in a cause of death) and was spent on the re-judge's SEND_BACK; architecture 2 draws a new world (business demography from the UI employer register)"
 }
