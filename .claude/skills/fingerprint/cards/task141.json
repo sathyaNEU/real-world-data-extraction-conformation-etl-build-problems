@@ -11,8 +11,8 @@
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "index_or_score",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Scores 1 to 3: the 2027 presumptive release tier's top score is Pretrial Assessment Scale new-criminal-activity score 3 (score 4 about 76 per cent with every eligible defendant released, under the 85 per cent floor; 87.9 per cent among the released)",
+  "answer_source": "submission.md block 1; presumptive_release_tier_2027.docx",
   "gap": [
     "population",
     "time"
@@ -37,7 +37,7 @@
   "scoring_unit": "per episode",
   "spine": {
     "file": "first_appearances_2024-03-04_2026-09-30.csv",
-    "rows": 0,
+    "rows": 86923,
     "entity": "one defendant's first appearance before a magistrate after an arrest",
     "grain": "first appearance",
     "source": "constructed (the court case management system's first-appearance export)"
@@ -68,15 +68,15 @@
   "deliverables": [
     "presumptive_release_tier_2027.docx",
     "presumptive_release_tier_2027.xlsx",
-    "held_bed_days_by_score.png"
+    "missed_court_dates_by_fta_score.png"
   ],
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "Outcomes are recorded only for the units a decision-maker let through, and the decision-makers, who sit by rota and so meet like caseloads, let through very different shares; a rule that lets every unit at a level through has to be priced at the rate the whole level would show, read from how outcomes per unit rise with each decision-maker's let-through share out to all let through, while any rate, model or reweighting fitted on the units already let through keeps the decision-makers' own selection and understates it.",
-  "driver_concrete": "Dorrance County's magistrates hold at first appearance the eligible defendants they judge riskiest from what the Pretrial Assessment Scale cannot see, and the magistrates on the duty rota hold from about 2 to 30 per cent of score-4 defendants, so the presumptive tier's projected safety rate at each score is read from the new-offence arrests per eligible first appearance each magistrate's caseload shows against the share that magistrate released, carried out to every eligible defendant released: score 4 falls below the policy's 85 per cent floor, while the score-4 defendants magistrates released show about 87 per cent.",
-  "stump": "A competent solver links the screens to the first appearances, keeps the eligible charges, counts a new-offence arrest within 365 days of release or before disposition, takes each score's safety rate among the eligible defendants magistrates released (or fits a model on them) and files scores 1 to 4 (score 4 at about 87 per cent); the step that lands it there is reading the released defendants as the tier's population, when magistrates held the score-4 defendants they judged riskiest and the tier releases them all: read from the magistrates' differing release shares, score 4 falls to about 81 per cent and the tier is scores 1 to 3.",
+  "driver_concrete": "Dorrance County's magistrates hold at first appearance the eligible defendants they judge riskiest from what the Pretrial Assessment Scale cannot see, and the magistrates on the duty rota hold from about 1 to 36 per cent of score-4 defendants, so the presumptive tier's projected safety rate at each score is read from the new-offence arrests per eligible first appearance each magistrate's caseload shows against the share that magistrate released, carried out to every eligible defendant released: score 4 falls to about 76 per cent, below the policy's 85 per cent floor, while the score-4 defendants magistrates released show 87.9 per cent.",
+  "stump": "A competent solver links the screens to the first appearances, keeps the eligible charges, counts a new-offence arrest within 365 days of release or before disposition, takes each score's safety rate among the eligible defendants magistrates released (or fits a model on them) and files scores 1 to 4 (score 4 at 87.9 per cent); the step that lands it there is reading the released defendants as the tier's population, when magistrates held 26 per cent of eligible score-4 defendants, the ones they judged riskiest, and the tier releases them all: read from the magistrates' differing release shares, score 4 falls to about 76 per cent and the tier is scores 1 to 3.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who links every file correctly, applies the policy's eligibility rules and the 365-day window and computes each score's safety rate among the eligible defendants magistrates released (or fits a logistic model with the defendants' charges and records on them, or reweights them to the eligible population) files scores 1 to 4, score 4 at about 87 per cent; only reading each score's rate for every eligible defendant from the magistrates' differing release shares drops score 4 below 85 per cent and files scores 1 to 3.",
+  "analyst_test": "A strong analyst who links every file correctly, applies the policy's eligibility rules and the 365-day window and computes each score's safety rate among the eligible defendants magistrates released (or fits a logistic model with the defendants' charges and records on them, or reweights them to the eligible population) files scores 1 to 4, score 4 at 87.9 per cent; only reading each score's rate for every eligible defendant from the magistrates' differing release shares drops score 4 below 85 per cent and files scores 1 to 3.",
   "domain_test": "The deciding quantity is the pretrial new-offence rate each score's eligible defendants would show if every one were released, which pretrial research estimates from the release shares and outcomes of magistrates assigned by rota (the selective-labels problem of risk assessment: outcomes exist only for the released); with another field's nouns there is no first appearance, no pretrial window to disposition and no duty rota of magistrates, and replacing the leniency estimate with the released defendants' own rate files a different tier.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "criminology-justice/recidivism-risk-assessment/5",

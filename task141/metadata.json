@@ -1,0 +1,223 @@
+{
+  "task": "task141",
+  "title": "The highest Pretrial Assessment Scale score Dorrance County's 2027 bail policy can release on a written promise at first appearance under its 85 per cent safety floor",
+  "domain": "Criminology & Justice",
+  "client_domain": "Criminology & Justice",
+  "subdomain": "recidivism-risk-assessment (pretrial risk assessment: each score's new-offence rate for every eligible defendant a presumptive release tier would release, estimated past the selective labels of the outcome record)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "04: setting one dial (the tier's top score, scores 1 to 6 the settings), with three 2025-26 tables (bed-days in custody and monitoring days by new-criminal-activity score, missed court dates by failure-to-appear score) and one chart",
+  "as_of": "2026-10-14",
+  "deliverables": [
+    "presumptive_release_tier_2027.docx",
+    "presumptive_release_tier_2027.xlsx",
+    "missed_court_dates_by_fta_score.png"
+  ],
+  "distractor_files": [
+    "cjac_jail_population_report_2025.pdf",
+    "dorrance_county_reported_crime_2019-2025.xlsx"
+  ],
+  "input_gates": {
+    "files": 20,
+    "formats": [
+      "csv",
+      "docx",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "state_arrest_extract_2026-10-02.csv",
+    "largest_file_rows": 294770
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task141/generator/build.py (seeded, deterministic) around a fictional North Carolina county (Dorrance County, county seat Garrison), its courts, magistrates, Pretrial Services, Sheriff's Office and people, and a fictional neighbouring county (Halsey County); no real organisation, person or system is depicted. Offense descriptions and statute citations follow the North Carolina General Statutes in form only.",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-15",
+  "generator": "task141/generator/build.py",
+  "files": [
+    {
+      "path": "README_pretrial_extracts.txt",
+      "format": "txt",
+      "bytes": 5193,
+      "rows": null,
+      "source": "Constructed: Pretrial Services' note on the extracts",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bail_policy_revision_2027_draft.docx",
+      "format": "docx",
+      "bytes": 38332,
+      "rows": null,
+      "source": "Constructed: Local bail policy revision for 2027, draft for consultation of 6 October 2026 (Senior Resident Superior Court Judge)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "cjac_jail_population_report_2025.pdf",
+      "format": "pdf",
+      "bytes": 35216,
+      "rows": null,
+      "source": "Constructed: Criminal Justice Advisory Council jail population report for 2025",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "court_case_index_2021-10-01_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 17256237,
+      "rows": 200516,
+      "source": "Constructed: Criminal case index with dispositions, cases filed from 1 October 2021",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "court_code_list.csv",
+      "format": "csv",
+      "bytes": 996,
+      "rows": 22,
+      "source": "Constructed: Court codes: conditions, dispositions and events",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "court_events_2025-10-01_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 6872611,
+      "rows": 170592,
+      "source": "Constructed: Court events, 1 October 2025 to 30 September 2026",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dorrance_county_reported_crime_2019-2025.xlsx",
+      "format": "xlsx",
+      "bytes": 7119,
+      "rows": null,
+      "source": "Constructed: Reported offenses by Dorrance County agencies, 2019 to 2025",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "first_appearance_charges_2024-03-04_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 8104552,
+      "rows": 135818,
+      "source": "Constructed: The charges at those appearances from 4 March 2024, with their case numbers",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "first_appearances_2021-10-01_2024-03-03.csv",
+      "format": "csv",
+      "bytes": 8073765,
+      "rows": 74163,
+      "source": "Constructed: Initial appearances on new charges from the clerk's legacy system, 1 October 2021 to 3 March 2024",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "first_appearances_2024-03-04_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 11580608,
+      "rows": 86923,
+      "source": "Constructed: Initial appearances on new charges from the case management system, 4 March 2024 to 30 September 2026",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "halsey_county_board_bills_2025-11_2026-09.xlsx",
+      "format": "xlsx",
+      "bytes": 193238,
+      "rows": null,
+      "source": "Constructed: Halsey County inmate housing invoices to the Sheriff's Office, November 2025 to September 2026",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "jail_bookings_2021-10-01_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 20577832,
+      "rows": 194461,
+      "source": "Constructed: Detention center bookings from the Sheriff's Office jail system, 1 October 2021 to 30 September 2026",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "jail_code_list.csv",
+      "format": "csv",
+      "bytes": 977,
+      "rows": 16,
+      "source": "Constructed: Jail booking types, release types and facilities",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "local_bail_policy_2024.pdf",
+      "format": "pdf",
+      "bytes": 100134,
+      "rows": null,
+      "source": "Constructed: Local bail policy for pretrial release, effective 1 July 2024",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "magistrate_roster.xlsx",
+      "format": "xlsx",
+      "bytes": 8847,
+      "rows": null,
+      "source": "Constructed: Magistrate roster and duty shifts, 2021 to 2026 (chief magistrate)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "offense_code_crosswalk.xlsx",
+      "format": "xlsx",
+      "bytes": 8634,
+      "rows": null,
+      "source": "Constructed: Offense code crosswalk, legacy to new system (clerk)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pas_scoring_guide_v2.pdf",
+      "format": "pdf",
+      "bytes": 36364,
+      "rows": null,
+      "source": "Constructed: Pretrial Assessment Scale scoring guide, version 2 (Pretrial Services)",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pas_screens_2021-10-01_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 16301839,
+      "rows": 155649,
+      "source": "Constructed: Pretrial Assessment Scale screens, 1 October 2021 to 30 September 2026",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sentry_point_invoice_lines_2025-10_2026-09.csv",
+      "format": "csv",
+      "bytes": 516388,
+      "rows": 6154,
+      "source": "Constructed: Electronic monitoring vendor invoice lines, October 2025 to September 2026",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "state_arrest_extract_2026-10-02.csv",
+      "format": "csv",
+      "bytes": 37310692,
+      "rows": 294770,
+      "source": "Constructed: State arrest repository extract for every defendant in the first-appearance exports, run 2 October 2026",
+      "date": "2026-10-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
