@@ -1,0 +1,101 @@
+{
+  "task": "task145",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "wave 3, new; numbered from seed FC16 (express-carrier customs brokerage), world, decision and quantity only",
+  "domain": "economics-econometrics",
+  "subdomain": "forecasting-forecast-evaluation",
+  "client_domain": "economics-econometrics",
+  "niche": "an express carrier's annual broker establishment review in Canada: where six funded customs broker posts go across five import gateway brokerage desks for 2027, or are held, on each desk's forecast 2027 formal entries per broker post, when a shipment needs a broker's formal entry only above CAD 3,300 once its invoice value is converted at the customs rate and the network plan sets 2027's exchange rates",
+  "objective": "forecasting",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the brokerage workforce planning lead in the carrier's Canadian customs brokerage department, who prepares the annual broker establishment review",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "highvalue_check_2025Q4.csv, highvalue_check_2026Q1.csv, highvalue_check_2026Q2.csv, highvalue_check_2026Q3.csv",
+    "rows": 250000,
+    "entity": "one inbound international shipment released at a gateway with a value for duty of CAD 2,500 or more, with its declared value in its invoice currency, the customs rate of its date and the route the clearance system gave it",
+    "grain": "shipment (waybill)",
+    "source": "constructed (the clearance system's quarterly high-value check extracts, two layouts)"
+  },
+  "forum": "executive_team",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "logistics_or_3pl",
+  "world": {
+    "geography": "Canada (five import gateways at Mississauga, Dorval, Richmond, Calgary and Winnipeg; the express carrier, its contract broker, people, systems and data are fictional)",
+    "currency": "CAD",
+    "org_type": "an express carrier's Canadian customs brokerage department and its five gateway brokerage desks",
+    "invented_names": [
+      "Larchwood Express Canada",
+      "Brandmoor Customs Services"
+    ],
+    "people": [
+      "Laura Parks",
+      "Robin Larson",
+      "Wanda Armstrong",
+      "Brian Stewart",
+      "Clémence Sirois",
+      "Theresa Rowe"
+    ]
+  },
+  "deliverables": [
+    "broker_posts_2027.xlsx",
+    "establishment_review_2027.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The forward count of units above a fixed line is set by where each unit's value, fixed in its own denomination, lands once converted at the forward period's factors; the history's count, its share of all units and any sensitivity fitted to the history carry only the factors the history saw, so forward factors that carry a cluster of values across the line in a direction no past period reached raise one candidate's count and lower the others', and only re-applying the line to each unit's own value at the forward factors gets the count.",
+  "driver_concrete": "Each gateway's 2027 formal entries are its shipments of the twelve months to September 2026 re-routed at the network plan's 2027 planning rates (each shipment's value for duty in its invoice currency times the plan's rate for that currency against the CAD 3,300 line, OGD-regulated shipments formal whatever their value) and scaled to the plan's volumes, so Dorval gains about an eighth (European goods priced near EUR 2,000 cross the line at the plan's euro rate of 1.68, a level no month since January 2021 reached) while Mississauga, Richmond and Winnipeg lose about an eighth (US price points just above the line fall under it at the plan's US dollar rate of 1.34).",
+  "stump": "Carrying each gateway's formal entries per inbound shipment of the twelve months to September 2026 onto the 2027 network plan places one post at each of the five gateways and holds one; the step that lands it there is carrying the base year's routing into a plan year whose planning rates move the CAD 3,300 line in every invoice currency.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the staffing standard, the clearance manual and the network plan correctly forecasts each gateway's 2027 formal entries as the plan's shipments times its formal entries per shipment over the twelve months to September 2026 and places one post at each of the five gateways with one held; the entries' own trend files the same placement, an exchange-rate elasticity fitted on the monthly history and re-routing at the US rate alone each hold more posts with one at Dorval, and only re-routing every shipment at its own currency's planning rate, OGD shipments kept formal, files two at Dorval, one at Calgary and three held.",
+  "domain_test": "The deciding quantity is each gateway's 2027 formal entries, which trade economics forecasts conditionally on the plan year's exchange rates as the mass of declared values that will sit above a line fixed in Canadian dollars once each value, set in the currency it is invoiced in, is converted at the year's rate; with another field's nouns (a hospital's admissions, a utility's megawatt-hours) there is no invoice currency, no conversion and no nominal line for a price point to cross, so the forecast that decides the call has nothing to stand on.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:formal-entry-count-re-routed-at-the-plan-years-exchange-rates",
+  "layer1": [
+    "the clearance system's high-value check extracts in four quarterly files, the layout changed by a February 2026 release (column names, date formats, the rate column's label)",
+    "release times stamped in UTC beside each gateway's local release date",
+    "the monthly gateway report in two layouts: the legacy brokerage system to September 2024 counting formal entries by accounting date, the new system from October 2024 by release date",
+    "gateways keyed by airport code in one file, by desk name in another and by region label in the network plan",
+    "the network plan's volumes in thousands of shipments to one decimal",
+    "shipments invoiced in Canadian dollars beside US dollars, euros, sterling, renminbi and yen, each row with the customs rate of its date",
+    "other-government-department program codes on the register, blank or NONE where none applies",
+    "shipments amended after release appearing again in the next quarter's extract with the corrected value",
+    "time and attendance in two systems (legacy to 31 October 2025, new from 1 November 2025), employee numbers and pay codes in two schemes, the migration carrying the last open week of October into the new system",
+    "HR assignment history in effective-dated rows for brokers who moved between desks",
+    "call-back lines carrying the paid minimum beside the punch times",
+    "the contract broker's monthly invoices dated in the month after the entries they bill, its portal detail repeating each invoice's desk-minimum adjustment on every line, and a disputed invoice re-issued with its credit memo posted after the year end"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task127": "task127 v3 restates a development triangle's history at the latest resolution shares before carrying its age-to-age ratios; here nothing develops by age: a fixed nominal line is re-applied to each shipment's own invoice-currency value at the plan year's exchange rates, a conversion the history never ran at.",
+    "task138": "task138 rebuilds each unit's starting store from its replenishment record before replaying past driver traces; here no state carries forward and nothing is replayed: the plan year's exchange rates move a fixed Canadian-dollar line across each shipment's invoice value.",
+    "task446": "task446 backs a moved base rate out through a screen's two error rates (Bayes' rule on a classifier); here there is no classifier and no base rate: the count above a nominal line is the upper tail of declared values held in their invoice currencies and converted at the plan year's rates, and the decisive shift is price points crossing the line at a euro rate the history never reached."
+  },
+  "lineage": [],
+  "notes": "stump_strategy forecast_method_backtest (stumping strategies F6): the quantity the history shows (formal entries, their share of shipments, a fitted elasticity) is not the invariant; the invariant is each shipment's value in the currency it is invoiced in, and the plan year's rates differ, so the natural fit fails forward. No back-test organ ships: the method is forced by the design (the routing rule converts each value at the rate of its date, the plan sets 2027's rates). Gap time decisive (the plan year's rates against the history's), population second (OGD-regulated shipments are formal whatever their value, so a value-only re-routing drops them). Furniture: forum executive_team (the Canada leadership team approves the establishment on 22 October 2026), forcing event vote_or_meeting (that establishment review), organisation family logistics_or_3pl (an express carrier).",
+  "registered": "2026-10-15T10:17:48Z"
+}
