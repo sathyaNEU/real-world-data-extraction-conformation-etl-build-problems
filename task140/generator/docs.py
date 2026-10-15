@@ -176,8 +176,8 @@ def write_memo(path, W):
         "Budgets and rates. Technology Controlling's note of 27 November holds every technology cost centre's monthly "
         "budgets for January to March 2027 at their December 2026 levels until the 2027 plan is approved. The rate "
         "card for reserved cores from 1 January 2027 was published on 1 December.",
-        "Platform services. Compute Operations prepares the cell-ctl and cell-store reservations from the cell "
-        "monitoring export, which will be pulled on the morning of 14 December.",
+        "Platform services. Compute Operations prepares the cell-ctl and cell-store reservations. The cell monitoring "
+        "export for the review will be pulled on the morning of 14 December.",
         "Batch. The guarantee goes to the six batch training teams after the review. ML Platform's note on batch "
         "demand for the first half of 2027 is in the papers for information.",
         K.PEOPLE["head"],
@@ -264,7 +264,7 @@ def write_budgets(path, W):
               "Sep 2026", "Oct 2026", "Nov 2026", "Dec 2026", "Jan 2027", "Feb 2027", "Mar 2027"]
     _title_rows(ws, "Technology compute budgets by cost centre, monthly, EUR",
                 "Technology Controlling. 2026 as revised in April and October 2026; January to March 2027 held at "
-                "December 2026 under the freeze note of 27 November 2026 (see the Freeze sheet).",
+                "December 2026 (budget freeze of 27 November 2026, Freeze sheet).",
                 "One line per cost centre and budget line. Budget lines for reserved cores are per cell.")
     hr = _head(ws, ["CC", "Cost centre", "Budget line"] + months, [7, 26, 28] + [11] * 15)
     lines = []
@@ -284,17 +284,17 @@ def write_budgets(path, W):
             ws.cell(row=ws.max_row, column=c).number_format = "#,##0"
     ws.freeze_panes = ws.cell(row=hr + 1, column=4)
     ws2 = wb.create_sheet("Freeze")
-    _title_rows(ws2, "Note on 2027 budgets", "Technology Controlling, %s, 27 November 2026." % K.PEOPLE["finance"])
-    for t in ["The 2027 technology plan goes to the management committee in January. Until it is approved, every "
-              "technology cost centre's monthly budgets for January, February and March 2027 are held at their "
-              "December 2026 levels, line by line. The 2027 columns of the budget workbook carry those levels.",
-              "Requests for capacity in the first quarter of 2027 should be sized against these budgets at the 2027 "
-              "rate card, which we will publish on 1 December.",
-              "Lines will be revised once the plan is approved; revisions take effect from the month after approval."]:
-        ws2.append([t])
-        ws2.cell(row=ws2.max_row, column=1).alignment = Alignment(wrap_text=True, vertical="top")
-        ws2.row_dimensions[ws2.max_row].height = 46
-    ws2.column_dimensions["A"].width = 110
+    _title_rows(ws2, "Budget freeze, January to March 2027", "Technology Controlling.")
+    _head(ws2, ["Item", "Record"], [20, 92])
+    for k, v in (("Freeze", "TC-FRZ-2027-01"),
+                 ("Entered", "27 November 2026, %s" % K.PEOPLE["finance"]),
+                 ("Cost centres", "All technology cost centres, every budget line"),
+                 ("Months held", "January, February and March 2027"),
+                 ("Held at", "December 2026 level, line by line (columns Jan 2027 to Mar 2027 of Compute budgets)"),
+                 ("Reason", "2027 technology plan not yet approved (management committee, January 2027)"),
+                 ("Lifted", "On approval of the plan; revised lines apply from the month after approval")):
+        ws2.append([k, v])
+        ws2.cell(row=ws2.max_row, column=2).alignment = Alignment(wrap_text=True, vertical="top")
     wb.save(path)
 
 
@@ -322,6 +322,7 @@ def q3_report_figures(W):
     b = ser["batch-train"]
     out["batch_hours_99"] = int(sum(1 for h in hrs if b[h] >= 0.99 * W.guarantee[q]))
     out["hours"] = len(hrs)
+    out["hours_q"] = h1 - h0
     return out
 
 
@@ -330,9 +331,9 @@ def write_capreport(path, W):
     q = "2026Q3"
     s = [Paragraph("%s  |  Compute Operations, MAD1" % K.COMPANY, H1S),
          Paragraph("C-22 capacity report, 2026 Q3", H1),
-         Paragraph("1 July to 30 September 2026 (UTC). Version 1.0, issued 6 October 2026 by %s. Reports the quarter's "
-                   "reservations as approved at the review of 16 June 2026 and the cell's use against them; it does not "
-                   "carry mid-quarter changes to firm reservations." % K.PEOPLE["requester"], H1S)]
+         Paragraph("1 July to 30 September 2026 (UTC). Version 1.0, issued 6 October 2026 by %s. Reservations as "
+                   "approved at the review of 16 June 2026, and the cell's use against them." % K.PEOPLE["requester"],
+                   H1S)]
     s.append(Paragraph("1 Reservable cores and reservations", H2))
     s.append(Paragraph("C-22 started the quarter with %s machines in service (%d racks) and ended it with %s, three "
                        "racks of Lena R4-96 having gone into service on 14 July, 25 August and 15 September. At the "
@@ -347,9 +348,8 @@ def write_capreport(path, W):
             ["Reservable cores", n0(f["reservable"])]]
     s.append(_table(rows, [7.5 * cm, 3.2 * cm]))
     s.append(Paragraph("2 Use at the busiest hours", H2))
-    s.append(Paragraph("Use is each tenant's average cores in use over an hour in the cell monitoring export. The "
-                       "export has no rows for 19 August from 01:00 to 07:59 UTC (collector outage), so the quarter has "
-                       "%s hours of use on record." % n0(f["hours"]), BODY))
+    s.append(Paragraph("Use is each tenant's average cores in use over an hour, from the cell monitoring export, which "
+                       "holds %s of the quarter's %s hours." % (n0(f["hours"]), n0(f["hours_q"])), BODY))
     rows = [["", "Busiest hour (UTC)", "Cores in use"]]
     for k, lab in (("firm", "Firm tenants together"), ("cell-ctl", "cell-ctl"), ("cell-store", "cell-store"),
                    ("batch-train", "batch-train"), ("cell", "Whole cell")):
@@ -526,7 +526,8 @@ def write_chargeback(path):
                 "card's rate for reserved cores at the site in force on that day, divided by the number of days in the "
                 "month. The month's charge is the sum over its days."),
         ("2.2", "The cores a tenant holds are its reservation for the quarter as approved at the cell's capacity review, "
-                "with any release or grant made during the quarter through the cell's capacity desk."),
+                "with any release or grant made during the quarter through the cell's capacity desk. A release or grant "
+                "counts from the first 00:00 UTC after the cell's quota service has applied it."),
         ("2.3", "Cores in use above a tenant's reservation are not charged; reserved cores left unused are charged.")])
     sec("3 Rates", [
         ("3.1", "Technology Controlling publishes the rate card. A rate applies from its effective date until the next "
@@ -549,10 +550,9 @@ DICT = [
     (K.USAGE, "cell", "Cell id."),
     (K.USAGE, "tenant", "Tenant id, as in the tenant directory."),
     (K.USAGE, "cores_in_use", "The tenant's average cores in use over the hour."),
-    (K.CELLHOURLY, "machines_installed", "Machines installed in the cell (in service, or out for repair or "
-                                         "maintenance), averaged over the hour."),
-    (K.CELLHOURLY, "machines_in_service", "Machines registered with the cell's scheduler and schedulable, averaged over "
-                                          "the hour."),
+    (K.CELLHOURLY, "machines_installed", "Machines installed in the cell, hourly average (in service or out for repair "
+                                         "or maintenance)."),
+    (K.CELLHOURLY, "machines_in_service", "Schedulable machines registered with the cell's scheduler, hourly average."),
     (K.LEDGER, "reserved_cores", "The tenant's reservation for the quarter as approved at the capacity review; for "
                                  "batch-train, the batch guarantee."),
     (K.LEDGER, "approved_on", "Date of the review."),
@@ -563,31 +563,26 @@ DICT = [
                                    "resource and site."),
     (K.DIRECTORY, "class", "firm, platform or batch (CS-3, 1.3)."),
     (K.DIRECTORY, "cost_centre", "The cost centre the tenant's budget and charges sit in."),
-    (K.RUNS, "job_id", "The training job. A job's runs are its first run and each resumption of it."),
+    (K.RUNS, "job_id", "Training job; its runs are the first run and each resumption."),
     (K.RUNS, "cores", "Cores the run held when it started."),
     (K.RUNS, "ended_utc", "When the run ended; blank if it was still running when the snapshot was taken (1 October "
                           "2026 00:00 UTC)."),
-    (K.RUNS, "end_state", "COMPLETED, PREEMPTED (stopped by the scheduler before completing) or RUNNING."),
+    (K.RUNS, "end_state", "COMPLETED, PREEMPTED or RUNNING."),
     (K.RUNS, "resumed_from", "For a run that resumed a preempted run of the same job: that run."),
     (K.RUNS, "restore_checkpoint", "For a run that resumed a preempted run: the checkpoint it restored from."),
     (K.CHECKPOINTS, "run_id", "The run that wrote the checkpoint."),
     (K.CHECKPOINTS, "step", "Training step whose state the checkpoint holds."),
-    (K.CHECKPOINTS, "write_started_utc", "When the trainer took the state at step and began writing it. Training "
-                                         "carries on while the checkpoint is written."),
-    (K.CHECKPOINTS, "committed_utc", "When the write completed and the checkpoint became readable; blank if the write "
-                                     "never completed."),
+    (K.CHECKPOINTS, "write_started_utc", "When the state at step was snapshotted and the write began; checkpoint "
+                                         "writes run in the background."),
+    (K.CHECKPOINTS, "committed_utc", "When the write completed; blank if it did not complete."),
     (K.RESIZES, "at_utc", "When the resize took effect."),
     (K.RESIZES, "cores_after", "Cores held by the run from at_utc."),
     (K.MEVENTS, "machine_id", "The cluster manager's id for the machine."),
-    (K.MEVENTS, "event", "REMOVED: drained and taken out of the cell's pool. REGISTERED: registered in the cell's pool "
-                         "and schedulable."),
-    (K.MEVENTS, "cause", "For REMOVED: hw_fault (a hardware fault found by the fleet health checks) or maintenance "
-                         "(planned work under a change ticket)."),
+    (K.MEVENTS, "event", "REMOVED (drained out of the cell's pool) or REGISTERED (in the pool and schedulable)."),
+    (K.MEVENTS, "cause", "For REMOVED: hw_fault or maintenance."),
     (K.MEVENTS, "rack", "Rack position of the machine."),
-    (K.INVENTORY, "Status", "in service; retired (taken out of service for good); staged (racked and in burn-in, not "
-                            "yet in service)."),
-    (K.INVENTORY, "Cluster ids", "Each machine id under which the asset has been registered, from the time of "
-                                 "registration."),
+    (K.INVENTORY, "Status", "in service, retired or staged (racked, in burn-in)."),
+    (K.INVENTORY, "Cluster ids", "Machine ids registered for the asset, with registration times (UTC)."),
     (K.QCHANGES, "delta_cores", "Change to the tenant's reserved cores: negative a release, positive a grant."),
     (K.QCHANGES, "requested_utc", "When the change was requested in the quota tool (UTC)."),
     (K.QRUNS, "run_started_utc", "When the quota service's reconciliation run started (UTC)."),
@@ -716,8 +711,7 @@ def write_batch_demand(path, W):
     s.append(Paragraph("Planned training that does not fit the guarantee queues. Last quarter the median batch queue "
                        "wait in C-22 was 4.8 hours; teams have asked us to keep it under 6 hours for the larger "
                        "models.", BODY))
-    s.append(Paragraph("Figures are the teams' plans as sent, not a reservation request: the batch tier's cores come "
-                       "from the guarantee set at each review under CS-3.", NOTE))
+    s.append(Paragraph("Figures are the teams' plans as sent in November.", NOTE))
     foot = _footer("%s Internal." % K.COMPANY, "Batch demand H1 2027")
     doc = _doc(path, "Batch training demand H1 2027", K.PEOPLE["batch"])
     doc.build(s, onFirstPage=foot, onLaterPages=foot)

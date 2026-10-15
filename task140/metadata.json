@@ -51,7 +51,7 @@
     {
       "path": "README_capacity_review_files.txt",
       "format": "txt",
-      "bytes": 3270,
+      "bytes": 3272,
       "rows": null,
       "source": "Constructed: Files note: each file, what it is and where it came from",
       "date": "2026-12-14",
@@ -87,7 +87,7 @@
     {
       "path": "batch_training_demand_2027H1.pdf",
       "format": "pdf",
-      "bytes": 52054,
+      "bytes": 51997,
       "rows": null,
       "source": "Constructed: ML Platform's note on batch training demand for January to June 2027",
       "date": "2026-12-14",
@@ -96,7 +96,7 @@
     {
       "path": "c22_capacity_report_2026Q3.pdf",
       "format": "pdf",
-      "bytes": 52421,
+      "bytes": 52293,
       "rows": null,
       "source": "Constructed: C-22 capacity report for 2026 Q3",
       "date": "2026-12-14",
@@ -150,7 +150,7 @@
     {
       "path": "capacity_memo_2027Q1.docx",
       "format": "docx",
-      "bytes": 37488,
+      "bytes": 37486,
       "rows": null,
       "source": "Constructed: Capacity memo for the C-22 review of 2027 Q1 (9 December 2026)",
       "date": "2026-12-14",
@@ -168,7 +168,7 @@
     {
       "path": "chargeback_policy_2026.pdf",
       "format": "pdf",
-      "bytes": 35227,
+      "bytes": 35276,
       "rows": null,
       "source": "Constructed: Technology chargeback policy 2026",
       "date": "2026-12-14",
@@ -186,7 +186,7 @@
     {
       "path": "data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 8852,
+      "bytes": 8719,
       "rows": null,
       "source": "Constructed: Field definitions for the capacity review files",
       "date": "2026-12-14",
@@ -240,9 +240,9 @@
     {
       "path": "tech_budgets_2026_Q1-2027_freeze.xlsx",
       "format": "xlsx",
-      "bytes": 9487,
+      "bytes": 9503,
       "rows": null,
-      "source": "Constructed: Technology compute budgets by cost centre, 2026 and January to March 2027, with the freeze note",
+      "source": "Constructed: Technology compute budgets by cost centre, 2026 and January to March 2027, with the freeze record",
       "date": "2026-12-14",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },

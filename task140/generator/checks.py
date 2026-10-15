@@ -1,5 +1,5 @@
 """Assertions on the built pack and the goldens: the call and every rung reproduce from the shipped files, every
-semantic-fork row (SF1 to SF27) is closed as the design note says, the asks' devices and stops land where the ask
+semantic-fork row (SF1 to SF38) is closed as the design note says, the asks' devices and stops land where the ask
 sheet says, the context artifact recomputes, the input gates and the realism sweep hold. Run by build.py."""
 from __future__ import annotations
 
@@ -375,8 +375,219 @@ def run(target, golden, W=None, meta_path=None):
     spares = [a for a in (W.assets if W is not None else []) if a["origin"] == "spare" and
               C.Q3S <= a["installed"] < C.Q3E]
     ok(W is None or len(spares) >= 3, "SF27 spares registered in Q3 (another asset, not a return): %d" % len(spares))
+    _stage4_rows(target, M, g, lad, A, W, red, share, lost, owe, pre, succ, ev, rem, by_asset)
     print("checks: %d assertions passed" % N[0])
     return N[0]
+
+
+def _charges(A, when_of, rate_of):
+    """Each firm tenant's Q3 charge on this module's own path: a change counts on day d once when_of(change) <= d
+    (00:00 UTC), the rate rate_of(day) divided by the days of its month."""
+    out = {}
+    for t in A.firm:
+        base = A.ledger[("2026Q3", t)]
+        ch = [(when_of(c), int(c["delta_cores"])) for c in A.changes if c["tenant"] == t]
+        tot, d = 0.0, C.Q3S
+        while d < C.Q3E:
+            nxt = dt.date(d.year + (d.month == 12), 1 if d.month == 12 else d.month + 1, 1)
+            tot += (base + sum(v for w, v in ch if w <= d)) * rate_of(d.date()) / (nxt - d.date().replace(day=1)).days
+            d += dt.timedelta(days=1)
+        out[t] = tot
+    return out
+
+
+def _stage4_rows(target, M, g, lad, A, W, red, share, lost, owe, pre, succ, ev, rem, by_asset):
+    """SF29 to SF38 and the restated SF13, SF19, SF25 and SF26: the determinism judge's two risks, the leak reader's ask
+    readings, and the three round-2 lessons (a filed sentence executing to the easy answer, a figure near its edge or
+    moved by a defensible variant, an ask basis left unclosed)."""
+    G = g["G"]
+    gq = {q: M.ledger[(q, "batch-train")] for q in M.quarters}
+    std = re.sub(r"\s+", " ", _text_of(os.path.join(target, K.STANDARD_PDF)))
+    # SF29: the batch cores in cell-store's busiest hour are the reserved quarter's guarantee (CS-3 4.1 and 5.2)
+    ok("is reserved for the quarter at the use forecast for its busiest hour of the quarter" in std and
+       "Batch training runs inside its guarantee" in std,
+       "SF29 CS-3 4.1 files the busiest hour of the quarter being reserved; 5.2 runs batch inside its guarantee")
+    for i, q in enumerate(M.quarters):
+        mm = M.q == q
+        k = int(np.argmax(M.store[mm]))
+        b = float(M.batch[mm][k])
+        ok(b >= 0.996 * gq[q], "SF29 batch at cell-store's busiest hour of %s at its own guarantee (%.1f of %d)" % (
+            q, b, gq[q]))
+        if i:
+            prev = gq[M.quarters[i - 1]]
+            ok(prev != gq[q] and abs(b - gq[q]) < 200 and abs(b - prev) > 800,
+               "SF29 %s: batch at its own quarter's guarantee %d, not the quarter before's %d" % (q, gq[q], prev))
+    ok(lad["R2e"]["G"] == 120000 and lad["R2e"]["G"] != G, "SF29 batch at the last quarter's guarantee files 120,000")
+    # SF30: the load read at another answer is not the guarantee that reading files; 109,000 is the one fixed point
+    ok(lad["R2b"]["G"] == 106000 and lad["R2b"]["G"] != lad["R0"]["G"],
+       "SF30 the load read at the default's 122,000 files 106,000, not the guarantee it was read at")
+    fixed = [x for x in range(50000, 160001, 1000)
+             if C.floor1000(M.R1 - g["F"] - g["ctl"] - (g["a"] + g["c"] * M.M1 + g["beta"] * x)) == x]
+    ok(fixed == [G], "SF30 the one whole thousand whose own storage load leaves it: %s" % fixed)
+    # SF13: the closed quarters do not separate the line from the drivers; the 640-machine step and the guarantee do
+    steps = [M.machines_q[b] - M.machines_q[a] for a, b in zip(M.quarters, M.quarters[1:])]
+    ok(max(steps) <= 60 and M.M1 - M.machines_q[M.quarters[-1]] == 640,
+       "SF13 2027 Q1 opens 640 machines above 2026 Q4; no quarter on file stepped more than %d" % max(steps))
+    for i in range(4, len(M.quarters)):
+        q = M.quarters[i]
+        actual = float(M.store[M.q == q].max())
+        line = C.line_forecast([C.qmax(M, M.store, x) for x in M.quarters[i - 4:i]])
+        co, _ = C.fit(M, [M.mach, M.batch], np.isin(M.q, M.quarters[:i]))
+        drv = float(co[0] + co[1] * M.machines_q[q] + co[2] * gq[q])
+        ok(abs(line - actual) < 500 and abs(drv - actual) < 500,
+           "SF13 back-test %s: the line misses by %.0f, the drivers by %.0f; the closed quarters do not separate them" % (
+               q, line - actual, drv - actual))
+    r_m = float(C.fit(M, [M.mach])[1].std())
+    r_b = float(C.fit(M, [M.batch])[1].std())
+    ok(r_m > 600 and r_b > 300 and g["resid_sd"] < 14,
+       "SF13 the hourly fit needs both drivers: residual s.d. %.1f on machines alone, %.1f on batch alone, %.1f on both"
+       % (r_m, r_b, g["resid_sd"]))
+    ok(lad["R2e"]["S"] - lad["R0"]["S"] > 1500,
+       "SF13 the 640-machine step alone puts cell-store %.0f cores above the line" % (lad["R2e"]["S"] - lad["R0"]["S"]))
+    # SF31: no filed sentence confines the platform forecast to the export (lesson 1)
+    memo = re.sub(r"\s+", " ", _text_of(os.path.join(target, K.MEMO)))
+    ok("from the cell monitoring export" not in memo and "prepares the cell-ctl and cell-store reservations." in memo,
+       "SF31 the memo names no source for the platform reservations")
+    ok("the hardware plan" in std and lad["R2d"]["G"] != G,
+       "SF31 CS-3 6.2 lists the hardware plan; the export alone (4,640 machines) files %d" % lad["R2d"]["G"])
+    # SF38: the reservations rounded to the thousand before the subtraction (rounding path)
+    Gr = C.floor1000(M.R1 - K.round_to(g["F"], 1000) - K.round_to(g["ctl"], 1000) - K.round_to(g["S"], 1000))
+    ok(Gr == G, "SF38 the reservations rounded first: the same call (%d)" % Gr)
+    af = float(np.mean([M.batch[M.q == q].mean() / gq[q] for q in M.quarters]))
+    spread = [C.golden(M, ctl_how=h)["Gu"] for h in ("trend4", "last", "mean4", "machines")]
+    spread += [C.golden(M, mask=np.isin(M.q, M.quarters[2:]))["Gu"], C.golden(M, mask=np.isin(M.q, M.quarters[4:]))["Gu"],
+               C.golden(M, use_installed=True)["Gu"], C.golden(M, allowance=g["resid_max"])["Gu"],
+               (M.R1 - g["F"] - g["ctl"] - g["a"] - g["c"] * M.M1) / (1 + g["beta"] * af),
+               M.R1 - K.round_to(g["F"], 1000) - K.round_to(g["ctl"], 1000) - K.round_to(g["S"], 1000)]
+    ok(all(C.floor1000(x) == G for x in spread) and min(spread) - G > 400 and G + 1000 - max(spread) > 250,
+       "SF38 every converging variant floors to %d (before the thousand %.0f to %.0f)" % (G, min(spread), max(spread)))
+    s_spread = [C.golden(M, mask=np.isin(M.q, qs))["S"] for qs in (M.quarters[2:], M.quarters[4:])]
+    s_spread += [C.golden(M, use_installed=True)["S"], C.golden(M, allowance=g["resid_max"])["S"],
+                 C.golden(M, G_in_store="unrounded")["S"]]
+    ok(all(K.round_to(x, 1000) == K.round_to(g["S"], 1000) for x in s_spread),
+       "SF38 cell-store to the thousand under every variant (%.0f to %.0f)" % (min(s_spread), max(s_spread)))
+    # SF19: the directory's cost-centre format against the workbook's number
+    ok(all(re.fullmatch(r"CC-\d{4} .+", M.cc[t]) for t in M.firm) and
+       all(re.fullmatch(r"\d{4}", str(x["CC"])) for x in M.budget_lines),
+       "SF19 the directory's 'CC-dddd name' against the workbook's dddd: joined by number or by name, the same lines")
+    # SF32: a checkpoint write with no commit time (under way at the preemption, or failed) is never the restore point
+    mid = 0
+    for r in pre:
+        own = sorted(A.ckpt_by_run.get(r["run_id"], []), key=lambda c: c["write_started_utc"])
+        if own and not own[-1]["committed_utc"]:
+            mid += 1
+            ok(succ[r["run_id"]]["restore_checkpoint"] != own[-1]["checkpoint_id"],
+               "SF32 no resumption restores a write that did not complete")
+    ok(mid >= 5, "SF32 preemptions whose newest write has no commit time: %d" % mid)
+    ok(all(A.ckpt[s["restore_checkpoint"]]["committed_utc"] for s in succ.values() if s["restore_checkpoint"]),
+       "SF32 every restore point in the file is a committed checkpoint")
+    # SF33: runs still running at the snapshot hold core-hours to 1 October 00:00
+    running = [r for r in A.runs if not r["ended_utc"]]
+    ok(len(running) > 20 and all(r["end_state"] == "RUNNING" for r in running), "SF33 %d runs running at the snapshot" %
+       len(running))
+    held_nr = {t: 0.0 for t in A.teams}
+    held_all = {t: 0.0 for t in A.teams}
+    for r in A.runs:
+        segs = C.segments(A, r)
+        if r["ended_utc"]:
+            held_nr[r["team"]] += C.core_hours(segs, C.Q3S, C.Q3E)
+        held_all[r["team"]] += C.core_hours(segs, dt.datetime(2026, 1, 1, tzinfo=C.UTC), C.Q3E)
+    ok(sum(_pct2(100.0 * red[t] / held_nr[t]) != _pct2(share[t]) for t in A.teams) == 4,
+       "SF33 leaving the running runs out moves four teams' shares")
+    # SF34: runs started before 1 July count from 1 July; no lost training before it
+    ok(sum(1 for r in A.runs if C.tparse(r["started_utc"]) < C.Q3S) > 20 and
+       sum(_pct2(100.0 * red[t] / held_all[t]) != _pct2(share[t]) for t in A.teams) == 2 and
+       (_pct2(100.0 * red["reco-ml"] / held_all["reco-ml"]), _pct2(100.0 * red["nlp-ml"] / held_all["nlp-ml"])) ==
+       (0.58, 0.76), "SF34 the runs' whole lives (from June) move two teams' shares (reco-ml 0.58, nlp-ml 0.76)")
+    ok(all(C.tparse(r["started_utc"]) >= C.Q3S for r in pre) and
+       all(C.tparse(A.ckpt[succ[r["run_id"]]["restore_checkpoint"]]["write_started_utc"]) >= C.Q3S for r in pre),
+       "SF34 no lost training before 1 July: clipped or not, the lost core-hours are the same")
+    # SF35: a removal with no return is a machine the inventory retired that day
+    wbi = openpyxl.load_workbook(os.path.join(target, K.INVENTORY), read_only=True, data_only=True)
+    retired_on = {r[0]: r[8] for r in wbi["Assets"].iter_rows(values_only=True)
+                  if r and isinstance(r[0], str) and r[0].startswith("SRV-")}
+    seen, open_rm = set(), []
+    for r in rem:
+        a = A.asset_of[int(r["machine_id"])]
+        if tuple(r.values()) in seen:
+            continue
+        seen.add(tuple(r.values()))
+        if not any(x["event"] == "REGISTERED" and x["time_utc"] > r["time_utc"] for x in by_asset[a]):
+            open_rm.append(r)
+            ok(A.status[a] == "retired" and retired_on[a] is not None and
+               retired_on[a].date().isoformat() == r["time_utc"][:10],
+               "SF35 a removal with no return (%s) is an asset retired that day" % a)
+    ok(len(open_rm) >= 3, "SF35 removals of retired machines: %d" % len(open_rm))
+    to_end = dict(lost)
+    for r in open_rm:
+        k = (r["cause"], int(r["time_utc"][5:7]))
+        to_end[k] += (C.Q3E - C.tparse(r["time_utc"])).total_seconds() / 3600.0
+    ok(all(K.round_to(to_end[("hw_fault", m)], 10) != K.round_to(lost[("hw_fault", m)], 10) for m in (7, 8, 9)),
+       "SF35 counting them to 30 September moves every hardware-fault month")
+    # SF23: every Q3 registration in the inventory's Cluster ids sheet is a cluster-manager event at the same minute
+    q3ids = [(int(r[1]), r[2]) for r in wbi["Cluster ids"].iter_rows(values_only=True)
+             if r and isinstance(r[0], str) and r[0].startswith("SRV-") and "2026-07-01" <= r[2] < "2026-10-01"]
+    evk = {(int(x["machine_id"]), x["time_utc"][:16].replace("T", " ")) for x in ev if x["event"] == "REGISTERED"}
+    ok(len(q3ids) > 200 and all(k in evk for k in q3ids) and all(int(x["machine_id"]) in A.asset_of for x in ev),
+       "SF23 the Cluster ids sheet carries every Q3 registration (%d) and every event's machine id" % len(q3ids))
+    # SF37: hours split by Madrid local month (CEST, UTC+2, from July to September) give the same six figures
+    bounds = [dt.datetime(2026, 6, 30, 22, tzinfo=C.UTC), dt.datetime(2026, 7, 31, 22, tzinfo=C.UTC),
+              dt.datetime(2026, 8, 31, 22, tzinfo=C.UTC), dt.datetime(2026, 9, 30, 22, tzinfo=C.UTC),
+              dt.datetime(2026, 10, 31, 23, tzinfo=C.UTC)]
+    seen2, loc = set(), {k: 0.0 for k in lost}
+    evs = sorted((dict(x, t=C.tparse(x["time_utc"])) for x in ev), key=lambda x: x["t"])
+    for x in evs:
+        if x["event"] != "REMOVED" or tuple((k, x[k]) for k in sorted(x) if k != "t") in seen2:
+            continue
+        seen2.add(tuple((k, x[k]) for k in sorted(x) if k != "t"))
+        a = A.asset_of[int(x["machine_id"])]
+        y = next((y for y in evs if y["event"] == "REGISTERED" and y["t"] > x["t"] and A.asset_of[int(y["machine_id"])] == a),
+                 None)
+        if y is None:
+            continue
+        for m, (lo, hi) in zip((7, 8, 9, 10), zip(bounds[:-1], bounds[1:])):
+            h = (min(y["t"], hi) - max(x["t"], lo)).total_seconds() / 3600.0
+            if h > 0:
+                loc[(x["cause"], m)] = loc.get((x["cause"], m), 0.0) + h
+    ok(all(K.round_to(loc[k], 10) == K.round_to(lost[k], 10) for k in lost),
+       "SF37 the outages split by Madrid local month: the same six figures")
+    # SF36: 19 August: the power event removed no machine; the re-sent removals are byte-identical
+    ok(not [r for r in ev if r["event"] == "REMOVED" and "2026-08-19T01:40" <= r["time_utc"] < "2026-08-19T07:00"],
+       "SF36 no removal between the power event (01:40 UTC) and the day's maintenance wave")
+    ok(W is None or W.mev_resent == 4, "SF36 the cluster manager re-sent four removals")
+    # SF25: chargeback policy 2.2 files when a change counts; its literal reading is the golden
+    pol = re.sub(r"\s+", " ", _text_of(os.path.join(target, K.CHARGEBACK)))
+    ok("A release or grant counts from the first 00:00 UTC after the cell's quota service has applied it." in pol,
+       "SF25 policy 2.2 files when a release or grant counts")
+    fin, start = {}, {}
+    for r in A.qruns:
+        for cid in filter(None, r["changes_applied"].split(";")):
+            fin[cid], start[cid] = C.tparse(r["run_finished_utc"]), C.tparse(r["run_started_utc"])
+    day_rate = lambda d: C.rate_on(A.rates, d)
+    nextmid = lambda t: dt.datetime(t.year, t.month, t.day, tzinfo=C.UTC) + dt.timedelta(days=1)
+    lit = _charges(A, lambda c: nextmid(fin[c["change_id"]]), day_rate)
+    ok(all(K.round_to(lit[t], 100) == K.round_to(owe[t], 100) for t in A.firm),
+       "SF25 policy 2.2 read literally (the first 00:00 after the applying run finished) gives the golden for all 11")
+    ok(all(nextmid(start[c]) == nextmid(fin[c]) for c in fin), "SF25 the applying run's start or finish: same midnight")
+    for lab, when, n in (("the request time", lambda c: C.tparse(c["requested_utc"]), 11),
+                         ("the request day's own 00:00", lambda c: C.tparse(c["requested_utc"]).replace(
+                             hour=0, minute=0, second=0), 10),
+                         ("the day the change was applied", lambda c: start[c["change_id"]].replace(
+                             hour=0, minute=0, second=0), 10)):
+        v = _charges(A, when, day_rate)
+        miss = sum(K.round_to(v[t], 100) != K.round_to(owe[t], 100) for t in A.firm)
+        ok(miss == n, "SF25 from %s misses %d of 11" % (lab, miss))
+    # SF26: the September rate split
+    pub = [r for r in C.rows(os.path.join(target, K.RATECARD)) if r["effective_from"] == "2026-09-01"]
+    ok(len(pub) == 1 and pub[0]["published_on"] < "2026-09-01", "SF26 the September rate published before it applies")
+    p0 = dt.date.fromisoformat(pub[0]["published_on"])
+    for lab, rate in (("the September rate all quarter", lambda d: C.rate_on(A.rates, dt.date(2026, 9, 1))),
+                      ("the rate from its publication", lambda d: C.rate_on(A.rates, dt.date(2026, 9, 1)) if d >= p0
+                       else C.rate_on(A.rates, dt.date(2026, 7, 1)))):
+        v = _charges(A, lambda c: nextmid(fin[c["change_id"]]), rate)
+        ok(sum(K.round_to(v[t], 100) != K.round_to(owe[t], 100) for t in A.firm) == 11, "SF26 %s misses all 11" % lab)
+    ok(C.rate_on(A.rates, dt.date(2026, 8, 31)) != C.rate_on(A.rates, dt.date(2026, 9, 1)),
+       "SF26 the rate changes at a month boundary, so September is one rate")
 
 
 def _text_of(path):

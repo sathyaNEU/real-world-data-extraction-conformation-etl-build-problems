@@ -32,7 +32,7 @@ FILES = [
      "11 December 2026"),
     (K.REQUESTS, "Firm tenants' reservation requests for 2027 Q1", "Quota tool, request window 16 November to "
      "4 December 2026"),
-    (K.BUDGETS, "Technology compute budgets by cost centre, 2026 and January to March 2027, with the freeze note",
+    (K.BUDGETS, "Technology compute budgets by cost centre, 2026 and January to March 2027, with the freeze record",
      "Technology Controlling, 27 November 2026"),
     (K.RATECARD, "Compute rate card for MAD1 reserved cores, every rate by effective date", "Technology Controlling"),
     (K.LEDGER, "C-22 reservation ledger, 2025 Q1 to 2026 Q4, as approved at each review", "Compute Operations"),
