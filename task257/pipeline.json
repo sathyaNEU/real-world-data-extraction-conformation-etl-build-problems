@@ -1,36 +1,36 @@
 {
   "task": "task257",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "psychology-behavioral-science",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-15",
-  "stump": "The default path correlates the 30 five-point item scores as numbers and keeps five dimensions, splitting the tools items and the growth items into sub-scales of their own; the step that lands it there is treating answers that pile up at the top of the scale (tools) and at the bottom (growth) as interval scores, whose correlations carry the items' shared lopsidedness as a dimension of its own, so only correlating the responses as ordered categories of the employees' underlying views (polychoric correlations) shows the three dimensions the items measure.",
+  "stump": "The default path correlates the 30 answers as numbers and keeps five dimensions, five sub-scales (workload, tools, manager, growth, and belonging with recognition) with the six tools questions and the six growth questions each split from the dimension they measure; the step that lands it there is correlating yes or no answers that nearly everyone gives one way (yes to tools, no to growth) as scores, whose correlations are capped by their lopsided splits, so the shared split stands as a dimension of its own, and only correlating every answer as an ordered category of an underlying view (tetrachoric and polychoric correlations) shows the three dimensions the items measure.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (the standard holds the estimand words; a prompt sentence; no rounding words for whole counts), each line harmless",
+    "reader": "nothing names the move (q1 none); no ranking or helper file; the count left to the analysis; deciding step analytical; three realism tells fixed"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN",
+    "nearest": "0.05 task17 (revision 3, lineage); guard surface clean"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task257/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 2: readability screen, semantic fork table, ladder, closure table, literal reader, oracles, ask sheet, prompt.txt, then precut.py",
+  "resume": "shipped; next: the portal result",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-15",
   "portal": null,
   "draw": {
     "card": "cards/task257.json registered 2026-10-15",
