@@ -64,8 +64,8 @@ def write(target, out_path):
         "domain": "Economics & Econometrics",
         "client_domain": "Economics & Econometrics",
         "subdomain": "forecasting-forecast-evaluation (a conditional forecast of each gateway's 2027 formal import "
-                     "entries on the network plan's exchange rates: the shipments whose value for duty, set in "
-                     "their invoice currency, will exceed CAD 3,300 at the plan year's rates)",
+                     "entries on the network plan's exchange rates, from two years of the shipments' declared values "
+                     "against a line of CAD 3,300)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "05 allocation to a fixed total: the six posts across five gateways and the held bucket, each "
                         "gateway's forecast monthly formal entries and its load after the review, with two fiscal "

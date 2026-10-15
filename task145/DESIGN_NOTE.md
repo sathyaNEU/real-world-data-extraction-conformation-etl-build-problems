@@ -7,25 +7,27 @@ licensed customs brokers file formal entries at five import gateways, six new br
 goes to the gateway with the most forecast entries per broker while that load is above the standard, and the rest are
 held. The seed's mechanism (the entry forecasts' own error record setting a lower bound) is decoy-era design and is not
 used; no back-test organ ships. The pitfall is re-found from how the records come to exist: a shipment needs a broker's
-formal entry only when its value, set in the currency it is invoiced in, exceeds CAD 3,300 once converted at the
-customs rate of its date, so a gateway's formal entries are the part of its shipments' value distribution that sits
-above a line fixed in Canadian dollars, and the network plan sets 2027's exchange rates where no month of the history
-has been.
+formal entry only when its value for duty exceeds CAD 3,300 once its invoice value is converted at the customs rate of
+its date, so a gateway's 2027 formal entries depend on where its goods' CAD values land under the plan's exchange rates,
+and goods differ in which value they hold from year to year. Goods priced in the invoice currency keep their invoice
+value and carry the rate into their CAD value; goods priced in Canadian dollars and invoiced at that price converted at
+the day's rate keep their CAD value whatever the rate. How far the rate passes through is an estimate, segment by
+segment, from the consignments the same importers ship in both years on file.
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task145.json`, architecture v1, registered 2026-10-15 after `git pull` (task262, task455 and task144 on file); `guard.py check` WARN (repeat.gate_g, answered below), no BLOCK; `guard.py validate` clean |
-| Domain / task type | `economics-econometrics` (client domain; Economics & Econometrics has never carried a forecasting build), task type `forecasting-forecast-evaluation` (forecasting): the call rests on a conditional forecast of each gateway's 2027 formal import entries on the plan year's exchange rates, built from the declared values of the shipments the forecast carries |
+| Card | `.claude/skills/fingerprint/cards/task145.json`, architecture v1, registered 2026-10-15 after `git pull` (task262, task455 and task144 on file); `guard.py check` WARN (repeat.gate_g, answered below), no BLOCK; `guard.py validate` clean; re-checked after the rule 3 rework (below) |
+| Domain / task type | `economics-econometrics` (client domain; Economics & Econometrics has never carried a forecasting build), task type `forecasting-forecast-evaluation` (forecasting): the call rests on a conditional forecast of each gateway's 2027 formal import entries on the plan year's exchange rates, through the exchange-rate pass-through into each segment's declared values |
 | Objective | Forecasting & Predictive Modeling: each gateway's average monthly formal entries in calendar 2027, a window not yet open, on the 2027 network plan, and from it the broker posts placed and held |
 | Shape | `05` allocation to a fixed total (the six posts across five gateways and the held bucket): six bucket counts, each gateway's forecast monthly formal entries and its entries per broker post once placed (10), the call and the blocking load (2), the asks' 40 figures and the deck's named parts; about 60 criteria |
 | Decision | `allocation_to_total`, answer unit `count` (broker posts per gateway and held) |
-| Mechanism | gap time (decisive: the routing the history records belongs to the exchange rates of its months, the plan year's rates differ, and at the euro rate no month since January 2021 reached) then population (OGD-regulated shipments are formal whatever their value, so a value-only re-routing drops them); pattern none, generators G16 decisive (the forecasting method: carry each shipment's invoice-currency value and re-apply the line, not the count, its share or a fitted elasticity), G13 (the plan year's window and its rates); Gate G `forecasting`; strategy `forecast_method_backtest` (stumping F6: the invariant is constructed, the natural fit fails forward) |
-| Layer 2 family / pattern | `field_method`; `own:formal-entry-count-re-routed-at-the-plan-years-exchange-rates`: the field's way of projecting declarations above a nominal threshold (re-applying the line to the value distribution held in its invoice currencies at the projection's rates) against the generic move (extrapolating the count) |
+| Mechanism | gap time (the plan year's rates sit where no month on file has been, and the euro rate where none since January 2021 has) then population (the segments differ in how the rate passes into their values: Calgary's US-dollar goods and the Chinese goods at Mississauga and Richmond hold their CAD values, every other segment its invoice prices; OGD-regulated shipments are formal whatever their value); pattern none, generators G16 decisive (the forecasting method: the conditional forecast through each segment's estimated pass-through, against the count's ratio, a mechanical re-conversion of every shipment or one pooled share), G13 (the plan year's window and its rates); Gate G `forecasting`; strategy `forecast_method_backtest` (stumping F6: the invariant is constructed, the natural fit fails forward) |
+| Layer 2 family / pattern | `field_method`; `own:formal-entry-count-at-the-plan-years-rates-through-segment-pass-through-from-repeat-consignments`: the field's way of projecting declarations above a nominal threshold under a forward exchange rate (estimate, by segment, which goods pass the rate into their CAD value from repeat transactions, and re-apply the line at the forward rate to that share alone) against the generic moves (extrapolate the count, re-convert everything, pool one share) |
 | Furniture | forum `executive_team` (the Canada leadership team approves the brokerage establishment at its review of 22 October 2026), forcing event `vote_or_meeting` (that establishment review), organisation family `logistics_or_3pl` (Larchwood Express Canada, an express carrier), role family `capacity_planner` (the brokerage workforce planning lead), context artifact `filed_standard` (BRK-STD-03, the brokerage staffing standard, which files the placement rule and the forecast's basis and no method), calibration `none`, opening `question-first`, question form `where` |
-| Spine | `highvalue_check_2025Q4.csv` to `highvalue_check_2026Q3.csv`, the clearance system's quarterly high-value check extracts (every inbound international shipment released with a value for duty of CAD 2,500 or more, and every OGD shipment, in two layouts), eight quarterly files over October 2024 to September 2026 (the four of the plan's base, 248,256 shipments with 13 amended shipments twice, and the four pulled for the 2026 review, 235,270 shipments), 483,539 rows; constructed. The pack is 26 files in six formats (csv, docx, json, pdf, txt, xlsx) |
-| Deliverables | `broker_posts_2027.xlsx` (the placement, each gateway's forecast and load, the two ask tables), `establishment_review_2027.pptx` (two slides for the leadership team: the placement and the desks' overtime by quarter) |
+| Spine | `highvalue_check_2024Q4.csv` to `highvalue_check_2026Q3.csv`, the clearance system's quarterly high-value check extracts (every inbound international shipment released with a value for duty of CAD 2,500 or more, and every OGD shipment, in two layouts), eight quarterly files over October 2024 to September 2026 (the four of the plan's base, 245,702 shipments with 13 amended shipments twice, and the four pulled for the 2026 review, 234,415 shipments), 480,130 rows; constructed. The pack is 26 files in six formats (csv, docx, json, pdf, txt, xlsx) |
+| Deliverables | `broker_posts_2027.xlsx` (the placement, each gateway's forecast and load, the forecast basis, the two ask tables), `establishment_review_2027.pptx` (two slides for the leadership team: the placement and the desks' overtime by quarter) |
 | People | drawn with `guard.py names --geo Canada --seed 145 --n 30` and `--locale fr_CA --seed 145`, every name the guard clears: Laura Parks (lead, brokerage workforce planning; the requester), Robin Larson (vice-president, trade and brokerage services; owner of BRK-STD-03), Wanda Armstrong (manager, network planning; the network plan), Brian Stewart (treasury manager; the planning rates in the plan), Clémence Sirois (manager, clearance operations, Dorval; the clearance manual), Theresa Rowe (HR systems analyst; the time and attendance migration); none appears in the prompt. The HR roster's brokers are drawn from seeded locale pools in the generator |
 
 **Guard.** `guard.py check` on the registered card: WARN, no BLOCK. Answered: `repeat.gate_g` (forecasting beside
@@ -41,27 +43,27 @@ build in the last twelve carries gap time at all (coverage: 0 in the window), so
 `test.same_driver` pass; the older matches are the three differentiated above.
 
 **Abstraction test.** Stripped of nouns, the driver is: the forward count of units above a fixed line is set by where
-each unit's value, fixed in its own denomination, lands once converted at the forward period's factors; the history's
-count, its share of all units and any sensitivity fitted to the history carry only the factors the history saw, so
-forward factors that carry a cluster of values across the line in a direction no past period reached raise one
-candidate's count and lower the others', and only re-applying the line to each unit's own value at the forward factors
-gets the count. The three nearest on file (`guard.py check`): task253 v3 (units with a latent level below a line, seen
-through noisy averages, 0.08), task98 v5 lineage (units scored on the class they had at entry, 0.07), task107 v4 (a
-group under a line only on an entry rate its counterparty lifts at an anniversary, 0.07). None converts a unit's value
-between denominations or moves a line through a forward conversion factor; task107's is a dated step in a rate the
-history shows exactly, here the forward condition is a level the history never reached. task446 v2 (the closest in
-shape, a derived rate carried onto a moved condition) has a classifier, a base rate and Bayes' rule; here the derived
-quantity is a tail mass of a value distribution under a change of scale, and the shift is non-linear (clusters of price
-points cross or leave the line), so no elasticity fitted on the history can carry it.
+each unit's value lands at the forward period's conversion factors, and units differ in which value they hold fixed
+from period to period, their own denomination or the line's; the history's count carries only the past factors, a
+mechanical re-conversion of every unit at the forward factors treats every unit as holding its own denomination, and
+one pooled share of holders treats unlike groups alike; only estimating each group's mix of holders from the units seen
+in both periods, and re-converting the own-denomination share alone, gets the count. The three nearest on file
+(`guard.py check`): task253 v3 (units with a latent level below a line, seen through noisy averages, 0.08), task98 v5
+lineage (units scored on the class they had at entry, 0.07), task107 v4 (a group under a line only on an entry rate its
+counterparty lifts at an anniversary, 0.07). None converts a unit's value between denominations or estimates which
+value a unit holds; task107's is a dated step in a rate the history shows exactly. task446 v2 (the closest in shape, a
+derived rate carried onto a moved condition) has a classifier, a base rate and Bayes' rule; here the derived quantity
+is a tail mass of a value distribution under a change of scale that only part of each segment undergoes, and the part
+is read off repeat transactions.
 
 **Data-native sentence.** Larchwood's clearance system routes a shipment to a gateway's brokerage desk for a formal entry
 when its value for duty, declared in the currency of its commercial invoice, exceeds CAD 3,300 once converted at the
-customs exchange rate for its date, or when its goods fall under another government department's program; everything
-else is released under the courier low-value program without a broker. European goods priced near EUR 2,000 and US
-goods priced near USD 2,350 therefore sit on either side of the line according to the month's rates, so each gateway's
-formal entries are the share of its shipments whose invoice values sit above 3,300 divided by the rate, and the 2027
-network plan's planning rates (USD 1.340, EUR 1.680) put the euro line below Dorval's European price points, where no
-month since January 2021 has had it, and the US line above Richmond's, Mississauga's and Winnipeg's.
+customs exchange rate for its date, or when its goods fall under another government department's program; European
+goods priced near EUR 2,000 and US goods priced near USD 2,350 therefore sit on either side of the line according to
+the month's rates, while Calgary's importers of US goods and the Chinese sellers shipping to Mississauga and Richmond
+sell on Canadian-dollar prices (Calgary's price points run from CAD 3,329 to 3,399) and invoice them at the day's
+conversion, so those goods' CAD values, and their routes, stay where they are whatever the plan's US dollar and
+renminbi rates do.
 
 **Sources read, one line each.** `guard.py mechanisms --objective forecasting` (56 builds): renewal (132), conditional
 survival (133), hazards by time since entry (134), selective labels (141), a period total built from its units (142), a
@@ -70,13 +72,13 @@ step (107): none forecasts a count above a nominal line through a forward exchan
 economics: forecasting-forecast-evaluation/1 (real-time vintages) and /2 (proper scores) are not this build's; the
 decisive line is a conditional forecast through the structure (the nearest library line is
 healthcare-delivery-health-economics/utilization-access-demand-forecasting/2, project with the rates on the projected
-structure against a trend on totals), here the structure being the declared-value distribution in its invoice
-currencies and the rate the routing rule converts at. `two-layer-task-design.md`: "the data's real structure" and
-"validating a forecast properly" are the client's families for the step. `measured-drivers.md`: held tasks put the
-decisive move upstream of every graded figure; here every forecast, every load and every post inherits it.
-`strategies.md` F6 (the invariant constructed from a log) and Part 6 (a dated cause stepping the series dies to an event
-study: here the forward condition is a level, not a date, and the decisive euro crossing never happened in the
-history). The seed's header and Situation (FC16) for the world, decision and quantity only.
+structure against a trend on totals), here the structure being each segment's pass-through, estimated from repeat
+transactions the way trade economics estimates producer-currency against local-currency pricing.
+`two-layer-task-design.md`: "the data's real structure" and "validating a forecast properly" are the client's families
+for the step. `measured-drivers.md`: held tasks put the decisive move upstream of every graded figure; here every
+forecast, every load and every post inherits it. `strategies.md` F6 (the invariant constructed from a log) and Part 6
+(a dated cause stepping the series dies to an event study: here the forward condition is a level, not a date). The
+seed's header and Situation (FC16) for the world, decision and quantity only.
 
 **World.** Larchwood Express Canada Ltd. (Mississauga, Ontario) is an express carrier whose inbound international
 shipments arrive at five import gateways: Mississauga (YYZ, Toronto Pearson), Dorval (YUL, Montréal-Trudeau), Richmond
@@ -86,10 +88,14 @@ on its commercial invoice in the invoice currency, converts it at the customs ex
 over CAD 3,300, or goods under another government department's (OGD) program, to the desk for a formal entry filed by a
 broker; otherwise released under the courier low-value program (CLVS) by clearance operations. Shipments with a value
 for duty of CAD 2,500 or more are checked against the commercial invoice before release (the high-value check), and the
-check's extracts are pulled every calendar quarter. At peaks a desk sends entries to a contract broker, Brandmoor
-Customs Services, which transmits them on Larchwood's account and invoices monthly. The brokerage staffing standard
-BRK-STD-03 places new broker posts each autumn for the next calendar year: one at a time, at the gateway whose forecast
-average monthly formal entries per broker post (posts already placed in the review counted) is highest, while that load
+check's extracts are pulled every calendar quarter. Most of the network's goods are priced in the currency they are
+invoiced in; Calgary's importers of US goods (western distributors and e-commerce sellers buying on Canadian price
+lists) and the Chinese sellers on the Mississauga and Richmond lanes sell on Canadian-dollar prices and invoice them at
+the day's conversion. No file records which: the extracts carry each shipment's importer, tariff item, invoice value,
+customs rate and CAD value, in both years. At peaks a desk sends entries to a contract broker, Brandmoor Customs
+Services, which transmits them on Larchwood's account and invoices monthly. The brokerage staffing standard BRK-STD-03
+places new broker posts each autumn for the next calendar year: one at a time, at the gateway whose forecast average
+monthly formal entries per broker post (posts already placed in the review counted) is highest, while that load
 exceeds 560; posts not placed are held to the next review. The forecast is made on the network plan for the year
 (Network Planning issued the 2027 plan on 18 September 2026, its volumes by gateway and month and its planning
 assumptions, Treasury's planning rates among them). The establishment at 1 January 2027 is 25 broker posts (Mississauga
@@ -105,40 +111,45 @@ extracts were pulled from 5 to 9 October 2026 and the request is dated 13 Octobe
    twelve months to September 2026 (the plan's base), and its formal entries per shipment.
 3. Multiply each gateway's 2027 planned shipments by that ratio and divide by twelve: the forecast average monthly
    formal entries.
-4. Divide by the establishment and run the placement: one post at each of Dorval, Calgary, Mississauga, Richmond and
+4. Divide by the establishment and run the placement: one post at each of Calgary, Dorval, Mississauga, Richmond and
    Winnipeg, one held.
 
 Ends on: one post at each of the five gateways, one held.
-Golden: two posts at Dorval, one at Calgary, three held: every shipment of the twelve months to September 2026
-re-routed at the plan's planning rates (value for duty in its invoice currency times the plan's rate for that currency
-against CAD 3,300, OGD-program shipments formal whatever their value) and scaled to the plan's volumes gives Dorval about
-an eighth more formal entries (its European goods priced near EUR 2,000 cross the line at EUR 1.680) and Mississauga,
-Richmond and Winnipeg about an eighth fewer (their US price points near USD 2,350 to 2,380 fall under it at USD 1.340).
+Golden: two posts at Dorval, one at Calgary, three held: each segment's pass-through (gateway and invoice currency) read
+off the base year's shipments that repeat a consignment of the year before (at the same invoice value, the rate passes
+into the CAD value; at the same CAD value, it does not: Calgary's US-dollar goods 0.009, the Chinese goods at Mississauga
+0.011 and Richmond 0.013, every other segment 0.958 to 1.000), that share of each segment's base-year shipments
+re-routed at the plan's planning rate against CAD 3,300 and the rest kept at the CAD value and route the base year gave
+it, OGD shipments formal regardless, scaled to the plan's volumes. Dorval gains about an eighth (European goods priced
+near EUR 2,000 cross the line at EUR 1.680), Mississauga, Richmond and Winnipeg lose about a tenth (US price points
+near USD 2,350 to 2,380 fall under it at USD 1.340), and Calgary holds within 0.2 per cent of its base year.
 
 ## Stump sentence
 
 A competent solver carries each gateway's formal entries per inbound shipment over the twelve months to September 2026
 onto the 2027 network plan's shipments and places one post at each of the five gateways with one held (Ends on); the
-step that lands it there is carrying the base year's routing into a plan year whose planning rates move the CAD 3,300
-line in every invoice currency: re-routing the base year's shipments at the plan's rates, OGD-program shipments formal
-whatever their value, sends Dorval's European goods priced near EUR 2,000 over the line at a euro rate no month since
-2021 reached and Mississauga's, Richmond's and Winnipeg's US price points under it, and the placement is two posts at
-Dorval, one at Calgary and three held.
+step that lands it there is forecasting the 2027 count without asking how each segment's CAD values respond to the
+plan's exchange rates: most of the network's goods keep their invoice-currency prices, so the plan's rates move their
+line, while Calgary's US-dollar goods and the Chinese goods at Mississauga and Richmond keep their CAD values, so the
+plan's rates do not, and only the pass-through estimated by gateway and invoice currency from the repeat consignments
+files two posts at Dorval, one at Calgary and three held; re-routing every shipment at the plan's rates, or one share
+for the network or for each currency, drops Calgary under 560 and holds four.
 
 ## Three rules
 
 - **Task type:** `economics-econometrics`, `forecasting-forecast-evaluation` (serves Forecasting): the call is a
-  conditional forecast of each gateway's 2027 formal import entries on the network plan's exchange rates, built from the
-  declared-value distribution of the shipments the forecast carries.
+  conditional forecast of each gateway's 2027 formal import entries on the network plan's exchange rates, through the
+  pass-through of those rates into each segment's declared values, estimated from repeat consignments.
 - **Domain test:** the deciding quantity is each gateway's 2027 formal entries, which trade economics forecasts
-  conditionally on the plan year's exchange rates as the mass of declared values that will sit above a line fixed in
-  Canadian dollars once each value, set in the currency it is invoiced in, is converted at the year's rate; the generic
-  forecast (the count carried on its share of shipments, its trend, or an elasticity fitted to the monthly history)
-  places a post at every gateway, so the call turns on the conditional forecast through the threshold.
-- **Swap:** "two of the six posts go to Dorval and three are held because at the plan's euro rate Dorval's European
-  goods priced near EUR 2,000 cross the CAD 3,300 line" read with another field's nouns ("two of the six nurses go to
-  ward A because at next year's rate ward A's patients cross the line") loses the invoice currency, the conversion at
-  the date's rate and the nominal line a price point crosses, so what moves the count stops making sense.
+  conditionally on the plan year's exchange rates as the mass of declared values above a line fixed in Canadian dollars,
+  where the rate reaches a declared value only as far as its goods are priced in the invoice currency (producer-currency
+  against local-currency pricing, the exchange-rate pass-through the field estimates from repeat transactions); the
+  generic forecasts (the count carried on its share, its trend, an elasticity fitted to the monthly history, a full
+  re-conversion of every shipment) place a post at every gateway or hold four, so the call turns on the pass-through.
+- **Swap:** "Calgary keeps its post because its US goods are sold on Canadian prices and hold their CAD values at the
+  plan's dollar rate" read with another field's nouns ("ward B keeps its nurse because its patients are billed in local
+  units and hold their value at next year's rate") loses the invoice currency, the conversion at the date's rate, the
+  choice of pricing currency and the nominal line a price point crosses, so what moves the count stops making sense.
 - **Layer 1:** on the call's path, the clearance system's high-value check extracts come in eight quarterly files whose
   layout a February 2026 release changed (column names, date formats, the rate column's label); release times are
   stamped in UTC beside each gateway's local release date; a few shipments amended after release appear again in the
@@ -146,68 +157,72 @@ Dorval, one at Calgary and three held.
   counted formal entries by accounting date, the new one by release date); gateways are keyed by airport code, desk name
   and the plan's region labels; the plan's volumes are in thousands to one decimal; OGD program codes are blank or NONE
   where none applies; shipments are invoiced in CAD, USD, EUR, GBP, CNY and JPY, each row with the customs rate of its
-  date. On the ask paths, two time and attendance systems (legacy to 31 October 2025, new from 1 November 2025) with two
+  date, and a CAD value converted from a US-dollar invoice of a CAD price lands a cent either side of that price on some
+  days. On the ask paths, two time and attendance systems (legacy to 31 October 2025, new from 1 November 2025) with two
   employee-number and pay-code schemes and the migration's carried week, the HR assignment history, call-back lines at
   the paid minimum, and the contract broker's monthly invoices, portal detail and a re-issued invoice. Each is what these
   systems write; none decides the call (each mishandled leaves the placement where it was, asserted: R2).
-- **Layer 2:** `field_method`: the shortcut carries the base year's routing outcome (formal entries per shipment, their
-  trend, or their fitted sensitivity to the rate) into the plan year; the expert carries each shipment's value in its
-  invoice currency and re-applies the CAD 3,300 line at the plan year's rate for that currency, OGD shipments formal
-  regardless, because the count above a nominal line is the tail of the value distribution under the year's conversion.
-- **Decisive step:** inferring from the two years of extracts how the goods are priced, and forecasting on it: the same
-  consignments recur at the same value in their invoice currency while their CAD value moves with the day's customs rate
-  (the price points in EUR, USD and GBP and the importers' repeat consignments alike), so the plan year's shipments
-  carry the base year's invoice values and the CAD 3,300 line has to be re-applied to them at the 2027 planning rates
-  (OGD-program shipments formal regardless), scaled to the plan's volumes; instead of carrying the base year's formal
-  entries per shipment (which keeps every shipment at the CAD value the base year gave it), their trend or an
-  elasticity fitted to the months the history saw. No document says how the goods are priced; the plan files the
-  lanes, customers and goods and the rates, the data says what stays fixed.
+- **Layer 2:** `field_method`: the expert estimates, by gateway and invoice currency, the share of goods whose CAD value
+  moves with the rate (repeat consignments at the same invoice value) against those whose CAD value holds (repeats at
+  the same CAD value), and forecasts the count above the line by re-applying it at the plan's rate to the first share
+  alone; the shortcuts carry the base year's routing (pass-through nil everywhere), re-convert every shipment (full
+  pass-through everywhere) or pool one share across segments that behave in opposite ways.
+- **Decisive step:** estimating each segment's exchange-rate pass-through from the consignments the same importers ship
+  in both years (Calgary's US-dollar goods repeat at the same CAD value 13,169 times and at the same invoice value 117;
+  the Chinese goods at Mississauga and Richmond 2,161 and 3,731 times at the same CAD value; every other segment's
+  repeats keep their invoice values, 54,126 of 54,444), and forecasting the 2027 count through it: the plan's rates
+  applied to the invoice-held share, the base year's CAD values and routes kept for the CAD-held share. Executing the
+  filed rules gives no share; the full re-conversion they suggest files Dorval 2 and four held.
 - **Not semantics:** every field, code, unit and definition can be read correctly (the value for duty in its invoice
   currency, the customs rate of its date, the value in CAD, the route, the OGD program, the line at CAD 3,300, the
-  plan's volumes in thousands, the establishment) and the default path reads them all correctly and still places a
-  post at every gateway, because it carries the base year's outcome; nothing in the pack says the plan's rates change
-  the routing or how the goods are priced, and the answer moves only on what the analyst infers from the history about
-  which value stays fixed and how the 2027 count is forecast from it.
-- **Not rule application:** BRK-STD-03 files the placement rule and the forecast's basis (the 2027 network plan's
-  shipments and planning assumptions), the plan files its volumes, its profile (lanes, customers and goods as in the
-  base) and its rates, and the clearance manual files how a shipment is routed on its date; nothing files what a 2027
-  shipment's value will be. Executing every filed rule leaves that open, and the open question has two candidate
-  answers that file different calls: values held in CAD (the base year's routing carried, one post at each gateway) or
-  values held in the invoice currency (re-routed at the plan's rates, two at Dorval, one at Calgary, three held). Only
-  the history decides between them (68,657 of the base year's 190,312 foreign-currency shipments outside OGD programs
-  repeat a consignment of the year before at the same invoice value, 683 at the same CAD value; the CAD value moves one
-  for one with the rate, slope 1.000), so the step that moves the call is an inference from the data that no filed
-  rule performs.
+  plan's volumes in thousands and its rates, the establishment) and the default path and the full re-conversion both
+  read them all correctly and still miss; no field, code or definition says how a shipment is priced, and the shares
+  come from the joint behaviour of invoice values, CAD values and rates across the two years, an estimate whose
+  segmentation and estimator the analyst chooses.
+- **Not rule application:** the shipped sentences on how a figure is computed are CLR-OPS-11 2.1 and 2.2 (each shipment
+  valued on its commercial invoice in the invoice currency, converted at the customs rate of its release day), 3.1 and
+  3.2 (formal over CAD 3,300 or under an OGD program, a CAD invoice on its value), BRK-STD-03 4.2 to 4.5 (the load and
+  the placement) and 4.3 (the forecast on the plan's shipments and planning assumptions), and the plan's assumption 7
+  (Treasury's planning rates for 2027); executed word for word they route a 2027 shipment whose value is known and say
+  nothing on what a 2027 shipment's invoice or CAD value will be. Completing them mechanically (each base-year shipment
+  at its base-year invoice value, converted at the plan's rate: a filed assumption executed through a filed rule) is
+  rival (b), which files Dorval 2 and four held; the golden needs an estimate no sentence performs, the share of each
+  segment whose CAD value moves with the rate, read off the repeat consignments with a segmentation and an estimator the
+  data separates (gateway and currency against one share for the network, 0.737, or for the US dollar, 0.719, rejected
+  by a homogeneity statistic of 71,119 on 11 degrees of freedom).
 - **Analyst test:** a strong analyst who reads the staffing standard, the clearance manual and the network plan
   correctly forecasts each gateway's 2027 formal entries as the plan's shipments times its formal entries per shipment
-  over the twelve months to September 2026 and places one post at each of the five gateways with one held (Ends on);
-  the entries' own trend files the same placement, an elasticity of the formal share to the US and euro rates fitted on
-  the monthly history and a re-routing at the US rate alone each hold four posts with one at Dorval, and carrying every
-  shipment at the CAD value the base year gave it is the default again; only reading from the two years of extracts
-  that the goods keep their invoice-currency prices, and re-routing every shipment at its own currency's planning rate
-  with OGD shipments kept formal, files two at Dorval, one at Calgary and three held (R3a and R3b asserted on the
-  generator's clean truth; the CAD-fixed basis asserted to file the default).
+  over the twelve months to September 2026 and places one post at each of the five gateways with one held (Ends on); the
+  stronger one who sees that the plan's rates move the line re-routes every base-year shipment at its own currency's
+  planning rate, because the manual values a shipment on its invoice, and files two posts at Dorval with four held
+  (Calgary at 2,000 a month, 505 a post on its four); pooling one pass-through share for the network (0.737) or for each
+  currency (0.719 for the US dollar) files the same; only the shares by gateway and invoice currency, Calgary's US-dollar
+  goods and the Chinese goods holding their CAD values, file two at Dorval, one at Calgary and three held (R3a, R3b and
+  R3c asserted on the generator's clean truth, the world's own 2027 filing the golden's placement and every rounded
+  figure).
 - **Estimand:** BRK-STD-03 (`brk_std_03_brokerage_staffing_standard.pdf`) section 4: a gateway's load is its forecast
   average monthly formal entries in the plan year (every formal entry for a shipment released at the gateway in calendar
   2027, whoever transmits it) divided by its broker posts (the establishment at 1 January of the plan year and the
   posts already placed in the review); the forecast is made on the network plan for the year, its shipments for the
   gateway and its planning assumptions; posts placed one at a time while the highest load exceeds 560, the rest held.
   The network plan's assumptions page fixes the plan year's volumes, its base (the twelve months to September 2026), its
-  shipment profile (each gateway's lanes, customers and goods as in the base) and its exchange rates; nothing files how
-  the goods are priced or the forecast's method.
-- **No decoy:** nothing is planted to be caught: no copied block, no hidden rule, and no memo, draft, briefing or
-  stakeholder figure states a forecast, a load or a placement; the network plan states volumes and assumptions, the
-  clearance manual the routing rule, and no document ranks the gateways on the decision; the distractors (the 2026
-  network plan as issued in September 2025 and the export desk's declaration report) rank nothing.
-- **No certified replay:** no published forecast, certified load or past placement ships to be reproduced; the method
-  is forced by the routing rule and the plan's rates acting on the shipments on file, and no closed figure is matched
-  to recover it.
-- **Lesson:** a count of items above a fixed nominal line is the upper tail of their value distribution after
-  conversion, so its history carries every exchange-rate move the window saw and none it did not; a forecast for a year
-  whose rates differ re-applies the line to the values in the currencies they are set in, and a price point the
-  history never saw cross can move a whole gateway; no build on file teaches a nominal threshold under a forward
-  exchange rate (task446 teaches a screen's yield under a moved base rate, task107 an anniversary step in a rate the
-  history shows exactly).
+  shipment profile (each gateway's lanes, customers and goods as in the base) and its exchange rates as the year's
+  rates; nothing files how the goods are priced, how a rate passes into a value, or the forecast's method.
+- **No decoy:** nothing is planted to be caught: no copied block, no hidden rule, no file, column or flag that marks a
+  shipment's pricing (the evidence is the extracts' own invoice values, CAD values and rates in both years), and no
+  memo, draft, briefing or stakeholder figure states a forecast, a load, a share or a placement; the network plan states
+  volumes and assumptions, the clearance manual the routing rule, and no document ranks the gateways on the decision;
+  the distractors (the 2026 network plan as issued in September 2025 and the export desk's declaration report) rank
+  nothing.
+- **No certified replay:** no published forecast, certified load, pass-through table or past placement ships to be
+  reproduced; the method is forced by the routing rule and the plan's rates acting on the shipments on file, with each
+  segment's share estimated from them, and no closed figure is matched to recover it.
+- **Lesson:** a count of items above a fixed nominal line under a forward exchange rate is set by how far the rate
+  reaches each item's declared value, and that depends on the currency its price is set in, not the currency it is
+  invoiced in; the pass-through is estimated by segment from repeat transactions (the same goods at the same invoice
+  value, or at the same domestic value), and neither a full re-conversion nor one pooled share survives segments that
+  behave in opposite ways; no build on file teaches producer-currency against local-currency pricing (task446 teaches a
+  screen's yield under a moved base rate, task107 an anniversary step in a rate the history shows exactly).
 
 ## Readability screen
 
@@ -216,9 +231,9 @@ Dorval, one at Calgary and three held.
 | R0: base-year formal entries per shipment carried on the plan (the default) | BRK-STD-03 4.3 and the plan's volumes | the gateway report's two columns | yes, the planner's ratio | no | no | yes, one ratio | readable |
 | R0b: the formal entries' own trend (log-linear or exponential smoothing with seasons) | no | the 69-month series | yes, a forecasting default | no | no | no | readable |
 | R1: the formal share fitted on the month's US dollar and euro rates, evaluated at the plan's rates | the plan lists its rates | the gateway report and a rate per month | no | no | no | yes, a regression | readable |
-| R2: re-routing every foreign value at the US dollar's change alone | the routing clause names conversion | the register's rate column | no | no | no | yes, one factor | readable |
-| R2b: re-routing at the plan's rates on value alone, the OGD program ignored | the routing clause names both tests | the register's OGD column | no | no | no | no | readable |
-| R3 (decisive): the goods' invoice-currency prices read off the two years of extracts, every base-year shipment at its invoice value re-routed at its own currency's planning rate against CAD 3,300, OGD shipments formal regardless, scaled to the plan's volumes | none: no sentence says how the goods are priced or connects the plan's rates to the year's routing or to formal entries (asserted); CLR-OPS-11 states how a shipment is routed on its date and the plan lists its planning rates among nine assumptions, both read by the default path | the register's value, currency, customs rate and CAD value are the clearance system's audit trail of each valuation; nothing marks a shipment near the line or a route for the plan year | every forecasting reflex carries the routing (the ratio, the trend, smoothing, a fitted elasticity) and lands on a post at every gateway or a post at Richmond | none: no record scores a forecast | none: the battery passes on every route | no: a pricing inference over 483,000 rows, a re-routing of 248,000 shipments by currency, then a placement | silent |
+| R2: every foreign-currency shipment re-routed at its currency's planning rate on its base-year invoice value | CLR-OPS-11 2.1 to 3.1 and the plan's assumption 7, read together | the register's value, currency and rate columns | yes, once the rates are seen to move the line | no | no | yes, one conversion per shipment | readable |
+| R2a, R2b: one pass-through share for the network, or one per invoice currency | no | the register's importer, tariff item and two value columns | no | no | no | no | readable |
+| R3 (decisive): each segment's pass-through (gateway and invoice currency) estimated from the base year's repeat consignments of the year before, the plan's rate applied to the invoice-held share, the CAD-held share kept at its base-year routes, OGD formal regardless, scaled to the plan's volumes | none: no sentence says how the goods are priced, how a rate reaches a value, or connects the plan's rates to the year's routing or to formal entries (asserted); CLR-OPS-11 states how a shipment is routed on its date and the plan lists its planning rates among nine assumptions, both read by the default path | the register's importer, tariff item, invoice value, customs rate and CAD value are the clearance system's audit trail of each valuation; no column marks a shipment's pricing or a repeat | every forecasting reflex carries the routing (the ratio, the trend, smoothing, a fitted elasticity) or re-converts every shipment, and lands on a post at every gateway or four held | none: no record scores a forecast | none: the battery passes on every route | no: a match of 245,702 shipments to the year before on two keys, twelve shares, a re-routing by segment, then a placement | silent |
 
 ## Semantic fork table
 
@@ -228,117 +243,129 @@ Dorval, one at Calgary and three held.
 | SF2 | formal entries | every formal entry for a shipment released at the gateway, whoever transmits it | only entries the desk's own brokers transmit | the register carries no transmitter, so no other count exists | BRK-STD-03 4.2 ("whoever transmits it") |
 | SF3 | average monthly formal entries in 2027 | the year's forecast formal entries over twelve | the busiest month | none | BRK-STD-03 4.2 ("the average month of the plan year") |
 | SF4 | the load that places a post | forecast monthly formal entries over posts, the posts already placed in the review counted | the post being placed counted too | Dorval 1, five held (asserted) | BRK-STD-03 4.5 ("counting the posts already placed in this review") |
-| SF5 | exceeds 560 | strictly above | at or above | same call (no load within 25 of 560, asserted) | BRK-STD-03 4.5 and C1 |
-| SF6 | the plan year's exchange rates | the 2027 network plan's planning rates | the last customs rate on file; the base year's average | the last rate files a post at every gateway (R0 spot, asserted) | BRK-STD-03 4.3 ("on the network plan for the year, its shipments and its planning assumptions") and the plan's assumption 7 |
+| SF5 | exceeds 560 | strictly above | at or above | same call (no load at a step or the stop within 25 of 560, asserted) | BRK-STD-03 4.5 and C1 |
+| SF6 | the plan year's exchange rates | the 2027 network plan's planning rates | the last customs rate on file; the base year's average | the last rate (with the golden's shares) files a post at every gateway (R0f, asserted) | BRK-STD-03 4.3 ("on the network plan for the year, its shipments and its planning assumptions") and the plan's assumption 7 |
 | SF7 | the forecast's shipments | the plan's 2027 shipments with the profile of each gateway's twelve months to September 2026 | the two years' profile | same call and the same monthly forecasts to the nearest 50 (asserted) | the plan's assumptions 1 and 2 ("The twelve months October 2025 to September 2026", "as in the base") |
 | SF8 | the plan's growth | plan 2027 shipments over the base year's, by gateway | month by month | same call (the plan's months are the base months grown, asserted to 0.1) | C1 |
-| SF9 | invoice prices in 2027 | as in the base year (the history: every list price and repeat consignment kept its invoice value through both years) | inflated 1 to 3 per cent | same call from 0.98 to 1.03 (asserted) | the history (no list price moved in two years) and C3 |
-| SF10 | OGD-program shipments | formal whatever their value | routed on value alone | every post held (R2b, asserted) | CLR-OPS-11 3.1 (b) |
+| SF9 | price levels in 2027 | as in the base year, each in the currency its goods hold | every price 1 to 3 per cent lower or higher, invoice and CAD prices alike | same call from 0.98 to 1.03 (asserted) | the history (no list price moved in two years in either currency) and C3 |
+| SF10 | OGD-program shipments | formal whatever their value | routed on value alone | Calgary 1, five held (R2e, asserted) | CLR-OPS-11 3.1 (b) |
 | SF11 | a shipment amended after release | the later extract's row once | both rows | same call and bins (asserted) | C1 |
 | SF12 | the month of a release | the gateway's local release date | the UTC timestamp's date | same call and bins (asserted) | the extracts note and C1 |
 | SF13 | shipments under CAD 2,500 | outside the check; none can cross CAD 3,300 at any plan rate (the largest rise is 6.5 per cent) | re-routed too | same call | C1, asserted |
-| SF14 | the line | value for duty in CAD over 3,300.00 | at or over | same call (no value within CAD 0.75 of the line at the plan's rates; the nearest is 0.78, asserted) | CLR-OPS-11 3.1 (a) and C1 |
+| SF14 | the line | value for duty in CAD over 3,300.00 | at or over | same call (no value within CAD 0.75 of the line at the plan's rates, and no CAD value on file at 3,300.00, asserted) | CLR-OPS-11 3.1 (a) and C1 |
 | SF15 | a shipment invoiced in CAD | converted at 1 | none | same call | CLR-OPS-11 3.2 |
 | SF16 | rounding | the placement on unrounded loads; figures rounded once for the report | loads rounded before comparing | same call | BRK-STD-03 4.5 and the prompt |
 | SF17 | tie-break | none needed: no two loads within 5 of each other at a placement step (asserted) | by gateway code | same call | C1 |
 | SF18 | the plan's volumes | thousands of inbound international shipments to one decimal | units | none | the plan's own heading |
-| SF19 | the value a 2027 shipment carries | its base-year value in its invoice currency (the goods keep their invoice-currency prices) | its base-year CAD value (prices held in CAD); the list prices at invoice value but the other goods at CAD value; the reverse | prices in CAD files the default, one post at each gateway (asserted); list prices alone files the golden placement on other forecasts (3,850, 3,550, 3,150, 2,600, 1,600 to the nearest 50, asserted); the reverse files Mississauga, Dorval and Calgary 1, three held (asserted) | the history, not a sentence: 68,657 of the base year's 190,312 foreign-currency shipments outside OGD programs repeat a consignment of the year before at the same invoice value, 683 at the same CAD value; within those consignments the CAD value moves one for one with the rate (slope 1.000); every EUR, USD and GBP list price recurs in both years. No document files how the goods are priced (asserted) |
+| SF19 | the value a 2027 shipment carries | by segment: the base-year invoice value (re-routed at the plan's rate) for the share whose repeats keep their invoice values, the base-year CAD value (the route on file) for the share whose repeats keep their CAD values | every shipment at its base-year invoice value (rival b); every shipment at its base-year CAD value (the default's basis) | the first files Dorval 2, four held; the second the default, one post at each gateway (both asserted) | the history, not a sentence: Calgary's US-dollar goods 13,169 repeats at the same CAD value against 117 at the same invoice value, the Chinese goods at Mississauga 2,161 against 24 and Richmond 3,731 against 50, every other segment's repeats at their invoice values (54,126 of 54,444); within those consignments the CAD value holds (slopes 0.009 to 0.013) or moves one for one (0.970 to 1.000); Calgary's 15 CAD price points recur in both years while their US-dollar invoice values move against the rate. No document files how the goods are priced (asserted) |
+| SF20 | the pass-through estimator | shares of repeat shipments by gateway and invoice currency, the full key (gateway, importer, tariff item, currency, value to the cent), the year before against the base | shares counted by consignment; both years matched each way; the key without the tariff item, alone or counted by consignment; the CAD value within a cent, alone or by consignment; the CAD value to the dollar; the within-consignment regression of the log CAD value on the log rate; the regression of the change in the log CAD value on the change in the log rate; each repeat routed as its own consignment behaves; the world's truth | same call and every rounded figure (asserted, twelve constructions) | the data: every estimator lands each segment within 0.02 of its share |
+| SF21 | the segment a share is estimated for | gateway and invoice currency | one share for the network; one per invoice currency; one per gateway | Dorval 2, four held; Dorval 2, four held; the golden's placement on other figures (Mississauga 540 and Richmond 520 a post, Richmond 3,150 a month) (all asserted) | the data: the US-dollar goods keep their invoice values at the four other gateways (0.980 or more) and their CAD values at Calgary (0.009); at Mississauga and Richmond the Chinese goods keep their CAD values (0.011, 0.013) and the US-dollar goods their invoice values (1.000); homogeneity across the twelve segments rejected (71,119 on 11 degrees of freedom) |
 
 ## Ladder
 
 | Rung | Construction | Mississauga, Dorval, Richmond, Calgary, Winnipeg (2027 monthly formal entries) | Posts placed and held | Dies to |
 |---|---|---|---|---|
-| R0 (default) | base-year formal entries per shipment carried on the plan | 4,186, 3,211, 3,443, 2,582, 1,733 | one at each gateway, one held | the history: the goods keep their invoice-currency prices, so the plan's rates move the line in every invoice currency |
-| R0b | log-linear trend with month effects on the monthly formal entries | 4,439, 3,320, 3,550, 2,685, 1,855 | one at each gateway, one held | the trend carries the US dollar's rise through the price points |
-| R0c | additive-trend, seasonal exponential smoothing | 4,683, 3,307, 3,821, 2,655, 1,816 | Mississauga 2, one at each other gateway, none held | the same |
-| R0d | the last quarter's formal share on the plan | 4,274, 3,162, 3,572, 2,613, 1,693 | one at each gateway, one held | the same |
-| R0e | the network's formal share on each gateway's plan | 5,295, 2,986, 3,371, 1,560, 1,931 | Mississauga 3, Dorval, Richmond, Winnipeg 1, none held | each gateway's own mix |
-| R0f | the base year re-routed at the last customs rate on file | 4,241, 3,219, 3,571, 2,600, 1,754 | one at each gateway, one held | BRK-STD-03 4.3: the plan's rates |
-| R0g | every shipment kept at the CAD value the base year gave it (prices held in CAD) | 4,186, 3,211, 3,443, 2,582, 1,733 | one at each gateway, one held | the history: 68,657 repeat consignments on the invoice value against 683 on the CAD value, slope 1.000 |
-| R1 | the formal share fitted on the month's US dollar and euro rates, at the plan's rates | 3,901, 3,261, 3,312, 2,447, 1,563 | Dorval 1, Calgary 1, four held | the euro price points never crossed in the history, and the US crossing is not linear |
-| R2 | every foreign value moved by the US dollar's change | 3,635, 3,064, 2,945, 2,444, 1,500 | Dorval 1, Calgary 1, four held | each currency has its own planning rate |
-| R2a | only the euro shipments re-routed | 4,215, 3,655, 3,443, 2,582, 1,733 | Dorval 2, one at each other gateway, none held | the US dollar's rate moves too |
-| R2b | every shipment re-routed on value alone | 2,303, 2,029, 2,429, 2,103, 994 | every post held | CLR-OPS-11 3.1 (b): OGD goods are formal whatever their value |
-| R2c | the list prices re-routed, the other goods kept at their base-year CAD values | 3,845, 3,572, 3,152, 2,582, 1,590 | Dorval 2, Calgary 1, three held, on other forecasts | the repeat consignments: the other goods keep their invoice prices too |
-| R3 (golden) | every base-year shipment at its invoice value, re-routed at its currency's planning rate, OGD formal regardless, scaled to the plan | 3,709, 3,602, 3,001, 2,444, 1,500 | Dorval 2, Calgary 1, three held | none |
+| R0 (default) | base-year formal entries per shipment carried on the plan | 4,173, 3,216, 3,484, 2,605, 1,730 | one at each gateway, one held | the plan's rates move the line for the invoice-priced goods |
+| R0b | log-linear trend with month effects on the monthly formal entries | 4,438, 3,320, 3,527, 2,605, 1,875 | one at each gateway, one held | the trend carries the US dollar's rise through the price points |
+| R0c | additive-trend, seasonal exponential smoothing | 4,546, 3,393, 3,755, 2,590, 1,876 | Mississauga 2, one at each other gateway, none held | the same |
+| R0d | the last quarter's formal share on the plan | 4,229, 3,254, 3,603, 2,659, 1,752 | one at each gateway, one held | the same |
+| R0e | the network's formal share on each gateway's plan | 5,288, 2,982, 3,449, 1,563, 1,909 | Mississauga 3, Dorval, Richmond, Winnipeg 1, none held | each gateway's own mix |
+| R0f | the golden's pass-through at the last customs rate on file | 4,218, 3,227, 3,599, 2,605, 1,749 | one at each gateway, one held | BRK-STD-03 4.3: the plan's rates |
+| R1 | the formal share fitted on the month's US dollar and euro rates, at the plan's rates | 3,928, 3,255, 3,425, 2,620, 1,563 | one at each gateway but Winnipeg, two held | the euro price points never crossed in the history, and the crossing is not linear |
+| R2 (rival b) | every foreign-currency shipment re-routed at its currency's planning rate | 3,718, 3,601, 3,039, 2,023, 1,501 | Dorval 2, four held | the repeat consignments: Calgary's US goods and the Chinese goods keep their CAD values |
+| R2a (rival c) | one pass-through share for the network (0.737) | 3,837, 3,500, 3,156, 2,176, 1,561 | Dorval 2, four held | the segments behave in opposite ways (SF21) |
+| R2b (rival d) | one pass-through share per invoice currency (US dollar 0.719) | 3,872, 3,614, 3,198, 2,186, 1,565 | Dorval 2, four held | Calgary's US goods against the other four gateways' (SF21) |
+| R2c | the golden's pass-through, every value moved by the US dollar's change alone | 3,669, 3,073, 3,047, 2,600, 1,501 | Dorval 1, Calgary 1, four held | each currency has its own planning rate |
+| R2d | the golden's pass-through, only the euro shipments re-routed | 4,203, 3,652, 3,484, 2,605, 1,730 | Dorval 2, one at each other gateway, none held | the US dollar's rate moves too |
+| R2e | the golden's pass-through, OGD goods on value alone | 2,318, 2,007, 2,517, 2,258, 990 | Calgary 1, five held | CLR-OPS-11 3.1 (b): OGD goods are formal whatever their value |
+| R2f (rival e) | one pass-through share per gateway | 3,771, 3,598, 3,129, 2,600, 1,501 | Dorval 2, Calgary 1, three held, on other forecasts and loads | the Chinese goods and the US goods at Mississauga and Richmond (SF21) |
+| R3 (golden) | each segment's pass-through from the repeat consignments, that share re-routed at the plan's rate, the rest at its base-year route, OGD formal, scaled to the plan | 3,743, 3,601, 3,091, 2,600, 1,501 | Dorval 2, Calgary 1, three held | none |
 
-- **Constructions of the golden**, every one the same placement: the year at once (3,708.5, 3,602.5, 3,001.3, 2,443.6,
-  1,499.7), month by month on the plan's months (the same figures to the nearest 50), the base year cut by UTC date
-  (3,707.5, 3,601.2, 2,998.7, 2,441.5, 1,498.9), amended shipments counted twice (the same rounded figures), the two
-  years' profile instead of the base's (3,692.3, 3,585.4, 2,981.2, 2,446.0, 1,509.3, the same figures to the nearest 50,
-  ruled out by the plan's assumptions 1 and 2), invoice prices from 2 per cent lower to 3 per cent higher.
-- **Separation:** the placement steps are Dorval at 720.5, Calgary at 610.9, Dorval again at 600.4; the stop is
-  Mississauga at 529.8, 5.4 per cent under 560 (flip condition: Mississauga's 2027 monthly formal entries would have to
-  rise from 3,709 to 3,920 for a fourth post). Dorval's second post clears the line by 7.2 per cent (flip: Dorval under
-  3,360 a month). Every rival's placement differs from the golden's in at least two buckets; the default in five of six.
-- **Position:** the golden's two-post desk, Dorval, is second of five on the default's loads before posts (642.1 against
-  Calgary's 645.4) and gets one post there; Richmond, Mississauga and Winnipeg, which the default all staff, get none.
-- **Dominance:** the decisive move shifts Dorval by +12.2 per cent and Mississauga, Richmond and Winnipeg by -11.4,
-  -12.8 and -13.5 per cent, against Calgary's -5.4; the largest move any rung keeping the history's rates makes on Dorval
-  is the trend's +3.4 per cent.
-- **Grid:** every construction that keeps the base year's routing files a post at Richmond (R0 to R0g); one rate for
-  every currency or an elasticity fitted on the history holds four (R1, R2); re-routing on value alone holds every post
-  (R2b); the list prices alone re-routed files the golden placement on other forecasts (R2c); only every shipment at its
-  base-year invoice value, re-routed per currency with OGD kept, files Dorval 2, Calgary 1, three held on the golden's
-  forecasts.
-- **Worth on the graded figures:** the decisive step moves every forecast (by -5 to +12 per cent), every load and five of
-  the six buckets; no rung keeping the history's rates moves Dorval's forecast by more than 3.4 per cent.
+- **Constructions of the golden**, every one the same placement and every rounded figure: the world's own 2027, each
+  shipment routed as its own pricing behaves (3,742.6, 3,601.8, 3,090.8, 2,601.7, 1,500.9); the twelve SF20 estimators
+  (Mississauga 3,742.6 to 3,755.3, Dorval 3,594.4 to 3,602.0, Richmond 3,090.6 to 3,094.9, Calgary 2,592.6 to 2,601.7,
+  Winnipeg 1,500.9 to 1,506.6); month by month on the plan's months; the base year cut by UTC date; amended shipments
+  counted twice; the two years' profile instead of the base's (3,732.4, 3,579.8, 3,081.4, 2,623.1, 1,509.0, the same
+  figures to the nearest 50, ruled out by the plan's assumptions 1 and 2); every price 2 per cent lower to 3 per cent
+  higher.
+- **Separation:** the placement steps are Dorval at 720.3, Calgary at 650.0, Dorval again at 600.2; the stop is
+  Mississauga at 534.8, 4.5 per cent under 560 (flip condition: Mississauga's 2027 monthly formal entries would have to
+  rise from 3,743 to 3,920 for a fourth post). Dorval's second post clears the line by 7.2 per cent (flip: Dorval under
+  3,360 a month); Calgary's clears it by 16 per cent (flip: Calgary under 2,240, which every rival that re-routes its US
+  goods reaches). Every rival's placement differs from the golden's in at least two buckets but rival (e), which keeps
+  the placement and misses Mississauga's and Richmond's figures; the default differs in five of six.
+- **Position:** the golden's two-post desk, Dorval, is second of five on the default's loads before posts (643.3 against
+  Calgary's 651.3) and gets one post there; Richmond, Mississauga and Winnipeg, which the default all staff, get none.
+- **Dominance:** against the default the decisive step shifts Dorval by +12.0 per cent and Mississauga, Richmond and
+  Winnipeg by -10.3, -11.3 and -13.3 per cent, against Calgary's -0.2; against the full re-conversion it lifts Calgary by
+  28.6 per cent and Mississauga and Richmond by 0.7 and 1.7 per cent; the largest move any rung keeping the history's
+  rates makes on Dorval is the smoothing's +5.5 per cent.
+- **Grid:** every construction that keeps the base year's routing files a post at Richmond (R0 to R0f); every one that
+  re-routes Calgary's US goods at the plan's dollar rate loses Calgary's post (R2, R2a, R2b); one rate for every currency
+  or an elasticity fitted on the history holds two to four (R1, R2c); re-routing on value alone holds five (R2e); one
+  share per gateway files the golden placement on other forecasts (R2f); only the shares by gateway and invoice currency
+  file Dorval 2, Calgary 1, three held on the golden's forecasts.
+- **Worth on the graded figures:** against the full re-conversion, the pass-through moves Calgary's bucket, the held
+  count, and Calgary's, Mississauga's and Richmond's forecasts and loads (2,000 to 2,600, 3,700 to 3,750 and 3,050 to
+  3,100 a month; 505 to 520, 530 to 535 and 505 to 515 a post), and keeps Dorval's and Winnipeg's.
 - **Rounding:** each gateway's entries per post is the same five from the unrounded forecast and from the forecast to
-  the nearest 50 (530, 515, 500, 490, 500), each 1.0 or more from its edge (Mississauga's 3,700 over seven is 1.07 from
-  527.5, the nearest), and each step's load is 1.6 or more from its edge (asserted).
+  the nearest 50 (535, 515, 515, 520, 500); the unrounded loads sit 1.97 or more from their edges, and the loads from
+  the rounded forecasts, fixed by their bins, 0.83 or more (Richmond's 3,100 over six, 516.67); each step's load is 2.2
+  or more from its edge (asserted).
 
 ## Closure table
 
 | Axis | Reading | Closure |
 |---|---|---|
-| 1 Population | every shipment the plan expects at the gateway in 2027, of the profile of its twelve months to September 2026, each at its base-year invoice value | BRK-STD-03 4.2 and 4.3, the plan's assumptions 1 and 2; the value basis from the history (SF19); C1 |
+| 1 Population | every shipment the plan expects at the gateway in 2027, of the profile of its twelve months to September 2026, each at the value its segment holds (the invoice value for the invoice-held share, the CAD value for the CAD-held share) | BRK-STD-03 4.2 and 4.3, the plan's assumptions 1 and 2; the value basis from the history (SF19); C1 |
 | 2 Unit of account | a formal entry (one per shipment routed to the desk); broker posts | BRK-STD-03 4.2 and 4.4; the extracts note's grain line |
 | 3 Attribution window | calendar 2027; the base year 1 October 2025 to 30 September 2026 by local release date | BRK-STD-03 4.2; C1 on UTC dates (SF12) |
 | 4 As-of dating | the extracts pulled 7 October 2026; the establishment at 1 January 2027 | the extracts note; BRK-STD-03 appendix A |
 | 5 Version basis | the 2027 network plan issued 18 September 2026; the amended row of an amended shipment | the plan's cover; C1 (SF11) |
 | 6 Denominator | posts on the establishment plus posts placed | BRK-STD-03 4.4 and 4.5 (SF1, SF4) |
-| 7 Weighting | each shipment once | C1 |
-| 8 Window length | the twelve months the plan grows from for the profile; the two years on file for how the goods are priced | the plan's assumptions 1 and 2; the two years' profile files the same rounded forecasts (SF7, asserted) |
+| 7 Weighting | each shipment once; each segment's share over its repeat shipments | C1; every SF20 estimator files the same rounded figures |
+| 8 Window length | the twelve months the plan grows from for the profile; the two years on file for the pass-through | the plan's assumptions 1 and 2; the two years' profile files the same rounded forecasts (SF7, asserted) |
 | 9 Boundary inclusivity | over CAD 3,300; exceeds 560 | C1 (SF5, SF14) |
 | 10 Rounding path | the placement on unrounded loads; reported figures rounded once | BRK-STD-03 4.5; the prompt (SF16) |
 | 11 Tie-break | none | C1 (SF17) |
 | 12 Maturity and censoring | none: every base-year month closed at the pull, 2027 not begun | the extracts note |
-| 13 Order of operations | re-route, count, scale to the plan, divide by posts, place one at a time | BRK-STD-03 4.5; C4 n.a. |
+| 13 Order of operations | estimate the shares, re-route by segment, count, scale to the plan, divide by posts, place one at a time | BRK-STD-03 4.5; C4 n.a. |
 | 14 Row order | none | C1 |
 | 15 Duplicate resolution | an amended shipment once, its later row | C1 (SF11) |
-| 16 Identity normalisation | gateways by code, desk name and plan region | the extracts note and the plan's legend |
+| 16 Identity normalisation | gateways by code, desk name and plan region; a consignment by gateway, importer, tariff item and currency | the extracts note and the plan's legend; SF20 for the key |
 | 17 Netting against gross | none | n.a. |
 | 18 Dimensional units | CAD per unit of each currency; the plan in thousands | the plan's legend; the register's rate column (SF18) |
 | 19 Code and status semantics | FORMAL and CLVS; OGD program codes | the extracts note; never the stump |
 | 20 Integerisation | whole posts | BRK-STD-03 4.5 |
 | 21 Clause scope | BRK-STD-03 4.5 per post; CLR-OPS-11 3.1 per shipment | the documents' own clauses |
-| 22 Forward window contents | the plan's 2027 volumes and rates; the goods' invoice values as the history shows them kept | the 2027 network plan ships; no 2027 record exists; SF19 |
+| 22 Forward window contents | the plan's 2027 volumes and rates; each segment's goods at the value the history shows them holding | the 2027 network plan ships; no 2027 record exists; SF19, SF21 |
 
 ## Literal reader
 
-Executed word for word, the prompt, BRK-STD-03 4.2 to 4.5 and appendix A, CLR-OPS-11 3.1 and 3.2 and the 2027 network
+Executed word for word, the prompt, BRK-STD-03 4.2 to 4.5 and appendix A, CLR-OPS-11 2.1 to 3.2 and the 2027 network
 plan's volumes and assumptions give, for each gateway, the formal entries of its 2027 shipments (the plan's shipments,
 of the profile of its twelve months to September 2026, each routed as CLR-OPS-11 routes a shipment, at the plan's
 exchange rates) over its posts, and the placement one post at a time while the highest load exceeds 560. The text is
-silent on what a 2027 shipment's value will be and on how the year's formal entries are forecast. The candidate
-bases are the base year's values held in CAD (which is what carrying the base year's routing, its ratio, trend or fitted
-sensitivity, amounts to) and the base year's values held in their invoice currencies; the text does not choose, the
-history does (SF19: the consignments recur on their invoice values, not their CAD values, and their CAD values move one
-for one with the rate). On that basis a 2027 shipment is routed at the rate of its 2027 date, which the plan sets, so
-the data and the design force the method (`determinism-check` section 1). Every term and convention converges or is
-ruled out by a quoted sentence or by the history (SF1 to SF19, all asserted in `checks.py`); the easy answer comes from
-an easy method on the same literal estimand, never from another reading.
+silent on what a 2027 shipment's invoice value or CAD value will be and on how the year's formal entries are forecast;
+filling the gap with the base year's invoice values is an assumption the text does not make (rival b), and filling it
+with the base year's CAD values is the default's. The history decides, segment by segment: the consignments repeated
+across the two years show which goods keep their invoice values and which their CAD values (SF19), at a segmentation
+the data separates (SF21) and with every estimator landing the same figures (SF20). On that basis a 2027 shipment of an
+invoice-held segment is routed at the plan's rate and one of a CAD-held segment at the CAD value it holds, so the data
+and the design force the method (`determinism-check` section 1). Every term and convention converges or is ruled out by
+a quoted sentence or by the history (SF1 to SF21, all asserted in `checks.py`); the easy answers come from easy methods
+on the same literal estimand, never from another reading.
 
 ## Oracles
 
 - The gateway activity report (monthly inbound shipments, CLVS releases and formal entries since January 2021): the
   history every route reads; it ties on every route and ranks nothing for 2027.
 - The 2027 network plan: volumes and assumptions; it ranks gateways by shipments, not by load, and states no formal
-  entries.
+  entries and no pricing.
 - CLR-OPS-11: how a shipment is routed on its date; every route executes it on the history.
-- The year before the base in the high-value check (the 2026 review's four extracts): the evidence for how the goods are
-  priced; it ranks nothing and states no forecast; read on the default path's question (the base year's ratio) it is
-  idle.
+- The year before the base in the high-value check (the 2026 review's four extracts): the evidence for each segment's
+  pass-through; it ranks nothing and states no forecast; read on the default path's question (the base year's ratio) it
+  is idle, and read for the full re-conversion it is not needed.
 - The 2026 network plan (a distractor): last year's volumes and rates, superseded; it states no formal entries.
 - The ask files (time and attendance, HR, Brandmoor's statements and portal, the AP register): the asks only; the call
   opens none (asserted).
@@ -445,11 +472,15 @@ stamped or which month a statement bills (asserted).
 | B Brandmoor charges (20) | the AP register by posting date, reconciled to the statements by their titled month | every desk and quarter a month behind (computed at the build) | miss |
 | the deck's overtime chart | the cracker's hours drawn as the golden draws them | its bars carry Ask A's miss | outside |
 
-Mirror leakage: 10 per cent of the ask weight. The mirror (R0, a post at every gateway) runs the same ask paths as the
-cracker, so it misses every Ask A and Ask B figure the cracker misses and keeps only the deck's chart form (one bar per
-desk in each quarter, the five desks, the four quarters).
-Pair ceiling: 34 (the cracker about 48 with the call, its components, the instructions and the chart's form; the
-mirror about 20 with the instructions, the chart's form and the one bucket it shares, Calgary's post).
+Mirror leakage: 10 per cent of the ask weight. The mirror is now the most attractive wrong rung, rival (b), every
+shipment re-routed at the plan's rates; it runs the same ask paths as the cracker, so it misses every Ask A and Ask B
+figure the cracker misses and keeps only the deck's chart form (one bar per desk in each quarter, the five desks, the
+four quarters).
+Pair ceiling: 37 (the cracker about 48 with the call, its components, the instructions and the chart's form; the
+mirror about 26 with the instructions, the chart's form and the call's components it shares: Mississauga's, Dorval's,
+Richmond's and Winnipeg's buckets, Dorval's and Winnipeg's forecasts and loads, two of the three step loads; it misses
+the call, Calgary's bucket and the held count, Calgary's, Mississauga's and Richmond's forecasts and loads and the
+blocking load).
 
 ## Build record
 
@@ -458,50 +489,60 @@ precut, voice-check, leak.py REVIEW answered, heart WARN, surface with task446 p
 
 **Stage 4, 2026-10-15.** The leak reader was clean (Q1 to Q4 none, Q6 analytical, every REVIEW line harmless; its ask
 readings are the devices: desk by assignment date, call-backs at punch time, the minimum once, the transmission month).
-The judge returned DETERMINISTIC and APPROVE (`determinism_check_report.md`) with two findings this repair closes:
+The judge returned DETERMINISTIC and APPROVE (`determinism_check_report.md`) with two findings, closed in the repair
+(target.zip db04473c): the per-post rounding fork (the plan's growth re-set so both rounding routes give the same five)
+and Gate H borderline on rule application (the plan's assumption 2 no longer filed the goods' invoice prices; the two
+years of extracts carried the pricing instead). The re-judge returned DETERMINISTIC and APPROVE again, its Gate H line
+still reading the repricing as partly rule execution.
 
-- **Rounding fork on two graded figures.** Entries per post from the forecast already rounded to 50 gave Mississauga 530
-  and Winnipeg 500 against 525 and 505 from the unrounded forecast. The data moved, not the prompt: the plan's growth
-  was re-set by gateway (Mississauga 2.4, Dorval 3.2, Richmond 1.3, Calgary 3.6, Winnipeg 3.2 per cent), so both
-  routes give the same five at every gateway (530, 515, 500, 490, 500), each 1.0 or more from its edge, and every
-  placement step's load sits 1.6 or more from its edge (asserted).
-- **Gate H borderline on rule application.** The plan's assumption 2 filed "the prices those goods are invoiced at, as
-  in the base", which with BRK-STD-03 4.3 and assumption 7 spelled the re-routing out. The clause is gone (the profile
-  is lanes, customers and goods), and the history now carries the pricing: the pack holds the 2026 review's four
-  extracts (October 2024 to September 2025) beside the base year's, and the goods keep their invoice-currency prices
-  through both years (list prices in EUR, USD and GBP, and importers' repeat consignments across every background
-  segment), while their CAD values move with the day's rate. The analyst has to read that off the data; carrying the
-  base year's routing is the same as holding every shipment at its base-year CAD value, which the data rejects.
+**Rule 3 rework, 2026-10-15.** The client's strict reading of rule 3: with the plan's rates filed as the year's rates
+and the clearance manual valuing each shipment on its invoice, re-routing every base-year shipment at the plan's rates
+is a filed assumption executed through a filed rule, so a golden that is that re-routing lands from the HOW sentences
+with no modelling choice left. The decisive step moved to the exchange-rate pass-through: importers differ in the
+currency their prices are set in, the mix differs by segment, and the golden estimates each segment's share from the
+repeat consignments. The world now prices Calgary's US-dollar goods (99 per cent of them, its background goods and 15
+price points from CAD 3,329 to 3,399) and the Chinese goods at Mississauga and Richmond (99 per cent) in Canadian
+dollars, invoiced at the day's conversion; a few per cent of the euro, sterling, yen and Dorval's US-dollar goods are
+priced in CAD too, where their wedge at the plan's rates is small; every price point sits on a standing consignment
+(one tariff item per importer's line), so both pricing kinds recur at the same rate per consignment; a base-year
+shipment that would repeat a consignment of the year before on both values (a day of the same rate) is not drawn. The
+call is kept (Dorval 2, Calgary 1, three held) on new forecasts (Mississauga 3,750, Dorval 3,600, Richmond 3,100,
+Calgary 2,600, Winnipeg 1,500; loads 535, 515, 515, 520, 500), the plan's growth re-set (Mississauga 2.5, Dorval 3.3,
+Richmond 3.9, Calgary 4.0, Winnipeg 2.2 per cent) so every forecast sits 15.6 or more from its 50 edge and every load
+1.97 or more from its 5 edge. No filed sentence names pass-through, repricing or how a 2027 value is formed (asserted);
+the plan states its volumes and its rates as the year's rates; the evidence sits in the extracts' own columns, no
+single-purpose file or column. The prompt and the asks are unchanged.
 
-**The margin by which the history rejects CAD-fixed pricing:** 68,657 of the base year's 190,312 foreign-currency
-shipments outside OGD programs (36.1 per cent) repeat a consignment of the year before (importer, tariff item,
-currency) at the same invoice value, against 683 (0.4 per cent) at the same CAD value, about 100 to 1; within the
-consignments of both years the CAD value moves one for one with the day's customs rate (slope 1.000; CAD-fixed pricing
-predicts 0); every EUR, USD and GBP list price recurs in both years while its CAD value moves with the rate (Dorval's
-EUR list +4.0 per cent between the two years' averages, the GBP lists +2.3 and +2.4, the USD lists +0.8 to +0.9). The CAD-fixed basis
-files the default placement (one post at each gateway, one held); list prices alone re-routed files the golden
-placement on other forecasts (3,850, 3,550, 3,150, 2,600, 1,600), ruled out by the repeat consignments; the reverse
-files Mississauga, Dorval and Calgary 1, three held, ruled out by the list prices (all asserted).
+**Rivals and the margins by which the data rejects them.** (a) the default, the base year's formal entries per shipment
+carried: one post at each gateway, one held. (b) every foreign-currency shipment re-routed at the plan's rates
+(pass-through one everywhere): Dorval 2, four held, Calgary at 2,023 a month (505.7 a post on four); the data puts
+19,061 of the 19,252 repeats in the three CAD-held segments at the same CAD value (Calgary's US-dollar goods 0.009, 95
+per cent interval plus or minus 0.002, about 1,200 standard errors from one; the Chinese goods 0.011 and 0.013), and
+their within-consignment slopes of the log CAD value on the log rate are 0.009 to 0.013 against the one the rival
+assumes. (c) one share for the network (0.737): Dorval 2, four held, Calgary at 544.0 a post on four; the twelve
+segments split into two groups (0.958 to 1.000 and 0.009 to 0.013) and homogeneity is rejected with a statistic of
+71,119 on 11 degrees of freedom, Calgary's share about 900 standard errors under the pooled one. (d) one share per
+currency (US dollar 0.719): Dorval 2, four held, Calgary at 546.6; the other four gateways' US-dollar goods sit at 0.980
+or more. (e) one share per gateway: the golden's placement on other figures (Richmond 3,150 a month, Mississauga 540 and
+Richmond 520 a post), the Chinese and US goods at Mississauga and Richmond behaving in opposite ways. Every SF20
+estimator files the golden's placement and every rounded figure; the estimators that count a CAD value rounded to the
+whole dollar without the tariff item, or once per key, are not among them: a large importer's one-off shipments meet
+others in the same dollar by chance (about 2,000 at Mississauga), which no repeat consignment does.
 
-**Gates after the repair:** checks 163 assertions, 0 failed; verify from the bundle alone equal to figures.json, the
-workbook and the deck; two builds byte-identical; figures_check exit 0 (103 figures); precut exit 0 (49 checks);
-voice-check PASS (867 characters, unchanged); containers clean (target and golden); leak.py REVIEW, no LEAK; guard
-heart WARN (repeat.gate_g; the older same-driver match a NOTE, differentiated), surface exit 0 with track A clean and
-task446 still promoted on the card signature for the author's clone-check; validate 183 cards, 0 invalid.
+**Gates after the rework:** checks 189 assertions, 0 failed; verify from the bundle alone equal to figures.json, the
+workbook (now with its Forecast basis sheet) and the deck; two builds byte-identical (target.zip sha256 2ef27adf);
+figures_check exit 0 (133 figures); precut exit 0 (49 checks, no FAIL or WARN, pair ceiling 37); voice-check PASS (the
+prompt unchanged, 867 characters); containers clean (target and golden); leak.py REVIEW, no LEAK; guard check and heart
+WARN (repeat.gate_g; the older same-driver match a NOTE, differentiated on the card), surface exit 0 with task446
+promoted on the card signature as before, for the author's clone-check; validate 184 cards, 0 invalid. freeze.py
+against the stage 4 snapshot: the call, the posts placed, the prompt and all 40 ask figures are unchanged; the
+forecasts, loads and blocking load, the card's stump and driver and the note's ladder and default path move, by design
+(a re-root of the decisive step, not a repair of a reading).
 
-**Freeze (determinism mode):** the call (Dorval 2, Calgary 1, three held), the stump, the card's stump and driver, the
-default path section, the prompt's call sentence and all 40 ask figures are unchanged. Allowed: `blocking_load.load`,
-`entries_per_post_after.Mississauga`, `.Richmond`, `.Winnipeg` and `forecast_monthly_formal_entries.Richmond` (the
-rounding repair), `base_year_formal_at_plan_rates.*`, `base_year_shipments_checked` and the default path's Mississauga
-and Richmond forecasts (the register regenerated with the standing consignments, and the re-set growth). The four
-frozen items that move with them and that the tool cannot allow by key: the Final Recommendation's blocking load (525
-to 530), the Critical Components' per-post and Richmond figures, the ladder section's numbers and the workbook's
-forecast and per-post answer lines.
-
-**leak.py REVIEW lines, each harmless:** 500, 490 and 165 inside Brandmoor amounts and an entry count, and 500 inside
-CLR-OPS-11's CAD 2,500 check floor, three-digit coincidences; BRK-STD-03 carries the call's words because the call is
-made under it and states no placement; the design-note vocabulary in BRK-STD-03, CLR-OPS-11 and the two notes is the
-field's own (invoice currency, routing, exchange, workforce planning), and no document says how the goods are priced
+**leak.py REVIEW lines, each harmless:** 117, 165 and 500 inside Brandmoor amounts, and 500 inside CLR-OPS-11's CAD
+2,500 check floor, three-digit coincidences; BRK-STD-03 carries the call's words because the call is made under it and
+states no placement; the design-note vocabulary in BRK-STD-03, CLR-OPS-11 and the two notes is the field's own (invoice,
+currency, shipment, the gateways' names), and no document says how the goods are priced, how a rate passes into a value
 or connects the plan's rates to the routing (asserted).
 
 ## Tried and rejected
@@ -538,3 +579,22 @@ or connects the plan's rates to the routing (asserted).
 - Standing consignments drawn above the check's floor at the lowest rate of the two years: they sat higher in the value
   distribution than the fresh shipments and lifted every gateway's formal share about 2 per cent; drawn at the two
   years' average rate instead.
+- full repricing at plan rates: rule application (filed assumption plus filed rule), per the rule 3 read
+- Annual repricing to hold the CAD price (the invoice value reset once a year): rejected on paper; within a year such a
+  consignment repeats at one invoice value and across years at neither value, so the repeats carry no clean signal and
+  a regression's share depends on how consignments are paired across years; the CAD-priced goods are invoiced at the
+  CAD price converted at the day's rate instead.
+- CAD pricing at 2 to 5 per cent in every segment: a US-dollar invoice converted from a CAD price lands a cent either
+  side of the price on about three conversions in ten, so counting repeats by consignment doubled the CAD-held
+  consignments, and a CAD value to the whole dollar met chance matches; Mississauga's, Richmond's and Winnipeg's
+  forecasts moved across their bins by estimator. CAD pricing stays out of the segments with a large wedge at the plan's
+  rates unless it is near total (Calgary's US goods, the Chinese goods, whose fine currency unit hits the CAD price to
+  the cent).
+- Price points drawn fresh for each shipment (a random importer and tariff item): the CAD price points were sparse
+  combinations against dense invoice ones, so a consignment-weighted share moved Calgary across its load bin; every
+  price point is now a standing consignment, one tariff item per importer's line.
+- Calgary's US goods the only CAD-held segment: the full re-conversion then missed only Calgary's bucket, forecast and
+  load and the held count and kept twelve of the call's sixteen per-gateway figures, a mirror near the pair ceiling;
+  the Chinese goods at Mississauga and Richmond are CAD-priced too, so it misses their forecasts and loads as well.
+- Richmond's forecast in the 3,050 bin (3,036.5 a month): 3,050 over six posts is 508.33, which rounds to 510, while the
+  unrounded load, 506.1, rounds to 505; the plan's growth for Richmond was set so the forecast sits mid-bin at 3,100.

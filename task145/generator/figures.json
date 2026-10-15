@@ -29,22 +29,22 @@
     "Winnipeg": "3"
   },
   "forecast_monthly_formal_entries": {
-    "Mississauga": "3,700",
+    "Mississauga": "3,750",
     "Dorval": "3,600",
-    "Richmond": "3,000",
-    "Calgary": "2,450",
+    "Richmond": "3,100",
+    "Calgary": "2,600",
     "Winnipeg": "1,500"
   },
   "entries_per_post_after": {
-    "Mississauga": "530",
+    "Mississauga": "535",
     "Dorval": "515",
-    "Richmond": "500",
-    "Calgary": "490",
+    "Richmond": "515",
+    "Calgary": "520",
     "Winnipeg": "500"
   },
   "blocking_load": {
     "desk": "Mississauga",
-    "load": "530"
+    "load": "535"
   },
   "plan_rates": {
     "USD": "1.3400",
@@ -54,13 +54,6 @@
     "JPY": "0.0092500"
   },
   "line_cad": "3,300",
-  "fx_effect_pct": {
-    "Mississauga": "-11",
-    "Dorval": "+12",
-    "Richmond": "-13",
-    "Calgary": "-5",
-    "Winnipeg": "-13"
-  },
   "default_path": {
     "posts_placed": {
       "Mississauga": "1",
@@ -71,11 +64,159 @@
     },
     "held": "1",
     "forecast_monthly_formal_entries": {
-      "Mississauga": "4,200",
+      "Mississauga": "4,150",
       "Dorval": "3,200",
-      "Richmond": "3,450",
+      "Richmond": "3,500",
       "Calgary": "2,600",
       "Winnipeg": "1,750"
+    }
+  },
+  "pass_through": {
+    "Mississauga USD": {
+      "repeats_on_invoice_value": "13,267",
+      "repeats_on_cad_value": "5",
+      "share": "1.000"
+    },
+    "Mississauga EUR": {
+      "repeats_on_invoice_value": "1,900",
+      "repeats_on_cad_value": "36",
+      "share": "0.981"
+    },
+    "Mississauga GBP": {
+      "repeats_on_invoice_value": "1,998",
+      "repeats_on_cad_value": "87",
+      "share": "0.958"
+    },
+    "Mississauga CNY": {
+      "repeats_on_invoice_value": "24",
+      "repeats_on_cad_value": "2,161",
+      "share": "0.011"
+    },
+    "Dorval USD": {
+      "repeats_on_invoice_value": "3,151",
+      "repeats_on_cad_value": "65",
+      "share": "0.980"
+    },
+    "Dorval EUR": {
+      "repeats_on_invoice_value": "9,427",
+      "repeats_on_cad_value": "5",
+      "share": "0.999"
+    },
+    "Dorval GBP": {
+      "repeats_on_invoice_value": "1,542",
+      "repeats_on_cad_value": "21",
+      "share": "0.987"
+    },
+    "Richmond USD": {
+      "repeats_on_invoice_value": "9,579",
+      "repeats_on_cad_value": "1",
+      "share": "1.000"
+    },
+    "Richmond CNY": {
+      "repeats_on_invoice_value": "50",
+      "repeats_on_cad_value": "3,731",
+      "share": "0.013"
+    },
+    "Richmond JPY": {
+      "repeats_on_invoice_value": "5,460",
+      "repeats_on_cad_value": "95",
+      "share": "0.983"
+    },
+    "Calgary USD": {
+      "repeats_on_invoice_value": "117",
+      "repeats_on_cad_value": "13,169",
+      "share": "0.009"
+    },
+    "Winnipeg USD": {
+      "repeats_on_invoice_value": "7,802",
+      "repeats_on_cad_value": "3",
+      "share": "1.000"
+    }
+  },
+  "calgary_usd_cad_held_pct": "99.1",
+  "cad_held_repeats": "19,061",
+  "invoice_held_repeats_elsewhere": "54,126",
+  "repeats_elsewhere": "54,444",
+  "repeats_total": "73,696",
+  "calgary_cad_price_points": {
+    "count": "15",
+    "lowest": "3,329",
+    "highest": "3,399"
+  },
+  "rivals": {
+    "full_repricing": {
+      "posts_placed": {
+        "Mississauga": "0",
+        "Dorval": "2",
+        "Richmond": "0",
+        "Calgary": "0",
+        "Winnipeg": "0"
+      },
+      "held": "4",
+      "forecast_monthly_formal_entries": {
+        "Mississauga": "3,700",
+        "Dorval": "3,600",
+        "Richmond": "3,050",
+        "Calgary": "2,000",
+        "Winnipeg": "1,500"
+      },
+      "calgary_load_at_four_posts": "505"
+    },
+    "pooled_share": {
+      "posts_placed": {
+        "Mississauga": "0",
+        "Dorval": "2",
+        "Richmond": "0",
+        "Calgary": "0",
+        "Winnipeg": "0"
+      },
+      "held": "4",
+      "forecast_monthly_formal_entries": {
+        "Mississauga": "3,850",
+        "Dorval": "3,500",
+        "Richmond": "3,150",
+        "Calgary": "2,200",
+        "Winnipeg": "1,550"
+      },
+      "calgary_load_at_four_posts": "545",
+      "share": "0.737"
+    },
+    "by_currency": {
+      "posts_placed": {
+        "Mississauga": "0",
+        "Dorval": "2",
+        "Richmond": "0",
+        "Calgary": "0",
+        "Winnipeg": "0"
+      },
+      "held": "4",
+      "forecast_monthly_formal_entries": {
+        "Mississauga": "3,850",
+        "Dorval": "3,600",
+        "Richmond": "3,200",
+        "Calgary": "2,200",
+        "Winnipeg": "1,550"
+      },
+      "calgary_load_at_four_posts": "545",
+      "usd_share": "0.719"
+    },
+    "by_gateway": {
+      "posts_placed": {
+        "Mississauga": "0",
+        "Dorval": "2",
+        "Richmond": "0",
+        "Calgary": "1",
+        "Winnipeg": "0"
+      },
+      "held": "3",
+      "forecast_monthly_formal_entries": {
+        "Mississauga": "3,750",
+        "Dorval": "3,600",
+        "Richmond": "3,150",
+        "Calgary": "2,600",
+        "Winnipeg": "1,500"
+      },
+      "calgary_load_at_four_posts": "650"
     }
   },
   "ask_a_overtime_hours": {
@@ -143,24 +284,39 @@
     }
   },
   "fiscal_year": "2025-26",
-  "base_year_shipments_checked": "248,256",
-  "prior_year_shipments_checked": "235,270",
-  "pricing_history": {
-    "base_foreign_shipments": "190,312",
-    "repeat_on_invoice_value": "68,657",
-    "repeat_on_cad_value": "683",
-    "slope": "1.000"
+  "base_year_shipments_checked": "245,702",
+  "prior_year_shipments_checked": "234,415",
+  "base_year_formal_as_routed": {
+    "Mississauga": "48,862",
+    "Dorval": "37,362",
+    "Richmond": "40,242",
+    "Calgary": "30,053",
+    "Winnipeg": "20,313"
   },
   "base_year_formal_at_plan_rates": {
-    "Mississauga": "43,460",
-    "Dorval": "41,885",
-    "Richmond": "35,553",
-    "Calgary": "28,309",
-    "Winnipeg": "17,438"
+    "Mississauga": "43,526",
+    "Dorval": "41,825",
+    "Richmond": "35,100",
+    "Calgary": "23,332",
+    "Winnipeg": "17,619"
+  },
+  "base_year_formal_with_pass_through": {
+    "Mississauga": "43,828",
+    "Dorval": "41,835",
+    "Richmond": "35,693",
+    "Calgary": "29,994",
+    "Winnipeg": "17,620"
+  },
+  "plan_over_base": {
+    "Mississauga": "1.0249",
+    "Dorval": "1.0330",
+    "Richmond": "1.0390",
+    "Calgary": "1.0403",
+    "Winnipeg": "1.0222"
   },
   "placement_steps": [
     "Dorval 720",
-    "Calgary 610",
+    "Calgary 650",
     "Dorval 600"
   ],
   "ask_a_total_hours": "2,664",

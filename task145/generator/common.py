@@ -128,9 +128,10 @@ def monthly_rate(cur, i):
 
 # ---------------------------------------------------------------------------------------------------- the shipments
 # Each gateway's inbound international shipments are a mix of segments, each a share of the gateway's shipments with a
-# value distribution in its invoice currency: 'ln' lognormal (mu, sigma on the log of the value), 'pp' price points
-# (single units at listed prices, weights). 'ogd' is the share of the segment's shipments whose goods fall under an OGD
-# program (formal entry whatever the value); those carry values from the segment's 'ogd_ln' distribution.
+# value distribution: 'ln' lognormal (mu, sigma on the log of the value in the invoice currency), 'pp' price points
+# (single units at listed prices, weights): 'p' the prices listed in the invoice currency, 'cp' the prices listed in
+# Canadian dollars. 'ogd' is the share of the segment's shipments whose goods fall under an OGD program (formal entry
+# whatever the value); those carry values from the segment's 'ogd_ln' distribution.
 SEGMENTS = {
     "YYZ": [
         dict(cur="USD", share=0.6822, kind="ln", p=(5.05, 1.30), ogd=0.0100, ogd_ln=(4.30, 1.10), lane="US"),
@@ -139,9 +140,10 @@ SEGMENTS = {
         dict(cur="CNY", share=0.1365, kind="ln", p=(7.30, 1.20), ogd=0.0080, ogd_ln=(6.30, 1.10), lane="CN"),
         dict(cur="CAD", share=0.0531, kind="ln", p=(5.40, 1.30), ogd=0.0120, ogd_ln=(4.60, 1.10), lane="US"),
         dict(cur="USD", share=0.0031, kind="pp", p=((2355, 2), (2359, 3), (2365, 3), (2369, 4), (2375, 4), (2379, 4),
-                                                     (2385, 3), (2389, 3)), ogd=0.0, lane="US"),
-        dict(cur="GBP", share=0.0010, kind="pp", p=((1540, 3), (1549, 4), (1555, 3), (1565, 2), (1575, 2)), ogd=0.0,
-             lane="GB"),
+                                                     (2385, 3), (2389, 3)),
+             cp=((3309, 2), (3319, 3), (3329, 3), (3349, 4), (3359, 3), (3379, 3), (3389, 2)), ogd=0.0, lane="US"),
+        dict(cur="GBP", share=0.0010, kind="pp", p=((1540, 3), (1549, 4), (1555, 3), (1565, 2), (1575, 2)),
+             cp=((2879, 3), (2899, 4), (2929, 3), (2949, 2)), ogd=0.0, lane="GB"),
     ],
     "YUL": [
         dict(cur="USD", share=0.4876, kind="ln", p=(5.00, 1.30), ogd=0.0120, ogd_ln=(4.30, 1.10), lane="US"),
@@ -149,9 +151,10 @@ SEGMENTS = {
         dict(cur="GBP", share=0.0499, kind="ln", p=(5.20, 1.25), ogd=0.0200, ogd_ln=(4.30, 1.10), lane="GB"),
         dict(cur="CAD", share=0.0472, kind="ln", p=(5.30, 1.30), ogd=0.0150, ogd_ln=(4.60, 1.10), lane="US"),
         dict(cur="EUR", share=0.0055, kind="pp", p=((2005, 3), (2009, 5), (2010, 3), (2015, 4), (2019, 6), (2020, 2),
-                                                     (2025, 3), (2029, 2)), ogd=0.0, lane="EU"),
-        dict(cur="GBP", share=0.0012, kind="pp", p=((1545, 3), (1549, 3), (1559, 4), (1569, 2), (1575, 2)), ogd=0.0,
-             lane="GB"),
+                                                     (2025, 3), (2029, 2)),
+             cp=((3189, 2), (3199, 3), (3219, 3), (3229, 4), (3249, 3), (3259, 2), (3279, 2)), ogd=0.0, lane="EU"),
+        dict(cur="GBP", share=0.0012, kind="pp", p=((1545, 3), (1549, 3), (1559, 4), (1569, 2), (1575, 2)),
+             cp=((2889, 3), (2909, 3), (2919, 4), (2939, 2)), ogd=0.0, lane="GB"),
     ],
     "YVR": [
         dict(cur="USD", share=0.5665, kind="ln", p=(5.15, 1.25), ogd=0.0080, ogd_ln=(4.30, 1.10), lane="US"),
@@ -159,25 +162,51 @@ SEGMENTS = {
         dict(cur="JPY", share=0.0612, kind="ln", p=(11.95, 1.20), ogd=0.0100, ogd_ln=(11.00, 1.10), lane="JP"),
         dict(cur="CAD", share=0.0322, kind="ln", p=(5.30, 1.30), ogd=0.0100, ogd_ln=(4.60, 1.10), lane="US"),
         dict(cur="USD", share=0.0053, kind="pp", p=((2339, 3), (2345, 4), (2349, 6), (2355, 4), (2359, 5), (2365, 3),
-                                                     (2369, 2)), ogd=0.0, lane="AS"),
+                                                     (2369, 2)),
+             cp=((3279, 2), (3289, 3), (3319, 4), (3329, 3), (3349, 3), (3359, 2)), ogd=0.0, lane="AS"),
     ],
     "YYC": [
-        dict(cur="USD", share=0.9242, kind="ln", p=(5.45, 1.55), ogd=0.0100, ogd_ln=(4.40, 1.10), lane="US"),
+        dict(cur="USD", share=0.9103, kind="ln", p=(5.277, 1.55), ogd=0.0100, ogd_ln=(4.40, 1.10), lane="US"),
+        dict(cur="USD", share=0.0139, kind="pp", p=((2389, 3), (2395, 3), (2399, 4), (2405, 3), (2409, 3), (2415, 2)),
+             cp=((3329, 2), (3335, 3), (3339, 3), (3345, 4), (3349, 6), (3355, 3), (3359, 4), (3365, 3), (3369, 4),
+                 (3375, 3), (3379, 4), (3385, 2), (3389, 3), (3395, 2), (3399, 4)), ogd=0.0, lane="US"),
         dict(cur="CAD", share=0.0758, kind="ln", p=(5.50, 1.40), ogd=0.0100, ogd_ln=(4.60, 1.10), lane="US"),
     ],
     "YWG": [
         dict(cur="USD", share=0.9163, kind="ln", p=(5.15, 1.35), ogd=0.0120, ogd_ln=(4.30, 1.10), lane="US"),
         dict(cur="USD", share=0.0035, kind="pp", p=((2365, 3), (2369, 4), (2375, 4), (2379, 3), (2385, 2), (2389, 2)),
-             ogd=0.0, lane="US"),
+             cp=((3309, 2), (3319, 3), (3339, 4), (3349, 3), (3369, 2), (3389, 2)), ogd=0.0, lane="US"),
         dict(cur="CAD", share=0.0802, kind="ln", p=(5.30, 1.30), ogd=0.0120, ogd_ln=(4.60, 1.10), lane="US"),
     ],
 }
+# How each segment's goods are priced, by gateway and invoice currency: the share of shipments whose supplier bills in
+# the invoice currency at a price set in Canadian dollars, converted at the day's rate (the value for duty in CAD holds
+# whatever the rate); the rest keep their prices in the invoice currency (the CAD value moves with the rate). The same
+# share holds for a segment's price points and its other goods. Calgary's importers of US goods, and the Chinese
+# sellers shipping to Mississauga and Richmond, sell mostly on Canadian prices.
+LCP = {("YYZ", "EUR"): 0.02, ("YYZ", "GBP"): 0.04, ("YYZ", "CNY"): 0.99,
+       ("YUL", "USD"): 0.02, ("YUL", "GBP"): 0.02,
+       ("YVR", "CNY"): 0.99, ("YVR", "JPY"): 0.02,
+       ("YYC", "USD"): 0.99}
+
+
+def lcp_share(g, cur):
+    return LCP.get((g, cur), 0.0)
+
+
+def ref_rate(cur):
+    """The two years on file's average rate (October 2024 to September 2026): the rate a Canadian price list is set
+    against, so a CAD-priced segment's values in CAD match its invoice-currency twin's at that rate."""
+    i0 = HIST_MONTHS.index((2024, 10))
+    return sum(monthly_rate(cur, i) for i in range(i0, i0 + 24)) / 24.0
+
+
 # inbound international shipments a month at the centre of the base year, before seasonality
 BASE_LEVEL = {"YYZ": 114900, "YUL": 64800, "YVR": 74600, "YYC": 33500, "YWG": 41900}
 TREND = {"YYZ": 0.035, "YUL": 0.040, "YVR": 0.050, "YYC": 0.025, "YWG": 0.030}       # a year, 2021 to 2026
 SEASON = [0.90, 0.88, 0.98, 0.98, 1.00, 0.98, 0.96, 0.97, 1.00, 1.05, 1.15, 1.15]
 # the 2027 network plan's growth on the twelve months to September 2026
-PLAN_GROWTH = {"YYZ": 0.024, "YUL": 0.032, "YVR": 0.013, "YYC": 0.036, "YWG": 0.032}
+PLAN_GROWTH = {"YYZ": 0.025, "YUL": 0.033, "YVR": 0.039, "YYC": 0.040, "YWG": 0.022}
 
 
 def season(m):

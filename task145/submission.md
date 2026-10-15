@@ -1,26 +1,27 @@
 ## Tags
 
-**Domain:** Economics & Econometrics (forecasting and forecast evaluation: each import gateway's 2027 formal customs entries forecast at the 2027 network plan's planning exchange rates from the declared values of the shipments the plan carries forward, against the brokerage staffing standard's load of 560 entries a month per broker post).
+**Domain:** Economics & Econometrics (forecasting and forecast evaluation: each import gateway's 2027 formal customs entries forecast at the 2027 network plan's planning exchange rates, with the pass-through of the rate into each segment's declared values estimated from the consignments repeated across two years of declarations, against the brokerage staffing standard's load of 560 entries a month per broker post).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
 **Place two of the six new broker posts at Dorval and one at Calgary for 2027, and hold the other three to the next review.**
-With the goods at the invoice-currency prices they kept through the two years on file and the 2027 network plan's rates (USD 1.3400, EUR 1.6800), Dorval's second post is placed at a load of 600 against the standard 560, and after it the highest load, Mississauga's 530, is under 560. Not one post at each of the five gateways with one held, which carries the base year's formal entries per shipment onto the plan and so keeps every shipment at the CAD value the base year gave it, which the history contradicts. Not a post at Mississauga, Richmond or Winnipeg, whose goods invoiced in US dollars fall under the CAD 3,300 line at USD 1.3400.
+At the 2027 network plan's rates (USD 1.3400, EUR 1.6800) Dorval's European goods, which keep their euro prices, cross the CAD 3,300 line and its second post is placed at a load of 600 against the standard 560. Calgary's US-dollar goods do not reprice with the dollar: 13,169 of their repeat consignments came back at the same CAD value and 117 at the same invoice value (99.1 per cent held in CAD), so Calgary's forecast stays at 2,600 a month and its post is placed at 650. After the three posts the highest load, Mississauga's 535, is under 560. Not one post at each of the five gateways with one held, which carries the base year's formal entries per shipment onto the plan as if the rates did not move. Not two at Dorval with four held, which re-routes every foreign-currency shipment at the plan's rates and drops Calgary to 2,000 a month (505 a post on its four posts). Nor one pass-through share for the whole network (0.737) or one for the US dollar (0.719), which spread Calgary's behaviour over gateways whose goods keep their invoice prices and leave Calgary at 545, under 560.
 
 ## 2. Critical Components
 
-1. Forecast average monthly formal entries in 2027, the base year's shipments at their invoice values and the plan's rates: Mississauga **3,700**, Dorval **3,600**, Richmond **3,000**, Calgary **2,450**, Winnipeg **1,500**
-2. Posts placed in order at loads of **720** (Dorval), **610** (Calgary) and **600** (Dorval) formal entries a month per broker post
-3. Loads once the posts are placed: Mississauga **530**, Dorval **515**, Richmond **500**, Calgary **490**, Winnipeg **500**, the highest under **560**, so **3** posts are held
+1. Pass-through by gateway and invoice currency, from the base year's shipments that repeat a consignment of the year before: Calgary's US-dollar goods **0.009** (13,169 repeats at the same CAD value, 117 at the same invoice value), the Chinese goods at Mississauga **0.011** and Richmond **0.013**, every other segment **0.958** to **1.000**
+2. Forecast average monthly formal entries in 2027: Mississauga **3,750**, Dorval **3,600**, Richmond **3,100**, Calgary **2,600**, Winnipeg **1,500**
+3. Posts placed in order at loads of **720** (Dorval), **650** (Calgary) and **600** (Dorval) formal entries a month per broker post
+4. Loads once the posts are placed: Mississauga **535**, Dorval **515**, Richmond **515**, Calgary **520**, Winnipeg **500**, the highest under **560**, so **3** posts are held
 
 ## 3. Step-by-Step Solution
 
 1. Read brk_std_03_brokerage_staffing_standard.pdf section 4 and appendix A: a gateway's load is its forecast average monthly formal entries in 2027 over its broker posts (Mississauga 7, Dorval 5, Richmond 6, Calgary 4, Winnipeg 3 at 1 January 2027, and the posts already placed), the forecast made on the 2027 network plan's shipments and planning assumptions, posts placed one at a time while the highest load exceeds 560.
-2. Stacked the eight high-value check extracts, highvalue_check_2024Q4.csv to highvalue_check_2026Q3.csv (to 2025Q4 in the earlier layout, dates DD/MM/YYYY), an amended shipment once at its later row: 248,256 shipments released from October 2025 to September 2026, the plan's base, and 235,270 in the year before.
-3. Matched the base year's foreign-currency shipments outside OGD programs (190,312) to the year before on importer, tariff item, currency and value: 68,657 repeat a consignment at the same invoice value and 683 at the same CAD value, and within the consignments of both years the CAD value moves one for one with the day's customs rate (slope 1.000), so the goods keep their invoice-currency prices and the plan's 2027 shipments carry the base year's invoice values.
-4. Routed each base-year shipment as clr_ops_11_clearance_routing.docx section 3 routes it, at network_plan_2027.xlsx assumption 7's planning rate for its invoice currency (USD 1.3400, EUR 1.6800, GBP 1.8750, CNY 0.18800, JPY 0.0092500), formal when its value for duty at that rate exceeds CAD 3,300 or its goods are under an OGD program (Mississauga 43,460, Dorval 41,885, Richmond 35,553, Calgary 28,309, Winnipeg 17,438), then scaled each count by the gateway's 2027 inbound shipments on the plan's Inbound volumes sheet over its base-year inbound international shipments in gateway_activity_2024-10_2026-09.csv and divided by twelve: Mississauga 3,700, Dorval 3,600, Richmond 3,000, Calgary 2,450, Winnipeg 1,500 formal entries a month.
-5. Placed posts one at a time as BRK-STD-03 places them, the posts already placed counted: Dorval at 720, Calgary at 610, Dorval at 600; the highest load after those three is Mississauga's 530, under 560, so the other three are held.
+2. Stacked the eight high-value check extracts, highvalue_check_2024Q4.csv to highvalue_check_2026Q3.csv (to 2025Q4 in the earlier layout, dates DD/MM/YYYY), an amended shipment once at its later row: 245,702 shipments released from October 2025 to September 2026, the plan's base, and 234,415 in the year before.
+3. Matched the base year's foreign-currency shipments outside OGD programs to the year before on gateway, importer, tariff item and invoice currency, at the same invoice value or at the same CAD value: 73,696 repeat a consignment. A repeat at the same invoice value passes the rate through to its CAD value; a repeat at the same CAD value does not. By gateway and invoice currency the share passed through is 0.958 to 1.000 in nine segments (54,126 of their 54,444 repeats) and 0.009 to 0.013 in three: Calgary's US-dollar goods (price points from CAD 3,329 to 3,399 among them, their US-dollar invoice values moving against the rate), and the Chinese goods at Mississauga and Richmond. One share for the network (0.737) or for the US dollar (0.719) mixes the two behaviours.
+4. Routed each base-year shipment as clr_ops_11_clearance_routing.docx section 3 routes it: OGD goods formal, CAD invoices on their value, and in each segment its pass-through share at network_plan_2027.xlsx assumption 7's planning rate for its currency (USD 1.3400, EUR 1.6800, GBP 1.8750, CNY 0.18800, JPY 0.0092500) against CAD 3,300, the rest at the CAD value the base year gave it: Mississauga 43,828, Dorval 41,835, Richmond 35,693, Calgary 29,994, Winnipeg 17,620 formal entries (re-routing every shipment would give Calgary 23,332). Scaled each count by the gateway's 2027 inbound shipments on the plan's Inbound volumes sheet over its base-year inbound international shipments in gateway_activity_2024-10_2026-09.csv (1.0249, 1.0330, 1.0390, 1.0403, 1.0222) and divided by twelve: Mississauga 3,750, Dorval 3,600, Richmond 3,100, Calgary 2,600, Winnipeg 1,500 formal entries a month.
+5. Placed posts one at a time as BRK-STD-03 places them, the posts already placed counted: Dorval at 720, Calgary at 650, Dorval at 600; the highest load after those three is Mississauga's 535, under 560, so the other three are held.
 6. Took the overtime lines (OT15, OT20, OT1.5, OT2.0) at their hours and the call-backs (CALLB, CB) at the time between their punches from ta_legacy_export_2025-04-01_2025-10-31.csv and ta_export_2025-10-27_2026-09-30.csv (its MIGRATED lines for 27 to 31 October 2025 are the legacy timecards, counted once), each on the desk hr_assignment_changes_2025-04_2026-09.csv gives for the work date, by fiscal quarter: 2,664 hours in fiscal 2025-26.
 7. Took each Brandmoor statement's net before tax from ap_invoice_register_brandmoor_2025-04_2026-09.xlsx on the month of the transmissions it bills (the month before its date, as brandmoor_portal_detail_2025-04_2026-03.json shows for every statement it holds), Mississauga's February 2026 transmissions at the statement re-issued on 23 March 2026 (the original reversed by credit memo BCM-2026-00118), each cost centre on its desk in finance_cost_centres_2026.csv: CAD 220,798 in fiscal 2025-26.
 8. Place two posts at Dorval and one at Calgary, and hold three to the next review.
@@ -37,10 +38,10 @@ With the goods at the invoice-currency prices they kept through the two years on
    - Winnipeg: 0
    - Held to the next review: 3
 2. Forecast average monthly formal entries for 2027 (nearest fifty) and formal entries per broker post once the posts are placed (nearest five):
-   - Mississauga: 3,700 a month, 530 a post
+   - Mississauga: 3,750 a month, 535 a post
    - Dorval: 3,600 a month, 515 a post
-   - Richmond: 3,000 a month, 500 a post
-   - Calgary: 2,450 a month, 490 a post
+   - Richmond: 3,100 a month, 515 a post
+   - Calgary: 2,600 a month, 520 a post
    - Winnipeg: 1,500 a month, 500 a post
 3. Overtime hours worked at each gateway's brokerage desk in each quarter of fiscal 2025-26 (Q1 April to June 2025 through Q4 January to March 2026), nearest hour:
    - Mississauga: Q1 185, Q2 170, Q3 273, Q4 189
@@ -54,6 +55,7 @@ With the goods at the invoice-currency prices they kept through the two years on
    - Richmond: Q1 $6,509, Q2 $6,052, Q3 $18,636, Q4 $9,237
    - Calgary: Q1 $5,877, Q2 $6,964, Q3 $20,054, Q4 $7,052
    - Winnipeg: Q1 $6,241, Q2 $7,074, Q3 $14,924, Q4 $5,970
+5. The Forecast basis sheet: each gateway and invoice currency's repeats at the same invoice value and at the same CAD value with the share re-routed at the planning rate, and each desk's formal entries as routed, all re-routed and with its shares, the plan's scale and the forecast.
 
 ### establishment_review_2027.pptx
 

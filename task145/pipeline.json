@@ -1,37 +1,39 @@
 {
   "task": "task145",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "economics-econometrics/forecasting-forecast-evaluation",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 3,
+  "stage_name": "build",
   "updated": "2026-10-15",
-  "stump": "Carrying each gateway's formal entries per inbound shipment of the twelve months to September 2026 onto the 2027 network plan places one post at each of the five gateways and holds one; the step that lands it there is carrying the base year's routing into a plan year whose planning rates move the CAD 3,300 line in every invoice currency.",
+  "stump": "Carrying each gateway's formal entries per inbound shipment of the twelve months to September 2026 onto the 2027 network plan places one post at each of the five gateways and holds one; the step that lands it there is forecasting the 2027 count without estimating how each segment's CAD values respond to the plan's exchange rates, and re-routing every shipment at those rates instead (or one pooled pass-through share) drops Calgary's post and holds four.",
   "architecture": 1,
-  "loops": 1,
+  "loops": 2,
   "precut": {
     "exit": 0,
-    "date": "2026-10-15"
+    "date": "2026-10-15",
+    "checks": 49,
+    "pair_ceiling": 37
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK) on the repaired cut: three-digit golden figures inside Brandmoor amounts and CLR-OPS-11's CAD 2,500 floor, BRK-STD-03 carrying the call's words, the field's vocabulary; each answered in the design note's ## Build record",
-    "reader": "clean on the first cut (c150b43f): Q1 to Q4 none, Q6 analytical, every REVIEW line harmless; the repair changed a document the call reads (the plan's assumption 2) and added four extracts, so the reader re-reads the repaired cut"
+    "leak_py": "REVIEW (no LEAK) on the rule 3 rework's cut (target.zip 2ef27adf): 117, 165 and 500 inside Brandmoor amounts and 500 inside CLR-OPS-11's CAD 2,500 floor, BRK-STD-03 carrying the call's words, the field's vocabulary; each answered in the design note's ## Build record",
+    "reader": "clean on the first cut (c150b43f); the stage 4 repair and the rule 3 rework changed the world and documents the call reads, so a fresh reader reads the reworked cut at stage 4"
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.gate_g against task144; test.same_driver_older a NOTE, task127 v3, task138 and task446 v2 differentiated on the card)",
-    "nearest": "driver 0.08 (task253 v3), 0.07 (task98 v5 lineage, task107 v4, task258 v1)",
-    "surface": "exit 0; track A 0 promoted after the format mix was varied (task143 had been promoted on format and layout alone); task446 promoted on the card signature (gap time, G16, Gate G forecasting), the same-driver match differentiated on the card at the draw, for the author's clone-check",
-    "note": "drawn 2026-10-15 after git pull (task262, task455 and task144 on file): guard WARN repeat.gate_g answered in ## Draw"
+    "heart": "WARN (repeat.gate_g against task144; test.same_driver_older a NOTE, task127 v3, task138 and task446 v2 differentiated on the card); re-run after the rework on the new driver",
+    "nearest": "driver 0.08 (task253 v3), 0.07 (task450 v2), 0.06 (task107 v4, task121 v1, task118)",
+    "surface": "exit 0; 1 promoted, task446 on the card signature (gap time, G16, Gate G forecasting), the same-driver match differentiated on the card at the draw, for the author's clone-check",
+    "note": "drawn 2026-10-15 after git pull (task262, task455 and task144 on file): guard WARN repeat.gate_g answered in ## Draw; guard check re-run on the reworked card, WARN only"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE, with two findings repaired at the author's request (the per-post rounding fork, Gate H borderline on rule application)",
-    "report": "task145/determinism_check_report.md",
+    "verdict": "DETERMINISTIC (twice, on the cuts before the rework)",
+    "disposition": "the re-judge's Gate H read the full repricing at the plan's rates as partly rule execution; the rule 3 read failed it strictly, and the decisive step was re-rooted to the exchange-rate pass-through estimated by segment; a fresh judge reads the reworked cut",
+    "report": "task145/determinism_check_report.md (the first verdict; the re-judge's in the session scratchpad)",
     "brief": ""
   },
   "returned": [],
-  "resume": "stage 4: re-judge, and the leak reader re-reads, the repaired cut of 2026-10-15 (target.zip sha256 db04473ccf87f76b); fix every finding in the generator in one pass; then ship",
+  "resume": "stage 4: a fresh leak reader and determinism judge on the rule 3 rework's cut of 2026-10-15 (target.zip sha256 2ef27adfec63a099); fix every finding in the generator in one pass; then ship",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -39,28 +41,28 @@
   "portal_status": "",
   "portal_status_date": "",
   "build": {
-    "checks": 163,
-    "verify": "from the bundle alone, equal to figures.json, the workbook and the deck",
+    "checks": 189,
+    "verify": "from the bundle alone (the pass-through by gateway and invoice currency, the golden and the three rivals), equal to figures.json, the workbook and the deck",
     "rebuild": "two builds byte-identical",
-    "figures_check": "exit 0 (103 figures)",
-    "voice_check": "PASS (867 characters)",
+    "figures_check": "exit 0 (133 figures)",
+    "voice_check": "PASS (867 characters, the prompt unchanged)",
     "containers": "clean (target and golden)",
-    "precut": "exit 0 (49 checks)",
-    "target_zip_sha256": "db04473ccf87f76b760410f8506d6ff2de0d5808b8e49129b467fa82d9e81dd5"
+    "precut": "exit 0 (49 checks, no FAIL or WARN)",
+    "target_zip_sha256": "2ef27adfec63a099dc9c2d77d24ac8dd0d65f481cd0f95b414f250ccce4b8f66"
   },
-  "freeze": {
-    "mode": "determinism",
-    "allow": [
-      "blocking_load.load",
-      "entries_per_post_after.Mississauga",
-      "entries_per_post_after.Richmond",
-      "entries_per_post_after.Winnipeg",
-      "forecast_monthly_formal_entries.Richmond",
-      "base_year_formal_at_plan_rates.*",
-      "base_year_shipments_checked",
-      "default_path.forecast_monthly_formal_entries.Mississauga",
-      "default_path.forecast_monthly_formal_entries.Richmond"
-    ],
-    "result": "the call, the stump, the card stump and driver, the default path, the prompt call sentence and every ask figure unchanged; with the allowed keys, four frozen items move with them (block 1's blocking load, block 2's per-post and Richmond figures, the ladder section, the workbook's forecast and per-post lines), reasons in the design note's ## Build record"
+  "rework": {
+    "kind": "rule 3 rework of the decisive step (re-root, not a repair)",
+    "date": "2026-10-15",
+    "decisive_step": "each segment's exchange-rate pass-through (gateway and invoice currency) estimated from the base year's consignments repeated from the year before; the plan's rates applied to the invoice-held share, the CAD-held share kept at its base-year routes",
+    "call": "kept: Dorval 2, Calgary 1, three held",
+    "rivals": {
+      "a_default": "one post at each gateway, one held",
+      "b_full_repricing": "Dorval 2, four held (Calgary 2,023 a month, 505.7 a post on four)",
+      "c_one_network_share": "Dorval 2, four held (share 0.737; Calgary 544.0 a post on four)",
+      "d_one_share_per_currency": "Dorval 2, four held (US dollar 0.719; Calgary 546.6)",
+      "e_one_share_per_gateway": "the golden placement on other figures (Richmond 3,150 a month; Mississauga 540 and Richmond 520 a post)"
+    },
+    "margins": "against (b): 19,061 of the 19,252 repeats in the three CAD-held segments keep their CAD value (Calgary's US-dollar goods 0.009 plus or minus 0.002, about 1,200 standard errors from one; the Chinese goods at Mississauga 0.011 and Richmond 0.013), within-consignment slopes 0.009 to 0.013 against one; against (c): the segments split into 0.958 to 1.000 and 0.009 to 0.013, homogeneity rejected at 71,119 on 11 degrees of freedom, Calgary about 900 standard errors under the pooled 0.737",
+    "freeze": "the call, the posts placed, the prompt and all 40 ask figures unchanged against the stage 4 snapshot; the main side's forecasts and loads, the card's stump and driver and the note's ladder and default path moved by design"
   }
 }

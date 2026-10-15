@@ -16,51 +16,38 @@ SERIES = {"YYZ": "#2a78d6", "YUL": "#eb6834", "YVR": "#1baf7a", "YYC": "#eda100"
 
 
 def golden(W, staff, lines, stmts):
-    E = C.golden_E(W)
+    recs = C.records(W)
+    n_inv, n_cad = C.repeat_counts(recs)
+    pi = C.shares(n_inv, n_cad)
+    n = C.mixture_counts(recs, pi)
+    E = C.scale(W, n)
     placed, held, final, order = C.placement(E)
     Ed = C.default_E(W)
     pd_, hd, fd, od = C.placement(Ed)
+    Eb = C.full_repricing_E(W)
+    Ec, p_pool = C.pooled_share_E(W, recs)
+    Ecur, pi_cur = C.by_key_E(W, lambda r: r["cur"], recs)
+    Egw, pi_gw = C.by_key_E(W, lambda r: r["gw"], recs)
+    rivals = {}
+    for key, Ex in (("full_repricing", Eb), ("pooled_share", Ec), ("by_currency", Ecur), ("by_gateway", Egw)):
+        p_, h_, f_, o_ = C.placement(Ex)
+        rivals[key] = dict(E=Ex, placed=p_, held=h_, final=f_)
     A = C.ask_a(staff, lines, "golden")
     B = C.ask_b(stmts, "golden")
-    n = {g: C.formal_at(W, g, lambda s: K.PLAN_RATE[s.cur]) for g in K.GATEWAYS}
+    n_plan = {g: C.formal_at(W, g, lambda s: K.PLAN_RATE[s.cur]) for g in K.GATEWAYS}
+    n_base = {g: sum(1 for r in recs if r["yr"] == 1 and r["gw"] == g and r["formal"]) for g in K.GATEWAYS}
+    ratio = {g: C.plan_ratio(W, g) for g in K.GATEWAYS}
     return dict(E=E, placed=placed, held=held, final=final, order=order, Ed=Ed, placed_d=pd_, held_d=hd, final_d=fd,
-                A=A, B=B, n=n, ships=len(W.ships), prior=len(W.prior), pricing=pricing_history(W))
+                A=A, B=B, n=n, n_plan=n_plan, n_base=n_base, ratio=ratio, ships=len(W.ships), prior=len(W.prior),
+                n_inv=n_inv, n_cad=n_cad, pi=pi, p_pool=p_pool, pi_cur=pi_cur, rivals=rivals)
 
 
-def pricing_history(W):
-    """The two years on file read for how the goods are priced: the base year's foreign-currency shipments (OGD goods
-    aside) that repeat a consignment of the year before (gateway, importer, tariff item, currency) on its invoice value
-    and on its CAD value, and the slope of the CAD value on the day's rate within the consignments of both years."""
-    import math
-    amended = {id(s): nv for s, nv in W.amended}
+SEG_ORDER = [(g, cu) for g in K.GATEWAYS for cu in ("USD", "EUR", "GBP", "CNY", "JPY")]
+CAD_HELD = (("YYC", "USD"), ("YYZ", "CNY"), ("YVR", "CNY"))     # the segments whose repeats keep their CAD values
 
-    def rows(ships):
-        out = []
-        for s in ships:
-            if s.ogd or s.cur == "CAD":
-                continue
-            v = amended.get(id(s), s.value)
-            out.append((s.gw, s.importer, s.hs, s.cur, v, K.round_dp(v * s.rate, 2), s.rate))
-        return out
-    prior, base = rows(W.prior), rows(W.ships)
-    p_inv = {r[:5] for r in prior}
-    p_cad = {r[:4] + (r[5],) for r in prior}
-    on_inv = sum(1 for r in base if r[:5] in p_inv)
-    on_cad = sum(1 for r in base if r[:4] + (r[5],) in p_cad)
-    groups = {}
-    for yr, rr in ((0, prior), (1, base)):
-        for r in rr:
-            groups.setdefault(r[:5], []).append((yr, r))
-    sxx = sxy = 0.0
-    for v in groups.values():
-        if len({yr for yr, _ in v}) < 2:
-            continue
-        lr = [math.log(r[6]) for _, r in v]
-        lc = [math.log(r[5]) for _, r in v]
-        mr, mc = sum(lr) / len(lr), sum(lc) / len(lc)
-        sxx += sum((a - mr) ** 2 for a in lr)
-        sxy += sum((a - mr) * (b - mc) for a, b in zip(lr, lc))
-    return dict(base_rows=len(base), on_invoice=on_inv, on_cad=on_cad, slope=sxy / sxx)
+
+def segments(G):
+    return [k for k in SEG_ORDER if k in G["pi"]]
 
 
 def figures(G):
@@ -78,11 +65,24 @@ def figures(G):
          "plan_rates": {c: ("%." + str(K.RATE_DP[c]) + "f") % K.PLAN_RATE[c]
                         for c in ("USD", "EUR", "GBP", "CNY", "JPY")},
          "line_cad": "3,300",
-         "fx_effect_pct": {d[g]: "%+.0f" % (100 * (G["E"][g] / G["Ed"][g] - 1)) for g in K.GATEWAYS},
          "default_path": {"posts_placed": {d[g]: str(G["placed_d"][g]) for g in K.GATEWAYS},
                           "held": str(G["held_d"]),
                           "forecast_monthly_formal_entries": {d[g]: "{:,}".format(K.round_to(G["Ed"][g], 50))
                                                               for g in K.GATEWAYS}},
+         "pass_through": {"%s %s" % (d[g], cu): {"repeats_on_invoice_value": "{:,}".format(G["n_inv"].get((g, cu), 0)),
+                                                  "repeats_on_cad_value": "{:,}".format(G["n_cad"].get((g, cu), 0)),
+                                                  "share": "%.3f" % G["pi"][(g, cu)]}
+                          for (g, cu) in segments(G)},
+         "calgary_usd_cad_held_pct": "%.1f" % (100 * (1 - G["pi"][("YYC", "USD")])),
+         "cad_held_repeats": "{:,}".format(sum(G["n_cad"][k] for k in CAD_HELD)),
+         "invoice_held_repeats_elsewhere": "{:,}".format(sum(v for k, v in G["n_inv"].items() if k not in CAD_HELD)),
+         "repeats_elsewhere": "{:,}".format(sum(v for k, v in G["n_inv"].items() if k not in CAD_HELD) +
+                                            sum(v for k, v in G["n_cad"].items() if k not in CAD_HELD)),
+         "repeats_total": "{:,}".format(sum(G["n_inv"].values()) + sum(G["n_cad"].values())),
+         "calgary_cad_price_points": {"count": str(len(K.SEGMENTS["YYC"][1]["cp"])),
+                                      "lowest": "{:,}".format(min(v for v, _ in K.SEGMENTS["YYC"][1]["cp"])),
+                                      "highest": "{:,}".format(max(v for v, _ in K.SEGMENTS["YYC"][1]["cp"]))},
+         "rivals": {},
          "ask_a_overtime_hours": {d[g]: {"FQ%d" % q: "{:,}".format(K.round_to(G["A"][(g, q)], 1)) for q in (1, 2, 3, 4)}
                                   for g in K.GATEWAYS},
          "ask_b_brandmoor_cad": {d[g]: {"FQ%d" % q: "{:,}".format(K.round_to(G["B"][(g, q)], 1)) for q in (1, 2, 3, 4)}
@@ -90,14 +90,20 @@ def figures(G):
          "fiscal_year": "2025-26",
          "base_year_shipments_checked": "{:,}".format(G["ships"]),
          "prior_year_shipments_checked": "{:,}".format(G["prior"]),
-         "pricing_history": {"base_foreign_shipments": "{:,}".format(G["pricing"]["base_rows"]),
-                             "repeat_on_invoice_value": "{:,}".format(G["pricing"]["on_invoice"]),
-                             "repeat_on_cad_value": "{:,}".format(G["pricing"]["on_cad"]),
-                             "slope": "%.3f" % G["pricing"]["slope"]},
-         "base_year_formal_at_plan_rates": {d[g]: "{:,}".format(G["n"][g]) for g in K.GATEWAYS},
+         "base_year_formal_as_routed": {d[g]: "{:,}".format(G["n_base"][g]) for g in K.GATEWAYS},
+         "base_year_formal_at_plan_rates": {d[g]: "{:,}".format(G["n_plan"][g]) for g in K.GATEWAYS},
+         "base_year_formal_with_pass_through": {d[g]: "{:,}".format(K.round_to(G["n"][g], 1)) for g in K.GATEWAYS},
+         "plan_over_base": {d[g]: "%.4f" % G["ratio"][g] for g in K.GATEWAYS},
          "placement_steps": ["%s %d" % (d[g], K.round_to(l, 5)) for g, l in G["order"]],
          "ask_a_total_hours": "{:,}".format(K.round_to(sum(G["A"].values()), 1)),
          "ask_b_total_cad": "{:,}".format(K.round_to(sum(G["B"].values()), 1))}
+    for key, R_ in G["rivals"].items():
+        f["rivals"][key] = {"posts_placed": {d[g]: str(R_["placed"][g]) for g in K.GATEWAYS}, "held": str(R_["held"]),
+                            "forecast_monthly_formal_entries": {d[g]: "{:,}".format(K.round_to(R_["E"][g], 50))
+                                                                for g in K.GATEWAYS},
+                            "calgary_load_at_four_posts": str(K.round_to(R_["E"]["YYC"] / 4, 5))}
+    f["rivals"]["pooled_share"]["share"] = "%.3f" % G["p_pool"]
+    f["rivals"]["by_currency"]["usd_share"] = "%.3f" % G["pi_cur"]["USD"]
     return f
 
 
@@ -167,6 +173,45 @@ def write_book(path, G):
         ws.column_dimensions[chr(65 + i)].width = w
     ws.row_dimensions[4].height = 44
     ws.freeze_panes = "A5"
+
+    # forecast basis
+    fb = wb.create_sheet("Forecast basis")
+    fb["A1"] = "How each desk's 2027 forecast is built"
+    fb["A1"].font = title_f
+    fb["A2"] = ("Shipments released October 2025 to September 2026 in the high-value check, the network plan's base. A "
+                "repeat is a base-year shipment matching a shipment of October 2024 to September 2025 on gateway, "
+                "importer, tariff item and invoice currency, at the same invoice value or at the same value in CAD.")
+    fb["A2"].font = Font(name="Calibri", size=9, italic=True, color="5A6270")
+    fb["A2"].alignment = Alignment(wrap_text=True, vertical="top")
+    fb.merge_cells("A2:F2")
+    fb.row_dimensions[2].height = 40
+    header(fb, 4, ["Desk", "Invoice currency", "Repeats at the same invoice value", "Repeats at the same CAD value",
+                   "Share re-routed at the planning rate"])
+    r = 5
+    for (g, cu) in segments(G):
+        vals = [K.DESK[g], cu, G["n_inv"].get((g, cu), 0), G["n_cad"].get((g, cu), 0), round(G["pi"][(g, cu)], 3)]
+        for c, v in enumerate(vals, 1):
+            cell = fb.cell(row=r, column=c, value=v)
+            cell.font = norm
+            cell.number_format = "0.000" if c == 5 else "#,##0"
+        r += 1
+    r += 1
+    header(fb, r, ["Desk", "Base-year formal entries as routed", "Every shipment re-routed at the planning rates",
+                   "With each segment's share re-routed", "2027 plan shipments over base-year shipments",
+                   "Forecast 2027 formal entries, average month"])
+    fb.row_dimensions[r].height = 44
+    r += 1
+    for g in K.GATEWAYS:
+        vals = [K.DESK[g], G["n_base"][g], G["n_plan"][g], K.round_to(G["n"][g], 1), round(G["ratio"][g], 4),
+                K.round_to(G["E"][g], 50)]
+        for c, v in enumerate(vals, 1):
+            cell = fb.cell(row=r, column=c, value=v)
+            cell.font = norm
+            cell.number_format = "0.0000" if c == 5 else "#,##0"
+        r += 1
+    for i, w in enumerate((14, 16, 20, 20, 20, 20)):
+        fb.column_dimensions[chr(65 + i)].width = w
+    fb.row_dimensions[4].height = 44
 
     # overtime
     ot = wb.create_sheet("Overtime FY2025-26")
@@ -240,14 +285,21 @@ def write_book(path, G):
         "Load: a desk's forecast average monthly formal entries in 2027 over its broker posts, the posts already "
         "placed in the review counted (BRK-STD-03 4.2 to 4.5). A post is placed while the highest load exceeds 560.",
         "Forecast: each gateway's shipments of October 2025 to September 2026 in the high-value check, routed as "
-        "CLR-OPS-11 section 3 routes them at the 2027 planning rates (USD 1.3400, EUR 1.6800, GBP 1.8750, CNY "
-        "0.18800, JPY 0.0092500), scaled to the 2027 network plan's inbound volumes.",
-        "Invoice values: the goods kept their invoice-currency prices through the rate moves of October 2024 to "
-        "September 2026. %s of the base year's %s foreign-currency shipments outside OGD programs repeat a "
-        "consignment of the year before (importer, tariff item, currency) at the same invoice value, %s at the same "
-        "CAD value; the 2027 shipments are taken at the base year's invoice values." % (
-            "{:,}".format(G["pricing"]["on_invoice"]), "{:,}".format(G["pricing"]["base_rows"]),
-            "{:,}".format(G["pricing"]["on_cad"])),
+        "CLR-OPS-11 section 3 routes them, the goods that keep their invoice-currency values at the 2027 planning "
+        "rates (USD 1.3400, EUR 1.6800, GBP 1.8750, CNY 0.18800, JPY 0.0092500) and the goods that keep their CAD "
+        "values on those values, scaled to the 2027 network plan's inbound volumes.",
+        "Exchange rates: a consignment that keeps its invoice value from one year to the next carries the rate into its "
+        "CAD value, one that keeps its CAD value does not. Calgary's US-dollar goods repeat at the same CAD value %s "
+        "times and at the same invoice value %s; the Chinese goods at Mississauga and Richmond %s and %s times at the "
+        "same CAD value, %s and %s at the same invoice value; every other segment's goods repeat at their invoice value "
+        "(%s of its %s repeats). Each segment's share re-routed at the 2027 planning rates is on the Forecast basis "
+        "sheet; the rest keep the CAD value, and so the route, the base year gave them." % (
+            "{:,}".format(G["n_cad"][("YYC", "USD")]), "{:,}".format(G["n_inv"][("YYC", "USD")]),
+            "{:,}".format(G["n_cad"][("YYZ", "CNY")]), "{:,}".format(G["n_cad"][("YVR", "CNY")]),
+            "{:,}".format(G["n_inv"][("YYZ", "CNY")]), "{:,}".format(G["n_inv"][("YVR", "CNY")]),
+            "{:,}".format(sum(v for k, v in G["n_inv"].items() if k not in CAD_HELD)),
+            "{:,}".format(sum(v for k, v in G["n_inv"].items() if k not in CAD_HELD) +
+                          sum(v for k, v in G["n_cad"].items() if k not in CAD_HELD))),
         "Broker posts at 1 January 2027: BRK-STD-03 appendix A.",
         "Fiscal 2025-26 runs 1 April 2025 to 31 March 2026; Q1 is April to June 2025 and Q4 January to March 2026.",
         "Overtime: the legacy export to 31 October 2025 and the current system from 1 November (its migrated lines "
@@ -265,6 +317,7 @@ def write_book(path, G):
         c = nt.cell(row=i, column=1, value=t)
         c.font = bold if i == 1 else norm
         c.alignment = Alignment(wrap_text=True, vertical="top")
+        nt.row_dimensions[i].height = 14.5 * max(1, -(-len(t) // 150))
     nt.column_dimensions["A"].width = 120
     for sh in wb.worksheets:
         sh.page_setup.orientation = "landscape"
@@ -412,8 +465,9 @@ def write_deck(path, G):
     p.font.color.rgb = ink
     p.font.name = "Calibri"
     p2 = tf.add_paragraph()
-    p2.text = ("Forecast on the 2027 network plan: each gateway's shipments at their invoice-currency prices, routed "
-               "at the plan's exchange rates (USD 1.34, EUR 1.68), the line at CAD 3,300.")
+    p2.text = ("Forecast on the 2027 network plan, the line at CAD 3,300: goods that keep their invoice-currency values "
+               "re-routed at the plan's rates (USD 1.34, EUR 1.68); Calgary's US-dollar goods and the Chinese goods at "
+               "Mississauga and Richmond keep their CAD values and their routes.")
     p2.font.size = Pt(12)
     p2.font.color.rgb = grey
     p2.font.name = "Calibri"

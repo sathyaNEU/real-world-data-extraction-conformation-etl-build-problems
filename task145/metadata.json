@@ -3,7 +3,7 @@
   "title": "Where Larchwood Express Canada's six new 2027 broker posts go across its five import gateways, or are held, on each gateway's forecast formal entries per broker post",
   "domain": "Economics & Econometrics",
   "client_domain": "Economics & Econometrics",
-  "subdomain": "forecasting-forecast-evaluation (a conditional forecast of each gateway's 2027 formal import entries on the network plan's exchange rates: the shipments whose value for duty, set in their invoice currency, will exceed CAD 3,300 at the plan year's rates)",
+  "subdomain": "forecasting-forecast-evaluation (a conditional forecast of each gateway's 2027 formal import entries on the network plan's exchange rates, from two years of the shipments' declared values against a line of CAD 3,300)",
   "objective": "Forecasting & Predictive Modeling",
   "prompt_shape": "05 allocation to a fixed total: the six posts across five gateways and the held bucket, each gateway's forecast monthly formal entries and its load after the review, with two fiscal 2025-26 tables (overtime hours by desk and quarter, the contract broker's charges by desk and quarter) and a two-slide deck",
   "as_of": "2026-10-13",
@@ -36,7 +36,7 @@
       "xlsx"
     ],
     "largest_file": "highvalue_check_2025Q4.csv",
-    "largest_file_rows": 67850
+    "largest_file_rows": 66937
   },
   "sources": [
     {
@@ -133,7 +133,7 @@
     {
       "path": "gateway_activity_2021-01_2024-09.xlsx",
       "format": "xlsx",
-      "bytes": 12953,
+      "bytes": 12959,
       "rows": null,
       "source": "Constructed: Legacy brokerage system monthly gateway report GA-02, January 2021 to September 2024",
       "date": "2026-10-07",
@@ -151,8 +151,8 @@
     {
       "path": "highvalue_check_2024Q4.csv",
       "format": "csv",
-      "bytes": 7284110,
-      "rows": 64491,
+      "bytes": 7296656,
+      "rows": 64533,
       "source": "Constructed: Clearance system high-value check extract, October to December 2024 (earlier layout)",
       "date": "2026-10-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -160,8 +160,8 @@
     {
       "path": "highvalue_check_2025Q1.csv",
       "format": "csv",
-      "bytes": 6259323,
-      "rows": 55249,
+      "bytes": 6116213,
+      "rows": 53966,
       "source": "Constructed: Clearance system high-value check extract, January to March 2025 (earlier layout)",
       "date": "2026-10-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -169,8 +169,8 @@
     {
       "path": "highvalue_check_2025Q2.csv",
       "format": "csv",
-      "bytes": 6547608,
-      "rows": 58042,
+      "bytes": 6569437,
+      "rows": 58191,
       "source": "Constructed: Clearance system high-value check extract, April to June 2025 (earlier layout)",
       "date": "2026-10-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -178,8 +178,8 @@
     {
       "path": "highvalue_check_2025Q3.csv",
       "format": "csv",
-      "bytes": 6469898,
-      "rows": 57488,
+      "bytes": 6509275,
+      "rows": 57725,
       "source": "Constructed: Clearance system high-value check extract, July to September 2025 (earlier layout)",
       "date": "2026-10-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -187,8 +187,8 @@
     {
       "path": "highvalue_check_2025Q4.csv",
       "format": "csv",
-      "bytes": 7672662,
-      "rows": 67850,
+      "bytes": 7573490,
+      "rows": 66937,
       "source": "Constructed: Clearance system high-value check extract, October to December 2025 (earlier layout)",
       "date": "2026-10-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -196,8 +196,8 @@
     {
       "path": "highvalue_check_2026Q1.csv",
       "format": "csv",
-      "bytes": 7415724,
-      "rows": 56517,
+      "bytes": 7327105,
+      "rows": 55803,
       "source": "Constructed: Clearance system high-value check extract, January to March 2026",
       "date": "2026-10-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -205,8 +205,8 @@
     {
       "path": "highvalue_check_2026Q2.csv",
       "format": "csv",
-      "bytes": 8154790,
-      "rows": 62028,
+      "bytes": 8088507,
+      "rows": 61491,
       "source": "Constructed: Clearance system high-value check extract, April to June 2026",
       "date": "2026-10-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -214,8 +214,8 @@
     {
       "path": "highvalue_check_2026Q3.csv",
       "format": "csv",
-      "bytes": 8132098,
-      "rows": 61874,
+      "bytes": 8088857,
+      "rows": 61484,
       "source": "Constructed: Clearance system high-value check extract, July to September 2026",
       "date": "2026-10-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -250,7 +250,7 @@
     {
       "path": "network_plan_2027.xlsx",
       "format": "xlsx",
-      "bytes": 11144,
+      "bytes": 11159,
       "rows": null,
       "source": "Constructed: Network plan 2027 (Network Planning), volumes and planning assumptions",
       "date": "2026-10-07",

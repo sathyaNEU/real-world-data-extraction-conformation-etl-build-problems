@@ -1,6 +1,8 @@
 """task145 independent verifier. Reads only the shipped bundle (target/) and recomputes, on its own code path, the call
-(the forecast at the 2027 plan's rates, the loads and the placement), the default path's placement, and both asks; then
-compares them with generator/figures.json and with the two golden files. It imports nothing from the generator: every
+(each segment's pass-through from the repeat consignments of the two years on file, the forecast at the 2027 plan's
+rates with it, the loads and the placement), the default path's placement and the three rivals' (every shipment
+re-routed at the plan's rates, one share for the network, one share per currency), and both asks; then compares them
+with generator/figures.json and with the two golden files. It imports nothing from the generator: every
 constant (the line, the standard load, the posts funded, the establishment, the plan's rates and volumes) is read from
 the documents that file it.
 
@@ -171,41 +173,40 @@ def in_base(s):
     return BASE[0] <= s["local"] <= BASE[1]
 
 
-def pricing(reg):
-    """What the two years on file say about how the goods are priced. A consignment is a gateway, an importer, a
-    tariff item, an invoice currency and a value; the base year's foreign-currency shipments (OGD goods aside) are
-    matched to the year before on the invoice value and, separately, on the CAD value. Within the consignments seen
-    in both years the log of the CAD value is regressed on the log of the day's customs rate (slope 1 when the goods
-    keep their invoice-currency prices, 0 when they keep their CAD values)."""
-    import math
-    fx = [s for s in reg if not s["ogd"] and s["cur"] != "CAD"]
+def repeats(reg_all, seg=lambda s: (s["gw"], s["cur"])):
+    """How the goods' values behave between the two years on file, by segment (gateway and invoice currency unless
+    seg says otherwise): the base year's foreign-currency shipments outside OGD programs that repeat a consignment of
+    the year before (the same gateway, importer, tariff item and currency) at the same invoice value, and those that
+    repeat one at the same CAD value. A consignment that keeps its invoice value passes the exchange rate through to its
+    CAD value; one that keeps its CAD value does not."""
+    fx = [s for s in reg_all if not s["ogd"] and s["cur"] != "CAD"]
     prior = [s for s in fx if PRIOR[0] <= s["local"] <= PRIOR[1]]
-    base = [s for s in fx if in_base(s)]
     k_inv = lambda s: (s["gw"], s["imp"], s["hs"], s["cur"], s["val"])
     k_cad = lambda s: (s["gw"], s["imp"], s["hs"], s["cur"], s["cad"])
     p_inv, p_cad = {k_inv(s) for s in prior}, {k_cad(s) for s in prior}
-    on_inv = sum(1 for s in base if k_inv(s) in p_inv)
-    on_cad = sum(1 for s in base if k_cad(s) in p_cad)
-    groups = defaultdict(list)
-    for s in prior + base:
-        groups[k_inv(s)].append(s)
-    sxx = sxy = 0.0
-    for v in groups.values():
-        if not (any(in_base(s) for s in v) and any(not in_base(s) for s in v)):
+    out = defaultdict(lambda: [0, 0])
+    for s in fx:
+        if not in_base(s):
             continue
-        lr = [math.log(s["rate"]) for s in v]
-        lc = [math.log(s["cad"]) for s in v]
-        mr, mc = sum(lr) / len(lr), sum(lc) / len(lc)
-        sxx += sum((a - mr) ** 2 for a in lr)
-        sxy += sum((a - mr) * (b - mc) for a, b in zip(lr, lc))
-    # list prices: the invoice values each gateway sees 20 times or more in a currency, year by year
-    lists = {}
-    for yr, rows in (("prior", prior), ("base", base)):
-        c = defaultdict(int)
-        for s in rows:
-            c[(s["gw"], s["cur"], s["val"])] += 1
-        lists[yr] = {k for k, n in c.items() if n >= 20}
-    return dict(base_rows=len(base), on_invoice=on_inv, on_cad=on_cad, slope=sxy / sxx, lists=lists)
+        if k_inv(s) in p_inv:
+            out[seg(s)][0] += 1
+        elif k_cad(s) in p_cad:
+            out[seg(s)][1] += 1
+    return {k: (a, b, a / (a + b)) for k, (a, b) in out.items()}
+
+
+def with_passthrough(reg, rates, line, share, seg=lambda s: (s["gw"], s["cur"])):
+    """Each gateway's base-year shipments routed for 2027: OGD goods formal; goods invoiced in CAD on their value; in
+    every other segment its pass-through share re-routed at the plan's rate on the invoice value, the rest at the CAD
+    value (and so the route) the base year gave them."""
+    n = {g: 0.0 for g in GW}
+    for s in reg:
+        if s["ogd"] or s["cur"] == "CAD":
+            n[s["gw"]] += s["route"] == "FORMAL"
+            continue
+        p = share(seg(s))
+        n[s["gw"]] += p * (cents(s["val"] * rates[s["cur"]]) > line) + (1 - p) * (s["route"] == "FORMAL")
+    return n
 
 
 def main_call(target):
@@ -216,18 +217,29 @@ def main_call(target):
     reg_all = register(target)
     reg = [s for s in reg_all if in_base(s)]
     ratio = {g: sum(vols[g]) * 1000.0 / rep[g][0] for g in GW}
-    n = formal_count(reg, rates, line)
-    E = {g: n[g] * ratio[g] / 12.0 for g in GW}
+    scale = lambda n: {g: n[g] * ratio[g] / 12.0 for g in GW}
+    pt = repeats(reg_all)
+    n = with_passthrough(reg, rates, line, lambda k: pt[k][2])
+    E = scale(n)
     placed, held, final, order = place(E, st["est"], st["bar"], st["posts"])
+    # (a) the default: the base year's formal entries per shipment on the plan's volumes
     Ed = {g: rep[g][1] / rep[g][0] * sum(vols[g]) * 1000.0 / 12.0 for g in GW}
     pd_, hd, fd, od = place(Ed, st["est"], st["bar"], st["posts"])
-    # the same shipments with the CAD values the base year gave them (the routes on file), on the plan's volumes
-    n_cad = {g: sum(1 for s in reg if s["gw"] == g and s["route"] == "FORMAL") for g in GW}
-    Ec = {g: n_cad[g] * ratio[g] / 12.0 for g in GW}
+    # (b) every foreign-currency shipment re-routed at the plan's rate (pass-through one everywhere)
+    nb = formal_count(reg, rates, line)
+    Eb = scale(nb)
+    pb, hb, fb, ob = place(Eb, st["est"], st["bar"], st["posts"])
+    # (c) one pass-through share for the network; (d) one for each invoice currency
+    ptc = repeats(reg_all, seg=lambda s: "all")
+    Ec = scale(with_passthrough(reg, rates, line, lambda k: ptc["all"][2]))
     pc, hc, fc, oc = place(Ec, st["est"], st["bar"], st["posts"])
+    ptd = repeats(reg_all, seg=lambda s: s["cur"])
+    Edc = scale(with_passthrough(reg, rates, line, lambda k: ptd[k][2], seg=lambda s: s["cur"]))
+    pdc, hdc, fdc, odc = place(Edc, st["est"], st["bar"], st["posts"])
     return dict(st=st, line=line, rates=rates, vols=vols, rep=rep, reg=reg, reg_all=reg_all, ratio=ratio, n=n, E=E,
                 placed=placed, held=held, final=final, order=order, Ed=Ed, placed_d=pd_, held_d=hd, final_d=fd,
-                Ec=Ec, placed_c=pc, held_c=hc, pricing=pricing(reg_all))
+                nb=nb, Eb=Eb, placed_b=pb, held_b=hb, final_b=fb, pt=pt, ptc=ptc, Ec=Ec, placed_c=pc, held_c=hc,
+                final_c=fc, ptd=ptd, Edc=Edc, placed_dc=pdc, held_dc=hdc, final_dc=fdc)
 
 
 # ---------------------------------------------------------------------------------------------------- Ask A
@@ -388,11 +400,19 @@ def golden_values(golden):
           ("Mississauga", "Dorval", "Richmond", "Calgary", "Winnipeg")}
     bm = {r[0]: r[1:5] for r in wb["Brandmoor FY2025-26"].iter_rows(values_only=True) if r and r[0] in
           ("Mississauga", "Dorval", "Richmond", "Calgary", "Winnipeg")}
+    basis_seg, basis_gw = {}, {}
+    for r in wb["Forecast basis"].iter_rows(values_only=True):
+        if not r or r[0] not in DESKS:
+            continue
+        if isinstance(r[1], str):
+            basis_seg[(r[0], r[1])] = tuple(r[2:5])
+        else:
+            basis_gw[r[0]] = tuple(r[1:6])
     from pptx import Presentation
     prs = Presentation(os.path.join(golden, "establishment_review_2027.pptx"))
     tbl = [sh.table for sh in prs.slides[0].shapes if sh.has_table][0]
     deck = {tbl.cell(i, 0).text: [tbl.cell(i, j).text for j in range(1, 5)] for i in range(1, len(tbl.rows))}
-    return rows, held, ot, bm, deck
+    return rows, held, ot, bm, deck, basis_seg, basis_gw
 
 
 def main(target=None, golden=None):
@@ -418,17 +438,35 @@ def main(target=None, golden=None):
     eq("establishment", {d[g]: str(c["st"]["est"][g]) for g in GW}, fig["establishment"])
     eq("default placement", {d[g]: str(c["placed_d"][g]) for g in GW}, fig["default_path"]["posts_placed"])
     eq("default held", str(c["held_d"]), fig["default_path"]["held"])
-    pr = c["pricing"]
-    eq("pricing", {"base_foreign_shipments": "{:,}".format(pr["base_rows"]),
-                   "repeat_on_invoice_value": "{:,}".format(pr["on_invoice"]),
-                   "repeat_on_cad_value": "{:,}".format(pr["on_cad"]), "slope": "%.3f" % pr["slope"]},
-       fig["pricing_history"])
-    eq("CAD-fixed placement equals the default's", (c["placed_c"], c["held_c"]), (c["placed_d"], c["held_d"]))
+    pt = c["pt"]
+    eq("pass-through", {"%s %s" % (d[g], cu): {"repeats_on_invoice_value": "{:,}".format(a),
+                                                 "repeats_on_cad_value": "{:,}".format(b), "share": "%.3f" % p}
+                         for (g, cu), (a, b, p) in sorted(pt.items(), key=lambda kv: (GW.index(kv[0][0]), kv[0][1]))},
+       fig["pass_through"])
+    eq("pooled share", "%.3f" % c["ptc"]["all"][2], fig["rivals"]["pooled_share"]["share"])
+    eq("US dollar share", "%.3f" % c["ptd"]["USD"][2], fig["rivals"]["by_currency"]["usd_share"])
+    for key, p_, h_, E_ in (("full_repricing", c["placed_b"], c["held_b"], c["Eb"]),
+                            ("pooled_share", c["placed_c"], c["held_c"], c["Ec"]),
+                            ("by_currency", c["placed_dc"], c["held_dc"], c["Edc"])):
+        eq("rival %s placement" % key, {d[g]: str(p_[g]) for g in GW}, fig["rivals"][key]["posts_placed"])
+        eq("rival %s held" % key, str(h_), fig["rivals"][key]["held"])
+        eq("rival %s forecast" % key, {d[g]: fmt_int(E_[g], 50) for g in GW},
+           fig["rivals"][key]["forecast_monthly_formal_entries"])
+    eq("formal entries with the pass-through", {d[g]: "{:,}".format(rnd(c["n"][g], 1)) for g in GW},
+       fig["base_year_formal_with_pass_through"])
+    eq("formal entries at the plan's rates", {d[g]: "{:,}".format(c["nb"][g]) for g in GW},
+       fig["base_year_formal_at_plan_rates"])
     eq("ask A", {d[g]: {"FQ%d" % q: fmt_int(A[(d[g], q)], 1) for q in (1, 2, 3, 4)} for g in GW},
        fig["ask_a_overtime_hours"])
     eq("ask B", {d[g]: {"FQ%d" % q: fmt_int(B[(d[g], q)], 1) for q in (1, 2, 3, 4)} for g in GW},
        fig["ask_b_brandmoor_cad"])
-    rows, held, ot, bm, deck = golden_values(golden)
+    rows, held, ot, bm, deck, basis_seg, basis_gw = golden_values(golden)
+    eq("workbook pass-through", basis_seg, {(d[g], cu): (a, b, round(p, 3)) for (g, cu), (a, b, p) in c["pt"].items()})
+    n_base = {g: sum(1 for s in c["reg"] if s["gw"] == g and s["route"] == "FORMAL") for g in GW}
+    eq("workbook forecast basis", basis_gw, {d[g]: (n_base[g], c["nb"][g], rnd(c["n"][g], 1), round(c["ratio"][g], 4),
+                                                    rnd(c["E"][g], 50)) for g in GW})
+    eq("formal entries as routed", {d[g]: "{:,}".format(n_base[g]) for g in GW}, fig["base_year_formal_as_routed"])
+    eq("plan over base", {d[g]: "%.4f" % c["ratio"][g] for g in GW}, fig["plan_over_base"])
     for g in GW:
         r = rows[g]
         eq("workbook %s" % g, (r[3], r[5], r[6]), (c["placed"][g], rnd(c["E"][g], 50), rnd(c["final"][g], 5)))
@@ -442,11 +480,13 @@ def main(target=None, golden=None):
         for b in bad:
             print("  " + b)
         raise SystemExit(1)
-    print("verify.py: from the bundle alone, %s; held %d; forecast %s; default path %s, held %d; %d overtime and %d "
-          "Brandmoor figures; all equal figures.json, the workbook and the deck" % (
+    print("verify.py: from the bundle alone, %s; held %d; forecast %s; default path %s, held %d; full repricing held "
+          "%d, one network share held %d, one share per currency held %d; %d overtime and %d Brandmoor figures; all "
+          "equal figures.json, the workbook and the deck" % (
               ", ".join("%s %d" % (d[g], c["placed"][g]) for g in GW), c["held"],
               ", ".join("%s %s" % (d[g], fmt_int(c["E"][g], 50)) for g in GW),
-              ", ".join("%s %d" % (d[g], c["placed_d"][g]) for g in GW), c["held_d"], len(A), len(B)))
+              ", ".join("%s %d" % (d[g], c["placed_d"][g]) for g in GW), c["held_d"], c["held_b"], c["held_c"],
+              c["held_dc"], len(A), len(B)))
     return c, A, B
 
 

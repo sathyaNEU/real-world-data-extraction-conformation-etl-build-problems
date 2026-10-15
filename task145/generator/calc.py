@@ -61,8 +61,190 @@ def formal_at(W, g, rate_of, ogd_kept=True):
     return n
 
 
-def golden_E(W):
+# ---------------------------------------------------------------------------------------------------- pass-through
+def records(W):
+    """The two years on file as the extracts carry them, one record per shipment (an amended shipment at its amended
+    value): year 0 the twelve months to September 2025, year 1 the base."""
+    amended = {id(s): nv for s, nv in W.amended}
+    out = []
+    for yr, ships in ((0, W.prior), (1, W.ships)):
+        for s in ships:
+            v = amended.get(id(s), s.value)
+            cad = K.round_dp(v * s.rate, 2)
+            out.append(dict(yr=yr, gw=s.gw, imp=s.importer, hs=s.hs, cur=s.cur, val=v, rate=s.rate, cad=cad,
+                            ogd=bool(s.ogd), formal=bool(s.ogd) or cad > K.LINE_CAD, cad_priced=s.cad_priced,
+                            local=s.local.date(), utc=s.utc.date(), seg=s.seg))
+    return out
+
+
+def seg_gc(r):
+    return (r["gw"], r["cur"])
+
+
+def k_inv(r):
+    return (r["gw"], r["imp"], r["hs"], r["cur"], r["val"])
+
+
+def k_cad(r):
+    return (r["gw"], r["imp"], r["hs"], r["cur"], r["cad"])
+
+
+def repeat_counts(recs, seg=seg_gc, ki=k_inv, kc=k_cad, weight="shipment", both_years=False, tol=False):
+    """By segment: the base year's foreign-currency shipments (OGD goods aside) that repeat a consignment of the year
+    before on its invoice value, and those that repeat one on its CAD value. weight 'consignment' counts each repeated
+    consignment once; both_years also matches the year before's shipments against the base; tol matches the CAD value
+    within a cent (the conversion's rounding)."""
+    fx = [r for r in recs if not r["ogd"] and r["cur"] != "CAD"]
+    by_year = {0: [r for r in fx if r["yr"] == 0], 1: [r for r in fx if r["yr"] == 1]}
+    n_inv, n_cad = {}, {}
+    pairs = [(1, 0), (0, 1)] if both_years else [(1, 0)]
+
+    def shifted(r, d):
+        q = dict(r)
+        q["cad"] = K.round_dp(r["cad"] + d, 2)
+        return q
+    for a, b in pairs:
+        p_inv = {ki(r) for r in by_year[b]}
+        p_cad = {kc(r) for r in by_year[b]}
+        seen_i, seen_c = set(), set()
+        for r in by_year[a]:
+            sg = seg(r)
+            if ki(r) in p_inv:
+                if weight == "consignment":
+                    if (a, ki(r)) in seen_i:
+                        continue
+                    seen_i.add((a, ki(r)))
+                n_inv[sg] = n_inv.get(sg, 0) + 1
+            elif kc(r) in p_cad or (tol and (kc(shifted(r, -0.01)) in p_cad or kc(shifted(r, 0.01)) in p_cad)):
+                if weight == "consignment":
+                    key = kc(dict(r, cad=K.round_to(r["cad"], 1))) if tol else kc(r)
+                    if (a, key) in seen_c:
+                        continue
+                    seen_c.add((a, key))
+                n_cad[sg] = n_cad.get(sg, 0) + 1
+    return n_inv, n_cad
+
+
+def shares(n_inv, n_cad):
+    """Each segment's pass-through share: the repeat shipments that kept their invoice value over all repeats."""
+    out = {}
+    for sg in set(n_inv) | set(n_cad):
+        a, b = n_inv.get(sg, 0), n_cad.get(sg, 0)
+        out[sg] = a / (a + b)
+    return out
+
+
+def slope_shares(recs, seg=seg_gc, ki=k_inv, kc=k_cad):
+    """Each segment's pass-through as a regression: within the consignments seen in both years (on the invoice value
+    or on the CAD value), the log of the CAD value on the log of the day's rate, slope 1 for goods that keep their
+    invoice prices and 0 for goods that keep their CAD prices."""
+    fx = [r for r in recs if not r["ogd"] and r["cur"] != "CAD"]
+    groups = {}
+    for r in fx:
+        groups.setdefault(("i",) + ki(r), []).append(r)
+        groups.setdefault(("c",) + kc(r), []).append(r)
+    sxx, sxy = {}, {}
+    for v in groups.values():
+        if len({r["yr"] for r in v}) < 2:
+            continue
+        lr = [math.log(r["rate"]) for r in v]
+        lc = [math.log(r["cad"]) for r in v]
+        mr, mc = sum(lr) / len(lr), sum(lc) / len(lc)
+        sg = seg(v[0])
+        sxx[sg] = sxx.get(sg, 0.0) + sum((a - mr) ** 2 for a in lr)
+        sxy[sg] = sxy.get(sg, 0.0) + sum((a - mr) * (b - mc) for a, b in zip(lr, lc))
+    return {sg: sxy[sg] / sxx[sg] for sg in sxx if sxx[sg] > 0}
+
+
+def mixture_counts(recs, pi, seg=seg_gc, plan=None):
+    """Each gateway's base-year shipments routed for 2027: OGD goods formal; goods invoiced in CAD on their value; in
+    each other segment the pass-through share pi re-routed at the plan's rate on the invoice value, the rest keeping
+    the CAD value (and the route) the base year gave them."""
+    plan = plan or K.PLAN_RATE
+    n = {g: 0.0 for g in K.GATEWAYS}
+    for r in recs:
+        if r["yr"] != 1:
+            continue
+        g = r["gw"]
+        if r["ogd"] or r["cur"] == "CAD":
+            n[g] += r["formal"]
+            continue
+        p = pi[seg(r)]
+        n[g] += p * (K.round_dp(r["val"] * plan[r["cur"]], 2) > K.LINE_CAD) + (1.0 - p) * r["formal"]
+    return n
+
+
+def scale(W, n):
+    return {g: n[g] * plan_ratio(W, g) / 12.0 for g in K.GATEWAYS}
+
+
+def golden_E(W, recs=None):
+    """The golden: each segment's pass-through share from the repeat consignments, the base year re-routed with it."""
+    recs = recs or records(W)
+    return scale(W, mixture_counts(recs, shares(*repeat_counts(recs))))
+
+
+def full_repricing_E(W):
+    """Rival (b): every foreign-currency shipment re-routed at the plan's rate on its invoice value (pass-through 1)."""
     return {g: formal_at(W, g, lambda s: K.PLAN_RATE[s.cur]) * plan_ratio(W, g) / 12.0 for g in K.GATEWAYS}
+
+
+def pooled_share_E(W, recs=None):
+    """Rival (c): one pass-through share for the network, pooled over the segments."""
+    recs = recs or records(W)
+    n_inv, n_cad = repeat_counts(recs, seg=lambda r: "all")
+    p = shares(n_inv, n_cad)["all"]
+    return scale(W, mixture_counts(recs, {sg: p for sg in {seg_gc(r) for r in recs}})), p
+
+
+def by_key_E(W, keyf, recs=None):
+    """The pass-through share estimated on another segmentation (by currency alone, by gateway alone, by origin)."""
+    recs = recs or records(W)
+    pi = shares(*repeat_counts(recs, seg=keyf))
+    return scale(W, mixture_counts(recs, pi, seg=keyf)), pi
+
+
+def consignment_level_E(W, recs=None):
+    """Each base-year shipment that repeats a consignment of the year before routed as its own price behaves (a repeat
+    on the invoice value re-routed at the plan's rate, a repeat on the CAD value kept), the rest at the segment's
+    share."""
+    recs = recs or records(W)
+    pi = shares(*repeat_counts(recs))
+    fx0 = [r for r in recs if r["yr"] == 0 and not r["ogd"] and r["cur"] != "CAD"]
+    p_inv, p_cad = {k_inv(r) for r in fx0}, {k_cad(r) for r in fx0}
+    n = {g: 0.0 for g in K.GATEWAYS}
+    for r in recs:
+        if r["yr"] != 1:
+            continue
+        g = r["gw"]
+        if r["ogd"] or r["cur"] == "CAD":
+            n[g] += r["formal"]
+            continue
+        at_plan = K.round_dp(r["val"] * K.PLAN_RATE[r["cur"]], 2) > K.LINE_CAD
+        if k_inv(r) in p_inv:
+            n[g] += at_plan
+        elif k_cad(r) in p_cad:
+            n[g] += r["formal"]
+        else:
+            p = pi[seg_gc(r)]
+            n[g] += p * at_plan + (1 - p) * r["formal"]
+    return scale(W, n)
+
+
+def truth_E(W):
+    """The world's own 2027 at the plan's rates: goods priced in the invoice currency re-routed at the plan's rate,
+    goods priced in CAD at their CAD price (never computable from the pack: a shipment's pricing is not on file)."""
+    amended = {id(s): nv for s, nv in W.amended}
+    n = {g: 0 for g in K.GATEWAYS}
+    for s in W.ships:
+        v = amended.get(id(s), s.value)
+        if s.ogd:
+            n[s.gw] += 1
+        elif s.cur == "CAD" or s.cad_priced:
+            n[s.gw] += int(K.round_dp(v * s.rate, 2) > K.LINE_CAD)
+        else:
+            n[s.gw] += int(K.round_dp(v * K.PLAN_RATE[s.cur], 2) > K.LINE_CAD)
+    return scale(W, n)
 
 
 def default_E(W):
@@ -117,29 +299,48 @@ def share_regression_E(W, g):
     return sum(sh[k - 1] * plan_k[(g, k)] * 1000.0 for k in range(1, 13)) / 12.0
 
 
-def usd_only_E(W):
-    """R2: every foreign-currency shipment re-routed with its CAD value moved by the US dollar's change alone."""
-    out = {}
-    for g in K.GATEWAYS:
-        n = formal_at(W, g, lambda s: s.rate * (K.PLAN_RATE["USD"] / W.rates["USD"][s.local.date()])
-                      if s.cur != "CAD" else 1.0)
-        out[g] = n * plan_ratio(W, g) / 12.0
-    return out
+def golden_shares(W, recs=None):
+    recs = recs or records(W)
+    return shares(*repeat_counts(recs))
 
 
-def eur_only_E(W):
-    """R2b: only the euro shipments re-routed at the plan's euro rate, the rest kept as routed."""
-    out = {}
-    for g in K.GATEWAYS:
-        n = formal_at(W, g, lambda s: K.PLAN_RATE["EUR"] if s.cur == "EUR" else s.rate)
-        out[g] = n * plan_ratio(W, g) / 12.0
-    return out
+def mixture_at(W, rate_of, recs=None, ogd_kept=True, cad_factor=1.0, inv_factor=1.0):
+    """The golden's pass-through shares with another rate for the re-routed share: rate_of(record) is the rate a
+    record's invoice value is converted at; OGD goods on value alone when ogd_kept is False; prices moved by a factor
+    (cad_factor on the CAD-held share, inv_factor on the invoice-held share) for the price corridor."""
+    recs = recs or records(W)
+    pi = golden_shares(W, recs)
+    n = {g: 0.0 for g in K.GATEWAYS}
+    for r in recs:
+        if r["yr"] != 1:
+            continue
+        g = r["gw"]
+        if r["ogd"] and ogd_kept:
+            n[g] += 1
+            continue
+        held = K.round_dp(r["cad"] * cad_factor, 2) > K.LINE_CAD
+        if r["cur"] == "CAD":
+            n[g] += held
+            continue
+        moved = K.round_dp(r["val"] * inv_factor * rate_of(r), 2) > K.LINE_CAD
+        p = pi[seg_gc(r)]
+        n[g] += p * moved + (1.0 - p) * held
+    return scale(W, n)
 
 
-def value_only_E(W):
-    """R2c: every shipment re-routed at the plan's rate on its value alone, the OGD program ignored."""
-    return {g: formal_at(W, g, lambda s: K.PLAN_RATE[s.cur], ogd_kept=False) * plan_ratio(W, g) / 12.0
-            for g in K.GATEWAYS}
+def usd_only_E(W, recs=None):
+    """R2c: the golden's pass-through, every foreign-currency value re-routed with the US dollar's change alone."""
+    return mixture_at(W, lambda r: r["rate"] * K.PLAN_RATE["USD"] / W.rates["USD"][r["local"]], recs)
+
+
+def eur_only_E(W, recs=None):
+    """R2d: the golden's pass-through, only the euro shipments re-routed at the plan's euro rate."""
+    return mixture_at(W, lambda r: K.PLAN_RATE["EUR"] if r["cur"] == "EUR" else r["rate"], recs)
+
+
+def value_only_E(W, recs=None):
+    """R2e: the golden's pass-through, OGD goods routed on their value alone."""
+    return mixture_at(W, lambda r: K.PLAN_RATE[r["cur"]], recs, ogd_kept=False)
 
 
 def latest_quarter_E(W, g):
@@ -159,15 +360,39 @@ def pooled_E(W):
     return {g: f / v * sum(plan_k[(g, k)] for k in range(1, 13)) * 1000.0 / 12.0 for g in K.GATEWAYS}
 
 
-def spot_E(W):
-    """A rival rate basis: the shipments re-routed at the last rate on file (30 September 2026) instead of the plan's."""
+def spot_E(W, recs=None):
+    """R0f: the golden's pass-through at the last customs rate on file (30 September 2026) instead of the plan's."""
     last = {c: W.rates[c][K.HIST_END] for c in K.CURRENCIES}
-    return {g: formal_at(W, g, lambda s: last[s.cur]) * plan_ratio(W, g) / 12.0 for g in K.GATEWAYS}
+    return mixture_at(W, lambda r: last[r["cur"]], recs)
 
 
-def inflated_E(W, f):
-    """The corridor: invoice values moved by a factor f before the plan's rates are applied."""
-    return {g: formal_at(W, g, lambda s: K.PLAN_RATE[s.cur] * f) * plan_ratio(W, g) / 12.0 for g in K.GATEWAYS}
+def inflated_E(W, f, recs=None):
+    """The price corridor: every price moved by a factor f between the base year and 2027 (invoice-currency prices
+    before the plan's rates, CAD prices as they stand)."""
+    return mixture_at(W, lambda r: K.PLAN_RATE[r["cur"]], recs, cad_factor=f, inv_factor=f)
+
+
+def diff_slope_shares(recs, seg=seg_gc):
+    """Each segment's pass-through as a regression of the change in the log CAD value on the change in the log rate,
+    through the origin, over each base-year repeat and the latest shipment of its consignment the year before."""
+    fx = [r for r in recs if not r["ogd"] and r["cur"] != "CAD"]
+    last_inv, last_cad = {}, {}
+    for r in sorted((r for r in fx if r["yr"] == 0), key=lambda r: r["local"]):
+        last_inv[k_inv(r)] = r
+        last_cad[k_cad(r)] = r
+    sxx, sxy = {}, {}
+    for r in fx:
+        if r["yr"] != 1:
+            continue
+        q = last_inv.get(k_inv(r)) or last_cad.get(k_cad(r))
+        if q is None:
+            continue
+        dr = math.log(r["rate"]) - math.log(q["rate"])
+        dc = math.log(r["cad"]) - math.log(q["cad"])
+        sg = seg(r)
+        sxx[sg] = sxx.get(sg, 0.0) + dr * dr
+        sxy[sg] = sxy.get(sg, 0.0) + dr * dc
+    return {sg: sxy[sg] / sxx[sg] for sg in sxx if sxx[sg] > 0}
 
 
 # ---------------------------------------------------------------------------------------------------- the asks

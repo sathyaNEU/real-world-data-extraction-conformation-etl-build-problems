@@ -77,20 +77,26 @@ def daily_rates():
 
 
 # ---------------------------------------------------------------------------------------------------- the routing
-def segment_formal_prob(seg, rate):
-    """Share of a segment's shipments routed to a formal entry at one rate (OGD shipments always)."""
+def segment_formal_prob(g, seg, rate):
+    """Share of a segment's shipments routed to a formal entry at one rate (OGD shipments always): the goods priced in
+    the invoice currency cross the line with the rate, the goods priced in CAD hold their CAD value."""
+    lam = K.lcp_share(g, seg["cur"])
     x = K.LINE_CAD / rate
     if seg["kind"] == "ln":
         mu, s = seg["p"]
-        p_val = 1.0 - K.phi((math.log(x) - mu) / s)
+        p_inv = 1.0 - K.phi((math.log(x) - mu) / s)
+        p_cad = 1.0 - K.phi((math.log(K.LINE_CAD) - mu - math.log(K.ref_rate(seg["cur"]))) / s) if lam else 0.0
     else:
         tot = sum(w for _, w in seg["p"])
-        p_val = sum(w for v, w in seg["p"] if v * rate > K.LINE_CAD) / tot
+        p_inv = sum(w for v, w in seg["p"] if v * rate > K.LINE_CAD) / tot
+        tc = sum(w for _, w in seg["cp"])
+        p_cad = sum(w for v, w in seg["cp"] if v > K.LINE_CAD) / tc
+    p_val = (1.0 - lam) * p_inv + lam * p_cad
     return seg["ogd"] + (1.0 - seg["ogd"]) * p_val
 
 
 def gateway_formal_share(g, rates_by_cur):
-    return sum(seg["share"] * segment_formal_prob(seg, rates_by_cur[seg["cur"]]) for seg in K.SEGMENTS[g])
+    return sum(seg["share"] * segment_formal_prob(g, seg, rates_by_cur[seg["cur"]]) for seg in K.SEGMENTS[g])
 
 
 WEEKDAY_W = [1.14, 1.12, 1.10, 1.10, 1.08, 0.36, 0.10]
@@ -113,6 +119,8 @@ class Shipment:
     seg: int
     route: str                    # FORMAL or CLVS
     entry: str = ""
+    cad_priced: bool = False      # the truth, never shipped: the goods' price is set in CAD (the value in CAD holds)
+    price_cad: float = 0.0        # that CAD price
 
 
 @dataclass
@@ -221,40 +229,90 @@ RELEASE_HOURS = np.array([0.6, 0.4, 0.3, 0.3, 0.6, 1.4, 3.2, 5.0, 6.4, 7.0, 7.2,
 RELEASE_HOURS = RELEASE_HOURS / RELEASE_HOURS.sum()
 
 
-def catalogue(g, si, seg, rates, pool, pw):
-    """An importer's standing consignments in one background segment: the same goods sent again and again at the same
-    invoice value in the invoice currency. Values come from the segment's own distribution above the check's floor at
-    the two years' average rate (a consignment under the floor on a day of a lower rate is released unchecked), and
-    clear of the line at the plan's rate."""
+def cur_round(cur, x):
+    return np.round(x) if cur == "JPY" else np.round(x, 2)
+
+
+def invoice_of(price_cad, rate, cur):
+    """The invoice value of goods priced in CAD: the price converted at the day's rate, to the currency's unit."""
+    v = price_cad / rate
+    return float(K.round_dp(v, 0)) if cur == "JPY" else K.round_dp(v, 2)
+
+
+def off_line(vals, rr):
+    """Values moved two units of CAD clear of the line where they land within CAD 0.75 of it at the rate rr."""
+    near = np.abs(vals * rr - K.LINE_CAD) < 0.75
+    return np.where(near, vals + np.where(vals * rr >= K.LINE_CAD, 2.0, -2.0) / rr, vals)
+
+
+def catalogue(g, si, seg, rates, pool, pw, big):
+    """An importer's standing consignments in one segment: the same goods sent again and again at the same price.
+    Goods priced in the invoice currency keep their invoice value; goods priced in CAD keep their CAD price and are
+    invoiced at it converted at the day's rate. A background segment's values come from its own distribution above the
+    check's floor (at the two years' average rate for the invoice-currency prices: a consignment under the floor on a
+    day of a lower rate is released unchecked), clear of the line at the plan's rate; a price-point segment's from its
+    lists, most of them the gateway's large accounts. Both kinds of price recur at the same rate per consignment."""
     r = K.rng("catalogue", g, si)
-    days = [d for d in rates[seg["cur"]] if K.PRIOR_START <= d <= K.BASE_END]
-    r_mean = sum(rates[seg["cur"]][d] for d in days) / len(days)
-    mu, s_ = seg["p"]
-    lo = K.CHECK_FLOOR_CAD / r_mean
-    mid = sum(W_VOL_HINT[g][m] for m in range(12)) * 2.0 * seg["share"] * (1 - seg["ogd"]) * \
-        (1.0 - K.phi((math.log(lo) - mu) / s_))
-    n = max(24, int(round(K.REPEAT_SHARE * mid / K.REPEATS_PER_ITEM)))
-    vals = sample_lognorm_above(r, mu, s_, lo, n)
-    vals = np.round(vals) if seg["cur"] == "JPY" else np.round(vals, 2)
-    pr = K.PLAN_RATE[seg["cur"]]
-    near = np.abs(vals * pr - K.LINE_CAD) < 0.75
-    vals = np.where(near, vals + np.where(vals * pr >= K.LINE_CAD, 2.0, -2.0) / pr, vals)
-    vals = np.round(vals) if seg["cur"] == "JPY" else np.round(vals, 2)
+    cur = seg["cur"]
+    lam = K.lcp_share(g, cur)
     lane = seg["lane"]
-    imps = [pool[i] for i in r.choice(len(pool), size=n, p=pw)]
-    hss = [HS[lane][i][0] for i in r.integers(0, len(HS[lane]), n)]
     ocs = ORIGIN[lane]
-    ors = [ocs[i][0] for i in r.choice(len(ocs), size=n, p=[x for _, x in ocs])]
-    w = 1.0 / (np.arange(1, n + 1) + 4.0) ** 0.55
-    w = w[r.permutation(n)]
-    return dict(vals=vals, imps=imps, hss=hss, ors=ors, w=w / w.sum())
+
+    def items(vals, pp=False):
+        n = len(vals)
+        if pp:
+            # an importer's price-point goods are one line of goods under one tariff item
+            idx = [int(r.integers(0, len(big))) if r.random() < 0.7 else int(r.choice(len(pool), p=pw))
+                   for _ in range(n)]
+            imps = [pool[i] for i in idx]
+            hss = [HS[lane][(i * 7 + si) % len(HS[lane])][0] for i in idx]
+        else:
+            imps = [pool[i] for i in r.choice(len(pool), size=n, p=pw)]
+            hss = [HS[lane][i][0] for i in r.integers(0, len(HS[lane]), n)]
+        ors = [ocs[i][0] for i in r.choice(len(ocs), size=n, p=[x for _, x in ocs])]
+        w = 1.0 / (np.arange(1, n + 1) + 4.0) ** 0.55
+        w = w[r.permutation(n)]
+        return dict(vals=vals, imps=imps, hss=hss, ors=ors, w=w / w.sum())
+
+    out = {}
+    if seg["kind"] == "pp":
+        vol2 = sum(W_VOL_HINT[g][m] for m in range(12)) * 2.0 * seg["share"]
+        for key, plist, part in (("inv", seg["p"], 1.0 - lam), ("cad", seg["cp"], lam)):
+            if part <= 0:
+                continue
+            n = max(2, int(round(vol2 * part / K.REPEATS_PER_ITEM)))
+            pv = np.array([v for v, _ in plist], float)
+            pw_ = np.array([w_ for _, w_ in plist], float)
+            out[key] = items(r.choice(pv, size=n, p=pw_ / pw_.sum()), pp=True)
+        return out
+    days = [d for d in rates[cur] if K.PRIOR_START <= d <= K.BASE_END]
+    r_mean = sum(rates[cur][d] for d in days) / len(days)
+    mu, s_ = seg["p"]
+    vol2 = sum(W_VOL_HINT[g][m] for m in range(12)) * 2.0 * seg["share"] * (1 - seg["ogd"])
+    lo = K.CHECK_FLOOR_CAD / r_mean
+    mid = vol2 * (1 - lam) * (1.0 - K.phi((math.log(lo) - mu) / s_))
+    n = max(2, int(round(K.REPEAT_SHARE * mid / K.REPEATS_PER_ITEM)))
+    vals = cur_round(cur, sample_lognorm_above(r, mu, s_, lo, n))
+    vals = cur_round(cur, off_line(vals, K.PLAN_RATE[cur]))
+    out["inv"] = items(vals)
+    if lam:
+        muc = mu + math.log(K.ref_rate(cur))
+        mid = vol2 * lam * (1.0 - K.phi((math.log(K.CHECK_FLOOR_CAD) - muc) / s_))
+        n = max(2, int(round(K.REPEAT_SHARE * mid / K.REPEATS_PER_ITEM)))
+        pc = np.round(sample_lognorm_above(r, muc, s_, K.CHECK_FLOOR_CAD + 1.0, n), 2)
+        pc = np.round(off_line(pc, 1.0), 2)
+        out["cad"] = items(pc)
+    return out
 
 
 W_VOL_HINT = {}
 
 
-def _window(W, g, months_, r, pool, pw, big, cats, out):
-    """Every shipment the high-value check covers (CAD 2,500 or more, or OGD) at gateway g over the months given."""
+def _window(W, g, months_, r, pool, pw, big, cats, out, seen=None):
+    """Every shipment the high-value check covers (CAD 2,500 or more, or OGD) at gateway g over the months given.
+    seen: the year before's consignment keys (importer, tariff item, currency, and the invoice value or the CAD value);
+    a shipment of the base year that would repeat one on both (the same goods on a day of the same rate) is not drawn,
+    so a repeat consignment shows one price or the other."""
     rates = W.rates
     for (y, m) in months_:
         vol = W.volume[(g, y, m)]
@@ -263,54 +321,89 @@ def _window(W, g, months_, r, pool, pw, big, cats, out):
             day = dt.date(y, m, d + 1)
             n_day = vol * w[d]
             for si, seg in enumerate(K.SEGMENTS[g]):
-                rate = rates[seg["cur"]][day]
+                cur = seg["cur"]
+                rate = rates[cur][day]
+                pr = K.PLAN_RATE[cur]
                 lo = K.CHECK_FLOOR_CAD / rate
-                vals, ogds, rep = [], [], []
+                lam = K.lcp_share(g, cur)
+                vals, ogds, rep, cadp = [], [], [], []
                 if seg["kind"] == "ln":
                     mu, s = seg["p"]
+                    # goods priced in the invoice currency
                     p_hv = 1.0 - K.phi((math.log(lo) - mu) / s)
-                    k = int(r.poisson(n_day * seg["share"] * (1 - seg["ogd"]) * p_hv))
+                    k = int(r.poisson(n_day * seg["share"] * (1 - seg["ogd"]) * (1 - lam) * p_hv))
                     k_rep = int(r.binomial(k, K.REPEAT_SHARE)) if k else 0
-                    fresh = sample_lognorm_above(r, mu, s, lo, k - k_rep)
-                    fresh = np.round(fresh) if seg["cur"] == "JPY" else np.round(fresh, 2)
-                    for rr in (rate, K.PLAN_RATE[seg["cur"]]):
-                        near = np.abs(fresh * rr - K.LINE_CAD) < 0.75
-                        fresh = np.where(near, fresh + np.where(fresh * rr >= K.LINE_CAD, 2.0, -2.0) / rr, fresh)
-                    fresh = np.round(fresh) if seg["cur"] == "JPY" else np.round(fresh, 2)
+                    fresh = cur_round(cur, sample_lognorm_above(r, mu, s, lo, k - k_rep))
+                    for rr in (rate, pr):
+                        fresh = cur_round(cur, off_line(fresh, rr))
                     vals += list(fresh)
                     ogds += [""] * len(fresh)
                     rep += [-1] * len(fresh)
+                    cadp += [0.0] * len(fresh)
                     if k_rep:
-                        c = cats[si]
-                        picks = r.choice(len(c["vals"]), size=k_rep, p=c["w"])
-                        for i in picks:
+                        c = cats[si]["inv"]
+                        for i in r.choice(len(c["vals"]), size=k_rep, p=c["w"]):
                             v = float(c["vals"][i])
                             if K.round_dp(v * rate, 2) == K.LINE_CAD:
                                 continue
                             vals.append(v)
                             ogds.append("")
                             rep.append(int(i))
+                            cadp.append(0.0)
+                    # goods priced in CAD, invoiced at the price converted at the day's rate
+                    if lam:
+                        muc = mu + math.log(K.ref_rate(cur))
+                        p_hc = 1.0 - K.phi((math.log(K.CHECK_FLOOR_CAD + 1.0) - muc) / s)
+                        kc = int(r.poisson(n_day * seg["share"] * (1 - seg["ogd"]) * lam * p_hc))
+                        kc_rep = int(r.binomial(kc, K.REPEAT_SHARE)) if kc else 0
+                        pf = np.round(sample_lognorm_above(r, muc, s, K.CHECK_FLOOR_CAD + 1.0, kc - kc_rep), 2)
+                        pf = np.round(off_line(pf, 1.0), 2)
+                        for P in pf:
+                            vals.append(invoice_of(float(P), rate, cur))
+                            ogds.append("")
+                            rep.append(-1)
+                            cadp.append(float(P))
+                        if kc_rep:
+                            c = cats[si]["cad"]
+                            for i in r.choice(len(c["vals"]), size=kc_rep, p=c["w"]):
+                                P = float(c["vals"][i])
+                                vals.append(invoice_of(P, rate, cur))
+                                ogds.append("")
+                                rep.append(int(i))
+                                cadp.append(P)
                     ko = int(r.poisson(n_day * seg["share"] * seg["ogd"]))
                     omu, os_ = seg["ogd_ln"]
                     ov = np.exp(r.normal(omu, os_, ko))
-                    vals += list(np.round(ov) if seg["cur"] == "JPY" else np.round(ov, 2))
+                    vals += list(cur_round(cur, ov))
                     ogds += ["OGD"] * ko
                     rep += [-1] * ko
+                    cadp += [0.0] * ko
                 else:
                     k = int(r.poisson(n_day * seg["share"]))
-                    prices = [v for v, _ in seg["p"]]
-                    pw_ = np.array([wt for _, wt in seg["p"]], float)
-                    vals += list(r.choice(prices, size=k, p=pw_ / pw_.sum()).astype(float))
+                    kc = int(r.binomial(k, lam)) if (k and lam) else 0
+                    if k - kc:
+                        c = cats[si]["inv"]
+                        for i in r.choice(len(c["vals"]), size=k - kc, p=c["w"]):
+                            vals.append(float(c["vals"][i]))
+                            rep.append(int(i))
+                            cadp.append(0.0)
+                    if kc:
+                        c = cats[si]["cad"]
+                        for i in r.choice(len(c["vals"]), size=kc, p=c["w"]):
+                            P = float(c["vals"][i])
+                            vals.append(invoice_of(P, rate, cur))
+                            rep.append(int(i))
+                            cadp.append(P)
                     ogds += [""] * k
-                    rep += [-1] * k
                 if not vals:
                     continue
                 vals = np.array(vals, float)
                 ogd_mask = np.array([o == "OGD" for o in ogds])
                 rep = np.array(rep)
+                cadp = np.array(cadp, float)
                 cads = np.array([K.round_dp(v * rate, 2) for v in vals])
                 keep = ogd_mask | (cads >= K.CHECK_FLOOR_CAD)
-                vals, cads, ogd_mask, rep = vals[keep], cads[keep], ogd_mask[keep], rep[keep]
+                vals, cads, ogd_mask, rep, cadp = vals[keep], cads[keep], ogd_mask[keep], rep[keep], cadp[keep]
                 k = len(vals)
                 if k == 0:
                     continue
@@ -323,25 +416,41 @@ def _window(W, g, months_, r, pool, pw, big, cats, out):
                 ocs = ORIGIN[lane]
                 or_i = r.choice(len(ocs), size=k, p=[x for _, x in ocs])
                 imp_i = r.choice(len(pool), size=k, p=pw)
-                big_u = r.random(k)
-                big_i = r.integers(0, 3, k)
                 for j in range(k):
                     t_local = dt.datetime(y, m, d + 1, int(hours[j]), int(mins[j]), int(secs[j]))
+                    lc = cadp[j] > 0
                     if ogd_mask[j]:
                         hs, prog = OGD_GOODS[int(og_i[j])]
                         org, imp = ocs[int(or_i[j])][0], pool[int(imp_i[j])]
                     elif rep[j] >= 0:
-                        c = cats[si]
+                        c = cats[si]["cad" if lc else "inv"]
                         hs, prog, org, imp = c["hss"][rep[j]], "", c["ors"][rep[j]], c["imps"][rep[j]]
                     else:
                         hs, prog = HS[lane][int(hs_i[j])][0], ""
                         org = ocs[int(or_i[j])][0]
-                        imp = big[int(big_i[j])] if (seg["kind"] == "pp" and big_u[j] < 0.7) else pool[int(imp_i[j])]
-                    cad = float(cads[j])
+                        imp = pool[int(imp_i[j])]
+                    v, cad = float(vals[j]), float(cads[j])
+                    if lc and not prog and abs(K.round_dp(v * pr, 2) - K.LINE_CAD) < 0.75:
+                        continue
+                    if seen is not None and not prog and cur != "CAD" and (
+                            ((imp, hs, cur, v) in seen["inv"] and (imp, hs, cur, cad) in seen["cad"]) or
+                            ((imp, cur, v) in seen["inv"] and (imp, cur, cad) in seen["cad"])):
+                        continue
                     route = "FORMAL" if (prog or cad > K.LINE_CAD) else "CLVS"
                     out.append(Shipment(waybill="", gw=g, local=t_local, utc=local_to_utc(g, t_local),
-                                        cur=seg["cur"], value=float(vals[j]), rate=rate, vfd_cad=cad, ogd=prog,
-                                        hs=hs, origin=org, importer=imp, seg=si, route=route))
+                                        cur=cur, value=v, rate=rate, vfd_cad=cad, ogd=prog, hs=hs, origin=org,
+                                        importer=imp, seg=si, route=route, cad_priced=bool(lc and not prog),
+                                        price_cad=float(cadp[j]) if lc else 0.0))
+
+
+def consignment_keys(ships, g):
+    """The consignment keys of a year's shipments at gateway g, with the tariff item and without it."""
+    inv, cad = set(), set()
+    for s in ships:
+        if s.gw == g and not s.ogd and s.cur != "CAD":
+            inv |= {(s.importer, s.hs, s.cur, s.value), (s.importer, s.cur, s.value)}
+            cad |= {(s.importer, s.hs, s.cur, s.vfd_cad), (s.importer, s.cur, s.vfd_cad)}
+    return dict(inv=inv, cad=cad)
 
 
 def simulate():
@@ -363,9 +472,10 @@ def simulate():
         W_VOL_HINT[g] = [W.volume[(g, y, m)] for (y, m) in K.BASE_MONTHS]
         pool, pw = importer_pool(g, K.rng("importers", g))
         big = pool[:12]
-        cats = {si: catalogue(g, si, seg, rates, pool, pw) for si, seg in enumerate(K.SEGMENTS[g]) if seg["kind"] == "ln"}
+        cats = {si: catalogue(g, si, seg, rates, pool, pw, big) for si, seg in enumerate(K.SEGMENTS[g])}
         _window(W, g, K.PRIOR_MONTHS, K.rng("ships_prior", g), pool, pw, big, cats, W.prior)
-        _window(W, g, K.BASE_MONTHS, K.rng("ships", g), pool, pw, big, cats, W.ships)
+        _window(W, g, K.BASE_MONTHS, K.rng("ships", g), pool, pw, big, cats, W.ships,
+                seen=consignment_keys(W.prior, g))
     # waybills: ten digits with a mod-7 check digit, in release order across the network
     allships = sorted(W.prior + W.ships, key=lambda s: (s.utc, s.gw, s.value))
     r = K.rng("waybills")
