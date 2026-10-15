@@ -87,7 +87,7 @@ def write_memo(path):
     cl("2.4", "The expected external stars count every external star the repository will have by the end of its 90th "
               "day, including those it has not yet received when the pick is made.")
     s.append(Paragraph("3. The October 2026 issue", H2))
-    cl("3.1", "Nominations for the October issue closed on Sunday 20 September 2026 and the shortlist of seven on "
+    cl("3.1", "Nominations for the October issue close on Sunday 20 September 2026 and the shortlist of seven on "
               "Wednesday 23 September.")
     cl("3.2", "The pick is made from the events warehouse extract to Sunday 27 September 2026 and locked at the "
               "editorial meeting on Wednesday 30 September.")
@@ -182,8 +182,8 @@ def write_lottery(path, W):
             ws2.cell(row=i, column=12, value=x["reps"].index(x["drawn"]) + 1)
             ws2.cell(row=i, column=13, value=x["draw_at"]).number_format = "yyyy-mm-dd hh:mm"
         else:
-            ws2.cell(row=i, column=14, value="no draw: featuring memo of 15 Sep 2026 (pick locked 30 Sep from the "
-                                              "extract to 27 Sep)")
+            ws2.cell(row=i, column=14, value="no draw: the October pick follows the featuring memo of 15 Sep 2026 "
+                                              "(extract to 27 Sep, editorial meeting 30 Sep)")
         i += 1
     for j, w in enumerate([12, 16, 12] + [13] * 7 + [15, 9, 17, 70], 1):
         ws2.column_dimensions[get_column_letter(j)].width = w
@@ -263,7 +263,8 @@ DICT = [
     (K.NOMS, None, "Responses to the October 2026 Sluis nomination form (Amsterdam times)."),
     (K.NOMS, "account_id", "The signed-in account, when the nominator was signed in."),
     (K.NOMS, "email_sha256", "SHA-256 of the email address the nominator typed, lower-cased, when not signed in."),
-    (K.NOMS, "repository", "The repository as the nominator typed it."),
+    (K.NOMS, "repository", "The repository the nominator named, as typed. The form accepts a nomination only when what "
+                           "was typed resolves to a repository on Grachtwerk."),
     (K.RENAMES, None, "Repository renames on Grachtwerk in 2026, one row per rename (UTC)."),
     ("Other", None, None),
     (K.TRAFFIC, None, "Page views and unique visitors of the October 2026 shortlist's repository pages by day and "

@@ -21,6 +21,7 @@ import json
 import numpy as np
 
 import common as K
+import names as NM
 import records as R
 
 ASK_MONTHS = [(2026, m) for m in range(4, 10)]
@@ -369,6 +370,8 @@ def _hash_email(text):
 
 
 def _ref(g, owner, name):
+    """The repository as the form stored it: the form checks what was typed against the host, so it keeps an
+    owner/name or an address, in whatever case and form the nominator typed."""
     u = g.random()
     if u < 0.58:
         return "%s/%s" % (owner, name)
@@ -378,7 +381,7 @@ def _ref(g, owner, name):
         return "%s/%s/%s/" % (K.HOST, owner, name)
     if u < 0.92:
         return "%s/%s" % (owner.capitalize(), name.capitalize())
-    return name
+    return "https://www.%s/%s/%s.git" % (K.HOST, owner, name)
 
 
 def build_nominations(W):
@@ -432,15 +435,14 @@ def build_nominations(W):
             elif u < 0.80:
                 people.append(dict(kind="out", account=aid, hash=acc[aid].email_key, member=False))
             else:
-                h = _hash_email("%s@mail.example" % K.hexid("nominee", key, aid, n=10))
-                people.append(dict(kind="anon", account=None, hash=h, member=False))
+                people.append(dict(kind="out", account=aid, hash=acc[aid].email_key, member=False))
         for pi, p in enumerate(people):
             pid = "%s-%d" % (key, pi)
             truth[pid] = dict(repo=key, member=p["member"], account=p.get("account"))
             subs = []
             if p["kind"] == "in":
                 subs.append((p["account"], None))
-            elif p["kind"] in ("out", "anon"):
+            elif p["kind"] == "out":
                 subs.append((None, p["hash"]))
             elif p["kind"] == "both":
                 subs += [(p["account"], None), (None, p["hash"])]
@@ -466,8 +468,7 @@ def build_nominations(W):
         g = K.rng("noms-fork", key)
         start = max(NOM_OPEN, K.to_amsterdam(r.public) + dt.timedelta(hours=30))
         for i in range(plan["forks"]):
-            fowner = "%s%s" % (["ruben", "lotte", "mats", "yara", "joris", "elif", "kenji", "noor"][(i * 3 + len(key)) % 8],
-                               ["bos", "vos", "smit", "kuip", "prins", "dekk"][(i + len(key)) % 6])
+            fowner = NM.handle(K.rng("fork-owner", key, i))
             t = start + dt.timedelta(seconds=float(g.uniform(0, (NOM_CLOSE - start).total_seconds())))
             pool = A.pool("regular", 110000)
             aid = pool[int(g.integers(len(pool)))]
@@ -481,11 +482,14 @@ def build_nominations(W):
     # nominations of repositories that did not make the shortlist
     g = K.rng("noms-other")
     others = []
-    for i in range(57):
-        owner = "%s%s" % (["kade", "brug", "dijk", "sloot", "haven", "polder", "werf", "molen", "veld", "duin"][i % 10],
-                          ["labs", "dev", "works", "hq", "io", "tools"][(i * 7) % 6])
-        nm = "%s%s" % (["swift", "tiny", "open", "micro", "quick", "safe", "plain", "deep", "sharp", "calm"][(i * 3) % 10],
-                       ["rpc", "csv", "cron", "diff", "env", "grep", "json", "lsp", "orm", "sql"][(i * 11) % 10])
+    seen_names = {r.name for r in W.repos}
+    gn = K.rng("noms-other-names")
+    while len(others) < 57:
+        nm = NM.repo(gn, personal=False)[0]
+        if nm in seen_names:
+            continue
+        seen_names.add(nm)
+        owner = NM.handle(gn) if gn.random() < 0.45 else NM.org(gn)
         others.append((owner, nm))
     for i, (owner, nm) in enumerate(others):
         for _ in range(1 + int(g.poisson(1.8))):
@@ -527,14 +531,18 @@ def rename_rows(W):
     for key, (old, when) in K.RENAMED.items():
         r = W.by_name[key]
         rows.append([r.id, "%s/%s" % (r.owner, old), "%s/%s" % (r.owner, r.name), K.iso_z(when)])
-    words = ["tern", "gull", "pike", "carp", "eel", "perch", "crane", "stork", "heron", "swift", "finch", "plover"]
-    for i in range(13):
+    gn = K.rng("rename-owners")
+    for i, (old, new, move) in enumerate(NM.RENAMES):
         rid = 600_000_000 + int(g.integers(0, 60_000_000))
-        owner = "%s%s" % (words[i % 12], ["-dev", "labs", "-io", "hq"][i % 4])
-        a = "%s-%s" % (words[(i * 5) % 12], ["kit", "cli", "db", "ui", "api"][i % 5])
-        b = "%s%s" % (words[(i * 7 + 3) % 12], ["kit", "cli", "db", "ui", "api"][(i + 2) % 5])
+        person = NM.handle(gn)
+        if move == "org":
+            # moved from the maintainer's own account into the project's organisation
+            before, after = "%s/%s" % (person, old), "%s/%s" % (new + ("-dev" if gn.random() < 0.5 else "hq"), new)
+        else:
+            owner = person if gn.random() < 0.55 else NM.org(gn)
+            before, after = "%s/%s" % (owner, old), "%s/%s" % (owner, new)
         when = dt.datetime(2026, 1, 3) + dt.timedelta(days=float(g.uniform(0, 265)), seconds=float(g.uniform(0, 86400)))
-        rows.append([rid, "%s/%s" % (owner, a), "%s/%s" % (owner, b), K.iso_z(when.replace(microsecond=0))])
+        rows.append([rid, before, after, K.iso_z(when.replace(microsecond=0))])
     rows.sort(key=lambda x: x[3])
     return rows
 
@@ -581,13 +589,18 @@ def trending_rows(W):
     filler = {}
     for lang in langs:
         filler[lang] = []
-        for i in range(140):
-            owner = "%s%s" % (["amstel", "ij", "zaan", "vecht", "spaarne", "linge", "dommel", "berkel", "regge", "eem"][i % 10],
-                              ["-labs", "dev", "-hq", "works", "-io", "code", "soft"][(i * 3) % 7])
-            nm = "%s-%s" % (["fast", "lite", "nano", "hyper", "quiet", "bold", "lazy", "eager", "tidy", "busy"][(i * 7) % 10],
-                            ["router", "cache", "parser", "queue", "logger", "shell", "store", "proxy", "grid", "form",
-                             "auth", "sync", "chart", "table"][(i * 5 + len(lang)) % 14])
-            filler[lang].append(("%s/%s" % (owner, nm), float(np.exp(g.normal(3.6, 0.9)))))
+        gn = K.rng("trending-names", lang)
+        names_here = set()
+        while len(filler[lang]) < 140:
+            nm, _, lg = NM.repo(gn)
+            if lg != lang:
+                continue
+            owner = NM.handle(gn) if gn.random() < 0.5 else NM.org(gn)
+            full = "%s/%s" % (owner, nm)
+            if full in names_here:
+                continue
+            names_here.add(full)
+            filler[lang].append((full, float(np.exp(g.normal(3.6, 0.9)))))
     by_lang = {}
     for r in W.october:
         by_lang.setdefault(r.language, []).append(r)

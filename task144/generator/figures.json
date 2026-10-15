@@ -12,12 +12,12 @@
       "expected_external_stars_90d": 12000,
       "expected_without_spotlight": 3000,
       "stars_the_spotlight_adds": 9000,
-      "external_stars_to_2026_09_27": 2709,
+      "external_stars_to_2026_09_27": 2766,
       "external_stars_to_2026_09_27_thousands": 3000,
       "days_public_at_cut": 35,
-      "feed_card_stars": 160,
-      "followers_reached": 8883,
-      "stars_per_follower_view_pct": 1.801
+      "feed_card_stars": 551,
+      "followers_reached": 30671,
+      "stars_per_follower_view_pct": 1.796
     },
     "tracewire": {
       "expected_external_stars_90d": 9000,

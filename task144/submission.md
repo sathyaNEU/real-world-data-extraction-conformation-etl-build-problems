@@ -18,7 +18,7 @@ About 1.8 per cent of the followers who see a slidewell star in their feed star 
 ## 3. Step-by-Step Solution
 
 1. Read the estimand in section 2 of sluis_featuring_memo_2026-09.pdf: the shortlisted repository with the most expected external stars in its first 90 days public if it is the issue's spotlight, external stars and the window as that section defines them, stars not yet made counted; the seven are the October row of the 2026 sheet of sluis_spotlight_lottery_2025-2026.xlsx.
-2. Counted each repository's external first stars by UTC day from grachtwerk_star_events_2026-03-02_to_2026-09-27.csv, bots excluded by accounts_snapshot_2026-09-27.parquet and members at the time by organization_memberships_2026-09-27.csv: slidewell 2,709 by 27 September, tracewire 3,876.
+2. Counted each repository's external first stars by UTC day from grachtwerk_star_events_2026-03-02_to_2026-09-27.csv, bots excluded by accounts_snapshot_2026-09-27.parquet and members at the time by organization_memberships_2026-09-27.csv: slidewell 2,766 by 27 September, tracewire 3,876.
 3. Forecast each repository's stars without the spotlight to day 90 as its stars to date plus its last seven days' daily pace times the ratio of stars still to come to that pace at the same age among the lottery's runners-up with complete windows (repo_daily_external_stars_2024-11-24_to_2026-09-27.csv): slidewell 3,000, tracewire 6,000.
 4. Took the newsletter stars per subscriber over the 21 lottery issues (newsletter-surface external stars of each drawn repository in both event files, v5 codes mapped through star_surface_code_crosswalk_2026-03-02.csv, over the log's subscribers) times the October list: 0.7236% of 433,812, about 3,000.
 5. Measured each repository's stars per follower view as its feed-card stars over the summed followers of every account that starred it by 27 September: slidewell 1.8%, tracewire 0.1%.
@@ -39,12 +39,12 @@ About 1.8 per cent of the followers who see a slidewell star in their feed star 
    - hullcheck: 7,000
    - timeloom: 6,000
 3. Sluis issues, subscribers delivered to and the share of them who clicked through to the issue's spotlighted repository:
-   - April 2026 (dykedev/zephyrsync): 391,299 subscribers; 1.49%
-   - May 2026 (hanaver/sable-parse): 399,160 subscribers; 1.52%
-   - June 2026 (ivannovak/fern-db): 406,891 subscribers; 1.53%
-   - July 2026 (stone-dev/mosslens): 429,444 subscribers; 1.52%
-   - August 2026 (sannebrou/pebblevault): 429,291 subscribers; 1.44%
-   - September 2026 (kenjidijks/briarnotes): 429,949 subscribers; 1.49%
+   - April 2026 (calware-cloud/bryis): 391,299 subscribers; 1.49%
+   - May 2026 (paulaha/awesome-home-automation): 399,160 subscribers; 1.52%
+   - June 2026 (otto_kok/zig-toml): 406,891 subscribers; 1.53%
+   - July 2026 (dalora-oss/orvum): 429,444 subscribers; 1.52%
+   - August 2026 (yusufkuipers/minio-exporter): 429,291 subscribers; 1.44%
+   - September 2026 (bruno-murphy29/rust-ratelimit): 429,949 subscribers; 1.49%
 4. People who nominated each shortlisted repository and, for those owned by an organisation, the share of them outside it:
    - slidewell: 58 people (owned by a user)
    - tracewire: 47 people; 91.49% outside meridian-observe

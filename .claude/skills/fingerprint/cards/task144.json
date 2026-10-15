@@ -49,7 +49,7 @@
   ],
   "spine": {
     "file": "grachtwerk_star_events_2026-03-02_to_2026-09-27.csv",
-    "rows": 63569,
+    "rows": 63632,
     "entity": "one star event on Grachtwerk: an account starring (or unstarring) a repository on the Sluis shortlists, with the surface it was starred from",
     "grain": "account x repository x star event",
     "source": "constructed (the platform events warehouse's star stream, two schema vintages)"
@@ -94,7 +94,7 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "An intervention seeds adoptions among people whose follower reach differs from the item's own adopters', and every adoption is shown to the adopter's followers, who adopt at the item's own rate per view, so the intervention's yield is its seeded adoptions times a branching process whose ratio is that per-view rate times the seeds' reach; the measured average yield, a percentage of the forecast, the item's recent pace and its own share of adoptions that came through followers, which carries its own adopters' reach, all misprice it.",
-  "driver_concrete": "A Grachtwerk star shows in the starrer's followers' home feeds and they star from the feed card at the repository's own rate per view; the Sluis readers star whatever is spotlighted at much the same rate but reach far more followers than the forum newcomers who starred slidewell, so slidewell's spotlight sets off a feed cascade several times tracewire's, which their own feed shares hide.",
+  "driver_concrete": "A Grachtwerk star shows in the starrer's followers' home feeds and they star from the feed card at the repository's own rate per view; the Sluis readers star whatever is spotlighted at much the same rate but reach far more followers (about 85) than the developers who starred slidewell after a link-forum post (about 11), so slidewell's spotlight sets off a feed cascade several times tracewire's, which a lift carried on the average, on a percentage or on its own feed share misprices.",
   "stump": "A competent solver forecasts each shortlisted repository's organic 90-day external stars from its trajectory against the lottery's runners-up, adds the spotlight lottery's average lift and spotlights tracewire at about 11,000; the step that lands it there is carrying an average lift when the spotlight's stars are the readers' own plus the cascade they set off through their followers' feeds at each repository's own per-view rate, which puts slidewell first at about 12,000, the spotlight adding about 9,000.",
   "analyst_test": "A strong analyst who reads every field and the featuring memo correctly forecasts each candidate's organic stars from its trajectory against past shortlisted repositories, adds the lottery's randomised average spotlight lift and spotlights tracewire at about 11,000, while slidewell, whose stars barely travel through feeds, is the pick at about 12,000 once the readers' cascade is built from its per-view rate and the readers' reach.",
   "domain_test": "The deciding quantity is the stars a spotlight sets off on a social coding platform, the readers' own plus the cascade through their followers' home feeds at the repository's per-view rate, sized the way growth analysts size viral spread from a seed population's reach and a per-exposure conversion; with a hospital or a school there is no follow feed, starrer's reach or per-view rate, so the spotlight's yield and the pick stop making sense.",

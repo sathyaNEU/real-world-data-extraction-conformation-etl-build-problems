@@ -19,13 +19,15 @@ from dataclasses import dataclass, field
 import numpy as np
 
 import common as K
+import names as NM
 
 H = dt.timedelta(hours=1)
 
 # Follower counts by the kind of account a star comes from: (mu, sigma, share with no followers). Lognormal
 # floors, capped at 25,000.
 FOLLOWERS = {"forum": (1.30, 1.10, 0.55), "regular": (1.55, 1.35, 0.15), "senior": (4.25, 1.20, 0.0),
-             "reader": (3.65, 1.25, 0.0), "feed": (1.60, 1.30, 0.10), "member": (3.10, 1.10, 0.0)}
+             "reader": (3.65, 1.25, 0.0), "feed": (1.60, 1.30, 0.10), "member": (3.10, 1.10, 0.0),
+             "community": (2.05, 1.15, 0.12)}
 FCAP = 25000
 NL_RATE = 0.00722            # newsletter stars on the spotlight per subscriber sent
 NL_DELAY = [(0.40, 2.0), (0.30, 14.0), (0.20, 48.0), (0.10, 120.0)]      # (share, mean hours)
@@ -134,17 +136,12 @@ class Accounts:
 
     def _login(self, g):
         while True:
-            r = g.random()
-            if r < 0.42:
-                s = "%s%s" % (FIRST[g.integers(len(FIRST))], LAST[g.integers(len(LAST))])
-            elif r < 0.62:
-                s = "%s-%s" % (FIRST[g.integers(len(FIRST))], LAST[g.integers(len(LAST))])
-            elif r < 0.80:
+            if g.random() < 0.12:
                 s = "".join(SYL[g.integers(len(SYL))] for _ in range(int(g.integers(2, 4))))
+                if g.random() < 0.4:
+                    s += str(int(g.integers(1, 99)))
             else:
-                s = "%s%s" % (FIRST[g.integers(len(FIRST))][0], LAST[g.integers(len(LAST))])
-            if g.random() < 0.38:
-                s += str(int(g.integers(1, 99)))
+                s = NM.handle(g)
             if s not in self.logins:
                 self.logins.add(s)
                 return s
@@ -325,8 +322,8 @@ class StarSim:
 OCT_PARAMS = {
     "tracewire": dict(c=0.0010, burst=1200, burst_kind="senior", burst_hour=5, org=295, decay=0.55,
                       mix={"senior": 0.8, "regular": 0.2}, n_members=11),
-    "slidewell": dict(c=0.0181, burst=2000, burst_kind="forum", burst_hour=14, org=60, decay=0.55,
-                      mix={"forum": 0.85, "regular": 0.15}, n_members=0),
+    "slidewell": dict(c=0.0170, burst=1875, burst_kind="community", burst_hour=14, org=37, decay=0.55,
+                      mix={"community": 0.6, "regular": 0.4}, n_members=0),
     "shiftgres": dict(c=0.0037, burst=0, burst_kind="regular", burst_hour=0, org=290, decay=0.55,
                       mix={"regular": 0.9, "senior": 0.1}, n_members=7),
     "kilnkit": dict(c=0.0062, burst=200, burst_kind="senior", burst_hour=3, org=82, decay=0.55,
@@ -390,19 +387,26 @@ def lottery_repos():
             name = _repo_name(g, used)
             out.append(Repo(rid, name, _owner(g, user), "user" if user else "organization", public,
                             LANGS[int(g.integers(len(LANGS)))], "", (y, m), drawn=(j == drawn), **p))
-    # owners are distinct accounts: a repeated draw takes another name from a hash (the stream above is untouched)
+    # names, owners and descriptions from their own streams (the stream above is untouched): owners are distinct
+    # accounts and names are distinct across the shortlists
     taken = {o for _, o, *_ in K.OCT_SHORTLIST}
+    names_used = set(K.OCT_NAMES) | {old for old, _ in K.RENAMED.values()}
+    descs_used = set()
     for r in out:
-        k = 0
-        while r.owner in taken:
-            k += 1
-            h = int(K.hexid("owner", r.id, k, n=8), 16)
-            if r.owner_type == "user":
-                r.owner = "%s%s%d" % (FIRST[h % len(FIRST)], LAST[(h // 97) % len(LAST)][:3 + h % 5], 1 + h % 89)
-            else:
-                r.owner = "%s%s%s" % (OWNER_A[h % len(OWNER_A)], "-" if h % 2 else "", OWNER_B[(h // 31) % len(OWNER_B)])
-        taken.add(r.owner)
-        r.description = describe(r)
+        gn = K.rng("repo-name", r.id)
+        while True:
+            name, desc, lang = NM.repo(gn, personal=False, used_desc=descs_used)
+            if name not in names_used:
+                break
+        names_used.add(name)
+        r.name, r.description, r.language = name, desc, lang
+        go = K.rng("owner-name", r.id)
+        while True:
+            owner = NM.handle(go) if r.owner_type == "user" else NM.org(go)
+            if owner not in taken:
+                break
+        taken.add(owner)
+        r.owner = owner
     return out
 
 

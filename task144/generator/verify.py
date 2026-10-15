@@ -183,7 +183,8 @@ def main(target, golden):
     ppl = {i: {} for i in oct_row[2]}
     for r in rows(p(K.NOMS)):
         ref = re.sub(r"^https?://", "", r["repository"].strip(), flags=re.I)
-        ref = re.sub(r"^grachtwerk\.dev/", "", ref, flags=re.I).strip("/").lower()
+        ref = re.sub(r"^(www\.)?grachtwerk\.dev/", "", ref, flags=re.I).strip("/").lower()
+        ref = ref[:-4] if ref.endswith(".git") else ref
         ref = ren.get(ref, ref)
         rid = short.get(ref) if "/" in ref else names.get(ref)
         if rid is None:

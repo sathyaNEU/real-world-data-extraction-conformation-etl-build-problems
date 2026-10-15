@@ -267,6 +267,24 @@ def run(target, golden, W=None, meta_path=None):
     ok(all(C.day_index(B["public"][r["rid"]], K.OCT_SEND + dt.timedelta(days=21)) <= 90 for r in G["rows"]),
        "axis 22: the cascade runs inside every window", "three weeks after the send is before every day 90")
 
+    # ---------------------------------------------------------------- the evidence behind each per-view rate
+    print("rate evidence")
+
+    def total_at(r, c):
+        return r["base"] + X["D"] * (1 + c * X["fR"] / (1 - c * X["f2"]))
+    for r in G["rows"]:
+        sig = r["c"] / np.sqrt(r["feed"])
+        moved = [total_at(r, r["c"] + s * sig) for s in (-1, 1)]
+        same = all(k(t) == k(r["total"]) for t in moved)
+        if r is G["pick"]:
+            same = same and all(k(t - r["base"]) == k(r["lift"]) for t in moved)
+        ok(same, "one sigma: %s's rate (%d feed stars)" % (r["name"], r["feed"]),
+           "%.0f to %.0f around %.0f" % (min(moved), max(moved), r["total"]))
+    low = total_at(G["pick"], G["pick"]["c"] - 2 * G["pick"]["c"] / np.sqrt(G["pick"]["feed"]))
+    high = max(total_at(r, r["c"] + 2 * r["c"] / np.sqrt(r["feed"])) for r in G["rows"] if r is not G["pick"])
+    ok(low > high, "two sigma: the pick holds with its rate low and every other rate high", "%.0f against %.0f" % (low, high))
+    ok(G["pick"]["feed"] >= 500, "the decisive rate rests on 500 or more feed stars", "%d" % G["pick"]["feed"])
+
     # ---------------------------------------------------------------- bins and spreads
     print("bins")
     figs = [("pick total", sw["total"]), ("pick added", sw["lift"])] + [(r["name"], r["total"]) for r in G["rows"]]
@@ -348,6 +366,33 @@ def run(target, golden, W=None, meta_path=None):
             g = float(np.mean(vals)) if how == "mean_of_ratios" else float(np.median(vals))
             moved = moved and k(r["S"] + r["pace"] * g + r["lift"]) == k(r["total"])
         ok(moved, "H14 runners-up ratio pooled or as the %s" % how.replace("_", " "), "every figure in its bin")
+
+    # ---------------------------------------------------------------- the nominations' readings
+    noms = A["noms"]
+    refs = [C.norm_ref(x) for x in noms.repository]
+    ok(all("/" in x for x in refs), "Ask B every reference names an owner", "%d references" % len(refs))
+    accs = B["accounts"]
+    by_hash = dict(zip(accs.primary_email_sha256.dropna(), accs.account_id[accs.primary_email_sha256.notna()]))
+    short_full = {B["repos"][rid]["full_name"].lower() for rid in octrow["shortlist"]}
+    ren = {o.lower(): n.lower() for o, n in zip(A["renames"].old_full_name, A["renames"].new_full_name)}
+    on_short = [i for i, x in enumerate(refs) if ren.get(x, x) in short_full]
+    signed_out = [i for i in on_short if noms.account_id[i] is None]
+    ok(all(noms.email_sha256[i] in by_hash for i in signed_out), "Ask B every signed-out nominator resolves to an account",
+       "%d signed-out nominations of the shortlist" % len(signed_out))
+    C.prepare(B)
+    merged_to = dict(zip(accs.account_id[accs.merged_into.notna()], accs.merged_into.dropna().astype(int)))
+    same_now = True
+    for i in on_short:
+        rid = [q for q in octrow["shortlist"] if B["repos"][q]["full_name"].lower() == ren.get(refs[i], refs[i])][0]
+        org = C.owner_of(B, rid)
+        if not org:
+            continue
+        aid = noms.account_id[i] if noms.account_id[i] is not None else int(by_hash[noms.email_sha256[i]])
+        while aid in merged_to:
+            aid = merged_to[aid]
+        t = K.from_amsterdam(dt.datetime.strptime(noms.submitted_at[i], "%Y-%m-%d %H:%M:%S"))
+        same_now = same_now and C.is_member(B, org, aid, t) == C.is_member(B, org, aid, t, current=True)
+    ok(same_now, "Ask B membership when nominating equals membership now", "%d nominations of the shortlist" % len(on_short))
 
     # ---------------------------------------------------------------- input gates and metadata
     print("input gates")

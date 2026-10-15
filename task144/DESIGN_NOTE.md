@@ -20,7 +20,7 @@ repository sets.
 | Mechanism | gap population (decisive: the spotlight seeds stars among the newsletter's readers, a population whose follower reach is far from the repository's own starrers', and every star travels to its starrer's followers); pattern none; generators G6 (the seeded population's reach), G2 (a star's spread is measured per follower who sees it, not per star), G14 (the lottery's average lift does not fit this candidate); Gate G `forecasting`; strategy `causal_design` (the spotlight's effect read at the level the platform's feed delivers it: a cascade seeded by the readers) |
 | Layer 2 family / pattern | `estimand_identification` (the spotlight's effect for this candidate includes the spillover its readers' stars set off through their followers' feeds); `own:spotlight-cascade-through-follower-feeds` (nearest library lines: product-analytics/feature-adoption-diffusion-modeling/2, adoption rates over the eligible denominator at risk; product-analytics/network-effect-marketplace-experimentation/1, effects that travel through a shared network; this build's version is a seeded cascade whose seeds reach far more followers than the repository's organic starrers) |
 | Furniture | forum `line_manager_or_team` (the Sluis editorial team acts on the pick, no formal forum), forcing event `other` (the October issue's editorial close), organisation family `software_or_platform`, role family `other` (the newsletter's editor), context artifact `monitoring_export` (the newsletter platforms' campaign exports), calibration `pilot_log` (the spotlight lottery of January 2025 to September 2026, the history the spotlight's effect is measured on), opening `question-first`, question form `which` |
-| Spine | `grachtwerk_star_events_2026-03-02_to_2026-09-27.csv` (63,569 rows), the events warehouse's star stream from 2 March 2026 (schema v6) for the October shortlist and the lottery's spotlighted repositories: one row per star or unstar, with the account, the repository, the time (UTC) and the surface it was starred from; beside it the stream to 1 March 2026 (schema v5, 104,550 rows) and the account snapshot (followers, type, created, merged, email hash; 119,210 accounts) that the decisive step joins; constructed. The pack is 19 files in six formats (csv, json, md, parquet, pdf, xlsx) |
+| Spine | `grachtwerk_star_events_2026-03-02_to_2026-09-27.csv` (63,632 rows), the events warehouse's star stream from 2 March 2026 (schema v6) for the October shortlist and the lottery's spotlighted repositories: one row per star or unstar, with the account, the repository, the time (UTC) and the surface it was starred from; beside it the stream to 1 March 2026 (schema v5, 104,550 rows) and the account snapshot (followers, type, created, merged, email hash; 119,157 accounts) that the decisive step joins; constructed. The pack is 19 files in six formats (csv, json, md, parquet, pdf, xlsx) |
 | Deliverables | `sluis_spotlight_2026-10.xlsx` (the pick, each candidate's expected 90-day external stars if spotlighted, and the two ask sheets), `shortlist_forecast_2026-10.png` (each candidate's expected 90-day external stars if spotlighted beside its stars to 27 September) |
 | People | drawn with `guard.py names --geo "Netherlands" --seed 144`: Sylvie Kramer (editor of Sluis, the requester and the featuring memo's author), Twan Evers (head of developer relations, owns the Pipelines sponsorship), Vigo Hulshouts (data engineer, the events warehouse extract), Laura Rijntjes (growth analyst who ran the spotlight lottery); none appears in the prompt |
 
@@ -56,10 +56,9 @@ files tracewire.
 
 **Data-native sentence.** On Grachtwerk every star is shown in the starrer's followers' home feeds and followers star
 from the feed card at a rate the repository sets, so a repository's stars travel as far as its starrers' followers
-reach: slidewell took off on an outside forum among accounts that follow and are followed by almost no one (about 3
-followers a starrer), so its own stars have barely travelled and its share of stars from feed cards is among the
-shortlist's lowest, while the newsletter's readers, who star whatever is spotlighted at much the same rate, are each
-followed by about 85 developers.
+reach: slidewell took off after a post on an outside link forum, among developers each followed by about 11 accounts,
+so its own stars have travelled only through small audiences, while the newsletter's readers, who star whatever is
+spotlighted at much the same rate, are each followed by about 85 developers.
 
 **Sources read, one line each.** `guard.py mechanisms --objective forecasting`: conditional survival (133), hazards
 by time since entry and a surge filling the pool (134), an intervention's increment carried on own pace (136), a
@@ -116,7 +115,7 @@ the lottery's runners-up, adds the lottery's average spotlight lift scaled to th
 at about 11,000 (Ends on); the step that lands it there is carrying an average lift when the spotlight's stars are the
 readers' own plus the cascade they set off through their followers' home feeds at each repository's own rate per
 follower view: slidewell's cascade runs at its 1.8 per cent a view on the readers' 85 followers a star, not its own
-starrers' 3, and puts it first at about 12,000, the spotlight adding about 9,000.
+starrers' 11, and puts it first at about 12,000, the spotlight adding about 9,000.
 
 ## Three rules
 
@@ -152,7 +151,7 @@ starrers' 3, and puts it first at about 12,000, the spotlight adding about 9,000
 - **Decisive step:** each repository's spotlight stars built as the October issue's direct stars (the lottery's
   newsletter stars per subscriber sent, times the October list) times one plus its per-view rate (its feed-card stars
   over the followers of everyone who starred it) times the readers' mean followers over one minus its per-view rate
-  times the feed starrers' mean followers; this moves slidewell's added stars from about 5,300 (the average) or 3,300
+  times the feed starrers' mean followers; this moves slidewell's added stars from about 5,300 (the average) or 3,900
   (its own feed share) to about 9,000 and tracewire's to about 3,400, and the pick from tracewire to slidewell.
 - **Not semantics:** every field, code, unit and definition can be read correctly (the surface codes in both
   vintages, the first star, the bot type, membership at the time, the follower count, the 90-day window, the list
@@ -234,35 +233,39 @@ October list (19 spotlights with complete windows).
 
 | Rung | Construction | tracewire | slidewell | shiftgres | ferrolog | Pick (margin) | slidewell's place | Dies to |
 |---|---|---|---|---|---|---|---|---|
-| R0 | trajectory forecast plus the lottery's average lift | 10,977 | 8,310 | 9,097 | 8,962 | tracewire (1.207) | 5th | the lottery's lifts run from 2,424 to 7,497 and follow each spotlighted repository's per-view rate (the cascade reproduces them at a correlation of 0.965, RMSE 359 against 1,368 for the average), not its size |
-| R1 | forecast times one plus the lottery's lift as a share of the spotlighted repositories' forecasts (1.434) | 13,912 | 7,421 | 9,338 | 9,007 | tracewire (1.490) | 5th | the lift as a share scatters several-fold across the lottery and is largest for the smallest forecasts |
-| R2 | forecast plus the readers' direct stars over one minus its own feed-card share | 9,260 | 6,385 | 7,234 | 7,182 | tracewire (1.278 over kilnkit's 7,246) | 6th | the feed share carries its starrers' reach: slidewell's starrers have about 3 followers, the readers 85 |
-| R3 (decisive) | forecast plus direct stars times one plus per-view rate times readers' reach over one minus per-view rate times feed starrers' reach | 9,122 | 12,084 | 7,953 | 8,160 | slidewell (1.325) | 1st | (the golden) |
+| R0 | trajectory forecast plus the lottery's average lift | 10,977 | 8,217 | 9,097 | 8,962 | tracewire (1.207) | 5th | the lottery's lifts run from 2,424 to 7,497 and follow each spotlighted repository's per-view rate (the cascade reproduces them at a correlation of 0.968, RMSE 349 against 1,368 for the average), not its size |
+| R1 | forecast times one plus the lottery's lift as a share of the spotlighted repositories' forecasts (1.434) | 13,912 | 7,195 | 9,338 | 9,007 | tracewire (1.490) | 5th | the lift as a share scatters several-fold across the lottery and is largest for the smallest forecasts |
+| R2 | forecast plus the readers' direct stars over one minus its own feed-card share | 9,260 | 6,876 | 7,234 | 7,182 | tracewire (1.278 over kilnkit's 7,246) | 5th | the feed share carries its starrers' reach: slidewell's starrers have about 11 followers, the readers 85 |
+| R3 (decisive) | forecast plus direct stars times one plus per-view rate times readers' reach over one minus per-view rate times feed starrers' reach | 9,122 | 11,973 | 7,953 | 8,160 | slidewell (1.313) | 1st | (the golden) |
 
 - **Rivals, each asserted:** the readers' direct stars only (tracewire 8,854, 1.269); the lift as a multiple of each
   repository's pace in its last seven days, task136's carrier (tracewire 19,465 against shiftgres 18,796, slidewell
-  7th); the per-view rate with the snapshot's mean user followers (33.5) for the readers (tracewire 8,960 against
-  slidewell 8,515, 1.052); the three lottery spotlights nearest each candidate on pre-issue stars, pace and feed share
-  (tracewire 9,977 against slidewell 8,718, 1.144); a regression of the lottery's lifts on pre-issue stars, pace and
-  feed share (tracewire 10,124, slidewell 6th); the cascade's first generation only (slidewell 10,994, adding 7,945:
-  the right pick with both graded figures a bin off, 11,000 and 8,000 against 12,000 and 9,000; not a construction of
-  the golden, because the per-view rate is measured over every starrer's followers and the readers' feed starrers are
-  shown to their own followers in turn).
-- **Position.** slidewell is 5th on R0, 5th on R1, 6th on R2, 1st on R3; never in the top two on an intermediate rung.
-  Every correction from R0 to R2 keeps tracewire; only the decisive move reverses it. Two rivals (the platform's
-  reach, the analogs) put slidewell second, neither by 1.15.
-- **Dominance.** slidewell's per-view rate is 18.2 times tracewire's (1.80 against 0.099 per cent); tracewire's organic
-  forecast leads slidewell's by 1.87 times (5,715 against 3,049) and its feed share by 1.94 times (0.114 against
-  0.059): 18.2 against 1.2 times 1.94.
-- **Twin pair.** The March and April 2026 spotlights (nimbus-graph and zephyrsync), both 39 days public at their
-  issue: 1,779 and 1,792 external stars before it, a pace of 13.1 and 12.7 a day, feed shares of 0.167 and 0.170;
-  lifts of 3,054 and 7,497 (2.45 times), per-view rates of 0.15 and 1.44 per cent (one's starrers well followed, the
-  other's not); the two lists 2.2 per cent apart; asserted.
+  7th); the per-view rate with the snapshot's mean user followers (33.7) for the readers (tracewire 8,960 against
+  slidewell 8,427, 1.063); the three lottery spotlights nearest each candidate on pre-issue stars, pace and feed share
+  (tracewire 9,977 against kilnkit 8,616, 1.158, slidewell 6th); a regression of the lottery's lifts on pre-issue stars,
+  pace and feed share (tracewire 10,124, slidewell 6th); the cascade's first generation only (slidewell 10,889, adding
+  7,933: the right pick with both graded figures a bin off, 11,000 and 8,000 against 12,000 and 9,000; not a
+  construction of the golden, because the per-view rate is measured over every starrer's followers and the readers'
+  feed starrers are shown to their own followers in turn).
+- **Position.** slidewell is 5th on R0, R1 and R2 and 1st on R3; never in the top two on an intermediate rung. Every
+  correction from R0 to R2 keeps tracewire; only the decisive move reverses it. One rival (the platform's reach) puts
+  slidewell second, at 1.063.
+- **Dominance.** slidewell's per-view rate is 18.1 times tracewire's (1.80 against 0.099 per cent); tracewire's organic
+  forecast leads slidewell's by 1.93 times (5,715 against 2,956): 18.1 against 1.2 times 1.93.
+- **Rate evidence.** Each per-view rate is measured from the feed-card stars it rests on: slidewell 551 (a standard
+  error of 4.3 per cent), tracewire 446, kilnkit 485, ferrolog 191, hullcheck 166, shiftgres 140, timeloom 16. A
+  one-sigma move in any repository's rate leaves every rounded figure where it is (slidewell 11,669 to 12,283, its added
+  stars 8,713 to 9,327; timeloom, on the fewest, 5,713 to 6,054); at two sigma, slidewell's rate low and every other
+  rate high, slidewell still leads at 11,370 against 9,147 (asserted).
+- **Twin pair.** The March and April 2026 spotlights, both 39 days public at their issue: 1,779 and 1,792 external
+  stars before it, a pace of 13.1 and 12.7 a day, feed shares of 0.167 and 0.170; lifts of 3,054 and 7,497 (2.45
+  times), per-view rates of 0.15 and 1.44 per cent (one's starrers well followed, the other's not); the two lists 2.2
+  per cent apart; asserted.
 - **Grid.** Two moves (what carries the readers' stars onward: nothing, the repository's own feed share, the per-view
   rate with the snapshot's average reach, or with the readers' reach; and whether the cascade is summed past the first
   generation). Every cell names tracewire except the readers' reach (slidewell), where the first generation alone
   misses both graded figures by a bin. No single-error cell lands on the golden's figures.
-- **Bins.** Every graded star figure sits at least 340 stars from its rounding edge (slidewell 12,084 and 9,036;
+- **Bins.** Every graded star figure sits at least 340 stars from its rounding edge (slidewell 11,973 and 9,017;
   tracewire 9,122; ferrolog 8,160; shiftgres 7,953; kilnkit 7,115; hullcheck 7,091; timeloom 5,883); the readings in
   the closure and fork tables and the runners-up' ratio pooled, averaged or taken as a median move none of them a bin
   (asserted).
@@ -309,7 +312,7 @@ spotlight's effect on the same literal estimand (the lottery's average lift), ne
 - The lottery (star events, rollups and the lottery log): it shows each spotlighted repository's stars with the
   spotlight, and its runners-up's without; it certifies no lift, and its spotlighted repositories' outcomes are what
   any construction must explain. The average lift is its mean; the per-view cascade reproduces each spotlight's added
-  stars (correlation 0.965, RMSE 359 against 1,368 for the average); neither is graded. It ties under no basis, because no lift is published.
+  stars (correlation 0.968, RMSE 349 against 1,368 for the average); neither is graded. It ties under no basis, because no lift is published.
 - The account snapshot: follower counts, types and email hashes; no rate or reach.
 - The repository traffic export (distractor): page views and unique visitors by referrer for the seven, no stars or
   conversions; it ranks nothing.
@@ -362,9 +365,12 @@ exact, and for the five owned by an organisation the share of those people outsi
 - Third device B2 (an attribute at the wrong vintage): kilnkit (kiln-ui until 9 September) and hullcheck (imagelint
   until 11 September) were renamed inside the nomination window; nominations name them under the old names, which only
   the renames export maps.
-- Hazards: B3 members of the owning organisation (inside, by the members file); B4 double submissions seconds apart
-  and references in several forms (full addresses, trailing slashes, case), texture; B5 nominations of repositories
-  not on the shortlist; B6 addresses of forks under other owners (not the shortlisted repository).
+- Hazards: B3 members of the owning organisation (inside, by the members file, the same when nominating and now for
+  every nominator, asserted); B4 double submissions seconds apart and references in several forms (addresses, clone
+  URLs, trailing slashes, case), texture; B5 nominations of repositories not on the shortlist; B6 addresses of forks
+  under other owners (not the shortlisted repository). The form keeps only references that resolve on the host (the
+  field notes say so), so every reference names its owner, and every signed-out nominator of the shortlist typed an
+  account's primary address (asserted): the counts have one reading.
 - Path: the nominations export, the account snapshot (email hashes, merges), the organisation members, the repository
   renames, the repositories file, the lottery log's October row, the dictionary.
 - Realism: forms accept signed-out entries by email, people merge old accounts, repositories are renamed after
@@ -415,27 +421,40 @@ ask whole on fewer than all its devices
 
 ## Leak sweep
 
-`leak.py --asof 2026-09-30` on the final cut: REVIEW, no LEAK; one line per REVIEW:
-- The account snapshot "carries" 12,000: a rendering artefact of a row (following 12, then an email hash beginning
-  000fa); no figure of the answer is in the pack.
+`leak.py --asof 2026-09-30` on the repaired cut: REVIEW, no LEAK; one line per REVIEW:
 - The field notes (`warehouse_extract_fields.md`) and the featuring memo carry the call's words (spotlight, Sluis,
   October, external stars, repository): the field's own vocabulary; neither states a figure, a pick or a method.
-- The field notes' design-note terms (followers, account, newsletter, snapshot) are field names and their flat
+- The field notes' design-note terms (followers, account, newsletter, snapshot, extract) are field names and their flat
   definitions ("accounts following this account at the snapshot"); no sentence names feeds, reach, a per-view rate or
-  a cascade. The memo's (lottery, account, snapshot) sit in its scope and records clauses.
+  a cascade. The memo's (lottery, account, snapshot, extract, surface) sit in its scope, rule and records clauses; its
+  "whichever surface" is the estimand's own sentence (2.2).
 - The lottery log's 2026-10-06 is the October issue's date in its own row, a scheduled date the memo also states.
+- Fixed in the repair: a generated repository name carried the word TODO (sweep 2); the plugin list no longer has it.
 
-## Stage 3 gates
+**Stage 4 reader** (isolated, on the first cut): nothing quoted for questions 1 to 4; question 5 gives the memo's 2.2
+to 2.4 as the population and window with the forecast open; question 6 analytical; the six REVIEW lines of that cut
+harmless. Its realism tell (names from fixed pools, renames swapping bird and fish names) is fixed in the generator
+(`names.py`). The readings it raised are closed: a nominator by account and by email hash is device B1 (the snapshot's
+primary hash, every signed-out nominator of the shortlist resolving, asserted); outside the organisation is membership
+when nominating, the same as now for every nominator (asserted); the click-through's denominator is the prompt's "of
+them", the subscribers the issue was delivered to; the chart's stars by 27 September follow memo 2.2 (rollup and
+events agree, asserted); the stars the spotlight adds are "of those", the expected stars less the stars without it.
 
-Generator checks 109 passed (the three-rules block, SF1 to SF16, the ladder, bins and spreads, the asks' profiles,
-separation, registers, input gates, realism); `verify.py` agrees on its own code path (pick, every candidate's
-figure, the default path, both asks, the workbook and figures.json); two consecutive builds byte-identical (19 target
-files, 2 goldens, metadata.json, figures.json, target.zip); `figures_check.py` 81 figures, none absent; precut 49
-checks, 0 FAIL; voice-check PASS; the container audit clean; `leak.py` REVIEW answered above; `guard.py heart` WARN
-(repeat.decision, repeat.question_form, answered in the Draw); `guard.py surface`: no hard tell after the manifest's
-columns and the two register names were changed (task142 had shared the manifest's column set); three pairs remain
-promoted on the cards alone (task124 and task132 on gap, G6 and Gate G; task68 on gap, G6 and the pick), each
-differentiated on the card with drivers 0.03 to 0.05 apart, for the author's `/clone-check`.
+**Stage 4 judge:** DETERMINISTIC, APPROVE (`determinism_check_report.md`, with the repairs that followed it).
+
+## Gates after the stage 4 repair
+
+Generator checks 121 passed (the earlier block plus the rate-evidence assertions: one sigma on every repository's rate
+keeps every rounded figure, two sigma keeps the pick, the decisive rate on 551 feed stars; and the nominations'
+readings: every reference names an owner, every signed-out nominator of the shortlist resolves, membership when
+nominating equals membership now); `verify.py` agrees on its own code path; two consecutive builds byte-identical, and a
+second separate run cuts the same target.zip; `figures_check.py` 81 figures, none absent; precut 49 checks, 0 FAIL;
+voice-check PASS; the container audit clean; `leak.py` REVIEW answered above; `guard.py heart` WARN (repeat.decision,
+repeat.question_form); `guard.py surface` no hard tell, task124, task132 and task68 promoted on the cards alone for the
+author's `/clone-check`; `guard.py validate` clean. `freeze.py check --mode determinism`: every number in blocks 1, 2
+and 4 of the write-up unchanged; moved, as the repair requires, slidewell's stars to 27 September (2,709 to 2,766),
+feed-card stars (160 to 551), followers reached (8,883 to 30,671) and rate per view (1.801 to 1.796 per cent), allowed
+by key, and the ladder section's unrounded values (slidewell 12,084 to 11,973, adding 9,036 to 9,017).
 
 ## Tried and rejected
 
@@ -477,3 +496,15 @@ differentiated on the card with drivers 0.03 to 0.05 apart, for the author's `/c
 - The export manifest's column set and the generic register names (data_dictionary, export_manifest): `guard.py
   surface` matched the manifest's columns to task142's, a hard tell; renamed to the extract's own idiom
   (warehouse_extract_fields.md, extract_contents_2026-09-28.csv) with columns of its own.
+- slidewell's launch audience at about 3 followers a starrer (a link forum's newcomers): its per-view rate rested on
+  160 feed stars and a one-sigma lower rate put its total on the 11,500 rounding line (stage 4 judge); the forum's
+  starrers now have about 11 followers each, the rate rests on 551 feed stars, and one sigma keeps every rounded figure.
+- Names from fixed pools (a colour or material with a tech noun, owner prefixes and suffixes, renames swapping bird and
+  fish names): read as generated (stage 4 reader); names now come from a generator of personal handles, organisations
+  named after projects or companies and repositories named for what they do, a minority brandable, and every rename
+  has a reason (a clearer name, a dropped prefix, a move into the project's organisation, a clash, a typo).
+- Bare-name and unresolvable signed-out nominations: a bare name mapped to the shortlist was a reading no file stated
+  (stage 4 judge: 44, 58, 29, 22, 23, 18 and 37 without it); the form now keeps only references that resolve on the
+  host, said once in the field notes, and every signed-out nominator of the shortlist resolves to an account.
+- The memo's section 3 in the past tense for dates after its own, and the lottery log's "pick locked 30 Sep" in a
+  sheet saved on 24 September: reworded as planned dates.

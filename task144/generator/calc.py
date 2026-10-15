@@ -370,7 +370,7 @@ def load_asks(target):
                                  for c in rm["campaigns"]])
     A["rm_links"] = pd.read_csv(p(K.RM_LINKS))
     A["noms"] = pd.read_csv(p(K.NOMS), keep_default_na=False, dtype=str)
-    A["noms"]["account_id"] = [int(v) if v else None for v in A["noms"].account_id]
+    A["noms"]["account_id"] = pd.Series([int(v) if v else None for v in A["noms"].account_id], dtype=object)
     A["renames"] = pd.read_csv(p(K.RENAMES))
     return A
 
@@ -459,8 +459,9 @@ def ask_a(B, A, handling=None):
 def norm_ref(text):
     t = text.strip()
     t = re.sub(r"^https?://", "", t, flags=re.I)
-    t = re.sub(r"^%s/" % re.escape(K.HOST), "", t, flags=re.I)
+    t = re.sub(r"^(www\.)?%s/" % re.escape(K.HOST), "", t, flags=re.I)
     t = t.strip("/").lower()
+    t = re.sub(r"\.git$", "", t)
     return t
 
 
