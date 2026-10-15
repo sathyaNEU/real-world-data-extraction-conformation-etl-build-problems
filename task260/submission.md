@@ -38,7 +38,7 @@ Its gain of 0.026 in the readers' average area under the ROC curve is the only o
    - Lumidra Detect: 0.047, does not meet the protocol
    - Ondrix Mammo: 0.042, does not meet the protocol
    - Halvic Breast: 0.026, meets the protocol
-2. Screening studies sent for reading from 1 October 2025 to 30 September 2026, each site with its mobile units:
+2. Routine and technical-repeat screening studies sent for reading from 1 October 2025 to 30 September 2026, each site with its mobile units:
    - Corrowby Road Breast Unit: 11,569
    - Wendlow Breast Screening Centre: 7,298
    - Copse Lane Breast Screening Centre: 13,253

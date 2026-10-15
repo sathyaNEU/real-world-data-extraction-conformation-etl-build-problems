@@ -21,3 +21,4 @@ architecture), new. A task from an objective no developer owns says so.
 |---|---|
 | 1 | task253 (resume 2: Ask A) · task254 (resume 2: architecture 3) · task120 (re-root: retired) · task121 (re-root, Root-Cause) · task127 (re-root, Opportunity Sizing) |
 | 2 | task255 (new) · task256 (new) · task257 (new) · task258 (new) · task259 (new) · task260 (new) |
+| 3 | task261 (new) · task262 (new) · task263 (new) · task264 (new) · task265 (new) · task266 (new) |

@@ -1,57 +1,69 @@
 # determinism-check report, task260, 2026-10-15
 
 ## Verdict
-NOT_DETERMINISTIC (competing_defensible_answer on supplementary ask 4, the Lumidra Detect first-year cost only). The main recommendation (license Halvic Breast) is forced and reproduces.
-**Disposition:** FIX_NOW
+DETERMINISTIC (re-judge after the FIX_NOW pass; run 043008, one thread)
+**Disposition:** APPROVE
 **Stumping type:** mechanism: statistical_rigor, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-The main call reproduces and is robust: only Halvic's interval, with readers and examinations both random, lies wholly above zero, and the ranking holds under OR, DBM and a two-way bootstrap. The Lumidra figure of £101,565 rests on a 28-day episode rule that no shipped file states; the Lumidra quote says only "one woman's screening, including any technical repeat". The golden also silently leaves out 14 women whose only window study is an early-October 2025 technical repeat (MAMT). Three readings are licensed by the files and the prompt asks for whole pounds, so they give different answers.
+Protocol section 4.1 files the estimand: the interval is for the service's film readers reading the service's screening examinations, so readers and examinations are both random. The thread recomputed every load-bearing value from a fresh unzip of target.zip. Only Halvic Breast's interval lies wholly above zero. The earlier finding (Ask B's Lumidra episode count unfiled) is closed: 44,262 episodes reproduce as distinct women with a routine study, as quote_lumidra_detect_2027.pdf defines them. No competing answer survives. After the verdict the author pinned the site-count ask in prompt.txt ("how many routine and technical-repeat screening studies each of the four sites..."). That closes the thread's one minor fork (MAMS only against MAMS plus MAMT). No figure, no file in target/ and no golden moved, so no rerun is needed.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Gain, Lumidra (reader_study exports, last submission) | 0.047 | 0.04722 | yes |
-| Gain, Ondrix | 0.042 | 0.04201 | yes |
-| Gain, Halvic | 0.026 | 0.02593 | yes |
-| Halvic interval (OR/DBM, Hillis df) | wholly above 0 | 0.0136 to 0.0383 | yes |
-| Ondrix interval | crosses 0 | -0.0129 to 0.0969 | yes |
-| Lumidra interval | crosses 0 | -0.0148 to 0.1092 | yes |
-| Screening studies, 4 sites (RIS + mobile visits) | 11,569 / 7,298 / 13,253 / 13,758 (45,878) | same | yes |
-| Film readers 1 Apr 2027 | 27 | 27 | yes |
-| Ondrix cost | £89,122 | £89,122 | yes |
-| Halvic cost | £101,750 | £101,750 | yes |
-| Lumidra episodes / cost | 44,262 / £101,565 | 44,262 / £101,565 under the golden reading only | partly (fork) |
+| Gain, Lumidra Detect | 0.047 | 0.0472 | yes |
+| Gain, Ondrix Mammo | 0.042 | 0.0420 | yes |
+| Gain, Halvic Breast | 0.026 | 0.0259 | yes |
+| 95% interval, readers and cases random (OR, jackknife, Hillis df) | Halvic only above zero | Lumidra [-0.0148, 0.1092]; Ondrix [-0.0129, 0.0969]; Halvic [0.0136, 0.0383]. A two-way bootstrap gives the same classification. | yes |
+| Ondrix readers reading worse with the tool | 3 of 10 | 3 of 10 | yes |
+| Site counts | CRB 11,569; WDL 7,298; CPL 13,253; TLW 13,758 (45,878) | same | yes |
+| Film readers on 1 April 2027 | 27 | 27 (28 rows, Johnson duplicated by registration) | yes |
+| Screening episodes | 44,262 | 44,262 | yes |
+| Cost, Lumidra | £110,745 | 44,262 x 2.08 + 27 x 340 + 9,500 = 110,744.96 | yes |
+| Cost, Ondrix | £89,122 | 45,878 x 1.62 + 14,800 = 89,122.36, above the 60,000 minimum | yes |
+| Cost, Halvic | £101,750 | 27 x 2,450 + 4 x 5,900 + 12,000 | yes |
 
 ## Competing answers that survived
-| Fork | Answers | Closing rule shipped |
-|---|---|---|
-| Lumidra episode population and window | distinct women with any screening study (44,276, £101,594); 28 days by timestamp (44,263, £101,567); golden, episodes opened by a routine study in the calendar-day window (44,262, £101,565) | none: the quote gives no 28-day rule and no window rule for a technical repeat |
-| Mobile-unit host (ask 2, residual) | dated visits file (golden: 11,569 / 7,298 / ...) against the static `host_site` in screening_locations.json (WDL 12,450, CRB 6,417) | the dated visits file is the better source but no "as at" qualifier is shipped on the json field |
+None. Residual forks, all closed by shipped text:
+- MAMS only against MAMS plus MAMT (CRB 11,351, WDL 7,163, CPL 13,003, TLW 13,495 under MAMS only). Closed by the codes file, the Ondrix quote and now the pinned ask wording.
+- Implant-displaced "-ID" second studies count as separate accessions, and the Lumidra episode count collapses them.
+- First against last submission would move Lumidra to 0.048. The field guide files the last as the reading of record.
+- The interval construction (OR, DBM, two-way bootstrap, z against t) is open. Every construction gives the same classification, and the closest margin (Ondrix bootstrap lower bound -0.006) still crosses zero.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
 | Files | 10 or more | 18 | yes |
-| Formats | 3 or more | 4 (PDF, XLSX, CSV, JSON) | yes |
-| Large file | 25,000 rows or more | RIS 55,920 raw rows | yes |
-| Distractors in metadata.json, none named in a file | 2 or more | 3 (vendor summaries, KPIs, self-assessment) | yes |
-| Distractors unused yet weighable, ruled out by a shipped fact | yes | vendor AUCs ruled out by protocol 3.1 and 3.2 | yes |
-| Deliverables | 1 to 3, all in golden | 3 present in golden/ | yes |
-| Asks multi-dimensional, unit and rounding stated | yes | yes (three decimals, whole pounds) | yes |
-| Rubric 25 or more criteria, prompt shape identifiable | yes | not generated at this stage; per-tool, per-site and per-cost items give well over 25 | not checked |
-| Reads as real, not LLM generated | yes | judge found no authoring or provenance leakage | yes |
+| Formats | 3 or more | 4 (csv, xlsx, pdf, json) | yes |
+| Large file | 25,000 or more rows | ris_mammography_studies: 55,920 rows | yes |
+| Distractors | 2 or more named in metadata.json, no file name labels one | 3 named (vendor_product_summaries_2026.pdf, screening_kpis_2023-24_to_2025-26.xlsx, reader_self_assessment_2025.csv); no file name labels one | yes |
+| Distractor behaviour | unused, relevant, ruled out by a shipped fact | the vendor standalone AUCs rank Lumidra first; protocol 3.1 and 3.2 rule them out; they decide nothing | yes |
+| Deliverables | 1 to 3, all in the golden | 3 (pdf, xlsx, png), all present in golden/ | yes |
+| Asks | multi-dimensional; unit and rounding stated | gains to three decimals and costs in whole pounds are stated; the counts are whole numbers; the four-site, three-tool and cost cuts are multi-dimensional | yes |
+| Prompt | one plain paragraph, under 1,000 characters | 930 characters after the pin, one plain paragraph | yes |
+| Rubric of 25 or more criteria | 25 or more | not measured here; the design note lists the criteria (call, 3 gains and verdicts, reasons, 4 site counts, readers, 3 costs, chart parts), which count about 25 | not independently verified |
+| Reads as real work, not LLM generated | yes | the thread found no authoring disclosure; the pdf and xlsx metadata read as in-fiction authors; the export, RIS and HR artifacts are realistic | yes |
 
 ## Gate G reconciliation
-Judge: mechanism statistical_rigor, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. The stump is the choice of unit of analysis (readers and examinations both random); a reader-level paired test makes Lumidra qualify and win. The declared distractor (vendor summaries) is inert and does not carry the call. Gate H: domain pass, layers pass, decisive_step analytical. The design note's Three rules lines (No decoy, Not semantics, Not rule application) are present and consistent with this read: the protocol files the estimand and leaves the interval construction to the analyst. The design note's own fork table (row B, D1) lists the 28-day episode rule as a closed fork, but the judge found no shipped text that closes it. The card carries stump_class analytical with an analyst_test and domain_test naming the OR/DBM interval, matching the judge. No mismatch on Gate G or H.
+The thread's Gate G reading matches the design note and the card (stump_class analytical; strategy uncertainty_hold; signal_vs_noise_or_hold).
+- **Mechanism:** the thread says statistical_rigor and the note says field_method (Obuchowski-Rockette or DBM, readers and examinations both random). Same stump.
+- **Stumping family:** the thread says analytical_non_defect and the note says nothing is planted.
+- **Easy routes:** the thread's routes match the note's. A case bootstrap with the readers fixed files Ondrix, and a reader-level test files Lumidra.
+- **Surface read:** the declared wrong-basis distractor (vendor standalone areas) is not the surface read that carries the task, and the thread did not name it as one. The difficulty survives deleting every wrong number from the pack. surface_read_dependency is no.
+- **Sole data defect:** no.
+- **Mismatch:** none.
+
+Gate G: PASS (statistical_rigor on honest data).
 
 ## Stump power (Gate F)
-Good. Only the two-source analysis licenses Halvic; one-factor intervals file Lumidra or Ondrix. Halvic's lower bound is 0.0136 and the other two cross zero under every method tried, so the margins are not knife-edge.
+Moderate to good. The easy route of a reader-level paired test, or a DeLong or case-bootstrap interval with the ten readers fixed, qualifies all three tools and files Ondrix or Lumidra. The protocol hints at the target population but names no method and does not say which tool fails. A model that knows MRMC (OR or DBM) gets it right, so the stump rests on reaching for crossed random factors.
 
 ## Findings, ranked
-1. Ask 4 Lumidra cost is open (44,262 / 44,263 / 44,276 episodes, £101,565 / £101,567 / £101,594). FIX_NOW.
-2. Ask 2 mobile-unit host basis has a residual semantic risk (static `host_site` against dated visits). Optional pin.
-3. Minor: MBS-AI-02 unaided-to-aided gap is about 27 days for at least one reader against the protocol's "at least four weeks". It does not touch the decision.
+1. No blocking finding. The previously open Lumidra episode count now reproduces.
+2. Minor, closed: the site-count ask now pins routine and technical-repeat studies.
+3. Not independently counted: the rubric's 25-criterion floor. The leak and portal stages cover it.
 
 ## Next action for the author
-Pin the episode count basis in the Lumidra quote wording or the prompt (for example "screening episodes whose routine study falls in the 12 months to 30 September 2026; a technical repeat belongs to the routine study it repeats") so that 44,262 and £101,565 are forced, optionally pin the host-by-date basis for mobile units, assert both in `checks.py`, rebuild, and re-judge once. Do not touch the reader-study files or the main call.
+prompt.txt measures 930 characters after the pin. Run voice-check.py on it once, since the thread did not rerun the voice gate, then ship.
+
+Gate H: PASS (domain: pass, layers: pass, decisive_step: analytical). The deciding quantity is MRMC inference on a fully crossed reader study, and the swap test fails to relabel it. Layer 1 is the v4.1 to v4.2 export change, resubmissions, a legacy RIS overlapping the new one with an hour shift, a mobile unit re-hosted, and duplicate HR registrations. Layer 2 is the reader-and-examination-random interval.

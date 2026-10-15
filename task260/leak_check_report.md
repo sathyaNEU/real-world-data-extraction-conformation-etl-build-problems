@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: examinations, random, asserted, delong, bootstrap, examination, shared, obuchowski-rockette, analysis, crossed, pooled, decisive, carries, factor, factors, export, rejected, method, populations, ratings, readings, paired, generator, two-way, condition
+Stump terms swept: examinations, random, asserted, delong, bootstrap, examination, shared, obuchowski-rockette, decisive, analysis, crossed, pooled, export, carries, method, populations, factor, factors, rejected, question, ratings, readings, paired, generator, two-way
 
 ## 3 answer figures in the pack (REVIEW 4)
 - **REVIEW** `ai_evaluation_protocol_v2.pdf`: carries 4 of 5 distinctive words of the committed call: 'License Halvic Breast for two years from 1 April 2027.'
@@ -13,7 +13,7 @@ Stump terms swept: examinations, random, asserted, delong, bootstrap, examinatio
 - **REVIEW** `quote_ondrix_mammo_2027.pdf`: carries 3 of 5 distinctive words of the committed call: 'License Halvic Breast for two years from 1 April 2027.'
 
 ## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `ai_evaluation_protocol_v2.pdf`: 4 of 25 stump-paragraph terms appear (examinations, examination, ratings, condition); read whether the document names the move
+- **REVIEW** `ai_evaluation_protocol_v2.pdf`: 4 of 25 stump-paragraph terms appear (examinations, examination, question, ratings); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 4, INFO 3)
 - **REVIEW** `film_reader_workforce_2026-10.xlsx`: names 4 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -127,3 +127,31 @@ Realism tells, disposition: the location table's host at export beside the dated
 mess, and the workforce's double contracts and changed post as credible HR records (no change); the quotes as
 plain one-page proposals, "slightly template-like" (kept: three layouts, voices and terms, one page each as a
 summary proposal); clean, regularly timed ReadPoint exports (kept, the platform's own log).
+
+## Solver's-eye read (loop 3)
+
+Isolated reader (general-purpose, Sonnet, medium) on a fresh copy after the re-judge's optional pin in the prompt (the
+site-count ask now names "routine and technical-repeat screening studies"); the pack is unchanged.
+
+1. Decisive step: none announced. Nearest: protocol 4.1 to 4.3, which state the rule and the population and name no
+   method.
+2. Ranking on the question: none; the vendors' standalone areas are labelled "not results of the service's reader
+   studies".
+3. Files only to help the analyst: none beyond the field guide, code legend, location table and study keys, none of
+   which gives a result.
+4. Answer-like figures or names: none.
+5. Literal sentences: protocol 4.1 read literally points to an interval carrying reader and case variability; the
+   reader could not say which tool wins without solving. The quotes fix the cost bases (rule application on the
+   asks). The reader also asked whether the interval should represent the service's mix of screen-detected and
+   interval cancers: protocol 3.1 fixes each area as the empirical one on the study set, and the pack carries no
+   service mix to weight to (closed, no change).
+6. What decides: an analytical choice, the interval's reader and case variability; the export clean-up is mess.
+7. The prompt's new phrase: says what to count, not which records to drop, merge or reassign.
+
+REVIEW lines: all harmless; the 1 April 2027 starter "sits exactly on the boundary and is part of the ask's
+difficulty, not a leak".
+
+Realism tells, disposition: the self-assessment file's fixed 60-case set and repeated rates (kept: every reader reads
+the same set, and rates over 20 cancers repeat); the staff list's three two-row people "neat" but plausible (kept);
+the two volume-priced quotes both echoing the tender's 12-month basis (kept: the tender asked bidders to price on it);
+regular mobile visit days (kept).

@@ -373,3 +373,15 @@ with the gains and two of three verdicts).
   the populations and names no method. No ranking, no answer-like figure; question 6 an analytical choice. Every
   REVIEW line harmless; the location table's host at export and the staff list's double contracts read as layered,
   credible records. Nothing to fix.
+- **Determinism re-judge (loop 1, the single re-judge after FIX_NOW).** DETERMINISTIC, APPROVE: every figure
+  reproduced from a fresh unzip (gains 0.047, 0.042, 0.026; only Halvic's interval above zero under
+  Obuchowski-Rockette and a two-way bootstrap; 45,878 studies by site, 44,262 episodes, 27 film readers, costs
+  110,745, 89,122 and 101,750). Gate G statistical_rigor, analytical_non_defect, no surface-read dependency, no sole
+  data defect; Gate H domain pass, layers pass, decisive step analytical. Its one minor fork, routine studies alone
+  as the site count (11,351, 7,163, 13,003, 13,495), already closed by the code table and Ondrix's quote, is pinned
+  in the prompt as the thread suggested ("routine and technical-repeat screening studies"); no figure or file moved,
+  voice-check and precut pass, and the leak reader read the new wording (loop 3).
+- **Leak re-read (loop 3, after the prompt pin).** No file announces the decisive step; the prompt's new phrase says
+  what to count, not how to repair a record. The reader's case-mix question (screen-detected against interval
+  cancers) is closed by protocol 3.1's empirical area on the study set, with no service mix in the pack to weight
+  to. Realism tells kept as texture. Ready to ship.
