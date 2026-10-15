@@ -88,7 +88,7 @@
   {
    "path": "edc_generation_emission_rates_2024.xlsx",
    "format": "xlsx",
-   "bytes": 8889,
+   "bytes": 8885,
    "rows": null,
    "source": "Constructed: the same publication for data year 2024",
    "date": "2026-10-23",
@@ -97,7 +97,7 @@
   {
    "path": "edc_generation_emission_rates_2025.xlsx",
    "format": "xlsx",
-   "bytes": 8851,
+   "bytes": 8855,
    "rows": null,
    "source": "Constructed: the Commission's published generation and emission rates by balancing area, data year 2025",
    "date": "2026-10-23",
@@ -106,7 +106,7 @@
   {
    "path": "generating_plant_register_2025.csv",
    "format": "csv",
-   "bytes": 6097,
+   "bytes": 6096,
    "rows": 88,
    "source": "Constructed: the Commission's plant register for the eight areas, data year 2025",
    "date": "2026-10-23",

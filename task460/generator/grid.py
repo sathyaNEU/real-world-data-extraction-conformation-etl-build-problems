@@ -10,6 +10,9 @@ import world as W
 
 H = 8760
 T0 = dt.datetime(2025, 1, 1)
+# each operator's readiness-test level for its peaking block, as a share of the block's capacity
+TEST_LEVEL = {"BRKW": 0.09, "QLBY": 0.10, "TNFD": 0.07, "GRSF": 0.06, "FRVW": 0.08, "OSTM": 0.08, "KSTP": 0.075,
+              "HLVN": 0.11}
 
 
 def season_of_month(m):
@@ -95,7 +98,7 @@ def dispatch(code, rng):
     caps = np.array([sum(p[2] for p in b[5]) for b in blocks], dtype=float)
     mn = np.array([[caps[k] * b[4][s] for s in range(4)] for k, b in enumerate(blocks)])[:, season]
     # peaking units (combustion turbines, oil steam) run a readiness test each month: the first Wednesday, 9 to 11 pm
-    # on the local clock, one unit at part load (about a twelfth of the block's capacity)
+    # on the local clock, at part load (each operator's own test level)
     first_wed = np.zeros(H, bool)
     for mth in range(1, 13):
         days = np.unique(doy[(mon == mth) & (dow == 2)])
@@ -104,7 +107,7 @@ def dispatch(code, rng):
     test = first_wed & ((lh == 21) | (lh == 22))
     for k, b in enumerate(blocks):
         if b[2] == "GT" or b[1] == "petroleum":
-            mn[k] = np.where(test, np.maximum(mn[k], 0.08 * caps[k]), mn[k])
+            mn[k] = np.where(test, np.maximum(mn[k], TEST_LEVEL[code] * caps[k]), mn[k])
     rooms = caps[:, None] - mn
     rem0 = net - mn.sum(axis=0)
     costs = sorted(set(b[3] for b in blocks))
@@ -146,12 +149,16 @@ def dispatch(code, rng):
         out[b[0]] = np.where(on_margin[b[0]], out[b[0]] - drift * rooms[k] / np.where(mroom > 0, mroom, 1.0), out[b[0]])
     if not ((rem0 >= 0).all() and (rem0 < cum).all()):
         raise RuntimeError("%s: %d hours below must-run, %d above capacity, net min %.0f must-run %.0f" % (code, (rem0 < 0).sum(), (rem0 >= cum).sum(), net.min(), mn.sum(axis=0).max()))
+    # a block's units share its output by capacity and each unit's own availability over the year (outages,
+    # deratings), so units of one size do not report the same annual generation
+    avail = lambda c, amp: 1.0 + amp * (((c * 7919) % 101) - 50) / 50.0
     plants = {}
     for b in blocks:
-        tot = sum(p[2] for p in b[5])
+        amp = 0.3 if (b[2] == "GT" or b[1] == "petroleum") else 0.004      # peakers' starts differ unit to unit
+        tot = sum(p[2] * avail(p[0], amp) for p in b[5])
         for p in b[5]:
             plants[p[0]] = dict(code=p[0], name=p[1], fuel=b[1], pm=b[2], mw=p[2], rate=p[3], block=b[0],
-                                gen=out[b[0]] * p[2] / tot)
+                                gen=out[b[0]] * p[2] * avail(p[0], amp) / tot)
     fuel = {}
     for b in blocks:
         fuel.setdefault(b[1], np.zeros(H))

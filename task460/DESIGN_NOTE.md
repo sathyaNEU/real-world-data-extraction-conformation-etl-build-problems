@@ -334,6 +334,10 @@ store and ranks nothing. No control ties only under the golden.
   REVIEW (no LEAK); guard heart WARN; surface promoting task458 (the prompt's opening, reworded as a where question),
   task459 (the same pairing back to back), task135 and task451 (the same gap, pattern and Gate G, differentiated on the
   card) for the author's read; the containers carry the fiction's people and dates.
+- **The main call after stage 4.** The repairs (the dictionary's three pins on the asks, the 2025 release moved before
+  the charter, the reader's realism fixes in the plant data and the store sites) moved no graded figure: Gorsefield
+  0.89, Halvane 0.58, the gap 0.31, every store's rate, use, share and price as before; Quillbury's published
+  non-baseload rate is 1.11 after the peakers' readiness tests.
 
 ## Leak check
 
@@ -350,8 +354,17 @@ store and ranks nothing. No control ties only under the golden.
   full output sitting on their nameplate for hours (now a little below it, as ambient conditions move it), every array
   facing due south with the roof area scaled from the array (each store's own roof and orientation now); the dates
   against today's date are the fiction's own timeline, internally consistent.
-
-## Determinism judge
+- Reader, second pass on the repaired pack (2026-10-15): questions 1 to 4 none; question 6 an analytical choice (the
+  margin in the array's hours against the published average, Brackwell 0.85, or one all-hours marginal rate,
+  Tennaford). Question 5 found no filed sentence fixing the method or the hours and named the area average as the
+  nearest literal execution: the easy method on the filed estimand, which both judge passes, executing charter 3.2
+  and 3.3 word for word, found closed as the response of the area's generators (the hourly records show which ones
+  move); filing the method would make the step rule application, so nothing was added. Realism: two peakers of one size
+  reporting the same annual output fixed in the generator (each operator's own test level, each unit's own share of
+  its block's starts); round nameplates, the old coal units' small 2025 output and extract dates after the charter
+  (the charter commissions the analysis) left as they are. The dictionary's station-service, former-code, wholesale
+  delivery point and bill-of-record lines stay: the first two are the agency's own notes and the last two the judge's
+  determinism pins.
 
 - First pass (2026-10-15, `determinism_check_report.md`): DETERMINISTIC, FIX_NOW (optional). Gate G
   method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain
@@ -361,6 +374,13 @@ store and ranks nothing. No control ties only under the golden.
   lines as charges; the 2025 rates release moved before the charter's approval (8 September 2026). Left as they are:
   the hour-matched average (the charter's counterfactual and the hourly records rule it out; filing the word marginal
   would file the method) and the chart's monthly basis (loosely gradable by design).
+- Re-judge after FIX_NOW (2026-10-15, `determinism_check_report_pass2.md`): DETERMINISTIC, APPROVE. Gate G
+  method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain
+  pass, layers pass, decisive_step analytical; every figure reproduced under season by hour, hour alone and month by
+  hour; the asks reproduce with the dictionary's pins; stump power moderate to good. Its three weak forks move no
+  call: the single fossil output rate (Tennaford, against the publication's fuel-specific rates), a regression on
+  levels rather than changes (seasonally confounded, not the counterfactual), a slope without an intercept (gap 0.29).
+  If a portal finding names one, the repair files the WHAT (fuel-specific CO2, change on change), never the grouping.
 
 ## Tried and rejected
 
