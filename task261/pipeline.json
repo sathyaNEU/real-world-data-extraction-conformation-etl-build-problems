@@ -1,21 +1,34 @@
 {
   "task": "task261",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "survey-research-official-statistics",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-15",
-  "stump": "The default path files four segments, under 35 | 35-44 | 45-54 | 55 and over, because it takes the error of each adjacent difference from the two age groups' own standard errors added as if the groups were independent samples; both groups are drawn from the same 120 survey areas and their medians move together from replicate to replicate, so the error of the difference recomputed on the replicate weights is about $98,000, not $145,000, and 55-64 stands apart from 65-74 (z about 2.4), giving five segments.",
+  "stump": "The default path files four segments, under 35 | 35-44 | 45-54 | 55 and over, because it takes the error of each adjacent difference from the two age groups' own standard errors added as if the groups were independent samples; both groups are drawn from the same 120 survey areas and their medians move together from replicate to replicate (correlation 0.70), so the error of the difference recomputed on the replicate weights is about $95,000, not $165,000, and 55-64 stands apart from 65-74 (2.7 times its error), giving five segments.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "task143 0.09"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-15"
+  },
+  "leak": {
+    "leak_py": "REVIEW (no LEAK)",
+    "reader": "loop 0: bulletin regrouped (8.3); loop 1: clean, nothing names the move"
+  },
+  "duplicate_check": {
+    "heart": "PASS",
+    "nearest": "task143 0.09; surface promotes task259 (same pairing, two numbers apart), differentiated on the card"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: the asks on the insurer's retirement income book (scratch generator insurer.py), semantic fork table, ladder, closure, literal reader, oracles, ask sheet, prompt.txt, then precut.py",
+  "resume": "stage 4: the judge's isolated thread (run r2) writes /tmp/determinism-check-task261-r2/verdict.md; re-invoke the determinism-judge agent with it for task261/determinism_check_report.md, fix any finding in the generator, then the pre-ship check and ship",
   "approved": null,
   "delivered": null,
   "portal": null,
