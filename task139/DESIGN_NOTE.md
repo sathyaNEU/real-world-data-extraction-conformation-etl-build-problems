@@ -551,6 +551,53 @@ to 10,000, the total to 100,000, the paid indemnity to 1,000, intakes whole).
   the pick memo, the review workbook, the export manifest, the new claim merge file, and (numbers only, plus the 86
   merged rows in the extract) the claims extract, the payment register and the ACH returns. Owed: the targeted re-read
   and the one re-judge.
+- **Ship** (2026-10-15): the targeted re-read found no leak and the re-judge returned DETERMINISTIC and APPROVE with no
+  fix (`determinism_check_report_pass2.md`); `target.zip` is cut from the final rebuild, byte-identical to the judged
+  pack; guard heart PASS, validate clean, precut 0 FAIL, leak.py REVIEW on the same seven lines.
+
+## Pre-ship check
+
+Written at stage 5 against the built pack (the stage 4 FIX_NOW pass and the Ask 1 redraw in); the reader and judge
+lines are stage 4's and the re-judge's.
+
+1. Domain: the deciding quantity is a workers' compensation pure premium per intake, each group's share of intakes
+   paying indemnity times its verified ultimate severity, read from a randomised pilot and valued per nurse place-day;
+   with a hospital's nouns there is no three-day waiting period, no intake that pays nothing because the worker is
+   back on suitable duties and no ultimate indemnity across TTD, TPD and PPD, and with the comparison read per
+   verified claim the call moves to 2,000,000 with the healthcare and retail strain units empty.
+2. Real work, nothing planted: claim numbers written four ways, segment codes recoded at the upgrade, the review's
+   eight sheets with control digits, a case log with reopenings and US dates, an extract mixing intakes with later
+   conversions, a superseded draft; on the ask paths the converted claims' legacy flag, the parallel run's double
+   listing, the EDI resends merged into their claims, a payment register at line grain, voided checks and the bank's
+   returns. Each is what these systems write; each mishandled leaves the call and every component where they were (R2,
+   asserted), and the call is unchanged with every ask file removed.
+3. The flip is a method choice: reading the randomised pilot per assigned intake, frequency and severity together,
+   instead of per verified indemnity claim; no field, unit or stated rule decides it, and the default path reads every
+   filed rule the same (R3a on the clean truth: the strain units empty).
+4. The analyst test holds: the default path files 2,000,000 (2,048,524) with HC-SS and RW-SS empty; the per-claim
+   family files 2.0 to 2.2 million, the per-intake saving without the place-day or with an indemnity claim's 3.4 to
+   3.8 million, the golden saving without the fill check 4.2 million; only the decisive rung files 4,100,000, on the
+   pack and on the clean truth (R3b).
+5. One defensible answer: pick memo 2 to 5 and charter 2.1 to 5.3 file the estimand and the rules; the 28 fork rows
+   are each asserted; the fill check keeps RW-SS at two teams on every base SF5 asserts (2.33 to 2.65 teams' worth),
+   every other funded unit 3.97 or more.
+6. No decoy: no file states a saving, a placement, an evaluation or a credit; the review refuses an effect (R 1.2);
+   the draft charter, the worker survey and the staffing plan are declared distractors, each deleted with the call and
+   every ask unchanged.
+7. Nothing hidden and recovered: no certified saving or past placement ships to reproduce; the review's totals and
+   frame count tie under every basis.
+8. A new lesson: a randomised intervention that moves its units out of the recorded costly class is valued per
+   assigned unit, each arm's own conversion times its own severity, and a capacity-bound team per unit of the capacity
+   an assigned unit holds; no build on file reads a randomised pilot per assigned unit for that reason.
+9. Leak reader (stage 4): no leak; Q1 to Q4 none; Q6 analytical; its realism tells fixed at stage 4. The targeted
+   re-read of the dictionary, the pick memo, the review workbook, the manifest and the merge file: no leak, Q6
+   analytical; its note that the dictionary's parallel-run and converted-flag lines read as briefing is recorded and
+   left (both filed for determinism).
+10. Judge (stage 4): NOT_DETERMINISTIC on supplementary 3 only, FIX_NOW applied (`determinism_check_report.md`). The
+   re-judge: DETERMINISTIC, APPROVE, every figure reproduced; Gate H domain and layers pass, the decisive step
+   analytical; stump power moderate; the merged-claim reading a mild fork, asserted both ways (SF28); the optional
+   metadata dates left (`determinism_check_report_pass2.md`). The rubric's exposure is Ask 1, which rests on one silent
+   device since its first two were filed; the pair on paper is 32.9.
 
 ## Tried and rejected
 
