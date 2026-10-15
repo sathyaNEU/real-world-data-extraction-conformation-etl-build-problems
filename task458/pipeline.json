@@ -1,0 +1,37 @@
+{
+  "task": "task458",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "healthcare-delivery-health-economics",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-15",
+  "stump": "The default path counts the adult members whose claims in the measurement year carry a qualifying diagnosis (or only those enrolled all year), finds the farm counties clear the prescriber standards and designates only the two counties short of prescribers outright, because the farm counties' members in need sit in enrollment spells too short for the claims to have recorded their conditions; measured on members enrolled all year and carried to every member by eligibility group, the farm counties fall below the standards and qualify.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.08 task126 lineage, 0.05 task180 lineage",
+    "note": "drawn 2026-10-15: guard WARN overuse.objective only (the ETL lane); differentiated against task231 and task445"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet and prompt.txt to precut exit 0, then the generator",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET15 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a Medicaid program's behavioral-health prescriber pilot designating counties on workforce ratios, the provider master rebuilt from NPPES monthly and weekly files); the decoy-era traps are not used; pairing in Healthcare Delivery & Health Economics, payment-claims-health-plan-analytics (see ## Draw)"
+}

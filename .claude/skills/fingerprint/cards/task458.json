@@ -1,0 +1,91 @@
+{
+  "task": "task458",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "seed ET15 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a Medicaid program's behavioral-health prescriber pilot designating counties on workforce ratios, the provider master rebuilt from NPPES monthly files and weekly deltas); the decoy-era traps are not used",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "niche": "a nonprofit Medicaid health plan's designation of eastern Washington counties for a 2027 behavioral-health prescriber loan-repayment pilot, each county scored on prescribers per adult member with a serious mental illness, per adult member with an opioid use disorder, and the share of members with a serious mental illness seen by a prescriber, populations the claims record only through services billed while a member is enrolled",
+  "objective": "etl",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G12",
+    "G6"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "the plan's director of network development",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "bh_claims_encounters_2026_extract.csv",
+    "rows": 0,
+    "entity": "one line of a behavioral-health claim or encounter for an adult member in 2026, with its diagnosis codes, rendering prescriber and frequency code",
+    "grain": "claim line",
+    "source": "synthetic (constructed in the layout of a state Medicaid MCO encounter and fee-for-service claim extract)"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "nonprofit_or_charity",
+  "world": {
+    "geography": "United States, Washington (ten eastern Washington counties)",
+    "currency": "USD",
+    "org_type": "nonprofit Medicaid managed care plan",
+    "invented_names": [
+      "Sandhollow Health Plan",
+      "Prescriber Service Award Pilot"
+    ],
+    "people": [
+      "Cameron Joyce",
+      "William Guerrero",
+      "Charles Schmidt"
+    ]
+  },
+  "deliverables": [
+    "prescriber_pilot_county_scorecard_2027.xlsx",
+    "county_adult_members_need_2026_conformed.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A population defined by a lasting trait is counted from records that show the trait only through events logged while each unit is observed, and units observed for short spells have had fewer chances to log one, so the recorded count understates exactly the segments whose units come and go; the trait's rate has to be measured on units observed long enough for it to show and carried to every unit by its group, not read from the records or from the fully observed units alone.",
+  "driver_concrete": "Adult members with a serious mental illness or an opioid use disorder appear in the claims only through services billed while they were enrolled; expansion adults in the farm counties churn through spells of a few months, so counting the members whose 2026 claims carry a qualifying diagnosis (or only the members enrolled all year) leaves out many who have the condition there, inflating the farm counties' prescribers per member in need and their share seen by a prescriber; measured on members enrolled all year and carried to every member by eligibility group, the farm counties fall below the standards and qualify.",
+  "stump": "A strong analyst counts the adult members whose 2026 claims carry a qualifying diagnosis (or, by the continuous-enrollment reflex, only those enrolled all year), finds the farm counties clear the prescriber standards, and designates only the counties short of prescribers outright, because the farm counties' members in need sit in enrollment spells too short for the claims to have recorded their conditions.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms NPPES, the claims and the eligibility spells and reads every field and the standard correctly counts members with a serious mental illness or an opioid use disorder as those whose 2026 claims record a qualifying diagnosis (or restricts to the continuously enrolled) and designates only the two counties short of prescribers outright, leaving out the farm counties whose churning members' conditions their short spells never recorded.",
+  "domain_test": "Need is the number of adult members with a serious mental illness or an opioid use disorder, estimated the way health-plan analysts estimate a chronic condition's prevalence from claims: on members enrolled long enough for the condition to appear in billed services, carried to every member by eligibility group; with retail or school nouns there is no lasting condition that a record shows only through a service billed during an enrollment spell, so the task collapses to counting flagged rows.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task231": "task231 estimates the exited share of a register's silent units from follow-up that reaches active units more often than exited ones; task458 estimates a lasting condition's prevalence among members whose short enrollment spells gave the claims too few billed services to record it, measured on members enrolled all year and carried to every member by eligibility group.",
+    "task445": "task445 completes a period's holdings for reporters whose reports have not arrived; task458 counts a population whose trait the record shows only through events during each unit's observation, so the shortfall sits with units observed briefly, not with units still to report."
+  },
+  "lineage": [],
+  "notes": "Personas drawn with guard.py names --geo 'United States' --seed 458. org_family nonprofit_or_charity: a nonprofit Medicaid managed care plan (no payer key in the vocabulary). forum board_of_directors: the plan's board approves the pilot's county list with its 2027 budget in December (forcing event budget_or_appropriation). Decisive generator G14 (the recorded share of members with the condition is conditioned on how long each was observed), G12 behind it (a member with no qualifying claim is a non-answer, not a zero).",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:chronic-condition-prevalence-from-fully-observed-enrollment",
+  "layer1": [
+    "several sources for one picture: the NPPES monthly full replacement file and its weekly incremental files, the NPPES deactivation file, the plan's behavioral-health claims and encounter extract, the eligibility spell file",
+    "vintages and revisions: the November full file superseded record by record by the December weekly files, deactivated NPIs reactivated, claims replaced and voided by frequency code",
+    "imperfect keys: rendering NPIs present on some encounters and absent on others, member numbers reissued at re-enrollment and tied by a person number, practice against mailing addresses, ZIP codes spanning two counties",
+    "documentation that has to be read: the taxonomy code list, the standard's definitions, claim frequency and place-of-service codes",
+    "genuine overlap: overlapping eligibility spells after retroactive enrollment, an encounter and a fee-for-service claim for the same visit",
+    "real coverage: members enrolling and leaving during the year, prescribers arriving, moving and leaving during the year"
+  ],
+  "registered": "2026-10-15T01:00:53Z"
+}
