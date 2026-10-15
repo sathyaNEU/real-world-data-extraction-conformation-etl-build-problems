@@ -281,9 +281,8 @@ def write_service_readme(path, files):
         "- Service case system: one row per case in its latest state, times in UTC. fault_code: CAP the gauge reported",
         "  full charge capacity below 80 per cent; SWL swollen battery; CON contact fault; BMS charging electronics or",
         "  gauge fault; NFF no fault found. warranty: WTY battery warranty, GW goodwill, OOW at the customer's cost.",
-        "  action REPLACED: a battery was fitted. cycle_count: the pack gauge's cycle count with the fault; the gauge",
-        "  learns a capacity fault at the end of the cycle in which full charge capacity fell below 80 per cent, and",
-        "  that cycle is counted. battery_sn: the battery in the notebook when the case closed. legacy_ref: order number",
+        "  action REPLACED: a battery was fitted. cycle_count: gauge cycle count when the fault was logged, the fault's",
+        "  own cycle included. battery_sn: the battery in the notebook when the case closed. legacy_ref: order number",
         "  in the DACH depot's former system.",
         "- The DACH depot (Bielefeld) kept its service orders in SAP until 1 March 2026 and has recorded its repairs in",
         "  the service case system since 2 March 2026. SAP fields: Auftragsart ZS01 warranty repair, ZS02 goodwill,",
@@ -297,9 +296,8 @@ def write_service_readme(path, files):
         "- Partner invoices: one workbook per partner, one sheet per invoice, a line per job in the invoice's service",
         "  period, in the partner's own layout and currency.",
         "- Returns depot log: one row for each battery received at the Bielefeld returns depot; Reference is the case or",
-        "  order it came from. A battery scrapped where it was removed (swollen, or failing the transport check for",
-        "  damaged lithium cells) is not shipped: it has no row and no freight is billed for it, and its case and its",
-        "  invoice line stand as for any other repair.",
+        "  order it came from. Battery scrapped where removed (swollen, or failed the transport check): not shipped, no",
+        "  returns-log row, no carrier charge; case and invoice line unaffected.",
         "- Treasury rates are units of each currency per euro at each month end.",
     ]
     _write_note(path, head, files, notes)

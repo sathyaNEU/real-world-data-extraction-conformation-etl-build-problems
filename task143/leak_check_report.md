@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: chance, release, cycles, finished, decisive, shared, fin-rs-, members, asserted, predictive, effect, golden, weakest, variance, validation, extracts, independent, forecasting, system, nothing, structure, default, window, groups, quantity
+Stump terms swept: chance, release, cycles, finished, asserted, fin-rs-, members, shared, effect, predictive, decisive, weakest, variance, structure, nothing, default, golden, forecasting, validation, window, groups, between-tray, genealogy, system, builds
 
 ## 2 author vocabulary (REVIEW 3)
 - **REVIEW** `extract_note_battery_lab_2026-10-12.txt`: \bthe model\b x2: ...e: Zelvora Cell s.r.o. model_k_genealogy_zc2638.csv Genealogy of the Model K packs built from lot ZC2638, one row per cell Source: Battery P...
@@ -18,8 +18,8 @@ Stump terms swept: chance, release, cycles, finished, decisive, shared, fin-rs-,
 - **REVIEW** `qm07_release_model_rl3_zp4820.pdf`: carries 3 of 5 distinctive words of the committed call: "Reserve 400 of lot ZC2638's 7,200 Model K packs at Friday's release."
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `extract_note_battery_lab_2026-10-12.txt`: 5 of 25 stump-paragraph terms appear (release, cycles, finished, extracts, system); read whether the document names the move
-- **REVIEW** `fin_rs04_battery_warranty_reserve_policy.pdf`: 6 of 25 stump-paragraph terms appear (release, cycles, finished, fin-rs-, effect, system); read whether the document names the move
+- **REVIEW** `extract_note_battery_lab_2026-10-12.txt`: 5 of 25 stump-paragraph terms appear (release, cycles, finished, genealogy, system); read whether the document names the move
+- **REVIEW** `fin_rs04_battery_warranty_reserve_policy.pdf`: 7 of 25 stump-paragraph terms appear (release, cycles, finished, fin-rs-, effect, genealogy); read whether the document names the move
 - **REVIEW** `model_k_pack_specification_rev_d.pdf`: 4 of 25 stump-paragraph terms appear (release, cycles, weakest, system); read whether the document names the move
 - **REVIEW** `qm07_release_model_rl3_zp4820.pdf`: 6 of 25 stump-paragraph terms appear (release, cycles, finished, fin-rs-, validation, system); read whether the document names the move
 
@@ -80,3 +80,20 @@ The five ask readings the reader raised: CAP (a capacity replacement) is defined
 FX date and the pack-cost date each stay within the euro on every reading; the freight split and the repair month
 are the asks' devices, settled by the carrier statement (each consignment billed once, with its pieces) and by the
 invoice's service period.
+
+## Solver's-eye read (round 2)
+
+The targeted re-read after the judge's repair (fresh copies of `prompt.txt` and `target/` only; its verdict relayed by
+the main session) is clean on Q1 to Q4: no sentence announces the decisive step, no file ranks or scores the answer or
+states an asked figure, no file exists only to help the analyst, and no figure or name reads as the answer. Q6 is
+analytical: the weakest-cell rule (the pack specification, section 4) and the error's population (FIN-RS-04 3.3, every
+finished lot's life tests) are filed WHATs, and the tray-shared error they leave open is the stump. Its one finding,
+a realism tell in the two sentences the repair added to `extract_note_service_operations_2026-10-09.txt` (they read
+as instructions to the analyst), is fixed: both are reworded in the system owner's field-note voice with the same
+content ("Battery scrapped where removed (swollen, or failed the transport check): not shipped, no returns-log row,
+no carrier charge; case and invoice line unaffected." and "cycle_count: gauge cycle count when the fault was logged,
+the fault's own cycle included."), and no data or figure moved. The thirteen REVIEW lines above are the classes of round 1
+(the stump-term counts shift with the design note's own wording: the lab's note now shows genealogy, the policy one
+term more) and stay harmless as ruled there: the fiction's own nouns, a clause number and the documents' subjects. The ask readings stay closed: CAP is defined in the service extracts note,
+the FX date and the pack-cost date stay within the euro on every reading, and the freight split and the repair month
+are the asks' devices, settled by the carrier statement and the invoice's service period.

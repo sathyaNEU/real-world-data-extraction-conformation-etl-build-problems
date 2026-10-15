@@ -504,8 +504,8 @@ def run(target, golden, W=None, meta_path=None):
     # the battery that never travelled: the service extracts note files it (no row, no freight, the repair stands);
     # and every reading of it (nothing billed, the line dropped, the partner's mean freight) rounds to the golden euro
     A("ask A: the service extracts note files a battery scrapped where it was removed (no row, no freight, the repair "
-      "stands)", "is not shipped: it has no row and no freight is billed for it, and its case and its invoice line stand "
-      "as for any other repair" in texts[K.F_README_SVC], "")
+      "stands)", "Battery scrapped where removed (swollen, or failed the transport check): not shipped, no returns-log "
+      "row, no carrier charge; case and invoice line unaffected." in texts[K.F_README_SVC], "")
     fv = freight_variants(target)
     for p in CA.PARTNERS:
         z, d_, m_ = fv[p][:3]

@@ -1,72 +1,64 @@
-# Verdict (task143, ZC2638 warranty reserve)
+# Verdict, task143 (re-judge, fresh)
 
-**Verdict:** DETERMINISTIC (the golden reproduces from the bundle; one low-severity open convention on a single cell, see Evidence).
+**Verdict:** DETERMINISTIC
 
-**Disposition:** FIX_NOW (optional, low severity). Pin in one place how a replacement whose removed battery never reached the Bielefeld returns log is costed (zero freight, counted in the average). It changes only the Ljungqvist cell (112 against 113). Otherwise APPROVE. No change to the main call, the data or the stump.
+**Disposition:** APPROVE. No repair needed and no rerun. Optional one-line pin only if the author wants extra margin (see Residual forks).
 
-**Why:** The reserve is forced by the shipped files. RL-3's log-life error is mostly the formation tray's (tray sd 0.160, cell sd 0.086, 78% at the tray). 7,063 of the 7,200 packs are three tray-mates, and the pack spec (s.4) makes the pack its weakest cell. Integrating over a new tray's shared error gives about 398 packs, so 400 at the nearest 50. The independent-cell shortcut gives 514 (500). Every supplementary figure also recomputes, apart from the single-cell convention below.
+**Why:** Every committed answer reproduced from the shipped files. The reserve is forced by the policy's estimand (FIN-RS-04 3.2: the sum over packs of each pack's probability, with the pack failing on its weakest cell per spec rev D s4). The data then fixes the dependence structure: RL-3's error on the 20 finished lots is about 78% formation-tray, and 7,063 of 7,200 packs are three tray-mates. Every standard estimator lands on 394 to 402 packs, which rounds to 400. The 500 answer (independent cells, 514) is the easy route and is wrong on the data.
 
-## Literal reading
-1. Reserve (FIN-RS-04 3.2, 3.3, 3.4): the sum over the 7,200 packs of P(any of the 3 cells has N80 < 600), rounded to the nearest 50. The estimand is filed. Method stays open but is forced by the data (tray ICC 0.78).
-2. Partner counts and months: CAP + WTY + REPLACED, by the invoice service period (README_service_extracts: "a line per job in the invoice's service period"). TM-2603-R1 replaces TM-2603. DACH uses SAP Techn. Abschluss to 1 March and the case-system closing day from 2 March; an SAP order is counted once.
-3. Cost per replacement: invoice line in EUR at the treasury month-end rate of the service period, plus the battery's share of its consignment charge, plus the service-pack standard cost valid at the service period.
-4. Silent points: (a) replacements with no returns-log row (18 of 317); (b) closed_utc as the work date for partners; (c) cycle_count exactly 600 against the warranty field; (d) the FX month; (e) the freight allocation basis. Each is run below.
+## Evidence (recomputed from target/)
 
-## Evidence (recomputed from the bundle)
-| Item | Recomputed | Golden | Source |
+| Item | Golden | Mine | Source |
 |---|---|---|---|
-| RL-3 coefficients (refit on 2,373 EOL cells) | 8.7067 / -0.4265 / -0.0671 | same | fleet A + B first-100 files (A cycle +1, B deduplicated, 4 continued tests stitched), life results |
-| Tray sd / cell sd / tray share | 0.1601 / 0.0856 / 77.8% (ANOVA and REML agree; lot variance 0) | 0.160 / 0.086 / 78% | register + life results |
-| Pack composition | 7,063 / 136 / 1 | same | genealogy joined to cell data trays |
-| Release-test predicted lives | 120 cells, all above 600 (min 701, median 886) | all outlive 600 | features F1, F2 |
-| Expected packs | 397.4 to 398.5 (my implementations) | 398.9 | RL-3 + pack spec s.4 |
-| Independent cells (2.44% per cell, 3 cells) | 514 | 514 | same inputs |
-| Dauvergne / Tolley Marsh / Ljungqvist / Ferrucci replacements | 99 / 81 / 58 / 79 | same | invoices (R1 used, original March sheet dropped) |
-| Monthly totals Oct 2025 to Sep 2026 | 8, 17, 23, 25, 26, 39, 41, 51, 57, 56, 74, 71 (sum 488) | same | partners 317 + DACH 171 |
-| Average cost, zero freight for the 18 unreturned | 99.0 / 102.0 / 112.0 / 96.0 | 99 / 102 / 112 / 96 | invoices, rates, carrier statement, cost sheet |
+| RL-3 features F1/F2 for 3,000 cells (fleet A cycle 0 is the first, fleet B cycle 1, 4,704 duplicate B rows dropped, 4 continued tests stitched incl. ZC2638-3111526 B 72 + A 28 = 100) | n/a | 3,000 cells, each with 100 cycles; refit of the b0/b1/b2 on the 2,373 EOL cells gives 8.7067/-0.4265/-0.0671 exactly | fleet_a, fleet_b, register, life results |
+| RL-3 error RMSE, 2,373 EOL cells | 0.182 (LOLO) | 0.1814 in-sample, 0.1823 LOLO. Lot-mean errors match QM-07 Table 1 within 0.003 | life results |
+| Error normal | stated | Shapiro p=0.37, skew -0.03, kurtosis -0.09 | same |
+| Tray sd / cell sd / tray share | 0.160 / 0.086 / 78% | REML 0.1601 / 0.0856 / 77.7%; one-way ANOVA 0.1601; moments 0.1599; LOLO errors 0.1602 to 0.1609 | register tray key + life results |
+| Lot-level residual effect | none implied | sd of lot-mean errors 0.0355 vs 0.0366 expected from tray sampling alone, so no separate lot effect | same |
+| ZC2638 predictions | all outlive 600 | min pred life 702 cycles, median 887, none under 700 (release criterion met) | fleets + register |
+| Pack structure | 7,063 / 136 / 1 | 7,063 three-tray-mate, 136 two-plus-one, 1 three-tray; 7,200 packs, 21,600 unique cells, none in Model J, none outside A-limits | model_k_genealogy x zelvora_cell_data |
+| Reserve | 398.9 (5.5%) | 397.3 to 398.5 with sd 0.160/0.086 and empirical 120 predictions | policy 3.2, spec s4 |
+| Independent-cell route | 514 | 7.14% a pack, 514.0 | QM-07 s5 RMSE |
+| Partner counts | DVG 99, TMR 81, LJQ 58, FRC 79 | 99 / 81 / 58 / 79 (CAP, WTY, REPLACED, invoice service period Oct 2025 to Sep 2026, TM-2603-R1 replaces TM-2603, which is dropped with its duplicate TMJ117922 line) | invoices x service cases |
+| Monthly totals | 8,17,23,25,26,39,41,51,57,56,74,71 = 488 | identical, all 12 months (DACH from SAP Techn. Abschluss to 1 Mar, then the case-system closing day, deduped on legacy_ref; partners by invoice period) | all |
+| Average cost | 99 / 102 / 112 / 96 | 99.09 / 101.89 / 111.73 / 95.93 | invoices, treasury, carrier, returns log, cost sheet |
 
-Robustness of the reserve:
-- Censored STOPPED cells (27) changed the tray sd by 0.0004 when imputed.
-- Fleet means and homoscedasticity are fine, and errors are close to normal.
-- The 375 to 425 rounding window holds for any sensible estimator. A one-standard-error move in the tray sd would reach 360 or 437, but the shipped estimators agree to three decimals.
-- Plugging in the lot's mean predicted life gives 237 (250). It drops the real cell-to-cell spread of predicted lives and is not a defensible rival.
-- Treating the three cells as one (perfect correlation) gives 176 (150). The data show ICC 0.78, not 1.
+Cost build checked: invoice line (labour + handling) converted at the service-period month-end rate (cost sheet Costing tab). Freight is the carrier charge divided by pieces (pieces equal the returns-log rows for every consignment). The returns-log "Freight EUR" column repeats the full consignment charge on every row, so using it gives 149 to 159 and is wrong. Seven scrapped batteries have no row and zero freight. Service pack is 52.40 before 1 Jan 2026 and 49.80 after. Dropping the seven no-freight batteries from the mean still rounds to 99/102/112/96. Using case close date for the pack price also rounds the same.
 
-Open point (low severity): 18 CAP/WTY/REPLACED partner lines have no row in the returns log, and all 222 statement consignments match the log row for row, so no freight was billed for them.
-- Counted with zero freight (golden): Ljungqvist 111.98, which is 112.
-- Dropped from the average, or filled with the mean freight: Ljungqvist 112.95 or 113.04, which is 113.
-- The other three partners round identically under every variant (99 / 102 / 96).
-- The text does not say which reading governs. "What one cost us on average" over the 58 replacements favours the golden, but this is a real if small fork on one graded cell.
+## Competing answers stress-tested (Gate C)
 
-Other forks that close:
-- Partner closed_utc is always after the invoice date (lag 1 to 2 months), so it cannot be the work date. Counting by closing month would give 87 / 69 / 51 / 69. The invoice period is forced.
-- Month-end FX: only the service-period month-end exists for September 2026, and prior-month FX moves nothing at rounding.
-- Pack standard cost by service period, closing date or return date does not change any rounded figure.
-- KS26-015372 (UKI, cycle_count 600, GW) is excluded by the warranty field. A solver applying "within 600 cycles" literally to cycle_count could include it. Minor.
+- Reserve 500 (514), independent cells: loses to the tray structure in the data (78% tray variance). It is the intended easy route, not a defensible alternative.
+- Reserve about 150, finished lots' own tray-mate packs as they lived: ignores RL-3, which policy 3.3 prescribes, and ignores this lot's lower predictions (mean predicted life about 888 against about 967 for the finished lots).
+- Reserve 350 needs tray sd of about 0.1555 or less. Only ML with lot as a fixed effect gives 0.1559, which is a biased variance estimator. REML (the statsmodels/lme4 default), ANOVA and moments all give 0.160. Thin but clean.
+- 450 would need sd above 0.1645. No reasonable estimator gets there. LOLO errors give 402, a parameter-uncertainty-integrated version 394, and a P(N<=600.5) edge 401. All round to 400.
+- The 375 and 425 boundaries sit about 22 to 28 packs from the point estimate. I rate this thin but clean (all rigorous point estimators agree), not margin_or_boundary_fragility.
 
-Gate B: every decisive fact is in a shipped file (tray key and register, pack spec s.4, policy 3.2 to 3.4, cost sheet, rates). Competing answers: 500 (independence), 250 (plug-in) and 150 (perfect correlation) each lose to the data.
+## Residual forks (low risk, none flips a committed answer under a reasonable reading)
 
-## Files/Hygiene
-PASS, with notes.
-- 25 files in 4 formats (pdf, csv, xlsx, txt). One file exceeds 25,000 rows (fleet A, 174k).
-- Mess is realistic: semicolons and decimal commas against UTC ISO, cycle 0 against cycle 1, a serial in three spellings, overlapping weekly pulls, reissued invoice, SAP to case-system migration, three languages on the invoices, three currencies.
-- Notes: the two README_* files are in-fiction extract notes ("pulled for Product Finance by ..."). No authoring language, but the "README" file name reads like a build artifact and may be renamed. The extract notes also define file grain, which is acceptable.
-- Temporal coherence is fine (pull 12 October 2026, release 16 October, QM-07 rev 4 of 30 September 2026).
-- No exclusion-level finding. No public-data contamination is evident.
+1. Partner "carried out" date. Case-system closed_utc lags the invoice service period by 1 to 2 months for all 317 included partner jobs, and 49 invoiced replaced cases have no close date. Counting by closed_utc would give 277 partner replacements (DVG 88, FRC 69, LJQ 51, TMR 69) and different months. The invoice workbooks are "a line per job in the invoice's service period", and the cost sheet also keys on the invoice's service period, so the invoice reading is the better-supported one. The prompt does not say so in words. Optional prompt pin: "by the service period of the partner's invoice line".
+2. Gauge cycles vs QP-3 cycles. Spec rev D s5 says the gauge adds one cycle per 4,820 mAh discharged, which would count fewer cycles than QP-3 as cells fade. FIN-RS-04 3.3 states they are the same cycles, so the policy closes it. A solver who rescales would shift the threshold and the reserve.
+3. The monthly table is "across all five regions". The golden lists totals per month. The region split lives only in the chart. A grader could want it in the table too (a rubric concern, not a determinism one).
 
-## Stump power
-Good. The trap is treating RL-3's published RMSE 0.182 as independent per-cell error (514, so 500), when a tray's shared error is perfectly visible in the register and genealogy. A strong model that cleans everything correctly still reaches 500 by compounding the 2.4% over three cells. The ~25 graded ETL figures (12 months, 4 counts, 4 costs, the freight-share and R1 traps, the SAP/case-system overlap) add many independent ways to miss points. The asks plausibly hold the top two under 50.
+## Files/Hygiene: PASS
 
-## Stumping type
-`mechanism: statistical_rigor` (clustered errors, weakest-link pack probability; also `etl_conformance` for the second table), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`.
-The reported RMSE, coefficients and counts are all correct. The difficulty is the dependence structure of the errors and the pack's weakest-cell logic, and it survives clean data. Not a banned scaffold.
+24 files, formats csv, xlsx, pdf, txt (4). Fleet A is 174,006 rows, fleet B 130,698, and the genealogy 21,600. Distractors present and unused: Model J genealogy, certificate of analysis, the DACH depot and Model J tabs, and the Sep 2025 invoice sheets. Layer 1 mess is real and not planted: semicolon and decimal-comma local-time fleet A against UTC fleet B, three serial formats, continued tests, overlapping weekly pulls, the SAP to case-system migration with legacy_ref, four-language partner invoices in EUR/GBP/SEK, a reissued invoice, the consignment-share freight. No authoring or benchmark language. No tool signatures in the PDFs. The xlsx authors are in-fiction. Dates are coherent: extracts of 5 to 12 October 2026, the last pack built 9 October, no decisive fact after the snapshot. No public-data contamination. No exclusion-level finding.
 
-## Three rules
-`domain: pass`, `layers: pass`, `decisive_step: analytical`.
-- Swap test: the deciding quantity is a cycle-life prediction model's error structure turned into a pack-level warranty probability. A stated score or list rule is not what decides it.
-- Layer 1: cycler fleet formats, UTC against Bielefeld wall time, continued tests, serial formats, partner invoice layouts and currencies, SAP against case system, a reissued invoice.
-- Layer 2: random-effects error (tray within lot) propagated through a weakest-cell series pack.
-- Easy route: a strong analyst who read everything correctly applies RMSE 0.182 per cell and compounds it over three independent cells. That gives 514, so a reserve of 500 instead of 400.
+## Stump power (Gate F)
+
+Strong. The reserve is 400 against a plausible 500 from the document's own RMSE of 0.182 and a normal per-cell tail, since the independence step looks innocuous. Nothing in the pack announces the tray correlation. The tray key appears only in the register note and the cell data. Reaching 400 needs the stitched features, a tray-level variance decomposition on the finished lots, and the genealogy join to formation trays. The 12-month tables add independent mess (reissue, dedupe, share-of-consignment freight).
+
+## Stumping type (Gate G)
+
+mechanism: statistical_rigor (clustering and variance components, plus etl_conformance in the asks) | stumping_family: analytical_non_defect | surface_read_dependency: no | sole_data_defect: no
+
+The reported RMSE and normality are correct and nothing is misleading. The trap is ignoring the dependence among a pack's cells. On clean data it would still stump.
+
+## Three rules (Gate H)
+
+domain: pass | layers: pass (Layer 1 = two cycler exports, serial and time conventions, SAP/case migration, multilingual multi-currency invoices; Layer 2 = clustered-error variance components for a weakest-link pack) | decisive_step: analytical
+
+Swap test: replacing the cell-life reliability work with another field's nouns breaks the task, because the deciding quantity is a pack-failure probability from a release-model's prediction error under a 3S weakest-cell rule. Easy route for a strong analyst who read everything: treat each cell's RL-3 error as independent with RMSE 0.182, giving 7.1% a pack, 514 packs, filed as 500. The data-correct answer is 400. No planted defect, no decoy, no hidden rule, and the semantics are closed by policy 3.2/3.3 and spec s4.
 
 ## Fix
-Where: prompt or the extract notes (optional, one line). State that a replacement whose removed battery has no returns-log row carries no freight, or that the average runs over returned batteries only, whichever the author intends. The 112 golden requires the former. Otherwise none. Rename README_* if the house wants to avoid that file name.
+
+none. Optional: add the invoice-service-period pin to the prompt (fork 1 above). It would not change the golden but would change what solvers see, so only do it if a rerun is acceptable.

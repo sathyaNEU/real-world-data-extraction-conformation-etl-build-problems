@@ -482,7 +482,45 @@ mirror about 22 with the instructions, the chart's form and part of the componen
   `extract_note_battery_lab_2026-10-12.txt` and `extract_note_service_operations_2026-10-09.txt`. After it:
   `build.py` 143 assertions, verify 6 of 6, two builds byte-identical, `target.zip` sha256 78dc1ed8...; `freeze.py
   check --mode determinism` passes with six cost parts allowed (`ask_a_parts`, the freight and invoice-line averages
-  the repair moved; no graded figure moved). Next: the single re-judge.
+  the repair moved; no graded figure moved).
+- **Re-judge (stage 4, round 2): DETERMINISTIC, APPROVE** (`determinism_check_report.md`; the FIX_NOW report stays in
+  git history). Every graded figure reproduced. Findings recorded: (1) a thin margin, clean: only a maximum-likelihood
+  fit with lot as a fixed effect gives a tray standard deviation of 0.156 (about 367 packs, 350), a biased variance
+  estimator; restricted maximum likelihood, the analysis of variance and the method of moments give 0.160 (400), and
+  350 needs 0.1555 or less, 450 more than 0.1645; (2) a residual fork on the partner's job date, the invoice's service
+  period against the case's closed_utc: this is the designed device (Ask A's second, Ask B's primary), settled by the
+  invoice workbooks ("a line per job in the invoice's service period") and the cost sheet, which both key on the
+  service period. The targeted re-read: clean on Q1, Q2 and Q4, Q6 analytical; its one finding, a realism tell in the
+  two sentences the repair added to the service extracts note (they read as instructions to the analyst), was reworded
+  in the system owner's field-note voice with the same content ("Battery scrapped where removed (swollen, or failed
+  the transport check): not shipped, no returns-log row, no carrier charge; case and invoice line unaffected." and
+  "cycle_count: gauge cycle count when the fault was logged, the fault's own cycle included."). No data or figure
+  moved: `build.py` 143 assertions, verify 6 of 6, two builds byte-identical, freeze PASS, figures_check 58/0, precut
+  49/0/0, voice-check PASS, leak.py REVIEW with no LEAK, guard surface 0 promoted and heart WARN, container clean;
+  `target.zip` sha256 f51980cb99be1f9d8173729dc96bc8fceed56f864148a1bd706f601b722cc939.
+
+## Pre-ship check
+
+- **Rule 1, the domain, on the built pack.** The reserve is decided by the posterior predictive of a pack's weakest
+  cell under the between-tray share of RL-3's error, estimated from the life monitoring results of the twenty finished
+  lots (2,373 cells cycled to 80 per cent) joined to the release register's formation trays, and carried to the 7,200
+  packs through the genealogy and Zelvora's tray map; no shipped column holds a tray effect, a correlation, a pack
+  chance or a reserve (asserted). With another field's nouns the series pack, the formation tray and the 100-cycle
+  release test lose the structure that makes the joint chance differ from the compounded one.
+- **Rule 2, two layers.** Layer 1 on the call's path is the lab's own mess, each item neutral (asserted): two cycler
+  layouts with cycle 0 against cycle 1 and Bielefeld time against UTC, fleet B's overlapping pulls, continued tests,
+  three serial forms, the tray key's format change at ZC2532, life tests stopped late in life, part-tray packs. Layer 2
+  is the error's tray structure carried into a weakest-cell pack, which no cleaning step touches: on the generator's
+  clean truth the easy route files 514 and the decisive step alone 394 (R3a, R3b).
+- **Rule 3, the decisive step.** No filed sentence names a shared error, a tray effect, a correlation or a joint
+  chance (asserted on every shipped document); FIN-RS-04 files the estimand (packs, the 80 per cent line, 600 cycles,
+  RL-3, the model's error on the finished lots) and the specification the weakest-cell rule, both executed by the
+  default path as well. Nothing planted, copied or withheld carries the answer (R3c); the distractors (the Model J
+  genealogy, Zelvora's certificate of analysis) rank nothing.
+- **Determinism.** Every construction with the error's tray structure files 400 (395.2 to 400.5), every leave-one-lot
+  estimate and both halves at the tray key change too; the asks' devices each have one handling that reproduces the
+  field's own events exactly (asserted), the never-shipped battery and the 600-cycle line are filed, and the cracker's
+  path misses all 20 ask figures.
 
 ## Tried and rejected
 
