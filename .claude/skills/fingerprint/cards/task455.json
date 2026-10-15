@@ -1,0 +1,96 @@
+{
+  "task": "task455",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "wave 3 (oviya1301), seed ET12 (analytical_tasks/07_data_extraction_conformation): the world (a health department certifying whether a program bent the curve on a cause of death), the decision and the quantity only",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "niche": "a county health department's certification to its council and the state's opioid settlement oversight board that residents' opioid overdose deaths fell at least 20 per cent below their 2021 to 2023 average, the deaths counted from death certificates that both miss opioid deaths and list incidental opioids in stimulant deaths, with a medical examiner's full review of one year as the measure of the certificates' error",
+  "objective": "etl",
+  "shape": "03",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G12",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "the county health department's epidemiology and vital statistics manager",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "death_records_residents_2019_2026.csv",
+    "rows": 0,
+    "entity": "one death record (original or amended) of a county resident or a death occurring in the county",
+    "grain": "death record version",
+    "source": "synthetic (constructed in the layout of a state vital records death file with multiple-cause ICD-10 codes)"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "period_close",
+  "org_family": "foundation_or_funder",
+  "world": {
+    "geography": "United States (an unnamed state, an invented county)",
+    "currency": "USD",
+    "org_type": "regional opioid settlement recovery foundation and the county public health department it funds",
+    "invented_names": [
+      "Wendmoor County",
+      "Wendmoor Valley Recovery Foundation",
+      "Overdose Reduction Initiative"
+    ],
+    "people": [
+      "Tammie Mcneil",
+      "Jesse Mcdonald",
+      "Leah Jackson"
+    ]
+  },
+  "deliverables": [
+    "ori_phase_one_outcome_certification_2026.pdf",
+    "resident_opioid_overdose_deaths_2019_2026.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "A register's count of one class is wrong in both directions: it misses some of the class and files in it some units of one neighbouring class only, a class that grows while the counted one shrinks; a full review of one period measures each true class's chance of being filed in each register category, so each period's count is solved from its own register categories, the false entries scaled by the neighbouring class's own visible entries; any multiplicative correction leaves the period-on-period change untouched, and a two-way error rate pooled over every unit outside the class misplaces the false entries as the neighbouring class grows.",
+  "driver_concrete": "Death certificates miss one resident opioid overdose death in eight (certified as an unspecified drug) and list an opioid in a quarter of stimulant overdose deaths where the medical examiner rules it incidental; stimulant deaths roughly doubled from 2021 to 2026 while other drug deaths fell, so the certified opioid count understates the fall. The 2025 full review gives each true class's chance of each certificate category, and only the count solved with the false listings scaled to each year's stimulant certificates meets the 20 per cent target (figures fixed at build).",
+  "stump": "A strong analyst corrects the certified counts with the 2025 review's sensitivity and its false-listing rate over all non-opioid drug deaths (the standard two-by-two correction) and does not certify, because the pooled rate puts the false listings level while the stimulant deaths that produce them grew; the count as certified, a net ratio or the review's predictive values leave the fall where the certificates put it.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the death file (residents, final amended records, the drug poisoning underlying causes, the multiple-cause codes), reads the initiative's measure and the medical examiner's 2025 review correctly and corrects each year with the review's sensitivity and specificity over all drug overdose deaths finds the 2026 count short of 20 per cent below the 2021 to 2023 average and does not certify; the certified count, a net ratio and the predictive values do not certify either.",
+  "domain_test": "The deciding quantity is each year's resident opioid overdose deaths corrected for certificate misclassification, worked as official statistics measures a register's gross classification error against a gold-standard review (a full re-examination of one year) and solves each year's true classes from its register categories through the measured error matrix; with another field's nouns no register files units of a growing neighbouring class into the counted one, and the net-versus-gross distinction has nothing to act on.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task121": "task121 sets each event's exposure against the same unit's exposure at the same clock hours on other days; task455 corrects a register's classification error in both directions with an error matrix measured by a full review, the false entries coming from a neighbouring class that grows: no exposure, no daily cycle, no matched comparison.",
+    "task456": "task456 estimates a latent share from three conflicting feeds with no gold standard; task455 has a gold-standard review of one year and one register, and the decisive move is where the register's false entries come from, not a latent class model.",
+    "task448": "task448 completes a register missing whole producers from a second list's capture by route; task455 corrects false entries in and misses from one register, the false entries scaled to a neighbouring class's visible entries, and the target is a percent change that no multiplicative correction moves.",
+    "task458": "task458 completes a condition count for members observed briefly against a selected full-year reference; task455 measures a certificate's two-way error on a full review and the trap is the pool the false entries come from, with no exposure window.",
+    "task230": "task230 measures a category count's net classification bias on the processed part of an output and carries it to a late part processed under a looser rule; task455 has no unprocessed part and no rule change: it measures a register's gross error in both directions on a full review of one year and solves every year's true classes through that error matrix, the decisive point being that the false entries scale with a growing neighbouring class, so the net bias is the wrong object.",
+    "task253": "task253 counts units under a line from noisy small-sample averages (shrinkage and posterior probabilities); its lineage adjusts survey nonresponse within classes; task455 has one complete register and a full review of one year, no sampling noise to separate and no nonresponse: the error is classification, measured directly.",
+    "task68": "task68 reads a like-for-like change on a matched panel of continuing units with the qualifying basis recovered from a corpus of settled dispositions; task455 reads a register's change between periods through a measured classification error matrix, with no panel, no succession linking and no corpus."
+  },
+  "lineage": [],
+  "notes": "Resumed 2026-10-15 from the paused draw of 2026-10-13 (the SROS x ETL pairing ban against task453 has lapsed). Personas from guard.py names --geo 'United States' --seed 455. org_family foundation_or_funder and forum trustees_or_governors: the regional recovery foundation that holds the county's opioid settlement share releases phase two of its grant when its trustees accept the phase-one outcome certification; forcing_event period_close: the phase-one grant period closed with 2026. context_artifact close_out_summary: the phase-one outcome certification. Decisive generator G6 (the composition of the non-opioid drug deaths shifts toward stimulants), G12 and G16 behind it.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "survey-research-official-statistics/census-register-administrative-data-quality/2",
+  "layer1": [
+    "several sources for one picture: the state death file extract, the medical examiner's 2025 review, the population estimates, the initiative's measure",
+    "vintages and revisions: original and amended death records (a cause pending investigation, later amended)",
+    "imperfect keys: residents dying in other counties and out of state, non-residents dying in the county, the review keyed by state file number",
+    "documentation that has to be read: ICD-10 underlying and record-axis multiple-cause codes, manner of death, resident and occurrence geography",
+    "genuine overlap: the occurrence county's and the residence county's copies of one death",
+    "real coverage: the 2026 file closed at the extract date with amendments arriving"
+  ],
+  "registered": "2026-10-15T04:30:59Z"
+}
