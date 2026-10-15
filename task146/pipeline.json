@@ -1,26 +1,40 @@
 {
   "task": "task146",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "survey-research-official-statistics/seasonal-adjustment-official-time-series-production",
   "objective": "forecasting",
   "stage": 2,
   "stage_name": "design",
   "updated": "2026-10-15",
-  "stump": "Carrying the step the first claims week of a quarter takes on average onto the level of the last four weeks calls about 14,000 initial claims for the week ended 10 October 2026; the step that lands it there is treating the quarter-start rise as seasonal when it is claimants found monetarily ineligible in the third quarter filing again once the fourth quarter moves their base period, and the third quarter's ineligible determinations, more than twice a usual quarter's, put the week at about 16,000.",
+  "stump": "Carrying the step the first claims week of a quarter takes on average onto the level of the last four weeks calls about 13,000 initial claims for the week ended 10 October 2026; the step that lands it there is treating the quarter-start rise as seasonal when it is claimants found monetarily ineligible in the third quarter filing again once the fourth quarter moves their base period, and the third quarter's ineligible determinations, more than twice a usual quarter's, put the week at about 16,000.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "driver 0.06 (task446 v2, task127 v1 lineage)"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "driver 0.06 (task446 v2, task127 v1 lineage)"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: finish the design note (screen, fork table, ladder, closure, literal reader, oracles, asks), prompt.txt, precut.py",
+  "resume": "stage 2: re-centre the golden near 16,000 so one sigma on the first-week rate stays in the bin and re-run generator/ladder_proto.py (every construction 0.15 of a bin clear, every rival two bins off); build and measure the two ask worlds (notices.py, industry.py) and write the pair ceiling and mirror leakage from them; write prompt.txt (draft in the design note's State at pause) and run precut.py task146 to exit 0; then stage 3",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "wave": "wave 3 (new), seed FC17 (world, decision and quantity kept; pitfall re-found)"
+  "wave": "wave 3 (new), seed FC17 (world, decision and quantity kept; pitfall re-found)",
+  "paused_for": "the author's priority reworks of shipped tasks (coordinator, 2026-10-15)"
 }
