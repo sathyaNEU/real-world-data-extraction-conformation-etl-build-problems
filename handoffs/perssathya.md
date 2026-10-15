@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-14 (task230 and task129 reshipped at the author's request). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-15 (task228 architecture 5 drawn at the author's request). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
-and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is shipped apart from task228, which waits on the author's
-call (a fifth architecture and a G16 waiver). Wave 2: task231 and task232 shipped; task233 to task236 not started.
+and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is shipped apart from task228, redrawn 2026-10-15 as
+architecture 5 at the author's request (a full refresh). Wave 2: task231 and task232 shipped; task233 to task236 follow task228.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -98,7 +98,11 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   leak.py REVIEW only; leak reader clean on two reads; judge pass 1 DETERMINISTIC, APPROVE.
 
 
-**task228: paused by the author.**
+**task228: architecture 5 drawn 2026-10-15 (full refresh at the author's request), in design.**
+- The seed's world again (Avisly Medier's experiment platform, which data-health check its scorecard hold watches),
+  with the field's own decisive step: a ratio metric's variance at the randomised install (delta method).
+- State and resume line: `task228/pipeline.json`; the design: `task228/DESIGN_NOTE.md`.
+- Earlier record (architectures 1 to 4), kept for history:
 - Branch `perssathya/task228-guardrail-alert-metric` at 9120146.
 - Design 1 (experiment-platform paging alert): its round-2 pass was on an earlier cut, and it failed
   the domain-coupling rule when revived.
@@ -106,8 +110,7 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
 - Design 3 and design 4 (granted as an exception) found no architecture. Data-health estimator choices
   key G12 or G16, which task181, task182, task445 and task446 hold in the ban window.
 - The card on file is design 2's.
-- **Resume:** once task229 or task230 ships, a designer redraws architecture 4. It works under a G16
-  waiver if the author grants one then, or without one if the window has moved.
+- Superseded 2026-10-15 by architecture 5 (above).
 
 **Done:** `guard.py` orders same-day draws by registration time (on `main`, 60881f6).
 

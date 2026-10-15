@@ -1,5 +1,168 @@
 # task228 design note
 
+Architecture 5 (drawn 2026-10-15), a full refresh at the author's request. Product Analytics, metric
+definition and measurement science, Data Quality Monitoring & Alerting: the seed's own world (DQ01) with a
+decisive step that is the field's own method. Avisly Medier, a Copenhagen news group, chooses the one
+data-health check its experiment platform's new scorecard service will hold experiments on from January
+2027, and the line it holds a standard experiment at. Architectures 1 to 4 (the experiment platform's
+paging alert, then the Coteau soil moisture network, then two paper re-roots) are spent; their record is
+`## Architecture 1 to 4 record`, the card's lineage and `## Tried and rejected`.
+
+## Draw
+
+Card `cards/task228.json` (architecture v5, registered 2026-10-15T12:53Z). Guard verdict WARN, one line:
+`three_rules.strategy_risk` (grain_or_unit), answered by the analyst test below, which runs on the clean
+truth in `checks.py`. Differentiated against task187 (`test.same_puzzle_older`), task229 v1 and this slot's
+architecture 1.
+
+- **Pairing.** Product Analytics / metric-definition-measurement-science, serving Data Quality Monitoring &
+  Alerting (the client lists this task type under DQ; the seed DQ01 is this pairing).
+- **Niche.** Avisly Medier runs its news app's experiments on an in-house platform. Until now the
+  data-health desk reviews every experiment's telemetry by hand each week; from 4 January 2027 the new
+  scorecard service holds an experiment's readout automatically on one data-health check. The desk decides
+  which check and the line it holds a standard experiment at.
+- **The call.** Which of the five checks in the platform's hold standard the service watches (gap
+  sessions, duplicate sessions, late sessions, events per install, treatment share), and its hold line in
+  the check's own unit for the 2027 standard experiment (10,000 installs per arm over 14 days).
+- **Corpus.** The 82 experiments the platform ran from January to September 2026, every one a 14-day run
+  judged once on its full run; the data-health desk's reconciliation confirmed a data incident in 18 of them
+  (telemetry loss, duplicate delivery, late delivery, consent loss) and the other 64 are clean.
+- **Shape.** 10, a scorecard: each check's incidents held and clean experiments held, its hold line, and
+  the pick. Decision pick_one_of_n, answer named_option, question form which.
+- **Strategy.** grain_or_unit with G2 decisive (the unit of independence is the randomised install, not the
+  session) and G17 supporting (each check judged with its own uncertainty); Gate G signal_vs_noise_or_hold;
+  calibration closed_decision_corpus; context artifact register; layer 2 family estimation_fit, pattern
+  product-analytics/metric-definition-measurement-science/2.
+- **Forum, event, organisation.** operations_desk (the data-health desk), cutover_or_migration (the weekly
+  manual review gives way to the automatic hold), media_or_publishing.
+- **People** (`guard.py names --geo Denmark --seed 228`): Mathilde Knudsen, head of the data-health desk;
+  Kaspar Gregersen, platform engineer who keeps the hold standard; Inge Lund, data quality analyst who keeps
+  the incident register.
+- **Deliverables.** `auto_hold_check_scorecard_2027.xlsx` (the scorecard) and `auto_hold_checks_2026.png`
+  (each check's 2026 record at a glance).
+- **Data-native sentence.** An install's sessions share one phone and one reader, so an arm's sessions
+  arrive as bundles from the installs the platform randomised: a phone whose uploader keeps failing shows
+  gaps in session after session, and a reader who opens the app forty times in a fortnight holds forty
+  sessions, so the gap-session share an arm reports is a ratio of two per-install sums whose spread is set
+  by how those bundles vary, not by the count of sessions.
+
+Sources, one line each (what it teaches; how this build differs):
+- Client pattern metric-definition-measurement-science/1 (validate candidate metrics on known interventions,
+  sensitivity against variance; shortcut: the candidate that moved most): the frame of the call; moved-most
+  is this build's lowest rung, never its stump.
+- Client pattern metric-definition-measurement-science/2 (ratio of sums is not mean of ratios; variance to
+  match the unit): the decisive step is the variance to match the filed ratio of sums; the per-install mean
+  of shares is rung 2.
+- Seed DQ01: the world, the decision and the quantity only; its withheld-rule architecture is not used.
+- Deng, Knoblich and Lu (2018), "Applying the delta method in metric analytics", and Kohavi, Tang and Xu
+  (2020), Trustworthy Online Controlled Experiments, chapters 18 and 21 (ratio-metric variance,
+  trust-related guardrails): the field's method; no card or ledger row on file carries it.
+- task229 v1 (spent): a clustered standard error over sites behind a shared node; this build tests a ratio
+  metric at the randomisation unit inside metric validation, with a false-hold allowance and a second wrong
+  route (the per-install mean) that build had no counterpart for.
+- This slot's architecture 1 (spent): the same seed world, judged on run length and mid-run revisions (a
+  stratification by a visible attribute); here each experiment is judged once on its full run and nothing
+  is stratified.
+
+## Default path
+
+1. Read the hold standard: the five checks, their definitions and hold directions, the hold at the
+   two-sided 1 per cent level, the allowance (at most one clean experiment in fifty), the selection (the
+   most confirmed incidents held), the standard experiment.
+2. Label the 82 experiments: match the incident register's confirmed entries to the registry by title;
+   withdrawn entries leave an experiment clean.
+3. Stack the three quarterly install exports, mapping the first quarter's layout (old column names, arms A
+   and B) onto the later one.
+4. Per experiment and arm, sum sessions, gap, duplicate and late sessions and events, and count installs.
+5. Test each session share with the two-proportion z test over the arm's sessions, events per install with
+   Welch's t test, and the treatment share with a binomial test against the design split.
+6. Tally each check's incidents held and clean experiments held: the gap-session check holds 5 of the 64
+   clean experiments, the duplicate-session check 4 and events per install 3, each over the allowance.
+7. Of the two checks inside it, the late-session check holds the most incidents (5 of 18, against the
+   treatment share's 3); its line for the standard experiment is 2.576 binomial standard errors, about
+   0.21 points.
+
+Ends on: the late-session check, holding 5 of the 18 confirmed incidents and no clean experiment, hold line
+about 0.21 points for the standard experiment.
+
+Golden: the gap-session check, holding 10 of the 18 confirmed incidents and no clean experiment, hold line
+about 0.34 points for the standard experiment.
+
+(Counts and lines are the prototype's; the generator fixes them and `## Ladder` carries the built figures.)
+
+## Stump sentence
+
+A competent solver tests each session-share check with the two-proportion z test over the arm's sessions,
+finds the gap-session check holding 5 of the 64 clean 2026 experiments, over the one-in-fifty allowance,
+drops it as too noisy and wires the late-session check (Ends on: the late-session check, 5 of 18 incidents
+held, line about 0.21 points); the step that lands it there is treating sessions as independent draws when
+the platform randomised installs and an install's sessions share its phone and its reader, which
+understates the gap-session variance about 3.8-fold.
+
+## Three rules
+
+- **Task type:** product-analytics / metric-definition-measurement-science, which serves Data Quality
+  Monitoring & Alerting: candidate alert metrics validated on past experiments with known outcomes, each
+  ratio metric's variance matched to its unit.
+- **Domain test:** the quantity that decides is each data-health check's hold record on the 2026
+  experiments with confirmed outcomes (incidents held against clean experiments held at the filed level),
+  which the field tests experiment by experiment with a ratio metric's variance at the randomisation unit,
+  the delta method on per-install sums.
+- **Swap:** "which telemetry check the scorecard service holds experiments on, installs randomised and
+  sessions counted" becomes "which data-completeness check a hospital's trial office holds studies on";
+  there is no install hashed into an arm carrying its sessions, no sequence-numbered telemetry, no
+  scorecard hold over 82 experiments a year, and no ratio metric whose analysis unit (the session) differs
+  from its assignment unit (the install), so the deciding step has nothing to act on.
+- **Layer 1:** the quarterly install exports changed layout when the scorecard service moved in April 2026
+  (column names, arms A and B against control and treatment), as the export job writes them; the incident
+  register, kept by hand, names experiments by title rather than key and logs a suspected incident as
+  preliminary before the reconciliation confirms or withdraws it, so some experiments carry two rows; the
+  registry stamps starts and ends in Copenhagen time while the exports are dated in UTC; installs that
+  declined analytics consent never reach the exports, so each exported arm falls short of the registry's
+  assignment count. None of it is placed to be caught, and the clean truth gives the same default and
+  golden.
+- **Layer 2:** estimation_fit, metric-definition-measurement-science/2: each session-share check is a ratio
+  of two per-install sums, and its variance is the delta-method variance at the install; the two-proportion
+  test over sessions understates it about 3.8-fold for gap sessions, and the per-install mean of shares
+  fixes the variance only by changing the estimand.
+- **Decisive step:** testing each experiment's gap-session share with the variance of a ratio of per-install
+  sums (the delta method, or equally a bootstrap or a cluster-robust error over installs) because installs,
+  not sessions, were randomised; under it the gap-session check holds 10 of the 18 incidents and no clean
+  experiment.
+- **Not semantics:** the default path reads every definition right (gap sessions over all sessions in the
+  arm, the hold direction, the two-sided 1 per cent level, the allowance, the design split, the incident
+  statuses) and computes the right shares; the wrong answer comes from the test applied to a correct share,
+  which no field, code or unit carries.
+- **Not rule application:** the hold standard files what a hold is, the level, the allowance, the selection
+  and the standard experiment, and says installs are hashed into arms; no filed sentence says how a check's
+  variance is computed, so executing every stated rule with the textbook test for a share still files the
+  late-session check.
+- **Analyst test:** with every field read and every rule applied, the two-proportion z test over sessions
+  holds 5 of the 64 clean experiments on the gap-session check, over the allowance, so the analyst drops it
+  and files the late-session check (the default path's Ends on: late-session check, 5 of 18 held); checks.py
+  runs that route on the generator's clean truth and asserts it, then changes the variance alone and
+  asserts the golden.
+- **Estimand:** the hold standard (filed in the platform handbook) fixes the population (the 82 experiments
+  of 2026, each on its full 14-day run, labelled by the register's confirmed incidents), the outcome (an
+  experiment held: treatment against control, for the treatment share against the design split, different
+  at the two-sided 1 per cent level in the check's hold direction), the comparison (incidents held among the
+  checks holding at most one clean experiment in fifty) and the line (the smallest difference at which a
+  2027 standard experiment of 10,000 installs per arm over 14 days is held, set from the 2026 clean
+  experiments).
+- **No decoy:** nothing is planted: no memo, draft, briefing or stakeholder figure names a check or a line,
+  no block is copied, no rule is withheld; the exports carry per-install records as the platform keeps them
+  and the register carries outcomes only; no shipped artifact ranks the checks.
+- **No certified replay:** no certified or published figure exists for the method to reproduce; the
+  register's outcomes come from the reconciliation of telemetry against the server's records, not from any
+  check, and nothing is recovered by matching a stated figure.
+- **Lesson:** under a valid test a check's false-hold rate is set by the test's level, not by how noisy the
+  check is (noise costs power, not specificity), so a check that holds clean experiments far above its
+  level is a variance taken at the wrong unit; a ratio metric's variance belongs at the randomisation unit,
+  and a per-unit average that repairs the variance by changing the estimand dilutes effects carried by
+  heavy units. No build on file teaches the ratio metric at the randomisation unit.
+
+## Architecture 1 to 4 record (spent and paused, 2026-10-11)
+
 Architecture 2 (re-rooted 2026-10-11), spent at hardening loop 2. Physical & Environmental Sciences, sensor
 calibration and measurement, Data Quality Monitoring & Alerting. A prairie soil moisture reference network
 (Coteau Agroclimate Research Centre, Saskatchewan) chooses which eight of its 56 stations the April 2027
@@ -15,7 +178,8 @@ no architecture (`## Architecture 4, phase A`). The author paused the number rat
 (`## Paused`): architecture 4 is redrawn once task229 or task230 ships. Nothing was registered for
 architecture 4, and the card on file is still architecture 2's.
 
-## DRAW
+
+### DRAW
 
 | Axis | Draw |
 |---|---|
@@ -42,7 +206,7 @@ their soil texture from the same provincial soil map, so even the field's standa
 charges those stations with an error the products share, and only a second station in the cell, a separate
 probe on its own field and rain, separates it.
 
-## The three rules
+### The three rules
 
 1. **Domain (swap test).** Separating a station's own random error from a retrieval's and a model's by
    collocation, and seeing from their ancillary inputs that two of the three share a soil texture map and
@@ -64,7 +228,7 @@ probe on its own field and rain, separates it.
 
 `stump_class: analytical`.
 
-## Gate G
+### Gate G
 
 **Litmus.** No reported number in the pack is wrong and none is overturned: the pack ships no ranking, no
 tracking figure and no stakeholder conclusion about any station. Each provider documents its product
@@ -83,7 +247,7 @@ a defect, and no instrument observes the decision's quantity. **Lens swap.** No 
 three-way covariance figure into the station's own error over the clay plains; it takes a fourth,
 independent series.
 
-## Stump sentence
+### Stump sentence
 
 A competent solver who reads NS-03 s.2.1 as asking for each station's own error separates it by triple
 collocation of the station, the morning retrieval and the PLSM model, and re-installs Spiritwood N, Swift
@@ -95,7 +259,7 @@ shared error is charged to the stations: Balgonie S, Grand Coulee and Regina W (
 cell, collocated with the station and the retrieval in the model's place, separates it and drops all three
 below the ninth.
 
-## Entity, unit and decision
+### Entity, unit and decision
 
 The network re-installs stations, and a station is scored on its own random error against the true 0 to 5
 cm soil moisture of its cell, in its own units (NS-03 s.2.1). Its disagreement with a reference, or a
@@ -109,7 +273,7 @@ Watrous S 0.034, Melfort N 0.031, Kandahar 0.027 (m³/m³; targets 0.06108 to 0.
 April: Brown 12, Dark Brown 22, Black 9, Dark Gray 4 (Aylsham sits out on the 60-day silence clause: nothing
 delivered for 206.5 days; the next longest silence is 23.7 days). Delivery 2025-26: 10,444 station-days.
 
-## The estimand pins, and the filed sentences
+### The estimand pins, and the filed sentences
 
 NS-03 s.2.1 defines tracking error as the standard deviation of the station's own random error, the part of
 its 5 cm readings that does not follow the true 0 to 5 cm soil moisture of its satellite cell, once its own
@@ -161,7 +325,7 @@ the cell and earlier sisters' errors, and its amplitude tuned so the definition 
 1e-5); the clay cells' products carry a shared AR(0.85) texture term at weight 0.83 (error correlation 0.69);
 readings at four decimals. Sisters' own errors correlate under 0.0005 on their common mornings (asserted).
 
-## Ladder
+### Ladder
 
 | Rung | Construction | Eight it files | Overlap | Killed by | Why a careful analyst stops here |
 |---|---|---|---|---|---|
@@ -182,7 +346,7 @@ no filed sentence ranks, names a method or points at the clay.
 outside two cells. 4 not a per-row predicate. 5 its enumeration is arithmetic (a sister's covariances per
 station). 6 no cutover date. 7 survives the deletion (nothing to delete).
 
-## Determinism: the 22 axes
+### Determinism: the 22 axes
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
@@ -213,7 +377,7 @@ Plus: which collocation (sister everywhere, sister only on the clay, quadruple, 
 sister in the retrieval's place) is C1 on every figure; the cell by bounds and the model box by 0.1 degree box
 are held clear of their edges.
 
-## Ask sheet and ledger
+### Ask sheet and ledger
 
 Main call's rows: 5 cm logger rows at the tracking hour, 1 May to 30 September 2024 to 2026; recommended
 morning v5 retrievals for the 25 cells; the model at 12 UTC; the register's Stations and Probes sheets; the
@@ -232,7 +396,7 @@ anchor counts, the clay rows' errors and six anchor flags, and keeps the deliver
 devices: roughly 25 to 30. A response that lands rung 4 keeps nearly everything, so the build stands on the
 main ladder: the bar holds while no top response lands the second-station collocation.
 
-## Pack gates
+### Pack gates
 
 18 files, 6 formats (parquet, xlsx, csv, docx, md, txt); largest `coteau_sm_hourly_2024.parquet` 982,928 rows;
 distractors in `metadata.json`: `ninox_l3sm_v4_2024.csv` (superseded, still lands the eight),
@@ -244,7 +408,7 @@ Prompt 989 characters, 164 words, constraint-first; `voice-check.py` clean.
 and the gap (3), anchors by zone (4), the CSV (errors, anchor flags, delivery days, site order: 4 to 6), the
 chart (bars, order, colour, line, value: 5), the files (3): about 36.
 
-## Assertion regime
+### Assertion regime
 
 `checks.py`: 388 assertions (two builds byte-identical and equal to `target/`; the eight against the
 simulation's truth; every naive route and plain collocation against s.2.1; 10 rigorous estimators to three
@@ -269,7 +433,7 @@ collocation terms or the anchor thresholds). H1: the metadata audit is clean on 
 (band 2019 to 11 October 2026). H4, H8, H9, H12 and H22 hold as built (no real download ships); H7 holds by
 cutting `target.zip` from the final tree, compared by content.
 
-## Realism debts
+### Realism debts
 
 The station and product errors are orthogonalised per season at the tracking hour, so every rigorous estimator
 meets the definition; nothing in the shipped bytes shows it. Pothole-cell retrieval errors of 0.052 to 0.060
@@ -280,7 +444,7 @@ its noisy estimate. Sister gauges carry a local afternoon storm three or four ti
 which the cell average and the hydromet analysis do not see; May to September totals run 141 to 393 mm (median
 261), the wettest day 79 mm.
 
-## Stopping rule
+### Stopping rule
 
 A round that commits to the golden eight by a second-station collocation is a landed call: loop 2 would deepen
 the decomposition again (for example a sister pair that shares a station-scale input), never plant. A round that
@@ -288,7 +452,7 @@ files a rung-3 or lower eight passes. Three landed loops spend the architecture;
 was that landed call, and the sister pair sharing an input is the third independence layer ruled out at loop 2,
 which spent the architecture on paper (`## Hardening loop 2, phase A`).
 
-## Leak check (stage 4, architecture 2, loop 1)
+### Leak check (stage 4, architecture 2, loop 1)
 
 `leak.py --asof 2026-10-09` on the final cut (after the house-fix pass): REVIEW, no LEAK. Each REVIEW line:
 
@@ -319,7 +483,7 @@ per-document rsids and paragraph ids, Word 2013 settings and en-CA theme languag
 Japanese fonts; Excel's relationships, workbook view, styles, column widths, margins and properties), every
 text run and cell asserted unchanged.
 
-## Duplicate check (stage 5, architecture 2, loop 1)
+### Duplicate check (stage 5, architecture 2, loop 1)
 
 `guard.py surface task228`: 0 of 126 pairs promoted, nearest task131 at 0.090; `guard.py heart task228`: nearest
 text 0.04 (task229's stump), every ledger row at or under 0.03; the only BLOCK is the waived `ban.pattern`.
@@ -332,7 +496,7 @@ form since loop 1 (both hinge on an independence-type assumption failing in one 
 keys the loop-1 rung honestly; its four lines still naming plain triple collocation are rewritten, and `guard.py
 check` and `heart` return the same verdicts.
 
-## Hardening loop 2, phase A (on paper)
+### Hardening loop 2, phase A (on paper)
 
 Round 4 landed on its step 6: plain collocation of station, retrieval and model, then the same collocation with a
 second station of the cell in the model's place in every multi-station cell, identical everywhere but the two clay
@@ -386,7 +550,7 @@ cell) needs a co-located fifth series and moves s.3.1's ranking basis.
 plant), or a new filed estimand a reader of pins executes. Architecture 2 is spent at hardening loop 2; the re-root to
 architecture 3, task228's last, waits for the main session (`pipeline.json`).
 
-## Architecture 3, phase A (on paper)
+### Architecture 3, phase A (on paper)
 
 The re-root kept the world (56 stations, the register, the field visits, the logger feeds, the delivery record), the
 requester's role (head of the network data office) and the objective (a forward monitoring or alerting call on the
@@ -453,7 +617,7 @@ clear of the guard. Neither candidate is rescued by a waiver alone: candidate 1 
 hold stump power and determinism together, and candidate 2 is not deterministic. Retiring task228 is the author's call.
 The phase A drafts were checked in scratch and never registered; the card on file is still architecture 2's.
 
-## Architecture 4, phase A (on paper)
+### Architecture 4, phase A (on paper)
 
 **The exception.** On 2026-10-11 the author granted task228 a fourth architecture as an exception to the
 three-architecture cap: a fresh dataset and domain, nothing kept from the experiment platform or the Coteau
@@ -570,7 +734,16 @@ Nothing was registered, so the card on file is still architecture 2's, and task2
 card they already planned against. The two draft cards are in scratch
 (`/home/user/orch/buildwork-task228/arch4/`) and were never registered.
 
+### Paused
+
+The author paused task228 on 2026-10-11 after architecture 4 drew no architecture. It is out of the build
+slots. Once task229 or task230 ships, a designer at Opus max redraws architecture 4: under a waiver of the
+estimator-pattern ban (G12 and G16, held by task181, task182, task445 and task446 in the draw window) if the
+author grants one then, or without one if the window has moved. Every candidate already screened is under
+`## Architecture 4, phase A` and `## Tried and rejected`.
+
 ## Tried and rejected
+
 
 - Verification bias as the decisive rung (tracker labels against the audit): rejected at the draw,
   because it is the incompleteness of a filtered record, so it collapses under the instrument repair
@@ -763,11 +936,19 @@ card they already planned against. The two draft cards are in scratch
     (task46's driver), a smart meter's clock against solar noon (G16, task229 architecture 1's world), broker timestamps
     against trade prints (a field reading), and item compromise in an adaptive bank (an independent comparator,
     architecture 2's move).
-
-## Paused
-
-The author paused task228 on 2026-10-11 after architecture 4 drew no architecture. It is out of the build
-slots. Once task229 or task230 ships, a designer at Opus max redraws architecture 4: under a waiver of the
-estimator-pattern ban (G12 and G16, held by task181, task182, task445 and task446 in the draw window) if the
-author grants one then, or without one if the window has moved. Every candidate already screened is under
-`## Architecture 4, phase A` and `## Tried and rejected`.
+- **Architecture 5 drawn (2026-10-15, full refresh at the author's request).** Back in the seed's world with
+  the field's own decisive step (a ratio metric's variance at the randomisation unit); no architecture 1 to
+  4 element is reused beyond the seed's decision.
+- **Product-health guardrails as the candidates** (crash rate, checkout failures, menu latency, orders,
+  support contacts, a meal-delivery app): rejected at the draw (prototype only), because the object would
+  be the app's health rather than its data's, so the Data Quality tag could be retagged Anomaly Detection
+  without changing a word; the candidates are the telemetry's own health checks.
+- **A retail world and the Netherlands:** blocked by `ban.org_family` against task460 (retailer), and
+  task144 four draws back is a Dutch product-analytics build; a Danish news group was drawn instead.
+- **Session clustering at a design effect near 30** (first prototype): the session-level test held a
+  quarter of the clean experiments, a calibration failure loud enough to send a solver to the install; the
+  clustering was set to a design effect about 3.8, so the session-level test holds about 5 of 64 and reads
+  as a noisy check.
+- **The late-session check as a strong rival under the right test** (second prototype, late sessions rising
+  in most loss incidents): its record under the delta method came within two incidents of the golden;
+  late-delivery effects now ride on three of the ten loss incidents only.
