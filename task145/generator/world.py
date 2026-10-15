@@ -121,6 +121,7 @@ class World:
     volume: dict = field(default_factory=dict)        # (g, y, m) -> inbound international shipments
     formal_hist: dict = field(default_factory=dict)   # (g, y, m) -> formal entries released in the month
     ships: list = field(default_factory=list)         # the high-value check population, base year
+    prior: list = field(default_factory=list)         # the same, the year before the base
     amended: list = field(default_factory=list)
 
 
@@ -220,102 +221,156 @@ RELEASE_HOURS = np.array([0.6, 0.4, 0.3, 0.3, 0.6, 1.4, 3.2, 5.0, 6.4, 7.0, 7.2,
 RELEASE_HOURS = RELEASE_HOURS / RELEASE_HOURS.sum()
 
 
+def catalogue(g, si, seg, rates, pool, pw):
+    """An importer's standing consignments in one background segment: the same goods sent again and again at the same
+    invoice value in the invoice currency. Values come from the segment's own distribution above the check's floor at
+    the two years' average rate (a consignment under the floor on a day of a lower rate is released unchecked), and
+    clear of the line at the plan's rate."""
+    r = K.rng("catalogue", g, si)
+    days = [d for d in rates[seg["cur"]] if K.PRIOR_START <= d <= K.BASE_END]
+    r_mean = sum(rates[seg["cur"]][d] for d in days) / len(days)
+    mu, s_ = seg["p"]
+    lo = K.CHECK_FLOOR_CAD / r_mean
+    mid = sum(W_VOL_HINT[g][m] for m in range(12)) * 2.0 * seg["share"] * (1 - seg["ogd"]) * \
+        (1.0 - K.phi((math.log(lo) - mu) / s_))
+    n = max(24, int(round(K.REPEAT_SHARE * mid / K.REPEATS_PER_ITEM)))
+    vals = sample_lognorm_above(r, mu, s_, lo, n)
+    vals = np.round(vals) if seg["cur"] == "JPY" else np.round(vals, 2)
+    pr = K.PLAN_RATE[seg["cur"]]
+    near = np.abs(vals * pr - K.LINE_CAD) < 0.75
+    vals = np.where(near, vals + np.where(vals * pr >= K.LINE_CAD, 2.0, -2.0) / pr, vals)
+    vals = np.round(vals) if seg["cur"] == "JPY" else np.round(vals, 2)
+    lane = seg["lane"]
+    imps = [pool[i] for i in r.choice(len(pool), size=n, p=pw)]
+    hss = [HS[lane][i][0] for i in r.integers(0, len(HS[lane]), n)]
+    ocs = ORIGIN[lane]
+    ors = [ocs[i][0] for i in r.choice(len(ocs), size=n, p=[x for _, x in ocs])]
+    w = 1.0 / (np.arange(1, n + 1) + 4.0) ** 0.55
+    w = w[r.permutation(n)]
+    return dict(vals=vals, imps=imps, hss=hss, ors=ors, w=w / w.sum())
+
+
+W_VOL_HINT = {}
+
+
+def _window(W, g, months_, r, pool, pw, big, cats, out):
+    """Every shipment the high-value check covers (CAD 2,500 or more, or OGD) at gateway g over the months given."""
+    rates = W.rates
+    for (y, m) in months_:
+        vol = W.volume[(g, y, m)]
+        w = day_weights(y, m)
+        for d in range(K.days_in(y, m)):
+            day = dt.date(y, m, d + 1)
+            n_day = vol * w[d]
+            for si, seg in enumerate(K.SEGMENTS[g]):
+                rate = rates[seg["cur"]][day]
+                lo = K.CHECK_FLOOR_CAD / rate
+                vals, ogds, rep = [], [], []
+                if seg["kind"] == "ln":
+                    mu, s = seg["p"]
+                    p_hv = 1.0 - K.phi((math.log(lo) - mu) / s)
+                    k = int(r.poisson(n_day * seg["share"] * (1 - seg["ogd"]) * p_hv))
+                    k_rep = int(r.binomial(k, K.REPEAT_SHARE)) if k else 0
+                    fresh = sample_lognorm_above(r, mu, s, lo, k - k_rep)
+                    fresh = np.round(fresh) if seg["cur"] == "JPY" else np.round(fresh, 2)
+                    for rr in (rate, K.PLAN_RATE[seg["cur"]]):
+                        near = np.abs(fresh * rr - K.LINE_CAD) < 0.75
+                        fresh = np.where(near, fresh + np.where(fresh * rr >= K.LINE_CAD, 2.0, -2.0) / rr, fresh)
+                    fresh = np.round(fresh) if seg["cur"] == "JPY" else np.round(fresh, 2)
+                    vals += list(fresh)
+                    ogds += [""] * len(fresh)
+                    rep += [-1] * len(fresh)
+                    if k_rep:
+                        c = cats[si]
+                        picks = r.choice(len(c["vals"]), size=k_rep, p=c["w"])
+                        for i in picks:
+                            v = float(c["vals"][i])
+                            if K.round_dp(v * rate, 2) == K.LINE_CAD:
+                                continue
+                            vals.append(v)
+                            ogds.append("")
+                            rep.append(int(i))
+                    ko = int(r.poisson(n_day * seg["share"] * seg["ogd"]))
+                    omu, os_ = seg["ogd_ln"]
+                    ov = np.exp(r.normal(omu, os_, ko))
+                    vals += list(np.round(ov) if seg["cur"] == "JPY" else np.round(ov, 2))
+                    ogds += ["OGD"] * ko
+                    rep += [-1] * ko
+                else:
+                    k = int(r.poisson(n_day * seg["share"]))
+                    prices = [v for v, _ in seg["p"]]
+                    pw_ = np.array([wt for _, wt in seg["p"]], float)
+                    vals += list(r.choice(prices, size=k, p=pw_ / pw_.sum()).astype(float))
+                    ogds += [""] * k
+                    rep += [-1] * k
+                if not vals:
+                    continue
+                vals = np.array(vals, float)
+                ogd_mask = np.array([o == "OGD" for o in ogds])
+                rep = np.array(rep)
+                cads = np.array([K.round_dp(v * rate, 2) for v in vals])
+                keep = ogd_mask | (cads >= K.CHECK_FLOOR_CAD)
+                vals, cads, ogd_mask, rep = vals[keep], cads[keep], ogd_mask[keep], rep[keep]
+                k = len(vals)
+                if k == 0:
+                    continue
+                hours = r.choice(24, size=k, p=RELEASE_HOURS)
+                mins = r.integers(0, 60, k)
+                secs = r.integers(0, 60, k)
+                lane = seg["lane"]
+                hs_i = r.integers(0, len(HS[lane]), k)
+                og_i = r.integers(0, len(OGD_GOODS), k)
+                ocs = ORIGIN[lane]
+                or_i = r.choice(len(ocs), size=k, p=[x for _, x in ocs])
+                imp_i = r.choice(len(pool), size=k, p=pw)
+                big_u = r.random(k)
+                big_i = r.integers(0, 3, k)
+                for j in range(k):
+                    t_local = dt.datetime(y, m, d + 1, int(hours[j]), int(mins[j]), int(secs[j]))
+                    if ogd_mask[j]:
+                        hs, prog = OGD_GOODS[int(og_i[j])]
+                        org, imp = ocs[int(or_i[j])][0], pool[int(imp_i[j])]
+                    elif rep[j] >= 0:
+                        c = cats[si]
+                        hs, prog, org, imp = c["hss"][rep[j]], "", c["ors"][rep[j]], c["imps"][rep[j]]
+                    else:
+                        hs, prog = HS[lane][int(hs_i[j])][0], ""
+                        org = ocs[int(or_i[j])][0]
+                        imp = big[int(big_i[j])] if (seg["kind"] == "pp" and big_u[j] < 0.7) else pool[int(imp_i[j])]
+                    cad = float(cads[j])
+                    route = "FORMAL" if (prog or cad > K.LINE_CAD) else "CLVS"
+                    out.append(Shipment(waybill="", gw=g, local=t_local, utc=local_to_utc(g, t_local),
+                                        cur=seg["cur"], value=float(vals[j]), rate=rate, vfd_cad=cad, ogd=prog,
+                                        hs=hs, origin=org, importer=imp, seg=si, route=route))
+
+
 def simulate():
     W = World()
     W.rates = daily_rates()
     W.volume = monthly_volume()
     rates = W.rates
-    # the history's formal entries: every month before the base year from the routing at that month's daily rates
+    # the history's formal entries before the extracts on file: every month from the routing at that month's rates
     for g in K.GATEWAYS:
         r = K.rng("formal_hist", g)
         for (y, m) in K.HIST_MONTHS:
-            if (y, m) >= (K.BASE_START.year, K.BASE_START.month):
+            if (y, m) >= (K.PRIOR_START.year, K.PRIOR_START.month):
                 continue
             lam = W.volume[(g, y, m)] * expected_formal(g, y, m, rates)
             W.formal_hist[(g, y, m)] = int(r.poisson(lam))
-    # the base year shipment by shipment: every shipment the high-value check covers (CAD 2,500 or more, or OGD)
+    # the two years on file shipment by shipment: the year before the base (the 2026 review's extracts) and the base
+    W.prior = []
     for g in K.GATEWAYS:
-        r = K.rng("ships", g)
+        W_VOL_HINT[g] = [W.volume[(g, y, m)] for (y, m) in K.BASE_MONTHS]
         pool, pw = importer_pool(g, K.rng("importers", g))
         big = pool[:12]
-        for (y, m) in K.BASE_MONTHS:
-            vol = W.volume[(g, y, m)]
-            w = day_weights(y, m)
-            for d in range(K.days_in(y, m)):
-                day = dt.date(y, m, d + 1)
-                n_day = vol * w[d]
-                for si, seg in enumerate(K.SEGMENTS[g]):
-                    rate = rates[seg["cur"]][day]
-                    lo = K.CHECK_FLOOR_CAD / rate
-                    vals, ogds = [], []
-                    if seg["kind"] == "ln":
-                        mu, s = seg["p"]
-                        p_hv = 1.0 - K.phi((math.log(lo) - mu) / s)
-                        k = int(r.poisson(n_day * seg["share"] * (1 - seg["ogd"]) * p_hv))
-                        vals += list(sample_lognorm_above(r, mu, s, lo, k))
-                        ogds += [""] * k
-                        ko = int(r.poisson(n_day * seg["share"] * seg["ogd"]))
-                        omu, os_ = seg["ogd_ln"]
-                        vals += list(np.exp(r.normal(omu, os_, ko)))
-                        ogds += ["OGD"] * ko
-                    else:
-                        k = int(r.poisson(n_day * seg["share"]))
-                        prices = [v for v, _ in seg["p"]]
-                        pw_ = np.array([wt for _, wt in seg["p"]], float)
-                        vals += list(r.choice(prices, size=k, p=pw_ / pw_.sum()).astype(float))
-                        ogds += [""] * k
-                    if not vals:
-                        continue
-                    vals = np.array(vals, float)
-                    ogd_mask = np.array([o == "OGD" for o in ogds])
-                    if seg["cur"] == "JPY":
-                        vals = np.round(vals)
-                    elif seg["kind"] == "ln":
-                        vals = np.round(vals, 2)
-                    # keep every value clear of the line at the day's rate and at the plan's rate (price points
-                    # sit far from it at the plan's rates and keep their listed prices)
-                    for rr in ((rate, K.PLAN_RATE[seg["cur"]]) if seg["kind"] == "ln" else ()):
-                        near = np.abs(vals * rr - K.LINE_CAD) < 0.75
-                        vals = np.where(near, vals + np.where(vals * rr >= K.LINE_CAD, 2.0, -2.0) / rr, vals)
-                    if seg["cur"] == "JPY":
-                        vals = np.round(vals)
-                    else:
-                        vals = np.round(vals, 2)
-                    cads = np.array([K.round_dp(v * rate, 2) for v in vals])
-                    keep = ogd_mask | (cads >= K.CHECK_FLOOR_CAD)
-                    vals, cads, ogd_mask = vals[keep], cads[keep], ogd_mask[keep]
-                    k = len(vals)
-                    if k == 0:
-                        continue
-                    hours = r.choice(24, size=k, p=RELEASE_HOURS)
-                    mins = r.integers(0, 60, k)
-                    secs = r.integers(0, 60, k)
-                    lane = seg["lane"]
-                    hs_i = r.integers(0, len(HS[lane]), k)
-                    og_i = r.integers(0, len(OGD_GOODS), k)
-                    ocs = ORIGIN[lane]
-                    or_i = r.choice(len(ocs), size=k, p=[x for _, x in ocs])
-                    imp_i = r.choice(len(pool), size=k, p=pw)
-                    big_u = r.random(k)
-                    big_i = r.integers(0, 3, k)
-                    for j in range(k):
-                        t_local = dt.datetime(y, m, d + 1, int(hours[j]), int(mins[j]), int(secs[j]))
-                        if ogd_mask[j]:
-                            hs, prog = OGD_GOODS[int(og_i[j])]
-                        else:
-                            hs, prog = HS[lane][int(hs_i[j])][0], ""
-                        imp = big[int(big_i[j])] if (seg["kind"] == "pp" and big_u[j] < 0.7) else pool[int(imp_i[j])]
-                        cad = float(cads[j])
-                        route = "FORMAL" if (prog or cad > K.LINE_CAD) else "CLVS"
-                        W.ships.append(Shipment(waybill="", gw=g, local=t_local, utc=local_to_utc(g, t_local),
-                                                cur=seg["cur"], value=float(vals[j]), rate=rate, vfd_cad=cad, ogd=prog,
-                                                hs=hs, origin=ocs[int(or_i[j])][0], importer=imp, seg=si,
-                                                route=route))
+        cats = {si: catalogue(g, si, seg, rates, pool, pw) for si, seg in enumerate(K.SEGMENTS[g]) if seg["kind"] == "ln"}
+        _window(W, g, K.PRIOR_MONTHS, K.rng("ships_prior", g), pool, pw, big, cats, W.prior)
+        _window(W, g, K.BASE_MONTHS, K.rng("ships", g), pool, pw, big, cats, W.ships)
     # waybills: ten digits with a mod-7 check digit, in release order across the network
-    W.ships.sort(key=lambda s: (s.utc, s.gw, s.value))
+    allships = sorted(W.prior + W.ships, key=lambda s: (s.utc, s.gw, s.value))
     r = K.rng("waybills")
     used = set()
-    for s in W.ships:
+    for s in allships:
         while True:
             body = "%09d" % int(r.integers(100000000, 999999999))
             if body not in used:
@@ -323,18 +378,23 @@ def simulate():
                 break
         s.waybill = body + waybill_check(body)
     # formal entry transaction numbers: Larchwood's 5-digit account and a 9-digit sequence, in release order per desk
-    acct = {"YYZ": "13947", "YUL": "13947", "YVR": "13947", "YYC": "13947", "YWG": "13947"}
-    seq = {g: {"YYZ": 104000000, "YUL": 304000000, "YVR": 504000000, "YYC": 604000000, "YWG": 704000000}[g]
-           for g in K.GATEWAYS}
-    for s in W.ships:
+    acct = "13947"
+    seq = {"YYZ": 103800000, "YUL": 303800000, "YVR": 503800000, "YYC": 603800000, "YWG": 703800000}
+    for s in allships:
         if s.route == "FORMAL":
             seq[s.gw] += 1 + int(r.random() < 0.02)
-            s.entry = acct[s.gw] + "%09d" % seq[s.gw]
-    # the history's base-year months: the gateway report counts the register's formal releases
+            s.entry = acct + "%09d" % seq[s.gw]
+    W.ships.sort(key=lambda s: (s.utc, s.gw, s.value))
+    W.prior.sort(key=lambda s: (s.utc, s.gw, s.value))
+    # the gateway report counts the extracts' formal releases in the two years on file
     for g in K.GATEWAYS:
-        for (y, m) in K.BASE_MONTHS:
-            W.formal_hist[(g, y, m)] = sum(1 for s in W.ships if s.gw == g and s.route == "FORMAL"
-                                           and (s.local.year, s.local.month) == (y, m))
+        cnt = {}
+        for s in W.prior + W.ships:
+            if s.gw == g and s.route == "FORMAL":
+                key = (s.local.year, s.local.month)
+                cnt[key] = cnt.get(key, 0) + 1
+        for (y, m) in K.PRIOR_MONTHS + K.BASE_MONTHS:
+            W.formal_hist[(g, y, m)] = cnt.get((y, m), 0)
     # a few shipments amended after release (a corrected invoice), route unchanged at every rate on file
     r = K.rng("amend")
     cand = [s for s in W.ships if not s.ogd and s.local.date() < dt.date(2026, 6, 20)]

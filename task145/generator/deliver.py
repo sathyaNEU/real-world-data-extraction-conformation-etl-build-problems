@@ -24,7 +24,43 @@ def golden(W, staff, lines, stmts):
     B = C.ask_b(stmts, "golden")
     n = {g: C.formal_at(W, g, lambda s: K.PLAN_RATE[s.cur]) for g in K.GATEWAYS}
     return dict(E=E, placed=placed, held=held, final=final, order=order, Ed=Ed, placed_d=pd_, held_d=hd, final_d=fd,
-                A=A, B=B, n=n, ships=len(W.ships))
+                A=A, B=B, n=n, ships=len(W.ships), prior=len(W.prior), pricing=pricing_history(W))
+
+
+def pricing_history(W):
+    """The two years on file read for how the goods are priced: the base year's foreign-currency shipments (OGD goods
+    aside) that repeat a consignment of the year before (gateway, importer, tariff item, currency) on its invoice value
+    and on its CAD value, and the slope of the CAD value on the day's rate within the consignments of both years."""
+    import math
+    amended = {id(s): nv for s, nv in W.amended}
+
+    def rows(ships):
+        out = []
+        for s in ships:
+            if s.ogd or s.cur == "CAD":
+                continue
+            v = amended.get(id(s), s.value)
+            out.append((s.gw, s.importer, s.hs, s.cur, v, K.round_dp(v * s.rate, 2), s.rate))
+        return out
+    prior, base = rows(W.prior), rows(W.ships)
+    p_inv = {r[:5] for r in prior}
+    p_cad = {r[:4] + (r[5],) for r in prior}
+    on_inv = sum(1 for r in base if r[:5] in p_inv)
+    on_cad = sum(1 for r in base if r[:4] + (r[5],) in p_cad)
+    groups = {}
+    for yr, rr in ((0, prior), (1, base)):
+        for r in rr:
+            groups.setdefault(r[:5], []).append((yr, r))
+    sxx = sxy = 0.0
+    for v in groups.values():
+        if len({yr for yr, _ in v}) < 2:
+            continue
+        lr = [math.log(r[6]) for _, r in v]
+        lc = [math.log(r[5]) for _, r in v]
+        mr, mc = sum(lr) / len(lr), sum(lc) / len(lc)
+        sxx += sum((a - mr) ** 2 for a in lr)
+        sxy += sum((a - mr) * (b - mc) for a, b in zip(lr, lc))
+    return dict(base_rows=len(base), on_invoice=on_inv, on_cad=on_cad, slope=sxy / sxx)
 
 
 def figures(G):
@@ -53,6 +89,11 @@ def figures(G):
                                  for g in K.GATEWAYS},
          "fiscal_year": "2025-26",
          "base_year_shipments_checked": "{:,}".format(G["ships"]),
+         "prior_year_shipments_checked": "{:,}".format(G["prior"]),
+         "pricing_history": {"base_foreign_shipments": "{:,}".format(G["pricing"]["base_rows"]),
+                             "repeat_on_invoice_value": "{:,}".format(G["pricing"]["on_invoice"]),
+                             "repeat_on_cad_value": "{:,}".format(G["pricing"]["on_cad"]),
+                             "slope": "%.3f" % G["pricing"]["slope"]},
          "base_year_formal_at_plan_rates": {d[g]: "{:,}".format(G["n"][g]) for g in K.GATEWAYS},
          "placement_steps": ["%s %d" % (d[g], K.round_to(l, 5)) for g, l in G["order"]],
          "ask_a_total_hours": "{:,}".format(K.round_to(sum(G["A"].values()), 1)),
@@ -201,6 +242,12 @@ def write_book(path, G):
         "Forecast: each gateway's shipments of October 2025 to September 2026 in the high-value check, routed as "
         "CLR-OPS-11 section 3 routes them at the 2027 planning rates (USD 1.3400, EUR 1.6800, GBP 1.8750, CNY "
         "0.18800, JPY 0.0092500), scaled to the 2027 network plan's inbound volumes.",
+        "Invoice values: the goods kept their invoice-currency prices through the rate moves of October 2024 to "
+        "September 2026. %s of the base year's %s foreign-currency shipments outside OGD programs repeat a "
+        "consignment of the year before (importer, tariff item, currency) at the same invoice value, %s at the same "
+        "CAD value; the 2027 shipments are taken at the base year's invoice values." % (
+            "{:,}".format(G["pricing"]["on_invoice"]), "{:,}".format(G["pricing"]["base_rows"]),
+            "{:,}".format(G["pricing"]["on_cad"])),
         "Broker posts at 1 January 2027: BRK-STD-03 appendix A.",
         "Fiscal 2025-26 runs 1 April 2025 to 31 March 2026; Q1 is April to June 2025 and Q4 January to March 2026.",
         "Overtime: the legacy export to 31 October 2025 and the current system from 1 November (its migrated lines "
@@ -365,13 +412,13 @@ def write_deck(path, G):
     p.font.color.rgb = ink
     p.font.name = "Calibri"
     p2 = tf.add_paragraph()
-    p2.text = ("Forecast on the 2027 network plan: each gateway's shipments routed at the plan's exchange rates "
-               "(USD 1.34, EUR 1.68), the line at CAD 3,300.")
+    p2.text = ("Forecast on the 2027 network plan: each gateway's shipments at their invoice-currency prices, routed "
+               "at the plan's exchange rates (USD 1.34, EUR 1.68), the line at CAD 3,300.")
     p2.font.size = Pt(12)
     p2.font.color.rgb = grey
     p2.font.name = "Calibri"
     foot(s1, "Brokerage Workforce Planning, establishment review 2027. Sources: BRK-STD-03 rev. 4; network plan 2027; "
-             "high-value check extracts October 2025 to September 2026.", 1)
+             "high-value check extracts October 2024 to September 2026.", 1)
 
     s2 = prs.slides.add_slide(blank)
     title(s2, chart_title(G))

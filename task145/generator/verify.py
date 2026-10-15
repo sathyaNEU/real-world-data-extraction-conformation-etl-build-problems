@@ -21,8 +21,10 @@ import openpyxl
 GW = ["YYZ", "YUL", "YVR", "YYC", "YWG"]
 BASE = (dt.date(2025, 10, 1), dt.date(2026, 9, 30))
 FY = (dt.date(2025, 4, 1), dt.date(2026, 3, 31))
-HV = ["highvalue_check_2025Q4.csv", "highvalue_check_2026Q1.csv", "highvalue_check_2026Q2.csv",
-      "highvalue_check_2026Q3.csv"]
+HV = ["highvalue_check_2024Q4.csv", "highvalue_check_2025Q1.csv", "highvalue_check_2025Q2.csv",
+      "highvalue_check_2025Q3.csv", "highvalue_check_2025Q4.csv", "highvalue_check_2026Q1.csv",
+      "highvalue_check_2026Q2.csv", "highvalue_check_2026Q3.csv"]
+PRIOR = (dt.date(2024, 10, 1), dt.date(2025, 9, 30))
 MAIN = HV + ["gateway_activity_2024-10_2026-09.csv", "network_plan_2027.xlsx",
              "brk_std_03_brokerage_staffing_standard.pdf", "clr_ops_11_clearance_routing.docx"]
 ASK_A = ["ta_legacy_export_2025-04-01_2025-10-31.csv", "ta_export_2025-10-27_2026-09-30.csv",
@@ -115,8 +117,8 @@ def gateway_report(target):
 
 
 def register(target, keep="last"):
-    """The four high-value check extracts in their two layouts, one record per shipment: an amended shipment's row in
-    the later extract replaces the earlier (keep='both' keeps every row)."""
+    """The eight high-value check extracts in their two layouts, one record per shipment: an amended shipment's row
+    in the later extract replaces the earlier (keep='both' keeps every row)."""
     recs = {}
     allrows = []
     for f in HV:
@@ -124,12 +126,14 @@ def register(target, keep="last"):
             for r in csv.DictReader(fh):
                 if "WAYBILL" in r:
                     rec = dict(wb=r["WAYBILL"], gw=r["GTWY"], local=dt.datetime.strptime(r["REL_DT"], "%d/%m/%Y").date(),
-                               utc=r["REL_TM_UTC"], cur=r["INV_CURR"], val=float(r["VFD_INV"]),
+                               utc=r["REL_TM_UTC"], imp=r["IMPORTER_ACCT"], hs=r["HS_CODE"], cur=r["INV_CURR"],
+                               val=float(r["VFD_INV"]),
                                rate=float(r["CUST_RATE"]), cad=float(r["VFD_CAD"]), route=r["ROUTE"],
                                pgm=r["OGD_PGM"].strip(), amended=r["AMEND"] == "Y", file=f)
                 else:
                     rec = dict(wb=r["waybill"], gw=r["gateway"], local=dt.date.fromisoformat(r["release_local_date"]),
-                               utc=r["release_utc"], cur=r["invoice_currency"], val=float(r["value_for_duty"]),
+                               utc=r["release_utc"], imp=r["importer_account"], hs=r["hs_code"],
+                               cur=r["invoice_currency"], val=float(r["value_for_duty"]),
                                rate=float(r["customs_exchange_rate"]), cad=float(r["value_for_duty_cad"]),
                                route=r["route"], pgm=r["ogd_program"].strip(), amended=r["amended"] == "Y", file=f)
                 rec["ogd"] = rec["pgm"] not in ("", "NONE")
@@ -163,20 +167,67 @@ def place(E, est, bar, posts):
     return placed, posts - sum(placed.values()), final, order
 
 
+def in_base(s):
+    return BASE[0] <= s["local"] <= BASE[1]
+
+
+def pricing(reg):
+    """What the two years on file say about how the goods are priced. A consignment is a gateway, an importer, a
+    tariff item, an invoice currency and a value; the base year's foreign-currency shipments (OGD goods aside) are
+    matched to the year before on the invoice value and, separately, on the CAD value. Within the consignments seen
+    in both years the log of the CAD value is regressed on the log of the day's customs rate (slope 1 when the goods
+    keep their invoice-currency prices, 0 when they keep their CAD values)."""
+    import math
+    fx = [s for s in reg if not s["ogd"] and s["cur"] != "CAD"]
+    prior = [s for s in fx if PRIOR[0] <= s["local"] <= PRIOR[1]]
+    base = [s for s in fx if in_base(s)]
+    k_inv = lambda s: (s["gw"], s["imp"], s["hs"], s["cur"], s["val"])
+    k_cad = lambda s: (s["gw"], s["imp"], s["hs"], s["cur"], s["cad"])
+    p_inv, p_cad = {k_inv(s) for s in prior}, {k_cad(s) for s in prior}
+    on_inv = sum(1 for s in base if k_inv(s) in p_inv)
+    on_cad = sum(1 for s in base if k_cad(s) in p_cad)
+    groups = defaultdict(list)
+    for s in prior + base:
+        groups[k_inv(s)].append(s)
+    sxx = sxy = 0.0
+    for v in groups.values():
+        if not (any(in_base(s) for s in v) and any(not in_base(s) for s in v)):
+            continue
+        lr = [math.log(s["rate"]) for s in v]
+        lc = [math.log(s["cad"]) for s in v]
+        mr, mc = sum(lr) / len(lr), sum(lc) / len(lc)
+        sxx += sum((a - mr) ** 2 for a in lr)
+        sxy += sum((a - mr) * (b - mc) for a, b in zip(lr, lc))
+    # list prices: the invoice values each gateway sees 20 times or more in a currency, year by year
+    lists = {}
+    for yr, rows in (("prior", prior), ("base", base)):
+        c = defaultdict(int)
+        for s in rows:
+            c[(s["gw"], s["cur"], s["val"])] += 1
+        lists[yr] = {k for k, n in c.items() if n >= 20}
+    return dict(base_rows=len(base), on_invoice=on_inv, on_cad=on_cad, slope=sxy / sxx, lists=lists)
+
+
 def main_call(target):
     st = standard(target)
     line = line_cad(target)
     rates, vols = plan(target)
     rep = gateway_report(target)
-    reg = register(target)
+    reg_all = register(target)
+    reg = [s for s in reg_all if in_base(s)]
     ratio = {g: sum(vols[g]) * 1000.0 / rep[g][0] for g in GW}
     n = formal_count(reg, rates, line)
     E = {g: n[g] * ratio[g] / 12.0 for g in GW}
     placed, held, final, order = place(E, st["est"], st["bar"], st["posts"])
     Ed = {g: rep[g][1] / rep[g][0] * sum(vols[g]) * 1000.0 / 12.0 for g in GW}
     pd_, hd, fd, od = place(Ed, st["est"], st["bar"], st["posts"])
-    return dict(st=st, line=line, rates=rates, vols=vols, rep=rep, reg=reg, ratio=ratio, n=n, E=E, placed=placed,
-                held=held, final=final, order=order, Ed=Ed, placed_d=pd_, held_d=hd, final_d=fd)
+    # the same shipments with the CAD values the base year gave them (the routes on file), on the plan's volumes
+    n_cad = {g: sum(1 for s in reg if s["gw"] == g and s["route"] == "FORMAL") for g in GW}
+    Ec = {g: n_cad[g] * ratio[g] / 12.0 for g in GW}
+    pc, hc, fc, oc = place(Ec, st["est"], st["bar"], st["posts"])
+    return dict(st=st, line=line, rates=rates, vols=vols, rep=rep, reg=reg, reg_all=reg_all, ratio=ratio, n=n, E=E,
+                placed=placed, held=held, final=final, order=order, Ed=Ed, placed_d=pd_, held_d=hd, final_d=fd,
+                Ec=Ec, placed_c=pc, held_c=hc, pricing=pricing(reg_all))
 
 
 # ---------------------------------------------------------------------------------------------------- Ask A
@@ -367,6 +418,12 @@ def main(target=None, golden=None):
     eq("establishment", {d[g]: str(c["st"]["est"][g]) for g in GW}, fig["establishment"])
     eq("default placement", {d[g]: str(c["placed_d"][g]) for g in GW}, fig["default_path"]["posts_placed"])
     eq("default held", str(c["held_d"]), fig["default_path"]["held"])
+    pr = c["pricing"]
+    eq("pricing", {"base_foreign_shipments": "{:,}".format(pr["base_rows"]),
+                   "repeat_on_invoice_value": "{:,}".format(pr["on_invoice"]),
+                   "repeat_on_cad_value": "{:,}".format(pr["on_cad"]), "slope": "%.3f" % pr["slope"]},
+       fig["pricing_history"])
+    eq("CAD-fixed placement equals the default's", (c["placed_c"], c["held_c"]), (c["placed_d"], c["held_d"]))
     eq("ask A", {d[g]: {"FQ%d" % q: fmt_int(A[(d[g], q)], 1) for q in (1, 2, 3, 4)} for g in GW},
        fig["ask_a_overtime_hours"])
     eq("ask B", {d[g]: {"FQ%d" % q: fmt_int(B[(d[g], q)], 1) for q in (1, 2, 3, 4)} for g in GW},

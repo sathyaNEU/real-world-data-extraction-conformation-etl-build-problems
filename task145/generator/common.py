@@ -62,6 +62,13 @@ def months(start, end):
 
 HIST_MONTHS = months(HIST_START, HIST_END)        # 69 months
 BASE_MONTHS = months(BASE_START, BASE_END)        # 12 months
+PRIOR_START = dt.date(2024, 10, 1)       # the year before the base: the extracts pulled for the 2026 review
+PRIOR_END = dt.date(2025, 9, 30)
+PRIOR_MONTHS = months(PRIOR_START, PRIOR_END)
+# standing consignments: the share of a background segment's checked shipments that repeat a consignment an importer
+# ships again and again (same goods, same invoice value in its invoice currency), and how often each recurs
+REPEAT_SHARE = 0.32
+REPEATS_PER_ITEM = 18
 PLAN_MONTHS = [(PLAN_YEAR, m) for m in range(1, 13)]
 
 
@@ -128,19 +135,23 @@ SEGMENTS = {
     "YYZ": [
         dict(cur="USD", share=0.6822, kind="ln", p=(5.05, 1.30), ogd=0.0100, ogd_ln=(4.30, 1.10), lane="US"),
         dict(cur="EUR", share=0.0910, kind="ln", p=(5.30, 1.25), ogd=0.0300, ogd_ln=(4.40, 1.10), lane="EU"),
-        dict(cur="GBP", share=0.0341, kind="ln", p=(5.20, 1.25), ogd=0.0200, ogd_ln=(4.30, 1.10), lane="GB"),
+        dict(cur="GBP", share=0.0331, kind="ln", p=(5.20, 1.25), ogd=0.0200, ogd_ln=(4.30, 1.10), lane="GB"),
         dict(cur="CNY", share=0.1365, kind="ln", p=(7.30, 1.20), ogd=0.0080, ogd_ln=(6.30, 1.10), lane="CN"),
         dict(cur="CAD", share=0.0531, kind="ln", p=(5.40, 1.30), ogd=0.0120, ogd_ln=(4.60, 1.10), lane="US"),
         dict(cur="USD", share=0.0031, kind="pp", p=((2355, 2), (2359, 3), (2365, 3), (2369, 4), (2375, 4), (2379, 4),
                                                      (2385, 3), (2389, 3)), ogd=0.0, lane="US"),
+        dict(cur="GBP", share=0.0010, kind="pp", p=((1540, 3), (1549, 4), (1555, 3), (1565, 2), (1575, 2)), ogd=0.0,
+             lane="GB"),
     ],
     "YUL": [
         dict(cur="USD", share=0.4876, kind="ln", p=(5.00, 1.30), ogd=0.0120, ogd_ln=(4.30, 1.10), lane="US"),
         dict(cur="EUR", share=0.4089, kind="ln", p=(5.45, 1.20), ogd=0.0400, ogd_ln=(4.50, 1.10), lane="EU"),
-        dict(cur="GBP", share=0.0511, kind="ln", p=(5.20, 1.25), ogd=0.0200, ogd_ln=(4.30, 1.10), lane="GB"),
+        dict(cur="GBP", share=0.0499, kind="ln", p=(5.20, 1.25), ogd=0.0200, ogd_ln=(4.30, 1.10), lane="GB"),
         dict(cur="CAD", share=0.0472, kind="ln", p=(5.30, 1.30), ogd=0.0150, ogd_ln=(4.60, 1.10), lane="US"),
         dict(cur="EUR", share=0.0055, kind="pp", p=((2005, 3), (2009, 5), (2010, 3), (2015, 4), (2019, 6), (2020, 2),
                                                      (2025, 3), (2029, 2)), ogd=0.0, lane="EU"),
+        dict(cur="GBP", share=0.0012, kind="pp", p=((1545, 3), (1549, 3), (1559, 4), (1569, 2), (1575, 2)), ogd=0.0,
+             lane="GB"),
     ],
     "YVR": [
         dict(cur="USD", share=0.5665, kind="ln", p=(5.15, 1.25), ogd=0.0080, ogd_ln=(4.30, 1.10), lane="US"),
@@ -166,7 +177,7 @@ BASE_LEVEL = {"YYZ": 114900, "YUL": 64800, "YVR": 74600, "YYC": 33500, "YWG": 41
 TREND = {"YYZ": 0.035, "YUL": 0.040, "YVR": 0.050, "YYC": 0.025, "YWG": 0.030}       # a year, 2021 to 2026
 SEASON = [0.90, 0.88, 0.98, 0.98, 1.00, 0.98, 0.96, 0.97, 1.00, 1.05, 1.15, 1.15]
 # the 2027 network plan's growth on the twelve months to September 2026
-PLAN_GROWTH = {"YYZ": 0.026, "YUL": 0.034, "YVR": 0.048, "YYC": 0.019, "YWG": 0.029}
+PLAN_GROWTH = {"YYZ": 0.024, "YUL": 0.032, "YVR": 0.013, "YYC": 0.036, "YWG": 0.032}
 
 
 def season(m):

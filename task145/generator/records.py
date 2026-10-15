@@ -12,9 +12,16 @@ import common as K
 import field as FD
 
 # ---------------------------------------------------------------------------------------------------- the files
-F_HV = {"2025Q4": "highvalue_check_2025Q4.csv", "2026Q1": "highvalue_check_2026Q1.csv",
+F_HV = {"2024Q4": "highvalue_check_2024Q4.csv", "2025Q1": "highvalue_check_2025Q1.csv",
+        "2025Q2": "highvalue_check_2025Q2.csv", "2025Q3": "highvalue_check_2025Q3.csv",
+        "2025Q4": "highvalue_check_2025Q4.csv", "2026Q1": "highvalue_check_2026Q1.csv",
         "2026Q2": "highvalue_check_2026Q2.csv", "2026Q3": "highvalue_check_2026Q3.csv"}
-HV_WINDOW = {"2025Q4": (dt.date(2025, 10, 1), dt.date(2025, 12, 31), dt.date(2026, 1, 6)),
+OLD_LAYOUT = ("2024Q4", "2025Q1", "2025Q2", "2025Q3", "2025Q4")     # pulled before the release of 17 February 2026
+HV_WINDOW = {"2024Q4": (dt.date(2024, 10, 1), dt.date(2024, 12, 31), dt.date(2025, 1, 7)),
+             "2025Q1": (dt.date(2025, 1, 1), dt.date(2025, 3, 31), dt.date(2025, 4, 7)),
+             "2025Q2": (dt.date(2025, 4, 1), dt.date(2025, 6, 30), dt.date(2025, 7, 8)),
+             "2025Q3": (dt.date(2025, 7, 1), dt.date(2025, 9, 30), dt.date(2025, 10, 7)),
+             "2025Q4": (dt.date(2025, 10, 1), dt.date(2025, 12, 31), dt.date(2026, 1, 6)),
              "2026Q1": (dt.date(2026, 1, 1), dt.date(2026, 3, 31), dt.date(2026, 4, 7)),
              "2026Q2": (dt.date(2026, 4, 1), dt.date(2026, 6, 30), dt.date(2026, 7, 7)),
              "2026Q3": (dt.date(2026, 7, 1), dt.date(2026, 9, 30), dt.date(2026, 10, 7))}
@@ -58,12 +65,11 @@ def fmt_rate(cur, r):
 
 
 def hv_rows(W):
-    """The four quarterly extracts: each shipment released in its window (local release date), and the shipments
+    """The eight quarterly extracts: each shipment released in its window (local release date), and the shipments
     amended since the last pull with their corrected value."""
-    amended = {id(s): nv for s, nv in W.amended}
     out = {q: [] for q in F_HV}
-    by_q = {}
-    for s in W.ships:
+    by_q = {q: [] for q in F_HV}
+    for s in W.prior + W.ships:
         d = s.local.date()
         for q, (a, b, _) in HV_WINDOW.items():
             if a <= d <= b:
@@ -79,7 +85,7 @@ def hv_rows(W):
         rows = []
         for s, v, am in by_q[q]:
             cad = K.round_dp(v * s.rate, 2)
-            if q == "2025Q4":
+            if q in OLD_LAYOUT:
                 rows.append({"WAYBILL": s.waybill, "GTWY": s.gw, "REL_DT": s.local.strftime("%d/%m/%Y"),
                              "REL_TM_UTC": s.utc.strftime("%H:%M"), "IMPORTER_ACCT": s.importer, "HS_CODE": s.hs,
                              "ORIG_CTRY": s.origin, "INV_CURR": s.cur, "VFD_INV": fmt_value(s.cur, v),
@@ -93,7 +99,7 @@ def hv_rows(W):
                              "value_for_duty_cad": "%.2f" % cad, "route": s.route, "entry_number": s.entry,
                              "ogd_program": s.ogd or "NONE", "amended": am or "N"})
         # the extract sorts by release time, the amended rows after the window's own
-        if q == "2025Q4":
+        if q in OLD_LAYOUT:
             rows.sort(key=lambda r: (r["AMEND"], r["REL_DT"][6:] + r["REL_DT"][3:5] + r["REL_DT"][:2],
                                      r["REL_TM_UTC"], r["WAYBILL"]))
         else:

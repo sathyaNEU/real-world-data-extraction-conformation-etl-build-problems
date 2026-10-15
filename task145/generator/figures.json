@@ -31,20 +31,20 @@
   "forecast_monthly_formal_entries": {
     "Mississauga": "3,700",
     "Dorval": "3,600",
-    "Richmond": "3,050",
+    "Richmond": "3,000",
     "Calgary": "2,450",
     "Winnipeg": "1,500"
   },
   "entries_per_post_after": {
-    "Mississauga": "525",
+    "Mississauga": "530",
     "Dorval": "515",
-    "Richmond": "510",
+    "Richmond": "500",
     "Calgary": "490",
-    "Winnipeg": "505"
+    "Winnipeg": "500"
   },
   "blocking_load": {
     "desk": "Mississauga",
-    "load": "525"
+    "load": "530"
   },
   "plan_rates": {
     "USD": "1.3400",
@@ -71,9 +71,9 @@
     },
     "held": "1",
     "forecast_monthly_formal_entries": {
-      "Mississauga": "4,150",
+      "Mississauga": "4,200",
       "Dorval": "3,200",
-      "Richmond": "3,500",
+      "Richmond": "3,450",
       "Calgary": "2,600",
       "Winnipeg": "1,750"
     }
@@ -143,13 +143,20 @@
     }
   },
   "fiscal_year": "2025-26",
-  "base_year_shipments_checked": "246,894",
+  "base_year_shipments_checked": "248,256",
+  "prior_year_shipments_checked": "235,270",
+  "pricing_history": {
+    "base_foreign_shipments": "190,312",
+    "repeat_on_invoice_value": "68,657",
+    "repeat_on_cad_value": "683",
+    "slope": "1.000"
+  },
   "base_year_formal_at_plan_rates": {
-    "Mississauga": "43,058",
-    "Dorval": "41,853",
-    "Richmond": "35,134",
-    "Calgary": "28,835",
-    "Winnipeg": "17,610"
+    "Mississauga": "43,460",
+    "Dorval": "41,885",
+    "Richmond": "35,553",
+    "Calgary": "28,309",
+    "Winnipeg": "17,438"
   },
   "placement_steps": [
     "Dorval 720",

@@ -178,8 +178,11 @@ def run(target, golden, W=None, F=None, G=None, meta_path=None):
     A("R1 the call reads no ask file and no distractor", not (main_reads & (set(ASK_FILES) | set(dis))),
       sorted(main_reads & (set(ASK_FILES) | set(dis))))
     reg = c["reg"]
+    reg_all = c["reg_all"]
     A("R1 the register holds every base-year shipment of the check once (%d)" % len(reg), len(reg) == len(W.ships),
       (len(reg), len(W.ships)))
+    A("R1 the eight extracts hold the two years on file, each shipment once (%d and %d)" % (len(W.prior), len(W.ships)),
+      len(reg_all) == len(W.prior) + len(W.ships), (len(reg_all), len(W.prior) + len(W.ships)))
     A("R1 the decisive computation reads each shipment's value and invoice currency: the counts at the plan's rates "
       "equal the truth's", c["n"] == {g: C.formal_at(W, g, lambda s: K.PLAN_RATE[s.cur]) for g in GW},
       c["n"])
@@ -229,11 +232,12 @@ def run(target, golden, W=None, F=None, G=None, meta_path=None):
       len(twice), len(twice) == len(W.amended) and all(
           len(v) == 2 and not v[0]["amended"] and v[1]["amended"] and
           order.index(v[1]["file"]) == order.index(v[0]["file"]) + 1 for v in twice.values()), len(twice))
-    n2 = V.formal_count(both, c["rates"], c["line"])
+    n2 = V.formal_count([r for r in both if V.in_base(r)], c["rates"], c["line"])
     same(e_of(n2, c["ratio"]), "R2 the amended shipments counted twice: the call and every rounded figure stay (SF11)")
     first = {}
     for r in both:
-        first.setdefault(r["wb"], r)
+        if V.in_base(r):
+            first.setdefault(r["wb"], r)
     n3 = V.formal_count(list(first.values()), c["rates"], c["line"])
     A("R2 an amended shipment's first row or its amended row: the same route at the plan's rates (SF11)", n3 == c["n"],
       (n3, c["n"]))
@@ -273,8 +277,8 @@ def run(target, golden, W=None, F=None, G=None, meta_path=None):
     A("R2 OGD codes blank or NONE: every row with a program is FORMAL whatever its value, and NONE rows routed CLVS "
       "(%d) rule out reading NONE as a program" % pgm_none_clvs,
       all(s["route"] == "FORMAL" for s in reg if s["ogd"]) and pgm_none_clvs > 1000)
-    A("R2 the routes on file are CLR-OPS-11 at each day's customs rate (the extracts' own routing reproduces)",
-      all((s["route"] == "FORMAL") == (s["ogd"] or s["cad"] > c["line"]) for s in reg))
+    A("R2 the routes on file are CLR-OPS-11 at each day's customs rate, both years (the extracts' own routing "
+      "reproduces)", all((s["route"] == "FORMAL") == (s["ogd"] or s["cad"] > c["line"]) for s in reg_all))
     labels = {g: str(prow[g][0]) for g in GW}
     A("R2 gateways keyed by code, desk name and the plan's region label map one to one",
       all("(%s)" % g in labels[g] for g in GW) and c["st"]["desk"] == K.DESK, labels)
@@ -301,7 +305,7 @@ def run(target, golden, W=None, F=None, G=None, meta_path=None):
         "R0d last quarter": ({g: C.latest_quarter_E(W, g) for g in GW}, (1, 1, 1, 1, 1, 1)),
         "R0e pooled share": (C.pooled_E(W), (3, 1, 1, 0, 1, 0)),
         "R0f last customs rate": (C.spot_E(W), (1, 1, 1, 1, 1, 1)),
-        "R1 share fitted on the rates": ({g: C.share_regression_E(W, g) for g in GW}, (0, 1, 1, 1, 0, 3)),
+        "R1 share fitted on the rates": ({g: C.share_regression_E(W, g) for g in GW}, (0, 1, 0, 1, 0, 4)),
         "R2 US dollar's change alone": (C.usd_only_E(W), (0, 1, 0, 1, 0, 4)),
         "R2a euro shipments alone": (C.eur_only_E(W), (1, 2, 1, 1, 1, 0)),
         "R2b value alone, OGD ignored": (C.value_only_E(W), (0, 0, 0, 0, 0, 6)),
@@ -315,9 +319,9 @@ def run(target, golden, W=None, F=None, G=None, meta_path=None):
           sum(1 for a, b in zip(tup(p, h), tup(pg, hg)) if a != b) >= 2, tup(p, h))
     A("R3b the default differs from the golden in five of six buckets",
       sum(1 for a, b in zip(tup(pd_, hd), tup(pg, hg)) if a != b) == 5)
-    A("R3b every construction without the plan's rates staffs Richmond",
+    A("R3b every construction that keeps the base year's routing staffs Richmond",
       all(res[n][1][2] >= 1 for n in ("R0b trend", "R0c smoothing", "R0d last quarter", "R0e pooled share",
-                                      "R0f last customs rate", "R1 share fitted on the rates")) and pd_["YVR"] == 1)
+                                      "R0f last customs rate")) and pd_["YVR"] == 1)
     blocks = Counter()
     for f in R.F_HV.values():
         with open(os.path.join(target, f), encoding="utf-8") as fh:
@@ -341,7 +345,7 @@ def run(target, golden, W=None, F=None, G=None, meta_path=None):
     A("ladder: the placement steps are Dorval, Calgary, Dorval", [g for g, _ in og] == ["YUL", "YYC", "YUL"], steps)
     A("ladder: every placed post clears 560 by 7 per cent or more", min(l for _, l in og) / 560 >= 1.07, steps)
     top = max(fg, key=fg.get)
-    A("ladder: the stop is Mississauga at 526.0, 6 per cent under 560", top == "YYZ" and fg[top] <= 0.94 * 560 + 0.5,
+    A("ladder: the stop is Mississauga, 5 per cent or more under 560", top == "YYZ" and fg[top] <= 0.95 * 560,
       (top, round(fg[top], 1)))
     A("ladder: flip conditions, Mississauga needs 3,920 a month for a fourth post and Dorval keeps its second above "
       "3,360", Eg["YYZ"] < 560 * 7 and Eg["YUL"] > 560 * 6 and abs(560 * 7 - 3920) < 1e-9, (Eg["YYZ"], Eg["YUL"]))
@@ -391,8 +395,20 @@ def run(target, golden, W=None, F=None, G=None, meta_path=None):
     A("SF6 the last customs rate on file files a post at every gateway (BRK-STD-03 4.3 and the plan's assumption 7 "
       "rule it out)", res["R0f last customs rate"][1] == (1, 1, 1, 1, 1, 1) and "the plan's planning assumptions" in
       T[R.F_STD] and "Treasury planning rates for 2027" in T[R.F_PLAN27])
-    A("SF7 the register holds only the base year, by local release date",
-      all(K.BASE_START <= s["local"] <= K.BASE_END for s in reg))
+    A("SF7 the plan files its base, the twelve months October 2025 to September 2026, and the profile as in the base",
+      "The twelve months October 2025 to September 2026." in T[R.F_PLAN27] and
+      "Each gateway's lanes, customers and goods as in the base." in T[R.F_PLAN27])
+    two = {}
+    pk = C.plan_shipments_k(W)
+    for g in GW:
+        n2y = sum(1 for s in W.prior + W.ships if s.gw == g and
+                  (s.ogd or K.round_dp(s.value * K.PLAN_RATE[s.cur], 2) > K.LINE_CAD))
+        v2y = sum(W.volume[(g, y, m)] for (y, m) in K.PRIOR_MONTHS + K.BASE_MONTHS)
+        two[g] = n2y / v2y * sum(pk[(g, m)] for m in range(1, 13)) * 1000 / 12
+    p2y, h2y, _, _ = place(two)
+    A("SF7 the two years' profile instead of the base's (ruled out by assumption 1 and 2): the same call and the same "
+      "monthly forecasts to the nearest 50", tup(p2y, h2y) == gold_t and
+      {g: K.round_to(two[g], 50) for g in GW} == gold_bins[0], {g: round(two[g], 1) for g in GW})
     ok8 = all(abs(plan_k[(g, m)] - W.volume[(g, y, m)] * (1 + K.PLAN_GROWTH[g]) / 1000.0) <= 0.05 + 1e-9
               for g in GW for (y, m) in K.BASE_MONTHS)
     A("SF8 the plan's months are the base months grown by the plan's growth, to 0.1 thousand", ok8)
@@ -429,6 +445,79 @@ def run(target, golden, W=None, F=None, G=None, meta_path=None):
     A("SF18 the plan's volumes are thousands (its heading), and thousands times 1,000 match the report's base",
       "Inbound international shipments, thousands" in T[R.F_PLAN27] and
       all(abs(float(prow[g][14]) * 1000 - c["rep"][g][0]) <= 50 for g in GW))
+
+    # ------------------------------------------------------------------ the decisive inference: how the goods are priced
+    pr = c["pricing"]
+    A("R3 price inference: %d of the base year's %d foreign-currency shipments outside OGD programs repeat a consignment "
+      "of the year before on its invoice value, %d on its CAD value" % (pr["on_invoice"], pr["base_rows"], pr["on_cad"]),
+      pr["on_invoice"] >= 0.30 * pr["base_rows"] and pr["on_cad"] <= 0.01 * pr["base_rows"] and
+      pr["on_invoice"] >= 50 * pr["on_cad"], (pr["on_invoice"], pr["on_cad"], pr["base_rows"]))
+    A("R3 price inference: within the consignments of both years the CAD value moves one for one with the day's rate "
+      "(slope %.4f; CAD-fixed pricing gives 0)" % pr["slope"], abs(pr["slope"] - 1.0) < 0.001, pr["slope"])
+    lists_ok, drift = True, {}
+    for g in GW:
+        for si, seg in enumerate(K.SEGMENTS[g]):
+            if seg["kind"] != "pp":
+                continue
+            lp = {v for v, _ in seg["p"]}
+            pv = {s["val"] for s in reg_all if s["gw"] == g and s["cur"] == seg["cur"] and s["val"] in lp and
+                  K.PRIOR_START <= s["local"] <= K.PRIOR_END}
+            bv = {s["val"] for s in reg if s["gw"] == g and s["cur"] == seg["cur"] and s["val"] in lp}
+            lists_ok = lists_ok and pv == bv == lp
+            pc = [s["cad"] / s["val"] for s in reg_all if s["gw"] == g and s["cur"] == seg["cur"] and s["val"] in lp
+                  and K.PRIOR_START <= s["local"] <= K.PRIOR_END]
+            bc = [s["cad"] / s["val"] for s in reg if s["gw"] == g and s["cur"] == seg["cur"] and s["val"] in lp]
+            drift[(g, seg["cur"])] = round(100 * (sum(bc) / len(bc) / (sum(pc) / len(pc)) - 1), 1)
+    A("R3 price inference: every EUR, USD and GBP list price recurs in both years while its CAD value drifts with the "
+      "rate (%s)" % ", ".join("%s %s %+.1f%%" % (g, cu, d) for (g, cu), d in drift.items()),
+      lists_ok and {cu for _, cu in drift} >= {"EUR", "USD", "GBP"} and max(abs(d) for d in drift.values()) >= 3.0,
+      drift)
+    Ec = c["Ec"]
+    A("R3a the rival basis, every shipment keeping the CAD value the base year gave it, files the default placement "
+      "(one post at each gateway, one held), which the history rejects",
+      tup(c["placed_c"], c["held_c"]) == (1, 1, 1, 1, 1, 1) == tup(c["placed_d"], c["held_d"]),
+      {g: round(Ec[g], 1) for g in GW})
+
+    def mixed(pp_inv, bg_inv):
+        out = {}
+        for g in GW:
+            n = 0
+            for s in W.ships:
+                if s.gw != g:
+                    continue
+                if s.ogd:
+                    n += 1
+                    continue
+                inv = pp_inv if K.SEGMENTS[g][s.seg]["kind"] == "pp" else bg_inv
+                n += int(K.round_dp(s.value * K.PLAN_RATE[s.cur], 2) > K.LINE_CAD) if inv else int(s.route == "FORMAL")
+            out[g] = n * C.plan_ratio(W, g) / 12.0
+        return out
+    m1 = mixed(True, False)
+    p_, h_, _, _ = place(m1)
+    A("SF19 list prices held but the other goods at their CAD values: the same call on other forecasts (%s), ruled out by "
+      "the repeat consignments" % ", ".join("%s %d" % (K.DESK[g], K.round_to(m1[g], 50)) for g in GW),
+      tup(p_, h_) == gold_t and {g: K.round_to(m1[g], 50) for g in GW} != gold_bins[0] and
+      pr["on_invoice"] >= 0.30 * pr["base_rows"])
+    m2 = mixed(False, True)
+    p_, h_, _, _ = place(m2)
+    A("SF19 the other goods at their invoice prices but the list prices at their CAD values files %s, ruled out by the "
+      "list prices recurring in both years" % fmt(p_, h_), tup(p_, h_) != gold_t and lists_ok)
+    A("SF19 no document files how the goods are priced (the plan's profile names lanes, customers and goods only)",
+      not [f for f, t in T.items() if re.search(r"\bprices?\b|\binvoiced at\b", t, re.I)],
+      [f for f, t in T.items() if re.search(r"\bprices?\b|\binvoiced at\b", t, re.I)])
+
+    # ------------------------------------------------------------------ rounding: per post from either forecast
+    post_after = {g: K.ESTABLISHMENT[g] + pg[g] for g in GW}
+    for g in GW:
+        x = Eg[g] / post_after[g]
+        y = K.round_to(Eg[g], 50) / post_after[g]
+        A("rounding: %s entries per post %d from the unrounded forecast (%.2f) and from the forecast to the nearest 50 "
+          "(%.2f), each 1.0 or more from its edge" % (K.DESK[g], K.round_to(x, 5), x, y),
+          K.round_to(x, 5) == K.round_to(y, 5) and edge(x, 5) >= 1.0 and edge(y, 5) >= 1.0,
+          (round(edge(x, 5), 2), round(edge(y, 5), 2)))
+    st_loads = [(g, l) for g, l in og]
+    A("rounding: each placement step's load sits 1.0 or more from its edge (%s)" %
+      ", ".join("%s %.1f" % (K.DESK[g], l) for g, l in st_loads), all(edge(l, 5) >= 1.0 for _, l in st_loads))
 
     # ------------------------------------------------------------------ bins
     for g in GW:

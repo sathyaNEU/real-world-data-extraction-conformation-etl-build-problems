@@ -461,8 +461,7 @@ def write_plan(path, W, year):
     gtxt = ", ".join("%s %+.1f%%" % (K.PLAN_REGION[g], 100 * growth[g]) for g in K.GATEWAYS)
     rtxt = ", ".join(("%s %." + str(K.RATE_DP[c]) + "f") % (c, rates[c]) for c in ["USD", "EUR", "GBP", "CNY", "JPY"])
     rows = [("1", "Base", "The twelve months %s." % base_label),
-            ("2", "Shipment profile", "Each gateway's lanes, customers and goods, and the prices those goods are "
-                                      "invoiced at, as in the base."),
+            ("2", "Shipment profile", "Each gateway's lanes, customers and goods as in the base."),
             ("3", "Inbound volume growth on the base", gtxt + "."),
             ("4", "Outbound volume growth on the base", "Network %+.1f%%, by gateway on the Outbound volumes sheet." %
              (100 * (sum(growth.values()) / 5 - 0.004))),
@@ -587,9 +586,10 @@ def write_clearance_note(path):
 Pulled 7 October 2026 by Clearance Operations for Customs Brokerage (workforce planning).
 
 Files
-  highvalue_check_2025Q4.csv, highvalue_check_2026Q1.csv, highvalue_check_2026Q2.csv, highvalue_check_2026Q3.csv
-      The high-value check extract for each calendar quarter (CLR-OPS-11, 4.2). The clearance system release of
-      17 February 2026 changed the extract's layout; the 2025Q4 file, pulled 6 January 2026, is in the earlier layout.
+  highvalue_check_2024Q4.csv to highvalue_check_2026Q3.csv (eight files)
+      The high-value check extract for each calendar quarter (CLR-OPS-11, 4.2), October 2024 to September 2026; the
+      four files to 2025Q3 are the extracts pulled for the 2026 review. The clearance system release of 17 February
+      2026 changed the extract's layout; the files to 2025Q4, the last pulled 6 January 2026, are in the earlier layout.
   gateway_activity_2021-01_2024-09.xlsx
       The legacy brokerage system's monthly gateway report (GA-02), to its last month, September 2024.
   gateway_activity_2024-10_2026-09.csv

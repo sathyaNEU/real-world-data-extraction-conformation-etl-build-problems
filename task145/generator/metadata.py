@@ -10,6 +10,10 @@ import deliver as DL  # noqa: E402
 
 TASK = os.path.dirname(HERE)
 SOURCES = {
+    R.F_HV["2024Q4"]: "Clearance system high-value check extract, October to December 2024 (earlier layout)",
+    R.F_HV["2025Q1"]: "Clearance system high-value check extract, January to March 2025 (earlier layout)",
+    R.F_HV["2025Q2"]: "Clearance system high-value check extract, April to June 2025 (earlier layout)",
+    R.F_HV["2025Q3"]: "Clearance system high-value check extract, July to September 2025 (earlier layout)",
     R.F_HV["2025Q4"]: "Clearance system high-value check extract, October to December 2025 (earlier layout)",
     R.F_HV["2026Q1"]: "Clearance system high-value check extract, January to March 2026",
     R.F_HV["2026Q2"]: "Clearance system high-value check extract, April to June 2026",

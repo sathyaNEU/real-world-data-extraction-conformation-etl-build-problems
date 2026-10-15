@@ -49,7 +49,7 @@ def build(out, quiet=False, WF=None):
     counts = {}
     hv = R.hv_rows(W)
     for q, f in R.F_HV.items():
-        cols = R.HV_OLD if q == "2025Q4" else R.HV_NEW
+        cols = R.HV_OLD if q in R.OLD_LAYOUT else R.HV_NEW
         counts[f] = K.write_csv(p(f), cols, hv[q])
     DOC.write_gw_legacy(p(R.F_GW_LEGACY), R.gw_legacy_rows(W))
     counts[R.F_GW_NEW] = K.write_csv(p(R.F_GW_NEW), R.GW_NEW, R.gw_new_rows(W))
