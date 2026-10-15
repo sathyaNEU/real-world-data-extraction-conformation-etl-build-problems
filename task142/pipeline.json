@@ -1,11 +1,11 @@
 {
   "task": "task142",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "healthcare-delivery-health-economics",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-15",
   "stump": "A competent solver takes each member's planned January to March 2027 visits as its expected requirement, adds the 90th-percentile margin of a Poisson count, tops each member up above its in-house capacity in Schedule 2's order in lots of 25 and books Northgate 100 visits, Riverbend 50, Westmere 50, Kingsdale 25 and Hillcrest 25, leaving 600 of the 850 unbooked; the step that lands it there is treating the quarter's visits as independent counts when they are the home days of admissions whose stays run from a few days to six weeks and more: built from the plan's admissions by stream and the stays on file, counted inside the quarter, Northgate books 300, Riverbend 250, Westmere 225, Kingsdale 75 and Hillcrest none.",
   "architecture": 1,
@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW, no LEAK (--asof 2026-11-03, after the stage 4 rebuild; every REVIEW line answered in ## Leak review)",
-    "reader": "no leak, Q6 analytical; readings (referral share basis, chart weeks, payable visits as a count) closed in the fix pass; manifest sizes filled; H04 plan rows kept"
+    "reader": "round 1: no leak, Q6 analytical, three readings closed in the fix pass; round 2 (targeted re-read of clause 4.5, the dictionary row, the manifest and the prompt's chart sentence): clean, Q1, Q2 and Q4 none, Q6 analytical"
   },
   "duplicate_check": {
     "heart": "WARN (repeat.gate_g only, no BLOCK)",
@@ -25,14 +25,15 @@
     "note": "drawn 2026-10-15 after git pull (task260, task141, task458 on file): guard WARN repeat.gate_g only, answered in ## Draw"
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC (one cell: the re-post survivor moved Kingsdale September, $8,787 or $8,755)",
-    "disposition": "FIX_NOW, applied in one generator pass; re-judge once next",
-    "report": "task142/determinism_check_report.md"
+    "verdict": "DETERMINISTIC (re-judge after the FIX_NOW pass; every graded figure reproduced)",
+    "disposition": "APPROVE",
+    "report": "task142/determinism_check_report.md",
+    "round1": "NOT_DETERMINISTIC on one ask cell (the re-post survivor moved Kingsdale September, $8,787 or $8,755), FIX_NOW applied in commit fe9bd2c"
   },
   "returned": [],
-  "resume": "stage 4: the single re-judge on a fresh unzip of target.zip; a targeted leak re-read of the changed documents (Schedules 3 and 4 clause 4.5, the dictionary's week_commencing row, the manifest) and the prompt's chart sentence; then stage 5 ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-15",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -65,6 +66,11 @@
     "voice_check": "PASS (838 characters)",
     "guard": "surface 0 promoted, heart WARN (repeat.gate_g), validate clean",
     "container_audit": "clean",
+    "date": "2026-10-15"
+  },
+  "ship": {
+    "target_zip_sha256": "c0616cc42ee80a2de4108778ddcebaa087ec1ac21579842a5f7de691f3edcb4a",
+    "from": "the stage 4 final rebuild (byte-identical second build)",
     "date": "2026-10-15"
   }
 }

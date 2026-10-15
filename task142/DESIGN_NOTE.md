@@ -498,6 +498,59 @@ read` in `leak_check_report.md`, every REVIEW line harmless. Its readings, ruled
   `heart` WARN (`repeat.gate_g`), `validate` clean; the container audit clean. Changed under `target/`: the
   Schedules 3 and 4 PDF (clause 4.5), the visit export (one record's times), the data dictionary (one row) and the
   manifest. The single re-judge is next.
+- Ship (2026-10-15): the re-judge returned DETERMINISTIC, APPROVE, every graded figure reproduced
+  (`determinism_check_report.md`); the targeted leak re-read of clause 4.5, the dictionary row, the manifest and the
+  prompt's chart sentence came back clean (`leak_check_report.md`, round 2). `target.zip` is the stage 4 final
+  rebuild's cut, byte-identical on the second build (sha256 c0616cc42ee80a2d); no file moved after the re-checks.
+
+## Pre-ship check
+
+Written at stage 5 against the built pack (the stage 4 fix pass in); the reader and judge lines are stage 4's, the
+targeted re-read's and the re-judge's.
+
+1. Domain: the deciding quantity is each member's 90th-percentile Hospital in the Home visit requirement for January
+   to March 2027, the home days of a random stream of admissions whose stays run by stream (days for cellulitis or a
+   clot, weeks for a bone and joint infection) counted inside the quarter, the
+   admissions-times-length-of-stay accounting health services plan HITH capacity with; with a data centre's or a
+   grid's nouns there is no admission, no infection course and no HITH day, and the spread they create goes with them.
+2. Real work, nothing planted: a census warehouse loaded from five members' returns (patient numbers in five formats,
+   Westmere's campus codes reissued at the Altona Park merger), program streams revised on 1 July 2025 and joined
+   through the crosswalk, plans by financial year one sheet a member, a course split by a ward return, episodes open
+   at the extract; on the ask paths Bellbird's UTC export, two app status vintages, re-posted records, the portal
+   outage's telephoned referrals and holding files. Each is what these systems write; each mishandled leaves the call
+   where it was (R2, asserted), and the call reads no ask file (asserted). The stage 4 changes are a filed WHAT
+   (clause 4.5, the dictionary's pay week row, the prompt's chart words) and the re-post pairs' generation rule, all on
+   the ask paths.
+3. The flip is a method choice: the quarter's distribution built from the plan's admissions and the stays on file,
+   counted inside the window, against a Poisson margin on the planned visits or the history's spread of weeks, months
+   or quarters; no field, unit or stated rule decides it (Schedule 2 files the estimand and leaves the estimator open),
+   and the default path reads every filed rule the same (R3a on the clean truth).
+4. The analyst test holds: plan plus a Poisson margin books 100, 50, 50, 25 and 25 with 600 unbooked; the history's
+   monthly spread, its weekly spread, an AR(1) on daily visits and the members' own past admissions and stays each
+   book otherwise; only the admissions-and-stays construction books 300, 250, 225, 75 and none, on all thirteen
+   admissible constructions and on the clean truth (R3b).
+5. One defensible answer: Schedule 2 clauses 2.2 to 2.7 file the estimand; the 14 fork rows are asserted and the 22
+   closure axes closed; the re-judge reproduced every graded figure (40 of 40 bootstrap resamples of the stays book the
+   golden; stay-set variants centred on the plan leave every requirement in its 50-visit bin); the asks' readings were
+   closed at stage 4 (every survivor rule of a re-post pair, clause 4.5's two shares, the pay weeks, the count).
+6. No decoy: no file states a percentile, margin, requirement or booking; the plans give expected visits only; the
+   patient experience survey, Bellbird's 2025-26 service report and its declined referrals are declared distractors,
+   read by neither the call nor any ask (asserted).
+7. Nothing hidden and recovered: no published percentile, past booking or certified requirement ships to reproduce;
+   the history describes past quarters under another mix and confirms no estimator.
+8. A new lesson: an upper percentile of a period's total made of multi-day stays has the spread of the admissions and
+   their stays, so it is built from them and counted inside the window, and a plan that adds long stays moves the
+   spread more than its mean; no build on file teaches the spread of a period total from its generating units.
+9. Leak reader (stage 4): no leak; Q1 to Q4 none; Q6 analytical; its three readings (the referral share's basis, the
+   chart's weeks, payable visits as a count) fixed in the generator pass, the manifest's sizes filled and the H04 plan
+   rows kept. The targeted re-read: clean, Q1, Q2 and Q4 none, Q6 analytical; telephoned referrals under clause 4.1,
+   the straddling pay weeks and every accepted portal referral's visit after acceptance (0 missing) all closed in the
+   pack.
+10. Judge (stage 4): NOT_DETERMINISTIC on one ask cell (which record of a re-post pair is the visit, Kingsdale
+   September), FIX_NOW applied in one generator pass with `freeze.py --mode determinism` passing, so no graded figure
+   moved; the re-judge DETERMINISTIC, APPROVE, stump power strong, Gate G analytical_non_defect with no surface-read
+   dependency, Gate H domain pass, layers pass, decisive step analytical. The asks' devices are as designed (the
+   cracker profiles unchanged, pair ceiling 39.5); clause 4.5 removes a reading the design never counted on.
 
 ## Tried and rejected
 
