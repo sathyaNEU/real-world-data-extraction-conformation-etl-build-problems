@@ -1,0 +1,100 @@
+{
+  "task": "task142",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "new build, wave 3 of sathya8571, numbered from seed FC13 (world redrawn: the seed's data-centre world is not used; its decision and quantity shape are kept: a capped block of contract visits placed across sites for one quarter, each topped up in a filed order to its 90th-percentile visit requirement above in-house capacity)",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "utilization-access-demand-forecasting",
+  "client_domain": "healthcare-delivery-health-economics",
+  "niche": "a purchasing alliance of five Victorian public health services booking a private nursing provider's January to March 2027 Hospital in the Home overflow block, each member topped up in the alliance agreement's order to its 90th-percentile HITH visit requirement above its in-house nurses' capacity, when two members open a bone and joint infection at home pathway whose courses run for weeks",
+  "objective": "forecasting",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G13",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "the alliance's Hospital in the Home program manager, who books the provider's quarterly overflow block across the member health services",
+  "role_family": "programme_officer",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "hith_census_days_2024-04-01_to_2026-09-30.csv",
+    "rows": 0,
+    "entity": "one day a member health service's admitted Hospital in the Home patient spent at home under the program, with that day's nurse visits",
+    "grain": "patient x day",
+    "source": "constructed (the alliance's HITH census warehouse, loaded from the members' daily census returns)"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "Australia, Victoria (Melbourne's north and west; fictional health services, alliance and provider)",
+    "currency": "AUD",
+    "org_type": "a purchasing alliance of five public health services with Hospital in the Home programs, and its contracted private home nursing provider",
+    "invented_names": [
+      "Ironbark Health Alliance",
+      "Bellbird Home Nursing",
+      "Northgate Health",
+      "Riverbend Health",
+      "Westmere Health",
+      "Kingsdale Health",
+      "Hillcrest Health"
+    ],
+    "people": [
+      "Joan Rogers",
+      "Timothy Cardenas",
+      "Maureen Phillips",
+      "George Grant",
+      "Tony Tucker",
+      "Miranda Medina",
+      "Dennis McMahon"
+    ]
+  },
+  "deliverables": [
+    "hith_overflow_block_2027q1.xlsx",
+    "hith_monthly_visits_2024-26.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The upper percentile of a period's total is set by how many of the units that generate it arrive and how long each one runs, so it has to be built from those units and their durations counted inside the window; treating the counted rows, or the weeks or months they fall in, as independent draws, or carrying a site's own past spread onto a planned mix that adds long-running units, understates it and misplaces every capped top-up.",
+  "driver_concrete": "Each member's January to March 2027 HITH visits are the home days of patients admitted at random, each stream's stay set by its course (weeks for a bone and joint infection, days for cellulitis), so the 90th-percentile requirement is built from the plan's admissions by stream and the stays on file counted inside the quarter; a Poisson margin on the planned visits, or the spread of past weeks, months or quarters carried onto the plan, understates it, most at the two members opening the bone and joint infection pathway, and books the block in the wrong lots.",
+  "stump": "A competent solver takes each member's planned visits as its expected requirement, adds the 90th-percentile margin of a Poisson count (or the spread of its past monthly visits) and books small lots spread across all five members; the step that lands it there is treating visits as independent counts when they arrive in admissions whose stays run from days to weeks, so the quarter's spread is the admissions' and their stays': built from them, the two pathway members need several lots each and the block runs out before the last member in the order.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the alliance agreement, the operating plans and the capacity returns correctly takes each member's planned January to March 2027 visits as its mean, adds a Poisson or monthly-spread margin, tops members up above in-house capacity in the agreement's order and books small lots for every member with the block left partly unbooked; every field and rule is read right and the booking is still wrong, because the visits come from admissions whose stays run for weeks.",
+  "domain_test": "The deciding quantity is each member's 90th-percentile HITH visit requirement for the quarter, the home days of a random stream of admissions with stream-specific lengths of stay counted inside the quarter, the admissions-times-length-of-stay accounting health services plan HITH capacity with; with another field's nouns (technician visits, megawatt-hours) the admissions, the infection-specific courses and the HITH day have no counterpart, and neither does the spread they create.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:quarter-percentile-of-hith-visits-built-from-admissions-and-stays",
+  "layer1": [
+    "a census warehouse loaded from five members' returns, each member's patient numbers in its own format and one member's campus code reissued after a 2025 merger",
+    "the program stream taxonomy revised on 1 July 2025, earlier days coded in the old streams and joined through the alliance crosswalk",
+    "operating plans laid out by financial year (July to June), one sheet per member with header blocks and footnotes",
+    "a course interrupted by a ward readmission returned as two HITH episodes under one patient number",
+    "episodes still at home on 30 September 2026 present only to that date",
+    "the provider's visit export stamped in UTC by its mobile platform",
+    "provider visits re-posted by the mobile app after offline working, under fresh visit numbers",
+    "referrals resent through the alliance portal when the first was not acknowledged, and provider acceptance times taken from its own platform"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "stump_strategy other: the decisive move is the dependence structure of a period total (the independent unit of the quarter's visits is the admission with its stay, not the visit, the week or the month), which no listed family names; G2 marks the unit question (what one independent unit of the requirement is), G13 the window (visits inside the quarter from admissions before it), G6 the planned mix moving long stays into two members. Nearest library lines: healthcare-delivery-health-economics/utilization-access-demand-forecasting/4 (plan capacity to an overdispersed quantile) and general-statistics-data-science/resampling-simulation-monte-carlo-methods/1 (resample the independent unit). Forcing event launch_or_rollout: the bone and joint infection at home pathway opens at two members on 1 October 2026, which is what makes this quarter's booking differ from the last ones.",
+  "registered": "2026-10-15T04:26:18Z"
+}
