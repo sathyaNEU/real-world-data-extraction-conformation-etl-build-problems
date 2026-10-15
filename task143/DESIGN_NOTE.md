@@ -339,8 +339,10 @@ Neither is keyed to the call, its construction or its figures; they share no pri
 
 **Ask A. For each of the four repair partners, the capacity replacements under the warranty carried out from October
 2025 to September 2026 and what one cost on average, to the nearest euro** (8 figures): Dauvergne Réparation 99 at 99,
-Tolley Marsh Repair 81 at 102, Ljungqvist Service 58 at 112, Ferrucci Assistenza 79 at 96 (unrounded 98.9977,
-102.0447, 111.9825, 95.9921, each within 0.05 of a whole euro).
+Tolley Marsh Repair 81 at 102, Ljungqvist Service 58 at 112, Ferrucci Assistenza 79 at 96 (unrounded 99.086,
+101.892, 111.732, 95.933). With a battery that never travelled dropped from the average, or given its partner's mean
+freight, the four read 99.086 and 99.086, 102.054 and 102.046, 112.225 and 112.260, 96.070 and 96.066: every reading on
+the golden euro, each 0.23 or more from an edge (asserted).
 - H18 home: the cost of one replacement where the lot's packs will be serviced, which values the reserve (FIN-RS-04
   3.4: Service Operations controlling values it); a measure the reserve carries that the count does not turn on. Use:
   the reserve's valuation in the release record, in the controller's words ("what one cost us").
@@ -360,13 +362,16 @@ Tolley Marsh Repair 81 at 102, Ljungqvist Service 58 at 112, Ferrucci Assistenza
 - Hazards: HA1 (D2) Tolley Marsh Repair's March 2026 invoice and its reissue in one workbook, the first with last
   year's handling fee and one job billed twice; HA2 (D3) GBP and SEK lines at treasury's month-end rate for the service
   period; HA3 (D2) the service pack's standard cost lowered from 1 January 2026; HA4 (D5) goodwill replacements after
-  600 cycles and no-fault-found diagnoses on the same invoices; HA5 (D4) batteries that never reached Bielefeld carry no
-  consignment.
-- Stops (computed and asserted): S1 freight on every row: 99 at 151, 81 at 156, 58 at 154, 79 at 147; S2 closing
-  days: 87 at 100, 69 at 103, 51 at 113, 69 at 97; S3 both (the cracker): 87 at 147, 69 at 152, 51 at 151, 69 at 146;
-  S4 no freight: 95, 96, 103, 91; S5 goodwill kept: 279, 225, 158 and 223 replacements. HA1, HA2 and HA3 alone stay
-  inside the euro (Tolley Marsh 102.16 with both invoices, 102.15 at the invoice date's rate; the current pack cost
-  throughout 98.68, 101.76, 111.58, 95.83): texture.
+  600 cycles and no-fault-found diagnoses on the same invoices, a goodwill case's gauge count above 600 against every
+  warranty case's at or below it (the service extracts note says the gauge counts the cycle in which it learns a
+  capacity fault); HA5 (D4) a battery scrapped where it was removed (swollen, or failing the transport check) is not
+  shipped, has no row and carries no freight, its repair standing as any other (filed in the service extracts note, 7
+  of 317 partner lines).
+- Stops (computed and asserted): S1 freight on every row: 99 at 153, 81 at 159, 58 at 156, 79 at 149; S2 closing
+  days: 87 at 100, 69 at 103, 51 at 113, 69 at 97; S3 both (the cracker): 87 at 149, 69 at 156, 51 at 154, 69 at 147;
+  S4 no freight: 95, 96, 102, 91; S5 goodwill kept: 279, 225, 158 and 223 replacements. HA1, HA2, HA3 and HA5 alone
+  stay inside the euro (Tolley Marsh 102.01 with both invoices, 101.99 at the invoice date's rate; the current pack
+  cost throughout 98.77, 101.60, 111.33, 95.77; the never-shipped readings above): texture.
 - Span: the case system, the four invoice workbooks, the returns log, the carrier statement, treasury's rates, the cost
   sheet and the service extracts note (10 files); case_no, region, partner, fault_code, warranty, action, closed_utc;
   the invoice number, the invoice it replaces, the period, the currency, the line's case, labour and handling;
@@ -398,12 +403,12 @@ differs from every other's).
 
 | Hazard | Root cause | Moves | Per-ask delta |
 |---|---|---|---|
-| HA1 the March invoice and its reissue | Tolley Marsh's queried invoice | Ask A, Tolley Marsh | 0.11 euro, inside the euro |
+| HA1 the March invoice and its reissue | Tolley Marsh's queried invoice | Ask A, Tolley Marsh | 0.12 euro, inside the euro |
 | HA2 GBP and SEK at another month's rate | treasury's month-end table | Ask A, Tolley Marsh and Ljungqvist | 0.10 and 0.05 euro |
 | HA3 the pack's standard cost from 1 January 2026 | the cost sheet's two rows | Ask A, every partner | 0.16 to 0.40 euro |
 | HA4, HB2 goodwill and diagnoses beside warranty replacements | the partners' invoices, the case codes | Ask A counts, Ask B every month | +180, +144, +100, +144; +11 to +97 a month |
 | HB1 carried-over depot orders | the depot's move from SAP | Ask B, October to February | +3 to +12 a month |
-| HA5, HB3 batteries never received, repairs open at the cut | the returns depot, the extract | Ask A freight, Ask B September | inside the golden's handling |
+| HA5, HB3 batteries scrapped where removed, repairs open at the cut | the partners' transport check, the extract | Ask A freight, Ask B September | 0.00 to 0.53 euro, inside the euro; part of the closing-month shift |
 
 **Referee.** The invoice's service period arbitrates the repair month and the carrier statement the freight; each is
 a source the golden reads, neither a control that ties only under the golden. No filed sentence says when a partner
@@ -412,7 +417,7 @@ case closes or that the log's freight is the consignment's (asserted for the fir
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
 | A replacements (4) | partner cases CAP, WTY, REPLACED closed in the twelve months | 87, 69, 51, 69 against 99, 81, 58, 79 | miss |
-| A average cost (4) | the invoice line at the closing month's rate, the log's freight on the battery's row, the pack at the closing day's cost | 147, 152, 151, 146 against 99, 102, 112, 96 | miss |
+| A average cost (4) | the invoice line at the closing month's rate, the log's freight on the battery's row, the pack at the closing day's cost | 149, 156, 154, 147 against 99, 102, 112, 96 | miss |
 | B the twelve months (12) | the depot's orders and cases by repair day (carried-over orders once), the partners' cases by closing month | 12, 7, 17, 31, 16, 46, 31, 39, 61, 52, 53, 83 against the golden | miss |
 | the chart | the cracker's month counts drawn as the golden draws them | its bars carry Ask B's miss | outside |
 
@@ -462,7 +467,22 @@ mirror about 22 with the instructions, the chart's form and part of the componen
   - the service extracts note and the cost sheet name the partners beside numbers: country codes, vendor codes and
     contract rates (labour, handling, diagnosis), one part of an invoice line; neither states an average cost or ranks
     the partners.
-- **Stage 4 open:** the leak reader and the determinism judge, spawned together by the main session.
+- **Stage 4.** The leak reader came back clean (no announcing sentence, no ranking file, no answer figure, the decisive
+  step analytical, every REVIEW line harmless); its solver's-eye read is appended to `leak_check_report.md`. The
+  determinism judge returned DETERMINISTIC, FIX_NOW of low severity (`determinism_check_report.md`): the reserve, the
+  partner counts, the twelve months and the FX, cost-date and invoice bases all reproduced; two readings were open.
+  Repair, in one generator pass with the call, the stump and every graded figure frozen: (1) Ljungqvist's average read
+  112 with no freight for a battery that never travelled and 113 with the line dropped or the mean freight filled; the
+  service extracts note now files that such a battery is not shipped, has no row and no freight and its repair
+  stands, the share of batteries scrapped where they were removed went from 5.5 to 2 per cent (7 of 317 partner
+  lines), and Tolley Marsh's and Ljungqvist's labour rates moved (GBP 33.75, SEK 505.50) so every reading of every
+  partner rounds to the golden euro (asserted); (2) goodwill case KS26-015372 sat at a gauge count of 600: the gauge
+  now counts the cycle in which it learns a capacity fault (filed), every warranty case sits at or below 600 and every
+  goodwill or paid one above (asserted), and the case reads 601; (3) the extract notes renamed
+  `extract_note_battery_lab_2026-10-12.txt` and `extract_note_service_operations_2026-10-09.txt`. After it:
+  `build.py` 143 assertions, verify 6 of 6, two builds byte-identical, `target.zip` sha256 78dc1ed8...; `freeze.py
+  check --mode determinism` passes with six cost parts allowed (`ask_a_parts`, the freight and invoice-line averages
+  the repair moved; no graded figure moved). Next: the single re-judge.
 
 ## Tried and rejected
 
@@ -511,3 +531,15 @@ mirror about 22 with the instructions, the chart's form and part of the componen
 - The context artifact keyed `filed_model` (QM-07): after the stage 3 rebase task455's re-registration put task141's
   filed model in this build's last three and `heart` BLOCKed on `ban.artifact`; re-keyed `monitoring_export`, the life
   monitoring results, with QM-07 read as a governing document.
+- Batteries that never reached the returns depot at 5.5 per cent of removals, unexplained (judge FIX_NOW, low): 18 of
+  317 partner lines had no row, and Ljungqvist's average read 112 with no freight but 113 with the line dropped or the
+  mean freight filled. The service extracts note now files the battery scrapped where it was removed (no row, no
+  freight, the repair stands), the share is 2 per cent, and two labour rates moved so every reading rounds to the
+  golden euro; the cost parts in figures.json moved with them (`freeze.py --allow` ask_a_parts.DVG.freight_eur,
+  ask_a_parts.TMR.freight_eur, ask_a_parts.TMR.invoice_eur, ask_a_parts.LJQ.freight_eur, ask_a_parts.LJQ.invoice_eur,
+  ask_a_parts.FRC.freight_eur; no graded figure moved).
+- A goodwill capacity case at a gauge count of exactly 600 (KS26-015372, judge): read against "within 600 cycles" it
+  could join the warranty count. The gauge now counts the cycle in which it learns a capacity fault, which the service
+  extracts note files; the case reads 601, and no warranty case sits above 600 or goodwill case at or below it.
+- Extract notes named `README_battery_extracts.txt` and `README_service_extracts.txt`: the judge read the name as a
+  build artifact; renamed for the system that wrote each.

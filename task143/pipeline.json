@@ -9,14 +9,14 @@
   "updated": "2026-10-15",
   "stump": "A competent solver computes RL-3's features for lot ZC2638's 120 release-test cells, predicts each cell's life with the model's validation error, averages each cell's chance of falling below 80 per cent within 600 cycles (2.4 per cent) and compounds it over a pack's three cells as if they were independent, filing 500 packs (514); the step that lands it there is treating a pack's three cells as independent draws when they are tray-mates and the release model's error is mostly a formation-tray effect they share: carried through the tray effect the finished lots' whole trays show, a pack's chance is 5.5 per cent and the reserve 400 packs (398.9).",
   "architecture": 1,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
     "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-15, --asof 2026-10-12); every line answered in the design note's Gate record",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (10-15 after the FIX_NOW rebuild, --asof 2026-10-12); every line answered in leak_check_report.md and the design note",
+    "reader": "clean (stage 4, 10-15): no announcing sentence, no ranking file, no answer figure, decisive step analytical, every REVIEW line harmless; solver's-eye read appended to leak_check_report.md"
   },
   "duplicate_check": {
     "heart": "WARN (strategy risk, repeat.gate_g, repeat.question_form; answered in ## Draw); rechecked after the rebase, context artifact re-keyed monitoring_export (ban.artifact against task141 once task455 re-registered)",
@@ -24,12 +24,12 @@
     "note": "drawn 2026-10-15 after git pull (task142, task455, task260, task141 on file); at stage 3 the decisive generator moved from G10 to G17 (surface had promoted task98 on gap, pattern and decision family)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "FIX_NOW (low severity), applied 10-15 in one generator pass; the single re-judge next",
+    "report": "task143/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge. Spawn the leak reader and the determinism judge together on a fresh unzip of task143/target.zip with prompt.txt (and the judge with submission.md's graded blocks); fix every finding in the generator in one pass, rerun build.py and the free gates (precut, figures_check, leak.py --asof 2026-10-12, guard surface and heart), re-judge once on FIX_NOW, then stage 5.",
+  "resume": "stage 4: the single re-judge. Spawn the determinism judge once on a fresh unzip of task143/target.zip (sha256 78dc1ed8af3a8e008a5359b087e3d31a6f496e7077e6696bd7beb2b90910b2cc) with prompt.txt and submission.md's graded blocks; the reader re-runs only if the judge's findings change a document or the prompt (the repair changed the service extracts note and renamed both extract notes). On APPROVE, stage 5.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -38,12 +38,13 @@
   "portal_status_date": "",
   "wave": "wave 3 (new), seed FC14 (world, decision and quantity kept; pitfall re-found)",
   "gates_stage3": {
-    "checks": "139 assertions, 0 failed",
+    "checks": "143 assertions, 0 failed",
     "verify": "6 of 6 figures",
     "rebuild": "two builds byte-identical",
     "figures_check": "58 figures, 0 absent",
     "voice_check": "PASS (924 characters)",
     "container": "clean (target and golden)",
-    "guard": "validate clean; surface 0 promoted; heart WARN"
+    "guard": "validate clean; surface 0 promoted; heart WARN",
+    "freeze": "determinism mode PASS with ask_a_parts freight and invoice-line averages allowed (no graded figure moved)"
   }
 }

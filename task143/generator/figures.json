@@ -71,22 +71,22 @@
   "ask_a_parts": {
     "DVG": {
       "invoice_eur": "44.85",
-      "freight_eur": "4.03",
+      "freight_eur": "4.12",
       "pack_eur": "50.12"
     },
     "TMR": {
-      "invoice_eur": "45.99",
-      "freight_eur": "5.96",
+      "invoice_eur": "45.70",
+      "freight_eur": "6.10",
       "pack_eur": "50.09"
     },
     "LJQ": {
-      "invoice_eur": "52.59",
-      "freight_eur": "9.19",
+      "invoice_eur": "51.83",
+      "freight_eur": "9.70",
       "pack_eur": "50.20"
     },
     "FRC": {
       "invoice_eur": "40.85",
-      "freight_eur": "5.18",
+      "freight_eur": "5.12",
       "pack_eur": "49.96"
     }
   },

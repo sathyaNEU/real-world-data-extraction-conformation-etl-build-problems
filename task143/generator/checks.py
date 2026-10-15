@@ -166,6 +166,34 @@ def comp_of(target):
     return CA.composition(CA.genealogy(target), CA.tray_map(target))
 
 
+def freight_variants(target):
+    """Each partner's average cost with a battery that never travelled read three ways: no freight (the golden), the
+    line dropped from the average, and the partner's mean freight filled in; and the number of such lines."""
+    fx = CA.fx_table(target)
+    pack, depot, coll = CA.cost_tables(target)
+    carrier, by_ref = CA.freight(target)
+    rows = defaultdict(list)
+    for e in CA.partner_replacements(target):
+        if e["ym"] not in CA.WINDOW or e["line"] is None:
+            continue
+        l = e["line"]
+        y, m = e["ym"]
+        rate = 1.0 if l["currency"] == "EUR" else fx[(y, m, l["currency"])]
+        fr = None
+        if e["case"] in by_ref:
+            ch, pcs = carrier[by_ref[e["case"]][0]]
+            fr = ch / pcs
+        rows[l["partner"]].append((l["amount"] / rate + CA.valid(pack, dt.date(y, m, 15)), fr))
+    out = {}
+    for p, rs in rows.items():
+        base = np.array([r[0] for r in rs])
+        have = np.array([r[1] is not None for r in rs])
+        frv = np.array([r[1] if r[1] is not None else 0.0 for r in rs])
+        out[p] = ((base + frv).mean(), (base[have] + frv[have]).mean(),
+                  (base + np.where(have, frv, frv[have].mean())).mean(), int((~have).sum()))
+    return out
+
+
 # ---------------------------------------------------------------------------------------------------- the clean truth
 def truth_reserves(W, m):
     """The default construction and the decisive step alone on the generator's clean truth: the release-test cells'
@@ -473,8 +501,33 @@ def run(target, golden, W=None, meta_path=None):
       all(ga[p][0] == at[p][0] and abs(ga[p][1] - at[p][1]) < 1e-6 for p in CA.PARTNERS),
       {p: (ga[p], at[p]) for p in CA.PARTNERS})
     A("ask B fair: the golden handling reproduces the field's own month counts exactly", gb == bt, (gb, bt))
+    # the battery that never travelled: the service extracts note files it (no row, no freight, the repair stands);
+    # and every reading of it (nothing billed, the line dropped, the partner's mean freight) rounds to the golden euro
+    A("ask A: the service extracts note files a battery scrapped where it was removed (no row, no freight, the repair "
+      "stands)", "is not shipped: it has no row and no freight is billed for it, and its case and its invoice line stand "
+      "as for any other repair" in texts[K.F_README_SVC], "")
+    fv = freight_variants(target)
     for p in CA.PARTNERS:
-        A("ask A %s average mid-bin (within 0.2 of a whole euro)" % p, mid(ga[p][1], 1) >= 0.3, "%.4f" % ga[p][1])
+        z, d_, m_ = fv[p][:3]
+        A("ask A %s: no freight, the line dropped and the mean freight all round to the golden euro, each 0.15 or more "
+          "from the bin's edges" % p,
+          all(K.round_to(v, 1) == K.round_to(ga[p][1], 1) and mid(v, 1) >= 0.15 for v in (z, d_, m_)) and
+          abs(z - ga[p][1]) < 1e-9, "%.3f %.3f %.3f (%d never shipped)" % (z, d_, m_, fv[p][3]))
+    # the warranty line on the gauge's count: every capacity case or order under the warranty sits at or below 600
+    # cycles, every goodwill or paid one above
+    cs_rows = CA.cases(target)
+    bad = [r["case_no"] for r in cs_rows if r["fault_code"] == "CAP" and r["cycle_count"] and
+           (r["warranty"] == "WTY") != (int(r["cycle_count"]) <= K.WARRANTY_CYCLES)]
+    A("asks: every capacity case's cycle count agrees with its warranty code (WTY at or below 600, GW and OOW above)",
+      not bad, bad[:5])
+    sap_bad = [str(r["Auftrag"]) for r in CA.sap_orders(target) if r["Schadenscode"] == "B10" and r["Zykluszähler"] is
+               not None and (r["Auftragsart"] == "ZS01") != (int(r["Zykluszähler"]) <= K.WARRANTY_CYCLES)]
+    A("asks: every SAP capacity order's cycle count agrees with its order type (ZS01 at or below 600)", not sap_bad,
+      sap_bad[:5])
+    edge = [r["case_no"] for r in cs_rows if r["fault_code"] == "CAP" and r["warranty"] != "WTY" and r["cycle_count"]
+            and int(r["cycle_count"]) == K.WARRANTY_CYCLES]
+    A("asks: no goodwill or paid capacity case sits on 600 cycles (KS26-015372 at 601)", not edge and any(
+        r["case_no"] == "KS26-015372" and r["cycle_count"] == "601" for r in cs_rows), edge)
     A("ask A the partners' counts all differ", len({ga[p][0] for p in CA.PARTNERS}) == 4, ga)
     A("ask B the twelve month counts all differ", len(set(gb.values())) == 12, gb)
     crack_a = A_["cracker: closing days and the log's freight"]

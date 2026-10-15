@@ -27,6 +27,7 @@ END = dt.datetime.combine(K.SERVICE_END, dt.time(23, 59))
 ALPHA = "0123456789ABCDEFGHJKLMNPQRSTUVWXYZ"
 
 EVENTS_KEY = (4,)          # the stream of the field's events
+SCRAPPED_ON_SITE = 0.02    # the share of removed batteries that fail the partner's transport check
 APPROVAL_KEY = (11,)       # the stream of the partners' invoice dates
 
 # rates of the battery events other than capacity, per pack-year in service
@@ -175,7 +176,12 @@ def events(W):
             if tf > END:
                 break
             cycles = (tf - fit_t).total_seconds() / 86400.0 * nb.use
-            ev = SimpleNamespace(nb=nb, code=code, t_fail=tf, cycles=int(cycles), removed=cur.serial, region=nb.region)
+            # the gauge's cycle count with the fault: a capacity fault is learned at the end of the cycle in which the
+            # full charge capacity fell below 80 per cent, so its count includes that cycle; other faults carry the
+            # cycles completed
+            ev = SimpleNamespace(nb=nb, code=code, t_fail=tf,
+                                 cycles=int(math.ceil(cycles)) if code == "CAP" else int(cycles),
+                                 removed=cur.serial, region=nb.region)
             if code == "CAP":
                 if cycles <= K.WARRANTY_CYCLES:
                     if r.random() < 0.05:        # the owner never asks
@@ -288,7 +294,8 @@ def systems(W):
 def returns(W):
     """The returns depot in Bielefeld receives the batteries the repairs removed, consignment by consignment: each
     partner sends its removed batteries weekly, the DACH depot hands them over daily. Swollen batteries are scrapped
-    where they are removed and never travel; a few others never arrive. The carrier bills each consignment once."""
+    where they are removed and never travel, and so is a battery that fails the transport check for damaged lithium
+    cells. The carrier bills each consignment once."""
     r = K.rng("returns")
     rows = []
     cons = []
@@ -296,7 +303,7 @@ def returns(W):
     for ev in W.events:
         if ev.code in ("NFF", "SWL") or ev.fitted is None or ev.closed is None:
             continue
-        if r.random() < 0.055:
+        if r.random() < SCRAPPED_ON_SITE:      # failed the transport check: scrapped where it was removed
             continue
         wk = ev.closed.isocalendar()[:2]
         key = (PARTNER[ev.region], wk) if ev.region != "DACH" else ("KVD", ev.closed.date())
@@ -361,8 +368,8 @@ if __name__ == "__main__":
 # ---------------------------------------------------------------------------------------------------- money
 FEES = {   # partner: currency, labour, handling, diagnosis only (no fault found)
     "SVT": ("EUR", 38.85, 6.00, 24.00),
-    "HRL": ("GBP", 34.00, 5.50, 21.00),
-    "NFX": ("SEK", 514.0, 75.0, 310.0),
+    "HRL": ("GBP", 33.75, 5.50, 21.00),
+    "NFX": ("SEK", 505.5, 75.0, 310.0),
     "RPS": ("EUR", 35.85, 5.00, 22.00),
 }
 PARTNER_NAME = {"SVT": "Dauvergne Réparation SAS", "HRL": "Tolley Marsh Repair Ltd", "NFX": "Ljungqvist Service AB",

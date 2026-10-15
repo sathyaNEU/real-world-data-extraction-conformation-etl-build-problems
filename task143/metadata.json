@@ -38,27 +38,9 @@
   "generator": "task143/generator/build.py",
   "files": [
     {
-      "path": "README_battery_extracts.txt",
-      "format": "txt",
-      "bytes": 2976,
-      "rows": null,
-      "source": "Constructed: The battery reliability lab's and battery plant's note on the release extracts",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "README_service_extracts.txt",
-      "format": "txt",
-      "bytes": 3457,
-      "rows": null,
-      "source": "Constructed: Service Operations' note on the service and costing extracts",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "carrier_statement_inbound_returns_2025-09_2026-10.csv",
       "format": "csv",
-      "bytes": 15421,
+      "bytes": 15426,
       "rows": 222,
       "source": "Constructed: Carrier statement of inbound consignments of returned batteries",
       "date": "2026-10-12",
@@ -67,7 +49,7 @@
     {
       "path": "depot_returns_log_2024-09_2026-09.xlsx",
       "format": "xlsx",
-      "bytes": 127161,
+      "bytes": 131437,
       "rows": null,
       "source": "Constructed: Bielefeld returns depot goods-receipt log of returned batteries",
       "date": "2026-10-12",
@@ -76,9 +58,27 @@
     {
       "path": "depot_service_orders_2024-09_2026-03.xlsx",
       "format": "xlsx",
-      "bytes": 28506,
+      "bytes": 28505,
       "rows": null,
       "source": "Constructed: DACH depot SAP service orders, September 2024 to 1 March 2026",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_note_battery_lab_2026-10-12.txt",
+      "format": "txt",
+      "bytes": 2976,
+      "rows": null,
+      "source": "Constructed: The battery reliability lab's and battery plant's note on the release extracts",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "extract_note_service_operations_2026-10-09.txt",
+      "format": "txt",
+      "bytes": 3982,
+      "rows": null,
+      "source": "Constructed: Service Operations' note on the service and costing extracts",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -112,7 +112,7 @@
     {
       "path": "invoices_ljungqvist_nor_2025-09_2026-09.xlsx",
       "format": "xlsx",
-      "bytes": 29039,
+      "bytes": 29082,
       "rows": null,
       "source": "Constructed: Ljungqvist Service invoices to Service Operations",
       "date": "2026-10-12",
@@ -121,7 +121,7 @@
     {
       "path": "invoices_tolley_marsh_uki_2025-09_2026-09.xlsx",
       "format": "xlsx",
-      "bytes": 35547,
+      "bytes": 35588,
       "rows": null,
       "source": "Constructed: Tolley Marsh Repair invoices to Service Operations",
       "date": "2026-10-12",
@@ -202,7 +202,7 @@
     {
       "path": "service_cases_2024-09_2026-09.csv",
       "format": "csv",
-      "bytes": 400871,
+      "bytes": 400873,
       "rows": 3517,
       "source": "Constructed: Service case system extract, Model K battery cases, September 2024 to September 2026",
       "date": "2026-10-12",
@@ -211,7 +211,7 @@
     {
       "path": "service_cost_sheet_fy2026.xlsx",
       "format": "xlsx",
-      "bytes": 9578,
+      "bytes": 9581,
       "rows": null,
       "source": "Constructed: Service Operations controlling cost sheet FY2026",
       "date": "2026-10-12",
