@@ -1,28 +1,28 @@
 {
   "task": "task455",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "survey-research-official-statistics",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-15",
-  "stump": "The default path counts each county's new employer accounts with first employment in 2026, net of the predecessors the register records, and designates Caldmere, Eskwell and Quarrin, because an acquired chain re-registered its Caldmere sites without filing for the predecessor's rate; counted by the workforces arriving together from accounts that stopped reporting the quarter before, the designation is Dunrath, Eskwell and Quarrin.",
+  "stump": "The default path counts each county's new employer accounts first employing in 2026, net of the predecessors the register records, and designates Caldmere, Eskwell and Tolbeck (Caldmere at 11.1 per 100), because a buyer re-registered nineteen Caldmere stores and twenty-one businesses moved into Tolbeck's enterprise park under new accounts without a filed transfer; an address match catches the stores but not the moves and removes Quarrin's storefront births; counted by the workforce paid together the quarter before by one account that then stopped reporting, the designation is Dunrath, Eskwell and Quarrin.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (no LEAK): golden digits inside wage amounts, the county names in the guideline",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN (three_rules.strategy_risk, overuse.org_family, overuse.objective; task82 differentiated)",
     "nearest": "0.06 task87 lineage, 0.06 task98 lineage",
     "note": "architecture 2 registered 2026-10-15: guard WARN three_rules.strategy_risk, overuse.org_family, overuse.objective; task82 v2 differentiated",
-    "surface": ""
+    "surface": "task82 promoted (same-driver signature, differentiated on the card); nearest task448 0.101"
   },
   "judge": {
     "verdict": "",
@@ -31,7 +31,7 @@
     "brief": ""
   },
   "returned": [],
-  "resume": "stage 2 design for architecture 2: readability screen, semantic fork table, ladder with built magnitudes, closure table, literal reader, oracles, the asks (supplemental-stumping), prompt.txt; then the generator (UI employer register, quarterly establishment reports, wage records, program guideline) and stage 3",
+  "resume": "stage 4: the leak reader and the judge's thread are running on the 2026-10-15 cut (target.zip sha256 4c0245c3431f23af); collect both, fix every finding in the generator in one pass, re-judge once on FIX_NOW; then ship",
   "approved": null,
   "delivered": null,
   "portal": null,

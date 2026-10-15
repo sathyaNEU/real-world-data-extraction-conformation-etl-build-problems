@@ -1,0 +1,164 @@
+{
+ "counties": {
+  "Brennock": {
+   "base": 1618,
+   "births": 113,
+   "code": "011",
+   "filed": 14,
+   "new": 136,
+   "rank": 6,
+   "rate": 7.0,
+   "rate_unrounded": 6.9839,
+   "set_aside": 23,
+   "workforce": 9
+  },
+  "Caldmere": {
+   "base": 702,
+   "births": 55,
+   "code": "019",
+   "filed": 6,
+   "new": 84,
+   "rank": 4,
+   "rate": 7.8,
+   "rate_unrounded": 7.8348,
+   "set_aside": 29,
+   "workforce": 23
+  },
+  "Dunrath": {
+   "base": 1236,
+   "births": 121,
+   "code": "027",
+   "filed": 9,
+   "new": 135,
+   "rank": 2,
+   "rate": 9.8,
+   "rate_unrounded": 9.7896,
+   "set_aside": 14,
+   "workforce": 5
+  },
+  "Eskwell": {
+   "base": 759,
+   "births": 86,
+   "code": "041",
+   "filed": 7,
+   "new": 98,
+   "rank": 1,
+   "rate": 11.3,
+   "rate_unrounded": 11.3307,
+   "set_aside": 12,
+   "workforce": 5
+  },
+  "Fennamore": {
+   "base": 1104,
+   "births": 73,
+   "code": "053",
+   "filed": 10,
+   "new": 88,
+   "rank": 7,
+   "rate": 6.6,
+   "rate_unrounded": 6.6123,
+   "set_aside": 15,
+   "workforce": 5
+  },
+  "Quarrin": {
+   "base": 863,
+   "births": 82,
+   "code": "077",
+   "filed": 5,
+   "new": 90,
+   "rank": 3,
+   "rate": 9.5,
+   "rate_unrounded": 9.5017,
+   "set_aside": 8,
+   "workforce": 3
+  },
+  "Tolbeck": {
+   "base": 612,
+   "births": 44,
+   "code": "089",
+   "filed": 5,
+   "new": 71,
+   "rank": 5,
+   "rate": 7.2,
+   "rate_unrounded": 7.1895,
+   "set_aside": 27,
+   "workforce": 22
+  }
+ },
+ "designated": [
+  "Eskwell",
+  "Dunrath",
+  "Quarrin"
+ ],
+ "designated_order": [
+  "Eskwell",
+  "Dunrath",
+  "Quarrin"
+ ],
+ "gap": 1.7,
+ "new_accounts": 702,
+ "rate_unit": 100,
+ "runner_up": "Caldmere",
+ "totals": {
+  "base_2024q4": 6895,
+  "base_2025q4": 6894,
+  "births_2025": 542,
+  "births_2026": 574,
+  "deaths_2025": 549,
+  "filed_2026": 56,
+  "new_2026": 702,
+  "set_aside_2026": 128,
+  "workforce_2026": 72
+ },
+ "y2025": {
+  "Brennock": {
+   "base_2024q4": 1621,
+   "birth_rate": 7.3,
+   "births": 118,
+   "death_rate": 7.1,
+   "deaths": 115
+  },
+  "Caldmere": {
+   "base_2024q4": 703,
+   "birth_rate": 7.4,
+   "births": 52,
+   "death_rate": 8.0,
+   "deaths": 56
+  },
+  "Dunrath": {
+   "base_2024q4": 1225,
+   "birth_rate": 8.5,
+   "births": 104,
+   "death_rate": 7.4,
+   "deaths": 91
+  },
+  "Eskwell": {
+   "base_2024q4": 738,
+   "birth_rate": 10.4,
+   "births": 77,
+   "death_rate": 7.7,
+   "deaths": 57
+  },
+  "Fennamore": {
+   "base_2024q4": 1106,
+   "birth_rate": 7.3,
+   "births": 81,
+   "death_rate": 7.6,
+   "deaths": 84
+  },
+  "Quarrin": {
+   "base_2024q4": 889,
+   "birth_rate": 7.1,
+   "births": 63,
+   "death_rate": 11.0,
+   "deaths": 98
+  },
+  "Tolbeck": {
+   "base_2024q4": 613,
+   "birth_rate": 7.7,
+   "births": 47,
+   "death_rate": 7.8,
+   "deaths": 48
+  }
+ }
+}

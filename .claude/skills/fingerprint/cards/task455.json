@@ -1,119 +1,136 @@
 {
-  "task": "task455",
-  "architecture": "v2",
-  "drawn": "2026-10-15",
-  "slot_note": "re-root of task455 after architecture 1 (SROS vital registration misclassification) was spent on the re-judge's SEND_BACK; the seed ET12's world is not kept",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "census-register-administrative-data-quality",
-  "niche": "business demography from the unemployment insurance employer register: establishment births told apart from existing businesses re-registered under new employer accounts",
-  "objective": "etl",
-  "shape": "01",
-  "decision_type": "ranked_slate_under_cap",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
+ "task": "task455",
+ "architecture": "v2",
+ "drawn": "2026-10-15",
+ "slot_note": "re-root of task455 after architecture 1 (SROS vital registration misclassification) was spent on the re-judge's SEND_BACK; the seed ET12's world is not kept",
+ "domain": "survey-research-official-statistics",
+ "subdomain": "census-register-administrative-data-quality",
+ "niche": "business demography from the unemployment insurance employer register: establishment births told apart from existing businesses re-registered under new employer accounts",
+ "objective": "etl",
+ "shape": "01",
+ "decision_type": "ranked_slate_under_cap",
+ "answer_unit": "set_of_items",
+ "answer": "Designate Eskwell, Dunrath and Quarrin (11.3, 9.8 and 9.5 births per 100 establishments); Caldmere is the runner-up at 7.8, 1.7 below Quarrin.",
+ "answer_source": "task455/submission.md block 1; generator/figures.json",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G3",
+  "G10"
+ ],
+ "gate_g": "etl_conformance",
+ "calibration_form": "none",
+ "stump_strategy": "identity_resolution",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "register",
+ "stakeholder_role": "the business dynamics economist in the state Labor Market Information bureau, who certifies the counties' 2026 establishment birth rates for the Commerce Department's designation",
+ "role_family": "research_desk",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "qcew_private_establishments_2024q4_2026q4.csv",
+  "rows": 65564,
+  "entity": "one employer account's report for one quarter (monthly employment, wages, county, industry)",
+  "grain": "UI account x quarter",
+  "source": "synthetic (constructed in the layout of a state QCEW microdata extract)"
+ },
+ "forum": "minister_or_cabinet",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "government_agency",
+ "world": {
+  "geography": "an unnamed US state's Lornock Valley region (invented), seven counties",
+  "currency": "USD",
+  "org_type": "state workforce and commerce departments",
+  "invented_names": [
+   "Lornock Valley",
+   "Brennock",
+   "Caldmere",
+   "Dunrath",
+   "Eskwell",
+   "Fennamore",
+   "Quarrin",
+   "Tolbeck",
+   "Lornock Valley Development Region",
+   "Halvard Fuel Stop",
+   "Pellworth Market",
+   "Kessler Way",
+   "Pruitt Crossing",
+   "Larkin Bay",
+   "Halloway",
+   "Corriston",
+   "Wexley",
+   "Hollin",
+   "Marrow",
+   "Tindall",
+   "Oakridge",
+   "Bellmont",
+   "Saddler",
+   "Northam",
+   "Grissom",
+   "Ardley"
+  ],
+  "people": [
+   "Kristy Townsend",
+   "Brandon Compton",
+   "Chelsey Hensley"
+  ]
+ },
+ "deliverables": [
+  "formation_county_designation_2027.pdf",
+  "lornock_establishment_births_2026.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The units a period adds are new administrative identifiers, but some identifiers continue an existing unit under a new number: the continuity is recorded only for the units that filed it, a shared location marks it and also marks new units that replaced a closed one, and only the members who move together from an identifier that closed the period before separate the two; counting new identifiers net of the filed links, or of location matches, misranks the groups a membership-flow test ranks right.",
+ "driver_concrete": "A county's 2026 establishment births are the new unemployment insurance accounts first reporting employment in 2026 that are not existing businesses continuing under a new account; continuity shows in the workers paid together the quarter before by one account that then stopped reporting, not in the employer register's predecessor field (filled only when the buyer applies to take over the predecessor's experience rating), nor in a shared worksite address (which misses the businesses that moved and catches new businesses in vacated storefronts), nor in a similar name or industry.",
+ "stump": "The default path counts each county's new employer accounts first employing in 2026, nets off the predecessors the register records and designates Caldmere, Eskwell and Tolbeck (Caldmere at 11.1 per 100), because a buyer re-registered nineteen Caldmere stores and twenty-one businesses moved into Tolbeck's enterprise park under new accounts without a filed transfer; an address match catches the stores but not the moves and removes Quarrin's storefront births (Dunrath, Eskwell and Tolbeck); counted by the workforce paid together the quarter before by an account that then stopped reporting, the designation is Dunrath, Eskwell and Quarrin.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst counts each county's new accounts first employing in 2026, nets off the register's predecessors and designates Caldmere, Eskwell and Tolbeck; the more careful one also sets aside the accounts at the address of an account that closed and designates Dunrath, Eskwell and Tolbeck: re-registered stores and relocated businesses have no predecessor recorded, the relocations share no address, and the storefront re-lets do.",
+ "domain_test": "The deciding quantity is each county's establishment birth rate as business demography defines it, a new establishment and not a continuing business under a new employer account, built from the UI account openings and quarterly wage records by the employment-flow continuity test official business statistics use; with hospital or school nouns there is no employer account a business re-registers under and no workforce that moves with it, so the task stops reading the same.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:establishment-continuity-from-worker-flows",
+ "layer1": [
+  "several sources for one picture: the employer register, the quarterly contribution reports and the wage records",
+  "vintages: industry codes on two NAICS editions, county codes assigned from the ZIP code before the third quarter of 2025",
+  "imperfect keys: worksite addresses in two formats from the 2025 system replacement, a business's self-reported industry code on re-registration",
+  "documentation that has to be read: monthly employment on the 12th against quarterly wages, liability against registration dates, status and inactivation dates",
+  "genuine overlap: a worker on two accounts in a quarter (a job change), zero reports from open accounts, final pay after a closure"
+ ],
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task82": "task82's re-root credits a checkout to the channel a record names through a join; task455 v2 decides whether a new identifier is a new unit at all, from the members who move with it out of an identifier that closed, against a filed link that covers only some continuations and a location match that also catches replacements."
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "fate": "spent 2026-10-15 at stage 4: the leak readers missed the call twice (4.5 and 8.4 per cent, the first year only) but the one re-judge after the workbook asks' FIX_NOW returned NOT_DETERMINISTIC, SEND_BACK on the graded estimates: which drugs and certificate codes make the stimulant class behind the coroner's false opioid listings was never filed, and reading the certificate's stimulant as T43.6 alone (184 against 247, 25.5 per cent) or keeping cocaine apart (189, 25.0; 21.8 or 26.7 per cent with cocaine among the other drugs) moves the 2026 count, the baseline and the change, every variant releasing phase two.",
+   "domain": "survey-research-official-statistics",
+   "subdomain": "census-register-administrative-data-quality",
+   "objective": "etl",
+   "gap": [
     "population"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G3",
-    "G10"
-  ],
-  "gate_g": "etl_conformance",
-  "calibration_form": "none",
-  "stump_strategy": "identity_resolution",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "register",
-  "stakeholder_role": "the business dynamics economist in the state Labor Market Information bureau, who certifies the counties' 2026 establishment birth rates for the Commerce Department's designation",
-  "role_family": "research_desk",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "qcew_establishment_quarters_2024_2026.csv",
-    "rows": 0,
-    "entity": "one employer account's report for one quarter (monthly employment, wages, county, industry)",
-    "grain": "UI account x quarter",
-    "source": "synthetic (constructed in the layout of a state QCEW microdata extract)"
-  },
-  "forum": "minister_or_cabinet",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "government_agency",
-  "world": {
-    "geography": "an unnamed US state's Lornock Valley region (invented), seven counties",
-    "currency": "USD",
-    "org_type": "state workforce and commerce departments",
-    "invented_names": [
-      "Lornock Valley",
-      "Brennock",
-      "Caldmere",
-      "Dunrath",
-      "Eskwell",
-      "Fennamore",
-      "Quarrin",
-      "Tolbeck"
-    ],
-    "people": [
-      "Kristy Townsend",
-      "Brandon Compton",
-      "Chelsey Hensley"
-    ]
-  },
-  "deliverables": [
-    "formation_county_designation_2027.pdf",
-    "lornock_establishment_births_2026.xlsx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The units a period adds are new administrative identifiers, but some identifiers continue an existing unit under a new number: the continuity is recorded only for the units that filed it, a shared location marks it and also marks new units that replaced a closed one, and only the members who move together from an identifier that closed the period before separate the two; counting new identifiers net of the filed links, or of location matches, misranks the groups a membership-flow test ranks right.",
-  "driver_concrete": "A county's 2026 establishment births are the new unemployment insurance accounts with first employment in 2026 that are not existing businesses continuing under a new account; continuity shows in the workers who arrive together from an account that stopped reporting the quarter before, not in the employer register's successor field (filed only by employers taking over a predecessor's experience rating) nor in a shared address (which also catches new businesses in vacated premises).",
-  "stump": "A strong analyst counts each county's new employer accounts with first employment in 2026, nets off the successors the employer register records and the accounts sharing an address with one that closed, and designates the wrong three counties, because an acquired chain re-registered its sites without filing for the predecessor's rate (the register misses them) and a county's re-let premises hold new businesses (the address match removes them); only the workers arriving together from an account that closed the quarter before separate a continuing business from a new one.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst counts each county's new accounts with first employment in 2026, nets off the successors the employer register records and the accounts sharing an address with one that closed, and designates the wrong three counties: an acquired chain re-registered its stores without filing for the predecessor's rate, and a county's re-let premises hold new businesses that an address match removes.",
-  "domain_test": "The deciding quantity is each county's establishment birth rate as business demography defines it, a new establishment and not a continuing business under a new employer account, built from the UI account openings and quarterly wage records by the employment-flow continuity test official business statistics use; with hospital or school nouns there is no employer account a business re-registers under and no workforce that moves with it, so the task stops reading the same.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:establishment-continuity-from-worker-flows",
-  "layer1": [
-    "several sources for one picture: the employer register, the quarterly establishment reports and the wage records",
-    "vintages and revisions: industry codes on two NAICS vintages, amended quarterly reports",
-    "imperfect keys: employer account numbers, worksite addresses written several ways, hashed worker identifiers",
-    "documentation that has to be read: ownership codes, status codes, monthly employment against quarterly wages",
-    "genuine overlap: a worker on two accounts in one quarter (a job change), multi-worksite employers",
-    "real coverage: the 2026 fourth-quarter reports still arriving at the extract"
-  ],
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task82": "task82's re-root credits a checkout to the channel a record names through a join; task455 v2 decides whether a new identifier is a new unit at all, from the members who move with it out of an identifier that closed, against a filed link that covers only some continuations and a location match that also catches replacements."
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "fate": "spent 2026-10-15 at stage 4: the leak readers missed the call twice (4.5 and 8.4 per cent, the first year only) but the one re-judge after the workbook asks' FIX_NOW returned NOT_DETERMINISTIC, SEND_BACK on the graded estimates: which drugs and certificate codes make the stimulant class behind the coroner's false opioid listings was never filed, and reading the certificate's stimulant as T43.6 alone (184 against 247, 25.5 per cent) or keeping cocaine apart (189, 25.0; 21.8 or 26.7 per cent with cocaine among the other drugs) moves the 2026 count, the baseline and the change, every variant releasing phase two.",
-      "domain": "survey-research-official-statistics",
-      "subdomain": "census-register-administrative-data-quality",
-      "objective": "etl",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G6",
-        "G12",
-        "G16"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "go_hold_or_stop",
-      "stump_strategy": "composition_mix",
-      "layer2_pattern": "survey-research-official-statistics/census-register-administrative-data-quality/2",
-      "driver": "A register's count of one class is wrong in both directions: it misses some of the class and files in it some units of one neighbouring class only, a class that grows while the counted one shrinks; a full review of one period measures each true class's chance of being filed in each register category, so each period's count is solved from its own register categories, the false entries scaled by the neighbouring class's own visible entries; any multiplicative correction leaves the period-on-period change untouched, and a two-way error rate pooled over every unit outside the class misplaces the false entries as the neighbouring class grows.",
-      "driver_concrete": "The coroner's certificates name no drug on one overdose death in eight (an opioid death so certified is missed) and list fentanyl found but not contributing on half of the methamphetamine and cocaine deaths and on none of the other drug deaths; stimulant deaths grew from about 56 in 2021 to about 149 in 2026 while other drug deaths fell from about 83 to 61. The medical examiner's full review of 2025 gives each class's chance of each certificate category; solving each year's classes from its three certificate categories puts 2026 at 190 against a 2021 to 2023 average of 253, 24.9 per cent below, where the two-by-two correction with one false-listing rate over all non-opioid deaths files 12.1 per cent and the certificates 6.2."
-    }
-  ],
-  "notes": "",
-  "registered": "2026-10-15T07:33:45Z"
+   ],
+   "generators": [
+    "G6",
+    "G12",
+    "G16"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "go_hold_or_stop",
+   "stump_strategy": "composition_mix",
+   "layer2_pattern": "survey-research-official-statistics/census-register-administrative-data-quality/2",
+   "driver": "A register's count of one class is wrong in both directions: it misses some of the class and files in it some units of one neighbouring class only, a class that grows while the counted one shrinks; a full review of one period measures each true class's chance of being filed in each register category, so each period's count is solved from its own register categories, the false entries scaled by the neighbouring class's own visible entries; any multiplicative correction leaves the period-on-period change untouched, and a two-way error rate pooled over every unit outside the class misplaces the false entries as the neighbouring class grows.",
+   "driver_concrete": "The coroner's certificates name no drug on one overdose death in eight (an opioid death so certified is missed) and list fentanyl found but not contributing on half of the methamphetamine and cocaine deaths and on none of the other drug deaths; stimulant deaths grew from about 56 in 2021 to about 149 in 2026 while other drug deaths fell from about 83 to 61. The medical examiner's full review of 2025 gives each class's chance of each certificate category; solving each year's classes from its three certificate categories puts 2026 at 190 against a 2021 to 2023 average of 253, 24.9 per cent below, where the two-by-two correction with one false-listing rate over all non-opioid deaths files 12.1 per cent and the certificates 6.2."
+  }
+ ],
+ "notes": "",
+ "registered": "2026-10-15T07:33:45Z"
 }
