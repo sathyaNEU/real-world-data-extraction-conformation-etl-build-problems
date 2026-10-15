@@ -362,6 +362,16 @@ def run(target, golden, W=None, F=None, G=None, meta_path=None):
                                                       c["ptc"]["all"][2], c["ptd"]["USD"][2]),
       min(v[2] for v in inv_held.values()) >= 0.95 and min(usd4) >= 0.97 and 0.6 <= c["ptc"]["all"][2] <= 0.9 and
       0.6 <= c["ptd"]["USD"][2] <= 0.9)
+    rows_pt = list(pt.values())
+    p_all = sum(a for a, b, q in rows_pt) / sum(a + b for a, b, q in rows_pt)
+    chi = sum((a - (a + b) * p_all) ** 2 / ((a + b) * p_all) + (b - (a + b) * (1 - p_all)) ** 2 / ((a + b) * (1 - p_all))
+              for a, b, q in rows_pt)
+    se_yyc = math.sqrt(p_yyc * (1 - p_yyc) / (a_ + b_))
+    A("R3c the margins: homogeneity across the %d segments %.0f on %d degrees of freedom; Calgary's share %.4f plus or "
+      "minus %.4f (95 per cent), %.0f standard errors from one and %.0f under the network's %.3f" % (
+          len(rows_pt), chi, len(rows_pt) - 1, p_yyc, 1.96 * se_yyc, (1 - p_yyc) / se_yyc, (p_all - p_yyc) / se_yyc,
+          p_all), chi > 10000 and (1 - p_yyc) / se_yyc > 500 and (p_all - p_yyc) / se_yyc > 500 and
+      abs(p_all - c["ptc"]["all"][2]) < 1e-12, round(chi))
     rungs = {
         "R0b trend": ({g: C.trend_E(W, g) for g in GW}, (1, 1, 1, 1, 1, 1)),
         "R0c smoothing": ({g: C.holt_winters_E(W, g) for g in GW}, (2, 1, 1, 1, 1, 0)),
@@ -582,6 +592,14 @@ def run(target, golden, W=None, F=None, G=None, meta_path=None):
 
     def by_counts(**kw):
         return C.scale(W, C.mixture_counts(recs, C.shares(*C.repeat_counts(recs, **kw))))
+    dol_nohs = lambda r: (r["gw"], r["imp"], r["cur"], K.round_to(r["cad"], 1))
+    p0 = [r for r in recs if r["yr"] == 0 and not r["ogd"] and r["cur"] != "CAD"]
+    p0_inv, p0_dol = {C.k_inv(r) for r in p0}, {dol_nohs(r) for r in p0}
+    chance = sum(1 for r in recs if r["yr"] == 1 and r["gw"] == "YYZ" and not r["ogd"] and r["cur"] != "CAD" and
+                 not r["cad_priced"] and C.k_inv(r) not in p0_inv and dol_nohs(r) in p0_dol)
+    A("SF20 the crude keys left out: a CAD value to the whole dollar without the tariff item matches %d of Mississauga's "
+      "base-year shipments priced in their invoice currency to a shipment of the year before by chance" % chance,
+      chance >= 1000, chance)
     fam = {
         "shares counted by consignment": by_counts(weight="consignment"),
         "both years matched each way": by_counts(both_years=True),

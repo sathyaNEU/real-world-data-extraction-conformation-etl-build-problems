@@ -257,7 +257,7 @@ for the network or for each currency, drops Calgary under 560 and holds four.
 | SF16 | rounding | the placement on unrounded loads; figures rounded once for the report | loads rounded before comparing | same call | BRK-STD-03 4.5 and the prompt |
 | SF17 | tie-break | none needed: no two loads within 5 of each other at a placement step (asserted) | by gateway code | same call | C1 |
 | SF18 | the plan's volumes | thousands of inbound international shipments to one decimal | units | none | the plan's own heading |
-| SF19 | the value a 2027 shipment carries | by segment: the base-year invoice value (re-routed at the plan's rate) for the share whose repeats keep their invoice values, the base-year CAD value (the route on file) for the share whose repeats keep their CAD values | every shipment at its base-year invoice value (rival b); every shipment at its base-year CAD value (the default's basis) | the first files Dorval 2, four held; the second the default, one post at each gateway (both asserted) | the history, not a sentence: Calgary's US-dollar goods 13,169 repeats at the same CAD value against 117 at the same invoice value, the Chinese goods at Mississauga 2,161 against 24 and Richmond 3,731 against 50, every other segment's repeats at their invoice values (54,126 of 54,444); within those consignments the CAD value holds (slopes 0.009 to 0.013) or moves one for one (0.970 to 1.000); Calgary's 15 CAD price points recur in both years while their US-dollar invoice values move against the rate. No document files how the goods are priced (asserted) |
+| SF19 | the value a 2027 shipment carries | by segment: the base-year invoice value (re-routed at the plan's rate) for the share whose repeats keep their invoice values, the base-year CAD value (the route on file) for the share whose repeats keep their CAD values | every shipment at its base-year invoice value (rival b); every shipment at its base-year CAD value (the default's basis) | the first files Dorval 2, four held; the second the default, one post at each gateway (both asserted) | the history, not a sentence: Calgary's US-dollar goods 13,169 repeats at the same CAD value against 117 at the same invoice value, the Chinese goods at Mississauga 2,161 against 24 and Richmond 3,731 against 50, every other segment's repeats at their invoice values (54,126 of 54,444); within those consignments the CAD value holds (slopes 0.009 to 0.013) or moves one for one (0.970 to 1.000); Calgary's 15 CAD price points recur in both years while their US-dollar invoice values move against the rate. No document files how the goods are priced (asserted). The fresh judge's optional pin of the WHAT ("priced as in the base", importers' pricing, in the plan's assumption 2) was considered and declined: it would point the solver at pricing, and the data already refutes the literal re-pricing (13,169 of Calgary's 13,286 repeats held their CAD value) |
 | SF20 | the pass-through estimator | shares of repeat shipments by gateway and invoice currency, the full key (gateway, importer, tariff item, currency, value to the cent), the year before against the base | shares counted by consignment; both years matched each way; the key without the tariff item, alone or counted by consignment; the CAD value within a cent, alone or by consignment; the CAD value to the dollar; the within-consignment regression of the log CAD value on the log rate; the regression of the change in the log CAD value on the change in the log rate; each repeat routed as its own consignment behaves; the world's truth | same call and every rounded figure (asserted, twelve constructions) | the data: every estimator lands each segment within 0.02 of its share |
 | SF21 | the segment a share is estimated for | gateway and invoice currency | one share for the network; one per invoice currency; one per gateway | Dorval 2, four held; Dorval 2, four held; the golden's placement on other figures (Mississauga 540 and Richmond 520 a post, Richmond 3,150 a month) (all asserted) | the data: the US-dollar goods keep their invoice values at the four other gateways (0.980 or more) and their CAD values at Calgary (0.009); at Mississauga and Richmond the Chinese goods keep their CAD values (0.011, 0.013) and the US-dollar goods their invoice values (1.000); homogeneity across the twelve segments rejected (71,119 on 11 degrees of freedom) |
 
@@ -527,7 +527,9 @@ or more. (e) one share per gateway: the golden's placement on other figures (Ric
 Richmond 520 a post), the Chinese and US goods at Mississauga and Richmond behaving in opposite ways. Every SF20
 estimator files the golden's placement and every rounded figure; the estimators that count a CAD value rounded to the
 whole dollar without the tariff item, or once per key, are not among them: a large importer's one-off shipments meet
-others in the same dollar by chance (about 2,000 at Mississauga), which no repeat consignment does.
+others in the same dollar by chance (2,212 of Mississauga's base-year shipments priced in their invoice currency,
+asserted), which no repeat consignment does. The margins above are asserted in `checks.py` (R3c), not taken from a
+scratch computation.
 
 **Gates after the rework:** checks 189 assertions, 0 failed; verify from the bundle alone equal to figures.json, the
 workbook (now with its Forecast basis sheet) and the deck; two builds byte-identical (target.zip sha256 2ef27adf);
@@ -544,6 +546,78 @@ forecasts, loads and blocking load, the card's stump and driver and the note's l
 states no placement; the design-note vocabulary in BRK-STD-03, CLR-OPS-11 and the two notes is the field's own (invoice,
 currency, shipment, the gateways' names), and no document says how the goods are priced, how a rate passes into a value
 or connects the plan's rates to the routing (asserted).
+
+**Stage 4 on the reworked cut, 2026-10-15.** The fresh judge returned DETERMINISTIC and APPROVE
+(`determinism_check_report.md`): Gate H analytical, every figure and every ask cell reproduced from the shipped files.
+Its main risk is the literal reader who re-prices every foreign-currency shipment at the plan's rates (Dorval 2,
+Calgary 0, four held), which it rules an easy-route wrong answer because the data contradicts it (13,169 of Calgary's
+13,286 repeats held their CAD value); it notes Calgary's post holds for any Calgary US-dollar share under about 0.62.
+Its optional pin of the WHAT in the plan's assumption 2 is declined (SF19, Tried and rejected). The leak reader was clean
+on questions 1 to 4 and 6 (mainly analytical) and never surfaced the pass-through step; its ask readings are the
+devices, which the judge confirmed as governed (call-backs at the punch span, the desk by the work date, the charges from
+the AP register, the portal re-rating the fees).
+
+## Leak sweep
+
+`leak.py --asof 2026-10-13` on the shipped cut (target.zip 2ef27adf): REVIEW, no LEAK; one line per REVIEW:
+- 117, 165 and 500 inside Brandmoor statement amounts and an entry count, and 500 inside CLR-OPS-11's CAD 2,500 check
+  floor: three-digit coincidences; none sits where a forecast, a share or a load would.
+- BRK-STD-03 carries six of the call's eight distinctive words because the call is made under it; it states the
+  placement rule and no placement, forecast or load.
+- The design-note terms in BRK-STD-03, CLR-OPS-11 and the two extract notes (invoice, shipment, currency, network, the
+  gateways' names, extracts, planning) are the field's own vocabulary; no document says how the goods are priced, how a rate
+  passes into a value, or connects the plan's rates to the routing (asserted, SF19).
+
+**Reader, round 1** (isolated, the first cut c150b43f): nothing quoted for questions 1 to 4, question 6 analytical,
+every REVIEW line harmless; its ask readings were the build's devices. **Reader, round 2** read the stage 4 repair's
+cut (db04473c), superseded by the rework. **Reader, round 3** (isolated, this cut
+2ef27adf): clean on questions 1 to 4 and 6 (mainly analytical); it never surfaced the pass-through step; its ask
+readings are the devices, confirmed by the judge as governed. **Judge:** DETERMINISTIC and APPROVE on the first cut
+and on the stage 4 repair; on this cut DETERMINISTIC and APPROVE, Gate H analytical, every figure and ask cell
+reproduced (`determinism_check_report.md`).
+
+## Gates at ship
+
+- Generator checks: 191 passed, among them the pass-through evidence (shares, slopes, Calgary's price points), the
+  four rivals with their placements and the margins by which the data rejects them, the twelve SF20 estimators and the
+  crude keys' chance count.
+- `verify.py` agrees from the bundle alone on its own code path (the shares, the golden, the three rivals, both asks,
+  the workbook's Forecast basis sheet and the deck).
+- Each build run compares two builds byte for byte; the final rebuild cut the judged target.zip again (sha256
+  2ef27adf).
+- `figures_check.py`: 133 figures, none absent. precut: 49 checks, 0 FAIL, 0 WARN. voice-check: PASS (the prompt
+  unchanged, 867 characters).
+- The container audit is clean (target and golden). `guard.py validate` is clean.
+- `leak.py`: REVIEW, answered above.
+- `guard.py heart`: WARN (repeat.gate_g; the older same-driver match a NOTE, differentiated on the card).
+- `guard.py surface`: exit 0; task446 promoted on the card signature alone, for the author's `/clone-check`.
+- `freeze.py check --mode determinism` against the stage 4 snapshot: the call, the posts placed, the prompt and all 40
+  ask figures unchanged; the forecasts, loads and blocking load, the card's stump and driver and the note's ladder and
+  default path moved, by design (the rule 3 re-root of the decisive step).
+
+## Pre-ship check
+
+The 10/10 rules re-read against the built pack:
+- **The domain:** the call turns on each gateway's 2027 formal entries above the CAD 3,300 line under the plan's
+  exchange rates, through the pass-through each segment's goods show in repeat consignments (producer-currency against
+  local-currency pricing), the estimate trade economics makes. Swapping in hospital admissions leaves no invoice
+  currency, no pricing currency and no nominal line.
+- **Two layers:** every mess item is the systems' own and asserted neutral for the call (the extracts' two layouts and
+  date formats, UTC against local dates, amended rows, the gateway report's two layouts, codes and keys, thousands, a
+  CAD value converted from a US-dollar invoice landing a cent either side of its CAD price). The decisive step is the
+  pass-through by segment, and it is analytical:
+  - the easy routes, executed on the clean truth with every filed rule applied, file one post at each gateway (the
+    default) or Dorval 2 and four held (the full re-pricing, one network share, one share per currency);
+  - changing only the decisive step files the golden, which matches the world's own 2027 in every rounded figure;
+  - nothing in the pack is planted to be caught, and no file, column or flag marks a shipment's pricing.
+- **Rule 3, read literally:** CLR-OPS-11 2.1 to 3.2, BRK-STD-03 4.2 to 4.5 and the plan's assumption 7, executed word
+  for word, give no 2027 value; their mechanical completion is rival (b), which the data rejects.
+- **Determinism:** the fresh judge reproduced every figure and ask cell; twelve estimators and the world's truth file
+  the same call and every rounded figure (SF20); the segmentations the data rejects are named with their margins
+  (SF21).
+- **Robustness:** every forecast sits 15.6 or more from its 50 edge and every load 1.97 or more from its 5 edge, both
+  rounding routes give the same five, and every price moved from 2 per cent lower to 3 per cent higher keeps the call.
+- **The asks:** unchanged; the cracker misses every figure; the reader's ask readings are the devices.
 
 ## Tried and rejected
 
@@ -598,3 +672,6 @@ or connects the plan's rates to the routing (asserted).
   the Chinese goods at Mississauga and Richmond are CAD-priced too, so it misses their forecasts and loads as well.
 - Richmond's forecast in the 3,050 bin (3,036.5 a month): 3,050 over six posts is 508.33, which rounds to 510, while the
   unrounded load, 506.1, rounds to 505; the plan's growth for Richmond was set so the forecast sits mid-bin at 3,100.
+- The fresh judge's optional pin of the WHAT, "priced as in the base" (importers' pricing as in the base) in the plan's
+  assumption 2, to close the literal re-pricing reading: considered and declined, because it would point the solver at
+  pricing; the data already refutes that reading (13,169 of Calgary's 13,286 repeats held their CAD value).

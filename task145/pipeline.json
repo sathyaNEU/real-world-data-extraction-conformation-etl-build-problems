@@ -1,11 +1,11 @@
 {
   "task": "task145",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "economics-econometrics/forecasting-forecast-evaluation",
   "objective": "forecasting",
-  "stage": 3,
-  "stage_name": "build",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-15",
   "stump": "Carrying each gateway's formal entries per inbound shipment of the twelve months to September 2026 onto the 2027 network plan places one post at each of the five gateways and holds one; the step that lands it there is forecasting the 2027 count without estimating how each segment's CAD values respond to the plan's exchange rates, and re-routing every shipment at those rates instead (or one pooled pass-through share) drops Calgary's post and holds four.",
   "architecture": 1,
@@ -17,8 +17,8 @@
     "pair_ceiling": 37
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK) on the rule 3 rework's cut (target.zip 2ef27adf): 117, 165 and 500 inside Brandmoor amounts and 500 inside CLR-OPS-11's CAD 2,500 floor, BRK-STD-03 carrying the call's words, the field's vocabulary; each answered in the design note's ## Build record",
-    "reader": "clean on the first cut (c150b43f); the stage 4 repair and the rule 3 rework changed the world and documents the call reads, so a fresh reader reads the reworked cut at stage 4"
+    "leak_py": "REVIEW, five lines answered in the design note's ## Leak sweep, no LEAK (2026-10-15, the shipped cut 2ef27adf)",
+    "reader": "round 1 (first cut c150b43f): Q1 to Q4 none, Q6 analytical, every REVIEW line harmless; round 2 (the stage 4 repair's cut db04473c), superseded by the rule 3 rework; round 3 (the shipped cut 2ef27adf): Q1 to Q4 none, Q6 mainly analytical, the pass-through step never surfaced, its ask readings the devices"
   },
   "duplicate_check": {
     "heart": "WARN (repeat.gate_g against task144; test.same_driver_older a NOTE, task127 v3, task138 and task446 v2 differentiated on the card); re-run after the rework on the new driver",
@@ -27,23 +27,23 @@
     "note": "drawn 2026-10-15 after git pull (task262, task455 and task144 on file): guard WARN repeat.gate_g answered in ## Draw; guard check re-run on the reworked card, WARN only"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (twice, on the cuts before the rework)",
-    "disposition": "the re-judge's Gate H read the full repricing at the plan's rates as partly rule execution; the rule 3 read failed it strictly, and the decisive step was re-rooted to the exchange-rate pass-through estimated by segment; a fresh judge reads the reworked cut",
-    "report": "task145/determinism_check_report.md (the first verdict; the re-judge's in the session scratchpad)",
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task145/determinism_check_report.md (the fresh judge on the pass-through cut: Gate H analytical, every figure and ask cell reproduced; its main risk, the literal full re-pricing at the plan's rates, ruled an easy-route wrong answer the data contradicts; its optional pin in the plan's assumption 2 declined, as it would point at pricing)",
     "brief": ""
   },
   "returned": [],
-  "resume": "stage 4: a fresh leak reader and determinism judge on the rule 3 rework's cut of 2026-10-15 (target.zip sha256 2ef27adfec63a099); fix every finding in the generator in one pass; then ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-15",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
   "build": {
-    "checks": 189,
+    "checks": 191,
     "verify": "from the bundle alone (the pass-through by gateway and invoice currency, the golden and the three rivals), equal to figures.json, the workbook and the deck",
-    "rebuild": "two builds byte-identical",
+    "rebuild": "two builds byte-identical; the final rebuild cut the judged target.zip again",
     "figures_check": "exit 0 (133 figures)",
     "voice_check": "PASS (867 characters, the prompt unchanged)",
     "containers": "clean (target and golden)",
