@@ -1,89 +1,96 @@
-# determinism-check report, task138, 2026-10-12
+# determinism-check report, task138 round 3, 2026-10-15
 
-The determinism judge's verdict (one isolated thread at medium effort, on the pack and prompt as built at stage 3), verbatim:
+The determinism judge's verdict (one isolated thread at medium effort, on the round 3 pack and prompt as built at stage 3, `target.zip` sha256 50c887dca427e7ad), verbatim:
 
-## Verdict, task138 (Kestrel Bend Irrigation District 2027 order)
+## Verdict: task138 (KBID 2027 order), fresh judge pass r3
 
-**Verdict:** DETERMINISTIC (conditional on one residual fork, see Why and Evidence). Every committed figure reproduced from the shipped files.
+Scope note: cross-batch check against other tasks was not run (other task folders are forbidden to this pass). Everything below was recomputed from `target/` only.
 
-**Disposition:** APPROVE. No solution-block repair is needed. Optional in-house pin: one sentence in WOP 2.4 or the prompt saying the replay starts from the root-zone depletion carried through 31 January 2027 from each field's last delivered 2026 set. That would also remove the fork below. It is a procedure-text edit that changes what solvers see, so it would need a rerun.
+**Verdict:** DETERMINISTIC
 
-**Why:**
-- The answer is forced by WOP 2.3, 2.4 and 3.1 to 3.5 read literally. WOP 3.1 defines each day's depletion from the previous day's, and 3.4 resets a field to zero on the day of an irrigation. For 1 February the previous day is 31 January. That value follows from the last Delivered 2026 set in the orders file, the Table 1 coefficients (which include Nov to Jan), and the station records, which run to 31 January 2027.
-- The weakest point is that WOP 2.4 never states the 1 February starting depletion. A reader who starts every field at field capacity gets a different order (see Evidence). I judge that reading unlicensed rather than equally licensed, because the files let the 31 January state be computed. The risk is real and I flag it.
-- A second boundary risk: the 24th value (202,658 af) sits 42 af below the 202,700 hundred-boundary, so non-literal unit-conversion choices move the order.
+**Disposition:** APPROVE. No repair is required and no rerun is needed. The one optional hardening is to file the estimand for the 31 January root-zone state in the prompt (WHAT, not HOW; see Fix).
 
-**Evidence** (recomputed independently from the bundle; no use of answer_key, generator or submission):
+**Why:** The 24th smallest of the thirty replays is about 211,565 AF (211,381 to 211,685 across the variants I ran), so the smallest whole thousand covering it is 212,000. I reproduced it independently from the shipped files, and every reasonable way I tried to fit the 2026 delivery share gave the same thousand. The one soft spot is that neither the prompt nor the WOP says how "the root zone as it stands at the end of 31 January" is to be built. The shipped data separate the candidate methods: a model run at Table 4 efficiency misses the soil moisture stations' season by about 0.5 in RMSE, against 0.05 in (their noise floor) when the share is fitted. This is a method fork that the data resolve, not a semantic fork. All 36 lateral figures also reproduce.
 
-| Item | Recomputed | Golden | Source |
+## Evidence (all recomputed; file and field named)
+
+Main call.
+| Item | Golden | My recompute | Source |
 |---|---|---|---|
-| Accepted fields / acres | 619 / 39,399.33 | 619 / 39,399 | water_requests Accepted rows; every field has one accepted version, 10 withdrawn have none |
-| Acre-weighted depletion at end of 31 Jan 2027 | 3.388 in | 3.39 | last Delivered 2026 set date (set_end), weather splice, Tables 1 to 3 |
-| Fields at or past allowable depletion | 446 | 446 | same |
-| 24th smallest replay | 2012, 202,658 af | 2012, 202,660 | 30 replays 1997 to 2026 |
-| Order | 202,700 | 202,700 | WOP 2.3 |
-| Monthly schedule | 13,520 / 970 / 10,290 / 27,190 / 37,470 / 42,010 / 37,270 / 24,010 / 9,970 | identical | WOP 5.1 |
-| Chart order | smallest 2024 (156,207), largest 2002 (211,091) | same | |
-| Lateral 2026 deliveries (af) | 17,820 / 19,608 / 12,800 / 16,959 / 16,501 / 17,299 / 13,880 / 14,432 / 18,210 | 17,820 / 19,610 / 12,800 / 16,960 / 16,500 / 17,300 / 13,880 / 14,430 / 18,210 | meter book with shop-log register splices, rollover at capacity, hundred-cubic-foot meters converted, Lateral 5 tail turnouts to Lateral 6 after their 15 June read |
-| Share not delivered (%) | 8.71 / 9.60 / 8.53 / 14.90 / 8.30 / 13.88 / 8.00 / 12.32 / 13.20 | 8.7 / 9.6 / 8.5 / 14.9 / 8.3 / 13.9 / 8.0 / 12.3 / 13.2 | headings daily including E days |
-| Tail weir spill (af) | 579 / 631 / 440 / 270 / 548 / 650 / 511 / 419 / 361 | 580 / 630 / 440 / 270 / 550 / 650 / 510 / 420 / 360 | weir equation, crest raised 2 in per board per the remarks, reading held to the next reading |
+| Fields on accepted requests | 631 | 631 (47 Superseded and 10 Withdrawn dropped; no duplicate field) | kbid_water_requests_2027.xlsx (Status, Version) |
+| Acres | 40,309 | 40,309.43 | same |
+| Weather splice | per WOP 6.1 | station39 mm/25.4 to 30 Apr 2014, yard from 1 May 2014, 7 flagged-M and 8 absent yard days filled from station 39; no gaps in the 1997-2026 window | station39_daily_1995-2027.csv, kbid_station_daily_2014-2027.csv |
+| Fitted share by method (least squares, 2026 sets, 9 stations) | above Table 4 at all 9 | Drip .940/.932/.936/.934 (T4 .90); Micro .880/.886/.880 (T4 .85); Sprinkler .780/.782 (T4 .75); Border .704/.690 (T4 .70) | kbid_soil_moisture_network_2026.xlsx joined by APN to the register, each UTC stamp read as the end of the day before; sets from kbid_irrigation_orders_2023-2026.csv |
+| 24th smallest requirement | between 211,000 and 212,000 (2012 replay) | 211,565 (2012 replay) | replay of WOP 3.1-3.5 and 4.1 |
+| Order | 212,000 | 212,000 | WOP 2.3 |
+| Ranking and chart | smallest 2024, largest 2002 | 2024 = 163,355; 2002 = 219,461; 24 at or below 211,565; above it 2003, 2010, 2009, 2005, 2021, 2002 | |
 
-- Rank robustness: the 23rd value is 2000 at 201,412 and the 25th is 2003 at 204,982, so the choice of the 24th year is stable.
-- Competing answers, with their cause:
-  1. Start every replay at field capacity (zero depletion): 24th is 2003 at 189,785, order 189,800. This is the main fork; the text is silent on the start and a common modelling default gives it.
-  2. Half-allowable-depletion start: order 190,900. Not licensed by any text.
-  3. Rounding the station 39 inch values to 0.01 in (yard convention): 24th is 2012 at 202,398, order 202,400.
-  4. Converting at 0.0394 in/mm: order 202,800.
-  5. Conversions 3 and 4 are non-literal. The exact 25.4 mm/in is canonical but unstated, and the margin to the 202,700 boundary is only 42 af (0.02 percent). This is a thin-and-mildly-contested margin, not disqualifying.
-- Lateral for the 14 reach turnouts (05-045 to 05-058): the register (WOP 6.2) puts them on Lateral 6, while their request turnout prefix says 05. The golden follows the register. 20 fields differ in total.
-- No correction factor is shipped for the "bearing worn, under-reading" meters, so as-read values stand. A solver cannot compute a correction, so this does not fork the answer.
-- Flashboard sequences resolve unambiguously (set, added, pulled one, pulled boards) from an initial zero. The last delivered sets all start and end on the same day, so there is no start-day versus end-day fork.
-- Cross-batch reference check: not performed (other task folders are forbidden to this reader). No overlap seen within the bundle.
+The 2026 sets, from the same ordered flows, agree with the turnout meters within +/-3.6% per turnout (mean ratio 1.0003). There are no overlapping or duplicated Delivered sets.
 
-**Files/Hygiene:** PASS. 18 files in 5 formats (csv, xlsx, pdf, docx, txt). Large files: irrigation orders 64,887 rows, meter book 16,334 rows. Distractors present (groundwater levels, 2026 crop report, TVWA allocation notice, headings and tail-weir files being used only by the lateral asks). Minor points, none exclusion-level:
-- README_order_working_files.txt reads as a tidy index.
-- The data dictionary's remark "Both are the District's record of the day" and its Superseded and Cancelled definitions state data semantics a little too cleanly.
-- Station 39 looks like a renamed state network download. I found no sign that its canonical analysis equals the golden, so no contamination.
-- Dates are consistent with a 1 February 2027 snapshot.
+Alternatives for the 31 January state (all other steps held fixed):
+| 31 January state | Order |
+|---|---|
+| Fitted share (golden) | 212,000 |
+| 2026 rebuilt at Table 4 efficiency | 215,000 |
+| Each field's last set taken as a refill | 209,000 |
+| Every field full | 196,000 |
+| Every field empty | 221,000 |
 
-**Stump power:** Moderate to good.
-- The trap is the starting state. A solver who starts at field capacity gets 189,800 against 202,700, a 6.4 percent gap.
-- Cues that a careful solver can find: Nov to Jan coefficients in Table 1, weather through 31 January 2027, and the last-set data in the orders file. The Cancelled versus Delivered distinction in the late-season orders is a lower decoy.
-- The many lateral asks (rollovers, units, shop-log splices, estimated days, connector, flashboards) add separate graded failure points.
-- The risk to difficulty validity is the unstated initial condition (see Why).
+The station data refute the last three. The Table 4 route is also refuted by the stations' in-season readings (RMSE .34 to .60 in at the nine non-border stations, against .05 to .09 fitted), though not by their 31 January readings, which read the same under both.
 
-**Stumping type:**
-- mechanism: forecasting
-- stumping_family: analytical_non_defect
-- surface_read_dependency: no
-- sole_data_defect: no
+Robustness of 212 (24th-value ranges):
+- Fitted share by method mean, pooled fit, or median: 211,564 to 211,662.
+- Fit window Apr-Oct or Mar-Nov: 211,611 to 211,614. Same-day stamp reading: 211,381.
+- Set water credited entirely to its start day or its end day: 211,685 / 211,549.
+- 2026 acres from the request log instead of the crop report: 211,477 (about 90 AF lower).
+- 2026 acres on the GIS basis with the share refitted: 211,083 to 211,101, still 212 but only about 85 to 100 AF above the 211,000 line. It is the one variant that comes close.
+- Rounding shares to 0.94/0.89/0.78 or 0.95/0.90/0.80 drops to 211,000. A solver who fits properly does not round that coarsely.
+- A fit on the post-season window only (Oct 15 to Jan 31) is unreasonable and gives 216,000.
 
-The reported figures are fine and nothing the solver is handed is overturned. The difficulty is carrying the root-zone state through the winter and replaying thirty weather years at the 80th percentile. The task would still stump on perfectly clean data.
+The golden sits near the centre of the 211,000 to 212,000 band. I judge this a thin-but-clean margin: every rigorous fit lands in the same thousand.
 
-**Three rules:**
-- domain: pass
-- layers: pass (Layer 1 is the splice of two weather stations with unit and gap handling, superseded request versions, former and new field ids, and meters with rollover, units and swaps. Layer 2 is state-carrying soil-water-balance replay with the exceedance order rule.)
-- decisive_step: analytical
+Supplementary answers (all reproduce to the stated rounding):
+| Lateral | Delivered (AF) | Put in (AF) | Not delivered | Over tail weir (AF) |
+|---|---|---|---|---|
+| 1 | 17,872 (17,870) | 19,678 (19,680) | 9.18% (9.2) | 578.8 (580) |
+| 2 | 17,530 | 19,409 (19,410) | 9.68% (9.7) | 630.6 (630) |
+| 3 | 15,399 (15,400) | 16,879 (16,880) | 8.77% (8.8) | 440.1 (440) |
+| 4 | 17,888 (17,890) | 21,018 (21,020) | 14.89% (14.9) | 270.1 (270) |
+| 5 | 18,162 (18,160) | 19,758 (19,760) | 8.08% (8.1) | 548.5 (550) |
+| 6 | 18,211 (18,210) | 21,060 | 13.53% (13.5) | 650.5 (650) |
+| 7 | 15,311 (15,310) | 16,711 (16,710) | 8.38% (8.4) | 510.8 (510) |
+| 8 | 11,488 (11,490) | 13,110 (13,110) | 12.37% (12.4) | 419.2 (420) |
+| 9 | 15,082 (15,080) | 17,371 (17,370) | 13.17% (13.2) | 360.6 (360) |
 
-The deciding quantity is a root-zone water balance with initial condition and an exceedance-quantile of seasonal demand, which irrigation planning would estimate. The easy route is to start each replay at field capacity or at the replay year's own winter, which gives 189,800 against 202,700 (and a different setting year, 2003 against 2012). The easy route is wrong, so H3 passes as analytical. The ambiguity in the initial condition is the one risk to that classification.
+Golden values in brackets.
+- Deliveries come from kbid_meter_book_2026.csv: rollovers carried, CCF converted at 100/43,560, each of 31 swaps chained through Reg. out and Reg. in of the work order in kbid_meter_shop_log_2026.xlsx, and west spur turnouts 05-021 to 05-034 split at their 15 June read (kbid_canal_operations_log_2026.docx). The spur split is 1,719 AF to Lateral 5 and 4,581 AF to Lateral 6. Without the split, Lateral 5's share would be 16.8% and Lateral 6's 5.4%, so the data themselves expose the re-feed.
+- Water put in is the heading logger totals plus the Water Master's log estimates. The 32 missing logger days (3,4,3,5,2,3,4,3,5 by lateral) match the 32 log estimates one for one.
+- Spills use Q = C*L*H^1.5 with H = gauge less the crest gauge reading less 2 in per board, a reading held until the next one, 1 Feb to 31 Oct. Every board remark time precedes its read time, so there is no same-day ambiguity. Without the board correction the spills would be 660 to 1,460 AF, so the board handling matters, and the remarks ("set 2in brd", "added 2in brd", "pulled 1 brd", "brds out") are unambiguous.
+- Three meters are logged "bearing worn, under-reading" (T08017, T01007, T04035). No correction factor is shipped, so the unadjusted reads stand and no fork arises.
 
-**Fix:** none required (location: none). Recommended hardening against the fork: add one sentence to WOP 2.4 stating the replay's starting depletion is the field's depletion at the end of 31 January from its last delivered 2026 set. That would sit in the procedure document as a prompt/input-file pin. Optionally pin exact 25.4 mm per inch in the data dictionary.
+Competing answers and forks (Gates C and E):
+- 215,000 (Table 4 reconstruction). This is the strongest rival. Table 4 is labelled "design application efficiency ... as WOP 3.5 uses it", i.e. the replay value. WOP 2.4 asks for the root zone "as it stands", an actual state. The stations show the actual shares plainly (see above). I do not find 215 defensible once the sensor series is read. It is the intended trap.
+- Fork on the 2026 acres basis (crop report irrigated acres or request acres, versus GIS acres): 212,000 under crop or request acres, 212,000 under GIS with the share refitted, so no flip.
+- Whole-thousand rounding, the 24-of-30 count, the 1997-2026 window and the leap-day handling are all filed in WOP 2.3 and 2.4. No fork.
+- Literal-reading note: the text is silent on how the 31 January state is to be rebuilt. A purely literal executor has no instruction and must model 2026. The result of the lowest-effort literal route (Table 4) is 215,000, which differs from the golden. I count this as an unfiled method that the data force, not an open fork, because the stations' record is in the package and discriminates sharply. If the author wants zero reliance on the solver's judgement, see the optional Fix.
 
-## Disposition
+Gate B: every decisive fact is in a shipped file (efficiency evidence in the soil moisture network and orders; losses in Table 5; weir equations in kbid_canal_structures.xlsx; estimates in the operations log docx). No external dependency. Gate A grain check: the orders file is an event log, the meter book is a cumulative register, headings are daily totals, none is a delta feed.
 
-- **DETERMINISTIC, APPROVE; no repair required and no re-judge** (no FIX_NOW). Every graded figure reproduced: the 24th
-  smallest replay is 2012 at 202,658 acre-feet, the order 202,700, the schedule, the setting year and requirement and
-  both asks as filed.
-- **The optional pin is refused.** A WOP 2.4 sentence naming each replay's starting depletion would name the decisive
-  rung and pin the method; the start stays forced by WOP 3.1 and 3.4 on the record (fork row SF9). Recorded in the
-  design note's `## Tried and rejected`.
-- **The unit margin is recorded, and the dictionary carries the unit fact.** Rounding station 39's converted values to
-  0.01 inch (202,400) and converting at 0.0394 inch per millimetre (202,800) are non-literal readings, fork row SF29,
-  both asserted in `checks.py`. The dictionary already stated station 39's units, so its entry now reads "millimetres
-  (25.4 millimetres to the inch)": a changed document, and the arithmetic the judge ran.
-- **The connector turnouts' lateral** (05-045 to 05-058): fork row SF16 for the call (WOP 6.2, the register as it
-  stands, 202,500 under the alternative), SF26 and SF27 for Ask A, each asserted.
-- **The pack after the stage 4 fix pass** differs from the judged one in five files (the dictionary and the operations
-  log, documents; the meter shop log, the meter book and the requests' remarks, data). `golden/` and
-  `generator/figures.json` are byte-identical and `freeze.py check --mode determinism` passes, so no graded figure
-  moved.
+## Files/Hygiene: PASS (no exclusion-level finding)
+19 files. Formats: csv (9), xlsx (6), pdf (2), docx (1), txt (1). One file has 107,067 rows (orders) and one 16,311 (meter book). Real-world mess is native to the systems: former field ids against current ids, superseded request versions, hundred-cubic-foot against acre-foot registers with rollovers, a UTC-stamped sensor series, logger outages with log-book estimates, and mm against inches. Distractors present and unused by the answer: groundwater levels, crop report, TVWA allocation notice (100% allocation, 241,000 AF contract, so 212,000 is within the cap), tail weir structures. Temporal coherence is fine (exports 1 Feb 2027, tables adopted 9 Dec 2025, allocation notice 15 Dec 2026). README_order_working_files.txt is an in-fiction file index with no authoring or benchmark language; mildly artificial but not a provenance violation. No LLM-generation tell found in the files I read.
+
+## Stump power (Gate F)
+Strong. A capable solver has to notice that the starting root zone must be rebuilt at all (assuming full gives 196,000; refill gives 209,000), then calibrate the 2026 delivery share to the sensors instead of using Table 4 (215,000), then run the 30-year replay exactly (a single slip moves the thousand). The asks add 36 separately gradable figures with meter rollovers, swaps, a spur re-feed, logger gaps and flashboard remarks, which are independent traps. Too-easy signals: none (nothing in the package documents the share defect or hands out the corrections). Risk the other way: the stump margin is a 3,000 AF (1.4%) gap, so a solver who gets the fit right but errs elsewhere also fails; that is acceptable difficulty.
+
+## Stumping type (Gate G)
+`mechanism: method_or_model_selection` (parameter calibration of the delivery share against observed soil moisture, then propagation to a forecast quantile), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`.
+No reported number is wrong: Table 4 is a legitimate design value used as filed in the replays, and the stations are honest data. The difficulty survives clean data, because even then the 2026 share has to be estimated from the sensors. Borderline note: if a reviewer reads Table 4 as "an official figure the solver must reject", the type leans toward a refutation; I read it as calibration, not a catch of a misleading number.
+
+## Three rules (Gate H)
+`domain: pass`, `layers: pass`, `decisive_step: analytical`.
+- Domain: crop water balance, root-zone state estimation and an exceedance quantile over replayed weather years are irrigation water management proper; swap "hospital" or "visits" in and the task collapses.
+- Layer 1: unit and register conversions, id re-keying, superseded versions, UTC stamps, logger gaps, meter swaps. Layer 2: estimate the actual application share from the sensor series and carry the resulting starting root zone through a 24-of-30 replay.
+- Decisive step: calibrating the starting state. The easy route a strong analyst who read every rule correctly would take is the 2026 reconstruction at Table 4, which gives 215,000 (not 212,000); the check against the stations that would catch it is analysis, not a rule or a field reading.
+
+## Fix
+none required. Optional (prompt, no rerun if the estimand is unchanged): file the WHAT in one clause, e.g. "from the root zone the District's 2026 deliveries and soil moisture readings put each field in on 31 January", without naming the share fit. This would remove the single literal-reading gap noted above. Do not file the least-squares method itself (that would turn the decisive step into rule application).

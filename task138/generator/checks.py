@@ -1,6 +1,6 @@
 """task138 assertions: the input gates, every rung of the ladder and its separation, the soil moisture stations (the
 efficiency they show, their misfit under every rival, their blind 31 January readings, the golden method's variants and
-one standard error), the three-rules block on the clean truth (R1 to R3c), every semantic fork row (SF1 to SF47), the
+one standard error), the three-rules block on the clean truth (R1 to R3c), every semantic fork row (SF1 to SF48), the
 graded figures' distances to their rounding edges, the four lateral asks with their stops and devices (each figure as
 shipped at round 2), the separation line between the call and the asks, the distractors' deletion test, and the realism
 and hygiene sweeps. Run by build.py on every build; prints the ladder and the measured figures the design note
@@ -507,6 +507,15 @@ def run(target, golden, W=None, meta_path=None):
     # own fields at their readings converge (SF40); SF47: the logger gaps leave no reading on those days (nothing filled)
     gaps = {st["station"]: (K.WEATHER_END - dt.date(2025, 12, 31)).days + 1 - len(st["reads"]) for st in S}
     ok(sorted(v for v in gaps.values() if v) == [6, 8], ("SF47 two stations with logger gaps", gaps))
+    # SF48: the prompt names the call, the two files it wants and the asks, and no input (the judge's optional clause
+    # naming the soil moisture readings was declined: it would point at the decisive step's evidence)
+    pp = os.path.join(os.path.dirname(os.path.abspath(target)), "prompt.txt")
+    ok(os.path.exists(pp), "SF48 the prompt beside the pack")
+    prompt = open(pp, encoding="utf-8").read()
+    named = set(re.findall(r"[\w.-]+\.(?:xlsx|svg|csv|pdf|docx|txt|json)\b", prompt))
+    ok(named == {"kbid_order_2027.xlsx", "kbid_order_2027.svg"}, ("SF48 the prompt names only the deliverables", named))
+    ok(not re.search(r"soil|moisture|station|efficien|probe|Table \d|WOP", prompt, re.I),
+       "SF48 the prompt names no input and no method")
     ok("February to October" in out and "May to October" in out and "stations' fields at their readings" in out,
        "SF39 SF42")
     # SF41: the stations' efficiency kept to the stations' crops (PT) files another order; SF44: the crop coefficient

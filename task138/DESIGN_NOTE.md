@@ -319,6 +319,7 @@ Water Order Procedure; T1 to T5 its tables. Every record-run variant below refit
 | SF45 | a replay's delivery | the depletion it replaces over Table 4's efficiency | over the stations' efficiency (O3) | 206,000 | WOP 3.5 ("divided by the application efficiency of the field's irrigation method (Table 4)") |
 | SF46 | the stations' 31 January readings | the end of the run the fit is checked on, the same under any efficiency at every station (asserted at each station) | the readings on their own fields with the Table 4 run elsewhere (P1); the Table 4 run shifted by their offset by method (AB); their share of total available water on every field of the method (MI); that share regressed on the last set's day, the January crop coefficient and the method (RG) | 215,000; 215,000; 218,000; 216,000 | the data: every station's 31 January state is the same at Table 4 and at every efficiency up to its own (asserted), so the January readings cannot tell the efficiencies apart, and the late blocks they would be carried to are where the efficiency still moves the state (pistachios, citrus and walnuts at 0.52, 0.51 and 0.59 of total available water against 0.73, 0.68 and 0.70 under Table 4, asserted) |
 | SF47 | a station's logger gaps | no reading on those days (KB-SM-03, 8 to 15 July; KB-SM-08, 17 to 22 March, both in the site sheet's notes) | (a value filled in) | converges: the fit uses the readings there are (asserted: two stations with gaps of 8 and 6 days) | the records converge |
+| SF48 | what the prompt names of the inputs (the round 3 judge's optional clause) | the call, the two files and the asks, and no input: WOP 2.4 files the start as each field's "root zone as it stands at the end of 31 January" | the start filed in the prompt "from the root zone the District's 2026 deliveries and soil moisture readings put each field in on 31 January" | same call (the clause moves no figure) | declined at ship: naming the soil moisture readings in the prompt points at the decisive step's evidence (a single-purpose sentence), and the prompt carries the question and no convention; the judge found the method forced by the data without it (asserted: the prompt names no input file and none of soil, moisture, station or efficiency) |
 
 The stump is none of these rows: every term is read the same way by a careful reader, and the default path reads them
 all as the golden does. SF11 and SF46 hold the two estimators of the record's efficiency that the ladder carries (Table 4
@@ -618,7 +619,7 @@ stations' export, like every input, is not named in it.
   (Table 4's note scoped to WOP 3.5; the station export; the operations log in its writers' words), `calc.py` the
   procedure, the stations' fit and every rung, `deliver.py` the goldens and `figures.json`, `checks.py` (the three-rules
   block on the clean truth, every rung and floor, the stations' blindness and misfit, the fit's variants and one standard
-  error, SF1 to SF47, the asks with every stop and edge and each lateral figure as shipped at round 2, the separation
+  error, SF1 to SF48, the asks with every stop and edge and each lateral figure as shipped at round 2, the separation
   line, the gates and the realism sweep), `verify.py` (an independent recompute from the shipped files alone, its own
   station fit), `metadata.py`.
 - Texture knobs on the ask paths are round 2's (a calibration offset shared by each lateral's meters, the 2026 loss
@@ -651,7 +652,26 @@ stations' export, like every input, is not named in it.
   eleven stations' sites and daily profile water), and the procedure files the start as WHAT (WOP 2.4) and Table 4 as
   WOP 3.5's efficiency without naming a fit; the yard logger's `Flag` column is its export's own missing-day flag,
   defined in the dictionary.
-- Stage 4 (the leak reader and the determinism judge): pending; the main session spawns both.
+- Stage 4, round 3 (2026-10-15), both on the stage 3 cut (`target.zip` sha256 50c887dca427e7ad). Judge: DETERMINISTIC,
+  APPROVE, no fix (`determinism_check_report.md`; rounds 1 and 2 in `determinism_check_report_round1.md` and
+  `determinism_check_report_round2.md`): Gate H `decisive_step: analytical`; the call and all 36 lateral figures
+  reproduced, its own 24th smallest about 211,565 and every fit variant it ran in the 212,000 bin (its nearest, the
+  2026 record run on the register's GIS acres with the fit redone, 211,083 to 211,101, still inside it); Table 4's
+  215,000 judged the intended trap, refuted by the stations' in-season readings and not by their 31 January ones. Its
+  optional prompt clause naming the soil moisture readings is declined (SF48). Reader: no file ranks or states the
+  figures and no figure reads as the answer; its Q6, without computing, read the filed replay and order procedure (WOP
+  2.3 to 3.5) as rule application: that procedure is the order's machinery, which the default path executes as well;
+  the decisive step is the unfiled estimate of the start state (WOP 2.4 files only what the state is), and executing
+  every filed rule with Table 4 read across files 215,000 (SF35), as the rule 3 re-audit and the judge confirm. Its
+  sweep verdicts of "leak" on the procedure's call words and stump terms and on the prompt's chart sentence are the
+  governing procedure's own vocabulary and the chart's named parts, with no figure and no move named. Rule 3 re-audit
+  of the round 3 build: PASS (the 31 January readings uninformative for a physical reason, asserted, not a planted
+  check); its residual risk is under `## Pre-ship check` as accepted. The pack ships as built: `target/`, the goldens
+  and every graded figure unchanged (the rebuild byte-identical to the stage 3 cut).
+- Ship gates (2026-10-15): `checks.py` 214,114 assertions (SF48 added); `verify.py` green; two builds byte-identical,
+  `target.zip` sha256 50c887dca427e7ad as cut at stage 3; `precut.py` 49 checks, 0 FAIL, 0 WARN (48 fork rows);
+  `figures_check.py` 59 figures; `leak.py --asof 2027-02-01` REVIEW, no LEAK, the stage 3 lines; `guard.py validate`
+  clean; `guard.py heart` WARN, no BLOCK.
 
 ## Pre-ship check
 
@@ -674,9 +694,10 @@ Round 3, written at stage 3 against the built pack; the reader and judge lines a
    218,000, the fitted model on the obvious covariates 216,000, the record's other efficiencies 209,000 and 210,000, the
    audit's routes 196,000 to 199,000; only the stations' season fit files 212,000 (and on the generator's clean truth
    the same two figures).
-5. One defensible answer: WOP 2.3, 2.4, 3.1 to 3.5, 4.1, 6.1 and 6.2 file the estimand, the start state included; the 47
+5. One defensible answer: WOP 2.3, 2.4, 3.1 to 3.5, 4.1, 6.1 and 6.2 file the estimand, the start state included; the 48
    fork rows are each asserted; every defensible variant of the fit lands within 256.7 acre-feet of the 24th replay and
-   every construction of the record run within 469.7, inside its thousand.
+   every construction of the record run asserted here within 469.7, inside its thousand (the judge's nearest, the record
+   run on the register's GIS acres with the fit redone, 211,083 to 211,101, inside it too).
 6. No decoy: no file states a 2027 figure, a past requirement, an efficiency, a field's state or a schedule; the
    stations' January readings agree with the default because the dry autumn erased the efficiency from every station's
    state, and they agree with the golden as well; the groundwater levels, the crop survey and the Authority's
@@ -686,8 +707,22 @@ Round 3, written at stage 3 against the built pack; the reader and judge lines a
 8. A new lesson: a model's initial condition estimated by calibrating its process parameter where the parameter acts,
    on the monitored units, and carrying the parameter through every unit's own record; round 2's design value on the
    record is now this build's default path.
-9. Leak reader (stage 4): pending.
-10. Judge (stage 4): pending.
+9. Leak reader (stage 4): no file ranks or states the figures and no figure reads as the answer; its Q6 lean to rule
+   application is the filed order procedure, the order's machinery on both paths; the decisive step is the unfiled
+   start-state estimate, and executing every filed rule files 215,000 (SF35); its sweep's "leak" lines are the
+   procedure's own vocabulary, no figure and no move named.
+10. Judge (stage 4): DETERMINISTIC, APPROVE, no fix; Gate H analytical; every graded figure reproduced; its optional
+   prompt clause declined (SF48).
+11. Accepted risk (the rule 3 re-audit, PASS): the end-point check is blind because three things hold together, the
+   driest October to January in 32 winters, a network sited on almond, vine, pasture and alfalfa blocks with no station
+   on the pistachio, citrus and walnut blocks that carry most of what the efficiency moves on 31 January, and almonds
+   unwatered after September; a sceptical reviewer could read the world as arranged so the natural check passes. Rated
+   low to moderate and accepted: each is plausible alone (a grant network on cooperators' blocks, a record dry winter,
+   deficit irrigation after harvest), the blindness is physical and asserted (a root zone capped at total available
+   water forgets its history; a border set runs past field capacity), and removing it would make the task easier
+   without changing what decides it. The re-audit's cheap realism move (a cooperator-selection line in the Sites sheet
+   in the program's own voice) is left for a later round, the pack shipping as built; a station on a late crop is never
+   added (it would make the 31 January check informative and collapse the stump).
 
 ## Tried and rejected
 
@@ -793,3 +828,7 @@ Round 3, written at stage 3 against the built pack; the reader and judge lines a
   outage entries in their writers' own words, every estimate and ask figure unchanged (asserted).
 - A March station gap noted as the probe pulled for the grower's ripping, on an alfalfa block: ripping is an orchard and
   vineyard job; the note now says gophers chewed through the logger cable.
+- The round 3 judge's optional prompt clause filing the start "from the root zone the District's 2026 deliveries and
+  soil moisture readings put each field in on 31 January" (a WHAT, not the fit): declined at ship; it names the decisive
+  step's evidence in the prompt, a single-purpose sentence the wave 3 bar bans, and the judge found the method forced by
+  the data without it (SF48).
