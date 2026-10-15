@@ -21,7 +21,7 @@ show and only the earlier lots' whole trays cycled to the end do, and the pack l
 | Decision | `quantity_figure`, answer unit `count` (packs, to the nearest 50) |
 | Mechanism | gap population (decisive: the reserve's unit is a pack of three tray-mates, whose shared share of the model error is one draw, not three) then time (the earlier lots' pack rate belongs to stronger lots than the one under release); pattern none, generators G17 decisive (statistical rigor: the error's between-tray share carried into the members' joint predictive), G2 (the pack as the unit), G6 (the lot under release predicts shorter lives than the history); Gate G `forecasting`; strategy `grain_or_unit` |
 | Layer 2 family / pattern | `estimation_fit` (clustered errors in a joint prediction); `general-statistics-data-science/bayesian-modeling-posterior-inference/2` (predict with the posterior predictive, observation noise and between-group variance, for new units in new groups): this build's version asks for the predictive of a new group's members jointly, because the reserve pays on the weakest of them |
-| Furniture | forum `other` (product finance books the reserve under its release reserve policy, no meeting), forcing event `other` (the lot's release for shipment on Friday 16 October 2026, when the reserve is booked), organisation family `manufacturer` (Kalvenhorst Systeme GmbH, a business-notebook maker with its own battery plant and reliability lab), role family `finance_controller` (the notebook division's product finance controller), context artifact `filed_model` (the qualification memo QM-07 files the release model of record, its two features and its validation error, no reserve), calibration `none`, opening `question-first`, question form `how-many` |
+| Furniture | forum `other` (product finance books the reserve under its release reserve policy, no meeting), forcing event `other` (the lot's release for shipment on Friday 16 October 2026, when the reserve is booked), organisation family `manufacturer` (Kalvenhorst Systeme GmbH, a business-notebook maker with its own battery plant and reliability lab), role family `finance_controller` (the notebook division's product finance controller), context artifact `monitoring_export` (the lab's life monitoring results, each finished cell's cycles to 80 per cent: a monitoring export of a past quantity that answers its own question correctly; QM-07, which files the release model of record, its two features and its validation error and no reserve, is a governing document), calibration `none`, opening `question-first`, question form `how-many` |
 | Spine | `qp3_first100_cycles_fleet_a.csv` (174,006 rows) and `qp3_first100_cycles_fleet_b.csv` (130,698 rows), the reliability lab's cycler exports of the first 100 QP-3 cycles of every release-test cell (two fleets in two layouts), one row per cell per cycle, for the twenty lots whose life tests have finished, the four still running and the lot under release; constructed |
 | Deliverables | `z2638_warranty_reserve.xlsx` (the reserve and its working, the partners' table and the months' table), `z2638_reserve_note.docx` (a one-page note to Product Finance opening with the reserve, with the chart of the monthly replacements by region) |
 | People | drawn with `guard.py names --geo "Germany" --seed 143` and `--seed 1431`, every name the guard clears: Christiana Harloff (product finance controller, notebook division, the requester and owner of the reserve policy), Frieder Henschel (head of the battery reliability lab, author of QM-07), Dietmar Schaaf (manufacturing engineering, battery plant, the pack genealogy), Annelie Geisel (service operations analyst, the service case system); none appears in the prompt |
@@ -37,7 +37,10 @@ unit of a period total); the decisive step is that a formation tray's share of t
 three cells of a pack share, carried into the members' joint predictive. The draw keyed it G10 with a differentiation
 line for task98 v7 (two removal lists that list some members twice); at stage 3 `guard.py surface` promoted task98 on
 gap, pattern and decision family, and the card was re-keyed G17 (statistical rigor), the key a reviewer gives a
-group-shared error in a joint prediction: `guard.py check` WARN as above, no BLOCK, `surface` 0 promoted.
+group-shared error in a joint prediction: `guard.py check` WARN as above, no BLOCK, `surface` 0 promoted. After the
+stage 3 rebase, task455 re-registered after this build, which put task141 (a filed model) among the last three and
+`heart` BLOCKed on `ban.artifact`; the card's context artifact is now the life monitoring export (above), the file the
+dataset-generation roles call the context artifact, and `heart` is WARN again.
 
 **Same-puzzle and same-driver tests.** Gap population, decisive G17, decision `quantity_figure`, Gate G `forecasting`:
 `guard.py check` finds no build, recent or older, carrying the three together (no NOTE). task98 v7 (the draw's G10
@@ -439,7 +442,8 @@ mirror about 22 with the instructions, the chart's form and part of the componen
 - **Free gates.** `precut.py` 49 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS (924 characters); `figures_check.py`
   58 figures, 0 absent; container audit clean on `target/` and `golden/`; `guard.py validate` clean, `surface` 0
   promoted (personas Christiana Harloff and Frieder Henschel, both on the card), `heart` WARN (strategy risk,
-  repeat.gate_g, repeat.question_form, answered under Guard; nearest driver task261 at 0.09).
+  repeat.gate_g, repeat.question_form, answered under Guard; nearest driver task261 at 0.09), rechecked after the
+  rebase onto task144's draw with the context artifact re-keyed.
 - **golden-realism and house fixes.** Finding titles on the workbook and the note; the note's identifying block, one
   true footnote from FIN-RS-04 2.2 and 3.3, precision by quantity; the chart titled with its finding, regions in a set
   palette, totals labelled, a source line. H4 23 archive members, no folder; H8 every citation resolves (FIN-RS-04 2.2
@@ -504,3 +508,6 @@ mirror about 22 with the instructions, the chart's form and part of the componen
   within 0.05 of a whole euro by the partners' contract rates.
 - File names `qp3_life_test_results.csv` and `release_test_register.csv`: `leak.py` reads `test_` as author
   vocabulary; renamed `qp3_life_monitoring_results.csv` and `qp3_release_register.csv` (the lab's own words).
+- The context artifact keyed `filed_model` (QM-07): after the stage 3 rebase task455's re-registration put task141's
+  filed model in this build's last three and `heart` BLOCKed on `ban.artifact`; re-keyed `monitoring_export`, the life
+  monitoring results, with QM-07 read as a governing document.

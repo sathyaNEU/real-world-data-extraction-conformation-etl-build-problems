@@ -19,7 +19,7 @@
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (strategy risk, repeat.gate_g, repeat.question_form; answered in ## Draw)",
+    "heart": "WARN (strategy risk, repeat.gate_g, repeat.question_form; answered in ## Draw); rechecked after the rebase, context artifact re-keyed monitoring_export (ban.artifact against task141 once task455 re-registered)",
     "nearest": "driver 0.09 (task261); surface 0 promoted after the decisive generator was re-keyed G17",
     "note": "drawn 2026-10-15 after git pull (task142, task455, task260, task141 on file); at stage 3 the decisive generator moved from G10 to G17 (surface had promoted task98 on gap, pattern and decision family)"
   },
