@@ -1,0 +1,104 @@
+{
+  "task": "task462",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "seed ET19 used for its decision and quantity (an ESG data company's published emissions intensity built across EPA's greenhouse gas reporting, production statistics and keys that join many-to-many); its own world (CAMD and GHGRP joined to EIA plant data through the EPA-EIA crosswalk) is task459's pack, so the intensity is a gas producer's methane intensity measured from aerial surveys",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "measurement-based methane intensity of gas producers from repeated aerial plume surveys, for an emissions data company's low-methane rating",
+  "objective": "etl",
+  "shape": "01",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G12",
+    "G16",
+    "G13"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "physical_verification",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the head of methane ratings at an emissions data company that rates a basin's gas producers for the buyers of their gas",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "state_gas_well_production_2026.csv",
+    "rows": 0,
+    "entity": "one well's reported gas production for one month",
+    "grain": "well x month",
+    "source": "synthetic (constructed in the layout of a state oil and gas commission's well production reports)"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "professional_services",
+  "world": {
+    "geography": "an unnamed US state's gas basin (invented), twelve producers",
+    "currency": "USD",
+    "org_type": "emissions data and ratings company",
+    "invented_names": [
+      "Tarvane Methane Ratings",
+      "Kestrin Aerial",
+      "Tollaver Basin",
+      "Calbrent Energy",
+      "Pinyon Draw Production",
+      "Brushy Mesa Operating",
+      "Lechuza Creek Resources",
+      "Anchell Oil & Gas",
+      "Corrandale Petroleum",
+      "Marrowind Operating",
+      "Ostrel Energy",
+      "Dellmont Gas Partners",
+      "Ruskmoor Exploration",
+      "Sedgeway Production",
+      "Sunmere Natural Gas"
+    ],
+    "people": [
+      "Aaron Watkins",
+      "Kimberly Clements"
+    ]
+  },
+  "deliverables": [
+    "tollaver_producer_methane_ratings_2027.xlsx",
+    "kestrin_plumes_conformed_2025_2026.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is a period total of many intermittent sources seen only through a few snapshot surveys, each of which records a source only while it is active and then only with a probability that rises with its size, so a blank at a surveyed place is partly a miss: each detection has to stand for the instances its detection probability implies, measured on blind trials of known size, while counting blanks as zeros understates the units whose total sits in many small sources and carrying each detected source through the period overstates the units whose total sits in large intermittent ones.",
+  "driver_concrete": "Each producer's 2026 methane is the time-averaged emission rate of its sites over four basin-wide aerial campaigns, each plume weighted by one over the survey's probability of detecting a plume of its rate (measured on the provider's blind controlled releases), not the campaigns' detected plumes alone with blanks as zeros (which understates producers whose methane leaks from many 5 to 15 kg/h sources) nor each detected source at its detected rate all year (which overstates producers whose methane comes from tank dumps part of the time).",
+  "stump": "The default path averages each producer's plume rates over the four campaigns, counting every imaged site without a plume as zero, and rates seven producers low-methane, three of whose methane leaks from many 3 to 15 kg/h sources the survey catches on fewer than half its passes; carrying each detected source through the year instead fails the producers whose methane comes from tank dumps seen once in four passes; weighting each plume by one over the survey's detection probability at its rate, measured on blind controlled releases, before averaging the campaigns rates the golden four.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who attributes every plume to its producer, reads every field and applies the rating standard averages each producer's detected rates over the four campaigns with a blank counted as zero and rates seven producers low-methane, three of them over the 0.20 per cent line.",
+  "domain_test": "The deciding quantity is a producer's measurement-based methane intensity, built the way methane inventories build it from aerial surveys (plume rates weighted by a detection probability that depends on rate and wind, measured on controlled releases, averaged over campaigns against the methane in the gas produced); with another field's nouns the rate- and wind-dependent detection of intermittent plumes and the produced gas's methane content no longer read.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task180": "task180 forecasts a plant's earthquake count once a network change removes the daily masking of its small events (completeness varying with the hour); task462 estimates a time-averaged emission total from four snapshot surveys whose detection probability rises with each plume's rate, each detection standing for the instances its probability implies: no forecast of a record change and no time-of-day masking",
+    "task255": "task255 fits a severity distribution's tail with each claim truncated at its deductible and censored at the retention; task462 fits no size distribution: it weights each detected plume by the survey's detection probability at its rate, measured on blind releases, and averages the campaigns to a total",
+    "task456": "task456 classifies unit-days from three imperfect categorical records with a latent class model; task462 scales one instrument's continuous detections by its measured detection curve across repeated snapshots of intermittent sources"
+  },
+  "lineage": [],
+  "notes": "",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:detection-weighted snapshot totals",
+  "layer1": [
+    "several sources for one picture: the survey provider's plume detections and flight-line coverage, the state commission's well production reports, the producers' site register, gas composition analyses and the producers' greenhouse gas reports",
+    "imperfect keys: plumes located by coordinates and attributed to the nearest site, a few between two producers' pads; wells and sites that changed operator during 2026; one site under two spellings",
+    "vintages and revisions: amended production reports superseding the originals; one campaign's rates reprocessed by the provider",
+    "units and time: plume rates in kg per hour, production in Mcf, reports in metric tons, survey passes stamped in UTC",
+    "genuine overlap: plumes imaged twice on overlapping flight lines in one campaign",
+    "real coverage: flight lines lost to cloud, a few sites not imaged in a campaign"
+  ],
+  "registered": "2026-10-15T15:36:19Z"
+}

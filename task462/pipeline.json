@@ -1,0 +1,36 @@
+{
+  "task": "task462",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-15",
+  "stump": "The default path averages each producer's plume rates over the four campaigns, counting every imaged site without a plume as zero, and rates seven producers low-methane, three of whose methane leaks from many 3 to 15 kg/h sources the survey catches on fewer than half its passes; carrying each detected source through the year instead fails the producers whose methane comes from tank dumps seen once in four passes; weighting each plume by one over the survey's detection probability at its rate, measured on blind controlled releases, before averaging the campaigns rates the golden four.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.07 task107 lineage"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: generator prototype (sources, campaigns, detection curve, controlled releases, production), fix the ladder's names, then the readability screen, fork table, ladder, closure, asks and prompt to precut",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET19 (analytical_tasks/07_data_extraction_conformation): the decision (what an emissions data company publishes for each emitter) and the quantity (an emissions intensity across EPA greenhouse gas reporting, production statistics and a measurement record joining many-to-many) kept; the seed's own world (CAMD and GHGRP to EIA through the EPA-EIA crosswalk) is task459's pack, so the intensity is a gas producer's methane intensity from aerial surveys; the crosswalk-key trap is Layer 1 only"
+}
