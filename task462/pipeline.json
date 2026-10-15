@@ -1,11 +1,11 @@
 {
   "task": "task462",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "physical-environmental-sciences",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-15",
   "stump": "The default path averages each producer's plume rates over its passes and campaigns, counting every imaged site without a plume as zero, and rates eight producers low-methane, among them Anchell, Pinyon Draw, Pellisto and Ashmund (0.150, 0.155, 0.179 and 0.181 per cent), whose methane leaks from many 5 to 15 kg/h sources a pass catches less than half the time; carrying each detected source through the year instead rates none; only weighting each plume by one over the detection probability at its rate, fitted to the provider's blind controlled releases, rates the golden four.",
   "architecture": 1,
@@ -24,14 +24,15 @@
     "surface": "4 promoted: task460 (two apart, pairing), task456, task255, task180 (card axes, differentiated)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report.md",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
   "returned": [],
-  "resume": "stage 4: the judge thread is running on /tmp/determinism-check-task462-1792083160/ (brief judge_brief.md, verdict.md when done); hand its verdict path to the determinism-judge agent for the report, then fix every reader and judge finding in one generator pass (candidates: a dictionary line for the statement reference and revisions on Ask A; note 4.2's wording), rebuild, rerun the free gates, re-judge once on FIX_NOW, re-read only if a document or the prompt changed; then the ledger row, card, SHIPPED commit with target.zip and golden/ force-added, the board update, and task463",
+  "resume": "portal: pending review; nothing open on the build",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-15",
   "portal": null,
   "source_note": "seed ET19 (analytical_tasks/07_data_extraction_conformation): the decision (what an emissions data company publishes for each emitter) and the quantity (an emissions intensity across EPA greenhouse gas reporting, production statistics and a measurement record joining many-to-many) kept; the seed's own world (CAMD and GHGRP to EIA through the EPA-EIA crosswalk) is task459's pack, so the intensity is a gas producer's methane intensity from aerial surveys; the crosswalk-key trap is Layer 1 only"
 }

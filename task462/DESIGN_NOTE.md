@@ -365,6 +365,32 @@ standard's measured basis.
   figure; its vocabulary lines are the standard and the provider's note in their own words (campaign, detection,
   imaged, coverage), neither naming the weighting; its announcements are the note's header and contact line; the
   register names the producers beside their sites' coordinates, which ranks nothing.
+- Reader (2026-10-15, one pass): REVIEW, nothing hands over the decisive step or a rating. Questions 1 to 4 none: no
+  sentence orders the correction ("the note and the workbook supply the ingredients and nothing orders the step"), no
+  file ranks or helps, no figure reads as the answer; question 5's literal execution of the standard with the passes'
+  plumes taken as the rate is the default path (its rough figures the eight, Calbrent 0.076 to Ashmund 0.179); question
+  6 an analytical choice. Its three items stay as they are: the FR code is Ask B's device, the basin summary its
+  referee (FL and FR tie it every month); the plant's prior-period lines carry the production month in their reference
+  and the March statement's second revision re-issues it whole, Ask A's device and hazard, the delivery month being what
+  "delivered over the rating year" reads as; the note's 4.2 is the form of the provider's detection curve, filed so the
+  graded tonnes are determinate (Tried and rejected), and names no weight or correction. Its realism notes need nothing:
+  site names carry the field's first word (Lechuza Creek, Corran Ridge), the four small operators are the commission's,
+  and the folder was assembled on 18 November after the note's October issue.
+
+## Determinism judge
+
+- Pass 1 (2026-10-15, `determinism_check_report.md`): DETERMINISTIC, APPROVE. Every figure reproduced from the bundle:
+  the detection curve (7.96 and 23.86 kg/h), the 2,348, 2,241 and 107 plume rows, and each producer's methane emitted,
+  intensity, gas delivered and gas flared. Gate G analytical_non_defect (its mechanism label statistical_rigor, the
+  estimator's choice on the card as method_or_model_selection), surface_read_dependency no, sole_data_defect no; Gate H
+  domain pass, layers pass, decisive_step analytical. The four held under every variant it ran (Talmora's own facility
+  attribution, no operator split, a logistic in the rate itself, no floor); only the uncorrected sum (the default path,
+  eight) and a 10 kg/h floor outside the filed 5 move it. Stump power moderate on the call, high on the asks.
+- Its three advisory forks stay as they are. The detection correction is the decisive step, left open with the
+  estimand filed ("emitted") and the plume source's own documentation saying a pass does not detect every plume. The
+  plant's prior-period lines and the FR code are Ask A's and Ask B's devices: a dictionary line for either would narrate
+  the device and hand both asks to the top pair, while FR has its referee (the basin summary ties FL and FR every month)
+  and the delivery month is what "delivered over the rating year" reads as.
 
 ## Tried and rejected
 
