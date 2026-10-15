@@ -128,10 +128,7 @@ def write_agreement(path):
     for no, text in [
         ("5.1", "The System's Risk Management and Insurance department administers Claims for the Trust, keeps the "
                 "claims register and reports to the Trustees each quarter."),
-        ("5.2", "Each Participating Entity continues to report to its expiring carrier every Claim and every "
-                "precautionary notice of a Medical Incident that occurred before its Transition Date, for as long as "
-                "that carrier's policy responds."),
-        ("5.3", "Defence counsel is appointed from the panel the Trustees approve. No settlement above $250,000 is made "
+        ("5.2", "Defence counsel is appointed from the panel the Trustees approve. No settlement above $250,000 is made "
                 "without the consent of the Trustees' claims committee."),
     ]:
         s.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (no, text), CLAUSE))
@@ -177,29 +174,25 @@ def write_policy(path):
     s.append(Paragraph("The Trustees fix the Contribution for a Plan Year at their November meeting in the year before "
                        "it, on the recommendation of the System's Vice President, Risk Management and Insurance. The "
                        "Participating Entities pay it in equal quarterly instalments, each in proportion to its share "
-                       "of the Plan Year's exposure under 3.3.", BODY))
+                       "of the Plan Year's exposure under 3.2.", BODY))
     s.append(Paragraph("3. The Contribution", H2))
     for no, text in [
         ("3.1", "For each Plan Year the Participating Entities together contribute the expected cost, at the Plan "
                 "Year's cost level, of the Claims that will be first made against the Trust during the Plan Year "
                 "(the Contribution)."),
-        ("3.2", "The expected cost is estimated from the System's own claims experience: the Claims arising from "
-                "Medical Incidents from 1 January 2017 to 31 December 2024 against Covered Clinicians, each valued at "
-                "the indemnity and defence paid and the case reserves recorded against its Covered Clinicians in the "
-                "risk management claims register extract valued 30 September 2026, and brought to the Plan Year's "
-                "cost level at 5.0 per cent a year compounded from the calendar year of the Medical Incident. The "
-                "exposure behind that experience is the Covered Clinicians' paid FTE in the System's payroll for the "
-                "same years, each month's FTE counting as one twelfth of an FTE-year."),
-        ("3.3", "The Plan Year's exposure is the Covered Clinician FTE in the System's staffing plan for the Plan "
-                "Year, for each Participating Entity, specialty class and month from the entity's Transition Date. "
-                "Each month's FTE counts as one twelfth of an FTE-year, earned evenly over the days of the month."),
-        ("3.4", "The experience is used as recorded and taken as a whole within each specialty class: it is not "
-                "divided by year, month or entity, no development or tail factor is applied to it, and no "
-                "distribution is fitted to it."),
+        ("3.2", "Exposure is measured in Covered Clinician FTE-years. The experience's exposure is the Covered "
+                "Clinicians' paid FTE in the System's payroll over the experience period. The Plan Year's exposure is "
+                "the Covered Clinician FTE in the System's staffing plan for the Plan Year, for each Participating "
+                "Entity, specialty class and month from the entity's Transition Date."),
+        ("3.3", "The experience is the Claims arising from Medical Incidents from 1 January 2016 to 31 December 2024 "
+                "against Covered Clinicians, pooled within each specialty class of Schedule B."),
+        ("3.4", "Each experience Claim is valued at the indemnity and defence paid and the case reserves recorded "
+                "against its Covered Clinicians in the risk management claims register extract valued 30 September "
+                "2026, and brought to the Plan Year's cost level at 5.0 per cent a year compounded from the calendar "
+                "year of its Medical Incident."),
         ("3.5", "The first Plan Year's Contribution carries no provision for the Trust's administrative expenses, "
                 "investment income, excess insurance or a margin; the Trustees budget those separately."),
-        ("3.6", "Figures reported to the Trustees are rounded once, from unrounded amounts; a total is the rounded sum "
-                "of its unrounded parts."),
+        ("3.6", "Figures reported to the Trustees are rounded once, from unrounded amounts."),
     ]:
         s.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (no, text), CLAUSE))
     s.append(Paragraph("4. Review", H2))
@@ -254,8 +247,8 @@ def write_plan(path, plan):
         ws.column_dimensions[get_column_letter(c)].width = w
     ws.freeze_panes = "D6"
     ns = wb.create_sheet("Notes")
-    notes = ["Plan FTE are budgeted positions at each month's planned level; a vacancy is carried from the month the "
-             "plan expects it filled.",
+    notes = ["Plan FTE are the budgeted covered FTE for each month, held through the month; a vacancy is carried from "
+             "the month the plan expects it filled, and per-diem clinicians at their budgeted average FTE.",
              "Covered Clinician FTE only: resident physicians, clinical fellows, psychologists and contracted or locum "
              "clinicians are not included.",
              "Entity codes as in the general ledger: TFH Tolliver Falls Hospital, AMC Alderwick Medical Center, CMG "
@@ -320,40 +313,52 @@ def write_qm_run(path, recs, nums, valued, run_date, revision=None):
     wb.save(path)
 
 
-def write_premiums(path):
+def write_premiums(path, W):
+    """Each entity's clinician occurrence policies from the term in force on 1 January 2016 (Brennick's from the term in
+    force when it affiliated) to the expiring term, with the carrier that wrote each, the physician and advanced
+    practice FTE the carrier rated at inception and the premium billed."""
     rng = K.stream("premiums")
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Premium history"
-    ws["A1"] = "Corvane Health, clinician professional liability premium history 2017 to 2026"
+    ws["A1"] = "Corvane Health, clinician professional liability premium history 2016 to 2026"
     ws["A1"].font = TITLE_FONT
-    ws["A2"] = "Risk Management and Insurance; annual premiums as billed at inception, before audit adjustments"
+    ws["A2"] = "Risk Management and Insurance; occurrence policies by entity and term, annual premiums as billed at " \
+               "inception, before audit adjustments"
     hdr = ["Entity", "Carrier", "Policy number", "Policy period start", "Policy period end", "Limits",
            "Rated physician FTE", "Rated APC FTE", "Annual premium ($)"]
     for c, h in enumerate(hdr, start=1):
         cell = ws.cell(row=4, column=c, value=h)
         cell.font = BOLD
         cell.fill = HEAD_FILL
-    base = {"TFH": (52.0, 27.0, 1.62e6), "AMC": (148.0, 58.0, 4.9e6), "CMG": (338.0, 151.0, 5.6e6),
-            "BCH": (26.0, 19.0, 0.62e6)}
+    rate = {"TFH": 30500.0, "AMC": 33800.0, "CMG": 11900.0, "BCH": 24600.0}     # 2026 premium per rated physician FTE
+    apc = {"TFH": 0.32, "AMC": 0.31, "CMG": 0.29, "BCH": 0.30}                   # an APC FTE rated as this share
     r = 5
     for e in K.ENTITY_ORDER:
         ent = K.ENTITIES[e]
-        for y in range(2017, 2027):
+        first = ent["joined"] or dt.date(2016, 1, 1)
+        y0 = first.year if first.month >= ent["anniv"] else first.year - 1
+        for y in range(y0, 2027):
             start = dt.date(y, ent["anniv"], 1)
-            if ent["joined"] and start < ent["joined"]:
-                continue
-            phys, apc, prem = base[e]
-            g = (1.022 ** (y - 2026))
-            rated_p = round(phys * g * float(rng.uniform(0.97, 1.03)), 1)
-            rated_a = round(apc * g * float(rng.uniform(0.95, 1.05)), 1)
-            premium = round(prem * (1.045 ** (y - 2026)) * float(rng.uniform(0.96, 1.05)), -2)
-            vals = [ent["name"], K.CARRIERS[ent["carrier"]], K.policy_number(e, start), start,
+            on = max(start, ent["joined"] or start)
+            phys = sum(p.fte_in(on.year, on.month) for p in W.positions if p.entity == e and not p.moonlight and
+                       not p.per_diem and K.CLASS_OF_JOB.get(p.job) and p.job not in ("NP", "PA", "CRNA", "CNM") and
+                       p.start <= on and (p.end is None or p.end >= on))
+            apcs = sum(p.fte_in(on.year, on.month) for p in W.positions if p.entity == e and not p.moonlight and
+                       not p.per_diem and p.job in ("NP", "PA", "CRNA", "CNM") and p.start <= on and
+                       (p.end is None or p.end >= on))
+            rated_p = round(phys * float(rng.uniform(0.97, 1.03)), 1)
+            rated_a = round(apcs * float(rng.uniform(0.95, 1.05)), 1)
+            premium = round((rated_p + apc[e] * rated_a) * rate[e] * (1.045 ** (y - 2026)) *
+                            float(rng.uniform(0.96, 1.05)), -2)
+            vals = [ent["name"], K.CARRIERS[K.carrier_on(e, start)], K.policy_number(e, start), start,
                     dt.date(y + 1, ent["anniv"], 1), "$1,000,000 / $3,000,000", rated_p, rated_a, premium]
             for c, v in enumerate(vals, start=1):
                 cell = ws.cell(row=r, column=c, value=v)
                 if c in (4, 5):
                     cell.number_format = "yyyy-mm-dd"
+                if c in (7, 8):
+                    cell.number_format = "0.0"
                 if c == 9:
                     cell.number_format = "#,##0"
             r += 1
@@ -388,8 +393,9 @@ def write_dictionary(path, counts):
         ("defendant_role", "Attending physician, Advanced practice clinician, Resident physician, Clinical fellow or "
                            "Contracted physician."),
         ("specialty", "Specialty as entered by the claims analyst."),
-        ("coverage_line", "The insurance programme responding for this defendant: carrier code and entity (QM-TFH, "
-                          "QM-AMC, SC-CMG, SC-BCH); CONTRACT where the clinician's own group insures them."),
+        ("coverage_line", "The entity insurance programme line the claims system holds for this defendant: carrier "
+                          "code and entity (QM-TFH, QM-AMC, SC-CMG, SC-BCH); CONTRACT where the clinician's own group "
+                          "insures them."),
         ("entity_at_incident", "Entity where the care was given."),
         ("incident_date", "Date of the care the claim arises from."),
         ("claim_made_date", "Date risk management received the claim under this claim number."),
@@ -432,12 +438,11 @@ def write_dictionary(path, counts):
         ("worker_id", "Employee id (carried over from the legacy payroll)."),
         ("position_id", "HCM position."),
         ("work_month", "Month worked, YYYY-MM."),
-        ("earning_code, earning_description", "REG, PTO, CALL, ADMIN or LOA."),
-        ("hours", "Hours paid on the line."),
+        ("earning_code, earning_description", "REG, PDM, PTO, CALL, ADMIN or LOA."),
+        ("hours", "Hours paid on the line. Positions are scheduled 173.33 hours a month at 1.0 FTE."),
         ("fte", "FTE of the position."),
         ("job_profile_code, job_profile", "HCM job profile of the position; legacy job codes through the crosswalk."),
         ("cost_centre", "Cost centre the line is charged to."),
-        ("home_entity", "The worker's home entity on their HCM record at the time of the extract."),
         ("pay_group", "PHYS, APC or GME."),
     ]:
         a("- `%s`: %s" % (f, d))
@@ -463,6 +468,16 @@ def write_dictionary(path, counts):
     a("")
     a("Patient safety event reports from the safety reporting system, January 2019 to September 2026, one row per "
       "report; %d rows. Harm level as assigned at the quality team's review." % counts[K.SAFETY])
+    a("")
+    a("## %s" % K.INVOICES)
+    a("")
+    a("Defence panel invoices received for service from July to September 2026, one row per invoice; %d rows. "
+      "Approved invoices are paid by the carrier or, within a retention, by the System." % counts[K.INVOICES])
+    a("")
+    a("## %s" % K.PREMIUMS)
+    a("")
+    a("Each entity's clinician occurrence policies by term since 2016: carrier, policy number, period, limits, rated "
+      "FTE and the annual premium billed at inception.")
     a("")
     with open(path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(t))

@@ -1,7 +1,7 @@
-"""The goldens, computed from the pack in target/: trust_funding_2027.xlsx (the contribution with the expected claims
-and cost by entity and by specialty class, the emergence by month, the carrier loss run check and the September 2026
-covered FTE) and trustees_paper_2027.pptx (the contribution, and the chart of each entity's expected cost by the month
-the claims are made), plus generator/figures.json for the write-up."""
+"""The goldens, computed from the pack in target/: trust_funding_2027.xlsx (the contribution and its exposure, the
+carrier loss run check, the paid covered FTE for July to September 2026, notes) and trustees_paper_2027.pptx (the
+contribution, then the chart of each entity's paid covered FTE in those three months), plus generator/figures.json
+for the write-up."""
 from __future__ import annotations
 
 import io
@@ -13,6 +13,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt     # noqa: E402
+import matplotlib.ticker            # noqa: E402,F401
 import openpyxl                     # noqa: E402
 from openpyxl.styles import Alignment, Font, PatternFill   # noqa: E402
 from openpyxl.utils import get_column_letter                # noqa: E402
@@ -23,13 +24,17 @@ from pptx.util import Cm, Pt         # noqa: E402
 
 import analysis as AN    # noqa: E402
 import asks as A         # noqa: E402
+import calc as CA        # noqa: E402
 import common as K       # noqa: E402
 import postprocess as PP  # noqa: E402
 
 BOOK, DECK = K.DELIVERABLES
-MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+MONTH_LABEL = {"2026-07": "July 2026", "2026-08": "August 2026", "2026-09": "September 2026"}
+MONTH_SHORT = {"2026-07": "Jul", "2026-08": "Aug", "2026-09": "Sep"}
 NAVY, SLATE, PAPER, LINE = "#1f2f3f", "#5a6672", "#ffffff", "#d5dbe1"
-ENTITY_COLOURS = {"TFH": "#2f5f8a", "AMC": "#7fa6c9", "CMG": "#c98b3f", "BCH": "#8a9a5b"}
+MONTH_COLOURS = {"2026-07": "#9db7cf", "2026-08": "#5f88ae", "2026-09": "#24476b"}
+LAG_BANDS = [(0, 30, "Within 30 days"), (31, 90, "31 to 90 days"), (91, 364, "91 days to a year"),
+             (365, 100000, "A year or more")]
 
 
 def r1000(x):
@@ -55,36 +60,37 @@ def compute(target):
     return dict(m=m, a=a, b=b)
 
 
+def months_in(e):
+    return 13 - K.ENTITIES[e]["transition"].month
+
+
+def lag_profile(m):
+    out = []
+    for lo, hi, label in LAG_BANDS:
+        cl = [c for c in m["ex"] if lo <= c["lag"] <= hi]
+        out.append((label, len(cl), sum(c["cost"] for c in cl) / len(cl) if cl else 0.0,
+                    sum(c["cost"] for c in cl)))
+    return out
+
+
 def figures(c):
     m, a, b = c["m"], c["a"], c["b"]
-    ex = m["ex"]
-    fig = {"call": {"contribution": money(m["total"]), "contribution_usd": "$" + money(m["total"])}}
-    fig["entities"] = {}
-    for e in K.ENTITY_ORDER:
-        v = m["ent"][e]
-        fig["entities"][e] = {"name": K.ENTITIES[e]["name"], "transition": long_date(K.ENTITIES[e]["transition"]),
-                              "fte_years_2027": "%.1f" % r1(v["fte_years"]), "expected_claims": "%.1f" % r1(v["count"]),
-                              "expected_cost": money(v["cost"])}
-    fig["classes"] = {}
-    for k in K.CLASSES:
-        v = m["cls"][k]
-        fig["classes"][k] = {"name": K.CLASS_NAME[k], "fte_years_2027": "%.1f" % r1(v["fte_years"]),
-                             "expected_claims": "%.1f" % r1(v["count"]), "expected_cost": money(v["cost"])}
-    tot_n = sum(v["count"] for v in m["ent"].values())
-    fig["totals"] = {"expected_claims": "%.1f" % r1(tot_n), "expected_cost": money(m["total"]),
-                     "fte_years_2027": "%.1f" % r1(sum(v["fte_years"] for v in m["ent"].values()))}
-    fig["experience"] = {"claims": len(ex), "claims_made_within_364_days": sum(1 for x in ex if x["lag"] <= 364),
-                         "fte_years": "{:,.1f}".format(sum(m["E"].values())), "trend_pct": "5.0"}
-    fig["by_month"] = {e: [money(x) for x in m["months"][e]] for e in K.ENTITY_ORDER}
+    fig = {"call": {"contribution": "{:,}".format(m["rounded"]), "contribution_usd": "$" + "{:,}".format(m["rounded"])}}
+    fig["components"] = {"experience_claims": "{:,}".format(m["exp_claims"]),
+                         "experience_fte_years": "{:,.1f}".format(r1(m["exp_fte_years"]))}
+    fig["entities"] = {e: {"name": K.ENTITIES[e]["name"], "transition": long_date(K.ENTITIES[e]["transition"]),
+                           "months_in_2027": months_in(e)} for e in K.ENTITY_ORDER}
     fig["ask_a"] = {}
     for e in K.ENTITY_ORDER:
         v = a[e]
-        fig["ask_a"][e] = {"any_missing": "yes" if v["count"] else "no", "count": v["count"],
-                           "reserves": money(v["reserves"]), "open_claims": v["open"],
-                           "carrier": K.CARRIERS[K.ENTITIES[e]["carrier"]]}
-    fig["ask_b"] = {e: "%.1f" % b["gold"][e] for e in K.ENTITY_ORDER}
-    fig["ask_b_total"] = "%.1f" % r1(sum(b["raw"].values()))
-    fig["rungs"] = {k: money(v) for k, v in m["rungs"].items()}
+        fig["ask_a"][e] = {"name": K.ENTITIES[e]["name"], "any_missing": "yes" if v["count"] else "no",
+                           "count": v["count"], "reserves": money(v["reserves"]), "carrier": v["carrier"],
+                           "carrier_since": long_date(v["era_start"])}
+    fig["ask_b"] = {e: {m_: "%.1f" % r1(b["gold"][(e, m_)]) for m_ in A.ASK_B_MONTHS} for e in K.ENTITY_ORDER}
+    fig["ask_b_total"] = {m_: "%.1f" % r1(sum(b["gold"][(e, m_)] for e in K.ENTITY_ORDER)) for m_ in A.ASK_B_MONTHS}
+    fig["conventions"] = {"contribution_rounded_to": "{:,}".format(CA.BIN), "trend_pct": "5.0",
+                          "hours_per_fte_month": "%.2f" % A.HOURS_FULL}
+    fig["routes"] = {k: "{:,}".format(CA.rounded(v)) for k, v in m["routes"].items()}
     return fig
 
 
@@ -114,153 +120,141 @@ def write_book(path, c):
     ws["A2"] = "Expected cost of the Claims first made against the Trust in 2027, at 2027 cost level (funding policy 3.1)"
     ws["A4"] = "2027 Contribution ($)"
     ws["A4"].font = B
-    ws["B4"] = r1000(m["total"])
+    ws["B4"] = m["rounded"]
     ws["B4"].font = B
     ws["B4"].number_format = "#,##0"
-    ws["A6"] = "By Participating Entity"
+    ws["C4"] = "to the nearest $250,000"
+    ws["C4"].font = NOTE_FONT
+    ws["A6"] = "Entities in the Trust, 2027"
     ws["A6"].font = B
-    _head(ws, 7, ["Participating Entity", "Joins the Trust", "Covered FTE-years in the Trust, 2027",
-                  "Expected Claims", "Expected cost ($)"])
+    _head(ws, 7, ["Participating Entity", "Transition Date", "Months in the Trust in 2027"])
     r = 8
     for e in K.ENTITY_ORDER:
-        v = m["ent"][e]
-        for col, val, fmt in ((1, K.ENTITIES[e]["name"], None), (2, long_date(K.ENTITIES[e]["transition"]), None),
-                              (3, r1(v["fte_years"]), "0.0"), (4, r1(v["count"]), "0.0"), (5, r1000(v["cost"]), "#,##0")):
-            cell = ws.cell(row=r, column=col, value=val)
-            if fmt:
-                cell.number_format = fmt
-            if col > 1:
-                cell.alignment = Alignment(horizontal="right")
+        ws.cell(row=r, column=1, value=K.ENTITIES[e]["name"])
+        ws.cell(row=r, column=2, value=long_date(K.ENTITIES[e]["transition"])).alignment = Alignment(horizontal="right")
+        ws.cell(row=r, column=3, value=months_in(e))
         r += 1
-    tot_n = sum(v["count"] for v in m["ent"].values())
-    tot_x = sum(v["fte_years"] for v in m["ent"].values())
-    for col, val, fmt in ((1, "All entities", None), (3, r1(tot_x), "0.0"), (4, r1(tot_n), "0.0"),
-                          (5, r1000(m["total"]), "#,##0")):
-        cell = ws.cell(row=r, column=col, value=val)
-        cell.font = B
-        cell.fill = TOTAL
-        if fmt:
-            cell.number_format = fmt
-    for col in (2,):
-        ws.cell(row=r, column=col).fill = TOTAL
-    r += 2
-    ws.cell(row=r, column=1, value="By specialty class").font = B
     r += 1
-    _head(ws, r, ["Specialty class", "", "Covered FTE-years in the Trust, 2027", "Expected Claims", "Expected cost ($)"])
+    ws.cell(row=r, column=1, value="Experience").font = B
     r += 1
-    for k in K.CLASSES:
-        v = m["cls"][k]
-        ws.cell(row=r, column=1, value=K.CLASS_NAME[k])
-        for col, val, fmt in ((3, r1(v["fte_years"]), "0.0"), (4, r1(v["count"]), "0.0"), (5, r1000(v["cost"]), "#,##0")):
-            cell = ws.cell(row=r, column=col, value=val)
-            cell.number_format = fmt
+    for label, val, fmt in (("Claims from 2016 to 2024 incidents naming Covered Clinicians", m["exp_claims"], "#,##0"),
+                            ("Covered FTE-years, 2016 to 2024 payroll", r1(m["exp_fte_years"]), "#,##0.0")):
+        ws.cell(row=r, column=1, value=label)
+        cell = ws.cell(row=r, column=3, value=val)
+        cell.number_format = fmt
         r += 1
-    for col, val, fmt in ((1, "All classes", None), (3, r1(tot_x), "0.0"), (4, r1(tot_n), "0.0"),
-                          (5, r1000(m["total"]), "#,##0")):
-        cell = ws.cell(row=r, column=col, value=val)
-        cell.font = B
-        cell.fill = TOTAL
-        if fmt:
-            cell.number_format = fmt
-    ws.cell(row=r, column=2).fill = TOTAL
     r += 1
-    ws.cell(row=r, column=1, value="Brennick Community Hospital joins on 1 October 2027: three months of exposure, and "
-                                   "only the Claims made by 31 December count.").font = NOTE_FONT
+    ws.cell(row=r, column=1, value="Experience Claims by delay from incident to first making").font = B
     r += 1
-    ws.cell(row=r, column=1, value="Source: risk management claims register extract valued 30 September 2026; legacy "
-                                   "payroll 2017 to 2024; clinician staffing plan 2027, version 2026-09-29. Basis and "
-                                   "definitions on the Notes sheet.").font = NOTE_FONT
-    for col, wd in zip(range(1, 6), [34, 18, 22, 16, 18]):
+    _head(ws, r, ["Delay", "Claims", "Average cost, 2027 level ($)", "Share of the experience's cost"])
+    r += 1
+    prof = lag_profile(m)
+    tot_cost = sum(x[3] for x in prof)
+    for label, n, avg, cost in prof:
+        ws.cell(row=r, column=1, value=label)
+        ws.cell(row=r, column=2, value=n).number_format = "#,##0"
+        ws.cell(row=r, column=3, value=r1000(avg)).number_format = "#,##0"
+        cell = ws.cell(row=r, column=4, value=cost / tot_cost)
+        cell.number_format = "0.0%"
+        r += 1
+    r += 1
+    for t in ("Only Claims made by 31 December 2027 from incidents on or after each entity's Transition Date fall in "
+              "2027. In the experience the Claims made within weeks of the care are disclosed harm settled through the "
+              "Early Resolution Program, those made in the following months mostly small program requests, and the "
+              "cost sits in the demands and suits made a year or more after the care.",
+              "Source: risk management claims register extract valued 30 September 2026; legacy payroll 2016 to 2024; "
+              "clinician staffing plan 2027, version 2026-09-29. Definitions on the Notes sheet."):
+        ws.cell(row=r, column=1, value=t).font = NOTE_FONT
+        r += 1
+    for col, wd in zip(range(1, 5), [58, 18, 30, 30]):
         ws.column_dimensions[get_column_letter(col)].width = wd
 
-    ws2 = wb.create_sheet("By month")
-    ws2["A1"] = "Expected cost of the Trust's 2027 Claims by the month they are made ($)"
-    ws2["A1"].font = T
-    _head(ws2, 3, ["Month made"] + [K.ENTITIES[e]["name"] for e in K.ENTITY_ORDER] + ["All entities"])
-    for i in range(12):
-        ws2.cell(row=4 + i, column=1, value="%s 2027" % MONTH_NAMES[i])
-        for j, e in enumerate(K.ENTITY_ORDER):
-            cell = ws2.cell(row=4 + i, column=2 + j, value=r1000(m["months"][e][i]))
-            cell.number_format = "#,##0"
-        cell = ws2.cell(row=4 + i, column=6, value=r1000(sum(m["months"][e][i] for e in K.ENTITY_ORDER)))
-        cell.number_format = "#,##0"
-    ws2.cell(row=16, column=1, value="2027").font = B
-    for j, e in enumerate(K.ENTITY_ORDER):
-        cell = ws2.cell(row=16, column=2 + j, value=r1000(m["ent"][e]["cost"]))
-        cell.number_format = "#,##0"
-        cell.font = B
-    cell = ws2.cell(row=16, column=6, value=r1000(m["total"]))
-    cell.number_format = "#,##0"
-    cell.font = B
-    ws2.cell(row=18, column=1, value="Monthly figures are rounded separately and may not add to the year. Each entity "
-                                     "counts from its Transition Date.").font = NOTE_FONT
-    for col, wd in zip(range(1, 7), [14, 22, 24, 22, 26, 14]):
-        ws2.column_dimensions[get_column_letter(col)].width = wd
-    ws2.freeze_panes = "B4"
-
     ws3 = wb.create_sheet("Carrier loss runs")
-    ws3["A1"] = "Open claims under each entity's occurrence policies missing from its carrier's latest loss run"
+    ws3["A1"] = "Open claims under each entity's policies with its expiring carrier missing from that carrier's latest " \
+                "loss run"
     ws3["A1"].font = T
-    _head(ws3, 3, ["Participating Entity", "Carrier", "Latest loss run", "Open claims in the register",
-                   "Missing from the loss run", "Our reserves on them ($)"])
+    _head(ws3, 3, ["Participating Entity", "Expiring carrier", "Carrier's policies since", "Latest loss run",
+                   "Open claims under its policies", "Missing from the loss run", "Our reserves on them ($)"])
     for i, e in enumerate(K.ENTITY_ORDER):
         v = a[e]
-        vals = [K.ENTITIES[e]["name"], K.CARRIERS[K.ENTITIES[e]["carrier"]], "valued 30 September 2026", v["open"],
-                v["count"] if v["count"] else "None", r1000(v["reserves"])]
+        vals = [K.ENTITIES[e]["name"], v["carrier"], long_date(v["era_start"]), "valued 30 September 2026",
+                v["expiring"], v["count"] if v["count"] else "None", r1000(v["reserves"])]
         for col, val in enumerate(vals, start=1):
             cell = ws3.cell(row=4 + i, column=col, value=val)
-            if col == 6:
+            if col == 7:
                 cell.number_format = "#,##0"
-            if col >= 4:
+            if col >= 5:
                 cell.alignment = Alignment(horizontal="right")
     rr = 10
     ws3.cell(row=rr - 1, column=1, value="Claims missing from the loss runs").font = B
-    _head(ws3, rr, ["Participating Entity", "Claim number", "Incident number", "Claim made", "Matter type",
-                    "Our reserves ($)"])
+    _head(ws3, rr, ["Participating Entity", "Claim number", "Incident number", "Incident date", "Claim made",
+                    "Matter type", "Our reserves ($)"])
     rr += 1
     rows = m["rows"]
+    n_missing = 0
     for e in K.ENTITY_ORDER:
         line = K.ENTITIES[e]["line"]
         for ino in a[e]["missing"]:
             rs = [x for x in rows if x["incident_no"] == ino and x["coverage_line"] == line]
-            first = sorted(rs, key=lambda x: (x["claim_made_date"], x["claim_no"]))[0]
+            opn = sorted((x for x in rs if x["status"] in ("OPEN", "REOPENED")),
+                         key=lambda x: (x["claim_made_date"], x["claim_no"]))[0]
             res = sum((x["indemnity_reserve"] or 0) + (x["defense_reserve"] or 0) for x in rs)
-            for col, val in enumerate([K.ENTITIES[e]["name"], first["claim_no"], ino,
-                                       first["claim_made_date"].strftime("%d %b %Y").lstrip("0"),
-                                       first["matter_type"], r1000(res)], start=1):
+            for col, val in enumerate([K.ENTITIES[e]["name"], opn["claim_no"], ino,
+                                       opn["incident_date"].strftime("%d %b %Y").lstrip("0"),
+                                       opn["claim_made_date"].strftime("%d %b %Y").lstrip("0"),
+                                       opn["matter_type"], r1000(res)], start=1):
                 cell = ws3.cell(row=rr, column=col, value=val)
-                if col == 6:
+                if col == 7:
                     cell.number_format = "#,##0"
             rr += 1
+            n_missing += 1
+    if not n_missing:
+        ws3.cell(row=rr, column=1, value="None")
+        rr += 1
     rr += 1
-    for t in ("Quillan Mutual's latest run is the one valued 30 September 2026 (issued 6 October 2026); revision 1 of "
+    for t in ("Each expiring carrier's policies are the terms it wrote for the entity, from the date in the premium "
+              "history; open claims from incidents before that date are under the former carrier's occurrence policies "
+              "(trust agreement 2.2), so they are not looked for on these runs.",
+              "Quillan Mutual's latest run is the one valued 30 September 2026 (issued 6 October 2026); revision 1 of "
               "its 30 June 2026 run, issued 9 October 2026, is an earlier valuation.",
               "Claims that began as precautionary notices are carried on the runs under their notice numbers (RMN), "
               "which the notice log ties to incident numbers; a suit that followed an earlier claim number for the "
               "same incident stays under that earlier number. Stoneleigh drops the punctuation from references.",
-              "Missing: open in the register at 30 September 2026 under the entity's coverage line, one per incident, "
+              "Missing: open in the register at 30 September 2026 on the entity's coverage line, one per incident, "
               "with no record on the run. Reserves are the register's indemnity and defense reserves on our rows."):
         ws3.cell(row=rr, column=1, value=t).font = NOTE_FONT
         rr += 1
-    for col, wd in zip(range(1, 7), [30, 44, 24, 18, 18, 22]):
+    for col, wd in zip(range(1, 8), [30, 44, 22, 24, 18, 18, 22]):
         ws3.column_dimensions[get_column_letter(col)].width = wd
 
-    ws4 = wb.create_sheet("Covered FTE Sep 2026")
-    ws4["A1"] = "Covered Clinician FTE in September 2026, HCM pay lines"
+    ws4 = wb.create_sheet("Covered FTE 2026")
+    ws4["A1"] = "Covered clinician FTE paid by the payroll, July to September 2026"
     ws4["A1"].font = T
-    _head(ws4, 3, ["Participating Entity", "Covered clinician FTE"])
+    _head(ws4, 3, ["Participating Entity"] + [MONTH_LABEL[x] for x in A.ASK_B_MONTHS])
     for i, e in enumerate(K.ENTITY_ORDER):
         ws4.cell(row=4 + i, column=1, value=K.ENTITIES[e]["name"])
-        cell = ws4.cell(row=4 + i, column=2, value=b["gold"][e])
-        cell.number_format = "0.0"
+        for j, mo in enumerate(A.ASK_B_MONTHS):
+            cell = ws4.cell(row=4 + i, column=2 + j, value=r1(b["gold"][(e, mo)]))
+            cell.number_format = "#,##0.0"
     ws4.cell(row=8, column=1, value="All entities").font = B
-    cell = ws4.cell(row=8, column=2, value=r1(sum(b["raw"].values())))
-    cell.number_format = "0.0"
-    cell.font = B
-    ws4.cell(row=10, column=1, value="One FTE per position held in September 2026, Schedule B jobs through the HCM job "
-                                     "profile crosswalk, on the entity of the cost centre the position's lines are "
-                                     "charged to.")
-    for col, wd in zip(range(1, 3), [34, 24]):
+    for j, mo in enumerate(A.ASK_B_MONTHS):
+        cell = ws4.cell(row=8, column=2 + j, value=r1(sum(b["gold"][(e, mo)] for e in K.ENTITY_ORDER)))
+        cell.number_format = "#,##0.0"
+        cell.font = B
+        cell.fill = TOTAL
+    ws4.cell(row=8, column=1).fill = TOTAL
+    for k, t in enumerate(("Paid FTE: the hours paid on each covered position's pay lines in the work month (regular "
+                           "and paid time off) over the 173.33 hours scheduled a month at 1.0 FTE; a per-diem "
+                           "clinician by the shifts paid, a month of unpaid leave at none.",
+                           "Covered Clinicians: Schedule B jobs through the HCM job profile crosswalk. A resident's or "
+                           "fellow's additional position is left out, trainees not being Covered Clinicians (trust "
+                           "agreement 1.5).",
+                           "Entity: the entity of the cost centre the lines are charged to. The total is rounded from "
+                           "unrounded figures.",
+                           "Source: HCM clinician pay lines for work months January to September 2026, run 2 October "
+                           "2026.")):
+        ws4.cell(row=10 + k, column=1, value=t).font = NOTE_FONT
+    for col, wd in zip(range(1, 5), [34, 16, 16, 18]):
         ws4.column_dimensions[get_column_letter(col)].width = wd
 
     ws5 = wb.create_sheet("Notes")
@@ -274,20 +268,21 @@ def write_book(path, c):
                               "fellows, psychologists and contracted or locum clinicians are excluded."),
         ("Window", "Each entity from its Transition Date (its Retroactive Date) to 31 December 2027: Claims made in "
                    "2027 from incidents on or after that date."),
-        ("Experience", "The %d Claims from incidents in 2017 to 2024 naming Covered Clinicians, valued at paid plus "
+        ("Experience", "The %s Claims from incidents in 2016 to 2024 naming Covered Clinicians, valued at paid plus "
                        "case reserves on the Covered Clinicians' rows of the register extract valued 30 September "
-                       "2026, trended at 5.0%% a year from the incident year to 2027, against %s covered FTE-years in "
-                       "the payroll for the same years, pooled within each specialty class (funding policy 3.2 and "
-                       "3.4)." % (len(m["ex"]), "{:,.1f}".format(sum(m["E"].values())))),
-        ("Exposure", "The staffing plan's covered FTE for each month from the Transition Date, one twelfth of an "
-                     "FTE-year spread evenly over the month's days (funding policy 3.3)."),
-        ("Expected cost", "Each day of exposure is charged the experience's cost per FTE-year of the Claims whose delay "
-                          "from incident to first making, added to that day, falls on or before 31 December 2027; the "
-                          "expected number of Claims is the same sum counting each Claim once."),
+                       "2026 and trended at 5.0%% a year from the incident year to 2027, against %s covered FTE-years "
+                       "in the payroll for the same years, pooled within each specialty class (funding policy 3.2 to "
+                       "3.4)." % ("{:,}".format(m["exp_claims"]), "{:,.1f}".format(r1(m["exp_fte_years"])))),
+        ("Exposure", "The staffing plan's covered FTE for each month from the Transition Date, a month one twelfth of "
+                     "an FTE-year, held through the month's days."),
+        ("Expected cost", "Each experience Claim stands for the Claims its class would make in 2027 at the same delay "
+                          "from incident to first making: it counts once for each FTE-year of 2027 exposure with "
+                          "that delay still left before 31 December, per FTE-year of its class's experience, at its "
+                          "own cost."),
         ("Not included", "Administrative expenses, investment income, excess insurance and any margin (funding policy "
                          "3.5)."),
-        ("Rounding", "Rounded once, from unrounded amounts: dollars to the nearest thousand, Claims and FTE to one "
-                     "decimal."),
+        ("Rounding", "Rounded once, from unrounded amounts: the contribution to the nearest $250,000, other dollars to "
+                     "the nearest thousand, FTE to one decimal."),
         ("As of", "Register extract run 2 October 2026, valued 30 September 2026; HCM pay lines to September 2026; "
                   "carrier loss runs received 5 to 9 October 2026."),
     ]
@@ -310,42 +305,49 @@ def write_book(path, c):
 
 
 # ------------------------------------------------------------------------------------------------ deck
+def chart_title(b):
+    tot = {mo: sum(b["gold"][(e, mo)] for e in K.ENTITY_ORDER) for mo in A.ASK_B_MONTHS}
+    big = max(K.ENTITY_ORDER, key=lambda e: b["gold"][(e, "2026-09")])
+    share = b["gold"][(big, "2026-09")] / tot["2026-09"]
+    return "%s carries %d%% of the covered clinician FTE the payroll paid in September" % (
+        K.ENTITIES[big]["name"], int(math.floor(share * 100 + 0.5)))
+
+
 def write_chart(buf, c):
-    m = c["m"]
+    b = c["b"]
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 10, "svg.hashsalt": "t130",
                          "axes.edgecolor": SLATE, "axes.labelcolor": SLATE, "xtick.color": NAVY, "ytick.color": SLATE})
     fig, ax = plt.subplots(figsize=(9.6, 4.6), dpi=200)
     fig.patch.set_facecolor(PAPER)
     ax.set_facecolor(PAPER)
-    bottom = [0.0] * 12
-    for e in K.ENTITY_ORDER:
-        vals = [x / 1000.0 for x in m["months"][e]]
-        ax.bar(MONTH_NAMES, vals, bottom=bottom, color=ENTITY_COLOURS[e], width=0.66, edgecolor=PAPER, linewidth=0.8,
-               label="%s (from %s)" % (K.ENTITIES[e]["name"], long_date(K.ENTITIES[e]["transition"])))
-        bottom = [b_ + v for b_, v in zip(bottom, vals)]
-    for i, tot in enumerate(bottom):
-        if tot > 0.5:
-            ax.text(i, tot + max(bottom) * 0.012, "%d" % round(tot), ha="center", va="bottom", fontsize=8.5,
-                    color=NAVY)
-    top = max(bottom)
-    for x, label in ((2.5, "Alderwick joins 1 Apr"), (5.5, "Medical group joins 1 Jul"), (8.5, "Brennick joins 1 Oct")):
-        ax.axvline(x, color=SLATE, linewidth=0.8, linestyle=(0, (3, 3)))
-        ax.text(x - 0.08, top * 1.05, label, ha="right", va="top", fontsize=8.2, color=SLATE)
-    ax.set_ylabel("Expected cost of Claims made in the month ($000)")
+    width = 0.26
+    xs = list(range(len(K.ENTITY_ORDER)))
+    top = max(b["gold"].values())
+    for j, mo in enumerate(A.ASK_B_MONTHS):
+        vals = [r1(b["gold"][(e, mo)]) for e in K.ENTITY_ORDER]
+        pos = [x + (j - 1) * width for x in xs]
+        ax.bar(pos, vals, width=width * 0.94, color=MONTH_COLOURS[mo], label=MONTH_LABEL[mo], edgecolor=PAPER,
+               linewidth=0.6)
+        for p, v in zip(pos, vals):
+            ax.text(p, v + top * 0.012, "{:,.1f}".format(v), ha="center", va="bottom", fontsize=7.6, color=NAVY)
+    ax.set_xticks(xs)
+    ax.set_xticklabels([K.ENTITIES[e]["name"] for e in K.ENTITY_ORDER])
+    ax.set_ylabel("Covered clinician FTE paid")
+    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: "{:,.0f}".format(v)))
     ax.yaxis.grid(True, color=LINE, linewidth=0.8)
     ax.set_axisbelow(True)
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)
     ax.tick_params(axis="x", length=0)
-    ax.set_ylim(0, max(bottom) * 1.12)
-    ax.legend(loc="upper left", bbox_to_anchor=(0.0, 0.86), frameon=False, fontsize=8.8)
+    ax.set_ylim(0, top * 1.12)
+    ax.legend(loc="upper left", frameon=False, fontsize=8.8)
     fig.tight_layout()
     fig.savefig(buf, format="png", facecolor=PAPER, metadata={"Software": None})
     plt.close(fig)
 
 
 def write_deck(path, c, chart_png):
-    m = c["m"]
+    m, b = c["m"], c["b"]
     navy, slate, pale = RGBColor(0x1F, 0x2F, 0x3F), RGBColor(0x5A, 0x66, 0x72), RGBColor(0xEE, 0xF1, 0xF4)
     prs = Presentation()
     prs.slide_width, prs.slide_height = Cm(33.867), Cm(19.05)
@@ -369,20 +371,16 @@ def write_deck(path, c, chart_png):
         text(slide, 1.6, 17.9, 30.6, 0.7, "Corvane Health, Risk Management and Insurance  |  Trustees of the Corvane "
              "Professional Liability Trust, 10 November 2026  |  %d" % n, size=9)
 
+    contribution = "{:,}".format(m["rounded"])
     s1 = prs.slides.add_slide(blank)
-    frame(s1, 1, "2027 contribution to the Trust: $%s" % money(m["total"]),
+    frame(s1, 1, "2027 contribution to the Trust: $%s" % contribution,
           "Recommended: the Participating Entities contribute $%s for 2027, the expected cost of the Claims that will "
-          "be first made against the Trust in its first Plan Year" % money(m["total"]))
-    rows = [["Participating Entity", "Joins the Trust", "Covered FTE-years, 2027", "Expected Claims",
-             "Expected cost ($)"]]
+          "be first made against the Trust in its first Plan Year" % contribution)
+    rows = [["Participating Entity", "Joins the Trust", "Months in the Trust in 2027"]]
     for e in K.ENTITY_ORDER:
-        v = m["ent"][e]
-        rows.append([K.ENTITIES[e]["name"], long_date(K.ENTITIES[e]["transition"]), "%.1f" % r1(v["fte_years"]),
-                     "%.1f" % r1(v["count"]), money(v["cost"])])
-    rows.append(["All entities", "", "%.1f" % r1(sum(v["fte_years"] for v in m["ent"].values())),
-                 "%.1f" % r1(sum(v["count"] for v in m["ent"].values())), money(m["total"])])
-    widths = [8.4, 5.6, 6.0, 4.6, 5.6]
-    tb = s1.shapes.add_table(len(rows), 5, Cm(1.6), Cm(4.3), Cm(sum(widths)), Cm(0.95 * len(rows))).table
+        rows.append([K.ENTITIES[e]["name"], long_date(K.ENTITIES[e]["transition"]), "%d" % months_in(e)])
+    widths = [9.4, 6.4, 7.6]
+    tb = s1.shapes.add_table(len(rows), 3, Cm(1.6), Cm(4.3), Cm(sum(widths)), Cm(0.95 * len(rows))).table
     for j, wd in enumerate(widths):
         tb.columns[j].width = Cm(wd)
     for i, row in enumerate(rows):
@@ -390,7 +388,7 @@ def write_deck(path, c, chart_png):
             cell = tb.cell(i, j)
             cell.text = val
             cell.fill.solid()
-            last = i == len(rows) - 1
+            last = False
             cell.fill.fore_color.rgb = navy if i == 0 else (pale if last else RGBColor(0xFF, 0xFF, 0xFF))
             para = cell.text_frame.paragraphs[0]
             if not para.runs:
@@ -401,21 +399,23 @@ def write_deck(path, c, chart_png):
             run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF) if i == 0 else navy
             if j >= 2:
                 para.alignment = PP_ALIGN.RIGHT
-    text(s1, 1.6, 11.0, 30.6, 6.0, [
-        "Each entity joins on the day its occurrence policy expires, and the Trust is claims-made with each entity's "
-        "Transition Date as its Retroactive Date: in 2027 it pays only for Claims made by 31 December from incidents "
-        "after the entity joined.",
-        "In the System's 2017 to 2024 experience the Claims made within a few months of their incident settled small, "
-        "and most of the cost sits in Claims made a year or more after it. Costed claim by claim on that experience, "
-        "the first year is a fraction of a mature year's cost.",
+    text(s1, 1.6, 10.6, 30.6, 6.6, [
+        "The Trust is claims-made, each entity's Transition Date its Retroactive Date: in 2027 it pays only for the "
+        "Claims made by 31 December from incidents after the entity joined.",
+        "Those are the Claims the System's experience makes within the year: harm disclosed and settled within weeks "
+        "of the care, which is costly, and program requests a few months on, which settle small. The demands and "
+        "suits that carry most of the experience's cost come a year or more after the care, after 2027 for every "
+        "entity.",
+        "Each 2016 to 2024 experience Claim was costed at its own delay from incident to first making against the "
+        "days each entity is in the Trust in 2027, within its specialty class.",
         "No provision for expenses, investment income, excess insurance or margin (funding policy 3.5)."], size=12)
 
     s2 = prs.slides.add_slide(blank)
-    frame(s2, 2, "The 2027 cost builds through the year as each entity joins",
-          "Expected cost of the Claims made against the Trust in each month of 2027, by entity, $000 at 2027 cost level")
+    frame(s2, 2, chart_title(b),
+          "Covered clinician FTE the payroll paid at each entity, July to September 2026 (HCM pay lines)")
     s2.shapes.add_picture(chart_png, Cm(2.6), Cm(3.5), width=Cm(27.6))
-    text(s2, 1.6, 16.9, 30.6, 0.8, "Source: risk management claims register valued 30 September 2026 (incidents 2017 "
-         "to 2024, trended at 5.0% a year); clinician staffing plan 2027. Each entity counts from its Transition Date.",
+    text(s2, 1.6, 16.9, 30.6, 0.8, "Source: HCM clinician pay lines run 2 October 2026; hours paid over 173.33 a month "
+         "at 1.0 FTE, residents' and fellows' additional positions left out, entity of the cost centre charged.",
          size=9)
     prs.core_properties.title = "Trust contribution 2027"
     prs.save(path)
@@ -433,7 +433,7 @@ def main(target, golden, figures_path, world=None):
     buf.seek(0)
     write_deck(os.path.join(golden, DECK), c, buf)
     with open(figures_path, "w") as fh:
-        json.dump(fig, fh, indent=1, ensure_ascii=False)
+        json.dump(fig, fh, indent=1, ensure_ascii=False, default=str)
         fh.write("\n")
     return c
 

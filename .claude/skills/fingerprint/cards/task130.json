@@ -10,8 +10,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "Corvane Health should put $784,000 into its professional liability trust for 2027. That is the expected cost of the 11.5 claims expected to be first made against the trust in 2027 from incidents on or after each entity's Transition Date.",
-  "answer_source": "task130/submission.md, 1. Final Recommendation, first two sentences (bold markers removed); figures in task130/generator/figures.json, written with golden/trust_funding_2027.xlsx and golden/trustees_paper_2027.pptx by generator/deliver.py from target/ and recomputed by generator/verify.py",
+  "answer": "Corvane Health should put $1,250,000 into its professional liability trust for 2027.",
+  "answer_source": "task130/submission.md, 1. Final Recommendation, first sentence (bold markers removed); figures in task130/generator/figures.json, written with golden/trust_funding_2027.xlsx and golden/trustees_paper_2027.pptx by generator/deliver.py from target/ and recomputed by generator/verify.py",
   "gap": [
     "time",
     "population"
@@ -35,18 +35,18 @@
   "scoring_unit": "per resolved case",
   "spine": {
     "file": "clinician_fte_by_month_2016-01_2025-12.csv",
-    "rows": 114499,
+    "rows": 224767,
     "entity": "one employee's paid full-time equivalent in one month on one cost centre, with the job code, entity and status payroll held that month (employed clinicians, residents, fellows and psychologists)",
     "grain": "employee x month x cost centre",
     "source": "synthetic"
   },
   "forum": "trustees_or_governors",
-  "forcing_event": "vote_or_meeting",
+  "forcing_event": "launch_or_rollout",
   "org_family": "hospital_or_health_provider",
   "world": {
     "geography": "United States, Oregon",
     "currency": "USD",
-    "org_type": "nonprofit regional health system with four hospitals and an employed medical group, replacing commercial occurrence professional liability policies with a self-insured claims-made trust",
+    "org_type": "nonprofit regional health system with three hospitals and an employed medical group, replacing commercial occurrence professional liability policies with a self-insured claims-made trust",
     "invented_names": [
       "Corvane Health",
       "Corvane Professional Liability Trust",
@@ -56,8 +56,6 @@
       "Nancy Holland",
       "Derek White",
       "Lori Williams",
-      "Jerome Warren",
-      "Elizabeth Nelson",
       "Walter Butler"
     ]
   },
@@ -67,17 +65,18 @@
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
-  "driver": "A cover that pays only for events that both occur and are first reported inside its own window is costed from a full period's cost per unit of exposure, when inside a short window only the events reported soon after they occur can count and here those are the cheap ones; the expected cost is the exposure at each point of the window times the cost of past events reported within the time then left, which neither a full period's cost, its prorated share nor the share of events reported within a year at the average cost gives.",
-  "driver_concrete": "Each hospital and the employed medical group joins the new trust, claims-made, on the day its commercial occurrence policy expires, so the trust's 2027 cost is the claims first made by 31 December 2027 from incidents after each entity's transition; the system's early-resolution programme turns most claims into quick, small settlements while the lawsuits that carry most of the money are made a year or more after the incident, so the expected cost is each day's covered clinician exposure times the trended cost of the system's past claims made within the days then left in 2027, not a year's cost per FTE-year applied to each entity's FTE-years in the trust.",
-  "stump": "A competent solver collapses the register's defendant rows to one claim per incident, values and trends every claim from 2017, takes the system's annual claims cost per clinician FTE-year by specialty class, applies it to each entity's FTE-years in the trust and files a contribution of $4,854,000; the step that lands it there is costing the trust's opening months as a mature year, when only the claims made by 31 December 2027 from incidents after each entity's transition count, and those are mostly the quick, cheap requests: the golden is $784,000.",
+  "driver": "A cover that pays only for events first reported inside its own short window is priced as the count of past events that would report in time at the average cost of all past events, when a past event's cost depends on how soon it was reported, and not in one direction: the quickest reports are costly, the next quickest cheap and the late ones carry most of the money; the expected cost is each past event's own cost counted for the exposure from which its own delay still lands it inside the window, which neither the average cost, the average cost of the events reported within a period nor a smooth curve of cost on delay gives.",
+  "driver_concrete": "Each hospital and the employed medical group joins the new trust, claims-made, on the day its occurrence policy expires, so the 2027 cost is the Claims first made by 31 December 2027 from incidents after each entity's Transition Date; in the system's 2016 to 2024 experience the Claims made within weeks are disclosed harm the Early Resolution Program settles at tens of thousands, those made in the following months mostly program requests settled for a few thousand, and the demands and suits made a year or more on carry nearly all the cost, so the window's expected cost is each experience Claim's own trended cost counted for the covered FTE-years of 2027 with its own delay still left, within its specialty class, not the window's expected count at the class's average cost, at the average cost of the Claims made within a year, or along a fitted severity curve.",
+  "stump": "A competent solver who reads the claims-made window correctly counts the Claims the 2016 to 2024 experience would make by 31 December 2027 from each entity's Transition Date and prices them at each specialty class's average trended Claim cost (frequency times severity), filing $2,500,000 ($2,605,268 unrounded); the step that lands it there is pricing the window's Claims at the cost of all Claims, when the Claims made inside a first claims-made year are the disclosed-harm settlements made within weeks (about $54,500 each in the experience) and the program requests made months later (about $8,600 each), while the average carries the demands and suits made a year or more later (about $443,000 each); costing each experience Claim at its own delay against each entity's days in the trust gives $1,250,000.",
   "stump_class": "analytical",
-  "analyst_test": "a strong analyst who dedupes the claims and reads the trust agreement and funding policy correctly still multiplies a mature year's cost per FTE by each entity's 2027 months of cover, or applies the share of claims made within a year of the incident at the average claim cost, and overfunds the trust, because inside a first claims-made window only the claims made quickly count and they cost a fraction of the average.",
-  "domain_test": "the deciding quantity is the expected cost of claims first made inside a claims-made trust's opening window, built from each entity's covered clinician exposure through the system's own report-lag and cost-by-lag experience, which is how a professional liability actuary funds a first claims-made year; with another field's nouns the retroactive dates, report lags, early-resolution settlements and specialty classes have nothing to attach to.",
+  "analyst_test": "a strong analyst who dedupes the register, merges each incident's claim numbers, reads the claims-made window and counts the expected Claims made by 31 December 2027 from each Transition Date correctly still prices them at each specialty class's average Claim cost and files $2,500,000; a severity from the Claims made within a year gives $750,000, a log-linear severity curve on the delay $1,000,000, a lognormal or gamma log-delay severity $1,500,000; only costing each Claim at its own delay (or in delay bands fine enough to part the weeks from the months) lands $1,250,000.",
+  "domain_test": "the deciding quantity is the expected cost of claims first made inside a claims-made trust's opening window, built from each entity's covered exposure through the system's own report-lag experience with each claim's cost tied to its own report lag, which is how a professional liability actuary prices a first claims-made year; with another field's nouns (a warranty, a subscription) there is no claims-made trigger, retroactive date, early-resolution settlement or late suit for the cost to depend on.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task102": "task102 moves payments across a period boundary by a business-day release rule; here nothing moves across a boundary: a claims-made window keeps only the claims made soon after their incident, which are the cheap early-resolution ones, so the cost is the exposure at each point of each entity's months of cover times the cost of past claims made within the time then left.",
     "task501": "task501 v3 sized a buffer on the furthest a cumulative path ran ahead of its forecast inside a test horizon; here no path maximum or buffer is involved: the cost of a claims-made opening window is a lag-truncated, cost-weighted share of exposure, entity by entity.",
-    "task134": "task134 v2 round 2 forecasts a pool's inflow over a window holding an announced threshold step, the step's size scaled from a smaller one the history holds; here no threshold steps and nothing is scaled: a claims-made opening window keeps only the claims made soon after their incident, the cheap early-resolution ones, so the cost is each day's covered exposure times the trended cost of past claims made within the days then left."
+    "task134": "task134 v2 round 2 forecasts a pool's inflow over a window holding an announced threshold step, the step's size scaled from a smaller one the history holds; here no threshold steps and nothing is scaled: a claims-made opening window keeps only the claims made soon after their incident, the cheap early-resolution ones, so the cost is each day's covered exposure times the trended cost of past claims made within the days then left.",
+    "task130": "v4 round 1's decisive step was the claims-made window itself (truncating each claim's report lag against each entity's days in the trust, against a mature year's cost per FTE-year); here that truncation is the default path's own construction and the decisive step is the cost each window claim carries: the experience's cost is non-monotone in the report lag and class-specific, so the window's expected count at the average claim cost, a within-a-year severity and a fitted severity curve all miss, and only costing each claim at its own lag lands."
   },
   "lineage": [
     {
@@ -119,17 +118,34 @@
       "stump_strategy": "population_selection",
       "fate": "sent back by the judge 2026-10-14 (NOT_DETERMINISTIC, SEND_BACK): funding policy 3.2's \"the System's own claims experience\" read literally gives the pooled $312,000 against the golden $587,000 (a main-call fork), and two ask bases (the entity split, the September 2026 FTE attribution) were open; the author kept round 1 as shipped ($784,000) and every task130 file was restored to 9bf3cbc",
       "driver": "A cover whose first window sees only the events reported soon after they occur is priced on a history in which only some units ran the process that produces those quick, cheap reports, while every unit runs it from the window's start; the window's cost is carried almost entirely by the quick events that only the process's units show, so the history pooled across every unit about halves it, and the process's effect read over a full period of development, where it makes the units look cheaper, points the wrong way; the window is costed at each point of its exposure on the experience of the units that already ran the process, one rate for every unit."
+    },
+    {
+      "architecture": "v4 round 1",
+      "fate": "shipped 2026-10-12 at $784,000 (portal pending); the rule 3 audit of 2026-10-15 read it AT_RISK: funding policy 3.4 (\"used as recorded ... no development or tail factor ... no distribution is fitted\") filed the estimator by eliminating every rival, 3.2 read as a cost-per-FTE-year recipe and the headline wrong answer ($4,854,000) was a contract misreading; reworked in place as the v4 rule 3 rework",
+      "driver": "A cover that pays only for events that both occur and are first reported inside its own window is costed from a full period's cost per unit of exposure, when inside a short window only the events reported soon after they occur can count and here those are the cheap ones; the expected cost is the exposure at each point of the window times the cost of past events reported within the time then left, which neither a full period's cost, its prorated share nor the share of events reported within a year at the average cost gives.",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "domain": "actuarial-science-insurance",
+      "subdomain": "pricing-ratemaking-credibility",
+      "stump_strategy": "maturity_censoring"
     }
   ],
-  "notes": "Re-rooted as v4 on 2026-10-12 (wave 1, the author's fourth root for a retired number). v4 moves to professional liability pricing: the first-year contribution to a new claims-made trust. stump_strategy maturity_censoring: the claims-made window truncates the report lag, so only early-made claims count, and early claims are the cheap early-resolution settlements. Pattern none, decisive G13 (horizon: the window the decision covers) then G14 (cost conditioned on early reporting). Calibration none: the system's own claims experience is the evidence, no organ. context_artifact register: the risk management claims register extract the stakeholder works from. Shape moved from 02 to other after the DRAWN commit (task125 drew 02 minutes earlier). Built 2026-10-12 on claims seed 3671: default $4,854,000 against the golden $784,000. Forcing event moved from purchase_order_or_contract to vote_or_meeting after the PAUSED commit: task127 v2, drawn the same day with a lower number, drew purchase_order_or_contract and so sits among this build's last three; the trustees fix the contribution at their 10 November 2026 meeting (funding policy section 2), which is what forces the call now. Round 2 (2026-10-14, PAUSED f44902f) moved the decisive step to the Early Resolution Program's class experience ($587,000) and was sent back by the judge; the author kept round 1, so this card carries round 1's identity again and round 2 sits in lineage. At the restore, guard.py heart BLOCKs on people.first (Elizabeth, against task128) and ban.forcing_event (vote_or_meeting, against task128 v3), both from task128's re-root after round 1 shipped; round 1's pack is kept as shipped, so neither is redrawn.",
+  "notes": "Re-rooted as v4 on 2026-10-12 (wave 1, the author's fourth root for a retired number). v4 moves to professional liability pricing: the first-year contribution to a new claims-made trust. stump_strategy maturity_censoring: the claims-made window truncates the report lag, so only early-made claims count, and early claims are the cheap early-resolution settlements. Pattern none, decisive G13 (horizon: the window the decision covers) then G14 (cost conditioned on early reporting). Calibration none: the system's own claims experience is the evidence, no organ. context_artifact register: the risk management claims register extract the stakeholder works from. Shape moved from 02 to other after the DRAWN commit (task125 drew 02 minutes earlier). Built 2026-10-12 on claims seed 3671: default $4,854,000 against the golden $784,000. Forcing event moved from purchase_order_or_contract to vote_or_meeting after the PAUSED commit: task127 v2, drawn the same day with a lower number, drew purchase_order_or_contract and so sits among this build's last three; the trustees fix the contribution at their 10 November 2026 meeting (funding policy section 2), which is what forces the call now. Round 2 (2026-10-14, PAUSED f44902f) moved the decisive step to the Early Resolution Program's class experience ($587,000) and was sent back by the judge; the author kept round 1, so this card carries round 1's identity again and round 2 sits in lineage. At the restore, guard.py heart BLOCKs on people.first (Elizabeth, against task128) and ban.forcing_event (vote_or_meeting, against task128 v3), both from task128's re-root after round 1 shipped; round 1's pack is kept as shipped, so neither is redrawn. Rule 3 rework 2026-10-15 (v4 kept: world, trust, entities, transitions, the 2027 plan year): the funding policy now files only the WHAT (estimand, exposure bases, experience period 2016 to 2024 pooled within class, valuation and trend); the decisive step moves from the lag truncation (now the default path's own construction) to costing each window Claim at its own report lag, the experience's cost being non-monotone in the lag and class-specific; stump_strategy stays maturity_censoring (the window censors the report lag and the Claims it keeps carry a cost profile of their own); forcing_event moves from vote_or_meeting to launch_or_rollout (the trust's launch, entity by entity from 1 January 2027, forces the first contribution), clearing the ban against task128 v3's later re-root without banning task136 to task138; Elizabeth Nelson and Jerome Warren dropped from the personas (no shipped file names them; Elizabeth collided with task128).",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:claims-made-opening-window-cost-by-report-lag",
+  "layer2_pattern": "own:claims-made-first-year-cost-conditioned-on-report-lag",
   "layer1": [
     "a risk management claims register with one row per named defendant: employed clinicians, residents and contracted clinicians in one extract, the contracted rows unpriced",
     "claim stages that move: an early-resolution request that later becomes a suit is a new claim number pointing back at the request; reopened claims keep their earlier closing date; claims closed without indemnity carry defence costs",
-    "legacy payroll by employee, month and cost centre with job codes re-mapped on 1 July 2020 (both code sets in the trust's schedule), dual appointments on two entities' cost centres, transfers between entities and one hospital's mid-2019 affiliation",
-    "a 2026 HCM pay-line extract at earning-code grain repeating the position's FTE on each line, the worker's home entity stamped as of the extract date, and job profiles that map to legacy codes only through a crosswalk",
-    "two expiring carriers' loss runs in their own layouts and reference formats, one carrier's corrected run for an earlier valuation delivered after its latest run, and noticed matters carried under the notice number",
-    "each entity's transition date, expiring policy and the trust's coverage terms in the trust agreement, the costing basis in a separate funding policy"
+    "legacy payroll by employee, month and cost centre with job codes re-mapped on 1 July 2020 (both code sets in the trust's schedule), per-diem clinicians paid by the shift at two-decimal FTE, dual appointments on two entities' cost centres, transfers, unpaid leave at zero FTE and one hospital's mid-2019 affiliation",
+    "a 2026 HCM pay-line extract at earning-code grain (regular, per-diem shifts, paid time off, stipends, unpaid leave) repeating the position's FTE on each line, residents' additional paid positions under attending job profiles, and job profiles that map to legacy codes only through a crosswalk",
+    "two expiring carriers' loss runs in their own layouts and reference formats, one carrier's corrected run for an earlier valuation delivered after its latest run, noticed matters carried under the notice number, and a claims system that holds each entity's current programme line on claims its former carriers insure",
+    "each entity's transition date, expiring policy and the trust's coverage terms in the trust agreement, the costing basis in a separate funding policy, the carriers by term in a premium history"
   ]
 }

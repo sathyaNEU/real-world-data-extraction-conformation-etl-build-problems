@@ -2,11 +2,12 @@
 September 2026, by the route it came in on, the claim numbers risk management opened for it, what each cost, the
 precautionary notices sent to the carriers, and the carriers' own records of the same matters.
 
-Incidents arise month by month from each clinician position's paid FTE. Since September 2015 a patient harmed by care
-can ask for compensation through the Early Resolution Program: those requests come a few months after the incident
-and mostly settle small; a request that is declined can turn into a suit, which risk management opens as a new claim
-number pointing back at the request. Demand letters and suits that come in directly arrive a year or more after the
-incident and carry the defence costs and the large indemnity payments."""
+Incidents arise month by month from each clinician position's paid FTE. Since September 2015 the Early Resolution
+Program has met patients harmed by care in two ways: when the care team discloses serious harm, the program reviews
+the care and settles within weeks; otherwise a patient may ask for compensation within a year of the care, most once
+treatment and bills are done, and those requests settle small. A request that is declined can turn into a suit, which
+risk management opens as a new claim number pointing back at the request. Demand letters and suits that come in
+directly arrive a year or more after the incident and carry the defence costs and the large indemnity payments."""
 from __future__ import annotations
 
 import datetime as dt
@@ -18,18 +19,23 @@ import numpy as np
 import common as K
 import world as WD
 
-F_DIRECT = {"OB": 0.070, "SUR": 0.045, "EM": 0.031, "AN": 0.024, "HM": 0.016, "PC": 0.011, "APC": 0.006}
-F_ERP = {"OB": 0.084, "SUR": 0.062, "EM": 0.051, "AN": 0.036, "HM": 0.027, "PC": 0.020, "APC": 0.011}
+# Claims per covered FTE-year by route and specialty class, report lags (days, lognormal median and spread, bounds)
+# and amounts (2020 cost level).
+F_DISCLOSED = {"OB": 0.043, "SUR": 0.030, "EM": 0.026, "AN": 0.030, "HM": 0.017, "PC": 0.011, "APC": 0.011}
+DISCLOSED_LAG = {"OB": 13, "SUR": 16, "EM": 17, "AN": 10, "HM": 17, "PC": 22, "APC": 17}
+DISCLOSED_IND = {"OB": 54000, "SUR": 38000, "EM": 34000, "AN": 42000, "HM": 31000, "PC": 23000, "APC": 19000}
+F_ERP = {"OB": 0.30, "SUR": 0.26, "EM": 0.16, "AN": 0.22, "HM": 0.18, "PC": 0.16, "APC": 0.16}
+ERP_LAG_MEDIAN = {"OB": 257, "SUR": 273, "EM": 250, "AN": 234, "HM": 281, "PC": 296, "APC": 281}
+ERP_LAG_SIGMA = 0.43
+ERP_IND = {"OB": 4700, "SUR": 4100, "EM": 2900, "AN": 2300, "HM": 3500, "PC": 2300, "APC": 2000}
+ESCALATE = 0.022
+SUIT_IND = {"OB": 180000, "SUR": 120000, "EM": 110000, "AN": 100000, "HM": 100000, "PC": 80000, "APC": 70000}
+F_DIRECT = {"OB": 0.072, "SUR": 0.054, "EM": 0.036, "AN": 0.0144, "HM": 0.024, "PC": 0.0192, "APC": 0.0072}
+DIRECT_LAG_MEDIAN = {"OB": 1150, "SUR": 620, "EM": 560, "AN": 700, "HM": 650, "PC": 1050, "APC": 760}
+DIRECT_LAG_SIGMA = 0.35
+DIRECT_IND = {"OB": 878000, "SUR": 446000, "EM": 405000, "AN": 392000, "HM": 351000, "PC": 378000, "APC": 216000}
 F_RESIDENT = 0.012
-ESCALATE = 0.065
-ERP_LAG_MEDIAN = {"OB": 96, "SUR": 90, "EM": 84, "AN": 86, "HM": 90, "PC": 88, "APC": 86}
-ERP_LAG_SIGMA = 0.50
-DIRECT_LAG_MEDIAN = {"OB": 800, "SUR": 520, "EM": 470, "AN": 500, "HM": 520, "PC": 560, "APC": 500}
-DIRECT_LAG_SIGMA = 0.55
-ERP_IND = {"OB": 32000, "SUR": 22000, "EM": 14000, "AN": 15000, "HM": 14000, "PC": 10000, "APC": 8500}
-SUIT_IND = {"OB": 500000, "SUR": 290000, "EM": 230000, "AN": 250000, "HM": 230000, "PC": 175000, "APC": 150000}
-DIRECT_IND = {"OB": 620000, "SUR": 310000, "EM": 250000, "AN": 270000, "HM": 250000, "PC": 190000, "APC": 155000}
-CAP_2020 = 1_200_000
+CAP_2020 = 1_400_000
 
 ALLEGATIONS = {
     "OB": ["Birth injury", "Delay in delivery", "Failure to monitor fetal status", "Postpartum hemorrhage management",
@@ -134,10 +140,14 @@ def _day_in(rng, p, y, m):
 
 
 def _active(index, entity, jobs, d):
+    """Clinicians working on date d: positions held that day, not on unpaid leave, and per-diem clinicians only in a
+    month they worked shifts."""
     out = []
     for j in jobs:
         for p in index.get((entity, j), ()):
             if p.start <= d and (p.end is None or p.end >= d) and (d.year, d.month) not in p.leave:
+                if p.per_diem and p.shifts_held(d.year, d.month) < 1:
+                    continue
                 out.append(p)
     return out
 
@@ -176,6 +186,8 @@ def simulate(W):
     rng = K.claims_stream("incidents")
     index = {}
     for p in W.positions:
+        if p.moonlight:
+            continue
         index.setdefault((p.entity, p.job), []).append(p)
     for v in index.values():
         v.sort(key=lambda p: p.pid)
@@ -193,17 +205,19 @@ def simulate(W):
                     incidents.append(_resident_incident(rng, index, p, y, m))
             continue
         d0 = dt.date(y, m, 1)
+        on = d0 >= dt.date(erp_start.year, erp_start.month, 1)
         lam_d = f * F_DIRECT[cls] / 12.0
-        lam_e = f * F_ERP[cls] / 12.0 if d0 >= dt.date(erp_start.year, erp_start.month, 1) else 0.0
-        nd, ne = rng.poisson(lam_d), rng.poisson(lam_e)
-        for route, n in (("DIRECT", nd), ("ERP", ne)):
+        lam_e = f * F_ERP[cls] / 12.0 if on else 0.0
+        lam_s = f * F_DISCLOSED[cls] / 12.0 if on else 0.0
+        nd, ne, ns = rng.poisson(lam_d), rng.poisson(lam_e), rng.poisson(lam_s)
+        for route, n in (("DIRECT", nd), ("ERP", ne), ("DISCLOSED", ns)):
             for _ in range(int(n)):
                 d = _day_in(rng, p, y, m)
                 if p.entity == "CMG":
                     d2 = clinic_day(d)
                     if p.start <= d2 and (p.end is None or d2 <= p.end) and (d2.year, d2.month) not in p.leave:
                         d = d2
-                if route == "ERP" and d < erp_start:
+                if route in ("ERP", "DISCLOSED") and d < erp_start:
                     route_i = "DIRECT"
                 else:
                     route_i = route
@@ -236,14 +250,14 @@ def _codefendants(rng, index, p, d, erp):
 
 
 def _covered_incident(rng, index, p, cls, d, route):
-    co = _codefendants(rng, index, p, d, route == "ERP")
+    co = _codefendants(rng, index, p, d, route != "DIRECT")
     defendants = [(p.emp, p.job)] + [(q.emp, q.job) for q in co]
     res_p = 0.0
     if p.entity == "AMC" and cls in ("OB", "SUR", "EM", "HM", "AN"):
         res_p = 0.12
     elif p.entity == "TFH" and cls in ("OB", "EM", "HM") and d >= dt.date(2018, 7, 1):
         res_p = 0.08
-    if rng.random() < res_p * (0.5 if route == "ERP" else 1.0):
+    if rng.random() < res_p * (0.5 if route != "DIRECT" else 1.0):
         res = _active(index, p.entity, ["RES"] if cls != "HM" or rng.random() < 0.7 else ["FEL", "RES"], d)
         if res:
             r = res[int(rng.integers(0, len(res)))]
@@ -318,40 +332,52 @@ def _cap(ind, dfn, level):
     return ind, dfn
 
 
+def _lag(rng, median, sigma, lo, hi):
+    """A report lag in days from a lognormal, redrawn until it falls inside [lo, hi]."""
+    while True:
+        lag = int(round(_lognormal(rng, median, sigma)))
+        if lo <= lag <= hi:
+            return lag
+
+
 def _claims_for(rng, inc, defendants, cls, ctr):
     level = _cost_level(inc.date.year) * float(np.exp(0.04 * rng.standard_normal()))
     defs = _defs(rng, inc.entity, defendants, ctr)
-    if inc.route == "ERP":
-        lag = int(min(330, max(12, round(_lognormal(rng, ERP_LAG_MEDIAN[cls], ERP_LAG_SIGMA)))))
+    if inc.route == "DISCLOSED":
+        # harm the care team disclosed at once: the program meets the patient within days and settles within weeks
+        lag = _lag(rng, DISCLOSED_LAG[cls], 0.45, 2, 75)
+        made = bday(inc.date + dt.timedelta(days=lag))
+        ind = _lognormal(rng, DISCLOSED_IND[cls], 0.35) * level
+        dfn = _lognormal(rng, 5000, 0.3) * level
+        inc.claims = [ClaimNo(made, "Claim", defs, ind, dfn, bday(made + dt.timedelta(days=int(rng.integers(25, 121)))))]
+    elif inc.route == "ERP":
+        # a request through the program once care and bills are done, within the program's year
+        lag = _lag(rng, ERP_LAG_MEDIAN[cls], ERP_LAG_SIGMA, 40, 365)
         made = bday(inc.date + dt.timedelta(days=lag))
         if rng.random() < ESCALATE:
-            req_close = bday(made + dt.timedelta(days=int(rng.integers(30, 151))))
+            req_close = bday(made + dt.timedelta(days=int(rng.integers(30, 121))))
             req = ClaimNo(made, "Claim", defs, 0.0, _lognormal(rng, 1600, 0.6) * level, req_close)
-            suit_made = bday(made + dt.timedelta(days=int(rng.integers(180, 601))))
+            suit_made = bday(made + dt.timedelta(days=int(rng.integers(90, 259))))
             sdefs = [Defendant(d.clinician_id, d.job, d.role, d.line, d.share, d.specialty) for d in defs]
-            if rng.random() < 0.62:
+            if rng.random() < 0.10:
                 ind = _lognormal(rng, SUIT_IND[cls], 0.6) * level
-                dfn = _lognormal(rng, 90000, 0.5) * level
+                dfn = _lognormal(rng, 80000, 0.5) * level
             else:
-                ind, dfn = 0.0, _lognormal(rng, 65000, 0.6) * level
+                ind, dfn = 0.0, _lognormal(rng, 55000, 0.5) * level
             ind, dfn = _cap(ind, dfn, level)
             suit = ClaimNo(suit_made, "Suit", sdefs, ind, dfn,
                            bday(suit_made + dt.timedelta(days=int(rng.integers(420, 1501)))), prior=req)
             inc.claims = [req, suit]
         else:
-            ind = 0.0 if rng.random() < 0.24 else min(250000 * level, _lognormal(rng, ERP_IND[cls], 0.85) * level)
-            dfn = _lognormal(rng, 1600, 0.6) * level
-            inc.claims = [ClaimNo(made, "Claim", defs, ind, dfn, bday(made + dt.timedelta(days=int(rng.integers(20, 161)))))]
+            ind = 0.0 if rng.random() < 0.30 else min(60000 * level, _lognormal(rng, ERP_IND[cls], 0.65) * level)
+            dfn = _lognormal(rng, 1500, 0.5) * level
+            inc.claims = [ClaimNo(made, "Claim", defs, ind, dfn, bday(made + dt.timedelta(days=int(rng.integers(20, 121)))))]
     else:
-        lag = int(min(3200, max(45, round(_lognormal(rng, DIRECT_LAG_MEDIAN[cls], DIRECT_LAG_SIGMA)))))
+        lag = _lag(rng, DIRECT_LAG_MEDIAN[cls], DIRECT_LAG_SIGMA, 200, 3200)
         made = bday(inc.date + dt.timedelta(days=lag))
-        suit = rng.random() < 0.55
-        if rng.random() < 0.40:
-            ind = _lognormal(rng, DIRECT_IND[cls], 0.7) * level
-            dfn = _lognormal(rng, 95000, 0.5) * level
-        else:
-            ind = 0.0
-            dfn = _lognormal(rng, 40000 if suit else 12000, 0.65) * level
+        suit = rng.random() < 0.40
+        dfn = _lognormal(rng, 95000 if suit else 35000, 0.45) * level
+        ind = _lognormal(rng, DIRECT_IND[cls], 0.6) * level if rng.random() < 0.45 else 0.0
         ind, dfn = _cap(ind, dfn, level)
         close = bday(made + dt.timedelta(days=int(rng.integers(480, 1601) if suit else rng.integers(150, 901))))
         c = ClaimNo(made, "Suit" if suit else "Claim", defs, ind, dfn, close)
@@ -360,11 +386,11 @@ def _claims_for(rng, inc, defendants, cls, ctr):
             c.reopen_reserve = float(rng.choice([5000, 10000, 15000, 25000, 40000]))
         inc.claims = [c]
     # a precautionary notice to the carrier for serious events, sent before any claim
-    p_notice = 0.35 if inc.route == "DIRECT" else 0.05
+    p_notice = {"DIRECT": 0.35, "DISCLOSED": 0.30, "ERP": 0.03}[inc.route]
     if inc.cls is not None or any(d.line != "CONTRACT" for d in defs):
         if rng.random() < p_notice:
-            nd = bday(inc.date + dt.timedelta(days=int(rng.integers(4, 81))))
-            if nd < inc.claims[0].made:
+            nd = bday(inc.date + dt.timedelta(days=int(rng.integers(2, 81))))
+            if nd < inc.claims[0].made and nd <= K.VALUATION:
                 inc.notice = nd
 
 
@@ -411,10 +437,11 @@ def _carrier_timing(incidents):
             pick.unreported = True
             for c in pick.claims:
                 c.report = None
-    # each entity has at least two open matters that began as precautionary notices
+    # each entity has at least two open matters under its expiring carrier that began as precautionary notices
     for e in K.ENTITY_ORDER:
         opened = [inc for inc in incidents if inc.entity == e and on_line(inc) and inc.route == "DIRECT"
-                  and any(_open_at(c, V) for c in inc.claims) and inc.claims[0].made < GAP_FIRST]
+                  and any(_open_at(c, V) for c in inc.claims) and inc.claims[0].made < GAP_FIRST
+                  and inc.date >= K.ENTITIES[e]["carrier_from"]]
         have = [inc for inc in opened if inc.notice is not None]
         rest = [inc for inc in opened if inc.notice is None]
         while len(have) < 2 and rest:
@@ -597,8 +624,10 @@ def experience_from_rows(rows, job_of=None):
             pm = [r for r in rs if r["claim_no"] == cno][0]["claim_made_date"]
             parts.append(((pm - inc_date).days, pc))
             parts3.append(((pm - inc_date).days, pc, pm.year == inc_date.year))
+        first_rows = [r for r in rs if r["claim_no"] == first_claim]
         out.append(dict(incident_no=ino, cls=K.CLASS_OF_JOB[j], lag=(made - inc_date).days, cost=cost,
                         year=inc_date.year, same_year=made.year == inc_date.year, parts=parts, parts3=parts3,
-                        n_claim_nos=len(parts)))
+                        n_claim_nos=len(parts), mtype=first_rows[0]["matter_type"], alleg=first_rows[0]["allegation"],
+                        entity=first_rows[0]["entity_at_incident"]))
     out.sort(key=lambda c: c["incident_no"])
     return out

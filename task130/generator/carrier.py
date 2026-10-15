@@ -12,6 +12,12 @@ def _on_line(inc):
     return any(d.line != "CONTRACT" for c in inc.claims for d in c.defendants) or inc.route == "NOTICE"
 
 
+def expiring_era(inc):
+    """The matter falls under the entity's expiring carrier's occurrence policies: its incident is on or after the
+    date the entity moved to that carrier (earlier incidents stay with the former carrier)."""
+    return inc.date >= K.ENTITIES[inc.entity]["carrier_from"]
+
+
 def records(incidents, notice_only, Vr, key):
     """Every carrier claim open or closed on the carrier's books at valuation date Vr."""
     rng = K.claims_stream("carrier-reserves")
@@ -19,7 +25,7 @@ def records(incidents, notice_only, Vr, key):
     out = []
     for inc in incidents + notice_only:
         f = float(rng.uniform(0.8, 1.6))
-        if not _on_line(inc):
+        if not _on_line(inc) or not expiring_era(inc):
             continue
         factors[inc.incident_no] = f
         reports = [c.report for c in inc.claims if c.report is not None]

@@ -24,6 +24,7 @@ TARGET = {
     "BCH": dict(GSU=3.0, ORT=2.0, EMR=11.0, ANE=3.0, CRNA=5.0, HOS=9.0, CAR=1.0, RAD=1.0, NP=10.0, PA=7.0),
 }
 GROWTH = 0.024                      # covered FTE growth a year, 2012 to 2026
+SCALE = 2.0                         # the establishment is twice TARGET (trainees as listed)
 FTE_MIX = {
     "hosp": ((1.0, .70), (0.9, .10), (0.8, .10), (0.6, .05), (0.5, .05)),
     "phys": ((1.0, .60), (0.9, .15), (0.8, .15), (0.6, .10)),
@@ -31,6 +32,7 @@ FTE_MIX = {
     "res": ((1.0, 1.0),),
 }
 LEAVE_RATE = {"hosp": 0.0058, "phys": 0.0050, "clin": 0.0075, "res": 0.0}
+HOURS_FULL = 173.33                 # scheduled hours a month at 1.0 FTE (2,080 a year)
 WORLD_MONTHS = K.months(K.WORLD_FIRST, K.HCM_LAST)
 
 
@@ -48,6 +50,8 @@ class Position:
     fte_changes: list = field(default_factory=list)     # (first month, new fte)
     leave: set = field(default_factory=set)              # (y, m) of unpaid leave
     hcm_profile: str = ""
+    per_diem: bool = False                               # works shifts as needed; no scheduled FTE
+    moonlight: bool = False                              # a resident's or fellow's additional job (HCM, 2026)
 
     @property
     def cc(self):
@@ -72,14 +76,37 @@ class Position:
         a = max(self.start, first)
         b = min(self.end, last) if self.end is not None else last
         days = (b - a).days + 1
+        if self.per_diem:
+            n = self.shifts_held(y, m)
+            return round(n * 12.0 / HOURS_FULL, 4) if n >= 1 else None
         f = self.fte_in(y, m)
         if days == dim:
             return f
         return max(0.1, round(f * days / dim + 1e-9, 1))
 
+    def held_share(self, y, m):
+        """Share of the month's days the position is held (1 for a whole month)."""
+        first = dt.date(y, m, 1)
+        dim = K.days_in_month(y, m)
+        last = dt.date(y, m, dim)
+        if self.start > last or (self.end is not None and self.end < first):
+            return 0.0
+        a = max(self.start, first)
+        b = min(self.end, last) if self.end is not None else last
+        return ((b - a).days + 1) / dim
+
+    def shifts(self, y, m):
+        """A per-diem clinician's twelve-hour shifts in a month."""
+        r = K.stream("shifts", self.pid, y, m)
+        return int(r.integers(1, 8)) if r.random() < 0.88 else 0
+
+    def shifts_held(self, y, m):
+        """The whole shifts worked while the position was held in the month."""
+        return int(round(self.shifts(y, m) * self.held_share(y, m)))
+
 
 def _target(entity, job, y, m):
-    base = TARGET[entity].get(job, 0.0)
+    base = TARGET[entity].get(job, 0.0) * (1.0 if job in ("RES", "FEL") else SCALE)
     if not base:
         return 0.0
     if job in ("RES", "FEL"):
@@ -200,17 +227,11 @@ def build():
                 if job == "RES" and cy + years - 1 <= 2026 and rr.random() < 0.3:
                     p.hcm_profile = "JP-40102" if rr.random() < 0.2 else p.hcm_profile
                 W.positions.append(p)
-    # clinicians join on the first of a month and leave at a month's end in September 2026, and nobody is on unpaid
-    # leave that month
-    for p in W.positions:
-        if p.start.year == 2026 and p.start.month == 9:
-            p.start = dt.date(2026, 9, 1)
-        if p.end is not None and p.end.year == 2026 and p.end.month == 9:
-            p.end = dt.date(2026, 9, 30)
-        p.leave.discard((2026, 9))
+    _per_diem(W)
     _dual_appointments(W)
     _historic_transfers(W)
     W.movers = _october_moves(W)
+    _moonlighting(W)
     W.by_emp = {}
     for p in W.positions:
         W.by_emp.setdefault(p.emp, []).append(p)
@@ -224,6 +245,56 @@ def _active_on(W, d, entity=None, job=None):
             if (entity is None or p.entity == entity) and (job is None or p.job == job) and (d.year, d.month) not in p.leave:
                 out.append(p)
     return out
+
+
+PER_DIEM = {"TFH": (("EMR", "6310", 3), ("HOS", "6510", 2), ("NP", "6610", 2)),
+            "AMC": (("EMR", "6310", 4), ("HOS", "6510", 4), ("PA", "6610", 3), ("CRNA", "6410", 2)),
+            "BCH": (("EMR", "6310", 3), ("HOS", "6510", 2), ("NP", "6610", 2)),
+            "CMG": (("FAM", "7020", 4), ("NP", "7020", 5), ("PA", "7020", 3))}
+
+
+def _per_diem(W):
+    """Per-diem clinicians: employed, no scheduled FTE, paid for the twelve-hour shifts they work. Each pool keeps
+    its number of clinicians from 2012, a leaver replaced the next month."""
+    rng = K.stream("per-diem")
+    for e in K.ENTITY_ORDER:
+        joined = K.ENTITIES[e]["joined"] or dt.date(2012, 1, 1)
+        for job, dept, n in PER_DIEM[e]:
+            for _ in range(n):
+                start = max(joined, dt.date(2012, 1, 1) - dt.timedelta(days=int(rng.integers(0, 900))))
+                while start <= dt.date(2026, 9, 30):
+                    end = start + dt.timedelta(days=int(rng.integers(400, 3000)))
+                    p = Position(W.new_pid(rng), W.new_emp(rng), job, e, dept, 0.0, start,
+                                 end if end <= dt.date(2026, 9, 30) else None)
+                    p.per_diem = True
+                    p.hcm_profile = _profile(rng, job)
+                    W.positions.append(p)
+                    if p.end is None:
+                        break
+                    start = p.end + dt.timedelta(days=int(rng.integers(20, 50)))
+
+
+MOONLIGHT = (("AMC", "HOS", "6510", "JP-20182"), ("TFH", "HOS", "6510", "JP-20182"), ("BCH", "HOS", "6510", "JP-20182"),
+             ("BCH", "EMR", "6310", "JP-20162"), ("TFH", "EMR", "6310", "JP-20162"), ("CMG", "FAM", "7020", "JP-20191"))
+
+
+def _moonlighting(W):
+    """From the HCM go-live in January 2026 residents and fellows in their later years take an additional job for
+    paid shifts (nocturnist and after-hours rotas), at 0.2 FTE; the legacy payroll paid such shifts on the trainee's
+    own job."""
+    rng = K.stream("moonlighting")
+    trainees = sorted((p for p in W.positions if p.job in ("RES", "FEL") and p.end is not None and
+                       p.end >= dt.date(2026, 7, 1) and p.start <= dt.date(2025, 7, 1)), key=lambda p: p.pid)
+    picks = [trainees[int(i)] for i in sorted(rng.choice(len(trainees), size=min(18, len(trainees)), replace=False))]
+    for k, t in enumerate(picks):
+        e, job, dept, prof = MOONLIGHT[k % len(MOONLIGHT)]
+        start = dt.date(2026, int(rng.integers(1, 8)), int(rng.integers(1, 29)))
+        end = min(t.end, dt.date(2026, 12, 31))
+        q = Position(W.new_pid(rng), t.emp, job, e, dept, 0.2, start, end if end < dt.date(2026, 10, 1) else None,
+                     primary=False)
+        q.moonlight = True
+        q.hcm_profile = prof
+        W.positions.append(q)
 
 
 def _dual_appointments(W):
@@ -256,7 +327,7 @@ def _historic_transfers(W):
              ("AMC", "NP", "TFH", "6610", dt.date(2021, 2, 1)), ("CMG", "FAM", "CMG", "7120", dt.date(2022, 5, 16)),
              ("AMC", "HOS", "BCH", "6510", dt.date(2023, 8, 7)), ("TFH", "CRNA", "AMC", "6410", dt.date(2024, 4, 22))]
     for e, j, e2, dept2, d in moves:
-        cands = [p for p in _active_on(W, d, e, j) if p.end is None and p.primary]
+        cands = [p for p in _active_on(W, d, e, j) if p.end is None and p.primary and not p.per_diem]
         cands.sort(key=lambda p: p.pid)
         p = cands[int(rng.integers(0, len(cands)))]
         p.end = d - dt.timedelta(days=1)
@@ -275,7 +346,7 @@ def _october_moves(W):
     out = []
     for e, j, n, e2, dept2 in (("TFH", "HOS", 3, "AMC", "6510"), ("CMG", "FAM", 2, "BCH", "7110"),
                                ("AMC", "CRNA", 4, "CMG", "7810"), ("BCH", "EMR", 1, "TFH", "6310")):
-        cands = [p for p in _active_on(W, sept, e, j) if p.end is None and p.primary
+        cands = [p for p in _active_on(W, sept, e, j) if p.end is None and p.primary and not p.per_diem
                  and not any(q.emp == p.emp and q is not p for q in W.positions if q.end is None)]
         cands.sort(key=lambda p: p.pid)
         idx = rng.choice(len(cands), size=n, replace=False)
@@ -293,6 +364,8 @@ def position_months(W, first=K.WORLD_FIRST, last=K.HCM_LAST):
     """(position, y, m, paid FTE) for every month a position is held."""
     out = []
     for p in W.positions:
+        if p.moonlight:
+            continue
         for (y, m) in K.months(first, last):
             f = p.paid(y, m)
             if f is not None:
@@ -321,8 +394,11 @@ def plan_2027(W):
         cls = K.CLASS_OF_JOB[p.job]
         if cls is None:
             continue
+        if p.moonlight:
+            continue
         if p.start <= oct_ and (p.end is None or p.end >= oct_):
-            base[(p.entity, cls)] = base.get((p.entity, cls), 0.0) + p.fte_in(2026, 10)
+            f = p.fte_in(2026, 10) if not p.per_diem else 0.25
+            base[(p.entity, cls)] = base.get((p.entity, cls), 0.0) + f
     plan = {}
     for (e, cls), f in sorted(base.items()):
         level = round(f, 1)

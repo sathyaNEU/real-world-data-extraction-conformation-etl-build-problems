@@ -22,13 +22,13 @@ LEGACY_FIRST, LEGACY_LAST = (2016, 1), (2025, 12)   # legacy payroll history in 
 HCM_FIRST, HCM_LAST = (2026, 1), (2026, 9)
 WORLD_FIRST = (2012, 1)                   # the simulation starts here (claims from older incidents are in the register)
 ERP_START = dt.date(2015, 9, 1)           # the Early Resolution Program takes requests from this date
-EXPERIENCE = (dt.date(2017, 1, 1), dt.date(2024, 12, 31))
+EXPERIENCE = (dt.date(2016, 1, 1), dt.date(2024, 12, 31))
 PLAN_YEAR = 2027
 PLAN_START, PLAN_END = dt.date(2027, 1, 1), dt.date(2027, 12, 31)
 TREND = 0.05
 MEETING = dt.date(2026, 11, 10)           # trustees set the 2027 contribution
 CODE_SWITCH = (2020, 7)                   # legacy job architecture: 2020 code set from July 2020
-MOVE_DATE = dt.date(2026, 10, 1)          # the October 2026 moves (HCM home entity re-stamped)
+MOVE_DATE = dt.date(2026, 10, 1)          # the October 2026 moves (after the asks' months)
 LIMIT_PER_CLAIM = 2_000_000
 
 COMPANY = "Corvane Health"
@@ -36,18 +36,26 @@ TRUST = "Corvane Professional Liability Trust"
 CARRIERS = {
     "QM": "Quillan Mutual Professional Liability Company",
     "SC": "Stoneleigh Casualty Insurance Company",
+    "HL": "Halberd Hospital Mutual Insurance Company",
+    "CL": "Corrigan Lane Indemnity Company",
+    "WP": "Westerholm Physicians Exchange",
+    "TR": "Tallis Reciprocal Insurance Exchange",
 }
 # entity code: name, GL company, transition date, carrier, register coverage line, policy anniversary month,
 # policy number pattern (by the policy year's start year), affiliation date
 ENTITIES = {
     "TFH": dict(name="Tolliver Falls Hospital", company="120", transition=dt.date(2027, 1, 1), carrier="QM",
-                line="QM-TFH", anniv=1, policy="QM-HPL-{yy}-0{n}", base_n=4172, joined=None),
+                line="QM-TFH", anniv=1, policy="QM-HPL-{yy}-0{n}", base_n=4172, joined=None,
+                former="HL", carrier_from=dt.date(2021, 1, 1), former_policy="HHM-{yy}-17{n}"),
     "AMC": dict(name="Alderwick Medical Center", company="110", transition=dt.date(2027, 4, 1), carrier="QM",
-                line="QM-AMC", anniv=4, policy="QM-HPL-{yy}-0{n}", base_n=4406, joined=None),
+                line="QM-AMC", anniv=4, policy="QM-HPL-{yy}-0{n}", base_n=4406, joined=None,
+                former="CL", carrier_from=dt.date(2019, 4, 1), former_policy="CLI-PL-{yy}{n}"),
     "CMG": dict(name="Corvane Medical Group", company="300", transition=dt.date(2027, 7, 1), carrier="SC",
-                line="SC-CMG", anniv=7, policy="SC-PPL-0091877-{yy}", base_n=0, joined=None),
+                line="SC-CMG", anniv=7, policy="SC-PPL-0091877-{yy}", base_n=0, joined=None,
+                former="WP", carrier_from=dt.date(2019, 7, 1), former_policy="WPX-0{n}-{yy}"),
     "BCH": dict(name="Brennick Community Hospital", company="140", transition=dt.date(2027, 10, 1), carrier="SC",
-                line="SC-BCH", anniv=10, policy="SC-HPL-0102265-{yy}", base_n=0, joined=dt.date(2019, 7, 1)),
+                line="SC-BCH", anniv=10, policy="SC-HPL-0102265-{yy}", base_n=0, joined=dt.date(2019, 7, 1),
+                former="TR", carrier_from=dt.date(2022, 10, 1), former_policy="TRE-HPL-{yy}-{n}"),
 }
 ENTITY_ORDER = ["TFH", "AMC", "CMG", "BCH"]
 
@@ -134,7 +142,7 @@ DEPTS = {
             ("7540", "Neurology Clinic", ["NEU", "NP"]), ("7550", "Behavioral Health", ["PSY", "PSYC", "NP"]),
             ("7610", "Orthopaedics and Sports Medicine", ["ORT", "PA"]), ("7620", "Urology Clinic", ["URO", "PA"]),
             ("7630", "Ear, Nose and Throat", ["ENT", "PA"]), ("7640", "General Surgery Clinic", ["GSU", "PA"]),
-            ("7810", "Ambulatory Surgery Center", ["CRNA"])],
+            ("7810", "Ambulatory Surgery Center", ["CRNA"]), ("7020", "After Hours Care", ["FAM", "NP", "PA"])],
 }
 
 
@@ -177,11 +185,20 @@ def trend_factor(incident_year):
     return (1 + TREND) ** (PLAN_YEAR - incident_year)
 
 
+def carrier_on(entity, d):
+    """The carrier whose occurrence policy covered the entity's clinicians on date d."""
+    e = ENTITIES[entity]
+    return e["carrier"] if d >= e["carrier_from"] else e["former"]
+
+
 def policy_number(entity, d):
     """The occurrence policy in force on date d for the entity's clinicians (annual, on the anniversary)."""
     e = ENTITIES[entity]
     start_year = d.year if d.month >= e["anniv"] else d.year - 1
     yy = "%02d" % (start_year % 100)
+    if carrier_on(entity, d) != e["carrier"]:
+        return e["former_policy"].format(yy=yy, n={"TFH": 41 + start_year % 7, "AMC": 3306 + 11 * (start_year - 2010),
+                                                   "CMG": 7712, "BCH": 205 + start_year % 9}[entity])
     if e["carrier"] == "QM":
         return e["policy"].format(yy=yy, n=e["base_n"] + 37 * (start_year - 2010))
     return e["policy"].format(yy=yy)
@@ -207,11 +224,11 @@ QM_JUN = "QMPL_loss_run_Corvane_val_2026-06-30_rev1.xlsx"
 SC_SEP = "Stoneleigh_lossrun_CORVANE_20260930.csv"
 NOTICES = "rm_carrier_notices_2012_2026.csv"
 SAFETY = "patient_safety_events_2019-01_2026-09.csv"
-PREMIUMS = "insurance_premium_history_2017-2026.xlsx"
+INVOICES = "defense_panel_invoices_2026Q3.csv"
+PREMIUMS = "insurance_premium_history_2016-2026.xlsx"
 DICTIONARY = "data_dictionary_rm_extracts.md"
 EXTRACT_LOG = "extract_log_2026-10.csv"
-DISTRACTORS = (SAFETY, PREMIUMS)
+DISTRACTORS = (SAFETY, INVOICES)
 DELIVERABLES = ("trust_funding_2027.xlsx", "trustees_paper_2027.pptx")
 
-PEOPLE = {"requester": "Nancy Holland", "cfo": "Derek White", "claims": "Lori Williams", "actuary": "Jerome Warren",
-          "erp": "Elizabeth Nelson", "chair": "Walter Butler"}
+PEOPLE = {"requester": "Nancy Holland", "cfo": "Derek White", "claims": "Lori Williams", "chair": "Walter Butler"}

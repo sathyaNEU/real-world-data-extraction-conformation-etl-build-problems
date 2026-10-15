@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import csv
 import datetime as dt
+import math
 
 import common as K
 import world as WD
@@ -66,7 +67,8 @@ def payroll_rows(W):
         last = dt.date(y, m, K.days_in_month(y, m))
         status = "L" if (y, m) in p.leave else ("T" if p.end is not None and p.end <= last and
                                                   not _continues(W, p, y, m) else "A")
-        out.append((K.month_key(y, m), p.emp, code, title, p.cc, p.entity, "%.1f" % f, status))
+        out.append((K.month_key(y, m), p.emp, code, title, p.cc, p.entity, "%.1f" % f if not p.per_diem else
+                    "%.2f" % f, status))
     out.sort(key=lambda r: (r[0], r[1], r[4]))
     return out
 
@@ -80,41 +82,55 @@ def _continues(W, p, y, m):
 
 # ------------------------------------------------------------------------------------------------ HCM pay lines
 HCM_COLS = ["worker_id", "position_id", "work_month", "earning_code", "earning_description", "hours", "fte",
-            "job_profile_code", "job_profile", "cost_centre", "home_entity", "pay_group"]
-EARNINGS = {"REG": "Regular salary", "PTO": "Paid time off", "CALL": "Call pay", "ADMIN": "Administrative stipend",
-            "LOA": "Leave of absence (unpaid)"}
+            "job_profile_code", "job_profile", "cost_centre", "pay_group"]
+EARNINGS = {"REG": "Regular salary", "PDM": "Per diem shifts", "PTO": "Paid time off", "CALL": "Call stipend",
+            "ADMIN": "Administrative stipend", "LOA": "Leave of absence (unpaid)"}
 PROFILE_NAME = {code: name for j in K.JOBS for code, name in j[5]}
+
+
+def hcm_hours(p, y, m):
+    """Paid hours in a work month: a scheduled position's hours for the days it is held, a per-diem clinician's shifts;
+    none in a month of unpaid leave."""
+    if (y, m) in p.leave:
+        return 0.0
+    if p.per_diem:
+        return 12.0 * p.shifts_held(y, m)
+    return WD.HOURS_FULL * p.fte_in(y, m) * p.held_share(y, m)
 
 
 def hcm_rows(W):
     rng = K.stream("hcm-lines")
     admin = set()
     for p in sorted(W.positions, key=lambda p: p.pid):
-        if rng.random() < 0.06 and K.JOB[p.job][6] in ("hosp", "phys"):
+        if rng.random() < 0.06 and K.JOB[p.job][6] in ("hosp", "phys") and not p.per_diem and not p.moonlight:
             admin.add(p.pid)
     out = []
     for p in sorted(W.positions, key=lambda p: p.pid):
-        home = WD.home_entity(W, p.emp)
         group = "PHYS" if p.job not in ("NP", "PA", "CRNA", "CNM", "PSYC") else "APC"
         if p.job in ("RES", "FEL"):
             group = "GME"
         for (y, m) in K.months(K.HCM_FIRST, K.HCM_LAST):
-            f = p.paid(y, m)
-            if f is None:
+            if p.held_share(y, m) <= 0:
                 continue
-            fte = p.fte_in(y, m)
+            if p.per_diem and p.shifts_held(y, m) < 1:
+                continue
+            fte = p.fte_in(y, m) if not p.per_diem else 0.0
             wm = K.month_key(y, m)
             base = [p.emp, p.pid, wm]
-            tail = ["%.2f" % fte, p.hcm_profile, PROFILE_NAME[p.hcm_profile], p.cc, home, group]
+            tail = ["%.2f" % fte, p.hcm_profile, PROFILE_NAME[p.hcm_profile], p.cc, group]
             if (y, m) in p.leave:
                 out.append(base + ["LOA", EARNINGS["LOA"], "0.00"] + tail)
                 continue
-            std = 173.33 * f
-            out.append(base + ["REG", EARNINGS["REG"], "%.2f" % std] + tail)
-            if rng.random() < 0.42:
-                out.append(base + ["PTO", EARNINGS["PTO"], "%.2f" % float(8 * rng.integers(1, 6))] + tail)
-            if K.JOB[p.job][6] == "hosp" and rng.random() < 0.6:
-                out.append(base + ["CALL", EARNINGS["CALL"], "%.2f" % float(rng.integers(12, 61))] + tail)
+            hours = hcm_hours(p, y, m)
+            pto = 0.0
+            if not p.per_diem and rng.random() < 0.42 and hours > 60:
+                pto = float(8 * rng.integers(1, 6))
+            code = "PDM" if p.per_diem else "REG"
+            out.append(base + [code, EARNINGS[code], "%.2f" % (hours - pto)] + tail)
+            if pto:
+                out.append(base + ["PTO", EARNINGS["PTO"], "%.2f" % pto] + tail)
+            if K.JOB[p.job][6] == "hosp" and not p.per_diem and rng.random() < 0.6 and not p.moonlight:
+                out.append(base + ["CALL", EARNINGS["CALL"], "0.00"] + tail)
             if p.pid in admin:
                 out.append(base + ["ADMIN", EARNINGS["ADMIN"], "0.00"] + tail)
     out.sort(key=lambda r: (r[2], r[0], r[1], r[3]))
@@ -168,7 +184,7 @@ def notice_rows(incidents, notice_only):
     for inc in incidents + notice_only:
         if inc.notice is None:
             continue
-        out.append([inc.notice_no, inc.incident_no, inc.entity, K.CARRIERS[K.ENTITIES[inc.entity]["carrier"]],
+        out.append([inc.notice_no, inc.incident_no, inc.entity, K.CARRIERS[K.carrier_on(inc.entity, inc.date)],
                     iso(inc.notice), iso(inc.date), inc.allegation])
     out.sort()
     return out
@@ -212,7 +228,7 @@ ROLES = [("RN", 0.58), ("Pharmacist", 0.09), ("Physician", 0.07), ("APC", 0.03),
 
 def safety_rows():
     rng = K.stream("safety")
-    rate = {"AMC": 205, "TFH": 74, "CMG": 52, "BCH": 34}
+    rate = {"AMC": 410, "TFH": 148, "CMG": 104, "BCH": 68}
     pick = lambda opts: opts[int(rng.choice(len(opts), p=[w for _, w in opts]))][0]
     out = []
     seq = 2118400
@@ -233,6 +249,42 @@ def safety_rows():
         for t in days:
             seq += int(rng.integers(1, 3))
             out.append(["SE%07d" % seq, t[0].isoformat()] + list(t[1:]))
+    return out
+
+
+INVOICE_COLS = ["invoice_no", "panel_firm", "claim_no", "entity_code", "service_from", "service_to", "fees",
+                "disbursements", "invoice_total", "received_date", "approved_date"]
+PANEL = ["Harrowgate Lusk LLP", "Benedetti Varga & Coyle", "Okonkwo Stahl PC", "Marsh Ruelas Defense Group"]
+
+
+def invoice_rows(incidents):
+    """Defence panel invoices received for July to September 2026 on suits open at the start of the quarter."""
+    rng = K.stream("invoices")
+    q0, q1 = dt.date(2026, 7, 1), dt.date(2026, 9, 30)
+    out = []
+    seq = 26300410
+    suits = []
+    for inc in incidents:
+        for c in inc.claims:
+            if c.matter_type == "Suit" and c.made < q0 and c.close >= q0 and any(d.line != "CONTRACT" for d in c.defendants):
+                suits.append((c.claim_no, inc.entity))
+    for claim_no, e in sorted(suits):
+        firm = PANEL[int(rng.integers(0, len(PANEL)))]
+        for mth in (7, 8, 9):
+            if rng.random() < 0.72:
+                fees = float(round(rng.lognormal(math.log(6500), 0.7), 2))
+                disb = float(round(fees * rng.uniform(0.02, 0.18), 2))
+                start = dt.date(2026, mth, 1)
+                end = dt.date(2026, mth, K.days_in_month(2026, mth))
+                rec = end + dt.timedelta(days=int(rng.integers(6, 40)))
+                if rec > dt.date(2026, 10, 2):
+                    continue
+                appr = rec + dt.timedelta(days=int(rng.integers(3, 25)))
+                seq += int(rng.integers(1, 9))
+                out.append(["INV-%d" % seq, firm, claim_no, e, start.isoformat(), end.isoformat(), "%.2f" % fees,
+                            "%.2f" % disb, "%.2f" % (fees + disb), rec.isoformat(),
+                            appr.isoformat() if appr <= dt.date(2026, 10, 2) else ""])
+    out.sort(key=lambda r: (r[9], r[0]))
     return out
 
 

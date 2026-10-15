@@ -22,7 +22,8 @@ SOURCES = {
     K.SC_SEP: "Stoneleigh Casualty loss run for Corvane Medical Group and Brennick Community Hospital, valued 30 September 2026",
     K.NOTICES: "Precautionary notices risk management sent to the carriers, 2012 to September 2026",
     K.SAFETY: "Patient safety event reports, January 2019 to September 2026",
-    K.PREMIUMS: "Clinician professional liability premium history by entity and policy year, 2017 to 2026",
+    K.PREMIUMS: "Clinician occurrence policies by entity and term, 2016 to 2026: carrier, policy number, period, rated FTE and premium",
+    K.INVOICES: "Defence panel invoices received for service from July to September 2026",
     K.DICTIONARY: "Data dictionary for the risk management extracts",
     K.EXTRACT_LOG: "Extract log: each file's system, date, row count and preparer",
 }
@@ -49,9 +50,11 @@ def write(target, out_path):
         "domain": "Actuarial Science & Insurance",
         "subdomain": "pricing-ratemaking-credibility (first-year funding of a self-insured claims-made professional "
                      "liability trust at an Oregon health system)",
+        "stated_inputs": [],
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "other: the contribution with the expected number and cost of claims for each of four entities "
-                        "and seven specialty classes, the emergence chart by month, and two reconciliation asks",
+        "prompt_shape": "other: the contribution, then two reconciliation asks across four entities (open claims under "
+                        "each expiring carrier's policies missing from its latest loss run, with reserves; paid covered "
+                        "clinician FTE in each of three months) and a chart of the second",
         "as_of": "2026-10-12",
         "deliverables": list(K.DELIVERABLES),
         "distractor_files": list(K.DISTRACTORS),

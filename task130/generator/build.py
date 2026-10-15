@@ -25,7 +25,7 @@ import records as R        # noqa: E402
 import world as WD         # noqa: E402
 
 TASK = os.path.dirname(HERE)
-CLAIMS_SEED = 3671         # chosen by the seed search (the design note's build record)
+CLAIMS_SEED = 2077         # chosen by the seed search (the design note's build record)
 EXPORT_STAMP = dt.datetime(2026, 10, 12, 16, 20, tzinfo=dt.timezone.utc)   # 9:20 am Pacific, the pack's hand-off
 JUNE = dt.date(2026, 6, 30)
 
@@ -58,6 +58,7 @@ def build(out, quiet=False, world=None):
     counts[K.NOTICES] = R.write_csv(p(K.NOTICES), R.NOTICE_COLS, R.notice_rows(w["incidents"], w["notice_only"]))
     counts[K.SC_SEP] = R.write_csv(p(K.SC_SEP), R.SC_COLS, R.sc_rows(w["sep"], w["nums"], K.VALUATION), crlf=True)
     counts[K.SAFETY] = R.write_csv(p(K.SAFETY), R.SAFETY_COLS, R.safety_rows())
+    counts[K.INVOICES] = R.write_csv(p(K.INVOICES), R.INVOICE_COLS, R.invoice_rows(w["incidents"]))
     D.write_plan(p(K.PLAN), w["plan"])
     counts[K.PLAN] = len(w["plan"])
     qm = lambda recs: [r for r in recs if K.ENTITIES[r["entity"]]["carrier"] == "QM"]
@@ -65,7 +66,7 @@ def build(out, quiet=False, world=None):
     D.write_qm_run(p(K.QM_JUN), qm(w["jun"]), w["nums"], JUNE, dt.date(2026, 10, 9),
                    revision="Revision 1 of the run valued 06/30/2026: replaces the run of 07/08/2026 (expense reserves restated)")
     counts[K.QM_SEP], counts[K.QM_JUN] = len(qm(w["sep"])), len(qm(w["jun"]))
-    D.write_premiums(p(K.PREMIUMS))
+    D.write_premiums(p(K.PREMIUMS), W)
     D.write_agreement(p(K.AGREEMENT))
     D.write_policy(p(K.POLICY))
     D.write_dictionary(p(K.DICTIONARY), counts)
@@ -91,8 +92,10 @@ def build(out, quiet=False, world=None):
          "loss run valued 30 September 2026"),
         (K.SAFETY, "Patient safety reporting system", "2026-10-02", counts[K.SAFETY], "Quality and Patient Safety",
          "safety event reports, January 2019 to September 2026"),
-        (K.PREMIUMS, "Risk Management and Insurance", "2026-10-02", "", "Risk Management and Insurance",
-         "clinician professional liability premiums 2017 to 2026"),
+        (K.INVOICES, "Legal billing system (defence panel)", "2026-10-02", counts[K.INVOICES], "Claims and Litigation",
+         "panel invoices for service July to September 2026"),
+        (K.PREMIUMS, "Risk Management and Insurance", "2026-10-01", "", "Risk Management and Insurance",
+         "clinician occurrence policies and premiums by entity and term, 2016 to 2026"),
         (K.AGREEMENT, "Office of the General Counsel", "2026-08-14", "", "Office of the General Counsel",
          "trust agreement as executed, extract"),
         (K.POLICY, "Trust secretary", "2026-09-22", "", "Trust secretary", "funding policy as adopted"),
