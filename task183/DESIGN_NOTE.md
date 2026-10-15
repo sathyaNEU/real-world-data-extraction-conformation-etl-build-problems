@@ -533,3 +533,20 @@ architecture's main call.
 - Cable recurrence world, first tuning: with recurrence only from the third failure, the trailing in-service average already named the target (it never replaced, so its repeat failures sat in the default window); fixed by moving the recurrence threshold to the second failure, flattening the target's yearly counts, and giving the other feeders replacement at the second failure since 2019.
 - Builder's first tuning (WIP before the restart): the section-year split credited the rest of each piece after a failure to the count before it, which inflated the rates after two and three failures; fixed in `models.py`, and on correct exposures the WIP world's R3 lead fell to 1.24x and the Poisson model with attributes to 1.03x.
 - The WIP world itself (paper cable spliced in place, episodes on every count, Mill Lane 7 still at three times baseline in 2026): a pooled rate after one failure of 6 to 7 per cent (paper cable and the State Route 443 run) lifted every feeder's forecast, a feeder-effect Poisson model named Mill Lane 7 (1.13x) and passing history to replacements named Harrow Road 12 (1.85x), a fork on SF7; replaced by paper cable replaced at its first fault, first-failure episodes, and Mill Lane 7's episode easing out.
+- A fourth rung above the failure count, 2026-10-15 (the author asked for a second decisive layer). Two were
+  built and measured, and both died on this world's own structure:
+  - the repeat hazard as a function of time since the last failure, with a second spliced-in-place run (a duct
+    bank under a rail viaduct) carrying a recent cohort of second failures: the process self-regulates, because a
+    section with a high hazard fails often and its time since the last failure stays short, so the built cohorts
+    came out with the same time since (medians 1.2 and 1.8 years) and the layer had nothing to separate;
+  - the repeat hazard conditioned on the water the section's structures stand in, with the viaduct run drying out
+    when the deck was relaid: the water is the cause of the failure count here, so the two are collinear by
+    construction and the conditioning added nothing the count had not already given; worse, the inspection
+    file's Water Level column makes it a header-found join, which fails the readability screen's schema test, and
+    a readable decisive rung is dead.
+  The deeper reason is that in this world any model conditioned on the section's failure count already ranks
+  Quarry Hill 21 first by a wide margin (its stock is 14 sections at three failures or more), so a decoy cannot
+  outrank it on a count-conditioned basis without a failure volume that would also make it lead the default
+  five-year average, which collapses the ladder. A fourth rung therefore needs a re-rooted world with different
+  volumes, not a hardening of this one, and the shipped build was left exactly as it is (rebuilt byte-identical
+  after the experiment).
