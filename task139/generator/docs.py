@@ -190,7 +190,7 @@ def write_pick_memo(path, pick_total):
         "(plan Exhibit 3)." % (pick_total / 1e6),
         "2. The pick books the saving from the 2027 teams as one credit against these eight segments. The credit is the "
         "ultimate indemnity that the accident year 2027 intakes the teams take will not pay because the teams took "
-        "them: what those intakes would pay with their adjusters alone, less what they pay with a team.",
+        "them.",
         "3. The credit is set at run rate: every place of every team in use on every day of 2027, twenty places for 365 "
         "days. The weeks while the teams fill in January and the files still open at the end of December are not "
         "adjusted for.",
@@ -208,7 +208,7 @@ def write_pick_memo(path, pick_total):
     s.append(Spacer(1, 8))
     s.append(Paragraph("KR", BODY))
     doc = _doc(path, "AY2027 indemnity pick: the ERN credit", K.PEOPLE["pricing"])
-    foot = _footer("%s  |  Pricing and Reserving" % K.COMPANY, "AY2027 pick memo 4")
+    foot = _footer("%s  |  Pricing and Reserving" % K.COMPANY, "PR-2026-041")
     doc.build(s, onFirstPage=foot, onLaterPages=foot)
 
 
@@ -344,6 +344,7 @@ def write_review_book(path, W):
         ("Prepared for %s. Valuation date 30 June 2026. Issued %s." % (K.COMPANY, _long(K.REVIEW_DATE)), "sub"),
         ("Each segment sheet lists the segment's sampled claims, both assignment groups together, in claim-number order. "
          "Verification was blind to group.", ""),
+        ("KPA ref: workpaper section and item number, items numbered as the files were worked.", ""),
         ("Claim number: Haverline's legacy claim number with our control digit after the final hyphen.", ""),
         ("Status: the claim's status at 30 June 2026.", ""),
         ("TTD, TPD, PPD: verified ultimate temporary total, temporary partial and permanent partial disability at "
@@ -377,7 +378,10 @@ def write_review_book(path, W):
 
 DICT = [
     (K.EXTRACT, "", "One row per claim reported 1 January 2021 to 30 September 2026 whose first report of injury "
-                    "recorded time lost from work or that has paid or reserved indemnity. Pulled 30 September 2026."),
+                    "recorded time lost from work or that has paid or reserved indemnity. Pulled 30 September 2026. A "
+                    "first report received in the parallel run of 29 May to 1 June 2025 and keyed in both systems is "
+                    "listed twice, converted under its legacy number and again under its new number, the two rows "
+                    "carrying the same office, segment, class_code, injury_date, report_date and disability_began."),
     (K.EXTRACT, "claim_no", "Claim number on the claims system (WC and eight digits)."),
     (K.EXTRACT, "legacy_claim_no", "Claim number on the legacy claims system (office letter, year reported, sequence), "
                                    "for claims converted at the 2 June 2025 upgrade."),
@@ -387,7 +391,10 @@ DICT = [
     (K.EXTRACT, "injury_date", "Date of injury."),
     (K.EXTRACT, "report_date", "Date Haverline received the first report of injury."),
     (K.EXTRACT, "disability_began", "First day of time lost from work on record; blank if none."),
-    (K.EXTRACT, "time_off_at_report", "Y when the first report of injury records time lost from work."),
+    (K.EXTRACT, "time_off_at_report", "Y when the first report of injury records time lost from work "
+                                      "(disability_began on or before report_date). On claims converted at the 2 June "
+                                      "2025 upgrade the field holds the legacy LOST_TIME indicator, which the legacy "
+                                      "system set to Y for any claim with time lost on record."),
     (K.EXTRACT, "claim_type", "IND when indemnity has been paid or reserved on the claim; MO (medical only) otherwise."),
     (K.EXTRACT, "first_indemnity_date", "Date of the first indemnity payment."),
     (K.EXTRACT, "status", "OPEN, CLOSED or REOPENED at the extract date."),
@@ -418,8 +425,8 @@ DICT = [
     (K.PAYMENTS, "check_or_trace", "Check number, or the ACH trace number of an EFT."),
     (K.PAYMENTS, "issue_date", "Date the payment was issued (the payment run)."),
     (K.PAYMENTS, "period_from, period_to", "The week of benefits the line covers."),
-    (K.PAYMENTS, "amount", "Payment amount, US dollars."),
-    (K.PAYMENTS, "status", "ISSUED, or VOID when the check was voided (void_date)."),
+    (K.PAYMENTS, "amount", "Amount of the payment, US dollars, repeated on each line of the payment."),
+    (K.PAYMENTS, "status", "ISSUED, or VOID when the check was voided before it was cashed (void_date)."),
     (K.ACH_RETURNS, "", "The bank's ACH return items for Haverline's workers' compensation EFT payments, 1 January to 30 "
                         "September 2026, as received from the bank."),
     (K.CROSSWALK, "", "Legacy segment codes and the 2025 codes they converted to at the 2 June 2025 upgrade."),

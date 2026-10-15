@@ -282,6 +282,11 @@ def run(target, golden, W=None, meta_path=None):
     for frag in ("will not pay because the teams took", "twenty places for 365", "open and closed claims alike",
                  "with no trend", "what the pilot measured in that segment", "this credit is indemnity only"):
         ok(frag in docs_txt, ("SF6 SF7 SF8 SF9 SF10 SF15: the memo's sentence", frag))
+    # SF7: the memo states the credit once, as what it is, and restates no comparison of what the intakes pay
+    memo_txt = _doc_text(target, only=K.PICK_MEMO)
+    ok("will not pay because the teams took them." in memo_txt and "adjusters alone" not in memo_txt and
+       "would pay" not in memo_txt, "SF7: memo paragraph 2 files the credit once, with no restated comparison")
+    ok("PR-2026-041" in memo_txt and "pick memo 4" not in memo_txt, "the memo carries its Pricing reference")
     # row order: reversed register and log give the same figures
     D2 = dict(D)
     D2["register"] = D["register"].iloc[::-1].reset_index(drop=True)
@@ -317,6 +322,63 @@ def run(target, golden, W=None, meta_path=None):
     i1 = C.intakes(D, dt.date(2025, 1, 1), dt.date(2025, 12, 31), by="injury_date")
     moved = [abs(i1[s] - a1[s]) for s in K.PROG if i1[s] != a1[s]]
     ok(len(moved) == 5 and min(moved) == 2 and max(moved) == 9, ("SF23: the injury year moves five segments", i1))
+    # Ask 1 as filed: the dictionary's definitions executed word for word are the golden, on their own code path
+    DD = _dictionary(target)
+    tor_def, file_def = DD[(K.EXTRACT, "time_off_at_report")], DD[(K.EXTRACT, "(file)")]
+    ok("(disability_began on or before report_date)" in tor_def and "the legacy LOST_TIME indicator" in tor_def and
+       "for any claim with time lost on record" in tor_def, ("SF21: the dictionary files the flag on converted claims", tor_def))
+    ok("parallel run of 29 May to 1 June 2025 and keyed in both systems is listed twice" in file_def and
+       "the same office, segment, class_code, injury_date, report_date and disability_began" in file_def,
+       ("SF22: the dictionary files the parallel run's double listing", file_def))
+    pkey = ["office", "segment", "class_code", "injury_date", "report_date", "disability_began"]
+    natives = ex[ex["legacy_claim_no"] == ""]
+    nat_at = {}
+    for k_, cno in zip(map(tuple, natives[pkey].values.tolist()), natives["claim_no"]):
+        nat_at.setdefault(k_, []).append(cno)
+    win = ex[(ex["legacy_claim_no"] != "") & (ex["report_date"] >= "2025-05-29") & (ex["report_date"] <= "2025-06-01")]
+    twin = {cno: nat_at[k_] for k_, cno in zip(map(tuple, win[pkey].values.tolist()), win["claim_no"]) if k_ in nat_at}
+    ok(len(twin) == 62 and all(len(v) == 1 for v in twin.values()) and len({v[0] for v in twin.values()}) == 62 and
+       len(win) - len(twin) == 4 and natives["report_date"].min() == "2025-05-29",
+       ("SF22: 62 converted claims each pair one new-number claim, four converted claims are listed once", len(twin)))
+    k5 = pkey[:-1]
+    nat5 = set(map(tuple, natives[k5].values.tolist()))
+    hit5 = [cno for k_, cno in zip(map(tuple, win[k5].values.tolist()), win["claim_no"]) if k_ in nat5]
+    ok(len(hit5) == 63 and len(set(hit5) - set(twin)) == 1,
+       ("SF22: without disability_began one converted claim listed once pairs a new-number claim", len(hit5)))
+    x25p = ex[(ex["report_date"] >= "2025-01-01") & (ex["report_date"] <= "2025-12-31") & ex["segment"].isin(K.PROG)]
+    lit, lit_dates = {s: 0 for s in K.PROG}, {s: 0 for s in K.PROG}
+    for r in x25p.itertuples(index=False):
+        if r.claim_no in twin:                       # listed twice: counted once, on its new-number row
+            continue
+        by_dates = r.disability_began != "" and r.disability_began <= r.report_date
+        lit[r.segment] += by_dates if r.legacy_claim_no else (r.time_off_at_report == "Y")
+        lit_dates[r.segment] += by_dates
+    ok(lit == a1 and lit_dates == a1, ("SF21 SF22: the dictionary executed literally is the golden", lit, a1))
+    ok([a1[s] for s in K.PROG] == [1537, 822, 939, 708, 1356, 770, 1109, 666], ("Ask 1 golden", a1))
+    # the same intake definition on the main call's window: every row there is a new-system row and the flag is it
+    xm = ex[(ex["report_date"] >= "2025-10-01") & (ex["report_date"] <= "2026-09-30") & ex["segment"].isin(K.PROG)]
+    vdates = {s: int(((xm["segment"] == s) & (xm["disability_began"] != "") &
+                      (xm["disability_began"] <= xm["report_date"])).sum()) for s in K.PROG}
+    vflag = {s: int(((xm["segment"] == s) & (xm["time_off_at_report"] == "Y")).sum()) for s in K.PROG}
+    ok((xm["legacy_claim_no"] == "").all() and vdates == vflag == v12, ("one intake definition on the call's window", vflag))
+    # the rival readings of Ask 1 each miss, each ruled out by a filed sentence
+    s4 = C.intakes(D, dt.date(2025, 1, 1), dt.date(2025, 12, 31), strict=True)
+    ok(all(s4[s] != a1[s] for s in K.PROG) and (min(a1[s] - s4[s] for s in K.PROG), max(a1[s] - s4[s] for s in K.PROG))
+       == (37, 124),
+       ("SF21: time lost beginning before the report date only (strict) misses every segment", s4))
+    s5 = C.intakes(D, dt.date(2025, 1, 1), dt.date(2025, 12, 31), dedup="window")
+    off5 = sorted(s for s in K.PROG if s5[s] != a1[s])
+    once = win[~win["claim_no"].isin(twin)]
+    ok(off5 == ["CN-SS", "HC-SS", "MF-SS"] and sorted(set(once["segment"])) == off5 and
+       all(a1[s] - s5[s] == int((once["segment"] == s).sum()) for s in K.PROG) and
+       {s: a1[s] - s5[s] for s in off5} == {"CN-SS": 1, "HC-SS": 2, "MF-SS": 1},
+       ("SF22: dropping every converted claim of the parallel run drops the four listed once", s5))
+    s6 = C.intakes(D, dt.date(2025, 1, 1), dt.date(2025, 12, 31), dedup="global")
+    took25 = x25p[np.where(x25p["legacy_claim_no"] != "", (x25p["disability_began"] != "") &
+                           (x25p["disability_began"] <= x25p["report_date"]), x25p["time_off_at_report"] == "Y")]
+    ok(all(s6[s] < a1[s] for s in K.PROG) and int((took25.groupby(pkey).size() > 1).sum()) == 148 and
+       (min(a1[s] - s6[s] for s in K.PROG), max(a1[s] - s6[s] for s in K.PROG)) == (3, 34),
+       ("SF22: a dedup on those fields across the year deletes genuine same-day claims in every segment", s6))
     a2 = G["ask2"]
     t1_ = C.paid_2026(D, dedup_lines=False, drop_returns=False)
     t2_ = C.paid_2026(D, dedup_lines=True, drop_returns=False)
@@ -340,6 +402,28 @@ def run(target, golden, W=None, meta_path=None):
     ok((amt_per == 1).all(), "SF24: a payment's lines all carry the same amount")
     ok(pay["claim_no"].isin(set(ex["claim_no"])).all(), "SF27: every payment's claim is on the extract")
     ok(D["ach"]["trace_number"].isin(set(pay["check_or_trace"])).all(), "SF25: every return matches an EFT")
+    # SF24 to SF26 as filed: the amount repeats on a payment's lines; a voided check and a returned EFT did not pay,
+    # and each was paid again by a check for the same claim, benefit, payee, period and amount
+    ok(DD[(K.PAYMENTS, "amount")] == "Amount of the payment, US dollars, repeated on each line of the payment." and
+       "one line for each week of benefits the payment covers" in DD[(K.PAYMENTS, "line")],
+       "SF24: the dictionary files the amount as the payment's, repeated on each line")
+    ok("VOID when the check was voided before it was cashed" in DD[(K.PAYMENTS, "status")], "SF26: a voided check")
+    ok("ACH return items" in DD[(K.ACH_RETURNS, "(file)")], "SF25: the bank's file is described as its return items")
+    hdr = pay[pay["line"] == "1"].drop(columns=["period_from", "period_to"]).merge(
+        pay.groupby("payment_no").agg(pf=("period_from", "min"), pt=("period_to", "max")).reset_index(), on="payment_no")
+    rk = ["claim_no", "benefit", "payee", "pf", "pt", "amount"]
+    chk = hdr[(hdr["method"] == "CHK") & (hdr["status"] == "ISSUED")]
+    ok(not chk.duplicated(rk).any(), "SF25 SF26: no two issued checks share claim, benefit, payee, period and amount")
+    ret = hdr[hdr["check_or_trace"].isin(set(D["ach"]["trace_number"]))]
+    rm = ret.merge(chk, on=rk, how="left", suffixes=("", "_r"))
+    reiss = rm[rm["payment_no_r"].notna()]
+    late = set(D["ach"][D["ach"]["trace_number"].isin(ret[~ret["payment_no"].isin(reiss["payment_no"])]["check_or_trace"])]
+               ["return_date"])
+    ok(len(ret) == 275 and (ret["method"] == "EFT").all() and len(reiss) == 271 and (reiss["issue_date_r"] > reiss["issue_date"]).all()
+       and late == {"20260929"}, ("SF25: 271 returned EFTs paid again by check, the four returned 29 September not yet", late))
+    vm = hdr[hdr["status"] == "VOID"].merge(chk, on=rk, how="left", suffixes=("", "_r"))
+    ok(len(vm) == 85 and vm["payment_no_r"].notna().all() and (vm["issue_date_r"] > vm["issue_date"]).all(),
+       "SF26: every voided check replaced by a new check")
     for s in K.PROG:
         ok(K.edge_distance(a2[s], 1000) >= 150, ("Ask 2 bin", s, a2[s]))
     ok(len(set(a1.values())) == 8, "Ask 1 counts distinct")
@@ -368,6 +452,23 @@ def run(target, golden, W=None, meta_path=None):
     from collections import Counter
     cn = Counter(notes)
     ok(max(cn.values()) <= 6, ("a verifier's note recurs", cn.most_common(3)))
+    shapes = Counter(re.sub(r"[\d$,./]+", "#", n) for n in notes)
+    ok(len(shapes) >= 20 and max(shapes.values()) <= 0.15 * len(notes), ("the verifiers' notes vary in form", shapes.most_common(3)))
+    rrows = _review_rows(target)
+    arm_of = dict(zip(reg["legacy"], reg["arm"]))
+    rates = []
+    for seg in K.PROG:
+        rs = [r for r in rrows if r[0] == seg]
+        items = [int(r[1].split(".")[1]) for r in rs]
+        ok(all(r[1].startswith("B%d." % (K.PROG.index(seg) + 1)) for r in rs) and sorted(items) == list(range(1, 201)),
+           ("the review's references: one workpaper section a sheet, items 1 to 200", seg))
+        ok(sum(1 for a_, b_ in zip(items, items[1:]) if b_ == a_ + 1) <= 5, ("references in claim-number sequence", seg))
+        arms = [arm_of[C.norm_legacy(C.strip_check(r[2]))] for r in rs]
+        mE = np.mean([i for i, a_ in zip(items, arms) if a_ == "E"])
+        mU = np.mean([i for i, a_ in zip(items, arms) if a_ == "U"])
+        ok(abs(mE - mU) < 30, ("the review's item numbers carry no group", seg, mE, mU))
+        rates.append(sum(1 for r in rs if r[3]) / len(rs))
+    ok(max(rates) - min(rates) >= 0.05, ("each sheet's reviewer remarks at their own rate", rates))
     ok(len(set(M[s]["nU"] for s in K.PROG)) == 8, "pilot sizes vary by segment")
     for f in files:
         b = open(P(f), "rb").read()
@@ -426,11 +527,33 @@ def _doc_text(target, only=None):
     return re.sub(r"\s+", " ", txt)
 
 
-def _review_notes(target):
+def _dictionary(target):
+    """The data dictionary's definitions, keyed by (file, field); a file's own row is keyed (file, "(file)")."""
+    wb = openpyxl.load_workbook(os.path.join(target, K.DICTIONARY), read_only=True, data_only=True)
+    out = {}
+    for r in wb["Fields"].iter_rows(values_only=True):
+        if r and len(r) >= 3 and r[0] and r[1] and r[2] and r[0] != "File":
+            out[(str(r[0]), str(r[1]))] = str(r[2])
+    return out
+
+
+def _review_rows(target):
+    """Every verified row of the review workbook, sheet by sheet: (segment, KPA ref, claim number, note)."""
     wb = openpyxl.load_workbook(os.path.join(target, K.REVIEW_BOOK), read_only=True, data_only=True)
     out = []
     for seg in K.PROG:
+        on = False
         for r in wb[seg].iter_rows(values_only=True):
-            if r and r[0] and str(r[0]).startswith("KPA-"):
-                out.append(r[6])
+            if r and r[0] == "KPA ref":
+                on = True
+                continue
+            if not on or not r or not r[0]:
+                continue
+            if str(r[0]).startswith("Sheet total"):
+                break
+            out.append((seg, str(r[0]), str(r[1]), r[6]))
     return out
+
+
+def _review_notes(target):
+    return [r[3] for r in _review_rows(target)]

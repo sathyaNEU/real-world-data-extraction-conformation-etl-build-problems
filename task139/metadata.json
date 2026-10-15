@@ -50,7 +50,7 @@
     {
       "path": "ay2027_indemnity_pick_ern_credit.pdf",
       "format": "pdf",
-      "bytes": 50797,
+      "bytes": 50754,
       "rows": null,
       "source": "Constructed: The chief pricing actuary's memorandum on the ERN credit in the AY2027 indemnity pick (28 October 2026)",
       "date": "2026-11-09",
@@ -59,7 +59,7 @@
     {
       "path": "claims_data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 8372,
+      "bytes": 8581,
       "rows": null,
       "source": "Constructed: Data dictionary for the pack's claims files",
       "date": "2026-11-09",
@@ -140,7 +140,7 @@
     {
       "path": "kpa_ern_indemnity_verification_2026-06-30.xlsx",
       "format": "xlsx",
-      "bytes": 80858,
+      "bytes": 81683,
       "rows": null,
       "source": "Constructed: Kellerman Pryce Actuarial's verification workbook: verified ultimate indemnity on the sampled pilot claims at 30 June 2026",
       "date": "2026-11-09",

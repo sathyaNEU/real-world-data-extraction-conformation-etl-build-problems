@@ -18,10 +18,10 @@ A team saves $290,000 a year in HC-SS and RW-SS and $280,000 in MF-SS, read per 
 
 1. Took each of the 5,227 pilot intakes and its group from ern_pilot_assignments_2023-25.xlsx, its segment through segment_code_crosswalk_2025.csv, and whether it paid indemnity from claim_type in claims_extract_2021-01_to_2026-09.csv on legacy_claim_no: 4,339 paid.
 2. Took each group's mean verified ultimate TTD, TPD and PPD per sampled claim in each segment from kpa_ern_indemnity_verification_2026-06-30.xlsx (100 a group and segment), its claim numbers matched to the register with the control digit dropped.
-3. Per the pick memo's credit (what the teams' intakes would pay with their adjusters alone, less what they pay with a team), each segment's saving per intake is usual handling's share of intakes paying indemnity times its mean, less ERN's: Critical Component 1.
+3. Per the pick memo's credit (the ultimate indemnity the teams' intakes will not pay because the teams took them), each segment's saving per intake is usual handling's share of intakes paying indemnity times its mean, less ERN's: Critical Component 1.
 4. Summed each ERN intake's place-days in ern_case_log_2023-25.csv, both days counted and reopenings added as the charter's files-and-places section sets out, and averaged them over the segment's ERN intakes: Critical Component 2.
 5. Valued a team at 7,300 place-days a year (pick memo 3) times the saving per intake over the place-days per intake: the team savings in block 4.
-6. Applied the charter's fill rule with each unit's intakes reported October 2025 to September 2026 in the claims extract times its place-days per intake over 7,300: RW-SS fills 2.44 teams, every other unit at least three.
+6. Applied the charter's fill rule with each unit's intakes reported October 2025 to September 2026 in the claims extract (all new-system claims, time_off_at_report Y as the dictionary defines it) times its place-days per intake over 7,300: RW-SS fills 2.44 teams, every other unit at least three.
 7. Placed seventeen teams, highest saving per team-year first, at most three a unit (the charter) and within each unit's fill: three each to HC-SS, MF-SS, MF-OT, CN-OT and HC-OT and two to RW-SS.
 8. Summed each team's saving per team-year for the AY2027 credit (pick memo 3 to 5): $4,100,000.
 

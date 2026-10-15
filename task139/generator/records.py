@@ -119,48 +119,101 @@ def nurse_rows(W):
     return rows
 
 
+# the review's workpaper section for each segment sheet, and how often each sheet's reviewer left a remark
+WORKPAPER = {s: "B%d" % (i + 1) for i, s in enumerate(K.PROG)}
+NOTE_RATE = {"HC-SS": 0.21, "HC-OT": 0.16, "RW-SS": 0.24, "RW-OT": 0.13, "MF-SS": 0.18, "MF-OT": 0.22, "CN-SS": 0.15,
+             "CN-OT": 0.19}
+
+
 def review_sheets(W):
-    """Kellerman Pryce's verified rows by segment, both groups together and blind to group, in claim-number order."""
+    """Kellerman Pryce's verified rows by segment, both groups together and blind to group, in claim-number order. The
+    reference is the workpaper section and the item number the file took when the segment's pooled files were worked,
+    in an order that knows nothing of group."""
     out = {}
     for seg in K.PROG:
         ids = W.review[(seg, "E")] + W.review[(seg, "U")]
         cs = sorted([W.claims[i] for i in ids], key=lambda c: c.legacy_no)
+        item = K.rng("review-refs", seg).permutation(len(cs)) + 1
         rows = []
         rg = K.rng("review-notes", seg)
         for k, c in enumerate(cs):
             st = "Open" if (c.closed is None or c.closed > K.VALUATION or (c.reopened and c.reopened <= K.VALUATION)) else "Closed"
             no = "%s-%s" % (c.legacy_no, K.check_digit(c.legacy_no))
-            note = _note(c, rg)
-            rows.append(("KPA-%s-%03d" % (seg[:2] + seg[3], k + 1), no, st, K.cents(c.ttd), K.cents(c.tpd),
+            note = _note(c, rg, NOTE_RATE[seg])
+            rows.append(("%s.%d" % (WORKPAPER[seg], int(item[k])), no, st, K.cents(c.ttd), K.cents(c.tpd),
                          K.cents(c.ppd), note or None))
         out[seg] = rows
     return out
 
 
-def _note(c, rg):
+def _d(d, u):
+    """A date the way a reviewer jots it, one style a remark: 04/12/2024, 4/12/24 or 4/12/2024."""
+    if u < 0.45:
+        return d.strftime("%m/%d/%Y")
+    if u < 0.8:
+        return "%d/%d/%02d" % (d.month, d.day, d.year % 100)
+    return "%d/%d/%d" % (d.month, d.day, d.year)
+
+
+def _note(c, rg, rate):
     """A verifier's remark where the file needed one, in the reviewers' own shorthand, with the claim's own facts."""
-    if rg.random() > 0.19:
+    if rg.random() > rate:
         return ""
+    style = rg.random()
     back = c.dis_began + dt.timedelta(days=c.days_off)
+    is_open = c.closed is None or c.closed > K.VALUATION or bool(c.reopened and c.reopened <= K.VALUATION)
+    weeks = c.ppd / max(c.ppd_rate, 1.0)
     opts = []
     if c.ttd > 0:
-        opts += ["AWW recomputed from 13-wk wage stmt, $%.2f" % c.aww,
-                 "TTD through %s confirmed to RTW slip" % back.strftime("%m/%d/%Y"),
-                 "Rate corrected to $%.2f/wk, arrears paid" % c.ttd_rate]
+        opts += [lambda: "AWW recomputed from 13-wk wage stmt, $%.2f" % c.aww,
+                 lambda: "AWW $%s per employer wage statement" % format(c.aww, ",.2f"),
+                 lambda: "aww %.2f agrees to wage stmt (13 wks)" % c.aww,
+                 lambda: "TTD through %s confirmed to RTW slip" % _d(back, style),
+                 lambda: "Rate corrected to $%.2f/wk, arrears paid" % c.ttd_rate,
+                 lambda: "TTD rate $%.2f checked to MO max for DOI %s" % (c.ttd_rate, _d(c.injury, style)),
+                 lambda: "Off work %d days, TTD paid to RTW" % c.days_off,
+                 lambda: "TTD %s to %s per work status reports" % (_d(c.dis_began, style), _d(back, style))]
+        if c.ttd_rate + 0.005 < c.aww * 2 / 3:
+            opts.append(lambda: "Comp rate at MO max, $%.2f" % c.ttd_rate)
+        else:
+            opts.append(lambda: "Comp rate 2/3 of AWW = $%.2f" % c.ttd_rate)
+        if c.tpd > 0:
+            opts.append(lambda: "RTW %s at reduced hours per treating MD" % _d(back, style))
+        else:
+            opts.append(lambda: "RTW full duty %s per treating MD, TTD period agrees" % _d(back, style))
         if c.days_off > 14:
-            opts.append("Waiting period paid after day 14 (%d days)" % c.days_off)
+            opts += [lambda: "Waiting period paid after day 14 (%d days)" % c.days_off,
+                     lambda: "3-day wait paid back, off %d days" % c.days_off]
     if c.ppd > 0:
-        weeks = c.ppd / max(c.ppd_rate, 1.0)
-        opts += ["PPD %.1f wks per stipulation" % weeks, "PPD rating per treating physician, %.1f wks" % weeks]
+        opts += [lambda: "PPD %.1f wks per stipulation" % weeks,
+                 lambda: "PPD rating per treating physician, %.1f wks" % weeks,
+                 lambda: "%.1f wks PPD agrees to award" % weeks,
+                 lambda: "PPD %.1f wks x $%.2f" % (weeks, c.ppd_rate)]
         if c.ppd_award is not None:
-            opts.append("Settlement approved by ALJ %s" % (c.ppd_award + dt.timedelta(days=21)).strftime("%m/%d/%Y"))
+            appr = c.ppd_award + dt.timedelta(days=21)
+            opts += [lambda: "Settlement approved by ALJ %s" % _d(appr, style),
+                     lambda: "Stip for compromise approved %s, %.1f wks" % (_d(appr, style), weeks)]
+            if c.ppd_lump and c.ppd_atty:
+                opts.append(lambda: "Atty fee 25%% taken from PPD lump sum, $%s" % format(round(c.ppd * 0.25, 2), ",.2f"))
+            elif not c.ppd_lump:
+                opts.append(lambda: "PPD paid biweekly at $%.2f/wk" % c.ppd_rate)
     if c.tpd > 0:
-        opts.append("TPD %d wks at reduced hours confirmed" % c.tpd_weeks)
-    if c.closed is None or c.closed > K.VALUATION:
-        opts.append("Open at valuation: %s" % ("PPD rating pending" if c.ppd > 0 else "TTD continuing"))
+        opts += [lambda: "TPD %d wks at reduced hours confirmed" % c.tpd_weeks,
+                 lambda: "TPD %d wks, wage loss stmts on file" % c.tpd_weeks]
+    if is_open:
+        if c.ppd > 0:
+            opts += [lambda: "Open at valuation: PPD rating pending",
+                     lambda: "Open 6/30/26, rating outstanding; projected",
+                     lambda: "Projected to ult. on %.1f wks PPD expected" % weeks]
+        elif back > K.VALUATION:
+            opts += [lambda: "Open at valuation: TTD continuing",
+                     lambda: "Still off work at 6/30/26; projected",
+                     lambda: "Open 6/30, projected on %d days off" % c.days_off]
+        else:
+            opts += [lambda: "RTW %s, open at valuation for final bills" % _d(back, style)]
     if not opts:
         return ""
-    return opts[int(rg.integers(0, len(opts)))]
+    return opts[int(rg.integers(0, len(opts)))]()
 
 
 def crosswalk_rows():

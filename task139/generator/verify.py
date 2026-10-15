@@ -51,10 +51,18 @@ def main(target, golden):
     wb = openpyxl.load_workbook(f(pick(r"verification")), read_only=True, data_only=True)
     sev = defaultdict(list)
     for seg in SEGS:
+        on = False
         for r in wb[seg].iter_rows(values_only=True):
-            if r and r[0] and str(r[0]).startswith("KPA-"):
-                leg = canon(str(r[1]).rsplit("-", 1)[0])
-                sev[(seg, reg[leg]["arm"])].append(float(r[3]) + float(r[4]) + float(r[5]))
+            if r and r[0] == "KPA ref":
+                on = True
+                continue
+            if not on or not r or not r[0]:
+                continue
+            if str(r[0]).startswith("Sheet total"):
+                break
+            leg = canon(str(r[1]).rsplit("-", 1)[0])
+            sev[(seg, reg[leg]["arm"])].append(float(r[3]) + float(r[4]) + float(r[5]))
+    assert all(len(v) == 100 for v in sev.values()) and len(sev) == 16, {k: len(v) for k, v in sev.items()}
     pdays = defaultdict(int)
     for r in read_csv(f(pick(r"case_log"))):
         o = dt.datetime.strptime(r["opened"], "%m/%d/%Y").date()

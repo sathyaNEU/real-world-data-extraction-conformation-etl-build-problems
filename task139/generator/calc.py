@@ -112,25 +112,32 @@ def pilot_metrics(D, reopen=True, inclusive=True, ind_from="claim_type", office=
     return out
 
 
-def intakes(D, a, b, fix_vintage=True, dedup=True, by="report_date"):
-    """Each segment's intakes reported a to b: a first report recording time lost. Rows converted at the 2 June 2025
-    upgrade carry the legacy lost-time indicator in time_off_at_report, so for them the first report's own record
-    decides (time lost began on or before the report); the parallel run's converted copies of claims keyed again on the
-    new system are counted once."""
+def intakes(D, a, b, fix_vintage=True, dedup=True, by="report_date", strict=False):
+    """Each segment's intakes reported a to b: a first report recording time lost (the dictionary: disability_began on
+    or before report_date). Rows converted at the 2 June 2025 upgrade carry the legacy LOST_TIME indicator in
+    time_off_at_report, so for them the dates decide; a claim keyed in both systems in the parallel run is listed twice
+    and counted once. The rivals: fix_vintage=False reads the flag as filed; strict counts time lost beginning before
+    the report date only; dedup=False keeps both listings, "window" drops every converted claim of the parallel run,
+    "global" drops every repeat of the six fields across the period."""
     ex = D["extract"]
     x = ex[(ex[by] >= a.isoformat()) & (ex[by] <= b.isoformat()) & ex["segment"].isin(K.PROG)]
     conv = x["legacy_claim_no"] != ""
+    key = ["office", "segment", "class_code", "injury_date", "report_date", "disability_began"]
+    a0, b0 = K.PARALLEL
     if fix_vintage:
-        took = (x["disability_began"] != "") & (x["disability_began"] <= x["report_date"])
+        took = (x["disability_began"] != "") & ((x["disability_began"] < x["report_date"]) if strict else
+                                                (x["disability_began"] <= x["report_date"]))
         flag = np.where(conv, took, x["time_off_at_report"] == "Y")
     else:
         flag = (x["time_off_at_report"] == "Y").values
     x = x[flag]
-    if dedup:
-        key = ["office", "segment", "class_code", "injury_date", "report_date", "disability_began"]
+    if dedup == "window":
+        x = x[~((x["legacy_claim_no"] != "") & (x["report_date"] >= a0.isoformat()) & (x["report_date"] <= b0.isoformat()))]
+    elif dedup == "global":
+        x = x.drop_duplicates(subset=key)
+    elif dedup:
         nat = x[x["legacy_claim_no"] == ""]
         natkeys = set(map(tuple, nat[key].values.tolist()))
-        a0, b0 = K.PARALLEL
         cv = x[(x["legacy_claim_no"] != "") & (x["report_date"] >= a0.isoformat()) & (x["report_date"] <= b0.isoformat())]
         dup = cv[[tuple(r) in natkeys for r in cv[key].values.tolist()]]
         x = x.drop(dup.index)

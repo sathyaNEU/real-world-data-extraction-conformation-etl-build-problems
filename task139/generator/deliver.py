@@ -165,9 +165,10 @@ def write_book(path, G, F):
         "(intakes in the twelve months to 30 September 2026 times place-days per intake over 7,300). Retail and "
         "warehousing strains and sprains keeps two teams' places in use, not three.",
         "Amounts: Kellerman Pryce's verified ultimate indemnity at 30 June 2026, no trend. Indemnity only.",
-        "2025 intakes: claims converted at the June 2025 upgrade carry the legacy lost-time indicator in "
-        "time_off_at_report; for them the first report's own dates decide. Claims keyed in both systems in the "
-        "29 May to 1 June 2025 parallel run are counted once.",
+        "2025 intakes: claims whose first report recorded time lost (charter 4.1), disability_began on or before "
+        "report_date as the data dictionary defines it; on claims converted at the June 2025 upgrade time_off_at_report "
+        "holds the legacy LOST_TIME indicator, so their dates decide. A claim listed twice from the 29 May to 1 June "
+        "2025 parallel run is counted once.",
         "Indemnity paid: the payment register repeats a payment's amount on each weekly line, so each payment is counted "
         "once; voided checks and the EFTs in the bank's return file are left out.",
         "Rounding: team savings to the nearest $10,000 and the credit to the nearest $100,000, from the unrounded team "
