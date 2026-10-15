@@ -192,7 +192,7 @@ def write_wop_tables(path):
         ws3.append([int(k), name, awc, lim if lim is not None else "none"])
     ws4 = wb.create_sheet("T4 Application efficiency")
     _title_rows(ws4, "Table 4. Application efficiency", "Water Order Procedure, tables for the 2027 order.",
-                "The share of the water delivered to a field that its root zone receives.")
+                "Design application efficiency of each irrigation method, as WOP 3.5 uses it.")
     _head(ws4, ["Irrigation method", "Application efficiency"], [22, 22])
     for m in K.METHODS:
         ws4.append([m, K.EA[m]])
@@ -351,33 +351,66 @@ def ops_entries(W):
         (D(2027, 1, 20), "11:30", "TG", "Check 3 gate seals replaced and the gates worked through their travel."),
         (D(2027, 1, 25), "09:10", "CR", "Main canal fill for the 2027 season scheduled from 28 January."),
     ]
-    # each heading logger's modem outage: logged when it stopped reporting, and the Water Master's daily estimates from
-    # the heading gate opening logged when it came back
-    check = {"L1": "Check 1", "L2": "Check 1", "L3": "Check 2", "L4": "Check 2", "L5": "Check 3", "L6": "Check 3",
-             "L7": "Check 4", "L8": "Check 4", "L9": "Check 4"}
-    fault = {"L1": ("lost power (solar regulator)", "regulator replaced"),
-             "L2": ("logger card fault", "card replaced"),
-             "L3": ("level sensor reading zero", "level sensor replaced"),
-             "L4": ("lost power (battery)", "battery replaced"),
-             "L5": ("logger card fault", "card replaced"),
-             "L6": ("stilling well silted, level sensor stuck", "stilling well cleaned out and the sensor checked "
-                    "against the staff gauge"),
-             "L7": ("lost power (solar regulator)", "regulator replaced"),
-             "L8": ("logger not recording after a firmware fault", "logger reloaded"),
-             "L9": ("level sensor failed", "level sensor replaced")}
-    r = K.rng("ops-log-outage")
-    for lat, (s0, n) in sorted(WD.OUTAGES.items(), key=lambda kv: kv[1][0]):
-        name = K.LATERAL_NAME[lat]
-        down, fix = fault[lat]
-        e.append((s0, "%02d:%02d" % (int(r.integers(7, 10)), int(r.integers(0, 60))), "DZ",
-                  "%s heading flume: %s. No logger total; Water Master estimating the heading from the gate opening "
-                  "and the %s level." % (name, down, check[lat])))
-        back = s0 + dt.timedelta(days=n)
-        est = ", ".join("%d %s %.1f" % (d.day, d.strftime("%B"), W.heading_estimates[(lat, d)])
-                        for d in (s0 + dt.timedelta(days=k) for k in range(n)))
-        e.append((back, "%02d:%02d" % (int(r.integers(8, 12)), int(r.integers(0, 60))), "DZ",
-                  "%s heading: %s yesterday evening; logger totals again from midnight. Water Master's estimates for "
-                  "the days without a total, acre-feet: %s." % (name, fix, est)))
+    # each heading logger's outage: logged when it stopped reporting, and the Water Master's daily estimates from the
+    # heading gate opening and the check level logged when it came back, each entry in its writer's own words
+    def est(lat, style):
+        s0, n = WD.OUTAGES[lat]
+        ds = [s0 + dt.timedelta(days=k) for k in range(n)]
+        v = [W.heading_estimates[(lat, d)] for d in ds]
+        if style == "dmy":
+            return ", ".join("%d %s %.1f" % (d.day, d.strftime("%B"), x) for d, x in zip(ds, v))
+        if style == "dmy_short":
+            return ", ".join("%d %s %.1f" % (d.day, d.strftime("%b"), x) for d, x in zip(ds, v))
+        if style == "dmy_af":
+            return ", ".join("%d %s %.1f af" % (d.day, d.strftime("%B"), x) for d, x in zip(ds, v))
+        if style == "mdy":
+            return ", ".join("%s %d %.1f" % (d.strftime("%b"), d.day, x) for d, x in zip(ds, v))
+        if style == "slash":
+            return ", ".join("%d/%d %.1f" % (d.month, d.day, x) for d, x in zip(ds, v))
+        if style == "and":
+            parts = ["%d %s %.1f" % (d.day, d.strftime("%B"), x) for d, x in zip(ds, v)]
+            return ", ".join(parts[:-1]) + " and " + parts[-1]
+        raise ValueError(style)
+    O = {lat: WD.OUTAGES[lat][0] for lat in WD.OUTAGES}
+    back = {lat: WD.OUTAGES[lat][0] + dt.timedelta(days=WD.OUTAGES[lat][1]) for lat in WD.OUTAGES}
+    e += [
+        (O["L9"], "08:42", "DZ", "L9 heading flume level sensor failed overnight; no logger total today. Water Master "
+                                 "estimating Lateral 9 from the gate opening and Check 4."),
+        (back["L9"], "11:45", "DZ", "New level sensor in at the Lateral 9 flume 1640 yesterday, logging again from "
+                                    "0000. CR's estimates for L9 while it was out (af): %s." % est("L9", "dmy_short")),
+        (O["L1"], "09:03", "DZ", "Lateral 1 heading logger dead, solar regulator. Water Master estimating the heading "
+                                 "from the gate opening and the Check 1 level until it is back."),
+        (back["L1"], "10:51", "CR", "Lateral 1 regulator replaced, logger reporting from midnight. Heading estimates, "
+                                    "acre-feet: %s." % est("L1", "dmy")),
+        (O["L4"], "07:38", "DZ", "Lat 4 flume logger lost power (battery flat). CR estimating from the gate position and "
+                                 "Check 2."),
+        (back["L4"], "08:23", "DZ", "Battery replaced at the Lat 4 heading late yesterday; totals again from 0000 today. "
+                                    "Estimated heading for the outage: %s." % est("L4", "dmy_af")),
+        (O["L7"], "09:15", "DZ", "Lateral 7 heading logger off again, regulator failed. Water Master estimating L7 from "
+                                 "the gate and the Check 4 level."),
+        (back["L7"], "08:31", "CR", "L7 regulator swapped yesterday afternoon; logger totals from midnight. Lateral 7 "
+                                    "estimated, acre-feet: %s." % est("L7", "slash")),
+        (O["L3"], "08:03", "DZ", "Lateral 3 heading level sensor reading zero since early morning. No total for L3; CR "
+                                 "estimating from the gate opening and Check 2."),
+        (back["L3"], "08:43", "DZ", "Lateral 3 level sensor replaced 1715 yesterday; logging from midnight. Estimates "
+                                    "while it was down (af): %s." % est("L3", "dmy")),
+        (O["L2"], "07:57", "DZ", "Logger card fault at the Lateral 2 flume, no total for today. Estimating L2 from the "
+                                 "gate opening and Check 1."),
+        (back["L2"], "09:15", "CR", "New card in the L2 heading logger yesterday evening; totals again from midnight. "
+                                    "CR's L2 estimates, acre-feet: %s." % est("L2", "mdy")),
+        (O["L6"], "09:19", "DZ", "Lateral 6 flume stilling well silted up and the level sensor stuck. L6 heading "
+                                 "estimated from the gate opening and the Check 3 level until the well is cleaned."),
+        (back["L6"], "10:32", "DZ", "Lat 6 stilling well cleaned out and the sensor checked against the staff gauge "
+                                    "yesterday; logger totals from midnight. Water Master's estimates (af): %s."
+                                    % est("L6", "dmy_short")),
+        (O["L5"], "07:58", "DZ", "L5 heading logger card fault, no total. CR estimating from the gate and Check 3."),
+        (back["L5"], "11:35", "CR", "Lateral 5 logger card replaced; totals from midnight. Heading estimates %s "
+                                    "acre-feet." % est("L5", "and")),
+        (O["L8"], "09:48", "DZ", "Lateral 8 heading logger stopped recording after a firmware fault. Estimating L8 from "
+                                 "the gate opening and the Check 4 level."),
+        (back["L8"], "09:11", "CR", "L8 logger reloaded by DZ yesterday evening, recording from midnight. Estimates for "
+                                    "Lateral 8, acre-feet: %s." % est("L8", "dmy_short")),
+    ]
     return sorted(e, key=lambda x: (x[0], x[1]))
 
 
@@ -408,6 +441,35 @@ def write_ops_log(path, W):
     d.core_properties.author = K.PEOPLE["watermaster"]
     d.core_properties.title = "Canal operations log 2026"
     d.save(path)
+
+
+# ---------------------------------------------------------------------------------------------------- soil moisture network
+
+def write_stations(path, W):
+    """The Water Conservation program's platform export: the network's sites and every station's daily readings."""
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Sites"
+    _title_rows(ws, "KBID soil moisture network: sites", "Water Conservation, irrigation scheduling program. Stations "
+                "installed 2024 under the state's on-farm water conservation grant.")
+    _head(ws, ["Station", "Grower block", "APN", "Crop", "Irrigation", "Installed", "Sensors (in)", "Profile to (in)",
+               "Full point (in)", "Notes"], [10, 34, 12, 10, 16, 11, 26, 14, 14, 52])
+    for x in W.stations:
+        ws.append([x["station"], x["block"], x["apn"], K.CROP_NAME[x["crop"]], x["method"], x["installed"],
+                   ", ".join(str(v) for v in x["sensors"]), x["depth_in"], x["full"], x["note"] or None])
+        ws.cell(row=ws.max_row, column=6).number_format = "yyyy-mm-dd"
+        ws.cell(row=ws.max_row, column=9).number_format = "0.00"
+    ws2 = wb.create_sheet("Daily")
+    ws2.append(["Station", "Reading (UTC)", "Profile water (in)"])
+    for c in range(1, 4):
+        ws2.cell(row=1, column=c).font = Font(name="Calibri", bold=True)
+    for w_, col in zip((10, 22, 18), "ABC"):
+        ws2.column_dimensions[col].width = w_
+    for x in sorted(W.station_reads, key=lambda x: (x["station"], x["utc"])):
+        ws2.append([x["station"], x["utc"].strftime("%Y-%m-%dT%H:%M:%SZ"), x["profile"]])
+        ws2.cell(row=ws2.max_row, column=3).number_format = "0.00"
+    ws2.freeze_panes = "A2"
+    wb.save(path)
 
 
 # ---------------------------------------------------------------------------------------------------- dictionary
@@ -452,6 +514,14 @@ DICT = [
     (K.WEIRS, "gauge_ft", "Staff gauge at the tail weir, feet, read at read_time. A reading stands for its day and for "
                           "each following day until the weir's next reading."),
     (K.WEIRS, "remarks", "The rider's notes."),
+    (K.STATIONS, "Station", "Soil moisture station (capacitance probe in an access tube in the tree or vine row, or "
+                            "mid-field in pasture and alfalfa)."),
+    (K.STATIONS, "APN", "Assessor's parcel number of the block the station is in, as the grower gave it at sign-up."),
+    (K.STATIONS, "Profile to (in)", "Depth the station's profile water is summed to, inches."),
+    (K.STATIONS, "Full point (in)", "The station's profile water at field capacity, set from its readings two days after "
+                                    "the 2025-26 winter's last storm."),
+    (K.STATIONS, "Reading (UTC)", "Time of the reading, UTC. The station logs once a day at midnight local time."),
+    (K.STATIONS, "Profile water (in)", "Water held in the profile to the station's profile depth at the reading, inches."),
     (K.GROUNDWATER, "depth_to_water_ft", "Depth from the reference point to water, feet."),
     (K.CROP_REPORT, "irrigated_acres", "Acres irrigated in the 2026 season as reported in the District's crop survey."),
 ]

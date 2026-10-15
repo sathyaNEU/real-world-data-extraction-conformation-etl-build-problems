@@ -118,6 +118,15 @@ TARGET = {   # share of total available water after a set, January to December
     "ALF": [0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.22, 0.22, 0.22, 0.22],
     "PAS": [0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.22, 0.22, 0.22, 0.22],
 }
+# What the record's water does in the root zone (never shipped). A grower's set is sized on the procedure's design
+# efficiency (Table 4), but a drip, micro-sprinkler or sprinkler set that only puts back part of the deficit loses
+# little below the root zone, so it puts more of its water into the root zone than the design value allows: each such
+# field's water reaches its root zone at EA_RECORD times its method's Table 4 efficiency, give or take EA_SPREAD field
+# to field. A border set runs past field capacity and refills the field whatever its efficiency.
+EA_RECORD = 1.0425
+EA_SPREAD = 0.004
+# volumetric water content at field capacity by soil unit (the stations' full points; available water is Table 3's)
+SOIL_FC = {"128": 0.172, "141": 0.268, "150": 0.114, "163": 0.197, "175": 0.286}
 TRIGGER_IN = {"Drip": (0.30, 0.50), "Micro-sprinkler": (0.45, 0.75), "Sprinkler": (0.60, 0.95)}
 FLOW_PER_ACRE = {"Drip": (0.024, 0.034), "Micro-sprinkler": (0.030, 0.044), "Sprinkler": (0.050, 0.070),
                  "Border": (0.14, 0.20)}
@@ -147,6 +156,7 @@ README = "README_order_working_files.txt"
 GROUNDWATER = "kbid_groundwater_levels_2016-2026.csv"
 CROP_REPORT = "kbid_crop_report_2026.csv"
 NOTICE = "TVWA_2027_initial_allocation_notice.pdf"
+STATIONS = "kbid_soil_moisture_network_2026.xlsx"
 DISTRACTORS = [GROUNDWATER, CROP_REPORT, NOTICE]
 
 GOLD_BOOK = "kbid_order_2027.xlsx"

@@ -137,14 +137,29 @@ def _season_plan(f, year):
     return dict(last=last, harvest=harvest, cutoff=cutoff, cfs=cfs, last_hour=last_hour)
 
 
+def record_efficiency(f):
+    """The share of a set's delivered water that reaches the field's root zone: a drip, micro-sprinkler or sprinkler
+    field's at EA_RECORD times its method's design efficiency, give or take EA_SPREAD; a border field's at the design
+    efficiency (its sets run past field capacity whatever the share). Never shipped."""
+    if f["method"] in K.REFILL_METHODS:
+        return K.EA[f["method"]]
+    return K.EA[f["method"]] * K.EA_RECORD + float(K.rng("record-efficiency", f["id"]).normal(0.0, K.EA_SPREAD))
+
+
 def simulate_field(f, true_wx):
-    """The grower's own sets on one field over the 2023 to 2026 seasons, and the field's root zone as it is: a daily
-    balance from field capacity on 1 February 2023 through 31 January 2027 under the true weather, each set's water
-    reaching the root zone as it runs (the delivered water times the method's efficiency, water beyond field capacity
-    draining). Returns ({season: [(start, end, cfs)]}, {date: depletion at the end of the day})."""
+    """The grower's own sets on one field over the 2023 to 2026 seasons, and two daily balances from field capacity on
+    1 February 2023 through 31 January 2027 under the true weather: the grower's own reckoning (each set's water at the
+    design efficiency, the balance the grower schedules on and sizes each set with) and the root zone as it is (each
+    set's water at the share that reaches the root zone, record_efficiency). Water beyond field capacity drains in both.
+    Returns ({season: [(start, end, cfs)]}, {date: the grower's depletion}, {date: the root zone's depletion}), the last
+    from 1 December 2025."""
     t_aw = taw(f)
     kc = K.KC[f["crop"]]
     ea = K.EA[f["method"]]
+    ea_root = record_efficiency(f)
+    f["ea_root"] = ea_root
+    state = {}
+    S = 0.0
     meth = f["method"]
     refill = meth in K.REFILL_METHODS
     plans = {y: _season_plan(f, y) for y in K.ORDER_SEASONS}
@@ -220,23 +235,27 @@ def simulate_field(f, true_wx):
             elif wait > 0:
                 wait -= 1
         e, rain = true_wx[d]
-        net_in = pending.pop(d, 0.0) * 12.0 / f["acres"] * ea
+        af_day = pending.pop(d, 0.0)
+        net_in = af_day * 12.0 / f["acres"] * ea
         D = min(t_aw, max(0.0, D + kc[d.month - 1] * e - rain - net_in))
         path[d] = D
+        S = min(t_aw, max(0.0, S + kc[d.month - 1] * e - rain - af_day * 12.0 / f["acres"] * ea_root))
+        if d >= dt.date(2025, 12, 1):
+            state[d] = S
     for y, ss in sets.items():
         assert all(ss[k][1] <= ss[k + 1][0] for k in range(len(ss) - 1)), (f["id"], y)
         assert ss and ss[-1][0].date() == plans[y]["last"] == ss[-1][1].date(), (f["id"], y)
-    return sets, path
+    return sets, path, state
 
 
 def build_orders(W, true_wx):
     """Every season's orders. Order numbers run by season; a share of orders were cancelled before water ran (one
     in about twenty-five), and some growers placed and cancelled a further order after their last set."""
     rows = []
-    W.true_path = {}
+    W.true_path, W.state_path = {}, {}
     all_sets = {}
     for f in W.fields:
-        all_sets[f["id"]], W.true_path[f["id"]] = simulate_field(f, true_wx)
+        all_sets[f["id"]], W.true_path[f["id"]], W.state_path[f["id"]] = simulate_field(f, true_wx)
     for year in K.ORDER_SEASONS:
         r = K.rng("orders", year)
         sets_all = []
@@ -305,6 +324,7 @@ def simulate():
     build_requests(W)
     build_meters(W)
     build_laterals(W)
+    build_stations(W)
     return W
 
 
@@ -620,6 +640,45 @@ RANCH_A = ["Oak", "Sand", "Willow", "Cottonwood", "Quail", "Mesa", "Alder", "Syc
            "Larkspur", "Mill", "Orchard", "Pioneer", "Redbud", "Sage", "Tule", "Valley", "Walnut", "Yokohl", "Granite",
            "Fairview", "Kettle", "Lone Pine", "Magpie", "North Fork", "Plover", "Rush", "Sunflower"]
 RANCH_B = ["Ranch", "Farms", "Orchards", "Vineyards", "Ranch Co.", "Farming", "Family Farms", "Land Co."]
+# The growers as the District's accounts carry them: family farms, partnerships, trusts and a few companies, under
+# the surnames of an east-side San Joaquin Valley district (Portuguese, Armenian, Punjabi, Mexican-American, Dutch,
+# Mennonite, Japanese-American, Basque and older Anglo families); RANCH_A and RANCH_B only keep the request stream's
+# draws in place.
+SURNAMES = [
+    ("Avila", 3), ("Silveira", 2), ("Mendonca", 2), ("Bettencourt", 2), ("Rocha", 2), ("Machado", 2), ("Soares", 1),
+    ("Freitas", 2), ("Medeiros", 2), ("Correia", 1), ("Azevedo", 1), ("Toste", 1), ("Vieira", 2), ("Borba", 1),
+    ("Kazarian", 1), ("Hagopian", 1), ("Bedrosian", 1), ("Sarkisian", 1), ("Kalebjian", 1), ("Peloian", 1),
+    ("Sandhu", 3), ("Dhillon", 3), ("Gill", 2), ("Bains", 2), ("Sidhu", 2), ("Grewal", 1), ("Sekhon", 1), ("Atwal", 1),
+    ("Randhawa", 1), ("Samra", 1), ("Ramirez", 2), ("Cervantes", 2), ("Ochoa", 2), ("Gallegos", 1), ("Mendoza", 2),
+    ("Villarreal", 1), ("Arroyo", 1), ("Zuniga", 1), ("Barajas", 1), ("Esparza", 1), ("Valdez", 1), ("Lopez", 2),
+    ("Garza", 1), ("Ruelas", 1), ("Van Groningen", 1), ("DeBoer", 2), ("Vander Poel", 1), ("Hettinga", 1),
+    ("Kooistra", 1), ("Bos", 1), ("Jensen", 2), ("Friesen", 2), ("Dueck", 1), ("Penner", 1), ("Unruh", 1),
+    ("Wiebe", 1), ("Thiesen", 1), ("Reimer", 1), ("Nakamura", 1), ("Yamamoto", 1), ("Takeda", 1), ("Ikeda", 1),
+    ("Okamoto", 1), ("Etcheverry", 1), ("Arambel", 1), ("Tomasini", 1), ("Gallo", 1), ("Bianchi", 1),
+    ("Hollister", 1), ("Pryor", 1), ("Whitlock", 1), ("Stoltz", 1), ("Fenske", 1), ("Kirschenmann", 1),
+    ("Hansen", 2), ("Carlson", 1), ("Whitaker", 1), ("Lyon", 1), ("Hurst", 1), ("Fairbanks", 1), ("Moffett", 1),
+    ("Sorensen", 1), ("Bowles", 1), ("Kellogg", 1), ("Tharp", 1), ("Burrough", 1), ("Shannon", 1), ("McKellar", 1),
+    ("Nunes", 2), ("Sousa", 1), ("Pimentel", 1), ("Simas", 1), ("Lemos", 1), ("Dias", 1)]
+INITIALS = "ABCDEFGHJKLMNPRSTW"
+
+
+def grower_name(r):
+    """One grower account's name, drawn the way the District's accounts read."""
+    names = [n for n, _ in SURNAMES]
+    w = np.array([k for _, k in SURNAMES], dtype=float)
+    sn = names[int(r.choice(len(names), p=w / w.sum()))]
+    other = names[int(r.choice(len(names), p=w / w.sum()))]
+    i1, i2 = INITIALS[int(r.integers(len(INITIALS)))], INITIALS[int(r.integers(len(INITIALS) - 1))]
+    i2 = i2 if i2 < i1 else INITIALS[INITIALS.index(i2) + 1]
+    road = int(r.choice([132, 136, 140, 144, 148, 152, 156, 160, 164, 168]))
+    ave = int(r.choice([240, 248, 256, 264, 272, 280, 288]))
+    forms = [("%s Farms" % sn, 20), ("%s Ranch" % sn, 10), ("%s Family Farms" % sn, 8), ("%s Bros." % sn, 6),
+             ("%s & Sons" % sn, 4), ("%s Orchards" % sn, 5), ("%s. %s" % (i1, sn), 9),
+             ("%s & %s %s Farming" % (i1, i2, sn), 5), ("%s Family Trust" % sn, 5), ("%s-%s Partnership" % (sn, other), 3),
+             ("%s Ag LLC" % sn, 4), ("Road %d Ranch LLC" % road, 2), ("Avenue %d Farms" % ave, 2),
+             ("%s Farming Co." % sn, 4), ("%s Land Co." % sn, 2)]
+    fw = np.array([k for _, k in forms], dtype=float)
+    return forms[int(r.choice(len(forms), p=fw / fw.sum()))][0]
 
 
 def _pick(rm, options, weights=None):
@@ -650,7 +709,8 @@ def _request_remark(f, growers, rm):
             return _pick(rm, ["back to border for 2027", "sprinklers pulled, border 2027"])
         return _pick(rm, ["converted to %s for 2027" % meth, "changed to %s" % meth, "new %s system" % meth])
     if rm.random() < 0.06:
-        other = "%s %s" % (_pick(rm, RANCH_A), _pick(rm, RANCH_B))
+        _pick(rm, RANCH_A), _pick(rm, RANCH_B)      # keeps the remark stream's draws
+        other = grower_name(K.rng("lessee", f["id"]))
         return _pick(rm, ["new owner, account transferred", "leased to %s" % other, "orders through the farm manager",
                           "billing to farm manager", "call grower before ordering", "gate key with the rider",
                           "phone number changed", "mailing address changed"], [3, 2, 2, 2, 2, 1, 2, 1])
@@ -672,10 +732,21 @@ def build_requests(W):
     or corrected its acres filed a second version; a few withdrew. Every field took water in 2026 and keeps its crop."""
     r = K.rng("request-rows")
     growers = {}
+    r_name = K.rng("grower-accounts")
+    prev = None
     for t in W.turnouts:
-        a = RANCH_A[int(r.integers(len(RANCH_A)))]
-        b = RANCH_B[int(r.integers(len(RANCH_B)))]
-        growers[t["id"]] = ("G-%04d" % int(r.integers(1100, 9800)), "%s %s" % (a, b))
+        r.integers(len(RANCH_A)), r.integers(len(RANCH_B))      # keeps the request stream's draws
+        acct = "G-%04d" % int(r.integers(1100, 9800))
+        # a grower farming the next block down the lateral keeps the same account
+        if prev is not None and prev[2] == t["lateral_built"] and r_name.random() < 0.27:
+            growers[t["id"]] = prev[:2]
+        else:
+            taken = {v[1] for v in growers.values()}
+            name = grower_name(r_name)
+            while name in taken:
+                name = grower_name(r_name)
+            growers[t["id"]] = (acct, name)
+        prev = growers[t["id"]] + (t["lateral_built"],)
     rows = []
     k = 0
     for f in sorted(W.fields, key=lambda f: (f["turnout"], f["id"])):
@@ -709,3 +780,79 @@ def build_requests(W):
         if x["received"] > K.REQUESTS_CLOSE:
             x["received"] = K.REQUESTS_CLOSE - dt.timedelta(days=int(r.integers(0, 4)))
     W.requests = rows
+
+
+# ---------------------------------------------------------------------------------------------------- the soil moisture network
+
+# The Water Conservation program's soil moisture network: eleven capacitance-probe stations put in under the 2024 state
+# on-farm water conservation grant on cooperating growers' blocks in the District's main crops (almond orchards, wine grape
+# vineyards, pasture and alfalfa). Each logs the water held in the profile at local midnight, and the program's platform
+# exports the sites and the daily readings.
+STATION_STRATA = [("Drip", "ALM", 2), ("Drip", "GRW", 2), ("Micro-sprinkler", "ALM", 3), ("Sprinkler", "PAS", 2),
+                  ("Border", "ALF", 1), ("Border", "PAS", 1)]
+STATION_SALT = 9         # the draw of the network's blocks among the growers who joined the program
+READ_NOISE_IN = 0.05     # a station's profile water, reading to reading
+READS_FROM = dt.date(2025, 12, 31)   # the export's first reading: the end of 31 December 2025
+STATION_GAPS = {3: (dt.date(2026, 7, 8), dt.date(2026, 7, 15), "Logger battery failed 8 Jul 2026; replaced 16 Jul."),
+                8: (dt.date(2026, 3, 17), dt.date(2026, 3, 22),
+                    "Logger cable chewed through by gophers 17 Mar 2026; spliced and back on 23 Mar.")}
+BLOCK_NAMES = ["north block", "south 40", "home block", "west block", "Road 148 block", "east 20", "block 3",
+               "block 7", "river block", "Avenue 264 block", "back 80", "pump block"]
+
+
+def station_fields(W):
+    """The eleven stations' fields, in the order the program put the stations in."""
+    out = []
+    for meth, crop, k in STATION_STRATA:
+        cand = sorted(f["id"] for f in W.fields if f["method"] == meth and f["crop"] == crop
+                      and f["req_status"] == "accepted" and f["turnout"] not in K.MOVED)
+        r = K.rng("stations", STATION_SALT, meth, crop)
+        pick = [cand[int(i)] for i in r.permutation(len(cand))[:k]]
+        out += [(meth, crop, fid) for fid in pick]
+    r = K.rng("stations-order", STATION_SALT)
+    order = r.permutation(len(out))
+    return [out[int(i)] for i in order]
+
+
+def build_stations(W):
+    """The network's sites and daily readings: profile water to the root zone's depth (the rooting depth of the
+    procedure's Table 2 and 3 for the block's crop and soil), the station's full point the profile water two days after
+    the 2025-26 winter's last storm (field capacity), each midnight's reading the full point less the root zone's
+    depletion at the end of the day before, with the probe's reading noise, stamped in UTC by the platform."""
+    import records as R
+    from zoneinfo import ZoneInfo
+    apn = {row["field_id"]: row["apn"].replace("-", "") for row in R.register_rows(W)}
+    ranch = {}
+    for q in W.requests:
+        ranch[q["field"]] = q["ranch"]
+    local = ZoneInfo("America/Los_Angeles")
+    sites, reads = [], []
+    r_site = K.rng("station-sites", STATION_SALT)
+    drawn = []
+    for meth, crop, fid in station_fields(W):
+        full_draw = float(1.0 + r_site.normal(0.0, 0.02))
+        inst = dt.date(2024, 2, 5) + dt.timedelta(days=int(r_site.integers(0, 190)))
+        drawn.append((inst, meth, crop, fid, full_draw))
+    # the platform numbers its stations in the order they went in
+    for k, (inst, meth, crop, fid, full_draw) in enumerate(sorted(drawn), 1):
+        f = W.field[fid]
+        _, awc, lim = K.SOILS[f["soil"]]
+        root = K.ROOT_FT[crop] if lim is None else min(K.ROOT_FT[crop], lim)
+        depth_in = round(root * 12.0, 1)
+        full = round(K.SOIL_FC[f["soil"]] * depth_in * full_draw, 2)
+        sensors = [x for x in range(4, 100, 8) if x < depth_in]
+        sid = "KB-SM-%02d" % k
+        gap = STATION_GAPS.get(k)
+        sites.append(dict(station=sid, field=fid, apn=apn[fid], block="%s, %s" % (ranch[fid], BLOCK_NAMES[(k * 5) % 12]),
+                          crop=crop, method=meth, installed=inst, sensors=sensors, depth_in=depth_in, full=full,
+                          note=gap[2] if gap else ""))
+        r_read = K.rng("station-reads", sid)
+        path = W.state_path[fid]
+        for d in K.daterange(READS_FROM, K.WEATHER_END):
+            noise = float(r_read.normal(0.0, READ_NOISE_IN))
+            if gap and gap[0] <= d <= gap[1]:
+                continue
+            nd = d + dt.timedelta(days=1)       # the reading at midnight that ends day d
+            utc = dt.datetime(nd.year, nd.month, nd.day, tzinfo=local).astimezone(dt.timezone.utc)
+            reads.append(dict(station=sid, utc=utc, day=d, profile=round(full - path[d] + noise, 2)))
+    W.stations, W.station_reads = sites, reads

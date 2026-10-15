@@ -29,6 +29,9 @@ SOURCES = {
     K.GROUNDWATER: "Spring and fall depth to groundwater at 24 District monitoring wells, 2016 to 2026",
     K.CROP_REPORT: "The District's 2026 crop survey by field",
     K.NOTICE: "Tolan Valley Water Authority notice of the 2027 initial allocation and water orders (15 December 2026)",
+    K.STATIONS: "The District's soil moisture network (Water Conservation's irrigation scheduling program): the eleven "
+                "stations' sites and their daily profile water from 31 December 2025 to 31 January 2027, platform "
+                "export",
 }
 
 

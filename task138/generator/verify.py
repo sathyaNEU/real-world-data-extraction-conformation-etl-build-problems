@@ -1,6 +1,8 @@
 """Independent verifier for task138. Reads only the shipped bundle (target/ and golden/), shares no code with the
-generator (no calc.py, no numpy), and recomputes the order, the replay that sets it, the default path (each field's
-last 2026 set taken as a refill) and the four lateral asks; the golden workbook is used only as the expectations.
+generator (no calc.py, no numpy), and recomputes the efficiency the soil moisture stations' 2026 readings show for each
+irrigation method (its own fit: a grid, then a parabola through the best three points), the order and the replay that
+sets it, the default path (the 2026 record run at the Table 4 efficiency) and the four lateral asks; the golden workbook
+is used only as the expectations.
 
     python3 task138/generator/verify.py [target] [golden]"""
 from __future__ import annotations
@@ -119,18 +121,63 @@ class Pack:
                 t = nxt
             if r["field_id"] not in self.last or b.date() > self.last[r["field_id"]]:
                 self.last[r["field_id"]] = b.date()
+        # the soil moisture network: each station's field through its parcel number, its full point, and each reading
+        # by the local day it ends (a reading at local midnight ends the day before; the platform stamps UTC)
+        from zoneinfo import ZoneInfo
+        net = find(target, "kbid_soil_moisture_network", ".xlsx")
+        head, body = after_header(sheet(net, "Sites"), "Station")
+        col = {h: k for k, h in enumerate(head)}
+        by_apn = {r["apn"].replace("-", ""): r["field_id"] for r in rows(find(target, "kbid_field_register", ".csv"))}
+        byid = {f["id"]: f for f in self.fields}
+        self.stations = {}
+        for r in body:
+            self.stations[r[col["Station"]]] = dict(field=byid[by_apn[str(r[col["APN"]])]], method=r[col["Irrigation"]],
+                                                     full=float(r[col["Full point (in)"]]), reads={})
+        tz = ZoneInfo("America/Los_Angeles")
+        for r in sheet(net, "Daily")[1:]:
+            if not r or r[0] is None:
+                continue
+            t = dt.datetime.strptime(r[1], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc).astimezone(tz)
+            self.stations[r[0]]["reads"][t.date() - dt.timedelta(days=1)] = float(r[2])
 
-    def depletion_31jan(self, f):
-        """The root zone at the end of 31 January 2027: the 2026 season from field capacity at the end of 27 January
-        2026 (the winter's rains had every root zone full, see winter_full), each day's delivered water at the method's
-        efficiency, then the winter."""
-        D = 0.0
-        ea = self.ea[f["method"]]
+    def run_2026(self, f, ea):
+        """The 2026 season from field capacity at the end of 27 January 2026 (the winter's rains had every root zone
+        full, see winter_full) to the end of 31 January 2027, each day's delivered water at the share ea reaching the
+        root zone: {day: depletion at its end}."""
+        D, out = 0.0, {}
         for d in days(dt.date(2026, 1, 28), dt.date(2027, 1, 31)):
             e, rain = self.wx[d]
             w = self.water.get((f["id"], d), 0.0) * 12.0 / f["acres"] * ea
             D = min(f["taw"], max(0.0, D + self.kc[f["crop"]][d.month - 1] * e - rain - w))
-        return D
+            out[d] = D
+        return out
+
+    def depletion_31jan(self, f, ea=None):
+        return self.run_2026(f, self.ea[f["method"]] if ea is None else ea)[dt.date(2027, 1, 31)]
+
+    def fit(self, st):
+        """The share of the record's water that brings the station's field's run onto its readings (least squares):
+        every ten-thousandth from 0.60 to 1.00 (the misfit's floor can be flat and bumpy on a small root zone), then
+        grids ten times finer around the best point until the step is under a ten-millionth."""
+        def misfit(ea):
+            run = self.run_2026(st["field"], ea)
+            return sum((st["full"] - v - run[d]) ** 2 for d, v in st["reads"].items() if d in run)
+        lo, step, n = 0.60, 0.0001, 4001
+        while True:
+            grid = [lo + step * k for k in range(n)]
+            vals = [misfit(x) for x in grid]
+            k = min(range(len(grid)), key=lambda j: vals[j])
+            if step < 1e-7:
+                return grid[k]
+            lo, step, n = grid[k] - step, step / 10.0, 21
+
+    def station_efficiency(self):
+        per = {s: self.fit(st) for s, st in self.stations.items() if st["method"] != "Border"}
+        by = {}
+        for m in ("Drip", "Micro-sprinkler", "Sprinkler"):
+            v = [per[s] for s, st in self.stations.items() if st["method"] == m]
+            by[m] = sum(v) / len(v)
+        return per, by
 
     def winter_full(self, f):
         """The field's root zone at the end of 27 January 2026 from 1 November 2025, starting empty (at its total
@@ -240,12 +287,28 @@ def asks(target):
     for r in rows(find(target, "kbid_lateral_headings", ".csv")):
         inflow["L" + r["lateral"].split()[-1]] += float(r["volume_af"])
     log = docx.Document(find(target, "kbid_canal_operations_log", ".docx")).tables[0]
+    month_names = ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
     for row in log.rows[1:]:
         text = row.cells[2].text
-        m = re.search(r"^Lateral (\d) heading: .*the days without a total, acre-feet: (.*)\.$", text)
-        if m:
-            for part in m.group(2).split(", "):
-                inflow["L" + m.group(1)] += float(part.split(" ")[-1])
+        if "estimat" not in text.lower():
+            continue
+        lat = re.search(r"\b(?:Lateral|Lat|L) ?([1-9])\b", text)
+        words = re.findall(r"[A-Za-z]+|\d+/\d+|\d+\.\d+|\d+", text)
+        seen = set()
+        for k in range(len(words) - 2):
+            a, b, c = words[k], words[k + 1], words[k + 2]
+            if not re.fullmatch(r"\d+\.\d", c):
+                continue
+            key = None
+            if a.isdigit() and b[:3].lower() in month_names:
+                key = (b[:3].lower(), int(a))
+            elif a[:3].lower() in month_names and b.isdigit():
+                key = (a[:3].lower(), int(b))
+            elif re.fullmatch(r"\d+/\d+", b):
+                key = ("slash", b)
+            if key is not None and key not in seen:
+                seen.add(key)
+                inflow["L" + lat.group(1)] += float(c)
     share = {l: 100 * (inflow[l] - deliv[l]) / inflow[l] for l in LATS}
     st = find(target, "kbid_canal_structures", ".xlsx")
     head, body = after_header(sheet(st, "Tail weirs"), "Lateral")
@@ -280,9 +343,16 @@ def asks(target):
 def main(target, golden):
     P = Pack(target)
     assert all(P.winter_full(f) == 0.0 for f in P.fields), "a root zone short of field capacity on 27 January 2026"
-    starts = {f["id"]: P.depletion_31jan(f) for f in P.fields}
+    per, by = P.station_efficiency()
+    assert all(v > P.ea[P.stations[s]["method"]] + 0.02 for s, v in per.items()), ("a station at Table 4", per)
+    # every station's 31 January reading is the same under Table 4 and under its own efficiency
+    for s, st in P.stations.items():
+        a = P.depletion_31jan(st["field"])
+        b = P.depletion_31jan(st["field"], per.get(s, P.ea[st["method"]]))
+        assert abs(a - b) < 1e-9 and abs(st["full"] - st["reads"][dt.date(2027, 1, 31)] - a) < 0.15, s
+    starts = {f["id"]: P.depletion_31jan(f, by.get(f["method"], P.ea[f["method"]])) for f in P.fields}
     gold = P.order(starts)
-    default = P.order({f["id"]: P.depletion_from_last_set(f) for f in P.fields})
+    default = P.order({f["id"]: P.depletion_31jan(f) for f in P.fields})
     deliv, inflow, share, spill = asks(target)
     # expectations from the golden workbook
     book = os.path.join(golden, "kbid_order_2027.xlsx")
@@ -292,7 +362,9 @@ def main(target, golden):
     assert lab["Replay that sets the order"] == gold["year"]
     head, body = after_header(sheet(book, "Replays"), "Weather year")
     for r in body:
-        assert r[1] == half_up(gold["reqs"][r[0]], 10), (r[0], r[1], gold["reqs"][r[0]])
+        v = gold["reqs"][r[0]]
+        # equal at the workbook's rounding, unless the recomputed value sits within half an acre-foot of a rounding line
+        assert r[1] == half_up(v, 10) or abs((v % 10) - 5) < 0.5, (r[0], r[1], v)
     lt = sheet(book, "Laterals 2026")
     head, body = after_header(lt, "Lateral")
     for r in body:
@@ -308,14 +380,15 @@ def main(target, golden):
         assert abs(r[3] - half_up(share[l] * 10, 1) / 10.0) < 1e-9, (l, r[3], share[l])
         assert r[4] == half_up(spill[l], 10), (l, r[4], spill[l])
     assert default["order"] != gold["order"], "the default path files the golden"
-    assert gold["order"] - default["order"] >= 5000, (gold["order"], default["order"])
+    assert default["order"] - gold["order"] >= 3000, (gold["order"], default["order"])
+    assert 400 <= gold["req"] - (gold["order"] - 1000) <= 600, gold["req"]
     gap = P.closest_approach(starts)
     assert gap > 1e-7, gap
-    print("verify.py: order %s AF set by %d (24th %.1f AF); default path (each last 2026 set taken as a refill) %s AF "
-          "set by %d; closest approach to an allowable depletion %.1e in; the four lateral asks recomputed on 9 "
-          "laterals each; all match the golden" % (
-              "{:,}".format(gold["order"]), gold["year"], gold["req"], "{:,}".format(default["order"]),
-              default["year"], gap))
+    print("verify.py: the stations' efficiency %s; order %s AF set by %d (24th %.1f AF); default path (the 2026 record "
+          "at Table 4) %s AF set by %d; closest approach to an allowable depletion %.1e in; the four lateral asks "
+          "recomputed on 9 laterals each; all match the golden" % (
+              {k: round(v, 4) for k, v in by.items()}, "{:,}".format(gold["order"]), gold["year"], gold["req"],
+              "{:,}".format(default["order"]), default["year"], gap))
     return gold, default
 
 

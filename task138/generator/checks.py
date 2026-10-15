@@ -1,8 +1,10 @@
-"""task138 assertions: the input gates, every rung of the ladder and its separation, the three-rules block on the clean
-truth (R1 to R3c), every semantic fork row (SF1 to SF35), the graded figures' distances to their rounding edges, the four
-lateral asks with their stops and devices, the separation line between the call and the asks, the distractors' deletion
-test, and the realism and hygiene sweeps. Run by build.py on every build; prints the ladder and the measured figures
-the design note quotes."""
+"""task138 assertions: the input gates, every rung of the ladder and its separation, the soil moisture stations (the
+efficiency they show, their misfit under every rival, their blind 31 January readings, the golden method's variants and
+one standard error), the three-rules block on the clean truth (R1 to R3c), every semantic fork row (SF1 to SF47), the
+graded figures' distances to their rounding edges, the four lateral asks with their stops and devices (each figure as
+shipped at round 2), the separation line between the call and the asks, the distractors' deletion test, and the realism
+and hygiene sweeps. Run by build.py on every build; prints the ladder and the measured figures the design note
+quotes."""
 from __future__ import annotations
 
 import copy
@@ -22,6 +24,7 @@ import calc as C
 import common as K
 
 N = [0]
+K_READ_VAR = 0.05 ** 2      # a station's reading noise (world.READ_NOISE_IN), squared
 
 
 def ok(cond, msg):
@@ -52,14 +55,14 @@ def run(target, golden, W=None, meta_path=None):
     N[0] = 0
     M = C.load(target)
     lad = C.ladder(M)
-    g = lad["R4"]
+    g = lad["G"]
     print("ladder (24th smallest of thirty, order, setting year):")
-    for k, v in lad.items():
+    for k, v in sorted(lad.items(), key=lambda kv: kv[1]["req"]):
         print("  %-4s %-86s %12s  %7s  %d  %+.2f%%" % (k, v["label"][:86], "{:,.2f}".format(v["req"]),
                                                    af(v["order"]), v["year"], 100 * (v["req"] / g["req"] - 1)))
 
     # ------------------------------------------------------------------------------------------ the golden call
-    ok(g["order"] == 215000 and g["year"] == 2012, ("golden", g["order"], g["year"]))
+    ok(g["order"] == 212000 and g["year"] == 2012, ("golden", g["order"], g["year"]))
     lo = g["req"] - (g["order"] - K.ORDER_STEP)
     ok(400 <= lo <= 600, ("24th smallest mid-bin in its thousand", lo))
     r = g["ranked"]
@@ -68,62 +71,205 @@ def run(target, golden, W=None, meta_path=None):
         g["req"], lo, af(g["order"] - K.ORDER_STEP), g["order"] - g["req"], r[22][0], r[22][1], r[24][0], r[24][1]))
 
     # ------------------------------------------------------------------------------------------ the ladder
-    R3, R2d, R4g, O2 = lad["R3"], lad["R2d"], lad["R4g"], lad["O2"]
-    ok(R3["order"] == 209000 and R3["year"] == 2012, ("default path", R3["order"], R3["year"]))
-    for k, floor in (("R0", 0.07), ("R1", 0.06), ("R2", 0.06), ("R2b", 0.07), ("R3", 0.025), ("R3c", 0.01),
-                     ("R4g", 0.02), ("R2d", 0.004)):
+    T4 = lad["T4"]
+    ok(T4["order"] == 215000 and T4["year"] == 2012, ("default path", T4["order"], T4["year"]))
+    expect = {"R0": 196000, "R2b": 197000, "R1": 199000, "R2": 199000, "O3": 206000, "R3": 209000, "R4g": 210000,
+              "R3c": 211000, "R2d": 211000, "KC": 211000, "O2": 213000, "O1": 214000, "PT": 214000, "AB": 215000,
+              "P1": 215000, "T4": 215000, "RG": 216000, "MI": 218000, "HT": 218000}
+    for k, v in expect.items():
+        ok(lad[k]["order"] == v, ("rung order", k, lad[k]["order"], v))
+        ok(abs(lad[k]["order"] - g["order"]) >= K.ORDER_STEP, ("rung a full bin from the order", k))
+    for k, floor in (("R0", 0.07), ("R2b", 0.065), ("R1", 0.06), ("R2", 0.06), ("O3", 0.025), ("R3", 0.014),
+                     ("R4g", 0.010), ("R3c", 0.005), ("R2d", 0.005), ("KC", 0.002)):
         ok(lad[k]["req"] / g["req"] - 1 <= -floor, ("rung under the golden by its floor", k, floor))
-        ok(lad[k]["order"] <= g["order"] - K.ORDER_STEP, ("rung a full bin under the order", k))
-    for k in ("O1", "O2"):
-        ok(lad[k]["order"] >= g["order"] + K.ORDER_STEP, ("over-correction a full bin above", k))
+    for k, floor in (("O2", 0.003), ("O1", 0.010), ("PT", 0.010), ("AB", 0.011), ("P1", 0.013), ("T4", 0.013),
+                     ("RG", 0.018), ("MI", 0.025), ("HT", 0.025)):
+        ok(lad[k]["req"] / g["req"] - 1 >= floor, ("rung over the golden by its floor", k, floor))
     for k in ("R0", "R1", "R2", "R2b"):
         ok(lad[k]["year"] != g["year"], ("rung names another setting year", k))
-    D = M.D_golden
-    D3 = M.D_last_set
+    D, D4 = M.D_golden, M.D_t4
+    D3 = M.start_last_set()(0)
     meth = np.array([f["method"] for f in M.fields])
+    crop = np.array([f["crop"] for f in M.fields])
     held = meth != "Border"
+    aw = lambda X: float(X @ M.acres / M.acres.sum())
     print("  31 January 2027: golden acre-weighted %.3f in, %d of %d fields at or past allowable depletion; default path "
-          "%.3f in, %d" % (float(D @ M.acres / M.acres.sum()), int((D >= M.raw).sum()), M.n,
-                          float(D3 @ M.acres / M.acres.sum()), int((D3 >= M.raw).sum())))
+          "(Table 4) %.3f in, %d; last set as a refill %.3f in" % (aw(D), int((D >= M.raw).sum()), M.n, aw(D4),
+                                                                  int((D4 >= M.raw).sum()), aw(D3)))
+
+    # ------------------------------------------------------------------------------------------ the stations
+    S = M.stations
+    hs = [st for st in S if st["method"] != "Border"]
+    ok(len(S) == 11 and len(hs) == 9 and [sum(1 for st in S if st["method"] == m) for m in K.METHODS] == [4, 3, 2, 2],
+       ("SF36 the network's stations by method", len(S)))
+    ok(len({st["field"] for st in S}) == 11 and all(st["field"] in M.index for st in S), "SF36 one 2027 field each")
+    apns = [g_["apn"].replace("-", "") for g_ in M.register.values()]
+    ok(len(apns) == len(set(apns)), "SF36 every APN in the register names one field")
+    per, by = M.ea_station, M.ea_by
+    ok(all(per[st["station"]] > M.T["ea"][st["method"]] + 0.02 for st in hs), ("every station above Table 4", per))
+    sse_e = sum(M.station_sse(st, per[st["station"]]) for st in hs)
+    sse_4 = sum(M.station_sse(st, M.T["ea"][st["method"]]) for st in hs)
+    sse_1 = sum(M.station_sse(st, 1.0) for st in hs)
+    kf, sse_k = M.kc_factor()
+    nread = sum(len(st["reads"]) for st in hs)
+    ok(sse_4 >= 40 * sse_e and sse_1 >= 10 * sse_e, ("the season rejects Table 4 and all-of-it", sse_e, sse_4, sse_1))
+    ok(sse_k >= 2 * sse_e and kf < 0.99, ("SF44 a crop coefficient factor fits worse", kf, sse_k, sse_e))
+    ok(abs(sse_e / nread - K_READ_VAR) < 0.0008, ("the misfit at the stations' efficiency is reading noise",
+                                                 sse_e / nread))
+    # January: every station's 31 January state is the same at Table 4 and at every efficiency up to its own (the dry
+    # autumn and winter took each to the bottom of its root zone), and its reading sits on both runs
+    jan = M.station_jan()
+    for st in S:
+        t4 = M.T["ea"][st["method"]]
+        top = per.get(st["station"], t4) + 0.02
+        v = [M.station_path(st, e)[K.WEATHER_END] for e in np.linspace(t4, top, 7)]
+        ok(max(v) - min(v) < 1e-9, ("SF46 the station's 31 January state is blind to the efficiency", st["station"]))
+        i = M.index[st["field"]]
+        ok(abs(D4[i] - jan[i]) < 0.15 and abs(D[i] - jan[i]) < 0.15, ("SF46 January reading on both runs", st["station"]))
+    off = [round(float(D4[M.index[st["field"]]] - jan[M.index[st["field"]]]), 3) for st in S]
+    # why: each held station's two runs meet at the bottom of its root zone after its last set (the almond and vine
+    # blocks, last watered in September, in October; the shallow pastures, watered to late October, by early January);
+    # a border station's last set runs past field capacity at Table 4's efficiency or any above it, so its runs meet the
+    # day after that set
+    meet = {}
+    for st in S:
+        i = M.index[st["field"]]
+        p4 = M.station_path(st, M.T["ea"][st["method"]])
+        po = M.station_path(st, per[st["station"]] if st["method"] != "Border" else 0.90)
+        last = M.last_delivery[st["field"]]
+        d0 = next(d for d in sorted(po) if d > last and abs(po[d] - p4[d]) < 1e-9)
+        ok(all(abs(po[d] - p4[d]) < 1e-9 for d in po if d >= d0), ("the runs stay together", st["station"]))
+        if st["method"] == "Border":
+            ok(d0 == last + dt.timedelta(days=1), ("a border station's runs meet the day after its last set", st["station"]))
+        else:
+            ok(abs(po[d0] - M.taw[i]) < 1e-9, ("a held station's runs meet at the bottom of its root zone", st["station"]))
+        meet[st["station"]] = (st["crop"], st["method"], last, d0)
+    tree = [v[3] for v in meet.values() if v[0] in ("ALM", "GRW")]
+    past = [v[3] for v in meet.values() if v[0] == "PAS" and v[1] != "Border"]
+    ok(all(v[2].month == 9 for v in meet.values() if v[0] in ("ALM", "GRW")) and
+       all(v[2].month == 10 for v in meet.values() if v[0] == "PAS" and v[1] != "Border"), "the stations' last sets")
+    ok(max(tree) <= dt.date(2026, 10, 31) and min(past) >= dt.date(2026, 12, 1) and max(past) <= K.WEATHER_END,
+       ("when the held stations' runs meet", min(tree), max(tree), min(past), max(past)))
+    lastat = [(M.last_delivery.get(f["id"]) or dt.date(1900, 1, 1)) for f in M.fields if f["crop"] in ("ALM", "GRW")]
+    ok(all(d.year == 2026 and d.month == 9 for d in lastat), "every almond and vine field's last 2026 set in September")
+    print("  held stations' runs meet at the bottom of the root zone: almonds and vines %s to %s, sprinkler pastures %s "
+          "and %s; border stations the day after their last set" % (min(tree), max(tree), min(past), max(past)))
+    share = {}
+    for c in ("PIS", "CIT", "WAL", "ALM", "GRW", "PAS", "ALF"):
+        m = crop == c
+        share[c] = (round(float((D4[m] / M.taw[m]).mean()), 2), round(float((D[m] / M.taw[m]).mean()), 2))
+    ok(all(share[c][0] - share[c][1] >= 0.10 for c in ("PIS", "CIT", "WAL")) and
+       all(share[c][0] - share[c][1] <= 0.05 for c in ("ALM", "GRW", "PAS", "ALF")),
+       ("the late crops' 31 January share of total available water moves, the stations' crops' barely", share))
+    print("  31 January mean share of total available water, Table 4 run and golden: %s" % ", ".join(
+        "%s %.2f %.2f" % (c, a, b) for c, (a, b) in share.items()))
+    # the write-up's rival clauses: every drip, micro-sprinkler and sprinkler station reads short of its full point after
+    # its last set (no refill), and every station is deep in its root zone on 31 January (no full start)
+    for st in S:
+        i = M.index[st["field"]]
+        after = st["full"] - st["reads"][M.last_delivery[st["field"]]]
+        ok(st["method"] == "Border" or after >= 0.2, ("a held station short of full after its last set", st["station"], after))
+        ok(jan[i] >= 0.5 * M.taw[i], ("a station deep in its root zone on 31 January", st["station"], jan[i]))
+    # the drip stations in two crops agree (the efficiency is the method's)
+    alm = [per[st["station"]] for st in hs if st["method"] == "Drip" and st["crop"] == "ALM"]
+    grw = [per[st["station"]] for st in hs if st["method"] == "Drip" and st["crop"] == "GRW"]
+    ok(len(alm) == 2 and len(grw) == 2 and abs(np.mean(alm) - np.mean(grw)) < 0.01, ("SF41 drip almonds and vines",
+                                                                                   alm, grw))
+    print("  stations: efficiency %s; by method %s; misfit at their efficiency %.1f, at Table 4 %.1f, all of it %.1f, "
+          "crop coefficient factor %.3f %.1f (%d readings); January offset from the Table 4 run %s" % (
+              {k: round(v, 4) for k, v in per.items()}, {k: round(v, 4) for k, v in by.items()}, sse_e, sse_4, sse_1, kf,
+              sse_k, nread, off))
+    # the golden method's variants: every defensible way of fitting the stations files the same order, mid-bin
+    VAR = {}
+    _, b_med = M.station_efficiency(how="median")
+    VAR["median"] = b_med
+    fac = float(np.mean([per[st["station"]] / M.T["ea"][st["method"]] for st in hs]))
+    VAR["one factor"] = {m: M.T["ea"][m] * fac for m in by}
+    VAR["pooled least squares"] = _pooled(M)
+    for lab, kw in (("February to October", dict(days=(dt.date(2026, 1, 28), dt.date(2026, 10, 31)))),
+                    ("May to October", dict(days=(dt.date(2026, 5, 1), dt.date(2026, 10, 31)))),
+                    ("UTC date as the day", dict(shift=1)), ("a day early", dict(shift=-1))):
+        VAR[lab] = M.station_efficiency(**kw)[1]
+    w_ac = {st["station"]: M.acres[M.index[st["field"]]] for st in hs}
+    VAR["acre-weighted"] = {m: float(sum(per[st["station"]] * w_ac[st["station"]] for st in hs if st["method"] == m) /
+                                     sum(w_ac[st["station"]] for st in hs if st["method"] == m)) for m in by}
+    out = {}
+    for lab, b in VAR.items():
+        Dv = M.hindcast(M.water26(), ea=M.ea_from(b))
+        out[lab] = variant_order(M, lambda y, Dv=Dv: Dv)
+    Db = M.hindcast(M.water26(), ea=M.ea_from({m: M.T["ea"][m] * fac for m in by}, border=0.70 * fac))
+    out["one factor, border too"] = variant_order(M, lambda y: Db)
+    Ds = D.copy()
+    for i, v in jan.items():
+        Ds[i] = v
+    out["stations' fields at their readings"] = variant_order(M, lambda y: Ds)
+    for lab, o in out.items():
+        ok(o["order"] == g["order"] and o["year"] == g["year"] and 250 <= o["req"] - (g["order"] - K.ORDER_STEP) <= 750,
+           ("SF40 the golden method's variants file the order mid-bin", lab, o["req"]))
+    SEEN = {"SF40": {k: round(v["req"] - g["req"], 1) for k, v in out.items()}}
+    # one standard error of each method's efficiency (the stations' spread) moves no order
+    for sgn in (-1, 1):
+        b_ = {}
+        for m in by:
+            v = [per[st["station"]] for st in hs if st["method"] == m]
+            b_[m] = by[m] + sgn * float(np.std(v, ddof=1)) / len(v) ** 0.5
+        Dv = M.hindcast(M.water26(), ea=M.ea_from(b_))
+        o = variant_order(M, lambda y, Dv=Dv: Dv)
+        ok(o["order"] == g["order"], ("one standard error of the stations' efficiency", sgn, o["req"]))
+        SEEN.setdefault("one standard error", []).append(round(o["req"] - g["req"], 1))
+    # SF43: a border set runs past field capacity, so any efficiency from Table 4's up leaves every border field's 31
+    # January state where it is; the border stations' own fit (about Table 4's) files the same order
+    bord = ~held
+    for eb in (0.70, 0.80, 0.90, 1.00):
+        Dx = M.hindcast(M.water26(), ea=M.ea_from(by, border=eb))
+        ok(float(np.abs(Dx[bord] - D[bord]).max()) < 1e-9, ("SF43 border efficiency", eb))
+    e_b = [M.calibrate_station(st) for st in S if st["method"] == "Border"]
+    ok(all(abs(x - 0.70) < 0.01 for x in e_b), ("SF43 the border stations fit about Table 4", e_b))
+    Dx = M.hindcast(M.water26(), ea=M.ea_from(by, border=float(np.mean(e_b))))
+    o = variant_order(M, lambda y: Dx)
+    ok(o["order"] == g["order"] and abs(o["req"] - g["req"]) < 200, ("SF43 border at its stations' fit", o["req"]))
+    SEEN["SF43"] = (round(float(np.mean(e_b)), 4), round(o["req"] - g["req"], 1))
 
     # ------------------------------------------------------------------------------------------ the record's season
-    water = M.set_water()
-    lastfull, at_last = _season_path(M, water)
-    # every drip, micro-sprinkler and sprinkler field ends its 2026 season short of field capacity; the border fields'
-    # last set fills them
+    water = M.water26()
+    lastfull, at_last = _season_path(M, water, M.ea_record)
     short = at_last[held]
-    ok(int(held.sum()) == 501 and float(short.min()) > 0.3, ("held fields short after their last set", int(held.sum()),
-                                                           float(short.min())))
+    ok(int(held.sum()) == 501 and int((short < 1e-9).sum()) <= 3, ("held fields short after their last set",
+                                                                     int(held.sum()), int((short < 1e-9).sum())))
     ok(float(at_last[~held].max()) < 1e-9, "every border field full after its last set")
-    lf = [dt.date.fromordinal(int(x)) for x in lastfull[held]]
-    ok(max(lf) <= dt.date(2026, 6, 15), ("held fields last full in the spring", max(lf)))
-    # the season's water against the crop's use: from the day after a held field was last full to the end of its last
-    # set's day, its crop water use less rain exceeds its delivered water at its efficiency by at least its depletion
-    # there (water beyond field capacity only drains), so a refill at the last set would need water the record never
-    # delivered
-    shortfall = _season_shortfall(M, water, lastfull)
-    ok(np.all(shortfall[held] >= at_last[held] - 1e-6) and float(shortfall[held].min()) > 0.3,
-       "the season's water short of the crop's use less rain since the field was last full")
-    print("  2026 record: %d held fields short of field capacity after their last set by %.2f to %.2f in (acre-weighted "
-          "%.2f); last full between %s and %s; every border field full after its last set" % (
-              int(held.sum()), float(short.min()), float(short.max()),
-              float((short * M.acres[held]).sum() / M.acres[held].sum()), min(lf), max(lf)))
+    late = np.array([lastfull[i] > dt.date(2026, 6, 30).toordinal() for i in range(M.n)])
+    print("  2026 record at the stations' efficiency: %d of %d held fields short of field capacity after their last set "
+          "(acre-weighted %.2f in); %d held fields full at some point after June; every border field full after its "
+          "last set" % (int((short > 1e-9).sum()), int(held.sum()), float((short * M.acres[held]).sum() /
+                                                                          M.acres[held].sum()), int((late & held).sum())))
+    # the late-season crops carry the difference between Table 4 and the stations' efficiency on 31 January; the
+    # stations' crops, near the bottom of their root zones by then, barely
+    diff = D4 - D
+    lates = np.isin(crop, ["PIS", "CIT", "WAL"]) | ((crop == "ALF") & held)
+    ok(float((diff * M.acres)[lates].sum()) > 3 * float((diff * M.acres)[~lates].sum()),
+       "the late crops carry the Table 4 run's excess depletion")
+    print("  Table 4 run less golden on 31 January: pistachios, citrus, walnuts and sprinkler alfalfa %.0f acre-inches, "
+          "the rest %.0f, of %.0f; acre-weighted %.3f in, %.3f on the held fields" % (
+              float((diff * M.acres)[lates].sum()), float((diff * M.acres)[~lates].sum()), float(diff @ M.acres),
+              aw(diff), float(diff[held] @ M.acres[held] / M.acres[held].sum())))
 
     # ------------------------------------------------------------------------------------------ the three rules
     files = sorted(os.listdir(target))
     heads = " ".join(open(os.path.join(target, f), encoding="utf-8").readline().lower() for f in files
                      if f.endswith(".csv"))
-    ok(not re.search(r"depletion|soil_water|moisture|deficit|requirement", heads),
+    ok(not re.search(r"depletion|soil_water|moisture|deficit|requirement|efficiency", heads),
        "R1: a shipped column holds the deciding quantity")
     orders_head = C.read_csv(os.path.join(target, K.ORDERS))[0]
     ok({"ordered_cfs", "set_start", "set_end", "status", "field_id"} <= set(orders_head),
        "R1: the orders ship at set grain with each set's flow and times")
     ok(len(M.wx) == (K.WEATHER_END - K.WEATHER_START).days + 1, "R1: the daily weather ships whole")
+    ok(len(S) == 11 and min(len(st["reads"]) for st in S) >= 380, "R1: the stations ship their daily readings")
     if W is not None:
         T = _truth(W)
         # R2: the mess on the call's path (two stations spliced, units and missing days; revised and withdrawn requests;
-        # former field ids; cancelled sets; turnout ids written three ways), read by the filed rules and the dictionary,
-        # gives back the world's own fields, weather and 2026 sets
+        # former field ids; cancelled sets; turnout ids written three ways; the stations keyed by APN, stamped in UTC,
+        # with logger gaps), read by the filed rules and the dictionary, gives back the world's own fields, weather,
+        # 2026 sets and station readings
         ok(sorted(M.ids) == sorted(T["ids"]), "R2: the 2027 fields read from the pack are the world's")
         ok(all(abs(M.acres[i] - T["acres"][fid]) < 0.006 and M.fields[i]["crop"] == T["crop"][fid]
                and M.fields[i]["method"] == T["method"][fid] for i, fid in enumerate(M.ids)),
@@ -133,35 +279,35 @@ def run(target, golden, W=None, meta_path=None):
         ids = set(M.ids)
         rec_w = {(a, b, round(cfs, 1)) for fid, a, b, cfs, s in M.record if s == "Delivered" and fid in ids}
         ok(rec_w == T["sets26"], "R2: the 2026 delivered sets read from the orders are the world's")
-        # R3a: the easy route on the clean truth (the world's own fields, weather and sets), every filed rule applied,
-        # files the default path's wrong answer
-        t3 = _truth_order(T, M, "last set")
-        ok(t3["order"] == R3["order"] and t3["year"] == R3["year"], ("R3a: the default path on the clean truth", t3["order"]))
-        # R3b: the same route with only the decisive step changed (the 2026 season run on the water each set put in)
-        t4 = _truth_order(T, M, "record")
-        ok(t4["order"] == g["order"] and t4["year"] == g["year"] and abs(t4["req"] - g["req"]) < 1e-6,
-           ("R3b: the record run on the clean truth", t4["order"]))
-        # the fields as they are: the record run reproduces each field's root zone within the yard's rounding
-        true31 = np.array([W.true_path[i][K.WEATHER_END] for i in M.ids])
-        ok(float(np.abs(true31 - D).max()) < 0.35 and abs(float((true31 - D) @ M.acres) / M.acres.sum()) < 0.03,
-           ("R3b: the record run against the fields as they are", float(np.abs(true31 - D).max())))
-        # SF34: the root zone as it stands is the one the record's water left: a start that credits no delivered set
-        # (full on 1 February, R0) or a simulated 2026 season in place of the delivered sets (the replay rule run through
-        # 2026, R2) misses the fields as they are by inches, the record run by hundredths
-        aw = lambda X: float(np.abs(X - true31) @ M.acres) / M.acres.sum()
-        e4, e0, e2, e3 = aw(D), aw(np.zeros(M.n)), aw(M.start_model_2026()(g["year"])), aw(D3)
-        ok(e4 < 0.03 and e0 > 4.0 and e2 > 2.5, ("SF34 the record's water against a full or simulated 2026 start",
-                                                e4, e0, e2))
-        # SF35: the decisive step is the estimator of the filed state, not a filed rule: no document names a start
-        # (R3c below), and on the clean truth the two estimators of the same filed state stand a full order apart, the
-        # last set as a refill missing the fields as they are by close to an inch
-        ok(t3["order"] <= t4["order"] - K.ORDER_STEP and e3 > 0.5 and e3 > 20 * e4,
-           ("SF35 the estimators of the filed state separate on the clean truth", t3["order"], t4["order"], e3, e4))
-        print("  SF34 and SF35 on the clean truth: acre-weighted miss of the fields as they are, record run %.3f in, "
-              "last set %.3f, simulated 2026 %.3f, full %.3f" % (e4, e3, e2, e0))
-        print("  three rules on the clean truth: default path %s, the record run %s; the fields as they are within "
-              "%.3f in (acre-weighted %+.4f)" % (af(t3["order"]), af(t4["order"]), float(np.abs(true31 - D).max()),
-                                                 float((true31 - D) @ M.acres / M.acres.sum())))
+        wst = {x["station"]: x for x in W.stations}
+        for st in S:
+            x = wst[st["station"]]
+            ok(st["field"] == x["field"] and abs(st["full"] - x["full"]) < 1e-9, ("R2: a station's field and full point",
+                                                                                 st["station"]))
+            wr = {q["day"]: q["profile"] for q in W.station_reads if q["station"] == st["station"]}
+            ok(wr == st["reads"], ("R2: a station's readings by the day each ends", st["station"]))
+        # R3a: the easy route on the clean truth (the world's own fields, weather, sets and stations' true state), every
+        # filed rule applied, files the default path's wrong answer
+        t3 = _truth_order(T, M, "table 4")
+        ok(t3["order"] == T4["order"] and t3["year"] == T4["year"], ("R3a: the default path on the clean truth",
+                                                                    t3["order"]))
+        # R3b: the same route with only the decisive step changed (the record's efficiency fitted on the stations'
+        # season, here on the stations' readings without their reading noise)
+        t4, eb = _truth_order(T, M, "stations")
+        ok(t4["order"] == g["order"] and t4["year"] == g["year"], ("R3b: the stations' efficiency on the clean truth",
+                                                                  t4["order"], t4["req"]))
+        # the fields as they are: the golden start sits on them, the Table 4 run and the last set as a refill do not
+        true31 = np.array([W.state_path[i][K.WEATHER_END] for i in M.ids])
+        aws = lambda X: float(np.abs(X - true31) @ M.acres) / M.acres.sum()
+        e_g, e_4, e_3, e_0 = aws(D), aws(D4), aws(D3), aws(np.zeros(M.n))
+        ok(e_g < 0.10 and e_4 > 5 * e_g and e_3 > 5 * e_g and e_0 > 3.0, ("SF34 the fields as they are", e_g, e_4, e_3,
+                                                                          e_0))
+        # SF35: the estimators of the filed state separate on the clean truth by a full order and more
+        ok(t3["order"] - t4["order"] >= 2 * K.ORDER_STEP, ("SF35 the two estimators on the clean truth", t3["order"],
+                                                           t4["order"]))
+        print("  three rules on the clean truth: default path (Table 4) %s, the stations' efficiency %s (%s); acre-weighted "
+              "miss of the fields as they are: golden %.3f in, Table 4 %.3f, last set %.3f, full %.3f" % (
+                  af(t3["order"]), af(t4["order"]), {k: round(v, 4) for k, v in eb.items()}, e_g, e_4, e_3, e_0))
     # R3c: nothing planted
     ok(not any(w in f.lower() for f in files for w in ("memo", "draft", "briefing", "estimate")),
        "R3c: a memo, draft, briefing or estimate ships")
@@ -169,9 +315,12 @@ def run(target, golden, W=None, meta_path=None):
     stated = sorted(set(re.findall(r"\b(\d{3},\d{3}) acre-feet\b", docs_txt)))
     ok(stated == ["241,000"], ("R3c: a document states a requirement or an order", stated))
     for w in ("field capacity at", "start state", "starting depletion", "initial depletion", "initial condition",
-              "initial state", "antecedent", "deficit irrigation", "regulated deficit", "working deficit",
-              "soil moisture", "carry-over", "carryover"):
-        ok(w not in docs_txt.lower(), ("R3c: a document names the start", w))
+              "initial state", "antecedent", "deficit irrigation", "regulated deficit", "working deficit", "carry-over",
+              "carryover", "calibrat"):
+        ok(w not in docs_txt.lower(), ("R3c: a document names the start or the method", w))
+    st_txt = _text_of(os.path.join(target, K.STATIONS)).lower()
+    for w in (r"efficien", r"calibrat", r"table 4", r"\border\b", r"requirement", r"deficit", r"depletion"):
+        ok(not re.search(w, st_txt), ("R3c: the stations' export names the method", w))
 
     # ------------------------------------------------------------------------------------------ closure
     for c in K.CROPS:
@@ -188,9 +337,6 @@ def run(target, golden, W=None, meta_path=None):
     ok(meths == {"Drip": 196, "Micro-sprinkler": 255, "Sprinkler": 50, "Border": 130}, ("methods", meths))
     ok(sorted(wint, key=wint.get, reverse=True)[1] == 2025 and abs(wint[2025] - 13.19) < 0.005,
        ("the 2025-26 winter the second wettest", wint[2025]))
-    dd = M.D_golden - M.D_last_set
-    ok(abs(float(dd[held] @ M.acres[held] / M.acres[held].sum()) - 1.199) < 0.0005 and float(np.abs(dd[~held]).max()) < 1e-9,
-       "the record run against the default path: the held fields 1.199 inches deeper, the border fields equal")
     lastm = [M.last_delivery[f["id"]].month for f in M.fields]
     print("  closest approach of a replay day's depletion to an allowable depletion: %.2e in; October 2026 to January "
           "2027 rain %.2f in (next driest %.2f, median of %d winters %.2f); last 2026 sets in September %d, October %d"
@@ -201,7 +347,6 @@ def run(target, golden, W=None, meta_path=None):
     rows = C.read_csv(os.path.join(target, K.ORDERS))
     head = rows[0]
     ix = {c: head.index(c) for c in head}
-    SEEN = {}
     # SF1: no delivered set outside the canal season in any season on file
     for rr in rows[1:]:
         if rr[ix["status"]] == "Delivered":
@@ -213,7 +358,10 @@ def run(target, golden, W=None, meta_path=None):
     vals = sorted(g["reqs"].values())
     p80 = float(np.percentile(vals, 80))
     ok(K.ceil_to(p80, K.ORDER_STEP) == g["order"], ("SF2 the interpolated 80th percentile converges", p80))
-    ok(K.round_to(vals[23], K.ORDER_STEP) != g["order"], "SF2 the 24th rounded to the nearest thousand")
+    # the 24th rounded to the nearest thousand happens to give the same thousand (the 24th sits above its half-thousand),
+    # and WOP 2.3's smallest thousand that would have covered it is the order
+    ok(K.round_to(vals[23], K.ORDER_STEP) == g["order"] and K.ceil_to(vals[23], K.ORDER_STEP) == g["order"],
+       "SF2 the 24th rounded to the nearest thousand")
     SEEN["SF2"] = (K.ceil_to(p80, K.ORDER_STEP), K.round_to(vals[23], K.ORDER_STEP))
     # SF3: every request row, or withdrawn requests in
     alt = []
@@ -235,7 +383,7 @@ def run(target, golden, W=None, meta_path=None):
     sf5 = _order_on_tables(M, T5)
     ok(sf5["order"] != g["order"], ("SF5", sf5["order"]))
     SEEN["SF5"] = sf5["order"]
-    # SF6: station 39 throughout; the yard from its first day; missing yard days as zero
+    # SF6: station 39 throughout; the yard from its first day; missing yard days as zero (the stations fitted on each)
     wx_a = {d: M.s39[d] for d in M.wx}
     wx_b = {d: (M.yard[d] if (d >= K.DISTRICT_STATION_START and d in M.yard) else M.s39[d]) for d in M.wx}
     wx_c = {d: (M.yard.get(d, (0.0, 0.0)) if d >= K.SPLICE else M.s39[d]) for d in M.wx}
@@ -249,57 +397,62 @@ def run(target, golden, W=None, meta_path=None):
     ok(sf7["order"] == g["order"] and sf7["year"] == g["year"], "SF7 converges")
     SEEN["SF7"] = (sf7["order"], round(sf7["req"] - g["req"], 1))
     # SF8: a replay day's arithmetic: the irrigation test before rain; the rain taken first
-    st = M.start_golden()
-    sf8 = _order_test_before_rain(M, st)
-    sf8b = _order_rain_first(M, st)
+    st0 = M.start_golden()
+    sf8 = _order_test_before_rain(M, st0)
+    sf8b = _order_rain_first(M, st0)
     ok(sf8["order"] != g["order"] and sf8b["order"] == g["order"], ("SF8", sf8["order"], sf8b["order"]))
     SEEN["SF8"] = (sf8["order"], sf8b["order"], round(sf8b["req"] - g["req"], 1))
     # SF9: where each replay starts: every rung files its own order (the ladder above)
-    for k in ("R0", "R1", "R2", "R2b", "R3", "R3c"):
+    for k in ("R0", "R1", "R2", "R2b", "R3", "T4"):
         ok(lad[k]["order"] != g["order"], ("SF9 rung files its own order", k))
-    # SF10: cancelled sets counted as water (R2d); SF11: no efficiency on the record's sets (R4g); SF20: no cap (O2)
-    ok(R2d["order"] != g["order"] and R4g["order"] != g["order"] and O2["order"] != g["order"], "SF10 SF11 SF20")
+    # SF10: cancelled sets counted as water (R2d); SF11: the record's water at Table 4 (T4) or all of it (R4g); SF20:
+    # no cap (O2)
+    ok(lad["R2d"]["order"] != g["order"] and lad["R4g"]["order"] != g["order"] and lad["T4"]["order"] != g["order"]
+       and lad["O2"]["order"] != g["order"], "SF10 SF11 SF20")
     # SF12: the record run's start converges: from 1 November 2025 at field capacity or at total available water, and
-    # from 1 February 2023 with every season's record (former field ids mapped through the register)
+    # from 1 February 2023 with every season's record (former field ids mapped through the register); the stations
+    # fitted from 1 February 2026 give the same efficiency
     for D0 in (np.zeros(M.n), M.taw.copy()):
         Dw = M.hindcast({}, start=dt.date(2025, 11, 1), D0=D0, upto=K.WINTER_FULL)
         ok(float(Dw.max()) < 1e-12, "SF12 every root zone at field capacity at the end of 27 January 2026")
-    for lab, Dx in (("1 Feb 2026 full", M.hindcast(water, start=dt.date(2026, 2, 1))),
-                    ("1 Nov 2025 full", M.hindcast(water, start=dt.date(2025, 11, 1))),
-                    ("1 Nov 2025 empty", M.hindcast(water, start=dt.date(2025, 11, 1), D0=M.taw.copy())),
-                    ("1 Feb 2023 every season", M.hindcast(_water_all_seasons(M, target), start=dt.date(2023, 2, 1)))):
+    ea_r = M.ea_record
+    for lab, Dx in (("1 Feb 2026 full", M.hindcast(water, start=dt.date(2026, 2, 1), ea=ea_r)),
+                    ("1 Nov 2025 full", M.hindcast(water, start=dt.date(2025, 11, 1), ea=ea_r)),
+                    ("1 Nov 2025 empty", M.hindcast(water, start=dt.date(2025, 11, 1), D0=M.taw.copy(), ea=ea_r)),
+                    ("1 Feb 2023 every season", M.hindcast(_water_all_seasons(M, target), start=dt.date(2023, 2, 1),
+                                                           ea=ea_r))):
         ok(float(np.abs(Dx - D).max()) < 1e-9, ("SF12 the record run's start converges", lab))
-    # SF13: a set's water by day: all on its first or last day instead of the hours it ran each day
+    for st in hs:
+        e1 = M.calibrate_station(st, days=(dt.date(2026, 2, 1), K.WEATHER_END))
+        ok(abs(e1 - per[st["station"]]) < 0.002, ("SF12 a station fitted from 1 February", st["station"], e1))
+    # SF13: a set's water by day: all on its first or last day instead of the hours it ran each day (the stations fitted
+    # the same way)
     sf13 = {}
     for split in ("start", "end"):
-        Dx = M.hindcast(M.set_water(split=split))
-        o = variant_order(M, lambda y, Dx=Dx: Dx)
-        ok(o["order"] == g["order"] and o["year"] == g["year"] and abs(o["req"] - g["req"]) < 10.0,
+        o = _calibrated_variant(M, water=M.set_water(split=split))
+        ok(o["order"] == g["order"] and o["year"] == g["year"] and abs(o["req"] - g["req"]) < 420.0,
            ("SF13 converges", split, o["req"] - g["req"]))
         sf13[split] = round(o["req"] - g["req"], 1)
+        # and the stations' daily readings follow the hours each set ran, not a set's water on one day
+        ok(o["sse"] >= 5 * sse_e, ("SF13 the stations reject a set's water on one day", split, o["sse"], sse_e))
     SEEN["SF13"] = sf13
-    # SF14: the day's order of the record's water: after the day's floor and cap, or before the day's ET and rain (a
-    # border field's last set then leaves that day's crop water use on it): both converge on the order and the year
-    Da = M.hindcast(water, order="after")
-    oa = variant_order(M, lambda y: Da)
-    ok(oa["order"] == g["order"] and oa["year"] == g["year"] and abs(oa["req"] - g["req"]) < 5.0,
-       ("SF14 after the floor converges", oa["req"] - g["req"]))
-    Db = M.hindcast(water, order="before")
-    ob = variant_order(M, lambda y: Db)
-    ok(ob["order"] == g["order"] and ob["year"] == g["year"], "SF14 before: the same order and year")
-    held_short = lambda Dx: int(held.sum())
-    SEEN["SF14"] = (round(oa["req"] - g["req"], 1), round(ob["req"] - g["req"], 1))
+    # SF14: the day's order of the record's water: after the day's floor and cap, or before the day's ET and rain
+    sf14 = {}
+    for ordr in ("after", "before"):
+        o = _calibrated_variant(M, order=ordr)
+        ok(o["order"] == g["order"] and o["year"] == g["year"] and abs(o["req"] - g["req"]) < 420.0,
+           ("SF14 converges", ordr, o["req"] - g["req"]))
+        sf14[ordr] = (round(o["req"] - g["req"], 1), round(o["sse"] / sse_e, 2))
+    SEEN["SF14"] = sf14
     # SF15: the register's GIS acres in the record run (the replays on the request acres)
     gis = np.array([float(M.register[f["id"]]["gis_acres"]) for f in M.fields])
-    Dg = M.hindcast(water, acres=gis)
-    og = variant_order(M, lambda y: Dg)
+    og = _calibrated_variant(M, acres=gis)
     ok(og["order"] == g["order"] and og["year"] == g["year"], "SF15 GIS acres in the record run: the same order and year")
     SEEN["SF15"] = round(og["req"] - g["req"], 1)
     # SF16: each set's water scaled by its turnout meter's season (the meters as the measure of what ran)
     A = C.load_asks(target)
     scale = _meter_scale(M, A, target)
-    Dm = M.hindcast({d: v * scale for d, v in water.items()})
-    om = variant_order(M, lambda y: Dm)
+    om = _calibrated_variant(M, water={d: v * scale for d, v in water.items()})
     ok(om["order"] == g["order"] and om["year"] == g["year"], "SF16 metered: the same order and year")
     SEEN["SF16"] = (round(om["req"] - g["req"], 1), round(float(scale.min()), 3), round(float(scale.max()), 3))
     # SF17: every 2027 field kept its 2026 irrigation method (the record's efficiency is the request's)
@@ -310,7 +463,7 @@ def run(target, golden, W=None, meta_path=None):
     crop26 = {rr[0]: rr[2] for rr in C.read_csv(os.path.join(target, K.CROP_REPORT))[1:]}
     ok(all(crop26[f["id"]] == f["crop"] for f in M.fields), "SF19")
     # SF21: deliveries times one plus each allowance
-    sf21 = _order_loss_multiplied(M, st)
+    sf21 = _order_loss_multiplied(M, st0)
     ok(sf21["order"] != g["order"], ("SF21", sf21["order"]))
     SEEN["SF21"] = sf21["order"]
     # SF22: the west spur's fields on Lateral 5 for the call
@@ -343,6 +496,26 @@ def run(target, golden, W=None, meta_path=None):
         sf27[key] = _order_on_weather(M, wx27)
         ok(sf27[key]["order"] == g["order"], ("SF27 converges on the order", key, sf27[key]["order"]))
     SEEN["SF27"] = {k: round(v["req"] - g["req"], 1) for k, v in sf27.items()}
+    # SF37: a reading's day: local midnight ends the day before (the UTC date taken as the day files the same order,
+    # SF40); SF38: a station's depletion is its full point less its profile water, and the full point is the profile
+    # water at the end of January 2026 (every station within 0.15 in of it at the end of 27 January 2026)
+    for st in S:
+        ok(abs(st["full"] - st["reads"][K.WINTER_FULL]) < 0.15, ("SF38 the full point is the wet winter's profile",
+                                                                  st["station"]))
+    ok("UTC date as the day" in out and "a day early" in out, "SF37 the reading's day")
+    # SF39: the period fitted (whole series, February to October, May to October) converges (SF40); SF42: the stations'
+    # own fields at their readings converge (SF40); SF47: the logger gaps leave no reading on those days (nothing filled)
+    gaps = {st["station"]: (K.WEATHER_END - dt.date(2025, 12, 31)).days + 1 - len(st["reads"]) for st in S}
+    ok(sorted(v for v in gaps.values() if v) == [6, 8], ("SF47 two stations with logger gaps", gaps))
+    ok("February to October" in out and "May to October" in out and "stations' fields at their readings" in out,
+       "SF39 SF42")
+    # SF41: the stations' efficiency kept to the stations' crops (PT) files another order; SF44: the crop coefficient
+    # fit (KC) another; SF45: the stations' efficiency in the replays' deliveries (O3) another (WOP 3.5 files Table 4's)
+    ok(lad["PT"]["order"] != g["order"] and lad["KC"]["order"] != g["order"] and lad["O3"]["order"] != g["order"],
+       "SF41 SF44 SF45")
+    # SF46: the stations' 31 January readings used directly, as an offset, as a share or through a fitted model on the
+    # obvious covariates file other orders
+    ok(all(lad[k]["order"] != g["order"] for k in ("P1", "AB", "MI", "RG")), "SF46")
     print("  forks: %s" % json.dumps(SEEN, default=str))
     # closure axes 14 to 16: the orders' row order changes nothing; order numbers are unique; every 2026 order and every
     # 2027 request names a field in the register as it stands
@@ -470,6 +643,16 @@ def run(target, golden, W=None, meta_path=None):
           "routine work orders; %d logger days without a total; %d board notes among %d other remarks of %d kinds" % (
               len(hcf), ", ".join(rolls), len(A["changes"]), n_new, len(A["changes"]) - n_new, wo["other"],
               len(A["estimates"]), notes, len(remarks), len(set(remarks))))
+    # the asks' files and the 2026 record are as shipped at round 2 (the operations log reworded, its estimates the same),
+    # so every lateral figure is round 2's
+    R2_ASKS = {"deliveries": [17870, 17530, 15400, 17890, 18160, 18210, 15310, 11490, 15080],
+               "water in": [19680, 19410, 16880, 21020, 19760, 21060, 16710, 13110, 17370],
+               "share": [9.2, 9.7, 8.8, 14.9, 8.1, 13.5, 8.4, 12.4, 13.2],
+               "spill": [580, 630, 440, 270, 550, 650, 510, 420, 360]}
+    for k, l in enumerate(K.LATERALS):
+        ok(K.round_to(gd[l], 10) == R2_ASKS["deliveries"][k] and K.round_to(gi[l], 10) == R2_ASKS["water in"][k]
+           and abs(share1(gs[l]) - R2_ASKS["share"][k]) < 1e-9 and K.round_to(sp[l], 10) == R2_ASKS["spill"][k],
+           ("the lateral figures as shipped at round 2", l))
     print("  Ask 1 deliveries: %s" % ", ".join("%s %s" % (l, af(K.round_to(gd[l], 10))) for l in K.LATERALS))
     print("  Ask 2 water put in: %s" % ", ".join("%s %s" % (l, af(K.round_to(gi[l], 10))) for l in K.LATERALS))
     print("  Ask 3 shares: %s" % ", ".join("%s %.1f" % (l, share1(gs[l])) for l in K.LATERALS))
@@ -596,19 +779,26 @@ def run(target, golden, W=None, meta_path=None):
 # ---------------------------------------------------------------------------------------------------- the clean truth
 
 def _truth(W):
-    """The world before any file is written: the 2027 fields, their crops, methods and acres, and the 2026 delivered
-    sets, from the simulation."""
+    """The world before any file is written: the 2027 fields, their crops, methods and acres, the 2026 delivered sets,
+    and each soil moisture station's root zone as it is (its full point less the field's depletion at the end of each
+    day, with no reading noise, no logger gaps and no time stamps), from the simulation."""
     acc = [f for f in W.fields if f["req_status"] == "accepted"]
     sets26 = {(o["start"], o["end"], round(o["cfs"], 1)) for o in W.orders if o["season"] == 2026
               and o["status"] == "Delivered" and W.field[o["field_id"]]["req_status"] == "accepted"}
+    stations = []
+    for x in W.stations:
+        path = W.state_path[x["field"]]
+        stations.append(dict(station=x["station"], field=x["field"], method=x["method"], crop=x["crop"], full=x["full"],
+                             reads={d: x["full"] - path[d] for d in K.daterange(dt.date(2025, 12, 31), K.WEATHER_END)}))
     return dict(ids=[f["id"] for f in acc], acres={f["id"]: f["acres"] for f in acc},
                 crop={f["id"]: f["crop"] for f in acc}, method={f["id"]: f["method"] for f in acc},
-                sets26=sets26, W=W)
+                sets26=sets26, stations=stations, W=W)
 
 
 def _truth_order(T, M, route):
-    """The order on the world's own fields, weather and 2026 sets: route 'last set' (each field's last set taken as a
-    refill) or 'record' (the season run on the water its sets put in)."""
+    """The order on the world's own fields, weather and 2026 sets: route 'table 4' (the record run at the Table 4
+    efficiency, the default path) or 'stations' (the record run at the efficiency the stations' clean readings show,
+    returned with that efficiency)."""
     W = T["W"]
     fields = [dict(id=f["id"], lateral=f["lateral"], soil=f["soil"], crop=f["crop"], method=f["method"], acres=f["acres"],
                    turnout=f["turnout"]) for f in W.fields if f["req_status"] == "accepted"]
@@ -621,40 +811,92 @@ def _truth_order(T, M, route):
         if o["status"] == "Delivered":
             last[o["field_id"]] = max(last.get(o["field_id"], o["end"].date()), o["end"].date())
     Mt = C.Model(fields, W.wx, M.T, last_delivery=last, record=record)
-    start = Mt.start_last_set() if route == "last set" else Mt.start_golden()
-    return C.order_from(Mt.thirty(start)[0])
+    if route == "table 4":
+        return C.order_from(Mt.thirty(Mt.start_t4())[0])
+    Mt.stations = T["stations"]
+    o = C.order_from(Mt.thirty(Mt.start_golden())[0])
+    return o, Mt.ea_by
 
 
 # ---------------------------------------------------------------------------------------------------- helpers
 
-def _season_path(M, water):
-    """The record run through 2026 to each field's last set: the last day each field was full before its last set,
-    and its depletion at the end of its last set's day."""
+def _season_path(M, water, ea):
+    """The record run through 2026 to each field's last set at efficiency ea: the last day each field was full before
+    its last set, and its depletion at the end of its last set's day."""
     Dd = np.zeros(M.n)
     lastfull = np.full(M.n, dt.date(2026, 1, 31).toordinal())
     at_last = np.zeros(M.n)
     lo = np.array([M.last_delivery[i].toordinal() for i in M.ids])
     for d in K.daterange(K.WINTER_FULL + dt.timedelta(days=1), dt.date(2026, 10, 31)):
         e, r = M.wx[d]
-        net = water[d] * 12.0 / M.acres * M.ea if d in water else 0.0
+        net = water[d] * 12.0 / M.acres * ea if d in water else 0.0
         Dd = np.minimum(np.maximum(Dd + M.kc[:, d.month - 1] * e - r - net, 0.0), M.taw)
         lastfull = np.where((Dd < 1e-12) & (d.toordinal() < lo), d.toordinal(), lastfull)
         at_last = np.where(d.toordinal() == lo, Dd, at_last)
     return lastfull, at_last
 
 
-def _season_shortfall(M, water, lastfull):
-    """Each field's crop water use less rain, less its delivered water at its efficiency, from the day after it was
-    last full to the end of its last set's day."""
-    out = np.zeros(M.n)
-    lo = np.array([M.last_delivery[i].toordinal() for i in M.ids])
-    for d in K.daterange(K.WINTER_FULL + dt.timedelta(days=1), dt.date(2026, 10, 31)):
-        o = d.toordinal()
-        inside = (o > lastfull) & (o <= lo)
-        e, r = M.wx[d]
-        net = water[d] * 12.0 / M.acres * M.ea if d in water else 0.0
-        out += np.where(inside, M.kc[:, d.month - 1] * e - r - net, 0.0)
+def _golden_section(f, lo=0.55, hi=1.0, tol=1e-6):
+    g = (5 ** 0.5 - 1) / 2
+    a, b = lo, hi
+    c, d_ = b - g * (b - a), a + g * (b - a)
+    fc, fd = f(c), f(d_)
+    while b - a > tol:
+        if fc <= fd:
+            b, d_, fd = d_, c, fc
+            c = b - g * (b - a)
+            fc = f(c)
+        else:
+            a, c, fc = c, d_, fd
+            d_ = a + g * (b - a)
+            fd = f(d_)
+    return (a + b) / 2
+
+
+def _pooled(M):
+    """One efficiency per method fitted on all the method's stations' readings together (least squares)."""
+    out = {}
+    for m in ("Drip", "Micro-sprinkler", "Sprinkler"):
+        sts = [st for st in M.stations if st["method"] == m]
+        out[m] = _golden_section(lambda e: sum(M.station_sse(st, e) for st in sts))
     return out
+
+
+def _calibrated_variant(M, water=None, acres=None, order="net"):
+    """The golden route under another construction of the record run (a set's water by day, the day's order of
+    operations, the acres): the stations fitted with that construction, then every field run with it."""
+    water = water if water is not None else M.water26()
+    ac = M.acres if acres is None else acres
+    days = list(K.daterange(K.WINTER_FULL + dt.timedelta(days=1), K.WEATHER_END))
+
+    def path(i, e):
+        D, out = 0.0, {}
+        taw, kc = M.taw[i], M.kc[i]
+        for d in days:
+            ee, r = M.wx[d]
+            net = water[d][i] * 12.0 / ac[i] * e if d in water else 0.0
+            et = kc[d.month - 1] * ee
+            if order == "net":
+                D = min(taw, max(D + et - r - net, 0.0))
+            elif order == "after":
+                D = max(min(taw, max(D + et - r, 0.0)) - net, 0.0)
+            else:
+                D = min(taw, max(max(D - net, 0.0) + et - r, 0.0))
+            out[d] = D
+        return out
+
+    def sse(st, e):
+        p = path(M.index[st["field"]], e)
+        return sum((st["full"] - v - p[d]) ** 2 for d, v in st["reads"].items() if d in p)
+
+    per = {st["station"]: _golden_section(lambda e, st=st: sse(st, e)) for st in M.stations if st["method"] != "Border"}
+    by = {m: float(np.mean([per[st["station"]] for st in M.stations if st["method"] == m]))
+          for m in ("Drip", "Micro-sprinkler", "Sprinkler")}
+    D = M.hindcast(water, acres=ac, order=order, ea=M.ea_from(by))
+    o = variant_order(M, lambda y: D)
+    o["sse"] = sum(sse(st, per[st["station"]]) for st in M.stations if st["method"] != "Border")
+    o["by"] = by
+    return o
 
 
 def _water_all_seasons(M, target):
@@ -863,16 +1105,19 @@ def _order_on_fields(M, fields):
     """The golden route on another set of fields: the 2026 record run for each (by field id), then the replays."""
     M2 = C.Model(fields, M.wx, M.T, last_delivery=M.last_delivery, record=M.record)
     M2.ids = [f["id"] for f in fields]
+    M2.stations = M.stations
     return C.order_from(M2.thirty(M2.start_golden())[0])
 
 
 def _order_on_tables(M, T):
     M2 = C.Model(M.fields, M.wx, T, last_delivery=M.last_delivery, record=M.record)
+    M2.stations = M.stations
     return C.order_from(M2.thirty(M2.start_golden())[0])
 
 
 def _order_on_weather(M, wx):
     M2 = C.Model(M.fields, wx, M.T, last_delivery=M.last_delivery, record=M.record)
+    M2.stations = M.stations
     return C.order_from(M2.thirty(M2.start_golden())[0])
 
 

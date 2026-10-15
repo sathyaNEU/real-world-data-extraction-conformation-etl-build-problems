@@ -1,46 +1,68 @@
 {
   "task": "task138",
   "owner": "sathya8571",
-  "status": "SHIPPED",
+  "status": "BUILD",
   "domain": "physical-environmental-sciences",
   "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-14",
-  "stump": "A competent solver starts every replay from each field's root zone at the end of 31 January 2027 as WOP 2.4 files it, takes each field's last delivered 2026 set as a refill to field capacity, carries it through the record's dry October to January and files 209,000 acre-feet; the step that lands it there is not running each field's 2026 season through the balance on the water its delivered sets put in, from the wet winter's field capacity, which shows that the 501 drip, micro-sprinkler and sprinkler fields ended the season 0.48 to 3.99 inches short of field capacity after their last sets: the golden is 215,000 acre-feet.",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-15",
+  "stump": "A competent solver builds each field's root zone at the end of 31 January 2027 by running its 2026 season through the procedure's balance on the water its delivered sets put in at the Table 4 efficiency, finds every soil moisture station's 31 January reading within 0.094 inches of that run, and files 215,000 acre-feet (Ends on); the step that lands it there is taking Table 4's design efficiency as the share of the record's water that reached the root zones and checking it at the order date, when the dry autumn and winter have left every station's state the same under any efficiency: the stations' readings through the 2026 season, set by set, put that share above Table 4 at every drip, micro-sprinkler and sprinkler station, and carried through every field's own record it leaves the late pistachio, citrus, walnut and alfalfa blocks wetter: the golden is 212,000 acre-feet.",
   "architecture": 1,
-  "loops": 1,
+  "loops": 2,
   "precut": {
     "exit": 0,
-    "date": "2026-10-14",
-    "checks": "49 checks, 0 FAIL, 0 WARN (35 fork rows)"
+    "date": "2026-10-15",
+    "checks": "49 checks, 0 FAIL, 0 WARN (47 fork rows)"
   },
   "three_rules": {
-    "domain": "pass (a season's headgate irrigation requirement read at 24 in 30 replayed weather years through a daily root-zone balance, every replay from each field's root zone as it stands at the end of 31 January, which irrigation hydrology rebuilds by tracking the balance on the season's applied water)",
-    "layers": "pass (Layer 1: two weather stations spliced, a re-mapped register, revised and withdrawn requests, cancelled sets, turnout ids three ways, and on the ask paths meter swaps among work orders, rollovers, magnetic meters in hundreds of cubic feet, a spur re-fed in mid-season, logger outages with the estimates in the operations log, flashboards in shorthand remarks; Layer 2: the estimator of the filed start state, the season run on the record's water against the last set taken as a refill)",
-    "decisive_step": "analytical (each field's 2026 season run through the balance on the water its delivered sets put in, from the wet winter's field capacity; the default path, the last set as a refill, files 209,000; asserted R1 to R3c in checks.py on the clean truth)"
+    "domain": "pass (a season's headgate irrigation requirement read at 24 in 30 replayed weather years through a daily root-zone balance, every replay from each field's root zone at the end of 31 January, which irrigation hydrology estimates by calibrating the balance's application efficiency on soil moisture monitoring over the season and carrying it through each field's own record)",
+    "layers": "pass (Layer 1: two weather stations spliced, a re-mapped register, revised and withdrawn requests, cancelled sets, turnout ids three ways, a soil moisture export keyed by parcel number, stamped in UTC, with two logger gaps, and on the ask paths meter swaps among work orders, rollovers, magnetic meters in hundreds of cubic feet, a spur re-fed in mid-season, logger outages with the estimates in the operations log, flashboards in shorthand remarks; Layer 2: the estimator of the share of the record's water that reached the root zones, fitted on the stations' season against Table 4 checked at the order date)",
+    "decisive_step": "analytical (the application efficiency fitted by least squares on each drip, micro-sprinkler and sprinkler station's 2026 readings, averaged by method and carried through every field's 2026 record; the default path, Table 4 checked against the stations' blind 31 January readings, files 215,000; asserted R1 to R3c in checks.py on the clean truth)"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-14 on the final round-2 rebuild (--asof 2027-02-01), no LEAK, sweep 11 clean: the same lines as stage 3, answered in the design note's build record",
-    "reader": "2026-10-14 round 2: no figure handed over; Q1 quoted WOP 2.3 and 2.4 (the WHAT); Q2 to Q4 none; Q6 leaned to rule application without computing, closed as SF35 (asserted on the clean truth); realism notes on the operations log left as they are (the design note's build record); appended to task138/leak_check_report.md",
-    "previous": "2026-10-12 on the stage 3 pack: Q1 to Q4 none, REVIEW lines harmless, every reading raised closed in the fork table (SF8, SF16, SF25 to SF29); targeted re-read of the four changed files (dictionary, operations log, meter shop log, request remarks): Q1 to Q4 none, readings closed by SF26, SF27 and the filed loss share, realism notes left as minor"
+    "leak_py": "REVIEW 2026-10-15 on the final round-3 rebuild (--asof 2027-02-01), no LEAK, sweep 11 clean: the same lines as round 2, answered in the design note's build record",
+    "reader": "",
+    "previous": {
+      "round 2": {
+        "leak_py": "REVIEW 2026-10-14 on the final round-2 rebuild (--asof 2027-02-01), no LEAK, sweep 11 clean: the same lines as stage 3, answered in the design note's build record",
+        "reader": "2026-10-14 round 2: no figure handed over; Q1 quoted WOP 2.3 and 2.4 (the WHAT); Q2 to Q4 none; Q6 leaned to rule application without computing, closed as SF35 (asserted on the clean truth); realism notes on the operations log left as they are (the design note's build record); appended to task138/leak_check_report.md"
+      },
+      "round 1": "2026-10-12 on the stage 3 pack: Q1 to Q4 none, REVIEW lines harmless, every reading raised closed in the fork table (SF8, SF16, SF25 to SF29); targeted re-read of the four changed files (dictionary, operations log, meter shop log, request remarks): Q1 to Q4 none, readings closed by SF26, SF27 and the filed loss share, realism notes left as minor"
+    }
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-14 on the round-2 card (repeat.gate_g and repeat.decision against task137, answered at the draw; NOTEs test.same_puzzle_older against task126 and task82 and driver.near 0.43 against the slot's round 1, differentiated), no BLOCK",
-    "nearest": "this slot's round 1 0.43; task117 and task45 0.05",
-    "surface": "exit 0, two pairs promoted on card axes alone (task126 0.080 and task82 0.077: gap population, G3, quantity_figure), no surface overlap, each differentiated on the card; left for the main session's adjudication or the author's /clone-check; no persona outside the card",
-    "validate": "169 cards, 0 invalid",
-    "card": "edited in place at round 2 with the round 1 identity in lineage; no new filing stamp (the draw dates from 2026-10-12)",
+    "heart": "WARN 2026-10-15 on the round-3 card (repeat.gate_g and repeat.decision against task137, people.first and people.last against task457, answered at the draw; NOTEs test.same_puzzle_older against task126 and task82, driver.near 0.23 and 0.21 against the slot's rounds 2 and 1, differentiated), no BLOCK",
+    "nearest": "this slot's round 2 0.23 and round 1 0.21; task500 0.06; stump text task134 0.05",
+    "surface": "exit 0, the same two pairs as round 2 promoted on card axes alone (task126 0.080 and task82 0.077: gap population, G3, quantity_figure), no surface overlap, each differentiated on the card; no persona outside the card",
+    "validate": "184 cards, 0 invalid",
+    "card": "edited in place at round 3 with the round 2 identity in lineage; no new filing stamp (the draw dates from 2026-10-12)",
     "previous": {
-      "heart": "WARN 2026-10-12 at the final rebuild (strategy_risk, repeat.gate_g and repeat.decision against task137, answered at the draw); no BLOCK",
-      "nearest": "0.08 task107 (stump); surface promotes two pairs on card axes alone: task137 back to back (gap time and quantity_figure; main-session adjudication: a card-axis echo with a different domain, world, pattern and driver, surface 0.094, not a clone) and task446 (retired); both differentiated on the card"
+      "round 2": {
+        "heart": "WARN 2026-10-14 on the round-2 card (repeat.gate_g and repeat.decision against task137, answered at the draw; NOTEs test.same_puzzle_older against task126 and task82 and driver.near 0.43 against the slot's round 1, differentiated), no BLOCK",
+        "nearest": "this slot's round 1 0.43; task117 and task45 0.05",
+        "surface": "exit 0, two pairs promoted on card axes alone (task126 0.080 and task82 0.077: gap population, G3, quantity_figure), no surface overlap, each differentiated on the card; left for the main session's adjudication or the author's /clone-check; no persona outside the card",
+        "validate": "169 cards, 0 invalid",
+        "card": "edited in place at round 2 with the round 1 identity in lineage; no new filing stamp (the draw dates from 2026-10-12)"
+      },
+      "round 1": {
+        "heart": "WARN 2026-10-12 at the final rebuild (strategy_risk, repeat.gate_g and repeat.decision against task137, answered at the draw); no BLOCK",
+        "nearest": "0.08 task107 (stump); surface promotes two pairs on card axes alone: task137 back to back (gap time and quantity_figure; main-session adjudication: a card-axis echo with a different domain, world, pattern and driver, surface 0.094, not a clone) and task446 (retired); both differentiated on the card"
+      }
     }
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE, no fix; every graded figure reproduced (2012 at 214,499; order 215,000); Gate H analytical; stump power moderate; residual (WOP never says to credit past deliveries) closed as SF34 by the estimand and the data, no WOP sentence added",
-    "report": "task138/determinism_check_report_round2.md",
-    "previous": "round 1: DETERMINISTIC 2026-10-12: APPROVE, no fix; every graded figure reproduced (the 24th replay 2012 at 202,658 acre-feet, the order 202,700) (task138/determinism_check_report.md); superseded by round 2"
+    "verdict": "",
+    "disposition": "",
+    "report": "",
+    "previous": {
+      "round 2": {
+        "verdict": "DETERMINISTIC",
+        "disposition": "APPROVE, no fix; every graded figure reproduced (2012 at 214,499; order 215,000); Gate H analytical; stump power moderate; residual (WOP never says to credit past deliveries) closed as SF34 by the estimand and the data, no WOP sentence added",
+        "report": "task138/determinism_check_report_round2.md"
+      },
+      "round 1": "round 1: DETERMINISTIC 2026-10-12: APPROVE, no fix; every graded figure reproduced (the 24th replay 2012 at 202,658 acre-feet, the order 202,700) (task138/determinism_check_report.md); superseded by round 2"
+    }
   },
   "returned": [
     {
@@ -51,9 +73,18 @@
       "paused_commit": "PAUSED (task138): round 2 redesign, stage 3 green, waiting on the reader and judge",
       "commit": "RESHIPPED (task138): round 2, order 215,000 acre-feet from the Tolan Valley Project for the 2027 season",
       "reshipped": "2026-10-14"
+    },
+    {
+      "date": "2026-10-15",
+      "portal": "rule 3 audit: FAIL (rule application): the round 2 start state was the filed daily water balance (WOP 3.1 to 3.3 with WOP 3.5's Table 4 efficiency) executed on the 2026 delivery record",
+      "repair": "design",
+      "round": 3,
+      "paused_commit": "PAUSED (task138): rule 3 rework, stage 3 green, waiting on the reader and judge",
+      "commit": "",
+      "reshipped": ""
     }
   ],
-  "resume": "",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": "2026-10-14",
   "portal": null,
@@ -62,16 +93,16 @@
   "portal_status_date": "",
   "wave": "wave 2 (new), seed FC09",
   "build": {
-    "date": "2026-10-14",
-    "checks": "213,900 assertions, 0 failed (three-rules block R1 to R3c on the clean truth, ladder floors, SF1 to SF35, the asks with every stop and edge, the separation line, input gates, realism sweep, closure axes 14 to 16)",
-    "verify": "green from the bundle alone: order 215,000 set by 2012 (24th 214,499.4), default 209,000, closest approach 5.9e-06 in, the winter-full fact, 36 lateral figures and the total row",
+    "date": "2026-10-15",
+    "checks": "214,111 assertions, 0 failed (three-rules block R1 to R3c on the clean truth, the ladder with every floor, the stations' fit, misfit and blind 31 January state, the fit's variants and one standard error, SF1 to SF47, the asks with every stop and edge and each lateral figure equal to round 2's, the separation line, input gates, realism sweep)",
+    "verify": "green from the bundle alone: its own station fit (drip 0.9353, micro-sprinkler 0.8822, sprinkler 0.7811), order 212,000 set by 2012 (24th 211,562.0), default 215,000 set by 2012, closest approach 5.9e-06 in, the 36 lateral figures",
     "byte_identical": true,
-    "input_gates": "18 files, 5 formats, the orders file 107,067 rows, 3 distractors (deletion moves nothing)",
-    "figures_check": "exit 0 (60 figures)",
-    "house_fixes": "pass, recorded in the design note's build record (H2 counts asserted in checks.py, H6 the record run's start, H18 the asks' motive)",
-    "answer": "215,000 acre-feet (default path 209,000; near rivals 210,000 to 214,000; audit routes 196,000 to 199,000)"
+    "input_gates": "19 files, 5 formats, the orders file 107,067 rows, 3 distractors (deletion moves nothing)",
+    "figures_check": "exit 0 (59 figures)",
+    "house_fixes": "pass, recorded in the design note's build record (H1 container clean, H2 the note's figures printed by checks.py, H3 the stations' blindness worded as asserted, H4 zip members equal target/, H11 one write-up)",
+    "answer": "212,000 acre-feet (default path, Table 4 checked at 31 January, 215,000; the stations' January readings used directly 215,000 to 218,000, a fitted model on the obvious covariates 216,000; the record's other efficiencies 209,000 and 210,000; audit routes 196,000 to 199,000)"
   },
-  "target_zip": "18 members, 2,477,070 bytes, sha256 160a86191c3417df, each byte-identical to target/ on the final rebuild",
+  "target_zip": "19 members, 2,541,365 bytes, sha256 50c887dca427e7ad, each byte-identical to target/ on the final rebuild",
   "rounds": [
     {
       "round": 2,
@@ -81,21 +112,45 @@
       "answer": "215,000 acre-feet; the 24th smallest replay (2012) 214,499.45, 499.45 above 214,000",
       "rivals": "default (last set as a refill) 209,000; no efficiency 210,000; first set as a refill 212,000; cancelled sets as water 214,000; no cap 216,000; flat addition 216,000; full start 196,000; full at the canal's close 197,000; own winter 199,000; replay rule through 2026 199,000",
       "pair_ceiling": 38.2
+    },
+    {
+      "round": 3,
+      "date": "2026-10-15",
+      "trigger": "rule 3 audit FAIL (rule application): the round 2 start state was the procedure's daily balance executed on the 2026 delivery record at Table 4's efficiency, which the table defined as the share of delivered water the root zone receives, so the filed sentences executed word for word gave the golden",
+      "redesign": "Table 4 scoped to WOP 3.5's replays as their design efficiency; no filed sentence gives the share of the record's water that reached a root zone; the District's soil moisture network ships (eleven stations, daily profile water December 2025 to January 2027, keyed by parcel number, stamped UTC, two logger gaps); the record's water reached the root zones at about 1.04 times Table 4 on drip, micro-sprinkler and sprinkler fields (deficit sets lose little below the root zone), border at Table 4; the stations' season identifies it set by set, while their 31 January readings are the same under any efficiency (the dry autumn took every held station to the bottom of its root zone; a border set runs past field capacity); the growers still size sets on Table 4, so the 2026 record and every ask file are round 2's (the operations log's outage entries reworded, every estimate kept); grower accounts redrawn in the district's idiom",
+      "answer": "212,000 acre-feet; the 24th smallest replay (2012) 211,561.96, 561.96 above 211,000; every defensible variant of the fit within 256.7 and of the record run within 469.7",
+      "rivals": "default (Table 4 checked at 31 January) 215,000; the stations' 31 January readings on their fields 215,000, as an offset by method 215,000, as a share of total available water 218,000, regressed on the obvious covariates 216,000; every held field at total available water 218,000; the efficiency on the stations' crops only 214,000; flat addition 214,000; no cap 213,000; first set as a refill 211,000; cancelled sets as water 211,000; a crop coefficient factor 211,000; all of the record's water 210,000; last set as a refill 209,000; the stations' efficiency in the replays too 206,000; replay rule through 2026 199,000; own winter 199,000; full at the canal's close 197,000; full start 196,000",
+      "pair_ceiling": 38.2
     }
   ],
   "final_gates": {
-    "date": "2026-10-14",
-    "checks": "213,900 passed",
+    "date": "2026-10-15",
+    "stage": "3 (round 3)",
+    "checks": "214,111 passed",
     "verify": "green",
     "byte_identical": true,
-    "target_zip_unchanged_from_stage3": true,
-    "figures_check": "exit 0 (60 figures)",
-    "precut": "exit 0 (49 checks, 0 FAIL, 0 WARN, 35 fork rows)",
-    "voice_check": "exit 0",
-    "leak_py": "REVIEW, no LEAK",
-    "guard_surface": "exit 0 (task126 and task82 on card axes alone, as at stage 3)",
-    "guard_heart": "WARN (repeat.decision against task137; NOTEs differentiated), no BLOCK",
-    "guard_validate": "171 cards, 0 invalid",
-    "freeze": "check --mode determinism PASS"
+    "figures_check": "exit 0 (59 figures)",
+    "precut": "exit 0 (49 checks, 0 FAIL, 0 WARN, 47 fork rows)",
+    "voice_check": "exit 0 (690 characters, the prompt unchanged)",
+    "leak_py": "REVIEW, no LEAK, sweep 11 clean",
+    "guard_surface": "exit 0 (task126 and task82 on card axes alone, as at round 2)",
+    "guard_heart": "WARN (repeat.gate_g, repeat.decision against task137; people.first, people.last against task457; NOTEs differentiated), no BLOCK",
+    "guard_validate": "184 cards, 0 invalid",
+    "container": "scrub audit clean on target/ and golden/",
+    "previous": {
+      "date": "2026-10-14",
+      "checks": "213,900 passed",
+      "verify": "green",
+      "byte_identical": true,
+      "target_zip_unchanged_from_stage3": true,
+      "figures_check": "exit 0 (60 figures)",
+      "precut": "exit 0 (49 checks, 0 FAIL, 0 WARN, 35 fork rows)",
+      "voice_check": "exit 0",
+      "leak_py": "REVIEW, no LEAK",
+      "guard_surface": "exit 0 (task126 and task82 on card axes alone, as at stage 3)",
+      "guard_heart": "WARN (repeat.decision against task137; NOTEs differentiated), no BLOCK",
+      "guard_validate": "171 cards, 0 invalid",
+      "freeze": "check --mode determinism PASS"
+    }
   }
 }

@@ -16,7 +16,7 @@
     "TVWA_2027_initial_allocation_notice.pdf"
   ],
   "input_gates": {
-    "files": 18,
+    "files": 19,
     "formats": [
       "csv",
       "docx",
@@ -42,7 +42,7 @@
     {
       "path": "KBID_WOP_tables_2027_order.xlsx",
       "format": "xlsx",
-      "bytes": 11158,
+      "bytes": 11151,
       "rows": null,
       "source": "Constructed: The Water Order Procedure's Tables 1 to 5 for the 2027 order (crop coefficients, crops, soil units, application efficiency, loss allowances)",
       "date": "2027-02-01",
@@ -60,7 +60,7 @@
     {
       "path": "README_order_working_files.txt",
       "format": "txt",
-      "bytes": 2335,
+      "bytes": 2568,
       "rows": null,
       "source": "Constructed: Working-files note: each file, what it is and where it came from",
       "date": "2027-02-01",
@@ -78,7 +78,7 @@
     {
       "path": "kbid_canal_operations_log_2026.docx",
       "format": "docx",
-      "bytes": 38990,
+      "bytes": 39330,
       "rows": null,
       "source": "Constructed: Canal operations log, 2026 season",
       "date": "2027-02-01",
@@ -105,7 +105,7 @@
     {
       "path": "kbid_data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 8219,
+      "bytes": 8609,
       "rows": null,
       "source": "Constructed: Data dictionary for the order working files",
       "date": "2027-02-01",
@@ -166,6 +166,15 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
+      "path": "kbid_soil_moisture_network_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 77615,
+      "rows": null,
+      "source": "Constructed: The District's soil moisture network (Water Conservation's irrigation scheduling program): the eleven stations' sites and their daily profile water from 31 December 2025 to 31 January 2027, platform export",
+      "date": "2027-02-01",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
       "path": "kbid_station_daily_2014-2027.csv",
       "format": "csv",
       "bytes": 210540,
@@ -186,7 +195,7 @@
     {
       "path": "kbid_water_requests_2027.xlsx",
       "format": "xlsx",
-      "bytes": 53820,
+      "bytes": 53961,
       "rows": null,
       "source": "Constructed: Growers' 2027 water requests, every version, from the District's request log",
       "date": "2027-02-01",

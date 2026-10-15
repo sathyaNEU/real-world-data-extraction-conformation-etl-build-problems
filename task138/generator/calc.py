@@ -40,6 +40,8 @@ class Model:
         self.cancelled_last = cancelled_last
         # the 2026 record: (field id, set start, set end, cfs, status) for every 2026 order on a 2027 field
         self.record = record or []
+        self.index = {f: i for i, f in enumerate(self.ids)}
+        self.stations = []
 
     # -------------------------------------------------------------------------------------------- the daily balance
     def day(self, D, d, cap=True):
@@ -120,20 +122,20 @@ class Model:
         return out
 
     def hindcast(self, water, start=K.WINTER_FULL + dt.timedelta(days=1), D0=None, use_ea=True, acres=None,
-                 order="net", cap=True, upto=None):
+                 order="net", cap=True, upto=None, ea=None, kcf=1.0):
         """Each field's root zone run day by day from `start` (field capacity unless D0) to the end of 31 January 2027
         through the procedure's daily balance on the record's weather, each day's irrigation water reaching the root
-        zone at the field's application efficiency (Table 4). order: net (the day's ET, rain and irrigation together,
-        then the floor and cap), after (the irrigation after the day's floor and cap) or before (the irrigation before
-        the day's ET and rain)."""
+        zone at the share `ea` (by field; Table 4 when not given, all of it when use_ea is False). order: net (the
+        day's ET, rain and irrigation together, then the floor and cap), after (the irrigation after the day's floor and
+        cap) or before (the irrigation before the day's ET and rain). kcf scales the crop coefficients."""
         D = np.zeros(self.n) if D0 is None else D0.copy()
         ac = self.acres if acres is None else acres
-        eff = self.ea if use_ea else 1.0
+        eff = (self.ea if ea is None else ea) if use_ea else 1.0
         upto = upto or K.WEATHER_END
         for d in K.daterange(start, upto):
             e, r = self.wx[d]
             net = water[d] * 12.0 / ac * eff if d in water else 0.0
-            et = self.kc[:, d.month - 1] * e
+            et = kcf * self.kc[:, d.month - 1] * e
             if order == "net":
                 D = np.maximum(D + et - r - net, 0.0)
             elif order == "after":
@@ -146,18 +148,207 @@ class Model:
             D = np.minimum(D, self.taw) if cap else D
         return D
 
+    # -------------------------------------------------------------------------------------------- the stations
+    def station_path(self, st, ea_value, water=None, kcf=1.0):
+        """The record run for one station's field at one efficiency: {date: depletion at the end of the day} from the
+        end of 28 January 2026 (field capacity at the end of 27 January) to the end of 31 January 2027."""
+        water = water if water is not None else self.water26()
+        i = self.index[st["field"]]
+        kc, taw, ac = self.kc[i], self.taw[i], self.acres[i]
+        D, out = 0.0, {}
+        for d in K.daterange(K.WINTER_FULL + dt.timedelta(days=1), K.WEATHER_END):
+            e, r = self.wx[d]
+            w = water[d][i] * 12.0 / ac * ea_value if d in water else 0.0
+            D = min(taw, max(0.0, D + kcf * kc[d.month - 1] * e - r - w))
+            out[d] = D
+        return out
+
+    def station_sse(self, st, ea_value, days=None, shift=0, kcf=1.0):
+        """Squared misfit of the record run at ea_value against the station's readings (full point less profile water,
+        each reading the end of the day before its local midnight); shift compares a reading with the run that many
+        days later (a reading's UTC date taken as its day: shift 1)."""
+        path = self.station_path(st, ea_value, kcf=kcf)
+        tot = 0.0
+        for d, v in st["reads"].items():
+            dd = d + dt.timedelta(days=shift)
+            if dd not in path or (days and not (days[0] <= d <= days[1])):
+                continue
+            tot += (st["full"] - v - path[dd]) ** 2
+        return tot
+
+    def station_sse_grid(self, st, grid, days=None, shift=0, kcf=1.0):
+        """station_sse at every efficiency in grid at once (the run vectorised over the efficiencies)."""
+        water = self.water26()
+        i = self.index[st["field"]]
+        kc, taw, ac = self.kc[i], self.taw[i], self.acres[i]
+        D = np.zeros(len(grid))
+        path = {}
+        for d in K.daterange(K.WINTER_FULL + dt.timedelta(days=1), K.WEATHER_END):
+            e, r = self.wx[d]
+            w = water[d][i] * 12.0 / ac * grid if d in water else 0.0
+            D = np.minimum(taw, np.maximum(0.0, D + kcf * kc[d.month - 1] * e - r - w))
+            path[d] = D
+        tot = np.zeros(len(grid))
+        for d, v in st["reads"].items():
+            dd = d + dt.timedelta(days=shift)
+            if dd not in path or (days and not (days[0] <= d <= days[1])):
+                continue
+            tot += (st["full"] - v - path[dd]) ** 2
+        return tot
+
+    def calibrate_station(self, st, lo=0.55, hi=1.0, **kw):
+        """The efficiency that brings the record run closest to the station's readings (least squares): the best of a
+        grid at a ten-thousandth, then golden section to a millionth between its neighbours."""
+        grid = np.round(np.arange(lo, hi + 1e-12, 0.0001), 4)
+        k = int(np.argmin(self.station_sse_grid(st, grid, **kw)))
+        a, b = grid[max(k - 1, 0)], grid[min(k + 1, len(grid) - 1)]
+        g = (5 ** 0.5 - 1) / 2
+        c, d_ = b - g * (b - a), a + g * (b - a)
+        fc, fd = self.station_sse(st, c, **kw), self.station_sse(st, d_, **kw)
+        while b - a > 1e-6:
+            if fc <= fd:
+                b, d_, fd = d_, c, fc
+                c = b - g * (b - a)
+                fc = self.station_sse(st, c, **kw)
+            else:
+                a, c, fc = c, d_, fd
+                d_ = a + g * (b - a)
+                fd = self.station_sse(st, d_, **kw)
+        return float((a + b) / 2)
+
+    def station_efficiency(self, how="mean", **kw):
+        """Each station's efficiency and the efficiency by method (drip, micro-sprinkler and sprinkler stations; a
+        border field's efficiency stays Table 4's, its sets running past field capacity)."""
+        per = {st["station"]: self.calibrate_station(st, **kw) for st in self.stations if st["method"] != "Border"}
+        by = {}
+        for m in ("Drip", "Micro-sprinkler", "Sprinkler"):
+            v = [per[st["station"]] for st in self.stations if st["method"] == m]
+            by[m] = float(np.median(v)) if how == "median" else float(np.mean(v))
+        return per, by
+
+    def ea_from(self, by, border=None):
+        return np.array([by.get(f["method"], self.T["ea"][f["method"]]) if f["method"] != "Border" else
+                         (border if border is not None else self.T["ea"]["Border"]) for f in self.fields])
+
+    def water26(self):
+        if not hasattr(self, "_water26"):
+            self._water26 = self.set_water()
+        return self._water26
+
     def start_golden(self):
         """The golden start: each field's root zone as it stands at the end of 31 January 2027, its 2026 season run
-        through the balance on the water its delivered sets put in, from field capacity at the end of 27 January 2026,
-        when the 2025-26 winter's rains had every root zone full."""
-        D = self.hindcast(self.set_water())
+        through the balance from field capacity at the end of 27 January 2026 (the 2025-26 winter's rains had every
+        root zone full) on the water its delivered sets put in, at the share of that water that reaches the root zone
+        as the soil moisture stations' 2026 readings show it for the field's irrigation method."""
+        if not hasattr(self, "ea_by"):
+            self.ea_station, self.ea_by = self.station_efficiency()
+        self.ea_record = self.ea_from(self.ea_by)
+        D = self.hindcast(self.water26(), ea=self.ea_record)
         self.D_golden = D
+        return lambda y: D
+
+    def start_t4(self):
+        """The default path: the 2026 record run at the Table 4 efficiency (WOP 3.5's efficiency read across to the
+        record)."""
+        D = self.hindcast(self.water26())
+        self.D_t4 = D
+        return lambda y: D
+
+    def station_jan(self):
+        """{field index: the station's depletion at the end of 31 January 2027 (full point less profile water)}."""
+        out = {}
+        for st in self.stations:
+            out[self.index[st["field"]]] = st["full"] - st["reads"][K.WEATHER_END]
+        return out
+
+    def start_p1(self):
+        """The stations' 31 January readings on their own fields, the Table 4 run on every other field."""
+        D = self.hindcast(self.water26()).copy()
+        for i, v in self.station_jan().items():
+            D[i] = v
+        return lambda y: D
+
+    def start_offset(self):
+        """The Table 4 run shifted, method by method, by the stations' mean 31 January offset from it."""
+        D4 = self.hindcast(self.water26())
+        jan = self.station_jan()
+        D = D4.copy()
+        meth = np.array([f["method"] for f in self.fields])
+        for m in K.METHODS:
+            ix = [i for i in jan if meth[i] == m]
+            off = float(np.mean([jan[i] - D4[i] for i in ix]))
+            D[meth == m] = np.clip(D4[meth == m] + off, 0.0, self.taw[meth == m])
+        for i, v in jan.items():
+            D[i] = v
+        return lambda y: D
+
+    def start_station_share(self):
+        """The stations' 31 January depletion as a share of total available water, method by method, on every field."""
+        jan = self.station_jan()
+        meth = np.array([f["method"] for f in self.fields])
+        D = np.zeros(self.n)
+        for m in K.METHODS:
+            ix = [i for i in jan if meth[i] == m]
+            share = float(np.mean([jan[i] / self.taw[i] for i in ix]))
+            D[meth == m] = np.minimum(share, 1.0) * self.taw[meth == m]
+        for i, v in jan.items():
+            D[i] = v
+        return lambda y: D
+
+    def start_held_taw(self):
+        """Every drip, micro-sprinkler and sprinkler field at its total available water, every border field from its
+        last set taken as a refill."""
+        D3 = self.carry([self.last_delivery[i] for i in self.ids])
+        meth = np.array([f["method"] for f in self.fields])
+        D = np.where(meth != "Border", self.taw, D3)
+        return lambda y: D
+
+    def start_partial(self):
+        """The stations' efficiency on the stations' crops (almonds, wine grapes, pasture, alfalfa), Table 4 on the
+        others."""
+        self.start_golden()
+        crops = {st["crop"] for st in self.stations}
+        ea = np.array([self.ea_record[i] if f["crop"] in crops else self.ea[i] for i, f in enumerate(self.fields)])
+        D = self.hindcast(self.water26(), ea=ea)
+        return lambda y: D
+
+    def start_regression(self):
+        """A fitted model on the obvious covariates: the stations' 31 January depletion as a share of total available
+        water regressed (least squares) on the day of the year of each field's last 2026 set, its crop coefficient in
+        January and whether it is a drip, micro-sprinkler or sprinkler field, carried to every field."""
+        jan = self.station_jan()
+        ix = list(jan)
+        last = np.array([self.last_delivery[i].timetuple().tm_yday for i in self.ids], dtype=float)
+        held = np.array([1.0 if f["method"] != "Border" else 0.0 for f in self.fields])
+        X = np.array([np.ones(self.n), last, self.kc[:, 0], held]).T
+        y = np.array([jan[i] / self.taw[i] for i in ix])
+        beta = np.linalg.lstsq(X[ix], y, rcond=None)[0]
+        D = np.clip(X @ beta, 0.0, 1.0) * self.taw
+        for i, v in jan.items():
+            D[i] = v
+        return lambda y: D
+
+    def kc_factor(self):
+        """The stations' 2026 readings fitted by a factor on the crop coefficients at the Table 4 efficiency."""
+        best = None
+        for k in range(800, 1101):
+            kf = k / 1000.0
+            sse = sum(self.station_sse(st, self.T["ea"][st["method"]], kcf=kf) for st in self.stations
+                      if st["method"] != "Border")
+            if best is None or sse < best[0]:
+                best = (sse, kf)
+        return best[1], best[0]
+
+    def start_kc_fit(self):
+        kf, _ = self.kc_factor()
+        D = self.hindcast(self.water26(), kcf=kf)
         return lambda y: D
 
     def start_first_set(self):
         """R3c: the 2026 season run on the record from each field's first delivered set, taken as returning it to field
-        capacity."""
-        water = self.set_water()
+        capacity (at the stations' efficiency)."""
+        self.start_golden()
+        water = self.water26()
         first = {}
         for fid, a, b, cfs, status in self.record:
             if status == "Delivered":
@@ -166,17 +357,18 @@ class Model:
         D = np.zeros(self.n)
         for d in K.daterange(K.WINTER_FULL + dt.timedelta(days=1), K.WEATHER_END):
             e, r = self.wx[d]
-            net = water[d] * 12.0 / self.acres * self.ea if d in water else 0.0
+            net = water[d] * 12.0 / self.acres * self.ea_record if d in water else 0.0
             nd = np.minimum(np.maximum(D + self.kc[:, d.month - 1] * e - r - net, 0.0), self.taw)
             D = np.where(d.toordinal() > a_ord, nd, np.where(d.toordinal() == a_ord, 0.0, nd))
         return lambda y: D
 
     def start_gross(self):
-        D = self.hindcast(self.set_water(), use_ea=False)
+        D = self.hindcast(self.water26(), use_ea=False)
         return lambda y: D
 
     def start_cancelled(self):
-        D = self.hindcast(self.set_water(statuses=("Delivered", "Cancelled")))
+        self.start_golden()
+        D = self.hindcast(self.set_water(statuses=("Delivered", "Cancelled")), ea=self.ea_record)
         return lambda y: D
 
     def start_canal_close(self):
@@ -184,7 +376,8 @@ class Model:
         return lambda y: D
 
     def start_nocap(self):
-        D = self.hindcast(self.set_water(), cap=False)
+        self.start_golden()
+        D = self.hindcast(self.water26(), cap=False, ea=self.ea_record)
         return lambda y: D
 
     def _model_season_then_winter(self, year, D):
@@ -360,7 +553,39 @@ def load(target):
     M.s39, M.yard = s39, yard
     M.requests = reqs
     M.register = reg
+    M.stations = load_stations(target, reg, {f["id"]: f for f in fields})
     return M
+
+
+def load_stations(target, register, fields):
+    """The soil moisture network's sites, keyed to the register's fields by APN, and each station's readings by the
+    day each ends (a reading at local midnight ends the day before; the platform stamps UTC)."""
+    import openpyxl
+    from zoneinfo import ZoneInfo
+    path = os.path.join(target, K.STATIONS)
+    if not os.path.exists(path):
+        return []
+    wb = openpyxl.load_workbook(path, data_only=True)
+    rows = list(wb["Sites"].iter_rows(values_only=True))
+    hi = next(i for i, r in enumerate(rows) if r and r[0] == "Station")
+    head = list(rows[hi])
+    by_apn = {g["apn"].replace("-", ""): fid for fid, g in register.items()}
+    crop_code = {v: k for k, v in K.CROP_NAME.items()}
+    sites = {}
+    for r in rows[hi + 1:]:
+        if not r or r[0] is None:
+            continue
+        x = dict(zip(head, r))
+        fid = by_apn[str(x["APN"]).strip()]
+        sites[x["Station"]] = dict(station=x["Station"], field=fid, method=x["Irrigation"], crop=crop_code[x["Crop"]],
+                                   full=float(x["Full point (in)"]), depth=float(x["Profile to (in)"]), reads={})
+    local = ZoneInfo("America/Los_Angeles")
+    for r in wb["Daily"].iter_rows(min_row=2, values_only=True):
+        if not r or r[0] is None:
+            continue
+        t = dt.datetime.strptime(r[1], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc).astimezone(local)
+        sites[r[0]]["reads"][t.date() - dt.timedelta(days=1)] = float(r[2])
+    return [sites[k] for k in sorted(sites) if sites[k]["field"] in fields]
 
 
 # ---------------------------------------------------------------------------------------------------- the ladder
@@ -370,10 +595,23 @@ RUNGS = [("R0", "full on 1 February", "start_full"),
          ("R2", "the replay rule run through 2026, then the observed winter", "start_model_2026"),
          ("R2b", "full at the canal's close (31 October 2026), then the observed winter", "start_canal_close"),
          ("R3", "each field's last delivered 2026 set taken as a refill, then the observed winter", "start_last_set"),
-         ("R3c", "the 2026 record run from each field's first delivered set taken as a refill", "start_first_set"),
-         ("R4g", "the 2026 record run at each set's delivered water with no application efficiency", "start_gross"),
-         ("R2d", "the 2026 record run with cancelled sets counted as water", "start_cancelled"),
-         ("R4", "the 2026 record run at the water each delivered set put in (golden)", "start_golden"),
+         ("R4g", "the 2026 record run with all of each set's delivered water reaching the root zone", "start_gross"),
+         ("KC", "the stations' 2026 readings fitted by a crop coefficient factor at the Table 4 efficiency",
+          "start_kc_fit"),
+         ("R3c", "the record run at the stations' efficiency from each field's first set taken as a refill",
+          "start_first_set"),
+         ("R2d", "the record run at the stations' efficiency with cancelled sets counted as water", "start_cancelled"),
+         ("G", "the 2026 record run at the efficiency the stations' 2026 readings show (golden)", "start_golden"),
+         ("PT", "the stations' efficiency on the stations' crops, Table 4 on the rest", "start_partial"),
+         ("AB", "the Table 4 run shifted by the stations' 31 January offset, method by method", "start_offset"),
+         ("P1", "the stations' 31 January readings on their own fields, the Table 4 run elsewhere", "start_p1"),
+         ("T4", "the 2026 record run at the Table 4 efficiency, checked against the stations' January readings "
+                "(the default path)", "start_t4"),
+         ("MI", "the stations' 31 January share of total available water on every field of the method",
+          "start_station_share"),
+         ("RG", "the stations' 31 January share regressed on the last set's day, the January crop coefficient and the "
+                "method", "start_regression"),
+         ("HT", "every drip, micro-sprinkler and sprinkler field at its total available water", "start_held_taw"),
          ("O2", "the golden start with the root-zone cap dropped", "start_nocap")]
 
 
@@ -393,6 +631,13 @@ def ladder(M):
     o = order_from(req)
     out["O1"] = dict(label="the full-start replays plus each field's 31 January depletion as a flat addition",
                      reqs=req, mon=None, months=None, raw_months=None, **o)
+    # O3: the stations' efficiency carried into the replays' deliveries as well (WOP 3.5 files Table 4's)
+    M3 = Model(M.fields, M.wx, M.T, last_delivery=M.last_delivery, record=M.record)
+    M3.ea = M.ea_record.copy()
+    req = M3.thirty(lambda y: D)[0]
+    o = order_from(req)
+    out["O3"] = dict(label="the golden start with the stations' efficiency in the replays' deliveries too", reqs=req,
+                     mon=None, months=None, raw_months=None, **o)
     return out
 
 
@@ -488,17 +733,28 @@ def heading_estimates(target):
     import docx
     import re
     t = docx.Document(os.path.join(target, K.OPS_LOG)).tables[0]
+    months = {m.lower(): k for k, m in enumerate(["January", "February", "March", "April", "May", "June", "July",
+                                                  "August", "September", "October", "November", "December"], 1)}
+    abbr = {m[:3]: k for m, k in months.items()}
+    mon = r"(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|" \
+          r"Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
     out = {}
     for row in t.rows[1:]:
         c = [x.text for x in row.cells]
         day = dt.date.fromisoformat(c[0])
-        m = re.match(r"Lateral (\d) heading: .*estimates for the days without a total, acre-feet: (.*)\.$", c[2])
-        if not m:
+        text = c[2]
+        if "estimat" not in text.lower():
             continue
-        for part in m.group(2).split(", "):
-            dd, month, v = part.split(" ")
-            when = dt.datetime.strptime("%s %s %d" % (dd, month, day.year), "%d %B %Y").date()
-            out[("L" + m.group(1), when)] = float(v)
+        lat = re.search(r"\b(?:Lateral|Lat|L)\s?(\d)\b", text)
+        pairs = []
+        for a, b, v in re.findall(r"\b(\d{1,2}) %s (\d+\.\d)" % mon, text):
+            pairs.append((months.get(b.lower(), abbr.get(b.lower()[:3])), int(a), float(v)))
+        for b, a, v in re.findall(r"\b%s (\d{1,2}) (\d+\.\d)" % mon, text):
+            pairs.append((months.get(b.lower(), abbr.get(b.lower()[:3])), int(a), float(v)))
+        for m_, a, v in re.findall(r"\b(\d{1,2})/(\d{1,2}) (\d+\.\d)", text):
+            pairs.append((int(m_), int(a), float(v)))
+        for m_, a, v in pairs:
+            out[("L" + lat.group(1), dt.date(day.year, m_, a))] = v
     return out
 
 

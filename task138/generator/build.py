@@ -50,6 +50,7 @@ def build(out, quiet=False, W=None):
     DOC.write_ops_log(p(K.OPS_LOG), W)
     DOC.write_dictionary(p(K.DICTIONARY))
     DOC.write_notice(p(K.NOTICE))
+    DOC.write_stations(p(K.STATIONS), W)
     files = [
         (K.WOP_PDF, "The Water Order Procedure (Resolution 2019-07, revised December 2025)", "Board records"),
         (K.WOP_TABLES, "The procedure's Tables 1 to 5 for the 2027 order", "Board records, adopted 9 December 2025"),
@@ -70,6 +71,8 @@ def build(out, quiet=False, W=None):
          "Groundwater monitoring program"),
         (K.CROP_REPORT, "2026 crop survey by field", "Water Conservation, June and July 2026"),
         (K.NOTICE, "The Authority's 2027 initial allocation notice", "Tolan Valley Water Authority, 15 December 2026"),
+        (K.STATIONS, "Soil moisture network: the eleven stations' sites and daily profile water, December 2025 to "
+                     "January 2027", "Water Conservation, irrigation scheduling program platform export, 1 February 2027"),
         (K.DICTIONARY, "Field definitions for these files", "Water Resources"),
     ]
     DOC.write_readme(p(K.README), files)
@@ -85,6 +88,8 @@ def build(out, quiet=False, W=None):
                        "2027-02-01T15:30:12Z", excel=True)
     PP.normalize_ooxml(p(K.OPS_LOG), K.PEOPLE["watermaster"], K.PEOPLE["watermaster"], "2026-01-26T15:02:00Z",
                        "2027-01-25T22:14:36Z", title="Canal operations log 2026")
+    PP.normalize_ooxml(p(K.STATIONS), K.PEOPLE["conservation"], K.PEOPLE["conservation"], "2027-02-01T15:11:47Z",
+                       "2027-02-01T15:11:47Z", excel=True)
     PP.normalize_pdf(p(K.WOP_PDF), b"D:20251210083122-08'00'", b"D:20251210091405-08'00'")
     PP.normalize_pdf(p(K.NOTICE), b"D:20261215101530-08'00'", b"D:20261215102207-08'00'")
     stamp = EXPORT_STAMP.timestamp()

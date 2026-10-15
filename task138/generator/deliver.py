@@ -26,7 +26,7 @@ def share1(x):
 def compute(target):
     M = C.load(target)
     lad = C.ladder(M)
-    g = lad["R4"]
+    g = lad["G"]
     A = C.load_asks(target)
     deliv, share, inflow = C.ask_a(A)
     spill = C.ask_b(A)
@@ -48,10 +48,14 @@ def figures(c):
             "replays_covered": 24,
             "order_af": "{:,}".format(g["order"]),
             # the Water Order Procedure clauses the write-up's steps cite
-            "procedure_clauses": ["2.3", "2.4", "3.1", "3.3", "3.4", "3.5", "4.1", "6.1", "6.2"],
+            "procedure_clauses": ["2.3", "2.4", "3.1", "3.2", "3.3", "3.4", "3.5", "4.1", "6.1", "6.2"],
             "table": "4",
         },
-        "default_path": {"order_af": "{:,}".format(lad["R3"]["order"]), "setting_year": lad["R3"]["year"]},
+        "stations": {"held_stations": sum(1 for st in M.stations if st["method"] != "Border"),
+                     "stations": len(M.stations),
+                     "above_table4": all(v > M.T["ea"][next(st["method"] for st in M.stations if st["station"] == k)]
+                                         for k, v in M.ea_station.items())},
+        "default_path": {"order_af": "{:,}".format(lad["T4"]["order"]), "setting_year": lad["T4"]["year"]},
         "rungs": {k: {"order_af": "{:,}".format(v["order"]), "setting_year": v["year"]} for k, v in lad.items()},
         "ask_deliveries_af": {l: "{:,}".format(K.round_to(c["deliv"][l], 10)) for l in K.LATERALS},
         "ask_water_in_af": {l: "{:,}".format(K.round_to(c["inflow"][l], 10)) for l in K.LATERALS},
@@ -98,7 +102,8 @@ def write_book(path, c, figs):
     ws.column_dimensions["B"].width = 38
     r += 1
     ws.cell(row=r, column=1, value="Each replay starts every field from its root zone at the end of 31 January 2027, "
-                                    "from its 2026 water and the record's weather since (Notes).")
+                                    "from its 2026 water at the share the soil moisture stations show reached the root "
+                                    "zone, and the record's weather since (Notes).")
     ws.cell(row=r, column=1).font = Font(name="Calibri", italic=True, size=9, color="595959")
 
     ws2 = wb.create_sheet("Replays")
@@ -164,11 +169,19 @@ def write_book(path, c, figs):
         ("Fields", "Latest accepted 2027 request for each field: crop, method and acres from the request; turnout, "
                    "lateral and soil unit from the register as it stood on 1 February 2027 (WOP 6.2). Withdrawn "
                    "requests and superseded versions not run."),
-        ("Root zone at 31 January", "Each field run day by day through the WOP 3.1 balance from the end of 27 January "
-                                    "2026, when the winter's rains had every root zone at field capacity, to the end "
-                                    "of 31 January 2027: each delivered 2026 set in the irrigation orders at its "
-                                    "ordered flow for the hours it ran, times the Table 4 efficiency of the field's "
-                                    "method, on the record's weather. Cancelled orders carry no water."),
+        ("Root zone at 31 January", "Each field run day by day through the WOP 3.1 to 3.3 balance from the end of 27 "
+                                    "January 2026, when the winter's rains had every root zone at field capacity, to "
+                                    "the end of 31 January 2027 on the record's weather, each delivered 2026 set at its "
+                                    "ordered flow for the hours it ran, times the share of it that reached the root "
+                                    "zone. That share is the one the soil moisture network's 2026 readings give for "
+                                    "the field's method: each drip, micro-sprinkler and sprinkler station's season "
+                                    "fitted (least squares) by the share its own sets reached its root zone at, "
+                                    "averaged over the method's stations, above Table 4 at every station; border "
+                                    "fields at Table 4, their sets running past field capacity. Cancelled orders carry "
+                                    "no water."),
+        ("Replays", "Each replay from that root zone, with WOP 3.4 and 3.5 as filed: an irrigation at the allowable "
+                    "depletion returns the field to field capacity and delivers the depletion over the Table 4 "
+                    "efficiency."),
         ("Weather record", "Station 39 to 30 April 2014 and the yard station from 1 May 2014; a day the yard station "
                            "did not record takes station 39's values (WOP 6.1)."),
         ("Laterals 2026", "Deliveries from the riders' meter reads, a meter changed in the season chained through the "

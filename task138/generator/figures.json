@@ -1,22 +1,23 @@
 {
   "call": {
-    "order_af": "215,000"
+    "order_af": "212,000"
   },
   "steps": {
     "fields": 631,
     "acres": "40,309",
     "held_fields": 501,
     "setting_replay_between_af": [
-      "214,000",
-      "215,000"
+      "211,000",
+      "212,000"
     ],
     "setting_year": 2012,
     "replays_covered": 24,
-    "order_af": "215,000",
+    "order_af": "212,000",
     "procedure_clauses": [
       "2.3",
       "2.4",
       "3.1",
+      "3.2",
       "3.3",
       "3.4",
       "3.5",
@@ -26,8 +27,13 @@
     ],
     "table": "4"
   },
+  "stations": {
+    "held_stations": 9,
+    "stations": 11,
+    "above_table4": true
+  },
   "default_path": {
-    "order_af": "209,000",
+    "order_af": "215,000",
     "setting_year": 2012
   },
   "rungs": {
@@ -51,29 +57,65 @@
       "order_af": "209,000",
       "setting_year": 2012
     },
-    "R3c": {
-      "order_af": "212,000",
-      "setting_year": 2012
-    },
     "R4g": {
       "order_af": "210,000",
       "setting_year": 2012
     },
+    "KC": {
+      "order_af": "211,000",
+      "setting_year": 2012
+    },
+    "R3c": {
+      "order_af": "211,000",
+      "setting_year": 2012
+    },
     "R2d": {
+      "order_af": "211,000",
+      "setting_year": 2012
+    },
+    "G": {
+      "order_af": "212,000",
+      "setting_year": 2012
+    },
+    "PT": {
       "order_af": "214,000",
       "setting_year": 2012
     },
-    "R4": {
+    "AB": {
       "order_af": "215,000",
       "setting_year": 2012
     },
-    "O2": {
+    "P1": {
+      "order_af": "215,000",
+      "setting_year": 2012
+    },
+    "T4": {
+      "order_af": "215,000",
+      "setting_year": 2012
+    },
+    "MI": {
+      "order_af": "218,000",
+      "setting_year": 2012
+    },
+    "RG": {
       "order_af": "216,000",
       "setting_year": 2012
     },
+    "HT": {
+      "order_af": "218,000",
+      "setting_year": 2012
+    },
+    "O2": {
+      "order_af": "213,000",
+      "setting_year": 2012
+    },
     "O1": {
-      "order_af": "216,000",
+      "order_af": "214,000",
       "setting_year": 2003
+    },
+    "O3": {
+      "order_af": "206,000",
+      "setting_year": 2012
     }
   },
   "ask_deliveries_af": {
