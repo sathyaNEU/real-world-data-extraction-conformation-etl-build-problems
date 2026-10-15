@@ -1,0 +1,90 @@
+{
+  "task": "task461",
+  "architecture": "v1",
+  "drawn": "2026-10-15",
+  "slot_note": "seed ET18 (battery cycling threshold from day-ahead prices): the world, the decision and the quantity kept (a storage owner sets next year's minimum daily day-ahead spread for cycling a 4-hour battery under a 300-cycle warranty); the seed's clock trap is Layer 1 only, and the pitfall is re-found in the data: the node's own record is one short, atypical year",
+  "domain": "general-statistics-data-science",
+  "subdomain": "data-integration-record-linkage-entity-resolution",
+  "niche": "an independent storage owner's 2027 cycling threshold for a 100 MW / 400 MWh battery at a congested node: the node's daily day-ahead spread distribution, seen directly for only sixteen months since the node was created, integrated with the trading hub's eight-year record through their overlap",
+  "objective": "etl",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G13",
+    "G14",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the owner's asset manager for storage",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "hub_day_ahead_settlement_point_prices_2019_2026.csv",
+    "rows": 70128,
+    "entity": "one settlement point's day-ahead price for one delivery hour",
+    "grain": "settlement point x operating day x hour ending (prevailing time)",
+    "source": "synthetic (constructed in the layout of a wholesale market operator's day-ahead settlement point price archive)"
+  },
+  "forum": "executive_team",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "an unnamed country's wholesale power market (invented), one trading hub and the battery's own node",
+    "currency": "USD",
+    "org_type": "independent energy storage owner",
+    "invented_names": [
+      "Tallgrove Storage Partners",
+      "Redrock Draw Energy Storage",
+      "Midplains Power Market",
+      "Midplains North Hub"
+    ],
+    "people": [
+      "Stacey Garrett",
+      "Hailey Cooper"
+    ]
+  },
+  "deliverables": [
+    "redrock_draw_2027_cycling_threshold.xlsx",
+    "redrock_draw_daily_spreads_conformed.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "The decisive quantity is a low quantile of a distribution seen directly only over one short and unrepresentative period; the long record of a correlated auxiliary series, carried to the target through the proportional relationship their overlap shows, gives the distribution over the full range of conditions, while the short record alone, the auxiliary record alone or the auxiliary shifted by an additive offset each set the dial at a different value.",
+  "driver_concrete": "The battery cycles on days whose day-ahead spread at its own node clears the threshold, and the warranty allows 300 cycles a year: the threshold is the node's spread exceeded on 300 days of an ordinary year, which the node's sixteen months (one mild, windy year) cannot show; the hub's eight weather years, carried to the node through the proportional relationship the overlap shows between the node's and the hub's daily spreads, give it; not the node's 2026 alone, not the hub's record alone, not the hub plus the node's average price basis.",
+  "stump": "The default path sets the threshold from the node's own 2026 day-ahead spreads, the battery's own price record, and picks a setting too low for an ordinary year; the hub's eight years alone pick lower still and the hub plus the node's average additive basis picks too high; carrying the hub's eight weather years to the node through the proportional relationship their overlap shows picks the golden setting.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file correctly and applies every filed rule sets the threshold from the battery's own node's 2026 day-ahead spreads and picks the setting that would have cycled it 300 times in 2026; one who wants more weather uses the hub's eight years, alone or with the node's average price basis added. None picks the golden setting.",
+  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, the node's daily-spread distribution over the full weather record built by combining its short direct record with the hub's long one through their overlap; replacing it with a summary of either source alone (the node's one year, the hub's eight) or an additive basis changes the setting picked.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task229": "task229 v2 fitted one source's own error rate against the days since its last count (a measurement-error model inside one record); task461 carries a long auxiliary record to a short target record through their overlap to read a low quantile over the full range of weather: no shared quantity, evidence or move.",
+    "task501": "task501 v4 weighted a pooled contact matrix's two regimes to the season it will run in (an eigenvalue of a mixture); task461 carries a long auxiliary record to a short target record through the proportional relationship their overlap shows: no shared quantity, evidence or move."
+  },
+  "lineage": [],
+  "notes": "",
+  "client_domain": "general-statistics-data-science",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:short-record-extension-through-overlap",
+  "layer1": [
+    "several sources for one picture: the market operator's day-ahead price archive in yearly files whose layout changed in 2022, the node's own price file since its creation, the settlement point list with the node's rename, the battery's operating log and the warranty terms",
+    "clocks: hour ending 01 to 24 on prevailing time with a repeated-hour flag, 23- and 25-hour days, the battery's log in UTC",
+    "genuine gaps: the node's first weeks of test-period prices, a repriced day in the archive"
+  ],
+  "registered": "2026-10-15T13:20:45Z"
+}
