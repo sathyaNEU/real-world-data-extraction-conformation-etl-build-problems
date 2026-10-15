@@ -15,8 +15,8 @@
     "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-15 on the final rebuild (no LEAK; every REVIEW line answered in ## Leak review)",
-    "reader": "stage 4 2026-10-12: no leak, Q1 to Q4 none, every Q5 sentence executes to the golden's inputs, Q6 the platform forecast as the analytical choice; its realism tells and ask readings fixed or closed at stage 4 (SF19 to SF38); targeted re-read of the seven changed documents 2026-10-15: nothing quoted for Q1 to Q4, Q6 the platform forecast analytical, realism notes recorded and left"
+    "leak_py": "REVIEW 2026-10-15 on the rebuild after the realism notes were trimmed (no LEAK; every REVIEW line answered in ## Leak review)",
+    "reader": "stage 4 2026-10-12: no leak, Q1 to Q4 none, every Q5 sentence executes to the golden's inputs, Q6 the platform forecast as the analytical choice; its realism tells and ask readings fixed or closed at stage 4 (SF19 to SF38); targeted re-read of the seven changed documents 2026-10-15: nothing quoted for Q1 to Q4, Q6 the platform forecast analytical, realism notes recorded and left; re-read after the realism repair 2026-10-15: the dictionary's late-sample sentence and the operations log's restart reminder read as signposts, and the Q3 report's hours-held clause and twice-told 19 August account flagged; all four trimmed in the generator, no figure moved"
   },
   "duplicate_check": {
     "heart": "WARN (overuse.objective), no BLOCK (2026-10-15)",
@@ -31,11 +31,11 @@
     {
       "date": "2026-10-15",
       "portal": "realism audit: regressing cell-store on machines in service and batch cores gave 2.946 and 0.208 with a residual s.d. of 13 cores on a 25,000-core service, which reads as generator output",
-      "repair": "generator: cell-store's hourly load now carries what neither driver does (the small tenants' daily cycle, an AR(1) drift, the Tuesday 03:00 to 05:00 UTC rolling restart and hours with late daemon samples, each uncorrelated with the drivers within every quarter, draw 13 of 40 scanned); residual s.d. 62.0 cores; the dictionary and operations log carry the restart and the late samples; every graded figure unchanged (109,000; 726,624; 577,000; 38,000; 2,000; 2.94; 0.208; 1.208; every ask); the write-up's residual s.d. 13.0 to 62.0; rung R-1 119,000 to 118,000 (not graded); four more fits asserted to share the precision (restart hours left out, low hours left out, Huber, hour-of-week terms)",
+      "repair": "generator: cell-store's hourly load now carries what neither driver does (the small tenants' daily cycle, an AR(1) drift, the Tuesday 03:00 to 05:00 UTC rolling restart and hours with late daemon samples, each uncorrelated with the drivers within every quarter, draw 13 of 40 scanned); residual s.d. 62.0 cores; the dictionary and operations log carry the restart and the late samples; every graded figure unchanged (109,000; 726,624; 577,000; 38,000; 2,000; 2.94; 0.208; 1.208; every ask); the write-up's residual s.d. 13.0 to 62.0; rung R-1 119,000 to 118,000 (not graded); four more fits asserted to share the precision (restart hours left out, low hours left out, Huber, hour-of-week terms); after the reader's re-read the two explanatory notes were cut (the dictionary's cores_in_use to a terse definition, the restart reminder to one on-call line) and the Q3 report's hours-held clause and 19 August account trimmed, no figure moved (target.zip 5823a2b7)",
       "commit": ""
     }
   ],
-  "resume": "stage 4 on the realism repair of 2026-10-15: the leak reader (a document changed: the dictionary's cores_in_use note and one operations-log entry) and the determinism judge together on target.zip ae9940da; then RESHIPPED",
+  "resume": "stage 4 on the realism repair of 2026-10-15, notes trimmed after the re-read: the determinism judge on target.zip 5823a2b7 (the reader's re-read answered in the design note's build record); then RESHIPPED",
   "approved": null,
   "delivered": "2026-10-15",
   "portal": null,

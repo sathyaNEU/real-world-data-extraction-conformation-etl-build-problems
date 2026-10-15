@@ -137,8 +137,9 @@ together with the storage it brings: the golden is 109,000.
   hardware inventory carrying each asset's id history, spares that replace retired machines in the same rack, a quota
   service that applies changes in six-hourly reconciliation runs and ran none for three days after the August power
   event; and in the storage service's own series, the hours of its weekly rolling daemon restart (Tuesday 03:00 to
-  05:00 UTC, noted in the operations log) and hours whose daemon samples reached the collector after the hour closed
-  (the dictionary's note on `cores_in_use`) both read low, beside the small tenants' daily cycle. Each is what these
+  05:00 UTC; the operations log carries one routine on-call line for it, no explanation) and hours whose daemon samples
+  reached the collector after the hour closed (no document explains them; the dictionary says only "as the collector
+  received them") both read low, beside the small tenants' daily cycle. Each is what these
   systems write; none decides the call (the restart hours left out, the low hours left out, a Huber fit and hour-of-week
   terms all keep 2.94, 0.208, 1.208, 38,000 and 109,000, asserted).
 - **Layer 2:** family `allocation_constraints` on a General Statistics regression: the shortcut forecasts the storage
@@ -631,13 +632,33 @@ at the close.
   surface` 0 promoted, `heart` WARN, `validate` clean, `freeze.py check --mode determinism` with the 30 moved path and
   rung keys allowed: only the ladder and default-path sections' measured numbers moved, the container audit clean.
   Stage 4 next: the reader (a document changed) and the judge.
+- Realism notes trimmed after the re-read, 2026-10-15. An isolated reader read the two notes the realism repair added
+  as signposts toward a wrong method or a decoy (the dictionary's `cores_in_use` sentence explaining why late daemon
+  samples read low, and the operations log's 7 July reminder that the rolling restart runs every Tuesday 03:00 to
+  05:00 UTC, "no action needed"), and flagged the Q3 report's hours-held clause and its minute-by-minute 19 August
+  account, which the operations log also tells. `docs.py`: the dictionary's `cores_in_use` is now "Cores in use, hourly
+  average, as the collector received them."; the reminder is an ordinary on-call line (7 July 05:04 UTC, "cell-store
+  rolling restart on C-22 done, all daemons back."); the Q3 report's use line ends at "from the cell monitoring export",
+  and its 19 August event is one line with the PIR number (the operations log keeps the account SF36 rests on).
+  `deliver.py`: the golden workbook's cell-store note describes the low residuals as observed (Tuesday 03:00 to 05:00
+  UTC, the rolling restart, and scattered single hours) rather than naming late samples, which the pack no longer
+  explains. The data texture is unchanged. Only three files under `target/` moved (the dictionary, the operations log,
+  the Q3 report) and one golden (the workbook's note); `figures.json`, the slide and `submission.md` are byte-identical,
+  and no graded figure, rung or path figure moved. Gates: `build.py` (2,397 assertions, `verify.py`, two builds
+  byte-identical within a run and across two runs, target.zip 5823a2b7), `freeze.py check --mode determinism` PASS
+  against a snapshot taken before this edit with nothing allowed, `figures_check.py` 79 figures, `precut.py` 49 checks
+  0 FAIL, `leak.py --asof 2026-12-14` REVIEW, no LEAK (one line fewer: the Q3 report's "generator" went with the
+  19 August account, and its sweep 4 terms fell from 8 to 7), `guard.py surface` 0 promoted, `heart` WARN (`overuse.objective`, no
+  BLOCK), `validate` clean, the container audit clean on `target/` and `golden/`. Stage 4 next: the judge on
+  target.zip 5823a2b7 (the reader's re-read is answered here).
 
 ## Leak review
 
 `leak.py task140 --asof 2026-12-14`: REVIEW, no LEAK, at stage 3 and again on the stage 4 rebuild (the same lines, less
 the demand note under sweep 4, and the chargeback policy at 5 of 6 call words). Each REVIEW line:
-- Sweep 2, "generator" in the Q3 capacity report and the operations log: the hall's standby generator in the
-  19 August power event (the weekly generator test); in-world, harmless.
+- Sweep 2, "generator" in the operations log (and, before the 19 August line was cut to one sentence, the Q3
+  capacity report): the hall's standby generator in the 19 August power event (the weekly generator test); in-world,
+  harmless.
 - Sweep 3, the committed call's words (C-22, guarantee, cores, batch, training, quarter) in CS-3, the memo, the README,
   the capacity report, the chargeback policy and the demand note: the domain's own nouns (the policy's fifth is
   "first", from 2.2's "the first 00:00 UTC"); no document carries the guarantee's figure or any 2027 reservation;
@@ -667,7 +688,7 @@ Written at stage 5 against the built pack (the stage 4 fixes and the precision c
 are stage 4's.
 
 1. Domain: the deciding quantity is the storage service's CPU per machine in service and per batch core running, a
-   two-driver regression on the cell's hourly telemetry (17,081 hours, residual s.d. 13.0 cores) read forward at the
+   two-driver regression on the cell's hourly telemetry (17,081 hours, residual s.d. 62.0 cores) read forward at the
    quarter's 5,220 machines and the guarantee being struck; with a hospital's nouns there is no pool of reservable
    cores at an overcommit and no machines or batch cores for a dependent service's load to be measured on, and with
    the regression swapped for the load's own trend or share the call moves to 122,000 or 119,000.
@@ -764,3 +785,8 @@ are stage 4's.
   leaving each quarter its own mean put the rack additions back into the level; one-sided dips at s.d. 85 to 90 moved
   beta between windows and broke the trimmed and Huber fits. Kept: a small symmetric part and low-reading hours, each
   part projected off the drivers within every quarter with one mean across quarters (s.d. 62).
+- 2026-10-15, the realism repair's two explanatory notes (the dictionary's `cores_in_use` sentence that late daemon
+  samples are not added back so the hour reads low, and the operations log's on-call reminder that the rolling restart
+  runs every Tuesday 03:00 to 05:00 UTC, "no action needed"): an isolated reader read both as written to steer, since a
+  field definition does not explain a bias and the reminder reads as addressed to the analyst; cut to a terse
+  definition and one routine on-call line, the texture left in the data.

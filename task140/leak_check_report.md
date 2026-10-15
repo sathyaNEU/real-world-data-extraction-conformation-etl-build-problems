@@ -6,8 +6,7 @@ LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's sol
 
 Stump terms swept: storage, busiest, drivers, forecast, history, cell-store, budget, objective, forecasting, running, operations, series, machine, decision, quantity, reservation, binding, decisive, solved, residual, default, compute, struck, regression, together
 
-## 2 author vocabulary (REVIEW 2)
-- **REVIEW** `c22_capacity_report_2026Q3.pdf`: \bdesign note\b|\bgenerator\b x1: ...ime (01:40 UTC): UPS B in hall 2 failed to transfer during the weekly generator test. C-22's control nodes lost power for about 40 seconds. Firm and...
+## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `mad1_operations_log_2026H2.docx`: \bdesign note\b|\bgenerator\b x3: ...03:40 Hall 2 UPS B failed to transfer during the weekly generator test. C-22 control nodes lost power, about 40 s, and restarted. Worke...
 
 ## 3 answer figures in the pack (REVIEW 6)
@@ -21,7 +20,7 @@ Stump terms swept: storage, busiest, drivers, forecast, history, cell-store, bud
 ## 4 design-note vocabulary (REVIEW 6)
 - **REVIEW** `CS-3_cell_capacity_standard_rev2026-06.pdf`: 8 of 25 stump-paragraph terms appear (busiest, forecast, history, budget, operations, machine); read whether the document names the move
 - **REVIEW** `README_capacity_review_files.txt`: 5 of 25 stump-paragraph terms appear (budget, operations, machine, reservation, compute); read whether the document names the move
-- **REVIEW** `c22_capacity_report_2026Q3.pdf`: 8 of 25 stump-paragraph terms appear (busiest, cell-store, running, operations, machine, reservation); read whether the document names the move
+- **REVIEW** `c22_capacity_report_2026Q3.pdf`: 7 of 25 stump-paragraph terms appear (busiest, cell-store, operations, machine, reservation, compute); read whether the document names the move
 - **REVIEW** `capacity_memo_2027Q1.docx`: 7 of 25 stump-paragraph terms appear (storage, cell-store, budget, operations, machine, reservation); read whether the document names the move
 - **REVIEW** `mad1_operations_log_2026H2.docx`: 4 of 25 stump-paragraph terms appear (cell-store, running, operations, machine); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: 'Give reservations to the nearest 1,000 cores, core-hours to the nearest 100, shares in per cent to two decimals, machine-hours to the nearest 10 and charges in euros to the nearest 100.'
@@ -54,3 +53,9 @@ Q1 to Q4: none (CS-3 4.1 and 3.2 are procedure; no file states a 2027 Q1 reserva
 On the seven changed documents. Q1 to Q4: none (CS-3 3.2, 4.1 and 5.1 state the rules, not the step; no file states the 2027 Q1 guarantee or an asked figure; the Q3 and Q4 figures read as history; the dictionary and README read as helpers). Q5: the literal chain gives reservable 726,624 and the budget-held firm reservations; the reader did not compute the guarantee. Q6: rule application for the reservations plus one analytical choice, the platform services' busiest-hour forecast (the decisive step, storage solved with the guarantee it serves; the judge's Gate H ruled it analytical). Realism: CS-3's June 2026 additions are the rules used; chargeback 2.2's "applied" points at the reconciler file (the asks' basis, filed at the judge's request); the memo's tenant and freeze statements; the demand note's 0.6 factor and queue lines (a declared distractor); the dictionary's field set; the September budget bumps on three cost centres. Readings: nearest thousand against largest whole thousand (5.1, SF38); the platform method (open by design); R114 against R117 (the January rate); a reservation above the request (held to the budget only caps); the asks' preemption basis, resized cores, machines out at quarter end, the 19 August event, UTC months (fork rows SF19 to SF37).
 
 Disposition (ship): nothing quoted for questions 1 to 4; the realism notes are recorded and left (each further rewording of a filed document risks reopening a closed fork for no graded figure).
+
+## Solver's-eye read (re-read after the realism repair, 2026-10-15)
+
+Q1 to Q4: no file states a 2027 Q1 guarantee, a storage forecast or a method. The reader read the two notes the realism repair added as signposts or a decoy: the dictionary's `cores_in_use` sentence on late daemon samples (a bias mechanism explained in a field definition) and the operations log's 7 July reminder of the Tuesday 03:00 to 05:00 UTC rolling restart ("no action needed"), and wondered whether the Tuesday dip decides the busiest-hour forecast (it does not: the restart hours left out, the low hours left out, a Huber fit and hour-of-week terms all keep 2.94, 0.208, 1.208, 38,000 and 109,000, asserted). It also flagged the Q3 report's "which holds 2,201 of the quarter's 2,208 hours" and the 19 August minute-by-minute account told in both the Q3 report and the operations log.
+
+Disposition (fixed in the generator): the dictionary's `cores_in_use` is now the terse "Cores in use, hourly average, as the collector received them."; the restart reminder is an ordinary on-call line (7 July 07:04 Madrid time, "cell-store rolling restart on C-22 done, all daemons back."); the Q3 report drops the hours-held clause and gives 19 August one line with its PIR number, the operations log keeping the account. The texture in the data is unchanged; only these three documents and the golden workbook's residual note moved; no graded figure, `figures.json` value or rung moved.
