@@ -1,0 +1,177 @@
+{
+  "task": "task139",
+  "title": "Where Haverline Casualty's seventeen Early Return Nursing teams work in 2027 and the AY2027 indemnity they save",
+  "domain": "Actuarial Science & Insurance",
+  "subdomain": "claims-frequency-severity (a workers' compensation nurse programme's saving read as indemnity per assigned intake, frequency times severity, from a randomised pilot, valued per nurse place-day)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "05: seventeen teams allocated across eight segments (teams and saving per team-year for every segment, the AY2027 credit), the note's chart, and two per-segment asks (2025 intakes; indemnity paid January to September 2026)",
+  "as_of": "2026-11-09",
+  "deliverables": [
+    "ern_placement_ay2027.xlsx",
+    "ern_placement_note_ay2027.pdf"
+  ],
+  "distractor_files": [
+    "ern_programme_charter_2027_draft_v3.docx",
+    "ern_pilot_worker_survey_2023-25.csv",
+    "medical_management_staffing_plan_2027.xlsx"
+  ],
+  "input_gates": {
+    "files": 15,
+    "formats": [
+      "csv",
+      "docx",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "indemnity_payments_2026-01_to_09.csv",
+    "largest_file_rows": 63135
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task139/generator/build.py (seeded, deterministic) around a fictional Missouri workers' compensation carrier (Haverline Casualty Company), its consulting actuaries (Kellerman Pryce Actuarial), claim units and people; no real organisation, person, employer or claim is depicted. NCCI classification codes and Missouri benefit rules are used descriptively.",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-12",
+  "revised": "2026-10-15",
+  "generator": "task139/generator/build.py",
+  "files": [
+    {
+      "path": "ach_returns_2026-01_to_09.csv",
+      "format": "csv",
+      "bytes": 26402,
+      "rows": 275,
+      "source": "Constructed: The bank's ACH return items on workers' compensation EFT payments, January to September 2026",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ay2027_indemnity_pick_ern_credit.pdf",
+      "format": "pdf",
+      "bytes": 50797,
+      "rows": null,
+      "source": "Constructed: The chief pricing actuary's memorandum on the ERN credit in the AY2027 indemnity pick (28 October 2026)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "claims_data_dictionary.xlsx",
+      "format": "xlsx",
+      "bytes": 8372,
+      "rows": null,
+      "source": "Constructed: Data dictionary for the pack's claims files",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "claims_extract_2021-01_to_2026-09.csv",
+      "format": "csv",
+      "bytes": 6060729,
+      "rows": 59789,
+      "source": "Constructed: Haverline Casualty's claims listing: every claim reported January 2021 to September 2026 whose first report recorded time lost or that has paid or reserved indemnity",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ern_case_log_2023-25.csv",
+      "format": "csv",
+      "bytes": 177314,
+      "rows": 2647,
+      "source": "Constructed: The ERN case system's export of the pilot nurses' files and reopenings",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ern_pilot_assignments_2023-25.xlsx",
+      "format": "xlsx",
+      "bytes": 192008,
+      "rows": null,
+      "source": "Constructed: The triage screen's assignment register of the Early Return Nursing pilot, with its notes",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ern_pilot_worker_survey_2023-25.csv",
+      "format": "csv",
+      "bytes": 64957,
+      "rows": 1369,
+      "source": "Constructed: The ERN pilot's worker satisfaction survey",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ern_programme_charter_2027_draft_v3.docx",
+      "format": "docx",
+      "bytes": 10473,
+      "rows": null,
+      "source": "Constructed: Draft v3 of the 2027 programme charter (18 September 2026), superseded",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ern_programme_charter_2027_signed.pdf",
+      "format": "pdf",
+      "bytes": 52607,
+      "rows": null,
+      "source": "Constructed: The signed Early Return Nursing programme charter for 2027 (19 October 2026)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest.csv",
+      "format": "csv",
+      "bytes": 1746,
+      "rows": 14,
+      "source": "Constructed: Export manifest: each file, its source system, as-of date and preparer",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "indemnity_payments_2026-01_to_09.csv",
+      "format": "csv",
+      "bytes": 6401289,
+      "rows": 63135,
+      "source": "Constructed: Indemnity payment register lines, January to September 2026",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kpa_ern_indemnity_verification_2026-06-30.xlsx",
+      "format": "xlsx",
+      "bytes": 80858,
+      "rows": null,
+      "source": "Constructed: Kellerman Pryce Actuarial's verification workbook: verified ultimate indemnity on the sampled pilot claims at 30 June 2026",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kpa_ern_pilot_review_2026-08.pdf",
+      "format": "pdf",
+      "bytes": 52133,
+      "rows": null,
+      "source": "Constructed: Kellerman Pryce Actuarial's report on the verification of the pilot claims (14 August 2026)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "medical_management_staffing_plan_2027.xlsx",
+      "format": "xlsx",
+      "bytes": 7705,
+      "rows": null,
+      "source": "Constructed: Medical Case Management's 2027 ERN staffing plan (positions, status, salary midpoints)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "segment_code_crosswalk_2025.csv",
+      "format": "csv",
+      "bytes": 1207,
+      "rows": 12,
+      "source": "Constructed: Legacy segment codes and the 2025 codes they converted to",
+      "date": "2026-11-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

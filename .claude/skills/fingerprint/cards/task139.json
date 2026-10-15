@@ -10,8 +10,8 @@
   "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "three teams each to HC-SS, MF-SS, MF-OT, CN-OT and HC-OT, two to RW-SS, none to RW-OT or CN-SS; an AY2027 indemnity credit of 4,100,000 dollars",
+  "answer_source": "submission.md block 1 and golden/ern_placement_ay2027.xlsx (Placement), recomputed by generator/verify.py",
   "gap": [
     "population",
     "objective"
@@ -35,8 +35,8 @@
   "role_family": "capacity_planner",
   "scoring_unit": "per episode",
   "spine": {
-    "file": "claims_extract_2021-2026.csv",
-    "rows": 58000,
+    "file": "claims_extract_2021-01_to_2026-09.csv",
+    "rows": 59789,
     "entity": "one claim reported to the carrier with time off work at first report, or one that later paid indemnity",
     "grain": "claim",
     "source": "constructed (the carrier's claims system listing of time-off and indemnity claims)"
@@ -54,12 +54,13 @@
       "Early Return Nursing"
     ],
     "people": [
-      "Margaret York",
+      "Julie Winters",
       "Joanna Sullivan",
       "Kathleen Reilly",
       "Joel Kelly",
       "Kristen Hansen",
-      "Juan Castillo"
+      "Juan Castillo",
+      "Gregory Friedman"
     ]
   },
   "deliverables": [
@@ -69,10 +70,10 @@
   "opening_move": "question-first",
   "question_form": "where",
   "driver": "An intervention assigned at random at intake changes how many of its units go on to become the recorded costly cases as well as what those cases cost, so its effect has to be read per assigned unit, each arm's own conversion times its own cost, and valued per unit of the capacity each assigned unit holds; read per recorded case, it compares a costlier remainder of one arm with the ordinary cases of the other and places the capacity where the recorded cases are dearest.",
-  "driver_concrete": "The pilot assigned intakes with time off at first report half to Early Return nurses, and the nurses kept a fifth to a quarter of the healthcare, retail and manufacturing strain intakes at work on suitable duties so they never paid indemnity, while the independent review verified only indemnity claims; the saving a team buys is indemnity per assigned intake (each arm's own indemnity-claim rate times its own verified severity) over the nurse place-days an assigned intake holds, which puts the teams in the strain segments, where the saving per verified indemnity claim reads as three to five per cent and puts them in construction.",
-  "stump": "A competent solver compares the verified ultimates of the two arms' indemnity claims in each segment, values each segment's teams per nurse place-day at that saving and files teams weighted to construction with a run-rate saving near 1.6 million dollars; the step that lands it there is reading the saving per indemnity claim when the nurses kept part of their intakes from ever paying indemnity, so the programme arm's indemnity claims are the costlier remainder: per assigned intake the teams go to the strain segments and save near 4.9 million dollars.",
+  "driver_concrete": "The pilot assigned intakes with time off at first report at random, half to Early Return nurses, and the nurses kept about a fifth to a quarter of the healthcare, retail and manufacturing strain intakes from ever paying indemnity (back on suitable duties inside the waiting period), while the independent review verified a sample of indemnity claims only; the saving a team buys is indemnity per assigned intake (each arm's own indemnity-claim rate times its own verified severity) over the nurse place-days an assigned intake holds, which puts the teams in the strain segments, where the saving per verified indemnity claim reads as four to six per cent and leaves healthcare and retail strains without a team.",
+  "stump": "A competent solver compares the verified ultimates of the two arms' indemnity claims in each segment, values each segment's teams per place-day of an indemnity claim at that saving and files teams in the other-injury and construction units, none in healthcare or retail strains, with a run-rate credit of 2,000,000 dollars; the step that lands it there is reading the saving per indemnity claim when the nurses kept part of their intakes from ever paying indemnity, so the programme arm's indemnity claims are the costlier remainder: per assigned intake the teams go to the strain segments, retail strains takes the two teams its intakes keep in use, and the credit is 4,100,000 dollars.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the pilot protocol, the review and the charter right compares the verified ultimate indemnity of each arm's indemnity claims segment by segment and divides by the place-days a programme indemnity claim held, and that files construction-heavy teams and a saving near 1.6 million dollars, because the nurses kept a quarter of the healthcare and retail strain intakes at work, so those segments' programme indemnity claims are the costlier remainder and their saving per claim looks like four per cent.",
+  "analyst_test": "A strong analyst who reads the pilot register, the review, the charter and the pick memo right compares the verified ultimate indemnity of each arm's indemnity claims segment by segment and divides by the place-days a programme indemnity claim held, and that files teams in the other-injury and construction units, none in healthcare or retail strains, and a credit of 2,000,000 dollars, because the nurses kept about a fifth to a quarter of the strain intakes at work, so those segments' programme indemnity claims are the costlier remainder and their saving per claim reads as four to six per cent.",
   "domain_test": "The saving is a workers' compensation pure premium per intake, the indemnity-claim rate times indemnity severity at ultimate, read as the pilot was randomised and valued per nurse place-day; with another field's nouns there is no waiting period, no conversion of an intake into an indemnity claim and no stay-at-work on suitable duties, and the task stops reading the same.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:indemnity-saving-read-per-assigned-intake",
@@ -83,13 +84,19 @@
     "nurse case log with a reopened file on a second row for some intakes",
     "mixed date formats between the nurse log and the claims extract",
     "claims extract mixing intakes with later indemnity conversions that were not intakes",
-    "a superseded draft of the programme charter beside the signed one"
+    "a superseded draft of the programme charter beside the signed one",
+    "converted claims carrying the legacy lost-time indicator in the new system's time-off flag",
+    "claims keyed in both systems during the upgrade's parallel run",
+    "a payment register exported at weekly-line grain with the payment amount on every line",
+    "returned ACH payments only in the bank's return file",
+    "voided checks with their replacements as new payments"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
     "task136": "task136 carries a campaign's yield to new sites per member still able to respond, a pool built through a join; here nothing is transported and no pool is built: within one randomised pilot the treatment itself changes which assigned intakes become the recorded indemnity claims, and the comparison has to be read per assigned intake",
     "task128": "task128 reads a call's effect from a capacity-overflow natural experiment and fixes the unmarked undiallable records; here the pilot is randomised and the bias is the nurses' own effect on which intakes ever pay indemnity, with no natural experiment and no marking",
-    "task124": "task124 carries a rate measured on units examined because they showed signs of the outcome to a population all of which will be examined; here the forward population and the randomised one are the same intakes, and the error is a comparison conditioned on an outcome the treatment moves"
+    "task124": "task124 carries a rate measured on units examined because they showed signs of the outcome to a population all of which will be examined; here the forward population and the randomised one are the same intakes, and the error is a comparison conditioned on an outcome the treatment moves",
+    "task452": "task452 v2 weights a stratified reference sample by the inclusion probabilities of the strata it was drawn from after a reclassification moved points between classes; here no design weight is at issue: within one randomised pilot the treatment itself moves assigned intakes out of the recorded class, and the comparison is read per assigned intake, each arm's own conversion times its own verified severity"
   },
   "lineage": [],
   "notes": "stump_strategy causal_design: the decisive step is the comparison the randomised design implies (per assigned intake, as randomised), not a forward-population definition, because next year's teams take exactly the population the pilot randomised. G9 names the mechanism: the measured class (indemnity claims) is the downstream survivor of the upstream acquisition (intakes) and survival depends on the arm. Lower rungs: G1 per place-day (the slots bind), G14 per-segment yields."

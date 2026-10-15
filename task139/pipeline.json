@@ -1,26 +1,26 @@
 {
   "task": "task139",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "actuarial-science-insurance",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-12",
-  "stump": "A competent solver joins the review's verified ultimates to the assignment register, takes usual handling's mean indemnity claim less ERN's in each segment, divides by the place-days an ERN indemnity claim held and files teams weighted to construction and manufacturing with none in retail, about 1.6 million dollars; the step that lands it there is reading the saving per verified indemnity claim when the nurses kept a fifth to a quarter of the strain intakes from ever paying indemnity: read per assigned intake the teams go to the strain segments and save about 4.9 million dollars (design-stage estimates).",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-15",
+  "stump": "A competent solver joins Kellerman Pryce's verified ultimates to the pilot register, takes usual handling's mean indemnity claim less ERN's in each segment, values each segment's teams at that saving over the place-days an ERN indemnity claim held, and files teams weighted to the other-injury and construction segments with none in healthcare or retail strains and a credit of 2,000,000 dollars; the step that lands it there is reading the saving per verified indemnity claim when the nurses kept a fifth to a quarter of the strain intakes from ever paying indemnity, so ERN's indemnity claims there are the costlier remainder: read per assigned intake, as the pilot was randomised, the teams go to the strain segments, retail strains takes the two teams its intakes keep in use, and the credit is 4,100,000 dollars.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-15"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-15, seven lines answered in the design note's build record",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "PASS 2026-10-15, nearest 0.06 (task128 ledger row)",
+    "nearest": "task73 0.07; surface exit 0, task229 and task452 promoted for an adjudicated read"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: design (prototype the pilot and measure every competing model, readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet, prompt.txt, precut.py)",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
