@@ -67,6 +67,10 @@ def figures(c):
             "platform_total": "%.1f" % g["platform"],
             "unreserved": "%.1f" % g["unreserved"],
             "cs3_sections": ["2.1", "3.2", "3.3", "4.1", "4.2", "5.1", "5.2"],
+            # the precision every converging variant shares (the write-up and the goldens state these)
+            "store_per_machine_shared": "%.2f" % g["c"],
+            "store_per_batch_core_shared": "%.3f" % g["beta"],
+            "reservable_per_guaranteed_core_shared": "%.3f" % (1 + g["beta"]),
         },
         "default_path": {"guarantee_cores": f0(lad["R0"]["G"]), "cell_store_cores": "%.1f" % lad["R0"]["S"],
                          "guarantee_unrounded": "%.1f" % lad["R0"]["Gu"]},
@@ -131,16 +135,15 @@ def write_book(path, c, figs):
             f0(M.M1), M.overcommit)),
         ("Firm tenants (eleven)", g["F"], K.round_to(g["F"], 1000), "Each Q1 request held to what its frozen monthly "
          "budget buys at EUR %.2f per core-month; sheet Firm tenants" % M.rate_q1),
-        ("cell-ctl", round(g["ctl"], 1), K.round_to(g["ctl"], 1000), "Busiest hour forecast: line through the four "
-         "quarters of 2026, one quarter on"),
-        ("cell-store", round(g["S"], 1), K.round_to(g["S"], 1000), "Busiest hour forecast from its drivers: %.1f + "
-         "%.4f per machine in service + %.5f per batch core running, at %s machines and batch at its guarantee "
-         "(sheet cell-store)" % (g["a"], g["c"], g["beta"], f0(M.M1))),
-        ("Platform services", round(g["platform"], 1), K.round_to(g["platform"], 1000), "cell-ctl and cell-store"),
-        ("Batch training guarantee", g["G"], g["G"], "Largest whole thousand left; solved with cell-store, which "
-         "rises by %.5f cores for each batch core: (%s - firm - cell-ctl - %.1f - %.4f x %s) / %.5f = %s" % (
-             g["beta"], f0(M.R1), g["a"], g["c"], f0(M.M1), 1 + g["beta"], "{:,.1f}".format(g["Gu"]))),
-        ("Not reserved", round(g["unreserved"], 1), None, "Left after the guarantee (CS-3 5.2)"),
+        ("cell-ctl", None, K.round_to(g["ctl"], 1000), "Busiest hour forecast: line through the four quarters of 2026, "
+         "one quarter on"),
+        ("cell-store", None, K.round_to(g["S"], 1000), "Busiest hour forecast from its drivers: %.2f cores per machine "
+         "in service and %.3f per batch core running, at %s machines and batch at its guarantee (sheet cell-store)" % (
+             g["c"], g["beta"], f0(M.M1))),
+        ("Platform services", None, K.round_to(g["platform"], 1000), "cell-ctl and cell-store"),
+        ("Batch training guarantee", g["G"], g["G"], "Largest whole thousand left, solved together with cell-store: each "
+         "guaranteed core takes %.3f reservable cores, its own and %.3f of cell-store load" % (1 + g["beta"], g["beta"])),
+        ("Not reserved", None, None, "Left after the guarantee, under 1,000 cores (CS-3 5.2)"),
     ]
     for lab, v, rv, how in items:
         _row(ws, r, [lab, v, rv, how], [None, "#,##0" if isinstance(v, int) else "#,##0.0", "#,##0", None],
@@ -148,7 +151,7 @@ def write_book(path, c, figs):
         r += 1
     r += 1
     ws.cell(row=r, column=1, value="For comparison: carrying cell-store forward on its own last four busiest hours "
-            "(%s cores) would leave %s cores, but every batch core added brings %.5f cores of cell-store load that "
+            "(%s cores) would leave %s cores, but every batch core added brings %.3f cores of cell-store load that "
             "history at a guarantee of 55,000 to 58,000 cores has not seen." % (
                 "{:,.0f}".format(lad["R0"]["S"]), f0(lad["R0"]["G"]), g["beta"]))
     ws.cell(row=r, column=1).alignment = Alignment(wrap_text=True, vertical="top")
@@ -179,9 +182,11 @@ def write_book(path, c, figs):
            "the cell's machines in service and the batch tier's cores in use. Residual s.d. %.1f cores." % (
                f0(g["n"]), g["resid_sd"]))
     _head(ws, 4, ["Term", "Cores"], [40, 14])
-    for k, (lab, v, nd) in enumerate([("Intercept", g["a"], 1), ("Per machine in service", g["c"], 4),
-                                      ("Per batch core running", g["beta"], 5)]):
-        _row(ws, 5 + k, [lab, round(v, nd)], [None, "0." + "0" * nd])
+    shown = [("Intercept", round(g["a"], 1), 1), ("Per machine in service", round(g["c"], 2), 2),
+             ("Per batch core running", round(g["beta"], 3), 3)]
+    for k, (lab, v, nd) in enumerate(shown):
+        _row(ws, 5 + k, [lab, v], [None, "0." + "0" * nd])
+    a1, c2, b3 = (v for _, v, _ in shown)       # the fitted column is worked from the terms as shown
     _head(ws, 9, ["Quarter", "Busiest hour (UTC)", "cell-store at that hour", "Machines in service",
                   "batch-train cores", "Fitted"], [40, 18, 14, 14, 14, 12])
     r = 10
@@ -189,14 +194,14 @@ def write_book(path, c, figs):
         m = M.q == q
         k = int(max(range(int(m.sum())), key=lambda i: M.store[m][i]))
         tt = [t for t, mm in zip(M.t, m) if mm][k]
-        fitted = g["a"] + g["c"] * float(M.mach[m][k]) + g["beta"] * float(M.batch[m][k])
+        fitted = a1 + c2 * float(M.mach[m][k]) + b3 * float(M.batch[m][k])
         _row(ws, r, [q + (" (to 13 Dec)" if q == M.quarters[-1] else ""), tt.strftime("%Y-%m-%d %H:%M"),
                      float(M.store[m][k]), float(M.mach[m][k]), float(M.batch[m][k]), round(fitted, 1)],
              [None, None, "#,##0.0", "#,##0.0", "#,##0.0", "#,##0.0"])
         r += 1
     r += 1
-    _row(ws, r, ["2027 Q1 at %s machines, batch at %s" % (f0(M.M1), f0(g["G"])), None, round(g["S"], 1)],
-         [None, None, "#,##0.0"], bold=True)
+    _row(ws, r, ["2027 Q1 at %s machines, batch at %s (reserved, nearest 1,000)" % (f0(M.M1), f0(g["G"])), None,
+                 K.round_to(g["S"], 1000)], [None, None, "#,##0"], bold=True)
     # Ask A
     ws = wb.create_sheet("Training lost 2026 Q3")
     _title(ws, "Batch training lost to preemptions, July to September 2026",
@@ -337,14 +342,14 @@ def write_deck(path, c, figs):
                 f0(K.round_to(g["S"], 1000)), f0(K.round_to(g["ctl"], 1000)))),
             ("Batch training guarantee", G, "largest whole thousand left once cell-store carries the batch tier's "
              "load"),
-            ("Not reserved", round(g["unreserved"]), "")]
+            ("Not reserved", "under 1,000", "left after the guarantee (CS-3 5.2)")]
     tb = s.shapes.add_table(len(rows) + 1, 3, Inches(0.6), Inches(5.45), Inches(12.2), Inches(1.6)).table
     tb.columns[0].width, tb.columns[1].width, tb.columns[2].width = Inches(3.0), Inches(1.6), Inches(7.6)
     for k, h in enumerate(("Part", "Cores", "How it is set")):
         tb.cell(0, k).text = h
     for i, (lab, v, note) in enumerate(rows, 1):
         tb.cell(i, 0).text = lab
-        tb.cell(i, 1).text = f0(v)
+        tb.cell(i, 1).text = v if isinstance(v, str) else f0(v)
         tb.cell(i, 2).text = note
     for i in range(len(rows) + 1):
         for k in range(3):

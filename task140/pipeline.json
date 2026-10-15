@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW, no LEAK (2026-10-15, on the stage 4 rebuild; every REVIEW line answered in the design note)",
-    "reader": "no leak (2026-10-12): Q1 to Q4 none, every Q5 sentence executes to the golden's inputs, Q6 the platform forecast as the analytical choice; realism tells and ask readings fixed or closed at stage 4 (SF19 to SF38)"
+    "reader": "no leak (2026-10-12): Q1 to Q4 none, every Q5 sentence executes to the golden's inputs, Q6 the platform forecast as the analytical choice; realism tells and ask readings fixed or closed at stage 4 (SF19 to SF38); targeted re-read of the seven changed documents (2026-10-15): nothing quoted for Q1 to Q4, Q6 the platform forecast as the analytical choice, realism notes recorded and left"
   },
   "duplicate_check": {
     "heart": "WARN (overuse.objective), no BLOCK",
@@ -28,7 +28,7 @@
     "report": "task140/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: the main session's targeted re-read of the seven documents changed at stage 4 (README_capacity_review_files.txt, batch_training_demand_2027H1.pdf, c22_capacity_report_2026Q3.pdf, capacity_memo_2027Q1.docx, chargeback_policy_2026.pdf, data_dictionary.xlsx, tech_budgets_2026_Q1-2027_freeze.xlsx), then stage 5 (pre-ship check, card current, ledger row, SHIPPED commit). Open for the author: the path figures in Critical Components 3 and 4 and the Final Recommendation's coefficient decimals (design note, Build record)",
+  "resume": "stage 4: the targeted re-read of the seven documents changed at stage 4 is in leak_check_report.md (no leak); the write-up and goldens were then restated at the precision every variant shares (freeze.py snapshot retaken 2026-10-15); next the main session's re-read, then stage 5 (pre-ship check, card current, ledger row, SHIPPED commit)",
   "approved": null,
   "delivered": null,
   "portal": null,

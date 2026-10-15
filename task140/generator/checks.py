@@ -376,8 +376,55 @@ def run(target, golden, W=None, meta_path=None):
               C.Q3S <= a["installed"] < C.Q3E]
     ok(W is None or len(spares) >= 3, "SF27 spares registered in Q3 (another asset, not a return): %d" % len(spares))
     _stage4_rows(target, M, g, lad, A, W, red, share, lost, owe, pre, succ, ev, rem, by_asset)
+    _shared_precision(target, golden, M, g)
     print("checks: %d assertions passed" % N[0])
     return N[0]
+
+
+def _shared_precision(target, golden, M, g):
+    """The write-up and the goldens state each figure at the precision every converging variant shares (the fit
+    windows, machines installed, the re-sent day kept, the gap interpolated, cell-ctl's forecast, the largest residual,
+    the reservations rounded first); the golden path's own unrounded figures are stated nowhere a reader takes as a
+    claim."""
+    G = g["G"]
+    variants = [g, C.golden(M, use_installed=True), C.golden(C.load(target, dedupe=False)),
+                C.golden(C.load(target, gap="interpolate"))]
+    for qs in (M.quarters[2:], M.quarters[4:]):
+        variants += [C.golden(M, mask=np.isin(M.q, qs)), C.golden(M, mask=np.isin(M.q, qs), use_installed=True)]
+    variants += [C.golden(M, ctl_how=h) for h in ("last", "mean4", "machines")] + [C.golden(M, allowance=g["resid_max"])]
+    for v in variants:
+        ok(("%.2f" % v["c"], "%.3f" % v["beta"], "%.3f" % (1 + v["beta"])) == ("2.94", "0.208", "1.208"),
+           "shared precision: per machine %.5f, per batch core %.5f, per guaranteed core %.5f" % (
+               v["c"], v["beta"], 1 + v["beta"]))
+        ok(v["G"] == G and K.round_to(v["S"], 1000) == K.round_to(g["S"], 1000) and
+           K.round_to(v["ctl"], 1000) == K.round_to(g["ctl"], 1000) and 0 < v["unreserved"] < 1000,
+           "shared precision: the call, cell-store and cell-ctl to the thousand, under 1,000 left (%.1f)" %
+           v["unreserved"])
+    path_figures = ("109,492", "109492", "38,058", "38058", "1,999", "1999.2", "2.9404", "0.20804", "1.20804", "33.1",
+                    "594.3")
+    sub = open(os.path.join(os.path.dirname(target), "submission.md"), encoding="utf-8").read()
+    blocks13 = sub.split("## 4. Deliverable Answers")[0]
+    ok(not [x for x in path_figures if x in blocks13], "the write-up's blocks 1 to 3 state no path figure: %s" %
+       [x for x in path_figures if x in blocks13])
+    ok(all(x in blocks13 for x in ("2.94 cores per machine", "0.208 per batch core", "**1.208**")),
+       "the write-up states the shared precision")
+    wb = openpyxl.load_workbook(os.path.join(golden, K.GOLD_BOOK), data_only=True)
+    for name in ("2027 Q1", "cell-store"):
+        flat = " ".join(str(v) for r in wb[name].iter_rows(values_only=True) for v in r if v is not None)
+        ok(not [x for x in ("109,492", "2.9404", "0.20804", "1.20804", "38058.5", "1999.2", "40057.7", "594.3")
+                if x in flat], "golden sheet %s states no path figure" % name)
+    top = {r[0]: r for r in wb["2027 Q1"].iter_rows(values_only=True) if r and isinstance(r[0], str)}
+    ok(all(top[k][1] is None for k in ("cell-ctl", "cell-store", "Platform services", "Not reserved")) and
+       "1.208" in top["Batch training guarantee"][3] and "2.94" in top["cell-store"][3],
+       "golden: the platform services at the thousand only, the guarantee's note at the shared precision")
+    terms = {r[0]: r[1] for r in wb["cell-store"].iter_rows(values_only=True) if r and r[0] in (
+        "Intercept", "Per machine in service", "Per batch core running")}
+    ok(terms["Per machine in service"] == 2.94 and terms["Per batch core running"] == 0.208,
+       "golden cell-store sheet: the fit's terms at the shared precision")
+    from pptx import Presentation
+    deck = Presentation(os.path.join(golden, K.GOLD_DECK))
+    cells = [c.text for sh in deck.slides[0].shapes if sh.has_table for r in sh.table.rows for c in r.cells]
+    ok("under 1,000" in cells and "594" not in cells, "golden slide: the remainder stated as under 1,000")
 
 
 def _charges(A, when_of, rate_of):

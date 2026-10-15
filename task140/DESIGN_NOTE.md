@@ -250,11 +250,12 @@ estimand and no method; the memo's platform line, the one sentence a literal rea
 forecast to the export, names no source (SF31); the budget freeze is a record, not a sizing instruction. (2) Every
 graded figure clears its edge under every variant that keeps it: the guarantee floors to 109,000 from 109,426 to 109,707
 before the thousand (SF38), the reservations sit 441 to 499 cores from their nearest-1,000 edges, and every ask figure
-at least 19 per cent of a bin from its edge (asserted at 15). The guarantee before the thousand itself (Critical
-Component 4, 109,492) and the parenthesised path figures of Component 3 (38,058 and 1,999) are the golden path's own
-numbers: the converging variants move them (109,426 to 109,707; 38,050 to 38,161; 1,982 to 2,079) while the call and
-every component to the thousand stay; they are frozen in this pass and flagged to the author. (3) Every ask's basis is
-closed by a cited sentence or an asserted data fact (SF20 to SF28, SF32 to SF37).
+at least 19 per cent of a bin from its edge (asserted at 15). The guarantee before the thousand (109,492) and the two
+platform forecasts to the core (38,058 and 1,999), which Critical Components 4 and 3 stated until 2026-10-15, are the
+golden path's own numbers: the converging variants move them (109,426 to 109,707; 38,046 to 38,161; 1,982 to 2,079)
+while the call and every component to the thousand stay, so the write-up and the goldens now state each figure at the
+precision every variant shares (`## Build record`, asserted). (3) Every ask's basis is closed by a cited sentence or an
+asserted data fact (SF20 to SF28, SF32 to SF37).
 
 ## Ladder
 
@@ -580,14 +581,23 @@ at the close.
   checks, 0 FAIL; `voice-check.py` PASS; `leak.py --asof 2026-12-14` REVIEW, no LEAK; `guard.py surface` 0 promoted
   pairs, `heart` WARN (`overuse.objective`, no BLOCK), `validate` clean; the container audit clean on `target/` and
   `golden/`. Next: the targeted re-read of the seven changed documents, then stage 5.
-- Open for the author, frozen in this pass: Critical Component 4 (109,492), the parenthesised figures of Component 3
-  (38,058 and 1,999) and the Final Recommendation's coefficients (2.9404 and 0.20804) are the golden path's own
-  numbers; the converging variants (SF14 to SF16, SF38, closure 8 and 19) move them (109,426 to 109,707; 38,050 to
-  38,161; 1,982 to 2,079; 2.9384 to 2.9404; 0.20799 to 0.20804) while the call and every component to the thousand
-  hold. Restated at the precision every variant shares (Component 4 as the 1.208 reservable cores each guaranteed
-  core takes, Component 3 without the parentheses, the coefficients as 2.94 and 0.208), they would move numbers in
-  blocks 1 and 2, which `freeze.py` holds in a determinism repair. Ask C's basis, filed in policy 2.2 since stage 4, is
-  the pair's main rubric exposure (`## Ask sheet`).
+- Write-up precision, 2026-10-15, a precision-only change to blocks 1 and 2 accepted by the main session (recorded for
+  the author) because the stated figures exceeded what every defensible variant shares: Critical Component 4 (109,492),
+  the parenthesised figures of Component 3 (38,058 and 1,999) and the Final Recommendation's coefficients (2.9404 and
+  0.20804) are the golden path's own numbers, and the converging variants (SF14 to SF16, SF38, closure 8 and 19, the
+  fit windows with machines installed) move them (109,426 to 109,707; 38,046 to 38,161; 1,982 to 2,079; 2.936 to
+  2.940; 0.20798 to 0.20804) while the call and every component to the thousand hold. Component 4 now states the 1.208
+  reservable cores each guaranteed core takes, Component 3 has no parentheses, and the coefficients read 2.94 and
+  0.208; the steps carry the same precision (no 33.1, 2.9404, 0.20804, 1,999, 109,492 or 38,058 in block 3), and the
+  goldens follow (the 2027 Q1 sheet's platform rows at the thousand only and its notes at 2.94, 0.208 and 1.208; the
+  cell-store sheet's terms as 33.1, 2.94 and 0.208 with the fitted column worked from them and the 2027 Q1 row at the
+  thousand; the slide's remainder as under 1,000). No graded figure, file under `target/` or `figures.json` value moved
+  (three keys added at the shared precision); `checks.py` asserts the shared precision under every converging variant
+  and that blocks 1 to 3 and the goldens' summary sheets state no path figure. Against the stage 4 freeze snapshot
+  only blocks 1 and 2's numbers moved (Final Recommendation 2.9404 and 0.20804 to 2.94 and 0.208; Critical Components
+  109,492, 38,058 and 1,999 out, 1.208 and 0.208 in); the `freeze.py` snapshot was retaken after this change, and later
+  determinism repairs are checked against it. Ask C's basis, filed in policy 2.2 since stage 4, is the pair's main
+  rubric exposure (`## Ask sheet`), accepted by the main session as recorded.
 
 ## Leak review
 
@@ -612,6 +622,11 @@ the demand note under sweep 4, and the chargeback policy at 5 of 6 call words). 
   landed about 121,000 to 122,000 (the default path); Q6 the platform forecast as the analytical choice, the plan read
   and the budget hold as rule application on lower rungs. Its REVIEW verdicts agree; its realism tells and readings are
   fixed or closed at stage 4 (`## Build record`, SF19 to SF38).
+- Targeted re-read (2026-10-15, the seven documents changed at stage 4): nothing quoted for Q1 to Q4; Q6 the platform
+  forecast as the analytical choice; its realism notes (CS-3's June 2026 additions, policy 2.2's "applied", the memo's
+  tenant and freeze lines, the demand note's figures, the dictionary's field set, three cost centres' September budget
+  steps) are recorded in the report and left, since each further rewording of a filed document risks reopening a
+  closed fork for no graded figure.
 
 ## Tried and rejected
 
