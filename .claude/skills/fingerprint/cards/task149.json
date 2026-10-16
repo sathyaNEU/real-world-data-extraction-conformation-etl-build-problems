@@ -1,0 +1,94 @@
+{
+  "task": "task149",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "wave 4, new; numbered from seed FC20 (next year's recordable injuries at the twenty ergonomics-programme sites, the figure the ergonomics vendor's contract is priced on), world, decision and quantity only; the seed's new-hire tenure mechanism is not used",
+  "domain": "epidemiology-public-health",
+  "subdomain": "health-burden-impact-modeling",
+  "client_domain": "epidemiology-public-health",
+  "niche": "a third-party logistics operator's fiscal 2027 forecast of OSHA recordable injuries at the twenty grocery distribution centres in its ergonomics programme, the count the ergonomics vendor's per-case price is applied to, when the FY2027 operating plan moves the centres' new client volume through fewer labour hours than their crews now take for that work",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G6",
+    "G13"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "the operator's director of environmental health and safety, who gives procurement the fiscal 2027 recordable-injury forecast the ergonomics vendor's per-case price is applied to",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "wfm_hours_by_dept_week_fy21_fy26.csv",
+    "rows": 0,
+    "entity": "one distribution centre's labour department in one fiscal week, with the hours worked by pay type as the workforce-management system closed the week",
+    "grain": "distribution centre x fiscal week x labour department",
+    "source": "synthetic (constructed in the layout of a workforce-management system's weekly labour-hours export)"
+  },
+  "forum": "executive_team",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "logistics_or_3pl",
+  "world": {
+    "geography": "United States (Ostrander Logistics, a fictional third-party logistics operator running grocery and consumer-goods distribution centres for retail clients in eleven states; its clients, its ergonomics vendor and its people are fictional)",
+    "currency": "USD",
+    "org_type": "third-party logistics operator (dedicated contract distribution centres for grocery retailers)",
+    "invented_names": [
+      "Ostrander Logistics",
+      "Lindqvist Ergonomics Group"
+    ],
+    "people": [
+      "Sherri Newton",
+      "Jesse Delgado",
+      "Kurt Gilbert",
+      "Nichole Sandoval",
+      "Tracy Curtis"
+    ]
+  },
+  "deliverables": [
+    "ergonomics_forecast_fy2027.xlsx",
+    "ergonomics_forecast_fy2027.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The hazard per unit of working time rises steeply with how fast a fixed content of work is done, measured against that work's engineered content and read within each unit, and a forward plan that fits more work into each hour concentrates it; carrying today's rate per hour, per item or per unit of engineered work onto the plan, reading the speed off raw item counts, or reading it across units rather than within each, under-counts where the plan raises the speed.",
+  "driver_concrete": "Ostrander's FY2027 operating plan gives the twenty programme DCs their new client accounts' cases at labour hours that imply each crew working faster against the engineered labour standards than it does today, and each DC's recordable rate per hour worked rises steeply with its pace against standard, read within each DC over fiscal 2021 to 2026, so the fiscal 2027 forecast is each DC's own rate at the pace its planned cases and hours imply, not its current rate per hour, per case or per standard hour, nor a pace read off cases per hour or across DCs.",
+  "stump": "A competent solver carries each programme DC's recordable rate per 200,000 hours worked from the latest twelve months onto its FY2027 planned hours and files about 800 recordables for fiscal 2027 against about 1,000; the step that lands it there is pricing every planned hour at today's rate, when the plan moves the new accounts' cases through hours that imply each crew working about a tenth faster against the engineered standards and the rate per hour rises steeply with that pace within each DC.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the EHS, labour and WMS exports, reads the recordkeeping procedure and the operating plan correctly and forecasts each DC as its recordable rate per hour worked (trailing, seasonal or multi-year) times its FY2027 planned hours files about 800 (or, at its rate per case or per standard hour times the plan's cases, about 850 to 900), because the plan's hours imply each crew working faster against the standards than today and the rate per hour rises steeply with that pace within every DC; only each DC's own rate at the pace its planned cases and hours imply files about 1,000.",
+  "domain_test": "The deciding quantity is each DC's recordable injury rate per 200,000 hours as a function of its crews' work pace against the engineered labour standards, the work-intensity exposure-response occupational epidemiology fits on person-time, applied to the pace the operating plan implies, the impact-modelling way (the burden under the shifted exposure, not today's burden scaled by hours); with another field's nouns there are no OSHA recordable cases, person-hours, engineered standards or selectors' pace for the response to attach to.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "epidemiology-public-health/health-burden-impact-modeling/2",
+  "layer1": [
+    "several sources for one picture: the EHS case export, the workforce-management hours, the WMS throughput, the engineered standards and the operating plan, each on its own keys and calendar",
+    "imperfect keys: DC numbers in the labour system, site names in the EHS system and location codes in the WMS, one DC re-coded after a client change",
+    "vintages and revisions: the EHS system migrated in 2024 with open cases carried across under new case numbers; the standards table versioned by effective date",
+    "units, time and scale: 4-4-5 fiscal periods in the plan against fiscal weeks in the history; UTC timestamps in the new EHS system against local dates in the old",
+    "real coverage: cases later found not work-related kept with a status; privacy cases with the name withheld; first-aid cases in the same export",
+    "documentation that has to be read: the recordkeeping procedure, the standards notes, the plan's notes"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task134": "task134's round-1 lineage times a conversion hazard by each member's time since entry over a pool a surge filled; here there is no clock or entry date: the rate per working hour moves with the pace the plan sets against the engineered labour standards, read within each DC, and the plan moves pace beyond where it runs today.",
+    "task452": "task452's v1 lineage builds a total from a sparsely sampled factor that rises with a recorded series and fills the unsampled intervals; here the rate is recorded in every week at every DC and the step is the rate's response to pace measured against the engineered content of the work, carried to a plan that sets a faster pace than the history ran."
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-16T11:31:44Z"
+}
