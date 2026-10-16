@@ -1,26 +1,48 @@
 {
   "task": "task151",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "general-statistics-data-science/resampling-simulation-monte-carlo-methods",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-16",
-  "stump": "Pricing each signing's plate-appearance bonuses off his projected 2027 plate appearances with a normal band from the projection's past misses accrues about half a million dollars too much; the step that lands it there is reading each player off his own record, earned higher in his old club's batting order and spread symmetrically, when his 2027 total is his new lineup slot's rate per start times the starts a winter-planned regular makes, a near-full season or a long injured-list block.",
+  "stump": "Pricing each signing's bonuses off the vendor's projected 2027 plate appearances with a normal band from the projection's past misses accrues $4,750,000; the step that lands it there is reading each player off his own record, earned higher in his old club's batting order and spread symmetrically, when his 2027 total is his new lineup slot's plate appearances per start times the starts a winter-planned regular makes, a near-full season or one long injured-list block, which accrues $3,500,000.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "driver 0.05 (task132, task105 v1 lineage); guard check WARN (overuse.objective, repeat.gate_g), answered in the design note"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-16",
+    "checks": 49
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK (2026-10-16; every REVIEW line answered in the design note's Build record)",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "WARN (overuse.objective, repeat.gate_g; answered under Draw)",
+    "nearest": "heart 0.06 (task105 v1 lineage), card driver 0.05 (task132); surface 0 promoted (nearest task38, task32, task147 at 0.100)"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: finish the design note (screen, fork table, ladder, closure, ask sheet), prompt.txt, precut.py",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "wave": "wave 4 (new), seed FC22 (world, decision and quantity kept; the filed projection method and the shared-slot driver dropped; pitfall re-found)"
+  "wave": "wave 4 (new), seed FC22 (world, decision and quantity kept; the filed projection method and the shared-slot driver dropped; pitfall re-found)",
+  "build": {
+    "checks": 173,
+    "verify": "agreeing",
+    "byte_identical": true,
+    "figures_check": "72 of 72",
+    "target_zip_sha256": "ffcfbe61fc303d98a876b3145cd8e58b6d365d9a55d07a6a1dbf6608992a7916",
+    "world_seed": 1511
+  }
 }

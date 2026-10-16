@@ -1,0 +1,223 @@
+{
+  "task": "task151",
+  "title": "How much a baseball club accrues at signing for the plate-appearance bonuses in five free-agent hitters' 2027 contracts, each bonus at its expected amount for the 2027 season",
+  "domain": "General Statistics & Data Science",
+  "client_domain": "General Statistics & Data Science",
+  "subdomain": "resampling-simulation-monte-carlo-methods (the expected value of stepped plate-appearance bonuses from the distribution of comparable whole seasons: the winter-planned regulars' seasons of starts, each read at the signing's 2027 lineup slot's plate appearances per start)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "a total accrual built from five players' accruals (fifteen bonus lines), a table of nine injured-list stints (date taken effect and regular-season days), a table of the plate-appearance bonuses paid for three seasons by player and in total, and a one-page memo",
+  "as_of": "2026-12-11",
+  "deliverables": [
+    "pa_bonus_accrual_2027.xlsx",
+    "pa_bonus_accrual_memo_2027.docx"
+  ],
+  "distractor_files": [
+    "hvbd_hitter_projections_2022_2027.csv",
+    "league_schedule_2027.csv"
+  ],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 20,
+    "formats": [
+      "csv",
+      "json",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "lsf_batting_2021_2024.txt",
+    "largest_file_rows": 184137
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task151/generator/build.py (seeded, deterministic) around a fictional 30-club professional baseball league, its clubs (the Raleigh Oaks among them), its statistics feed and league office, a fictional projection vendor and the club's own finance, payroll and baseball operations systems; no real league, club, player, vendor or person is depicted. Box-score conventions (plate-appearance components, lineup slots, doubleheader and suspended-game numbering) and injured-list mechanics follow common professional baseball practice.",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-16",
+  "generator": "task151/generator/build.py",
+  "files": [
+    {
+      "path": "FIN-14_player_compensation_accounting_policy.pdf",
+      "format": "pdf",
+      "bytes": 3453,
+      "rows": null,
+      "source": "Constructed: Triangle Baseball Club, LLC Finance Department, Accounting Policy FIN-14 Player Compensation (effective January 1, 2025)",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest_2026-12-11.csv",
+      "format": "csv",
+      "bytes": 2406,
+      "rows": 20,
+      "source": "Constructed: Raleigh Oaks Finance, manifest of the December 11, 2026 pull",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hvbd_hitter_projections_2022_2027.csv",
+      "format": "csv",
+      "bytes": 437764,
+      "rows": 4814,
+      "source": "Constructed: Harlan Voss Baseball Data (fictional vendor), preseason hitter projections 2022 to 2027",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hvbd_winter_depth_charts_2021_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 146392,
+      "rows": null,
+      "source": "Constructed: Harlan Voss Baseball Data (fictional vendor), projected depth charts, January 31 snapshots 2021 to 2026",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "league_calendar_2021_2027.csv",
+      "format": "csv",
+      "bytes": 515,
+      "rows": 7,
+      "source": "Constructed: League Statistics Feed, championship-season calendar 2021 to 2027",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "league_club_directory.csv",
+      "format": "csv",
+      "bytes": 2388,
+      "rows": 30,
+      "source": "Constructed: League Statistics Feed, club directory (platform team IDs, abbreviations, legacy codes)",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "league_office_il_report_2024_2026.csv",
+      "format": "csv",
+      "bytes": 630672,
+      "rows": 7369,
+      "source": "Constructed: League office, weekly injured-list report, championship seasons 2024 to 2026",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "league_rules_art22_injured_lists_excerpt.pdf",
+      "format": "pdf",
+      "bytes": 2900,
+      "rows": null,
+      "source": "Constructed: League office, League Rules (2024 edition) Article 22 Injured Lists, excerpt",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "league_schedule_2027.csv",
+      "format": "csv",
+      "bytes": 132798,
+      "rows": 2430,
+      "source": "Constructed: League office, 2027 championship-season schedule as published",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lsf_batting_2021_2024.txt",
+      "format": "txt",
+      "bytes": 14944944,
+      "rows": 184137,
+      "source": "Constructed: League Statistics Feed (fictional league), box-score batting lines 2021 to 2024, legacy layout (pipe-delimited archive export)",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lsf_batting_2025_2026.csv",
+      "format": "csv",
+      "bytes": 7442314,
+      "rows": 92038,
+      "source": "Constructed: League Statistics Feed (fictional league), box-score batting lines 2025 and 2026, platform layout",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lsf_feed_notes.txt",
+      "format": "txt",
+      "bytes": 3072,
+      "rows": null,
+      "source": "Constructed: League Statistics, field notes for the batting lines, crosswalk, club directory and calendar",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lsf_player_id_crosswalk.csv",
+      "format": "csv",
+      "bytes": 55530,
+      "rows": 1322,
+      "source": "Constructed: League Statistics Feed, legacy player code to League player ID crosswalk built at the 2025 platform change",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lsf_transactions_2024_2026.json",
+      "format": "json",
+      "bytes": 1637342,
+      "rows": 5479,
+      "source": "Constructed: League Statistics Feed, transaction wire January 1, 2024 to December 11, 2026 (JSON export)",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ral_depth_chart_2027.xlsx",
+      "format": "xlsx",
+      "bytes": 6050,
+      "rows": null,
+      "source": "Constructed: Raleigh Oaks Baseball Operations, 2027 depth chart as of December 10, 2026",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ral_hris_legacy_employee_map.csv",
+      "format": "csv",
+      "bytes": 2222,
+      "rows": 50,
+      "source": "Constructed: Raleigh Oaks HRIS, legacy employee number map from the January 2025 migration",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ral_payroll_earning_codes.csv",
+      "format": "csv",
+      "bytes": 658,
+      "rows": 13,
+      "source": "Constructed: Raleigh Oaks HRIS payroll, earning codes (legacy payroll and HRIS)",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ral_payroll_player_earnings_2023_2026.csv",
+      "format": "csv",
+      "bytes": 100806,
+      "rows": 1363,
+      "source": "Constructed: Raleigh Oaks HRIS payroll, player earnings register, pay dates January 2023 to December 11, 2026",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ral_player_contract_register_2024_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 9425,
+      "rows": null,
+      "source": "Constructed: Raleigh Oaks Finance and Baseball Operations, player contract register extract, 2024 to 2026 seasons",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "term_sheets_2027_free_agent_hitters.pdf",
+      "format": "pdf",
+      "bytes": 4473,
+      "rows": null,
+      "source": "Constructed: Raleigh Oaks Baseball Operations, summary of terms of the five free-agent hitters signed for 2027",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

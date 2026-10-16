@@ -1,0 +1,197 @@
+{
+ "call": {
+  "total": "$3,500,000",
+  "total_unrounded": "$3,495,938"
+ },
+ "critical_components": {
+  "per_player": {
+   "Jairo Calderón": "$700,000",
+   "Kevin Weeks": "$800,000",
+   "Ramon Figueroa": "$800,000",
+   "Eric Dobbs": "$600,000",
+   "Dylan Harlow": "$600,000"
+  },
+  "slots_2027": {
+   "Jairo Calderón": "fourth",
+   "Kevin Weeks": "fifth",
+   "Ramon Figueroa": "sixth",
+   "Eric Dobbs": "seventh",
+   "Dylan Harlow": "ninth"
+  },
+  "slots_old": {
+   "Jairo Calderón": "fourth",
+   "Kevin Weeks": "second",
+   "Ramon Figueroa": "third",
+   "Eric Dobbs": "first",
+   "Dylan Harlow": "first"
+  }
+ },
+ "steps": {
+  "batting_lines": "276,175",
+  "planned_seasons": "1,440",
+  "first_season": "2021",
+  "last_season": "2026",
+  "rate_first": "4.73",
+  "rate_ninth": "3.84",
+  "rates": {
+   "fourth": "4.38",
+   "fifth": "4.26",
+   "sixth": "4.15",
+   "seventh": "4.05",
+   "ninth": "3.84"
+  },
+  "under_100": "242",
+  "full_155": "379",
+  "thresholds": [
+   "100",
+   "155"
+  ],
+  "rate_first_1dp": "4.7",
+  "rate_ninth_1dp": "3.8",
+  "line_probabilities": {
+   "Jairo Calderón": [
+    "78.3%",
+    "70.6%",
+    "50.8%"
+   ],
+   "Kevin Weeks": [
+    "76.3%",
+    "61.0%",
+    "37.9%"
+   ],
+   "Ramon Figueroa": [
+    "69.9%",
+    "57.6%",
+    "33.9%"
+   ],
+   "Eric Dobbs": [
+    "61.0%",
+    "45.5%",
+    "1.2%"
+   ],
+   "Dylan Harlow": [
+    "71.8%",
+    "59.7%",
+    "34.7%"
+   ]
+  },
+  "per_player_unrounded": {
+   "Jairo Calderón": "$698,785",
+   "Kevin Weeks": "$788,750",
+   "Ramon Figueroa": "$806,597",
+   "Eric Dobbs": "$603,556",
+   "Dylan Harlow": "$598,250"
+  }
+ },
+ "references": {
+  "fin14_sections": [
+   "4.2",
+   "4.3",
+   "4.4"
+  ],
+  "rounding_total": "$250,000",
+  "rounding_player": "$100,000"
+ },
+ "rivals": {
+  "default": "$4,750,000",
+  "opening_day": "$3,250,000",
+  "old_slot": "$4,500,000"
+ },
+ "deliverables": {
+  "stints": [
+   {
+    "player": "Jairo Calderón",
+    "took_effect": "May 4, 2024",
+    "days": "66"
+   },
+   {
+    "player": "Eric Dobbs",
+    "took_effect": "May 18, 2024",
+    "days": "11"
+   },
+   {
+    "player": "Eric Dobbs",
+    "took_effect": "June 2, 2024",
+    "days": "14"
+   },
+   {
+    "player": "Dylan Harlow",
+    "took_effect": "August 9, 2024",
+    "days": "9"
+   },
+   {
+    "player": "Ramon Figueroa",
+    "took_effect": "August 15, 2024",
+    "days": "13"
+   },
+   {
+    "player": "Dylan Harlow",
+    "took_effect": "March 25, 2025",
+    "days": "15"
+   },
+   {
+    "player": "Ramon Figueroa",
+    "took_effect": "June 13, 2026",
+    "days": "76"
+   },
+   {
+    "player": "Kevin Weeks",
+    "took_effect": "July 8, 2026",
+    "days": "14"
+   },
+   {
+    "player": "Jairo Calderón",
+    "took_effect": "September 11, 2026",
+    "days": "17"
+   }
+  ],
+  "paid": [
+   {
+    "season": "2024",
+    "rows": [
+     [
+      "Carson Bickford",
+      "$420,000"
+     ],
+     [
+      "Andrés Acevedo",
+      "$300,000"
+     ]
+    ],
+    "total": "$720,000"
+   },
+   {
+    "season": "2025",
+    "rows": [
+     [
+      "Zach Strickland",
+      "$225,000"
+     ],
+     [
+      "Shota Nakagawa",
+      "$100,000"
+     ]
+    ],
+    "total": "$325,000"
+   },
+   {
+    "season": "2026",
+    "rows": [
+     [
+      "Elijah Mosley",
+      "$187,500"
+     ],
+     [
+      "Shota Nakagawa",
+      "$150,000"
+     ],
+     [
+      "Kody Bagwell",
+      "$87,500"
+     ]
+    ],
+    "total": "$425,000"
+   }
+  ]
+ }
+}
