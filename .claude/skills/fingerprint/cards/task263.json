@@ -1,0 +1,84 @@
+{
+  "task": "task263",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "seed DA13 (PFAS treatment-design grants down a priority list under a $36 million fund): world, decision and quantity kept; the seed's mechanism rows not read; the pitfall re-found from the data as the unmixing of entry-point blends into the wells' own levels",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "a state drinking water revolving fund's 2027 PFAS treatment-design grants, sized on the wells whose own water carries PFOA or PFOS above 4.0 ng/L, when compliance sampling sees only entry-point blends of the wells pumping at collection",
+  "objective": "descriptive-distribution",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G3"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "the state drinking water program's revolving-fund manager, who takes the 2027 PFAS design-grant list to the state's drinking water infrastructure board on 18 February 2027",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "pfas_compliance_results_2025-2026.csv",
+    "rows": 0,
+    "entity": "one analyte result of one compliance or confirmation sample at one entry point",
+    "grain": "sample x analyte",
+    "source": "synthetic (constructed in the layout of a state PFAS compliance-monitoring export under EPA Method 533)"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "United States, an unnamed Upper Midwest state (invented state drinking water program, revolving fund and twenty water systems)",
+    "currency": "USD",
+    "org_type": "state drinking water program administering the drinking water state revolving fund",
+    "invented_names": [],
+    "people": [
+      "Judy Carey",
+      "Lynn Whitaker"
+    ]
+  },
+  "deliverables": [
+    "pfas_design_grants_2027.xlsx",
+    "pfas_design_grants_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is each source's own level when the level is measured only in mixtures of the sources running at the moment of measurement, in proportions that change from one measurement to the next; giving every source in an over-the-line mixture the mixture's level, or giving each source the average of the mixtures it ran in, credits clean sources with their partners' level and over-sizes the funded need, and only solving the mass balance across mixtures separates the sources.",
+  "driver_concrete": "Each well's own PFOA and PFOS has to be recovered from entry-point samples that blend the wells pumping at collection, in proportions set by their pump rates and shifted as operators rotate the wells, by a mass balance across a system's samples; counting every well at an entry point with a result above 4.0 ng/L, or giving each well the average of the samples it ran in, counts clean wells as over the line, inflates each grant and stops the list short.",
+  "stump": "A strong analyst counts treatment capacity at every active well serving an entry point with a PFOA or PFOS result above 4.0 ng/L, sizes the grants on it and walks the list until a grant no longer fits, so the $36 million reaches fewer systems, when only the wells whose own water, solved from the blends, is above 4.0 need treating and the fund reaches further down the list.",
+  "stump_class": "analytical",
+  "analyst_test": "An analyst who reads every rule and field correctly takes an entry point's results as the water of every well that feeds it (the state's own compliance unit), counts every active well at an entry point with a result over 4.0 ng/L, sizes each grant at $2.4 million per MGD of those wells capped at $6 million, and walks the list to a shorter funded slate, when the wells' own levels, unmixed from the blends, leave clean wells out and the fund reaches more systems.",
+  "domain_test": "The deciding quantity is each well's own PFAS level apportioned from entry-point samples that blend the wells pumping at collection, the environmental field's mass-balance source apportionment (an inversion of mixtures of known proportions, the top-down step of a contaminant source inventory); with another field's nouns there are no flow-weighted blends of sources with recorded proportions to invert, and the call no longer reads the same.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task187": "task187 reads each grid unit's output shortfall at matched input spread, a curved, capped response averaged over a spread of inputs; task263 inverts flow-weighted mixtures of sources with recorded proportions into each source's own level by a linear mass balance across samples: no response curve, no spread, no cap",
+    "task48": "task48 recovers a population invisible at the monitor's grain by aggregating transactions up to a pair grain; task263 disaggregates measured blends down to their sources by solving the mass balance across many samples whose proportions differ, the opposite move"
+  },
+  "lineage": [],
+  "notes": "Drawn 2026-10-16 by sathay3012 (wave 3, Descriptive). Seed DA13 keeps the world (a state revolving fund's $36 million of PFAS treatment-design grants for 2027), the decision (how far the fund reaches down its priority list) and the quantity (treatment capacity at the sources whose own water is over 4.0 ng/L); its mechanism rows were not read. overuse.org_family WARN answered: a state drinking water program is a government agency, the honest key; the forcing event is the 2027 intended use plan the state files for its capitalization grant.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:mass-balance unmixing of blended samples",
+  "layer1": [
+    "censored lab results with qualifiers (less-than values at the laboratories' reporting limits)",
+    "mixed units and bases (the national results in micrograms per litre, the state's in nanograms per litre)",
+    "site ids that differ across systems (federal facility and sample-point ids against the state's entry-point codes)",
+    "QC samples among field results (field reagent blanks and field duplicates)",
+    "provisional and approved records overlap (laboratory revisions kept beside the results they replace)"
+  ],
+  "registered": "2026-10-16T22:32:11Z"
+}

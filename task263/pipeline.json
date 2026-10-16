@@ -1,0 +1,39 @@
+{
+  "task": "task263",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-16",
+  "stump": "A strong analyst counts treatment capacity at every active well serving an entry point with a PFOA or PFOS result above 4.0 ng/L (or gives each well the level of the samples taken while it pumped), sizes each grant on it and walks the priority list until a grant no longer fits, so the $36 million stops short, when only the wells whose own water, solved from the entry-point blends by a mass balance, is above 4.0 ng/L need treating and the fund reaches further down the list.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task181 v1 lineage 0.08"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: prototype the world (wells, entry points, rotations, true levels) so the default path and the golden part on the systems reached; then the full design note to precut",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "seed": "analytical_tasks/03_descriptive_distribution/DA13_pfas-design-grants-blend-down-source-sets.md (header and Situation only)"
+}
