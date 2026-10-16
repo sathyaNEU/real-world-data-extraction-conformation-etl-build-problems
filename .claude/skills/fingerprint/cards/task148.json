@@ -6,13 +6,13 @@
   "domain": "urban-regional-science",
   "subdomain": "municipal-service-demand-resource-allocation",
   "client_domain": "urban-regional-science",
-  "niche": "a consolidated county 911 center's FY2028 staffing request: in which months of fiscal 2028 the Friday and Saturday late shift (22:00 to 02:00) will fall short of answering 90 per cent of 911 calls within 15 seconds with the four funded call-takers, so a seasonal fifth call-taker is funded for those months, when the regional 911 board's forecast adds the wireless calls a neighbouring township's NG911 re-routing brings and 911 callers hang up when they wait",
+  "niche": "a consolidated county 911 center's FY2028 staffing request: in which months of fiscal 2028 the Friday and Saturday late shift (22:00 to 02:00) will fall short of answering 90 per cent of 911 calls within 15 seconds with the four funded call-takers, once the state grant paying a fifth ends, so a seasonal fifth call-taker is funded for those months, when the regional 911 board's forecast adds a township whose 911 service moves over from the neighbouring county and 911 callers hang up when they wait",
   "objective": "forecasting",
   "shape": "02",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "July 2027, August 2027 and June 2028 fall below 90 per cent with four call-takers (88, 89 and 89 per cent; September 2027 and May 2028 at 91, the other months 93 to 95): a seasonal fifth call-taker for those three months",
+  "answer_source": "submission.md block 1 and generator/figures.json call.months_short, built 2026-10-16 (stage 3)",
   "gap": [
     "time",
     "population"
@@ -35,24 +35,26 @@
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "acd_call_detail_2023-01_2026-09 (the agency's ACD detail export: the legacy CSV to the May 2025 NG911 cutover, then the i3 JSON log)",
-    "rows": 1400000,
+    "file": "acd_call_detail (the agency's ACD detail export, January 2025 to September 2026: the legacy CSV to the 13 May 2025 NG911 cutover, then the i3 JSON Lines log)",
+    "rows": 418817,
     "entity": "one 911 call presented to the agency's ACD queue, with the time it was presented, answered or abandoned, and the call-taker's release and ready times",
     "grain": "call",
-    "source": "constructed (in the layout of a PSAP call-handling system's ACD detail export, legacy CSV then NG911 i3 JSON)"
+    "source": "constructed (in the layout of a PSAP call-handling system's ACD detail export, legacy CSV then NG911 i3 JSON Lines)"
   },
   "forum": "board_of_directors",
   "forcing_event": "budget_or_appropriation",
   "org_family": "local_government",
   "world": {
-    "geography": "United States (Calder County, a fictional county; its consolidated 911 agency and regional board are fictional)",
+    "geography": "United States (Tavish County, a fictional county; its consolidated 911 agency and regional board are fictional)",
     "currency": "USD",
     "org_type": "a consolidated county emergency communications agency (primary public safety answering point)",
     "invented_names": [
-      "Calder Valley Emergency Communications Agency",
-      "Calder County",
-      "Calder Valley Regional 911 Board",
-      "Bellmont Township"
+      "Tavish County Emergency Communications Agency",
+      "Tavish County",
+      "Tri-County Regional 911 Board",
+      "Halvorsen Township",
+      "Wexley County Emergency Communications",
+      "City of Tamsen"
     ],
     "people": [
       "Leon Carpenter",
@@ -64,24 +66,24 @@
   },
   "deliverables": [
     "late_shift_staffing_fy2028.xlsx",
-    "late_shift_board_note.pdf"
+    "late_shift_compliance_fy2028.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "Units waiting for a service leave when the wait outlasts their own patience, so the queue each new unit meets is drained by those who give up; a model in which every unit waits until served overstates every wait, and the patience that sets the drain is seen in full only for the units that left, the served ones showing only a lower bound, so it has to be estimated over every unit's wait, not from the leavers' waits alone, which make units look far less patient and the service better than it will be.",
-  "driver_concrete": "Calder Valley's late-shift 911 callers hang up after about 40 seconds on average: the ACD log times every call's wait and marks the hang-ups, so the callers' patience is the total time every call waited over the number that hung up, not the average wait of the calls that hung up (about 17 seconds); Erlang A with that patience, the call-takers' busy time from answer to ready and the board's FY2028 hourly forecast puts only the summer months' late shift below 90 per cent within 15 seconds with four call-takers, where Erlang C puts nearly every month below and the hang-ups' own waits leave no month short.",
-  "stump": "A strong solver runs the standard Erlang C staffing model on the board's FY2028 late-shift forecast with the measured busy time and four call-takers, finds nearly every month below the 90 per cent answer standard and asks for a full-year fifth call-taker; the step that lands it there is treating every caller as waiting until answered, when 911 callers hang up after about 40 seconds and those who leave shorten the wait for those who stay, so only the summer months fall short (about 86 to 88 per cent) and a seasonal fifth call-taker covers them.",
+  "driver_concrete": "Tavish County's 911 callers would hold on about 160 seconds on average: the ACD log times every call's wait and marks the hang-ups, so the callers' patience is the total time every call waited over the number that hung up (161.4 seconds), not the average wait of the calls that hung up (45.6 seconds); Erlang A with that patience, the call-takers' busy time from answer to ready (227.0 seconds) and the board's FY2028 hourly forecast puts only June, July and August below 90 per cent within 15 seconds with four call-takers, where Erlang C puts May to September below and the hang-ups' own waits leave no month short.",
+  "stump": "A strong solver runs the standard Erlang C staffing model on the board's FY2028 late-shift forecast with the measured busy time and four call-takers, finds May to September below the 90 per cent answer standard (July 2027 84 per cent) and asks for a fifth call-taker for those five months; the step that lands it there is treating every caller as waiting until answered, when 911 callers would hold on about 160 seconds and those who hang up shorten the wait for those who stay, so only June, July and August fall short (July 88 per cent) and a seasonal fifth call-taker covers them.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins the legacy and NG911 ACD exports, reads the call-answering standard and the board's volume forecast correctly and runs Erlang C on each month's forecast late-shift hours with the measured busy time and four call-takers files nearly every month below 90 per cent and a full-year fifth call-taker; modelling the hang-ups with the patience read off the abandoned calls' own waits files no month short; only Erlang A with the patience estimated over every call's wait, censored where the call was answered, puts the summer months below 90 and the rest above.",
+  "analyst_test": "A strong analyst who joins the legacy and NG911 ACD exports, reads the call-answering standard and the board's volume forecast correctly and runs Erlang C on each month's forecast late-shift hours with the measured busy time and four call-takers files five months below 90 per cent, May to September, and a fifth call-taker for them; modelling the hang-ups with the patience read off the abandoned calls' own waits files no month short; carrying fiscal 2026's observed compliance forward (five call-takers) files no month short; only Erlang A with the patience estimated over every call's wait, censored where the call was answered, puts June, July and August below 90 and the rest above.",
   "domain_test": "The deciding quantity is each month's late-shift 911 answer-time compliance under the call-answering standard with the funded call-takers, which a PSAP staffing analysis computes from a queueing model of its own calls; because 911 callers hang up, the model is Erlang A calibrated on the agency's ACD log with patience estimated over censored waits; with another field's nouns there is no 15-second 911 answer standard, no call-taker busy time running to the CAD entry, no hang-up behaviour of 911 callers and no NG911 re-routing for the forecast to carry.",
   "layer2_family": "allocation_constraints",
   "layer2_pattern": "own:queue-with-reneging-censored-patience",
   "layer1": [
-    "the ACD detail export in two layouts across the May 2025 NG911 cutover: legacy CSV in local time to the second, then the i3 JSON log in UTC with milliseconds, three days logged by both",
-    "transferred-in calls from the neighbouring PSAP presented with their own arrival time here, and test calls from the carrier in the same export",
+    "the ACD detail export in two layouts across the 13 May 2025 NG911 cutover: legacy CSV in local time to the second, then the i3 JSON Lines log in UTC with milliseconds, wireline calls on the legacy trunks to 16 May so both files carry those days with different calls",
+    "transferred-in calls from other PSAPs presented with their own arrival time, test calls answered by the i3 test responder, and redials after hang-ups in the same export",
     "the late shift running across midnight and across daylight-saving changes, so a Friday shift ends on Saturday",
-    "the call-takers' state log (logged in, ready, not ready) beside the call detail, on its own keys",
-    "the regional board's volume forecast by month, day type and hour in its own workbook layout"
+    "the floor roster by block and night, a block past midnight dated by the evening it starts",
+    "the regional board's volume forecast as a long table for four PSAPs by month, day and hour beginning, a FY2027 sheet beside the FY2028 one"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
@@ -120,6 +122,6 @@
       "driver_concrete": "Many of the bank's borrowers are owner-operators who personally guarantee a 7(a) loan on each of several businesses under cross-default, so when one business fails the bank accelerates every loan the guarantor stands behind; each performing FY2019-21 loan's default hazard is the union of its guarantor group's business failure hazards at each business's own months on book, estimated on loans standing alone, the 1,561 businesses financed outside the pool included (1,403 of them in FY2026 and only now entering their peak years)."
     }
   ],
-  "notes": "Architecture 2 drawn 2026-10-16 after architecture 1's stage 4 SEND_BACK. Personas from guard.py names --geo 'United States' --seed 148 --n 16, skipping the five architecture 1 used and first names already on file. Strategy 'other': a queueing model with reneging (Erlang A) against the standard Erlang C, calibrated with patience estimated over censored waits.",
+  "notes": "Architecture 2 drawn 2026-10-16 after architecture 1's stage 4 SEND_BACK. Personas from guard.py names --geo 'United States' --seed 148 --n 40, skipping the five architecture 1 used and first names already on file. Strategy 'other': a queueing model with reneging (Erlang A) against the standard Erlang C, calibrated with patience estimated over censored waits.",
   "registered": "2026-10-16T15:08:42Z"
 }

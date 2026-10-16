@@ -1,0 +1,139 @@
+{
+ "call": {
+  "months_short": [
+   "July 2027",
+   "August 2027",
+   "June 2028"
+  ],
+  "fifth_call_taker_months": 3
+ },
+ "fiscal_2028_compliance_pct": {
+  "July 2027": 88,
+  "August 2027": 89,
+  "September 2027": 91,
+  "October 2027": 93,
+  "November 2027": 94,
+  "December 2027": 93,
+  "January 2028": 94,
+  "February 2028": 95,
+  "March 2028": 94,
+  "April 2028": 93,
+  "May 2028": 91,
+  "June 2028": 89
+ },
+ "fiscal_2028_compliance_unrounded": {
+  "Jul 2027": 88.067,
+  "Aug 2027": 88.915,
+  "Sep 2027": 91.107,
+  "Oct 2027": 92.962,
+  "Nov 2027": 94.058,
+  "Dec 2027": 92.877,
+  "Jan 2028": 94.019,
+  "Feb 2028": 94.944,
+  "Mar 2028": 94.093,
+  "Apr 2028": 92.897,
+  "May 2028": 91.038,
+  "Jun 2028": 88.973
+ },
+ "parameters": {
+  "busy_time_s": 227.0,
+  "patience_s": 161.4,
+  "hangups_own_wait_s": 45.6,
+  "calls_911": 417086,
+  "abandoned_911": 7651,
+  "call_takers": 4,
+  "standard_pct": 90,
+  "seconds": 15,
+  "misdial_seconds": 5
+ },
+ "rivals": {
+  "erlang_c_july_pct": 84,
+  "erlang_c_months_short": [
+   "July 2027",
+   "August 2027",
+   "September 2027",
+   "May 2028",
+   "June 2028"
+  ],
+  "hangups_wait_july_pct": 91
+ },
+ "backtest_fy2026": {
+  "observed_pct": 95.2,
+  "erlang_a_pct": 95.3,
+  "erlang_c_pct": 93.7,
+  "hangups_wait_pct": 96.4,
+  "hangups_observed_pct": 1.7,
+  "hangups_erlang_a_pct": 1.7,
+  "hangups_biased_pct": 2.8,
+  "params_busy_s": 226.5,
+  "params_patience_s": 157.5
+ },
+ "ask_a": {
+  "Q1": {
+   "reached": 1473,
+   "transferred_to_wexley": 1304
+  },
+  "Q2": {
+   "reached": 1249,
+   "transferred_to_wexley": 1126
+  },
+  "Q3": {
+   "reached": 1104,
+   "transferred_to_wexley": 1001
+  },
+  "Q4": {
+   "reached": 1265,
+   "transferred_to_wexley": 1154
+  }
+ },
+ "ask_b": {
+  "January 2026": {
+   "share_pct": 54.9,
+   "abandoned": 213,
+   "dialled_within_2_min": 117
+  },
+  "February 2026": {
+   "share_pct": 55.3,
+   "abandoned": 141,
+   "dialled_within_2_min": 78
+  },
+  "March 2026": {
+   "share_pct": 51.4,
+   "abandoned": 245,
+   "dialled_within_2_min": 126
+  },
+  "April 2026": {
+   "share_pct": 53.6,
+   "abandoned": 220,
+   "dialled_within_2_min": 118
+  },
+  "May 2026": {
+   "share_pct": 48.3,
+   "abandoned": 379,
+   "dialled_within_2_min": 183
+  },
+  "June 2026": {
+   "share_pct": 51.6,
+   "abandoned": 496,
+   "dialled_within_2_min": 256
+  }
+ },
+ "years": [
+  2025,
+  2026,
+  2027,
+  2028
+ ],
+ "late_shift": "22:00 to 02:00",
+ "references": {
+  "service": "911",
+  "procedure": "SOP 2.10",
+  "sections": [
+   "2",
+   "3.3",
+   "4.2",
+   "5",
+   "6"
+  ]
+ }
+}

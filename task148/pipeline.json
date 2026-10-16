@@ -1,28 +1,28 @@
 {
   "task": "task148",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "urban-regional-science/municipal-service-demand-resource-allocation",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-16",
-  "stump": "Running the standard Erlang C staffing model on the board's FY2028 late-shift forecast with the measured busy time and four call-takers puts eleven of the twelve months below the 90 per cent standard (July 2027 about 72 per cent) and asks for a full-year fifth call-taker; the step that lands it there is treating every caller as waiting until answered, when Calder Valley's late-shift callers hang up after about 40 seconds and those who leave shorten the wait for those who stay, so only the summer months fall short (July about 86 per cent), and the patience must be measured over every call's wait, not from the hang-ups' own waits, which leave no month short.",
+  "stump": "Running the standard Erlang C staffing model on the board's FY2028 late-shift forecast with the measured busy time and four call-takers puts five months, May to September, below the 90 per cent standard (July 2027 84 per cent) and asks for a fifth call-taker from May to September; the step that lands it there is treating every caller as waiting until answered, when Tavish County's callers would hold on about 160 seconds on average and those who hang up shorten the wait for those who stay, so only June, July and August fall short (July 88 per cent), and the patience must be measured over every call's wait, not from the hang-ups' own waits (46 seconds), which leave no month short.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-16"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-16 (4 lines answered in the note's Build record; no LEAK)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN 2026-10-16 (repeat.gate_g, overuse.gate_g, repeat.question_form; answered in the note)",
     "nearest": "0.08 task500 v1 lineage, 0.07 task119 v2",
     "note": "architecture 2 registered 2026-10-16: guard WARN repeat.gate_g, repeat.decision, repeat.question_form, answered in the note; task254 v2 and task501 v2 differentiated (same-driver older signature)",
-    "surface": ""
+    "surface": "exit 0, 0 promoted pairs (2026-10-16)"
   },
   "judge": {
     "verdict": "",
@@ -31,7 +31,7 @@
     "brief": ""
   },
   "returned": [],
-  "resume": "stage 2 design for architecture 2: readability screen, semantic fork table, ladder with built magnitudes, closure table, literal reader, oracles, the asks (supplemental-stumping), prompt.txt, precut; then the generator (ACD log in two layouts, the regional board's forecast, the SOP, the CHE location records, the callback log) and stage 3",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
