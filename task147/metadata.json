@@ -3,7 +3,7 @@
   "title": "Which 2027 festival roster week gets the staffing agency's block of temporary room attendants at a 480-room city hotel, forecast on the 1 July book with two concert nights already full",
   "domain": "Supply Chain & Logistics",
   "client_domain": "General Statistics & Data Science",
-  "subdomain": "resampling-simulation-monte-carlo-methods (the bookings still to come forecast on the booking process's independent unit, the stay, a block of consecutive nights taken only if every night has a room)",
+  "subdomain": "resampling-simulation-monte-carlo-methods (the bookings still to come simulated on the booking process's independent unit, the stay, a block of consecutive nights taken only if every night has a room: each past season's later bookings replayed whole against this year's book, the seasons the replicates)",
   "objective": "Forecasting & Predictive Modeling",
   "prompt_shape": "pick one of five roster weeks with its forecast room-nights above capacity to the nearest hundred and the next week with its own figure, a one-page note with the nightly forecast chart, and two tables from August 2026 (services and overtime by roster week; the block's billable hours and charge by day)",
   "as_of": "2027-07-01",
@@ -28,7 +28,7 @@
       "xlsx"
     ],
     "largest_file": "pms_reservations_extract_2027-07-01.csv",
-    "largest_file_rows": 361527
+    "largest_file_rows": 360694
   },
   "sources": [
     {
@@ -143,7 +143,7 @@
     {
       "path": "night_audit_statistics_2022-2027.xlsx",
       "format": "xlsx",
-      "bytes": 160142,
+      "bytes": 160121,
       "rows": null,
       "source": "Constructed: The Weighhouse Hotel night audit, daily statistics 1 January 2022 to 30 June 2027",
       "date": "2027-07-01",
@@ -161,8 +161,8 @@
     {
       "path": "pms_amendment_log_2027-07-01.csv",
       "format": "csv",
-      "bytes": 1140220,
-      "rows": 17904,
+      "bytes": 1139375,
+      "rows": 17888,
       "source": "Constructed: The Weighhouse Hotel property management system, amendment log of date and guest-count changes",
       "date": "2027-07-01",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -188,8 +188,8 @@
     {
       "path": "pms_reservations_extract_2027-07-01.csv",
       "format": "csv",
-      "bytes": 34504136,
-      "rows": 361527,
+      "bytes": 34427006,
+      "rows": 360694,
       "source": "Constructed: The Weighhouse Hotel property management system, reservation extract of 06:12 on 1 July 2027, one row per room reserved for arrivals from 1 January 2022",
       "date": "2027-07-01",
       "license": "CC0-1.0 (original work, constructed for this task)"

@@ -10,6 +10,7 @@ import json
 import os
 
 import matplotlib
+import numpy as np
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt               # noqa: E402
@@ -51,7 +52,8 @@ def compute(target):
                 pick_fig=K.round_to(L["gw"][L["pick"]], 100), runner_fig=K.round_to(L["gw"][L["runner"]], 100),
                 default_pick=C.top(L["default"])[0], default_fig=K.round_to(max(L["default"]), 100),
                 default_runner_fig=K.round_to(sorted(L["default"])[-2], 100),
-                thru_w3=K.round_to(cm["thru_w3"], 10), nightly=[float(x) for x in L["g"]])
+                thru_w3=K.round_to(cm["thru_w3"], 10), freed_fig=K.round_to(float(np.mean(cm["freed"])), 10),
+                nightly=[float(x) for x in L["g"]])
 
 
 def n0(v):
@@ -81,6 +83,7 @@ def figures(c):
             "past_seasons": "2022 to 2026",
             "comparable_point": "the Thursday five weeks before each year's opening night",
             "blocked_stays_room_nights_concert_week": n0(c["thru_w3"]),
+            "rooms_the_full_nights_release_a_night": n0(c["freed_fig"]),
         },
         "default_path": {"week": C.WEEK_NAMES[c["default_pick"]], "room_nights": n0(c["default_fig"]),
                          "its_runner_up_room_nights": n0(c["default_runner_fig"])},
@@ -165,17 +168,20 @@ def write_note(path, c, png):
          Paragraph("The concert week looks the biggest on a night-by-night pickup, which puts it at about %s, but "
                    "Friday 13 and Saturday 14 August are already full with the two stadium concerts. Many of that "
                    "week's late bookings in past Augusts were festival guests staying the week, and a stay is only "
-                   "sold if every night of it has a room, so this year they cannot book through the concert nights: "
-                   "in the last five seasons the stays booked after the confirmation date that ran through the same "
-                   "Friday and Saturday carried about %s room-nights of the week's other five nights. Taking them "
-                   "out leaves the concert week at about %s, its two full nights and little else. The closing "
-                   "week has no full night and keeps its usual late bookings." % (
-                       n0(c["default_fig"]), n0(c["thru_w3"]), n0(c["runner_fig"])), DOC.BODY),
+                   "sold if every night of it has a room: in the last five seasons the stays booked after the "
+                   "confirmation date that ran through the same Friday and Saturday carried about %s room-nights of "
+                   "the week's other five nights. Replayed stay by stay against this morning's book, each of those "
+                   "seasons' later bookings finds room on the concert nights only in the rooms those nights' own "
+                   "bookings will give back, about %s a night (half the rooms are prepaid at the event rate), which "
+                   "leaves the concert week at about %s, its two full nights and little else. The closing week has no "
+                   "full night and keeps its usual late bookings." % (
+                       n0(c["default_fig"]), n0(c["thru_w3"]), n0(c["freed_fig"]), n0(c["runner_fig"])), DOC.BODY),
          Spacer(1, 4),
          Image(io.BytesIO(png), width=16.6 * cm, height=16.6 * cm * 3.05 / 7.0),
          Paragraph("Forecast occupied rooms each night, Monday 26 July to Sunday 29 August 2027: the book at 06:12 on "
-                   "1 July realised at each night's rate in 2022 to 2026, plus the stays booked after the confirmation "
-                   "date in those seasons (aligned on the festival's opening), less those through the two full nights. "
+                   "1 July realised at each night's rate in 2022 to 2026, plus each of those seasons' bookings made "
+                   "after its confirmation date (aligned on the festival's opening) replayed whole, in booking order, "
+                   "against the book, a stay taken only if every night of it has a room; the mean of the five seasons. "
                    "The full nights at 480 rooms less the event rate's no-shows.", DOC.SMALL),
          Spacer(1, 6),
          Paragraph("Room-nights above capacity are each night's occupied rooms above 380 summed over the week (HK-04 "

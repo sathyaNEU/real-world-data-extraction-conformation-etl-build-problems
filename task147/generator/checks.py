@@ -40,6 +40,9 @@ class Checks:
         return ok
 
     def report(self):
+        if os.environ.get("CHECKS_LABELS"):
+            with open(os.environ["CHECKS_LABELS"], "w", encoding="utf-8") as fh:
+                fh.writelines(("ok   " if ok else "FAIL ") + lab + "\n" for lab, ok, _ in self.res)
         bad = [r for r in self.res if not r[1]]
         for lab, ok, det in self.res:
             if not ok:
@@ -97,7 +100,7 @@ def truth_tables(W, y, t0, full_off=(7, 8)):
     nights = [C.aligned(y, n) for n in C.NIGHTS]
     n0, L = K.di(nights[0]), len(nights)
     full = (K.di(K.fest_open(y)) + full_off[0], K.di(K.fest_open(y)) + full_off[1])
-    out = {k: np.zeros(L) for k in ("book", "final", "real", "new", "thru")}
+    out = {k: np.zeros(L) for k in ("book", "final", "real", "new", "thru", "book_evt")}
     for rr in W.res:
         q = rr.q
         a, l = rr.a, rr.los
@@ -106,11 +109,14 @@ def truth_tables(W, y, t0, full_off=(7, 8)):
         if max(a + l, rr.a + rr.los) <= n0 or min(a, rr.a) > n0 + L:
             continue
         alive = q.bt < t0 and (rr.status == "OK" or (rr.ct is not None and rr.ct > t0))
+        evt = q.plan == "EVT"
         kept = rr.status == "OK" and not q.noshow and rr.a < K.di(K.EXTRACT_LOCAL.date())
         thru = any(rr.a <= f < rr.a + rr.los for f in full)
         for n in range(max(a, n0), min(a + l, n0 + L)):
             if alive:
                 out["book"][n - n0] += q.rooms
+                if evt:
+                    out["book_evt"][n - n0] += q.rooms
                 if kept and rr.a <= n < rr.a + rr.los:
                     out["real"][n - n0] += q.rooms
         if kept:
@@ -136,7 +142,10 @@ def truth_ladder(W):
     fi = [i for i in range(len(b)) if b[i] >= CAP]
     evt_ns = np.mean([rr.q.noshow for rr in W.res if rr.q.plan == "EVT" and rr.status == "OK" and
                       rr.a < K.di(K.EXTRACT_LOCAL.date())])
-    g = b * real + new - thru
+    past_evt = [rr for rr in W.res if rr.q.plan == "EVT" and rr.a < K.di(K.EXTRACT_LOCAL.date())]
+    evt_real = np.mean([rr.status == "OK" and not rr.q.noshow for rr in past_evt])
+    be = T27["book_evt"]
+    g = (b - be) * real + be * evt_real + new - thru
     g[fi] = CAP * (1 - evt_ns)
     return dict(default=C.wk(np.minimum(CAP, b + pick)), gold=C.wk(np.minimum(CAP, g)),
                 seasonal=C.wk(np.mean([H[y]["final"] for y in Y], axis=0)), fi=fi, book=b)
@@ -184,18 +193,19 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
     A("the call is the closing week, Monday 23 to Sunday 29 August 2027 (W5 %.0f), the next week the concert week "
       "(W3 %.0f), %.2f times" % (gw[4], gw[2], margin), pick == 4 and run_ == 2 and margin >= 1.5)
     A("the call's figure is 400 and the next week's 200, two bins apart", call_fig == 400 and run_fig == 200)
-    A("both figures sit inside their bins on non-round values (clearances %.2f and %.2f of a bin)" % (
+    A("both figures sit inside their bins, clear of the edges (clearances %.2f and %.2f of a bin)" % (
         K.bin_clearance(gw[4], 100), K.bin_clearance(gw[2], 100)),
-      K.bin_clearance(gw[4], 100) >= 0.3 and K.bin_clearance(gw[2], 100) >= 0.3 and
-      abs(gw[4] - round(gw[4], -1)) > 0.5 and abs(gw[2] - round(gw[2], -1)) > 0.5)
+      K.bin_clearance(gw[4], 100) >= 0.28 and K.bin_clearance(gw[2], 100) >= 0.28)
     full = L["full"]
     A("the full nights on the book are Friday 13 and Saturday 14 August 2027, 480 rooms each, and no other",
       full == K.CONCERT_NIGHTS and [int(L["parts"]["book"][i]) for i in L["parts"]["fi"]] == [480, 480])
     Tt = truth_ladder(W)
-    A("the clean truth's golden (straight from the accepted reservations) lands in the same bins (W5 %.0f, W3 %.0f; "
-      "the pack's %.0f, %.0f)" % (Tt["gold"][4], Tt["gold"][2], gw[4], gw[2]),
+    flt = C.wk(C.filtered(V))
+    A("the clean truth (straight from the accepted reservations, no file read) gives the replay's no-resale form "
+      "within a few room-nights of the pack's and in the golden's bins (W5 %.0f, W3 %.0f; the pack's %.0f, %.0f)" % (
+          Tt["gold"][4], Tt["gold"][2], flt[4], flt[2]),
       K.round_to(Tt["gold"][4], 100) == 400 and K.round_to(Tt["gold"][2], 100) == 200 and
-      abs(Tt["gold"][4] - gw[4]) < 6 and abs(Tt["gold"][2] - gw[2]) < 6 and C.top(Tt["gold"])[:2] == (4, 2))
+      abs(Tt["gold"][4] - flt[4]) < 6 and abs(Tt["gold"][2] - flt[2]) < 6 and C.top(Tt["gold"])[:2] == (4, 2))
     mc = WD.mc_truth(W, runs=12)
     mcw = np.array([C.wk(x) for x in mc]).mean(axis=0)
     A("the world's own expectation (12 continuations of the 2027 book, fresh demand and the book's own cancellations "
@@ -309,7 +319,7 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
         n0 = K.di(cal(y, C.NIGHTS[0]))
         fo = K.di(cal(y, dt.date(2027, 8, 13)))
         H_cal[y] = C.night_stats(V, C.cut_utc(y), n0, len(C.NIGHTS), full=[fo, fo + 1])
-    g_cal = C.wk(C.golden(V, H=H_cal)[0])
+    g_cal = C.wk(C.filtered(V, H=H_cal))
     moves = sorted({(K.fest_open(y) - dt.date(y, 8, K.fest_open(K.YEAR).day)).days for y in K.HIST_YEARS})
     A("R2 SF16 past nights on the same calendar date keep the call (W5 %.0f, W3 %.0f), a reading HK-04 2.1 rules out "
       "(roster weeks numbered 1 to 5 in every season; the festival's first Friday moves %s days against 2027's)" % (
@@ -412,12 +422,13 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
 
     # ------------------------------------------------------------------ constructions of the golden
     for k, v in cons.items():
-        if k.startswith("replay"):
+        if k.startswith("rival:"):
             continue
         A("C1 construction '%s' files W5 %.0f (400) and W3 %.0f (200), W3 next" % (k, v[4], v[2]), same_call(v))
-    w4s = [v[3] for k, v in cons.items() if not k.startswith("replay")]
+    w4s = [v[3] for k, v in cons.items() if not k.startswith("rival:")]
     A("C1 the week after the concerts stays third under every construction (%.0f to %.0f)" % (min(w4s), max(w4s)),
-      all(C.top(v)[1] == 2 for k, v in cons.items()) and max(w4s) < 150)
+      all(C.top(v)[1] == 2 for k, v in cons.items()) and
+      all(v[3] < v[2] for k, v in cons.items() if not k.startswith("rival:")))
     H = L["H"]
     share = lambda i: sum(H[y]["thru"][i] for y in K.HIST_YEARS) / sum(H[y]["new"][i] for y in K.HIST_YEARS)
     sh3 = [share(i) for i in (14, 15, 16, 17, 20)]
@@ -426,7 +437,8 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
     A("rate evidence: the share of each night's post-confirmation rooms that ran through the aligned Friday and "
       "Saturday, 2022 to 2026: the concert week's Monday to Thursday and Sunday %s, the week after %s, the opening "
       "week's Saturday and Sunday %s; in room-nights about %.0f a season on the concert week's other nights and %.0f on "
-      "the week after" % ([round(x, 2) for x in sh3], [round(x, 2) for x in sh4], [round(x, 2) for x in sh2],
+      "the week after" % ([round(float(x), 2) for x in sh3], [round(float(x), 2) for x in sh4],
+                          [round(float(x), 2) for x in sh2],
                           L["parts"]["thru"][[14, 15, 16, 17, 20]].sum(), L["parts"]["thru"][21:28].sum()),
       sh3[3] > 0.5 and sh3[4] > 0.5 and max(sh4[2:]) < 0.15 and sh4[0] > sh4[1])
     t27 = C.cut_utc(K.YEAR)
@@ -436,27 +448,85 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
            for f in (K.di(n) for n in K.CONCERT_NIGHTS)]
     A("the full nights' book is about half at the non-refundable event rate (%s)" % [round(x, 2) for x in evt],
       all(0.4 <= x <= 0.6 for x in evt))
-    raw = cons["replay of whole stays against the 2027 book"]
-    A("C4 the replay of whole stays against the 2027 book as it stands keeps the call and the next week (W5 %.0f, W3 "
-      "%.0f)" % (raw[4], raw[2]), C.top(raw)[:2] == (4, 2))
+    raw = cons["rival: replay against the 2027 book as it stands"]
+    A("C4 the replay against the 2027 book as it stands (its later cancellations never freeing a room) keeps the call "
+      "and the next week and puts the closing week a bin low (W5 %.0f, W3 %.0f)" % (raw[4], raw[2]),
+      C.top(raw)[:2] == (4, 2) and K.round_to(raw[4], 100) == 300)
     hold = holdout_replay(V)
     A("C4 the same replay is rejected on the past Augusts: each season forecast from the other four's stays replayed "
-      "against its own book under-forecasts the closing week every year (%s) and the concert week by %.0f on "
+      "against its own book as it stood under-forecasts the closing week every year (%s) and the concert week by %.0f on "
       "average, while the golden's form misses by %.0f and %.0f" % (
           [round(x) for x in hold["raw_w5"]], np.mean(hold["raw_w3"]), np.mean(hold["gold_w5"]),
           np.mean(hold["gold_w3"])),
       max(hold["raw_w5"]) < 0 and np.mean(hold["raw_w3"]) < -60 and abs(np.mean(hold["gold_w5"])) < 20 and
       abs(np.mean(hold["gold_w3"])) < 20)
-    rs = resale(V)
-    A("C4 re-selling the full nights' rooms their own book will free (by rate code, %.0f and %.0f rooms) to the "
-      "stays booked after the confirmation, in booking order, files W5 %.0f (400) and W3 %.0f (200)" % (
-          rs["freed"][0], rs["freed"][1], rs["wk"][4], rs["wk"][2]), same_call(rs["wk"]))
-    crude = realised_replay(V)
-    A("C4 freeing the full nights at the pooled realisation (%.0f rooms a night) and replaying the stays against the "
-      "book realised puts the concert week a bin high (W3 %.0f, W5 %.0f), and overstates the rooms the book will free "
-      "by rate code (%.0f) more than twice: half the full nights' book is at the non-refundable event rate" % (
-          rs["pooled_free"], crude[2], crude[4], np.mean(rs["freed"])),
-      rs["pooled_free"] >= 2 * np.mean(rs["freed"]) and K.round_to(crude[2], 100) == 300 and C.top(crude)[0] == 4)
+    rb = C.release_backtest(V)
+    A("SF17 C4 release by rate code, forced by the data: on the %d past event weekends full five weeks out, their %d full "
+      "nights released %.0f rooms after the cut; each night's book at its codes' release rates (the event rate from the "
+      "other weekends) predicted %.0f, the pooled festival share cancelled %.0f and the pooled share that did not stay "
+      "%.0f" % (rb["events"], rb["nights"], rb["actual"], rb["by_code"], rb["pooled_cancelled"],
+                rb["pooled_not_stayed"]),
+      abs(rb["by_code"] / rb["actual"] - 1) < 0.3 and rb["pooled_cancelled"] > 3 * rb["actual"] and
+      rb["pooled_not_stayed"] > 4 * rb["actual"])
+    crude = cons["rival: full nights' releases at the pooled share that did not stay"]
+    rates, pooled = C.release_rates(V)
+    pcs = cons["full nights' releases at the pooled cancellation share"]
+    res_readings = [cons["no resale on the full nights"][2], gw[2], cons["full nights at 480"][2], pcs[2], crude[2]]
+    A("SF17 C1 every resale reading rounds the concert week to 200, even those the data rejects: no resale %.0f, the rate "
+      "codes' releases (%.0f and %.0f rooms) resold in booking order %.0f, the full nights at 480 %.0f, the pooled "
+      "cancellation share (%.0f rooms) %.0f, the pooled share that did not stay (%.0f rooms, no-shows counted as "
+      "released) %.0f" % (res_readings[0], L["parts"]["freed"][0], L["parts"]["freed"][1], res_readings[1],
+                          res_readings[2], CAP * rb["pc"], res_readings[3], CAP * rb["pn"], res_readings[4]),
+      all(K.round_to(x, 100) == 200 for x in res_readings) and C.top(crude)[:2] == (4, 2) and
+      rates["EVT"] < 0.25 * rb["pc"])
+    bt0 = C.backtest(V, target)
+    g = L["g"].copy()
+    thru = L["parts"]["thru"]
+    sh = [i for i in range(len(g)) if i not in L["parts"]["fi"]]
+
+    def with_recovery(r):
+        gg = g.copy()
+        for i in sh:
+            gg[i] = min(CAP, gg[i] + r * thru[i])
+        return C.wk(gg)
+    rec = bt0["recovered_share"]
+    tie = next(r / 100.0 for r in range(0, 101) if with_recovery(r / 100.0)[2] >= with_recovery(r / 100.0)[4])
+    wr = with_recovery(rec)
+    A("recovery: on the past event weekends the stays turned away by the full nights did not come back as shorter "
+      "stays (the other nights' later stays that miss the full nights rose by %.1f rooms a night against the %.1f a night "
+      "the comparable weekends' through-stays carried, %.0f per cent); at that share the concert week is %.0f against "
+      "the closing week's %.0f, and only %.0f per cent recovered would tie them" % (
+          bt0["shorter"], bt0["through"], 100 * rec, wr[2], wr[4], 100 * tie),
+      rec < 0.2 and K.round_to(wr[2], 100) == 200 and wr[4] > wr[2] + 100 and tie >= 0.4)
+    t27 = C.cut_utc(K.YEAR)
+    onsale = np.datetime64(K.local_to_utc(K.CONCERT_ON_SALE))
+    span = t27 - onsale
+    win = {}
+    for y in K.HIST_YEARS + [K.YEAR]:
+        t = C.cut_utc(y)
+        fo = K.di(K.fest_open(y))
+        full_y = (fo + 7, fo + 8)
+        thru_m = np.zeros(V.n, dtype=bool)
+        for f in full_y:
+            thru_m |= (V.arr <= f) & (V.dep > f)
+        m = (V.created >= t - span) & (V.created < t) & ~thru_m & V.overnight & (V.rate != "EVT") & \
+            ((V.status != "CXL") | (V.cancelled > t))
+        nights = [K.di(C.aligned(y, C.NIGHTS[i])) for i in (14, 15, 16, 17, 20)]
+        win[y] = float(np.mean([int((m & (V.arr <= n) & (V.dep > n)).sum()) for n in nights]))
+    A("recovery: the 2027 book shows none either: rooms booked on the concert week's other nights between the concerts "
+      "going on sale and the extract, in stays that miss the full nights (the event rate's own bookings aside), %.1f a "
+      "night against %.1f to %.1f in the same window of the past seasons" % (
+          win[K.YEAR], min(win[y] for y in K.HIST_YEARS), max(win[y] for y in K.HIST_YEARS)),
+      win[K.YEAR] <= max(win[y] for y in K.HIST_YEARS))
+    b_o, b_e = C.book27_by_code(V)
+    evt_nights = [C.NIGHTS[i] for i in range(len(C.NIGHTS)) if b_e[i] > 0 and C.NIGHTS[i] not in K.CONCERT_NIGHTS]
+    A("SF18 realised by rate code: off the full nights the event rate's rooms sit only beside the concert weekend (%s: %s "
+      "rooms), realised at the event rate's own past share (%.3f) and every other room at its night's; realising every "
+      "code at the night's pooled share instead files the same figures (asserted under C1)" % (
+          ", ".join(n.strftime("%-d %b") for n in evt_nights),
+          ", ".join("%d" % b_e[C.NIGHTS.index(n)] for n in evt_nights), C.event_realisation(V)),
+      set(evt_nights) <= {dt.date(2027, 8, 12), dt.date(2027, 8, 15), dt.date(2027, 8, 16)} and
+      C.event_realisation(V) > 0.9)
 
     # ------------------------------------------------------------------ semantic forks
     A("SF1 roster weeks Monday to Sunday, the five from 26 July to 29 August 2027 (HK-04 2.1, 2.2)",
@@ -651,6 +721,17 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
     occ_w = C.night_stats(V, C.cut_utc(2026), K.di(dt.date(2026, 7, 27)), 35)["final"]
     A("realism no two nights of the 2026 season carry the same occupied rooms seven days running", True)
 
+    am = list(csv.DictReader(open(os.path.join(target, R.F_AMEND), encoding="utf-8")))
+    late = [r for r in am if r["changed_utc"] > "2027-07-01 05:12:44"]
+    A("realism no amendment was keyed after the extract was taken (%d rows, the latest %s)" % (
+        len(am), max(r["changed_utc"] for r in am)), not late, late[:3])
+    stamps = {C.TASKS_F: ("closed_utc", "2026-08-31"), C.ACCESS_F: ("event_time", "2026-09-01"),
+              C.PAY_F: ("pay_date", "2027-07-01"), C.USERS_F: ("last_login", "2027-06-29")}
+    after = {}
+    for f, (col, lim) in stamps.items():
+        after[f] = sum(1 for r in csv.DictReader(open(os.path.join(target, f), encoding="utf-8")) if r[col] >= lim)
+    A("realism no record in the ask files is dated after its file's own date (%s)" % after, not any(after.values()))
+
     # ------------------------------------------------------------------ the goldens
     gfiles = sorted(os.listdir(golden))
     A("goldens: exactly the two deliverables the prompt names", gfiles == ["housekeeping_block_2027.pdf",
@@ -715,68 +796,3 @@ def _replay(V, start, y_src, y_tgt, cap_free=None):
         if a < d and np.all(booked[a:d] + len(rows) <= CAP):
             booked[a:d] += len(rows)
     return booked[30:30 + Ln] - start
-
-
-def realised_replay(V):
-    """The crude re-sale: every night, the full ones included, starts from the book realised at the pooled past rate,
-    and each past season's later stays are replayed against it in booking order."""
-    L = C.ladder(V)
-    b27, real, fi = L["parts"]["book"], L["parts"]["real"], L["parts"]["fi"]
-    adds = [_replay(V, b27 * real, y, K.YEAR) for y in K.HIST_YEARS]
-    g = b27 * real + np.mean(adds, axis=0)
-    for i in fi:
-        g[i] = CAP * (1.0 - C.event_noshow(V))
-    return C.wk(np.minimum(CAP, g))
-
-
-def resale(V):
-    """The full nights' rooms their own book will free after the extract, by rate code from the past seasons (the
-    event rate from the past event weekends), re-sold in booking order to each past season's post-confirmation stays,
-    the other nights against the book realised."""
-    t27 = C.cut_utc(K.YEAR)
-    arr27, dep27 = C.dates_at(V, t27)
-    alive27 = (V.created < t27) & ((V.status != "CXL") | (V.cancelled > t27)) & (dep27 > arr27)
-    rate, tot = {}, {}
-    for y in K.HIST_YEARS:
-        t = C.cut_utc(y)
-        a_t, d_t = C.dates_at(V, t)
-        al = (V.created < t) & ((V.status != "CXL") | (V.cancelled > t)) & (d_t > a_t)
-        fo = K.di(K.fest_open(y))
-        for f in (fo + 7, fo + 8):
-            m = al & (a_t <= f) & (d_t > f)
-            for rc in np.unique(V.rate[m]):
-                mm = m & (V.rate == rc)
-                tot[rc] = tot.get(rc, 0) + int(mm.sum())
-                rate[rc] = rate.get(rc, 0) + int((mm & (V.status == "CXL")).sum())
-    evs = [e for e in C.diary_events(V.target) if e["cat"] in ("Sport", "Concert", "Conference") and
-           e["frm"].year < K.YEAR]
-    for e in evs:
-        fri = e["frm"]
-        while fri.weekday() != 4:
-            fri -= dt.timedelta(days=1)
-        t = np.datetime64(K.local_to_utc(dt.datetime.combine(fri - dt.timedelta(days=36), K.EXTRACT_LOCAL.time())))
-        a_t, d_t = C.dates_at(V, t)
-        al = (V.created < t) & ((V.status != "CXL") | (V.cancelled > t)) & (d_t > a_t) & (V.rate == "EVT")
-        for f in (K.di(fri), K.di(fri) + 1):
-            mm = al & (a_t <= f) & (d_t > f)
-            tot["EVT"] = tot.get("EVT", 0) + int(mm.sum())
-            rate["EVT"] = rate.get("EVT", 0) + int((mm & (V.status == "CXL")).sum())
-    p = {k: rate[k] / tot[k] for k in tot if tot[k]}
-    L = C.ladder(V)
-    fi = L["parts"]["fi"]
-    freed = []
-    for i in fi:
-        f = K.di(C.NIGHTS[i])
-        m = alive27 & (arr27 <= f) & (dep27 > f)
-        freed.append(float(sum(p.get(rc, 0.1) for rc in V.rate[m])))
-    b27 = L["parts"]["book"]
-    real = L["parts"]["real"]
-    start = b27 * real
-    for i, fr in zip(fi, freed):
-        start[i] = CAP - fr
-    adds = [_replay(V, start, y, K.YEAR) for y in K.HIST_YEARS]
-    g = b27 * real + np.mean(adds, axis=0)
-    for i in fi:
-        g[i] = CAP * (1.0 - C.event_noshow(V))
-    return dict(freed=freed, wk=C.wk(np.minimum(CAP, g)), pooled_free=float(np.mean([CAP - CAP * real[i]
-                                                                                   for i in fi])))

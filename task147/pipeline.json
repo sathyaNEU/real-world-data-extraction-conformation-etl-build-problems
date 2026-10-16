@@ -16,20 +16,20 @@
     "checks": 49
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-16 (no LEAK; sweeps 3, 4 and 9 answered in the design note's Leak review)",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-16 on the stage 4 repairs, no LEAK; every line answered in the note's Leak review (the amendment log's later dates are old and new values of changes keyed before the extract)",
+    "reader": "clean on the stage 3 cut cd5abab (Q6 analytical; its 'come next' and rounding-order readings closed by SF8 and SF9); a short re-read of the repaired cut next"
   },
   "duplicate_check": {
     "heart": "WARN repeat.question_form, answered",
     "nearest": "driver 0.08 (task138 v1 lineage); surface 0.100, not promoted"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
+    "verdict": "DETERMINISTIC on the stage 3 cut cd5abab (the call reproduced: the closing week about 417, the concert week about 215; the default 560)",
+    "disposition": "FIX_NOW (78 guest-count amendments dated after the extract), repaired: clamped before the extract and asserted; its moderate fragility (turned-away stays recovered as shorter stays) measured on the history, 11 per cent against the 59 per cent a tie needs; re-judge on the repaired cut",
     "report": ""
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: a short re-read and one re-judge on the repaired cut",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -47,5 +47,18 @@
     "guard_surface": "exit 0, 0 promoted (nearest task38 and task32 at 0.100); NOTE 'Monte Carlo' read as a persona from the domain tag",
     "guard_heart": "WARN repeat.question_form (answered in the design note), no BLOCK",
     "guard_validate": "1 card, 0 invalid"
+  },
+  "rule3_audit": "PASS on cd5abab (decisive step analytical, no plant); repaired: the runner-up's release basis forced by the event-weekend back-test (135 released, 164 by rate code, 578 and 768 at pooled shares) and every resale reading on 200 (174 to 235); the domain tag made honest by making the golden the whole-stay replay the resampling task type names",
+  "stage4": {
+    "checks": "138 assertions, 0 failed",
+    "verify": "agrees on its own code path (W5 408 about 400, W3 180 about 200, default W3 556 about 600; full nights releasing 19.4 and 20.5 rooms; Ask A 25 and Ask B 8 figures equal in the workbook)",
+    "rebuild": "two builds byte-identical (20 target files, 2 goldens, metadata.json, figures.json, target.zip sha256 daaad09a10319e7e)",
+    "figures_check": "PASS (99 figures, 0 absent)",
+    "voice_check": "PASS (932 characters)",
+    "container_audit": "clean (target and golden)",
+    "guard_surface": "exit 0, 0 promoted (nearest task38 and task32 at 0.100); NOTE 'Monte Carlo' read as a persona from the domain tag",
+    "guard_heart": "WARN repeat.question_form (answered in the design note), no BLOCK",
+    "guard_validate": "1 card, 0 invalid",
+    "repairs": "amendments clamped before the extract (H16 asserted); the event rate's eve arrivals run through the event night; the golden a whole-stay replay of each past season's later bookings against the 2027 book realised by rate code, the full nights holding only the rooms their own bookings release by rate code; SF17 (release and resale) and SF18 (realisation basis) added; the LB-02 clock left unstated"
   }
 }

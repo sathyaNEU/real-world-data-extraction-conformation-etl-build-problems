@@ -24,6 +24,7 @@ SEASON = {1: 255, 2: 270, 3: 300, 4: 330, 5: 355, 6: 380, 7: 370, 8: P["base_aug
 LOS_LEIS = np.array([.30, .32, .20, .10, .05, .02, .01, 0])
 LOS_BUS = np.array([.45, .35, .15, .05, 0, 0, 0, 0])
 LOS_EVT = np.array([.42, .48, .10, 0, 0, 0, 0, 0])
+LOS_EVT_EVE = np.array([0, .80, .20, 0, 0, 0, 0, 0])        # arriving the day before the event night: through it
 LOS_WEEK = np.array([0, 0, 0, .04, .08, .12, .64, .12])      # festival week stays
 LOS_SHORT = np.array([.22, .44, .26, .08, 0, 0, 0, 0])       # festival short stays
 ROOMS_P = np.array([0.86, 0.10, 0.03, 0.01])
@@ -223,8 +224,8 @@ def requests(nights, min_bt=None, tag="", events=EVENTS):
                     fixed = lambda r, n: on_sale + r.exponential(1.6, size=n)
                 else:
                     fixed = lambda r, n, t=ann_t: t + 4 + r.exponential(5.0, size=n)
-                out += make("EVT", arr, n, LOS_EVT, 0, 0, rp=ROOMS_EVT, bt_fixed=fixed, plan_fixed="EVT",
-                            tag=tag + "|" + nt.isoformat(), min_bt=min_bt)
+                out += make("EVT", arr, n, LOS_EVT_EVE if arr < nt else LOS_EVT, 0, 0, rp=ROOMS_EVT, bt_fixed=fixed,
+                            plan_fixed="EVT", tag=tag + "|" + nt.isoformat(), min_bt=min_bt)
     # group bookings carry several rooms each: 8 to 22 rooms, one row per room downstream
     for q in out:
         if q.seg == "GRP":

@@ -289,7 +289,7 @@ def adults_changes(B):
             continue
         u = uniforms("adults|" + b.key, 2)
         if u[0] < 0.02:
-            hi = b.a - 0.2
+            hi = min(b.a - 0.2, K.T_EXTRACT - 0.01)       # keyed before the arrival and before the extract was taken
             if hi <= b.bt + 0.1:
                 continue
             t = b.bt + 0.05 + u[1] * (hi - b.bt - 0.05)

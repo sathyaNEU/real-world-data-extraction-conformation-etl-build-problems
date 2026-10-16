@@ -1,6 +1,8 @@
 """The independent verifier: reads only the bundle (target/ and golden/) with the standard library and openpyxl, on
-its own code path (no generator module), and recomputes the call, the next week, the default path, and every Ask A
-and Ask B figure, then compares them with the goldens and generator/figures.json."""
+its own code path (no generator module), and recomputes the call (each past season's later bookings replayed whole
+against the 2027 book, the full nights' rooms only those their own bookings release at each rate code's past rate),
+the next week, the default path, and every Ask A and Ask B figure, then compares them with the goldens and
+generator/figures.json."""
 from __future__ import annotations
 
 import csv
@@ -65,7 +67,7 @@ def main(target, golden, figures_path=None):
     with open(os.path.join(target, "pms_reservations_extract_2027-07-01.csv"), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
             rows.append((int(r["confirmation_no"]), r["created_utc"], r["cancelled_utc"], day(r["arrival"]),
-                         day(r["departure"]), r["status"], r["rate_code"]))
+                         day(r["departure"]), r["status"], r["rate_code"], r["booking_ref"]))
     changes = defaultdict(list)
     with open(os.path.join(target, "pms_amendment_log_2027-07-01.csv"), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
@@ -73,6 +75,27 @@ def main(target, golden, figures_path=None):
                 changes[int(r["confirmation_no"])].append((r["changed_utc"], r["field"], day(r["old_value"])))
     for v in changes.values():
         v.sort()
+
+    def as_of(conf, a, d, t):
+        a_t, d_t = a, d
+        for ct, fld, old in changes.get(conf, ()):
+            if ct > t:
+                if fld == "ARRIVAL" and a_t == a:
+                    a_t = old
+                if fld == "DEPARTURE" and d_t == d:
+                    d_t = old
+        return a_t, d_t
+
+    def on_book(t):
+        """The rooms on the book at t (booked before it, not cancelled by it), with their dates as they then stood."""
+        out = []
+        for conf, cr, cx, a, d, st, rc, ref in rows:
+            if d <= a or not (cr < t and (st != "CXL" or cx > t)):
+                continue
+            a_t, d_t = as_of(conf, a, d, t)
+            if d_t > a_t:
+                out.append((a_t, d_t, st, rc, a, d))
+        return out
 
     def tables(y, full):
         """Each aligned night of year y: the book at the cut (dates as they stood), the rooms of it that stayed on the
@@ -82,31 +105,21 @@ def main(target, golden, figures_path=None):
         n0 = (nights[0] - DATE0).days
         z = lambda: [0.0] * 35
         book, real, final, new, thru = z(), z(), z(), z(), z()
-        for conf, cr, cx, a, d, st, rc in rows:
-            if d <= a:
+        for a_t, d_t, st, rc, a, d in on_book(t):
+            for n in range(max(a_t, n0), min(d_t, n0 + 35)):
+                book[n - n0] += 1
+                if st in ("OUT", "INH") and a <= n < d:
+                    real[n - n0] += 1
+        for conf, cr, cx, a, d, st, rc, ref in rows:
+            if d <= a or st not in ("OUT", "INH"):
                 continue
-            a_t, d_t = a, d
-            for ct, fld, old in changes.get(conf, ()):
-                if ct > t:
-                    if fld == "ARRIVAL" and a_t == a:
-                        a_t = old
-                    if fld == "DEPARTURE" and d_t == d:
-                        d_t = old
-            stayed = st in ("OUT", "INH")
-            alive = cr < t and (st != "CXL" or cx > t)
-            if alive:
-                for n in range(max(a_t, n0), min(d_t, n0 + 35)):
-                    book[n - n0] += 1
-                    if stayed and a <= n < d:
-                        real[n - n0] += 1
-            if stayed:
-                through = any(a <= f < d for f in full)
-                for n in range(max(a, n0), min(d, n0 + 35)):
-                    final[n - n0] += 1
-                    if cr >= t:
-                        new[n - n0] += 1
-                        if through:
-                            thru[n - n0] += 1
+            through = any(a <= f < d for f in full)
+            for n in range(max(a, n0), min(d, n0 + 35)):
+                final[n - n0] += 1
+                if cr >= t:
+                    new[n - n0] += 1
+                    if through:
+                        thru[n - n0] += 1
         return dict(book=book, real=real, final=final, new=new, thru=thru)
 
     past = {}
@@ -120,13 +133,92 @@ def main(target, golden, figures_path=None):
     ns_share = sum(1 for r in evt if r[5] == "NS") / len(evt)
     Y = list(past)
 
+    # each rate code's release rate: the share of a full night's book at the cut that its bookings later cancelled
+    rel = defaultdict(lambda: [0, 0])
+
+    def count_release(t, nights, want_event):
+        for a_t, d_t, st, rc, a, d in on_book(t):
+            if (rc == "EVT") != want_event:
+                continue
+            for f in nights:
+                if a_t <= f < d_t:
+                    rel[rc][0] += 1
+                    rel[rc][1] += st == "CXL"
+    for y in Y:
+        fo = (first_friday(y) - DATE0).days
+        count_release(cut(y), (fo + 7, fo + 8), False)
+    import openpyxl
+    dwb = openpyxl.load_workbook(os.path.join(target, "sales_events_diary_2022-2027.xlsx"), read_only=True)
+    fridays = set()
+    for r in dwb["Diary"].iter_rows(min_row=5, values_only=True):
+        if r[0] is not None and r[4] in ("Sport", "Concert", "Conference") and r[0].year < 2027:
+            f = r[0].date()
+            while f.weekday() != 4:
+                f -= dt.timedelta(days=1)
+            fridays.add(f)
+    evt_on = evt_stay = 0
+    for f in sorted(fridays):
+        t = to_utc(dt.datetime.combine(f - dt.timedelta(days=36), dt.time(6, 12, 44))).strftime("%Y-%m-%d %H:%M:%S")
+        n = (f - DATE0).days
+        count_release(t, (n, n + 1), True)
+        for a_t, d_t, st, rc, a, d in on_book(t):
+            if rc != "EVT":
+                continue
+            for x in (n, n + 1):
+                if a_t <= x < d_t:
+                    evt_on += 1
+                    evt_stay += st in ("OUT", "INH") and a <= x < d
+    evt_real = evt_stay / evt_on
+    rate = {k: v[1] / v[0] for k, v in rel.items() if v[0]}
+    other = sum(v[1] for k, v in rel.items() if k != "EVT") / sum(v[0] for k, v in rel.items() if k != "EVT")
+    t27 = cut(2027)
+    n27 = (season(2027)[0] - DATE0).days
+    freed = {}
+    for a_t, d_t, st, rc, a, d in on_book(t27):
+        for i in full:
+            if a_t <= n27 + i < d_t:
+                freed[i] = freed.get(i, 0.0) + rate.get(rc, other)
+
+    # each past season's later bookings replayed whole, in booking order, against the 2027 book
+    realised = [sum(past[y]["real"][i] for y in Y) / sum(past[y]["book"][i] for y in Y) for i in range(35)]
+    book_evt = [0.0] * 35
+    for a_t, d_t, st, rc, a, d in on_book(t27):
+        if rc == "EVT":
+            for x in range(max(a_t, n27), min(d_t, n27 + 35)):
+                book_evt[x - n27] += 1
+    start = [(book[i] - book_evt[i]) * realised[i] + book_evt[i] * evt_real for i in range(35)]
+    for i in full:
+        start[i] = CAP - freed[i]
+    taken_sum = [0.0] * 35
+    for y in Y:
+        t = cut(y)
+        shift = (first_friday(2027) - first_friday(y)).days
+        lo = (season(y)[0] - DATE0).days - 21
+        hi = (season(y)[-1] - DATE0).days + 21
+        bookings = {}
+        for conf, cr, cx, a, d, st, rc, ref in rows:
+            if cr >= t and st in ("OUT", "INH") and d > a and d > lo and a <= hi:
+                bookings.setdefault(ref, []).append((cr, conf, a, d))
+        order = sorted(bookings.values(), key=lambda v: min((x[0], x[1]) for x in v))
+        held = {i: start[i] for i in range(35)}
+        taken = [0.0] * 35
+        for b in order:
+            a, d = b[0][2] + shift - n27, b[0][3] + shift - n27
+            span = [i for i in range(a, d)]
+            inside = [i for i in span if 0 <= i < 35]
+            if all(held[i] + len(b) <= CAP for i in inside):
+                for i in inside:
+                    held[i] += len(b)
+                    taken[i] += len(b)
+        for i in range(35):
+            taken_sum[i] += taken[i] / len(Y)
+
     def weeks(v):
         return [sum(max(0.0, x - CREW) for x in v[7 * w:7 * w + 7]) for w in range(5)]
 
     gold, dflt = [], []
     for i in range(35):
-        realised = sum(past[y]["real"][i] for y in Y) / sum(past[y]["book"][i] for y in Y)
-        g = book[i] * realised + sum(past[y]["new"][i] - past[y]["thru"][i] for y in Y) / len(Y)
+        g = (book[i] - book_evt[i]) * realised[i] + book_evt[i] * evt_real + taken_sum[i]
         if i in full:
             g = CAP * (1 - ns_share)
         gold.append(min(CAP, g))
@@ -136,12 +228,11 @@ def main(target, golden, figures_path=None):
     dorder = sorted(range(5), key=lambda w: -dw[w])
     out = dict(full=[season(2027)[i].isoformat() for i in full], gold=gw, default=dw, pick=order[0], next=order[1],
                pick_fig=rnd(gw[order[0]], 100), next_fig=rnd(gw[order[1]], 100), default_pick=dorder[0],
-               default_fig=rnd(dw[dorder[0]], 100))
+               default_fig=rnd(dw[dorder[0]], 100), freed=[freed[i] for i in full])
 
     # ---------------------------------------------------------------- Ask A
     users = {r["login"]: r for r in csv.DictReader(open(os.path.join(target, "hk_app_users_2027-06-28.csv"),
                                                          encoding="utf-8"))}
-    import openpyxl
     wb = openpyxl.load_workbook(os.path.join(target, "brennock_timesheets_weighhouse_summer_2026.xlsx"), read_only=True)
     sheet_rows = []
     for ws in wb.worksheets:
@@ -248,9 +339,11 @@ def main(target, golden, figures_path=None):
             print("VERIFY FAIL", f)
         raise SystemExit(1)
     print("verify.py: the call W%d (%.0f, about %d), next W%d (%.0f, about %d), the default W%d (%.0f, about %d); "
-          "full nights %s; Ask A 25 figures and Ask B 8 figures recomputed and equal in the workbook" % (
+          "full nights %s releasing %s rooms; Ask A 25 figures and Ask B 8 figures recomputed and equal in the "
+          "workbook" % (
               out["pick"] + 1, gw[out["pick"]], out["pick_fig"], out["next"] + 1, gw[out["next"]], out["next_fig"],
-              out["default_pick"] + 1, dw[out["default_pick"]], out["default_fig"], ", ".join(out["full"])))
+              out["default_pick"] + 1, dw[out["default_pick"]], out["default_fig"], ", ".join(out["full"]),
+              " and ".join("%.1f" % x for x in out["freed"])))
     return out
 
 

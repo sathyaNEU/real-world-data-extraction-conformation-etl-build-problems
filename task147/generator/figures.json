@@ -20,7 +20,8 @@
     "hotel_rooms": "480",
     "past_seasons": "2022 to 2026",
     "comparable_point": "the Thursday five weeks before each year's opening night",
-    "blocked_stays_room_nights_concert_week": "420"
+    "blocked_stays_room_nights_concert_week": "420",
+    "rooms_the_full_nights_release_a_night": "20"
   },
   "default_path": {
     "week": "Monday 9 to Sunday 15 August",
@@ -28,8 +29,8 @@
     "its_runner_up_room_nights": "400"
   },
   "precision": {
-    "closing_week_standard_error": "22",
-    "concert_week_standard_error": "8"
+    "closing_week_standard_error": "21",
+    "concert_week_standard_error": "9"
   },
   "season_window": "Monday 26 July to Sunday 29 August 2027",
   "ask_a_2026_services_and_overtime": [

@@ -63,9 +63,10 @@ def write(target, out_path):
                  "480-room city hotel, forecast on the 1 July book with two concert nights already full",
         "domain": "Supply Chain & Logistics",
         "client_domain": "General Statistics & Data Science",
-        "subdomain": "resampling-simulation-monte-carlo-methods (the bookings still to come forecast on the booking "
+        "subdomain": "resampling-simulation-monte-carlo-methods (the bookings still to come simulated on the booking "
                      "process's independent unit, the stay, a block of consecutive nights taken only if every night "
-                     "has a room)",
+                     "has a room: each past season's later bookings replayed whole against this year's book, the "
+                     "seasons the replicates)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "pick one of five roster weeks with its forecast room-nights above capacity to the nearest "
                         "hundred and the next week with its own figure, a one-page note with the nightly forecast "

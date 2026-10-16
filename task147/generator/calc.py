@@ -2,10 +2,12 @@
 the rivals, constructions and ask stops checks.py asserts.
 
 The block week: each 2027 roster week's forecast room-nights above the crew's 380 a night (HK-04 3.2), forecast on the
-book of the extract (06:12 on Thursday 1 July 2027). The golden forecasts the bookings still to come by stay: each past
-August's post-confirmation stays (booked after its own confirmation morning, HK-04 4.2), aligned on the festival's
-opening, less those that ran through the nights now full (Friday 13 and Saturday 14 August 2027), which cannot be sold
-this year; the book itself realised at each night's past rate."""
+book of the extract (06:12 on Thursday 1 July 2027). The golden simulates the bookings still to come on the booking
+process's own unit, the stay: each past season's post-confirmation bookings (made after its own confirmation morning,
+HK-04 4.2, aligned on the festival's opening) are replayed whole, in booking order, against this year's book, each taken
+only if every night of it has a room. The book itself is realised at each night's past rate; on the two nights already
+full (Friday 13 and Saturday 14 August 2027) the only rooms a later stay can find are those the nights' own bookings will
+release, at each rate code's past release rate. The five seasons are the replicates; the forecast is their mean."""
 from __future__ import annotations
 
 import datetime as dt
@@ -155,8 +157,10 @@ def book27(V, t=None):
 
 
 def full_nights(V):
-    b = book27(V)
-    return [NIGHTS[i] for i in range(len(NIGHTS)) if b[i] >= CAP]
+    if "_full" not in V.__dict__:
+        b = book27(V)
+        V._full = [NIGHTS[i] for i in range(len(NIGHTS)) if b[i] >= CAP]
+    return V._full
 
 
 def event_noshow(V):
@@ -165,18 +169,180 @@ def event_noshow(V):
     return float((V.status[m] == "NS").sum()) / float(m.sum())
 
 
-def golden(V, years=HIST, cut=cut_utc, t27=None, H=None):
-    """The forecast by stay: the book realised at each night's past rate, plus the past post-confirmation stays,
-    less those through the aligned full nights; the full nights at 480 less the event rate's no-shows."""
+def event_fridays(target, full_only=False, V=None):
+    """The Fridays of the past event weekends in the sales office's diary (sport, concerts, conferences); with
+    full_only, those whose Friday and Saturday were full on the book 36 days before the Friday."""
+    out = []
+    for e in diary_events(target):
+        if e["cat"] not in ("Sport", "Concert", "Conference"):
+            continue
+        d = e["frm"]
+        while d.weekday() != 4:
+            d -= dt.timedelta(days=1)
+        if d.year < Y27:
+            out.append(d)
+    out = sorted(set(out))
+    if full_only:
+        keep = []
+        for fri in out:
+            S = night_stats(V, event_cut(fri), K.di(fri), 2)
+            if S["book"][0] >= CAP and S["book"][1] >= CAP:
+                keep.append(fri)
+        out = keep
+    return out
+
+
+def event_cut(fri):
+    return np.datetime64(K.local_to_utc(dt.datetime.combine(fri - dt.timedelta(days=36), K.EXTRACT_LOCAL.time())))
+
+
+def _release_counts(V, cases, codes=None, exclude=None):
+    """Rooms on each case's nights' book at its cut, and how many of them their bookings later cancelled, by code."""
+    num, den = {}, {}
+    for t, nights in cases:
+        a, d = dates_at(V, t)
+        al = (V.created < t) & ((V.status != "CXL") | (V.cancelled > t)) & (d > a)
+        for f in nights:
+            m = al & (a <= f) & (d > f)
+            if codes is not None:
+                m &= np.isin(V.rate, codes)
+            if exclude is not None:
+                m &= ~np.isin(V.rate, exclude)
+            for rc in np.unique(V.rate[m]):
+                mm = m & (V.rate == rc)
+                den[rc] = den.get(rc, 0) + int(mm.sum())
+                num[rc] = num.get(rc, 0) + int((mm & (V.status == "CXL")).sum())
+    return num, den
+
+
+def release_rates(V, skip_event=None):
+    cache = V.__dict__.setdefault("_rel", {})
+    if skip_event not in cache:
+        cache[skip_event] = _release_rates(V, skip_event)
+    return cache[skip_event]
+
+
+def _release_rates(V, skip_event=None):
+    """Each rate code's release rate: the share of the rooms on a night's book at the cut that their bookings later
+    cancelled. The event rate from the past event weekends (the book 36 days before the Friday, the Friday and
+    Saturday); every other code from the aligned festival Friday and Saturday at each past season's comparable
+    point. skip_event leaves one event weekend out (the out-of-sample test)."""
+    cases = [(cut_utc(y), (K.di(K.fest_open(y)) + 7, K.di(K.fest_open(y)) + 8)) for y in HIST]
+    num, den = _release_counts(V, cases, exclude=["EVT"])
+    ev = [(event_cut(f), (K.di(f), K.di(f) + 1)) for f in event_fridays(V.target) if f != skip_event]
+    n2, d2 = _release_counts(V, ev, codes=["EVT"])
+    num.update(n2)
+    den.update(d2)
+    pooled = sum(num.get(k, 0) for k in den if k != "EVT") / max(1, sum(v for k, v in den.items() if k != "EVT"))
+    return {k: num.get(k, 0) / den[k] for k in den if den[k]}, pooled
+
+
+def night_release(V, t, nights, rates, pooled):
+    """Rooms each night's book at t is expected to release later: its rooms at their codes' release rates."""
+    a, d = dates_at(V, t)
+    al = (V.created < t) & ((V.status != "CXL") | (V.cancelled > t)) & (d > a)
+    out = []
+    for f in nights:
+        m = al & (a <= f) & (d > f)
+        out.append(float(sum(rates.get(rc, pooled) * int((m & (V.rate == rc)).sum()) for rc in np.unique(V.rate[m]))))
+    return out
+
+
+def replay_season(V, start, y, cut=cut_utc, target_year=Y27):
+    """One past season's post-confirmation bookings replayed, whole and in booking order, against a book: each is
+    taken only if every night of it has a room for all of its rooms. Returns the rooms taken on each 2027 season
+    night."""
+    t = cut(y)
+    shift = K.di(K.fest_open(target_year)) - K.di(K.fest_open(y))
+    n0 = K.di(NIGHTS[0])
+    L = len(NIGHTS)
+    post = (V.created >= t) & V.stayed & V.overnight
+    lo, hi = K.di(aligned(y, NIGHTS[0])) - 21, K.di(aligned(y, NIGHTS[-1])) + 21
+    idx = np.where(post & (V.dep > lo) & (V.arr <= hi))[0]
+    order = sorted(idx, key=lambda i: (V.created[i], V.conf[i]))
+    groups = {}
+    for i in order:
+        groups.setdefault(V.ref[i], []).append(i)
+    booked = np.zeros(L + 60)
+    booked[30:30 + L] = start
+    seen = set()
+    for i in order:
+        ref = V.ref[i]
+        if ref in seen:
+            continue
+        seen.add(ref)
+        rows = groups[ref]
+        a = max(0, int(V.arr[rows[0]]) + shift - n0 + 30)
+        d = min(L + 60, int(V.dep[rows[0]]) + shift - n0 + 30)
+        if a < d and np.all(booked[a:d] + len(rows) <= CAP):
+            booked[a:d] += len(rows)
+    return booked[30:30 + L] - start
+
+
+def event_realisation(V):
+    """The event rate's share of its rooms on the book 36 days before a past event weekend that stayed on the event
+    nights."""
+    if "_evt_real" not in V.__dict__:
+        on = stay = 0
+        for fri in event_fridays(V.target):
+            t = event_cut(fri)
+            a, d = dates_at(V, t)
+            al = (V.created < t) & ((V.status != "CXL") | (V.cancelled > t)) & (d > a) & (V.rate == "EVT")
+            for f in (K.di(fri), K.di(fri) + 1):
+                m = al & (a <= f) & (d > f)
+                on += int(m.sum())
+                stay += int((m & V.stayed & (V.arr <= f) & (V.dep > f)).sum())
+        V._evt_real = stay / on
+    return V._evt_real
+
+
+def book27_by_code(V, t=None):
+    """The 2027 book at t split into the event rate's rooms and every other room."""
+    t = cut_utc(Y27) if t is None else t
+    a, d = dates_at(V, t)
+    al = (V.created < t) & ((V.status != "CXL") | (V.cancelled > t)) & (d > a)
+    n0, L = K.di(NIGHTS[0]), len(NIGHTS)
+    return _cover(a, d, al & (V.rate != "EVT"), n0, L), _cover(a, d, al & (V.rate == "EVT"), n0, L)
+
+
+def golden(V, years=HIST, cut=cut_utc, t27=None, H=None, start="realised", freed=None, full_occ=None,
+           real_mode="code"):
+    """The forecast by stay: each past season's later bookings replayed whole against this year's book (the book
+    realised by rate code, each night's other rooms at that night's past rate and the event rate's rooms at the event
+    rate's own; on the full nights only the rooms their own bookings will release), the five seasons' mean; the full
+    nights at 480 less the event rate's no-shows."""
     H = H or history(V, years, cut)
+    t27 = cut_utc(Y27) if t27 is None else t27
     b = book27(V, t27)
+    b_o, b_e = book27_by_code(V, t27)
     fi = [i for i, n in enumerate(NIGHTS) if n in full_nights(V)]
     real = np.sum([H[y]["real"] for y in years], axis=0) / np.sum([H[y]["book"] for y in years], axis=0)
+    breal = b_o * real + b_e * event_realisation(V) if real_mode == "code" else b * real
     new = np.mean([H[y]["new"] for y in years], axis=0)
     thru = np.mean([H[y]["thru"] for y in years], axis=0)
-    g = b * real + new - thru
+    if freed is None:
+        rates, pooled = release_rates(V)
+        freed = night_release(V, t27, [K.di(NIGHTS[i]) for i in fi], rates, pooled)
+    st = breal.copy() if start == "realised" else b.copy()
+    for i, fr in zip(fi, freed):
+        st[i] = CAP - fr
+    adds = [replay_season(V, st, y, cut) for y in years]
+    g = breal + np.mean(adds, axis=0)
+    g[fi] = CAP * (1.0 - event_noshow(V)) if full_occ is None else full_occ
+    return np.minimum(CAP, g), dict(book=b, real=real, breal=breal, new=new, thru=thru, fi=fi, freed=list(freed),
+                                    adds=adds)
+
+
+def filtered(V, years=HIST, cut=cut_utc, t27=None, H=None):
+    """The replay's expectation with no capacity check off the full nights and no resale: the book realised by rate
+    code, plus the past seasons' later stays, less those through the aligned full nights."""
+    H = H or history(V, years, cut)
+    b_o, b_e = book27_by_code(V, t27)
+    fi = [i for i, n in enumerate(NIGHTS) if n in full_nights(V)]
+    real = np.sum([H[y]["real"] for y in years], axis=0) / np.sum([H[y]["book"] for y in years], axis=0)
+    g = b_o * real + b_e * event_realisation(V) + np.mean([H[y]["new"] - H[y]["thru"] for y in years], axis=0)
     g[fi] = CAP * (1.0 - event_noshow(V))
-    return np.minimum(CAP, g), dict(book=b, real=real, new=new, thru=thru, fi=fi)
+    return np.minimum(CAP, g)
 
 
 def rivals(V, H=None):
@@ -255,98 +421,95 @@ def plan_realised(V):
     return out
 
 
-def replay(V, years=HIST):
-    """Each past season's post-confirmation stays replayed in booking order against the 2027 book, each taken only
-    if every night of it has a room (whole stays, the booking reference's rooms together), then the book realised."""
-    t27 = cut_utc(Y27)
-    n27 = K.di(NIGHTS[0])
-    L = len(NIGHTS)
-    S = night_stats(V, t27, n27, L)
-    b27 = S["book"]
-    H = history(V, years)
-    real = np.sum([H[y]["real"] for y in years], axis=0) / np.sum([H[y]["book"] for y in years], axis=0)
-    out = []
-    for y in years:
+def pooled_release(V, share="cancelled"):
+    """The pooled share of the aligned festival Friday and Saturday's book at the comparable point that did not stay
+    (share="not stayed", no-shows included) or was cancelled (share="cancelled"), every code together."""
+    num = den = 0
+    for y in HIST:
         t = cut_utc(y)
-        shift = K.di(K.fest_open(Y27)) - K.di(K.fest_open(y))
-        post = (V.created >= t) & V.stayed & V.overnight
-        lo, hi = K.di(aligned(y, NIGHTS[0])) - 21, K.di(aligned(y, NIGHTS[-1])) + 21
-        m = post & (V.dep > lo) & (V.arr <= hi)
-        idx = np.where(m)[0]
-        order = sorted(idx, key=lambda i: (V.created[i], V.conf[i]))
-        groups = {}
-        for i in order:
-            groups.setdefault(V.ref[i], []).append(i)
-        booked = np.zeros(L + 60)
-        booked[30:30 + L] = b27
-        seen = set()
-        for i in order:
-            ref = V.ref[i]
-            if ref in seen:
-                continue
-            seen.add(ref)
-            rows = groups[ref]
-            a = V.arr[rows[0]] + shift - n27 + 30
-            d = V.dep[rows[0]] + shift - n27 + 30
-            a, d = max(a, 0), min(d, L + 60)
-            if a >= d:
-                continue
-            if np.all(booked[a:d] + len(rows) <= CAP):
-                booked[a:d] += len(rows)
-        out.append(booked[30:30 + L] - b27)
-    add = np.mean(out, axis=0)
-    g = b27 * real + add
-    fi = [i for i, n in enumerate(NIGHTS) if b27[i] >= CAP]
-    g[fi] = CAP * (1.0 - event_noshow(V))
-    return np.minimum(CAP, g)
+        a, d = dates_at(V, t)
+        al = (V.created < t) & ((V.status != "CXL") | (V.cancelled > t)) & (d > a)
+        fo = K.di(K.fest_open(y))
+        for f in (fo + 7, fo + 8):
+            m = al & (a <= f) & (d > f)
+            den += int(m.sum())
+            if share == "cancelled":
+                num += int((m & (V.status == "CXL")).sum())
+            else:
+                num += int((m & ~(V.stayed & (V.arr <= f) & (V.dep > f))).sum())
+    return num / den
 
 
 def constructions(V):
-    """Every defensible construction of the stay-level forecast, each week's figure."""
+    """Every defensible construction of the stay-level forecast, each week's figure; the rivals the data rejects are
+    keyed 'rival:'."""
     H = history(V)
     out = {}
-    g, _ = golden(V, H=H)
-    out["golden: all five years"] = wk(g)
+    g, parts = golden(V, H=H)
+    out["golden: all five seasons replayed"] = wk(g)
     for y in HIST:
         ys = [x for x in HIST if x != y]
         out["leave out %d" % y] = wk(golden(V, years=ys)[0])
-    out["last three years"] = wk(golden(V, years=[2024, 2025, 2026])[0])
-    out["last two years"] = wk(golden(V, years=[2025, 2026])[0])
-    b = book27(V)
-    pick = np.mean([H[y]["final"] - H[y]["book"] for y in HIST], axis=0)
-    thru = np.mean([H[y]["thru"] for y in HIST], axis=0)
-    add = b + pick - thru
-    add[[i for i, n in enumerate(NIGHTS) if n in full_nights(V)]] = CAP * (1.0 - event_noshow(V))
-    out["additive: book plus pickup less the blocked stays"] = wk(np.minimum(CAP, add))
+    out["last three seasons"] = wk(golden(V, years=[2024, 2025, 2026])[0])
+    out["last two seasons"] = wk(golden(V, years=[2025, 2026])[0])
     mid = lambda y: np.datetime64(K.local_to_utc(dt.datetime.combine(K.confirmation_day(y), dt.time(0, 0))))
     out["books at midnight"] = wk(golden(V, cut=mid, t27=mid(Y27))[0])
     jul1 = lambda y: np.datetime64(K.local_to_utc(dt.datetime(y, 7, 1, 6, 12, 44)))
     out["past books on 1 July"] = wk(golden(V, cut=jul1)[0])
-    g2, parts = golden(V, H=H)
-    pr = plan_realised(V)
-    g3 = pr + parts["new"] - parts["thru"]
-    g3[parts["fi"]] = CAP * (1.0 - event_noshow(V))
-    out["book realised by rate plan"] = wk(np.minimum(CAP, g3))
-    full480 = g.copy()
-    full480[parts["fi"]] = CAP
-    out["full nights at 480"] = wk(full480)
-    out["replay of whole stays against the 2027 book"] = wk(replay(V))
+    out["no resale on the full nights"] = wk(golden(V, H=H, freed=[0.0] * len(parts["fi"]))[0])
+    out["full nights at 480"] = wk(golden(V, H=H, full_occ=CAP)[0])
+    pc = pooled_release(V, "cancelled")
+    out["full nights' releases at the pooled cancellation share"] = wk(golden(
+        V, H=H, freed=[CAP * pc] * len(parts["fi"]))[0])
+    out["the filter: later stays less those through the full nights, no capacity check"] = wk(filtered(V, H=H))
+    b = book27(V)
+    pick = np.mean([H[y]["final"] - H[y]["book"] for y in HIST], axis=0)
+    add = b + pick - parts["thru"]
+    add[parts["fi"]] = CAP * (1.0 - event_noshow(V))
+    out["additive: book plus pickup less the blocked stays"] = wk(np.minimum(CAP, add))
+    out["book realised at each night's pooled past rate, every code together"] = wk(golden(
+        V, H=H, real_mode="pooled")[0])
+    out["rival: replay against the 2027 book as it stands"] = wk(golden(V, H=H, start="raw")[0])
+    pn = pooled_release(V, "not stayed")
+    out["rival: full nights' releases at the pooled share that did not stay"] = wk(golden(
+        V, H=H, freed=[CAP * pn] * len(parts["fi"]))[0])
     return out
 
 
 def precision(V):
-    """The golden's standard error per week from the five years' spread (one year's post-confirmation stays each)."""
+    """The golden's standard error per week from the five seasons' spread (each season's replay one replicate)."""
     H = history(V)
-    b = book27(V)
-    real = np.sum([H[y]["real"] for y in HIST], axis=0) / np.sum([H[y]["book"] for y in HIST], axis=0)
-    fi = [i for i, n in enumerate(NIGHTS) if n in full_nights(V)]
+    g, parts = golden(V, H=H)
+    breal, fi = parts["breal"], parts["fi"]
     per = []
-    for y in HIST:
-        g = b * real + H[y]["new"] - H[y]["thru"]
-        g[fi] = CAP * (1.0 - event_noshow(V))
-        per.append(wk(np.minimum(CAP, g)))
+    for a in parts["adds"]:
+        gy = breal + a
+        gy[fi] = CAP * (1.0 - event_noshow(V))
+        per.append(wk(np.minimum(CAP, gy)))
     per = np.array(per)
     return list(per.std(axis=0, ddof=1) / np.sqrt(len(HIST)))
+
+
+def release_backtest(V):
+    """Out of sample on the past event weekends full five weeks out: the rooms their full Friday and Saturday
+    released after the cut, against each night's book at its codes' release rates (the event rate from the other
+    event weekends) and against the pooled festival shares."""
+    fris = event_fridays(V.target, full_only=True, V=V)
+    pc, pn = pooled_release(V, "cancelled"), pooled_release(V, "not stayed")
+    act = byc = 0.0
+    nights = 0
+    for fri in fris:
+        rates, pooled = release_rates(V, skip_event=fri)
+        t0 = event_cut(fri)
+        a, d = dates_at(V, t0)
+        al = (V.created < t0) & ((V.status != "CXL") | (V.cancelled > t0)) & (d > a)
+        for f, r in zip((K.di(fri), K.di(fri) + 1), night_release(V, t0, (K.di(fri), K.di(fri) + 1), rates, pooled)):
+            m = al & (a <= f) & (d > f)
+            act += int((m & (V.status == "CXL")).sum())
+            byc += r
+            nights += 1
+    return dict(events=len(fris), nights=nights, actual=act, by_code=byc, pooled_cancelled=CAP * pc * nights,
+                pooled_not_stayed=CAP * pn * nights, pc=pc, pn=pn)
 
 
 # ---------------------------------------------------------------------------------------------------- back-test
@@ -363,9 +526,10 @@ def diary_events(target):
 
 
 def backtest(V, target):
-    """The eleven past event weekends whose Friday and Saturday were full five weeks out: each week's other nights
-    forecast at the Thursday five weeks before the Friday (night-level pickup from comparable weekends without an
-    event, and the same less the comparable weekends' stays through their Friday and Saturday), against the finals."""
+    """The past event weekends whose Friday and Saturday were full five weeks out: each week's other nights forecast
+    at the Thursday five weeks before the Friday (night-level pickup from comparable weekends without an event, and the
+    same less the comparable weekends' stays through their Friday and Saturday), against the finals; and how much of
+    the comparable weekends' through-stays came back on the other nights as stays that miss the full nights."""
     evs = [e for e in diary_events(target) if e["cat"] in ("Sport", "Concert", "Conference")]
     fris = []
     for e in evs:
@@ -383,7 +547,7 @@ def backtest(V, target):
         if not (S["book"][4] >= CAP and S["book"][5] >= CAP):
             continue
         adj = [0, 1, 2, 3, 6, 7, 8]
-        refp, reft, nref = np.zeros(9), np.zeros(9), 0
+        refp, reft, refn, nref = np.zeros(9), np.zeros(9), np.zeros(9), 0
         for yy in HIST:
             if yy == fri.year:
                 continue
@@ -398,20 +562,26 @@ def backtest(V, target):
             S2 = night_stats(V, t2, K.di(cand) - 4, 9, full=[K.di(cand), K.di(cand) + 1])
             refp += S2["final"] - S2["book"]
             reft += S2["thru"]
+            refn += S2["new"] - S2["thru"]
             nref += 1
         refp /= nref
         reft /= nref
+        refn /= nref
         for j in adj:
             fn = min(CAP, S["book"][j] + refp[j])
             fs = min(CAP, S["book"][j] + refp[j] - reft[j])
-            rows.append((fri, j, fn - S["final"][j], fs - S["final"][j]))
+            rows.append((fri, j, fn - S["final"][j], fs - S["final"][j], reft[j],
+                         (S["new"][j] - S["thru"][j]) - refn[j]))
     en = np.array([r[2] for r in rows])
     es = np.array([r[3] for r in rows])
     se = en.std(ddof=1) / np.sqrt(len(en))
+    through = float(np.mean([r[4] for r in rows]))
+    shorter = float(np.mean([r[5] for r in rows]))
     return dict(events=len({r[0] for r in rows}), nights=len(rows), night_bias=float(en.mean()),
                 night_t=float(en.mean() / se), night_mae=float(np.abs(en).mean()), stay_bias=float(es.mean()),
                 stay_mae=float(np.abs(es).mean()),
-                stay_t=float(es.mean() / (es.std(ddof=1) / np.sqrt(len(es)))))
+                stay_t=float(es.mean() / (es.std(ddof=1) / np.sqrt(len(es)))), through=through,
+                shorter=shorter, recovered_share=shorter / through)
 
 
 def august_backtest(V):
@@ -449,7 +619,7 @@ def components(V, L):
     thru_w4 = float(np.mean([sum(H[y]["thru"][i] for i in range(21, 28)) for y in HIST]))
     b = L["parts"]["book"]
     return dict(full=L["full"], book_full=[int(b[i]) for i in fi], thru_w3=thru_w3, thru_w4=thru_w4,
-                gw=L["gw"], default=L["default"])
+                gw=L["gw"], default=L["default"], freed=L["parts"]["freed"])
 
 
 # ---------------------------------------------------------------------------------------------------- Ask A
