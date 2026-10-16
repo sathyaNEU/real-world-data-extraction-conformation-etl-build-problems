@@ -1,26 +1,52 @@
 {
   "task": "task149",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "epidemiology-public-health/health-burden-impact-modeling",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-16",
-  "stump": "Carrying each programme DC's recordable rate per hour worked from the latest twelve months onto its FY2027 planned hours files about 800 recordable cases for fiscal 2027; the step that lands it there is pricing every planned hour at today's rate, when the plan moves the new accounts' cases through hours that imply each crew working about a tenth faster against the engineered standards, and within each DC the rate per hour rises steeply with pace against standard, so the twenty DCs come to about 1,000.",
+  "stump": "Carrying each programme DC's recordable rate per hour worked from the latest twelve months onto its FY2027 planned hours files about 800 recordable cases for fiscal 2027; the step that lands it there is pricing every planned hour at today's rate, when the plan moves the new accounts' cases through hours that imply each crew working about 9 per cent faster against the engineered standards, and within each DC the rate per hour rises steeply with pace against standard, so the twenty DCs come to about 1,000.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "driver 0.07 (task89 lineage, task54) at the draw"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-16",
+    "checks": 49
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK (2026-10-16, the stage 3 cut bc83c300): seven lines and one surface note, each answered in the design note's ## Leak review",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "WARN repeat.decision, answered",
+    "nearest": "driver 0.07 (task89 lineage, task54); surface 0.100 (task71), not promoted"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: ladder, fork table, closure, asks, prompt, precut",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "wave": "wave 4 (new), seed FC20 (world, decision and quantity kept; pitfall re-found)"
+  "wave": "wave 4 (new), seed FC20 (world, decision and quantity kept; pitfall re-found)",
+  "gates": {
+    "checks": "154, 0 failed",
+    "verify": "agrees on its own code path (forecast 1,001.8, response 2.734, default 816.7, chart, 40 ask figures, workbook and slide)",
+    "rebuilds": "two byte-identical (target, goldens, metadata.json, figures.json, target.zip sha256 bc83c300f3ef8ed24111e60b116dc89229efa836e726e6e6ee543e83261a3df4)",
+    "figures_check": "73 figures, 0 absent",
+    "precut": "49 checks, 0 FAIL, 0 WARN",
+    "voice_check": "exit 0 (772 characters)",
+    "scrub": "target and golden clean",
+    "guard": "validate clean, heart WARN (repeat.decision, answered), surface exit 0 (0 promoted; NOTE 'Pleasant Prairie' read as a persona, a village)",
+    "leak_py": "REVIEW, no LEAK"
+  },
+  "call": "about 1,000 recordable cases in fiscal 2027 at the twenty ergonomics program DCs (1,001.8, one standard error 26.2); the default path about 800 (816.7)"
 }

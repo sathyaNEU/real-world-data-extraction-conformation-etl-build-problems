@@ -11,8 +11,8 @@
   "shape": "single-figure",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "About 1,000 recordable cases at the twenty ergonomics program DCs in fiscal 2027 under the FY2027 operating plan (1,001.8 from the shipped files).",
+  "answer_source": "task149/submission.md block 1; task149/generator/figures.json call",
   "gap": [
     "time",
     "population"
@@ -37,7 +37,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "wfm_hours_by_dept_week_fy21_fy26.csv",
-    "rows": 0,
+    "rows": 146400,
     "entity": "one distribution centre's labour department in one fiscal week, with the hours worked by pay type as the workforce-management system closed the week",
     "grain": "distribution centre x fiscal week x labour department",
     "source": "synthetic (constructed in the layout of a workforce-management system's weekly labour-hours export)"
@@ -69,9 +69,9 @@
   "question_form": "how-many",
   "driver": "The hazard per unit of working time rises steeply with how fast a fixed content of work is done, measured against that work's engineered content and read within each unit, and a forward plan that fits more work into each hour concentrates it; carrying today's rate per hour, per item or per unit of engineered work onto the plan, reading the speed off raw item counts, or reading it across units rather than within each, under-counts where the plan raises the speed.",
   "driver_concrete": "Ostrander's FY2027 operating plan gives the twenty programme DCs their new client accounts' cases at labour hours that imply each crew working faster against the engineered labour standards than it does today, and each DC's recordable rate per hour worked rises steeply with its pace against standard, read within each DC over fiscal 2021 to 2026, so the fiscal 2027 forecast is each DC's own rate at the pace its planned cases and hours imply, not its current rate per hour, per case or per standard hour, nor a pace read off cases per hour or across DCs.",
-  "stump": "A competent solver carries each programme DC's recordable rate per 200,000 hours worked from the latest twelve months onto its FY2027 planned hours and files about 800 recordables for fiscal 2027 against about 1,000; the step that lands it there is pricing every planned hour at today's rate, when the plan moves the new accounts' cases through hours that imply each crew working about a tenth faster against the engineered standards and the rate per hour rises steeply with that pace within each DC.",
+  "stump": "A competent solver carries each programme DC's recordable rate per 200,000 hours worked from the latest twelve months onto its FY2027 planned hours and files about 800 recordables for fiscal 2027 against about 1,000; the step that lands it there is pricing every planned hour at today's rate, when the plan moves the new accounts' cases through hours that imply each crew working about 9 per cent faster against the engineered standards and the rate per hour rises steeply with that pace within each DC.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the EHS, labour and WMS exports, reads the recordkeeping procedure and the operating plan correctly and forecasts each DC as its recordable rate per hour worked (trailing, seasonal or multi-year) times its FY2027 planned hours files about 800 (or, at its rate per case or per standard hour times the plan's cases, about 850 to 900), because the plan's hours imply each crew working faster against the standards than today and the rate per hour rises steeply with that pace within every DC; only each DC's own rate at the pace its planned cases and hours imply files about 1,000.",
+  "analyst_test": "A strong analyst who cleans the EHS, labour and WMS exports, reads the recordkeeping procedure and the operating plan correctly and forecasts each DC as its recordable rate per hour worked (trailing, seasonal or multi-year) times its FY2027 planned hours files about 800 (or, at its rate per case or per standard hour, or a fit on cases per hour, 840 to 890), because the plan's hours imply each crew working faster against the standards than today and the rate per hour rises steeply with that pace within every DC; only each DC's own rate at the pace its planned cases and hours imply files about 1,000.",
   "domain_test": "The deciding quantity is each DC's recordable injury rate per 200,000 hours as a function of its crews' work pace against the engineered labour standards, the work-intensity exposure-response occupational epidemiology fits on person-time, applied to the pace the operating plan implies, the impact-modelling way (the burden under the shifted exposure, not today's burden scaled by hours); with another field's nouns there are no OSHA recordable cases, person-hours, engineered standards or selectors' pace for the response to attach to.",
   "layer2_family": "field_method",
   "layer2_pattern": "epidemiology-public-health/health-burden-impact-modeling/2",

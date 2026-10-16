@@ -1,0 +1,277 @@
+{
+ "call": {
+  "forecast_recordable_cases": "1,000",
+  "unrounded": "1001.8",
+  "dcs": "20",
+  "fiscal_year": "2027"
+ },
+ "critical_components": {
+  "pace_plan_vs_latest_twelve_months_per_cent": "9",
+  "rate_per_hour_rise_per_cent": "26",
+  "response_to_log_pace": "2.7"
+ },
+ "steps": {
+  "latest_twelve_months_recordables": "678",
+  "planned_hours_vs_latest_twelve_months_per_cent": "20",
+  "plan_cases_per_direct_hour_vs_latest_per_cent": "3",
+  "response_standard_error": "0.2",
+  "golden_standard_error": "26",
+  "backtest_pace_mape": "11",
+  "backtest_rate_mape": "21",
+  "backtest_uph_mape": "15",
+  "backtest_mixed_dcs": "7",
+  "backtest_pace_mape_mixed": "9",
+  "backtest_uph_mape_mixed": "20",
+  "deviance_gap_uph_vs_pace": "60",
+  "constructions_low": "982",
+  "constructions_high": "1,028"
+ },
+ "default_path": {
+  "forecast": "800",
+  "unrounded": "816.7"
+ },
+ "rivals": {
+  "R0 latest twelve months' rate per hour x planned hours": "817",
+  "R0a every year's rate per hour": "779",
+  "R0s each fiscal period's rate": "780",
+  "R1c rate per case shipped": "841",
+  "R1e rate per standard hour": "888",
+  "R2h hours elasticity": "770",
+  "R2u cases per hour within DCs": "841",
+  "R2c free log hours and log cases": "869",
+  "R2p pace pooled across DCs": "783",
+  "R2s heavy-freight share within DCs": "784"
+ },
+ "rivals_rounded": {
+  "R0 latest twelve months' rate per hour x planned hours": "800",
+  "R0a every year's rate per hour": "800",
+  "R0s each fiscal period's rate": "800",
+  "R1c rate per case shipped": "800",
+  "R1e rate per standard hour": "900",
+  "R2h hours elasticity": "800",
+  "R2u cases per hour within DCs": "800",
+  "R2c free log hours and log cases": "900",
+  "R2p pace pooled across DCs": "800",
+  "R2s heavy-freight share within DCs": "800"
+ },
+ "fit": {
+  "dcs": "60",
+  "latest_twelve_months_from_week": "45",
+  "latest_twelve_months_to_week": "44",
+  "fy2022_weeks": "53"
+ },
+ "chart_fiscal_years": {
+  "2021": "609",
+  "2022": "623",
+  "2023": "637",
+  "2024": "588",
+  "2025": "661"
+ },
+ "ask_a_dart_days": [
+  {
+   "dc": "104",
+   "site": "Groveport DC",
+   "days": "685"
+  },
+  {
+   "dc": "109",
+   "site": "West Jefferson DC",
+   "days": "313"
+  },
+  {
+   "dc": "121",
+   "site": "West Chester DC",
+   "days": "160"
+  },
+  {
+   "dc": "203",
+   "site": "Plainfield DC",
+   "days": "358"
+  },
+  {
+   "dc": "205",
+   "site": "Whitestown DC",
+   "days": "557"
+  },
+  {
+   "dc": "211",
+   "site": "Fort Wayne DC",
+   "days": "621"
+  },
+  {
+   "dc": "214",
+   "site": "Lebanon IN DC",
+   "days": "576"
+  },
+  {
+   "dc": "304",
+   "site": "Joliet DC 2",
+   "days": "954"
+  },
+  {
+   "dc": "318",
+   "site": "Rockford DC",
+   "days": "534"
+  },
+  {
+   "dc": "407",
+   "site": "Lansing DC",
+   "days": "708"
+  },
+  {
+   "dc": "508",
+   "site": "York DC",
+   "days": "163"
+  },
+  {
+   "dc": "602",
+   "site": "Shepherdsville DC",
+   "days": "195"
+  },
+  {
+   "dc": "706",
+   "site": "Mount Juliet DC",
+   "days": "631"
+  },
+  {
+   "dc": "709",
+   "site": "Memphis DC",
+   "days": "421"
+  },
+  {
+   "dc": "804",
+   "site": "Jackson DC",
+   "days": "401"
+  },
+  {
+   "dc": "809",
+   "site": "Savannah DC",
+   "days": "737"
+  },
+  {
+   "dc": "1007",
+   "site": "Katy DC",
+   "days": "140"
+  },
+  {
+   "dc": "1011",
+   "site": "Lancaster DC",
+   "days": "523"
+  },
+  {
+   "dc": "1104",
+   "site": "Pleasant Prairie DC",
+   "days": "766"
+  },
+  {
+   "dc": "1106",
+   "site": "Sun Prairie DC",
+   "days": "703"
+  }
+ ],
+ "ask_a_total": "10,146",
+ "ask_b_cases_over_50_lb": [
+  {
+   "dc": "104",
+   "site": "Groveport DC",
+   "cases": "948,540"
+  },
+  {
+   "dc": "109",
+   "site": "West Jefferson DC",
+   "cases": "905,131"
+  },
+  {
+   "dc": "121",
+   "site": "West Chester DC",
+   "cases": "887,878"
+  },
+  {
+   "dc": "203",
+   "site": "Plainfield DC",
+   "cases": "783,854"
+  },
+  {
+   "dc": "205",
+   "site": "Whitestown DC",
+   "cases": "1,734,902"
+  },
+  {
+   "dc": "211",
+   "site": "Fort Wayne DC",
+   "cases": "2,041,509"
+  },
+  {
+   "dc": "214",
+   "site": "Lebanon IN DC",
+   "cases": "1,170,134"
+  },
+  {
+   "dc": "304",
+   "site": "Joliet DC 2",
+   "cases": "1,551,654"
+  },
+  {
+   "dc": "318",
+   "site": "Rockford DC",
+   "cases": "1,146,239"
+  },
+  {
+   "dc": "407",
+   "site": "Lansing DC",
+   "cases": "1,210,331"
+  },
+  {
+   "dc": "508",
+   "site": "York DC",
+   "cases": "437,458"
+  },
+  {
+   "dc": "602",
+   "site": "Shepherdsville DC",
+   "cases": "779,632"
+  },
+  {
+   "dc": "706",
+   "site": "Mount Juliet DC",
+   "cases": "1,467,921"
+  },
+  {
+   "dc": "709",
+   "site": "Memphis DC",
+   "cases": "477,853"
+  },
+  {
+   "dc": "804",
+   "site": "Jackson DC",
+   "cases": "688,582"
+  },
+  {
+   "dc": "809",
+   "site": "Savannah DC",
+   "cases": "960,715"
+  },
+  {
+   "dc": "1007",
+   "site": "Katy DC",
+   "cases": "670,764"
+  },
+  {
+   "dc": "1011",
+   "site": "Lancaster DC",
+   "cases": "475,031"
+  },
+  {
+   "dc": "1104",
+   "site": "Pleasant Prairie DC",
+   "cases": "692,958"
+  },
+  {
+   "dc": "1106",
+   "site": "Sun Prairie DC",
+   "cases": "710,735"
+  }
+ ],
+ "ask_b_total": "19,741,821",
+ "ask_b_threshold_pounds": "50"
+}

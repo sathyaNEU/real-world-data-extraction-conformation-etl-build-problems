@@ -1,0 +1,206 @@
+{
+  "task": "task149",
+  "title": "How many recordable cases a third-party logistics company's twenty ergonomics program DCs will log in fiscal 2027 under an operating plan that works their hours faster against the engineered standards",
+  "domain": "Epidemiology & Public Health",
+  "client_domain": "Epidemiology & Public Health",
+  "subdomain": "health-burden-impact-modeling (the occupational injury burden of a working population under a planned shift in its exposure: the recordable rate per hour worked as a function of pace against the engineered labor standards, estimated within each DC on person-time, carried to the pace the plan sets)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "one forecast figure to the nearest hundred, two tables for the twenty DCs (fiscal 2026 DART days to 31 October 2026; cases picked over 50 pounds), and a one-slide chart of the five fiscal years' recordable cases beside the forecast",
+  "as_of": "2026-11-02",
+  "deliverables": [
+    "ergonomics_forecast_fy2027.xlsx",
+    "ergonomics_forecast_fy2027.pptx"
+  ],
+  "distractor_files": [
+    "wc_loss_run_valued_2026-09-30.xlsx",
+    "bbs_observations_fy2025_fy2026.csv"
+  ],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 18,
+    "formats": [
+      "csv",
+      "json",
+      "parquet",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "wms_sku_picks_fy2026_p01_p11.parquet",
+    "largest_file_rows": 1051088
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task149/generator/build.py (seeded, deterministic) around a fictional third-party logistics company in Ohio, its distribution centers, its ergonomics vendor and their systems; no real organisation, person or system is depicted. Form layouts follow 29 CFR Part 1904 and OSHA's Injury Tracking Application field names; event codes follow BLS OIICS 2.01.",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-16",
+  "generator": "task149/generator/build.py",
+  "files": [
+    {
+      "path": "EHS-RK-01_osha_recordkeeping_procedure_rev7.pdf",
+      "format": "pdf",
+      "bytes": 4724,
+      "rows": null,
+      "source": "Constructed: Ostrander Logistics EHS procedure EHS-RK-01 rev 7, OSHA injury and illness recordkeeping",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bbs_observations_fy2025_fy2026.csv",
+      "format": "csv",
+      "bytes": 113033,
+      "rows": 5760,
+      "source": "Constructed: Ostrander Logistics safety observation app, behavior-based safety observations FY2025 to FY2026 week 44",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ehs_legacy_case_export_fy21_2024-06-30.csv",
+      "format": "csv",
+      "bytes": 4498634,
+      "rows": 22759,
+      "source": "Constructed: Ostrander Logistics legacy incident database, case export (cases with a date of injury 12/27/2020 to 06/30/2024)",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ehs_platform_cases_2024-07-01_2026-11-02.json",
+      "format": "json",
+      "bytes": 9607011,
+      "rows": 16186,
+      "source": "Constructed: Ostrander Logistics EHS platform, full incident case extract from 07/01/2024 with the cases migrated at go-live",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_notes.txt",
+      "format": "txt",
+      "bytes": 3563,
+      "rows": null,
+      "source": "Constructed: Ostrander Logistics Safety Analytics, field notes for the forecast folder",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "folder_index_2026-11-02.csv",
+      "format": "csv",
+      "bytes": 2101,
+      "rows": 17,
+      "source": "Constructed: Ostrander Logistics Safety Analytics, folder manifest",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fy2027_operating_plan_v3.xlsx",
+      "format": "xlsx",
+      "bytes": 98544,
+      "rows": null,
+      "source": "Constructed: Ostrander Logistics FP&A, FY2027 operating plan v3: cases and labor hours by DC and fiscal period",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ie_engineered_labor_standards.xlsx",
+      "format": "xlsx",
+      "bytes": 10975,
+      "rows": null,
+      "source": "Constructed: Ostrander Logistics Industrial Engineering, engineered labor standards (minutes per case) and site factors",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ita_form300a_submissions_cy2021_cy2025.csv",
+      "format": "csv",
+      "bytes": 47096,
+      "rows": 300,
+      "source": "Constructed: Ostrander Logistics Form 300A summaries as submitted to OSHA's Injury Tracking Application, calendar 2021 to 2025",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lindqvist_program_agreement_fy2027_draft.pdf",
+      "format": "pdf",
+      "bytes": 4590,
+      "rows": null,
+      "source": "Constructed: Ergonomics program services agreement between Ostrander Logistics and Lindqvist Ergonomics Group, fiscal 2027, draft for signature",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rtw_work_status_log_fy2026.csv",
+      "format": "csv",
+      "bytes": 266390,
+      "rows": 3011,
+      "source": "Constructed: Ostrander Logistics return-to-work program, case management system work-status log, files opened from 12/28/2025",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "site_register_2026-11-02.csv",
+      "format": "csv",
+      "bytes": 6910,
+      "rows": 60,
+      "source": "Constructed: Ostrander Logistics DC register as at 11/02/2026",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wc_loss_run_valued_2026-09-30.xlsx",
+      "format": "xlsx",
+      "bytes": 554554,
+      "rows": null,
+      "source": "Constructed: Workers' compensation third-party administrator, loss run for Ostrander Logistics valued 09/30/2026",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wfm_hours_by_dept_week_fy21_fy26.csv",
+      "format": "csv",
+      "bytes": 6854434,
+      "rows": 146400,
+      "source": "Constructed: Ostrander Logistics workforce-management system, weekly hours by DC, department and pay code, FY2021 week 1 to FY2026 week 44",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wms_cases_shipped_by_category_week.parquet",
+      "format": "parquet",
+      "bytes": 409801,
+      "rows": 73200,
+      "source": "Constructed: Ostrander Logistics WMS, weekly cases shipped by location and item category, FY2021 week 1 to FY2026 week 44",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wms_item_master_2026-11-01.csv",
+      "format": "csv",
+      "bytes": 888430,
+      "rows": 13485,
+      "source": "Constructed: Ostrander Logistics WMS item master, active items, 11/01/2026",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wms_item_master_history.csv",
+      "format": "csv",
+      "bytes": 981914,
+      "rows": 14504,
+      "source": "Constructed: Ostrander Logistics WMS item master history, every item version with its effective dates",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wms_sku_picks_fy2026_p01_p11.parquet",
+      "format": "parquet",
+      "bytes": 3704915,
+      "rows": 1051088,
+      "source": "Constructed: Ostrander Logistics WMS pick history summary, the program DCs' cases picked by SKU and fiscal period, FY2026 period 1 to week 44",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
