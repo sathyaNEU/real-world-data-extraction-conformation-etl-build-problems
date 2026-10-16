@@ -481,6 +481,28 @@ Stage 3, built 2026-10-16 from `task149/generator/build.py` (seed 1492027).
   health system, a grocery chain, a golf brand, three staffing brands); the folder index and the export notes'
   keys checked against the shipped set (H9) and the write-up's citations against the pack (H8).
 
+- Stage 4 and ship: the first judge DETERMINISTIC with a FIX_NOW on Ask B's unstated kilogram unit (fixed); the re-judge
+  on the repair cut DETERMINISTIC and APPROVE with Gate H analytical, the call at 1,001.8, every ask cell and an ITA
+  tie-out on all 300 DC-years reproduced (`determinism_check_report.md`, the first judge in
+  `determinism_check_report_round1.md`); the rule 3 audit (scratchpad `rule3/task149.md`, on 44d85cd) PASS and strong,
+  no literal fork or official decoy in section 8 or Schedule B; three reader rounds, the last on the realism cut clean
+  with Q6 analytical. The repair, realism and prompt cuts moved no graded figure: `freeze.py check --mode determinism`
+  against 44d85cd finds every main-call figure, figures.json value and Deliverable Answers number unchanged, and its one
+  exit is the call sentence's spelling (programme to program), the requested prompt change. Shipped as built: the
+  realism cut, target.zip sha256 b45b1fc033957446801a9b223300f0c1407e9845b060c4a9aba5008e890c5e4c.
+
+## Pre-ship check
+
+The 10/10 rules read again against the built pack.
+- Domain: the deciding quantity is still each DC's recordable rate per hour as a function of pace against the
+  engineered standards, fitted within DCs on person-time and carried to the plan's pace. Two judges and the rule 3
+  audit read it as the field's own exposure-response model.
+- Two layers: the mess (migration, UTC, Rockford, category codes, the Lebanon re-study, the 53-week year, the ITA
+  calendar) is what the systems write and stays neutral, R2.1 to R2.9 all in the 1,000 bin. The analysis decides:
+  today's rate per hour files 816.7 on the clean truth and on the pack alike.
+- Rule 3: nothing is planted. No field, unit or definition decides the call. The shipped HOW sentences, executed
+  literally, file 778 to 888 or no figure at all (R3s, C2c). The decisive step is analytical.
+
 ## Leak review
 
 `leak.py --asof 2026-11-02` on the realism cut (b45b1fc0): REVIEW, no LEAK. One line per REVIEW line.
@@ -500,3 +522,10 @@ Stage 3, built 2026-10-16 from `task149/generator/build.py` (seed 1492027).
 - Sweep 9, the plan's FY2027 period dates after the as-of: a forward plan by design (the allow-list is the plan alone).
 - `guard.py surface` reads "Pleasant Prairie" as a persona: it is the Wisconsin village where DC 1104 stands, not a
   person; no change.
+- Reader rounds (`leak_check_report.md`, `## Solver's-eye read`): round 1 clean; round 2 no leak, its authored-text notes
+  rewritten in the realism pass; round 3 on the realism cut clean, Q6 analytical. Rulings: EHS-RK-01 sections 8 and 9
+  and the agreement's clause 4 are ordinary procedure and procurement text and name no method. The thin rev 7 procedure
+  is an accepted residual realism risk. The ask readings close in shipped files, and the judge reproduced each: days
+  through 10/31/2026 inclusive (section 9), the fiscal calendar from the WFM notes, period 11 as week 44 (the export
+  notes).
+

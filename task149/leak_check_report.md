@@ -41,3 +41,26 @@ Stump terms swept: standard, exposure, worked, method, standards, engineered, tw
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+Three rounds by an isolated reader at medium effort, each on a fresh copy of `prompt.txt` and `target/` only.
+
+- **Round 1, the stage 3 cut (bc83c300).** Clean: no sentence or file names the decisive step, nothing ranks the twenty
+  DCs on fiscal 2027 cases, no figure reads as the answer. Q6 analytical (the forecast turns on modelling the rate per
+  hour against pace, not on a field, a rule or a plant).
+- **Round 2, targeted re-read of the repair cut (eaec660f).** No leak, Q6 analytical. It flagged text that read as
+  authored and made the asks easier: Schedule B 2.2's "volumes and labor hours" tail, B3's fee sentence, a data-request
+  clause that listed exactly the two asked tables, EHS-RK-01 sections 5 to 7 and its revision line, and the Rockford
+  re-numbering told in three places. All of it was rewritten in the generator for the realism cut.
+- **Round 3, targeted re-read of the realism cut (b45b1fc0).** Clean: no leak, no ranking, no answer figure. Q6
+  analytical.
+
+Rulings on the REVIEW lines and the readers' notes:
+- EHS-RK-01 sections 8 and 9 and the agreement's clause 4 data list are ordinary procedure and procurement text. They
+  name no method; harmless.
+- The thin rev 7 procedure is a residual realism risk, accepted.
+- The ask readings close in shipped files, and the judge reproduced each: days are counted through 10/31/2026 inclusive
+  under EHS-RK-01 section 9; the fiscal calendar comes from the WFM notes (fiscal years end on the last Saturday of
+  December); period 11 is week 44 only (the export notes' line on the SKU pick file).
+- The sweep 3, 4, 6 and 9 lines above are answered one by one in the design note's `## Leak review`; all are harmless.

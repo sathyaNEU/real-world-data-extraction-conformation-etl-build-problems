@@ -1,11 +1,11 @@
 {
   "task": "task149",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "epidemiology-public-health/health-burden-impact-modeling",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-16",
   "stump": "Carrying each programme DC's recordable rate per hour worked from the latest twelve months onto its FY2027 planned hours files about 800 recordable cases for fiscal 2027; the step that lands it there is pricing every planned hour at today's rate, when the plan moves the new accounts' cases through hours that imply each crew working about 9 per cent faster against the engineered standards, and within each DC the rate per hour rises steeply with pace against standard, so the twenty DCs come to about 1,000.",
   "architecture": 1,
@@ -16,8 +16,8 @@
     "checks": 49
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-16, the realism cut b45b1fc0): seven lines and one surface note, each answered in the design note's ## Leak review",
-    "reader": "round 1 on the stage 3 cut (bc83c300): clean, Q6 analytical; round 2 targeted re-read on the repair cut (eaec660f): no leak, Q6 analytical, authored-looking text flagged and rewritten in the realism pass"
+    "leak_py": "REVIEW, no LEAK (2026-10-16, the shipped realism cut b45b1fc0): seven lines and one surface note, each answered in the design note's ## Leak review",
+    "reader": "three rounds in task149/leak_check_report.md (## Solver's-eye read): round 1 (stage 3 cut bc83c300) clean with Q6 analytical; round 2 (repair cut eaec660f) no leak with Q6 analytical, its authored-text notes rewritten in the realism pass; round 3 (realism cut b45b1fc0, the shipped pack) clean, no ranking, no answer figure, Q6 analytical"
   },
   "duplicate_check": {
     "heart": "WARN repeat.decision, answered",
@@ -26,12 +26,13 @@
   "judge": {
     "verdict": "DETERMINISTIC (re-judge on the repair cut eaec660f), Gate H analytical",
     "disposition": "APPROVE; the call at 1,001.8, all 20 day and 20 heavy-pick cells and an ITA tie-out on all 300 DC-years reproduced; two low-risk residual readings for information (the SEPARATED day, the state to time zone map), no fix",
-    "report": "task149/determinism_check_report.md (the re-judge); history: determinism_check_report_round1.md (the first judge, FIX_NOW on Ask B's kilogram unit, fixed)"
+    "report": "task149/determinism_check_report.md (the re-judge); history: determinism_check_report_round1.md (the first judge, FIX_NOW on Ask B's kilogram unit, fixed)",
+    "stump_power": "strong (rule 3 audit); moderate to good (first judge)"
   },
   "returned": [],
-  "resume": "stage 5: a short targeted re-read on the realism cut (b45b1fc0), then ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-16",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -55,8 +56,15 @@
       "file": "scratchpad rule3/task149.md",
       "commit": "44d85cd",
       "cut": "bc83c300",
-      "verdict": "PASS (decisive step analytical, nothing planted; stump strong)",
-      "outcome": "no literal fork or official decoy in EHS-RK-01 section 8 or Schedule B 2.2; the residual (no filed selection criterion) closed on the WHAT side by Schedule B3, what the forecast is compared with, no method named"
+      "verdict": "PASS and strong (decisive step analytical, nothing planted)",
+      "outcome": "no literal fork or official decoy in EHS-RK-01 section 8 or Schedule B 2.2; the residual (no filed selection criterion) left to the data's back-test, which both judges accepted; the realism pass later trimmed B2.2 to the approved plan and moved the post-term review into section 1, no method named"
     }
-  ]
+  ],
+  "accepted_risks": [
+    "the thin rev 7 recordkeeping procedure (ten short sections) is a residual realism risk, accepted",
+    "Ask B: a solver who reads the export notes' unit line and joins each pick to the item version in force in its period lands every Ask B cell; that is the golden path, and only the unit-aware join without item versions misses (at all 20 DCs, the smallest gap 64 cases)",
+    "the re-judge's residual readings, both closed by shipped text and reproduced: the SEPARATED day not counted (EHS-RK-01 9 and the log's EFFECTIVE_DATE as the first day of the status), and the state to time zone map (general knowledge, confirmed by the ITA tie-out on all 300 DC-years)",
+    "freeze determinism exits 1 on the call sentence's spelling only (programme to program, the requested realism change); no graded figure moved"
+  ],
+  "shipped_cut": "commit c019b15 (the realism cut), shipped as built; target.zip sha256 b45b1fc033957446801a9b223300f0c1407e9845b060c4a9aba5008e890c5e4c"
 }
