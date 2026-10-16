@@ -1,5 +1,5 @@
 """The documents: the club's accounting policy FIN-14, the five term sheets, the League's injured-list rules excerpt,
-the statistics feed notes and the export manifest."""
+the statistics feed notes and the finance close-file index of the December 11 pull."""
 from __future__ import annotations
 
 import datetime as dt
@@ -19,7 +19,7 @@ F_FIN14 = "FIN-14_player_compensation_accounting_policy.pdf"
 F_TERMS = "term_sheets_2027_free_agent_hitters.pdf"
 F_ILRULES = "league_rules_art22_injured_lists_excerpt.pdf"
 F_NOTES = "lsf_feed_notes.txt"
-F_MANIFEST = "export_manifest_2026-12-11.csv"
+F_MANIFEST = "ral_close_file_index_2026-12-11.csv"
 
 BODY = ParagraphStyle("body", fontName="Helvetica", fontSize=9.6, leading=12.6, alignment=TA_LEFT, spaceAfter=4.5)
 HEAD = ParagraphStyle("head", fontName="Helvetica-Bold", fontSize=10, leading=13, spaceBefore=6, spaceAfter=2.5,
@@ -47,8 +47,8 @@ def _pdf(path, story, title, author, stamp, footer, producer):
 def write_fin14(out):
     s = [Paragraph(K.CLUB_LEGAL.upper() + " (RALEIGH OAKS)", SMALL), Paragraph("Finance Department", SMALL),
          Spacer(1, 6), Paragraph("Accounting Policy FIN-14: Player Compensation", TITLE),
-         Paragraph("Effective January 1, 2025; supersedes FIN-14 of March 2019. Policy owner: Controller. Approved by "
-                   "the Audit Committee, December 4, 2024.", SMALL), Spacer(1, 6)]
+         Paragraph("Effective January 1, 2025, as revised November 12, 2026; supersedes FIN-14 of March 2019. Policy "
+                   "owner: Controller. Approved by the Audit Committee, November 12, 2026.", SMALL), Spacer(1, 6)]
     secs = [
         ("1. Scope", [
             "This policy sets how the Club records the cost of its players' contracts: salaries, signing bonuses, "
@@ -70,18 +70,30 @@ def write_fin14(out):
             "4.2 When a contract is signed, the Club accrues each such bonus at its expected amount: the amount of the "
             "bonus multiplied by the probability, assessed at the date the contract is signed, that the player reaches "
             "its threshold in the championship season for which the bonus is payable.",
-            "4.3 The probability is assessed with the player taken as remaining with the Club for the whole season, in "
-            "the role the Club plans for him at the date of signing.",
-            "4.4 The accrual is remeasured at each quarter end during the season and settled at the end of the season "
+            "4.3 The probability is assessed on the footing that the contract stands as signed through the season: "
+            "the player is not traded or released and the contract is not renegotiated, and he is in the role the "
+            "Club plans for him at the date of signing. His own health and playing time are not assumed: the chance "
+            "that he is hurt, or plays less than planned, is part of the probability.",
+            "4.4 The Controller chooses the basis for the probabilities by a look-back, kept in the close file for "
+            "the auditors. Each basis considered is applied to each of the four championship seasons before the "
+            "contract is signed, as if that season were still to be played and using only what was published before "
+            "it began, to every hitter in a starting lineup of the January 31 depth charts for that season who made "
+            "at least 100 plate appearances in each of the two seasons before it. For each such hitter the basis "
+            "gives the probability that he makes at least 450, 500, 550, 600 and 650 plate appearances in the "
+            "season, counting his plate appearances for every club he played for. The Club uses the basis with the "
+            "lowest average, over every hitter, season and threshold, of the squared difference between that "
+            "probability and 1 where he reached the threshold or 0 where he did not.",
+            "4.5 The accrual is remeasured at each quarter end during the season and settled at the end of the season "
             "against the bonuses earned."]),
         ("5. Award bonuses", [
             "Bonuses for All-Star selection, league awards and postseason honors are not accrued. They are expensed in "
             "the period in which the selection or award is announced."]),
         ("6. Documentation", [
             "Each accrual under section 4 is documented in the close file of the period in which the contract is "
-            "signed: the contract's bonus terms, the expected amount of each bonus and the basis for each probability. "
-            "Baseball Operations provides the Club's plans for the player; the Controller is responsible for the "
-            "estimate."]),
+            "signed: the contract's bonus terms, the expected amount of each bonus, the basis for each probability and "
+            "the look-back that chose it. Expected amounts are carried unrounded; a total is the sum of the unrounded "
+            "amounts, rounded only where it is reported. Baseball Operations provides the Club's plans for the player; "
+            "the Controller is responsible for the estimate."]),
     ]
     for h, paras in secs:
         s.append(Paragraph(h, HEAD))
@@ -89,9 +101,11 @@ def write_fin14(out):
             s.append(Paragraph(p, BODY))
     s.append(Spacer(1, 8))
     s.append(Paragraph("Revision history: March 2019, issued. January 2025, section 4 added (playing-time bonuses "
-                       "were previously expensed when earned); section 3.2 discount rate basis changed.", SMALL))
+                       "were previously expensed when earned); section 3.2 discount rate basis changed. November 2026, "
+                       "4.3 restated and 4.4 added (the look-back, after the auditors' review of the 2025 close); 4.4 "
+                       "renumbered 4.5; section 6 extended.", SMALL))
     _pdf(os.path.join(out, F_FIN14), s, "FIN-14 Player Compensation", K.PEOPLE["controller"],
-         dt.datetime(2024, 12, 5, 10, 2), "Triangle Baseball Club, LLC: Finance policies", "Finance policy library")
+         dt.datetime(2026, 11, 13, 9, 41), "Triangle Baseball Club, LLC: Finance policies", "Finance policy library")
 
 
 # ------------------------------------------------------------------------------------------------------- term sheets
@@ -153,7 +167,9 @@ def write_il_rules(out):
     secs = [
         ("22.1 Lists", "A Club may place a Player who is unable to play because of injury or illness on the 10-day "
                        "Injured List (the 15-day Injured List for a pitcher) or the 60-day Injured List, and a Player "
-                       "with a concussion on the 7-day Injured List."),
+                       "with a concussion on the 7-day Injured List. A placement takes effect on the date the Club "
+                       "designates, which may be up to three days before the date of the transaction placing the "
+                       "Player on the list."),
         ("22.2 Minimum periods", "A Player may not be reinstated from the 7-day, 10-day, 15-day or 60-day Injured List "
                                  "until seven, ten, fifteen or sixty days after his placement takes effect."),
         ("22.3 Transfers", "A Player on the 7-day, 10-day or 15-day Injured List may be transferred to the 60-day "
@@ -235,7 +251,7 @@ from Opening Day through the last scheduled day.
         f.write(txt)
 
 
-# --------------------------------------------------------------------------------------------------------- manifest
+# ---------------------------------------------------------------------------------------------- close-file index
 def write_manifest(out, rows):
     items = [
         (R.F_LEGACY, "League Statistics Feed", "Batting lines, legacy layout", "championship seasons 2021-2024"),
@@ -261,5 +277,5 @@ def write_manifest(out, rows):
     out_rows = []
     for f, src, what, cover in items:
         out_rows.append([f, src, what, cover, rows.get(f, ""), "2026-12-11"])
-    out_rows.append([F_MANIFEST, "Finance", "This manifest", "", "", "2026-12-11"])
+    out_rows.append([F_MANIFEST, "Finance", "This index", "", "", "2026-12-11"])
     K.write_csv(os.path.join(out, F_MANIFEST), ["file", "source", "contents", "coverage", "rows", "pulled"], out_rows)

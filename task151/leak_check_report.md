@@ -1,24 +1,25 @@
 # leak check, task151
 
-**Verdict: REVIEW.** 20 files read, 15 golden figures and 9 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 20 files read, 20 golden figures and 9 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: appearances, regulars, starts, projection, planned, batting, distribution, decisive, sheets, normal, vendor, method, regular, golden, lineup, population, league, forecasting, payout, winter, contract, asserted, opening, stepped, comparable
+Stump terms swept: regulars, starts, appearances, look-back, projection, vendor, planned, golden, catchers, decisive, population, distribution, starting, contract, regular, method, lineup, batting, non-catcher, sheets, record, asserted, readable, window, position
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `ral_player_contract_register_2024_2026.xlsx`: golden figure 225,000 appears: ...Zach E1039635 3B 12/12/2024 2025 7250000 500000 $225,000 each for 375, 475 and 575 plate appearances $50,0...
-- **REVIEW** `term_sheets_2027_free_agent_hitters.pdf`: carries 7 of 10 distinctive words of the committed call: "Accrue $3,500,000 at signing for the plate-appearance bonuses in the five free-agent hitters' 2027 contracts."
+## 3 answer figures in the pack (REVIEW 4)
+- **REVIEW** `FIN-14_player_compensation_accounting_policy.pdf`: golden figure 4.4 appears: ...ys less than planned, is part of the probability. 4.4 The Controller chooses the basis for the probabil...
+- **REVIEW** `ral_player_contract_register_2024_2026.xlsx`: golden figure 225,000 appears: ...Juan E1035317 3B 12/12/2024 2025 7250000 500000 $225,000 each for 375, 475 and 575 plate appearances $50,0...
+- **REVIEW** `ral_player_contract_register_2024_2026.xlsx`: golden figure 125,000 appears: ...6/2023 2024-2026 8000000 8000000 8000000 2000000 $125,000 each for 500, 550 and 600 plate appearances $45,0...
+- **REVIEW** `term_sheets_2027_free_agent_hitters.pdf`: carries 7 of 10 distinctive words of the committed call: "Accrue $4,250,000 at signing for the plate-appearance bonuses in the five free-agent hitters' 2027 contracts."
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `FIN-14_player_compensation_accounting_policy.pdf`: 3 of 25 stump-paragraph terms appear (appearances, league, contract); read whether the document names the move
-- **REVIEW** `lsf_feed_notes.txt`: 5 of 25 stump-paragraph terms appear (appearances, batting, lineup, league, opening); read whether the document names the move
-- **REVIEW** `term_sheets_2027_free_agent_hitters.pdf`: 3 of 25 stump-paragraph terms appear (appearances, league, contract); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `FIN-14_player_compensation_accounting_policy.pdf`: 7 of 25 stump-paragraph terms appear (appearances, look-back, planned, starting, contract, lineup); read whether the document names the move
+- **REVIEW** `lsf_feed_notes.txt`: 5 of 25 stump-paragraph terms appear (appearances, catchers, lineup, batting, position); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 4, INFO 1)
 - **REVIEW** `hvbd_hitter_projections_2022_2027.csv`: names 9 of 9 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `hvbd_winter_depth_charts_2021_2026.xlsx`: names 9 of 9 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `lsf_transactions_2024_2026.json`: names 9 of 9 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `lsf_transactions_2024_2026.json`: names 8 of 9 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `term_sheets_2027_free_agent_hitters.pdf`: names 4 of 9 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `ral_depth_chart_2027.xlsx`: names 5 of 9 answer-set candidates; confirm it does not rank them on the decision question
 

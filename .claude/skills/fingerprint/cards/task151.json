@@ -6,12 +6,12 @@
   "domain": "general-statistics-data-science",
   "subdomain": "resampling-simulation-monte-carlo-methods",
   "client_domain": "general-statistics-data-science",
-  "niche": "a major-league baseball club's controller accruing, at signing, the plate-appearance bonuses in five free-agent hitters' 2027 contracts, when four of the five will bat lower in the club's order than they did for their old clubs and the league's winter-planned everyday regulars either play out the 162-game schedule or lose a long block of it to the injured list, about one in six before opening day",
+  "niche": "a major-league baseball club's controller accruing, at signing, the plate-appearance bonuses in five free-agent hitters' 2027 contracts, when the five will bat fifth to ninth in the club's order, each lower than for his old club, the league's winter-planned everyday regulars either play out the 162-game schedule or lose a long block of it to the injured list (about one in six before opening day), and the club's policy chooses the basis by a look-back over the last four seasons",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "Accrue $3,500,000 at signing for the plate-appearance bonuses in the five free-agent hitters' 2027 contracts.",
+  "answer": "Accrue $4,250,000 at signing for the plate-appearance bonuses in the five free-agent hitters' 2027 contracts.",
   "answer_source": "task151/submission.md, block 1 (generator/figures.json call.total)",
   "gap": [
     "population",
@@ -37,7 +37,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "lsf_batting_2021_2024.txt beside lsf_batting_2025_2026.csv",
-    "rows": 276175,
+    "rows": 276378,
     "entity": "one player's batting line in one championship-season game, with his lineup slot and position",
     "grain": "player x game",
     "source": "synthetic (constructed in the layout of a league statistics feed, two layouts across a 2025 platform change)"
@@ -58,17 +58,21 @@
       "Steven Armstrong",
       "Harry Barnes",
       "Matthew Wallace",
-      "Jairo Calderón",
-      "Kevin Weeks",
-      "Ramon Figueroa",
-      "Eric Dobbs",
-      "Dylan Harlow",
-      "Andrés Acevedo",
-      "Elijah Mosley",
-      "Kody Bagwell",
-      "Zach Strickland",
-      "Carson Bickford",
-      "Shota Nakagawa"
+      "Sawyer Lusk",
+      "Andres Rivas",
+      "Drew Brock",
+      "Ángel Medina",
+      "Mike Meeks",
+      "Micah Herron",
+      "Edwin Cedeno",
+      "Jonathan Vasquez",
+      "Juan Nunez",
+      "Gregorio Candelario",
+      "Jacob Briggs",
+      "Néstor Cabrera",
+      "Gilberto Polanco",
+      "Josh Atwell",
+      "Parker Burkett"
     ]
   },
   "deliverables": [
@@ -78,11 +82,11 @@
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "A stepped payout on a unit's season total is the sum of its chances of clearing each step, and the total is the rate per appearance the unit's assigned position earns times the appearances it makes, which units planned to play every day either make nearly in full or lose in one long block, before the season as well as during it; so each chance has to come from the appearances made by every unit planned the same way at the same point before the season, read at the new position's rate, while a point forecast, a symmetric band, the unit's own rate from its old position, or only the units that opened or completed the season whole each misplace the steps.",
-  "driver_concrete": "Each signing's 2027 plate appearances are the plate appearances per start his planned lineup slot earns (4.38 batting fourth down to 3.84 batting ninth) times the starts he makes, and the league's winter-planned everyday regulars made a near-full 150 to 160 starts or lost a long block to the injured list (about one in six missed opening day), so the accrual is each bonus times the share of the 1,440 seasons of the 2021 to 2026 winter-planned non-catcher regulars whose starts, at the new slot's rate, clear its plate-appearance line ($3,500,000), where each player's projected plate appearances with a normal band ($4,750,000), the same regulars at each player's old-club rate per start ($4,500,000), the regulars who opened the season or qualified, and the new slot's rate with a normal band ($3,000,000) each file another accrual.",
-  "stump": "A competent solver takes each signing's projected 2027 plate appearances from the vendor's file, puts a normal band on them from the projection's past misses and accrues the bonuses at those chances, filing $4,750,000; the step that lands it there is pricing each player off his own record, earned higher in his old club's batting order and spread symmetrically, when his 2027 total is his new slot's rate per start times the starts a winter-planned regular makes, a near-full season or one long injured-list block, which files $3,500,000.",
+  "driver_concrete": "Each signing's 2027 plate appearances are the plate appearances per start his planned lineup slot earns (4.25 batting fifth down to 3.83 batting ninth) times the starts he makes, and the league's winter-planned everyday regulars made a near-full 150 to 160 starts or lost a long block to the injured list (about one in six missed opening day); catchers rest a third of the schedule; so the accrual is each bonus times the share of the 1,440 seasons of the 2021 to 2026 winter-planned non-catcher regulars whose starts, at the new slot's rate, clear its line ($4,250,000), the basis the policy's look-back over 748 hitter-seasons scores lowest, where the starting nines' seasons taken whole ($4,500,000), each player's projected plate appearances with a normal band ($6,250,000), the non-catchers at any slot ($5,250,000), every regular at the slot with the catchers kept in ($3,750,000) and the opening-day starters ($4,000,000) each file another accrual and score worse.",
+  "stump": "A competent solver runs the policy's look-back on the bases at hand (the vendor's projection with a band from its past misses, each player's own seasons, the depth charts' starting nines' seasons taken whole), keeps the starting nines' seasons and files $4,500,000; the step that lands it there is reading each signing off seasons that keep the catchers in and ignore where each hitter bats, when his 2027 total is his new slot's rate per start times the starts a winter-planned non-catcher regular makes, a near-full season or one long injured-list block: the basis that scores lowest in the same look-back and files $4,250,000.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the five contracts, the accrual policy and the depth chart correctly and prices each bonus off each signing's projected plate appearances with a normal band from the projection's past misses files $4,750,000 against the golden $3,500,000; building the league's regulars' seasons but at each player's old-club plate appearances per start files $4,500,000, the regulars who opened the season $3,750,000, the opening-day lineups $3,250,000 and the new slot's rate with a normal band $3,000,000; only the winter-planned regulars' whole seasons read at the new slot's rate file $3,500,000 (executed in checks.py on the clean truth and the pack).",
-  "domain_test": "The deciding quantity is each signing's predictive distribution of 2027 plate appearances at his bonus lines, which a resampling of comparable seasons gets only when the unit resampled is a whole season of a regular planned in the winter (its injured-list blocks, the ones before opening day included) and its starts are read at the new lineup slot's rate per start; replacing it with a generic summary of the player's record (a projection and its error as a normal band) moves the accrual from $3,500,000 to $4,750,000, and with another field's nouns there is no batting order fixing a rate per start and no 162-game schedule that planned regulars play out or lose in blocks.",
+  "analyst_test": "A strong analyst who reads the five contracts, the accrual policy (its look-back included) and the depth chart correctly and runs the look-back on the bases at hand files $4,500,000 against the golden $4,250,000; the vendor's projection with its band files $6,250,000, the players' own seasons $7,750,000, the non-catcher regulars at any slot $5,250,000, every regular at the slot with the catchers kept in $3,750,000, the new slot's rate with a normal band $3,500,000 and the opening-day starters $4,000,000; only the winter-planned non-catcher regulars' whole seasons read at the new slot's rate file $4,250,000 and score lowest (executed in checks.py on the clean truth and the pack).",
+  "domain_test": "The deciding quantity is each signing's predictive distribution of 2027 plate appearances at his bonus lines, which a resampling of comparable seasons gets only when the unit resampled is a whole season of a non-catcher regular planned in the winter (its injured-list blocks, the ones before opening day included) and its starts are read at the new lineup slot's rate per start; a generic summary of the player's record (a projection and its error as a normal band) moves the accrual from $4,250,000 to $6,250,000 and the starting nines taken whole to $4,500,000, and with another field's nouns there is no batting order fixing a rate per start, no position that rests a third of the schedule and no 162-game schedule that planned regulars play out or lose in blocks.",
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "own:stepped-bonus-chances-from-winter-planned-regular-seasons-at-the-new-slot-rate",
   "layer1": [
@@ -103,6 +107,6 @@
     "task97": "task97 reads a unit's chance off the cumulative history of the place it occupies across every occupant; here the slot fixes only a rate per start, and the chance comes from the starts distribution of planned regulars"
   },
   "lineage": [],
-  "notes": "stump_strategy other: the decisive move is the expected value of a stepped payout from the right predictive distribution (a planned regular's whole-season starts read at the new slot's rate), a forecast-uncertainty family the vocabulary does not name; forecast_method_backtest and population_selection are also banned against the last three builds",
+  "notes": "stump_strategy other: the decisive move is the expected value of a stepped payout from the right predictive distribution (a planned non-catcher regular's whole-season starts read at the new slot's rate), a forecast-uncertainty family the vocabulary does not name; forecast_method_backtest and population_selection are also banned against the last three builds. Selection organ: FIN-14 4.4 files a look-back (population, window, thresholds and score, no basis named) that ranks the bases, added at the stage 4 repair after the round 1 determinism finding; neither task150 nor task148 files one.",
   "registered": "2026-10-16T18:56:20Z"
 }

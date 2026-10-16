@@ -38,8 +38,8 @@ DISTRACTORS = [REC.F_PROJ, REC.F_SCHED27]
 METHOD = (r"per start|comparab|distribution|percentile|share of|simulat|resampl|bootstrap|regulars' seasons|"
           r"winter-planned|planned regulars")
 SOFT = ("hitters with 81 or more starts", "hitters with 300 or more plate appearances")
-GOLD_TOTAL = 3_500_000
-GOLD_PER = {"P4": 700_000, "P1": 800_000, "P2": 800_000, "P3": 600_000, "P5": 600_000}
+GOLD_TOTAL = 4_250_000
+GOLD_PER = {"P4": 500_000, "P1": 1_000_000, "P2": 600_000, "P3": 1_200_000, "P5": 900_000}
 BIN = 250_000
 
 
@@ -182,7 +182,7 @@ def run(target, golden, W, R, meta_path):
       % (len(P.lines), G["n"]), len(P.lines) == sum(rows[f] for f in (REC.F_LEGACY, REC.F_BAT)) and G["n"] == 6 * 30 * 8)
 
     # ---- the golden itself
-    C("M1 the accrual is $3,500,000 and each player's figure as filed", G["total_r"] == GOLD_TOTAL and
+    C("M1 the accrual is $4,250,000 and each player's figure as filed", G["total_r"] == GOLD_TOTAL and
       {key_of[n]: v for n, v in G["per_r"].items()} == GOLD_PER, (G["total"], G["per"]))
     Tr = truth(L)
     tper, ttot = truth_golden(Tr)
@@ -222,6 +222,14 @@ def run(target, golden, W, R, meta_path):
       "%s, %.1f bins from the golden" % (K.money(calc.r250(tdef)), bins(tdef, ttot)), calc.r250(tdef) != GOLD_TOTAL
       and abs(tdef - ttot) >= BIN, tdef)
     C("R3a the same route on the pack files the same rounded figure", calc.r250(pdef) == calc.r250(tdef), (pdef, tdef))
+    at_hand = ("default: vendor projection with a normal band", "own three seasons as the draws",
+               "the full nine's own plate appearances")
+    pick = min(at_hand, key=lambda n: R["LB"][n])
+    C("R3a the default path: FIN-14 4.4 run on the bases at hand (the vendor's projection with its band, the players' "
+      "own seasons, the starting nines' seasons taken whole) keeps '%s' and files %s, %.2f bins from the golden" % (
+          pick, K.money(calc.r250(RV[pick])), bins(RV[pick], G["total"])),
+      pick == "the full nine's own plate appearances" and abs(RV[pick] - G["total"]) >= BIN and
+      calc.r250(RV[pick]) != GOLD_TOTAL, (pick, RV[pick]))
     # ---- R3b: the decisive step alone; each lower correction stays wrong
     st = G["starts"]
     rt = G["rate"]
@@ -250,9 +258,11 @@ def run(target, golden, W, R, meta_path):
     how = fin + " " + terms + " " + texts[REC.F_DC27] + " " + texts[DOC.F_NOTES] + " " + texts[REC.F_DC]
     C("R3s no shipped sentence names a distribution, a comparison set, a rate per start or how starts are lost",
       not re.search(METHOD, how, re.I), re.findall(r".{40}(?:%s).{40}" % METHOD, how, re.I)[:3])
-    C("R3s FIN-14 fixes the estimand (4.2, 4.3) and no method", "multiplied by the probability" in fin and
-      "remaining with the Club for the whole season" in fin and not re.search(
-          r"projection|past seasons|player's record|regress|comparable|depth chart", fin, re.I))
+    C("R3s FIN-14 fixes the estimand (4.2, 4.3) and the selection criterion (4.4), and names no basis",
+      "multiplied by the probability" in fin and "the contract stands as signed through the season" in fin and
+      "The Club uses the basis with the lowest average" in fin and not re.search(
+          r"projection|past seasons|player's record|regress|comparab|lineup slot|batting order|per start|catch|"
+          r"\bstarts\b|\bslot", fin, re.I), re.findall(r".{30}(?:projection|regress|comparab|slot|catch).{30}", fin, re.I))
     vp = RV["vendor point"]
     C("R3s the literal combination with the field's ready projection (each bonus counted if the vendor's projection "
       "reaches it) files %s, not the golden" % K.money(calc.r250(vp)), abs(vp - G["total"]) >= BIN, vp)
@@ -288,6 +298,53 @@ def run(target, golden, W, R, meta_path):
           abs(v - G["total"]) >= BIN, v)
     C("L6 rivals on both sides of the golden", any(v < G["total"] - BIN for v in RV.values()) and
       any(v > G["total"] + BIN for v in RV.values()))
+    # ---- the filed look-back (FIN-14 4.4) executed: the selection criterion ranks the bases
+    LB, n_lb = R["LB"], R["n_lb"]
+    gb = LB["golden"]
+    acc = R["ACC"]
+    win = min(LB, key=LB.get)
+    proj_all = calc.projections(P)
+    missing = [(y, r["lg"]) for y in calc.LB_SEASONS for r in T.planned if r["season"] == y and all(
+        T.pa[(y - j, r["lg"])] >= calc.LB_MIN_PA for j in (1, 2)) and (y, r["lg"]) not in proj_all]
+    C("LB0 FIN-14 4.4's hitters: %d hitter-seasons 2023 to 2026, every one with the vendor's projection" % n_lb,
+      n_lb > 600 and not missing, missing[:3])
+    C("LB1 the look-back's lowest score is a construction of the golden ('%s', %.5f; the golden basis %.5f)" % (
+        win, LB[win], gb), win in calc.FAMILY, (win, LB[win]))
+    for nm in calc.FAMILY + calc.LANDS:
+        tot = sum(acc[nm].values())
+        C("LB2 '%s' files the golden at the signings (%s, players %s)" % (nm, K.money(round(tot)), "same" if {
+            n: calc.r100(v) for n, v in acc[nm].items()} == G["per_r"] else "differ"), calc.r250(tot) == GOLD_TOTAL
+          and {n: calc.r100(v) for n, v in acc[nm].items()} == G["per_r"], (tot, acc[nm]))
+    for nm in calc.FAMILY:
+        C("LB2b '%s' ties the golden basis in the look-back (%+.2f per cent)" % (nm, 100 * (LB[nm] - gb) / gb),
+          abs(LB[nm] - gb) / gb < 0.0025)
+    for nm, sc in sorted(LB.items()):
+        if nm not in calc.FAMILY:
+            C("LB3 '%s' loses the look-back by %.2f per cent" % (nm, 100 * (sc - gb) / gb), sc > gb * 1.001, sc)
+    floors = {"default: vendor projection with a normal band": 0.10, "vendor projection with its past misses": 0.10,
+              "own three seasons as the draws": 0.10, "own seasons since 2021": 0.10, "opening-day lineups": 0.01,
+              "planned regulars who opened the season": 0.01, "the full nine's own plate appearances": 0.10,
+              "catchers kept in": 0.05, "planned regulars' own plate appearances": 0.03}
+    for nm, m in floors.items():
+        C("LB4 a visible margin: '%s' scores %.1f per cent above the golden basis (floor %d)" % (
+            nm, 100 * (LB[nm] - gb) / gb, round(100 * m)), LB[nm] >= gb * (1 + m), LB[nm])
+    C("LB5 weight on the player's record or the vendor's projection only worsens the score, more weight more so",
+      gb < LB["own record given a weight of 2 per cent"] < LB["own record given a weight of 5 per cent"] <
+      LB["own record given a weight of 10 per cent"] and gb < LB["vendor projection given a weight of 2 per cent"] <
+      LB["vendor projection given a weight of 5 per cent"] < LB["vendor projection given a weight of 10 per cent"] and
+      gb < LB["own seasons blended in at 5 per cent"] < LB["own seasons blended in at 10 per cent"])
+    for nm, v in sorted(R["NEAR"].items()):
+        C("LB6 near route '%s' (%+.2f bins, %s) loses the look-back by %.2f per cent" % (
+            nm, bins(v, G["total"]), K.money(calc.r250(v)), 100 * (LB[nm] - gb) / gb), LB[nm] > gb * 1.001, (v, LB[nm]))
+    lit = RV["the look-back's own hitters' seasons"]
+    C("LB7 FIN-14 4.4 executed word for word as a basis (its own hitters' seasons) files %s, %.2f bins away: the "
+      "criterion ranks bases, it is not one" % (K.money(calc.r250(lit)), bins(lit, G["total"])),
+      abs(lit - G["total"]) >= BIN and calc.r250(lit) != GOLD_TOTAL, lit)
+    for nm in ("the full nine's own plate appearances", "the full nine's own plate appearances, 2022-2026",
+               "the full nine's own plate appearances, 2024-2026"):
+        C("LB8 the audit's route '%s' misses by %.2f bins (one-bin rule)" % (nm, bins(RV[nm], G["total"])),
+          abs(RV[nm] - G["total"]) >= BIN and calc.r250(RV[nm]) != GOLD_TOTAL, RV[nm])
+
     # ---- the out-of-sample back-test (fitted on 2021-2023, scored on the 2024-2026 planned regulars)
     train = [r for r in T.planned if r["pos"] != "C" and r["season"] <= 2023]
     test = [r for r in T.planned if r["pos"] != "C" and r["season"] >= 2024]
@@ -353,15 +410,40 @@ def run(target, golden, W, R, meta_path):
     C("SF5 the expected amount and the amount at the expected season differ by more than a bin",
       abs(RV["new slot at the mean starts"] - G["total"]) >= BIN and abs(RV["new slot at the median starts"] -
                                                                          G["total"]) >= BIN)
-    C("SF6 FIN-14 4.3 takes the player as staying with the Club", "remaining with the Club for the whole season" in fin)
-    C("SF7 the role is the depth chart's: the five bat fourth, fifth, sixth, seventh and ninth",
-      [f["slot"] for f in F] == [4, 5, 6, 7, 9] and "the role the Club plans for him at the date of signing" in fin)
-    C("SF8 the rounded player figures add to the rounded total", sum(G["per_r"].values()) == GOLD_TOTAL)
+    C("SF6 FIN-14 4.3 takes the contract as standing all season and leaves the player's health in the probability",
+      "the player is not traded or released and the contract is not renegotiated" in fin and
+      "is part of the probability" in fin)
+    for nm in ("every game started", "seasons with no injured-list stint, 2024-2026"):
+        C("SF6b the reading of 4.3 with the player kept healthy ('%s') files %s, %.1f bins from the golden" % (
+            nm, K.money(calc.r250(RV[nm])), bins(RV[nm], G["total"])), abs(RV[nm] - G["total"]) >= BIN and
+          calc.r250(RV[nm]) != GOLD_TOTAL, RV[nm])
+    C("SF7 the role is the depth chart's: the five bat fifth to ninth", [f["slot"] for f in F] == [5, 6, 7, 8, 9] and
+      "the role the Club plans for him at the date of signing" in fin)
+    alt = sum(G["per_r"].values())
+    C("SF8 one rounding path: FIN-14 6 rounds the total from the unrounded amounts (%s); the rounded player figures "
+      "add to %s, which is not the total" % (K.money(GOLD_TOTAL), K.money(alt)), "a total is the sum of the unrounded "
+      "amounts, rounded only where it is reported" in fin and calc.r250(G["total"]) == GOLD_TOTAL and alt != GOLD_TOTAL,
+      alt)
     memo = docx_text(os.path.join(golden, DL.F_MEMO))
     C("SF9 the memo carries the workbook's figures", K.money(GOLD_TOTAL) in memo and all(
         K.money(v) in memo for v in G["per_r"].values()))
     stamps = {os.path.getmtime(os.path.join(target, f)) for f in files}
     C("SF10 every file is stamped with the pull of December 11, 2026", stamps == {K.PULL_STAMP.timestamp()})
+
+    # ---- the look-back's own terms (FIN-14 4.4): every reading ranks a construction of the golden first
+    pool = list(calc.FAMILY) + ["default: vendor projection with a normal band", "own three seasons as the draws",
+                                "the full nine's own plate appearances", "catchers kept in",
+                                "planned regulars' own plate appearances", "opening-day lineups",
+                                "own record given a weight of 5 per cent", "regression on the projection, the slot and catching"]
+    for sid, what, kw in (("SF11", "the seasons read as 2024 to 2026 only", dict(seasons_=(2024, 2025, 2026))),
+                          ("SF11", "the seasons read as 2023 to 2025 only", dict(seasons_=(2023, 2024, 2025))),
+                          ("SF12", "the starting lineups without their catchers", dict(tests_nc=True)),
+                          ("SF13", "the 100 plate appearances counted with the planning club only", dict(est_club=True)),
+                          ("SF14", "a threshold reached only when passed", dict(strict=True))):
+        LBx, nx, _ = calc.lookback(P, T, names=pool, **kw)
+        wx = min(LBx, key=LBx.get)
+        C("%s same call: the look-back with %s (%d hitter-seasons) still ranks a construction of the golden first ('%s')"
+          % (sid, what, nx, wx), wx in calc.FAMILY, (wx, LBx))
 
     # ---- the closure axes
     C("C1 population: five term sheets, fifteen lines", len(F) == 5 and sum(len(f["lines"]) for f in F) == 15)
@@ -375,7 +457,7 @@ def run(target, golden, W, R, meta_path):
     C("C7 weighting: the age-matched sets round alike (L4)", any(r[0].startswith("L4 construction 'ages") for r in C.res))
     C("C8 window length: every history window rounds alike (L4)", any(r[0].startswith("L4 construction 'seasons from")
                                                                       for r in C.res))
-    C("C10 rounding path: rounded once (SF8)", sum(G["per_r"].values()) == G["total_r"])
+    C("C10 rounding path: the total from the unrounded amounts (SF8)", G["total_r"] == calc.r250(sum(G["per"].values())))
     C("C11 tie-break: no two of the five share a slot", len({f["slot"] for f in F}) == 5)
     games = defaultdict(set)
     for (y, g, d, club, pid, slot, stt, pa, pos) in P.lines:
@@ -433,8 +515,13 @@ def run(target, golden, W, R, meta_path):
     C("A3b the move-date path misses all 18 figures", sum(1 for a, s in zip(A, mv) if a["eff"] == s["eff"]) == 0 and
       sum(1 for a, s in zip(A, mv) if a["days"] == s["days"]) == 0)
     hp = [a for a in A if a["player"] == L.players["P5"].name and a["eff"].year == 2025][0]
+    sp = [s_ for s_ in L.stints if s_["key"] == "P5" and s_["season"] == 2025][0]
     C("HA1 the spring placement took effect before Opening Day; its days run from Opening Day",
-      hp["eff"] < K.SEASON[2025][0] and hp["days"] == (dt.date(2025, 4, 10) - K.SEASON[2025][0]).days + 1)
+      hp["eff"] < K.SEASON[2025][0] and hp["days"] == (sp["reinst"] - K.SEASON[2025][0]).days, (hp, sp["reinst"]))
+    rules = texts[DOC.F_ILRULES]
+    C("HA7 the rules date a placement from the day it takes effect, up to three days before its transaction",
+      "may be up to three days before the date of the transaction" in rules and "after his placement takes effect" in
+      rules and "the date of the transaction that placed him on it" in rules)
     op = [a for a in A if a["player"] == L.players["P4"].name and a["eff"].year == 2026][0]
     C("HA2 the stint open at the 2026 season's end runs through the last scheduled day",
       op["days"] == (K.SEASON[2026][1] - op["eff"]).days + 1 and any(
@@ -465,9 +552,14 @@ def run(target, golden, W, R, meta_path):
 
     # ---- Ask B: plate-appearance bonuses paid
     BT = calc.ask_b_totals(B)
-    C("B1 paid for 2024, 2025, 2026: $720,000, $325,000, $425,000", {y: round(v) for y, v in BT.items()} ==
-      {2024: 720000, 2025: 325000, 2026: 425000}, BT)
-    for mode in ("face", "code_payyear", "code_season", "register", "gross"):
+    C("B1 paid for 2024, 2025, 2026: $325,000, $900,000, $412,500", {y: round(v) for y, v in BT.items()} ==
+      {2024: 325000, 2025: 900000, 2026: 412500}, BT)
+    notes = texts[REC.F_REG]
+    C("B1b the register's notes file the population, the season, the reissue and the legacy code",
+      "was paid to a player under a contract in this register that carries plate-appearance terms" in notes and
+      "Both halves are the bonus of the season in which it was earned" in notes and
+      "is one payment" in notes and "one E40 line can carry more than one bonus" in notes)
+    for mode in ("face", "code_payyear", "code_season", "register", "gross", "payyear", "five"):
         B2 = calc.ask_b(P, mode)
         T2 = calc.ask_b_totals(B2)
         same = sum(1 for k2, v in B.items() if abs(B2.get(k2, 0) - v) < 0.5) + sum(
@@ -476,14 +568,18 @@ def run(target, golden, W, R, meta_path):
           any(abs(T2.get(y, 0) - BT[y]) >= 0.5 for y in BT), (same, T2))
     pay = list(csv.DictReader(open(os.path.join(target, REC.F_PAY), encoding="utf-8")))
     e40 = [r for r in pay if r["earning_code"] == "E40" and r["pay_date"] == "2024-10-15"]
-    C("B3 the legacy season-end line holds each 2024 first half (one with the season's All-Star bonus in it)",
-      sorted(float(r["amount"]) for r in e40) == [220000.0, 235000.0])
-    pt_lines = [r for r in pay if r["earning_code"] in ("BPA", "E40") and r["status"] == "PAID" and
-                float(r["amount"]) > 0 and r["pay_date"][5:7] in ("10", "01") and r["pay_date"] >= "2024-10-01"]
     expect = {}
     for b in REC.vet_bonuses(L):
         if b["club"] == K.CLUB:
             expect[(b["k"], b["season"])] = expect.get((b["k"], b["season"]), 0) + b["amount"]
+    star = {(k, y): dict(REC.VET_CONTRACTS[k]["awards"])[a] for (k, y), a in REC.AWARDS_WON.items()
+            if "All-Star" in a and y == 2024 and (k, y) in expect}
+    want_e40 = sorted(expect[(k, y)] / 2 + star.get((k, y), 0) for (k, y) in expect if y == 2024)
+    C("B3 the legacy season-end lines hold each 2024 first half (%d of them carrying the season's All-Star bonus)" %
+      len(star), sorted(float(r["amount"]) for r in e40) == want_e40 and len(star) == 1, (sorted(
+          float(r["amount"]) for r in e40), want_e40))
+    pt_lines = [r for r in pay if r["earning_code"] in ("BPA", "E40") and r["status"] == "PAID" and
+                float(r["amount"]) > 0 and r["pay_date"][5:7] in ("10", "01") and r["pay_date"] >= "2024-10-01"]
     def legacy_or_hris(k):
         return {REC.hris_name(L.players[k].name), REC.legacy_name(L.players[k].name)}
     ok_lines = 0
@@ -492,13 +588,14 @@ def run(target, golden, W, R, meta_path):
             if r["employee_name"] in legacy_or_hris(k):
                 d = calc.ymd(r["pay_date"])
                 season = d.year if d.month >= 7 else d.year - 1
-                extra = 50000 if (k, y) == ("V3", 2024) and d.month == 10 else 0
+                extra = star.get((k, y), 0) if d.month == 10 else 0
                 if season == y and abs(float(r["amount"]) - amt / 2 - extra) < 0.5:
                     ok_lines += 1
+    n_halves = sum(1 + (y <= 2025) for (k, y) in expect if 2024 <= y <= 2026)
     C("B3c every 2024-2026 playing-time line is half the season's plate-appearance and games-started lines reached for "
-      "the club (the legacy October 2024 line to one player also carries his All-Star bonus)", ok_lines == len(
-          [r for r in pt_lines if any(r["employee_name"] in legacy_or_hris(k) for k in REC.VET_CONTRACTS)]) and
-      ok_lines == 11, ok_lines)
+      "the club (the legacy October 2024 line to one player also carries his All-Star bonus): %d lines" % ok_lines,
+      ok_lines == len([r for r in pt_lines if any(r["employee_name"] in legacy_or_hris(k) for k in REC.VET_CONTRACTS)])
+      and ok_lines == n_halves, (ok_lines, n_halves))
     codes = list(csv.DictReader(open(os.path.join(target, REC.F_CODES), encoding="utf-8")))
     C("B3b the legacy performance-bonus code migrated as other bonus", any(r["earning_code"] == "E40" and
                                                                            r["migrated_as"] == "BOT" for r in codes))
@@ -506,8 +603,12 @@ def run(target, golden, W, R, meta_path):
           {REC.hris_name(L.players[k].name) for k in REC.pitcher_bonus_rows(L)}]
     C("B4 the playing-time code also carries two pitchers' bonuses", len(pt) == 2)
     reg = calc.ask_b(P, "register")
-    C("B5 the assigned contract's later lines were not the club's to pay", round(reg[(2025, REC.hris_name(
-        L.players["V4"].name))]) == 675000 and round(B[(2025, REC.hris_name(L.players["V4"].name))]) == 225000)
+    v4 = REC.hris_name(L.players["V4"].name)
+    a4, l4 = REC.VET_CONTRACTS["V4"]["pa"]
+    with_club = sum(a4 for b in REC.vet_bonuses(L) if b["k"] == "V4" and b["kind"] == "PA" and b["club"] == K.CLUB)
+    C("B5 the assigned contract's later lines were not the club's to pay (register reading %s, paid %s)" % (
+        K.money(reg[(2025, v4)]), K.money(B.get((2025, v4), 0))), reg[(2025, v4)] > B.get((2025, v4), 0) and
+      abs(B.get((2025, v4), 0) - with_club) < 0.5 and with_club > 0, (reg[(2025, v4)], B.get((2025, v4)), with_club))
     C("B6 the 2026 second halves are not paid by December 11, 2026", not any(r["pay_date"] > "2026-12-11" for r in pay)
       and not any(r["pay_date"].startswith("2027") for r in pay))
     void = [r for r in pay if r["status"] in ("VOIDED", "VOID REVERSAL")]
@@ -525,7 +626,7 @@ def run(target, golden, W, R, meta_path):
     crt = calc.ask_b_totals(crb)
     hit_b = [k2 for k2 in B if abs(crb.get(k2, 0) - B[k2]) < 0.5] + [y for y in BT if abs(crt.get(y, 0) - BT[y]) < 0.5]
     C("CR2 the cracker's Ask B path (the payroll's playing-time and legacy season-end lines at face value, each half to "
-      "its season, voids netted, pitchers dropped) misses all 10 figures", not hit_b, hit_b)
+      "its season, voids netted, pitchers dropped) misses all %d figures" % (len(B) + len(BT)), not hit_b, hit_b)
 
     # ---- the separation line and the distractors
     tmp = tempfile.mkdtemp(prefix="t151sep", dir=os.path.dirname(target))

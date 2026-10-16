@@ -16,7 +16,8 @@ import zipfile
 
 import numpy as np
 
-SEED = 1511                  # the world draw (chosen so that every defensible construction rounds alike)
+SEED = 1539                  # the world draw (chosen so that every defensible construction rounds alike and the
+                             # filed look-back ranks the bases with room to spare)
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
@@ -73,22 +74,22 @@ PAR = dict(
 # The five free-agent signings (the key is the generator's; nothing keyed ships): new slot in the club's December
 # depth chart, old club and slot, contract terms. Bonus amounts and lines are each contract's own.
 SIGNINGS = {
-    "P4": dict(pos="3B", slot=4, old_slot=4, signed=dt.date(2026, 11, 24), years=(2027, 2027),
-               salary={2027: 9_500_000}, signing_bonus=1_000_000,
-               bonus=[(350_000, 475), (350_000, 525), (350_000, 600)]),
-    "P1": dict(pos="1B", slot=5, old_slot=2, signed=dt.date(2026, 11, 30), years=(2027, 2029),
-               salary={2027: 14_000_000, 2028: 15_000_000, 2029: 15_500_000}, signing_bonus=4_000_000,
-               bonus=[(450_000, 475), (450_000, 550), (450_000, 625)]),
-    "P2": dict(pos="DH", slot=6, old_slot=3, signed=dt.date(2026, 12, 3), years=(2027, 2028),
+    "P4": dict(pos="3B", slot=5, old_slot=4, signed=dt.date(2026, 11, 24), years=(2027, 2027),
+               salary={2027: 9_750_000}, signing_bonus=1_250_000,
+               bonus=[(320_000, 500), (320_000, 575), (320_000, 650)]),
+    "P1": dict(pos="1B", slot=6, old_slot=2, signed=dt.date(2026, 11, 30), years=(2027, 2029),
+               salary={2027: 14_000_000, 2028: 15_000_000, 2029: 15_750_000}, signing_bonus=4_000_000,
+               bonus=[(750_000, 525), (750_000, 575), (750_000, 650)]),
+    "P2": dict(pos="DH", slot=7, old_slot=3, signed=dt.date(2026, 12, 3), years=(2027, 2028),
                salary={2027: 11_000_000, 2028: 11_000_000}, signing_bonus=2_000_000,
-               bonus=[(500_000, 500), (500_000, 550), (500_000, 625)]),
-    "P3": dict(pos="LF", slot=7, old_slot=1, signed=dt.date(2026, 12, 8), years=(2027, 2030),
+               bonus=[(330_000, 450), (330_000, 525), (330_000, 600)]),
+    "P3": dict(pos="LF", slot=8, old_slot=1, signed=dt.date(2026, 12, 8), years=(2027, 2030),
                salary={2027: 16_000_000, 2028: 17_000_000, 2029: 17_000_000, 2030: 18_000_000},
                signing_bonus=5_000_000, deferred={2027: 2_000_000, 2028: 2_000_000},
-               bonus=[(560_000, 525), (560_000, 575), (560_000, 650)]),
+               bonus=[(730_000, 500), (730_000, 525), (730_000, 575)]),
     "P5": dict(pos="2B", slot=9, old_slot=1, signed=dt.date(2026, 12, 10), years=(2027, 2028),
-               salary={2027: 8_000_000, 2028: 8_500_000}, signing_bonus=1_500_000,
-               bonus=[(360_000, 450), (360_000, 500), (360_000, 575)]),
+               salary={2027: 9_000_000, 2028: 9_250_000}, signing_bonus=1_750_000,
+               bonus=[(720_000, 500), (720_000, 550), (720_000, 600)]),
 }
 SIGN_ORDER = ["P4", "P1", "P2", "P3", "P5"]
 

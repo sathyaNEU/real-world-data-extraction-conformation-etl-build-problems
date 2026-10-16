@@ -1,6 +1,6 @@
 """Independent verifier for task151: reads only the shipped bundle (target/), the goldens and figures.json, on its own
 code path (pandas frames, pdftotext, no generator module), and recomputes the accrual and each player's figure, the
-default path's figure, the write-up's step figures, and both asks."""
+default path's figure, the write-up's step figures, the look-back for four bases, and both asks."""
 from __future__ import annotations
 
 import datetime as dt
@@ -211,6 +211,45 @@ def paid(target, D):
     return {k: v for k, v in out.items() if v}
 
 
+def lookback(target, D):
+    """FIN-14 4.4 for four bases, on this path: the regulars' seasons of starts at the slot, the vendor's projection
+    with a normal band from its misses, the player's own last three seasons, every lineup regular's plate appearances."""
+    bl = batting(target)
+    st = bl[bl.starter]
+    starts = st.groupby(["season", "pid"]).size()
+    pa = bl.groupby(["season", "pid"]).pa.sum()
+    sp = st.groupby(["season", "slot"]).pa.sum()
+    sn = st.groupby(["season", "slot"]).size()
+    pr = pd.read_csv(os.path.join(target, "hvbd_hitter_projections_2022_2027.csv"))
+    proj = {(a, b): c for a, b, c in zip(pr.season, pr.lg_id, pr.pa)}
+    lu = D["pl"][D["pl"].role == "Lineup"].copy()
+    lu["c"] = lu.pos == "C"
+    lu["st"] = [starts.get((a, b), 0) for a, b in zip(lu.season, lu.pid)]
+    lu["pa"] = [pa.get((a, b), 0) for a, b in zip(lu.season, lu.pid)]
+    thr = np.array([450, 500, 550, 600, 650], float)
+    sq = {k: [] for k in ("golden", "vendor", "own", "nine")}
+    for Y in (2023, 2024, 2025, 2026):
+        past = lu[lu.season < Y]
+        rate = {s: sp[[(y, s) for y in range(2021, Y)]].sum() / sn[[(y, s) for y in range(2021, Y)]].sum()
+                for s in range(1, 10)}
+        est = np.array([pa.get((Y - 1, p), 0) >= 100 and pa.get((Y - 2, p), 0) >= 100 for p in lu.pid])
+        tests = lu[(lu.season == Y).values & est]
+        for _, t in tests.iterrows():
+            out = (t.pa >= thr).astype(float)
+            pool = past[past.c == t.c]
+            g = np.array([(pool.st.values * rate[int(t.ord)] >= x).mean() for x in thr])
+            e = np.array([q - proj[(a, b)] for a, b, q in zip(pool.season, pool.pid, pool.pa) if (a, b) in proj], float)
+            mu = proj[(Y, t.pid)]
+            v = np.array([1 - 0.5 * (1 + math.erf((x - mu) / (e.std() * math.sqrt(2)))) for x in thr])
+            own = np.array([pa.get((Y - j, t.pid), 0) for j in (1, 2, 3)], float)
+            own = own[own > 0]
+            o = np.array([(own >= x).mean() for x in thr])
+            n9 = np.array([(past.pa.values >= x).mean() for x in thr])
+            for k, p in (("golden", g), ("vendor", v), ("own", o), ("nine", n9)):
+                sq[k].append((p - out) ** 2)
+    return {k: float(np.mean(v)) for k, v in sq.items()}, len(sq["golden"])
+
+
 def r(x, unit):
     return int(math.floor(x / unit + 0.5)) * unit
 
@@ -254,6 +293,23 @@ def main(target, golden, fig_path):
         t = sum(v for (y, n), v in B.items() if y == int(blk["season"]))
         if "$%s" % format(int(round(t)), ",") != blk["total"]:
             bad.append(("paid total", blk["season"], t))
+    bl = batting(target)
+    pa_all = bl.groupby(["season", "pid"]).pa.sum()
+    lu = D["pl"][D["pl"].role == "Lineup"]
+    nine = np.array([pa_all.get((a, b), 0) for a, b in zip(lu.season, lu.pid)], float)
+    at_hand = sum(f["amount"] * float((nine >= T).mean()) for f in D["F"] for T in f["T"])
+    if "$%s" % format(r(at_hand, 250000), ",") != fig["rivals"]["default_at_hand"]:
+        bad.append(("default at hand", at_hand))
+    LB, n = lookback(target, D)
+    lab = {"golden": "Non-catcher regulars' seasons of starts at the player's 2027 slot (used)",
+           "vendor": "Vendor's projection with a normal band from its misses",
+           "own": "The player's own last three seasons",
+           "nine": "Every lineup regular's plate appearances, catchers in, any slot"}
+    for k, v in LB.items():
+        if "%.4f" % v != fig["lookback"]["scores"][lab[k]]:
+            bad.append(("look-back", k, v))
+    if "{:,}".format(n) != fig["lookback"]["hitter_seasons"] or min(LB, key=LB.get) != "golden":
+        bad.append(("look-back hitters or ranking", n, LB))
     wb = openpyxl.load_workbook(os.path.join(golden, "pa_bonus_accrual_2027.xlsx"), data_only=True)
     cells = [c for row in wb["Accrual"].iter_rows(values_only=True) for c in row if isinstance(c, (int, float))]
     if r(tot, 250000) not in cells:
@@ -261,9 +317,11 @@ def main(target, golden, fig_path):
     if bad:
         print("verify.py: FAIL", bad)
         raise SystemExit(1)
-    print("verify.py: the accrual %s (unrounded %.0f), five player figures, the default path %s, the step figures, "
+    print("verify.py: the accrual %s (unrounded %.0f), five player figures, the vendor's band %s, the look-back's pick "
+          "among the bases at hand %s, the step figures, the FIN-14 4.4 look-back for four bases (%s hitter-seasons), "
           "nine stints and the bonuses paid reproduce from the bundle on an independent path" % (
-              fig["call"]["total"], tot, fig["rivals"]["default"]))
+              fig["call"]["total"], tot, fig["rivals"]["default"], fig["rivals"]["default_at_hand"],
+              fig["lookback"]["hitter_seasons"]))
 
 
 if __name__ == "__main__":

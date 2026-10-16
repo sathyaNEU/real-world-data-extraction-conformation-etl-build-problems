@@ -164,10 +164,10 @@ def seasons(P):
                 T.first_game[key] = ((d, g), [])
             T.pos_starts[(y, club, pos)][pid] += 1
             T.club_starts[(y, club)][pid] += 1
-    T.opening = set()
+    T.opening, T.opening_c = set(), set()
     for (y, g, d, club, pid, slot, st, pa, pos) in P.lines:
-        if st and T.first_game[(y, club)][0] == (d, g) and pos != 2:
-            T.opening.add((y, pid))
+        if st and T.first_game[(y, club)][0] == (d, g):
+            (T.opening if pos != 2 else T.opening_c).add((y, pid))
     T.years = sorted({k[0] for k in T.starts})
     T.planned = [r for r in P.plan if r["role"] == "Lineup"]
     return T
@@ -250,67 +250,293 @@ def vendor_errors(P, T):
     return np.array(errs, float)
 
 
+# ------------------------------------------------------------------------------------- the bases and the look-back
+LB_SEASONS = (2023, 2024, 2025, 2026)          # FIN-14 4.4: the four championship seasons before the signings
+LB_THRESHOLDS = np.array([450.0, 500.0, 550.0, 600.0, 650.0])
+LB_MIN_PA = 100
+FAMILY = ("golden", "the last three seasons", "plate appearances rescaled to the slot")
+LANDS = ("regulars planned at the same slot", "ages within three years")   # lose the look-back, file the golden
+
+
+def emp(vals, thr):
+    """The share of a set of season plate-appearance totals at or above each threshold."""
+    v = np.sort(np.asarray(vals, float))
+    return 1 - np.searchsorted(v, np.asarray(thr, float), side="left") / len(v)
+
+
+def normal(mu, sd, thr):
+    return np.array([1 - NORM.cdf((t - mu) / sd) for t in thr])
+
+
+def projections(P):
+    return {(int(r["season"]), int(r["lg_id"])): int(r["pa"]) for r in P.proj}
+
+
+def hitter_seasons(P, T):
+    """Every hitter-season in the box scores, flagged a catcher's when catcher is his most common starting position."""
+    if getattr(T, "_hs", None) is None:
+        posc = defaultdict(lambda: defaultdict(int))
+        for (y, g, d, club, pid, slot, st, pa, pos) in P.lines:
+            if st:
+                posc[(y, pid)][pos] += 1
+        T._hs = {k: max(d, key=d.get) == 2 for k, d in posc.items()}
+    return T._hs
+
+
+def appearances(P, T):
+    if getattr(T, "_app", None) is None:
+        app = defaultdict(int)
+        ap, an = defaultdict(int), defaultdict(int)
+        for (y, g, d, club, pid, slot, st, pa, pos) in P.lines:
+            app[(y, pid)] += 1
+            ap[(y, slot)] += pa
+            an[(y, slot)] += 1
+        T._app = (app, ap, an)
+    return T._app
+
+
+class Ctx:
+    pass
+
+
+def context(P, T, Y):
+    """What a basis may use for season Y: the box scores of the seasons before it, the depth charts and the vendor's
+    projections published before it began."""
+    C = Ctx()
+    C.Y = Y
+    C.years = [y for y in T.years if y < Y]
+    C.rt = rate(T, C.years)
+    rows = [r for r in T.planned if r["season"] < Y]
+    C.st = np.array([T.starts[(r["season"], r["lg"])] for r in rows], float)
+    C.pa = np.array([T.pa[(r["season"], r["lg"])] for r in rows], float)
+    C.yr = np.array([r["season"] for r in rows])
+    C.ord = np.array([r["ord"] for r in rows])
+    C.isc = np.array([r["pos"] == "C" for r in rows])
+    C.age = np.array([r["age"] for r in rows])
+    C.team = np.array([r["team"] for r in rows])
+    C.est = np.array([all(T.pa[(r["season"] - j, r["lg"])] >= LB_MIN_PA for j in (1, 2)) for r in rows])
+    opened = T.opening | T.opening_c
+    C.opened = np.array([(r["season"], r["lg"]) in opened for r in rows])
+    C.od = {False: np.array([T.starts[k] for k in sorted(T.opening) if k[0] < Y], float),
+            True: np.array([T.starts[k] for k in sorted(T.opening_c) if k[0] < Y], float)}
+    hs = hitter_seasons(P, T)
+    C.hs = {c: np.array([(T.starts[k], T.pa[k]) for k, ic in sorted(hs.items()) if k[0] < Y and ic == c], float)
+            for c in (False, True)}
+    proj = projections(P)
+    iv = [i for i, r in enumerate(rows) if (r["season"], r["lg"]) in proj]
+    C.vp = np.array([proj[(rows[i]["season"], rows[i]["lg"])] for i in iv], float)
+    C.vpa, C.visc, C.vord = C.pa[iv], C.isc[iv], C.ord[iv]
+    C.err = {c: C.vpa[C.visc == c] - C.vp[C.visc == c] for c in (False, True)}
+    C.fit = {}
+    for c in (False, True):
+        m = C.visc == c
+        if m.sum() > 10:
+            b, a = np.polyfit(C.vp[m], C.vpa[m], 1)
+            C.fit[c] = (a, b, C.vpa[m] - (a + b * C.vp[m]))
+    sr = np.array([C.rt[o] for o in C.vord])
+    X = np.column_stack([np.ones(len(iv)), C.vp, sr, C.visc.astype(float)])
+    C.beta, *_ = np.linalg.lstsq(X, C.vpa, rcond=None)
+    C.res = C.vpa - X @ C.beta
+    C.beta0, *_ = np.linalg.lstsq(X[:, [0, 2, 3]], C.vpa, rcond=None)
+    C.res0 = C.vpa - X[:, [0, 2, 3]] @ C.beta0
+    app, ap, an = appearances(P, T)
+    C.rta = {s: sum(ap[(y, s)] for y in C.years) / sum(an[(y, s)] for y in C.years) for s in SLOTS}
+    C.app = np.array([app[(r["season"], r["lg"])] for r in rows], float)
+    return C
+
+
+def _g(C, t):
+    return C.isc == t["is_c"]
+
+
+def _own(t, n=3):
+    return np.array([x for x in t["own"][:n] if x is not None], float)
+
+
+BASES = {
+    # the golden basis and the constructions of it that FIN-14 4.4 scores alike
+    "golden": lambda C, t, x: emp(C.st[_g(C, t)] * C.rt[t["slot"]], x),
+    "the last three seasons": lambda C, t, x: emp(C.st[_g(C, t) & (C.yr >= C.Y - 3)] * C.rt[t["slot"]], x),
+    "plate appearances rescaled to the slot": lambda C, t, x: emp(
+        C.pa[_g(C, t)] * C.rt[t["slot"]] / np.array([C.rt[o] for o in C.ord[_g(C, t)]]), x),
+    "regulars planned at the same slot": lambda C, t, x: _same_slot(C, t, x),
+    "ages within three years": lambda C, t, x: emp(C.st[_g(C, t) & (np.abs(C.age - t["age"]) <= 3)] * C.rt[t["slot"]], x),
+    # the vendor's projection
+    "default: vendor projection with a normal band": lambda C, t, x: normal(t["proj"], C.err[t["is_c"]].std(), x),
+    "vendor projection with its past misses": lambda C, t, x: emp(t["proj"] + C.err[t["is_c"]], x),
+    "vendor point": lambda C, t, x: (t["proj"] >= np.asarray(x)).astype(float),
+    "vendor projection plus its mean miss, normal band": lambda C, t, x: normal(
+        t["proj"] + C.err[t["is_c"]].mean(), C.err[t["is_c"]].std(), x),
+    "vendor projection rescaled to the new slot, normal band": lambda C, t, x: normal(
+        t["proj"] * C.rt[t["slot"]] / C.rt[t["prev"] or t["slot"]], C.err[t["is_c"]].std(), x),
+    "vendor projection rescaled to the new slot, its past misses": lambda C, t, x: emp(
+        t["proj"] * C.rt[t["slot"]] / C.rt[t["prev"] or t["slot"]] + C.err[t["is_c"]], x),
+    "vendor projection calibrated by regression, normal band": lambda C, t, x: normal(
+        C.fit[t["is_c"]][0] + C.fit[t["is_c"]][1] * t["proj"], C.fit[t["is_c"]][2].std(), x),
+    "vendor projection calibrated by regression, its residuals": lambda C, t, x: emp(
+        C.fit[t["is_c"]][0] + C.fit[t["is_c"]][1] * t["proj"] + C.fit[t["is_c"]][2], x),
+    # the player's own record
+    "own three seasons as the draws": lambda C, t, x: emp(_own(t), x),
+    "own three-season mean, normal band": lambda C, t, x: normal(_own(t).mean(), C.err[t["is_c"]].std(), x),
+    "own seasons' starts at the new slot": lambda C, t, x: emp(
+        np.array([s for s in t["ownst"][:3] if s is not None], float) * C.rt[t["slot"]], x),
+    "own seasons since 2021": lambda C, t, x: emp(_own(t, 9), x),
+    # the regulars' seasons read another way
+    "regulars at the old slot's rate": lambda C, t, x: emp(C.st[_g(C, t)] * C.rt[t["prev"] or t["slot"]], x),
+    "old slot, normal band": lambda C, t, x: normal(C.rt[t["prev"] or t["slot"]] * C.st[_g(C, t)].mean(),
+                                                    C.rt[t["prev"] or t["slot"]] * C.st[_g(C, t)].std(), x),
+    "new slot, normal band": lambda C, t, x: normal(C.rt[t["slot"]] * C.st[_g(C, t)].mean(),
+                                                    C.rt[t["slot"]] * C.st[_g(C, t)].std(), x),
+    "new slot at the mean starts": lambda C, t, x: (C.rt[t["slot"]] * C.st[_g(C, t)].mean() >= np.asarray(x)).astype(float),
+    "new slot at the median starts": lambda C, t, x: (C.rt[t["slot"]] * np.median(C.st[_g(C, t)]) >= np.asarray(x)).astype(float),
+    "new slot, starts game by game": lambda C, t, x: _binomial(C.st[_g(C, t)].mean() / 162.0, C.rt[t["slot"]], x),
+    "catchers kept in": lambda C, t, x: emp(C.st * C.rt[t["slot"]], x),
+    "opening-day lineups": lambda C, t, x: emp(C.od[t["is_c"]] * C.rt[t["slot"]], x),
+    "planned regulars who opened the season": lambda C, t, x: emp(C.st[_g(C, t) & C.opened] * C.rt[t["slot"]], x),
+    "hitters with 100 or more starts": lambda C, t, x: emp(_hs(C, t, 0, 100) * C.rt[t["slot"]], x),
+    "hitters with 400 or more plate appearances": lambda C, t, x: emp(_hs(C, t, 1, 400) * C.rt[t["slot"]], x),
+    "hitters with 502 or more plate appearances": lambda C, t, x: emp(_hs(C, t, 1, 502) * C.rt[t["slot"]], x),
+    "planned regulars' own plate appearances": lambda C, t, x: emp(C.pa[_g(C, t)], x),
+    "plate appearances per appearance, appearances for starts": lambda C, t, x: emp(C.app[_g(C, t)] * C.rta[t["slot"]], x),
+    "the full nine's own plate appearances": lambda C, t, x: emp(C.pa, x),
+    "the full nine at the slot, own plate appearances": lambda C, t, x: emp(C.pa[C.ord == t["slot"]], x),
+    "the look-back's own hitters' seasons": lambda C, t, x: emp(C.pa[C.est], x),
+    "the club's own regulars": lambda C, t, x: emp(C.st[_g(C, t) & (C.team == t["team"])] * C.rt[t["slot"]], x),
+    "every game started": lambda C, t, x: (162 * C.rt[t["slot"]] >= np.asarray(x)).astype(float),
+    "own record given a weight of 2 per cent": lambda C, t, x: _shift(C, t, x, 0.02, "own"),
+    "own record given a weight of 5 per cent": lambda C, t, x: _shift(C, t, x, 0.05, "own"),
+    "own record given a weight of 10 per cent": lambda C, t, x: _shift(C, t, x, 0.10, "own"),
+    "vendor projection given a weight of 2 per cent": lambda C, t, x: _shift(C, t, x, 0.02, "vendor"),
+    "vendor projection given a weight of 5 per cent": lambda C, t, x: _shift(C, t, x, 0.05, "vendor"),
+    "own seasons blended in at 5 per cent": lambda C, t, x: 0.95 * emp(C.st[_g(C, t)] * C.rt[t["slot"]], x) +
+    0.05 * emp(_own(t), x),
+    "own seasons blended in at 10 per cent": lambda C, t, x: 0.90 * emp(C.st[_g(C, t)] * C.rt[t["slot"]], x) +
+    0.10 * emp(_own(t), x),
+    "vendor projection given a weight of 10 per cent": lambda C, t, x: _shift(C, t, x, 0.10, "vendor"),
+    "regression on the projection, the slot and catching": lambda C, t, x: emp(
+        C.beta @ np.array([1.0, t["proj"], C.rt[t["slot"]], float(t["is_c"])]) + C.res, x),
+    "regression on the slot and catching": lambda C, t, x: emp(
+        C.beta0 @ np.array([1.0, C.rt[t["slot"]], float(t["is_c"])]) + C.res0, x),
+}
+# within a bin of the golden: each loses the look-back (FIN-14 4.4)
+NEAR = ("regression on the projection, the slot and catching", "regression on the slot and catching",
+        "own record given a weight of 2 per cent", "vendor projection given a weight of 2 per cent",
+        "own seasons blended in at 5 per cent")
+# read at the signings only (FIN-14 4.4's own hitters need two earlier seasons, which 2023 has not got)
+AT_SIGNING_ONLY = ("the look-back's own hitters' seasons",)
+
+
+def _same_slot(C, t, x):
+    m = _g(C, t) & (C.ord == t["slot"])
+    return emp(C.pa[m], x) if m.any() else emp(C.st[_g(C, t)] * C.rt[t["slot"]], x)
+
+
+def _binomial(p, r, x):
+    return np.array([1 - NORM.cdf((t / r - 0.5 - 162 * p) / np.sqrt(162 * p * (1 - p))) for t in x])
+
+
+def _hs(C, t, col, th):
+    h = C.hs[t["is_c"]]
+    return h[h[:, col] >= th, 0]
+
+
+def _shift(C, t, x, w, src):
+    base = C.st[_g(C, t)] * C.rt[t["slot"]]
+    dev = (_own(t).mean() - base.mean()) if src == "own" else (t["proj"] - C.vp.mean())
+    return emp(base + w * dev, x)
+
+
+def test_row(T, proj, r, Y):
+    """A depth-chart lineup row as FIN-14 4.4 tests it for season Y."""
+    prev = [q["ord"] for q in T.planned if q["season"] == Y - 1 and q["lg"] == r["lg"]]
+    return dict(lg=r["lg"], is_c=r["pos"] == "C", slot=r["ord"], age=r["age"], team=r["team"],
+                prev=prev[0] if prev else None, proj=proj.get((Y, r["lg"])),
+                own=[T.pa[(Y - j, r["lg"])] or None if Y - j >= min(T.years) else None for j in range(1, 7)],
+                ownst=[T.starts[(Y - j, r["lg"])] if T.pa[(Y - j, r["lg"])] and Y - j >= min(T.years) else None
+                       for j in range(1, 4)])
+
+
+def five_rows(P, T):
+    proj = projections(P)
+    out = []
+    for f in five(P):
+        out.append(dict(name=f["name"], lines=f["lines"], lg=f["lg"], is_c=False, slot=f["slot"], age=f["age"],
+                        team="RAL", prev=f["old"], proj=proj.get((2027, f["lg"])),
+                        own=[T.pa[(2027 - j, f["lg"])] for j in range(1, 7)],
+                        ownst=[T.starts[(2027 - j, f["lg"])] for j in range(1, 4)]))
+    return out
+
+
+def lookback(P, T=None, names=None, seasons_=None, tests_nc=False, est_club=False, strict=False):
+    """FIN-14 4.4 executed: each basis applied to each of the 2023 to 2026 seasons with what was published before it,
+    to every hitter in a starting lineup of that season's January 31 depth charts who made at least 100 plate
+    appearances in each of the two seasons before; the average over every hitter, season and threshold (450, 500, 550,
+    600 and 650) of the squared difference between the probability and the outcome."""
+    T = T or seasons(P)
+    proj = projections(P)
+    names = names or [n for n in BASES if n not in AT_SIGNING_ONLY]
+    sq = defaultdict(list)
+    n_tests = 0
+    if est_club:
+        club_pa = defaultdict(int)
+        for (y, g, d, club, pid, slot, st, pa, pos) in P.lines:
+            club_pa[(y, pid, club)] += pa
+        inv = {v: k for k, v in {"LVS": "LV", "SAT": "SA", "NOL": "NO", "SLC": "SL", "HRD": "HR", "JAX": "JAC",
+                                 "SAC": "SCR"}.items()}
+    for Y in seasons_ or LB_SEASONS:
+        C = context(P, T, Y)
+        if est_club:
+            ok = lambda r: all(club_pa[(Y - j, r["lg"], inv.get(r["team"], r["team"]))] >= LB_MIN_PA for j in (1, 2))
+        else:
+            ok = lambda r: all(T.pa[(Y - j, r["lg"])] >= LB_MIN_PA for j in (1, 2))
+        tests = [test_row(T, proj, r, Y) for r in T.planned if r["season"] == Y and ok(r) and
+                 not (tests_nc and r["pos"] == "C")]
+        n_tests += len(tests)
+        for t in tests:
+            out = ((T.pa[(Y, t["lg"])] > LB_THRESHOLDS) if strict else (T.pa[(Y, t["lg"])] >= LB_THRESHOLDS)).astype(float)
+            for nm in names:
+                sq[nm].append((BASES[nm](C, t, LB_THRESHOLDS) - out) ** 2)
+    score = {nm: float(np.mean(v)) for nm, v in sq.items()}
+    per_row = {nm: np.array(v).mean(axis=1) for nm, v in sq.items()}
+    return score, n_tests, per_row
+
+
+def accruals(P, T=None, names=None):
+    """Every basis applied at the signings (the 2021 to 2026 seasons): each player's expected amount and the total."""
+    T = T or seasons(P)
+    C = context(P, T, 2027)
+    out = {}
+    for nm in names or BASES:
+        per = {}
+        for t in five_rows(P, T):
+            thr = [x for _, x in t["lines"]]
+            per[t["name"]] = float(sum(a * p for (a, _), p in zip(t["lines"], BASES[nm](C, t, thr))))
+        out[nm] = per
+    return out
+
+
 def rivals(P, T=None):
+    """Every rival route's total at the signings (each at least a bin from the golden), the near routes (within a bin,
+    losing the look-back) and the golden."""
     T = T or seasons(P)
     G = golden(P, T)
-    F = G["five"]
-    rt = G["rate"]
-    st = G["starts"]
-    m, s = st.mean(), st.std()
-    out = {}
-    own = {f["name"]: np.array([T.pa[(y, f["lg"])] for y in (2024, 2025, 2026)], float) for f in F}
-    sdp = float(np.std(np.array([T.pa[(r["season"], r["lg"])] for r in T.planned if r["pos"] != "C"], float)))
-    if P.proj:
-        proj27 = {int(r["lg_id"]): int(r["pa"]) for r in P.proj if r["season"] == "2027"}
-        errs = vendor_errors(P, T)
-        sdp = errs.std()
-        out["vendor point"] = sum(ev_point(f["lines"], proj27[f["lg"]]) for f in F)
-        out["default: vendor projection with a normal band"] = sum(ev_normal(f["lines"], proj27[f["lg"]], sdp) for f in F)
-        out["vendor projection with its past misses"] = sum(ev(f["lines"], proj27[f["lg"]] + errs) for f in F)
-        out["vendor projection rescaled to the new slot, normal band"] = sum(
-            ev_normal(f["lines"], proj27[f["lg"]] * rt[f["slot"]] / rt[f["old"]], sdp) for f in F)
-    out["own three seasons as the draws"] = sum(ev(f["lines"], own[f["name"]]) for f in F)
-    out["own three-season mean, normal band"] = sum(ev_normal(f["lines"], own[f["name"]].mean(), sdp) for f in F)
-    out["own seasons' starts at the new slot"] = sum(
-        ev(f["lines"], np.array([T.starts[(y, f["lg"])] for y in (2024, 2025, 2026)]) * rt[f["slot"]]) for f in F)
-    out["regulars at the old slot's rate"] = sum(ev(f["lines"], st * rt[f["old"]]) for f in F)
-    out["old slot, normal band"] = sum(ev_normal(f["lines"], rt[f["old"]] * m, rt[f["old"]] * s) for f in F)
-    out["new slot, normal band"] = sum(ev_normal(f["lines"], rt[f["slot"]] * m, rt[f["slot"]] * s) for f in F)
-    out["new slot at the mean starts"] = sum(ev_point(f["lines"], rt[f["slot"]] * m) for f in F)
-    out["new slot at the median starts"] = sum(ev_point(f["lines"], rt[f["slot"]] * np.median(st)) for f in F)
-    p = m / 162.0
-    out["new slot, starts game by game"] = sum(
-        sum(a * (1 - NORM.cdf((Tt / rt[f["slot"]] - 0.5 - 162 * p) / np.sqrt(162 * p * (1 - p)))) for a, Tt in f["lines"])
-        for f in F)
-    stc, _ = planned_starts(T, catchers=True)
-    out["catchers kept in"] = sum(ev(f["lines"], stc * rt[f["slot"]]) for f in F)
-    od = np.array([T.starts[k] for k in sorted(T.opening)], float)
-    out["opening-day lineups"] = sum(ev(f["lines"], od * rt[f["slot"]]) for f in F)
-    _, rows = planned_starts(T)
-    opened = np.array([T.starts[(r["season"], r["lg"])] for r in rows if (r["season"], r["lg"]) in T.opening], float)
-    out["planned regulars who opened the season"] = sum(ev(f["lines"], opened * rt[f["slot"]]) for f in F)
-    nonc = hitters_nonc(P, T)
-    for th in (100,):
-        d = np.array([T.starts[k] for k in nonc if T.starts[k] >= th], float)
-        out["hitters with %d or more starts" % th] = sum(ev(f["lines"], d * rt[f["slot"]]) for f in F)
-    for th in (400, 502):
-        d = np.array([T.starts[k] for k in nonc if T.pa[k] >= th], float)
-        out["hitters with %d or more plate appearances" % th] = sum(ev(f["lines"], d * rt[f["slot"]]) for f in F)
-    pas = np.array([T.pa[(r["season"], r["lg"])] for r in rows], float)
-    out["planned regulars' own plate appearances"] = sum(ev(f["lines"], pas) for f in F)
-    # every appearance taken as a start (plate appearances per appearance at the slot, appearances for starts)
-    Ta = seasons(_every_line_a_start(P))
-    rta = rate(Ta)
-    sta, _ = planned_starts(Ta)
-    out["plate appearances per appearance, appearances for starts"] = sum(ev(f["lines"], sta * rta[f["slot"]]) for f in F)
-    return out, G
+    A = accruals(P, T)
+    out = {nm: sum(v.values()) for nm, v in A.items() if nm not in FAMILY + NEAR + LANDS}
+    # windows of the full nine's own plate appearances, and the 2024 to 2026 seasons free of an injured-list stint
+    for y0, lab in ((2022, "2022-2026"), (2024, "2024-2026")):
+        v = np.array([T.pa[(r["season"], r["lg"])] for r in T.planned if r["season"] >= y0], float)
+        out["the full nine's own plate appearances, %s" % lab] = sum(ev(f["lines"], v) for f in G["five"])
+    hurt = injured_seasons(P)
+    v = np.array([T.starts[(r["season"], r["lg"])] for r in T.planned if r["pos"] != "C" and r["season"] >= 2024 and
+                  (r["season"], r["lg"]) not in hurt], float)
+    out["seasons with no injured-list stint, 2024-2026"] = sum(ev(f["lines"], v * G["rate"][f["slot"]]) for f in G["five"])
+    near = {nm: sum(A[nm].values()) for nm in NEAR}
+    return out, G, near, A
 
 
-def _every_line_a_start(P):
-    Q = Pack()
-    Q.__dict__.update(P.__dict__)
-    Q.lines = [ln[:6] + (True,) + ln[7:] for ln in P.lines]
-    return Q
+def injured_seasons(P):
+    tx = json.load(open(os.path.join(P.target, "lsf_transactions_2024_2026.json"), encoding="utf-8"))["transactions"]
+    return {(int(t["date"][:4]), int(t["player_id"])) for t in tx if t["type"] == "IL_PLACEMENT"}
 
 
 def hitters_nonc(P, T):
@@ -363,6 +589,11 @@ def constructions(P, T=None):
         ks = [q for q in ks if q not in catchers_of(P, T, y, club)][:8]
         top8 += [T.starts[(y, q)] for q in ks]
     out["eight non-catchers with most starts per club"] = {f["name"]: ev(f["lines"], np.array(top8) * rt[f["slot"]]) for f in F}
+    poss = np.array([r["pos"] for r in rows])
+    out["the same position"] = {f["name"]: ev(f["lines"], st[poss == f["pos"]] * rt[f["slot"]]) for f in F}
+    est = np.array([all(T.pa[(r["season"] - j, r["lg"])] >= LB_MIN_PA for j in (1, 2)) for r in rows])
+    out["regulars with two earlier seasons of 100 plate appearances"] = {f["name"]: ev(f["lines"], st[est] * rt[f["slot"]])
+                                                                       for f in F}
     nonc = hitters_nonc(P, T)
     d81 = np.array([T.starts[k] for k in nonc if T.starts[k] >= 81], float)
     out["hitters with 81 or more starts"] = {f["name"]: ev(f["lines"], d81 * rt[f["slot"]]) for f in F}
@@ -481,7 +712,8 @@ def ask_b(P, mode="golden"):
     playing-time and legacy season-end lines at face value, each half to its season, voids netted, pitchers dropped),
     'code_payyear' (the playing-time code by pay year), 'code_season' (the playing-time code, each half to its season,
     pitchers in), 'register' (the register's plate-appearance terms against the season's plate appearances),
-    'gross' (the face-value lines with the void reversal ignored), 'golden'."""
+    'gross' (the face-value lines with the void reversal ignored), 'payyear' (each half under the year it was paid),
+    'five' (the five signings only), 'golden'."""
     pay = read_csv(os.path.join(P.target, "ral_payroll_player_earnings_2023_2026.csv"))
     hmap = {r["legacy_employee_no"]: r["employee_id"] for r in read_csv(os.path.join(P.target, "ral_hris_legacy_employee_map.csv"))}
     wb = openpyxl.load_workbook(os.path.join(P.target, "ral_player_contract_register_2024_2026.xlsx"), read_only=True)
@@ -547,7 +779,11 @@ def ask_b(P, mode="golden"):
         return {k: v for k, v in out.items() if k[0] in (2024, 2025, 2026)}
     # golden (and 'gross'): the halves each season's playing-time payments made, times half the plate-appearance
     # lines the player reached for the club
+    if mode == "five":
+        # 'player by player' read as the five signings: none of them was the Club's player in 2024 to 2026
+        return {}
     halves = defaultdict(lambda: defaultdict(float))
+    paid_in = defaultdict(lambda: defaultdict(int))
     for r in pay:
         e = emp(r)
         if e not in terms or not playing_time(r):
@@ -555,16 +791,21 @@ def ask_b(P, mode="golden"):
         amt = float(r["amount"])
         d = ymd(r["pay_date"])
         y = season_of(d)
-        halves[(y, e)]["first" if d.month >= 7 else "second"] += amt
+        half = "first" if d.month >= 7 else "second"
+        halves[(y, e)][half] += amt
+        if amt > 0:
+            paid_in[(y, e)][half] = d.year
     for (y, e), parts in halves.items():
-        if y not in (2024, 2025, 2026):
-            continue
         t = terms[e]
         lg = lg_of[t["name"]]
         pa = pa_club[(y, lg, "RAL")]
         earned = t["amount"] * sum(1 for x in t["lines"] if pa >= x)
-        n = sum(1 for v in parts.values() if v > 0.5)
-        out[(y, t["name"])] += earned / 2 * n
+        for half, v in parts.items():
+            if v <= 0.5:
+                continue
+            yy = paid_in[(y, e)][half] if mode == "payyear" else y
+            if yy in (2024, 2025, 2026):
+                out[(yy, t["name"])] += earned / 2
     return {k: v for k, v in out.items() if v}
 
 

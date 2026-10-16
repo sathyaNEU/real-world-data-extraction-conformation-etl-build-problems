@@ -313,18 +313,21 @@ def make_schedule(L, y):
     by_series = defaultdict(list)
     for g in games:
         by_series[(g["series"], g["home"])].append(g)
+    made_up = set()          # (club, off day) already taken by a game made up there
     for key, gs in by_series.items():
         for idx, g in enumerate(gs):
-            if r.random() < 0.012:
+            if r.random() < 0.005:
                 if idx < len(gs) - 1:
                     nxt = gs[idx + 1]
                     if nxt["gnum"] == 0:
                         g["date"] = nxt["date"]
                         g["gnum"], nxt["gnum"] = 1, 2
                 else:
-                    later = [d for d in off_days if d > g["date"]]
+                    later = [d for d in off_days if d > g["date"] and (g["home"], d) not in made_up and
+                             (g["away"], d) not in made_up]
                     if later:
                         g["date"] = later[0]
+                        made_up |= {(g["home"], later[0]), (g["away"], later[0])}
             elif r.random() < 0.002 and idx < len(gs) - 1 and g["gnum"] == 0:
                 g["completed"] = gs[idx + 1]["date"]
     games.sort(key=lambda g: (g["date"], g["gnum"], g["home"]))
@@ -354,7 +357,6 @@ def gen_availability(L, y, key, cg, role, r):
     day-to-day absences, rest, a lost job."""
     p = L.players[key]
     n = len(cg)
-    age = p.age(y)
     P = K.PAR
     av = dict(stints=[], dtd=set(), rest=set(), jobloss=None, lists=[])
     missed = np.zeros(n, bool)
@@ -364,7 +366,7 @@ def gen_availability(L, y, key, cg, role, r):
         Lg = int(round(np.exp(r.normal(P["spring_mu"], P["spring_sig"]))))
         Lg = max(Lg, 3)
         spells.append([0, min(Lg, n), "spring", "10-day"])
-    lam = (P["stint_rate"] if role == "starter" else 0.5) + (0.04 * (age - 34) if age > 34 else 0.0)
+    lam = P["stint_rate"] if role == "starter" else 0.5
     for _ in range(int(r.poisson(lam))):
         s = int(r.integers(1, n))
         if r.random() < P["concussion_share"]:
@@ -399,7 +401,7 @@ def gen_availability(L, y, key, cg, role, r):
                 av["dtd"].add(g)
                 missed[g] = True
     if role == "starter":
-        mu = P["catcher_rest"] if p.is_c else P["rest_rate"] + (1.0 * (age - 34) if age > 34 else 0.0)
+        mu = P["catcher_rest"] if p.is_c else P["rest_rate"]
         cand = [g for g in range(3, n) if not missed[g] and not any(st["s"] == g + 1 for st in av["stints"])]
         k = min(len(cand), int(r.poisson(mu)))
         if k:
@@ -614,8 +616,8 @@ def simulate_season(L, y):
                 av = AV.get(k)
                 if av and av["jobloss"] is not None and L.club_of[(y, k)] == c and gi >= av["jobloss"] \
                         and (c, slot, k) not in jobloss_done:
-                    cands = [b for b in benches[c] if b not in used and (GROUP[pos] == "ANY" or
-                             GROUP.get(L.players[b].pos, "INF") == GROUP[pos] or (pos == "1B" and not L.players[b].is_c))]
+                    cands = [b for b in benches[c] if b not in used and L.players[b].is_c == (pos == "C") and
+                             (GROUP[pos] == "ANY" or GROUP.get(L.players[b].pos, "INF") == GROUP[pos] or pos == "1B")]
                     if cands:
                         rep = cands[0]
                         owner[(c, slot)].append((g["date"], rep, pos))
@@ -922,7 +924,7 @@ def setup_design(L):
             slot[y][k] = K.SIGNINGS[k]["old_slot"]
     # the club's own: four core regulars kept into 2027, the incumbent first baseman (2025-2027) and the veterans whose
     # plate-appearance bonuses the payments ask covers
-    core = {"RC": ("C", 1995, 0.6), "RSS": ("SS", 1997, 1.4), "RCF": ("CF", 1998, 1.5), "RRF": ("RF", 1996, 1.6)}
+    core = {"RC": ("C", 1995, 1.4), "RSS": ("SS", 1997, 1.4), "RCF": ("CF", 1998, 1.5), "RRF": ("RF", 1996, 1.6)}
     for k, (pos, by, t) in core.items():
         nm, org = designed_name(L, k)
         new_player(L, K.rng("make", k), pos, by, talent=t, key=k, name=nm, origin=org)
@@ -997,8 +999,8 @@ def plan_2027(L):
     """The club's December 2026 depth chart: the four core regulars, the five signings, the incumbent to the bench."""
     R26 = L.rosters[(2026, K.CLUB)]
     bench = [k for k in R26["bench"] if L.players[k].age(2027) <= 35][:3] + ["INC"]
-    lineup = [("CF", "RCF"), ("SS", "RSS"), ("RF", "RRF"), ("3B", "P4"), ("1B", "P1"), ("DH", "P2"), ("LF", "P3"),
-              ("C", "RC"), ("2B", "P5")]
+    lineup = [("CF", "RCF"), ("SS", "RSS"), ("RF", "RRF"), ("C", "RC"), ("3B", "P4"), ("1B", "P1"), ("DH", "P2"),
+              ("LF", "P3"), ("2B", "P5")]
     L.plan = dict(lineup=[(i + 1, pos, k) for i, (pos, k) in enumerate(lineup)], bench=bench)
     for k in K.SIGN_ORDER:
         assert dict((kk, s) for s, _, kk in L.plan["lineup"])[k] == K.SIGNINGS[k]["slot"]

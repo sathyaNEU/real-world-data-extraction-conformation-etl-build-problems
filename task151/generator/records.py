@@ -498,7 +498,7 @@ VET_CONTRACTS = {
     "V3": dict(signed=dt.date(2022, 11, 30), seasons=(2023, 2024), salary=6_000_000, signing_bonus=0,
                pa=(100_000, (450, 500, 550)), gs=(40_000, 140), awards=[("All-Star selection", 50_000)]),
     "V2": dict(signed=dt.date(2023, 12, 6), seasons=(2024, 2025, 2026), salary=8_000_000, signing_bonus=2_000_000,
-               pa=(125_000, (500, 550, 600)), gs=(45_000, 120), awards=[("All-Star selection", 50_000)]),
+               pa=(125_000, (500, 550, 600)), gs=(45_000, 110), awards=[("All-Star selection", 50_000)]),
     "V4": dict(signed=dt.date(2024, 12, 12), seasons=(2025,), salary=7_250_000, signing_bonus=500_000,
                pa=(225_000, (375, 475, 575)), gs=(50_000, 90), awards=[]),
     "INC": dict(signed=dt.date(2024, 12, 19), seasons=(2025, 2026, 2027), salary=5_500_000, signing_bonus=1_500_000,
@@ -810,7 +810,13 @@ def write_register(L, out, new, people):
     ns = wb.create_sheet("Notes")
     for line in [
         "Plate-appearance and games-started bonuses are earned in the championship season and paid half in the first "
-        "payroll after the season ends and half on the following January 15.",
+        "payroll after the season ends and half on the following January 15. Both halves are the bonus of the season "
+        "in which it was earned.",
+        "Every plate-appearance bonus the Club paid for the 2024 to 2026 seasons was paid to a player under a contract "
+        "in this register that carries plate-appearance terms.",
+        "A payment voided and reissued (the VOIDED line, its VOID REVERSAL and the new payment) is one payment.",
+        "Until the HRIS migration on January 1, 2025 the payroll paid every performance and award bonus under the "
+        "legacy code E40 (PERF BONUS); one E40 line can carry more than one bonus.",
         "Pitchers' playing-time bonuses (games finished, innings pitched) are paid in full in the first payroll after "
         "the season ends.",
         "Award and All-Star bonuses are paid in the payroll after the award is announced.",

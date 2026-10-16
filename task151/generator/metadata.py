@@ -36,7 +36,7 @@ SOURCES = {
     DOC.F_TERMS: "Raleigh Oaks Baseball Operations, summary of terms of the five free-agent hitters signed for 2027",
     DOC.F_ILRULES: "League office, League Rules (2024 edition) Article 22 Injured Lists, excerpt",
     DOC.F_NOTES: "League Statistics, field notes for the batting lines, crosswalk, club directory and calendar",
-    DOC.F_MANIFEST: "Raleigh Oaks Finance, manifest of the December 11, 2026 pull",
+    DOC.F_MANIFEST: "Raleigh Oaks Finance, index of the December 2026 close file as pulled December 11, 2026",
 }
 DISTRACTORS = [R.F_PROJ, R.F_SCHED27]
 

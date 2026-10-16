@@ -30,8 +30,9 @@ ORD = {1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth", 6: "sixth",
 def compute(target):
     P = calc.load(target)
     T = calc.seasons(P)
-    R, G = calc.rivals(P, T)
-    return dict(P=P, T=T, G=G, R=R, A=calc.ask_a(P), B=calc.ask_b(P))
+    R, G, NEAR, ACC = calc.rivals(P, T)
+    LB, n_lb, _ = calc.lookback(P, T)
+    return dict(P=P, T=T, G=G, R=R, NEAR=NEAR, ACC=ACC, LB=LB, n_lb=n_lb, A=calc.ask_a(P), B=calc.ask_b(P))
 
 
 def usd(x):
@@ -99,7 +100,8 @@ def figures(R):
     st = G["starts"]
     rv = R["R"]
     f = dict(
-        call=dict(total=usd(G["total_r"]), total_unrounded=usd(G["total"])),
+        call=dict(total=usd(G["total_r"]), total_unrounded=usd(G["total"]),
+                  sum_of_player_figures=usd(sum(G["per_r"].values()))),
         critical_components=dict(
             per_player={f_["name"]: usd(G["per_r"][f_["name"]]) for f_ in F},
             slots_2027={f_["name"]: ORD[f_["slot"]] for f_ in F},
@@ -116,9 +118,16 @@ def figures(R):
             rate_first_1dp="%.1f" % rt[1], rate_ninth_1dp="%.1f" % rt[9],
             line_probabilities={f_["name"]: ["%.1f%%" % (100 * p) for a, t, p in G["lines"][f_["name"]]] for f_ in F},
             per_player_unrounded={f_["name"]: usd(G["per"][f_["name"]]) for f_ in F}),
-        references=dict(fin14_sections=["4.2", "4.3", "4.4"], rounding_total="$250,000", rounding_player="$100,000"),
+        references=dict(fin14_sections=["4.2", "4.3", "4.4", "6"], rounding_total="$250,000", rounding_player="$100,000"),
+        lookback=dict(hitter_seasons="{:,}".format(R["n_lb"]), seasons="2023 to 2026", min_pa=str(calc.LB_MIN_PA),
+                      thresholds=[str(int(t)) for t in calc.LB_THRESHOLDS],
+                      scores={LB_LABEL[n]: "%.4f" % R["LB"][n] for n in LB_ROWS},
+                      above_chosen={LB_LABEL[n]: "%.1f%%" % (100 * (R["LB"][n] / R["LB"]["golden"] - 1))
+                                    for n in LB_ROWS if n != "golden"},
+                      accrual_each={LB_LABEL[n]: usd(calc.r250(sum(R["ACC"][n].values()))) for n in LB_ROWS}),
         rivals=dict(
             default=usd(calc.r250(rv["default: vendor projection with a normal band"])),
+            default_at_hand=usd(calc.r250(rv["the full nine's own plate appearances"])),
             opening_day=usd(calc.r250(rv["opening-day lineups"])),
             old_slot=usd(calc.r250(rv["regulars at the old slot's rate"]))),
         deliverables=dict(
@@ -129,6 +138,30 @@ def figures(R):
     )
     return f
 
+
+# the bases the look-back sheet and the memo report, in the controller's words
+LB_ROWS = ["golden", "the last three seasons", "plate appearances rescaled to the slot",
+           "default: vendor projection with a normal band", "vendor projection with its past misses",
+           "own three seasons as the draws", "the full nine's own plate appearances",
+           "planned regulars' own plate appearances", "catchers kept in", "opening-day lineups",
+           "planned regulars who opened the season", "hitters with 400 or more plate appearances",
+           "own record given a weight of 10 per cent", "regression on the projection, the slot and catching"]
+LB_LABEL = {
+    "golden": "Non-catcher regulars' seasons of starts at the player's 2027 slot (used)",
+    "the last three seasons": "The same, the last three seasons only",
+    "plate appearances rescaled to the slot": "The same, each season's plate appearances rescaled to the slot",
+    "default: vendor projection with a normal band": "Vendor's projection with a normal band from its misses",
+    "vendor projection with its past misses": "Vendor's projection plus each of its past misses",
+    "own three seasons as the draws": "The player's own last three seasons",
+    "the full nine's own plate appearances": "Every lineup regular's plate appearances, catchers in, any slot",
+    "planned regulars' own plate appearances": "Non-catcher regulars' plate appearances, any slot",
+    "catchers kept in": "Every lineup regular's starts at the player's slot, catchers in",
+    "opening-day lineups": "Opening-day starters' seasons at the player's slot",
+    "planned regulars who opened the season": "Regulars who started their club's first game, at the slot",
+    "hitters with 400 or more plate appearances": "Hitters with 400 or more plate appearances, at the slot",
+    "own record given a weight of 10 per cent": "The regulars' seasons moved 10 per cent toward the player's record",
+    "regression on the projection, the slot and catching": "Regression on the vendor's projection, slot and catching",
+}
 
 # ------------------------------------------------------------------------------------------------------- workbook
 THIN = Side(style="thin", color="999999")
@@ -205,6 +238,32 @@ def write_book(R, path):
     ws.page_setup.fitToWidth = 1
     ws.sheet_properties.pageSetUpPr.fitToPage = True
     ws.print_title_rows = "5:5"
+    # the look-back
+    wl = wb.create_sheet("Look-back (FIN-14 4.4)")
+    wl["A1"] = ("FIN-14 4.4 look-back: %s hitter-seasons, 2023 to 2026; the basis with the lowest score is used" %
+                "{:,}".format(R["n_lb"]))
+    wl["A1"].font = Font(bold=True)
+    wl["A2"] = ("Each basis applied to each season with what was published before it began, to every hitter in a "
+                "starting lineup of that season's January 31 depth charts with 100 plate appearances in each of the two "
+                "seasons before; score: the average squared difference between the probability of 450, 500, 550, 600 "
+                "and 650 plate appearances and the outcome (1 reached, 0 not).")
+    _hdr(wl, 4, ["Basis", "Score", "Above the basis used", "2027 accrual on this basis"])
+    gb = R["LB"]["golden"]
+    for i, n in enumerate(LB_ROWS):
+        r = 5 + i
+        wl.cell(row=r, column=1, value=LB_LABEL[n]).font = Font(bold=(n == "golden"))
+        wl.cell(row=r, column=2, value=round(R["LB"][n], 4)).number_format = "0.0000"
+        c = wl.cell(row=r, column=3, value=None if n == "golden" else round(R["LB"][n] / gb - 1, 4))
+        c.number_format = "0.0%"
+        wl.cell(row=r, column=4, value=calc.r250(sum(R["ACC"][n].values()))).number_format = "$#,##0"
+    r = 5 + len(LB_ROWS) + 1
+    wl.cell(row=r, column=1, value="The bases that tie the one used (the last three seasons; plate appearances "
+                                   "rescaled) give the same accrual. Accruals to the nearest $250,000.")
+    wl.cell(row=r + 1, column=1, value="Sources: hvbd_winter_depth_charts_2021_2026.xlsx; "
+                                       "hvbd_hitter_projections_2022_2027.csv; the batting lines 2021 to 2026.")
+    for col, w in zip("ABCD", (66, 10, 14, 18)):
+        wl.column_dimensions[col].width = w
+    wl.freeze_panes = "A5"
     # injured-list stints
     ws2 = wb.create_sheet("IL stints since 2024")
     ws2["A1"] = "Injured-list stints of the five since Opening Day 2024: nine stints, %d regular-season days" % sum(
@@ -267,16 +326,17 @@ def write_book(R, path):
     wn = wb.create_sheet("Notes")
     for line in [
         "As of December 11, 2026 (files pulled that afternoon). Prepared by %s, Controller." % AUTHOR,
-        "Accrual under FIN-14 4.2 to 4.4: each plate-appearance bonus at its amount times the probability that the "
-        "player reaches its threshold in the 2027 championship season, assessed at signing, the player taken as "
-        "staying with the Club in his planned role (lineup slot in ral_depth_chart_2027.xlsx).",
+        "Accrual under FIN-14 4.2 and 4.3: each plate-appearance bonus at its amount times the probability that the "
+        "player reaches its threshold in the 2027 championship season, assessed at signing, the contract taken as "
+        "standing all season with the player in his planned role (lineup slot in ral_depth_chart_2027.xlsx) and his "
+        "health and playing time left in the probability. Basis chosen by the FIN-14 4.4 look-back (sheet Look-back).",
         "Plate appearances as the term sheets define them: championship season, for the Club; postseason and "
         "rehabilitation-assignment plate appearances excluded.",
         "Comparison seasons: the non-catchers in the lineups of hvbd_winter_depth_charts_2021_2026.xlsx, %s seasons; "
         "starts counted for every club the player started for that season, from lsf_batting_2021_2024.txt (through "
         "lsf_player_id_crosswalk.csv) and lsf_batting_2025_2026.csv." % "{:,}".format(G["n"]),
-        "Rounding: each player's accrual to the nearest $100,000 and the total to the nearest $250,000, both from the "
-        "unrounded line amounts.",
+        "Rounding (FIN-14 6): each player's accrual to the nearest $100,000 and the total to the nearest $250,000, "
+        "both from the unrounded line amounts; the rounded player figures add to %s." % usd(sum(G["per_r"].values())),
     ]:
         wn.append([line])
     wn.column_dimensions["A"].width = 130
@@ -363,19 +423,24 @@ def write_memo(R, path, fig):
                           "2026; pa_bonus_accrual_2027.xlsx.")
     src.runs[0].font.size = Pt(8.5)
     src.runs[0].italic = True
+    lb = fig["lookback"]
     d.add_paragraph(
-        "Basis for the probabilities. A player's plate appearances are his starts times the plate appearances his slot "
-        "comes up per start, which in the League's 2021 to 2026 box scores fall from %s batting first to %s batting "
-        "ninth. A regular's season is either close to a full season of starts or one long injured-list absence, some of "
-        "it before Opening Day. Each bonus's probability is therefore the share of the %s seasons of the non-catcher "
-        "regulars in the projection vendor's January 31 depth charts, 2021 to 2026, whose starts at the player's 2027 "
-        "slot reach the threshold. Player figures are rounded to the nearest $100,000 and the total to the nearest "
-        "$250,000." % (fig["steps"]["rate_first"], fig["steps"]["rate_ninth"], fig["steps"]["planned_seasons"]))
+        "Basis for the probabilities (FIN-14 4.4). We scored each basis on the %s hitter-seasons of 2023 to 2026 the "
+        "policy names, each basis given only what was published before the season. The lowest score went to the share "
+        "of the %s seasons of the non-catcher regulars in the vendor's January 31 depth charts, 2021 to 2026, whose "
+        "starts, times the plate appearances per start of the player's 2027 slot, reach the threshold; plate "
+        "appearances per start fall from %s batting first to %s batting ninth. The vendor's projection with a band "
+        "from its past misses scored %s worse and would have accrued %s; the players' own last three seasons scored %s "
+        "worse." % (lb["hitter_seasons"], fig["steps"]["planned_seasons"], fig["steps"]["rate_first"],
+                    fig["steps"]["rate_ninth"], lb["above_chosen"][LB_LABEL["default: vendor projection with a normal band"]],
+                    lb["accrual_each"][LB_LABEL["default: vendor projection with a normal band"]],
+                    lb["above_chosen"][LB_LABEL["own three seasons as the draws"]]))
     d.add_paragraph(
-        "The vendor's December 1 projections are not used: they carry each player's recent seasons at his old club, "
-        "four of the five higher in the order than we plan to bat them, and a band around a projection spreads a "
-        "season evenly where a regular's season is lumpy. The accrual is remeasured at each 2027 quarter end (FIN-14 "
-        "4.4); the workbook pa_bonus_accrual_2027.xlsx carries each bonus line.")
+        "The five come to us off full seasons batting higher for their old clubs; each will bat lower here, and a "
+        "regular's next season does not follow his last ones. Player figures are rounded to the nearest $100,000 and the "
+        "total to the nearest $250,000 from the unrounded amounts (FIN-14 6), so the player figures add to %s. The "
+        "accrual is remeasured at each 2027 quarter end (FIN-14 4.5); pa_bonus_accrual_2027.xlsx carries each bonus "
+        "line and the look-back." % usd(sum(G["per_r"].values())))
     nt = d.add_paragraph("Plate appearances are counted as the contracts define them: championship season, for the "
                          "Club, excluding postseason and rehabilitation-assignment plate appearances. Catchers are left "
                          "out of the comparison seasons; none of the five catches.")
@@ -399,20 +464,26 @@ def submission(R, fig, path):
     lines.append("## 1. Final Recommendation\n")
     lines.append("**Accrue %s at signing for the plate-appearance bonuses in the five free-agent hitters' 2027 "
                  "contracts.**" % fig["call"]["total"])
+    LBk = fig["lookback"]
     lines.append("Each bonus is priced at the share of the %s seasons of the non-catcher regulars in the vendor's "
                  "January 31 depth charts, %s to %s, whose starts, read at the plate appearances per start of the "
-                 "player's 2027 lineup slot, reach its threshold. Not the vendor's 2027 projections with a band from their past "
-                 "misses, which carry each player's healthy recent seasons at his old club's higher slot and spread a "
-                 "season symmetrically when a regular's season is a near-full run of starts or one long injured-list "
-                 "loss. Not the players in the clubs' opening-day lineups, which drop the planned regulars hurt in "
-                 "spring training and keep the fill-ins who started for them." % (
-                     S["planned_seasons"], S["first_season"], S["last_season"]))
+                 "player's 2027 lineup slot, reach its threshold: the basis with the lowest score in FIN-14 4.4's "
+                 "look-back over the %s hitter-seasons of 2023 to 2026. Not the vendor's 2027 projections with a band "
+                 "from their past misses (%s worse in the look-back), which carry each player's full recent seasons at "
+                 "a higher slot for his old club; not the players' own seasons; and not the starting nines' seasons "
+                 "taken whole (%s worse), which keep the catchers in and ignore where each hitter bats." % (
+                     S["planned_seasons"], S["first_season"], S["last_season"], LBk["hitter_seasons"],
+                     LBk["above_chosen"][LB_LABEL["default: vendor projection with a normal band"]],
+                     LBk["above_chosen"][LB_LABEL["the full nine's own plate appearances"]]))
     lines.append("")
     lines.append("## 2. Critical Components\n")
     lines.append("1. Accrual by player: %s." % "; ".join("%s **%s**" % (f_["name"], per[f_["name"]]) for f_ in F))
     lines.append("2. Plate appearances per start fall from **%s** batting first to **%s** batting ninth, and the "
                  "depth chart bats the five %s." % (S["rate_first_1dp"], S["rate_ninth_1dp"], ", ".join(
                      "%s %s" % (surname(f_["name"]), fig["critical_components"]["slots_2027"][f_["name"]]) for f_ in F)))
+    lines.append("3. FIN-14 4.4's look-back over the **%s** hitter-seasons of 2023 to 2026 ranks the regulars' seasons of "
+                 "starts at the slot ahead of the vendor's projection with a band and of the players' own seasons." %
+                 LBk["hitter_seasons"])
     lines.append("")
     lines.append("## 3. Step-by-Step Solution\n")
     lines.append("1. Joined lsf_batting_2021_2024.txt (plate appearances AB + BB + HBP + SH + SF + CI, per lsf_feed_notes.txt) "
@@ -426,13 +497,22 @@ def submission(R, fig, path):
                  "first to %s batting ninth; at the five's 2027 slots they are %s." % (
                      S["first_season"], S["last_season"], S["rate_first"], S["rate_ninth"],
                      ", ".join("%s batting %s" % (v, k) for k, v in S["rates"].items())))
-    lines.append("4. For each bonus line in term_sheets_2027_free_agent_hitters.pdf, the probability under FIN-14 4.2 and "
+    sc = LBk["scores"]
+    lines.append("4. Ran the look-back of FIN-14 4.4 on the %s hitter-seasons of 2023 to 2026 (a starting lineup of the "
+                 "January 31 depth charts and 100 plate appearances in each of the two seasons before), each basis "
+                 "built from what was published before the season: the regulars' seasons at the slot scored %s; the "
+                 "vendor's projection with a band from its misses %s; the players' own last three seasons %s; the "
+                 "starting nines' plate appearances taken whole %s." % (
+                     LBk["hitter_seasons"], sc[LB_LABEL["golden"]],
+                     sc[LB_LABEL["default: vendor projection with a normal band"]],
+                     sc[LB_LABEL["own three seasons as the draws"]], sc[LB_LABEL["the full nine's own plate appearances"]]))
+    lines.append("5. For each bonus line in term_sheets_2027_free_agent_hitters.pdf, the probability under FIN-14 4.2 and "
                  "4.3 is the share of those seasons whose starts times the player's 2027 slot rate reach the threshold, "
                  "and the expected amount is the bonus times that share.")
-    lines.append("5. Summed each player's expected amounts and rounded to the nearest $100,000: %s." % (
+    lines.append("6. Summed each player's expected amounts and rounded to the nearest $100,000: %s." % (
         "; ".join("%s %s" % (f_["name"], per[f_["name"]]) for f_ in F)))
-    lines.append("6. Summed the five players' unrounded amounts and rounded to the nearest $250,000: %s." %
-                 fig["call"]["total"])
+    lines.append("7. Summed the five players' unrounded amounts and rounded to the nearest $250,000 (FIN-14 6): %s; the "
+                 "rounded player figures add to %s." % (fig["call"]["total"], usd(sum(G["per_r"].values()))))
     lines.append("")
     lines.append("## 4. Deliverable Answers\n")
     lines.append("### %s\n" % F_BOOK)

@@ -1,5 +1,5 @@
 """Assemble the evidence pack: the world, the League's files, the vendor's files, the club's files, the documents and
-the manifest, every file stamped with the pull time."""
+the close-file index, every file stamped with the pull time."""
 from __future__ import annotations
 
 import os

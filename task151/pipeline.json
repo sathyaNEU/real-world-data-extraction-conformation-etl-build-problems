@@ -7,29 +7,36 @@
   "stage": 4,
   "stage_name": "check",
   "updated": "2026-10-16",
-  "stump": "Pricing each signing's bonuses off the vendor's projected 2027 plate appearances with a normal band from the projection's past misses accrues $4,750,000; the step that lands it there is reading each player off his own record, earned higher in his old club's batting order and spread symmetrically, when his 2027 total is his new lineup slot's plate appearances per start times the starts a winter-planned regular makes, a near-full season or one long injured-list block, which accrues $3,500,000.",
+  "stump": "Running FIN-14 4.4's look-back on the bases at hand (the vendor's projection with a band from its past misses, the players' own seasons, the depth charts' starting nines' seasons taken whole) keeps the starting nines' seasons and accrues $4,500,000; the step that lands it there is reading each signing off seasons that keep the catchers in and ignore where each hitter bats, when his 2027 total is his new lineup slot's plate appearances per start times the starts a winter-planned non-catcher regular makes, the basis that scores lowest and accrues $4,250,000.",
   "architecture": 1,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
     "date": "2026-10-16",
     "checks": 49
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-16; every REVIEW line answered in the design note's Build record)",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (2026-10-16, on the repaired pack; every REVIEW line answered in the design note's Build record)",
+    "reader": "round 1 (stage 3 pack): no leak, decisive step analytical (coordinator relay); FIN-14 4.4 is new text for a targeted re-read"
   },
   "duplicate_check": {
-    "heart": "WARN (overuse.objective, repeat.gate_g; answered under Draw)",
-    "nearest": "heart 0.06 (task105 v1 lineage), card driver 0.05 (task132); surface 0 promoted (nearest task38, task32, task147 at 0.100)"
+    "heart": "WARN (overuse.objective, repeat.gate_g, people.first and people.last on one veteran's name; answered under Draw)",
+    "nearest": "heart 0.05 (task132; task105 v1 lineage), surface 0 promoted (nearest task38, task147, task32 at 0.100)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "round 1 NOT_DETERMINISTIC (competing_defensible_answer on the main call)",
+    "disposition": "SEND_BACK, repaired at stage 4",
+    "report": "task151/determinism_check_report_round1.md"
   },
-  "returned": [],
-  "resume": "stage 4: reader and judge",
+  "returned": [
+    {
+      "date": "2026-10-16",
+      "by": "determinism judge round 1 and the rule 3 audit (coordinator)",
+      "finding": "no filed preference among the bases (vendor band, vendor residuals, own seasons defensible); the starting nines' raw seasons landing the call; 4.3's health reading; Ask B population and attribution; rounding path; Ask A effective date; the manifest's name",
+      "repair": "FIN-14 4.4 filed look-back (selection criterion, no method named), lineup fifth to ninth with terms re-searched, world redrawn (seed 1539), 4.3 restated, register notes, FIN-14 6 rounding, rules 22.1 backdating, close-file index; golden re-derived $4,250,000"
+    }
+  ],
+  "resume": "stage 4: judge round 2 on the repaired pack (and the leak reader's targeted read of FIN-14 4.4)",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -38,11 +45,11 @@
   "portal_status_date": "",
   "wave": "wave 4 (new), seed FC22 (world, decision and quantity kept; the filed projection method and the shared-slot driver dropped; pitfall re-found)",
   "build": {
-    "checks": 173,
+    "checks": 276,
     "verify": "agreeing",
     "byte_identical": true,
-    "figures_check": "72 of 72",
-    "target_zip_sha256": "ffcfbe61fc303d98a876b3145cd8e58b6d365d9a55d07a6a1dbf6608992a7916",
-    "world_seed": 1511
+    "figures_check": "87 of 87",
+    "target_zip_sha256": "b6ee5326bc84d051d85b70f009020564fe26590f2ad8f0965f9149eb8405c415",
+    "world_seed": 1539
   }
 }
