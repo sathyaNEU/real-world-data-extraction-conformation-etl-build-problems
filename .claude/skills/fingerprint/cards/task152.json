@@ -1,0 +1,108 @@
+{
+  "task": "task152",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "wave 4 (new); seed FC23 kept for its world, decision and quantity only (a repowered solar plant's 2027 forward sale at the one-year P90); the desk memo filing the P90 method is not shipped, the pitfall re-found from the plant's own records",
+  "domain": "energy-systems-utilities",
+  "subdomain": "asset-condition-maintenance",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a Phoenix building-products manufacturer's energy desk sizing the 2027 forward sale of its 40 MWac fixed-tilt solar plant in Pinal County at the plant's one-year P90 after a December 2026 module replacement on the same tables and inverters, when the plant's ten-year decline mixes the original modules' backsheet wear, which the replacement removes, with the dust the array carries between washes, which grew as washes fell from six a year to one under the Colorado River shortage, and with ageing inverters' efficiency and availability, which the replacement keeps",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G4",
+    "G16",
+    "G13"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "the energy and commodities manager on the treasury team, who sets the hedge volume the risk committee approves",
+  "role_family": "procurement_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "scada_inverter_daily_2015-2019.csv beside scada_inverter_daily_2020-2026.csv",
+    "rows": 63500,
+    "entity": "one central inverter's day: DC energy in, AC energy out, hours online, with the plant pyranometer's plane-of-array irradiation and the back-of-module temperature",
+    "grain": "inverter x day",
+    "source": "synthetic (constructed in the layout of a utility-scale plant's SCADA daily export, before and after a 2020 SCADA replacement)"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "manufacturer",
+  "world": {
+    "geography": "United States, Arizona (Pinal County; the company, the plant, its contractors, suppliers and counterparties are fictional)",
+    "currency": "USD",
+    "org_type": "building-products manufacturer with an in-house energy and commodities desk",
+    "invented_names": [
+      "Marden-Vail Building Products",
+      "Hadley Ranch Solar",
+      "Tresco Field Services",
+      "Tianrun New Energy",
+      "Kellerman Solar",
+      "Clearfield Solar Resource",
+      "Santa Rosa Irrigation and Power District"
+    ],
+    "people": [
+      "Kristopher Lara",
+      "Selena Sloan",
+      "Caroline Barnett",
+      "John Davila",
+      "Laurie Howell",
+      "Isabel Shaw"
+    ]
+  },
+  "deliverables": [
+    "hedge_volume_2027.xlsx",
+    "hedge_note_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "The forward level after a worn part is replaced is the present output restored by the part's own wear only, and that wear is the decline of the unit's just-reset states read at the boundary inside the unit that leaves out the losses the replacement keeps: the unit's average output also carries a loss that accumulates between recurring resets and whose mean grew as the resets grew rarer, so a decline taken over every day, or over the whole unit, books that kept loss as wear and overstates what the replacement restores, while carrying the present output unrestored understates it.",
+  "driver_concrete": "Hadley Ranch's 2027 P50 is its October 2025 to September 2026 output per unit of plane-of-array irradiation, times the new nameplate and the side-by-side test's measured gain of the new bifacial modules over unexposed original spares, divided by the original modules' own wear, read from the inverters' DC input per unit of irradiation, temperature-corrected, on fully available inverter-days in the days just after each full wash; the plant's AC performance ratio fell further because the inverters lost efficiency and availability and the washes fell from six a year to one, losses the new modules keep, so neither the plant's whole decline nor its whole DC-side decline is what the replacement restores.",
+  "stump": "A competent solver carries the plant's last twelve months' performance ratio onto the new modules with the side-by-side test's gain and runs the 25 weather years, filing a P90 far under the golden; the stronger one restores the plant's whole decline since 2016, or its whole DC-side decline, and files far over it; the step that lands each there is reading the decline as one quantity, when only the original modules' own wear, read on freshly washed days at the inverters' DC input, leaves with them, while the inverters' losses and the dust carried between washes, which grew as washes fell from six a year to one, stay.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who joins the two SCADA layouts, reads the hedge policy, the replacement scope and the side-by-side test correctly and computes the P90 over the 25 weather years carries the plant's last twelve months' performance ratio onto the new modules with the test's gain and files a P90 about 14 per cent under the golden; restoring the plant's whole performance-ratio decline since 2016 files about 9 per cent over, restoring its whole DC-side decline on available days about 5 per cent over, and restoring the decline read on washed days but at the AC meter about 3.5 per cent over.",
+  "domain_test": "The deciding quantity is the repowered plant's 2027 performance level, which a solar asset analyst builds from the plant's own monitoring by separating the losses the module swap removes (the original modules' wear) from those it keeps (inverter efficiency and availability, and soiling under the cleaning regime), with the wear measured the way PV degradation studies measure it, on the DC side, temperature-corrected and on clean-module days, then run over the long-term irradiance record for the one-year P90; with another field's nouns there is no irradiance to normalise by, no inverter boundary between DC and AC, and no dust reset by washes and rain, so the task stops reading the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:module-wear-net-of-soiling-at-the-inverter-dc-boundary",
+  "layer1": [
+    "SCADA layout change at the 2020 replacement (local time, kWh, inverter numbers to UTC, MWh, block-inverter tags)",
+    "an inverter replaced in 2021 under a new tag",
+    "a long-term satellite record in UTC with a provider header block",
+    "work orders in free text, washes spread over several days block by block",
+    "a revenue-meter export with a mid-year meter exchange and a re-issued interval file",
+    "PDF tables (side-by-side test report, datasheets, contracts)"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task132": "both replace a worn item with a new one, but task132 counts failures over a renewal process, while here the replacement's forward level needs the site's kept losses separated from the item's own wear",
+    "task185": "task185 converts a history across an instrument change at the value being converted; here nothing is converted, a decline is split between what leaves and what stays",
+    "task460": "task460 weights a marginal rate by a project's output profile; here the decisive quantity is a performance level, split into removed and kept losses",
+    "task136": "task136 reads a scheduled intervention against units not yet treated; here there is no comparison group, the split is inside one unit's own record",
+    "task260": "task260 judges an average gain's interval over raters and items; here the measured gain is taken as is and the stump is what it multiplies",
+    "task30": "task30 carries a gap across from closed parallel cases on a transmission variable; here no other case is carried, the plant's own record is decomposed",
+    "task68": "task68 builds a like-for-like change on a matched panel; here the change is read within one unit across a boundary and a reset cycle",
+    "task232": "task232 attributes later outcomes to an exposure by a delay window; here a unit's own decline is split by where in the unit each loss arises (either side of the inverter) and by the wash cycle that resets one of them, and nothing is timed against an exposure",
+    "task127": "task127 v2 removes the replaced step's excess over a concurrent wait found by joining two logs (a max of parallel steps); here the losses are a serial chain read either side of the inverter, and the kept loss is separated from the wear by the wash cycle that resets it, so the wear is the decline of the just-washed states",
+    "task187": "task187 ranks turbines on a power-curve shortfall read at matched turbulence, a capped curve averaged over a spread; here a single plant's forward level is rebuilt after a part swap, the kept losses read off at the inverter boundary and the wear on the days a wash has just reset the dust"
+  },
+  "lineage": [],
+  "notes": "Kinship cards read at the draw: task136, task460, task185, task260, task30, task68, task132, task79.",
+  "registered": "2026-10-16T22:18:16Z"
+}
