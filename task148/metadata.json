@@ -27,7 +27,7 @@
       "xlsx"
     ],
     "largest_file": "i3_call_log_2025-05-13_2026-09-30.jsonl",
-    "largest_file_rows": 340059
+    "largest_file_rows": 339676
   },
   "sources": [
     {
@@ -43,7 +43,7 @@
     {
       "path": "README.md",
       "format": "md",
-      "bytes": 5956,
+      "bytes": 6341,
       "rows": null,
       "source": "Constructed: Tavish County Emergency Communications Agency, README and field notes",
       "date": "2026-10-06",
@@ -52,8 +52,8 @@
     {
       "path": "acd_call_detail_legacy_2025-01-01_2025-05-16.csv",
       "format": "csv",
-      "bytes": 10290201,
-      "rows": 78758,
+      "bytes": 10304767,
+      "rows": 78676,
       "source": "Constructed: Tavish County Emergency Communications Agency, legacy ACD (CAMA and ALI) call detail export",
       "date": "2026-10-06",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -61,8 +61,8 @@
     {
       "path": "admin_line_acd_fy2026.csv",
       "format": "csv",
-      "bytes": 3479325,
-      "rows": 35036,
+      "bytes": 3485643,
+      "rows": 35114,
       "source": "Constructed: Tavish County Emergency Communications Agency, administrative line ACD export",
       "date": "2026-10-06",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -70,8 +70,8 @@
     {
       "path": "cad_incidents_fy2026_fri_sat_late.csv",
       "format": "csv",
-      "bytes": 795616,
-      "rows": 6241,
+      "bytes": 815662,
+      "rows": 6397,
       "source": "Constructed: Tavish County Emergency Communications Agency, CAD incident export",
       "date": "2026-10-06",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -79,8 +79,8 @@
     {
       "path": "callback_desk_tasks_2026-01_2026-06.csv",
       "format": "csv",
-      "bytes": 606131,
-      "rows": 4565,
+      "bytes": 470786,
+      "rows": 3743,
       "source": "Constructed: Tavish County Emergency Communications Agency, callback module task export",
       "date": "2026-10-06",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -88,9 +88,9 @@
     {
       "path": "che_location_records_fy2026_northeast.csv",
       "format": "csv",
-      "bytes": 4953236,
-      "rows": 39486,
-      "source": "Constructed: Tavish County Emergency Communications Agency, call-handling system location records, north-east extract",
+      "bytes": 4987711,
+      "rows": 39720,
+      "source": "Constructed: Tavish County Emergency Communications Agency, call-handling systems' location records, north-east extract",
       "date": "2026-10-06",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -106,7 +106,7 @@
     {
       "path": "floor_roster_2025-01_2026-09.csv",
       "format": "csv",
-      "bytes": 96170,
+      "bytes": 96285,
       "rows": 3829,
       "source": "Constructed: Tavish County Emergency Communications Agency, scheduling system floor roster",
       "date": "2026-10-06",
@@ -133,8 +133,8 @@
     {
       "path": "i3_call_log_2025-05-13_2026-09-30.jsonl",
       "format": "jsonl",
-      "bytes": 124527049,
-      "rows": 340059,
+      "bytes": 152252655,
+      "rows": 339676,
       "source": "Constructed: Tavish County Emergency Communications Agency, NG911 call-handling system i3 call log export",
       "date": "2026-10-06",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -142,7 +142,7 @@
     {
       "path": "qa_extract_log.csv",
       "format": "csv",
-      "bytes": 1942,
+      "bytes": 1971,
       "rows": 12,
       "source": "Constructed: Tavish County Emergency Communications Agency, QA extract log",
       "date": "2026-10-06",
@@ -160,7 +160,7 @@
     {
       "path": "tri_county_911_hourly_forecast_fy2027_fy2028.xlsx",
       "format": "xlsx",
-      "bytes": 445734,
+      "bytes": 445775,
       "rows": 16128,
       "source": "Constructed: Tri-County Regional 911 Board, hourly 911 volume forecast workbook, fiscal 2027 and 2028",
       "date": "2026-10-06",

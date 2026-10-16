@@ -31,7 +31,7 @@ def load_calls(t):
     leg = pd.DataFrame({"presented": loc(a["SEIZE_TIME"]), "answered": loc(a["ANS_TIME"]),
                         "ready": loc(a["RDY_TIME"]), "ended": loc(a["DISC_TIME"]),
                         "abandoned": a["CALL_STATUS"] == "ABN", "service": a["CLASS_OF_SVC"], "xfer_to": a["XFER_OUT_TO"],
-                        "cbn": a["CBN_REF"].str.lower(), "id": a["CALL_ID"]})
+                        "cbn": a["CBN_REF"].str.lower(), "id": a["CALL_ID"], "inc": ""})
     recs = [json.loads(x) for x in open(os.path.join(t, I3), encoding="utf-8")]
     b = pd.DataFrame(recs)
     b = b[b["serviceType"] != "test"]
@@ -39,8 +39,10 @@ def load_calls(t):
     i3 = pd.DataFrame({"presented": ts("presented"), "answered": ts("answered"), "ready": ts("ready"), "ended": ts("ended"),
                        "abandoned": b["disposition"] == "abandoned", "service": b["serviceType"],
                        "xfer_to": b["transferTo"].fillna(""), "cbn": b["callbackRef"].str.replace("cb-", "", regex=False),
-                       "id": b["callId"]})
+                       "id": b["callId"], "inc": b["incidentId"]})
     df = pd.concat([leg, i3], ignore_index=True)
+    lp = df["presented"].dt.tz_convert(TZ)
+    df["late"] = ((lp.dt.hour >= 22) & lp.dt.dayofweek.isin([4, 5])) | ((lp.dt.hour < 2) & lp.dt.dayofweek.isin([5, 6]))
     end = df["ended"].where(df["abandoned"], df["answered"])
     df["wait"] = (end - df["presented"]).dt.total_seconds()
     df["busy"] = (df["ready"] - df["answered"]).dt.total_seconds()
@@ -143,10 +145,13 @@ def ask_a(t, df):
     hand = che[che["method"] != "cell"].sort_values(["call_id", "seq"]).groupby("call_id").last()
     uris = pd.read_csv(os.path.join(t, DIRC))
     wex = set(uris[uris["agency"] == "Wexley County Emergency Communications"]["uri"])
-    w = df[(df["service"] == "wireless") & df["id"].isin(hand.index)].copy()
+    # a record's call_id is the call's i3 callId or, from the backup centre's system, its incidentId
+    w = df[df["service"] == "wireless"].copy()
+    w["key"] = w["id"].where(w["id"].isin(hand.index), w["inc"].where(w["inc"].isin(hand.index), None))
+    w = w[w["key"].notna()]
     w["local"] = w["presented"].dt.tz_convert(TZ)
     w = w[(w["local"] >= pd.Timestamp("2025-07-01", tz=TZ)) & (w["local"] < pd.Timestamp("2026-07-01", tz=TZ))]
-    w["in"] = [inside(hand.loc[i, "longitude"], hand.loc[i, "latitude"]) for i in w["id"]]
+    w["in"] = [inside(hand.loc[i, "longitude"], hand.loc[i, "latitude"]) for i in w["key"]]
     w = w[w["in"]]
     q = ((w["local"].dt.month - 7) % 12) // 3 + 1
     out = {}
@@ -158,7 +163,6 @@ def ask_a(t, df):
 
 def ask_b(t, df):
     cb = pd.read_csv(os.path.join(t, CB), dtype=str, keep_default_na=False)
-    cb = cb[cb["line"] == "911"].copy()
     cb["num"] = cb["callback_number"].str.lower()
     cb["created_t"] = pd.to_datetime(cb["created"]).dt.tz_localize(TZ).dt.tz_convert("UTC")
     cb["first_t"] = pd.to_datetime(cb["first_dial"].where(cb["first_dial"] != "", None)).dt.tz_localize(TZ).dt.tz_convert("UTC")
@@ -184,7 +188,8 @@ def main(target, golden):
     df = load_calls(target)
     ans = ~df["abandoned"]
     busy = df.loc[ans, "busy"].mean()
-    pat = df["wait"].sum() / df["abandoned"].sum()
+    late = df[df["late"]]
+    pat = late["wait"].sum() / late["abandoned"].sum()
     g = fy2028(target, busy, pat)
     gold = {k: int(math.floor(100 * v + 0.5)) for k, v in g.items()}
     short = [k for k, v in sorted(g.items()) if v < 0.90]

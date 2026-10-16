@@ -40,12 +40,29 @@ HIST_START = dt.datetime(2025, 1, 1, 0, 0, tzinfo=TZ)      # first hour of the e
 HIST_END = dt.datetime(2026, 10, 1, 0, 0, tzinfo=TZ)       # exclusive
 CUT_WIRELESS = dt.datetime(2025, 5, 13, 6, 0, tzinfo=TZ)   # wireless, VoIP and telematics move to i3
 CUT_WIRELINE = dt.datetime(2025, 5, 16, 6, 0, tzinfo=TZ)   # wireline calls leave the CAMA trunks
+# planned works on the main floor in fiscal 2026: the agency answered from its backup centre, whose call-handling
+# system files a call's location records under the ESInet's incident identifier rather than the call identifier
+BACKUP_WINDOWS = [(dt.datetime(2025, 8, 19, 7, 0, tzinfo=TZ), dt.datetime(2025, 8, 21, 19, 0, tzinfo=TZ)),
+                  (dt.datetime(2025, 11, 3, 7, 0, tzinfo=TZ), dt.datetime(2025, 11, 7, 7, 0, tzinfo=TZ)),
+                  (dt.datetime(2026, 2, 9, 7, 0, tzinfo=TZ), dt.datetime(2026, 2, 14, 7, 0, tzinfo=TZ)),
+                  (dt.datetime(2026, 5, 12, 7, 0, tzinfo=TZ), dt.datetime(2026, 5, 14, 7, 0, tzinfo=TZ))]
+
+
+def at_backup(ts):
+    return any(a.timestamp() <= ts < b.timestamp() for a, b in BACKUP_WINDOWS)
+
+
 EXPORT_DATE = dt.date(2026, 10, 6)
 EXPORT_STAMP = dt.datetime(2026, 10, 6, 16, 42, tzinfo=UTC)  # 11.42 am Central on 6 October 2026
 
 # ---------------------------------------------------------------------------------------------------- the world's laws
 AHT = 227.0          # mean busy time per answered call, seconds (answer to ready), exponential
-PATIENCE = 161.0     # mean caller patience, seconds, exponential
+# mean caller patience, seconds, exponential: the call mix of Friday and Saturday nights from 22:00 to 06:00 (bar
+# districts, disturbances, third parties who give up) against the rest of the week's (traffic, alarms, medical calls
+# from people who hold on)
+PATIENCE_WEEKEND_NIGHT = 120.0
+PATIENCE_OTHER = {"day": 630.0, "evening": 580.0, "night": 540.0}   # 06:00-18:00, 18:00-22:00, 22:00-06:00
+PATIENCE = PATIENCE_WEEKEND_NIGHT    # the late shift's (the one the decision turns on)
 TALK_BETA = (7.0, 3.0)
 REDIAL_P = 0.20      # a hang-up is followed by a redial from the same number
 REDIAL_DELAY = (4.0, 30.0)   # seconds after the hang-up: fixed part, exponential mean
@@ -84,6 +101,26 @@ def is_late(loc):
 
 def is_frisat_late(loc):
     return is_late(loc) and night_of(loc).weekday() in (4, 5)
+
+
+def is_weekend_night(loc):
+    """22:00 to 06:00 of a night that starts on a Friday or a Saturday."""
+    if loc.hour >= 22:
+        return loc.weekday() in (4, 5)
+    if loc.hour < 6:
+        return (loc - dt.timedelta(days=1)).weekday() in (4, 5)
+    return False
+
+
+def patience_mean(loc):
+    """The world's mean caller patience (seconds) for a call presented at local time loc."""
+    if is_weekend_night(loc):
+        return PATIENCE_WEEKEND_NIGHT
+    if 6 <= loc.hour < 18:
+        return PATIENCE_OTHER["day"]
+    if 18 <= loc.hour < 22:
+        return PATIENCE_OTHER["evening"]
+    return PATIENCE_OTHER["night"]
 
 
 def block_of(loc):

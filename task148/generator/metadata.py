@@ -12,7 +12,7 @@ SOURCES = {
     R.F_FORECAST: "Tri-County Regional 911 Board, hourly 911 volume forecast workbook, fiscal 2027 and 2028",
     DOC.F_SOP: "Tavish County Emergency Communications Agency, SOP 2.10 call answering and answer-time reporting",
     DOC.F_BUDGET: "Tavish County budget office, FY2028 recommended budget page for the communications floor",
-    R.F_CHE: "Tavish County Emergency Communications Agency, call-handling system location records, north-east extract",
+    R.F_CHE: "Tavish County Emergency Communications Agency, call-handling systems' location records, north-east extract",
     R.F_BOUNDARY: "Tavish County GIS, Halvorsen Township boundary",
     R.F_DIRECTORY: "Tri-County ESInet PSAP directory",
     R.F_CALLBACK: "Tavish County Emergency Communications Agency, callback module task export",

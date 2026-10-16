@@ -22,33 +22,45 @@
   "June 2028": 89
  },
  "fiscal_2028_compliance_unrounded": {
-  "Jul 2027": 88.067,
-  "Aug 2027": 88.915,
-  "Sep 2027": 91.107,
-  "Oct 2027": 92.962,
-  "Nov 2027": 94.058,
-  "Dec 2027": 92.877,
-  "Jan 2028": 94.019,
-  "Feb 2028": 94.944,
-  "Mar 2028": 94.093,
-  "Apr 2028": 92.897,
-  "May 2028": 91.038,
-  "Jun 2028": 88.973
+  "Jul 2027": 88.066,
+  "Aug 2027": 88.914,
+  "Sep 2027": 91.112,
+  "Oct 2027": 92.961,
+  "Nov 2027": 94.064,
+  "Dec 2027": 92.884,
+  "Jan 2028": 94.025,
+  "Feb 2028": 94.943,
+  "Mar 2028": 94.092,
+  "Apr 2028": 92.9,
+  "May 2028": 91.044,
+  "Jun 2028": 88.97
  },
  "parameters": {
-  "busy_time_s": 227.0,
-  "patience_s": 161.4,
-  "hangups_own_wait_s": 45.6,
-  "calls_911": 417086,
-  "abandoned_911": 7651,
+  "busy_time_s": 226.9,
+  "patience_late_shift_s": 123.2,
+  "patience_rest_of_week_s": 587.7,
+  "patience_every_call_s": 576.6,
+  "hangups_own_wait_late_shift_s": 37.6,
+  "hangups_own_wait_every_call_s": 68.2,
+  "calls_911": 416621,
+  "calls_911_late_shift": 15814,
+  "abandoned_911": 3407,
+  "abandoned_911_late_shift": 81,
   "call_takers": 4,
   "standard_pct": 90,
   "seconds": 15,
   "misdial_seconds": 5
  },
  "rivals": {
-  "erlang_c_july_pct": 84,
+  "erlang_c_july_pct": 83,
   "erlang_c_months_short": [
+   "July 2027",
+   "August 2027",
+   "September 2027",
+   "May 2028",
+   "June 2028"
+  ],
+  "one_patience_months_short": [
    "July 2027",
    "August 2027",
    "September 2027",
@@ -57,65 +69,69 @@
   ],
   "hangups_wait_july_pct": 91
  },
- "backtest_fy2026": {
-  "observed_pct": 95.2,
-  "erlang_a_pct": 95.3,
-  "erlang_c_pct": 93.7,
-  "hangups_wait_pct": 96.4,
-  "hangups_observed_pct": 1.7,
-  "hangups_erlang_a_pct": 1.7,
-  "hangups_biased_pct": 2.8,
-  "params_busy_s": 226.5,
-  "params_patience_s": 157.5
+ "backtest_fy2026_late_shift": {
+  "observed_pct": 99.1,
+  "erlang_a_pct": 98.9,
+  "one_patience_pct": 98.8,
+  "erlang_c_pct": 98.7,
+  "hangups_observed_pct": 0.46,
+  "hangups_erlang_a_pct": 0.34,
+  "hangups_one_patience_pct": 0.14
+ },
+ "backtest_params": {
+  "busy_s": 226.4,
+  "patience_late_shift_s": 180.3,
+  "patience_rest_s": 602.5,
+  "patience_every_call_s": 594.2
  },
  "ask_a": {
   "Q1": {
-   "reached": 1473,
-   "transferred_to_wexley": 1304
+   "reached": 1475,
+   "transferred_to_wexley": 1326
   },
   "Q2": {
-   "reached": 1249,
-   "transferred_to_wexley": 1126
+   "reached": 1243,
+   "transferred_to_wexley": 1127
   },
   "Q3": {
    "reached": 1104,
-   "transferred_to_wexley": 1001
+   "transferred_to_wexley": 1003
   },
   "Q4": {
-   "reached": 1265,
-   "transferred_to_wexley": 1154
+   "reached": 1253,
+   "transferred_to_wexley": 1160
   }
  },
  "ask_b": {
   "January 2026": {
-   "share_pct": 54.9,
-   "abandoned": 213,
-   "dialled_within_2_min": 117
+   "share_pct": 55.2,
+   "abandoned": 96,
+   "dialled_within_2_min": 53
   },
   "February 2026": {
-   "share_pct": 55.3,
-   "abandoned": 141,
-   "dialled_within_2_min": 78
+   "share_pct": 45.1,
+   "abandoned": 51,
+   "dialled_within_2_min": 23
   },
   "March 2026": {
-   "share_pct": 51.4,
-   "abandoned": 245,
-   "dialled_within_2_min": 126
+   "share_pct": 56.8,
+   "abandoned": 111,
+   "dialled_within_2_min": 63
   },
   "April 2026": {
-   "share_pct": 53.6,
-   "abandoned": 220,
-   "dialled_within_2_min": 118
+   "share_pct": 52.6,
+   "abandoned": 97,
+   "dialled_within_2_min": 51
   },
   "May 2026": {
-   "share_pct": 48.3,
-   "abandoned": 379,
-   "dialled_within_2_min": 183
+   "share_pct": 50.3,
+   "abandoned": 187,
+   "dialled_within_2_min": 94
   },
   "June 2026": {
-   "share_pct": 51.6,
-   "abandoned": 496,
-   "dialled_within_2_min": 256
+   "share_pct": 51.4,
+   "abandoned": 216,
+   "dialled_within_2_min": 111
   }
  },
  "years": [
@@ -129,11 +145,11 @@
   "service": "911",
   "procedure": "SOP 2.10",
   "sections": [
-   "2",
+   "2.2",
    "3.3",
    "4.2",
-   "5",
-   "6"
+   "5.1",
+   "6.1"
   ]
  }
 }

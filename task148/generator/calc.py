@@ -54,7 +54,7 @@ def read_calls(target, legacy_name, i3_name):
                          _p_legacy(r["DISC_TIME"]) if r["CALL_STATUS"] == "ABN" else math.nan,
                          r["CALL_STATUS"] == "ABN", r["CALL_STATUS"] == "TST", LEGACY_KIND[r["CLASS_OF_SVC"]],
                          bool(r["XFER_IN_FROM"]), r["XFER_OUT_TO"], r["CBN_REF"].lower(), r["CALL_ID"], "legacy",
-                         _p_legacy(r["REL_TIME"])))
+                         _p_legacy(r["REL_TIME"]), ""))
     with open(os.path.join(target, i3_name), encoding="utf-8") as fh:
         for line in fh:
             o = json.loads(line)
@@ -64,7 +64,7 @@ def read_calls(target, legacy_name, i3_name):
                          _p_iso(o.get("ready", "")), _p_iso(o.get("ended", "")) if ab else math.nan, ab, test,
                          o["serviceType"], "referredBy" in o, o.get("transferTo", ""),
                          o["callbackRef"][3:] if o["callbackRef"].startswith("cb-") else o["callbackRef"],
-                         o["callId"], "i3", _p_iso(o.get("released", ""))))
+                         o["callId"], "i3", _p_iso(o.get("released", "")), o.get("incidentId", "")))
     rows.sort(key=lambda r: r[0])
     C = Calls()
     C.t = np.array([r[0] for r in rows])
@@ -80,8 +80,15 @@ def read_calls(target, legacy_name, i3_name):
     C.cid = np.array([r[10] for r in rows], dtype=object)
     C.layout = np.array([r[11] for r in rows], dtype=object)
     C.rel = np.array([r[12] for r in rows])
+    C.iid = np.array([r[13] for r in rows], dtype=object)
     C.is911 = ~C.test
     C.wait = np.where(C.ab, C.hang - C.t, C.ans - C.t)
+    locs = [K.to_local(x) for x in C.t]
+    C.lhour = np.array([d.hour for d in locs], dtype=np.int64)
+    C.lwd = np.array([d.weekday() for d in locs], dtype=np.int64)
+    C.late = np.array([K.is_frisat_late(d) for d in locs], dtype=bool)          # the Friday and Saturday late shift
+    C.wknight = np.array([K.is_weekend_night(d) for d in locs], dtype=bool)     # Friday and Saturday nights, 22:00-06:00
+    C.lateblock = np.array([K.is_late(d) for d in locs], dtype=bool)            # 22:00-02:00, any night
     return C
 
 
@@ -182,7 +189,8 @@ def hour_table(ros, t0, nh):
 
 def backtest(C, ros, t0, nh, busy, pat, select, models=("obs", "A", "C", "Ab"), wab=None):
     """Observed compliance and abandon share over the hours `select` picks, against each model's prediction with the
-    hours grouped by (year, month, hour, weekday, call-takers) and each group's mean count as its arrival rate."""
+    hours grouped by (year, month, hour, weekday, call-takers) and each group's mean count as its arrival rate. `pat`
+    (and `wab`) may be a number or a function of the group's (year, month, hour, weekday, call-takers)."""
     cnt, ok15, ab5, abn = hourly(C, t0, nh)
     HT = hour_table(ros, t0, nh)
     groups = {}
@@ -190,11 +198,15 @@ def backtest(C, ros, t0, nh, busy, pat, select, models=("obs", "A", "C", "Ab"), 
         if select(HT[k]):
             y, mo, h, wd, fy, late, c = HT[k]
             groups.setdefault((y, mo, h, wd, c), []).append(k)
-    mu, th = 3600.0 / busy, 3600.0 / pat
-    thb = 3600.0 / wab if wab else None
+    mu = 3600.0 / busy
+    pat_of = pat if callable(pat) else (lambda key: pat)
+    wab_of = wab if callable(wab) else (lambda key: wab)
     num = den = 0.0
     pA = dA = pB = dB = pC = n = abA = abB = oab = 0.0
-    for (y, mo, h, wd, c), ks in groups.items():
+    for key, ks in groups.items():
+        y, mo, h, wd, c = key
+        th = 3600.0 / pat_of(key)
+        thb = 3600.0 / wab_of(key) if wab else None
         ks = np.array(ks)
         lam = cnt[ks].mean()
         w = len(ks) * lam
@@ -207,13 +219,13 @@ def backtest(C, ros, t0, nh, busy, pat, select, models=("obs", "A", "C", "Ab"), 
         abA += w * pab
         pC += w * E.erlang_c(lam, mu, c)
         n += w
-        if thb:
+        if wab:
             st, a5, pab = E.erlang_a(lam, mu, thb, c)[:3]
             pB += w * st
             dB += w * (1 - a5)
             abB += w * pab
-    return {"obs": num / den, "A": pA / dA, "C": pC / n, "Ab": (pB / dB) if thb else None,
-            "ab_obs": oab / n, "ab_A": abA / n, "ab_Ab": (abB / n) if thb else None, "calls": n}
+    return {"obs": num / den, "A": pA / dA, "C": pC / n, "Ab": (pB / dB) if wab else None,
+            "ab_obs": oab / n, "ab_A": abA / n, "ab_Ab": (abB / n) if wab else None, "calls": n}
 
 
 # ---------------------------------------------------------------------------------------------------- ask A
@@ -260,14 +272,18 @@ def read_directory(target, name):
         return {r["uri"]: r["agency"] for r in csv.DictReader(fh)}
 
 
-def ask_a(C, che, polys, directory, fix="handset", holes=True, all_parts=True, xfer="directory", quarter="local"):
-    """{(fy, q): (reached, transferred)} for fiscal 2026."""
+def ask_a(C, che, polys, directory, fix="handset", holes=True, all_parts=True, xfer="directory", quarter="local",
+          key="both"):
+    """{(fy, q): (reached, transferred)} for fiscal 2026; a call's location records are filed under its call
+    identifier or its incident identifier (key="callid" reads the first alone)."""
     out = {(2026, q): [0, 0] for q in (1, 2, 3, 4)}
     lo = dt.datetime(2025, 7, 1, tzinfo=TZ).astimezone(UTC).timestamp()
     hi = dt.datetime(2026, 7, 1, tzinfo=TZ).astimezone(UTC).timestamp()
     sel = np.nonzero(C.is911 & (C.kind == "wireless") & (C.layout == "i3"))[0]
     for i in sel:
         recs = che.get(C.cid[i])
+        if not recs and key == "both":
+            recs = che.get(C.iid[i])
         if not recs:
             continue
         if fix == "handset":
@@ -304,21 +320,23 @@ def read_callbacks(target, name):
     with open(os.path.join(target, name), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
             rows.append({"line": r["line"], "created": _p_local(r["created"]), "ref": r["call_ref"],
-                         "num": r["callback_number"].lower(), "first": _p_local(r["first_dial"])})
+                         "num": r["callback_number"].lower(), "first": _p_local(r["first_dial"]),
+                         "result": r["result"], "closed": _p_local(r["closed"])})
     return rows
 
 
-def ask_b(C, tasks, match="number", anchor="hangup", misdials=True, unmatched="not", tol=30.0):
+def ask_b(C, tasks, match="number", anchor="hangup", misdials=True, unmatched="not", tol=30.0, lines911=False,
+          called_in="not"):
     """{(y, m): share} for January to June 2026, by the local month of the hang-up."""
     lo = dt.datetime(2026, 1, 1, tzinfo=TZ).astimezone(UTC).timestamp()
     hi = dt.datetime(2026, 7, 1, tzinfo=TZ).astimezone(UTC).timestamp()
     by_num = {}
     by_ref = {}
     for tk in tasks:
-        if tk["line"] != "911":
-            continue
-        by_num.setdefault(tk["num"], []).append(tk)
-        by_ref[tk["ref"]] = tk
+        if tk["line"] == "911" or not lines911:
+            by_num.setdefault(tk["num"], []).append(tk)
+        if tk["line"] == "911":
+            by_ref[tk["ref"]] = tk
     num = {}
     den = {}
     if match == "tasks":
@@ -348,6 +366,9 @@ def ask_b(C, tasks, match="number", anchor="hangup", misdials=True, unmatched="n
                     owner = [tk for tk in by_num[C.cbn[i]] if tk["first"] == f][0]
                     base = owner["created"]
                 hit = f - base <= 120.0
+            if not hit and called_in == "dialled":
+                hit = any(tk["result"] == "caller called in" and tk["created"] <= C.hang[i] + tol
+                          and 0.0 <= tk["closed"] - C.hang[i] <= 120.0 for tk in by_num.get(C.cbn[i], []))
         else:
             tk = by_ref.get(C.cid[i])
             if tk is None:

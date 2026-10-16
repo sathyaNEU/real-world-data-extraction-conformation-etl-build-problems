@@ -204,7 +204,8 @@ def readme_text(files):
              "call. `disposition` is `answered`, `abandoned` or `test-responder` (an ESInet test call answered by the "
              "test responder, not a call-taker). `serviceType` is `wireless`, `fixed`, `voip`, `mlts`, `telematics` or "
              "`test`. `referredBy` is the URI of the PSAP that transferred the call in; `transferTo` and `transferAt` "
-             "the URI a call was transferred out to and when. `callId` is the ESInet's Call Identifier.")
+             "the URI a call was transferred out to and when. `callId` is the ESInet's Call Identifier and "
+             "`incidentId` its Incident Tracking Identifier.")
     L.append("")
     L.append("**Cutover.** Wireless, VoIP and telematics calls moved to NG911 at 06:00 on 13 May 2025; wireline "
              "calls stayed on the CAMA trunks until 06:00 on 16 May 2025. Calls presented between those times are in "
@@ -215,12 +216,13 @@ def readme_text(files):
              "block of a Friday runs to 02:00 on Saturday.")
     L.append("")
     L.append("**Location records** (`che_location_records_fy2026_northeast.csv`). Every location record the "
-             "call-handling system stored for wireless 911 calls presented from 1 July 2025 to 30 June 2026 with any "
-             "location inside 39.80 to 39.97 N and 88.21 to 87.97 W (the north-east of the county and the Wexley "
-             "County line). `method` is `cell` (the serving cell sector's location delivered with the call; "
-             "`cell_sector` names the sector), `device` (a handset location from the device-based hybrid service) or "
-             "`gnss` (a handset satellite fix, also returned on a rebid). `radius_m` is the uncertainty radius at "
-             "`confidence_pct`. `call_id` is the i3 `callId`.")
+             "agency's call-handling systems, on the floor and at the backup centre, stored for wireless 911 calls "
+             "presented from 1 July 2025 to 30 June 2026 with any location inside 39.80 to 39.97 N and 88.21 to 87.97 W "
+             "(the north-east of the county and the Wexley County line). `method` is `cell` (the serving cell sector's "
+             "location delivered with the call; `cell_sector` names the sector), `device` (a handset location from the "
+             "device-based hybrid service) or `gnss` (a handset satellite fix, also returned on a rebid). `radius_m` is "
+             "the uncertainty radius at `confidence_pct`. `call_id` ties each record to its call in the i3 log. The "
+             "agency places a wireless call by the last handset location received for it (`device` or `gnss`).")
     L.append("")
     L.append("**Township boundary** (`halvorsen_township_boundary.geojson`). Tavish County GIS's boundary of "
              "Halvorsen Township, the layer the ESInet's routing uses for the township from 1 July 2027 (WGS84 "
@@ -233,8 +235,9 @@ def readme_text(files):
              "from 1 January to 30 June 2026, for abandoned 911 calls and abandoned administrative-line calls. Times "
              "are local (Central), `YYYY-MM-DD HH:MM:SS`. `call_ref` is the call that opened the task (the i3 "
              "`callId`, or the administrative line's `call_id`); `callback_number` is the pseudonym of the number "
-             "dialled; `first_dial` is the desk's first dial; `result` `caller called in` closes a task the caller "
-             "got through on before the desk dialled.")
+             "dialled; `first_dial` is the desk's first dial. The desk works one open task per callback number: an "
+             "abandon from a number whose task has not been dialled yet joins that task and opens none of its own. A "
+             "task closed as `caller called in` was never dialled: the caller got through on a redial first.")
     L.append("")
     L.append("**Other exports.** The CAD incident export and the administrative line's ACD export are as pulled for "
              "the request; the board's forecast workbook is as published, with its own Read me sheet.")

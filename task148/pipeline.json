@@ -7,31 +7,31 @@
   "stage": 4,
   "stage_name": "check",
   "updated": "2026-10-16",
-  "stump": "Running the standard Erlang C staffing model on the board's FY2028 late-shift forecast with the measured busy time and four call-takers puts five months, May to September, below the 90 per cent standard (July 2027 84 per cent) and asks for a fifth call-taker from May to September; the step that lands it there is treating every caller as waiting until answered, when Tavish County's callers would hold on about 160 seconds on average and those who hang up shorten the wait for those who stay, so only June, July and August fall short (July 88 per cent), and the patience must be measured over every call's wait, not from the hang-ups' own waits (46 seconds), which leave no month short.",
+  "stump": "Running the standard Erlang C staffing model on the board's FY2028 late-shift forecast with the measured busy time and four call-takers puts five months, May to September, below the 90 per cent standard (July 2027 83 per cent) and asks for a fifth call-taker from May to September; the step that lands it there is treating every caller as waiting until answered, when the late shift's own callers hang up after about two minutes and those who hang up shorten the wait for those who stay, so only June, July and August fall short (July 88 per cent); the patience has to be the late shift's own, measured over every one of its calls' waits, because one patience for the whole week (577 seconds) puts May to September short again and the hang-ups' own waits (38 seconds) leave no month short.",
   "architecture": 2,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
     "date": "2026-10-16"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-16 (4 lines answered in the note's Build record; no LEAK)",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-16 on the hardened pack (2 lines answered in the note's Build record; no LEAK)",
+    "reader": "clean on the pre-hardening pack (commit 027f6ff, 2026-10-16); the hardened pack owes a re-read"
   },
   "duplicate_check": {
     "heart": "WARN 2026-10-16 (repeat.gate_g, overuse.gate_g, repeat.question_form; answered in the note)",
-    "nearest": "0.08 task500 v1 lineage, 0.07 task119 v2",
+    "nearest": "0.07 task500 v1 lineage, 0.07 task119 v2",
     "note": "architecture 2 registered 2026-10-16: guard WARN repeat.gate_g, repeat.decision, repeat.question_form, answered in the note; task254 v2 and task501 v2 differentiated (same-driver older signature)",
-    "surface": "exit 0, 0 promoted pairs (2026-10-16)"
+    "surface": "exit 0, 0 promoted pairs (2026-10-16, hardened pack)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": "",
-    "brief": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task148/determinism_check_report.md (the pre-hardening pack, commit 027f6ff)",
+    "brief": "the hardened pack owes a re-judge"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4 on the hardened pack: the leak reader and the determinism judge, spawned together (the coordinator decides first whether the residual landing routes in the note's Ladder are acceptable)",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -39,5 +39,6 @@
   "portal_status": "",
   "portal_status_date": "",
   "wave": "wave 4 (new), seed FC19 number only (architecture 2 redrawn outside the seed's world)",
-  "source_note": "re-root of FC19's slot: architecture 1 kept the seed's world (an SBA lender's CECL allowance) and was spent at stage 4 (judge NOT_DETERMINISTIC, SEND_BACK; rule 3 AT_RISK; a task133-like shell); architecture 2 draws a new world (a county 911 center's late-shift answer-time forecast)"
+  "source_note": "re-root of FC19's slot: architecture 1 kept the seed's world (an SBA lender's CECL allowance) and was spent at stage 4 (judge NOT_DETERMINISTIC, SEND_BACK; rule 3 AT_RISK; a task133-like shell); architecture 2 draws a new world (a county 911 center's late-shift answer-time forecast)",
+  "rule3_audit": "PASS, strength AT_RISK on the pre-hardening pack (corrections of Erlang C fitted to the history landed the set); hardened 2026-10-16 with patience by call mix; residual: 3 of 16 late-shift-at-five scalar correction cells and a free-slope logistic weighted by calls still land the set (design note, Ladder)"
 }

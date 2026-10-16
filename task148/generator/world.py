@@ -3,8 +3,9 @@ the queue each call met, the location records of the north-east's wireless calls
 administrative line. Nothing here is a file; records.py writes the exports from it.
 
 Arrivals are Poisson by clock hour. Each caller's patience and each answered call's busy time (answer to ready) are
-exponential and independent of everything else; one in five of the callers who hang up redial, most within a
-minute (common.REDIAL_P and REDIAL_DELAY). Calls are answered first
+exponential and independent of everything else, the patience's mean set by the hour's call mix (common.patience_mean:
+about two minutes on Friday and Saturday nights from 22:00 to 06:00, about ten the rest of the week); one in five of the
+callers who hang up redial, most within a minute (common.REDIAL_P and REDIAL_DELAY). Calls are answered first
 come, first served by the call-takers on the floor in the roster's block."""
 from __future__ import annotations
 
@@ -22,7 +23,7 @@ KINDS = ["wireless", "voip", "residence", "business", "mlts", "telematics"]
 KIND_P = [0.748, 0.083, 0.099, 0.042, 0.016, 0.012]
 XFER_IN_P = 0.024
 XFER_IN_FROM = [("wexley", 0.45), ("patrol", 0.35), ("hollin", 0.12), ("garrick", 0.08)]
-CB_KEY = "cbtask-7"    # the callback desk's stream (stamp lags, dial delays): one whose monthly shares sit off
+CB_KEY = "cbtask-9"    # the callback desk's stream (stamp lags, dial delays): one whose monthly shares sit off
                        # whole numbers and one-decimal rounding edges, both asserted in checks.py
 BOX_P = 0.087                                       # a wireless call's chance of falling in the north-east box
 AREA_P = [("main", 0.300), ("detached", 0.034), ("tamsen", 0.120), ("tavish", 0.440), ("wexley", 0.106)]
@@ -62,7 +63,9 @@ def _roster(W):
             c = K.plan_c(d, blk)
             u = r.random()
             note = ""
-            if u < 0.035:
+            if u < 0.035 and blk == K.LATE_BLOCK and d.weekday() in (4, 5):
+                note = "sick call, grant position backfilled on overtime"
+            elif u < 0.035:
                 c -= 1
                 note = "sick call, not backfilled"
             elif u > 0.986:
@@ -122,7 +125,7 @@ def simulate():
         xsrc = r.choice(len(XFER_IN_FROM), size=n, p=[p for _, p in XFER_IN_FROM])
         inbox = r.random(n) < BOX_P
         area = r.choice(len(AREA_P), size=n, p=[p for _, p in AREA_P])
-        pat = r.exponential(K.PATIENCE, n)
+        pat = r.exponential(K.patience_mean(loc), n)
         busy = r.exponential(K.AHT, n)
         talk = r.beta(*K.TALK_BETA, n)
         for i in range(n):
@@ -170,7 +173,7 @@ def simulate():
             if rr.random() < K.REDIAL_P:
                 tr = t + p + K.REDIAL_DELAY[0] + rr.exponential(K.REDIAL_DELAY[1])
                 if tr < tend:
-                    na = (tr, cid, kd, "", ar, float(rr.exponential(K.PATIENCE)),
+                    na = (tr, cid, kd, "", ar, float(rr.exponential(K.patience_mean(K.to_local(tr)))),
                           float(rr.exponential(K.AHT)), float(rr.beta(*K.TALK_BETA)), rd + 1)
                     heapq.heappush(heap, (tr, seq, na))
                     seq += 1
@@ -202,6 +205,7 @@ def simulate():
     _tests(W)
     _locations(W)
     _admin(W)
+    _escalations(W)
     _callbacks(W)
     _cad(W)
     return W
@@ -333,11 +337,35 @@ def _admin(W):
             w = float(r.exponential(31.0))
             p = float(r.exponential(150.0))
             if w > p:
-                rows.append((float(ts), p, 1, 0.0, int(r.integers(1, 10 ** 9))))
+                rows.append((float(ts), p, 1, 0.0, int(r.integers(1, 10 ** 9)), -1))
             else:
-                rows.append((float(ts), w, 0, float(r.exponential(165.0)), int(r.integers(1, 10 ** 9))))
+                rows.append((float(ts), w, 0, float(r.exponential(165.0)), int(r.integers(1, 10 ** 9)), -1))
         k += 1
     W.admin = rows
+
+
+ESC_P = 0.12       # a 911 abandon whose caller had just given up on the administrative line
+
+
+def _escalations(W):
+    """Callers who gave up waiting on the administrative line and dialled 911 within a couple of minutes, then hung
+    up on 911 too: the administrative-line call (abandoned) precedes the 911 call from the same number. Only the
+    callback window (January to June 2026) is drawn; the administrative line's export carries the call like any
+    other."""
+    lo = dt.datetime(2026, 1, 1, tzinfo=K.TZ).astimezone(K.UTC).timestamp()
+    hi = dt.datetime(2026, 7, 1, tzinfo=K.TZ).astimezone(K.UTC).timestamp()
+    extra = []
+    for i in np.nonzero(W.ab)[0]:
+        if not (lo + 600 <= W.t[i] < hi - 600) or W.wait[i] <= 5.0 or W.xin[i]:
+            continue
+        r = K.rng("escalate", int(i))
+        if r.random() >= ESC_P:
+            continue
+        gap = float(r.uniform(60.0, 150.0))
+        w = float(r.uniform(15.0, 45.0))
+        extra.append((float(W.t[i]) - gap, w, 1, 0.0, 0, int(W.caller[i])))
+    W.admin = sorted(W.admin + extra, key=lambda a: (a[0], a[5]))
+    W.n_escalations = len(extra)
 
 
 def _callbacks(W):
@@ -365,7 +393,10 @@ def _callbacks(W):
     tasks = []
     member = {}         # (line, index) -> task index
     for th, line, idx in ev:
-        key = ("C", int(W.caller[idx])) if line == "911" else ("A", W.admin[idx][4])
+        if line == "911":
+            key = ("C", int(W.caller[idx]))
+        else:
+            key = ("C", W.admin[idx][5]) if W.admin[idx][5] >= 0 else ("A", W.admin[idx][4])
         tk = open_tasks.get(key)
         if tk is not None and tasks[tk]["first_dial"] is not None and tasks[tk]["first_dial"] <= th:
             tk = None

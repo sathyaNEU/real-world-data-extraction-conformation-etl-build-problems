@@ -32,7 +32,7 @@ FILES = [
     (R.F_FORECAST, "Tri-County Regional 911 Board, hourly 911 volume forecast for fiscal 2027 and 2028 (published 15 September 2026)."),
     (DOC.F_SOP, "SOP 2.10, call answering and answer-time reporting (revision 4, effective 1 July 2025)."),
     (DOC.F_BUDGET, "FY2028 recommended budget, communications floor staffing (budget office draft, 2 October 2026)."),
-    (R.F_CHE, "Call-handling system location records for wireless 911 calls in the north-east, fiscal 2026."),
+    (R.F_CHE, "Call-handling systems' location records for wireless 911 calls in the north-east, fiscal 2026."),
     (R.F_BOUNDARY, "Halvorsen Township boundary, Tavish County GIS (the ESInet routing layer from 1 July 2027)."),
     (R.F_DIRECTORY, "ESInet PSAP directory: PSAP URIs and their agencies."),
     (R.F_CALLBACK, "Callback desk tasks, 1 January to 30 June 2026."),
@@ -44,7 +44,7 @@ FILES = [
 SYSTEMS = {
     R.F_LEGACY: "legacy ACD (CAMA/ALI) MIS", R.F_I3: "NG911 call-handling system, i3 logging", R.F_ROSTER: "scheduling system",
     R.F_FORECAST: "Tri-County Regional 911 Board", DOC.F_SOP: "agency procedures", DOC.F_BUDGET: "county budget office",
-    R.F_CHE: "NG911 call-handling system, location records", R.F_BOUNDARY: "Tavish County GIS",
+    R.F_CHE: "NG911 call-handling systems (floor and backup centre), location records", R.F_BOUNDARY: "Tavish County GIS",
     R.F_DIRECTORY: "Tri-County ESInet", R.F_CALLBACK: "callback module", R.F_CAD: "CAD",
     R.F_ADMIN: "administrative line ACD",
 }
@@ -74,7 +74,8 @@ def build(out, quiet=False, W=None):
         fh.write("\n".join(lines) + "\n")
     counts[R.F_I3] = len(lines)
     C = CA.read_calls(out, R.F_LEGACY, R.F_I3)
-    busy, pat, wab, nab = CA.estimates(C)
+    busy = CA.estimates(C)[0]
+    pat, wab, nab = CA.estimates(C, C.late)[1:]     # the late shift's own callers
     tb, gold, late = FC.write(p(R.F_FORECAST), busy, pat)
     counts[R.F_FORECAST] = sum(len(v) for v in tb.values())
     counts[R.F_ROSTER] = K.write_csv(p(R.F_ROSTER), R.ROSTER_COLS, R.roster_rows(W))

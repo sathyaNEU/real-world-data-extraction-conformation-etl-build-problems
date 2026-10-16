@@ -40,7 +40,7 @@ LEGACY_TRUNKS = {"wireless": ("WRLS", 6), "voip": ("VOIP", 2), "residence": ("CA
 
 def call_ids(W):
     """i3 Call Identifiers, assigned by the ESInet's routing proxy, and legacy CALL_IDs (date and daily sequence)."""
-    ids = [None] * W.N
+    ids, incs = [None] * W.N, [None] * W.N
     seqs = {}
     for i in range(W.N):
         if in_legacy(W, i):
@@ -49,7 +49,9 @@ def call_ids(W):
             ids[i] = "%s%05d" % (d.strftime("%y%m%d"), seqs[d])
         else:
             ids[i] = "urn:emergency:uid:callid:%s:esrp.%s" % (K.token("callid", i, n=10), ESINET)
+            incs[i] = "urn:emergency:uid:incidentid:%s:esrp.%s" % (K.token("incidentid", i, n=10), ESINET)
     W.call_id = ids
+    W.incident_id = incs
     W.legacy_seq = seqs
     return ids
 
@@ -124,8 +126,8 @@ def i3_lines(W):
     for i in range(W.N):
         if in_legacy(W, i):
             continue
-        o = {"callId": W.call_id[i], "queue": QUEUE_URI, "presented": K.iso_utc_ms(W.t[i]),
-             "serviceType": I3_SERVICE[W.kind[i]]}
+        o = {"callId": W.call_id[i], "incidentId": W.incident_id[i], "queue": QUEUE_URI,
+             "presented": K.iso_utc_ms(W.t[i]), "serviceType": I3_SERVICE[W.kind[i]]}
         if W.xin[i]:
             o["referredBy"] = URI[W.xin[i]]
         if W.ab[i]:
@@ -146,6 +148,7 @@ def i3_lines(W):
         if test_in_legacy(ts):
             continue
         o = {"callId": "urn:emergency:uid:callid:%s:esrp.%s" % (K.token("testcall", tid, n=10), ESINET),
+             "incidentId": "urn:emergency:uid:incidentid:%s:esrp.%s" % (K.token("testinc", tid, n=10), ESINET),
              "queue": QUEUE_URI, "presented": K.iso_utc_ms(ts), "serviceType": "test",
              "disposition": "test-responder", "answered": K.iso_utc_ms(ts + 0.4), "ended": K.iso_utc_ms(ts + dur),
              "callbackRef": "cb-" + K.token("testcbn", tid % 3, n=12)}
@@ -181,9 +184,11 @@ def che_rows(W):
     for i, (sid, recs) in sorted(W.locrecs.items(), key=lambda kv: W.t[kv[0]]):
         if not (FY26[0] <= W.t[i] < FY26[1]) or in_legacy(W, i):
             continue
+        # the backup centre's call-handling system files a call's records under its incident identifier
+        key = W.incident_id[i] if K.at_backup(W.t[i]) else W.call_id[i]
         for s, (method, when, x, y, rad, conf) in enumerate(recs, start=1):
             lat, lon = G.to_latlon(x, y)
-            rows.append({"call_id": W.call_id[i], "seq": s, "received_utc": K.iso_utc_ms(when), "method": method,
+            rows.append({"call_id": key, "seq": s, "received_utc": K.iso_utc_ms(when), "method": method,
                          "latitude": "%.6f" % lat, "longitude": "%.6f" % lon, "radius_m": int(round(rad)),
                          "confidence_pct": conf, "cell_sector": sid if method == "cell" else ""})
     return rows
@@ -243,7 +248,7 @@ def callback_rows(W):
         else:
             a = W.admin[task["opener"]]
             ref = W.admin_id[task["opener"]]
-            num = K.token("admincbn", a[4], n=12).upper()
+            num = cb_token(a[5]).upper() if a[5] >= 0 else K.token("admincbn", a[4], n=12).upper()
         rows.append({"task_id": "CB26-%06d" % n, "line": task["line"],
                      "created": K.local_str(task["created"], "%Y-%m-%d %H:%M:%S"), "call_ref": ref,
                      "callback_number": num,
@@ -269,11 +274,11 @@ def admin_ids(W):
 def admin_rows(W):
     rows = []
     for j, a in enumerate(W.admin):
-        ts, w, ab, serv, num = a
+        ts, w, ab, serv, num, esc = a
         if not (FY26[0] <= ts < FY26[1]):
             continue
         r = {"call_id": W.admin_id[j], "presented": K.local_str(ts, "%Y-%m-%d %H:%M:%S"),
-             "caller_ref": K.token("admincbn", num, n=12).upper()}
+             "caller_ref": cb_token(esc).upper() if esc >= 0 else K.token("admincbn", num, n=12).upper()}
         if ab:
             r["disposition"] = "abandoned"
             r["ended"] = K.local_str(ts + w, "%Y-%m-%d %H:%M:%S")
