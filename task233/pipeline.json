@@ -1,21 +1,35 @@
 {
  "task": "task233",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "general-statistics-data-science",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-16",
- "stump": "A competent solver adds the 2025 follow-up's pooled points gap to each district's nonrespondents in proportion to their share and files nine wrong flags, suppressing the low NEET rates of Southern Shore, Hill Country, Northern Plains and Market Towns, cautioning Upper Valley's and Glen Villages' NEET rates, leaving Mill Towns' NEET rate under caution and cautioning the Old Docks and Mill Towns HE entry rates; the step that lands it there is carrying a departure measured where allocations are middling as a fixed number of points instead of leaver by leaver on the odds scale, on which the followed-up districts and attainment bands agree.",
- "architecture": 1,
+ "stump": "A competent solver adds the 2025 follow-up's pooled points gap to each district's nonrespondents in proportion to their share and files 11 of the 24 flags wrong; the step that lands it there is carrying a departure measured across allocations from under 1 to over 55 per cent as a fixed number of points instead of nonrespondent by nonrespondent on the odds scale, the one scale on which the follow-up's districts and bands agree.",
+ "architecture": 2,
  "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": ""},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-16"
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "WARN (three_rules.strategy_risk answered; overuse.org_family, overuse.gate_g; older same-puzzle and same-driver differentiated)",
+  "nearest": "task446 v2 0.13 (differentiated); surface promoted task81, task95, task73 (0.10, corpus top 1 per cent, other mechanisms), task256, task54, task458 (differentiated on the card)"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": "",
+  "arch1": "NOT_DETERMINISTIC, SEND_BACK (determinism_check_report_arch1.md)"
+ },
  "returned": [],
- "resume": "stage 2: readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet, prompt.txt to precut exit 0",
+ "resume": "architecture 2: free gates (make, figures_check, leak.py, guard surface and heart), then stage 4 (reader re-read on a fresh cut, judge r2)",
  "approved": null,
  "delivered": null,
  "portal": null,

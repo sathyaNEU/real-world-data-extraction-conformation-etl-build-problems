@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-15 (task228 architecture 5 shipped at the author's request; wave 2 continues with task233). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-16 (wave 2: task233 re-rooted to architecture 2 after the judge's SEND_BACK on architecture 1, the 2025 follow-up now spanning the island's range so the odds scale is the only one its cases fit; in build). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 and task232 shipped; task233 to task236 next.
