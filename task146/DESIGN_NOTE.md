@@ -659,6 +659,34 @@ tells in the two changed files). Nothing graded moved (`freeze.py --mode determi
   FAIL, 0 WARN; `leak.py` REVIEW, the same eight lines as answered below; the producer-metadata audit clean on target and
   golden; `guard.py validate` 187 cards, 0 invalid, `surface` exit 0, `heart` WARN as before.
 
+**Ship, 2026-10-16**, on the realism pass's cut (commit 0a888d3, target.zip sha256 e5e9d268b7bd6c16; the final rebuild
+cut it again byte for byte). The final targeted re-read of that cut was clean: no leak, nothing ranks or states a
+figure, Q6 an analytical choice.
+- The judge: `determinism_check_report.md` is the third round's verdict, on the strengthened cut f0b43f3f:
+  DETERMINISTIC / APPROVE, Gate H analytical, the call reproduced at 16,895 (bootstrap 16,656 to 17,137 on the revised
+  basis), all 24 Ask A cells and all 14 Ask B changes. The first two rounds, on the designs before the strengthening
+  (22f06ed9 and a040f6c1, the call then 16,000), are kept as history in `determinism_check_report_round1.md` and
+  `determinism_check_report_round2.md`. The two cuts after f0b43f3f (a502ea69 and e5e9d268) changed only the case notes
+  and the desk's data log: no graded figure moved, `freeze.py check --mode determinism` passed with nothing allowed at
+  each, and 14 of the 16 pack files are byte-identical to the judged pack.
+- The rule 3 audits, three, each an isolated strict read:
+  - `rule3/task146.md` (f71f5a0, cut 22f06ed9): AT_RISK on data semantics, the refiling read off the base-period
+    definition carrying most of the stump's power. Fixed by the rule 3 repair: the refiling filed in technical notes
+    2.3 with no size, timing or region, and the decisive step moved to its regional sizing.
+  - `rule3/task146_r2.md` (67e305d, cut a040f6c1): PASS, but the stump too weak (both top responses land regional
+    sizing about half to three quarters of the time). Strengthened: the month of the refusal.
+  - `rule3/task146_r3.md` (0f4de4d, cut f0b43f3f): PASS and strong (0.1 to 0.25 of a strong field landing 17,000,
+    0.5 to 0.9 landers expected in the top two; eleven constructions outside the asserted 24 all land 17,000).
+- Accepted risks:
+  - The judge's stump-power note, a partial landing route: applying July 2026's refiling ratio (the turn after June's
+    refusal spike, a step of 3,042) to September's 5,767 refusals in Western, Coastal and Island gives about 4,900
+    claims filed again and about 17,000 (16,800 to 17,000) without the region-by-month build. The judge rates the stump
+    moderate and expects partial failures rather than a wall. Accepted as it stands.
+  - The case notes' remaining regularity (a reason on most withdrawals, the whole-notice wording varied by officer,
+    regular routine entries, the reference spellings), from the final re-read: accepted as a residual realism risk; no
+    count turns on it.
+- The leak readers' rounds and rulings are in `leak_check_report.md` (`## Solver's-eye read`) and in `## Leak review`.
+
 ## Leak review
 
 `leak.py --asof 2026-10-08` on the strengthened build: REVIEW, no LEAK. Each line is harmless:
@@ -675,12 +703,69 @@ tells in the two changed files). Nothing graded moved (`freeze.py --mode determi
 - Sweep 9, dates after 8 October: the notices' first layoffs (portal and register) and the holiday list, forward by
   nature.
 
-## State at pause
+The last `leak.py` run, on the shipped cut, gives the same eight lines, no LEAK. The isolated readers, five rounds
+(`leak_check_report.md`): rounds 1 to 3 on the stage 3, repaired and strengthened cuts each found no decisive-step
+sentence, no file ranking the candidates or stating an asked figure, no helping file and no answer-shaped figure, with
+Q6 an analytical choice, and round 3 never surfaced the month of the refusal; the two targeted re-reads of the case
+notes and the desk's data log found no leak, and the first one's realism tells were fixed in the realism pass. Rulings
+on the final re-read's points:
+- The VR notes and the "amendment form emailed" notes do not change any count: technical notes section 5 counts a
+  change only through an amended notice, and the judge reproduced all 24 Ask A cells on that reading.
+- The chart's question for past weeks (revised or first reported) is ungraded and low risk.
+- The technical notes' completeness is the board's own methodology document, so it is not steering.
+- The remaining regularity in the case notes is accepted as a residual realism risk (`## Build record`, Ship).
 
-Stage 4 passed on the strengthened cut (judge DETERMINISTIC / APPROVE, rule 3 PASS, leak reader clean); the case-note
-coherence fix and the realism pass the targeted re-read asked for are in (2026-10-16), every gate green and `freeze.py`
-proving nothing graded moved. Next: one more short targeted re-read of the case notes and the desk's data log, then
-ship.
+## Gates at ship
+
+- Generator checks: 187 passed, 0 failed, among them the R3 strict block (the HOW-bearing sentences ship word for word
+  and executed give no 17,000), R3a and R3b (the analyst test on the clean truth and the pack: 14,849 and 16,895 on
+  both), every fork row SF1 to SF17, the rivals and the margins by which the data rejects them, Ask A's 24 cells held
+  identical across the cuts, and the case notes' realism and coherence checks.
+- `verify.py` agrees on its own code path (the call 16,895, 17,000; one sigma 83; claims filed again 5,308, the rest
+  11,588; the timing-blind route 14,849, the seasonal default 13,241, the national rate 13,340; Ask A's 24 cells and Ask
+  B's 14 groups; the goldens agree).
+- Each build run compares two builds byte for byte; the final rebuild cut the shipped target.zip again (sha256
+  e5e9d268b7bd6c16).
+- `figures_check.py`: 69 figures, none absent. precut: 49 checks, 0 FAIL, 0 WARN, with voice-check (the prompt
+  unchanged).
+- The container audit is clean (target and golden). `guard.py validate`: 187 cards, 0 invalid.
+- `leak.py`: REVIEW, the eight lines answered above, no LEAK.
+- `guard.py heart`: WARN (repeat.gate_g, overuse.gate_g, answered at the draw). `guard.py surface`: exit 0, task134 and
+  task54 promoted on the card signature for the author's `/clone-check`.
+- `freeze.py check --mode determinism`: PASS with nothing allowed (the main call, the stump and every graded figure
+  unchanged through the case-note cuts).
+
+## Pre-ship check
+
+The 10/10 rules re-read against the built pack:
+- **The domain:** the call turns on how many of the third quarter's refused claimants file again in the first claims
+  week of the fourth quarter, the administrative calendar effect an official statistics unit models as a regression
+  effect with its own driver: each region's monetarily ineligible determinations month by month, at that region's own
+  shares by month of refusal. Swapping in hospital admissions leaves no base period, no monetary determination and no
+  refused claimant to come back.
+- **Two layers:** every mess item is the board's, Employer Services' or the desk's own and asserted neutral for the
+  call (the two claims-system layouts, the advance count beside revised counts, the fiscal-year workbook in two layouts
+  with September provisional, the holiday and shutdown weeks; on the ask paths the register and the portal, UTC stamps,
+  amended and withdrawn notices, typed references, the cube's 2023 rebuild). The decisive step is analytical:
+  - the easy routes, executed on the clean truth with every filed rule applied, file 14,849 (each region's quarter
+    taken whole), 13,340 (the national rate) and 13,241 (the seasonal step);
+  - changing only the decisive step, each month of the closing quarter at its own share region by region, files
+    16,895;
+  - nothing in the pack is planted to be caught, and no file, column or sentence gives a share by region or by month of
+    refusal.
+- **Rule 3, read literally:** technical notes 2.1 to 2.4 and 3.1 to 3.3, the release's three sentences on the count and
+  the prompt's question, executed word for word, fix the week, the series and who may file again when, and give no
+  figure; the estimators they admit file 15,000, 13,000 or 38,000, never 17,000. The three isolated audits: AT_RISK
+  (fixed), PASS (strengthened), PASS and strong.
+- **Determinism:** the fresh judge on the strengthened cut reproduced the call, all 24 Ask A cells and all 14 Ask B
+  changes, Gate H analytical; the two later cuts moved no graded figure.
+- **Robustness:** one sigma is 83 claims and the golden sits 0.40 of a bin from the edge; the 24 asserted constructions
+  run 16,844 to 17,225 (the nearest edge 275 claims away, 3.3 sigma); every fork row is closed by a filed sentence or
+  keeps the call, asserted.
+- **Accepted risks:** the judge's partial landing route (July 2026's refiling ratio on September's refusals, about
+  17,000) and the case notes' residual regularity (`## Build record`, Ship).
+- **The asks:** unchanged since the strengthening; the readers' ask readings are the asks' bases, closed by filed
+  sentences, or their devices.
 
 ## Tried and rejected
 
