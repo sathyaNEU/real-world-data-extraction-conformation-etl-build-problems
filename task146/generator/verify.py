@@ -1,7 +1,8 @@
 """Independent verifier for task146. Reads only the shipped bundle (target/) and the goldens, on its own code path
-(the csv module, openpyxl and numpy least squares; nothing from the generator's modules), and recomputes the call,
-its components, the default path, the national-rate rival, every Ask A cell and every Ask B change, then checks the
-goldens carry them.
+(the csv module, openpyxl and numpy least squares; nothing from the generator's modules), and recomputes the call
+(each region's step on its closing quarter's determinations month by month), its components, the default path (the
+same regions on the quarter taken whole), the national-rate rival, the seasonal route, every Ask A cell and every
+Ask B change, then checks the goldens carry them.
 
     python3 task146/generator/verify.py [target] [golden]"""
 from __future__ import annotations
@@ -87,7 +88,7 @@ def pools(target, regions, code):
         out[(r, q)] = out.get((r, q), 0) + v
         if r == regions[0]:
             nm[q] = nm.get(q, 0) + 1
-    return out, nm
+    return out, nm, m
 
 
 def lsq(X, y):
@@ -100,28 +101,36 @@ def lsq(X, y):
 
 def the_call(target):
     regions, code, s = series(target)
-    pool, nm = pools(target, regions, code)
+    pool, nm, monthly = pools(target, regions, code)
     weeks = sorted(s[regions[0]])
     nat = {d: sum(s[r][d] for r in regions) for d in weeks}
     last = weeks[-1]
     target_q = quarter(last + dt.timedelta(days=7))
     closing = quarter(last)
+
+    def months(q, r):
+        return [monthly[((q[0], 3 * (q[1] - 1) + j), r)] for j in (1, 2, 3)]
     turns = [k for k in range(1, len(weeks)) if quarter(weeks[k]) != quarter(weeks[k - 1])
              and nm.get(quarter(weeks[k - 1])) == 3]
-    tot, var, refile, without, slopes = 0.0, 0.0, 0.0, 0.0, {}
+    tot, var, refile, without, slopes, tb, tb_refile = 0.0, 0.0, 0.0, 0.0, {}, 0.0, 0.0
     for r in regions:
-        X, y = [], []
+        X, Xq, y = [], [], []
         for k in turns:
             q = quarter(weeks[k])
-            X.append([1.0 if q[1] == j else 0.0 for j in (1, 2, 3, 4)] + [pool[(r, quarter(weeks[k - 1]))]])
+            d4 = [1.0 if q[1] == j else 0.0 for j in (1, 2, 3, 4)]
+            X.append(d4 + months(quarter(weeks[k - 1]), r))
+            Xq.append(d4 + [pool[(r, quarter(weeks[k - 1]))]])
             y.append(s[r][weeks[k]] - s[r][weeks[k - 1]])
         b, V = lsq(X, y)
-        x = np.array([0, 0, 0, 1.0, pool[(r, closing)]])
+        x = np.array([0, 0, 0, 1.0] + months(closing, r))
         tot += s[r][last] + float(x @ b)
         var += float(x @ V @ x)
-        refile += b[4] * pool[(r, closing)]
+        refile += float(np.array(months(closing, r)) @ b[4:])
         without += s[r][last] + b[3]
-        slopes[r] = b[4]
+        slopes[r] = list(b[4:])
+        bq, _ = lsq(Xq, y)
+        tb += s[r][last] + bq[3] + bq[4] * pool[(r, closing)]
+        tb_refile += bq[4] * pool[(r, closing)]
     # the national rival: the national step on the national pool, one intercept per quarter of the year
     X, y = [], []
     for k in turns:
@@ -147,9 +156,11 @@ def the_call(target):
     lvl = sum(vals[i] / fac[(kq[i], quarter(weeks[i])[1])] for i in range(len(weeks) - 4, len(weeks))) / 4.0
     default = lvl * fac[(0, target_q[1])]
     wci = sum(pool[(r, closing)] for r in ("Western", "Coastal", "Island"))
+    sep = sum(months(closing, r)[2] for r in ("Western", "Coastal", "Island"))
     return dict(call=tot, se=math.sqrt(var), refile=refile, without=without, slopes=slopes, base=nat[last],
                 pool=sum(pool[(r, closing)] for r in regions), wci_share=wci / sum(pool[(r, closing)] for r in regions),
-                national=nat_rival, default=default, turns=len(turns), last=last)
+                sep_share=sep / wci, national=nat_rival, default=default, turns=len(turns), last=last, tb=tb,
+                tb_refile=tb_refile)
 
 
 # ---------------------------------------------------------------------------------------------------- Ask A
@@ -285,23 +296,30 @@ def main(target=None, golden=None):
             bad.append("%s %s" % (label, detail))
     c = the_call(target)
     call = half_up(c["call"], 1000)
-    ok("V call 16,000 from the shipped files", call == 16000, c["call"])
-    ok("V the call is a bin clear of the default path", half_up(c["default"], 1000) <= call - 2000, c["default"])
-    ok("V the national rate files two bins low", half_up(c["national"], 1000) == call - 2000, c["national"])
+    ok("V call 17,000 from the shipped files", call == 17000, c["call"])
+    ok("V the call is two bins clear of the seasonal default path", half_up(c["default"], 1000) <= call - 2000,
+       c["default"])
+    ok("V the regions on the quarter taken whole file two bins low", half_up(c["tb"], 1000) == call - 2000, c["tb"])
+    ok("V the national rate files four bins low", half_up(c["national"], 1000) == call - 4000, c["national"])
     ok("V one standard error leaves the call's thousand", half_up(c["call"] - c["se"], 1000) == call ==
        half_up(c["call"] + c["se"], 1000), c["se"])
     ok("V 50 quarter turns", c["turns"] == 50, c["turns"])
-    ok("V refiled claims between 4,000 and 5,000", 4000 <= c["refile"] <= 5000, c["refile"])
+    ok("V refiled claims between 5,000 and 6,000", 5000 <= c["refile"] <= 6000, c["refile"])
     ok("V the rest of the week between 11,000 and 12,000", 11000 <= c["without"] <= 12000, c["without"])
-    ok("V the third quarter's determinations 30,182, 48.5 per cent in Western, Coastal and Island",
-       c["pool"] == 30182 and dp1(100 * c["wci_share"]) == 48.5, (c["pool"], c["wci_share"]))
-    ok("V Western about one in four, Coastal and Island about three in ten, the rest under one in ten",
-       0.24 <= c["slopes"]["Western"] <= 0.29 and all(0.27 <= c["slopes"][r] <= 0.35 for r in ("Coastal", "Island")) and
-       all(v < 0.1 for r, v in c["slopes"].items() if r not in ("Western", "Coastal", "Island")), c["slopes"])
+    ok("V the timing-blind refiling between 3,000 and 4,000", 3000 <= c["tb_refile"] <= 4000, c["tb_refile"])
+    ok("V in Western, Coastal and Island two thirds to nine tenths of a quarter's last-month refusals file again, "
+       "under one in five of its earlier months'", all(2 / 3 <= c["slopes"][r][2] <= 0.9 and c["slopes"][r][1] < 0.2 and
+                                                      c["slopes"][r][0] < 0.2 for r in ("Western", "Coastal", "Island")),
+       c["slopes"])
     a, regions, periods = ask_a(target)
     b, _ = ask_b(target)
     wb = openpyxl.load_workbook(os.path.join(golden, "ic_preview_2026-10-10.xlsx"), data_only=True)
     ok("V golden workbook carries the call", wb["Call"]["B4"].value == call, wb["Call"]["B4"].value)
+    work = {r[0]: r[1] for r in wb["Call"].iter_rows(min_row=4, max_row=20, values_only=True) if r[0]}
+    ok("V golden workbook carries the third quarter's determinations, their three-region part and its September part",
+       work.get("Monetarily ineligible determinations, claims weeks of July to September 2026") == c["pool"] and
+       work.get("  of which Western, Coastal and Island (%)") == dp1(100 * c["wci_share"]) and
+       work.get("  of which Western, Coastal and Island, made in September (%)") == dp1(100 * c["sep_share"]), work)
     ws = wb["Layoff notices"]
     got = {}
     for r in ws.iter_rows(min_row=5, max_row=4 + len(regions), values_only=True):
@@ -313,15 +331,15 @@ def main(target=None, golden=None):
     ok("V golden workbook carries every Ask B change", all(abs(gb[g] - dp1(b[g])) < 1e-9 for g in b),
        [g for g in b if abs(gb.get(g, 1e9) - dp1(b[g])) > 1e-9])
     txt = docx_text(os.path.join(golden, "ic_preview_2026-10-10.docx"))
-    ok("V the preview opens with the call", "about 16,000" in txt[:400], txt[:200])
+    ok("V the preview opens with the call", "about 17,000" in txt[:400], txt[:200])
     ok("V the preview names the week", "10 October 2026" in txt[:600])
     if bad:
         for x in bad:
             print("VERIFY FAIL", x)
         raise SystemExit(1)
-    print("verify.py: the call %.0f (%d), se %.0f, refiled %.0f, without %.0f, default %.0f, national %.0f; "
-          "Ask A %d cells, Ask B %d groups; goldens agree" % (c["call"], call, c["se"], c["refile"], c["without"],
-                                                               c["default"], c["national"], len(a), len(b)))
+    print("verify.py: the call %.0f (%d), se %.0f, refiled %.0f, without %.0f, timing-blind %.0f, default %.0f, "
+          "national %.0f; Ask A %d cells, Ask B %d groups; goldens agree" % (
+              c["call"], call, c["se"], c["refile"], c["without"], c["tb"], c["default"], c["national"], len(a), len(b)))
     return c, a, b
 
 

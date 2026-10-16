@@ -8,9 +8,15 @@ first claims weeks whose Sunday falls in a new quarter some of the closing quart
 How many come back differs by region and is stable within each: where the refused are mostly seasonal and short-tenure
 workers whose last season's pay enters the base period at the turn (the tourism, fishing and building regions), a large
 share files again; where they are mostly people with patchy earnings all year (the Capital, the manufacturing
-regions), the move adds one thin quarter and drops another, and few come back. A share R0[r] of a region's closing
-quarter monetarily ineligible determinations files again in the first such week, R1 and R2 of that in the second and
-third. Nothing else in the world steps at a quarter turn."""
+regions), the move adds one thin quarter and drops another, and few come back. How many come back also depends on how
+long ago they were refused: a claimant refused in the quarter's first weeks has mostly found other work or stopped
+looking by the turn, one refused in its last weeks is still out of work and files again as soon as the base period
+moves, so each refusal weighs exp(-d / TAU) by the weeks d from its claims week to the quarter's last. Layoffs come in
+lumps, so a region's refusals move from month to month inside a quarter (the tourism and building regions together, as
+a season ends or a project finishes), some quarters' late and others' early. A share R0[r] of a region's closing
+quarter monetarily ineligible determinations, each weighted by how recently it was made (the weights averaging one over
+a quarter's weeks), files again in the first such week, R1 and R2 of that in the second and third. Nothing else in the
+world steps at a quarter turn."""
 from __future__ import annotations
 
 import datetime as dt
@@ -22,8 +28,9 @@ import common as K
 
 # the quarter-turn refiling: the share of a region's closing-quarter monetarily ineligible determinations filed again
 # in the first claims week of the new quarter; the second and third weeks take fixed fractions of it
-R0 = {"Northern": 0.032, "Capital": 0.016, "Eastern": 0.027, "Midlands": 0.024, "Western": 0.265, "Southern": 0.058,
-      "Coastal": 0.295, "Island": 0.318}
+R0 = {"Northern": 0.032, "Capital": 0.016, "Eastern": 0.027, "Midlands": 0.024, "Western": 0.2862, "Southern": 0.058,
+      "Coastal": 0.3186, "Island": 0.34344}
+TAU = 2.5                  # weeks: how fast the chance of filing again falls with the weeks since the refusal
 R_LATER = (0.155, 0.058)
 REFILE_INELIGIBLE = 0.10          # share of the claims filed again that are refused a second time
 
@@ -47,19 +54,30 @@ REGION_EPISODES = {("Western", (2016, 2)): 1.85, ("Coastal", (2017, 3)): 1.80, (
                    ("Western", (2019, 2)): 1.70, ("Coastal", (2019, 2)): 1.80, ("Island", (2019, 2)): 1.85,
                    ("Capital", (2021, 3)): 1.60, ("Midlands", (2021, 3)): 1.65, ("Northern", (2021, 3)): 1.50,
                    ("Capital", (2017, 1)): 1.55, ("Eastern", (2017, 1)): 1.60, ("Midlands", (2017, 1)): 1.45}
+# when inside its quarter a region's layoff episode fell: the month weights of its refusals (late waves and early ones)
+EPISODE_TIMING = {("Western", (2016, 2)): (0.4, 0.8, 1.8), ("Coastal", (2017, 3)): (0.4, 0.8, 1.8),
+                  ("Western", (2018, 2)): (0.4, 0.8, 1.8), ("Coastal", (2018, 2)): (0.4, 0.8, 1.8),
+                  ("Island", (2018, 2)): (0.4, 0.8, 1.8), ("Western", (2019, 2)): (1.6, 0.9, 0.5),
+                  ("Coastal", (2019, 2)): (1.6, 0.9, 0.5), ("Island", (2019, 2)): (1.6, 0.9, 0.5),
+                  ("Island", (2019, 1)): (1.5, 1.0, 0.5), ("Island", (2015, 2)): (1.5, 0.9, 0.6),
+                  ("Western", (2022, 3)): (1.6, 0.9, 0.5), ("Coastal", (2024, 2)): (1.5, 1.0, 0.5)}
 # 2025 to mid-2026: the building and tourism boom; recent hires in the boom regions carry full base periods
-BOOM = {"Western": 0.62, "Coastal": 0.58, "Island": 0.60, "Capital": 1.18, "Midlands": 1.08, "Northern": 1.10,
+BOOM = {"Western": 0.806, "Coastal": 0.754, "Island": 0.78, "Capital": 1.18, "Midlands": 1.08, "Northern": 1.10,
         "Eastern": 1.12, "Southern": 0.92}
 BOOM_QUARTERS = [(2025, 2), (2025, 3), (2025, 4), (2026, 1), (2026, 2)]
-# July, August and September 2026: the building and hotel layoffs of staff taken on in 2025 and early 2026 lift the
-# refusals in the tourism and building regions; elsewhere they stay near their usual level
+# July, August and September 2026: in the tourism and building regions the refusals stay near their usual level in July
+# and August, and in September, as the winter season ends and the contractors and hotels shed staff taken on in 2025
+# and early 2026, more than half of their new claims are refused; elsewhere they stay near their usual level
 INELIG_2026Q3 = {"Northern": (0.145, 0.155, 0.170), "Capital": (0.130, 0.140, 0.155), "Eastern": (0.145, 0.160, 0.175),
-                 "Midlands": (0.150, 0.165, 0.180), "Western": (0.3333, 0.4141, 0.4949), "Southern": (0.155, 0.170, 0.185),
-                 "Coastal": (0.3434, 0.4242, 0.505), "Island": (0.3232, 0.404, 0.4848)}
+                 "Midlands": (0.150, 0.165, 0.180), "Western": (0.135, 0.185, 0.545), "Southern": (0.155, 0.170, 0.185),
+                 "Coastal": (0.145, 0.19, 0.56), "Island": (0.14, 0.195, 0.555)}
 SEASONAL_REGIONS = ("Western", "Coastal", "Island")
 SEASONAL_SD = 0.55
+MONTH_SD = 0.28            # a region's month-to-month swing in the refused share (the timing of its layoffs)
+SEASONAL_MONTH_SD = 0.50   # the tourism and building regions' common month-to-month swing (a season's end, a project's)
+MONTH_DRAW = "s24"         # the realisation of the month swings' two streams
 ADDITIONAL_SHARE = 0.213
-ADVANCE_LATE = (0.0025, 0.0095)   # range of the share of a week's claims taken late and added at the revision
+ADVANCE_LATE = (0.0023, 0.0095)   # range of the share of a week's claims taken late and added at the revision
 
 
 def _year_frac(d):
@@ -72,6 +90,7 @@ PANDEMIC_START = dt.date(2020, 3, 22)
 PANDEMIC_MULT = [2.35, 2.28, 2.16, 2.02, 1.90, 1.81, 1.74, 1.68, 1.63, 1.59]
 # the 2026 layoffs lean on the building and tourism regions
 LEAN_2026 = {"Midlands": 1.06, "Western": 1.24, "Coastal": 1.28, "Island": 1.20, "Capital": 0.94}
+LEAN_START, LEAN_DAYS = dt.date(2026, 6, 1), 70.0
 
 
 def level_path(sun):
@@ -131,7 +150,9 @@ class Truth:
 
 def simulate(params=None):
     P = dict(R0=R0, R_LATER=R_LATER, RFAC=RFAC, REGION_SHOCK_SD=REGION_SHOCK_SD, REGION_EPISODES=REGION_EPISODES,
-             INELIG_2026Q3=INELIG_2026Q3, LEAN_2026=LEAN_2026, BOOM=BOOM, SEASONAL_SD=SEASONAL_SD, seed_salt="")
+             INELIG_2026Q3=INELIG_2026Q3, LEAN_2026=LEAN_2026, LEAN_START=LEAN_START, LEAN_DAYS=LEAN_DAYS, BOOM=BOOM,
+             SEASONAL_SD=SEASONAL_SD, EPISODE_TIMING=EPISODE_TIMING, TAU=TAU, MONTH_SD=MONTH_SD,
+             SEASONAL_MONTH_SD=SEASONAL_MONTH_SD, seed_salt="")
     if params:
         P.update(params)
     salt = P["seed_salt"]
@@ -170,8 +191,8 @@ def simulate(params=None):
         drift = np.cumsum(g.normal(0, 0.0009, n))
         share[r] = K.REGION_SHARE[r] * np.exp(drift - drift.mean())
     for i, s in enumerate(S):
-        if s >= dt.date(2026, 6, 1):
-            ramp = min(1.0, (s - dt.date(2026, 6, 1)).days / 70.0)
+        if s >= P["LEAN_START"]:
+            ramp = min(1.0, (s - P["LEAN_START"]).days / P["LEAN_DAYS"])
             for r, f in P["LEAN_2026"].items():
                 share[r][i] *= 1.0 + (f - 1.0) * ramp
     tot = sum(share[r] for r in R)
@@ -204,6 +225,24 @@ def simulate(params=None):
         for r in R:
             rq[(r, q)] = rq[(r, q)] * P["BOOM"][r]
     T.rq = rq
+    # the month inside the quarter: layoffs come in lumps, so a region's refusals move month to month, the tourism and
+    # building regions' together (a common factor on its own stream), and the episodes fall late or early in their quarter
+    gmr = K.rng("inelig-month-region", MONTH_DRAW, salt)
+    gms = K.rng("inelig-month-seasonal", MONTH_DRAW, salt)
+    mfac = {}
+    for key in sorted({(s.year, s.month) for s in S}):
+        fs = float(gms.normal(0, P["SEASONAL_MONTH_SD"]))
+        for r in R:
+            f = float(gmr.normal(0, P["MONTH_SD"]))
+            v2 = P["MONTH_SD"] ** 2
+            if r in SEASONAL_REGIONS:
+                f += fs
+                v2 += P["SEASONAL_MONTH_SD"] ** 2
+            mfac[(r, key)] = math.exp(f - 0.5 * v2)
+    for (r, q), wts in P["EPISODE_TIMING"].items():
+        for j, wj in enumerate(wts):
+            mfac[(r, (q[0], 3 * (q[1] - 1) + j + 1))] *= wj
+    T.mfac = mfac
     gm = K.rng("inelig-month", salt)
     mshift = {}
     gw = K.rng("inelig-week", salt)
@@ -218,10 +257,11 @@ def simulate(params=None):
             if q == (2026, 3):
                 v = P["INELIG_2026Q3"][r][s.month - 7] + e
             else:
-                v = (qlev[q] + mshift[key]) * P["RFAC"][r] * rq[(r, q)] + e
+                v = (qlev[q] + mshift[key]) * P["RFAC"][r] * rq[(r, q)] * mfac[(r, key)] + e
             inel[r][i] = float(np.clip(v, 0.04, 0.62))
     T.inel_share = inel
-    # draw the weeks in order, so each quarter's refiling rests on the closing quarter's determinations
+    # draw the weeks in order, so each quarter's refiling rests on the closing quarter's determinations; the claims filed
+    # again and their determinations on their own streams, so the base claims never move with the refiling
     T.base_new = {r: np.zeros(n, dtype=int) for r in R}
     T.base_add = {r: np.zeros(n, dtype=int) for r in R}
     T.refile = {r: np.zeros(n, dtype=int) for r in R}
@@ -230,8 +270,13 @@ def simulate(params=None):
     T.exp_refile = {r: np.zeros(n) for r in R}
     pool = {}
     pool_r = {}
+    recent_r = {}
+    tau = P["TAU"]
+    wbar = sum(math.exp(-d / tau) for d in range(13)) / 13.0
     g = K.rng("claims", salt)
     gi = K.rng("determinations", salt)
+    grf = K.rng("refile", salt)
+    gri = K.rng("refile-determinations", salt)
     rates = [None, P["R_LATER"][0], P["R_LATER"][1]]
     for i, s in enumerate(S):
         q = T.quarter[i]
@@ -245,18 +290,20 @@ def simulate(params=None):
             na = int(g.poisson(mu * ADDITIONAL_SHARE))
             rf_mu = 0.0
             if k <= 2 and prevq in pool:
-                rf_mu = P["R0"][r] * (1.0 if k == 0 else rates[k]) * pool_r[prevq][r]
+                rf_mu = P["R0"][r] * (1.0 if k == 0 else rates[k]) * recent_r[prevq][r]
             T.exp_refile[r][i] = rf_mu
-            nr = int(g.poisson(rf_mu)) if rf_mu > 0 else 0
+            nr = int(grf.poisson(rf_mu)) if rf_mu > 0 else 0
             T.base_new[r][i], T.base_add[r][i], T.refile[r][i] = nb, na, nr
-            T.inelig[r][i] = int(gi.binomial(nb, inel[r][i]) + gi.binomial(nr, REFILE_INELIGIBLE))
+            T.inelig[r][i] = int(gi.binomial(nb, inel[r][i])) + (int(gri.binomial(nr, REFILE_INELIGIBLE)) if nr else 0)
         # close the quarter when its last week is drawn
         last = (i == n - 1) or (T.quarter[i + 1] != q)
         if last:
             idx = [j for j in range(i + 1) if T.quarter[j] == q]
             pool_r[q] = {r: float(sum(T.inelig[r][j] for j in idx)) for r in R}
             pool[q] = sum(pool_r[q].values())
-    T.pool, T.pool_r = pool, pool_r
+            # the refused weigh by how recently they were refused: weeks from the refusal to the quarter's last week
+            recent_r[q] = {r: float(sum(T.inelig[r][j] * math.exp(-(i - j) / tau) for j in idx)) / wbar for r in R}
+    T.pool, T.pool_r, T.recent_r = pool, pool_r, recent_r
     # counts: new claims include the claims filed again; the revised count, and the advance taken before late claims
     T.new = {r: T.base_new[r] + T.refile[r] for r in R}
     T.additional = T.base_add

@@ -1,35 +1,37 @@
 {
   "call": {
-    "initial_claims_week_ended_2026-10-10": "16,000",
+    "initial_claims_week_ended_2026-10-10": "17,000",
     "release": "15 October 2026"
   },
   "critical_components": {
-    "ineligible_determinations_jul_sep_2026": "30,182",
-    "share_in_western_coastal_island_pct": "48.5",
+    "ineligible_determinations_jul_sep_2026": "26,035",
+    "share_in_western_coastal_island_pct": "40.1",
+    "share_of_those_in_september_pct": "55.3",
+    "last_month_usual_share": "about a third at a usual quarter turn",
+    "first_week_share_by_month_of_refusal_words": "between two thirds and nine tenths of those refused in a quarter's last month, under one in five of those refused in its first two months (Western, Coastal, Island)",
     "refiled_claims_range": [
-      "4,000",
-      "5,000"
+      "5,000",
+      "6,000"
     ],
     "refiled_share_wci": "nine tenths",
     "week_without_refiling_range": [
       "11,000",
       "12,000"
-    ],
-    "first_week_share_words": "one in four (Western), three in ten (Coastal, Island), fewer than one in ten (the other five regions)",
-    "pool_against_usual": "about one and a half times a usual quarter's; about a fifth in the three regions at a usual turn"
+    ]
   },
   "steps": {
-    "base_week_ended_2026-10-03_advance": "11,695",
+    "base_week_ended_2026-10-03_advance": "11,814",
     "turns": "50",
     "turns_from": "April 2014",
     "turns_to": "July 2026"
   },
   "default_path": {
-    "national_rate": "14,000",
+    "timing_blind_regional": "15,000",
+    "national_rate": "13,000",
     "seasonal_step": "13,000"
   },
   "precision": {
-    "one_standard_error_claims": "77"
+    "one_standard_error_claims": "83"
   },
   "ask_a_workers_by_region_and_period": {
     "Northern": {
@@ -79,82 +81,82 @@
     "Dec": "1,997"
   },
   "ask_b_change_pct_by_group": {
-    "Agriculture, forestry and fishing": "3.6",
-    "Mining, energy and utilities": "1.3",
-    "Manufacturing": "-4.8",
-    "Construction": "58.9",
-    "Wholesale, transport and storage": "0.8",
-    "Retail trade": "1.1",
-    "Accommodation and food services": "21.6",
-    "Information and communication": "-11.8",
-    "Financial, insurance and property services": "-7.0",
-    "Professional, scientific and technical services": "-2.4",
-    "Administrative and support services": "1.3",
-    "Public administration and safety": "-1.0",
-    "Education and training": "2.8",
-    "Health care, social assistance and other services": "-5.1"
+    "Agriculture, forestry and fishing": "6.5",
+    "Mining, energy and utilities": "0.9",
+    "Manufacturing": "-4.2",
+    "Construction": "60.3",
+    "Wholesale, transport and storage": "4.4",
+    "Retail trade": "4.1",
+    "Accommodation and food services": "26.1",
+    "Information and communication": "-11.7",
+    "Financial, insurance and property services": "-1.2",
+    "Professional, scientific and technical services": "-6.3",
+    "Administrative and support services": "2.3",
+    "Public administration and safety": "6.7",
+    "Education and training": "4.9",
+    "Health care, social assistance and other services": "-2.7"
   },
   "ask_b_claims_jul_sep": {
     "Agriculture, forestry and fishing": {
-      "2025": "7,096",
-      "2026": "7,353"
+      "2025": "7,094",
+      "2026": "7,554"
     },
     "Mining, energy and utilities": {
-      "2025": "3,751",
-      "2026": "3,799"
+      "2025": "3,725",
+      "2026": "3,759"
     },
     "Manufacturing": {
-      "2025": "21,906",
-      "2026": "20,858"
+      "2025": "22,193",
+      "2026": "21,265"
     },
     "Construction": {
-      "2025": "21,899",
-      "2026": "34,794"
+      "2025": "22,080",
+      "2026": "35,395"
     },
     "Wholesale, transport and storage": {
-      "2025": "15,444",
-      "2026": "15,565"
+      "2025": "15,150",
+      "2026": "15,818"
     },
     "Retail trade": {
-      "2025": "15,630",
-      "2026": "15,801"
+      "2025": "15,482",
+      "2026": "16,114"
     },
     "Accommodation and food services": {
-      "2025": "17,623",
-      "2026": "21,427"
+      "2025": "17,544",
+      "2026": "22,120"
     },
     "Information and communication": {
-      "2025": "5,130",
+      "2025": "5,124",
       "2026": "4,524"
     },
     "Financial, insurance and property services": {
-      "2025": "5,865",
-      "2026": "5,454"
+      "2025": "5,565",
+      "2026": "5,497"
     },
     "Professional, scientific and technical services": {
-      "2025": "7,404",
-      "2026": "7,227"
+      "2025": "7,585",
+      "2026": "7,108"
     },
     "Administrative and support services": {
-      "2025": "11,876",
-      "2026": "12,032"
+      "2025": "11,963",
+      "2026": "12,237"
     },
     "Public administration and safety": {
-      "2025": "4,095",
-      "2026": "4,053"
+      "2025": "3,960",
+      "2026": "4,226"
     },
     "Education and training": {
-      "2025": "4,753",
-      "2026": "4,885"
+      "2025": "4,676",
+      "2026": "4,905"
     },
     "Health care, social assistance and other services": {
-      "2025": "13,466",
-      "2026": "12,779"
+      "2025": "13,386",
+      "2026": "13,022"
     }
   },
   "ask_b_all_groups": {
-    "2025": "155,938",
-    "2026": "170,551",
-    "change_pct": "9.4"
+    "2025": "155,527",
+    "2026": "173,544",
+    "change_pct": "11.6"
   }
 }

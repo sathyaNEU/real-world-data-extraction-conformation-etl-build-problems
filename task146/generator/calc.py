@@ -4,8 +4,8 @@ precision of the golden, the leave-one-out and panel rejection margins, the twin
 their rows.
 
 A view holds, for each region, the weekly initial claims by the claims week's Sunday (revised, and first reported),
-the latest week at its advance count, and the monetarily ineligible determinations by quarter (the program
-statistics' claims-week months summed)."""
+the latest week at its advance count, and the monetarily ineligible determinations by claims-week month (the program
+statistics), summed by quarter for the timing-blind routes and kept month by month for the golden."""
 from __future__ import annotations
 
 import csv
@@ -140,6 +140,7 @@ def finish(V):
         V.pool[(r, q)] = V.pool.get((r, q), 0) + v
     for q in {q for _, q in V.pool}:
         V.pool[("NAT", q)] = sum(V.pool[(r, q)] for r in REG)
+    V.mq3 = {r: [mpool(V, r, ym) for ym in q_months(Q3)] for r in REG + ["NAT"]}
     V.months_in_q = {}
     for (ym, r) in V.inelig_m:
         if r == REG[0]:
@@ -153,7 +154,34 @@ def finish(V):
             V.qclaims[("NAT", q)] = V.qclaims.get(("NAT", q), 0) + V.rev[r][d]
 
 
+
+
 # ---------------------------------------------------------------------------------------------------- the turns
+WCI = ("Western", "Coastal", "Island")
+# the closing quarter's ineligible determinations as regressors: each claims-week month on its own (the golden), the
+# quarter taken whole (timing-blind), or months grouped
+SPECS = {"months": (("m1",), ("m2",), ("m3",)), "quarter": (("m1", "m2", "m3"),), "last_rest": (("m3",), ("m1", "m2")),
+         "last": (("m3",),), "last_two": (("m2",), ("m3",)), "lump": (("m1",), ("m2", "m3"))}
+
+
+def q_months(q):
+    """The three claims-week months of a calendar quarter, in order."""
+    return [(q[0], 3 * (q[1] - 1) + j) for j in (1, 2, 3)]
+
+
+def mpool(V, r, ym):
+    return sum(V.inelig_m[(ym, x)] for x in REG) if r == "NAT" else V.inelig_m[(ym, r)]
+
+
+def terms(spec):
+    return ["+".join(g) for g in SPECS[spec]]
+
+
+def x26(V, r, spec):
+    """The third quarter of 2026's determinations in the spec's groups of months."""
+    return [sum(V.mq3[r][int(m[1]) - 1] for m in g) for g in SPECS[spec]]
+
+
 def turns(V, series="rev"):
     """Every first claims week of a quarter with the closing quarter's determinations complete (three months)."""
     rows = []
@@ -179,6 +207,8 @@ def turns(V, series="rev"):
             row["p2_" + r] = ser(W[k - 2])
             row["p3_" + r] = ser(W[k - 3])
             row["pool_" + r] = V.pool[(r if r != "NAT" else "NAT", pq)]
+            for j, ym in enumerate(q_months(pq)):
+                row["m%d_%s" % (j + 1, r)] = mpool(V, r, ym)
             row["pqc_" + r] = V.qclaims[(r, pq)]
         rows.append(row)
     return pd.DataFrame(rows)
@@ -188,21 +218,35 @@ def dums(df):
     return pd.get_dummies(df["qq"].astype(str), prefix="q", dtype=float)
 
 
-def fit_region(df, r, kind="diff", robust=False, base="p1"):
-    X = dums(df)
-    if kind == "ratio":
-        y = df["nq_" + r] / df["p1_" + r] - 1
-        X["pool"] = df["pool_" + r] / df["p1_" + r]
+def design(df, r, kind="diff", base="p1", spec="months", icpt="quarter"):
+    """The step of region r (or NAT) at each turn and its regressors: intercepts (one per quarter of the year, one, or
+    none) and the closing quarter's determinations in the spec's groups of months (over the base week for the ratio and
+    log forms)."""
+    if icpt == "quarter":
+        X = dums(df)
+    elif icpt == "const":
+        X = pd.DataFrame({"const": np.ones(len(df))}, index=df.index)
     else:
-        if kind == "adv":
-            y = df["nqa_" + r] - df["p1_" + r]
-        elif base == "mean3":
-            y = df["nq_" + r] - (df["p1_" + r] + df["p2_" + r] + df["p3_" + r]) / 3
-        else:
-            y = df["nq_" + r] - df["p1_" + r]
-        X["pool"] = df["pool_" + r]
-    if "q_4" not in X:
-        X = sm.add_constant(X, has_constant="add")
+        X = pd.DataFrame(index=df.index)
+    p1 = df["p1_" + r]
+    for g in SPECS[spec]:
+        v = sum(df["%s_%s" % (m, r)] for m in g)
+        X["+".join(g)] = v / p1 if kind in ("ratio", "log") else v
+    if kind == "ratio":
+        y = df["nq_" + r] / p1 - 1
+    elif kind == "log":
+        y = np.log(df["nq_" + r] / p1)
+    elif kind == "adv":
+        y = df["nqa_" + r] - p1
+    elif base == "mean3":
+        y = df["nq_" + r] - (p1 + df["p2_" + r] + df["p3_" + r]) / 3
+    else:
+        y = df["nq_" + r] - p1
+    return X, y
+
+
+def fit_region(df, r, kind="diff", robust=False, base="p1", spec="months", icpt="quarter"):
+    X, y = design(df, r, kind, base, spec, icpt)
     return sm.RLM(y, X, M=sm.robust.norms.HuberT()).fit() if robust else sm.OLS(y, X).fit()
 
 
@@ -214,85 +258,109 @@ def base_of(V, r, base="p1"):
     return float(ser(W[-1]))
 
 
-def predict(V, m, r, kind="diff", base="p1"):
-    icpt = m.params["q_4"] if "q_4" in m.params else m.params["const"]
-    pool = V.pool[(r, Q3)]
+def intercept(m):
+    return float(m.params["q_4"]) if "q_4" in m.params else float(m.params["const"]) if "const" in m.params else 0.0
+
+
+def predict(V, m, r, kind="diff", base="p1", spec="months"):
+    a = intercept(m)
+    lin = sum(float(m.params[t]) * x for t, x in zip(terms(spec), x26(V, r, spec)))
+    b0 = base_of(V, r)
     if kind == "ratio":
-        return base_of(V, r) * (1 + icpt) + m.params["pool"] * pool
-    return base_of(V, r, base) + icpt + m.params["pool"] * pool
+        return b0 * (1 + a) + lin
+    if kind == "log":
+        return b0 * math.exp(a + lin / b0)
+    return base_of(V, r, base) + a + lin
 
 
-def regional(V, df, **kw):
+def regional(V, df, spec="months", icpt="quarter", **kw):
     fk = {k: v for k, v in kw.items() if k in ("kind", "robust", "base")}
     pk = {k: v for k, v in kw.items() if k in ("kind", "base")}
-    return sum(predict(V, fit_region(df, r, **fk), r, **pk) for r in REG)
+    return sum(predict(V, fit_region(df, r, spec=spec, icpt=icpt, **fk), r, spec=spec, **pk) for r in REG)
 
 
-def national(V, df, **kw):
+def national(V, df, spec="quarter", icpt="quarter", **kw):
     fk = {k: v for k, v in kw.items() if k in ("kind", "robust", "base")}
     pk = {k: v for k, v in kw.items() if k in ("kind", "base")}
-    return predict(V, fit_region(df, "NAT", **fk), "NAT", **pk)
+    return predict(V, fit_region(df, "NAT", spec=spec, icpt=icpt, **fk), "NAT", spec=spec, **pk)
 
 
 # ---------------------------------------------------------------------------------------------------- the ladder
-def golden_parts(V, D):
+def golden_parts(V, D, spec="months"):
     """The golden by region: the base week, the fourth-quarter intercept (the week's movement net of the refiling),
-    the refiling (slope times the region's third-quarter determinations), with the delta-method variance of each."""
+    the refiling (each month's slope times the region's determinations of that month of the third quarter), with the
+    delta-method variance of each."""
     out = {}
+    tn = terms(spec)
     for r in REG:
-        m = fit_region(D, r)
-        P = V.pool[(r, Q3)]
-        C = m.cov_params().loc[["q_4", "pool"], ["q_4", "pool"]].values
-        v = np.array([1.0, P])
-        out[r] = dict(base=base_of(V, r), icpt=float(m.params["q_4"]), slope=float(m.params["pool"]),
-                      slope_se=float(m.bse["pool"]), icpt_se=float(m.bse["q_4"]), pool=P,
-                      refile=float(m.params["pool"]) * P, var_call=float(v @ C @ v),
-                      var_refile=float(m.bse["pool"] ** 2 * P ** 2), var_icpt=float(m.bse["q_4"] ** 2))
+        m = fit_region(D, r, spec=spec)
+        xs = np.array(x26(V, r, spec), float)
+        names = ["q_4"] + tn
+        Cv = m.cov_params().loc[names, names].values
+        v = np.r_[1.0, xs]
+        Cs = m.cov_params().loc[tn, tn].values
+        sl = {t: float(m.params[t]) for t in tn}
+        out[r] = dict(base=base_of(V, r), icpt=float(m.params["q_4"]), slopes=sl,
+                      slope_se={t: float(m.bse[t]) for t in tn}, x=dict(zip(tn, xs)),
+                      refile=float(sum(sl[t] * x for t, x in zip(tn, xs))), var_call=float(v @ Cv @ v),
+                      var_refile=float(xs @ Cs @ xs), var_icpt=float(m.bse["q_4"] ** 2))
     return out
+
+
+def touched_by_holiday(s):
+    """A public holiday in the turn week or the week before (every January turn, and the April turns Easter reaches)."""
+    return any((s + dt.timedelta(days=k)) in K.HOLIDAYS for k in range(-7, 7))
+
+
+def windows(D):
+    """The estimation windows every construction is tried on."""
+    return {"all turns": D, "fourth-quarter turns only": D[D.qq == 4], "third and fourth-quarter turns": D[D.qq >= 3],
+            "without 2020 and 2021": D[~D.y.isin([2020, 2021])], "since 2019": D[D.y >= 2019],
+            "since 2017": D[D.y >= 2017], "without January turns": D[D.qq != 1],
+            "the current system's turns": D[D.sun >= dt.date(2021, 7, 1)],
+            "the last five years (turns from October 2021)": D[D.sun >= dt.date(2021, 10, 1)],
+            "the last three years (turns from October 2023)": D[D.sun >= dt.date(2023, 10, 1)],
+            "holiday-touched turns dropped": D[[not touched_by_holiday(s) for s in D.sun]]}
 
 
 def ladder(V):
     D = turns(V, series="adv")
     out = {}
+    cur = D[D.sun >= dt.date(2021, 7, 1)]
     q4 = D[D.qq == 4]
-    G = {}
-    G["all turns"] = regional(V, D)
-    G["fourth-quarter turns only"] = regional(V, q4)
-    G["third and fourth-quarter turns"] = regional(V, D[D.qq >= 3])
-    G["without 2020 and 2021"] = regional(V, D[~D.y.isin([2020, 2021])])
-    G["since 2019"] = regional(V, D[D.y >= 2019])
-    G["since 2017"] = regional(V, D[D.y >= 2017])
-    G["without January turns"] = regional(V, D[D.qq != 1])
-    G["the current system's turns"] = regional(V, D[D.sun >= dt.date(2021, 7, 1)])
+    Wn = windows(D)
+    # the golden's family: region by region, each claims-week month of the closing quarter on its own
+    G = {k: regional(V, df) for k, df in Wn.items()}
     G["Huber"] = regional(V, D, robust=True)
     G["ratio form"] = regional(V, D, kind="ratio")
+    G["log-ratio form"] = regional(V, D, kind="log")
     G["mean of the last three weeks as base"] = regional(V, D, base="mean3")
-    cur = D[D.sun >= dt.date(2021, 7, 1)]
     G["advance count as the target (current system)"] = regional(V, cur, kind="adv")
-    G["each region through the origin"] = sum(
-        base_of(V, r) + float(sm.OLS(D["nq_" + r] - D["p1_" + r], D[["pool_" + r]]).fit().params.iloc[0]) *
-        V.pool[(r, Q3)] for r in REG)
-    G["each region with one intercept"] = sum(
-        predict(V, sm.OLS(D["nq_" + r] - D["p1_" + r], sm.add_constant(pd.DataFrame({"pool": D["pool_" + r]}))).fit(), r)
-        for r in REG)
-    # holiday-touched turns dropped: Easter Monday or Good Friday in the turn week or the week before
-    hol = set(d for y in range(2014, 2028) for d, n in K.holidays(y))
-
-    def touched(s):
-        return any((s + dt.timedelta(days=k)) in hol for k in range(-7, 7))
-    G["holiday-touched turns dropped"] = regional(V, D[[not touched(s) for s in D.sun]])
+    G["each region with one intercept"] = regional(V, D, icpt="const")
+    G["fourth-quarter turns only, one intercept"] = regional(V, q4, icpt="const")
+    G["the last month and the rest of the quarter"] = regional(V, D, spec="last_rest")
+    G["the last month alone"] = regional(V, D, spec="last")
+    G["the last two months, the first left out"] = regional(V, D, spec="last_two")
+    G["one month profile for every region, each region's own scale"] = profile(V, D)[0]
+    G["the national step on the three regions' and the rest's months"] = two_groups(V, D)
+    G["one intercept per quarter of the year common to every region"] = common_intercepts(V, D)
     out["golden"] = G
     gold = G["all turns"]
-    # one equation for the national step on the eight regional pools (the regional steps discarded)
-    X = dums(D)
-    for r in REG:
-        X["pool_" + r] = D["pool_" + r]
-    m = sm.OLS(D["nq_NAT"] - D["p1_NAT"], X).fit()
-    Pv = np.array([V.pool[(r, Q3)] for r in REG])
-    cols = ["pool_" + r for r in REG]
-    out["nat_on_regional_pools"] = (base_of(V, "NAT") + m.params["q_4"] + float(m.params[cols].values @ Pv),
-                                    math.sqrt(float(np.r_[1.0, Pv] @ m.cov_params().loc[["q_4"] + cols, ["q_4"] + cols].values
-                                                    @ np.r_[1.0, Pv])))
+    out["nat_on_regional_months"] = all_months(V, D)
+    out["lump"] = regional(V, D, spec="lump")
+    # region-aware but timing-blind: the closing quarter's determinations taken whole
+    TB = {k: regional(V, df, spec="quarter") for k, df in Wn.items()}
+    TB["Huber"] = regional(V, D, spec="quarter", robust=True)
+    TB["ratio form"] = regional(V, D, spec="quarter", kind="ratio")
+    TB["log-ratio form"] = regional(V, D, spec="quarter", kind="log")
+    TB["mean of the last three weeks as base"] = regional(V, D, spec="quarter", base="mean3")
+    TB["advance count as the target (current system)"] = regional(V, cur, spec="quarter", kind="adv")
+    TB["each region with one intercept"] = regional(V, D, spec="quarter", icpt="const")
+    TB["each region through the origin"] = regional(V, D, spec="quarter", icpt="none")
+    TB["fourth-quarter turns only, one intercept"] = regional(V, q4, spec="quarter", icpt="const")
+    TB.update(region_crude(V, D))
+    TB["one equation on the eight regional pools"] = all_pools(V, D)[0]
+    out["timing_blind"] = TB
     # rivals
     Rv = {}
     Rv["R0 seasonal factors of the quarter's first claims week on the level of the last four weeks (default)"] = default_path(V)
@@ -319,29 +387,26 @@ def ladder(V):
         m = sm.OLS(D["nq_" + r] - D["p1_" + r], dums(D)).fit()
         tot += base_of(V, r) + m.params["q_4"]
     Rv["R2g quarter-start terms region by region"] = tot
-    N4 = {}
-    N4["all turns"] = national(V, D)
-    N4["fourth-quarter turns only"] = national(V, q4)
-    N4["without 2020 and 2021"] = national(V, D[~D.y.isin([2020, 2021])])
+    # the national determinations at the national rate (quarter taken whole), and the national months
+    N4 = {k: national(V, df) for k, df in Wn.items() if k not in ("the last three years (turns from October 2023)",)}
     N4["Huber"] = national(V, D, robust=True)
     N4["ratio form"] = national(V, D, kind="ratio")
-    N4["since 2019"] = national(V, D[D.y >= 2019])
-    N4["since 2022"] = national(V, D[D.y >= 2022])
-    N4["the current system's turns"] = national(V, cur)
     N4["mean of the last three weeks as base"] = national(V, D, base="mean3")
-    m = sm.OLS(D["nq_NAT"] - D["p1_NAT"], sm.add_constant(pd.DataFrame({"pool": D["pool_NAT"]}))).fit()
-    N4["one intercept"] = base_of(V, "NAT") + m.params["const"] + m.params["pool"] * V.pool[("NAT", Q3)]
-    m = sm.OLS(D["nq_NAT"] - D["p1_NAT"], D[["pool_NAT"]]).fit()
-    N4["through the origin"] = base_of(V, "NAT") + m.params["pool_NAT"] * V.pool[("NAT", Q3)]
+    N4["one intercept"] = national(V, D, icpt="const")
+    N4["through the origin"] = national(V, D, icpt="none")
     X = dums(D)
     X["pool"] = D["pool_NAT"]
     X["pqc"] = D["pqc_NAT"]
     m = sm.OLS(D["nq_NAT"] - D["p1_NAT"], X).fit()
     N4["with the closing quarter's claims"] = base_of(V, "NAT") + m.params["q_4"] + m.params["pool"] * \
         V.pool[("NAT", Q3)] + m.params["pqc"] * V.qclaims[("NAT", Q3)]
-    # one common share for every region, region intercepts (the panel's pooled slope), summed
     N4["one share for every region, each region's own intercepts"] = common_share(V, D)
     out["national"] = N4
+    NM = {k: national(V, df, spec="months") for k, df in Wn.items()
+          if k not in ("the last three years (turns from October 2023)",)}
+    NM["the last month and the rest of the quarter"] = national(V, D, spec="last_rest")
+    NM["one month profile for every region, one share"] = common_share(V, D, spec="months")
+    out["national_months"] = NM
     L = {}
     L4 = D.tail(4)
     L["the last four turns' step per refused claim"] = base_of(V, "NAT") + \
@@ -356,21 +421,114 @@ def ladder(V):
     out["rivals"] = Rv
     out["gold"] = gold
     out["parts"] = golden_parts(V, D)
+    out["parts_tb"] = golden_parts(V, D, spec="quarter")
     out["D"] = D
     return out
 
 
-def common_share(V, D):
-    """Stacked regions: region-by-quarter intercepts and one slope on the regions' own pools."""
+def profile(V, D):
+    """One month profile for every region (the closing quarter's months weighted rho squared, rho and one), each region
+    its own scale and quarter intercepts; rho by least squares over a grid of hundredths."""
+    best = None
+    for k in range(1, 151):
+        rho = k / 100.0
+        ssr = 0.0
+        for r in REG:
+            X = dums(D)
+            X["w"] = rho ** 2 * D["m1_" + r] + rho * D["m2_" + r] + D["m3_" + r]
+            ssr += sm.OLS(D["nq_" + r] - D["p1_" + r], X).fit().ssr
+        if best is None or ssr < best[0] - 1e-9:
+            best = (ssr, rho)
+    rho = best[1]
+    tot = 0.0
+    for r in REG:
+        X = dums(D)
+        X["w"] = rho ** 2 * D["m1_" + r] + rho * D["m2_" + r] + D["m3_" + r]
+        m = sm.OLS(D["nq_" + r] - D["p1_" + r], X).fit()
+        w26 = rho ** 2 * V.mq3[r][0] + rho * V.mq3[r][1] + V.mq3[r][2]
+        tot += base_of(V, r) + m.params["q_4"] + m.params["w"] * w26
+    return tot, rho
+
+
+def common_intercepts(V, D):
+    """The regions stacked, one intercept per quarter of the year shared by every region's step, each region's own
+    month slopes."""
     rows = []
     for _, t in D.iterrows():
         for r in REG:
-            rows.append(dict(r=r, qq=t.qq, y=t["nq_" + r] - t["p1_" + r], pool=t["pool_" + r]))
+            rows.append(dict(r=r, qq=t.qq, y=t["nq_" + r] - t["p1_" + r],
+                             **{"m%d" % j: t["m%d_%s" % (j, r)] for j in (1, 2, 3)}))
+    P = pd.DataFrame(rows)
+    X = pd.get_dummies(P.qq.astype(str), prefix="q", dtype=float)
+    for r in REG:
+        for j in (1, 2, 3):
+            X["m%d_%s" % (j, r)] = P["m%d" % j] * (P.r == r)
+    m = sm.OLS(P.y, X).fit()
+    return sum(base_of(V, r) + m.params["q_4"] + sum(m.params["m%d_%s" % (j, r)] * V.mq3[r][j - 1] for j in (1, 2, 3))
+               for r in REG)
+
+
+def two_groups(V, D):
+    """The national step on the three regions' monthly determinations and the other five's, one intercept per quarter."""
+    X = dums(D)
+    x26_ = []
+    for j in (1, 2, 3):
+        X["hi%d" % j] = sum(D["m%d_%s" % (j, r)] for r in WCI)
+        X["lo%d" % j] = D["m%d_NAT" % j] - X["hi%d" % j]
+        hi = sum(V.mq3[r][j - 1] for r in WCI)
+        x26_ += [("hi%d" % j, hi), ("lo%d" % j, V.mq3["NAT"][j - 1] - hi)]
+    m = sm.OLS(D["nq_NAT"] - D["p1_NAT"], X).fit()
+    return base_of(V, "NAT") + m.params["q_4"] + sum(m.params[k] * v for k, v in x26_)
+
+
+def all_months(V, D):
+    """The national step on the 24 regional monthly determinations in one equation (the regional steps discarded),
+    with its standard error."""
+    X = dums(D)
+    cols, xv = [], []
+    for r in REG:
+        for j in (1, 2, 3):
+            c = "m%d_%s" % (j, r)
+            X[c] = D[c]
+            cols.append(c)
+            xv.append(V.mq3[r][j - 1])
+    m = sm.OLS(D["nq_NAT"] - D["p1_NAT"], X).fit()
+    v = np.r_[1.0, xv]
+    names = ["q_4"] + cols
+    return (base_of(V, "NAT") + m.params["q_4"] + float(m.params[cols].values @ np.array(xv)),
+            math.sqrt(float(v @ m.cov_params().loc[names, names].values @ v)))
+
+
+def all_pools(V, D):
+    """The national step on the eight regional pools taken whole in one equation, with its standard error."""
+    X = dums(D)
+    for r in REG:
+        X["pool_" + r] = D["pool_" + r]
+    m = sm.OLS(D["nq_NAT"] - D["p1_NAT"], X).fit()
+    Pv = np.array([V.pool[(r, Q3)] for r in REG])
+    cols = ["pool_" + r for r in REG]
+    return (base_of(V, "NAT") + m.params["q_4"] + float(m.params[cols].values @ Pv),
+            math.sqrt(float(np.r_[1.0, Pv] @ m.cov_params().loc[["q_4"] + cols, ["q_4"] + cols].values @ np.r_[1.0, Pv])))
+
+
+def common_share(V, D, spec="quarter"):
+    """Stacked regions: region-by-quarter intercepts and one set of slopes for every region on the regions' own
+    determinations (the quarter whole, or by month)."""
+    rows = []
+    tn = terms(spec)
+    for _, t in D.iterrows():
+        for r in REG:
+            row = dict(r=r, qq=t.qq, y=t["nq_" + r] - t["p1_" + r])
+            for g, n in zip(SPECS[spec], tn):
+                row[n] = sum(t["%s_%s" % (mm, r)] for mm in g)
+            rows.append(row)
     P = pd.DataFrame(rows)
     X = pd.get_dummies(P.r + "_" + P.qq.astype(str), dtype=float)
-    X["pool"] = P.pool
+    for n in tn:
+        X[n] = P[n]
     m = sm.OLS(P.y, X).fit()
-    return sum(base_of(V, r) + m.params["%s_4" % r] + m.params["pool"] * V.pool[(r, Q3)] for r in REG)
+    return sum(base_of(V, r) + m.params["%s_4" % r] + sum(m.params[n] * x for n, x in zip(tn, x26(V, r, spec)))
+               for r in REG)
 
 
 def factor_frame(V):
@@ -386,8 +544,8 @@ def factor_frame(V):
 
 
 def default_path(V):
-    """Default path steps 2 to 4: factors of each claims week of the quarter, 2022 to 2025, on the level of the last
-    four weeks, times the factor of the first claims week of the fourth quarter."""
+    """The seasonal route: factors of each claims week of the quarter, 2022 to 2025, on the level of the last four
+    weeks, times the factor of the first claims week of the fourth quarter."""
     w = factor_frame(V)
     w2 = w[(w.sun >= dt.date(2022, 1, 2)) & (w.sun <= dt.date(2025, 12, 28))]
     fac = w2.groupby(["kq", w2.q.map(lambda x: x[1])]).ratio.mean()
@@ -420,108 +578,168 @@ def precision(V, L):
     se_call = math.sqrt(sum(p["var_call"] for p in parts.values()))
     se_refile = math.sqrt(sum(p["var_refile"] for p in parts.values()))
     se_icpt = math.sqrt(sum(p["var_icpt"] for p in parts.values()))
-    m = fit_region(L["D"], "NAT")
+    se_tb = math.sqrt(sum(p["var_call"] for p in L["parts_tb"].values()))
+    m = fit_region(L["D"], "NAT", spec="quarter")
     P = V.pool[("NAT", Q3)]
-    se_nat = math.sqrt(float(np.array([1.0, P]) @ m.cov_params().loc[["q_4", "pool"], ["q_4", "pool"]].values @
-                             np.array([1.0, P])))
-    return dict(se_call=se_call, se_refile=se_refile, se_icpt=se_icpt, se_nat=se_nat)
+    names = ["q_4", "m1+m2+m3"]
+    se_nat = math.sqrt(float(np.array([1.0, P]) @ m.cov_params().loc[names, names].values @ np.array([1.0, P])))
+    return dict(se_call=se_call, se_refile=se_refile, se_icpt=se_icpt, se_tb=se_tb, se_nat=se_nat)
 
 
 def components(V, L):
     parts = L["parts"]
     refile = sum(p["refile"] for p in parts.values())
-    wci = sum(parts[r]["refile"] for r in ("Western", "Coastal", "Island"))
+    wci = sum(parts[r]["refile"] for r in WCI)
     without = sum(p["base"] + p["icpt"] for p in parts.values())
     pool = V.pool[("NAT", Q3)]
-    pool_wci = sum(V.pool[(r, Q3)] for r in ("Western", "Coastal", "Island"))
-    shares = {r: parts[r]["slope"] for r in REG}
-    nat_slope = float(fit_region(L["D"], "NAT").params["pool"])
+    pool_wci = sum(V.pool[(r, Q3)] for r in WCI)
+    sep_wci = sum(V.mq3[r][2] for r in WCI)
+    tb = L["parts_tb"]
     return dict(call=L["gold"], refile=refile, refile_wci_share=wci / refile, without=without, pool=pool,
-                pool_wci=pool_wci, pool_wci_share=pool_wci / pool, shares=shares, nat_slope=nat_slope,
-                nat_refile=nat_slope * pool, base=base_of(V, "NAT"))
+                pool_wci=pool_wci, pool_wci_share=pool_wci / pool, sep_wci=sep_wci, sep_wci_share=sep_wci / pool_wci,
+                slopes={r: parts[r]["slopes"] for r in REG}, base=base_of(V, "NAT"),
+                tb_refile=sum(p["refile"] for p in tb.values()), tb_shares={r: tb[r]["slopes"]["m1+m2+m3"] for r in REG},
+                nat_slope=float(fit_region(L["D"], "NAT", spec="quarter").params["m1+m2+m3"]))
 
 
 def usual_mix(V, L):
     D = L["D"]
-    hi = (D["pool_Western"] + D["pool_Coastal"] + D["pool_Island"]) / D["pool_NAT"]
+    hi = sum(D["pool_" + r] for r in WCI) / D["pool_NAT"]
+    last = sum(D["m3_" + r] for r in WCI) / sum(D["pool_" + r] for r in WCI)
     pools = D["pool_NAT"]
     return dict(median_share=float(hi.median()), mean_share=float(hi.mean()), max_share=float(hi.max()),
-                median_pool=float(pools.median()), mean_pool=float(pools.mean()), hi=hi)
+                median_pool=float(pools.median()), mean_pool=float(pools.mean()), hi=hi,
+                median_last=float(last.median()), max_last=float(last.max()), min_last=float(last.min()),
+                q3_last=float(last[D.qq == 4].median()), last=last)
+
+
+def _hat_loo(X, y):
+    """Leave-one-out residuals of an OLS fit, exact, from the hat matrix."""
+    X, y = np.asarray(X, float), np.asarray(y, float)
+    XtXi = np.linalg.pinv(X.T @ X)
+    e = y - X @ (XtXi @ (X.T @ y))
+    h = np.einsum("ij,jk,ik->i", X, XtXi, X)
+    return e / (1 - h)
 
 
 def loo(V, D):
-    """Leave-one-out errors of the national step at each turn: the regional build summed, the national pool, the
-    closing quarter's claims, a quarter-start term alone."""
-    errs = {k: [] for k in ("regional", "pool", "claims", "term")}
-    for k in range(len(D)):
-        tr = D.drop(index=D.index[k])
-        te = D.iloc[[k]]
-        qq = int(te.qq.iloc[0])
-        y = float(te["nq_NAT"].iloc[0] - te["p1_NAT"].iloc[0])
-        p = 0.0
+    """Leave one turn out, the national step's errors at each turn: the golden (each region, each month), the
+    region-aware timing-blind build, months grouped, the log-ratio form, the national months, the national pool, the
+    closing quarter's claims, a quarter-start term, and the 24 regional months in one equation."""
+    out = {}
+    yN = (D["nq_NAT"] - D["p1_NAT"]).values.astype(float)
+    for name, spec in (("golden", "months"), ("timing_blind", "quarter"), ("last_rest", "last_rest"), ("lump", "lump"),
+                       ("last", "last")):
+        e = np.zeros(len(D))
         for r in REG:
-            m = fit_region(tr, r)
-            p += m.params["q_%d" % qq] + m.params["pool"] * float(te["pool_" + r].iloc[0])
-        errs["regional"].append(y - p)
-        for name, col in (("pool", "pool_NAT"), ("claims", "pqc_NAT"), ("term", None)):
-            X = dums(tr)
-            if col:
-                X["v"] = tr[col]
-            m = sm.OLS(tr["nq_NAT"] - tr["p1_NAT"], X).fit()
-            p = m.params["q_%d" % qq] + (m.params["v"] * float(te[col].iloc[0]) if col else 0.0)
-            errs[name].append(y - p)
-    return {k: np.array(v) for k, v in errs.items()}
+            X, y = design(D, r, spec=spec)
+            e += _hat_loo(X.values, y.values)
+        out[name] = e
+    e = np.zeros(len(D))
+    for r in REG:
+        X, y = design(D, r, kind="log", spec="months")
+        p1 = D["p1_" + r].values.astype(float)
+        yl = y.values.astype(float)
+        e += D["nq_" + r].values - p1 * np.exp(yl - _hat_loo(X.values, yl))
+    out["log_ratio"] = e
+    for name, spec in (("national_months", "months"), ("pool", "quarter")):
+        X, y = design(D, "NAT", spec=spec)
+        out[name] = _hat_loo(X.values, y.values)
+    X = dums(D)
+    X["pqc"] = D["pqc_NAT"]
+    out["claims"] = _hat_loo(X.values, yN)
+    out["term"] = _hat_loo(dums(D).values, yN)
+    X = dums(D)
+    for r in REG:
+        for j in (1, 2, 3):
+            X["m%d_%s" % (j, r)] = D["m%d_%s" % (j, r)]
+    out["all_months"] = _hat_loo(X.values, yN)
+    return out
+
+
+def rmse(e):
+    return float(np.sqrt(np.mean(np.square(e))))
 
 
 def panel(V, D):
-    """Each region's step at each turn: region-by-quarter intercepts with one slope against a slope per region; the
-    F test and the leave-one-turn-out root mean square error per region and turn."""
+    """Each region's step at each turn, stacked: region-by-quarter intercepts with (a) one set of month slopes for every
+    region against a set per region (the regional test) and (b) one slope per region on the quarter taken whole
+    against three month slopes per region (the timing test); F tests, and leave-one-turn-out errors per region and
+    turn."""
     rows = []
     for k, (_, t) in enumerate(D.iterrows()):
         for r in REG:
-            rows.append(dict(turn=k, r=r, qq=t.qq, y=t["nq_" + r] - t["p1_" + r], pool=t["pool_" + r]))
+            rows.append(dict(turn=k, r=r, qq=t.qq, y=t["nq_" + r] - t["p1_" + r], m1=t["m1_" + r], m2=t["m2_" + r],
+                             m3=t["m3_" + r]))
     P = pd.DataFrame(rows)
 
-    def design(df, common):
+    def X_(df, kind):
         X = pd.get_dummies(df.r + "_" + df.qq.astype(str), dtype=float)
-        if common:
-            X["pool"] = df.pool
+        if kind == "common_months":
+            for j in (1, 2, 3):
+                X["m%d" % j] = df["m%d" % j]
+        elif kind == "region_quarter":
+            for r in REG:
+                X["q_" + r] = (df.m1 + df.m2 + df.m3) * (df.r == r)
         else:
             for r in REG:
-                X["pool_" + r] = df.pool * (df.r == r)
+                for j in (1, 2, 3):
+                    X["m%d_%s" % (j, r)] = df["m%d" % j] * (df.r == r)
         return X
     out = {}
-    for common in (True, False):
+    fits = {}
+    for kind in ("common_months", "region_quarter", "region_months"):
+        X = X_(P, kind)
+        fits[kind] = sm.OLS(P.y, X).fit()
         e = []
         for tid in P.turn.unique():
             tr, te = P[P.turn != tid], P[P.turn == tid]
-            Xtr = design(tr, common)
-            Xte = design(te, common).reindex(columns=Xtr.columns, fill_value=0.0)
+            Xtr = X_(tr, kind)
+            Xte = X_(te, kind).reindex(columns=Xtr.columns, fill_value=0.0)
             e.extend(list(te.y - sm.OLS(tr.y, Xtr).fit().predict(Xte)))
-        out["rmse_common" if common else "rmse_regional"] = float(np.sqrt(np.mean(np.square(e))))
-    mc, mr = sm.OLS(P.y, design(P, True)).fit(), sm.OLS(P.y, design(P, False)).fit()
-    out["F"] = float(((mc.ssr - mr.ssr) / 7) / (mr.ssr / mr.df_resid))
-    out["df"] = (7, int(mr.df_resid))
+        out["rmse_" + kind] = rmse(e)
+    full = fits["region_months"]
+    for kind, q in (("common_months", 21), ("region_quarter", 16)):
+        out["F_" + kind] = float(((fits[kind].ssr - full.ssr) / q) / (full.ssr / full.df_resid))
+        out["df_" + kind] = (q, int(full.df_resid))
+    # region by region: three month slopes against one on the quarter whole, and the second month's against the last's
+    out["F_region"] = {}
+    out["F_lump"] = {}
+    for r in REG:
+        mm = fit_region(D, r)
+        mq = fit_region(D, r, spec="quarter")
+        ml = fit_region(D, r, spec="lump")
+        out["F_region"][r] = float(((mq.ssr - mm.ssr) / 2) / (mm.ssr / mm.df_resid))
+        out["F_lump"][r] = float((ml.ssr - mm.ssr) / (mm.ssr / mm.df_resid))
+    out["df_region"] = (2, int(fit_region(D, REG[0]).df_resid))
     return out
 
 
-def twins(V, D):
-    """Pairs of turns whose national pools are within 5 per cent while the share of the pool in Western, Coastal and
-    Island differs by 0.12 or more, outside 2020 and 2021."""
+def twin_timing(V, D, tol_hi=0.10, tol_nat=0.15):
+    """The pair of turns of the same quarter of the year, outside 2020 and 2021, whose Western, Coastal and Island
+    determinations are within tol_hi of each other and whose national determinations are within tol_nat, and whose
+    three regions' last-month part differs most."""
     D = D.reset_index(drop=True).copy()
     D["step"] = D.nq_NAT - D.p1_NAT
-    D["hi"] = (D.pool_Western + D.pool_Coastal + D.pool_Island) / D.pool_NAT
-    out = []
+    D["hi"] = sum(D["pool_" + r] for r in WCI)
+    D["last"] = sum(D["m3_" + r] for r in WCI) / D.hi
+    best = None
     for a in range(len(D)):
-        for b in range(a + 1, len(D)):
-            A, B = D.loc[a], D.loc[b]
-            if A.y in (2020, 2021) or B.y in (2020, 2021):
+        for b_ in range(a + 1, len(D)):
+            A, B = D.loc[a], D.loc[b_]
+            if A.qq != B.qq or A.y in (2020, 2021) or B.y in (2020, 2021):
                 continue
-            if abs(A.pool_NAT / B.pool_NAT - 1) < 0.05 and abs(A.hi - B.hi) >= 0.12:
-                out.append(dict(a=A.sun, b=B.sun, pool_a=A.pool_NAT, pool_b=B.pool_NAT, hi_a=A.hi, hi_b=B.hi,
-                                step_a=A.step, step_b=B.step))
-    out.sort(key=lambda x: -abs(x["hi_a"] - x["hi_b"]))
-    return out
+            if abs(A.hi / B.hi - 1) <= tol_hi and abs(A.pool_NAT / B.pool_NAT - 1) <= tol_nat:
+                d = abs(A["last"] - B["last"])
+                if best is None or d > best[0]:
+                    best = (d, A, B)
+    if best is None:
+        return None
+    _, A, B = best
+    late, early = (A, B) if A["last"] > B["last"] else (B, A)
+    return dict(late_turn=late.sun, early_turn=early.sun, late_hi=int(late.hi), early_hi=int(early.hi),
+                late_pool=int(late.pool_NAT), early_pool=int(early.pool_NAT), late_last=float(late["last"]),
+                early_last=float(early["last"]), late_step=int(late.step), early_step=int(early.step))
 
 
 # ---------------------------------------------------------------------------------------------------- the asks
@@ -584,13 +802,12 @@ def ads_rival(V, target):
     return base_of(V, "NAT") + m.params["q_4"] + m.params["x"] * x26, len(P), x26
 
 
-# ---------------------------------------------------------------------------------------------------- region-aware
-# constructions beyond the golden's own, and the pooled rival's out-of-sample record
-def region_aware(V, L):
-    """Every other way of sizing the step region by region or by group of regions: crude ratios without a seasonal
-    intercept, the national step on two pools or on the pool and its mix, fourth-quarter turns region by region, and
-    the last three and five years of turns."""
-    D = L["D"]
+
+
+# ---------------------------------------------------------------------------------------------------- crude
+# region-aware, timing-blind constructions beyond the regressions
+def region_crude(V, D):
+    """Crude ratios without a seasonal intercept, and the national step on two pools or on the pool and its mix."""
     b = lambda r: base_of(V, r)
     out = {}
     q4 = D[D.qq == 4]
@@ -598,45 +815,45 @@ def region_aware(V, L):
         b(r) + float(((q4["nq_" + r] - q4["p1_" + r]) / q4["pool_" + r]).mean()) * V.pool[(r, Q3)] for r in REG)
     out["each region's summed steps over its summed pools, every turn, no intercept"] = sum(
         b(r) + float((D["nq_" + r] - D["p1_" + r]).sum() / D["pool_" + r].sum()) * V.pool[(r, Q3)] for r in REG)
-    wci = ("Western", "Coastal", "Island")
-    hi26 = sum(V.pool[(r, Q3)] for r in wci)
+    hi26 = sum(V.pool[(r, Q3)] for r in WCI)
     X = dums(D)
-    X["hi"] = sum(D["pool_" + r] for r in wci)
+    X["hi"] = sum(D["pool_" + r] for r in WCI)
     X["lo"] = D["pool_NAT"] - X["hi"]
     m = sm.OLS(D["nq_NAT"] - D["p1_NAT"], X).fit()
     out["the national step on two pools (Western, Coastal and Island; the rest)"] = \
         b("NAT") + m.params["q_4"] + m.params["hi"] * hi26 + m.params["lo"] * (V.pool[("NAT", Q3)] - hi26)
     X = dums(D)
     X["pool"] = D["pool_NAT"]
-    X["mix"] = sum(D["pool_" + r] for r in wci)
+    X["mix"] = sum(D["pool_" + r] for r in WCI)
     m = sm.OLS(D["nq_NAT"] - D["p1_NAT"], X).fit()
     out["the national step on the pool and its three-region part"] = \
         b("NAT") + m.params["q_4"] + m.params["pool"] * V.pool[("NAT", Q3)] + m.params["mix"] * hi26
-    tot = 0.0
-    for r in REG:
-        mm = sm.OLS(q4["nq_" + r] - q4["p1_" + r], sm.add_constant(q4["pool_" + r])).fit()
-        tot += b(r) + float(mm.params.iloc[0]) + float(mm.params.iloc[1]) * V.pool[(r, Q3)]
-    out["each region at fourth-quarter turns only, one intercept"] = tot
-    out["the last three years (turns from October 2023)"] = regional(V, D[D.sun >= dt.date(2023, 10, 1)])
-    out["the last five years (turns from October 2021)"] = regional(V, D[D.sun >= dt.date(2021, 10, 1)])
     return out
 
 
-def loo_one_share(V, D):
-    """Leave one turn out: the national step from region-by-quarter intercepts and one share for every region."""
+def loo_one_share(V, D, spec="quarter"):
+    """Leave one turn out: the national step from region-by-quarter intercepts and one set of slopes for every region."""
     errs = []
+    tn = terms(spec)
     for k in range(len(D)):
         tr, te = D.drop(index=D.index[k]), D.iloc[[k]]
-        rows = [dict(r=r, qq=t.qq, y=t["nq_" + r] - t["p1_" + r], pool=t["pool_" + r])
-                for _, t in tr.iterrows() for r in REG]
+        rows = []
+        for _, t in tr.iterrows():
+            for r in REG:
+                row = dict(r=r, qq=t.qq, y=t["nq_" + r] - t["p1_" + r])
+                for g, n in zip(SPECS[spec], tn):
+                    row[n] = sum(t["%s_%s" % (mm, r)] for mm in g)
+                rows.append(row)
         P = pd.DataFrame(rows)
         X = pd.get_dummies(P.r + "_" + P.qq.astype(str), dtype=float)
-        X["pool"] = P.pool
+        for n in tn:
+            X[n] = P[n]
         m = sm.OLS(P.y, X).fit()
         qq = int(te.qq.iloc[0])
-        p = sum(m.params["%s_%d" % (r, qq)] + m.params["pool"] * float(te["pool_" + r].iloc[0]) for r in REG)
+        p = sum(m.params["%s_%d" % (r, qq)] + sum(m.params[n] * sum(float(te["%s_%s" % (mm, r)].iloc[0]) for mm in g)
+                                                 for g, n in zip(SPECS[spec], tn)) for r in REG)
         errs.append(float(te["nq_NAT"].iloc[0] - te["p1_NAT"].iloc[0] - p))
-    return float(np.sqrt(np.mean(np.square(errs))))
+    return rmse(errs)
 
 
 def twin_same_quarter(V, D, tol=0.08):

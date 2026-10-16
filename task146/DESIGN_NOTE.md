@@ -6,36 +6,41 @@ header and Situation only. Its world, decision and quantity are kept. Its mechan
 attention signal cannot see) is a hidden bulk filing and is not kept. The pitfall is re-found from how unemployment
 insurance claims come to exist: a claim takes effect on the Sunday of the week it is filed, its base period is fixed
 by the quarter of that Sunday, a claimant refused for want of base-period earnings can be admitted once the quarter
-turns, and how many of the refused come back is a property of the region's labour market. Deepened at the stage 2
-resume (2026-10-16): the refiling itself is inferable from the base-period definition, so the decisive step is now the
-refiling share's regional structure, estimated from past quarter turns (`## Tried and rejected`). Built at stage 3 on
-2026-10-16: every measured figure below is the shipped pack's, recomputed by `generator/checks.py` and `verify.py`.
-Repaired the same day after the strict rule 3 audit (AT_RISK, data semantics): the refiling is now filed in the technical
-notes as the board's own rule, so no reader misses it and the call turns only on how many come back, region by region;
-the world was rebuilt so the national rate on the national determinations files two bins low and the data visibly
-rejects pooling (`## Build record`).
+turns, and how many of the refused come back is a property of the region's labour market and of how long ago they were
+refused. Deepened at the stage 2 resume (2026-10-16): the refiling itself is inferable from the base-period definition,
+so the decisive step became the refiling share's regional structure. Repaired the same day after the strict rule 3
+audit (AT_RISK, data semantics): the refiling is filed in the technical notes as the board's own rule. Strengthened the
+same day after the rule 3 re-audit (PASS) found the stump too weak (both top responses land regional sizing about half to
+three quarters of the time): in this world a refused claimant's chance of filing again at the turn also falls steeply
+with the weeks since the refusal, the third quarter's refusals in the three regions that come back fell late (55.3 per
+cent in September), and the call turns on sizing the refiling region by region and month by month of refusal; regional
+sizing on the quarter taken whole files two bins low (`## Build record`). Every measured figure below is the shipped
+pack's, recomputed by `generator/checks.py` and `verify.py`.
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task146.json`, architecture v1, registered 2026-10-15, edited in place at the stage 2 resume (2026-10-16) for the deepened decisive step and at stage 3 (answer, spine rows, Layer 1 as built); `guard.py check` WARN (repeat.gate_g, overuse.gate_g, answered below), no BLOCK; nearest drivers 0.07 and under; same-puzzle and same-driver matches against older builds (task134 v3, task54) and the composition drivers (task95, task137, task448) differentiated on the card; `guard.py validate` clean |
-| Domain / task type | `survey-research-official-statistics` (client domain), task type `seasonal-adjustment-official-time-series-production` (forecasting): the call is the next value of an official weekly series in a week that carries an administrative calendar effect, which official time-series practice models as a regression effect with its own driver beside the seasonal component, and on the components where their effects differ and their mix moves. The seed's home, `economics-econometrics` with forecasting, is banned against task145 (the pairing in the last three builds) |
+| Card | `.claude/skills/fingerprint/cards/task146.json`, architecture v1, registered 2026-10-15, edited in place at the stage 2 resume (2026-10-16) for the deepened decisive step, at stage 3 (answer, spine rows, Layer 1 as built) and at the strengthening (answer, driver, stump, analyst and domain tests, Layer 2 pattern, the task134 differentiation); `guard.py heart` WARN (repeat.gate_g, overuse.gate_g, answered below), no BLOCK; nearest drivers 0.07 and under; same-puzzle and same-driver matches against older builds (task134 v3, task54) and the composition drivers (task95, task137, task448) differentiated on the card; `guard.py validate` clean |
+| Domain / task type | `survey-research-official-statistics` (client domain), task type `seasonal-adjustment-official-time-series-production` (forecasting): the call is the next value of an official weekly series in a week that carries an administrative calendar effect, which official time-series practice models as a regression effect with its own driver beside the seasonal component, on the components where their effects differ and their mix moves, and with the driver measured at the grain the effect works on (here the month of the refusal). The seed's home, `economics-econometrics` with forecasting, is banned against task145 (the pairing in the last three builds) |
 | Objective | Forecasting & Predictive Modeling: the national initial claims of the claims week Sunday 4 to Saturday 10 October 2026, in progress at the decision (Thursday 8 October 2026, after the board's 08:30 release of the week ended 3 October) and first published on Thursday 15 October 2026 |
 | Shape | `single-figure`: one committed count, its critical components, a chart and two ask tables supplying the criteria (the call and its components 6, the chart's parts 5, Ask A 24, Ask B 14, the files 2, instructions about 3: about 54) |
 | Decision | `quantity_figure`, answer unit `count` (the desk's call for the week, to the nearest thousand) |
-| Mechanism | gap population (decisive: the claims that make the quarter-start step are filed by the claimants the closing quarter refused, in each region at that region's own share) and time (the step comes in the first week whose Sunday opens the quarter); pattern none; generators G14 (the first week's yield conditioned on the region), G6 (the refused pool's regional mix moved far from the usual), G11 (the pool is the claims that failed the monetary eligibility test), G13 (the week the turn falls in); Gate G `forecasting`; strategy `composition_mix` |
-| Layer 2 family / pattern | `field_method` (an administrative calendar effect in an official series modelled as a regression effect with its driver, on the components); `own:quarter-start-refiling-effect-sized-region-by-region-on-the-closing-quarter-ineligible-determinations` (nearest library line: survey-research-official-statistics/seasonal-adjustment-official-time-series-production/1, model the regression effects before the seasonal filter; this build's effect is a recurring calendar step with a measurable driver whose yield differs by component) |
+| Mechanism | gap population (decisive: the claims that make the quarter-start step are filed by the claimants the closing quarter refused, in each region at that region's own shares by the month of the refusal) and time (the step comes in the first week whose Sunday opens the quarter, and the weeks from a refusal to that week set how many of the refused are still out of work); pattern none; generators G14 (the first week's yield conditioned on the region and the month of refusal), G6 (the refused pool's regional and monthly mix moved far from the usual), G11 (the pool is the claims that failed the monetary eligibility test), G13 (the week the turn falls in); Gate G `forecasting`; strategy `composition_mix` |
+| Layer 2 family / pattern | `field_method` (an administrative calendar effect in an official series modelled as a regression effect with its driver, on the components); `own:quarter-start-refiling-effect-sized-by-region-and-month-of-refusal-on-the-closing-quarter-ineligible-determinations` (nearest library line: survey-research-official-statistics/seasonal-adjustment-official-time-series-production/1, model the regression effects before the seasonal filter; this build's effect is a recurring calendar step with a measurable driver whose yield differs by component and by the driver's timing inside the closing quarter) |
 | Furniture | forum `customer_or_counterparty` (the bank's clients receive the preview), forcing event `other` (the board's Thursday 08:30 release), organisation family `financial_institution` (a bank's economics desk), role family `research_desk`, context artifact `other` (the board's releases, statistics and technical notes; no stakeholder memo or model ships), calibration `none`, opening `question-first`, question form `how-many` |
-| Spine | `ic_open_data_by_industry_2023-2026.csv`, the board's open-data cube of claims by claims week, region, industry division of the last employer and claim type from the claims week of 1 January 2023 (constructed, 189,848 rows), on Ask B's path; the call reads the board's weekly series by region and the monthly program statistics. The pack is 16 files in four formats (csv, json, pdf, xlsx) |
+| Spine | `ic_open_data_by_industry_2023-2026.csv`, the board's open-data cube of claims by claims week, region, industry division of the last employer and claim type from the claims week of 1 January 2023 (constructed, 189,903 rows), on Ask B's path; the call reads the board's weekly series by region and the monthly program statistics. The pack is 16 files in four formats (csv, json, pdf, xlsx) |
 | Deliverables | `ic_preview_2026-10-10.docx` (the one-page preview: the call and a chart of the weekly series with it), `ic_preview_2026-10-10.xlsx` (the call and the two ask tables) |
 | People | drawn with `guard.py names --geo "New Zealand" --seed 146`: Stacey Baxter (senior economist, Rothwell Bank, writes the preview), Tia Hewitt (economist on the desk, keeps the desk's files and data log), Nicola Pedersen (the board's manager of labour market statistics, the technical notes' author and contact), Timothy Laing (the board's employer services lead, the register's last save); Employer Services officers appear by initials only in their case notes and register; none appears in the prompt |
 
-**Guard.** `guard.py check` on the edited card: WARN `repeat.gate_g` (forecasting beside task145) and WARN
-`overuse.gate_g` (5 of the last 12), no BLOCK. Answered: the objective is Forecasting and the honest mechanism for a
-forecast the correctly read past does not pin is `forecasting`; task145's is a forward count re-routed at plan exchange
-rates and shares nothing else on the card. The structural tests matched older builds on (population, G14,
-quantity_figure) and (population, G14, forecasting): task134 v3 and task54, each differentiated on the card in one line.
+**Guard.** `guard.py heart` on the edited card at the strengthening: WARN `repeat.gate_g` (forecasting beside task145)
+and WARN `overuse.gate_g` (5 of the last 12), no BLOCK; nearest drivers 0.07 (task446 v2) and under. Answered: the
+objective is Forecasting and the honest mechanism for a forecast the correctly read past does not pin is
+`forecasting`; task145's is a forward count re-routed at plan exchange rates and shares nothing else on the card. The
+structural tests matched older builds on (population, G14, quantity_figure) and (population, G14, forecasting):
+task134 v3 and task54, each differentiated on the card in one line. A scratch card carrying the recency driver, checked
+as a new draw before the world was rebuilt, blocked only against this slot's own registration (test.own_lineage and
+driver 0.61, the same build); its nearest other drivers were 0.06 (task1, task127 lineage) and 0.05 (task85, task123).
 
 **Same-puzzle and same-driver tests.** Gap population, decisive G14, decision `quantity_figure`, Gate G `forecasting`:
 no build in the last twelve carries gap population with decisive G14 (task143's decisive is G17, task141's G9,
@@ -43,25 +48,33 @@ task142's G2, task144's G6). Older matches are task134 v3 and task54, differenti
 
 **Abstraction test.** Stripped of nouns, the driver is: a step a weekly count takes each time a calendar period turns is
 released by the turn from a pool the closing period built (units refused at their first attempt because their
-qualifying record lagged), the share of the pool that comes back differs several-fold between the pool's segments and
-holds within each across past turns, and when the closing period refused far more units than usual, mostly in the
-segments that come back most, both the seasonal forecast and the pool taken whole at the pooled rate understate the
-step. The three nearest drivers (`guard.py`, 0.07 and under): task136 v1 lineage (an intervention's increment carried as
-a multiple of a site's own pace), task446 v2 (a screen's yield against a moving base rate), task127 v1 lineage (a fixed
-team's finishes before a period closes); none shares the latent structure. Read by mechanism rather than score: the
-composition drivers are the nearest. task95's rate is a weighted average over two latent classes rebuilt per unit by
-differencing two dated events across two registers; task137 splits a repricing's share between two kinds of unit;
-task448 completes a register by a capture rate that differs by filing route. Here nothing is latent per unit or
-completed: a calendar turn releases a closing quarter's refused claims all at once into one week of an official series,
-and the step is a regression effect whose yield is measured region by region at 50 past turns. task134's lineage v2 (a
-pool converting on a hazard by time since entry) has a duration clock; here there is none.
+qualifying record lagged); the share of the pool that comes back differs several-fold between the pool's segments and,
+within the segments that come back at all, falls steeply with the time from the refusal to the turn, steady within each
+across past turns; when the closing period's refusals in the segments that come back most fell late in the period, the
+segment pools taken whole at their average rates, the pool taken whole at the pooled rate and the seasonal forecast all
+understate the step. The nearest drivers (`guard.py`, 0.07 and under): task446 v2 (a screen's yield against a moving
+base rate), task123 v2 (a total split onto calendar periods by how fast it ran), task85 v2.5 (each unit's own
+observation window), task133 v2 (units held only if still present at a takeover); none shares the latent structure.
+Read by mechanism rather than score: the composition drivers are the nearest. task95's rate is a weighted average over
+two latent classes rebuilt per unit by differencing two dated events across two registers; task137 splits a repricing's
+share between two kinds of unit; task448 completes a register by a capture rate that differs by filing route. Here
+nothing is latent per unit or completed: a calendar turn releases a closing quarter's refused claims all at once into one
+week of an official series, and the step is a regression effect whose yield is measured region by region and month by
+month at 50 past turns. task134's lineage v2 converted a pool continuously on a hazard by time since entry; here no
+survival curve is fitted and nothing converts by age: the turn is a single release, and the month of the quarter a claim
+was refused in enters as three monthly determinations the board publishes, each with its own share. The stage 2 resume
+had rejected the month of refusal for nearness to that lineage and for three collinear monthly pools (`## Tried and
+rejected`); at the strengthening the guard puts no driver nearer than 0.07, and the world's month-to-month swings and
+timed layoff episodes separate the three months (F 219 to 529 a region against the quarter taken whole).
 
 **Data-native sentence.** The board's rules let a claimant refused for want of base-period earnings file again once a
-later quarter moves the base period, but how many do is a property of the region: in the tourism and building regions
-the refused are mostly short-tenure seasonal workers whose last season now counts, and about one in four to three in
-ten come back in the first week; in the Capital and the manufacturing regions they are mostly people with patchy
-earnings all year, and fewer than one in ten do; this year's third quarter refused about one and a half times the usual
-number, nearly half of them in the three regions where claimants come back, against about a fifth at a usual turn.
+later quarter moves the base period, but how many do depends on the region and on how long before the turn they were
+refused: in the tourism and building regions the refused are mostly short-tenure seasonal workers whose last season now
+counts, and between two thirds and nine tenths of those refused in a quarter's last month come back in the first week,
+while those refused in its first two months have mostly found other work and under one in five come back; elsewhere few
+come back at any month; this year's third quarter refused about 1.4 times a usual quarter's number, 40 per cent of them
+in the three regions where claimants come back, and 55 per cent of those three regions' refusals came in September,
+against about a third in a quarter's last month at a usual turn.
 
 **Sources read, one line each.** `guard.py mechanisms --objective forecasting`: conditional survival (133), a hazard by
 time since entry and a surge filling the pool (134 v2), an intervention's increment on own pace (136), a mixture of unit
@@ -86,108 +99,119 @@ clients a short initial claims preview each Thursday afternoon with its call for
 as-of is Thursday 8 October 2026, after the release of the week ended 3 October, which carried the September program
 statistics. The desk holds Employer Services' notice register, portal export and case notes from an information
 request answered on 7 October. Through 2025 and early 2026 building and tourism boomed in the Western, Coastal and
-Island regions and their refused claimants were few; in the third quarter of 2026 building contractors and hotels shed
-staff taken on in that boom, claims rose, and the share of new claims found monetarily ineligible rose with them in
-those three regions while elsewhere it stayed near its usual level. Employer Services took layoff notices by email until 30 June 2026 and on the Employer
-Portal from 1 July 2026. The board's open-data cube of claims by industry was rebuilt for the 2023 industry
+Island regions and their refused claimants were few; layoffs there come in lumps, as a season ends or a project
+finishes, so their refusals move together from month to month and some quarters' fall late and others' early. In the
+third quarter of 2026 their claims rose from June, their refusals stayed near the usual level in July and August, and in
+September, as the winter season ended and building contractors and hotels shed staff taken on in the boom, more than
+half of their new claims were found monetarily ineligible; elsewhere refusals stayed near their usual level. Employer
+Services took layoff notices by email until 30 June 2026 and on the Employer Portal from 1 July 2026. The board's open-data cube of claims by industry was rebuilt for the 2023 industry
 classification from the claims week of 4 January 2026.
 
 ## Default path
 
-1. Read the board's weekly initial claims by region in both claims-system layouts into one national series by claims
-   week to the advance count of the week ended 3 October 2026 (11,695).
-2. Sum the national monetarily ineligible determinations of each calendar quarter from the program statistics
+1. Read the board's weekly initial claims by region in both claims-system layouts into one series per region by claims
+   week to the advance count of the week ended 3 October 2026 (11,814 nationally).
+2. Sum each region's monetarily ineligible determinations of each calendar quarter from the program statistics
    (insufficient in the sheets to June 2021): the claimants technical notes 2.3 allow to file again once the base period
    has moved.
-3. At each of the 50 first claims weeks of a quarter from April 2014 to July 2026, regress the national change from the
-   week before on the closing quarter's national determinations, with one intercept per quarter of the year.
-4. Add to the week ended 3 October the fourth-quarter intercept and the fitted rate times the third quarter's 30,182
-   determinations.
+3. At each of the 50 first claims weeks of a quarter from April 2014 to July 2026, regress each region's change from the
+   week before on that region's ineligible determinations in the quarter just closed, with one intercept per quarter of
+   the year (Western about 0.33, Coastal and Island about 0.26, every other region under 0.1).
+4. Add to each region's week ended 3 October its fourth-quarter intercept and its share of its July to September
+   determinations, and sum the eight regions: about 3,500 claims filed again on about 11,350 for the rest of the week.
 
-Ends on: about 14,000 initial claims for the week ended 10 October 2026 (13,727 on the built pack and on the clean
-truth, asserted R3a; every national variant 13,556 to 14,158).
-Golden: about 16,000 initial claims for the week ended 10 October 2026 (16,038 on the built pack, 0.46 of a bin from
-the edges; the world's own expected advance count 16,203).
+Ends on: about 15,000 initial claims for the week ended 10 October 2026 (14,849 on the built pack and on the clean
+truth, asserted R3a; every region-aware timing-blind construction 13,767 to 15,807, a full bin or more off).
+Golden: about 17,000 initial claims for the week ended 10 October 2026 (16,895 on the built pack, 0.40 of a bin from
+the edge; the world's own expected advance count 17,045).
 
 ## Stump sentence
 
-Sizing the claims filed again in the first claims week of the fourth quarter on the third quarter's national ineligible
-determinations at the national rate past turns show calls about 14,000 initial claims for the week ended 10 October 2026
-(Ends on); the step that lands it there is pooling regions whose refused claimants come back at shares that differ
-several-fold and hold within each across past turns (about one in four in Western and three in ten in Coastal and
-Island, fewer than one in ten elsewhere), when the third quarter's refusals sit nearly half in those three regions
-against about a fifth at a usual turn, so the week is about 16,000; the seasonal step of past first claims weeks calls
-about 13,000.
+Sizing the claims filed again in the first claims week of the fourth quarter region by region, each region's third
+quarter ineligible determinations taken whole at the share its own past quarter turns show, calls about 15,000 initial
+claims for the week ended 10 October 2026 (Ends on); the step that lands it there is weighing every refusal of the
+quarter alike, when past turns show that in Western, Coastal and Island between two thirds and nine tenths of those
+refused in a quarter's last month file again in the first week against under one in five of those refused in its first
+two months, and this quarter's refusals there came 55.3 per cent in September against about a third in a quarter's last
+month at a usual turn, so the week is about 17,000; the national determinations at the national rate and the seasonal
+step of past first claims weeks call about 13,000.
 
 ## Three rules
 
 - **Task type:** survey-research-official-statistics, seasonal-adjustment-official-time-series-production (serves
   Forecasting): the national initial claims of the first claims week of the fourth quarter, forecast as the official
   weekly series' baseline movement plus the quarter-start refiling effect, a regression effect with its own driver,
-  sized on the regional components.
+  sized on the regional components with the driver read month by month.
 - **Domain test:** the deciding quantity is how many of a closing quarter's refused claimants file again in the first
   claims week of the next quarter, an administrative effect that official time-series practice models as a regression
-  effect with its own driver beside the seasonal component, and models on the components when their effects differ and
-  their mix moves (indirect rather than direct treatment of the aggregate): each region's monetarily ineligible
-  determinations at that region's own share, measured on 50 past quarter turns.
-- **Swap:** "how many hospital admissions will the first week of the quarter bring" keeps a weekly count, regions and a
-  quarter turn, but a base period that moves at the turn, a monetary determination and refused claimants who file
-  again have no counterpart there, so what sizes the quarter-start step, and with it the call, stops making sense.
+  effect with its own driver beside the seasonal component, on the components where their effects differ and their mix
+  moves, and with the driver at the grain the effect works on: each region's monetarily ineligible determinations of
+  each month of the closing quarter at that region's own shares, which fall from the quarter's last month to its first,
+  measured on 50 past quarter turns.
+- **Swap:** "how many hospital admissions will the first week of the quarter bring" keeps a weekly count, regions, months
+  and a quarter turn, but a base period that moves at the turn, a monetary determination and refused claimants who file
+  again once it moves, fewer the longer ago they were refused, have no counterpart there, so what sizes the quarter-start
+  step, and with it the call, stops making sense.
 - **Layer 1:** the board's weekly series in two claims-system layouts (upper-case against lower-case column names,
   day-first against ISO dates, region codes against names, both keyed by the claims week's Sunday); the latest week at
   its advance count beside revised counts and a first-reported column; the program statistics workbook organised by
   fiscal year (July to June) in two layouts (the legacy report blocks headed sufficient and insufficient, the current long
-  table headed monetarily eligible and ineligible), its months assigned by the claims week's Sunday, determinations in
-  units beside benefits in thousands of dollars, a few claims withdrawn before they are determined; public holidays,
-  the summer shutdown and the fiscal year's end moving claims between weeks; on the ask paths the layoff notices in
-  Employer Services' register to 30 June 2026 and on the Employer Portal after it, the portal's UTC lodgement stamps,
-  amended and withdrawn notices, typed register dates and employer names, case-note references typed in several forms,
-  the open-data cube's rebuild for the 2023 classification, transitional claims beside initial claims; the desk's data
-  log. Each is what these systems write; none moves the call (R2 asserted per item in `checks.py`: the day-first dates
-  read month first fail in 2,976 of 3,128 legacy rows, the codes map one to one and the national series is the same
-  under any mapping, first-reported history 16,032, the current layout's turns 16,069, holiday-touched turns dropped
-  16,051, January turns dropped 16,017, July turns dropped 16,008, every legacy month heading carries its year, the
-  junction neither gaps nor overlaps).
+  table headed monetarily eligible and ineligible), its months assigned by the claims week's Sunday, September 2026
+  provisional with its last week at the advance count, determinations in units beside benefits in thousands of dollars,
+  a few claims withdrawn before they are determined; public holidays, the summer shutdown and the fiscal year's end
+  moving claims between weeks; on the ask paths the layoff notices in Employer Services' register to 30 June 2026 and on
+  the Employer Portal after it, the portal's UTC lodgement stamps, amended and withdrawn notices, typed register dates and
+  employer names, case-note references typed in several forms, the open-data cube's rebuild for the 2023 classification,
+  transitional claims beside initial claims; the desk's data log. Each is what these systems write; none moves the call
+  (R2 asserted per item in `checks.py`: the day-first dates read month first fail in 2,976 of 3,128 legacy rows, the
+  codes map one to one and the national series is the same under any mapping, first-reported history 16,883, the current
+  layout's turns 17,045, holiday-touched turns dropped 17,045, January turns dropped 16,957, July turns dropped 16,724,
+  September's last week at its revised count 16,898, every legacy month heading carries its year, the junction neither
+  gaps nor overlaps).
 - **Layer 2:** `field_method`: an administrative calendar effect in an official weekly series is modelled as a
-  regression effect with its driver, on the components where the components' effects differ and their mix moves; the
-  shortcut, once the filed refiling is read, sizes it as the national refused pool at the national rate (or carries the
-  step as a seasonal share of the level), and the expert sizes it region by region after the past turns show that one
-  rate for every region fails out of sample.
-- **Decisive step:** the claims filed again in the first claims week of the fourth quarter sized region by region, each
-  region's July to September monetarily ineligible determinations at the share its own past quarter turns sent back in
-  their first claims week; this moves the week from about 14,000 (the national rate on the national pool) to about
-  16,000.
+  regression effect with its driver, on the components where the components' effects differ and their mix moves, with
+  the driver at the grain the effect works on; the shortcut, once the filed refiling is read and the regions are
+  separated, takes each region's closing quarter whole at its average share, and the expert reads the published months
+  apart after the past turns show that the quarter whole fails in and out of sample and that the share falls from the
+  quarter's last month to its first.
+- **Decisive step:** the claims filed again in the first claims week of the fourth quarter sized region by region and
+  month by month, each region's July, August and September monetarily ineligible determinations at the shares its own
+  past quarter turns sent back from each month of a quarter; this moves the week from about 15,000 (each region's
+  quarter taken whole) to about 17,000.
 - **Not semantics:** the refiling is filed (technical notes 2.3: "A claimant found monetarily ineligible may file again
   in a later quarter, once the base period has moved."), so no reader misses it and no reading of a field, code, unit or
-  definition decides the call; what no field, code, unit or definition says is how many come back, or that the share
-  runs from fewer than one in ten in five regions to about one in four in Western and three in ten in Coastal and
-  Island; an analyst who reads every definition correctly sizes the filed refiling on the national determinations at
-  the national rate and calls about 14,000, two bins low.
+  definition decides the call; what no field, code, unit or definition says is how many come back, that the share differs
+  by region, or that it depends on when within the quarter the claimant was refused (asserted: no shipped sentence that
+  speaks of refusal or filing again names recency, timing or region); an analyst who reads every definition correctly and
+  sizes the filed refiling region by region on the quarter taken whole calls about 15,000, two bins low.
 - **Not rule application:** the strict rule 3 test, on every shipped sentence that bears on how the figure is computed:
   the prompt's question (the national count the board will first report for the claims week ended Saturday 10 October
   2026), the technical notes' 24 sentences on the claims week and its effective date, the month a week belongs to, an
   initial claim, the monetary determination and its base period, refiling once the base period has moved, the region of
   a claim, the advance and revised counts, a month's program statistics and the two claims systems (sections 2.1 to 2.4,
-  3.1, 3.2 and 3.3), and the release's three sentences on the count. Executed word for word on the clean truth,
-  together, they fix the target week, the series and who may file again when, and give no figure of their own: they
-  carry no count, rate or share (their only figures are the $6,800 minimum, 08:30, dates and years), say nothing of how
-  many file again or of a share by region, and name no seasonal factor or regression; the estimators they admit file
-  14,000 (the filed refiling at the national rate), 13,000 (the seasonal step) or 42,000 (every refused claimant filing
-  again in the week), never 16,000. The behaviour the decisive step turns on, each region's own share, is inferred from
-  the 50 past quarter turns, and the data rejects the rival assumption by a visible margin: one share for every region
-  at F 189.8 on 7 and 360 degrees of freedom (leave-one-turn-out 75 claims a region and turn against 161), and the
-  national pool at the national rate out of sample (leave one turn out, the national step misses by 374 claims under
-  the regional build against 583, 591 for one share in every region, 823 for the closing quarter's claims and 914 for a
-  quarter-start term; the national fit's R squared 0.65). Asserted in `checks.py` (the R3 strict block: the sentences
-  ship word for word, the refiling once with no size, rate, share, timing or region, no method vocabulary, and
-  executed give no 16,000; and R3a, R3b on the clean truth and the pack).
+  3.1, 3.2 and 3.3), and the release's three sentences on the count. Executed word for word on the clean truth, together,
+  they fix the target week, the series and who may file again when, and give no figure of their own: they carry no count,
+  rate or share (their only figures are the $6,800 minimum, 08:30, dates and years), say nothing of how many file again,
+  of a share by region or of a share by how long ago the claimant was refused, and name no seasonal factor or regression;
+  the estimators they admit file 15,000 (the filed refiling region by region on the quarter whole), 13,000 (the filed
+  refiling at the national rate, or the seasonal step) or 38,000 (every refused claimant filing again in the week), never
+  17,000. The behaviour the decisive step turns on, each region's shares by month of refusal, is inferred from the 50 past
+  quarter turns, and the data rejects the rival assumptions by visible margins: one slope on the quarter whole in each
+  region at F 77.3 on 16 and 344 degrees of freedom (Western, Coastal and Island 219, 529 and 387 on 2 and 43; per region
+  and turn 156 claims against 76), one month profile for every region at F 108.3 on 21 and 344; leave one turn out, the
+  national step misses by 303 claims under the golden against 635 for the regions on the quarter whole, 758 for the
+  national months, 880 for the national pool, 873 for one share in every region, 1,015 for the closing quarter's claims
+  and 1,041 for a quarter-start term. Asserted in `checks.py` (the R3 strict block: the sentences ship word for word, the
+  refiling once with no size, rate, share, timing or region, no method vocabulary, no sentence of refusal naming recency,
+  timing or region, and executed they give no 17,000; and R3a, R3b on the clean truth and the pack).
 - **Analyst test:** a strong analyst who reads every field, the technical notes (the refiling filed in 2.3) and the
-  program statistics correctly sizes the refiling on the third quarter's national ineligible determinations at the
-  national rate past turns show and calls about 14,000 (Ends on; every national variant 13,556 to 14,158, the one-share
-  panel 13,624); the seasonal step, the year-on-year ratio, a quarter-start term and a step scaled on the third
-  quarter's claims call 12,000 to 14,000; only the step built region by region, each region's third-quarter ineligible
-  determinations at the share its own past quarter turns sent back, calls about 16,000 (executed in `checks.py` on the
-  clean truth and on the pack: 13,727 and 16,038 on both).
+  program statistics correctly, and sizes the refiling region by region, each region's third-quarter ineligible
+  determinations taken whole at the share its own past quarter turns show, calls about 15,000 (Ends on: 14,849; every
+  region-aware timing-blind construction 13,767 to 15,807); the national determinations at the national rate (13,340), the
+  seasonal step, the year-on-year ratio, a quarter-start term and a step scaled on the third quarter's claims call 12,000
+  to 14,000; only the step built region by region and month by month, each region's July, August and September
+  determinations at the shares its own past turns sent back from each month of a quarter, calls about 17,000 (executed in
+  `checks.py` on the clean truth and on the pack: 14,849 and 16,895 on both).
 - **Estimand:** the prompt: the national number of initial claims the board will first report for the claims week
   ended Saturday 10 October 2026, in its release of Thursday 15 October 2026 (the release of 8 October names it); the
   technical notes define the claims week (Sunday to Saturday, section 2.1), an initial claim (a new or additional
@@ -198,14 +222,16 @@ about 13,000.
   shipped; the distractors (the labour force survey's regional unemployment rates and the online job advertisements
   index) rank nothing.
 - **No certified replay:** no certified or published forecast ships and nothing graded is reproduced; the refiling
-  shares are not recovered by reproducing certified figures but estimated from the raw weekly counts and monthly
-  determinations of past quarter turns.
+  shares by region and month are not recovered by reproducing certified figures but estimated from the raw weekly counts
+  and monthly determinations of past quarter turns.
 - **Lesson:** a recurring step at a calendar turn in an official weekly series can be an administrative effect with a
   driver (here the closing quarter's refused claims, free to file again when the base period moves) whose yield differs
-  by component, and must be modelled from that driver on the components, not carried as a seasonal share of the level
-  nor as the aggregate pool at the aggregate rate; no build on file teaches a calendar-released pool in an official
-  series (task102 moves payments across a weekend year end, task134 converts a pool by time since entry, task95
-  recovers a latent class weight).
+  by component and by the driver's timing inside the period (a refusal near the turn is still out of work at it, an early
+  one has moved on), and must be modelled from that driver on the components at the grain the publisher already gives,
+  not carried as a seasonal share of the level, as the aggregate pool at the aggregate rate, nor as each component's
+  period total at its average rate; no build on file teaches a calendar-released pool in an official series weighed by
+  when it was built (task102 moves payments across a weekend year end, task134 converts a pool by time since entry,
+  task95 recovers a latent class weight).
 
 ## Readability screen
 
@@ -218,8 +244,9 @@ measured on the shipped pack (`generator/calc.py`).
 | R1 last year's first claims week of the fourth quarter times the year-on-year growth of the last eight weeks | no | no | yes: the year-on-year reflex | no | no | yes: one ratio | readable |
 | R2 the step from the week before, one intercept per quarter of the year (a quarter-start term) | no | no | yes: a calendar dummy | no | no | yes: one mean | readable |
 | R3 the step scaled on the closing quarter's claims | no | no | yes: the obvious covariate | no | no | yes: one slope | readable |
-| R4 (the default path) the step on the closing quarter's national ineligible determinations at the national rate | yes: technical notes 2.3 files the refiling, which sends every reader to the refused claims | no | yes: the national determinations are the obvious covariate | no | no | yes: one slope | readable |
-| R5 (decisive) the step built region by region, each region's closing-quarter determinations at its own share | no: no sentence says how many refused claimants come back or that the share differs by region | no: no column holds a share or a refiled claim; the regions are a dimension of every file the call reads | no: the national fit is the reflex once the refiling is filed; only its out-of-sample record (leave-one-turn-out 583 against 374) and its loose fit (R squared 0.65) show the pooling fails, and a solver must go and look | no: no published forecast, certified figure or past call ships | no: nothing in the files is wrong | no: eight regressions of a step built against the week before at 50 turns on pools summed by quarter from a second file's regional table, read across fiscal-year sheets in two layouts | silent |
+| R4 the step on the closing quarter's national ineligible determinations at the national rate | yes: technical notes 2.3 files the refiling, which sends every reader to the refused claims | no | yes: the national determinations are the obvious covariate | no | no | yes: one slope | readable |
+| R5 (the default path) each region's step on its closing quarter's determinations taken whole | yes: 2.3 sends the reader to the refused claims | yes: every file is by region, the workbook's ineligible determinations by region and month | yes: the regions are the series' own dimension, the quarter the refiling's own period | no | no | yes: one slope a region | readable |
+| R6 (decisive) each region's step on its closing quarter's three monthly determinations, each month at its own share | no: no sentence says how many refused claimants come back, that the share differs by region, or that it depends on when within the quarter they were refused | no: no column holds a share, a weight or a refiled claim; the months are the workbook's grain, summed by every quarterly route | no: once the refiling is filed the quarter is its natural unit; only the regional fits' misfit (R squared 0.55 to 0.76 in the three regions against 0.98 by month) and their out-of-sample record (leave-one-turn-out 635 against 303) show that a refusal's month matters, and a solver must go and look | no: no published forecast, certified figure or past call ships | no: nothing in the files is wrong | no: eight regressions of a step built against the week before at 50 turns on three monthly pools a region read from a second file's regional table across fiscal-year sheets in two layouts | silent |
 
 ## Semantic fork table
 
@@ -229,19 +256,21 @@ Every row is asserted in `generator/checks.py` at stage 3.
 |---|---|---|---|---|---|
 | SF1 | "initial claims" | new and additional claims taken in the claims week, as the board counts them | new claims only; transitional claims added; continued weeks | another quantity, not the series the board publishes | technical notes 2.2 (an initial claim) |
 | SF2 | "the claims week ended Saturday 10 October 2026" | Sunday 4 to Saturday 10 October 2026 | the week containing 1 October | the week ended 3 October is published; same target week | technical notes 2.1 (the claims week); the prompt |
-| SF3 | "first report" | the advance count in the release of Thursday 15 October 2026 | the count as revised a week later | same call (asserted: national revisions at most about 1 per cent, the largest 1.08; the advance target files 15,979 and every construction keeps its bin) | the prompt; technical notes 3.1 (advance and revised counts) |
+| SF3 | "first report" | the advance count in the release of Thursday 15 October 2026 | the count as revised a week later | same call (asserted: national revisions at most about 1 per cent, the largest 1.03; the advance target files 16,951 and every construction keeps its bin) | the prompt; technical notes 3.1 (advance and revised counts) |
 | SF4 | "nationally" | the eight regions together | one region | not the national figure | the prompt; the release's national row |
 | SF5 | the as-of | the release of 8 October (week ended 3 October, advance) and the September program statistics it carried | the release of 15 October | not available at the as-of | each file's own date |
-| SF6 | the months of the program statistics | claims-week months, each week in the month of its Sunday | calendar months | same call (the workbook's months are the board's; no calendar-month figures ship; asserted C1, every region-month's new claims equal its weeks') | technical notes 2.1 and 3.2; the workbook's notes |
-| SF7 | history on advance or revised counts | either | the other | same call (asserted) | none needed |
-| SF8 | the turns the shares are measured on | all 50 since 2014 | since 2017, since 2019, the current system's, without 2020 and 2021, fourth-quarter turns only, third and fourth only, without January turns | same call (asserted: every construction inside the 16,000 bin) | none needed |
-| SF9 | the base week | the advance count of the week ended 3 October | the mean of the last three weeks | same call (asserted) | none needed |
+| SF6 | the months of the program statistics | claims-week months, each week in the month of its Sunday, so a quarter's three months are its weeks' | calendar months | same call (the workbook's months are the board's; no calendar-month figures ship; asserted C1, every region-month's new claims equal its weeks') | technical notes 2.1 and 3.2; the workbook's notes |
+| SF7 | history on advance or revised counts | either | the other | same call (asserted: first-reported history 16,883) | none needed |
+| SF8 | the turns the shares are measured on | all 50 since 2014 | since 2017, since 2019, the current system's, the last five or three years, without 2020 and 2021, fourth-quarter turns only, third and fourth only, without January turns, holiday-touched turns dropped | same call (asserted: every window inside the 17,000 bin, 16,865 to 17,075) | none needed |
+| SF9 | the base week | the advance count of the week ended 3 October | the mean of the last three weeks | same call (asserted: 17,088) | none needed |
 | SF10 | the rounding | the call to the nearest thousand from unrounded components, once | per region or per component | asserted one arithmetic | the prompt's last sentence |
 | SF11 | "how many" | the mean expected count | the median | same call (asserted) | the prompt |
 | SF12 | holidays in the target week | none (Labour Day is 26 October) | n/a | same call | the public holidays file |
 | SF13 | the legacy and current layouts' junction | the legacy file to the week ended 26 June 2021, the current from the week beginning 27 June 2021, no gap or overlap | a duplicated or dropped week at the junction | same call (asserted) | the two files' own ranges |
 | SF14 | the regions | the eight regions, legacy codes mapped to names through the regions file, the same boundaries throughout | codes read as other regions | same call once mapped (asserted: one code per name) | the regions file |
 | SF15 | "charts the weekly national count from April 2026" | from the claims week of Sunday 5 April 2026 (ended 11 April) | from the week ended 4 April 2026 | the chart only, not the call | technical notes 2.1: the week ended 4 April begins on Sunday 29 March and belongs to March (asserted) |
+| SF16 | the month terms' form | each month of the closing quarter its own share | the last month and the rest; the last month alone; the first month left out; one month profile for every region with each region's scale | same call (asserted: 16,895, 16,970, 16,954, 16,930) | none needed |
+| SF17 | September 2026 in the workbook | provisional, its last week (ended 3 October) at the advance count | the week's revised determinations | same call (asserted: 16,898) | technical notes 3.2; the workbook's note "September 2026 is provisional." |
 
 ## Ladder
 
@@ -251,55 +280,68 @@ claims-week month. The same code on the clean truth gives the same rungs (R3a, R
 
 | Rung | Construction | Call | Bin | Dies to |
 |---|---|---|---|---|
-| R0b | ISO-week seasonal factors on the level of the last four weeks | 12,175 | 12,000 | ISO week 41 is the fourth quarter's first claims week in 2024 and 2025 only (the second in 2022 and 2023) |
-| R0 | factors for the first claims week of each quarter, 2022 to 2025, on the level of the last four weeks | 13,273 | 13,000 | the first week's step varies with the closing quarter's refused claims, not the level |
-| R1 | last year's first claims week of the fourth quarter times the last eight weeks' growth on the year | 12,142 | 12,000 | last October's step (190) carried a third-quarter pool of 15,786 determinations, 9.1 per cent in Western, Coastal and Island; this year's is 30,182 at 48.5 per cent |
-| R2 | the step from the week before with one intercept per quarter of the year | 13,066 | 13,000 | as R0 (leave-one-out 914 claims against 374) |
-| R3 | the step scaled on the closing quarter's claims | 13,266 | 13,000 | the third quarter's claims are 1.09 times the median third quarter's, its ineligible determinations 1.48 times |
-| R3r | R3 region by region | 13,679 | 14,000 | as R3 |
-| R2r, R2g | a quarter-start ratio; quarter-start terms region by region | 13,151; 13,066 | 13,000 | as R0 |
-| R4 (default) | the filed refiling sized on the national determinations at the national rate (all turns; twelve variants and the one-share panel 13,556 to 14,158) | 13,727 | 14,000 | one share for every region is rejected by the regions' own steps (F 189.8 on 7 and 360) and fails out of sample (leave-one-turn-out 583 against 374, the one-share panel 591); the third quarter's pool sits 48.5 per cent in Western, Coastal and Island against 19.7 at the median turn |
-| L | latest-period rates: the last four turns' step per refused claim, the last turn's, last October's | 12,058 to 14,107 | 12,000 to 14,000 | the boom quarters' refused claims sat in the low-share regions; the October and July turns carry their own seasonal steps |
-| V | the step on the closing quarter's change in the job advertisements index (a distractor, 29 turns) | 13,131 | 13,000 | the index does not drive the step |
-| golden | each region's step on its closing-quarter determinations, one intercept per quarter of the year, all 50 turns, on the advance count of the week ended 3 October | 16,038 | 16,000 | (the golden) |
+| R0b | ISO-week seasonal factors on the level of the last four weeks | 12,340 | 12,000 | ISO week 41 is the fourth quarter's first claims week in 2024 and 2025 only (the second in 2022 and 2023) |
+| R1 | last year's first claims week of the fourth quarter times the last eight weeks' growth on the year | 12,665 | 13,000 | last October's step (860) carried a third-quarter pool of 16,767 determinations, 14.5 per cent in Western, Coastal and Island and 28 per cent of theirs in September; this year's is 26,035 at 40.1 per cent, 55.3 of theirs in September |
+| R2 | the step from the week before with one intercept per quarter of the year | 13,084 | 13,000 | the first week's step varies with the closing quarter's refused claims, not the calendar (leave-one-out 1,041 claims against 303) |
+| R0 | factors for the first claims week of each quarter, 2022 to 2025, on the level of the last four weeks (the seasonal route) | 13,241 | 13,000 | as R2 |
+| R3, R3r | the step scaled on the closing quarter's claims; the same region by region | 13,253; 13,562 | 13,000; 14,000 | the third quarter's claims are 1.11 times the median third quarter's (leave-one-out 1,015) |
+| R2r, R2g | a quarter-start ratio; quarter-start terms region by region | 13,184; 13,084 | 13,000 | as R2 |
+| R4 | the filed refiling sized on the national determinations at the national rate (all turns; sixteen variants and the one-share panel 13,171 to 13,916) | 13,340 | 13,000 | one share for every region is rejected by the regions' own steps (F 108.3 on 21 and 344 by month) and fails out of sample (leave-one-turn-out 880, the one-share panel 873); the national fit's R squared is 0.40 |
+| R4m | the national determinations month by month (twelve variants 13,592 to 15,346) | 14,516 | 15,000 | region-blind: the national months mix the three regions' steep monthly shares with the rest's flat ones (leave-one-out 758) |
+| L | latest-period rates: last October's step per refused claim, the last four turns', the last turn's | 13,149; 14,727; 16,097 | 13,000 to 16,000 | the boom quarters' refusals sat in the low-share regions; the July turn's step rode its own late refusals (0.60 of the three regions' in June) on a pool of another mix |
+| V | the step on the closing quarter's change in the job advertisements index (a distractor, 29 turns) | 13,171 | 13,000 | the index does not drive the step |
+| R5 (default) | the filed refiling region by region, each region's quarter taken whole at its share (all turns; 24 constructions 13,767 to 15,807) | 14,849 | 15,000 | the share falls steeply from a quarter's last month to its first (Western, Coastal and Island F 219, 529 and 387 on 2 and 43 against the quarter whole; R squared 0.76, 0.61 and 0.55 against 0.98 by month); out of sample 635 against 303; this quarter's refusals in the three regions sit 55.3 per cent in September against 32.4 at the median turn |
+| golden | each region's step on its closing quarter's three monthly determinations, one intercept per quarter of the year, all 50 turns, on the advance count of the week ended 3 October | 16,895 | 17,000 | (the golden) |
 
-- **Every region-aware construction** (22, asserted, each clear of 15,500 and 16,500 by more than one sigma): all turns
-  16,038; fourth-quarter turns only 16,058; third and fourth 16,056; without 2020 and 2021 16,161; since 2019 15,903;
-  since 2017 15,998; without January turns 16,017; the current system's turns 16,069; Huber 16,040; ratio form 16,115;
-  the mean of the last three weeks as base 16,179; the advance count as the target (current system) 15,979; each region
-  through the origin 16,247; each region with one intercept 16,229; holiday-touched turns dropped 16,051; each region's
-  mean step per refused claim at fourth-quarter turns, no intercept, 15,720; each region's summed steps over its summed
-  pools, no intercept, 16,296; the national step on two pools (the three regions; the rest) 15,939; the national step on
-  the pool and its three-region part 15,939; each region at fourth-quarter turns only 16,058; the last three years
-  (turns from October 2023) 16,169; the last five years 16,076. Span 15,720 to 16,296; the nearest edge 204 claims away,
-  2.6 sigma. Without the July turns (the June fiscal year's end) 16,008. The national step on the eight regional pools in
-  one equation lands the bin too: 15,781, standard error 351 (4.5 times the regional build's).
-- **Rate evidence.** The regions' first-week shares: Midlands 0.010, Capital 0.014, Eastern 0.037, Northern 0.039,
-  Southern 0.052, Western 0.263, Coastal 0.302, Island 0.319, standard errors 0.006 to 0.011 over 50 turns; under every
-  construction Western stays 0.24 to 0.29, Coastal and Island 0.27 to 0.35 and every other region under 0.1 (asserted).
-  One sigma on the golden (slopes and fourth-quarter intercepts, delta method) is 77 claims: 15,961 to 16,116; the flip
-  to 15,000 needs the estimate 538 claims lower (7.0 sigma), to 17,000 462 higher (6.0).
-- **The components at the precision every construction shares** (asserted): the claims filed again 4,596 (4,383 to
-  4,832 across constructions, one sigma 88) state as 4,000 to 5,000; the rest of the week 11,443 (11,282 to 11,674, one
-  sigma 87) as 11,000 to 12,000; Western, Coastal and Island's part of the refiled claims 0.913 (0.898 to 0.934, one
-  sigma 0.011) as about nine tenths.
-- **The data rejects pooling.** Leave one turn out, the national step misses by 374 claims under the regional build,
-  583 under the national pool at the national rate, 591 under one share for every region with each region's own
-  intercepts, 823 under the closing quarter's claims and 914 under a quarter-start term; the national pool's fit has R
-  squared 0.65 and a residual of 551 claims. Region by region, one common share misses by 161 claims a region and turn
-  against 75 for each region's own; F 189.8 on 7 and 360. The three regions' part of the pool moves from 0.09 to 0.61
-  across the 50 turns (standard deviation 0.092), so pooling shows in the history.
-- **Twin pair.** The October 2016 and October 2025 turns: national pools 14,898 and 15,786, Western, Coastal and Island's
-  part 0.347 and 0.091, steps 1,554 and 190 (asserted).
-- **Position and dominance.** The golden is the extreme cell; every correction from R0 to R4 walks up and stops at or
-  below 14,000. The regional mix raises the pool's yield from the national 0.077 to 0.152, so the regional build's
-  refiling (4,596) is 1.97 times the national pool's (2,336).
-- **Bins.** Every rival two bins or more below the golden: the national pool's nearest variant 1,880 claims below, the
-  seasonal default 2,765.
-- **Worth.** Graded: the call and its critical components (the third quarter's ineligible determinations, 30,182 exact
-  from the workbook, 48.5 per cent of them in the three regions; the regional shares in words; the claims filed again,
-  4,000 to 5,000, about nine tenths of them in Western, Coastal and Island; the rest of the week, 11,000 to 12,000),
-  never an intermediate.
+- **Every construction of the golden** (24, asserted, each clear of 16,500 and 17,500 by more than one sigma): all turns
+  16,895; fourth-quarter turns only 17,071 (one intercept 17,071); third and fourth 17,075; without 2020 and 2021 16,910;
+  since 2019 16,949; since 2017 16,916; without January turns 16,957; the current system's turns 17,045; the last five
+  years 17,051; the last three years 16,865; holiday-touched turns dropped 17,045; Huber 16,942; ratio form 16,844;
+  log-ratio form 17,225; the mean of the last three weeks as base 17,088; the advance count as the target (current
+  system) 16,951; each region with one intercept 17,047; the last month and the rest of the quarter 16,895; the last
+  month alone 16,970; the last two months with the first left out 16,954; one month profile for every region with each
+  region's own scale 16,930; the national step on the three regions' and the rest's months 16,899; one intercept per
+  quarter of the year common to every region 17,067. Span 16,844 to 17,225;
+  the nearest edge 275 claims away, 3.3 sigma. Without the July turns (the June fiscal year's end) 16,724. The national
+  step on the 24 regional monthly determinations in one equation lands the bin too: 16,854, standard error 262 (3.1 times
+  the golden's), out of sample 398. The middle month lumped with the last (one share for August and September) files
+  16,504, four claims over the edge, and the data rejects it (F 96, 238 and 255 on 1 and 43 in the three regions; out of
+  sample 403).
+- **The multiplicative form** (each region's log ratio of the first week to the week before on its months over the base
+  week) lands the same bin, 17,225, and predicts past turns worse (leave-one-out 369 against 303); it is a variant of the
+  golden, not a rival.
+- **Rate evidence.** The three regions' first-week shares by month of refusal (all turns): Western 0.011, 0.155 and
+  0.696 for a quarter's first, middle and last month; Coastal -0.005, 0.147 and 0.852; Island 0.063, 0.085 and 0.823
+  (standard errors 0.016 to 0.038); every other region's under 0.1 in every month. Under every construction with its
+  months identified the last month stays between two thirds and nine tenths (0.678 to 0.880) and the first two under one
+  in five (asserted); on the quarter taken whole the same regions show 0.33, 0.26 and 0.26. One sigma on the golden
+  (slopes and fourth-quarter intercepts, delta method) is 83 claims: 16,812 to 16,979; the flip to 16,000 needs the
+  estimate 395 claims lower (4.7 sigma), to 18,000 605 higher (7.3).
+- **The components at the precision every construction shares** (asserted): the claims filed again 5,308 (5,243 to
+  5,527 across constructions, one sigma 86) state as 5,000 to 6,000; the rest of the week 11,588 (11,503 to 11,803, one
+  sigma 84) as 11,000 to 12,000; Western, Coastal and Island's part of the refiled claims 0.916 (0.901 to 0.929, one
+  sigma 0.009) as about nine tenths.
+- **The data rejects the quarter taken whole.** Leave one turn out, the national step misses by 303 claims under the
+  golden, 314 for the last month and the rest, 342 for the last month alone, 635 under each region's quarter taken
+  whole, 758 under the national months, 880 under the national pool at the national rate, 873 under one share for every
+  region, 1,015 under the closing quarter's claims and 1,041 under a quarter-start term. Region by region and turn by
+  turn, the quarter whole misses by 156 claims and one month profile for every region by 198, against 76 for each
+  region's own months; F 77.3 on 16 and 344 (the quarter whole) and 108.3 on 21 and 344 (one profile). The three regions'
+  last-month part of their quarter's refusals runs from 0.08 to 0.60 across the 50 turns (median 0.32), so the timing
+  shows in the history, and this quarter's 0.553 is inside it.
+- **Twin pairs.** Timing: the July 2026 and July 2019 turns, Western, Coastal and Island determinations 6,207 and 5,729
+  (national 18,490 and 16,964), the last month's part 0.60 and 0.15, steps 3,042 and 836 (asserted). Regions: the
+  October 2016 and October 2022 turns, national pools 17,681 and 17,518, the three regions' part 0.380 and 0.109, steps
+  2,084 and 545 (asserted).
+- **Position and dominance.** The golden is the extreme cell; every correction from R0 to R5 walks up and stops at or
+  below 16,000: the timing-blind constructions reach 15,807 and the latest-period rate on the July turn alone 16,097,
+  each a full bin below. The month weighting raises the claims filed again from the quarter-whole build's 3,498 to 5,308.
+- **Bins.** The default path two bins below the golden (its nearest variant 1,088 claims below), the national rate and
+  the seasonal route four.
+- **Worth.** Graded: the call and its critical components (the third quarter's ineligible determinations, 26,035 exact
+  from the workbook, 40.1 per cent of them in the three regions and 55.3 per cent of those three regions' in September;
+  the month shares in words; the claims filed again, 5,000 to 6,000, about nine tenths of them in Western, Coastal and
+  Island; the rest of the week, 11,000 to 12,000), never an intermediate.
 
 ## Closure table
 
@@ -310,16 +352,16 @@ Each row's assertion is written in `checks.py` at stage 3.
 | 1 | Population | every initial claim the board takes in the claims week ended 10 October 2026, none filed at the as-of | filed (the prompt; technical notes 2.2); SF1 |
 | 2 | Unit of account | initial claims (new and additional) | filed (2.2) |
 | 3 | Attribution window | Sunday 4 to Saturday 10 October 2026 | filed (2.1); SF2 |
-| 4 | As-of dating | the release of 8 October and the September program statistics published with it | each file's date; SF5 |
+| 4 | As-of dating | the release of 8 October and the September program statistics published with it | each file's date; SF5, SF17 |
 | 5 | Version basis | the advance count is the target; history revised or advance | SF3, SF7 asserted |
-| 6 | Denominator | none in the call; each share is a region's claims filed again per ineligible determination | design; asserted convergent across constructions |
+| 6 | Denominator | none in the call; each share is a region's claims filed again per ineligible determination of a month of the closing quarter | design; asserted convergent across constructions |
 | 7 | Weighting | each past turn once per region | C1 across OLS and Huber (asserted) |
-| 8 | Window length | the turns since 2014 | C1 across eight windows (SF8) |
-| 9 | Boundary inclusivity | a week belongs to the month, so the quarter, of its Sunday | filed (technical notes 2.1 and 3.2); no claims week straddles the target's edges |
+| 8 | Window length | the turns since 2014 | C1 across eleven windows (SF8) |
+| 9 | Boundary inclusivity | a week belongs to the month, so the quarter, of its Sunday | filed (technical notes 2.1 and 3.2); no claims week straddles the target's edges; SF6 |
 | 10 | Rounding path | the call rounded once to the nearest thousand | the prompt; SF10 |
 | 11 | Tie-break | none arises | the golden a bin or more from every rival |
-| 12 | Maturity and censoring | the September determinations complete at 8 October (determined when the claim is taken), the month's last week at its advance count | technical notes 2.3 and 3.2; asserted |
-| 13 | Order of operations | each region's step estimated, then added to its base week, then summed | not a convention: the order is the decisive step (the components against the aggregate), forced by the data (F 189.8; leave-one-turn-out 374 against 583 for the national pool and 591 for one share); the national step fitted on the eight pools at once lands the same bin (15,781, standard error 351) |
+| 12 | Maturity and censoring | the September determinations complete at 8 October (determined when the claim is taken), the month's last week at its advance count | technical notes 2.3 and 3.2; SF17 asserted |
+| 13 | Order of operations | each region's step estimated on its three months, then added to its base week, then summed | not a convention: the components and the months are the decisive step, forced by the data (F 77.3 against the quarter whole, 108.3 against one profile; leave-one-turn-out 303 against 635 and 880); the national step fitted on the 24 regional months at once lands the same bin (16,854, standard error 262) |
 | 14 | Row order | none matters | C1, asserted: the weekly files and the program statistics' rows read in reverse give the same call |
 | 15 | Duplicate resolution | the junction week once | SF13 |
 | 16 | Identity normalisation | regions by legacy code and by name | the regions file; SF14 |
@@ -334,21 +376,22 @@ Each row's assertion is written in `checks.py` at stage 3.
 
 Executing the prompt and the technical notes word for word fixes the target (the national initial claims first reported
 for the claims week Sunday 4 to Saturday 10 October 2026) and every term but the estimator of the week's count; every
-reading converges on the golden's bin or violates a quoted line (SF1 to SF15), and the easy answers come from easy
-estimators on the same literal target (the filed refiling as the national refused pool at the national rate, or a
-seasonal share of the level), never from another reading. Re-run on the finished pack: the 24 technical-notes
-sentences (the filed refiling among them), the release's three and the prompt's question ship word for word and carry no
-count, rate or share; every SF row is asserted (SF1 to SF15 in `checks.py`), and the literal estimators file 14,000,
-13,000 or 42,000, never the golden's 16,000.
+reading converges on the golden's bin or violates a quoted line (SF1 to SF17), and the easy answers come from easy
+estimators on the same literal target (the filed refiling region by region on the quarter taken whole, the national
+refused pool at the national rate, or a seasonal share of the level), never from another reading. Re-run on the
+finished pack: the 24 technical-notes sentences (the filed refiling among them), the release's three and the prompt's
+question ship word for word and carry no count, rate or share, and no sentence that speaks of refusal or filing again
+names recency, timing or region; every SF row is asserted (SF1 to SF17 in `checks.py`), and the literal estimators file
+15,000, 13,000 or 38,000, never the golden's 17,000.
 
 ## Oracles
 
 - The board's weekly series by region: raw counts; the history's quarter turns are what any construction must explain;
   no forecast, seasonal factor or certified figure ships with it.
-- The program statistics workbook: the monetary determinations the golden reads, one regional table among several
-  (claims by type, determinations, first payments, weeks claimed by region); no table ties only under the golden.
+- The program statistics workbook: the monthly monetary determinations the golden reads, one regional table among
+  several (claims by type, determinations, first payments, weeks claimed by region); no table ties only under the golden.
 - The labour force survey's regional unemployment rates and the online job advertisements index (distractors): rank
-  nothing; the step on the job advertisements index files 13,131 (rung V), and the survey's July to September quarter
+  nothing; the step on the job advertisements index files 13,171 (rung V), and the survey's July to September quarter
   is not out until November. Each deleted leaves the call and both asks unchanged (asserted).
 - The desk's data log: where each file came from and when; it states no figure, method or device (asserted).
 - Nothing ties only under the golden: no published forecast, consensus or past call for the week ships.
@@ -418,10 +461,10 @@ from July to September 2025 to July to September 2026, in per cent to one decima
 - Hazards: HB1 transitional claims in the cube (technical notes 2.2); HB2 the quarter of the Sunday against a label's
   own month (technical notes 2.1); HB3 the two 2006 divisions feeding one 2023 division (accommodation, education).
 - Stops (computed from the cube as shipped and asserted; the nearest moved group to the golden): S1 the current list
-  on both years, 14 of 14 groups off, nearest 3.9 points; S2 every label read as a Saturday, 14 off, nearest 7.5; S3
-  every label read as a Sunday, 14 off, nearest 0.1; S4 transitional claims kept, 11 off, nearest 0.1; S5 the cracker
-  (S1 with labels read as Saturdays), 14 off, nearest 1.1; S6 S1 with labels read as Sundays, 14 off, nearest 4.7.
-  Every golden figure sits 0.244 of a bin or more from its rounding edge (asserted at 0.23: the smallest group's change
+  on both years, 14 of 14 groups off, nearest 5.0 points; S2 every label read as a Saturday, 14 off, nearest 7.9; S3
+  every label read as a Sunday, 14 off, nearest 0.4; S4 transitional claims kept, 11 off, nearest 0.1; S5 the cracker
+  (S1 with labels read as Saturdays), 14 off, nearest 3.1; S6 S1 with labels read as Sundays, 14 off, nearest 5.6.
+  Every golden figure sits 0.281 of a bin or more from its rounding edge (asserted at 0.23: the smallest group's change
   moves about half a bin a claim); the golden equals the truth in all 14 groups. The cube's latest week is at its
   advance count, as the release's.
 - Span: the cube, the board's industry code list, the Statistics Office's concordance and the technical notes (4
@@ -451,15 +494,16 @@ sentence says what the portal's region column holds, that open notices were re-k
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
 | A workers by region and period (24) | both channels stacked, case-note withdrawals applied, amendments and types handled, the portal's region column | every cell off, nearest 8 workers | miss |
-| B change by industry group (14) | transitional claims out, the quarter of the Sunday with every label read as a week's end, the current code list on both years | every group off, nearest 0.3 points | miss |
+| B change by industry group (14) | transitional claims out, the quarter of the Sunday with every label read as a week's end, the current code list on both years | every group off, nearest 3.1 points | miss |
 | the preview's chart | the cracker's weekly series drawn as the golden draws it | its call point carries the cracker's call only when the call lands | outside |
 
-Mirror leakage: 9 per cent of the ask weight. The mirror is the most attractive wrong rung, R4 (the filed refiling at
-the national rate, 14,000); it runs the same ask paths as the cracker, so it misses every Ask A and Ask B figure and
-keeps only the chart's form (four of its five parts).
+Mirror leakage: 9 per cent of the ask weight. The mirror is the most attractive wrong rung, R5 (the filed refiling
+region by region on each region's quarter taken whole, 15,000); it runs the same ask paths as the cracker, so it misses
+every Ask A and Ask B figure and keeps only the chart's form (four of its five parts).
 Pair ceiling: 35 (the cracker about 49 with the call, its components, the instructions and the chart; the mirror about
-21 with the instructions, the chart's form and the components it shares: the third quarter's determinations and the
-rest of the week without the refiling; it misses the call, the regional shares and the refiling's size). With the
+21 with the instructions, the chart's form and the components it shares: the third quarter's determinations with their
+three-region part and the rest of the week without the refiling; it misses the call, the month shares and the
+refiling's size). With the
 cracker also cracking the most obvious device (A3, the case-note withdrawals) it keeps no further figure, since A1 holds
 every Ask A cell: 35. With both top responses on the call: about 49.
 
@@ -526,24 +570,70 @@ APPROVE on the pre-repair cut (22f06ed9, Gate H analytical).
 - Gates: checks 163, 0 failed; verify agrees; two builds byte-identical; `figures_check.py` 65 of 65; `precut.py`,
   `voice-check`, `leak.py`, `guard.py surface` and `heart` re-run (results in the commit and `pipeline.json`).
 
+**Strengthening, 2026-10-16**, after stage 4 on the repaired cut (a040f6c1): the judge DETERMINISTIC / APPROVE (one
+residual fork, a multiplicative region build at 16,719); the rule 3 re-audit PASS but the stump too weak (both top
+responses land regional sizing about half to three quarters of the time); the leak reader clean, noting repeated
+withdrawal phrases in the case notes.
+- The second layer: a refused claimant's chance of filing again at the turn falls with the weeks from the refusal to
+  the quarter's last week (each refusal weighs exp(-d / 2.5) by its weeks d, averaging one over a quarter), so those
+  refused in a quarter's last month come back several times as often as those refused in its first. The world gives the
+  history the timing variation that identifies it: each region's refused share moves month to month (standard deviation
+  0.28, the three tourism and building regions together 0.50 on a stream of their own), and twelve of the regional
+  layoff episodes fall late or early in their quarter. The claims filed again and their determinations moved to streams
+  of their own, so the base claims no longer move with the refiling. The third quarter of 2026 in the three regions:
+  refusals near the usual level in July and August (about 0.14 and 0.19 of new claims) and more than half in September
+  (0.545 to 0.56). The three regions' first-week shares at an even spread of refusals over a quarter rose by 8 per cent
+  (Western 0.286, Coastal 0.319, Island 0.343).
+- Searched and chosen (scratch harness, clean truth): the decay (2.5 and 3 weeks against 4), the month swings, the
+  timed episodes, the September profile and the realisation of the month swings' two streams (forty draws; `MONTH_DRAW`
+  "s24" is the one where every construction of the golden, the two-group month equation and the 24-month equation
+  agree within 310 claims and the timing-blind constructions sit 1,050 claims or more below). The late-claim share's
+  range moved from 0.0025-0.0095 to 0.0023-0.0095 so the week ended 3 October's advance count is not a round 11,800 and
+  Ask B's nearest change sits 0.281 of a bin from its edge.
+- Measured on the pack (asserted): the golden 16,895 (one sigma 83, 0.40 of a bin from the edge; 24 constructions 16,844
+  to 17,225, the nearest edge 275 claims away, 3.3 sigma; the 24-month equation 16,854); the multiplicative form lands the
+  bin (17,225, leave-one-out 369 against 303); the default path, each region's quarter whole, 14,849 (24 constructions
+  13,767 to 15,807, the nearest 1,088 claims below); the national rate 13,340; the national months 14,516; the seasonal
+  route 13,241; leave one turn out 303 against 635 (the quarter whole), 758, 880, 873, 1,015 and 1,041; F 77.3 on 16 and
+  344 against the quarter whole and 108.3 on 21 and 344 against one month profile; the timing twin July 2026 against July
+  2019 (last-month part 0.60 and 0.15 on pools within 8 per cent, steps 3,042 and 836).
+- Records: the stump sentence, the analyst test (now the region-aware timing-blind route), the Three rules lines, the
+  ladder, the fork table (SF16 the month terms' form, SF17 September's provisional last week), the card (answer, driver,
+  stump, analyst and domain tests, Layer 2 pattern, the task134 line), the ledger row and the submission rewritten; the
+  preview and the workbook carry 17,000, the September part and the month shares in words; the workbook's note on the
+  refiled claims' regional part now matches the preview (about nine tenths). The checks now assert that no shipped
+  sentence that speaks of refusal or filing again names recency, timing or region.
+- Case notes: the withdrawal reasons are drawn with their own particulars (the month, the year, the plant, the number
+  of staff on reduced hours), so no reason phrase repeats verbatim across notices; Ask A's 24 cells are unchanged.
+- Gates: checks 179, 0 failed; verify agrees (call 16,895, one sigma 83, refiled 5,308, the rest 11,588, the timing-blind
+  route 14,849, the seasonal default 13,241, the national rate 13,340, Ask A's 24 cells, Ask B's 14 groups); two builds
+  byte-identical; `figures_check.py` 69 figures, 0 absent; `precut.py` 49 checks, 0 FAIL, 0 WARN, with `voice-check`;
+  `leak.py` REVIEW, answered below; the producer-metadata audit clean on target and golden; `guard.py validate` 186 cards,
+  0 invalid; `surface` exit 0 (task134 and task54 promoted on the card signature, as before); `heart` WARN
+  (repeat.gate_g, overuse.gate_g, answered at the draw; nearest driver 0.07).
+
 ## Leak review
 
-`leak.py --asof 2026-10-08` on the repaired build: REVIEW, no LEAK. Each line is harmless:
+`leak.py --asof 2026-10-08` on the strengthened build: REVIEW, no LEAK. Each line is harmless:
+- Sweep 3, "2.3" in the technical notes: the section number of the monetary determination, matching Ask B's 2.3 for
+  administrative and support services by coincidence of digits.
 - Sweep 3, the call's words in the technical notes and the release: the field's own vocabulary (board, report, initial
   claims, nationally, claims week); no figure of the call.
-- Sweep 4, stump terms in the technical notes (12 of 25: quarter, technical, determinations, effect, statistics,
-  release) and the release (5 of 25: technical, statistics, release, seasonal, advance): the claims-week, base-period
-  and publication definitions, the filed refiling rule of 2.3 (the WHAT, filed on purpose by the rule 3 repair) and
-  "Counts are not seasonally adjusted."; neither document says how many refused claimants come back or that the share
-  differs by region (asserted R3 strict).
+- Sweep 4, stump terms in the technical notes (9 of 25: quarter, effect, determinations, period, technical, advance) and
+  the release (5 of 25: technical, advance, regions, seasonal, statistics): the claims-week, base-period and publication
+  definitions, the filed refiling rule of 2.3 (the WHAT, filed on purpose by the rule 3 repair) and "Counts are not
+  seasonally adjusted."; neither document says how many refused claimants come back, that the share differs by region,
+  or that it depends on when within the quarter they were refused (asserted R3 strict: no sentence that speaks of refusal
+  or filing again names recency, timing or region).
 - Sweep 9, dates after 8 October: the notices' first layoffs (portal and register) and the holiday list, forward by
   nature.
 
 ## State at pause
 
-The rule 3 repair is complete on 2026-10-16, and every stage 3 gate is green on the repaired build. Next, stage 4: a fresh leak
-reader and determinism judge on the repaired `target.zip`; findings fixed in the generator in one pass, then the
-pre-ship check and ship.
+The strengthening is complete on 2026-10-16 (the refiling share by region and month of refusal decides; regional
+sizing on the quarter taken whole files two bins low), and every stage 3 gate is green on the strengthened build. Next,
+stage 4: a fresh leak reader and determinism judge on the strengthened `target.zip`; findings fixed in the generator in
+one pass, then the pre-ship check and ship.
 
 ## Tried and rejected
 
@@ -634,3 +724,18 @@ pre-ship check and ship.
   now shows the misfit in the history (2026-10-16).
 - Ask B's rounding floor raised to 0.27 of a bin: unreachable for the smallest group, whose change moves about half a
   bin with each claim; kept at the design's 0.23.
+- regional sizing alone: both top responses land it once the refiling is filed, per the rule 3 re-audit
+- A refusal's weight decaying over four weeks with month swings of 0.22 (the first strengthening world): the month
+  model predicted past turns no better than each region's quarter taken whole (leave-one-out 322 against 319), the
+  April 2020 turn's pandemic fall swamping the timing; a 2.5-week decay with larger month swings, common to the three
+  regions, and timed episodes separates them (303 against 635).
+- The September wave on the history as it stood (no late waves): the 2026 last-month refusals over the base week sat
+  beyond every past turn and the multiplicative form overshot to about 17,600 (18,000); with late waves in the history
+  and September's refused share at 0.55, the multiplicative form lands the golden's bin (17,225).
+- Late layoff waves in the recent quarters (Western 2022, Coastal 2024): they lifted the timing-blind constructions on
+  the recent windows to about 16,600, inside a bin of the golden; made early waves (2026-10-16).
+- The first draw of the month swings' streams: the national step on the three regions' months and the rest's filed
+  16,437 (16,000), 460 claims under the golden on a standard error of 220; among forty draws, the one kept holds every
+  construction of the golden within 310 claims.
+- The week ended 3 October at a round 11,800 (the late-claim share's first range): a round headline count reads as
+  made up; the range moved to 0.0023-0.0095 (11,814), which also keeps Ask B's nearest change 0.281 of a bin from its edge.

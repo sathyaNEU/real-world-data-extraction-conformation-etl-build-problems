@@ -43,6 +43,24 @@ def rows_of(path):
     return None
 
 
+def release_figures(target):
+    """The national figures the release of 8 October states: the advance count of the week ended 3 October, the week
+    before as revised and as first reported, and the same week a year earlier."""
+    import csv
+    import datetime as dt
+    with open(os.path.join(target, R.F_CURRENT), encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+    tot = {}
+    for r in rows:
+        d = r["claims_week_start"]
+        a, b = tot.get(d, (0, 0))
+        tot[d] = (a + int(r["initial_claims"]), b + int(r["first_reported_initial_claims"]))
+    last = max(tot)
+    prev = (dt.date.fromisoformat(last) - dt.timedelta(days=7)).isoformat()
+    year = (dt.date.fromisoformat(last) - dt.timedelta(days=364)).isoformat()
+    return ["{:,}".format(v) for v in (tot[last][0], tot[prev][0], tot[prev][1], tot[year][0])]
+
+
 def write(target, out_path):
     files = []
     for f in sorted(os.listdir(target)):
@@ -59,7 +77,8 @@ def write(target, out_path):
         "client_domain": "Survey Research & Official Statistics",
         "subdomain": "seasonal-adjustment-official-time-series-production (the next value of an official weekly series "
                      "in a week carrying an administrative calendar effect: the quarter-start refiling of the closing "
-                     "quarter's monetarily ineligible claimants, sized region by region on 50 past quarter turns)",
+                     "quarter's monetarily ineligible claimants, sized region by region and month by month of the "
+                     "refusal on 50 past quarter turns)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "single figure: the national count for one claims week to the nearest thousand, with a one-page "
                         "preview charting the weekly count from April 2026 and a workbook carrying two tables (workers "
@@ -68,7 +87,7 @@ def write(target, out_path):
         "as_of": "2026-10-08",
         "deliverables": [DL.GOLD_DOC, DL.GOLD_BOOK],
         "distractor_files": list(R.DISTRACTORS),
-        "stated_inputs": ["11,687", "12,297", "12,263", "10,808", "6,800"],
+        "stated_inputs": release_figures(target) + ["6,800"],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",

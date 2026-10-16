@@ -7,7 +7,7 @@
   "stage": 4,
   "stage_name": "check",
   "updated": "2026-10-16",
-  "stump": "Sizing the claims filed again in the first claims week of the fourth quarter on the third quarter's national ineligible determinations at the national rate past turns show calls about 14,000 initial claims for the week ended 10 October 2026; the step that lands it there is pooling regions whose refused claimants come back at shares that differ several-fold and hold within each across past turns (about one in four in Western and three in ten in Coastal and Island, fewer than one in ten elsewhere), when the third quarter's refusals sit nearly half in those three regions against about a fifth at a usual turn, so the week is about 16,000; the seasonal step of past first claims weeks calls about 13,000.",
+  "stump": "Sizing the claims filed again in the first claims week of the fourth quarter region by region, each region's third-quarter ineligible determinations taken whole at the share its own past quarter turns show, calls about 15,000 initial claims for the week ended 10 October 2026; the step that lands it there is weighing every refusal of the quarter alike, when past turns show that in Western, Coastal and Island between two thirds and nine tenths of those refused in a quarter's last month file again in the first week against under one in five of those refused in its first two months, and this quarter's refusals there came 55.3 per cent in September against about a third in a quarter's last month at a usual turn, so the week is about 17,000; the national determinations at the national rate and the seasonal step call about 13,000.",
   "architecture": 1,
   "loops": 0,
   "precut": {
@@ -15,25 +15,35 @@
     "date": "2026-10-16"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-16 on the rule 3 repair, no LEAK; every line answered in the note's Leak review",
-    "reader": "pre-repair cut: named notes 2.1 with 2.3 as pointing at a quarter-start effect (the rule 3 audit's finding, repaired)"
+    "leak_py": "REVIEW 2026-10-16 on the strengthening, no LEAK; every line answered in the note's Leak review",
+    "reader": "repaired cut a040f6c1: clean, Q6 analytical; repeated case-note withdrawal phrases varied at the strengthening"
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-16 (repeat.gate_g, overuse.gate_g, answered at the draw)",
-    "nearest": "driver 0.07 (task136 v1 round 2 lineage); surface exit 0, task134 and task54 promoted on the card signature for the author's clone-check"
+    "heart": "WARN 2026-10-16 on the strengthened card (repeat.gate_g, overuse.gate_g, answered at the draw)",
+    "nearest": "driver 0.07 (task446 v2); surface exit 0, task134 and task54 promoted on the card signature for the author's clone-check"
   },
   "judge": {
-    "verdict": "DETERMINISTIC on the pre-repair cut 22f06ed9, superseded by the rule 3 repair",
-    "disposition": "APPROVE (pre-repair); re-judge on the repaired cut",
+    "verdict": "DETERMINISTIC on the repaired cut a040f6c1 (residual multiplicative fork 16,719), superseded by the strengthening",
+    "disposition": "APPROVE (repaired cut); re-judge on the strengthened cut",
     "report": ""
   },
   "returned": [],
-  "resume": "stage 4: reader and judge (fresh, on the rule 3 repair)",
+  "resume": "stage 4: reader and judge (fresh, on the strengthening: the refiling share by region and month of refusal)",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "wave": "wave 3 (new), seed FC17 (world, decision and quantity kept; pitfall re-found)"
+  "wave": "wave 3 (new), seed FC17 (world, decision and quantity kept; pitfall re-found)",
+  "gates": {
+    "checks": "179, 0 failed",
+    "verify": "agrees (call 16,895, se 83, timing-blind 14,849, national 13,340, seasonal 13,241)",
+    "rebuilds": "two byte-identical",
+    "figures_check": "69 figures, 0 absent",
+    "precut": "49 checks, 0 FAIL, 0 WARN",
+    "voice_check": "exit 0",
+    "scrub": "target and golden clean",
+    "guard": "validate clean, heart WARN, surface exit 0"
+  }
 }

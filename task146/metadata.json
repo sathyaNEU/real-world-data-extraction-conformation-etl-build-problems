@@ -3,7 +3,7 @@
   "title": "How many initial claims the Unemployment Insurance Board will first report for the claims week ended 10 October 2026, the first claims week of the fourth quarter",
   "domain": "Survey Research & Official Statistics",
   "client_domain": "Survey Research & Official Statistics",
-  "subdomain": "seasonal-adjustment-official-time-series-production (the next value of an official weekly series in a week carrying an administrative calendar effect: the quarter-start refiling of the closing quarter's monetarily ineligible claimants, sized region by region on 50 past quarter turns)",
+  "subdomain": "seasonal-adjustment-official-time-series-production (the next value of an official weekly series in a week carrying an administrative calendar effect: the quarter-start refiling of the closing quarter's monetarily ineligible claimants, sized region by region and month by month of the refusal on 50 past quarter turns)",
   "objective": "Forecasting & Predictive Modeling",
   "prompt_shape": "single figure: the national count for one claims week to the nearest thousand, with a one-page preview charting the weekly count from April 2026 and a workbook carrying two tables (workers under layoff notices by region and period of first layoff; the change in initial claims by industry group, July to September 2025 to 2026)",
   "as_of": "2026-10-08",
@@ -16,10 +16,10 @@
     "online_job_ads_index_weekly_2019-2026.json"
   ],
   "stated_inputs": [
-    "11,687",
-    "12,297",
-    "12,263",
-    "10,808",
+    "11,814",
+    "12,181",
+    "12,156",
+    "10,517",
     "6,800"
   ],
   "input_gates": {
@@ -31,7 +31,7 @@
       "xlsx"
     ],
     "largest_file": "ic_open_data_by_industry_2023-2026.csv",
-    "largest_file_rows": 189677
+    "largest_file_rows": 189903
   },
   "sources": [
     {
@@ -47,7 +47,7 @@
     {
       "path": "brs_weekly_initial_claims_2013-12-29_2021-06-20.csv",
       "format": "csv",
-      "bytes": 91271,
+      "bytes": 91291,
       "rows": 3128,
       "source": "Constructed: Unemployment Insurance Board, Benefit Records System weekly export of initial claims by region, claims weeks of 29 December 2013 to 20 June 2021",
       "date": "2026-10-08",
@@ -74,7 +74,7 @@
     {
       "path": "es_case_notes_2026-07-01_2026-10-07.csv",
       "format": "csv",
-      "bytes": 17717,
+      "bytes": 18057,
       "rows": 177,
       "source": "Constructed: Unemployment Insurance Board, Employer Services' case notes on notices, July to October 2026",
       "date": "2026-10-08",
@@ -92,8 +92,8 @@
     {
       "path": "ic_open_data_by_industry_2023-2026.csv",
       "format": "csv",
-      "bytes": 5050081,
-      "rows": 189677,
+      "bytes": 5056175,
+      "rows": 189903,
       "source": "Constructed: Unemployment Insurance Board open data, initial and transitional claims by claims week, region, industry division and claim type, from January 2023",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -155,7 +155,7 @@
     {
       "path": "ui_program_statistics_2026-09.xlsx",
       "format": "xlsx",
-      "bytes": 108797,
+      "bytes": 109012,
       "rows": null,
       "source": "Constructed: Unemployment Insurance Board, program statistics by region and month, January 2014 to September 2026",
       "date": "2026-10-08",
@@ -164,7 +164,7 @@
     {
       "path": "ui_weekly_claims_release_2026-10-08.pdf",
       "format": "pdf",
-      "bytes": 35474,
+      "bytes": 35451,
       "rows": null,
       "source": "Constructed: Unemployment Insurance Board, weekly claims release of 8 October 2026 (claims week ended 3 October 2026)",
       "date": "2026-10-08",
@@ -182,7 +182,7 @@
     {
       "path": "uics_weekly_initial_claims_by_region_2021-06-27_2026-09-27.csv",
       "format": "csv",
-      "bytes": 123335,
+      "bytes": 123334,
       "rows": 2200,
       "source": "Constructed: Unemployment Insurance Board, UI Claims System weekly initial claims by region with first-reported counts, claims weeks of 27 June 2021 to 27 September 2026",
       "date": "2026-10-08",

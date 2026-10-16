@@ -532,12 +532,38 @@ def _typed_ref(ref, g):
 
 CONTACTS = ["HR manager", "payroll contact", "site manager", "general manager", "operations manager", "owner",
             "HR advisor", "company accountant", "employment lawyer", "office manager"]
-REASONS_W = ["new contract won", "sale of the business fell through", "restructure deferred", "staff redeployed",
-             "workers taken on by the buyer", "council consent came through", "funding extended to June 2027",
-             "the receiver found a buyer", "work picked up after the stand-down", "main client renewed for two years",
-             "staff moving to the Kerrigan plant instead", "the merger was called off", "insurer approved the rebuild",
-             "season extended into November", "parent company put in more capital", "tender won on the second round",
-             "hours cut instead, under 20 affected", "the closure is on hold until March"]
+MONTHS_AHEAD = ["February", "March", "April", "May", "June", "August", "September"]
+
+
+def _why(g, n):
+    """The reason an employer gave for withdrawing a notice, in the words the officer took down."""
+    pick = lambda xs: xs[int(g.integers(len(xs)))]
+    w = sum(s_["workers"] for s_ in n.sites)
+    other = pick([t for t in TOWN if t != n.sites[0]["town"]])
+    forms = [
+        lambda: pick(["new contract won", "picked up a new contract", "won the %s contract after all" % other]),
+        lambda: pick(["sale of the business fell through", "the sale fell over", "buyer pulled out, staying open"]),
+        lambda: pick(["restructure deferred", "restructure put back to %s" % pick(MONTHS_AHEAD),
+                      "restructure shelved for now"]),
+        lambda: pick(["staff redeployed", "staff redeployed to other sites", "all %d placed elsewhere in the group" % w]),
+        lambda: pick(["workers taken on by the buyer", "buyer keeping the whole team"]),
+        lambda: pick(["council consent came through", "resource consent granted", "consent approved on appeal"]),
+        lambda: pick(["funding extended to %s %d" % (pick(["March", "June", "December"]), int(g.integers(2027, 2029))),
+                      "funding renewed for another year", "programme funding confirmed to %d" % int(g.integers(2027, 2029))]),
+        lambda: pick(["the receiver found a buyer", "receivers sold it as a going concern"]),
+        lambda: pick(["work picked up after the stand-down", "orders back up", "busy again since %s" % pick(
+            ["August", "September", "the start of October"])]),
+        lambda: "main client renewed for %s years" % pick(["two", "three", "five"]),
+        lambda: "staff moving to the %s plant instead" % other,
+        lambda: pick(["the merger was called off", "merger off"]),
+        lambda: pick(["insurer approved the rebuild", "insurance came through for the repairs"]),
+        lambda: "season extended into %s" % pick(["November", "December", "the new year"]),
+        lambda: pick(["parent company put in more capital", "owners injected funds"]),
+        lambda: pick(["tender won on the second round", "won the retender"]),
+        lambda: pick(["hours cut instead of jobs", "going to a four-day week instead",
+                      "reduced hours for %d staff instead" % max(3, w // 2), "short time instead, nobody let go"]),
+        lambda: "closure on hold until %s" % pick(MONTHS_AHEAD)]
+    return forms[int(g.integers(len(forms)))]()
 
 
 MODES = ["by email", "by phone", "in an email", "on the phone", "by letter", "in a call"]
@@ -555,7 +581,7 @@ def _note_withdraw(g, who, n, d):
     """A withdrawal as each officer writes one up: the contact, how it came in, the reason the employer gave."""
     pick = lambda xs: xs[int(g.integers(len(xs)))]
     town = n.sites[0]["town"]
-    why = pick(REASONS_W)
+    why = _why(g, n)
     c = pick(CONTACTS)
     w = sum(s_["workers"] for s_ in n.sites)
     mode = pick(MODES)
