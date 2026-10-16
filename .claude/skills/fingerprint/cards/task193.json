@@ -1,0 +1,79 @@
+{
+  "task": "task193",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "seed AD16 kept its decision shape only: which alarms a scarce paid reviewer is given, under a cap on reviewer hours, judged on the real faults the routing escalates. The seed's own architecture turns on a channel attribute that explains every alarm on it, which is a field read deciding the call, so the build is re-rooted on the field's own disproportionality measure and what one dominant member does to it.",
+  "domain": "pharmacology-pharmacoepidemiology-safety",
+  "subdomain": "safety-signal-detection",
+  "niche": "triaging which signals a capped assessment team takes, when one member of the comparison set dominates it",
+  "objective": "anomaly-detection",
+  "shape": "16",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G5",
+    "G8"
+  ],
+  "gate_g": "signal_vs_noise_or_hold",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "the agency's signal assessment coordinator",
+  "role_family": "policy_adviser",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "spontaneous_reports_extract.csv",
+    "rows": 0,
+    "entity": "one reported reaction on one report, as coded",
+    "grain": "report x drug x reaction",
+    "source": "synthetic"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "shift_or_daily_cycle",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "Denmark",
+    "currency": "DKK",
+    "org_type": "national medicines agency",
+    "invented_names": [],
+    "people": [
+      "Cirkeline Gregersen",
+      "Malthe Danielsen"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive measure of each candidate is its share of an outcome against every other candidate pooled, so one dominant candidate holds every other candidate's measure down, and only re-measuring with the dominant one out of the comparison set recovers which candidates truly stand out.",
+  "driver_concrete": "Every candidate's measure is computed against the rest of the database, and one product accounts for most of the reports of the reaction in question, so it sits inside the comparison every other product is judged against and holds their measures below the threshold until it is taken out of it.",
+  "stump": "A competent solver computes each product's proportional reporting ratio against the whole database, takes the ones above the filed threshold within the hours the contract allows, and leaves out the products whose measure is depressed by the one product that dominates the reaction's reports.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who codes every report correctly and applies the filed threshold and the hours cap computes each measure against the full database and files a set that omits the signals the dominant product masks.",
+  "domain_test": "The deciding quantity is a disproportionality measure whose comparison set is the rest of the database, and pharmacovigilance treats masking by one dominant member as part of computing it; swap the products for warehouses and the reactions for delivery delays and nothing is measured against a shared background, so there is nothing to unmask.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:comparison-set-holding-the-measure-down",
+  "layer1": [
+    "free-text reaction terms mapped to a dictionary",
+    "duplicate reports from two channels",
+    "report dates against receipt dates",
+    "a product renamed after a licence transfer",
+    "a coding dictionary revised mid-year",
+    "tables inside PDFs"
+  ],
+  "registered": "2026-10-16T23:56:38Z"
+}

@@ -1,0 +1,38 @@
+{
+ "task": "task195",
+ "owner": "oviya13ya",
+ "status": "DRAWING",
+ "domain": "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
+ "objective": "anomaly-detection",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-16",
+ "stump": "A competent solver computes each screen's detection rate on the parallel run with its confidence interval, sees the two intervals overlap, reads the filed rule as unmet and holds the switch, where the same specimens establish the difference with an interval clear of zero.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}

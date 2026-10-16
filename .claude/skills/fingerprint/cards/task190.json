@@ -1,0 +1,85 @@
+{
+  "task": "task190",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "seed AD13 kept its decision shape only: one scarce specialist team placed with one part of an organisation for a fixed spell, scored on what it would find. The seed's own architecture ranks the parts by a filed scorecard on confirmed movement per 1,000 accounts, which is a stated score deciding the call and a backdrop domain, so the build is re-rooted on the field's own estimate of undetected caseload.",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "fraud-aml-detection",
+  "niche": "placing a scarce financial-crime review team against the caseload each business line is carrying unseen",
+  "objective": "anomaly-detection",
+  "shape": "09",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G8",
+    "G7"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the bank's head of financial crime",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "alert_adjudication_extract.csv",
+    "rows": 0,
+    "entity": "one alert on one customer, as raised and as later adjudicated",
+    "grain": "alert x adjudication stage",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "New Zealand",
+    "currency": "NZD",
+    "org_type": "retail and business bank",
+    "invented_names": [],
+    "people": [
+      "Bruce Wheeler",
+      "Kayla Burr"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the stock of undetected cases a scarce reviewer would meet, which is each unit's arrival rate multiplied by how long a case goes unseen there, so ranking units by the cases they confirm ranks them by arrivals alone and passes over the unit whose cases sit longest before anyone sees them.",
+  "driver_concrete": "Each business line's confirmed cases a quarter measure how fast cases arrive there, but a review team meets the cases still sitting unseen, and that stock is arrivals times the time a case goes unseen, which the lines' own alert and adjudication timestamps put between three weeks and nine months.",
+  "stump": "A competent solver conforms the alert and adjudication extracts, computes each line's confirmed cases per 1,000 customers over the last two quarters, and assigns the team to the lines that confirm the most, which is the lines where cases are found fastest rather than where they are sitting unfound.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field and applies every filed rule correctly ranks the lines on confirmed cases per 1,000 customers and files the wrong set, because that rate is an arrival rate and the team's yield is a stock.",
+  "domain_test": "The deciding quantity is the undetected caseload a financial-crime unit carries, which the field estimates as arrivals multiplied by time to detection rather than from confirmations alone; swap the business lines for shops and the cases for stock losses counted at a stocktake and there is no detection delay to multiply by, so the quantity collapses into the count.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task181": "task181 v2's lineage completes a count whose records have not all arrived, so the quantity is a period count read too early. Here every record has arrived and the count is correct: the decisive quantity is a different one, the stock still unseen, which is the arrival rate multiplied by the time to detection.",
+    "task450": "task450 v1's lineage turns on how a scheduled visit samples time: a self-ending event is seen at a moment independent of it while an event that runs until a visit stops it is certain to be seen, so the sighting's own weight differs by event type. Here nothing is sampled by a visit and every case is adjudicated: the decisive quantity is a stock, arrivals multiplied by the time a case goes unseen, which the confirmations alone do not carry.",
+    "task126": "task126 splits units a succession link has already joined, so its decisive move is identity: one carried work file can mean a continuing unit or a new one. Here identity is never in doubt and every alert belongs to one customer; the decisive move is the quantity, a stock still unseen against a rate of confirmations."
+  },
+  "lineage": [],
+  "notes": "",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:stock-from-arrivals-and-time-unseen",
+  "layer1": [
+    "two extracts at different grains",
+    "adjudication outcomes arriving on a lag",
+    "customer identifiers differing between systems",
+    "amounts in two currencies",
+    "a line reorganised mid-year",
+    "tables inside PDFs"
+  ],
+  "registered": "2026-10-16T23:56:37Z"
+}

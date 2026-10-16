@@ -1,0 +1,38 @@
+{
+ "task": "task194",
+ "owner": "oviya13ya",
+ "status": "DRAWING",
+ "domain": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
+ "objective": "anomaly-detection",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-16",
+ "stump": "A competent solver builds each unit's last-quarter rate of the outcome, confirms it against the dashboard, ranks the units and embeds with the worst, which is the unit with the most room to revert rather than the unit an embed moves most.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}

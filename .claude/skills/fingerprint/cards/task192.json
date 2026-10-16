@@ -1,0 +1,81 @@
+{
+  "task": "task192",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "seed AD15 kept its decision shape only: a count of coordinated operations committed to a standing body, where detection fires per item and the rules count per operation. The seed's own architecture turns on a stated definition of a campaign and a verification subsample that blesses one reading, which is rule application with a certified replay, so the build is re-rooted on the field's own estimate of how many processes generated the bursts.",
+  "domain": "political-science-public-policy",
+  "subdomain": "conflict-protest-event-data-analysis",
+  "niche": "counting how many coordinated operations stand behind overlapping bursts of recorded events",
+  "objective": "anomaly-detection",
+  "shape": "17",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G10",
+    "G6"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "the monitoring unit's lead analyst",
+  "role_family": "research_desk",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "event_reports_minute.csv",
+    "rows": 0,
+    "entity": "one recorded event at one location in one minute",
+    "grain": "location x minute",
+    "source": "synthetic"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "Portugal",
+    "currency": "EUR",
+    "org_type": "conflict monitoring institute",
+    "invented_names": [],
+    "people": [
+      "Vicente Gomes",
+      "Duarte Miranda"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive count is of the distinct generating processes behind overlapping bursts, recovered from the interval each process repeats on, where counting flagged items counts the targets they share and counting flagged intervals counts their overlaps.",
+  "driver_concrete": "The bursts in the record are produced by a handful of operations that each run on their own repeating interval, and because two operations often hit the same location on the same day, the number of operations is the number of distinct intervals in the series rather than the number of flagged locations or flagged days.",
+  "stump": "A competent solver takes the flagged location-days, groups the ones that touch in time and place, counts the groups and files that number, which counts the overlaps of the operations rather than the operations.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the minute-level series and applies the filed definition of an operation groups the flagged location-days by contiguity and files a count that is too high, because two operations running on different intervals are merged wherever they coincide and one operation is split wherever its interval skips.",
+  "domain_test": "The deciding quantity is how many point processes generated an observed superposition, which event-data analysis recovers from the periodicity each process imposes; swap the coordinated operations for shops counted once each and there is no superposition to decompose.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task98": "task98 v7's decisive move is a double removal: two dated lists each take members out of one population and a subset sits on both, so summing the lists subtracts it twice. Here nothing is removed and no list is summed: the decisive move recovers how many repeating processes produced one observed superposition, from the interval each repeats on."
+  },
+  "lineage": [],
+  "notes": "",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:count-of-processes-behind-a-superposition",
+  "layer1": [
+    "minute-level counts by access route",
+    "two language feeds overlapping",
+    "a flag file at a coarser grain",
+    "clocks in local time with a summer shift",
+    "a re-import covering one month twice",
+    "tables inside PDFs"
+  ],
+  "registered": "2026-10-16T23:56:37Z"
+}

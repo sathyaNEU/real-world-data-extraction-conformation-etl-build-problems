@@ -1,0 +1,87 @@
+{
+  "task": "task194",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "seed AD17 kept its decision shape only: one scarce improvement team embedded with one unit for a quarter, judged on the fall in the failures users see. The seed's own architecture attributes failures through traces from the returning unit to the causing one, which is attribution a trace join performs and a spent mechanism on this objective, so the build is re-rooted on the field's own treatment of units chosen for standing worst.",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "provider-quality-risk-adjustment",
+  "niche": "placing a scarce improvement team when the unit standing worst is partly standing worst by chance",
+  "objective": "anomaly-detection",
+  "shape": "11",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G18"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "closed_decision_corpus",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "the trust's director of improvement",
+  "role_family": "operations_director",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "episode_outcomes_extract.csv",
+    "rows": 0,
+    "entity": "one episode of care with its outcome and its unit",
+    "grain": "episode x unit x month",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "Australia",
+    "currency": "AUD",
+    "org_type": "hospital network",
+    "invented_names": [],
+    "people": [
+      "Johnathan Serrano",
+      "Joanna Barrera"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the fall a scarce intervention causes, and because units are picked for standing worst now, most of the fall that follows is their own return toward their long-run level, so ranking units by their current level picks the unit with the most room to revert rather than the one the intervention changes most, which only the record of past interventions separates.",
+  "driver_concrete": "Each unit's last-quarter rate is correct and the worst of them is the obvious placement, but a unit's quarterly rate swings around its own long-run level by more than the embeds have ever moved it, so the fall that follows the worst unit is mostly its own reversion, and the closed record of past embeds separates the part the team caused.",
+  "stump": "A competent solver builds each unit's last-quarter rate of the outcome, confirms it against the dashboard, ranks the units and embeds with the worst, which is the unit with the most room to revert rather than the unit an embed moves most.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who risk-adjusts every unit's rate correctly and applies the filed charter ranks the units on the adjusted rate and embeds with the worst, where the fall that follows is mostly reversion and a different unit gains more from the team.",
+  "domain_test": "The deciding quantity is the effect of an improvement intervention on a provider's outcome rate, which provider profiling separates from regression to the mean using the providers' own between-quarter variation and the record of past placements; swap the providers for machines measured without error and there is nothing to revert, so the ranking is the answer.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task258": "task258 v1's decisive quantity is how many units an intervention moves across a threshold when it acts on only some of the additive parts of each unit, so its work is decomposing the measure into parts. Here the measure has no parts to decompose: the decisive work separates the part of a fall that is the unit's own return to its long-run level from the part the intervention caused.",
+    "task131": "task131 v2's decisive quantity is what a randomised treatment does to the peak of a summed curve: load moved out of a window returns as a synchronised surge, so the mechanism is the treatment's own physical rebound. Here the treatment has no rebound and the curve has no peak: the decisive work separates a unit's return to its long-run level from the effect of placing a team with it.",
+    "task183": "task183's decisive quantity is a forward count that arises in a unit's parts, where a part with a history of repeat failures keeps failing at many times the rate of its siblings, so the work is heterogeneity inside the unit. Here the units have no parts and nothing is forecast: the work is separating reversion from effect in a unit chosen for standing worst.",
+    "task149": "task149's decisive quantity is a hazard that rises with how fast a fixed content of work is done, so its work is finding the right denominator for a rate and carrying it into a plan. Here the rate and its denominator are both correct and agreed: the decisive work is that the fall which follows placing a team with the worst unit is mostly that unit's own reversion.",
+    "task134": "task134 v2 round 1's lineage turns on an inflow a pool outside the register will send in, generated by a hazard that peaks a year after entry, so its work is a forward conversion curve. Here nothing converts and nothing flows in: the decisive work is separating a unit's return to its own long-run level from the effect of placing a team with it.",
+    "task452": "task452 v1's lineage multiplies two series, one recorded always and one sampled mostly in the quiet state, so its work is imputing the sampled factor across the unsampled intervals. Here both series are complete and nothing is imputed: the decisive work is that a unit chosen for standing worst falls back toward its own level whatever the team does."
+  },
+  "lineage": [],
+  "notes": "",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:reversion-against-effect-in-a-chosen-worst-unit",
+  "layer1": [
+    "episode records at two grains",
+    "a coding revision mid-year",
+    "units merged during the period",
+    "case-mix fields partly missing",
+    "a dashboard export correct and labelled for last quarter",
+    "tables inside PDFs"
+  ],
+  "registered": "2026-10-16T23:57:11Z"
+}
