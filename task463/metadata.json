@@ -1,0 +1,200 @@
+{
+ "task": "task463",
+ "architecture": 1,
+ "title": "Which of the sixteen grocery and household items in the Kellesay Retail Prices Index move from shelf-price collection to the three supermarkets' transaction data in the January 2027 index, an item moving when its 12-month rate to September 2026 from the transaction data is within 1.5 points of its published rate; with each supermarket's average days to complete monthly records and each item's 2025 coverage of household spending",
+ "domain": "Survey Research & Official Statistics",
+ "subdomain": "seasonal-adjustment-official-time-series-production (official time-series production: a monthly retail prices index compiled from supermarket transaction records, conformed into product-months and set against the published index over a parallel year)",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "10: a scorecard of sixteen items against the 1.5-point line (lines compared, transaction-data rate, published rate, difference, move or stay), with each supermarket's timeliness, each item's coverage, a chart of each item's two indices and the conformed product-month file",
+ "as_of": "2026-10-21",
+ "deliverables": [
+  "kellesay_rpi_transaction_readiness_2027.xlsx",
+  "kellesay_item_indices_parallel_year.png",
+  "kellesay_transaction_product_months_2025_2026.csv"
+ ],
+ "distractor_files": [
+  "rpi_field_quotes_2025_2026.csv",
+  "kellesay_retail_sales_index_2025_2026.xlsx"
+ ],
+ "stated_inputs": [
+  "sixteen",
+  "January 2027",
+  "September 2026",
+  "three",
+  "1101",
+  "1103",
+  "1105",
+  "1108",
+  "1145",
+  "1146",
+  "1151",
+  "1182",
+  "1211",
+  "1212",
+  "1221",
+  "1222",
+  "1223",
+  "5611",
+  "5613",
+  "6213"
+ ],
+ "input_gates": {
+  "files": 15,
+  "formats": [
+   "csv",
+   "pdf",
+   "sqlite",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "calderby_pos_daily_2025_2026.sqlite",
+  "largest_file_rows": 287409
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task463/generator/build.py (seeded, deterministic) in the layouts of three supermarkets' sales extracts (a weekly CSV, a fiscal-period text file and a point-of-sale SQLite database), a statistics office's product classification, published index workbook, introduction plan, data receipt log, field quotes, category map, household spending estimates and retail sales index, and the supermarkets' annual returns; the island, its statistics office, the supermarkets, their products and the people are fictional.",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work)"
+  }
+ ],
+ "created": "2026-10-21",
+ "generator": "task463/generator/build.py",
+ "files": [
+  {
+   "path": "calderby_pos_daily_2025_2026.sqlite",
+   "format": "sqlite",
+   "bytes": 16269312,
+   "rows": 287409,
+   "source": "Constructed: a supermarket's point-of-sale database extract: daily sales by store and SKU, its SKU table and stores",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "gorsedale_fiscal_calendar_fy2026_fy2027.csv",
+   "format": "csv",
+   "bytes": 3875,
+   "rows": 104,
+   "source": "Constructed: the co-operative's fiscal calendar",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "gorsedale_period_sales_fy2026_fy2027.txt",
+   "format": "txt",
+   "bytes": 1462285,
+   "rows": 20773,
+   "source": "Constructed: a co-operative's sales by fiscal year, period and week, by product",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "household_spending_estimates_2025.xlsx",
+   "format": "xlsx",
+   "bytes": 6797,
+   "rows": null,
+   "source": "Constructed: the statistics office's estimate of households' 2025 spending by RPI item",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "kellesay_retail_sales_index_2025_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 7115,
+   "rows": null,
+   "source": "Constructed: the statistics office's monthly retail sales index",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "kellesay_rpi_item_indices_2024_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 12236,
+   "rows": null,
+   "source": "Constructed: the statistics office's published RPI item indices and 12-month rates",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "retailer_annual_returns_2025.xlsx",
+   "format": "xlsx",
+   "bytes": 10048,
+   "rows": null,
+   "source": "Constructed: the supermarkets' annual returns of 2025 retail sales",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "retailer_category_map.csv",
+   "format": "csv",
+   "bytes": 2280,
+   "rows": 58,
+   "source": "Constructed: the statistics office's map of the supermarkets' categories to RPI items",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "retailer_delivery_log_2025_2026.csv",
+   "format": "csv",
+   "bytes": 7738,
+   "rows": 85,
+   "source": "Constructed: the statistics office's log of the files received from the supermarkets",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "rpi_field_quotes_2025_2026.csv",
+   "format": "csv",
+   "bytes": 1251411,
+   "rows": 13192,
+   "source": "Constructed: the RPI field collection's price quotes for the sixteen items",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "rpi_transaction_data_introduction_plan_2026.pdf",
+   "format": "pdf",
+   "bytes": 65765,
+   "rows": null,
+   "source": "Constructed: the statistics office's plan for introducing supermarket transaction data into the RPI",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "statistics_kellesay_product_classification.csv",
+   "format": "csv",
+   "bytes": 95130,
+   "rows": 1250,
+   "source": "Constructed: the statistics office's classification of the supermarkets' product lines to RPI items",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "transaction_data_dictionary.xlsx",
+   "format": "xlsx",
+   "bytes": 7937,
+   "rows": null,
+   "source": "Constructed: the prices team's field definitions for the folder",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "transaction_data_folder_register.csv",
+   "format": "csv",
+   "bytes": 1948,
+   "rows": 14,
+   "source": "Constructed: the programme's register of the files in the folder: owner, period covered, version date, records and handling",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "wrenfold_weekly_item_sales_2025_2026.csv",
+   "format": "csv",
+   "bytes": 2135571,
+   "rows": 29280,
+   "source": "Constructed: a supermarket group's weekly sales extract by product, all stores",
+   "date": "2026-10-21",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  }
+ ]
+}
