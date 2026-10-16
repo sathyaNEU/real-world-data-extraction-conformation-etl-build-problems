@@ -3,10 +3,11 @@
 Architecture 2 (re-rooted 2026-10-16), wave 2, seed DQ06 (whether a register statistic keeps its quality flag
 when the missing field may not be missing at random): the seed's world, decision and quantity only, the pitfall
 re-found from the data under the 10/10 rules. General Statistics & Data Science, missing data, censoring and
-measurement error, Data Quality Monitoring & Alerting. The island's Statistics Office publishes its school-leaver
-destinations release each December; the head of education statistics signs a quality flag for each district's
-NEET rate and higher-education entry rate, judged on how far the rate would move if the survey's nonrespondents
-departed from the destination model's allocation as the 2025 nonresponse follow-up found.
+measurement error, Data Quality Monitoring & Alerting. The island's Department of Education publishes the school-leaver
+destinations release each December from the survey a university's Social Survey Unit runs for it; the unit's
+survey director signs a quality flag for each district's NEET rate and higher-education entry rate, the first under
+the revised standard QS-4 v2.0, judged on how far the rate would move if the survey's nonrespondents departed from
+the destination model's allocation as the 2025 nonresponse follow-up found.
 
 Architecture 1 (same world and decision, follow-up in the five middle and deprived districts) was sent back by the
 judge at stage 4: inside each attainment band its follow-up allocations barely varied, so a points gap or a ratio
@@ -20,33 +21,37 @@ defines the headline rate as a computation made whatever the flag.
 
 Card `cards/task233.json` (architecture v2, re-registered 2026-10-16). Guard verdict WARN, one line each:
 `three_rules.strategy_risk` (grain_or_unit) is answered by the analyst test below, which `checks.py` runs on the
-clean truth; `overuse.org_family` (government_agency) and `overuse.gate_g` (method_or_model_selection, 5 of the last
-12) are accepted because the mechanism, the task type and the forum differ from every neighbour;
+clean truth; `repeat.gate_g` (task463) and `overuse.gate_g` (method_or_model_selection, 5 of the last 12) are
+accepted because the mechanism, the task type and the forum differ from every neighbour (task463 chooses a seasonal
+adjustment model for price index series);
 `test.same_puzzle_older` (task458) and `test.same_driver_older` (task256, task262, task54) are differentiated on the
 card; `driver.near` against this slot's v1 (0.57) is differentiated (the follow-up design and the forcing evidence
 changed, the flags changed) and task446 v2 (0.13) is differentiated.
 
 - **Pairing.** General Statistics & Data Science / missing-data-censoring-measurement-error, serving Data
   Quality Monitoring & Alerting (the domain index lists this task type under DD and DQ).
-- **Niche.** The Statistics Office's destinations survey asks every school leaver in October where they
-  went; about one in six do not answer. The release allocates each nonrespondent across the five destinations in
+- **Niche.** The destinations survey, run by a university's Social Survey Unit for the Department of
+  Education, asks every school leaver in October where they went; about one in six do not answer. The release allocates each nonrespondent across the five destinations in
   proportion to the previous year's respondents of the same district and attainment band (a missing-at-random
-  allocation). In 2025 the Office's field team followed up a random sample of nonrespondents in five districts
-  chosen across the island's range and found where they really went. The head of education statistics flags each
-  2026 statistic standard, caution or suppressed on the sensitivity shift the quality standard defines.
+  allocation). In 2025 the unit's field team followed up a random sample of nonrespondents in five districts
+  chosen across the island's range and found where they really went. The survey director flags each 2026 statistic
+  standard, caution or suppressed on the sensitivity shift the revised quality standard defines.
 - **The call.** For each of the twelve districts' NEET rate and higher-education entry rate (24 statistics),
   the flag: standard (shift under 1.0 point), caution (1.0 to under 3.0) or suppression (3.0 or more).
-- **Shape.** 07, a grid of cells, each cell graded. Decision designation_set, answer set_of_items, question
-  form which.
+- **Shape.** 10, a scorecard against thresholds: each statistic's sensitivity shift in each district checked
+  against the standard's two thresholds, each check graded. Decision designation_set, answer set_of_items, question
+  form what.
 - **Strategy.** grain_or_unit with G14 decisive (the departure measured in the followed-up pool does not carry
   as points to every pool) and G17 supporting (each shift judged against the flag bands); Gate G
   method_or_model_selection; calibration gold_standard_subsample; context artifact close_out_summary; layer 2
   family estimand_identification, pattern general-statistics-data-science/missing-data-censoring-measurement-error/3.
-- **Forum, event, organisation.** committee_or_panel (the release quality panel the head chairs),
-  statutory_or_regulatory_filing (the release goes out under the statistics code with its quality flags),
-  government_agency.
-- **People** (`guard.py names --geo Ireland --seed 233`): Polly Ganley, head of education statistics, who signs
-  the flags; Emmett Phelan, field manager who ran the 2025 follow-up; Leanne Henebry, survey methodologist who
+- **Forum, event, organisation.** customer_or_counterparty (the Department of Education, which commissions the
+  survey and publishes the release, receives the flagged tables), launch_or_rollout (the 2026 release is the first
+  under QS-4 v2.0, which replaced a flag on the nonresponse share alone), university_or_school (the Social Survey
+  Unit). Redrawn at stage 3 with the role and the shape: task189, task463 and task152, filed before this card's
+  re-registration, had taken the earlier statistics-office head, grid, panel, statutory filing and government agency.
+- **People** (`guard.py names --geo Ireland --seed 233`): Polly Ganley, the survey director, who signs the
+  flags; Emmett Phelan, field manager who ran the 2025 follow-up; Leanne Henebry, survey methodologist who
   keeps the allocation and the quality standard.
 - **Deliverables.** `leaver_destinations_2026_quality_flags.xlsx`: each statistic's flag beside its headline
   rate, and the attainment-band table.
@@ -302,8 +307,8 @@ band is scrambled).
 - **Span:** nine files and 16 column uses across the two asks; no shared primary.
 - **Shared hazard:** the form-build device moves every figure in both asks; the band device moves ask B only.
 - **Realism:** a web form whose new edition went live a day into fieldwork while the processing reference table
-  holds only the current edition, and a leaver return whose bands were filled before appeals, are both records an
-  office's systems make with no task in mind.
+  holds only the current edition, and a leaver return whose bands were filled before appeals, are both records a
+  survey unit's systems make with no task in mind.
 - **Referee:** none; nothing ties only under the golden (the allocations come from the previous year's respondents,
   so the 2026 forms cannot be checked against them).
 

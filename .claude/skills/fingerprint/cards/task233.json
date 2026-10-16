@@ -5,9 +5,9 @@
   "slot_note": "seed DQ06; architecture 2 re-rooted at stage 1 after the judge's SEND_BACK of architecture 1: the follow-up now spans the island's range of districts so the data themselves reject band-level points and ratio departures",
   "domain": "general-statistics-data-science",
   "subdomain": "missing-data-censoring-measurement-error",
-  "niche": "a national statistics office's school-leaver destinations release choosing, for each of twelve education districts' NEET rate and higher-education entry rate, the standard flag, a caution flag or suppression, given survey nonrespondents allocated by a destination model and a 2025 nonresponse follow-up in five districts chosen across the island's range",
+  "niche": "a university social survey unit that runs an island state's school-leaver destinations survey for its Department of Education choosing, on the first release under a revised quality standard, the standard flag, a caution flag or suppression for each of twelve education districts' NEET rate and higher-education entry rate, given survey nonrespondents allocated by a destination model and a 2025 nonresponse follow-up in five districts chosen across the island's range",
   "objective": "data-quality-monitoring",
-  "shape": "07",
+  "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
   "answer": "",
@@ -29,8 +29,8 @@
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "close_out_summary",
-  "stakeholder_role": "head of education statistics at the national statistics office, who signs the quality flags on the school-leaver destinations release",
-  "role_family": "statistical_office_head",
+  "stakeholder_role": "director of the Leaver Destinations Survey at a university's social survey unit, who signs the quality flags on the release tables the unit delivers to the Department of Education",
+  "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
     "file": "leaver_destinations_frame_2026.csv",
@@ -39,13 +39,13 @@
     "grain": "leaver",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "government_agency",
+  "forum": "customer_or_counterparty",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "university_or_school",
   "world": {
-    "geography": "a fictional English-speaking island state of about 3.9 million (its statistics office, education districts, schools and people are fictional; personas on the Irish index)",
+    "geography": "a fictional English-speaking island state of about 3.9 million (its university survey unit, Department of Education, education districts, schools and people are fictional; personas on the Irish index)",
     "currency": "EUR",
-    "org_type": "national statistics office, education statistics division",
+    "org_type": "university social survey unit running the national leaver destinations survey for the Department of Education",
     "invented_names": [
       "Southern Shore",
       "Upper Valley",
@@ -70,10 +70,10 @@
     "leaver_destinations_2026_quality_flags.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "what",
   "driver": "A departure between the group missing a value and the values imputed for it is measured on a gold-standard follow-up across the full range of base rates and has to be carried to every unit; carried as a fixed difference in points, pooled or per stratum, or as a ratio of rates, it misfits the follow-up because base rates vary inside each stratum as well as between strata, while one odds ratio fits every unit and stratum, so each unit's shift follows its own base rate and its share missing.",
   "driver_concrete": "The 2025 nonresponse follow-up, in five districts from the most affluent to the most deprived, found nonrespondents NEET far more often and in higher education far less often than the destination model allocated them: a pooled gap of about 15 and 11 points that grows with the allocation, by band and by district within a band, while one odds ratio, about 2.5 and 0.40, fits every district and band; carried as points it overstates the NEET shift in the affluent districts, understates it in the deprived and misses both higher-education suppressions; carried nonrespondent by nonrespondent on the logit scale it gives each statistic's shift and flag.",
-  "stump": "A competent solver adds the follow-up's pooled points gap to each district's nonrespondents and files 11 of the 24 flags wrong: caution for the NEET rates of Southern Shore, Upper Valley and Glen Villages (standard), suppression for Hill Country's and Northern Plains' (caution), caution for City West's and City East's (suppression), caution for the Hill Country and Northern Plains higher-education entry rates (suppression) and for Old Docks' and Mill Towns' (standard); the step that lands it there is carrying a departure measured across allocations from 2 to 60 per cent as a fixed number of points instead of nonrespondent by nonrespondent on the odds scale, the one scale on which the follow-up's districts and bands agree.",
+  "stump": "A competent solver adds the follow-up's pooled points gap to each district's nonrespondents and files 11 of the 24 flags wrong: caution for the NEET rates of Southern Shore, Upper Valley and Glen Villages (standard), suppression for Hill Country's and Northern Plains' (caution), caution for City West's and City East's (suppression), caution for the Hill Country and Northern Plains higher-education entry rates (suppression) and for Old Docks' and Mill Towns' (standard); the step that lands it there is carrying a departure measured across allocations from under 1 to over 55 per cent as a fixed number of points instead of nonrespondent by nonrespondent on the odds scale, the one scale on which the follow-up's districts and bands agree.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who reads every field and the quality standard correctly takes the follow-up's departure as its pooled points gap (about 15 points for NEET, minus 11 for higher education), adds it to each district's nonrespondents in proportion to their share and files 11 of the 24 flags wrong; stratifying the gap by attainment band keeps 11 wrong, and the follow-up rejects both against one odds ratio.",
   "domain_test": "The deciding quantity is each statistic's shift under a departure from missing-at-random calibrated on a gold-standard nonresponse follow-up and carried leaver by leaver on the logit scale (the delta adjustment of a pattern-mixture model), the missing-data task type's own object; replacing it with a points gap, a ratio of rates, a borrowed district's gaps or the agreement between the respondent-only and allocated rates changes the flags, so the missing-data method, not the education setting, decides.",
@@ -112,15 +112,15 @@
       "objective": "data-quality-monitoring"
     }
   ],
-  "notes": "Architecture 2 (re-rooted 2026-10-16 after the stage-4 SEND_BACK of architecture 1). Decisive G14, G17 supporting. The standard files the WHAT (bands, the counterfactual, the per-nonrespondent grain, the headline rate); the scale is forced by the follow-up's design (districts across the range) and its data (pooled and band-level points and ratio departures rejected).",
+  "notes": "Architecture 2 (re-rooted 2026-10-16 after the stage-4 SEND_BACK of architecture 1). Decisive G14, G17 supporting. The standard files the WHAT (bands, the counterfactual, the per-nonrespondent grain, the headline rate); the scale is forced by the follow-up's design (districts across the range) and its data (pooled and band-level points and ratio departures rejected). Furniture redrawn 2026-10-16 at stage 3: task189, task463 and task152, filed before this card's re-registration, took its role, shape, forum, forcing event and organisation family, so the survey now runs at a university social survey unit for the Department of Education, which receives the flagged tables (customer), the 2026 release is the first under QS-4 v2.0 (rollout), and the flags are a scorecard of each statistic's shift against the two thresholds (shape 10).",
   "client_domain": "general-statistics-data-science",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "general-statistics-data-science/missing-data-censoring-measurement-error/3",
   "layer1": [
-    "the 2026 destinations survey returned on two form versions with different destination code lists (the new form splits NEET and adds a deferred-entry code)",
+    "the 2026 survey returned on paper forms (letter codes) and online forms (numeric codes), and the online form's 2026 edition, which inserted a code for higher education outside the island and shifted every later code, went live a day into fieldwork while the processing reference list holds only the 2026 edition",
     "follow-up outcomes keyed by the field team's case numbers, crosswalked to survey leaver IDs, with duplicate cases found by two routes",
     "the follow-up sample drawn from the provisional nonrespondent list, so late respondents in the final 2025 file carry a survey destination and no allocation",
     "district boundaries revised for 2026 (two schools moved district), schools named by code against district names"
   ],
-  "registered": "2026-10-16T22:32:08Z"
+  "registered": "2026-10-16T22:52:44Z"
 }

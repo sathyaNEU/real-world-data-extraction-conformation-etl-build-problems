@@ -15,12 +15,12 @@
   "date": "2026-10-16"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK (2026-10-16, --asof 2026-11-10)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (three_rules.strategy_risk answered; overuse.org_family, overuse.gate_g; older same-puzzle and same-driver differentiated)",
-  "nearest": "task446 v2 0.13 (differentiated); surface promoted task81, task95, task73 (0.10, corpus top 1 per cent, other mechanisms), task256, task54, task458 (differentiated on the card)"
+  "heart": "WARN (three_rules.strategy_risk answered; repeat.gate_g against task463 and overuse.gate_g accepted; older same-puzzle and same-driver differentiated)",
+  "nearest": "task446 v2 0.11 (differentiated); surface promoted task81, task95, task73 (0.10, corpus top 1 per cent, other mechanisms), task256, task54, task458, task262 (differentiated on the card)"
  },
  "judge": {
   "verdict": "",
@@ -29,7 +29,7 @@
   "arch1": "NOT_DETERMINISTIC, SEND_BACK (determinism_check_report_arch1.md)"
  },
  "returned": [],
- "resume": "architecture 2: free gates (make, figures_check, leak.py, guard surface and heart), then stage 4 (reader re-read on a fresh cut, judge r2)",
+ "resume": "architecture 2, furniture redrawn at stage 3 and free gates green: stage 4 (reader on a fresh cut, judge r2)",
  "approved": null,
  "delivered": null,
  "portal": null,
