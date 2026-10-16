@@ -11,7 +11,7 @@ July is expected at 88 per cent and August and June at 89, while May and Septemb
 ## 2. Critical Components
 
 1. Expected compliance in the months that fall short: July 2027 **88%**, August 2027 **89%**, June 2028 **89%**; the closest months above the standard, September 2027 and May 2028, at **91%**.
-2. The queue runs on the late shift's own callers' patience, about two minutes, estimated on the late shift's calls alone.
+2. The late shift's own callers give up quickly: their patience, estimated on the late shift's calls, is short, on the order of two minutes, and the queue runs on it.
 
 ## 3. Step-by-Step Solution
 

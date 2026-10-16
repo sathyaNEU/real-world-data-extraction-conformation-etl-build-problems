@@ -5,7 +5,8 @@ relief-era SBA 7(a) pool, priced on guarantor groups) was spent at stage 4; its 
 ledger's dead-architecture row and `## Tried and rejected`, and its files left the folder (they stay in history at
 435395d). Architecture 2 leaves the seed's lending world behind: a county 911 center's forecast of its late shift's
 answer-time compliance in fiscal 2028. Its first stage 4 (reader clean, judge APPROVE, rule 3 audit strength AT_RISK)
-led to the hardening this note describes; the hardened pack owes its own reader and judge.
+led to the hardening this note describes; the hardened pack's stage 4 (reader clean, judge APPROVE, rule 3 PASS) led to
+the corrected residual and the callback desk's linkage sentence recorded below.
 
 ## Re-root
 
@@ -50,17 +51,31 @@ generator pass:
 - The golden is Erlang A with the late shift's own patience, censored, 123.2 seconds on its 15,814 calls and 81
   hang-ups; one patience for every call (576.6 seconds) now files May to September, Erlang C May to September, the
   hang-ups' own waits no month, every correction of Erlang C fitted outside the late shift's own hours May to
-  September, and the empirical curve on the four-call-taker hours May to September (each asserted).
-- The residual, stated plainly: a scalar correction of Erlang C fitted on the late shift's own history at five
-  call-takers lands the golden's months in three of sixteen window cells (fiscal 2026, and January to September 2026
-  for the miss-rate factor) by sampling noise, and a free-slope logistic recalibration weighted by calls lands them by
-  its slope; `## Ladder` gives the figures.
+  September under the cell-mean back-test, and the Poisson-mixed empirical curve on the four-call-taker hours May to
+  September (each asserted).
+- The residual, stated plainly (corrected after the second stage 4): a correction of Erlang C fitted to the history
+  lands the golden's months whenever its back-test runs Erlang C on each historical hour's own count (a Jensen bias
+  about the size of the abandonment effect), on every hour and on most of the late shift's windows; crude
+  four-call-taker lookups land the same way; under the cell-mean back-test three of sixteen late-shift cells land by
+  noise. The rule 3 re-audit puts one strong solver landing at about 0.25 and both of two at about 0.07; `## Ladder`
+  gives the figures, each asserted or printed in `checks.py`.
 - Critical components re-cut: the monthly compliance at four (every valid route produces it) and the late shift's own
-  patience at about two minutes (the hardened design makes it necessary); the whole-history patience is no longer
+  patience being short, on the order of two minutes (the hardened design makes it necessary); no precise patience is
   graded.
 - The asks' readings pinned in the owner's voice, the alternatives asserted, a silent device kept alive in each
   (`## Ask sheet`): Ask A gains A4, the backup centre's records filed under the incident identifier; Ask B gains B4, the
   911 abandons that join an administrative-line task.
+
+**Second stage 4 (2026-10-16).** On the hardened pack (commit eb89e4a) the leak reader was clean (decisive step
+analytical, nothing planted), the determinism judge returned DETERMINISTIC and APPROVE with every main figure reproduced
+(`determinism_check_report.md`; round 1 kept as `determinism_check_report_round1.md`), and the rule 3 re-audit passed and
+recommended shipping the data as is with the record corrected. This pass:
+- the residual is restated: the per-hour back-test family and the crude lookups are asserted in `checks.py` as recorded
+  landing routes, and the cell-mean assertions carry their convention in their labels;
+- the judge's April finding is closed by the README's callback sentence (a task is open from the abandon that opens it
+  until it is dialled or closed), with the stamp-only reading asserted (April 51.5);
+- the moment-matched patience (79.4 to 111.7 seconds by grouping) is asserted to keep the set, its figure exposure noted;
+- the patience component is graded as short, on the order of two minutes, never as a precise figure.
 
 ## Draw
 
@@ -93,8 +108,7 @@ patience, so the queue each new unit meets is drained by those who give up; a mo
 served overstates every wait; the patience that sets the drain is seen in full only for the units that left, the
 served ones showing only a lower bound, so it has to be estimated over every unit's wait; and the units arriving in the
 window being forecast are not the history's average unit (they give up five times sooner), so it has to be estimated
-on their own segment, where one pooled patience, or a correction fitted where the queue is light or the units patient,
-leaves the forecast as pessimistic as the standard queue. The nearest by mechanism: task254 v2 (truncated event times:
+on their own segment, where one pooled patience leaves the forecast as pessimistic as the standard queue. The nearest by mechanism: task254 v2 (truncated event times:
 here the censoring is by service, inside a queue), task142 (a percentile built from arrivals and durations: here there
 is a wait, a standard and units that give up), task147 (requests needing every unit of a run), task149 (a rate rising
 with pace). None shares the latent structure.
@@ -111,8 +125,8 @@ differentiation lines.
 or hang-up and marks which it was; an answered caller leaves only the time they had held on so far, and the callers
 differ by when they call: on Friday and Saturday nights from 22:00 they would hold on about two minutes, the rest of the
 week about ten, so the four call-takers' queue in fiscal 2028 is drained by the late shift's own impatient callers,
-which a standard queue (nobody hangs up), one patience for the week (577 seconds), a correction fitted on the week's
-hours and the hang-ups' own waits (38 seconds) all miss.
+which a standard queue (nobody hangs up), one patience for the week (577 seconds) and the hang-ups' own waits (38
+seconds) all miss.
 
 **Sources read, one line each.** `guard.py mechanisms --objective forecasting` (61 builds): no queue with reneging and
 no censored patience; the waiting-adjacent builds (task142's arrivals and durations, task147's consecutive runs,
@@ -243,7 +257,7 @@ them.
 | R0 Erlang C on the board's forecast with the measured busy time and four call-takers (May to September short, July 82.6) | no | no | yes (the PSAP staffing default) | no | no | no | readable |
 | R1a no queue: fiscal 2026's observed late-shift compliance carried forward (no month short, July 99.1) | no | yes (the answer times give the observed share directly) | yes | no | no | yes | readable |
 | R1b the analyst's own forecast from the history with the golden's queue (no Halvorsen move; no month short, July 93.4) | no | no | yes (forecast from history) | no | no | no | readable |
-| R1c Erlang C corrected to the history (a miss-rate factor, a busy-time fudge, a logit offset, a fitted compliance curve) on every hour, the daytime, the four-call-taker hours, the Sunday to Thursday late block or the late shift's whole history (May to September short, July 84.6 to 86.4) | no | no | yes (calibrate to history) | no | no | no | readable |
+| R1c Erlang C corrected to the history (a miss-rate factor, a busy-time fudge, a logit offset, a fitted compliance curve): under the cell-mean back-test, on every hour, the daytime, the four-call-taker hours, the Sunday to Thursday late block or the late shift's whole history, May to September short (July 84.6 to 86.4); under the per-hour back-test, the golden's set (the residual in `## Ladder`) | no | no | yes (calibrate to history) | no | no | no | readable |
 | R2 Erlang A with the hang-ups' own waits as the patience (37.6 seconds on the late shift: no month short, July 90.8; 68.2 over every call: July alone) | no | yes (the disposition marks the hang-ups and their wait is one subtraction) | yes (Erlang A's patience read as the mean time to abandon) | no | no | yes (a mean of one column) | readable |
 | R2b Erlang A with one patience over every call, answered calls censored (576.6 seconds; May to September short, July 85.0) | no | no | yes (estimate on all the data there is) | no | no | no | readable |
 | R3 (decisive) Erlang A with the late shift's own patience over every one of its calls' waits, answered calls censored (123.2 seconds; July, August and June short, July 88.1) | no (SOP 2.10 files the measure and the arrival basis; nothing names a queue, a wait, a patience or a segment) | no (no column holds a patience or marks a wait as censored; no column or document says callers differ by night) | no (the reflexes are Erlang C, a calibration to history, the mean time to abandon and the most data) | no (no compliance forecast, model output or staffing study ships) | no (the battery is clean on it) | no (a likelihood over one segment's waits inside a queue with reneging, per forecast hour) | silent |
@@ -269,7 +283,7 @@ group the data force (the late shift's 123 seconds against 529 to 628 elsewhere)
 | SF10 | busy time | answer to the position's return to Ready, the after-call work and CAD entry included | answer to release (talk only) | no month short (talk time 158.8 seconds) | SOP 2.10 4.2 (a position takes no new call until the call-taker sets Ready again after the after-call work and CAD entry) and the README |
 | SF11 | the busy-time window | every answered 911 call in the history | the late shift's calls; fiscal 2026; January to June 2025; fiscal 2027's first quarter; one layout; transfers-in left out | same call (asserted: 225.5 to 227.1 seconds) | same call |
 | SF12 | the patience window | the late shift's own 911 calls over the whole history | fiscal 2026; the last twelve months; the i3 layout; transfers-in left out; Friday and Saturday nights to 06:00 | same call (asserted: 109.2 to 123.1 seconds, and one sigma, 13.7 seconds either way) | same call |
-| SF13 | the patience estimator | the exponential likelihood, answered calls censored | Kaplan-Meier on the late shift's waits with an exponential fitted to it; the hang-ups' rate over the total waiting time by 30-second band | same call (asserted: 118.8 and 123.2 seconds); a patience fitted so the queue reproduces the late shift's own observed compliance over its whole history (137 seconds) gives the same twelve figures (printed) | same call |
+| SF13 | the patience estimator | the exponential likelihood, answered calls censored | Kaplan-Meier on the late shift's waits with an exponential fitted to it; the hang-ups' rate over the total waiting time by 30-second band; the patience matched to the late shift's fiscal 2026 hang-up share (a method of moments) | same call (asserted: 118.8 and 123.2 seconds); the moment-matched patience, 79.4 to 111.7 seconds by grouping, files the same set (asserted), August and June printing 90 at the coarse groupings; a patience fitted so the queue reproduces the late shift's own observed compliance over its whole history (137 seconds) gives the same twelve figures (printed) | same call; the figure exposure is in `## Ladder` |
 | SF14 | the queue in time | each forecast hour as a stationary queue | one continuous queue for each night, from empty or from the evening block's five call-takers | same call (asserted within 0.4: largest moves 0.28 and 0.17) | same call |
 | SF15 | the hours of a shift | each hour on its own forecast | the shift's average rate for all four hours | same call (asserted) | same call |
 | SF16 | a month's figure | the month's calls answered within 15 seconds over its calls presented less those abandoned within 5 seconds, over all its late-shift hours | the forecast-weighted mean of the hourly figures | same call (asserted) | same call |
@@ -291,7 +305,7 @@ The hardened pack's figures (stage 3, 2026-10-16); `checks.py` prints every valu
 | 0 | Erlang C, the measured busy time (226.9 s), the board's forecast, four call-takers | July to September, May and June (5) | 82.6 | out of sample (January to June 2025's parameters, fiscal 2026 predicted hour by hour on its own call-takers) Erlang C files 93.8 against an observed 94.7 on the whole floor and predicts no hang-ups where 0.77 per cent of calls hung up (0.46 per cent on the late shift) |
 | 1a | fiscal 2026's observed late-shift compliance carried forward (five call-takers) | none | 99.1 | the FY2028 budget's four call-takers and the board's Halvorsen move |
 | 1b | the analyst's own forecast from the history (fiscal 2026 times growth, no Halvorsen), the golden's queue | none | 93.4 | SOP 2.10 5.1 and the workbook's Halvorsen column |
-| 1c | Erlang C corrected to the history: a miss-rate factor (0.834 to 0.867), the busy time fudged (214.5 to 217.8 s), one patience fitted to the observed compliance (264 to 478 s), a logit offset, or an empirical compliance curve, over every hour, the daytime, the four-call-taker hours, the Sunday to Thursday late block, or the late shift's own hours at five over its whole history | July to September, May and June (a logit offset: none) | 84.6 to 86.4 (logit offset 95.1) | a correction fitted where the queue is light or the callers patient carries their drain into a four-call-taker shift whose callers give up after two minutes; the late shift's own patience (the segment table) is what no scalar correction carries |
+| 1c | Erlang C corrected to the history under the cell-mean back-test: a miss-rate factor (0.834 to 0.867), the busy time fudged (214.5 to 217.8 s), one patience fitted to the observed compliance (264 to 478 s), a logit offset, or the Poisson-mixed empirical compliance curve, over every hour, the daytime, the four-call-taker hours, the Sunday to Thursday late block, or the late shift's own hours at five over its whole history | July to September, May and June (a logit offset: none) | 84.6 to 86.4 (logit offset 95.1) | a correction fitted where the queue is light or the callers patient carries their drain into a four-call-taker shift whose callers give up after two minutes; under the per-hour back-test the same corrections land the golden's set (the residual below) |
 | 2 | Erlang A with the hang-ups' own waits as the patience (late shift 37.6 s; every call 68.2 s) | none; July alone | 90.8; 89.4 | an answered call's wait is a lower bound on its caller's patience, not a missing value |
 | 2b | Erlang A with one patience over every call, censored (576.6 s) | July to September, May and June (5) | 85.0 | the late shift's callers hang up five times sooner (123 s against 529 to 628 s at other hours, the segment table); out of sample one patience predicts 0.14 per cent hang-ups on the late shift against 0.46 observed (the late shift's own, 0.34) |
 | 3 (decisive) | Erlang A with the late shift's own patience over every one of its calls' waits, censored (123.2 s) | July, August, June | 88.1 | the golden; out of sample the whole floor 94.5 against 94.7 observed, the late shift's hang-ups 0.34 against 0.46 |
@@ -308,28 +322,54 @@ Off the grid: Erlang C on the board's forecast with five call-takers files none 
 the late block of every night (359.4 s), over every night from 22:00 to 06:00 (351.0 s) or over Friday and Saturday
 from 18:00 to 02:00 (522.1 s) files May to September, every month 0.3 or more from 90 (asserted).
 
-**The residual landing routes, stated plainly.** A scalar correction of Erlang C fitted on the late shift's own
-history at five call-takers was run over eight windows. It files May to September in thirteen of the sixteen scalar
-cells (asserted): the whole history (factor 0.834, busy 217.4 s), calendar 2025, January to June 2025, June 2025 to
-September 2026, the last twelve months and the June to September months. Three cells land the golden's set by
-sampling:
-- fiscal 2026's miss-rate factor (0.730; July 87.3; 9 of 12 figures);
-- fiscal 2026's busy-time fudge (210.9 s; July 86.1; 5 of 12);
-- January to September 2026's miss-rate factor (0.776; July 86.5; 7 of 12).
+**The residual landing routes, stated plainly** (corrected after the rule 3 re-audit of the second stage 4; every
+figure below is printed or asserted by `checks.py`). A correction of Erlang C fitted to the history depends on how its
+back-test runs Erlang C over the past hours.
 
-The late shift at five leaves 46 to 184 missed calls per window. The factor's sampling error is about 0.08, about 1.4
-points on July, against an expected miss of about 0.4 points (analytic: factor 0.83 against a landing edge near
-0.80).
-
-A free-slope logistic recalibration of Erlang C over every hour lands the set when weighted by calls (slope 1.90; July
-82.7; 2 of 12 figures). Weighted by hour group it files none.
-
-The patience fitted to the late shift's own compliance, or to its hang-up share, is the golden's model on the golden's
-population. It lands in most windows: the whole history at 137 s gives all 12 figures. It is a valid route, not a
-residual.
-
-No data-native change tried moved the late-shift corrections' expectation clear of their noise (`## Tried and
-rejected`); reseeding the world to dodge the three cells would be noise-shopping.
+- The per-hour back-test runs Erlang C on each historical hour's own count, weighted by calls. Erlang C's miss rate is
+  convex in load, so the realised counts overstate the predicted misses (a Jensen bias). The bias is about the size of
+  what the late shift's hang-ups take off fiscal 2028 at four call-takers (July: golden 11.9 per cent missed against
+  Erlang C's 17.4). A correction fitted on this back-test lands the golden's set; this is the residual (asserted as
+  recorded landing routes):
+  - fiscal 2026, every hour: the miss-rate factor 0.739 (July 87.2), the logit offset +0.323 (86.8), the busy time
+    209.1 s (86.5) and the free-slope logistic, slope 1.03 (86.9);
+  - the whole history, every hour: 0.744 (87.1), +0.316 (86.7), 209.4 s (86.4) and slope 1.02 (86.8);
+  - the late shift's own windows: 19 of 24 cells over six windows. The misses: fiscal 2026's factor (0.549, no month
+    short) and logit offset (July alone), January to September 2026's factor and logit offset (July alone), and
+    calendar 2025's logistic (May to September);
+  - the landing cells' twelve figures: July 85.4 to 88.9, 0 to 10 of 12 matching the golden's, the every-hour cells 7
+    to 9.
+  This is a systematic coincidence, not noise. No reseed or small data change removes it without changing the world's
+  loads (`## Tried and rejected`).
+- The crude four-call-taker lookups skip the Poisson mixing over each forecast rate and land the same way:
+  - the isotonic curve read at the forecast rate (July 88.0, 8 of 12 figures);
+  - five-call bins (87.8, 7 of 12);
+  - a logistic linear in the hour's rate (87.3, 9 of 12).
+  The Poisson-mixed curve and a quadratic logistic file May to September (asserted).
+- The cell-mean back-test (cells of year, month, hour, weekday and call-takers, each at its mean count) is the one
+  under which every correction fitted outside the late shift's own hours files May to September (asserted under that
+  label).
+  - On the late shift's own history at five, three of sixteen scalar cells land by sampling: fiscal 2026's miss-rate
+    factor (0.730; July 87.3; 9 of 12 figures), fiscal 2026's busy-time fudge (210.9 s; July 86.1; 5 of 12), and
+    January to September 2026's miss-rate factor (0.776; July 86.5; 7 of 12).
+  - The late shift at five leaves 46 to 184 missed calls per window. The factor's sampling error is about 0.08 (the
+    re-audit's bootstrap over nights, 0.15), about 1.4 points on July, against a truth-model factor near 0.87.
+  - A free-slope logistic over the cells lands when weighted by calls (slope 1.90; July 82.7; 2 of 12 figures) and
+    files none when weighted by hour group.
+- The rule 3 re-audit's estimate:
+  - plain Erlang C (about 40 per cent of strong solvers) misses;
+  - Erlang A with the hang-ups' waits or one pooled patience (about 20 per cent) misses;
+  - the back-test-and-correct family (about 20 per cent) lands about half the time;
+  - one strong solver lands with probability about 0.25 (0.2 to 0.35), both of two about 0.07 (0.04 to 0.12).
+- Valid routes, not residual: the patience fitted to the late shift's own compliance or its hang-up share is the
+  golden's model on the golden's population.
+  - The compliance fit over the whole history (137 s) gives all 12 figures.
+  - The patience matched to fiscal 2026's late-shift hang-up share (0.46 per cent, a method of moments) is 111.7 s on
+    cells and 103.3 s on the month's hours (12 of 12 figures). On coarser groupings it is 79.8 and 79.4 s, where the
+    set holds (August 89.84 and 89.85, June 89.89 and 89.90; asserted) but August and June print 90 (6 of 12
+    figures).
+  - That is a one-point exposure on two graded cells, recorded with no change: the likelihood is the principled
+    estimate, and the fiscal 2026 late shift's 41 hang-ups against 32 to 39 expected at 123.2 s are within noise.
 
 Position and margin: the golden's set is the only grid cell naming July, August and June. Every month's golden
 compliance is at least 1.03 points from 90 (June 88.97, August 88.91, May 91.04, September 91.11) and at least 0.384
@@ -343,7 +383,7 @@ from its rounding edge, so a month flips only on moving a full point:
 
 Same call at one sigma, asserted; every margin printed by `checks.py`.
 
-Dominance: the decisive step moves July from 82.6 (rung 0), 84.6 to 86.4 (rung 1c) and 85.0 (rung 2b) up to 88.1,
+Dominance: the decisive step moves July from 82.6 (rung 0), 84.6 to 86.4 (rung 1c, cell-mean) and 85.0 (rung 2b) up to 88.1,
 and from 90.8 (rung 2) down to 88.1; it is the only construction between the hang-ups' waits and the pooled patience.
 Worth: the decisive step carries the whole set (five
 months at rungs 0 and 2b, none at rung 2, three at rung 3) and all twelve figures (every rung 0 figure 1.49 or more
@@ -392,7 +432,9 @@ whole floor Erlang C 93.8, Erlang A by segment 94.5, observed 94.7; on the late 
 per cent with one patience, 0.34 with the late shift's own, 0.46 observed. The easy answer is an easy method on the
 same literal estimand, never another reading; executing the filed sentences alone gives no figure, and the estimators
 they admit (Erlang C, the observed compliance carried forward, Erlang A on the hang-ups' waits, Erlang A with one
-patience for every call) each file a different set (asserted).
+patience for every call) each file a different set (asserted). Every estimator of the late shift's own patience the
+data admit (the likelihood, Kaplan-Meier, the hang-up rate by band, the patience matched to its hang-up share at any
+grouping, 79.4 to 123.2 seconds) files the same set (asserted); the figure exposure of the coarsest is in `## Ladder`.
 
 ## Oracles
 
@@ -490,10 +532,12 @@ June 2026** (6 figures, per cent to one decimal).
     Leaving out the abandons within 5 seconds moves all 6 months (57.3, 44.7, 59.1, 54.8, 51.1, 53.2).
   - The numerator: the README, "A task closed as `caller called in` was never dialled". Counting those tasks as dialled
     back moves all 6 (65.6 to 73.0).
-  - The linkage: the README, "The desk works one open task per callback number: an abandon from a number whose task has
-    not been dialled yet joins that task and opens none of its own" (joins in every month, 4 to 9 a month, 4.5 per
-    cent of abandons). Tasks keyed on their opening call move all 6, whether the unjoined count as not dialled back
-    (51.0, 37.3, 54.1, 45.4, 48.7, 48.2) or are dropped (53.9, 40.4, 56.1, 48.9, 50.0, 50.2).
+  - The linkage: the README, "The desk works one open task per callback number, from the abandon that opens it until
+    the task is dialled or closed: any later abandon from that number in that time joins the task and opens none of
+    its own" (joins in every month, 4 to 9 a month, 4.5 per cent of abandons). Tasks keyed on their opening call move
+    all 6, whether the unjoined count as not dialled back (51.0, 37.3, 54.1, 45.4, 48.7, 48.2) or are dropped (53.9,
+    40.4, 56.1, 48.9, 50.0, 50.2). A task read as open only from its `created` stamp drops the one April abandon that
+    hung up 4 seconds before its number's task was stamped: April 51.5, the other five months unchanged (asserted).
 - Primary device B4 (D5, a category crossed by label):
   - The callers: some first hang up on the administrative line and then dial 911 and hang up again. The 911 abandon
     joins the open task the administrative-line abandon opened, a task whose `line` is `ADMIN`.
@@ -557,8 +601,9 @@ devices are the margin, the portal measures them, and the ceiling is rerun from 
 
 ## Build record
 
-Stage 3 of the hardening complete on 2026-10-16 (`generator/build.py`, the fourth full build of the hardening),
-paused for the stage 4 reader and judge on the hardened pack.
+Stage 3 of the hardening complete on 2026-10-16. The second stage 4 (reader clean, judge APPROVE, rule 3 PASS) was
+answered in one generator pass (`generator/build.py`, the sixth full build of the hardening). It changed one sentence
+under `target/`, the README's callback-desk linkage, and paused for the coordinator's targeted re-read before ship.
 
 - Pack: 14 files in `target/`, six formats (csv, geojson, jsonl, md, pdf, xlsx).
   - The legacy ACD CSV 78,676 rows and the i3 JSON Lines log 339,676 calls (the file over 25,000 rows), each i3 call
@@ -569,13 +614,19 @@ paused for the stage 4 reader and judge on the hardened pack.
   - SOP 2.10 and the FY2028 budget page as PDFs, the boundary GeoJSON and the README.
   - Distractors in `metadata.json`: the CAD incidents and the administrative line's ACD, read by neither the call nor
     the asks (asserted).
-  - `target.zip`: 23,225,713 bytes, sha256 35bd97282bebbf5e88c44d37942afd46b3c690076c5205aeec4562a037fa0b03.
+  - `target.zip`: 23,225,726 bytes, sha256 f7c143a8a5abe478f7fa14abfc8c68bbb9ddca128dc22f1affd6b3e21eff1661.
+    Against the judged pack (eb89e4a, sha256 35bd9728...0b03) only `README.md` differs: the callback-desk sentence now
+    reads "The desk works one open task per callback number, from the abandon that opens it until the task is dialled
+    or closed: any later abandon from that number in that time joins the task and opens none of its own." The other 13
+    files are byte-identical, and so is every graded figure.
 - Goldens: `late_shift_staffing_fy2028.xlsx` (Summary, FY2028 late shift, Model check with the out-of-sample table and
   the patience by segment, Halvorsen FY2026, Callbacks Jan-Jun 2026) and `late_shift_compliance_fy2028.png` (opened:
   twelve bars, the 90 per cent line, the three months in red, the source line inside the frame); `submission.md` is
   written by `deliver.py` from the same objects.
 - Gates:
-  - `checks.py` 192 assertions, 0 failed (the margins, calibration, back-test, pin and device blocks included);
+  - `checks.py` 203 assertions, 0 failed. These include the margins, the cell-mean calibration, the per-hour residual,
+    the crude lookups, the moment-matched patience, the back-test, the pins (the stamp-only linkage reading among them)
+    and the devices;
   - `verify.py` recomputes every graded figure on its own code path; two builds byte-identical (target, golden,
     metadata.json, figures.json, submission.md, target.zip);
   - `figures_check.py` PASS (figures in blocks 1 to 4 all in `figures.json`); `precut.py` PASS; `voice-check.py` PASS;
@@ -587,9 +638,13 @@ paused for the stage 4 reader and judge on the hardened pack.
   - (1) The FY2028 budget page shares words with the committed call because it carries the decision's frame (the board
     asks in which months of fiscal 2028 a seasonal fifth call-taker should cover the Friday and Saturday late shift); it
     names no month, no compliance figure and no method.
-  - (2) The README's four terms (forecast, September, method, late-shift) are its field notes: the forecast workbook,
-    the export's last month, the CHE's `method` column and the late-shift block. No queue model, no wait distribution,
-    no patience, no censoring, nothing on callers differing by night.
+  - (2) The README's six terms (forecast, September, method, late-shift, second, regional) are its field notes: the
+    regional board's forecast workbook, the export's last month, the CHE's `method` column, the late-shift block and
+    times to the second. No queue model, no wait distribution, no patience, no censoring, nothing on callers differing
+    by night.
+  - (3) SOP 2.10's four terms (forecast, seconds, second, regional) are the filed estimand: the regional board's
+    forecast as the arrival basis and the 15-second and 5-second measures. Nothing says how a month's compliance
+    follows from them.
 - House fixes (`reduce-house-fixes`):
   - H1 the container audit clean on the pack and the goldens; H2 every figure in this note is printed by `checks.py` or
     held in `figures.json`, the analytic expectations in `## Ladder` and `## Tried and rejected` excepted (scratch
@@ -601,8 +656,8 @@ paused for the stage 4 reader and judge on the hardened pack.
     2028 rows and the boundary's in-service date, forward by nature; H21 the inventory file is the QA extract log, not
     the corpus's `export_manifest`; H23 both asks read with "none" stay grammatical; H24 the README is the QA team's
     compile note.
-- Stage 4 owes: the leak reader and the determinism judge on the hardened pack, spawned together; every finding fixed
-  in the generator in one pass.
+- Owed before ship: the coordinator's targeted re-read of the README's callback sentence; then target.zip from this
+  build, the ledger row, the card and `pipeline.json` SHIPPED.
 
 ## Tried and rejected
 
@@ -663,3 +718,6 @@ paused for the stage 4 reader and judge on the hardened pack.
 - A free-slope logistic recalibration of Erlang C over every hour (stage 3 of the hardening, 2026-10-16): weighted by calls its slope (1.90) lands the golden's months with July at 82.7 (2 of 12 figures), weighted by hour group none; a coincidence of the fit, recorded, not asserted.
 - The 161.4-second patience over every call as a critical component (stage 4 instruction, 2026-10-16): a correct route on the hardened data need not compute it; the critical components are now the monthly compliance at four and the late shift's own patience at about two minutes.
 - Ask A after the pins with its earlier devices alone (the geometry, Wexley's alternate URI, the local quarters; stage 3 of the hardening, 2026-10-16): a careful solver with a MultiPolygon-aware library who reads the directory lands all eight figures; A4, the backup centre's records under the incident identifier, now holds every figure against a join on the call identifier.
+- The record's first residual (stage 3 of the hardening) counted only the cell-mean back-test's late-shift cells and its logistic. The rule 3 re-audit of the second stage 4 (2026-10-16) found the per-hour back-test landing the set too: Erlang C on each hour's realised count, with every correction, on every hour and on 19 of 24 late-shift cells (a Jensen bias about the size of the abandonment effect). It also found the crude four-call-taker lookups landing. No small data-native change removes it: a heavier late-shift history moves the true factor from 0.87 toward fiscal 2028's 0.68, inside the landing band, and a lighter one is noisier. So the data ship as is, the residual is recorded and asserted, and the re-audit's estimate stands (one strong solver lands about 0.25, both of two about 0.07).
+- Closing the April 2026 callback edge with a generator change (second stage 4, 2026-10-16). One 911 hang-up came 4 seconds before the callback module stamped the task its number's earlier abandon had opened. Making the module stamp before any later abandon would have shortened the stamp lag that device B2 rests on, or tied each poll to the next abandon. Instead the README's callback sentence now says a task is open from the abandon that opens it until it is dialled or closed, and the stamp-only reading is asserted (April 51.5, the other five months and Ask A unchanged).
+- The moment-matched patience (second stage 4, 2026-10-16). Matched to fiscal 2026's late-shift hang-up share, it is 79.4 to 111.7 seconds by grouping and keeps the set, but at the coarse groupings it prints August and June at 90. Recorded as a figure exposure with no change: the likelihood is the principled estimate, and 41 hang-ups against 32 to 39 expected is within noise.

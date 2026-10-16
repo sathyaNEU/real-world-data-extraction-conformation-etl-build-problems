@@ -414,31 +414,95 @@ def run(target, golden, B=None, G=None, meta_path=None):
             G["calibration"][(nm_, lab)] = (s_, figs, v)
         if "late shift" not in nm_:
             for lab, v in res.items():
-                ck("calibration %s on %s files another set" % (lab.split(" ")[0] + " " + lab.split(" ")[1], nm_),
+                ck("calibration (cell-mean back-test) %s on %s files another set" % (
+                    lab.split(" ")[0] + " " + lab.split(" ")[1], nm_),
                    CA.short_months(v) != want, "%s: %s" % (lab, CA.label_set(CA.short_months(v))))
         else:
             for lab in list(res)[:2]:
                 if CA.short_months(res[lab]) == want:
                     landers.add((nm_, lab.split(" ")[0]))
                 if (nm_, lab.split(" ")[0]) not in known:
-                    ck("calibration %s on %s files another set" % (lab.split(" ")[0] + " " + lab.split(" ")[1], nm_),
+                    ck("calibration (cell-mean back-test) %s on %s files another set" % (
+                        lab.split(" ")[0] + " " + lab.split(" ")[1], nm_),
                        CA.short_months(res[lab]) != want, "%s: %s" % (lab, CA.label_set(CA.short_months(res[lab]))))
-    ck("calibration the late shift at five: the scalar corrections land in at most 3 of 16 windows (fiscal 2026 both, "
-       "January to September 2026 the miss-rate factor)", landers <= known,
+    ck("calibration (cell-mean back-test) the late shift at five: the scalar corrections land in at most 3 of 16 "
+       "windows (fiscal 2026 both, January to September 2026 the miss-rate factor)", landers <= known,
        "%d land: %s" % (len(landers), "; ".join("%s, %s" % x for x in sorted(landers))))
     G["calibration_landers"] = sorted(landers)
     for wt in ("calls", "groups"):
         lo_ = logistic_route(H, busy, fc, pat, weight=wt, slope=False)
         show("logit offset on Erlang C, every hour, weighted by %s" % wt, lo_, "cal")
-        ck("calibration a logit offset on Erlang C over every hour (weighted by %s) files another set" % wt,
+        ck("calibration (cell-mean back-test) a logit offset on Erlang C over every hour (weighted by %s) files another "
+           "set" % wt,
            CA.short_months(lo_) != want, CA.label_set(CA.short_months(lo_)))
         lg = logistic_route(H, busy, fc, pat, weight=wt, slope=True)
         s_, figs = show("logistic recalibration of Erlang C, every hour, weighted by %s" % wt, lg, "cal")
         G["calibration"][("every hour", "logistic, %s" % wt)] = (s_, figs, lg)
     em = empirical_route(H, fc)
     show("empirical curve of compliance on calls, the four-call-taker hours", em, "emp")
-    ck("empirical compliance against hourly calls on the four-call-taker hours files another set",
-       CA.short_months(em) != want, CA.label_set(CA.short_months(em)))
+    ck("empirical compliance against hourly calls on the four-call-taker hours, Poisson-mixed over each forecast rate, "
+       "files another set", CA.short_months(em) != want, CA.label_set(CA.short_months(em)))
+    # the per-hour back-test: Erlang C on each historical hour's own count. Its miss rate is convex in load, so the
+    # realised counts overstate the predicted misses by about what the late shift's hang-ups take off fiscal 2028's,
+    # and a correction fitted this way lands the golden's set (a residual, recorded in the design note)
+    real_wins = {"fiscal 2026, every hour": lambda h: h[4] == 2026, "the whole history, every hour": lambda h: True,
+                 "the late shift at five, fiscal 2026": lambda h: h[5] and h[4] == 2026,
+                 "the late shift at five, the whole history": lambda h: h[5],
+                 "the late shift at five, calendar 2025": lambda h: h[5] and h[0] == 2025,
+                 "the late shift at five, January to September 2026": lambda h: h[5] and h[0] == 2026,
+                 "the late shift at five, the last twelve months": lambda h: h[5] and (h[0], h[1]) >= (2025, 10),
+                 "the late block of every night, fiscal 2026": lambda h: h[4] == 2026 and (h[2] >= 22 or h[2] < 2)}
+    real_land = {}
+    for nm_, sel in real_wins.items():
+        ks = hours_of(H, sel)
+        o = H.ok15[ks].sum() / (H.cnt[ks].sum() - H.ab5[ks].sum())
+        pr_ = realised_pred(H, ks, busy)
+        f_ = (1 - o) / (1 - pr_)
+        lo_ = _logit(o) - _logit(pr_)
+        bcal = brentq(lambda b: realised_pred(H, ks, b) - o, 120.0, 320.0, xtol=0.05)
+        a_, b_ = realised_logistic(H, ks, busy)
+        res = {"miss-rate factor %.3f" % f_: {ym: 1 - f_ * (1 - cC[ym]) for ym in FY28},
+               "logit offset %+.3f" % lo_: {ym: 1.0 / (1.0 + math.exp(-(_logit(cC[ym]) + lo_))) for ym in FY28},
+               "busy time %.1f s" % bcal: CA.fy2028(fc, bcal, pat, model="C"),
+               "free-slope logistic, slope %.2f" % b_: by_forecast_hour(fc, lambda lam: 1.0 / (1.0 + math.exp(
+                   -(a_ + b_ * _logit(E.erlang_c(lam, 3600.0 / busy, 4))))))}
+        for lab, v in res.items():
+            s_, figs = show("realised %s on %s" % (lab, nm_), v, "res")
+            real_land[(nm_, lab.split(" ")[0])] = s_ == want
+    allh = [k for k in real_land if k[0].endswith("every hour")]
+    ck("residual, recorded (realised per-hour back-test): every correction fitted on fiscal 2026's or the whole "
+       "history's hours lands the golden's set", all(real_land[k] for k in allh),
+       "%d of %d" % (sum(real_land[k] for k in allh), len(allh)))
+    latec = [k for k in real_land if k not in allh]
+    ck("residual, recorded (realised per-hour back-test): on the late shift's own windows the corrections land in 19 "
+       "or more of 24 cells", sum(real_land[k] for k in latec) >= 19,
+       "%d of %d land; misses: %s" % (sum(real_land[k] for k in latec), len(latec),
+                                      "; ".join("%s, %s" % k for k in latec if not real_land[k])))
+    G["realised_land"] = real_land
+    # the crude four-call-taker lookups skip the Poisson mixing and land the same way
+    crude = {"the isotonic curve read at the forecast rate": empirical_route(H, fc, mix=False),
+             "five-call bins at the forecast rate": binned_route(H, fc),
+             "a logistic linear in the hour's rate": rate_logistic_route(H, fc, quadratic=False)}
+    for k_, v in crude.items():
+        show("four-call-taker hours, %s" % k_, v, "emp")
+        ck("residual, recorded: the four-call-taker hours, %s, lands the golden's set" % k_, CA.short_months(v) == want,
+           CA.label_set(CA.short_months(v)))
+    v = rate_logistic_route(H, fc, quadratic=True)
+    show("four-call-taker hours, a logistic quadratic in the hour's rate", v, "emp")
+    ck("empirical a logistic quadratic in the hour's rate on the four-call-taker hours files another set",
+       CA.short_months(v) != want, CA.label_set(CA.short_months(v)))
+    # the late shift's patience matched to its fiscal 2026 hang-up share (a method of moments), by grouping
+    mm = {"cells of year, month, hour, weekday and call-takers": lambda h: (h[0], h[1], h[2], h[3], h[6]),
+          "the month's hours": lambda h: (h[0], h[1], h[2], h[6]),
+          "the fiscal year's hour and weekday": lambda h: (h[4], h[2], h[3], h[6]),
+          "one rate for each hour of the night": lambda h: (h[2], h[6])}
+    G["moment_matched"] = {}
+    for k_, keyf in mm.items():
+        pm, ab_o, v = moment_matched(H, busy, fc, keyf)
+        G["moment_matched"][k_] = (pm, v)
+        show("patience %.1f s matched to the late shift's fiscal 2026 hang-up share (%.2f%%), %s" % (pm, 100 * ab_o, k_), v, "mm")
+        ck("the late shift's patience matched to its fiscal 2026 hang-up share by %s (%.1f s) files the golden's set" % (
+            k_, pm), CA.short_months(v) == want, "Aug %.2f Jun %.2f" % (100 * v[(2027, 8)], 100 * v[(2028, 6)]))
 
     # ------------------------------------------------------------------------------------------------ back-test
     bt = G["backtest"]
@@ -613,9 +677,10 @@ def logistic_route(H, busy, fc, pat, weight="calls", slope=True):
     return out
 
 
-def empirical_route(H, fc):
+def empirical_route(H, fc, mix=True):
     """Observed compliance against the hour's realised calls on the four-call-taker hours, made non-increasing (pool
-    adjacent violators), and each forecast hour's expected compliance under Poisson counts at its forecast rate."""
+    adjacent violators), and each forecast hour's expected compliance under Poisson counts at its forecast rate
+    (mix=False reads the curve at the forecast rate itself)."""
     from scipy.stats import poisson
     num, den = {}, {}
     for k in range(H.nh):
@@ -648,6 +713,10 @@ def empirical_route(H, fc):
         for nd, cells in M.night_cells(y, m):
             for dow, hh in cells:
                 lam = fc[(y, m, dow, hh)][0]
+                if not mix:
+                    nm_ += lam * float(np.interp(lam, cx, cy))
+                    dm_ += lam
+                    continue
                 ks = np.arange(1, int(lam * 3 + 30))
                 pk = poisson.pmf(ks, lam)
                 cv = np.interp(ks.astype(float), cx, cy)
@@ -655,6 +724,113 @@ def empirical_route(H, fc):
                 dm_ += float(np.sum(pk * ks))
         out[(y, m)] = nm_ / dm_
     return out
+
+
+def hours_of(H, select):
+    """The history's clock hours in select that carried any call."""
+    return np.array([k for k in range(H.nh) if select(H.HT[k]) and H.cnt[k] > 0], dtype=np.int64)
+
+
+def realised_pred(H, ks, busy):
+    """Erlang C's compliance on each historical hour's own count, weighted by calls (the per-hour back-test)."""
+    mu = 3600.0 / busy
+    pairs = np.vstack([H.cnt[ks].astype(np.int64), np.array([H.HT[k][6] for k in ks], dtype=np.int64)]).T
+    keys, counts = np.unique(pairs, axis=0, return_counts=True)
+    num = den = 0.0
+    for (x, c), n in zip(keys, counts):
+        num += n * x * E.erlang_c(float(x), mu, int(c))
+        den += n * x
+    return num / den
+
+
+def _irls(cols, succ, trials):
+    """Binomial logistic regression by iteratively reweighted least squares: coefficients for [1] + cols."""
+    X = np.column_stack([np.ones(len(succ))] + list(cols))
+    beta = np.zeros(X.shape[1])
+    for _ in range(200):
+        eta = X @ beta
+        p = 1.0 / (1.0 + np.exp(-eta))
+        w = trials * p * (1 - p)
+        z = eta + (succ - trials * p) / np.maximum(w, 1e-12)
+        nb = np.linalg.solve(X.T @ (X * w[:, None]), X.T @ (w * z))
+        if np.max(np.abs(nb - beta)) < 1e-10:
+            return nb
+        beta = nb
+    return beta
+
+
+def realised_logistic(H, ks, busy):
+    """logit(observed) on logit(Erlang C) over the realised hours, binomial, grouped by count and call-takers."""
+    mu = 3600.0 / busy
+    g = {}
+    for k in ks:
+        a = g.setdefault((int(H.cnt[k]), int(H.HT[k][6])), [0.0, 0.0])
+        a[0] += H.ok15[k]
+        a[1] += H.cnt[k] - H.ab5[k]
+    keys = sorted(g)
+    x = np.array([_logit(E.erlang_c(float(n), mu, c)) for n, c in keys])
+    a_, b_ = _irls([x], np.array([g[k][0] for k in keys]), np.array([g[k][1] for k in keys]))
+    return float(a_), float(b_)
+
+
+def by_forecast_hour(fc, fn):
+    """Each FY2028 month's compliance from a function of the forecast hour's rate, weighted by its calls."""
+    out = {}
+    for y, m in FY28:
+        num = den = 0.0
+        for nd, cells in M.night_cells(y, m):
+            for dow, hh in cells:
+                lam = fc[(y, m, dow, hh)][0]
+                num += lam * fn(lam)
+                den += lam
+        out[(y, m)] = num / den
+    return out
+
+
+def binned_route(H, fc, width=5):
+    """Observed compliance on the four-call-taker hours by bins of five calls, read at the forecast rate's bin."""
+    bins = {}
+    for k in hours_of(H, lambda h: h[6] == 4):
+        a = bins.setdefault(int(H.cnt[k]) // width * width, [0.0, 0.0])
+        a[0] += H.ok15[k]
+        a[1] += H.cnt[k] - H.ab5[k]
+    return by_forecast_hour(fc, lambda lam: bins[int(lam) // width * width][0] / bins[int(lam) // width * width][1])
+
+
+def rate_logistic_route(H, fc, quadratic=False):
+    """A binomial logistic of observed compliance on the cell's mean rate over the four-call-taker cells."""
+    G4 = H.groups(lambda h: h[6] == 4)
+    lam = np.array([H.cnt[v].mean() for v in G4.values()])
+    succ = np.array([H.ok15[v].sum() for v in G4.values()])
+    tr = np.array([(H.cnt[v] - H.ab5[v]).sum() for v in G4.values()])
+    beta = _irls([lam, lam ** 2] if quadratic else [lam], succ, tr)
+    if quadratic:
+        return by_forecast_hour(fc, lambda l: 1.0 / (1.0 + math.exp(-(beta[0] + beta[1] * l + beta[2] * l * l))))
+    return by_forecast_hour(fc, lambda l: 1.0 / (1.0 + math.exp(-(beta[0] + beta[1] * l))))
+
+
+def moment_matched(H, busy, fc, keyf):
+    """The late shift's patience at which Erlang A, at its fiscal 2026 hours grouped by keyf (each group at its mean
+    rate and call-takers), predicts the hang-up share those hours showed; and fiscal 2028 at that patience."""
+    mu = 3600.0 / busy
+    groups = {}
+    for k in range(H.nh):
+        h = H.HT[k]
+        if h[5] and h[4] == 2026:
+            groups.setdefault(keyf(h), []).append(k)
+    groups = {g: np.array(v) for g, v in groups.items()}
+    ab_o = sum(H.abn[v].sum() for v in groups.values()) / sum(H.cnt[v].sum() for v in groups.values())
+
+    def share(p):
+        th = 3600.0 / p
+        ab = n = 0.0
+        for v in groups.values():
+            lam = H.cnt[v].mean()
+            ab += len(v) * lam * E.erlang_a(lam, mu, th, int(H.HT[v[0]][6]))[2]
+            n += len(v) * lam
+        return ab / n
+    pm = brentq(lambda p: share(p) - ab_o, 10.0, 5000.0, xtol=0.05)
+    return pm, ab_o, CA.fy2028(fc, busy, pm)
 
 
 def mean_of_hours(fc, busy, pat):
@@ -903,8 +1079,14 @@ def ask_checks(ck, target, G, W):
     v = CA.ask_b(C, tasks, called_in="dialled")[0]
     ck("Ask B pin's alternative: caller-called-in tasks counted as dialled back moves 4 or more months", off_(v) >= 4,
        "%d off: %s" % (off_(v), show_(v)))
-    ck("Ask B pin: one open task per callback number, a further abandon joins it (README)",
-       "the desk works one open task per callback number" in readme.lower() and "joins that task and opens none of its own" in readme.lower())
+    ck("Ask B pin: one open task per callback number, from the abandon that opens it until it is dialled or closed, a "
+       "later abandon joins it (README)",
+       "the desk works one open task per callback number, from the abandon that opens it until the task is dialled or "
+       "closed" in readme.lower() and "joins the task and opens none of its own" in readme.lower())
+    v = CA.ask_b(C, tasks, open_from="stamp")[0]
+    ck("Ask B pin's alternative: a task open only from its stamp (an abandon before the stamp joins nothing) moves a month",
+       off_(v) >= 1, "%d off: %s" % (off_(v), show_(v)))
+    G["ask_b_stamp_reading"] = v
     for k_, v in {"tasks keyed on their opening call, the unjoined counted as not dialled back": CA.ask_b(C, tasks, match="ref")[0],
                   "tasks keyed on their opening call, the unjoined dropped": CA.ask_b(C, tasks, match="ref", unmatched="drop")[0]}.items():
         ck("Ask B pin's alternative: %s moves 3 or more months" % k_, off_(v) >= 3, "%d off: %s" % (off_(v), show_(v)))

@@ -235,9 +235,10 @@ def readme_text(files):
              "from 1 January to 30 June 2026, for abandoned 911 calls and abandoned administrative-line calls. Times "
              "are local (Central), `YYYY-MM-DD HH:MM:SS`. `call_ref` is the call that opened the task (the i3 "
              "`callId`, or the administrative line's `call_id`); `callback_number` is the pseudonym of the number "
-             "dialled; `first_dial` is the desk's first dial. The desk works one open task per callback number: an "
-             "abandon from a number whose task has not been dialled yet joins that task and opens none of its own. A "
-             "task closed as `caller called in` was never dialled: the caller got through on a redial first.")
+             "dialled; `first_dial` is the desk's first dial. The desk works one open task per callback number, from "
+             "the abandon that opens it until the task is dialled or closed: any later abandon from that number in that "
+             "time joins the task and opens none of its own. A task closed as `caller called in` was never dialled: the "
+             "caller got through on a redial first.")
     L.append("")
     L.append("**Other exports.** The CAD incident export and the administrative line's ACD export are as pulled for "
              "the request; the board's forecast workbook is as published, with its own Read me sheet.")

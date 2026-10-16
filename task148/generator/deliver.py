@@ -345,8 +345,8 @@ def write_submission(path, G):
     L.append("1. Expected compliance in the months that fall short: July 2027 **%d%%**, August 2027 **%d%%**, June 2028 "
              "**%d%%**; the closest months above the standard, September 2027 and May 2028, at **%d%%**."
              % (pc((2027, 7)), pc((2027, 8)), pc((2028, 6)), pc((2027, 9))))
-    L.append("2. The queue runs on the late shift's own callers' patience, about two minutes, estimated on the late "
-             "shift's calls alone.")
+    L.append("2. The late shift's own callers give up quickly: their patience, estimated on the late shift's calls, is "
+             "short, on the order of two minutes, and the queue runs on it.")
     L.append("")
     L.append("## 3. Step-by-Step Solution")
     L.append("")

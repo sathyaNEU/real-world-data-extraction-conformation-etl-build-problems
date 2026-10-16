@@ -326,8 +326,9 @@ def read_callbacks(target, name):
 
 
 def ask_b(C, tasks, match="number", anchor="hangup", misdials=True, unmatched="not", tol=30.0, lines911=False,
-          called_in="not"):
-    """{(y, m): share} for January to June 2026, by the local month of the hang-up."""
+          called_in="not", open_from="abandon"):
+    """{(y, m): share} for January to June 2026, by the local month of the hang-up. A task is open from the abandon
+    that opens it (open_from="stamp" reads it as open only from its `created` stamp)."""
     lo = dt.datetime(2026, 1, 1, tzinfo=TZ).astimezone(UTC).timestamp()
     hi = dt.datetime(2026, 7, 1, tzinfo=TZ).astimezone(UTC).timestamp()
     by_num = {}
@@ -358,7 +359,8 @@ def ask_b(C, tasks, match="number", anchor="hangup", misdials=True, unmatched="n
         hit = False
         if match == "number":
             firsts = [tk["first"] for tk in by_num.get(C.cbn[i], []) if not math.isnan(tk["first"])
-                      and tk["first"] >= C.hang[i] and tk["created"] <= C.hang[i] + tol]
+                      and tk["first"] >= C.hang[i] and (tk["created"] <= C.hang[i] + tol if open_from == "abandon"
+                                                        else (tk["ref"] == C.cid[i] or tk["created"] <= C.hang[i]))]
             if firsts:
                 f = min(firsts)
                 base = C.hang[i]

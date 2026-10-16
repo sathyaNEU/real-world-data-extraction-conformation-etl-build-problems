@@ -1,65 +1,58 @@
-Judged pack: commit 027f6ff (architecture 2 as first built, before the stage 4 hardening of the late shift's patience and the ask pins); the hardened pack has not been re-judged.
+Judged pack: commit eb89e4a (the hardened pack, target.zip sha256 35bd97282bebbf5e88c44d37942afd46b3c690076c5205aeec4562a037fa0b03). After this verdict the README's callback-desk sentence was reworded to close finding (b), the April 2026 linkage; the round 1 verdict on the pre-hardening pack is determinism_check_report_round1.md.
 
-# Verdict, task148 (fresh judge pass)
+# Verdict, task148 (re-judge, fresh)
 
 **Verdict:** DETERMINISTIC
 
-**Disposition:** APPROVE. Every committed figure reproduced from the shipped files, so no repair is required and no rerun. Two small optional pins are listed under Fix.
+**Disposition:** APPROVE. No repair needed, no rerun. Optional note-level items under Evidence (rounding exposure on two asks).
 
-**Why:** The main call (July 2027, August 2027, June 2028 short of the 90 per cent standard with four call-takers) reproduces exactly from the shipped files. It uses SOP 2.10 sections 3.3, 4.2, 5 and 6, the FY2028 board forecast and the 417,086 calls from the legacy ACD plus the i3 log. Within the abandonment-aware queue family the month set does not move over the reasonable range of busy time (225 to 231 s) and patience (150 to 184 s). The only readings that change the set are ones the data rejects as methods: Erlang C (May to September short) and patience read off the hang-ups' own waits (no month short). No taxonomy failure applies (none).
+**Why:** The shipped files force one answer: Jul 2027, Aug 2027 and Jun 2028 fall short of the 90 per cent standard with four call-takers (88.07, 88.91, 88.97 per cent); Sep 2027 and May 2028 (91.11, 91.04) and every other month clear it. I rebuilt the full chain from the raw files and every load-bearing figure reproduced. The decision survives every reasonable alternative I tried (patience anywhere in the 95 per cent interval, busy time, night weighting, a non-stationary simulation, a 2 per cent overlap correction of the forecast). It flips only on genuinely wrong methods (Erlang C, one pooled patience, patience read off hang-up waits, talk time instead of busy-until-Ready).
 
-## Evidence (recomputed from target/)
-| Item | Golden | Mine | Source |
+## Evidence (recomputed from target/ only)
+
+| Value | Golden | Mine | Source |
 |---|---|---|---|
-| Non-test 911 calls (acd 77,385 ANS + 1,007 ABN; i3 332,050 + 6,644) | 417,086 | 417,086 | acd csv + i3 jsonl, test dropped, i3 UTC to Central |
-| Abandoned calls | 7,651 | 7,651 | same |
-| Busy time, answered to Ready | 227.0 s | 227.0 s | same |
-| Patience, total wait of all calls / abandons | 161.4 s | 161.35 s | same. This is the exponential-patience MLE with answered waits as censored. The abandoned calls' own mean wait is 45.6 s. |
-| Erlang A (M/M/4+M), SOP 3.3 compliance, nights weighted by Fri/Sat count, forecast row of the starting month | 88, 89, 91, 93, 94, 93, 94, 95, 94, 93, 91, 89 | 88.07, 88.91, 91.11, 92.96, 94.05, 92.88, 94.02, 94.94, 94.09, 92.90, 91.04, 88.97 | FY2028 sheet, Tavish rows, Fri 22/23, Sat 00/01, Sat 22/23, Sun 00/01 |
-| Same without night weights | | 88.07, 88.91, 91.11, 92.96, 94.05, 92.82, 94.06, 94.94, 94.05, 92.95, 91.04, 88.89 | rounds to the same whole per cents |
-| Erlang C | May to Sep short | 83.6, 85.0, 88.3, 91.0, ..., 88.2, 85.0 (May, Sep and Jun-Aug short) | consistent with the golden's note |
-| Own-wait patience (45.6 s) | no month short | 90.8 to 95.9, none short | consistent |
-| Sensitivity: busy 231 s with patience 183.5 s | | May 90.41, Sep 90.48, Jun 88.21, Aug 88.15, Jul 87.24 | set unchanged. Whole-per-cent values would shift by at most 1 at the extreme corner. |
-| Observed FY2026 whole-floor compliance (SOP 3.3) | 95.2 | 95.24 | back-test target reproduces |
-| Back-test with H1-2025 busy and patience and the roster, per hour | A 95.3, C 93.7, own-wait 96.4 | A 94.7, C 92.7, own-wait 96.0 against 95.2 observed | direction and ordering reproduce. My simplified replication separates A from own-wait only weakly (0.5 against 0.7 away), so the golden's sharper separation depends on its implementation. |
-| Halvorsen reached, by fiscal 2026 quarter | 1,473 / 1,249 / 1,104 / 1,265 | same | che records located at the last (equal to smallest-radius) fix, point-in-polygon on the MultiPolygon with its hole, joined to i3 by callId, Central quarters |
-| Halvorsen transferred to Wexley | 1,304 / 1,126 / 1,001 / 1,154 | same | transferTo is the Wexley primary URI plus alt07@bkp.state911 (Wexley's alternate per the PSAP directory). The primary URI alone gives 1,153 / 994 / 881 / 1,015. |
-| Callback within 2 min, Jan to Jun 2026 | 54.9, 55.3, 51.4, 53.6, 48.3, 51.6 | same | Denominator is all abandoned 911 calls, misdials included (SOP 7.1). Numerator is the first dial after the hang-up to that number (callback_desk number to i3 callbackRef). 71 repeat abandons have no task of their own and are covered by the open task. A task-keyed-only read gives 49.8, 52.5, 48.2, 50.9, 46.4, 48.0. |
+| Calls, legacy + i3, tests out | 416,621 | 416,621 | acd csv (78,310 non-TST) + jsonl (338,311 non-test), local tz conversion, no overlap |
+| Busy time (ready less answered, answered calls) | 226.9 s | 226.909 | both call files, SOP 4.2 |
+| Late shift calls / hang-ups | 15,814 / 81 | 15,814 / 81 | Fri/Sat 22:00-02:00 dated by start day (SOP 5.2) |
+| Patience (summed waits over hang-ups): late / other / all | 123.2 / 587.7 / 576.6 | 123.16 / 587.67 / 576.62 | same |
+| Monthly compliance Jul27..Jun28 (Erlang A, c=4, SOP 3.3, forecast FY2028 Tavish rows, night-weighted, start-month) | 88 89 91 93 94 93 94 95 94 93 91 89 | 88.07 88.91 91.11 92.96 94.05 92.88 94.03 94.94 94.09 92.90 91.04 88.97 | forecast xlsx FY2028 sheet |
+| Halvorsen reached / transferred Q1..Q4 | 1475/1326, 1243/1127, 1104/1003, 1253/1160 | identical | che records (joined on callId or incidentId, last device/gnss fix, polygon with its hole and exclave), i3, directory (Wexley primary + alt07) |
+| Callback within 2 min, Jan..Jun 2026 | 55.2 45.1 56.8 52.6 50.3 51.4 | 55.2 45.1 56.8 51.5* 50.3 51.4 | callback desk tasks, i3 ended time |
 
-Other checks:
-- The cutover split is clean: no wireline ACD rows after 16 May and no wireless/VoIP ACD rows after 13 May.
-- Busy time is homogeneous across transferred-out, transferred-in and Halvorsen calls (about 226 to 237 s), so the pooled 227 s does not misstate the new Halvorsen load.
-- The task rests on SOP 5.1 (the forecast as planning basis), so the forecast's Halvorsen column is taken as filed.
+*April: one hang-up (09EE50160AF9, 16:49:56) came a few seconds before the task opened by the same number's other abandon (task created 16:50:00, first dial 16:50:56). Joining it to that not-yet-dialled task (README rule) gives 51 of 97 = 52.6, matching the golden. A strict "task exists at hang-up" reading gives 51.5. README's "has not been dialled yet" supports the golden reading, so I treat it as reproduced, with a small wording exposure on that one ask.
 
-## Competing answers stress-tested
-- Erlang C (the textbook model): May to Sep short. It overstates shortfall because callers hang up; rejected by the back-test (2.5 points under observed) and by the filed definition of the data.
-- Erlang A with patience = mean abandoned wait: no month short. It is biased because it ignores the answered calls' waits as censored holds. The golden's estimator is the standard exponential MLE.
-- FY2026 observed late-shift compliance (about 99 per cent): it ran with five call-takers and no Halvorsen load. Not applicable.
-- Night weighting, month-start attribution (SOP 6.1), 4 call-takers (budget PDF): no effect on the set or the rounded values.
+Competing answers tested against the strongest honest case:
 
-## Files/Hygiene: PASS
-- 14 files (more than 10).
-- Formats: csv (8), jsonl, xlsx, pdf (2), geojson, md.
-- Row gates: i3 has 340k rows and the legacy ACD 78k.
-- Distractors: admin_line_acd, cad_incidents, esinet directory. qa_extract_log and the README read as an export manifest. Counts in qa_extract_log match (78,758 / 340,059 / 3,829 / 39,486 / 4,565 / 6,241 / 35,036).
-- No authoring or benchmark disclosure found. The `.example` domains are placeholder-style.
-- Dates are coherent: pulled 6 October 2026, budget draft 2 October 2026, forecast published 15 September 2026.
-- Not exclusion-level.
+| Alternative | Result | Verdict |
+|---|---|---|
+| Erlang C (no hang-ups) | short: Jul, Aug, Sep, May, Jun (82.6, 84.1, 87.7, 87.6, 84.2) | wrong: predicts zero hang-ups, data shows 0.46 per cent on the late shift |
+| One patience for all calls (576.6) | short May-Sep (89.0 to 85.0) | wrong: late-shift hazard is about 8.1e-3 per s against 1.7e-3 elsewhere (interval hazards constant in both, so exponential fits) |
+| Patience as mean wait of hang-ups (37.6 s) | none short (90.8 minimum) | wrong: ignores the answered calls' time at risk (censoring) |
+| Talk time (release less answer, 158.8 s) as busy time | none short (95.5 minimum) | wrong: SOP 4.2 pins busy until Ready |
+| Patience 100 to 200 s (95 per cent interval for 81 events is about 96 to 158) | Jul, Aug, Jun short in every case; Sep, May stay above 90 (90.3 at 200 s) | set is robust |
+| Late-shift-only busy time (225.5 s) | +0.1 to +0.2 points, same set | robust |
+| Unweighted nights; Poisson simulation with queue carry-over between hours, empty start | within 0.3 points (Jul 88.4, Sep 91.35, May 91.3, Jun 89.2, Dec 93.06); same whole per cents | robust |
+| Forecast Halvorsen move may double-count the 5,075 a year already reaching the queue (about 2.4 per cent of late-shift volume) | Jul 88.6, Aug 89.4, Jun 89.4: same set | robust (not a fork; SOP 5.1 also names the forecast as the planning basis) |
+| Calendar-clock Fri/Sat 22-02 instead of shift-dated | patience 154.7, same set | robust |
+
+Residual exposure (not a failure): (a) a patience calibrated to the observed 0.46 per cent hang-up rate (about 80 s, a method-of-moments choice) gives Aug 89.83 and Jun 89.88, still under 90 but printing as 90 to the whole per cent; the observed 41 against 32 expected hang-ups is within noise (z about 1.4) and the MLE is the principled estimate, so the golden stands, but those two graded cells carry a one-point rounding risk. (b) Q4 April wording noted above.
+
+All decisive facts are present in the files: standard and measure (SOP 2.1, 3.2, 3.3), busy rule (4.2), shift and month assignment (5.2, 6.1), four funded call-takers (budget PDF table), forecast and Halvorsen move (xlsx), transfer destination mapping (directory), last-handset rule and callback join rule (README). Nothing relies on outside knowledge.
+
+## Files/Hygiene
+PASS. 14 files (13 inputs plus README), formats: csv x8, jsonl, xlsx, pdf x2, geojson, md. Large file present (339,676-line i3 log). Layout changes across systems (legacy local-time ACD vs UTC i3), cutover window, call vs incident keys, pseudonym keys, delta in hang-up timing are realistic. Distractors present and unused by the solution: admin_line_acd_fy2026.csv, cad_incidents_fy2026_fri_sat_late.csv, roster. The README is an in-fiction QA hand-off note with no authoring leakage. Temporal coherence holds (data to 30 Sep 2026, budget draft 2 Oct, README 6 Oct 2026, move on 1 Jul 2027). No public-data contamination. Mild synthetic tell: busy times and patience are near perfectly exponential (CV 1.00, constant hazards), which a real floor would not show; not exclusion-level. Cross-batch fingerprint check not run (isolation forbids other task folders).
 
 ## Stump power
-The trap that does the work is the abandonment-aware queue with patience estimated under censoring: the unit of analysis is the call, not the hang-up. A strong model plausibly reaches for Erlang C (May to September short, wrong) or estimates patience from the abandoned callers' own waits (no month short, wrong). Both are specific, data-refuted wrong answers. The back-test in the files lets a careful analyst separate them, though only moderately in my replication. Likely strong-model failure rate is high but not 100 per cent. The supplementary asks add independent, hard ETL layers: refined-location selection, MultiPolygon with hole, alternate-URI mapping, repeat-abandon callback linkage.
+Good. The easy routes are the industry-standard Erlang C and a single pooled patience, both of which are wrong in the same direction and put May to September short (a five-month answer against the true three), plus the hang-up-wait patience (none short). A strong model has to notice that abandonment is a segment property (late shift 123 s against 588 s), estimate it with the answered calls' time at risk, and use an abandonment-aware queue. One or two GPT runs taking Erlang C or the pooled patience is the expected failure; the task needs live testing to confirm, but the trap is genuine and clean.
 
 ## Stumping type
-`mechanism: method_or_model_selection` (with statistical_rigor on censored patience), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`.
-Reported numbers are fine and clean data would still stump. The difficulty is choosing and calibrating the queue model, not rejecting a misleading figure. Passes Gate G.
+`mechanism: method_or_model_selection`, `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`.
+No reported figure is wrong; the difficulty is choosing and parameterising the queue model on honest data (censoring-aware segment patience, validated against the observed 0.46 per cent hang-up rate). On perfectly clean data it would still stump.
 
 ## Three rules
-`domain: pass`, `layers: pass`, `decisive_step: analytical`
-- Layer 1: UTC against Central, legacy ACD against i3 layouts, cutover overlap, test calls, transfers in and out, pseudonymised keys.
-- Layer 2: abandonment-aware Erlang A with patience from a censoring-aware estimate, validated out of sample, applied to a forecast of a changed demand.
-- Domain: staffing a PSAP floor to an answer-time standard is workforce-queueing work the field does. Swap test: "visits" or "hospital" nouns would not preserve the Erlang A with call-abandonment framing.
-- Easy route: a strong analyst who read everything correctly applies Erlang C, or reads patience from the hang-ups' own waits. Erlang C gives May, June, July, August and September short (five months). The own-wait read gives no month short. The filed answer is three months.
+`domain: pass`, `layers: pass`, `decisive_step: analytical`.
+Domain: 911 answer-time staffing by queueing with abandonment (swap test fails: "megawatt-hours" or "visits" would not leave Erlang A, call-taker busy-until-Ready and caller patience intact). Layer 1: legacy vs i3 export, local vs UTC, CAMA/NG911 cutover, callId vs incidentId keys, pseudonymised numbers. Layer 2: segment patience with censoring and an abandonment-aware queue checked on observed hang-ups. Easy route a strong, correct-reading analyst takes: Erlang C (or one pooled patience) with the right busy time, giving May to September short (five months instead of three).
 
-## Fix: none required (optional, solution or prompt, no rerun)
-1. If the author wants the asks tighter: the located Halvorsen calls rely on taking the last/most precise location record. The README gives the radius field but no stated rule. A first (cell) reading gives 1,568 / 1,329 / 1,188 / 1,445 reached. State in the prompt that a call's location is its most precise fix, or accept the risk. This is a pin on the asks, which are free of the main call.
-2. The callback ask depends on joining desk numbers to i3 `callbackRef` (`cb-` + lower-case pseudonym) to cover repeat abandons. The README says the pseudonym is consistent across files, so it is reachable, but an optional README sentence would reduce risk.
+## Fix
+none.
