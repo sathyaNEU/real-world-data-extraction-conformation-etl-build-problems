@@ -1,0 +1,93 @@
+{
+  "task": "task147",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "wave 3, new; numbered from seed FC18 (which August roster week gets a staffing agency's single block of temporary housekeepers at a city hotel), world, decision and quantity only",
+  "domain": "supply-chain-logistics",
+  "subdomain": "inventory-demand-planning",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a festival-city hotel's housekeeping agency block, confirmed five weeks out for one of five August roster weeks, forecast from the reservation book when two concert nights in the festival's first full week are already full and the festival's week-long stays run through them",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G8",
+    "G2",
+    "G13"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "none",
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "the hotel's executive housekeeper, who confirms the staffing agency's block of temporary room attendants for one festival roster week",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "pms_reservations_extract_2027-07-01.csv (the property management system's reservation extract taken on the confirmation morning: every room reserved for arrivals from 1 January 2022, cancelled and no-show rooms included)",
+    "rows": 0,
+    "entity": "one room reserved under one booking, with its arrival and departure dates, rate code, channel, status and booking and cancellation times (rooms booked together share the booking reference)",
+    "grain": "room reservation",
+    "source": "constructed (a hotel property management system's reservation export)"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "season_or_peak",
+  "org_family": "hospitality_or_tourism",
+  "world": {
+    "geography": "Ireland (an invented mid-sized Irish city, Carrigeen, with a three-week August arts festival; the hotel, the festival, the staffing agency, the touring act and the people are fictional)",
+    "currency": "EUR",
+    "org_type": "a 480-room city-centre hotel and its housekeeping staffing agency",
+    "invented_names": [
+      "The Weighhouse Hotel",
+      "Carrigeen Festival of Arts",
+      "Brennock Hospitality Staffing",
+      "Rossmore"
+    ],
+    "people": [
+      "Fergus Roddy",
+      "Edel McCay",
+      "Naoise Meskill",
+      "Grainne McGuinn"
+    ]
+  },
+  "deliverables": [
+    "housekeeping_block_2027.xlsx",
+    "housekeeping_block_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "Demand arrives as requests for runs of consecutive units and a request is taken only if every unit of its run has room, so when a few units are already full at the forecast date every later request whose run passes through them is lost, and the units around them take far less than their history's intake; an intake forecast unit by unit, which the history supports everywhere else, overstates the group holding the full units and names it.",
+  "driver_concrete": "The two stadium concerts sold out the hotel's Friday 13 and Saturday 14 August 2027 in late June, and a stay is sold only when every night of it has a room, so none of the festival's week-long stays booked after the 1 July confirmation can run through those two nights; in past Augusts those stays carried most of the festival's first full week's other nights and much of the next week's Monday to Friday after the same date, so the week holding the concerts, which every night-by-night pickup forecast and the seasonal average put first, carries far fewer rooms above the crew's 380 a night than the festival's closing week.",
+  "stump": "Forecasting each night's remaining bookings from its own past pickup at the same days before arrival puts the concert week (9 to 15 August) first with about 500 room-nights above the crew's 380 a night; the step that lands it there is treating each night's pickup as independent of the others, when a festival stay booked after the confirmation needs a room on every night of it and the two concert nights are already full, so the stays that make most of that pickup cannot be sold and the closing week (23 to 29 August) has the most room-nights above capacity.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field, rate code and the housekeeping standard correctly builds each night's book at the confirmation date, adds each night's average pickup from the same days before arrival in the five past Augusts (or scales the book by its past final-to-book ratio, or fits final on book), caps the concert nights at capacity and calls the concert week, about 500 room-nights above the crew's capacity; only forecasting the remaining bookings by stay, every past post-confirmation stay through the two concert nights unsellable this year except into rooms their own cancellations free, calls the closing week.",
+  "domain_test": "The deciding quantity is each August night's occupied rooms forecast from the bookings still to come, which has to be simulated on the booking process's independent unit, the stay (a block of consecutive nights accepted only if every night has a room), not night by night; resampling the history's stays as whole blocks against this year's full nights is the task type's own move (resample the independent unit, not the rows), and the night-level summary it replaces changes the call; with megawatt-hours or school visits for room-nights there is no stay spanning several units and no full unit blocking its neighbours, so the quantity that decides has nothing to stand on.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "general-statistics-data-science/resampling-simulation-monte-carlo-methods/1",
+  "layer1": [
+    "the reservation extract one row per room reserved, rooms booked together sharing a booking reference, cancelled and no-show rooms kept with their status, booking and cancellation times in UTC against arrival dates in local time",
+    "date and room changes in a separate amendment log, the extract carrying each reservation's current dates only",
+    "rate codes and channel codes in separate lists, the online travel agents renamed in the 2025 channel review",
+    "the night audit statistics one sheet per year in two layouts after a 2024 system upgrade, complimentary and house-use rooms counted as occupied",
+    "the festival's dates in its own published programme history, its opening night moving with the weekday",
+    "on the ask paths the housekeeping app's task log, its user list and the HR room-attendant list as they stand now, the agency's timesheets and invoice, the staff badge readers' event export and the payroll overtime lines by pay period"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "stump_strategy binding_constraint: the full nights bind on every later stay that would run through them, a removal that re-places nobody (the blocked guests stay elsewhere); the metric (each roster week's occupied room-nights above 380 a night) is correct and the night-level forecast is the natural reading of it. Decisive G8 (a stay through a full night cannot be sold: binary), G2 (the booking process's unit is the stay, not the room-night), G13 (only the bookings after the confirmation date are affected). No back-test organ and no filed method: the stay structure and the full nights are in the data, and past event weekends in other months, full five or more weeks ahead, show night-level pickup over-forecasting the nights beside them. Client domain general-statistics-data-science (resampling the independent unit) because the setting is another field's and the deciding statistical object is the resampled unit; the house domain keeps the seed's world. Furniture: forum customer_or_counterparty (the staffing agency receives the block confirmation), forcing event season_or_peak (the festival season's roster), organisation family hospitality_or_tourism (a city-centre hotel). Context artifact close_out_summary: the night audit's daily statistics.",
+  "registered": "2026-10-16T07:06:10Z"
+}
