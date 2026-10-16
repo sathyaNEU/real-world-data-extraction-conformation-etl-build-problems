@@ -461,7 +461,7 @@ def tier_filings():
                         "hospital_system_placements": placements,
                         "freestanding_facilities_tier": 1})
     return {"maintained_by": "Office of Health Care Cost Review, market oversight unit",
-            "purpose": "standing reference on tiered-network products, kept for the annual cost trends report",
+            "purpose": "standing reference on the tier placements carriers have filed for tiered-network products",
             "source": "network tier exhibits from carrier form filings approved by the Office of the Commissioner of Insurance",
             "updated": "2025-09-26 (plan year 2026 filings added)",
             "note": "One record per tiered product and plan year. A plan year is named by the calendar year in which it begins; a group renewing on 1 July holds the plan year that began on 1 July of the year before until 30 June. Products without tiers place every in-network facility on one level of cost sharing and are not listed.",

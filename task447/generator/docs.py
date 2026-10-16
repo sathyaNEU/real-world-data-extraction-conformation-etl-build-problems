@@ -110,8 +110,9 @@ def rule_pdf(path):
                "notice;"),
              P("(b) a referred service that the acquiring party offers, and that was not at one of the acquiring "
                "party's sites in the baseline, moves to the acquiring party's sites in the share expected for that "
-               "service in the projection year, estimated under 4.05; the part that moves is priced at the acquiring "
-               "party's facility rate filed with the notice and the rest keeps its baseline allowed amount;"),
+               "service under the member's product as the product stands in the projection year, estimated under "
+               "4.05; the part that moves is priced at the acquiring party's facility rate filed with the notice "
+               "and the rest keeps its baseline allowed amount;"),
              P("(c) every other referred service keeps its baseline allowed amount."),
              P("Projected spending is the spending on the baseline services so projected."),
              S("4.05 Expected share that moves"),
@@ -121,7 +122,9 @@ def rule_pdf(path):
                "and after the acquisition. A service falls before or after by its date of service against the date "
                "its referring physician joined, and only the services offered by the system he or she joined are "
                "counted. The share that moves is the rise, after the acquisition, in the share of those services at "
-               "the acquiring system, as a share of the services that were elsewhere before it. The office states "
+               "the acquiring system, as a share of the services that were elsewhere before it. A share is "
+               "estimated for a service and a product, and is the share expected under that product as it stands "
+               "in the projection year; the office does not estimate one share across products. The office states "
                "each expected share in whole per cent and projects with the shares as stated."),
              S("4.06 Determination"),
              P("The projected increase is projected spending less baseline spending. Where the projected increase "
@@ -158,7 +161,11 @@ def appendix_pdf(path):
                "services in the line that facilities in the database provided to commercial members residing in the "
                "county, with dates of service in the year, whenever paid. Each unit of a procedure code that a "
                "facility provided to a member is one service, read on the latest version of the claim line, net of "
-               "voids. A member resides in the county holding the ZIP code on the member's "
+               "voids, and is one service however many carriers were billed for it. Two claims that report the "
+               "same unit to two carriers are one service; two units of the code that the facility provided to the "
+               "member on the same date, which the claims show by their quantities or their referring providers, "
+               "are two services. A member resides in the county "
+               "holding the ZIP code on the member's "
                "eligibility span that covers the date of service. A practice's referred share is the part of those "
                "services whose referring provider is a physician of the practice. Shares are stated in per cent to "
                "one decimal."),
@@ -167,12 +174,14 @@ def appendix_pdf(path):
                "coded 99202 to 99215 that physicians of the specialty rendered in person to commercial members at "
                "locations in the two counties, with dates of service in the year, whenever paid, read on the latest "
                "version of each claim; a visit by telehealth (place of service 10, or modifier 95) is not an office "
-               "visit. A physician's specialty is the classification of the physician's NUCC taxonomy: primary care "
+               "visit. A physician's specialty is the classification of the physician's own NUCC taxonomy, as the "
+               "carriers' provider files record it rather than as a claim reports it: primary care "
                "is family medicine (207Q00000X), internal medicine (207R00000X) and pediatrics (208000000X); "
                "gastroenterology is 207RG0100X, orthopaedic surgery 207X00000X and cardiovascular disease "
                "207RC0000X. A practice's or a system's share is the part of "
                "those visits billed under taxpayer identification numbers it owns or controls, read from the "
-               "register as in A4, stated in per cent to one decimal."),
+               "register as in A4, stated in per cent to one decimal. A visit reported to more than one carrier "
+               "is one visit."),
              S("A4 A system's physicians"),
              P("A physician is a doctor of medicine or of osteopathic medicine; nurse practitioners and physician "
                "assistants are not counted. A system's physicians on a date are the physicians billing on that "
@@ -185,8 +194,10 @@ def appendix_pdf(path):
                "numbers together with the practice the physician billed under: either the practice comes under the "
                "system's ownership or control, or every physician of the practice moves to the system's numbers "
                "within 90 days of the first, leaving none billing under the practice's number. A physician already "
-               "counted for the system who moves between its numbers has not joined. A physician joins in the "
-               "calendar year of the date he or she first bills under the system's numbers."),
+               "counted for the system who moves between its numbers has not joined. A physician joins on the "
+               "date he or she first bills under the system's numbers, and that date, not the first day of its "
+               "calendar year, is the date a service falls before or after; the physician joined in the calendar "
+               "year that date falls in."),
              S("A6 Sources"),
              P("Claims, eligibility and products come from the database extracts described in the extract data "
                "dictionary; ownership from the office's provider ownership register; billing relationships from "

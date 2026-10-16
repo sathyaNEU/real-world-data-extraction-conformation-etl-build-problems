@@ -258,6 +258,60 @@ The six tests of `stumping` Part 2.1 on every rung (no means the test does not f
 | R4 the share product by product, or by tier with the 2024 placements | no | yes, product on every eligibility span | yes, hold the pool to a visible attribute | no, Ledgestone's purchases reproduce it | no | no | readable |
 | R5 the share keyed to the patient's tier for the acquirer in the plan year, carried with each referral's 2026 placement (decisive) | no: no shipped sentence mentions tiers beside referrals, shares or the projection year | no: no claim or span carries a tier; the tier for the acquirer is a join from the span's product and benefit period into a filing kept for the cost trends report | no: the reflex strata (carrier, product) reproduce Ledgestone's purchases | no: nothing scores candidate models; on Ledgestone's purchases the corpus reproduces the product shares, and the only refutation sits in Wolf River's 2024 by product, a cut the default path never takes | no: every key, join and total ties on the wrong path | no: the share is not a ratio or difference of any reported figure | silent |
 
+## Three rules
+
+Written on 2026-10-16, when the build came back from the house review; the card has carried
+`stump_class: analytical`, `analyst_test` and `domain_test` since it was registered.
+
+- **Task type:** `payment-claims-health-plan-analytics`, which the taxonomy lists against ETL and AD in
+  Healthcare Delivery & Health Economics: all-payer claims, eligibility and provider files conformed into the
+  quantity a filed regulation defines.
+- **Domain test:** the deciding quantity is the health-economics projection of a vertical integration's
+  spending effect, professional price convergence plus referral capture into hospital outpatient departments,
+  and the field's own method for the capture half is a capture model estimated on closed acquisitions and
+  moderated by the benefit design that decides what a referral costs the patient.
+- **Swap:** "which of two depots will hold more stock after the merger, projected from last year's movements"
+  has no benefit design standing between the owner and the patient, so there is nothing for the capture rate
+  to be conditional on and nothing to transport across a changed mix; the task stops making sense.
+- **Layer 1:** claims at header and line grain with replacement and void submissions, a layout revision
+  between submission years, identifiers that do not line up (NPIs, billing TINs, CMS certification numbers),
+  coordination-of-benefits copies across two carriers, the 30 June 2025 paid-through cutoff, NPI reassignment
+  spans with Northpoint's orthopedists moving one at a time, Brown counted as Brightwater under 4.02(e), the
+  Medicare Advantage file excluded under 4.02(b), and a group taxonomy reported on every one of a practice's
+  claim lines. Each is what these systems produce, and none decides the call.
+- **Layer 2:** the capture rate is transported from closed acquisitions to a projection population whose
+  benefit-design mix is different, so the estimand is the share expected under each member's product as that
+  product stands in the projection year, not a blend of the mix the history happened to hold.
+- **Decisive step:** recognising that the share a referral moves is gated by the acquiring system's tier
+  placement under the member's product, that the placements changed (Bayfield places Ledgestone first from
+  plan year 2025, Norbridge placed Wolf River first from 2024), and that the share is therefore 86 per cent or
+  nil rather than any pooled blend of them.
+- **Not semantics:** every field, code and definition reads the same on both routes. The rule's terms, the
+  claim layouts, the void and replacement codes, the paid-through cutoff and the ownership register are read
+  correctly by the analyst test, and the wrong answer still comes out, because what differs is the population
+  the capture rate is estimated over and carried to, not the meaning of anything in the files.
+- **Not rule application:** no filed sentence says what differs between products, names tier placement, or
+  tells the analyst to look at the tier filings. 4.04 and 4.05 file the estimand's unit (a service, a product,
+  the projection year) and 4.05 files the estimation sample; the gating variable, the natural experiment that
+  identifies it and the 2026 placements are the analyst's to find, and R4 of the ladder shows that finding the
+  unit without finding the gate still files close at $1.633 million.
+- **Analyst test:** a strong analyst who conforms every claim, span, ownership change and rate exhibit
+  correctly and reads the regulation correctly measures the shift on the closed acquisitions, finds a capture
+  share that reproduces each of them, applies it to Brightwater's referrals and files close at $1.4 to
+  $1.6 million, because the history's mix of benefit designs is not the projection population's.
+- **Estimand:** rule 4.04 and 4.04(b), that every baseline service is projected as the same service for the
+  same member under the same product delivered in the projection year, and moves in the share expected for
+  that service under the member's product as the product stands in the projection year, with 4.05 fixing the
+  estimation sample and the whole-per-cent rounding.
+- **No decoy:** nothing is planted to be caught. No figure in the pack is wrong, no memo argues the wrong
+  answer, no artifact ranks the two outcomes, and the difficulty survives deleting every number that is not an
+  input: the HCRIS extract is a genuine non-input distractor, not a trap.
+- **No certified replay:** no published figure in the pack states the projection, the increase or either
+  exhibit, so the method cannot be recovered by reproducing one.
+- **Lesson:** a rate estimated on closed cases is only the rate the decision needs where the cases' mix
+  matches the population the decision funds; when a filed estimand says "for this member, under this product,
+  in the projection year", the mix is the estimand and not a nuisance to average over.
+
 ## Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative reading | Call under the alternative | Ruled out by |
@@ -274,9 +328,20 @@ The six tests of `stumping` Part 2.1 on every rung (no means the test does not f
 | SF10 | Ledgestone's facility price | the rate filed with the notice (Bayfield at its percent of the CY2025 Medicare amounts) | Ledgestone's 2024 claim prices | proceed ($2.6 million) | rule 4.04(b), priced at the rate filed with the notice |
 | SF11 | the expected share's precision | stated in whole per cent | the fitted share unrounded | same call, the same total and parts | rule 4.05; same call |
 | SF12 | the services that move | referrals that were not at a Ledgestone site | every referral of the class, the 8 per cent already at Ledgestone included | proceed ($2.3 million) | rule 4.04(b), only services not at its sites in the baseline |
+| SF13 | what the expected share is a share of | one share for each service and product, the share expected under that product as it stands in the projection year (86 per cent where the product places Ledgestone first or has no tiers, nil where second) | one share pooled over the whole estimation set (44 per cent); one share per service line pooled across products (arthroscopy 37, echo 44, GI 55, imaging 41, lab 41 per cent); the share under the member's product at the placement the product held in the baseline years | close, $1.5 million either way ($0.9 million referred pooled or by line, $1.6 million at the historical placement) | rule 4.04(b), the share expected "for that service under the member's product as the product stands in the projection year", and rule 4.05, "A share is estimated for a service and a product ... the office does not estimate one share across products" |
 
 The stump is none of these readings: every row lands the golden's call or is refused by the cited rule,
-and `generator/checks.py` asserts each (SF1 to SF12).
+and `generator/checks.py` asserts each (SF1 to SF13). SF13 was added on 2026-10-16, when the house review
+returned the build: the rule as first shipped left the share's unit of analysis unfiled, so a reader who
+executed 4.05's own sentence over the set 4.05 defines reached $1.5 million and close, and the reading that
+reaches the golden was closed in this note by the records rather than by a quotable sentence. The unit of
+analysis is part of the estimand, which `determinism-check` section 1 requires filed literally, so it is now
+filed at authority in 4.04(b) and 4.05. What is still not filed, and still the whole difficulty, is what
+differs between products: that the acquiring system's tier placement under the member's product gates whether
+the referral moves, that the placements change (Bayfield places Ledgestone first from plan year 2025, Norbridge
+placed Wolf River first from 2024), and that the share is 86 per cent or nil rather than any blend of them.
+The ladder's own arithmetic shows the pin costs the call nothing: R4, the share product by product or by tier
+at the 2024 placements, still files $1.633 million and close.
 
 ## Entity, unit, decision
 
@@ -783,4 +848,16 @@ remove the stump and is not taken.
   the classification of the physician's taxonomy instead, which closes the code-to-specialty reading
   without naming a source.
 - 2026-10-14, after shipping: the prompt's "That turns on the increase in commercial spending the deal will cause in 2026 ... Put the call and that increase ... Give the increase to one decimal". Rejected on the house-fix register's H23: "the increase the deal will cause" presupposes a rise, a fact only the analysis establishes (rule 4.06's projected increase may be zero or less); it reads "how much the deal will change commercial spending in 2026", "that change" and "the change", every figure, file and rounding kept, and the reader re-run on the repaired prompt (clean on the prompt; its Q6 repeats read 1's view that 4.04 and 4.05 leave the call to rule application, against the judge's analytical, an open concern for the author).
-
+- Returned 2026-10-16 by the house review, with both in-task determinism judges passing (gates A to G pass,
+  F strong, the measured response a valid stump at an 11 per cent rubric) and the review nevertheless right on
+  the determinism axis: rule 4.05 shipped as a complete recipe whose literal execution gives the other answer,
+  which `determinism-check` section 1 bans outright, and both judges had closed the fork by argument rather
+  than by a quotable sentence (this note closed it with "the records"). Repaired as a determinism fix with the
+  call, the ladder and every graded figure frozen: the share's unit of analysis filed in 4.04(b) and 4.05, the
+  cross-carrier duplicate filed in A2, the taxonomy source filed in A3, and the tier filings' purpose line no
+  longer saying it is kept for another report. Not taken, and rebutted in the covering note: filing the tier
+  stratification itself, which the review proposed and which would make the decisive step rule application; the
+  claim that the exhibit figures are uncommitted, which block 4 of the submission has always carried; and the
+  claim that the duplicate and taxonomy conventions were unpinned, which A2 and A3 already settled in terms
+  both judges used. A filed back-test, the review's third suggestion, was refused because task457 in the same
+  lane already ships one and an organ may not appear in consecutive builds.

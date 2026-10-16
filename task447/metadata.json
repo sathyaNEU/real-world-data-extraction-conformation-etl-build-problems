@@ -164,7 +164,7 @@
     {
       "path": "market_oversight_technical_appendix.pdf",
       "format": "pdf",
-      "bytes": 4413,
+      "bytes": 4770,
       "rows": null,
       "source": "Constructed: Market oversight technical appendix, revision 3",
       "date": "2025-06-02",
@@ -173,7 +173,7 @@
     {
       "path": "network_tier_placements_2020_2026.json",
       "format": "json",
-      "bytes": 26817,
+      "bytes": 26821,
       "rows": null,
       "source": "Constructed: Network tier placements of the three hospital systems in each tiered product, plan years 2020 to 2026",
       "date": "2025-09-26",
@@ -191,7 +191,7 @@
     {
       "path": "ohccr_rule_4_preliminary_review.pdf",
       "format": "pdf",
-      "bytes": 5025,
+      "bytes": 5159,
       "rows": null,
       "source": "Constructed: Rule OHCCR 4, preliminary review of notices of material change",
       "date": "2023-02-14",

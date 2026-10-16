@@ -483,8 +483,14 @@ def document_checks(target):
     A("tiered network" in texts[DC.DICTIONARY].lower(), "the dictionary describes the product reference's tier flag")
     A(sum("2,000,000" in t for t in texts.values()) == 1 and "2,000,000" in texts[DC.RULE], "the threshold is stated once, in the rule")
     rule = re.sub(r"\s+", " ", texts[DC.RULE])
-    A("share expected for that service in the projection year" in rule and "in whole per cent" in rule,
-      "the rule files the per-service expected share for the projection year and its rounding")
+    A("share expected for that service under the member's product as the product stands in the projection year"
+      in rule and "in whole per cent" in rule,
+      "the rule files the expected share's unit of analysis, the service and the product as it stands in the "
+      "projection year, and its rounding")
+    # SF13: the share's unit of analysis is filed, so no reader can pool across products
+    A("A share is estimated for a service and a product" in rule and
+      "the office does not estimate one share across products" in rule,
+      "4.05 says what each share is a share of, so its own sentence is not a complete recipe")
     # the method is left to the records: no filed sentence selects among estimates or names what to condition on
     for w in ("closest", "largest miss", "fitted only", "back-test", "backtest", "out of sample", "more groups"):
         A(w not in rule.lower(), "the rule files no selection criterion ('%s')" % w)

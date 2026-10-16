@@ -1,66 +1,73 @@
 {
-  "task": "task447",
-  "domain": "healthcare-delivery-health-economics",
-  "objective": "data-extraction-conformation",
-  "stage": 5,
-  "stage_name": "shipped (ask layer rebuilt)",
-  "updated": "2026-10-12",
-  "branch": "main",
-  "stump": "Solvers measure the referral share on Ledgestone's earlier practice purchases, pooled, by carrier or product by product (Bayfield Value Tier patients never moved), project a 2026 increase of about $1.6 million against the $2.0 million threshold and close the review; the records of every earlier acquisition show the share following each patient's tier for the acquirer (Norbridge's 2024 re-tiering of Wolf River moved its Tiered EPO patients), and Bayfield places Ledgestone in its first tier from 2025, so the projection is about $2.2 million and the notice proceeds to a cost and market impact review.",
-  "architecture": 1,
-  "loops": 0,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-12",
-    "fails": "",
-    "pair_ceiling": 27.5,
-    "mirror_leakage": 0.0
+ "task": "task447",
+ "domain": "healthcare-delivery-health-economics",
+ "objective": "data-extraction-conformation",
+ "stage": 5,
+ "stage_name": "shipped (ask layer rebuilt)",
+ "updated": "2026-10-16",
+ "branch": "main",
+ "stump": "Solvers measure the referral share on Ledgestone's earlier practice purchases, pooled, by carrier or product by product (Bayfield Value Tier patients never moved), project a 2026 increase of about $1.6 million against the $2.0 million threshold and close the review; the records of every earlier acquisition show the share following each patient's tier for the acquirer (Norbridge's 2024 re-tiering of Wolf River moved its Tiered EPO patients), and Bayfield places Ledgestone in its first tier from 2025, so the projection is about $2.2 million and the notice proceeds to a cost and market impact review.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-12",
+  "fails": "",
+  "pair_ceiling": 27.5,
+  "mirror_leakage": 0.0
+ },
+ "leak": {
+  "leak_py": "REVIEW (unchanged lines, answered in the design note)",
+  "reader": "pass after the repair: nothing quoted for the decisive step, no ranking file, question 6 analytical, nothing points at the tier filings"
+ },
+ "duplicate_check": {
+  "heart": "WARN only (overuse.org_family, repeat.gate_g, overuse.gate_g; answered in the design note)",
+  "surface": "personas Clayton Brown, Donna Mcintosh, Jacob Murillo, Samantha Abbott, all on the card",
+  "clone_check": ""
+ },
+ "solver_rounds": [],
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report_pass2.md",
+  "pass": 3,
+  "date": "2026-10-16",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "notes": "pass 2 DETERMINISTIC FIX_NOW on three input wordings (A2's two-unit case, A3's dual-carrier visit, A5's join date), all applied; pass 3 APPROVE with fix location none. The one residual the verdict names is Bayfield's first-tier share, which has to come from the same placement under other products ($576k of the $1.6M referred); taking that product's own tier-two history instead contradicts the projection-year clause, and both the judge and the isolated reader read it that way."
+ },
+ "approved": null,
+ "delivered": "2026-10-12",
+ "portal": null,
+ "status": "SHIPPED",
+ "owner": "oviya1301",
+ "ask_layer": {
+  "date": "2026-10-12",
+  "asks": "the review's two standing exhibits (rule 4.07, appendix A2 and A3): residents' imaging, endoscopy and arthroscopy services by county and line with Brightwater's referred share (12 figures); Brightwater's and Ledgestone's office-visit shares by specialty (8 figures)",
+  "devices": "Exhibit 1 primary: second-plan claims (659 facility services billed by two carriers for 1,025 members covered twice); Exhibit 2 primary: Kinnickinnic's business office reports its family-medicine taxonomy for every rendering physician (7,471 lines, 12 NPIs), with the second-plan office visits (1,807) shared",
+  "cracker": "misses all 20 exhibit figures (Exhibit 1 counts +4 to +67, shares 0.71 to 1.63 points low; Exhibit 2 shares 0.38 to 18.15 points off)",
+  "combinations": "24 on Exhibit 1 and 128 on Exhibit 2, none lands back inside a bin it leaves (nearest 0.13 and 0.065 points)",
+  "main_call": "byte-identical to main_call_ref.json (rows, reference files, figures)"
+ },
+ "build": {
+  "date": "2026-10-12",
+  "generator": "green, 990 checks; independent verifier agrees; two builds byte-identical",
+  "gates": "19 files, 4 formats (csv, json, pdf, xlsx), eligibility spans 102,665 rows, 2 distractors in metadata.json",
+  "figures_check": "PASS, 43 figures",
+  "target_zip_sha256": "760cadac3a50b825431c2ddc866cc62396bc61b5e5a16509d66239d67afc0e6a"
+ },
+ "returned": [
+  {
+   "date": "2026-10-14",
+   "portal": "none (self-found before review)",
+   "repair": "prompt: H23 presupposition (the change the deal will cause)",
+   "commit": ""
   },
-  "leak": {
-    "leak_py": "REVIEW (0 LEAK) at --asof 2025-10-21, nine lines answered in the design note",
-    "reader": "two isolated reads (stage 3 pack, then after the appendix pins): no sentence names the decisive step, nothing ranks or answers, nothing exists only to help; literal readings of 4.02 to 4.06 execute to the golden"
-  },
-  "duplicate_check": {
-    "heart": "WARN only (overuse.org_family, repeat.gate_g, overuse.gate_g; answered in the design note)",
-    "surface": "personas Clayton Brown, Donna Mcintosh, Jacob Murillo, Samantha Abbott, all on the card",
-    "clone_check": ""
-  },
-  "solver_rounds": [],
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "determinism_check_report.md",
-    "pass": 1,
-    "gate_g": "method_or_model_selection / forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive_step analytical",
-    "optional_pins": "provider file as the specialty source (not taken: it would settle the Exhibit 2 device); tier stratification filed (not taken: it removes the stump)"
-  },
-  "approved": null,
-  "delivered": "2026-10-12",
-  "portal": null,
-  "status": "SHIPPED",
-  "owner": "oviya1301",
-  "ask_layer": {
-    "date": "2026-10-12",
-    "asks": "the review's two standing exhibits (rule 4.07, appendix A2 and A3): residents' imaging, endoscopy and arthroscopy services by county and line with Brightwater's referred share (12 figures); Brightwater's and Ledgestone's office-visit shares by specialty (8 figures)",
-    "devices": "Exhibit 1 primary: second-plan claims (659 facility services billed by two carriers for 1,025 members covered twice); Exhibit 2 primary: Kinnickinnic's business office reports its family-medicine taxonomy for every rendering physician (7,471 lines, 12 NPIs), with the second-plan office visits (1,807) shared",
-    "cracker": "misses all 20 exhibit figures (Exhibit 1 counts +4 to +67, shares 0.71 to 1.63 points low; Exhibit 2 shares 0.38 to 18.15 points off)",
-    "combinations": "24 on Exhibit 1 and 128 on Exhibit 2, none lands back inside a bin it leaves (nearest 0.13 and 0.065 points)",
-    "main_call": "byte-identical to main_call_ref.json (rows, reference files, figures)"
-  },
-  "build": {
-    "date": "2026-10-12",
-    "generator": "green, 990 checks; independent verifier agrees; two builds byte-identical",
-    "gates": "19 files, 4 formats (csv, json, pdf, xlsx), eligibility spans 102,665 rows, 2 distractors in metadata.json",
-    "figures_check": "PASS, 43 figures",
-    "target_zip_sha256": "760cadac3a50b825431c2ddc866cc62396bc61b5e5a16509d66239d67afc0e6a"
-  },
-  "returned": [
-    {
-      "date": "2026-10-14",
-      "portal": "none (self-found before review)",
-      "repair": "prompt: H23 presupposition (the change the deal will cause)",
-      "commit": ""
-    }
-  ]
+  {
+   "date": "2026-10-16",
+   "portal": "house review returned the build: the deciding step not pinned by a shipped file, with the pooled or per-line reading of 4.05 landing $1.516M and close against the golden's $2.209M and proceed. Both in-task determinism judges had passed (gates A to G, F strong) and the measured response was a valid stump at an 11 per cent rubric, so the return was on the determinism axis alone.",
+   "repair": "determinism",
+   "commit": ""
+  }
+ ]
 }
