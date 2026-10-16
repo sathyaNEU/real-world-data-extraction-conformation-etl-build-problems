@@ -1,0 +1,94 @@
+{
+  "task": "task148",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "Wave 4 Forecasting; seed FC19 (SBA reserve, payment holiday) kept for its world, decision and quantity only; the seed's paused-clock mechanism is kin to task133's delayed entry and is not used.",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "expected-credit-loss-provisioning",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a national SBA 7(a) lender's fiscal year-end CECL allowance on the unguaranteed portions it holds of its FY2019-FY2021 loans, where a large share of borrowers are businesses whose owner-operator personally guarantees cross-defaulted 7(a) loans on several businesses",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "scoring_unit": "per active unit per period",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G14",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "the bank's controller, who books the 30 September year-end allowance for the SBA unguaranteed book",
+  "role_family": "finance_controller",
+  "spine": {
+    "file": "servicing_history.parquet",
+    "rows": 2500000,
+    "entity": "one 7(a) loan in one month of the bank's servicing history",
+    "grain": "loan x month",
+    "source": "synthetic (constructed in the layout of an SBA lender's monthly servicing extract and SBA Form 1502 guaranty reporting)"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "period_close",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "United States (Fenmore Savings Bank, a fictional savings bank with a national SBA 7(a) lending division; its people and borrowers are fictional)",
+    "currency": "USD",
+    "org_type": "bank holding company with a national SBA lending division",
+    "invented_names": [
+      "Fenmore Savings Bank",
+      "Fenmore Financial Corporation"
+    ],
+    "people": [
+      "Erin Spence",
+      "Richard Fields",
+      "Johnny Nicholson",
+      "Donna Graves",
+      "Tara Williams"
+    ]
+  },
+  "deliverables": [
+    "sba_allowance_fy2026.xlsx",
+    "allowance_note_fy2026.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "A unit's failure takes down every other unit its backer carries, so the hazard each unit faces is the sum of the hazards of all the units behind the same backer, each at its own age, including units outside the population being priced and units added recently at the steepest part of the curve; a rate built on each unit alone at its own age, pooled over the history or taken from the latest period, prices every unit as if it stood alone.",
+  "driver_concrete": "Many of the bank's borrowers are owner-operators who personally guarantee a 7(a) loan on each of several businesses under cross-default, so when one business fails the bank accelerates every loan the guarantor stands behind; each active FY2019-21 loan's charge-off hazard is the sum of its guarantor's businesses' default hazards at their own months on book, including the businesses financed in FY2022-26 that sit outside the reserve population, many of them added in 2025-26 and only now entering their peak years.",
+  "stump": "A strong solver builds monthly default and payoff rates by months on book and term from every loan since FY2010, conditions each active FY2019-21 loan on its survival to 30 September 2026 and books the allowance well below the golden; the step that lands it there is pricing each loan on its own months on book as if it stood alone, when a loan whose guarantor carries other businesses fails whenever any of them fails.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stages the book cleanly, keeps the SBA-paid relief months out of the risk sets, reads the allowance policy and the guarantee register correctly and builds the textbook lifetime PD from monthly default and payoff rates by months on book and term over every loan since FY2010 books the allowance well below the golden, because each loan whose guarantor carries other businesses fails when any of them fails and its own age says little about that.",
+  "domain_test": "The deciding quantity is each loan's lifetime charge-off probability built the ECL way (default and payoff hazards by months on book, conditioned on survival to the reserve date), where the unit that defaults is the personal guarantor's cross-defaulted group of businesses, so a loan's hazard is the sum of its group's business hazards at each business's own age; with another field's nouns personal guarantees, cross-default and acceleration have nothing to attach to.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:guarantor-group-default-unit",
+  "layer1": [
+    "guarantor names written differently across a guarantor's loans (middle initials, suffixes, nicknames) and two different people with the same name told apart by address",
+    "months in which SBA made the payment under the CARES Act Section 1112 relief recorded as paid in the servicing history",
+    "an SBA Form 1502 guaranty report in SBA's own layout beside the bank's servicing extract",
+    "fiscal years ending 30 September against calendar-year dates in the charge-off ledger"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task142": "task142 builds the upper percentile of a period's total from how many units arrive and how long each runs; here the quantity is a mean lifetime charge-off and the decisive move is that the unit of default is the guarantor's cross-defaulted group, whose hazard is the sum of its businesses' own-age hazards.",
+    "task133": "task133's stump is delayed entry (taken-over loans counted only from the go-live); here every loan is observed from its first payment and each loan's own age axis is right, and what decides is that a loan fails with its guarantor's other businesses, whose number and ages set its hazard.",
+    "task143": "task143's decisive quantity is the chance the weakest member of a new group falls below a threshold when the predictor's error is a shared group effect; here members fail independently and the group's default is their union under cross-default, so a loan's hazard is a sum over its group's members at their own ages, members outside the priced pool included.",
+    "task132": "task132 renews a failed item at age zero in the same position; here no failure is replaced: a guarantor adds businesses by choice, the whole group fails at the first member's default, and younger members raise the hazard of older loans."
+  },
+  "lineage": [],
+  "notes": "Drawn 2026-10-16 (wave 4). Seed FC19 read at its header and Situation only. The seed's paused repayment clock is kin to task133's delayed entry (both re-align the loan-age axis) and is not used; the payment-burden route (variable-rate payments re-amortised at prime) was prototyped and dropped (too weak against the textbook and latest-period routes, its constructions scattered). Strategy grain_or_unit WARN answered by the analyst test: the guarantee register is read correctly by the easy route too. Personas from guard.py names --geo 'United States' --seed 148.",
+  "registered": "2026-10-16T09:59:03Z"
+}
