@@ -68,7 +68,7 @@
     {
       "path": "ecse_roster_2026-10-01.xlsx",
       "format": "xlsx",
-      "bytes": 9405,
+      "bytes": 9523,
       "rows": null,
       "source": "Constructed: Sorrel Creek RE-6 Special Education Department, early childhood special education roster on 10/01/2026",
       "date": "2026-10-09",
@@ -149,8 +149,8 @@
     {
       "path": "section_enrollment_fall2026.csv",
       "format": "csv",
-      "bytes": 227264,
-      "rows": 5894,
+      "bytes": 230240,
+      "rows": 5956,
       "source": "Constructed: Sorrel Creek RE-6 student information system, pupil lines in the fall 2026 elementary sections",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"

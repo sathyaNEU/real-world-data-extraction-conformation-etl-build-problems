@@ -331,11 +331,13 @@ its figures; they share no primary device.
   Lincoln 19 and 15, Ortega 19 and 13, Bluestem 15 and 20, Prairie Rose 21 and 20, Kessler 15 and 17, North Fork 13 and 13.
 - Primary device A3 (D2, a label stored before a silent switch): in the September rebalance every school opened a class
   for a grade that came in above the spring master schedule on a spare section the schedule had built for a
-  neighbouring grade; the section keeps its course. At every school one such class crosses the band line (a grade 3
-  class on a spare HR-2 section at six schools, a grade 2 class on a spare HR-3 section at Kessler), and four more stay
-  inside a band. Executed with each class's grade read off its sections' course codes, the filed count misses all 14
-  figures (A3g); the pupils' grades on the October 1 count (a join through the section enrollment lines) put each class
-  in its band. Only the cross-file cut shows it: the pupils' earlier lines in the grade's other classes end the school day
+  neighbouring grade; the section keeps its course. Ten such classes cross the band line, five each way (grade 3
+  classes on spare HR-2 sections at Fifth Street, Kessler, North Fork and Prairie Rose, two there; grade 2 classes on
+  spare HR-3 sections at Ortega, two there, Bluestem, Lincoln and Prairie Rose), and four stay inside a band (Fifth
+  Street, Kessler, Ortega, Prairie Rose), one to four a school. Every school's net shift by course code is nonzero
+  (Ortega two out of K-2, Bluestem and Lincoln one out, the other four one in), so the filed count executed with each
+  class's grade read off its sections' course codes misses all 14 figures (A3g, A7); the pupils' grades on the October 1
+  count (a join through the section enrollment lines) put each class in its band. Only the cross-file cut shows it: the pupils' earlier lines in the grade's other classes end the school day
   before the class opened (A7c).
 - Second devices A1 and A2 (now executed by anyone who reads the notes): combination and co-taught classes on two
   sections, half-day kindergarten pairs in one room.
@@ -343,10 +345,10 @@ its figures; they share no primary device.
   the same room on September 21 (Bluestem grade 4, Lincoln grade 1); HA2 a placeholder section with no pupils (North
   Fork grade 4, room TBD); 19 withdrawals with lines ending October 2 to 8 and 11 late enrollees from October 5 (neither
   moves a figure); intervention sections in the resource rooms.
-- Stops (measured, `calc.ask_a`, A3 to A3g), every alternative reading against the golden: section rows (14 of 14 over,
+- Stops (measured, `calc.ask_a`, A3 to A3g), every alternative reading against the golden: section rows (14 of 14 off,
   ruled out by "whatever the number of homeroom section rows"); merged by teacher (14 of 14 off, "teachers of record",
   "one session"); merged by room alone (off at the three half-day K-2 bands, "one room in one session"); every fall
-  homeroom section (14 of 14 over, "open that day with at least one pupil enrolled"); classes without the pupil test (off
+  homeroom section (14 of 14 off, "open that day with at least one pupil enrolled"); classes without the pupil test (off
   at North Fork 3-5, "at least one pupil enrolled"); classes without the date filter (the same figures, converging);
   classes banded by course code (14 of 14 off, "counted in the grade or grades of the pupils enrolled in it"); the golden.
 - Span: the sections export, the section enrollment export, the October membership, the student-system notes (4 files);
@@ -360,12 +362,14 @@ preschool classes on October 1, 2026 and the classrooms those classes use** (8 f
 - H18 home: building use outside the K-5 rated capacity the standard places on, a measure every hosting school carries
   that the call does not turn on; in the preschool office's words ("children enrolled", "classrooms").
 - Filed in the roster's own notes sheet (stage 4 repair of the judge's itinerant note and the reader's classroom
-  question), in the special education department's voice: "Case school: the elementary school whose special education
-  team holds the child's IEP case." "Service model: ECSE classroom, a district early childhood special education
-  classroom; Inclusive classroom, a district preschool class the child attends with special education support;
-  Itinerant, special education services at the child's home or community preschool. A child served itinerantly is not
-  enrolled in a district preschool class." "Classroom: the school and room where the child's class meets. A morning and
-  an afternoon class in the same room share the classroom."
+  question, and the re-read's two points), in the special education department's voice: "Case school: the elementary
+  school whose special education team holds the child's IEP case." "State ID: the child's state-assigned student ID, the
+  key for a child across this roster and the preschool registration platform; a child is counted once however many
+  enrollment rows the platform holds for them." "Service model: ECSE classroom, a district preschool class taught by an
+  early childhood special education teacher; Inclusive classroom, a district preschool class the child attends with
+  special education support; Itinerant, special education services at the child's home or community preschool. A child
+  served itinerantly is not enrolled in a district preschool class." "Classroom: the school and room where the child's
+  class meets. A morning and an afternoon class in the same room share the classroom."
 - Construction: the platform's enrollments open on October 1 at the site plus the roster's children whose class meets at
   the site (the school in the Classroom), each child once by state ID; classrooms as the distinct rooms.
 - Golden (`figures.json` `ask_b_preschool`, unchanged by the repair): Fifth Street 88 children and 4 classrooms, Ortega
@@ -382,8 +386,9 @@ preschool classes on October 1, 2026 and the classrooms those classes use** (8 f
   classrooms overcount there; HB2 a child who moved sites in September (North Fork to Kessler, Fifth Street to Ortega;
   the old enrollment ended) and three September withdrawals; a waitlist offer starting October 5.
 - Stops (measured, `calc.ask_b`, B2 to B2f), every alternative reading against the golden: the platform alone by state ID
-  and room (8 of 8 off, ruled out by the roster's classroom children); platform child records and class names (8 of 8
-  off); the roster grouped by case school (8 of 8 off, "Classroom: the school and room where the child's class meets");
+  and room (8 of 8 off, ruled out by "ECSE classroom, a district preschool class"); platform child records and class
+  names (8 of 8 off, "a child is counted once however many enrollment rows the platform holds"); the roster grouped by
+  case school (8 of 8 off, "Classroom: the school and room where the child's class meets");
   the itinerant children added (92, 96, 54, 37: over at 4 of 4, "not enrolled in a district preschool class"); classes
   counted as classrooms (over at the three half-day sites, "share the classroom"); the two sources added without
   matching children (over at 4 of 4); the golden.
@@ -410,7 +415,7 @@ state ID on both sources. Each is a field the golden reads, not a control: no fi
 
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
-| A homeroom classes, K-2 and 3-5 (14) | the filed class count executed on the sections (one room in one session, open on October 1 with a pupil enrolled), each class's grade read off its sections' course codes | the September classes on spare sections in the other band at every school: every figure off by one | miss |
+| A homeroom classes, K-2 and 3-5 (14) | the filed class count executed on the sections (one room in one session, open on October 1 with a pupil enrolled), each class's grade read off its sections' course codes | each school's September classes on spare sections from the other band shift its bands by one or two: every figure off | miss |
 | B children and classrooms (8) | the platform's enrollments open on October 1 and the roster's in-class children, each child once by state ID, itinerant children out, rooms distinct, the roster's children placed by its case school | every site gains or loses a child and a room to another site: every figure off | miss |
 | the chart | the cracker's projection drawn as the golden draws it | the history, capacity and its own projection | outside |
 
@@ -461,6 +466,13 @@ North Fork's placements and Fifth Street's, Lincoln's, Ortega's and North Fork's
   meaning: the judge noted the first and the reader raised the second; both filed in the roster's notes sheet, which
   hands over the old children device to a reader of the roster, so the roster now lists children by the team that holds
   the case and the class's school sits in the Classroom (the true key in another field).
+- A September rebalance with one cross-band class at every school, six of the seven a grade 3 class on an HR-2
+  section: the stage 4 re-read found the concentration on the band line could read as planted. Remixed to both
+  directions (five each way), one to four off-code sections a school beside the four inside a band, every school's net
+  shift by course code still nonzero (A7); every golden figure unchanged.
+- An ECSE classroom defined as "a district early childhood special education classroom", the platform's repeat rows
+  left to the hygiene check: the re-read could not find a sentence putting those children in preschool classes, or one
+  counting a child once across the platform's rows; both filed in the roster's notes.
 
 ## Build record
 
@@ -501,10 +513,17 @@ Stage 3, built 2026-10-16 from `task150/generator/build.py` (seed 50).
   the section enrollment, the roster, the student-system notes and the manifest moved. `checks.py` 143 assertions, 0
   failed; verify agreeing; two byte-identical builds; figures_check 41 of 41; precut 49; voice-check PASS on the
   unchanged prompt; leak.py REVIEW, no LEAK; container audit clean; heart WARN answered; surface as at stage 3.
+- Stage 4 close: the re-judge on the repair cut b475530 DETERMINISTIC and APPROVE, the main call and both ask tables
+  reproduced, Gates G and H pass (`determinism_check_report.md`; its optional prompt pin on validation not taken, it
+  files the HOW); the re-read clean on the main call, its two items fixed with every golden figure frozen: the rebalance
+  remixed (A7) and the roster's notes extended (B0). Against b475530 the main call's files, the student-system notes,
+  every figures.json value and the write-up are byte-identical; the sections, the section enrollment, the roster and the
+  manifest moved. `checks.py` 143 assertions, 0 failed; verify agreeing; two byte-identical builds; figures_check 41 of
+  41; precut 49; voice-check PASS; leak.py REVIEW, no LEAK; container audit clean; heart WARN answered; surface as before.
 
 ## Leak review
 
-`leak.py --asof 2026-10-09` on the stage 4 repair cut: REVIEW, no LEAK. One line per REVIEW line.
+`leak.py --asof 2026-10-09` on the stage 4 close cut: REVIEW, no LEAK. One line per REVIEW line.
 
 - Sweep 3, the policy carries 12 of 13 words of the call: section 1 lists the seven schools the program places among, in
   the board's code order, with no figure and no order of need; the estimand's filing, harmless.

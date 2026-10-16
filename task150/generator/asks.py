@@ -36,12 +36,13 @@ PLACEHOLDER = {"F": 4}                   # a section built in spring for a class
 # master schedule, on a spare section the schedule had built for a neighbouring grade that came in below it; the
 # section keeps the course it was built with. zone: [(grade of the class, grade the section was built for, opened)]
 REBALANCE = {
-    "A": [(3, 2, dt.date(2026, 9, 8)), (5, 4, dt.date(2026, 9, 14))],
-    "B": [(3, 2, dt.date(2026, 9, 14))],
+    "A": [(2, 3, dt.date(2026, 9, 8)), (2, 3, dt.date(2026, 9, 14)), (5, 4, dt.date(2026, 9, 14))],
+    "B": [(2, 3, dt.date(2026, 9, 14))],
     "P": [(3, 2, dt.date(2026, 9, 8)), (1, 0, dt.date(2026, 9, 21))],
-    "C": [(3, 2, dt.date(2026, 9, 21))],
-    "D": [(2, 3, dt.date(2026, 9, 14)), (4, 5, dt.date(2026, 9, 8))],
-    "E": [(3, 2, dt.date(2026, 9, 8)), (4, 3, dt.date(2026, 9, 14))],
+    "C": [(2, 3, dt.date(2026, 9, 21))],
+    "D": [(3, 2, dt.date(2026, 9, 14)), (4, 5, dt.date(2026, 9, 8))],
+    "E": [(3, 2, dt.date(2026, 9, 8)), (3, 2, dt.date(2026, 9, 21)), (2, 3, dt.date(2026, 9, 14)),
+          (4, 3, dt.date(2026, 9, 14))],
     "F": [(3, 2, dt.date(2026, 9, 14))],
 }
 LABOR_DAY = dt.date(2026, 9, 7)
@@ -478,10 +479,12 @@ ECSE_NOTES = [
     "Early Childhood Special Education roster: children aged 3 to 5 with an active IEP on 10/01/2026, listed by case "
     "school.",
     "Case school: the elementary school whose special education team holds the child's IEP case.",
-    "Service model: ECSE classroom, a district early childhood special education classroom; Inclusive classroom, a "
-    "district preschool class the child attends with special education support; Itinerant, special education services "
-    "at the child's home or community preschool. A child served itinerantly is not enrolled in a district preschool "
-    "class.",
+    "State ID: the child's state-assigned student ID, the key for a child across this roster and the preschool "
+    "registration platform; a child is counted once however many enrollment rows the platform holds for them.",
+    "Service model: ECSE classroom, a district preschool class taught by an early childhood special education teacher; "
+    "Inclusive classroom, a district preschool class the child attends with special education support; Itinerant, "
+    "special education services at the child's home or community preschool. A child served itinerantly is not enrolled "
+    "in a district preschool class.",
     "Classroom: the school and room where the child's class meets. A morning and an afternoon class in the same room "
     "share the classroom.",
 ]

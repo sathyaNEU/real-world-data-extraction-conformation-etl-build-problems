@@ -478,16 +478,15 @@ def run(target, golden, W, R, meta_path):
 
     allA = sorted(A["golden"])
     # every alternative reading of the ask, each either ruled out by a clause of the filed count or converging on it
-    C("A3 section rows counted (ruled out by 'whatever the number of homeroom section rows'): all 14 figures over",
-      off("sections running with pupils") == allA and all(
-          st["sections running with pupils"][k2] > A["golden"][k2] for k2 in allA))
+    C("A3 section rows counted (ruled out by 'whatever the number of homeroom section rows'): all 14 figures off",
+      off("sections running with pupils") == allA, off("sections running with pupils"))
     C("A3b sections merged by teacher (ruled out by 'teachers of record' and 'one session'): all 14 figures off",
       off("merged by teacher") == allA)
     C("A3c sections merged by room alone (ruled out by 'one room in one session'): off at the three half-day "
       "kindergarten bands", off("merged by room") == sorted([(CODE[z], "K-2") for z in AS.HALF_DAY_K]),
       off("merged by room"))
-    C("A3d every fall homeroom section (ruled out by 'open that day with at least one pupil enrolled'): all 14 over",
-      off("every fall homeroom section") == allA)
+    C("A3d every fall homeroom section (ruled out by 'open that day with at least one pupil enrolled'): all 14 off",
+      off("every fall homeroom section") == allA, off("every fall homeroom section"))
     C("A3e classes without the pupil test (ruled out by 'at least one pupil enrolled'): off at North Fork 3-5 only",
       off("classes without the pupil test") == [(CODE["F"], "3-5")], off("classes without the pupil test"))
     C("A3f classes without the date filter: the ended sections share their class's room and session (same figures)",
@@ -516,10 +515,23 @@ def run(target, golden, W, R, meta_path):
               v[0]["course_code"] == v[1]["course_code"] and v[0]["section_end"] == v[1]["section_end"])
     C("A6 a combination class in each band at every school (14) and a co-taught class in every 3-5 band",
       shared_t == 14 and cot >= 11, (shared_t, cot))
-    cross = sorted(c for c in {k[0] for k in A["classes"]}
-                   if any(A["label_band"][k] != A["pupil_band"][k] for k in A["classes"] if k[0] == c))
-    C("A7 the A3 device (a label stored before a silent switch): at every school a class opened in September on a "
-      "spare section built for a grade in the other band", cross == sorted(D.codes), cross)
+    net = {}
+    into_k2 = out_of_k2 = 0
+    for k in A["classes"]:
+        lab, pup = A["label_band"][k], A["pupil_band"][k]
+        if lab != pup:
+            step = 1 if lab == {"K-2"} else -1
+            net[k[0]] = net.get(k[0], 0) + step
+            into_k2 += step == 1
+            out_of_k2 += step == -1
+    per_school = {}
+    for z in K.ZONES:
+        per_school[CODE[z]] = sum(1 for (g, b, o) in AS.REBALANCE[z] if (g <= 2) != (b <= 2))
+    C("A7 the A3 device (a label stored before a silent switch): every school's September classes on spare sections "
+      "built for the other band leave a nonzero net shift by course code, in both directions (5 grade 3 classes on "
+      "HR-2 sections, 5 grade 2 classes on HR-3 sections) and an uneven count a school",
+      sorted(net) == sorted(D.codes) and all(v != 0 for v in net.values()) and into_k2 == 5 and out_of_k2 == 5 and
+      len(set(per_school.values())) >= 3, (net, into_k2, out_of_k2, per_school))
     within = sum(1 for z in K.ZONES for (g, b, o) in AS.REBALANCE[z] if (g <= 2) == (b <= 2))
     C("A7b the rebalance also reused sections inside a band at four schools (the practice, not a band trick)",
       within == 4, within)
@@ -532,9 +544,11 @@ def run(target, golden, W, R, meta_path):
     # ---- Ask B
     roster_wb = openpyxl.load_workbook(os.path.join(target, AS.F_ECSE), data_only=True)
     notes_b = " ".join(str(r[0]) for r in roster_wb["Notes"].iter_rows(values_only=True) if r and r[0])
-    C("B0 the roster's notes file the case school, the service models with the itinerant children out of class, and "
-      "the classroom as a room",
+    C("B0 the roster's notes file the case school, the child once by state ID, the service models (an ECSE classroom "
+      "a district preschool class, the itinerant children out of class) and the classroom as a room",
       "A child served itinerantly is not enrolled in a district preschool class." in notes_b and
+      "ECSE classroom, a district preschool class taught by an early childhood special education teacher;" in notes_b and
+      "a child is counted once however many enrollment rows the platform holds for them." in notes_b and
       "Classroom: the school and room where the child's class meets. A morning and an afternoon class in the same room "
       "share the classroom." in notes_b and
       "Case school: the elementary school whose special education team holds the child's IEP case." in notes_b and
@@ -550,12 +564,13 @@ def run(target, golden, W, R, meta_path):
     sites = sorted(B["sites"])
     want = {"Fifth Street Elementary": 77, "Ortega Elementary": 79, "Kessler Elementary": 32,
             "North Fork Elementary": 29}
-    C("B2 the platform alone, each child once (ruled out by the roster's ECSE classroom children): children 77, 79, "
-      "32 and 29 against the golden",
+    C("B2 the platform alone, each child once (ruled out by 'ECSE classroom, a district preschool class'): children "
+      "77, 79, 32 and 29 against the golden",
       {s2: sb["platform by state ID and room"][s2]["children"] for s2 in B["sites"]} == want and
       offb("platform by state ID and room", "classrooms") == sites,
       {s2: sb["platform by state ID and room"][s2] for s2 in B["sites"]})
-    C("B2b platform child records and class names: all 8 figures off",
+    C("B2b platform child records and class names (ruled out by 'a child is counted once however many enrollment "
+      "rows the platform holds for them'): all 8 figures off",
       offb("platform child records and class names", "children") == sites and
       offb("platform child records and class names", "classrooms") == sites)
     C("B2c the roster grouped by case school (ruled out by 'Classroom: the school and room where the child's class "
