@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-16 (wave 2: task233 re-rooted to architecture 2 after the judge's SEND_BACK on architecture 1, the 2025 follow-up now spanning the island's range so the odds scale is the only one its cases fit; in build). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-16 (wave 2: task233 shipped on architecture 2 after the judge's SEND_BACK of architecture 1; task234 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 and task232 shipped; task233 to task236 next.
@@ -44,6 +44,20 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   REVIEW only; leak reader two reads (question 1 none); judge pass 1 FIX_NOW on ask B's ticket fold (closed by policy
   2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC. Surface screen promotes task128 (back to back) and task230
   (surface vocabulary), neither sharing domain, objective or mechanism: the adjudicated clone check is the author's call.
+
+**task233: SHIPPED 2026-10-16 (wave 2, third build; architecture 2); waiting on the portal.**
+- A university Social Survey Unit runs an island state's school-leaver destinations survey for its Department of
+  Education (General Statistics & Data Science, missing-data-censoring-measurement-error x Data Quality Monitoring).
+  Call: suppress the NEET rates of City East, City West and Riverside and the higher-education entry rates of Hill
+  Country and Northern Plains; standard for the NEET rates of Southern Shore, Glen Villages and Upper Valley and the
+  higher-education rates of Old Docks and Mill Towns; caution for the other 14. The 2025 nonresponse follow-up, in five
+  districts across the island's range, found one odds ratio in every district and band (2.46 NEET, 0.41 higher
+  education; calibration slopes 0.99 and 1.03); the pooled points gap (14.5, minus 11.1) files 11 of the 24 flags wrong.
+- Gates: 385 generator checks, verify green, byte-identical rebuilds, figures_check 57 of 57, precut 49, leak.py REVIEW
+  only; leak reader two reads (questions 1 to 4 none, question 6 analytical); judge r2 DETERMINISTIC, APPROVE, Gate H
+  analytical. Architecture 1 (follow-up in the middle districts) was sent back the same day and re-rooted. The
+  furniture was redrawn at stage 3 because task189, task463 and task152 were filed first and took its role, shape,
+  forum, forcing event and organisation family.
 
 **task232: SHIPPED 2026-10-13 (wave 2, second build); waiting on the portal.**
 - A regional local health district's public health unit on the New South Wales and Queensland border (Epidemiology &

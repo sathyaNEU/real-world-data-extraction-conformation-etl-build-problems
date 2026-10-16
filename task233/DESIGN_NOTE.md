@@ -266,8 +266,9 @@ Executed word for word, QS-4 and the prompt fix the population (every leaver on 
 the statistic (the headline NEET and HE rate, allocations included, computed whatever the flag), the counterfactual
 (each nonrespondent's allocation moved as the 2025 follow-up found followed-up nonrespondents' destinations
 departing from their allocations, worked nonrespondent by nonrespondent and summed), the bands and the rounding. No
-sentence fixes the scale on which a departure moves an allocation; the follow-up does. Its five districts run from
-the most affluent to the most deprived (the field report says they were chosen to cover the island's range), so
+sentence fixes the scale on which a departure moves an allocation; the follow-up does. Its five districts were chosen
+across the island's range of area deprivation (the field report's design section), and QS-4 s.6 has them stand for
+every district, so
 inside every band its 3,134 comparable cases carry allocations that differ by district; regressing the found
 destination on the logit of the allocation returns slope 0.99 for NEET and 1.03 for higher education, a pure shift
 on the odds scale, and one odds ratio fits the cases better than a pooled points gap (by 54.4 and 242.0
@@ -351,7 +352,11 @@ band is scrambled).
 
 Architecture 1: leak.py REVIEW, no LEAK (--asof 2026-11-10); reader pass 1: Q1 to Q4 none, Q6 analytical, all seven
 REVIEW lines harmless; realism notes fixed in the generator (careers counts, the field report's late-form sentence,
-school names, QS-4's history line and the "own allocation" phrase). Architecture 2 re-runs both on the new cut.
+school names, QS-4's history line and the "own allocation" phrase). Architecture 2 (2026-10-16, after the furniture
+redraw): leak.py REVIEW, no LEAK; reader on a fresh cut: Q1 to Q4 none, Q5 the headline rate (the golden's
+definition), Q6 an analytical choice, all nine REVIEW lines harmless; realism notes fixed in the generator (the
+methodology dated after the allocation run, its reason for the previous year's shares, the field report's
+"most affluent" phrase) and QS-4 s.6 now says the follow-up stands for every district (scope only, no scale).
 
 ## Tried and rejected
 

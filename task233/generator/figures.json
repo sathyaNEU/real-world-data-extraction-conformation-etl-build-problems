@@ -1,0 +1,195 @@
+{
+ "call": {
+  "Suppressed": [
+   "City East NEET rate",
+   "City West NEET rate",
+   "Riverside NEET rate",
+   "Hill Country higher-education entry rate",
+   "Northern Plains higher-education entry rate"
+  ],
+  "Standard": [
+   "Old Docks higher-education entry rate",
+   "Southern Shore NEET rate",
+   "Glen Villages NEET rate",
+   "Upper Valley NEET rate",
+   "Mill Towns higher-education entry rate"
+  ],
+  "Caution": [
+   "City East higher-education entry rate",
+   "City West higher-education entry rate",
+   "Riverside higher-education entry rate",
+   "Old Docks NEET rate",
+   "Coastal Strip NEET rate",
+   "Coastal Strip higher-education entry rate",
+   "Southern Shore higher-education entry rate",
+   "Glen Villages higher-education entry rate",
+   "Upper Valley higher-education entry rate",
+   "Hill Country NEET rate",
+   "Northern Plains NEET rate",
+   "Market Towns NEET rate",
+   "Market Towns higher-education entry rate",
+   "Mill Towns NEET rate"
+  ]
+ },
+ "components": {
+  "comparable_cases": 3134,
+  "odds_ratio_neet": 2.46,
+  "odds_ratio_he": 0.41,
+  "calibration_slope_neet": 0.99,
+  "calibration_slope_he": 1.03,
+  "leavers_2026": 47734,
+  "nonrespondents_2026": 7641,
+  "followup_drawn": 3617,
+  "followup_unresolved": 125,
+  "followup_late_returns": 358
+ },
+ "rival": {
+  "points_gap_neet": 14.5,
+  "points_gap_he": -11.1,
+  "default_wrong": 11
+ },
+ "flags": {
+  "ED01 neet": {
+   "rate": 28.2,
+   "shift": 3.39,
+   "flag": "Suppressed"
+  },
+  "ED01 he": {
+   "rate": 27.0,
+   "shift": -1.5,
+   "flag": "Caution"
+  },
+  "ED02 neet": {
+   "rate": 23.3,
+   "shift": 3.4,
+   "flag": "Suppressed"
+  },
+  "ED02 he": {
+   "rate": 32.7,
+   "shift": -1.84,
+   "flag": "Caution"
+  },
+  "ED03 neet": {
+   "rate": 16.8,
+   "shift": 3.72,
+   "flag": "Suppressed"
+  },
+  "ED03 he": {
+   "rate": 39.2,
+   "shift": -2.65,
+   "flag": "Caution"
+  },
+  "ED04 neet": {
+   "rate": 30.9,
+   "shift": 2.31,
+   "flag": "Caution"
+  },
+  "ED04 he": {
+   "rate": 16.8,
+   "shift": -0.69,
+   "flag": "Standard"
+  },
+  "ED05 neet": {
+   "rate": 12.8,
+   "shift": 2.05,
+   "flag": "Caution"
+  },
+  "ED05 he": {
+   "rate": 45.9,
+   "shift": -1.81,
+   "flag": "Caution"
+  },
+  "ED06 neet": {
+   "rate": 1.5,
+   "shift": 0.34,
+   "flag": "Standard"
+  },
+  "ED06 he": {
+   "rate": 74.2,
+   "shift": -1.99,
+   "flag": "Caution"
+  },
+  "ED07 neet": {
+   "rate": 3.0,
+   "shift": 0.63,
+   "flag": "Standard"
+  },
+  "ED07 he": {
+   "rate": 62.7,
+   "shift": -1.82,
+   "flag": "Caution"
+  },
+  "ED08 neet": {
+   "rate": 2.8,
+   "shift": 0.54,
+   "flag": "Standard"
+  },
+  "ED08 he": {
+   "rate": 74.4,
+   "shift": -1.92,
+   "flag": "Caution"
+  },
+  "ED09 neet": {
+   "rate": 4.5,
+   "shift": 1.75,
+   "flag": "Caution"
+  },
+  "ED09 he": {
+   "rate": 65.5,
+   "shift": -3.67,
+   "flag": "Suppressed"
+  },
+  "ED10 neet": {
+   "rate": 7.9,
+   "shift": 2.52,
+   "flag": "Caution"
+  },
+  "ED10 he": {
+   "rate": 55.2,
+   "shift": -3.57,
+   "flag": "Suppressed"
+  },
+  "ED11 neet": {
+   "rate": 9.4,
+   "shift": 1.86,
+   "flag": "Caution"
+  },
+  "ED11 he": {
+   "rate": 52.0,
+   "shift": -2.16,
+   "flag": "Caution"
+  },
+  "ED12 neet": {
+   "rate": 31.6,
+   "shift": 2.53,
+   "flag": "Caution"
+  },
+  "ED12 he": {
+   "rate": 12.5,
+   "shift": -0.57,
+   "flag": "Standard"
+  }
+ },
+ "bands": {
+  "AB1": {
+   "leavers": 11331,
+   "neet": 2.4,
+   "he": 80.7
+  },
+  "AB2": {
+   "leavers": 14483,
+   "neet": 6.9,
+   "he": 57.9
+  },
+  "AB3": {
+   "leavers": 12699,
+   "neet": 17.6,
+   "he": 29.6
+  },
+  "AB4": {
+   "leavers": 9221,
+   "neet": 36.5,
+   "he": 10.3
+  }
+ }
+}
