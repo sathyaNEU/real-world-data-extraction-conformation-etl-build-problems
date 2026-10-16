@@ -12,8 +12,8 @@
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
   "scoring_unit": "per active unit per period",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Book an allowance for credit losses of $10 million at 30 September 2026 on the unguaranteed portions of the SBA 7(a) loans approved in fiscal years 2019 to 2021.",
+  "answer_source": "task148/submission.md, ## 1. Final Recommendation (generator/figures.json call $10 million; the golden $9.94 million from the shipped files, verify.py agreeing on its own code path)",
   "gap": [
     "population",
     "time"
@@ -36,11 +36,11 @@
   "stakeholder_role": "the bank's controller, who books the 30 September year-end allowance for the SBA unguaranteed book",
   "role_family": "finance_controller",
   "spine": {
-    "file": "servicing_history.parquet",
-    "rows": 2500000,
-    "entity": "one 7(a) loan in one month of the bank's servicing history",
-    "grain": "loan x month",
-    "source": "synthetic (constructed in the layout of an SBA lender's monthly servicing extract and SBA Form 1502 guaranty reporting)"
+    "file": "servicing_history_2017-10_2026-09.parquet (the current servicing system's month-end loan history from its October 2017 go-live), beside legacy_loan_history_200910_201710.parquet (the legacy core's, October 2009 to October 2017, 499,113 rows)",
+    "rows": 1627120,
+    "entity": "one SBA 7(a) loan at one month-end on the current servicing system, with its status, days past due, principal outstanding and note rate",
+    "grain": "loan x month-end",
+    "source": "constructed (an SBA lender's servicing system month-end history, in the current system's and the legacy core's layouts)"
   },
   "forum": "board_of_directors",
   "forcing_event": "period_close",
@@ -68,25 +68,29 @@
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "A unit's failure takes down every other unit its backer carries, so the hazard each unit faces is the sum of the hazards of all the units behind the same backer, each at its own age, including units outside the population being priced and units added recently at the steepest part of the curve; a rate built on each unit alone at its own age, pooled over the history or taken from the latest period, prices every unit as if it stood alone.",
-  "driver_concrete": "Many of the bank's borrowers are owner-operators who personally guarantee a 7(a) loan on each of several businesses under cross-default, so when one business fails the bank accelerates every loan the guarantor stands behind; each active FY2019-21 loan's charge-off hazard is the sum of its guarantor's businesses' default hazards at their own months on book, including the businesses financed in FY2022-26 that sit outside the reserve population, many of them added in 2025-26 and only now entering their peak years.",
-  "stump": "A strong solver builds monthly default and payoff rates by months on book and term from every loan since FY2010, conditions each active FY2019-21 loan on its survival to 30 September 2026 and books the allowance well below the golden; the step that lands it there is pricing each loan on its own months on book as if it stood alone, when a loan whose guarantor carries other businesses fails whenever any of them fails.",
+  "driver_concrete": "Many of the bank's borrowers are owner-operators who personally guarantee a 7(a) loan on each of several businesses under cross-default, so when one business fails the bank accelerates every loan the guarantor stands behind; each performing FY2019-21 loan's default hazard is the union of its guarantor group's business failure hazards at each business's own months on book, estimated on loans standing alone, the 1,561 businesses financed outside the pool included (1,403 of them in FY2026 and only now entering their peak years).",
+  "stump": "A strong solver builds monthly default and payoff rates by months on book from every loan since October 2009, rolls each performing FY2019-21 loan forward on its own months on book and books about $4 million (3.89) against the golden's $10 million (9.94); the step that lands it there is pricing each loan as if it stood alone, when a loan whose operator guarantees other businesses under cross-default fails whenever any of them fails, and most of those businesses, financed outside the pool in FY2026, are only now entering the years when a business fails most.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stages the book cleanly, keeps the SBA-paid relief months out of the risk sets, reads the allowance policy and the guarantee register correctly and builds the textbook lifetime PD from monthly default and payoff rates by months on book and term over every loan since FY2010 books the allowance well below the golden, because each loan whose guarantor carries other businesses fails when any of them fails and its own age says little about that.",
+  "analyst_test": "A strong analyst who stages the pool cleanly, maps the legacy layout, reads the allowance policy, the guarantee register and the loan authorization's cross-default clause correctly and builds the textbook lifetime PD from monthly default and payoff rates by months on book and term over every loan since October 2009 books about $4 million against the golden's $10 million; the latest year's rates file about $4.6 million, the group's size as a covariate or the group's loan count at a per-loan rate $5.2 to $7.4 million, and the group priced at per-loan rates $11.9 to $13.0 million.",
   "domain_test": "The deciding quantity is each loan's lifetime charge-off probability built the ECL way (default and payoff hazards by months on book, conditioned on survival to the reserve date), where the unit that defaults is the personal guarantor's cross-defaulted group of businesses, so a loan's hazard is the sum of its group's business hazards at each business's own age; with another field's nouns personal guarantees, cross-default and acceleration have nothing to attach to.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:guarantor-group-default-unit",
   "layer1": [
-    "guarantor names written differently across a guarantor's loans (middle initials, suffixes, nicknames) and two different people with the same name told apart by address",
-    "months in which SBA made the payment under the CARES Act Section 1112 relief recorded as paid in the servicing history",
-    "an SBA Form 1502 guaranty report in SBA's own layout beside the bank's servicing extract",
-    "fiscal years ending 30 September against calendar-year dates in the charge-off ledger"
+    "the servicing history in two layouts: the legacy core's status codes, cents, decimal rates and legacy loan numbers to October 2017 and the current system's from its October 2017 parallel run, the month in both",
+    "guarantor names written differently across an operator's loans (middle initials, suffixes, capitals) beside the documentation system's party number and the tax number's last four, and different people sharing a name",
+    "months in which SBA made the payment under Section 1112 recorded as paid in the servicing history",
+    "SBA loan numbers in SBA's files against the bank's note numbers in its own",
+    "an SBA Form 1502 report in SBA's own layout beside the bank's servicing extract",
+    "fiscal years ending 30 September against calendar dates",
+    "transient delinquencies that cure"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
     "task142": "task142 builds the upper percentile of a period's total from how many units arrive and how long each runs; here the quantity is a mean lifetime charge-off and the decisive move is that the unit of default is the guarantor's cross-defaulted group, whose hazard is the sum of its businesses' own-age hazards.",
     "task133": "task133's stump is delayed entry (taken-over loans counted only from the go-live); here every loan is observed from its first payment and each loan's own age axis is right, and what decides is that a loan fails with its guarantor's other businesses, whose number and ages set its hazard.",
     "task143": "task143's decisive quantity is the chance the weakest member of a new group falls below a threshold when the predictor's error is a shared group effect; here members fail independently and the group's default is their union under cross-default, so a loan's hazard is a sum over its group's members at their own ages, members outside the priced pool included.",
-    "task132": "task132 renews a failed item at age zero in the same position; here no failure is replaced: a guarantor adds businesses by choice, the whole group fails at the first member's default, and younger members raise the hazard of older loans."
+    "task132": "task132 renews a failed item at age zero in the same position; here no failure is replaced: a guarantor adds businesses by choice, the whole group fails at the first member's default, and younger members raise the hazard of older loans.",
+    "task146": "task146 sizes a pool released at a calendar turn, each segment's refusals weighed by when in the closing period they fell; here nothing is released and no timing within a period is weighed: the unit that defaults is the guarantor's cross-defaulted group, so each loan's hazard is the union of its group's businesses' hazards at their own ages, members outside the priced pool included."
   },
   "lineage": [],
   "notes": "Drawn 2026-10-16 (wave 4). Seed FC19 read at its header and Situation only. The seed's paused repayment clock is kin to task133's delayed entry (both re-align the loan-age axis) and is not used; the payment-burden route (variable-rate payments re-amortised at prime) was prototyped and dropped (too weak against the textbook and latest-period routes, its constructions scattered). Strategy grain_or_unit WARN answered by the analyst test: the guarantee register is read correctly by the easy route too. Personas from guard.py names --geo 'United States' --seed 148.",

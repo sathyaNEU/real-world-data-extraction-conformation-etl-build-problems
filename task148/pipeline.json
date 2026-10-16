@@ -1,26 +1,53 @@
 {
   "task": "task148",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "banking-credit-financial-risk/expected-credit-loss-provisioning",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-16",
-  "stump": "Building monthly default and payoff rates by months on book and term from every loan since FY2010 and rolling each active FY2019-21 loan forward on its own months on book books about $7 million at 30 September 2026; the step that lands it there is pricing each loan as if it stood alone, when a loan whose guarantor carries other businesses under cross-default fails whenever any of them fails, and many of those businesses, financed outside the pool in FY2022-26, are young.",
+  "stump": "Building monthly default and payoff rates by months on book from every loan since October 2009 and rolling each performing relief-era loan forward on its own months on book books about $4 million at 30 September 2026; the step that lands it there is pricing each loan as if it stood alone, when a loan whose operator guarantees other businesses under the bank's cross-default fails whenever any of them fails, and most of those businesses, financed outside the pool in fiscal 2026, are only now entering the years when a business fails most.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "driver 0.09 (task127 v3 lineage) at the draw"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-16",
+    "checks": 49
+  },
+  "leak": {
+    "leak_py": "REVIEW 2026-10-16 on the stage 3 cut, no LEAK; six lines answered in the note's Leak review (the call's vocabulary in the README and the policy, stump terms in the field notes and clauses, contractual maturity and first payment dates)",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "WARN (three_rules.strategy_risk and task133's v2 stump text at 0.22, both answered in the note's Draw), no BLOCK",
+    "nearest": "driver 0.09 (task127 v3 lineage); surface exit 0, two pairs promoted on card mechanism axes for the author's adjudication (task146 two apart, differentiated on the card; task142 the older same-driver signature, differentiated at the draw)"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: ladder, fork table, closure, asks, prompt, precut",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "wave": "wave 4 (new), seed FC19 (world, decision and quantity kept; pitfall re-found)"
+  "wave": "wave 4 (new), seed FC19 (world, decision and quantity kept; pitfall re-found)",
+  "stage3": {
+    "checks": "173 assertions, 0 failed",
+    "verify": "agrees on its own code path (the allowance 9.94 million, $10 million; split 1.99, 3.00 and 4.95; all 26 graded figures equal)",
+    "rebuild": "two builds byte-identical (16 target files, 2 goldens, metadata.json, figures.json, target.zip sha256 991dd3ef)",
+    "figures_check": "PASS (53 figures, 0 absent)",
+    "voice_check": "PASS (846 characters)",
+    "container_audit": "clean (target and golden, band 2018-01-01 to 2026-10-09)",
+    "guard_surface": "exit 0, no file, schema, wording or name promoted; two card-axis pairs promoted for adjudication (task146, task142), answered",
+    "guard_heart": "WARN, answered in the design note, no BLOCK",
+    "guard_validate": "188 cards, 0 invalid",
+    "default_path": "about $4 million (3.89; by term 3.84)",
+    "golden": "$10 million (9.94; FY2019 $2.0 million, FY2020 $3.0 million, FY2021 $5.0 million)"
+  }
 }

@@ -1,0 +1,187 @@
+{
+  "task": "task148",
+  "title": "How much a savings bank books at its fiscal year-end as the CECL allowance on the unguaranteed portions of its relief-era SBA 7(a) loans, when an operator's units are cross-defaulted under the same personal guarantees",
+  "domain": "Banking, Credit & Financial Risk",
+  "client_domain": "Banking, Credit & Financial Risk",
+  "subdomain": "expected-credit-loss-provisioning (lifetime expected charge-offs from default and payoff hazards by months on book, conditioned on survival, with the guarantor group as the unit that defaults)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "one figure (the allowance to the nearest $1 million) with its split by approval fiscal year, a board note with a chart of the allowance and the unguaranteed principal, and two tables (Section 1112 payments by fiscal quarter; net charge-offs by fiscal year and approval year)",
+  "as_of": "2026-09-30",
+  "deliverables": [
+    "sba_allowance_fy2026.xlsx",
+    "allowance_note_fy2026.docx"
+  ],
+  "distractor_files": [
+    "form1502_2026-09.csv",
+    "secondary_market_settlements.csv"
+  ],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 16,
+    "formats": [
+      "csv",
+      "parquet",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "servicing_history_2017-10_2026-09.parquet",
+    "largest_file_rows": 1627120
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task148/generator/build.py (seeded, deterministic) around a fictional savings bank, its SBA lending division, its borrowers and guarantors and their records, in the layouts of a lender's servicing extracts and of the reports SBA's fiscal transfer agent sends lenders; no real organisation's records, person or borrower is depicted. The prime rate path the servicing records follow is the published prime rate to December 2025, held at 6.75 per cent after.",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-16",
+  "generator": "task148/generator/build.py",
+  "files": [
+    {
+      "path": "README.txt",
+      "format": "txt",
+      "bytes": 4864,
+      "rows": null,
+      "source": "Constructed: SBA Servicing and Loan Operations README and field notes for the allowance data",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "allowance_policy_sba_7a.pdf",
+      "format": "pdf",
+      "bytes": 35578,
+      "rows": null,
+      "source": "Constructed: Fenmore Savings Bank credit policy CP-SBA-07 version 4, allowance for credit losses on SBA 7(a) unguaranteed portions",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest.csv",
+      "format": "csv",
+      "bytes": 1804,
+      "rows": 14,
+      "source": "Constructed: SBA Servicing export manifest for the allowance data",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "form1502_2026-09.csv",
+      "format": "csv",
+      "bytes": 1775138,
+      "rows": 19680,
+      "source": "Constructed: Fenmore Savings Bank Form 1502 report for September 2026",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fta_1112_detail_cares.csv",
+      "format": "csv",
+      "bytes": 7186043,
+      "rows": 85462,
+      "source": "Constructed: SBA fiscal transfer agent remittance detail for Section 1112 payments, CARES Act layout, as received by Fenmore Savings Bank",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fta_1112_detail_eaa.xlsx",
+      "format": "xlsx",
+      "bytes": 2518342,
+      "rows": 80255,
+      "source": "Constructed: SBA fiscal transfer agent remittance detail for Section 1112 payments, Economic Aid Act layout, as received by Fenmore Savings Bank",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "guarantee_register.xlsx",
+      "format": "xlsx",
+      "bytes": 3920706,
+      "rows": 62487,
+      "source": "Constructed: Fenmore Savings Bank loan documentation system, guarantee register",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "legacy_loan_history_200910_201710.parquet",
+      "format": "parquet",
+      "bytes": 1956285,
+      "rows": 499113,
+      "source": "Constructed: Fenmore Savings Bank legacy core, month-end loan history of the SBA 7(a) book, October 2009 to October 2017",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "payments_to_sba.csv",
+      "format": "csv",
+      "bytes": 1294947,
+      "rows": 20973,
+      "source": "Constructed: Fenmore Savings Bank accounts payable and treasury management, payments to SBA",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sba_loan_authorization_standard_terms.pdf",
+      "format": "pdf",
+      "bytes": 46443,
+      "rows": null,
+      "source": "Constructed: Fenmore Savings Bank SBA Loan Authorization Part B standard terms, form SBL-AUTH-B (March 2018)",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sba_loan_master.csv",
+      "format": "csv",
+      "bytes": 5766700,
+      "rows": 37586,
+      "source": "Constructed: Fenmore Savings Bank SBA Lending portfolio register of 7(a) loans approved from October 2009",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sba_settlement_account_credits.csv",
+      "format": "csv",
+      "bytes": 2061110,
+      "rows": 23008,
+      "source": "Constructed: Fenmore Savings Bank treasury management, credits to the SBA settlement account",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "secondary_market_settlements.csv",
+      "format": "csv",
+      "bytes": 1929934,
+      "rows": 35015,
+      "source": "Constructed: Fenmore Savings Bank secondary market settlements of SBA guaranteed portions",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "servicing_history_2017-10_2026-09.parquet",
+      "format": "parquet",
+      "bytes": 9291558,
+      "rows": 1627120,
+      "source": "Constructed: Fenmore Savings Bank current servicing system, month-end loan history of the SBA 7(a) book, October 2017 to September 2026",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "servicing_status_codes.csv",
+      "format": "csv",
+      "bytes": 980,
+      "rows": 18,
+      "source": "Constructed: Fenmore Savings Bank servicing status codes, current system and legacy core",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "special_assets_ledger_fy2020_fy2026.csv",
+      "format": "csv",
+      "bytes": 681966,
+      "rows": 7498,
+      "source": "Constructed: Fenmore Savings Bank Special Assets, charge-off and recovery entries on SBA 7(a) loans",
+      "date": "2026-10-05",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
