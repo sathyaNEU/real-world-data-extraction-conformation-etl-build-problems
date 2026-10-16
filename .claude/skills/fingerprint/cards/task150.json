@@ -1,0 +1,102 @@
+{
+  "task": "task150",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "wave 4 (new), seed FC21: the world (a suburban district placing a bond's 24 classrooms across seven elementary schools), the decision and the quantity kept; the seed's pupils-per-home-by-housing-age mechanism dropped (task134 kin) and the pitfall re-found from how a district's enrollment records come to exist",
+  "domain": "sociology-demography",
+  "subdomain": "population-estimation-demographic-projection",
+  "client_domain": "sociology-demography",
+  "niche": "a suburban Colorado school district's planning office placing a voter-approved bond's 24 new elementary classrooms across its seven K-5 attendance-area schools on each school's average projected October enrollment for 2028-29 to 2032-33 above rated capacity, when pupils arrive from outside the district at a steady count each fall while some areas' own birth cohorts shrink or grow, and pupils move between attendance areas at the rate of the school they leave",
+  "objective": "forecasting",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G16",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the district's planning and enrollment analyst, who prepares the classroom placement schedule the board of education adopts",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "october_membership_2019-2026.csv beside membership_oct_2013-2018.csv",
+    "rows": 75000,
+    "entity": "one pupil enrolled in kindergarten to grade 5 at one school on one October count day",
+    "grain": "pupil x October count day",
+    "source": "synthetic (constructed in the layout of a district student information system's October membership snapshot)"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "United States, Colorado (Sorrel Creek School District RE-6 and Brandt County, a fictional suburban district and county on the northern Front Range)",
+    "currency": "USD",
+    "org_type": "suburban public school district (planning and enrollment office)",
+    "invented_names": [
+      "Sorrel Creek School District RE-6",
+      "Brandt County",
+      "Brandt County Public Health",
+      "Ortega Elementary",
+      "Bluestem Elementary",
+      "Fifth Street Elementary",
+      "Lincoln Elementary",
+      "Kessler Elementary",
+      "Prairie Rose Elementary",
+      "North Fork Elementary"
+    ],
+    "people": [
+      "Stacy Frazier",
+      "Joseph Hanson",
+      "Mariah Henry",
+      "Troy Medina",
+      "Brian Owen"
+    ]
+  },
+  "deliverables": [
+    "classroom_placement_2028-33.xlsx",
+    "enrollment_vs_capacity_2026-33.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "A unit's next-period count is its own members carried on at a rate on its own base, plus arrivals from outside the system that come at a steady count whatever the base, plus transfers from sibling units that come at a rate on each sender's base, so a ratio of next count to this count struck on the receiving unit carries the past proportion of arrivals to base forward: it under-counts the steady arrivals where the receiver's own cohorts are shrinking, over-counts them where they are growing, and keeps counting a sender's transfers after the sender has shrunk.",
+  "driver_concrete": "Each school's October K-5 enrollment is carried grade by grade with pupils leaving the district and pupils moving to another attendance area at the rate of the school they leave, kindergartens at each area's share of its births five years earlier, and pupils arriving from outside the district into grades 1 to 5 at the steady count each school has taken in every fall since 2014; grade progression ratios carry each school's past share of arrivals in a class and Ortega's past class sizes into Bluestem and Kessler, so they over-project Prairie Rose (births up a half since 2015) and the two subdivisions Ortega's families move to (Ortega's births down a third since 2017) and under-project Fifth Street (births down a quarter under a steady 75 arrivals a year).",
+  "stump": "Projecting each school by its five-year average grade progression ratios and its kindergarten-to-births ratio places the 24 classrooms as Bluestem 7, Prairie Rose 8, Lincoln 6 and Fifth Street 3 (Kessler none); the step that lands it there is carrying ratios struck on each school's own classes, when pupils arriving from outside the district come at a steady count each fall whatever the size of the class they join and pupils moving between attendance areas come at the rate of the school they leave, which places Prairie Rose 7, Lincoln 6, Fifth Street 5, Bluestem 4 and Kessler 2.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stitches the two student-system layouts, links pupils across Octobers, allocates births to attendance areas and reads the placement standard correctly projects each school by its five-year average grade progression ratios and kindergarten-to-births ratio and places Bluestem 7, Prairie Rose 8, Lincoln 6 and Fifth Street 3; the 3-year, latest-year, 8-year and all-year ratios, trended ratios, cohort-change differences, a district control total and a component model carrying arrivals or transfers on the receiving class each place another wrong schedule, and only exits and transfers on the school they leave with outside arrivals as steady counts places Prairie Rose 7, Lincoln 6, Fifth Street 5, Bluestem 4 and Kessler 2.",
+  "domain_test": "The deciding quantity is each school's projected October enrollment by grade, built as applied demographers build small-area projections: a cohort-component model with gross migration, exits and moves between areas as rates on the population at risk where they start and arrivals from outside the system as counts, not a net cohort-progression ratio on the receiving cohort; with another field's nouns there is no birth cohort ageing through grades, no kindergarten fed by births five years earlier and no attendance area for pupils to move between.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "sociology-demography/population-estimation-demographic-projection/2",
+  "layer1": [
+    "two student-information-system layouts (a 2019 migration) with different column names, grade, school and entry codes and date formats",
+    "pupils keyed by a local number with the state ID beside it before 2019 and by the state ID after, with an IT migration crosswalk for the few without a state ID",
+    "births to county residents by ZIP code of mother's residence, the latest year provisional, ZIP codes split across attendance areas and one ZIP partly outside the district, allocated by the GIS office's residential address counts",
+    "secondary enrollments beside primary ones in the new system",
+    "a re-pulled October file superseding an earlier pull",
+    "school codes changed from local to state codes at the migration"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task125": "task125 v2 filters a share of recruits out of a rotating survey panel at intake and the distortion lingers for each intake run; here nothing is filtered or measured differently, and the step is which population each migration flow between Octobers is a rate on (the sending school for exits and moves, none for arrivals from outside)",
+    "task501": "task501 v3 paces a unit draw against a deadline its schedule sets, pooled by age; here no deadline or schedule exists, and the step is carrying each school's outside arrivals as a steady count and its exits and transfers on the base they leave from, not a cohort ratio on the receiving class"
+  },
+  "lineage": [],
+  "notes": "stump_strategy population_selection: the decisive step is which population each flow is a rate on (the sending school's pupils for exits and transfers, none for outside arrivals), the population at risk; forecast_method_backtest would describe the out-of-sample failure of the net ratio but is banned against task149.",
+  "registered": "2026-10-16T16:13:30Z"
+}
