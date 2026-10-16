@@ -117,7 +117,7 @@ cannot be sold, the concert week falls to about 200 and the closing week (23 to 
   stays still to be booked, and the task type's own rule decides it: resample the independent unit (a cluster or block),
   not the rows; a stay is a block of consecutive nights accepted only if every night has a room, so the simulation
   replays whole stays against each night's remaining rooms and, with two nights full, the history's post-confirmation
-  stays through them find no room, while the night-level summary (each night's own average pickup, the rows resampled
+  stays touching either find no room, while the night-level summary (each night's own average pickup, the rows resampled
   one by one) treats a room-night as if it could be sold alone and changes the call.
 - **Swap:** "which month gets the extra crew at a power station, on the megawatt-hours above the crew's capacity" keeps a
   forecast against a capacity line, but a megawatt-hour is not a block spanning several units that one full unit refuses,
@@ -133,11 +133,11 @@ cannot be sold, the concert week falls to about 200 and the closing week (23 to 
   the call (R2, asserted per item).
 - **Layer 2:** `estimation_fit`, resample the independent unit: the bookings still to come are blocks of nights, each
   taken only if every night has a room, so the simulation replays each past season's later bookings whole against this
-  year's book, and the stays that ran through the aligned Friday and Saturday find no room this year beyond the few the
+  year's book, and the stays that touched the aligned Friday or Saturday find no room this year beyond the few the
   full nights' own bookings will release; the easy route forecasts every night from its own pickup and files the concert
   week.
-- **Decisive step:** forecasting the remaining bookings by stay: the past post-confirmation stays through the nights now
-  full cannot be sold (only about 20 rooms a night come free on them), which takes about 420 room-nights from the concert
+- **Decisive step:** forecasting the remaining bookings by stay: the past post-confirmation stays touching either night
+  now full cannot be sold (only about 20 rooms a night come free on them), which takes about 420 room-nights from the concert
   week's other five nights and about 190 from the week after; this moves the block from the concert week (about 600) to
   the closing week (about 400), the concert week next at about 200.
 - **Not semantics:** no field, code or definition says how many rooms the nights still to come will take, or that a night's
@@ -168,7 +168,7 @@ cannot be sold, the concert week falls to about 200 and the closing week (23 to 
   book by its past final-to-book ratio, fits final on book, or splits the book's realisation by rate plan), caps the concert
   nights at 480 and calls the concert week at about 600 room-nights above capacity (Ends on: 556; every night-level variant
   471 to 558, the seasonal average 503); only the forecast by stay, each past season's later bookings replayed whole
-  against this year's book so that the stays through the two full nights find no room, calls the closing week at about
+  against this year's book so that the stays touching either full night find no room, calls the closing week at about
   400 with the concert week next at about 200 (executed in `checks.py` on the clean truth and on the pack).
 - **Estimand:** HK-04 4.1 and 3.2 with the prompt: the roster week, Monday to Sunday from 26 July to 29 August 2027, whose
   nights carry the most occupied rooms above 380, summed night by night, forecast on the book as it stood at the extract on
@@ -201,7 +201,7 @@ measured on the pack.
 | R1L last year's pickup only | no | no | yes: the latest-period rate | no | no | yes | readable |
 | R2 the book realised by rate plan (the prepaid event rooms kept) | no | yes: the rate code | yes: a stratification on a visible column | no | no | yes | readable |
 | R2b the full nights' block applied inside the concert week only (a partial of R3: the call right, the runner-up wrong) | no | no | no | no | no | no: a stay replay over past reservations | silent |
-| R3 (decisive) the remaining bookings simulated by stay, each past season's later bookings replayed whole against this year's book, the stays through the two full nights finding no room | no: no sentence says a stay needs a room every night, how a night's pickup arrives or that a full night blocks others | no: no column marks a stay through another night; the stays are rows with arrival and departure, the full nights a count of rooms | no: night-level pickup is the reflex, and its back-test on past Augusts passes (no August had a night full at the confirmation) | no: no forecast, past block decision or certified figure ships | no: nothing in the files is wrong | no: five seasons' bookings grouped by reference and replayed in booking order against this year's book, every night of each checked for a room, the rooms the full nights will release found by rate code | silent |
+| R3 (decisive) the remaining bookings simulated by stay, each past season's later bookings replayed whole against this year's book, the stays touching either full night finding no room | no: no sentence says a stay needs a room every night, how a night's pickup arrives or that a full night blocks others | no: no column marks a stay through another night; the stays are rows with arrival and departure, the full nights a count of rooms | no: night-level pickup is the reflex, and its back-test on past Augusts passes (no August had a night full at the confirmation) | no: no forecast, past block decision or certified figure ships | no: nothing in the files is wrong | no: five seasons' bookings grouped by reference and replayed in booking order against this year's book, every night of each checked for a room, the rooms the full nights will release found by rate code | silent |
 
 ## Semantic fork table
 
@@ -237,7 +237,7 @@ margin over the next week.
 | Rung | Construction | W1 | W2 | W3 (concerts) | W4 | W5 (closing) | Pick | Dies to |
 |---|---|---|---|---|---|---|---|---|
 | R0 | the five past Augusts' finals at the aligned nights | 0 | 122 | 503 | 351 | 407 | W3 1.24x | the book: this year's concert nights are full five weeks out, and the history's finals carry the festival stays that cannot be sold this year |
-| R1 (default) | book plus each night's average pickup at the same days before arrival | 15 | 129 | 556 | 226 | 419 | W3 1.32x | a stay needs a room every night: about 420 room-nights of the concert week's pickup ran through the aligned Friday and Saturday |
+| R1 (default) | book plus each night's average pickup at the same days before arrival | 15 | 129 | 556 | 226 | 419 | W3 1.32x | a stay needs a room every night: about 420 room-nights of the concert week's pickup came from stays that touched the aligned Friday or Saturday |
 | R1m | book times its past final-to-book ratio | 57 | 122 | 502 | 147 | 418 | W3 1.20x | as R1 |
 | R1t | book at its past realisation plus the past post-confirmation bookings | 9 | 128 | 553 | 234 | 413 | W3 1.34x | as R1 |
 | R1L | last year's pickup only | 31 | 124 | 523 | 118 | 434 | W3 1.21x | as R1; and one year's pickup |
@@ -285,7 +285,7 @@ margin over the next week.
 - **The world's own expectation** (`mc_truth`, 12 continuations of the 2027 book with fresh demand and the book's own
   cancellations after the extract): the closing week 418, the concert week 184, the week after 161: the golden method
   recovers the world in both bins.
-- **Rate evidence.** The share of each night's post-confirmation rooms that ran through the aligned Friday and Saturday,
+- **Rate evidence.** The share of each night's post-confirmation rooms in stays that touched the aligned Friday or Saturday,
   2022 to 2026: the concert week's Monday 0.20, Tuesday 0.24, Wednesday 0.34, Thursday 0.54, Sunday 0.57; the week after
   Monday 0.30, Tuesday 0.17 and under 0.14 later; the opening week's Saturday and Sunday 0.14 and 0.19. In room-nights:
   about 420 a season on the concert week's other five nights (423), about 190 on the week after (185).
@@ -505,6 +505,22 @@ metadata.json, figures.json, target.zip sha256 daaad09a); `figures_check.py` 99 
 0.100; NOTE "Monte Carlo" read as a persona from the domain tag), `heart` WARN repeat.question_form (answered), `validate`
 clean. The golden note re-rendered: one page, the call in its title, the chart unchanged in form.
 
+Stage 4 round 2 and ship, 2026-10-16. On the repaired cut (c06e15f, target.zip daaad09a): the leak reader (round 2)
+clean on Q1 to Q4 with Q6 analytical, its literal route on "the book as it stands" landing the concert week (the default)
+and its "come next" reading closed by SF8; the re-judge DETERMINISTIC and APPROVE, Gate H analytical, stump power strong,
+the weeks at 9, 66, 209, 140 and 411 and every ask cell reproduced (EUR 9,654.27); the rule 3 audit PASS (on cd5abab, its
+runner-up fork and domain-tag findings fixed in the stage 4 pass). The re-judge's wording finding is fixed in the
+write-up and the goldens: the about 420 room-nights are those of the later stays that touched either night (423; 155 if
+a stay must cover both), and block 1 and the workbook say the full nights take later stays only into the rooms their own
+bookings give back. Its two forks and the LB-02 clock are accepted residuals (`## Pre-ship check`), the two forks and
+the wording asserted (`checks.py` 141). Reports: `determinism_check_report.md` (the re-judge) and
+`determinism_check_report_round1.md` (the first judge, history); the readers in `leak_check_report.md`. Final rebuild:
+`checks.py` 141, 0 failed; `verify.py` agreeing; two builds byte-identical, target.zip cut again at sha256 daaad09a (the
+pack unchanged, the goldens' wording only); `figures_check.py` 99 of 99; `precut.py` exit 0 (49 checks); `voice-check.py`
+PASS; the container audit clean on target and golden; `leak.py` REVIEW (no LEAK, the same ten lines); `guard.py surface`
+exit 0 (0 promoted), `heart` WARN (answered), `validate` clean; `freeze.py check --mode determinism` against c06e15f:
+nothing moved but the wording of the ladder's R1 row and rate-evidence bullet (every number equal). Shipped.
+
 ## Leak review
 
 - Sweep 3, `pms_export_notes.txt` carries 480 ("The hotel has 480 rooms"): the hotel's size, a filed fact every route
@@ -513,15 +529,58 @@ clean. The golden note re-rendered: one page, the call in its title, the chart u
   standard that defines the decision in the same vocabulary (the block, a Monday-to-Sunday roster week, room-nights above
   the crew's capacity, forecast); it names no week, date or figure of 2027 (the R3 strict block asserts it). Harmless.
 - Sweep 4, `HK-04_housekeeping_staffing_festival_season.pdf`, `brennock_framework_agreement_2025.pdf` and
-  `pms_export_notes.txt` share three to six words with the stump paragraph (nights, festival, confirmation, booking,
-  bookings, reservation, arrival, extract): the standard's definitions, the agreement's bookings and the export's field
-  notes; none names a stay against a full night, a pickup, a release, a replay or a method (the R3 strict block asserts
+  `pms_export_notes.txt` share four to six words with the stump paragraph (nights, festival, confirmation, staffing,
+  booking, bookings, reservation, arrival, extract): the standard's definitions, the agreement's bookings and staffing,
+  and the export's field notes; none names a stay against a full night, a pickup, a release, a replay or a method (the R3 strict block asserts
   it). Harmless.
 - Sweep 9, dates after 1 July 2027 in the extract (future arrivals and departures on the book), the amendment log (378
   old and new arrival and departure values of 193 date changes, every change keyed before the extract, the latest at
   03:39:27 UTC on 1 July, asserted), the rate shop (the season's nights shopped), the festival's programme (the 2027
   edition) and the events diary (coming events): forward-looking records on the allow-list (H16); nothing dated after
   the extract was made after it, and no ask file holds a record after its own date (asserted). Harmless.
+
+## Pre-ship check
+
+The 10/10 rules re-read against the built pack (the repaired cut, target.zip sha256 daaad09a):
+- **The domain:** the call turns on each festival night's occupied rooms forecast from the bookings still to come,
+  simulated as the booking process makes them: whole stays, each accepted only if every night has a room, five past
+  seasons' later bookings replayed against this year's book (the resampling task type's own move, the stay the
+  independent unit and the season the replicate). Swapping in megawatt-hours or school visits leaves no stay spanning
+  several units and no full unit refusing it. The re-judge: domain pass, a length-of-stay constrained booking-pace
+  forecast.
+- **Two layers:** every mess item is the property management system's, the night audit's, the housekeeping app's,
+  payroll's, the access system's or Brennock's own, each asserted neutral for the call (R2); the decisive step is
+  analytical:
+  - the easy routes on the clean truth with every filed rule applied file the concert week (night-level pickup 556, the
+    seasonal average 503; every night-level variant on the pack 471 to 558);
+  - changing only the decisive step, the later bookings replayed whole against this year's book, files the closing week
+    at 408 with the concert week next at 180;
+  - nothing is planted: no file, column or sentence marks a stay through another night, ranks the weeks or states a
+    figure of 2027.
+- **Rule 3, read literally:** the 12 HK-04 sentences, the 5 PMS export-note sentences and the prompt's question,
+  executed word for word, fix the target and give no forecast, and the estimators they admit file the concert week. The
+  rule 3 audit PASS on cd5abab, its runner-up fork and domain-tag findings fixed in the stage 4 pass; the judge
+  DETERMINISTIC on cd5abab, its FIX_NOW fixed; the re-judge on the repaired cut DETERMINISTIC and APPROVE, Gate H
+  analytical, stump power strong.
+- **Determinism:** the re-judge replayed the weeks at 9, 66, 209, 140 and 411 (0, 100, 200, 100 and 400 rounded) and
+  reproduced every ask cell (EUR 9,654.27). Its wording finding is fixed in the write-up and the goldens: the about 420
+  room-nights are carried by the later stays that touched either the Friday or the Saturday (423; those covering both
+  nights carry 155), and block 1 and the workbook no longer say that no later stay can use the full nights (their own
+  bookings give back about 20 rooms a night). Asserted.
+- **Robustness:** one sigma 20.9 on the closing week and 9.0 on the concert week, clearances 0.42 and 0.30 of a bin; the
+  16 C1 constructions run 374 to 432 and 170 to 214; every fork row is closed by a filed sentence or keeps the call,
+  asserted.
+- **Accepted residuals** (each asserted):
+  - skipping the book's attrition (every room on the book staying, the later bookings replayed against it as it stands,
+    the re-judge's fork 2) files 477 and 260: the call and the next week hold and both figures sit a bin up; the book's
+    cancellations and no-shows are in the extract's status field and HK-04 2.3, and the past Augusts reject a replay
+    against the unrealised book every season (C4);
+  - the stay constraint on the concert week alone with additive pickup elsewhere (the re-judge's fork 3, rung R2b's
+    form) keeps the call (419) and puts the week after second (226 against 180): one week constrained and the next not,
+    an inconsistent method; the thin margin on the next week's figure under it is accepted;
+  - the LB-02 reader's UTC clock stays unstated (Ask B's device; the data recovers it, the loading bay's exits an hour
+    before the entrance's); the re-judge's optional pin is declined.
+- **The asks:** unchanged since stage 3; both judges reproduced all 33 figures.
 
 ## Tried and rejected
 

@@ -169,7 +169,7 @@ def write_note(path, c, png):
                    "Friday 13 and Saturday 14 August are already full with the two stadium concerts. Many of that "
                    "week's late bookings in past Augusts were festival guests staying the week, and a stay is only "
                    "sold if every night of it has a room: in the last five seasons the stays booked after the "
-                   "confirmation date that ran through the same Friday and Saturday carried about %s room-nights of "
+                   "confirmation date that touched the same Friday or Saturday carried about %s room-nights of "
                    "the week's other five nights. Replayed stay by stay against this morning's book, each of those "
                    "seasons' later bookings finds room on the concert nights only in the rooms those nights' own "
                    "bookings will give back, about %s a night (half the rooms are prepaid at the event rate), which "
@@ -218,8 +218,8 @@ def write_book(path, c):
     ws.append([])
     ws.append(["Room-nights above capacity: each night's forecast occupied rooms above 380, summed over the roster "
                "week's seven nights (HK-04 3.2), to the nearest hundred."])
-    ws.append(["Friday 13 and Saturday 14 August are full on the book (480 rooms); stays booked from today cannot "
-               "run through them."])
+    ws.append(["Friday 13 and Saturday 14 August are full on the book (480 rooms); stays booked from today can run "
+               "through them only into the rooms those nights' own bookings give back."])
     ws.column_dimensions["A"].width = 13
     ws.column_dimensions["B"].width = 38
     ws.column_dimensions["C"].width = 22

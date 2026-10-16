@@ -351,8 +351,8 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
       C.top(Tt["seasonal"])[0] == 2)
     cons = C.constructions(V)
     add = cons["additive: book plus pickup less the blocked stays"]
-    A("R3b the decisive step alone (the default path less the past post-confirmation stays through the aligned Friday "
-      "and Saturday) files the closing week at 400 (%.0f), the concert week next at 200 (%.0f)" % (add[4], add[2]),
+    A("R3b the decisive step alone (the default path less the past post-confirmation stays that touched the aligned "
+      "Friday or Saturday) files the closing week at 400 (%.0f), the concert week next at 200 (%.0f)" % (add[4], add[2]),
       same_call(add))
     edge = dflt[2] - gw[2]
     carried = dflt[2] - dflt[4]
@@ -434,7 +434,7 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
     sh3 = [share(i) for i in (14, 15, 16, 17, 20)]
     sh4 = [share(i) for i in range(21, 28)]
     sh2 = [share(i) for i in (12, 13)]
-    A("rate evidence: the share of each night's post-confirmation rooms that ran through the aligned Friday and "
+    A("rate evidence: the share of each night's post-confirmation rooms in stays that touched the aligned Friday or "
       "Saturday, 2022 to 2026: the concert week's Monday to Thursday and Sunday %s, the week after %s, the opening "
       "week's Saturday and Sunday %s; in room-nights about %.0f a season on the concert week's other nights and %.0f on "
       "the week after" % ([round(float(x), 2) for x in sh3], [round(float(x), 2) for x in sh4],
@@ -527,6 +527,37 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
           ", ".join("%d" % b_e[C.NIGHTS.index(n)] for n in evt_nights), C.event_realisation(V)),
       set(evt_nights) <= {dt.date(2027, 8, 12), dt.date(2027, 8, 15), dt.date(2027, 8, 16)} and
       C.event_realisation(V) > 0.9)
+
+    # ------------------------------------------------------------------ accepted residuals (the re-judge's forks)
+    b27 = L["parts"]["book"]
+    na_ = np.minimum(CAP, b27 + np.mean([C.replay_season(V, b27.copy(), y) for y in K.HIST_YEARS], axis=0))
+    naw = C.wk(na_)
+    A("accepted residual: skipping the book's attrition (every room on the book stays, the later bookings replayed "
+      "against it as it stands) keeps the call and the next week and puts both figures a bin up (W5 %.0f, W3 %.0f); "
+      "the book's cancellations and no-shows are in the extract's status field and HK-04 2.3" % (naw[4], naw[2]),
+      C.top(naw)[:2] == (4, 2) and K.round_to(naw[4], 100) == 500 and K.round_to(naw[2], 100) == 300)
+    pk_add = np.mean([L["H"][y]["final"] - L["H"][y]["book"] for y in K.HIST_YEARS], axis=0)
+    hyb_ = np.minimum(CAP, b27 + pk_add)
+    for i in range(14, 21):
+        hyb_[i] = L["g"][i]
+    hw = C.wk(hyb_)
+    A("accepted residual: the stay constraint on the concert week alone with additive pickup elsewhere keeps the call "
+      "(W5 %.0f) and puts the week after second (%.0f against the concert week's %.0f): one week constrained and the "
+      "next not, the next week's margin thin under that inconsistent method" % (hw[4], hw[3], hw[2]),
+      C.top(hw)[0] == 4)
+    w3o = [i for i in range(14, 21) if i not in L["parts"]["fi"]]
+    both_ = []
+    for y in K.HIST_YEARS:
+        t_ = C.cut_utc(y)
+        fo_ = K.di(K.fest_open(y))
+        m_ = (V.created >= t_) & V.stayed & V.overnight & (V.arr <= fo_ + 7) & (V.dep > fo_ + 8)
+        cv_ = C._cover(V.arr, V.dep, m_, K.di(C.aligned(y, C.NIGHTS[0])), len(C.NIGHTS))
+        both_.append(sum(cv_[i] for i in w3o))
+    either_ = float(np.mean([sum(L["H"][y]["thru"][i] for i in w3o) for y in K.HIST_YEARS]))
+    A("write-up wording: the later stays that touched the aligned Friday or Saturday carried %.0f room-nights a season "
+      "of the concert week's other five nights (the write-up's about 420, 'touched either night'); those covering both "
+      "nights %.0f" % (either_, float(np.mean(both_))),
+      K.round_to(either_, 10) == 420 and float(np.mean(both_)) < either_ / 2)
 
     # ------------------------------------------------------------------ semantic forks
     A("SF1 roster weeks Monday to Sunday, the five from 26 July to 29 August 2027 (HK-04 2.1, 2.2)",
