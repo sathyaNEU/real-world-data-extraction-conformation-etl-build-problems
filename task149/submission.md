@@ -1,6 +1,6 @@
 ## Tags
 
-**Domain:** Epidemiology & Public Health (health burden and impact modelling: the occupational injury burden twenty grocery distribution centers will carry in fiscal 2027 under a planned shift in work pace, through the recordable rate per hour worked fitted on pace against the engineered labor standards within each center).
+**Domain:** Epidemiology & Public Health (health burden and impact modeling: the occupational injury burden twenty grocery distribution centers will carry in fiscal 2027 under a planned shift in work pace, through the recordable rate per hour worked fitted on pace against the engineered labor standards within each center).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
@@ -29,7 +29,7 @@ The plan's cases and labor hours have the crews working about 9 per cent faster 
 ### ergonomics_forecast_fy2027.xlsx
 
 1. Forecast recordable cases for the twenty program DCs in fiscal 2027, to the nearest hundred: 1,000.
-2. Days away from work and of job transfer or restriction, added together, that each DC's fiscal 2026 recordable cases have carried to 31 October 2026:
+2. Days away from work and of job transfer or restriction, added together, that each DC's fiscal 2026 recordable cases have carried to October 31, 2026:
    - Groveport DC: 685 days
    - West Jefferson DC: 313 days
    - West Chester DC: 160 days
@@ -50,7 +50,7 @@ The plan's cases and labor hours have the crews working about 9 per cent faster 
    - Lancaster DC: 523 days
    - Pleasant Prairie DC: 766 days
    - Sun Prairie DC: 703 days
-3. Cases each DC picked from 28 December 2025 to 31 October 2026 that weighed more than 50 pounds:
+3. Cases each DC picked from December 28, 2025 to October 31, 2026 that weighed more than 50 pounds:
    - Groveport DC: 948,540 cases
    - West Jefferson DC: 905,131 cases
    - West Chester DC: 887,878 cases

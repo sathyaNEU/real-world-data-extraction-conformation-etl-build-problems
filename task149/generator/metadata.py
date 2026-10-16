@@ -36,7 +36,7 @@ SOURCES = {
     DOC.F_MANIFEST: "Ostrander Logistics Safety Analytics, folder manifest",
     AR.F_RTW: "Ostrander Logistics return-to-work program, case management system work-status log, files opened from "
               "12/28/2025",
-    AR.F_ITEM: "Ostrander Logistics WMS item master, active items, 11/01/2026",
+    AR.F_ITEM: "Ostrander Logistics WMS item master, active and discontinued items, 11/01/2026",
     AR.F_ITEMH: "Ostrander Logistics WMS item master history, every item version with its effective dates",
     AR.F_PICKS: "Ostrander Logistics WMS pick history summary, the program DCs' cases picked by SKU and fiscal period, "
                 "FY2026 period 1 to week 44",

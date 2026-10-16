@@ -109,14 +109,14 @@ def shipped_weight(it):
 
 
 def write_items(W, I, out):
-    cur = I[((I.version == 2) | ((I.version == 1) & (I.reissue_period == 0))) & (I.purged_period == 0)].copy()
+    cur = I[(I.version == 2) | ((I.version == 1) & (I.reissue_period == 0))].copy()
     cur = cur.sort_values("sku")
     buf = io.StringIO()
     w = csv.writer(buf, lineterminator="\n")
     w.writerow(["SKU", "DESCRIPTION", "CATEGORY", "CASE_WEIGHT", "CASE_CUBE_FT3", "WEIGHT_SOURCE", "SETUP_DATE", "STATUS"])
     for it in cur.itertuples():
         w.writerow([it.sku, it.desc, it.category, "%.1f" % shipped_weight(it), "%.2f" % it.cube, it.source,
-                    it.setup.isoformat(), "ACTIVE"])
+                    it.setup.isoformat(), "DISCONTINUED" if it.purged_period else "ACTIVE"])
     with open(os.path.join(out, F_ITEM), "w", newline="", encoding="utf-8") as f:
         f.write(buf.getvalue())
     # history: every version with its dates, benign attribute changes among them

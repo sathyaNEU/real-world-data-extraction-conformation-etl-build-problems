@@ -188,7 +188,7 @@ def items():
     I["reissue_period"] = 0
     I.loc[reiss, "reissue_period"] = [n_["reissue_period"] for n_ in news]
     I = pd.concat([I, pd.DataFrame(news)], ignore_index=True)
-    # purged: items discontinued during fiscal 2026 and purged from the current master (in the history only)
+    # discontinued during fiscal 2026: kept in the master as DISCONTINUED, their last day in the history
     purge = I[(I.version == 1) & (I.reissue_period == 0)].sample(frac=0.012, random_state=int(r.integers(0, 2**31))).index
     I["purged_period"] = 0
     I.loc[purge, "purged_period"] = r.integers(2, 9, len(purge))

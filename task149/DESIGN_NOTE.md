@@ -144,8 +144,9 @@ so the twenty DCs come to about 1,000.
   and the standards' versions are read correctly on the easy route too, and an analyst who reads every one of them
   correctly and carries today's rate per hour (or per case, or per standard hour) onto the plan files 780 to 890.
 - **Not rule application:** the strict rule 3 test on every shipped sentence that bears on how the figure is computed:
-  the prompt's question; the agreement's Schedule A (the twenty DCs) and Schedule B 2.1 to 2.3 (the forecast recordable
-  cases, by date of injury in fiscal 2027, on the plan's volumes and labour hours; expected, not a high case); EHS-RK-01
+  the prompt's question; the agreement's Schedule A (the twenty DCs) and Schedule B 2.1 to 3 (the forecast recordable
+  cases, by date of injury in fiscal 2027, on the plan's volumes and labour hours; expected, not a high case; compared
+  after the Term with the cases the sites log, no fee adjusted); EHS-RK-01
   sections 3 to 8 (what is recorded, on whose log, by date of injury, privacy cases, removed cases, the migration, the
   rate's denominator); the export notes' field definitions; the plan's read-me (what each sheet holds, the hours
   Ostrander's and agency associates' together); the standards' notes (minutes per case shipped, by function and category,
@@ -294,7 +295,10 @@ fiscal 2027, expected, on the plan's volumes and labour hours) and every convent
 reading converges on the golden's bin or violates a quoted line (SF1 to SF14); the easy answers come from easy methods
 on the same literal target (today's rate per hour, per case or per standard hour; seasonal, elastic or pooled fits),
 never from another reading. The one reading that would change the basis, re-deriving the plan's hours at the DCs' current
-productivity, is ruled out by Schedule B 2.2.
+productivity, is ruled out by Schedule B 2.2. Schedule B3 files what the forecast is compared with (the recordable cases
+the twenty DCs enter on their fiscal 2027 logs, in Lindqvist's program review after the Term) and names no method, so the
+expected value of B2.3 is the expectation of that count, and a budgeting convention is one estimator of it among others
+the history tests.
 
 ## Oracles
 
@@ -349,21 +353,25 @@ together, that its recordable cases have carried to 31 October 2026** (20 figure
 - H18 home: Lindqvist's lift-assist sizing (the assists go on the heavy slots, the agreement's section 1), a measure every
   programme DC carries that the call does not turn on; in the vendor's words ("cases over 50 pounds").
 - Construction: the WMS SKU pick summary (cases picked by DC, SKU and fiscal period) joined to the case weight of the item
-  version in effect during the period picked (item master history), each weight in pounds; cases strictly over 50 pounds.
+  version in effect during the period picked (item master history), each weight in its source's unit (the export notes:
+  CUBISCAN and BUYER in pounds, PORTAL in kilograms), in pounds; cases strictly over 50 pounds.
 - Golden: `figures.json` `ask_b_cases_over_50_lb` (437,458 to 2,041,509 a DC), equal to the world's heavy cases at every DC
   (AB1).
-- Primary device B1 (D3, units set per source): case weights for items set up through the vendor portal since its March
-  2025 launch are kilograms (the portal's field), every other weight pounds; the item master carries the weight source and
-  no unit; only the weight-to-cube density by source and the pounds in bag descriptions show it. No portal item sits
-  within half a pound of 50 (AB3).
-- Second device B2 (D7, a code reissued): the WMS re-uses a discontinued SKU's number for a new item; the item master
-  shows the current item only and its history file carries the earlier item's weight and dates, so picks of the old item
-  before the change are weighed as the new one.
-- Hazards: HB1 SKUs picked but missing from the master (items purged after discontinuation, in the history file, 4,326
-  pick rows); HB2 cases at exactly 50.0 pounds (not over); HB3 Rockford's two codes (its picks under RKF2 only).
-- Stops (measured, `calc.ask_b`): the master's weight read as pounds throughout (misses at 20 of 20); the current master
-  only, kilograms converted (20 of 20); the cracker, current master and pounds (20 of 20); the over-correction, every
-  weight set up since the portal launch converted (20 of 20); 50 pounds and over (20 of 20).
+- Primary device B2 (D7, a code reissued): the WMS re-uses a discontinued SKU's number for a new item; the item master
+  shows the item each number carries now, so the habitual join on SKU matches every pick row and weighs the earlier
+  item's picks before the change as the new one; only the history file's versions and dates, read against the period of
+  each pick, show it. Every programme DC picked a reissued number whose two items sit either side of 50 pounds (AB8).
+- Second device B1 (D3, units set per source): the case weight is in pounds for CUBISCAN and BUYER items and in
+  kilograms for items set up through the vendor portal since 03/03/2025, as the export notes state per source (AB7); the
+  device is reading WEIGHT_SOURCE on every row and applying its unit, not converting by date or by look. No portal item
+  sits within half a pound of 50 (AB3).
+- Hazards: HB2 cases at exactly 50.0 pounds (not over); HB3 Rockford's two codes (its picks under RKF2 only); items
+  discontinued during the year stay in the master as DISCONTINUED with their last day in the history, so no join leaves
+  a row unmatched (AB5).
+- Stops (measured, `calc.ask_b`): the master's weight read as pounds throughout, versions handled (misses at 20 of 20);
+  the master's weights each in its source's unit, no versions, the unit-aware cracker (20 of 20, the smallest gap 64
+  cases); the master read as pounds (20 of 20); the over-correction, every weight set up since the portal launch
+  converted (20 of 20); 50 pounds and over (20 of 20).
 - Span: the SKU pick summary, the item master, the item master history, the site register (4 files); 10 columns.
 - Realism: a vendor portal defaults to metric for imported items; WMS SKU numbers are recycled.
 
@@ -378,17 +386,16 @@ the five yearly bars, the forecast bar and its label.
 | HA1 the 180-day cap | EHS-RK-01 9 | Ask A, 1 DC | measured (`stop_no_cap`) |
 | HA2 removed cases in the log | the case manager keeps the spells | Ask A, 2 DCs | measured (`stop_with_removed`) |
 | HA3 separations | the log's SEPARATED status | Ask A, 5 DCs | measured (`stop_sep_ignored`) |
-| HB1 purged SKUs | the master purges discontinued items | Ask B, every DC | inside `stop_current` |
 | HB2 exactly 50 pounds | a common bag weight | Ask B, every DC | measured (`stop_at_50`) |
 
 **Referee.** For Ask A, the work-status log's continuation files (associate number and dates) and the EHS case's DC;
-for Ask B, the item master's weight source against its cube and the history file's dates. Each is a source the golden
-reads, not a control: no file ties only under the golden.
+for Ask B, the export notes' unit per weight source and the history file's versions and dates. Each is a source the
+golden reads, not a control: no file ties only under the golden.
 
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
 | A days by DC (20) | the log joined to the platform by EHS case number, every filed rule (calendar days, 180 cap, separations) applied | the transferred associates' continuation days dropped: every DC low | miss |
-| B heavy cases by DC (20) | the picks joined to the current item master, weights read as pounds | the portal items' kilograms read as pounds: every DC off | miss |
+| B heavy cases by DC (20) | the picks joined to the item master on SKU (every row matches), each weight in its source's unit as the export notes file it | the reissued numbers' earlier items weighed as the new ones: every DC off (the smallest gap 64 cases) | miss |
 | the slide's chart | the cracker's forecast drawn as the golden draws it | the five yearly bars and the forecast | outside |
 
 Mirror leakage: about 10 per cent of the ask weight (the mirror runs the same ask paths as the cracker and keeps the
@@ -422,6 +429,16 @@ with the instructions, the chart's history and the asks' shared misses; 40 ask f
   associates' hours were in them, so a reader could build the plan's pace on another basis than the history's. Closed by
   the plan's read-me (the hours Ostrander's and agency associates' together, as the WFM system records them), a WHAT.
 
+- Ask B's kilogram weights left to density alone (the stage 4 judge's FIX_NOW): no shipped record stated the PORTAL
+  unit, so the cell read as underdetermined. The export notes now give each weight source's unit in the system's own
+  terms. Discontinued items now stay in the master, so the habitual join matches every row and the reissued numbers
+  carry the ask. Every Ask B cell is unchanged and the pound-reading stop still misses at every DC.
+- The agreement's header read "draft for signature 11/16/2026", a date after the 11/02/2026 pull: the draft is now
+  dated 10/29/2026, its own save date.
+- The prompt in British spelling and day-month dates against a US company's files: US spelling and dates throughout.
+- A filed back-test as the forecast's selection criterion: not filed. The judge advised against it because it would
+  name the validation step. Schedule B3 files only what the forecast is compared with (the fiscal 2027 logged cases).
+
 ## Build record
 
 Stage 3, built 2026-10-16 from `task149/generator/build.py` (seed 1492027).
@@ -436,12 +453,17 @@ Stage 3, built 2026-10-16 from `task149/generator/build.py` (seed 1492027).
 - Mess variants (R2): migrated twice 1,010.7; removed kept 1,012.5; UTC dates 1,000.9; Rockford as two DCs 1,004.4; old
   WMS codes unmapped 997.0; Lebanon TN's current factor throughout 1,001.2; week 53 dropped 1,003.8; illnesses out 989.0;
   the main files alone 1,001.8.
-- Gates: `checks.py` 154 assertions, 0 failed (the measured lines above printed by it); `verify.py` agrees on its own code
+- Gates: `checks.py` 157 assertions, 0 failed (the measured lines above printed by it); `verify.py` agrees on its own code
   path (forecast 1,001.8, response 2.734, default 816.7, the chart and all 40 ask figures, the workbook and the slide); two
-  byte-identical builds (target, goldens, metadata.json, figures.json, target.zip sha256 bc83c300f3ef8ed2); container
+  byte-identical builds (target, goldens, metadata.json, figures.json, target.zip sha256 eaec660f3004384b); container
   audit clean on the pack and the goldens; `figures_check.py` 73 figures, 0 absent; `precut.py` 49 checks, 0 FAIL;
-  `voice-check.py` PASS (772 characters); `leak.py` REVIEW, no LEAK (answered below); `guard.py heart` WARN
+  `voice-check.py` PASS (770 characters); `leak.py` REVIEW, no LEAK (answered below); `guard.py heart` WARN
   (repeat.decision, answered under Draw), `surface` 0 promoted (nearest task71 at 0.100), `validate` clean.
+- Stage 4 repairs (the judge's FIX_NOW and the coordinator's realism notes): the PORTAL unit filed in the export notes per
+  weight source, discontinued items kept in the master, the agreement's draft dated 10/29/2026 and its B3 filing what the
+  forecast is compared with, the prompt in US spelling and dates. `freeze.py check --mode determinism` against the stage
+  3 cut: every main-call figure, every figures.json value and every Deliverable Answers number unchanged; the one moved
+  item is the call sentence's spelling (programme to program), asked for by the realism note.
 - Golden realism and house fixes: the workbook's title states the finding, number formats per column, frozen headers,
   a provenance line from the pack; the slide's title states the forecast, its forecast bar distinguished and labelled,
   axis titled, a source strip; invented names a letter or a word from real organisations renamed in the generator (a
@@ -450,7 +472,8 @@ Stage 3, built 2026-10-16 from `task149/generator/build.py` (seed 1492027).
 
 ## Leak review
 
-`leak.py --asof 2026-11-02` on the cut: REVIEW, no LEAK. One line per REVIEW line.
+`leak.py --asof 2026-11-02` on the stage 4 repair cut (eaec660f): REVIEW, no LEAK, the same seven lines as the stage 3
+cut. One line per REVIEW line.
 
 - Sweep 3, the agreement's "USD 2,140": Katy DC's 140 DART days match inside the fee; a coincidence of digits, harmless.
 - Sweep 3, the export notes carry 5 of 8 words of the call: the folder's title (the FY2027 ergonomics program forecast)

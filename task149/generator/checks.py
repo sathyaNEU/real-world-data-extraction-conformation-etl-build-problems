@@ -446,6 +446,9 @@ def run(target, golden, B=None, R=None, meta_path=None):
     ck("C1 population: the twenty Schedule A DCs' log cases, agency and privacy cases in (SF1, SF2, SF6, SF7)",
        len(prog) == 20 and n_agy > 0 and n_priv > 0)
     ck("C2 unit of account: a recordable case (Schedule B 2.1)", "recordable cases that Client expects" in agree)
+    ck("C2b what the forecast is compared with: the cases the sites enter on their fiscal 2027 logs (Schedule B3), "
+       "no method named", "compares the Forecast Recordable Cases with the recordable cases the Program Sites entered" in
+       agree and not re.search(r"back-?test|model|method|pace|regress", agree.split("Schedule B - Program Fee")[1], re.I))
     ck("C3 window: the fiscal year of the date of injury (EHS-RK-01 4.2)", "log of the year in which the injury" in proc)
     ck("C4 as-of: the plan v3 of 10/23/2026; history to FY2026 week 44 pulled 11/02/2026",
        int(X[X.fy == 2026].wk.max()) == 44 and "10/23/2026" in plan_readme)
@@ -512,8 +515,14 @@ def run(target, golden, B=None, R=None, meta_path=None):
     ck("AB3 no vendor-portal item within half a pound of 50 (the kilogram round trip stays on its side)",
        not ((I.source == "PORTAL") & ((I.weight_lb - 50).abs() < 0.5)).any())
     ck("AB4 one item version in effect for every pick row", Bq["ambiguous_rows"] == 0, Bq["ambiguous_rows"])
-    ck("AB5 purged items picked before their purge are in the history, not the master", Bq["unmatched_rows"] > 0,
-       Bq["unmatched_rows"])
+    ck("AB5 every picked SKU is in the master (discontinued items kept), so the habitual join leaves no row unmatched",
+       Bq["unmatched_rows"] == 0, Bq["unmatched_rows"])
+    notes_txt = docs["export_notes.txt"]
+    ck("AB7 the export notes give each weight source's unit (pounds for CUBISCAN and BUYER, kilograms for PORTAL)",
+       "CUBISCAN and BUYER weights in lb" in notes_txt and "PORTAL weights load as the vendor supplies them, kg" in notes_txt)
+    ck("AB8 the unit-aware cracker (the master's weights in each source's unit, no item versions) misses at every DC",
+       all(Bq["stop_current"][d] != Bq["golden"][d] for d in prog),
+       sum(Bq["stop_current"][d] == Bq["golden"][d] for d in prog))
     wms = D["wms"]
     pk = pq.read_table(os.path.join(target, "wms_sku_picks_fy2026_p01_p11.parquet")).to_pandas()
     pk["dc"] = pk.loc_code.map(D["loc2dc"])

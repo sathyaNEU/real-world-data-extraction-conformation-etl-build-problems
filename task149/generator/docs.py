@@ -97,7 +97,7 @@ def write_procedure(W, out):
 def write_agreement(W, out):
     info = W.dcs.set_index("dc_no")
     s = []
-    s.append(Paragraph("DRAFT FOR SIGNATURE 11/16/2026", SMALL))
+    s.append(Paragraph("Draft for signature, 10/29/2026", SMALL))
     s.append(Paragraph("Ergonomics Program Services Agreement - Fiscal 2027", TITLE))
     s.append(Paragraph("between Ostrander Logistics, LLC (Client) and Lindqvist Ergonomics Group, Inc. (Lindqvist)", BODY))
     s.append(Spacer(1, 4))
@@ -128,7 +128,7 @@ def write_agreement(W, out):
         "B2.1 Forecast Recordable Cases means the number of recordable cases that Client expects the Program Sites to enter on their OSHA 300 Logs with a date of injury or illness in Client's fiscal 2027.",
         "B2.2 The forecast is made on Client's FY2027 operating plan for the Program Sites as approved before signing, on the plan's volumes and labor hours for each site and fiscal period.",
         "B2.3 The forecast is Client's expected value, rounded to the nearest hundred cases, and is entered in this Schedule at signing: Forecast Recordable Cases ________.",
-        "B3 No adjustment is made for the cases recorded in fiscal 2027.",
+        "B3 After the Term, Lindqvist's program review compares the Forecast Recordable Cases with the recordable cases the Program Sites entered on their fiscal 2027 OSHA 300 Logs. No fee is adjusted on the comparison.",
     ]:
         s.append(Paragraph(p, BODY))
     s.append(Spacer(1, 10))
@@ -185,9 +185,11 @@ rtw_work_status_log_fy2026.csv  (return-to-work program, case management system;
   HOME_DC (the associate's home DC), STATUS (AWAY, RESTRICTED, TRANSFER, TRANSFER OUT, FULL DUTY, SEPARATED),
   EFFECTIVE_DATE (first day of the status), ENTERED_ON, CASE_MANAGER, NOTE
 
-wms_item_master_2026-11-01.csv  (WMS item master, active items)
+wms_item_master_2026-11-01.csv  (WMS item master, each SKU with the item it carries now)
   SKU, DESCRIPTION, CATEGORY, CASE_WEIGHT, CASE_CUBE_FT3, WEIGHT_SOURCE (CUBISCAN, BUYER, PORTAL),
-  SETUP_DATE, STATUS
+  SETUP_DATE, STATUS (ACTIVE, DISCONTINUED)
+  CASE_WEIGHT        CUBISCAN and BUYER weights in lb; PORTAL weights load as the vendor supplies them, kg since
+                     portal onboarding (03/03/2025)
 wms_item_master_history.csv  (every item version with its effective dates)
 wms_sku_picks_fy2026_p01_p11.parquet  (program DCs, cases picked by SKU and fiscal period; period 11 = week 44 only)
 """

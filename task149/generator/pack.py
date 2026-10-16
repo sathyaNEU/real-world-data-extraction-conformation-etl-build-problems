@@ -67,7 +67,7 @@ def manifest_rows():
         [DOC.F_PROC, "EHS policy library", "2026-11-02", "OSHA recordkeeping procedure, rev 7", "EHS"],
         [DOC.F_AGREE, "Procurement", "2026-11-02", "Lindqvist agreement, draft for signature", "Procurement"],
         [AR.F_RTW, "Case management system", "2026-11-02", "Return-to-work status log, files opened from 12/28/2025", "Return-to-work program"],
-        [AR.F_ITEM, "WMS", "2026-11-01", "Item master, active items", "Operations"],
+        [AR.F_ITEM, "WMS", "2026-11-01", "Item master, active and discontinued items", "Operations"],
         [AR.F_ITEMH, "WMS", "2026-11-01", "Item master history", "Operations"],
         [AR.F_PICKS, "WMS", "2026-11-02", "Program DCs' cases picked by SKU and fiscal period, FY2026 P1 to wk 44", "Operations"],
         [DS.F_WC, "Workers' compensation TPA", "2026-10-07", "Loss run valued 09/30/2026", "Risk Management"],

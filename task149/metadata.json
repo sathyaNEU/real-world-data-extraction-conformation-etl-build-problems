@@ -79,7 +79,7 @@
     {
       "path": "export_notes.txt",
       "format": "txt",
-      "bytes": 3563,
+      "bytes": 3776,
       "rows": null,
       "source": "Constructed: Ostrander Logistics Safety Analytics, field notes for the forecast folder",
       "date": "2026-11-02",
@@ -88,7 +88,7 @@
     {
       "path": "folder_index_2026-11-02.csv",
       "format": "csv",
-      "bytes": 2101,
+      "bytes": 2118,
       "rows": 17,
       "source": "Constructed: Ostrander Logistics Safety Analytics, folder manifest",
       "date": "2026-11-02",
@@ -124,7 +124,7 @@
     {
       "path": "lindqvist_program_agreement_fy2027_draft.pdf",
       "format": "pdf",
-      "bytes": 4590,
+      "bytes": 4655,
       "rows": null,
       "source": "Constructed: Ergonomics program services agreement between Ostrander Logistics and Lindqvist Ergonomics Group, fiscal 2027, draft for signature",
       "date": "2026-11-02",
@@ -178,9 +178,9 @@
     {
       "path": "wms_item_master_2026-11-01.csv",
       "format": "csv",
-      "bytes": 888430,
-      "rows": 13485,
-      "source": "Constructed: Ostrander Logistics WMS item master, active items, 11/01/2026",
+      "bytes": 899924,
+      "rows": 13645,
+      "source": "Constructed: Ostrander Logistics WMS item master, active and discontinued items, 11/01/2026",
       "date": "2026-11-02",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
