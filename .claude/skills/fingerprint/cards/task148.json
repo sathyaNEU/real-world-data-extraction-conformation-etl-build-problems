@@ -1,98 +1,125 @@
 {
   "task": "task148",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-16",
-  "slot_note": "Wave 4 Forecasting; seed FC19 (SBA reserve, payment holiday) kept for its world, decision and quantity only; the seed's paused-clock mechanism is kin to task133's delayed entry and is not used.",
-  "domain": "banking-credit-financial-risk",
-  "subdomain": "expected-credit-loss-provisioning",
-  "client_domain": "banking-credit-financial-risk",
-  "niche": "a national SBA 7(a) lender's fiscal year-end CECL allowance on the unguaranteed portions it holds of its FY2019-FY2021 loans, where a large share of borrowers are businesses whose owner-operator personally guarantees cross-defaulted 7(a) loans on several businesses",
+  "slot_note": "Wave 4 Forecasting. Architecture 2 after architecture 1 (the SBA 7(a) relief-era CECL allowance priced on guarantor groups) was spent at stage 4 (judge SEND_BACK, rule 3 AT_RISK, a task133-like shell). The seed FC19's lending world is left behind: redrawn in Urban & Regional Science, a county 911 center's late-shift answer-time forecast.",
+  "domain": "urban-regional-science",
+  "subdomain": "municipal-service-demand-resource-allocation",
+  "client_domain": "urban-regional-science",
+  "niche": "a consolidated county 911 center's FY2028 staffing request: in which months of fiscal 2028 the Friday and Saturday late shift (22:00 to 02:00) will fall short of answering 90 per cent of 911 calls within 15 seconds with the four funded call-takers, so a seasonal fifth call-taker is funded for those months, when the regional 911 board's forecast adds the wireless calls a neighbouring township's NG911 re-routing brings and 911 callers hang up when they wait",
   "objective": "forecasting",
-  "shape": "single-figure",
-  "decision_type": "quantity_figure",
-  "answer_unit": "currency",
-  "scoring_unit": "per active unit per period",
-  "answer": "Book an allowance for credit losses of $10 million at 30 September 2026 on the unguaranteed portions of the SBA 7(a) loans approved in fiscal years 2019 to 2021.",
-  "answer_source": "task148/submission.md, ## 1. Final Recommendation (generator/figures.json call $10 million; the golden $9.94 million from the shipped files, verify.py agreeing on its own code path)",
+  "shape": "02",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G2",
-    "G14",
-    "G13"
+    "G16",
+    "G12"
   ],
-  "gate_g": "forecasting",
+  "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
-  "stakeholder_role": "the bank's controller, who books the 30 September year-end allowance for the SBA unguaranteed book",
-  "role_family": "finance_controller",
+  "context_artifact": "published_series",
+  "stakeholder_role": "the agency's operations manager, who brings the FY2028 late-shift staffing request to the agency's board",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
   "spine": {
-    "file": "servicing_history_2017-10_2026-09.parquet (the current servicing system's month-end loan history from its October 2017 go-live), beside legacy_loan_history_200910_201710.parquet (the legacy core's, October 2009 to October 2017, 499,113 rows)",
-    "rows": 1627120,
-    "entity": "one SBA 7(a) loan at one month-end on the current servicing system, with its status, days past due, principal outstanding and note rate",
-    "grain": "loan x month-end",
-    "source": "constructed (an SBA lender's servicing system month-end history, in the current system's and the legacy core's layouts)"
+    "file": "acd_call_detail_2023-01_2026-09 (the agency's ACD detail export: the legacy CSV to the May 2025 NG911 cutover, then the i3 JSON log)",
+    "rows": 1400000,
+    "entity": "one 911 call presented to the agency's ACD queue, with the time it was presented, answered or abandoned, and the call-taker's release and ready times",
+    "grain": "call",
+    "source": "constructed (in the layout of a PSAP call-handling system's ACD detail export, legacy CSV then NG911 i3 JSON)"
   },
   "forum": "board_of_directors",
-  "forcing_event": "period_close",
-  "org_family": "financial_institution",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "local_government",
   "world": {
-    "geography": "United States (Fenmore Savings Bank, a fictional savings bank with a national SBA 7(a) lending division; its people and borrowers are fictional)",
+    "geography": "United States (Calder County, a fictional county; its consolidated 911 agency and regional board are fictional)",
     "currency": "USD",
-    "org_type": "bank holding company with a national SBA lending division",
+    "org_type": "a consolidated county emergency communications agency (primary public safety answering point)",
     "invented_names": [
-      "Fenmore Savings Bank",
-      "Fenmore Financial Corporation"
+      "Calder Valley Emergency Communications Agency",
+      "Calder County",
+      "Calder Valley Regional 911 Board",
+      "Bellmont Township"
     ],
     "people": [
-      "Erin Spence",
-      "Richard Fields",
-      "Johnny Nicholson",
-      "Donna Graves",
-      "Tara Williams"
+      "Leon Carpenter",
+      "Regina Holder",
+      "William Braun",
+      "Carol Bender",
+      "Gary Dennis"
     ]
   },
   "deliverables": [
-    "sba_allowance_fy2026.xlsx",
-    "allowance_note_fy2026.docx"
+    "late_shift_staffing_fy2028.xlsx",
+    "late_shift_board_note.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "A unit's failure takes down every other unit its backer carries, so the hazard each unit faces is the sum of the hazards of all the units behind the same backer, each at its own age, including units outside the population being priced and units added recently at the steepest part of the curve; a rate built on each unit alone at its own age, pooled over the history or taken from the latest period, prices every unit as if it stood alone.",
-  "driver_concrete": "Many of the bank's borrowers are owner-operators who personally guarantee a 7(a) loan on each of several businesses under cross-default, so when one business fails the bank accelerates every loan the guarantor stands behind; each performing FY2019-21 loan's default hazard is the union of its guarantor group's business failure hazards at each business's own months on book, estimated on loans standing alone, the 1,561 businesses financed outside the pool included (1,403 of them in FY2026 and only now entering their peak years).",
-  "stump": "A strong solver builds monthly default and payoff rates by months on book from every loan since October 2009, rolls each performing FY2019-21 loan forward on its own months on book and books about $4 million (3.89) against the golden's $10 million (9.94); the step that lands it there is pricing each loan as if it stood alone, when a loan whose operator guarantees other businesses under cross-default fails whenever any of them fails, and most of those businesses, financed outside the pool in FY2026, are only now entering the years when a business fails most.",
+  "question_form": "which",
+  "driver": "Units waiting for a service leave when the wait outlasts their own patience, so the queue each new unit meets is drained by those who give up; a model in which every unit waits until served overstates every wait, and the patience that sets the drain is seen in full only for the units that left, the served ones showing only a lower bound, so it has to be estimated over every unit's wait, not from the leavers' waits alone, which make units look far less patient and the service better than it will be.",
+  "driver_concrete": "Calder Valley's late-shift 911 callers hang up after about 40 seconds on average: the ACD log times every call's wait and marks the hang-ups, so the callers' patience is the total time every call waited over the number that hung up, not the average wait of the calls that hung up (about 17 seconds); Erlang A with that patience, the call-takers' busy time from answer to ready and the board's FY2028 hourly forecast puts only the summer months' late shift below 90 per cent within 15 seconds with four call-takers, where Erlang C puts nearly every month below and the hang-ups' own waits leave no month short.",
+  "stump": "A strong solver runs the standard Erlang C staffing model on the board's FY2028 late-shift forecast with the measured busy time and four call-takers, finds nearly every month below the 90 per cent answer standard and asks for a full-year fifth call-taker; the step that lands it there is treating every caller as waiting until answered, when 911 callers hang up after about 40 seconds and those who leave shorten the wait for those who stay, so only the summer months fall short (about 86 to 88 per cent) and a seasonal fifth call-taker covers them.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stages the pool cleanly, maps the legacy layout, reads the allowance policy, the guarantee register and the loan authorization's cross-default clause correctly and builds the textbook lifetime PD from monthly default and payoff rates by months on book and term over every loan since October 2009 books about $4 million against the golden's $10 million; the latest year's rates file about $4.6 million, the group's size as a covariate or the group's loan count at a per-loan rate $5.2 to $7.4 million, and the group priced at per-loan rates $11.9 to $13.0 million.",
-  "domain_test": "The deciding quantity is each loan's lifetime charge-off probability built the ECL way (default and payoff hazards by months on book, conditioned on survival to the reserve date), where the unit that defaults is the personal guarantor's cross-defaulted group of businesses, so a loan's hazard is the sum of its group's business hazards at each business's own age; with another field's nouns personal guarantees, cross-default and acceleration have nothing to attach to.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:guarantor-group-default-unit",
+  "analyst_test": "A strong analyst who joins the legacy and NG911 ACD exports, reads the call-answering standard and the board's volume forecast correctly and runs Erlang C on each month's forecast late-shift hours with the measured busy time and four call-takers files nearly every month below 90 per cent and a full-year fifth call-taker; modelling the hang-ups with the patience read off the abandoned calls' own waits files no month short; only Erlang A with the patience estimated over every call's wait, censored where the call was answered, puts the summer months below 90 and the rest above.",
+  "domain_test": "The deciding quantity is each month's late-shift 911 answer-time compliance under the call-answering standard with the funded call-takers, which a PSAP staffing analysis computes from a queueing model of its own calls; because 911 callers hang up, the model is Erlang A calibrated on the agency's ACD log with patience estimated over censored waits; with another field's nouns there is no 15-second 911 answer standard, no call-taker busy time running to the CAD entry, no hang-up behaviour of 911 callers and no NG911 re-routing for the forecast to carry.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:queue-with-reneging-censored-patience",
   "layer1": [
-    "the servicing history in two layouts: the legacy core's status codes, cents, decimal rates and legacy loan numbers to October 2017 and the current system's from its October 2017 parallel run, the month in both",
-    "guarantor names written differently across an operator's loans (middle initials, suffixes, capitals) beside the documentation system's party number and the tax number's last four, and different people sharing a name",
-    "months in which SBA made the payment under Section 1112 recorded as paid in the servicing history",
-    "SBA loan numbers in SBA's files against the bank's note numbers in its own",
-    "an SBA Form 1502 report in SBA's own layout beside the bank's servicing extract",
-    "fiscal years ending 30 September against calendar dates",
-    "transient delinquencies that cure"
+    "the ACD detail export in two layouts across the May 2025 NG911 cutover: legacy CSV in local time to the second, then the i3 JSON log in UTC with milliseconds, three days logged by both",
+    "transferred-in calls from the neighbouring PSAP presented with their own arrival time here, and test calls from the carrier in the same export",
+    "the late shift running across midnight and across daylight-saving changes, so a Friday shift ends on Saturday",
+    "the call-takers' state log (logged in, ready, not ready) beside the call detail, on its own keys",
+    "the regional board's volume forecast by month, day type and hour in its own workbook layout"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
-    "task142": "task142 builds the upper percentile of a period's total from how many units arrive and how long each runs; here the quantity is a mean lifetime charge-off and the decisive move is that the unit of default is the guarantor's cross-defaulted group, whose hazard is the sum of its businesses' own-age hazards.",
-    "task133": "task133's stump is delayed entry (taken-over loans counted only from the go-live); here every loan is observed from its first payment and each loan's own age axis is right, and what decides is that a loan fails with its guarantor's other businesses, whose number and ages set its hazard.",
-    "task143": "task143's decisive quantity is the chance the weakest member of a new group falls below a threshold when the predictor's error is a shared group effect; here members fail independently and the group's default is their union under cross-default, so a loan's hazard is a sum over its group's members at their own ages, members outside the priced pool included.",
-    "task132": "task132 renews a failed item at age zero in the same position; here no failure is replaced: a guarantor adds businesses by choice, the whole group fails at the first member's default, and younger members raise the hazard of older loans.",
-    "task146": "task146 sizes a pool released at a calendar turn, each segment's refusals weighed by when in the closing period they fell; here nothing is released and no timing within a period is weighed: the unit that defaults is the guarantor's cross-defaulted group, so each loan's hazard is the union of its group's businesses' hazards at their own ages, members outside the priced pool included."
+    "task133": "task133 prices a loan book's lifetime losses on loans watched only from an earlier platform's go-live (delayed entry); here nothing is a loan or a lifetime: the forecast is a 911 center's hourly answer-time compliance in a queue where callers hang up, and the decisive move is the queueing model with reneging and a patience estimated over waits the answer censors.",
+    "task130": "task130 prices a cover paying only for events first reported inside its own window (and, in a lineage architecture, regression to the mean); here the censoring is of each caller's patience by the answer, not of a report date, and it calibrates how a queue drains, not what events cost.",
+    "task146": "task146 sizes a pool of refused units released at a calendar turn, weighed by when each refusal fell; here no pool is released: each hour's compliance is set by how a queue drains when callers give up, a stationary queueing model per hour on the board's forecast arrivals.",
+    "task142": "task142 builds the upper percentile of a period's total from arrivals and how long each runs, with no waiting and no standard; here arrivals and busy times feed a waiting-time standard and the decisive quantity is the callers' abandonment, which shortens the others' waits.",
+    "task149": "task149's recordable rate per hour rises with work pace under an operating plan; here no rate is forecast: the hourly arrivals are the board's filed forecast and the decisive move is the queue's reneging and its censored calibration.",
+    "task254": "task254's architecture 2 estimates a time-to-event cut from events seen only before a lock date, each with its own truncation time; here nothing is truncated by a calendar date: each caller's patience is censored by the answer in a queue, and the patience feeds a queueing model with reneging whose drain on the queue decides each hour's compliance.",
+    "task501": "task501's architecture 2 strikes a forward figure from the pacing base that survives a walk-forward test; here no base is chosen by a back-test: the queueing model with reneging is forced by the callers' hang-ups in the ACD log, and its patience by the censoring of every answered call's wait."
   },
-  "lineage": [],
-  "notes": "Drawn 2026-10-16 (wave 4). Seed FC19 read at its header and Situation only. The seed's paused repayment clock is kin to task133's delayed entry (both re-align the loan-age axis) and is not used; the payment-burden route (variable-rate payments re-amortised at prime) was prototyped and dropped (too weak against the textbook and latest-period routes, its constructions scattered). Strategy grain_or_unit WARN answered by the analyst test: the guarantee register is read correctly by the easy route too. Personas from guard.py names --geo 'United States' --seed 148.",
-  "registered": "2026-10-16T09:59:03Z"
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent 2026-10-16 at stage 4: the determinism judge returned NOT_DETERMINISTIC, SEND_BACK (underspecified_objective): implementing the write-up's own method (standing-alone rates by six-month band, the group's first failure, 91.8 per cent charge-off share) filed $11.7 million against the golden $10 million (split 2.33, 3.59, 5.77 against 2.0, 3.0, 5.0), and the Section 1112 table and the net charge-offs did not reproduce (multi-instalment lines with no findable allocation rule; 'net' undefined; 38 ledger rows with no note number in the master); the rule 3 audit read AT_RISK (executing the loan authorization's cross-default clause on the register gives most of the move, the member hazard's double count at 1.19 the only analytical margin) and the shell (domain, task type, decision, role, register artifact, the default path's wording, a servicing conversion) as task133's",
+      "domain": "banking-credit-financial-risk",
+      "subdomain": "expected-credit-loss-provisioning",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G2",
+        "G14",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "stump_strategy": "grain_or_unit",
+      "layer2_pattern": "own:guarantor-group-default-unit",
+      "driver": "A unit's failure takes down every other unit its backer carries, so the hazard each unit faces is the sum of the hazards of all the units behind the same backer, each at its own age, including units outside the population being priced and units added recently at the steepest part of the curve; a rate built on each unit alone at its own age, pooled over the history or taken from the latest period, prices every unit as if it stood alone.",
+      "driver_concrete": "Many of the bank's borrowers are owner-operators who personally guarantee a 7(a) loan on each of several businesses under cross-default, so when one business fails the bank accelerates every loan the guarantor stands behind; each performing FY2019-21 loan's default hazard is the union of its guarantor group's business failure hazards at each business's own months on book, estimated on loans standing alone, the 1,561 businesses financed outside the pool included (1,403 of them in FY2026 and only now entering their peak years)."
+    }
+  ],
+  "notes": "Architecture 2 drawn 2026-10-16 after architecture 1's stage 4 SEND_BACK. Personas from guard.py names --geo 'United States' --seed 148 --n 16, skipping the five architecture 1 used and first names already on file. Strategy 'other': a queueing model with reneging (Erlang A) against the standard Erlang C, calibrated with patience estimated over censored waits.",
+  "registered": "2026-10-16T15:08:42Z"
 }
