@@ -344,23 +344,21 @@ IR = "UIB Employer Services, information request IR 26/0412"
 
 
 def log_rows():
-    """The economics desk's working record of where each file in the folder came from, kept as files came in (by the
-    desk's economist, with the odd entry by the senior economist)."""
+    """The economics desk's working record of where each file in the folder came from, kept as files came in."""
     return [
-        [F_LEGACY, "UIB open data archive", "2021-07-09", "claims wks 29/12/2013-20/06/2021, region codes",
-         "saved after the BRS switch-off"],
-        [F_CURRENT, "UIB open data", "2026-10-08", "claims wks 27/06/2021-27/09/2026", "TH 08:41, after the release"],
-        [F_RELEASE, "UIB website", "2026-10-08", "wk ended 3 Oct", "printed for the morning meeting"],
-        [F_PROGRAM, "UIB website", "2026-10-08", "Jan 2014-Sep 2026", "Sept provisional"],
-        [F_NOTES, "UIB website", "2026-07-22", "", "July 2026 rev"],
+        [F_LEGACY, "UIB open data archive", "2021-07-09", "claims wks 29/12/2013-20/06/2021", "BRS export"],
+        [F_CURRENT, "UIB open data", "2026-10-08", "claims wks 27/06/2021-27/09/2026", "08:41"],
+        [F_RELEASE, "UIB website", "2026-10-08", "wk ended 3 Oct", ""],
+        [F_PROGRAM, "UIB website", "2026-10-08", "Jan 2014-Sep 2026", ""],
+        [F_NOTES, "UIB website", "2026-07-22", "", ""],
         [F_REGIONS, "UIB open data", "2025-02-11", "", ""],
-        [F_HOLIDAYS, "govt holidays page", "2026-01-12", "2014-2027", "observed dates"],
-        [F_PORTAL, IR, "2026-10-07", "portal notices at 7/10", "came through 4.50pm, ES ran the export"],
+        [F_HOLIDAYS, "govt holidays page", "2026-01-12", "2014-2027", ""],
+        [F_PORTAL, IR, "2026-10-07", "portal notices at 7/10", "16:50"],
         [F_REGISTER, "IR 26/0412", "2026-10-07", "email notices Jul 2025-Jun 2026", ""],
-        [F_CASES, "IR 26/0412", "2026-10-07", "1/7-7/10/2026", "officers by initials only"],
-        [F_CUBE, "UIB open data", "2026-10-08", "claims wks from 1 Jan 2023", "same pull as the uics file"],
+        [F_CASES, "IR 26/0412", "2026-10-07", "1/7-7/10/2026", ""],
+        [F_CUBE, "UIB open data", "2026-10-08", "claims wks from 1 Jan 2023", "08:43"],
         [F_CODES, "UIB open data", "2026-02-03", "divisions and groups", ""],
         [F_CONCORD, "Statistics Office", "2025-11-20", "divisions", "v1.2"],
-        [F_LFS, "Statistics Office", "2026-08-12", "2014Q1-2026Q2", "Jul-Sep qtr out 11 Nov"],
-        [F_ADS, "Stats Office", "2026-10-08", "wks ending 6/1/2019-4/10/2026", "experimental. SB wanted it in the folder"],
+        [F_LFS, "Statistics Office", "2026-08-12", "2014Q1-2026Q2", ""],
+        [F_ADS, "Stats Office", "2026-10-08", "wks ending 6/1/2019-4/10/2026", ""],
     ]

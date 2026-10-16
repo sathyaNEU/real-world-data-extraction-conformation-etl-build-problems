@@ -134,7 +134,7 @@ ASK_A_FROZEN = {"Northern": (111, 121, 230), "Capital": (360, 463, 238), "Easter
                 "Coastal": (300, 828, 242), "Island": (350, 277, 139)}
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",
           "December"]
-PAST_WORDS = re.compile(r"\b(went|finished|left|done|since|visited|met)\b", re.I)
+PAST_WORDS = re.compile(r"\b(went|finished|left|done|since|visited|met|came)\b", re.I)
 
 
 def note_time_faults(note, nd):
@@ -790,6 +790,41 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
       "(%d templates in %d notes)" % (len(skel), len(notes_rows)), max(skel.values()) <= 2, skel.most_common(3))
     A("realism: no case note names a real agency (the board's own offices only)",
       not any(re.search(r"Work and Income|WINZ|MSD\b", r["note"]) for r in notes_rows))
+    long_cl = Counter(c_ for r in notes_rows for c_ in {x for x in N.note_clauses(r["note"]) if len(x.split()) >= 6})
+    A("realism: no clause of six words or more appears in more than one case note (%d such clauses, each once); the "
+      "notes are all distinct" % len(long_cl), all(v == 1 for v in long_cl.values()) and
+      len({r["note"] for r in notes_rows}) == len(notes_rows), [k for k, v in long_cl.items() if v > 1][:5])
+    filler = [r["note_id"] for r in notes_rows if re.search(
+        r"notice (?:unchanged|still covers|stands)|amended notice is needed|lodge an amended notice|days (?:count|run) "
+        r"from|counts? towards|they count|(?:don't|do not) count|weekends|\bit does\b|details match|nothing out of line",
+        r["note"], re.I)]
+    A("realism: the case notes record the call or the job done and never restate a rule for a reader (no 'notice "
+      "unchanged', 'amended notice is needed', 'days count from', 'casuals count' and the like)", not filler, filler)
+    load = Counter(r["officer"] for r in notes_rows)
+    A("realism: the officers' workload is uneven (%s)" % ", ".join("%s %d" % kv for kv in load.most_common()),
+      max(load.values()) >= 3 * min(load.values()) and max(load.values()) >= 0.25 * len(notes_rows))
+    refmap = {}
+    for n_ in W["notices"]:
+        for ref_ in (n_.ln, n_.es_ref, n_.rekeyed["ln"] if n_.rekeyed else None):
+            if ref_:
+                refmap[ref_] = n_
+    WHOLE = re.compile(r"in full|as a whole|entirely|outright|altogether|whole notice|both sites|all \d+ sites", re.I)
+    wfaults, wnotes = [], {}
+    for r in notes_rows:
+        if not N.is_withdrawal(r["note"]):
+            continue
+        n_ = refmap[N.norm_ref(r["reference"])]
+        tot_w, k_ = sum(s_["workers"] for s_ in n_.sites), len(n_.sites)
+        counts = [int(m_.group(1) or m_.group(2)) for m_ in
+                  re.finditer(r"\b(?:all|none of the) (\d+)\b(?! sites)|\b(\d+) jobs\b", r["note"])]
+        sites = [int(x) for x in re.findall(r"\ball (\d+) sites\b", r["note"])] + ([2] if "both sites" in r["note"] else [])
+        ok_ = bool(WHOLE.search(r["note"])) and all(x == tot_w for x in counts) and all(x == k_ for x in sites)
+        wnotes[r["note_id"]] = ok_
+        if not ok_:
+            wfaults.append(r["note_id"])
+    A("realism: every withdrawal note says the whole notice is withdrawn, in the officer's words, and any count it gives "
+      "is the notice's own (%d notes; CN051234 among them: %s)" % (len(wnotes), wnotes.get("CN051234")),
+      not wfaults and wnotes.get("CN051234") is True and len(wnotes) == 34, wfaults)
     portal_rows = list(csv.DictReader(open(os.path.join(target, R.F_PORTAL), encoding="utf-8")))
 
     def bn_ok(bn):

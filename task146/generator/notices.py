@@ -13,6 +13,7 @@ that replaces the old one, which the portal marks superseded."""
 from __future__ import annotations
 
 import datetime as dt
+import re
 
 import numpy as np
 
@@ -534,6 +535,8 @@ CONTACTS = ["HR manager", "payroll contact", "site manager", "general manager", 
             "HR advisor", "company accountant", "employment lawyer", "office manager"]
 MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
                "November", "December"]
+# who writes the notes: the team's workload is uneven, the senior officer and the intake officer carrying most of it
+OFFICER_LOAD = {"JW": 0.31, "CH": 0.25, "SB": 0.16, "RB": 0.13, "DL": 0.09, "TL": 0.06}
 
 
 def _month_after(d, k):
@@ -541,131 +544,212 @@ def _month_after(d, k):
     return MONTH_NAMES[(d.month - 1 + k) % 12]
 
 
-class _Cycle:
-    """Draws one phrasing per call, using every phrasing of a kind before any repeats (as officers vary their wording)."""
-
-    def __init__(self, g):
-        self.g = g
-        self.left = {}
-
-    def pick(self, key, forms):
-        left = self.left.get(key)
-        if not left:
-            left = list(range(len(forms)))
-        i = left.pop(int(self.g.integers(len(left))))
-        self.left[key] = left
-        return forms[i]
-
-
-def _why(g, n, d):
-    """The reason an employer gave for withdrawing a notice, in the words the officer took down; every month it names is
-    after the note's date when it is a plan and before it when it is past."""
-    pick = lambda xs: xs[int(g.integers(len(xs)))]
-    w = sum(s_["workers"] for s_ in n.sites)
-    other = pick([t for t in TOWN if t != n.sites[0]["town"]])
-    since = pick((["the start of %s" % MONTH_NAMES[d.month - 1]] if d.day >= 8 else []) +
-                 [_month_after(d, -1), _month_after(d, -2)])
-    forms = [
-        lambda: pick(["new contract won", "picked up a new contract", "won the %s contract after all" % other]),
-        lambda: pick(["sale of the business fell through", "the sale fell over", "buyer pulled out, staying open"]),
-        lambda: pick(["restructure deferred", "restructure put back to %s" % _month_after(d, int(g.integers(4, 8))),
-                      "restructure shelved for now"]),
-        lambda: pick(["staff redeployed", "staff redeployed to other sites", "all %d placed elsewhere in the group" % w]),
-        lambda: pick(["workers taken on by the buyer", "buyer keeping the whole team"]),
-        lambda: pick(["council consent came through", "resource consent granted", "consent approved on appeal"]),
-        lambda: pick(["funding extended to %s %d" % (pick(["March", "June", "December"]), int(g.integers(2027, 2029))),
-                      "funding renewed for another year", "programme funding confirmed to %d" % int(g.integers(2027, 2029))]),
-        lambda: pick(["the receiver found a buyer", "receivers sold it as a going concern"]),
-        lambda: pick(["work picked up after the stand-down", "orders back up", "busy again since %s" % since]),
-        lambda: "main client renewed for %s years" % pick(["two", "three", "five"]),
-        lambda: "staff moving to the %s plant instead" % other,
-        lambda: pick(["the merger was called off", "merger off"]),
-        lambda: pick(["insurer approved the rebuild", "insurance came through for the repairs"]),
-        lambda: "season extended into %s" % _month_after(d, int(g.integers(2, 4))),
-        lambda: pick(["parent company put in more capital", "owners injected funds"]),
-        lambda: pick(["tender won on the second round", "won the retender"]),
-        lambda: pick(["hours cut instead of jobs", "going to a four-day week instead",
-                      "reduced hours for %d staff instead" % max(3, w // 2), "short time instead, nobody let go"]),
-        lambda: "closure on hold until %s" % _month_after(d, int(g.integers(3, 8)))]
-    return forms[int(g.integers(len(forms)))]()
-
-
-MODES = ["by email", "by phone", "in an email", "on the phone", "by letter", "in a call"]
-
-
-def _cap(t):
-    return t[:1].upper() + t[1:]
+def _year_of(d, k):
+    return d.year + (d.month - 1 + k) // 12
 
 
 def _fl(d):
     return "%d %s" % (d.day, d.strftime("%B"))
 
 
+def _dm(d):
+    return "%d/%d" % (d.day, d.month)
+
+
+def _cap(t):
+    return t[:1].upper() + t[1:]
+
+
 def _hm(g):
     return "%d:%02d" % (int(g.integers(8, 17)), int(g.integers(0, 60)))
-
-
-def _note_withdraw(g, who, n, d, cyc):
-    """A withdrawal as each officer writes one up: the contact, how it came in, the reason the employer gave."""
-    pick = lambda xs: xs[int(g.integers(len(xs)))]
-    town = n.sites[0]["town"]
-    why = _why(g, n, d)
-    c = pick(CONTACTS)
-    w = sum(s_["workers"] for s_ in n.sites)
-    mode = pick(MODES)
-    dm = "%d/%d" % (d.day, d.month)
-    forms = {
-        "JW": ["Notice withdrawn. The %s confirmed %s (%s), so none of the %d layoffs will go ahead." % (c, mode, why, w),
-               "The %s has withdrawn the notice (%s). Confirmation saved to the file." % (c, why),
-               "Withdrawal received %s from the %s: %s. Closed." % (mode, c, why),
-               "Employer has withdrawn the notice; %s. The %s site keeps all %d staff." % (why, town, w),
-               "Notice withdrawn at the employer's request %s. Reason given: %s." % (mode, why),
-               "Spoke to the %s at %s. %s, so the notice is withdrawn and written confirmation is on its way." % (
-                   c, _hm(g), _cap(why)),
-               "%s: the employer has withdrawn its notice for the %s staff." % (_cap(why), town),
-               "Withdrawal in writing from the %s today. %s." % (c, _cap(why))],
-        "CH": ["w/drawn - %s. email on file" % why, "ph %s - notice withdrawn, %s" % (c, why),
-               "WITHDRAWN per email %s (%s)" % (dm, why), "notice withdrawn by emp, %s" % why,
-               "w/drawn. %s rang, %s" % (c, why), "withdrawal recvd from %s. %s" % (c, why),
-               "emp w/drawn notice %s, %s. nothing further" % (dm, why), "withdrawn (%s) - confirmed w %s" % (why, c)],
-        "RB": ["employer emailed - notice withdrawn, %s" % why, "notice withdrawn, %s at %s" % (why, town),
-               "withdrawn by the %s, %s" % (c, why), "%s confirmed withdrawal - %s" % (c, why),
-               "withdrawal email in from %s. %s" % (c, why), "got the withdrawal through from the %s, %s" % (c, why),
-               "%s notice withdrawn - %s, all %d staying" % (town, why, w)],
-        "SB": ["Notice withdrawn. The %s advised: %s." % (c, why),
-               "Received written withdrawal of the notice from the %s. %s." % (c, _cap(why)),
-               "Withdrawal confirmed with the %s %s. %s staff staying on." % (c, mode, town),
-               "Notice withdrawn by the employer; %s. File closed." % why,
-               "Formal withdrawal received from the %s on %s. %s. No layoffs to proceed." % (c, _fl(d), _cap(why)),
-               "The employer has withdrawn its notice covering %d workers at %s. Reason: %s." % (w, town, why)],
-        "DL": ["%s/%d withdrawal email from %s - %s." % (dm, d.year, c, why), "Withdrawn %s. %s." % (_fl(d), _cap(why)),
-               "%s notice withdrawn (%s)." % (dm, why), "Withdrawal of notice received %s from %s. %s." % (dm, c, _cap(why)),
-               "%s %s rang: notice withdrawn, %s." % (dm, c, why), "%s withdrawal confirmed in writing. %s." % (dm, _cap(why))],
-        "TL": ["Withdrawn - %s." % why, "Spoke to %s. Notice withdrawn, %s." % (c, why), "Notice withdrawn; %s." % why,
-               "Withdrawn by employer (%s)." % why, "W/drawn %s, %s." % (mode, why),
-               "Emp has withdrawn notice. %s. %d jobs kept." % (_cap(why), w),
-               "%s confirmed withdrawal %s - %s." % (_cap(c), mode, why)],
-    }
-    return cyc.pick(("withdraw", who), forms[who])
 
 
 def _ordinal(k):
     return "%d%s" % (k, "th" if 10 <= k % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(k % 10, "th"))
 
 
-def _note_other(g, who, n, d, cyc):
-    """Everything else Employer Services records on a notice, in the officer's own style; a date it schedules falls
-    after the note, a date it reports does not."""
+class _Spread:
+    """Chooses among options the one used least so far (ties broken on the wording stream), so an officer's phrasing
+    and an employer's reasons spread across the log instead of repeating."""
+
+    def __init__(self, g):
+        self.g = g
+        self.used = {}
+
+    def pick(self, key, options, ident=None):
+        ids = [ident(o) if ident else i for i, o in enumerate(options)]
+        counts = [self.used.get((key, x), 0) for x in ids]
+        low = min(counts)
+        idx = [i for i, c_ in enumerate(counts) if c_ == low]
+        i = idx[int(self.g.integers(len(idx)))]
+        self.used[(key, ids[i])] = low + 1
+        return options[i]
+
+
+def note_clauses(text):
+    """A note's clauses (split at stops, commas, semicolons, colons, brackets and spaced dashes), lower case."""
+    return [" ".join(c.split()).lower() for c in re.split(r"[.,;:()!?]| - ", text) if c.strip()]
+
+
+def note_skeleton(text):
+    """A note with its particulars set aside (date stamps, contacts, towns, numbers, months and weekdays, the bracketed
+    reason, case and closing stops): the sentence template an officer wrote."""
+    s = text.lower()
+    s = re.sub(r"^\d{1,2}/\d{1,2}(/\d{4})?\s*", "", s)
+    for c in sorted(CONTACTS, key=len, reverse=True):
+        s = s.replace(c.lower(), "<c>")
+    for t in sorted(TOWN, key=len, reverse=True):
+        s = s.replace(t.lower(), "<t>")
+    s = re.sub(r"\b(%s|monday|tuesday|wednesday|thursday|friday|mon|tue|wed|thu|fri)\b" % "|".join(
+        m.lower() for m in MONTH_NAMES), "<m>", s)
+    s = re.sub(r"\d+(st|nd|rd|th)?", "#", s)
+    s = re.sub(r"\(([^)]*)\)", "(<r>)", s)
+    return s.strip(" .")
+
+
+def _why(g, n, d, spread=None):
+    """The reason an employer gave for withdrawing a notice, in its own particulars: the counterparty, the project,
+    the place and the month. A month it names as past is before the note; one it names as a plan is after it."""
+    pick = lambda xs: xs[int(g.integers(len(xs)))]
+    town = n.sites[0]["town"]
+    other = pick([t for t in TOWN if t != town])
+    sn, pl, co = pick(SURNAMES), pick(PLACES), pick(COINED)
+    w = sum(s_["workers"] for s_ in n.sites)
+    past = _workday(d - dt.timedelta(days=int(g.integers(3, 20))), step=-1)
+    m_plan = int(g.integers(3, 8))
+    plan = "%s %d" % (_month_after(d, m_plan), _year_of(d, m_plan))
+    yrs = pick(["two", "three", "five"])
+    by_group = {
+        "Construction": [
+            "consent for the %s Road stage came through on %s" % (pl, _fl(past)),
+            "%s Developments put the %s apartments back on" % (sn, town),
+            "won the %s school rebuild" % other,
+            "%s Civil kept them on for stage %d of the %s job" % (co, int(g.integers(2, 5)), pl),
+            "council signed off the %s subdivision variation" % town,
+            "the %s motorway package came back to them" % other],
+        "Accommodation and food services": [
+            "bookings for %s picked up once the %s festival was confirmed" % (_month_after(d, 1), town),
+            "%s Hospitality bought the business and is keeping everyone" % sn,
+            "the %s conference contract was renewed to %d" % (co, _year_of(d, 18)),
+            "sale of the %s lodge fell through, staying open" % pl,
+            "the cruise schedule for %s was confirmed for the summer" % town,
+            "the %s owners decided to stay open over winter" % town],
+        "Manufacturing": [
+            "the %s order for %s confirmed" % (co, plan),
+            "signed an export contract with %s Trading" % sn,
+            "the %s line is staying after %s Group put money in" % (town, co),
+            "%s took the plant on with the staff" % (sn + " Industries"),
+            "the %s tender came through on %s" % (pl, _fl(past))],
+        "Retail trade": [
+            "the %s lease renewed for %s years" % (town, yrs),
+            "%s Holdings bought the store as a going concern" % sn,
+            "the %s landlord cut the rent, store staying open" % pl,
+            "trading at %s since %s better than budgeted" % (town, _month_after(d, -1))],
+        "Health care, social assistance and other services": [
+            "the %s health board renewed the contract to %s" % (TOWN[town]["region"], plan),
+            "funding for the %s clinic extended to %s" % (town, plan),
+            "%s Trust took the service over with all staff" % sn],
+        "Wholesale, transport and storage": [
+            "%s Freight renewed the %s depot contract" % (co, town),
+            "won back the %s distribution work" % sn,
+            "the depot merger with %s Logistics is off" % co],
+        "Agriculture, forestry and fishing": [
+            "the %s harvest ran late, season extended into %s" % (town, _month_after(d, int(g.integers(2, 4)))),
+            "%s Orchards bought the %s block with the staff" % (sn, pl)],
+        "Administrative and support services": [
+            "%s renewed the %s cleaning contract for %s years" % (co, town, yrs)],
+    }
+    client = sn + " " + pick(["Freight", "Group", "Partners", "Trading", "Foods", "Health"])
+    generic = [
+        pick(["restructure put back to %s" % plan, "the %s restructure deferred to %s" % (town, plan)]),
+        pick(["the sale to %s Holdings fell over, staying open" % sn, "%s Holdings pulled out of the purchase" % sn]),
+        pick(["receivers sold it to %s Group as a going concern" % co,
+              "%s Group bought it out of receivership with the staff" % co]),
+        pick(["parent company put in capital to %s" % plan, "the %s parent topped up funding to %s" % (co, plan)]),
+        pick(["main client %s renewed for %s years" % (client, yrs), "the %s contract extended to %d" % (client, _year_of(d, 24))]),
+        pick(["%s staff going onto shorter weeks instead" % town, "rostering the %s crew down to four days instead" % town]),
+        pick(["closure on hold until %s" % plan, "the %s closure deferred to %s" % (town, plan)]),
+        "won %s work that covers the %s roles" % (client, town),
+        "insurer approved the %s rebuild" % town,
+        "merger with %s called off" % co,
+        "new owner %s keeping the %s team" % (sn, town),
+        "orders at %s up since %s" % (town, _month_after(d, -1)),
+        "redeploying the %s staff to %s instead" % (town, other)]
+    fams = [("g", n.emp.group, i) for i in range(len(by_group.get(n.emp.group, [])))] + [("x", i) for i in range(len(generic))]
+    texts = {f: (by_group[n.emp.group][f[2]] if f[0] == "g" else generic[f[1]]) for f in fams}
+    return texts[spread.pick("why", fams, ident=lambda f: f)] if spread else texts[fams[int(g.integers(len(fams)))]]
+
+
+def _scope(g, n, spread=None):
+    """How the officer says the whole notice is withdrawn, never one site of it: an adverb for the notice, and a
+    count of everyone on it."""
+    pick = lambda xs: xs[int(g.integers(len(xs)))]
+    w = sum(s_["workers"] for s_ in n.sites)
+    k = len(n.sites)
+    choose = (lambda key, xs: spread.pick(key, xs)) if spread else (lambda key, xs: pick(xs))
+    if k == 1:
+        adv = choose("adv1", ["in full", "as a whole", "entirely", "outright", "altogether"])
+    elif k == 2:
+        adv = choose("adv2", ["for both sites", "in full, both sites", "at both sites"])
+    else:
+        adv = choose("advk", ["for all %d sites" % k, "in full, all %d sites" % k, "across all %d sites" % k])
+    count = pick(["all %d staying" % w, "none of the %d will go" % w, "%d jobs kept" % w])
+    return adv, count
+
+
+def _note_withdraw(g, who, n, d, spread=None):
+    """A withdrawal as each officer writes one up: the contact, how it came in, that the whole notice is withdrawn,
+    and the employer's reason in its own particulars."""
+    pick = lambda xs: xs[int(g.integers(len(xs)))]
+    c = pick(CONTACTS)
+    mode = pick(["by email", "by phone", "in an email", "on the phone", "by letter", "in a call"])
+    why = _why(g, n, d, spread)
+    adv, count = _scope(g, n, spread)
+    w = sum(s_["workers"] for s_ in n.sites)
+    hm = _hm(g)
+    forms = {
+        "JW": ["%s rang at %s: notice withdrawn %s, %s. %s." % (_cap(c), hm, adv, count, _cap(why)),
+               "Withdrawal received %s from the %s, notice withdrawn %s. %s." % (mode, c, adv, _cap(why)),
+               "Written withdrawal from the %s on file, notice withdrawn %s, %s. %s." % (c, adv, count, _cap(why)),
+               "%s, per the %s. Notice withdrawn %s." % (_cap(why), c, adv),
+               "Spoke to the %s at %s, notice withdrawn %s (%s)." % (c, hm, adv, why),
+               "%s has withdrawn the notice %s: %s." % (_cap(c), adv, why)],
+        "CH": ["w/drawn %s - %s. %s %s" % (adv, why, c, mode.replace("by ", "").replace("on the ", "").replace("in an ", "")
+                                            .replace("in a ", "")),
+               "ph %s %s, notice w/drawn %s. %s" % (c, hm, adv, why),
+               "WITHDRAWN %s per email %s, %s. %s" % (adv, _dm(d), count, why),
+               "notice w/drawn %s %s: %s" % (adv, _dm(d), why), "%s - withdrawal on file, w/drawn %s, %s" % (c, adv, count)],
+        "RB": ["%s emailed, notice withdrawn %s - %s" % (c, adv, why),
+               "withdrawal in from the %s, withdrawn %s, %s, %s" % (c, adv, count, why),
+               "%s. withdrawn %s" % (why, adv), "%s confirmed withdrawal %s %s, %s, %s" % (c, adv, mode, count, why)],
+        "SB": ["Formal withdrawal of the whole notice received from the %s on %s. %s." % (c, _fl(d), _cap(why)),
+               "The %s advised: %s. Notice withdrawn %s." % (c, why, adv),
+               "Withdrawal confirmed with the %s %s, notice withdrawn %s, %s. %s." % (c, mode, adv, count, _cap(why)),
+               "%s. Letter of withdrawal from the %s, notice withdrawn %s." % (_cap(why), c, adv)],
+        "DL": ["%s notice withdrawn %s, %s. %s." % (_dm(d), adv, c, _cap(why)),
+               "%s withdrawal email from %s: %s. Whole notice, all %d staying." % (_dm(d), c, why, w),
+               "%s notice withdrawn %s (%s)." % (_dm(d), adv, why)],
+        "TL": ["W/drawn %s - %s." % (adv, why), "Spoke to %s, notice withdrawn %s: %s." % (c, adv, why),
+               "Withdrawal by phone, notice withdrawn %s, %s. %s." % (adv, count, _cap(why))],
+    }
+    return spread.pick(("w", who), forms[who]) if spread else pick(forms[who])
+
+
+def _note_other(g, who, n, d, spread=None):
+    """Everything else Employer Services records on a notice, as an officer's terse record of the call or the job
+    done; a date it schedules falls after the note, a date it reports does not."""
     pick = lambda xs: xs[int(g.integers(len(xs)))]
     town = n.sites[0]["town"]
     c = pick(CONTACTS)
+    c2 = pick([x for x in CONTACTS if x != c])
     C = _cap(c)
     w = sum(s_["workers"] for s_ in n.sites)
     k = len(n.sites)
     fl = n.first_layoff
     hm = _hm(g)
     reg = TOWN[town]["region"]
-    ev = _workday(d + dt.timedelta(days=int(g.integers(3, 24))))       # a date the note schedules, after the note
+    emp = re.sub(r"\s*\((?:No \d+|\d{4})\)|\s+Limited$", "", n.emp.name)
+    ev = _workday(d + dt.timedelta(days=int(g.integers(3, 24))))
     evs = pick(["%d %s" % (ev.day, ev.strftime("%B")), "%s %d/%d" % (ev.strftime("%a"), ev.day, ev.month),
                 "%s %d %s" % (ev.strftime("%A"), ev.day, ev.strftime("%B"))] +
                (["the %s" % _ordinal(ev.day)] if ev.month == d.month else []))
@@ -673,117 +757,127 @@ def _note_other(g, who, n, d, cyc):
     v = max(2, w // 7)
     ahead = fl > d
     kinds = [
-        ["Called the %s to confirm the site addresses, all correct." % c, "Site addresses checked with the %s." % c,
-         "Went through the %d site%s with the %s, no changes." % (k, "" if k == 1 else "s", c),
-         "Confirmed the %s address with the %s; matches the notice." % (town, c),
-         "%s confirmed every site on the notice is still trading." % C],
-        ["Union delegate asked for a copy of the notice. Sent with names removed.",
-         "%s organiser asked for the notice, redacted copy sent." % town, "Copy to the union as requested.",
-         "Union rep rang for the numbers by site. Sent the summary, no names.",
-         "Delegate at the %s site wants the notice; sent a copy without staff names." % town],
-        ["Employer asked whether the 30 days run from lodgement. They do.",
-         "Query from the %s about when the 30 days start. Explained." % c,
-         "%s unsure if the notice period counts weekends. It does." % C,
-         "%s wanted to know if the 30 days can be shortened. Not without an exemption." % C,
-         "Explained to the %s that the 30 days count from the day the notice was lodged." % c],
-        (["%s says the layoffs go ahead as notified." % C, "Layoffs going ahead on %s per the %s." % (_fl(fl), c),
-          "No change, proceeding %d/%d." % (fl.day, fl.month), "%s confirmed %d finishing as planned from %s." % (C, w, _fl(fl)),
-          "Checked in with the %s; still %d affected, dates unchanged." % (c, w)] if ahead else
-         ["%s confirmed the layoffs went ahead on %s as notified." % (C, _fl(fl)),
-          "First finishes went through on %d/%d, no change to the numbers." % (fl.day, fl.month),
-          "%s says the %d left as planned." % (C, w)]),
-        ["Postcode missing for the %s site, now supplied." % town, "Blank postcode on site %d fixed." % k,
-         "Site %d had no postcode. %s supplied it." % (k, C), "Corrected the %s site's postcode." % town,
-         "Wrong postcode on the %s site line; the %s sent the right one." % (town, c)],
-        ["Referred to the %s regional office for redeployment help." % reg,
-         "Employer wants help placing staff. Passed to %s regional office." % reg,
-         "%s asked about redeployment support; put them onto the %s office." % (C, reg),
-         "%s regional office to contact the %s about placing the %d staff." % (reg, c, w)],
-        ["Media enquiry about the %s job losses, sent to communications." % town,
-         "Reporter rang about the %s numbers at %s, referred to comms." % (town, hm),
-         "Local paper asking about %s. Passed to comms." % town,
-         "Comms team asked for the %s figures, sent the notice summary." % town],
-        ["%s thinks %d of the %d may be kept on. Will amend if so." % (C, x, w),
-         "Numbers may come down. Employer will lodge an amendment if they do.",
-         "Possibly fewer than %d will go; the %s will amend the notice once they know." % (w, c),
-         "%s hopes to keep %d on. Told them to lodge an amended notice if that happens." % (C, x)],
-        (["Payroll confirms the first finishing date is %s." % _fl(fl), "First layoff date checked with payroll, unchanged.",
-          "Payroll contact confirmed the last day of work as %s." % _fl(fl), "%s still the first finishing date, per payroll." %
-          _cap(_fl(fl))] if ahead else
-         ["Payroll confirms the first staff finished on %s." % _fl(fl), "First layoff date checked with payroll, it held."]),
-        ["Staff briefing booked at the %s office for %s." % (town, evs),
-         "Information session for affected staff %s at %s." % (evs, town),
-         "%s has a briefing for the affected staff on %s; we will attend." % (C, evs),
-         "Booked a room at %s for the staff session %s." % (town, evs)],
-        ["New contact for this notice: the %s." % c, "Contact details updated, now the %s." % c,
-         "%s takes over as contact for the notice." % C, "Changed the contact on file to the %s." % c],
-        ["%d staff left early on voluntary terms, notice stands." % v,
-         "Some voluntary redundancies taken early. Notice unchanged at %d." % w,
-         "%s says %d took voluntary redundancy already; the notice still covers all %d." % (C, v, w)],
-        ["Info pack for affected workers emailed to the %s." % c, "Sent the information sheet for affected workers.",
-         "Posted copies of the worker information sheet to the %s site." % town,
-         "%s asked for the information sheets in bulk; sent." % C],
-        ["Asked whether casual staff count towards the 20. Explained.",
-         "Question on fixed-term staff and the notice. Answered by email.",
-         "%s unsure whether contractors count. They don't; explained." % C,
-         "Query about part-timers in the count. Explained they count."],
-        ["Jobs expo in %s for the affected workers, employer releasing staff to attend." % town,
-         "Regional office running a jobs expo at %s on %s." % (town, evs),
-         "Expo for the %s workers set for %s; the %s is letting staff go along." % (town, evs, c)],
-        ["Second copy of the notice by email, nothing new.", "Same notice sent again by the %s, no action." % c,
-         "Duplicate email %d/%d, nothing changed." % (d.day, d.month),
-         "%s resent the notice; identical to the one on file." % C],
-        (["%s rang at %s, still on track for %s." % (C, hm, _fl(fl)), "Rang the %s, on track." % c,
-          "Spoke to the %s; %s is still the date." % (c, _fl(fl)),
-          "%s called to say nothing has changed for %s." % (C, _fl(fl))] if ahead else
-         ["Rang the %s, all went as notified." % c, "%s rang at %s, the layoffs are done." % (C, hm)]),
-        ["Got a mobile number for the %s site lead." % town, "Asked for the site manager's number for the briefing.",
-         "Need a site contact at %s; the %s to send one." % (town, c)],
-        ["%s wanted wording for the staff letter, example sent." % C, "Template letter to staff sent to the %s." % c,
-         "Sent the %s our sample letter for affected staff." % c],
-        ["Left a message for the %s, no reply yet." % c, "Tried the %s twice, voicemail." % c,
-         "No answer from the %s, will try again Monday." % c, "Emailed the %s again; nothing back." % c],
-        ["Checked the notice against the business register, details match.",
-         "Business number on the notice confirmed with the register.",
-         "Register entry for the employer checked, nothing out of line."],
-        ["Employer asked to move the first layoff date. Advised an amended notice is needed.",
-         "Wants to push the first layoff back a fortnight. Told them to amend the notice.",
-         "%s asked how to change the dates. Sent the amendment steps." % C],
-        ["Regional employment office told about the %d workers at %s." % (w, town),
-         "Passed the numbers to the local benefits office for %s." % town,
-         "Let the %s regional office know %d at %s are affected." % (reg, w, town)],
-        ["%s asked if the notice is public. Explained what we publish." % C,
-         "Query about who sees the notice. Explained.", "%s worried about the notice being published; explained." % C],
-        ["Site visit to %s arranged for %s." % (town, evs), "Visited the %s site, met the %s." % (town, c),
-         "Going out to %s on %s to meet the %s." % (town, evs, c)],
-        ["Emailed the %s for the full site list, received the same day." % c,
-         "Requested the breakdown by site, the %s sent it through." % c,
-         "%s sent the site-by-site numbers on request." % C],
+        ["Went through %s with the %s (%s)." % ("the site details" if k == 1 else "the %d sites" % k, c, emp),
+         "%s address confirmed with the %s." % (town, c),
+         "Site %s checked w %s." % ("details" if k == 1 else "list (%d)" % k, c),
+         ("Rang %s re the site address." % emp if k == 1 else "Rang %s re site addresses, %s first." % (emp, town))],
+        ["Union delegate rang %s for a copy of the %s notice, sent redacted." % (hm, emp),
+         "%s organiser wants the notice; copy sent, names out." % town, "Copy to union (%s delegate)." % town,
+         ("Union rep after the %s numbers, summary sent." % emp if k == 1 else
+          "Union rep after the %s numbers by site, summary sent." % emp)],
+        ["Rang re notice period, went through it with the %s." % c, "%s rang %s re the 30 days for %s." % (C, hm, emp),
+         "Query from %s %s on timing, rang back %s." % (emp, c, hm),
+         "%s asked about the notice period for the %s staff, covered it on the phone." % (C, town)],
+        (["Layoffs at %s going ahead %s per %s." % (town, _fl(fl), c), "No change, proceeding %s." % _dm(fl),
+          "%s: %d finishing from %s as notified." % (C, w, _fl(fl)), "Checked in w %s %s, %s still the date." % (c, hm, _fl(fl))]
+         if ahead else
+         ["%s confirmed the %s finishes went through %s." % (C, town, _fl(fl)),
+          "%s: first finishes done %s." % (emp, _dm(fl)), "%s says the %d left as planned." % (C, w)]),
+        ["Postcode for the %s site added." % town,
+         ("%s postcode missing, %s supplied." % (town, c) if k == 1 else "Site %d postcode missing, %s supplied." % (k, c)),
+         "Fixed the %s postcode (%s)." % (town, emp), "%s site line had the wrong postcode, corrected from the %s's email." %
+         (town, c)],
+        ["Passed to %s regional office re redeployment (%s)." % (reg, emp),
+         "%s after help placing %d staff, referred to %s office." % (C, w, reg),
+         "%s office to call the %s re placements at %s." % (reg, c, town)],
+        ["%s reporter rang %s, sent to comms." % (town, hm), "Media query re %s numbers, comms handling." % emp,
+         "Comms asked for the %s figures, summary sent." % town],
+        ["%s thinks %d of the %d may be kept on, will confirm." % (C, x, w),
+         "Numbers at %s may come down, %s to let us know." % (town, c),
+         "%s hoping to keep %d on at %s, nothing firm." % (C, x, town)],
+        (["Payroll: first finish %s." % _fl(fl), "Payroll contact confirmed last day %s (%s)." % (_fl(fl), emp),
+          "%s confirmed as first finishing date, per payroll." % _fl(fl)] if ahead else
+         ["Payroll: first staff finished %s." % _fl(fl), "%s payroll confirmed the %s finish went through." % (emp, _dm(fl))]),
+        ["Staff briefing at the %s office %s." % (town, evs), "Info session for %s staff %s." % (town, evs),
+         "%s running a staff briefing %s, we will attend." % (C, evs), "Room booked at %s for the session %s." % (town, evs)],
+        ["Now dealing with the %s." % c, "New contact for %s: %s." % (emp, c), "%s taking over the notice from the %s." % (C, c2)],
+        ["%s: %d gone early on voluntary terms." % (C, v), "%d left on VR at %s per the %s." % (v, town, c)],
+        ["Info pack emailed to %s (%s)." % (c, emp), "Worker info sheets posted to %s." % town,
+         "%s asked for %d info sheets, sent." % (C, w)],
+        ["Query re casuals on the %s roster, rang back %s." % (town, hm), "%s asked about fixed-term staff, went through it." % C,
+         "Contractor question from the %s, covered on the phone." % c, "Part-time staff query (%s), answered." % emp],
+        ["Jobs expo %s %s, %s releasing staff." % (town, evs, c), "%s office expo at %s %s." % (reg, town, evs),
+         "Expo for the %s workers %s." % (emp, evs)],
+        ["Same notice emailed again by the %s." % c, "Duplicate email %s, filed." % _dm(d),
+         "%s resent the notice, filed with the original." % C],
+        (["%s rang %s, still on for %s." % (C, hm, _fl(fl)), "Rang %s, on track." % c,
+          "%s still the date per %s." % (_fl(fl), c), "%s called, no change for %s." % (C, _fl(fl))] if ahead else
+         ["Rang %s, all went as notified." % c, "%s rang %s, layoffs done." % (C, hm)]),
+        ["Got a mobile for the %s site lead." % town, "Need site contact at %s, %s to send." % (town, c),
+         "Asked the %s for the site lead's number." % (c if c != "site manager" else c2)],
+        ["%s wanted staff letter wording, sample sent." % C, "Sample staff letter to the %s." % c,
+         "Sent our letter template to %s for the %s staff." % (emp, town)],
+        ["Left msg for %s." % c, "Tried %s twice, voicemail." % c, "No answer from %s, try Monday." % c,
+         "Emailed %s again, nothing back." % c],
+        ["%s wants to move the first layoff, sent the amendment form." % C,
+         "Asked about pushing the %s dates back a fortnight, sent the amendment steps." % town,
+         "%s rang %s re changing dates, amendment form emailed." % (C, hm)],
+        ["Regional employment office told re %d at %s." % (w, town), "%s numbers to the local benefits office." % town,
+         "Let %s office know: %d at %s." % (reg, w, town)],
+        ["%s rang %s worried the notice is public, went through it." % (C, hm),
+         "Query re who sees the %s notice, rang back." % emp, "%s asked about publication, covered it." % C],
+        ["Site visit %s %s." % (town, evs), "Visited the %s site, met the %s." % (town, c),
+         "Out to %s %s to see the %s." % (town, evs, c)],
+        (["Full site list requested from %s, in same day." % c, "%s sent site breakdown on request." % C,
+          "Asked %s for numbers by site, received %s." % (emp, _dm(d))] if k > 1 else
+         ["%s headcount requested from %s, in same day." % (town, c), "%s sent the staff numbers on request." % C,
+          "Asked %s for the %s staff list, received %s." % (emp, town, _dm(d))]),
     ]
-    kind = cyc.pick("kind", list(range(len(kinds))))
-    t = cyc.pick(("other", kind, ahead), kinds[kind])
+    if spread:
+        ki = spread.pick("kind", list(range(len(kinds))))
+        t = spread.pick(("other", ki, ahead), kinds[ki])
+    else:
+        t = pick(pick(kinds))
     if who == "CH":
         t = t.replace("Employer", "emp").replace("employer", "emp").replace(" the ", " ").replace("phone", "ph")
         t = t.replace("received", "recvd").replace(" with ", " w ")
     elif who == "RB":
-        t = (t if t[:2].isupper() else t[0].lower() + t[1:]).rstrip(".")
+        first = re.split(r"[ ,:;(]", t, 1)[0]
+        proper = t[:2].isupper() or first in TOWN or first in K.REGIONS or first in MONTH_NAMES or \
+            first == emp.split()[0] or any(first == x.split()[0] for x in TOWN)
+        t = (t if proper else t[0].lower() + t[1:]).rstrip(".")
     elif who == "DL":
-        t = "%d/%d %s" % (d.day, d.month, t)
+        t = "%s %s" % (_dm(d), t)
     elif who == "TL" and g.random() < 0.4:
         t = t.rstrip(".").replace(" the ", " ")
+    return t
+
+
+def _unique(make, used_clauses, used_texts, skel, who="", tries=60):
+    """Draw a note until no clause of six words or more repeats an earlier note's, the text is new, its template has
+    not been used twice already and never twice by the same officer."""
+    t = None
+    for _ in range(tries):
+        t = make()
+        long_ = [cl for cl in note_clauses(t) if len(cl.split()) >= 6]
+        sk = note_skeleton(t)
+        if t not in used_texts and not any(cl in used_clauses for cl in long_) and skel.get(sk, 0) < 2 and \
+                (sk, who) not in skel:
+            break
+    used_texts.add(t)
+    used_clauses.update(cl for cl in note_clauses(t) if len(cl.split()) >= 6)
+    sk = note_skeleton(t)
+    skel[sk] = skel.get(sk, 0) + 1
+    skel[(sk, who)] = 1
     return t
 
 
 def case_note_rows(W):
     g = K.rng("case-notes")
     gt = K.rng("case-note-text")
-    cyc = _Cycle(K.rng("case-note-wording"))
+    go = K.rng("case-note-officer")
+    load = [OFFICER_LOAD[o] for o in OFFICERS]
+    officer = lambda: OFFICERS[int(go.choice(len(OFFICERS), p=np.array(load) / sum(load)))]
+    used_clauses, used_texts, skel = set(), set(), {}
+    spread = _Spread(K.rng("case-note-wording"))
     notes = []
     for n in W["notices"]:
         if n.withdrawn:
             ref = n.rekeyed["ln"] if (n.rekeyed and n.withdrawn >= n.rekeyed["at"].date()) else (n.ln or n.es_ref)
-            who = OFFICERS[int(g.integers(6))]
-            notes.append((n.withdrawn, who, _typed_ref(ref, g), _note_withdraw(gt, who, n, n.withdrawn, cyc)))
+            slot = int(g.integers(6))                       # the structure stream keeps its draws and the log its order
+            who = officer()
+            txt = _unique(lambda: _note_withdraw(gt, who, n, n.withdrawn, spread), used_clauses, used_texts, skel, who)
+            notes.append((n.withdrawn, slot, who, _typed_ref(ref, g), txt))
     pool = [n for n in W["notices"] if (n.channel == "portal" or n.rekeyed) and n.given >= dt.date(2026, 4, 1)]
     for _ in range(152):
         n = pool[int(g.integers(len(pool)))]
@@ -794,20 +888,25 @@ def case_note_rows(W):
         if d > K.EXTRACT_PULL or (n.withdrawn and d >= n.withdrawn):
             continue
         ref = n.ln if n.channel == "portal" else n.rekeyed["ln"]
-        who = OFFICERS[int(g.integers(6))]
-        notes.append((d, who, _typed_ref(ref, g), _note_other(gt, who, n, d, cyc)))
+        slot = int(g.integers(6))
+        who = officer()
+        txt = _unique(lambda: _note_other(gt, who, n, d, spread), used_clauses, used_texts, skel, who)
+        notes.append((d, slot, who, _typed_ref(ref, g), txt))
     cons = [n for n in pool if n.withdrawn is None and valid(n) and n.first_layoff >= dt.date(2026, 10, 20)]
     for n in [cons[int(i)] for i in g.choice(len(cons), 2, replace=False)]:
         start = n.lodged.date() if n.channel == "portal" else n.rekeyed["at"].date()
         d = _workday(start + dt.timedelta(days=12))
         ref = n.ln if n.channel == "portal" else n.rekeyed["ln"]
-        txt = ["Employer is considering withdrawing the notice if a tender comes through. Will advise.",
-               "the %s thinks they may withdraw, waiting on their directors" % CONTACTS[int(g.integers(len(CONTACTS)))]][len(notes) % 2]
-        notes.append((d, "JW" if "Employer" in txt else "RB", _typed_ref(ref, g), txt))
-    notes.sort(key=lambda x: (x[0], x[1]))
+        txt = ["Employer is considering withdrawing the notice if the %s tender comes through. Will advise." %
+               n.sites[0]["town"],
+               "the %s thinks they may withdraw, waiting on their directors" % CONTACTS[int(g.integers(len(CONTACTS)))]][
+            len(notes) % 2]
+        who = "JW" if "Employer" in txt else "RB"
+        notes.append((d, OFFICERS.index(who), who, _typed_ref(ref, g), txt))
+    notes.sort(key=lambda x: (x[0], OFFICERS[x[1]]))
     rows = []
     k0 = 51120
-    for k, (d, who, ref, txt) in enumerate(notes):
+    for k, (d, _, who, ref, txt) in enumerate(notes):
         k0 += int(g.integers(1, 4))
         rows.append(dict(note_id="CN%06d" % k0, note_date=d.isoformat(), officer=who, reference=ref, note=txt))
     return rows

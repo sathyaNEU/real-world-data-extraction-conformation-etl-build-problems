@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW 2026-10-16 after the case-note fix, no LEAK; every line answered in the note's Leak review",
-    "reader": "strengthened cut f0b43f3f: clean, Q6 analytical, the recency layer not surfaced; desk data log read tidy (now a working log)"
+    "reader": "targeted re-read of a502ea69: no leak, Q6 analytical; realism tells in the case notes and the desk data log fixed in the realism pass"
   },
   "duplicate_check": {
     "heart": "WARN 2026-10-16 on the strengthened card (repeat.gate_g, overuse.gate_g, answered at the draw)",
@@ -28,7 +28,7 @@
     "report": "scratchpad judge-task146c/verdict.md"
   },
   "returned": [],
-  "resume": "ship: after the coordinator's targeted re-read of the case notes and the desk data log",
+  "resume": "ship: after one more short targeted re-read of the case notes and the desk data log",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -37,7 +37,7 @@
   "portal_status_date": "",
   "wave": "wave 3 (new), seed FC17 (world, decision and quantity kept; pitfall re-found)",
   "gates": {
-    "checks": "183, 0 failed",
+    "checks": "187, 0 failed",
     "verify": "agrees (call 16,895, se 83, timing-blind 14,849, national 13,340, seasonal 13,241)",
     "rebuilds": "two byte-identical",
     "figures_check": "69 figures, 0 absent",
@@ -45,6 +45,6 @@
     "voice_check": "exit 0",
     "scrub": "target and golden clean",
     "guard": "validate clean, heart WARN, surface exit 0",
-    "freeze": "determinism mode PASS after the case-note fix"
+    "freeze": "determinism mode PASS after the case-note realism pass (nothing allowed)"
   }
 }

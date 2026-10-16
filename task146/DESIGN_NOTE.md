@@ -636,6 +636,29 @@ the leak reader clean, Q6 analytical, never surfacing the recency layer, with th
   answered below; the producer-metadata audit clean on target and golden; `guard.py validate` 187 cards, 0 invalid,
   `surface` exit 0, `heart` WARN as before.
 
+**Case-note realism pass, 2026-10-16**, after the targeted re-read of cut a502ea69 (no leak, Q6 analytical; realism
+tells in the two changed files). Nothing graded moved (`freeze.py --mode determinism` PASS, nothing allowed).
+- Each note now carries its own particulars: the employer's name, the site town, the contact, the time, the counts and,
+  for a withdrawal, a reason drawn for the employer's industry with its own counterparty, place and month (a consent
+  granted on a past date, a client renewed to a named year, a buyer by name). Reason families and each officer's
+  phrasings are spread across the log, least used first, so no cause or form clusters. Asserted: no clause of six words
+  or more appears in more than one note, every note is distinct, and no template recurs more than twice or twice for
+  the same officer.
+- The rule-restating filler is gone: the notes record the call or the job done ("Rang re notice period, went through it
+  with the operations manager", "sent the amendment form", "4 left on VR at Pikes Landing per the operations manager")
+  and never tell a reader what counts, what stands or what an amendment needs (asserted). The facts the asks rest on
+  stay: the 34 withdrawals, the two withdrawals under consideration, the possible reductions with no amendment lodged,
+  the first layoff dates.
+- Every withdrawal note says the whole notice is withdrawn in the officer's own words ("in full", "outright", "for both
+  sites", "across all 4 sites") and any count it gives is the notice's own total; asserted for all 34, and CN051234 now
+  reads "withdrawal email from owner: ... Whole notice, all 20 staying."
+- The officers' workload is uneven (JW 55, CH 35, RB 32, SB 30, DL 15, TL 10; asserted three to one or more), drawn on a
+  stream of its own so the log's ids, dates and typed references are unchanged; Ask A's 24 cells asserted identical.
+- The desk's data log is plainer: time stamps only where the desk kept one, the job-advertisements entry untagged.
+- Gates: checks 187, 0 failed; verify agrees; two builds byte-identical; `figures_check.py` 69 of 69; `precut.py` 49, 0
+  FAIL, 0 WARN; `leak.py` REVIEW, the same eight lines as answered below; the producer-metadata audit clean on target and
+  golden; `guard.py validate` 187 cards, 0 invalid, `surface` exit 0, `heart` WARN as before.
+
 ## Leak review
 
 `leak.py --asof 2026-10-08` on the strengthened build: REVIEW, no LEAK. Each line is harmless:
@@ -654,9 +677,10 @@ the leak reader clean, Q6 analytical, never surfacing the recency layer, with th
 
 ## State at pause
 
-Stage 4 passed on the strengthened cut (judge DETERMINISTIC / APPROVE, rule 3 PASS, leak reader clean), and the case-note
-coherence fix it asked for is in (2026-10-16), every gate green and `freeze.py` proving nothing graded moved. Next: the
-coordinator's targeted re-read of the changed files (the case notes and the desk's data log), then ship.
+Stage 4 passed on the strengthened cut (judge DETERMINISTIC / APPROVE, rule 3 PASS, leak reader clean); the case-note
+coherence fix and the realism pass the targeted re-read asked for are in (2026-10-16), every gate green and `freeze.py`
+proving nothing graded moved. Next: one more short targeted re-read of the case notes and the desk's data log, then
+ship.
 
 ## Tried and rejected
 
