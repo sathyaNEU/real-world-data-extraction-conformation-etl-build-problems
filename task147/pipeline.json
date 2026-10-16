@@ -1,26 +1,51 @@
 {
   "task": "task147",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "supply-chain-logistics/inventory-demand-planning (client domain general-statistics-data-science, resampling-simulation-monte-carlo-methods)",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-16",
-  "stump": "Forecasting each night's remaining bookings from its own past pickup at the same days before arrival puts the concert week (9 to 15 August) first with about 500 room-nights above the crew's 380 a night; the step that lands it there is treating each night's pickup as independent of the others, when a festival stay booked after the confirmation needs a room on every night of it and the two concert nights are already full, so the stays that make most of that pickup cannot be sold and the closing week (23 to 29 August) carries the most room-nights above capacity.",
+  "stump": "Forecasting each night's remaining bookings from its own past pickup at the same days before arrival puts the concert week (9 to 15 August) first with about 600 room-nights above the crew's 380 a night; the step that lands it there is treating each night's pickup as independent of the others, when a festival stay booked after the confirmation needs a room on every night of it and the two concert nights are already full, so the stays that make much of that week's pickup cannot be sold, the concert week falls to about 200 and the closing week (23 to 29 August, about 400) gets the block.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "driver 0.08 (task138 v1 lineage) at the draw"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-16",
+    "checks": 49
+  },
+  "leak": {
+    "leak_py": "REVIEW 2026-10-16 (no LEAK; sweeps 3, 4 and 9 answered in the design note's Leak review)",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "WARN repeat.question_form, answered",
+    "nearest": "driver 0.08 (task138 v1 lineage); surface 0.100, not promoted"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: ladder, fork table, closure, asks, prompt, precut",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "wave": "wave 3 (new), seed FC18 (world, decision and quantity kept; pitfall re-found)"
+  "wave": "wave 3 (new), seed FC18 (world, decision and quantity kept; pitfall re-found)",
+  "stage3": {
+    "checks": "130 assertions, 0 failed",
+    "verify": "agrees on its own code path (W5 413 about 400, W3 182 about 200, default W3 556 about 600; Ask A 25 and Ask B 8 figures equal in the workbook)",
+    "rebuild": "two builds byte-identical (20 target files, 2 goldens, metadata.json, figures.json, target.zip)",
+    "figures_check": "PASS (99 figures, 0 absent)",
+    "voice_check": "PASS (932 characters)",
+    "container_audit": "clean (target and golden)",
+    "guard_surface": "exit 0, 0 promoted (nearest task38 and task32 at 0.100); NOTE 'Monte Carlo' read as a persona from the domain tag",
+    "guard_heart": "WARN repeat.question_form (answered in the design note), no BLOCK",
+    "guard_validate": "1 card, 0 invalid"
+  }
 }

@@ -1,0 +1,111 @@
+{
+  "call": {
+    "block_week": "Monday 23 to Sunday 29 August 2027",
+    "room_nights_above_capacity": "400",
+    "next_week": "Monday 9 to Sunday 15 August 2027",
+    "next_week_room_nights": "200"
+  },
+  "critical_components": {
+    "full_nights": "Friday 13 and Saturday 14 August 2027",
+    "rooms_on_the_book_full_nights": [
+      "480",
+      "480"
+    ],
+    "concert_week_forecast": "200",
+    "closing_week_forecast": "400"
+  },
+  "steps": {
+    "extract_taken": "06:12 on Thursday 1 July 2027",
+    "crew_capacity": "380",
+    "hotel_rooms": "480",
+    "past_seasons": "2022 to 2026",
+    "comparable_point": "the Thursday five weeks before each year's opening night",
+    "blocked_stays_room_nights_concert_week": "420"
+  },
+  "default_path": {
+    "week": "Monday 9 to Sunday 15 August",
+    "room_nights": "600",
+    "its_runner_up_room_nights": "400"
+  },
+  "precision": {
+    "closing_week_standard_error": "22",
+    "concert_week_standard_error": "8"
+  },
+  "season_window": "Monday 26 July to Sunday 29 August 2027",
+  "ask_a_2026_services_and_overtime": [
+    {
+      "week": "Monday 27 July to Sunday 2 August 2026",
+      "crew_departure_cleans": "920",
+      "crew_stayover_services": "1,100",
+      "brennock_departure_cleans": "184",
+      "brennock_stayover_services": "206",
+      "crew_overtime_hours": "17.25"
+    },
+    {
+      "week": "Monday 3 to Sunday 9 August 2026",
+      "crew_departure_cleans": "796",
+      "crew_stayover_services": "986",
+      "brennock_departure_cleans": "113",
+      "brennock_stayover_services": "166",
+      "crew_overtime_hours": "20.75"
+    },
+    {
+      "week": "Monday 10 to Sunday 16 August 2026",
+      "crew_departure_cleans": "788",
+      "crew_stayover_services": "1,336",
+      "brennock_departure_cleans": "341",
+      "brennock_stayover_services": "577",
+      "crew_overtime_hours": "15.25"
+    },
+    {
+      "week": "Monday 17 to Sunday 23 August 2026",
+      "crew_departure_cleans": "929",
+      "crew_stayover_services": "1,460",
+      "brennock_departure_cleans": "145",
+      "brennock_stayover_services": "249",
+      "crew_overtime_hours": "11.25"
+    },
+    {
+      "week": "Monday 24 to Sunday 30 August 2026",
+      "crew_departure_cleans": "962",
+      "crew_stayover_services": "1,574",
+      "brennock_departure_cleans": "187",
+      "brennock_stayover_services": "276",
+      "crew_overtime_hours": "14.25"
+    }
+  ],
+  "ask_b_2026_block_billable_hours": [
+    {
+      "day": "Monday 10 August 2026",
+      "hours": "59.25"
+    },
+    {
+      "day": "Tuesday 11 August 2026",
+      "hours": "59.50"
+    },
+    {
+      "day": "Wednesday 12 August 2026",
+      "hours": "55.75"
+    },
+    {
+      "day": "Thursday 13 August 2026",
+      "hours": "59.25"
+    },
+    {
+      "day": "Friday 14 August 2026",
+      "hours": "59.75"
+    },
+    {
+      "day": "Saturday 15 August 2026",
+      "hours": "59.75"
+    },
+    {
+      "day": "Sunday 16 August 2026",
+      "hours": "59.75"
+    }
+  ],
+  "ask_b_week": {
+    "hours": "413.00",
+    "charge_before_vat_eur": "9,654.27"
+  }
+}
