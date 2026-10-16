@@ -31,3 +31,16 @@ Stump terms swept: patience, forecast, erlang, seconds, callers, history, hang-u
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+Three rounds by an isolated reader at medium effort, each on a fresh copy of `prompt.txt` and `target/` only.
+
+- **Round 1, the first pack (027f6ff).** Clean.
+- **Round 2, the hardened pack (eb89e4a).** Clean: the decisive step analytical, nothing planted; the incident-keyed
+  location rows and the test calls' callback references read as ordinary ESInet mess.
+- **Round 3, targeted re-read of the README's callback sentence (1eb79d0).** Clean: nothing steers the main call and
+  the README reads as field notes. The reader reproduced the callback shares for January to March, May and June exactly.
+  On April it got 51.5 by matching the one edge abandon on the task's `created` stamp instead of "from the abandon that
+  opens it": the B2 stamp-lag device working, closed by the filed sentence. Joiners counting as dialled back rests on
+  the README's joiner sentence, which supports it; no change.

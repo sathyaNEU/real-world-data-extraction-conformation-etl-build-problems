@@ -603,7 +603,8 @@ devices are the margin, the portal measures them, and the ceiling is rerun from 
 
 Stage 3 of the hardening complete on 2026-10-16. The second stage 4 (reader clean, judge APPROVE, rule 3 PASS) was
 answered in one generator pass (`generator/build.py`, the sixth full build of the hardening). It changed one sentence
-under `target/`, the README's callback-desk linkage, and paused for the coordinator's targeted re-read before ship.
+under `target/`, the README's callback-desk linkage, and shipped from this build on 2026-10-16 after a clean targeted
+re-read (`## Leak review`).
 
 - Pack: 14 files in `target/`, six formats (csv, geojson, jsonl, md, pdf, xlsx).
   - The legacy ACD CSV 78,676 rows and the i3 JSON Lines log 339,676 calls (the file over 25,000 rows), each i3 call
@@ -656,8 +657,21 @@ under `target/`, the README's callback-desk linkage, and paused for the coordina
     2028 rows and the boundary's in-service date, forward by nature; H21 the inventory file is the QA extract log, not
     the corpus's `export_manifest`; H23 both asks read with "none" stay grammatical; H24 the README is the QA team's
     compile note.
-- Owed before ship: the coordinator's targeted re-read of the README's callback sentence; then target.zip from this
-  build, the ledger row, the card and `pipeline.json` SHIPPED.
+- Shipped 2026-10-16 from this build, cut 1eb79d0, target.zip f7c143a8, after the targeted re-read; no rebuild.
+
+## Leak review
+
+`leak.py --asof 2026-10-06` on the shipped cut: REVIEW, no LEAK; its three lines (the budget page's frame, the README's
+and SOP 2.10's vocabulary) are answered under `## Build record`. Reader rounds, each an isolated read of `prompt.txt` and
+`target/` only:
+- Round 1, the first pack (027f6ff): clean.
+- Round 2, the hardened pack (eb89e4a): clean, the decisive step analytical, nothing planted; the incident-keyed
+  location rows and the test calls' callback references read as ordinary ESInet mess.
+- Round 3, targeted, the README's callback sentence (1eb79d0): clean. Nothing steers the main call, the README reads as
+  field notes, and the reader reproduced January to March, May and June exactly (55.2, 45.1, 56.8, 50.3, 51.4).
+- April: the reader got 51.5 by matching the one edge abandon on its task's `created` stamp instead of "from the abandon that opens it", the B2 stamp-lag device working; the filed sentence closes it (golden 52.6).
+- The reader noted that joiners count as dialled back only on the README's joiner sentence; that sentence supports it,
+  no change.
 
 ## Tried and rejected
 
