@@ -105,8 +105,8 @@ def write_book(path, R):
         ["Safety Analytics, 11/04/2026. Records through FY2026 week 44 (pulled 11/02/2026); FY2027 operating plan v3 "
          "(approved 10/23/2026)."],
         ["Forecast recordable cases, fiscal 2027 (12/27/2026 to 12/25/2027)", fc],
-        ["Basis", "Expected cases with a date of injury in fiscal 2027 on the FY2027 operating plan v3 volumes and labor "
-                  "hours, rounded to the nearest hundred (agreement Schedule B 2.1 to 2.3)"],
+        ["Basis", "Expected cases with a date of injury in fiscal 2027 under the FY2027 operating plan v3 (approved "
+                  "10/23/2026), rounded to the nearest hundred (agreement Schedule B 2.1 to 2.3)"],
         ["Method", "Recordable rate per hour worked fitted on pace against the engineered labor standards (standard hours "
                    "earned on the WMS cases shipped over direct hours), each DC its own baseline, Poisson on DC fiscal "
                    "periods FY2021 to FY2026 wk 44, all 60 DCs; carried to the pace the plan's cases and hours set at "

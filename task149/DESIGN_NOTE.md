@@ -144,11 +144,11 @@ so the twenty DCs come to about 1,000.
   and the standards' versions are read correctly on the easy route too, and an analyst who reads every one of them
   correctly and carries today's rate per hour (or per case, or per standard hour) onto the plan files 780 to 890.
 - **Not rule application:** the strict rule 3 test on every shipped sentence that bears on how the figure is computed:
-  the prompt's question; the agreement's Schedule A (the twenty DCs) and Schedule B 2.1 to 3 (the forecast recordable
-  cases, by date of injury in fiscal 2027, on the plan's volumes and labour hours; expected, not a high case; compared
-  after the Term with the cases the sites log, no fee adjusted); EHS-RK-01
-  sections 3 to 8 (what is recorded, on whose log, by date of injury, privacy cases, removed cases, the migration, the
-  rate's denominator); the export notes' field definitions; the plan's read-me (what each sheet holds, the hours
+  the prompt's question; the agreement's Schedule A (the twenty DCs), Schedule B 2.1 to 2.3 (the forecast recordable
+  cases, by date of injury in fiscal 2027, on the plan as approved; expected, not a high case) and its section 1 (a
+  post-term review setting the sites' fiscal 2027 cases against the forecast); EHS-RK-01 sections 3 to 8 (what is
+  recorded, on whose log, by date of injury, privacy cases, work-relatedness, the system of record, the rate's
+  denominator); the export notes' field definitions; the plan's read-me (what each sheet holds, the hours
   Ostrander's and agency associates' together); the standards' notes (minutes per case shipped, by function and category,
   a site factor for putaway and selection, standard hours for a week). Executed word for word they fix the target and
   give no forecast: none carries a pace, a response or a method, none says the plan's hours are worked faster or that a
@@ -164,8 +164,8 @@ so the twenty DCs come to about 1,000.
   each DC files about 1,000 (executed in `checks.py` on the clean truth and on the pack).
 - **Estimand:** the agreement's Schedule B 2.1 with the prompt: the number of recordable cases the twenty Schedule A DCs
   are expected to enter on their OSHA 300 Logs with a date of injury or illness in fiscal 2027 (Sunday 27 December 2026 to
-  Saturday 25 December 2027), every associate on those logs included, on the FY2027 operating plan's volumes and labour
-  hours for those DCs, in `target/lindqvist_program_agreement_fy2027_draft.pdf`. Population (members not yet observed:
+  Saturday 25 December 2027), every associate on those logs included, under the FY2027 operating plan as approved (v3)
+  for those DCs, in `target/lindqvist_program_agreement_fy2027_draft.pdf`. Population (members not yet observed:
   every fiscal 2027 case), outcome, window, unit and comparison are filed; the forecast's method is not.
 - **No decoy:** no memo, earlier forecast, vendor figure, benchmark or stakeholder number states or argues a fiscal 2027
   count, a rate or a method; the plan's read-me and the standards' notes say what their sheets hold; the ITA submissions
@@ -206,11 +206,11 @@ Every row is asserted in `generator/checks.py`.
 | SF1 | "recordable cases" | cases entered on the DCs' OSHA 300 Logs, injuries and illnesses | injuries only; every reported case | illnesses out: same call (asserted); every reported case: not the log (first aid is not recorded) | Schedule B 2.1 ("entered on the Program Sites' OSHA 300 Logs"); EHS-RK-01 3.1 |
 | SF2 | "our twenty ergonomics programme DCs" | the twenty Schedule A DCs | any other twenty | not the agreement's sites | Schedule A; the site register's program column, the same twenty (asserted) |
 | SF3 | "fiscal 2027" | 27 December 2026 to 25 December 2027, 52 weeks | calendar 2027 | not the agreement's window (the plan is fiscal) | Schedule B 2.1; agreement section 2 |
-| SF4 | "under the FY2027 operating plan" | the plan's cases and labour hours for each DC and period, as approved | the plan's cases with hours re-derived at the DCs' current productivity | not the agreement's basis (that basis files the per-standard-hour rung, 888) | Schedule B 2.2 ("on the plan's volumes and labor hours") |
+| SF4 | "under the FY2027 operating plan" | the plan's cases and labour hours for each DC and period, as approved | the plan's cases with hours re-derived at the DCs' current productivity | not the agreement's basis (that basis files the per-standard-hour rung, 888) | Schedule B 2.2 ("on Client's FY2027 operating plan ... as approved before signing"): the approved plan's labour hours, not hours re-derived |
 | SF5 | "log in fiscal 2027" | by date of injury or onset | by date entered | same call (asserted: no case is entered more than seven days after the injury) | EHS-RK-01 4.2 |
 | SF6 | agency associates | on Ostrander's logs, counted; their hours in the history's and the plan's hours | Ostrander employees only | not the log | EHS-RK-01 3.3 (supervised day to day) and 8; the plan's read-me (the hours together) |
-| SF7 | privacy cases | counted | left out | not the log | EHS-RK-01 5 |
-| SF8 | cases migrated in 2024 | once | twice (both exports) | same call (asserted: 1,010.7) | EHS-RK-01 7; the platform's legacy reference |
+| SF7 | privacy cases | counted | left out | not the log | EHS-RK-01 5 (a privacy case is entered on the log, the name withheld) |
+| SF8 | cases migrated in 2024 | once | twice (both exports) | same call (asserted: 1,010.7) | the platform's legacy_case_ref (the export notes: cases open at go-live carried into the platform) |
 | SF9 | cases removed as not work-related | out | in | same call (asserted: 1,012.5) | EHS-RK-01 6 |
 | SF10 | "forecast" | the expected count | a high case | the golden matches the world's own expectation (990.7) | Schedule B 2.3 ("expected value") |
 | SF11 | rounding | each DC-period unrounded, summed, rounded once to the nearest hundred | per DC | asserted one arithmetic | the prompt's last sentence |
@@ -278,11 +278,11 @@ Each row's assertion is in `checks.py` (C1 to C22).
 | 12 | Maturity and censoring | every case through week 44 entered by the pull | asserted (the last week's count in line with the weeks before) |
 | 13 | Order of operations | cases, hours, standard hours, pace, fit, the plan's pace, forecast, sum, round | design; the decisive step is forced by the data (the back-test and the in-sample separation) |
 | 14 | Row order | none matters | asserted (the exports read in reverse give the same figures) |
-| 15 | Duplicate resolution | a migrated case once (the platform keeps the legacy number) | EHS-RK-01 7; SF8 asserted |
+| 15 | Duplicate resolution | a migrated case once (the platform keeps the legacy number) | the export notes' legacy_case_ref; SF8 asserted |
 | 16 | Identity normalisation | DC numbers, WMS codes and EHS establishment names through the site register; Rockford's two numbers and codes | the register's crosswalk; asserted |
 | 17 | Netting against gross | first-aid and removed cases out | EHS-RK-01 3.1 and 6; SF9 |
 | 18 | Dimensional units | hours; cases; standard minutes per case shipped | the standards' notes; the plan's read-me |
-| 19 | Code and status semantics | classification, OSHA case type, status; WMS category codes before and after fiscal 2023 week 27 | the export notes and the standards' notes; never the stump |
+| 19 | Code and status semantics | classification, OSHA case type, status; WMS category codes before and after fiscal 2023 week 27 | the export notes; the standards' notes map the old codes; never the stump |
 | 20 | Integerisation | none before the final rounding | design |
 | 21 | Clause scope | EHS-RK-01 covers every Ostrander DC | filed |
 | 22 | Forward window contents | the plan's twelve periods (52 weeks), the new accounts from period 1 | the plan |
@@ -295,10 +295,10 @@ fiscal 2027, expected, on the plan's volumes and labour hours) and every convent
 reading converges on the golden's bin or violates a quoted line (SF1 to SF14); the easy answers come from easy methods
 on the same literal target (today's rate per hour, per case or per standard hour; seasonal, elastic or pooled fits),
 never from another reading. The one reading that would change the basis, re-deriving the plan's hours at the DCs' current
-productivity, is ruled out by Schedule B 2.2. Schedule B3 files what the forecast is compared with (the recordable cases
-the twenty DCs enter on their fiscal 2027 logs, in Lindqvist's program review after the Term) and names no method, so the
+productivity, is ruled out by Schedule B 2.2 (the plan as approved, its hours with it). The agreement's section 1 sets
+the sites' fiscal 2027 recordable cases against the forecast in the post-term program review and names no method, so the
 expected value of B2.3 is the expectation of that count, and a budgeting convention is one estimator of it among others
-the history tests.
+the history tests. Read literally, Schedule B files no figure but the fee (asserted, C2c).
 
 ## Oracles
 
@@ -321,9 +321,9 @@ figures; they share no primary device.
 
 **Ask A. Fiscal 2026 to date, each programme DC: the days away from work and of job transfer or restriction, added
 together, that its recordable cases have carried to 31 October 2026** (20 figures).
-- H18 home: the programme's severity baseline (Lindqvist's coaching and return-to-work support are sized on DART days,
-  the agreement's section 4), a measure every programme DC carries that the call does not turn on; in the safety team's
-  words ("days away", "job transfer or restriction").
+- H18 home: the programme's severity baseline (Lindqvist's coaching and return-to-work support work from the sites'
+  injury and return-to-work records, the agreement's section 4), a measure every programme DC carries that the call does
+  not turn on; in the safety team's words ("days away", "job transfer or restriction").
 - Construction: the fiscal 2026 recordable cases at each DC (EHS platform, removed cases out), each case's days from the
   return-to-work work-status log (calendar days from the day after the injury, away and restricted or transferred spells,
   to full duty, separation or 31 October 2026, 180 days at most in total, EHS-RK-01 9), attributed to the DC whose log
@@ -439,6 +439,13 @@ with the instructions, the chart's history and the asks' shared misses; 40 ask f
 - A filed back-test as the forecast's selection criterion: not filed. The judge advised against it because it would
   name the validation step. Schedule B3 files only what the forecast is compared with (the fiscal 2027 logged cases).
 
+- Text written to close readings, found by the stage 4 re-read: Schedule B 2.2's "on the plan's volumes and labor
+  hours" (with section 8 it pointed at rate times planned hours), B3's "no fee is adjusted", a data-request clause that
+  listed exactly the two asked tables, EHS-RK-01 sections 5 to 7 and its revision line describing the pack's own
+  systems, and the Rockford re-numbering told in three places. Rewritten as the documents' owners would write them: B2.2
+  files the approved plan only; the post-term review sits in section 1; section 4 is a data-request list; sections 5 to
+  7 are policy; the migration fact is in the platform's field note; Rockford is in the site register alone.
+
 ## Build record
 
 Stage 3, built 2026-10-16 from `task149/generator/build.py` (seed 1492027).
@@ -453,17 +460,21 @@ Stage 3, built 2026-10-16 from `task149/generator/build.py` (seed 1492027).
 - Mess variants (R2): migrated twice 1,010.7; removed kept 1,012.5; UTC dates 1,000.9; Rockford as two DCs 1,004.4; old
   WMS codes unmapped 997.0; Lebanon TN's current factor throughout 1,001.2; week 53 dropped 1,003.8; illnesses out 989.0;
   the main files alone 1,001.8.
-- Gates: `checks.py` 157 assertions, 0 failed (the measured lines above printed by it); `verify.py` agrees on its own code
+- Gates: `checks.py` 159 assertions, 0 failed (the measured lines above printed by it); `verify.py` agrees on its own code
   path (forecast 1,001.8, response 2.734, default 816.7, the chart and all 40 ask figures, the workbook and the slide); two
-  byte-identical builds (target, goldens, metadata.json, figures.json, target.zip sha256 eaec660f3004384b); container
+  byte-identical builds (target, goldens, metadata.json, figures.json, target.zip sha256 b45b1fc033957446); container
   audit clean on the pack and the goldens; `figures_check.py` 73 figures, 0 absent; `precut.py` 49 checks, 0 FAIL;
   `voice-check.py` PASS (770 characters); `leak.py` REVIEW, no LEAK (answered below); `guard.py heart` WARN
   (repeat.decision, answered under Draw), `surface` 0 promoted (nearest task71 at 0.100), `validate` clean.
-- Stage 4 repairs (the judge's FIX_NOW and the coordinator's realism notes): the PORTAL unit filed in the export notes per
-  weight source, discontinued items kept in the master, the agreement's draft dated 10/29/2026 and its B3 filing what the
-  forecast is compared with, the prompt in US spelling and dates. `freeze.py check --mode determinism` against the stage
-  3 cut: every main-call figure, every figures.json value and every Deliverable Answers number unchanged; the one moved
-  item is the call sentence's spelling (programme to program), asked for by the realism note.
+- Stage 4 repairs and the realism pass: the PORTAL unit filed in the export notes per weight source; discontinued items
+  kept in the master; the agreement's draft dated 10/29/2026, Schedule B 2.2 the approved plan only, the post-term review
+  in section 1 (the sites' fiscal 2027 cases set against the forecast), section 4 a data-request list; EHS-RK-01 sections
+  5 to 7 as policy, its revision line and section 9's closing sentence cut; the migration fact in the platform's field
+  note; Rockford's re-numbering in the site register only; the prompt in US spelling and dates. `freeze.py check --mode
+  determinism` against the stage 3 cut: every main-call figure, every figures.json value and every Deliverable Answers
+  number unchanged; the one moved item is the call sentence's spelling (programme to program), asked for by the realism
+  note. No ask got easier: Ask A lost section 9's pointer to the case managers' status changes, Ask B kept its unit line
+  and the reissued numbers, both stops at every DC still miss (AA2, AB2, AB8); the pair ceiling stays 36.
 - Golden realism and house fixes: the workbook's title states the finding, number formats per column, frozen headers,
   a provenance line from the pack; the slide's title states the forecast, its forecast bar distinguished and labelled,
   axis titled, a source strip; invented names a letter or a word from real organisations renamed in the generator (a
@@ -472,21 +483,20 @@ Stage 3, built 2026-10-16 from `task149/generator/build.py` (seed 1492027).
 
 ## Leak review
 
-`leak.py --asof 2026-11-02` on the stage 4 repair cut (eaec660f): REVIEW, no LEAK, the same seven lines as the stage 3
-cut. One line per REVIEW line.
+`leak.py --asof 2026-11-02` on the realism cut (b45b1fc0): REVIEW, no LEAK. One line per REVIEW line.
 
 - Sweep 3, the agreement's "USD 2,140": Katy DC's 140 DART days match inside the fee; a coincidence of digits, harmless.
 - Sweep 3, the export notes carry 5 of 8 words of the call: the folder's title (the FY2027 ergonomics program forecast)
   names the subject and no figure; harmless.
 - Sweep 3, the agreement carries 7 of 8 words of the call: Schedule B 2.1 defines the forecast the call fills, its
-  B2.3 blank ("Forecast Recordable Cases ____"); the estimand, filed by design.
-- Sweep 4, EHS-RK-01 (worked, injury, history, schedule, the procedure's own number): recordkeeping words; it names no
-  pace, response or method (R3s asserted); harmless.
-- Sweep 4, the agreement (twelve, injury, schedule): twelve installments, injury or illness, Schedules A and B; harmless.
+  B2.3 blank ("Forecast Recordable Cases ________"); the estimand, filed by design.
+- Sweep 4, EHS-RK-01 (worked, injury, schedule): recordkeeping words; it names no pace, response or method (R3s
+  asserted); harmless.
+- Sweep 4, the agreement (twelve, injury, history, schedule): twelve installments, injury or illness, pick history in
+  the data request, Schedules A and B; harmless.
 - Sweep 6, the case exports, the plan, the standards, the agreement and the loss run name the twenty DCs beside numbers:
   records by DC (cases, hours, plan volumes, site factors, Schedule A, claims), none ranks the DCs on fiscal 2027 cases;
   the loss run is a declared distractor; harmless.
 - Sweep 9, the plan's FY2027 period dates after the as-of: a forward plan by design (the allow-list is the plan alone).
 - `guard.py surface` reads "Pleasant Prairie" as a persona: it is the Wisconsin village where DC 1104 stands, not a
   person; no change.
-

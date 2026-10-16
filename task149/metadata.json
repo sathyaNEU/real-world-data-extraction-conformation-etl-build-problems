@@ -43,7 +43,7 @@
     {
       "path": "EHS-RK-01_osha_recordkeeping_procedure_rev7.pdf",
       "format": "pdf",
-      "bytes": 4724,
+      "bytes": 3800,
       "rows": null,
       "source": "Constructed: Ostrander Logistics EHS procedure EHS-RK-01 rev 7, OSHA injury and illness recordkeeping",
       "date": "2026-11-02",
@@ -79,7 +79,7 @@
     {
       "path": "export_notes.txt",
       "format": "txt",
-      "bytes": 3776,
+      "bytes": 3540,
       "rows": null,
       "source": "Constructed: Ostrander Logistics Safety Analytics, field notes for the forecast folder",
       "date": "2026-11-02",
@@ -97,7 +97,7 @@
     {
       "path": "fy2027_operating_plan_v3.xlsx",
       "format": "xlsx",
-      "bytes": 98544,
+      "bytes": 98500,
       "rows": null,
       "source": "Constructed: Ostrander Logistics FP&A, FY2027 operating plan v3: cases and labor hours by DC and fiscal period",
       "date": "2026-11-02",
@@ -124,7 +124,7 @@
     {
       "path": "lindqvist_program_agreement_fy2027_draft.pdf",
       "format": "pdf",
-      "bytes": 4655,
+      "bytes": 4591,
       "rows": null,
       "source": "Constructed: Ergonomics program services agreement between Ostrander Logistics and Lindqvist Ergonomics Group, fiscal 2027, draft for signature",
       "date": "2026-11-02",

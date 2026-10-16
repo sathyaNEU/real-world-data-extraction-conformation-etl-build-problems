@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: standard, exposure, worked, method, standards, engineered, twelve, asserted, injury, window, decisive, history, population, labour, nothing, latest, months, schedule, ehs-rk-, readable, golden, rejected, decision, forecasting, burden
+Stump terms swept: standard, exposure, worked, method, standards, engineered, twelve, asserted, injury, window, decisive, history, population, nothing, latest, months, schedule, readable, golden, rejected, decision, forecasting, burden, planned, shifted
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `lindqvist_program_agreement_fy2027_draft.pdf`: golden figure 140 appears: ...edule B - Program Fee B1 The Program Fee is USD 2,140 per Forecast Recordable Case. B2.1 Forecast Recor...
@@ -12,8 +12,8 @@ Stump terms swept: standard, exposure, worked, method, standards, engineered, tw
 - **REVIEW** `lindqvist_program_agreement_fy2027_draft.pdf`: carries 7 of 8 distinctive words of the committed call: 'The twenty ergonomics program DCs will log about 1,000 recordable cases in fiscal 2027 under the FY2027 operating plan.'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `EHS-RK-01_osha_recordkeeping_procedure_rev7.pdf`: 5 of 25 stump-paragraph terms appear (worked, injury, history, schedule, ehs-rk-); read whether the document names the move
-- **REVIEW** `lindqvist_program_agreement_fy2027_draft.pdf`: 3 of 25 stump-paragraph terms appear (twelve, injury, schedule); read whether the document names the move
+- **REVIEW** `EHS-RK-01_osha_recordkeeping_procedure_rev7.pdf`: 3 of 25 stump-paragraph terms appear (worked, injury, schedule); read whether the document names the move
+- **REVIEW** `lindqvist_program_agreement_fy2027_draft.pdf`: 4 of 25 stump-paragraph terms appear (twelve, injury, history, schedule); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 6, INFO 1)
 - **REVIEW** `ehs_legacy_case_export_fy21_2024-06-30.csv`: names 20 of 20 answer-set candidates beside numbers; confirm it does not rank them on the decision question

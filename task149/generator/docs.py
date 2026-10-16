@@ -70,26 +70,24 @@ def write_procedure(W, out):
         ("1 Purpose", ["How Ostrander distribution centers record work-related injuries and illnesses on OSHA Forms 300, 300A and 301 under 29 CFR Part 1904, and where the records are kept."]),
         ("2 Scope", ["Every Ostrander distribution center (DC). Each DC is a separate establishment and keeps its own OSHA 300 Log. The DC safety coordinator maintains the log; the DC general manager certifies the annual summary."]),
         ("3 What is recorded", [
-            "3.1 A case is recorded when a work-related injury or illness results in death, days away from work, restricted work or transfer to another job, medical treatment beyond first aid, loss of consciousness, or a significant injury or illness diagnosed by a physician or other licensed health care professional (1904.7). First aid alone is not recorded; the EHS system keeps first-aid cases with the classification First Aid.",
+            "3.1 A case is recorded when a work-related injury or illness results in death, days away from work, restricted work or transfer to another job, medical treatment beyond first aid, loss of consciousness, or a significant injury or illness diagnosed by a physician or other licensed health care professional (1904.7). First aid alone is not recorded.",
             "3.2 Each recorded case is classified by its most serious outcome: days away from work, job transfer or restriction, or other recordable case.",
             "3.3 Temporary associates supplied by a staffing agency and supervised day to day by Ostrander are recorded on the log of the DC where they work (1904.31).",
             "3.4 Injuries and illnesses are both recorded. Illnesses are entered by the Form 300 illness type (skin disorder, respiratory condition, poisoning, hearing loss, all other illnesses)."]),
         ("4 Dates", [
             "4.1 Enter a recordable case within seven calendar days of receiving information that it occurred (1904.29(b)(3)).",
             "4.2 A case is entered on the log of the year in which the injury occurred or the illness began, under its date of injury or onset."]),
-        ("5 Privacy cases", ["For a privacy concern case the associate's name is withheld on the log (1904.29(b)(6) to (9)); the case is otherwise entered as any other and counts as any other."]),
-        ("6 Work-relatedness", ["If a recorded case is later determined not to be work-related, the coordinator changes its status to Removed - not work-related with the reason. The case stays in the EHS system and comes off the log."]),
-        ("7 System of record", ["Cases with a date of injury up to 06/30/2024 are in the legacy incident database. Cases from 07/01/2024 are in the EHS platform. Cases open on 06/30/2024 were migrated to the platform with platform case numbers; the platform keeps the legacy case number as the legacy reference. Closed cases were not migrated."]),
+        ("5 Privacy cases", ["For a privacy concern case, enter \"privacy case\" in place of the associate's name on the log and keep a separate confidential list of the case numbers and names (1904.29(b)(6) to (9))."]),
+        ("6 Work-relatedness", ["Record a case only when the injury or illness is work-related (1904.5). When information received after entry shows that a recorded case is not work-related, remove it from the log."]),
+        ("7 System of record", ["Cases are entered in the EHS platform, which produces each DC's OSHA 300 Log, Form 300A and Form 301 reports. Records are kept for five years after the end of the calendar year they cover (1904.33)."]),
         ("8 Rates", ["A DC's recordable case rate is its recordable cases x 200,000 / total hours worked. Hours worked are the workforce-management system's hours for every department and pay code, agency associates' hours included."]),
-        ("9 Counting days", ["Days away from work and days of job transfer or restriction are calendar days, counted from the day after the injury or the onset of the illness, whether or not the associate was scheduled to work. The count ends when the associate returns to full duty or leaves employment, or when the days away and the days of transfer or restriction together reach 180 (1904.7(b)(3) and (4)). Status changes are recorded by the return-to-work program's case managers; the coordinator updates the counts on the case."]),
+        ("9 Counting days", ["Days away from work and days of job transfer or restriction are calendar days, counted from the day after the injury or the onset of the illness, whether or not the associate was scheduled to work. The count ends when the associate returns to full duty or leaves employment, or when the days away and the days of transfer or restriction together reach 180 (1904.7(b)(3) and (4))."]),
         ("10 Annual summary", ["Form 300A for each DC covers the calendar year, is certified by the DC general manager, posted from February 1 to April 30, and submitted to OSHA's Injury Tracking Application by March 2."]),
     ]
     for h, paras in secs:
         s.append(Paragraph(h, HEAD))
         for p in paras:
             s.append(Paragraph(p, BODY))
-    s.append(Spacer(1, 8))
-    s.append(Paragraph("Revision history: rev 6 (07/01/2024) added section 7 for the EHS platform go-live; rev 7 (01/01/2025) aligned section 9 with the return-to-work program.", SMALL))
     _pdf(os.path.join(out, F_PROC), s, "EHS-RK-01 OSHA Injury and Illness Recordkeeping, rev 7", K.ORG, "EHS-RK-01 rev 7",
          dt.datetime(2024, 12, 18, 9, 30, 15))
 
@@ -102,10 +100,10 @@ def write_agreement(W, out):
     s.append(Paragraph("between Ostrander Logistics, LLC (Client) and Lindqvist Ergonomics Group, Inc. (Lindqvist)", BODY))
     s.append(Spacer(1, 4))
     secs = [
-        ("1 Services", ["Lindqvist delivers its ergonomics program at the Program Sites in Schedule A: job and slot assessments, lift assists at heavy-case slots, job rotation design, and coaching for selectors, loaders and receivers, with a monthly report to Client's Director, Environmental Health and Safety."]),
+        ("1 Services", ["Lindqvist delivers its ergonomics program at the Program Sites in Schedule A: job and slot assessments, lift assists at heavy-case slots, job rotation design, and coaching for selectors, loaders and receivers. Lindqvist reports monthly to Client's Director, Environmental Health and Safety, and within 60 days after the Term delivers a program review setting the Program Sites' fiscal 2027 recordable cases against the Forecast Recordable Cases."]),
         ("2 Term", ["Client's fiscal 2027, Sunday 12/27/2026 to Saturday 12/25/2027."]),
         ("3 Fees", ["Client pays the Program Fee in Schedule B in twelve equal installments, one per Client fiscal period, net 30."]),
-        ("4 Client data", ["Client provides by 12/04/2026, for each Program Site: its fiscal 2026 recordable cases with their days away from work, job transfer or restriction to 10/31/2026; and its fiscal 2026 cases picked, by item, to 10/31/2026, with item weights. Lindqvist uses Client data for program design only."]),
+        ("4 Client data", ["Client provides by 12/04/2026, for each Program Site: its OSHA 300 Logs and Form 301 reports for fiscal 2024 to date, with the return-to-work records of those cases; labor hours by department and week; the WMS item master and pick history by item; slot maps; and the site's FY2027 operating plan. Lindqvist uses Client data for program design only."]),
         ("5 Confidentiality", ["Each party keeps the other's information confidential for three years after the Term."]),
     ]
     for h, paras in secs:
@@ -126,9 +124,8 @@ def write_agreement(W, out):
     for p in [
         "B1 The Program Fee is USD 2,140 per Forecast Recordable Case.",
         "B2.1 Forecast Recordable Cases means the number of recordable cases that Client expects the Program Sites to enter on their OSHA 300 Logs with a date of injury or illness in Client's fiscal 2027.",
-        "B2.2 The forecast is made on Client's FY2027 operating plan for the Program Sites as approved before signing, on the plan's volumes and labor hours for each site and fiscal period.",
+        "B2.2 The forecast is made on Client's FY2027 operating plan for the Program Sites as approved before signing.",
         "B2.3 The forecast is Client's expected value, rounded to the nearest hundred cases, and is entered in this Schedule at signing: Forecast Recordable Cases ________.",
-        "B3 After the Term, Lindqvist's program review compares the Forecast Recordable Cases with the recordable cases the Program Sites entered on their fiscal 2027 OSHA 300 Logs. No fee is adjusted on the comparison.",
     ]:
         s.append(Paragraph(p, BODY))
     s.append(Spacer(1, 10))
@@ -140,7 +137,8 @@ def write_agreement(W, out):
 NOTES = """EXPORT NOTES - folder for the FY2027 ergonomics program forecast
 Built 11/02/2026 by Safety Analytics (J. Delgado). Source systems as listed in folder_index_2026-11-02.csv.
 
-ehs_legacy_case_export_fy21_2024-06-30.csv  (legacy incident database, one row per case)
+ehs_legacy_case_export_fy21_2024-06-30.csv  (legacy incident database, one row per case; system of record to the
+  07/01/2024 platform go-live)
   CASE_NO            legacy case number: location code - two-digit year - sequence
   ESTABLISHMENT      the DC's establishment name on its OSHA log
   INCIDENT_DATE      date of injury or onset, MM/DD/YYYY, DC local
@@ -159,7 +157,7 @@ ehs_legacy_case_export_fy21_2024-06-30.csv  (legacy incident database, one row p
 
 ehs_platform_cases_2024-07-01_2026-11-02.json  (EHS platform, full case extract incl. migrated cases)
   case_id                         platform case number
-  legacy_case_ref                 legacy CASE_NO for cases migrated at go-live, else null
+  legacy_case_ref                 legacy CASE_NO for cases open at go-live and carried into the platform, else null
   site.site_code / establishment  DC number as DCnnn / establishment name
   occurred_at, reported_at        UTC (ISO 8601, Z)
   person.associate_no, employer, job_title, department
@@ -172,13 +170,10 @@ wfm_hours_by_dept_week_fy21_fy26.csv  (workforce-management system, weekly labor
   DC_NO, FISCAL_YEAR, FISCAL_WEEK, WEEK_ENDING (Saturday), DEPT
   REG_HRS, OT_HRS   hours paid to Ostrander associates, regular and overtime
   AGY_HRS           agency associates' hours badged through the WFM system
-  Fiscal years end on the last Saturday of December; FY2022 has 53 weeks. Rockford is DC 311 to FY2025 week 13 and
-  DC 318 from week 14.
+  Fiscal years end on the last Saturday of December.
 
 wms_cases_shipped_by_category_week.parquet  (WMS, weekly throughput)
   loc_code, fiscal_year, fiscal_week, category_code, cases_shipped
-  Category codes from FY2023 week 27: AMB, CHL, FRZ, HVB. Before: DRYG, PERI, FROZ, BULK (item hierarchy v4 to v5).
-  Rockford is RKF1 to FY2025 week 13 and RKF2 from week 14.
 
 rtw_work_status_log_fy2026.csv  (return-to-work program, case management system; files opened from 12/28/2025)
   RTW_CASE_ID, EHS_CASE_NO (platform case number where the file was opened from an EHS case), ASSOCIATE_NO,
@@ -188,8 +183,7 @@ rtw_work_status_log_fy2026.csv  (return-to-work program, case management system;
 wms_item_master_2026-11-01.csv  (WMS item master, each SKU with the item it carries now)
   SKU, DESCRIPTION, CATEGORY, CASE_WEIGHT, CASE_CUBE_FT3, WEIGHT_SOURCE (CUBISCAN, BUYER, PORTAL),
   SETUP_DATE, STATUS (ACTIVE, DISCONTINUED)
-  CASE_WEIGHT        CUBISCAN and BUYER weights in lb; PORTAL weights load as the vendor supplies them, kg since
-                     portal onboarding (03/03/2025)
+  CASE_WEIGHT        lb for CUBISCAN and BUYER; kg for PORTAL, as vendors supply it (portal live 03/03/2025)
 wms_item_master_history.csv  (every item version with its effective dates)
 wms_sku_picks_fy2026_p01_p11.parquet  (program DCs, cases picked by SKU and fiscal period; period 11 = week 44 only)
 """

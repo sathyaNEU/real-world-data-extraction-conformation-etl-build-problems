@@ -16,20 +16,20 @@
     "checks": 49
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-16, the stage 4 repair cut eaec660f): the same seven lines as the stage 3 cut, each answered in the design note's ## Leak review",
-    "reader": "round 1 on the stage 3 cut (bc83c300): clean, Q6 analytical"
+    "leak_py": "REVIEW, no LEAK (2026-10-16, the realism cut b45b1fc0): seven lines and one surface note, each answered in the design note's ## Leak review",
+    "reader": "round 1 on the stage 3 cut (bc83c300): clean, Q6 analytical; round 2 targeted re-read on the repair cut (eaec660f): no leak, Q6 analytical, authored-looking text flagged and rewritten in the realism pass"
   },
   "duplicate_check": {
     "heart": "WARN repeat.decision, answered",
     "nearest": "driver 0.07 (task89 lineage, task54); surface 0.100 (task71), not promoted"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (round 1, the stage 3 cut bc83c300), Gate H analytical",
-    "disposition": "FIX_NOW: Ask B's PORTAL weight unit stated nowhere in the pack (fixed: the export notes give each weight source's unit); the main call reproduced at 1,001.8 (default 817), all 20 day and 20 heavy-pick cells reproduced; its optional filed back-test declined",
-    "report": "task149/determinism_check_report_round1.md (the first judge)"
+    "verdict": "DETERMINISTIC (re-judge on the repair cut eaec660f), Gate H analytical",
+    "disposition": "APPROVE; the call at 1,001.8, all 20 day and 20 heavy-pick cells and an ITA tie-out on all 300 DC-years reproduced; two low-risk residual readings for information (the SEPARATED day, the state to time zone map), no fix",
+    "report": "task149/determinism_check_report.md (the re-judge); history: determinism_check_report_round1.md (the first judge, FIX_NOW on Ask B's kilogram unit, fixed)"
   },
   "returned": [],
-  "resume": "stage 4: a short re-read and one re-judge on the repair cut (eaec660f)",
+  "resume": "stage 5: a short targeted re-read on the realism cut (b45b1fc0), then ship",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -38,9 +38,9 @@
   "portal_status_date": "",
   "wave": "wave 4 (new), seed FC20 (world, decision and quantity kept; pitfall re-found)",
   "gates": {
-    "checks": "157, 0 failed",
+    "checks": "159, 0 failed",
     "verify": "agrees on its own code path (forecast 1,001.8, response 2.734, default 816.7, chart, 40 ask figures, workbook and slide)",
-    "rebuilds": "two byte-identical (target, goldens, metadata.json, figures.json, target.zip sha256 eaec660f3004384b074f1b430f06077362f302795abe14bf00f278b41c9fcfcf)",
+    "rebuilds": "two byte-identical (target, goldens, metadata.json, figures.json, target.zip sha256 b45b1fc033957446801a9b223300f0c1407e9845b060c4a9aba5008e890c5e4c)",
     "figures_check": "73 figures, 0 absent",
     "precut": "49 checks, 0 FAIL, 0 WARN",
     "voice_check": "exit 0 (770 characters)",

@@ -367,7 +367,6 @@ def write_plan(W, out):
         "from the FY2027 labor model, version 3; indirect hours (inventory control, maintenance, sanitation, training) by DC",
         "and period. Hours are Ostrander and agency associates' hours together, as the WFM system records them.",
         "Fiscal 2027 runs Sunday 12/27/2026 to Saturday 12/25/2027, 52 weeks in 4-4-5 periods (Periods sheet).",
-        "Rockford is DC 318 (location RKF2) from FY2025 week 14.",
     ]:
         rm.rows.append([line if line else None])
     rm.widths = [120]

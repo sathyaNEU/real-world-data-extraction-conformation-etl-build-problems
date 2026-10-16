@@ -411,8 +411,9 @@ def run(target, golden, B=None, R=None, meta_path=None):
     ck("SF3 fiscal 2027 is 12/27/2026 to 12/25/2027, 52 weeks, the plan's twelve periods",
        str(per.FIRST_DAY.iloc[0])[:10] == "2026-12-27" and str(per.LAST_DAY.iloc[-1])[:10] == "2027-12-25" and
        int(per.WEEKS.sum()) == 52 and "12/27/2026 to Saturday 12/25/2027" in agree)
-    ck("SF4 the plan's labour hours (Schedule B 2.2) give the golden; hours re-derived at today's productivity file "
-       "another bin", "volumes and labor hours" in agree and hundred(L["R1e rate per standard hour"]) != 1000)
+    ck("SF4 the approved plan (Schedule B 2.2), its labour hours as filed, gives the golden; hours re-derived at today's "
+       "productivity file another bin", "operating plan for the Program Sites as approved before signing." in agree and
+       hundred(L["R1e rate per standard hour"]) != 1000)
     leg = pd.read_csv(os.path.join(target, "ehs_legacy_case_export_fy21_2024-06-30.csv"), dtype=str,
                       keep_default_na=False)
     lag_leg = (pd.to_datetime(leg.DATE_ENTERED, format="%m/%d/%Y") - pd.to_datetime(leg.INCIDENT_DATE,
@@ -427,7 +428,8 @@ def run(target, golden, B=None, R=None, meta_path=None):
     ck("SF6b the plan's hours are Ostrander and agency associates' hours together, as the history's are",
        "agency associates' hours together" in plan_readme and "agency associates' hours included" in proc)
     n_priv = sum(1 for c in D["plat"] if (c.get("osha_log") or {}).get("privacy_case"))
-    ck("SF7 privacy cases are on the logs (EHS-RK-01 5) and counted", n_priv > 5 and "counts as any other" in proc, n_priv)
+    ck("SF7 privacy cases are on the logs, the name withheld (EHS-RK-01 5), and counted", n_priv > 5 and
+       "privacy case" in proc and "confidential list" in proc, n_priv)
     ck("SF8 migrated cases once or twice: the same call (R2.1)", LO <= v["R2.1 migrated cases counted in both exports"] < HI)
     ck("SF9 removed cases out or in: the same call (R2.2)", LO <= v["R2.2 cases removed as not work-related kept"] < HI)
     ck("SF10 the forecast is the expected value (Schedule B 2.3) and the golden is the model's mean",
@@ -446,9 +448,14 @@ def run(target, golden, B=None, R=None, meta_path=None):
     ck("C1 population: the twenty Schedule A DCs' log cases, agency and privacy cases in (SF1, SF2, SF6, SF7)",
        len(prog) == 20 and n_agy > 0 and n_priv > 0)
     ck("C2 unit of account: a recordable case (Schedule B 2.1)", "recordable cases that Client expects" in agree)
-    ck("C2b what the forecast is compared with: the cases the sites enter on their fiscal 2027 logs (Schedule B3), "
-       "no method named", "compares the Forecast Recordable Cases with the recordable cases the Program Sites entered" in
-       agree and not re.search(r"back-?test|model|method|pace|regress", agree.split("Schedule B - Program Fee")[1], re.I))
+    ck("C2b what the forecast is set against: the sites' fiscal 2027 recordable cases in the post-term program review "
+       "(section 1), no method named", "setting the Program Sites' fiscal 2027 recordable cases against the Forecast "
+       "Recordable Cases" in agree and not re.search(r"back-?test|model|method|pace|regress",
+                                                     agree.split("Schedule B - Program Fee")[1], re.I))
+    sched_b = re.sub(r"\d{2}/\d{2}/\d{4}|B\d(?:\.\d)?|page \d+", " ", agree.split("Schedule B - Program Fee")[1])
+    ck("C2c read literally, Schedule B files no figure but the fee: no rate, count or forecast",
+       set(re.findall(r"\d[\d,.]*\d|\d", sched_b)) <= {"2,140", "2027", "300"} and "________" in agree,
+       set(re.findall(r"\d[\d,.]*\d|\d", sched_b)))
     ck("C3 window: the fiscal year of the date of injury (EHS-RK-01 4.2)", "log of the year in which the injury" in proc)
     ck("C4 as-of: the plan v3 of 10/23/2026; history to FY2026 week 44 pulled 11/02/2026",
        int(X[X.fy == 2026].wk.max()) == 44 and "10/23/2026" in plan_readme)
@@ -472,16 +479,23 @@ def run(target, golden, B=None, R=None, meta_path=None):
     D_rev["cases_all"] = rev
     ck("C14 row order: the exports read in reverse give the same forecast",
        abs(variant(D_rev, cases=lambda ALL: calc.case_frame(ALL)) - gold) < 1e-6)
-    ck("C15 duplicates: each migrated case once through the platform's legacy reference (EHS-RK-01 7)",
-       "legacy reference" in proc and n_mig > 0)
+    ck("C15 duplicates: each case carried into the platform at go-live once, through its legacy_case_ref (the notes)",
+       "legacy_case_ref" in docs["export_notes.txt"] and "carried into the platform" in docs["export_notes.txt"] and
+       n_mig > 0)
     ck("C16 identities: the register maps every WFM DC number, WMS location and EHS establishment",
        set(D["wfm"].DC_NO.unique()) <= set(D["num2dc"]) and set(D["wms"].loc_code.unique()) <= set(D["loc2dc"]) and
        {c["site"]["establishment"] for c in D["plat"]} <= set(D["est2dc"]))
     ck("C17 netting: first-aid and removed cases off the log (EHS-RK-01 3.1 and 6)",
-       "First aid alone is not recorded" in proc and "comes off the log" in proc)
+       "First aid alone is not recorded" in proc and "remove it from the log" in proc)
     ck("C18 units: hours, cases and standard minutes per case shipped", "minutes per case shipped" in std_notes.lower())
-    ck("C19 codes: the WMS category re-code mapped in the notes and the standards", "DRYG = AMB" in std_notes and
-       "DRYG, PERI, FROZ, BULK" in docs["export_notes.txt"])
+    ck("C19 codes: the WMS category re-code mapped once, in the standards' notes", "DRYG = AMB" in std_notes and
+       "DRYG" not in docs["export_notes.txt"])
+    rm_sheet = " ".join(str(r[0]) for r in openpyxl.load_workbook(os.path.join(target, "fy2027_operating_plan_v3.xlsx"),
+                                                                 data_only=True)["Read me"].iter_rows(values_only=True)
+                        if r and r[0])
+    ck("C19b Rockford's re-numbering stated once, in the site register's own note", "Rockford" not in
+       docs["export_notes.txt"] and "Rockford" not in rm_sheet and "RKF" not in rm_sheet and
+       "311" in str(D["reg"][D["reg"].DC_NO.str.contains("318")].NOTES.iloc[0]), rm_sheet[:200])
     ck("C20 no integerisation before the final rounding", isinstance(gold, float))
     ck("C21 scope: EHS-RK-01 covers every Ostrander DC", "Every Ostrander distribution center" in proc)
     ck("C22 the forward window: twelve plan periods, the new accounts from period 1",
@@ -519,7 +533,7 @@ def run(target, golden, B=None, R=None, meta_path=None):
        Bq["unmatched_rows"] == 0, Bq["unmatched_rows"])
     notes_txt = docs["export_notes.txt"]
     ck("AB7 the export notes give each weight source's unit (pounds for CUBISCAN and BUYER, kilograms for PORTAL)",
-       "CUBISCAN and BUYER weights in lb" in notes_txt and "PORTAL weights load as the vendor supplies them, kg" in notes_txt)
+       "lb for CUBISCAN and BUYER; kg for PORTAL" in notes_txt)
     ck("AB8 the unit-aware cracker (the master's weights in each source's unit, no item versions) misses at every DC",
        all(Bq["stop_current"][d] != Bq["golden"][d] for d in prog),
        sum(Bq["stop_current"][d] == Bq["golden"][d] for d in prog))
