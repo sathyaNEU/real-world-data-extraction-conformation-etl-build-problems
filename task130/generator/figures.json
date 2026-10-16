@@ -4,63 +4,53 @@
   "contribution_usd": "$1,250,000"
  },
  "components": {
-  "experience_claims": "3,320",
-  "experience_fte_years": "13,747.1",
-  "claims_since_starts": "2,288",
-  "fte_years_since_starts": "9,330.0",
-  "quick_claims_since_starts": "295",
-  "quick_claims_2016_to_2018": "0",
-  "quick_window_days": "30",
-  "whole_experience_figure": "1,000,000"
+  "experience_claims": "3,043",
+  "experience_fte_years": "13,747.1"
  },
  "entities": {
   "TFH": {
    "name": "Tolliver Falls Hospital",
    "transition": "1 January 2027",
-   "months_in_2027": 12,
-   "experience_from": "April 2019"
+   "months_in_2027": 12
   },
   "AMC": {
    "name": "Alderwick Medical Center",
    "transition": "1 April 2027",
-   "months_in_2027": 9,
-   "experience_from": "January 2019"
+   "months_in_2027": 9
   },
   "CMG": {
    "name": "Corvane Medical Group",
    "transition": "1 July 2027",
-   "months_in_2027": 6,
-   "experience_from": "May 2019"
+   "months_in_2027": 6
   },
   "BCH": {
    "name": "Brennick Community Hospital",
    "transition": "1 October 2027",
-   "months_in_2027": 3,
-   "experience_from": "July 2019"
+   "months_in_2027": 3
   }
  },
  "ask_a": {
   "TFH": {
    "name": "Tolliver Falls Hospital",
-   "any_missing": "yes",
-   "count": 1,
-   "reserves": "1,465,000",
+   "any_missing": "no",
+   "count": 0,
+   "reserves": "0",
    "carrier": "Quillan Mutual Professional Liability Company",
    "carrier_since": "1 January 2021"
   },
   "AMC": {
    "name": "Alderwick Medical Center",
    "any_missing": "yes",
-   "count": 3,
-   "reserves": "7,000",
+   "count": 4,
+   "reserves": "839,000",
    "carrier": "Quillan Mutual Professional Liability Company",
    "carrier_since": "1 April 2019"
   },
   "CMG": {
    "name": "Corvane Medical Group",
    "any_missing": "yes",
-   "count": 4,
-   "reserves": "54,000",
+   "count": 5,
+   "reserves": "16,000",
    "carrier": "Stoneleigh Casualty Insurance Company",
    "carrier_since": "1 July 2019"
   },
@@ -107,41 +97,33 @@
  },
  "routes": {
   "golden": "1,250,000",
-  "R1_count_x_class_average": "3,250,000",
-  "R1m_count_x_mature_average": "4,250,000",
-  "R1g_count_x_lognormal_mean": "1,750,000",
-  "R1p_count_x_pooled_average": "3,000,000",
-  "R1y_count_x_average_made_within_year": "1,000,000",
+  "R1_count_x_class_average": "2,500,000",
+  "R1m_count_x_mature_average": "2,750,000",
+  "R1g_count_x_lognormal_mean": "1,500,000",
+  "R1p_count_x_pooled_average": "2,500,000",
+  "R1y_count_x_average_made_within_year": "750,000",
   "R1c_count_x_average_same_year": "1,000,000",
-  "R1w_count_x_average_within_entity_window": "1,000,000",
-  "R1t_count_x_average_by_matter_type": "2,250,000",
-  "R1a_count_x_average_by_allegation": "3,250,000",
-  "F1_loglog_by_class": "4,000,000",
-  "F2_loglinear_by_class": "1,250,000",
-  "F3_loglog_pooled": "4,000,000",
-  "F4_gamma_loglag_class_factors": "1,750,000",
+  "R1w_count_x_average_within_entity_window": "750,000",
+  "R1t_count_x_average_by_matter_type": "1,750,000",
+  "R1a_count_x_average_by_allegation": "2,500,000",
+  "F1_loglog_by_class": "2,750,000",
+  "F2_loglinear_by_class": "1,000,000",
+  "F3_loglog_pooled": "2,500,000",
+  "F4_gamma_loglag_class_factors": "1,500,000",
   "F5_gamma_lag_class_factors": "1,000,000",
   "F6_gamma_quadratic_by_class": "1,000,000",
   "S1_gamma_spline_by_class": "1,250,000",
-  "S2_quadratic_log_ols_by_class": "1,750,000",
+  "S2_quadratic_log_ols_by_class": "1,250,000",
   "B1_half_year_bands": "1,000,000",
   "E1_30_day_bands": "1,250,000",
   "E2_bands_30_90_180_365": "1,250,000",
   "E3_bands_90_180_365": "1,250,000",
   "E4_quarter_bands": "1,250,000",
   "E5_bands_120_365": "1,250,000",
-  "E3_equal_bins": "1,250,000",
-  "E6_equal_bins": "1,250,000",
-  "E8_equal_bins": "1,250,000",
-  "K5_kernel_severity": "1,250,000",
-  "K10_kernel_severity": "1,250,000",
-  "K20_kernel_severity": "1,250,000",
-  "K40_kernel_severity": "1,250,000",
-  "K80_kernel_severity": "1,250,000",
   "P1_pooled_lag_share_x_class_rate": "1,250,000",
   "P2_all_classes_pooled": "1,250,000",
   "P3_pooled_band_severity_x_class_counts": "1,250,000",
-  "R0_mature_year": "12,750,000",
+  "R0_mature_year": "13,000,000",
   "R2_full_year_share_prorated": "1,750,000",
   "R2b_same_year_prorated": "1,750,000",
   "R3_window_length_filter": "2,000,000"

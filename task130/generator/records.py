@@ -84,7 +84,7 @@ def _continues(W, p, y, m):
 HCM_COLS = ["worker_id", "position_id", "work_month", "earning_code", "earning_description", "hours", "fte",
             "job_profile_code", "job_profile", "cost_centre", "pay_group"]
 EARNINGS = {"REG": "Regular salary", "PDM": "Per diem shifts", "PTO": "Paid time off", "CALL": "Call stipend",
-            "ADMIN": "Administrative stipend", "LOA": "Leave of absence (unpaid)"}
+            "ADMIN": "Administrative stipend", "LOA": "Leave of absence (unpaid)", "TRM": "Termination payout"}
 PROFILE_NAME = {code: name for j in K.JOBS for code, name in j[5]}
 
 
@@ -133,6 +133,12 @@ def hcm_rows(W):
                 out.append(base + ["CALL", EARNINGS["CALL"], "0.00"] + tail)
             if p.pid in admin:
                 out.append(base + ["ADMIN", EARNINGS["ADMIN"], "0.00"] + tail)
+    # a position that has ended is paid its termination payout in a later pay run, an amount with no hours
+    for p, (y, m) in getattr(W, "payouts", ()):
+        group = "GME" if p.job in ("RES", "FEL") else ("APC" if p.job in ("NP", "PA", "CRNA", "CNM", "PSYC")
+                                                       else "PHYS")
+        out.append([p.emp, p.pid, K.month_key(y, m), "TRM", EARNINGS["TRM"], "0.00", "0.00", p.hcm_profile,
+                    PROFILE_NAME[p.hcm_profile], p.cc, group])
     out.sort(key=lambda r: (r[2], r[0], r[1], r[3]))
     return out
 

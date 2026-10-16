@@ -3,13 +3,11 @@ September 2026, by the route it came in on, the claim numbers risk management op
 precautionary notices sent to the carriers, and the carriers' own records of the same matters.
 
 Incidents arise month by month from each clinician position's paid FTE. Since September 2015 the Early Resolution
-Program has taken patients' requests for compensation, made within a year of the care, most once treatment and bills
-are done, and those requests settle small. From 2019, entity by entity (each entity's disclosure_from), the care
-teams disclose serious harm through the program, which meets the patient within days and settles within weeks; before
-an entity's start, a harm its care team would now disclose surfaced a year or more later as a demand or a suit, or
-not at all. A request that is declined can turn into a suit, which risk management opens as a new claim number
-pointing back at the request. Demand letters and suits that come in directly arrive a year or more after the incident
-and carry the defence costs and the large indemnity payments."""
+Program has met patients harmed by care in two ways: when the care team discloses serious harm, the program reviews
+the care and settles within weeks; otherwise a patient may ask for compensation within a year of the care, most once
+treatment and bills are done, and those requests settle small. A request that is declined can turn into a suit, which
+risk management opens as a new claim number pointing back at the request. Demand letters and suits that come in
+directly arrive a year or more after the incident and carry the defence costs and the large indemnity payments."""
 from __future__ import annotations
 
 import datetime as dt
@@ -23,23 +21,20 @@ import world as WD
 
 # Claims per covered FTE-year by route and specialty class, report lags (days, lognormal median and spread, bounds)
 # and amounts (2020 cost level).
-F_DISCLOSED = {"OB": 0.086, "SUR": 0.060, "EM": 0.052, "AN": 0.060, "HM": 0.034, "PC": 0.022, "APC": 0.022}
+F_DISCLOSED = {"OB": 0.043, "SUR": 0.030, "EM": 0.026, "AN": 0.030, "HM": 0.017, "PC": 0.011, "APC": 0.011}
 DISCLOSED_LAG = {"OB": 13, "SUR": 16, "EM": 17, "AN": 10, "HM": 17, "PC": 22, "APC": 17}
-DISCLOSED_IND = {"OB": 22000, "SUR": 15500, "EM": 14000, "AN": 17000, "HM": 12500, "PC": 9500, "APC": 8000}
+DISCLOSED_IND = {"OB": 54000, "SUR": 38000, "EM": 34000, "AN": 42000, "HM": 31000, "PC": 23000, "APC": 19000}
 F_ERP = {"OB": 0.30, "SUR": 0.26, "EM": 0.16, "AN": 0.22, "HM": 0.18, "PC": 0.16, "APC": 0.16}
 ERP_LAG_MEDIAN = {"OB": 257, "SUR": 273, "EM": 250, "AN": 234, "HM": 281, "PC": 296, "APC": 281}
 ERP_LAG_SIGMA = 0.43
-ERP_LAG_LO = 40
 ERP_IND = {"OB": 4700, "SUR": 4100, "EM": 2900, "AN": 2300, "HM": 3500, "PC": 2300, "APC": 2000}
-ESCALATE = 0.015
+ESCALATE = 0.022
 SUIT_IND = {"OB": 180000, "SUR": 120000, "EM": 110000, "AN": 100000, "HM": 100000, "PC": 80000, "APC": 70000}
 F_DIRECT = {"OB": 0.072, "SUR": 0.054, "EM": 0.036, "AN": 0.0144, "HM": 0.024, "PC": 0.0192, "APC": 0.0072}
 DIRECT_LAG_MEDIAN = {"OB": 1150, "SUR": 620, "EM": 560, "AN": 700, "HM": 650, "PC": 1050, "APC": 760}
 DIRECT_LAG_SIGMA = 0.35
 DIRECT_IND = {"OB": 878000, "SUR": 446000, "EM": 405000, "AN": 392000, "HM": 351000, "PC": 378000, "APC": 216000}
 F_RESIDENT = 0.012
-PRE_DISCLOSURE_DIRECT = 0.55     # a disclosure-eligible harm before the entity's disclosure start: a later demand
-PRE_START_REQUESTS = 1.0         # share of program requests made before the entity's disclosure start
 CAP_2020 = 1_400_000
 
 ALLEGATIONS = {
@@ -222,18 +217,8 @@ def simulate(W):
                     d2 = clinic_day(d)
                     if p.start <= d2 and (p.end is None or d2 <= p.end) and (d2.year, d2.month) not in p.leave:
                         d = d2
-                if route == "DISCLOSED" and d < K.ENTITIES[p.entity]["disclosure_from"]:
-                    # before the entity's care teams disclosed harm through the program, the patient learned of it
-                    # later: a demand or a suit a year or more on, or no claim at all
-                    if rng.random() >= PRE_DISCLOSURE_DIRECT:
-                        continue
+                if route in ("ERP", "DISCLOSED") and d < erp_start:
                     route_i = "DIRECT"
-                elif route == "ERP" and d < erp_start:
-                    route_i = "DIRECT"
-                elif route == "ERP" and PRE_START_REQUESTS < 1.0 and d < K.ENTITIES[p.entity]["disclosure_from"]:
-                    if rng.random() >= PRE_START_REQUESTS:
-                        continue
-                    route_i = route
                 else:
                     route_i = route
                 incidents.append(_covered_incident(rng, index, p, cls, d, route_i))
@@ -367,7 +352,7 @@ def _claims_for(rng, inc, defendants, cls, ctr):
         inc.claims = [ClaimNo(made, "Claim", defs, ind, dfn, bday(made + dt.timedelta(days=int(rng.integers(25, 121)))))]
     elif inc.route == "ERP":
         # a request through the program once care and bills are done, within the program's year
-        lag = _lag(rng, ERP_LAG_MEDIAN[cls], ERP_LAG_SIGMA, ERP_LAG_LO, 365)
+        lag = _lag(rng, ERP_LAG_MEDIAN[cls], ERP_LAG_SIGMA, 40, 365)
         made = bday(inc.date + dt.timedelta(days=lag))
         if rng.random() < ESCALATE:
             req_close = bday(made + dt.timedelta(days=int(rng.integers(30, 121))))
@@ -602,11 +587,11 @@ def register(incidents, key="v", V=K.VALUATION):
     return rows
 
 
-def experience_from_rows(rows, job_of=None, value_all_rows=False):
+def experience_from_rows(rows, job_of=None):
     """The main call's experience from register rows (dicts with dates as date objects): incidents in the
     experience window with a covered clinician, one Claim per incident made at its earliest claim number, its cost
-    the paid and reserves on covered rows trended from the incident year (on every priced row when value_all_rows).
-    job_of(clinician_id, date) gives the payroll job key; rows carry it in memory."""
+    the paid and reserves on covered rows trended from the incident year. job_of(clinician_id, date) gives the
+    payroll job key; rows carry it in memory."""
     lo, hi = K.EXPERIENCE
     by_inc = {}
     for r in rows:
@@ -629,9 +614,8 @@ def experience_from_rows(rows, job_of=None, value_all_rows=False):
         j = job_of(firsts[0]["clinician_id"], firsts[0]["incident_date"]) if job_of else firsts[0]["job"]
         inc_date = rs[0]["incident_date"]
         tf = K.trend_factor(inc_date.year)
-        priced = [r for r in rs if r["coverage_line"] != "CONTRACT"] if value_all_rows else cov
         cost = sum((r["indemnity_paid"] or 0) + (r["defense_paid"] or 0) + (r["indemnity_reserve"] or 0) +
-                   (r["defense_reserve"] or 0) for r in priced) * tf
+                   (r["defense_reserve"] or 0) for r in cov) * tf
         parts, parts3 = [], []
         for cno in sorted({r["claim_no"] for r in rs}):
             cr = [r for r in cov if r["claim_no"] == cno]
@@ -644,6 +628,6 @@ def experience_from_rows(rows, job_of=None, value_all_rows=False):
         out.append(dict(incident_no=ino, cls=K.CLASS_OF_JOB[j], lag=(made - inc_date).days, cost=cost,
                         year=inc_date.year, same_year=made.year == inc_date.year, parts=parts, parts3=parts3,
                         n_claim_nos=len(parts), mtype=first_rows[0]["matter_type"], alleg=first_rows[0]["allegation"],
-                        entity=first_rows[0]["entity_at_incident"], date=inc_date))
+                        entity=first_rows[0]["entity_at_incident"]))
     out.sort(key=lambda c: c["incident_no"])
     return out

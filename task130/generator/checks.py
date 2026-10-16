@@ -1,11 +1,9 @@
 """task130 assertions on the built pack and goldens: input gates, the three-rules block (R1 raw material, R2 one line
-per Layer 1 item, R3a the analyst test on the clean truth, R3b the decisive steps alone, R3c no plant), the claims
-process the 2027 window inherits (each entity's disclosure settlements from their 2019 start, none before, steady
-after, every lag the window uses complete), every route a solver takes to the contribution (on the whole 2016 to 2024
-experience and on the experience since each entity's start: the natural routes a full bin off, the constructions in
-the golden's bin), the golden's sampling error, every semantic fork row (SF1 to SF35), the closure axes that can be
-asserted, the asks with their stops and fairness, the separation line, distractor deletion, mid-bin figures, the
-realism sweep and container hygiene."""
+per Layer 1 item, R3a the analyst test on the clean truth, R3b the decisive step alone, R3c no plant), every route a
+solver takes to the contribution (the natural routes a full bin off, the empirical constructions in the golden's
+bin), the golden's sampling error, every semantic fork row (SF1 to SF30), the closure axes that can be asserted, the
+asks with their stops and fairness, the separation line, distractor deletion, mid-bin figures, the realism sweep and
+container hygiene."""
 from __future__ import annotations
 
 import csv
@@ -32,29 +30,20 @@ import world as WD
 RESULTS = []
 BIN = CA.BIN
 
-# Routes on the whole 2016 to 2024 experience (the claims process before each entity's start pooled in): each lands a
-# full bin or more from the golden and rounds to another figure. OFFSET_FULL are the two-error routes whose own error
-# offsets the pooled years' missing settlements; they are recorded, never asserted to land or miss.
-OFFSET_FULL = ["R2_full_year_share_prorated", "S2_quadratic_log_ols_by_class"]
-# Routes on the experience since each entity's start that keep round 1's error (a severity not tied to each Claim's
-# own delay): a full bin or more off; ROUND_POST round elsewhere inside a bin.
-MISS_POST = ["R1_count_x_class_average", "R1m_count_x_mature_average", "R1g_count_x_lognormal_mean",
-             "R1p_count_x_pooled_average", "R1y_count_x_average_made_within_year",
-             "R1w_count_x_average_within_entity_window", "R1t_count_x_average_by_matter_type",
-             "R1a_count_x_average_by_allegation", "F1_loglog_by_class", "F3_loglog_pooled",
-             "F4_gamma_loglag_class_factors", "F5_gamma_lag_class_factors", "F6_gamma_quadratic_by_class",
-             "S2_quadratic_log_ols_by_class", "R0_mature_year", "R2_full_year_share_prorated", "R2b_same_year_prorated",
-             "R3_window_length_filter"]
-ROUND_POST = ["R1c_count_x_average_same_year", "B1_half_year_bands"]
-# The constructions that cost each Claim at its own delay, finely enough, on the experience since each entity's start:
-# each rounds with the golden (the judge's banded and kernel variants among them).
+# The natural routes: each lands a full bin or more from the golden and rounds to another figure.
+MISS = ["R1_count_x_class_average", "R1m_count_x_mature_average", "R1g_count_x_lognormal_mean",
+        "R1p_count_x_pooled_average", "R1y_count_x_average_made_within_year", "R1c_count_x_average_same_year",
+        "R1w_count_x_average_within_entity_window",
+        "R1t_count_x_average_by_matter_type", "R1a_count_x_average_by_allegation", "F1_loglog_by_class",
+        "F2_loglinear_by_class", "F3_loglog_pooled", "F4_gamma_loglag_class_factors", "F5_gamma_lag_class_factors",
+        "F6_gamma_quadratic_by_class", "B1_half_year_bands", "R0_mature_year", "R2_full_year_share_prorated",
+        "R2b_same_year_prorated", "R3_window_length_filter"]
+# The empirical constructions that condition cost on the delay finely enough: each rounds with the golden.
 CONV = ["E1_30_day_bands", "E2_bands_30_90_180_365", "E3_bands_90_180_365", "E4_quarter_bands", "E5_bands_120_365",
-        "E3_equal_bins", "E6_equal_bins", "E8_equal_bins", "K5_kernel_severity", "K10_kernel_severity",
-        "K20_kernel_severity", "K40_kernel_severity", "S1_gamma_spline_by_class", "P1_pooled_lag_share_x_class_rate",
+        "S1_gamma_spline_by_class", "S2_quadratic_log_ols_by_class", "P1_pooled_lag_share_x_class_rate",
         "P2_all_classes_pooled", "P3_pooled_band_severity_x_class_counts"]
 SAME_CONVENTIONS = ["lag_plus_1", "lag_minus_1", "transition_plus_1", "transition_minus_1", "window_end_plus_1",
                     "month_mid", "month_end", "calendar_day_exposure"]
-QUICK = 39       # no Claim before an entity's start is made within this many days of its incident
 
 
 def ok(name, cond, detail=""):
@@ -80,14 +69,10 @@ def fmt(x):
     return "{:,}".format(int(round(x)))
 
 
-def ym_of(s):
-    return int(s[:4]), int(s[5:7])
-
-
 def oracle(plan, tr, n=400000, seed=7):
     """The population truth, never shipped: the expected cost and count of the Claims first made in the 2027 window,
-    from the claims world's own frequencies, report lags and cost distributions at the 2027 cost level, every entity
-    past its disclosure start (co-defendant shares, weekend dating and reserve noise left out)."""
+    from the claims world's own frequencies, report lags and cost distributions at the 2027 cost level (co-defendant
+    shares, weekend dating and reserve noise left out)."""
     import numpy as np
     rng = np.random.default_rng(seed)
     lv = 1.05 ** 7 * np.exp(0.04 * rng.standard_normal(n))
@@ -109,7 +94,7 @@ def oracle(plan, tr, n=400000, seed=7):
         s_ind = np.where(with_ind, ln(C.SUIT_IND[k], 0.6) * lv, 0.0)
         s_ind = np.where(s_ind + s_dfn > cap, np.maximum(0, cap - s_dfn), s_ind)
         cost[("E", k)] = float(np.where(esc, ln(1600, 0.6) * lv + s_ind + s_dfn, base).mean())
-        lag[("E", k)] = lags(C.ERP_LAG_MEDIAN[k], C.ERP_LAG_SIGMA, C.ERP_LAG_LO, 365)
+        lag[("E", k)] = lags(C.ERP_LAG_MEDIAN[k], C.ERP_LAG_SIGMA, 40, 365)
         dfn = np.where(rng.random(n) < 0.40, ln(95000, 0.45), ln(35000, 0.45)) * lv
         ind = np.where(rng.random(n) < 0.45, ln(C.DIRECT_IND[k], 0.6) * lv, 0.0)
         ind = np.where(ind + dfn > cap, np.maximum(0, cap - dfn), ind)
@@ -127,42 +112,16 @@ def oracle(plan, tr, n=400000, seed=7):
     return dict(cost=tot, count=cnt)
 
 
-def payroll_eekm(target, sb, keep=None, last="2024-12", add=None):
-    """{(entity, class, (y, m)): FTE-years} from the legacy payroll's Schedule B rows from January 2016 to `last`
-    passing keep(row); add(row) may return a class for a row Schedule B leaves out."""
-    out = {}
-    with open(os.path.join(target, K.PAYROLL), encoding="utf-8") as fh:
-        for x in csv.DictReader(fh):
-            if not ("2016-01" <= x["pay_month"] <= last):
-                continue
-            k = sb.get(x["job_code"])
-            if k is None and add is not None:
-                k = add(x)
-            if k is None or (keep is not None and not keep(x)):
-                continue
-            key = (x["entity_code"], k, ym_of(x["pay_month"]))
-            out[key] = out.get(key, 0.0) + float(x["fte"]) / 12.0
-    return out
-
-
 def run(target, golden, world=None, meta_path=None):
     del RESULTS[:]
     m = AN.main_call(target)
-    g, rts, full, conv, rb = m["total"], m["routes"], m["full"], m["conv"], m["rounded"]
-    ex, post, E, E_full, plan, a, rows = m["ex"], m["post"], m["E"], m["E_full"], m["plan"], m["a"], m["rows"]
-    Eekm, starts, cons, riv = m["Eekm"], m["starts"], m["cons"], m["rivals"]
+    g, rts, conv, rb = m["total"], m["routes"], m["conv"], m["rounded"]
+    ex, E, plan, a, rows = m["ex"], m["E"], m["plan"], m["a"], m["rows"]
     tr = AN.transitions()
     files = sorted(os.listdir(target))
-    sb = AN.schedule_b()
-
-    def post_g(claims, ekm=None, st=None, pl=None, tt=None):
-        """The golden's construction on any experience: the Claims and exposure from each entity's start month."""
-        st = st or starts
-        return CA.golden(CA.after(claims, st), CA.lag_weights(pl or plan, tt or tr, CA.exposure(ekm or Eekm,
-                                                                                                 K.CLASSES, st),
-                                                              K.CLASSES, K.ENTITY_ORDER))
+    golden_of = lambda claims, EE=E, pl=plan, tt=tr: CA.golden(claims, CA.lag_weights(pl, tt, EE, K.CLASSES,
+                                                                                       K.ENTITY_ORDER))
     same_bin = lambda v: CA.rounded(v) == rb
-    a_bin_off = lambda v: abs(v - g) >= BIN and CA.rounded(v) != rb
 
     # ------------------------------------------------------------------ input gates
     meta = json.load(open(meta_path)) if meta_path else {}
@@ -176,66 +135,21 @@ def run(target, golden, world=None, meta_path=None):
     ok("gate.no_distractor_word", not any("distract" in f.lower() for f in files))
 
     # ------------------------------------------------------------------ the pack agrees with the simulation
-    ex_mem = E_mem = Eekm_mem = None
+    ex_mem = E_mem = None
     if world is not None:
         ex_mem = C.experience_from_rows(world["rows"])
         lo, hi = K.EXPERIENCE
-        Eekm_mem = {}
+        E_mem = {k: 0.0 for k in K.CLASSES}
         for (p, y, mm, f) in WD.position_months(world["W"], (lo.year, 1), (hi.year, 12)):
             kk = K.CLASS_OF_JOB[p.job]
             if kk:
-                Eekm_mem[(p.entity, kk, (y, mm))] = Eekm_mem.get((p.entity, kk, (y, mm)), 0.0) + f / 12.0
-        E_mem = CA.exposure(Eekm_mem, K.CLASSES)
+                E_mem[kk] += f / 12.0
         ok("bundle.experience_matches_simulation", len(ex_mem) == len(ex) and
            abs(sum(x["cost"] for x in ex_mem) - sum(x["cost"] for x in ex)) < 1.0,
            "%d/%d Claims" % (len(ex_mem), len(ex)))
-        ok("bundle.exposure_matches_simulation", all(abs(E_mem[k] - E_full[k]) < 0.5 for k in K.CLASSES),
-           "largest gap %.3f FTE-years" % max(abs(E_mem[k] - E_full[k]) for k in K.CLASSES))
+        ok("bundle.exposure_matches_simulation", all(abs(E_mem[k] - E[k]) < 0.5 for k in K.CLASSES),
+           "largest gap %.3f FTE-years" % max(abs(E_mem[k] - E[k]) for k in K.CLASSES))
         ok("bundle.plan_matches_simulation", {kk: [float(v) for v in vv] for kk, vv in world["plan"].items()} == plan)
-        ok("bundle.starts_match_simulation", CA.regime_starts(world["rows"]) == starts, str(starts))
-
-    # ------------------------------------------------------------------ the claims process the window inherits
-    quick_before, quick_by_year = [], {}
-    for x in rows:
-        if x["coverage_line"] == "CONTRACT":
-            continue
-        e, d = x["entity_at_incident"], x["incident_date"]
-        lagd = (x["claim_made_date"] - d).days
-        if lagd <= QUICK and d < starts[e]:
-            quick_before.append(x["claim_no"])
-        if lagd <= 30:
-            quick_by_year.setdefault((e, d.year), set()).add(x["incident_no"])
-    ok("regime.starts_in_2019", all(dt.date(2019, 1, 1) <= d <= dt.date(2019, 12, 1) for d in starts.values()),
-       ", ".join("%s %s" % (e, starts[e].strftime("%B %Y")) for e in K.ENTITY_ORDER))
-    ok("regime.none_before_start", not quick_before,
-       "no Claim from an incident before its entity's start was made within %d days (%d found)" % (QUICK,
-                                                                                                  len(quick_before)))
-    gaps = [(e, y) for e in K.ENTITY_ORDER for y in range(starts[e].year + 1, 2026) if not quick_by_year.get((e, y))]
-    per_entity = {e: sum(len(quick_by_year.get((e, y), ())) for y in range(starts[e].year, 2026)) for e in K.ENTITY_ORDER}
-    every_year = all(any(quick_by_year.get((e, y)) for e in K.ENTITY_ORDER) for y in range(2019, 2026))
-    ok("regime.every_year_after_start", every_year and len(gaps) <= 1 and min(per_entity.values()) >= 10,
-       "the System has Claims made within 30 days in every incident year from 2019 to 2025, each entity in all but %d "
-       "entity-years after its start (%s); since its start: %s" % (len(gaps), gaps, ", ".join(
-           "%s %d" % (e, per_entity[e]) for e in K.ENTITY_ORDER)))
-    fte_year = {}
-    with open(os.path.join(target, K.PAYROLL), encoding="utf-8") as fh:
-        for x in csv.DictReader(fh):
-            if sb.get(x["job_code"]):
-                fte_year[int(x["pay_month"][:4])] = fte_year.get(int(x["pay_month"][:4]), 0.0) + float(x["fte"]) / 12
-    rate = {y: sum(len(quick_by_year.get((e, y), ())) for e in K.ENTITY_ORDER) / fte_year[y] for y in range(2020, 2026)}
-    mean_rate = sum(rate.values()) / len(rate)
-    ok("regime.steady_after_start", all(abs(v / mean_rate - 1) <= 0.4 for v in rate.values()) and
-       abs(sum(rate[y] for y in (2023, 2024, 2025)) / sum(rate[y] for y in (2020, 2021, 2022)) - 1) <= 0.15,
-       "Claims made within 30 days per 1,000 covered FTE-years by incident year: " +
-       ", ".join("%d %.1f" % (y, 1000 * rate[y]) for y in sorted(rate)))
-    pre = [y for y in range(2016, 2019) if any(quick_by_year.get((e, y)) for e in K.ENTITY_ORDER)]
-    ok("regime.none_in_2016_to_2018", not pre, "no Claim made within 30 days from any 2016 to 2018 incident")
-    last_lag_day = K.EXPERIENCE[1] + dt.timedelta(days=CA.NDAYS - 1)
-    made_max = max(x["claim_made_date"] for x in rows)
-    ok("regime.window_lags_complete", last_lag_day < K.VALUATION and made_max >= K.VALUATION - dt.timedelta(days=14),
-       "a 2024 incident's Claim made within the window's longest delay (364 days) is made by %s, %d days before the "
-       "register's valuation; the register holds Claims made to %s, so no experience year needs development for the "
-       "window" % (last_lag_day, (K.VALUATION - last_lag_day).days, made_max))
 
     # ------------------------------------------------------------------ the three rules (dataset-generation 7.1)
     with open(os.path.join(target, K.REGISTER), encoding="utf-8") as fh:
@@ -252,13 +166,11 @@ def run(target, golden, world=None, meta_path=None):
         if f.endswith(".csv"):
             with open(os.path.join(target, f), encoding="utf-8") as fh:
                 shipped_cols += [c.lower() for c in next(csv.reader(fh))]
-    tells = [c for c in shipped_cols if re.search(r"lag|delay|window|per_fte|rate|route|program|disclos|channel|"
-                                                  r"regime|intake", c)]
-    ok("R1.no_shipped_deciding_quantity", not tells, "no column holds a delay, a window share, a route, a channel or a "
-       "rate: %s" % tells)
-    ok("R1.golden_reads_register_rows", len(post) > 1000 and sum(1 for c in post if c["lag"] < CA.NDAYS) > 1000,
-       "%d experience Claims since the starts, %d made within a year" % (len(post), sum(1 for c in post
-                                                                                       if c["lag"] < CA.NDAYS)))
+    tells = [c for c in shipped_cols if re.search(r"lag|delay|window|per_fte|rate|route|program", c)]
+    ok("R1.no_shipped_deciding_quantity", not tells, "no column holds a delay, a window share, a route or a rate: %s" %
+       tells)
+    ok("R1.golden_reads_register_rows", len(ex) > 1000 and sum(1 for c in ex if c["lag"] < CA.NDAYS) > 1000,
+       "%d experience Claims, %d made within a year" % (len(ex), sum(1 for c in ex if c["lag"] < CA.NDAYS)))
 
     # R2: each Layer 1 item mishandled leaves the call in its bin
     by_inc = {}
@@ -266,11 +178,11 @@ def run(target, golden, world=None, meta_path=None):
         by_inc.setdefault(x["incident_no"], []).append(x)
     job_of = AN.job_lookup(m["job"])
     first_only = [x for x in rows if x["defendant_seq"] == 1]
-    v = post_g(C.experience_from_rows(first_only, job_of=job_of))
+    v = golden_of(C.experience_from_rows(first_only, job_of=job_of))
     ok("R2.defendant_rows_first_only", same_bin(v), "one defendant row a claim number: %s" % fmt(v))
-    flat = [dict(c, lag=L, cost=cost) for c in ex for (L, cost) in c["parts"]]
-    v_flat = post_g(flat)
-    ok("R2.claim_numbers_apart", same_bin(v_flat), "each claim number its own Claim at its own date: %s" % fmt(v_flat))
+    flat = [dict(cls=c["cls"], lag=L, cost=cost) for c in ex for (L, cost) in c["parts"]]
+    v = golden_of(flat)
+    ok("R2.claim_numbers_apart", same_bin(v), "each claim number its own Claim at its own date: %s" % fmt(v))
     contract_claims = 0
     for ino, rs in by_inc.items():
         if all(x["coverage_line"] == "CONTRACT" for x in rs) and K.EXPERIENCE[0] <= rs[0]["incident_date"] <= K.EXPERIENCE[1]:
@@ -286,47 +198,59 @@ def run(target, golden, world=None, meta_path=None):
     finally:
         K.CLASS_OF_JOB.clear()
         K.CLASS_OF_JOB.update(saved)
-    trainee = ("25010", "GME-RES", "25020", "GME-FEL")
-    Eekm_res = payroll_eekm(target, sb, add=lambda x: "HM" if x["job_code"] in trainee else None)
-    v_res = post_g(ex_res, Eekm_res)
+    E_res = dict(E)
+    with open(os.path.join(target, K.PAYROLL), encoding="utf-8") as fh:
+        for x in csv.DictReader(fh):
+            if x["job_code"] in ("25010", "GME-RES", "25020", "GME-FEL") and "2016-01" <= x["pay_month"] <= "2024-12":
+                E_res["HM"] += float(x["fte"]) / 12.0
+    v_res = golden_of(ex_res, E_res)
     ok("R2.trainees_on_claims", same_bin(v_res),
        "residents and fellows counted as hospital medicine (claims, rows and FTE): %s" % fmt(v_res))
+    # the 2020 code set alone: claims and exposure from July 2020
     new_codes = {j[2] for j in K.JOBS}
-    Eekm20 = payroll_eekm(target, sb, keep=lambda x: x["job_code"] in new_codes)
-    ex20 = [c for c in ex if min(r_["incident_date"] for r_ in by_inc[c["incident_no"]]) >= dt.date(2020, 7, 1)]
-    v20 = post_g(ex20, Eekm20)
+    E20 = {k: 0.0 for k in K.CLASSES}
+    sb = AN.schedule_b()
+    with open(os.path.join(target, K.PAYROLL), encoding="utf-8") as fh:
+        for x in csv.DictReader(fh):
+            if x["job_code"] in new_codes and sb.get(x["job_code"]) and x["pay_month"] <= "2024-12":
+                E20[sb[x["job_code"]]] += float(x["fte"]) / 12.0
+    ex20 = [c for c in ex if (c["year"], 0) >= (2020, 0) and
+            min(r_["incident_date"] for r_ in by_inc[c["incident_no"]]) >= dt.date(2020, 7, 1)]
+    v20 = golden_of(ex20, E20)
     ok("R2.job_codes_2020_set_only", same_bin(v20), "claims and exposure from July 2020 only: %s" % fmt(v20))
     per_diem_ids = set()
-
-    def not_per_diem(x):
-        if len(x["fte"].split(".")[1]) == 2:
-            per_diem_ids.add(x["employee_id"])
-            return False
-        return True
-    Eekm_pd = payroll_eekm(target, sb, keep=not_per_diem)
-    v_pd = post_g(ex, Eekm_pd)
-    ok("R2.per_diem_rows_dropped", per_diem_ids and same_bin(v_pd), "%d per-diem clinicians' rows out of the "
-       "exposure: %s" % (len(per_diem_ids), fmt(v_pd)))
+    E_pd = {k: 0.0 for k in K.CLASSES}
+    with open(os.path.join(target, K.PAYROLL), encoding="utf-8") as fh:
+        for x in csv.DictReader(fh):
+            if sb.get(x["job_code"]) and "2016-01" <= x["pay_month"] <= "2024-12":
+                if len(x["fte"].split(".")[1]) == 2:
+                    per_diem_ids.add(x["employee_id"])
+                    continue
+                E_pd[sb[x["job_code"]]] += float(x["fte"]) / 12.0
+    v = golden_of(ex, E_pd)
+    ok("R2.per_diem_rows_dropped", per_diem_ids and same_bin(v), "%d per-diem clinicians' rows out of the exposure: %s" %
+       (len(per_diem_ids), fmt(v)))
     seen_month = set()
-    dual = [0]
-
-    def first_row(x):
-        key = (x["employee_id"], x["pay_month"])
-        if key in seen_month:
-            dual[0] += 1
-            return False
-        seen_month.add(key)
-        return True
-    Eekm_one = payroll_eekm(target, sb, keep=first_row)
-    v_one = post_g(ex, Eekm_one)
-    ok("R2.second_cost_centre_row_dropped", dual[0] > 0 and same_bin(v_one),
-       "%d second rows (dual appointments, transfers) dropped: %s" % (dual[0], fmt(v_one)))
+    E_one = {k: 0.0 for k in K.CLASSES}
+    dual = 0
+    with open(os.path.join(target, K.PAYROLL), encoding="utf-8") as fh:
+        for x in csv.DictReader(fh):
+            if sb.get(x["job_code"]) and "2016-01" <= x["pay_month"] <= "2024-12":
+                key = (x["employee_id"], x["pay_month"])
+                if key in seen_month:
+                    dual += 1
+                    continue
+                seen_month.add(key)
+                E_one[sb[x["job_code"]]] += float(x["fte"]) / 12.0
+    v = golden_of(ex, E_one)
+    ok("R2.second_cost_centre_row_dropped", dual > 0 and same_bin(v),
+       "%d second rows (dual appointments, transfers) dropped: %s" % (dual, fmt(v)))
     reopen_free = []
     for c in ex:
         rs = [x for x in by_inc[c["incident_no"]] if x["status"] == "REOPENED"]
         reopen_free.append(dict(c, cost=c["cost"] - sum((x["defense_reserve"] or 0) for x in rs) *
                                 K.trend_factor(c["year"])) if rs else c)
-    v = post_g(reopen_free)
+    v = golden_of(reopen_free)
     ok("R2.reopened_reserves_dropped", same_bin(v), "reopened claims at their paid amounts: %s" % fmt(v))
     leave_rows = 0
     with open(os.path.join(target, K.PAYROLL), encoding="utf-8") as fh:
@@ -344,56 +268,38 @@ def run(target, golden, world=None, meta_path=None):
             e = x["entity_at_incident"]
             y["coverage_line"] = "%s-%s" % (K.carrier_on(e, x["incident_date"]), e)
         recoded.append(y)
-    v = post_g(C.experience_from_rows(recoded, job_of=job_of))
-    ok("R2.ask_devices_off_the_call", abs(v - g) < 1e-6 and CA.regime_starts(recoded) == starts,
-       "the coverage line recoded by carrier era leaves the starts and the golden to the cent; the HCM lines are not "
-       "read")
+    v = golden_of(C.experience_from_rows(recoded, job_of=job_of))
+    ok("R2.ask_devices_off_the_call", abs(v - g) < 1e-6,
+       "the coverage line recoded by carrier era leaves the golden to the cent; the HCM lines are not read")
 
     # R3a: the analyst test on the clean truth, and on the pack
     if world is not None:
-        starts_mem = CA.regime_starts(world["rows"])
-        post_mem = CA.after(ex_mem, starts_mem)
-        Ep_mem = CA.exposure(Eekm_mem, K.CLASSES, starts_mem)
-        rts_mem, _ = CA.routes(post_mem, Ep_mem, world["plan"], tr, K.CLASSES, K.ENTITY_ORDER)
-        full_mem, _ = CA.routes(ex_mem, E_mem, world["plan"], tr, K.CLASSES, K.ENTITY_ORDER)
+        rts_mem, a_mem = CA.routes(ex_mem, E_mem, world["plan"], tr, K.CLASSES, K.ENTITY_ORDER)
         g_mem = rts_mem["golden"]
-        d = full_mem["golden"]
-        ok("R3a.analyst_test_clean_truth", a_bin_off(d) and abs(d - g_mem) >= BIN and CA.rounded(d) != CA.rounded(g_mem),
-           "every Claim at its own delay against each entity's days (the loss-weighted claims-made step factor), every "
-           "filed rule applied, on the whole 2016 to 2024 experience of the generator's clean truth: %s against the "
-           "golden %s" % (fmt(d), fmt(g_mem)))
+        d = rts_mem["R1_count_x_class_average"]
+        ok("R3a.analyst_test_clean_truth", abs(d - g_mem) >= BIN and CA.rounded(d) != CA.rounded(g_mem),
+           "the claims made in the window counted per class, at the class's average Claim cost, every filed rule "
+           "applied, on the generator's clean truth: %s against the golden %s" % (fmt(d), fmt(g_mem)))
         ok("R3a.clean_truth_golden_same_bin", CA.rounded(g_mem) == rb, "%s" % fmt(g_mem))
-        miss_full = [k for k in full_mem if k not in OFFSET_FULL]
-        worst = min(miss_full, key=lambda k: abs(full_mem[k] - g_mem))
-        ok("R3a.every_whole_experience_route_clean_truth",
-           all(abs(full_mem[k] - g_mem) >= BIN and CA.rounded(full_mem[k]) != CA.rounded(g_mem) for k in miss_full),
-           "nearest %s at %s" % (worst, fmt(abs(full_mem[worst] - g_mem))))
-        worst = min(MISS_POST, key=lambda k: abs(rts_mem[k] - g_mem))
-        ok("R3a.every_round_1_route_clean_truth",
-           all(abs(rts_mem[k] - g_mem) >= BIN and CA.rounded(rts_mem[k]) != CA.rounded(g_mem) for k in MISS_POST),
+        worst = min(MISS, key=lambda k: abs(rts_mem[k] - g_mem))
+        ok("R3a.every_natural_route_clean_truth", all(abs(rts_mem[k] - g_mem) >= BIN and
+                                                      CA.rounded(rts_mem[k]) != CA.rounded(g_mem) for k in MISS),
            "nearest %s at %s" % (worst, fmt(abs(rts_mem[worst] - g_mem))))
-    d = full["golden"]
-    ok("R3a.analyst_test_pack", a_bin_off(d), "the loss-weighted step factor on the whole experience %s (rounds %s) "
-       "against %s, %.2f bins off" % (fmt(d), "{:,}".format(CA.rounded(d)), fmt(g), abs(d - g) / BIN))
-    dm = m["conv_full"]["month_mid"]
-    ok("R3a.monthly_step_factor_pack", a_bin_off(dm), "the same by whole months of delay at mid-month exposure "
-       "(the re-audit's probe) %s" % fmt(dm))
-    ok("R3a.frequency_severity_pack", a_bin_off(full["R1_count_x_class_average"]),
-       "the window's count at the class average on the whole experience %s" % fmt(full["R1_count_x_class_average"]))
-    ok("R3a.post_start_count_route_pack", a_bin_off(rts["R1_count_x_class_average"]),
-       "the same count route on the experience since each entity's start %s" % fmt(rts["R1_count_x_class_average"]))
-    # R3b: each decisive step alone, with the other done right, lands the golden; either alone misses
-    ok("R3b.experience_since_the_start_alone", abs(cons["starts_by_entity"] - g) < 1e-6 and
-       abs(post_g(ex) - g) < 1e-6, "the whole-experience step factor with only the experience moved to each entity's "
-       "months from its start is the golden")
-    own = sum(a[c["cls"]][c["lag"]] * c["cost"] for c in post if c["lag"] < CA.NDAYS)
-    ok("R3b.own_cost_alone", abs(own - g) < 1e-6, "the count route on the experience since the starts with each window "
-       "Claim at its own cost in place of the class average is the golden")
-    ok("R3b.either_alone_misses", a_bin_off(full["golden"]) and a_bin_off(rts["R1_count_x_class_average"]),
-       "own cost on the whole experience %s; the experience since the starts at the class average %s" % (
-           fmt(full["golden"]), fmt(rts["R1_count_x_class_average"])))
-    ok("R3b.window_alone_is_not_enough", a_bin_off(rts["R0_mature_year"]) and a_bin_off(full["R0_mature_year"]),
-       "no window (a mature year) %s" % fmt(rts["R0_mature_year"]))
+    d = rts["R1_count_x_class_average"]
+    ok("R3a.analyst_test_pack", abs(d - g) >= BIN and CA.rounded(d) != rb, "%s (rounds %s) against %s" % (
+        fmt(d), "{:,}".format(CA.rounded(d)), fmt(g)))
+    # R3b: the easy route with only the decisive step changed lands the golden; each other single correction does not
+    own = sum(a[c["cls"]][c["lag"]] * c["cost"] for c in ex if c["lag"] < CA.NDAYS)
+    ok("R3b.decisive_step_alone", abs(own - g) < 1e-6,
+       "the default route with each window Claim at its own cost in place of the class average is the golden")
+    ok("R3b.window_alone_is_not_enough", CA.rounded(rts["R1_count_x_class_average"]) != rb and
+       CA.rounded(rts["R0_mature_year"]) != rb,
+       "the window truncation alone (count at the class average) %s; the claim-level cost without the window (a mature "
+       "year) %s" % (fmt(rts["R1_count_x_class_average"]), fmt(rts["R0_mature_year"])))
+    ok("R3b.severity_by_year_not_enough", CA.rounded(rts["R1y_count_x_average_made_within_year"]) != rb and
+       CA.rounded(rts["B1_half_year_bands"]) != rb,
+       "a severity from the Claims made within a year %s, half-year bands %s" % (
+           fmt(rts["R1y_count_x_average_made_within_year"]), fmt(rts["B1_half_year_bands"])))
     # R3c: no plant
     with open(os.path.join(target, K.PAYROLL), encoding="utf-8") as fh:
         months = {}
@@ -415,92 +321,56 @@ def run(target, golden, world=None, meta_path=None):
     figures_text = " ".join(open(os.path.join(target, f), encoding="utf-8", errors="ignore").read()
                             for f in files if f.endswith((".csv", ".md")))
     ok("R3c.no_stakeholder_figure", "{:,}".format(rb) not in figures_text and
-       "{:,}".format(CA.rounded(full["golden"])) not in figures_text)
-
-    def _pdf(name):
-        return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(target, name)).pages))
-    filed = _pdf(K.AGREEMENT) + " " + _pdf(K.POLICY)
-    shipped_text = figures_text + " " + filed
-    ok("R3c.no_sentence_names_the_start", not re.search(r"disclos|candou?r|communication.and.resolution|roll.?out|"
-                                                        r"launch", shipped_text, re.I),
-       "no shipped sentence names the disclosure settlements, their start or a break")
-    ok("R3c.no_weighting_sentence", not re.search(r"recent|weight|credib|most current|later years|exclude", filed, re.I),
-       "no filed sentence weights, drops or credits any experience year")
+       "{:,}".format(CA.rounded(rts["R1_count_x_class_average"])) not in figures_text)
 
     # ------------------------------------------------------------------ routes
-    miss_full = [k for k in full if k not in OFFSET_FULL]
-    worst = min(miss_full, key=lambda k: abs(full[k] - g))
-    for k in miss_full:
-        ok("route.whole_experience.%s" % k, a_bin_off(full[k]),
-           "%s (%.3fx), rounds %s" % (fmt(full[k]), full[k] / g, "{:,}".format(CA.rounded(full[k]))))
-    ok("route.whole_experience_nearest", abs(full[worst] - g) >= BIN, "%s %s from the golden" % (
-        worst, fmt(abs(full[worst] - g))))
-    for k in OFFSET_FULL:
-        ok("route.offset.%s" % k, True, "two errors that offset: %s (%.3fx), rounds %s" % (
-            fmt(full[k]), full[k] / g, "{:,}".format(CA.rounded(full[k]))))
-    for k in MISS_POST:
-        ok("route.miss.%s" % k, a_bin_off(rts[k]),
+    worst = min(MISS, key=lambda k: abs(rts[k] - g))
+    for k in MISS:
+        ok("route.miss.%s" % k, abs(rts[k] - g) >= BIN and CA.rounded(rts[k]) != rb,
            "%s (%.3fx), rounds %s" % (fmt(rts[k]), rts[k] / g, "{:,}".format(CA.rounded(rts[k]))))
-    for k in ROUND_POST:
-        ok("route.rounds_elsewhere.%s" % k, CA.rounded(rts[k]) != rb,
-           "%s (%.3fx), rounds %s" % (fmt(rts[k]), rts[k] / g, "{:,}".format(CA.rounded(rts[k]))))
+    ok("route.nearest_miss", abs(rts[worst] - g) >= BIN, "%s %s from the golden" % (worst, fmt(abs(rts[worst] - g))))
     for k in CONV:
         ok("route.converges.%s" % k, same_bin(rts[k]), "%s (%.3fx)" % (fmt(rts[k]), rts[k] / g))
-    for k, v in sorted(cons.items()):
-        ok("construction.%s" % k, same_bin(v), "%s (%.3fx)" % (fmt(v), v / g))
-    for k in ("incident_years_2019_on", "earliest_start_for_all"):
-        ok("construction.%s" % k, same_bin(riv[k]), "%s (%.3fx)" % (fmt(riv[k]), riv[k] / g))
-    ok("construction.at_least_five", len(cons) + 2 >= 5, "%d start handlings" % (len(cons) + 2))
     ok("route.golden_mid_bin", abs(g - rb) <= 0.25 * BIN, "%s, %s from the bin's centre" % (fmt(g), fmt(abs(g - rb))))
     for name, sd in (("poisson", m["sd"]), ("bootstrap", m["boot_sd"])):
         ok("route.one_sigma_%s" % name, CA.rounded(g - sd) == rb and CA.rounded(g + sd) == rb,
-           "SD %s (%.1f%%) on %d Claims since the starts: %s to %s" % (fmt(sd), 100 * sd / g, len(post), fmt(g - sd),
-                                                                      fmt(g + sd)))
-    window_claims = [c for c in post if c["lag"] < CA.NDAYS]
+           "SD %s (%.1f%%): %s to %s" % (fmt(sd), 100 * sd / g, fmt(g - sd), fmt(g + sd)))
+    window_claims = [c for c in ex if c["lag"] < CA.NDAYS]
     top = sorted((a[c["cls"]][c["lag"]] * c["cost"] for c in window_claims), reverse=True)
     ok("route.not_sized_from_a_few_claims", top[0] / g < 0.05 and sum(top[:10]) / g < 0.25,
        "%d window Claims; the largest carries %.1f%%, the ten largest %.1f%%" % (len(window_claims), 100 * top[0] / g,
                                                                                 100 * sum(top[:10]) / g))
     for k in SAME_CONVENTIONS:
         ok("convention.%s" % k, same_bin(conv[k]), "%s (%.4fx)" % (fmt(conv[k]), conv[k] / g))
-    # the judge's variants of round 3a, on this experience
-    exall = C.experience_from_rows(rows, job_of=job_of, value_all_rows=True)
-    judge = {"all_defendant_rows_valued": post_g(exall), "trend_to_mid_2027": g * (1 + K.TREND) ** 0.5,
-             "claim_numbers_unmerged": v_flat, "one_pooled_class": rts["P2_all_classes_pooled"],
-             "capped_at_the_limit": post_g([dict(c, cost=min(c["cost"], K.LIMIT_PER_CLAIM)) for c in ex])}
-    for k, v in judge.items():
-        ok("judge_variant.%s" % k, same_bin(v), "%s (%.3fx)" % (fmt(v), v / g))
 
-    slips = {"first_row_only": post_g(C.experience_from_rows(first_only, job_of=job_of)),
-             "claim_numbers_apart": v_flat, "trainees": v_res, "codes_2020_only": v20,
-             "per_diem_dropped": v_pd, "second_rows_dropped": v_one}
+    slips = {"first_row_only": golden_of(C.experience_from_rows(first_only, job_of=job_of)),
+             "claim_numbers_apart": golden_of(flat), "trainees": v_res, "codes_2020_only": v20,
+             "per_diem_dropped": golden_of(ex, E_pd), "second_rows_dropped": golden_of(ex, E_one)}
     big_slip = max(slips, key=lambda k: abs(slips[k] - g))
-    regime_gap = abs(full["golden"] - g)
-    cost_gap = abs(rts["R1_count_x_class_average"] - g)
-    ok("route.dominance", min(regime_gap, cost_gap) >= 3 * abs(slips[big_slip] - g),
-       "the decisive steps (the experience since the starts %s, each Claim at its own cost %s) against the largest "
-       "Layer 1 slip (%s) %s: %.1f and %.1f times" % (fmt(regime_gap), fmt(cost_gap), big_slip,
-                                                      fmt(abs(slips[big_slip] - g)),
-                                                      regime_gap / abs(slips[big_slip] - g),
-                                                      cost_gap / abs(slips[big_slip] - g)))
+    decisive = abs(rts["R1_count_x_class_average"] - g)
+    ok("route.dominance", decisive >= 10 * abs(slips[big_slip] - g),
+       "the decisive step %s against the largest Layer 1 slip (%s) %s: %.1f times" % (
+           fmt(decisive), big_slip, fmt(abs(slips[big_slip] - g)), decisive / abs(slips[big_slip] - g)))
     if world is not None:
         orc = oracle(plan, tr)
         ok("oracle.population_truth", CA.rounded(orc["cost"]) == rb and abs(orc["cost"] - g) <= 1.5 * m["sd"],
-           "the generating parameters' expected 2027 window cost with every entity past its start %s (%.2f Claims): "
-           "the golden is %.3f of it; the whole-experience step factor %.2f of it" % (
-               fmt(orc["cost"]), orc["count"], g / orc["cost"], full["golden"] / orc["cost"]))
+           "the generating parameters' expected 2027 window cost %s (%.2f Claims): the golden is %.3f of it; the "
+           "default %.2f times it" % (fmt(orc["cost"]), orc["count"], g / orc["cost"],
+                                      rts["R1_count_x_class_average"] / orc["cost"]))
 
     # ------------------------------------------------------------------ semantic fork table
+    def _pdf(name):
+        return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(target, name)).pages))
+    filed = _pdf(K.AGREEMENT) + " " + _pdf(K.POLICY)
     ok("SF1.no_margin", "carries no provision for the Trust's administrative expenses" in filed,
        "a 5%% loading files %s" % "{:,}".format(CA.rounded(g * 1.05)))
-    ok("SF2.claims_made_trigger", a_bin_off(rts["R0_mature_year"]) and
+    ok("SF2.claims_made_trigger", CA.rounded(rts["R0_mature_year"]) != rb and
        "A Claim first made after the end of a Plan Year is not covered" in filed,
        "the occurrence reading (every Claim from 2027 incidents) %s" % fmt(rts["R0_mature_year"]))
-    ok("SF3.one_claim_per_incident", same_bin(v_flat) and "are one Claim, first made on the date the earliest"
+    ok("SF3.one_claim_per_incident", same_bin(golden_of(flat)) and "are one Claim, first made on the date the earliest"
        in filed, "claim numbers apart: same call")
     ok("SF4.covered_clinicians", "Residents, fellows and other trainees" in filed,
        "residents and fellows counted: %s" % fmt(v_res))
-
     def rescost(fn):
         out = []
         for c in ex:
@@ -513,35 +383,37 @@ def run(target, golden, world=None, meta_path=None):
     paid = rescost(lambda x: (x["indemnity_paid"] or 0) + (x["defense_paid"] or 0))
     indem = rescost(lambda x: (x["indemnity_paid"] or 0) + (x["indemnity_reserve"] or 0))
     ok("SF5.cost_basis_reproduces", abs(sum(c["cost"] for c in full_check) - sum(c["cost"] for c in ex)) < 0.01)
-    ok("SF5.paid_only", True, "paid only: %s; ruled out by 3.4 (case reserves)" % fmt(post_g(paid)))
-    ok("SF5.indemnity_only", True, "indemnity only: %s; ruled out by 3.4 (indemnity and defence)" % fmt(post_g(indem)))
+    ok("SF5.paid_only", True, "paid only: %s; ruled out by 3.4 (case reserves)" % fmt(golden_of(paid)))
+    ok("SF5.indemnity_only", True, "indemnity only: %s; ruled out by 3.4 (indemnity and defence)" % fmt(golden_of(indem)))
     ex6 = [dict(c, cost=c["cost"] / K.trend_factor(c["year"]) * K.trend_factor(c["year"] + (0 if c["same_year"] else 1)))
            for c in ex]
-    ok("SF6.trend_from_incident_year", "compounded from the calendar year of its Medical Incident" in filed and
-       same_bin(post_g(ex6)), "trended from the year made: %s" % fmt(post_g(ex6)))
-    v17 = CA.golden([c for c in ex if c["year"] >= 2017], CA.lag_weights(
-        plan, tr, CA.exposure(Eekm, K.CLASSES, first=(2017, 1)), K.CLASSES, K.ENTITY_ORDER))
-    ok("SF7.experience_since_the_starts", "from 1 January 2016 to 31 December 2024" in filed and
-       "as Claims against the System's clinicians will arise and be made in that year" in filed and
-       a_bin_off(full["golden"]) and a_bin_off(v17) and same_bin(cons["incident_years_2020_on"]),
-       "the whole experience held %s and 2017 to 2024 %s, against 3.1's Claims as they will be made in 2027 and the "
-       "settlements every year since each start (regime block); 2020 to 2024 %s, same call" % (
-           fmt(full["golden"]), fmt(v17), fmt(cons["incident_years_2020_on"])))
-    by_entity = 0.0
+    ok("SF6.trend_from_incident_year", "compounded from the calendar year of its Medical Incident" in filed,
+       "trended from the year made: %s" % fmt(golden_of(ex6)))
+    for lo_y in (2017, 2020):
+        exy = [c for c in ex if c["year"] >= lo_y]
+        Ey = AN.load_payroll(target, first="%d-01" % lo_y)[1]
+        ok("SF7.experience_from_%d" % lo_y, "from 1 January 2016 to 31 December 2024" in filed,
+           "experience %d to 2024: %s" % (lo_y, fmt(golden_of(exy, Ey))))
+    ok("SF8.pooled_within_class", same_bin(rts["P2_all_classes_pooled"]) and "pooled within each specialty class" in filed,
+       "all classes pooled: %s (same call)" % fmt(rts["P2_all_classes_pooled"]))
+    tot_by_entity = 0.0
     for e in K.ENTITY_ORDER:
+        ce = [c for c in ex if c["entity"] == e]
         pe = {kk: vv for kk, vv in plan.items() if kk[0] == e}
-        Ee = CA.exposure({kk: vv for kk, vv in Eekm.items() if kk[0] == e}, K.CLASSES, starts)
+        Ee = {k: 0.0 for k in K.CLASSES}
+        with open(os.path.join(target, K.PAYROLL), encoding="utf-8") as fh:
+            for x in csv.DictReader(fh):
+                if x["entity_code"] == e and sb.get(x["job_code"]) and "2016-01" <= x["pay_month"] <= "2024-12":
+                    Ee[sb[x["job_code"]]] += float(x["fte"]) / 12.0
         ks = [k for k in K.CLASSES if (e, k) in pe and Ee[k] > 0]
         if ks:
-            by_entity += CA.golden([c for c in post if c["entity"] == e and c["cls"] in ks],
-                                   CA.lag_weights(pe, tr, Ee, ks, [e]))
-    ok("SF8.rated_by_class", same_bin(rts["P2_all_classes_pooled"]) and "rated by the specialty classes" in filed,
-       "all classes pooled: %s (same call); each entity on its own experience %s (%s)" % (
-           fmt(rts["P2_all_classes_pooled"]), fmt(by_entity),
-           "same call" if same_bin(by_entity) else "ruled out by 3.3, the System's experience"))
+            tot_by_entity += CA.golden([c for c in ce if c["cls"] in ks],
+                                       CA.lag_weights(pe, tr, Ee, ks, [e]))
+    ok("SF8.not_by_entity", True, "each entity on its own experience: %s; ruled out by 3.3 (pooled within each class)" %
+       fmt(tot_by_entity))
     tr0 = {e: K.PLAN_START for e in K.ENTITY_ORDER}
-    v0 = post_g(ex, tt=tr0)
-    ok("SF9.from_transition_date", a_bin_off(v0) and "month from the entity's Transition Date" in filed,
+    v0 = golden_of(ex, E, plan, tr0)
+    ok("SF9.from_transition_date", CA.rounded(v0) != rb and "month from the entity's Transition Date" in filed,
        "every entity from 1 January: %s" % fmt(v0))
     wbp = openpyxl.load_workbook(os.path.join(target, K.PLAN), data_only=True)
     plan_note = " ".join(str(c.value) for row in wbp["Notes"].iter_rows() for c in row if c.value)
@@ -571,13 +443,10 @@ def run(target, golden, world=None, meta_path=None):
     ok("SF14.rounded_once", rb == CA.rounded(g) and "rounded once, from unrounded amounts" in filed)
     ind_cost = {c["incident_no"]: c["cost"] for c in indem}
     ex15 = [c for c in ex if ind_cost[c["incident_no"]] > 0]
-    v15 = post_g(ex15)
-    ok("SF15.defence_only_claims_counted", len(ex15) < len(ex) and same_bin(v15),
-       "%d Claims without indemnity; left out: %s" % (len(ex) - len(ex15), fmt(v15)))
+    ok("SF15.defence_only_claims_counted", len(ex15) < len(ex),
+       "%d Claims without indemnity; left out: %s" % (len(ex) - len(ex15), fmt(golden_of(ex15))))
     biggest = max(c["cost"] for c in window_claims)
-    ok("SF16.limit_cannot_bind", biggest < K.LIMIT_PER_CLAIM and abs(judge["capped_at_the_limit"] - g) < 1e-6,
-       "largest Claim made within a year since the starts %s; capping every Claim at the limit changes nothing" %
-       fmt(biggest))
+    ok("SF16.limit_cannot_bind", biggest < K.LIMIT_PER_CLAIM, "largest Claim made within a year %s" % fmt(biggest))
     chains = [c for c in ex if c["n_claim_nos"] > 1]
     repeats = 0
     for c in chains:
@@ -589,10 +458,10 @@ def run(target, golden, world=None, meta_path=None):
         vals = [tuple(sorted(v_)) for v_ in sets.values()]
         repeats += len(vals) != len(set(vals))
     later = [dict(c, cost=sorted(c["parts"])[-1][1]) if c["n_claim_nos"] > 1 else c for c in ex]
-    v17b = post_g(later)
-    ok("SF17.claim_numbers_added", bool(chains) and repeats == 0 and same_bin(v17b),
-       "%d chains, %d repeat an amount set; the later claim number alone %s" % (len(chains), repeats, fmt(v17b)))
-    ok("SF18.per_diem_paid_fte", same_bin(v_pd), "per-diem rows out of the exposure: same call")
+    ok("SF17.claim_numbers_added", bool(chains) and repeats == 0,
+       "%d chains, %d repeat an amount set; the later claim number alone %s" % (len(chains), repeats,
+                                                                               fmt(golden_of(later))))
+    ok("SF18.per_diem_paid_fte", True, "per-diem rows out of the exposure: same call (R2.per_diem_rows_dropped)")
     ok("SF19.month_as_twelfth", same_bin(conv["calendar_day_exposure"]), "calendar-day exposure %s" %
        fmt(conv["calendar_day_exposure"]))
     lo, hi = K.EXPERIENCE
@@ -602,32 +471,16 @@ def run(target, golden, world=None, meta_path=None):
         ex25 = C.experience_from_rows(rows, job_of=job_of)
     finally:
         K.EXPERIENCE = hi_saved
-    v25 = post_g(ex25, payroll_eekm(target, sb, last="2025-12"))
-    ok("SF20.experience_to_2024", "31 December 2024" in filed, "2025 incidents added: %s (%s)" % (
-        fmt(v25), "same call" if same_bin(v25) else "outside the experience 3.3 holds"))
-    ok("SF21.escalations_at_the_request", same_bin(v_flat), "= SF3")
-    Eekm20all = payroll_eekm(target, sb, keep=lambda x: x["job_code"] in new_codes)
-    v22 = post_g(ex, Eekm20all)
-    ok("SF22.both_code_sets", a_bin_off(v22) or CA.rounded(v22) != rb,
-       "the 2020 code set's exposure under every Claim: %s" % fmt(v22))
-    ok("SF31.start_handling", all(same_bin(v) for v in cons.values()) and
-       all(same_bin(riv[k]) for k in ("incident_years_2019_on", "earliest_start_for_all")),
-       "; ".join("%s %s" % (k, fmt(v)) for k, v in sorted(list(cons.items()) + [
-           (k, riv[k]) for k in ("incident_years_2019_on", "earliest_start_for_all")])))
-    ok("SF32.no_development_for_the_window", last_lag_day < K.VALUATION and "valued at the indemnity and defence paid "
-       "and the case reserves recorded" in filed, "every delay the window uses is observed for every experience "
-       "incident (regime.window_lags_complete); 3.4 values each Claim as recorded")
-    ok("SF33.trend_to_mid_2027", same_bin(judge["trend_to_mid_2027"]), "trended to mid-2027: %s, same call" %
-       fmt(judge["trend_to_mid_2027"]))
-    ok("SF34.all_defendant_rows_valued", same_bin(judge["all_defendant_rows_valued"]),
-       "every priced defendant row valued: %s, same call" % fmt(judge["all_defendant_rows_valued"]))
-    ok("SF35.delay_severity_granularity", all(same_bin(rts[k]) for k in ("E3_equal_bins", "E6_equal_bins",
-                                                                         "E8_equal_bins", "K5_kernel_severity",
-                                                                         "K10_kernel_severity", "K20_kernel_severity",
-                                                                         "K40_kernel_severity")),
-       "3, 6 or 8 delay bins and kernels of 5 to 40 days: %s" % ", ".join(
-           fmt(rts[k]) for k in ("E3_equal_bins", "E6_equal_bins", "E8_equal_bins", "K5_kernel_severity",
-                                 "K40_kernel_severity")))
+    E25 = AN.load_payroll(target, last="2025-12")[1]
+    ok("SF20.experience_to_2024", "31 December 2024" in filed, "2025 incidents added: %s" % fmt(golden_of(ex25, E25)))
+    ok("SF21.escalations_at_the_request", same_bin(golden_of(flat)), "= SF3")
+    E20all = {k: 0.0 for k in K.CLASSES}
+    with open(os.path.join(target, K.PAYROLL), encoding="utf-8") as fh:
+        for x in csv.DictReader(fh):
+            if x["job_code"] in new_codes and sb.get(x["job_code"]) and "2016-01" <= x["pay_month"] <= "2024-12":
+                E20all[sb[x["job_code"]]] += float(x["fte"]) / 12.0
+    v22 = golden_of(ex, E20all)
+    ok("SF22.both_code_sets", CA.rounded(v22) != rb, "the 2020 code set's exposure under every Claim: %s" % fmt(v22))
 
     # ------------------------------------------------------------------ closure axes
     lag_ok = max(dt.date(c["year"], 12, 31) + dt.timedelta(days=c["lag"]) for c in window_claims) < K.VALUATION
@@ -636,7 +489,7 @@ def run(target, golden, world=None, meta_path=None):
     for seed in (1, 2, 3):
         rr = list(rows)
         random.Random(seed).shuffle(rr)
-        perm.append(post_g(C.experience_from_rows(rr, job_of=job_of), st=CA.regime_starts(rr)))
+        perm.append(golden_of(C.experience_from_rows(rr, job_of=job_of)))
     ok("axis14.row_order", all(abs(p - g) < 1e-6 for p in perm))
     covered_ids = {x["clinician_id"] for x in rows if x["coverage_line"] != "CONTRACT" and lo <= x["incident_date"] <= hi}
     in_pay = {k[0] for k in m["job"]}
@@ -648,8 +501,8 @@ def run(target, golden, world=None, meta_path=None):
     ok("axis22.plan_full_year", all(len(v_) == 12 and min(v_) > 0 for v_ in plan.values()))
     tr_p = {e: tr[e] + dt.timedelta(days=1) for e in tr}
     tr_m = dict({e: tr[e] - dt.timedelta(days=1) for e in tr}, TFH=tr["TFH"])
-    alt_counts = [CA.count(post, CA.lag_weights(plan, t_, E, K.CLASSES, K.ENTITY_ORDER)) for t_ in (tr_p, tr_m)]
-    alt_counts.append(CA.count([dict(c, lag=c["lag"] + 1) for c in post], a))
+    alt_counts = [CA.count(ex, CA.lag_weights(plan, t_, E, K.CLASSES, K.ENTITY_ORDER)) for t_ in (tr_p, tr_m)]
+    alt_counts.append(CA.count([dict(c, lag=c["lag"] + 1) for c in ex], a))
     ok("axis20.expected_claims_not_graded", True, "%.2f expected Claims; one-day variants %s, so no count is stated as "
        "a graded figure" % (m["count"], ", ".join("%.2f" % x for x in alt_counts)))
 
@@ -671,6 +524,39 @@ def run(target, golden, world=None, meta_path=None):
        ", ".join(s3_off))
     ok("askA.none_is_an_answer", any(aa[e]["count"] == 0 for e in K.ENTITY_ORDER))
     ok("askA.some_missing", sum(1 for e in K.ENTITY_ORDER if aa[e]["count"] > 0) >= 2)
+    # A2: a suit the clinician sent straight to the carrier is on the run with no insured reference; the carrier era
+    # applied and the run matched by its references alone files a wrong figure at every entity
+    for e in K.ENTITY_ORDER:
+        v_ = aa[e]
+        ok("askA.%s.S6_era_by_reference_off" % e, v_["s6"][0] != v_["count"] and
+           r1000(v_["s6"][1]) != r1000(v_["reserves"]) and len(v_["no_reference"]) == 1,
+           "references only: %d, %s against %d, %s (suit on the run with no reference %s)" % (
+               v_["s6"][0], fmt(v_["s6"][1]), v_["count"], fmt(v_["reserves"]), v_["no_reference"]))
+    ok("askA.S6_none_becomes_yes", all(aa[e]["s6"][0] > 0 for e in K.ENTITY_ORDER if aa[e]["count"] == 0),
+       "the entities with none missing answer yes on references alone")
+    blank_rows = {}
+    for f_, loader in ((K.QM_SEP, lambda: A.load_qm(target, K.QM_SEP)[1]), (K.QM_JUN, lambda: A.load_qm(target, K.QM_JUN)[1]),
+                       (K.SC_SEP, lambda: A.load_sc(target)[1])):
+        blank_rows[f_] = [x for x in loader() if not A.norm(x["ref"])]
+    reg_dates = {}
+    for x in rows:
+        reg_dates.setdefault((x["entity_at_incident"], x["incident_date"]), set()).add(x["incident_no"])
+    ok("askA.no_reference_rows_unique", all(len(reg_dates.get((x["entity"], x["dol"]), ())) == 1 and
+                                            str(x["ctype"]).lower() == "suit"
+                                            for rs in blank_rows.values() for x in rs),
+       "every run row with no insured reference is a suit, the only register incident of its entity on its date of "
+       "care (%d rows)" % sum(len(rs) for rs in blank_rows.values()))
+    gaps_all = {i for e in K.ENTITY_ORDER for i in aa[e]["missing"]}
+    ok("askA.no_reference_never_a_gap", not any(reg_dates.get((x["entity"], x["dol"]), set()) & gaps_all
+                                                for rs in blank_rows.values() for x in rs))
+    closed_twins = {f_: sum(1 for x in rs if str(x["status"]).upper() in ("CLOSED", "C")) for f_, rs in blank_rows.items()}
+    ok("askA.no_reference_not_a_marker", closed_twins[K.QM_SEP] >= 2 and closed_twins[K.SC_SEP] >= 2,
+       "closed suits with no insured reference beside the open ones: %s" % closed_twins)
+    ok("SF31.suit_with_no_reference_is_on_the_run", all(set(aa[e]["no_reference"]).isdisjoint(aa[e]["missing"]) and
+                                                         aa[e]["s6"][0] == aa[e]["count"] + len(aa[e]["no_reference"])
+                                                         for e in K.ENTITY_ORDER),
+       "each suit the run carries with no reference is on the run, not a gap; read as missing it adds one at every "
+       "entity")
     ok("askA.S5_contracted_moves", any(aa[e]["s5"][0] != aa[e]["count"] for e in K.ENTITY_ORDER))
     a_open = A.ask_a(target, [dict(x, status="CLOSED") if x["status"] == "REOPENED" else x for x in rows])
     ok("SF23.open_and_reopened_converge", all(a_open[e]["count"] == aa[e]["count"] and
@@ -719,7 +605,41 @@ def run(target, golden, world=None, meta_path=None):
     for r_ in lines:
         if sb.get(xw[r_["job_profile_code"]]) and r_["worker_id"] not in trainee_any:
             alt[(cc[r_["cost_centre"]], r_["work_month"])] += float(r_["hours"]) / A.HOURS_FULL
-    ok("SF29.trainee_in_month_or_quarter", all(r1(alt[c_]) == r1(bb["gold"][c_]) for c_ in cells))
+    # B2: the June graduates hired into attending vacancies hold a GME line in a later month only as a termination
+    # payout; reading any GME line as a trainee month (S6), or a trainee in any month of the quarter, drops them
+    off6 = [c_ for c_ in cells if r1(bb["s6"][c_]) != r1(bb["gold"][c_])]
+    ok("askB.s6_payout_read_as_trainee_moves", len(off6) >= 9 and all((e, mo) in off6 for e in ("TFH", "AMC", "CMG")
+                                                                       for mo in A.ASK_B_MONTHS),
+       "%d of %d cells (every Tolliver Falls, Alderwick and medical group month)" % (len(off6), len(cells)))
+    off_q = [c_ for c_ in cells if r1(alt[c_]) != r1(bb["gold"][c_])]
+    ok("SF29.trainee_in_the_month", set(off_q) == set(off6),
+       "a trainee in any month of the quarter moves the same %d cells as S6; agreement 1.5 covers a physician employed "
+       "in a Schedule B job while so employed and takes out residents and fellows, so the test is the month" % len(off_q))
+    with open(os.path.join(target, K.HCM), encoding="utf-8") as fh:
+        all_lines = list(csv.DictReader(fh))
+    trm = [r_ for r_ in all_lines if r_["earning_code"] == "TRM"]
+    trm_gme = [r_ for r_ in trm if xw[r_["job_profile_code"]] in A.TRAINEE_CODES]
+    trm_cov = [r_ for r_ in trm if sb.get(xw[r_["job_profile_code"]])]
+    ok("askB.trm_lines_carry_no_hours", trm and all(float(r_["hours"]) == 0.0 and float(r_["fte"]) == 0.0 for r_ in trm),
+       "%d termination payouts, %d on resident or fellow positions, %d on covered positions" % (
+           len(trm), len(trm_gme), len(trm_cov)))
+    ok("askB.trm_not_a_marker", len(trm_cov) >= 20 and len(trm_gme) >= 15,
+       "payouts follow every ended position, not the graduates alone")
+    gme_months = {}
+    for r_ in all_lines:
+        if xw[r_["job_profile_code"]] in A.TRAINEE_CODES and r_["earning_code"] != "TRM":
+            gme_months.setdefault(r_["worker_id"], set()).add(r_["work_month"])
+    hired = sorted({r_["worker_id"] for r_ in trm_gme if r_["work_month"] in A.ASK_B_MONTHS and any(
+        x["worker_id"] == r_["worker_id"] and x["work_month"] == r_["work_month"] and sb.get(xw[x["job_profile_code"]])
+        and float(x["hours"]) > 0 for x in lines)})
+    ok("askB.graduates_trained_to_june", hired and all(max(gme_months.get(w_, {"9999"})) == "2026-06" for w_ in hired),
+       "%d graduates paid on a covered position in their payout month, each paid on a GME position to June 2026" %
+       len(hired))
+    dic_text = open(os.path.join(target, K.DICTIONARY), encoding="utf-8").read()
+    ok("SF32.payout_month_not_a_trainee_month", "a termination payout carries the month it is paid" in dic_text and
+       all(r1(bb["s6"][c_]) < r1(bb["gold"][c_]) for c_ in off6),
+       "the dictionary dates a payout to the month paid; read as a trainee month it takes the graduates out of %d cells"
+       % len(off6))
     alt2 = {c_: v_ * A.HOURS_FULL / (2080.0 / 12) for c_, v_ in bb["gold"].items()}
     ok("SF28.hours_per_fte_month", all(r1(alt2[c_]) == r1(bb["gold"][c_]) for c_ in cells),
        "2,080 over 12 against 173.33 gives the same figures")
@@ -823,7 +743,9 @@ def run(target, golden, world=None, meta_path=None):
                                                                   K.DIRECTORY, K.NOTICES, K.QM_SEP, K.QM_JUN, K.SC_SEP,
                                                                   K.SAFETY, K.INVOICES, K.PREMIUMS)))
     ok("H9.dictionary_narrates_no_device", not re.search(r"moonlight|additional job|former carrier|before .* moved|"
-                                                         r"per.diem|carrier change", dic, re.I))
+                                                         r"per.diem|carrier change|graduat|residency|trainee|"
+                                                         r"no (insured )?reference|without a reference|summons|"
+                                                         r"directly to the carrier", dic, re.I))
     vdate = K.VALUATION
     late = [x["claim_no"] for x in rows if x["claim_made_date"] > vdate or (x["closed_date"] and x["closed_date"] > vdate)]
     ok("H16.register_dates_by_valuation", not late, str(late[:3]))
@@ -841,24 +763,13 @@ def run(target, golden, world=None, meta_path=None):
     ok("H16.stoneleigh_reports_by_valuation", max(rpt) <= vdate)
 
     # the design note's world figures, recomputed here (H2)
-    for name, cl in (("since_the_starts", post), ("whole_experience", ex)):
-        prof = []
-        for lo_, hi_ in ((0, 30), (31, 90), (91, 182), (183, 364), (365, 10 ** 6)):
-            sel = [c for c in cl if lo_ <= c["lag"] <= hi_]
-            prof.append("%d-%s: %d Claims at %s" % (lo_, hi_ if hi_ < 10 ** 6 else "", len(sel),
-                                                    fmt(sum(c["cost"] for c in sel) / len(sel))))
-        ok("record.experience_by_delay.%s" % name, True, "; ".join(prof))
-    ok("record.starts", True, ", ".join("%s %s" % (e, starts[e]) for e in K.ENTITY_ORDER))
-    ok("record.experience", True, "whole: %d Claims on %.1f FTE-years; since the starts: %d Claims on %.1f FTE-years" % (
-        len(ex), sum(E_full.values()), len(post), sum(E.values())))
-    ok("record.routes_since_the_starts", True, "; ".join("%s %s" % (k, fmt(v_)) for k, v_ in
-                                                         sorted(rts.items(), key=lambda kv: kv[1])))
-    ok("record.routes_whole_experience", True, "; ".join("%s %s" % (k, fmt(v_)) for k, v_ in
-                                                         sorted(full.items(), key=lambda kv: kv[1])))
-    ok("record.constructions", True, "; ".join("%s %s" % (k, fmt(v_)) for k, v_ in sorted(
-        list(cons.items()) + list(riv.items()), key=lambda kv: kv[1])))
-    ok("record.slips", True, "; ".join("%s %s" % (k, fmt(v_)) for k, v_ in slips.items()))
-    ok("record.judge_variants", True, "; ".join("%s %s" % (k, fmt(v_)) for k, v_ in judge.items()))
+    prof = []
+    for lo_, hi_ in ((0, 30), (31, 90), (91, 182), (183, 364), (365, 10 ** 6)):
+        cl = [c for c in ex if lo_ <= c["lag"] <= hi_]
+        prof.append("%d-%s: %d Claims at %s" % (lo_, hi_ if hi_ < 10 ** 6 else "", len(cl),
+                                                fmt(sum(c["cost"] for c in cl) / len(cl))))
+    ok("record.experience_by_delay", True, "; ".join(prof))
+    ok("record.routes", True, "; ".join("%s %s" % (k, fmt(v_)) for k, v_ in sorted(rts.items(), key=lambda kv: kv[1])))
     figs_json = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")))
     ok("figures.contribution", figs_json["call"]["contribution"] == "{:,}".format(rb))
 

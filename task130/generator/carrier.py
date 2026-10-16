@@ -18,6 +18,44 @@ def expiring_era(inc):
     return inc.date >= K.ENTITIES[inc.entity]["carrier_from"]
 
 
+def mark_clinician_reported(incidents, V=K.VALUATION):
+    """Suits a clinician sent straight to the carrier: the policy asks the insured to forward a summons at once, and
+    the carrier opens its file from the clinician's copy, which carries no Corvane reference. One open suit at each
+    entity and about two in five of the closed ones, each the only incident its entity has on its date of care."""
+    import claims as C
+    rng = K.claims_stream("clinician-reported")
+    dates = {}
+    for inc in incidents:
+        dates.setdefault((inc.entity, inc.date), []).append(inc)
+    open_by, closed = {}, []
+    for inc in incidents:
+        inc.clinician_reported = False
+        if inc.route != "DIRECT" or inc.notice is not None or len(inc.claims) != 1 or len(dates[(inc.entity,
+                                                                                                    inc.date)]) > 1:
+            continue
+        c = inc.claims[0]
+        if c.matter_type != "Suit" or c.prior is not None or c.report is None or c.report > V:
+            continue
+        if not any(d.line != "CONTRACT" for d in c.defendants) or not expiring_era(inc):
+            continue
+        if C._open_at(c, V):
+            open_by.setdefault(inc.entity, []).append(inc)
+        else:
+            closed.append(inc)
+    for e in K.ENTITY_ORDER:
+        cands = sorted(open_by.get(e, []), key=lambda i: i.incident_no)
+        if cands:
+            cands[int(rng.integers(0, len(cands)))].clinician_reported = True
+    for car in ("QM", "SC"):
+        pool = sorted((i for i in closed if K.ENTITIES[i.entity]["carrier"] == car), key=lambda i: i.incident_no)
+        picked = [i for i in pool if rng.random() < 0.4]
+        rest = [i for i in pool if i not in picked]
+        while len(picked) < 2 and rest:
+            picked.append(rest.pop(int(rng.integers(0, len(rest)))))
+        for inc in picked:
+            inc.clinician_reported = True
+
+
 def records(incidents, notice_only, Vr, key):
     """Every carrier claim open or closed on the carrier's books at valuation date Vr."""
     rng = K.claims_stream("carrier-reserves")
@@ -33,7 +71,10 @@ def records(incidents, notice_only, Vr, key):
         if created is None or created > Vr:
             continue
         known = [c for c in inc.claims if c.report is not None and c.report <= Vr and c.made <= Vr]
-        ref = inc.notice_no if inc.notice is not None else inc.claims[0].claim_no
+        if getattr(inc, "clinician_reported", False):
+            ref = ""
+        else:
+            ref = inc.notice_no if inc.notice is not None else inc.claims[0].claim_no
         if not known:
             ctype = "Incident"
             status = "Open" if (Vr - inc.notice).days < 540 else "Closed"

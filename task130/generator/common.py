@@ -46,20 +46,16 @@ CARRIERS = {
 ENTITIES = {
     "TFH": dict(name="Tolliver Falls Hospital", company="120", transition=dt.date(2027, 1, 1), carrier="QM",
                 line="QM-TFH", anniv=1, policy="QM-HPL-{yy}-0{n}", base_n=4172, joined=None,
-                former="HL", carrier_from=dt.date(2021, 1, 1), former_policy="HHM-{yy}-17{n}",
-                disclosure_from=dt.date(2019, 3, 1)),
+                former="HL", carrier_from=dt.date(2021, 1, 1), former_policy="HHM-{yy}-17{n}"),
     "AMC": dict(name="Alderwick Medical Center", company="110", transition=dt.date(2027, 4, 1), carrier="QM",
                 line="QM-AMC", anniv=4, policy="QM-HPL-{yy}-0{n}", base_n=4406, joined=None,
-                former="CL", carrier_from=dt.date(2019, 4, 1), former_policy="CLI-PL-{yy}{n}",
-                disclosure_from=dt.date(2019, 1, 1)),
+                former="CL", carrier_from=dt.date(2019, 4, 1), former_policy="CLI-PL-{yy}{n}"),
     "CMG": dict(name="Corvane Medical Group", company="300", transition=dt.date(2027, 7, 1), carrier="SC",
                 line="SC-CMG", anniv=7, policy="SC-PPL-0091877-{yy}", base_n=0, joined=None,
-                former="WP", carrier_from=dt.date(2019, 7, 1), former_policy="WPX-0{n}-{yy}",
-                disclosure_from=dt.date(2019, 5, 1)),
+                former="WP", carrier_from=dt.date(2019, 7, 1), former_policy="WPX-0{n}-{yy}"),
     "BCH": dict(name="Brennick Community Hospital", company="140", transition=dt.date(2027, 10, 1), carrier="SC",
                 line="SC-BCH", anniv=10, policy="SC-HPL-0102265-{yy}", base_n=0, joined=dt.date(2019, 7, 1),
-                former="TR", carrier_from=dt.date(2022, 10, 1), former_policy="TRE-HPL-{yy}-{n}",
-                disclosure_from=dt.date(2019, 7, 1)),
+                former="TR", carrier_from=dt.date(2022, 10, 1), former_policy="TRE-HPL-{yy}-{n}"),
 }
 ENTITY_ORDER = ["TFH", "AMC", "CMG", "BCH"]
 

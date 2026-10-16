@@ -61,7 +61,8 @@ def load_qm(target, fname):
     for row in ws.iter_rows(min_row=8, values_only=True):
         if not row[3]:
             continue
-        out.append(dict(entity=QM_NAMES[row[2]], ref=row[4], ctype=row[7], status=row[8]))
+        dol = row[5].date() if hasattr(row[5], "date") else row[5]
+        out.append(dict(entity=QM_NAMES[row[2]], ref=row[4] or "", ctype=row[7], status=row[8], dol=dol))
     return valued, out
 
 
@@ -70,8 +71,9 @@ def load_sc(target):
     valued = None
     with open(os.path.join(target, K.SC_SEP), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
+            mo, dd, yy = r["DATE_OF_LOSS"].split("/")
             out.append(dict(entity=SC_NAMES[r["INSURED_NAME"]], ref=r["INSURED_REF"], ctype=r["CLM_TYPE"],
-                            status=r["CLM_STATUS"]))
+                            status=r["CLM_STATUS"], dol=dt.date(int(yy), int(mo), int(dd))))
             m, d, y = r["VALUATION_DT"].split("/")
             valued = dt.date(int(y), int(m), int(d))
     return valued, out
@@ -127,8 +129,14 @@ def ask_a(target, rows=None):
     rev_notice = {}
     for k, v in notices.items():
         rev_notice.setdefault(v, set()).add(norm(k))
+    suit_inc = {r["incident_no"] for r in rows if r["matter_type"] == "Suit"}
+    by_date = {}
+    for r in rows:
+        by_date.setdefault((r["entity_at_incident"], r["incident_date"]), set()).add(r["incident_no"])
 
-    def found(run, e, notices_too=True):
+    def found(run, e, notices_too=True, blank=True):
+        """The incidents a carrier's run carries: by insured reference (claim numbers; notice numbers through the
+        notice log), and a suit filed with no insured reference by its entity, date of loss and type."""
         out = set()
         for x in run:
             if x["entity"] != e:
@@ -138,6 +146,10 @@ def ask_a(target, rows=None):
                 out.add(claim_inc[k])
             elif notices_too and k in notice_inc:
                 out.add(notice_inc[k])
+            elif blank and not k and str(x["ctype"]).lower() == "suit":
+                cands = {i for i in by_date.get((e, x["dol"]), ()) if i in suit_inc}
+                if len(cands) == 1:
+                    out |= cands
         return out
 
     def reserves_of(sel, incs):
@@ -154,11 +166,18 @@ def ask_a(target, rows=None):
         old = [i for i in opn if inc_date[i] < era]
         on = found(latest[e], e)
         miss = [i for i in exp if i not in on]
+        on_refs = found(latest[e], e, blank=False)
         out = dict(open=len(opn), expiring=len(exp), old_era=old, era_start=era, carrier=car, missing=miss,
-                   count=len(miss), reserves=reserves_of(on_line, set(miss)))
-        # S1: every open claim on the coverage line, the expiring carrier's era not applied
-        s1 = [i for i in opn if i not in on]
+                   count=len(miss), reserves=reserves_of(on_line, set(miss)),
+                   no_reference=sorted(i for i in exp if i in on and i not in on_refs))
+        # S1, the cracker's: every open claim on the coverage line matched by every reference, the expiring
+        # carrier's era not applied
+        s1 = [i for i in opn if i not in on_refs]
         out["s1"] = (len(s1), reserves_of(on_line, set(s1)))
+        # S6: the expiring carrier's era applied, the run matched by its references only (a suit filed with no
+        # insured reference left unmatched)
+        s6 = [i for i in exp if i not in on_refs]
+        out["s6"] = (len(s6), reserves_of(on_line, set(s6)))
         # S2: the runs' notice references left unmatched
         on2 = found(latest[e], e, notices_too=False)
         s2 = [i for i in exp if i not in on2]
@@ -167,7 +186,8 @@ def ask_a(target, rows=None):
         refs = {norm(x["ref"]) for x in latest[e] if x["entity"] == e}
         open_nos = sorted({r["claim_no"] for r in rows if on_line(r) and r["status"] in ("OPEN", "REOPENED")
                            and inc_date[r["incident_no"]] >= era})
-        s3 = [c for c in open_nos if norm(c) not in refs and not (rev_notice.get(no_inc[c], set()) & refs)]
+        s3 = [c for c in open_nos if norm(c) not in refs and not (rev_notice.get(no_inc[c], set()) & refs)
+              and no_inc[c] not in out["no_reference"]]
         out["s3"] = (len(s3), sum((r["indemnity_reserve"] or 0.0) + (r["defense_reserve"] or 0.0)
                                   for r in rows if on_line(r) and r["claim_no"] in s3))
         # S4: the run received last (Quillan's revision 1 of its June run) read as the latest
@@ -216,8 +236,12 @@ def ask_b(target, lines=None):
     xw = crosswalk(target)
     cc = directory(target)
     lines = lines if lines is not None else hcm_lines(target)
-    trainee = {(r["worker_id"], r["work_month"]) for r in lines if xw[r["job_profile_code"]] in TRAINEE_CODES}
-    names = ("gold", "s1", "s2", "s3", "s4", "s5")
+    # a worker holds a resident or fellow position in a month he is paid on it for that month; a termination payout
+    # is paid after the position has ended
+    trainee = {(r["worker_id"], r["work_month"]) for r in lines if xw[r["job_profile_code"]] in TRAINEE_CODES
+               and r["earning_code"] != "TRM"}
+    any_gme = {(r["worker_id"], r["work_month"]) for r in lines if xw[r["job_profile_code"]] in TRAINEE_CODES}
+    names = ("gold", "s1", "s2", "s3", "s4", "s5", "s6")
     out = {n: {(e, m): 0.0 for e in K.ENTITY_ORDER for m in ASK_B_MONTHS} for n in names}
     seen = set()
     for r in lines:
@@ -227,6 +251,8 @@ def ask_b(target, lines=None):
         hrs = float(r["hours"])
         per_diem = float(r["fte"]) == 0.0 and hrs > 0
         out["s1"][cell] += hrs / HOURS_FULL                                 # trainees' additional positions kept
+        if (r["worker_id"], r["work_month"]) not in any_gme:
+            out["s6"][cell] += hrs / HOURS_FULL                             # any GME line that month, payouts too
         if (r["worker_id"], r["work_month"]) in trainee:
             continue
         out["gold"][cell] += hrs / HOURS_FULL                               # paid hours, trainees left out

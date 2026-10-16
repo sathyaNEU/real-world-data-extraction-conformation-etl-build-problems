@@ -232,6 +232,7 @@ def build():
     _historic_transfers(W)
     W.movers = _october_moves(W)
     _moonlighting(W)
+    W.graduates, W.payouts = _graduates(W)
     W.by_emp = {}
     for p in W.positions:
         W.by_emp.setdefault(p.emp, []).append(p)
@@ -295,6 +296,60 @@ def _moonlighting(W):
         q.moonlight = True
         q.hcm_profile = prof
         W.positions.append(q)
+
+
+# the June 2026 graduates the System hired into attending vacancies, by the training the vacancy takes
+GRAD_FIT = {"HOS": (("AMC", "RES"), ("TFH", "RES")), "EMR": (("AMC", "RES"),), "INT": (("AMC", "RES"),),
+            "FAM": (("TFH", "RES"),), "CCM": (("AMC", "FEL"),), "CAR": (("AMC", "FEL"),)}
+GRAD_CELLS = [(e, mm) for e in ("TFH", "AMC", "CMG") for mm in (7, 8, 9)]
+
+
+def _graduates(W):
+    """Residents and fellows finish on 30 June. The System hired some of its June 2026 graduates into attending
+    vacancies that opened from July to September: the attending position is the vacancy's (the same position, start
+    date and FTE), held under the graduate's own employee id. HCM pays each worker whose position ends a termination
+    payout line, with no hours, in a later pay run: the graduates in July, August or September, attendings and other
+    clinicians who left in 2026 the month after they left. Returns the hired graduates [(GME position, attending
+    position, payout month)] and every payout [(position, (y, m))]."""
+    rng = K.stream("graduates")
+    grads = sorted((p for p in W.positions if p.job in ("RES", "FEL") and p.end == dt.date(2026, 6, 30)),
+                   key=lambda p: p.pid)
+    owners = {}
+    for p in W.positions:
+        owners.setdefault(p.emp, []).append(p)
+    hires = sorted((p for p in W.positions if p.job in GRAD_FIT and p.primary and not p.per_diem and not p.moonlight
+                    and dt.date(2026, 7, 1) <= p.start <= dt.date(2026, 9, 30) and len(owners[p.emp]) == 1),
+                   key=lambda p: p.pid)
+    used, hired, payouts = set(), [], []
+    for e, mm in GRAD_CELLS:
+        free = [p for p in hires if p.entity == e and p.pid not in used]
+        # a vacancy filled in an earlier month, else one filled early in the month, else any in the month
+        cands = ([p for p in free if p.start.month < mm] or [p for p in free if p.start.month == mm and p.start.day <= 10]
+                 or [p for p in free if p.start.month == mm])
+        if not cands:
+            continue
+        h = cands[int(rng.integers(0, len(cands)))]
+        pool = [g for g in grads if g.pid not in used and (g.entity, g.job) in GRAD_FIT[h.job]]
+        if not pool:
+            continue
+        g = pool[int(rng.integers(0, len(pool)))]
+        used.update((h.pid, g.pid))
+        h.emp = g.emp
+        hired.append((g, h, (2026, mm)))
+        payouts.append((g, (2026, mm)))
+    for g in grads:
+        if g.pid not in used:
+            payouts.append((g, (2026, 7 if rng.random() < 0.6 else 8)))
+    owners = {}
+    for p in W.positions:
+        owners.setdefault(p.emp, []).append(p)
+    for p in sorted(W.positions, key=lambda p: p.pid):
+        if p.per_diem or p.moonlight or p.job in ("RES", "FEL") or p.end is None:
+            continue
+        if dt.date(2026, 1, 1) <= p.end <= dt.date(2026, 8, 31) and \
+                not any(q is not p and q.start == p.end + dt.timedelta(days=1) for q in owners[p.emp]):
+            payouts.append((p, (2026, p.end.month + 1)))
+    return hired, payouts
 
 
 def _dual_appointments(W):

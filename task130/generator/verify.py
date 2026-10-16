@@ -1,8 +1,6 @@
 """Independent verifier for task130: reads only the shipped pack (target/) and the goldens, on its own code path (no
-generator module is imported), and recomputes each entity's first month with a Claim made within 30 days of its
-incident, the contribution on the experience from those months, the expected number of Claims, both asks and the
-default path's figure (the same construction on the whole 2016 to 2024 experience), then compares them with the
-golden workbook.
+generator module is imported), and recomputes the contribution, the expected number of Claims, both asks and the
+default path's figure, then compares them with the golden workbook.
 
     python3 task130/generator/verify.py [target] [golden]"""
 from __future__ import annotations
@@ -64,31 +62,14 @@ def num(s):
     return float(s) if s else 0.0
 
 
-def starts_of(target):
-    """Each entity's first incident month with a claim number made within 30 days of the incident (rows naming an
-    employed clinician), as YYYY-MM."""
-    first = {}
-    for r in read_csv(target, REGISTER):
-        if r["coverage_line"] == "CONTRACT":
-            continue
-        if (dt.date.fromisoformat(r["claim_made_date"]) - dt.date.fromisoformat(r["incident_date"])).days <= 30:
-            e = r["entity_at_incident"]
-            if e not in first or r["incident_date"] < first[e]:
-                first[e] = r["incident_date"]
-    return {e: d[:7] for e, d in first.items()}
-
-
-def experience(target, classes, starts=None):
-    """The experience's Claims (class, delay, trended cost) and covered FTE-years by class, every month of 2016 to 2024
-    or, given starts, each entity's months from its start."""
+def experience(target, classes):
     pay = read_csv(target, PAYROLL)
     job = {}
     fte_years = {c: 0.0 for c in CLASS_NAMES}
     for r in pay:
         job.setdefault((r["employee_id"], r["pay_month"]), r["job_code"])
         if "2016-01" <= r["pay_month"] <= "2024-12" and r["job_code"] in classes:
-            if starts is None or r["pay_month"] >= starts[r["entity_code"]]:
-                fte_years[classes[r["job_code"]]] += float(r["fte"]) / 12.0
+            fte_years[classes[r["job_code"]]] += float(r["fte"]) / 12.0
     incidents = {}
     for r in read_csv(target, REGISTER):
         if "2016-01-01" <= r["incident_date"] <= "2024-12-31":
@@ -103,9 +84,6 @@ def experience(target, classes, starts=None):
         made = min(r["claim_made_date"] for r in rs)
         first_no = min((r["claim_made_date"], r["claim_no"]) for r in rs)[1]
         first = min((r for r in covered if r["claim_no"] == first_no), key=lambda r: int(r["defendant_seq"]))
-        lead = min((r for r in rs if r["claim_no"] == first_no), key=lambda r: int(r["defendant_seq"]))
-        if starts is not None and rs[0]["incident_date"][:7] < starts[lead["entity_at_incident"]]:
-            continue
         cls = classes[job[(first["clinician_id"], first["incident_date"][:7])]]
         inc = dt.date.fromisoformat(rs[0]["incident_date"])
         lag = (dt.date.fromisoformat(made) - inc).days
@@ -115,8 +93,9 @@ def experience(target, classes, starts=None):
     return claims, fte_years
 
 
-def window(target, trans, claims, fte_years):
-    """The window's expected cost and count, and the default path's cost (the count at each class's average)."""
+def main_call(target):
+    trans, classes = agreement(target)
+    claims, fte_years = experience(target, classes)
     wb = openpyxl.load_workbook(os.path.join(target, PLAN), data_only=True)
     plan = {}
     for row in wb["Covered FTE 2027"].iter_rows(min_row=6, values_only=True):
@@ -129,13 +108,12 @@ def window(target, trans, claims, fte_years):
     for cls, v in by_cls.items():
         v.sort()
         lags = [x[0] for x in v]
-        cc, c_acc = [], 0.0
-        for lag, cost in v:
+        cc, nn, c_acc = [], [], 0.0
+        for k, (lag, cost) in enumerate(v):
             c_acc += cost
             cc.append(c_acc)
         cum[cls] = (lags, cc)
-    avg = {c: sum(x[1] for x in v) / len(v) for c, v in by_cls.items()}
-    total = count = exposure = default = 0.0
+    total = count = exposure = 0.0
     for (e, c), fte in plan.items():
         lags, cc = cum[c]
         d = trans[e]
@@ -147,21 +125,20 @@ def window(target, trans, claims, fte_years):
             if k:
                 total += w * cc[k - 1] / fte_years[c]
                 count += w * k / fte_years[c]
-                default += w * k / fte_years[c] * avg[c]
             d += dt.timedelta(days=1)
-    return total, count, exposure, default
-
-
-def main_call(target):
-    trans, classes = agreement(target)
-    starts = starts_of(target)
-    claims, fte_years = experience(target, classes, starts)
-    total, count, exposure, default = window(target, trans, claims, fte_years)
-    whole_claims, whole_fte = experience(target, classes)
-    whole, _, _, whole_default = window(target, trans, whole_claims, whole_fte)
+    # the default path: the window's count at each class's average Claim cost
+    avg = {c: sum(x[1] for x in v) / len(v) for c, v in by_cls.items()}
+    default = 0.0
+    for (e, c), fte in plan.items():
+        lags, _ = cum[c]
+        d = trans[e]
+        while d <= END:
+            nxt = dt.date(d.year + (d.month == 12), d.month % 12 + 1, 1)
+            w = fte[d.month - 1] / 12.0 / (nxt - dt.date(d.year, d.month, 1)).days
+            default += w * bisect.bisect_right(lags, (END - d).days) / fte_years[c] * avg[c]
+            d += dt.timedelta(days=1)
     return dict(total=total, count=count, exposure=exposure, default=default, claims=len(claims),
-                fte_years=sum(fte_years.values()), starts=starts, whole=whole, whole_default=whole_default,
-                whole_claims=len(whole_claims), whole_fte_years=sum(whole_fte.values()))
+                fte_years=sum(fte_years.values()))
 
 
 def era_starts(target):
@@ -191,11 +168,21 @@ def ask_a(target):
     names = {"Tolliver Falls Hospital": "TFH", "Alderwick Medical Center": "AMC", "CORVANE MEDICAL GROUP": "CMG",
              "BRENNICK COMMUNITY HOSP": "BCH"}
     wb = openpyxl.load_workbook(os.path.join(target, QM_SEP), data_only=True)
-    refs = [(names[row[2]], row[4]) for row in wb["Loss Run"].iter_rows(min_row=8, values_only=True) if row[3]]
-    refs += [(names[r["INSURED_NAME"]], r["INSURED_REF"]) for r in read_csv(target, SC_SEP)]
+    refs = [(names[row[2]], row[4] or "", row[5].date().isoformat(), str(row[7]).upper())
+            for row in wb["Loss Run"].iter_rows(min_row=8, values_only=True) if row[3]]
+    for r in read_csv(target, SC_SEP):
+        mo, dd, yy = r["DATE_OF_LOSS"].split("/")
+        refs.append((names[r["INSURED_NAME"]], r["INSURED_REF"], "%s-%s-%s" % (yy, mo, dd), r["CLM_TYPE"].upper()))
+    # suits on a run with no insured reference: the register's one suit of that entity on that date of care
+    suits_on = {}
+    for r in reg:
+        if r["matter_type"] == "Suit":
+            suits_on.setdefault((r["entity_at_incident"], r["incident_date"]), set()).add(r["incident_no"])
     on_run = {}
-    for e, ref in refs:
+    for e, ref, dol, ctype in refs:
         ino = claim_inc.get(key(ref)) or notice_inc.get(key(ref))
+        if not key(ref) and ctype == "SUIT" and len(suits_on.get((e, dol), ())) == 1:
+            ino = next(iter(suits_on[(e, dol)]))
         if ino:
             on_run.setdefault(e, set()).add(ino)
     eras = era_starts(target)
@@ -215,7 +202,10 @@ def ask_b(target):
     xw = {r["job_profile_code"]: r["legacy_job_code"] for r in read_csv(target, CROSSWALK)}
     cc = {r["cost_centre"]: r["entity_code"] for r in read_csv(target, DIRECTORY)}
     lines = [r for r in read_csv(target, HCM) if r["work_month"] in ("2026-07", "2026-08", "2026-09")]
-    trainees = {(r["worker_id"], r["work_month"]) for r in lines if xw[r["job_profile_code"]].startswith("GME-")}
+    # a trainee in a month is paid on a resident or fellow position for that month (a termination payout follows the
+    # position's end)
+    trainees = {(r["worker_id"], r["work_month"]) for r in lines if xw[r["job_profile_code"]].startswith("GME-")
+                and r["earning_code"] != "TRM"}
     out = {}
     for r in lines:
         if xw[r["job_profile_code"]] not in classes or (r["worker_id"], r["work_month"]) in trainees:
@@ -259,14 +249,11 @@ def main(target, golden):
                                                               r1(b[(e, mo)])))
     if errors:
         raise SystemExit("verify: %d mismatches\n  " % len(errors) + "\n  ".join(errors))
-    print("verify: starts %s; %d experience Claims since them on %s FTE-years (whole experience %d on %s); 2027 "
-          "exposure %.1f FTE-years; %.2f expected Claims; contribution %s from %s (the same construction on the whole "
-          "experience, the default path: %s; the count at each class's average cost: %s); ask A %s; ask B %s; all "
+    print("verify: %d experience Claims on %s FTE-years; 2027 exposure %.1f FTE-years; %.2f expected Claims; contribution "
+          "%s from %s (default path, the window's count at each class's average cost: %s); ask A %s; ask B %s; all "
           "match the golden workbook" % (
-              ", ".join("%s %s" % (e, mc["starts"][e]) for e in ENTS), mc["claims"],
-              "{:,.1f}".format(mc["fte_years"]), mc["whole_claims"], "{:,.1f}".format(mc["whole_fte_years"]),
-              mc["exposure"], mc["count"], "{:,}".format(r250k(mc["total"])), "{:,.0f}".format(mc["total"]),
-              "{:,.0f}".format(mc["whole"]), "{:,.0f}".format(mc["default"]),
+              mc["claims"], "{:,.1f}".format(mc["fte_years"]), mc["exposure"], mc["count"],
+              "{:,}".format(r250k(mc["total"])), "{:,.0f}".format(mc["total"]), "{:,.0f}".format(mc["default"]),
               ", ".join("%s %d/%s" % (e, a[e][0], "{:,}".format(r1000(a[e][1]))) for e in ENTS),
               ", ".join("%s %s" % (e, "/".join("%.1f" % r1(b[(e, mo)]) for mo in ("2026-07", "2026-08", "2026-09")))
                         for e in ENTS)))
