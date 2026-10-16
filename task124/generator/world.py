@@ -1,14 +1,18 @@
 """The district as it stands on 8 January 2027: every service line, its records, the material that is really in the
 ground, and every field verification and replacement from January 2021 to December 2026.
 
-A street's services were laid by the district in one material when its main went in: lead or galvanized on the older
-streets, copper (later plastic) after. The district's tap cards record that material on the services whose cards
-survive, and the 1991-92 lead survey added cards on the streets it found lead or galvanized. A line with no usable card
-is a lost original or a service the district never laid, so on a lead or galvanized street it proves lead or GRR at
-13 in 14 and on a copper street at 1 in 19. Every verification route the district ran (main replacements coordinated
-with lead streets, the 2024 ranking, the 2021-22 sampling-site recruitment, checks after the lead letters) went to the
-lead and galvanized streets far more than to the copper ones; within a street, which lines were verified does not
-depend on their own material.
+A street's services were laid when its main went in: lead or galvanized on most of the older streets, copper (later
+plastic) on the rest and after 1950. The district's tap cards record that material on the services whose cards
+survive, and the 1991-92 lead survey added cards on the streets it found lead or galvanized. A line with no usable
+card is a lost original or a service someone else laid, and who laid the services changed with the decades: before
+1930 the district laid every service on a lead or galvanized street, in the 1930s and 1940s private plumbers laid
+some of them in copper under city permit, and on the few lead or galvanized streets of 1950 to 1988 builders' plumbers
+laid about half of them in copper; on a copper street the odd service built before 1950 is galvanized behind a lead
+gooseneck, and none after. Each no-card line is an independent draw at the share for its kind of main and its era.
+The main renewals (old mains by break history, and renewals coordinated with the lead and galvanized streets) expose
+every service on a renewed main; digs for cause (sampling sites, leaks, requests, the 2024 ranking) went to the lead
+and galvanized streets far more than to the copper ones, and on the copper streets mostly to the post-1950 ones after
+the lead letters; within a street, which lines were verified does not depend on their own material.
 
 Nothing here is written to disk; records.py turns these frames into the files the district's systems export. The
 ground truth of unverified lines and every street's class never leave this module."""
@@ -22,17 +26,22 @@ import pandas as pd
 import common as K
 
 # streets serviced in lead or galvanized (LG) by era of the main, and of those the share laid in lead
-STREET_LG = {0: 0.55, 1: 0.38, 2: 0.06}
+STREET_LG = {0: 0.66, 1: 0.46, 2: 0.06}
 L_OF_LG = {0: 0.70, 1: 0.40, 2: 0.15}
-S_LG = (13, 14)            # no-card lines proving lead or GRR on an LG street, exact on every verified cell
-S_C = (1, 19)              # on a copper street
+# a line with no usable card is a lost original or a service someone else laid. On a lead or galvanized street before
+# 1930 the district laid every service, so it is nearly always the original; in the 1930s and 1940s private plumbers
+# laid some services under city permit in copper; on the few lead or galvanized streets of 1950 to 1988 builders'
+# plumbers laid about half of them in copper. On a copper street the odd service built before 1950 is galvanized
+# behind a lead gooseneck; none after. The share proving lead or GRR, by kind of main and the era the line was built:
+P_HIT = {"LG": (0.994, 0.952, 0.57), "C": (0.0030, 0.0016, 0.0)}
 COVER = {"LG": 1.50, "C": 0.85}   # tap card survival, relative, by street class (the 1991-92 survey on LG streets)
 RENEW = 0.03               # copper renewal cards among the cards on LG streets
 LEAD_OF_HIT = {"L": 0.93, "G": 0.08, "C": 0.5}   # of a no-card line proving lead or GRR, the share that is lead
-DIG_RATE = 0.062
-DIG_MULT = {"LG": 3.0, "C": 0.35}
-SWEEP_W = {"LG": 6.0, "C": 0.5}
-N_SWEEPS = 78
+DIG_RATE = 0.062           # digs for cause on a no-card line away from the renewed mains, 2021 to 2026, by kind and era
+DIG_MULT = {("LG", 0): 3.6, ("LG", 1): 2.8, ("LG", 2): 2.5, ("C", 0): 0.3, ("C", 1): 0.25, ("C", 2): 1.8}
+# main renewals 2021 to 2026, the chance a main is renewed by its kind and era: old mains by break history, and
+# renewals coordinated with the lead and galvanized streets
+SWEEP_P = {("LG", 0): 0.245, ("LG", 1): 0.295, ("LG", 2): 0.39, ("C", 0): 0.175, ("C", 1): 0.175, ("C", 2): 0.007}
 DISTRICT_CREWS = ["SLV1", "SLV2", "SLV3", "SLV4", "SLV5"]
 CONTRACT_CREWS = ["BRN-1", "BRN-2", "TCU-1", "TCU-2", "KPU-1"]
 STREETS = [
@@ -51,9 +60,9 @@ SUFFIXES = ["ST", "AVE", "ST", "ST", "AVE", "RD", "DR", "PL", "CT", "LN"]
 def _segments():
     """Main segments per zone: (zone, segment id, era, base year, n lines, street, first house number)."""
     rows = []
-    seg_no = 10000
-    for zc, name, muni, n_lines, mix, rc in K.ZONES:
+    for zi, (zc, name, muni, n_lines, mix, rc) in enumerate(K.ZONES):
         r = K.stream("segments", zc)
+        seg_no = 10000 + 6000 * zi       # the GIS numbers mains in blocks by zone
         left = n_lines
         street_pool = list(r.permutation(STREETS))
         k = 0
@@ -86,8 +95,11 @@ def _segments():
 
 def _lines(segs):
     out = []
-    sl = 1_041_000
+    base = {z[0]: 1_041_000 + 31_000 * i for i, z in enumerate(K.ZONES)}   # service line ids in blocks by zone
+    sl, zone = 0, None
     for seg in segs.itertuples():
+        if seg.zone != zone:
+            zone, sl = seg.zone, base[seg.zone]
         r = K.stream("lines", seg.segment)
         for i in range(seg.n):
             y = int(seg.base_year + r.integers(-4, 5))
@@ -140,85 +152,62 @@ def _cards(lines):
             i = idx[int(r.integers(len(idx)))]
             lines.at[i, "card"] = True
             lines.at[i, "card_mat"] = "LEAD" if lines.at[i, "ssub"] == "L" else "GALV"
+    # the 1991-92 survey carded the lead and galvanized streets more fully: a district renewal card is never as much as
+    # a third of a lead or galvanized street's cards
+    for sg, idx in lines[pre & (lines.sclass == "LG")].groupby("segment").groups.items():
+        idx = sorted(idx, key=lambda i: lines.at[i, "sl_id"])
+        r = K.stream("survey-card", sg)
+        while True:
+            have = [i for i in idx if lines.at[i, "card"]]
+            n_cu = sum(1 for i in have if lines.at[i, "card_mat"] == "COPPER")
+            free = [i for i in idx if not lines.at[i, "card"]]
+            if 3 * n_cu < len(have) or not free:
+                break
+            i = free[int(r.integers(len(free)))]
+            lines.at[i, "card"] = True
+            lines.at[i, "card_mat"] = "LEAD" if lines.at[i, "ssub"] == "L" else "GALV"
     lines["record"] = np.where(lines.card, lines.card_mat, "")
     lines["no_record"] = (lines.record == "") & pre
     return lines
 
 
 def _pick_sweeps(segs, lines):
-    """Main replacement projects 2023 to 2026: the renewal programme took mains where the services could be renewed
-    with the main, so its segments run on lead and galvanized streets; every service on a replaced main is exposed."""
-    r = K.stream("sweeps")
+    """Main renewals 2021 to 2026: the distribution renewal programme took old mains by break history and coordinated
+    renewals with the lead and galvanized streets; every service on a renewed main is exposed and verified. One draw
+    per main, so a zone's mains are renewed or not on their own."""
     cand = segs[(segs.seg_era < 3) & segs.zone.isin(K.PLAN_ORDER)].sort_values("segment")
-    w = cand.sclass.map(SWEEP_W).to_numpy() * cand.seg_era.map({0: 3.0, 1: 1.6, 2: 0.8}).to_numpy()
-    w = w / w.sum()
-    return sorted(str(s) for s in r.choice(cand.segment.to_numpy(), size=N_SWEEPS, replace=False, p=w))
+    out = []
+    for s in cand.itertuples():
+        if K.stream("renewal", s.segment).random() < SWEEP_P[(s.sclass, int(s.seg_era))]:
+            out.append(str(s.segment))
+    return sorted(out)
 
 
 def _digs(lines):
     """Lines with no usable card dug for cause, away from the replaced mains: the street decides, not the line."""
-    era_t = (1.30, 1.00, 0.75)
     dug = []
     for ln in lines.itertuples():
         if not ln.no_record or ln.swept:
             dug.append(False)
             continue
         r = K.stream("dig", ln.sl_id)
-        dug.append(bool(r.random() < DIG_RATE * DIG_MULT[ln.sclass] * era_t[ln.era]))
+        dug.append(bool(r.random() < DIG_RATE * DIG_MULT[(ln.sclass, ln.era)]))
     return np.array(dug)
 
 
-def _exact(lines):
-    """Each (street class, era, route) cell of verified no-card lines holds a multiple of its class's denominator:
-    excess digs are not made (the line stays unknown); excess lines on a replaced main get the card the 2026 records
-    search found for them."""
-    lines = lines.copy()
-    v = lines[lines.no_record & (lines.swept | lines.dug)]
-    route = np.where(v.swept, "main", "cause")
-    for (c, e, rt), idx in v.groupby([v.sclass, v.era, route]).groups.items():
-        den = (S_LG if c == "LG" else S_C)[1]
-        idx = sorted(idx, key=lambda i: lines.at[i, "sl_id"])
-        excess = len(idx) % den
-        if not excess:
-            continue
-        r = K.stream("exact", c, e, rt)
-        for i in r.choice(idx, size=excess, replace=False):
-            if rt == "cause":
-                lines.at[i, "dug"] = False
-            else:
-                lines.at[i, "record"] = lines.at[i, "card_mat"]
-                lines.at[i, "no_record"] = False
-    return lines
-
-
 def _truth(lines):
-    """Material in the ground. Carded lines are what their card says; verified no-card lines carry their class's share
-    exactly in every (class, era, route) cell, spread over the cell's construction years; every other no-card line is
-    an independent draw at its class's share."""
+    """Material in the ground. Carded lines are what their card says; a line with no usable card proves lead or GRR at
+    the share for its kind of main and its era, an independent draw for each line."""
     lines = lines.copy()
     truth = np.array(["NON-LEAD"] * len(lines), dtype=object)
     rec = lines.record.to_numpy()
     truth[rec == "LEAD"] = "LEAD"
     truth[rec == "GALV"] = "GRR"
-
-    def lead_or_grr(i, r):
-        return "LEAD" if r.random() < LEAD_OF_HIT[lines.at[i, "ssub"]] else "GRR"
-    v = lines[lines.no_record & (lines.swept | lines.dug)]
-    route = np.where(v.swept, "main", "cause")
-    for (c, e, rt), idx in v.groupby([v.sclass, v.era, route]).groups.items():
-        num, den = S_LG if c == "LG" else S_C
-        order = sorted(idx, key=lambda i: (lines.at[i, "year_built"], lines.at[i, "sl_id"]))
-        assert len(order) % den == 0
-        r = K.stream("truth-verified", c, e, rt)
-        for b in range(0, len(order), den):
-            for i in r.choice(order[b:b + den], size=num, replace=False):
-                truth[lines.index.get_loc(i)] = lead_or_grr(i, r)
-    other = lines[lines.no_record & ~(lines.swept | lines.dug)]
-    for i, row in zip(other.index, other.itertuples()):
+    nr = lines[lines.no_record]
+    for i, row in zip(nr.index, nr.itertuples()):
         r = K.stream("truth", row.sl_id)
-        num, den = S_LG if row.sclass == "LG" else S_C
-        if r.random() < num / den:
-            truth[lines.index.get_loc(i)] = lead_or_grr(i, r)
+        if r.random() < P_HIT[row.sclass][row.era]:
+            truth[lines.index.get_loc(i)] = "LEAD" if r.random() < LEAD_OF_HIT[row.ssub] else "GRR"
     lines["truth"] = truth
     return lines
 
@@ -294,8 +283,8 @@ def _verifications(lines, sweeps):
         group = order[i:i + k]
         i += k
         pno += 1
-        year = int(r.choice([2023, 2024, 2025, 2026], p=[0.22, 0.26, 0.26, 0.26]))
-        lo = dt.date(year, 5, 1) if year == 2023 else dt.date(year, 4, 6)
+        year = int(r.choice([2021, 2022, 2023, 2024, 2025, 2026], p=[0.15, 0.16, 0.17, 0.18, 0.18, 0.16]))
+        lo = dt.date(year, 4, 6)
         start = _season_date(r, year=year, lo=lo, hi=dt.date(year, 9, 25))
         weeks = int(r.integers(3, 9))
         end = min(start + dt.timedelta(days=7 * weeks), dt.date(year, 11, 20))
@@ -349,7 +338,8 @@ def _replacements(lines, ev):
 
 def _never_built(lines):
     """Lots platted with a tap but never built on, or merged into a neighbour, leave no service line: a few dozen
-    in each zone, all of them on records-known or new-build lines nobody has dug."""
+    in each zone on records-known or new-build lines nobody has dug, and in the plan zones a few lots on the copper
+    streets of 1950 to 1988 (K.NEVER_BUILT_C2)."""
     out = []
     for z in [x[0] for x in K.ZONES]:
         r = K.stream("never-built", z)
@@ -360,6 +350,11 @@ def _never_built(lines):
             g = lines[(lines.zone == z) & (lines.cls == "GRR") & (lines.basis == "RECORDS") & lines.verified.isna()]
             if len(g):
                 out.extend(r.choice(sorted(g.sl_id), size=min(len(g), int(r.integers(1, 4))), replace=False))
+        k = K.NEVER_BUILT_C2.get(z, 0)
+        if k:
+            c2 = lines[(lines.zone == z) & (lines.cls == "LEAD STATUS UNKNOWN") & (lines.sclass == "C") &
+                       (lines.era == 2)]
+            out.extend(K.stream("never-built-c2", z).choice(sorted(c2.sl_id), size=k, replace=False))
     return lines[~lines.sl_id.isin(set(out))].reset_index(drop=True)
 
 
@@ -445,7 +440,6 @@ def build():
     sweeps = _pick_sweeps(segs, lines)
     lines["swept"] = lines.segment.isin(sweeps)
     lines["dug"] = _digs(lines)
-    lines = _exact(lines)
     lines = _truth(lines)
     ev, projects = _verifications(lines, sweeps)
     lines = lines.set_index("sl_id", drop=False)

@@ -185,7 +185,7 @@ CONTRACT_COLS = ["contract_no", "contractor", "vendor_no", "vendor_name", "vendo
 def contracts() -> list:
     out = []
     award = {"2026-LSL-01": "2025-12-09", "2026-LSL-02": "2025-12-09", "2026-LSL-03": "2025-12-16"}
-    nte = {"2026-LSL-01": "4,950,000.00", "2026-LSL-02": "4,200,000.00", "2026-LSL-03": "3,350,000.00"}
+    nte = {"2026-LSL-01": "8,450,000.00", "2026-LSL-02": "4,050,000.00", "2026-LSL-03": "4,300,000.00"}
     for no, name, vendors, zones, price, rate in K.CONTRACTS_2026:
         for k, v in enumerate(vendors):
             frm = "2026-01-01" if k == 0 else K.TC_SWITCH.isoformat()

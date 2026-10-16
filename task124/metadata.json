@@ -24,7 +24,7 @@
       "xlsx"
     ],
     "largest_file": "hfrwd_service_line_inventory_20270108.csv",
-    "largest_file_rows": 87410
+    "largest_file_rows": 90652
   },
   "sources": [
     {
@@ -58,7 +58,7 @@
     {
       "path": "LSLR_progress_report_2026.pdf",
       "format": "pdf",
-      "bytes": 63957,
+      "bytes": 63940,
       "rows": null,
       "source": "Constructed: LSLR programme office 2026 progress report (counts of work done)",
       "date": "2027-01-08",
@@ -67,8 +67,8 @@
     {
       "path": "access_agreements_2022_2026.csv",
       "format": "csv",
-      "bytes": 661316,
-      "rows": 10015,
+      "bytes": 618952,
+      "rows": 9378,
       "source": "Constructed: Right-of-entry agreement forms on lines open in the plan, 2022 to January 2027",
       "date": "2027-01-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -76,8 +76,8 @@
     {
       "path": "ami_meter_exchanges_2023_2025.csv",
       "format": "csv",
-      "bytes": 2045096,
-      "rows": 30924,
+      "bytes": 2124546,
+      "rows": 32125,
       "source": "Constructed: Automated meter exchanges, April 2023 to December 2025",
       "date": "2027-01-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -85,7 +85,7 @@
     {
       "path": "change_orders_2026.xlsx",
       "format": "xlsx",
-      "bytes": 10655,
+      "bytes": 11058,
       "rows": null,
       "source": "Constructed: Engineering change order log, 2026 replacement contracts",
       "date": "2027-01-08",
@@ -94,8 +94,8 @@
     {
       "path": "cis_gis_crosswalk_2023.csv",
       "format": "csv",
-      "bytes": 3229655,
-      "rows": 85856,
+      "bytes": 3350243,
+      "rows": 89053,
       "source": "Constructed: Customer system premise numbers to GIS service line ids, built at the March 2023 migration",
       "date": "2027-01-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -112,7 +112,7 @@
     {
       "path": "extract_log_2027-01-08.csv",
       "format": "csv",
-      "bytes": 2383,
+      "bytes": 2384,
       "rows": 16,
       "source": "Constructed: Extract log: each file's source system, date, row count and owner",
       "date": "2027-01-08",
@@ -121,8 +121,8 @@
     {
       "path": "hfrwd_service_line_inventory_20270108.csv",
       "format": "csv",
-      "bytes": 8115996,
-      "rows": 87410,
+      "bytes": 8537905,
+      "rows": 90652,
       "source": "Constructed: GIS export: the district's lead service line inventory, every service line in the fourteen zones, 8 January 2027",
       "date": "2027-01-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -139,8 +139,8 @@
     {
       "path": "lsl_completions_2026.csv",
       "format": "csv",
-      "bytes": 157228,
-      "rows": 858,
+      "bytes": 207406,
+      "rows": 1134,
       "source": "Constructed: Contract management export: 2026 full replacement completions with pay application amounts",
       "date": "2027-01-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -157,8 +157,8 @@
     {
       "path": "lslr_outreach_tracker_20270108.csv",
       "format": "csv",
-      "bytes": 2381432,
-      "rows": 40850,
+      "bytes": 2178397,
+      "rows": 37368,
       "source": "Constructed: LSLR programme office outreach tracker: letters, portal invitations and the portal's status by line",
       "date": "2027-01-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -166,8 +166,8 @@
     {
       "path": "sl_field_verifications_2021_2026.csv",
       "format": "csv",
-      "bytes": 304002,
-      "rows": 5185,
+      "bytes": 735739,
+      "rows": 12654,
       "source": "Constructed: Work management system: service line material verifications, January 2021 to December 2026 (customer system service orders before the March 2023 cut-over)",
       "date": "2027-01-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -184,7 +184,7 @@
     {
       "path": "unit_cost_schedule_2027.xlsx",
       "format": "xlsx",
-      "bytes": 7327,
+      "bytes": 7323,
       "rows": null,
       "source": "Constructed: 2027 unit cost schedule by zone (engineer's estimate)",
       "date": "2027-01-08",

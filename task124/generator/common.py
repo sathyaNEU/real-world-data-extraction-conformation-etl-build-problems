@@ -24,15 +24,15 @@ DEADLINE = dt.date(2037, 11, 1)              # every lead and GRR line replaced 
 FIRST_YEAR, LAST_YEAR = 2027, 2037           # programme years the appropriation runs
 
 # Plan costs, 2027 dollars (unit cost schedule)
-UNIT_FULL = 13_400        # full replacement of a lead or GRR line, both sides, restoration included (system rate)
-UNIT_DIG = 2_450          # verification excavation that finds no lead, restored (system rate)
+UNIT_FULL = 14_400        # full replacement of a lead or GRR line, both sides, restoration included (system rate)
+UNIT_DIG = 2_600          # verification excavation that finds no lead, restored (system rate)
 MOBILISATION = 230_000    # once per zone, when its work starts
 APPROPRIATION = 25_400_000  # capital plan, lead service line construction, each programme year
 # engineer's unit costs by zone (service length, pavement, traffic control): full replacement, non-lead dig
 ZONE_PRICES = {
-    "RZ-07": (12_500, 2_530), "RZ-02": (15_350, 2_560), "RZ-11": (13_400, 2_610), "RZ-04": (13_450, 2_620),
-    "RZ-09": (13_400, 2_490), "RZ-01": (13_400, 2_450), "RZ-05": (13_400, 2_450), "RZ-12": (13_400, 2_450),
-    "RZ-03": (13_400, 2_450), "RZ-08": (13_400, 2_490), "RZ-10": (13_400, 2_450), "RZ-06": (13_400, 2_450),
+    "RZ-07": (13_500, 2_680), "RZ-02": (16_350, 2_710), "RZ-11": (14_400, 2_760), "RZ-04": (14_450, 2_770),
+    "RZ-09": (14_400, 2_640), "RZ-01": (14_400, 2_600), "RZ-05": (14_400, 2_600), "RZ-12": (14_400, 2_600),
+    "RZ-03": (14_400, 2_600), "RZ-08": (14_400, 2_640), "RZ-10": (14_400, 2_600), "RZ-06": (14_400, 2_600),
 }
 
 # Construction eras the plan reports unknown lines by
@@ -43,18 +43,18 @@ AGE_RULE_YEAR = 1989      # built in or after: non-lead by construction date
 # Zones of plan revision 2 (inventory zones). code, name, municipality, lines, era mix
 # (before 1930, 1930-49, 1950-88, 1989 on), share of pre-1989 lines with a usable tap card record
 ZONES = [
-    ("RZ-01", "Foundry Hill", "City of Hollins Ford", 5200, (0.55, 0.25, 0.15, 0.05), 0.30),
-    ("RZ-02", "Canal Street", "City of Hollins Ford", 6100, (0.40, 0.35, 0.20, 0.05), 0.35),
-    ("RZ-03", "Millrace", "City of Hollins Ford", 4800, (0.20, 0.40, 0.35, 0.05), 0.40),
-    ("RZ-04", "North Linden", "City of Hollins Ford", 7300, (0.10, 0.25, 0.55, 0.10), 0.45),
-    ("RZ-05", "Depot Square", "City of Hollins Ford", 5600, (0.35, 0.30, 0.30, 0.05), 0.30),
-    ("RZ-06", "Wexley", "City of Hollins Ford", 6900, (0.05, 0.20, 0.65, 0.10), 0.50),
-    ("RZ-07", "Orchard Ridge", "City of Hollins Ford", 4400, (0.60, 0.25, 0.10, 0.05), 0.25),
-    ("RZ-08", "Elm Park", "City of Hollins Ford", 5900, (0.15, 0.30, 0.45, 0.10), 0.40),
-    ("RZ-09", "Burkhart", "Darrow Township", 6400, (0.25, 0.25, 0.40, 0.10), 0.35),
-    ("RZ-10", "Lakeview Terrace", "Darrow Township", 5100, (0.05, 0.15, 0.70, 0.10), 0.55),
-    ("RZ-11", "Southgate", "City of Hollins Ford", 5700, (0.45, 0.30, 0.20, 0.05), 0.30),
-    ("RZ-12", "Kittering Village", "Kittering Township", 4700, (0.10, 0.20, 0.60, 0.10), 0.45),
+    ("RZ-01", "Foundry Hill", "City of Hollins Ford", 5673, (0.55, 0.25, 0.15, 0.05), 0.30),
+    ("RZ-02", "Canal Street", "City of Hollins Ford", 7013, (0.40, 0.35, 0.20, 0.05), 0.35),
+    ("RZ-03", "Millrace", "City of Hollins Ford", 5340, (0.20, 0.40, 0.35, 0.05), 0.40),
+    ("RZ-04", "North Linden", "City of Hollins Ford", 8211, (0.10, 0.25, 0.55, 0.10), 0.45),
+    ("RZ-05", "Depot Square", "City of Hollins Ford", 5962, (0.35, 0.30, 0.30, 0.05), 0.30),
+    ("RZ-06", "Wexley", "City of Hollins Ford", 7286, (0.05, 0.20, 0.65, 0.10), 0.50),
+    ("RZ-07", "Orchard Ridge", "City of Hollins Ford", 4709, (0.60, 0.25, 0.10, 0.05), 0.25),
+    ("RZ-08", "Elm Park", "City of Hollins Ford", 6243, (0.15, 0.30, 0.45, 0.10), 0.40),
+    ("RZ-09", "Burkhart", "Darrow Township", 5779, (0.25, 0.25, 0.40, 0.10), 0.35),
+    ("RZ-10", "Lakeview Terrace", "Darrow Township", 4396, (0.05, 0.15, 0.70, 0.10), 0.55),
+    ("RZ-11", "Southgate", "City of Hollins Ford", 6598, (0.45, 0.30, 0.20, 0.05), 0.30),
+    ("RZ-12", "Kittering Village", "Kittering Township", 4300, (0.10, 0.20, 0.60, 0.10), 0.45),
     ("RZ-13", "Darrow Meadows", "Darrow Township", 9600, (0.0, 0.0, 0.08, 0.92), 0.90),
     ("RZ-14", "Kittering North", "Kittering Township", 10300, (0.0, 0.0, 0.05, 0.95), 0.90),
 ]
@@ -64,10 +64,13 @@ PLAN_ORDER = ["RZ-07", "RZ-02", "RZ-11", "RZ-04", "RZ-09", "RZ-01",
 OUTREACH_ORDER = ["RZ-07", "RZ-02", "RZ-11", "RZ-04", "RZ-09", "RZ-01",
                   "RZ-05", "RZ-03", "RZ-12", "RZ-08", "RZ-06", "RZ-10"]
 # renewal tap cards (COPPER) on lead or galvanized streets that the 2026 records search read again as the street's
-# original material, by plan zone (lines no crew has dug); tuned so each zone's expected replacements and cost sit
-# clear of their rounding edges
-LEAD_CARDS_ADDED = {"RZ-07": 3, "RZ-02": 1, "RZ-11": 7, "RZ-04": 7, "RZ-09": 8, "RZ-01": 9, "RZ-12": 2,
-                    "RZ-03": 4, "RZ-08": 2, "RZ-10": 12}
+# original material, by plan zone (lines no crew has dug); and lots on the copper streets of 1950 to 1988 that were
+# platted with a tap and never built on. Set so each zone's expected replacements and cost sit more than one sampling
+# sigma inside their rounding bins
+LEAD_CARDS_ADDED = {"RZ-07": 3, "RZ-02": 9, "RZ-11": 7, "RZ-04": 6, "RZ-09": 6, "RZ-01": 8, "RZ-05": 4, "RZ-12": 7,
+                    "RZ-03": 5, "RZ-08": 3, "RZ-10": 1, "RZ-06": 7}
+NEVER_BUILT_C2 = {"RZ-07": 1, "RZ-02": 1, "RZ-11": 15, "RZ-04": 26, "RZ-09": 2, "RZ-01": 44, "RZ-05": 17,
+                  "RZ-12": 54, "RZ-10": 4, "RZ-06": 5}
 ZONE_NAME = {z[0]: z[1] for z in ZONES}
 
 

@@ -277,7 +277,7 @@ def _header(ws, row, cols):
         cell.alignment = Alignment(wrap_text=True, vertical="top")
 
 
-SYSTEM_RATES = (13_400, 2_450)
+SYSTEM_RATES = (K.UNIT_FULL, K.UNIT_DIG)
 RATE_BASIS = {
     "RZ-02": "Downtown: pavement restoration and traffic control on both items",
     "RZ-04": "Long services on deep setbacks; curb stops under pavement",

@@ -48,10 +48,19 @@ def lg_card_share(inv: pd.DataFrame) -> pd.Series:
 
 
 def class_shares(s: pd.DataFrame, cls: pd.Series, mask=None) -> dict:
-    """Share of the verified no-tap-card lines found lead or GRR, by the class of the main they tap."""
+    """Share of the verified no-tap-card lines found lead or GRR, by the class of the main they tap, all eras
+    together."""
     t = s if mask is None else s[mask]
     t = t.assign(sc=t.segment.map(cls))
     return {k: float(t[t.sc == k].hit.mean()) for k in ("LG", "C")}
+
+
+def kind_era_shares(s: pd.DataFrame, cls: pd.Series, mask=None) -> dict:
+    """{(class, era): share of the verified no-tap-card lines found lead or GRR}, by the class of the main they tap and
+    the era the line was built."""
+    t = s if mask is None else s[mask]
+    t = t.assign(sc=t.segment.map(cls))
+    return {(k, e): float(t[(t.sc == k) & (t.era == e)].hit.mean()) for k in ("LG", "C") for e in range(3)}
 
 
 def unknown_by_class(inv: pd.DataFrame, cls: pd.Series) -> dict:
@@ -62,13 +71,35 @@ def unknown_by_class(inv: pd.DataFrame, cls: pd.Series) -> dict:
     return {k: {x: int(((e == k) & (c == x)).sum()) for x in ("LG", "C")} for k in range(3)}
 
 
-def class_era_shares(inv: pd.DataFrame, s: pd.DataFrame, cls: pd.Series, mask=None) -> dict:
+def class_era_shares(inv: pd.DataFrame, s: pd.DataFrame, cls: pd.Series, mask=None, pooled=False) -> dict:
     """The share of lead or GRR expected among the district's Lead Status Unknown lines of each era: each unknown line
-    carries the share found on the verified no-tap-card lines of mains of its class, averaged over the era's unknown
-    lines."""
-    sh = class_shares(s, cls, mask)
+    carries the share found on the verified no-tap-card lines of mains of its class built in its era (pooled=True:
+    of its class, every era together), averaged over the era's unknown lines."""
     ub = unknown_by_class(inv, cls)
-    return {e: sum(ub[e][x] * sh[x] for x in ("LG", "C")) / sum(ub[e].values()) for e in range(3)}
+    if pooled:
+        sh = class_shares(s, cls, mask)
+        return {e: sum(ub[e][x] * sh[x] for x in ("LG", "C")) / sum(ub[e].values()) for e in range(3)}
+    sh = kind_era_shares(s, cls, mask)
+    return {e: sum(ub[e][x] * sh[(x, e)] for x in ("LG", "C")) / sum(ub[e].values()) for e in range(3)}
+
+
+def share_sigma(s: pd.DataFrame, cls: pd.Series, inv: pd.DataFrame) -> dict:
+    """One standard error of each era's expected share among the unknown lines, from the binomial error of each class
+    and era cell (the cell's share taken as (found + 1) / (verified + 2), so a cell with nothing found still carries
+    its uncertainty)."""
+    t = s.assign(sc=s.segment.map(cls))
+    ub = unknown_by_class(inv, cls)
+    out = {}
+    for e in range(3):
+        v = 0.0
+        tot = sum(ub[e].values())
+        for k in ("LG", "C"):
+            c = t[(t.sc == k) & (t.era == e)]
+            n, h = len(c), int(c.hit.sum())
+            p = (h + 1) / (n + 2)
+            v += (ub[e][k] / tot) ** 2 * p * (1 - p) / n
+        out[e] = math.sqrt(v)
+    return out
 
 
 def unknown_shares(inv: pd.DataFrame, ver: pd.DataFrame, p) -> dict:

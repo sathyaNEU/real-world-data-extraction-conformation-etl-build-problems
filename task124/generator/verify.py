@@ -102,11 +102,14 @@ def main(target=None, golden=None):
                 if k == "all" or r["main_segment"] in whole:
                     n[k][era(y)] += 1
                     h[k][era(y)] += hit
-            cn[klass[r["main_segment"]]] += 1
-            ch[klass[r["main_segment"]]] += hit
+            cn[(klass[r["main_segment"]], era(y))] += 1
+            ch[(klass[r["main_segment"]], era(y))] += hit
     shares = {k: [h[k][e] / n[k][e] for e in range(3)] for k in n}
     cshare = {k: ch[k] / cn[k] for k in cn}
-    assert abs(cshare["LG"] - 13 / 14) < 1e-12 and abs(cshare["C"] - 1 / 19) < 1e-12, cshare
+    pooled = {c: sum(ch[(c, e)] for e in range(3)) / sum(cn[(c, e)] for e in range(3)) for c in ("LG", "C")}
+    # the share on lead or galvanized mains falls with the era, so the era-pooled rate misstates every era
+    assert cshare[("LG", 0)] > cshare[("LG", 1)] > cshare[("LG", 2)] and \
+        all(cshare[("C", e)] < 0.01 for e in range(3)), cshare
     order = plan_order(target)
     prices, mob = unit_costs(target)
     ap = appropriation(target)
@@ -137,19 +140,25 @@ def main(target=None, golden=None):
             out.append((z, lgrr[z] + exp, cost, cum, 2027 + math.ceil(cum / ap - 1e-9) - 1))
         return out
     # plan 4.3: the share expected among the district's Lead Status Unknown lines of each era. Each unknown line
-    # carries the share found on the verified no-tap-card lines of mains of its class; the era's share is their average
-    left = [sum(unk_cls[e][k] * cshare[k] for k in ("LG", "C")) / sum(unk_cls[e].values()) for e in range(3)]
+    # carries the share found on the verified no-tap-card lines of mains of its class built in its era; the era's
+    # share is their average
+    left = [sum(unk_cls[e][k] * cshare[(k, e)] for k in ("LG", "C")) / sum(unk_cls[e].values()) for e in range(3)]
+    flat = [sum(unk_cls[e][k] * pooled[k] for k in ("LG", "C")) / sum(unk_cls[e].values()) for e in range(3)]
     gold = schedule(left)
     whole_path = schedule(shares["whole"])
     dflt = schedule(shares["all"])
     card_path = schedule(rec_share)
-    print("verify: %d segments verified whole; class shares %s; unknown-line shares %s; every verification %s; whole "
-          "segments %s; tap cards %s" % (len(whole), {k: "%.4f" % v for k, v in cshare.items()},
-                                         ["%.4f" % x for x in left], ["%.4f" % x for x in shares["all"]],
-                                         ["%.4f" % x for x in shares["whole"]], ["%.4f" % x for x in rec_share]))
+    flat_path = schedule(flat)
+    print("verify: %d segments verified whole; shares by class and era %s; unknown-line shares %s; every verification "
+          "%s; whole segments %s; tap cards %s" % (
+              len(whole), {"%s%d" % k: "%.4f" % v for k, v in sorted(cshare.items())}, ["%.4f" % x for x in left],
+              ["%.4f" % x for x in shares["all"]], ["%.4f" % x for x in shares["whole"]],
+              ["%.4f" % x for x in rec_share]))
     print("verify: last zone %s finished %d (tap cards %d, whole segments %d, default path %d); plan cost $%.1f million "
-          "over %.2f programme years" % (gold[-1][0], gold[-1][4], card_path[-1][4], whole_path[-1][4], dflt[-1][4],
-                                         gold[-1][3] / 1e6, gold[-1][3] / ap))
+          "over %.2f programme years; one rate per kind across eras moves %d zones' lines" % (
+              gold[-1][0], gold[-1][4], card_path[-1][4], whole_path[-1][4], dflt[-1][4], gold[-1][3] / 1e6,
+              gold[-1][3] / ap, sum(1 for a, b in zip(gold, flat_path) if math.floor(a[1] / 10 + 0.5) !=
+                                    math.floor(b[1] / 10 + 0.5))))
 
     # ask A
     comp = rows(target, "lsl_completions_2026.csv")
@@ -201,8 +210,8 @@ def main(target=None, golden=None):
     sched = {r[1]: r for r in gw["Zone schedule"].iter_rows(min_row=5, values_only=True) if r[1] in order}
     for z, repl, cost, cum, fy in gold:
         g = sched[z]
-        if (g[3], g[4], g[7]) != (int(math.floor(repl / 10 + 0.5) * 10), int(math.floor(cost / 1e5 + 0.5) * 1e5), fy):
-            bad.append(("zone", z, g[3:8], (repl, cost, fy)))
+        if (g[3], g[4], g[6]) != (int(math.floor(repl / 10 + 0.5) * 10), int(math.floor(cost / 1e5 + 0.5) * 1e5), fy):
+            bad.append(("zone", z, g[3:7], (repl, cost, fy)))
     for r in gw["2026 contract payments"].iter_rows(min_row=5, max_row=7, values_only=True):
         for q in (1, 2, 3, 4):
             if r[1 + q] != math.floor(pay[(r[0], q)] + 0.5):
@@ -211,8 +220,9 @@ def main(target=None, golden=None):
         if r[1] in order and r[3] != len(agreed[r[1]]):
             bad.append(("agree", r[1], r[3], len(agreed[r[1]])))
     assert not bad, bad
-    assert gold[-1][4] == 2037 and card_path[-1][4] == 2039 and whole_path[-1][4] == 2040 and dflt[-1][4] == 2042, (
+    assert gold[-1][4] == 2037 and min(card_path[-1][4], whole_path[-1][4], dflt[-1][4]) >= 2039, (
         gold[-1], card_path[-1], whole_path[-1], dflt[-1])
+    assert sum(1 for a, b in zip(gold, flat_path) if math.floor(a[1] / 10 + 0.5) != math.floor(b[1] / 10 + 0.5)) >= 6
     print("verify: golden workbook agrees on 12 zones' lines, costs and finish years, 12 payments and 12 agreement "
           "counts")
     return gold, pay, agreed
