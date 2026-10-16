@@ -1,0 +1,126 @@
+{
+ "a1_sampling": {
+  "Aghavannagh": {
+   "below_limit": 18,
+   "samples": 23
+  },
+  "Ballynure": {
+   "below_limit": 35,
+   "samples": 47
+  },
+  "Carrowbeg": {
+   "below_limit": 18,
+   "samples": 30
+  },
+  "Cloonfad": {
+   "below_limit": 11,
+   "samples": 36
+  },
+  "Derryvore": {
+   "below_limit": 25,
+   "samples": 35
+  },
+  "Drominagh": {
+   "below_limit": 31,
+   "samples": 36
+  },
+  "Glasheen": {
+   "below_limit": 19,
+   "samples": 36
+  },
+  "Kilcrohane": {
+   "below_limit": 5,
+   "samples": 24
+  },
+  "Knockanure": {
+   "below_limit": 28,
+   "samples": 35
+  },
+  "Lisheenaguile": {
+   "below_limit": 16,
+   "samples": 24
+  },
+  "Moneycashen": {
+   "below_limit": 19,
+   "samples": 24
+  },
+  "Owenbeg": {
+   "below_limit": 31,
+   "samples": 47
+  },
+  "Tirneevin Stream": {
+   "below_limit": 20,
+   "samples": 30
+  }
+ },
+ "a2_nitrate": {
+  "Ballynure Borehole 1": {
+   "at_or_above_trigger": 14,
+   "max_no3_mgl": 50.7
+  },
+  "Cloonfad Spring Chamber": {
+   "at_or_above_trigger": 0,
+   "max_no3_mgl": 35.5
+  },
+  "Gortaleen Borehole": {
+   "at_or_above_trigger": 25,
+   "max_no3_mgl": 65.9
+  },
+  "Moneycashen Intake": {
+   "at_or_above_trigger": 0,
+   "max_no3_mgl": 28.5
+  },
+  "Rathvilly Borehole 2": {
+   "at_or_above_trigger": 3,
+   "max_no3_mgl": 41.3
+  },
+  "Sheskin Shallow Well": {
+   "at_or_above_trigger": 19,
+   "max_no3_mgl": 60.1
+  }
+ },
+ "a3_quarter": {
+  "export": 242,
+  "one_only": 18,
+  "reports": 250
+ },
+ "below_limit_total": 276,
+ "call": 4,
+ "censored_readings_agreeing": 4,
+ "compliance_samples_total": 427,
+ "legacy_limit_over_standard": 2.0,
+ "nearest_compliant_pct_below": 12,
+ "nearest_non_compliant_pct_above": 12,
+ "nitrate_trigger_mgl_no3": 37.5,
+ "non_compliant": [
+  "Cloonfad",
+  "Glasheen",
+  "Kilcrohane",
+  "Owenbeg"
+ ],
+ "programme_points": 37,
+ "regulation_clauses": [
+  "1.4",
+  "4.2",
+  "4.4",
+  "7.2",
+  "7.3",
+  "7.5",
+  "7.6"
+ ],
+ "reporting_limit_legacy_ugl": 0.1,
+ "reporting_limit_sensitive_ugl": 0.005,
+ "rungs": {
+  "cond": 4,
+  "drop": 8,
+  "fitted_dist": 4,
+  "full": 11,
+  "half": 7,
+  "km": 4,
+  "mle": 4,
+  "own_points": 3,
+  "zero": 3
+ },
+ "standard_ugl": 0.05,
+ "water_bodies_assessed": 13
+}

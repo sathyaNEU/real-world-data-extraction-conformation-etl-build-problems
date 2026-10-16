@@ -63,6 +63,254 @@ samples went to the laboratory whose reporting limit is 0.05 ug/L, so half of it
 written into their year where the authority's own laboratory shows the concentration at those
 points to be nearer 0.004 ug/L.
 
+## Three rules
+
+- **Task type:** `environmental-monitoring-exceedance`, the task type in Physical & Environmental Sciences
+that serves Anomaly Detection: a monitoring record assessed against a standard, where the question is
+whether an apparent exceedance is the water or the measurement.
+- **Domain test:** the deciding quantity is each water body's annual average concentration of MCPA
+estimated from a sample in which most results carry only an upper bound, the problem environmental
+statistics treats with a censored-data estimator (a maximum likelihood fit on the censored sample,
+Kaplan-Meier on the flipped sample, or a fill from the sensitive method's own quantified values at the
+same limit) and never with a substituted constant.
+- **Swap:** "how many schools does the return state as non-compliant with the standard for recorded
+absences" reads as a filter over counted events: there is no limit of quantification beneath which an
+absence is merely known to be below a bound, so no result is censored, the estimator disappears and the
+whole call becomes an average and a comparison.
+- **Layer 1:** the authority's own systems produce all of it. The laboratory export carries a qualifier and
+an achieved reporting limit per result (the two methods accredited to 0.005 and 0.10 ug/l, the second twice the standard), results in
+ng/L from one method and ug/L from the other, provisional versions superseded by approved ones, QC rows
+(field and equipment blanks, field and laboratory duplicates, matrix spikes) beside the field samples,
+the laboratory's own client point codes against the authority's sample point codes, water body codes
+renumbered in the 2024 revision of the register, the quarterly reports as tables inside PDFs with
+multi-row headers, and the monitoring programme as a wide workbook. None of it is placed to be caught
+and none of it carries the decisive step.
+- **Layer 2:** `estimation_fit`, censoring. The methodological choice is what a result reported below a
+reporting limit contributes to a mean when the limits in the sample differ, and the limits differ
+because two laboratories with different methods serve one network.
+- **Decisive step:** estimating each water body's annual mean from the censored sample using every
+observation's own reporting limit, rather than substituting one value for every result below a limit.
+- **Not semantics:** the data dictionary states plainly that a `<` qualifier means the determinand was not
+detected at the value in `reporting_limit_ug_l`, and the method schedule gives each method's limit, so
+the reading is free. A solver who reads every field correctly still has to decide what those results
+contribute to an average, and every constant substitution files a different count: 7 at half the limit,
+3 at zero, 11 at the limit itself, 8 with them dropped.
+- **Not rule application:** clause 7.2 files what is averaged (the compliance samples the programme requires
+for the water body in the reporting year, each weighted equally) and clause 7.3 the standard it is
+compared with. No shipped sentence says what a result reported below a limit contributes, and the
+regulations, the method schedule, the programme and the data dictionary are silent on it. Executing
+every stated rule leaves the decisive step untouched.
+- **Analyst test:** a strong analyst conforms the export, drops the QC and superseded rows, crosswalks the
+points, substitutes half the reporting limit for every non-detect, averages and files 7 non-compliant
+water bodies (the `Ends on:` figure) where 4 are.
+- **Estimand:** clause 7.2 of `surface_water_quality_regulations_2019.pdf`: "A water body is non-compliant
+for a Schedule 2 substance in a reporting year where the average concentration of the substance in the
+water body in that year exceeds the standard for the substance. The average is taken over the
+compliance samples the authority's monitoring programme requires for the water body in the reporting
+year, each sample weighted equally." Population, unit, window, weighting and comparison are literal;
+the estimator is not named anywhere.
+- **No decoy:** nothing is planted to be caught. No previous return, no draft assessment, no memo, no
+stakeholder figure and no ranked list of water bodies ships; no block is copied or backfilled; the one
+water body whose points are all on the sensitive method (Kilcrohane) reads the same under every
+handling, which is the honest control the data produces rather than a tie built to bless a method.
+- **No certified replay:** the seed's architecture (the method for a return must reproduce the counts in
+the two previously published returns) is not used and no published return is in the pack, so no method
+can be recovered by reproducing a certified figure. The method is forced by the data: the sensitive
+method's quantified results at the same points in the same months show what lies below 0.10 ug/L, and
+four censored-sample estimators agree on all thirteen verdicts.
+- **Lesson:** a result reported below a reporting limit is an observation with an upper bound, not a value
+and not a gap, and when the bounds in a sample differ, any constant put in their place ranks the units
+by which method measured them. No build on file teaches it: the 21 anomaly-detection drivers include a
+detection threshold that moves with a daily noise cycle (task180), where the events are never recorded
+at all, and a density from grouped tests (task188), where every group is observed; none has an
+observation that is present and bounded.
+
+## Readability screen
+
+| Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 0 substitute half the reporting limit | no clause names a substitution | the qualifier and limit columns invite one | yes, the practice default | no corpus scores it | the battery counts non-detects, not their worth | one pass over the rows | readable |
+| 1 treat the non-detects as absent (zero) | no | same columns | yes | no | no | one pass | readable |
+| 2 assess on the authority's own compliance points only | clause 7.2 says the programme's required samples, which include the partnership points, so this violates a quotable sentence | the lab code column | yes, a quality reflex | no | no | one filter | readable |
+| 3 substitute the limit itself | no | same columns | yes, the precautionary reflex | no | no | one pass | readable |
+| 4 drop the non-detects and average the quantified results | no | same columns | yes | no | the battery's missing-value sweep suggests it | one filter | readable |
+| 5 estimate the mean from the censored sample, every observation at its own limit **(decisive)** | no sentence names an estimator or points at one | no column isolates it; the limit column is ordinary metadata both halves of the ladder read | no reflex reaches it; every reflex above is a constant | no control or corpus scores the estimators; Kilcrohane ties under all of them because its method is sensitive | the battery finds the non-detects and leaves their worth open | no subtraction, ratio or half of a reported figure gives it | silent |
+
+## Semantic fork table
+
+| id | term or convention | golden reading | alternative | call under it | ruled out by |
+|---|---|---|---|---|---|
+| SF1 | water body | the register's water body in force in the reporting year | the 2024 pre-revision code | 4, the same bodies under either code | `same call`, asserted: the revision renamed codes and merged none |
+| SF2 | compliance sample | a field sample the programme requires at a listed point | any row in the export, QC included | 7 | clause 7.2 "the compliance samples the authority's monitoring programme requires", and the dictionary's sample type codes |
+| SF3 | reporting year | 1 April 2025 to 31 March 2026 | calendar 2025 | 5 | clause 1.4 "the reporting year begins on 1 April" |
+| SF4 | which sample date | the date of collection | the date of receipt or of analysis | 4 | `same call`, asserted: every sample is collected and received inside one reporting year, the nearest clear of the boundary by 9 days |
+| SF5 | result version | the approved version | the provisional version, or both | 4 and 4 | clause 7.5 "the result as approved by the laboratory"; asserted that no approved value differs from its provisional value for MCPA |
+| SF6 | weighting | each sample weighted equally | per point, then averaged over points | 5 | clause 7.2 "each sample weighted equally", quoted against the per-point reading; the separation is asserted |
+| SF7 | units | ug/L after converting the ng/L rows | the numbers as reported | 11 | the `units` column and the dictionary's statement that both are in use |
+| SF8 | the `<` qualifier | the determinand was not detected at the limit in `reporting_limit_ug_l` | the value is the limit | 11 | the dictionary: "a result qualified `<` was not detected; the figure in reporting_limit_ug_l is the limit the method achieved for that sample" |
+| SF9 | standard | 0.05 ug/L, Schedule 2, as an annual average | the 0.10 ug/l drinking water parametric value in the method schedule's scope note | 1 | clause 7.3 "the standard for the substance set out in Schedule 2" |
+| SF10 | non-compliant | the average exceeds the standard | the average equals or exceeds it | 4 | `same call`, asserted: no estimate lands within 11 per cent of the standard |
+| SF11 | rounding | the count is a whole number of water bodies; no estimate is rounded before the comparison | each average rounded to two decimals first | 4 | `same call`, asserted at two and three decimals |
+| SF12 | the district | the thirteen water bodies the programme lists for the authority | the register's full list, which includes three outside the programme | 4 | clause 7.2 "requires for the water body", and the programme's own list |
+| SF13 | the average | the mean of the thirteen water bodies' own samples, one concentration per sample | the mean of a lognormal fitted to the censored sample, which is a property of the fit rather than of the samples | 4 | `same call`, asserted: the fitted distribution's own mean gives the same four verdicts with every water body 12 per cent or more clear of the standard; clause 7.2 also says the average is "the mean of the concentrations of the compliance samples ... one concentration for each of those samples" and that the authority "shall not report in place of the average any property of a distribution fitted to them" |
+| SF14 | nitrate basis | a result under `NO3N` is nitrogen and converts to the nitrate ion by 4.4268 | the two codes pooled as reported | the asks' figures change at five of the six abstraction points | the field dictionary: "a result under NO3N is 4.4268 times smaller than the same water under NO3" |
+
+## Ladder
+
+| Rung | The analysis | Count | Water bodies named |
+|---|---|---|---|
+| 0 | substitute half the reporting limit for every non-detect | **7** | Ballynure, Cloonfad, Derryvore, Glasheen, Kilcrohane, Owenbeg, Tirneevin Stream |
+| 1 | treat the non-detects as absent, averaging over all samples | 3 | Cloonfad, Glasheen, Kilcrohane |
+| 2 | assess on the authority's own compliance points only | 3 | Cloonfad, Glasheen, Kilcrohane |
+| 3 | substitute the reporting limit itself | 11 | all but Carrowbeg and Lisheenaguile |
+| 4 | drop the non-detects and average the quantified results | 8 | the seven of rung 0 plus Knockanure |
+| 5 | **answer:** estimate each water body's mean from its censored sample, every observation at its own limit | **4** | Cloonfad, Glasheen, Kilcrohane, Owenbeg |
+
+**Worth on the graded quantity.** Rung 0 to the answer moves the count by 3 and the named set by 3
+water bodies; rung 1 and rung 2 by 1; rung 3 by 7; rung 4 by 4. No rung is reachable by a correction
+that walks the same way: substituting less (zero) under-states and substituting more (the limit)
+over-states, so the answer is bracketed, not extreme, and no monotone correction reaches it.
+
+**Separation.** Five readings that keep a bounded result bounded agree on all thirteen verdicts,
+computed in `checks.py` and again in `verify.py`: a lognormal fit with each observation at its own
+censoring point and each bounded sample at its conditional expectation, Kaplan-Meier on the flipped
+sample, a fill from the sensitive method's quantified results of the same month below the same limit,
+the fitted lognormal's own distribution mean, and the clean truth the generator holds. Every verdict
+is at least 12 per cent clear of the standard under all of them, asserted. The count stays 4 for any
+standard between the widest compliant estimate and the narrowest non-compliant one, and Schedule 2's
+0.05 sits mid-corridor.
+
+**Dominance.** Owenbeg is the water body the ladder turns on: it is non-compliant (0.056 to 0.062
+ug/L across the four estimators) and falls out of rungs 1 and 2, while Ballynure, Derryvore and
+Tirneevin Stream are compliant (0.032 to 0.048) and enter rung 0. All four are heavy on the
+partnership's points; Kilcrohane, which is all on the sensitive method, sits in every rung.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | which results are averaged | clause 7.2 files the compliance samples the programme requires; SF2, SF12; C1 asserted on row and point counts |
+| 2 Unit of account | result, sample, point or water body | clause 7.2 averages samples and assesses the water body; SF6 |
+| 3 Attribution window | which reporting year a sample falls in | the date of collection, SF4; every sample is 9 or more days clear of the boundary, asserted |
+| 4 As-of dating | the state of the register and the programme | the authority's extract of 16 November 2026; the register revision of 2024 is the one in force, SF1 |
+| 5 Version basis | provisional or approved | clause 7.5 and SF5; asserted that no MCPA approved value differs from its provisional value |
+| 6 Denominator | the number of samples in the average | the count of compliance samples, clause 7.2; asserted per water body |
+| 7 Weighting | per sample or per point | clause 7.2 "each sample weighted equally", SF6; the per-point average gives the same verdicts, asserted |
+| 8 Window length | one reporting year | clause 1.4, SF3 |
+| 9 Boundary inclusivity | exceeds, or equals and exceeds | SF10; no estimate within 11 per cent of the standard, asserted |
+| 10 Rounding path | before or after the comparison | SF11; the comparison is on the unrounded estimate and the count is identical at two and three decimals, asserted |
+| 11 Tie-break | two water bodies at the same estimate | none: the thirteen estimates are distinct to three decimals, asserted |
+| 12 Maturity and censoring | results below a reporting limit | the decisive step; the estimand is filed and the estimator is forced by the data, not by a sentence |
+| 13 Order of operations | convert units, then exclude, then average | every order gives the same figures, asserted over the three permutations that are defined |
+| 14 Row order | the export's order | C1, asserted over three permutations of the export |
+| 15 Duplicate resolution | the same sample under two client codes | the crosswalk resolves them; the main call's population holds no duplicate pair, asserted by count |
+| 16 Identity normalisation | laboratory client point codes against authority codes | `sample_point_crosswalk.csv`, every code matched, asserted 1 to 1 on the compliance network |
+| 17 Netting against gross | none; concentrations do not offset | no closure needed, asserted that no result is negative |
+| 18 Dimensional units | ng/L and ug/L in one column | the `units` column, SF7; asserted that every averaged value is in ug/L |
+| 19 Code and status semantics | the qualifier, sample type and status codes | the data dictionary, SF8; never the decisive step |
+| 20 Integerisation | the count of water bodies | a whole number by construction |
+| 21 Clause scope | per substance, per water body, per year | clause 7.2's own scope, SF9 |
+| 22 Forward window contents | none; the reporting year closed on 31 March 2026 | the call is retrospective: the figure is committed at the regulator's deadline of 30 November 2026 and the window it describes is closed. The reason is the decision itself, which is what the authority states in a statutory return, and no forward quantity enters it. |
+
+## Literal reader
+
+Executing the prompt, clause 7.2, clause 7.3, clause 7.5, clause 1.4, the method schedule and the data
+dictionary word for word selects 427 MCPA compliance results at 37 sample points in 13 water bodies and
+asks for the mean of each water body's samples' concentrations against 0.05 ug/l, one concentration per
+sample. The text is silent on what a sample the laboratory reported no value for contributes, so every
+option was computed: zero 3, half the limit 7, the limit 11, dropped 8, and each of the five readings
+that keep the sample bounded 4. The easy ones are easy methods on the same literal estimand, not other
+readings of it, and the one reading that is a different quantity, the mean of a distribution fitted to
+the sample, both converges on the golden and is excluded by clause 7.2's own words. Every other term and convention has an SF row that is
+either ruled out by a quoted sentence or asserted to give the same call.
+
+## Oracles
+
+- The labs' quarterly report PDFs confirm result counts per quarter and the values as issued; they tie
+  under every handling of the non-detects, because they carry no average and no assessment.
+- The programme workbook confirms each point's required frequency; it ties under every handling.
+- `export_manifest.csv` confirms the export's row count and date range; it ties under every handling.
+- Kilcrohane, the one water body wholly on the sensitive method, reads 0.0606 to 0.0612 ug/L under all
+  six pipelines and is non-compliant in every one. It is the data's own consequence of an accredited
+  limit twelve times below the standard, it is not quoted anywhere, and it blesses no method: it is
+  non-compliant under rung 0 too.
+- No control, published figure or corpus ties only under the golden. There is no calibration organ.
+
+## Ask sheet
+
+| Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, lazy delta | Realism |
+|---|---|---|---|---|---|---|---|---|
+| A1 the year's sampling record | per water body, the compliance samples the year holds and how many came back below the reporting limit (26 figures) | the audit trail of the call's own population | the return's own columns; the regulator asks every authority for them | none (construction layer) | QC sample types, provisional superseded by approved, the ng/L rows, the 2024 point renumbering, a re-issued batch | export, programme, crosswalk, register, dictionary; 11 columns | 5 stops; the lazy read (every MCPA row at the programme's points, QC and all) gives 475 against 427 | the return form asks for the sample count behind every assessment |
+| A2 nitrate at the abstraction points | per abstraction point, the highest nitrate result of the year as mg/L NO3 to one decimal and the number of samples at or above 37.5 mg/L NO3 (12 figures) | an input the call consumes (the same export) read on rows the call never touches | the authority's drinking water source protection report | D1, the same samples submitted under two client codes, the water services section's and the laboratory's own, so a plain count double-counts; resolved only by the crosswalk and the collection timestamp | the two determinand codes, nitrate as NO3 and as N; a point renamed mid-year | export, crosswalk, abstraction register, dictionary, method schedule; 9 columns | 4 stops; the lazy read double-counts 40 rounds and files the as-N figures at five of the six points | abstraction points are monitored for nitrate under a separate programme |
+| A3 the quarter's reconciliation | for October to December 2025, the ortho-phosphate results the quarterly reports show for the district, the number the export holds, and the number in only one of the two (3 figures) | an input reconciled to another system's total | the authority's data quality log, which the regulator audits | D2 version, the reports were issued on a cut-off before some results were approved, so the export holds replacements the reports do not | a report page with a continued multi-row header; one report issued twice | two report PDFs, export, manifest; 7 columns | 4 stops; the lazy read compares the two totals, 250 against 242, and files 8 rather than 18 | the quarterly report is the laboratory's contractual deliverable |
+
+**Main population separation.** Zero device rows in the main call's population (MCPA, field samples,
+approved versions, the 13 programmed water bodies' 37 points, 1 April 2025 to 31 March 2026): the A2
+double submissions are nitrate at the six abstraction points, which are not in the compliance network;
+the A3 superseded versions are ortho-phosphate. Asserted by count in `checks.py`. The main path still
+carries its own texture (QC rows, provisional versions, ng/L, the crosswalk), all of it coded and found
+by the hygiene battery.
+
+**Hazard table.** 475 MCPA rows sit at the programme's points and 427 of them are compliance samples. QC sample types move A1 and A2; the ng/L rows move A1 and A2; the 2024 renumbering
+moves A1 and A3; the multi-row report header moves A3.
+
+**Referee.** `export_manifest.csv` arbitrates the export's own extent (row count, date range, the
+determinands it covers) and nothing else; it ties under every handling and settles no level.
+
+**Cracker sheet.** The cracker landed the call at rung 5, ran the hygiene battery, executed clauses
+1.4, 7.2, 7.3 and 7.5 and matched the quarterly reports.
+
+| Ask figure | Cracker's figure | Golden | Result |
+|---|---|---|---|
+| A1 compliance samples, Ballynure | counts every MCPA row at the water body's points, 53 against 47 | 47 | miss |
+| A1 below-limit count, Owenbeg | counts every `<` row including the field duplicates and blanks | 31 | miss |
+| A2 highest nitrate, Gortaleen Borehole | takes the maximum as reported, without the nitrate-ion basis, 14.9 | 65.9 | miss |
+| A2 rounds at or above 37.5, Sheskin Shallow Well | reads the as-N results as the nitrate ion, so no round reaches the level and it files 0 | 19 | miss |
+| A3 identifiers in only one of the two | subtracts the two totals and files 8 | 18 | miss |
+
+Pair ceiling: 34.0
+Mirror leakage: 20.0 per cent of the ask weight
+
+**Leak sweeps answered.** `leak.py` returns REVIEW on six lines, each harmless. Sweep 4 flags the
+regulations, the method schedule, the dictionary and the two quarterly reports for sharing three to
+eight ordinary words with the stump paragraph (sample, method, average, authority, standard,
+programme, laboratory): those are the domain's own nouns and no document names the decisive step, which
+the word sweep in `checks.py` asserts over every shipped file. Sweep 3 flags 0.005 and 0.10 in the
+method schedule: they are the two accredited reporting limits, an input the pack must carry, and both
+are listed under `stated_inputs` in `metadata.json`.
+
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** The decisive step is still the estimate of a
+  left-censored mean with two reporting limits in play, and `checks.py` executes it: the easy route on
+  the generator's clean truth files 7 and the same clean truth assessed on the limits as reported files
+  4. The mess in the pack is Layer 1 only: the QC rows, the provisional versions, the ng/l rows, the
+  crosswalk, the renumbering and the incomplete rounds are all typed or documented, and removing every
+  one of them leaves the call exactly as hard, because the decisive step is in the 427 compliance
+  samples themselves.
+- **Rule 3, each class.** Nothing is planted (every quantified MCPA value is its own draw, asserted
+  distinct; no block is copied; no memo, draft or stakeholder figure ships). Not semantics (the
+  dictionary states what the `<` qualifier and `reporting_limit` mean, so the reading is free, and a
+  word sweep over every shipped file asserts that none of them says substitute, censor, non-detect,
+  Kaplan or maximum likelihood). Not rule application (clause 7.2 files the population, the unit, the
+  window and the weighting, clause 7.3 the standard, clause 7.5 the governing version, and no shipped
+  sentence says what a result below a limit contributes).
+- **Input gates.** 14 files, 4 formats (csv, xlsx, json, pdf), the export at 25,524 rows, two
+  distractors declared in `metadata.json` and named in neither a file name nor the prompt.
+- **Gate G.** No shipped artifact assesses or ranks the water bodies: the regulations give the standard
+  and the method, the programme gives the points and the rounds, the quarterly reports list
+  ortho-phosphate results and say in their own words that they are not a compliance assessment, and
+  the word `non-compliant` appears only in the regulations' own clauses. There is no declared
+  wrong-basis distractor and the difficulty survives deleting every number in the pack that is not a
+  laboratory result.
+- **Free gates.** `precut.py` 49 checks 0 FAIL 0 WARN; `voice-check.py` PASS at 908 characters;
+  generator assertions 209; independent checks 68; two byte-identical rebuilds of `target/` and
+  `golden/`; `figures_check.py` 42 of 42; `leak.py` REVIEW with every line answered above;
+  `guard.py surface` clean and `heart` WARN only (`government_agency` overuse).
+- **Retrospective call.** The reporting year closed on 31 March 2026 and the figure is committed to the
+  regulator at the 30 November 2026 deadline, which is the decision the authority actually makes; no
+  forward quantity enters it (closure axis 22).
+
 ## Tried and rejected
 
 - Shrinkage of each water body's mean before the threshold comparison (the small-sample selection
@@ -75,3 +323,12 @@ points to be nearer 0.004 ug/L.
 - The seed's own architecture (the return's method must reproduce the two previously published
   returns): a certified replay, banned by the 10/10 rules and by `guard.py` as a validated decoy; no
   previous return ships in the pack at all.
+- The non-detect row carrying a copy of its reporting limit in the `result` field: the stage 4 reader
+  showed that a literal "average of results" could then take 0.1000 as a measured value and reach 11,
+  which is a reading rather than a method. The row now carries an empty `result` and the limit only in
+  `reporting_limit`, with the dictionary saying so; every graded figure is unchanged.
+- The method schedule's scope note explaining that the legacy limit was set for the drinking water
+  parametric value: the reader called it "unusually explanatory" and said it pointed at the mismatch
+  with the standard. The note now gives the accredited limit, the units and the method's age, and
+  leaves the comparison to the analyst.
+

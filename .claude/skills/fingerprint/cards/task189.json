@@ -10,7 +10,7 @@
   "shape": "10",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "4 water bodies non-compliant with the annual average standard for MCPA in the 2025/26 reporting year",
+  "answer": "4 water bodies non-compliant for MCPA in the 2025/26 reporting year (Cloonfad, Glasheen, Kilcrohane, Owenbeg)",
   "answer_source": "golden/annual_compliance_return_2025_26.xlsx",
   "gap": [
     "population",
@@ -36,7 +36,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "lims_results_export_2025_2026.csv",
-    "rows": 34000,
+    "rows": 25524,
     "entity": "one analytical result for one sample and one determinand, as issued or as later approved",
     "grain": "sample x determinand x result version",
     "source": "synthetic (constructed in the layout of a water authority's laboratory information management system result export)"
@@ -57,7 +57,8 @@
     "people": [
       "Emmet McQuillen",
       "Katie Enright",
-      "George Twohey"
+      "George Twohey",
+      "Shay Caldwell"
     ]
   },
   "deliverables": [
@@ -76,13 +77,14 @@
   "layer2_pattern": "own:left-censored-results-with-several-reporting-limits",
   "layer1": [
     "censored lab results and qualifiers",
-    "mixed units and bases",
+    "mixed units and bases (ng/l against ug/l)",
     "provisional and approved records overlap",
     "site ids differ across systems",
     "wide sheets with multi-row headers",
     "QC samples among field results",
     "tables inside PDFs",
-    "a method change documented mid-year"
+    "a point added and a point closed mid-year",
+    "rounds the field team did not complete"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
