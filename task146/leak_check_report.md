@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: quarter, refused, driver, refiling, effect, determinations, refusal, series, closing, period, regional, technical, advance, decisive, regions, seasonal, statistics, asserted, official, checks, forecasting, calendar, components, shares, months
+Stump terms swept: quarter, refused, driver, refiling, effect, determinations, refusal, series, closing, period, regional, technical, advance, decisive, regions, checks, seasonal, statistics, asserted, official, forecasting, calendar, components, shares, months
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `ui_claims_statistics_technical_notes_2026-07.pdf`: golden figure 2.3 appears: ...already receiving benefit are not initial claims. 2.3 The monetary determination Every new claim is gi...

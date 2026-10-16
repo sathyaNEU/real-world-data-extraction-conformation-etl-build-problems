@@ -612,6 +612,30 @@ withdrawal phrases in the case notes.
   0 invalid; `surface` exit 0 (task134 and task54 promoted on the card signature, as before); `heart` WARN
   (repeat.gate_g, overuse.gate_g, answered at the draw; nearest driver 0.07).
 
+**Case-note coherence fix, 2026-10-16**, after stage 4 on the strengthened cut (f0b43f3f): the judge DETERMINISTIC /
+APPROVE with Gate H analytical (the call reproduced at 16,895, all 24 Ask A cells and all 14 Ask B changes); the third
+rule 3 audit PASS, strong (0.5 to 0.9 landers expected in the top two; eleven further constructions all land 17,000);
+the leak reader clean, Q6 analytical, never surfacing the recency layer, with the desk's data log reading tidy.
+- Fixed: CN051136, dated 10 July, gave "busy again since the start of October" as a withdrawal reason; two information
+  sessions were dated before the notes that booked them (CN051364, CN051376). Every date a case note names is now drawn
+  from the note's own date: a month given as past ("since ...") is before it, a session, briefing, expo or visit falls 3
+  to 23 days after it, a deferral or extension names a month after it, and a first layoff already past is spoken of in
+  the past. Asserted: no case note refers to a month or day after its own date as already past, speaks of a day before
+  it as still ahead, or carries a date stamp other than its own (forward references to a first layoff or a deferral are
+  the notice's own future). The assertion flags all three notes of the earlier cut.
+- Varied: the officers' wording, so no sentence template (contacts, towns, numbers, months and the bracketed reason set
+  aside) recurs more than twice (152 templates in 177 notes; asserted); each officer writes withdrawals six to eight
+  ways and every other kind of note three to five, used in turn before any repeats, on a wording stream of their own. The
+  notes' ids, dates, officers and typed references are unchanged, every withdrawal is still read as one by both
+  detectors, and Ask A's 24 cells are asserted identical to the strengthened cut's. "Work and Income" (a real agency's
+  name) became the board's regional employment office.
+- The desk's data log reads as a working log: terse notes, the keeper's initials and times, an entry left bare.
+- Gates: checks 183, 0 failed; verify agrees (call 16,895); two builds byte-identical; `freeze.py check --mode
+  determinism` PASS (the main call, the stump and every graded figure unchanged; the goldens and figures.json
+  untouched); `figures_check.py` 69 of 69; `precut.py` 49 checks, 0 FAIL, 0 WARN; `leak.py` REVIEW, the same lines as
+  answered below; the producer-metadata audit clean on target and golden; `guard.py validate` 187 cards, 0 invalid,
+  `surface` exit 0, `heart` WARN as before.
+
 ## Leak review
 
 `leak.py --asof 2026-10-08` on the strengthened build: REVIEW, no LEAK. Each line is harmless:
@@ -630,10 +654,9 @@ withdrawal phrases in the case notes.
 
 ## State at pause
 
-The strengthening is complete on 2026-10-16 (the refiling share by region and month of refusal decides; regional
-sizing on the quarter taken whole files two bins low), and every stage 3 gate is green on the strengthened build. Next,
-stage 4: a fresh leak reader and determinism judge on the strengthened `target.zip`; findings fixed in the generator in
-one pass, then the pre-ship check and ship.
+Stage 4 passed on the strengthened cut (judge DETERMINISTIC / APPROVE, rule 3 PASS, leak reader clean), and the case-note
+coherence fix it asked for is in (2026-10-16), every gate green and `freeze.py` proving nothing graded moved. Next: the
+coordinator's targeted re-read of the changed files (the case notes and the desk's data log), then ship.
 
 ## Tried and rejected
 

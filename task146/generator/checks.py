@@ -128,6 +128,62 @@ def copy_only(target, files):
     return tmp
 
 
+# Ask A's 24 cells as shipped at the strengthened cut (f0b43f3f): case-note wording may change, these may not
+ASK_A_FROZEN = {"Northern": (111, 121, 230), "Capital": (360, 463, 238), "Eastern": (205, 101, 164),
+                "Midlands": (198, 499, 290), "Western": (198, 697, 555), "Southern": (136, 548, 139),
+                "Coastal": (300, 828, 242), "Island": (350, 277, 139)}
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",
+          "December"]
+PAST_WORDS = re.compile(r"\b(went|finished|left|done|since|visited|met)\b", re.I)
+
+
+def note_time_faults(note, nd):
+    """What a case note says about time that its own date contradicts: a leading date stamp that is not the note's
+    date, a month named as already past ('since ...') after it, a day before the note's date spoken of as ahead, or a
+    day after it spoken of as past. A day without a year is in the note's year unless its month is more than three
+    months before the note's (then it is next year's: a first layoff or a deferral)."""
+    faults = []
+    m = re.match(r"\s*(\d{1,2})/(\d{1,2})(?:/(\d{4}))?\b", note)
+    if m and (int(m.group(1)), int(m.group(2))) != (nd.day, nd.month):
+        faults.append("stamp %s" % m.group(0).strip())
+    for m in re.finditer(r"\bsince (?:the start of )?(%s)\b" % "|".join(MONTHS), note):
+        if MONTHS.index(m.group(1)) + 1 > nd.month:
+            faults.append("since %s" % m.group(1))
+    refs = [(int(m.group(1)), MONTHS.index(m.group(2)) + 1, None)
+            for m in re.finditer(r"(?<![\d/:])(\d{1,2}) (%s)\b" % "|".join(MONTHS), note)]
+    refs += [(int(m.group(1)), int(m.group(2)), int(m.group(3)) if m.group(3) else None)
+             for m in re.finditer(r"(?<![\d/:])(\d{1,2})/(\d{1,2})(?:/(\d{4}))?(?![\d/])", note)]
+    for day, mon, yr in refs:
+        y = yr or (nd.year if mon >= nd.month - 3 else nd.year + 1)
+        try:
+            r = dt.date(y, mon, day)
+        except ValueError:
+            faults.append("no such date %d/%d" % (day, mon))
+            continue
+        past = bool(PAST_WORDS.search(note))
+        if r < nd and not past:
+            faults.append("%s spoken of as ahead" % r)
+        if r > nd and past:
+            faults.append("%s spoken of as past" % r)
+    return faults
+
+
+def note_skeleton(note, towns, contacts):
+    """A case note with its particulars set aside (date stamps, contacts, towns, numbers, months and weekdays, the
+    reason in brackets, case and closing stops): the sentence template an officer wrote."""
+    s = note.lower()
+    s = re.sub(r"^\d{1,2}/\d{1,2}(/\d{4})?\s*", "", s)
+    for c in contacts:
+        s = s.replace(c.lower(), "<c>")
+    for t in towns:
+        s = s.replace(t.lower(), "<t>")
+    s = re.sub(r"\b(%s|monday|tuesday|wednesday|thursday|friday|mon|tue|wed|thu|fri)\b" % "|".join(
+        m.lower() for m in MONTHS), "<m>", s)
+    s = re.sub(r"\d+(st|nd|rd|th)?", "#", s)
+    s = re.sub(r"\(([^)]*)\)", "(<r>)", s)
+    return s.strip(" .")
+
+
 # ---------------------------------------------------------------------------------------------------- run
 def run(target, golden, Wd=None, G=None, meta_path=None):
     A = Checks()
@@ -610,6 +666,8 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
     ga, info = C.ask_a(target)
     cells = [(r, p[0]) for r in REG for p in N.PERIODS]
     A("Ask A the golden from the shipped rows equals the truth in all 24 cells", ga == truth_a)
+    A("Ask A's 24 cells are identical to the strengthened cut's (case-note wording moved no notice)",
+      all(tuple(ga[(r, p)] for p, _, _ in N.PERIODS) == ASK_A_FROZEN[r] for r in REG))
     ask_only = copy_only(target, R.ASK_A_FILES + R.ASK_B_FILES)
     try:
         A("Ask A and Ask B computed with every main-call file but the technical notes and the regions file removed are "
@@ -721,6 +779,17 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
     A("realism: no case note's text recurs more than three times (%r x%d)" % top, top[1] <= 3)
     A("realism: the case notes' wording carries no doubled article or bad ordinal",
       not any(re.search(r"\bthe the\b|\b(?:\d*[02-9])?[123]th\b", r["note"]) for r in notes_rows))
+    tfaults = [(r["note_id"], f) for r in notes_rows
+               for f in note_time_faults(r["note"], dt.date.fromisoformat(r["note_date"]))]
+    A("realism: no case note refers to a month or day after its own date as already past, speaks of a day before it "
+      "as still ahead, or carries a date stamp other than its own (%d notes read)" % len(notes_rows), not tfaults,
+      tfaults)
+    skel = Counter(note_skeleton(r["note"], sorted(N.TOWN, key=len, reverse=True),
+                                 sorted(N.CONTACTS, key=len, reverse=True)) for r in notes_rows)
+    A("realism: the officers vary their wording: no sentence template (particulars set aside) recurs more than twice "
+      "(%d templates in %d notes)" % (len(skel), len(notes_rows)), max(skel.values()) <= 2, skel.most_common(3))
+    A("realism: no case note names a real agency (the board's own offices only)",
+      not any(re.search(r"Work and Income|WINZ|MSD\b", r["note"]) for r in notes_rows))
     portal_rows = list(csv.DictReader(open(os.path.join(target, R.F_PORTAL), encoding="utf-8")))
 
     def bn_ok(bn):

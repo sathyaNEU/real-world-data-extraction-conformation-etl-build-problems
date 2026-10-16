@@ -15,20 +15,20 @@
     "date": "2026-10-16"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-16 on the strengthening, no LEAK; every line answered in the note's Leak review",
-    "reader": "repaired cut a040f6c1: clean, Q6 analytical; repeated case-note withdrawal phrases varied at the strengthening"
+    "leak_py": "REVIEW 2026-10-16 after the case-note fix, no LEAK; every line answered in the note's Leak review",
+    "reader": "strengthened cut f0b43f3f: clean, Q6 analytical, the recency layer not surfaced; desk data log read tidy (now a working log)"
   },
   "duplicate_check": {
     "heart": "WARN 2026-10-16 on the strengthened card (repeat.gate_g, overuse.gate_g, answered at the draw)",
     "nearest": "driver 0.07 (task446 v2); surface exit 0, task134 and task54 promoted on the card signature for the author's clone-check"
   },
   "judge": {
-    "verdict": "DETERMINISTIC on the repaired cut a040f6c1 (residual multiplicative fork 16,719), superseded by the strengthening",
-    "disposition": "APPROVE (repaired cut); re-judge on the strengthened cut",
-    "report": ""
+    "verdict": "DETERMINISTIC on the strengthened cut f0b43f3f, Gate H analytical",
+    "disposition": "APPROVE; the optional case-note fix done (CN051136 and template reuse)",
+    "report": "scratchpad judge-task146c/verdict.md"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge (fresh, on the strengthening: the refiling share by region and month of refusal)",
+  "resume": "ship: after the coordinator's targeted re-read of the case notes and the desk data log",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -37,13 +37,14 @@
   "portal_status_date": "",
   "wave": "wave 3 (new), seed FC17 (world, decision and quantity kept; pitfall re-found)",
   "gates": {
-    "checks": "179, 0 failed",
+    "checks": "183, 0 failed",
     "verify": "agrees (call 16,895, se 83, timing-blind 14,849, national 13,340, seasonal 13,241)",
     "rebuilds": "two byte-identical",
     "figures_check": "69 figures, 0 absent",
     "precut": "49 checks, 0 FAIL, 0 WARN",
     "voice_check": "exit 0",
     "scrub": "target and golden clean",
-    "guard": "validate clean, heart WARN, surface exit 0"
+    "guard": "validate clean, heart WARN, surface exit 0",
+    "freeze": "determinism mode PASS after the case-note fix"
   }
 }
