@@ -1,0 +1,186 @@
+{
+  "task": "task150",
+  "title": "Where a suburban Colorado school district's 2025 bond places its 24 new elementary classrooms under the board's placement standard, from each school's projected enrollment over 2028-29 to 2032-33",
+  "domain": "Sociology & Demography",
+  "client_domain": "Sociology & Demography",
+  "subdomain": "population-estimation-demographic-projection (a small-area cohort-component projection of each attendance area's K-5 pupils: cohorts aged through grades, kindergartens from births five years earlier, exits and moves between areas as rates on the area a pupil leaves, arrivals from outside the district as counts)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "a placement schedule for seven schools (each school's classroom need and classrooms placed), two October 1, 2026 tables (homeroom classes by grade band at seven schools; preschool children and classrooms at four sites), and a seven-panel enrollment chart",
+  "as_of": "2026-10-09",
+  "deliverables": [
+    "classroom_placement_2028-33.xlsx",
+    "enrollment_vs_capacity_2026-33.png"
+  ],
+  "distractor_files": [
+    "facility_condition_assessment_2025.xlsx",
+    "meal_eligibility_2026-10.csv"
+  ],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 16,
+    "formats": [
+      "csv",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "october_membership_2019-2026.csv",
+    "largest_file_rows": 44314
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task150/generator/build.py (seeded, deterministic) around a fictional Colorado school district (Sorrel Creek School District RE-6, Brandt County), its schools, board, county vital records office and their systems; no real organisation, person or system is depicted. Grade, entry and school code conventions follow common Colorado student information practice; the board policy code follows the NEPN/NSBA classification.",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-16",
+  "generator": "task150/generator/build.py",
+  "files": [
+    {
+      "path": "BP_FEA-R2_elementary_classroom_placement.pdf",
+      "format": "pdf",
+      "bytes": 4686,
+      "rows": null,
+      "source": "Constructed: Sorrel Creek RE-6 Board of Education, Policy FEA-R2 Elementary Classroom Placement (2025 Bond Program), adopted 03/12/2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "births_file_notes.txt",
+      "format": "txt",
+      "bytes": 1136,
+      "rows": null,
+      "source": "Constructed: Brandt County Public Health, Vital Records: notes on the births file",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "brandt_county_births_by_attendance_area_2008-2025.csv",
+      "format": "csv",
+      "bytes": 4211,
+      "rows": 162,
+      "source": "Constructed: Brandt County Public Health, Vital Records: resident live births by RE-6 attendance area, 2008 to 2025",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ecse_roster_2026-10-01.xlsx",
+      "format": "xlsx",
+      "bytes": 8457,
+      "rows": null,
+      "source": "Constructed: Sorrel Creek RE-6 Special Education Department, early childhood special education roster on 10/01/2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest_2026-10-09.csv",
+      "format": "csv",
+      "bytes": 2245,
+      "rows": 15,
+      "source": "Constructed: Sorrel Creek RE-6 Planning and Enrollment Office, manifest of the October 2026 pull",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "facilities_capacity_report_2026-09.xlsx",
+      "format": "xlsx",
+      "bytes": 6197,
+      "rows": null,
+      "source": "Constructed: Sorrel Creek RE-6 Facilities and Operations, elementary school capacity report 2026-27",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "facility_condition_assessment_2025.xlsx",
+      "format": "xlsx",
+      "bytes": 6125,
+      "rows": null,
+      "source": "Constructed: Sorrel Creek RE-6 Facilities and Operations, facility condition assessment of the elementary schools, spring 2025",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "meal_eligibility_2026-10.csv",
+      "format": "csv",
+      "bytes": 437,
+      "rows": 7,
+      "source": "Constructed: Sorrel Creek RE-6 Nutrition Services, meal benefit eligibility of K-5 pupils on the October 1, 2026 count",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "membership_oct2013-oct2018.txt",
+      "format": "txt",
+      "bytes": 2981944,
+      "rows": 32283,
+      "source": "Constructed: Sorrel Creek RE-6 legacy student information system, October membership snapshots 2013-14 to 2018-19 (pipe-delimited archive export)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "october_membership_2019-2026.csv",
+      "format": "csv",
+      "bytes": 3982377,
+      "rows": 44314,
+      "source": "Constructed: Sorrel Creek RE-6 student information system, October membership snapshots 2019-20 to 2026-27",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "preschool_enrollments_2026-27.csv",
+      "format": "csv",
+      "bytes": 24373,
+      "rows": 229,
+      "source": "Constructed: Sorrel Creek RE-6 preschool registration platform, enrollments at the elementary sites, 2026-27",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "school_codes.csv",
+      "format": "csv",
+      "bytes": 497,
+      "rows": 7,
+      "source": "Constructed: Sorrel Creek RE-6 student information system, elementary school codes (legacy and state)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "section_enrollment_fall2026.csv",
+      "format": "csv",
+      "bytes": 214880,
+      "rows": 5636,
+      "source": "Constructed: Sorrel Creek RE-6 student information system, pupil lines in the fall 2026 elementary sections",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sections_fall2026.csv",
+      "format": "csv",
+      "bytes": 29786,
+      "rows": 290,
+      "source": "Constructed: Sorrel Creek RE-6 student information system, elementary sections scheduled for 2026-27",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "sis_export_notes.txt",
+      "format": "txt",
+      "bytes": 4153,
+      "rows": null,
+      "source": "Constructed: Sorrel Creek RE-6 Student Information Systems, notes on the student-system files",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "student_number_crosswalk_2019.csv",
+      "format": "csv",
+      "bytes": 181704,
+      "rows": 5505,
+      "source": "Constructed: Sorrel Creek RE-6 student information system, 2019 conversion crosswalk of legacy student numbers to state IDs",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

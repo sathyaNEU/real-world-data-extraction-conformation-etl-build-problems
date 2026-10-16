@@ -1,26 +1,50 @@
 {
   "task": "task150",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "sociology-demography/population-estimation-demographic-projection",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-16",
   "stump": "Projecting each school by its five-year average grade progression ratios and its kindergarten-to-births ratio places the 24 classrooms as Bluestem 7, Prairie Rose 8, Lincoln 6 and Fifth Street 3 (Kessler none); the step that lands it there is carrying ratios struck on each school's own classes, when pupils arriving from outside the district come at a steady count each fall and pupils moving between attendance areas come at the rate of the school they leave, which places Prairie Rose 7, Lincoln 6, Fifth Street 5, Bluestem 4 and Kessler 2.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "driver 0.08 (task451 v2), 0.07 (task62 lineage); guard check WARN (overuse.objective, repeat.gate_g), answered in the design note"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-16",
+    "checks": 49
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK (2026-10-16, the stage 3 cut): policy lists the seven schools, records by school, no method words, the sections' planned end dates; each answered in the design note's ## Leak review",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "WARN overuse.objective, answered under Draw",
+    "nearest": "driver 0.08 (task451 v2); surface promotes task125 at 0.077 on the cards' same-driver signature (gap time, G6, Gate G forecasting) and a shared filed_standard context artifact, differentiated on the card; the adjudicated clone read is the author's call"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: finish the design note (ladder, closure, ask sheet), prompt.txt, precut.py",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "wave": "wave 4 (new), seed FC21 (world, decision and quantity kept; pitfall re-found)"
+  "wave": "wave 4 (new), seed FC21 (world, decision and quantity kept; pitfall re-found)",
+  "stage3": {
+    "checks": "132 assertions, 0 failed",
+    "verify": "pass (own pandas code path)",
+    "rebuild": "two builds byte-identical",
+    "figures_check": "41 figures, 0 absent",
+    "voice_check": "PASS (785 characters)",
+    "container_audit": "clean (pack and goldens)",
+    "call": "Prairie Rose 7, Lincoln 6, Fifth Street 5, Bluestem 4, Kessler 2, Ortega 0, North Fork 0 (needs 7, 6, 5, 4, 3, 0, 1)",
+    "default": "Bluestem 7, Prairie Rose 8, Lincoln 6, Fifth Street 3, Kessler 0 (five-year progression ratios)"
+  }
 }

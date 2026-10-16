@@ -11,8 +11,8 @@
   "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Prairie Rose 7, Lincoln 6, Fifth Street 5, Bluestem 4, Kessler 2, Ortega 0, North Fork 0 (classroom needs 7, 6, 5, 4, 3, 0, 1)",
+  "answer_source": "task150/generator/figures.json (call, critical_components.classroom_need), recomputed by task150/generator/verify.py",
   "gap": [
     "time",
     "population"
@@ -36,8 +36,8 @@
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "october_membership_2019-2026.csv beside membership_oct_2013-2018.csv",
-    "rows": 75000,
+    "file": "october_membership_2019-2026.csv beside membership_oct2013-oct2018.txt",
+    "rows": 76597,
     "entity": "one pupil enrolled in kindergarten to grade 5 at one school on one October count day",
     "grain": "pupil x October count day",
     "source": "synthetic (constructed in the layout of a district student information system's October membership snapshot)"
@@ -84,12 +84,11 @@
   "layer2_family": "field_method",
   "layer2_pattern": "sociology-demography/population-estimation-demographic-projection/2",
   "layer1": [
-    "two student-information-system layouts (a 2019 migration) with different column names, grade, school and entry codes and date formats",
-    "pupils keyed by a local number with the state ID beside it before 2019 and by the state ID after, with an IT migration crosswalk for the few without a state ID",
-    "births to county residents by ZIP code of mother's residence, the latest year provisional, ZIP codes split across attendance areas and one ZIP partly outside the district, allocated by the GIS office's residential address counts",
-    "secondary enrollments beside primary ones in the new system",
-    "a re-pulled October file superseding an earlier pull",
-    "school codes changed from local to state codes at the migration"
+    "two student-information-system layouts across the 2019 conversion (pipe-delimited with legacy school, grade and entry codes and US dates; comma-separated with state codes and ISO dates)",
+    "pupils keyed by a legacy student number with the state ID beside it before 2019 (a few blank) and by the state ID after, with IT's conversion crosswalk for the 2018-19 roll",
+    "Southeast Elementary renamed Kessler Elementary in 2020 under the same building and codes",
+    "October count days moved to the nearest school day when October 1 falls on a weekend",
+    "births to county residents geocoded to attendance areas, births outside the district and not geocoded in their own rows, the latest year provisional"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

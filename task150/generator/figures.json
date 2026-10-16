@@ -1,0 +1,409 @@
+{
+ "call": {
+  "Fifth Street": "5",
+  "Lincoln": "6",
+  "Ortega": "0",
+  "Bluestem": "4",
+  "Prairie Rose": "7",
+  "Kessler": "2",
+  "North Fork": "0"
+ },
+ "classrooms_total": "24",
+ "site_cap": "8",
+ "seats_per_classroom": "24",
+ "critical_components": {
+  "classroom_need": {
+   "Fifth Street": "5",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "4",
+   "Prairie Rose": "7",
+   "Kessler": "3",
+   "North Fork": "1"
+  },
+  "classroom_need_total": "26",
+  "order_above_capacity": [
+   "Prairie Rose",
+   "Lincoln",
+   "Fifth Street",
+   "Bluestem",
+   "Kessler",
+   "North Fork"
+  ]
+ },
+ "steps": {
+  "pupil_rows": "76,597",
+  "snapshots": "14",
+  "first_year": "2013",
+  "last_year": "2026",
+  "transitions": "13",
+  "fifth_street_arrivals_low": "66",
+  "fifth_street_arrivals_high": "89",
+  "fifth_street_base_first": "741",
+  "fifth_street_base_last": "639",
+  "prairie_rose_arrivals_low": "61",
+  "prairie_rose_arrivals_high": "81",
+  "prairie_rose_base_first": "532",
+  "prairie_rose_base_last": "752",
+  "ortega_to_bluestem_low": "58",
+  "ortega_to_bluestem_high": "93",
+  "ortega_to_bluestem_rate_low": "9.3",
+  "ortega_to_bluestem_rate_high": "11.8",
+  "ortega_rate_per": "100",
+  "backtest_origin": "2019",
+  "backtest_gross_worst_abs": "5.0",
+  "backtest_gross_worst_school": "Ortega",
+  "backtest_gpr5_fifth_street": "-8.2",
+  "backtest_gpr5_prairie_rose": "8.3",
+  "backtest_gpr5_fifth_street_abs": "8.2",
+  "backtest_gpr5_prairie_rose_abs": "8.3",
+  "backtest_gross_fifth_street": "-0.7",
+  "backtest_gross_prairie_rose": "-1.0",
+  "excess": {
+   "Fifth Street": "109",
+   "Lincoln": "131",
+   "Ortega": "-92",
+   "Bluestem": "89",
+   "Prairie Rose": "152",
+   "Kessler": "60",
+   "North Fork": "10"
+  },
+  "ortega_below": "92",
+  "five_year_average": {
+   "Fifth Street": "776",
+   "Lincoln": "771",
+   "Ortega": "611",
+   "Bluestem": "799",
+   "Prairie Rose": "985",
+   "Kessler": "711",
+   "North Fork": "587"
+  },
+  "rated_capacity": {
+   "Fifth Street": "667",
+   "Lincoln": "640",
+   "Ortega": "703",
+   "Bluestem": "710",
+   "Prairie Rose": "833",
+   "Kessler": "651",
+   "North Fork": "577"
+  },
+  "october_2026": {
+   "Fifth Street": "778",
+   "Lincoln": "804",
+   "Ortega": "733",
+   "Bluestem": "845",
+   "Prairie Rose": "949",
+   "Kessler": "726",
+   "North Fork": "566"
+  },
+  "kessler_remaining": "2",
+  "births_2026_27_basis": "2023-25"
+ },
+ "default_path": {
+  "placement": {
+   "Fifth Street": "3",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "7",
+   "Prairie Rose": "8",
+   "Kessler": "0",
+   "North Fork": "0"
+  },
+  "need": {
+   "Fifth Street": "5",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "7",
+   "Prairie Rose": "8",
+   "Kessler": "4",
+   "North Fork": "1"
+  },
+  "window": "2021-22 to 2025-26"
+ },
+ "rivals": {
+  "five-year progression ratios (default)": {
+   "Fifth Street": "3",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "7",
+   "Prairie Rose": "8",
+   "Kessler": "0",
+   "North Fork": "0"
+  },
+  "three-year progression ratios": {
+   "Fifth Street": "4",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "6",
+   "Prairie Rose": "8",
+   "Kessler": "0",
+   "North Fork": "0"
+  },
+  "latest-year progression ratios": {
+   "Fifth Street": "0",
+   "Lincoln": "5",
+   "Ortega": "0",
+   "Bluestem": "6",
+   "Prairie Rose": "7",
+   "Kessler": "6",
+   "North Fork": "0"
+  },
+  "eight-year progression ratios": {
+   "Fifth Street": "3",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "7",
+   "Prairie Rose": "8",
+   "Kessler": "0",
+   "North Fork": "0"
+  },
+  "all-year progression ratios": {
+   "Fifth Street": "3",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "7",
+   "Prairie Rose": "8",
+   "Kessler": "0",
+   "North Fork": "0"
+  },
+  "five-year mean of ratios": {
+   "Fifth Street": "3",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "7",
+   "Prairie Rose": "8",
+   "Kessler": "0",
+   "North Fork": "0"
+  },
+  "ratios trended over eight years": {
+   "Fifth Street": "7",
+   "Lincoln": "5",
+   "Ortega": "0",
+   "Bluestem": "5",
+   "Prairie Rose": "7",
+   "Kessler": "0",
+   "North Fork": "0"
+  },
+  "ratios trended over five years": {
+   "Fifth Street": "5",
+   "Lincoln": "3",
+   "Ortega": "0",
+   "Bluestem": "5",
+   "Prairie Rose": "6",
+   "Kessler": "5",
+   "North Fork": "0"
+  },
+  "cohort change differences, five years": {
+   "Fifth Street": "3",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "7",
+   "Prairie Rose": "8",
+   "Kessler": "0",
+   "North Fork": "0"
+  },
+  "cohort change differences, all years": {
+   "Fifth Street": "3",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "7",
+   "Prairie Rose": "8",
+   "Kessler": "0",
+   "North Fork": "0"
+  },
+  "district ratios split by school share": {
+   "Fifth Street": "4",
+   "Lincoln": "5",
+   "Ortega": "3",
+   "Bluestem": "5",
+   "Prairie Rose": "0",
+   "Kessler": "2",
+   "North Fork": "0"
+  },
+  "arrivals as a share of the receiving class": {
+   "Fifth Street": "4",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "4",
+   "Prairie Rose": "8",
+   "Kessler": "2",
+   "North Fork": "0"
+  },
+  "arrivals as a share, last five": {
+   "Fifth Street": "5",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "4",
+   "Prairie Rose": "8",
+   "Kessler": "1",
+   "North Fork": "0"
+  },
+  "moves in as counts": {
+   "Fifth Street": "5",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "6",
+   "Prairie Rose": "7",
+   "Kessler": "0",
+   "North Fork": "0"
+  },
+  "moves in as counts, last five": {
+   "Fifth Street": "5",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "6",
+   "Prairie Rose": "7",
+   "Kessler": "0",
+   "North Fork": "0"
+  },
+  "moves in as counts, arrivals as a share": {
+   "Fifth Street": "4",
+   "Lincoln": "6",
+   "Ortega": "0",
+   "Bluestem": "6",
+   "Prairie Rose": "8",
+   "Kessler": "0",
+   "North Fork": "0"
+  },
+  "five-year ratios raked to a district total": {
+   "Fifth Street": "4",
+   "Lincoln": "5",
+   "Ortega": "0",
+   "Bluestem": "5",
+   "Prairie Rose": "7",
+   "Kessler": "2",
+   "North Fork": "0"
+  }
+ },
+ "projection": {
+  "Fifth Street": {
+   "2027": "766",
+   "2028": "778",
+   "2029": "775",
+   "2030": "771",
+   "2031": "778",
+   "2032": "776"
+  },
+  "Lincoln": {
+   "2027": "794",
+   "2028": "788",
+   "2029": "784",
+   "2030": "773",
+   "2031": "763",
+   "2032": "749"
+  },
+  "Ortega": {
+   "2027": "688",
+   "2028": "652",
+   "2029": "628",
+   "2030": "603",
+   "2031": "589",
+   "2032": "584"
+  },
+  "Bluestem": {
+   "2027": "850",
+   "2028": "825",
+   "2029": "807",
+   "2030": "801",
+   "2031": "785",
+   "2032": "774"
+  },
+  "Prairie Rose": {
+   "2027": "939",
+   "2028": "956",
+   "2029": "982",
+   "2030": "991",
+   "2031": "1,001",
+   "2032": "996"
+  },
+  "Kessler": {
+   "2027": "725",
+   "2028": "710",
+   "2029": "711",
+   "2030": "714",
+   "2031": "712",
+   "2032": "708"
+  },
+  "North Fork": {
+   "2027": "572",
+   "2028": "556",
+   "2029": "573",
+   "2030": "587",
+   "2031": "604",
+   "2032": "615"
+  }
+ },
+ "ask_a_homeroom_classes": [
+  {
+   "school": "Fifth Street Elementary",
+   "k2": "17",
+   "g35": "17"
+  },
+  {
+   "school": "Lincoln Elementary",
+   "k2": "19",
+   "g35": "15"
+  },
+  {
+   "school": "Ortega Elementary",
+   "k2": "19",
+   "g35": "13"
+  },
+  {
+   "school": "Bluestem Elementary",
+   "k2": "15",
+   "g35": "20"
+  },
+  {
+   "school": "Prairie Rose Elementary",
+   "k2": "21",
+   "g35": "20"
+  },
+  {
+   "school": "Kessler Elementary",
+   "k2": "15",
+   "g35": "17"
+  },
+  {
+   "school": "North Fork Elementary",
+   "k2": "13",
+   "g35": "13"
+  }
+ ],
+ "ask_a_district": {
+  "k2": "119",
+  "g35": "115"
+ },
+ "ask_b_preschool": [
+  {
+   "site": "Fifth Street Elementary",
+   "children": "88",
+   "classrooms": "4"
+  },
+  {
+   "site": "Ortega Elementary",
+   "children": "94",
+   "classrooms": "4"
+  },
+  {
+   "site": "Kessler Elementary",
+   "children": "51",
+   "classrooms": "3"
+  },
+  {
+   "site": "North Fork Elementary",
+   "children": "35",
+   "classrooms": "3"
+  }
+ ],
+ "ask_b_total": {
+  "children": "268",
+  "classrooms": "14"
+ },
+ "chart_years": {
+  "history_from": "2013",
+  "history_to": "2026",
+  "projection_to": "2032",
+  "placed_from": "2028"
+ }
+}
