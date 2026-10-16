@@ -1,64 +1,121 @@
-# Verdict, task140 (C-22 batch guarantee, 2027 Q1)
+# Judge verdict, task140 (C-22 batch guarantee, 2027 Q1), fresh re-judge
 
-**Verdict:** DETERMINISTIC (with a flagged Gate C risk on the cell-store forecast method and a minor one on the chargeback change date).
+Scope: only the shipped bundle under `judge-task140d/target/` plus `prompt.txt` and `graded_blocks.md` were read. No other task or judge directory was opened, so the cross-batch fingerprint check was not run beyond the bundle itself (no overlap visible inside the bundle).
 
-**Disposition:** APPROVE for determinism; optional FIX_NOW prompt/CS-3 pin (see Fix). No model rerun needed unless the author chooses to pin the forecast basis in the shipped text.
+**Verdict:** DETERMINISTIC
 
-**Why:** Every committed figure reproduces from the shipped files. The main call turns on the cell-store busiest-hour forecast. The fitted hourly relation (33.1 + 2.9404 per machine in service + 0.20804 per batch core, residual s.d. 13 cores) is very tight, the 5,220-machine step is in the hardware plan, and the batch guarantee is the solved level (CS-3 5.2). That gives 109,492 and so 109,000. The competing answers (122,000 from a line through quarterly peaks, 120,000 from batch at last quarter's 57,000, 106,000 from batch at 122,000) each ignore a fact in the files: the machine step or the batch coupling. The fitted answer is robust to every variation I tried. CS-3 4.1 and the memo never name the forecast method, so the golden rests on an analyst choosing the structural model. That is the one real Gate C exposure.
+**Disposition:** APPROVE. Nothing needs repair and no rerun is required. One residual fork, named below, is optional hardening only.
+
+**Why:** The guarantee follows from CS-3 2.1, 3.2, 3.3, 4.1 and 5.1 and the shipped hardware plan, budgets, rate card, requests and hourly monitoring export. Everything except one input is filed literally. That input is cell-store's busiest-hour forecast, which the prompt does not fix. The data fix it. Cell-store use is 99.26% explained by `machines_in_service` and batch-train's hourly use, and the same model with batch at its guarantee backtests all 8 quarterly busiest hours within +160 to +251 cores. The tier peaks at 99.9 to 100% of its guarantee in every quarter on file. Solved together, 109,000 is the largest feasible whole thousand: at 110,000 the cell-store reservation is 38.2k to 38.3k and the remainder is 109.4k, which is under 110,000. The result is stable to cell-ctl method, rounding order and the peak-hour noise uplift.
+
+## Literal reading and the options where the text is silent
+
+| Silent point | Options | Answer each gives | Closed by |
+|---|---|---|---|
+| Machines in service | plan 5,220 / actual Dec 4,640 | 726,624 / 645,888 reservable | CS-3 2.1 and memo (the plan); closed |
+| Firm reservation | request / request held to budget at 7.42 | 580,200 / 576,972 | CS-3 3.2, 3.3, rate R117 effective 2027-01-01; closed |
+| cell-ctl forecast | line through quarterly maxima / machines driver / time trend | 1,999 / 2,026 / 1,960 (all 2,000 to the nearest 1,000) | no fork |
+| cell-store forecast method | trend of maxima / machines only / two drivers with batch at 2026 level / two drivers with batch at guarantee | G = 122,000 / 120,000 / 120,000 / 109,000 | data (see Evidence); not stated in text |
+| Batch level at cell-store's busiest hour | 2026 level (57k) / ML note 0.6 x 149,100 = 89,460 / guarantee | 120,000 / 113,000 / 109,000 | history (see residual fork) |
+| Order of rounding | exact vs rounded platform and firm figures | 109,624 to 109,652 leftover, floor 109,000 in every case | no fork |
+| Preemption denominator | July to September clipped / whole-run / runs starting in window | shares differ for 4 of 6 teams at 2 decimals | "for July to September 2026" (minor, see below) |
+| Lost-work start | write_started / committed | 121,830 / 117,354 (ranking-ml) | data dictionary: state is snapshotted at write_started; closed |
+| Machine pairing | machine_id / asset via inventory Cluster ids | breaks for re-registered machines / correct | inventory sheet "Cluster ids"; Layer 1 |
 
 ## Evidence (recomputed from the bundle)
-| Item | Result | Source |
+
+**Main call**
+- Machines in service: 261 racks x 20 = 5,220 (`c22_hardware_plan_2027Q1_rev2026-12-11.xlsx`, Racks and By quarter sheets). Reservable = 5,220 x 96 x 1.45 = 726,624. Reproduced.
+- Firm reservations: floor(Jan 2027 C-22 budget / 7.42) against each request. Search-api (126,415), pricing (76,819) and reco-serve (52,088) are held. The total is 576,972, which rounds to 577,000. Reproduced from `capacity_requests_2027Q1.csv`, `tech_budgets_2026_Q1-2027_freeze.xlsx` (Compute budgets sheet) and `tenant_directory.json`.
+- Monitoring export: 17,081 distinct hours after dropping the re-sent 17 March 2026 day (identical rows), and 7 hours missing on 19 August (01:00 to 07:00 UTC), which matches the operations log in Madrid time. Reproduced.
+- Cell-store fit on `machines_in_service` and batch-train over those hours:
+  - With an intercept: 2.9402 per machine and 0.2081 per batch core (no-intercept fit: 2.947 and 0.2082).
+  - Residual s.d. 62.0, R2 0.9926. Reproduced.
+  - Coefficients are stable across 2025, 2026 H1 and after the 21 July cell-store release (2.945 to 2.952 and 0.208).
+  - The coupling is directly visible in the drain hours: on 9 Sep 02:00 to 04:00 UTC batch goes to 0 and cell-store falls by about 11.8k.
+- Cell-store prediction at 5,220 machines and batch at 109,000 is 38,019 to 38,078 cores, which gives 38,000 to the nearest thousand. Reproduced. Cell-ctl is 2,000 under every method tried. Reproduced.
+- Fixed point: G=109,000 has leftover 109,6xx and is feasible. G=110,000 needs cell-store about 38.23k to 38.29k, leaves about 109.4k, and is infeasible. Adding the observed +215 to +265 peak-hour uplift still gives 109,000. The 1.208 reservable cores per guaranteed core reproduces.
+- Backtest of the golden's structure: prediction = 2.94 x start-of-quarter plan machines + 0.208 x ledger guarantee. Errors against the actual busiest hour are +229, +171, +229, +160, +217, +219, +225 and +251 for 2025Q1 to 2026Q4. This is a near-constant bias, as expected from peak noise.
+- The trend-of-quarterly-maxima route errs by roughly 500 in the same history and cannot see the +640-machine step in 2027 Q1.
+- Alternatives produced from the files:
+
+| Route | Guarantee |
+|---|---|
+| Line through quarterly maxima | 122,000 |
+| Machines only (or two drivers, batch at 57k) | 120,000 |
+| Two drivers with the load added once at 122,000 | 106,000 |
+| ML note 0.6 x 149,100 | 113,000 |
+| Golden | 109,000 |
+
+- Counter-evidence to the 113,000 route: the same ML note's monthly plans average 91.2k (Feb) and 93.4k (Mar) cores, which is above 89,460, so 0.6 x sum of peaks cannot be the busiest hour of 2027 Q1.
+- C-22 has held 99.9 to 100% of its guarantee at its busiest hour in every quarter on file (`mad1_cells_quarterly_summary_2025-2026.xlsx`; Q3 report 1,578 hours at 99% or more). Cell-store's top-30 hours of 2026Q3 all sit at 99.3 to 99.8% of the guarantee.
+
+**Supplementary answers (all reproduced exactly to the stated rounding)**
+- Preemption losses, from `batch_runs`, `batch_checkpoints`, `batch_resizes`. Lost work runs from the restored checkpoint's `write_started_utc` to the preempted run's end, with resizes applied. One chain, job-7204868, has a run that restores another run's checkpoint; the lost interval for that run starts at its own start.
+
+| Team | Lost core-hours | Share |
 |---|---|---|
-| Reservable cores 5,220 x 96 x 1.45 | 726,624, reproduced | hardware plan (Racks, By quarter), memo overcommit 1.45 |
-| Machines 5,220 | reproduced (4,640 + 29 racks x 20 = 580) | plan rev 11 Dec; installed series peaks at 4,640 in Q4 |
-| Firm approvals (min of request, floor(budget/7.42)) | 576,972 reproduced; search-api 126,415, pricing 76,819, reco-serve 52,088 held to budget, other eight at request | requests csv, budgets xlsx Jan 2027 (C-22 lines via tenant_directory CC), rate R117 |
-| cell-ctl peak forecast | line through 2026 quarterly peaks 1,999.25; driver fit gives about 2,021-2,026; both round to 2,000 | usage_hourly |
-| cell-store fit | b0 33.05, 2.94039/machine in service, 0.20804/batch core, s.d. 13.0 (17,081 hours, 336 exact-duplicate rows of 17 Mar removed). Installed instead of in_service gives s.d. 15.6, so the data prefers in_service | usage_hourly, cell_hourly |
-| cell-store at G=109,000 | 38,058 (all-history fit); 2026Q3-only fit about 38,045; reserves 38,000 | |
-| Guarantee | (726,624-576,972-1,999-33.1-2.9404x5220)/1.20804 = 109,492 -> 109,000. Boundary distance about 500 either way. With reservations rounded first (577,000 / 2,000 / 38,000): 109,624 -> 109,000 | |
-| Preemption loss (core-hours, share) | demand 71,995 (0.49), fraud 48,525 (0.31), nlp 134,899 (0.77), pricing 80,513 (0.37), ranking 121,830 (0.40), reco 144,274 (0.59): all match golden | runs, checkpoints, resizes |
-| Machine-hours lost, came back (asset tag mapped through inventory Cluster ids, exact-duplicate REMOVED rows on 19 Aug dropped, intervals split by UTC month) | Jul 748 / 851, Aug 731 / 909, Sep 662 / 883, matching golden 750/850, 730/910, 660/880 | machine_events, inventory |
-| Chargeback (ledger 2026Q3 + 29 quota changes, effective at the 00:00 UTC after reconciler application; 7.65 to 7.70 on 1 Sep) | all eleven match golden to 100 EUR (search-api 2,653,000 ... settle-batch 488,500) | ledger, quota_changes, reconciler runs, rate card, policy |
+| ranking-ml | 121,830 | 0.398% |
+| pricing-ml | 80,513 | 0.369% |
+| fraud-ml | 48,525 | 0.311% |
+| reco-ml | 144,274 | 0.590% |
+| demand-ml | 71,995 | 0.489% |
+| nlp-ml | 134,899 | 0.770% |
 
-## Forks and competing answers
-1. **Cell-store forecast method (Gate C, the main risk).** CS-3 4.1 says "the use forecast for its busiest hour" and nothing about method.
-   - Line through quarterly peaks: cell-store 25.5k, guarantee 122,000.
-   - Driver fit with batch at last guarantee (56-57k): about 27.1k store, guarantee 120,000.
-   - Driver fit with batch at the solved guarantee: 109,000, the golden.
-   - Driver fit with batch at the 122,000 line answer: 106,000.
-   - A historical back-test does NOT separate line from driver (both within about 500 cores for 2026Q1-Q3, because machine growth was smooth). The separation rests only on the 640-machine step in the plan and the hour-level fit (s.d. 13 vs 640 without batch). An expert who reads the plan and tests drivers lands on 109,000. A line-extrapolating analyst is not unreasonable on the text alone. Judged forced given the data, but only just. A one-line pin removes it.
-2. **Chargeback effective date of a change (minor).** Policy 2.2 says "release or grant made during the quarter". "Holds ... at 00:00 UTC" with the data-dictionary definition of changes_applied points to reconciler application, which the golden uses. Using requested_utc shifts several tenants by 100-700 EUR (payments 697,400 vs 696,700; search-api 2,653,300 vs 2,653,000), so a few cells would differ at the stated rounding. I judge the golden the literal reading, but it is not airtight.
-3. **Preemption loss basis.** The data dictionary (write_started = state time, training carries on) and the restore_checkpoint column pin loss as cores integrated from the restored checkpoint's write_started to preemption, with resizes. Counting from commit time gives a different result (ranking 117,400, 0.38%). Clipping to Jul-Sep is required by the prompt (unclipped changes nlp to 0.76 and reco to 0.58). Pinned.
-4. Machine-hours: "came back into service" excludes 7 never-returned (retired) assets; duplicates identical, so no fork.
+  These match the golden figures 121,800 / 0.40, 80,500 / 0.37, 48,500 / 0.31, 144,300 / 0.59, 72,000 / 0.49 and 134,900 / 0.77. The golden writes 0.40% for ranking-ml at two decimals, but the exact share is 0.398%, which is 0.40% only after rounding to two decimals.
+- Machine-hours: the cluster manager duplicates events on 19 August (4 exact duplicate rows). Machine ids map to assets through the inventory "Cluster ids" sheet. 7 hw_fault removals never came back and are excluded. Hours clipped by month: July hw 748.1 and maintenance 851.3, August 731.2 and 909.2, September 662.1 and 882.7. These give 750/850, 730/910, 660/880. Reproduced. Clipping by month, by start month and by end month agree.
+- Chargeback: Q3 ledger reservations, plus the quota changes counted from the first 00:00 UTC after the reconciler run that applied them, at 7.65 until 31 August and 7.70 from 1 September, divided by days in the month. Computed values:
 
-## Files/Hygiene: PASS
-- 24 files; formats pdf, csv, xlsx, docx, json, txt (6). One file of 239,470 rows. Distractors plentiful (batch_training_demand note, cells summary, ops log, hardware inventory beyond the machine-id join).
-- Realistic noise: re-sent day (17 Mar), collector outage 19 Aug, duplicate event rows, machine id changes, superseded plan revision, other cells' budget lines.
-- README_capacity_review_files.txt is an in-fiction file index. It carries no authoring language, so I rate it fine (a minor point against the "no README" rule; the author may drop it).
-- Temporal coherence good (exports pulled 14 Dec, review 15 Dec, report 6 Oct, figures consistent with plan).
-- No exclusion-level finding. No canonical public-data contamination. The cell-store/batch coupling is nowhere documented in prose (no leak).
+| Tenant | Owed (EUR) |
+|---|---|
+| search-api | 2,652,993 |
+| avail-cache | 2,148,194 |
+| pricing | 1,594,272 |
+| booking | 1,204,894 |
+| payments | 696,703 |
+| reviews | 506,815 |
+| reco-serve | 1,104,080 |
+| ads-listings | 822,907 |
+| notify | 409,178 |
+| partner-gw | 658,477 |
+| settle-batch | 488,499 |
+
+  These match all 11 golden amounts to the nearest 100. Using request time instead of applied time would move several tenants by 200 to 1,000, so policy 2.2 (applied by the quota service) is what closes it.
+
+**Residual forks (neither flips a committed answer under the shipped text)**
+1. Batch busiest-hour level. The text never says "batch at its guarantee", and CS-3 5.2 only caps batch use. The files close it as shown above: eight quarters of 99.9 to 100%, the eight-quarter backtest, and the ML note's own monthly plans contradicting its 0.6 estimate. Risk: low to moderate. A one-line pin in the memo, such as "platform reservations are sized with batch running at its guarantee", would file the WHAT without giving the HOW. It would change what solvers see, so it is optional and only worth doing if a returned finding calls for it.
+2. Preemption share denominator. "All the core-hours its runs held" is clipped to July to September, which follows the table's period. Using whole-run lifetimes gives reco-ml 0.58% and nlp-ml 0.76%, and using only runs that started in the window gives reco-ml 0.60% and nlp-ml 0.78%. Lost core-hours are unaffected. Risk: low.
+3. Non-decisive: the quoted 2.94 per machine reproduces only with an intercept (2.947 without one). Both give 38,0xx for cell-store.
+
+## Files/Hygiene
+
+PASS.
+- 24 files in 6 formats: PDF x4, CSV x11, XLSX x5, DOCX x2, JSON x1, TXT x1. The largest file is the usage export at 239,470 rows.
+- Operational artefacts read as system exports with real irregularities: re-sent day, collector gap, duplicate cluster-manager events, re-registered machine ids, superseded hardware plan revision, Madrid local time in the log against UTC in the exports.
+- Temporal coherence holds. The ledger approval date matches the Q3 report, the Q3 report reserved figures sum to its reservable cores including "Not reserved 484", the quarterly summary matches the ledger and plan, the dates on the drain events align between the log (Madrid) and the run/usage data (UTC), and nothing postdates the 14 December pull.
+- No authoring or benchmark language. The README is an in-fiction file list.
+- Fictional company and data, so there is no public-data contamination.
+- Distractors weighed but unused by the solution: ML Platform demand note, quarterly summary of other cells, Q3 capacity report, the unused reconciler and machine data for the main call. I did not read `metadata.json`.
+- No exclusion-level finding.
 
 ## Stump power
-Plausible stump. Model default: line through quarterly peaks or a driver fit at the old guarantee. The 580-machine step is stated in memo and plan, so a careful solver can find it, but the batch coupling and the simultaneous solution require genuine modelling. Supplements (checkpoint-state loss with resizes, asset-tag re-pairing, reconciler-timing chargeback) add multi-step load. The risk is that strong models split on the unpinned method (Fork 1), which would be a Gate C/D finding rather than a clean stump if a model finds the machine step yet chooses a different peak-forecast construction.
+
+Moderate to high, for an analytical reason. The easy route reads the quarterly busiest hours the export reports and extends them one quarter. It gives 122,000, because cell-store's busiest hour is in fact driven by the machine count (a +640 step on 1 Jan) and by batch use, and batch use rises with the guarantee being set. A stronger analyst who adds the machine driver but keeps batch at its 2026 level files 120,000. Only the analyst who finds the batch coupling and solves guarantee and reservation together reaches 109,000. Nothing in the pack hands over the coupling. The quarterly summary and Q3 report show the 99.9 to 100% pegging but not the cell-store dependence.
 
 ## Stumping type
-`mechanism: forecasting` (with method_or_model_selection), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. Reported peaks are correct; the difficulty is a forward projection that history alone does not pin (the plan's machine step plus the batch coupling). On clean data it still stumps. Passes Gate G.
+
+`mechanism: forecasting` (with method_or_model_selection on honest data), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`.
+The reported quarterly peaks are all correct. The difficulty is a forecast the correctly-read past does not pin, because the future differs by a known structural step and a simultaneity between the decision and the forecast quantity. On perfectly clean data the task still stumps. Banned type not raised.
 
 ## Three rules
-`domain: pass`, `layers: pass`, `decisive_step: analytical`. Domain: capacity planning of a compute cell (peak-hour use forecast against hardware growth, preemption loss from checkpoints, fault/maintenance availability, chargeback). Layer 1: change-log style re-sends, collector outage, machine-id churn, superseded plan, reconciler lag. Layer 2: a driver-based forecast of the platform reservation solved jointly with the guarantee. Easy route: trend line through quarterly busiest hours (cell-store about 25.5k) which gives 122,000; the correct driver model gives 109,000.
+
+`domain: pass`, `layers: pass`, `decisive_step: analytical`.
+- Domain: sizing a platform service's peak load from its drivers under the capacity standard, and testing that model against history, is capacity planning. A swap to another field's nouns does not read the same.
+- Layer 1: duplicated day, collector gap, UTC against Madrid time, superseded plan revision, re-registered machine ids, checkpoint write against commit times.
+- Layer 2: modelling cell-store's busiest-hour use on its two drivers and solving it jointly with the guarantee.
+- Easy route and wrong answer: extend the quarterly busiest hours, giving 122,000, or add machines but keep batch at its 2026 level, giving 120,000.
+- Planted defects, withheld rules and field semantics sit only in lower steps and the asks (checkpoint write against commit, cluster ids, applied time).
 
 ## Fix
-- None required for correctness. Recommended, optional and low cost (prompt or CS-3 text, input_files): pin the forecast basis, for instance CS-3 4.1 stating that a platform service's busiest-hour forecast is made from its relation to the cell's installed machines and the batch tier's cores, or a filed selection criterion (a back-test where the structural model wins). That closes Fork 1 without handing over the answer.
-- Optional: state in policy 2.2 that a change counts from the first 00:00 UTC after the quota service applies it (closes Fork 2).
 
-## Disposition
-
-The verdict above is the isolated judge thread's verdict.md, verbatim (one pass at medium effort on a fresh unzip of target.zip, prompt.txt, the submission's graded blocks and the judge's system prompt).
-
-APPROVE. No re-judge is owed: the verdict is DETERMINISTIC and no FIX_NOW was raised. Both risks are closed in the record in one generator pass, and no graded figure moved (`freeze.py check --mode determinism` PASS; both goldens and `figures.json` byte-identical to the judged pack).
-
-- Fork 1, the cell-store forecast method: the optional pin is refused. Filing the forecast basis in CS-3 4.1 (or a back-test criterion) names the decisive step and makes it rule application, and the back-test the judge ran does not separate the line from the drivers, so a filed criterion would pick neither. CS-3 4.1 already files the estimand the judge read ("reserved for the quarter at the use forecast for its busiest hour of the quarter", with 5.2 running batch inside that quarter's guarantee), so no method word was added. The design note's fork table now carries the two competing readings as their own rows: SF29 (batch at the last quarter's guarantee, 120,000) and SF30 (the load read at another answer's guarantee, 106,000 at 122,000), each ruled out by that estimand, with the data facts asserted in checks.py (at cell-store's busiest hour of every quarter on file batch held at least 99.6 per cent of that quarter's own guarantee, within 200 cores of it and 983 to 3,031 from the quarter before's; 109,000 is the one whole thousand whose own storage load leaves it). SF13 records the back-test's non-separation (the line misses 2026 Q1 to Q4 by 26 to 489 cores, the fit on both drivers by 177 to 204) and the data fact that separates them: 2027 Q1 opens 640 machines above 2026 Q4 (no quarter on file stepped more than 60), worth 1,615 cores of cell-store above the line on its own, with a guarantee near double the history's, both carried by the hourly fit (residual s.d. 13.0 cores on both drivers, 638.5 on machines alone, 356.2 on batch alone).
-- Fork 2, Ask C's change date: closed in the filed text. Chargeback policy 2.2 now ends "A release or grant counts from the first 00:00 UTC after the cell's quota service has applied it.", naming no file or join. checks.py asserts the sentence ships, that its literal execution on its own code path gives the golden for all eleven tenants (from the applying run's start or finish, the same midnight), and that the request-time reading misses 11 of 11 (payments 697,400 against 696,700), the request day's own 00:00 10 of 11 and the application day's own 00:00 10 of 11 (SF25). The September rate split is closed beside it (SF26: the opening rate, the September rate all quarter and the rate from its publication each miss all eleven).
-- Fork 3 and the machine-hours note are confirmed in the record (SF20 to SF23, SF32 to SF37). The README note is kept as an in-fiction file index.
-- Changed under target/, figure-neutral: README_capacity_review_files.txt, batch_training_demand_2027H1.pdf, c22_capacity_report_2026Q3.pdf, capacity_memo_2027Q1.docx, chargeback_policy_2026.pdf, data_dictionary.xlsx, tech_budgets_2026_Q1-2027_freeze.xlsx (the policy sentence above; the memo's platform line names no source; the leak reader's realism tells reworded). Every data file is byte-identical to the judged pack.
-- Gates on the final rebuild: checks.py 2,358 assertions, verify.py, two byte-identical builds, figures_check.py, precut.py, voice-check.py, leak.py (REVIEW, no LEAK), guard.py surface, heart and validate.
+none. Optional only: see residual fork 1 (file the batch-at-guarantee condition in the memo), which changes what solvers see and is not required.

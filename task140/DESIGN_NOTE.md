@@ -219,7 +219,7 @@ Standard.
 | SF11 | a service's use in an hour | the export's average cores in use over the hour | (none) | n/a | CS-3 4.2; the dictionary |
 | SF12 | "its busiest hour of the quarter" | the hour of the quarter with the highest average use | the 99th percentile hour | same call (asserted: `cell-ctl` 1,988.1 against 1,999.2) | CS-3 4.1 |
 | SF13 | the use forecast for `cell-store` | its use at the quarter's busiest hour from its drivers, with the batch tier at its own guarantee (R3) | its trend (R0), last value (R0b), share of the cell (R1), batch alone (R2), one pass (R2b) | each files its own guarantee (Ladder) | a method row, not a reading: CS-3 4.1 asks for a forecast and 5.2 runs batch inside its guarantee, so the busiest hour comes when batch fills it (asserted: in every quarter on file batch reached 99.9 per cent of its guarantee or more); the method is forced by the design and never filed (`## Tried and rejected`). The closed quarters do not separate the line from the drivers: the line through the four quarters before misses each of 2026 Q1 to Q4 by 26 to 484 cores, the fit on both drivers read at the quarter's opening machines and guarantee by 220 to 254 (asserted), because the history's machines rose 40 to 60 a quarter and its guarantee held between 55,000 and 58,000. The data fact that separates them is the quarter being reserved: 2027 Q1 opens 640 machines above 2026 Q4 (no quarter on file stepped more than 60, asserted), which alone puts `cell-store` 1,552 cores above the line, and its guarantee nearly doubles; the hourly fit carries both and needs both (residual s.d. 62.0 cores, against 641.5 on machines alone and 361.3 on batch alone, asserted). Each alternative is priced and refused by the telemetry's own fit |
-| SF14 | the batch tier at its busiest | at its guarantee | at its historical average fill (98.9 per cent) | same call (asserted: 109,707.1 before the thousand) | CS-3 5.2 and the record (batch reached its guarantee in every quarter) |
+| SF14 | the batch tier at its busiest | at its guarantee | at its historical average fill (98.9 per cent) | same call (asserted: 109,707.1 before the thousand) | CS-3 5.2 and the record (batch reached its guarantee in every quarter); the re-judge's residual fork 1 (2026-10-16), recorded as low risk and declined: the text never says "batch at its guarantee" and 5.2 only caps batch use, but the files close it (99.9 to 100 per cent of the guarantee held at the busiest hour in every quarter on file, and the golden's structure back-tests the eight quarterly busiest hours within +160 to +251 cores); its optional memo pin ("platform reservations are sized with batch running at its guarantee") is declined, since it would point at the coupling |
 | SF15 | the busiest hour's excess over the fitted line | not carried | the fit's largest residual (95.2 cores) carried | same call (asserted: 109,407.7 before the thousand, `cell-store` 38,160.2) | the records converge |
 | SF16 | `cell-ctl`'s forecast | its busiest hour on the line through four quarters | last value; mean; fitted on the machines | same call (asserted: 1,991.4, 1,982.0, 2,078.5 cores, each 2,000 to the nearest thousand) | the records converge |
 | SF17 | the order of the solve | the guarantee and the storage reservation solved together, the whole thousand taken last, `cell-store` reserved at the guarantee | `cell-store` read at the guarantee before the thousand | same guarantee; `cell-store` 38,160.8, the same thousand (asserted) | CS-3 5.1 and 5.2 (batch runs inside the whole-thousand guarantee) |
@@ -239,7 +239,7 @@ Standard.
 | SF31 | where the platform forecast takes its inputs | the services' use as the export records it (CS-3 4.2), for the quarter whose machines the hardware plan gives (2.1) | the export alone, without the plan's machines (the pull date's 4,640, R2d) | moves the call (110,000, asserted) | CS-3 2.1 and 6.2 (the review works from the hardware plan with the export); no shipped sentence confines the forecast to the export: the memo's platform line, which read "from the cell monitoring export", names no source since stage 4 (asserted) |
 | SF32 | Ask A: a checkpoint write with no commit time (under way at the preemption, or failed) | not a state the training resumed from | the preempted run's lost training counted from it (S2b) | every team's figure (S2b, asserted) | the dictionary (`committed_utc` blank when the write did not complete) and the runs file's `restore_checkpoint`: 12 of the 192 preemptions followed a write with no commit time and no resumption restored from one; every restore point in the file is committed (asserted) |
 | SF33 | Ask A: a run still running at the snapshot | its core-hours to 1 October 00:00 UTC are held | left out of the held core-hours | four teams' shares (asserted) | the prompt ("all the core-hours its runs held", July to September 2026); the dictionary (`ended_utc` blank for a run still running at the 1 October 2026 00:00 UTC snapshot: 49 runs, every one RUNNING, asserted) |
-| SF34 | Ask A: a run that started before 1 July | its core-hours from 1 July | its whole run from June | two teams' shares (reco-ml 0.58, nlp-ml 0.76, asserted) | the prompt ("three tables for July to September 2026"); the lost core-hours converge: no preempted run of the quarter started before 1 July and no restore point is earlier (asserted) |
+| SF34 | Ask A: a run that started before 1 July | its core-hours from 1 July | its whole run from June | two teams' shares (reco-ml 0.58, nlp-ml 0.76, asserted) | the prompt ("three tables for July to September 2026"); the lost core-hours converge: no preempted run of the quarter started before 1 July and no restore point is earlier (asserted); the re-judge's residual fork 2 (2026-10-16), recorded as low risk and declined: the share's denominator clipped to July to September follows the table's period; only runs started in the window gives reco-ml 0.60 and nlp-ml 0.78 (the judge's recompute), the lost core-hours unchanged under every variant |
 | SF35 | Ask B: a removal with no return in the file | not counted: the machine never came back | counted to 30 September 24:00 | every hardware-fault month (asserted) | the prompt ("machines that came back into service"); the records converge on it: each of the 7 is an asset the inventory has retired on the day of its removal (asserted), and every other removal returns before the quarter ends |
 | SF36 | Ask B: 19 August | the power event removed no machine; the cluster manager's four re-sent removals counted once | the power event's hours counted as lost; the re-sent rows kept | August maintenance moves (HB1, asserted) | the records: no removal between the power event (01:40 UTC) and the day's maintenance wave (asserted); the operations log ("Worker rows stayed up on feed A"); the re-sent rows are byte-identical to the originals (same machine, minute, cause and ticket: one removal each, asserted) |
 | SF37 | Ask B: the month of an hour | UTC, as the machine events record it | Madrid local time (CEST) | converges (asserted: split by local month the six figures are the same; one return falls five minutes past local midnight on 1 August) | the README ("Times are UTC unless a file says otherwise"); the records converge |
@@ -651,6 +651,13 @@ at the close.
   19 August account, and its sweep 4 terms fell from 8 to 7), `guard.py surface` 0 promoted, `heart` WARN (`overuse.objective`, no
   BLOCK), `validate` clean, the container audit clean on `target/` and `golden/`. Stage 4 next: the judge on
   target.zip 5823a2b7 (the reader's re-read is answered here).
+- Stage 4 and ship, 2026-10-16, on target.zip 5823a2b7 (no change to `target/` or `golden/` after it was cut): the
+  re-judge returned DETERMINISTIC, APPROVE, Gate H analytical, every figure and ask reproduced, no fix
+  (`determinism_check_report.md`; the stage 4 judge's report kept as `determinism_check_report_round1.md`); its two
+  residual forks, batch at its guarantee at the busiest hour and the preemption share's denominator, are recorded under
+  SF14 and SF34 as low risk and declined, the optional memo pin refused. The round 3 read clean (`## Leak review`).
+  `leak.py --asof 2026-12-14` re-run on the shipped cut: REVIEW, no LEAK, the same lines; the solver's-eye reads
+  re-appended. Reshipped: `pipeline.json` SHIPPED, the ledger row and the card current.
 
 ## Leak review
 
@@ -681,6 +688,14 @@ the demand note under sweep 4, and the chargeback policy at 5 of 6 call words). 
   tenant and freeze lines, the demand note's figures, the dictionary's field set, three cost centres' September budget
   steps) are recorded in the report and left, since each further rewording of a filed document risks reopening a
   closed fork for no graded figure.
+- Re-read after the realism repair (2026-10-15): the two notes that repair added (the dictionary's late-sample
+  sentence, the operations log's restart reminder) read as signposts, and the Q3 report's hours-held clause and
+  twice-told 19 August account were flagged; all four trimmed in the generator (`## Build record`).
+- Solver's-eye read, round 3 (2026-10-16, target.zip 5823a2b7): Q1 to Q4 none; the trimmed notes no longer steer; Q6
+  the platform forecast as the analytical choice, the reader's own route about 120,000 to 122,000 against 109,000. Its
+  one realism note, the operations log's 2026-12-11 line ("C-22 hardware plan revised: refresh racks in service from
+  28 December."), repeats the plan: harmless, it is the plan revision's own log entry, made by fleet and hardware on the
+  revision's date as the log records every rack handover, and it names no method, driver or figure.
 
 ## Pre-ship check
 
@@ -719,11 +734,14 @@ are stage 4's.
 8. A new lesson: a deduction that rises with the quantity being decided is modelled on its drivers and solved together
    with that quantity; carrying it on its own history is safe only while the decision's own value stands still.
 9. Leak reader (stage 4): no leak; Q1 to Q4 none; Q6 the platform forecast as the analytical choice; the targeted
-   re-read of the seven documents changed at stage 4 clean; every REVIEW line harmless.
+   re-read of the seven documents changed at stage 4 clean; every REVIEW line harmless. After the realism repair the
+   re-read flagged the two notes it added, trimmed; the round 3 read on target.zip 5823a2b7 clean on Q1 to Q4, its
+   own route at about 120,000 to 122,000, the 2026-12-11 refresh-racks log line ruled harmless (`## Leak review`).
 10. Judge (stage 4): DETERMINISTIC, APPROVE; Gate H domain pass, layers pass, decisive step analytical; its two risks
    closed in the record (SF29, SF30 and SF13 without a method word; chargeback policy 2.2 and SF25). The rubric's main
    exposure is Ask C (the pair about 42.5 if a strong response reads policy 2.2 and makes the join), accepted by the
-   main session.
+   main session. The re-judge on target.zip 5823a2b7 (2026-10-16): DETERMINISTIC, APPROVE, Gate H analytical, every
+   figure and ask reproduced, no fix; its two residual forks recorded as low risk and declined (SF14, SF34).
 
 ## Tried and rejected
 
@@ -790,3 +808,6 @@ are stage 4's.
   runs every Tuesday 03:00 to 05:00 UTC, "no action needed"): an isolated reader read both as written to steer, since a
   field definition does not explain a bias and the reminder reads as addressed to the analyst; cut to a terse
   definition and one routine on-call line, the texture left in the data.
+- 2026-10-16, the re-judge's optional memo pin for batch at its guarantee at the busiest hour ("platform reservations
+  are sized with batch running at its guarantee"): declined; the files already close it (SF14), and the sentence would
+  point the solver at the coupling between the guarantee and the storage reservation, the decisive step.

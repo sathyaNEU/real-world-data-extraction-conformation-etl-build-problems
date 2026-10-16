@@ -2,7 +2,7 @@
   "task": "task140",
   "architecture": "v1",
   "drawn": "2026-10-12",
-  "slot_note": "wave 2 (new). Seed FC11: world, decision and quantity kept (a compute cell's quarterly batch guarantee, the reservable cores left after the firm tenants' reservations, struck at the quarterly capacity review); the seed's self-referencing platform levy (a share no document states, recovered from settled ledgers) and its budget ceilings are not the stump; the pitfall is re-found from how the cell's own storage service burns CPU on the batch tier's reads and checkpoints, so the residual carries a reservation it drives.",
+  "slot_note": "wave 2 (new), shipped 2026-10-15, reshipped 2026-10-16 after a realism repair of the storage fit's residual (re-judge DETERMINISTIC, APPROVE; round 3 leak read clean, Q6 analytical; every graded figure held). Seed FC11: world, decision and quantity kept (a compute cell's quarterly batch guarantee, the reservable cores left after the firm tenants' reservations, struck at the quarterly capacity review); the seed's self-referencing platform levy (a share no document states, recovered from settled ledgers) and its budget ceilings are not the stump; the pitfall is re-found from how the cell's own storage service burns CPU on the batch tier's reads and checkpoints, so the residual carries a reservation it drives.",
   "domain": "supply-chain-logistics",
   "subdomain": "other",
   "client_domain": "general-statistics-data-science",
@@ -82,7 +82,8 @@
     "a collector outage leaving hours missing for every series",
     "effective-dated tables (the rate card, the budget freeze)",
     "rack additions on dated changes in the machines-in-service series",
-    "documentation that has to be read (the capacity standard, the memo, the dictionary)"
+    "documentation that has to be read (the capacity standard, the memo, the dictionary)",
+    "telemetry texture in the storage service's own hourly series (the small tenants' daily cycle, a slow drift, a weekly rolling daemon restart and hours with late daemon samples, each reading low and none explained to the analyst)"
   ],
   "mechanism_source": "design_note",
   "differentiation": {},
