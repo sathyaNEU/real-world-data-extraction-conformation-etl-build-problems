@@ -20,9 +20,9 @@
     "none"
   ],
   "generators": [
-    "G16",
     "G17",
-    "G2"
+    "G2",
+    "G12"
   ],
   "gate_g": "signal_vs_noise_or_hold",
   "calibration_form": "none",
@@ -31,8 +31,8 @@
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
-  "stakeholder_role": "the authority's catchment monitoring lead",
-  "role_family": "field_unit_lead",
+  "stakeholder_role": "the officer who runs the authority's monitoring programme",
+  "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
     "file": "lims_results_export_2025_2026.csv",
@@ -89,9 +89,10 @@
   "mechanism_source": "design_note",
   "differentiation": {
     "task70": "task70's decisive move builds a per-record date under a filed clause that bars one record class from a late capacity slot, so a stated rule drives it and the quantity is a surcharge; here no filed sentence touches the decisive step and the quantity is a mean estimated from measurements that carry only an upper bound, with several bounds in play.",
-    "task260": "task260's decisive move is the width of an interval over two sampled dimensions, readers and examinations, deciding which measured gain survives its own uncertainty; here the decisive move is a point estimate, the mean of a left-censored sample, and the error is giving each unquantified result a value rather than mis-stating an interval."
+    "task260": "task260's decisive move is the width of an interval over two sampled dimensions, readers and examinations, deciding which measured gain survives its own uncertainty; here the decisive move is a point estimate, the mean of a left-censored sample, and the error is giving each unquantified result a value rather than mis-stating an interval.",
+    "task143": "task143's decisive move is a joint probability: a shared group effect in a predictor's error, so compounding members' marginal chances as if independent overstates a forecast count, and the error structure is recovered from whole groups followed to the end. Here nothing is forecast and no dependence is modelled: the decisive move is the estimate of a mean from measurements that carry only an upper bound, where the bounds differ by the instrument that produced them, and the error is putting a value in place of a bound rather than mis-combining probabilities."
   },
   "lineage": [],
-  "notes": "Gate G could also be read as method_or_model_selection (the decisive step is which estimator the censored results get); signal_vs_noise_or_hold is the reviewer's reading, since the call separates a real exceedance from an artifact of the reporting limit, and it is not the mechanism of either of the last two builds. Decisive generator G12, a record of absence (the analyte was looked for and not found at a stated limit) read either as an absence of record or as a value.",
+  "notes": "Gate G could also be read as method_or_model_selection (the decisive step is which estimator the censored results get); signal_vs_noise_or_hold is the reviewer's reading, since the call separates a real exceedance from an artifact of the reporting limit, and it is not the mechanism of either of the last two builds. Decisive generator G12, a record of absence (the analyte was looked for and not found at a stated limit) read either as an absence of record or as a value. Redrawn on 2026-10-16 after task148 v2 shipped the same day with G16 and field_unit_lead: the decisive generator is filed as G17 statistical rigor, which is also the label the determinism judge used, and the stakeholder as the officer who runs the monitoring programme.",
   "registered": "2026-10-16T21:21:17Z"
 }

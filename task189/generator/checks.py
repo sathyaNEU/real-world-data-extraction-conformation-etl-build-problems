@@ -273,6 +273,28 @@ def run(target):
             A(lazy_max != mx or lazy_cnt != c, "A2 the lazy read matches at %s" % name)
         else:
             A(lazy_max != mx, "A2 the conversion does not bite at %s" % name)
+    # A2's counts hold under every conversion factor a chemist would use and under a rounded path,
+    # so the one sample 0.07 per cent above the trigger cannot move a graded count; the maxima to one
+    # decimal are forced by the factor the dictionary files.
+    nref = g["a2"]
+    anames = {r.sample_point_code: r.sample_point_name for r in ab.itertuples()}
+    base = G.governing(d)
+    base = base[base["point"].isin(set(ab["sample_point_code"]))
+                & base["determinand_code"].isin(["NO3", "NO3N"])].copy()
+    for factor, round1 in ((4.426802, False), (4.4268, False), (4.43, False), (4.427, False),
+                           (4.426802, True), (4.43, True)):
+        nn = base.copy()
+        nn["no3"] = [v * (factor if cc == "NO3N" else 1.0)
+                     for v, cc in zip(nn["val"], nn["determinand_code"])]
+        if round1:
+            nn["no3"] = nn["no3"].round(1)
+        nn = nn.sort_values(["point", "sample_date", "sample_time", "client_point_code"])
+        nn = nn.groupby(["point", "sample_date", "sample_time"], as_index=False).head(1)
+        for code, grp in nn.groupby("point"):
+            want = nref[anames[code]][1]
+            got = int((grp["no3"] >= W.NITRATE_TRIGGER).sum())
+            A(got == want, "A2 the count at %s moves to %d under factor %s (rounded %s)"
+              % (anames[code], got, factor, round1))
     a3 = g["a3"]
     A(a3 == {"reports": 250, "export": 242, "one_only": 18}, "A3 moved: %s" % a3)
     A(a3["reports"] != a3["export"], "A3 the two totals agree")

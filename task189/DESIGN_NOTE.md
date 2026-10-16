@@ -12,10 +12,11 @@ district's water bodies the annual return states as non-compliant.
 | Objective | Anomaly Detection & Diagnostics (an apparent exceedance separated from a measurement artifact) |
 | Shape | 10, scorecard: each water body's check against the standard |
 | Decision | a count committed to the National Water Quality Office in the return due 30 November 2026 |
-| Gate G | `signal_vs_noise_or_hold`; decisive generator G16 method selection, then G17, G2 |
+| Gate G | `signal_vs_noise_or_hold`; decisive generator G17 statistical rigor, then G2, G12. The determinism judge read Gate G as `statistical_rigor` on its third pass and `method_or_model_selection` on its second; both fit, and G16 was given up on 2026-10-16 when task148 v2 shipped the same day carrying it. |
 | Strategy | `other`: the mean of a left-censored sample whose reporting limits differ by laboratory |
 | Layer 2 | `estimation_fit`, own pattern `left-censored-results-with-several-reporting-limits` |
 | As-of date | 16 November 2026 (the authority's extract date; the return is due 30 November 2026) |
+| Stakeholder | the officer who runs the authority's monitoring programme (`programme_officer`; `field_unit_lead` was given up to task148 v2 on the same ground) |
 | Guard | WARN only. `overuse.org_family` government_agency in 28 builds: the unit that files a river basin district's statutory return is a public authority and no other org family is honest here. `test.same_puzzle_older` and `test.same_driver_older` differentiated against task70 and task260 in the card. |
 
 **Data-native sentence.** MCPA is sprayed on rush-infested pasture in a six-week window, so in this

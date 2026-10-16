@@ -59,3 +59,52 @@ The verdict failed on a rendering defect of mine, not on the design:
 
 No graded figure moved in this pass. The call, the thirteen verdicts, the per-water-body counts, the
 nitrate figures and the quarter's three figures are the same before and after.
+
+## Pass 3: DETERMINISTIC, APPROVE
+
+The confirming thread recomputed every load-bearing figure from the bundle and approved with no fix.
+
+**Main call.** "Every estimator that keeps a below-limit result as an upper bound returns the same 4",
+run four ways (Kaplan-Meier, a censored lognormal fit, a conditional-expectation fill, and same-month
+fills from the sensitive method's quantified results at district and water-body scope). The 427 FIELD
+samples, which it derived independently as 432 required rounds less the five unsampled, the 276
+below-limit results and all thirteen per-water-body counts match. The constant substitutions
+reproduce at 7, 11, 8 and 3. "Owenbeg is the thinnest case: its Kaplan-Meier mean is 0.056 against the
+0.05 standard (about 12% clear). Its zero-fill lower bound is 0.0488, so any realistic fill clears the
+standard."
+
+**Gate F:** "Strong. Half-limit substitution after perfect cleaning gives 7 ... Nothing in the pack
+ranks the candidates." **Gate G:** `statistical_rigor`, `analytical_non_defect`,
+`surface_read_dependency: no`, `sole_data_defect: no`. **Gate H:** `domain: pass`, `layers: pass`,
+`decisive_step: analytical`; "the easy route files 7 even after correct cleaning and rule reading."
+**Hygiene: PASS**, 14 files in 4 formats, the 25,524-row export, the distractors unused, "a coherent
+timeline ... no authoring leakage and no exclusion-level finding."
+
+**The rendering repair held.** Asked to check every page at character level: "No character falls
+outside the page and no word crosses a table cell boundary. All quarterly report rows sit on one line
+with intact identifiers (132 and 118 rows, matching the footers). The blank Tirneevin result cells are
+empty in the file, not clipped."
+
+**Its three residual reading risks, each answered.**
+
+1. *Constant substitution is not named unlawful by clause 7.2.* Correct, and deliberate: naming it
+   would make the decisive step rule application and spend the stump. The thread's own reading is the
+   design's: that route "the data contradict (it gives non-detects at the Kilgarron laboratory a value
+   of 0.05)". Left open.
+2. *The nitrate ask could count both sections' submissions of one round.* Closed by the records, as
+   the thread said: "Only the identical point, date, time and result close this", which is what the
+   crosswalk and the timestamps give. Asserted in `checks.py`.
+3. *The quarter could be read by approval date.* Sample date is the reading the reports themselves
+   carry, and the ask now says the results are those on water samples. Asserted.
+
+**Two smaller points.** The return workbook has thirteen data rows, one per water body in the
+compliance network, verified directly; the thread's note of sixteen is the register's row count, which
+includes the three surveillance water bodies. And Sheskin's nearest sample sits 0.07 per cent above
+the 37.5 mg/l trigger, which the thread flagged as resting on the filed factor. The counts are now
+asserted invariant under every conversion a chemist would use (4.426802, 4.4268, 4.427, 4.43) and
+under a path that rounds to one decimal before comparing; only the maxima to one decimal depend on the
+factor, and the field dictionary files it. No data was moved for it, because a count against a
+threshold always puts some sample near the threshold, and what matters is that every licensed reading
+agrees.
+
+**Verdict: DETERMINISTIC. Disposition: APPROVE. Fix: none.**
