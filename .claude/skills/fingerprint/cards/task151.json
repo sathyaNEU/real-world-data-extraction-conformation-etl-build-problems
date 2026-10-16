@@ -1,0 +1,94 @@
+{
+  "task": "task151",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "wave 4 (new), seed FC22: the world (a major-league club's five free-agent hitters with plate-appearance bonuses), the decision (the bonus accrual booked at signing) and the quantity (expected bonus payments for the coming season) kept; the seed's filed projection method and its shared first-base and DH ceiling as the driver dropped (task106, task140 and task16 kin), the ceiling kept as texture; the pitfall re-found from how a hitter's season of plate appearances is made",
+  "domain": "general-statistics-data-science",
+  "subdomain": "resampling-simulation-monte-carlo-methods",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a major-league baseball club's controller accruing, at signing, the plate-appearance bonuses in five free-agent hitters' 2027 contracts, when four of the five will bat lower in the club's order than they did for their old clubs and the league's planned everyday regulars either play out the 162-game schedule or lose a long block of it to the injured list, one in eight before opening day",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G1",
+    "G9",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "the club's controller, who books the plate-appearance bonus accrual when the contracts are signed",
+  "role_family": "finance_controller",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "boxscore_batting_2021-2024.txt beside boxscore_batting_2025-2026.csv",
+    "rows": 370000,
+    "entity": "one player's batting line in one championship-season game, with his lineup slot and position",
+    "grain": "player x game",
+    "source": "synthetic (constructed in the layout of a league statistics feed, two layouts across a 2025 platform change)"
+  },
+  "forum": "other",
+  "forcing_event": "period_close",
+  "org_family": "other",
+  "world": {
+    "geography": "United States (a fictional major-league club and league; every club, player, vendor and person is fictional)",
+    "currency": "USD",
+    "org_type": "a major-league baseball club's finance office and baseball operations department",
+    "invented_names": [],
+    "people": [
+      "Gregory Melton",
+      "Steven Armstrong",
+      "Karl Rojas",
+      "Harry Barnes",
+      "Matthew Wallace"
+    ]
+  },
+  "deliverables": [
+    "escalator_accrual_2027.xlsx",
+    "escalator_accrual_memo_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "A stepped payout on a unit's season total is the sum of its chances of clearing each step, and the total is the rate per appearance the unit's assigned position earns times the appearances it makes, which units planned to play every day either make nearly in full or lose in one long block, before the season as well as during it; so each chance has to come from the appearances made by every unit planned the same way at the same point before the season, read at the new position's rate, while a point forecast, a symmetric band, the unit's own rate from its old position, or only the units that opened or completed the season whole each misplace the steps.",
+  "driver_concrete": "Each signing's 2027 plate appearances are the plate appearances per start his planned lineup slot earns (4.31 batting fourth down to 3.79 batting ninth) times the starts he makes, and the league's winter-planned everyday regulars made a near-full 150 to 158 starts or lost a long block to the injured list (about one in eight before opening day), so the accrual is each bonus times the share of the 2021 to 2026 winter-planned non-catcher regulars whose starts, at the new slot's rate, clear its plate-appearance line, where each player's projected plate appearances with a normal band, the same regulars at each player's old-club rate per start, and the regulars who opened or qualified each file another accrual.",
+  "stump": "A competent solver takes each signing's projected 2027 plate appearances, puts a normal band on them from the projection's past misses and accrues the bonuses at those chances; the step that lands it there is pricing each player off his own record, earned higher in his old club's batting order and spread symmetrically, when his 2027 total is his new slot's rate per start times the starts a winter-planned regular makes, a near-full season or a long injured-list block.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the five contracts, the accrual policy and the depth chart correctly and prices each bonus off each signing's projected plate appearances with a normal band from the projection's misses files an accrual about half a million dollars too high; building the league's regulars' seasons but at each player's own plate appearances per start, or from only the regulars who opened the season or qualified, files one too high again, and the new slot's rate with a normal band one too low; only the winter-planned regulars' whole seasons read at the new slot's rate file the golden.",
+  "domain_test": "The deciding quantity is each signing's predictive distribution of 2027 plate appearances at his bonus lines, which a resampling of comparable seasons gets only when the unit resampled is a whole season of a regular planned in the winter (its injured-list blocks, the ones before opening day included) and its starts are read at the new lineup slot's rate per start; replacing it with a generic summary of the player's record (a projection and its error as a normal band) moves the accrual by about half a million dollars, and with another field's nouns there is no batting order fixing a rate per start and no 162-game schedule that planned regulars play out or lose in blocks.",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:stepped-bonus-chances-from-winter-planned-regular-seasons-at-the-new-slot-rate",
+  "layer1": [
+    "two box-score feed layouts across the league's 2025 platform change (2021-2024 pipe-delimited with legacy player codes and US dates; 2025-2026 comma-separated with league IDs and ISO dates), with a crosswalk between the codes",
+    "doubleheaders, suspended games completed on a later date and postponed games in the game logs",
+    "players traded mid-season appearing for two clubs in one season",
+    "the vendor's winter depth-chart archive, one sheet per season in its own layout, positions and batting order by club",
+    "the transactions feed's free-text remarks (retroactive dates, list types, rehab assignments) beside an effective-date field the feed added in 2025",
+    "contract terms in a PDF of term sheets",
+    "a payroll export with void and reissue rows and one pay code shared by every kind of performance bonus"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task142": "task142 builds an upper percentile of a quarter's visits from admissions and stays counted inside the window (a compound of arrivals and durations, the shortcut an independent count); here the payout is a sum of exceedance chances on one unit's bounded season total, the unit resampled is a whole planned-regular season and the total is read at the rate of the slot the new club gives him, so no arrivals are compounded",
+    "task143": "task143 carries a group effect the members share into the chance the weakest of a pack falls below a line; here nothing is shared between the five, each signing's chance comes from other players' seasons at his own new slot's rate",
+    "task106": "task106's members draw on one finite pool of return legs; here the first-base and DH crowding is texture fixed by the depth chart, and the step is the season distribution and the slot rate",
+    "task97": "task97 reads a unit's chance off the cumulative history of the place it occupies across every occupant; here the slot fixes only a rate per start, and the chance comes from the starts distribution of planned regulars"
+  },
+  "lineage": [],
+  "notes": "stump_strategy other: the decisive move is the expected value of a stepped payout from the right predictive distribution (a planned regular's whole-season starts read at the new slot's rate), a forecast-uncertainty family the vocabulary does not name; forecast_method_backtest and population_selection are also banned against the last three builds",
+  "registered": "2026-10-16T18:56:20Z"
+}
