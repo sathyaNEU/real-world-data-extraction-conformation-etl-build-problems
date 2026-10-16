@@ -1,6 +1,6 @@
 # leak check, task124
 
-**Verdict: REVIEW.** 17 files read, 63 golden figures and 12 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 17 files read, 62 golden figures and 12 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
@@ -38,3 +38,7 @@ Stump terms swept: unknown, verified, galvanized, services, decisive, copper, di
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read (round 3)
+
+On the round-3 cut (target.zip sha256 8ef783ab336726f5), one isolated reader on the prompt and `target/` only. Q1 to Q4: none (no sentence names the decisive step, no file ranks the zones on the deadline or states a cost, a finish year, a share or a schedule, no file exists only to help the analyst, no figure or name reads as the answer). Q6: an analytical choice; the reader read the decisive step as the selection of the verified sample (the verified lines are not the lines still unknown) and found nothing filed that corrects for it. Sweep line "the plan carries 9 of 13 words of the call": harmless, generic vocabulary (zone, programme year, finished, deadline and the zone name in the priority table); the call sentence is not in the plan and the plan states no finish year, cost or share. The other REVIEW lines are answered in the design note's leak review (the stump-paragraph terms are the inventory's own nouns; the zone lists are the priority order, unit prices and contractor counts). Ask readings the reader raised are each governed by a shipped file, as the determinism judge ruled on the same cut: quarters in Eastern time (progress report section 2), a reclosing replaces the first closing (field notes), Tri-County's two vendor numbers are one contract (progress report section 5 and the contracts file), E-SIGNED counts as signed (field notes and the outreach tracker). No leak; no fork on the main figure.

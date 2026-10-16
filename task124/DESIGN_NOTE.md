@@ -71,8 +71,8 @@ the verification sample is large enough that every defensible construction files
   the capital plan word for word, the files and their layouts, the twelve finish years, the decisive step (each unknown
   line's kind of main read from the tap cards on its main), both asks and their devices, the people, the forum and the
   forcing event.
-- **Stage 4.** The leak reader and the determinism judge are the main session's; `pipeline.json` carries the resume
-  step.
+- **Stage 4.** On the cut 8ef783ab336726f5: the leak reader clean (Q6 analytical) and the judge DETERMINISTIC, APPROVE
+  with every figure reproduced (`determinism_check_report.md`); reshipped 2026-10-16 (Pre-ship check).
 
 ## Draw
 
@@ -589,7 +589,8 @@ compares every byte: identical (sha256 2121efd8f645d73f over `target/` and `gold
   practice, and the reach is visible only to a solver who classifies every main by kind and era and counts coverage.
   The copper-main share after 1950 is none of 1,666, the world's mechanism (no lead goosenecks and no private lead
   services on those streets), not a trim.
-- **`figures_check.py`:** exit 0 (100 figures in blocks 1 to 4, none absent from `figures.json`).
+- **`figures_check.py`:** exit 0 (100 figures in blocks 1 to 4 at stage 3, 99 after the stage 4 block 1 edit, none
+  absent from `figures.json`).
 - **`precut.py`:** exit 0 (49 checks, 0 FAIL, 0 WARN, 19 fork rows); voice-check PASS on the unchanged prompt.
 - **`guard.py`:** validate 186 cards, 0 invalid; heart WARN (`overuse.strategy` composition_mix in 3 of the last 12;
   `driver.near` 0.15 against this slot's own v5 lineage; `test.same_driver_older` differentiated against task132 and
@@ -619,7 +620,7 @@ container audit clean. Each REVIEW line:
 
 - Sweep 3, the plan carries 9 of 13 words of the call: it defines the call's terms (zone, programme year, finished,
   deadline) and lists RZ-06 Wexley in its priority table; it states no finish year, cost, count or share. Harmless.
-- Sweep 4, the plan (15 of 25 stump-paragraph terms), the progress report (8) and the field notes (13): the terms are
+- Sweep 4, the plan (14 of 25 stump-paragraph terms), the progress report (8) and the field notes (12): the terms are
   the inventory's own nouns (unknown, verified, verification, galvanized, copper, district, record) and, in the plan,
   "streets" in clause 2.3 and the zone name Canal Street. No document says that a line takes its main's kind, that the
   cards on a main say anything about its other lines, who laid the services in which decade, how or where lines came
@@ -628,12 +629,36 @@ container audit clean. Each REVIEW line:
   ranking on finish year or cost. The unit cost schedule names 8 zones beside unit costs (prices only); the progress
   report and the change order log name the three contractors beside counts and change order amounts (no cost per
   replacement, no zone ranking). Harmless.
-- The reader runs at stage 4 (the main session's); its report is appended to `leak_check_report.md`.
+- Stage 4, `leak.py` re-run after the block 1 edit: REVIEW, the same lines (62 golden figures read from the write-up
+  against 63). The round-3 reader: Q1 to Q4 none, Q6 analytical (the selection of the verified sample, nothing filed
+  correcting for it), its ask readings each governed by a shipped file; its sweep line on the plan's 9 of 13 call words
+  ruled harmless (generic vocabulary, the call sentence not in the plan). Appended to `leak_check_report.md` as
+  `## Solver's-eye read (round 3)`.
 
 ## Pre-ship check
 
-Round 3: pending stage 4 (the leak reader and the determinism judge, both the main session's). Round 2's pre-ship
-check (judge DETERMINISTIC, APPROVE on the round-2 cut) is superseded by this round's pack.
+Round 3, stage 5, 2026-10-16, on the cut 8ef783ab336726f5. The judge (one isolated thread): DETERMINISTIC, APPROVE,
+the call, all 36 zone figures, the 12 payments and the 12 agreement counts reproduced (`determinism_check_report.md`;
+earlier rounds kept as `_loop0`, `_pass2`, `_loop1` and `_round2`). Its minor notes, disposed with no pack or golden
+figure moving (`target/`, `golden/`, `figures.json` and `metadata.json` byte-identical on a fresh rebuild, `target.zip`
+members equal to `target/` by content):
+- (a) Block 1 gave each rival a finish year, and the judge's own definition of the mains verified whole filed 2043
+  against the build's 2041; a rival year a defensible definition can move is a claim the grader recomputes. Every rival
+  year is cut from block 1: each rival is named and runs the last zone past the 1 November 2037 deadline, which every
+  definition the judge tried shares; the 316 count left that sentence (step 2 keeps it). Write-up only.
+- (b) Accepted risk, the ask rounding margins: RZ-11's lines (1,568.3 against the 1,565 boundary, 1,565.3 under a
+  logistic era average) and RZ-09's cost ($26.08 million against $26.05 million) are thin only under a per-line model
+  or a zone-level share, which plan 4.3's one share per construction era does not license; under the era-level
+  estimator the plan files, rounded or unrounded shares and the by-era constructions change no rounded figure (M11,
+  M4b). Not repaired: moving either zone off its boundary is a pack recut and a re-judge for a reading the plan rules out.
+The reader (round 3): no leak, Q6 analytical. The 10/10 rules re-read against the built pack: the decisive step is
+still analytical (each unknown line's kind of main read from the tap cards on its main, the share within kind and era
+carried to the unknown lines' own mix; the reader and the judge both rate it so), and the mess is still only Layer 1
+(crosswalk padding, route result codes, re-verifications, date formats, zero years, the ask files' devices), none of it
+moving the call (R2). Gates on the final state: checks 138/0, verify green, two builds byte-identical,
+`figures_check.py` 0 (99 figures), `precut.py` 0 (49 checks, 19 fork rows), voice-check 0, `leak.py --asof 2027-01-11`
+REVIEW (answered above), surface 0, heart WARN (as at stage 3), validate 186/0; `target.zip` 17 members, 2,895,290
+bytes, sha256 8ef783ab336726f5.
 
 ## Tried and rejected
 
@@ -814,3 +839,4 @@ check (judge DETERMINISTIC, APPROVE on the round-2 cut) is superseded by this ro
   and the era shares 0.001 to 0.002, so neither precision survives a one-sigma move or the replaced-mains
   construction; they are stated to $1 million, 0.1 programme years and two decimals, and the prompt's own precision
   (lines to ten, zone costs to $100,000) is unchanged.
+- Write-up, a finish year on each rival in block 1 (every verification and the logistic 2039, the mains verified whole 2041, the tap cards 2040): the judge's own definition of whole mains filed 2043, so a rival year is a recomputable claim a defensible definition moves; block 1 now names each rival and says it misses the deadline.
