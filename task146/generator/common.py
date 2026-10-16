@@ -30,7 +30,8 @@ SIM_LAST_SUNDAY = dt.date(2026, 10, 25)   # the world runs a few weeks past the 
 EXTRACT_PULL = dt.date(2026, 10, 7)       # open-data and register extracts pulled on Wednesday 7 October
 PROGRAM_STATS_SEPT = dt.date(2026, 10, 7)  # the September program statistics, fifth working day of October
 SIC_SWITCH_SUNDAY = dt.date(2026, 1, 4)   # the board codes industry on SIC 2023 from the claims week of 4 January 2026
-PORTAL_LIVE = dt.date(2026, 6, 1)         # the Employer Portal takes layoff notices from 1 June 2026
+PORTAL_LIVE = dt.date(2026, 7, 1)         # the Employer Portal takes layoff notices from 1 July 2026
+REGISTER_FROZEN = dt.date(2026, 6, 30)    # Employer Services' email register, last entries
 
 
 def sundays(first, last):
