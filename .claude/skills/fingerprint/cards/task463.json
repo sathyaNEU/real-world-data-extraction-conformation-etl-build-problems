@@ -1,0 +1,92 @@
+{
+  "task": "task463",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "seed ET20 used for its quantity form only (an official statistic compiled from many high-frequency records into a period figure and held against a line, per candidate); its own world (EPA air-quality monitoring and a county PM2.5 design value) is Physical & Environmental Sciences, whose only ETL task type is banned for this draw by the pairing rule after task462, so the statistic is a retail prices index compiled from supermarket transaction data",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "seasonal-adjustment-official-time-series-production",
+  "niche": "moving a small island's retail prices index from shelf-price collection to supermarket transaction (scanner) data: each item's 12-month rate from three retailers' sales records held against the published rate before the January 2027 switch",
+  "objective": "etl",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G13"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the head of prices statistics at a small island's statistics office, deciding which retail prices index items move from shelf-price collection to supermarket transaction data in January 2027",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "index points",
+  "spine": {
+    "file": "calderby_daily_item_sales_2025_2026.sqlite",
+    "rows": 0,
+    "entity": "one product's sales at one retailer on one day (value net of GST and units)",
+    "grain": "retailer x product x day",
+    "source": "synthetic (constructed in the layout of a supermarket's daily point-of-sale extract)"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "Kellesay, an invented self-governing island in the British Isles with its own statistics office and retail prices index",
+    "currency": "GBP",
+    "org_type": "island statistics office",
+    "invented_names": [
+      "Kellesay",
+      "Statistics Kellesay",
+      "Wrenfold Stores",
+      "Gorsedale Co-operative",
+      "Calderby's"
+    ],
+    "people": [
+      "Diana Lawson",
+      "Dennis Gill"
+    ]
+  },
+  "deliverables": [
+    "kellesay_rpi_transaction_readiness_2027.xlsx",
+    "kellesay_transaction_product_months_2025_2026.csv",
+    "kellesay_item_rates_parallel_year.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the change over a span in a spending-weighted average of many units' prices, where a unit's quantity jumps in the periods its price is cut and falls below normal in the periods after because buyers stock up; comparing each period with the one before and linking the comparisons weights every cut heavily and every recovery lightly and drifts far below each unit's own change, so the change has to come from comparisons that do not route through the cut periods' weights, which agree with each other, while the linked path and an unweighted average each move a different set of groups across the line.",
+  "driver_concrete": "Each retail prices index item's 12-month rate to September 2026 from the three supermarkets' transaction records is a drift-free comparison of September 2026 with September 2025 (a direct Tornqvist over the products sold in both months, or a GEKS or CCDI over the thirteen months, which agree to within a tenth of a point), not the twelve monthly Tornqvist comparisons linked into a chain, which drift 4 to 12 points below every product's own change in the items whose goods keep (laundry, toilet rolls, soft drinks, water, coffee, cereals, biscuits, tea, toiletries) because shoppers stock up in an offer month and buy little the month after.",
+  "stump": "The default path builds each item's monthly index by comparing every month with the one before at the plan's Tornqvist weights and linking the comparisons, finds the storable items 4 to 12 points under their published 12-month rates and moves about five items in January 2027 (bread, yoghurt, butter and spreads, fruit juice and one more), where a direct September-to-September comparison, or a multilateral one over the thirteen months, moves thirteen and holds only the three whose transaction prices genuinely part from the shelf prices (member prices on chocolate and on cheese, own-label pasta and rice).",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the three feeds correctly, reads the plan and builds each item's monthly index the usual way, comparing each month with the one before at the plan's Tornqvist weights and linking the comparisons, finds the storable items 4 to 12 points under their published 12-month rates and moves about five items in January 2027 instead of thirteen.",
+  "domain_test": "The deciding quantity is a price index compiled from transaction data the way price statisticians compile it (monthly unit values per product, spending-weighted superlative comparisons, and a comparison free of the drift that chained superlative indices show when sales come with stockpiling); with another field's nouns (patients and visits, megawatt-hours) the stockpiling after a price cut and the index-number path dependence it drives no longer read.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task254": "task254 v2 estimates a cut of a time-to-event distribution from events truncated at a lock date, with risk sets bounded by each unit's truncation time; task463 compiles a spending-weighted price change from transaction records whose quantities jump with a price cut and dip after it, and chooses a comparison that does not chain through the offer months: no time-to-event distribution and no truncation",
+    "task501": "task501 v2 picks a forward pacing basis by a walk-forward test on closed years; task463 forecasts nothing and runs no back-test: a closed year's 12-month price change comes from a drift-free comparison instead of linked monthly superlative comparisons"
+  },
+  "lineage": [],
+  "notes": "stump_strategy other: the decisive move is choosing a drift-free index over a chained one because promotional sales with stockpiling make linked superlative comparisons path-dependent; no vocab key names index-number path dependence (it is neither a grain, a population, a censoring nor a composition choice).",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:chain drift of linked superlative price indices under sales with stockpiling",
+  "layer1": [
+    "several sources for one picture: three supermarkets' sales feeds in three layouts (weekly CSV, a co-operative's 4-4-5 fiscal-period file, a daily point-of-sale database), the office's product classification and the published index",
+    "imperfect keys: GTINs with and without leading zeros, one retailer keyed by its own SKU through a lookup, products reclassified with an effective date",
+    "vintages and revisions: weeks resent after a till fault with a later extract date",
+    "units and time: one retailer's values net of GST, a fiscal calendar of 4-4-5 periods, retailer weeks running Sunday to Saturday",
+    "genuine records: returns as negative units, products entering and leaving the range"
+  ],
+  "registered": "2026-10-16T21:52:59Z"
+}

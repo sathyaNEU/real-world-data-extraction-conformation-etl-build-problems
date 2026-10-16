@@ -1,0 +1,36 @@
+{
+  "task": "task463",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-16",
+  "stump": "The default path links twelve month-on-month Tornqvist comparisons per item and moves about five RPI items in January 2027 (the nine storable items drift 4 to 12 points under their published rates through offer-month stockpiling); a direct September-to-September (or multilateral) comparison moves thirteen.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: design (screen, fork table, ladder, closure, asks, prompt) to precut exit 0; prototype in the scratchpad (proto3.py)",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET20 (analytical_tasks/07_data_extraction_conformation): a manufacturer choosing a county for a new plant needs to know whether the county's PM2.5 design value violates the annual standard (9.0 ug/m3), from AQS daily values across monitors, quarterly means, collocated monitors and event flags; the seed's own trap (averaging every daily value) is rule application and is not used"
+}
