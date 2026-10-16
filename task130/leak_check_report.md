@@ -41,3 +41,20 @@ Stump terms swept: window, rejected, golden, record, register, decisive, average
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+## Solver's-eye read (round 3a, hardened asks)
+
+Read on the cut with target.zip sha256 410a3ff6b4593066 (17 files), the same pack leak.py swept above. Q1 to Q4: none;
+no sentence or file names the decisive step, no file ranks the entities or states a 2027 contribution, a cost, a lag
+table or a severity curve, no file is there only to help the analyst, and no figure or name reads as the answer. Q6: an
+analytical choice (how the window's Claims are costed against the experience), not a field reading, a stated rule or a
+plant. REVIEW lines: every one harmless (the agreement, the funding policy and the dictionary carry the call's words
+because they name Corvane Health and the trust and state no contribution; the stump-paragraph nouns in the policy and
+the dictionary are each document's own terms for the register, the exposure and the month a payout carries; the
+schedules, loss runs, staffing plan, cost centre directory and premium history name the entities beside dates, policy
+numbers, codes, amounts, FTE and premiums and rank none on the contribution; the 2027 dates in the premium history are
+the 2026 policy terms' end dates). Funding policy 3.6 restating the prompt's rounding: harmless, a rounding convention
+names no method. Ask readings it raised, each governed by the shipped files as the round 3a judge confirmed on the same
+cut: the "latest" loss run is the latest valuation (the 30 September 2026 run, the 30 June rev1 a distractor); the
+claim-key join (the insured reference through the notices and prior_claim_no, the no-reference suits by entity, date
+and type); OPEN or REOPENED counted per Claim; paid FTE as hours/173.33 (the dictionary's hours paid on the line at
+173.33 hours to 1.0 FTE).

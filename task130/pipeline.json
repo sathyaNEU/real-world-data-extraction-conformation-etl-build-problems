@@ -1,11 +1,11 @@
 {
   "task": "task130",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "actuarial-science-insurance",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-16",
   "stump": "A strong solver who reads the claims-made window correctly counts the Claims the 2016 to 2024 experience would make by 31 December 2027 from each entity's Transition Date and prices them at each specialty class's average trended Claim cost, filing $2,500,000; the step that lands it there is pricing the window's Claims at the cost of all Claims, when the Claims a first claims-made year catches are the disclosed-harm settlements made within weeks and the program requests made months later, while the average carries the demands and suits made a year or more later; costing each experience Claim at its own delay against each entity's days in the trust gives $1,250,000.",
   "architecture": 4,
@@ -16,8 +16,8 @@
     "checks": 49
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-16 (--asof 2026-10-12), no LEAK: sweep 3 (the call's words in the documents that define the trust), sweep 4 (stump nouns in the funding policy and the dictionary, their own terms), sweep 6 (entity names beside numbers; none ranks the entities on the contribution), sweep 9 (the 2026 policy terms' 2027 end dates); answered in the design note's build record",
-    "reader": "pending: stage 4, a fresh read on the restored round 3a with the harder asks (three runs, the HCM lines and the dictionary changed since the judged cut), the main session's"
+    "leak_py": "REVIEW 2026-10-16 on the shipped pack (--asof 2026-10-12), no LEAK, sweep 11 clean: sweep 3 (the call's words in the documents that define the trust), sweep 4 (stump nouns in the funding policy and the dictionary, their own terms), sweep 6 (entity names beside numbers; none ranks the entities on the contribution), sweep 9 (the 2026 policy terms' 2027 end dates); each answered in the design note's Build record and the report's Solver's-eye read",
+    "reader": "2026-10-16 round 3a, hardened asks (cut 410a3ff6): clean on Q1 to Q4, Q6 analytical; every REVIEW line harmless, funding policy 3.6 echoing the prompt's rounding harmless; its ask readings (the latest loss run as the latest valuation, the claim-key join, OPEN or REOPENED counted per Claim, paid FTE as hours/173.33) each governed by the shipped files per the judge"
   },
   "duplicate_check": {
     "heart": "WARN 2026-10-16 (people.first: Lori against task129, an older build); this slot's lineage drivers (round 1, round 3b, round 3c) differentiated",
@@ -26,14 +26,25 @@
     "validate": "186 cards, 0 invalid"
   },
   "judge": {
-    "verdict": "pending",
-    "disposition": "pending: stage 4, a fresh judge on the restored round 3a with the harder asks (cut 410a3ff6), the main session's",
-    "previous": "round 3a (cut fac4903f) DETERMINISTIC, APPROVE, Gate H analytical (scratchpad judge-task130r3/verdict.md); round 3b (cut 710fb603) DETERMINISTIC, APPROVE, weakest point Gate C (scratchpad judge-task130r3b/verdict.md), then rejected on the rule 3 read; round 1 DETERMINISTIC, APPROVE (determinism_check_report.md is round 1's)"
+    "verdict": "DETERMINISTIC 2026-10-16 (judge-task130r3d, cut 410a3ff6): APPROVE, no fix, Gate H analytical; every figure reproduced ($1,263,838 to $1,250,000; missing claims Alderwick 4 / $839,000, the medical group 5 / $16,000, Tolliver Falls and Brennick none; all twelve FTE cells)",
+    "disposition": "APPROVE, shipped as judged with nothing under target/ moved; its two thin spots accepted (design note Accepted risks): month-start exposure gives $1,387,788, rounding to $1,500,000, closed by the staffing plan's 'held through the month'; Ask B's hours/173.33 against the position fte field",
+    "report": "determinism_check_report.md (earlier rounds: determinism_check_report_round1.md, _round2.md, _round3a.md on cut fac4903f, _round3b.md)",
+    "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "previous": "round 3a (cut fac4903f) DETERMINISTIC, APPROVE, Gate H analytical; round 3b (cut 710fb603) DETERMINISTIC, APPROVE, weakest point Gate C, then rejected on the rule 3 read; round 2 NOT_DETERMINISTIC, SEND_BACK; round 1 DETERMINISTIC, APPROVE"
   },
-  "returned": [],
-  "resume": "stage 4: a fresh reader and a fresh judge on the restored round 3a with the harder asks (cut 410a3ff6); the judge brief should ask whether Ask A's suit with no insured reference and Ask B's TRM payout month read one way",
+  "returned": [
+    {
+      "date": "2026-10-15",
+      "portal": "rule 3 audit AT_RISK (round 1, shipped 10-12 at $784,000): funding policy 3.4 filed the estimator by elimination, 3.2 read as a recipe, the headline wrong answer a contract misreading",
+      "repair": "design (rule 3 rework of the decisive step: each window Claim costed at its own report lag; round 3a restored with harder asks)",
+      "round": 3,
+      "commit": "RESHIPPED (task130): rule 3 rework, each window claim costed at its own report lag; $1,250,000"
+    }
+  ],
+  "resume": "",
   "approved": null,
-  "delivered": "2026-10-12",
+  "delivered": "2026-10-16",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -122,7 +133,7 @@
     "precut": "exit 0 (49 checks, 0 WARN)",
     "voice_check": "PASS (881 characters, the prompt round 3a's)",
     "house_fixes": "pass (H1 pack and golden containers clean on the scrub audit; H4 and H7 archive members equal the pack by content; H11 one submission.md and one prompt.txt; H9, H16, H5 asserted in checks.py)",
-    "target_zip": "17 members, sha256 410a3ff6b4593066e58f58bc84a39785185ee84e476f503c9a74e7254fc462eb"
+    "target_zip": "17 members, sha256 410a3ff6b4593066e58f58bc84a39785185ee84e476f503c9a74e7254fc462eb (the ship rebuild into scratch matched target/ file for file)"
   },
   "target_zip_sha256": "410a3ff6b4593066e58f58bc84a39785185ee84e476f503c9a74e7254fc462eb",
   "round_2": {
@@ -163,5 +174,11 @@
       "design": "round 3a restored from 265e1ed (cut fac4903f reproduced); Ask A's second device a suit the clinician sent straight to the carrier, on the run with no insured reference (S6: TFH 1 $436,000, AMC 5 $954,000, CMG 6 $140,000, BCH 1 $132,000); Ask B's second device nine June 2026 graduates in attending vacancies, their ended GME positions paid a TRM payout with no hours (S6 moves 9 of 12 cells); every golden figure unchanged",
       "pair": "37.1 with the cracker and the mirror; 37.1 or 40.2 when the strongest cracks one device; 53.1 with both on the call (49.1 if each whether is folded into its count); the floor with both on the call is 45, so at or under 40 with both on the call is out of the asks' reach"
     }
+  },
+  "accepted_risk": {
+    "date": "2026-10-16",
+    "decided_by": "author",
+    "risk": "the rule 3 re-audits rated stump strength moderate: the dollar-weighted claims-made step factor lands the golden; if both top responses land the call the pair is about 53 (53.1), or 49 (49.1) if the rubric folds each whether into its count; the 3b and 3c strengthenings failed (Tried and rejected); the author chose to ship 3a with the harder asks",
+    "judge_thin_spots": "month-start exposure $1,387,788 rounds to $1,500,000, closed by the staffing plan's 'held through the month'; Ask B hours/173.33 against the position fte field"
   }
 }

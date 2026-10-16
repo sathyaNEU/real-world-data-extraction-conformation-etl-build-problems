@@ -14,7 +14,10 @@ layer (the disclosure settlements' 2019 start) and round 3c tried to spread that
 under `## Tried and rejected` (3b: any recent-years trim lands and 3.3 reads as whole-experience pooling; 3c: no layout
 of starts makes every common trim miss while every own-start construction converges, and the WHAT that closes Gate C
 sends the solver to the lag table). This note is round 3a restored, the call, its ladder and every golden figure as
-3a built them, with each ask's figures held by a second device the first one's crack does not clear. The earlier
+3a built them, with each ask's figures held by a second device the first one's crack does not clear. Reshipped
+2026-10-16 on the stage-3 pack unchanged (`target.zip` sha256 410a3ff6b4593066...): the judge DETERMINISTIC, APPROVE,
+Gate H analytical (`determinism_check_report.md`), the leak reader clean on Q1 to Q4 with Q6 analytical
+(`leak_check_report.md`), the author's known risk on stump strength accepted (`## Accepted risks`). The earlier
 architectures' records are under `## Retired` and `## Tried and rejected`; the card keeps every dead identity in
 `lineage`.
 
@@ -515,7 +518,18 @@ are gone.
   the legacy payroll and the 2027 plan are as built), the dictionary (the TRM code, the payout's month) and the extract
   log's row count. The register is byte-identical, and the call, the ladder and every golden figure are unchanged to
   the cent.
-- Gates at stage 3: `checks.py` 204 of 204 (the three-rules block R1 to R3c, every natural route a full bin off and every converging construction in the bin on the pack and on the clean truth, one sigma, dominance, the population-truth oracle, SF1 to SF32, the asks' stops including S6 for each new device, the no-reference suits unique, never a gap and with closed twins, the TRM payouts on every ended position, the graduates trained to June, fairness and convergences, separation, distractor deletion, realism, H5, H9, H16); `verify.py` (its own code path, bundle only, the no-reference match and the month trainee test included) matches every golden figure; two builds byte-identical (target/, golden/, metadata.json, figures.json, target.zip: 17 members, sha256 410a3ff6b4593066e58f58bc84a39785185ee84e476f503c9a74e7254fc462eb); `figures_check.py` exit 0 (32 figures); `precut.py` exit 0 (49 checks, 0 WARN); `voice-check.py` PASS (881 characters, the prompt 3a's); `leak.py --asof 2026-10-12` REVIEW with no LEAK (lines below); `guard.py validate` clean (186 cards), `heart` WARN (Lori against task129, an older build; this slot's lineage drivers differentiated), `surface` one promoted pair (task102, on the card axes only, answered by the card's differentiation line); the scrub audit clean on target/ and golden/; H4 and H7 (the archive's 17 members equal the pack by content), H11 (one submission.md, one prompt.txt). Stage 4 (a fresh reader and a fresh judge on this cut) is the main session's.
+- Gates at stage 3: `checks.py` 204 of 204 (the three-rules block R1 to R3c, every natural route a full bin off and every converging construction in the bin on the pack and on the clean truth, one sigma, dominance, the population-truth oracle, SF1 to SF32, the asks' stops including S6 for each new device, the no-reference suits unique, never a gap and with closed twins, the TRM payouts on every ended position, the graduates trained to June, fairness and convergences, separation, distractor deletion, realism, H5, H9, H16); `verify.py` (its own code path, bundle only, the no-reference match and the month trainee test included) matches every golden figure; two builds byte-identical (target/, golden/, metadata.json, figures.json, target.zip: 17 members, sha256 410a3ff6b4593066e58f58bc84a39785185ee84e476f503c9a74e7254fc462eb); `figures_check.py` exit 0 (32 figures); `precut.py` exit 0 (49 checks, 0 WARN); `voice-check.py` PASS (881 characters, the prompt 3a's); `leak.py --asof 2026-10-12` REVIEW with no LEAK (lines below); `guard.py validate` clean (186 cards), `heart` WARN (Lori against task129, an older build; this slot's lineage drivers differentiated), `surface` one promoted pair (task102, on the card axes only, answered by the card's differentiation line); the scrub audit clean on target/ and golden/; H4 and H7 (the archive's 17 members equal the pack by content), H11 (one submission.md, one prompt.txt).
+- Stage 4 on this cut (410a3ff6), 2026-10-16: the judge (`determinism_check_report.md`; earlier rounds kept as
+  `determinism_check_report_round1.md`, `_round2.md`, `_round3a.md` on cut fac4903f and `_round3b.md`) returned
+  DETERMINISTIC, APPROVE, no fix, Gate H analytical, every figure reproduced: $1,263,838 rounding to $1,250,000, the
+  missing claims Alderwick 4 / $839,000, the medical group 5 / $16,000, Tolliver Falls and Brennick none, and all twelve
+  FTE cells. Its two thin spots are under `## Accepted risks`. The leak reader on the same cut: Q1 to Q4 clean, Q6
+  analytical, every REVIEW line harmless, funding policy 3.6 echoing the prompt's rounding harmless; its ask readings
+  (the latest loss run as the latest valuation, the claim-key join, OPEN or REOPENED counted per Claim, paid FTE as
+  hours/173.33) each governed by the shipped files, as the judge confirmed. `leak.py --asof 2026-10-12` re-run before
+  the read was appended: REVIEW, no LEAK, the same lines as above. The ship rebuild into scratch matched target/ file
+  for file, the archive's 17 members match target/ by content, and `verify.py` and `figures_check.py` (32 figures)
+  pass. Nothing under target/ moved after the cut.
 - Leak review: REVIEW, no LEAK, one line per REVIEW:
   - Sweep 3, the call's distinctive words in the agreement, the policy and the dictionary: those files name the
     trust and Corvane Health; none states a contribution or any 2027 figure.
@@ -545,7 +559,10 @@ are gone.
    $750,000, on a log-linear curve $1,000,000, on a lognormal mean $1,500,000; only each Claim at its own cost files
    $1,250,000 (R3a on the clean truth, asserted).
 5. One defensible answer: the policy files the WHAT, every fork row is asserted (SF1 to SF30), every converging
-   construction rounds to $1,250,000, and one standard error either way does too.
+   construction rounds to $1,250,000, and one standard error either way does too; the judge on the shipped cut
+   returned DETERMINISTIC, APPROVE with every graded figure reproduced (bins of 15 to 91 days, no class pooling,
+   unmerged claim numbers, every defendant valued and trend from the claim year all round to $1,250,000), its thinnest
+   spot the month-start exposure ($1,387,788, closed by the staffing plan's "held through the month", Accepted risks).
 6. No decoy: no file states a 2027 cost, a factor, a lag table or a curve; no memo, draft or voice argues a figure; the
    two distractors are plain.
 7. Nothing hidden and recovered: no certified figure pins the method; the window is estimated on the record, and the
@@ -553,6 +570,32 @@ are gone.
 8. A new lesson: inside a first claims-made window the claims' cost is neither the average claim's nor the average of
    the claims made within a year, when cost depends on the report lag non-monotonically (`guard.py heart` WARN, Lori
    against an older build only).
+9. The 10/10 rules re-read against the built pack: the decisive step is still analytical (the judge's Gate H and the
+   leak reader's Q6 both read it so from outside the design), and the mess (the defendant-grain register, the July
+   2020 job codes, the carriers' layouts, the re-issued June run, the HCM earning codes) is still only Layer 1.
+
+## Accepted risks
+
+Accepted by the author at the reship of 2026-10-16 and not acted on, because each fix would move the pack after the
+judge and the reader read it:
+
+- Stump strength is moderate, per the rule 3 re-audits: the field's claims-made step factor on loss dollars, applied
+  to the occurrence pure premium and convolved over each entity's days left, is the golden's own construction, so a
+  strong solver who takes the dollar-weighted step factor lands $1,250,000 without seeing the lag-cost link.
+- Both of the top two may land the call. With both on it the pair is about 53 (53.1), or 49 (49.1) if the rubric
+  folds each "whether" into its count; a response on the call banks 45 before any ask, so 40 with both on the call is
+  out of the asks' reach. The asks' second devices hold the pair at 37.1 to 40.2 only while one response misses the
+  call.
+- The strengthenings were tried and failed (`## Tried and rejected`, rounds 3b and 3c): 3b's recent-years trim lands
+  and 3.3 reads as whole-experience pooling; 3c's spread starts leave either the trims or the own-start constructions
+  in the golden's bin. The author chose to ship 3a with the harder asks.
+- The judge's thin spot on the main call: placing each month's FTE at the month's first day gives $1,387,788, which
+  rounds to $1,500,000 (the golden's unrounded $1,263,838 sits about 8.8 per cent below the $1,375,000 rounding
+  boundary); the staffing plan's "budgeted covered FTE for each month, held through the month" closes it
+  and policy 3.2 licenses the daily reading (SF10).
+- The judge's thin spot on Ask B: paid FTE read from the position `fte` field instead of hours/173.33 moves cells
+  (Alderwick July 467.3, Brennick September 106.0); the dictionary's hours "paid on the line" at 173.33 hours to
+  1.0 FTE make hours the literal reading (SF28), and the asks are free of the main-call bar.
 
 ## Retired
 
