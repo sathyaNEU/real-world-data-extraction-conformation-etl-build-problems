@@ -51,6 +51,16 @@ def spaced(nhs):
     return "%s %s %s" % (nhs[:3], nhs[3:6], nhs[6:])
 
 
+def practice_at(p, admitted):
+    """The practice the patient was registered with at admission: the trusts' systems take it from the national
+    register when the patient is admitted, so a practice closed by merger appears only on spells admitted before the
+    merger and the successor's code on every later one."""
+    code = p["practice"]
+    if code in W.MERGED and admitted >= W.MERGED[code][2]:
+        return W.MERGED[code][1]
+    return code
+
+
 def write_spells(R, subs, target):
     hn = RC.hospital_numbers(R["spells"])
     rows = []
@@ -59,7 +69,8 @@ def write_spells(R, subs, target):
         r = W.rng_for("adm", s["spell"])
         method = "Elective" if r.random() < 0.07 else "Emergency"
         rows.append([s["sub_id"], s["sub_d"].isoformat(), s["trust"], s["site"], s["spell"], s["nhs"],
-                     hn[(s["trust"], s["nhs"])], s["age"], p["practice"], p["postcode"].split()[0], method,
+                     hn[(s["trust"], s["nhs"])], s["age"], practice_at(p, s["adm_t"].date()), p["postcode"].split()[0],
+                     method,
                      s["adm_t"].strftime(DT), s["ready"].isoformat(), s.get("dis_sub", s["dis_t"]).strftime(DT),
                      RC.DEST[s["pw_sub"]],
                      s["pw_sub"], RC.P1_CARE[s["p1"]] if s["pw_sub"] == 1 else ""])

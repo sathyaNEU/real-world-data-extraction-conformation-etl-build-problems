@@ -5,31 +5,40 @@
   "domain": "healthcare-delivery-health-economics",
   "objective": "opportunity-sizing-decision",
   "stage": 5,
-  "stage_name": "ship (architecture 2)",
-  "updated": "2026-10-14",
-  "stump": "The default path values a discharge-to-assess package at each hospital by its covered patients' nights after the discharge ready date (every record presents them as the wait for home care, since the brokerage starts care on the day the patient goes home) and fills Ashby Vale Hospital first with 361 packages, then Cleeve Park 285, Wendlebury 350 and Royal Marchford 204, Holmford none, freeing 10,425 occupied bed-days, where the golden gives Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222 and Ashby Vale none, freeing 7,160; most of Ashby Vale's and Cleeve Park's covered patients were also waiting for community equipment from the South depot, a wait that ran alongside the care wait and that a package does not shorten.",
+  "stage_name": "ship (architecture 2, loop 1)",
+  "updated": "2026-10-16",
+  "stump": "The default path values a discharge-to-assess package at each hospital by its covered patients' nights after the discharge ready date (every record presents them as the wait for home care, since the brokerage starts care on the day the patient goes home) and fills Ashby Vale Hospital first with 361 packages, then Cleeve Park 285, Wendlebury 350 and Royal Marchford 204, Holmford none, freeing 10,507 occupied bed-days, where the golden gives Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222 and Ashby Vale none, freeing 6,816; most of Ashby Vale's and Cleeve Park's covered patients were also waiting for community equipment from the South depot, a wait that ran alongside the care wait and that a package does not shorten.",
   "architecture": 2,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
-    "date": "2026-10-12"
+    "date": "2026-10-16"
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), every line harmless (leak_check_report.md, Solver's-eye read)",
-    "reader": "pass 1: nothing for questions 1 to 4, realism tells fixed; pass 2: nothing for questions 1 to 4, two forks closed and asserted, realism tells fixed with figures.json identical"
+    "leak_py": "REVIEW (no LEAK) on the loop-1 cut, every line answered (leak_check_report.md)",
+    "reader": "passes 3 and 4 (loop 1): questions 1 to 4 none, question 6 an analytical choice, the equipment notes' route definition read as a plain description; the flat waits and the missing week fixed by the re-cuts (passes 1 and 2 in leak_check_report.md)"
   },
   "duplicate_check": {
-    "heart": "WARN (overuse.org_family; same_driver_older differentiated), 2026-10-12",
+    "heart": "WARN (overuse.org_family; same_driver_older differentiated), 2026-10-16",
     "surface": "no promoted pair after the card update, 2026-10-12",
     "nearest": "task119 v2 0.08 (differentiated)"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
+    "verdict": "DETERMINISTIC (loop 1, final cut)",
     "disposition": "APPROVE",
-    "report": "task127/determinism_check_report_pass2.md (pass 1 FIX_NOW: task127/determinism_check_report.md)"
+    "report": "task127/determinism_check_report_loop2c.md (loop 1 earlier cuts: determinism_check_report_loop2.md, determinism_check_report_loop2b.md; loop 0: determinism_check_report.md and determinism_check_report_pass2.md)",
+    "gate_g": "binding_constraint or decomposition_attribution by pass (borderline with a counterfactual method choice), analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
-  "returned": [],
-  "resume": "shipped (architecture 2, restored 10-14 after architecture 3's judge SEND_BACK); next event is the author's portal result",
+  "returned": [
+    {
+      "date": "2026-10-16",
+      "portal": "none: hardened at the author's request after the 10/10 audit, before any portal result",
+      "repair": "design",
+      "commit": "the RESHIPPED (task127) commit of 2026-10-16"
+    }
+  ],
+  "resume": "shipped (architecture 2, loop 1 of 2026-10-16); next event is the author's portal result",
   "approved": null,
   "delivered": "2026-10-12",
   "portal": null,

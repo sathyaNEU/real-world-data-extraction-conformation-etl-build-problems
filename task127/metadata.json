@@ -24,7 +24,7 @@
    "xlsx"
   ],
   "largest_file": "acute_ward_stays_2024-12_2026-09.csv",
-  "largest_file_rows": 138450
+  "largest_file_rows": 138829
  },
  "sources": [
   {
@@ -38,8 +38,8 @@
   {
    "path": "acute_discharges_65plus_2024-12_2026-09.csv",
    "format": "csv",
-   "bytes": 11609082,
-   "rows": 65496,
+   "bytes": 11613948,
+   "rows": 65524,
    "source": "Constructed: ICB data warehouse: acute discharges of patients aged 65 and over, Dec 2024 to Sep 2026",
    "date": "2026-10-12",
    "license": "CC BY 4.0 (original work, constructed for this task)"
@@ -47,7 +47,7 @@
   {
    "path": "acute_extract_notes.txt",
    "format": "txt",
-   "bytes": 2591,
+   "bytes": 2688,
    "rows": null,
    "source": "Constructed: Field notes for the acute extracts",
    "date": "2026-10-12",
@@ -56,8 +56,8 @@
   {
    "path": "acute_ward_stays_2024-12_2026-09.csv",
    "format": "csv",
-   "bytes": 7572456,
-   "rows": 138450,
+   "bytes": 7592911,
+   "rows": 138829,
    "source": "Constructed: ICB data warehouse: ward stays of the same spells",
    "date": "2026-10-12",
    "license": "CC BY 4.0 (original work, constructed for this task)"
@@ -65,7 +65,7 @@
   {
    "path": "bed_census_daily_2024-12_2026-09.xlsx",
    "format": "xlsx",
-   "bytes": 86649,
+   "bytes": 86665,
    "rows": null,
    "source": "Constructed: Daily general and acute bed census by site",
    "date": "2026-10-12",
@@ -74,8 +74,8 @@
   {
    "path": "brokerage_referrals_2024-12_2026-09.csv",
    "format": "csv",
-   "bytes": 1706052,
-   "rows": 14020,
+   "bytes": 1709255,
+   "rows": 14030,
    "source": "Constructed: County council brokerage: referrals for home care, Dec 2024 to Sep 2026",
    "date": "2026-10-12",
    "license": "CC BY 4.0 (original work, constructed for this task)"
@@ -101,7 +101,7 @@
   {
    "path": "discharge_delays_weekly_return_2024-12_2026-09.csv",
    "format": "csv",
-   "bytes": 15777,
+   "bytes": 15785,
    "rows": 190,
    "source": "Constructed: National discharge collection as submitted by the two trusts (weekly, by trust)",
    "date": "2026-10-12",
@@ -119,7 +119,7 @@
   {
    "path": "ices_export_notes.txt",
    "format": "txt",
-   "bytes": 1282,
+   "bytes": 1369,
    "rows": null,
    "source": "Constructed: Field notes for the equipment export",
    "date": "2026-10-12",
@@ -128,8 +128,8 @@
   {
    "path": "ices_order_lines_2024-12_2026-09.csv",
    "format": "csv",
-   "bytes": 3752190,
-   "rows": 32943,
+   "bytes": 3769991,
+   "rows": 33099,
    "source": "Constructed: Integrated community equipment service: order lines, Dec 2024 to Sep 2026",
    "date": "2026-10-12",
    "license": "CC BY 4.0 (original work, constructed for this task)"
@@ -155,8 +155,8 @@
   {
    "path": "spot_care_invoice_lines_2025-26.csv",
    "format": "csv",
-   "bytes": 363024,
-   "rows": 3876,
+   "bytes": 366313,
+   "rows": 3910,
    "source": "Constructed: County council finance: spot-care invoice lines, 2025-26",
    "date": "2026-10-12",
    "license": "CC BY 4.0 (original work, constructed for this task)"

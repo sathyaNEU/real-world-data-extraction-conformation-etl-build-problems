@@ -172,8 +172,25 @@ def edges(target, F):
     gaps = 0
     for k, v in ws.items():
         for (a1, b1, w1), (a2, b2, w2) in zip(v, v[1:]):
-            gaps += b1.date() != a2.date() and a2 > b1
-    ok(gaps == 0, "no midnight between two ward stays (%d)" % gaps)
+            m = dt.datetime(b1.year, b1.month, b1.day)
+            if b1 > m:
+                m += dt.timedelta(1)
+            gaps += a2 > b1 and a2 > m
+    ok(gaps == 0, "no midnight, a stay's end on one included, falls between two ward stays (%d)" % gaps)
+    # so a strict point-in-time join (the ward whose stay holds the midnight) gives every Ask A cell
+    strict = {(s, mo): 0 for s in core.SITES for mo in core.ASK_MONTHS}
+    so = AN.ward_sites(target)
+    for r in AN.spells(target):
+        R, D = AN.d(r["discharge_ready_date"]), AN.d(r["discharge_datetime"])
+        stays = ws.get((r["provider_code"], r["spell_number"]), [])
+        n = R
+        while n < D:
+            mid = dt.datetime(n.year, n.month, n.day) + dt.timedelta(1)
+            hold = [w for a, b, w in stays if a <= mid < b]
+            if hold and (so[hold[0]], (n.year, n.month)) in strict:
+                strict[(so[hold[0]], (n.year, n.month))] += 1
+            n += dt.timedelta(1)
+    ok(strict == F["A"], "a strict point-in-time join of nights to wards gives every Ask A bed-day cell")
     # the strict join (orders placed on or after admission, delivered by discharge) gives the golden
     eq = {}
     for r in eq_rows:
@@ -224,7 +241,8 @@ def semantic_forks(target, F):
     act = {r["practice_code"] for r in AN._rows(target, P.FILES["practices"]) if "Marchshire" in r["icb"]
            and r["status"] == "Active"}
     ac = [r for r in cov if r["gp_practice_code"] in act]
-    ok(len(ac) < len(cov) and split(ac) != M["packages"], "SF3 dropping the merged practices' codes gives another call")
+    ok(len(ac) == len(cov) and split(ac) == M["packages"],
+       "SF3 dropping the merged practices' codes gives the same call (no covered spell carries a retired code)")
     outs = {r["postcode"].split()[0] for r in AN._rows(target, P.FILES["postcodes"])}
     res = [r for r in sp if base(r) and r["p1_care_package"] == "New package" and r["postcode_district"] in outs
            and inwin(r)]
@@ -289,6 +307,12 @@ def semantic_forks(target, F):
     ok(len(edge) > 0, "SF13 patients sit on the window's edges (the window is inclusive by its wording)")
     # SF14 medically optimised = the discharge ready date column (one date per spell, never blank)
     ok(all(r["discharge_ready_date"] for r in sp), "SF14 every spell carries a discharge ready date")
+    # SF15 a package is "up to four weeks of home care ... available from the day a patient is medically optimised":
+    # every covered patient's equipment arrived within four weeks of the ready date, so a package running from the
+    # ready date is still running when the patient can leave, on any reading of the four weeks
+    lags = [(min(eq[(r["nhs_number"], AN.d(r["discharge_ready_date"]))]) - AN.d(r["discharge_ready_date"])).days
+            for r in cov if (r["nhs_number"], AN.d(r["discharge_ready_date"])) in eq]
+    ok(max(lags) < 28, "SF15 no covered patient's equipment came four weeks or more after the ready date (%d)" % max(lags))
     return True
 
 
@@ -516,8 +540,206 @@ def gates(target, meta):
     ok(not any("distractor" in f for f in files), "no file named for its role")
 
 
+def _headers(target):
+    from openpyxl import load_workbook
+    out = {}
+    for f in sorted(os.listdir(target)):
+        p = os.path.join(target, f)
+        if f.endswith(".csv"):
+            with open(p, encoding="utf-8") as fh:
+                out[f] = next(csv.reader(fh))
+        elif f.endswith(".xlsx"):
+            wb = load_workbook(p, read_only=True)
+            out[f] = [str(c) for ws in wb.worksheets for c in next(ws.iter_rows(max_row=1, values_only=True)) if c]
+    return out
+
+
+def _repeated_week(series):
+    """A run of seven days repeated exactly elsewhere in a daily series (the copied-week plant)."""
+    seen = {}
+    for i in range(len(series) - 6):
+        w = tuple(series[i:i + 7])
+        if len(set(w)) > 1 and w in seen and i - seen[w] >= 7:
+            return True
+        seen.setdefault(w, i)
+    return False
+
+
+def three_rules(target, F, R):
+    """The client's three rules, executed (dataset-generation 7.1): R1 the field's raw material ships and the decisive
+    computation reads it; R2 every Layer 1 item on the main path is neutral, and the ask-side mess sits off it; R3a the
+    easy route on the generator's clean truth files the named wrong answer; R3b the decisive step alone files the
+    golden and each single lower correction stays wrong; R3c nothing is planted. With the lens-swap test and the
+    equipment notes' one sentence."""
+    M = F["M"]
+    cov = AN.covered(target)
+    eq = AN.discharge_orders(target)
+    heads = _headers(target)
+    sp_cols, eq_cols = set(heads[P.FILES["spells"]]), set(heads[P.FILES["ices"]])
+    ok({"nhs_number", "discharge_ready_date", "discharge_datetime", "discharge_pathway", "p1_care_package"} <= sp_cols
+       and {"nhs_number", "route", "required_by", "delivered_date"} <= eq_cols,
+       "R1 the field's raw material ships: each spell's ready date and discharge time, each equipment line's delivery")
+    banned = re.compile(r"sav|free|value|benefit|counterfact|reason|cause|overlap|wait|depend", re.I)
+    ok(not any(banned.search(c) for cols in heads.values() for c in cols),
+       "R1 no shipped column holds the deciding quantity (no saving, value, cause, wait or dependency column)")
+    moved = 0
+    for r in cov:
+        Rd, D = AN.d(r["discharge_ready_date"]), AN.d(r["discharge_datetime"])
+        E = eq.get((r["nhs_number"], Rd))
+        E = min(E) if E else None
+        if max(0, (D - max(Rd, E or Rd)).days) != (D - Rd).days:
+            moved += 1
+            ok(E is not None and E > Rd, "R1 a patient the decisive step moves has a delivery after the ready date (%s)"
+               % r["spell_number"])
+    ok(moved >= 700, "R1 the decisive computation reads the equipment service's rows: %d covered patients' nights come "
+                     "from their delivery dates" % moved)
+    # the lens-swap test: the default and the golden are not one quantity under two lenses; the golden needs a second
+    # system's dates, and without them every construction on the warehouse alone files another split
+    tmp = tempfile.mkdtemp()
+    t2 = os.path.join(tmp, "t")
+    shutil.copytree(target, t2)
+    os.remove(os.path.join(t2, P.FILES["ices"]))
+    open(os.path.join(t2, P.FILES["ices"]), "w").write(open(os.path.join(target, P.FILES["ices"])).readline())
+    M2 = AN.main_call(t2)
+    shutil.rmtree(tmp)
+    ok(M2["packages"] == M["alloc"]["R1"] and M2["packages"] != M["packages"],
+       "lens swap: with the equipment lines removed the same population, window and estimand file the default split")
+    ok(moved < len(cov), "lens swap: the golden and the default agree on every covered patient whose equipment did not "
+                         "arrive after the ready date (%d of %d moved)" % (moved, len(cov)))
+    # R2: the main path's Layer 1 items
+    raw = AN.spells(target, dedup=False)
+    first = {}
+    for r in raw:
+        k = (r["provider_code"], r["spell_number"])
+        if k not in first or int(r["submission_id"]) < int(first[k]["submission_id"]):
+            first[k] = r
+    ck = {(r["provider_code"], r["spell_number"]) for r in cov}
+    ok({k for k, r in first.items() if r["discharge_pathway"] == "1"} >= ck
+       and sum(1 for r in raw if (r["provider_code"], r["spell_number"]) in ck) == len(ck),
+       "R2 mess neutral: resubmitted spells (kept beside the rows they correct) are none of the covered spells, so the "
+       "first, the latest or every submission gives the same covered patients")
+    plain_rows = [r for r in AN._rows(target, P.FILES["ices"]) if r["route"] == "Hospital discharge"]
+    exact = {r["nhs_number"] for r in plain_rows}
+    ok(not any(r["nhs_number"] in exact for r in cov) and all(" " in x for x in exact),
+       "R2 mess neutral: the equipment export writes every NHS number spaced, so an unnormalised join matches nothing "
+       "(a loud failure, never a silent partial match)")
+    in_stay = collections.defaultdict(list)
+    for r in plain_rows:
+        if r["delivered_date"]:
+            in_stay[r["nhs_number"].replace(" ", "")].append(AN.d(r["delivered_date"]))
+    by_stay = {r["spell_number"] for r in cov if any(AN.t(r["admission_datetime"]).date() <= x <= AN.d(
+        r["discharge_datetime"]) for x in in_stay[r["nhs_number"]])}
+    by_key = {r["spell_number"] for r in cov if (r["nhs_number"], AN.d(r["discharge_ready_date"])) in eq}
+    ok(by_stay == by_key and len(by_key) == F["X"]["with_equipment"],
+       "R2 mess neutral: once the spaces go, a join on the NHS number and the stay's dates and a join on the number and "
+       "the required-by date find the same %d covered patients" % len(by_key))
+    merged = {r["practice_code"]: (r["successor_code"], AN.d(r["status_date"])) for r in
+              AN._rows(target, P.FILES["practices"]) if r["status"].startswith("Closed")}
+    on_spells = [r for r in raw if r["gp_practice_code"] in merged]
+    ok(on_spells and all(AN.t(r["admission_datetime"]).date() < merged[r["gp_practice_code"]][1] for r in on_spells)
+       and not any(r["gp_practice_code"] in merged for r in cov),
+       "R2 mess neutral: practices closed by merger sit only on spells admitted before the merger (%d), none covered, "
+       "so dropping or mapping them leaves the call" % len(on_spells))
+    tmp = tempfile.mkdtemp()
+    t2 = os.path.join(tmp, "t")
+    shutil.copytree(target, t2)
+    for k in ("wards", "wardref", "brokerage", "spot", "postcodes", "council_notes", "weekly", "census", "reablement"):
+        os.remove(os.path.join(t2, P.FILES[k]))
+    M3 = AN.main_call(t2)
+    shutil.rmtree(tmp)
+    ok(M3["packages"] == M["packages"] and M3["total"] == M["total"],
+       "R2 mess neutral: the ask-side mess (ward times in two styles, moves within a trust, finance's references and "
+       "dates, typed postcodes, SV7 across the county line) sits in files the main call never reads")
+    # R3a and R3b on the generator's clean truth (the world before any record is written)
+    cl = [sp for sp in R["spells"] if sp["pathway"] == 1 and sp["p1"] == "New" and core.in_winter(sp["ready"])
+          and sp["home"] != "Severnside"]
+    caps = collections.Counter(sp["site"] for sp in cl)
+    ok(dict(caps) == M["caps"], "R3 the clean truth's covered patients are the pack's (%s)" % dict(caps))
+
+    def per_site(f, pop=cl):
+        s, n = collections.Counter(), collections.Counter()
+        for sp in pop:
+            n[sp["site"]] += 1
+            s[sp["site"]] += f(sp)
+        return {x: Fraction(s[x], n[x]) for x in core.SITES}
+
+    stay = lambda sp: (sp["dis_t"].date() - sp["ready"]).days
+    lag = lambda sp: max(0, (sp["equip"] - sp["ready"]).days) if sp["equip"] else 0
+    dflt = per_site(stay)
+    o, a = AN.allocate(dflt, dict(caps))
+    r1bed = whole(sum(M["rung_bed"]["R1"].values()))
+    ok(a == {"RSM01": 361, "RSM02": 285, "RMC02": 350, "RMC01": 204, "RSM03": 0} == M["alloc"]["R1"]
+       and whole(sum(a[s] * dflt[s] for s in core.SITES)) == r1bed,
+       "R3a the analyst test on the clean truth: the nights after the ready date, every filed rule applied, fill Ashby "
+       "Vale 361, Cleeve Park 285, Wendlebury 350, Royal Marchford 204, Holmford none, %s bed-days (%s)" % (
+           "{:,}".format(r1bed), a))
+    gold = per_site(lambda sp: max(0, stay(sp) - lag(sp)))
+    o, a = AN.allocate(gold, dict(caps))
+    ok(a == GOLD and whole(sum(a[s] * gold[s] for s in core.SITES)) == whole(M["total"]),
+       "R3b the decisive step alone on the clean truth (the nights from the later of the ready date and the delivery) "
+       "files the golden split and %s bed-days" % "{:,}".format(whole(M["total"])))
+    rs = [sp for sp in R["spells"] if sp["pathway"] == 1 and sp["p1"] == "Restart" and core.in_winter(sp["ready"])
+          and sp["home"] != "Severnside"]
+    rmean = per_site(stay, rs)
+    eqp = [sp for sp in cl if lag(sp)]
+    emean = per_site(lag, eqp)
+    singles = {
+        "equipment patients counted at nought": per_site(lambda sp: 0 if sp["equip"] else stay(sp)),
+        "the average over patients without equipment": per_site(stay, [sp for sp in cl if not sp["equip"]]),
+        "the restart patients' nights subtracted": {s: dflt[s] - rmean[s] for s in core.SITES},
+        "the equipment patients' average wait subtracted": {s: dflt[s] - emean[s] for s in core.SITES},
+    }
+    for lab, v in singles.items():
+        o, a = AN.allocate(v, dict(caps))
+        bed = whole(sum(a[s] * v[s] for s in core.SITES))
+        ok(a != GOLD or bed != whole(M["total"]), "R3b one correction alone stays wrong: %s files %s, %d bed-days"
+           % (lab, a, bed))
+    ok(all(stay(sp) == lag(sp) for sp in rs if sp["equip"]) and sum(1 for sp in rs if lag(sp)) >= 50,
+       "R3b the comparison group: every restart patient (care already in place) waiting for equipment left on its "
+       "delivery day (%d)" % sum(1 for sp in rs if lag(sp)))
+    # R3c: nothing planted
+    days = collections.defaultdict(collections.Counter)
+    for r in AN.spells(target):
+        days[r["site_code"]][AN.d(r["discharge_datetime"])] += 1
+    span = [core.REC0 + dt.timedelta(i) for i in range((core.REC1 - core.REC0).days + 1)]
+    ok(not any(_repeated_week([days[s][x] for x in span]) for s in core.SITES),
+       "R3c no plant: no site's daily discharges repeat a week of another stretch")
+    dl = collections.defaultdict(collections.Counter)
+    for r in AN._rows(target, P.FILES["ices"]):
+        if r["delivered_date"]:
+            dl[r["depot"]][AN.d(r["delivered_date"])] += 1
+    ok(not any(_repeated_week([dl[k][x] for x in span]) for k in dl),
+       "R3c no plant: neither depot's daily deliveries repeat a week of another stretch")
+    ok(not any(re.search(r"memo|draft|brief|minutes|summary|review", f, re.I) for f in os.listdir(target)),
+       "R3c no plant: no memo, draft, briefing or earlier review ships")
+    import docs as D
+    g = D.guidance_text()
+    ok(not re.search(r"\d[\d.,]*\s*(nights|bed-days)", g) and not any(re.search(r"%s\D{0,12}\d" % re.escape(
+        core.HOSPITALS[s]["short"]), g) for s in core.SITES),
+       "R3c no plant: the allocation note carries no hospital figure, value or ranking")
+    wk = collections.defaultdict(lambda: [0] * 8)
+    for r in AN.spells(target):
+        dd = AN.d(r["discharge_datetime"])
+        we = dd + dt.timedelta((6 - dd.weekday()) % 7)
+        o = wk[(r["provider_code"], we)]
+        pw = int(r["discharge_pathway"])
+        o[2 * pw] += 1
+        o[2 * pw + 1] += (dd - AN.d(r["discharge_ready_date"])).days
+    rows = AN._rows(target, P.FILES["weekly"])
+    ok(all([int(r[c]) for c in heads[P.FILES["weekly"]][3:]] == wk[(r["provider_code"], AN.d(r["week_ending"]))]
+           for r in rows), "R3c no plant: the national weekly return reproduces from the warehouse by trust and week "
+                           "(nothing in it is wrong)")
+    texts = {f: open(os.path.join(target, f), encoding="utf-8").read() for f in os.listdir(target) if f.endswith(".txt")}
+    pin = "equipment the patient needs at home from the day they go home"
+    ok(sum(" ".join(t.split()).count(pin) for t in texts.values()) == 1 and pin in " ".join(
+        texts[P.FILES["ices_notes"]].split()) and pin not in g,
+       "the equipment notes say once what hospital-discharge equipment is for; no other document repeats it")
+    return moved
+
+
 def run(F, target, meta, R, info, golden_dir):
     N[0] = 0
+    three_rules(target, F, R)
     main_call(F)
     ladder(F)
     control_reflex(target, F)

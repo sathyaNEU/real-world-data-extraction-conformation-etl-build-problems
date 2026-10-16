@@ -188,10 +188,12 @@ def _midnights(a, b):
 
 
 def _arrive(left, gap_min):
-    """When the patient reaches the next ward: a gap of gap_min minutes, closed up when it would run past
-    midnight."""
+    """When the patient reaches the next ward: a gap of gap_min minutes, closed up when it would hold a midnight
+    (running past one, or starting on one)."""
     t = left + dt.timedelta(minutes=gap_min)
-    return t if t.date() == left.date() else left
+    if t.date() != left.date() or (left.hour == 0 and left.minute == 0):
+        return left
+    return t
 
 
 def ward_stays(spells):
@@ -202,7 +204,7 @@ def ward_stays(spells):
     load = {}                                   # (ward, night) -> patients aged 65 and over in a bed
     caps = {}
 
-    off = {w: -0.07 + 0.12 * W.rng_for("woff", w).random() for w in beds}
+    off = {w: -0.10 + 0.17 * W.rng_for("woff", w).random() for w in beds}
 
     def cap(ward, n):
         k = (ward, n.toordinal() // 7)
@@ -235,9 +237,13 @@ def ward_stays(spells):
         t = sp["adm_t"]
         amu_h = int(r.integers(5, 40))
         seq = []
-        if (end0 - t).total_seconds() / 3600 > amu_h + 6:
-            seq.append((wards[0][0], t, t + dt.timedelta(hours=amu_h)))
-            t = _arrive(t + dt.timedelta(hours=amu_h), int(r.integers(10, 90)))
+        gap = int(r.integers(10, 90))
+        amu_end = t + dt.timedelta(hours=amu_h)
+        # a full assessment unit sends the patient straight to a base ward
+        amu_free = all(load.get((wards[0][0], n), 0) < beds[wards[0][0]] for n in _midnights(t, amu_end))
+        if (end0 - t).total_seconds() / 3600 > amu_h + 6 and amu_free:
+            seq.append((wards[0][0], t, amu_end))
+            t = _arrive(amu_end, gap)
         hours_left = (end0 - t).total_seconds() / 3600
         cands = [w[0] for w in wards[1:]]
         if hours_left >= 96 and r.random() < 0.25:
@@ -319,6 +325,10 @@ def equipment(R):
             u = r.random()
             lag = int(r.integers(1, 6)) + (int(r.integers(0, 5)) if depot == "South" and d.month in (12, 1, 2) else 0)
             status = "Delivered" if u < 0.80 else ("Cancelled" if u < 0.88 else "Collected")
+            if status != "Cancelled":
+                extra = depot == "South" and d.month in (12, 1, 2)
+                lag = W.rebook(d, lag, lambda g: int(g.integers(1, 6)) + (int(g.integers(0, 5)) if extra else 0),
+                               W.DEPOT_WEEKEND, W.rng_for("ceqweek", d.isoformat(), k))
             dl = None if status == "Cancelled" else d + dt.timedelta(lag)
             col = dl + dt.timedelta(int(r.integers(20, 200))) if status == "Collected" else None
             if col is not None and col > core.REC1:
@@ -377,8 +387,14 @@ def referrals(R):
             ref_t = dtime(d, 8, 18, r) if d.weekday() < 5 else dtime(d, 9, 13, r)
             wf = W.winter_factor(d)
             u = r.random()
-            wait = max(1, int(round((2 + r.random() * 12) * (0.6 + 0.4 * wf))))
-            spot_wait = max(2, int(round((2 + r.random() * 10) * (0.75 + 0.25 * wf))))
+            wait = max(1, int(round(W.skewed(r.random(), 6.8, 0.55) * (0.6 + 0.4 * wf))))
+            spot_wait = max(2, int(round(W.skewed(r.random(), 6.0, 0.45) * (0.75 + 0.25 * wf))))
+            rw = W.rng_for("cweek", d.isoformat(), k)
+            fw, fs = 0.6 + 0.4 * wf, 0.75 + 0.25 * wf
+            wait = W.rebook(d, wait, lambda g: max(1, int(round(W.skewed(g.random(), 6.8, 0.55) * fw))),
+                            W.CARE_WEEKEND, rw)
+            spot_wait = W.rebook(d, spot_wait, lambda g: max(2, int(round(W.skewed(g.random(), 6.0, 0.45) * fs))),
+                                 W.CARE_WEEKEND, rw)
             style = 0 if r.random() < 0.94 else 1 + int(r.integers(3))
             shown = r.random() < 0.7
             src = SOURCES[int(r.integers(len(SOURCES)))]

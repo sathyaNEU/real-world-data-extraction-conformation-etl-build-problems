@@ -1,5 +1,5 @@
 {
- "call": "Give Royal Marchford Hospital 508 packages, Wendlebury Hospital 350, Holmford Infirmary 120, Cleeve Park Hospital 222 and Ashby Vale Hospital none; they free 7,160 occupied bed-days.",
+ "call": "Give Royal Marchford Hospital 508 packages, Wendlebury Hospital 350, Holmford Infirmary 120, Cleeve Park Hospital 222 and Ashby Vale Hospital none; they free 6,816 occupied bed-days.",
  "packages": {
   "Royal Marchford Hospital": "508",
   "Wendlebury Hospital": "350",
@@ -8,13 +8,13 @@
   "Ashby Vale Hospital": "0"
  },
  "bed_days": {
-  "Royal Marchford Hospital": "3,377",
-  "Wendlebury Hospital": "2,184",
-  "Holmford Infirmary": "631",
-  "Cleeve Park Hospital": "968",
+  "Royal Marchford Hospital": "3,247",
+  "Wendlebury Hospital": "2,037",
+  "Holmford Infirmary": "642",
+  "Cleeve Park Hospital": "890",
   "Ashby Vale Hospital": "0"
  },
- "bed_days_total": "7,160",
+ "bed_days_total": "6,816",
  "packages_total": "1,200",
  "no_packages": [
   "Ashby Vale Hospital"
@@ -28,25 +28,25 @@
  },
  "covered_total": "1,624",
  "nights_per_package": {
-  "Royal Marchford Hospital": "6.65",
-  "Wendlebury Hospital": "6.24",
-  "Holmford Infirmary": "5.26",
-  "Cleeve Park Hospital": "4.36",
-  "Ashby Vale Hospital": "3.60"
+  "Royal Marchford Hospital": "6.39",
+  "Wendlebury Hospital": "5.82",
+  "Holmford Infirmary": "5.35",
+  "Cleeve Park Hospital": "4.01",
+  "Ashby Vale Hospital": "3.14"
  },
  "nights_saved_total": {
-  "Royal Marchford Hospital": "3,377",
-  "Wendlebury Hospital": "2,184",
-  "Holmford Infirmary": "631",
-  "Cleeve Park Hospital": "1,243",
-  "Ashby Vale Hospital": "1,299"
+  "Royal Marchford Hospital": "3,247",
+  "Wendlebury Hospital": "2,037",
+  "Holmford Infirmary": "642",
+  "Cleeve Park Hospital": "1,142",
+  "Ashby Vale Hospital": "1,134"
  },
  "rung_R1_nights": {
-  "Royal Marchford Hospital": "7.01",
-  "Wendlebury Hospital": "7.20",
-  "Holmford Infirmary": "6.18",
-  "Cleeve Park Hospital": "9.67",
-  "Ashby Vale Hospital": "10.30"
+  "Royal Marchford Hospital": "6.78",
+  "Wendlebury Hospital": "6.89",
+  "Holmford Infirmary": "6.43",
+  "Cleeve Park Hospital": "9.86",
+  "Ashby Vale Hospital": "10.81"
  },
  "rung_R1_packages": {
   "Royal Marchford Hospital": "204",
@@ -55,87 +55,87 @@
   "Cleeve Park Hospital": "285",
   "Ashby Vale Hospital": "361"
  },
- "rung_R1_bed_days": "10,425",
+ "rung_R1_bed_days": "10,507",
  "ask_a": {
-  "Royal Marchford Hospital": {
-   "December 2025": "1,947",
-   "January 2026": "1,994",
-   "February 2026": "1,773"
-  },
   "Ashby Vale Hospital": {
-   "December 2025": "1,891",
-   "January 2026": "1,873",
-   "February 2026": "1,600"
+   "December 2025": "2,057",
+   "January 2026": "1,989",
+   "February 2026": "1,678"
+  },
+  "Royal Marchford Hospital": {
+   "December 2025": "2,010",
+   "January 2026": "1,966",
+   "February 2026": "1,729"
   },
   "Cleeve Park Hospital": {
-   "December 2025": "1,653",
-   "January 2026": "1,631",
-   "February 2026": "1,232"
+   "December 2025": "1,787",
+   "January 2026": "1,687",
+   "February 2026": "1,263"
   },
   "Wendlebury Hospital": {
-   "December 2025": "1,428",
-   "January 2026": "1,673",
-   "February 2026": "1,360"
+   "December 2025": "1,439",
+   "January 2026": "1,627",
+   "February 2026": "1,386"
   },
   "Holmford Infirmary": {
-   "December 2025": "1,121",
-   "January 2026": "1,296",
-   "February 2026": "1,069"
+   "December 2025": "1,109",
+   "January 2026": "1,381",
+   "February 2026": "1,187"
   }
  },
  "ask_a_patients": {
-  "Royal Marchford Hospital": {
-   "December 2025": "378",
-   "January 2026": "402",
-   "February 2026": "357"
-  },
   "Ashby Vale Hospital": {
-   "December 2025": "290",
-   "January 2026": "290",
-   "February 2026": "253"
+   "December 2025": "316",
+   "January 2026": "305",
+   "February 2026": "274"
+  },
+  "Royal Marchford Hospital": {
+   "December 2025": "412",
+   "January 2026": "432",
+   "February 2026": "397"
   },
   "Cleeve Park Hospital": {
-   "December 2025": "275",
-   "January 2026": "263",
-   "February 2026": "204"
+   "December 2025": "293",
+   "January 2026": "277",
+   "February 2026": "220"
   },
   "Wendlebury Hospital": {
-   "December 2025": "296",
-   "January 2026": "334",
-   "February 2026": "260"
+   "December 2025": "317",
+   "January 2026": "347",
+   "February 2026": "280"
   },
   "Holmford Infirmary": {
-   "December 2025": "222",
-   "January 2026": "247",
-   "February 2026": "231"
+   "December 2025": "230",
+   "January 2026": "274",
+   "February 2026": "254"
   }
  },
- "ask_a_total": "23,541",
+ "ask_a_total": "24,295",
  "ask_b": {
   "Marchford": {
-   "December 2025": "169",
-   "January 2026": "189",
-   "February 2026": "146"
+   "December 2025": "178",
+   "January 2026": "228",
+   "February 2026": "166"
   },
   "Ashby": {
-   "December 2025": "34",
-   "January 2026": "35",
-   "February 2026": "39"
+   "December 2025": "57",
+   "January 2026": "55",
+   "February 2026": "53"
   },
   "Teme Valley": {
-   "December 2025": "92",
-   "January 2026": "96",
-   "February 2026": "77"
+   "December 2025": "106",
+   "January 2026": "103",
+   "February 2026": "95"
   }
  },
- "covered_with_equipment": "789",
+ "covered_with_equipment": "794",
  "left_on_delivery_day": {
-  "Royal Marchford Hospital": "0",
-  "Wendlebury Hospital": "0",
+  "Royal Marchford Hospital": "10",
+  "Wendlebury Hospital": "18",
   "Holmford Infirmary": "12",
-  "Cleeve Park Hospital": "101",
-  "Ashby Vale Hospital": "129"
+  "Cleeve Park Hospital": "126",
+  "Ashby Vale Hospital": "195"
  },
- "spot_closed_winter": "242",
- "checks": 27095
+ "spot_closed_winter": "239",
+ "checks": 28126
 }

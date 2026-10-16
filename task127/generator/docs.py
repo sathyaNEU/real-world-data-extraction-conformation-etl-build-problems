@@ -135,7 +135,8 @@ p1_care_package        pathway 1 only: New package, or Restart of existing packa
 
 Nights after the discharge ready date: a patient still in hospital at midnight after their discharge ready date
 has spent a night in hospital after being ready to leave. The national discharge collection counts these nights
-from the discharge ready date to the day of discharge and dates each night to the evening it begins.
+from the discharge ready date to the day of discharge and dates each night to the evening it begins. A patient
+counts as delayed in a month when at least one of these nights is dated in that month.
 
 acute_ward_stays_2024-12_2026-09.csv
 One row per ward stay in the spells above: the ward the patient was on from ward_start to ward_end. A spell's ward
@@ -166,8 +167,9 @@ line_no             line within the order
 nhs_number          as recorded by the prescriber
 delivery_postcode   address the items go to
 item                equipment item
-route               who prescribed the order: Hospital discharge (a hospital ward or discharge team), Community
-                    nursing, Occupational therapy, Reablement, Physiotherapy
+route               who prescribed the order: Hospital discharge (a hospital ward or discharge team, for
+                    equipment the patient needs at home from the day they go home), Community nursing,
+                    Occupational therapy, Reablement, Physiotherapy
 ordered_date        date the order was placed
 required_by         date the prescriber asked for delivery by
 delivered_date      date the item was delivered (blank if it was not)

@@ -4,12 +4,21 @@ equipment service delivered; a discharge happens on the day the last of medical 
 is in place."""
 import datetime as dt
 import math
+import statistics
 
 import numpy as np
 
 import core
 
 SEED = 127
+_ND = statistics.NormalDist()
+
+
+def skewed(u, median, sigma):
+    """A wait drawn from a right-skewed (lognormal) distribution by its quantile at the uniform draw u, so most waits
+    sit near the median and a few run to several times it."""
+    u = min(max(u, 1e-6), 1 - 1e-6)
+    return median * math.exp(sigma * _ND.inv_cdf(u))
 
 
 def rng_for(*keys):
@@ -35,16 +44,46 @@ HOME = {"RMC01": {"Marchford": 0.90, "Ashby": 0.06, "Teme Valley": 0.03, "Severn
         "RSM03": {"Marchford": 0.01, "Ashby": 0.02, "Teme Valley": 0.36, "Severnside": 0.61}}
 # home care already in place to start on the day of optimisation (a restarted package), by district
 IN_PLACE = {"Marchford": 0.47, "Ashby": 0.37, "Teme Valley": 0.41, "Severnside": 0.40}
-# days from optimisation to home care starting, for those who wait, by district (winter, then the rest of the year)
-CARE_WAIT = {"Marchford": (4, 10), "Ashby": (6, 14), "Teme Valley": (4, 11), "Severnside": (3, 10)}
+# days from optimisation to home care starting, for those who wait, by district: the winter median and the spread of
+# a right-skewed wait
+CARE_WAIT = {"Marchford": (6.1, 0.45), "Ashby": (8.4, 0.42), "Teme Valley": (6.4, 0.45), "Severnside": (5.8, 0.5)}
 # the north Teme Valley zone round Holmford has the council's newest block contract, so its waits are shorter
-CARE_WAIT_SITE = {("RSM03", "Teme Valley"): (3, 8)}
+CARE_WAIT_SITE = {("RSM03", "Teme Valley"): (4.9, 0.42)}
 # share of pathway-1 patients needing community equipment delivered before they can go home, by hospital
-EQUIP_NEED = {"RMC01": 0.21, "RMC02": 0.62, "RSM01": 0.78, "RSM02": 0.58, "RSM03": 0.12}
-# days from optimisation to the equipment's delivery, by depot (winter)
-EQUIP_LAG = {"North": (0, 3), "South": (5, 13)}
+EQUIP_NEED = {"RMC01": 0.21, "RMC02": 0.65, "RSM01": 0.78, "RSM02": 0.58, "RSM03": 0.12}
+# days from optimisation to the equipment's delivery, by depot: the winter median, the spread and the shortest
+EQUIP_LAG = {"North": (1.3, 0.6, 0), "South": (9.6, 0.3, 3)}
 RESTART_EQUIP = 0.15
 WARM_UP = 75
+# the week: the equipment depots run a small Saturday round and no Sunday deliveries; framework providers start
+# fewer new packages at the weekend; care homes and rehabilitation units take fewer admissions then; wards send
+# fewer patients home. Each pair is the chance that something that would fall on a Saturday, or a Sunday, is
+# booked for another day instead.
+DEPOT_WEEKEND = (0.75, 1.0)
+CARE_WEEKEND = (0.55, 0.8)
+BED_WEEKEND = (0.45, 0.6)
+HOME_WEEKEND = (0.2, 0.3)
+
+
+def rebook(day0, wait, redraw, chance, rng, tries=8):
+    """The wait from day0, drawn again (from the service's own spread of waits) while it would end on a weekend day
+    the service turns down; a service that is turned down every time keeps its last draw."""
+    for _ in range(tries):
+        wd = (day0 + dt.timedelta(wait)).weekday()
+        if wd < 5 or rng.random() >= chance[wd - 5]:
+            return wait
+        wait = redraw(rng)
+    return wait
+
+
+def weekend_hold(day, chance, rng):
+    """Days a patient going home waits when the ward does not send them on the weekend day."""
+    wd = day.weekday()
+    if wd == 5 and rng.random() < chance[0]:
+        return 2 if rng.random() < 0.65 else 3
+    if wd == 6 and rng.random() < chance[1]:
+        return 1 if rng.random() < 0.65 else 2
+    return 0
 
 
 def winter_factor(d):
@@ -77,19 +116,33 @@ def stays():
                     if rr.random() < IN_PLACE[s["home"]] + (1 - wf) * 0.25:
                         s["care_wait"] = -int(rr.integers(0, 6))          # in place: started on or before the day
                     else:
-                        lo, hi = CARE_WAIT_SITE.get((site, s["home"]), CARE_WAIT[s["home"]])
-                        s["care_wait"] = max(1, int(round((lo + rr.random() * (hi - lo)) * (0.55 + 0.45 * wf))))
+                        med, sg = CARE_WAIT_SITE.get((site, s["home"]), CARE_WAIT[s["home"]])
+                        s["care_wait"] = max(1, int(round(skewed(rr.random(), med, sg) * (0.55 + 0.45 * wf))))
                     # people whose care package restarts mostly have their equipment at home already
                     if rr.random() < EQUIP_NEED[site] * (RESTART_EQUIP if s["care_wait"] <= 0 else 1.0):
-                        lo, hi = EQUIP_LAG[core.HOSPITALS[site]["depot"]]
-                        s["equip_lag"] = int(round((lo + rr.random() * (hi - lo)) * (0.6 + 0.4 * wf)))
+                        med, sg, lo = EQUIP_LAG[core.HOSPITALS[site]["depot"]]
+                        s["equip_lag"] = max(lo, int(round(skewed(rr.random(), med, sg) * (0.6 + 0.4 * wf))))
                     else:
                         s["equip_lag"] = None
+                    rw = rng_for("week", *s["key"])
+                    if s["care_wait"] > 0:
+                        med, sg = CARE_WAIT_SITE.get((site, s["home"]), CARE_WAIT[s["home"]])
+                        f = 0.55 + 0.45 * wf
+                        s["care_wait"] = rebook(d, s["care_wait"], lambda g: max(1, int(round(skewed(g.random(), med, sg)
+                                                                                           * f))), CARE_WEEKEND, rw)
+                    if s["equip_lag"] is not None:
+                        med, sg, lo = EQUIP_LAG[core.HOSPITALS[site]["depot"]]
+                        f = 0.6 + 0.4 * wf
+                        s["equip_lag"] = rebook(d, s["equip_lag"], lambda g: max(lo, int(round(skewed(g.random(), med, sg)
+                                                                                             * f))), DEPOT_WEEKEND, rw)
                     s["delay"] = max(0, s["care_wait"], s["equip_lag"] or 0)
                 elif pw in (2, 3):
-                    s["delay"] = int(rr.gamma(1.4, 4.0 if pw == 2 else 6.5))
+                    sc = 4.0 if pw == 2 else 6.5
+                    s["delay"] = rebook(d, int(rr.gamma(1.4, sc)), lambda g: int(g.gamma(1.4, sc)), BED_WEEKEND,
+                                        rng_for("week", *s["key"]))
                 else:
                     s["delay"] = 0 if rr.random() < 0.9 else 1
+                    s["delay"] += weekend_hold(d + dt.timedelta(s["delay"]), HOME_WEEKEND, rng_for("week", *s["key"]))
                 out.append(s)
         d += dt.timedelta(1)
     return out
