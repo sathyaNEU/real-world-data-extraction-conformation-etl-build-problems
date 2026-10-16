@@ -1,0 +1,86 @@
+{
+  "task": "task234",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "seed DQ07 (which laboratory feeds get a volume-drop alert against the seasonal baseline): the world, the decision and the quantity only; the pitfall re-found from the data under the 10/10 rules",
+  "domain": "epidemiology-public-health",
+  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+  "niche": "a county health department's respiratory laboratory-feed monitor deciding, for each laboratory's influenza, RSV and SARS-CoV-2 result stream, whether the laboratory liaison escalates it for MMWR week 3 of 2027, judged on the stream's completeness against the tests the laboratory's weekly aggregate report will count, in a season when RSV peaked early among children and influenza is still climbing among adults",
+  "objective": "data-quality-monitoring",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G12",
+    "G6"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "parallel_run_overlap",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "surveillance data manager in a county health department's epidemiology unit, who sets the week's laboratory-feed escalations for the laboratory liaison",
+  "role_family": "other",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "elr_respiratory_results_2026-27.csv",
+    "rows": 0,
+    "entity": "one electronic laboratory result message for one pathogen target on one specimen",
+    "grain": "result message",
+    "source": "synthetic"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "season_or_peak",
+  "org_family": "local_government",
+  "world": {
+    "geography": "a fictional county in the United States (its health department, laboratories, hospitals and people are fictional; personas on the en_US index)",
+    "currency": "USD",
+    "org_type": "county health department, epidemiology unit",
+    "invented_names": [],
+    "people": [
+      "Michaela Mclean",
+      "Travis Humphrey",
+      "Kaitlyn Sanchez"
+    ]
+  },
+  "deliverables": [
+    "respiratory_feed_escalations_2027-W03.xlsx",
+    "respiratory_feed_completeness_2027-W03.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is what each source produced in the current period, which moves with a driver whose timing this period departs from every earlier one and differs between sources; a loss in transit removes items without changing the share carrying a property that tracks the driver, so each source's own share predicts its output, while the calendar, the last period and the other sources each misjudge it.",
+  "driver_concrete": "Each laboratory's weekly respiratory test count rises and falls with the epidemics among its own patients, and this winter RSV peaked among children in November while influenza is still climbing among adults in January; an interface outage drops positive and negative results alike, so each stream's test positivity, which no lost message moves, predicts the tests its laboratory ran in MMWR week 3, while last week's aggregate count, the seasonal baseline of earlier winters and the other laboratories' change each misjudge some streams.",
+  "stump": "A competent solver divides each stream's week-3 results by the tests in last week's aggregate report and misses the influenza streams of the two laboratories losing results (influenza tests rose by about a third in the week) while escalating streams whose epidemic is falling; the step that lands it there is taking the week's tests from the past instead of from the stream's own positivity, which moves with its patients' epidemic and not with a lost message.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who collapses the result messages to tests correctly and reads the protocol takes each stream's tests for the week from last week's aggregate report, or from the seasonal baseline of the same weeks in earlier winters, and files wrong escalations either way (influenza losses hidden by the rise, healthy falling streams escalated); only the tests predicted from each stream's own positivity file the golden.",
+  "domain_test": "The deciding quantity is each stream's tests for the week predicted from its own test positivity, the surveillance field's measure of epidemic activity that is independent of testing volume and untouched by a lost message; with meters or shop tills for laboratories there is no positivity to read, and a seasonal (Farrington-type) baseline, a persistence or a peer estimate in its place changes the escalations.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task231": "task231 takes the closed share of a round's silent firms from earlier rounds the business register has caught up with (exits recorded a year late); this build has no late register and no silent units to classify: every laboratory reports, and a stream's missing results this week are told apart from tests never run through the stream's own test positivity, a ratio no lost message moves, which predicts the tests its laboratory ran.",
+    "task445": "task445's first loop completes a still-open period reporter by reporter from each one's last report, slow reporters concentrated in some units; this build carries no last report forward: last week's count is the wrong route here, because each laboratory's tests move with its own patients' epidemic, read in the current week through positivity, and the aggregate report is the outcome being predicted, not a stale input to carry."
+  },
+  "lineage": [],
+  "notes": "Decisive G12 (a stream's missing results told apart from tests its laboratory never ran, through the stream's own positivity), G6 supporting (each laboratory's patient mix sets its own epidemic clock); Gate G decomposition_attribution: a correctly reported change in a stream's volume assigned to its driver, the epidemic among its patients or a lost message. The protocol files the WHAT (completeness as the stream's results over the tests the weekly aggregate report counts, the 80 per cent line, the MMWR week by result date); no sentence names how the week's tests are estimated.",
+  "client_domain": "epidemiology-public-health",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection/3",
+  "layer1": [
+    "result messages at the target level from some laboratories (influenza A and B as separate rows) and at the test level from others",
+    "corrected results resent under the same accession, and cancelled tests",
+    "result times in UTC against MMWR weeks counted on the county's local date",
+    "a laboratory sending under two facility identifiers after a merger",
+    "weekly aggregate reports revised after first submission"
+  ],
+  "registered": "2026-10-16T23:21:42Z"
+}
