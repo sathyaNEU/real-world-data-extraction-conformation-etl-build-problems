@@ -1,0 +1,95 @@
+{
+  "task": "task189",
+  "architecture": "v1",
+  "drawn": "2026-10-16",
+  "slot_note": "seed AD12 kept only its decision shape (one count committed to a regulator at a date, monitoring at a finer unit than the return counts); the seed's own architecture, a method pinned by reproducing two published returns plus a unit-of-counting reading, is a certified replay and data semantics, both banned as the decisive step, so the build is re-rooted on the field's own censored-data estimation.",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "environmental-monitoring-exceedance",
+  "niche": "trace-herbicide compliance assessment for a river basin district's annual return, where the two laboratories serving the network report to limits that differ fivefold",
+  "objective": "anomaly-detection",
+  "shape": "10",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "4 water bodies non-compliant with the annual average standard for MCPA in the 2025/26 reporting year",
+  "answer_source": "golden/annual_compliance_return_2025_26.xlsx",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G17",
+    "G2"
+  ],
+  "gate_g": "signal_vs_noise_or_hold",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "the authority's catchment monitoring lead",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "lims_results_export_2025_2026.csv",
+    "rows": 34000,
+    "entity": "one analytical result for one sample and one determinand, as issued or as later approved",
+    "grain": "sample x determinand x result version",
+    "source": "synthetic (constructed in the layout of a water authority's laboratory information management system result export)"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "Ireland, an invented river basin district in the south midlands",
+    "currency": "EUR",
+    "org_type": "regional water and catchment authority",
+    "invented_names": [
+      "Araglen Regional Water Authority",
+      "National Water Quality Office",
+      "Tirneevin Analytical Services",
+      "Kilgarron Laboratories"
+    ],
+    "people": [
+      "Emmet McQuillen",
+      "Katie Enright",
+      "George Twohey"
+    ]
+  },
+  "deliverables": [
+    "annual_compliance_return_2025_26.xlsx",
+    "mcpa_compliance_overview.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is a per-unit average over measurements many of which are known only to lie below a limit that differs by the instrument that produced them, so replacing each of them with any single stand-in value, or censoring them all at one common limit, ranks the units by which instrument measured them, and only an estimate that uses every observation's own limit separates the units that truly exceed.",
+  "driver_concrete": "Most MCPA results in the district's monitoring are reported only as below the laboratory's reporting limit and the two laboratories' limits differ fivefold, so substituting half the limit, zero or the limit itself for each non-detect makes a water body's annual average a function of which laboratory's sample points it holds, and four water bodies truly exceed the standard where seven appear to.",
+  "stump": "A competent solver conforms the export, removes the QC and superseded rows, crosswalks sample points to water bodies, substitutes half the reporting limit for every non-detect and averages, and files seven non-compliant water bodies, three of them non-compliant only because their samples went to the laboratory with the coarser limit.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the qualifier and reporting-limit columns correctly and applies every clause of the regulations substitutes half the reporting limit for the non-detects, the default in practice, and files seven non-compliant water bodies rather than four.",
+  "domain_test": "The deciding quantity is each water body's annual average concentration of a trace herbicide estimated from left-censored results carrying several reporting limits, which environmental statistics estimates from the censored observations themselves rather than by substitution; swap the water bodies for schools and the concentrations for visit counts and there is no limit of quantification, nothing is censored, and the analysis disappears.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:left-censored-results-with-several-reporting-limits",
+  "layer1": [
+    "censored lab results and qualifiers",
+    "mixed units and bases",
+    "provisional and approved records overlap",
+    "site ids differ across systems",
+    "wide sheets with multi-row headers",
+    "QC samples among field results",
+    "tables inside PDFs",
+    "a method change documented mid-year"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task70": "task70's decisive move builds a per-record date under a filed clause that bars one record class from a late capacity slot, so a stated rule drives it and the quantity is a surcharge; here no filed sentence touches the decisive step and the quantity is a mean estimated from measurements that carry only an upper bound, with several bounds in play.",
+    "task260": "task260's decisive move is the width of an interval over two sampled dimensions, readers and examinations, deciding which measured gain survives its own uncertainty; here the decisive move is a point estimate, the mean of a left-censored sample, and the error is giving each unquantified result a value rather than mis-stating an interval."
+  },
+  "lineage": [],
+  "notes": "Gate G could also be read as method_or_model_selection (the decisive step is which estimator the censored results get); signal_vs_noise_or_hold is the reviewer's reading, since the call separates a real exceedance from an artifact of the reporting limit, and it is not the mechanism of either of the last two builds. Decisive generator G12, a record of absence (the analyte was looked for and not found at a stated limit) read either as an absence of record or as a value.",
+  "registered": "2026-10-16T21:21:17Z"
+}

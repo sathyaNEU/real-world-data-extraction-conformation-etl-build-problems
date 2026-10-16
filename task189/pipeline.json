@@ -1,0 +1,12 @@
+{"task": "task189", "owner": "oviya13ya", "status": "DRAWING",
+ "domain": "physical-environmental-sciences/environmental-monitoring-exceedance", "objective": "anomaly-detection",
+ "stage": 1, "stage_name": "draw", "updated": "2026-10-16",
+ "stump": "A competent solver conforms the export, removes the QC and superseded rows, crosswalks sample points to water bodies, substitutes half the reporting limit for every non-detect and averages, and files seven non-compliant water bodies, three of them non-compliant only because their samples went to the laboratory with the coarser limit.",
+ "architecture": 1, "loops": 0,
+ "precut": {"exit": null, "date": ""},
+ "leak": {"leak_py": "", "reader": ""},
+ "duplicate_check": {"heart": "", "nearest": "0.08 task62 (lineage)"},
+ "judge": {"verdict": "", "disposition": "", "report": ""},
+ "returned": [],
+ "resume": "", "approved": null, "delivered": null, "portal": null,
+ "portal_id": "", "portal_status": "", "portal_status_date": ""}
