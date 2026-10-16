@@ -246,14 +246,16 @@ def write_book(path, R):
         ha.cell(row=tr, column=c).font = Font(bold=True)
         ha.cell(row=tr, column=c).border = Border(top=THIN)
     ha.append([])
-    ha.append(["One class for each room and session in use on October 1: a combination class's grade sections and a "
-               "co-taught class's two sections count once, a half-day kindergarten's morning and afternoon classes twice. "
-               "Homeroom sections (HR-K to HR-5) running on October 1 with at least one pupil enrolled that day "
-               "(sections_fall2026.csv, section_enrollment_fall2026.csv)."])
+    ha.append(["The district's class count (sis_export_notes.txt): one class for each room and session among the "
+               "homeroom sections (HR-K to HR-5) open on October 1 with at least one pupil enrolled that day, in the "
+               "grade of its pupils on the October 1 count. A combination class's grade sections and a co-taught "
+               "class's two sections count once, a half-day kindergarten's morning and afternoon classes twice, and the "
+               "classes opened in September on spare sections count in their pupils' grade, not the section's course "
+               "(sections_fall2026.csv, section_enrollment_fall2026.csv, october_membership_2019-2026.csv)."])
     ha.cell(row=ha.max_row, column=1).font = Font(size=9)
     ha.cell(row=ha.max_row, column=1).alignment = Alignment(wrap_text=True, vertical="top")
     ha.merge_cells(start_row=ha.max_row, start_column=1, end_row=ha.max_row, end_column=3)
-    ha.row_dimensions[ha.max_row].height = 64
+    ha.row_dimensions[ha.max_row].height = 92
     ha["A1"].font = Font(bold=True, size=12)
     for k, w in enumerate([26, 14, 14]):
         ha.column_dimensions[chr(65 + k)].width = w
@@ -276,10 +278,10 @@ def write_book(path, R):
         pk.cell(row=tr, column=c).border = Border(top=THIN)
     pk.append([])
     pk.append(["Children: each child once (state ID), from the registration platform's enrollments open on October 1 "
-               "(preschool_enrollments_2026-27.csv) and the special education roster's children placed in the school's "
-               "special education and inclusive preschool classrooms (ecse_roster_2026-10-01.xlsx); children served "
-               "itinerantly are not in a class. Classrooms: the rooms those classes meet in, morning and afternoon "
-               "classes in one room counted once."])
+               "(preschool_enrollments_2026-27.csv) and the special education roster's children whose class meets at "
+               "the school, by the roster's classroom rather than its case school (ecse_roster_2026-10-01.xlsx); "
+               "children served itinerantly are not in a class. Classrooms: the rooms those classes meet in, morning "
+               "and afternoon classes in one room counted once."])
     pk.cell(row=pk.max_row, column=1).font = Font(size=9)
     pk.cell(row=pk.max_row, column=1).alignment = Alignment(wrap_text=True, vertical="top")
     pk.merge_cells(start_row=pk.max_row, start_column=1, end_row=pk.max_row, end_column=3)

@@ -452,33 +452,59 @@ def run(target, golden, W, R, meta_path):
                                                             "births 2026-27 on the 2019-25 trend")))
 
     # ---- Ask A
+    sis = open(os.path.join(target, DOC.F_SIS_NOTES), encoding="utf-8").read()
+    unit = ("For class-size reporting the district counts classes, not sections. A homeroom class is one room in one "
+            "session (FULL, AM or PM), whatever the number of homeroom section rows or teachers of record in it, and it "
+            "is counted in the grade or grades of the pupils enrolled in it. A class meets on a day when one of its "
+            "sections is open that day with at least one pupil enrolled.")
+
+    def flat(t):
+        return re.sub(r"\s+", " ", t)
+
+    C("A0 the class count is filed once, in the student-system notes, and nowhere else in the pack",
+      flat(sis).count(unit) == 1 and sum(flat(t).count("class-size reporting") for t in texts.values()) == 1)
     truthA = {}
     for z in K.ZONES:
         for b, gs in (("K-2", (0, 1, 2)), ("3-5", (3, 4, 5))):
             cls = [c for c in W.A.classes[z] if min(c["grades"]) in gs]
             truthA[(CODE[z], b)] = len({(c["room"], c.get("session", "FULL")) for c in cls})
-    C("A1 Ask A golden equals the world's classes on October 1", truthA == A["golden"], (truthA, A["golden"]))
-    C("A2 every class keeps its sections inside one band", A["one_band"])
+    C("A1 Ask A golden (the filed count executed) equals the world's classes on October 1", truthA == A["golden"],
+      (truthA, A["golden"]))
+    C("A2 every class's pupils sit in one band (no class crosses grades 2 and 3)", A["one_band"])
     st = A["stops"]
-    over = sum(1 for k2 in A["golden"] if st["sections running with pupils"][k2] > A["golden"][k2])
-    C("A3 sections counted: every one of the 14 figures over", over == 14, over)
-    off_t = sum(1 for k2 in A["golden"] if st["merged by teacher"][k2] != A["golden"][k2])
-    C("A3' sections merged by teacher: every one of the 14 figures off", off_t == 14, off_t)
-    off_r = sorted(k2 for k2 in A["golden"] if st["merged by room"][k2] != A["golden"][k2])
-    C("A3'' sections merged by room: off at the three half-day kindergarten bands",
-      off_r == sorted([(CODE[z], "K-2") for z in AS.HALF_DAY_K]), off_r)
-    off_f = sum(1 for k2 in A["golden"] if st["every fall homeroom section"][k2] != A["golden"][k2])
-    C("A3''' every fall homeroom section: every figure over", off_f == 14, off_f)
-    C("A3'''' classes without the pupil test: off at North Fork 3-5 (the placeholder)",
-      [k2 for k2 in A["golden"] if st["classes without the pupil test"][k2] != A["golden"][k2]] == [("6189", "3-5")])
+
+    def off(stop):
+        return sorted(k2 for k2 in A["golden"] if st[stop][k2] != A["golden"][k2])
+
+    allA = sorted(A["golden"])
+    # every alternative reading of the ask, each either ruled out by a clause of the filed count or converging on it
+    C("A3 section rows counted (ruled out by 'whatever the number of homeroom section rows'): all 14 figures over",
+      off("sections running with pupils") == allA and all(
+          st["sections running with pupils"][k2] > A["golden"][k2] for k2 in allA))
+    C("A3b sections merged by teacher (ruled out by 'teachers of record' and 'one session'): all 14 figures off",
+      off("merged by teacher") == allA)
+    C("A3c sections merged by room alone (ruled out by 'one room in one session'): off at the three half-day "
+      "kindergarten bands", off("merged by room") == sorted([(CODE[z], "K-2") for z in AS.HALF_DAY_K]),
+      off("merged by room"))
+    C("A3d every fall homeroom section (ruled out by 'open that day with at least one pupil enrolled'): all 14 over",
+      off("every fall homeroom section") == allA)
+    C("A3e classes without the pupil test (ruled out by 'at least one pupil enrolled'): off at North Fork 3-5 only",
+      off("classes without the pupil test") == [(CODE["F"], "3-5")], off("classes without the pupil test"))
+    C("A3f classes without the date filter: the ended sections share their class's room and session (same figures)",
+      off("classes without the date filter") == [], off("classes without the date filter"))
+    C("A3g classes banded by the sections' course codes (ruled out by 'counted in the grade or grades of the pupils "
+      "enrolled in it'): all 14 figures off", off("classes banded by course code") == allA,
+      off("classes banded by course code"))
     secs, lines = calc.read_sections(target)
     on1 = [l for l in lines if l["end_date"] == "2026-10-01" or l["start_date"] == "2026-10-01"]
     on1 += [s for s in secs if s["section_end"] == "2026-10-01" or s["section_start"] == "2026-10-01"]
-    C("A4 nothing starts or ends on October 1 (boundary neutral)", not on1)
+    C("A4 nothing starts or ends on October 1 (an inclusive or exclusive end date gives the same classes)", not on1)
+    started_after = [s for s in secs if s["course_code"].startswith("HR-") and s["section_start"] > "2026-10-01"]
+    C("A4b no homeroom section starts after October 1", not started_after)
     ended = [s for s in secs if s["course_code"].startswith("HR-") and s["section_end"] == "2026-09-18"]
-    C("A5 HA1 a homeroom section ended mid-September at Bluestem and Lincoln",
+    C("A5 HA1 a homeroom section ended mid-September at Bluestem and Lincoln, the class re-opened in the same room",
       sorted(s["school_code"] for s in ended) == sorted([CODE["B"], CODE["C"]]))
-    C("A5' HA2 a placeholder homeroom section with no pupils at North Fork",
+    C("A5b HA2 a placeholder homeroom section with no pupils at North Fork",
       [s["school_code"] for s in secs if s["room"] == "TBD"] == [CODE["F"]])
     combos = {}
     for s in secs:
@@ -488,43 +514,97 @@ def run(target, golden, W, R, meta_path):
                    v[0]["course_code"] != v[1]["course_code"])
     cot = sum(1 for v in combos.values() if len(v) == 2 and v[0]["teacher_id"] != v[1]["teacher_id"] and
               v[0]["course_code"] == v[1]["course_code"] and v[0]["section_end"] == v[1]["section_end"])
-    C("A6 A1 device: a combination class in each band at every school (14) and a co-taught class in every 3-5 band",
+    C("A6 a combination class in each band at every school (14) and a co-taught class in every 3-5 band",
       shared_t == 14 and cot >= 11, (shared_t, cot))
+    cross = sorted(c for c in {k[0] for k in A["classes"]}
+                   if any(A["label_band"][k] != A["pupil_band"][k] for k in A["classes"] if k[0] == c))
+    C("A7 the A3 device (a label stored before a silent switch): at every school a class opened in September on a "
+      "spare section built for a grade in the other band", cross == sorted(D.codes), cross)
+    within = sum(1 for z in K.ZONES for (g, b, o) in AS.REBALANCE[z] if (g <= 2) == (b <= 2))
+    C("A7b the rebalance also reused sections inside a band at four schools (the practice, not a band trick)",
+      within == 4, within)
+    moved = {}
+    for l in lines:
+        moved.setdefault(l["student_id"], []).append(l)
+    two = sum(1 for v in moved.values() if len([x for x in v if x["end_date"] and x["end_date"] < "2026-10-01"]) >= 1)
+    C("A7c the rebalanced classes' pupils carry an earlier line in the grade's other classes", two > 150, two)
 
     # ---- Ask B
+    roster_wb = openpyxl.load_workbook(os.path.join(target, AS.F_ECSE), data_only=True)
+    notes_b = " ".join(str(r[0]) for r in roster_wb["Notes"].iter_rows(values_only=True) if r and r[0])
+    C("B0 the roster's notes file the case school, the service models with the itinerant children out of class, and "
+      "the classroom as a room",
+      "A child served itinerantly is not enrolled in a district preschool class." in notes_b and
+      "Classroom: the school and room where the child's class meets. A morning and an afternoon class in the same room "
+      "share the classroom." in notes_b and
+      "Case school: the elementary school whose special education team holds the child's IEP case." in notes_b and
+      sum(flat(t).count("served itinerantly") for t in texts.values()) == 1)
     truthB = {K.SCHOOLS[z]["name"]: dict(children=len(W.P.truth[z]["kids"]), classrooms=len(W.P.truth[z]["rooms"]))
               for z in AS.PRESCHOOL}
-    C("B1' Ask B golden equals the world's preschool rolls", truthB == B["golden"], (truthB, B["golden"]))
+    C("B1 Ask B golden equals the world's preschool rolls", truthB == B["golden"], (truthB, B["golden"]))
     sb = B["stops"]
-    for k2 in ("platform child records and class names", "platform by state ID and room"):
-        miss = sum(1 for s in B["sites"] for q in ("children", "classrooms") if sb[k2][s][q] != B["golden"][s][q])
-        C("B2 stop %s: all 8 figures off" % k2, miss == 8, miss)
-    for k2 in ("platform and roster added", "union with the itinerant children"):
-        miss = sum(1 for s in B["sites"] if sb[k2][s]["children"] > B["golden"][s]["children"])
-        C("B2' stop %s: children over at all 4 sites" % k2, miss == 4, miss)
-    miss = sum(1 for s in B["sites"] if sb["union by state ID, class names as classrooms"][s]["classrooms"] !=
-               B["golden"][s]["classrooms"])
-    C("B2'' class names as classrooms with the roster's rooms: off at all 4 sites", miss == 4, miss)
+
+    def offb(stop, q):
+        return sorted(s2 for s2 in B["sites"] if sb[stop][s2][q] != B["golden"][s2][q])
+
+    sites = sorted(B["sites"])
+    want = {"Fifth Street Elementary": 77, "Ortega Elementary": 79, "Kessler Elementary": 32,
+            "North Fork Elementary": 29}
+    C("B2 the platform alone, each child once (ruled out by the roster's ECSE classroom children): children 77, 79, "
+      "32 and 29 against the golden",
+      {s2: sb["platform by state ID and room"][s2]["children"] for s2 in B["sites"]} == want and
+      offb("platform by state ID and room", "classrooms") == sites,
+      {s2: sb["platform by state ID and room"][s2] for s2 in B["sites"]})
+    C("B2b platform child records and class names: all 8 figures off",
+      offb("platform child records and class names", "children") == sites and
+      offb("platform child records and class names", "classrooms") == sites)
+    C("B2c the roster grouped by case school (ruled out by 'Classroom: the school and room where the child's class "
+      "meets'): all 8 figures off", offb("roster by case school", "children") == sites and
+      offb("roster by case school", "classrooms") == sites,
+      {s2: sb["roster by case school"][s2] for s2 in B["sites"]})
+    itin = {s2: sb["union with the itinerant children"][s2]["children"] for s2 in B["sites"]}
+    C("B2d the itinerant children added (ruled out by 'not enrolled in a district preschool class'): children over at "
+      "all 4 sites", all(itin[s2] > B["golden"][s2]["children"] for s2 in B["sites"]), itin)
+    C("B2e class names as classrooms (ruled out by 'A morning and an afternoon class in the same room share the "
+      "classroom'): over at the three sites with half-day classes",
+      offb("class names as classrooms", "classrooms") == sorted(K.SCHOOLS[z]["name"] for z in ("A", "P", "D")),
+      offb("class names as classrooms", "classrooms"))
+    C("B2f the platform and roster added without matching children: children over at all 4 sites",
+      all(sb["platform and roster added"][s2]["children"] > B["golden"][s2]["children"] for s2 in B["sites"]))
     plat, roster = calc.read_preschool(target)
     dupe = {}
     for p in plat:
         dupe.setdefault(p["state_id"], set()).add(p["child_id"])
-    C("B3 B2 device: a re-registered child under two child records at every site",
+    C("B3 the B2 device: a re-registered child under two child records at every site",
       len({p["site"] for p in plat if len(dupe[p["state_id"]]) > 1}) == 4)
-    ecse_rooms = {x["Case school"] for x in roster if x["Service model"] == "ECSE classroom"}
-    plat_rooms = {(p["site"], calc.ROOM.match(p["class_name"]).group(1)) for p in plat}
-    C("B3' B1 device: a special education classroom at every site, none of its rooms on the platform",
-      len(ecse_rooms) == 4 and not any((x["Case school"], x["Classroom"]) in plat_rooms for x in roster
-                                       if x["Service model"] == "ECSE classroom"))
+    ecse_sites = {calc.CLASSROOM.match(x["Classroom"]).group(1) for x in roster if x["Service model"] == "ECSE classroom"}
+    plat_rooms = {(p["site"].replace(" Elementary", ""), calc.ROOM.match(p["class_name"]).group(1)) for p in plat}
+    C("B3b the B1 device: a special education classroom at every site, none of its rooms on the platform",
+      len(ecse_sites) == 4 and not any(tuple(calc.CLASSROOM.match(x["Classroom"]).groups()) in plat_rooms
+                                       for x in roster if x["Service model"] == "ECSE classroom"))
+    away = {}
+    for x in roster:
+        if x["Service model"] == "ECSE classroom":
+            site = calc.CLASSROOM.match(x["Classroom"]).group(1) + " Elementary"
+            if site != x["Case school"]:
+                away.setdefault(x["Case school"], set()).add(site)
+    C("B3c the B3 device (the true key in another field): every site holds the case of a child whose class meets at "
+      "another site", sorted(away) == sites, away)
     C("B4 nothing on the platform starts or ends on October 1",
       not any(p["enroll_start"] == "2026-10-01" or p["enroll_end"] == "2026-10-01" for p in plat))
 
-    # ---- the cracker sheet
-    cracker_a = sum(1 for k2 in A["golden"] if st["sections running with pupils"][k2] == A["golden"][k2])
-    cracker_b = sum(1 for s in B["sites"] for q in ("children", "classrooms")
-                    if sb["platform child records and class names"][s][q] == B["golden"][s][q])
+    # ---- the cracker sheet: every filed rule executed, each class's grade read off its sections' course codes, the
+    # roster's children placed by the roster's own key (the case school)
+    cracker_a = sum(1 for k2 in A["golden"] if st["classes banded by course code"][k2] == A["golden"][k2])
+    cracker_b = sum(1 for s2 in B["sites"] for q in ("children", "classrooms")
+                    if sb["roster by case school"][s2][q] == B["golden"][s2][q])
     C("CR the cracker's path misses every ask figure (Ask A 14, Ask B 8)", cracker_a == 0 and cracker_b == 0,
       (cracker_a, cracker_b))
+    naive_a = sum(1 for k2 in A["golden"] if st["sections running with pupils"][k2] == A["golden"][k2])
+    naive_b = sum(1 for s2 in B["sites"] for q in ("children", "classrooms")
+                  if sb["platform child records and class names"][s2][q] == B["golden"][s2][q])
+    C("CR2 the natural read (section rows, the platform's records) misses every ask figure",
+      naive_a == 0 and naive_b == 0, (naive_a, naive_b))
 
     # ---- the separation line and the distractors
     tmp = tempfile.mkdtemp(prefix="t150sep")

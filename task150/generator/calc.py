@@ -539,6 +539,10 @@ def _band(course):
     return "K-2" if course in ("HR-K", "HR-1", "HR-2") else "3-5"
 
 
+def _grade_band(g):
+    return "K-2" if g <= 2 else "3-5"
+
+
 def read_sections(target):
     with open(os.path.join(target, AS.F_SECTIONS), encoding="utf-8", newline="") as f:
         secs = list(csv.DictReader(f))
@@ -547,50 +551,95 @@ def read_sections(target):
     return secs, lines
 
 
+def october_grades(target, year="2026-27"):
+    out = {}
+    with open(os.path.join(target, R.F_MEMBERS), encoding="utf-8", newline="") as f:
+        for r in csv.DictReader(f):
+            if r["school_year"] == year:
+                out[r["student_id"]] = int(r["grade_level"])
+    return out
+
+
 def ask_a(target, codes):
-    """Homeroom classes meeting on October 1, 2026: homeroom sections running that day with at least one pupil line
-    open that day, one class for each room and session; by the band of the sections' grades."""
+    """Homeroom classes meeting on October 1, 2026, as the student-system notes count them: one class for each room and
+    session among the homeroom sections open that day with at least one pupil enrolled that day, counted in the grade
+    band of the pupils enrolled in it (their grade on the October 1 count)."""
     secs, lines = read_sections(target)
-    live = {}
+    grade = october_grades(target)
+    on_day = {}
+    any_line = {}
     for l in lines:
         st, en = _d(l["start_date"]), _d(l["end_date"])
+        any_line.setdefault(l["section_id"], []).append(l["student_id"])
         if st <= OCT1 and (en is None or en >= OCT1):
-            live[l["section_id"]] = live.get(l["section_id"], 0) + 1
+            on_day.setdefault(l["section_id"], []).append(l["student_id"])
     hr = [s for s in secs if s["course_code"].startswith("HR-")]
 
     def running(s):
         return _d(s["section_start"]) <= OCT1 <= _d(s["section_end"])
 
-    out = {}
-    stops = {k: {} for k in ("sections running with pupils", "merged by teacher", "merged by room",
-                             "every fall homeroom section", "classes without the pupil test")}
-    bands_of_class = {}
-    for c in codes:
-        for b in ("K-2", "3-5"):
-            mine = [s for s in hr if s["school_code"] == c and _band(s["course_code"]) == b]
-            run = [s for s in mine if running(s) and live.get(s["section_id"], 0) > 0]
-            out[(c, b)] = len({(s["room"], s["session"]) for s in run})
-            stops["sections running with pupils"][(c, b)] = len(run)
-            stops["merged by teacher"][(c, b)] = len({s["teacher_id"] for s in run})
-            stops["merged by room"][(c, b)] = len({s["room"] for s in run})
-            stops["every fall homeroom section"][(c, b)] = len(mine)
-            stops["classes without the pupil test"][(c, b)] = len({(s["room"], s["session"]) for s in mine if running(s)})
-        # every class (room and session) keeps its sections in one band
-        for s in hr:
-            if s["school_code"] == c and running(s) and live.get(s["section_id"], 0) > 0:
-                bands_of_class.setdefault((c, s["room"], s["session"]), set()).add(_band(s["course_code"]))
-    one_band = all(len(v) == 1 for v in bands_of_class.values())
-    return dict(golden=out, stops=stops, one_band=one_band)
+    def meeting(s):
+        return running(s) and on_day.get(s["section_id"])
+
+    classes = {}
+    for s in hr:
+        if meeting(s):
+            classes.setdefault((s["school_code"], s["room"], s["session"]), []).append(s)
+    pupil_band = {}
+    label_band = {}
+    for key, ss in classes.items():
+        bands = {_grade_band(grade[p]) for s in ss for p in on_day[s["section_id"]] if p in grade}
+        pupil_band[key] = bands
+        label_band[key] = {_band(s["course_code"]) for s in ss}
+    one_band = all(len(v) == 1 for v in pupil_band.values())
+
+    def count(keys_bands):
+        out = {(c, b): 0 for c in codes for b in ("K-2", "3-5")}
+        for (c, b) in keys_bands:
+            out[(c, b)] += 1
+        return out
+
+    golden = count([(k[0], next(iter(pupil_band[k]))) for k in classes])
+    stops = {}
+    stops["classes banded by course code"] = count([(k[0], sorted(label_band[k])[0]) for k in classes])
+    stops["sections running with pupils"] = count([(s["school_code"], _band(s["course_code"])) for s in hr
+                                                   if meeting(s)])
+    teach = {}
+    for k, ss in classes.items():
+        for s in ss:
+            teach.setdefault((k[0], s["teacher_id"]), set()).add(next(iter(pupil_band[k])))
+    stops["merged by teacher"] = count([(k[0], sorted(v)[0]) for k, v in teach.items()])
+    rooms = {}
+    for k in classes:
+        rooms.setdefault((k[0], k[1]), set()).add(next(iter(pupil_band[k])))
+    stops["merged by room"] = count([(k[0], sorted(v)[0]) for k, v in rooms.items()])
+    stops["every fall homeroom section"] = count([(s["school_code"], _band(s["course_code"])) for s in hr])
+    nopupil = {}
+    for s in hr:
+        if running(s):
+            nopupil.setdefault((s["school_code"], s["room"], s["session"]), []).append(s)
+    stops["classes without the pupil test"] = count([
+        (k[0], next(iter(pupil_band[k])) if k in pupil_band else _band(ss[0]["course_code"])) for k, ss in nopupil.items()])
+    nodate = {}
+    for s in hr:
+        if any_line.get(s["section_id"]):
+            nodate.setdefault((s["school_code"], s["room"], s["session"]), []).append(s)
+    stops["classes without the date filter"] = count([
+        (k[0], next(iter(pupil_band[k])) if k in pupil_band else _band(ss[0]["course_code"])) for k, ss in nodate.items()])
+    relabeled = sorted({k[0] for k in classes if label_band[k] != pupil_band[k]})
+    return dict(golden=golden, stops=stops, one_band=one_band, relabeled=relabeled, classes=classes,
+                pupil_band=pupil_band, label_band=label_band)
 
 
 # ---------------------------------------------------------------------------------------------------- Ask B
 ROOM = re.compile(r"^(Rm \d+)")
+CLASSROOM = re.compile(r"^(.*) (Rm \d+)$")
 
 
 def read_preschool(target):
     with open(os.path.join(target, AS.F_PRESCHOOL), encoding="utf-8", newline="") as f:
         plat = list(csv.DictReader(f))
-    ws = openpyxl.load_workbook(os.path.join(target, AS.F_ECSE), data_only=True).active
+    ws = openpyxl.load_workbook(os.path.join(target, AS.F_ECSE), data_only=True).worksheets[0]
     hdr = None
     roster = []
     for row in ws.iter_rows(values_only=True):
@@ -606,36 +655,46 @@ def read_preschool(target):
 
 def ask_b(target, names):
     """Children enrolled in each preschool site's classes on October 1, 2026 (the platform's enrollments open that day
-    and the special education roster's children in the site's classrooms, each child once by state ID) and the
-    classrooms those classes use."""
+    and the special education roster's children whose class meets at the site, each child once by state ID; children
+    served itinerantly are in no class) and the classrooms those classes use (distinct rooms)."""
     plat, roster = read_preschool(target)
+    short = {n.replace(" Elementary", ""): n for n in names}
 
     def active(p):
         st, en = _d(p["enroll_start"]), _d(p["enroll_end"])
         return st <= OCT1 and (en is None or en >= OCT1)
 
+    def where(x):
+        m = CLASSROOM.match(x["Classroom"] or "")
+        return (short[m.group(1)], m.group(2)) if m else (None, None)
+
+    in_class = [x for x in roster if x["Service model"] in ("ECSE classroom", "Inclusive classroom")]
     sites = sorted({p["site"] for p in plat}, key=lambda n: names.index(n))
     out = {}
-    stops = {k: {} for k in ("platform child records and class names", "platform and roster added",
-                             "union by state ID, class names as classrooms", "platform by state ID and room",
-                             "union with the itinerant children")}
+    stops = {k: {} for k in ("platform child records and class names", "platform by state ID and room",
+                             "roster by case school", "union with the itinerant children",
+                             "class names as classrooms", "platform and roster added")}
     for site in sites:
         pa = [p for p in plat if p["site"] == site and active(p)]
-        ro = [x for x in roster if x["Case school"] == site and x["Service model"] in ("ECSE classroom",
-                                                                                         "Inclusive classroom")]
-        ro_all = [x for x in roster if x["Case school"] == site]
+        ro = [x for x in in_class if where(x)[0] == site]
+        ro_case = [x for x in in_class if x["Case school"] == site]
+        itin = [x for x in roster if x["Service model"] == "Itinerant" and x["Case school"] == site]
         kids = {p["state_id"] for p in pa} | {str(x["State ID"]) for x in ro}
-        rooms = {ROOM.match(p["class_name"]).group(1) for p in pa} | {x["Classroom"] for x in ro}
+        rooms = {ROOM.match(p["class_name"]).group(1) for p in pa} | {where(x)[1] for x in ro}
         out[site] = dict(children=len(kids), classrooms=len(rooms))
         stops["platform child records and class names"][site] = dict(children=len({p["child_id"] for p in pa}),
                                                                        classrooms=len({p["class_name"] for p in pa}))
-        stops["platform and roster added"][site] = dict(children=len({p["child_id"] for p in pa}) + len(ro_all),
-                                                        classrooms=len(rooms))
-        stops["union by state ID, class names as classrooms"][site] = dict(
-            children=len(kids), classrooms=len({p["class_name"] for p in pa} | {x["Classroom"] for x in ro}))
         stops["platform by state ID and room"][site] = dict(children=len({p["state_id"] for p in pa}),
                                                             classrooms=len({ROOM.match(p["class_name"]).group(1)
                                                                             for p in pa}))
+        stops["roster by case school"][site] = dict(
+            children=len({p["state_id"] for p in pa} | {str(x["State ID"]) for x in ro_case}),
+            classrooms=len({(site, ROOM.match(p["class_name"]).group(1)) for p in pa} | {where(x) for x in ro_case}))
         stops["union with the itinerant children"][site] = dict(
-            children=len({p["state_id"] for p in pa} | {str(x["State ID"]) for x in ro_all}), classrooms=len(rooms))
+            children=len(kids | {str(x["State ID"]) for x in itin}), classrooms=len(rooms))
+        stops["class names as classrooms"][site] = dict(
+            children=len(kids), classrooms=len({(ROOM.match(p["class_name"]).group(1), p["session"]) for p in pa} |
+                                               {(where(x)[1], x["Session"]) for x in ro}))
+        stops["platform and roster added"][site] = dict(children=len({p["child_id"] for p in pa}) + len(ro),
+                                                        classrooms=len(rooms))
     return dict(golden=out, stops=stops, sites=sites)

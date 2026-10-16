@@ -157,14 +157,18 @@ def place(avg, cap, oct26):
 def ask_a(target):
     sec = pd.read_csv(os.path.join(target, "sections_fall2026.csv"), dtype=str, keep_default_na=False)
     lin = pd.read_csv(os.path.join(target, "section_enrollment_fall2026.csv"), dtype=str, keep_default_na=False)
+    mem = pd.read_csv(os.path.join(target, "october_membership_2019-2026.csv"), dtype=str, keep_default_na=False)
+    mem = mem[mem.school_year == "2026-27"][["student_id", "grade_level"]]
     lin["s"] = pd.to_datetime(lin.start_date)
     lin["e"] = pd.to_datetime(lin.end_date.replace("", "2099-01-01"))
-    open_ids = set(lin[(lin.s <= OCT1) & (lin.e >= OCT1)].section_id)
+    on = lin[(lin.s <= OCT1) & (lin.e >= OCT1)].merge(mem, on="student_id", how="inner")
     hr = sec[sec.course_code.str.startswith("HR-")].copy()
-    hr = hr[(pd.to_datetime(hr.section_start) <= OCT1) & (pd.to_datetime(hr.section_end) >= OCT1) &
-            hr.section_id.isin(open_ids)]
-    hr["band"] = np.where(hr.course_code.isin(["HR-K", "HR-1", "HR-2"]), "K-2", "3-5")
-    return hr.drop_duplicates(["school_code", "band", "room", "session"]).groupby(["school_name", "band"]).size()
+    hr = hr[(pd.to_datetime(hr.section_start) <= OCT1) & (pd.to_datetime(hr.section_end) >= OCT1)]
+    m = hr.merge(on[["section_id", "grade_level"]], on="section_id", how="inner")
+    m["band"] = np.where(m.grade_level.astype(int) <= 2, "K-2", "3-5")
+    per_class = m.groupby(["school_name", "room", "session"]).band.nunique()
+    assert (per_class == 1).all(), "a class spans both bands"
+    return m.drop_duplicates(["school_name", "room", "session"]).groupby(["school_name", "band"]).size()
 
 
 def ask_b(target):
@@ -172,15 +176,17 @@ def ask_b(target):
     p = p[(pd.to_datetime(p.enroll_start) <= OCT1) &
           (pd.to_datetime(p.enroll_end.replace("", "2099-01-01")) >= OCT1)].copy()
     p["room"] = p.class_name.str.extract(r"^(Rm \d+)")[0]
-    ws = openpyxl.load_workbook(os.path.join(target, "ecse_roster_2026-10-01.xlsx"), data_only=True).active
+    ws = openpyxl.load_workbook(os.path.join(target, "ecse_roster_2026-10-01.xlsx"), data_only=True).worksheets[0]
     rows = list(ws.iter_rows(values_only=True))
     h = next(k for k, r in enumerate(rows) if r and r[0] == "State ID")
     r = pd.DataFrame([x for x in rows[h + 1:] if x[0] is not None], columns=rows[h])
-    r = r[r["Service model"].isin(["ECSE classroom", "Inclusive classroom"])]
-    kids = pd.concat([p[["site", "state_id"]], r.rename(columns={"Case school": "site", "State ID": "state_id"})[
-        ["site", "state_id"]].astype(str)]).drop_duplicates()
-    rooms = pd.concat([p[["site", "room"]], r.rename(columns={"Case school": "site", "Classroom": "room"})[
-        ["site", "room"]]]).drop_duplicates()
+    r = r[r["Service model"].isin(["ECSE classroom", "Inclusive classroom"])].copy()
+    parts = r["Classroom"].str.extract(r"^(.*) (Rm \d+)$")
+    r["site"] = parts[0] + " Elementary"
+    r["room"] = parts[1]
+    r["state_id"] = r["State ID"].astype(str)
+    kids = pd.concat([p[["site", "state_id"]], r[["site", "state_id"]]]).drop_duplicates()
+    rooms = pd.concat([p[["site", "room"]], r[["site", "room"]]]).drop_duplicates()
     return kids.groupby("site").size(), rooms.groupby("site").size()
 
 

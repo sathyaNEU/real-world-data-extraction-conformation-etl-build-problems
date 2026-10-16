@@ -9,27 +9,28 @@
   "updated": "2026-10-16",
   "stump": "Projecting each school by its five-year average grade progression ratios and its kindergarten-to-births ratio places the 24 classrooms as Bluestem 7, Prairie Rose 8, Lincoln 6 and Fifth Street 3 (Kessler none); the step that lands it there is carrying ratios struck on each school's own classes, when pupils arriving from outside the district come at a steady count each fall and pupils moving between attendance areas come at the rate of the school they leave, which places Prairie Rose 7, Lincoln 6, Fifth Street 5, Bluestem 4 and Kessler 2.",
   "architecture": 1,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
     "date": "2026-10-16",
     "checks": 49
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-16, the stage 3 cut): policy lists the seven schools, records by school, no method words, the sections' planned end dates; each answered in the design note's ## Leak review",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (2026-10-16, the stage 4 repair cut): the policy lists the seven schools, records by school, no method words, the sections' planned end dates; each answered in the design note's ## Leak review",
+    "reader": "round 1 on the stage 3 cut 0018d35: clean on Q1 to Q6, the decisive step analytical, every REVIEW line harmless; the repair changed the student-system notes and the special education roster, so a re-read is due"
   },
   "duplicate_check": {
     "heart": "WARN overuse.objective, answered under Draw",
     "nearest": "driver 0.08 (task451 v2); surface promotes task125 at 0.077 on the cards' same-driver signature (gap time, G6, Gate G forecasting) and a shared filed_standard context artifact, differentiated on the card; the adjudicated clone read is the author's call"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC on supplementary answer 2 only (stage 3 cut 0018d35); main call reproduced exactly (excess 109, 131, -92, 89, 152, 60, 10); Gate G method_or_model_selection, analytical_non_defect; Gate H pass, pass, analytical",
+    "disposition": "FIX_NOW, fixed in the generator: the class unit filed once in sis_export_notes.txt (CLASS COUNTS); the roster's Notes sheet files the case school, the service models (itinerant children not in a class) and the classroom as a room; every alternative reading asserted (A3 to A3g, B2 to B2f); re-judge once on the repair cut",
+    "report": "task150/determinism_check_report_round1.md (the first judge)",
+    "rule3_audit": "PASS (residual note: an origin-destination table from linked IDs reaches the golden fairly naturally; no fix required)"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: re-judge the repair cut once and re-run the leak reader (the student-system notes and the special education roster changed)",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -46,5 +47,13 @@
     "container_audit": "clean (pack and goldens)",
     "call": "Prairie Rose 7, Lincoln 6, Fifth Street 5, Bluestem 4, Kessler 2, Ortega 0, North Fork 0 (needs 7, 6, 5, 4, 3, 0, 1)",
     "default": "Bluestem 7, Prairie Rose 8, Lincoln 6, Fifth Street 3, Kessler 0 (five-year progression ratios)"
+  },
+  "stage4_repair": {
+    "main_call": "frozen: the main call's files byte-identical to 0018d35, every figures.json value unchanged",
+    "asks": "goldens unchanged; Ask A's silent device the September rebalance (spare sections keep their course), Ask B's the case school against the classroom's school; the cracker executing every filed definition misses all 22",
+    "checks": "143 assertions, 0 failed",
+    "verify": "pass",
+    "rebuild": "two builds byte-identical",
+    "target_zip_sha256": "16b202db077ad12713afc88c52f4b3e6234df160d472abcaff016ba42fbdf914"
   }
 }

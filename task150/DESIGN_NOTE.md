@@ -320,58 +320,77 @@ its figures; they share no primary device.
 - H18 home: the building case for the placement (how many classes each school runs this fall in its permanent
   classrooms), a measure every school carries that the call does not turn on; in the board packet's words ("homeroom
   classes").
-- Construction: the fall 2026 sections export, homeroom courses HR-K to HR-5, sections running on October 1 with at least
-  one pupil on the section enrollment export that day; one class for each room and session (a combination class's two
-  grade sections share teacher, room and session; a co-taught class's two sections share room and session, not teacher;
-  a half-day kindergarten's morning and afternoon classes share teacher and room, not session); the band from the
-  sections' grades (every combination stays inside its band, A2 asserted).
-- Golden (`figures.json` `ask_a_homeroom_classes`, K-2 and 3-5): Fifth Street 17 and 17, Lincoln 19 and 15, Ortega 19
-  and 13, Bluestem 15 and 20, Prairie Rose 21 and 20, Kessler 15 and 17, North Fork 13 and 13.
-- Primary device A1 (D6, one class on two lines): every school runs a combination class in each band (14) and a co-taught
-  class in grades 3 to 5 (and in K-2 at Bluestem, Lincoln, Kessler and Prairie Rose), each scheduled as two homeroom
-  sections; counting sections overcounts all 14 (A6 asserts the 14 combinations and 11 co-taught classes).
-- Second device A2 (the over-cleaning half): half-day kindergarten at Ortega, Fifth Street and North Fork (a morning and
-  an afternoon class, one teacher, one room); merging sections by teacher undercounts those three K-2 bands and still
-  overcounts every co-taught class; merging by room alone undercounts the three half-day bands.
+- The unit, filed once in the student-system notes (stage 4 repair of the judge's Gate E finding), in the system owner's
+  voice: "For class-size reporting the district counts classes, not sections. A homeroom class is one room in one
+  session (FULL, AM or PM), whatever the number of homeroom section rows or teachers of record in it, and it is counted
+  in the grade or grades of the pupils enrolled in it. A class meets on a day when one of its sections is open that day
+  with at least one pupil enrolled." It settles the combination and co-taught sections, the half-day pairs, the
+  placeholder (no pupil), the sections ended or opened around the count day (none starts or ends on October 1, A4) and
+  the band.
+- Golden (`figures.json` `ask_a_homeroom_classes`, K-2 and 3-5, unchanged by the repair): Fifth Street 17 and 17,
+  Lincoln 19 and 15, Ortega 19 and 13, Bluestem 15 and 20, Prairie Rose 21 and 20, Kessler 15 and 17, North Fork 13 and 13.
+- Primary device A3 (D2, a label stored before a silent switch): in the September rebalance every school opened a class
+  for a grade that came in above the spring master schedule on a spare section the schedule had built for a
+  neighbouring grade; the section keeps its course. At every school one such class crosses the band line (a grade 3
+  class on a spare HR-2 section at six schools, a grade 2 class on a spare HR-3 section at Kessler), and four more stay
+  inside a band. Executed with each class's grade read off its sections' course codes, the filed count misses all 14
+  figures (A3g); the pupils' grades on the October 1 count (a join through the section enrollment lines) put each class
+  in its band. Only the cross-file cut shows it: the pupils' earlier lines in the grade's other classes end the school day
+  before the class opened (A7c).
+- Second devices A1 and A2 (now executed by anyone who reads the notes): combination and co-taught classes on two
+  sections, half-day kindergarten pairs in one room.
 - Hazards: HA1 a homeroom section ended on September 18 when its teacher left, the class re-opened as a new section in
   the same room on September 21 (Bluestem grade 4, Lincoln grade 1); HA2 a placeholder section with no pupils (North
   Fork grade 4, room TBD); 19 withdrawals with lines ending October 2 to 8 and 11 late enrollees from October 5 (neither
   moves a figure); intervention sections in the resource rooms.
-- Stops (measured, `calc.ask_a`, A3): sections running on October 1 with pupils (14 of 14 over); merged by teacher (14 of
-  14 off); merged by room alone (off at the three half-day K-2 bands); every fall homeroom section (14 of 14 over);
-  classes without the pupil test (off at North Fork 3-5); the golden.
-- Span: the sections export, the section enrollment export, the student-system notes (3 files); 10 columns.
-- Realism: a student system schedules a combination class one section per grade, and a co-taught class one section per
-  teacher, so course records and teacher views stay grade- and teacher-based.
+- Stops (measured, `calc.ask_a`, A3 to A3g), every alternative reading against the golden: section rows (14 of 14 over,
+  ruled out by "whatever the number of homeroom section rows"); merged by teacher (14 of 14 off, "teachers of record",
+  "one session"); merged by room alone (off at the three half-day K-2 bands, "one room in one session"); every fall
+  homeroom section (14 of 14 over, "open that day with at least one pupil enrolled"); classes without the pupil test (off
+  at North Fork 3-5, "at least one pupil enrolled"); classes without the date filter (the same figures, converging);
+  classes banded by course code (14 of 14 off, "counted in the grade or grades of the pupils enrolled in it"); the golden.
+- Span: the sections export, the section enrollment export, the October membership, the student-system notes (4 files);
+  13 columns.
+- Realism: a student system schedules a combination class one section per grade and a co-taught class one section per
+  teacher; a scheduler rebalancing in September reuses an unfilled section rather than building a new one, and the
+  course it was built with stays on it.
 
 **Ask B. At each school with a preschool (Ortega, Fifth Street, Kessler, North Fork), the children enrolled in its
 preschool classes on October 1, 2026 and the classrooms those classes use** (8 figures).
 - H18 home: building use outside the K-5 rated capacity the standard places on, a measure every hosting school carries
   that the call does not turn on; in the preschool office's words ("children enrolled", "classrooms").
-- Construction: the preschool registration platform's enrollments open on October 1 at the site plus the early childhood
-  special education roster's children placed in the site's special education and inclusive classrooms, each child once
-  by state ID; children served itinerantly are in no class; classrooms as the distinct rooms the classes meet in.
-- Golden (`figures.json` `ask_b_preschool`): Fifth Street 88 children and 4 classrooms, Ortega 94 and 4, Kessler 51 and 3,
-  North Fork 35 and 3.
-- Primary device B1 (D4, a reporter absent): children placed in the self-contained special education preschool
-  classrooms (one at Fifth Street, Ortega and North Fork, two at Kessler) are enrolled through the special education
-  system and are not on the platform export; the platform's count and its rooms miss them (B3' asserts no such room on
-  the platform).
-- Second device B2 (D1, one child under two keys): a family that re-registered holds two platform child records, one state
-  ID (every site, B3), and children with an IEP in an inclusive class are on both the platform and the roster (every site);
-  a count of platform child ids, or the two sources summed, overcounts.
-- Hazards: HB1 morning and afternoon half-day classes share a room (Ortega, Fifth Street, Kessler), so class names
-  counted as classrooms overcount there, while North Fork's classes are full day; HB2 a child who moved sites in
-  September (North Fork to Kessler, Fifth Street to Ortega; the old enrollment ended) and three September withdrawals; a
-  waitlist offer starting October 5.
-- Stops (measured, `calc.ask_b`, B2): platform child records and class names (Fifth Street 78 and 5, Ortega 81 and 5,
-  Kessler 34 and 2, North Fork 30 and 2: 8 of 8 off); platform by state ID and room (77 and 3, 79 and 3, 32 and 1, 29
-  and 2: 8 of 8 off); platform and roster added (children 97, 101, 60, 41: over at 4 of 4); union with the itinerant
-  children (92, 96, 54, 37: over at 4 of 4); union by state ID with class names as classrooms (8, 7, 5, 5: off at 4 of
-  4); the golden.
-- Span: the platform export, the special education roster, the student-system notes (3 files); 9 columns.
+- Filed in the roster's own notes sheet (stage 4 repair of the judge's itinerant note and the reader's classroom
+  question), in the special education department's voice: "Case school: the elementary school whose special education
+  team holds the child's IEP case." "Service model: ECSE classroom, a district early childhood special education
+  classroom; Inclusive classroom, a district preschool class the child attends with special education support;
+  Itinerant, special education services at the child's home or community preschool. A child served itinerantly is not
+  enrolled in a district preschool class." "Classroom: the school and room where the child's class meets. A morning and
+  an afternoon class in the same room share the classroom."
+- Construction: the platform's enrollments open on October 1 at the site plus the roster's children whose class meets at
+  the site (the school in the Classroom), each child once by state ID; classrooms as the distinct rooms.
+- Golden (`figures.json` `ask_b_preschool`, unchanged by the repair): Fifth Street 88 children and 4 classrooms, Ortega
+  94 and 4, Kessler 51 and 3, North Fork 35 and 3.
+- Primary device B3 (D7, the true key in another field): the special education classrooms are district programs, and at
+  every site the team holds the case of a child whose class meets at another site (Ortega's at Fifth Street, Fifth
+  Street's at Kessler, Kessler's at Ortega and North Fork, North Fork's at Kessler). The roster is listed by case school;
+  grouped by its own key it misses all 8 figures (Fifth Street 89 and 5, Ortega 93 and 5, Kessler 50 and 5, North Fork
+  36 and 4).
+- Second devices B1 (D4, a reporter absent: the special education classroom children are not on the platform; the
+  platform alone gives 77, 79, 32 and 29 children) and B2 (D1, one child under two keys: a re-registered child under two
+  platform records at every site, and inclusive children on both sources).
+- Hazards: HB1 morning and afternoon half-day classes share a room (Ortega, Fifth Street, Kessler), so classes counted as
+  classrooms overcount there; HB2 a child who moved sites in September (North Fork to Kessler, Fifth Street to Ortega;
+  the old enrollment ended) and three September withdrawals; a waitlist offer starting October 5.
+- Stops (measured, `calc.ask_b`, B2 to B2f), every alternative reading against the golden: the platform alone by state ID
+  and room (8 of 8 off, ruled out by the roster's classroom children); platform child records and class names (8 of 8
+  off); the roster grouped by case school (8 of 8 off, "Classroom: the school and room where the child's class meets");
+  the itinerant children added (92, 96, 54, 37: over at 4 of 4, "not enrolled in a district preschool class"); classes
+  counted as classrooms (over at the three half-day sites, "share the classroom"); the two sources added without
+  matching children (over at 4 of 4); the golden.
+- Span: the platform export, the special education roster and its notes (2 files); 10 columns.
 - Realism: a registration platform opens a new child record on each application; special education preschool placements
-  are made through the special education system.
+  are made through the special education system, and a district classroom serves children whose cases sit with their
+  home school's team.
 
 **The chart** (about 5 criteria): seven panels, each school's October K-5 counts 2013 to 2026 (from the membership
 exports) and the projection 2027 to 2032, rated capacity drawn across each, and capacity with its placed classrooms from
@@ -383,16 +402,16 @@ exports) and the projection 2027 to 2032, rated capacity drawn across each, and 
 |---|---|---|---|
 | HA1 a section ended mid-September | a teacher's departure | Ask A, 2 schools | +1 at Bluestem 3-5 and Lincoln K-2 on the every-section stop |
 | HA2 a placeholder section | a class planned in spring that did not open | Ask A, 1 school | +1 at North Fork 3-5 without the pupil test |
-| HB1 sessions sharing a room | half-day programs | Ask B, 3 sites; Ask A's half-day kindergartens share the cause | +1 to +2 classrooms on class names |
+| HB1 sessions sharing a room | half-day programs | Ask B, 3 sites; Ask A's half-day kindergartens share the cause | +2 to +3 classrooms counting classes |
 | HB2 a September site change or withdrawal | a family move | Ask B, 4 sites | +1 child on an undated count |
 
-**Referee.** For Ask A, the room and session on each homeroom section; for Ask B, the state ID on both preschool sources
-and the room in each class. Each is a field the golden reads, not a control: no file ties only under the golden.
+**Referee.** For Ask A, the pupils' grades on the October 1 count; for Ask B, the school in the roster's Classroom and the
+state ID on both sources. Each is a field the golden reads, not a control: no file ties only under the golden.
 
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
-| A homeroom classes, K-2 and 3-5 (14) | homeroom sections running on October 1 with pupils, counted by grade band (every filed field read, dates applied) | every combination and co-taught class twice: every figure over | miss |
-| B children and classrooms (8) | the platform's enrollments open on October 1, distinct child records, each class a classroom | special education classrooms and their children missing, re-registered children twice, morning and afternoon rooms twice: every figure off | miss |
+| A homeroom classes, K-2 and 3-5 (14) | the filed class count executed on the sections (one room in one session, open on October 1 with a pupil enrolled), each class's grade read off its sections' course codes | the September classes on spare sections in the other band at every school: every figure off by one | miss |
+| B children and classrooms (8) | the platform's enrollments open on October 1 and the roster's in-class children, each child once by state ID, itinerant children out, rooms distinct, the roster's children placed by its case school | every site gains or loses a child and a room to another site: every figure off | miss |
 | the chart | the cracker's projection drawn as the golden draws it | the history, capacity and its own projection | outside |
 
 Mirror leakage: about 16 per cent of the ask weight (the mirror runs the same ask paths as the cracker and keeps only the
@@ -432,6 +451,16 @@ North Fork's placements and Fifth Street's, Lincoln's, Ortega's and North Fork's
   both sessions, as half-day kindergarten runs (A3').
 - "The 2019 migration" for the student-system move in the notes and the manifest: it echoed the stump's vocabulary for
   a reader scanning the pack; renamed the 2019 conversion, IT's own word for it.
+- Ask A's unit left to the plain meaning of a homeroom class, asserted only as a data fact: the stage 4 judge read the
+  notes' "section ... meets in a room and session" as the unit and counted section rows (Gate E, FIX_NOW). The unit is
+  now filed in the student-system notes as the district's class count; filed, it hands a careful reader the
+  combination, co-taught and half-day devices, so the ask's silent device is the September rebalance (a spare
+  section's course stored before the switch), which the filed count's own words resolve only through the pupils'
+  grades.
+- Ask B's roster without notes, the itinerant children and a room shared by morning and afternoon classes left to plain
+  meaning: the judge noted the first and the reader raised the second; both filed in the roster's notes sheet, which
+  hands over the old children device to a reader of the roster, so the roster now lists children by the team that holds
+  the case and the class's school sits in the Classroom (the true key in another field).
 
 ## Build record
 
@@ -460,18 +489,30 @@ Stage 3, built 2026-10-16 from `task150/generator/build.py` (seed 50).
   chart's title states the finding, the placed schools in the accent colour, capacity labels clear of the lines; the
   manifest's names equal the shipped set (G5, H9); every file the write-up names ships (GD8, H8); no record dated after
   the pull bar the sections' planned end dates (C4, H16).
+- Stage 4 (the leak reader clean on Q1 to Q6 with the decisive step analytical; the rule 3 audit PASS; the judge
+  NOT_DETERMINISTIC on supplementary answer 2 only, FIX_NOW, with the main call reproduced exactly and Gate H analytical)
+  and the repair: the class count filed in the student-system notes; the roster's notes sheet (case school, service
+  models with the itinerant children out of class, the classroom as a room shared by morning and afternoon classes);
+  the September rebalance in the sections and the case schools in the roster as the asks' silent devices. Every
+  alternative reading asserted against the golden (A3 to A3g, B2 to B2f). Against the stage 3 cut 0018d35 the main
+  call's files (both membership exports, the crosswalk, the code list, the births file and its notes, the capacity
+  report, the policy, the two distractors and the preschool platform) are byte-identical and every figures.json value is
+  unchanged, the call, the needs, the default, the rivals, the projection and both asks' goldens included; the sections,
+  the section enrollment, the roster, the student-system notes and the manifest moved. `checks.py` 143 assertions, 0
+  failed; verify agreeing; two byte-identical builds; figures_check 41 of 41; precut 49; voice-check PASS on the
+  unchanged prompt; leak.py REVIEW, no LEAK; container audit clean; heart WARN answered; surface as at stage 3.
 
 ## Leak review
 
-`leak.py --asof 2026-10-09` on the stage 3 cut: REVIEW, no LEAK. One line per REVIEW line.
+`leak.py --asof 2026-10-09` on the stage 4 repair cut: REVIEW, no LEAK. One line per REVIEW line.
 
 - Sweep 3, the policy carries 12 of 13 words of the call: section 1 lists the seven schools the program places among, in
   the board's code order, with no figure and no order of need; the estimand's filing, harmless.
-- Sweep 4, the policy, the births notes and the student-system notes (pupils, counts, history, births, outside, district,
-  attendance): records and definitions; none names a method, a ratio, a rate or how arrivals or moves behave (R3s
-  asserted); harmless.
+- Sweep 4, the policy, the births notes, the student-system notes and the legacy export (school names, pupils, counts,
+  births, outside, district): the schools' own names and record words; none names a method, a ratio, a rate or how
+  arrivals or moves behave (R3s asserted); the notes' class count defines an ask's unit, not the call's; harmless.
 - Sweep 6, the capacity report, the condition assessment, the membership export, the sections, the preschool platform and
   the special education roster name the schools beside numbers: records by school (capacity, condition, pupils, sections,
-  enrollments), none ranks the schools on the placement; harmless.
+  enrollments, cases), none ranks the schools on the placement; harmless.
 - Sweep 9, the sections' 288 dates after the pull: each section's planned end, May 27, 2027 (H16 allow-list, C4);
   harmless.

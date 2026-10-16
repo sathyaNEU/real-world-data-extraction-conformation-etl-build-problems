@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: arrivals, births, prairie, bluestem, forecasting, population, pupils, ratios, street, kessler, ortega, method, outside, transfers, counts, average, five-year, default, asserted, window, decisive, progression, history, lincoln, district
+Stump terms swept: arrivals, births, prairie, bluestem, pupils, forecasting, population, ratios, street, kessler, ortega, method, outside, transfers, counts, asserted, default, average, decisive, five-year, window, progression, history, district, lincoln
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `BP_FEA-R2_elementary_classroom_placement.pdf`: carries 12 of 13 distinctive words of the committed call: 'Place the 24 classrooms at Prairie Rose 7, Lincoln 6, Fifth Street 5, Bluestem 4 and Kessler 2, and none at Ortega or No'
@@ -13,7 +13,7 @@ Stump terms swept: arrivals, births, prairie, bluestem, forecasting, population,
 - **REVIEW** `BP_FEA-R2_elementary_classroom_placement.pdf`: 12 of 25 stump-paragraph terms appear (prairie, bluestem, pupils, street, kessler, ortega); read whether the document names the move
 - **REVIEW** `births_file_notes.txt`: 4 of 25 stump-paragraph terms appear (births, outside, counts, district); read whether the document names the move
 - **REVIEW** `membership_oct2013-oct2018.txt`: 4 of 25 stump-paragraph terms appear (prairie, bluestem, ortega, lincoln); read whether the document names the move
-- **REVIEW** `sis_export_notes.txt`: 4 of 25 stump-paragraph terms appear (pupils, kessler, outside, district); read whether the document names the move
+- **REVIEW** `sis_export_notes.txt`: 5 of 25 stump-paragraph terms appear (pupils, kessler, outside, counts, district); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 6, INFO 3)
 - **REVIEW** `ecse_roster_2026-10-01.xlsx`: names 6 of 13 answer-set candidates beside numbers; confirm it does not rank them on the decision question

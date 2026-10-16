@@ -32,6 +32,26 @@ COTAUGHT_35 = {"A": 3, "B": 5, "P": 3, "C": 5, "D": 3, "E": 5, "F": 5}       # g
 COTAUGHT_K2 = {"B": 2, "C": 2, "D": 1, "E": 2}                              # schools without half-day kindergarten
 TEACHER_CHANGE = {"B": 4, "C": 1}        # a class whose teacher left in September (grade)
 PLACEHOLDER = {"F": 4}                   # a section built in spring for a class that did not open
+# September rebalancing: after the first weeks each school opened a class for a grade that came in above the spring
+# master schedule, on a spare section the schedule had built for a neighbouring grade that came in below it; the
+# section keeps the course it was built with. zone: [(grade of the class, grade the section was built for, opened)]
+REBALANCE = {
+    "A": [(3, 2, dt.date(2026, 9, 8)), (5, 4, dt.date(2026, 9, 14))],
+    "B": [(3, 2, dt.date(2026, 9, 14))],
+    "P": [(3, 2, dt.date(2026, 9, 8)), (1, 0, dt.date(2026, 9, 21))],
+    "C": [(3, 2, dt.date(2026, 9, 21))],
+    "D": [(2, 3, dt.date(2026, 9, 14)), (4, 5, dt.date(2026, 9, 8))],
+    "E": [(3, 2, dt.date(2026, 9, 8)), (4, 3, dt.date(2026, 9, 14))],
+    "F": [(3, 2, dt.date(2026, 9, 14))],
+}
+LABOR_DAY = dt.date(2026, 9, 7)
+
+
+def prev_school_day(d):
+    d = d - dt.timedelta(days=1)
+    while d.weekday() >= 5 or d == LABOR_DAY:
+        d -= dt.timedelta(days=1)
+    return d
 
 
 class Ask:
@@ -130,6 +150,15 @@ def build_homerooms(W, plans):
                 if c["kind"] == "single" and c["grades"] == [g]:
                     c["kind"] = "changed"
                     break
+        for (g, built, opened) in REBALANCE.get(z, []):
+            for c in reversed(classes):
+                if c["kind"] == "single" and c["grades"] == [g]:
+                    c["kind"] = "rebalanced"
+                    c["built_for"] = built
+                    c["opened"] = opened
+                    break
+            else:
+                raise AssertionError("no class to rebalance at %s grade %d" % (z, g))
         # rooms: the half-day pair shares one room; every other class its own; permanent rooms first, then portables
         hr_rooms = plans[z]["homeroom"]
         ri = 0
@@ -194,6 +223,15 @@ def build_homerooms(W, plans):
                 for pid in c["members"][g]:
                     A.lines.append((s_old, pid, None, dt.date(2026, 9, 18)))
                     A.lines.append((s_new, pid, dt.date(2026, 9, 21), None))
+            elif c["kind"] == "rebalanced":
+                g = c["grades"][0]
+                t = teacher()
+                sid = sec_id(z)
+                c["sections"] = [sid]
+                A.sections.append(dict(z=z, section_id=sid, course=_course(c["built_for"]), teacher=t, room=c["room"],
+                                       session=sess, start=TERM_START, end=TERM_END))
+                for pid in c["members"][g]:
+                    A.lines.append((sid, pid, max(c["opened"], W.spell[(pid, 2026)][0]), None))
             else:
                 g = c["grades"][0]
                 if c["kind"] == "halfday":          # one teacher teaches the morning and the afternoon class
@@ -209,6 +247,18 @@ def build_homerooms(W, plans):
                 for pid in c["members"][g]:
                     A.lines.append((sid, pid, None, None))
             c["teacher_sections"] = c["sections"]
+        # the rebalanced classes' pupils sat in the grade's other classes until the class opened
+        for c in classes:
+            if c["kind"] != "rebalanced":
+                continue
+            g = c["grades"][0]
+            donors = [d for d in classes if d["kind"] == "single" and d["grades"] == [g]]
+            assert donors, (z, g)
+            last = prev_school_day(c["opened"])
+            for k, pid in enumerate(c["members"][g]):
+                if W.spell[(pid, 2026)][0] > last:
+                    continue
+                A.lines.append((donors[k % len(donors)]["sections"][0], pid, None, last))
         if z in PLACEHOLDER:
             sid = sec_id(z)
             A.sections.append(dict(z=z, section_id=sid, course=_course(PLACEHOLDER[z]), teacher="T00000", room="TBD",
@@ -299,6 +349,9 @@ PRESCHOOL = {
 }
 
 
+CASE_FLOWS = [("P", "110", "A", 1), ("D", "122", "P", 2), ("A", "116", "D", 2), ("F", "108", "D", 1), ("D", "124", "F", 2)]
+
+
 def build_preschool(W):
     r = K.rng("preschool")
     P = Ask()
@@ -331,7 +384,7 @@ def build_preschool(W):
                 for sess, n in zip(("AM", "PM"), sizes):
                     for _ in range(n):
                         s = new_sid()
-                        P.ecse.append(dict(z=z, sid=s, birth=bdate(r.random() < 0.45), service="ECSE classroom",
+                        P.ecse.append(dict(z=z, case=z, sid=s, birth=bdate(r.random() < 0.45), service="ECSE classroom",
                                            room="Rm %s" % room, session=sess,
                                            iep_start=dt.date(2025, 1, 6) + dt.timedelta(days=int(r.integers(0, 600)))))
                         kids.add(s)
@@ -377,7 +430,7 @@ def build_preschool(W):
         rows = [p for p in P.platform if p["z"] == z and p["sid"] not in used]
         for p in [rows[int(i)] for i in r.choice(len(rows), size=int(r.integers(2, 5)), replace=False)]:
             room = p["cls"].replace(" Full Day", "") if p["cls"].endswith("Full Day") else p["cls"].rsplit(" ", 1)[0]
-            P.ecse.append(dict(z=z, sid=p["sid"], birth=p["birth"], service="Inclusive classroom", room=room,
+            P.ecse.append(dict(z=z, case=z, sid=p["sid"], birth=p["birth"], service="Inclusive classroom", room=room,
                                session=p["session"],
                                iep_start=dt.date(2025, 3, 3) + dt.timedelta(days=int(r.integers(0, 500)))))
             used.add(p["sid"])
@@ -385,7 +438,7 @@ def build_preschool(W):
     for z in PRESCHOOL:
         for _ in range(int(r.integers(2, 5))):
             s = new_sid()
-            P.ecse.append(dict(z=z, sid=s, birth=bdate(r.random() < 0.5), service="Itinerant", room="", session="",
+            P.ecse.append(dict(z=z, case=z, sid=s, birth=bdate(r.random() < 0.5), service="Itinerant", room="", session="",
                                iep_start=dt.date(2025, 6, 2) + dt.timedelta(days=int(r.integers(0, 400)))))
     # re-registrations: a family that applied again holds a second child record in the same class (1 or 2 a site)
     for z in PRESCHOOL:
@@ -396,6 +449,14 @@ def build_preschool(W):
             q["app"] = p["app"] + dt.timedelta(days=int(r.integers(20, 90)))
             P.platform.append(q)
             used.add(p["sid"])
+    # the special education classrooms are district programs: some children's IEP cases are held by the special
+    # education team of another preschool site (host zone, room, case zone, children)
+    for (host, room, case, n) in CASE_FLOWS:
+        rows = [p for p in P.ecse if p["z"] == host and p["service"] == "ECSE classroom" and p["room"] == "Rm " + room
+                and p["case"] == host]
+        for p in rows[:n]:
+            p["case"] = case
+        assert any(p["case"] == host for p in P.ecse if p["z"] == host and p["room"] == "Rm " + room)
     # a waitlist offer that starts after the count day
     p = dict([q for q in P.platform if q["z"] == "P"][0])
     p.update(child=child_id(), sid=new_sid(), start=dt.date(2026, 10, 5), end=None, app=dt.date(2026, 5, 18))
@@ -413,6 +474,19 @@ def write_preschool(W, P, out):
                         "enroll_start", "enroll_end", "application_date"], rows)
 
 
+ECSE_NOTES = [
+    "Early Childhood Special Education roster: children aged 3 to 5 with an active IEP on 10/01/2026, listed by case "
+    "school.",
+    "Case school: the elementary school whose special education team holds the child's IEP case.",
+    "Service model: ECSE classroom, a district early childhood special education classroom; Inclusive classroom, a "
+    "district preschool class the child attends with special education support; Itinerant, special education services "
+    "at the child's home or community preschool. A child served itinerantly is not enrolled in a district preschool "
+    "class.",
+    "Classroom: the school and room where the child's class meets. A morning and an afternoon class in the same room "
+    "share the classroom.",
+]
+
+
 def write_ecse(W, P, out):
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -421,16 +495,26 @@ def write_ecse(W, P, out):
     ws.append(["Early Childhood Special Education (ages 3 to 5), active IEPs on 10/01/2026, by case school"])
     ws.append([])
     ws.append(["State ID", "Birth date", "Case school", "Service model", "Classroom", "Session", "IEP start"])
-    for p in sorted(P.ecse, key=lambda p: (K.SCHOOLS[p["z"]]["name"], p["service"], p["room"], p["sid"])):
-        ws.append([p["sid"], p["birth"], K.SCHOOLS[p["z"]]["name"], p["service"], p["room"], p["session"], p["iep_start"]])
+
+    def classroom(p):
+        return "%s %s" % (K.SCHOOLS[p["z"]]["short"], p["room"]) if p["room"] else ""
+
+    for p in sorted(P.ecse, key=lambda p: (K.SCHOOLS[p["case"]]["name"], p["service"], classroom(p), p["sid"])):
+        ws.append([p["sid"], p["birth"], K.SCHOOLS[p["case"]]["name"], p["service"], classroom(p), p["session"],
+                   p["iep_start"]])
     ws["A1"].font = Font(bold=True)
     for c in ws[4]:
         c.font = Font(bold=True)
-    for col, wd in zip("ABCDEFG", (13, 12, 24, 20, 11, 9, 12)):
+    for col, wd in zip("ABCDEFG", (13, 12, 24, 20, 20, 9, 12)):
         ws.column_dimensions[col].width = wd
     for row in ws.iter_rows(min_row=5):
         row[1].number_format = "mm/dd/yyyy"
         row[6].number_format = "mm/dd/yyyy"
     ws.freeze_panes = "A5"
+    nt = wb.create_sheet("Notes")
+    for line in ECSE_NOTES:
+        nt.append([line])
+        nt.cell(row=nt.max_row, column=1).alignment = Alignment(wrap_text=True, vertical="top")
+    nt.column_dimensions["A"].width = 110
     K.save_workbook(wb, os.path.join(out, F_ECSE), dt.datetime(2026, 10, 2, 9, 14, 0), "Special Education")
     return len(P.ecse)

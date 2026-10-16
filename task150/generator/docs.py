@@ -234,6 +234,12 @@ HR-K (kindergarten) to HR-5, and the intervention courses INT-RDG, INT-MTH and I
 of record, the room and the session (FULL, AM, PM) the section meets in, and the section's start and end dates.
 section_enrollment_fall2026.csv holds one row per pupil line in a section; student_id is the state ID, and a blank
 end_date is a line still open at the pull (10/08/2026).
+
+CLASS COUNTS
+For class-size reporting the district counts classes, not sections. A homeroom class is one room in one session
+(FULL, AM or PM), whatever the number of homeroom section rows or teachers of record in it, and it is counted in the
+grade or grades of the pupils enrolled in it. A class meets on a day when one of its sections is open that day with
+at least one pupil enrolled.
 """ % days
     with open(os.path.join(out, F_SIS_NOTES), "w", encoding="utf-8", newline="\n") as f:
         f.write(txt)
