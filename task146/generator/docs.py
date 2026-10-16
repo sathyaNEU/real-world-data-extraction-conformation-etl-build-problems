@@ -107,6 +107,7 @@ NOTES = [
         "the last five completed calendar quarters before the quarter in which the claim takes effect. The claimant is "
         "monetarily eligible if earnings in the base period total at least $6,800 and were paid in at least two of "
         "its quarters. Otherwise the claimant is found monetarily ineligible and no benefit year is established. "
+        "A claimant found monetarily ineligible may file again in a later quarter, once the base period has moved. "
         "Determinations are counted in the claims week of the claim."]),
     ("2.4", "Regions", "regions", [
         "Claims are counted in the region of the claimant's home address. The eight regions have had their present "

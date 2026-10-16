@@ -42,11 +42,29 @@ def compute(target):
     return dict(V=V, L=L, cm=cm, pr=pr, a=a, b=b, b_tot=tot, chart=[(d, V.nat[d]) for d in weeks],
                 call=K.round_to(L["gold"], 1000), refile_lo=4000, refile_hi=5000, without_lo=11000, without_hi=12000,
                 base=int(round(cm["base"])), pool=int(cm["pool"]),
+                national=K.round_to(L["national"]["all turns"], 1000),
                 groups_lower=sum(1 for k in I.G if k not in (4, 7) and b[k] < 0),
-                groups_lower_word={7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven"}.get(
-                    sum(1 for k in I.G if k not in (4, 7) and b[k] < 0), "some"),
+                industry_sentence=industry_sentence(b, tot),
                 pool_wci_pct=K.round_dp(100.0 * cm["pool_wci_share"], 1),
                 shares={r: cm["shares"][r] for r in K.REGIONS})
+
+
+WORDS = {0: "none", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine",
+         10: "ten", 11: "eleven", 12: "all twelve"}
+
+
+def industry_sentence(b, tot):
+    """What the industry table says about the rise on a year ago, worded from the figures."""
+    rise = {k: tot[2026][k] - tot[2025][k] for k in I.G}
+    total = sum(rise.values())
+    lower = sum(1 for k in I.G if k not in (4, 7) and b[k] < 0)
+    ca = rise[4] + rise[7]
+    if ca > total:
+        head = "Claims from construction and accommodation rose by more than the whole rise on a year ago"
+    else:
+        head = "Construction and accommodation account for %s of the rise in claims on a year ago" % (
+            "most" if ca > 0.5 * total else "part")
+    return "%s; %s of the other twelve industry groups %s lower." % (head, WORDS[lower], "is" if lower == 1 else "are")
 
 
 def n0(v):
@@ -65,18 +83,20 @@ def figures(c):
             "ineligible_determinations_jul_sep_2026": n0(c["pool"]),
             "share_in_western_coastal_island_pct": "%.1f" % c["pool_wci_pct"],
             "refiled_claims_range": [n0(c["refile_lo"]), n0(c["refile_hi"])],
-            "refiled_share_wci": "four fifths",
+            "refiled_share_wci": "nine tenths",
             "week_without_refiling_range": [n0(c["without_lo"]), n0(c["without_hi"])],
-            "first_week_share_words": "one in five (Western), one in four (Coastal, Island), fewer than one in ten "
+            "first_week_share_words": "one in four (Western), three in ten (Coastal, Island), fewer than one in ten "
                                       "(the other five regions)",
+            "pool_against_usual": "about one and a half times a usual quarter's; about a fifth in the three regions at "
+                                  "a usual turn",
         },
         "steps": {
             "base_week_ended_2026-10-03_advance": n0(c["base"]),
             "turns": "50",
             "turns_from": "April 2014", "turns_to": "July 2026",
         },
-        "default_path": {"seasonal_step": n0(K.round_to(c["L"]["rivals"][[k for k in c["L"]["rivals"] if k.startswith("R0 ")][0]], 1000)),
-                         "national_rate": n0(K.round_to(c["L"]["national"]["all turns"], 1000))},
+        "default_path": {"national_rate": n0(c["national"]),
+                         "seasonal_step": n0(K.round_to(c["L"]["rivals"][[k for k in c["L"]["rivals"] if k.startswith("R0 ")][0]], 1000))},
         "precision": {"one_standard_error_claims": "%d" % round(c["pr"]["se_call"])},
         "ask_a_workers_by_region_and_period": {
             r: {p: n0(c["a"][(r, p)]) for p, _, _ in N.PERIODS} for r in K.REGIONS},
@@ -172,20 +192,21 @@ def write_docx(path, c, png):
     para("We expect the Unemployment Insurance Board to report about %s initial claims for the claims week ended "
          "10 October 2026 when it publishes the advance count next Thursday, 15 October, up from %s in the week ended "
          "3 October." % (n0(c["call"]), n0(c["base"])), size=10.5, after=8)
-    para("The week ended 10 October is the first claims week of the fourth quarter, and new claims filed in it are "
-         "assessed on a base period of July 2025 to June 2026. Claimants turned down in July to September because "
-         "their pay from April to June fell outside the old base period can now qualify, and a good share of them file "
-         "again in the first week. The third quarter left %s monetarily ineligible determinations, more than twice a "
-         "normal quarter, and %s per cent of them were in Western, Coastal and Island. That matters because regions "
-         "differ a lot in how many come back: over the past 50 quarter turns about one refused claimant in five has "
-         "filed again in the first week in Western and about one in four in Coastal and Island, where most of the "
-         "refused are seasonal hotel and building workers whose last season now counts, against fewer than one in ten "
-         "in the other five regions." % (n0(c["pool"]), "%.1f" % c["pool_wci_pct"]))
+    para("The week ended 10 October is the first claims week of the fourth quarter, the first in which claimants "
+         "refused in July to September for want of base-period earnings can file again. How many of them do differs "
+         "a lot from region to region. Over the past 50 quarter turns about one refused claimant in four has filed "
+         "again in the first week in Western and about three in ten in Coastal and Island, where most of the refused "
+         "are seasonal hotel and building workers whose last season now counts, against fewer than one in ten in the "
+         "other five regions. This quarter's refusals sit where claimants come back: the third quarter left %s "
+         "monetarily ineligible determinations, about one and a half times a normal quarter, and %s per cent of them "
+         "were in Western, Coastal and Island, against about a fifth at a usual quarter turn." % (
+             n0(c["pool"]), "%.1f" % c["pool_wci_pct"]))
     para("Taking each region's refused claimants at its own rate, we put the claims filed again at %s to %s, about "
-         "four fifths of them in Western, Coastal and Island, on top of %s to %s for the rest of the week. A seasonal "
-         "reading of past October first weeks, or the national refusals taken at the national rate, would put the week "
-         "well short of our call, because neither allows for where this quarter's refusals sit." % (
-             n0(c["refile_lo"]), n0(c["refile_hi"]), n0(c["without_lo"]), n0(c["without_hi"])), after=6, keep=True)
+         "nine tenths of them in Western, Coastal and Island, on top of %s to %s for the rest of the week. The national "
+         "refusals taken at the national rate would put the week near %s, and a seasonal reading of past October first "
+         "weeks lower still, because neither allows for where this quarter's refusals sit." % (
+             n0(c["refile_lo"]), n0(c["refile_hi"]), n0(c["without_lo"]), n0(c["without_hi"]), n0(c["national"])),
+         after=6, keep=True)
     pic = doc.add_paragraph()
     pic.alignment = WD_ALIGN_PARAGRAPH.CENTER
     pic.add_run().add_picture(io.BytesIO(png), width=Cm(16.4))
@@ -196,9 +217,7 @@ def write_docx(path, c, png):
          "Source: Unemployment Insurance Board weekly claims and program statistics; Rothwell Bank Economics.",
          size=8, color="5D6875", after=9)
     para("Layoffs already notified to the board for the rest of the year, by region, and the third quarter's change "
-         "in claims by industry are in the attached workbook. Claims from construction and accommodation rose by more "
-         "than the whole rise on a year ago; %s of the other twelve industry groups are lower." % c["groups_lower_word"],
-         after=10)
+         "in claims by industry are in the attached workbook. %s" % c["industry_sentence"], after=10)
     para("Stacey Baxter", bold=True, after=0)
     para("Senior Economist, Rothwell Bank", size=9, color="5D6875", after=14)
     para("This note is prepared by Rothwell Bank Economics for the bank's clients. It is not investment advice.",

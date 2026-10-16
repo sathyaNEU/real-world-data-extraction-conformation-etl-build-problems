@@ -287,14 +287,17 @@ def main(target=None, golden=None):
     call = half_up(c["call"], 1000)
     ok("V call 16,000 from the shipped files", call == 16000, c["call"])
     ok("V the call is a bin clear of the default path", half_up(c["default"], 1000) <= call - 2000, c["default"])
-    ok("V the call is a bin clear of the national rate", half_up(c["national"], 1000) <= call - 1000, c["national"])
+    ok("V the national rate files two bins low", half_up(c["national"], 1000) == call - 2000, c["national"])
     ok("V one standard error leaves the call's thousand", half_up(c["call"] - c["se"], 1000) == call ==
        half_up(c["call"] + c["se"], 1000), c["se"])
     ok("V 50 quarter turns", c["turns"] == 50, c["turns"])
-    ok("V refiled claims about 4,500", half_up(c["refile"], 500) == 4500, c["refile"])
-    ok("V the week without them about 11,500", half_up(c["without"], 500) == 11500, c["without"])
-    ok("V the closing quarter's determinations 40,524, 39.4 per cent in Western, Coastal and Island",
-       c["pool"] == 40524 and dp1(100 * c["wci_share"]) == 39.4, (c["pool"], c["wci_share"]))
+    ok("V refiled claims between 4,000 and 5,000", 4000 <= c["refile"] <= 5000, c["refile"])
+    ok("V the rest of the week between 11,000 and 12,000", 11000 <= c["without"] <= 12000, c["without"])
+    ok("V the third quarter's determinations 30,182, 48.5 per cent in Western, Coastal and Island",
+       c["pool"] == 30182 and dp1(100 * c["wci_share"]) == 48.5, (c["pool"], c["wci_share"]))
+    ok("V Western about one in four, Coastal and Island about three in ten, the rest under one in ten",
+       0.24 <= c["slopes"]["Western"] <= 0.29 and all(0.27 <= c["slopes"][r] <= 0.35 for r in ("Coastal", "Island")) and
+       all(v < 0.1 for r, v in c["slopes"].items() if r not in ("Western", "Coastal", "Island")), c["slopes"])
     a, regions, periods = ask_a(target)
     b, _ = ask_b(target)
     wb = openpyxl.load_workbook(os.path.join(golden, "ic_preview_2026-10-10.xlsx"), data_only=True)

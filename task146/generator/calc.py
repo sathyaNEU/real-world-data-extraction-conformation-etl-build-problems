@@ -582,3 +582,82 @@ def ads_rival(V, target):
     m = sm.OLS(P.y, X).fit()
     x26 = q_mean[Q3] / q_mean[(2026, 2)] - 1
     return base_of(V, "NAT") + m.params["q_4"] + m.params["x"] * x26, len(P), x26
+
+
+# ---------------------------------------------------------------------------------------------------- region-aware
+# constructions beyond the golden's own, and the pooled rival's out-of-sample record
+def region_aware(V, L):
+    """Every other way of sizing the step region by region or by group of regions: crude ratios without a seasonal
+    intercept, the national step on two pools or on the pool and its mix, fourth-quarter turns region by region, and
+    the last three and five years of turns."""
+    D = L["D"]
+    b = lambda r: base_of(V, r)
+    out = {}
+    q4 = D[D.qq == 4]
+    out["each region's mean step per refused claim at fourth-quarter turns, no intercept"] = sum(
+        b(r) + float(((q4["nq_" + r] - q4["p1_" + r]) / q4["pool_" + r]).mean()) * V.pool[(r, Q3)] for r in REG)
+    out["each region's summed steps over its summed pools, every turn, no intercept"] = sum(
+        b(r) + float((D["nq_" + r] - D["p1_" + r]).sum() / D["pool_" + r].sum()) * V.pool[(r, Q3)] for r in REG)
+    wci = ("Western", "Coastal", "Island")
+    hi26 = sum(V.pool[(r, Q3)] for r in wci)
+    X = dums(D)
+    X["hi"] = sum(D["pool_" + r] for r in wci)
+    X["lo"] = D["pool_NAT"] - X["hi"]
+    m = sm.OLS(D["nq_NAT"] - D["p1_NAT"], X).fit()
+    out["the national step on two pools (Western, Coastal and Island; the rest)"] = \
+        b("NAT") + m.params["q_4"] + m.params["hi"] * hi26 + m.params["lo"] * (V.pool[("NAT", Q3)] - hi26)
+    X = dums(D)
+    X["pool"] = D["pool_NAT"]
+    X["mix"] = sum(D["pool_" + r] for r in wci)
+    m = sm.OLS(D["nq_NAT"] - D["p1_NAT"], X).fit()
+    out["the national step on the pool and its three-region part"] = \
+        b("NAT") + m.params["q_4"] + m.params["pool"] * V.pool[("NAT", Q3)] + m.params["mix"] * hi26
+    tot = 0.0
+    for r in REG:
+        mm = sm.OLS(q4["nq_" + r] - q4["p1_" + r], sm.add_constant(q4["pool_" + r])).fit()
+        tot += b(r) + float(mm.params.iloc[0]) + float(mm.params.iloc[1]) * V.pool[(r, Q3)]
+    out["each region at fourth-quarter turns only, one intercept"] = tot
+    out["the last three years (turns from October 2023)"] = regional(V, D[D.sun >= dt.date(2023, 10, 1)])
+    out["the last five years (turns from October 2021)"] = regional(V, D[D.sun >= dt.date(2021, 10, 1)])
+    return out
+
+
+def loo_one_share(V, D):
+    """Leave one turn out: the national step from region-by-quarter intercepts and one share for every region."""
+    errs = []
+    for k in range(len(D)):
+        tr, te = D.drop(index=D.index[k]), D.iloc[[k]]
+        rows = [dict(r=r, qq=t.qq, y=t["nq_" + r] - t["p1_" + r], pool=t["pool_" + r])
+                for _, t in tr.iterrows() for r in REG]
+        P = pd.DataFrame(rows)
+        X = pd.get_dummies(P.r + "_" + P.qq.astype(str), dtype=float)
+        X["pool"] = P.pool
+        m = sm.OLS(P.y, X).fit()
+        qq = int(te.qq.iloc[0])
+        p = sum(m.params["%s_%d" % (r, qq)] + m.params["pool"] * float(te["pool_" + r].iloc[0]) for r in REG)
+        errs.append(float(te["nq_NAT"].iloc[0] - te["p1_NAT"].iloc[0] - p))
+    return float(np.sqrt(np.mean(np.square(errs))))
+
+
+def twin_same_quarter(V, D, tol=0.08):
+    """The pair of turns of the same quarter of the year, outside 2020 and 2021, whose national pools are within tol
+    of each other and whose Western, Coastal and Island parts differ most."""
+    D = D.reset_index(drop=True).copy()
+    D["step"] = D.nq_NAT - D.p1_NAT
+    D["hi"] = (D.pool_Western + D.pool_Coastal + D.pool_Island) / D.pool_NAT
+    best = None
+    for a in range(len(D)):
+        for b_ in range(a + 1, len(D)):
+            A, B = D.loc[a], D.loc[b_]
+            if A.qq != B.qq or A.y in (2020, 2021) or B.y in (2020, 2021):
+                continue
+            if abs(A.pool_NAT / B.pool_NAT - 1) <= tol:
+                d = abs(A.hi - B.hi)
+                if best is None or d > best[0]:
+                    best = (d, A, B)
+    if best is None:
+        return None
+    _, A, B = best
+    hi_, lo_ = (A, B) if A.hi > B.hi else (B, A)
+    return dict(hi_turn=hi_.sun, lo_turn=lo_.sun, hi_pool=int(hi_.pool_NAT), lo_pool=int(lo_.pool_NAT),
+                hi_share=float(hi_.hi), lo_share=float(lo_.hi), hi_step=int(hi_.step), lo_step=int(lo_.step))

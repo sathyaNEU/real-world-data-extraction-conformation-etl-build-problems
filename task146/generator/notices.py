@@ -141,6 +141,87 @@ def _name(g, group, town, used):
     return n
 
 
+COINED = ["Corvan", "Tarnex", "Pelora", "Avonmere", "Brackenridge", "Halvard", "Monterra", "Quayside", "Redstone",
+          "Sandhurst", "Westmark", "Ashgrove", "Cobalt", "Granite Peak", "Kestrel", "Lakeview", "Marlowe", "Ironsand",
+          "Silverfern", "Stonebridge", "Pacific Rim", "Alpine", "Seaview", "Coastline", "Fernbrook", "Northcote"]
+NATIVE = ["Kowhai", "Totara", "Rimu", "Manuka", "Matai", "Kauri", "Pohutukawa", "Harakeke", "Rata", "Miro", "Tawa"]
+TRADE = {
+    "Construction": ["Builders", "Construction", "Civil", "Scaffolding", "Concrete", "Roofing", "Drainage", "Joinery",
+                     "Precast", "Earthworks", "Plastering", "Formwork", "Building Services", "Developments", "Homes"],
+    "Accommodation and food services": ["Hotels", "Hospitality", "Lodge", "Resorts", "Catering", "Motor Inn", "Holiday Park",
+                                        "Function Centre", "Backpackers", "Hotel Group", "Kitchens", "Eateries", "Tavern"],
+    "Manufacturing": ["Engineering", "Timber Processors", "Plastics", "Foods", "Packaging", "Metals", "Fabrication",
+                      "Dairy Products", "Print", "Furniture", "Meats", "Bakeries", "Coatings"],
+    "Retail trade": ["Furniture", "Outdoor", "Hardware", "Fashion", "Home Centre", "Pharmacy", "Motors", "Supplies",
+                     "Trade Centre", "Garden Centre", "Books"],
+    "Wholesale, transport and storage": ["Freight", "Logistics", "Distributors", "Couriers", "Cold Storage", "Transport",
+                                         "Haulage", "Shipping", "Wholesale"],
+    "Agriculture, forestry and fishing": ["Orchards", "Forestry", "Fisheries", "Growers", "Contracting", "Seafoods",
+                                          "Vineyards", "Farms", "Horticulture"],
+    "Mining, energy and utilities": ["Quarries", "Energy", "Minerals", "Drilling", "Aggregates", "Power"],
+    "Information and communication": ["Media", "Digital", "Communications", "Software", "Networks", "Studios"],
+    "Financial, insurance and property services": ["Property Management", "Finance", "Realty", "Insurance Brokers",
+                                                   "Property Group", "Lending"],
+    "Professional, scientific and technical services": ["Consulting", "Surveyors", "Laboratories", "Design", "Engineers",
+                                                        "Architects", "Planning"],
+    "Administrative and support services": ["Cleaning", "Security", "Recruitment", "Facilities", "Labour Hire",
+                                            "Staffing", "Services"],
+    "Public administration and safety": ["Services Trust", "Council Enterprises", "Community Services"],
+    "Education and training": ["Training Institute", "Learning Centre", "Academy", "Education Trust", "Tutoring"],
+    "Health care, social assistance and other services": ["Healthcare", "Care Homes", "Medical Centre", "Community Trust",
+                                                          "Laundry Services", "Rest Home", "Home Support"],
+}
+INITIALS = "ABCDGHJKLMNPRSTW"
+
+
+def _company_name(g, e, used):
+    """The employer's legal name as the business register holds it, and the shorter way an Employer Services clerk
+    typed it into the email register: family businesses, place names, coined brands and native tree and bird names,
+    some re-registered with a year, a few holding companies."""
+    pick = lambda xs: xs[int(g.integers(len(xs)))]
+    sn, sn2 = pick(SURNAMES), pick(SURNAMES)
+    trade = pick(TRADE[e.group])
+    town = e.town
+    u = g.random()
+    if u < 0.20:
+        core = "%s %s" % (sn, trade)
+    elif u < 0.29:
+        core = "%s & %s %s" % (sn, sn2, trade) if sn != sn2 else "%s Brothers %s" % (sn, trade)
+    elif u < 0.42:
+        core = "%s %s" % (town, trade)
+    elif u < 0.52:
+        a, b = pick(INITIALS), pick(INITIALS)
+        core = pick(["%s & %s %s" % (a, b, sn), "%s.%s. %s %s" % (a, b, sn, trade), "%s %s %s" % (a, sn, trade)])
+    elif u < 0.66:
+        core = "%s %s" % (pick(COINED), trade)
+    elif u < 0.76:
+        core = "%s %s" % (pick(NATIVE), trade)
+    elif u < 0.82:
+        core = "%s Holdings" % pick([sn, pick(COINED), town])
+    elif u < 0.88:
+        core = "%s %s" % (pick(PLACES), trade)
+    else:
+        core = "%s Group" % pick([sn, pick(COINED), pick(NATIVE)])
+    if g.random() < 0.13:
+        core += " (%d)" % int(g.integers(1996, 2024))
+    legal = core + " Limited"
+    k = 2
+    while legal in used:
+        legal = "%s (No %d) Limited" % (core, k)
+        k += 1
+    used.add(legal)
+    v = g.random()
+    if v < 0.55:
+        reg = legal.replace(" Limited", " Ltd")
+    elif v < 0.80:
+        reg = legal
+    elif v < 0.92:
+        reg = legal.replace(" Limited", "")
+    else:
+        reg = legal.replace(" Limited", " Ltd").upper()
+    return legal, reg
+
+
 class Employer:
     pass
 
@@ -181,9 +262,13 @@ def simulate():
         e.town = REGION_TOWNS[e.region][int(g.integers(len(REGION_TOWNS[e.region])))]
         gw = np.array([0.05, 0.03, 0.15, 0.16, 0.08, 0.10, 0.14, 0.02, 0.02, 0.03, 0.06, 0.02, 0.03, 0.11])
         e.group = GROUPS[int(g.choice(len(GROUPS), p=gw / gw.sum()))]
-        e.name = _name(g, e.group, e.town, used)
+        e.name = _name(g, e.group, e.town, used)      # drawn as before so every later draw of the notice world holds
         e.bn = _bn(g)
         emps.append(e)
+    gn = K.rng("employer-names")
+    used_n = set()
+    for e in emps:
+        e.name, e.reg_name = _company_name(gn, e, used_n)
     # notices: dates given from 1 July 2025 to 7 October 2026
     notices = []
     day = dt.date(2025, 7, 1)
@@ -427,7 +512,7 @@ def register_rows(W):
                 com = "%d sites" % len(n.sites)
             elif n.type == "Reduced hours" and g.random() < 0.3:
                 com = "hours cut to %d per week" % int(g.choice([20, 24, 28, 30, 32]))
-            rows.append({"ES ref": n.es_ref, "Received": n.given, "Employer": n.emp.name, "Business no.": n.emp.bn,
+            rows.append({"ES ref": n.es_ref, "Received": n.given, "Employer": n.emp.reg_name, "Business no.": n.emp.bn,
                          "Site address": s["street"], "Town": s["town"], "Region": K.LEGACY_CODE[s["region"]],
                          "Workers": s["workers"], "First layoff": _typed_date(n.first_layoff, g), "Type": n.type,
                          "Status": n.reg_status, "Entered by": who, "Comments": com})
@@ -455,35 +540,53 @@ REASONS_W = ["new contract won", "sale of the business fell through", "restructu
              "hours cut instead, under 20 affected", "the closure is on hold until March"]
 
 
+MODES = ["by email", "by phone", "in an email", "on the phone", "by letter", "in a call"]
+
+
+def _cap(t):
+    return t[:1].upper() + t[1:]
+
+
+def _fl(d):
+    return "%d %s" % (d.day, d.strftime("%B"))
+
+
 def _note_withdraw(g, who, n, d):
+    """A withdrawal as each officer writes one up: the contact, how it came in, the reason the employer gave."""
+    pick = lambda xs: xs[int(g.integers(len(xs)))]
     town = n.sites[0]["town"]
-    why = REASONS_W[int(g.integers(len(REASONS_W)))]
-    c = CONTACTS[int(g.integers(len(CONTACTS)))]
-    k = int(g.integers(4))
+    why = pick(REASONS_W)
+    c = pick(CONTACTS)
+    w = sum(s_["workers"] for s_ in n.sites)
+    mode = pick(MODES)
     if who == "JW":
-        t = ["Notice withdrawn by the employer by email from the %s (%s). No layoffs will go ahead." % (c, why),
-             "The %s confirmed by phone and email that the notice is withdrawn: %s." % (c, why),
-             "Employer has withdrawn this notice, %s. Withdrawal email saved to the file." % why,
-             "Withdrawal received from the %s today. Reason given: %s." % (c, why)][k]
+        t = pick(["Notice withdrawn. The %s confirmed %s (%s), so none of the %d layoffs will go ahead." % (c, mode, why, w),
+                  "The %s has withdrawn the notice (%s). Confirmation saved to the file." % (c, why),
+                  "Withdrawal received %s from the %s: %s. Closed." % (mode, c, why),
+                  "Employer has withdrawn the notice; %s. The %s site keeps all %d staff." % (why, town, w),
+                  "Notice withdrawn at the employer's request %s. Reason given: %s." % (mode, why)])
     elif who == "CH":
-        t = ["w/drawn - %s. email on file" % why, "ph %s, notice withdrawn (%s)" % (c, why),
-             "WITHDRAWN per email %d/%d. %s" % (d.day, d.month, why), "emp withdrawing notice, %s" % why][k]
+        t = pick(["w/drawn - %s. email on file" % why, "ph %s - notice withdrawn, %s" % (c, why),
+                  "WITHDRAWN per email %d/%d (%s)" % (d.day, d.month, why), "notice withdrawn by emp, %s" % why,
+                  "w/drawn. %s rang, %s" % (c, why), "withdrawal recvd from %s. %s" % (c, why)])
     elif who == "RB":
-        t = ["employer emailed to withdraw - %s" % why, "notice withdrawn, %s at %s" % (why, town),
-             "withdrawn by %s, %s" % (c, why), "they've withdrawn it - %s" % why][k]
+        t = pick(["employer emailed - notice withdrawn, %s" % why, "notice withdrawn, %s at %s" % (why, town),
+                  "withdrawn by the %s, %s" % (c, why), "%s confirmed withdrawal - %s" % (c, why),
+                  "withdrawal email in from %s. %s" % (c, why)])
     elif who == "SB":
-        t = ["Notice withdrawn. %s advised %s." % (c[0].upper() + c[1:], why),
-             "Received withdrawal of notice from %s. %s." % (c, why[0].upper() + why[1:]),
-             "Withdrawal confirmed with %s. %s site staff staying on." % (c, town),
-             "Notice withdrawn by employer; %s." % why][k]
+        t = pick(["Notice withdrawn. The %s advised: %s." % (c, why),
+                  "Received written withdrawal of the notice from the %s. %s." % (c, _cap(why)),
+                  "Withdrawal confirmed with the %s %s. %s staff staying on." % (c, mode, town),
+                  "Notice withdrawn by the employer; %s. File closed." % why])
     elif who == "DL":
-        t = ["%d/%d/%d withdrawal email from %s - %s." % (d.day, d.month, d.year, c, why),
-             "Withdrawn on %d %s. %s" % (d.day, d.strftime("%B"), why[0].upper() + why[1:] + "."),
-             "Notice withdrawn %d/%d (%s)." % (d.day, d.month, why),
-             "Withdrawal of notice received %d/%d. %s." % (d.day, d.month, why[0].upper() + why[1:])][k]
+        t = pick(["%d/%d/%d withdrawal email from %s - %s." % (d.day, d.month, d.year, c, why),
+                  "Withdrawn %s. %s." % (_fl(d), _cap(why)),
+                  "%d/%d notice withdrawn (%s)." % (d.day, d.month, why),
+                  "Withdrawal of notice received %d/%d from %s. %s." % (d.day, d.month, c, _cap(why))])
     else:
-        t = ["Withdrawn - %s." % why, "Spoke to the %s. Notice withdrawn, %s." % (c, why),
-             "Notice withdrawn; %s." % why, "Withdrawn by employer (%s)." % why][k]
+        t = pick(["Withdrawn - %s." % why, "Spoke to %s. Notice withdrawn, %s." % (c, why),
+                  "Notice withdrawn; %s." % why, "Withdrawn by employer (%s)." % why,
+                  "W/drawn %s, %s." % (mode, why)])
     return t
 
 
@@ -492,89 +595,86 @@ def _ordinal(k):
 
 
 def _note_other(g, who, n, d):
-    town = n.sites[0]["town"]
-    c = CONTACTS[int(g.integers(len(CONTACTS)))]
-    w = sum(s["workers"] for s in n.sites)
-    fl = n.first_layoff
-    day = int(g.integers(1, 28))
+    """Everything else Employer Services records on a notice, in the officer's own style."""
     pick = lambda xs: xs[int(g.integers(len(xs)))]
-    k = int(g.integers(20))
-    if k == 0:
-        t = pick(["Called the %s to confirm the site addresses, all correct." % c,
-                  "Site addresses checked with the %s." % c, "Confirmed site details with the %s." % c])
-    elif k == 1:
-        t = pick(["Union delegate asked for a copy of the notice. Sent with names removed.",
-                  "%s union organiser requested the notice, sent redacted copy." % town,
-                  "Copy of notice sent to the union at their request."])
-    elif k == 2:
-        t = pick(["Employer asked whether the 30 days run from lodgement. They do.",
-                  "Query from the %s on the notice period. Explained 30 days from lodgement." % c])
-    elif k == 3:
-        t = pick(["%s advised the layoffs are going ahead as notified." % (c[0].upper() + c[1:]),
-                  "Layoffs proceeding on %d %s per the %s." % (fl.day, fl.strftime("%B"), c),
-                  "No change, proceeding on %d/%d." % (fl.day, fl.month)])
-    elif k == 4:
-        t = pick(["Asked for the missing postcode on site %d. Supplied." % len(n.sites),
-                  "Postcode for the %s site was blank, now supplied." % town])
-    elif k == 5:
-        t = pick(["Employer asked about redeployment support, referred to the %s regional office." % TOWN[town]["region"],
-                  "Passed to %s regional office for redeployment help." % TOWN[town]["region"]])
-    elif k == 6:
-        t = pick(["Media enquiry about the %s layoffs, referred to communications." % town,
-                  "Reporter from the %s paper asking about numbers, referred to comms." % town])
-    elif k == 7:
-        t = pick(["Employer says numbers may come down, will lodge an amended notice if they do.",
-                  "%s thinks %d of the %d may be kept on. Amendment to follow if so." % (
-                      c[0].upper() + c[1:], max(2, w // 5), w)])
-    elif k == 8:
-        t = pick(["Checked the first layoff date with the payroll contact, unchanged.",
-                  "Payroll confirms the first finishing date is %d %s." % (fl.day, fl.strftime("%B"))])
-    elif k == 9:
-        t = pick(["Briefing for affected staff booked at the %s office for the %s." % (town, _ordinal(day)),
-                  "Staff information session set for %d %s at %s." % (day, d.strftime("%B"), town)])
-    elif k == 10:
-        t = pick(["Employer contact changed to the %s. Details updated." % c, "New contact for this notice: %s." % c])
-    elif k == 11:
-        t = pick(["Some staff taking voluntary redundancy early. Notice unchanged at %d." % w,
-                  "%d staff left early on voluntary terms, notice stands." % max(2, w // 7)])
-    elif k == 12:
-        t = pick(["Sent the employer the information sheet for affected workers.",
-                  "Info pack for affected workers emailed to %s." % c])
-    elif k == 13:
-        t = pick(["Employer asked if casual staff count towards the 20. Explained.",
-                  "Question on whether fixed-term staff need notice. Answered."])
-    elif k == 14:
-        t = pick(["Regional office to run a jobs expo in %s for the affected workers." % town,
-                  "Jobs expo planned %s, employer happy to release staff to attend." % town])
-    elif k == 15:
-        t = pick(["Duplicate email from the employer, nothing new.", "Second copy of the notice received by email. No action."])
-    elif k == 16:
-        t = pick(["Employer phoned to say the first layoffs are still on track.",
-                  "Rang %s, on track for %d %s." % (c, fl.day, fl.strftime("%B"))])
-    elif k == 17:
-        t = pick(["Requested the site manager's number for the briefing.", "Got mobile for the %s site lead." % town])
-    elif k == 18:
-        t = pick(["%s asked for help with a letter to staff. Template sent." % (c[0].upper() + c[1:]),
-                  "Employer wanted wording for the staff letter, sent example."])
-    else:
-        t = pick(["Left a message for the %s, no reply yet." % c, "Tried the %s twice, voicemail." % c])
+    town = n.sites[0]["town"]
+    c = pick(CONTACTS)
+    w = sum(s_["workers"] for s_ in n.sites)
+    fl = n.first_layoff
+    hh, mm = int(g.integers(8, 17)), int(g.integers(0, 60))
+    day = int(g.integers(1, 28))
+    reg = TOWN[town]["region"]
+    kind = int(g.integers(26))
+    opts = [
+        ["Called the %s to confirm the site addresses, all correct." % c, "Site addresses checked with the %s." % c,
+         "Went through the %d site%s with the %s, no changes." % (len(n.sites), "" if len(n.sites) == 1 else "s", c)],
+        ["Union delegate asked for a copy of the notice. Sent with names removed.",
+         "%s organiser asked for the notice, redacted copy sent." % town, "Copy to the union as requested."],
+        ["Employer asked whether the 30 days run from lodgement. They do.",
+         "Query from the %s about when the 30 days start. Explained." % c,
+         "%s unsure if the notice period counts weekends. It does." % _cap(c)],
+        ["%s says the layoffs go ahead as notified." % _cap(c), "Layoffs going ahead on %s per the %s." % (_fl(fl), c),
+         "No change, proceeding %d/%d." % (fl.day, fl.month)],
+        ["Postcode missing for the %s site, now supplied." % town, "Blank postcode on site %d fixed." % len(n.sites),
+         "Site %d had no postcode. %s supplied it." % (len(n.sites), _cap(c)), "Corrected the %s site's postcode." % town],
+        ["Referred to the %s regional office for redeployment help." % reg,
+         "Employer wants help placing staff. Passed to %s regional office." % reg],
+        ["Media enquiry about the %s job losses, sent to communications." % town,
+         "Reporter rang about the %s numbers at %d:%02d, referred to comms." % (town, hh, mm)],
+        ["%s thinks %d of the %d may be kept on. Will amend if so." % (_cap(c), max(2, w // 5), w),
+         "Numbers may come down. Employer will lodge an amendment if they do."],
+        ["Payroll confirms the first finishing date is %s." % _fl(fl), "First layoff date checked with payroll, unchanged."],
+        ["Staff briefing booked at the %s office for the %s." % (town, _ordinal(day)),
+         "Information session for affected staff %s at %s." % (_fl(d.replace(day=day)), town)],
+        ["New contact for this notice: the %s." % c, "Contact details updated, now the %s." % c],
+        ["%d staff left early on voluntary terms, notice stands." % max(2, w // 7),
+         "Some voluntary redundancies taken early. Notice unchanged at %d." % w],
+        ["Info pack for affected workers emailed to the %s." % c, "Sent the information sheet for affected workers."],
+        ["Asked whether casual staff count towards the 20. Explained.",
+         "Question on fixed-term staff and the notice. Answered by email."],
+        ["Jobs expo in %s for the affected workers, employer releasing staff to attend." % town,
+         "Regional office running a jobs expo at %s on the %s." % (town, _ordinal(day))],
+        ["Second copy of the notice by email, nothing new.", "Same notice sent again by the %s, no action." % c,
+         "Duplicate email %d/%d, nothing changed." % (d.day, d.month)],
+        ["%s rang at %d:%02d, still on track for %s." % (_cap(c), hh, mm, _fl(fl)), "Rang the %s, on track." % c],
+        ["Got a mobile number for the %s site lead." % town, "Asked for the site manager's number for the briefing."],
+        ["%s wanted wording for the staff letter, example sent." % _cap(c), "Template letter to staff sent to the %s." % c],
+        ["Left a message for the %s, no reply yet." % c, "Tried the %s twice, voicemail." % c,
+         "No answer from the %s, will try again Monday." % c],
+        ["Checked the notice against the business register, details match.",
+         "Business number on the notice confirmed with the register."],
+        ["Employer asked to move the first layoff date. Advised an amended notice is needed.",
+         "Wants to push the first layoff back a fortnight. Told them to amend the notice.",
+         "%s asked how to change the dates. Sent the amendment steps." % _cap(c)],
+        ["Work and Income contacted about the %d workers at %s." % (w, town),
+         "Passed the numbers to the local benefits office for %s." % town],
+        ["%s asked if the notice is public. Explained what we publish." % _cap(c),
+         "Query about who sees the notice. Explained."],
+        ["Site visit to %s arranged for the %s." % (town, _ordinal(day)), "Visited the %s site, met the %s." % (town, c)],
+        ["Emailed the %s for the full site list, received the same day." % c,
+         "Requested the breakdown by site, %s sent it through." % c],
+    ]
+    t = pick(opts[kind])
     if who == "CH":
         t = t.replace("Employer", "emp").replace("employer", "emp").replace(" the ", " ").replace("phone", "ph")
     elif who == "RB":
         t = (t[0].lower() + t[1:]).rstrip(".")
     elif who == "DL":
         t = "%d/%d %s" % (d.day, d.month, t)
+    elif who == "TL" and g.random() < 0.4:
+        t = t.rstrip(".").replace(" the ", " ")
     return t
 
 
 def case_note_rows(W):
     g = K.rng("case-notes")
+    gt = K.rng("case-note-text")
     notes = []
     for n in W["notices"]:
         if n.withdrawn:
             ref = n.rekeyed["ln"] if (n.rekeyed and n.withdrawn >= n.rekeyed["at"].date()) else (n.ln or n.es_ref)
             who = OFFICERS[int(g.integers(6))]
-            notes.append((n.withdrawn, who, _typed_ref(ref, g), _note_withdraw(g, who, n, n.withdrawn)))
+            notes.append((n.withdrawn, who, _typed_ref(ref, g), _note_withdraw(gt, who, n, n.withdrawn)))
     pool = [n for n in W["notices"] if (n.channel == "portal" or n.rekeyed) and n.given >= dt.date(2026, 4, 1)]
     for _ in range(152):
         n = pool[int(g.integers(len(pool)))]
@@ -586,7 +686,7 @@ def case_note_rows(W):
             continue
         ref = n.ln if n.channel == "portal" else n.rekeyed["ln"]
         who = OFFICERS[int(g.integers(6))]
-        notes.append((d, who, _typed_ref(ref, g), _note_other(g, who, n, d)))
+        notes.append((d, who, _typed_ref(ref, g), _note_other(gt, who, n, d)))
     cons = [n for n in pool if n.withdrawn is None and valid(n) and n.first_layoff >= dt.date(2026, 10, 20)]
     for n in [cons[int(i)] for i in g.choice(len(cons), 2, replace=False)]:
         start = n.lodged.date() if n.channel == "portal" else n.rekeyed["at"].date()

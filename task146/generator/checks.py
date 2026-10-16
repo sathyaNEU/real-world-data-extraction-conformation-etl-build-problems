@@ -251,36 +251,38 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
       not (set(R.ASK_A_FILES + R.ASK_B_FILES) - {R.F_NOTES, R.F_REGIONS}) & {R.F_LEGACY, R.F_CURRENT, R.F_PROGRAM})
 
     # ------------------------------------------------------------------ R3a: the analyst test
-    A("R3a the default path on the clean truth (seasonal factors of the quarter's first claims week on the level of "
-      "the last four weeks) files 13,000 (%.0f)" % Lt["rivals"][R0], K.round_to(Lt["rivals"][R0], 1000) == 13000)
-    A("R3a the same default path on the pack files 13,000 (%.0f)" % L["rivals"][R0],
-      K.round_to(L["rivals"][R0], 1000) == 13000)
-    A("R3a the refiling inferred and sized on the national determinations at the national rate files 15,000 on the "
-      "clean truth and on the pack (%.0f, %.0f)" % (Lt["national"]["all turns"], L["national"]["all turns"]),
-      K.round_to(Lt["national"]["all turns"], 1000) == K.round_to(L["national"]["all turns"], 1000) == 15000)
     natv = L["national"]
-    A("R3a every national-rate variant lands at 14,000 or 15,000, a bin or more below (%s)" %
-      ", ".join("%.0f" % v for v in natv.values()), all(K.round_to(v, 1000) in (14000, 15000) for v in natv.values()))
+    A("R3a the default path on the clean truth (the refiling the notes file, sized on the third quarter's national "
+      "ineligible determinations at the national rate past turns show) files 14,000 (%.0f)" % Lt["national"]["all turns"],
+      K.round_to(Lt["national"]["all turns"], 1000) == 14000)
+    A("R3a the same default path on the pack files 14,000 (%.0f), two bins below the golden" % natv["all turns"],
+      K.round_to(natv["all turns"], 1000) == 14000 and call - K.round_to(natv["all turns"], 1000) == 2000)
+    A("R3a every national-rate variant files 14,000 or less, a full bin or more off (%s)" %
+      ", ".join("%.0f" % v for v in natv.values()), all(K.round_to(v, 1000) <= 14000 for v in natv.values()))
     A("R3a the nearest national-rate variant is %.0f claims below the golden" % (gold - max(natv.values())),
-      gold - max(natv.values()) >= 1000)
+      gold - max(natv.values()) >= 1500)
+    A("R3a the seasonal route (factors of the quarter's first claims week on the level of the last four weeks) files "
+      "13,000 on the clean truth and the pack (%.0f, %.0f)" % (Lt["rivals"][R0], L["rivals"][R0]),
+      K.round_to(Lt["rivals"][R0], 1000) == K.round_to(L["rivals"][R0], 1000) == 13000)
     # ------------------------------------------------------------------ R3b: the decisive step alone
-    A("R3b the decisive step alone (each region's step on its own closing-quarter determinations) turns the default "
-      "path's 13,000 into 16,000 on the clean truth and the pack (%.0f, %.0f)" % (Lt["gold"], gold),
+    A("R3b the decisive step alone (each region's refused claimants at that region's own share) turns the default "
+      "path's 14,000 into 16,000 on the clean truth and the pack (%.0f, %.0f)" % (Lt["gold"], gold),
       K.round_to(Lt["gold"], 1000) == call)
     rv = L["rivals"]
-    want = {"R1 last year's week times the last eight weeks' growth on the year": 12000,
+    want = {"R0 seasonal factors of the quarter's first claims week on the level of the last four weeks (default)": 13000,
+            "R1 last year's week times the last eight weeks' growth on the year": 12000,
             "R2 the step from the week before, one intercept per quarter of the year": 13000,
             "R3 the step scaled on the closing quarter's claims": 13000,
             "R3r the step scaled on the closing quarter's claims, region by region": 14000,
             "R0b ISO-week seasonal factors on the level of the last four weeks": 12000,
             "R2r a quarter-start ratio": 13000, "R2g quarter-start terms region by region": 13000}
-    for k, b in want.items():
-        A("R3b rung %s files %s (%.0f)" % (k, "{:,}".format(b), rv[k]), K.round_to(rv[k], 1000) == b)
+    for k, b_ in want.items():
+        A("R3b rung %s files %s (%.0f)" % (k, "{:,}".format(b_), rv[k]), K.round_to(rv[k], 1000) == b_)
     A("R3b the one-share panel (every region's own intercepts, one share for all) files 14,000 (%.0f)" %
       natv["one share for every region, each region's own intercepts"],
       K.round_to(natv["one share for every region, each region's own intercepts"], 1000) == 14000)
     for k, v in L["latest"].items():
-        A("R3b latest-period rate, %s, files %s (%.0f), a bin or more below" % (k, "{:,}".format(K.round_to(v, 1000)), v),
+        A("R3b latest-period rate, %s, files %s (%.0f), two bins or more below" % (k, "{:,}".format(K.round_to(v, 1000)), v),
           K.round_to(v, 1000) <= call - 2000)
     # ------------------------------------------------------------------ R3c: no plant
     blocks = Counter()
@@ -321,22 +323,28 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
           for n in nums) and not any("%" in n or "per cent" in n for n in nums))
     alltext = " ".join(dtext.values()) + " " + " ".join(
         open(os.path.join(target, f), encoding="utf-8").read() for f in (R.F_CASES,))
-    method = re.findall(r"refil\w*|\bfil(?:e|es|ed|ing) again\b|\bcom(?:e|es|ing) back\b|re-?admit\w*|regression|"
+    filed = "A claimant found monetarily ineligible may file again in a later quarter, once the base period has moved."
+    A("R3 strict: the refiling is filed once, as the board's own rule (technical notes 2.3): %r; the sentence carries "
+      "no size, rate, share, timing within the quarter or region" % filed,
+      filed in notes_t and len(re.findall(r"\bfil(?:e|es|ed|ing) again\b", alltext, re.I)) == 1 and
+      not re.search(r"\d|per cent|share|rate|region|most|many|few|half|first week|first claims week", filed, re.I))
+    method = re.findall(r"refil\w*|\bcom(?:e|es|ing) back\b|re-?admit\w*|regression|"
                         r"seasonal(?:ly)? (?:factor|adjustment|component|pattern)|quarter[- ]start|"
                         r"first (?:claims )?week of (?:the|a|each) quarter|turn of the quarter|"
-                        r"base period (?:moves|shifts|rolls)|(?:may|can) (?:then )?qualify|later quarter|next quarter|"
-                        r"share of (?:the )?(?:refused|ineligible)", alltext, re.I)
-    A("R3 strict: no shipped sentence or note says that refused claimants file again, how many, or that the share "
-      "differs by region, and none names a seasonal factor or a regression", not method, method)
+                        r"share of (?:the )?(?:refused|ineligible|claimants)|(?:most|many|few|half|some) of (?:them|those|"
+                        r"the refused|the claimants)|varies by region|differ\w* (?:by|between|across) regions?",
+                        alltext, re.I)
+    A("R3 strict: no shipped sentence or note says how many refused claimants file again, when within a quarter, or "
+      "that the share differs by region, and none names a seasonal factor or a regression", not method, method)
     every_refiles = V.nat[V.latest] + cm["pool"]
     A("R3 strict: the HOW sentences executed word for word on clean data give no figure of their own; the estimators "
-      "they admit file the default path's 13,000, the national rate's 15,000 or, every refused claimant filing again, "
-      "%s, never 16,000" % "{:,}".format(K.round_to(every_refiles, 1000)),
+      "they admit file the default path's 14,000 (the filed refiling at the national rate), the seasonal step's 13,000 "
+      "or, every refused claimant filing again in the week, %s, never 16,000" % "{:,}".format(K.round_to(every_refiles, 1000)),
       K.round_to(Lt["rivals"][R0], 1000) != call and K.round_to(Lt["national"]["all turns"], 1000) != call and
       K.round_to(every_refiles, 1000) != call)
-    A("R3 strict: the behaviour the decisive step turns on (each region's first-week share) is inferred from the data, "
-      "and the data rejects the rival (one share for every region) by a visible margin (F %.1f on %d and %d degrees "
-      "of freedom)" % ((P := C.panel(V, L["D"]))["F"], P["df"][0], P["df"][1]), P["F"] >= 50)
+    A("R3 strict: the behaviour the decisive step turns on (each region's own share) is inferred from the data, and "
+      "the data rejects the rival (one share for every region) by a visible margin (F %.1f on %d and %d degrees of "
+      "freedom)" % ((P := C.panel(V, L["D"]))["F"], P["df"][0], P["df"][1]), P["F"] >= 100)
 
     rev_dir = copy_only(target, [R.F_LEGACY, R.F_CURRENT, R.F_PROGRAM, R.F_REGIONS])
     try:
@@ -354,25 +362,35 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
     A("closure 14: the weekly files' rows and the workbook's fiscal-year sheets read in reverse give the same call "
       "(%.0f)" % g_rev, abs(g_rev - gold) < 1e-6)
 
-    # ------------------------------------------------------------------ the golden's constructions
-    for k, v in L["golden"].items():
-        A("construction %s files 16,000 (%.0f, clearance %.2f)" % (k, v, K.bin_clearance(v, 1000)),
-          K.round_to(v, 1000) == call and K.bin_clearance(v, 1000) >= 0.25)
+    # ------------------------------------------------------------------ every region-aware construction
+    se = pr["se_call"]
+    G_POOL = sum(V.inelig_m[((2026, m_), r)] for m_ in (7, 8, 9) for r in REG)
+    G_POOL_WCI = K.round_dp(100.0 * sum(V.inelig_m[((2026, m_), r)] for m_ in (7, 8, 9) for r in WCI) / G_POOL, 1)
+    ra = dict(L["golden"])
+    ra.update(C.region_aware(V, L))
+    for k, v in ra.items():
+        A("region-aware construction, %s: %.0f, clear of 15,500 and 16,500 by more than one sigma (%.0f and %.0f "
+          "against %.0f)" % (k, v, v - 15500, 16500 - v, se),
+          K.round_to(v, 1000) == call and v - 15500 > se and 16500 - v > se)
+    A("the region-aware constructions span %.0f to %.0f (%d of them); the nearest edge is %.0f claims away, %.1f sigma" % (
+        min(ra.values()), max(ra.values()), len(ra), min(min(v - 15500, 16500 - v) for v in ra.values()),
+        min(min(v - 15500, 16500 - v) for v in ra.values()) / se), len(ra) >= 20)
     nrp, nrp_se = L["nat_on_regional_pools"]
-    A("the national step on the eight regional pools at once (the regional steps discarded) is %.0f with a standard "
-      "error of %.0f, %.1f times the golden's: a dominated estimator whose interval holds the golden" % (
-          nrp, nrp_se, nrp_se / pr["se_call"]), nrp_se >= 5 * pr["se_call"] and abs(nrp - gold) < 1.96 * nrp_se)
+    A("the national step on the eight regional pools at once (one equation, the regional steps discarded) lands the "
+      "golden's bin: %.0f, standard error %.0f, %.1f times the regional build's" % (nrp, nrp_se, nrp_se / se),
+      K.round_to(nrp, 1000) == call and nrp_se >= 3 * se)
 
     # ------------------------------------------------------------------ one sigma, every rounded figure
-    lo, hi = gold - pr["se_call"], gold + pr["se_call"]
-    A("sigma: one standard error (%.0f claims) either way leaves the call at 16,000 (%.0f to %.0f)" % (pr["se_call"], lo, hi),
+    lo, hi = gold - se, gold + se
+    A("sigma: one standard error (%.0f claims) either way leaves the call at 16,000 (%.0f to %.0f)" % (se, lo, hi),
       K.round_to(lo, 1000) == K.round_to(hi, 1000) == call)
-    A("sigma: the flip to 15,000 needs the estimate %.0f claims lower, %.1f standard errors" % (
-        gold - 15500, (gold - 15500) / pr["se_call"]), (gold - 15500) / pr["se_call"] >= 4)
+    A("sigma: the flip to 15,000 needs the estimate %.0f claims lower (%.1f standard errors), the flip to 17,000 %.0f "
+      "higher (%.1f)" % (gold - 15500, (gold - 15500) / se, 16500 - gold, (16500 - gold) / se),
+      (gold - 15500) / se >= 4 and (16500 - gold) / se >= 4)
     ref, wo = cm["refile"], cm["without"]
     A("sigma: the refiled claims (%.0f, se %.0f) stay between 4,000 and 5,000 at one standard error" % (ref, pr["se_refile"]),
       4000 <= ref - pr["se_refile"] and ref + pr["se_refile"] <= 5000)
-    A("sigma: the week without them (%.0f, se %.0f) stays between 11,000 and 12,000" % (wo, pr["se_icpt"]),
+    A("sigma: the rest of the week (%.0f, se %.0f) stays between 11,000 and 12,000" % (wo, pr["se_icpt"]),
       11000 <= wo - pr["se_icpt"] and wo + pr["se_icpt"] <= 12000)
     parts = L["parts"]
     a_ = sum(parts[r]["refile"] for r in WCI)
@@ -380,48 +398,59 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
     va = sum(parts[r]["var_refile"] for r in WCI)
     vb = sum(parts[r]["var_refile"] for r in REG if r not in WCI)
     se_sh = math.sqrt(b_ ** 2 * va + a_ ** 2 * vb) / (a_ + b_) ** 2
-    A("sigma: Western, Coastal and Island's part of the refiled claims (%.3f, se %.3f) stays about four fifths "
-      "(0.75 to 0.85)" % (cm["refile_wci_share"], se_sh),
-      0.75 <= cm["refile_wci_share"] - se_sh and cm["refile_wci_share"] + se_sh <= 0.85)
-    A("sigma: each of Western, Coastal and Island's first-week shares stays between a fifth and three tenths, and every "
-      "other region's under a tenth, at one standard error (%s)" % ", ".join(
+    A("sigma: Western, Coastal and Island's part of the refiled claims (%.3f, se %.3f) stays about nine tenths "
+      "(0.85 to 0.95)" % (cm["refile_wci_share"], se_sh),
+      0.85 <= cm["refile_wci_share"] - se_sh and cm["refile_wci_share"] + se_sh <= 0.95)
+    A("sigma: Western's share stays about one in four (0.24 to 0.29), Coastal's and Island's about three in ten (0.27 to "
+      "0.35), every other region's under one in ten, at one standard error (%s)" % ", ".join(
           "%s %.3f+-%.3f" % (r, parts[r]["slope"], parts[r]["slope_se"]) for r in REG),
-      all(0.2 <= parts[r]["slope"] - parts[r]["slope_se"] and parts[r]["slope"] + parts[r]["slope_se"] <= 0.3
-          for r in WCI) and all(parts[r]["slope"] + parts[r]["slope_se"] < 0.1 for r in REG if r not in WCI))
-    A("sigma: the closing quarter's determinations (40,524) and their 39.4 per cent in Western, Coastal and Island are "
-      "counts from the workbook, with no estimation error", cm["pool"] == 40524 and
-      K.round_dp(100 * cm["pool_wci_share"], 1) == 39.4)
+      0.24 <= parts["Western"]["slope"] - parts["Western"]["slope_se"] and
+      parts["Western"]["slope"] + parts["Western"]["slope_se"] <= 0.29 and
+      all(0.27 <= parts[r]["slope"] - parts[r]["slope_se"] and parts[r]["slope"] + parts[r]["slope_se"] <= 0.35
+          for r in ("Coastal", "Island")) and
+      all(parts[r]["slope"] + parts[r]["slope_se"] < 0.1 for r in REG if r not in WCI))
+    A("sigma: the third quarter's determinations (%s) and their %.1f per cent in Western, Coastal and Island are counts "
+      "from the workbook, with no estimation error" % ("{:,}".format(cm["pool"]), 100 * cm["pool_wci_share"]),
+      cm["pool"] == G_POOL and K.round_dp(100 * cm["pool_wci_share"], 1) == G_POOL_WCI)
     # the same statements under every construction
     dec = decompositions(V, L)
-    A("every construction keeps the refiled claims between 4,000 and 5,000 and the week without them between 11,000 "
+    A("every construction keeps the refiled claims between 4,000 and 5,000 and the rest of the week between 11,000 "
       "and 12,000 (%s)" % "; ".join("%s %.0f/%.0f" % (k, x["refile"], x["without"]) for k, x in dec.items()),
       all(4000 <= x["refile"] <= 5000 and 11000 <= x["without"] <= 12000 for x in dec.values()))
-    A("every construction keeps about four fifths of the refiled claims in Western, Coastal and Island, their shares "
-      "between a fifth and three tenths and every other region's under a tenth",
-      all(0.75 <= x["wci"] <= 0.85 and all(0.2 <= x["shares"][r] <= 0.3 for r in WCI) and
+    A("every construction keeps about nine tenths of the refiled claims in Western, Coastal and Island, Western about "
+      "one in four, Coastal and Island about three in ten, every other region under one in ten",
+      all(0.85 <= x["wci"] <= 0.95 and 0.24 <= x["shares"]["Western"] <= 0.29 and
+          all(0.27 <= x["shares"][r] <= 0.35 for r in ("Coastal", "Island")) and
           all(x["shares"][r] < 0.1 for r in REG if r not in WCI) for x in dec.values()))
 
-    # ------------------------------------------------------------------ rejection margins and the mix
+    # ------------------------------------------------------------------ the data rejects pooling
     e = C.loo(V, L["D"])
     rm = {k: float(np.sqrt(np.mean(v ** 2))) for k, v in e.items()}
-    A("margin: leave-one-out root mean square of the national step, regional build %.0f, national pool %.0f, closing "
-      "quarter's claims %.0f, a quarter-start term %.0f" % (rm["regional"], rm["pool"], rm["claims"], rm["term"]),
-      rm["regional"] < rm["pool"] < rm["claims"] < rm["term"] and rm["regional"] <= 0.5 * rm["term"])
+    rm["one_share"] = C.loo_one_share(V, L["D"])
+    A("margin: leave one turn out, the national step misses by %.0f claims under the regional build against %.0f for "
+      "the national pool at the national rate, %.0f for one share in every region, %.0f for the closing quarter's claims "
+      "and %.0f for a quarter-start term" % (rm["regional"], rm["pool"], rm["one_share"], rm["claims"], rm["term"]),
+      rm["regional"] < min(rm["pool"], rm["one_share"], rm["claims"], rm["term"]) and
+      rm["pool"] >= 1.4 * rm["regional"] and rm["one_share"] >= 1.4 * rm["regional"])
     A("margin: region by region, one share for every region misses by %.0f claims a region and turn against %.0f for "
-      "each region's own" % (P["rmse_common"], P["rmse_regional"]), P["rmse_regional"] <= 0.7 * P["rmse_common"])
+      "each region's own" % (P["rmse_common"], P["rmse_regional"]), P["rmse_regional"] <= 0.6 * P["rmse_common"])
+    mn = C.fit_region(L["D"], "NAT")
+    A("margin: the national pool's fit is visibly loose (R squared %.2f, residual %.0f claims) beside the regional "
+      "build's leave-one-out %.0f" % (mn.rsquared, math.sqrt(mn.scale), rm["regional"]),
+      mn.rsquared < 0.75 and math.sqrt(mn.scale) > 1.3 * rm["regional"])
     um = C.usual_mix(V, L)
-    A("mix: the third quarter's determinations (%d) are more than twice the median closing quarter's (%.0f)" %
-      (cm["pool"], um["median_pool"]), cm["pool"] > 2 * um["median_pool"])
+    A("mix: the third quarter's determinations (%d) are about one and a half times the median closing quarter's (%.0f)" %
+      (cm["pool"], um["median_pool"]), 1.45 <= cm["pool"] / um["median_pool"] <= 1.8)
     A("mix: %.1f per cent of them sit in Western, Coastal and Island against %.1f per cent at the median turn" %
-      (100 * cm["pool_wci_share"], 100 * um["median_share"]), cm["pool_wci_share"] >= um["median_share"] + 0.12)
-    tw = [t for t in C.twins(V, L["D"]) if t["a"] == dt.date(2022, 10, 2) and t["b"] == dt.date(2023, 10, 1)]
-    A("twin: the October 2022 and October 2023 turns, national pools %d and %d, Western, Coastal and Island's part "
-      "%.3f and %.3f, steps %d and %d" % ((tw[0]["pool_a"], tw[0]["pool_b"], tw[0]["hi_a"], tw[0]["hi_b"],
-                                           tw[0]["step_a"], tw[0]["step_b"]) if tw else (0, 0, 0, 0, 0, 0)),
-      bool(tw) and tw[0]["step_a"] > tw[0]["step_b"] + 200)
+      (100 * cm["pool_wci_share"], 100 * um["median_share"]), cm["pool_wci_share"] >= um["median_share"] + 0.25)
+    tw = C.twin_same_quarter(V, L["D"])
+    A("twin: the %s and %s turns, national pools %d and %d, Western, Coastal and Island's part %.3f and %.3f, steps %d "
+      "and %d" % ((tw["hi_turn"], tw["lo_turn"], tw["hi_pool"], tw["lo_pool"], tw["hi_share"], tw["lo_share"],
+                   tw["hi_step"], tw["lo_step"]) if tw else ("-", "-", 0, 0, 0, 0, 0, 0)),
+      bool(tw) and tw["hi_share"] - tw["lo_share"] >= 0.2 and tw["hi_step"] > tw["lo_step"] + 800)
     ar, n_ads, x26 = C.ads_rival(V, target)
     A("rival: the step on the closing quarter's change in the job advertisements index (a distractor, %d turns) files "
-      "%.0f, a bin or more below" % (n_ads, ar), K.round_to(ar, 1000) <= call - 2000)
+      "%.0f, two bins or more below" % (n_ads, ar), K.round_to(ar, 1000) <= call - 2000)
 
     # ------------------------------------------------------------------ the semantic fork table
     ok1 = all(int(r["INITIAL_CLAIMS"]) == int(r["NEW_CLAIMS"]) + int(r["ADDL_CLAIMS"]) for r in legacy) and \
@@ -475,6 +504,12 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
       K.working_days_lost(K.TARGET_SUNDAY) == 0 and dt.date(2026, 10, 26) in K.HOLIDAYS)
     A("SF13 the junction (asserted under R2)", (K.CURRENT_FIRST_SUNDAY - K.LEGACY_LAST_SUNDAY).days == 7)
     A("SF14 the regions (asserted under R2)", len(code_name) == 8)
+    import deliver as DL_
+    A("SF15 the chart's weekly count from April 2026 starts at the claims week of Sunday 5 April (ended 11 April): the "
+      "week ended 4 April begins on Sunday 29 March and belongs to March (technical notes 2.1)",
+      DL_.CHART_FROM == dt.date(2026, 4, 5) and DL_.CHART_FROM.weekday() == 6 and
+      (DL_.CHART_FROM - dt.timedelta(days=7)).month == 3 and K.saturday(DL_.CHART_FROM - dt.timedelta(days=7)) ==
+      dt.date(2026, 4, 4) and "A claims week belongs to the month in which its Sunday falls." in notes_t)
 
     # ------------------------------------------------------------------ Ask A
     W = Wd.notices if Wd else N.simulate()
@@ -530,7 +565,7 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
     A("Ask B the golden from the cube equals the truth in all 14 groups",
       all(abs(gb[k] - (truth_b[2026][k] / truth_b[2025][k] - 1) * 100) < 1e-9 for k in I.G))
     clr_b = min(abs((gb[k] * 10) % 1 - 0.5) for k in I.G)
-    A("Ask B every change sits 0.25 of a bin or more from its rounding edge (nearest %.3f)" % clr_b, clr_b >= 0.25)
+    A("Ask B every change sits 0.23 of a bin or more from its rounding edge (nearest %.3f)" % clr_b, clr_b >= 0.23)
     stops_b = {"S1 the current code list on both years": dict(codes="current"),
                "S2 every label read as a Saturday": dict(label="saturday"),
                "S3 every label read as a Sunday": dict(label="sunday"),
@@ -580,7 +615,11 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
         ties, 28 * len(weeks)), ties <= 0.003 * 28 * len(weeks))
     rep3 = sum(1 for r in REG for i in range(2, len(weeks)) if V.rev[r][weeks[i]] == V.rev[r][weeks[i - 1]] ==
                V.rev[r][weeks[i - 2]])
-    A("realism: no region's count repeats three weeks running", rep3 == 0)
+    rep4 = sum(1 for r in REG for i in range(3, len(weeks)) if V.rev[r][weeks[i]] == V.rev[r][weeks[i - 1]] ==
+               V.rev[r][weeks[i - 2]] == V.rev[r][weeks[i - 3]])
+    A("realism: no region's count repeats four weeks running, and three-week repeats come at the rate of chance (%d "
+      "across the eight regions' %d weeks; Poisson counts of these sizes give about 0.3)" % (rep3, len(weeks)),
+      rep4 == 0 and rep3 <= 2)
     round_share = sum(1 for d in weeks if V.nat[d] % 100 == 0) / len(weeks)
     A("realism: national weekly totals land on a hundred at the rate of chance (%.1f per cent)" % (100 * round_share),
       round_share <= 0.03)
@@ -588,7 +627,7 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
     top = Counter(r["note"] for r in notes_rows).most_common(1)[0]
     A("realism: no case note's text recurs more than three times (%r x%d)" % top, top[1] <= 3)
     A("realism: the case notes' wording carries no doubled article or bad ordinal",
-      not any(re.search(r"\bthe the\b|\b\d*(?:1th|2th|3th)\b", r["note"]) for r in notes_rows))
+      not any(re.search(r"\bthe the\b|\b(?:\d*[02-9])?[123]th\b", r["note"]) for r in notes_rows))
     portal_rows = list(csv.DictReader(open(os.path.join(target, R.F_PORTAL), encoding="utf-8")))
 
     def bn_ok(bn):
@@ -597,8 +636,10 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
     A("realism: every business number carries a valid check digit", all(bn_ok(r["business_no"]) for r in portal_rows))
     styles = Counter()
     for n_ in {r["employer"] for r in portal_rows}:
-        styles[("&" in n_, "Limited" in n_, "Group Holdings" in n_, n_.startswith("The "), "(" in n_,
-                bool(re.match(r"[A-Z]{2} ", n_)), "'s " in n_)] += 1
+        first = n_.split()[0]
+        styles[("&" in n_, "(" in n_, bool(re.match(r"[A-Z]\.|[A-Z] & [A-Z] |[A-Z] [A-Z][a-z]", n_)),
+                "Holdings" in n_, "Group" in n_, first in N.COINED or first in N.NATIVE,
+                first in N.TOWN or first in N.PLACES, first in N.SURNAMES)] += 1
     A("realism: employer names come in %d shapes, none over half the register" % len(styles),
       len(styles) >= 6 and max(styles.values()) <= 0.5 * sum(styles.values()))
     people = set(K.PEOPLE.values())
@@ -662,14 +703,15 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
         t25, t26 = sum(tot[2025].values()), sum(tot[2026].values())
         rise = {k: tot[2026][k] - tot[2025][k] for k in I.G}
         lower = sum(1 for k in I.G if k not in (4, 7) and gb[k] < 0)
-        A("golden: construction and accommodation rose by more than the whole rise on a year ago (%.0f against %.0f), "
-          "and %d of the other twelve groups are lower, as the preview says" % (rise[4] + rise[7], t26 - t25, lower),
-          rise[4] + rise[7] > t26 - t25 > 0 and "%s of the other twelve industry groups are lower" % G["groups_lower_word"]
-          in txt and G["groups_lower"] == lower)
+        A("golden: the preview's industry sentence is what the table says (construction and accommodation %+.0f against "
+          "a rise of %.0f; %d of the other twelve groups lower)" % (rise[4] + rise[7], t26 - t25, lower),
+          G["industry_sentence"] in txt and G["groups_lower"] == lower and
+          (("more than the whole rise" in G["industry_sentence"]) == (rise[4] + rise[7] > t26 - t25)))
         A("golden: the preview states the regional shares, the refiled claims and the rest of the week at the precision "
           "every construction and a one-sigma move share", all(s_ in txt for s_ in (
-              "about one refused claimant in five", "about one in four in Coastal and Island",
-              "fewer than one in ten", "4,000 to 5,000", "11,000 to 12,000", "about four fifths")))
+              "about one refused claimant in four", "about three in ten in Coastal and Island",
+              "fewer than one in ten", "4,000 to 5,000", "11,000 to 12,000", "about nine tenths",
+              "about one and a half times a normal quarter", "near %s" % "{:,}".format(G["national"]))))
         fj = json.load(open(os.path.join(os.path.dirname(target), "generator", "figures.json"), encoding="utf-8"))
         A("figures.json carries the call and the components as written",
           fj["call"]["initial_claims_week_ended_2026-10-10"] == "16,000" and

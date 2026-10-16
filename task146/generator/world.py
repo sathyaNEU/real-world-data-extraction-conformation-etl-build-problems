@@ -22,8 +22,8 @@ import common as K
 
 # the quarter-turn refiling: the share of a region's closing-quarter monetarily ineligible determinations filed again
 # in the first claims week of the new quarter; the second and third weeks take fixed fractions of it
-R0 = {"Northern": 0.036, "Capital": 0.021, "Eastern": 0.033, "Midlands": 0.031, "Western": 0.205, "Southern": 0.078,
-      "Coastal": 0.238, "Island": 0.258}
+R0 = {"Northern": 0.032, "Capital": 0.016, "Eastern": 0.027, "Midlands": 0.024, "Western": 0.265, "Southern": 0.058,
+      "Coastal": 0.295, "Island": 0.318}
 R_LATER = (0.155, 0.058)
 REFILE_INELIGIBLE = 0.10          # share of the claims filed again that are refused a second time
 
@@ -51,10 +51,13 @@ REGION_EPISODES = {("Western", (2016, 2)): 1.85, ("Coastal", (2017, 3)): 1.80, (
 BOOM = {"Western": 0.62, "Coastal": 0.58, "Island": 0.60, "Capital": 1.18, "Midlands": 1.08, "Northern": 1.10,
         "Eastern": 1.12, "Southern": 0.92}
 BOOM_QUARTERS = [(2025, 2), (2025, 3), (2025, 4), (2026, 1), (2026, 2)]
-# July, August and September 2026: the building and hotel layoffs of staff taken on in 2025 and early 2026, by region
-INELIG_2026Q3 = {"Northern": (0.200, 0.238, 0.276), "Capital": (0.176, 0.205, 0.238), "Eastern": (0.188, 0.226, 0.268),
-                 "Midlands": (0.262, 0.324, 0.384), "Western": (0.352, 0.455, 0.548), "Southern": (0.221, 0.268, 0.317),
-                 "Coastal": (0.371, 0.478, 0.566), "Island": (0.345, 0.447, 0.536)}
+# July, August and September 2026: the building and hotel layoffs of staff taken on in 2025 and early 2026 lift the
+# refusals in the tourism and building regions; elsewhere they stay near their usual level
+INELIG_2026Q3 = {"Northern": (0.145, 0.155, 0.170), "Capital": (0.130, 0.140, 0.155), "Eastern": (0.145, 0.160, 0.175),
+                 "Midlands": (0.150, 0.165, 0.180), "Western": (0.3333, 0.4141, 0.4949), "Southern": (0.155, 0.170, 0.185),
+                 "Coastal": (0.3434, 0.4242, 0.505), "Island": (0.3232, 0.404, 0.4848)}
+SEASONAL_REGIONS = ("Western", "Coastal", "Island")
+SEASONAL_SD = 0.55
 ADDITIONAL_SHARE = 0.213
 ADVANCE_LATE = (0.0025, 0.0095)   # range of the share of a week's claims taken late and added at the revision
 
@@ -128,7 +131,7 @@ class Truth:
 
 def simulate(params=None):
     P = dict(R0=R0, R_LATER=R_LATER, RFAC=RFAC, REGION_SHOCK_SD=REGION_SHOCK_SD, REGION_EPISODES=REGION_EPISODES,
-             INELIG_2026Q3=INELIG_2026Q3, LEAN_2026=LEAN_2026, BOOM=BOOM, seed_salt="")
+             INELIG_2026Q3=INELIG_2026Q3, LEAN_2026=LEAN_2026, BOOM=BOOM, SEASONAL_SD=SEASONAL_SD, seed_salt="")
     if params:
         P.update(params)
     salt = P["seed_salt"]
@@ -190,6 +193,13 @@ def simulate(params=None):
             rq[(r, q)] = float(math.exp(gr.normal(0, P["REGION_SHOCK_SD"]) - 0.5 * P["REGION_SHOCK_SD"] ** 2))
     for key, m in P["REGION_EPISODES"].items():
         rq[key] = rq[key] * m
+    # the tourism and building regions' refusals rise and fall together, quarter by quarter, with how many of their
+    # claimants are short-tenure seasonal hires (a season's length, a building cycle), apart from the rest of the country
+    gs_ = K.rng("inelig-seasonal-regions", salt)
+    for q in quarters:
+        f = float(gs_.normal(0, P["SEASONAL_SD"]))
+        for r in SEASONAL_REGIONS:
+            rq[(r, q)] = rq[(r, q)] * math.exp(f - 0.5 * P["SEASONAL_SD"] ** 2)
     for q in BOOM_QUARTERS:
         for r in R:
             rq[(r, q)] = rq[(r, q)] * P["BOOM"][r]

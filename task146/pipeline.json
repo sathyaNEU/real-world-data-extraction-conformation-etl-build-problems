@@ -7,7 +7,7 @@
   "stage": 4,
   "stage_name": "check",
   "updated": "2026-10-16",
-  "stump": "Carrying the step the first claims week of a quarter takes on average onto the level of the last four weeks calls about 13,000 initial claims for the week ended 10 October 2026; the step that lands it there is treating the quarter-start rise as seasonal when it is claimants found monetarily ineligible in the third quarter filing again once the fourth quarter moves their base period, at a share that differs several-fold between regions and holds within each, and the third quarter's refused claimants, more than twice a usual quarter's, sit mostly in the regions whose claimants come back most, so the week is about 16,000, where the national rate on the national determinations gives about 15,000.",
+  "stump": "Sizing the claims filed again in the first claims week of the fourth quarter on the third quarter's national ineligible determinations at the national rate past turns show calls about 14,000 initial claims for the week ended 10 October 2026; the step that lands it there is pooling regions whose refused claimants come back at shares that differ several-fold and hold within each across past turns (about one in four in Western and three in ten in Coastal and Island, fewer than one in ten elsewhere), when the third quarter's refusals sit nearly half in those three regions against about a fifth at a usual turn, so the week is about 16,000; the seasonal step of past first claims weeks calls about 13,000.",
   "architecture": 1,
   "loops": 0,
   "precut": {
@@ -15,20 +15,20 @@
     "date": "2026-10-16"
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-16, no LEAK; every line answered in the note's Leak review",
-    "reader": ""
+    "leak_py": "REVIEW 2026-10-16 on the rule 3 repair, no LEAK; every line answered in the note's Leak review",
+    "reader": "pre-repair cut: named notes 2.1 with 2.3 as pointing at a quarter-start effect (the rule 3 audit's finding, repaired)"
   },
   "duplicate_check": {
     "heart": "WARN 2026-10-16 (repeat.gate_g, overuse.gate_g, answered at the draw)",
     "nearest": "driver 0.07 (task136 v1 round 2 lineage); surface exit 0, task134 and task54 promoted on the card signature for the author's clone-check"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
+    "verdict": "DETERMINISTIC on the pre-repair cut 22f06ed9, superseded by the rule 3 repair",
+    "disposition": "APPROVE (pre-repair); re-judge on the repaired cut",
     "report": ""
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: reader and judge (fresh, on the rule 3 repair)",
   "approved": null,
   "delivered": null,
   "portal": null,
