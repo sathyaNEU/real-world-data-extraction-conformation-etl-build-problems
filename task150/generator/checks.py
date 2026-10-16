@@ -379,6 +379,12 @@ def run(target, golden, W, R, meta_path):
     # ---- the closure axes
     C("C1 population: kindergartens of 2028 to 2032 come from births 2023 to 2027 (none enrolled yet)",
       all(M["P"][calc.GOLDEN][y][:, 0].sum() > 0 for y in calc.WIN))
+    bnd = {f: len(re.findall(r"boundar|attendance-area change", t, re.I)) for f, t in texts.items()}
+    C("C1b the births file's boundaries in effect 08/01/2026 are the areas in effect on October 1, 2026: no shipped "
+      "text records an attendance-area change between the two dates (the policy's one change clause is after October 1)",
+      "boundaries in effect 08/01/2026" in texts[DOC.F_BIRTH_NOTES] and
+      "Attendance-area changes and enrollment counts after October 1, 2026" in pol and
+      sum(v for f, v in bnd.items() if f not in (DOC.F_BIRTH_NOTES, DOC.F_POLICY)) == 0, bnd)
     uniq = all(len(D.snap[y]) == D.rows[y] for y in D.years)
     C("C2 unit: each pupil once per count day in both layouts", uniq)
     days = {}

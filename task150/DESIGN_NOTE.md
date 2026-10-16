@@ -521,6 +521,19 @@ Stage 3, built 2026-10-16 from `task150/generator/build.py` (seed 50).
   manifest moved. `checks.py` 143 assertions, 0 failed; verify agreeing; two byte-identical builds; figures_check 41 of
   41; precut 49; voice-check PASS; leak.py REVIEW, no LEAK; container audit clean; heart WARN answered; surface as before.
 
+## Pre-ship check
+
+The 10/10 rules read again against the shipped cut.
+- Domain: the deciding quantity is each school's projected October K-5 enrollment by grade, built as a small-area
+  cohort-component projection with gross flows; two judges and the rule 3 audit read it as the field's own method, and
+  the swap test breaks it.
+- Two layers: the mess (two student-system layouts and the conversion crosswalk, blank state IDs, the Southeast rename,
+  moved count days, geocoded and provisional births) is what the systems write and stays neutral (R2a to R2f); the
+  analysis decides: five-year progression ratios file Bluestem 7, Fifth Street 3, Lincoln 6 and Prairie Rose 8 on the
+  clean truth and the pack alike (R3a).
+- Rule 3: nothing is planted, no field reading decides the call, and the shipped HOW sentences name records, never a
+  method (R3s); the decisive step is analytical.
+
 ## Leak review
 
 `leak.py --asof 2026-10-09` on the stage 4 close cut: REVIEW, no LEAK. One line per REVIEW line.
@@ -535,3 +548,9 @@ Stage 3, built 2026-10-16 from `task150/generator/build.py` (seed 50).
   enrollments, cases), none ranks the schools on the placement; harmless.
 - Sweep 9, the sections' 288 dates after the pull: each section's planned end, May 27, 2027 (H16 allow-list, C4);
   harmless.
+- Round 3, the coordinator's targeted re-read on 40a2abe: clean; the main call analytical, nothing planted, both asks
+  read one way from the filed text. Its residual note, that the whole-section off-codes look interlocking, is accepted:
+  spring-built sections repurposed in September carry their course whole.
+- The births file's boundaries in effect 08/01/2026 are the areas the policy names as in effect on October 1, 2026: the
+  pack records no attendance-area change between the two dates, the policy's one change clause concerns changes after
+  October 1 (C1b); no fix.

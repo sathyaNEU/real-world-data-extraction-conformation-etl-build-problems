@@ -1,11 +1,11 @@
 {
   "task": "task150",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "sociology-demography/population-estimation-demographic-projection",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-16",
   "stump": "Projecting each school by its five-year average grade progression ratios and its kindergarten-to-births ratio places the 24 classrooms as Bluestem 7, Prairie Rose 8, Lincoln 6 and Fifth Street 3 (Kessler none); the step that lands it there is carrying ratios struck on each school's own classes, when pupils arriving from outside the district come at a steady count each fall and pupils moving between attendance areas come at the rate of the school they leave, which places Prairie Rose 7, Lincoln 6, Fifth Street 5, Bluestem 4 and Kessler 2.",
   "architecture": 1,
@@ -17,7 +17,7 @@
   },
   "leak": {
     "leak_py": "REVIEW, no LEAK (2026-10-16, the stage 4 close cut): the policy lists the seven schools, records by school, no method words, the sections' planned end dates; each answered in the design note's ## Leak review",
-    "reader": "round 1 on the stage 3 cut 0018d35: clean on Q1 to Q6, the decisive step analytical; round 2 on the repair cut b475530: the main call clean, two items (the off-code sections' concentration on the band line; no sentence putting ECSE classroom children in preschool classes), both fixed in the generator with every golden figure frozen; a targeted re-read on this cut is the coordinator's"
+    "reader": "round 1 on the stage 3 cut 0018d35: clean on Q1 to Q6, the decisive step analytical; round 2 on the repair cut b475530: the main call clean, two items fixed with every golden figure frozen (the off-code sections remixed, the ECSE classroom filed as a district preschool class and a child counted once across the platform's rows); round 3, targeted, on 40a2abe: clean, both asks read one way, its residual note on the whole-section off-codes accepted"
   },
   "duplicate_check": {
     "heart": "WARN overuse.objective, answered under Draw",
@@ -30,9 +30,9 @@
     "rule3_audit": "PASS (residual note: an origin-destination table from linked IDs reaches the golden fairly naturally; no fix required)"
   },
   "returned": [],
-  "resume": "stage 5: ship once the coordinator's targeted re-read clears this cut (not before)",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-16",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -51,10 +51,15 @@
   "stage4_repair": {
     "main_call": "frozen: the main call's files byte-identical to 0018d35, every figures.json value unchanged",
     "asks": "goldens unchanged; Ask A's silent device the September rebalance (spare sections keep their course), Ask B's the case school against the classroom's school; the cracker executing every filed definition misses all 22",
-    "checks": "143 assertions, 0 failed",
+    "checks": "144 assertions, 0 failed (final rebuild)",
     "verify": "pass",
     "rebuild": "two builds byte-identical",
     "target_zip_sha256": "16b202db077ad12713afc88c52f4b3e6234df160d472abcaff016ba42fbdf914",
     "reread_fixes": "the September rebalance remixed (five grade 3 classes on HR-2 sections, five grade 2 on HR-3, four inside a band, one to four a school, every school's net shift nonzero); the roster's notes put the ECSE classroom in preschool classes and count a child once across the platform's rows"
+  },
+  "shipped": {
+    "commit_cut": "40a2abe",
+    "target_zip_sha256": "7b084be13d8ab6f00172448420b19bd88be0a8ac3595793b86631d15c5f69538",
+    "call": "Prairie Rose 7, Lincoln 6, Fifth Street 5, Bluestem 4, Kessler 2"
   }
 }
