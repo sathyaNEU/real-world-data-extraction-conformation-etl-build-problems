@@ -1,18 +1,18 @@
 {
   "task": "task263",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "physical-environmental-sciences",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 3,
+  "stage_name": "build",
   "updated": "2026-10-16",
-  "stump": "A strong analyst counts treatment capacity at every active well serving an entry point with a PFOA or PFOS result above 4.0 ng/L (or gives each well the level of the samples taken while it pumped), sizes each grant on it and walks the priority list until a grant no longer fits, so the $36 million stops short, when only the wells whose own water, solved from the entry-point blends by a mass balance, is above 4.0 ng/L need treating and the fund reaches further down the list.",
+  "stump": "The default path funds 7 systems and stops at Lindell with $672,000 left because it gives each well the average of the entry-point samples taken while it pumped, so a clean well that runs beside a well over the line takes on that well's water; solving every entry point's samples as a mass balance of its wells' own water leaves only the wells whose own water is over 4.0 ng/L, and the $36 million reaches 16 systems, stopping at Norrell with $451,200 left.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-16"
   },
   "leak": {
     "leak_py": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: prototype the world (wells, entry points, rotations, true levels) so the default path and the golden part on the systems reached; then the full design note to precut",
+  "resume": "stage 3: generator (world, records written; docs, deliver, checks, verify, build next)",
   "approved": null,
   "delivered": null,
   "portal": null,
