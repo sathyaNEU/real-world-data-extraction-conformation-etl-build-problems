@@ -23,6 +23,19 @@ A source the golden completes (a list whose capture it estimates, a link whose e
 its own documentation that it does not hold every member, never how many or which: left unsaid, a literal
 judge reads that source as the count and the other source's excess as error (task448's portal return).
 
+**The comparison is WHAT, and a decisive step that is a comparison choice cannot be saved.** The five
+parts above include the comparison, so whose rates, which pool, which peer group supplies the
+expectation is part of the estimand and has to be filed so its literal execution is the golden.
+task194's architecture 2 put its decisive step exactly there, on whether the expectation comes from a
+published standard or from the comparison population's own current rates, and the author compounded it
+by ruling that the charter must say nothing about whose rates supply it, which withheld the one part
+the spec requires filed. The judge read the published rates literally, as the only rates the package
+carries, and filed a different unit; and filing the comparison instead turns the step into executing
+it. Every lever below it, the pool and the denominator, is also part of the estimand, so there is no
+position where both gates hold. Before drawing a decisive step, name which of the five parts it is: if
+it is one of them, it is WHAT, it must be filed, and the stump has to live somewhere else. The HOW is
+how a fully filed estimand is computed, and the data must force that.
+
 **HOW** may stay open only when something forces it (`references/forcing-the-answer.md` Part 5): the
 design (the data's structure rules out every other method; preferred), a governing standard's general
 method, or a filed selection criterion in general terms that never names the method (a recognisable

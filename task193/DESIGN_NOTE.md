@@ -542,20 +542,48 @@ over the generator's own flag.
 - The Final Recommendation named Ternivast and Oxelumab as pairs dropped from the equal-chance ten
   when they are the two it hides. Reworded, and reworded a second time so the figure set in that
   block is unchanged: the first rewrite dropped a repeated 10 and `freeze.py` caught it.
-- **The call is forced, and the judge measured it.** All 23 pair rows and 16,957 person keys
-  reproduce from the bundle. The seven referred pairs come out at 1.365 to 1.499 with the nearest
-  unreferred at 1.033, and the set holds under three independence constructions, the pair's own
-  dates, marginals from all window first-receivers, and a monthly grain, as well as under skipping
-  the crosswalk and under skipping the clearance rule. Three constructions converging on one answer
-  is C1 convergence, the strongest closure there is. Gate G and Gate H pass, the decisive step is
-  analytical, and the equal-chance route files 10 pairs against the golden's 7. The multiples above
-  were re-measured after this pass moved the register's own dates, and the seven are unchanged.
-  I had hypothesised the opposite from the cold reader landing the call at 85 per cent, reading
-  section 3.2(b)'s "the number that would be expected if receiving the product had no bearing on
-  when the marker treatment is first received" as naming the timing the null must be adjusted for,
-  and therefore as readability test 1 on the decisive rung. That was wrong: only section 1.1 gives a
-  partial hint, and a strong reader doing the field's own analysis correctly is what the top of the
-  portal does. The ask layer is what holds the pair, and that is what its arithmetic is built for.
+- The reader's remaining realism list, carried forward rather than fixed, because the pack ships
+  as measured and no graded figure may move: the screening log's last two rows are the same title
+  screened on two databases; pharmacy identifiers run 101 upward with no gaps within a chain and
+  the names come from one stock list; `in_chain_from` still clusters on four dates, one per
+  transaction, which is what a transaction is but reads as a block; the Sovraxil package swap and
+  its holder transfer fall on 2026-02-26 and 2026-02-27, which is correct for a transfer but makes
+  two devices share a date; and the tracker's two under-assessment rows are exactly the pairs its
+  rule could matter for. None of them moves a figure and none is a defect; they are the next
+  realism pass on this pack if it is ever reopened.
+- **Forced and findable are different properties, and section 3.2(b) carries both.** The judge
+  measured the call forced: all 23 pair rows, all 48 chain-by-quarter values, all seven holder dose
+  and fee rows, all 24 region and age cells and the chart's two end points reproduce; the seven
+  referred pairs come out at 1.365 to 1.499 with the nearest unreferred at 1.033; equal chance
+  refers 10 while three date-based constructions all refer the same 7; and dropping the re-sent
+  dedup, the retired-key crosswalk or the clearance rule one at a time still gives the same seven,
+  so no Layer 1 step decides the call. Gate G and Gate H pass with the decisive step analytical.
+  The same sentence that forces it also makes it findable: "the number that would be expected if
+  receiving the product had no bearing on when the marker treatment is first received" names the
+  timing the null has to be adjusted for. I first read that as a leak, was told it was not, and
+  both readings were half right. The phrase is why three independence constructions converge, which
+  is what determinism rests on, and it is why a strong reader can see what to adjust, which is what
+  Gate F costs. The judge rates the stump power moderate and puts it plainly: it expects a
+  substantial share of strong runs to file the crude 50 per cent.
+- Rewording 3.2(b) to state the threshold, the comparison and the population without naming the
+  timing, so the record would force the adjustment instead of the sentence. Not tried, and
+  deliberately so: the launch and lapse dates in `product_register.csv` can carry that work, but
+  the same clause is what makes three constructions converge, so removing the words that make the
+  answer findable risks the words that make it forced. A forced call a strong reader sometimes
+  finds is worth shipping and an unforced one is not, and that trade is not worth taking against a
+  judge that has already approved the call. **For the next build in this family: those two
+  properties trade against each other in exactly that clause, and the place to buy difficulty is
+  the spacing of the multiples rather than the wording of the null.**
+- **The multiples are spaced so widely that almost any trend-adjusted null lands the same seven**,
+  which is the other half of why the call is findable, and it is the lever a future build should
+  pull. Measured across the four window-aware constructions: the null pairs sit at 0.91 to 1.12 and
+  the referred pairs at 1.35 to 2.16, with nothing at all between 1.12 and 1.35. The cross-
+  construction spread is small for most pairs, 0.014 to 0.15, and only the two the window decides,
+  Ternivast with gout treatment at 0.79 and Oxelumab with antidepressant at 0.34, spread widely.
+  So two or three pairs placed to sit between 1.20 and 1.35 on all four constructions at once,
+  tightly clustered, would make the null construction decide them without breaking the convergence
+  the call rests on. That is a data change, not a wording change, and it is the one I would make
+  first on a re-root of this slot.
 - The reader found one of the three silent primaries, the chain that owned the pharmacy on the day of
   the dispensing, and reported that reading the chain at the extract date instead changes every cell.
   It missed the prior person extract, saying in terms that using `person_register_2025Q4.csv` changes
