@@ -1,11 +1,11 @@
 {
  "task": "task469",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-17",
  "stump": "The default path counts as needing longer than each relationship's filed 2027 ground time only the summer 2026 turns that visibly overran by more than it, reading every on-time pushback as ready in time, so the shortened filings read well under the authority's 20 per cent and are accepted; the share observed on the turns whose available time was already shorter than the filing sends some of them back.",
  "architecture": 1,
@@ -15,11 +15,11 @@
   "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17 on the fix-pass build: the guideline's example relationship and world nouns; registers naming the relationships; no LEAK",
-  "reader": "round 1: main call on R1 (stand time less held, all six sent back); schedule ask hit 12 of 12 through DEI 050, device rebuilt; realism findings fixed. Round 2 in flight"
+  "leak_py": "REVIEW 2026-10-17 on the final build: the guideline's example relationship and world nouns; registers naming the relationships; no LEAK",
+  "reader": "round 1: main call on R1 (stand time less held, all six sent back), schedule ask 12 of 12 through DEI 050, device rebuilt; round 2: landed the call, 0 of 12 schedule figures; round 3 (after the SFG-3 2.1 clause): landed the call by reverse product-limit, 0 of 12 (1,242 turns against 759); its fleet plan finding fixed, no graded figure moved"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-17 after the context artifact was re-keyed operations_log (task240 filed_standard entered the last three); Gate G overuse answered in the draw",
+  "heart": "WARN 2026-10-17 on the final build (context artifact re-keyed operations_log after task240 entered the last three; Gate G overuse answered in the draw)",
   "surface": "3 promoted for the author: task468 (back to back pairing), task101, task126 (differentiated on the card)"
  },
  "judge": {
@@ -28,9 +28,17 @@
   "report": "task469/determinism_check_report.md, task469/determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "stage 4: reader round 3 in flight on the build with the SFG-3 2.1 clause (a turn's relationship is the number the operator flies it under); read it, append rounds 1 to 3 to leak_check_report.md after the final leak.py run, fix anything new without moving a graded figure, then ship (ledger row drafted)",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-17",
  "portal": null,
- "source_note": "seed ET26 (a hub's arrival on-time fall, marketing brand against operating carrier, mix against rate): the world and the carrier relationships kept; the call made forward facing on the summer 2027 ground times; the seed's mix move banned (composition_mix) and its carrier reading kept only as a lower rung; the pitfall re-found in how the schedule hides a turn's need"
+ "source_note": "seed ET26 (a hub's arrival on-time fall, marketing brand against operating carrier, mix against rate): the world and the carrier relationships kept; the call made forward facing on the summer 2027 ground times; the seed's mix move banned (composition_mix) and its carrier reading kept only as a lower rung; the pitfall re-found in how the schedule hides a turn's need",
+ "ceiling": {
+  "pair": 37.2,
+  "cracker": 45.0,
+  "best_mirror": "29.5 on R5",
+  "mirror_leakage": 0.0,
+  "script": "generator/ceiling.py"
+ },
+ "target_zip_sha256_16": "61af0a00e65ed2e8"
 }

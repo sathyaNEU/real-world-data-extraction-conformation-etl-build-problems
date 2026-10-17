@@ -252,7 +252,13 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     check("ask: no repeated rotation's numbers are in the 2026 season schedule, and every operating copy's are",
           not (gen_refs & op26))
     fleet = pd.read_csv(os.path.join(target, W.FILES["fleet27"]))
-    jul = fleet[fleet["month"] == "2027-07"].set_index("operator")["aircraft_in_fleet"].to_dict()
+    jul = fleet[fleet["month"] == "2027-07"].set_index("operator")["aircraft_available_for_kdy_lines"].to_dict()
+    reg26 = pd.read_csv(os.path.join(target, W.FILES["aircraft"]))
+    fl26 = reg26.groupby("operator").size().to_dict()
+    whole = fleet[fleet["month"] == "2027-07"].set_index("operator")["aircraft_in_fleet"].to_dict()
+    added = {W.OPERATORS[W.SEGMENTS[s]["op"]][0]: k for s, k in SC.GROWTH.items()}
+    check("realism: the 2027 fleet plan's whole fleets are the 2026 register's aircraft plus one for each line added",
+          all(whole[o] == fl26[o] + added.get(o, 0) for o in whole), (whole, fl26))
     rot_all = {op: 0 for op in jul}
     for ln in x["lines27"]:
         rot_all[W.OPERATORS[W.SEGMENTS[ln["seg"]]["op"]][0]] += 1
