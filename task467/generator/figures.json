@@ -1,0 +1,993 @@
+{
+ "call": {
+  "fee_2027": "6.50",
+  "fee_2026": "6.75"
+ },
+ "components": {
+  "recorded_2025": "74,753",
+  "restated_2025": "84,000",
+  "share_cost_pct": "11",
+  "amount_2027": "535,027"
+ },
+ "surplus_at_fee": "10,000",
+ "shortfall_one_step_below": "10,000",
+ "settings": [
+  {
+   "fee": "5.50",
+   "recovers": "no"
+  },
+  {
+   "fee": "5.75",
+   "recovers": "no"
+  },
+  {
+   "fee": "6.00",
+   "recovers": "no"
+  },
+  {
+   "fee": "6.25",
+   "recovers": "no"
+  },
+  {
+   "fee": "6.50",
+   "recovers": "yes"
+  },
+  {
+   "fee": "6.75",
+   "recovers": "yes"
+  },
+  {
+   "fee": "7.00",
+   "recovers": "yes"
+  },
+  {
+   "fee": "7.25",
+   "recovers": "yes"
+  }
+ ],
+ "flip_pct": {
+  "lo": "9.2",
+  "hi": "12.7"
+ },
+ "strata_pct": {
+  "station_zones": "10.6",
+  "other_zones": "11.0"
+ },
+ "rivals": {
+  "own_fall": {
+   "share_pct": "22",
+   "fee": "5.75"
+  },
+  "all_dropoffs": {
+   "share_pct": "3",
+   "fee": "7.00"
+  },
+  "none": {
+   "share_pct": "0",
+   "fee": "7.25"
+  }
+ },
+ "pre_pickups": "95,670",
+ "ledger": [
+  {
+   "month": "2025-01",
+   "brokerage_id": 1,
+   "pickups": "1,070",
+   "pickups_raw": 1070,
+   "owed": "6,152.50"
+  },
+  {
+   "month": "2025-01",
+   "brokerage_id": 2,
+   "pickups": "1,033",
+   "pickups_raw": 1033,
+   "owed": "5,939.75"
+  },
+  {
+   "month": "2025-01",
+   "brokerage_id": 3,
+   "pickups": "921",
+   "pickups_raw": 921,
+   "owed": "5,295.75"
+  },
+  {
+   "month": "2025-01",
+   "brokerage_id": 4,
+   "pickups": "1,319",
+   "pickups_raw": 1319,
+   "owed": "7,584.25"
+  },
+  {
+   "month": "2025-01",
+   "brokerage_id": 5,
+   "pickups": "774",
+   "pickups_raw": 774,
+   "owed": "4,450.50"
+  },
+  {
+   "month": "2025-01",
+   "brokerage_id": 6,
+   "pickups": "583",
+   "pickups_raw": 583,
+   "owed": "3,352.25"
+  },
+  {
+   "month": "2025-02",
+   "brokerage_id": 1,
+   "pickups": "941",
+   "pickups_raw": 941,
+   "owed": "5,410.75"
+  },
+  {
+   "month": "2025-02",
+   "brokerage_id": 2,
+   "pickups": "863",
+   "pickups_raw": 863,
+   "owed": "4,962.25"
+  },
+  {
+   "month": "2025-02",
+   "brokerage_id": 3,
+   "pickups": "797",
+   "pickups_raw": 797,
+   "owed": "4,582.75"
+  },
+  {
+   "month": "2025-02",
+   "brokerage_id": 4,
+   "pickups": "1,134",
+   "pickups_raw": 1134,
+   "owed": "6,520.50"
+  },
+  {
+   "month": "2025-02",
+   "brokerage_id": 5,
+   "pickups": "633",
+   "pickups_raw": 633,
+   "owed": "3,639.75"
+  },
+  {
+   "month": "2025-02",
+   "brokerage_id": 6,
+   "pickups": "556",
+   "pickups_raw": 556,
+   "owed": "3,197.00"
+  },
+  {
+   "month": "2025-03",
+   "brokerage_id": 1,
+   "pickups": "1,148",
+   "pickups_raw": 1148,
+   "owed": "6,601.00"
+  },
+  {
+   "month": "2025-03",
+   "brokerage_id": 2,
+   "pickups": "1,142",
+   "pickups_raw": 1142,
+   "owed": "6,566.50"
+  },
+  {
+   "month": "2025-03",
+   "brokerage_id": 3,
+   "pickups": "1,015",
+   "pickups_raw": 1015,
+   "owed": "5,836.25"
+  },
+  {
+   "month": "2025-03",
+   "brokerage_id": 4,
+   "pickups": "1,419",
+   "pickups_raw": 1419,
+   "owed": "8,159.25"
+  },
+  {
+   "month": "2025-03",
+   "brokerage_id": 5,
+   "pickups": "848",
+   "pickups_raw": 848,
+   "owed": "4,876.00"
+  },
+  {
+   "month": "2025-03",
+   "brokerage_id": 6,
+   "pickups": "702",
+   "pickups_raw": 702,
+   "owed": "4,036.50"
+  },
+  {
+   "month": "2025-04",
+   "brokerage_id": 1,
+   "pickups": "1,127",
+   "pickups_raw": 1127,
+   "owed": "6,480.25"
+  },
+  {
+   "month": "2025-04",
+   "brokerage_id": 2,
+   "pickups": "1,093",
+   "pickups_raw": 1093,
+   "owed": "6,284.75"
+  },
+  {
+   "month": "2025-04",
+   "brokerage_id": 3,
+   "pickups": "908",
+   "pickups_raw": 908,
+   "owed": "5,221.00"
+  },
+  {
+   "month": "2025-04",
+   "brokerage_id": 4,
+   "pickups": "1,339",
+   "pickups_raw": 1339,
+   "owed": "7,699.25"
+  },
+  {
+   "month": "2025-04",
+   "brokerage_id": 5,
+   "pickups": "784",
+   "pickups_raw": 784,
+   "owed": "4,508.00"
+  },
+  {
+   "month": "2025-04",
+   "brokerage_id": 6,
+   "pickups": "692",
+   "pickups_raw": 692,
+   "owed": "3,979.00"
+  },
+  {
+   "month": "2025-05",
+   "brokerage_id": 1,
+   "pickups": "1,222",
+   "pickups_raw": 1222,
+   "owed": "7,026.50"
+  },
+  {
+   "month": "2025-05",
+   "brokerage_id": 2,
+   "pickups": "1,184",
+   "pickups_raw": 1184,
+   "owed": "6,808.00"
+  },
+  {
+   "month": "2025-05",
+   "brokerage_id": 3,
+   "pickups": "978",
+   "pickups_raw": 978,
+   "owed": "5,623.50"
+  },
+  {
+   "month": "2025-05",
+   "brokerage_id": 4,
+   "pickups": "1,544",
+   "pickups_raw": 1544,
+   "owed": "8,878.00"
+  },
+  {
+   "month": "2025-05",
+   "brokerage_id": 5,
+   "pickups": "926",
+   "pickups_raw": 926,
+   "owed": "5,324.50"
+  },
+  {
+   "month": "2025-05",
+   "brokerage_id": 6,
+   "pickups": "721",
+   "pickups_raw": 721,
+   "owed": "4,145.75"
+  },
+  {
+   "month": "2025-06",
+   "brokerage_id": 1,
+   "pickups": "1,144",
+   "pickups_raw": 1144,
+   "owed": "6,578.00"
+  },
+  {
+   "month": "2025-06",
+   "brokerage_id": 2,
+   "pickups": "1,086",
+   "pickups_raw": 1086,
+   "owed": "6,244.50"
+  },
+  {
+   "month": "2025-06",
+   "brokerage_id": 3,
+   "pickups": "931",
+   "pickups_raw": 931,
+   "owed": "5,353.25"
+  },
+  {
+   "month": "2025-06",
+   "brokerage_id": 4,
+   "pickups": "1,385",
+   "pickups_raw": 1385,
+   "owed": "7,963.75"
+  },
+  {
+   "month": "2025-06",
+   "brokerage_id": 5,
+   "pickups": "803",
+   "pickups_raw": 803,
+   "owed": "4,617.25"
+  },
+  {
+   "month": "2025-06",
+   "brokerage_id": 6,
+   "pickups": "714",
+   "pickups_raw": 714,
+   "owed": "4,105.50"
+  },
+  {
+   "month": "2025-07",
+   "brokerage_id": 1,
+   "pickups": "1,354",
+   "pickups_raw": 1354,
+   "owed": "7,785.50"
+  },
+  {
+   "month": "2025-07",
+   "brokerage_id": 2,
+   "pickups": "1,261",
+   "pickups_raw": 1261,
+   "owed": "7,250.75"
+  },
+  {
+   "month": "2025-07",
+   "brokerage_id": 3,
+   "pickups": "1,098",
+   "pickups_raw": 1098,
+   "owed": "6,313.50"
+  },
+  {
+   "month": "2025-07",
+   "brokerage_id": 4,
+   "pickups": "1,612",
+   "pickups_raw": 1612,
+   "owed": "9,269.00"
+  },
+  {
+   "month": "2025-07",
+   "brokerage_id": 5,
+   "pickups": "1,005",
+   "pickups_raw": 1005,
+   "owed": "5,778.75"
+  },
+  {
+   "month": "2025-07",
+   "brokerage_id": 6,
+   "pickups": "831",
+   "pickups_raw": 831,
+   "owed": "4,778.25"
+  },
+  {
+   "month": "2025-08",
+   "brokerage_id": 1,
+   "pickups": "1,388",
+   "pickups_raw": 1388,
+   "owed": "7,981.00"
+  },
+  {
+   "month": "2025-08",
+   "brokerage_id": 2,
+   "pickups": "1,347",
+   "pickups_raw": 1347,
+   "owed": "7,745.25"
+  },
+  {
+   "month": "2025-08",
+   "brokerage_id": 3,
+   "pickups": "1,144",
+   "pickups_raw": 1144,
+   "owed": "6,578.00"
+  },
+  {
+   "month": "2025-08",
+   "brokerage_id": 4,
+   "pickups": "1,721",
+   "pickups_raw": 1721,
+   "owed": "9,895.75"
+  },
+  {
+   "month": "2025-08",
+   "brokerage_id": 5,
+   "pickups": "978",
+   "pickups_raw": 978,
+   "owed": "5,623.50"
+  },
+  {
+   "month": "2025-08",
+   "brokerage_id": 6,
+   "pickups": "816",
+   "pickups_raw": 816,
+   "owed": "4,692.00"
+  },
+  {
+   "month": "2025-09",
+   "brokerage_id": 1,
+   "pickups": "1,123",
+   "pickups_raw": 1123,
+   "owed": "6,457.25"
+  },
+  {
+   "month": "2025-09",
+   "brokerage_id": 2,
+   "pickups": "1,068",
+   "pickups_raw": 1068,
+   "owed": "6,141.00"
+  },
+  {
+   "month": "2025-09",
+   "brokerage_id": 3,
+   "pickups": "885",
+   "pickups_raw": 885,
+   "owed": "5,088.75"
+  },
+  {
+   "month": "2025-09",
+   "brokerage_id": 4,
+   "pickups": "1,385",
+   "pickups_raw": 1385,
+   "owed": "7,963.75"
+  },
+  {
+   "month": "2025-09",
+   "brokerage_id": 5,
+   "pickups": "785",
+   "pickups_raw": 785,
+   "owed": "4,513.75"
+  },
+  {
+   "month": "2025-09",
+   "brokerage_id": 6,
+   "pickups": "661",
+   "pickups_raw": 661,
+   "owed": "3,800.75"
+  },
+  {
+   "month": "2025-10",
+   "brokerage_id": 1,
+   "pickups": "1,202",
+   "pickups_raw": 1202,
+   "owed": "6,911.50"
+  },
+  {
+   "month": "2025-10",
+   "brokerage_id": 2,
+   "pickups": "1,171",
+   "pickups_raw": 1171,
+   "owed": "6,733.25"
+  },
+  {
+   "month": "2025-10",
+   "brokerage_id": 3,
+   "pickups": "979",
+   "pickups_raw": 979,
+   "owed": "5,629.25"
+  },
+  {
+   "month": "2025-10",
+   "brokerage_id": 4,
+   "pickups": "1,480",
+   "pickups_raw": 1480,
+   "owed": "8,510.00"
+  },
+  {
+   "month": "2025-10",
+   "brokerage_id": 5,
+   "pickups": "808",
+   "pickups_raw": 808,
+   "owed": "4,646.00"
+  },
+  {
+   "month": "2025-10",
+   "brokerage_id": 6,
+   "pickups": "729",
+   "pickups_raw": 729,
+   "owed": "4,191.75"
+  },
+  {
+   "month": "2025-11",
+   "brokerage_id": 1,
+   "pickups": "1,152",
+   "pickups_raw": 1152,
+   "owed": "6,624.00"
+  },
+  {
+   "month": "2025-11",
+   "brokerage_id": 2,
+   "pickups": "1,116",
+   "pickups_raw": 1116,
+   "owed": "6,417.00"
+  },
+  {
+   "month": "2025-11",
+   "brokerage_id": 3,
+   "pickups": "962",
+   "pickups_raw": 962,
+   "owed": "5,531.50"
+  },
+  {
+   "month": "2025-11",
+   "brokerage_id": 4,
+   "pickups": "1,421",
+   "pickups_raw": 1421,
+   "owed": "8,170.75"
+  },
+  {
+   "month": "2025-11",
+   "brokerage_id": 5,
+   "pickups": "816",
+   "pickups_raw": 816,
+   "owed": "4,692.00"
+  },
+  {
+   "month": "2025-11",
+   "brokerage_id": 6,
+   "pickups": "683",
+   "pickups_raw": 683,
+   "owed": "3,927.25"
+  },
+  {
+   "month": "2025-12",
+   "brokerage_id": 1,
+   "pickups": "1,145",
+   "pickups_raw": 1145,
+   "owed": "6,583.75"
+  },
+  {
+   "month": "2025-12",
+   "brokerage_id": 2,
+   "pickups": "1,164",
+   "pickups_raw": 1164,
+   "owed": "6,693.00"
+  },
+  {
+   "month": "2025-12",
+   "brokerage_id": 3,
+   "pickups": "963",
+   "pickups_raw": 963,
+   "owed": "5,537.25"
+  },
+  {
+   "month": "2025-12",
+   "brokerage_id": 4,
+   "pickups": "1,459",
+   "pickups_raw": 1459,
+   "owed": "8,389.25"
+  },
+  {
+   "month": "2025-12",
+   "brokerage_id": 5,
+   "pickups": "846",
+   "pickups_raw": 846,
+   "owed": "4,864.50"
+  },
+  {
+   "month": "2025-12",
+   "brokerage_id": 6,
+   "pickups": "716",
+   "pickups_raw": 716,
+   "owed": "4,117.00"
+  },
+  {
+   "month": "2026-01",
+   "brokerage_id": 1,
+   "pickups": "1,255",
+   "pickups_raw": 1255,
+   "owed": "8,471.25"
+  },
+  {
+   "month": "2026-01",
+   "brokerage_id": 2,
+   "pickups": "1,000",
+   "pickups_raw": 1000,
+   "owed": "6,750.00"
+  },
+  {
+   "month": "2026-01",
+   "brokerage_id": 3,
+   "pickups": "947",
+   "pickups_raw": 947,
+   "owed": "6,392.25"
+  },
+  {
+   "month": "2026-01",
+   "brokerage_id": 4,
+   "pickups": "1,166",
+   "pickups_raw": 1166,
+   "owed": "7,870.50"
+  },
+  {
+   "month": "2026-01",
+   "brokerage_id": 5,
+   "pickups": "826",
+   "pickups_raw": 826,
+   "owed": "5,575.50"
+  },
+  {
+   "month": "2026-01",
+   "brokerage_id": 6,
+   "pickups": "568",
+   "pickups_raw": 568,
+   "owed": "3,834.00"
+  },
+  {
+   "month": "2026-02",
+   "brokerage_id": 1,
+   "pickups": "1,069",
+   "pickups_raw": 1069,
+   "owed": "7,215.75"
+  },
+  {
+   "month": "2026-02",
+   "brokerage_id": 2,
+   "pickups": "861",
+   "pickups_raw": 861,
+   "owed": "5,811.75"
+  },
+  {
+   "month": "2026-02",
+   "brokerage_id": 3,
+   "pickups": "769",
+   "pickups_raw": 769,
+   "owed": "5,190.75"
+  },
+  {
+   "month": "2026-02",
+   "brokerage_id": 4,
+   "pickups": "974",
+   "pickups_raw": 974,
+   "owed": "6,574.50"
+  },
+  {
+   "month": "2026-02",
+   "brokerage_id": 5,
+   "pickups": "747",
+   "pickups_raw": 747,
+   "owed": "5,042.25"
+  },
+  {
+   "month": "2026-02",
+   "brokerage_id": 6,
+   "pickups": "480",
+   "pickups_raw": 480,
+   "owed": "3,240.00"
+  },
+  {
+   "month": "2026-03",
+   "brokerage_id": 1,
+   "pickups": "1,409",
+   "pickups_raw": 1409,
+   "owed": "9,510.75"
+  },
+  {
+   "month": "2026-03",
+   "brokerage_id": 2,
+   "pickups": "1,144",
+   "pickups_raw": 1144,
+   "owed": "7,722.00"
+  },
+  {
+   "month": "2026-03",
+   "brokerage_id": 3,
+   "pickups": "1,112",
+   "pickups_raw": 1112,
+   "owed": "7,506.00"
+  },
+  {
+   "month": "2026-03",
+   "brokerage_id": 4,
+   "pickups": "1,345",
+   "pickups_raw": 1345,
+   "owed": "9,078.75"
+  },
+  {
+   "month": "2026-03",
+   "brokerage_id": 5,
+   "pickups": "954",
+   "pickups_raw": 954,
+   "owed": "6,439.50"
+  },
+  {
+   "month": "2026-03",
+   "brokerage_id": 6,
+   "pickups": "609",
+   "pickups_raw": 609,
+   "owed": "4,110.75"
+  },
+  {
+   "month": "2026-04",
+   "brokerage_id": 1,
+   "pickups": "1,356",
+   "pickups_raw": 1356,
+   "owed": "9,153.00"
+  },
+  {
+   "month": "2026-04",
+   "brokerage_id": 2,
+   "pickups": "1,120",
+   "pickups_raw": 1120,
+   "owed": "7,560.00"
+  },
+  {
+   "month": "2026-04",
+   "brokerage_id": 3,
+   "pickups": "1,158",
+   "pickups_raw": 1158,
+   "owed": "7,816.50"
+  },
+  {
+   "month": "2026-04",
+   "brokerage_id": 4,
+   "pickups": "1,294",
+   "pickups_raw": 1294,
+   "owed": "8,734.50"
+  },
+  {
+   "month": "2026-04",
+   "brokerage_id": 5,
+   "pickups": "879",
+   "pickups_raw": 879,
+   "owed": "5,933.25"
+  },
+  {
+   "month": "2026-04",
+   "brokerage_id": 6,
+   "pickups": "600",
+   "pickups_raw": 600,
+   "owed": "4,050.00"
+  },
+  {
+   "month": "2026-05",
+   "brokerage_id": 1,
+   "pickups": "1,331",
+   "pickups_raw": 1331,
+   "owed": "8,984.25"
+  },
+  {
+   "month": "2026-05",
+   "brokerage_id": 2,
+   "pickups": "1,122",
+   "pickups_raw": 1122,
+   "owed": "7,573.50"
+  },
+  {
+   "month": "2026-05",
+   "brokerage_id": 3,
+   "pickups": "1,191",
+   "pickups_raw": 1191,
+   "owed": "8,039.25"
+  },
+  {
+   "month": "2026-05",
+   "brokerage_id": 4,
+   "pickups": "1,297",
+   "pickups_raw": 1297,
+   "owed": "8,754.75"
+  },
+  {
+   "month": "2026-05",
+   "brokerage_id": 5,
+   "pickups": "929",
+   "pickups_raw": 929,
+   "owed": "6,270.75"
+  },
+  {
+   "month": "2026-05",
+   "brokerage_id": 6,
+   "pickups": "630",
+   "pickups_raw": 630,
+   "owed": "4,252.50"
+  },
+  {
+   "month": "2026-06",
+   "brokerage_id": 1,
+   "pickups": "1,274",
+   "pickups_raw": 1274,
+   "owed": "8,599.50"
+  },
+  {
+   "month": "2026-06",
+   "brokerage_id": 2,
+   "pickups": "1,112",
+   "pickups_raw": 1112,
+   "owed": "7,506.00"
+  },
+  {
+   "month": "2026-06",
+   "brokerage_id": 3,
+   "pickups": "1,159",
+   "pickups_raw": 1159,
+   "owed": "7,823.25"
+  },
+  {
+   "month": "2026-06",
+   "brokerage_id": 4,
+   "pickups": "1,247",
+   "pickups_raw": 1247,
+   "owed": "8,417.25"
+  },
+  {
+   "month": "2026-06",
+   "brokerage_id": 5,
+   "pickups": "968",
+   "pickups_raw": 968,
+   "owed": "6,534.00"
+  },
+  {
+   "month": "2026-06",
+   "brokerage_id": 6,
+   "pickups": "634",
+   "pickups_raw": 634,
+   "owed": "4,279.50"
+  },
+  {
+   "month": "2026-07",
+   "brokerage_id": 1,
+   "pickups": "1,511",
+   "pickups_raw": 1511,
+   "owed": "10,199.25"
+  },
+  {
+   "month": "2026-07",
+   "brokerage_id": 2,
+   "pickups": "1,257",
+   "pickups_raw": 1257,
+   "owed": "8,484.75"
+  },
+  {
+   "month": "2026-07",
+   "brokerage_id": 3,
+   "pickups": "1,314",
+   "pickups_raw": 1314,
+   "owed": "8,869.50"
+  },
+  {
+   "month": "2026-07",
+   "brokerage_id": 4,
+   "pickups": "1,536",
+   "pickups_raw": 1536,
+   "owed": "10,368.00"
+  },
+  {
+   "month": "2026-07",
+   "brokerage_id": 5,
+   "pickups": "1,122",
+   "pickups_raw": 1122,
+   "owed": "7,573.50"
+  },
+  {
+   "month": "2026-07",
+   "brokerage_id": 6,
+   "pickups": "737",
+   "pickups_raw": 737,
+   "owed": "4,974.75"
+  },
+  {
+   "month": "2026-08",
+   "brokerage_id": 1,
+   "pickups": "1,483",
+   "pickups_raw": 1483,
+   "owed": "10,010.25"
+  },
+  {
+   "month": "2026-08",
+   "brokerage_id": 2,
+   "pickups": "1,210",
+   "pickups_raw": 1210,
+   "owed": "8,167.50"
+  },
+  {
+   "month": "2026-08",
+   "brokerage_id": 3,
+   "pickups": "1,263",
+   "pickups_raw": 1263,
+   "owed": "8,525.25"
+  },
+  {
+   "month": "2026-08",
+   "brokerage_id": 4,
+   "pickups": "1,466",
+   "pickups_raw": 1466,
+   "owed": "9,895.50"
+  },
+  {
+   "month": "2026-08",
+   "brokerage_id": 5,
+   "pickups": "1,054",
+   "pickups_raw": 1054,
+   "owed": "7,114.50"
+  },
+  {
+   "month": "2026-08",
+   "brokerage_id": 6,
+   "pickups": "666",
+   "pickups_raw": 666,
+   "owed": "4,495.50"
+  }
+ ],
+ "ledger_totals": {
+  "2025_1": {
+   "pickups": "14,016",
+   "owed": "80,592.00"
+  },
+  "2025_2": {
+   "pickups": "13,528",
+   "owed": "77,786.00"
+  },
+  "2025_3": {
+   "pickups": "11,581",
+   "owed": "66,590.75"
+  },
+  "2025_4": {
+   "pickups": "17,218",
+   "owed": "99,003.50"
+  },
+  "2025_5": {
+   "pickups": "10,006",
+   "owed": "57,534.50"
+  },
+  "2025_6": {
+   "pickups": "8,404",
+   "owed": "48,323.00"
+  },
+  "2026_1": {
+   "pickups": "10,688",
+   "owed": "72,144.00"
+  },
+  "2026_2": {
+   "pickups": "8,826",
+   "owed": "59,575.50"
+  },
+  "2026_3": {
+   "pickups": "8,913",
+   "owed": "60,162.75"
+  },
+  "2026_4": {
+   "pickups": "10,325",
+   "owed": "69,693.75"
+  },
+  "2026_5": {
+   "pickups": "7,479",
+   "owed": "50,483.25"
+  },
+  "2026_6": {
+   "pickups": "4,924",
+   "owed": "33,237.00"
+  }
+ },
+ "ledger_rows": "120",
+ "stated": {
+  "menu": [
+   "5.50",
+   "5.75",
+   "6.00",
+   "6.25",
+   "6.50",
+   "6.75",
+   "7.00",
+   "7.25"
+  ],
+  "sections": [
+   "4.3",
+   "4.4"
+  ],
+  "budget_line": "12",
+  "change_day": "2024-11-04",
+  "return_day": "2027-01-01",
+  "fees": {
+   "2019": "4.50",
+   "2020": "4.50",
+   "2021": "4.75",
+   "2022": "5.00",
+   "2023": "5.25",
+   "2024": "5.50",
+   "2025": "5.75",
+   "2026": "6.75"
+  }
+ }
+}

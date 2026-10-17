@@ -1,34 +1,35 @@
 {
  "task": "task467",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-17",
- "stump": "The default path restates Velmont's 2025 fee-liable taxi pickups by their whole fall when the temporary rank opened on 4 November 2024 (about 21 per cent) and sets the 2027 fee at $5.75; the analyst who sees that the Airport Line opened the same day and controls for it with all of the airport's taxi drop-offs finds the rank cost only about 4 per cent and sets $7.00; measured within the taxi zones the line serves and within the zones it does not, the rank cost about 11.5 per cent in each, and the fee is $6.50.",
+ "stump": "The default path restates Velmont's 2025 fee-liable taxi pickups by their whole 22 per cent fall when the temporary rank opened on 4 November 2024 and sets the 2027 fee at $5.75; the analyst who sees that the Airport Line opened the same day and controls for it with all of the airport's taxi drop-offs finds the rank cost only about 3 per cent and sets $7.00; measured within the taxi zones the line serves and within the zones it does not, the rank cost about 11 per cent in each, and the fee is $6.50.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-17: Schedule A's 2025 and 2026 fees, generic vocabulary; no LEAK",
+  "reader": "round 1 and round 2 clean on the call (nothing quoted, Q6 analytical, the reader's own estimate on the $7.00 rung); round 1 realism fixes made in the generator; answers kept for the report"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "task463 0.06 (guard check at the draw, WARN only: Gate G repeats task266)"
+  "heart": "WARN 2026-10-17 after the redraw (shape 07, composition_mix): Gate G, decision type and question form repeat task238, answered in the design note's Draw",
+  "nearest": "task463 0.06 (guard check at the draw, WARN only: Gate G repeats task266)",
+  "surface": "0 promoted; nearest task453 0.100"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "pass 1 NOT_DETERMINISTIC (ledger only: records against trips for the 2026 re-sent copies)",
+  "disposition": "pass 1 FIX_NOW, fixed (by-law s.3(2) counts each trip once); pass 2 running",
+  "report": "task467/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 2: write the readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet; draft prompt.txt; precut.py task467 to exit 0",
+ "resume": "stage 4 pass 2: the one re-judge thread is running on /tmp/determinism-check-task467-r2/judge_brief.md (if lost with the container, have the determinism-judge agent write a fresh r2 brief and spawn one thread); on its verdict have the agent write determinism_check_report_pass2.md, append both reader rounds and their rulings to leak_check_report.md after the last leak.py run, then ship (target.zip, golden/, ledger row, card, board)",
  "approved": null,
  "delivered": null,
  "portal": null,
