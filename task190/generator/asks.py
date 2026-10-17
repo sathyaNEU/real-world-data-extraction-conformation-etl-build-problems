@@ -101,7 +101,12 @@ def cutoff_register(target):
 
 
 def a1_golden(truth):
-    """Per quarter: runs released, those past the cut-off in force, and the value they carried."""
+    """Per quarter: runs released, those past the cut-off in force, and the value they carried.
+
+    Both conventions are pinned in the asking sentence: a run falls in the quarter its release
+    falls in, and a release is judged against the cut-off in force on the run's own date, which is
+    what makes an overnight release late rather than moving it into the next quarter.
+    """
     out = {}
     for name, lo, hi in QUARTERS:
         n, past, val = 0, 0, 0.0
@@ -283,8 +288,10 @@ def a2_golden(events, mode="answer"):
                 up[e["after"]].append(sup)
                 if any(int(x["before"]) == int(e["after"]) for x in es[i + 1:]):
                     off[e["after"]].append(sup)
-            elif int(e["after"]) < int(e["before"]):
-                down[e["after"]].append(sup)
+            # "removed from it" is a move OUT of the category the supplier was in, which is the
+            # asking sentence's own wording; a move INTO a lower category is not a removal from it
+            if int(e["after"]) != int(e["before"]):
+                down[e["before"]].append(sup)
     if mode == "events":
         return {b: (len(up[b]), len(down[b]), len(off[b])) for b in W.RISK_BANDS}
     return {b: (len(set(up[b])), len(set(down[b])), len(set(off[b]))) for b in W.RISK_BANDS}
@@ -300,14 +307,17 @@ def a3_golden(tested_rows, ledger_lines):
     for r in ledger_lines:
         ledger.setdefault(r["line"], 0)
         ledger[r["line"]] += 1
-    bymonth = {m: 0 for m in MONTHS}
+    # the monthly figure is DISTINCT ledger lines, pinned in the asking sentence, so the line the
+    # schedule carries twice after a query counts once and the twelve months sum to the tested count
+    bymonth = {m: set() for m in MONTHS}
     absent, twice = [], []
     seen = {}
     for t in tested_rows:
-        bymonth[t["day"].isoformat()[:7]] += 1
+        bymonth[t["day"].isoformat()[:7]].add(t["line"])
         if t["line"] not in ledger:
             absent.append(t["schedule_ref"])
         seen[t["line"]] = seen.get(t["line"], 0) + 1
+    bymonth = {m: len(v) for m, v in bymonth.items()}
     for line, n in sorted(seen.items()):
         if n > 1:
             twice.append(line)

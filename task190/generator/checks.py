@@ -338,8 +338,12 @@ def run(g, target):
     ok("A3 the schedule's references carry the master's supplier number, not the ledger's",
        all(t["schedule_ref"].split("/")[0].startswith("SUP") for t in g["tested"]) and
        all(t["schedule_ref"].split("/")[0] in set(g["cross"].values()) for t in g["tested"]))
-    ok("A3 the monthly counts sum to the schedule's rows",
-       sum(month.values()) == len(g["tested"]), "%d / %d" % (sum(month.values()), len(g["tested"])))
+    # the asking sentence pins the monthly figure to DISTINCT ledger lines, so the twelve months
+    # sum to the distinct lines tested and not to the schedule's row count, which is one higher
+    ok("A3 the monthly counts sum to the distinct lines tested, one below the schedule's rows",
+       sum(month.values()) == len({t["line"] for t in g["tested"]}) == len(g["tested"]) - 1,
+       "%d months / %d distinct / %d rows"
+       % (sum(month.values()), len({t["line"] for t in g["tested"]}), len(g["tested"])))
 
     # ---------------------------------------------------------------- house fixes and realism
     ok("H9 the manifest names every shipped file",

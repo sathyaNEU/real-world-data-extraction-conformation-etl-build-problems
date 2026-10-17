@@ -189,7 +189,7 @@ def write_dictionary(target):
         ("payment_run_log_2026.csv", "reversed_value_eur", "The value of the run's lines later reversed by credit note, as a negative."),
         ("payment_release_cutoff_register.xlsx", "cutoff_time", "The latest release time for a run on the day. A run released at the cut-off is within it."),
         ("supplier_risk_approval_history.csv", "event_status", "accepted where the row is the approval register's record of the event, superseded where a later correction replaced it."),
-        ("supplier_risk_approval_history.csv", "category_after", "The category the event moved the supplier to. A supplier's category moves one way across the year and never returns to a category it left."),
+        ("supplier_risk_approval_history.csv", "category_after", "The category the event moved the supplier to. Per supplier, the category moves one way across the year and never returns to a category that supplier has left."),
         ("supplier_master.xlsx", "risk_category_current", "The category in force at the extract date, under the labelling from 1 October 2026."),
         ("grant_claim_2026.csv", "claim_period", "The funder's claim year, which runs to 31 March and is not the authority's financial year."),
     ]

@@ -731,7 +731,7 @@ QUARTER_SPAN = [("2025 Q4", 731, 822), ("2026 Q1", 823, 912),
 # other five span on every reading of this file, so no ranking of it recovers the screen's answer.
 # checks.py asserts that, and the file carries no marker dimension at all.
 REPORT_RATE = {"P01": 0.01297, "P02": 0.00884, "P03": 0.00980, "P04": 0.00820,
-               "P05": 0.00740, "P06": 0.02000, "P07": 0.00620, "P08": 0.00880,
+               "P05": 0.00740, "P06": 0.02000, "P07": 0.00620, "P08": 0.01120,
                "P09": 0.01090}
 SERIOUS_SHARE = {"P01": 0.38, "P02": 0.21, "P03": 0.27, "P04": 0.31, "P05": 0.24,
                  "P06": 0.35, "P07": 0.19, "P08": 0.29, "P09": 0.33}
@@ -756,7 +756,9 @@ def write_distractors(tgt, kept=None):
             if mf is not None and mf > b:
                 continue                      # not yet on the market in that quarter
             n = vol.get((code, label), 0)
-            rate = REPORT_RATE[code] * float(rng.normal(1.0, 0.13))
+            # a quarter's reports swing with whatever the division's reporters happened to send,
+            # not only with the product's volume
+            rate = REPORT_RATE[code] * float(rng.normal(1.0, 0.28))
             base = max(0, int(round(n * max(rate, 0.0))) + int(rng.integers(-1, 2)))
             ser = int(round(base * SERIOUS_SHARE[code] * float(rng.normal(1.0, 0.18))))
             ser = min(max(ser, 0), base)
@@ -788,13 +790,20 @@ def write_distractors(tgt, kept=None):
     tracked = {W.PNAME[pc]: "SM-%s-%s" % (pc, mc) for pc, mc in TRACKED_PAIRS}
     subjects = [W.PNAME[c] for c in W.PCODES] + sorted(
         set(n for code in W.MCODES for n in MARKER_NAMES[code]))
-    rows, day = [], 1001
+    rows, day = [], 962
+    batch, seq = 1, 0
     for i in range(96):
         name = subjects[int(rng.integers(0, len(subjects)))]
-        day += int(rng.choice([0, 1, 2, 3, 4, 7], p=[0.21, 0.26, 0.19, 0.13, 0.11, 0.10]))
-        day = min(day, W.PULL_DAY - 3)
+        step = int(rng.choice([0, 1, 2, 3, 4, 7], p=[0.21, 0.26, 0.19, 0.13, 0.11, 0.10]))
+        if day + step > W.PULL_DAY - 4:
+            break                       # the desk had screened this far when the extract was drawn
+        day += step
+        seq += 1
+        if seq > 24:
+            batch += 1
+            seq = 1
         decision = "screened in" if rng.random() < 0.22 else "not relevant"
-        rows.append(["LS-2026-%03d" % (i + 1), W.iso(day),
+        rows.append(["LS-%d-%02d-%03d" % (W.day(day).year, batch, seq), W.iso(day),
                      (" ".join([DESIGN[int(rng.integers(0, len(DESIGN)))],
                                 TOPIC[int(rng.integers(0, len(TOPIC)))] % name,
                                 SETTING[int(rng.integers(0, len(SETTING)))]]).strip()

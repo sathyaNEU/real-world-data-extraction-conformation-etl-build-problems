@@ -47,18 +47,18 @@ Security and access systems carries most of it at 250,000. Not the 21,004.93 the
 
 ### Also asked
 
-1. Payment runs released, those past the cut-off in force and the value those carried, by quarter, values to the cent:
+1. Payment runs released, those past the cut-off in force on the run's own date and the value those carried, by quarter of release, values to the cent:
    - 2026Q1: 25 runs, 9 past the cut-off, 4,103,782.83 released past it
    - 2026Q2: 26 runs, 8 past the cut-off, 5,633,782.71 released past it
    - 2026Q3: 27 runs, 5 past the cut-off, 2,342,669.74 released past it
    - 2026Q4: 26 runs, 6 past the cut-off, 3,603,482.20 released past it
-2. Suppliers raised into the category, removed into it, and raised in then removed again, by supplier risk category:
-   - Category 1 (R-A): 0 raised in, 25 removed into it, 0 raised then removed
-   - Category 2 (R-B): 29 raised in, 24 removed into it, 16 raised then removed
-   - Category 3 (R-C): 42 raised in, 36 removed into it, 11 raised then removed
-   - Category 4 (R-D): 31 raised in, 26 removed into it, 16 raised then removed
-   - Category 5 (R-E): 39 raised in, 0 removed into it, 0 raised then removed
-3. Payment lines the testing schedule covers, by month:
+2. Suppliers raised into the category, removed from it, and raised in then removed, by supplier risk category:
+   - Category 1 (R-A): 0 raised into it, 31 removed from it, 0 raised in then removed
+   - Category 2 (R-B): 29 raised into it, 69 removed from it, 16 raised in then removed
+   - Category 3 (R-C): 42 raised into it, 49 removed from it, 11 raised in then removed
+   - Category 4 (R-D): 31 raised into it, 76 removed from it, 16 raised in then removed
+   - Category 5 (R-E): 39 raised into it, 27 removed from it, 0 raised in then removed
+3. Distinct ledger lines the testing schedule covers, by month:
    - 2026-01: 29
    - 2026-02: 21
    - 2026-03: 24
@@ -70,5 +70,5 @@ Security and access systems carries most of it at 250,000. Not the 21,004.93 the
    - 2026-09: 25
    - 2026-10: 23
    - 2026-11: 20
-   - 2026-12: 23
-   No schedule line is absent from the ledger. One ledger line is on the schedule twice, CPL-26-081376.
+   - 2026-12: 22
+   No schedule line is missing from the ledger. One ledger line is on the schedule twice, CPL-26-081376, re-tested after a query, so the schedule has 276 rows against 275 distinct lines.

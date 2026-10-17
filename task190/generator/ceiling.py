@@ -111,9 +111,18 @@ def responses(fig):
         the reference is the master supplier number and the line reference joined by a slash, so
         every schedule row reads as absent and no ledger line reads as doubled."""
         n = 0
-        bym = {m: 0 for m in a3_month}
-        for r in sched:
-            bym[r["paid_date"][:7]] += 1
+        # the asking sentence pins the monthly figure to distinct ledger lines. The cracker
+        # executes the pin; the mirror counts the schedule's rows, which is one too many in the
+        # month that holds the re-tested line.
+        if join_on_the_raw_reference:
+            bym = {m: 0 for m in a3_month}
+            for r in sched:
+                bym[r["paid_date"][:7]] += 1
+        else:
+            seenm = {m: set() for m in a3_month}
+            for r in sched:
+                seenm[r["paid_date"][:7]].add(r["schedule_ref"].split("/")[-1])
+            bym = {m: len(v) for m, v in seenm.items()}
         n += sum(1 for m in a3_month if bym[m] == a3_month[m])
         if join_on_the_raw_reference:
             absent, twice = len(sched), 0

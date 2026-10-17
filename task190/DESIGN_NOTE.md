@@ -549,15 +549,15 @@ device against the careful solver's path.
 
 | Ask | Figures | The device |
 |---|---|---|
-| A1, per quarter of the year: the payment runs released, those released past the cut-off in force, and the value those carried | 4 x 3 = 12 | three devices, each measured: the cut-off moved from 15:00 to 14:00 on 1 July 2026 and the register carries both effective dates, so one cut-off for the year undercounts both later quarters; a run released past midnight ends each quarter, so grouping on the opening date rather than the release moves the counts; and one run was rejected by the bank and re-released, so the log carries it twice. A run released exactly at the cut-off is within it, which the register states |
-| A2, per supplier risk category: the suppliers approved into it during the year, those removed from it, and those approved in then removed again | 5 x 3 = 15 | the approval register chains per supplier and carries superseded rows the dictionary rules out of the history; a category was relabelled on 1 October and the scale map carries both codings |
-| A3, per month: the payment lines the testing schedule covers, whether any schedule line is absent from the ledger and if so how many, and whether any ledger line appears twice on the schedule and if so how many | 12 + 2 = 14 | the schedule is a table inside a PDF and its line references carry the ledger's supplier prefix, so the join needs the crosswalk; the re-delivered batch puts one ledger line on the schedule twice |
+| A1, per quarter of release: the payment runs released, those past the cut-off in force on the run's own date, and the value those carried. Both conventions are pinned in the asking sentence | 4 x 3 = 12 | three devices, each measured: the cut-off moved from 15:00 to 14:00 on 1 July 2026 and the register carries both effective dates, so one cut-off for the year undercounts both later quarters; a run released past midnight ends each quarter, so grouping on the opening date rather than the release moves the counts; and one run was rejected by the bank and re-released, so the log carries it twice. A run released exactly at the cut-off is within it, which the register states |
+| A2, per supplier risk category: the suppliers raised into it, those removed from it, and those raised in then removed. "Removed from it" is pinned in the asking sentence, against the removed-into reading | 5 x 3 = 15 | the approval register chains per supplier and carries superseded rows the dictionary rules out of the history; a category was relabelled on 1 October and the scale map carries both codings |
+| A3, per month: the distinct ledger lines the testing schedule covers, whether any schedule line is missing from the ledger and if so how many, and whether any ledger line is on it twice and if so how many. "Distinct" is pinned in the asking sentence | 12 + 2 = 14 | the schedule is a table inside a PDF and its line references carry the ledger's supplier prefix, so the join needs the crosswalk; the re-delivered batch puts one ledger line on the schedule twice |
 
 Every A3 ask is worded so that "none" is a grammatical answer, per H23.
 
-Pair ceiling: 69.3
+Pair ceiling: 67.8
 
-Mirror leakage: 51.2 per cent of ask weight
+Mirror leakage: 46.3 per cent of ask weight
 
 Measured by: `generator/ceiling.py`, which builds both responses as code, scores each on its OWN ask
 readings against the graded figures in `figures.json` on the cut pack, and exits non-zero unless the
@@ -574,7 +574,7 @@ third ask actually scored:
 | The cracker, and the mirror beside it | call | components | instruction | A1 | A2 | A3 | score |
 |---|---|---|---|---|---|---|---|
 | the cracker, which lands the call, runs the hygiene battery and executes every filed rule | 4/4 | 19/19 | 2/2 | 12/12 | 15/15 | 14/14 | **100.0** |
-| the mirror, which stops at the recorded-value ratio and takes each obvious reading | 0/4 | 3/19 | 1/2 | 5/12 | 4/15 | 12/14 | **38.6** |
+| the mirror, which stops at the recorded-value ratio and takes each obvious reading | 0/4 | 3/19 | 1/2 | 5/12 | 3/15 | 11/14 | **35.6** |
 
 **Why the cracker keeps everything, which is the diagnosis and not a wording problem.** Every device on
 every ask is adjudicated by a filed sentence or found by the hygiene battery, so a careful solver executes
@@ -862,3 +862,13 @@ were round too, so both were redrawn.
 - **The register's approved budget equal to the year's spend.** Each programme's budget was the year's own
   recorded value rounded to the thousand, so the register reconciled to the ledger exactly and the budget
   carried no information. It now carries the board's approval figure, which differs from the spend.
+- **Pins alone against the cracker.** The four ask conventions were pinned in the asking sentence, which
+  is where a pin belongs, and the measured pair ceiling moved only from 69.3 to 67.8 with the mirror
+  leakage from 51.2 to 46.3. The cracker still takes 41 of 41. That is the skill's own rule arriving
+  empirically: a pin says what to compute and never makes computing it correctly hard, so a pin without a
+  silent primary under it buys determinism and no difficulty. The primaries are open work and the four
+  families the author named for them are unspent in this world.
+- **A3's monthly figure read off the schedule's own date column.** Twelve of the ask's fourteen figures
+  were a group-by on `paid_date` with no join at all, which is why even the mirror took twelve of them.
+  Pinning the count to distinct ledger lines costs the mirror one figure and nothing else. The ask needs
+  re-routing through the resolution chain rather than strengthening, which is open.

@@ -341,16 +341,20 @@ def main(target, figpath):
                 up.setdefault(a, set()).add(sup)
                 if any(band(x["category_before"]) == a for x in es[i + 1:]):
                     off.setdefault(a, set()).add(sup)
-            elif int(a) < int(b):
-                dn.setdefault(a, set()).add(sup)
+            # the asking sentence pins "removed from it": a move out of the category the supplier
+            # was in, whichever way it went, not a move down into it
+            if int(a) != int(b):
+                dn.setdefault(b, set()).add(sup)
     for k, v in fig["asks"]["risk_moves_by_category"].items():
         chk("A2 category %s raised in" % k, len(up.get(k, ())), v[0])
-        chk("A2 category %s removed into" % k, len(dn.get(k, ())), v[1])
+        chk("A2 category %s removed from" % k, len(dn.get(k, ())), v[1])
         chk("A2 category %s raised then removed" % k, len(off.get(k, ())), v[2])
 
+    # distinct ledger lines per month, as the asking sentence pins it
     bym = {}
     for line, code, rec, pay, r in tested:
-        bym[r["paid_date"][:7]] = bym.get(r["paid_date"][:7], 0) + 1
+        bym.setdefault(r["paid_date"][:7], set()).add(line)
+    bym = {k: len(v) for k, v in bym.items()}
     for k, v in fig["asks"]["schedule_lines_by_month"].items():
         chk("A3 %s" % k, bym.get(k, 0), v)
     chk("A3 schedule lines absent from the ledger",
