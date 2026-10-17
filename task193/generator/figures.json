@@ -558,113 +558,113 @@
   {
    "chain": "APK",
    "quarter": "2025 Q4",
-   "accepted": 5265,
-   "rejected": 48,
-   "median_days": 4.0
+   "accepted": 5568,
+   "rejected": 54,
+   "median_days": 2.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q1",
-   "accepted": 4783,
-   "rejected": 78,
-   "median_days": 5.0
+   "accepted": 5775,
+   "rejected": 88,
+   "median_days": 4.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q2",
-   "accepted": 4877,
-   "rejected": 44,
+   "accepted": 5874,
+   "rejected": 53,
    "median_days": 4.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q3",
-   "accepted": 4647,
-   "rejected": 45,
+   "accepted": 4657,
+   "rejected": 44,
    "median_days": 6.0
   },
   {
    "chain": "DSA",
    "quarter": "2025 Q4",
-   "accepted": 4554,
-   "rejected": 59,
+   "accepted": 3002,
+   "rejected": 42,
+   "median_days": 4.0
+  },
+  {
+   "chain": "DSA",
+   "quarter": "2026 Q1",
+   "accepted": 2764,
+   "rejected": 55,
    "median_days": 3.0
   },
   {
    "chain": "DSA",
-   "quarter": "2026 Q1",
-   "accepted": 4079,
-   "rejected": 76,
-   "median_days": 4.0
-  },
-  {
-   "chain": "DSA",
    "quarter": "2026 Q2",
-   "accepted": 4011,
-   "rejected": 51,
-   "median_days": 4.0
-  },
-  {
-   "chain": "DSA",
-   "quarter": "2026 Q3",
-   "accepted": 4380,
-   "rejected": 44,
-   "median_days": 6.0
-  },
-  {
-   "chain": "NOR",
-   "quarter": "2025 Q4",
-   "accepted": 3777,
-   "rejected": 80,
-   "median_days": 4.0
-  },
-  {
-   "chain": "NOR",
-   "quarter": "2026 Q1",
-   "accepted": 3316,
-   "rejected": 78,
-   "median_days": 4.0
-  },
-  {
-   "chain": "NOR",
-   "quarter": "2026 Q2",
-   "accepted": 3123,
-   "rejected": 82,
-   "median_days": 5.0
-  },
-  {
-   "chain": "NOR",
-   "quarter": "2026 Q3",
-   "accepted": 3613,
-   "rejected": 57,
-   "median_days": 4.0
-  },
-  {
-   "chain": "VST",
-   "quarter": "2025 Q4",
-   "accepted": 2719,
+   "accepted": 3220,
    "rejected": 35,
+   "median_days": 7.0
+  },
+  {
+   "chain": "DSA",
+   "quarter": "2026 Q3",
+   "accepted": 2620,
+   "rejected": 30,
+   "median_days": 6.0
+  },
+  {
+   "chain": "NOR",
+   "quarter": "2025 Q4",
+   "accepted": 4189,
+   "rejected": 93,
+   "median_days": 6.0
+  },
+  {
+   "chain": "NOR",
+   "quarter": "2026 Q1",
+   "accepted": 3145,
+   "rejected": 67,
+   "median_days": 7.0
+  },
+  {
+   "chain": "NOR",
+   "quarter": "2026 Q2",
+   "accepted": 2888,
+   "rejected": 92,
+   "median_days": 6.0
+  },
+  {
+   "chain": "NOR",
+   "quarter": "2026 Q3",
+   "accepted": 4796,
+   "rejected": 78,
+   "median_days": 6.0
+  },
+  {
+   "chain": "VST",
+   "quarter": "2025 Q4",
+   "accepted": 3550,
+   "rejected": 39,
    "median_days": 6.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q1",
-   "accepted": 2434,
-   "rejected": 37,
+   "accepted": 2941,
+   "rejected": 46,
    "median_days": 7.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q2",
-   "accepted": 2419,
-   "rejected": 22,
-   "median_days": 7.0
+   "accepted": 2441,
+   "rejected": 26,
+   "median_days": 9.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q3",
-   "accepted": 2633,
-   "rejected": 30,
+   "accepted": 3190,
+   "rejected": 34,
    "median_days": 6.0
   }
  ],
@@ -672,86 +672,86 @@
   {
    "holder": "H1",
    "name": "Nordlys Pharma A/S",
-   "ddd": 281932.0,
-   "ddd_before": 135546.0,
-   "ddd_after": 146386.0,
+   "ddd": 282746.0,
+   "ddd_before": 136482.0,
+   "ddd_after": 146264.0,
    "rate_before": 1182,
    "rate_after": 1336,
-   "fee_dkk": 355787,
-   "fee_exact": "355787.068",
-   "fee_distance": 0.432
+   "fee_dkk": 356730,
+   "fee_exact": "356730.428",
+   "fee_distance": 0.072
   },
   {
    "holder": "H2",
    "name": "Bregnholt Laegemidler A/S",
-   "ddd": 504333.5,
-   "ddd_before": 214530.0,
-   "ddd_after": 289803.5,
+   "ddd": 502994.5,
+   "ddd_before": 214050.0,
+   "ddd_after": 288944.5,
    "rate_before": 1182,
    "rate_after": 1336,
-   "fee_dkk": 640752,
-   "fee_exact": "640751.936",
-   "fee_distance": 0.436
+   "fee_dkk": 639037,
+   "fee_exact": "639036.952",
+   "fee_distance": 0.452
   },
   {
    "holder": "H3",
    "name": "Vindeby Therapeutics ApS",
-   "ddd": 434434.0,
+   "ddd": 434430.0,
    "ddd_before": 16382.0,
-   "ddd_after": 418052.0,
+   "ddd_after": 418048.0,
    "rate_before": 1182,
    "rate_after": 1336,
-   "fee_dkk": 577881,
-   "fee_exact": "577880.996",
-   "fee_distance": 0.496
+   "fee_dkk": 577876,
+   "fee_exact": "577875.652",
+   "fee_distance": 0.152
   },
   {
    "holder": "H4",
    "name": "Soegaard Medica A/S",
-   "ddd": 204690.0,
-   "ddd_before": 197355.0,
-   "ddd_after": 7335.0,
+   "ddd": 204660.0,
+   "ddd_before": 197205.0,
+   "ddd_after": 7455.0,
    "rate_before": 1534,
    "rate_after": 1637,
-   "fee_dkk": 314750,
-   "fee_exact": "314749.965",
-   "fee_distance": 0.465
+   "fee_dkk": 314716,
+   "fee_exact": "314716.305",
+   "fee_distance": 0.195
   },
   {
    "holder": "H5",
    "name": "Kastholm Pharma A/S",
-   "ddd": 626840.0,
-   "ddd_before": 533170.0,
-   "ddd_after": 93670.0,
+   "ddd": 626952.0,
+   "ddd_before": 533128.0,
+   "ddd_after": 93824.0,
    "rate_before": 1182,
    "rate_after": 1336,
-   "fee_dkk": 755350,
-   "fee_exact": "755350.06",
-   "fee_distance": 0.44
+   "fee_dkk": 755506,
+   "fee_exact": "755506.16",
+   "fee_distance": 0.34
   },
   {
    "holder": "H6",
    "name": "Ellevang Biosciences A/S",
-   "ddd": 1088808.0,
-   "ddd_before": 545928.0,
-   "ddd_after": 542880.0,
+   "ddd": 1090310.0,
+   "ddd_before": 547080.0,
+   "ddd_after": 543230.0,
    "rate_before": 1006,
    "rate_after": 1088,
-   "fee_dkk": 1139857,
-   "fee_exact": "1139857.008",
-   "fee_distance": 0.492
+   "fee_dkk": 1141397,
+   "fee_exact": "1141396.72",
+   "fee_distance": 0.22
   },
   {
    "holder": "H7",
    "name": "Strandby Farma ApS",
-   "ddd": 120991.5,
-   "ddd_before": 120991.5,
+   "ddd": 121180.5,
+   "ddd_before": 121180.5,
    "ddd_after": 0.0,
    "rate_before": 1534,
    "rate_after": 1637,
-   "fee_dkk": 185601,
-   "fee_exact": "185600.961",
-   "fee_distance": 0.461
+   "fee_dkk": 185891,
+   "fee_exact": "185890.887",
+   "fee_distance": 0.387
   }
  ],
  "a3": [

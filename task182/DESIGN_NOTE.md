@@ -743,6 +743,38 @@ by initials on the deployment records. `guard.py heart task182`: **WARN, not BLO
    measured. The guard's heart check found no near driver (nearest 0.07).
 
 ## Tried and rejected
+- The cold reader on the re-cut pack put the committed slate at 60 per cent and the top four at 85,
+  with the alternative at about 35 per cent being NSL06 for NSL13, which turns on taking the residual
+  from the 90th percentile rather than the energy mean. That is the ladder working rather than
+  failing, and the distinction from task190 is the whole of why this build is not retired beside it:
+  there a cold reader landed every graded figure at 80 to 90 per cent and the judge's blind
+  enumeration matched the golden exactly, so both top responses land the call and the pair cannot
+  reach 40 whatever the asks do. Here one of two lands and one misses on the decisive step itself,
+  which is the premise the pair arithmetic is built on. The reader even names why NSL06 is arguable:
+  its two plant-off windows disagree, D06 flat at about 41 dB and D22 swinging 38.5 to 45.3 with
+  traffic spikes. The fifth place turning on the residual treatment is the stump biting where it was
+  aimed.
+- Held for the pass after the judge, because the data cannot move while a judge is reading it.
+  `survey_notes.md` still announces its traps even with the bolding and the early-morning sentence
+  gone: the reader lists the anemometer units, the rain reset, the duplicate download and the -120.2
+  sentinel as a checklist written in advance, and says every clause of the plan and every note maps to
+  a task element. A technician's notes mention some of that, never all four in order. The diurnal
+  profile contradicts those same notes: NSL04's hourly median sits between 51.4 and 53.6 dB across
+  all 24 hours with no morning or evening road peak, while the notes say the roadside positions see
+  traffic. The 400 Hz tone reads as an offset added to one band, with every other band moving together
+  and the spectrum shape identical at every site. The equipment log runs a weekday ladder, centrifuge
+  starts at 06:04, 06:08, 06:10, 06:12 and 06:14 repeating weekly with CF-02 always four minutes
+  behind CF-01 and four machines stopping at identical stamps. The effluent file's lab reference steps
+  by exactly 37 every row. And the SCADA file, which is where both new devices live, has counters
+  stepping in tidy increments and plant stops showing as exact zeros across every channel, so the
+  texture the devices are found in is the most mechanical surface in the pack: that one is fixed with
+  care, because the devices are found by a counter standing still while its own rate channel reads
+  above zero.
+- My own staging error, recorded so it is not repeated: the reader brief I restaged carried row counts
+  from the pre-re-cut pack, 282,360 against the file's 281,918 and two others, and the reader noticed,
+  checked them against `export_manifest.csv` and used the files. No harm done, and it was right. A
+  brief should carry no figure at all: restating a count tells the reader what to expect and goes
+  stale the moment the pack moves.
 
 - Seed AD05 as written: a prescriber's high-dose count pinned by the board's reviewer determinations, which is a
   certified-figure replay. Its world repeats task180's role, forum and organisation family.

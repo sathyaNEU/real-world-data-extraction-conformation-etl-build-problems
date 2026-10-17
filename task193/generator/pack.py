@@ -73,10 +73,10 @@ SUB_LAG = [[1.4, 1.9, 2.6, 2.2],
            [6.1, 7.2, 6.6, 8.0]]
 # days a chain's own transfer schedule adds on top, by quarter. They overlap the chains and change
 # their order between quarters, so no chain is simply faster than another all year.
-SUB_EXTRA = [[2, 3, 1, 3],
-             [0, 1, 0, 1],
-             [0, -1, -1, 0],
-             [1, 0, 1, 0]]
+SUB_EXTRA = [[0, 2, 1, 3],
+             [1, 0, 2, 1],
+             [2, 3, 1, 2],
+             [1, 2, 4, 0]]
 # how a pharmacy week falls: busiest on a Monday and a Friday, short hours on a Saturday, and
 # only the duty pharmacies open on a Sunday
 WEEK_SHAPE = [0.1845, 0.1705, 0.1655, 0.1680, 0.1965, 0.1065, 0.0085]
