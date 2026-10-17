@@ -81,9 +81,9 @@ def choose(key):
 check(choose("golden") == FIG["call"]["rule_name"], "the call: %s" % choose("golden"))
 check(choose("cc") != FIG["call"]["rule_name"], "the default path lands elsewhere")
 for k, v in res.items():
-    check(round(v["golden"], 1) == FIG["call"]["sensitivity"][k], "sensitivity %s %.3f" % (k, v["golden"]))
+    check(int(v["golden"] + .5) == FIG["call"]["sensitivity"][k], "sensitivity %s %.3f" % (k, v["golden"]))
     check(round(v["share"], 1) == FIG["call"]["referral_share"][k], "referral share %s %.3f" % (k, v["share"]))
-    check(round(v["cc"], 1) == FIG["rungs"]["cc"][k], "complete-case share %s" % k)
+    check(int(v["cc"] + .5) == FIG["rungs"]["cc"][k], "complete-case share %s" % k)
 check(len(adults) == FIG["counts"]["adults"] and int(adults["tested"].sum()) == FIG["counts"]["tested"], "counts")
 
 # ---------------------------------------------------------------------------------------------- Ask A

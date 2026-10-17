@@ -1,25 +1,47 @@
 {
   "task": "task158",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "general-statistics-data-science",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-17",
   "stump": "A competent solver costs every pool's busiest-hour requests at the Q3 close-out's GPU-seconds per request, adds Docs' contracted report calls at Docs' own rate per request, per token or per session (or with each report's sections sharing the pack) and sends the stopgap to Code at 300 GPUs short; the step that lands it there is pricing report calls at rates earned by turns that re-send a cached document, when each report call computes its whole source pack and leaves Docs 340 GPUs short.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "task228 (v2, lineage) 0.05"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-17"
+  },
+  "leak": {
+    "leak_py": "REVIEW 2026-10-17 (9 lines, each answered in the design note's Build record)",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "WARN 2026-10-17 (repeat.question_form; same_driver_older differentiated against task151)",
+    "nearest": "task228 (v2, lineage) 0.05",
+    "surface": "task151 promoted on card axes only, text surface 0.075"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: design note sections after Three rules, the ask layer, prompt.txt, precut.py",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "build": {
+    "checks": "99, 0 FAIL",
+    "verify": "26, 0 FAIL",
+    "rebuild": "byte-identical",
+    "figures_check": "36 figures, 0 absent",
+    "answer": "docs-prod, 340 GPUs (338.8, 2027-W13)",
+    "default_path": "code-prod, 300 GPUs (299.3)"
+  }
 }

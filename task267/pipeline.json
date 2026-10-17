@@ -7,7 +7,7 @@
   "stage": 4,
   "stage_name": "check",
   "updated": "2026-10-17",
-  "stump": "The default path reads each referral rule's sensitivity among the participants with an OGTT result and recommends the 2026 rule plus an HbA1c of 6.0 per cent or more (about 93 per cent there, a quarter of those screened referred), because the OGTT went to everyone the 2026 rule referred and to only a random fifth of everyone else, so any rule that contains the 2026 rule finds nearly every tested case; weighting each tested participant by the inverse of their group's OGTT rate puts that rule at about 77 per cent and makes an HbA1c of 5.7 per cent or more or a random glucose of 120 mg/dL or more (about 90 per cent) the rule with the fewest referrals that meets the 85 per cent target.",
+  "stump": "The default path reads each referral rule's sensitivity among the participants with an OGTT result and recommends the 2026 rule plus an HbA1c of 6.0 per cent or more (94 per cent there, 24.9 per cent of those screened referred), because the OGTT went to everyone the 2026 rule referred and to only a random fifth of everyone else, so any rule that contains the 2026 rule finds nearly every tested case; weighting each tested participant by the inverse of their group's OGTT rate puts that rule at 79 per cent and makes an HbA1c of 5.7 per cent or more or a random glucose of 120 mg/dL or more (90 per cent, 36.3 per cent referred) the rule with the fewest referrals that meets the 85 per cent target.",
   "architecture": 1,
   "loops": 0,
   "precut": {
@@ -23,13 +23,12 @@
     "nearest": "task257 0.07; task57 (v20, lineage) 0.07"
   },
   "judge": {
-    "verdict": "running",
+    "verdict": "round 1 DETERMINISTIC, FIX_NOW (the twin copies' four or five hours, the memo grain unfiled, the last digit across weightings); fixed; round 2 running",
     "disposition": "",
-    "report": "",
-    "note": "the judge agent had no Agent tool and left its brief; the isolated thread was spawned from it"
+    "report": ""
   },
   "returned": [],
-  "resume": "stage 4: when the judge thread's verdict lands, hand it to the determinism-judge agent for the report, fix every finding in one generator pass (re-judge once on FIX_NOW), then ship",
+  "resume": "stage 4 round 2: the re-judge (once) and the reader's re-read after the prompt's rounding change; then ship",
   "approved": null,
   "delivered": null,
   "portal": null,

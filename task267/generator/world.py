@@ -8,7 +8,7 @@ import numpy as np
 
 import common as K
 
-SEED = 285
+SEED = 694
 
 # the season's process (the draw's simulation, kept)
 P = dict(b0=-8.4, kb=0.085, lat=1.0, shape=1.6, s0=0.6, s1=0.06, dm_base=5.6, a_sev=0.55, g_sev=34, nd_mean=5.42,

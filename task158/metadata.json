@@ -1,0 +1,220 @@
+{
+  "task": "task158",
+  "title": "Which of an Amsterdam model provider's six serving pools gets a leased 240-GPU stopgap for Q1 2027, and that pool's Q1 peak-week GPU shortfall, when the document Q&A pool takes on eleven report-service contracts whose every call opens its own session",
+  "domain": "General Statistics & Data Science",
+  "client_domain": "General Statistics & Data Science",
+  "house_domain": "general-statistics-data-science",
+  "subdomain": "regression-classification-model-diagnostics (GPU busy time regressed on the prompt tokens a model computes and the tokens it generates, the specification chosen on its out-of-sample fit to an early-access tenant's report calls)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "a committed pick (one of six serving pools for a leased cluster) with the pool's Q1 peak-week GPU shortfall to the nearest 10, a table of each pool's November out-of-service GPU-hours and longest stay out, a table of the leased cluster's accepted GPUs by rack with the nodes held back, and a bar chart of the November out-of-service GPU-hours",
+  "as_of": "2026-12-07",
+  "deliverables": [
+    "stopgap_q1_2027.xlsx",
+    "pool_out_of_service_nov2026.png"
+  ],
+  "distractor_files": [
+    "serving_incidents_2026H2.csv",
+    "gpu_spec_register_2026-12.csv",
+    "stopgap_lease_terms_2026-11-13.pdf"
+  ],
+  "field_terms": [],
+  "stated_inputs": [
+    "240"
+  ],
+  "input_gates": {
+    "files": 19,
+    "formats": [
+      "csv",
+      "jsonl",
+      "log",
+      "md",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "fleet_rollup_hourly_2026-01-01_2026-12-06.csv",
+    "largest_file_rows": 48956
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task158/generator/build.py (seeded, deterministic) around a fictional Amsterdam model provider, in the layouts of a fleet capacity rollup, a billing usage export, maintenance automation and ops console logs, a provider's acceptance exports and the provider's own planning workbooks and documents; no real organisation's records or person is depicted.",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-17",
+  "generator": "task158/generator/build.py",
+  "files": [
+    {
+      "path": "capacity_closeout_2026Q3.pdf",
+      "format": "pdf",
+      "bytes": 36558,
+      "rows": null,
+      "source": "Constructed: Slenk fleet capacity, Q3 2026 capacity close-out (16 October 2026)",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "capacity_desk_notes.md",
+      "format": "md",
+      "bytes": 2532,
+      "rows": null,
+      "source": "Constructed: Slenk capacity desk, notes on the 7 December 2026 pull",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "capacity_pull_2026-12-07.log",
+      "format": "log",
+      "bytes": 1865,
+      "rows": null,
+      "source": "Constructed: Slenk capacity desk, log of the 7 December 2026 pull",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "docs_usage_by_org_daily_2026-09-01_2026-12-06.csv",
+      "format": "csv",
+      "bytes": 2849069,
+      "rows": 30903,
+      "source": "Constructed: Slenk billing, Docs usage by organisation, channel and Amsterdam business day, 1 September to 6 December 2026",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fleet_nodes_2026-12-06.csv",
+      "format": "csv",
+      "bytes": 34664,
+      "rows": 484,
+      "source": "Constructed: Slenk fleet inventory, nodes with hall, rack and pool memberships (6 December 2026)",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fleet_plan_2027Q1.xlsx",
+      "format": "xlsx",
+      "bytes": 8850,
+      "rows": 15,
+      "source": "Constructed: Slenk fleet capacity, Q1 2027 fleet plan, issue v3 (1 December 2026)",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fleet_rollup_hourly_2026-01-01_2026-12-06.csv",
+      "format": "csv",
+      "bytes": 4774536,
+      "rows": 48956,
+      "source": "Constructed: Slenk fleet capacity rollup, GPU busy time and gateway counters by pool and UTC hour, 1 January to 6 December 2026",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fleetctl_jobs_2026-10-26_2026-12-06.jsonl",
+      "format": "jsonl",
+      "bytes": 281500,
+      "rows": 1935,
+      "source": "Constructed: Slenk fleetctl, job step log, 26 October to 6 December 2026",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "gpu_spec_register_2026-12.csv",
+      "format": "csv",
+      "bytes": 591,
+      "rows": 7,
+      "source": "Constructed: Slenk GPU spec register, serving deployments and the leased cluster (7 December 2026)",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lease_schedule3_acceptance.pdf",
+      "format": "pdf",
+      "bytes": 41355,
+      "rows": null,
+      "source": "Constructed: Lease of GPU capacity, Noordermeer Compute and Slenk, Schedule 3: Acceptance (13 November 2026)",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "nx7_burnin_results.csv",
+      "format": "csv",
+      "bytes": 67002,
+      "rows": 729,
+      "source": "Constructed: Noordermeer Compute, NX7 stopgap cluster burn-in results as sent for the 4 December 2026 review",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "nx7_fabric_results.csv",
+      "format": "csv",
+      "bytes": 3254,
+      "rows": 31,
+      "source": "Constructed: Noordermeer Compute, NX7 stopgap cluster all-reduce results as sent for the 4 December 2026 review",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "nx7_handover_inventory_2026-12-04.csv",
+      "format": "csv",
+      "bytes": 7955,
+      "rows": 240,
+      "source": "Constructed: Noordermeer Compute, NX7 stopgap cluster handover inventory (4 December 2026)",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ops_console_audit_2026-10-26_2026-12-06.csv",
+      "format": "csv",
+      "bytes": 17257,
+      "rows": 219,
+      "source": "Constructed: Slenk ops console, audit export, 26 October to 6 December 2026",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "q1_2027_capacity_intake.xlsx",
+      "format": "xlsx",
+      "bytes": 7598,
+      "rows": 9,
+      "source": "Constructed: Slenk fleet capacity, Q1 2027 capacity intake from the six product teams (filed by 27 November 2026)",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "report_service_commitments_2026-12-04.xlsx",
+      "format": "xlsx",
+      "bytes": 9720,
+      "rows": 18,
+      "source": "Constructed: Slenk report service, commitments ledger export (4 December 2026)",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "serving_incidents_2026H2.csv",
+      "format": "csv",
+      "bytes": 3574,
+      "rows": 32,
+      "source": "Constructed: Slenk serving incident log, July to December 2026",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "stopgap_assignment_policy_2026-11.pdf",
+      "format": "pdf",
+      "bytes": 35131,
+      "rows": null,
+      "source": "Constructed: Slenk fleet capacity, stopgap capacity policy for Q1 2027 (16 November 2026)",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "stopgap_lease_terms_2026-11-13.pdf",
+      "format": "pdf",
+      "bytes": 41284,
+      "rows": null,
+      "source": "Constructed: Lease of GPU capacity, Noordermeer Compute and Slenk, principal terms (13 November 2026)",
+      "date": "2026-12-07",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

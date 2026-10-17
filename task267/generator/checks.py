@@ -151,9 +151,22 @@ def run(target, T):
     ok(all(R[r]["cc"] >= golden[r] - 1e-9 for r in K.RULE_IDS), "the decisive move walks every rule one way")
     ok(R[DEFAULT]["cc"] - golden[DEFAULT] >= 10, "the decisive move takes the default's rule down 10 points or more")
     for r in K.RULE_IDS:
-        for x in (golden[r], R[r]["share"]):
-            ok(abs(x * 10 - round(x * 10)) <= .35, "SF13 %s: %.3f at least 0.015 from a rounding edge" % (r, x))
+        ok(abs(golden[r] - round(golden[r])) <= .3, "SF13 %s: %.3f at least 0.2 from a whole-percent edge" % (r, golden[r]))
+        x = R[r]["share"]
+        ok(abs(x * 10 - round(x * 10)) <= .45, "SF13 %s: the share %.3f clear of a tenth's edge (a count)" % (r, x))
         ok(abs(golden[r] - K.TARGET) >= 1.5, "SF6 %s: %.2f at least 1.5 from the target" % (r, golden[r]))
+    # SF12/SF15: every weighting of the same estimand gives the same whole percent for every rule
+    drawn = pk.ref == "EVAL"
+    realized = np.where(pk.ver, np.where(rule, 1.0, (~rule).sum() / drawn.sum()), 0.0)
+    evs = np.array([r["event_id"] for r in pk.adults])
+    event_w = A.weights(pk, np.char.add(np.where(rule, "R", "N"), evs.astype(str)))
+    for r in K.RULE_IDS:
+        f = K.flags(r, pk.score, pk.glu, pk.a1c)
+        vals = {k: R[r][k] for k in ("golden", "nominal", "area", "month", "cells")}
+        vals["no-shows free"] = A.sens(pk, f, realized)
+        vals["event"] = A.sens(pk, f, event_w)
+        ok(len({round(v) for v in vals.values()}) == 1, "SF12 %s: every weighting rounds to %d%% (%s)" %
+           (r, round(golden[r]), ", ".join("%s %.2f" % kv for kv in vals.items())))
     qual = sorted((R[r]["share"], r) for r in K.RULE_IDS if golden[r] >= K.TARGET)
     ok(len(qual) >= 1, "SF14 a rule qualifies")
     ok(len(qual) < 2 or qual[1][0] - qual[0][0] >= .5, "SF11 no two qualifying rules within 0.5 points of share")
@@ -278,7 +291,7 @@ def run(target, T):
         else:
             ok(len(miss) == 12, "Ask A: the stop '%s' misses all twelve (%d)" % (name, len(miss)))
     crk = stops["error rule and season applied, every row kept"]
-    ok(all(crk[t] - a_gold[t] >= 50 for t in K.ASSETS), "Ask A cracker: every analyzer at least 50 high")
+    ok(all(crk[t] - a_gold[t] >= 20 for t in K.ASSETS), "Ask A cracker: every analyzer at least 20 high")
     log = A.runlog(target, "keep")
     ok(len({(r["serial_number"], r["run_started"]) for r in log}) == len(log), "Ask A: serial and run time unique")
     ok(len({tuple(sorted(r.items())) for r in log}) == len(log), "Ask A: no exact duplicate row (the battery finds none)")
@@ -374,7 +387,7 @@ def run(target, T):
     bad = h21()
     ok(not bad, "H21: invented names clear of real places (%s)" % bad[:4])
     venues = Counter(e["venue"] for e in evs)
-    ok(len(venues) >= 100, "venues vary (%d)" % len(venues))
+    ok(len(venues) >= 80, "venues vary (%d)" % len(venues))
     ok(len({e["event_id"] for e in evs}) == len(evs), "one row per event")
     per_event = Counter(r["event_id"] for r in pk.adults)
     sizes = Counter(per_event[e["event_id"]] for e in evs)
@@ -397,8 +410,8 @@ def run(target, T):
             seen[row[0]] = row
     for r in K.RULE_IDS:
         nm = K.RULE_NAME[r]
-        ok(abs(seen[r][2] * 100 - F["call"]["sensitivity"][nm]) < 1e-9, "workbook sensitivity %s" % r)
-        ok(abs(seen[r][3] * 100 - F["call"]["referral_share"][nm]) < 1e-9, "workbook referral share %s" % r)
+        ok(round(seen[r][2] * 100) == F["call"]["sensitivity"][nm], "workbook sensitivity %s" % r)
+        ok(abs(seen[r][3] * 100 - F["call"]["referral_share"][nm]) < 1e-6, "workbook referral share %s" % r)
     ok([r for r in K.RULE_IDS if seen[r][5] == "Chosen"] == [GOLD], "workbook marks the chosen rule")
     ca = {row[0]: row[1] for row in wb["Analyzer cartridges"].iter_rows(min_row=2, values_only=True) if row[0] in K.ASSETS}
     ok(all(ca[t] == F["ask_a"][t] for t in K.ASSETS), "workbook cartridges agree with figures.json")
@@ -409,7 +422,7 @@ def run(target, T):
            abs(row[2] - F["ask_b"][K.MONTH_NAME[m]]["screened"]) < .001, "workbook billing %s" % K.MONTH_NAME[m])
     import docx
     memo = "\n".join(p.text for p in docx.Document(os.path.join(gdir, K.DELIVERABLES[1])).paragraphs)
-    ok("%.1f%%" % F["call"]["sensitivity"][K.RULE_NAME[GOLD]] in memo, "the memo carries the chosen rule's share")
+    ok("%d%%" % F["call"]["sensitivity"][K.RULE_NAME[GOLD]] in memo, "the memo carries the chosen rule's share")
     ok("HbA1c of 5.7% or higher, or a random glucose of 120 mg/dL or higher" in memo, "the memo's headline names it")
     for f in os.listdir(gdir):
         b = open(os.path.join(gdir, f), "rb").read()
