@@ -1,11 +1,11 @@
 {
  "task": "task193",
  "owner": "oviya13ya",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "pharmacology-pharmacoepidemiology-safety/safety-signal-detection",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-17",
  "stump": "A competent solver reconciles the two register layouts, folds the replaced patient pseudonyms, carries the reissued package codes onto one product at each dispensing's own date, establishes every first receipt against the 24-month clearance period, counts each pair's after and before patients exactly and refers 10 pairs by measuring each after-count against 1.25 times half of the pair, because the number expected if the product had no bearing on when the marker treatment is first received is not half of the pair when the product's own first receipts are not level across the screen window.",
  "architecture": 2,
@@ -30,37 +30,22 @@
   "freeze": "freeze.py check --mode rubric exit 0"
  },
  "leak": {
-  "leak_py": "REVIEW, two REVIEW and two INFO lines, every one answered in the design note, no LEAK",
-  "reader": "pass 1 back: nothing quoted for the decisive step, no ranking file, question 6 an analytical choice, and it reached the golden seven cold at about 90 per cent confidence. It found three ask-layer forks and eight realism tells, all fixed in the generator in this pass.",
-  "reader_pass_2": "question 3 named register_release_notes.json's known_handling block as a solver's checklist, plus four dated contradictions and a realism list. All closed in this pass; leak.py is REVIEW with no release-notes line."
+  "leak_py": "REVIEW, no LEAK",
+  "reader": "landed the call at 80 per cent; its ask bases were right and its ask figures were not"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.org_family, overuse.objective, repeat.gate_g, overuse.gate_g, repeat.deliverables, repeat.question_form), all answered in the design note's ## Draw; two differentiated NOTEs against task254 and task50",
   "surface": "no file name and no persona promoted"
  },
  "judge": {
-  "verdict": "pass 1: NOT_DETERMINISTIC, SEND_BACK, with Gate G (statistical_rigor, analytical_non_defect) and Gate H passing and the main call, the pair data and the region table all forced. Every finding was in the chain-and-quarter and holder-fee asks.",
-  "disposition": "fix pass, not a re-root: the judge's own fix note keeps the main call, the pair data and the region ask",
-  "report": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_judge/verdict.md (pass 1)",
-  "fixed": [
-   "product_register.csv now carries holder_code, previous_holder_code and holder_code_from, so the Sovraxil authorisation transfer names H6 and its date",
-   "register_release_notes.json states that a line re-sent after a transmission failure counts once in any count of lines and once in any count of doses",
-   "register_release_notes.json states that the register reports a line in the quarter of its date of dispensing, and that the chains' log counts by month of submission",
-   "the fee schedule states that a payer's band rate is charged on all of its doses and the bands are not applied in tiers, and the notes sheet states who pays before and after a merger",
-   "the fee golden carries seven payers, including the pre-merger holder, and counts re-sent lines once",
-   "the prompt scopes the chain ask to the quarter of dispensing in the window and words the chart as each pair's referral threshold marked",
-   "section 2.5's death and emigration sentence, which could never apply, is removed and the convergence asserted instead",
-   "eight realism tells fixed in the generator: dose per pack constant per medicine, a skewed package count, a submission lag that drifts by quarter, skewed rejection reasons, per-chain municipalities, an irregular literature log, a varied serious share, and the extract's stated adult scope"
-  ],
-  "verdict_pass_2": "DETERMINISTIC, APPROVE, no repair, no rerun. It named six sentences as carrying the determinism; each still has a shipped home, asserted by the home.* block in checks.py.",
-  "verdict_pass_3": "DETERMINISTIC, SOLUTION_WRONG, FIX_NOW. The main call was forced and named the strongest result in the wave. One golden figure (H4's doses, 159766.95 shipped as 159766.9) was unreachable by any convention, three payer totals sat on exact halves, four figures sat near their edges, the fee ask's unit carried a semantic fork, the chart had two open points, and the dictionary contradicted the person register.",
-  "verdict_pass_4": "NOT_DETERMINISTIC, SEND_BACK, governing label answer_contradicts_files, and every reason in the ask layer. The call came back forced and margin-robust: 23 pair rows and 16,957 person keys reproduce, the seven referred pairs at 1.36 to 1.50 with the nearest unreferred at 1.03, the set holding under three independence constructions and under skipping the crosswalk and the clearance rule. Gate G and Gate H pass. Treated as a FIX_NOW on the ask layer by the author, not as a spent architecture.",
-  "verdict_pass_5": "NOT_DETERMINISTIC, SEND_BACK, and again the whole of it in the ask layer. Main call DETERMINISTIC and reproducing, Gate G and Gate H pass, the seven pairs unchanged under every date-based variant, asks 1, 2, 3 and 5 reproduce. The failure was ask 4's dose: the sentence that had adjudicated it was removed and nothing replaced it, so it read as a competing defensible answer with a third, vintage reading available."
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "loops 6: nothing failed to reproduce, Gate G and H pass, stump power moderate, and it expects a substantial share of strong runs to file the crude expectation"
  },
  "returned": [],
- "resume": "ASK LAYER FORCED FROM THE DATA, READY FOR ONE RE-JUDGE. Pair ceiling 34.0 (ceiling 40), mirror leakage 10.0 per cent (under 35). All three ask bases are now settled by the shipped data rather than by a sentence: the dose by nine rows contradicting their own documented formula with one edition in force across the fee period, the chain by the chains' log tying in 148 of 148 chain-months one way and failing in 144 the other, the region by the register's history columns starting after the window and no row contradicting it. Call untouched, freeze --mode rubric exit 0, seven pairs at 1.365 to 1.499. Gates: 183 generator assertions, 267 independent checks, precut 50 checks 0 FAIL 0 WARN, figures_check 205 of 205, voice-check exit 0, leak REVIEW with no LEAK, surface clean, heart WARN as drawn, two byte-identical rebuilds, target.zip md5 aa084e2f3354fce6ab82c4f09db87a61 with 21 entries. Both briefs staged and verified file by file; the judge brief keeps the author's neutral intro.",
+ "resume": "SHIPPED. Carry-forward for any repair: verify.py reads no PDFs, so the standard's own clause is asserted present only by checks.py, which built it. The independent verifier should read the authority documents too. Held realism items and the s3.2(b) forced-and-findable trade are in the design note.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-17",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
