@@ -52,6 +52,11 @@ def write(gendir, g):
         "rung0_published_ratio": round(r0["ratio"], 2),
         "rung3_unit_code": r3["unit"],
         "rung3_per_1000": round(r3["per_1000"], 1),
+        "pick_per_1000": round(a["per_1000"], 1),
+        "published_table_derived_year_end_day": 30,
+        "neutral_ratio": 1.00,
+        "unit_quarters_in_the_series": sum(1 for _ in g["units"]) and len(
+            [1 for k in g["bundle"]["panel"]]),
         "rung3_avoidable": round(r3["avoidable"]),
         "band_drift": {b: round(v, 3) for b, v in f["drift"].items()},
         "band_drift_low": round(f["drift_low"], 3),

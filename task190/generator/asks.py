@@ -132,7 +132,7 @@ def a1_golden(truth):
             if mins > ch * 60 + cm:
                 past += 1
                 val += value
-        out[name] = (past, round(val, 2))
+        out[name] = (round(val, 2),)
     return out
 
 
@@ -164,7 +164,7 @@ def a1_stops(truth):
                     val += value
             if name == "the_mirror":                  # the re-released run counted twice
                 n += 1 if lo <= "2026-05-01" <= hi else 0
-            agg[q] = (past, round(val, 2))
+            agg[q] = (round(val, 2),)
         stops[name] = agg
     return stops
 

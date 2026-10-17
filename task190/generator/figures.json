@@ -34,19 +34,15 @@
   },
   "runs_past_the_cutoff_by_quarter": {
    "2026Q1": [
-    11,
     11152377.12
    ],
    "2026Q2": [
-    10,
     7116710.85
    ],
    "2026Q3": [
-    10,
     9115055.38
    ],
    "2026Q4": [
-    8,
     6663248.13
    ]
   },
@@ -84,6 +80,7 @@
  },
  "critical_components": {
   "authority_certain_share_pct": 26.6,
+  "authority_misstatement_pct": 1.43,
   "certainty_lines": 31,
   "certainty_value": 15826540.07,
   "payment_lines": 26651,
@@ -109,6 +106,17 @@
    "Shore power installation": 150000,
    "Terminal roof and cladding": 50000,
    "Welfare and offices fit-out": 50000
+  },
+  "programme_misstatement_pct": {
+   "Deepwater berth renewal": 0.0,
+   "Dredging programme": 0.0,
+   "Pavement and surfacing": 4.53,
+   "Quay 3 reconstruction": 0.0,
+   "Rail siding and yard": 3.17,
+   "Security and access systems": 7.16,
+   "Shore power installation": 3.18,
+   "Terminal roof and cladding": 0.6,
+   "Welfare and offices fit-out": 1.57
   },
   "programme_payments_recorded": {
    "Deepwater berth renewal": 13874300.51,
@@ -145,39 +153,39 @@
    "rows": {
     "Deepwater berth renewal": [
      0,
-     35.2
+     0.0
     ],
     "Dredging programme": [
      0,
-     42.6
+     0.0
     ],
     "Pavement and surfacing": [
      150000,
-     15.6
+     4.53
     ],
     "Quay 3 reconstruction": [
      0,
-     34.2
+     0.0
     ],
     "Rail siding and yard": [
      200000,
-     16.9
+     3.17
     ],
     "Security and access systems": [
      250000,
-     13.8
+     7.16
     ],
     "Shore power installation": [
      150000,
-     18.4
+     3.18
     ],
     "Terminal roof and cladding": [
      50000,
-     18.5
+     0.6
     ],
     "Welfare and offices fit-out": [
      50000,
-     14.0
+     1.57
     ]
    }
   }

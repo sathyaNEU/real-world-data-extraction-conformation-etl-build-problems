@@ -72,13 +72,23 @@ def responses(fig):
             fig["call"]["referred_for_extended_testing"] else 0
         return n, per
 
-    def comp_hits(per, got_interval):
-        """Both graded figures per programme need the recovered interval, so neither is free:
-        the misstatement and the share of recorded value certain of selection."""
+    def comp_hits(per, got_interval=True):
+        """The misstatement per programme and its share of the programme's recorded value.
+
+        The column this replaced, the share of recorded value certain of selection, needed only the
+        filed interval and the ledger, so every response that read the working paper banked all
+        nine. A figure no route can get wrong is worth less than nothing: it dilutes every
+        criterion beside it. The share of recorded value moves with the estimator instead.
+        """
         n = 0
+        rec = fig["critical_components"]["programme_payments_recorded"]
+        pct = fig["critical_components"]["programme_misstatement_pct"]
         for k in prog:
             n += 1 if per.get(k) == prog[k] else 0
-            n += 1 if got_interval else 0
+            # the second column is the misstatement as a share of recorded value, so it moves with
+            # the estimator. The certain share it replaced needed only the filed interval and the
+            # ledger, so every response banked all nine of it.
+            n += 1 if round(100.0 * per.get(k, -1) / rec[k], 2) == pct[k] else 0
         n += 1 if sum(per.values()) == fig["call"]["misstatement_indicated"] else 0
         return n, 2 * len(prog) + 1
 
@@ -105,12 +115,11 @@ def responses(fig):
         is short by the revenue part, which is every value figure and nothing else."""
         n = 0
         for q in a1:
-            for i in range(2):
-                got = agg[q][i]
-                if i == 1 and rebuilt_the_value_from_the_capital_extract:
-                    got = None
-                n += 1 if got == a1[q][i] else 0
-        return n, 2 * len(a1)
+            got = agg[q][0]
+            if rebuilt_the_value_from_the_capital_extract:
+                got = None
+            n += 1 if got == a1[q][0] else 0
+        return n, len(a1)
 
     # ---- A2, five categories x three figures
     def a2_hits(agg):
@@ -208,7 +217,7 @@ def responses(fig):
                         "instruction": (2, 2), "asks": (cr_a1 + cr_a2 + cr_a3, asks_n),
                         "per_ask": [(cr_a1, a1_n), (cr_a2, a2_n), (cr_a3, a3_n)]},
         "the mirror": {"call": (mi_call, 4), "components": (mi_comp + mi_cov, comp_n + cov_n),
-                       "instruction": (1, 2), "asks": (mi_a1 + mi_a2 + mi_a3, asks_n),
+                       "instruction": (2, 2), "asks": (mi_a1 + mi_a2 + mi_a3, asks_n),
                        "per_ask": [(mi_a1, a1_n), (mi_a2, a2_n), (mi_a3, a3_n)]},
     }
 

@@ -16,15 +16,15 @@ def table(path, g):
     the chart uses too. Recorded value to the cent as the ledger holds it, the misstatement whole
     because 9.1 states it to the nearest fifty thousand, the share to one decimal.
     """
-    cert_total = sum(g["recorded"][c] * g["certain_share"][c] / 100.0 for c in W.PROG_CODES)
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh, lineterminator="\n")
         w.writerow(["work_programme", "programme_code", "misstatement_indicated_eur",
-                    "share_of_recorded_value_certain_of_selection_pct"])
+                    "misstatement_as_pct_of_recorded_value"])
         for c in sorted(W.PROG_CODES, key=lambda c: (-g["per"][c], W.PROG_NAME[c])):
-            w.writerow([W.PROG_NAME[c], c, g["per"][c], "%.1f" % g["certain_share"][c]])
+            w.writerow([W.PROG_NAME[c], c, g["per"][c],
+                        "%.2f" % (100.0 * g["per"][c] / g["recorded"][c])])
         w.writerow(["Authority", "", g["total"],
-                    "%.1f" % (100.0 * cert_total / g["recorded_total"])])
+                    "%.2f" % (100.0 * g["total"] / g["recorded_total"])])
     return path
 
 

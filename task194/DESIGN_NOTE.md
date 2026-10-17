@@ -80,8 +80,8 @@ measured at stage 2 on the built panel; the names below are what the design puts
 5. Put the improvement team with the unit at the top of that ranking.
 
 **Ends on:** Alderbrook General Surgery (cost centre 41220).
-**Golden:** Alderbrook Orthopaedics (cost centre 41230), 40.0 avoidable complications on its 2,305
-planned separations. The unit the default path names carries minus 3.7.
+**Golden:** Alderbrook Orthopaedics (cost centre 41230), 40 avoidable complications on its 2,305
+planned separations. The unit the default path names carries minus 3.
 
 ## Stump sentence
 
@@ -90,7 +90,7 @@ each records above the expectation the published stratum rates give it, and plac
 with Alderbrook General Surgery (cost centre 41220), which is the unit whose patients sit where the
 published standard has gone most out of date rather than the unit whose own patients are having the most
 complications they should not be having; on the comparison the charter asks for, that unit is carrying
-minus 3.7 avoidable complications and the unit that is carrying 40.0 sits fourth on the ranking it read.
+minus 3 avoidable complications and the unit that is carrying 40 sits fourth on the ranking it read.
 
 ## Three rules
 
@@ -159,10 +159,10 @@ Unit: complications, counted at the unit. Comparison: charter 4.3, against the c
 of the same risk band and age band ordinarily have. What stays open is which
 frequency answers "ordinarily have", and the data force it under `determinism-check` section 1's first
 licence, the design forcing the method with the data separating the candidates. The separation is measured,
-not asserted: the network's own rate runs from 0.886 to 1.319 of the published rate across the six risk
-bands, a factor of 1.49 crossing 1.00 in both directions; the twelve candidates' surgical share of in-scope
-episodes runs from 0.075 to 0.851 with three carrying none at all; and on the record one unit's own practice
-is flat across a case-mix shift while the published basis moves its avoidable count by a factor of five
+not asserted: the network's own rate runs from 0.887 to 1.313 of the published rate across the six risk
+bands, a factor of 1.48 crossing 1.00 in both directions; the twelve candidates' surgical share of in-scope
+episodes runs from 0.075 to 0.851 with two carrying none at all; and on the record one unit's own practice
+is flat across a case-mix shift while the published basis moves its avoidable count by a factor of 8.5
 (`## Literal reader`). Both candidate frequencies are measured sums over the record, neither is a fitted
 form, and no free parameter is chosen, so the collinearity that spent architecture 1 cannot arise.
 
@@ -196,12 +196,12 @@ this table and must never be: a reading difference is never the stump. It is in 
 
 | id | Term or convention | Golden reading | Alternative, and the call under it | Ruled out by |
 |---|---|---|---|---|
-| SF1 | "over a period" in charter 4.3, the unit's own record | every closed quarter under specification 4.0, ten quarters | the latest quarter alone (46.2), the last four (45.1), the last eight (40.1) | specification 3.3, "for the specification period to date, being every closed quarter from 1 July 2024. No other period is reported for a unit"; and `same call` on all four readings, each naming 41230 |
+| SF1 | "over a period" in charter 4.3, the unit's own record | every closed quarter under specification 4.0, ten quarters | the latest quarter alone (45.6), the last four (45.0), the last eight (39.5) | specification 3.3, "for the specification period to date, being every closed quarter from 1 July 2024. No other period is reported for a unit"; and `same call` on all four readings, each naming 41230 |
 | SF2 | "the most avoidable complications" | a count of complications | a rate per 1,000 separations, which names 41420 at 23.0 against 41230's 17.4 | charter 4.3, "the most avoidable complications ... counted patient by patient and summed over the unit's episodes in that period"; a count, not a rate. This is rung 3 |
-| SF3 | the exposure a record rate is carried on | all separations, to planned separations | in-scope episodes to planned separations (41230 at 43.6) | specification 3.4, "the separations planned for the unit multiplied by the unit's expected complications per separation", and charter 4.4; `same call` |
-| SF4 | "patients of the same risk band and age band" | every such patient in the network's record | restricted to the unit's own hospital (names 41410 at 1.14x) or to the hospital's peer group (names 41420 at 1.26x) | charter 4.3 stratifies on a risk band and an age band and names no site, division or peer condition; adding one adds a stratum the clause does not state |
-| SF5 | whether the unit's own patients sit inside the comparison | they do; the plain standard | leave-one-out, which gives 41230 76.5 | `same call`, measured at 2.88x; the asking sentence names the plain standard and the figure is graded on it |
-| SF6 | the window the comparison frequency is measured over | the same ten closed quarters | eight (43.2), four (36.2), the latest alone (36.8) | `same call` on all four, each naming 41230 |
+| SF3 | the exposure a record rate is carried on | all separations, to planned separations | in-scope episodes to planned separations (41230 at 43.0) | specification 3.4, "the separations planned for the unit multiplied by the unit's expected complications per separation", and charter 4.4; `same call` |
+| SF4 | "patients of the same risk band and age band" | every such patient in the network's record | restricted to the unit's own hospital (names 41410 at 1.42x) or to the hospital's peer group (names 41420 at 1.36x) | charter 4.3 stratifies on a risk band and an age band and names no site, division or peer condition; adding one adds a stratum the clause does not state |
+| SF5 | whether the unit's own patients sit inside the comparison | they do; the plain standard | leave-one-out, which gives 41230 75.6 | `same call`, measured at 2.86x; the asking sentence names the plain standard and the figure is graded on it |
+| SF6 | the window the comparison frequency is measured over | the same ten closed quarters | eight (42.5), four (35.0), the latest alone (37.0) | `same call` on all four, each naming 41230 |
 | SF7 | whether the comparison is stratified at all | by risk band and age band | one crude network rate, which names 41330 | charter 4.3, "patients of the same risk band and age band" |
 | SF8 | "closed quarters" at the decision date | the ten quarters to 31 December 2026 | including the quarter in progress | specification 3.7, coding closes eight weeks after the quarter ends, and charter 4.1, "on the indicator data closed at the time of the decision"; the extract's pull date is 5 March 2027 and carries no 2026-27 Q3 separations, so the readings converge |
 | SF9 | eligibility | charter 4.2, twelve units | counting the in-progress placement, the eight closed placements, the two amalgamated predecessors or the three non-acute units | charter 4.2's two exceptions and its four-quarter floor, specification 2.3 on service type, specification 3.6 on amalgamation |
@@ -217,32 +217,32 @@ decisive quantity is the avoidable count of charter 4.3 carried onto the planned
 
 | Rung | The route | Names | Figure | Rung margin | Golden's rank |
 |---|---|---|---|---|---|
-| 0 | the published excess, scaled to the planned separations: the route the series, the dashboard and specification 3.1 all invite | 41220 Alderbrook General Surgery | 59.2 | 2.09x over 41320 | 4 of 12 (20.4) |
-| 3 | the avoidable count rebuilt on the record's own stratum frequencies, then ranked as a rate per 1,000 rather than as a count | 41420 Marrowfield General Medicine | 23.0 per 1,000 | 1.33x over 41230's 17.4 | 2 of 12 |
-| 4 (decisive) | the same rebuilt count, counted and carried onto the quarter's planned separations | **41230 Alderbrook Orthopaedics** | **40.0** | **1.59x over 41420's 25.1** | 1 of 12 |
+| 0 | the published excess, carried onto the planned separations: the route the series, the dashboard and specification 3.1 all invite | 41220 Alderbrook General Surgery | 59.2 | 2.11x over 41320 | 4 of 12 (20.5) |
+| 3 | the avoidable count rebuilt on the record's own stratum frequencies, then ranked as a rate per 1,000 rather than as a count | 41420 Marrowfield General Medicine | 23.0 per 1,000 | 1.32x over 41230's 17.4 | 2 of 12 |
+| 4 (decisive) | the same rebuilt count, counted and carried onto the quarter's planned separations | **41230 Alderbrook Orthopaedics** | **40** | **1.60x over 41420's 25** | 1 of 12 |
 
 **The golden's lead in both units, as the coordinator asked.** Over the runner-up, 41420 Marrowfield
-General Medicine: **14.91 complications, 1.59x, and 2.38 standard errors** of the gap (each unit's excess
+General Medicine: **15.05 complications, 1.60x, and 2.41 standard errors** of the gap (each unit's excess
 carries a Poisson standard error of sqrt(observed) scaled by planned separations over record separations:
-5.17 for 41230, 3.52 for 41420, 6.25 for the gap). Over the third unit, 41410: 32.06 complications, 5.03x,
-5.50 standard errors. Every candidate's own excess against its own standard error: 41230 at 7.75, 41420 at
-7.13, 41410 at 2.96, and the remaining nine between -1.30 and 0.90. The top two are therefore not inside a
+5.17 for 41230, 3.52 for 41420, 6.25 for the gap). Over the third unit, 41410: 32.12 complications, 5.04x,
+5.51 standard errors. Every candidate's own excess against its own standard error: 41230 at 7.76, 41420 at
+7.11, 41410 at 2.96, and the remaining nine between -1.34 and 0.92. The top two are therefore not inside a
 standard error of each other and the ladder is not drawn on noise.
 
 **Ladder arithmetic (`dataset-generation` 6.2).** The answer is 4th on rung 0, never 1st on an intermediate
-rung, and 2nd on exactly one intermediate rung by 1.33x (the rule allows one at 1.20x or more). No rung
-margin is under 1.15x. The final margin is 1.59x, inside the 1.5 to 2x target. No rung is idle: rung 3 is
+rung, and 2nd on exactly one intermediate rung by 1.32x (the rule allows one at 1.20x or more). No rung
+margin is under 1.15x. The final margin is 1.60x, inside the 1.5 to 2x target. No rung is idle: rung 3 is
 the closest sibling of the right answer and is the one a careful solver reaches.
 
 **The nine other routes, measured rather than asserted.** Each was computed on the built record, so the next
 reader can see what was ruled out rather than that it was ruled. Routes naming a unit other than the golden:
-the published excess unscaled (41220, 434.0); the published standardised ratio (41420, 1.302); the published
-adjusted rate (41420, 125.8); the raw complication count (41220, 2,444); the crude rate per 1,000 in-scope
-episodes (41330, 137.7); the published excess on the latest quarter alone (41210, 35.4). Routes that also
-name the golden, so the call is robust to them: the rebuilt count on the latest quarter alone (45.6, 1.36x);
-the rebuilt count unscaled over the window (328.2, 1.45x); the rebuilt count over the last four quarters
-(45.1, 2.18x). Two of the six wrong-route margins are thin (the published ratio at 1.04x and the latest
-quarter at 1.12x) and neither is claimed as a rung for that reason.
+the published excess uncarried (41220, 434.0); the published standardised ratio (41420, 1.302); the
+published adjusted rate (41420, 125.8); the raw complication count (41220, 2,444); the crude rate per 1,000
+in-scope episodes (41330, 137.7); the published excess on the latest quarter alone (41210, 35.4). Routes
+that also name the golden, so the call is robust to them: the rebuilt count on the latest quarter alone
+(45.6, 1.33x); the rebuilt count uncarried over the window (328.7, 1.45x); the rebuilt count over the last
+four quarters (45.0, 2.18x). Two of the six wrong-route margins are thin (the published ratio at 1.05x and
+the latest quarter at 1.06x) and neither is claimed as a rung for that reason.
 
 **No functional form is chosen anywhere.** The architecture-1 failure was a graded quantity that needed a
 fitted counterfactual, and two forms fitted the register at a likelihood ratio of 1.02 to 1. Architecture 2
@@ -267,7 +267,7 @@ build takes and the move that closes it. Axes that cannot move this answer are i
 | 8 Window length | ten closed quarters | specification 3.3 files it; C1 across four lengths, every one naming 41230; SF1, SF6 |
 | 9 Boundary inclusivity | quarters are closed or they are not | specification 3.7's eight-week rule; C1, the pull date leaves nothing on the edge |
 | 10 Rounding path | once, at the figure the asking sentence names | the asking sentence carries the unit and the rounding; asserted mid-bin in `checks.py`; SF13 |
-| 11 Tie-break | none needed: the lead is 1.59x and 2.38 standard errors | measured separation, not a rule; the second level would be the unit's own ratio, which also puts 41230 above 41420's rank on the count |
+| 11 Tie-break | none needed: the lead is 1.60x and 2.41 standard errors | measured separation, not a rule; the second level would be the unit's own ratio, which also puts 41230 above 41420's rank on the count |
 | 12 Maturity and censoring | only fully closed quarters enter the record; the placement quarter is entirely unobserved and enters only as planned separations | specification 3.7 and 3.4; the forward window's contents ship as a driver file; axis 22 |
 | 13 Order of operations | expect per episode, then sum, then difference, then carry | charter 4.3 fixes the order inside the count ("counted patient by patient and summed"); summing before differencing gives the same number, asserted |
 | 14 Row order | the extract ships in separation order and the result is order-free | C1, asserted over permutations of the extract in `checks.py` |
@@ -288,7 +288,7 @@ could answer "ordinarily have": Appendix A's published stratum rates, and the fr
 carries. The published reading is ruled out by the pack's own sentences once the record is consulted.
 Appendix A states that its rates are "Derived from network activity in the year ended 30 June 2024";
 specification 3.1 states in the same breath that they "are not re-estimated between specifications"; and
-the record shows the network's own frequency now runs from 0.886 to 1.319 of those rates across the six
+the record shows the network's own frequency now runs from 0.887 to 1.313 of those rates across the six
 risk bands. A table of what patients had three years before, never re-estimated since, is not what patients
 of the same risk band and age band ordinarily have, and the record is what proves it is not.
 
@@ -296,12 +296,12 @@ of the same risk band and age band ordinarily have, and the record is what prove
 same number of patients in every one of the ten quarters and its own practice did not change. For two of
 them its orthopaedic theatre was closed, elective joint replacement stopped and its beds carried the
 hospital's emergency general surgical admissions, so its major-surgical share moved from 0.000 to 0.43 and
-back. On the published basis its avoidable count reads 1.1, 1.5, 1.7, 1.8, 1.9, 1.9 and 2.1 complications
-in the eight ordinary quarters and **9.2 and 9.4** in the two shifted ones, a factor of about five, and its
-published standardised ratio moves from 1.02 to 1.04 up to 1.27 and 1.28. On the record's own frequencies
-the same unit's avoidable count reads **6.2 to 7.1 in every one of the ten quarters**, a spread of under
-one complication, flat across the shift. The published basis therefore reports a unit's avoidable burden
-quintupling when nothing it does has changed, which is not a count of complications a unit carries as
+back. On the published basis its avoidable count reads 1.1, 1.5, 1.6, 1.7, 1.8, 1.9, 1.9 and 2.1
+complications in the eight ordinary quarters and **9.2 and 9.4** in the two shifted ones, a factor of
+**8.5**, and its published standardised ratio moves from 1.02 to 1.04 up to 1.27 and 1.28. On the record's
+own frequencies the same unit's avoidable count reads **6.2 to 7.1 in every one of the ten quarters**, a
+spread of 0.90 of a complication, flat across the shift. The published basis therefore reports a unit's
+avoidable burden multiplying by eight when nothing it does has changed, which is not a count of complications a unit carries as
 avoidable. This is the sentence the whole call turns on, and it is a measurement rather than an assertion.
 
 **Why this is analysis and not a reading.** Both frequencies are read correctly by both solvers: Appendix A
@@ -310,7 +310,7 @@ with it, and the record genuinely carries observed frequencies. Nothing is misre
 unit is misread. What separates the two answers is whether the analyst validates an external standard
 against the population it is being applied to before ranking providers on it. A solver who does not test
 the standard's currency ranks on the published excess and names 41220, whose avoidable count is actually
-minus 3.7. That is the recognised failure of indirect standardisation against a stale external standard,
+minus 3. That is the recognised failure of indirect standardisation against a stale external standard,
 and it is the first item on the client's own Layer 2 list, the right comparison group.
 
 **Every write-up step passes the same test.** Each step of the recommendation names the file and the clause
@@ -530,7 +530,7 @@ family A3 and A4 do not use, and until it has one this sheet says so.
 - **This pass, the design point measured rather than targeted.** Four rounds on the built record. The
   separation opened by deepening the published table's staleness in the orthopaedic bands and raising the
   golden's own standing together, holding their product fixed so its published excess stayed at fourth:
-  the golden's lead went from 7.33 complications, 1.45x and 1.19 standard errors to 14.91, 1.59x and 2.38.
+  the golden's lead went from 7.33 complications, 1.45x and 1.19 standard errors to 15.05, 1.60x and 2.41.
 - **Rejected: scaling the golden unit up to buy standard errors.** A unit's excess against its own Poisson
   error improves with the square root of its record volume, so the cheapest way to clear two standard
   errors was to make Alderbrook Orthopaedics a 2,500-separation-a-quarter unit. Ten thousand orthopaedic
@@ -541,18 +541,18 @@ family A3 and A4 do not use, and until it has one this sheet says so.
   treated changed, so that a measure which moves on a mix shift violates a quotable sentence. It was drafted
   and dropped: with only two rate sets in the pack, a clause ruling one out selects the other by
   elimination, which is the HOW filed in a fairness voice. The forcing sits on the data instead, where the
-  record carries it by a factor of five.
+  record carries it by a factor of 8.5.
 - **Rejected: the first backfill story.** The case-mix shift that forces the rate set was built by moving
   the demonstration unit into SURG-MAJ, which in this DRG set is major bowel resection and coronary bypass.
   Two hundred and thirty of those a quarter inside an orthopaedics cost centre is not a hospital. Replaced
   by the orthopaedic theatre closing for ventilation works, elective joint replacement stopping and the
   ward carrying the hospital's emergency general surgical admissions, which is SURG-MIN, keeps the unit's
   volume flat as the mechanism requires, needs no second unit to change because the elective work was
-  deferred rather than transferred, and still moves the published avoidable count by a factor of five.
+  deferred rather than transferred, and still moves the published avoidable count by a factor of 8.5.
 - **Rejected: claiming the published-ratio route and the latest-quarter route as ladder rungs.** Both are
   routes a solver takes, and both were measured, but their own first-to-second margins are 1.04x and 1.12x,
   under the 1.15x floor. A rung whose own winner is ambiguous is not a rung. They are recorded under the
-  ladder as measured routes, and the ladder claims three rungs whose margins are 2.09x, 1.33x and 1.59x.
+  ladder as measured routes, and the ladder claims three rungs whose margins are 2.11x, 1.32x and 1.60x.
 
 - **This pass, the ask layer measured rather than described.** The sheet was written from a script run on
   the cut pack, as the skill requires, and the first measurement came back at a pair ceiling of 50.0 with

@@ -300,7 +300,7 @@ def main(target, figpath):
             chk("deliverable row %s misstatement" % r["work_programme"],
                 int(r["misstatement_indicated_eur"]), w[0])
             chk("deliverable row %s certain share" % r["work_programme"],
-                round(float(r["share_of_recorded_value_certain_of_selection_pct"]), 1), w[1])
+                round(float(r["misstatement_as_pct_of_recorded_value"]), 2), w[1])
 
     # ---- the asks -------------------------------------------------------------
     cut = []
@@ -338,8 +338,7 @@ def main(target, figpath):
             a[0] += 1
             a[1] += float(r["run_value_eur"])
     for k, v in fig["asks"]["runs_past_the_cutoff_by_quarter"].items():
-        chk("A1 %s past the cut-off" % k, q[k][0], v[0])
-        chk("A1 %s value past the cut-off" % k, round(q[k][1], 2), v[1])
+        chk("A1 %s value released past the cut-off" % k, round(q[k][1], 2), v[0])
 
     ev = rows(target, "supplier_risk_approval_history.csv")
     cmap = {r["label_from_2026_10_01"]: r["label_to_2026_09_30"]

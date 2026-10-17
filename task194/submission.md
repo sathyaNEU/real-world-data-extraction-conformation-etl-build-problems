@@ -3,102 +3,130 @@
 ## Tags
 
 **Domain:** Healthcare Delivery & Health Economics (provider quality and risk adjustment).
-**Analytical objective:** Anomaly Detection & Diagnostics (separating the excess a unit is really carrying
-from what measuring a few hundred episodes a quarter produces on its own).
+**Analytical objective:** Anomaly Detection & Diagnostics (separating the excess a unit is really
+carrying from the excess the measurement system reports).
 
 ## 1. Final Recommendation
 
 **Place the cycle IP-10 improvement team with Alderbrook Orthopaedics, cost centre 41230.**
 
-The placement avoids **21** hospital-acquired complications over the quarter from 1 April 2027, against
-**13** at Alderbrook General Surgery, the closest unit, a gap of **8**. Alderbrook General Surgery will
-record more complications next quarter than any other unit, but only **19.5** of them sit above its own
-standing. Not Stonecreek Vascular Surgery, which stands worst of the twelve on its own record, because its
-planned **506** separations carry only **14.8** complications above that standing and a placement there
-avoids **10**. Not Alderbrook General Medicine, which is carrying **33** complications above expectation in
-the December quarter, more than any other unit, while its own ten closed quarters put **4.9** above
-expectation on the quarter's planned activity, so a placement there avoids **3**.
+The unit is carrying **40** avoidable hospital-acquired complications on the **2,305** separations it plans
+for the quarter from 1 April 2027, against **25** at Marrowfield General Medicine, the closest unit, a gap of **15** complications,
+**1.60** times and **2.41** standard errors of the gap. Not Alderbrook General Surgery, which the quarterly indicator puts first
+with **59.2** complications above the published expectation on its planned activity: measured against the
+complications its own patients would ordinarily have, it is carrying **-3**. Not Marrowfield General Medicine, which has the worst
+avoidable rate at **23.0** per 1,000 separations against **17.4** here, because on the separations each
+plans it is carrying **25** against **40**.
+
+The stratum rates published with specification 4.0 were derived from activity in the year ended 30 June
+2024 and clause 3.1 does not re-estimate them. The network's own rates now run from **0.887** to **1.313**
+of them across the six risk bands, a factor of **1.48** that crosses 1.00 in both directions, while the
+twelve candidates' surgical share of in-scope episodes runs from **0.075** to **0.851**. A ranking on the
+published expectation therefore ranks case mix as much as practice. Marrowfield Orthopaedics, cost centre 41410, is the clearest
+case: it treated the same number of patients in every closed quarter and changed nothing it does, and for
+two of them its orthopaedic theatre was closed and its beds carried emergency general surgery. On the
+published expectation its complications above expectation move from **1.1** to **9.4** a quarter, a
+factor of **8.5**; on the complications its own patients would ordinarily have the figure holds between
+**6.2** and **7.1** in every one of the ten quarters, a spread of **0.90** of a complication.
 
 ## 2. Critical Components
 
 1. Units eligible for the cycle under charter clause 4.2: **12**
-2. Alderbrook Orthopaedics' standardised ratio over the specification period: **1.16**
-3. Expected complications its planned **2,200** separations carry for the quarter: **189**
-4. Complications that planned activity carries above the unit's own standing: **31.1**
+2. Alderbrook Orthopaedics's observed complications over the ten closed quarters: **1,795**
+3. The complications patients of the same risk bands and age bands ordinarily have, over the same
+   quarters and the same episodes: **1,466.3**
+4. Its standardised ratio against that comparison: **1.22**, against **1.10** on the published rates
+5. Avoidable complications on its **2,305** planned separations: **40**
+6. Its rank on the published excess, which is the ranking the indicator report carries: **4** of **12**
 
 ## 3. Step-by-Step Solution
 
-1. Built each unit-quarter's observed and expected complications from episode_outcomes_extract.csv under
-   specification 4.0 clauses 2.1 to 2.5 and 3.1, through drg_risk_bands.csv and hac_stratum_rates.csv; the
-   result ties to unit_indicator_series.csv row for row.
-2. Applied charter clause 4.2 through unit_register.csv and improvement_placements.csv: 12 eligible units.
-3. Took each eligible unit's standardised ratio over the specification period, clause 3.3, which is the
-   position clause 4.3 holds it to without the team: Alderbrook Orthopaedics stands at 1.16.
-4. Converted the planned separations in activity_plan_2027q4.csv into each unit's expected complications for
-   the quarter under clause 3.4: 189 at Alderbrook Orthopaedics on 2,200 planned separations.
-5. Took what each unit's planned activity carries above its own standing: 31.1 complications at
-   Alderbrook Orthopaedics, the largest of the 12.
-6. Fitted the fall a placement produces to the eight closed placements in improvement_placements.csv, each
-   measured against clause 4.3's position over its own quarters before the team arrived: the fall scales
-   with the standing excess a unit carries, not with its expected complications or its level.
-7. Applied that share to each unit's own excess: 21 complications avoided at Alderbrook Orthopaedics against
-   13 at Alderbrook General Surgery.
-8. Recommended the placement with Alderbrook Orthopaedics (41230) and wrote the per-unit table and the
-   committee brief.
+1. Built each unit-quarter's observed and published-expected complications from
+   episode_outcomes_extract.csv under specification 4.0 clauses 2.1 to 2.5 and 3.1, through
+   drg_risk_bands.csv and hac_stratum_rates.csv; the result ties to unit_indicator_series.csv row for
+   row on all 215 unit-quarters.
+2. Applied charter clause 4.2 through unit_register.csv and improvement_placements.csv: 12 eligible
+   units.
+3. Read charter clause 4.3: a unit's avoidable complications are the complications its own patients had,
+   less the complications that patients of the same risk band and age band ordinarily have, counted
+   patient by patient and summed over its episodes in the period, which specification 3.3 fixes as every
+   closed quarter from 1 July 2024.
+4. Tested whether the published stratum rates still are what such patients ordinarily have. They are not:
+   Appendix A states they were derived from the year ended 30 June 2024, clause 3.1 does not re-estimate
+   them, and the record's own frequency runs from 0.887 to 1.313 of them band by band. On the published
+   expectation Marrowfield Orthopaedics's avoidable count moves by a factor of 8.5 across a quarter in which only its case mix
+   changed, which is not a count of complications a unit carries as avoidable.
+5. Measured the comparison from the record: complications per in-scope episode in each of the 24 strata,
+   over the same ten closed quarters, from the same extract. Alderbrook Orthopaedics's episodes carry 1,466.3 on that
+   basis against 1,627.0 on the published rates.
+6. Carried each unit's own avoidable complications per separation onto the separations
+   activity_plan_2027q4.csv plans for the quarter, which is clause 3.4's basis and clause 4.4's exposure:
+   40 at Alderbrook Orthopaedics, the largest of the 12.
+7. Measured each unit's excess against its own Poisson sampling error: 5.17 for 41230, 3.52 for 41420, 6.25 for
+   the gap, so the lead is 2.41 standard errors and the top two are not inside one of each other.
+8. Checked the ranking against every reading of clause 4.3 the text leaves open: the comparison
+   frequency over the last eight, four or one closed quarter; the unit's own patients left out of the
+   comparison; the unit's record over any of those windows; and the rate carried on in-scope episodes
+   rather than on all separations. All **12** readings name the same unit, by between 1.14 and 2.86 times.
+9. Recommended the placement with Alderbrook Orthopaedics (41230) and wrote the per-unit table and the committee brief.
 
 ## 4. Deliverable Answers
 
 ### embed_placement_2027q4.xlsx
 
-1. Recommendation: **Alderbrook Orthopaedics (41230)**; closest unit **Alderbrook General Surgery (41220)**; gap
-   **8** complications.
-2. Complications a placement would avoid, by unit, whole complications, in the file's order:
-   - Alderbrook Orthopaedics (41230): 21
-   - Alderbrook General Surgery (41220): 13
-   - Marrowfield General Medicine (41420): 11
-   - Stonecreek Vascular Surgery (41330): 10
-   - Stonecreek General Medicine (41310): 8
-   - Alderbrook Respiratory Medicine (41240): 5
-   - Marrowfield Surgical Services (41520): 4
-   - Alderbrook General Medicine (41210): 3
-   - Carrowdean General Medicine (41510): 3
-   - Stonecreek General Surgery (41320): 3
-   - Marrowfield Orthopaedics (41410): 2
-   - Stonecreek Renal Medicine (41430): 1
+1. Recommendation: **Alderbrook Orthopaedics (41230)**; closest unit **Marrowfield General Medicine (41420)**; gap **15** complications.
+2. Avoidable complications by unit, whole complications, in the file's order:
+   - Alderbrook Orthopaedics (41230): 40
+   - Marrowfield General Medicine (41420): 25
+   - Marrowfield Orthopaedics (41410): 8
+   - Stonecreek Vascular Surgery (41330): 2
+   - Stonecreek General Medicine (41310): 2
+   - Stonecreek General Surgery (41320): 2
+   - Carrowdean General Medicine (41510): 0
+   - Marrowfield Surgical Services (41520): 0
+   - Stonecreek Renal Medicine (41430): -1
+   - Alderbrook Respiratory Medicine (41240): -2
+   - Alderbrook General Surgery (41220): -3
+   - Alderbrook General Medicine (41210): -5
+3. Each unit's standardised ratio on the published rates and against the comparison frequency, to two
+   decimals: Alderbrook Orthopaedics is 1.10 and 1.22.
 
 ### embed_placement_brief.pdf
 
-3. The case for Alderbrook Orthopaedics: standing 1.16, 189 expected complications on 2,200 planned
-   separations, 31.1 above that standing, 21 avoided against 13 at the closest unit.
-4. One bar for each eligible unit of the complications a placement there would avoid, in avoided order, the
-   recommended unit marked, the axis in complications over the quarter and the finding as the title.
+4. The case for Alderbrook Orthopaedics: 1,795 observed complications against 1,466.3 the comparison gives its own patients, a
+   standardised ratio of 1.22 against that comparison, 40 avoidable complications on 2,305 planned
+   separations, against 25 at Marrowfield General Medicine, a gap of 15 complications, 1.60 times and 2.41 standard errors.
+5. One bar for each eligible unit of its avoidable complications, in avoidable order, the recommended
+   unit marked, the axis in avoidable complications on the quarter's planned separations and the finding
+   as the title.
 
 ### Also requested
 
-5. By hospital for the year ended 31 December 2026, in-scope episodes, complications and the adjusted rate
-   per 1,000 episodes:
-   - Alderbrook Hospital: 48,617 episodes, 5,488 complications, 114.7
-   - Stonecreek Hospital: 26,869 episodes, 3,138 complications, 118.7
-   - Marrowfield Hospital: 24,533 episodes, 2,676 complications, 120.0
-   - Carrowdean District Hospital: 2,323 episodes, 229 complications, 109.4
-6. By quarter, the separations the sub-acute and mental health units reported and the episodes among them
-   that recorded a complication:
-   - 2024-25 Q1: 913 separations, 45 with a complication
-   - 2024-25 Q2: 800 separations, 45 with a complication
-   - 2024-25 Q3: 844 separations, 47 with a complication
-   - 2024-25 Q4: 930 separations, 55 with a complication
-   - 2025-26 Q1: 930 separations, 41 with a complication
-   - 2025-26 Q2: 825 separations, 46 with a complication
-   - 2025-26 Q3: 839 separations, 41 with a complication
-   - 2025-26 Q4: 915 separations, 54 with a complication
-   - 2026-27 Q1: 931 separations, 37 with a complication
-   - 2026-27 Q2: 817 separations, 59 with a complication
-7. By complication group, the in-scope episodes that recorded one, 2025-26 and 2026-27 to 31 December 2026:
-   - G1 Healthcare-associated infections: 2,826 and 1,368
-   - G2 Pressure injuries: 1,926 and 884
-   - G3 Falls resulting in fracture or intracranial injury: 1,684 and 849
-   - G4 Medication and anaesthetic complications: 1,791 and 966
-   - G5 Delirium: 2,064 and 1,102
-   - G6 Respiratory complications: 2,272 and 1,159
-   - G7 Venous thromboembolism: 1,175 and 536
-   - G8 Surgical complications requiring unplanned return to theatre: 1,270 and 616
+6. By hospital for the year ended 31 December 2026, in-scope episodes, complications and the adjusted
+   rate per 1,000 episodes:
+   - Alderbrook Hospital: 48,617 episodes, 4,909 complications, 102.6
+   - Stonecreek Hospital: 26,848 episodes, 2,738 complications, 103.7
+   - Marrowfield Hospital: 24,522 episodes, 2,294 complications, 103.9
+   - Carrowdean District Hospital: 2,306 episodes, 199 complications, 111.7
+7. By quarter, the separations the sub-acute and mental health units reported and the episodes among
+   them that recorded a complication:
+   - 2024-25 Q1: 901 separations, 45 with a complication
+   - 2024-25 Q2: 793 separations, 45 with a complication
+   - 2024-25 Q3: 832 separations, 46 with a complication
+   - 2024-25 Q4: 918 separations, 54 with a complication
+   - 2025-26 Q1: 908 separations, 41 with a complication
+   - 2025-26 Q2: 808 separations, 45 with a complication
+   - 2025-26 Q3: 819 separations, 40 with a complication
+   - 2025-26 Q4: 900 separations, 53 with a complication
+   - 2026-27 Q1: 917 separations, 37 with a complication
+   - 2026-27 Q2: 809 separations, 58 with a complication
+8. By complication group, the in-scope episodes that recorded one, 2025-26 and 2026-27 to 31 December
+   2026:
+   - G1 Healthcare-associated infections: 2,500 and 1,223
+   - G2 Pressure injuries: 1,594 and 799
+   - G3 Falls resulting in fracture or intracranial injury: 1,336 and 664
+   - G4 Medication and anaesthetic complications: 1,688 and 775
+   - G5 Delirium: 1,797 and 907
+   - G6 Respiratory complications: 1,927 and 962
+   - G7 Venous thromboembolism: 1,082 and 496
+   - G8 Surgical complications requiring unplanned return to theatre: 1,250 and 639

@@ -135,6 +135,7 @@
   }
  },
  "margin": 1.6,
+ "neutral_ratio": 1.0,
  "outside_indicator": {
   "2024-25 Q1": {
    "separations": 901,
@@ -185,6 +186,7 @@
  "pick_expected_published": 1627.0,
  "pick_in_scope_episodes": 17617,
  "pick_observed_complications": 1795,
+ "pick_per_1000": 17.4,
  "pick_planned_separations": 2305,
  "pick_published_excess": 20.5,
  "pick_published_ratio": 1.1,
@@ -205,6 +207,7 @@
   "41520": 13.3
  },
  "published_rank_of_call": 4,
+ "published_table_derived_year_end_day": 30,
  "rate_denominator": 1000,
  "reading_margins": {
   "the comparison frequency measured over the eight most recent closed quarters": 1.72,
@@ -279,5 +282,6 @@
  "surgical_share_high": 0.851,
  "surgical_share_low": 0.075,
  "third_unit_code": "41410",
+ "unit_quarters_in_the_series": 215,
  "year_end_day": 31
 }
